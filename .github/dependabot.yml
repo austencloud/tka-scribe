@@ -1,0 +1,97 @@
+version: 2
+updates:
+  # Root package.json
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+    reviewers:
+      - "austencloud"
+    commit-message:
+      prefix: "deps"
+      include: "scope"
+
+  # Web application
+  - package-ecosystem: "npm"
+    directory: "/apps/web"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+    reviewers:
+      - "austencloud"
+    commit-message:
+      prefix: "deps(web)"
+      include: "scope"
+
+  # Landing page
+  - package-ecosystem: "npm"
+    directory: "/apps/landing"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+    reviewers:
+      - "austencloud"
+    commit-message:
+      prefix: "deps(landing)"
+      include: "scope"
+
+  # Animator
+  - package-ecosystem: "npm"
+    directory: "/apps/animator"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+    reviewers:
+      - "austencloud"
+    commit-message:
+      prefix: "deps(animator)"
+      include: "scope"
+
+  # Shared types package
+  - package-ecosystem: "npm"
+    directory: "/packages/shared-types"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 3
+    reviewers:
+      - "austencloud"
+    commit-message:
+      prefix: "deps(shared-types)"
+      include: "scope"
+
+  # Constants package
+  - package-ecosystem: "npm"
+    directory: "/packages/constants"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 3
+    reviewers:
+      - "austencloud"
+    commit-message:
+      prefix: "deps(constants)"
+      include: "scope"
+
+  # Python dependencies for desktop app
+  - package-ecosystem: "pip"
+    directory: "/apps/desktop"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+    reviewers:
+      - "austencloud"
+    commit-message:
+      prefix: "deps(desktop)"
+      include: "scope"
+
+  # GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    open-pull-requests-limit: 3
+    reviewers:
+      - "austencloud"
+    commit-message:
+      prefix: "ci"
+      include: "scope"

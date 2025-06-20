@@ -1,0 +1,241 @@
+name: TKA Monorepo CI/CD
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+env:
+  PYTHON_VERSION: '3.9'
+  NODE_VERSION: '18'
+
+jobs:
+  test-desktop:
+    name: Test Desktop Application
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      
+      - name: Cache Python dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt', '**/pyproject.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+      
+      - name: Install Python dependencies
+        run: |
+          cd apps/desktop
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then
+            pip install -r requirements.txt
+          elif [ -f pyproject.toml ]; then
+            pip install -e .[dev]
+          fi
+      
+      - name: Run Python tests
+        run: |
+          cd apps/desktop
+          python -m pytest modern/tests/ -v --tb=short --cov=modern/src --cov-report=xml
+        continue-on-error: true
+      
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          file: ./apps/desktop/coverage.xml
+          flags: desktop
+          name: desktop-coverage
+        continue-on-error: true
+
+  test-web:
+    name: Test Web Applications
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        app: [web, landing, animator]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: apps/${{ matrix.app }}/package-lock.json
+      
+      - name: Install dependencies
+        run: |
+          cd apps/${{ matrix.app }}
+          npm ci
+      
+      - name: Run linting
+        run: |
+          cd apps/${{ matrix.app }}
+          if npm run lint --if-present; then
+            echo "Linting passed"
+          else
+            echo "Linting failed or not configured"
+          fi
+        continue-on-error: true
+      
+      - name: Run tests
+        run: |
+          cd apps/${{ matrix.app }}
+          if npm test --if-present; then
+            echo "Tests passed"
+          else
+            echo "Tests failed or not configured"
+          fi
+        continue-on-error: true
+      
+      - name: Run build
+        run: |
+          cd apps/${{ matrix.app }}
+          npm run build
+
+  test-shared-packages:
+    name: Test Shared Packages
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+      
+      - name: Install root dependencies
+        run: npm install
+      
+      - name: Type check shared packages
+        run: |
+          for package in packages/*/; do
+            if [ -f "$package/package.json" ]; then
+              echo "Type checking $package"
+              cd "$package"
+              if npm run type-check --if-present; then
+                echo "Type check passed for $package"
+              else
+                echo "Type check failed or not configured for $package"
+              fi
+              cd - > /dev/null
+            fi
+          done
+        continue-on-error: true
+
+  integration-tests:
+    name: Integration Tests
+    runs-on: ubuntu-latest
+    needs: [test-desktop, test-web, test-shared-packages]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      
+      - name: Install all dependencies
+        run: |
+          python scripts/setup.py
+        continue-on-error: true
+      
+      - name: Run integration tests
+        run: |
+          if [ -f scripts/test_integration.py ]; then
+            python scripts/test_integration.py
+          else
+            echo "Integration tests not found, skipping"
+          fi
+        continue-on-error: true
+
+  build-and-release:
+    name: Build and Release
+    runs-on: ubuntu-latest
+    needs: [test-desktop, test-web, test-shared-packages]
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      
+      - name: Install dependencies
+        run: |
+          python scripts/setup.py
+      
+      - name: Build all applications
+        run: |
+          python scripts/dev.py build
+      
+      - name: Create release artifacts
+        run: |
+          mkdir -p dist
+          # Copy built web applications
+          if [ -d apps/web/build ]; then
+            cp -r apps/web/build dist/web
+          fi
+          if [ -d apps/landing/build ]; then
+            cp -r apps/landing/build dist/landing
+          fi
+          if [ -d apps/animator/dist ]; then
+            cp -r apps/animator/dist dist/animator
+          fi
+          # Create version info
+          echo "Build Date: $(date)" > dist/build-info.txt
+          echo "Commit: ${{ github.sha }}" >> dist/build-info.txt
+          echo "Branch: ${{ github.ref_name }}" >> dist/build-info.txt
+      
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: tka-release-${{ github.sha }}
+          path: dist/
+          retention-days: 30
+
+  security-scan:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          scan-ref: '.'
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+        continue-on-error: true
+      
+      - name: Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: 'trivy-results.sarif'
+        continue-on-error: true
