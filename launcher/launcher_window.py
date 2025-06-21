@@ -51,26 +51,32 @@ class ModernSearchBox(QLineEdit):
         self._setup_styling()
 
     def _setup_styling(self):
-        """Apply modern glassmorphism styling."""
+        """Apply premium glassmorphism styling with enhanced effects."""
         self.setStyleSheet(
             """
             QLineEdit {
-                background: rgba(255, 255, 255, 0.1);
+                background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
+                    stop:0 rgba(255, 255, 255, 0.12),
+                    stop:1 rgba(255, 255, 255, 0.08));
                 border: 1px solid rgba(255, 255, 255, 0.2);
-                border-radius: 12px;
-                padding: 12px 16px;
+                border-radius: 16px;
+                padding: 14px 20px;
                 font-family: 'Inter', sans-serif;
                 font-size: 14px;
                 color: #ffffff;
                 font-weight: 400;
+                selection-background-color: rgba(59, 130, 246, 0.3);
             }
             QLineEdit:focus {
-                background: rgba(255, 255, 255, 0.15);
-                border: 1px solid rgba(255, 255, 255, 0.4);
+                background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
+                    stop:0 rgba(255, 255, 255, 0.18),
+                    stop:1 rgba(255, 255, 255, 0.12));
+                border: 2px solid rgba(59, 130, 246, 0.6);
                 outline: none;
             }
             QLineEdit::placeholder {
-                color: rgba(255, 255, 255, 0.6);
+                color: rgba(255, 255, 255, 0.5);
+                font-style: italic;
             }
         """
         )
@@ -119,21 +125,27 @@ class ModernButton(QPushButton):
             self.setStyleSheet(
                 """
                 QPushButton {
-                    background: rgba(255, 255, 255, 0.05);
-                    border: 1px solid rgba(255, 255, 255, 0.15);
-                    border-radius: 12px;
+                    background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
+                        stop:0 rgba(255, 255, 255, 0.08),
+                        stop:1 rgba(255, 255, 255, 0.04));
+                    border: 1px solid rgba(255, 255, 255, 0.18);
+                    border-radius: 14px;
                     padding: 12px 24px;
                     font-family: 'Inter', sans-serif;
                     font-size: 14px;
-                    font-weight: 400;
+                    font-weight: 500;
                     color: rgba(255, 255, 255, 0.9);
                 }
                 QPushButton:hover {
-                    background: rgba(255, 255, 255, 0.1);
-                    border: 1px solid rgba(255, 255, 255, 0.25);
+                    background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
+                        stop:0 rgba(255, 255, 255, 0.12),
+                        stop:1 rgba(255, 255, 255, 0.08));
+                    border: 1px solid rgba(255, 255, 255, 0.28);
                 }
                 QPushButton:pressed {
-                    background: rgba(255, 255, 255, 0.15);
+                    background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
+                        stop:0 rgba(255, 255, 255, 0.16),
+                        stop:1 rgba(255, 255, 255, 0.12));
                 }
             """
             )

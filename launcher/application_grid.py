@@ -106,17 +106,20 @@ class ModernApplicationCard(QFrame):
         # Header with icon and title
         header_layout = QHBoxLayout()
 
-        # Application icon with modern styling
+        # Premium application icon with enhanced glassmorphism
         self.icon_label = QLabel(self.app_data.icon)
-        self.icon_label.setFixedSize(32, 32)
+        self.icon_label.setFixedSize(40, 40)  # Larger for better visual impact
         self.icon_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.icon_label.setStyleSheet(
             """
             QLabel {
-                font-size: 20px;
+                font-size: 24px;
                 color: #ffffff;
-                background: rgba(255, 255, 255, 0.1);
-                border-radius: 8px;
+                background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
+                    stop:0 rgba(255, 255, 255, 0.15),
+                    stop:1 rgba(255, 255, 255, 0.08));
+                border: 1px solid rgba(255, 255, 255, 0.2);
+                border-radius: 12px;
             }
         """
         )
@@ -176,31 +179,36 @@ class ModernApplicationCard(QFrame):
 
         layout.addStretch()
 
-        # Modern launch button
+        # Premium launch button with enhanced styling
         self.launch_btn = QPushButton("Launch")
-        self.launch_btn.setFixedHeight(32)
+        self.launch_btn.setFixedHeight(36)  # Slightly taller for better touch target
         self.launch_btn.setStyleSheet(
             """
             QPushButton {
                 background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
-                    stop:0 rgba(59, 130, 246, 0.8),
-                    stop:1 rgba(37, 99, 235, 0.8));
-                border: 1px solid rgba(255, 255, 255, 0.2);
-                border-radius: 8px;
+                    stop:0 rgba(59, 130, 246, 0.9),
+                    stop:0.5 rgba(37, 99, 235, 0.85),
+                    stop:1 rgba(29, 78, 216, 0.8));
+                border: 1px solid rgba(255, 255, 255, 0.25);
+                border-radius: 10px;
                 font-family: 'Inter', sans-serif;
-                font-size: 12px;
-                font-weight: 500;
+                font-size: 13px;
+                font-weight: 600;
                 color: #ffffff;
+                padding: 0 16px;
             }
             QPushButton:hover {
                 background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
-                    stop:0 rgba(59, 130, 246, 0.9),
-                    stop:1 rgba(37, 99, 235, 0.9));
+                    stop:0 rgba(59, 130, 246, 1.0),
+                    stop:0.5 rgba(37, 99, 235, 0.95),
+                    stop:1 rgba(29, 78, 216, 0.9));
+                border: 1px solid rgba(255, 255, 255, 0.35);
             }
             QPushButton:pressed {
                 background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
-                    stop:0 rgba(37, 99, 235, 0.9),
-                    stop:1 rgba(29, 78, 216, 0.9));
+                    stop:0 rgba(29, 78, 216, 0.95),
+                    stop:1 rgba(21, 59, 184, 0.9));
+                border: 1px solid rgba(255, 255, 255, 0.3);
             }
         """
         )
