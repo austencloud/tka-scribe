@@ -31,10 +31,7 @@
 		"vite": "^4.4.2",
 		"vitest": "^0.34.0"
 	},
-	"dependencies": {
-		"@tka/shared-types": "workspace:*",
-		"@tka/constants": "workspace:*"
-	},
+	"dependencies": {},
 	"engines": {
 		"node": ">=18.0.0",
 		"npm": ">=8.0.0"

@@ -87,6 +87,34 @@ def launch_modern_direct():
         return 1
 
 
+def launch_legacy_direct():
+    """Launch the legacy TKA Desktop application directly."""
+    try:
+        print("🏛️ Launching TKA Desktop (Legacy Version)")
+
+        legacy_desktop_path = Path(__file__).parent / "src" / "desktop" / "legacy"
+
+        if str(legacy_desktop_path) not in sys.path:
+            sys.path.insert(0, str(legacy_desktop_path))
+
+        # Change to legacy desktop directory
+        original_cwd = Path.cwd()
+        os.chdir(legacy_desktop_path)
+
+        try:
+            from main import main as legacy_main
+
+            return legacy_main()
+        finally:
+            # Restore original working directory
+            os.chdir(original_cwd)
+
+    except ImportError as legacy_error:
+        print(f"Error importing Legacy main: {legacy_error}")
+        print("Please ensure the TKA Desktop legacy application is properly set up.")
+        return 1
+
+
 def launch_dev_tools():
     """Launch TKA development tools."""
     try:
@@ -130,6 +158,9 @@ Examples:
         "--modern", action="store_true", help="Launch modern TKA Desktop directly"
     )
     parser.add_argument(
+        "--legacy", action="store_true", help="Launch legacy TKA Desktop directly"
+    )
+    parser.add_argument(
         "--dev", action="store_true", help="Launch TKA development tools"
     )
 
@@ -141,6 +172,8 @@ Examples:
     # Route to appropriate launcher based on arguments
     if args.modern:
         return launch_modern_direct()
+    elif args.legacy:
+        return launch_legacy_direct()
     elif args.dev:
         return launch_dev_tools()
     else:

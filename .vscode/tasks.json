@@ -2,12 +2,28 @@
   "version": "2.0.0",
   "tasks": [
     {
+      "label": "Start Modern Launcher",
+      "type": "shell",
+      "command": "python",
+      "args": ["launcher/main.py"],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "new"
+      }
+    },
+    {
       "label": "Start Desktop App",
       "type": "shell",
       "command": "python",
       "args": ["main.py"],
       "options": {
-        "cwd": "${workspaceFolder}/tka-desktop/modern"
+        "cwd": "${workspaceFolder}/src/desktop/modern"
       },
       "group": "build",
       "presentation": {
@@ -33,7 +49,7 @@
       "command": "python",
       "args": ["start_production_api.py"],
       "options": {
-        "cwd": "${workspaceFolder}/tka-desktop/modern"
+        "cwd": "${workspaceFolder}/src/desktop/modern"
       },
       "group": "build"
     },
@@ -41,7 +57,7 @@
       "label": "Run All Tests",
       "type": "shell",
       "command": "python",
-      "args": ["-m", "pytest", "tka-desktop/modern/tests/", "-v"],
+      "args": ["-m", "pytest", "src/desktop/modern/tests/", "-v"],
       "group": "test"
     },
     {

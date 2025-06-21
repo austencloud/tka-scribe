@@ -13,5 +13,15 @@
     "key": "ctrl+alt+f",
     "command": "workbench.action.tasks.runTask",
     "args": "Full Stack Development"
+  },
+  {
+    "key": "ctrl+i",
+    "command": "inlineChat.start",
+    "when": "editorTextFocus && !inlineChatVisible"
+  },
+  {
+    "key": "ctrl+i",
+    "command": "workbench.action.terminal.chat",
+    "when": "terminalFocus"
   }
 ]

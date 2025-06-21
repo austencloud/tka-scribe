@@ -1,183 +1,212 @@
 #!/usr/bin/env python3
 """
-Main entry point for TKA Unified Launcher.
+TKA Modern Launcher - Premium Application Launcher
+==================================================
 
-This launcher provides a modern, professional interface for launching
-all TKA applications with dual-mode operation (window/docked).
+A premium, modern application launcher for The Kinetic Constructor (TKA) built with
+pure PyQt6 and custom glassmorphism design. Features dual-mode operation, smooth
+animations, and seamless TKA integration.
+
+Architecture:
+- Clean separation of concerns
+- Pure PyQt6 with custom styling
+- TKA dependency injection integration
+- Modern responsive design patterns
+- Glassmorphism effects and micro-animations
+
+Author: TKA Development Team
+Version: 4.0.0 (Pure PyQt6 Rewrite)
 """
 
 import sys
-import signal
-import atexit
+import logging
 from pathlib import Path
 from PyQt6.QtWidgets import QApplication
-from PyQt6.QtCore import QTimer
+from PyQt6.QtCore import Qt, QTimer
+from PyQt6.QtGui import QFont
 
-# Add launcher directory to path
-launcher_dir = Path(__file__).parent
-if str(launcher_dir) not in sys.path:
-    sys.path.insert(0, str(launcher_dir))
-
-# Add parent directory for launcher imports
-parent_dir = launcher_dir.parent
-if str(parent_dir) not in sys.path:
-    sys.path.insert(0, str(parent_dir))
-
-from launcher.core.app_manager import ApplicationManager
-from launcher.config.settings import SettingsManager
-from launcher.core.state_manager import StateManager
-from launcher.config.app_definitions import AppDefinitions
-from launcher.ui.main_window import MainLauncherWindow
+# Setup logging
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+)
+logger = logging.getLogger(__name__)
 
 
-class UnifiedLauncherApp:
-    """Main application class for TKA Unified Launcher."""
+class TKAModernLauncherApp:
+    """
+    Main application class for TKA Modern Launcher.
+
+    Responsibilities:
+    - Application lifecycle management
+    - Modern theme and styling setup
+    - Error handling and recovery
+    - Clean shutdown procedures
+    """
 
     def __init__(self, argv):
         """Initialize the launcher application."""
+        logger.info("🚀 Initializing TKA Modern Launcher...")
+
+        # Create QApplication
         self.app = QApplication(argv)
-        self.main_window = None
-
-        # Setup signal handlers for proper termination
-        self._setup_signal_handlers()
-
-        # Setup application properties
-        self.app.setApplicationName("TKA Unified Launcher")
-        self.app.setApplicationVersion("2.0.0")
+        self.app.setApplicationName("TKA Modern Launcher")
+        self.app.setApplicationVersion("4.0.0")
         self.app.setOrganizationName("The Kinetic Constructor")
 
-        # Initialize core components
-        self._initialize_components()
+        # Setup application properties for high DPI displays
+        # Note: In PyQt6, high DPI scaling is enabled by default
 
-        # Create main window
-        self._create_main_window()
+        # Initialize components
+        self.main_window = None
+        self.tka_integration = None
 
-        # Register cleanup handlers
-        atexit.register(self._cleanup)
+        # Setup modern theme and styling
+        self._setup_modern_theme()
 
-    def _setup_signal_handlers(self):
-        """Setup signal handlers for graceful shutdown."""
+        # Setup error handling
+        self._setup_error_handling()
 
-        def signal_handler(signum, frame):
-            print(f"\n🛑 Received signal {signum}, shutting down gracefully...")
-            self.quit()
+        logger.info("✅ TKA Modern Launcher initialized successfully")
 
-        # Handle common termination signals
-        signal.signal(signal.SIGINT, signal_handler)
-        signal.signal(signal.SIGTERM, signal_handler)
-
-        # On Windows, handle Ctrl+C
-        if sys.platform == "win32":
-            import win32api
-
-            def console_handler(dwCtrlType):
-                if dwCtrlType in (0, 2):  # CTRL_C_EVENT, CTRL_CLOSE_EVENT
-                    print("\n🛑 Console close event, shutting down gracefully...")
-                    QTimer.singleShot(0, self.quit)
-                    return True
-                return False
-
-            win32api.SetConsoleCtrlHandler(console_handler, True)
-
-    def _initialize_components(self):
-        """Initialize core application components."""
+    def _setup_modern_theme(self):
+        """Setup the modern glassmorphism theme."""
         try:
-            # Initialize settings manager
-            self.settings_manager = SettingsManager()
+            # Set Inter font family for modern typography
+            font = QFont("Inter", 10)
+            font.setStyleHint(QFont.StyleHint.SansSerif)
+            self.app.setFont(font)
 
-            # Initialize app definitions
-            self.app_definitions = AppDefinitions()
+            # Apply modern dark theme via application-wide stylesheet
+            self.app.setStyleSheet(self._get_modern_stylesheet())
 
-            # Initialize app manager
-            self.app_manager = ApplicationManager(self.app_definitions)
-
-            # Initialize state manager
-            self.state_manager = StateManager(self.settings_manager)
-
-            print("✅ Core components initialized successfully")
+            logger.info("🎨 Applied modern glassmorphism theme with Inter typography")
 
         except Exception as e:
-            print(f"❌ Failed to initialize components: {e}")
-            sys.exit(1)
+            logger.warning(f"⚠️ Theme setup failed, using defaults: {e}")
 
-    def _create_main_window(self):
-        """Create and setup the main launcher window."""
-        try:
-            self.main_window = MainLauncherWindow(
-                app_manager=self.app_manager,
-                settings_manager=self.settings_manager,
-                state_manager=self.state_manager,
+    def _get_modern_stylesheet(self):
+        """Get the modern glassmorphism stylesheet."""
+        return """
+        QApplication {
+            background-color: #0f0f0f;
+            color: #ffffff;
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+        }
+
+        /* Modern glassmorphism base styling */
+        QWidget {
+            background-color: transparent;
+            color: #ffffff;
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+        }
+        """
+
+    def _setup_error_handling(self):
+        """Setup global error handling."""
+
+        def handle_exception(exc_type, exc_value, exc_traceback):
+            if issubclass(exc_type, KeyboardInterrupt):
+                sys.__excepthook__(exc_type, exc_value, exc_traceback)
+                return
+
+            logger.error(
+                "💥 Uncaught exception", exc_info=(exc_type, exc_value, exc_traceback)
             )
 
-            # Connect application quit signal
-            self.app.aboutToQuit.connect(self._on_about_to_quit)
+        sys.excepthook = handle_exception
 
-            print("✅ Main window created successfully")
+    def initialize(self):
+        """Initialize the launcher components."""
+        try:
+            # Import here to avoid circular imports
+            from launcher_window import TKAModernWindow
+            from tka_integration import TKAIntegrationService
 
+            # Initialize TKA integration
+            logger.info("🔗 Initializing TKA integration...")
+            self.tka_integration = TKAIntegrationService()
+
+            # Create main window
+            logger.info("🪟 Creating main launcher window...")
+            self.main_window = TKAModernWindow(self.tka_integration)
+
+            # Connect cleanup signals
+            self.app.aboutToQuit.connect(self._cleanup)
+
+            logger.info("✅ Launcher initialization complete")
+            return True
+
+        except ImportError as e:
+            logger.error(f"❌ Failed to import launcher components: {e}")
+            return False
         except Exception as e:
-            print(f"❌ Failed to create main window: {e}")
-            sys.exit(1)
+            logger.error(f"❌ Failed to initialize launcher: {e}")
+            return False
 
     def run(self):
         """Run the launcher application."""
         try:
+            if not self.initialize():
+                logger.error("❌ Launcher initialization failed")
+                return 1
+
             # Show the main window
             self.main_window.show()
 
-            print("🚀 TKA Unified Launcher started successfully")
-            print("   Use Ctrl+C or close the window to exit")
+            # Center the window on screen
+            self._center_window()
 
-            # Start the Qt event loop
+            logger.info("🎯 TKA Fluent Launcher is ready!")
+
+            # Start the event loop
             return self.app.exec()
 
-        except KeyboardInterrupt:
-            print("\n🛑 Keyboard interrupt received")
-            return 0
         except Exception as e:
-            print(f"❌ Application error: {e}")
+            logger.error(f"💥 Fatal error in launcher: {e}")
             return 1
 
-    def quit(self):
-        """Gracefully quit the application."""
-        print("🔄 Initiating graceful shutdown...")
-
-        # Save current state
+    def _center_window(self):
+        """Center the main window on the screen."""
         if self.main_window:
-            self.main_window._save_current_window_state()
+            screen = self.app.primaryScreen().geometry()
+            window = self.main_window.geometry()
 
-        # Quit the application
-        self.app.quit()
+            x = (screen.width() - window.width()) // 2
+            y = (screen.height() - window.height()) // 2
 
-    def _on_about_to_quit(self):
-        """Handle application about to quit signal."""
-        print("💾 Saving application state...")
-
-        # Ensure settings are saved
-        if hasattr(self, "settings_manager"):
-            self.settings_manager.save_settings()
+            self.main_window.move(x, y)
 
     def _cleanup(self):
-        """Cleanup resources on exit."""
-        print("🧹 Cleaning up resources...")
+        """Cleanup resources on application exit."""
+        logger.info("🧹 Cleaning up launcher resources...")
 
-        # Additional cleanup if needed
-        if hasattr(self, "app_manager"):
-            # Stop any running processes
-            pass
+        try:
+            if self.tka_integration:
+                self.tka_integration.cleanup()
+
+            if self.main_window:
+                self.main_window.cleanup()
+
+        except Exception as e:
+            logger.warning(f"⚠️ Cleanup warning: {e}")
+
+        logger.info("👋 TKA Fluent Launcher shutdown complete")
 
 
 def main():
-    """Main entry point for the launcher."""
+    """Main entry point for TKA Modern Launcher."""
     try:
-        # Create and run the launcher application
-        launcher = UnifiedLauncherApp(sys.argv)
+        # Create and run the launcher
+        launcher = TKAModernLauncherApp(sys.argv)
         exit_code = launcher.run()
 
-        print(f"👋 TKA Unified Launcher exited with code {exit_code}")
         return exit_code
 
+    except KeyboardInterrupt:
+        logger.info("⏹️ Launcher interrupted by user")
+        return 0
     except Exception as e:
-        print(f"💥 Fatal error: {e}")
+        logger.error(f"💥 Fatal launcher error: {e}")
         return 1
 
 
