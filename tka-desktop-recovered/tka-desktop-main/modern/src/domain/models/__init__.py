@@ -1,1 +1,0 @@
-# Modern Domain Models Module
