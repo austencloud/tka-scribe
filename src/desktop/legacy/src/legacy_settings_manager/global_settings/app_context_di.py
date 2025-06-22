@@ -1,4 +1,4 @@
-from typing import Optional, Dict, Any, Type, TypeVar, cast
+from typing import Dict, Any, Type, TypeVar, cast
 from interfaces.settings_manager_interface import ISettingsManager
 from interfaces.json_manager_interface import IJsonManager
 

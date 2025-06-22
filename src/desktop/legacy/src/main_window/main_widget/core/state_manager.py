@@ -236,4 +236,3 @@ class StateManager(QObject):
         """Persist all state data to settings."""
         # This would save all persistent state to the settings manager
         # Implementation depends on the specific settings structure
-        pass

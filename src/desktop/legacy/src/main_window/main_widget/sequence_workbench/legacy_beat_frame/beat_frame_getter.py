@@ -2,7 +2,6 @@ from typing import TYPE_CHECKING, Union
 
 from data.constants import LETTER
 from utils.word_simplifier import WordSimplifier
-from PyQt6.QtWidgets import QGraphicsView
 
 if TYPE_CHECKING:
     from base_widgets.pictograph.elements.views.beat_view import (

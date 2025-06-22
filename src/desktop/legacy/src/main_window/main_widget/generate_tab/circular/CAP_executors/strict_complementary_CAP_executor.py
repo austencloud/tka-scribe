@@ -1,5 +1,4 @@
 from data.constants import *
-from main_window.main_widget.generate_tab.circular.CAP_type import CAPType
 from .CAP_executor import CAPExecutor
 from PyQt6.QtWidgets import QApplication
 from enums.letter.complementary_letter_getter import ComplementaryLetterGetter

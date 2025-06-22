@@ -7,7 +7,6 @@ directly from the running application instance.
 
 import logging
 import time
-from typing import Dict, List
 from PyQt6.QtCore import QTimer, QObject, pyqtSignal
 from PyQt6.QtWidgets import QApplication
 

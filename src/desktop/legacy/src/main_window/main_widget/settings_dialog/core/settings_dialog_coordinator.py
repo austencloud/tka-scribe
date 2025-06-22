@@ -4,7 +4,6 @@ Settings dialog coordinator - orchestrates all dialog components.
 This replaces the monolithic ModernSettingsDialog with a coordinator pattern
 that manages smaller, focused components.
 """
-# pylint: disable=import-outside-toplevel
 
 import logging
 from typing import TYPE_CHECKING, Any, Dict, Optional

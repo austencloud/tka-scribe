@@ -4,7 +4,6 @@ from enums.letter.letter_type import LetterType
 from enums.prop_type import PropType
 from enums.letter.letter import Letter
 
-from main_window.main_widget.special_placement_loader import SpecialPlacementLoader
 from main_window.main_widget.turns_tuple_generator.turns_tuple_generator import (
     TurnsTupleGenerator,
 )

@@ -1,7 +1,6 @@
 from typing import TYPE_CHECKING
 from data.constants import *
 from main_window.main_widget.generate_tab.circular.CAP_type import CAPType
-from PyQt6.QtWidgets import QApplication
 
 if TYPE_CHECKING:
     from ..circular_sequence_builder import CircularSequenceBuilder

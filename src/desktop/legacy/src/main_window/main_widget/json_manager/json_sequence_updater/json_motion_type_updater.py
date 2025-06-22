@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 
-from data.constants import ANTI, FLOAT, PREFLOAT_MOTION_TYPE, MOTION_TYPE, PRO, TURNS
+from data.constants import ANTI, FLOAT, PREFLOAT_MOTION_TYPE, MOTION_TYPE, PRO
 
 
 if TYPE_CHECKING:

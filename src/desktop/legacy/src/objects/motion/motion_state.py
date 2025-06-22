@@ -1,4 +1,4 @@
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import Optional, Union
 
 from data.constants import PREFLOAT_MOTION_TYPE, PREFLOAT_PROP_ROT_DIR, PRO, ANTI, FLOAT

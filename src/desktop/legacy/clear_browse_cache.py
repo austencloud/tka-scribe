@@ -5,7 +5,6 @@ This will force regeneration of all thumbnails with the new high-quality setting
 """
 
 import os
-import shutil
 import sys
 from pathlib import Path
 

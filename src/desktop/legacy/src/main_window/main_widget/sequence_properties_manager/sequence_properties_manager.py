@@ -1,24 +1,19 @@
 from typing import TYPE_CHECKING, Optional
 
-from data.constants import DIAMOND, END_POS, GRID_MODE, LETTER
 from main_window.main_widget.sequence_level_evaluator import SequenceLevelEvaluator
 from main_window.main_widget.sequence_properties_manager.strict_swapped_CAP_checker import (
     StrictSwappedCAPChecker,
 )
 
+from data.constants import END_POS, LETTER
+
+from .mirrored_swapped_CAP_checker import MirroredSwappedCAPChecker
+from .rotated_swapped_CAP_checker import RotatedSwappedCAPChecker
+from .strict_mirrored_CAP_checker import StrictMirroredCAPChecker
+from .strict_rotated_CAP_checker import StrictRotatedCAPChecker
+
 if TYPE_CHECKING:
     from core.application_context import ApplicationContext
-    from interfaces.settings_manager_interface import ISettingsManager
-    from interfaces.json_manager_interface import IJsonManager
-
-from .mirrored_swapped_CAP_checker import (
-    MirroredSwappedCAPChecker,
-)
-from .strict_mirrored_CAP_checker import StrictMirroredCAPChecker
-from .rotated_swapped_CAP_checker import (
-    RotatedSwappedCAPChecker,
-)
-from .strict_rotated_CAP_checker import StrictRotatedCAPChecker
 
 
 class SequencePropertiesManager:
@@ -151,8 +146,8 @@ class SequencePropertiesManager:
             "is_circular": self.properties["ends_at_start_pos"],
             "can_be_CAP": self.properties["can_be_CAP"],
             **{
-                key: self.properties[key]
-                for key in self.properties
+                key: value
+                for key, value in self.properties.items()
                 if key.startswith("is_")
             },
         }

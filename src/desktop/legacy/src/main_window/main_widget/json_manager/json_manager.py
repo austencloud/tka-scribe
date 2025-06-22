@@ -1,7 +1,6 @@
 import logging
 from typing import TYPE_CHECKING, Dict, Any, List, Optional
 
-from src.interfaces.json_manager_interface import IJsonManager
 from src.main_window.main_widget.json_manager.json_act_saver import JsonActSaver
 from src.main_window.main_widget.json_manager.json_sequence_updater.json_sequence_updater import (
     JsonSequenceUpdater,

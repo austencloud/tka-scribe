@@ -2,7 +2,7 @@
 import os
 import logging
 from datetime import datetime
-from typing import Optional, List, TYPE_CHECKING
+from typing import Optional, TYPE_CHECKING
 from PyQt6.QtWidgets import (
     QFileDialog,
     QMessageBox,

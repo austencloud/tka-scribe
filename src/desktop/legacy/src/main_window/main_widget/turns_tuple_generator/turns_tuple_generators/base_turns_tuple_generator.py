@@ -3,7 +3,7 @@ from data.constants import BLUE, RED
 from objects.motion.motion import Motion
 
 if TYPE_CHECKING:
-    from legacy.src.base_widgets.pictograph.legacy_pictograph import LegacyPictograph
+    from base_widgets.pictograph.legacy_pictograph import LegacyPictograph
 
 
 class BaseTurnsTupleGenerator:

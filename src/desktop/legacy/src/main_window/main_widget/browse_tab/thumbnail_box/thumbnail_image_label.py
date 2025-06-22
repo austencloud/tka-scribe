@@ -1,11 +1,7 @@
 from PyQt6.QtCore import Qt, QRect, QSize, QTimer
-from PyQt6.QtGui import QPixmap, QCursor, QMouseEvent, QPainter, QColor, QPen, QImage
+from PyQt6.QtGui import QPixmap, QCursor, QMouseEvent, QPainter, QColor, QPen
 from PyQt6.QtWidgets import QLabel
 from typing import TYPE_CHECKING, Optional, Final
-import logging
-import os
-import hashlib
-import json
 from pathlib import Path
 
 from data.constants import GOLD, BLUE
@@ -134,7 +130,6 @@ class ThumbnailImageLabel(QLabel):
     # Legacy method - now handled by coordinator
     def _load_pending_image(self) -> None:
         """Legacy method - processing now handled by coordinator."""
-        pass
 
     # Size calculation now handled by coordinator
     def _calculate_available_space(self) -> QSize:
@@ -252,7 +247,6 @@ class ThumbnailImageLabel(QLabel):
     # Legacy methods - functionality now handled by coordinator
     def _enhance_image_quality(self) -> None:
         """Legacy method - now handled by coordinator."""
-        pass
 
     def _check_viewport_visibility(self) -> bool:
         """Check if this thumbnail is currently visible in the viewport."""

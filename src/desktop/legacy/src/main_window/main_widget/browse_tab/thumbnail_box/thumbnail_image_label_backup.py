@@ -1,5 +1,5 @@
 from PyQt6.QtCore import Qt, QRect, QSize, QTimer
-from PyQt6.QtGui import QPixmap, QCursor, QMouseEvent, QPainter, QColor, QPen, QImage
+from PyQt6.QtGui import QPixmap, QCursor, QMouseEvent, QPainter, QColor, QPen
 from PyQt6.QtWidgets import QLabel
 from typing import TYPE_CHECKING, Optional, Final
 import logging
@@ -12,7 +12,6 @@ from data.constants import GOLD, BLUE
 from main_window.main_widget.metadata_extractor import MetaDataExtractor
 
 # Import the new coordinator and components
-from .core.thumbnail_coordinator import ThumbnailCoordinator
 from .processing.image_processor import ImageProcessor
 
 if TYPE_CHECKING:

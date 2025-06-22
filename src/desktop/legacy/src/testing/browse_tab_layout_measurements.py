@@ -7,7 +7,7 @@ and automated verification of the 2:1 ratio requirement.
 
 import logging
 import time
-from typing import Dict, Optional, Tuple
+from typing import Dict
 from PyQt6.QtWidgets import QApplication
 from PyQt6.QtCore import QTimer, QObject, pyqtSignal
 

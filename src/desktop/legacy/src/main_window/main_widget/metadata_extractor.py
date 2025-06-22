@@ -1,7 +1,6 @@
 import json
 import logging
 import os
-from typing import TYPE_CHECKING
 
 from PIL import Image, PngImagePlugin
 from PyQt6.QtWidgets import QMessageBox

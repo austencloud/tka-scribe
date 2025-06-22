@@ -12,7 +12,7 @@ from PyQt6.QtGui import QColor, QCursor, QPainter, QPen
 GOLD = "gold"
 
 if TYPE_CHECKING:
-    from legacy.src.base_widgets.pictograph.legacy_pictograph import LegacyPictograph
+    from base_widgets.pictograph.legacy_pictograph import LegacyPictograph
 
 
 class BorderedPictographView(BasePictographView):
@@ -21,7 +21,11 @@ class BorderedPictographView(BasePictographView):
         self.primary_color = None
         self.secondary_color = None
         self.original_primary_color = None
+        
         self.original_secondary_color = None
+        self.outer_border_width = 0
+        self.inner_border_width = 0
+    
         self.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
 
         self.update_borders()

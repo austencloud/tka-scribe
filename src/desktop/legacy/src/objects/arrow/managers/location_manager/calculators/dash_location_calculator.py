@@ -3,7 +3,6 @@ from enums.letter.letter_type import LetterType
 from data.constants import *
 from objects.motion.motion import Motion
 from .base_location_calculator import BaseLocationCalculator
-from typing import TYPE_CHECKING
 
 
 class DashLocationCalculator(BaseLocationCalculator):

@@ -1,7 +1,6 @@
 import json
 import logging
 import re
-from typing import TYPE_CHECKING
 
 from main_window.main_widget.sequence_workbench.graph_editor.hotkey_graph_adjuster.data_updater.placement_data_cleaner import (
     PlacementDataCleaner,

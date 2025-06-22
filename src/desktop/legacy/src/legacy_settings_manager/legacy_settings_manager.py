@@ -1,9 +1,8 @@
 import shutil
 import os
-from typing import TYPE_CHECKING, Any
+from typing import Any
 from PyQt6.QtCore import QSettings, QObject, pyqtSignal
 from utils.path_helpers import get_settings_path
-from interfaces.settings_manager_interface import ISettingsManager
 from .construct_tab_settings import ConstructTabSettings
 from .generate_tab_settings import GenerateTabSettings
 from .sequence_sharing_settings import SequenceShareSettings

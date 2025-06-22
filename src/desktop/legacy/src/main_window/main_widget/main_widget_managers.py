@@ -1,18 +1,19 @@
 from typing import TYPE_CHECKING, Optional
+
 from letter_determination.core import LetterDeterminer
 from main_window.main_widget.pictograph_collector import PictographCollector
 from main_window.main_widget.pictograph_data_loader import PictographDataLoader
 
+from .sequence_level_evaluator import SequenceLevelEvaluator
 from .sequence_properties_manager.sequence_properties_manager_factory import (
     SequencePropertiesManagerFactory,
 )
-from .sequence_level_evaluator import SequenceLevelEvaluator
 from .thumbnail_finder import ThumbnailFinder
 
 if TYPE_CHECKING:
-    from .main_widget import MainWidget
     from core.application_context import ApplicationContext
-    from interfaces.settings_manager_interface import ISettingsManager
+
+    from .main_widget import MainWidget
 
 
 class MainWidgetManagers:
@@ -70,11 +71,11 @@ class MainWidgetManagers:
         # mw.special_placements = mw.special_placement_loader.load_special_placements()
 
     def _setup_pictograph_cache(self) -> None:
-        from enums.glyph_enum import Letter
+        from enums.letter.letter import Letter
 
         self.main_widget.pictograph_cache = {}
         for letter in Letter:
-            self.main_widget.pictograph_cache[letter] = {}
+            self.main_widget.pictograph_cache[letter.value] = {}
 
     def _set_prop_type(self) -> None:
         prop_type = self.settings_manager.global_settings.get_prop_type()

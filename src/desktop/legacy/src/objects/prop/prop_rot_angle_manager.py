@@ -15,7 +15,6 @@ from data.constants import (
     WEST,
     EAST,
 )
-from data.prop_class_mapping import PropType
 
 if TYPE_CHECKING:
     from objects.prop.prop import Prop

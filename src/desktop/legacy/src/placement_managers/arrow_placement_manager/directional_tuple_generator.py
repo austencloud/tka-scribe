@@ -18,8 +18,6 @@ from data.constants import (
     SOUTH,
     EAST,
     WEST,
-    BLUE,
-    RED,
     CW_HANDPATH,
     CCW_HANDPATH,
 )

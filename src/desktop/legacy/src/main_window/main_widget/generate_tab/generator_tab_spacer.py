@@ -3,7 +3,6 @@ from PyQt6.QtWidgets import (
     QSizePolicy,
 )
 from PyQt6.QtCore import pyqtSignal
-from typing import TYPE_CHECKING
 
 
 class GeneratorTabSpacer(QSpacerItem):

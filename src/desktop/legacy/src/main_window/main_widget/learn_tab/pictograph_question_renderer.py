@@ -1,4 +1,3 @@
-from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QHBoxLayout, QWidget
 from legacy.src.base_widgets.pictograph.legacy_pictograph import LegacyPictograph
 

@@ -7,11 +7,9 @@ regression issue, monitoring sequence viewer width and simulating user interacti
 
 import logging
 import time
-from typing import Optional, Dict, List, Tuple
+from typing import Dict, List
 from PyQt6.QtCore import QTimer, QObject, pyqtSignal
 from PyQt6.QtWidgets import QApplication
-from PyQt6.QtTest import QTest
-from PyQt6.QtCore import Qt
 
 
 class BrowseTabLayoutMonitor(QObject):

@@ -1,5 +1,5 @@
 from datetime import datetime
-from PyQt6.QtGui import QImage, QPainter, QPen
+from PyQt6.QtGui import QImage
 from PyQt6.QtCore import Qt
 from typing import TYPE_CHECKING
 

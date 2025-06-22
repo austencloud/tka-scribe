@@ -7,7 +7,6 @@ Extracted from ThumbnailImageLabel to follow Single Responsibility Principle.
 import logging
 from PyQt6.QtCore import Qt, QSize
 from PyQt6.QtGui import QPixmap, QPainter, QColor
-from typing import Optional
 
 
 class ThumbnailProcessor:

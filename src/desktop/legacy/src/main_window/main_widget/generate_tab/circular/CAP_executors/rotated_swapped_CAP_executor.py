@@ -1,14 +1,9 @@
 from typing import TYPE_CHECKING
-from data.quartered_CAPs import quartered_CAPs
-from data.halved_CAPs import halved_CAPs
 from data.constants import (
-    ANTI,
     BEAT,
     BLUE,
     BLUE_ATTRS,
     CCW_HANDPATH,
-    CLOCKWISE,
-    COUNTER_CLOCKWISE,
     CW_HANDPATH,
     DASH,
     DIRECTION,
@@ -19,7 +14,6 @@ from data.constants import (
     MOTION_TYPE,
     PREFLOAT_MOTION_TYPE,
     PREFLOAT_PROP_ROT_DIR,
-    PRO,
     PROP_ROT_DIR,
     RED,
     RED_ATTRS,
@@ -40,7 +34,6 @@ from data.CAP_executors.rotated_loc_maps import (
 )
 from PyQt6.QtWidgets import QApplication
 
-from main_window.main_widget.generate_tab.circular.CAP_type import CAPType
 from objects.motion.managers.handpath_calculator import HandpathCalculator
 from .CAP_executor import CAPExecutor
 from data.positions_maps import positions_map

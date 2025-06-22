@@ -7,9 +7,8 @@ is maintained consistently across all tab switching scenarios.
 
 import logging
 import time
-from typing import Dict, List, Optional
+from typing import Dict
 from PyQt6.QtWidgets import QApplication
-from PyQt6.QtCore import QTimer
 
 
 class TabSwitchingConsistencyTester:

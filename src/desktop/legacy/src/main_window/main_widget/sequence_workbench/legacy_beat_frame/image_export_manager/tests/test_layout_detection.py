@@ -8,7 +8,6 @@ import os
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../..")))
 
 from PyQt6.QtWidgets import QApplication, QGridLayout
-from PyQt6.QtCore import Qt
 
 from main_window.main_widget.sequence_workbench.legacy_beat_frame.image_export_manager.image_export_layout_handler import (
     ImageExportLayoutHandler

@@ -86,6 +86,7 @@ class Letter(Enum):
         # Raise an error if no match is found
         raise ValueError(f"No matching enum member for string: {letter_str}")
 
+    @staticmethod
     def get_letter(letter_str: str) -> "Letter":
         return Letter(letter_str)
 

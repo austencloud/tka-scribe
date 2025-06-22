@@ -1,4 +1,3 @@
-from typing import TYPE_CHECKING
 from data.constants import (
     ANTI,
     CCW_HANDPATH,

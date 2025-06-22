@@ -1,5 +1,5 @@
 from typing import TYPE_CHECKING, Union, Any
-from PyQt6.QtWidgets import QWidget, QVBoxLayout, QGridLayout, QSizePolicy, QScrollArea
+from PyQt6.QtWidgets import QWidget, QVBoxLayout, QGridLayout
 from PyQt6.QtCore import Qt, QTimer
 from PyQt6.QtGui import QResizeEvent
 from functools import partial

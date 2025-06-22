@@ -2,7 +2,7 @@ import os
 import xml.etree.ElementTree as ET
 from PyQt6.QtWidgets import QGraphicsItemGroup
 
-from utils.path_helpers import get_data_path, get_image_path
+from utils.path_helpers import get_image_path
 from .non_radial_point import NonRadialGridPoint
 
 

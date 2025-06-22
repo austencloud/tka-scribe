@@ -1,5 +1,4 @@
 from enum import Enum
-from functools import lru_cache
 
 from enums.letter.letter import Letter
 

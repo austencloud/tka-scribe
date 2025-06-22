@@ -1,5 +1,4 @@
 from typing import TYPE_CHECKING, Union
-from enums.glyph_enum import Handpaths, Turns
 from data.constants import (
     ANTI,
     CCW_HANDPATH,

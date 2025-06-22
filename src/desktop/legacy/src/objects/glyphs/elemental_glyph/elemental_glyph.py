@@ -13,7 +13,7 @@ from data.constants import (
 )
 from enums.letter.letter_type import LetterType
 from src.legacy_settings_manager.global_settings.app_context import AppContext
-from utils.path_helpers import get_data_path, get_image_path
+from utils.path_helpers import get_image_path
 
 
 if TYPE_CHECKING:

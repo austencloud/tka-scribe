@@ -1,7 +1,7 @@
 import json
 import logging
 import os
-from typing import TYPE_CHECKING, Any
+from typing import Any
 from data.constants import BOX, DIAMOND
 from utils.path_helpers import get_data_path
 

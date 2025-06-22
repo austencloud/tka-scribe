@@ -9,7 +9,6 @@ from data.constants import (
     PROP_ROT_DIR,
     TURNS,
     CLOCKWISE,
-    COUNTER_CLOCKWISE,
 )
 from main_window.main_widget.sequence_workbench.graph_editor.adjustment_panel.turns_adjustment_manager.turns_value import (
     TurnsValue,

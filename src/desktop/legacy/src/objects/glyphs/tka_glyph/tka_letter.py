@@ -5,7 +5,7 @@ from enums.letter.letter_type import LetterType
 
 from typing import TYPE_CHECKING
 
-from utils.path_helpers import get_data_path, get_image_path
+from utils.path_helpers import get_image_path
 
 
 if TYPE_CHECKING:

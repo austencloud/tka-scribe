@@ -8,9 +8,8 @@ and apply fixes based on test results.
 import sys
 import logging
 import time
-from typing import Optional
 from PyQt6.QtWidgets import QApplication
-from PyQt6.QtCore import QTimer, QObject, pyqtSignal
+from PyQt6.QtCore import QTimer, QObject
 
 # Import the main application components
 sys.path.append('src')

@@ -3,7 +3,6 @@ from PyQt6.QtWidgets import QGraphicsView, QFrame, QMenu
 from PyQt6.QtCore import Qt, QEvent, QTimer
 from PyQt6.QtGui import QCursor, QAction, QKeyEvent
 
-from base_widgets.pictograph.managers.pictograph_data_copier import dictCopier
 
 
 if TYPE_CHECKING:

@@ -1,4 +1,3 @@
-from typing import TYPE_CHECKING
 
 from data.constants import *
 from objects.motion.handpath_calculator import HandpathCalculator

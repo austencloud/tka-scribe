@@ -1,9 +1,8 @@
 import cProfile
-import pstats
 import os
+import pstats
 import tempfile
-from typing import IO, Any, Callable, Optional
-
+from typing import IO, Any, Callable
 
 
 class Profiler:
@@ -61,14 +60,7 @@ class Profiler:
         self, file: IO[str], stats: pstats.Stats, sort_by: str, app_root: str
     ) -> None:
         stats.sort_stats(sort_by)
-        header = "{:>10} {:>15} {:>15} {:>20} {:>20} {:>30}\n".format(
-            "Calls",
-            "Total Time",
-            "Per Call",
-            "Cumulative Time",
-            "Per Call (Cum)",
-            "Function",
-        )
+        header = f"{'Calls':>10} {'Total Time':>15} {'Per Call':>15} {'Cumulative Time':>20} {'Per Call (Cum)':>20} {'Function':>30}\n"
         file.write(header)
         file.write("-" * 115 + "\n")
 
@@ -84,6 +76,8 @@ class Profiler:
             sorted_stats = sorted(filtered_stats, key=lambda x: x[1][2], reverse=True)
         elif sort_by == "cumulative":
             sorted_stats = sorted(filtered_stats, key=lambda x: x[1][3], reverse=True)
+        else:
+            sorted_stats = filtered_stats
 
         for func, stat_info in sorted_stats:
             file_name, line_number, func_name = func
@@ -92,7 +86,7 @@ class Profiler:
                 os.path.basename(file_name),
             )
             function_info = f"{file_path}:{line_number}"
-            cc, nc, tt, ct, callers = stat_info
+            cc, nc, tt, ct, _ = stat_info
             percall_tt = tt / nc if nc else 0
             percall_ct = ct / cc if cc else 0
             file.write(

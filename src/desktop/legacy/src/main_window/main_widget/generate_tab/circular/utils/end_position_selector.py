@@ -1,4 +1,3 @@
-from typing import TYPE_CHECKING
 import random
 from data.positions_maps import (
     half_position_map,

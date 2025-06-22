@@ -1,4 +1,4 @@
-from typing import Callable, TYPE_CHECKING
+from typing import Callable
 from dataclasses import dataclass
 
 

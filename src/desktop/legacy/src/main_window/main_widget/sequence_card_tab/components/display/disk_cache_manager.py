@@ -6,7 +6,7 @@ import logging
 import time
 from pathlib import Path
 from typing import Optional, Dict, Any
-from PyQt6.QtGui import QImage, QPixmap
+from PyQt6.QtGui import QPixmap
 from PyQt6.QtCore import QSize
 
 

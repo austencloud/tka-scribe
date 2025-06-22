@@ -4,7 +4,7 @@ Core functionality for managing mirrored entries in special placements.
 
 import logging
 from typing import TYPE_CHECKING, Any
-from data.constants import BLUE, IN, OUT, RED
+from data.constants import BLUE, RED
 
 from enums.letter.letter import Letter
 from main_window.main_widget.turns_tuple_generator.turns_tuple_generator import (

@@ -7,9 +7,8 @@ This script tests the browse tab layout to ensure it maintains the correct 2:1 a
 
 import logging
 import time
-from typing import Dict, Optional
+from typing import Dict
 from PyQt6.QtWidgets import QApplication
-from PyQt6.QtCore import QTimer
 
 
 class BrowseTabAspectRatioTester:

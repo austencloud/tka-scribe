@@ -18,9 +18,6 @@ if TYPE_CHECKING:
     from main_window.main_widget.sequence_workbench.graph_editor.hotkey_graph_adjuster.prop_placement_override_manager import (
         PropPlacementOverrideManager,
     )
-    from placement_managers.prop_placement_manager.handlers.beta_prop_positioner import (
-        BetaPropPositioner,
-    )
 
 _large_offset = 60
 _medium_offset = 50

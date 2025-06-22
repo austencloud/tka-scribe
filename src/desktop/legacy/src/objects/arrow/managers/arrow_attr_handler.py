@@ -1,7 +1,6 @@
-from typing import Union, TYPE_CHECKING
+from typing import TYPE_CHECKING, Union
 
-from enums.glyph_enum import Turns
-from data.constants import *
+from data.constants import COLOR, LOC, MOTION_TYPE, TURNS
 
 if TYPE_CHECKING:
     from objects.arrow.arrow import Arrow
@@ -13,9 +12,7 @@ class ArrowAttrManager:
         self.arrow.state.color = self.arrow.arrow_data[COLOR]
         self.arrow.turns = self.arrow.arrow_data[TURNS]
 
-    def update_attributes(
-        self, arrow_data: dict[str, Union[str, str, str, Turns]]
-    ) -> None:
+    def update_attributes(self, arrow_data: dict[str, Union[str, int, float]]) -> None:
         arrow_attributes = [COLOR, LOC, MOTION_TYPE, TURNS]
         for attr in arrow_attributes:
             value = arrow_data.get(attr)

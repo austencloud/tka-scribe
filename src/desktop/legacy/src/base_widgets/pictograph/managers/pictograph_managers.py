@@ -2,7 +2,6 @@ from typing import TYPE_CHECKING
 
 
 from base_widgets.pictograph.managers.pictograph_data_copier import dictCopier
-from objects.glyphs.reversal_glyph import ReversalGlyph
 from placement_managers.arrow_placement_manager.arrow_placement_manager import (
     ArrowPlacementManager,
 )
@@ -16,9 +15,8 @@ from .updater.pictograph_updater import PictographUpdater
 from .pictograph_initializer import PictographInitializer
 
 if TYPE_CHECKING:
-    from legacy.src.base_widgets.pictograph.legacy_pictograph import LegacyPictograph
+    pass
 
-from PyQt6.QtWidgets import QGraphicsScene
 from dataclasses import dataclass
 
 

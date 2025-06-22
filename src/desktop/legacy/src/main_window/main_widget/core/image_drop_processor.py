@@ -8,12 +8,12 @@ providing various options for what to do with them.
 import os
 import shutil
 import logging
-from typing import TYPE_CHECKING, List, Optional, Dict, Any
+from typing import TYPE_CHECKING, List, Dict
 from pathlib import Path
 from datetime import datetime
 
-from PyQt6.QtCore import QObject, pyqtSignal, QThread, QTimer
-from PyQt6.QtWidgets import QMessageBox, QDialog, QVBoxLayout, QHBoxLayout, QPushButton, QLabel, QComboBox
+from PyQt6.QtCore import QObject, pyqtSignal
+from PyQt6.QtWidgets import QDialog, QVBoxLayout, QHBoxLayout, QPushButton, QLabel, QComboBox
 from PyQt6.QtGui import QPixmap
 
 if TYPE_CHECKING:

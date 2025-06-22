@@ -1,9 +1,6 @@
 from typing import TYPE_CHECKING
-from PyQt6.QtCore import QTimer
 
-from src.legacy_settings_manager.global_settings.app_context import AppContext
 
-from .thumbnail_box.thumbnail_box import ThumbnailBox
 
 if TYPE_CHECKING:
     from .browse_tab import BrowseTab

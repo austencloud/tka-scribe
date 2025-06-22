@@ -1,17 +1,16 @@
-import os
-from typing import TYPE_CHECKING
-from PyQt6.QtWidgets import QMainWindow, QApplication
-from PyQt6.QtCore import Qt
 import logging
+from typing import TYPE_CHECKING
 
-from main_window.palette_manager import PaletteManager
-from main_window.main_window_geometry_manager import MainWindowGeometryManager
 from main_window.main_widget.core.main_widget_coordinator import MainWidgetFactory
+from main_window.main_window_geometry_manager import MainWindowGeometryManager
+from main_window.palette_manager import PaletteManager
+from PyQt6.QtCore import Qt
+from PyQt6.QtWidgets import QApplication, QMainWindow
 
 if TYPE_CHECKING:
+    from core.application_context import ApplicationContext
     from profiler import Profiler
     from splash_screen.splash_screen import SplashScreen
-    from core.application_context import ApplicationContext
 
 logger = logging.getLogger(__name__)
 
@@ -83,9 +82,7 @@ class MainWindow(QMainWindow):
         self.profiler.enable()
         result = app.exec()
         self.profiler.disable()
-        self.profiler.write_profiling_stats_to_file(
-            "legacy/profiling_output.txt", "legacy/src/"
-        )
+        self.profiler.write_profiling_stats_to_file("profiling_output.txt", "src/")
         return result
 
     def closeEvent(self, event):

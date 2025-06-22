@@ -23,7 +23,7 @@ from data.constants import (
 )
 from main_window.main_widget.grid_mode_checker import GridModeChecker
 from src.legacy_settings_manager.global_settings.app_context import AppContext
-from utils.path_helpers import get_data_path, get_image_path
+from utils.path_helpers import get_image_path
 
 
 if TYPE_CHECKING:
@@ -63,7 +63,6 @@ class VTG_Glyph(QGraphicsSvgItem):
             QUARTER_SAME,
             QUARTER_OPP,
         )
-        from utils.path_helpers import get_data_path
 
         if not self.pictograph.state.letter_type in [LetterType.Type1]:
             self.setVisible(False)

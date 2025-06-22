@@ -4,7 +4,6 @@ from PyQt6.QtCore import QPoint, Qt
 from PyQt6.QtWidgets import QGraphicsTextItem
 from base_widgets.pictograph.elements.grid.grid import Grid
 from base_widgets.pictograph.elements.grid.grid_data import GridData
-from data.prop_class_mapping import prop_class_mapping
 
 from objects.arrow.arrow import Arrow
 from objects.glyphs.elemental_glyph.elemental_glyph import ElementalGlyph

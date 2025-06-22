@@ -1,5 +1,5 @@
 import os
-from typing import TYPE_CHECKING, Optional
+from typing import Optional
 
 from utils.path_helpers import get_data_path
 

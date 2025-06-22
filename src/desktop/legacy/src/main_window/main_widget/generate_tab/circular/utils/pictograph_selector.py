@@ -1,4 +1,3 @@
-from typing import TYPE_CHECKING
 import random
 from data.constants import (
     END_POS,

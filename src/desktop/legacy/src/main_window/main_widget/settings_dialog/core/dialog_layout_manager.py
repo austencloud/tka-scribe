@@ -9,7 +9,6 @@ from PyQt6.QtWidgets import (
     QDialog, QVBoxLayout, QHBoxLayout, QStackedWidget, 
     QWidget, QLabel, QPushButton
 )
-from PyQt6.QtCore import Qt
 import logging
 
 if TYPE_CHECKING:

@@ -1,26 +1,15 @@
 import json
 import codecs
-from typing import Union
 from PyQt6.QtCore import QPointF
-from enums.letter.letter import Letter
 
 from data.constants import (
     ANTI,
     BOX,
-    CLOCK,
-    COUNTER,
     DASH,
     DIAMOND,
     FLOAT,
-    IN,
-    NONRADIAL,
-    OUT,
     PRO,
-    RADIAL,
     STATIC,
-)
-from placement_managers.arrow_placement_manager.arrow_placement_context import (
-    ArrowPlacementContext,
 )
 from objects.arrow.arrow import Arrow
 from placement_managers.arrow_placement_manager.strategies.placement_key_generator import (

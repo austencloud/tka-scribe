@@ -1,8 +1,6 @@
 from data.constants import *
-from main_window.main_widget.generate_tab.circular.CAP_type import CAPType
 from .CAP_executor import CAPExecutor
 from PyQt6.QtWidgets import QApplication
-from data.locations import vertical_loc_mirror_map
 from data.positions_maps import swapped_positions
 
 

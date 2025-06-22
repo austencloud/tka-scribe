@@ -30,7 +30,6 @@ from .sequence_builder_start_position_manager import SequenceBuilderStartPosMana
 from main_window.main_widget.sequence_workbench.sequence_workbench import (
     SequenceWorkbench,
 )
-from interfaces.json_manager_interface import IJsonManager
 
 if TYPE_CHECKING:
     from .generate_tab import GenerateTab

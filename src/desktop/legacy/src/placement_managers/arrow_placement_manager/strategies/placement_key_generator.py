@@ -1,4 +1,4 @@
-from enums.letter.letter import Letter, LetterCondition
+from enums.letter.letter import LetterCondition
 
 from data.constants import CLOCK, COUNTER, IN, NONRADIAL, OUT, RADIAL
 from objects.arrow.arrow import Arrow

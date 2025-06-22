@@ -1,6 +1,5 @@
 from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QApplication
-from .thumbnail_box.thumbnail_box import ThumbnailBox
 from src.legacy_settings_manager.global_settings.app_context import AppContext
 from .sequence_picker.nav_sidebar.sidebar_button_ui_updater import (
     SidebarButtonUIUpdater,

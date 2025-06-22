@@ -6,12 +6,11 @@ allowing users to drag images from external applications and drop them
 onto the application window.
 """
 
-import os
 import logging
 from typing import TYPE_CHECKING, List, Optional, Callable
 from pathlib import Path
 
-from PyQt6.QtCore import QObject, pyqtSignal, QMimeData, QUrl
+from PyQt6.QtCore import QObject, pyqtSignal, QMimeData
 from PyQt6.QtGui import QDragEnterEvent, QDragMoveEvent, QDropEvent
 from PyQt6.QtWidgets import QWidget, QMessageBox
 

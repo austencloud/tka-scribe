@@ -16,7 +16,6 @@ from main_window.main_widget.sequence_workbench.graph_editor.graph_editor_view_k
     GraphEditorViewKeyEventHandler,
 )
 from main_window.main_widget.sequence_workbench.legacy_beat_frame.beat import Beat
-from legacy.src.base_widgets.pictograph.legacy_pictograph import LegacyPictograph
 from main_window.main_widget.sequence_workbench.graph_editor.GE_pictograph import (
     GE_Pictograph,
 )

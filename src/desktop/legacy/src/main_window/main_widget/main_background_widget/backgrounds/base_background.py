@@ -1,5 +1,4 @@
 from PyQt6.QtCore import QObject, pyqtSignal
-from typing import TYPE_CHECKING
 
 
 class BaseBackground(QObject):

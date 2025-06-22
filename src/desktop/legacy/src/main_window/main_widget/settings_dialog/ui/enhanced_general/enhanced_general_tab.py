@@ -2,18 +2,14 @@
 Enhanced General Tab with modern UI, thumbnail quality settings, and comprehensive configuration.
 """
 
-from typing import Optional, Dict, Any
-from PyQt6.QtCore import Qt, pyqtSignal
-from PyQt6.QtGui import QFont
+from PyQt6.QtCore import pyqtSignal
 from PyQt6.QtWidgets import (
     QWidget,
     QVBoxLayout,
     QHBoxLayout,
-    QScrollArea,
     QLabel,
     QSizePolicy,
     QSpacerItem,
-    QFrame,
     QLineEdit,
 )
 import logging
@@ -21,10 +17,7 @@ import logging
 from ...core.modern_components import (
     SettingCard,
     ModernToggle,
-    ModernButton,
-    ModernSlider,
     ModernComboBox,
-    StatusIndicator,
     HelpTooltip,
 )
 from ...core.glassmorphism_styler import GlassmorphismStyler

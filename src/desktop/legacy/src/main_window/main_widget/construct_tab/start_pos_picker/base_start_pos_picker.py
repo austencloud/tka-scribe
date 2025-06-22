@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Callable
+from typing import Callable
 from PyQt6.QtWidgets import QWidget
 from copy import deepcopy
 from base_widgets.pictograph.elements.views.start_pos_picker_pictograph_view import (

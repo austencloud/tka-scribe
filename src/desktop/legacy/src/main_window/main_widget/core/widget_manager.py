@@ -4,7 +4,7 @@ Widget manager responsible for managing non-tab widgets.
 This component follows SRP by focusing solely on widget lifecycle management.
 """
 
-from typing import TYPE_CHECKING, Dict, Optional, Any
+from typing import TYPE_CHECKING, Dict, Optional
 from PyQt6.QtWidgets import QWidget
 from PyQt6.QtCore import QObject, pyqtSignal
 import logging

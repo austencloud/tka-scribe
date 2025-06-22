@@ -7,7 +7,12 @@
   // Let pyproject.toml handle ALL Python analysis configuration
   "python.analysis.autoImportCompletions": true,
 
-  // File management
+  // Do NOT set any of these when using pyproject.toml:
+  // "python.analysis.extraPaths" - will conflict
+  // "python.analysis.typeCheckingMode" - will conflict
+  // "python.analysis.include" - will conflict
+  // "python.analysis.exclude" - will conflict
+
   "files.exclude": {
     "**/__pycache__": true,
     "**/node_modules": true,
@@ -21,16 +26,10 @@
     "**/venv": true,
     "**/.pytest_cache": true
   },
-
-  // Formatting - less aggressive
-  "editor.formatOnSave": false, // DISABLE auto-format to avoid whitespace issues
-  "editor.trimAutoWhitespace": false, // DISABLE trim whitespace
-  "files.trimTrailingWhitespace": false, // DISABLE trim whitespace
-
+  "editor.formatOnSave": true,
   "editor.codeActionsOnSave": {
-    "source.organizeImports": "never" // DISABLE auto-organize imports
+    "source.organizeImports": "explicit"
   },
-
   "files.associations": {
     "test_*.py": "python",
     "conftest.py": "python"
@@ -42,6 +41,6 @@
   "python.linting.mypyEnabled": false,
   "python.linting.flake8Enabled": false,
 
-  // Disable formatting to prevent conflicts
-  "python.formatting.provider": "none"
+  // Formatting
+  "python.formatting.provider": "black"
 }

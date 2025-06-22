@@ -1,20 +1,20 @@
-from PyQt6.QtWidgets import QFrame
-from PyQt6.QtCore import pyqtSignal, QSize
-from typing import TYPE_CHECKING, Callable
+from typing import Callable
 
-from enums.glyph_enum import Letter
+from enums.letter.letter import Letter
+from interfaces.json_manager_interface import IJsonManager
+from interfaces.settings_manager_interface import ISettingsManager
 from legacy.src.base_widgets.pictograph.legacy_pictograph import LegacyPictograph
-from main_window.main_widget.fade_manager.fade_manager import FadeManager
 from legacy.src.main_window.main_widget.sequence_workbench.legacy_beat_frame.legacy_beat_frame import (
     LegacyBeatFrame,
 )
-from interfaces.settings_manager_interface import ISettingsManager
-from interfaces.json_manager_interface import IJsonManager
+from main_window.main_widget.fade_manager.fade_manager import FadeManager
+from PyQt6.QtCore import QSize, pyqtSignal
+from PyQt6.QtWidgets import QFrame
 
-from .start_pos_picker.start_pos_picker import StartPosPicker
-from .advanced_start_pos_picker.advanced_start_pos_picker import AdvancedStartPosPicker
 from .add_to_sequence_manager.add_to_sequence_manager import AddToSequenceManager
+from .advanced_start_pos_picker.advanced_start_pos_picker import AdvancedStartPosPicker
 from .option_picker.widgets.legacy_option_picker import LegacyOptionPicker
+from .start_pos_picker.start_pos_picker import StartPosPicker
 
 
 class ConstructTab(QFrame):

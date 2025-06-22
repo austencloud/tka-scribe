@@ -9,7 +9,7 @@ from main_window.main_widget.main_background_widget.main_background_widget impor
 )
 
 if TYPE_CHECKING:
-    from main_window.main_widget.main_widget import MainWidget
+    pass
 
 logger = logging.getLogger(__name__)
 

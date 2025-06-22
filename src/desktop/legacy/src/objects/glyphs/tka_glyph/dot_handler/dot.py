@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 from PyQt6.QtSvg import QSvgRenderer
 from PyQt6.QtSvgWidgets import QGraphicsSvgItem
 
-from utils.path_helpers import get_data_path, get_image_path
+from utils.path_helpers import get_image_path
 
 if TYPE_CHECKING:
     from objects.glyphs.tka_glyph.tka_glyph import DotHandler

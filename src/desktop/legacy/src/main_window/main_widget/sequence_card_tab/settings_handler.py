@@ -3,7 +3,6 @@
 from interfaces.settings_manager_interface import ISettingsManager
 
 
-from typing import TYPE_CHECKING
 
 
 class SequenceCardSettingsHandler:

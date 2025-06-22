@@ -1,8 +1,7 @@
 from typing import TYPE_CHECKING
 from data.constants import BLUE, PROP_DIR
-from enums.prop_type import PropType
 from objects.prop.prop import Prop
-from utils.path_helpers import get_data_path, get_image_path
+from utils.path_helpers import get_image_path
 from PyQt6.QtSvg import QSvgRenderer
 from PyQt6.QtGui import QPixmap
 

@@ -7,7 +7,7 @@ architecture that follows the Single Responsibility Principle.
 
 import logging
 from typing import TYPE_CHECKING, Optional
-from PyQt6.QtCore import QSize, QTimer
+from PyQt6.QtCore import QTimer
 from PyQt6.QtGui import QPixmap
 
 from .thumbnail_processor import ThumbnailProcessor

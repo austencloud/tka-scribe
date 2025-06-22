@@ -30,9 +30,7 @@ from objects.motion.motion import Motion
 from objects.prop.prop import Prop
 
 if TYPE_CHECKING:
-    from placement_managers.prop_placement_manager.prop_placement_manager import (
-        PropPlacementManager,
-    )
+    pass
 
 
 class BetaPropDirectionCalculator:

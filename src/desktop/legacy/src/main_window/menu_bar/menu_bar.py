@@ -1,5 +1,5 @@
 from typing import TYPE_CHECKING
-from PyQt6.QtWidgets import QWidget, QHBoxLayout
+from PyQt6.QtWidgets import QWidget
 
 from main_window.menu_bar.navigation_widget.menu_bar_nav_widget import MenuBarNavWidget
 from main_window.menu_bar.settings_button import SettingsButton

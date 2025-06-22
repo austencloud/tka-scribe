@@ -1,6 +1,6 @@
 # === prop_rot_dir_button_manager/core.py ===
 from PyQt6.QtCore import QObject, pyqtSignal
-from typing import TYPE_CHECKING, Dict
+from typing import Dict
 
 from data.constants import CLOCKWISE, COUNTER_CLOCKWISE
 

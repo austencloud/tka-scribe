@@ -43,10 +43,8 @@ from data.locations import vertical_loc_mirror_map
 
 from PyQt6.QtWidgets import QApplication
 
-from main_window.main_widget.generate_tab.circular.CAP_type import CAPType
 from objects.motion.managers.handpath_calculator import HandpathCalculator
 from .CAP_executor import CAPExecutor
-from data.positions_maps import positions_map
 
 if TYPE_CHECKING:
     from ..circular_sequence_builder import CircularSequenceBuilder

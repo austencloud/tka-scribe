@@ -1,6 +1,5 @@
 from typing import TYPE_CHECKING, Union
 
-from data.constants import BLUE, RED
 
 Turns = Union[int, float, str]
 if TYPE_CHECKING:

@@ -1,7 +1,7 @@
 # src/main_window/main_widget/sequence_card_tab/export/export_grid_calculator.py
 import math
 import logging
-from typing import Tuple, Dict, List, Any, Optional, TYPE_CHECKING
+from typing import Tuple, Dict, Optional, TYPE_CHECKING
 
 from .export_config import ExportConfig
 

@@ -1,5 +1,5 @@
 from collections import defaultdict
-from typing import Dict, Tuple
+from typing import Tuple
 from data.constants import (
     CCW_HANDPATH,
     CW_HANDPATH,

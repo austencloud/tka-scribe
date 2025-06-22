@@ -6,7 +6,7 @@ architecture that follows the Single Responsibility Principle.
 """
 
 import logging
-from typing import TYPE_CHECKING, Optional, Dict, Any
+from typing import TYPE_CHECKING, Dict, Any
 from PyQt6.QtGui import QPixmap
 from PyQt6.QtCore import QSize
 

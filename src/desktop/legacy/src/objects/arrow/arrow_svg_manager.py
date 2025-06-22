@@ -1,5 +1,5 @@
 from typing import TYPE_CHECKING, Union
-from utils.path_helpers import get_data_path, get_image_path
+from utils.path_helpers import get_image_path
 from PyQt6.QtSvg import QSvgRenderer
 from objects.arrow.arrow import Arrow
 from data.constants import CLOCK, COUNTER, IN, OUT, FLOAT

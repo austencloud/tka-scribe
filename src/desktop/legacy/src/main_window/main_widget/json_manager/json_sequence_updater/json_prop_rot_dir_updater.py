@@ -5,7 +5,6 @@ from data.constants import (
     COUNTER_CLOCKWISE,
     PREFLOAT_PROP_ROT_DIR,
     PROP_ROT_DIR,
-    TURNS,
 )
 
 if TYPE_CHECKING:

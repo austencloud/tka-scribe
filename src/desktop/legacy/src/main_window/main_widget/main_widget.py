@@ -1,4 +1,3 @@
-import logging
 from typing import TYPE_CHECKING
 
 from enums.letter.letter import Letter
@@ -27,7 +26,7 @@ from .main_widget_ui import MainWidgetUI
 from .write_tab.write_tab import WriteTab
 
 if TYPE_CHECKING:
-    from legacy.src.base_widgets.pictograph.legacy_pictograph import LegacyPictograph
+    from base_widgets.pictograph.legacy_pictograph import LegacyPictograph
     from letter_determination.core import LetterDeterminer
     from main_window.main_widget.codex.codex import Codex
     from main_window.main_widget.generate_tab.generate_tab import GenerateTab
@@ -50,7 +49,7 @@ if TYPE_CHECKING:
 class MainWidget(QWidget):
     main_window: "MainWindow"
     # settings_manager: "SettingsManager"
-    splash: "SplashScreen"
+    splash: "SplashScreen | None"
     settings_dialog: "LegacySettingsDialog"
 
     # Tabs
@@ -102,10 +101,9 @@ class MainWidget(QWidget):
     letter_determiner: "LetterDeterminer"
     special_placements: dict[str, dict[str, dict[str, dict[str, list[int]]]]]
 
-    def __init__(self, main_window: "MainWindow", splash_screen: "SplashScreen" = None):
+    def __init__(self, main_window: "MainWindow", splash_screen: "SplashScreen | None" = None):
         super().__init__(main_window)
         self.main_window = main_window
-        self.main_window.main_widget = self
         self.splash = splash_screen
 
         # Get dependencies from AppContext safely

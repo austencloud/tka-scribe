@@ -170,11 +170,6 @@ class SettingsTabManager:
     def _check_real_tabs_availability(self) -> bool:
         """Check if real tab implementations are available."""
         try:
-            from ..ui.prop_type.prop_type_tab import PropTypeTab
-            from ..ui.visibility.visibility_tab import VisibilityTab
-            from ..ui.beat_layout.beat_layout_tab import BeatLayoutTab
-            from ..ui.image_export.image_export_tab import ImageExportTab
-            from ..ui.codex_exporter.codex_exporter_tab import CodexExporterTab
             return True
         except ImportError:
             return False

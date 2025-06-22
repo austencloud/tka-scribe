@@ -4,7 +4,6 @@ Test module for the ConstructTab dependency injection implementation.
 
 import os
 import sys
-import pytest
 from unittest.mock import MagicMock
 from PyQt6.QtCore import QSize
 
@@ -16,7 +15,6 @@ sys.path.insert(
 from interfaces.settings_manager_interface import ISettingsManager
 from interfaces.json_manager_interface import IJsonManager
 from main_window.main_widget.construct_tab.construct_tab import ConstructTab
-from main_window.main_widget.fade_manager.fade_manager import FadeManager
 
 
 class MockSettingsManager(ISettingsManager):

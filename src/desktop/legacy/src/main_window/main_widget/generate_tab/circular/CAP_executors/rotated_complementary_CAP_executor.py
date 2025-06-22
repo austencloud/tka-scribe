@@ -41,7 +41,6 @@ from data.CAP_executors.rotated_loc_maps import (
 from PyQt6.QtWidgets import QApplication
 from enums.letter.complementary_letter_getter import ComplementaryLetterGetter
 
-from main_window.main_widget.generate_tab.circular.CAP_type import CAPType
 from objects.motion.managers.handpath_calculator import HandpathCalculator
 from .CAP_executor import CAPExecutor
 from data.positions_maps import positions_map

@@ -1,7 +1,6 @@
 # base_dialog_styler.py
 from PyQt6.QtWidgets import QWidget, QPushButton, QLabel, QComboBox, QSpinBox, QFrame
 from .dark_theme_styler import DarkThemeStyler  # your existing dark theme
-from typing import Type
 
 
 class BaseDialogStyler:

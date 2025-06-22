@@ -57,7 +57,6 @@ class NavSidebarManager:
         # for button in self.buttons:
         #     button.setFixedWidth(SidebarButton._max_button_width)  # ☢️ OBLITERATED!
 
-        pass
 
     def resize_sidebar(self):
         """Handle sidebar resizing and reapply button widths."""

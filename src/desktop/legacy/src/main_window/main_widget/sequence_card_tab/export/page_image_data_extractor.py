@@ -1,12 +1,8 @@
 # src/main_window/main_widget/sequence_card_tab/export/page_image_data_extractor.py
 import os
 import logging
-import tempfile
-import uuid
 from typing import List, Dict, Any, Optional, TYPE_CHECKING
 from PyQt6.QtWidgets import QWidget, QLabel, QGridLayout
-from PyQt6.QtGui import QPixmap
-from PyQt6.QtCore import QRect
 
 from main_window.main_widget.metadata_extractor import MetaDataExtractor
 from utils.path_helpers import get_sequence_card_image_exporter_path

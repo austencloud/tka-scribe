@@ -2,9 +2,8 @@
 import os
 import time
 import logging
-from typing import TYPE_CHECKING, List, Optional, Dict, Any
+from typing import TYPE_CHECKING, List
 from PyQt6.QtWidgets import QApplication, QWidget
-from PyQt6.QtCore import Qt
 
 from .export_config import ExportConfig
 from .export_ui_manager import ExportUIManager

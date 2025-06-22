@@ -5,7 +5,7 @@ from PyQt6.QtCore import Qt
 from main_window.main_widget.rainbow_progress_bar import (
     RainbowProgressBar,
 )
-from utils.path_helpers import get_data_path, get_image_path
+from utils.path_helpers import get_image_path
 
 if TYPE_CHECKING:
     from .splash_screen import SplashScreen

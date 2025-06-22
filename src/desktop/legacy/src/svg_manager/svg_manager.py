@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING
 from objects.arrow.arrow_svg_manager import ArrowSvgManager
 from svg_manager.svg_color_handler import SvgColorHandler
 from svg_manager.prop_svg_manager import PropSvgManager
-from utils.path_helpers import get_data_path, get_image_path
+from utils.path_helpers import get_image_path
 
 if TYPE_CHECKING:
     from legacy.src.base_widgets.pictograph.legacy_pictograph import LegacyPictograph

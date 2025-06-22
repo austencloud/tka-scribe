@@ -6,7 +6,6 @@ This script will run the application and test the button behavior.
 
 import sys
 import os
-import time
 import logging
 
 # Add src to path

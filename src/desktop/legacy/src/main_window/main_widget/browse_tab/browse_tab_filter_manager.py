@@ -1,7 +1,6 @@
 from datetime import datetime, timedelta
 from typing import TYPE_CHECKING
 
-from utils.path_helpers import get_data_path
 
 if TYPE_CHECKING:
     from main_window.main_widget.browse_tab.browse_tab import BrowseTab

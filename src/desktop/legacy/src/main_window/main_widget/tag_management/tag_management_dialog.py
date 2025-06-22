@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, List, Optional
+from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import (
     QDialog,
     QVBoxLayout,
@@ -10,7 +10,7 @@ from PyQt6.QtWidgets import (
     QListWidgetItem,
     QMessageBox,
 )
-from PyQt6.QtCore import Qt, pyqtSignal
+from PyQt6.QtCore import pyqtSignal
 
 from main_window.main_widget.metadata_extractor import MetaDataExtractor
 

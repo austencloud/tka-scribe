@@ -4,9 +4,7 @@ Recovery script to regenerate dictionary thumbnails from existing sequence card 
 This will restore your dictionary using the intact sequence card images.
 """
 
-import os
 import sys
-import shutil
 from pathlib import Path
 from PIL import Image, PngImagePlugin
 

@@ -4,7 +4,6 @@ from PyQt6.QtCore import (
     QParallelAnimationGroup,
     QPropertyAnimation,
     QEasingCurve,
-    QTimer,
 )
 from enums.glyph_enum import Glyph
 

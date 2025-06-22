@@ -5,12 +5,11 @@ Manages the generation and manipulation of turns patterns.
 import logging
 from typing import TYPE_CHECKING, Dict, Any
 
-from objects.arrow.arrow import Arrow
 from data.constants import BLUE_ATTRS, RED_ATTRS, TURNS
 
 logger = logging.getLogger(__name__)
 if TYPE_CHECKING:
-    from legacy.src.base_widgets.pictograph.legacy_pictograph import LegacyPictograph
+    pass
 
 
 class TurnsPatternManager:

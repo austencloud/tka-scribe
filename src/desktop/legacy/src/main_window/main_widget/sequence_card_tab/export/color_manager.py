@@ -1,12 +1,10 @@
 # src/main_window/main_widget/sequence_card_tab/export/color_manager.py
 import logging
-import sys
-from typing import Dict, Any, Optional, Tuple
+from typing import Dict, Any
 import re
 from PyQt6.QtGui import QImage, QColor
-from PyQt6.QtCore import Qt, QVersionNumber
 
-from data.constants import HEX_RED, HEX_BLUE, RED, BLUE
+from data.constants import HEX_RED
 
 
 class ColorManager:

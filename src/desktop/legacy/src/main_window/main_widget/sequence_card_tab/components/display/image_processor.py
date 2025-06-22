@@ -9,7 +9,6 @@ that maintains backward compatibility while using the new architecture.
 import logging
 from typing import TYPE_CHECKING, Dict, Any
 from PyQt6.QtGui import QPixmap
-from PyQt6.QtCore import QSize
 
 if TYPE_CHECKING:
     from ..pages.printable_factory import PrintablePageFactory
