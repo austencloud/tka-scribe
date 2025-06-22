@@ -11,16 +11,16 @@ This service provides a clean, focused interface for motion validation
 while maintaining the proven validation algorithms.
 """
 
-from typing import List, Set, Tuple
 from abc import ABC, abstractmethod
 from enum import Enum
+from typing import List, Set, Tuple
 
 from domain.models.core_models import (
+    Location,
     MotionData,
     MotionType,
-    Location,
-    RotationDirection,
     Orientation,
+    RotationDirection,
 )
 
 

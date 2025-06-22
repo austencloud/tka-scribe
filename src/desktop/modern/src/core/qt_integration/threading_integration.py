@@ -12,26 +12,26 @@ import asyncio
 import logging
 import threading
 import time
-from typing import Dict, List, Optional, Any, Callable, TypeVar, Awaitable, Union
-from dataclasses import dataclass
-from concurrent.futures import ThreadPoolExecutor, Future
 import weakref
+from concurrent.futures import Future, ThreadPoolExecutor
+from dataclasses import dataclass
+from typing import Any, Awaitable, Callable, Dict, List, Optional, TypeVar, Union
 
 # Import Qt modules with compatibility
 try:
-    from PyQt6.QtCore import QObject, QThread, QTimer, pyqtSignal, QMutex, QMutexLocker
-    from PyQt6.QtWidgets import QWidget, QApplication
+    from PyQt6.QtCore import QMutex, QMutexLocker, QObject, QThread, QTimer, pyqtSignal
+    from PyQt6.QtWidgets import QApplication, QWidget
 except ImportError:
     try:
-        from PyQt5.QtCore import (
+        from PyQt6.QtCore import (
+            QMutex,
+            QMutexLocker,
             QObject,
             QThread,
             QTimer,
             pyqtSignal,
-            QMutex,
-            QMutexLocker,
         )
-        from PyQt5.QtWidgets import QWidget, QApplication
+        from PyQt6.QtWidgets import QApplication, QWidget
     except ImportError:
         # Fallback for testing without Qt
         QObject = object

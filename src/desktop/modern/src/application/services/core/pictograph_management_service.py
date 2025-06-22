@@ -16,30 +16,29 @@ PROVIDES:
 - CSV data loading and pictograph creation
 """
 
-from typing import List, Dict, Any, Optional, Tuple, Union, TypedDict
+import uuid
 from abc import ABC, abstractmethod
 from enum import Enum
-import uuid
 from pathlib import Path
+from typing import Any, Dict, List, Optional, Tuple, TypedDict, Union
 
 import pandas as pd
-
 from domain.models.core_models import (
     BeatData,
+    ElementalType,
+    GlyphData,
+    LetterType,
+    Location,
     MotionData,
     MotionType,
-    Location,
     RotationDirection,
-    GlyphData,
     VTGMode,
-    ElementalType,
-    LetterType,
 )
 from domain.models.pictograph_models import (
-    PictographData,
+    ArrowData,
     GridData,
     GridMode,
-    ArrowData,
+    PictographData,
     PropData,
 )
 

@@ -8,24 +8,24 @@ ARCHITECTURE: Provides resource pooling for expensive Qt objects (brushes, pens,
 fonts, graphics items) with automatic lifecycle management and performance optimization.
 """
 
+import hashlib
 import logging
 import weakref
-from typing import Dict, List, Optional, Any, Callable, TypeVar, Generic, Tuple, Union
+from collections import defaultdict
 from dataclasses import dataclass, field
 from threading import Lock
-from collections import defaultdict
-import hashlib
+from typing import Any, Callable, Dict, Generic, List, Optional, Tuple, TypeVar, Union
 
 # Import Qt modules with compatibility
 try:
-    from PyQt6.QtGui import QPen, QBrush, QFont, QColor, QPainter
-    from PyQt6.QtCore import Qt, QObject
+    from PyQt6.QtCore import QObject, Qt
+    from PyQt6.QtGui import QBrush, QColor, QFont, QPainter, QPen
     from PyQt6.QtWidgets import QGraphicsItem
 except ImportError:
     try:
-        from PyQt5.QtGui import QPen, QBrush, QFont, QColor, QPainter
-        from PyQt5.QtCore import Qt, QObject
-        from PyQt5.QtWidgets import QGraphicsItem
+        from PyQt6.QtCore import QObject, Qt
+        from PyQt6.QtGui import QBrush, QColor, QFont, QPainter, QPen
+        from PyQt6.QtWidgets import QGraphicsItem
     except ImportError:
         # Fallback for testing without Qt
         QPen = object

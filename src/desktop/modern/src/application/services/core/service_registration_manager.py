@@ -4,6 +4,16 @@ Service Registration Manager
 Pure service for managing dependency injection service registration.
 Extracted from KineticConstructorModern to follow single responsibility principle.
 
+```
+Option 2: Create a pylintrc configuration file
+
+Alternatively, you can create a `.pylintrc` file in your project root with the following content:
+```ini
+[MASTER]
+extension-pkg-whitelist=PyQt6
+
+[TYPECHECK]
+generated-members=PyQt6.*
 PROVIDES:
 - Core service registration
 - Motion service registration

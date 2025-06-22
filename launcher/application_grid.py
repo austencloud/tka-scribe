@@ -201,7 +201,7 @@ class ApplicationGridWidget(QWidget):
         self._clear_grid()
 
         # Process pending deletion events to ensure clean slate
-        from PyQt5.QtWidgets import QApplication
+        from PyQt6.QtWidgets import QApplication
 
         QApplication.processEvents()
 
@@ -401,7 +401,7 @@ class ApplicationGridWidget(QWidget):
         )
 
         # Find tab widget
-        from PyQt5.QtWidgets import QTabWidget
+        from PyQt6.QtWidgets import QTabWidget
 
         tab_widget = main_window.findChild(QTabWidget)
 

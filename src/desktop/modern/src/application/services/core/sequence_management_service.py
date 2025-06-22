@@ -11,43 +11,43 @@ This service provides a clean, unified interface for all sequence operations
 while maintaining the proven algorithms from the individual services.
 """
 
-from typing import List, Dict, Any, Optional, Tuple, Union, TYPE_CHECKING, cast
-from abc import ABC, abstractmethod
-from enum import Enum
-import uuid
 import logging
+import uuid
+from abc import ABC, abstractmethod
 from copy import deepcopy
 from datetime import datetime
+from enum import Enum
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple, Union, cast
 
 from domain.models.core_models import (
-    SequenceData,
     BeatData,
+    Location,
     MotionData,
     MotionType,
-    Location,
     RotationDirection,
+    SequenceData,
 )
 from domain.models.pictograph_models import PictographData
 
 # Event-driven architecture imports
 if TYPE_CHECKING:
-    from core.events import IEventBus
     from core.commands import CommandProcessor
+    from core.events import IEventBus
 
 try:
-    from core.events import (
-        IEventBus,
-        get_event_bus,
-        SequenceCreatedEvent,
-        BeatAddedEvent,
-        BeatUpdatedEvent,
-        BeatRemovedEvent,
-    )
     from core.commands import (
-        CommandProcessor,
         AddBeatCommand,
+        CommandProcessor,
         RemoveBeatCommand,
         UpdateBeatCommand,
+    )
+    from core.events import (
+        BeatAddedEvent,
+        BeatRemovedEvent,
+        BeatUpdatedEvent,
+        IEventBus,
+        SequenceCreatedEvent,
+        get_event_bus,
     )
 
     EVENT_SYSTEM_AVAILABLE = True
@@ -60,8 +60,8 @@ except ImportError:
 
 try:
     from core.decorators import handle_service_errors
-    from core.monitoring import monitor_performance
     from core.exceptions import ServiceOperationError, ValidationError
+    from core.monitoring import monitor_performance
 except ImportError:
     # For tests, create dummy decorators if imports fail
     def handle_service_errors(*args, **kwargs):

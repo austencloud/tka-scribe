@@ -1,0 +1,5 @@
+[MASTER]
+extension-pkg-whitelist=PyQt6
+
+[TYPECHECK]
+generated-members=PyQt6.*

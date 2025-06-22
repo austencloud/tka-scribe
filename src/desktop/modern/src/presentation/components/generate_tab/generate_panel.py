@@ -5,36 +5,37 @@ This panel contains all the generation controls and orchestrates the generation 
 following Modern's modern UI patterns and clean architecture.
 """
 
-from PyQt6.QtWidgets import (
-    QWidget,
-    QVBoxLayout,
-    QHBoxLayout,
-    QScrollArea,
-    QFrame,
-    QPushButton,
-    QLabel,
-    QProgressBar,
-    QTextEdit,
-)
-from PyQt6.QtCore import pyqtSignal, Qt
-from PyQt6.QtGui import QFont
 from typing import Optional
 
+from core.interfaces.generation_services import GenerationMode
 from domain.models.generation_models import (
     GenerationConfig,
-    GenerationState,
     GenerationResult,
+    GenerationState,
 )
-from core.interfaces.generation_services import GenerationMode
+from PyQt6.QtCore import Qt, pyqtSignal
+from PyQt6.QtGui import QFont
+from PyQt6.QtWidgets import (
+    QFrame,
+    QHBoxLayout,
+    QLabel,
+    QProgressBar,
+    QPushButton,
+    QScrollArea,
+    QTextEdit,
+    QVBoxLayout,
+    QWidget,
+)
+
 from .generation_controls import (
+    ModernCAPTypeSelector,
     ModernGenerationModeToggle,
     ModernLengthSelector,
-    ModernLevelSelector,
-    ModernTurnIntensitySelector,
-    ModernPropContinuityToggle,
     ModernLetterTypeSelector,
+    ModernLevelSelector,
+    ModernPropContinuityToggle,
     ModernSliceSizeSelector,
-    ModernCAPTypeSelector,
+    ModernTurnIntensitySelector,
 )
 
 

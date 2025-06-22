@@ -5,24 +5,25 @@ This will help us understand the component structure before implementing the lau
 """
 
 import sys
-from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QHBoxLayout
-from PyQt5.QtCore import Qt
+
+from PyQt6.QtCore import Qt
+from PyQt6.QtWidgets import QApplication, QHBoxLayout, QVBoxLayout, QWidget
 from qfluentwidgets import (
+    BodyLabel,
+    CaptionLabel,
+    CardWidget,
+    FlowLayout,
+    FluentIcon,
     MSFluentWindow,
     NavigationItemPosition,
-    FluentIcon,
-    SearchLineEdit,
-    PushButton,
-    CardWidget,
-    BodyLabel,
-    TitleLabel,
-    CaptionLabel,
-    setTheme,
-    Theme,
     PrimaryPushButton,
-    TransparentPushButton,
+    PushButton,
     ScrollArea,
-    FlowLayout,
+    SearchLineEdit,
+    Theme,
+    TitleLabel,
+    TransparentPushButton,
+    setTheme,
 )
 
 

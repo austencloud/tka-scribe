@@ -4,16 +4,19 @@ Creates and configures the FastAPI application with all components.
 """
 
 import logging
+
 from fastapi import FastAPI
 
-from .middleware import configure_all_middleware
 from .exceptions import register_exception_handlers
 from .lifecycle import lifespan
+from .middleware import configure_all_middleware
 from .routers import (
-    health_router,
-    sequences_router,
+    arrows_router,
+    beats_router,
     commands_router,
+    health_router,
     monitoring_router,
+    sequences_router,
 )
 
 logger = logging.getLogger(__name__)
@@ -22,10 +25,10 @@ logger = logging.getLogger(__name__)
 def create_app() -> FastAPI:
     """
     Create and configure the FastAPI application.
-    
+
     This factory function creates a fully configured FastAPI application
     with all middleware, exception handlers, routers, and lifecycle events.
-    
+
     Returns:
         FastAPI: Configured FastAPI application instance
     """
@@ -39,19 +42,21 @@ def create_app() -> FastAPI:
         openapi_url="/api/openapi.json",
         lifespan=lifespan,
     )
-    
+
     # Configure middleware (order matters - added in reverse execution order)
     configure_all_middleware(app)
-    
+
     # Register exception handlers
     register_exception_handlers(app)
-    
+
     # Register routers with appropriate prefixes
     app.include_router(health_router)
     app.include_router(sequences_router)
+    app.include_router(beats_router)
     app.include_router(commands_router)
+    app.include_router(arrows_router)
     app.include_router(monitoring_router)
-    
+
     logger.info("FastAPI application created and configured successfully")
     return app
 

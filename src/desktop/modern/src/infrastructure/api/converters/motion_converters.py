@@ -7,17 +7,13 @@ import logging
 from typing import Optional
 
 from domain.models.core_models import (
+    Location,
     MotionData,
     MotionType,
-    Location,
     RotationDirection,
 )
-from ..models import (
-    MotionAPI,
-    MotionTypeAPI,
-    RotationDirectionAPI,
-    LocationAPI,
-)
+
+from ..models import LocationAPI, MotionAPI, MotionTypeAPI, RotationDirectionAPI
 
 logger = logging.getLogger(__name__)
 

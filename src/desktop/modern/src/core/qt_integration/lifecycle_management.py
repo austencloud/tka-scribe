@@ -8,22 +8,22 @@ ARCHITECTURE: Provides automatic lifecycle management for Qt objects with
 smart cleanup registration, resource tracking, and automatic memory management.
 """
 
+import atexit
+import gc
 import logging
 import weakref
-import atexit
-from typing import Dict, List, Optional, Any, Callable, Type, TypeVar, Set
 from dataclasses import dataclass, field
 from threading import Lock
-import gc
+from typing import Any, Callable, Dict, List, Optional, Set, Type, TypeVar
 
 # Import Qt modules with compatibility
 try:
     from PyQt6.QtCore import QObject, QTimer, pyqtSignal
-    from PyQt6.QtWidgets import QWidget, QApplication
+    from PyQt6.QtWidgets import QApplication, QWidget
 except ImportError:
     try:
-        from PyQt5.QtCore import QObject, QTimer, pyqtSignal
-        from PyQt5.QtWidgets import QWidget, QApplication
+        from PyQt6.QtCore import QObject, QTimer, pyqtSignal
+        from PyQt6.QtWidgets import QApplication, QWidget
     except ImportError:
         # Fallback for testing without Qt
         QObject = object

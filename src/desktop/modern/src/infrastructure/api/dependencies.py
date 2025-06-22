@@ -5,13 +5,17 @@ Provides all service dependencies for FastAPI endpoints.
 
 import logging
 from typing import Optional
-from fastapi import HTTPException, status
 
-from core.dependency_injection.di_container import DIContainer, get_container
-from core.events import get_event_bus, IEventBus
+from application.services.core.sequence_management_service import (
+    SequenceManagementService,
+)
+from application.services.positioning.arrow_management_service import (
+    ArrowManagementService,
+)
 from core.commands import CommandProcessor
-from application.services.core.sequence_management_service import SequenceManagementService
-from application.services.positioning.arrow_management_service import ArrowManagementService
+from core.dependency_injection.di_container import DIContainer, get_container
+from core.events import IEventBus, get_event_bus
+from fastapi import HTTPException, status
 
 logger = logging.getLogger(__name__)
 
@@ -26,10 +30,10 @@ _arrow_service: Optional[ArrowManagementService] = None
 def initialize_services():
     """
     Initialize all services and dependencies.
-    
+
     This function is called during application startup to initialize
     all required services and their dependencies.
-    
+
     Raises:
         Exception: If service initialization fails
     """
@@ -37,7 +41,7 @@ def initialize_services():
 
     try:
         logger.info("Initializing API services...")
-        
+
         # Initialize DI container and event bus
         _container = get_container()
         _event_bus = get_event_bus()
@@ -59,34 +63,35 @@ def initialize_services():
 def cleanup_services():
     """
     Cleanup services during application shutdown.
-    
+
     This function is called during application shutdown to properly
     cleanup resources and close connections.
     """
     global _arrow_service
-    
+
     try:
         logger.info("Cleaning up API services...")
-        
+
         # Cleanup services that require it
         if _arrow_service:
             _arrow_service.cleanup()
-            
+
         logger.info("API services cleanup complete")
-        
+
     except Exception as e:
         logger.error(f"Error during service cleanup: {e}")
 
 
 # Dependency injection functions for FastAPI
 
+
 def get_sequence_service() -> SequenceManagementService:
     """
     Get sequence management service dependency.
-    
+
     Returns:
         SequenceManagementService: The sequence management service
-        
+
     Raises:
         HTTPException: If service is not available (503)
     """
@@ -102,10 +107,10 @@ def get_sequence_service() -> SequenceManagementService:
 def get_arrow_service() -> ArrowManagementService:
     """
     Get arrow management service dependency.
-    
+
     Returns:
         ArrowManagementService: The arrow management service
-        
+
     Raises:
         HTTPException: If service is not available (503)
     """
@@ -121,10 +126,10 @@ def get_arrow_service() -> ArrowManagementService:
 def get_command_processor() -> CommandProcessor:
     """
     Get command processor dependency.
-    
+
     Returns:
         CommandProcessor: The command processor
-        
+
     Raises:
         HTTPException: If service is not available (503)
     """
@@ -140,10 +145,10 @@ def get_command_processor() -> CommandProcessor:
 def get_event_bus_dependency() -> IEventBus:
     """
     Get event bus dependency.
-    
+
     Returns:
         IEventBus: The event bus
-        
+
     Raises:
         HTTPException: If service is not available (503)
     """
@@ -159,10 +164,10 @@ def get_event_bus_dependency() -> IEventBus:
 def get_di_container() -> DIContainer:
     """
     Get dependency injection container.
-    
+
     Returns:
         DIContainer: The DI container
-        
+
     Raises:
         HTTPException: If container is not available (503)
     """
@@ -178,7 +183,7 @@ def get_di_container() -> DIContainer:
 def check_service_health() -> dict:
     """
     Check the health status of all services.
-    
+
     Returns:
         dict: Service health status mapping
     """
@@ -194,7 +199,7 @@ def check_service_health() -> dict:
 def are_all_services_healthy() -> bool:
     """
     Check if all services are healthy.
-    
+
     Returns:
         bool: True if all services are available, False otherwise
     """

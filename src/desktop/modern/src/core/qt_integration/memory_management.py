@@ -8,23 +8,23 @@ ARCHITECTURE: Provides smart pointer management, memory leak detection,
 and automatic cleanup for Qt objects to prevent memory leaks.
 """
 
-import logging
-import weakref
 import gc
+import logging
 import os
-from typing import Dict, List, Optional, Any, Callable, TypeVar, Generic, Set
+import time
+import weakref
 from dataclasses import dataclass, field
 from threading import Lock
-import time
+from typing import Any, Callable, Dict, Generic, List, Optional, Set, TypeVar
 
 # Import Qt modules with compatibility
 try:
     from PyQt6.QtCore import QObject, QTimer
-    from PyQt6.QtWidgets import QWidget, QApplication
+    from PyQt6.QtWidgets import QApplication, QWidget
 except ImportError:
     try:
-        from PyQt5.QtCore import QObject, QTimer
-        from PyQt5.QtWidgets import QWidget, QApplication
+        from PyQt6.QtCore import QObject, QTimer
+        from PyQt6.QtWidgets import QApplication, QWidget
     except ImportError:
         # Fallback for testing without Qt
         QObject = object

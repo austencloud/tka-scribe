@@ -1,8 +1,8 @@
-from typing import List, Optional, Dict, Any, Callable, TYPE_CHECKING
-from PyQt6.QtCore import QObject
+from typing import TYPE_CHECKING, Any, Callable, Dict, List, Optional
 
 from application.services.data.data_conversion_service import DataConversionService
 from domain.models.core_models import BeatData
+from PyQt6.QtCore import QObject
 
 if TYPE_CHECKING:
     from application.services.positioning.position_matching_service import (

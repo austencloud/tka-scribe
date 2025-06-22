@@ -7,8 +7,9 @@ import logging
 from typing import List
 
 from domain.models.core_models import SequenceData
+
 from ..models import SequenceAPI
-from .beat_converters import domain_to_api_beat, api_to_domain_beat
+from .beat_converters import api_to_domain_beat, domain_to_api_beat
 
 logger = logging.getLogger(__name__)
 

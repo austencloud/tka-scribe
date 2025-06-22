@@ -11,24 +11,28 @@ PROVIDES:
 - Context-aware pictograph configuration
 """
 
-from typing import List, Dict, Any, Optional, Union
 from abc import ABC, abstractmethod
 from enum import Enum
+from typing import Any, Dict, List, Optional, Union
 
 from domain.models.core_models import BeatData
 from domain.models.pictograph_models import (
-    PictographData,
+    ArrowData,
     GridData,
     GridMode,
-    ArrowData,
+    PictographData,
     PropData,
 )
-from ..data.csv_data_service import ICSVDataService, CSVDataService
-from ..data.glyph_generation_service import IGlyphGenerationService, GlyphGenerationService
+
+from ..data.csv_data_service import CSVDataService, ICSVDataService
 from ..data.dataset_management_service import (
-    IDatasetManagementService,
     DatasetManagementService,
+    IDatasetManagementService,
     PictographSearchQuery,
+)
+from ..data.glyph_generation_service import (
+    GlyphGenerationService,
+    IGlyphGenerationService,
 )
 
 
@@ -72,7 +76,7 @@ class IPictographOrchestrator(ABC):
 class PictographOrchestrator(IPictographOrchestrator):
     """
     Orchestrates pictograph operations using focused services.
-    
+
     Coordinates CSV data, glyph generation, and dataset management services.
     Returns immutable pictograph data following TKA architecture.
     """

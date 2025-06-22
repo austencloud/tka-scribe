@@ -5,20 +5,20 @@ This service implements comprehensive dash location calculation logic,
 providing all the complex dash location maps and calculations with high precision.
 """
 
-from typing import Optional, Dict, Tuple
+from typing import Dict, Optional, Tuple
+
 from domain.models.core_models import (
+    ArrowColor,
+    BeatData,
+    GridMode,
     LetterType,
+    Location,
     MotionData,
     MotionType,
-    Location,
     RotationDirection,
-    ArrowColor,
-    GridMode,
-    BeatData,
 )
-from application.services.data.pictograph_analysis_service import (
-    PictographAnalysisService,
-)
+
+from ..data.pictograph_analysis_service import PictographAnalysisService
 
 
 class DashLocationService:
