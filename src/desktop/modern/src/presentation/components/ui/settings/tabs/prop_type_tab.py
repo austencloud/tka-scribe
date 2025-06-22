@@ -1,18 +1,27 @@
-from typing import Optional
-from PyQt6.QtWidgets import QWidget, QVBoxLayout, QGridLayout, QLabel, QPushButton
-from PyQt6.QtCore import Qt, pyqtSignal, QSize
-from PyQt6.QtGui import QFont, QIcon, QCursor
+from typing import Dict, Optional
 
 from core.interfaces.tab_settings_interfaces import IPropTypeService, PropType
+from PyQt6.QtCore import QSize, Qt, pyqtSignal
+from PyQt6.QtGui import QCursor, QFont, QIcon, QPixmap
+from PyQt6.QtWidgets import QGridLayout, QLabel, QPushButton, QVBoxLayout, QWidget
 
 
 class PropButton(QPushButton):
-    def __init__(self, prop_type: PropType, parent=None):
-        super().__init__(prop_type.value, parent)
-        self.prop_type = prop_type
-        self.setFixedSize(QSize(120, 120))
+    """Modern prop button with visual prop image and glassmorphism styling."""
+
+    def __init__(self, prop_name: str, icon_path: str, parent=None):
+        super().__init__(parent)
+        self.prop_name = prop_name
+        self.icon_path = icon_path
+        self.setFixedSize(QSize(100, 100))
+        self.setIconSize(QSize(64, 64))
         self.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self._is_active = False
+
+        # Load and set icon
+        if icon_path:
+            self.setIcon(QIcon(icon_path))
+
         self._apply_styling()
 
     def set_active(self, active: bool):
@@ -20,54 +29,72 @@ class PropButton(QPushButton):
         self._apply_styling()
 
     def _apply_styling(self):
-        base_style = """
-            QPushButton {
-                border: 3px solid rgba(255, 255, 255, 0.3);
-                border-radius: 15px;
-                background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                    stop:0 rgba(255, 255, 255, 0.15),
-                    stop:1 rgba(255, 255, 255, 0.05));
-                color: white;
-                font-size: 12px;
-                font-weight: bold;
-                text-align: center;
-            }
-            QPushButton:hover {
-                border-color: rgba(255, 255, 255, 0.5);
-                background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                    stop:0 rgba(255, 255, 255, 0.25),
-                    stop:1 rgba(255, 255, 255, 0.15));
-            }
-        """
-
         if self._is_active:
-            active_style = """
+            # Active state - highlighted with primary color
+            self.setStyleSheet(
+                """
                 QPushButton {
-                    border: 3px solid rgba(34, 197, 94, 0.8);
                     background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                        stop:0 rgba(34, 197, 94, 0.3),
-                        stop:1 rgba(34, 197, 94, 0.1));
-                    color: rgba(34, 197, 94, 1.0);
+                        stop:0 rgba(42, 130, 218, 0.8),
+                        stop:1 rgba(42, 130, 218, 0.6));
+                    border: 2px solid rgba(42, 130, 218, 1.0);
+                    border-radius: 12px;
+                    color: white;
+                    font-weight: bold;
+                    padding: 8px;
                 }
+
                 QPushButton:hover {
-                    border-color: rgba(34, 197, 94, 1.0);
                     background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                        stop:0 rgba(34, 197, 94, 0.4),
-                        stop:1 rgba(34, 197, 94, 0.2));
+                        stop:0 rgba(42, 130, 218, 1.0),
+                        stop:1 rgba(42, 130, 218, 0.8));
+                }
+
+                QPushButton:pressed {
+                    background: rgba(42, 130, 218, 0.9);
                 }
             """
-            self.setStyleSheet(active_style)
+            )
         else:
-            self.setStyleSheet(base_style)
+            # Inactive state - subtle glassmorphism
+            self.setStyleSheet(
+                """
+                QPushButton {
+                    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                        stop:0 rgba(255, 255, 255, 0.12),
+                        stop:1 rgba(255, 255, 255, 0.08));
+                    border: 1px solid rgba(255, 255, 255, 0.2);
+                    border-radius: 12px;
+                    color: rgba(255, 255, 255, 0.8);
+                    padding: 8px;
+                }
+
+                QPushButton:hover {
+                    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                        stop:0 rgba(255, 255, 255, 0.18),
+                        stop:1 rgba(255, 255, 255, 0.12));
+                    border: 1px solid rgba(255, 255, 255, 0.3);
+                    color: rgba(255, 255, 255, 0.9);
+                }
+
+                QPushButton:pressed {
+                    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                        stop:0 rgba(255, 255, 255, 0.08),
+                        stop:1 rgba(255, 255, 255, 0.06));
+                }
+            """
+            )
 
 
 class PropTypeTab(QWidget):
-    prop_type_changed = pyqtSignal(PropType)
+    """Modern prop type tab with visual prop buttons like the legacy version."""
+
+    prop_type_changed = pyqtSignal(str)  # Changed to str to match legacy
 
     def __init__(self, prop_service: IPropTypeService, parent=None):
         super().__init__(parent)
         self.prop_service = prop_service
-        self.buttons = {}
+        self.buttons: Dict[str, PropButton] = {}
         self._setup_ui()
         self._load_current_prop()
         self._setup_connections()
@@ -75,39 +102,76 @@ class PropTypeTab(QWidget):
     def _setup_ui(self):
         main_layout = QVBoxLayout(self)
         main_layout.setContentsMargins(30, 30, 30, 30)
-        main_layout.setSpacing(20)
+        main_layout.setSpacing(25)
 
-        title = QLabel("Prop Type Selection")
+        # Title
+        title = QLabel("Prop Type")
         title.setObjectName("section_title")
-        title.setFont(QFont("Arial", 18, QFont.Weight.Bold))
-        title.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        title.setFont(QFont("Inter", 18, QFont.Weight.Bold))
         main_layout.addWidget(title)
 
-        description = QLabel("Choose the prop type for your sequences")
+        # Description
+        description = QLabel("Select the prop type for your sequences")
         description.setObjectName("description")
-        description.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        description.setWordWrap(True)
         main_layout.addWidget(description)
 
-        # Props grid
-        props_widget = QWidget()
-        props_layout = QGridLayout(props_widget)
-        props_layout.setSpacing(15)
-        props_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        # Props container with glassmorphism styling
+        props_container = QWidget()
+        props_container.setObjectName("props_container")
+        container_layout = QVBoxLayout(props_container)
+        container_layout.setContentsMargins(12, 12, 12, 12)
+        container_layout.setSpacing(8)
 
-        available_props = self.prop_service.get_available_prop_types()
+        # Create grid layout for prop buttons
+        grid_layout = QGridLayout()
+        grid_layout.setSpacing(8)
+        grid_layout.setContentsMargins(0, 0, 0, 0)
 
-        for i, prop_type in enumerate(available_props):
-            row = i // 3
-            col = i % 3
+        # Define props with their icon paths (like legacy)
+        props = {
+            "Staff": "assets/images/props/staff.svg",
+            "Simplestaff": "assets/images/props/simple_staff.svg",
+            "Club": "assets/images/props/club.svg",
+            "Fan": "assets/images/props/fan.svg",
+            "Triad": "assets/images/props/triad.svg",
+            "Minihoop": "assets/images/props/minihoop.svg",
+            "Buugeng": "assets/images/props/buugeng.svg",
+            "Triquetra": "assets/images/props/triquetra.svg",
+            "Sword": "assets/images/props/sword.svg",
+            "Chicken": "assets/images/props/chicken.png",
+            "Hand": "assets/images/props/hand.svg",
+            "Guitar": "assets/images/props/guitar.svg",
+            "Ukulele": "assets/images/props/ukulele.svg",
+        }
 
-            button = PropButton(prop_type)
+        # Create prop buttons in a 4-column grid for better layout
+        row, col = 0, 0
+        for prop, icon_path in props.items():
+            # Create prop button
+            button = PropButton(prop, icon_path, self)
             button.clicked.connect(
-                lambda checked, pt=prop_type: self._on_prop_selected(pt)
+                lambda checked, p=prop: self._set_current_prop_type(p)
             )
-            self.buttons[prop_type] = button
-            props_layout.addWidget(button, row, col)
+            self.buttons[prop] = button
 
-        main_layout.addWidget(props_widget)
+            # Create label
+            label = QLabel(prop)
+            label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+            label.setFont(QFont("Inter", 10, QFont.Weight.Medium))
+            label.setStyleSheet("color: rgba(255, 255, 255, 0.8);")
+
+            # Add to grid
+            grid_layout.addWidget(button, row * 2, col)
+            grid_layout.addWidget(label, row * 2 + 1, col)
+
+            col += 1
+            if col >= 4:  # 4 columns
+                col = 0
+                row += 1
+
+        container_layout.addLayout(grid_layout)
+        main_layout.addWidget(props_container)
         main_layout.addStretch()
         self._apply_styling()
 
@@ -118,35 +182,83 @@ class PropTypeTab(QWidget):
                 background: transparent;
                 color: white;
             }
-            
+
             QLabel#section_title {
-                color: white;
-                font-size: 18px;
-                font-weight: bold;
-                margin-bottom: 10px;
+                color: rgba(255, 255, 255, 0.95);
+                font-family: "Inter", "Segoe UI", sans-serif;
+                font-weight: 700;
+                letter-spacing: -0.5px;
             }
-            
+
             QLabel#description {
                 color: rgba(255, 255, 255, 0.8);
+                font-family: "Inter", "Segoe UI", sans-serif;
                 font-size: 14px;
-                margin-bottom: 20px;
+                letter-spacing: 0.2px;
+            }
+
+            QWidget#props_container {
+                background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                    stop:0 rgba(255, 255, 255, 0.08),
+                    stop:1 rgba(255, 255, 255, 0.04));
+                border: 1px solid rgba(255, 255, 255, 0.15);
+                border-radius: 16px;
+                padding: 8px;
             }
         """
         )
 
+    def _set_current_prop_type(self, prop_type: str):
+        """Set the current prop type and update UI."""
+        try:
+            # Convert string to PropType enum if needed
+            if isinstance(prop_type, str):
+                # Try to find matching PropType
+                for prop_enum in PropType:
+                    if prop_enum.value.upper() == prop_type.upper():
+                        prop_type_enum = prop_enum
+                        break
+                else:
+                    # Fallback to STAFF if not found
+                    prop_type_enum = PropType.STAFF
+            else:
+                prop_type_enum = prop_type
+
+            # Update the service
+            self.prop_service.set_prop_type(prop_type_enum)
+
+            # Update button states
+            self._update_active_button(prop_type)
+
+            # Emit signal
+            self.prop_type_changed.emit(prop_type)
+
+        except Exception as e:
+            print(f"Error setting prop type: {e}")
+
+    def _update_active_button(self, active_prop: str):
+        """Update which button appears active."""
+        for prop, button in self.buttons.items():
+            button.set_active(prop == active_prop)
+
     def _load_current_prop(self):
-        current_prop = self.prop_service.get_current_prop_type()
-        if current_prop in self.buttons:
-            self._set_active_button(current_prop)
+        """Load the current prop type from settings."""
+        try:
+            current_prop = self.prop_service.get_current_prop_type()
+            if isinstance(current_prop, str) and current_prop in self.buttons:
+                self._update_active_button(current_prop)
+            elif hasattr(current_prop, "value") and current_prop.value in self.buttons:
+                self._update_active_button(current_prop.value)
+        except Exception as e:
+            print(f"Error loading current prop: {e}")
+            # Default to Staff if there's an error
+            if "Staff" in self.buttons:
+                self._update_active_button("Staff")
 
     def _setup_connections(self):
-        pass  # Connections set up in _setup_ui
+        """Setup signal connections."""
+        pass  # Connections are set up in _setup_ui
 
-    def _on_prop_selected(self, prop_type: PropType):
-        self.prop_service.set_prop_type(prop_type)
-        self._set_active_button(prop_type)
-        self.prop_type_changed.emit(prop_type)
-
-    def _set_active_button(self, active_prop: PropType):
-        for prop_type, button in self.buttons.items():
-            button.set_active(prop_type == active_prop)
+    def update_active_prop_type_from_settings(self):
+        """Update the active prop type from current settings."""
+        self._load_current_prop()

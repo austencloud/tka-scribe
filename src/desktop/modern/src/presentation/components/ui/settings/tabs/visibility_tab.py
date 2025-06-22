@@ -1,17 +1,18 @@
 from typing import Dict, Union
+
+from core.interfaces.tab_settings_interfaces import IVisibilityService
+from PyQt6.QtCore import Qt, pyqtSignal
+from PyQt6.QtGui import QFont
 from PyQt6.QtWidgets import (
-    QWidget,
-    QVBoxLayout,
-    QHBoxLayout,
-    QLabel,
     QCheckBox,
     QFrame,
     QGridLayout,
+    QHBoxLayout,
+    QLabel,
+    QSplitter,
+    QVBoxLayout,
+    QWidget,
 )
-from PyQt6.QtCore import Qt, pyqtSignal
-from PyQt6.QtGui import QFont
-
-from src.core.interfaces.tab_settings_interfaces import IVisibilityService
 
 
 class VisibilityToggle(QCheckBox):
@@ -87,19 +88,32 @@ class VisibilityTab(QWidget):
         description.setObjectName("description")
         main_layout.addWidget(description)
 
-        # Create sections
-        layout = QHBoxLayout()
+        # Create main content with splitter for preview
+        splitter = QSplitter(Qt.Orientation.Horizontal)
 
-        # Left column - Glyph elements
+        # Left side - Controls
+        controls_widget = QWidget()
+        controls_layout = QVBoxLayout(controls_widget)
+
+        # Glyph elements section
         glyph_section = self._create_glyph_section()
-        layout.addWidget(glyph_section)
+        controls_layout.addWidget(glyph_section)
 
-        # Right column - Motion elements
+        # Motion elements section
         motion_section = self._create_motion_section()
-        layout.addWidget(motion_section)
+        controls_layout.addWidget(motion_section)
 
-        main_layout.addLayout(layout)
-        main_layout.addStretch()
+        controls_layout.addStretch()
+        splitter.addWidget(controls_widget)
+
+        # Right side - Interactive preview (placeholder for now)
+        preview_section = self._create_preview_section()
+        splitter.addWidget(preview_section)
+
+        # Set splitter proportions (50% controls, 50% preview)
+        splitter.setSizes([400, 400])
+
+        main_layout.addWidget(splitter)
         self._apply_styling()
 
     def _create_glyph_section(self):
@@ -153,6 +167,37 @@ class VisibilityTab(QWidget):
         note.setObjectName("note")
         note.setWordWrap(True)
         layout.addWidget(note)
+
+        return section
+
+    def _create_preview_section(self):
+        """Create the interactive preview section."""
+        section = QFrame()
+        section.setObjectName("preview_section")
+        layout = QVBoxLayout(section)
+
+        title = QLabel("Interactive Preview")
+        title.setObjectName("subsection_title")
+        layout.addWidget(title)
+
+        # Preview area (placeholder for now)
+        preview_area = QLabel()
+        preview_area.setMinimumSize(300, 300)
+        preview_area.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        preview_area.setStyleSheet(
+            """
+            QLabel {
+                background: rgba(0, 0, 0, 0.3);
+                border: 2px dashed rgba(255, 255, 255, 0.3);
+                border-radius: 12px;
+                color: rgba(255, 255, 255, 0.6);
+                font-size: 16px;
+                font-weight: 500;
+            }
+        """
+        )
+        preview_area.setText("Interactive pictograph preview\nwill appear here")
+        layout.addWidget(preview_area)
 
         return section
 

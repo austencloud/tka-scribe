@@ -1,6 +1,6 @@
 from typing import Dict, Any
-from src.core.interfaces.tab_settings_interfaces import IVisibilityService
-from src.core.interfaces.core_services import IUIStateManagementService
+from core.interfaces.tab_settings_interfaces import IVisibilityService
+from core.interfaces.core_services import IUIStateManagementService
 
 
 class VisibilityService(IVisibilityService):

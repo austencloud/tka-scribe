@@ -1,6 +1,6 @@
 from typing import Dict, Any, Tuple
-from src.core.interfaces.tab_settings_interfaces import IImageExportService
-from src.core.interfaces.core_services import IUIStateManagementService
+from core.interfaces.tab_settings_interfaces import IImageExportService
+from core.interfaces.core_services import IUIStateManagementService
 
 
 class ImageExportService(IImageExportService):

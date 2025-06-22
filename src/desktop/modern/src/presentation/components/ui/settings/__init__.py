@@ -1,15 +1,13 @@
 """Settings dialog and related components."""
 
-from .settings_dialog import SettingsDialog
-from .modern_settings_dialog import ModernSettingsDialog  # Keep for backward compatibility
+from .components import ComboBox, SettingCard, Toggle
 from .coordinator import SettingsCoordinator
-from .components import SettingCard, Toggle, ComboBox
+from .settings_dialog import SettingsDialog
 
 __all__ = [
-    "SettingsDialog", 
-    "ModernSettingsDialog", 
+    "SettingsDialog",
     "SettingsCoordinator",
-    "SettingCard", 
-    "Toggle", 
-    "ComboBox"
+    "SettingCard",
+    "Toggle",
+    "ComboBox",
 ]

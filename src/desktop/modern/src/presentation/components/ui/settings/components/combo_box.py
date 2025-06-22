@@ -2,51 +2,59 @@
 Modern combo box component with glassmorphism styling.
 """
 
-from typing import List, Optional, Any
-from PyQt6.QtWidgets import QComboBox, QStyledItemDelegate, QStyleOptionViewItem, QStyle
-from PyQt6.QtCore import Qt, QModelIndex, QPointF
-from PyQt6.QtGui import QPainter, QBrush, QColor, QLinearGradient, QPen
+from typing import Any, List, Optional
+
+from PyQt6.QtCore import QModelIndex, QPointF, Qt
+from PyQt6.QtGui import QBrush, QColor, QLinearGradient, QPainter, QPen
+from PyQt6.QtWidgets import QComboBox, QStyle, QStyledItemDelegate, QStyleOptionViewItem
 
 
 class ComboBoxDelegate(QStyledItemDelegate):
     """Custom delegate for combo box items."""
-    
-    def paint(self, painter: QPainter, option: QStyleOptionViewItem, index: QModelIndex):
+
+    def paint(
+        self, painter: QPainter, option: QStyleOptionViewItem, index: QModelIndex
+    ):
         painter.setRenderHint(QPainter.RenderHint.Antialiasing)
-        
+
         # Background
         if option.state & QStyle.StateFlag.State_Selected:
-            gradient = QLinearGradient(QPointF(option.rect.topLeft()), QPointF(option.rect.bottomLeft()))
+            gradient = QLinearGradient(
+                QPointF(option.rect.topLeft()), QPointF(option.rect.bottomLeft())
+            )
             gradient.setColorAt(0, QColor(42, 130, 218, 100))
             gradient.setColorAt(1, QColor(42, 130, 218, 80))
             painter.fillRect(option.rect, QBrush(gradient))
         elif option.state & QStyle.StateFlag.State_MouseOver:
             painter.fillRect(option.rect, QBrush(QColor(255, 255, 255, 30)))
-        
+
         # Text
         painter.setPen(QColor(255, 255, 255, 220))
-        painter.drawText(option.rect.adjusted(12, 0, -12, 0), 
-                        Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter,
-                        index.data())
+        painter.drawText(
+            option.rect.adjusted(12, 0, -12, 0),
+            Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter,
+            index.data(),
+        )
 
 
 class ComboBox(QComboBox):
     """Modern combo box with glassmorphism styling."""
-    
+
     def __init__(self, items: Optional[List[str]] = None, parent=None):
         super().__init__(parent)
-        
+
         if items:
             self.addItems(items)
-        
+
         # Set custom delegate
         self.setItemDelegate(ComboBoxDelegate())
-        
+
         self._apply_styling()
-    
+
     def _apply_styling(self):
         """Apply glassmorphism styling."""
-        self.setStyleSheet("""
+        self.setStyleSheet(
+            """
             QComboBox {
                 background: rgba(255, 255, 255, 0.1);
                 border: 1px solid rgba(255, 255, 255, 0.2);
@@ -104,17 +112,18 @@ class ComboBox(QComboBox):
             QComboBox QAbstractItemView::item:selected {
                 background: rgba(42, 130, 218, 0.3);
             }
-        """)
-    
+        """
+        )
+
     def set_items(self, items: List[str]):
         """Set combo box items."""
         self.clear()
         self.addItems(items)
-    
+
     def get_current_data(self) -> Any:
         """Get current item data."""
         return self.currentData()
-    
+
     def set_current_by_data(self, data: Any):
         """Set current item by data."""
         index = self.findData(data)

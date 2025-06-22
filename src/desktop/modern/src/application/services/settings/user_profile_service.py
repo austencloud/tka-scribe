@@ -1,6 +1,6 @@
 from typing import List, Optional
-from src.core.interfaces.tab_settings_interfaces import IUserProfileService
-from src.core.interfaces.core_services import IUIStateManagementService
+from core.interfaces.tab_settings_interfaces import IUserProfileService
+from core.interfaces.core_services import IUIStateManagementService
 
 
 class UserProfileService(IUserProfileService):

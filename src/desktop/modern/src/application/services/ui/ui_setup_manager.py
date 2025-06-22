@@ -12,18 +12,19 @@ PROVIDES:
 - Component styling and layout management
 """
 
-from typing import Optional, Callable, TYPE_CHECKING
 from abc import ABC, abstractmethod
-from PyQt6.QtWidgets import (
-    QMainWindow,
-    QTabWidget,
-    QWidget,
-    QVBoxLayout,
-    QHBoxLayout,
-    QLabel,
-)
+from typing import TYPE_CHECKING, Callable, Optional
+
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QFont
+from PyQt6.QtWidgets import (
+    QHBoxLayout,
+    QLabel,
+    QMainWindow,
+    QTabWidget,
+    QVBoxLayout,
+    QWidget,
+)
 
 if TYPE_CHECKING:
     from core.dependency_injection.di_container import DIContainer
@@ -56,7 +57,7 @@ class IUISetupManager(ABC):
 class UISetupManager(IUISetupManager):
     """
     Pure service for UI setup and component management.
-    
+
     Handles all UI initialization without business logic dependencies.
     Uses clean separation of concerns following TKA architecture.
     """
@@ -222,9 +223,7 @@ class UISetupManager(IUISetupManager):
         except Exception as e:
             print(f"⚠️ Error loading construct tab: {e}")
             if progress_callback:
-                progress_callback(
-                    85, "Construct tab load failed, using fallback..."
-                )
+                progress_callback(85, "Construct tab load failed, using fallback...")
 
             # Create fallback placeholder
             fallback_placeholder = QLabel("🚧 Construct tab loading failed...")
@@ -261,16 +260,16 @@ class UISetupManager(IUISetupManager):
     def _show_settings(self, main_window: QMainWindow) -> None:
         """Open the settings dialog using dependency injection."""
         try:
-            from src.presentation.components.ui.settings.modern_settings_dialog import (
-                ModernSettingsDialog,
-            )
-            from core.interfaces.core_services import IUIStateManagementService
             from core.dependency_injection.di_container import get_container
+            from core.interfaces.core_services import IUIStateManagementService
+            from presentation.components.ui.settings.settings_dialog import (
+                SettingsDialog,
+            )
 
             # Get UI state service from container
             container = get_container()
             ui_state_service = container.resolve(IUIStateManagementService)
-            dialog = ModernSettingsDialog(ui_state_service, main_window)
+            dialog = SettingsDialog(ui_state_service, main_window)
 
             # Connect to settings changes if needed
             dialog.settings_changed.connect(

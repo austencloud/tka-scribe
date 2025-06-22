@@ -3,6 +3,26 @@
   "python.testing.pytestEnabled": true,
   "python.testing.pytestArgs": ["./src/desktop/modern/tests", "./tests"],
   "python.terminal.activateEnvironment": true,
+  
+  // Python path configuration for import resolution
+  "python.analysis.extraPaths": [
+    "./",
+    "./launcher",
+    "./src",
+    "./src/desktop/modern/src"
+  ],
+  
+  // Pylint configuration
+  "python.linting.pylintEnabled": true,
+  "python.linting.enabled": true,
+  "python.linting.pylintArgs": [
+    "--init-hook=import sys; sys.path.extend(['F:/CODE/TKA', 'F:/CODE/TKA/launcher', 'F:/CODE/TKA/src/desktop/modern/src'])"
+  ],
+  
+  // Type checking
+  "python.analysis.typeCheckingMode": "basic",
+  "python.analysis.autoImportCompletions": true,
+  
   "files.exclude": {
     "**/__pycache__": true,
     "**/node_modules": true,
