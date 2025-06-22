@@ -219,7 +219,9 @@ class SequenceManagementService(ISequenceManagementService):
     - Sequence validation and optimization
     """
 
-    def __init__(self, event_bus: Optional[Any] = None):
+    def __init__(
+        self, event_bus: Optional[Any] = None, repository: Optional[Any] = None
+    ):
         # Event system integration
         self.event_bus = event_bus or (get_event_bus() if get_event_bus else None)
         self.command_processor = (
@@ -227,6 +229,11 @@ class SequenceManagementService(ISequenceManagementService):
             if CommandProcessor and self.event_bus
             else None
         )
+
+        # Storage layer integration
+        from infrastructure.storage.sequence_repository import SequenceRepository
+
+        self.repository = repository or SequenceRepository()
 
         # Current state (will be managed by commands)
         self._current_sequence: Optional[SequenceData] = None
@@ -285,7 +292,55 @@ class SequenceManagementService(ISequenceManagementService):
                 )
             )
 
+        # Save sequence to repository
+        self.repository.save(sequence)
+
+        # Set as current sequence
+        self.repository.set_current_sequence(sequence.id)
+
         return sequence
+
+    # NEW: Storage methods for API integration
+
+    @handle_service_errors("save_sequence")
+    @monitor_performance("sequence_save")
+    def save_sequence(self, sequence: SequenceData) -> None:
+        """Save sequence to repository."""
+        self.repository.save(sequence)
+
+    @handle_service_errors("get_sequence_by_id")
+    @monitor_performance("sequence_retrieval")
+    def get_sequence_by_id(self, sequence_id: str) -> Optional[SequenceData]:
+        """Retrieve sequence by ID."""
+        return self.repository.get_by_id(sequence_id)
+
+    @handle_service_errors("update_sequence")
+    @monitor_performance("sequence_update")
+    def update_sequence(self, sequence: SequenceData) -> SequenceData:
+        """Update existing sequence."""
+        if not self.repository.exists(sequence.id):
+            raise ValidationError(f"Sequence {sequence.id} does not exist")
+
+        self.repository.update(sequence)
+        return sequence
+
+    @handle_service_errors("delete_sequence")
+    @monitor_performance("sequence_deletion")
+    def delete_sequence(self, sequence_id: str) -> bool:
+        """Delete sequence from repository."""
+        return self.repository.delete(sequence_id)
+
+    @handle_service_errors("get_current_sequence_from_storage")
+    @monitor_performance("current_sequence_retrieval")
+    def get_current_sequence_from_storage(self) -> Optional[SequenceData]:
+        """Get currently active sequence from storage."""
+        return self.repository.get_current_sequence()
+
+    @handle_service_errors("set_current_sequence_in_storage")
+    @monitor_performance("current_sequence_setting")
+    def set_current_sequence_in_storage(self, sequence_id: str) -> bool:
+        """Set the current active sequence in storage."""
+        return self.repository.set_current_sequence(sequence_id)
 
     @handle_service_errors("add_beat")
     @monitor_performance("beat_addition")

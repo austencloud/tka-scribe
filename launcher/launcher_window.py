@@ -40,24 +40,83 @@ from launcher_config import LauncherConfig
 
 logger = logging.getLogger(__name__)
 
+# Import enhanced design system
+try:
+    from ui.design_system import (
+        get_theme_manager,
+        get_style_builder,
+        apply_global_theme,
+    )
+    from ui.themes.base_theme import get_smart_theme_manager
+    from ui.effects.glassmorphism import get_effect_manager
+    from ui.components.animation_mixins import (
+        HoverAnimationMixin,
+        FeedbackAnimationMixin,
+    )
 
-# Modern UI Components with Glassmorphism
-class ModernSearchBox(QLineEdit):
-    """Modern search box with glassmorphism styling."""
+    ENHANCED_UI_AVAILABLE = True
+    logger.info("🎨 Enhanced UI design system loaded successfully")
+except ImportError as e:
+    logger.warning(f"Enhanced UI not available: {e}")
+    ENHANCED_UI_AVAILABLE = False
+
+
+# Enhanced Modern UI Components with Premium 2025 Design
+class ModernSearchBox(
+    QLineEdit, HoverAnimationMixin if ENHANCED_UI_AVAILABLE else object
+):
+    """Premium search box with glassmorphism styling and micro-interactions."""
 
     def __init__(self, placeholder="Search...", parent=None):
         super().__init__(parent)
+        if ENHANCED_UI_AVAILABLE:
+            HoverAnimationMixin.__init__(self)
+
         self.setPlaceholderText(placeholder)
         self._setup_styling()
+        self._setup_animations()
+        self._setup_effects()
 
     def _setup_styling(self):
-        """Apply premium glassmorphism styling with enhanced effects."""
+        """Apply premium glassmorphism styling with design system."""
+        if ENHANCED_UI_AVAILABLE:
+            try:
+                style_builder = get_style_builder()
+                theme = get_theme_manager().get_current_theme()
+
+                self.setStyleSheet(
+                    f"""
+                    QLineEdit {{
+                        {style_builder.glassmorphism_surface('primary')}
+                        border-radius: {theme['radius']['lg']};
+                        padding: {theme['spacing']['md']} {theme['spacing']['lg']};
+                        {style_builder.typography('base', 'normal')}
+                        color: #ffffff;
+                        selection-background-color: {theme['accent']['surface']};
+                    }}
+                    QLineEdit:focus {{
+                        {style_builder.glassmorphism_surface('primary', hover=True)}
+                        border: 2px solid {theme['accent']['primary']};
+                        outline: none;
+                    }}
+                    QLineEdit::placeholder {{
+                        color: rgba(255, 255, 255, 0.5);
+                        font-style: italic;
+                    }}
+                """
+                )
+            except Exception as e:
+                logger.warning(f"Could not apply enhanced styling: {e}")
+                self._apply_fallback_styling()
+        else:
+            self._apply_fallback_styling()
+
+    def _apply_fallback_styling(self):
+        """Apply fallback styling when enhanced UI is not available."""
         self.setStyleSheet(
             """
             QLineEdit {
-                background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
-                    stop:0 rgba(255, 255, 255, 0.12),
-                    stop:1 rgba(255, 255, 255, 0.08));
+                background: rgba(255, 255, 255, 0.12);
                 border: 1px solid rgba(255, 255, 255, 0.2);
                 border-radius: 16px;
                 padding: 14px 20px;
@@ -65,14 +124,10 @@ class ModernSearchBox(QLineEdit):
                 font-size: 14px;
                 color: #ffffff;
                 font-weight: 400;
-                selection-background-color: rgba(59, 130, 246, 0.3);
             }
             QLineEdit:focus {
-                background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
-                    stop:0 rgba(255, 255, 255, 0.18),
-                    stop:1 rgba(255, 255, 255, 0.12));
+                background: rgba(255, 255, 255, 0.18);
                 border: 2px solid rgba(59, 130, 246, 0.6);
-                outline: none;
             }
             QLineEdit::placeholder {
                 color: rgba(255, 255, 255, 0.5);
@@ -81,25 +136,90 @@ class ModernSearchBox(QLineEdit):
         """
         )
 
+    def _setup_animations(self):
+        """Setup micro-interactions and animations."""
+        if ENHANCED_UI_AVAILABLE:
+            try:
+                self.setup_hover_animations(self)
+            except Exception as e:
+                logger.warning(f"Could not setup animations: {e}")
 
-class ModernButton(QPushButton):
-    """Modern button with glassmorphism styling and animations."""
+    def _setup_effects(self):
+        """Setup visual effects."""
+        if ENHANCED_UI_AVAILABLE:
+            try:
+                effect_manager = get_effect_manager()
+                effect_manager.apply_glassmorphism(self, "subtle")
+            except Exception as e:
+                logger.warning(f"Could not apply effects: {e}")
+
+    def enterEvent(self, event):
+        """Enhanced hover enter with animations."""
+        super().enterEvent(event)
+        if ENHANCED_UI_AVAILABLE and hasattr(self, "animate_hover_enter"):
+            self.animate_hover_enter(self)
+
+    def leaveEvent(self, event):
+        """Enhanced hover leave with animations."""
+        super().leaveEvent(event)
+        if ENHANCED_UI_AVAILABLE and hasattr(self, "animate_hover_leave"):
+            self.animate_hover_leave(self)
+
+
+class ModernButton(
+    QPushButton, FeedbackAnimationMixin if ENHANCED_UI_AVAILABLE else object
+):
+    """Premium button with glassmorphism styling and spring animations."""
 
     def __init__(self, text="", button_type="primary", parent=None):
         super().__init__(text, parent)
+        if ENHANCED_UI_AVAILABLE:
+            FeedbackAnimationMixin.__init__(self)
+
         self.button_type = button_type
         self._setup_styling()
         self._setup_animations()
+        self._setup_effects()
 
     def _setup_styling(self):
-        """Apply modern button styling based on type."""
+        """Apply premium button styling with design system."""
+        if ENHANCED_UI_AVAILABLE:
+            try:
+                style_builder = get_style_builder()
+                theme = get_theme_manager().get_current_theme()
+
+                button_css = style_builder.button_style(self.button_type)
+                typography_css = style_builder.typography("base", "medium")
+
+                self.setStyleSheet(
+                    f"""
+                    QPushButton {{
+                        {button_css}
+                        {typography_css}
+                        border-radius: {theme['radius']['md']};
+                        padding: {theme['spacing']['md']} {theme['spacing']['lg']};
+                    }}
+                    QPushButton:hover {{
+                        background-color: {theme['accent']['primary'] if self.button_type == 'primary' else theme['glass']['surface_hover']};
+                    }}
+                    QPushButton:pressed {{
+                        background-color: {theme['accent']['secondary'] if self.button_type == 'primary' else theme['glass']['surface_pressed']};
+                    }}
+                """
+                )
+            except Exception as e:
+                logger.warning(f"Could not apply enhanced button styling: {e}")
+                self._apply_fallback_styling()
+        else:
+            self._apply_fallback_styling()
+
+    def _apply_fallback_styling(self):
+        """Apply fallback styling when enhanced UI is not available."""
         if self.button_type == "primary":
             self.setStyleSheet(
                 """
                 QPushButton {
-                    background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
-                        stop:0 rgba(59, 130, 246, 0.8),
-                        stop:1 rgba(37, 99, 235, 0.8));
+                    background: linear-gradient(135deg, rgba(59, 130, 246, 0.8), rgba(37, 99, 235, 0.8));
                     border: 1px solid rgba(255, 255, 255, 0.2);
                     border-radius: 12px;
                     padding: 12px 24px;
@@ -109,27 +229,21 @@ class ModernButton(QPushButton):
                     color: #ffffff;
                 }
                 QPushButton:hover {
-                    background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
-                        stop:0 rgba(59, 130, 246, 0.9),
-                        stop:1 rgba(37, 99, 235, 0.9));
+                    background: linear-gradient(135deg, rgba(59, 130, 246, 0.9), rgba(37, 99, 235, 0.9));
                     border: 1px solid rgba(255, 255, 255, 0.3);
                 }
                 QPushButton:pressed {
-                    background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
-                        stop:0 rgba(37, 99, 235, 0.9),
-                        stop:1 rgba(29, 78, 216, 0.9));
+                    background: linear-gradient(135deg, rgba(37, 99, 235, 0.9), rgba(29, 78, 216, 0.9));
                 }
             """
             )
-        else:  # transparent/secondary
+        else:  # secondary
             self.setStyleSheet(
                 """
                 QPushButton {
-                    background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
-                        stop:0 rgba(255, 255, 255, 0.08),
-                        stop:1 rgba(255, 255, 255, 0.04));
+                    background: rgba(255, 255, 255, 0.08);
                     border: 1px solid rgba(255, 255, 255, 0.18);
-                    border-radius: 14px;
+                    border-radius: 12px;
                     padding: 12px 24px;
                     font-family: 'Inter', sans-serif;
                     font-size: 14px;
@@ -137,24 +251,69 @@ class ModernButton(QPushButton):
                     color: rgba(255, 255, 255, 0.9);
                 }
                 QPushButton:hover {
-                    background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
-                        stop:0 rgba(255, 255, 255, 0.12),
-                        stop:1 rgba(255, 255, 255, 0.08));
+                    background: rgba(255, 255, 255, 0.12);
                     border: 1px solid rgba(255, 255, 255, 0.28);
                 }
                 QPushButton:pressed {
-                    background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
-                        stop:0 rgba(255, 255, 255, 0.16),
-                        stop:1 rgba(255, 255, 255, 0.12));
+                    background: rgba(255, 255, 255, 0.16);
                 }
             """
             )
 
     def _setup_animations(self):
-        """Setup hover animations."""
-        self.animation = QPropertyAnimation(self, b"geometry")
-        self.animation.setDuration(200)
-        self.animation.setEasingCurve(QEasingCurve.Type.OutCubic)
+        """Setup premium micro-interactions."""
+        if ENHANCED_UI_AVAILABLE:
+            try:
+                # Spring animation for button press
+                self.press_animation = self.create_spring_animation(
+                    self, b"geometry", damping=0.9, stiffness=200
+                )
+            except Exception as e:
+                logger.warning(f"Could not setup button animations: {e}")
+        else:
+            # Fallback animation
+            self.animation = QPropertyAnimation(self, b"geometry")
+            self.animation.setDuration(200)
+            self.animation.setEasingCurve(QEasingCurve.Type.OutCubic)
+
+    def _setup_effects(self):
+        """Setup visual effects."""
+        if ENHANCED_UI_AVAILABLE:
+            try:
+                effect_manager = get_effect_manager()
+                effect_manager.apply_contextual_shadow(self)
+            except Exception as e:
+                logger.warning(f"Could not apply button effects: {e}")
+
+    def mousePressEvent(self, event):
+        """Enhanced button press with spring feedback."""
+        super().mousePressEvent(event)
+        if ENHANCED_UI_AVAILABLE and hasattr(self, "animate_button_press"):
+            self.animate_button_press(self)
+
+    def enterEvent(self, event):
+        """Enhanced hover enter."""
+        super().enterEvent(event)
+        # Add subtle glow effect on hover
+        if ENHANCED_UI_AVAILABLE:
+            try:
+                effect_manager = get_effect_manager()
+                edge_effect = effect_manager.apply_edge_lighting(self)
+                edge_effect.start_glow(0.3)
+            except Exception as e:
+                logger.debug(f"Could not apply hover glow: {e}")
+
+    def leaveEvent(self, event):
+        """Enhanced hover leave."""
+        super().leaveEvent(event)
+        # Remove glow effect
+        if ENHANCED_UI_AVAILABLE:
+            try:
+                effect_manager = get_effect_manager()
+                effect_manager.remove_effects(self)
+                self._setup_effects()  # Restore base effects
+            except Exception as e:
+                logger.debug(f"Could not remove hover glow: {e}")
 
 
 class ModernLabel(QLabel):
@@ -309,8 +468,68 @@ class TKAModernWindow(QWidget):
         logger.info("✅ TKA Modern Window initialized")
 
     def _setup_modern_styling(self):
-        """Setup modern glassmorphism styling."""
-        # Apply modern glassmorphism theme
+        """Setup premium 2025 glassmorphism styling with design system."""
+        if ENHANCED_UI_AVAILABLE:
+            try:
+                # Apply global theme first
+                apply_global_theme()
+
+                # Get design system components
+                style_builder = get_style_builder()
+                theme = get_theme_manager().get_current_theme()
+
+                # Enhanced styling with design system
+                self.setStyleSheet(
+                    f"""
+                    QWidget {{
+                        background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
+                            stop:0 rgba(15, 15, 15, 0.95),
+                            stop:1 rgba(30, 30, 30, 0.95));
+                        color: #ffffff;
+                        {style_builder.typography()}
+                    }}
+
+                    QTabWidget::pane {{
+                        {style_builder.glassmorphism_surface('secondary')}
+                        border-radius: {theme['radius']['lg']};
+                    }}
+
+                    QTabBar::tab {{
+                        {style_builder.glassmorphism_surface('tertiary')}
+                        {style_builder.typography('base', 'medium')}
+                        color: rgba(255, 255, 255, 0.8);
+                        padding: {theme['spacing']['md']} {theme['spacing']['lg']};
+                        margin-right: {theme['spacing']['xs']};
+                        border-top-left-radius: {theme['radius']['md']};
+                        border-top-right-radius: {theme['radius']['md']};
+                    }}
+
+                    QTabBar::tab:selected {{
+                        {style_builder.glassmorphism_surface('selected')}
+                        color: #ffffff;
+                        border: 1px solid {theme['accent']['primary']};
+                    }}
+
+                    QTabBar::tab:hover {{
+                        {style_builder.glassmorphism_surface('hover')}
+                    }}
+                """
+                )
+
+                # Setup smart theme manager
+                smart_theme_manager = get_smart_theme_manager()
+                smart_theme_manager.theme_changed.connect(self._on_theme_changed)
+
+                logger.info("🎨 Enhanced styling applied with design system")
+
+            except Exception as e:
+                logger.warning(f"Could not apply enhanced styling: {e}")
+                self._apply_fallback_styling()
+        else:
+            self._apply_fallback_styling()
+
+    def _apply_fallback_styling(self):
+        """Apply fallback styling when enhanced UI is not available."""
         self.setStyleSheet(
             """
             QWidget {
@@ -350,6 +569,11 @@ class TKAModernWindow(QWidget):
             }
         """
         )
+
+    def _on_theme_changed(self, new_theme):
+        """Handle theme changes and update styling."""
+        logger.info("🎨 Theme changed, updating window styling")
+        self._setup_modern_styling()
 
     def _setup_window_geometry(self):
         """Setup window geometry to 50% of screen size and center it."""
