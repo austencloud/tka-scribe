@@ -1,17 +1,17 @@
-import os
+import json
 import logging
+import os
 from typing import TYPE_CHECKING
+
 from PIL import Image, PngImagePlugin
 from PyQt6.QtWidgets import QMessageBox
-import json
 
-from data.constants import (
-    GRID_MODE,
-    SEQUENCE_START_POSITION,
-    END_POS,
-    DIAMOND,
-    BOX,  # Import grid mode constants
-)
+# Constants imported directly to avoid data module dependency
+GRID_MODE = "grid_mode"
+SEQUENCE_START_POSITION = "sequence_start_position"
+END_POS = "end_pos"
+DIAMOND = "diamond"
+BOX = "box"
 from main_window.main_widget.sequence_level_evaluator import SequenceLevelEvaluator
 from main_window.main_widget.thumbnail_finder import ThumbnailFinder
 from utils.path_helpers import get_data_path

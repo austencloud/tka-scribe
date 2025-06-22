@@ -1,54 +1,50 @@
-from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QStackedWidget
-
+import logging
 from typing import TYPE_CHECKING
+
 from enums.letter.letter import Letter
 from enums.prop_type import PropType
-
 from main_window.main_widget.pictograph_collector import PictographCollector
-from legacy.src.main_window.main_widget.settings_dialog.legacy_settings_dialog import (
+from main_window.main_widget.sequence_card_tab.tab import SequenceCardTab
+from main_window.main_widget.settings_dialog.legacy_settings_dialog import (
     LegacySettingsDialog,
 )
 from main_window.main_widget.startup_dialog import StartupDialog
 from main_window.main_widget.tab_index import TAB_INDEX
 from main_window.main_widget.tab_name import TabName
-from main_window.main_widget.sequence_card_tab.tab import SequenceCardTab
+from PyQt6.QtWidgets import QHBoxLayout, QStackedWidget, QVBoxLayout, QWidget
+
 from .browse_tab.browse_tab import BrowseTab
-from .fade_manager.fade_manager import FadeManager
-from .full_screen_image_overlay import FullScreenImageOverlay
 from .construct_tab.construct_tab import ConstructTab
-from .learn_tab.learn_tab import LearnTab
-from .write_tab.write_tab import WriteTab
-from .main_background_widget.main_background_widget import MainBackgroundWidget
-from .main_widget_tab_switcher import MainWidgetTabSwitcher
+from .fade_manager.fade_manager import FadeManager
 from .font_color_updater.font_color_updater import FontColorUpdater
-
-
+from .full_screen_image_overlay import FullScreenImageOverlay
+from .learn_tab.learn_tab import LearnTab
+from .main_background_widget.main_background_widget import MainBackgroundWidget
 from .main_widget_managers import MainWidgetManagers
-from .main_widget_ui import MainWidgetUI
 from .main_widget_state import MainWidgetState
+from .main_widget_tab_switcher import MainWidgetTabSwitcher
+from .main_widget_ui import MainWidgetUI
+from .write_tab.write_tab import WriteTab
 
 if TYPE_CHECKING:
-    from main_window.main_widget.generate_tab.generate_tab import GenerateTab
+    from legacy.src.base_widgets.pictograph.legacy_pictograph import LegacyPictograph
+    from letter_determination.core import LetterDeterminer
     from main_window.main_widget.codex.codex import Codex
+    from main_window.main_widget.generate_tab.generate_tab import GenerateTab
     from main_window.main_widget.pictograph_data_loader import PictographDataLoader
     from main_window.menu_bar.menu_bar import MenuBarWidget
     from splash_screen.splash_screen import SplashScreen
+
     from ..main_window import MainWindow
-
+    from .grid_mode_checker import GridModeChecker
     from .json_manager.json_manager import JsonManager
-    from .sequence_workbench.sequence_workbench import SequenceWorkbench
-
-    from .main_background_widget.backgrounds.base_background import (
-        BaseBackground,
-    )
+    from .main_background_widget.backgrounds.base_background import BaseBackground
     from .sequence_level_evaluator import SequenceLevelEvaluator
     from .sequence_properties_manager.sequence_properties_manager import (
         SequencePropertiesManager,
     )
+    from .sequence_workbench.sequence_workbench import SequenceWorkbench
     from .thumbnail_finder import ThumbnailFinder
-    from .grid_mode_checker import GridModeChecker
-    from legacy.src.base_widgets.pictograph.legacy_pictograph import LegacyPictograph
-    from letter_determination.core import LetterDeterminer
 
 
 class MainWidget(QWidget):
@@ -115,10 +111,8 @@ class MainWidget(QWidget):
         # Get dependencies from AppContext safely
         try:
             # Use a consistent import path - always use the src-prefixed version
-            from src.legacy_settings_manager.global_settings.app_context import (
-                AppContext,
-            )
-            from src.utils.logging_config import get_logger
+            from legacy_settings_manager.global_settings.app_context import AppContext
+            from utils.logging_config import get_logger
 
             logger = get_logger(__name__)
             logger.info("MainWidget: Accessing AppContext...")
@@ -138,10 +132,10 @@ class MainWidget(QWidget):
                 "MainWidget: Successfully retrieved dependencies from AppContext"
             )
         except Exception as e:
-            from src.utils.logging_config import get_logger
+            from utils.logging_config import get_logger
 
             logger = get_logger(__name__)
-            logger.error(f"MainWidget: Failed to access AppContext: {e}")
+            logger.error("MainWidget: Failed to access AppContext: %s", e)
             raise
 
         # Get app_context for dependency injection

@@ -3,26 +3,11 @@
   "python.testing.pytestEnabled": true,
   "python.testing.pytestArgs": ["./src/desktop/modern/tests", "./tests"],
   "python.terminal.activateEnvironment": true,
-  
-  // Python path configuration for import resolution
-  "python.analysis.extraPaths": [
-    "./",
-    "./launcher",
-    "./src",
-    "./src/desktop/modern/src"
-  ],
-  
-  // Pylint configuration
-  "python.linting.pylintEnabled": true,
-  "python.linting.enabled": true,
-  "python.linting.pylintArgs": [
-    "--init-hook=import sys; sys.path.extend(['F:/CODE/TKA', 'F:/CODE/TKA/launcher', 'F:/CODE/TKA/src/desktop/modern/src'])"
-  ],
-  
-  // Type checking
-  "python.analysis.typeCheckingMode": "basic",
+
+  // Let pyproject.toml handle ALL Python analysis configuration
   "python.analysis.autoImportCompletions": true,
-  
+
+  // File management
   "files.exclude": {
     "**/__pycache__": true,
     "**/node_modules": true,
@@ -36,12 +21,27 @@
     "**/venv": true,
     "**/.pytest_cache": true
   },
-  "editor.formatOnSave": true,
+
+  // Formatting - less aggressive
+  "editor.formatOnSave": false, // DISABLE auto-format to avoid whitespace issues
+  "editor.trimAutoWhitespace": false, // DISABLE trim whitespace
+  "files.trimTrailingWhitespace": false, // DISABLE trim whitespace
+
   "editor.codeActionsOnSave": {
-    "source.organizeImports": "explicit"
+    "source.organizeImports": "never" // DISABLE auto-organize imports
   },
+
   "files.associations": {
     "test_*.py": "python",
     "conftest.py": "python"
-  }
+  },
+
+  // Python linting configuration
+  "python.linting.enabled": true,
+  "python.linting.pylintEnabled": true,
+  "python.linting.mypyEnabled": false,
+  "python.linting.flake8Enabled": false,
+
+  // Disable formatting to prevent conflicts
+  "python.formatting.provider": "none"
 }

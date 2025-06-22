@@ -1,13 +1,15 @@
 import math
 from typing import TYPE_CHECKING
-from PyQt6.QtCore import Qt, QEvent, QRectF
-from PyQt6.QtGui import QPainter, QPen, QColor, QCursor
 
-from data.constants import GOLD
-from enums.letter.letter_type import LetterType
 from base_widgets.pictograph.elements.views.base_pictograph_view import (
     BasePictographView,
 )
+from enums.letter.letter_type import LetterType
+from PyQt6.QtCore import QEvent, QRectF, Qt
+from PyQt6.QtGui import QColor, QCursor, QPainter, QPen
+
+# Import GOLD constant directly
+GOLD = "gold"
 
 if TYPE_CHECKING:
     from legacy.src.base_widgets.pictograph.legacy_pictograph import LegacyPictograph

@@ -4,14 +4,16 @@ Settings dialog coordinator - orchestrates all dialog components.
 This replaces the monolithic ModernSettingsDialog with a coordinator pattern
 that manages smaller, focused components.
 """
+# pylint: disable=import-outside-toplevel
 
-from typing import TYPE_CHECKING, Dict, Any
-from PyQt6.QtCore import QObject, pyqtSignal, QEvent, Qt
-from PyQt6.QtWidgets import QDialog
 import logging
+from typing import TYPE_CHECKING, Any, Dict, Optional
+
+from PyQt6.QtCore import QObject, Qt, pyqtSignal
+from PyQt6.QtWidgets import QDialog
 
 if TYPE_CHECKING:
-    from src.core.application_context import ApplicationContext
+    from core.application_context import ApplicationContext
     from main_window.main_widget.main_widget import MainWidget
 
 logger = logging.getLogger(__name__)
@@ -36,7 +38,7 @@ class SettingsDialogCoordinator(QObject):
         self,
         dialog: QDialog,
         main_widget: "MainWidget",
-        app_context: "ApplicationContext" = None,
+        app_context: Optional["ApplicationContext"] = None,
     ):
         super().__init__(dialog)
         self.dialog = dialog
@@ -57,6 +59,9 @@ class SettingsDialogCoordinator(QObject):
         # Drag functionality for frameless window
         self.drag_position = None
 
+        # Initialize settings manager properly
+        self.settings_manager = None
+
         # Initialize services
         self._initialize_services()
 
@@ -65,12 +70,11 @@ class SettingsDialogCoordinator(QObject):
         try:
             # Get settings manager from dependency injection
             if self.app_context:
-                self.settings_manager = self.app_context.settings_manager
-            else:
-                # Fallback to legacy AppContext
-                from src.legacy_settings_manager.global_settings.app_context import AppContext
-
-                self.settings_manager = AppContext.settings_manager()
+                try:
+                    self.settings_manager = self.app_context.settings_manager
+                except Exception as e:
+                    logger.error(f"Failed to get settings manager: {e}")
+                    self.settings_manager = None
 
             # Initialize state manager
             from ..core.settings_state_manager import SettingsStateManager
@@ -119,11 +123,11 @@ class SettingsDialogCoordinator(QObject):
 
     def _initialize_managers(self):
         """Initialize all component managers."""
+        from ..events.settings_event_coordinator import SettingsEventCoordinator
+        from ..tabs.settings_tab_manager import SettingsTabManager
         from .dialog_configuration_manager import DialogConfigurationManager
         from .dialog_layout_manager import DialogLayoutManager
         from .dialog_styling_manager import DialogStylingManager
-        from ..tabs.settings_tab_manager import SettingsTabManager
-        from ..events.settings_event_coordinator import SettingsEventCoordinator
 
         self.config_manager = DialogConfigurationManager(
             self.dialog, self.main_widget, self.app_context
@@ -182,15 +186,26 @@ class SettingsDialogCoordinator(QObject):
         except Exception as e:
             logger.error(f"Error restoring last selected tab: {e}")
 
-    def _get_last_selected_tab(self) -> str:
+    def _get_last_selected_tab(self) -> Optional[str]:
         """Get the last selected tab from settings."""
         try:
-            if self.settings_manager and hasattr(
-                self.settings_manager, "global_settings"
-            ):
-                return (
-                    self.settings_manager.global_settings.get_current_settings_dialog_tab()
+            if (
+                self.settings_manager
+                and hasattr(self.settings_manager, "global_settings")
+                and hasattr(
+                    self.settings_manager.global_settings,
+                    "get_current_settings_dialog_tab",
                 )
+            ):
+                # Call the method safely with getattr as fallback
+                method = getattr(
+                    self.settings_manager.global_settings,
+                    "get_current_settings_dialog_tab",
+                    None,
+                )
+                if method and callable(method):
+                    result = method()
+                    return str(result) if result is not None else None
         except Exception as e:
             logger.error(f"Error getting last selected tab: {e}")
         return None
