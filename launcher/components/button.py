@@ -1,22 +1,24 @@
 """
 ModernButton component for TKA Launcher.
 
-This component provides a premium button with glassmorphism styling 
+This component provides a premium button with glassmorphism styling
 and spring animations.
 """
 
 import logging
+
+from PyQt6.QtCore import QEasingCurve, QPropertyAnimation
 from PyQt6.QtWidgets import QPushButton
-from PyQt6.QtCore import QPropertyAnimation, QEasingCurve
 
 logger = logging.getLogger(__name__)
 
 # Check for enhanced UI availability
 ENHANCED_UI_AVAILABLE = False
 try:
+    from ui.components.animation_mixins import FeedbackAnimationMixin
     from ui.design_system import get_style_builder, get_theme_manager
     from ui.effects.glassmorphism import get_effect_manager
-    from ui.components.animation_mixins import FeedbackAnimationMixin
+
     ENHANCED_UI_AVAILABLE = True
 except ImportError as e:
     logger.debug(f"Enhanced UI components not available: {e}")

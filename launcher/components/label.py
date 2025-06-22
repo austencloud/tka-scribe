@@ -1,13 +1,14 @@
 """
 ModernLabel component for TKA Launcher.
 
-This component provides a modern label with Inter typography and 
+This component provides a modern label with Inter typography and
 multiple text styles (title, subtitle, body, caption).
 """
 
 import logging
-from PyQt6.QtWidgets import QLabel
+
 from PyQt6.QtGui import QFont
+from PyQt6.QtWidgets import QLabel
 
 logger = logging.getLogger(__name__)
 

@@ -18,168 +18,24 @@ Architecture:
 """
 
 import logging
-from PyQt6.QtWidgets import (
-    QWidget,
-    QVBoxLayout,
-    QHBoxLayout,
-    QTabWidget,
-    QMainWindow,
-    QLineEdit,
-    QPushButton,
-    QLabel,
-    QFrame,
-    QScrollArea,
-    QGraphicsBlurEffect,
-    QGraphicsOpacityEffect,
-)
-from PyQt6.QtCore import Qt, pyqtSignal, QPropertyAnimation, QEasingCurve, QRect, QTimer
-from PyQt6.QtGui import QFont, QPalette, QColor, QPainter, QBrush, QLinearGradient
 
 from application_grid import ApplicationGridWidget
 from launcher_config import LauncherConfig
-from components.search_box import ModernSearchBox
-from components.button import ModernButton
+from PyQt6.QtCore import Qt, pyqtSignal
+from PyQt6.QtWidgets import (
+    QApplication,
+    QHBoxLayout,
+    QLabel,
+    QTabWidget,
+    QVBoxLayout,
+    QWidget,
+)
+from ui.components import ReliableButton, ReliableSearchBox
+from ui.reliable_design_system import get_reliable_style_builder
 
 logger = logging.getLogger(__name__)
 
-# Import enhanced design system
-try:
-    from ui.design_system import (
-        get_theme_manager,
-        get_style_builder,
-        apply_global_theme,
-    )
-    from ui.themes.base_theme import get_smart_theme_manager
-    from ui.effects.glassmorphism import get_effect_manager
-    from ui.components.animation_mixins import (
-        HoverAnimationMixin,
-        FeedbackAnimationMixin,
-    )
-
-    ENHANCED_UI_AVAILABLE = True
-    logger.info("🎨 Enhanced UI design system loaded successfully")
-except ImportError as e:
-    logger.warning(f"Enhanced UI not available: {e}")
-    ENHANCED_UI_AVAILABLE = False
-
-
-# Enhanced Modern UI Components with Premium 2025 Design
-
-class ModernLabel(QLabel):
-    """Modern label with Inter typography."""
-
-    def __init__(self, text="", label_type="body", parent=None):
-        super().__init__(text, parent)
-        self.label_type = label_type
-        self._setup_typography()
-
-    def _setup_typography(self):
-        """Apply Inter typography based on label type."""
-        font = QFont("Inter", 10)
-        font.setStyleHint(QFont.StyleHint.SansSerif)
-
-        if self.label_type == "title":
-            font.setPointSize(24)
-            font.setWeight(QFont.Weight.Bold)
-            color = "#ffffff"
-        elif self.label_type == "subtitle":
-            font.setPointSize(16)
-            font.setWeight(QFont.Weight.Medium)
-            color = "rgba(255, 255, 255, 0.8)"
-        elif self.label_type == "caption":
-            font.setPointSize(12)
-            font.setWeight(QFont.Weight.Normal)
-            color = "rgba(255, 255, 255, 0.6)"
-        else:  # body
-            font.setPointSize(14)
-            font.setWeight(QFont.Weight.Normal)
-            color = "rgba(255, 255, 255, 0.9)"
-
-        self.setFont(font)
-        self.setStyleSheet(f"color: {color}; font-family: 'Inter', sans-serif;")
-
-
-class ModernNotification(QFrame):
-    """Modern notification widget with glassmorphism styling."""
-
-    def __init__(self, title="", message="", notification_type="info", parent=None):
-        super().__init__(parent)
-        self.notification_type = notification_type
-        self._setup_ui(title, message)
-        self._setup_styling()
-        self._setup_animations()
-
-    def _setup_ui(self, title, message):
-        """Setup the notification UI."""
-        layout = QHBoxLayout(self)
-        layout.setContentsMargins(16, 12, 16, 12)
-        layout.setSpacing(12)
-
-        # Icon (emoji for now)
-        icon_map = {"info": "ℹ️", "success": "✅", "warning": "⚠️", "error": "❌"}
-
-        self.icon_label = QLabel(icon_map.get(self.notification_type, "ℹ️"))
-        self.icon_label.setFixedSize(24, 24)
-        layout.addWidget(self.icon_label)
-
-        # Text content
-        text_layout = QVBoxLayout()
-        text_layout.setSpacing(4)
-
-        if title:
-            self.title_label = ModernLabel(title, "body")
-            text_layout.addWidget(self.title_label)
-
-        self.message_label = ModernLabel(message, "caption")
-        text_layout.addWidget(self.message_label)
-
-        layout.addLayout(text_layout)
-        layout.addStretch()
-
-    def _setup_styling(self):
-        """Apply modern notification styling."""
-        color_map = {
-            "info": "rgba(59, 130, 246, 0.2)",
-            "success": "rgba(34, 197, 94, 0.2)",
-            "warning": "rgba(245, 158, 11, 0.2)",
-            "error": "rgba(239, 68, 68, 0.2)",
-        }
-
-        bg_color = color_map.get(self.notification_type, "rgba(59, 130, 246, 0.2)")
-
-        self.setStyleSheet(
-            f"""
-            ModernNotification {{
-                background: {bg_color};
-                border: 1px solid rgba(255, 255, 255, 0.2);
-                border-radius: 12px;
-            }}
-        """
-        )
-
-    def _setup_animations(self):
-        """Setup fade in/out animations."""
-        self.fade_animation = QPropertyAnimation(self, b"windowOpacity")
-        self.fade_animation.setDuration(300)
-        self.fade_animation.setEasingCurve(QEasingCurve.Type.OutCubic)
-
-    def show_notification(self):
-        """Show notification with fade in."""
-        self.setWindowOpacity(0.0)
-        self.show()
-        self.fade_animation.setStartValue(0.0)
-        self.fade_animation.setEndValue(1.0)
-        self.fade_animation.start()
-
-        # Auto-hide after 3 seconds
-        QTimer.singleShot(3000, self.hide_notification)
-
-    def hide_notification(self):
-        """Hide notification with fade out."""
-        self.fade_animation.setStartValue(1.0)
-        self.fade_animation.setEndValue(0.0)
-        self.fade_animation.finished.connect(self.hide)
-        self.fade_animation.start()
+logger.info("🎨 Reliable UI design system loaded successfully")
 
 
 class TKAModernWindow(QWidget):
@@ -205,6 +61,16 @@ class TKAModernWindow(QWidget):
         self.tka_integration = tka_integration
         self.config = LauncherConfig()
 
+        # Initialize UI component attributes
+        self.app_grid = None
+        self.title_label = None
+        self.subtitle_label = None
+        self.mode_toggle_btn = None
+        self.search_box = None
+        self.refresh_btn = None
+        self.launch_btn = None
+        self.status_label = None
+
         # Window properties
         self.setWindowTitle("TKA Modern Launcher")
         self._setup_window_geometry()
@@ -217,117 +83,53 @@ class TKAModernWindow(QWidget):
         logger.info("✅ TKA Modern Window initialized")
 
     def _setup_modern_styling(self):
-        """Setup premium 2025 glassmorphism styling with design system."""
-        if ENHANCED_UI_AVAILABLE:
-            try:
-                # Apply global theme first
-                apply_global_theme()
+        """Setup reliable glassmorphism styling using proven PyQt6 patterns."""
+        # Get reliable design system components
+        style_builder = get_reliable_style_builder()
 
-                # Get design system components
-                style_builder = get_style_builder()
-                theme = get_theme_manager().get_current_theme()
-
-                # Enhanced styling with design system
-                self.setStyleSheet(
-                    f"""
-                    QWidget {{
-                        background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
-                            stop:0 rgba(15, 15, 15, 0.95),
-                            stop:1 rgba(30, 30, 30, 0.95));
-                        color: #ffffff;
-                        {style_builder.typography()}
-                    }}
-
-                    QTabWidget::pane {{
-                        {style_builder.glassmorphism_surface('secondary')}
-                        border-radius: {theme['radius']['lg']};
-                    }}
-
-                    QTabBar::tab {{
-                        {style_builder.glassmorphism_surface('tertiary')}
-                        {style_builder.typography('base', 'medium')}
-                        color: rgba(255, 255, 255, 0.8);
-                        padding: {theme['spacing']['md']} {theme['spacing']['lg']};
-                        margin-right: {theme['spacing']['xs']};
-                        border-top-left-radius: {theme['radius']['md']};
-                        border-top-right-radius: {theme['radius']['md']};
-                    }}
-
-                    QTabBar::tab:selected {{
-                        {style_builder.glassmorphism_surface('selected')}
-                        color: #ffffff;
-                        border: 1px solid {theme['accent']['primary']};
-                    }}
-
-                    QTabBar::tab:hover {{
-                        {style_builder.glassmorphism_surface('hover')}
-                    }}
-                """
-                )
-
-                # Setup smart theme manager
-                smart_theme_manager = get_smart_theme_manager()
-                smart_theme_manager.theme_changed.connect(self._on_theme_changed)
-
-                logger.info("🎨 Enhanced styling applied with design system")
-
-            except Exception as e:
-                logger.warning(f"Could not apply enhanced styling: {e}")
-                self._apply_fallback_styling()
-        else:
-            self._apply_fallback_styling()
-
-    def _apply_fallback_styling(self):
-        """Apply fallback styling when enhanced UI is not available."""
+        # Apply consistent styling across the application
         self.setStyleSheet(
-            """
-            QWidget {
+            f"""
+            QWidget {{
                 background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
                     stop:0 rgba(15, 15, 15, 0.95),
                     stop:1 rgba(30, 30, 30, 0.95));
                 color: #ffffff;
-                font-family: 'Inter', 'Segoe UI', sans-serif;
-            }
+                {style_builder.typography()}
+            }}
 
-            QTabWidget::pane {
-                border: 1px solid rgba(255, 255, 255, 0.1);
-                background: rgba(255, 255, 255, 0.05);
-                border-radius: 16px;
-            }
+            QTabWidget::pane {{
+                {style_builder.glass_surface('secondary')}
+                border-radius: {style_builder.tokens.RADIUS['lg']}px;
+            }}
 
-            QTabBar::tab {
-                background: rgba(255, 255, 255, 0.05);
+            QTabBar::tab {{
+                {style_builder.glass_surface('tertiary')}
+                {style_builder.typography('base', 'medium')}
                 color: rgba(255, 255, 255, 0.8);
-                padding: 12px 20px;
-                margin-right: 4px;
-                border-top-left-radius: 12px;
-                border-top-right-radius: 12px;
-                font-family: 'Inter', sans-serif;
-                font-weight: 500;
-                font-size: 14px;
-            }
+                padding: {style_builder.tokens.SPACING['md']}px \
+{style_builder.tokens.SPACING['lg']}px;
+                margin-right: {style_builder.tokens.SPACING['xs']}px;
+                border-top-left-radius: {style_builder.tokens.RADIUS['md']}px;
+                border-top-right-radius: {style_builder.tokens.RADIUS['md']}px;
+            }}
 
-            QTabBar::tab:selected {
-                background: rgba(255, 255, 255, 0.15);
+            QTabBar::tab:hover {{
+                {style_builder.glass_surface_hover('primary')}
+            }}
+
+            QTabBar::tab:selected {{
+                {style_builder.glass_surface('selected')}
                 color: #ffffff;
-                border: 1px solid rgba(255, 255, 255, 0.2);
-            }
-
-            QTabBar::tab:hover {
-                background: rgba(255, 255, 255, 0.1);
-            }
+                border: {style_builder.tokens.BORDERS['selected']};
+            }}
         """
         )
 
-    def _on_theme_changed(self, new_theme):
-        """Handle theme changes and update styling."""
-        logger.info("🎨 Theme changed, updating window styling")
-        self._setup_modern_styling()
+        logger.info("🎨 Reliable styling applied successfully")
 
     def _setup_window_geometry(self):
         """Setup window geometry to 50% of screen size and center it."""
-        from PyQt6.QtWidgets import QApplication
-
         # Get screen dimensions
         screen = QApplication.primaryScreen().geometry()
 
@@ -347,7 +149,13 @@ class TKAModernWindow(QWidget):
         self.setGeometry(x, y, target_width, target_height)
 
         logger.info(
-            f"🪟 Window geometry set: {target_width}x{target_height} at ({x}, {y}) - 50% of screen: {screen.width()}x{screen.height()}"
+            "🪟 Window geometry set: %dx%d at (%d, %d) - 50%% of screen: %dx%d",
+            target_width,
+            target_height,
+            x,
+            y,
+            screen.width(),
+            screen.height(),
         )
 
     def _init_modern_ui(self):
@@ -373,7 +181,17 @@ class TKAModernWindow(QWidget):
 
         layout.addWidget(self.tab_widget)
 
+        # Enhance tab widget with proper cursors
+        self._enhance_tab_widget()
+
         logger.info("🏠 Modern UI initialized with glassmorphism design")
+
+    def _enhance_tab_widget(self):
+        """Enhance tab widget with proper cursor and hover effects."""
+        # Set cursor for tab bar to pointer
+        tab_bar = self.tab_widget.tabBar()
+        if tab_bar:
+            tab_bar.setCursor(Qt.CursorShape.PointingHandCursor)
 
     def _create_modern_home_interface(self) -> QWidget:
         """Create the modern home interface with glassmorphism design."""
@@ -401,16 +219,34 @@ class TKAModernWindow(QWidget):
         return widget
 
     def _create_modern_header_section(self) -> QHBoxLayout:
-        """Create the modern header section with glassmorphism styling."""
+        """Create the modern header section with reliable styling."""
         layout = QHBoxLayout()
 
-        # Title and subtitle with modern typography
-        title_layout = QVBoxLayout()
-        title_layout.setSpacing(8)  # 8px grid system
+        # Get the reliable style builder
+        style_builder = get_reliable_style_builder()
 
-        self.title_label = ModernLabel("TKA Applications", "title")
-        self.subtitle_label = ModernLabel(
-            "Launch and manage your TKA applications", "caption"
+        # Title and subtitle with reliable typography
+        title_layout = QVBoxLayout()
+        title_layout.setSpacing(8)
+
+        self.title_label = QLabel("TKA Applications")
+        self.title_label.setStyleSheet(
+            f"""
+            QLabel {{
+                {style_builder.typography('title', 'bold')}
+                color: #ffffff;
+            }}
+        """
+        )
+
+        self.subtitle_label = QLabel("Launch and manage your TKA applications")
+        self.subtitle_label.setStyleSheet(
+            f"""
+            QLabel {{
+                {style_builder.typography('sm', 'normal')}
+                color: rgba(255, 255, 255, 0.6);
+            }}
+        """
         )
 
         title_layout.addWidget(self.title_label)
@@ -419,48 +255,70 @@ class TKAModernWindow(QWidget):
         layout.addLayout(title_layout)
         layout.addStretch()
 
-        # Mode toggle button with modern styling
-        self.mode_toggle_btn = ModernButton("Switch to Docked Mode", "secondary")
+        # Mode toggle button with reliable styling
+        self.mode_toggle_btn = ReliableButton("Switch to Docked Mode", "secondary")
         layout.addWidget(self.mode_toggle_btn)
 
         return layout
 
     def _create_modern_search_section(self) -> QHBoxLayout:
-        """Create the modern search section with glassmorphism styling."""
+        """Create the search section with reliable components."""
         layout = QHBoxLayout()
-        layout.setSpacing(16)  # 8px grid system
+        layout.setSpacing(16)
 
-        # Search label with modern typography
-        search_label = ModernLabel("Search:", "body")
+        # Get the reliable style builder
+        style_builder = get_reliable_style_builder()
+
+        # Search label
+        search_label = QLabel("Search:")
+        search_label.setStyleSheet(
+            f"""
+            QLabel {{
+                {style_builder.typography('base', 'normal')}
+                color: rgba(255, 255, 255, 0.9);
+            }}
+        """
+        )
         layout.addWidget(search_label)
 
-        # Modern search box with glassmorphism
-        self.search_box = ModernSearchBox("Type to search applications...")
+        # Reliable search box
+        self.search_box = ReliableSearchBox("Type to search applications...")
         self.search_box.setFixedWidth(400)
         layout.addWidget(self.search_box)
 
         layout.addStretch()
 
-        # Refresh button with modern styling
-        self.refresh_btn = ModernButton("Refresh", "secondary")
+        # Reliable refresh button
+        self.refresh_btn = ReliableButton("Refresh", "secondary")
         layout.addWidget(self.refresh_btn)
 
         return layout
 
     def _create_modern_action_section(self) -> QHBoxLayout:
-        """Create the modern action buttons section."""
+        """Create the action buttons section."""
         layout = QHBoxLayout()
-        layout.setSpacing(16)  # 8px grid system
+        layout.setSpacing(16)
 
-        # Launch button with modern styling
-        self.launch_btn = ModernButton("Launch Selected", "primary")
-        self.launch_btn.setEnabled(False)  # Enabled when app is selected
+        # Get the reliable style builder
+        style_builder = get_reliable_style_builder()
+
+        # Reliable launch button
+        self.launch_btn = ReliableButton("Launch Selected", "primary")
+        self.launch_btn.setEnabled(False)
         layout.addWidget(self.launch_btn)
 
         layout.addStretch()
 
-        # Status label with modern typography
-        self.status_label = ModernLabel("Ready", "caption")
+        # Status label
+        self.status_label = QLabel("Ready")
+        self.status_label.setStyleSheet(
+            f"""
+            QLabel {{
+                {style_builder.typography('sm', 'normal')}
+                color: rgba(255, 255, 255, 0.7);
+            }}
+        """
+        )
         layout.addWidget(self.status_label)
 
         return layout
@@ -469,15 +327,34 @@ class TKAModernWindow(QWidget):
         """Create the modern settings interface."""
         widget = QWidget()
         layout = QVBoxLayout(widget)
-        layout.setContentsMargins(32, 24, 32, 24)  # 8px grid system
+        layout.setContentsMargins(32, 24, 32, 24)
         layout.setSpacing(24)
 
-        # Settings title with modern typography
-        title = ModernLabel("Launcher Settings", "title")
+        # Get the reliable style builder
+        style_builder = get_reliable_style_builder()
+
+        # Settings title with reliable typography
+        title = QLabel("Launcher Settings")
+        title.setStyleSheet(
+            f"""
+            QLabel {{
+                {style_builder.typography('title', 'bold')}
+                color: #ffffff;
+            }}
+        """
+        )
         layout.addWidget(title)
 
         # Settings content (placeholder for now)
-        content_label = ModernLabel("Settings panel will be implemented here.", "body")
+        content_label = QLabel("Settings panel will be implemented here.")
+        content_label.setStyleSheet(
+            f"""
+            QLabel {{
+                {style_builder.typography('base', 'normal')}
+                color: rgba(255, 255, 255, 0.9);
+            }}
+        """
+        )
         layout.addWidget(content_label)
 
         layout.addStretch()
@@ -491,7 +368,7 @@ class TKAModernWindow(QWidget):
         elif index == 1:
             logger.info("⚙️ Switched to Settings tab")
         else:
-            logger.info(f"🔄 Switched to tab {index}")
+            logger.info("🔄 Switched to tab %d", index)
 
     def _connect_signals(self):
         """Connect UI signals to handlers."""
@@ -509,7 +386,7 @@ class TKAModernWindow(QWidget):
 
     def _on_search_changed(self, text: str):
         """Handle search text changes."""
-        logger.info(f"🔍 Search text changed: '{text}'")
+        logger.info("🔍 Search text changed: '%s'", text)
         self.app_grid.filter_applications(text)
 
         # Update status
@@ -527,24 +404,9 @@ class TKAModernWindow(QWidget):
             self.status_label.setText("Applications refreshed")
             logger.info("✅ Refresh completed successfully")
 
-            # Show modern success notification
-            notification = ModernNotification(
-                title="Refreshed",
-                message="Application list has been updated",
-                notification_type="success",
-                parent=self,
-            )
-            notification.show_notification()
-        except Exception as e:
-            logger.error(f"❌ Refresh failed: {e}")
-            # Show modern error notification
-            notification = ModernNotification(
-                title="Refresh Failed",
-                message=f"Failed to refresh applications: {str(e)}",
-                notification_type="error",
-                parent=self,
-            )
-            notification.show_notification()
+        except (AttributeError, RuntimeError) as e:
+            logger.error("❌ Refresh failed: %s", e)
+            self.status_label.setText("Refresh failed")
 
     def _on_launch_clicked(self):
         """Handle launch button click."""
@@ -552,37 +414,22 @@ class TKAModernWindow(QWidget):
 
         selected_app = self.app_grid.get_selected_application()
         if selected_app:
-            logger.info(f"🎯 Launching selected application: {selected_app.title}")
+            logger.info("🎯 Launching selected application: %s", selected_app.title)
             self.app_grid.launch_application(selected_app.id)
         else:
             logger.warning("⚠️ No application selected for launch")
-            # Show modern warning notification
-            notification = ModernNotification(
-                title="No Selection",
-                message="Please select an application to launch",
-                notification_type="warning",
-                parent=self,
-            )
-            notification.show_notification()
+            self.status_label.setText("Please select an application to launch")
 
     def _on_mode_toggle_clicked(self):
         """Handle mode toggle button click."""
         logger.info("🔄 Mode toggle button clicked")
 
         current_mode = self.config.get_window_mode()
-        logger.info(f"📊 Current window mode: {current_mode}")
+        logger.info("📊 Current window mode: %s", current_mode)
 
-        # TODO: Implement dual-mode functionality
+        # NOTE: Dual-mode functionality to be implemented in future iteration
         logger.info("⚠️ Dual-mode functionality not yet implemented")
-
-        # Show modern notification
-        notification = ModernNotification(
-            title="Coming Soon",
-            message="Docked mode will be available in a future update",
-            notification_type="warning",
-            parent=self,
-        )
-        notification.show_notification()
+        self.status_label.setText("Docked mode coming soon")
 
     def _on_application_selected(self, app_data):
         """Handle application selection."""
@@ -597,7 +444,7 @@ class TKAModernWindow(QWidget):
 
     def _on_application_launched(self, app_id: str, app_title: str):
         """Handle application launch."""
-        logger.info(f"🚀 Application launched: {app_title}")
+        logger.info("🚀 Application launched: %s", app_title)
 
         # Emit signal
         self.application_launched.emit(app_id, app_title)
@@ -605,22 +452,13 @@ class TKAModernWindow(QWidget):
         # Update status
         self.status_label.setText(f"Launched: {app_title}")
 
-        # Show modern success notification
-        notification = ModernNotification(
-            title="Application Launched",
-            message=f"{app_title} has been started successfully",
-            notification_type="success",
-            parent=self,
-        )
-        notification.show_notification()
-
     def cleanup(self):
         """Cleanup resources when closing."""
-        logger.info("🧹 Cleaning up TKA Fluent Window...")
+        logger.info("🧹 Cleaning up TKA Modern Window...")
 
         try:
             if hasattr(self, "app_grid"):
                 self.app_grid.cleanup()
 
-        except Exception as e:
-            logger.warning(f"⚠️ Window cleanup warning: {e}")
+        except (AttributeError, RuntimeError) as e:
+            logger.warning("⚠️ Window cleanup warning: %s", e)

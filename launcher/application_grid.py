@@ -21,137 +21,40 @@ Architecture:
 
 import logging
 from typing import List, Optional
-from PyQt6.QtWidgets import (
-    QWidget,
-    QVBoxLayout,
-    QHBoxLayout,
-    QLabel,
-    QScrollArea,
-    QFrame,
-    QPushButton,
-    QGridLayout,
-    QSizePolicy,
-)
+
 from PyQt6.QtCore import (
-    Qt,
-    pyqtSignal,
-    QPropertyAnimation,
     QEasingCurve,
+    QPropertyAnimation,
     QRect,
     QSize,
+    Qt,
     QTimer,
+    pyqtSignal,
 )
-from PyQt6.QtGui import QFont, QPixmap, QPainter, QColor, QPalette
+from PyQt6.QtGui import QColor, QFont, QPainter, QPalette, QPixmap
+from PyQt6.QtWidgets import (
+    QFrame,
+    QGridLayout,
+    QHBoxLayout,
+    QLabel,
+    QPushButton,
+    QScrollArea,
+    QSizePolicy,
+    QVBoxLayout,
+    QWidget,
+)
 
 logger = logging.getLogger(__name__)
 
-# Import new design system components
-try:
-    from ui.components.modern_card import ModernApplicationCard
-    from ui.components.animation_mixins import EntranceAnimationMixin
-    from ui.design_system import get_theme_manager, get_style_builder
+# Import reliable design system components
+from ui.components import ReliableApplicationCard
+from ui.reliable_effects import get_animation_manager
 
-    ENHANCED_UI_AVAILABLE = True
-except ImportError as e:
-    logger.warning(f"Enhanced UI components not available: {e}")
-    ENHANCED_UI_AVAILABLE = False
+logger.info("🎨 Reliable UI components loaded successfully")
 
 
-# Custom FlowLayout for responsive grid
-class FlowLayout(QVBoxLayout):
-    """Simple flow layout implementation for responsive grid."""
-
-    def __init__(self, parent=None):
-        super().__init__(parent)
-        self.setSpacing(16)  # 8px grid system
-        self.setContentsMargins(16, 16, 16, 16)
-
-
-# Fallback card class for when enhanced UI is not available
-class LegacyApplicationCard(QFrame):
-    """Legacy application card for fallback compatibility."""
-
-    # Signals
-    clicked = pyqtSignal(object)  # app_data
-    launch_requested = pyqtSignal(str)  # app_id
-
-    def __init__(self, app_data, card_width=280, card_height=140, parent=None):
-        """Initialize the legacy application card."""
-        super().__init__(parent)
-        self.app_data = app_data
-        self.is_selected = False
-        self.setFixedSize(card_width, card_height)
-        self.setCursor(Qt.CursorShape.PointingHandCursor)
-
-        # Basic styling
-        self.setStyleSheet(
-            """
-            QFrame {
-                background: rgba(255, 255, 255, 0.1);
-                border: 1px solid rgba(255, 255, 255, 0.2);
-                border-radius: 12px;
-            }
-        """
-        )
-
-        # Simple layout
-        layout = QVBoxLayout(self)
-        layout.setContentsMargins(16, 12, 16, 12)
-
-        # Title
-        self.title_label = QLabel(app_data.title)
-        self.title_label.setStyleSheet("color: white; font-weight: bold;")
-        layout.addWidget(self.title_label)
-
-        # Description
-        self.desc_label = QLabel(app_data.description)
-        self.desc_label.setWordWrap(True)
-        self.desc_label.setStyleSheet("color: rgba(255, 255, 255, 0.8);")
-        layout.addWidget(self.desc_label)
-
-        layout.addStretch()
-
-        # Launch button
-        self.launch_btn = QPushButton("Launch")
-        self.launch_btn.setStyleSheet(
-            """
-            QPushButton {
-                background: rgba(59, 130, 246, 0.8);
-                border: none;
-                border-radius: 8px;
-                color: white;
-                padding: 8px 16px;
-            }
-            QPushButton:hover {
-                background: rgba(59, 130, 246, 1.0);
-            }
-        """
-        )
-        self.launch_btn.clicked.connect(self._on_launch_clicked)
-        layout.addWidget(self.launch_btn)
-
-    def _on_launch_clicked(self):
-        """Handle launch button click."""
-        self.launch_requested.emit(self.app_data.id)
-
-    def set_selected(self, selected: bool):
-        """Set selection state."""
-        self.is_selected = selected
-
-    def mousePressEvent(self, event):
-        """Handle mouse press."""
-        if event.button() == Qt.MouseButton.LeftButton:
-            self.clicked.emit(self.app_data)
-
-
-# Use enhanced card if available, otherwise fallback
-# if ENHANCED_UI_AVAILABLE:
-#     ApplicationCard = ModernApplicationCard
-# else:
-#     ApplicationCard = LegacyApplicationCard
-
-# Temporarily force legacy cards for debugging
-ApplicationCard = LegacyApplicationCard
+# Use the reliable application card
+ApplicationCard = ReliableApplicationCard
 
 
 class ApplicationGridWidget(QWidget):
@@ -345,7 +248,7 @@ class ApplicationGridWidget(QWidget):
         cards_created = []
 
         for i, app in enumerate(self.filtered_applications):
-            card = ApplicationCard(app, card_width, card_height)
+            card = ReliableApplicationCard(app, card_width, card_height)
             card.clicked.connect(self._on_card_selected)
             card.launch_requested.connect(self._on_launch_requested)
 
@@ -365,19 +268,25 @@ class ApplicationGridWidget(QWidget):
 
     def _animate_cards_entrance(self, cards):
         """Animate staggered entrance for cards."""
-        if not ENHANCED_UI_AVAILABLE:
-            return
-
         try:
+            animation_manager = get_animation_manager()
             # Animate cards with staggered delay
             for i, card in enumerate(cards):
-                if hasattr(card, "animate_entrance"):
-                    delay = i * 50  # 50ms stagger delay
-                    card.animate_entrance(delay)
+                # Use reliable entrance animation
+                delay = i * 50  # 50ms stagger delay
+                QTimer.singleShot(
+                    delay, lambda c=card: self._start_entrance_animation(c)
+                )
 
-            logger.info(f"🎬 Started staggered entrance for {len(cards)} cards")
+            logger.info("🎬 Started staggered entrance for %d cards", len(cards))
         except Exception as e:
-            logger.warning(f"Could not animate card entrance: {e}")
+            logger.warning("Could not animate card entrance: %s", e)
+
+    def _start_entrance_animation(self, card):
+        """Start entrance animation for a single card."""
+        animation_manager = get_animation_manager()
+        entrance_anim = animation_manager.smooth_fade(card, fade_in=True)
+        entrance_anim.start()
 
     def _clear_grid(self):
         """Clear all cards from the grid."""
@@ -474,8 +383,6 @@ class ApplicationGridWidget(QWidget):
         """Handle show event to ensure proper sizing."""
         super().showEvent(event)
         # Schedule a delayed update to ensure widget is properly sized
-        from PyQt5.QtCore import QTimer
-
         QTimer.singleShot(100, self._update_grid)
         # Schedule size logging after everything is rendered
         QTimer.singleShot(500, self.log_component_sizes)

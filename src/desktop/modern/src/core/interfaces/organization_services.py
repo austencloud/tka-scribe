@@ -1,0 +1,215 @@
+"""
+Interface definitions for code organization services.
+
+These interfaces define the contracts for services that analyze and optimize
+code organization, following TKA's clean architecture principles.
+"""
+
+from abc import ABC, abstractmethod
+from pathlib import Path
+from typing import List, Dict, Union
+from dataclasses import dataclass
+
+
+@dataclass
+class ImportAnalysis:
+    """Analysis results for import patterns in a file."""
+    file_path: Path
+    total_imports: int
+    relative_imports: int
+    absolute_imports: int
+    src_prefix_imports: int
+    inconsistent_imports: List[str]
+    recommendations: List[str]
+    compliance_score: float
+
+
+@dataclass
+class ImportStandardizationReport:
+    """Comprehensive report of import standardization across codebase."""
+    total_files_analyzed: int
+    total_imports_found: int
+    compliant_files: int
+    non_compliant_files: int
+    average_compliance_score: float
+    common_violations: Dict[str, int]
+    files_needing_fixes: List[Path]
+    standardization_recommendations: List[str]
+
+
+@dataclass
+class ComponentHierarchyAnalysis:
+    """Analysis of component hierarchy depth and structure."""
+    component_path: Path
+    hierarchy_depth: int
+    class_count: int
+    method_count: int
+    complexity_score: float
+    responsibilities: List[str]
+    recommendations: List[str]
+
+
+class IImportAnalysisService(ABC):
+    """Interface for analyzing import patterns in Python files."""
+
+    @abstractmethod
+    def analyze_file(self, file_path: Path) -> ImportAnalysis:
+        """
+        Analyze import patterns in a single Python file.
+        
+        Args:
+            file_path: Path to the Python file to analyze
+            
+        Returns:
+            ImportAnalysis with detailed import pattern analysis
+        """
+        pass
+
+    @abstractmethod
+    def analyze_codebase(self) -> ImportStandardizationReport:
+        """
+        Analyze import patterns across the entire codebase.
+        
+        Returns:
+            ImportStandardizationReport with comprehensive analysis
+        """
+        pass
+
+
+class IImportStandardizationService(ABC):
+    """Interface for standardizing import patterns in Python files."""
+
+    @abstractmethod
+    def fix_file_imports(self, file_path: Path, dry_run: bool = True) -> bool:
+        """
+        Fix import patterns in a single file.
+        
+        Args:
+            file_path: Path to the file to fix
+            dry_run: If True, only show what would be changed
+            
+        Returns:
+            True if fixes were applied (or would be applied in dry_run)
+        """
+        pass
+
+    @abstractmethod
+    def standardize_codebase(self, dry_run: bool = True) -> Dict[str, Union[int, float]]:
+        """
+        Standardize imports across the entire codebase.
+        
+        Args:
+            dry_run: If True, only show what would be changed
+            
+        Returns:
+            Dictionary with fix statistics
+        """
+        pass
+
+
+class IComponentHierarchyAnalysisService(ABC):
+    """Interface for analyzing component hierarchy structure."""
+
+    @abstractmethod
+    def analyze_component_hierarchy(self) -> List[ComponentHierarchyAnalysis]:
+        """
+        Analyze component hierarchy across presentation layer.
+        
+        Returns:
+            List of ComponentHierarchyAnalysis for each component
+        """
+        pass
+
+    @abstractmethod
+    def generate_optimization_recommendations(self) -> List[str]:
+        """
+        Generate optimization recommendations for component hierarchy.
+        
+        Returns:
+            List of actionable optimization recommendations
+        """
+        pass
+
+
+class IFileSystemService(ABC):
+    """Interface for file system operations used by organization services."""
+
+    @abstractmethod
+    def read_file(self, file_path: Path) -> str:
+        """
+        Read content from a file.
+        
+        Args:
+            file_path: Path to the file to read
+            
+        Returns:
+            File content as string
+        """
+        pass
+
+    @abstractmethod
+    def write_file(self, file_path: Path, content: str) -> None:
+        """
+        Write content to a file.
+        
+        Args:
+            file_path: Path to the file to write
+            content: Content to write
+        """
+        pass
+
+    @abstractmethod
+    def find_python_files(self, root_path: Path) -> List[Path]:
+        """
+        Find all Python files in a directory tree.
+        
+        Args:
+            root_path: Root directory to search
+            
+        Returns:
+            List of Python file paths
+        """
+        pass
+
+
+class ICodePatternAnalysisService(ABC):
+    """Interface for analyzing code patterns and violations."""
+
+    @abstractmethod
+    def is_standard_tka_import(self, module_name: str) -> bool:
+        """
+        Check if import follows standard TKA patterns.
+        
+        Args:
+            module_name: Module name to check
+            
+        Returns:
+            True if import follows TKA standards
+        """
+        pass
+
+    @abstractmethod
+    def is_external_library(self, module_name: str) -> bool:
+        """
+        Check if import is from external library.
+        
+        Args:
+            module_name: Module name to check
+            
+        Returns:
+            True if import is from external library
+        """
+        pass
+
+    @abstractmethod
+    def categorize_violation(self, violation: str) -> str:
+        """
+        Categorize violation type for reporting.
+        
+        Args:
+            violation: Violation description
+            
+        Returns:
+            Violation category
+        """
+        pass

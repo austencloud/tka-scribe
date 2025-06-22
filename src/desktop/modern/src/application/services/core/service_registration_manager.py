@@ -12,8 +12,8 @@ PROVIDES:
 - Event system registration
 """
 
-from typing import Optional, TYPE_CHECKING
 from abc import ABC, abstractmethod
+from typing import TYPE_CHECKING, Optional
 
 if TYPE_CHECKING:
     from core.dependency_injection.di_container import DIContainer
@@ -51,7 +51,7 @@ class IServiceRegistrationManager(ABC):
 class ServiceRegistrationManager(IServiceRegistrationManager):
     """
     Pure service for managing dependency injection service registration.
-    
+
     Handles all service registration without external dependencies.
     Uses clean dependency injection patterns following TKA architecture.
     """
@@ -70,6 +70,8 @@ class ServiceRegistrationManager(IServiceRegistrationManager):
         self.register_motion_services(container)
         self.register_layout_services(container)
         self.register_pictograph_services(container)
+        self.register_positioning_services(container)
+        self.register_option_picker_services(container)
         self.register_workbench_services(container)
 
         self._update_progress("Services configured")
@@ -77,8 +79,8 @@ class ServiceRegistrationManager(IServiceRegistrationManager):
     def register_event_system(self, container: "DIContainer") -> None:
         """Register event system and command infrastructure."""
         try:
-            from core.events import IEventBus, get_event_bus
             from core.commands import CommandProcessor
+            from core.events import IEventBus, get_event_bus
 
             # Get or create event bus
             event_bus = get_event_bus()
@@ -103,8 +105,8 @@ class ServiceRegistrationManager(IServiceRegistrationManager):
             UIStateManagementService,
         )
         from core.interfaces.core_services import (
-            IUIStateManagementService,
             ILayoutService,
+            IUIStateManagementService,
         )
 
         # Register service types with factory functions for proper DI
@@ -123,25 +125,21 @@ class ServiceRegistrationManager(IServiceRegistrationManager):
 
         # Register with factory functions for proper dependency resolution
         container.register_factory(ILayoutService, create_layout_service)
-        container.register_factory(
-            IUIStateManagementService, create_ui_state_service
-        )
+        container.register_factory(IUIStateManagementService, create_ui_state_service)
 
     def register_motion_services(self, container: "DIContainer") -> None:
         """Register motion services using pure dependency injection."""
-        from application.services.motion.motion_validation_service import (
-            MotionValidationService,
-            IMotionValidationService,
-        )
         from application.services.motion.motion_orientation_service import (
-            MotionOrientationService,
             IMotionOrientationService,
+            MotionOrientationService,
+        )
+        from application.services.motion.motion_validation_service import (
+            IMotionValidationService,
+            MotionValidationService,
         )
 
         # Register service types, not instances - pure DI
-        container.register_singleton(
-            IMotionValidationService, MotionValidationService
-        )
+        container.register_singleton(IMotionValidationService, MotionValidationService)
         container.register_singleton(
             IMotionOrientationService, MotionOrientationService
         )
@@ -158,8 +156,8 @@ class ServiceRegistrationManager(IServiceRegistrationManager):
     def register_pictograph_services(self, container: "DIContainer") -> None:
         """Register pictograph services using pure dependency injection."""
         from application.services.data.pictograph_data_service import (
-            PictographDataService,
             IPictographDataService,
+            PictographDataService,
         )
         from src.application.services.core.pictograph_management_service import (
             PictographManagementService,
@@ -173,32 +171,109 @@ class ServiceRegistrationManager(IServiceRegistrationManager):
 
     def register_workbench_services(self, container: "DIContainer") -> None:
         """Register workbench services."""
-        from presentation.factories.workbench_factory import configure_workbench_services
+        from presentation.factories.workbench_factory import (
+            configure_workbench_services,
+        )
 
         configure_workbench_services(container)
 
     def register_positioning_services(self, container: "DIContainer") -> None:
         """Register the new refactored positioning services."""
-        # Import the new orchestrators
-        from application.services.positioning.arrow_orchestrator import (
+        # Import the new refactored positioning services
+        from application.services.positioning.arrow_adjustment_calculator_service import (
+            ArrowAdjustmentCalculatorService,
+        )
+        from application.services.positioning.arrow_coordinate_system_service import (
+            ArrowCoordinateSystemService,
+        )
+        from application.services.positioning.arrow_location_calculator_service import (
+            ArrowLocationCalculatorService,
+        )
+        from application.services.positioning.arrow_rotation_calculator_service import (
+            ArrowRotationCalculatorService,
+        )
+        from core.interfaces.positioning_services import (
+            IArrowAdjustmentCalculator,
+            IArrowCoordinateSystemService,
+            IArrowLocationCalculator,
+            IArrowRotationCalculator,
+        )
+
+        # Register the refactored positioning services
+        container.register_singleton(
+            IArrowLocationCalculator, ArrowLocationCalculatorService
+        )
+        container.register_singleton(
+            IArrowRotationCalculator, ArrowRotationCalculatorService
+        )
+        container.register_singleton(
+            IArrowAdjustmentCalculator, ArrowAdjustmentCalculatorService
+        )
+        container.register_singleton(
+            IArrowCoordinateSystemService, ArrowCoordinateSystemService
+        )
+
+        # Import the existing orchestrators
+        from application.services.core.pictograph_orchestrator import (
+            IPictographOrchestrator,
+            PictographOrchestrator,
+        )
+        from application.services.positioning.arrow_positioning_orchestrator import (
             ArrowPositioningOrchestrator,
-            IArrowPositioningOrchestrator,
+            IArrowPositioningService,
         )
         from application.services.positioning.prop_orchestrator import (
-            PropOrchestrator,
             IPropOrchestrator,
-        )
-        from application.services.core.pictograph_orchestrator import (
-            PictographOrchestrator,
-            IPictographOrchestrator,
+            PropOrchestrator,
         )
 
         # Register the orchestrators
         container.register_singleton(
-            IArrowPositioningOrchestrator, ArrowPositioningOrchestrator
+            IArrowPositioningService, ArrowPositioningOrchestrator
         )
         container.register_singleton(IPropOrchestrator, PropOrchestrator)
         container.register_singleton(IPictographOrchestrator, PictographOrchestrator)
+
+    def register_option_picker_services(self, container: "DIContainer") -> None:
+        """Register the refactored option picker services."""
+        # Import the refactored option picker services
+        from application.services.option_picker.option_picker_data_service import (
+            OptionPickerDataService,
+        )
+        from application.services.option_picker.option_picker_display_service import (
+            OptionPickerDisplayService,
+        )
+        from application.services.option_picker.option_picker_event_service import (
+            OptionPickerEventService,
+        )
+        from application.services.option_picker.option_picker_initialization_service import (
+            OptionPickerInitializationService,
+        )
+        from application.services.option_picker.option_picker_orchestrator import (
+            OptionPickerOrchestrator,
+        )
+        from core.interfaces.option_picker_services import (
+            IOptionPickerDataService,
+            IOptionPickerDisplayService,
+            IOptionPickerEventService,
+            IOptionPickerInitializationService,
+            IOptionPickerOrchestrator,
+        )
+
+        # Register the refactored option picker services
+        container.register_singleton(
+            IOptionPickerInitializationService, OptionPickerInitializationService
+        )
+        container.register_singleton(IOptionPickerDataService, OptionPickerDataService)
+        container.register_singleton(
+            IOptionPickerDisplayService, OptionPickerDisplayService
+        )
+        container.register_singleton(
+            IOptionPickerEventService, OptionPickerEventService
+        )
+        container.register_singleton(
+            IOptionPickerOrchestrator, OptionPickerOrchestrator
+        )
 
     def register_data_services(self, container: "DIContainer") -> None:
         """Register the new refactored data services."""
@@ -208,13 +283,15 @@ class ServiceRegistrationManager(IServiceRegistrationManager):
             ICSVDataService,
         )
         from application.services.positioning.json_configuration_service import (
-            JSONConfigurationService,
             IJSONConfigurationService,
+            JSONConfigurationService,
         )
 
         # Register the data services
         container.register_singleton(ICSVDataService, CSVDataService)
-        container.register_singleton(IJSONConfigurationService, JSONConfigurationService)
+        container.register_singleton(
+            IJSONConfigurationService, JSONConfigurationService
+        )
 
     def get_registration_status(self) -> dict:
         """Get status of service registration."""

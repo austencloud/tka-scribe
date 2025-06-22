@@ -9,9 +9,9 @@ launcher_dir = Path(__file__).parent
 sys.path.insert(0, str(launcher_dir))
 
 from PyQt6.QtWidgets import QApplication
+from ui.components import ReliableButton, ReliableSearchBox
 from ui.reliable_design_system import get_reliable_style_builder
 from ui.reliable_effects import get_shadow_manager
-from ui.components.reliable_components import ReliableButton, ReliableSearchBox
 
 
 def test_reliable_components():
