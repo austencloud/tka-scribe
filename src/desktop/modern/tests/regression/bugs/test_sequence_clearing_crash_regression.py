@@ -12,8 +12,10 @@ Focus on reproducing the exact scenario that caused the original bug.
 """
 
 import pytest
-import sys
 from pathlib import Path
+from domain.models.core_models import BeatData, SequenceData
+from domain.models.pictograph_models import PictographData
+import sys
 
 # Add modern to path for imports
 modern_path = Path(__file__).parent.parent.parent.parent
@@ -74,8 +76,9 @@ class TestSequenceClearingCrashRegression:
                 sequence = self.SequenceData(beats=[beat1])
                 assert sequence.length == 1
 
-                # Add beat
-                updated_sequence = self.SequenceData(beats=[beat1, beat2])
+                # Add beat (fix beat numbers for sequence validation)
+                beat2_updated = beat2.update(beat_number=2)
+                updated_sequence = self.SequenceData(beats=[beat1, beat2_updated])
                 assert updated_sequence.length == 2
 
                 # Clear sequence

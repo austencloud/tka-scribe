@@ -7,8 +7,8 @@ that follow TKA's clean architecture principles.
 
 from abc import ABC, abstractmethod
 from typing import Tuple
-from PyQt6.QtCore import QPointF
 
+from core.types import Point
 from domain.models.core_models import MotionData, Location
 from domain.models.pictograph_models import ArrowData, PictographData
 
@@ -57,7 +57,7 @@ class IArrowAdjustmentCalculator(ABC):
     @abstractmethod
     def calculate_adjustment(
         self, arrow_data: ArrowData, pictograph_data: PictographData
-    ) -> QPointF:
+    ) -> Point:
         """
         Calculate position adjustment for arrow based on placement rules.
 
@@ -66,7 +66,7 @@ class IArrowAdjustmentCalculator(ABC):
             pictograph_data: Pictograph context for special placement rules
 
         Returns:
-            QPointF representing the adjustment offset
+            Point representing the adjustment offset
         """
         pass
 
@@ -75,7 +75,7 @@ class IArrowCoordinateSystemService(ABC):
     """Interface for coordinate system management."""
 
     @abstractmethod
-    def get_initial_position(self, motion: MotionData, location: Location) -> QPointF:
+    def get_initial_position(self, motion: MotionData, location: Location) -> Point:
         """
         Get initial position coordinates based on motion type and location.
 
@@ -84,12 +84,12 @@ class IArrowCoordinateSystemService(ABC):
             location: Arrow location
 
         Returns:
-            QPointF representing the initial position coordinates
+            Point representing the initial position coordinates
         """
         pass
 
     @abstractmethod
-    def get_scene_center(self) -> QPointF:
+    def get_scene_center(self) -> Point:
         """Get the center point of the scene coordinate system."""
         pass
 
@@ -125,5 +125,32 @@ class IArrowPositioningOrchestrator(ABC):
 
         Returns:
             Updated pictograph data with calculated positions
+        """
+        pass
+
+    @abstractmethod
+    def should_mirror_arrow(self, arrow_data: ArrowData) -> bool:
+        """
+        Determine if arrow should be mirrored based on motion type.
+
+        Args:
+            arrow_data: Arrow data including motion type and rotation direction
+
+        Returns:
+            True if arrow should be mirrored, False otherwise
+        """
+        pass
+
+    @abstractmethod
+    def apply_mirror_transform(self, arrow_item, should_mirror: bool) -> None:
+        """
+        Apply mirror transformation to arrow graphics item.
+
+        Args:
+            arrow_item: Arrow graphics item to transform
+            should_mirror: Whether to apply mirror transformation
+
+        Returns:
+            None
         """
         pass

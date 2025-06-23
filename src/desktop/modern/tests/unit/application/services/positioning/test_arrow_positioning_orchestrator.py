@@ -14,16 +14,16 @@ from unittest.mock import Mock
 modern_src_path = Path(__file__).parent.parent.parent.parent.parent.parent / "src"
 sys.path.insert(0, str(modern_src_path))
 
-from domain.models.core_models import (
+from src.domain.models.core_models import (
     MotionData,
     MotionType,
     Location,
     RotationDirection,
 )
-from domain.models.pictograph_models import ArrowData
-from domain.models.pictograph_models import PictographData
-from domain.models.positioning_models import ArrowPositionResult
-from application.services.positioning.arrow_positioning_orchestrator import (
+from src.domain.models.pictograph_models import ArrowData
+from src.domain.models.pictograph_models import PictographData
+from src.domain.models.positioning_models import ArrowPositionResult
+from src.application.services.positioning.arrow_positioning_orchestrator import (
     ArrowPositioningOrchestrator,
     IArrowPositioningService,
 )
@@ -66,9 +66,11 @@ class TestArrowPositioningOrchestrator:
         # Mock service responses
         self.mock_location_calculator.calculate_location.return_value = Location.NORTH
         self.mock_rotation_calculator.calculate_rotation.return_value = 180.0
-        self.mock_adjustment_service.calculate_adjustment.return_value = Mock(
-            x=lambda: 10.0, y=lambda: 5.0
-        )
+        # Mock Point object with x and y properties
+        mock_point = Mock()
+        mock_point.x = 10.0
+        mock_point.y = 5.0
+        self.mock_adjustment_service.calculate_adjustment.return_value = mock_point
 
         # Execute
         result = self.orchestrator.calculate_position(arrow_data, pictograph_data)
@@ -131,9 +133,11 @@ class TestArrowPositioningOrchestrator:
         # Mock service responses
         self.mock_location_calculator.calculate_location.return_value = Location.NORTH
         self.mock_rotation_calculator.calculate_rotation.return_value = 90.0
-        self.mock_adjustment_service.calculate_adjustment.return_value = Mock(
-            x=lambda: 0.0, y=lambda: 0.0
-        )
+        # Mock Point object with x and y properties
+        mock_point = Mock()
+        mock_point.x = 0.0
+        mock_point.y = 0.0
+        self.mock_adjustment_service.calculate_adjustment.return_value = mock_point
 
         # Execute
         results = self.orchestrator.calculate_all_positions(pictograph_data)
@@ -173,9 +177,11 @@ class TestArrowPositioningOrchestrator:
         # Mock location calculator to return NORTH for both
         self.mock_location_calculator.calculate_location.return_value = Location.NORTH
         self.mock_rotation_calculator.calculate_rotation.return_value = 0.0
-        self.mock_adjustment_service.calculate_adjustment.return_value = Mock(
-            x=lambda: 0.0, y=lambda: 0.0
-        )
+        # Mock Point object with x and y properties
+        mock_point = Mock()
+        mock_point.x = 0.0
+        mock_point.y = 0.0
+        self.mock_adjustment_service.calculate_adjustment.return_value = mock_point
 
         # Test PRO motion
         arrow_pro = ArrowData(color="red", motion_data=motion_pro, is_visible=True)

@@ -19,9 +19,8 @@ from domain.models.core_models import (
     MotionType,
 )
 from domain.models.pictograph_models import ArrowData, PictographData
-from application.services.positioning.arrow_management_service import (
-    ArrowManagementService,
-)
+from core.interfaces.positioning_services import IArrowPositioningOrchestrator
+from core.dependency_injection.di_container import get_container
 
 if TYPE_CHECKING:
     from presentation.components.pictograph.pictograph_scene import PictographScene
@@ -36,7 +35,9 @@ class ArrowRenderer:
         self.CENTER_Y = 475
         self.HAND_RADIUS = 143.1
 
-        self.arrow_service = ArrowManagementService()
+        # Get orchestrator from DI container
+        container = get_container()
+        self.positioning_orchestrator = container.resolve(IArrowPositioningOrchestrator)
 
         self.location_coordinates = {
             Location.NORTH.value: (0, -self.HAND_RADIUS),
@@ -116,8 +117,9 @@ class ArrowRenderer:
                     position_y=position_y,
                     rotation_angle=rotation,
                 )
-                self.arrow_service.apply_mirror_transform(
-                    arrow_item, self.arrow_service.should_mirror_arrow(arrow_data)
+                self.positioning_orchestrator.apply_mirror_transform(
+                    arrow_item,
+                    self.positioning_orchestrator.should_mirror_arrow(arrow_data),
                 )
 
                 # POSITIONING FORMULA:
@@ -181,7 +183,9 @@ class ArrowRenderer:
         else:
             pictograph_data = PictographData(arrows={color: arrow_data})
 
-        return self.arrow_service.calculate_arrow_position(arrow_data, pictograph_data)
+        return self.positioning_orchestrator.calculate_arrow_position(
+            arrow_data, pictograph_data
+        )
 
     def _get_location_position(self, location: Location) -> tuple[float, float]:
         """Get the coordinate position for a location."""

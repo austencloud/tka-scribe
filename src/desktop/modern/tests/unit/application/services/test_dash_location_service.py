@@ -4,27 +4,26 @@ Unit tests for DashLocationService
 Tests for Type 3 detection, dash location calculation, and compatibility with legacy logic.
 """
 
-import pytest
-import sys
 from pathlib import Path
 
-# Add modern/src to path for imports
-modern_src_path = Path(__file__).parent.parent.parent.parent.parent / "src"
-sys.path.insert(0, str(modern_src_path))
-
+import pytest
 from domain.models.core_models import (
+    ArrowColor,
     BeatData,
+    GridMode,
+    LetterType,
+    Location,
     MotionData,
     MotionType,
     RotationDirection,
-    Location,
-    LetterType,
-    ArrowColor,
-    GridMode,
 )
+from domain.models.core_models import MotionType
+
 from application.services.positioning.dash_location_service import (
     DashLocationService,
 )
+
+# Add modern/src to path for imports
 
 
 class TestDashLocationService:

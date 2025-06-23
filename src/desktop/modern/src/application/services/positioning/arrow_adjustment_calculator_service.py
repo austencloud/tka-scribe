@@ -26,7 +26,26 @@ from domain.models.core_models import (
     RotationDirection,
 )
 from domain.models.pictograph_models import ArrowData, PictographData
-from PyQt6.QtCore import QPointF
+
+# Conditional PyQt6 imports for testing compatibility
+try:
+    from PyQt6.QtCore import QPointF
+
+    QT_AVAILABLE = True
+except ImportError:
+    # Create mock QPointF for testing when Qt is not available
+    class QPointF:
+        def __init__(self, x=0.0, y=0.0):
+            self._x = x
+            self._y = y
+
+        def x(self):
+            return self._x
+
+        def y(self):
+            return self._y
+
+    QT_AVAILABLE = False
 
 from .default_placement_service import DefaultPlacementService
 from .placement_key_service import PlacementKeyService
@@ -181,12 +200,18 @@ class ArrowAdjustmentCalculatorService(IArrowAdjustmentCalculator):
         """
         motion = arrow_data.motion_data
         if not motion:
-            return base_adjustment
+            return base_adjustment  # Step 1: Generate directional tuples for all 4 quadrants
+        # Handle both QPointF (with x(), y() methods) and Point (with x, y attributes)
+        if hasattr(base_adjustment, "x") and callable(base_adjustment.x):
+            # QPointF object
+            x_val = int(base_adjustment.x())
+            y_val = int(base_adjustment.y())
+        else:
+            # Point object
+            x_val = int(base_adjustment.x)
+            y_val = int(base_adjustment.y)
 
-        # Step 1: Generate directional tuples for all 4 quadrants
-        directional_tuples = self._generate_directional_tuples(
-            motion, int(base_adjustment.x()), int(base_adjustment.y())
-        )
+        directional_tuples = self._generate_directional_tuples(motion, x_val, y_val)
 
         # Step 2: Get quadrant index for this arrow
         quadrant_index = self._get_quadrant_index(motion)
@@ -219,20 +244,34 @@ class ArrowAdjustmentCalculatorService(IArrowAdjustmentCalculator):
         special_adjustment = self._get_special_adjustment(arrow_data, pictograph_data)
         final_adjustment = self.calculate_adjustment(arrow_data, pictograph_data)
 
-        placement_key = self.placement_key_service.generate_placement_key(motion)
+        placement_key = self.placement_key_service.generate_placement_key(
+            motion
+        )  # Helper function to extract x, y values regardless of type
+
+        def get_coords(point):
+            if hasattr(point, "x") and callable(point.x):
+                return point.x(), point.y()
+            else:
+                return point.x, point.y
 
         return {
             "placement_key": placement_key,
             "default_adjustment": {
-                "x": default_adjustment.x(),
-                "y": default_adjustment.y(),
+                "x": get_coords(default_adjustment)[0],
+                "y": get_coords(default_adjustment)[1],
             },
             "special_adjustment": (
-                {"x": special_adjustment.x(), "y": special_adjustment.y()}
+                {
+                    "x": get_coords(special_adjustment)[0],
+                    "y": get_coords(special_adjustment)[1],
+                }
                 if special_adjustment
                 else None
             ),
-            "final_adjustment": {"x": final_adjustment.x(), "y": final_adjustment.y()},
+            "final_adjustment": {
+                "x": get_coords(final_adjustment)[0],
+                "y": get_coords(final_adjustment)[1],
+            },
             "motion_type": motion.motion_type.value,
             "color": arrow_data.color,
             "letter": pictograph_data.letter,

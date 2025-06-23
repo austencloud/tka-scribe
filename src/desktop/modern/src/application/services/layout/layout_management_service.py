@@ -10,7 +10,7 @@ to the specialized calculators.
 from typing import Dict, Any, Optional, Tuple
 import logging
 
-from PyQt6.QtCore import QSize
+from core.types import Size
 from domain.models.core_models import SequenceData
 from core.interfaces.core_services import ILayoutService
 
@@ -44,7 +44,7 @@ class LayoutManagementService(ILayoutService):
 
     def __init__(self, event_bus: Optional[Any] = None):
         # Basic UI layout configuration (ILayoutService)
-        main_window_size = QSize(1400, 900)
+        main_window_size = Size(1400, 900)
         layout_ratio = (10, 10)  # 50/50 split between workbench and picker
 
         # Initialize specialized calculators and providers
@@ -149,18 +149,17 @@ class LayoutManagementService(ILayoutService):
             "default_padding": 10,
             "default_spacing": 5,
             "aspect_ratio_tolerance": 0.1,
-        }
+        }  # ILayoutService implementation methods - delegate to UILayoutProvider
 
-    # ILayoutService implementation methods - delegate to UILayoutProvider
-    def get_main_window_size(self) -> QSize:
+    def get_main_window_size(self) -> Size:
         """Delegate to UI layout provider."""
         return self._ui_layout_provider.get_main_window_size()
 
-    def get_workbench_size(self) -> QSize:
+    def get_workbench_size(self) -> Size:
         """Delegate to UI layout provider."""
         return self._ui_layout_provider.get_workbench_size()
 
-    def get_picker_size(self) -> QSize:
+    def get_picker_size(self) -> Size:
         """Delegate to UI layout provider."""
         return self._ui_layout_provider.get_picker_size()
 
@@ -172,15 +171,13 @@ class LayoutManagementService(ILayoutService):
         """Delegate to UI layout provider."""
         self._ui_layout_provider.set_layout_ratio(ratio)
 
-    def calculate_component_size(
-        self, component_type: str, parent_size: QSize
-    ) -> QSize:
+    def calculate_component_size(self, component_type: str, parent_size: Size) -> Size:
         """Delegate to UI layout provider."""
         return self._ui_layout_provider.calculate_component_size(
             component_type, parent_size
         )
 
-    def set_main_window_size(self, size: QSize) -> None:
+    def set_main_window_size(self, size: Size) -> None:
         """Delegate to UI layout provider."""
         self._ui_layout_provider.set_main_window_size(size)
 

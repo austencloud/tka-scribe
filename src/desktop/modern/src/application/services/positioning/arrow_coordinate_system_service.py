@@ -14,16 +14,10 @@ No UI dependencies, completely testable in isolation.
 """
 
 import logging
-from PyQt6.QtCore import QPointF
 
-from core.interfaces.positioning_services import (
-    IArrowCoordinateSystemService,
-)
-from domain.models.core_models import (
-    MotionData,
-    MotionType,
-    Location,
-)
+from core.interfaces.positioning_services import IArrowCoordinateSystemService
+from core.types.geometry import Point
+from domain.models.core_models import MotionData, MotionType, Location
 
 logger = logging.getLogger(__name__)
 
@@ -46,33 +40,33 @@ class ArrowCoordinateSystemService(IArrowCoordinateSystemService):
         # Hand point coordinates (for STATIC/DASH arrows)
         # These are the inner grid positions where props are placed
         self.HAND_POINTS = {
-            Location.NORTH: QPointF(475.0, 331.9),
-            Location.EAST: QPointF(618.1, 475.0),
-            Location.SOUTH: QPointF(475.0, 618.1),
-            Location.WEST: QPointF(331.9, 475.0),
+            Location.NORTH: Point(475.0, 331.9),
+            Location.EAST: Point(618.1, 475.0),
+            Location.SOUTH: Point(475.0, 618.1),
+            Location.WEST: Point(331.9, 475.0),
             # Diagonal hand points (calculated from radius)
-            Location.NORTHEAST: QPointF(618.1, 331.9),
-            Location.SOUTHEAST: QPointF(618.1, 618.1),
-            Location.SOUTHWEST: QPointF(331.9, 618.1),
-            Location.NORTHWEST: QPointF(331.9, 331.9),
+            Location.NORTHEAST: Point(618.1, 331.9),
+            Location.SOUTHEAST: Point(618.1, 618.1),
+            Location.SOUTHWEST: Point(331.9, 618.1),
+            Location.NORTHWEST: Point(331.9, 331.9),
         }
 
         # Layer2 point coordinates (for PRO/ANTI/FLOAT arrows)
         # Using DIAMOND layer2 points from circle_coords.json
         self.LAYER2_POINTS = {
             # Diamond layer2 points are diagonal positions
-            Location.NORTHEAST: QPointF(618.1, 331.9),
-            Location.SOUTHEAST: QPointF(618.1, 618.1),
-            Location.SOUTHWEST: QPointF(331.9, 618.1),
-            Location.NORTHWEST: QPointF(331.9, 331.9),
+            Location.NORTHEAST: Point(618.1, 331.9),
+            Location.SOUTHEAST: Point(618.1, 618.1),
+            Location.SOUTHWEST: Point(331.9, 618.1),
+            Location.NORTHWEST: Point(331.9, 331.9),
             # For cardinal directions, map to nearest diagonal
-            Location.NORTH: QPointF(618.1, 331.9),  # Maps to NE
-            Location.EAST: QPointF(618.1, 618.1),  # Maps to SE
-            Location.SOUTH: QPointF(331.9, 618.1),  # Maps to SW
-            Location.WEST: QPointF(331.9, 331.9),  # Maps to NW
+            Location.NORTH: Point(618.1, 331.9),  # Maps to NE
+            Location.EAST: Point(618.1, 618.1),  # Maps to SE
+            Location.SOUTH: Point(331.9, 618.1),  # Maps to SW
+            Location.WEST: Point(331.9, 331.9),  # Maps to NW
         }
 
-    def get_initial_position(self, motion: MotionData, location: Location) -> QPointF:
+    def get_initial_position(self, motion: MotionData, location: Location) -> Point:
         """
         Get initial position coordinates based on motion type and location.
 
@@ -81,7 +75,7 @@ class ArrowCoordinateSystemService(IArrowCoordinateSystemService):
             location: Arrow location
 
         Returns:
-            QPointF representing the initial position coordinates
+            Point representing the initial position coordinates
         """
         if motion.motion_type in [MotionType.PRO, MotionType.ANTI, MotionType.FLOAT]:
             # Shift arrows use layer2 points
@@ -94,11 +88,11 @@ class ArrowCoordinateSystemService(IArrowCoordinateSystemService):
             logger.warning(f"Unknown motion type: {motion.motion_type}, using center")
             return self.get_scene_center()
 
-    def get_scene_center(self) -> QPointF:
+    def get_scene_center(self) -> Point:
         """Get the center point of the scene coordinate system."""
-        return QPointF(self.CENTER_X, self.CENTER_Y)
+        return Point(self.CENTER_X, self.CENTER_Y)
 
-    def _get_layer2_coords(self, location: Location) -> QPointF:
+    def _get_layer2_coords(self, location: Location) -> Point:
         """Get layer2 point coordinates for shift arrows."""
         coords = self.LAYER2_POINTS.get(location)
         if coords is None:
@@ -108,7 +102,7 @@ class ArrowCoordinateSystemService(IArrowCoordinateSystemService):
             return self.get_scene_center()
         return coords
 
-    def _get_hand_point_coords(self, location: Location) -> QPointF:
+    def _get_hand_point_coords(self, location: Location) -> Point:
         """Get hand point coordinates for static/dash arrows."""
         coords = self.HAND_POINTS.get(location)
         if coords is None:
@@ -154,7 +148,7 @@ class ArrowCoordinateSystemService(IArrowCoordinateSystemService):
             "scene_size": self.SCENE_SIZE,
         }
 
-    def validate_coordinates(self, point: QPointF) -> bool:
+    def validate_coordinates(self, point: Point) -> bool:
         """
         Validate that coordinates are within scene bounds.
 
@@ -166,11 +160,11 @@ class ArrowCoordinateSystemService(IArrowCoordinateSystemService):
         """
         return 0 <= point.x() <= self.SCENE_SIZE and 0 <= point.y() <= self.SCENE_SIZE
 
-    def get_all_hand_points(self) -> dict[Location, QPointF]:
+    def get_all_hand_points(self) -> dict[Location, Point]:
         """Get all hand point coordinates."""
         return self.HAND_POINTS.copy()
 
-    def get_all_layer2_points(self) -> dict[Location, QPointF]:
+    def get_all_layer2_points(self) -> dict[Location, Point]:
         """Get all layer2 point coordinates."""
         return self.LAYER2_POINTS.copy()
 

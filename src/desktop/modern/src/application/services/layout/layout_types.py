@@ -6,7 +6,7 @@ import logging
 import uuid
 from datetime import datetime
 
-from PyQt6.QtCore import QSize
+
 from domain.models.core_models import SequenceData
 from core.interfaces.core_services import ILayoutService
 

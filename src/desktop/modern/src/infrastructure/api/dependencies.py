@@ -10,10 +10,7 @@ from application.services.core.sequence_management_service import (
     SequenceManagementService,
     ISequenceManagementService,
 )
-from application.services.positioning.arrow_management_service import (
-    ArrowManagementService,
-    IArrowManagementService,
-)
+from core.interfaces.positioning_services import IArrowPositioningOrchestrator
 from core.commands import CommandProcessor
 from core.dependency_injection.di_container import (
     DIContainer,
@@ -29,7 +26,7 @@ _container: Optional[DIContainer] = None
 _event_bus: Optional[IEventBus] = None
 _command_processor: Optional[CommandProcessor] = None
 _sequence_service: Optional[SequenceManagementService] = None
-_arrow_service: Optional[ArrowManagementService] = None
+_arrow_service: Optional[IArrowPositioningOrchestrator] = None
 
 
 def initialize_services():
@@ -56,7 +53,7 @@ def initialize_services():
 
         # Resolve services from DI container instead of direct instantiation
         _sequence_service = _container.resolve(ISequenceManagementService)
-        _arrow_service = _container.resolve(IArrowManagementService)
+        _arrow_service = _container.resolve(IArrowPositioningOrchestrator)
 
         logger.info("All API services initialized successfully")
 
@@ -109,12 +106,12 @@ def get_sequence_service() -> SequenceManagementService:
     return _sequence_service
 
 
-def get_arrow_service() -> ArrowManagementService:
+def get_arrow_service() -> IArrowPositioningOrchestrator:
     """
     Get arrow management service dependency.
 
     Returns:
-        ArrowManagementService: The arrow management service
+        IArrowPositioningOrchestrator: The arrow positioning orchestrator
 
     Raises:
         HTTPException: If service is not available (503)

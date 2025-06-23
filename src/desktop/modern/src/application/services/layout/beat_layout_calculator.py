@@ -6,7 +6,7 @@ import logging
 import uuid
 from datetime import datetime
 
-from PyQt6.QtCore import QSize
+
 from core.decorators import handle_service_errors
 from core.monitoring import monitor_performance
 from domain.models.core_models import SequenceData

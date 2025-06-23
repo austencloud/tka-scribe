@@ -29,12 +29,12 @@ class GeneralTab(QWidget):
 
     def _setup_ui(self):
         main_layout = QVBoxLayout(self)
-        main_layout.setContentsMargins(30, 30, 30, 30)
-        main_layout.setSpacing(20)
+        main_layout.setContentsMargins(20, 20, 20, 20)  # Reduced from 30
+        main_layout.setSpacing(12)  # Reduced from 20
 
         title = QLabel("General Settings")
         title.setObjectName("section_title")
-        title.setFont(QFont("Arial", 18, QFont.Weight.Bold))
+        title.setFont(QFont("Inter", 18, QFont.Weight.Bold))
         main_layout.addWidget(title)
 
         # User Profile Section
@@ -52,6 +52,8 @@ class GeneralTab(QWidget):
         section = QFrame()
         section.setObjectName("settings_section")
         layout = QVBoxLayout(section)
+        layout.setContentsMargins(16, 12, 16, 12)  # Reduced padding
+        layout.setSpacing(10)  # Reduced spacing
 
         title = QLabel("User Profile")
         title.setObjectName("subsection_title")
@@ -59,6 +61,7 @@ class GeneralTab(QWidget):
 
         # Current User
         user_layout = QHBoxLayout()
+        user_layout.setSpacing(8)  # Reduced spacing
         user_layout.addWidget(QLabel("Current User:"))
         self.user_input = QLineEdit()
         self.user_input.setPlaceholderText("Enter your name")
@@ -71,6 +74,8 @@ class GeneralTab(QWidget):
         section = QFrame()
         section.setObjectName("settings_section")
         layout = QVBoxLayout(section)
+        layout.setContentsMargins(16, 12, 16, 12)  # Reduced padding
+        layout.setSpacing(10)  # Reduced spacing
 
         title = QLabel("Application Behavior")
         title.setObjectName("subsection_title")
@@ -88,6 +93,7 @@ class GeneralTab(QWidget):
 
         # Theme selection
         theme_layout = QHBoxLayout()
+        theme_layout.setSpacing(8)  # Reduced spacing
         theme_layout.addWidget(QLabel("Theme:"))
         self.theme_combo = QComboBox()
         self.theme_combo.addItems(["Dark", "Light", "Auto"])
@@ -106,83 +112,142 @@ class GeneralTab(QWidget):
             }
             
             QLabel#section_title {
-                color: white;
+                color: rgba(255, 255, 255, 0.98);
                 font-size: 18px;
                 font-weight: bold;
-                margin-bottom: 15px;
-            }
-            
-            QLabel#subsection_title {
-                color: rgba(255, 255, 255, 0.9);
-                font-size: 14px;
-                font-weight: bold;
+                font-family: "Inter", "Segoe UI", sans-serif;
+                letter-spacing: -0.3px;
                 margin-bottom: 10px;
             }
             
+            QLabel#subsection_title {
+                color: rgba(255, 255, 255, 0.92);
+                font-size: 14px;
+                font-weight: 600;
+                font-family: "Inter", "Segoe UI", sans-serif;
+                letter-spacing: 0.2px;
+                margin-bottom: 8px;
+            }
+            
             QFrame#settings_section {
-                background: rgba(255, 255, 255, 0.1);
-                border: 2px solid rgba(255, 255, 255, 0.2);
-                border-radius: 10px;
-                padding: 15px;
-                margin: 5px 0;
+                background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
+                    stop:0 rgba(255, 255, 255, 0.15),
+                    stop:1 rgba(255, 255, 255, 0.10));
+                border: 1px solid rgba(255, 255, 255, 0.25);
+                border-radius: 12px;
+                padding: 12px;
+                margin: 3px 0;
+            }
+            
+            QFrame#settings_section:hover {
+                background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
+                    stop:0 rgba(255, 255, 255, 0.20),
+                    stop:1 rgba(255, 255, 255, 0.14));
+                border-color: rgba(255, 255, 255, 0.35);
             }
             
             QLineEdit {
-                background: rgba(255, 255, 255, 0.1);
-                border: 2px solid rgba(255, 255, 255, 0.3);
+                background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                    stop:0 rgba(255, 255, 255, 0.15),
+                    stop:1 rgba(255, 255, 255, 0.10));
+                border: 1px solid rgba(255, 255, 255, 0.30);
                 border-radius: 8px;
-                padding: 8px;
+                padding: 10px 12px;
                 color: white;
-                font-size: 12px;
+                font-size: 13px;
+                font-family: "Inter", "Segoe UI", sans-serif;
+                font-weight: 500;
             }
             
             QLineEdit:focus {
-                border-color: rgba(59, 130, 246, 0.8);
+                border-color: rgba(42, 130, 218, 0.8);
+                background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                    stop:0 rgba(255, 255, 255, 0.20),
+                    stop:1 rgba(255, 255, 255, 0.14));
+                box-shadow: 0 0 0 2px rgba(42, 130, 218, 0.2);
             }
             
             QCheckBox {
-                color: white;
-                font-size: 12px;
-                spacing: 8px;
+                color: rgba(255, 255, 255, 0.90);
+                font-size: 13px;
+                font-family: "Inter", "Segoe UI", sans-serif;
+                font-weight: 500;
+                spacing: 10px;
+                padding: 4px 0;
             }
             
             QCheckBox::indicator {
-                width: 18px;
-                height: 18px;
-                border: 2px solid rgba(255, 255, 255, 0.3);
-                border-radius: 4px;
-                background: rgba(255, 255, 255, 0.1);
+                width: 20px;
+                height: 20px;
+                border: 2px solid rgba(255, 255, 255, 0.40);
+                border-radius: 6px;
+                background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                    stop:0 rgba(255, 255, 255, 0.15),
+                    stop:1 rgba(255, 255, 255, 0.08));
             }
             
             QCheckBox::indicator:checked {
-                background: rgba(34, 197, 94, 0.8);
+                background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                    stop:0 rgba(34, 197, 94, 0.9),
+                    stop:1 rgba(34, 197, 94, 0.7));
                 border-color: rgba(34, 197, 94, 1.0);
+                box-shadow: 0 2px 8px rgba(34, 197, 94, 0.3);
+            }
+            
+            QCheckBox::indicator:hover {
+                border-color: rgba(255, 255, 255, 0.6);
+                background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                    stop:0 rgba(255, 255, 255, 0.22),
+                    stop:1 rgba(255, 255, 255, 0.12));
             }
             
             QComboBox {
-                background: rgba(255, 255, 255, 0.1);
-                border: 2px solid rgba(255, 255, 255, 0.3);
+                background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                    stop:0 rgba(255, 255, 255, 0.15),
+                    stop:1 rgba(255, 255, 255, 0.10));
+                border: 1px solid rgba(255, 255, 255, 0.30);
                 border-radius: 8px;
-                padding: 8px;
+                padding: 10px 12px;
                 color: white;
-                min-width: 120px;
+                min-width: 140px;
+                font-size: 13px;
+                font-family: "Inter", "Segoe UI", sans-serif;
+                font-weight: 500;
             }
             
             QComboBox:focus {
-                border-color: rgba(59, 130, 246, 0.8);
+                border-color: rgba(42, 130, 218, 0.8);
+                background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                    stop:0 rgba(255, 255, 255, 0.20),
+                    stop:1 rgba(255, 255, 255, 0.14));
+                box-shadow: 0 0 0 2px rgba(42, 130, 218, 0.2);
             }
             
             QComboBox::drop-down {
                 border: none;
-                width: 20px;
+                width: 25px;
+                background: transparent;
             }
             
             QComboBox::down-arrow {
                 image: none;
                 border-left: 5px solid transparent;
                 border-right: 5px solid transparent;
-                border-top: 8px solid rgba(255, 255, 255, 0.7);
-                margin-right: 5px;
+                border-top: 8px solid rgba(255, 255, 255, 0.8);
+                margin-right: 8px;
+            }
+            
+            QComboBox:hover {
+                background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                    stop:0 rgba(255, 255, 255, 0.20),
+                    stop:1 rgba(255, 255, 255, 0.14));
+                border-color: rgba(255, 255, 255, 0.45);
+            }
+            
+            QLabel {
+                color: rgba(255, 255, 255, 0.88);
+                font-family: "Inter", "Segoe UI", sans-serif;
+                font-weight: 500;
             }
         """
         )

@@ -6,13 +6,14 @@ Domain Model Test Fixtures
 Provides reusable domain model fixtures for testing.
 """
 
-import sys
-import pytest
 from pathlib import Path
+
+import pytest
+from domain.models.core_models import BeatData, SequenceData
+from domain.models.pictograph_models import PictographData
 
 # Add modern source to path
 modern_src = Path(__file__).parent.parent.parent / "src"
-sys.path.insert(0, str(modern_src))
 
 
 @pytest.fixture
@@ -33,7 +34,7 @@ def sample_beat_data():
 def sample_sequence_data():
     """Provide sample sequence data for testing."""
     try:
-        from domain.models.core_models import SequenceData, BeatData
+        from domain.models.core_models import BeatData, SequenceData
 
         beats = [
             BeatData(beat_number=1, letter="A", duration=1.0),
@@ -67,10 +68,10 @@ def sample_motion_data():
     """Provide sample motion data for testing."""
     try:
         from domain.models.core_models import (
+            Location,
             MotionData,
             MotionType,
             RotationDirection,
-            Location,
         )
 
         motion = MotionData(
@@ -93,17 +94,17 @@ def sample_motion_data():
 def sample_pictograph_data():
     """Provide sample pictograph data for testing."""
     try:
-        from domain.models.pictograph_models import (
-            PictographData,
-            GridData,
-            GridMode,
-            ArrowData,
-        )
         from domain.models.core_models import (
+            Location,
             MotionData,
             MotionType,
             RotationDirection,
-            Location,
+        )
+        from domain.models.pictograph_models import (
+            ArrowData,
+            GridData,
+            GridMode,
+            PictographData,
         )
 
         # Create motion data

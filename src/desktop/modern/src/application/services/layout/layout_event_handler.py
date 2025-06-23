@@ -12,7 +12,7 @@ import logging
 import uuid
 from datetime import datetime
 
-from PyQt6.QtCore import QSize
+from core.types import Size
 
 from .beat_layout_calculator import BeatLayoutCalculator
 
@@ -62,7 +62,7 @@ class LayoutEventHandler:
     """
 
     def __init__(
-        self, beat_layout_calculator: BeatLayoutCalculator, main_window_size: QSize
+        self, beat_layout_calculator: BeatLayoutCalculator, main_window_size: Size
     ):
         """Initialize with references to calculator and window size."""
         self._beat_layout_calculator = beat_layout_calculator

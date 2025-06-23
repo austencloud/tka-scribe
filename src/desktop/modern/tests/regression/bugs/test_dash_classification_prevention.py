@@ -7,14 +7,10 @@ FIXED_DATE: 2025-06-19
 AUTHOR: @austencloud
 """
 
-import sys
-from pathlib import Path
-
 # Setup project imports using proper path resolution
-modern_src_path = Path(__file__).parent.parent.parent.parent / "src"
-sys.path.insert(0, str(modern_src_path))
 
 import pytest
+from pathlib import Path
 from application.services.core.pictograph_management_service import (
     PictographManagementService,
 )

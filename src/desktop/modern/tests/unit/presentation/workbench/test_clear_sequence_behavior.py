@@ -6,20 +6,22 @@ while clearing all other beats from the sequence, maintaining START text overlay
 and proper layout.
 """
 
-import pytest
-from unittest.mock import Mock, MagicMock
-from PyQt6.QtWidgets import QApplication
+from pathlib import Path
+from unittest.mock import MagicMock, Mock
 
-from domain.models.core_models import SequenceData, BeatData
+import pytest
+from domain.models.core_models import BeatData, SequenceData
 from presentation.components.workbench.event_controller import (
     WorkbenchEventController,
-)
-from presentation.components.workbench.sequence_beat_frame.sequence_beat_frame import (
-    SequenceBeatFrame,
 )
 from presentation.components.workbench.sequence_beat_frame.beat_view import (
     BeatView,
 )
+from presentation.components.workbench.sequence_beat_frame.sequence_beat_frame import (
+    SequenceBeatFrame,
+)
+from PyQt6.QtWidgets import QApplication
+
 from application.services.layout.layout_management_service import (
     LayoutManagementService,
 )

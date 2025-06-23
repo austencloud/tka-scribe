@@ -13,42 +13,42 @@ TESTS:
 - Event subscription and cleanup
 """
 
-import pytest
-import sys
-from pathlib import Path
-from unittest.mock import Mock, MagicMock
 import uuid
 from datetime import datetime
+from pathlib import Path
+from unittest.mock import MagicMock, Mock
+
+import pytest
 
 # Add src to path for imports
 test_dir = Path(__file__).parent.parent.parent
 src_dir = test_dir / "src"
-sys.path.insert(0, str(src_dir))
 
-from core.events import (
-    get_event_bus,
-    reset_event_bus,
-    ArrowPositionedEvent,
-    PropPositionedEvent,
+from domain.models.core_models import (
+    BeatData,
+    Location,
+    MotionData,
+    MotionType,
+    RotationDirection,
 )
+from domain.models.pictograph_models import (
+    ArrowData,
+    GridData,
+    GridMode,
+    PictographData,
+)
+
 from application.services.positioning.arrow_management_service import (
     ArrowManagementService,
 )
 from application.services.positioning.prop_management_service import (
     PropManagementService,
 )
-from domain.models.core_models import (
-    MotionData,
-    MotionType,
-    RotationDirection,
-    Location,
-    BeatData,
-)
-from domain.models.pictograph_models import (
-    ArrowData,
-    PictographData,
-    GridData,
-    GridMode,
+from core.events import (
+    ArrowPositionedEvent,
+    PropPositionedEvent,
+    get_event_bus,
+    reset_event_bus,
 )
 
 

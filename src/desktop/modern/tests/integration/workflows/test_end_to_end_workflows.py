@@ -12,9 +12,13 @@ TESTS:
 """
 
 import pytest
+from pathlib import Path
 from unittest.mock import Mock, patch
 from typing import List, Dict, Any
 
+from domain.models.core_models import MotionType
+from domain.models.core_models import BeatData
+from domain.models.core_models import SequenceData
 from core.events.event_bus import (
     TypeSafeEventBus,
     SequenceEvent,

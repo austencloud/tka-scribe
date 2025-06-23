@@ -1,5 +1,20 @@
-from typing import Optional
-from PyQt6.QtWidgets import QWidget
+from typing import Optional, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from PyQt6.QtWidgets import QWidget
+
+# Conditional PyQt6 imports for testing compatibility
+try:
+    from PyQt6.QtWidgets import QWidget
+
+    QT_AVAILABLE = True
+except ImportError:
+    # Create mock QWidget for testing when Qt is not available
+    class QWidget:
+        def __init__(self, parent=None):
+            self.parent = parent
+
+    QT_AVAILABLE = False
 from core.dependency_injection.di_container import DIContainer
 from core.interfaces.core_services import (
     ILayoutService,

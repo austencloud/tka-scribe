@@ -20,24 +20,23 @@ import sys
 import time
 import traceback
 from pathlib import Path
-from typing import Optional, List, Dict, Any
-from PyQt6.QtWidgets import QApplication, QWidget
-from PyQt6.QtCore import QTimer, QPoint, QPointF, Qt
+from typing import Any, Dict, List, Optional
+
+from PyQt6.QtCore import QPoint, QPointF, Qt, QTimer
 from PyQt6.QtGui import QMouseEvent
 from PyQt6.QtTest import QTest
+from PyQt6.QtWidgets import QApplication, QWidget
 
 # Add Modern source path and main directory
-modern_src_path = Path(__file__).parent.parent.parent.parent / "src"
+
 modern_main_path = Path(__file__).parent.parent.parent.parent
-sys.path.insert(0, str(modern_src_path))
-sys.path.insert(0, str(modern_main_path))
 
 # Import Modern application
 try:
     from modern.main import KineticConstructorModern
 except ImportError:
     # Fallback import path
-    sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent / "modern"))
+
     from main import KineticConstructorModern
 
 
@@ -241,7 +240,7 @@ class GraphEditorUIWorkflowTester:
             if not start_positions and hasattr(
                 self.start_position_picker, "findChildren"
             ):
-                from PyQt6.QtWidgets import QPushButton, QLabel
+                from PyQt6.QtWidgets import QLabel, QPushButton
 
                 buttons = self.start_position_picker.findChildren(QPushButton)
                 labels = self.start_position_picker.findChildren(QLabel)

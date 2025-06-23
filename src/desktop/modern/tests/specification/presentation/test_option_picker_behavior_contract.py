@@ -262,7 +262,7 @@ class TestOptionPickerBehaviorContract:
         except ImportError:
             pytest.skip("Construct tab not available for signal flow testing")
 
-    def _configure_test_services(self, container: DIContainer):
+    def _configure_test_services(self, container: "DIContainer"):
         """Configure all services needed for the construct tab test."""
         from core.interfaces.core_services import (
             ILayoutService,

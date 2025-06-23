@@ -99,11 +99,14 @@ def get_import_paths() -> List[Path]:
     return [
         # Most specific paths first for proper module resolution
         get_modern_src_root(),  # Primary modern source code
-        get_modern_root(),  # Modern directory
+        get_modern_root(),  # Modern directory (for tests)
+        get_modern_root() / "tests",  # Modern tests
         get_legacy_src_root(),  # Legacy source code
+        project_root / "src" / "desktop" / "legacy",  # Legacy root (for tests)
         project_root / "src" / "desktop",  # Desktop root
         get_launcher_root(),  # Launcher
         get_packages_root(),  # Shared packages
+        project_root / "src",  # Src root
         project_root,  # TKA Monorepo root
     ]
 
@@ -175,13 +178,8 @@ def validate_imports() -> bool:
         # Core modern imports
         "domain.models.core_models",
         "domain.models.pictograph_models",
-        "application.services.positioning.prop_orchestrator",
         "core.events",
         "core.dependency_injection.di_container",
-        # Infrastructure imports
-        "infrastructure.api.production_api",
-        # Presentation imports
-        "presentation.components.workbench",
     ]
 
     successful = 0
@@ -214,8 +212,8 @@ def print_debug_info():
         exists = "✅" if path.exists() else "❌"
         print(f"  {i+1}. {exists} {path}")
 
-    print(f"\nPython sys.path (first 10 entries):")
-    for i, path in enumerate(sys.path[:10]):
+    print(f"\nPython sys.path (first 15 entries):")
+    for i, path in enumerate(sys.path[:15]):
         print(f"  {i+1}. {path}")
 
     print(f"\nPYTHONPATH: {os.environ.get('PYTHONPATH', 'Not set')}")
@@ -228,7 +226,6 @@ if __name__ != "__main__":
     except Exception as e:
         # Fail silently to avoid breaking imports, but log the issue
         import warnings
-
         warnings.warn(f"TKA Monorepo auto-setup failed: {e}", UserWarning)
 
 # Export key constants and functions

@@ -163,8 +163,8 @@ class TestOffsetCalculationService:
         assert hasattr(red_offset, "x") and hasattr(red_offset, "y")
 
         # Verify they are opposite for LEFT/RIGHT
-        assert blue_offset.x() == -red_offset.x()
-        assert blue_offset.y() == red_offset.y()
+        assert blue_offset.x == -red_offset.x
+        assert blue_offset.y == red_offset.y
 
     def test_calculate_base_offset(self):
         """Test base offset calculation."""

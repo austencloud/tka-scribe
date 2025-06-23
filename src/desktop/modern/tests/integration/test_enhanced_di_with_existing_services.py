@@ -6,14 +6,8 @@ Tests that the enhanced DI container works correctly with real modern services
 and validates that existing service registrations continue to work.
 """
 
-import sys
-from pathlib import Path
-
-# Add modern src to path
-modern_src_path = Path(__file__).parent.parent.parent / "src"
-sys.path.insert(0, str(modern_src_path))
-
 import pytest
+from pathlib import Path
 from unittest.mock import Mock
 
 from core.dependency_injection.di_container import (
@@ -33,8 +27,10 @@ class TestEnhancedDIWithExistingServices:
     def test_simple_layout_service_integration(self):
         """Test that SimpleLayoutService works with enhanced DI."""
         try:
-            from application.services.simple_layout_service import SimpleLayoutService
-            from core.interfaces.core_services import ILayoutService
+            from tka.desktop.application.services.simple_layout_service import (
+                SimpleLayoutService,
+            )
+            from tka.desktop.core.interfaces.core_services import ILayoutService
 
             # Test auto-registration with validation
             self.container.auto_register_with_validation(
@@ -55,10 +51,12 @@ class TestEnhancedDIWithExistingServices:
     def test_ui_state_management_service_integration(self):
         """Test that UIStateManagementService works with enhanced DI."""
         try:
-            from application.services.ui.ui_state_management_service import (
+            from tka.desktop.application.services.ui.ui_state_management_service import (
                 UIStateManagementService,
             )
-            from core.interfaces.core_services import IUIStateManagementService
+            from tka.desktop.core.interfaces.core_services import (
+                IUIStateManagementService,
+            )
 
             # Test registration
             self.container.register_singleton(
@@ -75,7 +73,7 @@ class TestEnhancedDIWithExistingServices:
     def test_position_matching_service_integration(self):
         """Test that PositionMatchingService works with enhanced DI."""
         try:
-            from application.services.positioning.position_matching_service import (
+            from tka.desktop.application.services.positioning.position_matching_service import (
                 PositionMatchingService,
             )
 
@@ -89,7 +87,7 @@ class TestEnhancedDIWithExistingServices:
     def test_pictograph_dataset_service_integration(self):
         """Test that PictographDatasetService works with enhanced DI."""
         try:
-            from application.services.data.pictograph_dataset_service import (
+            from tka.desktop.application.services.data.pictograph_dataset_service import (
                 PictographDatasetService,
             )
 
@@ -103,8 +101,10 @@ class TestEnhancedDIWithExistingServices:
     def test_dependency_graph_with_real_services(self):
         """Test dependency graph generation with real services."""
         try:
-            from application.services.simple_layout_service import SimpleLayoutService
-            from core.interfaces.core_services import ILayoutService
+            from tka.desktop.application.services.simple_layout_service import (
+                SimpleLayoutService,
+            )
+            from tka.desktop.core.interfaces.core_services import ILayoutService
 
             self.container.register_singleton(ILayoutService, SimpleLayoutService)
 
@@ -120,8 +120,10 @@ class TestEnhancedDIWithExistingServices:
     def test_validate_all_with_real_services(self):
         """Test validation of all registrations with real services."""
         try:
-            from application.services.simple_layout_service import SimpleLayoutService
-            from core.interfaces.core_services import ILayoutService
+            from tka.desktop.application.services.simple_layout_service import (
+                SimpleLayoutService,
+            )
+            from tka.desktop.core.interfaces.core_services import ILayoutService
 
             self.container.register_singleton(ILayoutService, SimpleLayoutService)
 
@@ -135,7 +137,9 @@ class TestEnhancedDIWithExistingServices:
         """Test enhanced error reporting with real service dependencies."""
         try:
             # Try to create a service that might have unregistered dependencies
-            from application.services.workbench_services import SequenceWorkbenchService
+            from tka.desktop.application.services.workbench_services import (
+                SequenceWorkbenchService,
+            )
 
             with pytest.raises((ValueError, RuntimeError)) as exc_info:
                 self.container._create_instance(SequenceWorkbenchService)
@@ -157,7 +161,9 @@ class TestEnhancedDIWithExistingServices:
     def test_primitive_type_handling_with_real_services(self):
         """Test that primitive types are handled correctly in real services."""
         try:
-            from application.services.simple_layout_service import SimpleLayoutService
+            from tka.desktop.application.services.simple_layout_service import (
+                SimpleLayoutService,
+            )
 
             # SimpleLayoutService should be instantiable even if it has primitive parameters
             service = self.container._create_instance(SimpleLayoutService)
@@ -169,7 +175,9 @@ class TestEnhancedDIWithExistingServices:
     def test_lifecycle_management_with_real_services(self):
         """Test lifecycle management with real services that might have lifecycle methods."""
         try:
-            from application.services.simple_layout_service import SimpleLayoutService
+            from tka.desktop.application.services.simple_layout_service import (
+                SimpleLayoutService,
+            )
 
             # Test with lifecycle management
             service = self.container._create_with_lifecycle(SimpleLayoutService)
@@ -192,11 +200,13 @@ class TestEnhancedDIWithExistingServices:
     def test_complex_service_chain_with_real_services(self):
         """Test complex dependency chains with real modern services."""
         try:
-            from application.services.simple_layout_service import SimpleLayoutService
-            from application.services.ui.ui_state_management_service import (
+            from tka.desktop.application.services.simple_layout_service import (
+                SimpleLayoutService,
+            )
+            from tka.desktop.application.services.ui.ui_state_management_service import (
                 UIStateManagementService,
             )
-            from core.interfaces.core_services import (
+            from tka.desktop.core.interfaces.core_services import (
                 ILayoutService,
                 IUIStateManagementService,
             )

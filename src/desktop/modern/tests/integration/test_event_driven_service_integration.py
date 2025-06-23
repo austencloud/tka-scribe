@@ -6,10 +6,12 @@ verifying that the event-driven architecture works end-to-end.
 """
 
 import pytest
+from pathlib import Path
 from unittest.mock import Mock, MagicMock
 import uuid
 from datetime import datetime
 
+from domain.models.core_models import BeatData
 from core.events import (
     TypeSafeEventBus,
     SequenceCreatedEvent,

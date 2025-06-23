@@ -193,8 +193,8 @@ class ServiceRegistrationManager(IServiceRegistrationManager):
         configure_workbench_services(container)
 
     def register_positioning_services(self, container: "DIContainer") -> None:
-        """Register the new refactored positioning services."""
-        # Import the individual calculator services that are still used internally
+        """Register microservices-based positioning services."""
+        # Import the individual calculator services
         from application.services.positioning.arrow_adjustment_calculator_service import (
             ArrowAdjustmentCalculatorService,
         )
@@ -207,14 +207,18 @@ class ServiceRegistrationManager(IServiceRegistrationManager):
         from application.services.positioning.arrow_rotation_calculator_service import (
             ArrowRotationCalculatorService,
         )
+        from application.services.positioning.arrow_positioning_orchestrator import (
+            ArrowPositioningOrchestrator,
+        )
         from core.interfaces.positioning_services import (
             IArrowAdjustmentCalculator,
             IArrowCoordinateSystemService,
             IArrowLocationCalculator,
             IArrowRotationCalculator,
+            IArrowPositioningOrchestrator,
         )
 
-        # Register individual calculator services (for potential internal use)
+        # Register calculator microservices
         container.register_singleton(
             IArrowLocationCalculator, ArrowLocationCalculatorService
         )
@@ -228,17 +232,17 @@ class ServiceRegistrationManager(IServiceRegistrationManager):
             IArrowCoordinateSystemService, ArrowCoordinateSystemService
         )
 
-        # Register the unified management services
-        from application.services.positioning.arrow_management_service import (
-            ArrowManagementService,
-            IArrowManagementService,
+        # Register orchestrator (replaces monolith)
+        container.register_singleton(
+            IArrowPositioningOrchestrator, ArrowPositioningOrchestrator
         )
+
+        # Register prop management services
         from application.services.positioning.prop_management_service import (
             PropManagementService,
             IPropManagementService,
         )
 
-        container.register_singleton(IArrowManagementService, ArrowManagementService)
         container.register_singleton(IPropManagementService, PropManagementService)
 
         # Import existing prop orchestrator (keep if still needed)
@@ -249,9 +253,8 @@ class ServiceRegistrationManager(IServiceRegistrationManager):
         from application.services.positioning.prop_orchestrator import (
             IPropOrchestrator,
             PropOrchestrator,
-        )
+        )  # Register remaining orchestrators
 
-        # Register remaining orchestrators
         container.register_singleton(IPropOrchestrator, PropOrchestrator)
         container.register_singleton(IPictographOrchestrator, PictographOrchestrator)
 

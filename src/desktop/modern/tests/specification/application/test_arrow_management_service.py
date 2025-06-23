@@ -1,19 +1,18 @@
 """
 TEST LIFECYCLE: specification
 CREATED: 2025-06-14
-PURPOSE: Contract testing for ArrowManagementService consolidation
-SCOPE: Unified arrow operations, positioning, mirroring, beta positioning
+PURPOSE: Contract testing for ArrowPositioningOrchestrator (decomposed arrow services)
+SCOPE: Unified arrow operations, positioning, mirroring, beta positioning via microservices
 EXPECTED_DURATION: permanent
 """
 
 import pytest
 from typing import Tuple
-from PyQt6.QtCore import QPointF
 
-from application.services.positioning.arrow_management_service import (
-    ArrowManagementService,
-    IArrowManagementService,
+from application.services.positioning.arrow_positioning_orchestrator import (
+    ArrowPositioningOrchestrator,
 )
+from core.interfaces.positioning_services import IArrowPositioningOrchestrator
 from domain.models.core_models import (
     BeatData,
     MotionData,
@@ -160,9 +159,9 @@ class TestArrowPositioning:
         )
 
         # PRO motion should use layer2 coordinates for end location
-        expected_pos = arrow_service.LAYER2_POINTS[Location.SOUTH]
-        assert abs(x - expected_pos.x()) < 50  # Allow for adjustments
-        assert abs(y - expected_pos.y()) < 50  # Allow for adjustments
+        expected_pos = arrow_service.LAYER2_POINTS[Location.SOUTH.value]
+        assert abs(x - expected_pos.x) < 50  # Allow for adjustments
+        assert abs(y - expected_pos.y) < 50  # Allow for adjustments
 
     def test_calculate_arrow_position_static_motion(
         self, arrow_service, sample_pictograph_data
@@ -187,9 +186,9 @@ class TestArrowPositioning:
         )
 
         # STATIC motion should use hand point coordinates for start location
-        expected_pos = arrow_service.HAND_POINTS[Location.EAST]
-        assert abs(x - expected_pos.x()) < 50  # Allow for adjustments
-        assert abs(y - expected_pos.y()) < 50  # Allow for adjustments
+        expected_pos = arrow_service.HAND_POINTS[Location.EAST.value]
+        assert abs(x - expected_pos.x) < 50  # Allow for adjustments
+        assert abs(y - expected_pos.y) < 50  # Allow for adjustments
 
 
 class TestArrowMirroring:

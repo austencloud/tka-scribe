@@ -6,13 +6,12 @@ Qt Testing Fixtures
 Provides reusable Qt application and widget fixtures for testing.
 """
 
-import sys
-import pytest
 from pathlib import Path
+
+import pytest
 
 # Add modern source to path
 modern_src = Path(__file__).parent.parent.parent / "src"
-sys.path.insert(0, str(modern_src))
 
 
 @pytest.fixture
@@ -77,9 +76,9 @@ def qt_widget(qt_app):
 def construct_tab_widget(qt_app, workbench_di_container):
     """Provide a construct tab widget for testing."""
     try:
-        from presentation.tabs.construct.construct_tab_widget import ConstructTabWidget
+        from presentation.tabs.construct.construct_tab import ConstructTab
 
-        construct_tab = ConstructTabWidget(workbench_di_container)
+        construct_tab = ConstructTab(workbench_di_container)
         construct_tab.resize(800, 600)
 
         yield construct_tab

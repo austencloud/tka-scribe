@@ -13,7 +13,7 @@ to avoid overlaps, particularly for beta-ending letters.
 
 from typing import Tuple, Dict, Any, Optional, List, TYPE_CHECKING
 from abc import ABC, abstractmethod
-from PyQt6.QtCore import QPointF
+from core.types import Point
 import json
 from pathlib import Path
 from enum import Enum
@@ -78,9 +78,7 @@ class IPropManagementService(ABC):
         pass
 
     @abstractmethod
-    def calculate_separation_offsets(
-        self, beat_data: BeatData
-    ) -> Tuple[QPointF, QPointF]:
+    def calculate_separation_offsets(self, beat_data: BeatData) -> Tuple[Point, Point]:
         """Calculate separation offsets for blue and red props."""
         pass
 
@@ -274,16 +272,14 @@ class PropManagementService(IPropManagementService):
 
         return result
 
-    def calculate_separation_offsets(
-        self, beat_data: BeatData
-    ) -> Tuple[QPointF, QPointF]:
+    def calculate_separation_offsets(self, beat_data: BeatData) -> Tuple[Point, Point]:
         """
         Calculate separation offsets for blue and red props.
 
-        Returns tuple of (blue_offset, red_offset) as QPointF objects.
+        Returns tuple of (blue_offset, red_offset) as Point objects.
         """
         if not beat_data.blue_motion or not beat_data.red_motion:
-            return QPointF(0, 0), QPointF(0, 0)
+            return Point(0, 0), Point(0, 0)
 
         # Calculate separation directions based on motion types and letter
         blue_direction = self._calculate_separation_direction(
@@ -294,10 +290,10 @@ class PropManagementService(IPropManagementService):
         )
 
         # Calculate offsets based on directions and prop types
-        blue_offset = self._calculate_directional_offset(
+        blue_offset = self.calculate_directional_offset(
             blue_direction, self._get_current_prop_type()
         )
-        red_offset = self._calculate_directional_offset(
+        red_offset = self.calculate_directional_offset(
             red_direction, self._get_current_prop_type()
         )
 
@@ -310,8 +306,8 @@ class PropManagementService(IPropManagementService):
                     source="PropManagementService",
                     positioning_type="separation",
                     position_data={
-                        "blue_offset": {"x": blue_offset.x(), "y": blue_offset.y()},
-                        "red_offset": {"x": red_offset.x(), "y": red_offset.y()},
+                        "blue_offset": {"x": blue_offset.x, "y": blue_offset.y},
+                        "red_offset": {"x": red_offset.x, "y": red_offset.y},
                         "blue_direction": blue_direction.value,
                         "red_direction": red_direction.value,
                         "letter": beat_data.letter,
@@ -427,9 +423,9 @@ class PropManagementService(IPropManagementService):
 
         return direction_map.get((location, color), SeparationDirection.RIGHT)
 
-    def _calculate_directional_offset(
+    def calculate_directional_offset(
         self, direction: SeparationDirection, prop_type: PropType
-    ) -> QPointF:
+    ) -> Point:
         """
         Calculate offset based on direction and prop type.
 
@@ -448,17 +444,17 @@ class PropManagementService(IPropManagementService):
 
         # Direction to offset mapping using SeparationDirection enum
         offset_map = {
-            SeparationDirection.LEFT: QPointF(-base_offset, 0),
-            SeparationDirection.RIGHT: QPointF(base_offset, 0),
-            SeparationDirection.UP: QPointF(0, -base_offset),
-            SeparationDirection.DOWN: QPointF(0, base_offset),
-            SeparationDirection.DOWNRIGHT: QPointF(diagonal_offset, diagonal_offset),
-            SeparationDirection.UPLEFT: QPointF(-diagonal_offset, -diagonal_offset),
-            SeparationDirection.DOWNLEFT: QPointF(-diagonal_offset, diagonal_offset),
-            SeparationDirection.UPRIGHT: QPointF(diagonal_offset, -diagonal_offset),
+            SeparationDirection.LEFT: Point(-base_offset, 0),
+            SeparationDirection.RIGHT: Point(base_offset, 0),
+            SeparationDirection.UP: Point(0, -base_offset),
+            SeparationDirection.DOWN: Point(0, base_offset),
+            SeparationDirection.DOWNRIGHT: Point(diagonal_offset, diagonal_offset),
+            SeparationDirection.UPLEFT: Point(-diagonal_offset, -diagonal_offset),
+            SeparationDirection.DOWNLEFT: Point(-diagonal_offset, diagonal_offset),
+            SeparationDirection.UPRIGHT: Point(diagonal_offset, -diagonal_offset),
         }
 
-        return offset_map.get(direction, QPointF(0, 0))
+        return offset_map.get(direction, Point(0, 0))
 
     def _get_current_prop_type(self) -> PropType:
         """

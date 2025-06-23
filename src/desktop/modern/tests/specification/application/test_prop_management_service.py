@@ -9,7 +9,6 @@ import pytest
 import pandas as pd
 import random
 from pathlib import Path
-from PyQt6.QtCore import QPointF
 
 from application.services.positioning.prop_management_service import (
     PropManagementService,
@@ -281,13 +280,16 @@ class TestSeparationOffsets:
     def test_calculate_separation_offsets_returns_tuple(
         self, prop_service, sample_beta_beat_data
     ):
-        """Test that calculate_separation_offsets returns tuple of QPointF."""
+        """Test that calculate_separation_offsets returns tuple of point objects."""
         blue_offset, red_offset = prop_service.calculate_separation_offsets(
             sample_beta_beat_data
         )
 
-        assert isinstance(blue_offset, QPointF)
-        assert isinstance(red_offset, QPointF)
+        # Should return Point objects with x and y properties
+        assert hasattr(blue_offset, "x") and isinstance(blue_offset.x, (int, float))
+        assert hasattr(red_offset, "x") and isinstance(red_offset.x, (int, float))
+        assert hasattr(blue_offset, "y") and isinstance(blue_offset.y, (int, float))
+        assert hasattr(red_offset, "y") and isinstance(red_offset.y, (int, float))
 
     def test_calculate_separation_offsets_no_motions(self, prop_service):
         """Test separation offsets with missing motions."""
@@ -299,8 +301,9 @@ class TestSeparationOffsets:
 
         blue_offset, red_offset = prop_service.calculate_separation_offsets(beat_data)
 
-        assert blue_offset == QPointF(0, 0)
-        assert red_offset == QPointF(0, 0)
+        # Should return zero offsets for no motions
+        assert blue_offset.x == 0 and blue_offset.y == 0
+        assert red_offset.x == 0 and red_offset.y == 0
 
     def test_calculate_separation_offsets_blue_left_red_right(
         self, prop_service, sample_beta_beat_data
@@ -312,8 +315,8 @@ class TestSeparationOffsets:
 
         # Blue should generally move left (negative x), red should move right (positive x)
         # The exact values depend on the direction calculation, but this tests the general pattern
-        assert blue_offset.x() <= 0  # Blue moves left or diagonally left
-        assert red_offset.x() >= 0  # Red moves right or diagonally right
+        assert blue_offset.x <= 0  # Blue moves left or diagonally left
+        assert red_offset.x >= 0  # Red moves right or diagonally right
 
 
 class TestDirectionalOffsets:
@@ -353,7 +356,7 @@ class TestDirectionalOffsets:
         assert down_offset.x() == 0
         assert down_offset.y() > 0
 
-    def test_calculate_directional_offset_diagonal_directions(self, prop_service):
+    def test_calculate_directional_offset_diagonal_directions(self, prop_service: "PropManagementService"):
         """Test offset calculation for diagonal directions."""
         prop_type = PropType.HAND if hasattr(PropType, "HAND") else list(PropType)[0]
 

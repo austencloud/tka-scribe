@@ -19,14 +19,15 @@ Consolidates functionality from:
 Tests complete graph editor workflow from service creation to UI interaction.
 """
 
-import sys
 import pytest
 from pathlib import Path
+
 from typing import Optional
+from domain.models.core_models import BeatData
+from domain.models.core_models import SequenceData
 
 # Add modern source to path
 modern_src = Path(__file__).parent.parent.parent.parent / "src"
-sys.path.insert(0, str(modern_src))
 
 
 class TestGraphEditorCompleteWorkflow:
@@ -49,10 +50,10 @@ class TestGraphEditorCompleteWorkflow:
             from domain.models.core_models import BeatData, SequenceData
 
             # Test service interfaces
-            from core.interfaces.workbench_services import IGraphEditorService
+            from desktop.core.interfaces.workbench_services import IGraphEditorService
 
             # Test dependency injection
-            from core.dependency_injection.di_container import DIContainer
+            from desktop.core.dependency_injection.di_container import DIContainer
 
             # Verify basic imports work
             assert BeatData is not None
@@ -78,8 +79,8 @@ class TestGraphEditorCompleteWorkflow:
     def test_di_container_integration(self):
         """Test dependency injection container integration."""
         try:
-            from core.dependency_injection.di_container import DIContainer
-            from core.interfaces.workbench_services import IGraphEditorService
+            from desktop.core.dependency_injection.di_container import DIContainer
+            from desktop.core.interfaces.workbench_services import IGraphEditorService
 
             # Create container
             container = DIContainer()
@@ -100,11 +101,11 @@ class TestGraphEditorCompleteWorkflow:
     def test_full_service_integration(self):
         """Test complete service integration (from test_graph_editor_integration.py)."""
         try:
-            from core.dependency_injection.di_container import DIContainer
-            from application.services.layout.layout_management_service import (
+            from desktop.core.dependency_injection.di_container import DIContainer
+            from desktop.application.services.layout.layout_management_service import (
                 LayoutManagementService,
             )
-            from application.services.ui.ui_state_management_service import (
+            from desktop.application.services.ui.ui_state_management_service import (
                 UIStateManagementService,
             )
             from domain.models.core_models import BeatData, SequenceData
@@ -137,11 +138,11 @@ class TestGraphEditorCompleteWorkflow:
     def test_workbench_factory_integration(self):
         """Test workbench factory integration."""
         try:
-            from core.dependency_injection.di_container import DIContainer
-            from application.services.layout.layout_management_service import (
+            from desktop.core.dependency_injection.di_container import DIContainer
+            from desktop.application.services.layout.layout_management_service import (
                 LayoutManagementService,
             )
-            from application.services.ui.ui_state_management_service import (
+            from desktop.application.services.ui.ui_state_management_service import (
                 UIStateManagementService,
             )
 
@@ -188,7 +189,7 @@ class TestGraphEditorCompleteWorkflow:
         """Test workbench imports and factory."""
         try:
             # Test basic imports without Qt dependencies
-            from core.dependency_injection.di_container import DIContainer
+            from desktop.core.dependency_injection.di_container import DIContainer
 
             container = DIContainer()
             assert container is not None
@@ -209,19 +210,19 @@ class TestGraphEditorCompleteWorkflow:
             from PyQt6.QtWidgets import QApplication, QMainWindow
             from PyQt6.QtCore import QTimer
 
-            from core.dependency_injection.di_container import DIContainer
-            from presentation.factories.workbench_factory import (
+            from desktop.core.dependency_injection.di_container import DIContainer
+            from desktop.presentation.factories.workbench_factory import (
                 create_modern_workbench,
                 configure_workbench_services,
             )
-            from core.interfaces.core_services import (
+            from desktop.core.interfaces.core_services import (
                 ILayoutService,
                 IUIStateManagementService,
             )
-            from application.services.layout.layout_management_service import (
+            from desktop.application.services.layout.layout_management_service import (
                 LayoutManagementService,
             )
-            from application.services.ui.ui_state_management_service import (
+            from desktop.application.services.ui.ui_state_management_service import (
                 UIStateManagementService,
             )
 

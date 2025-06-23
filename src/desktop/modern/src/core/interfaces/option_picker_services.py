@@ -10,7 +10,6 @@ from typing import Any, Callable, Dict, List, Optional, Tuple
 
 from core.dependency_injection.di_container import DIContainer
 from domain.models.core_models import BeatData, SequenceData
-from PyQt6.QtWidgets import QVBoxLayout, QWidget
 
 
 class IOptionPickerInitializationService(ABC):
@@ -37,7 +36,7 @@ class IOptionPickerInitializationService(ABC):
     @abstractmethod
     def create_widget_hierarchy(
         self, container: DIContainer, resize_callback: Callable[[], None]
-    ) -> Tuple[QWidget, QWidget, QVBoxLayout, QWidget]:
+    ) -> Tuple[Any, Any, Any, Any]:
         """
         Create the widget hierarchy for option picker.
 
@@ -53,7 +52,7 @@ class IOptionPickerInitializationService(ABC):
     @abstractmethod
     def create_pool_manager(
         self,
-        main_widget: QWidget,
+        main_widget: Any,
         beat_click_handler: Callable[[str], None],
         beat_data_click_handler: Callable[[Any], None],
     ) -> Any:
@@ -157,8 +156,8 @@ class IOptionPickerDisplayService(ABC):
     @abstractmethod
     def initialize_display(
         self,
-        sections_container: QWidget,
-        sections_layout: QVBoxLayout,
+        sections_container: Any,
+        sections_layout: Any,
         pool_manager: Any,
         size_provider: Callable,
     ) -> None:
@@ -221,7 +220,7 @@ class IOptionPickerEventService(ABC):
     def setup_event_handlers(
         self,
         pool_manager: Any,
-        filter_widget: QWidget,
+        filter_widget: Any,
         beat_click_handler: Callable[[str], None],
         beat_data_click_handler: Callable[[BeatData], None],
         filter_change_handler: Callable[[str], None],
@@ -290,7 +289,7 @@ class IOptionPickerOrchestrator(ABC):
         pass
 
     @abstractmethod
-    def get_widget(self) -> QWidget:
+    def get_widget(self) -> Any:
         """
         Get the main widget for this component.
 

@@ -6,7 +6,7 @@ These interfaces define the contracts for core services, replacing tightly-coupl
 
 from abc import ABC, abstractmethod
 from typing import List, Optional, Dict, Any, Tuple
-from PyQt6.QtCore import QSize
+from core.types import Size
 
 
 class ILayoutService(ABC):
@@ -19,17 +19,17 @@ class ILayoutService(ABC):
 
     # Basic UI Layout Methods (formerly ILayoutService)
     @abstractmethod
-    def get_main_window_size(self) -> QSize:
+    def get_main_window_size(self) -> Size:
         """Get the main window size."""
         pass
 
     @abstractmethod
-    def get_workbench_size(self) -> QSize:
+    def get_workbench_size(self) -> Size:
         """Get the workbench area size."""
         pass
 
     @abstractmethod
-    def get_picker_size(self) -> QSize:
+    def get_picker_size(self) -> Size:
         """Get the option picker size."""
         pass
 
@@ -44,9 +44,7 @@ class ILayoutService(ABC):
         pass
 
     @abstractmethod
-    def calculate_component_size(
-        self, component_type: str, parent_size: QSize
-    ) -> QSize:
+    def calculate_component_size(self, component_type: str, parent_size: Size) -> Size:
         """Calculate component size based on parent and type."""
         pass
 

@@ -221,7 +221,11 @@ class UISetupManager(IUISetupManager):
                 progress_callback(92, "Construct tab loaded successfully!")
 
         except Exception as e:
+            import traceback
+
             print(f"⚠️ Error loading construct tab: {e}")
+            print(f"🔍 Full traceback:")
+            traceback.print_exc()
             if progress_callback:
                 progress_callback(85, "Construct tab load failed, using fallback...")
 

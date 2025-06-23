@@ -5,7 +5,7 @@ This is the main container that coordinates all DI operations using focused modu
 The container has been refactored into specialized components for better maintainability.
 """
 
-from typing import TypeVar, Type, Dict, Any, Optional, Set
+from typing import TypeVar, Type, Dict, Any, Optional, Set, List
 import logging
 
 # Import refactored modules
@@ -273,6 +273,12 @@ class DIContainer:
         """Backward compatibility property for accessing service registrations."""
         # Delegate to service registry
         return self._registry._services
+
+    @property
+    def _cleanup_handlers(self) -> List[Any]:
+        """Backward compatibility property for accessing cleanup handlers."""
+        # Delegate to lifecycle manager
+        return self._lifecycle_manager._cleanup_handlers
 
 
 def get_container() -> DIContainer:

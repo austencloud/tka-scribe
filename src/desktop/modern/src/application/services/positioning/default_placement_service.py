@@ -10,26 +10,8 @@ import codecs
 from pathlib import Path
 from typing import Dict, Any, Optional
 
-# Conditional Qt imports to avoid DLL loading issues during testing
-try:
-    from PyQt6.QtCore import QPointF
-
-    QT_AVAILABLE = True
-except ImportError:
-    # Fallback for testing or when Qt is not available
-    class MockQPointF:
-        def __init__(self, x=0.0, y=0.0):
-            self._x = x
-            self._y = y
-
-        def x(self):
-            return self._x
-
-        def y(self):
-            return self._y
-
-    QPointF = MockQPointF
-    QT_AVAILABLE = False
+# Use framework-agnostic types from core.types
+from core.types import Point
 
 from domain.models.core_models import MotionData, MotionType
 
@@ -88,7 +70,7 @@ class DefaultPlacementService:
         motion_data: MotionData,
         grid_mode: str = "diamond",
         placement_key: Optional[str] = None,
-    ) -> Any:
+    ) -> Point:
         """
         Get default adjustment using validated placement system.
 
@@ -99,7 +81,7 @@ class DefaultPlacementService:
                           If None, will use basic motion type
 
         Returns:
-            QPointF with adjustment values
+            Point with adjustment values
         """
         if grid_mode not in ["diamond", "box"]:
             grid_mode = "diamond"
@@ -110,7 +92,7 @@ class DefaultPlacementService:
         )
 
         if not default_placements:
-            return QPointF(0, 0)
+            return Point(0, 0)
 
         # If specific placement key provided, use it
         if placement_key and placement_key in default_placements:
@@ -134,7 +116,7 @@ class DefaultPlacementService:
         else:
             x, y = (0, 0)
 
-        return QPointF(x, y)
+        return Point(x, y)
 
     def get_available_placement_keys(
         self, motion_type: MotionType, grid_mode: str = "diamond"

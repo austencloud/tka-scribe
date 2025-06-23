@@ -1,168 +1,147 @@
 """
 Arrow Positioning Orchestrator
 
-Orchestrates the complete arrow positioning pipeline using focused services.
-Replaces the monolithic ArrowManagementService with clean architecture.
+Coordinates microservices to provide the same interface as the monolith.
+Uses dependency injection to compose positioning pipeline.
 
-PROVIDES:
-- Complete arrow positioning pipeline coordination
-- Immutable positioning result data
-- Clean separation of concerns
-- No Qt dependencies in business logic
+Replaces the 700-line ArrowManagementService with clean composition
+of focused services.
 """
 
-from typing import Optional, Dict
-from abc import ABC, abstractmethod
+from typing import Tuple
 
-from PyQt6.QtCore import QPointF
-
-from domain.models.core_models import Location, MotionType
-from domain.models.pictograph_models import ArrowData
-from domain.models.pictograph_models import PictographData
-from domain.models.positioning_models import ArrowPositionResult
-from .arrow_location_calculator import IArrowLocationCalculator, ArrowLocationCalculator
-from .arrow_rotation_calculator import IArrowRotationCalculator, ArrowRotationCalculator
-from .arrow_adjustment_service import IArrowAdjustmentService, ArrowAdjustmentService
+from domain.models.pictograph_models import ArrowData, PictographData
+from core.interfaces.positioning_services import (
+    IArrowLocationCalculator,
+    IArrowRotationCalculator,
+    IArrowAdjustmentCalculator,
+    IArrowCoordinateSystemService,
+    IArrowPositioningOrchestrator,
+)
 
 
-class IArrowPositioningService(ABC):
-    """Interface for complete arrow positioning."""
-
-    @abstractmethod
-    def calculate_position(
-        self, arrow_data: ArrowData, pictograph_data: Optional[PictographData] = None
-    ) -> ArrowPositionResult:
-        """Calculate complete arrow position and rotation."""
-        pass
-
-    @abstractmethod
-    def calculate_all_positions(
-        self, pictograph_data: PictographData
-    ) -> Dict[str, ArrowPositionResult]:
-        """Calculate positions for all arrows in pictograph."""
-        pass
-
-
-class ArrowPositioningOrchestrator(IArrowPositioningService):
+class ArrowPositioningOrchestrator(IArrowPositioningOrchestrator):
     """
-    Orchestrates the complete arrow positioning pipeline.
+    Orchestrates microservices to handle arrow positioning.
 
-    Coordinates focused services to calculate arrow positions.
-    Returns immutable positioning data following TKA architecture.
+    Replaces the 700-line ArrowManagementService monolith with clean
+    composition of focused services.
     """
-
-    # Center coordinates for fallback positioning
-    CENTER_X = 475.0
-    CENTER_Y = 475.0
-
-    # Coordinate mappings extracted from original service
-    HAND_POINTS = {
-        Location.NORTH: QPointF(475.0, 331.9),
-        Location.EAST: QPointF(618.1, 475.0),
-        Location.SOUTH: QPointF(475.0, 618.1),
-        Location.WEST: QPointF(331.9, 475.0),
-        Location.NORTHEAST: QPointF(618.1, 331.9),
-        Location.SOUTHEAST: QPointF(618.1, 618.1),
-        Location.SOUTHWEST: QPointF(331.9, 618.1),
-        Location.NORTHWEST: QPointF(331.9, 331.9),
-    }
-
-    LAYER2_POINTS = {
-        Location.NORTHEAST: QPointF(618.1, 331.9),
-        Location.SOUTHEAST: QPointF(618.1, 618.1),
-        Location.SOUTHWEST: QPointF(331.9, 618.1),
-        Location.NORTHWEST: QPointF(331.9, 331.9),
-        Location.NORTH: QPointF(618.1, 331.9),  # Maps to NE
-        Location.EAST: QPointF(618.1, 618.1),  # Maps to SE
-        Location.SOUTH: QPointF(331.9, 618.1),  # Maps to SW
-        Location.WEST: QPointF(331.9, 331.9),  # Maps to NW
-    }
 
     def __init__(
         self,
-        location_calculator: Optional[IArrowLocationCalculator] = None,
-        rotation_calculator: Optional[IArrowRotationCalculator] = None,
-        adjustment_service: Optional[IArrowAdjustmentService] = None,
+        location_calculator: IArrowLocationCalculator,
+        rotation_calculator: IArrowRotationCalculator,
+        adjustment_calculator: IArrowAdjustmentCalculator,
+        coordinate_system: IArrowCoordinateSystemService,
     ):
         """Initialize with dependency injection."""
-        self.location_calculator = location_calculator or ArrowLocationCalculator()
-        self.rotation_calculator = rotation_calculator or ArrowRotationCalculator()
-        self.adjustment_service = adjustment_service or ArrowAdjustmentService()
+        self.location_calculator = location_calculator
+        self.rotation_calculator = rotation_calculator
+        self.adjustment_calculator = adjustment_calculator
+        self.coordinate_system = coordinate_system
 
-    def calculate_position(
-        self, arrow_data: ArrowData, pictograph_data: Optional[PictographData] = None
-    ) -> ArrowPositionResult:
+        # Mirror conditions (extracted from monolith)
+        self.mirror_conditions = {
+            "anti": {"cw": True, "ccw": False},
+            "other": {"cw": False, "ccw": True},
+        }
+
+    def calculate_arrow_position(
+        self, arrow_data: ArrowData, pictograph_data: PictographData
+    ) -> Tuple[float, float, float]:
         """
-        Calculate complete arrow position using focused service pipeline.
+        Calculate arrow position using microservices pipeline.
 
-        Pipeline:
-        1. Calculate arrow location from motion
-        2. Compute initial position (layer2 vs hand points)
-        3. Calculate rotation angle
-        4. Apply adjustments (default placement + special rules)
-        5. Return immutable positioning result
+        PIPELINE:
+        1. Calculate location (microservice)
+        2. Get initial position (microservice)
+        3. Calculate rotation (microservice)
+        4. Calculate adjustment (microservice)
+        5. Compose final position
         """
         if not arrow_data.motion_data:
-            return ArrowPositionResult(x=self.CENTER_X, y=self.CENTER_Y, rotation=0.0)
+            center = self.coordinate_system.get_scene_center()
+            return center.x, center.y, 0.0
 
         motion = arrow_data.motion_data
 
         # Step 1: Calculate arrow location
-        arrow_location = self.location_calculator.calculate_location(
-            motion, pictograph_data
-        )
+        location = self.location_calculator.calculate_location(motion, pictograph_data)
 
-        # Step 2: Compute initial position
-        initial_position = self._compute_initial_position(motion, arrow_location)
+        # Step 2: Get initial position
+        initial_position = self.coordinate_system.get_initial_position(motion, location)
 
         # Step 3: Calculate rotation
-        rotation = self.rotation_calculator.calculate_rotation(motion, arrow_location)
+        rotation = self.rotation_calculator.calculate_rotation(motion, location)
 
-        # Step 4: Get adjustment
-        adjustment = self.adjustment_service.calculate_adjustment(
+        # Step 4: Calculate adjustment
+        adjustment = self.adjustment_calculator.calculate_adjustment(
             arrow_data, pictograph_data
-        )
+        )  # Step 5: Compose final position
+        # Handle both QPointF (with x(), y() methods) and Point (with x, y attributes)
+        try:
+            # Try QPointF method call first
+            adjustment_x = adjustment.x()
+            adjustment_y = adjustment.y()
+        except TypeError:
+            # Fall back to Point attribute access
+            adjustment_x = adjustment.x
+            adjustment_y = adjustment.y
 
-        # Step 5: Apply final positioning formula
-        final_x = initial_position.x() + adjustment.x()
-        final_y = initial_position.y() + adjustment.y()
+        final_x = initial_position.x + adjustment_x
+        final_y = initial_position.y + adjustment_y
 
-        return ArrowPositionResult(
-            x=final_x,
-            y=final_y,
-            rotation=rotation,
-            location=arrow_location.value if arrow_location else None,
-        )
+        return final_x, final_y, rotation
 
-    def calculate_all_positions(
+    def calculate_all_arrow_positions(
         self, pictograph_data: PictographData
-    ) -> Dict[str, ArrowPositionResult]:
-        """Calculate positions for all arrows in pictograph."""
-        results = {}
+    ) -> PictographData:
+        """Calculate positions for all arrows in the pictograph."""
+        updated_pictograph = pictograph_data
 
-        if not pictograph_data.arrows:
-            return results
+        for color, arrow_data in pictograph_data.arrows.items():
+            if arrow_data.is_visible and arrow_data.motion_data:
+                x, y, rotation = self.calculate_arrow_position(
+                    arrow_data, pictograph_data
+                )
 
-        for arrow_key, arrow_data in pictograph_data.arrows.items():
-            if arrow_data.is_visible:
-                position_result = self.calculate_position(arrow_data, pictograph_data)
-                results[arrow_key] = position_result
+                updated_pictograph = updated_pictograph.update_arrow(
+                    color, position_x=x, position_y=y, rotation_angle=rotation
+                )
 
-        return results
+        return updated_pictograph
 
-    def _compute_initial_position(self, motion, arrow_location: Location) -> QPointF:
-        """Compute initial position using placement strategy."""
-        if motion.motion_type in [MotionType.PRO, MotionType.ANTI, MotionType.FLOAT]:
-            return self._get_layer2_coords(arrow_location)
-        elif motion.motion_type in [MotionType.STATIC, MotionType.DASH]:
-            return self._get_hand_point_coords(arrow_location)
+    def should_mirror_arrow(self, arrow_data: ArrowData) -> bool:
+        """Determine if arrow should be mirrored (extracted from monolith)."""
+        if not arrow_data.motion_data:
+            return False
+
+        motion_type = arrow_data.motion_data.motion_type.value.lower()
+        prop_rot_dir = arrow_data.motion_data.prop_rot_dir.value.lower()
+
+        if motion_type == "anti":
+            return self.mirror_conditions["anti"].get(prop_rot_dir, False)
         else:
-            return QPointF(self.CENTER_X, self.CENTER_Y)
+            return self.mirror_conditions["other"].get(prop_rot_dir, False)
 
-    def _get_layer2_coords(self, location: Location) -> QPointF:
-        """Get layer2 point coordinates for shift arrows."""
-        return self.LAYER2_POINTS.get(location, QPointF(self.CENTER_X, self.CENTER_Y))
+    def apply_mirror_transform(self, arrow_item, should_mirror: bool) -> None:
+        """Apply mirror transformation (extracted from monolith)."""
+        try:
+            from PyQt6.QtGui import QTransform
 
-    def _get_hand_point_coords(self, location: Location) -> QPointF:
-        """Get hand point coordinates for static/dash arrows."""
-        return self.HAND_POINTS.get(location, QPointF(self.CENTER_X, self.CENTER_Y))
+            center_x = arrow_item.boundingRect().center().x()
+            center_y = arrow_item.boundingRect().center().y()
+
+            transform = QTransform()
+            transform.translate(center_x, center_y)
+            transform.scale(-1 if should_mirror else 1, 1)
+            transform.translate(-center_x, -center_y)
+
+            arrow_item.setTransform(transform)
+        except ImportError:
+            # Handle case where PyQt6 is not available (testing scenarios)
+            pass
+        except AttributeError:
+            # Handle case where arrow_item doesn't have expected methods
+            pass

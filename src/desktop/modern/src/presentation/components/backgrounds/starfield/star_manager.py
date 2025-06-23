@@ -6,7 +6,7 @@ from PyQt6.QtCore import Qt
 
 # A+ Enhancement: Import Qt resource pooling - Temporarily disabled
 # try:
-#     from core.qt_integration import qt_resources, pooled_pen, pooled_brush
+#     from presentation.qt_integration import qt_resources, pooled_pen, pooled_brush
 #     QT_RESOURCES_AVAILABLE = True
 # except ImportError:
 #     QT_RESOURCES_AVAILABLE = False

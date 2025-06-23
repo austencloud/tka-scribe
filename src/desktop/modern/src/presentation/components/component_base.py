@@ -24,7 +24,7 @@ from core.dependency_injection.di_container import DIContainer
 
 # A+ Enhancement: Import Qt integration - Temporarily disabled due to import issues
 # try:
-#     from core.qt_integration import qt_factory, memory_detector, AutoManagedWidget
+#     from presentation.qt_integration import qt_factory, memory_detector, AutoManagedWidget
 #     QT_INTEGRATION_AVAILABLE = True
 # except ImportError:
 #     QT_INTEGRATION_AVAILABLE = False

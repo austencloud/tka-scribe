@@ -192,8 +192,8 @@ class PropOrchestrator(IPropOrchestrator):
         self._publish_positioning_event(
             "separation",
             {
-                "blue_offset": {"x": blue_offset.x(), "y": blue_offset.y()},
-                "red_offset": {"x": red_offset.x(), "y": red_offset.y()},
+                "blue_offset": {"x": blue_offset.x, "y": blue_offset.y},
+                "red_offset": {"x": red_offset.x, "y": red_offset.y},
                 "blue_direction": blue_direction.value,
                 "red_direction": red_direction.value,
                 "letter": beat_data.letter,

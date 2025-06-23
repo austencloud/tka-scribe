@@ -12,13 +12,14 @@ Import Pattern Enforcement Tests
 Prevents regression to old import patterns and enforces standardized imports.
 """
 
-import sys
-import pytest
 from pathlib import Path
+
+import pytest
+from domain.models.core_models import BeatData, SequenceData
+from domain.models.pictograph_models import PictographData
 
 # Add modern source to path
 modern_src = Path(__file__).parent.parent.parent.parent / "src"
-sys.path.insert(0, str(modern_src))
 
 
 class TestImportPatternEnforcement:
@@ -30,9 +31,9 @@ class TestImportPatternEnforcement:
 
         CONTRACT: Import patterns must be standardized:
         - Use 'from presentation.' not 'from presentation.'
-        - Use 'from core.' not 'from core.'
+        - Use 'from desktop.core.' not 'from desktop.core.'
         - Use 'from domain.' not 'from domain.'
-        - Use 'from application.' not 'from application.'
+        - Use 'from application.' not 'from desktop.application.'
         """
         # Test that standardized imports work
         try:
@@ -43,7 +44,7 @@ class TestImportPatternEnforcement:
             pytest.skip("Core domain models not available")
 
         try:
-            from application.services.layout.layout_management_service import (
+            from desktop.application.services.layout.layout_management_service import (
                 LayoutManagementService,
             )
 
@@ -52,7 +53,7 @@ class TestImportPatternEnforcement:
             pytest.skip("Application services not available")
 
         try:
-            from core.dependency_injection.di_container import DIContainer
+            from desktop.core.dependency_injection.di_container import DIContainer
 
             assert DIContainer is not None
         except ImportError:
@@ -68,11 +69,9 @@ class TestImportPatternEnforcement:
         - Factories use 'from presentation.factories.'
         """
         try:
-            from presentation.tabs.construct.construct_tab_widget import (
-                ConstructTabWidget,
-            )
+            from presentation.tabs.construct.construct_tab import ConstructTab
 
-            assert ConstructTabWidget is not None
+            assert ConstructTab is not None
         except ImportError:
             pytest.skip("Presentation tabs not available")
 
@@ -88,26 +87,26 @@ class TestImportPatternEnforcement:
         Test core layer imports contract.
 
         CONTRACT: Core layer imports must be standardized:
-        - DI container uses 'from core.dependency_injection.'
-        - Interfaces use 'from core.interfaces.'
-        - Events use 'from core.events'
+        - DI container uses 'from desktop.core.dependency_injection.'
+        - Interfaces use 'from desktop.core.interfaces.'
+        - Events use 'from desktop.core.events'
         """
         try:
-            from core.dependency_injection.di_container import DIContainer
+            from desktop.core.dependency_injection.di_container import DIContainer
 
             assert DIContainer is not None
         except ImportError:
             pytest.skip("Core DI not available")
 
         try:
-            from core.interfaces.core_services import ILayoutService
+            from desktop.core.interfaces.core_services import ILayoutService
 
             assert ILayoutService is not None
         except ImportError:
             pytest.skip("Core interfaces not available")
 
         try:
-            from core.events import get_event_bus
+            from desktop.core.events import get_event_bus
 
             assert get_event_bus is not None
         except ImportError:
@@ -118,12 +117,12 @@ class TestImportPatternEnforcement:
         Test application layer imports contract.
 
         CONTRACT: Application layer imports must be standardized:
-        - Services use 'from application.services.'
-        - Core services use 'from application.services.core.'
-        - UI services use 'from application.services.ui.'
+        - Services use 'from desktop.application.services.'
+        - Core services use 'from desktop.application.services.core.'
+        - UI services use 'from desktop.application.services.ui.'
         """
         try:
-            from application.services.core.sequence_management_service import (
+            from desktop.application.services.core.sequence_management_service import (
                 SequenceManagementService,
             )
 
@@ -132,7 +131,7 @@ class TestImportPatternEnforcement:
             pytest.skip("Application core services not available")
 
         try:
-            from application.services.ui.ui_state_management_service import (
+            from desktop.application.services.ui.ui_state_management_service import (
                 UIStateManagementService,
             )
 
@@ -141,7 +140,7 @@ class TestImportPatternEnforcement:
             pytest.skip("Application UI services not available")
 
         try:
-            from application.services.layout.layout_management_service import (
+            from desktop.application.services.layout.layout_management_service import (
                 LayoutManagementService,
             )
 
@@ -159,7 +158,7 @@ class TestImportPatternEnforcement:
         - Domain logic is independent of other layers
         """
         try:
-            from domain.models.core_models import BeatData, SequenceData, MotionData
+            from domain.models.core_models import BeatData, MotionData, SequenceData
 
             assert BeatData is not None
             assert SequenceData is not None
@@ -169,9 +168,9 @@ class TestImportPatternEnforcement:
 
         try:
             from domain.models.pictograph_models import (
-                PictographData,
-                GridData,
                 ArrowData,
+                GridData,
+                PictographData,
             )
 
             assert PictographData is not None
@@ -195,10 +194,11 @@ class TestImportPatternEnforcement:
         try:
             # Test absolute imports work
             from domain.models.core_models import BeatData
-            from application.services.layout.layout_management_service import (
+
+            from desktop.application.services.layout.layout_management_service import (
                 LayoutManagementService,
             )
-            from core.dependency_injection.di_container import DIContainer
+            from desktop.core.dependency_injection.di_container import DIContainer
 
             # If all imports work, relative imports are not needed
             assert BeatData is not None
@@ -247,7 +247,7 @@ class TestImportPatternEnforcement:
         Test legacy import prevention contract.
 
         CONTRACT: Legacy import patterns must be prevented:
-        - No 'from src.' imports
+        - No 'from desktop.' imports
         - No old-style module paths
         - No deprecated import patterns
         """
@@ -257,7 +257,8 @@ class TestImportPatternEnforcement:
         try:
             # These should work with new patterns
             from domain.models.core_models import BeatData
-            from core.dependency_injection.di_container import DIContainer
+
+            from desktop.core.dependency_injection.di_container import DIContainer
 
             # If these work, we're using new patterns
             assert BeatData is not None

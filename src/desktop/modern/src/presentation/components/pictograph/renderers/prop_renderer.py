@@ -11,6 +11,7 @@ from PyQt6.QtCore import QPointF
 from PyQt6.QtSvgWidgets import QGraphicsSvgItem
 from PyQt6.QtSvg import QSvgRenderer
 
+from core.types import Point
 from domain.models.core_models import MotionData, Location
 
 from presentation.components.pictograph.asset_utils import (
@@ -21,6 +22,7 @@ from domain.models.core_models import Orientation
 from application.services.positioning.prop_management_service import (
     PropManagementService,
 )
+from ui.adapters.qt_geometry_adapter import QtGeometryAdapter
 
 if TYPE_CHECKING:
     from presentation.components.pictograph.pictograph_scene import PictographScene
@@ -222,8 +224,15 @@ class PropRenderer:
         blue_current_pos = blue_prop.pos()
         red_current_pos = red_prop.pos()
 
-        new_blue_pos = blue_current_pos + blue_offset
-        new_red_pos = red_current_pos + red_offset
+        # Convert QPointF to Point, add offset, then convert back to QPointF
+        blue_current_point = QtGeometryAdapter.qpointf_to_point(blue_current_pos)
+        red_current_point = QtGeometryAdapter.qpointf_to_point(red_current_pos)
+
+        new_blue_point = blue_current_point + blue_offset
+        new_red_point = red_current_point + red_offset
+
+        new_blue_pos = QtGeometryAdapter.point_to_qpointf(new_blue_point)
+        new_red_pos = QtGeometryAdapter.point_to_qpointf(new_red_point)
 
         blue_prop.setPos(new_blue_pos)
         red_prop.setPos(new_red_pos)

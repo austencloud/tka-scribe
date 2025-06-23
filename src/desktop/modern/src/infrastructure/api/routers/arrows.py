@@ -7,9 +7,7 @@ Handles arrow positioning calculations and mirror checks.
 import logging
 from typing import Any, Dict
 
-from application.services.positioning.arrow_management_service import (
-    ArrowManagementService,
-)
+from core.interfaces.positioning_services import IArrowPositioningOrchestrator
 from core.monitoring import monitor_performance
 from fastapi import APIRouter, Depends, HTTPException
 
@@ -25,7 +23,7 @@ router = APIRouter(prefix="/api", tags=["Arrows"])
 @monitor_performance("api_calculate_arrow_position")
 async def calculate_arrow_position(
     request_data: Dict[str, Any],
-    arrow_service: ArrowManagementService = Depends(get_arrow_service),
+    arrow_service: IArrowPositioningOrchestrator = Depends(get_arrow_service),
 ):
     """
     Calculate arrow position based on motion data.
@@ -81,7 +79,7 @@ async def calculate_arrow_position(
 @monitor_performance("api_check_arrow_mirror")
 async def check_arrow_mirror(
     request_data: Dict[str, Any],
-    arrow_service: ArrowManagementService = Depends(get_arrow_service),
+    arrow_service: IArrowPositioningOrchestrator = Depends(get_arrow_service),
 ):
     """
     Check if arrows are mirrored correctly.

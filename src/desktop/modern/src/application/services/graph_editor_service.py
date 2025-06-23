@@ -1,3 +1,10 @@
+"""
+Graph Editor Service Implementation
+
+Provides graph editor functionality for the modern TKA desktop application.
+Manages graph editor state, beat selection, and UI interactions.
+"""
+
 from typing import Optional, List
 from core.interfaces.workbench_services import IGraphEditorService
 from core.interfaces.core_services import IUIStateManagementService
@@ -27,14 +34,11 @@ class GraphEditorService(IGraphEditorService):
         """Update the graph editor display with sequence data"""
         self._current_sequence = sequence
 
-        # If we have a selected beat index, try to maintain it
-        if sequence and self._selected_beat_index is not None:
-            if 0 <= self._selected_beat_index < len(sequence.beats):
-                self._selected_beat = sequence.beats[self._selected_beat_index]
-            else:
-                # Beat index out of range, reset
-                self._selected_beat = None
-                self._selected_beat_index = None
+        # Clear selections when sequence changes
+        if sequence != self._current_sequence:
+            self._selected_beat = None
+            self._selected_beat_index = None
+            self._selected_arrow_id = None
 
         # Notify UI state service if available (save only basic info, not the full sequence object)
         if self.ui_state_service:
@@ -76,29 +80,23 @@ class GraphEditorService(IGraphEditorService):
         """Get the currently selected beat"""
         return self._selected_beat
 
-    def update_beat_adjustments(self, beat_data: BeatData) -> BeatData:
-        """Apply adjustment panel modifications to beat data"""
-        # This would typically apply any pending modifications from the adjustment panel
-        # For now, return the beat data as-is since adjustment logic is complex
-
-        # In a full implementation, this would:
-        # 1. Apply any pending turn adjustments
-        # 2. Apply any pending orientation changes
-        # 3. Update motion types if needed
-        # 4. Recalculate arrow positions
-
-        # Update our internal state
-        if (
-            self._selected_beat
-            and self._selected_beat.beat_number == beat_data.beat_number
-        ):
-            self._selected_beat = beat_data
-
-        return beat_data
+    def get_selected_beat_index(self) -> Optional[int]:
+        """Get the currently selected beat index"""
+        return self._selected_beat_index
 
     def is_visible(self) -> bool:
         """Check if graph editor is currently visible"""
         return self._is_visible
+
+    def get_current_sequence(self) -> Optional[SequenceData]:
+        """Get the current sequence being displayed"""
+        return self._current_sequence
+
+    def update_beat_adjustments(self, beat_data: BeatData) -> BeatData:
+        """Apply adjustment panel modifications to beat data"""
+        # In a full implementation, this would apply any pending adjustments
+        # from the adjustment panel to the beat data
+        return beat_data
 
     def set_arrow_selection(self, arrow_id: Optional[str]) -> None:
         """Set selected arrow for detailed editing"""
@@ -114,9 +112,9 @@ class GraphEditorService(IGraphEditorService):
         return [0.0, 0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0, 2.25, 2.5, 2.75, 3.0]
 
     def get_available_orientations(self, arrow_color: str) -> List[str]:
-        """Get available orientations for specified arrow color"""
-        # Standard orientation options
-        return ["in", "counter", "out", "clock", "dash", "static", "float"]
+        """Get available orientation values for specified arrow color"""
+        # Standard orientations based on motion types
+        return ["pro", "anti", "float", "dash", "static"]
 
     def apply_turn_adjustment(self, arrow_color: str, turn_value: float) -> bool:
         """Apply turn adjustment to selected arrow"""
@@ -168,30 +166,14 @@ class GraphEditorService(IGraphEditorService):
             print(f"⚠️ Orientation adjustment failed: {e}")
             return False
 
-    # Additional helper methods for graph editor functionality
+    def get_graph_editor_size_ratio(self) -> tuple[float, float]:
+        """Get the size ratios for graph editor dimensions"""
+        return (self._graph_height_ratio, self._max_width_ratio)
 
-    def get_graph_editor_height(self, parent_height: int, parent_width: int) -> int:
-        """Calculate appropriate graph editor height using proven sizing formula"""
-        height_from_parent = int(parent_height // self._graph_height_ratio)
-        width_constraint = int(parent_width // self._max_width_ratio)
-        return min(height_from_parent, width_constraint)
-
-    def get_current_sequence(self) -> Optional[SequenceData]:
-        """Get the current sequence being displayed"""
-        return self._current_sequence
-
-    def get_selected_beat_index(self) -> Optional[int]:
-        """Get the index of the currently selected beat"""
-        return self._selected_beat_index
-
-    def get_selected_arrow_id(self) -> Optional[str]:
-        """Get the ID of the currently selected arrow"""
-        return self._selected_arrow_id
-
-    def reset_state(self) -> None:
-        """Reset graph editor state (useful for cleanup or switching sequences)"""
+    def cleanup(self) -> None:
+        """Clean up resources and state"""
         self._current_sequence = None
         self._selected_beat = None
         self._selected_beat_index = None
         self._selected_arrow_id = None
-        # Keep visibility state as user preference
+        self._is_visible = False
