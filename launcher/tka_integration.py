@@ -208,8 +208,8 @@ class FallbackApplicationService:
                 description="Modern TKA Desktop application with updated architecture",
                 icon="✨",
                 category=ApplicationCategory.DESKTOP,
-                command=f"{debug_prefix}python main.py --modern",
-                working_dir=tka_root,
+                command="python main.py",  # Modern main.py doesn't need --modern flag
+                working_dir=tka_root / "src" / "desktop" / "modern",
                 display_order=1,
             ),
             ApplicationData(
@@ -218,8 +218,8 @@ class FallbackApplicationService:
                 description="Modern TKA Desktop with debugger attached (port 5679)",
                 icon="🐛",
                 category=ApplicationCategory.DEVELOPMENT,
-                command="python -m debugpy --listen 5679 --wait-for-client main.py --modern",
-                working_dir=tka_root,
+                command="python -m debugpy --listen 5679 --wait-for-client main.py",
+                working_dir=tka_root / "src" / "desktop" / "modern",
                 display_order=1,
             ),
             ApplicationData(

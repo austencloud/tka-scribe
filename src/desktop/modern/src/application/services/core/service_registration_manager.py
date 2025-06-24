@@ -195,7 +195,7 @@ class ServiceRegistrationManager(IServiceRegistrationManager):
     def register_positioning_services(self, container: "DIContainer") -> None:
         """Register microservices-based positioning services."""
         try:
-            # Import the individual calculator services
+            # Import the individual calculator services with correct class names
             from application.services.positioning.arrows.orchestration.arrow_adjustment_calculator_service import (
                 ArrowAdjustmentCalculatorService,
             )
@@ -237,8 +237,10 @@ class ServiceRegistrationManager(IServiceRegistrationManager):
             container.register_singleton(
                 IArrowPositioningOrchestrator, ArrowPositioningOrchestrator
             )
-        except ImportError:
+        except ImportError as e:
             # Some positioning services not available - continue
+            print(f"⚠️ Failed to import positioning services: {e}")
+            print(f"   This means IArrowPositioningOrchestrator will not be available")
             pass
 
         try:
