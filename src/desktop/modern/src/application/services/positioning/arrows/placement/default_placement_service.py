@@ -7,6 +7,7 @@ arrow positioning with comprehensive adjustment data.
 
 import json
 import codecs
+import os
 from pathlib import Path
 from typing import Dict, Any, Optional
 
@@ -20,7 +21,7 @@ class DefaultPlacementService:
     """Service that loads default placement data and provides adjustments."""
 
     def __init__(self):
-        self.root_path = Path(__file__).parent.parent.parent.parent.parent.parent
+        self.root_path = self._find_project_root()
         self.all_defaults: Dict[str, Dict[str, Dict[str, Any]]] = {
             "diamond": {},
             "box": {},
@@ -44,6 +45,14 @@ class DefaultPlacementService:
         }
 
         self._load_all_default_placements()
+
+    def _find_project_root(self) -> Path:
+        """Automatically find the project root by looking for pyproject.toml or .git."""
+        current = Path(__file__).resolve()
+        for parent in [current] + list(current.parents):
+            if (parent / "pyproject.toml").exists() or (parent / ".git").exists():
+                return parent
+        return current.parent  # fallback
 
     def _load_all_default_placements(self) -> None:
         """Load all default placement JSON files using direct path resolution."""

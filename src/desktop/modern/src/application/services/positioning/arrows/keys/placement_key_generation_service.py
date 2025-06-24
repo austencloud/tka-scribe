@@ -43,14 +43,14 @@ class PlacementKeyGenerationService:
         Generate motion end orientation key component.
 
         Legacy logic:
-        - If hybrid orientation and end_ori is IN/OUT -> "RADIAL_"
-        - If hybrid orientation and end_ori is CLOCK/COUNTER -> "NONRADIAL_"
+        - If hybrid orientation and end_ori is IN/OUT -> "radial_"
+        - If hybrid orientation and end_ori is CLOCK/COUNTER -> "nonradial_"
         - Otherwise -> ""
         """
         if has_hybrid_orientation and motion_end_ori in ["IN", "OUT"]:
-            return "RADIAL_"
+            return "radial_"
         elif has_hybrid_orientation and motion_end_ori in ["CLOCK", "COUNTER"]:
-            return "NONRADIAL_"
+            return "nonradial_"
         else:
             return ""
 
