@@ -44,6 +44,7 @@ class PictographAnalysisService:
             - is_phi_dash: bool
             - is_psi_dash: bool
             - is_lambda: bool
+            - is _lambda_dash: bool
             - letter_type: LetterType
         """
         letter = pictograph_data.letter.upper() if pictograph_data.letter else ""
@@ -52,6 +53,7 @@ class PictographAnalysisService:
             "is_phi_dash": letter in ["Φ-", "PHI_DASH", "Φ_DASH"],
             "is_psi_dash": letter in ["Ψ-", "PSI_DASH", "Ψ_DASH"],
             "is_lambda": letter in ["Λ", "LAMBDA"],
+            "is_lambda_dash": letter in ["Λ-", "LAMBDA_DASH", "Λ_DASH"],
             "letter_type": self._determine_letter_type(pictograph_data),
         }
 

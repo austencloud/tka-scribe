@@ -71,9 +71,6 @@ class DashLocationCalculator:
 
         # Use analysis service to extract all the parameters
         letter_info = self.analysis_service.get_letter_info(pictograph_data)
-        letter_type = letter_info["letter_type"]
-        letter = pictograph_data.letter
-        print(letter, letter_type)
 
         # Extract beat data for grid info analysis (get_grid_info expects BeatData)
         from application.services.positioning.arrows.calculation.arrow_location_calculator import (
@@ -103,6 +100,7 @@ class DashLocationCalculator:
             is_phi_dash=letter_info["is_phi_dash"],
             is_psi_dash=letter_info["is_psi_dash"],
             is_lambda=letter_info["is_lambda"],
+            is_lambda_dash=letter_info["is_lambda_dash"],
         )
 
     # Predefined location mappings for dash calculations - comprehensive mapping
@@ -126,6 +124,49 @@ class DashLocationCalculator:
     }
 
     LAMBDA_ZERO_TURNS_LOCATION_MAP = {
+        ((Location.NORTH, Location.SOUTH), Location.WEST): Location.EAST,
+        ((Location.EAST, Location.WEST), Location.SOUTH): Location.NORTH,
+        ((Location.NORTH, Location.SOUTH), Location.EAST): Location.WEST,
+        ((Location.WEST, Location.EAST), Location.SOUTH): Location.NORTH,
+        ((Location.SOUTH, Location.NORTH), Location.WEST): Location.EAST,
+        ((Location.EAST, Location.WEST), Location.NORTH): Location.SOUTH,
+        ((Location.SOUTH, Location.NORTH), Location.EAST): Location.WEST,
+        ((Location.WEST, Location.EAST), Location.NORTH): Location.SOUTH,
+        (
+            (Location.NORTHEAST, Location.SOUTHWEST),
+            Location.NORTHWEST,
+        ): Location.SOUTHEAST,
+        (
+            (Location.NORTHWEST, Location.SOUTHEAST),
+            Location.NORTHEAST,
+        ): Location.SOUTHWEST,
+        (
+            (Location.SOUTHWEST, Location.NORTHEAST),
+            Location.SOUTHEAST,
+        ): Location.NORTHWEST,
+        (
+            (Location.SOUTHEAST, Location.NORTHWEST),
+            Location.SOUTHWEST,
+        ): Location.NORTHEAST,
+        (
+            (Location.NORTHEAST, Location.SOUTHWEST),
+            Location.SOUTHEAST,
+        ): Location.NORTHWEST,
+        (
+            (Location.NORTHWEST, Location.SOUTHEAST),
+            Location.SOUTHWEST,
+        ): Location.NORTHEAST,
+        (
+            (Location.SOUTHWEST, Location.NORTHEAST),
+            Location.NORTHWEST,
+        ): Location.SOUTHEAST,
+        (
+            (Location.SOUTHEAST, Location.NORTHWEST),
+            Location.NORTHEAST,
+        ): Location.SOUTHWEST,
+    }
+
+    LAMBDA_DASH_ZERO_TURNS_LOCATION_MAP = {
         ((Location.NORTH, Location.SOUTH), Location.WEST): Location.EAST,
         ((Location.EAST, Location.WEST), Location.SOUTH): Location.NORTH,
         ((Location.NORTH, Location.SOUTH), Location.EAST): Location.WEST,
@@ -251,6 +292,7 @@ class DashLocationCalculator:
         is_phi_dash: bool = False,
         is_psi_dash: bool = False,
         is_lambda: bool = False,
+        is_lambda_dash: bool = False,
     ) -> Location:
         """
         Calculate dash arrow location using proven calculation algorithms.
@@ -277,6 +319,10 @@ class DashLocationCalculator:
         if is_lambda and motion.turns == 0 and other_motion:
             return self._get_lambda_zero_turns_location(motion, other_motion)
 
+        # Λ_DASH (Lambda Dash) zero turns special case
+        if is_lambda_dash and motion.turns == 0 and other_motion:
+            return self._get_lambda_dash_zero_turns_location(motion, other_motion)
+
         # Zero turns - check for Type 3 or default
         if motion.turns == 0:
             return self._default_zero_turns_dash_location(
@@ -285,6 +331,13 @@ class DashLocationCalculator:
 
         # Non-zero turns
         return self._dash_location_non_zero_turns(motion)
+
+    def _get_lambda_dash_zero_turns_location(
+        self, motion: MotionData, other_motion: MotionData
+    ) -> Location:
+        """Handle Λ_DASH (Lambda Dash) zero turns special case."""
+        key = ((motion.start_loc, motion.end_loc), other_motion.end_loc)
+        return self.LAMBDA_DASH_ZERO_TURNS_LOCATION_MAP.get(key, motion.start_loc)
 
     def _get_phi_dash_psi_dash_location(
         self,

@@ -1,6 +1,21 @@
 from enums.letter.letter import Letter
 from enums.letter.letter_type import LetterType
-from data.constants import *
+from data.constants import (
+    CLOCKWISE,
+    COUNTER_CLOCKWISE,
+    DIAMOND,
+    BOX,
+    NORTH,
+    EAST,
+    SOUTH,
+    WEST,
+    NORTHEAST,
+    SOUTHEAST,
+    SOUTHWEST,
+    NORTHWEST,
+    RED,
+    BLUE,
+)
 from objects.motion.motion import Motion
 from .base_location_calculator import BaseLocationCalculator
 
@@ -27,6 +42,24 @@ class DashLocationCalculator(BaseLocationCalculator):
     }
 
     LAMBDA_ZERO_TURNS_LOCATION_MAP = {
+        ((NORTH, SOUTH), WEST): EAST,
+        ((EAST, WEST), SOUTH): NORTH,
+        ((NORTH, SOUTH), EAST): WEST,
+        ((WEST, EAST), SOUTH): NORTH,
+        ((SOUTH, NORTH), WEST): EAST,
+        ((EAST, WEST), NORTH): SOUTH,
+        ((SOUTH, NORTH), EAST): WEST,
+        ((WEST, EAST), NORTH): SOUTH,
+        ((NORTHEAST, SOUTHWEST), NORTHWEST): SOUTHEAST,
+        ((NORTHWEST, SOUTHEAST), NORTHEAST): SOUTHWEST,
+        ((SOUTHWEST, NORTHEAST), SOUTHEAST): NORTHWEST,
+        ((SOUTHEAST, NORTHWEST), SOUTHWEST): NORTHEAST,
+        ((NORTHEAST, SOUTHWEST), SOUTHEAST): NORTHWEST,
+        ((NORTHWEST, SOUTHEAST), SOUTHWEST): NORTHEAST,
+        ((SOUTHWEST, NORTHEAST), NORTHWEST): SOUTHEAST,
+        ((SOUTHEAST, NORTHWEST), NORTHEAST): SOUTHWEST,
+    }
+    LAMBDA_DASH_ZERO_TURNS_LOCATION_MAP = {
         ((NORTH, SOUTH), WEST): EAST,
         ((EAST, WEST), SOUTH): NORTH,
         ((NORTH, SOUTH), EAST): WEST,
@@ -121,14 +154,29 @@ class DashLocationCalculator(BaseLocationCalculator):
         if self.pictograph.state.letter in [Letter.Φ_DASH, Letter.Ψ_DASH]:
             return self._get_Φ_dash_Ψ_dash_location()
         elif (
-            self.pictograph.state.letter in [Letter.Λ, Letter.Λ_DASH]
+            self.pictograph.state.letter in [Letter.Λ]
             and self.arrow.motion.state.turns == 0
         ):
             return self._get_Λ_zero_turns_location()
+        elif (
+            self.pictograph.state.letter in [Letter.Λ_DASH]
+            and self.arrow.motion.state.turns == 0
+        ):
+            return self._get_Λ_DASH_zero_turns_location()
         elif self.arrow.motion.state.turns == 0:
             return self._default_zero_turns_dash_location()
         else:
             return self._dash_location_non_zero_turns()
+
+    def _get_Λ_DASH_zero_turns_location(self) -> str:
+        self.other_motion = self.pictograph.managers.get.other_motion(self.arrow.motion)
+        arrow_location = self.LAMBDA_DASH_ZERO_TURNS_LOCATION_MAP.get(
+            (
+                (self.arrow.motion.state.start_loc, self.arrow.motion.state.end_loc),
+                (self.other_motion.state.end_loc),
+            )
+        )
+        return arrow_location
 
     def _get_Φ_dash_Ψ_dash_location(self) -> str:
         self.other_motion = self.pictograph.managers.get.other_motion(self.arrow.motion)
@@ -170,7 +218,7 @@ class DashLocationCalculator(BaseLocationCalculator):
             return self._calculate_dash_location_based_on_shift()
 
         return self.DEFAULT_ZERO_TURNS_DASH_LOCATION_MAP.get(
-            (self.arrow.motion.state.start_loc, self.arrow.motion.state.end_loc), ""
+            (self.arrow.motion.state.start_loc, self.arrow.motion.state.end_loc)
         )
 
     def _dash_location_non_zero_turns(self, motion: Motion = None) -> str:
