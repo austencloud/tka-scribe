@@ -11,9 +11,10 @@ from application.services.ui.context_aware_scaling_service import (
     ScalingContext,
 )
 from domain.models.core_models import BeatData
+from presentation.components.pictograph.border_manager import BorderedPictographMixin
+from presentation.components.pictograph.pictograph_scene import PictographScene
 
-from .pictograph_scene import PictographScene
-from .border_manager import BorderedPictographMixin
+
 
 
 class PictographComponent(QGraphicsView, BorderedPictographMixin):
@@ -23,9 +24,9 @@ class PictographComponent(QGraphicsView, BorderedPictographMixin):
         if parent is not None:
             try:
                 _ = parent.isVisible()
-            except RuntimeError:
-                print(f"❌ Parent widget deleted, cannot create PictographComponent")
-                raise RuntimeError("Parent widget has been deleted")
+            except RuntimeError as exc:
+                print("❌ Parent widget deleted, cannot create PictographComponent")
+                raise RuntimeError("Parent widget has been deleted") from exc
 
         super().__init__(parent)
         BorderedPictographMixin.__init__(self)

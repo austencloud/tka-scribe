@@ -188,7 +188,7 @@ class OptionPickerDisplayService(IOptionPickerDisplayService):
 
             # Get current sections and refresh them
             sections = self.get_sections()
-            for section_name, section in sections.items():
+            for _, section in sections.items():
                 if hasattr(section, "refresh"):
                     section.refresh()
 

@@ -25,7 +25,7 @@ class OptionPickerDisplayManager:
 
     def create_sections(self) -> None:
         """Legacy-style: Create sections with single-row layout for sections 4,5,6"""
-        from PyQt6.QtWidgets import QHBoxLayout, QWidget
+        from PyQt6.QtWidgets import QHBoxLayout
 
         # Create sections 1, 2, 3 normally (vertical layout)
         for section_type in [LetterType.TYPE1, LetterType.TYPE2, LetterType.TYPE3]:

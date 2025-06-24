@@ -19,7 +19,7 @@ class ClickablePictographFrame(QFrame):
                 _ = parent.isVisible()
             except RuntimeError:
                 print(
-                    f"❌ Parent widget deleted, cannot create ClickablePictographFrame"
+                    "❌ Parent widget deleted, cannot create ClickablePictographFrame"
                 )
                 raise RuntimeError("Parent widget has been deleted")
 
