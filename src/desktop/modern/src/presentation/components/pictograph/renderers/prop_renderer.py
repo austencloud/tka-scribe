@@ -1,12 +1,5 @@
-"""
-Prop renderer for pictograph components.
-
-Handles rendering of prop elements with positioning and rotation.
-"""
-
 import os
 import re
-import logging
 from functools import lru_cache
 from typing import TYPE_CHECKING, Any
 from PyQt6.QtCore import QPointF
@@ -31,8 +24,6 @@ if TYPE_CHECKING:
 
 
 class PropRenderer:
-    """Handles prop rendering for pictographs."""
-
     def __init__(self, scene: "PictographScene"):
         self.scene = scene
         self.CENTER_X = 475
@@ -40,8 +31,6 @@ class PropRenderer:
         self.HAND_RADIUS = 143.1
 
         self.prop_management_service = PropManagementService()
-
-        # Store rendered props for overlap detection
         self.rendered_props: dict[str, QGraphicsSvgItem] = {}
 
         self.location_coordinates = {
@@ -68,7 +57,6 @@ class PropRenderer:
         }
 
     def render_prop(self, color: str, motion_data: MotionData) -> None:
-        """Render a prop using SVG files with exact scaling and rotation."""
         prop_svg_path = get_image_path("props/staff.svg")
 
         if not os.path.exists(prop_svg_path):
@@ -86,45 +74,32 @@ class PropRenderer:
 
         prop_item.setSharedRenderer(renderer)
 
-        # Get position with validation
         end_pos = self._get_location_position(motion_data.end_loc)
         if end_pos == (0, 0) and motion_data.end_loc != Location.NORTH:
             print(
                 f"Warning: Invalid location {motion_data.end_loc}, using default position"
             )
-            # Use a valid default position instead of center
             end_pos = self.location_coordinates[Location.NORTH.value]
 
         target_hand_point_x = self.CENTER_X + end_pos[0]
         target_hand_point_y = self.CENTER_Y + end_pos[1]
 
         prop_rotation = self._calculate_prop_rotation(motion_data)
-        print(f"🔄 PROP ROTATION DEBUG: {color} prop at {motion_data.end_loc.value}")
-        print(f"   Calculated rotation: {prop_rotation}°")
 
         bounds = prop_item.boundingRect()
         prop_item.setTransformOriginPoint(bounds.center())
         prop_item.setRotation(prop_rotation)
 
-        print(f"   Applied rotation: {prop_item.rotation()}°")
-        if abs(prop_rotation - prop_item.rotation()) > 0.1:
-            print(
-                f"   🚨 ROTATION MISMATCH: Expected {prop_rotation}°, got {prop_item.rotation()}°"
-            )
-
         self._place_prop_at_hand_point(
             prop_item, target_hand_point_x, target_hand_point_y
         )
 
-        # Store rendered prop for potential beta positioning
         self.rendered_props[color] = prop_item
-
         self.scene.addItem(prop_item)
 
     def _place_prop_at_hand_point(
         self, prop_item: QGraphicsSvgItem, target_x: float, target_y: float
     ) -> None:
-        """Position prop using coordinate system approach."""
         bounds = prop_item.boundingRect()
         center_point_in_local_coords = bounds.center()
         center_point_in_scene = prop_item.mapToScene(center_point_in_local_coords)
@@ -134,7 +109,6 @@ class PropRenderer:
         prop_item.setPos(new_position)
 
     def _get_location_position(self, location: Location) -> tuple[float, float]:
-        """Get the coordinate position for a location."""
         position = self.location_coordinates.get(location.value)
         if position is None:
             print(f"Warning: Unknown location {location}, using NORTH as fallback")
@@ -142,58 +116,60 @@ class PropRenderer:
         return position
 
     def _calculate_prop_rotation(self, motion_data: MotionData) -> float:
-        """Calculate prop rotation using orientation-based system."""
-        # Use the orientation service to calculate the correct rotation angle
-        # This follows the reference implementation's orientation calculation
+        # Use the actual start orientation from motion data instead of hardcoded IN
+        start_orientation = self._get_start_orientation_from_motion_data(motion_data)
         return self.prop_management_service.calculate_prop_rotation_angle(
-            motion_data, Orientation.IN
+            motion_data, start_orientation
         )
 
+    def _get_start_orientation_from_motion_data(
+        self, motion_data: MotionData
+    ) -> Orientation:
+        """Extract start orientation from motion data, with fallback to IN."""
+        if hasattr(motion_data, "start_ori") and motion_data.start_ori:
+            # Convert string orientation to Orientation enum
+            ori_str = motion_data.start_ori.lower()
+            if ori_str == "in":
+                return Orientation.IN
+            elif ori_str == "out":
+                return Orientation.OUT
+            elif ori_str == "clock":
+                return Orientation.CLOCK
+            elif ori_str == "counter":
+                return Orientation.COUNTER
+
+        # Fallback to IN if no valid orientation found
+        return Orientation.IN
+
     def _load_svg_file(self, file_path: str) -> str:
-        """Load SVG file content as string with caching."""
         return self._load_svg_file_cached(file_path)
 
-    @lru_cache(maxsize=64)  # Smaller cache for props since fewer files
+    @lru_cache(maxsize=64)
     def _load_svg_file_cached(self, file_path: str) -> str:
-        """Cached SVG file loader for props."""
         try:
             with open(file_path, "r", encoding="utf-8") as file:
                 content = file.read()
-                logging.getLogger(__name__).debug(
-                    f"Loaded and cached prop SVG: {file_path}"
-                )
                 return content
-        except Exception as e:
-            logging.getLogger(__name__).warning(
-                f"Error loading SVG file {file_path}: {e}"
-            )
+        except Exception:
             return ""
 
     def _apply_color_transformation(self, svg_data: str, color: str) -> str:
-        """Apply color transformation to SVG data based on prop color."""
         if not svg_data:
             return svg_data
 
-        # Color mapping based on reference implementation
         COLOR_MAP = {
-            "blue": "#2E3192",  # Reference blue color
-            "red": "#ED1C24",  # Reference red color
+            "blue": "#2E3192",
+            "red": "#ED1C24",
         }
 
-        target_color = COLOR_MAP.get(color.lower(), "#2E3192")  # Default to blue
+        target_color = COLOR_MAP.get(color.lower(), "#2E3192")
 
-        # Pattern to match CSS fill properties in SVG
-        # This matches both fill attributes and CSS style properties
         patterns = [
-            # CSS fill property: fill="#color"
             re.compile(r'(fill=")([^"]*)(")'),
-            # CSS style attribute: fill: #color;
             re.compile(r"(fill:\s*)([^;]*)(;)"),
-            # Class definition: .st0 { fill: #color; }
             re.compile(r"(\.(st0|cls-1)\s*\{[^}]*?fill:\s*)([^;}]*)([^}]*?\})"),
         ]
 
-        # Apply color transformation using all patterns
         for pattern in patterns:
             svg_data = pattern.sub(
                 lambda m: m.group(1) + target_color + m.group(len(m.groups())), svg_data
@@ -202,42 +178,27 @@ class PropRenderer:
         return svg_data
 
     def apply_beta_positioning(self, beat_data: Any) -> None:
-        """
-        Apply beta prop positioning if conditions are met.
-
-        This method should be called after both props are rendered
-        to detect overlaps and apply separation offsets.
-
-        Args:
-            beat_data: BeatData containing motion information
-        """
-        # Import here to avoid circular imports
         from domain.models.core_models import BeatData
 
         if not isinstance(beat_data, BeatData):
-            return  # Check if beta positioning should be applied
+            return
         if not self.prop_management_service.should_apply_beta_positioning(beat_data):
             return
 
-        # Check if we have both props rendered
         if "blue" not in self.rendered_props or "red" not in self.rendered_props:
             return
 
-        # Calculate separation offsets
         (
             blue_offset,
             red_offset,
         ) = self.prop_management_service.calculate_separation_offsets(beat_data)
 
-        # Apply offsets to rendered props
         blue_prop = self.rendered_props["blue"]
         red_prop = self.rendered_props["red"]
 
-        # Apply offsets to current positions
         blue_current_pos = blue_prop.pos()
         red_current_pos = red_prop.pos()
 
-        # Convert QPointF to Point, add offset, then convert back to QPointF
         blue_current_point = QtGeometryAdapter.qpointf_to_point(blue_current_pos)
         red_current_point = QtGeometryAdapter.qpointf_to_point(red_current_pos)
 
@@ -251,5 +212,4 @@ class PropRenderer:
         red_prop.setPos(new_red_pos)
 
     def clear_rendered_props(self) -> None:
-        """Clear the rendered props cache."""
         self.rendered_props.clear()

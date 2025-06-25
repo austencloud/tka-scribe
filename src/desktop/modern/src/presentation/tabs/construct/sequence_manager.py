@@ -9,6 +9,9 @@ from typing import Optional, Callable
 from PyQt6.QtCore import QObject, pyqtSignal
 
 from domain.models.core_models import SequenceData, BeatData
+from application.services.option_picker.option_orientation_update_service import (
+    OptionOrientationUpdateService,
+)
 
 
 class SequenceManager(QObject):
@@ -41,6 +44,9 @@ class SequenceManager(QObject):
         # Flag to prevent circular signal emissions during operations
         self._emitting_signal = False
 
+        # Initialize orientation update service for beat creation
+        self.orientation_update_service = OptionOrientationUpdateService()
+
     def add_beat_to_sequence(self, beat_data: BeatData):
         """Add a beat to the current sequence"""
         print(f"✅ Sequence manager: Adding beat: {beat_data.letter}")
@@ -52,7 +58,21 @@ class SequenceManager(QObject):
             print("📝 Created empty sequence for first beat")
 
         try:
-            # Use the exact beat data that was provided
+            # CRITICAL FIX: Apply orientation updates to the beat before adding it to sequence
+            # This ensures the beat has correct start orientations based on the sequence context
+            if current_sequence.length > 0:
+                # Update the beat's orientations based on the current sequence
+                updated_beats = (
+                    self.orientation_update_service.update_option_orientations(
+                        current_sequence, [beat_data]
+                    )
+                )
+                beat_data = updated_beats[0]
+                print(
+                    f"🔄 BEAT CREATION: Applied orientation updates to beat {beat_data.letter}"
+                )
+
+            # Create the new beat with updated orientations
             new_beat = beat_data.update(
                 beat_number=current_sequence.length + 1,
                 duration=1.0,  # Ensure valid duration

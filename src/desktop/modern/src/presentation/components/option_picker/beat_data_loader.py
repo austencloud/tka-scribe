@@ -3,6 +3,9 @@ from typing import TYPE_CHECKING, Any, Callable, Dict, List, Optional
 from application.services.data.data_conversion_service import (
     DataConversionService,
 )
+from application.services.option_picker.option_orientation_update_service import (
+    OptionOrientationUpdateService,
+)
 from domain.models.core_models import BeatData
 from PyQt6.QtCore import QObject
 
@@ -56,9 +59,7 @@ class BeatDataLoader(QObject):
 
     def __init__(self):
         super().__init__()
-        self._beat_options: List[
-            BeatData
-        ] = (
+        self._beat_options: List[BeatData] = (
             []
         )  # Create reverse mapping from positions_map for location tuples to positions
         self._location_to_position_map = self._create_location_to_position_mapping()
@@ -71,10 +72,12 @@ class BeatDataLoader(QObject):
 
             self.position_service = PositionMatchingService()
             self.conversion_service = DataConversionService()
+            self.orientation_update_service = OptionOrientationUpdateService()
         except Exception as e:
             # Failed to initialize services for BeatDataLoader
             self.position_service = None
             self.conversion_service = None
+            self.orientation_update_service = None
 
     def _create_location_to_position_mapping(self) -> Dict[tuple, str]:
         """Create reverse mapping from location tuples to position names using the class POSITIONS_MAP
@@ -107,7 +110,9 @@ class BeatDataLoader(QObject):
             conversion_service = DataConversionService()
 
             if not sequence_data or len(sequence_data) < 2:
-                print("   ❌ Insufficient sequence data, falling back to sample options")
+                print(
+                    "   ❌ Insufficient sequence data, falling back to sample options"
+                )
                 print(f"      - sequence_data is None: {sequence_data is None}")
                 print(
                     f"      - sequence_data length: {len(sequence_data) if sequence_data else 0}"
@@ -148,7 +153,7 @@ class BeatDataLoader(QObject):
                     elif hasattr(option_data, "get"):
                         # It's a dictionary, convert it to BeatData
                         beat_data = (
-                            conversion_service.convert_legacy_pictograph_to_beat_data(
+                            conversion_service.convert_external_pictograph_to_beat_data(
                                 option_data
                             )
                         )
@@ -161,6 +166,46 @@ class BeatDataLoader(QObject):
                 except Exception as e:
                     # Skip invalid options silently
                     continue
+
+            # CRITICAL FIX: Apply orientation updates based on sequence context
+            # This ensures options have correct start orientations after start position selection
+            if self.orientation_update_service and len(sequence_data) >= 2:
+                # Convert sequence data to SequenceData for orientation update service
+                try:
+                    # Create a minimal sequence from the start position data
+                    start_position_dict = sequence_data[
+                        -1
+                    ]  # Last entry is the start position
+                    if (
+                        isinstance(start_position_dict, dict)
+                        and "letter" in start_position_dict
+                    ):
+                        # Convert to BeatData for orientation calculations
+                        start_beat = (
+                            conversion_service.convert_external_pictograph_to_beat_data(
+                                start_position_dict
+                            )
+                        )
+
+                        # Create a minimal sequence with just the start position
+                        from domain.models.core_models import SequenceData
+
+                        temp_sequence = SequenceData.empty().update(beats=[start_beat])
+
+                        # Apply orientation updates to the options
+                        beat_options = (
+                            self.orientation_update_service.update_option_orientations(
+                                temp_sequence, beat_options
+                            )
+                        )
+                        print(
+                            f"🔄 Applied orientation updates to {len(beat_options)} options from start position"
+                        )
+                except Exception as e:
+                    print(
+                        f"⚠️ Could not apply orientation updates from start position: {e}"
+                    )
+                    # Continue with unupdated options
 
             self._beat_options = beat_options
             return beat_options
@@ -314,7 +359,7 @@ class BeatDataLoader(QObject):
             try:
                 for option_data in dict_objects:
                     beat_data = (
-                        self.conversion_service.convert_legacy_pictograph_to_beat_data(
+                        self.conversion_service.convert_external_pictograph_to_beat_data(
                             option_data
                         )
                     )
@@ -359,6 +404,15 @@ class BeatDataLoader(QObject):
                 return self._load_sample_beat_options()
 
             # Options are already BeatData objects from position service
+            # CRITICAL FIX: Update orientations based on sequence context
+            if self.orientation_update_service:
+                next_options = (
+                    self.orientation_update_service.update_option_orientations(
+                        sequence, next_options
+                    )
+                )
+                print(f"🔄 Updated orientations for {len(next_options)} options")
+
             total_time = (time.perf_counter() - start_time) * 1000
             print(f"⚡ PURE Modern BEAT LOADER: {total_time:.1f}ms")
             print(
@@ -391,7 +445,9 @@ class BeatDataLoader(QObject):
             )  # Create position key: (blue_location, red_location) where blue=left, red=right
             position_key = (blue_end, red_end)
             end_pos = self._location_to_position_map.get(position_key, "beta5")
-            print(f"🎯 Calculated Modern end_pos: {end_pos} for beat {beat_data.letter}")
+            print(
+                f"🎯 Calculated Modern end_pos: {end_pos} for beat {beat_data.letter}"
+            )
             return end_pos
 
         # Fallback
