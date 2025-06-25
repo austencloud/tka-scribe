@@ -9,7 +9,7 @@
       "console": "integratedTerminal",
       "justMyCode": false,
       "subProcess": true,
-      "python": "C:/Python312/python.exe",
+      "python": "${command:python.interpreterPath}",
       "cwd": "${workspaceFolder}",
       "env": {
         "PYTHONPATH": "${workspaceFolder}:${workspaceFolder}/src:${workspaceFolder}/launcher:${workspaceFolder}/src/desktop/modern/src:${workspaceFolder}/src/desktop/legacy/src",
@@ -28,7 +28,7 @@
       "request": "launch",
       "program": "${workspaceFolder}/test_print.py",
       "console": "integratedTerminal",
-      "python": "C:/Python312/python.exe"
+      "python": "${command:python.interpreterPath}"
     },
     {
       "name": "✨ TKA Desktop Modern (Direct Debug)",
@@ -73,11 +73,7 @@
       "type": "debugpy",
       "request": "launch",
       "module": "pytest",
-      "args": [
-        "src/desktop/modern/tests/",
-        "-v",
-        "--tb=short"
-      ],
+      "args": ["src/desktop/modern/tests/", "-v", "--tb=short"],
       "console": "integratedTerminal",
       "justMyCode": false,
       "subProcess": true,
@@ -98,11 +94,7 @@
       "type": "debugpy",
       "request": "launch",
       "module": "pytest",
-      "args": [
-        "${file}",
-        "-v",
-        "--tb=short"
-      ],
+      "args": ["${file}", "-v", "--tb=short"],
       "console": "integratedTerminal",
       "justMyCode": false,
       "subProcess": true,
@@ -124,12 +116,7 @@
       "type": "debugpy",
       "request": "launch",
       "module": "pytest",
-      "args": [
-        "src/desktop/modern/tests/",
-        "--lf",
-        "-v",
-        "--tb=short"
-      ],
+      "args": ["src/desktop/modern/tests/", "--lf", "-v", "--tb=short"],
       "console": "integratedTerminal",
       "justMyCode": false,
       "subProcess": true,

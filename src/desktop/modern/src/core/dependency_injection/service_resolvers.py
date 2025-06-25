@@ -11,6 +11,7 @@ from typing import Type, Any, Dict, get_type_hints, Set
 from abc import ABC, abstractmethod
 import inspect
 import logging
+from functools import lru_cache
 
 logger = logging.getLogger(__name__)
 
@@ -42,7 +43,12 @@ class SingletonResolver(IServiceResolver):
 
 
 class ConstructorResolver(IServiceResolver):
-    """Resolver for constructor-based dependency injection."""
+    """Resolver for constructor-based dependency injection with signature caching."""
+
+    # Class-level caches for constructor signatures and type hints
+    _signature_cache: Dict[Type, inspect.Signature] = {}
+    _type_hints_cache: Dict[Type, Dict[str, Type]] = {}
+    _cache_stats: Dict[str, int] = {"hits": 0, "misses": 0, "total_cached": 0}
 
     def can_resolve(self, service_type: Type, registry: Any) -> bool:
         """Check if service is registered for constructor injection."""
@@ -58,9 +64,10 @@ class ConstructorResolver(IServiceResolver):
     def _create_with_constructor_injection(
         self, implementation_class: Type, container: Any
     ) -> Any:
-        """Create instance with constructor injection - simplified and focused."""
-        signature = inspect.signature(implementation_class.__init__)
-        type_hints = get_type_hints(implementation_class.__init__)
+        """Create instance with constructor injection using cached signatures."""
+        # Use cached signature and type hints for performance
+        signature = self._get_cached_signature(implementation_class)
+        type_hints = self._get_cached_type_hints(implementation_class)
         dependencies = {}
 
         for param_name, param in signature.parameters.items():
@@ -85,6 +92,67 @@ class ConstructorResolver(IServiceResolver):
             dependencies[param_name] = container.resolve(param_type)
 
         return implementation_class(**dependencies)
+
+    def _get_cached_signature(self, implementation_class: Type) -> inspect.Signature:
+        """Get cached constructor signature for the implementation class."""
+        if implementation_class not in self._signature_cache:
+            self._cache_stats["misses"] += 1
+            logger.debug(f"Cache miss for signature: {implementation_class.__name__}")
+
+            # Cache the signature
+            self._signature_cache[implementation_class] = inspect.signature(
+                implementation_class.__init__
+            )
+            self._cache_stats["total_cached"] = len(self._signature_cache)
+        else:
+            self._cache_stats["hits"] += 1
+            logger.debug(f"Cache hit for signature: {implementation_class.__name__}")
+
+        return self._signature_cache[implementation_class]
+
+    def _get_cached_type_hints(self, implementation_class: Type) -> Dict[str, Type]:
+        """Get cached type hints for the implementation class."""
+        if implementation_class not in self._type_hints_cache:
+            logger.debug(f"Cache miss for type hints: {implementation_class.__name__}")
+
+            # Cache the type hints
+            self._type_hints_cache[implementation_class] = get_type_hints(
+                implementation_class.__init__
+            )
+        else:
+            logger.debug(f"Cache hit for type hints: {implementation_class.__name__}")
+
+        return self._type_hints_cache[implementation_class]
+
+    @classmethod
+    def get_cache_stats(cls) -> Dict[str, int]:
+        """Get current cache statistics for monitoring."""
+        return cls._cache_stats.copy()
+
+    @classmethod
+    def clear_cache(cls) -> None:
+        """Clear all cached signatures and type hints."""
+        cls._signature_cache.clear()
+        cls._type_hints_cache.clear()
+        cls._cache_stats = {"hits": 0, "misses": 0, "total_cached": 0}
+        logger.info("DI constructor cache cleared")
+
+    @classmethod
+    def get_cache_info(cls) -> str:
+        """Get detailed cache information for debugging."""
+        hit_rate = (
+            cls._cache_stats["hits"]
+            / (cls._cache_stats["hits"] + cls._cache_stats["misses"])
+            * 100
+            if (cls._cache_stats["hits"] + cls._cache_stats["misses"]) > 0
+            else 0
+        )
+
+        return (
+            f"DI Cache Info: {cls._cache_stats['hits']} hits, {cls._cache_stats['misses']} misses, "
+            f"hit rate: {hit_rate:.1f}%, signatures cached: {len(cls._signature_cache)}, "
+            f"type hints cached: {len(cls._type_hints_cache)}"
+        )
 
     def _is_primitive_type(self, param_type: Type) -> bool:
         """Check if a type is a primitive type that should not be resolved as a dependency."""

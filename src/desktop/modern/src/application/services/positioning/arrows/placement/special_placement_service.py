@@ -19,6 +19,8 @@ PROVIDES:
 
 import json
 import os
+import time
+import logging
 from pathlib import Path
 from typing import Dict, Any, Optional
 from PyQt6.QtCore import QPointF
@@ -43,8 +45,23 @@ class SpecialPlacementService:
     """
 
     def __init__(self):
+        start_time = time.time()
+        logger = logging.getLogger(__name__)
+
         self.special_placements: Dict[str, Dict[str, Dict[str, Any]]] = {}
+
+        # Eager load special placements during initialization
         self._load_special_placements()
+
+        load_time = (time.time() - start_time) * 1000  # Convert to milliseconds
+        total_placements = sum(
+            len(subfolder_data)
+            for mode_data in self.special_placements.values()
+            for subfolder_data in mode_data.values()
+        )
+        logger.info(
+            f"Special Placement Service initialized: {total_placements} placements loaded in {load_time:.1f}ms"
+        )
 
     def get_special_adjustment(
         self, arrow_data: ArrowData, pictograph_data: PictographData

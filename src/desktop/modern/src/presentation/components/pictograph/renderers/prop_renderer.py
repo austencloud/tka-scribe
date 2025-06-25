@@ -6,6 +6,8 @@ Handles rendering of prop elements with positioning and rotation.
 
 import os
 import re
+import logging
+from functools import lru_cache
 from typing import TYPE_CHECKING, Any
 from PyQt6.QtCore import QPointF
 from PyQt6.QtSvgWidgets import QGraphicsSvgItem
@@ -148,12 +150,23 @@ class PropRenderer:
         )
 
     def _load_svg_file(self, file_path: str) -> str:
-        """Load SVG file content as string."""
+        """Load SVG file content as string with caching."""
+        return self._load_svg_file_cached(file_path)
+
+    @lru_cache(maxsize=64)  # Smaller cache for props since fewer files
+    def _load_svg_file_cached(self, file_path: str) -> str:
+        """Cached SVG file loader for props."""
         try:
             with open(file_path, "r", encoding="utf-8") as file:
-                return file.read()
+                content = file.read()
+                logging.getLogger(__name__).debug(
+                    f"Loaded and cached prop SVG: {file_path}"
+                )
+                return content
         except Exception as e:
-            print(f"Error loading SVG file {file_path}: {e}")
+            logging.getLogger(__name__).warning(
+                f"Error loading SVG file {file_path}: {e}"
+            )
             return ""
 
     def _apply_color_transformation(self, svg_data: str, color: str) -> str:

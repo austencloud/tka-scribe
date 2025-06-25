@@ -14,6 +14,8 @@ PROVIDES:
 from typing import Dict, Any, Optional
 from abc import ABC, abstractmethod
 import json
+import time
+import logging
 from pathlib import Path
 
 from domain.models.core_models import BeatData
@@ -52,10 +54,21 @@ class JSONConfigurationService(IJSONConfigurationService):
     """
 
     def __init__(self, config_paths: Optional[list] = None):
-        """Initialize with optional custom configuration paths."""
+        """Initialize with optional custom configuration paths and eager loading."""
+        start_time = time.time()
+        logger = logging.getLogger(__name__)
+
         self._config_paths = config_paths or self._get_default_config_paths()
         self._special_placements: Optional[Dict[str, Any]] = None
+
+        # Eager load special placements during initialization
         self._load_special_placements()
+
+        load_time = (time.time() - start_time) * 1000  # Convert to milliseconds
+        placement_count = len(self._special_placements or {})
+        logger.info(
+            f"JSON Configuration Service initialized: {placement_count} placements loaded in {load_time:.1f}ms"
+        )
 
     def load_special_placements(self) -> Dict[str, Any]:
         """Load special placement data from JSON configuration files."""
