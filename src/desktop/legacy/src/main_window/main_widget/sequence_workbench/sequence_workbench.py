@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QWidget, QHBoxLayout
 
 # Import the refactored DictionaryService and UI
+from main_window.main_widget.core.main_widget_coordinator import MainWidgetCoordinator
 from main_window.main_widget.sequence_workbench.add_to_dictionary_manager.dictionary_service import (
     DictionaryService,
 )
@@ -48,7 +49,7 @@ class SequenceWorkbench(QWidget):
     circular_indicator: CircularSequenceIndicator
     current_word_label: CurrentWordLabel
 
-    def __init__(self, main_widget: "MainWidget") -> None:
+    def __init__(self, main_widget: "MainWidgetCoordinator") -> None:
         super().__init__()
         self.main_widget = main_widget
         self.main_widget.splash_screen.updater.update_progress("SequenceWorkbench")

@@ -99,6 +99,12 @@ class ErrorType(Enum):
     SERVICE_OPERATION_ERROR = "service_operation_error"
     FILE_SYSTEM_ERROR = "file_system_error"
     NETWORK_ERROR = "network_error"
+    INITIALIZATION_ERROR = "initialization_error"
+    PERFORMANCE_ERROR = "performance_error"
+    SHUTDOWN_ERROR = "shutdown_error"
+    STORAGE_ERROR = "storage_error"
+    PROFILING_ERROR = "profiling_error"
+    CONFIGURATION_ERROR = "configuration_error"
 
 
 @dataclass(frozen=True)

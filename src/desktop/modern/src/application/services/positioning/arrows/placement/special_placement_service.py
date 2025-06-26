@@ -108,26 +108,22 @@ class SpecialPlacementService:
 
         # First, try direct color-based coordinate lookup (most common case)
         color_key = arrow_data.color.lower()  # "blue" or "red"
-        print(f"   � Trying color key: {color_key}")
 
         if color_key in turn_data:
             adjustment_values = turn_data[color_key]
             if isinstance(adjustment_values, list) and len(adjustment_values) == 2:
                 result = QPointF(adjustment_values[0], adjustment_values[1])
-                print(f"   ✅ COLOR COORDINATE MATCH: {result}")
                 return result
 
         # Second, try motion-type-specific adjustment (for letters like I)
         motion_type_key = (
             motion.motion_type.value.lower()
         )  # "pro", "anti", "float", etc.
-        print(f"   � Trying motion type key: {motion_type_key}")
 
         if motion_type_key in turn_data:
             adjustment_values = turn_data[motion_type_key]
             if isinstance(adjustment_values, list) and len(adjustment_values) == 2:
                 result = QPointF(adjustment_values[0], adjustment_values[1])
-                print(f"   ✅ MOTION TYPE MATCH: {result}")
                 return result
 
         # Third, check for special placement boolean flags (swap rules)
@@ -175,12 +171,9 @@ class SpecialPlacementService:
                                 data = json.load(f)
                                 self.special_placements[mode][subfolder].update(data)
                         except Exception as e:
-                            print(
-                                f"⚠️ Failed to load special placement file {file_path}: {e}"
-                            )
+                            pass
 
         except Exception as e:
-            print(f"⚠️ Failed to load special placements: {e}")
             self.special_placements = {}
 
     def _generate_orientation_key(
@@ -195,10 +188,6 @@ class SpecialPlacementService:
         - from_layer3_blue1_red2: Mixed orientations with blue on layer 1, red on layer 2
         - from_layer3_blue2_red1: Mixed orientations with blue on layer 2, red on layer 1
         """
-        # For now, use simplified logic - can be enhanced based on actual requirements
-        # This would need to be expanded to match the exact orientation key generation
-
-        # FIXED: Use Modern's actual data structure (arrows dictionary with color keys)
         try:
             blue_arrow = pictograph_data.arrows.get("blue")
             red_arrow = pictograph_data.arrows.get("red")
@@ -212,17 +201,12 @@ class SpecialPlacementService:
                 blue_motion = blue_arrow.motion_data
                 red_motion = red_arrow.motion_data
 
-                # Simplified layer detection based on orientations
-                # This matches the logic for determining orientation keys
                 blue_end_ori = getattr(blue_motion, "end_ori", "in")
                 red_end_ori = getattr(red_motion, "end_ori", "in")
 
-                # Layer 1: in/out orientations
-                # Layer 2: clock/counter orientations
                 blue_layer = 1 if blue_end_ori in ["in", "out"] else 2
                 red_layer = 1 if red_end_ori in ["in", "out"] else 2
 
-                # Generate orientation key based on layer combinations
                 if blue_layer == 1 and red_layer == 1:
                     return "from_layer1"
                 elif blue_layer == 2 and red_layer == 2:
@@ -232,12 +216,11 @@ class SpecialPlacementService:
                 elif blue_layer == 2 and red_layer == 1:
                     return "from_layer3_blue2_red1"
                 else:
-                    return "from_layer1"  # Default fallback
+                    return "from_layer1"
 
-        except Exception as e:
-            print(f"⚠️ Error generating orientation key: {e}")
+        except Exception:
+            pass
 
-        # Default orientation key
         return "from_layer1"
 
     def _generate_turns_tuple(self, pictograph_data: PictographData) -> str:
@@ -248,7 +231,6 @@ class SpecialPlacementService:
         Format: "(blue_turns, red_turns)" e.g., "(0, 1.5)", "(1, 0.5)"
         """
         try:
-            # FIXED: Use Modern's actual data structure (arrows dictionary with color keys)
             blue_arrow = pictograph_data.arrows.get("blue")
             red_arrow = pictograph_data.arrows.get("red")
 
@@ -264,7 +246,6 @@ class SpecialPlacementService:
                 blue_turns = getattr(blue_motion, "turns", 0)
                 red_turns = getattr(red_motion, "turns", 0)
 
-                # Format turns values (remove .0 for whole numbers)
                 blue_str = (
                     str(int(blue_turns))
                     if blue_turns == int(blue_turns)
@@ -278,9 +259,7 @@ class SpecialPlacementService:
 
                 return f"({blue_str}, {red_str})"
 
-            # Default fallback
             return "(0, 0)"
 
-        except Exception as e:
-            print(f"⚠️ Error generating turns tuple: {e}")
+        except Exception:
             return "(0, 0)"
