@@ -3,7 +3,9 @@ from PyQt6.QtWidgets import QWidget, QVBoxLayout
 from PyQt6.QtCore import Qt
 from .letter_types import LetterType
 from .option_picker_section_header import OptionPickerSectionHeader
-from .option_picker_section_pictograph_frame import OptionPickerSectionPictographFrame
+from .option_picker_section_pictograph_container import (
+    OptionPickerSectionPictographContainer,
+)
 
 
 class OptionPickerSection(QWidget):
@@ -29,7 +31,9 @@ class OptionPickerSection(QWidget):
         self._last_width = None  # Track width to prevent unnecessary resize
         self._resize_in_progress = False  # Prevent resize cascades
         self._debug_logged = False  # Only log once per major change
+        self._option_picker_width = 0  # Reactive sizing reference
         self._setup_ui()
+        self._register_for_sizing_updates()
 
     def _setup_ui(self):
         """Setup UI using legacy-style separation of concerns."""
@@ -44,17 +48,17 @@ class OptionPickerSection(QWidget):
         layout.addWidget(self.header)
 
         # Create pictograph frame component
-        self.pictograph_frame = OptionPickerSectionPictographFrame(self)
-        layout.addWidget(self.pictograph_frame)
+        self.section_pictograph_container = OptionPickerSectionPictographContainer(self)
+        layout.addWidget(self.section_pictograph_container)
 
         # Set transparent background
         self.setStyleSheet("background-color: transparent; border: none;")
         self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
 
         # For compatibility, alias the frame as pictograph_container
-        self.pictograph_container = self.pictograph_frame
-        self.pictograph_layout = self.pictograph_frame.layout
-        self.pictographs = self.pictograph_frame.pictographs
+        self.section_pictograph_container = self.section_pictograph_container
+        self.pictograph_layout = self.section_pictograph_container.layout
+        self.pictographs = self.section_pictograph_container.pictographs
 
         # Access header button for compatibility
         self.header_button = self.header.type_button
@@ -62,24 +66,31 @@ class OptionPickerSection(QWidget):
     def _get_global_pictograph_size(self) -> int:
         """
         Calculate consistent pictograph size using legacy algorithm.
-        Matches legacy option_view.py resize logic exactly.
+        FIXED: Use frame width instead of section width for accurate sizing.
         """
         if self.mw_size_provider:
             main_window_width = self.mw_size_provider().width()
-            section_width = self.width() if self.width() > 0 else main_window_width
 
-            # Legacy algorithm: max(mw_width // 16, option_picker.width() // 8)
-            size = max(main_window_width // 16, section_width // 8)
+            # FIXED: Use frame width since that's where pictographs actually live
+            frame_width = (
+                self.section_pictograph_container.width()
+                if self.section_pictograph_container.width() > 0
+                else self.width()
+            )
+
+            # If frame width is still 0, fall back to section width
+            if frame_width <= 0:
+                frame_width = self.width() if self.width() > 0 else main_window_width
+
+            # Legacy algorithm: max(mw_width // 16, container.width() // 8)
+            # FIXED: Use frame_width instead of section_width
+            size = max(main_window_width // 16, frame_width // 8)
 
             # Legacy border width calculation: max(1, int(size * 0.015))
             border_width = max(1, int(size * 0.015))
 
             # Legacy spacing (grid spacing from frame)
-            spacing = (
-                self.pictograph_frame.layout.spacing()
-                if hasattr(self, "pictograph_frame")
-                else 3
-            )
+            spacing = self.section_pictograph_container.main_layout.spacing()
 
             # Legacy final calculation: size -= 2 * bw + spacing
             final_size = size - (2 * border_width) - spacing
@@ -91,43 +102,106 @@ class OptionPickerSection(QWidget):
         else:
             return 100  # Fallback size
 
-    def add_pictograph(self, pictograph_frame):
-        """Add pictograph using frame component."""
-        self.pictograph_frame.add_pictograph(pictograph_frame)
-        self._update_size()
-
-        # Log comprehensive metrics only when pictographs are added
-        if len(self.pictograph_frame.pictographs) in [1, 4, 8, 16]:  # Key milestones
-            self._log_layout_metrics(
-                f"After adding pictograph #{len(self.pictograph_frame.pictographs)}"
-            )
-
     def add_pictograph_from_pool(self, pictograph_frame):
         """Add pictograph from pool using frame component."""
-        self.pictograph_frame.add_pictograph_from_pool(pictograph_frame)
+        # CRITICAL FIX: Ensure sections_container is properly sized before pictograph sizing
+        self._ensure_container_ready()
+
+        # FIXED: Ensure frame width is synchronized before adding pictographs
+        self.section_pictograph_container.sync_width_with_section()
+        self.section_pictograph_container.add_pictograph(pictograph_frame)
         self._update_size()
+
+    def _ensure_container_ready(self):
+        """Ensure the option picker container is properly sized before pictograph operations"""
+        # Force the widget hierarchy to process any pending layout updates
+        if self.parent():
+            # Walk up to find the option picker container
+            widget = self.parent()
+            while widget:
+                # Look for ModernOptionPickerWidget or sections container
+                if (
+                    hasattr(widget, "__class__")
+                    and "ModernOptionPickerWidget" in widget.__class__.__name__
+                ):
+                    # Found the main option picker - ensure it's properly sized
+                    widget.updateGeometry()
+                    widget.update()
+                    # Process any pending events to ensure sizing is complete
+                    from PyQt6.QtWidgets import QApplication
+
+                    QApplication.processEvents()
+                    break
+                elif (
+                    hasattr(widget, "layout")
+                    and widget.layout()
+                    and widget.layout().__class__.__name__ == "QVBoxLayout"
+                    and widget.width() > 500
+                ):  # Reasonable minimum for option picker
+                    # Found a large sections container - ensure it's properly sized
+                    widget.updateGeometry()
+                    widget.update()
+                    # Process any pending events to ensure sizing is complete
+                    from PyQt6.QtWidgets import QApplication
+
+                    QApplication.processEvents()
+                    break
+                widget = widget.parent()
+
+    def _register_for_sizing_updates(self):
+        """Register this section to receive sizing updates from the option picker"""
+        # Walk up to find the ModernOptionPickerWidget
+        widget = self.parent()
+        while widget:
+            if (
+                hasattr(widget, "__class__")
+                and "ModernOptionPickerWidget" in widget.__class__.__name__
+            ):
+                # Found the option picker - register for sizing updates
+                widget.add_sizing_callback(self._on_option_picker_resize)
+                print(f"🔗 Section {self.letter_type} registered for sizing updates")
+                break
+            widget = widget.parent()
+
+    def _on_option_picker_resize(self, option_picker_width: int):
+        """Handle option picker width changes"""
+        self._option_picker_width = option_picker_width
+        print(
+            f"📏 Section {self.letter_type} received sizing update: {option_picker_width}px"
+        )
+
+        # Notify all pictograph frames in this section
+        if hasattr(self, "section_pictograph_container"):
+            self.section_pictograph_container.update_sizing_reference(
+                option_picker_width
+            )
 
     def clear_pictographs(self):
         """Clear pictographs using frame component."""
-        self.pictograph_frame.clear_pictographs()
+        self.section_pictograph_container.clear_pictographs()
 
     def clear_pictographs_pool_style(self):
         """Clear pictographs using pool style."""
-        self.pictograph_frame.clear_pictographs_pool_style()
+        self.section_pictograph_container.clear_pictographs_pool_style()
 
     def _update_size(self):
         """Update section size using legacy-style calculation."""
         try:
-            # Get global pictograph size
+            # FIXED: Ensure frame width matches section width exactly
+            self.section_pictograph_container.sync_width_with_section()
+
+            # Get global pictograph size (now uses correct frame width)
             pictograph_size = self._get_global_pictograph_size()
 
             # Resize pictographs
-            self.pictograph_frame.resize_pictographs(pictograph_size)
+            self.section_pictograph_container.resize_pictographs(pictograph_size)
 
             # Calculate required heights
             header_height = self.header.get_calculated_height()
-            pictograph_height = self.pictograph_frame.calculate_required_height(
-                pictograph_size
+            pictograph_height = (
+                self.section_pictograph_container.calculate_required_height(
+                    pictograph_size
+                )
             )
 
             # Total section height (legacy style: just header + content)
@@ -176,38 +250,90 @@ class OptionPickerSection(QWidget):
                 )
                 print(f"   Section: {self.width()}x{self.height()}")
                 print(
-                    f"   Frame: {self.pictograph_frame.width()}x{self.pictograph_frame.height()}"
+                    f"   Frame: {self.section_pictograph_container.width()}x{self.section_pictograph_container.height()}"
                 )
-                print(f"   Grid spacing: {self.pictograph_frame.layout.spacing()}px")
-                print(f"   Pictograph count: {len(self.pictograph_frame.pictographs)}")
+                print(
+                    f"   Grid spacing: {self.section_pictograph_container.main_layout.spacing()}px"
+                )
+                print(
+                    f"   Pictograph count: {len(self.section_pictograph_container.pictographs)}"
+                )
                 print(f"   Pictograph size: {self._get_global_pictograph_size()}px")
 
                 # Show section width calculation details
                 full_width = main_window_size.width()
-                expected_section_width = full_width // 2
-                print(
-                    f"   Section width calculation: {full_width} // 2 = {expected_section_width}px"
-                )
+                if self.letter_type in [
+                    LetterType.TYPE1,
+                    LetterType.TYPE2,
+                    LetterType.TYPE3,
+                ]:
+                    expected_section_width = full_width
+                    print(f"   Section width calculation: {full_width} (full width)")
+                else:
+                    expected_section_width = full_width // 3
+                    print(
+                        f"   Section width calculation: {full_width} // 3 = {expected_section_width}px"
+                    )
                 print(f"   Actual section width: {self.width()}px")
 
                 # Calculate grid utilization
-                if len(self.pictograph_frame.pictographs) > 0:
-                    rows = (len(self.pictograph_frame.pictographs) - 1) // 8 + 1
+                if len(self.section_pictograph_container.pictographs) > 0:
+                    rows = (
+                        len(self.section_pictograph_container.pictographs) - 1
+                    ) // 8 + 1
                     print(f"   Grid layout: {rows} rows x 8 columns")
 
                     # Calculate expected vs actual widths
                     pictograph_size = self._get_global_pictograph_size()
-                    spacing = self.pictograph_frame.layout.spacing()
+                    spacing = self.section_pictograph_container.main_layout.spacing()
                     expected_frame_width = (pictograph_size * 8) + (spacing * 7)
+
+                    # FIXED: Show frame-section width match status
+                    frame_width = self.section_pictograph_container.width()
+                    section_width = self.width()
+                    width_match = "✓" if frame_width == section_width else "✗"
+
+                    # ENHANCED: Add border analysis for pictograph sizing investigation
+                    border_width = max(1, int(pictograph_size * 0.015))
+                    actual_pictograph_width = (
+                        pictograph_size  # Frame size (borders are overlays)
+                    )
+                    total_pictographs_width = actual_pictograph_width * 8
+                    total_spacing_width = spacing * 7
+                    total_content_width = total_pictographs_width + total_spacing_width
+
+                    overflow = (
+                        total_content_width - frame_width if frame_width > 0 else 0
+                    )
+                    overflow_status = "⚠️ OVERFLOW" if overflow > 0 else "✓ FITS"
+
                     utilization = (
-                        (expected_frame_width / self.pictograph_frame.width() * 100)
-                        if self.pictograph_frame.width() > 0
+                        (expected_frame_width / frame_width * 100)
+                        if frame_width > 0
                         else 0
                     )
                     print(f"   Expected frame width: {expected_frame_width}px")
-                    print(f"   Actual frame width: {self.pictograph_frame.width()}px")
+                    print(f"   Actual frame width: {frame_width}px")
+                    print(
+                        f"   Frame-Section match: {width_match} ({frame_width} == {section_width})"
+                    )
                     print(f"   Width utilization: {utilization:.1f}%")
-                print(f"   ---")
+                    print(f"   🔍 BORDER ANALYSIS:")
+                    print(
+                        f"      Border width: {border_width}px (calculated from size)"
+                    )
+                    print(f"      Pictograph frame size: {actual_pictograph_width}px")
+                    print(
+                        f"      Total pictographs: {total_pictographs_width}px (8 × {actual_pictograph_width})"
+                    )
+                    print(
+                        f"      Total spacing: {total_spacing_width}px (7 × {spacing})"
+                    )
+                    print(f"      Total content width: {total_content_width}px")
+                    print(
+                        f"      Container overflow: {overflow_status} ({overflow:+d}px)"
+                    )
+                print("   ---")
         except Exception as e:
             print(f"⚠️ [ERROR] Metrics logging failed: {e}")
 
@@ -228,15 +354,6 @@ class OptionPickerSection(QWidget):
                     LetterType.TYPE6,
                 ]:
                     # Bottom row sections - use fixed calculation
-                    base_width = full_width // 2
-                    COLUMN_COUNT = 8
-                    calculated_width = int((base_width / COLUMN_COUNT) - 3)
-
-                    view_width = (
-                        calculated_width
-                        if calculated_width < self.mw_size_provider().height() // 8
-                        else self.mw_size_provider().height() // 8
-                    )
                     section_width = full_width // 3
                 else:
                     # Top sections - use full width like legacy system
@@ -249,6 +366,9 @@ class OptionPickerSection(QWidget):
                 ):
                     self._last_width = section_width
                     self.setFixedWidth(section_width)
+
+                    # FIXED: Ensure frame width matches section width immediately
+                    self.section_pictograph_container.sync_width_with_section()
 
                     # Log only on significant width changes for Types 1-3
                     if not self._debug_logged and self.letter_type in [
@@ -268,14 +388,14 @@ class OptionPickerSection(QWidget):
 
     def toggle_section(self):
         """Toggle section visibility."""
-        is_visible = not self.pictograph_frame.isVisible()
-        self.pictograph_frame.setVisible(is_visible)
+        is_visible = not self.section_pictograph_container.isVisible()
+        self.section_pictograph_container.setVisible(is_visible)
 
     # Properties for compatibility with old code
     @property
     def pictographs(self):
-        return self.pictograph_frame.pictographs
+        return self.section_pictograph_container.pictographs
 
     @pictographs.setter
     def pictographs(self, value):
-        self.pictograph_frame.pictographs = value
+        self.section_pictograph_container.pictographs = value

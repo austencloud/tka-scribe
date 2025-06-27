@@ -596,14 +596,12 @@ class DockApplicationIcon(QFrame):
                         stop:1 rgba(56, 142, 60, 0.3));
                     border: 2px solid #4CAF50;
                     border-radius: 8px;
-                    box-shadow: 0 0 8px rgba(76, 175, 80, 0.4);
                 }}
                 DockApplicationIcon:hover {{
                     background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
                         stop:0 rgba(102, 187, 106, 0.4),
                         stop:1 rgba(76, 175, 80, 0.4));
                     border: 2px solid #66BB6A;
-                    box-shadow: 0 0 12px rgba(102, 187, 106, 0.5);
                 }}
             """
             )
@@ -617,14 +615,12 @@ class DockApplicationIcon(QFrame):
                         stop:1 rgba(245, 124, 0, 0.3));
                     border: 2px solid #FF9800;
                     border-radius: 8px;
-                    box-shadow: 0 0 8px rgba(255, 152, 0, 0.4);
                 }}
                 DockApplicationIcon:hover {{
                     background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
                         stop:0 rgba(255, 183, 77, 0.4),
                         stop:1 rgba(255, 152, 0, 0.4));
                     border: 2px solid #FFB74D;
-                    box-shadow: 0 0 12px rgba(255, 183, 77, 0.5);
                 }}
             """
             )
@@ -638,14 +634,12 @@ class DockApplicationIcon(QFrame):
                         stop:1 rgba(211, 47, 47, 0.3));
                     border: 2px solid #F44336;
                     border-radius: 8px;
-                    box-shadow: 0 0 8px rgba(244, 67, 54, 0.4);
                 }}
                 DockApplicationIcon:hover {{
                     background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
                         stop:0 rgba(239, 83, 80, 0.4),
                         stop:1 rgba(244, 67, 54, 0.4));
                     border: 2px solid #EF5350;
-                    box-shadow: 0 0 12px rgba(239, 83, 80, 0.5);
                 }}
             """
             )
@@ -659,14 +653,12 @@ class DockApplicationIcon(QFrame):
                         stop:1 rgba(255, 255, 255, 0.05));
                     border: 1px solid rgba(255, 255, 255, 0.15);
                     border-radius: 8px;
-                    backdrop-filter: blur(10px);
                 }}
                 DockApplicationIcon:hover {{
                     background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
                         stop:0 rgba(255, 255, 255, 0.2),
                         stop:1 rgba(255, 255, 255, 0.1));
                     border: 1px solid rgba(255, 255, 255, 0.25);
-                    box-shadow: 0 0 8px rgba(255, 255, 255, 0.1);
                 }}
             """
             )

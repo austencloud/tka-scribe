@@ -174,7 +174,9 @@ class PictographPoolManager(QObject):
                 print(f"❌ Failed to create fallback pool object {i}: {e}")
                 break
 
-    def get_pool_frame(self, index: int) -> Optional[ClickablePictographFrame]:
+    def get_pictograph_from_pool(
+        self, index: int
+    ) -> Optional[ClickablePictographFrame]:
         """Get frame from pool at specified index"""
         if 0 <= index < len(self._pictograph_pool):
             return self._pictograph_pool[index]

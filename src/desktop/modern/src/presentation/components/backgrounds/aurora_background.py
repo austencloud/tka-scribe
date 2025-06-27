@@ -10,8 +10,6 @@ from .base_background import BaseBackground
 class AuroraBackground(BaseBackground):
     def __init__(self, parent=None) -> None:
         super().__init__(parent or QWidget())
-        self.gradient_shift = 0
-        self.color_shift = 0
         self.wave_phase = 0  # Phase of sine wave for wavy gradient effect
 
         # Initialize the SparkleManager and BlobManager

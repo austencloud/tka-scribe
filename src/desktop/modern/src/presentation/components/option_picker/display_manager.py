@@ -2,6 +2,7 @@ from typing import List, Dict
 from PyQt6.QtWidgets import QWidget, QVBoxLayout
 
 from domain.models.core_models import BeatData
+from presentation.components.option_picker.clickable_pictograph_frame import ClickablePictographFrame
 from .option_picker_section import OptionPickerSection
 from .pictograph_pool_manager import PictographPoolManager
 from .letter_types import LetterType
@@ -26,8 +27,10 @@ class OptionPickerDisplayManager:
     def create_sections(self) -> None:
         """Create sections with single-row layout for sections 4,5,6"""
         from PyQt6.QtWidgets import QHBoxLayout
-        
-        print(f"📄 [HEIGHT DEBUG] Creating sections - Container size: {self.sections_container.width()} × {self.sections_container.height()}px")
+
+        print(
+            f"📄 [HEIGHT DEBUG] Creating sections - Container size: {self.sections_container.width()} × {self.sections_container.height()}px"
+        )
 
         # Create sections 1, 2, 3 normally (vertical layout)
         for section_type in [LetterType.TYPE1, LetterType.TYPE2, LetterType.TYPE3]:
@@ -48,7 +51,7 @@ class OptionPickerDisplayManager:
         self.bottom_row_layout = QHBoxLayout(self.bottom_row_container)
         self.bottom_row_layout.setContentsMargins(5, 0, 5, 0)  # Reduced margins
         self.bottom_row_layout.setSpacing(8)  # Reduced spacing
-        
+
         print(f"   Created bottom row container with margins: 5,0,5,0 and spacing: 8px")
 
         # Create sections 4, 5, 6 in horizontal layout
@@ -70,16 +73,20 @@ class OptionPickerDisplayManager:
                 available_width = full_width - total_margins - total_spacing
                 section_width = available_width // 3
                 section.setFixedWidth(section_width)
-                print(f"   Set {section_type} width to: {section_width}px (of {available_width}px available)")
+                print(
+                    f"   Set {section_type} width to: {section_width}px (of {available_width}px available)"
+                )
 
         self.sections_layout.addWidget(self.bottom_row_container)
         print(f"   Added bottom row container to main layout")
-        
+
         # Print layout spacing information
         main_spacing = self.sections_layout.spacing()
         main_margins = self.sections_layout.contentsMargins()
         print(f"   Main layout spacing: {main_spacing}px")
-        print(f"   Main layout margins: {main_margins.left()}, {main_margins.top()}, {main_margins.right()}, {main_margins.bottom()}px")
+        print(
+            f"   Main layout margins: {main_margins.left()}, {main_margins.top()}, {main_margins.right()}, {main_margins.bottom()}px"
+        )
 
         # Make all containers transparent
         if self.sections_container:
@@ -91,8 +98,8 @@ class OptionPickerDisplayManager:
                 section.setVisible(True)
                 section.show()
                 if hasattr(section, "pictograph_container"):
-                    section.pictograph_container.setVisible(True)
-                    section.pictograph_container.show()
+                    section.section_pictograph_container.setVisible(True)
+                    section.section_pictograph_container.show()
 
         if hasattr(self, "bottom_row_container"):
             self.bottom_row_container.setVisible(True)
@@ -102,7 +109,9 @@ class OptionPickerDisplayManager:
 
     def update_beat_display(self, beat_options: List[BeatData]) -> None:
         """Optimized: Batch update beat display for instant performance"""
-        print(f"🔍 [DEBUG] Display Manager: update_beat_display called with {len(beat_options)} options")
+        print(
+            f"🔍 [DEBUG] Display Manager: update_beat_display called with {len(beat_options)} options"
+        )
         try:
             # Batch all operations to minimize UI updates
             self._batch_update_beat_display(beat_options)
@@ -135,10 +144,10 @@ class OptionPickerDisplayManager:
         for letter_type, beat_list in beats_by_type.items():
             target_section = self._sections[letter_type]
             for pool_index, beat in beat_list:
-                frame = self.pool_manager.get_pool_frame(pool_index)
+                frame = self.pool_manager.get_pictograph_from_pool(pool_index)
                 if frame:
                     frame.update_beat_data(beat)
-                    frame.setParent(target_section.pictograph_container)
+                    frame.setParent(target_section.section_pictograph_container)
                     target_section.add_pictograph_from_pool(frame)
 
     def _fallback_update_beat_display(self, beat_options: List[BeatData]) -> None:
@@ -160,10 +169,11 @@ class OptionPickerDisplayManager:
 
                 if letter_type in self._sections:
                     target_section = self._sections[letter_type]
-                    frame = self.pool_manager.get_pool_frame(pool_index)
+                    frame = self.pool_manager.get_pictograph_from_pool(pool_index)
                     if frame:
+                        frame: "ClickablePictographFrame"
                         frame.update_beat_data(beat)
-                        frame.setParent(target_section.pictograph_container)
+                        frame.setParent(target_section.section_pictograph_container)
                         target_section.add_pictograph_from_pool(frame)
                         pool_index += 1
 

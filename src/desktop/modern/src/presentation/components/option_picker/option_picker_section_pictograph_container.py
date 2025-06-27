@@ -2,11 +2,15 @@ from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QFrame, QGridLayout
 from PyQt6.QtCore import Qt
 
+from presentation.components.option_picker.clickable_pictograph_frame import (
+    ClickablePictographFrame,
+)
+
 if TYPE_CHECKING:
     from .option_picker_section import OptionPickerSection
 
 
-class OptionPickerSectionPictographFrame(QFrame):
+class OptionPickerSectionPictographContainer(QFrame):
     """
     Frame widget for holding pictographs in a grid layout.
     Handles pictograph-specific layout and sizing.
@@ -15,25 +19,24 @@ class OptionPickerSectionPictographFrame(QFrame):
     def __init__(self, section: "OptionPickerSection"):
         super().__init__()
         self.section = section
-        self.pictographs = []
+        self.pictographs: list[QFrame] = []
         self._setup_ui()
 
     def _setup_ui(self):
         """Setup grid layout for pictographs exactly like legacy system."""
-        self.layout = QGridLayout(self)
+        self.main_layout = QGridLayout(self)
         # CRITICAL: Use center alignment like original legacy system
-        self.layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.layout.setContentsMargins(0, 0, 0, 0)
-        self.layout.setSpacing(3)  # CRITICAL: Use original spacing value (3, not 8)
+        self.main_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.main_layout.setContentsMargins(0, 0, 0, 0)
+        self.main_layout.setSpacing(
+            3
+        )  # CRITICAL: Use original spacing value (3, not 8)
 
-        # Make sure the frame expands to fill available width
+        # FIXED: Frame should match section width exactly, not expand independently
         from PyQt6.QtWidgets import QSizePolicy
 
-        self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
-
-        # Ensure frame width matches section width exactly
-        self.setMinimumWidth(0)  # Allow shrinking
-        self.setMaximumWidth(16777215)  # Allow expanding (Qt max)
+        # Use Fixed width policy to match parent section's setFixedWidth()
+        self.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Minimum)
 
         # Set transparent background
         self.setStyleSheet(
@@ -47,21 +50,10 @@ class OptionPickerSectionPictographFrame(QFrame):
 
         self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
 
-    def add_pictograph(self, pictograph_frame):
-        """Add pictograph to grid layout."""
-        self.pictographs.append(pictograph_frame)
-
-        # Set container widget for legacy-style resizing
-        if hasattr(pictograph_frame, "set_container_widget"):
-            pictograph_frame.set_container_widget(self.section)
-
-        # Use 8-column layout like legacy for top sections (Types 1,2,3)
-        COLUMN_COUNT = 8
-        count = len(self.pictographs)
-        row, col = divmod(count - 1, COLUMN_COUNT)
-
-        self.layout.addWidget(pictograph_frame, row, col)
-        pictograph_frame.setVisible(True)
+    def sync_width_with_section(self):
+        """Ensure frame width exactly matches section width."""
+        if self.section and self.section.width() > 0:
+            self.setFixedWidth(self.section.width())
 
     def clear_pictographs(self):
         """Clear all pictographs from the frame."""
@@ -70,7 +62,7 @@ class OptionPickerSectionPictographFrame(QFrame):
                 try:
                     if hasattr(pictograph, "cleanup"):
                         pictograph.cleanup()
-                    self.layout.removeWidget(pictograph)
+                    self.main_layout.removeWidget(pictograph)
                     pictograph.setParent(None)
                     pictograph.deleteLater()
                 except RuntimeError:
@@ -82,26 +74,24 @@ class OptionPickerSectionPictographFrame(QFrame):
         for pictograph in self.pictographs:
             if pictograph is not None:
                 try:
-                    self.layout.removeWidget(pictograph)
+                    self.main_layout.removeWidget(pictograph)
                     pictograph.setVisible(False)
                 except RuntimeError:
                     pass
         self.pictographs.clear()
 
-    def add_pictograph_from_pool(self, pictograph_frame):
+    def add_pictograph(self, pictograph_frame: "ClickablePictographFrame"):
         """Add pictograph from pool."""
         self.pictographs.append(pictograph_frame)
 
-        # Set container widget for legacy-style resizing
         if hasattr(pictograph_frame, "set_container_widget"):
             pictograph_frame.set_container_widget(self.section)
 
-        # Use 8-column layout like legacy
         COLUMN_COUNT = 8
         count = len(self.pictographs)
         row, col = divmod(count - 1, COLUMN_COUNT)
 
-        self.layout.addWidget(pictograph_frame, row, col)
+        self.main_layout.addWidget(pictograph_frame, row, col)
         pictograph_frame.setVisible(True)
         pictograph_frame.show()
 
@@ -109,19 +99,41 @@ class OptionPickerSectionPictographFrame(QFrame):
             pictograph_frame.pictograph_component.setVisible(True)
             pictograph_frame.pictograph_component.show()
 
+        # DEBUG: Log actual pictograph dimensions after adding to layout
+        if count <= 8:  # Only log first row to avoid spam
+            actual_width = pictograph_frame.width()
+            actual_height = pictograph_frame.height()
+            print(
+                f"   🔍 Pictograph {count}: {actual_width}x{actual_height}px at grid ({row},{col})"
+            )
+
     def resize_pictographs(self, target_size: int):
         """Resize all pictographs using legacy algorithm."""
-        for pictograph_frame in self.pictographs:
+        print(
+            f"   🔧 Resizing {len(self.pictographs)} pictographs to target: {target_size}px"
+        )
+
+        for i, pictograph_frame in enumerate(self.pictographs):
             if pictograph_frame and hasattr(pictograph_frame, "resize_frame"):
                 try:
+                    old_size = f"{pictograph_frame.width()}x{pictograph_frame.height()}"
                     # Use the frame's own resize_frame method which implements legacy algorithm
                     pictograph_frame.resize_frame()
+                    new_size = f"{pictograph_frame.width()}x{pictograph_frame.height()}"
+                    if i < 3:  # Only log first 3 to avoid spam
+                        print(f"      Pictograph {i+1}: {old_size} → {new_size}")
                 except RuntimeError:
                     continue
             elif pictograph_frame and hasattr(pictograph_frame, "setFixedSize"):
                 try:
+                    old_size = f"{pictograph_frame.width()}x{pictograph_frame.height()}"
                     # Fallback for frames without resize_frame method
                     pictograph_frame.setFixedSize(target_size, target_size)
+                    new_size = f"{pictograph_frame.width()}x{pictograph_frame.height()}"
+                    if i < 3:  # Only log first 3 to avoid spam
+                        print(
+                            f"      Pictograph {i+1}: {old_size} → {new_size} (fallback)"
+                        )
                 except RuntimeError:
                     continue
 
@@ -135,10 +147,24 @@ class OptionPickerSectionPictographFrame(QFrame):
         rows_needed = max_row + 1
 
         container_margins = 0  # Frame has no margins
-        grid_spacing = 8
+        # FIXED: Use actual grid spacing from layout (3px, not 8px)
+        grid_spacing = self.main_layout.spacing()
 
         return (
             (rows_needed * pictograph_size)
             + (grid_spacing * (rows_needed - 1))
             + (2 * container_margins)
         )
+
+    def update_sizing_reference(self, option_picker_width: int):
+        """Update sizing reference for all pictograph frames in this container"""
+        print(
+            f"📏 Container updating sizing reference to {option_picker_width}px for {len(self.pictographs)} pictographs"
+        )
+
+        # Update all pictograph frames with the new sizing reference
+        for pictograph_frame in self.pictographs:
+            if pictograph_frame and hasattr(
+                pictograph_frame, "update_sizing_reference"
+            ):
+                pictograph_frame.update_sizing_reference(option_picker_width)

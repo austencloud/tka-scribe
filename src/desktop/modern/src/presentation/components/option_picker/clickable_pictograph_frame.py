@@ -31,6 +31,7 @@ class ClickablePictographFrame(QFrame):
         self.setLineWidth(0)
 
         self.container_widget: Optional[QWidget] = None
+        self._option_picker_width: int = 0  # Reactive sizing reference
 
         square_size: int = 160
         self.setFixedSize(square_size, square_size)
@@ -118,24 +119,28 @@ class ClickablePictographFrame(QFrame):
         self.container_widget = container_widget
 
     def resize_frame(self) -> None:
-        """Resize frame using exact legacy algorithm from option_view.py"""
-        if not self.container_widget:
-            return
-
+        """Resize frame using reactive sizing reference from option picker"""
         try:
-            # Get main window width (legacy approach)
-            main_window = self.container_widget
-            while main_window.parent():
-                main_window = main_window.parent()
-            main_window_width = main_window.width() if main_window else 800
-
-            # Get container (section) width
-            container_width = self.container_widget.width()
-            if container_width <= 0:
+            # Use the reactive sizing reference if available
+            if self._option_picker_width > 0:
+                container_width = self._option_picker_width
+                print(
+                    f"🔍 SIZING DEBUG: Using reactive sizing reference: {container_width}px"
+                )
+            elif self.container_widget and self.container_widget.width() > 0:
+                # Fallback to container width
+                container_width = self.container_widget.width()
+                print(
+                    f"🔍 SIZING DEBUG: Using fallback container width: {container_width}px"
+                )
+            else:
+                print(f"🔍 SIZING DEBUG: No valid sizing reference available")
                 return
 
-            # Legacy algorithm: max(mw_width // 16, option_picker.width() // 8)
-            size = max(main_window_width // 16, container_width // 8)
+            # Use unified sizing calculation for ALL section types
+            # This ensures Types 1-6 all have identical pictograph sizes
+            container_based_size = container_width // 8
+            size = container_based_size
 
             # Legacy border width calculation: max(1, int(size * 0.015))
             border_width = max(1, int(size * 0.015))
@@ -149,10 +154,20 @@ class ClickablePictographFrame(QFrame):
             # Apply reasonable bounds to prevent extreme sizes
             final_size = max(60, min(final_size, 200))
 
+            print(
+                f"🔍 SIZING DEBUG: Final pictograph size: {final_size}px (from container: {container_width}px)"
+            )
+
             self.setFixedSize(final_size, final_size)
 
         except Exception as e:
             print(f"❌ Error in resize_frame: {e}")
+
+    def update_sizing_reference(self, option_picker_width: int):
+        """Update the sizing reference and resize the frame"""
+        self._option_picker_width = option_picker_width
+        print(f"📏 Frame received sizing update: {option_picker_width}px")
+        self.resize_frame()
 
     def update_beat_data(self, beat_data: BeatData) -> None:
         """Update the frame's content with new beat data (Legacy-style reuse pattern)"""

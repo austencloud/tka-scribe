@@ -328,8 +328,6 @@ class StyleBuilder:
 
     def shadow(self, variant: str = "card") -> str:
         """Generate shadow CSS (PyQt6 doesn't support box-shadow, returns empty)."""
-        # PyQt6 doesn't support box-shadow CSS property
-        # Shadows should be applied via QGraphicsDropShadowEffect instead
         return ""
 
 
