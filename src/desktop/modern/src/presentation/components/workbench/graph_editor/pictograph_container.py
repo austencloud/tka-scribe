@@ -22,6 +22,8 @@ class GraphEditorPictographContainer(QWidget):
         self._graph_editor = parent
         self._current_beat: Optional[BeatData] = None
         self._selected_arrow_id: Optional[str] = None
+        self._selected_arrow_items = {}  # Track selected arrow visual items
+        self._selection_highlight_color = "#FFD700"  # Gold border color
 
         # Get layout service from parent's container
         container = getattr(parent, "container", None)
@@ -58,6 +60,51 @@ class GraphEditorPictographContainer(QWidget):
         self._current_beat = beat_data
         self._pictograph_view.set_beat(beat_data)
 
+    def refresh_display(self, beat_data: BeatData):
+        """Refresh pictograph display with new beat data"""
+        self.set_beat(beat_data)
+
+        # Maintain selection if we had one
+        if self._selected_arrow_id:
+            self._apply_arrow_selection_visual(self._selected_arrow_id)
+
+    def set_selected_arrow(self, arrow_id: str):
+        """Set selected arrow and update visual feedback"""
+        # Clear previous selection
+        self._clear_arrow_selection()
+
+        # Set new selection
+        self._selected_arrow_id = arrow_id
+        self._apply_arrow_selection_visual(arrow_id)
+
+        self.arrow_selected.emit(arrow_id)
+
+    def _clear_arrow_selection(self):
+        """Clear all arrow selection visual feedback"""
+        if hasattr(self._pictograph_view, "_scene") and self._pictograph_view._scene:
+            for item in self._pictograph_view._scene.items():
+                if hasattr(item, "setSelected"):
+                    item.setSelected(False)
+                if hasattr(item, "clear_selection_highlight"):
+                    item.clear_selection_highlight()
+
+    def _apply_arrow_selection_visual(self, arrow_id: str):
+        """Apply visual feedback for selected arrow"""
+        if (
+            not hasattr(self._pictograph_view, "_pictograph_scene")
+            or not self._pictograph_view._pictograph_scene
+        ):
+            return
+
+        for item in self._pictograph_view._pictograph_scene.items():
+            if hasattr(item, "arrow_color") and item.arrow_color == arrow_id:
+                # Add gold border highlighting
+                if hasattr(item, "add_selection_highlight"):
+                    item.add_selection_highlight(self._selection_highlight_color)
+                elif hasattr(item, "setSelected"):
+                    item.setSelected(True)
+                break
+
     def _on_arrow_clicked(self, arrow_id: str):
         self._selected_arrow_id = arrow_id
         self.arrow_selected.emit(arrow_id)
@@ -82,9 +129,18 @@ class ModernPictographView(QGraphicsView):
         self.setFrameStyle(0)
         self.setStyleSheet("background: transparent;")
 
+        # Enable proper scaling and viewport updates
+        self.setViewportUpdateMode(QGraphicsView.ViewportUpdateMode.FullViewportUpdate)
+        self.setOptimizationFlags(
+            QGraphicsView.OptimizationFlag.DontAdjustForAntialiasing
+        )
+
     def set_beat(self, beat_data: Optional[BeatData]):
         self._current_beat = beat_data
         self._render_beat()
+
+        # Ensure proper scaling after rendering
+        self._fit_pictograph_to_view()
 
     def _render_beat(self):
         if not self._current_beat:
@@ -96,6 +152,34 @@ class ModernPictographView(QGraphicsView):
 
         # Enable arrow selection for graph editor mode
         self._enable_arrow_selection()
+
+    def _fit_pictograph_to_view(self):
+        """Fit the pictograph properly within the view container"""
+        if not self._pictograph_scene:
+            return
+
+        # Get scene bounds
+        scene_rect = self._pictograph_scene.itemsBoundingRect()
+        if scene_rect.isEmpty():
+            return
+
+        # Add some padding around the pictograph
+        padding = 20
+        padded_rect = scene_rect.adjusted(-padding, -padding, padding, padding)
+
+        # Fit the scene to the view with proper scaling
+        self.fitInView(padded_rect, Qt.AspectRatioMode.KeepAspectRatio)
+
+        print(f"🔍 Graph Editor Pictograph Scaling:")
+        print(f"   Scene rect: {scene_rect.width():.1f}x{scene_rect.height():.1f}")
+        print(f"   View size: {self.width()}x{self.height()}")
+        print(f"   Scale factor: {self.transform().m11():.3f}")
+
+    def resizeEvent(self, event):
+        """Handle resize events to maintain proper scaling"""
+        super().resizeEvent(event)
+        # Re-fit the pictograph when the view is resized
+        self._fit_pictograph_to_view()
 
     def _enable_arrow_selection(self):
         """Enable arrow selection for graph editor mode."""

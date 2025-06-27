@@ -217,7 +217,8 @@ class AdjustmentPanel(QWidget):
     def _update_button_states(self, turn_value: float):
         """Update increment/decrement button enabled states based on turn value."""
         # Disable decrement at minimum (0.0)
-        self._decrement_button.setEnabled(turn_value > 0.0)
+        if self._decrement_button:
+            self._decrement_button.setEnabled(turn_value > 0.0)
 
         # Disable increment at maximum (3.0)
         self._increment_button.setEnabled(turn_value < 3.0)
@@ -230,7 +231,8 @@ class AdjustmentPanel(QWidget):
         else:
             display_text = str(turn_value)
 
-        self._turn_display.setText(display_text)
+        if self._turn_display:
+            self._turn_display.setText(display_text)
 
     def _update_motion_type_display(self):
         """Update motion type label based on current beat data."""
@@ -268,29 +270,75 @@ class AdjustmentPanel(QWidget):
         return 0.0
 
     def _apply_turn(self, arrow_color: str, turn_value: float):
-        """Apply turn value to selected arrow through graph editor service."""
-        if hasattr(self._graph_editor, "_graph_service"):
-            success = self._graph_editor._graph_service.apply_turn_adjustment(
-                arrow_color, turn_value
+        """Apply turn value using data flow service for proper propagation"""
+        if not self._current_beat:
+            return
+
+        # Use graph editor's data flow service if available
+        if hasattr(self._graph_editor, "_data_flow_service"):
+            updated_beat = self._graph_editor._data_flow_service.process_turn_change(
+                self._current_beat, arrow_color, turn_value
             )
-            if success:
-                self.turn_applied.emit(arrow_color, turn_value)
-                # Update the beat data if available
-                if self._current_beat:
-                    self.beat_modified.emit(self._current_beat)
+            self._current_beat = updated_beat
+            self.turn_applied.emit(arrow_color, turn_value)
+            self.beat_modified.emit(updated_beat)
+        else:
+            # Fallback to direct service call
+            if hasattr(self._graph_editor, "_graph_service"):
+                success = self._graph_editor._graph_service.apply_turn_adjustment(
+                    arrow_color, turn_value
+                )
+                if success:
+                    self.turn_applied.emit(arrow_color, turn_value)
+                    if self._current_beat:
+                        self.beat_modified.emit(self._current_beat)
 
     def set_beat(self, beat_data: Optional[BeatData]):
-        """Switch panels based on beat type like Legacy"""
+        """Enhanced panel switching with perfect beat type detection"""
         self._current_beat = beat_data
 
-        # Switch based on beat type (like Legacy's update_adjustment_panel)
-        if not beat_data or getattr(beat_data, "is_start_position", False):
+        # Determine panel mode using data flow service logic
+        panel_mode = self._determine_panel_mode(beat_data)
+
+        if panel_mode == "orientation":
             self._stacked_widget.setCurrentIndex(0)  # Show orientation picker
-            if beat_data:
-                self._update_orientation_picker(beat_data)
+            self._update_orientation_picker(beat_data)
+            print(f"📍 Showing orientation picker for {self._arrow_color} motion")
         else:
             self._stacked_widget.setCurrentIndex(1)  # Show turn controls
             self._update_turn_controls(beat_data)
+            print(f"🔄 Showing turn controls for {self._arrow_color} motion")
+
+    def _determine_panel_mode(self, beat_data: Optional[BeatData]) -> str:
+        """Determine whether to show orientation picker or turns controls"""
+        if not beat_data:
+            return "orientation"
+
+        # Multiple ways to detect start position for robustness
+        is_start_position = (
+            # Check metadata for start position marker
+            beat_data.metadata.get("is_start_position", False)
+            # Check beat number (0 = start position, 1+ = regular beats)
+            or getattr(beat_data, "beat_number", 1) == 0
+            # Check for start position letter (α, alpha, etc.)
+            or getattr(beat_data, "letter", "") in ["α", "alpha", "start"]
+            # Check for sequence start position in metadata
+            or "sequence_start_position" in beat_data.metadata
+            # Check for static motion type (start positions are typically static)
+            or (
+                beat_data.blue_motion
+                and beat_data.blue_motion.motion_type == MotionType.STATIC
+            )
+        )
+
+        print(f"🔍 Panel mode detection for {self._arrow_color}:")
+        print(f"   Beat number: {getattr(beat_data, 'beat_number', 'None')}")
+        print(f"   Letter: {getattr(beat_data, 'letter', 'None')}")
+        print(f"   Metadata: {beat_data.metadata}")
+        print(f"   Is start position: {is_start_position}")
+        print(f"   Panel mode: {'orientation' if is_start_position else 'turns'}")
+
+        return "orientation" if is_start_position else "turns"
 
     def set_selected_arrow(self, arrow_id: str):
         """Set selected arrow and update UI highlighting."""

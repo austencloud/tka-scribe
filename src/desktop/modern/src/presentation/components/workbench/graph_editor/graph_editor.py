@@ -5,6 +5,12 @@ from PyQt6.QtGui import QResizeEvent, QKeyEvent
 
 from core.interfaces.workbench_services import IGraphEditorService
 from domain.models.core_models import SequenceData, BeatData
+from application.services.graph_editor_data_flow_service import (
+    GraphEditorDataFlowService,
+)
+from application.services.graph_editor_hotkey_service import (
+    GraphEditorHotkeyService,
+)
 from .pictograph_container import GraphEditorPictographContainer
 from .adjustment_panel import AdjustmentPanel
 from .modern_toggle_tab import ModernToggleTab
@@ -40,6 +46,14 @@ class GraphEditor(QFrame):
         self._selected_beat_index: Optional[int] = None
         self._selected_arrow_id: Optional[str] = None
 
+        # Data flow service for real-time updates
+        self._data_flow_service = GraphEditorDataFlowService(self)
+        self._connect_data_flow_signals()
+
+        # Hotkey service for keyboard control
+        self._hotkey_service = GraphEditorHotkeyService(graph_service, self)
+        self._connect_hotkey_signals()
+
         # Animation system
         self._animations = []
 
@@ -54,6 +68,75 @@ class GraphEditor(QFrame):
 
         # Start hidden like legacy
         self.hide()
+
+    def _connect_data_flow_signals(self):
+        """Connect data flow service signals to UI updates"""
+        self._data_flow_service.beat_data_updated.connect(self._on_beat_data_updated)
+        self._data_flow_service.pictograph_refresh_needed.connect(
+            self._on_pictograph_refresh_needed
+        )
+        self._data_flow_service.sequence_modified.connect(self._on_sequence_modified)
+
+    def _on_beat_data_updated(self, beat_data: BeatData, beat_index: int):
+        """Handle beat data updates from data flow service"""
+        # Update our internal state
+        self._selected_beat = beat_data
+        self._selected_beat_index = beat_index
+
+        # Update all UI components
+        if self._pictograph_container:
+            self._pictograph_container.set_beat(beat_data)
+
+        if self._left_adjustment_panel:
+            self._left_adjustment_panel.set_beat(beat_data)
+        if self._right_adjustment_panel:
+            self._right_adjustment_panel.set_beat(beat_data)
+
+    def _on_pictograph_refresh_needed(self, beat_data: BeatData):
+        """Handle pictograph refresh requests"""
+        if self._pictograph_container:
+            self._pictograph_container.refresh_display(beat_data)
+
+    def _on_sequence_modified(self, sequence: SequenceData):
+        """Handle sequence modification from data flow service"""
+        self._current_sequence = sequence
+        # Emit signal to notify parent workbench
+        if self._selected_beat:
+            self.beat_modified.emit(self._selected_beat)
+
+    def _connect_hotkey_signals(self):
+        """Connect hotkey service signals"""
+        self._hotkey_service.arrow_moved.connect(self._on_arrow_moved)
+        self._hotkey_service.rotation_override_requested.connect(
+            self._on_rotation_override
+        )
+        self._hotkey_service.special_placement_removal_requested.connect(
+            self._on_special_placement_removal
+        )
+        self._hotkey_service.prop_placement_override_requested.connect(
+            self._on_prop_placement_override
+        )
+
+    def _on_arrow_moved(self, arrow_id: str, delta_x: int, delta_y: int):
+        """Handle arrow movement from hotkeys"""
+        print(f"🎯 Moving arrow {arrow_id} by ({delta_x}, {delta_y})")
+        # TODO: Implement arrow position adjustment
+        # This should update the arrow's position in the pictograph
+
+    def _on_rotation_override(self, arrow_id: str):
+        """Handle rotation override (X key)"""
+        print(f"🔄 Rotation override for arrow {arrow_id}")
+        # TODO: Implement rotation override logic
+
+    def _on_special_placement_removal(self, arrow_id: str):
+        """Handle special placement removal (Z key)"""
+        print(f"❌ Removing special placement for arrow {arrow_id}")
+        # TODO: Implement special placement removal
+
+    def _on_prop_placement_override(self, arrow_id: str):
+        """Handle prop placement override (C key)"""
+        print(f"🎭 Prop placement override for arrow {arrow_id}")
+        # TODO: Implement prop placement override
 
     def _setup_ui(self):
         """Setup the frosted glass sliding panel UI"""
@@ -166,6 +249,10 @@ class GraphEditor(QFrame):
         self._selected_beat = beat_data
         self._selected_beat_index = beat_index
         self._graph_service.set_selected_beat(beat_data, beat_index)
+
+        # Set context in data flow service
+        if self._current_sequence and beat_index is not None:
+            self._data_flow_service.set_context(self._current_sequence, beat_index)
 
         # Update pictograph container
         if self._pictograph_container:
@@ -395,11 +482,9 @@ class GraphEditor(QFrame):
             super().keyPressEvent(event)
             return
 
-        # Try to handle through hotkey service
-        if hasattr(self._graph_service, "_hotkey_service"):
-            handled = self._graph_service._hotkey_service.handle_key_event(event)
-            if handled:
-                return
+        # Try hotkey service first
+        if self._hotkey_service.handle_key_event(event):
+            return  # Handled by hotkey service
 
         # Pass to parent if not handled
         super().keyPressEvent(event)

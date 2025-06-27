@@ -128,19 +128,6 @@ def create_application():
 def main():
     print("🚀 Kinetic Constructor - Starting...")
 
-    # A+ Enhancement: Qt Environment Detection and Optimization - Temporarily disabled
-    # print("📋 Detecting Qt environment...")
-    # compat_manager = qt_compat()
-    # qt_env = compat_manager.get_environment()
-    # print(f"   Detected: {qt_env.version} with {len(qt_env.features)} features")
-    # print(f"   High DPI support: {qt_env.high_dpi_support}")
-    # print(f"   OpenGL support: {qt_env.opengl_support}")
-
-    # Start memory leak detection - Temporarily disabled
-    # print("🔍 Starting memory leak detection...")
-    # detector = memory_detector()
-    # detector.start_monitoring()
-
     # Detect parallel testing mode early
     parallel_mode, monitor, geometry = detect_parallel_testing_mode()
 
@@ -188,7 +175,9 @@ def main():
                 )
             else:
                 target_screen = primary_screen
-                print(f"🔄 Modern forced to LEFT monitor (primary) for parallel testing")
+                print(
+                    f"🔄 Modern forced to LEFT monitor (primary) for parallel testing"
+                )
         else:
             target_screen = screens[1]  # Default to secondary
     else:
@@ -197,29 +186,57 @@ def main():
             screens[1] if len(screens) > 1 else QGuiApplication.primaryScreen()
         )
 
-    # Create and show splash screen on target screen
-    splash = SplashScreen(target_screen=target_screen)
-    fade_in_animation = splash.show_animated()
+    try:
+        print("🔍 DEBUG: Step 3 - Creating splash screen...")
+        # Create and show splash screen on target screen
+        splash = SplashScreen(target_screen=target_screen)
+        print("🔍 DEBUG: Splash screen created successfully")
 
-    # Wait for fade-in to complete before starting app initialization
-    def start_initialization():
-        splash.update_progress(5, "Initializing application...")
-        app.processEvents()
+        print("🔍 DEBUG: Step 4 - Starting splash animation...")
+        fade_in_animation = splash.show_animated()
+        print("🔍 DEBUG: Splash animation started")
 
-        # Set application icon if available
-        icon_path = Path(__file__).parent / "images" / "icons" / "app_icon.png"
-        if icon_path.exists():
-            app.setWindowIcon(QIcon(str(icon_path)))
+        # Initialize window variable in outer scope
+        window = None
 
-        splash.update_progress(15, "Creating main window...")
-        window = KineticConstructorModern(
-            splash_screen=splash,
-            target_screen=target_screen,
-            parallel_mode=parallel_mode,
-            parallel_geometry=geometry,
-        )
+        # Wait for fade-in to complete before starting app initialization
+        def start_initialization():
+            nonlocal window
+            try:
+                print("🔍 DEBUG: Step 5 - Starting initialization...")
+                splash.update_progress(5, "Initializing application...")
+                app.processEvents()
+
+                # Set application icon if available
+                icon_path = Path(__file__).parent / "images" / "icons" / "app_icon.png"
+                if icon_path.exists():
+                    app.setWindowIcon(QIcon(str(icon_path)))
+
+                print("🔍 DEBUG: Step 6 - Creating main window...")
+                splash.update_progress(15, "Creating main window...")
+                window = KineticConstructorModern(
+                    splash_screen=splash,
+                    target_screen=target_screen,
+                    parallel_mode=parallel_mode,
+                    parallel_geometry=geometry,
+                )
+                print("🔍 DEBUG: Main window created successfully")
+
+                # Call complete_startup after window is created
+                complete_startup()
+
+            except Exception as e:
+                print(f"❌ FATAL ERROR in start_initialization(): {e}")
+                import traceback
+
+                traceback.print_exc()
+                return
 
         def complete_startup():
+            if window is None:
+                print("❌ ERROR: Window not created, cannot complete startup")
+                return
+
             splash.update_progress(100, "Ready!")
             app.processEvents()
 
@@ -229,14 +246,17 @@ def main():
             # Show main window after splash starts hiding
             QTimer.singleShot(300, lambda: window.show())
 
-        QTimer.singleShot(
-            200, complete_startup
-        )  # Connect to fade-in completion to start initialization
+        fade_in_animation.finished.connect(start_initialization)
 
-    fade_in_animation.finished.connect(start_initialization)
+        print("✅ Application started successfully!")
+        return app.exec()
 
-    print("✅ Application started successfully!")
-    return app.exec()
+    except Exception as e:
+        print(f"❌ FATAL ERROR in splash/window creation: {e}")
+        import traceback
+
+        traceback.print_exc()
+        return 1
 
 
 if __name__ == "__main__":

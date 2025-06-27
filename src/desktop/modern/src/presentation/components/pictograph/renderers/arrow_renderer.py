@@ -23,6 +23,9 @@ from domain.models.core_models import (
 from domain.models.pictograph_models import ArrowData, PictographData
 from core.interfaces.positioning_services import IArrowPositioningOrchestrator
 from core.dependency_injection.di_container import get_container
+from presentation.components.pictograph.graphics_items.selectable_arrow_item import (
+    SelectableArrowItem,
+)
 
 if TYPE_CHECKING:
     from presentation.components.pictograph.pictograph_scene import PictographScene
@@ -99,7 +102,8 @@ class ArrowRenderer:
 
         arrow_svg_path = self._get_arrow_svg_file(motion_data, color)
 
-        arrow_item = QGraphicsSvgItem()
+        arrow_item = SelectableArrowItem()
+        arrow_item.arrow_color = color  # Set arrow color for selection
         renderer = None
 
         if os.path.exists(arrow_svg_path):
@@ -174,6 +178,7 @@ class ArrowRenderer:
 
             arrow_item.setPos(final_x, final_y)
             arrow_item.setZValue(100)  # Bring arrows to front
+
             self.scene.addItem(arrow_item)
         else:
             logger.error(f"Invalid SVG renderer for motion: {motion_data}")

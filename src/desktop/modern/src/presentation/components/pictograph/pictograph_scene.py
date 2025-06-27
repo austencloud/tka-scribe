@@ -7,6 +7,7 @@ This scene coordinates multiple specialized renderers to create the complete pic
 from typing import Optional
 from PyQt6.QtWidgets import QGraphicsScene
 from PyQt6.QtGui import QBrush, QColor
+from PyQt6.QtCore import pyqtSignal
 
 from domain.models.core_models import BeatData, LetterType
 from domain.models.letter_type_classifier import LetterTypeClassifier
@@ -39,6 +40,8 @@ from presentation.components.pictograph.renderers.position_glyph_renderer import
 
 class PictographScene(QGraphicsScene):
     """Graphics scene for rendering pictographs using modular renderers."""
+
+    arrow_selected = pyqtSignal(str)  # Signal for arrow selection
 
     def __init__(self, parent=None):
         super().__init__(parent)

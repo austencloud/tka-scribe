@@ -118,24 +118,39 @@ class GraphEditorService(IGraphEditorService):
 
     def apply_turn_adjustment(self, arrow_color: str, turn_value: float) -> bool:
         """Apply turn adjustment to selected arrow"""
-        if not self._selected_beat or not self._selected_arrow_id:
+        if not self._selected_beat:
             return False
 
         try:
-            # In a full implementation, this would:
-            # 1. Find the specific arrow in the beat
-            # 2. Update its turn value
-            # 3. Recalculate positions if needed
-            # 4. Trigger UI updates
-
-            # For now, just store the adjustment intent
-            if self.ui_state_service:
-                adjustment_key = (
-                    f"turn_adjustment_{arrow_color}_{self._selected_arrow_id}"
+            # Update actual beat data
+            updated = False
+            if arrow_color == "blue" and self._selected_beat.blue_motion:
+                # Create updated motion data with new turns value
+                updated_motion = self._selected_beat.blue_motion.update(
+                    turns=turn_value
                 )
-                self.ui_state_service.set_setting(adjustment_key, turn_value)
+                # Update the beat with the new motion data
+                self._selected_beat = self._selected_beat.update(
+                    blue_motion=updated_motion
+                )
+                updated = True
+            elif arrow_color == "red" and self._selected_beat.red_motion:
+                # Create updated motion data with new turns value
+                updated_motion = self._selected_beat.red_motion.update(turns=turn_value)
+                # Update the beat with the new motion data
+                self._selected_beat = self._selected_beat.update(
+                    red_motion=updated_motion
+                )
+                updated = True
 
-            return True
+            if updated:
+                # Persist changes (connect to existing persistence layer)
+                self._persist_beat_changes(self._selected_beat)
+
+                # Notify UI components of changes
+                self._notify_beat_changed(self._selected_beat)
+
+            return updated
 
         except Exception as e:
             print(f"⚠️ Turn adjustment failed: {e}")
@@ -143,24 +158,41 @@ class GraphEditorService(IGraphEditorService):
 
     def apply_orientation_adjustment(self, arrow_color: str, orientation: str) -> bool:
         """Apply orientation adjustment to selected arrow"""
-        if not self._selected_beat or not self._selected_arrow_id:
+        if not self._selected_beat:
             return False
 
         try:
-            # In a full implementation, this would:
-            # 1. Find the specific arrow in the beat
-            # 2. Update its motion type/orientation
-            # 3. Recalculate arrow rendering
-            # 4. Trigger UI updates
-
-            # For now, just store the adjustment intent
-            if self.ui_state_service:
-                adjustment_key = (
-                    f"orientation_adjustment_{arrow_color}_{self._selected_arrow_id}"
+            # Update actual beat data
+            updated = False
+            if arrow_color == "blue" and self._selected_beat.blue_motion:
+                # Create updated motion data with new motion type
+                updated_motion = self._selected_beat.blue_motion.update(
+                    motion_type=MotionType(orientation)
                 )
-                self.ui_state_service.set_setting(adjustment_key, orientation)
+                # Update the beat with the new motion data
+                self._selected_beat = self._selected_beat.update(
+                    blue_motion=updated_motion
+                )
+                updated = True
+            elif arrow_color == "red" and self._selected_beat.red_motion:
+                # Create updated motion data with new motion type
+                updated_motion = self._selected_beat.red_motion.update(
+                    motion_type=MotionType(orientation)
+                )
+                # Update the beat with the new motion data
+                self._selected_beat = self._selected_beat.update(
+                    red_motion=updated_motion
+                )
+                updated = True
 
-            return True
+            if updated:
+                # Persist changes (connect to existing persistence layer)
+                self._persist_beat_changes(self._selected_beat)
+
+                # Notify UI components of changes
+                self._notify_beat_changed(self._selected_beat)
+
+            return updated
 
         except Exception as e:
             print(f"⚠️ Orientation adjustment failed: {e}")
@@ -169,6 +201,23 @@ class GraphEditorService(IGraphEditorService):
     def get_graph_editor_size_ratio(self) -> tuple[float, float]:
         """Get the size ratios for graph editor dimensions"""
         return (self._graph_height_ratio, self._max_width_ratio)
+
+    def _persist_beat_changes(self, beat_data: BeatData) -> None:
+        """Persist beat changes to JSON repository"""
+        # TODO: Connect to existing beat persistence mechanism
+        # This should trigger JSON file updates and sequence state changes
+        # For now, update the sequence in memory if we have context
+        if self._current_sequence and self._selected_beat_index is not None:
+            beats = list(self._current_sequence.beats)
+            if self._selected_beat_index < len(beats):
+                beats[self._selected_beat_index] = beat_data
+                self._current_sequence = self._current_sequence.update(beats=beats)
+
+    def _notify_beat_changed(self, beat_data: BeatData) -> None:
+        """Notify all UI components that beat data has changed"""
+        # TODO: Implement signal emission for UI synchronization
+        # This should emit signals that the graph editor and other components can listen to
+        pass
 
     def cleanup(self) -> None:
         """Clean up resources and state"""

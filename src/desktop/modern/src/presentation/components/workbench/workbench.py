@@ -118,6 +118,12 @@ class ModernSequenceWorkbench(QWidget):
             )
             self._beat_frame_section.layout_changed.connect(self._on_layout_changed)
 
+        # Connect graph editor data flow to beat frame updates
+        if self._graph_section and hasattr(self._graph_section, "_data_flow_service"):
+            self._graph_section._data_flow_service.beat_frame_update_needed.connect(
+                self._on_graph_editor_beat_changed
+            )
+
             # Button events
             self._beat_frame_section.add_to_dictionary_requested.connect(
                 self._handle_add_to_dictionary
@@ -400,6 +406,26 @@ class ModernSequenceWorkbench(QWidget):
         # Store layout parameters for potential future use
         _ = rows
         _ = columns
+
+    def _on_graph_editor_beat_changed(self, beat_data: BeatData, beat_index: int):
+        """Handle beat changes from graph editor and update beat frame"""
+        if hasattr(self, "_beat_frame_section") and self._beat_frame_section:
+            # Update the specific beat in beat frame
+            if hasattr(self._beat_frame_section, "update_beat_at_index"):
+                self._beat_frame_section.update_beat_at_index(beat_index, beat_data)
+
+            # Refresh beat frame display
+            if hasattr(self._beat_frame_section, "refresh_display"):
+                self._beat_frame_section.refresh_display()
+
+            # Update current sequence
+            if self._current_sequence and beat_index < len(
+                self._current_sequence.beats
+            ):
+                beats = list(self._current_sequence.beats)
+                beats[beat_index] = beat_data
+                self._current_sequence = self._current_sequence.update(beats=beats)
+                self.sequence_modified.emit(self._current_sequence)
 
     def _on_graph_beat_modified(self, beat_index: int, beat_data):
         """Handle beat modification from graph editor"""
