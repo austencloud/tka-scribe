@@ -93,6 +93,9 @@ class SequenceAnimationEngine:
         # Animation settings
         self.beat_duration = 1000  # ms per beat
 
+        # Visual feedback for animation
+        self.animation_callbacks = []
+
     def set_sequence(self, sequence: SequenceData):
         """Set the sequence for animation"""
         self.sequence = sequence
@@ -152,8 +155,16 @@ class SequenceAnimationEngine:
             self.stop()
             return
 
-        # Emit beat selection event
+        # Emit beat selection event with animation context
         self.event_bus.emit("beat.selected", self.current_beat_index)
+        self.event_bus.emit(
+            "animation.beat_changed",
+            {
+                "beat_index": self.current_beat_index,
+                "total_beats": len(self.sequence.beats),
+                "progress": (self.current_beat_index + 1) / len(self.sequence.beats),
+            },
+        )
 
 
 class MockLayoutService:
@@ -798,10 +809,16 @@ class ComprehensiveSequenceWorkbench(QMainWindow):
             # Start position selected
             beat_data = self.start_position_data
             self.beat_info_label.setText("Selected: Start Position (α)")
-            self.pictograph_display.setText("Start Position Pictograph\n(α - alpha1)")
             self.status_label.setText(
                 "Start position selected - shows orientation controls"
             )
+
+            # Update pictograph component with start position
+            self.pictograph_component.update_from_beat(beat_data)
+
+            # Update adjustment panels with start position
+            self.blue_adjustment_panel.set_beat(beat_data)
+            self.red_adjustment_panel.set_beat(beat_data)
 
             # Update motion details
             self.blue_motion_label.setText("STATIC (S→S)")
@@ -815,12 +832,16 @@ class ComprehensiveSequenceWorkbench(QMainWindow):
             self.beat_info_label.setText(
                 f"Selected: Beat {beat_index + 1} ({beat_data.letter})"
             )
-            self.pictograph_display.setText(
-                f"Beat {beat_index + 1} Pictograph\n({beat_data.letter} - {beat_data.blue_motion.motion_type.value})"
-            )
             self.status_label.setText(
                 f"Beat {beat_index + 1} selected - shows turns controls"
             )
+
+            # Update pictograph component with beat data
+            self.pictograph_component.update_from_beat(beat_data)
+
+            # Update adjustment panels with beat data
+            self.blue_adjustment_panel.set_beat(beat_data)
+            self.red_adjustment_panel.set_beat(beat_data)
 
             # Update motion details
             blue_motion = beat_data.blue_motion
@@ -838,8 +859,14 @@ class ComprehensiveSequenceWorkbench(QMainWindow):
         else:
             # Invalid selection
             self.beat_info_label.setText("Invalid Selection")
-            self.pictograph_display.setText("No pictograph available")
             self.status_label.setText("Invalid beat selection")
+
+            # Clear pictograph
+            self.pictograph_component.clear_pictograph()
+
+            # Clear adjustment panels
+            self.blue_adjustment_panel.set_beat(None)
+            self.red_adjustment_panel.set_beat(None)
 
             # Clear motion details
             self.blue_motion_label.setText("-")
@@ -848,6 +875,10 @@ class ComprehensiveSequenceWorkbench(QMainWindow):
             self.duration_label.setText("-")
 
         print(f"🎯 Beat {beat_index} selected and display updated")
+        print(
+            f"📊 Pictograph updated with {'start position' if beat_index == -1 else f'beat {beat_index + 1}'} data"
+        )
+        print(f"🎛️ Adjustment panels updated with beat data")
 
     def _update_progress_bar(self, beat_index: int):
         """Update animation progress bar"""
