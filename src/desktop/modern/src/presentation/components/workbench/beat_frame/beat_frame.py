@@ -174,7 +174,9 @@ class BeatFrame(QScrollArea):
         if self._selection_manager:
             self._selection_manager.clear_selection()
 
-        # Layout management    def _update_layout(self):
+        # Layout management
+
+    def _update_layout(self):
         """Update grid layout based on sequence length"""
         if not self._current_sequence:
             self._apply_layout(1, 8)  # Default layout
@@ -199,9 +201,9 @@ class BeatFrame(QScrollArea):
     def _apply_layout(self, rows: int, columns: int):
         """Apply the specified grid layout like legacy"""
         # Clear existing layout (except start position)
-        for i in range(len(self._beat_views)):
-            self._grid_layout.removeWidget(self._beat_views[i])
-            self._beat_views[i].hide()
+        for beat_view in self._beat_views:
+            self._grid_layout.removeWidget(beat_view)
+            beat_view.hide()
 
         # Update layout info (no label in legacy)
         self._current_layout = {"rows": rows, "columns": columns}

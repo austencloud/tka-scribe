@@ -54,15 +54,18 @@ class AdjustmentPanel(QWidget):
     beat_modified = pyqtSignal(BeatData)
     turn_applied = pyqtSignal(str, float)  # arrow_color, turn_value
 
-    def __init__(self, parent, side: str = "right"):
+    def __init__(self, parent, side: str = "right", color: str = None):
         super().__init__(parent)
         self._graph_editor = parent
         self._side = side  # "left" or "right" to match Legacy's left_stack/right_stack
         self._current_beat: Optional[BeatData] = None
         self._selected_arrow_id: Optional[str] = None
 
-        # Determine arrow color based on side
-        self._arrow_color = "blue" if side == "left" else "red"
+        # Determine arrow color - use provided color or derive from side
+        self._arrow_color = color if color else ("blue" if side == "left" else "red")
+        
+        # Color configurations from web version
+        self._color_config = self._get_color_config(self._arrow_color)
 
         # Create stacked widget like Legacy's QStackedLayout
         self._stacked_widget = QStackedWidget(self)
@@ -80,7 +83,12 @@ class AdjustmentPanel(QWidget):
 
         # Set layout
         layout = QVBoxLayout(self)
+        layout.setContentsMargins(0, 0, 0, 0)  # Remove margins for seamless color fill
+        layout.setSpacing(0)
         layout.addWidget(self._stacked_widget)
+
+        # Apply web-inspired color-coded styling
+        self._apply_color_styling()
 
         # UI components for turn controls (will be created in _create_turn_controls_widget)
         self._hand_indicator: Optional[QLabel] = None
@@ -96,11 +104,13 @@ class AdjustmentPanel(QWidget):
         layout.setContentsMargins(8, 8, 8, 8)
         layout.setSpacing(8)
 
-        # 1. Hand Indicator - simple text label
-        hand_text = "Left" if self._side == "left" else "Right"
+        # 1. Hand Indicator - use color config text
+        hand_text = self._color_config["text"]
         self._hand_indicator = QLabel(hand_text)
         self._hand_indicator.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self._hand_indicator.setStyleSheet("color: white; font-size: 12px;")
+        # Use primary color for text like web version
+        primary_color = self._color_config["primary"]
+        self._hand_indicator.setStyleSheet(f"color: {primary_color}; font-size: 18px; font-weight: bold;")
         layout.addWidget(self._hand_indicator)
 
         # 2. Turn Display - white background, colored border, clickable
@@ -109,8 +119,8 @@ class AdjustmentPanel(QWidget):
         self._turn_display.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self._turn_display.clicked.connect(self._on_turn_display_clicked)
 
-        # Set Legacy-exact colors
-        border_color = "#6496FF" if self._arrow_color == "blue" else "#FF6464"
+        # Use color config for consistent styling
+        border_color = self._color_config["border_color"]
         self._turn_display.setStyleSheet(
             f"""
             QPushButton {{
@@ -185,6 +195,58 @@ class AdjustmentPanel(QWidget):
         layout.addStretch()
 
         return widget
+
+    def _get_color_config(self, color: str) -> dict:
+        """Get color configuration based on web version styling"""
+        if color == "blue":
+            return {
+                "primary": "#2E3192",
+                "light": "rgba(46,49,146,0.4)",
+                "medium": "rgba(46,49,146,0.8)",
+                "gradient": "linear-gradient(135deg, rgba(46,49,146,0.1), rgba(46,49,146,0.8))",
+                "text": "Left",
+                "border_color": "#6496FF"
+            }
+        else:  # red
+            return {
+                "primary": "#ED1C24",
+                "light": "rgba(237,28,36,0.4)",
+                "medium": "rgba(237,28,36,0.8)", 
+                "gradient": "linear-gradient(135deg, rgba(237,28,36,0.1), rgba(237,28,36,0.8))",
+                "text": "Right",
+                "border_color": "#FF6464"
+            }
+
+    def _apply_color_styling(self):
+        """Apply web-inspired color-coded styling to the adjustment panel"""
+        # Create a gradient background similar to web version but adapted for Qt
+        primary_color = self._color_config["primary"]
+        
+        # Convert web colors to Qt-compatible colors
+        if self._arrow_color == "blue":
+            light_rgba = "rgba(46, 49, 146, 102)"  # 0.4 * 255 = 102
+            medium_rgba = "rgba(46, 49, 146, 204)"  # 0.8 * 255 = 204
+        else:  # red
+            light_rgba = "rgba(237, 28, 36, 102)"  # 0.4 * 255 = 102  
+            medium_rgba = "rgba(237, 28, 36, 204)"  # 0.8 * 255 = 204
+        
+        self.setStyleSheet(f"""
+            AdjustmentPanel {{
+                background: qlineargradient(
+                    x1: 0, y1: 0, x2: 1, y2: 1,
+                    stop: 0 {light_rgba},
+                    stop: 0.5 {medium_rgba},
+                    stop: 1 rgba(255, 255, 255, 230)
+                );
+                border: 4px solid {primary_color};
+                border-radius: 8px;
+            }}
+            
+            QLabel {{
+                color: {primary_color};
+                font-weight: bold;
+            }}
+        """)
 
     def _on_turn_display_clicked(self):
         """Handle turn display click to open turn selection dialog."""

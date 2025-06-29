@@ -10,7 +10,7 @@ from main_window.main_widget.sequence_workbench.legacy_beat_frame.image_export_m
     ImageExportManager,
 )
 
-from .start_pos_beat import StartPositionBeat
+from .legacy_start_pos_beat import LegacyStartPositionBeat
 from .start_pos_beat_view import StartPositionBeatView
 from .start_position_adder import StartPositionAdder
 from ..beat_factory import BeatFactory
@@ -45,7 +45,7 @@ class LegacyBeatFrame(BaseBeatFrame):
 
     def _init_beats(self):
         self.start_pos_view = StartPositionBeatView(self)
-        self.start_pos = StartPositionBeat(self)
+        self.start_pos = LegacyStartPositionBeat(self)
         self.beat_views = [LegacyBeatView(self, number=i + 1) for i in range(64)]
         for beat in self.beat_views:
             beat.hide()

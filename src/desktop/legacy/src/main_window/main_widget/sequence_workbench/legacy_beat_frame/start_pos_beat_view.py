@@ -6,8 +6,8 @@ from PyQt6.QtGui import QFont
 from base_widgets.pictograph.elements.views.beat_view import (
     LegacyBeatView,
 )
-from main_window.main_widget.sequence_workbench.legacy_beat_frame.start_pos_beat import (
-    StartPositionBeat,
+from main_window.main_widget.sequence_workbench.legacy_beat_frame.legacy_start_pos_beat import (
+    LegacyStartPositionBeat,
 )
 
 if TYPE_CHECKING:
@@ -24,11 +24,11 @@ class StartPositionBeatView(LegacyBeatView):
         self._setup_blank_beat()
 
     def _setup_blank_beat(self):
-        self.blank_beat = StartPositionBeat(self.beat_frame)
+        self.blank_beat = LegacyStartPositionBeat(self.beat_frame)
         self.set_start_pos(self.blank_beat)
         self.blank_beat.elements.grid.hide()
 
-    def set_start_pos(self, start_pos: "StartPositionBeat") -> None:
+    def set_start_pos(self, start_pos: "LegacyStartPositionBeat") -> None:
         self.start_pos = self.beat = self.pictograph = start_pos
         self.is_filled = True
         self.start_pos.view = self

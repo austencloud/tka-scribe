@@ -8,8 +8,8 @@ from data.constants import (
     FLOAT,
 )
 from main_window.main_widget.sequence_workbench.legacy_beat_frame.beat import Beat
-from main_window.main_widget.sequence_workbench.legacy_beat_frame.start_pos_beat import (
-    StartPositionBeat,
+from main_window.main_widget.sequence_workbench.legacy_beat_frame.legacy_start_pos_beat import (
+    LegacyStartPositionBeat,
 )
 
 
@@ -26,12 +26,12 @@ class BeatFactory:
 
     def create_start_pos_beat(
         self, pictograph_key: str, pictograph_data=None
-    ) -> StartPositionBeat:
+    ) -> LegacyStartPositionBeat:
         letter_str = pictograph_key.split("_")[0]
         letter = Letter.get_letter(letter_str)
 
         if pictograph_data is not None:
-            start_pos_beat = StartPositionBeat(self.beat_frame)
+            start_pos_beat = LegacyStartPositionBeat(self.beat_frame)
             start_pos_beat.managers.updater.update_pictograph(pictograph_data)
 
             if letter not in self.beat_frame.main_widget.pictograph_cache:

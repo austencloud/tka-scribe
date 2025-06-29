@@ -18,13 +18,19 @@ class WorkbenchGraphSection(QWidget):
     visibility_changed = pyqtSignal(bool)
 
     def __init__(
-        self, graph_service: IGraphEditorService, parent: Optional[QWidget] = None
+        self,
+        graph_service: IGraphEditorService,
+        parent: Optional[QWidget] = None,
+        workbench_width: int = 800,
+        workbench_height: int = 600,
     ):
         super().__init__(parent)
         self._graph_service = graph_service
         self._graph_editor: Optional["GraphEditor"] = None
         self._current_sequence: Optional[SequenceData] = None
         self._current_beat_index: int = 0  # Track current beat index
+        self._workbench_width = workbench_width
+        self._workbench_height = workbench_height
 
         self._setup_ui()
         self._connect_signals()
@@ -38,8 +44,14 @@ class WorkbenchGraphSection(QWidget):
         layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(0)
 
-        # Create graph editor with this section as parent context
-        self._graph_editor = GraphEditor(graph_service=self._graph_service, parent=None)
+        # Create graph editor with workbench dimensions passed directly
+        # Pass the parent workbench (self.parent()) for toggle tab positioning
+        self._graph_editor = GraphEditor(
+            graph_service=self._graph_service,
+            parent=self.parent(),  # Pass the actual workbench as parent
+            workbench_width=self._workbench_width,
+            workbench_height=self._workbench_height,
+        )
 
         # Add graph editor to layout
         layout.addWidget(self._graph_editor)
@@ -93,6 +105,14 @@ class WorkbenchGraphSection(QWidget):
 
         if self._graph_editor:
             self._graph_editor.set_selected_beat(start_position_data, -1)
+
+    def update_workbench_size(self, width: int, height: int):
+        """Update workbench size and pass to graph editor"""
+        self._workbench_width = width
+        self._workbench_height = height
+
+        if self._graph_editor:
+            self._graph_editor.update_workbench_size(width, height)
 
     def update_toggle_position(self, animate: bool = True):
         """Update graph toggle tab position"""

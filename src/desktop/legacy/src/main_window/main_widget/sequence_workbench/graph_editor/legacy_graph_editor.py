@@ -11,8 +11,8 @@ from PyQt6.QtCore import Qt
 from main_window.main_widget.sequence_workbench.graph_editor.graph_editor_animator import (
     GraphEditorAnimator,
 )
-from main_window.main_widget.sequence_workbench.graph_editor.graph_editor_toggle_tab import (
-    GraphEditorToggleTab,
+from main_window.main_widget.sequence_workbench.graph_editor.legacy_graph_editor_toggle_tab import (
+    LegacyGraphEditorToggleTab,
 )
 from legacy_settings_manager.legacy_settings_manager import pyqtSignal
 
@@ -55,7 +55,7 @@ class LegacyGraphEditor(QFrame):
         self.pictograph_container = LegacyGraphEditorPictographContainer(self)
         self.adjustment_panel = LegacyAdjustmentPanel(self)
         self.layout_manager = GraphEditorLayoutManager(self)
-        self.toggle_tab = GraphEditorToggleTab(self)
+        self.toggle_tab = LegacyGraphEditorToggleTab(self)
         self.placeholder = QFrame(self)
         self.animator = GraphEditorAnimator(self)
 

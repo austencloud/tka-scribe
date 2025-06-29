@@ -1,6 +1,6 @@
 from typing import Optional, TYPE_CHECKING
-from PyQt6.QtWidgets import QHBoxLayout, QFrame
-from PyQt6.QtCore import pyqtSignal, QPropertyAnimation, QEasingCurve, QTimer, Qt
+from PyQt6.QtWidgets import QFrame
+from PyQt6.QtCore import pyqtSignal
 from PyQt6.QtGui import QResizeEvent, QKeyEvent
 
 from core.interfaces.workbench_services import IGraphEditorService
@@ -11,9 +11,12 @@ from application.services.graph_editor_data_flow_service import (
 from application.services.graph_editor_hotkey_service import (
     GraphEditorHotkeyService,
 )
-from .pictograph_container import GraphEditorPictographContainer
-from .adjustment_panel import AdjustmentPanel
-from .modern_toggle_tab import ModernToggleTab
+
+# Import our specialized component classes
+from .animation_controller import GraphEditorAnimationController
+from .signal_coordinator import GraphEditorSignalCoordinator
+from .layout_manager import GraphEditorLayoutManager
+from .state_manager import GraphEditorStateManager
 
 if TYPE_CHECKING:
     from presentation.components.workbench.workbench import (
@@ -22,9 +25,19 @@ if TYPE_CHECKING:
 
 
 class GraphEditor(QFrame):
-    """Modern graph editor component following modern architecture patterns"""
+    """
+    Modern graph editor component following clean architecture patterns.
 
-    # Signals for communication
+    Acts as a coordinator that delegates functionality to specialized components:
+    - AnimationController: Handles sliding animations and height management
+    - SignalCoordinator: Manages signal connections and communication
+    - LayoutManager: Handles UI setup, styling, and component positioning
+    - StateManager: Manages sequence, beat, arrow, and visibility state
+
+    This refactored design improves maintainability, testability, and separation of concerns.
+    """
+
+    # Public signals for external communication
     beat_modified = pyqtSignal(BeatData)
     arrow_selected = pyqtSignal(str)  # arrow_id
     visibility_changed = pyqtSignal(bool)  # is_visible
@@ -33,469 +46,290 @@ class GraphEditor(QFrame):
         self,
         graph_service: IGraphEditorService,
         parent: Optional["ModernSequenceWorkbench"] = None,
+        workbench_width: int = 800,
+        workbench_height: int = 600,
     ):
         super().__init__(parent)
 
+        # Core dependencies
         self._graph_service = graph_service
         self._parent_workbench = parent
 
-        # State
-        self._is_visible = False
-        self._current_sequence: Optional[SequenceData] = None
-        self._selected_beat: Optional[BeatData] = None
-        self._selected_beat_index: Optional[int] = None
-        self._selected_arrow_id: Optional[str] = None
+        # Initialize specialized component managers
+        self._state_manager = GraphEditorStateManager(self)
+        self._animation_controller = GraphEditorAnimationController(self)
+        self._layout_manager = GraphEditorLayoutManager(self)
+        self._signal_coordinator = GraphEditorSignalCoordinator(self)
 
-        # Data flow service for real-time updates
+        # Update animation controller with workbench dimensions
+        self._animation_controller.update_workbench_size(
+            workbench_width, workbench_height
+        )
+
+        # Initialize services
         self._data_flow_service = GraphEditorDataFlowService(self)
-        self._connect_data_flow_signals()
-
-        # Hotkey service for keyboard control
         self._hotkey_service = GraphEditorHotkeyService(graph_service, self)
-        self._connect_hotkey_signals()
 
-        # Animation system
-        self._animations = []
+        # Setup the UI and wire everything together
+        self._initialize_components()
 
-        # Components (will be created in setup)
-        self._pictograph_container: Optional[GraphEditorPictographContainer] = None
-        self._adjustment_panel: Optional[AdjustmentPanel] = None
-        self._toggle_tab: Optional[ModernToggleTab] = None
-
-        self._setup_ui()
-        self._setup_animations()
-        self._connect_signals()
+        # Synchronize width with workbench after initialization
+        self.sync_width_with_workbench()
 
         # Start hidden like legacy
         self.hide()
 
-    def _connect_data_flow_signals(self):
-        """Connect data flow service signals to UI updates"""
-        self._data_flow_service.beat_data_updated.connect(self._on_beat_data_updated)
-        self._data_flow_service.pictograph_refresh_needed.connect(
-            self._on_pictograph_refresh_needed
-        )
-        self._data_flow_service.sequence_modified.connect(self._on_sequence_modified)
+    def _initialize_components(self) -> None:
+        """Initialize all components and wire them together"""
+        # Setup UI layout and components
+        self._layout_manager.setup_ui()
 
-    def _on_beat_data_updated(self, beat_data: BeatData, beat_index: int):
-        """Handle beat data updates from data flow service"""
-        # Update our internal state
-        self._selected_beat = beat_data
-        self._selected_beat_index = beat_index
-
-        # Update all UI components
-        if self._pictograph_container:
-            self._pictograph_container.set_beat(beat_data)
-
-        if self._left_adjustment_panel:
-            self._left_adjustment_panel.set_beat(beat_data)
-        if self._right_adjustment_panel:
-            self._right_adjustment_panel.set_beat(beat_data)
-
-    def _on_pictograph_refresh_needed(self, beat_data: BeatData):
-        """Handle pictograph refresh requests"""
-        if self._pictograph_container:
-            self._pictograph_container.refresh_display(beat_data)
-
-    def _on_sequence_modified(self, sequence: SequenceData):
-        """Handle sequence modification from data flow service"""
-        self._current_sequence = sequence
-        # Emit signal to notify parent workbench
-        if self._selected_beat:
-            self.beat_modified.emit(self._selected_beat)
-
-    def _connect_hotkey_signals(self):
-        """Connect hotkey service signals"""
-        self._hotkey_service.arrow_moved.connect(self._on_arrow_moved)
-        self._hotkey_service.rotation_override_requested.connect(
-            self._on_rotation_override
-        )
-        self._hotkey_service.special_placement_removal_requested.connect(
-            self._on_special_placement_removal
-        )
-        self._hotkey_service.prop_placement_override_requested.connect(
-            self._on_prop_placement_override
+        # Provide dependencies to signal coordinator
+        self._signal_coordinator.set_dependencies(
+            data_flow_service=self._data_flow_service,
+            hotkey_service=self._hotkey_service,
+            animation_controller=self._animation_controller,
+            layout_manager=self._layout_manager,
+            state_manager=self._state_manager,
         )
 
-    def _on_arrow_moved(self, arrow_id: str, delta_x: int, delta_y: int):
-        """Handle arrow movement from hotkeys"""
-        print(f"🎯 Moving arrow {arrow_id} by ({delta_x}, {delta_y})")
-        # TODO: Implement arrow position adjustment
-        # This should update the arrow's position in the pictograph
+        # Connect external signals to our public API
+        self._connect_external_signals()
 
-    def _on_rotation_override(self, arrow_id: str):
-        """Handle rotation override (X key)"""
-        print(f"🔄 Rotation override for arrow {arrow_id}")
-        # TODO: Implement rotation override logic
+        # Show toggle tab
+        self._layout_manager.show_toggle_tab()
 
-    def _on_special_placement_removal(self, arrow_id: str):
-        """Handle special placement removal (Z key)"""
-        print(f"❌ Removing special placement for arrow {arrow_id}")
-        # TODO: Implement special placement removal
-
-    def _on_prop_placement_override(self, arrow_id: str):
-        """Handle prop placement override (C key)"""
-        print(f"🎭 Prop placement override for arrow {arrow_id}")
-        # TODO: Implement prop placement override
-
-    def _setup_ui(self):
-        """Setup the frosted glass sliding panel UI"""
-        self.setFrameStyle(QFrame.Shape.NoFrame)
-        self.setFixedHeight(0)  # Start collapsed
-
-        # Enable focus for hotkey handling
-        self.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
-
-        # Frosted glass styling with better containment (Qt-compatible)
-        self.setStyleSheet(
-            """
-            ModernGraphEditor {
-                background: qlineargradient(
-                    x1: 0, y1: 0, x2: 0, y2: 1,
-                    stop: 0 rgba(255, 255, 255, 0.15),
-                    stop: 0.5 rgba(255, 255, 255, 0.10),
-                    stop: 1 rgba(255, 255, 255, 0.05)
-                );
-                border: 0px solid rgba(255, 255, 255, 0.3);
-                border-radius: 16px 16px 0px 0px;
-            }
-        """
+    def _connect_external_signals(self) -> None:
+        """Connect internal signals to external public API"""
+        # Forward signals from signal coordinator to our public API
+        self._signal_coordinator.beat_modified.connect(self.beat_modified.emit)
+        self._signal_coordinator.arrow_selected.connect(self.arrow_selected.emit)
+        self._signal_coordinator.visibility_changed.connect(
+            self.visibility_changed.emit
         )
 
-        # Main horizontal layout matching Legacy's structure exactly
-        main_layout = QHBoxLayout(self)
-        # Increase margins to ensure content stays within rounded borders
-        main_layout.setContentsMargins(0, 0, 0, 0)
-        main_layout.setSpacing(0)
+        # Connect state manager visibility changes to animation controller
+        self._state_manager.visibility_changed.connect(
+            self._on_state_visibility_changed
+        )
 
-        # Left adjustment controls (stretch=1, like Legacy's left_stack)
-        self._left_adjustment_panel = AdjustmentPanel(self, side="left")
+    def _on_state_visibility_changed(self, is_visible: bool) -> None:
+        """Handle visibility state changes"""
+        # This ensures state and animation stay in sync
+        pass  # State change is handled by the animation system
 
-        # Central pictograph container (stretch=0, fixed size like Legacy)
-        self._pictograph_container = GraphEditorPictographContainer(self)
+    # ============================================================================
+    # PUBLIC API METHODS (maintaining backward compatibility)
+    # ============================================================================
 
-        # Right adjustment controls (stretch=1, like Legacy's right_stack)
-        self._right_adjustment_panel = AdjustmentPanel(self, side="right")
-
-        # Add to layout with Legacy's exact proportions
-        main_layout.addWidget(
-            self._left_adjustment_panel, 1
-        )  # Left controls (stretch=1)
-        main_layout.addWidget(
-            self._pictograph_container, 0
-        )  # Pictograph (stretch=0, fixed)
-        main_layout.addWidget(
-            self._right_adjustment_panel, 1
-        )  # Right controls (stretch=1)
-
-        # Keep reference to both panels for compatibility
-        self._adjustment_panel = (
-            self._right_adjustment_panel
-        )  # Toggle tab (positioned absolutely)
-        self._toggle_tab = ModernToggleTab(self)
-
-        # Ensure toggle tab is visible immediately
-        self._toggle_tab.show()
-        self._toggle_tab.raise_()
-
-        # Set size policy to prevent unwanted expansion beyond allocated space
-        from PyQt6.QtWidgets import QSizePolicy
-
-        self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
-
-    def _setup_animations(self):
-        """Setup smooth sliding animation system"""
-        # Single height animation for clean sliding effect
-        self._height_animation = QPropertyAnimation(self, b"maximumHeight")
-        self._height_animation.setDuration(400)  # Slightly longer for smoother feel
-        self._height_animation.setEasingCurve(
-            QEasingCurve.Type.OutCubic
-        )  # Smoother easing
-
-        # Connect animation events
-        self._height_animation.finished.connect(self._on_animation_finished)
-
-        # Track animation state
-        self._animating = False
-
-    def _connect_signals(self):
-        """Connect internal component signals"""
-        if self._toggle_tab:
-            self._toggle_tab.toggle_requested.connect(self.toggle_visibility)
-
-        if self._pictograph_container:
-            self._pictograph_container.arrow_selected.connect(self._on_arrow_selected)
-
-        # Connect signals for both adjustment panels
-        if self._left_adjustment_panel:
-            self._left_adjustment_panel.beat_modified.connect(self._on_beat_modified)
-            self._left_adjustment_panel.turn_applied.connect(self._on_turn_applied)
-
-        if self._right_adjustment_panel:
-            self._right_adjustment_panel.beat_modified.connect(self._on_beat_modified)
-            self._right_adjustment_panel.turn_applied.connect(self._on_turn_applied)
-
-    # Public API Methods
-    def set_sequence(self, sequence: Optional[SequenceData]):
+    def set_sequence(self, sequence: Optional[SequenceData]) -> None:
         """Set the current sequence for display/editing"""
-        self._current_sequence = sequence
+        self._state_manager.set_current_sequence(sequence)
         self._graph_service.update_graph_display(sequence)
-        self._update_display()
+
+        # Update all UI components through layout manager
+        self._layout_manager.update_component_display(sequence_data=sequence)
 
     def set_selected_beat(
         self, beat_data: Optional[BeatData], beat_index: Optional[int] = None
-    ):
+    ) -> None:
         """Set the currently selected beat for editing"""
-        self._selected_beat = beat_data
-        self._selected_beat_index = beat_index
+        # Update state
+        self._state_manager.set_selected_beat(beat_data, beat_index)
+
+        # Update service
         self._graph_service.set_selected_beat(beat_data, beat_index)
 
-        # Set context in data flow service
-        if self._current_sequence and beat_index is not None:
-            self._data_flow_service.set_context(self._current_sequence, beat_index)
+        # Update data flow service context
+        self._state_manager.update_data_flow_context(self._data_flow_service)
 
-        # Update pictograph container
-        if self._pictograph_container:
-            self._pictograph_container.set_beat(beat_data)
+        # Update UI components
+        self._layout_manager.update_component_display(beat_data=beat_data)
 
-        # Update both adjustment panels
-        if self._left_adjustment_panel:
-            self._left_adjustment_panel.set_beat(beat_data)
-        if self._right_adjustment_panel:
-            self._right_adjustment_panel.set_beat(beat_data)
-
-    def toggle_visibility(self):
+    def toggle_visibility(self) -> None:
         """Toggle graph editor visibility with smooth sliding animation"""
+        print("🔄 toggle_visibility() called")
+
         # Prevent multiple animations
-        if self._animating:
+        if self._animation_controller.is_animating():
+            print("  ⚠️ Animation already in progress, skipping")
             return
 
-        if self._is_visible:
-            self._slide_down()
+        current_visibility = self._state_manager.is_visible()
+        print(f"  📊 Current visibility: {current_visibility}")
+
+        if current_visibility:
+            # Hide: start animation (state will be updated when animation completes)
+            print("  🔽 Calling slide_down()")
+            self._animation_controller.slide_down()
         else:
-            self._slide_up()
+            # Show: start animation (state will be updated when animation completes)
+            print("  🔼 Calling slide_up()")
+            self._animation_controller.slide_up()
 
     def is_visible(self) -> bool:
         """Check if graph editor is currently visible"""
-        return self._is_visible
+        return self._state_manager.is_visible()
 
     def get_preferred_height(self) -> int:
-        """Calculate preferred height constrained within available parent space"""
-        if not self._parent_workbench:
-            return self.height()
+        """Get the preferred height for the graph editor"""
+        return self._animation_controller.get_preferred_height()
 
-        parent_height = self._parent_workbench.height()
-        parent_width = self._parent_workbench.width()
+    def update_workbench_size(self, width: int, height: int) -> None:
+        """Update workbench size reference when workbench resizes"""
+        self._animation_controller.update_workbench_size(width, height)
 
-        # Calculate available space within the workbench
-        # Account for other components: indicators, beat frame, margins, etc.
-        available_height = self._calculate_available_height()
+        # Synchronize graph editor width with workbench width
+        self.sync_width_with_workbench()
 
-        # Use legacy's sizing logic but constrain to available space
-        calculated_height = min(int(parent_height // 3.5), parent_width // 4)
-
-        # Ensure we don't exceed available space or go below minimum
-        max_allowed = max(available_height - 50, 150)  # 50px buffer, 150px minimum
-        constrained_height = min(calculated_height, max_allowed)
-
-        return max(constrained_height, 150)  # Absolute minimum 150px
-
-    def _calculate_available_height(self) -> int:
-        """Calculate available height within the parent workbench"""
-        if not self._parent_workbench:
-            return 350 #TODO! the workbench isn't available when we check so it's using the default value
-
-        ### FIX THAT ^
-        ### FIX THAT ^
-        ### FIX THAT ^
-        ### FIX THAT ^
-        ### FIX THAT ^
-        ### FIX THAT ^
-        ### FIX THAT ^
-        ### FIX THAT ^
-        ### FIX THAT ^
-        ### FIX THAT ^
-        ### FIX THAT ^
-
-        parent_height = self._parent_workbench.height()
-
-        # Estimate space used by other workbench components
-        # Based on ModernSequenceWorkbench layout:
-        # - Indicators section: ~80px
-        # - Beat frame section: takes remaining space but needs minimum
-        # - Margins and spacing: ~40px
-
-        estimated_other_content = 120  # Conservative estimate
-        available = parent_height - estimated_other_content
-
-        # Ensure we have reasonable space available
-        return max(available, 200)
-
-    # Sliding Animation Methods
-    def _slide_up(self):
-        """Slide the graph editor up from bottom (show)"""
-        if self._is_visible or self._animating:
+    def sync_width_with_workbench(self) -> None:
+        """Synchronize graph editor width with parent workbench width"""
+        # CRITICAL FIX: Don't sync width during animation to prevent interference
+        if (
+            hasattr(self, "_animation_controller")
+            and self._animation_controller.is_animating()
+        ):
+            print("🚫 [WIDTH SYNC] Blocking width sync during animation")
             return
 
-        print("🔼 Starting slide up animation")
-        self._animating = True
-        self._is_visible = True
+        if self._parent_workbench:
+            workbench_width = self._parent_workbench.width()
+            if workbench_width > 0:
+                # CRITICAL FIX: Prevent width sync loops
+                current_width = self.width()
+                if abs(current_width - workbench_width) < 5:  # Less than 5px difference
+                    return  # Skip micro-adjustments that cause loops
 
-        # Show the widget first
-        self.show()
+                # Set graph editor width to match workbench width
+                self.setFixedWidth(workbench_width)
+                print(
+                    f"🔄 [WIDTH SYNC] Graph editor width synchronized: {current_width}px → {workbench_width}px"
+                )
 
-        target_height = self.get_preferred_height()
+                # Notify pictograph container of width change
+                if (
+                    hasattr(self, "_pictograph_container")
+                    and self._pictograph_container
+                ):
+                    self._pictograph_container.handle_width_change(workbench_width)
 
-        # Ensure target height doesn't exceed available space
-        available_height = self._calculate_available_height()
-        max_allowed_height = max(available_height - 50, 150)  # 50px buffer
-        target_height = min(target_height, max_allowed_height)
+    def get_current_width(self) -> int:
+        """Get the current graph editor width"""
+        return self.width()
 
-        # Set maximum height constraint to prevent layout expansion
-        self.setMaximumHeight(target_height)
-        self.setMinimumHeight(0)
+    def get_workbench_width(self) -> int:
+        """Get the parent workbench width"""
+        if self._parent_workbench:
+            return self._parent_workbench.width()
+        return 800  # Default fallback
 
-        # Configure animation from 0 to constrained target height
-        self._height_animation.setStartValue(0)
-        self._height_animation.setEndValue(target_height)
-
-        # Start animation
-        self._height_animation.start()
-
-        # Update toggle tab position with animation to hug top of frame
-        if self._toggle_tab:
-            self._toggle_tab.update_position(animate=True)
-
-        # Emit signal
-        self.visibility_changed.emit(True)
-
-    def _slide_down(self):
-        """Slide the graph editor down to bottom (hide)"""
-        if not self._is_visible or self._animating:
-            return
-
-        print("🔽 Starting slide down animation")
-        self._animating = True
-        self._is_visible = False
-
+    def _debug_setFixedHeight(self, height: int) -> None:
+        """Debug wrapper for setFixedHeight to track all height changes"""
         current_height = self.height()
+        is_visible = (
+            hasattr(self, "_state_manager") and self._state_manager.is_visible()
+        )
 
-        # Clear height constraints for smooth animation
-        self.setMaximumHeight(16777215)
-        self.setMinimumHeight(0)
+        print(
+            f"🎯 [HEIGHT DEBUG] setFixedHeight called: {current_height}px -> {height}px (visible={is_visible})"
+        )
 
-        # Configure animation from current height to 0
-        self._height_animation.setStartValue(current_height)
-        self._height_animation.setEndValue(0)
+        # CRITICAL: Track unwanted height changes when collapsed (for debugging)
+        if not is_visible and height > 0:
+            print(
+                f"🚨 [HEIGHT DEBUG] CRITICAL: Setting height {height}px when graph editor should be collapsed!"
+            )
+            print(f"🚨 [HEIGHT DEBUG] This may indicate an issue - monitoring...")
 
-        # Start animation
-        self._height_animation.start()
+            # Get some call stack info for debugging
+            import traceback
 
-        # Update toggle tab position with animation back to bottom
-        if self._toggle_tab:
-            self._toggle_tab.update_position(animate=True)
+            print("🚨 [HEIGHT DEBUG] Call stack:")
+            for line in traceback.format_stack()[
+                -5:
+            ]:  # Last 5 stack frames for context
+                print(f"    {line.strip()}")
 
-        # Emit signal
-        self.visibility_changed.emit(False)
+            # Allow the height change but log it for analysis
 
-    def _on_animation_finished(self):
-        """Handle animation completion"""
-        print(f"✅ Animation finished. Visible: {self._is_visible}")
-        self._animating = False
+        # Call the original method
+        self._original_setFixedHeight(height)
 
-        if not self._is_visible:
-            # Hide the widget after slide down animation
-            self.hide()
-            # Reset height constraints
-            self.setMaximumHeight(16777215)
-            self.setMinimumHeight(0)
-        else:
-            # Lock height after slide up animation to prevent layout issues
-            target_height = self.get_preferred_height()
+    # ============================================================================
+    # COMPONENT PROPERTY ACCESS (for backward compatibility)
+    # ============================================================================
 
-            # Ensure we don't exceed available space
-            available_height = self._calculate_available_height()
-            max_allowed_height = max(available_height - 50, 150)  # 50px buffer
-            constrained_height = min(target_height, max_allowed_height)
+    @property
+    def _pictograph_container(self):
+        """Access to pictograph container for backward compatibility"""
+        return self._layout_manager.pictograph_container
 
-            self.setFixedHeight(constrained_height)
+    @_pictograph_container.setter
+    def _pictograph_container(self, value):
+        """Setter for backward compatibility (managed by layout manager)"""
+        pass  # Managed by layout manager
 
-    # Event Handlers
-    def _on_arrow_selected(self, arrow_id: str):
-        """Handle arrow selection from pictograph container"""
-        self._selected_arrow_id = arrow_id
-        self._graph_service.set_arrow_selection(arrow_id)
-        self.arrow_selected.emit(arrow_id)
+    @property
+    def _left_adjustment_panel(self):
+        """Access to left adjustment panel for backward compatibility"""
+        return self._layout_manager.left_adjustment_panel
 
-        # Update both adjustment panels for selected arrow
-        if self._left_adjustment_panel:
-            self._left_adjustment_panel.set_selected_arrow(arrow_id)
-        if self._right_adjustment_panel:
-            self._right_adjustment_panel.set_selected_arrow(arrow_id)
+    @_left_adjustment_panel.setter
+    def _left_adjustment_panel(self, value):
+        """Setter for backward compatibility (managed by layout manager)"""
+        pass  # Managed by layout manager
 
-    def _on_beat_modified(self, beat_data: BeatData):
-        """Handle beat modification from adjustment panel"""
-        self._selected_beat = beat_data
+    @property
+    def _right_adjustment_panel(self):
+        """Access to right adjustment panel for backward compatibility"""
+        return self._layout_manager.right_adjustment_panel
 
-        # Apply modifications through service
-        updated_beat = self._graph_service.update_beat_adjustments(beat_data)
+    @_right_adjustment_panel.setter
+    def _right_adjustment_panel(self, value):
+        """Setter for backward compatibility (managed by layout manager)"""
+        pass  # Managed by layout manager
 
-        # Update pictograph display
-        if self._pictograph_container:
-            self._pictograph_container.set_beat(updated_beat)
+    @property
+    def _adjustment_panel(self):
+        """Access to adjustment panel for backward compatibility"""
+        return self._layout_manager.right_adjustment_panel
 
-        self.beat_modified.emit(updated_beat)
+    @_adjustment_panel.setter
+    def _adjustment_panel(self, value):
+        """Setter for backward compatibility (managed by layout manager)"""
+        pass  # Managed by layout manager
 
-    def _on_turn_applied(self, arrow_color: str, turn_value: float):
-        """Handle turn adjustment application"""
-        success = self._graph_service.apply_turn_adjustment(arrow_color, turn_value)
-        if success and self._selected_beat:
-            self._refresh_display()
+    @property
+    def _toggle_tab(self):
+        """Access to toggle tab for backward compatibility"""
+        return self._layout_manager.toggle_tab
 
-    def _update_display(self):
-        """Update all display components based on current state"""
-        if self._pictograph_container:
-            self._pictograph_container.set_beat(self._selected_beat)
+    @_toggle_tab.setter
+    def _toggle_tab(self, value):
+        """Setter for backward compatibility (managed by layout manager)"""
+        pass  # Managed by layout manager
 
-        if self._left_adjustment_panel:
-            self._left_adjustment_panel.set_beat(self._selected_beat)
-        if self._right_adjustment_panel:
-            self._right_adjustment_panel.set_beat(self._selected_beat)
+    # ============================================================================
+    # EVENT HANDLERS
+    # ============================================================================
 
-    def _refresh_display(self):
-        """Refresh display after modifications"""
-        if self._selected_beat:
-            updated_beat = self._graph_service.get_selected_beat()
-            if updated_beat:
-                self._selected_beat = updated_beat
-                self._update_display()
+    def resizeEvent(self, event: QResizeEvent) -> None:
+        """Handle resize events - delegate to layout manager"""
+        # print hte call stack
+        import traceback
+        print("🔍 [HEIGHT DEBUG] Graph editor resize event called")
+        for line in traceback.format_stack()[
+            -5:
+        ]:  # Last 5 stack frames for context
+            print(f"    {line.strip()}")
 
-    def resizeEvent(self, event: QResizeEvent):
-        """Handle resize events"""
+        # Delegate to layout manager
         super().resizeEvent(event)
 
-        # Don't interfere with animations
-        if self._animating:
-            return
-
-        if self._is_visible:
-            # Update height based on new parent size
-            new_height = self.get_preferred_height()
-            self.setFixedHeight(new_height)
-
-        # Update toggle tab position (no animation during resize)
-        if self._toggle_tab:
-            self._toggle_tab.update_position(animate=False)
-
-        # Trigger pictograph container resize like legacy version
-        # Legacy: self.pictograph_container.GE_view.resizeEvent(event)
-        if self._pictograph_container:
-            self._pictograph_container.resizeEvent(event)
-
-    def keyPressEvent(self, event: QKeyEvent):
-        """Handle key press events for hotkeys."""
+    def keyPressEvent(self, event: QKeyEvent) -> None:
+        """Handle key press events for hotkeys"""
         # Only handle hotkeys when graph editor is visible and has focus
-        if not self._is_visible:
+        if not self._state_manager.is_visible():
             super().keyPressEvent(event)
             return
 
@@ -505,3 +339,63 @@ class GraphEditor(QFrame):
 
         # Pass to parent if not handled
         super().keyPressEvent(event)
+
+    # ============================================================================
+    # COMPONENT ACCESS METHODS (for testing and advanced usage)
+    # ============================================================================
+
+    def get_state_manager(self) -> GraphEditorStateManager:
+        """Get the state manager component"""
+        return self._state_manager
+
+    def get_animation_controller(self) -> GraphEditorAnimationController:
+        """Get the animation controller component"""
+        return self._animation_controller
+
+    def get_layout_manager(self) -> GraphEditorLayoutManager:
+        """Get the layout manager component"""
+        return self._layout_manager
+
+    def get_signal_coordinator(self) -> GraphEditorSignalCoordinator:
+        """Get the signal coordinator component"""
+        return self._signal_coordinator
+
+    def get_data_flow_service(self) -> GraphEditorDataFlowService:
+        """Get the data flow service"""
+        return self._data_flow_service
+
+    def get_hotkey_service(self) -> GraphEditorHotkeyService:
+        """Get the hotkey service"""
+        return self._hotkey_service
+
+    # ============================================================================
+    # DEBUG AND MAINTENANCE METHODS
+    # ============================================================================
+
+    def get_state_summary(self) -> dict:
+        """Get a comprehensive summary of the current state (useful for debugging)"""
+        return {
+            "state_manager": self._state_manager.get_state_summary(),
+            "animation_controller": {
+                "is_animating": self._animation_controller.is_animating(),
+                "preferred_height": self._animation_controller.get_preferred_height(),
+            },
+            "graph_editor": {
+                "is_visible_widget": self.isVisible(),
+                "height": self.height(),
+                "width": self.width(),
+            },
+        }
+
+    def force_state_validation(self) -> bool:
+        """Force validation of all component states"""
+        return self._state_manager.force_state_validation()
+
+    def reconnect_signals(self) -> None:
+        """Reconnect all signals (useful for debugging signal issues)"""
+        self._signal_coordinator.reconnect_ui_component_signals()
+
+    def reset_to_initial_state(self) -> None:
+        """Reset the graph editor to its initial state"""
+        self._state_manager.reset_all_state()
+        self.hide()

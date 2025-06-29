@@ -14,8 +14,8 @@ from data.constants import (
     END_ORI,
     START_POS,
 )
-from main_window.main_widget.sequence_workbench.legacy_beat_frame.start_pos_beat import (
-    StartPositionBeat,
+from main_window.main_widget.sequence_workbench.legacy_beat_frame.legacy_start_pos_beat import (
+    LegacyStartPositionBeat,
 )
 
 if TYPE_CHECKING:
@@ -117,7 +117,7 @@ class SequenceBuilderStartPosManager:
                             )
                             return
 
-                    start_pos_beat = StartPositionBeat(beat_frame)
+                    start_pos_beat = LegacyStartPositionBeat(beat_frame)
                     start_pos_beat.managers.updater.update_pictograph(
                         deepcopy(pictograph_data)
                     )

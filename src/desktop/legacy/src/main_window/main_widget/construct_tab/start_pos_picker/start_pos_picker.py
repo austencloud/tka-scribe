@@ -15,8 +15,8 @@ from data.constants import (
 )
 from base_widgets.pictograph.legacy_pictograph import LegacyPictograph
 from main_window.main_widget.pictograph_key_generator import PictographKeyGenerator
-from main_window.main_widget.sequence_workbench.legacy_beat_frame.start_pos_beat import (
-    StartPositionBeat,
+from main_window.main_widget.sequence_workbench.legacy_beat_frame.legacy_start_pos_beat import (
+    LegacyStartPositionBeat,
 )
 from .start_pos_picker_variations_button import StartPosVariationsButton
 from .start_pos_pictograph_frame import StartPosPickerPictographFrame
@@ -128,11 +128,11 @@ class StartPosPicker(BaseStartPosPicker):
 
     def convert_current_sequence_json_entry_to_start_pos_pictograph(
         self, start_pos_entry
-    ) -> StartPositionBeat:
+    ) -> LegacyStartPositionBeat:
         start_position_pictograph = self.get_start_pos_pictograph(
             start_pos_entry[1] if start_pos_entry else None
         )
-        start_pos_beat = StartPositionBeat(
+        start_pos_beat = LegacyStartPositionBeat(
             self.beat_frame,
         )
         start_pos_beat.managers.updater.update_pictograph(

@@ -104,6 +104,8 @@ class ModernSequenceWorkbench(QWidget):
         self._graph_section = WorkbenchGraphSection(
             graph_service=self._graph_service,
             parent=self,
+            workbench_width=self.width(),
+            workbench_height=self.height(),
         )
         main_layout.addWidget(self._graph_section, 0)  # No stretch
 
@@ -118,13 +120,8 @@ class ModernSequenceWorkbench(QWidget):
             )
             self._beat_frame_section.layout_changed.connect(self._on_layout_changed)
 
-        # Connect graph editor data flow to beat frame updates
-        if self._graph_section and hasattr(self._graph_section, "_data_flow_service"):
-            self._graph_section._data_flow_service.beat_frame_update_needed.connect(
-                self._on_graph_editor_beat_changed
-            )
-
-            # Button events
+        # Connect beat frame button events (always connect these)
+        if self._beat_frame_section:
             self._beat_frame_section.add_to_dictionary_requested.connect(
                 self._handle_add_to_dictionary
             )
@@ -149,6 +146,15 @@ class ModernSequenceWorkbench(QWidget):
             )
             self._beat_frame_section.clear_sequence_requested.connect(
                 self._handle_clear
+            )
+            print(
+                "🔧 DEBUG: Connected clear_sequence_requested signal to _handle_clear"
+            )
+
+        # Connect graph editor data flow to beat frame updates
+        if self._graph_section and hasattr(self._graph_section, "_data_flow_service"):
+            self._graph_section._data_flow_service.beat_frame_update_needed.connect(
+                self._on_graph_editor_beat_changed
             )
 
         if self._graph_section:
@@ -323,17 +329,33 @@ class ModernSequenceWorkbench(QWidget):
 
     def _handle_clear(self):
         """Handle clear sequence operation"""
+        print("🧹 DEBUG: Clear sequence button clicked!")
+
         if not self._event_controller:
+            print("❌ DEBUG: No event controller available")
             return
 
         success, message, updated_sequence = self._event_controller.handle_clear()
+        print(
+            f"🧹 DEBUG: Event controller result - success: {success}, message: {message}"
+        )
 
         if success and updated_sequence:
+            print(
+                f"🧹 DEBUG: Clearing sequence - old length: {self._current_sequence.length if self._current_sequence else 0}"
+            )
             self._current_sequence = updated_sequence
+            print(f"🧹 DEBUG: New sequence length: {updated_sequence.length}")
+
             # Clear start position data and show cleared state (legacy behavior)
             self.clear_start_position()
+            print("🧹 DEBUG: Start position cleared")
+
             self._update_all_components()
+            print("🧹 DEBUG: All components updated")
+
             self.sequence_modified.emit(updated_sequence)
+            print("🧹 DEBUG: Sequence modified signal emitted")
 
         self._show_operation_result("clear_sequence", success, message)
 
@@ -470,4 +492,6 @@ class ModernSequenceWorkbench(QWidget):
             self._beat_frame_section.update_button_sizes(self.height())
 
         if self._graph_section:
+            # Pass new workbench dimensions to graph section
+            self._graph_section.update_workbench_size(self.width(), self.height())
             self._graph_section.update_toggle_position(animate=False)

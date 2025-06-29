@@ -7,8 +7,8 @@ from base_widgets.pictograph.elements.views.beat_view import (
     LegacyBeatView,
 )
 
-from main_window.main_widget.sequence_workbench.legacy_beat_frame.start_pos_beat import (
-    StartPositionBeat,
+from main_window.main_widget.sequence_workbench.legacy_beat_frame.legacy_start_pos_beat import (
+    LegacyStartPositionBeat,
 )
 from main_window.main_widget.sequence_workbench.legacy_beat_frame.start_pos_beat_view import (
     StartPositionBeatView,
@@ -40,7 +40,7 @@ class LayoutBeatFrame(QFrame):
     def _init_beats(self):
         """Initialize the start position and beat views."""
         self.start_pos_view = StartPositionBeatView(self)
-        self.start_pos = StartPositionBeat(self)
+        self.start_pos = LegacyStartPositionBeat(self)
         self.beat_views = [LayoutBeatView(self, number=i + 1) for i in range(64)]
         for beat in self.beat_views:
             beat.hide()
@@ -71,7 +71,7 @@ class LayoutBeatFrame(QFrame):
                 widget.hide()
 
         # Handle the start position beat view
-        start_pos = StartPositionBeat(self)
+        start_pos = LegacyStartPositionBeat(self)
         self.start_pos_view.set_start_pos(start_pos)
         start_pos.elements.grid.hide()
         self.layout.addWidget(self.start_pos_view, 0, 0)

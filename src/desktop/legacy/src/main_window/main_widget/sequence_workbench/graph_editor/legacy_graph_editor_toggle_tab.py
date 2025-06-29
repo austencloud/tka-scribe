@@ -36,7 +36,7 @@ SILVER_GRADIENT = f"""
 """
 
 
-class GraphEditorToggleTab(QWidget):
+class LegacyGraphEditorToggleTab(QWidget):
     """Toggle tab widget to expand/collapse the GraphEditor."""
 
     def __init__(self, graph_editor: "LegacyGraphEditor") -> None:

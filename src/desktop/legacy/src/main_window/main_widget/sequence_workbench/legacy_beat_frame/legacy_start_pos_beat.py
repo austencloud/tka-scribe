@@ -8,7 +8,7 @@ if TYPE_CHECKING:
     )
 
 
-class StartPositionBeat(Beat):
+class LegacyStartPositionBeat(Beat):
     def __init__(self, beat_frame: "LegacyBeatFrame") -> None:
         super().__init__(beat_frame)
         self.beat_frame = beat_frame

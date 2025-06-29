@@ -1,10 +1,51 @@
 """
-Graph Editor Components Package
-===============================
+Graph Editor Component Package
 
-This package contains graph editor components for the modern workbench.
+This package contains the refactored graph editor components following clean architecture patterns.
+
+Main Components:
+- GraphEditor: Main coordinator class (public API)
+- GraphEditorAnimationController: Handles animations and height management
+- GraphEditorSignalCoordinator: Manages signal connections and communication
+- GraphEditorLayoutManager: Handles UI setup, styling, and positioning
+- GraphEditorStateManager: Manages sequence, beat, arrow, and visibility state
+
+Usage:
+    from .graph_editor import GraphEditor
+
+    # Create graph editor with service injection
+    graph_editor = GraphEditor(
+        graph_service=my_service,
+        parent=my_parent,
+        workbench_width=1200,
+        workbench_height=800
+    )
 """
 
-# Project path setup - Fixed broken import
-# Note: Removed broken 'project_root' import that was causing ModuleNotFoundError
-# The modern architecture uses proper relative imports instead
+# Main public API
+from .graph_editor import GraphEditor
+
+# Individual components (for advanced usage and testing)
+from .animation_controller import GraphEditorAnimationController
+from .signal_coordinator import GraphEditorSignalCoordinator
+from .layout_manager import GraphEditorLayoutManager
+from .state_manager import GraphEditorStateManager
+
+# UI components (for compatibility)
+from .pictograph_container import GraphEditorPictographContainer
+from .adjustment_panel import AdjustmentPanel
+from .toggle_tab import ToggleTab
+
+__all__ = [
+    # Main public API
+    "GraphEditor",
+    # Component managers
+    "GraphEditorAnimationController",
+    "GraphEditorSignalCoordinator",
+    "GraphEditorLayoutManager",
+    "GraphEditorStateManager",
+    # UI components
+    "GraphEditorPictographContainer",
+    "AdjustmentPanel",
+    "ToggleTab",
+]

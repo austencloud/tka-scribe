@@ -7,7 +7,7 @@ from base_widgets.pictograph.legacy_pictograph import LegacyPictograph
 from data.constants import BLUE_ATTRS, MOTION_TYPE, STATIC
 from interfaces.json_manager_interface import IJsonManager
 
-from .start_pos_beat import StartPositionBeat
+from .legacy_start_pos_beat import LegacyStartPositionBeat
 
 if TYPE_CHECKING:
     from .legacy_beat_frame import LegacyBeatFrame
@@ -28,7 +28,7 @@ class StartPositionAdder:
         QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
 
         try:
-            start_pos_beat = StartPositionBeat(self.beat_frame)
+            start_pos_beat = LegacyStartPositionBeat(self.beat_frame)
 
             start_pos_view = self.beat_frame.start_pos_view
 

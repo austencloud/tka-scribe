@@ -206,7 +206,7 @@ class ApplicationService(IApplicationService):
                 description="Standalone sequence workbench for development and testing",
                 icon="🎯",
                 category=ApplicationCategory.DESKTOP,
-                command="python standalone_sequence_workbench_exact.py",
+                command="python standalone_sequence_workbench.py",
                 working_dir=tka_root / "src" / "desktop" / "modern",
                 display_order=3,
             ),

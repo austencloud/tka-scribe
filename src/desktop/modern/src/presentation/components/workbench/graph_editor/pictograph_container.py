@@ -47,20 +47,21 @@ class GraphEditorPictographContainer(QWidget):
 
         layout.addWidget(self._pictograph_view)
 
-        # Set initial size - will be updated in resizeEvent to maintain square aspect ratio
-        self.setFixedSize(300, 300)
+        # Set reasonable initial size - will be updated in resizeEvent to maintain square aspect ratio
+        self.setFixedSize(200, 200)  # Smaller initial size, will grow with container
 
         # Set size policy to Fixed to match legacy behavior
         from PyQt6.QtWidgets import QSizePolicy
 
         self.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
 
+        # Web-inspired styling with gold border like web version
         self.setStyleSheet(
             """
             GraphEditorPictographContainer {
-                border: 2px solid rgba(255, 255, 255, 0.2);
+                border: 4px solid #FFD700;
                 border-radius: 8px;
-                background-color: rgba(0, 0, 0, 0.1);
+                background-color: rgba(255, 255, 255, 0.95);
             }
         """
         )
@@ -119,22 +120,113 @@ class GraphEditorPictographContainer(QWidget):
         self.arrow_selected.emit(arrow_id)
 
     def resizeEvent(self, event):
-        """Handle resize events to maintain perfect square aspect ratio like legacy"""
+        """Handle resize events with responsive sizing based on graph editor height"""
         super().resizeEvent(event)
 
-        # Get the graph editor's height to maintain square proportions
+        # CRITICAL FIX: Prevent resize loops during animation and initialization
+        if self._graph_editor and hasattr(self._graph_editor, "_animation_controller"):
+            if self._graph_editor._animation_controller.is_animating():
+                print("🚫 [RESIZE DEBUG] Blocking pictograph resize during animation")
+                return
+
+        # CRITICAL FIX: Don't resize pictograph when graph editor is collapsed or very small
+        # This prevents pictograph from shrinking when graph editor collapses
         if self._graph_editor and hasattr(self._graph_editor, "height"):
             graph_editor_height = self._graph_editor.height()
-            if graph_editor_height > 0:
-                # Enforce square aspect ratio: width = height = graph_editor_height
-                # This matches legacy: self.setFixedSize(self.graph_editor.height(), self.graph_editor.height())
-                square_size = graph_editor_height
-                self.setFixedSize(square_size, square_size)
 
-                # The pictograph view should fill the container completely (no margins now)
+            # Check if graph editor is collapsed or in transition
+            if graph_editor_height < 100:  # Graph editor is collapsed or very small
+                print(
+                    f"🚫 [RESIZE DEBUG] Skipping pictograph resize - graph editor too small: {graph_editor_height}px"
+                )
+                return
+
+            if graph_editor_height > 0:
+                # Calculate content size as percentage of graph editor height
+                content_ratio = 0.85  # Use 85% of graph editor height for content
+                content_size = int(graph_editor_height * content_ratio)
+
+                # Ensure minimum size for usability
+                min_size = 150
+                content_size = max(content_size, min_size)
+
+                # CRITICAL FIX: Only resize if there's a significant change to prevent flashing
+                current_size = self.width()
+                if abs(current_size - content_size) < 10:  # Less than 10px change
+                    return  # Skip micro-adjustments that cause flashing
+
+                # Apply responsive sizing
+                self.setFixedSize(content_size, content_size)
+
+                # The pictograph view should fill most of the content area
                 if self._pictograph_view:
-                    # No margins now, so view fills entire container
-                    self._pictograph_view.setFixedSize(square_size, square_size)
+                    view_ratio = (
+                        0.95  # Use 95% of container for view (leaving space for border)
+                    )
+                    view_size = int(content_size * view_ratio)
+                    self._pictograph_view.setFixedSize(view_size, view_size)
+
+                print(
+                    f"📁 Pictograph responsive resize: graph_editor={graph_editor_height}px, content={content_size}px"
+                )
+
+    def handle_width_change(self, new_width: int) -> None:
+        """Handle graph editor width changes and recalculate pictograph size"""
+        if new_width <= 0:
+            return
+
+        # Prevent resize loops during animation
+        if self._graph_editor and hasattr(self._graph_editor, "_animation_controller"):
+            if self._graph_editor._animation_controller.is_animating():
+                print(
+                    "🚫 [WIDTH DEBUG] Blocking pictograph width update during animation"
+                )
+                return
+
+        # Use both width and height for better sizing calculation
+        graph_editor_height = self._graph_editor.height() if self._graph_editor else 0
+
+        # CRITICAL FIX: Don't resize pictograph when graph editor is collapsed or very small
+        if graph_editor_height < 100:  # Graph editor is collapsed or very small
+            print(
+                f"🚫 [WIDTH DEBUG] Skipping pictograph width update - graph editor too small: {graph_editor_height}px"
+            )
+            return
+
+        if graph_editor_height > 0:
+            # Calculate size based on both dimensions for better proportions
+            # Use the smaller dimension to ensure square pictograph fits properly
+            available_width = int(new_width * 0.4)  # Use 40% of graph editor width
+            available_height = int(
+                graph_editor_height * 0.85
+            )  # Use 85% of graph editor height
+
+            # Choose the smaller dimension to ensure it fits in both directions
+            content_size = min(available_width, available_height)
+
+            # Ensure minimum size for usability
+            min_size = 150
+            content_size = max(content_size, min_size)
+
+            # Only resize if there's a significant change to prevent flashing
+            current_size = self.width()
+            if abs(current_size - content_size) < 10:  # Less than 10px change
+                return  # Skip micro-adjustments that cause flashing
+
+            # Apply responsive sizing
+            self.setFixedSize(content_size, content_size)
+
+            # The pictograph view should fill most of the content area
+            if self._pictograph_view:
+                view_ratio = (
+                    0.95  # Use 95% of container for view (leaving space for border)
+                )
+                view_size = int(content_size * view_ratio)
+                self._pictograph_view.setFixedSize(view_size, view_size)
+
+            print(
+                f"📁 [WIDTH SYNC] Pictograph resized: width={new_width}px, height={graph_editor_height}px, content={content_size}px"
+            )
 
 
 class ModernPictographView(QGraphicsView):

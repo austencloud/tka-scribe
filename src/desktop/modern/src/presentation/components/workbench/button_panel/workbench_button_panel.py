@@ -102,9 +102,16 @@ class ModernSequenceWorkbenchButtonPanel(QWidget):
         button.setFont(font)
 
         # Connect to signal
-        button.clicked.connect(signal.emit)
+        button.clicked.connect(
+            lambda: self._handle_button_click(signal, button.toolTip())
+        )
 
         return button
+
+    def _handle_button_click(self, signal, tooltip):
+        """Handle button click with debug output"""
+        print(f"🔧 DEBUG: Button clicked - {tooltip}")
+        signal.emit()
 
     def _apply_styling(self):
         """Apply glassmorphism styling to the button panel and buttons"""

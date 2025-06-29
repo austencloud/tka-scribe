@@ -59,7 +59,9 @@ class WorkbenchBeatFrameSection(QWidget):
         self._beat_frame.setMinimumHeight(400)
 
         # Create button panel (right side)
+        print("🔧 DEBUG: Creating button panel in beat frame section...")
         self._button_panel = ModernSequenceWorkbenchButtonPanel(self)
+        print(f"🔧 DEBUG: Button panel created: {self._button_panel}")
 
         # Add with proper proportions (10:1 ratio like Legacy)
         layout.addWidget(self._beat_frame, 10)
@@ -96,8 +98,13 @@ class WorkbenchBeatFrameSection(QWidget):
             self._button_panel.copy_json_requested.connect(self.copy_json_requested)
             self._button_panel.delete_beat_requested.connect(self.delete_beat_requested)
             self._button_panel.clear_sequence_requested.connect(
-                self.clear_sequence_requested
+                self._handle_clear_sequence_request
             )
+
+    def _handle_clear_sequence_request(self):
+        """Handle clear sequence request from button panel"""
+        print("🔧 DEBUG: Beat frame section received clear sequence request")
+        self.clear_sequence_requested.emit()
 
     def set_sequence(self, sequence: Optional[SequenceData]):
         """Set the current sequence"""

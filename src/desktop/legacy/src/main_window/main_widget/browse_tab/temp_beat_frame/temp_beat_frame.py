@@ -26,8 +26,8 @@ from base_widgets.pictograph.elements.views.beat_view import (
 from main_window.main_widget.sequence_workbench.legacy_beat_frame.image_export_manager.image_export_manager import (
     ImageExportManager,
 )
-from main_window.main_widget.sequence_workbench.legacy_beat_frame.start_pos_beat import (
-    StartPositionBeat,
+from main_window.main_widget.sequence_workbench.legacy_beat_frame.legacy_start_pos_beat import (
+    LegacyStartPositionBeat,
 )
 from main_window.main_widget.sequence_workbench.legacy_beat_frame.start_pos_beat_view import (
     StartPositionBeatView,
@@ -68,7 +68,7 @@ class TempBeatFrame(BaseBeatFrame):
     def _setup_components(self) -> None:
         self.layout_manager = TempBeatFrameLayoutManager(self)
         self.start_pos_view = StartPositionBeatView(self)
-        self.start_pos = StartPositionBeat(self)
+        self.start_pos = LegacyStartPositionBeat(self)
         self.export_manager = ImageExportManager(self, TempBeatFrame)
 
     def _setup_layout(self) -> None:
@@ -193,7 +193,7 @@ class TempBeatFrame(BaseBeatFrame):
 
         # If we found a start position entry, set it
         if start_pos_entry:
-            start_pos = StartPositionBeat(self)
+            start_pos = LegacyStartPositionBeat(self)
             start_pos.managers.updater.update_pictograph(start_pos_entry)
             self.start_pos_view.set_start_pos(start_pos)
 
