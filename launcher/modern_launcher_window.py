@@ -20,7 +20,7 @@ from PyQt6.QtGui import (
 )
 
 from application_grid import ApplicationGridWidget
-from launcher_config import LauncherConfig
+from config.launcher_config import LauncherConfig
 from ui.window_layout import LauncherLayoutManager, ResponsiveLayoutManager
 from ui.window_handlers import LauncherEventHandler, LauncherShortcutHandler
 from ui.reliable_design_system import get_reliable_style_builder

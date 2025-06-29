@@ -12,7 +12,7 @@ from presentation.components.workbench.sequence_beat_frame import (
 )
 
 from .workbench import (
-    ModernSequenceWorkbench,
+    SequenceWorkbench,
 )
 
 from .indicator_section import WorkbenchIndicatorSection
@@ -32,7 +32,7 @@ from .button_interface import (
 )
 
 __all__ = [
-    "ModernSequenceWorkbench",
+    "SequenceWorkbench",
     "SequenceBeatFrame",
     "BeatView",
     "StartPositionView",

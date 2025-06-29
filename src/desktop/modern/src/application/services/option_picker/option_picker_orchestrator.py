@@ -289,7 +289,7 @@ class OptionPickerOrchestrator(QObject):
         except Exception as e:
             logger.error(f"Error refreshing options: {e}")
 
-    def refresh_from_modern_sequence(self, sequence: SequenceData) -> None:
+    def refresh_from_sequence(self, sequence: SequenceData) -> None:
         """
         Refresh options based on modern sequence data.
 
@@ -301,7 +301,7 @@ class OptionPickerOrchestrator(QObject):
                 logger.warning("Orchestrator not initialized")
                 return
 
-            beat_options = self.data_service.refresh_from_modern_sequence(sequence)
+            beat_options = self.data_service.refresh_from_sequence(sequence)
             self.display_service.update_beat_display(beat_options)
 
             logger.debug(f"Refreshed from modern sequence: {len(beat_options)} options")

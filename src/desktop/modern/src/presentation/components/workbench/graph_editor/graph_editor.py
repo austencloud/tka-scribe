@@ -26,7 +26,7 @@ logger = logging.getLogger(__name__)
 
 if TYPE_CHECKING:
     from presentation.components.workbench.workbench import (
-        ModernSequenceWorkbench,
+        SequenceWorkbench,
     )
 
 
@@ -51,7 +51,7 @@ class GraphEditor(QFrame):
     def __init__(
         self,
         graph_service: IGraphEditorService,
-        parent: Optional["ModernSequenceWorkbench"] = None,
+        parent: Optional["SequenceWorkbench"] = None,
         workbench_width: int = UIConfig.DEFAULT_WORKBENCH_WIDTH,
         workbench_height: int = UIConfig.DEFAULT_WORKBENCH_HEIGHT,
     ):

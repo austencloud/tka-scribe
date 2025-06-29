@@ -124,7 +124,7 @@ class OptionPicker(ViewableComponentBase):
     def refresh_options_from_modern_sequence(self, sequence: SequenceData) -> None:
         """PURE Modern: Refresh options based on Modern SequenceData using orchestrator."""
         if self.orchestrator:
-            self.orchestrator.refresh_from_modern_sequence(sequence)
+            self.orchestrator.refresh_from_sequence(sequence)
 
     def set_enabled(self, enabled: bool) -> None:
         """Enable or disable the widget."""

@@ -40,12 +40,12 @@ from application.services.graph_editor_service import (
     GraphEditorService,
 )
 
-from presentation.components.workbench import ModernSequenceWorkbench
+from presentation.components.workbench import SequenceWorkbench
 
 
 def create_modern_workbench(
     container: DIContainer, parent: Optional[QWidget] = None
-) -> ModernSequenceWorkbench:
+) -> SequenceWorkbench:
     """Factory function to create a fully configured modern sequence workbench"""
 
     # Configure all services if not already done
@@ -60,7 +60,7 @@ def create_modern_workbench(
     dictionary_service = container.resolve(IDictionaryService)
 
     # Create and return configured workbench
-    return ModernSequenceWorkbench(
+    return SequenceWorkbench(
         layout_service=layout_service,
         workbench_service=workbench_service,
         fullscreen_service=fullscreen_service,

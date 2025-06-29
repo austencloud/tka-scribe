@@ -121,7 +121,7 @@ class OptionPickerDataService(IOptionPickerDataService):
             logger.error(f"Error refreshing from sequence data: {e}")
             return self._cached_options
 
-    def refresh_from_modern_sequence(self, sequence: SequenceData) -> List[BeatData]:
+    def refresh_from_sequence(self, sequence: SequenceData) -> List[BeatData]:
         """
         Refresh options based on modern sequence data.
 

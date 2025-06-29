@@ -22,7 +22,7 @@ if TYPE_CHECKING:
     pass
 
 
-class ModernSequenceWorkbench(QWidget):
+class SequenceWorkbench(QWidget):
     """Modern sequence workbench component following modern architecture patterns"""
 
     # Signals for communication with other components

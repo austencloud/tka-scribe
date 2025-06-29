@@ -59,6 +59,41 @@ class KineticConstructorModern(QMainWindow):
             enable_api,
         )
 
+        # Production debugging can be enabled by uncommenting the line below
+        # self._attach_production_debugger()
+
+    def _attach_production_debugger(self) -> None:
+        """Attach production debugger to monitor toggle functionality"""
+        try:
+            # Import debugger
+            from debug import attach_to_application
+
+            # Delay attachment to ensure full initialization
+            from PyQt6.QtCore import QTimer
+
+            QTimer.singleShot(1000, lambda: self._do_debugger_attachment())
+
+        except Exception as e:
+            print(f"⚠️ Could not attach production debugger: {e}")
+
+    def _do_debugger_attachment(self) -> None:
+        """Perform the actual debugger attachment"""
+        try:
+            from debug import attach_to_application, get_production_debugger
+
+            success = attach_to_application(self)
+            if success:
+                print("🔍 Production toggle debugger attached successfully!")
+                print("🎯 Toggle functionality is now ready for testing!")
+            else:
+                print("⚠️ Production toggle debugger failed to attach")
+
+        except Exception as e:
+            print(f"⚠️ Error during debugger attachment: {e}")
+            import traceback
+
+            traceback.print_exc()
+
     def resizeEvent(self, a0):
         """Handle window resize events."""
         super().resizeEvent(a0)

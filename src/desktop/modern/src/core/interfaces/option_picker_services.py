@@ -109,7 +109,7 @@ class IOptionPickerDataService(ABC):
         pass
 
     @abstractmethod
-    def refresh_from_modern_sequence(self, sequence: SequenceData) -> List[BeatData]:
+    def refresh_from_sequence(self, sequence: SequenceData) -> List[BeatData]:
         """
         Refresh options based on modern sequence data.
 
