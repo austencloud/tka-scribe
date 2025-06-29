@@ -12,7 +12,7 @@ from PyQt6.QtGui import QColor
 from PyQt6.QtWidgets import QApplication
 
 
-class ReliableTokens:
+class PyQt6CompatibleTokens:
     """Reliable design tokens optimized for PyQt6 visibility."""
 
     # ENHANCED VISIBILITY - Increased opacity for better readability
@@ -65,11 +65,11 @@ class ReliableTokens:
     RADIUS = {"sm": 8, "md": 12, "lg": 16, "xl": 20}
 
 
-class ReliableStyleBuilder:
+class PyQt6CompatibleStyleBuilder:
     """Builds reliable CSS using only proven PyQt6 patterns."""
 
     def __init__(self):
-        self.tokens = ReliableTokens()
+        self.tokens = PyQt6CompatibleTokens()
         self.current_accent = "blue"
 
     def glass_surface(self, variant: str = "primary") -> str:
@@ -112,9 +112,9 @@ class ReliableStyleBuilder:
 
 
 # Global instances
-_reliable_style_builder = ReliableStyleBuilder()
+_reliable_style_builder = PyQt6CompatibleStyleBuilder()
 
 
-def get_reliable_style_builder() -> ReliableStyleBuilder:
+def get_reliable_style_builder() -> PyQt6CompatibleStyleBuilder:
     """Get the global reliable style builder."""
     return _reliable_style_builder

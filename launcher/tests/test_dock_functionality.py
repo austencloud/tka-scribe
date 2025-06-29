@@ -206,7 +206,7 @@ def test_visual_indicators():
             ApplicationCategory,
             ApplicationStatus,
         )
-        from ui.reliable_design_system import get_reliable_style_builder
+        from ui.pyqt6_compatible_design_system import get_reliable_style_builder
 
         # Create test application
         test_app = ApplicationData(

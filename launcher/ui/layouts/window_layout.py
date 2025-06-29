@@ -17,9 +17,9 @@ from PyQt6.QtWidgets import (
 from PyQt6.QtCore import Qt, pyqtSignal, QSize
 from PyQt6.QtGui import QFont
 
-from ui.reliable_design_system import get_reliable_style_builder
+from ui.pyqt6_compatible_design_system import get_reliable_style_builder
 from ui.reliable_effects import get_shadow_manager
-from ui.components.reliable_components import ReliableSearchBox, ReliableButton
+from ui.components import ReliableSearchBox, ReliableButton
 from ui.launcher_components import (
     LauncherHeader,
     LauncherStatusBar,

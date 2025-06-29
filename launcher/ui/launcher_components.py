@@ -10,7 +10,7 @@ from PyQt6.QtWidgets import QLabel, QFrame, QVBoxLayout, QHBoxLayout
 from PyQt6.QtCore import Qt, pyqtSignal, QTimer, QPropertyAnimation, QEasingCurve
 from PyQt6.QtGui import QFont
 
-from ui.reliable_design_system import get_reliable_style_builder
+from ui.pyqt6_compatible_design_system import get_reliable_style_builder
 from ui.reliable_effects import get_shadow_manager, get_animation_manager
 
 

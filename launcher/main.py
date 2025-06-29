@@ -119,8 +119,8 @@ class TKAModernLauncherApp:
         """Initialize the launcher components."""
         try:
             # Import here to avoid circular imports
-            from launcher_window import TKAModernWindow
-            from tka_integration import TKAIntegrationService
+            from ui.windows.launcher_window import TKAModernWindow
+            from integration.tka_integration import TKAIntegrationService
 
             # Initialize TKA integration
             logger.info("🔗 Initializing TKA integration...")

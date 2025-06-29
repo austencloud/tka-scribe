@@ -47,8 +47,8 @@ from PyQt6.QtWidgets import (
 logger = logging.getLogger(__name__)
 
 # Import reliable design system components
-from ui.components import ReliableApplicationCard
-from ui.reliable_effects import get_animation_manager
+from ..components import ReliableApplicationCard
+from ..reliable_effects import get_animation_manager
 
 logger.info("🎨 Reliable UI components loaded successfully")
 

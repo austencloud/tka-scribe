@@ -8,9 +8,9 @@ Professional application card with glassmorphism styling and animations.
 from PyQt6.QtWidgets import QFrame, QLabel, QVBoxLayout, QHBoxLayout
 from PyQt6.QtCore import Qt, pyqtSignal
 
-from ..reliable_design_system import get_reliable_style_builder
-from ..reliable_effects import get_shadow_manager, get_animation_manager
-from .button import ReliableButton
+from ...pyqt6_compatible_design_system import get_reliable_style_builder
+from ...reliable_effects import get_shadow_manager, get_animation_manager
+from ..buttons.button import ReliableButton
 
 
 class ReliableApplicationCard(QFrame):

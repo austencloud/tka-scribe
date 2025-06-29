@@ -8,8 +8,8 @@ Professional button with glassmorphism styling and animations.
 from PyQt6.QtWidgets import QPushButton
 from PyQt6.QtCore import Qt
 
-from ..reliable_design_system import get_reliable_style_builder
-from ..reliable_effects import get_shadow_manager, get_animation_manager
+from ...pyqt6_compatible_design_system import get_reliable_style_builder
+from ...reliable_effects import get_shadow_manager, get_animation_manager
 
 
 class ReliableButton(QPushButton):
