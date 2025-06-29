@@ -213,7 +213,7 @@ class OptionPickerEventService(IOptionPickerEventService):
             if self.filter_widget and hasattr(self.filter_widget, "filter_changed"):
                 try:
                     self.filter_widget.filter_changed.disconnect()
-                except:
+                except Exception:
                     pass  # Already disconnected
 
             # Clear handler references

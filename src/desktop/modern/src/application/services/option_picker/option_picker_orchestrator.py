@@ -16,6 +16,7 @@ Follows TKA's dependency injection patterns and clean architecture.
 import logging
 from typing import Any, Callable, Dict, List, Optional
 
+
 from core.dependency_injection.di_container import DIContainer
 from core.interfaces.option_picker_services import (
     IOptionPickerDataService,
@@ -75,19 +76,23 @@ class OptionPickerOrchestrator(QObject):
 
         # Initialize services with dependency injection
         if initialization_service is None:
-            from .option_picker_initialization_service import (
+            from application.services.option_picker.option_picker_initialization_service import (
                 OptionPickerInitializationService,
             )
 
             initialization_service = OptionPickerInitializationService()
 
         if display_service is None:
-            from .option_picker_display_service import OptionPickerDisplayService
+            from application.services.option_picker.option_picker_display_service import (
+                OptionPickerDisplayService,
+            )
 
             display_service = OptionPickerDisplayService()
 
         if event_service is None:
-            from .option_picker_event_service import OptionPickerEventService
+            from application.services.option_picker.option_picker_event_service import (
+                OptionPickerEventService,
+            )
 
             event_service = OptionPickerEventService()
 
@@ -157,7 +162,9 @@ class OptionPickerOrchestrator(QObject):
             # Step 4: Create data service with beat loader
             beat_loader = components["beat_loader"]
             if self.data_service is None:
-                from .option_picker_data_service import OptionPickerDataService
+                from application.services.option_picker.option_picker_data_service import (
+                    OptionPickerDataService,
+                )
 
                 self.data_service = OptionPickerDataService(beat_loader)
 

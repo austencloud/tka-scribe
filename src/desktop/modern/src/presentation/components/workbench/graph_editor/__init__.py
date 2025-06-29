@@ -26,15 +26,15 @@ Usage:
 from .graph_editor import GraphEditor
 
 # Individual components (for advanced usage and testing)
-from .animation_controller import GraphEditorAnimationController
-from .signal_coordinator import GraphEditorSignalCoordinator
-from .layout_manager import GraphEditorLayoutManager
-from .state_manager import GraphEditorStateManager
+from .managers.animation_controller import GraphEditorAnimationController
+from .managers.signal_coordinator import GraphEditorSignalCoordinator
+from .managers.layout_manager import GraphEditorLayoutManager
+from .managers.state_manager import GraphEditorStateManager
 
 # UI components (for compatibility)
-from .pictograph_container import GraphEditorPictographContainer
-from .adjustment_panel import AdjustmentPanel
-from .toggle_tab import ToggleTab
+from .components.pictograph_container import GraphEditorPictographContainer
+from .components.adjustment_panel import AdjustmentPanel
+from .components.toggle_tab import ToggleTab
 
 __all__ = [
     # Main public API

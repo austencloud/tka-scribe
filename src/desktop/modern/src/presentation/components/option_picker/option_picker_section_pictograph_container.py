@@ -25,20 +25,12 @@ class OptionPickerSectionPictographContainer(QFrame):
     def _setup_ui(self):
         """Setup grid layout for pictographs exactly like legacy system."""
         self.main_layout = QGridLayout(self)
-        # CRITICAL: Use center alignment like original legacy system
         self.main_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.main_layout.setContentsMargins(0, 0, 0, 0)
-        self.main_layout.setSpacing(
-            3
-        )  # CRITICAL: Use original spacing value (3, not 8)
+        self.main_layout.setSpacing(3)
 
-        # FIXED: Frame should match section width exactly, not expand independently
         from PyQt6.QtWidgets import QSizePolicy
-
-        # Use Fixed width policy to match parent section's setFixedWidth()
         self.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Minimum)
-
-        # Set transparent background
         self.setStyleSheet(
             """
             QFrame {
@@ -47,7 +39,6 @@ class OptionPickerSectionPictographContainer(QFrame):
             }
             """
         )
-
         self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
 
     def sync_width_with_section(self):
@@ -99,41 +90,20 @@ class OptionPickerSectionPictographContainer(QFrame):
             pictograph_frame.pictograph_component.setVisible(True)
             pictograph_frame.pictograph_component.show()
 
-        # DEBUG: Log actual pictograph dimensions after adding to layout
-        if count <= 8:  # Only log first row to avoid spam
-            actual_width = pictograph_frame.width()
-            actual_height = pictograph_frame.height()
-            print(
-                f"   🔍 Pictograph {count}: {actual_width}x{actual_height}px at grid ({row},{col})"
-            )
-
     def resize_pictographs(self, target_size: int):
         """Resize all pictographs using legacy algorithm."""
-        print(
-            f"   🔧 Resizing {len(self.pictographs)} pictographs to target: {target_size}px"
-        )
+        # Only print summary, not per-pictograph logs
 
-        for i, pictograph_frame in enumerate(self.pictographs):
+
+        for pictograph_frame in self.pictographs:
             if pictograph_frame and hasattr(pictograph_frame, "resize_frame"):
                 try:
-                    old_size = f"{pictograph_frame.width()}x{pictograph_frame.height()}"
-                    # Use the frame's own resize_frame method which implements legacy algorithm
                     pictograph_frame.resize_frame()
-                    new_size = f"{pictograph_frame.width()}x{pictograph_frame.height()}"
-                    if i < 3:  # Only log first 3 to avoid spam
-                        print(f"      Pictograph {i+1}: {old_size} → {new_size}")
                 except RuntimeError:
                     continue
             elif pictograph_frame and hasattr(pictograph_frame, "setFixedSize"):
                 try:
-                    old_size = f"{pictograph_frame.width()}x{pictograph_frame.height()}"
-                    # Fallback for frames without resize_frame method
                     pictograph_frame.setFixedSize(target_size, target_size)
-                    new_size = f"{pictograph_frame.width()}x{pictograph_frame.height()}"
-                    if i < 3:  # Only log first 3 to avoid spam
-                        print(
-                            f"      Pictograph {i+1}: {old_size} → {new_size} (fallback)"
-                        )
                 except RuntimeError:
                     continue
 
@@ -146,8 +116,7 @@ class OptionPickerSectionPictographContainer(QFrame):
         max_row = (len(self.pictographs) - 1) // COLUMN_COUNT
         rows_needed = max_row + 1
 
-        container_margins = 0  # Frame has no margins
-        # FIXED: Use actual grid spacing from layout (3px, not 8px)
+        container_margins = 0
         grid_spacing = self.main_layout.spacing()
 
         return (
@@ -162,7 +131,6 @@ class OptionPickerSectionPictographContainer(QFrame):
             f"📏 Container updating sizing reference to {option_picker_width}px for {len(self.pictographs)} pictographs"
         )
 
-        # Update all pictograph frames with the new sizing reference
         for pictograph_frame in self.pictographs:
             if pictograph_frame and hasattr(
                 pictograph_frame, "update_sizing_reference"

@@ -1,14 +1,18 @@
+import logging
 from typing import Optional, TYPE_CHECKING
 from PyQt6.QtWidgets import QHBoxLayout, QFrame, QSizePolicy
 from PyQt6.QtCore import QObject, Qt
 from PyQt6.QtGui import QResizeEvent
 
-from .pictograph_container import GraphEditorPictographContainer
-from .adjustment_panel import AdjustmentPanel
-from .toggle_tab import ToggleTab
+from ..components.pictograph_container import GraphEditorPictographContainer
+from ..components.adjustment_panel import AdjustmentPanel
+from ..components.toggle_tab import ToggleTab
+from ..config import LayoutConfig, ColorConfig
+
+logger = logging.getLogger(__name__)
 
 if TYPE_CHECKING:
-    from .graph_editor import GraphEditor
+    from ..graph_editor import GraphEditor
 
 
 class GraphEditorLayoutManager(QObject):
@@ -74,9 +78,14 @@ class GraphEditorLayoutManager(QObject):
         """Create the main horizontal layout"""
         self._main_layout = QHBoxLayout(self._graph_editor)
         self._main_layout.setContentsMargins(
-            8, 8, 8, 8
+            LayoutConfig.MAIN_LAYOUT_MARGINS,
+            LayoutConfig.MAIN_LAYOUT_MARGINS,
+            LayoutConfig.MAIN_LAYOUT_MARGINS,
+            LayoutConfig.MAIN_LAYOUT_MARGINS,
         )  # Small padding like web version
-        self._main_layout.setSpacing(8)  # Space between components
+        self._main_layout.setSpacing(
+            LayoutConfig.MAIN_LAYOUT_SPACING
+        )  # Space between components
 
     def _create_components(self) -> None:
         """Create all UI components"""
@@ -146,13 +155,11 @@ class GraphEditorLayoutManager(QObject):
 
     def sync_graph_editor_width(self) -> None:
         """Trigger graph editor width synchronization with workbench"""
-        print("🔍 [HEIGHT DEBUG] Layout manager sync_graph_editor_width called")
+        logger.debug("Layout manager sync_graph_editor_width called")
         if hasattr(self._graph_editor, "sync_width_with_workbench"):
             self._graph_editor.sync_width_with_workbench()
         else:
-            print(
-                "🚨 [HEIGHT DEBUG] Graph editor missing sync_width_with_workbench method!"
-            )
+            logger.error("Graph editor missing sync_width_with_workbench method!")
 
     # Property accessors for components
     @property

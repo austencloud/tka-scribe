@@ -17,6 +17,8 @@ from PyQt6.QtCore import QPropertyAnimation, QEasingCurve, QPoint
 from PyQt6.QtWidgets import QWidget
 import logging
 
+from ..config import AnimationConfig
+
 if TYPE_CHECKING:
     from ..graph_editor import GraphEditor
 
@@ -111,7 +113,9 @@ class AnimationSynchronizer:
         if not self._toggle_position_animation:
             self._toggle_position_animation = QPropertyAnimation(toggle_tab, b"pos")
 
-        self._toggle_position_animation.setDuration(400)  # Match graph editor animation
+        self._toggle_position_animation.setDuration(
+            AnimationConfig.DURATION_MS
+        )  # Match graph editor animation
         self._toggle_position_animation.setEasingCurve(QEasingCurve.Type.OutCubic)
 
         self._toggle_position_animation.setStartValue(start_pos)

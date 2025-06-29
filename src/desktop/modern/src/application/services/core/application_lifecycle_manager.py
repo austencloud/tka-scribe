@@ -215,7 +215,7 @@ class ApplicationLifecycleManager(IApplicationLifecycleManager):
             return False
 
         try:
-            from infrastructure.api.api_integration import start_api_server
+            from infrastructure.api.integration import start_api_server
             import platform
 
             # Enhanced logging for Windows
@@ -228,7 +228,7 @@ class ApplicationLifecycleManager(IApplicationLifecycleManager):
 
             if success:
                 print("🌐 TKA API server started successfully")
-                from infrastructure.api.api_integration import get_api_integration
+                from infrastructure.api.integration import get_api_integration
 
                 api = get_api_integration()
                 server_url = api.get_server_url()

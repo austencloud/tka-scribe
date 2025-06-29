@@ -16,7 +16,9 @@ from PyQt6.QtTest import QTest
 
 # TKA imports
 from presentation.components.workbench import ModernSequenceWorkbench
-from presentation.components.workbench.graph_editor.toggle_tab import ToggleTab
+from presentation.components.workbench.graph_editor.components.toggle_tab import (
+    ToggleTab,
+)
 from domain.models.core_models import SequenceData, BeatData
 from core.dependency_injection.di_container import DIContainer, get_container
 
@@ -268,10 +270,6 @@ class GraphEditorAnimationTestSuite:
         assert (
             not after_hide_visibility or after_hide_height == 0
         ), "Graph editor should be hidden after slide_down"
-
-        # Step 5: Test animation timing
-        expected_duration = 0.4  # 400ms as configured
-        tolerance = 0.3  # 300ms tolerance for test environment
 
         assert slide_up_time < 1.0, f"slide_up animation too slow: {slide_up_time:.3f}s"
         assert (

@@ -118,7 +118,7 @@ class WorkbenchGraphSection(QWidget):
         """Update graph toggle tab position"""
         if self._graph_editor and hasattr(self._graph_editor, "_toggle_tab"):
             if self._graph_editor._toggle_tab:
-                self._graph_editor._toggle_tab.update_position(animate=animate)
+                self._graph_editor._toggle_tab.update_position_for_graph_editor_state()
 
     def resizeEvent(self, event):
         """Handle resize events"""

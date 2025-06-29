@@ -1,9 +1,3 @@
-from typing import Optional, TYPE_CHECKING
-from PyQt6.QtWidgets import QFrame
-from PyQt6.QtCore import pyqtSignal
-from PyQt6.QtGui import QResizeEvent, QKeyEvent
-
-from core.interfaces.workbench_services import IGraphEditorService
 from domain.models.core_models import SequenceData, BeatData
 from application.services.graph_editor_data_flow_service import (
     GraphEditorDataFlowService,
@@ -13,10 +7,22 @@ from application.services.graph_editor_hotkey_service import (
 )
 
 # Import our specialized component classes
-from .animation_controller import GraphEditorAnimationController
-from .signal_coordinator import GraphEditorSignalCoordinator
-from .layout_manager import GraphEditorLayoutManager
-from .state_manager import GraphEditorStateManager
+from .managers.animation_controller import GraphEditorAnimationController
+from .managers.signal_coordinator import GraphEditorSignalCoordinator
+from .managers.layout_manager import GraphEditorLayoutManager
+from .managers.state_manager import GraphEditorStateManager
+
+
+import logging
+from typing import Optional, TYPE_CHECKING
+from PyQt6.QtWidgets import QFrame
+from PyQt6.QtCore import pyqtSignal
+from PyQt6.QtGui import QResizeEvent, QKeyEvent
+
+from core.interfaces.workbench_services import IGraphEditorService
+from .config import UIConfig, StateConfig
+
+logger = logging.getLogger(__name__)
 
 if TYPE_CHECKING:
     from presentation.components.workbench.workbench import (
@@ -46,8 +52,8 @@ class GraphEditor(QFrame):
         self,
         graph_service: IGraphEditorService,
         parent: Optional["ModernSequenceWorkbench"] = None,
-        workbench_width: int = 800,
-        workbench_height: int = 600,
+        workbench_width: int = UIConfig.DEFAULT_WORKBENCH_WIDTH,
+        workbench_height: int = UIConfig.DEFAULT_WORKBENCH_HEIGHT,
     ):
         super().__init__(parent)
 
@@ -146,33 +152,33 @@ class GraphEditor(QFrame):
 
     def toggle_visibility(self) -> None:
         """Toggle graph editor visibility with smooth sliding animation"""
-        print("🔄 toggle_visibility() called")
+        logger.debug("Toggle visibility called")
 
         # Prevent multiple animations
         if self._animation_controller.is_animating():
-            print("  ⚠️ Animation already in progress, skipping")
+            logger.warning("Animation already in progress, skipping toggle")
             return
 
         # Validate state synchronization before making decisions
-        print("  🔍 Calling validate_state_synchronization()...")
+        logger.debug("Validating state synchronization")
         is_synchronized = self._animation_controller.validate_state_synchronization()
-        print(f"  🔍 Validation result: {is_synchronized}")
+        logger.debug("State synchronization validation result: %s", is_synchronized)
         if not is_synchronized:
-            print("  🔧 State desynchronization detected and corrected")
+            logger.info("State desynchronization detected and corrected")
 
         current_visibility = self.state_manager.is_visible()
         current_height = self.height()
-        print(
-            f"  📊 Current visibility: {current_visibility}, height: {current_height}"
+        logger.debug(
+            "Current state: visible=%s, height=%d", current_visibility, current_height
         )
 
         if current_visibility:
             # Hide: start animation (state will be updated when animation completes)
-            print("  🔽 Calling slide_down()")
+            logger.debug("Starting slide down animation")
             self._animation_controller.slide_down()
         else:
             # Show: start animation (state will be updated when animation completes)
-            print("  🔼 Calling slide_up()")
+            logger.debug("Starting slide up animation")
             self._animation_controller.slide_up()
 
     def is_visible(self) -> bool:
@@ -197,7 +203,7 @@ class GraphEditor(QFrame):
             hasattr(self, "_animation_controller")
             and self._animation_controller.is_animating()
         ):
-            print("🚫 [WIDTH SYNC] Blocking width sync during animation")
+            logger.debug("Blocking width sync during animation")
             return
 
         if self._parent_workbench:
@@ -205,13 +211,18 @@ class GraphEditor(QFrame):
             if workbench_width > 0:
                 # CRITICAL FIX: Prevent width sync loops
                 current_width = self.width()
-                if abs(current_width - workbench_width) < 5:  # Less than 5px difference
+                if (
+                    abs(current_width - workbench_width)
+                    < StateConfig.WIDTH_SYNC_TOLERANCE
+                ):
                     return  # Skip micro-adjustments that cause loops
 
                 # Set graph editor width to match workbench width
                 self.setFixedWidth(workbench_width)
-                print(
-                    f"🔄 [WIDTH SYNC] Graph editor width synchronized: {current_width}px → {workbench_width}px"
+                logger.debug(
+                    "Graph editor width synchronized: %dpx → %dpx",
+                    current_width,
+                    workbench_width,
                 )
 
                 # Notify pictograph container of width change
@@ -229,37 +240,7 @@ class GraphEditor(QFrame):
         """Get the parent workbench width"""
         if self._parent_workbench:
             return self._parent_workbench.width()
-        return 800  # Default fallback
-
-    def _debug_setFixedHeight(self, height: int) -> None:
-        """Debug wrapper for setFixedHeight to track all height changes"""
-        current_height = self.height()
-        is_visible = hasattr(self, "_state_manager") and self.state_manager.is_visible()
-
-        print(
-            f"🎯 [HEIGHT DEBUG] setFixedHeight called: {current_height}px -> {height}px (visible={is_visible})"
-        )
-
-        # CRITICAL: Track unwanted height changes when collapsed (for debugging)
-        if not is_visible and height > 0:
-            print(
-                f"🚨 [HEIGHT DEBUG] CRITICAL: Setting height {height}px when graph editor should be collapsed!"
-            )
-            print(f"🚨 [HEIGHT DEBUG] This may indicate an issue - monitoring...")
-
-            # Get some call stack info for debugging
-            import traceback
-
-            print("🚨 [HEIGHT DEBUG] Call stack:")
-            for line in traceback.format_stack()[
-                -5:
-            ]:  # Last 5 stack frames for context
-                print(f"    {line.strip()}")
-
-            # Allow the height change but log it for analysis
-
-        # Call the original method
-        self._original_setFixedHeight(height)
+        return UIConfig.DEFAULT_WORKBENCH_WIDTH  # Default fallback
 
     # ============================================================================
     # COMPONENT PROPERTY ACCESS (for backward compatibility)
@@ -321,12 +302,11 @@ class GraphEditor(QFrame):
 
     def resizeEvent(self, event: QResizeEvent) -> None:
         """Handle resize events - delegate to layout manager"""
-        # print hte call stack
-        import traceback
-
-        print("🔍 [HEIGHT DEBUG] Graph editor resize event called")
-        for line in traceback.format_stack()[-5:]:  # Last 5 stack frames for context
-            print(f"    {line.strip()}")
+        logger.debug(
+            "Graph editor resize event: %dx%d",
+            event.size().width(),
+            event.size().height(),
+        )
 
         # Delegate to layout manager
         super().resizeEvent(event)

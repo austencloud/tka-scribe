@@ -1,10 +1,13 @@
+import logging
 from typing import Optional, TYPE_CHECKING
 from PyQt6.QtCore import QObject, pyqtSignal
 
 from domain.models.core_models import SequenceData, BeatData
 
+logger = logging.getLogger(__name__)
+
 if TYPE_CHECKING:
-    from .graph_editor import GraphEditor
+    from ..graph_editor import GraphEditor
 
 
 class GraphEditorSignalCoordinator(QObject):
@@ -107,11 +110,12 @@ class GraphEditorSignalCoordinator(QObject):
             self._graph_editor._toggle_tab.toggle_requested.connect(
                 self._on_toggle_requested
             )
-            print(
-                f"🔗 Connected toggle tab signal: {type(self._graph_editor._toggle_tab).__name__}"
+            logger.debug(
+                "Connected toggle tab signal: %s",
+                type(self._graph_editor._toggle_tab).__name__,
             )
         else:
-            print(f"⚠️ Toggle tab not found or not created yet")
+            logger.warning("Toggle tab not found or not created yet")
 
         # Pictograph container signals
         if (
@@ -180,23 +184,23 @@ class GraphEditorSignalCoordinator(QObject):
     # Hotkey Signal Handlers
     def _on_arrow_moved(self, arrow_id: str, delta_x: int, delta_y: int) -> None:
         """Handle arrow movement from hotkeys"""
-        print(f"🎯 Moving arrow {arrow_id} by ({delta_x}, {delta_y})")
+        logger.debug("Moving arrow %s by (%d, %d)", arrow_id, delta_x, delta_y)
         # TODO: Implement arrow position adjustment
         # This should update the arrow's position in the pictograph
 
     def _on_rotation_override(self, arrow_id: str) -> None:
         """Handle rotation override (X key)"""
-        print(f"🔄 Rotation override for arrow {arrow_id}")
+        logger.debug("Rotation override for arrow %s", arrow_id)
         # TODO: Implement rotation override logic
 
     def _on_special_placement_removal(self, arrow_id: str) -> None:
         """Handle special placement removal (Z key)"""
-        print(f"❌ Removing special placement for arrow {arrow_id}")
+        logger.debug("Removing special placement for arrow %s", arrow_id)
         # TODO: Implement special placement removal
 
     def _on_prop_placement_override(self, arrow_id: str) -> None:
         """Handle prop placement override (C key)"""
-        print(f"🎭 Prop placement override for arrow {arrow_id}")
+        logger.debug("Prop placement override for arrow %s", arrow_id)
         # TODO: Implement prop placement override
 
     # Animation Signal Handlers
@@ -214,7 +218,7 @@ class GraphEditorSignalCoordinator(QObject):
     # UI Component Signal Handlers
     def _on_toggle_requested(self) -> None:
         """Handle toggle request from toggle tab"""
-        print("🔗 Toggle requested from toggle tab")
+        logger.debug("Toggle requested from toggle tab")
         self._graph_editor.toggle_visibility()
 
     def _on_arrow_selected(self, arrow_id: str) -> None:

@@ -1,3 +1,4 @@
+import logging
 from typing import Optional
 
 from domain.models.core_models import BeatData, MotionType
@@ -14,6 +15,9 @@ from PyQt6.QtWidgets import (
 
 from .orientation_picker import OrientationPickerWidget
 from .turn_selection_dialog import TurnSelectionDialog
+from ..config import UIConfig, TurnConfig, ColorConfig, LayoutConfig
+
+logger = logging.getLogger(__name__)
 
 
 class TurnAdjustButton(QPushButton):
@@ -63,7 +67,7 @@ class AdjustmentPanel(QWidget):
 
         # Determine arrow color - use provided color or derive from side
         self._arrow_color = color if color else ("blue" if side == "left" else "red")
-        
+
         # Color configurations from web version
         self._color_config = self._get_color_config(self._arrow_color)
 
@@ -110,12 +114,14 @@ class AdjustmentPanel(QWidget):
         self._hand_indicator.setAlignment(Qt.AlignmentFlag.AlignCenter)
         # Use primary color for text like web version
         primary_color = self._color_config["primary"]
-        self._hand_indicator.setStyleSheet(f"color: {primary_color}; font-size: 18px; font-weight: bold;")
+        self._hand_indicator.setStyleSheet(
+            f"color: {primary_color}; font-size: {UIConfig.HAND_INDICATOR_FONT_SIZE}px; font-weight: bold;"
+        )
         layout.addWidget(self._hand_indicator)
 
         # 2. Turn Display - white background, colored border, clickable
         self._turn_display = QPushButton("0.0")
-        self._turn_display.setFixedHeight(40)
+        self._turn_display.setFixedHeight(UIConfig.TURN_DISPLAY_HEIGHT)
         self._turn_display.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self._turn_display.clicked.connect(self._on_turn_display_clicked)
 
@@ -128,7 +134,7 @@ class AdjustmentPanel(QWidget):
                 border: 2px solid {border_color};
                 border-radius: 4px;
                 color: black;
-                font-size: 16px;
+                font-size: {UIConfig.TURN_DISPLAY_FONT_SIZE}px;
                 font-weight: bold;
                 text-align: center;
             }}
@@ -146,14 +152,22 @@ class AdjustmentPanel(QWidget):
         buttons_layout = QHBoxLayout()
 
         # Decrement button (-) with custom mouse event handling
-        self._decrement_button = TurnAdjustButton("-", -1.0, -0.5)
-        self._decrement_button.setFixedSize(40, 30)
+        self._decrement_button = TurnAdjustButton(
+            "-", TurnConfig.LEFT_CLICK_DECREMENT, TurnConfig.RIGHT_CLICK_DECREMENT
+        )
+        self._decrement_button.setFixedSize(
+            UIConfig.TURN_BUTTON_SIZE, UIConfig.TURN_BUTTON_HEIGHT
+        )
         self._decrement_button.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self._decrement_button.turn_adjusted.connect(self._adjust_turn)
 
         # Increment button (+) with custom mouse event handling
-        self._increment_button = TurnAdjustButton("+", 1.0, 0.5)
-        self._increment_button.setFixedSize(40, 30)
+        self._increment_button = TurnAdjustButton(
+            "+", TurnConfig.LEFT_CLICK_INCREMENT, TurnConfig.RIGHT_CLICK_INCREMENT
+        )
+        self._increment_button.setFixedSize(
+            UIConfig.TURN_BUTTON_SIZE, UIConfig.TURN_BUTTON_HEIGHT
+        )
         self._increment_button.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self._increment_button.turn_adjusted.connect(self._adjust_turn)
 
@@ -189,7 +203,9 @@ class AdjustmentPanel(QWidget):
         # 4. Motion Type Display - simple text label
         self._motion_type_label = QLabel("Static")
         self._motion_type_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self._motion_type_label.setStyleSheet("color: white; font-size: 12px;")
+        self._motion_type_label.setStyleSheet(
+            f"color: white; font-size: {UIConfig.MOTION_TYPE_FONT_SIZE}px;"
+        )
         layout.addWidget(self._motion_type_label)
 
         layout.addStretch()
@@ -200,37 +216,38 @@ class AdjustmentPanel(QWidget):
         """Get color configuration based on web version styling"""
         if color == "blue":
             return {
-                "primary": "#2E3192",
+                "primary": ColorConfig.BLUE_PRIMARY,
                 "light": "rgba(46,49,146,0.4)",
                 "medium": "rgba(46,49,146,0.8)",
                 "gradient": "linear-gradient(135deg, rgba(46,49,146,0.1), rgba(46,49,146,0.8))",
                 "text": "Left",
-                "border_color": "#6496FF"
+                "border_color": ColorConfig.BLUE_BORDER,
             }
         else:  # red
             return {
-                "primary": "#ED1C24",
+                "primary": ColorConfig.RED_PRIMARY,
                 "light": "rgba(237,28,36,0.4)",
-                "medium": "rgba(237,28,36,0.8)", 
+                "medium": "rgba(237,28,36,0.8)",
                 "gradient": "linear-gradient(135deg, rgba(237,28,36,0.1), rgba(237,28,36,0.8))",
                 "text": "Right",
-                "border_color": "#FF6464"
+                "border_color": ColorConfig.RED_BORDER,
             }
 
     def _apply_color_styling(self):
         """Apply web-inspired color-coded styling to the adjustment panel"""
         # Create a gradient background similar to web version but adapted for Qt
         primary_color = self._color_config["primary"]
-        
+
         # Convert web colors to Qt-compatible colors
         if self._arrow_color == "blue":
             light_rgba = "rgba(46, 49, 146, 102)"  # 0.4 * 255 = 102
             medium_rgba = "rgba(46, 49, 146, 204)"  # 0.8 * 255 = 204
         else:  # red
-            light_rgba = "rgba(237, 28, 36, 102)"  # 0.4 * 255 = 102  
+            light_rgba = "rgba(237, 28, 36, 102)"  # 0.4 * 255 = 102
             medium_rgba = "rgba(237, 28, 36, 204)"  # 0.8 * 255 = 204
-        
-        self.setStyleSheet(f"""
+
+        self.setStyleSheet(
+            f"""
             AdjustmentPanel {{
                 background: qlineargradient(
                     x1: 0, y1: 0, x2: 1, y2: 1,
@@ -246,7 +263,8 @@ class AdjustmentPanel(QWidget):
                 color: {primary_color};
                 font-weight: bold;
             }}
-        """)
+        """
+        )
 
     def _on_turn_display_clicked(self):
         """Handle turn display click to open turn selection dialog."""
@@ -269,7 +287,10 @@ class AdjustmentPanel(QWidget):
     def _adjust_turn(self, amount: float):
         """Adjust turn value by the specified amount (Legacy-exact behavior)."""
         current_turn = self._get_current_turn_value(self._arrow_color)
-        new_turn = max(0.0, min(3.0, current_turn + amount))  # Clamp to 0.0-3.0 range
+        new_turn = max(
+            TurnConfig.MIN_TURN_VALUE,
+            min(TurnConfig.MAX_TURN_VALUE, current_turn + amount),
+        )  # Clamp to valid range
 
         if new_turn != current_turn:
             self._apply_turn(self._arrow_color, new_turn)
@@ -278,12 +299,12 @@ class AdjustmentPanel(QWidget):
 
     def _update_button_states(self, turn_value: float):
         """Update increment/decrement button enabled states based on turn value."""
-        # Disable decrement at minimum (0.0)
+        # Disable decrement at minimum
         if self._decrement_button:
-            self._decrement_button.setEnabled(turn_value > 0.0)
+            self._decrement_button.setEnabled(turn_value > TurnConfig.MIN_TURN_VALUE)
 
-        # Disable increment at maximum (3.0)
-        self._increment_button.setEnabled(turn_value < 3.0)
+        # Disable increment at maximum
+        self._increment_button.setEnabled(turn_value < TurnConfig.MAX_TURN_VALUE)
 
     def _update_turn_display_value(self, turn_value: float):
         """Update the turn display with new value."""
@@ -322,14 +343,14 @@ class AdjustmentPanel(QWidget):
     def _get_current_turn_value(self, arrow_color: str) -> float:
         """Get current turn value for the specified arrow color."""
         if not self._current_beat:
-            return 0.0
+            return TurnConfig.MIN_TURN_VALUE
 
         if arrow_color == "blue" and self._current_beat.blue_motion:
-            return getattr(self._current_beat.blue_motion, "turns", 0.0)
+            return getattr(self._current_beat.blue_motion, "turns", TurnConfig.MIN_TURN_VALUE)
         elif arrow_color == "red" and self._current_beat.red_motion:
-            return getattr(self._current_beat.red_motion, "turns", 0.0)
+            return getattr(self._current_beat.red_motion, "turns", TurnConfig.MIN_TURN_VALUE)
 
-        return 0.0
+        return TurnConfig.MIN_TURN_VALUE
 
     def _apply_turn(self, arrow_color: str, turn_value: float):
         """Apply turn value using data flow service for proper propagation"""
@@ -365,11 +386,11 @@ class AdjustmentPanel(QWidget):
         if panel_mode == "orientation":
             self._stacked_widget.setCurrentIndex(0)  # Show orientation picker
             self._update_orientation_picker(beat_data)
-            print(f"📍 Showing orientation picker for {self._arrow_color} motion")
+            logger.debug("Showing orientation picker for %s motion", self._arrow_color)
         else:
             self._stacked_widget.setCurrentIndex(1)  # Show turn controls
             self._update_turn_controls(beat_data)
-            print(f"🔄 Showing turn controls for {self._arrow_color} motion")
+            logger.debug("Showing turn controls for %s motion", self._arrow_color)
 
     def _determine_panel_mode(self, beat_data: Optional[BeatData]) -> str:
         """Determine whether to show orientation picker or turns controls"""
@@ -393,12 +414,14 @@ class AdjustmentPanel(QWidget):
             )
         )
 
-        print(f"🔍 Panel mode detection for {self._arrow_color}:")
-        print(f"   Beat number: {getattr(beat_data, 'beat_number', 'None')}")
-        print(f"   Letter: {getattr(beat_data, 'letter', 'None')}")
-        print(f"   Metadata: {beat_data.metadata}")
-        print(f"   Is start position: {is_start_position}")
-        print(f"   Panel mode: {'orientation' if is_start_position else 'turns'}")
+        logger.debug("Panel mode detection for %s:", self._arrow_color)
+        logger.debug("   Beat number: %s", getattr(beat_data, "beat_number", "None"))
+        logger.debug("   Letter: %s", getattr(beat_data, "letter", "None"))
+        logger.debug("   Metadata: %s", beat_data.metadata)
+        logger.debug("   Is start position: %s", is_start_position)
+        logger.debug(
+            "   Panel mode: %s", "orientation" if is_start_position else "turns"
+        )
 
         return "orientation" if is_start_position else "turns"
 

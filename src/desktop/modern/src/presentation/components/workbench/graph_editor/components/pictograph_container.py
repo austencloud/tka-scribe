@@ -1,3 +1,4 @@
+import logging
 from typing import Optional
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QGraphicsView
 from PyQt6.QtCore import pyqtSignal, Qt
@@ -11,6 +12,9 @@ from application.services.core.pictograph_management_service import (
 from presentation.components.pictograph.pictograph_scene import (
     PictographScene,
 )
+from ..config import LayoutConfig, UIConfig, ColorConfig, StateConfig, SizeConfig
+
+logger = logging.getLogger(__name__)
 
 
 class GraphEditorPictographContainer(QWidget):
@@ -23,7 +27,7 @@ class GraphEditorPictographContainer(QWidget):
         self._current_beat: Optional[BeatData] = None
         self._selected_arrow_id: Optional[str] = None
         self._selected_arrow_items = {}  # Track selected arrow visual items
-        self._selection_highlight_color = "#FFD700"  # Gold border color
+        self._selection_highlight_color = ColorConfig.SELECTION_HIGHLIGHT_COLOR
 
         # Get layout service from parent's container
         container = getattr(parent, "container", None)
@@ -39,8 +43,13 @@ class GraphEditorPictographContainer(QWidget):
     def _setup_ui(self):
         layout = QVBoxLayout(self)
         # Match legacy: no margins and no spacing like legacy container
-        layout.setContentsMargins(0, 0, 0, 0)
-        layout.setSpacing(0)
+        layout.setContentsMargins(
+            LayoutConfig.CONTAINER_MARGINS,
+            LayoutConfig.CONTAINER_MARGINS,
+            LayoutConfig.CONTAINER_MARGINS,
+            LayoutConfig.CONTAINER_MARGINS,
+        )
+        layout.setSpacing(LayoutConfig.CONTAINER_SPACING)
 
         self._pictograph_view = ModernPictographView(self)
         self._pictograph_view.arrow_clicked.connect(self._on_arrow_clicked)
@@ -48,7 +57,9 @@ class GraphEditorPictographContainer(QWidget):
         layout.addWidget(self._pictograph_view)
 
         # Set reasonable initial size - will be updated in resizeEvent to maintain square aspect ratio
-        self.setFixedSize(200, 200)  # Smaller initial size, will grow with container
+        self.setFixedSize(
+            UIConfig.INITIAL_PICTOGRAPH_SIZE, UIConfig.INITIAL_PICTOGRAPH_SIZE
+        )
 
         # Set size policy to Fixed to match legacy behavior
         from PyQt6.QtWidgets import QSizePolicy
@@ -57,12 +68,12 @@ class GraphEditorPictographContainer(QWidget):
 
         # Web-inspired styling with gold border like web version
         self.setStyleSheet(
-            """
-            GraphEditorPictographContainer {
-                border: 4px solid #FFD700;
-                border-radius: 8px;
-                background-color: rgba(255, 255, 255, 0.95);
-            }
+            f"""
+            GraphEditorPictographContainer {{
+                border: {LayoutConfig.PICTOGRAPH_BORDER_WIDTH}px solid {ColorConfig.SELECTION_HIGHLIGHT_COLOR};
+                border-radius: {LayoutConfig.PANEL_BORDER_RADIUS}px;
+                background-color: {ColorConfig.PICTOGRAPH_BACKGROUND};
+            }}
         """
         )
 
@@ -126,7 +137,7 @@ class GraphEditorPictographContainer(QWidget):
         # CRITICAL FIX: Prevent resize loops during animation and initialization
         if self._graph_editor and hasattr(self._graph_editor, "_animation_controller"):
             if self._graph_editor._animation_controller.is_animating():
-                print("🚫 [RESIZE DEBUG] Blocking pictograph resize during animation")
+                logger.debug("Blocking pictograph resize during animation")
                 return
 
         # CRITICAL FIX: Don't resize pictograph when graph editor is collapsed or very small
@@ -135,24 +146,25 @@ class GraphEditorPictographContainer(QWidget):
             graph_editor_height = self._graph_editor.height()
 
             # Check if graph editor is collapsed or in transition
-            if graph_editor_height < 100:  # Graph editor is collapsed or very small
-                print(
-                    f"🚫 [RESIZE DEBUG] Skipping pictograph resize - graph editor too small: {graph_editor_height}px"
+            if graph_editor_height < StateConfig.MINIMUM_GRAPH_HEIGHT:
+                logger.debug(
+                    "Skipping pictograph resize - graph editor too small: %dpx",
+                    graph_editor_height,
                 )
                 return
 
             if graph_editor_height > 0:
                 # Calculate content size as percentage of graph editor height
-                content_ratio = 0.85  # Use 85% of graph editor height for content
-                content_size = int(graph_editor_height * content_ratio)
+                content_size = int(
+                    graph_editor_height * LayoutConfig.PICTOGRAPH_SIZE_RATIO
+                )
 
                 # Ensure minimum size for usability
-                min_size = 150
-                content_size = max(content_size, min_size)
+                content_size = max(content_size, LayoutConfig.PICTOGRAPH_MIN_SIZE)
 
                 # CRITICAL FIX: Only resize if there's a significant change to prevent flashing
                 current_size = self.width()
-                if abs(current_size - content_size) < 10:  # Less than 10px change
+                if abs(current_size - content_size) < StateConfig.RESIZE_TOLERANCE:
                     return  # Skip micro-adjustments that cause flashing
 
                 # Apply responsive sizing
@@ -160,14 +172,13 @@ class GraphEditorPictographContainer(QWidget):
 
                 # The pictograph view should fill most of the content area
                 if self._pictograph_view:
-                    view_ratio = (
-                        0.95  # Use 95% of container for view (leaving space for border)
-                    )
-                    view_size = int(content_size * view_ratio)
+                    view_size = int(content_size * LayoutConfig.PICTOGRAPH_VIEW_RATIO)
                     self._pictograph_view.setFixedSize(view_size, view_size)
 
-                print(
-                    f"📁 Pictograph responsive resize: graph_editor={graph_editor_height}px, content={content_size}px"
+                logger.debug(
+                    "Pictograph responsive resize: graph_editor=%dpx, content=%dpx",
+                    graph_editor_height,
+                    content_size,
                 )
 
     def handle_width_change(self, new_width: int) -> None:
@@ -178,39 +189,37 @@ class GraphEditorPictographContainer(QWidget):
         # Prevent resize loops during animation
         if self._graph_editor and hasattr(self._graph_editor, "_animation_controller"):
             if self._graph_editor._animation_controller.is_animating():
-                print(
-                    "🚫 [WIDTH DEBUG] Blocking pictograph width update during animation"
-                )
+                logger.debug("Blocking pictograph width update during animation")
                 return
 
         # Use both width and height for better sizing calculation
         graph_editor_height = self._graph_editor.height() if self._graph_editor else 0
 
         # CRITICAL FIX: Don't resize pictograph when graph editor is collapsed or very small
-        if graph_editor_height < 100:  # Graph editor is collapsed or very small
-            print(
-                f"🚫 [WIDTH DEBUG] Skipping pictograph width update - graph editor too small: {graph_editor_height}px"
+        if graph_editor_height < StateConfig.MINIMUM_GRAPH_HEIGHT:
+            logger.debug(
+                "Skipping pictograph width update - graph editor too small: %dpx",
+                graph_editor_height,
             )
             return
 
         if graph_editor_height > 0:
             # Calculate size based on both dimensions for better proportions
             # Use the smaller dimension to ensure square pictograph fits properly
-            available_width = int(new_width * 0.4)  # Use 40% of graph editor width
+            available_width = int(new_width * SizeConfig.PICTOGRAPH_WIDTH_RATIO)
             available_height = int(
-                graph_editor_height * 0.85
-            )  # Use 85% of graph editor height
+                graph_editor_height * SizeConfig.PICTOGRAPH_HEIGHT_RATIO
+            )
 
             # Choose the smaller dimension to ensure it fits in both directions
             content_size = min(available_width, available_height)
 
             # Ensure minimum size for usability
-            min_size = 150
-            content_size = max(content_size, min_size)
+            content_size = max(content_size, LayoutConfig.PICTOGRAPH_MIN_SIZE)
 
             # Only resize if there's a significant change to prevent flashing
             current_size = self.width()
-            if abs(current_size - content_size) < 10:  # Less than 10px change
+            if abs(current_size - content_size) < StateConfig.RESIZE_TOLERANCE:
                 return  # Skip micro-adjustments that cause flashing
 
             # Apply responsive sizing
@@ -218,14 +227,14 @@ class GraphEditorPictographContainer(QWidget):
 
             # The pictograph view should fill most of the content area
             if self._pictograph_view:
-                view_ratio = (
-                    0.95  # Use 95% of container for view (leaving space for border)
-                )
-                view_size = int(content_size * view_ratio)
+                view_size = int(content_size * LayoutConfig.PICTOGRAPH_VIEW_RATIO)
                 self._pictograph_view.setFixedSize(view_size, view_size)
 
-            print(
-                f"📁 [WIDTH SYNC] Pictograph resized: width={new_width}px, height={graph_editor_height}px, content={content_size}px"
+            logger.debug(
+                "Pictograph resized: width=%dpx, height=%dpx, content=%dpx",
+                new_width,
+                graph_editor_height,
+                content_size,
             )
 
 
@@ -322,103 +331,15 @@ class ModernPictographView(QGraphicsView):
         # Ensure the view shows the entire scene content
         self.ensureVisible(self._pictograph_scene.sceneRect(), 0, 0)
 
-        # COMPREHENSIVE POSITION DEBUGGING
-        self._debug_positioning_data(scene_size, view_size, scale_factor)
-
-    def _debug_positioning_data(self, scene_size, view_size, scale_factor):
-        """Data-driven debugging to identify exact positioning issues"""
-        print("=" * 80)
-        print("🔍 COMPREHENSIVE PICTOGRAPH POSITIONING DEBUG")
-        print("=" * 80)
-
-        # 1. Basic scaling information
-        print(f"📐 Scene rect: {scene_size.width():.1f}x{scene_size.height():.1f}")
-        print(f"📐 View size: {view_size.width()}x{view_size.height()}")
-        print(f"📐 Scale factor: {scale_factor:.3f}")
-
-        # 2. View geometry and positioning
-        view_geometry = self.geometry()
-        print(
-            f"📍 View geometry: x={view_geometry.x()}, y={view_geometry.y()}, w={view_geometry.width()}, h={view_geometry.height()}"
+        # Log positioning data for debugging
+        logger.debug(
+            "Pictograph fitted: scene=%dx%d, view=%dx%d, scale=%.3f",
+            scene_size.width(),
+            scene_size.height(),
+            view_size.width(),
+            view_size.height(),
+            scale_factor,
         )
-        print(f"📍 View bottom edge: {view_geometry.bottom()}")
-
-        # 3. Parent container geometry
-        if self._container:
-            container_geometry = self._container.geometry()
-            print(
-                f"📦 Container geometry: x={container_geometry.x()}, y={container_geometry.y()}, w={container_geometry.width()}, h={container_geometry.height()}"
-            )
-            print(f"📦 Container bottom edge: {container_geometry.bottom()}")
-
-            # Calculate clipping amount
-            view_bottom = view_geometry.bottom()
-            container_bottom = container_geometry.bottom()
-            clipping_amount = view_bottom - container_bottom
-            print(
-                f"✂️ Clipping analysis: view_bottom={view_bottom}, container_bottom={container_bottom}"
-            )
-            if clipping_amount > 0:
-                print(
-                    f"❌ CONTENT CLIPPED: {clipping_amount}px extends beyond container"
-                )
-            else:
-                print(f"✅ NO CLIPPING: {abs(clipping_amount)}px margin available")
-
-        # 4. Scene rect coordinates and viewport visible area
-        scene_rect = self._pictograph_scene.sceneRect()
-        print(
-            f"🎬 Scene rect coords: x={scene_rect.x()}, y={scene_rect.y()}, w={scene_rect.width()}, h={scene_rect.height()}"
-        )
-
-        viewport_rect = self.viewport().geometry()
-        print(
-            f"👁️ Viewport geometry: x={viewport_rect.x()}, y={viewport_rect.y()}, w={viewport_rect.width()}, h={viewport_rect.height()}"
-        )
-
-        # 5. Transform matrix analysis
-        transform = self.transform()
-        print(
-            f"🔄 Transform matrix: m11={transform.m11():.3f}, m22={transform.m22():.3f}, dx={transform.dx():.1f}, dy={transform.dy():.1f}"
-        )
-
-        # 6. Effective pictograph size after scaling
-        effective_width = scene_size.width() * scale_factor
-        effective_height = scene_size.height() * scale_factor
-        print(
-            f"📏 Effective pictograph size: {effective_width:.1f}x{effective_height:.1f}"
-        )
-
-        # 7. Positioning within container analysis
-        if self._container:
-            container_width = container_geometry.width()
-            container_height = container_geometry.height()
-
-            # Calculate how much space is used vs available
-            width_utilization = (effective_width / container_width) * 100
-            height_utilization = (effective_height / container_height) * 100
-            print(
-                f"📊 Space utilization: width={width_utilization:.1f}%, height={height_utilization:.1f}%"
-            )
-
-            # Check if pictograph fits within container bounds
-            if (
-                effective_width <= container_width
-                and effective_height <= container_height
-            ):
-                print("✅ Pictograph fits within container bounds")
-            else:
-                print("❌ Pictograph exceeds container bounds")
-                if effective_width > container_width:
-                    print(
-                        f"   Width overflow: {effective_width - container_width:.1f}px"
-                    )
-                if effective_height > container_height:
-                    print(
-                        f"   Height overflow: {effective_height - container_height:.1f}px"
-                    )
-
-        print("=" * 80)
 
     def resizeEvent(self, event):
         """Handle resize events to maintain proper scaling and square aspect ratio like legacy"""

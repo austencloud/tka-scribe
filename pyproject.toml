@@ -1,3 +1,6 @@
+# This file now contains the configuration for Pylint, Pyright, Black, and isort.
+# You can safely delete the .pylintrc file after using this.
+
 [build-system]
 requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
@@ -21,7 +24,7 @@ dependencies = [
 [project.optional-dependencies]
 dev = [
     "pytest>=7.4.0",
-    "black>=23.0.0", 
+    "black>=23.0.0",
     "isort>=5.12.0",
     "pylint>=2.17.0",
     "mypy>=1.5.0",
@@ -36,6 +39,10 @@ test-automation = [
     "pytest-qt>=4.2.0",
     "plyer>=2.1.0"
 ]
+
+# ===================================================================
+# LINTER AND FORMATTER CONFIGURATION
+# ===================================================================
 
 [tool.black]
 line-length = 88
@@ -57,39 +64,89 @@ profile = "black"
 multi_line_output = 3
 line_length = 88
 
+# --- CONSOLIDATED PYLINT CONFIGURATION ---
 [tool.pylint.master]
-extension-pkg-whitelist = ["PyQt6"]
+# Add the project root and necessary directories to Python path
+init-hook='''
+import sys; import os; [sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__ if '__file__' in globals() else os.getcwd())), path)) for path in ['src/desktop/legacy/src', 'src/desktop/modern/src', 'launcher', 'packages', 'data', 'packages/shared-types/python', 'packages/constants/python'] if os.path.exists(os.path.join(os.path.dirname(os.path.abspath(__file__ if '__file__' in globals() else os.getcwd())), path))]
+'''
+# PyQt6 support
+extension-pkg-allow-list=["PyQt6"]
+# Ignore generated files and cache directories
+ignore=["__pycache__", ".git", "node_modules", ".pytest_cache", ".vscode", "build", "dist"]
+
+[tool.pylint.basic]
+# Good variable names
+good-names=["i","j","k","ex","Run","_","x","y","w","h","r","g","b","a","id","ok","ui","db","qt","app","e"]
 
 [tool.pylint.typecheck]
-generated-members = ["PyQt6.*"]
+# Tell Pylint about PyQt6 generated members
+generated-members=["PyQt6.*", "PyQt6.QtWidgets.*", "PyQt6.QtCore.*", "PyQt6.QtGui.*"]
+# Ignore missing members in certain modules
+ignored-modules=["PyQt6"]
 
 [tool.pylint.messages_control]
-disable = [
-    "C0330",  # Wrong hanging indentation (removed from pylint)
-    "C0326",  # Bad whitespace (removed from pylint)
+# Disable all the warnings from your .pylintrc, plus the new ones
+disable=[
+    "C0330",  # Wrong hanging indentation
+    "C0326",  # Bad whitespace
+    "C0303",  # Trailing whitespace
+    "C0301",  # Line too long
+    "C0305",  # Trailing newlines
+    "C0411",  # Wrong import order
+    "C0412",  # Ungrouped imports
+    "C0415",  # Import outside toplevel
+    "C2401",  # Non-ASCII name (for Greek letters)
+    "E0213",  # No self argument
+    "W0107",  # Unnecessary pass statement
+    "W0611",  # Unused import
+    "W0201",  # Attribute defined outside __init__
+    "W0613",  # Unused argument (common in Qt signal handlers)
+    "W0621",  # Redefined outer name
     "W1203",  # logging-fstring-interpolation
     "W0718",  # broad-exception-caught
-    "C0411",  # wrong-import-order
-    "R0913",  # too-many-arguments
-    "R0914",  # too-many-locals
-    "R0912",  # too-many-branches
-    "R0915",  # too-many-statements
-    "C0103",  # invalid-name (Qt uses camelCase)
-    "W0613",  # unused-argument (common in Qt signal handlers)
-    "R0201",  # no-self-use (common in Qt event handlers)
-    "C0116",  # missing-function-docstring
-    "C0115",  # missing-class-docstring
-    "C0114",  # missing-module-docstring
-    "E0401"   # import-error (handled by .pylintrc)
+    "R0903",  # Too few public methods (common in Qt widgets)
+    "R0913",  # Too many arguments (common in Qt constructors)
+    "R0914",  # Too many locals
+    "R0912",  # Too many branches
+    "R0915",  # Too many statements
+    "R0201",  # Method could be a function (common in Qt event handlers)
+    "C0103",  # Invalid name (Qt uses camelCase method names)
+    "C0116",  # Missing function or method docstring
+    "C0115",  # Missing class docstring
+    "C0114",  # Missing module docstring
+    "E0401",  # Import error
+    "W1309",  # f-string without interpolation
+    "C0121",  # singleton-comparison (like == False)
+    "W0212"   # protected-access
 ]
 
-# pytest configuration moved to pytest.ini to avoid conflicts
+[tool.pylint.format]
+# Line length
+max-line-length=120
 
+[tool.pylint.design]
+# Object limits
+max-args=10
+max-locals=20
+max-returns=6
+max-branches=15
+max-statements=60
+max-parents=7
+max-attributes=15
+max-public-methods=25
+max-bool-expr=5
+
+[tool.pylint.imports]
+# Allow relative imports
+allow-wildcard-with-all=false
+
+# --- PYRIGHT / PYLANCE CONFIGURATION ---
 [tool.pyright]
 # Include all source directories
 include = [
     "src/desktop/legacy/src",
-    "src/desktop/modern/src", 
+    "src/desktop/modern/src",
     "launcher",
     "packages",
     "tests"
@@ -121,13 +178,13 @@ extraPaths = [
     "assets"
 ]
 
-# TURN OFF ALL TYPE CHECKING
+# TURN OFF ALL TYPE CHECKING AND REPORTS
 pythonVersion = "3.12"
-typeCheckingMode = "basic"
+typeCheckingMode = "off" # Use "off" to be even less strict than "basic"
 
 # DISABLE ALL REPORTS - NO MORE ERRORS
 reportMissingImports = "none"
-reportMissingTypeStubs = false
+reportMissingTypeStubs = "none"
 reportUnusedImport = "none"
 reportDuplicateImport = "none"
 reportReturnType = "none"
@@ -163,7 +220,10 @@ reportAssignmentType = "none"
 reportInvalidTypeForm = "none"
 reportInvalidTypeArguments = "none"
 reportSelfClsParameterName = "none"
+# This one is not a specific report, but turning typeCheckingMode to "off" is the strongest way to disable it.
+reportCallIssue = "none" 
 
+# --- SETUPTOOLS CONFIGURATION ---
 [tool.setuptools]
 packages = ["tka.desktop.modern", "tka.desktop.legacy", "tka.launcher"]
 

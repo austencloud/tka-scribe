@@ -2,12 +2,13 @@ from typing import Optional, TYPE_CHECKING
 from PyQt6.QtCore import QObject, QPropertyAnimation, QEasingCurve, pyqtSignal, QTimer
 import logging
 
-from .animation.animation_size_calculator import AnimationSizeCalculator
-from .animation.animation_state_manager import AnimationStateManager
-from .animation.animation_synchronizer import AnimationSynchronizer
+from ..animation.animation_size_calculator import AnimationSizeCalculator
+from ..animation.animation_state_manager import AnimationStateManager
+from ..animation.animation_synchronizer import AnimationSynchronizer
+from ..config import AnimationConfig
 
 if TYPE_CHECKING:
-    from .graph_editor import GraphEditor
+    from ..graph_editor import GraphEditor
 
 # Set up animation logger
 animation_logger = logging.getLogger("tka.animation")
@@ -53,7 +54,7 @@ class GraphEditorAnimationController(QObject):
         self._height_animation = QPropertyAnimation(
             self._graph_editor, b"maximumHeight"
         )
-        self._height_animation.setDuration(400)
+        self._height_animation.setDuration(AnimationConfig.DURATION_MS)
         self._height_animation.setEasingCurve(QEasingCurve.Type.OutCubic)
 
         self._height_animation.finished.connect(self._on_animation_finished)
@@ -61,7 +62,9 @@ class GraphEditorAnimationController(QObject):
 
         self._animation_progress_timer = QTimer()
         self._animation_progress_timer.timeout.connect(self._track_animation_progress)
-        self._animation_progress_timer.setInterval(50)
+        self._animation_progress_timer.setInterval(
+            AnimationConfig.PROGRESS_TIMER_INTERVAL_MS
+        )
 
     def _on_height_animation_progress(self, value):
         """Track height animation progress"""
@@ -241,7 +244,7 @@ class GraphEditorAnimationController(QObject):
 
         if expected_height is not None:
             height_discrepancy = abs(current_height - expected_height)
-            if height_discrepancy > 5:
+            if height_discrepancy > AnimationConfig.HEIGHT_TOLERANCE_PX:
                 animation_logger.warning(
                     "Layout interference detected: expected_h=%d, actual_h=%d, discrepancy=%dpx",
                     expected_height,

@@ -48,7 +48,7 @@ from domain.models.core_models import (
     Orientation,
 )
 from presentation.components.pictograph.pictograph_component import PictographComponent
-from presentation.components.workbench.graph_editor.adjustment_panel import (
+from presentation.components.workbench.graph_editor.components.adjustment_panel import (
     AdjustmentPanel,
 )
 

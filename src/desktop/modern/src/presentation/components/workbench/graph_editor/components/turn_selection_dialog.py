@@ -16,6 +16,8 @@ from PyQt6.QtWidgets import (
 from PyQt6.QtCore import pyqtSignal, Qt
 from PyQt6.QtGui import QFont
 
+from ..config import TurnConfig, UIConfig
+
 
 class TurnSelectionDialog(QDialog):
     """Modal dialog for selecting turn values, matching Legacy behavior."""
@@ -23,7 +25,10 @@ class TurnSelectionDialog(QDialog):
     turn_selected = pyqtSignal(float)  # Emitted when user selects a turn value
 
     def __init__(
-        self, parent=None, current_turn: float = 0.0, arrow_color: str = "blue"
+        self,
+        parent=None,
+        current_turn: float = TurnConfig.MIN_TURN_VALUE,
+        arrow_color: str = "blue",
     ):
         super().__init__(parent)
         self._current_turn = current_turn
@@ -37,7 +42,7 @@ class TurnSelectionDialog(QDialog):
         """Set up the dialog UI with turn value buttons."""
         self.setWindowTitle("Select Turn Value")
         self.setModal(True)
-        self.setFixedSize(420, 120)
+        self.setFixedSize(UIConfig.TURN_DIALOG_WIDTH, UIConfig.TURN_DIALOG_HEIGHT)
 
         # Remove window frame for custom styling
         self.setWindowFlags(Qt.WindowType.FramelessWindowHint | Qt.WindowType.Dialog)
@@ -57,12 +62,20 @@ class TurnSelectionDialog(QDialog):
         buttons_layout = QHBoxLayout()
         buttons_layout.setSpacing(4)
 
-        self._turn_values = [0.0, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0]
+        self._turn_values = [
+            TurnConfig.MIN_TURN_VALUE,
+            0.5,
+            1.0,
+            1.5,
+            2.0,
+            2.5,
+            TurnConfig.MAX_TURN_VALUE,
+        ]
         self._turn_buttons = []
 
         for turn_value in self._turn_values:
             btn = QPushButton(str(turn_value))
-            btn.setFixedSize(50, 40)
+            btn.setFixedSize(UIConfig.TURN_BUTTON_WIDTH, UIConfig.TURN_BUTTON_HEIGHT)
             btn.clicked.connect(
                 lambda checked=False, val=turn_value: self._on_turn_selected(val)
             )
@@ -81,7 +94,7 @@ class TurnSelectionDialog(QDialog):
         cancel_layout.addStretch()
 
         cancel_btn = QPushButton("Cancel")
-        cancel_btn.setFixedSize(60, 30)
+        cancel_btn.setFixedSize(UIConfig.CANCEL_BUTTON_WIDTH, UIConfig.CANCEL_BUTTON_HEIGHT)
         cancel_btn.clicked.connect(self.reject)
         cancel_layout.addWidget(cancel_btn)
 
@@ -137,7 +150,10 @@ class TurnSelectionDialog(QDialog):
 
     @staticmethod
     def get_turn_value(
-        parent=None, current_turn: float = 0.0, arrow_color: str = "blue", position=None
+        parent=None,
+        current_turn: float = TurnConfig.MIN_TURN_VALUE,
+        arrow_color: str = "blue",
+        position=None,
     ) -> Optional[float]:
         """
         Static method to show dialog and get turn value.
