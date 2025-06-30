@@ -6,6 +6,10 @@ Graph Editor Validation Tests
 Tests for the validation utilities and error handling in graph editor components.
 """
 
+from tests.fixtures.graph_editor import (
+    create_sample_beat_data,
+    create_sample_sequence_data,
+)
 import pytest
 import sys
 from pathlib import Path
@@ -15,10 +19,6 @@ from unittest.mock import Mock
 modern_src = Path(__file__).parent.parent.parent.parent.parent / "src"
 sys.path.insert(0, str(modern_src))
 
-from tests.fixtures.graph_editor import (
-    create_sample_beat_data,
-    create_sample_sequence_data,
-)
 
 
 @pytest.mark.unit

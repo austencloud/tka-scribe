@@ -115,6 +115,7 @@ disable=[
     "C0116",  # Missing function or method docstring
     "C0115",  # Missing class docstring
     "C0114",  # Missing module docstring
+    "C0413",  # Wrong import position
     "E0401",  # Import error
     "W1309",  # f-string without interpolation
     "C0121",  # singleton-comparison (like == False)
