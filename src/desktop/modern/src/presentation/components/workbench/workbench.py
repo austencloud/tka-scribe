@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Optional, List
 
 from core.interfaces.core_services import ILayoutService
 from core.interfaces.workbench_services import (
@@ -11,6 +11,14 @@ from core.interfaces.workbench_services import (
 from domain.models.core_models import BeatData, SequenceData
 from PyQt6.QtCore import pyqtSignal
 from PyQt6.QtWidgets import QVBoxLayout, QWidget
+
+# Import event system for session restoration
+try:
+    from core.events.event_bus import get_event_bus, EventPriority
+
+    EVENT_SYSTEM_AVAILABLE = True
+except ImportError:
+    EVENT_SYSTEM_AVAILABLE = False
 
 from .beat_frame_section import WorkbenchBeatFrameSection
 from .button_interface import WorkbenchButtonInterfaceAdapter
@@ -50,9 +58,19 @@ class SequenceWorkbench(QWidget):
         self._beat_frame_section: Optional[WorkbenchBeatFrameSection] = None
         self._event_controller: Optional[WorkbenchEventController] = None
         self._button_interface: Optional[WorkbenchButtonInterfaceAdapter] = None
+
+        # Event bus integration for session restoration
+        self.event_bus = get_event_bus() if EVENT_SYSTEM_AVAILABLE else None
+        self._subscription_ids: List[str] = []
+
         self._create_event_controller(
             workbench_service, fullscreen_service, deletion_service, dictionary_service
         )
+
+        # Setup event subscriptions IMMEDIATELY to catch restoration events
+        # This must happen before UI setup completes to receive restoration events
+        self._setup_event_subscriptions()
+
         self._setup_ui()
         self._connect_signals()
         self._setup_button_interface()
@@ -141,7 +159,13 @@ class SequenceWorkbench(QWidget):
         """Set the current sequence to display/edit"""
         self._current_sequence = sequence
         self._update_all_components()
-        self.sequence_modified.emit(sequence)
+
+        # Only emit sequence_modified if we're not in restoration mode
+        # This prevents auto-save loops during sequence restoration
+        if not getattr(self, "_restoring_sequence", False):
+            # Include start position in the sequence data when emitting
+            complete_sequence = self._get_complete_sequence_with_start_position()
+            self.sequence_modified.emit(complete_sequence)
 
     def get_sequence(self) -> Optional[SequenceData]:
         """Get the current sequence"""
@@ -152,6 +176,11 @@ class SequenceWorkbench(QWidget):
         self._start_position_data = start_position_data
         if self._beat_frame_section:
             self._beat_frame_section.set_start_position(start_position_data)
+
+        # Emit sequence_modified with updated start position (unless restoring)
+        if not getattr(self, "_restoring_sequence", False) and self._current_sequence:
+            complete_sequence = self._get_complete_sequence_with_start_position()
+            self.sequence_modified.emit(complete_sequence)
 
     def clear_start_position(self):
         """Clear the start position data (V1 clear behavior)"""
@@ -166,6 +195,20 @@ class SequenceWorkbench(QWidget):
     def get_start_position(self) -> Optional[BeatData]:
         """Get the current start position"""
         return self._start_position_data
+
+    def _get_complete_sequence_with_start_position(self) -> SequenceData:
+        """Get the current sequence with start position data included."""
+        if not self._current_sequence:
+            return self._current_sequence
+
+        # If we have start position data, include it in the sequence
+        if self._start_position_data:
+            # Update the sequence to include start position
+            return self._current_sequence.update(
+                start_position=self._start_position_data
+            )
+
+        return self._current_sequence
 
     def get_button_interface(self) -> Optional[WorkbenchButtonInterfaceAdapter]:
         """Get the button interface adapter for Sprint 2 integration"""
@@ -325,5 +368,92 @@ class SequenceWorkbench(QWidget):
     def resizeEvent(self, event):
         """Handle resize events for responsive design"""
         super().resizeEvent(event)
-        if self._beat_frame_section:
-            self._beat_frame_section.update_button_sizes(self.height())
+        # Beat frame section handles its own resize events automatically
+        # No manual intervention needed - Qt will call resizeEvent on child widgets
+
+    def _setup_event_subscriptions(self):
+        """Setup event subscriptions for session restoration."""
+        try:
+            if not EVENT_SYSTEM_AVAILABLE:
+                print(
+                    "⚠️ [WORKBENCH] Event system not available - skipping session restoration subscription"
+                )
+                return
+
+            if not self.event_bus:
+                print(
+                    "⚠️ [WORKBENCH] Event bus not available - skipping session restoration subscription"
+                )
+                return
+
+            print(
+                "🔍 [WORKBENCH] Setting up session restoration event subscriptions..."
+            )
+
+            # Subscribe to session restoration events
+            # UIEvent.event_type returns "ui.{component}.{action}"
+            sub_id = self.event_bus.subscribe(
+                "ui.session_restoration.sequence_restored",
+                self._on_sequence_restored,
+                priority=EventPriority.HIGH,
+            )
+
+            if sub_id:
+                self._subscription_ids.append(sub_id)
+                print(
+                    f"✅ [WORKBENCH] Subscribed to session restoration events (ID: {sub_id})"
+                )
+            else:
+                print("⚠️ [WORKBENCH] Failed to subscribe to session restoration events")
+
+        except Exception as e:
+            print(f"⚠️ [WORKBENCH] Error setting up event subscriptions: {e}")
+            # Don't let event subscription errors block workbench creation
+
+    def _on_sequence_restored(self, event):
+        """Handle sequence restoration from session."""
+        try:
+            state_data = event.state_data
+            sequence_data = state_data.get("sequence_data")
+            start_position_data = state_data.get("start_position_data")
+
+            # Extract start position from sequence data if it exists
+            sequence_start_position = None
+            if (
+                hasattr(sequence_data, "start_position")
+                and sequence_data.start_position
+            ):
+                sequence_start_position = sequence_data.start_position
+            elif isinstance(sequence_data, dict) and sequence_data.get(
+                "start_position"
+            ):
+                sequence_start_position = sequence_data["start_position"]
+
+            # Set the sequence using the existing method (this will trigger auto-save)
+            # Temporarily disable auto-save during restoration to avoid loops
+            self._restoring_sequence = True
+            self.set_sequence(sequence_data)
+            self._restoring_sequence = False
+
+            # Restore start position from event data or sequence data
+            start_pos_to_restore = start_position_data or sequence_start_position
+            if start_pos_to_restore:
+                # Convert dict to BeatData if needed
+                if isinstance(start_pos_to_restore, dict):
+                    start_pos_to_restore = BeatData.from_dict(start_pos_to_restore)
+
+                self.set_start_position(start_pos_to_restore)
+
+        except Exception as e:
+            print(f"❌ [WORKBENCH] Failed to restore sequence: {e}")
+            import traceback
+
+            traceback.print_exc()
+
+    def cleanup(self):
+        """Clean up event subscriptions when component is destroyed."""
+        if self.event_bus:
+            for sub_id in self._subscription_ids:
+                self.event_bus.unsubscribe(sub_id)
+            self._subscription_ids.clear()
+            print("🧹 [WORKBENCH] Event subscriptions cleaned up")

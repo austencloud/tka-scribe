@@ -283,12 +283,14 @@ class SessionStateService(ISessionStateService):
 
             # Convert beat data to serializable format
             if beat_data:
-                if hasattr(beat_data, "__dict__"):
-                    self._current_session.selected_beat_data = (
-                        asdict(beat_data)
-                        if hasattr(beat_data, "__dataclass_fields__")
-                        else vars(beat_data)
-                    )
+                if hasattr(beat_data, "to_dict"):
+                    # Use custom to_dict() method which properly handles enum serialization
+                    self._current_session.selected_beat_data = beat_data.to_dict()
+                elif isinstance(beat_data, dict):
+                    self._current_session.selected_beat_data = beat_data
+                elif hasattr(beat_data, "__dataclass_fields__"):
+                    # Fallback to asdict() but this may cause enum serialization issues
+                    self._current_session.selected_beat_data = asdict(beat_data)
                 else:
                     self._current_session.selected_beat_data = beat_data
             else:
@@ -296,12 +298,14 @@ class SessionStateService(ISessionStateService):
 
             # Convert start position to serializable format
             if start_position:
-                if hasattr(start_position, "__dict__"):
-                    self._current_session.start_position_data = (
-                        asdict(start_position)
-                        if hasattr(start_position, "__dataclass_fields__")
-                        else vars(start_position)
-                    )
+                if hasattr(start_position, "to_dict"):
+                    # Use custom to_dict() method which properly handles enum serialization
+                    self._current_session.start_position_data = start_position.to_dict()
+                elif isinstance(start_position, dict):
+                    self._current_session.start_position_data = start_position
+                elif hasattr(start_position, "__dataclass_fields__"):
+                    # Fallback to asdict() but this may cause enum serialization issues
+                    self._current_session.start_position_data = asdict(start_position)
                 else:
                     self._current_session.start_position_data = start_position
             else:

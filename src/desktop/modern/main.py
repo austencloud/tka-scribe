@@ -65,7 +65,6 @@ class TKAMainWindow(QMainWindow):
     def _attach_production_debugger(self) -> None:
         try:
             from debug import attach_to_application
-            from PyQt6.QtCore import QTimer
 
             QTimer.singleShot(1000, lambda: self._do_debugger_attachment())
         except Exception:

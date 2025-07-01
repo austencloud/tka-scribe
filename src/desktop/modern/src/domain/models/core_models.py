@@ -407,13 +407,38 @@ class SequenceData:
 
     def __post_init__(self):
         """Validate sequence data."""
-        # Validate beat numbers are sequential
+        # Validate beat numbers are sequential (allowing beat_number=0 for start positions)
         for i, beat in enumerate(self.beats):
-            expected_beat_number = i + 1
-            if beat.beat_number != expected_beat_number:
-                raise ValueError(
-                    f"Beat {i} has number {beat.beat_number}, expected {expected_beat_number}"
+            # Check if this is a start position beat
+            is_start_position = beat.metadata.get("is_start_position", False)
+
+            if is_start_position:
+                # Start position should be beat_number=0 and should be first in array
+                if beat.beat_number != 0:
+                    raise ValueError(
+                        f"Start position beat has number {beat.beat_number}, expected 0"
+                    )
+                if i != 0:
+                    raise ValueError(
+                        f"Start position beat is at index {i}, should be at index 0"
+                    )
+            else:
+                # Regular beats should be numbered sequentially starting from 1
+                # Account for start position offset
+                start_position_offset = (
+                    1
+                    if (
+                        self.beats
+                        and self.beats[0].metadata.get("is_start_position", False)
+                    )
+                    else 0
                 )
+                expected_beat_number = i + 1 - start_position_offset
+
+                if beat.beat_number != expected_beat_number:
+                    raise ValueError(
+                        f"Beat {i} has number {beat.beat_number}, expected {expected_beat_number}"
+                    )
 
     @property
     def length(self) -> int:
@@ -492,7 +517,9 @@ class SequenceData:
             "name": self.name,
             "word": self.word,
             "beats": [beat.to_dict() for beat in self.beats],
-            "start_position": self.start_position,
+            "start_position": (
+                self.start_position.to_dict() if self.start_position else None
+            ),
             "metadata": self.metadata,
         }
 
@@ -501,12 +528,21 @@ class SequenceData:
         """Create from dictionary."""
         beats = [BeatData.from_dict(beat_data) for beat_data in data.get("beats", [])]
 
+        # Reconstruct start position from dictionary if present
+        start_position = None
+        start_pos_data = data.get("start_position")
+        if start_pos_data:
+            if isinstance(start_pos_data, dict):
+                start_position = BeatData.from_dict(start_pos_data)
+            else:
+                start_position = start_pos_data  # Already a BeatData object
+
         return cls(
             id=data.get("id", str(uuid.uuid4())),
             name=data.get("name", ""),
             word=data.get("word", ""),
             beats=beats,
-            start_position=data.get("start_position"),
+            start_position=start_position,
             metadata=data.get("metadata", {}),
         )
 

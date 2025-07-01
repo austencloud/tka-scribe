@@ -1,98 +1,24 @@
 {
   "session_metadata": {
-    "session_id": "48da16fb-3b6f-4a5f-9dda-815395457b49",
-    "created_at": "2025-07-01T10:11:42.652767",
-    "last_interaction": "2025-07-01T10:11:42.653766",
+    "session_id": "5eb7ddbe-3007-4adc-8af5-44e785825932",
+    "created_at": "2025-07-01T15:11:25.368127",
+    "last_interaction": "2025-07-01T15:12:04.002268",
     "tka_version": "modern"
   },
   "current_sequence": {
-    "sequence_id": "multi_beat_test",
+    "sequence_id": "loaded_sequence",
     "sequence_data": {
-      "id": "multi_beat_test",
-      "name": "Multi-Beat Motion Test",
+      "id": "loaded_sequence",
+      "name": "A",
       "word": "",
       "beats": [
         {
-          "id": "154bc4d9-b7f5-4963-9add-c4a176c62b96",
+          "id": "32456b08-eaf6-412c-be37-e623d9ce55fb",
           "beat_number": 1,
           "letter": "A",
-          "duration": 1.0,
-          "blue_motion": {
-            "motion_type": "static",
-            "prop_rot_dir": "no_rot",
-            "start_loc": "n",
-            "end_loc": "n",
-            "turns": 0.0,
-            "start_ori": "in",
-            "end_ori": "in"
-          },
-          "red_motion": {
-            "motion_type": "static",
-            "prop_rot_dir": "no_rot",
-            "start_loc": "s",
-            "end_loc": "s",
-            "turns": 0.0,
-            "start_ori": "in",
-            "end_ori": "in"
-          },
-          "glyph_data": null,
-          "blue_reversal": false,
-          "red_reversal": false,
-          "is_blank": false,
-          "metadata": {}
-        },
-        {
-          "id": "5e529818-d8ad-43b3-a683-73fe4f928d1e",
-          "beat_number": 2,
-          "letter": "B",
-          "duration": 1.5,
-          "blue_motion": {
-            "motion_type": "pro",
-            "prop_rot_dir": "cw",
-            "start_loc": "e",
-            "end_loc": "w",
-            "turns": 1.0,
-            "start_ori": "in",
-            "end_ori": "in"
-          },
-          "red_motion": {
-            "motion_type": "pro",
-            "prop_rot_dir": "cw",
-            "start_loc": "w",
-            "end_loc": "e",
-            "turns": 1.0,
-            "start_ori": "in",
-            "end_ori": "in"
-          },
-          "glyph_data": null,
-          "blue_reversal": false,
-          "red_reversal": false,
-          "is_blank": false,
-          "metadata": {}
-        },
-        {
-          "id": "fdbb0f91-ac08-4aa4-b575-c0c4dc4c853d",
-          "beat_number": 3,
-          "letter": "C",
-          "duration": 2.0,
-          "blue_motion": {
-            "motion_type": "anti",
-            "prop_rot_dir": "ccw",
-            "start_loc": "ne",
-            "end_loc": "sw",
-            "turns": 0.5,
-            "start_ori": "in",
-            "end_ori": "in"
-          },
-          "red_motion": {
-            "motion_type": "anti",
-            "prop_rot_dir": "ccw",
-            "start_loc": "nw",
-            "end_loc": "se",
-            "turns": 0.5,
-            "start_ori": "in",
-            "end_ori": "in"
-          },
+          "duration": 1,
+          "blue_motion": null,
+          "red_motion": null,
           "glyph_data": null,
           "blue_reversal": false,
           "red_reversal": false,
@@ -100,7 +26,19 @@
           "metadata": {}
         }
       ],
-      "start_position": null,
+      "start_position": {
+        "id": "a9937411-b424-48cf-be7a-7525904aab10",
+        "beat_number": 0,
+        "letter": "\u03b1",
+        "duration": 1.0,
+        "blue_motion": null,
+        "red_motion": null,
+        "glyph_data": null,
+        "blue_reversal": false,
+        "red_reversal": false,
+        "is_blank": true,
+        "metadata": {}
+      },
       "metadata": {}
     }
   },

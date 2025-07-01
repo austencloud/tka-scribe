@@ -99,6 +99,10 @@ class ConstructTabWidget(QWidget):
             self.option_picker_manager,
             self.sequence_manager,
         )
+        
+        # Load sequence from current_sequence.json on startup if no session restoration
+        # This mimics the legacy behavior of automatically loading the current sequence
+        self._load_sequence_on_startup()
 
     def _connect_external_signals(self):
         """Connect external signals from the signal coordinator to this widget"""
@@ -152,3 +156,25 @@ class ConstructTabWidget(QWidget):
     def workbench(self):
         """Access to the workbench component"""
         return getattr(self.layout_manager, "workbench", None)
+        
+    def _load_sequence_on_startup(self):
+        """Load sequence from current_sequence.json on startup - exactly like legacy"""
+        try:
+            print("🔍 [CONSTRUCT_TAB] Checking for sequence to load on startup...")
+            
+            # Use a small delay to ensure UI is fully ready
+            from PyQt6.QtCore import QTimer
+            QTimer.singleShot(100, self._perform_sequence_load)
+            
+        except Exception as e:
+            print(f"❌ [CONSTRUCT_TAB] Failed to setup sequence loading: {e}")
+            
+    def _perform_sequence_load(self):
+        """Perform the actual sequence loading after UI is ready"""
+        try:
+            if self.sequence_manager:
+                self.sequence_manager.load_sequence_on_startup()
+            else:
+                print("❌ [CONSTRUCT_TAB] No sequence manager available for loading")
+        except Exception as e:
+            print(f"❌ [CONSTRUCT_TAB] Failed to load sequence on startup: {e}")

@@ -132,7 +132,10 @@ class ApplicationOrchestrator(IApplicationOrchestrator):
 
         # Step 3: Setup UI
         self.tab_widget = self.ui_manager.setup_main_ui(
-            main_window, self.container, progress_callback
+            main_window,
+            self.container,
+            progress_callback,
+            self.lifecycle_manager._session_service,
         )
 
         # Step 3.5: Trigger deferred session restoration (after UI is ready)

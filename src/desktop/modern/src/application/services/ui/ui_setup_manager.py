@@ -72,6 +72,7 @@ class UISetupManager(IUISetupManager):
         main_window: QMainWindow,
         container: "DIContainer",
         progress_callback: Optional[Callable] = None,
+        session_service=None,
     ) -> QTabWidget:
         """Setup the main UI components and return the tab widget."""
         if progress_callback:
@@ -101,7 +102,7 @@ class UISetupManager(IUISetupManager):
             progress_callback(75, "Initializing construct tab...")
 
         # Load construct tab
-        self._load_construct_tab(container, progress_callback)
+        self._load_construct_tab(container, progress_callback, session_service)
 
         # Add placeholder tabs
         self._add_placeholder_tabs()
@@ -166,6 +167,7 @@ class UISetupManager(IUISetupManager):
         self,
         container: "DIContainer",
         progress_callback: Optional[Callable] = None,
+        session_service=None,
     ) -> None:
         """Load construct tab with granular progress updates."""
         try:
@@ -206,6 +208,9 @@ class UISetupManager(IUISetupManager):
             construct_tab = ConstructTabWidget(
                 container, progress_callback=internal_progress_callback
             )
+
+            # CRITICAL: Connect construct tab to session service for auto-save
+            self._connect_construct_tab_to_session(construct_tab, session_service)
 
             if progress_callback:
                 progress_callback(88, "Configuring construct tab styling...")
@@ -254,6 +259,29 @@ class UISetupManager(IUISetupManager):
             "color: white; font-size: 14px; background: transparent;"
         )
         self.tab_widget.addTab(browse_placeholder, "📚 Browse")
+
+    def _connect_construct_tab_to_session(self, construct_tab, session_service):
+        """Connect construct tab sequence modifications to session service for auto-save."""
+        try:
+            if not session_service:
+                return
+
+            # Connect sequence modification signals to session service
+            def on_sequence_modified(sequence_data):
+                """Handle sequence modification from construct tab."""
+                # Update session with current sequence
+                sequence_id = (
+                    sequence_data.id
+                    if hasattr(sequence_data, "id")
+                    else str(sequence_data)
+                )
+                session_service.update_current_sequence(sequence_data, sequence_id)
+
+            # Connect the signal
+            construct_tab.sequence_modified.connect(on_sequence_modified)
+
+        except Exception as e:
+            print(f"⚠️ Failed to connect construct tab to session service: {e}")
 
     def _create_settings_button(self):
         """Create settings button using dependency injection."""

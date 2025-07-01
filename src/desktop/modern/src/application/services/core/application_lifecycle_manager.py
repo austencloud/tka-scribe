@@ -202,10 +202,26 @@ class ApplicationLifecycleManager(IApplicationLifecycleManager):
                     print(
                         f"🔍 [LIFECYCLE] Created SequenceData: {sequence_data.name} (ID: {sequence_data.id})"
                     )
+                    
+                    # CRITICAL FIX: Recalculate sequence name from beat letters exactly like legacy
+                    if beat_objects:
+                        calculated_word = self._calculate_sequence_word_from_beats(beat_objects)
+                        sequence_data = sequence_data.update(name=calculated_word)
+                        print(f"✅ [LIFECYCLE] Recalculated sequence name: '{calculated_word}'")
+                    else:
+                        print("ℹ️ [LIFECYCLE] No beats to calculate name from")
                 else:
                     print(
                         f"🔍 [LIFECYCLE] Sequence data is already SequenceData object: {sequence_data.name}"
                     )
+                    
+                    # CRITICAL FIX: Also recalculate name for existing SequenceData objects
+                    if sequence_data.beats:
+                        calculated_word = self._calculate_sequence_word_from_beats(sequence_data.beats)
+                        sequence_data = sequence_data.update(name=calculated_word)
+                        print(f"✅ [LIFECYCLE] Recalculated existing sequence name: '{calculated_word}'")
+                    else:
+                        print("ℹ️ [LIFECYCLE] No beats in existing sequence to calculate name from")
 
                 # Publish sequence restoration event
                 print("🔍 [LIFECYCLE] Publishing sequence restoration event...")
@@ -478,3 +494,29 @@ class ApplicationLifecycleManager(IApplicationLifecycleManager):
     def set_session_service(self, session_service: ISessionStateService) -> None:
         """Set the session service for lifecycle integration."""
         self._session_service = session_service
+
+    def _calculate_sequence_word_from_beats(self, beat_objects) -> str:
+        """Calculate sequence word from beat letters exactly like legacy SequencePropertiesManager"""
+        if not beat_objects:
+            return ""
+            
+        # Extract letters from beats exactly like legacy calculate_word method
+        word = "".join(beat.letter for beat in beat_objects if hasattr(beat, 'letter'))
+        
+        # Apply word simplification for circular sequences like legacy
+        return self._simplify_repeated_word(word)
+    
+    def _simplify_repeated_word(self, word: str) -> str:
+        """Simplify repeated patterns exactly like legacy WordSimplifier"""
+        def can_form_by_repeating(s: str, pattern: str) -> bool:
+            pattern_len = len(pattern)
+            return all(
+                s[i : i + pattern_len] == pattern for i in range(0, len(s), pattern_len)
+            )
+
+        n = len(word)
+        for i in range(1, n // 2 + 1):
+            pattern = word[:i]
+            if n % i == 0 and can_form_by_repeating(word, pattern):
+                return pattern
+        return word

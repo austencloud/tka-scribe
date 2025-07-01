@@ -97,6 +97,9 @@ class SignalCoordinator(QObject):
         """Handle start position creation"""
         print(f"✅ Signal coordinator: Start position created: {position_key}")
 
+        # Save start position to current_sequence.json exactly like legacy
+        self.sequence_manager.set_start_position(start_position_data)
+
         # Populate option picker with valid combinations
         self.option_picker_manager.populate_from_start_position(
             position_key, start_position_data

@@ -30,6 +30,7 @@ from core.interfaces.core_services import (
     IPictographManagementService,
     IUIStateManagementService,
 )
+from core.interfaces.session_services import ISessionStateService
 
 # Import production services
 from application.services.layout.layout_management_service import (
@@ -42,6 +43,7 @@ from application.services.core.sequence_management_service import (
 from application.services.core.pictograph_management_service import (
     PictographManagementService,
 )
+from application.services.core.session_state_service import SessionStateService
 from application.services.settings.settings_service import SettingsService
 
 # Import file-based storage services
@@ -49,11 +51,6 @@ from infrastructure.storage.file_based_sequence_data_service import (
     FileBasedSequenceDataService,
 )
 from infrastructure.storage.file_based_settings_service import FileBasedSettingsService
-
-# Import session services
-from core.interfaces.session_services import ISessionStateService
-from application.services.core.session_state_service import SessionStateService
-from core.events.event_bus import get_event_bus
 
 # Import file system services
 from core.interfaces.organization_services import IFileSystemService
@@ -128,14 +125,14 @@ class ApplicationFactory:
             IPictographManagementService, PictographManagementService
         )
 
+        # Register session service
+        container.register_singleton(ISessionStateService, SessionStateService)
+
         # Register visibility service
         from core.interfaces.tab_settings_interfaces import IVisibilityService
         from application.services.settings.visibility_service import VisibilityService
 
         container.register_singleton(IVisibilityService, VisibilityService)
-
-        # Register session state service
-        container.register_singleton(ISessionStateService, SessionStateService)
 
         # TODO: Register remaining production services when identified:
         # container.register_singleton(IValidationService, ProductionValidationService)
@@ -179,14 +176,14 @@ class ApplicationFactory:
         )
         container.register_singleton(IFileSystemService, FileSystemService)
 
+        # Register session service
+        container.register_singleton(ISessionStateService, SessionStateService)
+
         # Register visibility service
         from core.interfaces.tab_settings_interfaces import IVisibilityService
         from application.services.settings.visibility_service import VisibilityService
 
         container.register_singleton(IVisibilityService, VisibilityService)
-
-        # Register session state service
-        container.register_singleton(ISessionStateService, SessionStateService)
 
         logger.info("Created test application container")
         return container
@@ -226,14 +223,14 @@ class ApplicationFactory:
             IUIStateManagementService, HeadlessUIStateManagementService
         )
 
+        # Register session service
+        container.register_singleton(ISessionStateService, SessionStateService)
+
         # Register visibility service
         from core.interfaces.tab_settings_interfaces import IVisibilityService
         from application.services.settings.visibility_service import VisibilityService
 
         container.register_singleton(IVisibilityService, VisibilityService)
-
-        # Register session state service
-        container.register_singleton(ISessionStateService, SessionStateService)
 
         # TODO: Register remaining production services when identified:
         # container.register_singleton(IValidationService, ProductionValidationService)
