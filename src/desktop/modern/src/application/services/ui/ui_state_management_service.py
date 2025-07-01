@@ -25,6 +25,7 @@ from core.events.event_bus import (
     EventPriority,
 )
 from core.interfaces.core_services import IUIStateManagementService
+from core.interfaces.session_services import ISessionStateService
 
 
 class UIComponent(Enum):
@@ -89,7 +90,7 @@ class UIStateManagementService(IUIStateManagementService):
     - Event-driven state synchronization
     """
 
-    def __init__(self):
+    def __init__(self, session_service: Optional[ISessionStateService] = None):
         # Core state
         self._ui_state = UIState()
 
@@ -100,6 +101,9 @@ class UIStateManagementService(IUIStateManagementService):
 
         # Event bus for state synchronization
         self._event_bus = get_event_bus()
+
+        # Session service integration (optional for backward compatibility)
+        self._session_service = session_service
 
         # Default settings
         self._default_settings = self._load_default_settings()
@@ -123,6 +127,10 @@ class UIStateManagementService(IUIStateManagementService):
         """Set a setting value."""
         self._ui_state.user_settings[key] = value
         self._save_state()
+
+        # Trigger session auto-save for settings changes
+        if self._session_service:
+            self._session_service.mark_interaction()
 
         # Publish setting change event
         event = UIEvent(
@@ -160,6 +168,14 @@ class UIStateManagementService(IUIStateManagementService):
         self._ui_state.active_tab = tab_name
         self._save_state()
 
+        # Trigger session auto-save for tab changes
+        if self._session_service:
+            self._session_service.update_ui_state(
+                active_tab=tab_name,
+                beat_layout=self._ui_state.tab_states.get("beat_layout", {}),
+                component_visibility=self._ui_state.component_visibility,
+            )
+
         # Publish tab change event
         event = UIEvent(
             component="tab",
@@ -185,6 +201,15 @@ class UIStateManagementService(IUIStateManagementService):
         """Toggle graph editor visibility."""
         self._ui_state.graph_editor_visible = not self._ui_state.graph_editor_visible
         self._save_state()
+
+        # Trigger session auto-save for graph editor visibility changes
+        if self._session_service:
+            self._session_service.update_graph_editor_state(
+                visible=self._ui_state.graph_editor_visible,
+                beat_index=None,  # Will be updated by graph editor itself
+                selected_arrow=None,  # Will be updated by graph editor itself
+                height=self._ui_state.graph_editor_height,
+            )
 
         # Publish graph editor toggle event
         event = UIEvent(
@@ -450,5 +475,129 @@ class UIStateManagementService(IUIStateManagementService):
 
     def _handle_tab_switched(self, event: UIEvent) -> None:
         """Handle tab switch event."""
-        if "tab_name" in event.state_data:
-            self.set_active_tab(event.state_data["tab_name"])
+        if "new_tab" in event.state_data:
+            self.set_active_tab(event.state_data["new_tab"])
+
+    # NEW: Session-aware state methods
+
+    def update_current_sequence_with_session(
+        self, sequence_data: Any, sequence_id: str
+    ) -> None:
+        """Update current sequence and save to session."""
+        # Update UI state
+        self.set_setting("current_sequence_id", sequence_id)
+
+        # Update session state if available
+        if self._session_service:
+            self._session_service.update_current_sequence(sequence_data, sequence_id)
+
+    def update_workbench_selection_with_session(
+        self, beat_index: Optional[int], beat_data: Any, start_position: Any
+    ) -> None:
+        """Update workbench selection and save to session."""
+        # Update UI state
+        if beat_index is not None:
+            self.set_setting("selected_beat_index", beat_index)
+
+        # Update session state if available
+        if self._session_service:
+            self._session_service.update_workbench_state(
+                beat_index, beat_data, start_position
+            )
+
+    def update_graph_editor_with_session(
+        self,
+        visible: bool,
+        beat_index: Optional[int] = None,
+        selected_arrow: Optional[str] = None,
+        height: Optional[int] = None,
+    ) -> None:
+        """Update graph editor state and save to session."""
+        # Update UI state
+        self._ui_state.graph_editor_visible = visible
+        if height is not None:
+            self._ui_state.graph_editor_height = height
+        self._save_state()
+
+        # Update session state if available
+        if self._session_service:
+            self._session_service.update_graph_editor_state(
+                visible, beat_index, selected_arrow, height
+            )
+
+    def update_ui_state_with_session(
+        self,
+        active_tab: Optional[str] = None,
+        beat_layout: Optional[Dict[str, Any]] = None,
+        component_visibility: Optional[Dict[str, bool]] = None,
+    ) -> None:
+        """Update UI state and save to session."""
+        # Update UI state
+        if active_tab is not None:
+            self.set_active_tab(active_tab)
+
+        if component_visibility is not None:
+            self._ui_state.component_visibility.update(component_visibility)
+            self._save_state()
+
+        # Update session state if available
+        if self._session_service:
+            current_tab = active_tab or self._ui_state.active_tab
+            current_layout = beat_layout or self._ui_state.tab_states.get(
+                "beat_layout", {}
+            )
+            current_visibility = (
+                component_visibility or self._ui_state.component_visibility
+            )
+
+            self._session_service.update_ui_state(
+                current_tab, current_layout, current_visibility
+            )
+
+    def restore_session_on_startup(self) -> bool:
+        """Restore session state on application startup."""
+        if not self._session_service:
+            return False
+
+        try:
+            restore_result = self._session_service.load_session_state()
+
+            if not restore_result.success:
+                return False
+
+            if not restore_result.session_restored or not restore_result.session_data:
+                return False
+
+            session_data = restore_result.session_data
+
+            # Restore UI state from session
+            if session_data.active_tab:
+                self._ui_state.active_tab = session_data.active_tab
+
+            if session_data.graph_editor_visible is not None:
+                self._ui_state.graph_editor_visible = session_data.graph_editor_visible
+
+            if session_data.graph_editor_height:
+                self._ui_state.graph_editor_height = session_data.graph_editor_height
+
+            if session_data.component_visibility:
+                self._ui_state.component_visibility.update(
+                    session_data.component_visibility
+                )
+
+            if session_data.beat_layout:
+                # Store beat layout in tab states
+                self._ui_state.tab_states["beat_layout"] = session_data.beat_layout
+
+            # Save the restored state to UI settings
+            self._save_state()
+
+            return True
+
+        except Exception as e:
+            print(f"Failed to restore session: {e}")
+            return False
+
+    def set_session_service(self, session_service: ISessionStateService) -> None:
+        """Set the session service for integration (used by DI container)."""
+        self._session_service = session_service

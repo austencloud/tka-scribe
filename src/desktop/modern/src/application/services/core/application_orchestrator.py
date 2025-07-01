@@ -15,6 +15,7 @@ from typing import Optional, Callable
 from abc import ABC, abstractmethod
 from PyQt6.QtWidgets import QMainWindow, QTabWidget
 
+from core.dependency_injection.di_container import DIContainer
 from .service_registration_manager import (
     ServiceRegistrationManager,
     IServiceRegistrationManager,
@@ -68,12 +69,30 @@ class ApplicationOrchestrator(IApplicationOrchestrator):
         ui_manager: Optional[IUISetupManager] = None,
         background_manager: Optional[IBackgroundManager] = None,
         lifecycle_manager: Optional[IApplicationLifecycleManager] = None,
+        container: Optional[DIContainer] = None,
     ):
         """Initialize with dependency injection."""
         self.service_manager = service_manager or ServiceRegistrationManager()
         self.ui_manager = ui_manager or UISetupManager()
         self.background_manager = background_manager or BackgroundManager()
-        self.lifecycle_manager = lifecycle_manager or ApplicationLifecycleManager()
+
+        # If no lifecycle manager provided, create one with session service from container
+        if lifecycle_manager is None:
+            session_service = None
+            if container:
+                try:
+                    from core.interfaces.session_services import ISessionStateService
+
+                    session_service = container.resolve(ISessionStateService)
+                    print(
+                        f"✅ [ORCHESTRATOR] Session service resolved for lifecycle manager"
+                    )
+                except Exception as e:
+                    print(f"⚠️ [ORCHESTRATOR] Could not resolve session service: {e}")
+
+            self.lifecycle_manager = ApplicationLifecycleManager(session_service)
+        else:
+            self.lifecycle_manager = lifecycle_manager
 
         # Store references for cleanup
         self.container = None
@@ -115,6 +134,12 @@ class ApplicationOrchestrator(IApplicationOrchestrator):
         self.tab_widget = self.ui_manager.setup_main_ui(
             main_window, self.container, progress_callback
         )
+
+        # Step 3.5: Trigger deferred session restoration (after UI is ready)
+        print(
+            "🔍 [ORCHESTRATOR] UI setup complete, triggering deferred session restoration..."
+        )
+        self.lifecycle_manager.trigger_deferred_session_restoration()
 
         # Step 4: Setup background
         self.background_widget = self.background_manager.setup_background(

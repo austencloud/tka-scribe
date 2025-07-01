@@ -50,6 +50,15 @@ from infrastructure.storage.file_based_sequence_data_service import (
 )
 from infrastructure.storage.file_based_settings_service import FileBasedSettingsService
 
+# Import session services
+from core.interfaces.session_services import ISessionStateService
+from application.services.core.session_state_service import SessionStateService
+from core.events.event_bus import get_event_bus
+
+# Import file system services
+from core.interfaces.organization_services import IFileSystemService
+from infrastructure.file_system.file_system_service import FileSystemService
+
 logger = logging.getLogger(__name__)
 # Import test doubles (to be created) - using try/except for graceful fallback
 try:
@@ -105,6 +114,7 @@ class ApplicationFactory:
         # Register file-based data services
         container.register_singleton(ISequenceDataService, FileBasedSequenceDataService)
         container.register_singleton(ISettingsService, FileBasedSettingsService)
+        container.register_singleton(IFileSystemService, FileSystemService)
 
         # Register production services
         container.register_singleton(ILayoutService, LayoutManagementService)
@@ -124,10 +134,12 @@ class ApplicationFactory:
 
         container.register_singleton(IVisibilityService, VisibilityService)
 
+        # Register session state service
+        container.register_singleton(ISessionStateService, SessionStateService)
+
         # TODO: Register remaining production services when identified:
         # container.register_singleton(IValidationService, ProductionValidationService)
         # container.register_singleton(IArrowManagementService, ProductionArrowManagementService)
-        
 
         logger.info("Created production application container")
         return container
@@ -165,12 +177,16 @@ class ApplicationFactory:
         container.register_singleton(
             IUIStateManagementService, MockUIStateManagementService
         )
+        container.register_singleton(IFileSystemService, FileSystemService)
 
         # Register visibility service
         from core.interfaces.tab_settings_interfaces import IVisibilityService
         from application.services.settings.visibility_service import VisibilityService
 
         container.register_singleton(IVisibilityService, VisibilityService)
+
+        # Register session state service
+        container.register_singleton(ISessionStateService, SessionStateService)
 
         logger.info("Created test application container")
         return container
@@ -194,6 +210,7 @@ class ApplicationFactory:
         # Register file-based data services (same as production)
         container.register_singleton(ISequenceDataService, FileBasedSequenceDataService)
         container.register_singleton(ISettingsService, FileBasedSettingsService)
+        container.register_singleton(IFileSystemService, FileSystemService)
 
         # Real business logic services
         container.register_singleton(
@@ -214,6 +231,9 @@ class ApplicationFactory:
         from application.services.settings.visibility_service import VisibilityService
 
         container.register_singleton(IVisibilityService, VisibilityService)
+
+        # Register session state service
+        container.register_singleton(ISessionStateService, SessionStateService)
 
         # TODO: Register remaining production services when identified:
         # container.register_singleton(IValidationService, ProductionValidationService)

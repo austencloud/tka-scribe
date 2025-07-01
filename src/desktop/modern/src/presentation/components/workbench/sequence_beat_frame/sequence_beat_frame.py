@@ -224,9 +224,22 @@ class SequenceBeatFrame(QScrollArea):
     # Public API methods
     def set_sequence(self, sequence: Optional[SequenceData]):
         """Set the current sequence and update display"""
+        if sequence:
+            print(
+                f"🔍 [SEQUENCE_BEAT_FRAME] set_sequence() called with: {sequence.name} (ID: {sequence.id})"
+            )
+            print(f"🔍 [SEQUENCE_BEAT_FRAME] Sequence has {len(sequence.beats)} beats")
+            for i, beat in enumerate(sequence.beats):
+                print(f"   Beat {i}: {beat.letter} (duration: {beat.duration})")
+        else:
+            print("🔍 [SEQUENCE_BEAT_FRAME] set_sequence() called with None")
+
         self._current_sequence = sequence
+        print("🔍 [SEQUENCE_BEAT_FRAME] Updating layout...")
         self._update_layout()
+        print("🔍 [SEQUENCE_BEAT_FRAME] Updating display...")
         self._update_display()
+        print("✅ [SEQUENCE_BEAT_FRAME] set_sequence() completed")
 
     def get_sequence(self) -> Optional[SequenceData]:
         """Get the current sequence"""
@@ -311,25 +324,40 @@ class SequenceBeatFrame(QScrollArea):
 
     def _update_display(self):
         """Update all display elements like legacy (no info labels)"""
+        print("🔍 [SEQUENCE_BEAT_FRAME] _update_display() called")
+
         # Always ensure start position is visible at (0,0) - Legacy behavior
         if self._start_position_view:
             self._start_position_view.show()
+            print("✅ [SEQUENCE_BEAT_FRAME] Start position view shown")
 
         if not self._current_sequence:
+            print("🔍 [SEQUENCE_BEAT_FRAME] No current sequence - hiding beat numbers")
             # No sequence beats to display, but start position remains visible
             # Hide beat numbers on all beat views when no sequence
             for beat_view in self._beat_views:
                 beat_view.set_beat_number_visible(False)
             return
 
+        print(
+            f"🔍 [SEQUENCE_BEAT_FRAME] Updating display for {len(self._current_sequence.beats)} beats"
+        )
+        print(f"🔍 [SEQUENCE_BEAT_FRAME] Available beat views: {len(self._beat_views)}")
+
         # Update beat views with sequence data
         for i, beat_data in enumerate(self._current_sequence.beats):
             if i < len(self._beat_views):
                 beat_view = self._beat_views[i]
+                print(f"🔍 [SEQUENCE_BEAT_FRAME] Setting beat {i}: {beat_data.letter}")
                 beat_view.set_beat_data(beat_data)
 
                 # Enable beat number overlay for sequence beats (like Legacy)
                 beat_view.set_beat_number_visible(True)
+                print(f"✅ [SEQUENCE_BEAT_FRAME] Beat {i} updated and made visible")
+            else:
+                print(f"⚠️ [SEQUENCE_BEAT_FRAME] No beat view available for beat {i}")
+
+        print("✅ [SEQUENCE_BEAT_FRAME] _update_display() completed")
 
         # Start position is always separate from sequence beats (Legacy behavior)
         # Start position data is managed independently via set_start_position()

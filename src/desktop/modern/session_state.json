@@ -1,0 +1,123 @@
+{
+  "session_metadata": {
+    "session_id": "48da16fb-3b6f-4a5f-9dda-815395457b49",
+    "created_at": "2025-07-01T10:11:42.652767",
+    "last_interaction": "2025-07-01T10:11:42.653766",
+    "tka_version": "modern"
+  },
+  "current_sequence": {
+    "sequence_id": "multi_beat_test",
+    "sequence_data": {
+      "id": "multi_beat_test",
+      "name": "Multi-Beat Motion Test",
+      "word": "",
+      "beats": [
+        {
+          "id": "154bc4d9-b7f5-4963-9add-c4a176c62b96",
+          "beat_number": 1,
+          "letter": "A",
+          "duration": 1.0,
+          "blue_motion": {
+            "motion_type": "static",
+            "prop_rot_dir": "no_rot",
+            "start_loc": "n",
+            "end_loc": "n",
+            "turns": 0.0,
+            "start_ori": "in",
+            "end_ori": "in"
+          },
+          "red_motion": {
+            "motion_type": "static",
+            "prop_rot_dir": "no_rot",
+            "start_loc": "s",
+            "end_loc": "s",
+            "turns": 0.0,
+            "start_ori": "in",
+            "end_ori": "in"
+          },
+          "glyph_data": null,
+          "blue_reversal": false,
+          "red_reversal": false,
+          "is_blank": false,
+          "metadata": {}
+        },
+        {
+          "id": "5e529818-d8ad-43b3-a683-73fe4f928d1e",
+          "beat_number": 2,
+          "letter": "B",
+          "duration": 1.5,
+          "blue_motion": {
+            "motion_type": "pro",
+            "prop_rot_dir": "cw",
+            "start_loc": "e",
+            "end_loc": "w",
+            "turns": 1.0,
+            "start_ori": "in",
+            "end_ori": "in"
+          },
+          "red_motion": {
+            "motion_type": "pro",
+            "prop_rot_dir": "cw",
+            "start_loc": "w",
+            "end_loc": "e",
+            "turns": 1.0,
+            "start_ori": "in",
+            "end_ori": "in"
+          },
+          "glyph_data": null,
+          "blue_reversal": false,
+          "red_reversal": false,
+          "is_blank": false,
+          "metadata": {}
+        },
+        {
+          "id": "fdbb0f91-ac08-4aa4-b575-c0c4dc4c853d",
+          "beat_number": 3,
+          "letter": "C",
+          "duration": 2.0,
+          "blue_motion": {
+            "motion_type": "anti",
+            "prop_rot_dir": "ccw",
+            "start_loc": "ne",
+            "end_loc": "sw",
+            "turns": 0.5,
+            "start_ori": "in",
+            "end_ori": "in"
+          },
+          "red_motion": {
+            "motion_type": "anti",
+            "prop_rot_dir": "ccw",
+            "start_loc": "nw",
+            "end_loc": "se",
+            "turns": 0.5,
+            "start_ori": "in",
+            "end_ori": "in"
+          },
+          "glyph_data": null,
+          "blue_reversal": false,
+          "red_reversal": false,
+          "is_blank": false,
+          "metadata": {}
+        }
+      ],
+      "start_position": null,
+      "metadata": {}
+    }
+  },
+  "workbench_state": {
+    "selected_beat_index": null,
+    "selected_beat_data": null,
+    "start_position_data": null
+  },
+  "graph_editor_state": {
+    "visible": false,
+    "selected_beat_index": null,
+    "selected_arrow": null,
+    "height": 300
+  },
+  "ui_state": {
+    "active_tab": "sequence_builder",
+    "beat_layout": {},
+    "component_visibility": {}
+  }
+}

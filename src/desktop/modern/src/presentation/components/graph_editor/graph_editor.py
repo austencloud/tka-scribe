@@ -16,11 +16,12 @@ This version uses clean component-based architecture with:
 import logging
 from typing import Optional, TYPE_CHECKING
 
-from PyQt6.QtWidgets import QFrame, QVBoxLayout, QSplitter, QLabel
+from PyQt6.QtWidgets import QFrame, QVBoxLayout, QLabel
 from PyQt6.QtCore import pyqtSignal, Qt
 
 from domain.models.core_models import SequenceData, BeatData
 from core.interfaces.workbench_services import IGraphEditorService
+from core.interfaces.session_services import ISessionStateService
 
 # Import core components
 from .components.pictograph_display_section import PictographDisplaySection
@@ -74,10 +75,12 @@ class GraphEditor(QFrame):
         parent: Optional["SequenceWorkbench"] = None,
         workbench_width: int = 800,
         workbench_height: int = 600,
+        session_service: Optional[ISessionStateService] = None,
     ):
         super().__init__(parent)
         self._graph_service = graph_service
         self._parent_workbench = parent
+        self._session_service = session_service
 
         # Core state
         self._current_sequence: Optional[SequenceData] = None
@@ -100,29 +103,23 @@ class GraphEditor(QFrame):
             self._create_minimal_error_ui(str(e))
 
     def _setup_ui(self) -> None:
-        """Simple UI setup without excessive error handling."""
+        """Simple UI setup with VBox layout and fixed proportions."""
         # Create main layout
         layout = QVBoxLayout(self)
         layout.setContentsMargins(10, 10, 10, 10)
         layout.setSpacing(10)
 
-        # Create splitter for component organization
-        splitter = QSplitter(Qt.Orientation.Vertical)
-        splitter.setChildrenCollapsible(False)
-
         # Create components (let them fail naturally if there are real problems)
         self._pictograph_display = PictographDisplaySection(parent=self)
         self._adjustment_panel = MainAdjustmentPanel(parent=self)
 
-        # Add components to splitter
-        splitter.addWidget(self._pictograph_display)
-        splitter.addWidget(self._adjustment_panel)
-        splitter.setSizes([150, 150])  # Equal proportions
+        # Add components with stretch factors for 65/35 split
+        # Stretch factor of 65 for pictograph display (top 65%)
+        layout.addWidget(self._pictograph_display, 65)
+        # Stretch factor of 35 for adjustment panel (bottom 35%)
+        layout.addWidget(self._adjustment_panel, 35)
 
-        # Add splitter to main layout
-        layout.addWidget(splitter)
-
-        logger.debug("UI setup completed")
+        logger.debug("UI setup completed with VBox layout")
 
     def _connect_signals(self) -> None:
         """Simple signal connections."""
@@ -302,6 +299,15 @@ class GraphEditor(QFrame):
             if self._adjustment_panel:
                 self._adjustment_panel.set_beat_data(beat_index, beat_data)
 
+            # Update session state
+            if self._session_service:
+                self._session_service.update_graph_editor_state(
+                    visible=self.isVisible(),
+                    beat_index=beat_index,
+                    selected_arrow=self._get_current_selected_arrow(),
+                    height=self.height(),
+                )
+
             logger.debug(f"Beat data set successfully: {beat_index}")
             return True
 
@@ -339,6 +345,16 @@ class GraphEditor(QFrame):
         try:
             self.setVisible(is_visible)
             self.visibility_changed.emit(is_visible)
+
+            # Update session state
+            if self._session_service:
+                self._session_service.update_graph_editor_state(
+                    visible=is_visible,
+                    beat_index=self._selected_beat_index,
+                    selected_arrow=self._get_current_selected_arrow(),
+                    height=self.height(),
+                )
+
             logger.debug(f"Visibility set to: {is_visible}")
             return True
         except Exception as e:
@@ -391,3 +407,14 @@ class GraphEditor(QFrame):
             logger.error(f"Error during state validation: {e}")
 
         return result
+
+    def _get_current_selected_arrow(self) -> Optional[str]:
+        """Get the currently selected arrow identifier."""
+        # Try to get selected arrow from adjustment panel
+        if self._adjustment_panel and hasattr(
+            self._adjustment_panel, "get_selected_arrow"
+        ):
+            return self._adjustment_panel.get_selected_arrow()
+
+        # Default to None if no arrow is selected
+        return None

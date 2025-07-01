@@ -48,7 +48,11 @@ class TKAMainWindow(QMainWindow):
                 ApplicationOrchestrator,
             )
 
-            self.orchestrator = ApplicationOrchestrator()
+            # Pass the container to the orchestrator so it can resolve the session service
+            print(
+                f"🔍 [MAIN] Creating orchestrator with container for session service resolution"
+            )
+            self.orchestrator = ApplicationOrchestrator(container=self.container)
             self.tab_widget = self.orchestrator.initialize_application(
                 self,
                 splash_screen,
@@ -135,24 +139,27 @@ def main():
     # Set up logging
     logging.basicConfig(level=logging.INFO)
     logger = logging.getLogger(__name__)
-    
+
     # INSTANT FIX: Suppress verbose arrow positioning logs
     try:
         from core.logging.instant_fix import apply_instant_fix
-        apply_instant_fix('quiet')
+
+        apply_instant_fix("quiet")
         logger.info("✅ Smart logging applied - arrow positioning verbosity REDUCED")
     except ImportError:
         # Fallback: Direct suppression without smart logging
         verbose_loggers = [
-            'application.services.positioning.arrows.orchestration.directional_tuple_processor',
-            'application.services.positioning.arrows.orchestration.arrow_adjustment_calculator_service',
-            'application.services.positioning.arrows.orchestration.arrow_adjustment_lookup_service'
+            "application.services.positioning.arrows.orchestration.directional_tuple_processor",
+            "application.services.positioning.arrows.orchestration.arrow_adjustment_calculator_service",
+            "application.services.positioning.arrows.orchestration.arrow_adjustment_lookup_service",
         ]
         for logger_name in verbose_loggers:
             logging.getLogger(logger_name).setLevel(logging.ERROR)
         logger.info("✅ Fallback logging applied - arrow positioning verbosity REDUCED")
     except Exception as e:
-        logger.warning(f"⚠️ Could not apply logging fix: {e} - continuing with default logging")
+        logger.warning(
+            f"⚠️ Could not apply logging fix: {e} - continuing with default logging"
+        )
 
     # Determine application mode from command line arguments
     app_mode = ApplicationMode.PRODUCTION

@@ -19,14 +19,14 @@ class TurnValueButtonGrid(QWidget):
         self.color = color
         self.on_value_selected = on_value_selected
         grid_layout = QGridLayout(self)
-        grid_layout.setContentsMargins(0, 0, 0, 0)
-        grid_layout.setSpacing(6)
+        grid_layout.setContentsMargins(8, 8, 8, 8)
+        grid_layout.setSpacing(10)  # Increased spacing for better visual separation
         for i, turn_value in enumerate(turn_values):
             row = i // 4
             col = i % 4
             button = QPushButton(turn_value)
             button.setCheckable(True)
-            button.setFixedSize(50, 40)
+            button.setFixedSize(70, 55)  # Increased size for better clickability
             button.clicked.connect(
                 lambda checked, val=turn_value: self._handle_click(val)
             )

@@ -18,6 +18,9 @@ from PyQt6.QtWidgets import QMainWindow
 from PyQt6.QtGui import QGuiApplication
 from PyQt6.QtCore import QRect
 
+# Import session service interface
+from core.interfaces.session_services import ISessionStateService
+
 
 class IApplicationLifecycleManager(ABC):
     """Interface for application lifecycle operations."""
@@ -59,9 +62,11 @@ class ApplicationLifecycleManager(IApplicationLifecycleManager):
     without business logic dependencies. Uses clean separation of concerns.
     """
 
-    def __init__(self):
+    def __init__(self, session_service: Optional[ISessionStateService] = None):
         """Initialize application lifecycle manager."""
         self.api_enabled = True
+        self._session_service = session_service
+        self._pending_session_data = None
 
     def initialize_application(
         self,
@@ -87,7 +92,163 @@ class ApplicationLifecycleManager(IApplicationLifecycleManager):
         )
 
         if progress_callback:
-            progress_callback(15, "Application lifecycle initialized")
+            progress_callback(85, "Restoring previous session...")
+
+        # NEW: Restore session state if available
+        if self._session_service:
+            print("🔍 [LIFECYCLE] Session service available, attempting restoration...")
+            try:
+                restore_result = self._session_service.load_session_state()
+                print(
+                    f"🔍 [LIFECYCLE] Session load result: success={restore_result.success}, restored={restore_result.session_restored}"
+                )
+
+                if restore_result.success and restore_result.session_restored:
+                    self._pending_session_data = restore_result.session_data
+                    print(f"✅ [LIFECYCLE] Session data loaded for later restoration")
+                    print(
+                        f"🔍 [LIFECYCLE] Session contains sequence: {self._pending_session_data.current_sequence_id}"
+                    )
+                    print(
+                        f"🔍 [LIFECYCLE] Selected beat: {self._pending_session_data.selected_beat_index}"
+                    )
+                    print(
+                        f"🔍 [LIFECYCLE] Active tab: {self._pending_session_data.active_tab}"
+                    )
+                    print(
+                        "🔍 [LIFECYCLE] Session restoration will be triggered after UI setup"
+                    )
+                else:
+                    print("ℹ️ [LIFECYCLE] No previous session to restore")
+                    if restore_result.warnings:
+                        for warning in restore_result.warnings:
+                            print(f"⚠️ [LIFECYCLE] Session warning: {warning}")
+            except Exception as e:
+                print(f"⚠️ [LIFECYCLE] Failed to restore session: {e}")
+                import traceback
+
+                traceback.print_exc()
+                # Continue without session restoration
+        else:
+            print("⚠️ [LIFECYCLE] No session service available for restoration")
+
+        if progress_callback:
+            progress_callback(90, "Session restoration complete")
+
+        if progress_callback:
+            progress_callback(95, "Application lifecycle initialized")
+
+    def trigger_deferred_session_restoration(self):
+        """Trigger session restoration after UI components are ready."""
+        if self._pending_session_data:
+            print("🔍 [LIFECYCLE] Triggering deferred session restoration...")
+            print(f"🔍 [LIFECYCLE] UI components should now be ready to receive events")
+            self._apply_restored_session_to_ui(self._pending_session_data)
+            self._pending_session_data = None  # Clear after use
+        else:
+            print("ℹ️ [LIFECYCLE] No pending session data to restore")
+
+    def _apply_restored_session_to_ui(self, session_data):
+        """Apply restored session data to UI components."""
+        print("🔍 [LIFECYCLE] Starting UI restoration process...")
+        try:
+            from core.events.event_bus import get_event_bus, UIEvent, EventPriority
+
+            # Get event bus for publishing restoration events
+            event_bus = get_event_bus()
+            print("🔍 [LIFECYCLE] Event bus obtained successfully")
+
+            # Restore sequence if available
+            if session_data.current_sequence_id and session_data.current_sequence_data:
+                print(
+                    f"🔄 [LIFECYCLE] Restoring sequence: {session_data.current_sequence_id}"
+                )
+                print(
+                    f"🔍 [LIFECYCLE] Sequence data type: {type(session_data.current_sequence_data)}"
+                )
+
+                # Convert sequence data back to SequenceData object if needed
+                sequence_data = session_data.current_sequence_data
+                if isinstance(sequence_data, dict):
+                    print("🔍 [LIFECYCLE] Converting dict to SequenceData object...")
+                    from domain.models.core_models import SequenceData, BeatData
+
+                    beats_data = sequence_data.get("beats", [])
+                    print(f"🔍 [LIFECYCLE] Sequence has {len(beats_data)} beats")
+
+                    # Convert beat dicts back to BeatData objects
+                    beat_objects = []
+                    for i, beat_dict in enumerate(beats_data):
+                        if isinstance(beat_dict, dict):
+                            print(
+                                f"🔍 [LIFECYCLE] Converting beat {i}: {beat_dict.get('letter', 'Unknown')}"
+                            )
+                            beat_obj = BeatData.from_dict(beat_dict)
+                            beat_objects.append(beat_obj)
+                        else:
+                            print(
+                                f"⚠️ [LIFECYCLE] Beat {i} is not a dict: {type(beat_dict)}"
+                            )
+                            beat_objects.append(beat_dict)
+
+                    print(f"🔍 [LIFECYCLE] Converted {len(beat_objects)} beat objects")
+
+                    # Convert dict back to SequenceData object
+                    sequence_data = SequenceData(
+                        id=sequence_data.get("id", session_data.current_sequence_id),
+                        name=sequence_data.get("name", "Restored Sequence"),
+                        beats=beat_objects,
+                    )
+                    print(
+                        f"🔍 [LIFECYCLE] Created SequenceData: {sequence_data.name} (ID: {sequence_data.id})"
+                    )
+                else:
+                    print(
+                        f"🔍 [LIFECYCLE] Sequence data is already SequenceData object: {sequence_data.name}"
+                    )
+
+                # Publish sequence restoration event
+                print("🔍 [LIFECYCLE] Publishing sequence restoration event...")
+                event = UIEvent(
+                    component="session_restoration",
+                    action="sequence_restored",
+                    state_data={
+                        "sequence_data": sequence_data,
+                        "sequence_id": session_data.current_sequence_id,
+                        "selected_beat_index": session_data.selected_beat_index,
+                        "start_position_data": session_data.start_position_data,
+                    },
+                    source="application_lifecycle_manager",
+                    priority=EventPriority.HIGH,
+                )
+                event_bus.publish(event)
+                print(
+                    f"✅ [LIFECYCLE] Published sequence restoration event for: {session_data.current_sequence_id}"
+                )
+            else:
+                print("ℹ️ [LIFECYCLE] No sequence data to restore")
+                if not session_data.current_sequence_id:
+                    print("🔍 [LIFECYCLE] No sequence ID in session")
+                if not session_data.current_sequence_data:
+                    print("🔍 [LIFECYCLE] No sequence data in session")
+
+            # Restore UI state
+            if session_data.active_tab:
+                print(f"🔄 Restoring active tab: {session_data.active_tab}")
+                event = UIEvent(
+                    component="session_restoration",
+                    action="tab_restored",
+                    state_data={"active_tab": session_data.active_tab},
+                    source="application_lifecycle_manager",
+                    priority=EventPriority.HIGH,
+                )
+                event_bus.publish(event)
+
+        except Exception as e:
+            print(f"⚠️ Failed to apply restored session to UI: {e}")
+            import traceback
+
+            traceback.print_exc()
 
     def set_window_dimensions(
         self,
@@ -297,3 +458,23 @@ class ApplicationLifecycleManager(IApplicationLifecycleManager):
                 for i, screen in enumerate(screens)
             ],
         }
+
+    def cleanup_application(self) -> None:
+        """Clean up application and save session state."""
+        # NEW: Save current session state before cleanup
+        if self._session_service:
+            try:
+                success = self._session_service.save_session_state()
+                if success:
+                    print("✅ Session state saved successfully")
+                else:
+                    print("⚠️ Failed to save session state")
+            except Exception as e:
+                print(f"⚠️ Failed to save session state: {e}")
+
+        # Additional cleanup can be added here as needed
+        print("🧹 Application cleanup completed")
+
+    def set_session_service(self, session_service: ISessionStateService) -> None:
+        """Set the session service for lifecycle integration."""
+        self._session_service = session_service

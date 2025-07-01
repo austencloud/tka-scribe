@@ -295,6 +295,7 @@ class MockUIStateManagementService(IUIStateManagementService):
         self.settings: Dict[str, Any] = {}
         self.tab_states: Dict[str, Dict[str, Any]] = {}
         self.graph_editor_visible = False
+        self._session_service = None
 
     def get_setting(self, key: str, default: Any = None) -> Any:
         """Get UI setting."""
@@ -312,3 +313,59 @@ class MockUIStateManagementService(IUIStateManagementService):
         """Toggle graph editor visibility."""
         self.graph_editor_visible = not self.graph_editor_visible
         return self.graph_editor_visible
+
+    def set_session_service(self, session_service) -> None:
+        """Set the session service for integration."""
+        self._session_service = session_service
+
+    def update_current_sequence_with_session(
+        self, sequence_data, sequence_id: str
+    ) -> None:
+        """Update current sequence and save to session."""
+        self.settings["current_sequence_id"] = sequence_id
+        if self._session_service:
+            self._session_service.update_current_sequence(sequence_data, sequence_id)
+
+    def update_workbench_selection_with_session(
+        self, beat_index, beat_data, start_position
+    ) -> None:
+        """Update workbench selection and save to session."""
+        if beat_index is not None:
+            self.settings["selected_beat_index"] = beat_index
+        if self._session_service:
+            self._session_service.update_workbench_state(
+                beat_index, beat_data, start_position
+            )
+
+    def set_active_tab(self, tab_name: str) -> None:
+        """Set the active tab."""
+        self.settings["active_tab"] = tab_name
+        if self._session_service:
+            self._session_service.update_ui_state(tab_name)
+
+    def get_active_tab(self) -> str:
+        """Get the active tab."""
+        return self.settings.get("active_tab", "sequence_builder")
+
+    def restore_session_on_startup(self) -> bool:
+        """Restore session state on application startup."""
+        if not self._session_service:
+            return False
+
+        try:
+            restore_result = self._session_service.load_session_state()
+            if (
+                restore_result.success
+                and restore_result.session_restored
+                and restore_result.session_data
+            ):
+                session_data = restore_result.session_data
+
+                # Restore UI state from session
+                if session_data.active_tab:
+                    self.settings["active_tab"] = session_data.active_tab
+
+                return True
+            return False
+        except Exception:
+            return False
