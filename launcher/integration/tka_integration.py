@@ -42,8 +42,6 @@ class TKAIntegrationService:
 
     def __init__(self):
         """Initialize TKA integration."""
-        logger.info("🔗 Initializing TKA integration service...")
-
         self.container = None
         self.app_service = None
         self.launch_service = None
@@ -52,7 +50,7 @@ class TKAIntegrationService:
         # Initialize TKA services
         self._initialize_tka_services()
 
-        logger.info("✅ TKA integration service initialized")
+        logger.info("✅ TKA integration service ready")
 
     def _initialize_tka_services(self):
         """Initialize TKA services with graceful fallback."""
@@ -72,8 +70,6 @@ class TKAIntegrationService:
             self.app_service = self.container.resolve(IApplicationService)
             self.launch_service = self.container.resolve(IApplicationLaunchService)
             self.settings_service = self.container.resolve(ISettingsService)
-
-            logger.info("✅ TKA services initialized successfully")
 
         except ImportError as e:
             logger.warning(f"⚠️ TKA services not available, using fallback: {e}")
@@ -98,7 +94,6 @@ class TKAIntegrationService:
         try:
             if self.app_service:
                 applications = self.app_service.get_all_applications()
-                logger.info(f"📱 Retrieved {len(applications)} applications")
                 return applications
             else:
                 logger.warning("⚠️ No application service available")

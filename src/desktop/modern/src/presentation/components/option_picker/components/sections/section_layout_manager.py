@@ -156,9 +156,7 @@ class SectionLayoutManager:
                 and "OptionPickerWidget" in widget.__class__.__name__
             ):
                 widget.add_sizing_callback(self._on_option_picker_resize)
-                print(
-                    f"🔗 Section {self.section.letter_type} registered for sizing updates"
-                )
+                # Removed repetitive log statement
                 break
             widget = widget.parent()
 

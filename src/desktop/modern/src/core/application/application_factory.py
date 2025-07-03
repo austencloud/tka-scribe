@@ -152,7 +152,7 @@ class ApplicationFactory:
                 f"Failed to register extracted services: {register_result.error}"
             )
 
-        logger.info("Created production application container")
+        # Removed repetitive log statement
         return container
 
     @staticmethod

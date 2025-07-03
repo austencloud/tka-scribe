@@ -44,7 +44,7 @@ class WindowGeometryManager:
             if saved_rect.x() != 0 or saved_rect.y() != 0:
                 # Use saved geometry
                 window.setGeometry(saved_rect)
-                logger.info(f"📐 Restored window geometry: {saved_rect}")
+                # Restored window geometry - log removed to reduce startup noise
             else:
                 # Calculate centered position
                 centered_rect = self._calculate_centered_geometry(

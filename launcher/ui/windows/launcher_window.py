@@ -40,8 +40,6 @@ except ImportError:
 
 logger = logging.getLogger(__name__)
 
-logger.info("🎨 Reliable UI design system loaded successfully")
-
 
 class TKALauncherWindow(QWidget):
     """
@@ -79,7 +77,7 @@ class TKALauncherWindow(QWidget):
         self._init_modern_ui()
         self._connect_signals()
 
-        logger.info("✅ TKA Modern Window initialized")
+        # TKA Modern Window initialized - log removed to reduce startup noise
 
     def _setup_modern_styling(self):
         """Setup reliable glassmorphism styling using proven PyQt6 patterns."""
@@ -124,7 +122,7 @@ class TKALauncherWindow(QWidget):
         """
         )
 
-        logger.info("🎨 Reliable styling applied successfully")
+        # Reliable styling applied - log removed to reduce startup noise
 
     def _setup_window_geometry(self):
         """Setup window geometry to 50% of screen size and center it."""
@@ -161,7 +159,7 @@ class TKALauncherWindow(QWidget):
 
         self._create_simplified_interface(layout)
 
-        logger.info("🏠 Simplified UI initialized with glassmorphism design")
+        # Simplified UI initialized - log removed to reduce startup noise
 
     def _create_simplified_interface(self, layout):
         """Create the simplified single-window interface."""
@@ -245,7 +243,7 @@ class TKALauncherWindow(QWidget):
             else:
                 self.dock_toggle_button.setText("Switch to Dock Mode")
 
-        logger.info(f"🔄 Mode changed to: {new_mode}")
+        # Mode changed - log removed to reduce startup noise
 
     def cleanup(self):
         """Cleanup resources when closing."""

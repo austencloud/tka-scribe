@@ -22,6 +22,8 @@ AUTHOR: AI Agent
 import sys
 import json
 from pathlib import Path
+from datetime import datetime
+from typing import Dict, Any, Optional
 
 # Add the modern src directory to Python path
 modern_src = Path(__file__).parent.parent.parent / "src"
@@ -60,6 +62,620 @@ class ProductionLikeTKATest:
         self.current_sequence_file = (
             Path(__file__).parent.parent.parent / "current_sequence.json"
         )
+
+        # Scaling diagnosis tracking
+        self.scaling_log = []
+        self.enable_scaling_diagnosis = True
+
+    def log_scaling_event(
+        self, view_type: str, event: str, view_widget, additional_info: str = ""
+    ):
+        """Log detailed scaling information for diagnosis"""
+        if not self.enable_scaling_diagnosis:
+            return
+
+        timestamp = datetime.now().strftime("%H:%M:%S.%f")[:-3]
+
+        # Extract scaling information
+        scale_info = self._extract_scaling_info(view_widget)
+        overlay_info = self._extract_overlay_info(view_widget)
+        transform_info = self._extract_transform_info(view_widget)
+
+        # Format log entry
+        log_entry = (
+            f"[{timestamp}] [{view_type}] [{event}] "
+            f"Scale: {scale_info['scale_factor']:.3f}, "
+            f"Overlay: {overlay_info['mode']}, "
+            f"Border: {overlay_info['border_color']}, "
+            f"Transform: {transform_info['matrix_str']}"
+        )
+
+        if additional_info:
+            log_entry += f" | {additional_info}"
+
+        # Store and print
+        self.scaling_log.append(
+            {
+                "timestamp": timestamp,
+                "view_type": view_type,
+                "event": event,
+                "scale_info": scale_info,
+                "overlay_info": overlay_info,
+                "transform_info": transform_info,
+                "additional_info": additional_info,
+                "log_entry": log_entry,
+            }
+        )
+
+        print(log_entry)
+
+    def _extract_scaling_info(self, view_widget) -> Dict[str, Any]:
+        """Extract scaling information from view widget"""
+        try:
+            if (
+                hasattr(view_widget, "_selection_overlay")
+                and view_widget._selection_overlay
+            ):
+                overlay = view_widget._selection_overlay
+                expected_scale = (
+                    overlay.SCALE_COMPENSATION
+                    if (overlay._is_selection_mode or overlay._is_hover_mode)
+                    else 1.0
+                )
+                return {
+                    "scale_factor": expected_scale,
+                    "compensation_factor": overlay.SCALE_COMPENSATION,
+                    "is_scaled": overlay._is_selection_mode or overlay._is_hover_mode,
+                }
+            else:
+                return {
+                    "scale_factor": 1.0,
+                    "compensation_factor": "N/A",
+                    "is_scaled": False,
+                }
+        except Exception as e:
+            return {
+                "scale_factor": "ERROR",
+                "compensation_factor": "ERROR",
+                "is_scaled": "ERROR",
+                "error": str(e),
+            }
+
+    def _extract_overlay_info(self, view_widget) -> Dict[str, Any]:
+        """Extract overlay state information"""
+        try:
+            if (
+                hasattr(view_widget, "_selection_overlay")
+                and view_widget._selection_overlay
+            ):
+                overlay = view_widget._selection_overlay
+
+                # Determine mode
+                if overlay._is_selection_mode:
+                    mode = "SELECTION"
+                elif overlay._is_hover_mode:
+                    mode = "HOVER"
+                else:
+                    mode = "NORMAL"
+
+                # Determine border color
+                if overlay._current_border_color:
+                    if overlay._current_border_color == overlay.SELECTION_COLOR:
+                        border_color = "GOLD"
+                    elif overlay._current_border_color == overlay.HOVER_COLOR:
+                        border_color = "BLUE"
+                    else:
+                        border_color = f"CUSTOM({overlay._current_border_color.name()})"
+                else:
+                    border_color = "NONE"
+
+                return {
+                    "mode": mode,
+                    "border_color": border_color,
+                    "is_visible": overlay.isVisible(),
+                    "selection_mode": overlay._is_selection_mode,
+                    "hover_mode": overlay._is_hover_mode,
+                }
+            else:
+                return {
+                    "mode": "NO_OVERLAY",
+                    "border_color": "NONE",
+                    "is_visible": False,
+                    "selection_mode": False,
+                    "hover_mode": False,
+                }
+        except Exception as e:
+            return {
+                "mode": "ERROR",
+                "border_color": "ERROR",
+                "is_visible": "ERROR",
+                "error": str(e),
+            }
+
+    def _extract_transform_info(self, view_widget) -> Dict[str, Any]:
+        """Extract transform matrix information"""
+        try:
+            if (
+                hasattr(view_widget, "_pictograph_component")
+                and view_widget._pictograph_component
+            ):
+                transform = view_widget._pictograph_component.transform()
+
+                # Extract matrix values
+                m11, m12, m13 = transform.m11(), transform.m12(), transform.m13()
+                m21, m22, m23 = transform.m21(), transform.m22(), transform.m23()
+                m31, m32, m33 = transform.m31(), transform.m32(), transform.m33()
+
+                # Check if it's identity
+                is_identity = transform.isIdentity()
+
+                # Calculate effective scale (assuming uniform scaling)
+                scale_x = (m11**2 + m21**2) ** 0.5
+                scale_y = (m12**2 + m22**2) ** 0.5
+
+                return {
+                    "matrix_str": f"[{m11:.3f},{m12:.3f},{m21:.3f},{m22:.3f}]",
+                    "is_identity": is_identity,
+                    "scale_x": scale_x,
+                    "scale_y": scale_y,
+                    "effective_scale": (scale_x + scale_y) / 2,
+                    "full_matrix": [m11, m12, m13, m21, m22, m23, m31, m32, m33],
+                }
+            else:
+                return {
+                    "matrix_str": "NO_COMPONENT",
+                    "is_identity": "N/A",
+                    "scale_x": "N/A",
+                    "scale_y": "N/A",
+                    "effective_scale": "N/A",
+                }
+        except Exception as e:
+            return {"matrix_str": "ERROR", "is_identity": "ERROR", "error": str(e)}
+
+    def diagnose_beat_frame_scaling(self):
+        """Diagnose scaling issues in the beat frame"""
+        print("\n🔍 [SCALING_DIAGNOSIS] Analyzing beat frame scaling...")
+
+        try:
+            if not self.workbench:
+                print("❌ [SCALING_DIAGNOSIS] No workbench available")
+                return
+
+            # Navigate to beat frame
+            beat_frame = None
+            if hasattr(self.workbench, "_beat_frame_section"):
+                beat_frame_section = self.workbench._beat_frame_section
+                if hasattr(beat_frame_section, "_beat_frame"):
+                    beat_frame = beat_frame_section._beat_frame
+
+            if not beat_frame:
+                print("❌ [SCALING_DIAGNOSIS] Could not access beat frame")
+                return
+
+            # Get sequence data - try multiple approaches
+            sequence_data = None
+            if hasattr(beat_frame, "_sequence_data"):
+                sequence_data = beat_frame._sequence_data
+            elif hasattr(beat_frame, "sequence_data"):
+                sequence_data = beat_frame.sequence_data
+            elif hasattr(beat_frame, "_sequence"):
+                sequence_data = beat_frame._sequence
+
+            if not sequence_data:
+                print("❌ [SCALING_DIAGNOSIS] No sequence data in beat frame")
+                print("🔍 [SCALING_DIAGNOSIS] Available beat frame attributes:")
+                attrs = [attr for attr in dir(beat_frame) if not attr.startswith("__")]
+                for attr in attrs[:10]:  # Show first 10 attributes
+                    print(f"   - {attr}")
+                print("   ... (truncated)")
+
+                # Try to proceed with beat views anyway
+                print("🔍 [SCALING_DIAGNOSIS] Proceeding with beat view analysis...")
+            else:
+                print(
+                    f"✅ [SCALING_DIAGNOSIS] Found sequence with {len(sequence_data.beats)} beats"
+                )
+
+            # Analyze start position view
+            if hasattr(beat_frame, "_start_position_view"):
+                start_view = beat_frame._start_position_view
+                self.log_scaling_event(
+                    "START_POSITION",
+                    "INITIAL_STATE",
+                    start_view,
+                    "Analyzing initial state",
+                )
+
+                # Test hover and selection on start position
+                print("🔍 [SCALING_DIAGNOSIS] Testing start position scaling...")
+                start_view.set_highlighted(True)
+                self.log_scaling_event(
+                    "START_POSITION", "HOVER_APPLIED", start_view, "Hover state applied"
+                )
+
+                start_view.set_selected(True)
+                self.log_scaling_event(
+                    "START_POSITION",
+                    "SELECTION_APPLIED",
+                    start_view,
+                    "Selection state applied",
+                )
+
+                start_view.set_selected(False)
+                start_view.set_highlighted(False)
+                self.log_scaling_event(
+                    "START_POSITION",
+                    "RESET_TO_NORMAL",
+                    start_view,
+                    "Reset to normal state",
+                )
+
+            # Analyze beat views - try multiple approaches
+            beat_views = []
+            if hasattr(beat_frame, "_beat_views"):
+                beat_views = beat_frame._beat_views
+            elif hasattr(beat_frame, "beat_views"):
+                beat_views = beat_frame.beat_views
+            elif hasattr(beat_frame, "_views"):
+                beat_views = beat_frame._views
+
+            if beat_views:
+                print(f"✅ [SCALING_DIAGNOSIS] Found {len(beat_views)} beat views")
+
+                # Test only visible beat views
+                visible_beat_views = [bv for bv in beat_views if bv.isVisible()]
+                print(
+                    f"✅ [SCALING_DIAGNOSIS] Found {len(visible_beat_views)} visible beat views"
+                )
+
+                for i, beat_view in enumerate(
+                    visible_beat_views[:3]
+                ):  # Test first 3 visible beat views
+                    print(f"🔍 [SCALING_DIAGNOSIS] Testing beat view {i+1} scaling...")
+
+                    self.log_scaling_event(
+                        f"BEAT_{i+1}",
+                        "INITIAL_STATE",
+                        beat_view,
+                        "Analyzing initial state",
+                    )
+
+                    # Test hover
+                    beat_view.set_highlighted(True)
+                    self.log_scaling_event(
+                        f"BEAT_{i+1}", "HOVER_APPLIED", beat_view, "Hover state applied"
+                    )
+
+                    # Test selection
+                    beat_view.set_selected(True)
+                    self.log_scaling_event(
+                        f"BEAT_{i+1}",
+                        "SELECTION_APPLIED",
+                        beat_view,
+                        "Selection state applied",
+                    )
+
+                    # Test hover while selected
+                    beat_view.set_highlighted(True)
+                    self.log_scaling_event(
+                        f"BEAT_{i+1}",
+                        "HOVER_WHILE_SELECTED",
+                        beat_view,
+                        "Hover while selected",
+                    )
+
+                    # Reset
+                    beat_view.set_selected(False)
+                    beat_view.set_highlighted(False)
+                    self.log_scaling_event(
+                        f"BEAT_{i+1}",
+                        "RESET_TO_NORMAL",
+                        beat_view,
+                        "Reset to normal state",
+                    )
+            else:
+                print("❌ [SCALING_DIAGNOSIS] No beat views found")
+                print("🔍 [SCALING_DIAGNOSIS] Available beat frame attributes:")
+                attrs = [attr for attr in dir(beat_frame) if "view" in attr.lower()]
+                for attr in attrs:
+                    print(f"   - {attr}")
+
+            # Print scaling analysis summary
+            self._print_scaling_analysis_summary()
+
+        except Exception as e:
+            print(f"❌ [SCALING_DIAGNOSIS] Error during scaling diagnosis: {e}")
+            import traceback
+
+            traceback.print_exc()
+
+    def _print_scaling_analysis_summary(self):
+        """Print summary of scaling analysis"""
+        print("\n📊 [SCALING_DIAGNOSIS] SCALING ANALYSIS SUMMARY")
+        print("=" * 60)
+
+        # Group logs by view type
+        view_types = {}
+        for log_entry in self.scaling_log:
+            view_type = log_entry["view_type"]
+            if view_type not in view_types:
+                view_types[view_type] = []
+            view_types[view_type].append(log_entry)
+
+        # Analyze each view type
+        for view_type, logs in view_types.items():
+            print(f"\n🔍 {view_type} Analysis:")
+
+            # Check for scaling consistency
+            initial_transforms = [
+                log for log in logs if log["event"] == "INITIAL_STATE"
+            ]
+            hover_transforms = [log for log in logs if log["event"] == "HOVER_APPLIED"]
+            selection_transforms = [
+                log for log in logs if log["event"] == "SELECTION_APPLIED"
+            ]
+
+            if initial_transforms:
+                initial_scale = initial_transforms[0]["transform_info"][
+                    "effective_scale"
+                ]
+                print(f"   Initial Scale: {initial_scale}")
+
+            if hover_transforms:
+                hover_scale = hover_transforms[0]["transform_info"]["effective_scale"]
+                print(f"   Hover Scale: {hover_scale}")
+
+                if initial_transforms:
+                    expected_hover = (
+                        initial_scale * 0.98
+                        if isinstance(initial_scale, (int, float))
+                        else "N/A"
+                    )
+                    print(f"   Expected Hover Scale: {expected_hover}")
+
+            if selection_transforms:
+                selection_scale = selection_transforms[0]["transform_info"][
+                    "effective_scale"
+                ]
+                print(f"   Selection Scale: {selection_scale}")
+
+                if initial_transforms:
+                    expected_selection = (
+                        initial_scale * 0.98
+                        if isinstance(initial_scale, (int, float))
+                        else "N/A"
+                    )
+                    print(f"   Expected Selection Scale: {expected_selection}")
+
+        print("\n🎯 [SCALING_DIAGNOSIS] Key Issues to Look For:")
+        print("   • Initial scales should be consistent across similar views")
+        print("   • Hover/Selection scales should be initial_scale * 0.98")
+        print("   • Transforms should reset properly to initial state")
+        print("   • No stacking of scaling effects")
+        print("=" * 60)
+
+    def test_hover_effects_comprehensive(self) -> bool:
+        """Test hover effects across all TKA components to catch crashes"""
+        print("\n🔍 [HOVER_TEST] Starting comprehensive hover effects testing...")
+
+        try:
+            # Test 1: Option Picker Hover Effects
+            if not self._test_option_picker_hover_effects():
+                return False
+
+            # Test 2: Start Position Picker Hover Effects
+            if not self._test_start_position_picker_hover_effects():
+                return False
+
+            # Test 3: Beat Frame Hover Effects
+            if not self._test_beat_frame_hover_effects():
+                return False
+
+            print("✅ [HOVER_TEST] All hover effects testing completed successfully")
+            return True
+
+        except Exception as e:
+            print(f"❌ [HOVER_TEST] Critical error during hover testing: {e}")
+            import traceback
+
+            traceback.print_exc()
+            return False
+
+    def _test_option_picker_hover_effects(self) -> bool:
+        """Test hover effects on option picker frames"""
+        print("🔍 [HOVER_TEST] Testing option picker hover effects...")
+
+        try:
+            if not self.option_picker:
+                print("❌ [HOVER_TEST] No option picker available")
+                return False
+
+            # Get option picker frames
+            frames = self._get_option_picker_frames()
+            if not frames:
+                print("❌ [HOVER_TEST] No option picker frames found")
+                return False
+
+            print(f"✅ [HOVER_TEST] Found {len(frames)} option picker frames")
+
+            # Test hover on first few frames
+            for i, frame in enumerate(frames[:3]):
+                print(f"🔍 [HOVER_TEST] Testing hover on option picker frame {i+1}...")
+
+                try:
+                    # Test programmatic hover
+                    if hasattr(frame, "set_highlighted"):
+                        frame.set_highlighted(True)
+                        print(f"✅ [HOVER_TEST] Frame {i+1} hover applied successfully")
+
+                        # Reset hover
+                        frame.set_highlighted(False)
+                        print(f"✅ [HOVER_TEST] Frame {i+1} hover reset successfully")
+                    else:
+                        print(
+                            f"⚠️ [HOVER_TEST] Frame {i+1} missing set_highlighted method"
+                        )
+
+                    # Test selection overlay existence
+                    if hasattr(frame, "_selection_overlay"):
+                        if frame._selection_overlay:
+                            print(f"✅ [HOVER_TEST] Frame {i+1} has selection overlay")
+                        else:
+                            print(
+                                f"⚠️ [HOVER_TEST] Frame {i+1} selection overlay is None"
+                            )
+                    else:
+                        print(
+                            f"⚠️ [HOVER_TEST] Frame {i+1} missing _selection_overlay attribute"
+                        )
+
+                except Exception as e:
+                    print(f"❌ [HOVER_TEST] Error testing frame {i+1}: {e}")
+                    import traceback
+
+                    traceback.print_exc()
+                    return False
+
+            print("✅ [HOVER_TEST] Option picker hover effects test completed")
+            return True
+
+        except Exception as e:
+            print(f"❌ [HOVER_TEST] Error in option picker hover test: {e}")
+            import traceback
+
+            traceback.print_exc()
+            return False
+
+    def _test_start_position_picker_hover_effects(self) -> bool:
+        """Test hover effects on start position picker"""
+        print("🔍 [HOVER_TEST] Testing start position picker hover effects...")
+
+        try:
+            # For now, we'll skip start position picker testing since it's not in the current workflow
+            # but we can add it later when we have access to it
+            print(
+                "⚠️ [HOVER_TEST] Start position picker testing skipped (not in current workflow)"
+            )
+            return True
+
+        except Exception as e:
+            print(f"❌ [HOVER_TEST] Error in start position picker hover test: {e}")
+            import traceback
+
+            traceback.print_exc()
+            return False
+
+    def _test_beat_frame_hover_effects(self) -> bool:
+        """Test hover effects on beat frame views"""
+        print("🔍 [HOVER_TEST] Testing beat frame hover effects...")
+
+        try:
+            if not self.workbench:
+                print("❌ [HOVER_TEST] No workbench available")
+                return False
+
+            # Get beat frame
+            beat_frame = self._get_beat_frame()
+            if not beat_frame:
+                print("❌ [HOVER_TEST] No beat frame available")
+                return False
+
+            # Test start position view hover
+            if hasattr(beat_frame, "_start_position_view"):
+                start_view = beat_frame._start_position_view
+                if start_view and start_view.isVisible():
+                    print("🔍 [HOVER_TEST] Testing start position view hover...")
+                    try:
+                        start_view.set_highlighted(True)
+                        print(
+                            "✅ [HOVER_TEST] Start position hover applied successfully"
+                        )
+                        start_view.set_highlighted(False)
+                        print("✅ [HOVER_TEST] Start position hover reset successfully")
+                    except Exception as e:
+                        print(f"❌ [HOVER_TEST] Start position hover error: {e}")
+                        return False
+
+            # Test beat views hover
+            if hasattr(beat_frame, "_beat_views"):
+                beat_views = beat_frame._beat_views
+                visible_beat_views = [bv for bv in beat_views if bv.isVisible()]
+
+                print(
+                    f"✅ [HOVER_TEST] Found {len(visible_beat_views)} visible beat views"
+                )
+
+                for i, beat_view in enumerate(visible_beat_views[:3]):
+                    print(f"🔍 [HOVER_TEST] Testing beat view {i+1} hover...")
+                    try:
+                        beat_view.set_highlighted(True)
+                        print(
+                            f"✅ [HOVER_TEST] Beat view {i+1} hover applied successfully"
+                        )
+                        beat_view.set_highlighted(False)
+                        print(
+                            f"✅ [HOVER_TEST] Beat view {i+1} hover reset successfully"
+                        )
+                    except Exception as e:
+                        print(f"❌ [HOVER_TEST] Beat view {i+1} hover error: {e}")
+                        return False
+
+            print("✅ [HOVER_TEST] Beat frame hover effects test completed")
+            return True
+
+        except Exception as e:
+            print(f"❌ [HOVER_TEST] Error in beat frame hover test: {e}")
+            import traceback
+
+            traceback.print_exc()
+            return False
+
+    def _get_option_picker_frames(self):
+        """Get all clickable pictograph frames from option picker"""
+        try:
+            if not self.option_picker:
+                return []
+
+            # Get the widget
+            if hasattr(self.option_picker, "widget") and self.option_picker.widget:
+                container = self.option_picker.widget
+            else:
+                container = self.option_picker
+
+            # Find all ClickablePictographFrame widgets
+            from presentation.components.option_picker.components.frames.clickable_pictograph_frame import (
+                ClickablePictographFrame,
+            )
+
+            frames = []
+            for child in container.findChildren(ClickablePictographFrame):
+                if child.isVisible():
+                    frames.append(child)
+
+            return frames
+
+        except Exception as e:
+            print(f"❌ [HOVER_TEST] Error getting option picker frames: {e}")
+            return []
+
+    def _get_beat_frame(self):
+        """Get the beat frame from workbench"""
+        try:
+            if not self.workbench:
+                return None
+
+            # Navigate to beat frame
+            beat_frame = None
+            if hasattr(self.workbench, "_beat_frame_section"):
+                beat_frame_section = self.workbench._beat_frame_section
+                if hasattr(beat_frame_section, "_beat_frame"):
+                    beat_frame = beat_frame_section._beat_frame
+
+            return beat_frame
+
+        except Exception as e:
+            print(f"❌ [HOVER_TEST] Error getting beat frame: {e}")
+            return None
 
     def setup_production_application(self):
         """Setup full production-like TKA application."""
@@ -546,6 +1162,18 @@ class ProductionLikeTKATest:
             if not self.validate_beat_frame_display(3):
                 print("❌ [PRODUCTION] Final beat frame validation failed")
                 return False
+
+            # Step 7: Test hover effects across all components
+            print("🔍 [PRODUCTION] Testing hover effects across all components...")
+            if not self.test_hover_effects_comprehensive():
+                print("❌ [PRODUCTION] Hover effects testing failed")
+                return False
+
+            # Step 8: Diagnose scaling system with real pictograph data
+            print(
+                "🔍 [PRODUCTION] Running scaling diagnosis with real pictograph data..."
+            )
+            self.diagnose_beat_frame_scaling()
 
             print("✅ [PRODUCTION] All validations passed!")
             return True

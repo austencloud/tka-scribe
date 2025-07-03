@@ -7,6 +7,9 @@ from domain.models.core_models import BeatData
 from presentation.components.pictograph.pictograph_component import (
     PictographComponent,
 )
+from presentation.components.workbench.sequence_beat_frame.selection_overlay import (
+    SelectionOverlay,
+)
 
 
 class ClickablePictographFrame(QFrame):
@@ -28,6 +31,10 @@ class ClickablePictographFrame(QFrame):
         self.container_widget: Optional[QWidget] = None
         self._option_picker_width: int = 0
 
+        # Initialize selection overlay
+        self._selection_overlay: Optional[SelectionOverlay] = None
+        self._pictograph_component: Optional[PictographComponent] = None
+
         square_size: int = 160
         self.setFixedSize(square_size, square_size)
 
@@ -36,21 +43,27 @@ class ClickablePictographFrame(QFrame):
         layout.setSpacing(0)
 
         try:
-            self.pictograph_component: Optional[PictographComponent] = (
-                PictographComponent(parent=None)
-            )
-            self.pictograph_component.setSizePolicy(
+            self._pictograph_component = PictographComponent(parent=None)
+            self.pictograph_component = (
+                self._pictograph_component
+            )  # Keep legacy reference
+            self._pictograph_component.setSizePolicy(
                 QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding
             )
 
             self._configure_option_picker_context(beat_data)
 
-            self.pictograph_component.update_from_beat(beat_data)
-            layout.addWidget(self.pictograph_component)
+            self._pictograph_component.update_from_beat(beat_data)
+            layout.addWidget(self._pictograph_component)
+
+            # Initialize selection overlay after pictograph component is set up
+            self._selection_overlay = SelectionOverlay(self)
+
         except RuntimeError:
             fallback_label = QLabel(f"Beat {beat_data.letter}")
             fallback_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
             layout.addWidget(fallback_label)
+            self._pictograph_component = None
             self.pictograph_component = None
 
         self.setStyleSheet(
@@ -130,9 +143,15 @@ class ClickablePictographFrame(QFrame):
             self.pictograph_component.update_from_beat(beat_data)
 
     def cleanup(self) -> None:
+        if self._selection_overlay:
+            self._selection_overlay.hide_all()
+            self._selection_overlay = None
         if self.pictograph_component:
             self.pictograph_component.cleanup()
             self.pictograph_component = None
+        if self._pictograph_component:
+            self._pictograph_component.cleanup()
+            self._pictograph_component = None
 
     def closeEvent(self, event: QCloseEvent) -> None:
         self.cleanup()
@@ -144,10 +163,24 @@ class ClickablePictographFrame(QFrame):
             self.beat_data_clicked.emit(self.beat_data)
         super().mousePressEvent(event)
 
+    def set_highlighted(self, highlighted: bool) -> None:
+        """Set hover state - no visual effects in legacy style"""
+        pass  # No hover effects in simple legacy mode
+
+    def set_selected(self, selected: bool) -> None:
+        """Set selection state - simple legacy style"""
+        if self._selection_overlay:
+            if selected:
+                self._selection_overlay.show_selection()
+            else:
+                self._selection_overlay.hide_selection()
+
     def enterEvent(self, event: QEnterEvent) -> None:
         self.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.set_highlighted(True)
         super().enterEvent(event)
 
     def leaveEvent(self, event: QEvent) -> None:
         self.setCursor(Qt.CursorShape.ArrowCursor)
+        self.set_highlighted(False)
         super().leaveEvent(event)

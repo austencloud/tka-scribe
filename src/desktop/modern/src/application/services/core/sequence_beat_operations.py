@@ -47,25 +47,20 @@ class SequenceBeatOperations(QObject):
 
     def add_beat_to_sequence(self, beat_data: BeatData):
         """Add a beat to the current sequence"""
-        print(
-            f"🔄 [BEAT_OPERATIONS] add_beat_to_sequence called with: {beat_data.letter}"
-        )
+        # Removed repetitive debug logs
 
         current_sequence = self._get_current_sequence()
         if current_sequence is None:
             current_sequence = SequenceData.empty()
-            print(f"🔄 [BEAT_OPERATIONS] Using empty sequence")
+            # Removed repetitive debug logs
         else:
-            print(
-                f"🔄 [BEAT_OPERATIONS] Current sequence has {len(current_sequence.beats)} beats"
-            )
+            # Removed repetitive debug logs
+            pass
 
         try:
             # Add beat to sequence
             new_sequence = current_sequence.add_beat(beat_data)
-            print(
-                f"🔄 [BEAT_OPERATIONS] New sequence has {len(new_sequence.beats)} beats"
-            )
+            # Removed repetitive debug logs
 
             # Update workbench
             if self.workbench_setter:
@@ -73,7 +68,7 @@ class SequenceBeatOperations(QObject):
                 print(f"✅ [BEAT_OPERATIONS] Updated workbench")
 
             # Save to persistence
-            print(f"🔄 [BEAT_OPERATIONS] Saving to persistence...")
+            # Removed repetitive debug logs
             self._save_sequence_to_persistence(new_sequence)
 
             # Emit signal
@@ -254,17 +249,11 @@ class SequenceBeatOperations(QObject):
 
             # Convert beats to legacy format (these will be beat 1, 2, 3, etc.)
             legacy_beats = []
-            print(
-                f"🔍 [PERSISTENCE] Converting {len(sequence.beats)} beats to legacy format"
-            )
+            # Removed repetitive log statements
             for i, beat in enumerate(sequence.beats):
-                print(f"🔍 [PERSISTENCE] Converting beat {i}: {beat.letter}")
                 try:
                     beat_dict = self.data_converter.convert_beat_data_to_legacy_format(
                         beat, i + 1
-                    )
-                    print(
-                        f"🔍 [PERSISTENCE] Converted beat {i} successfully: {beat_dict.get('letter', 'unknown')}"
                     )
                     legacy_beats.append(beat_dict)
                 except Exception as e:
@@ -294,13 +283,7 @@ class SequenceBeatOperations(QObject):
             # Add beats
             complete_sequence.extend(legacy_beats)
 
-            print(f"🔍 [PERSISTENCE] Final sequence structure:")
-            print(f"🔍 [PERSISTENCE] - Metadata: {metadata}")
-            print(
-                f"🔍 [PERSISTENCE] - Start position: {existing_start_position is not None}"
-            )
-            print(f"🔍 [PERSISTENCE] - Legacy beats: {len(legacy_beats)}")
-            print(f"🔍 [PERSISTENCE] - Total items: {len(complete_sequence)}")
+            # Removed repetitive log statements
 
             # Save to persistence
             self.persistence_service.save_current_sequence(complete_sequence)

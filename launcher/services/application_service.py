@@ -169,9 +169,7 @@ class ApplicationService(IApplicationService):
             if default_app.id not in state.applications:
                 self._state_service.add_application(default_app)
 
-        logger.info(
-            f"Initialized {len(self._default_applications)} default applications"
-        )
+
 
     def _create_default_applications(self) -> List[ApplicationData]:
         """Create the default set of applications."""

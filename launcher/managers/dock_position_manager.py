@@ -81,7 +81,6 @@ class DockPositionManager:
         dock_rect = self.calculate_dock_position(screen_geometry, dock_widget.height())
 
         dock_widget.setGeometry(dock_rect)
-        logger.info(f"📍 Positioned dock at {dock_rect}")
         return True
 
     def calculate_dock_position(

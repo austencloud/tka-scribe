@@ -308,37 +308,41 @@ class VisibilityTab(QWidget):
             # Get current visibility states
             motion_states = {}
             element_states = {}
-            
+
             if self.motion_section:
                 motion_states = self.motion_section.get_motion_states()
-                
+
             if self.element_section:
                 element_states = self.element_section.get_element_states()
-            
+
             # Apply motion visibility changes
             for color, visible in motion_states.items():
                 result = self.global_visibility_service.apply_visibility_change(
                     element_type="motion",
                     element_name=f"{color}_motion",
-                    visible=visible
+                    visible=visible,
                 )
-                logger.debug(f"Applied motion visibility {color}={visible}: {result['success_count']} updated")
-            
-            # Apply element visibility changes  
+                logger.debug(
+                    f"Applied motion visibility {color}={visible}: {result['success_count']} updated"
+                )
+
+            # Apply element visibility changes
             for element_name, visible in element_states.items():
                 # Determine appropriate element type
                 if element_name == "Non-radial_points":
                     element_type = "grid"
                 else:
                     element_type = "glyph"
-                    
+
                 result = self.global_visibility_service.apply_visibility_change(
                     element_type=element_type,
                     element_name=element_name,
-                    visible=visible
+                    visible=visible,
                 )
-                logger.debug(f"Applied element visibility {element_name}={visible}: {result['success_count']} updated")
-            
+                logger.debug(
+                    f"Applied element visibility {element_name}={visible}: {result['success_count']} updated"
+                )
+
             logger.info("Successfully applied global visibility updates")
 
         except Exception as e:

@@ -41,13 +41,11 @@ class StartPositionHandler(QObject):
 
     def handle_start_position_selected(self, position_key: str):
         """Handle start position selection from the picker"""
-        print(
-            f"🔄 [START_POS_HANDLER] handle_start_position_selected called with: {position_key}"
-        )
+        # Removed repetitive debug logs
         print(f"✅ Start position handler: Position selected: {position_key}")
 
         # Create start position data (separate from sequence like Legacy)
-        print(f"🔄 [START_POS_HANDLER] Creating start position data...")
+        # Removed repetitive debug logs
         start_position_data = self._create_start_position_data(position_key)
         print(
             f"✅ [START_POS_HANDLER] Created start position data: {start_position_data.letter if start_position_data else 'None'}"
@@ -55,19 +53,19 @@ class StartPositionHandler(QObject):
 
         # Set start position in workbench (this does NOT create a sequence)
         if self.workbench_setter:
-            print(f"🔄 [START_POS_HANDLER] Setting in workbench...")
+            # Removed repetitive debug logs
             self.workbench_setter(start_position_data)
             print(f"✅ [START_POS_HANDLER] Set in workbench")
         else:
             print(f"⚠️ [START_POS_HANDLER] No workbench setter available")
 
         # Emit signal with the created data
-        print(f"🔄 [START_POS_HANDLER] Emitting start_position_created signal...")
+        # Removed repetitive debug logs
         self.start_position_created.emit(position_key, start_position_data)
         print(f"✅ [START_POS_HANDLER] start_position_created signal emitted")
 
         # Request transition to option picker
-        print(f"🔄 [START_POS_HANDLER] Emitting transition_requested signal...")
+        # Removed repetitive debug logs
         self.transition_requested.emit()
         print(f"✅ [START_POS_HANDLER] transition_requested signal emitted")
 

@@ -173,7 +173,7 @@ class SequenceBeatFrame(QScrollArea):
     def _setup_start_position(self):
         """Setup start position view"""
         self._start_position_view = StartPositionView(parent=self._container_widget)
-        self._start_position_view.position_clicked.connect(
+        self._start_position_view.start_pos_beat_clicked.connect(
             self._on_start_position_clicked
         )
 
@@ -233,19 +233,16 @@ class SequenceBeatFrame(QScrollArea):
     def set_sequence(self, sequence: Optional[SequenceData]):
         """Set the current sequence and update display"""
         if sequence:
-            print(
-                f"🔍 [SEQUENCE_BEAT_FRAME] set_sequence() called with: {sequence.name} (ID: {sequence.id})"
-            )
-            print(f"🔍 [SEQUENCE_BEAT_FRAME] Sequence has {len(sequence.beats)} beats")
-            for i, beat in enumerate(sequence.beats):
-                print(f"   Beat {i}: {beat.letter} (duration: {beat.duration})")
+            # Removed repetitive debug logs
+            pass
         else:
-            print("🔍 [SEQUENCE_BEAT_FRAME] set_sequence() called with None")
+            # Removed repetitive debug logs
+            pass
 
         self._current_sequence = sequence
-        print("🔍 [SEQUENCE_BEAT_FRAME] Updating layout...")
+        # Removed repetitive debug logs
         self._update_layout()
-        print("🔍 [SEQUENCE_BEAT_FRAME] Updating display...")
+        # Removed repetitive debug logs
         self._update_display()
         print("✅ [SEQUENCE_BEAT_FRAME] set_sequence() completed")
 
@@ -373,21 +370,18 @@ class SequenceBeatFrame(QScrollArea):
                 beat_view.set_beat_number_visible(False)
             return
 
-        print(
-            f"🔍 [SEQUENCE_BEAT_FRAME] Updating display for {len(self._current_sequence.beats)} beats"
-        )
-        print(f"🔍 [SEQUENCE_BEAT_FRAME] Available beat views: {len(self._beat_views)}")
+        # Removed repetitive debug logs
 
         # Update beat views with sequence data
         for i, beat_data in enumerate(self._current_sequence.beats):
             if i < len(self._beat_views):
                 beat_view = self._beat_views[i]
-                print(f"🔍 [SEQUENCE_BEAT_FRAME] Setting beat {i}: {beat_data.letter}")
+                # Removed repetitive debug logs
                 beat_view.set_beat_data(beat_data)
 
                 # Enable beat number overlay for sequence beats (like Legacy)
                 beat_view.set_beat_number_visible(True)
-                print(f"✅ [SEQUENCE_BEAT_FRAME] Beat {i} updated and made visible")
+                # Removed repetitive debug logs
             else:
                 print(f"⚠️ [SEQUENCE_BEAT_FRAME] No beat view available for beat {i}")
 
@@ -429,6 +423,11 @@ class SequenceBeatFrame(QScrollArea):
         """Handle start position click events"""
         # Clear beat selection when start position is clicked
         self.clear_selection()
+
+        # Set start position as selected (toggle behavior)
+        if self._start_position_view:
+            current_selection = self._start_position_view._is_selected
+            self._start_position_view.set_selected(not current_selection)
 
         # Emit special signal for start position selection (index -1)
         self.beat_selected.emit(-1)  # Responsive design

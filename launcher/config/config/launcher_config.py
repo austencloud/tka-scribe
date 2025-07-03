@@ -92,7 +92,7 @@ class LauncherConfig:
         self.config_file = config_file or self._get_default_config_path()
         self.config = self._load_configuration()
 
-        logger.info(f"📋 Configuration loaded from: {self.config_file}")
+        # Configuration file path log removed to reduce startup noise
 
     def _get_default_config_path(self) -> Path:
         """Get the default configuration file path."""
@@ -109,7 +109,7 @@ class LauncherConfig:
 
                 # Validate and migrate if needed
                 config = self._validate_and_migrate(data)
-                logger.info("✅ Configuration loaded successfully")
+                # Configuration loaded - log message removed to reduce startup noise
                 return config
             else:
                 logger.info("📋 No config file found, using defaults")
@@ -179,7 +179,7 @@ class LauncherConfig:
             with open(self.config_file, "w", encoding="utf-8") as f:
                 json.dump(config_dict, f, indent=2, ensure_ascii=False)
 
-            logger.info("💾 Configuration saved successfully")
+            # Configuration saved - log removed to reduce startup noise
 
         except Exception as e:
             logger.error(f"❌ Failed to save configuration: {e}")

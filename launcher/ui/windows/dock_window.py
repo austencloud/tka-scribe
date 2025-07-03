@@ -92,7 +92,7 @@ class TKADockWindow(QWidget):
         # Setup window
         self._initialize_window()
 
-        logger.info("✅ TKA Dock Window initialized")
+        # TKA Dock Window initialized - log removed to reduce startup noise
         # Ensure always-on-top after initial show
         self._install_always_on_top()
 
@@ -157,7 +157,8 @@ class TKADockWindow(QWidget):
 
     def _on_applications_loaded(self, application_count: int):
         """Handle applications loaded signal."""
-        logger.info(f"📱 Applications loaded: {application_count}")
+        # Remove the "Applications loaded" log message
+        pass
 
     def _on_launch_requested(self, app_id: str):
         """Handle application launch request."""

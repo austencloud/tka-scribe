@@ -7,24 +7,16 @@ with modern architecture patterns and Modern pictograph integration.
 
 from typing import Optional
 
+from PyQt6.QtCore import pyqtSignal
+from PyQt6.QtGui import QColor, QPainter, QPen
+
 from domain.models.core_models import BeatData
-from presentation.components.pictograph.pictograph_component import (
-    PictographComponent,
-)
-from presentation.components.start_position_picker.start_text_overlay import (
-    StartTextOverlay,
-)
-from PyQt6.QtCore import QSize, Qt, pyqtSignal
-from PyQt6.QtGui import QColor, QMouseEvent, QPainter, QPen
-from PyQt6.QtWidgets import QFrame, QVBoxLayout, QWidget
-
-from .beat_number_overlay import (
-    BeatNumberOverlay,
-    add_beat_number_to_view,
-)
+from .pictograph_view_base import PictographViewBase
+from .start_text_overlay import StartTextOverlay
+from .beat_number_overlay import BeatNumberOverlay, add_beat_number_to_view
 
 
-class BeatView(QFrame):
+class BeatView(PictographViewBase):
     """
     Modern beat view widget with Modern pictograph integration.
 
@@ -35,23 +27,14 @@ class BeatView(QFrame):
     - Responsive design
     """
 
-    # Signals
+    # Additional signals specific to beat view
     beat_clicked = pyqtSignal()
-    beat_double_clicked = pyqtSignal()
     beat_modified = pyqtSignal(object)  # BeatData object
     beat_context_menu = pyqtSignal()
 
-    def __init__(self, beat_number: int, parent: Optional[QWidget] = None):
-        super().__init__(parent)
-
-        # Properties
+    def __init__(self, beat_number: int, parent=None):
+        # Beat-specific properties
         self._beat_number = beat_number
-        self._beat_data: Optional[BeatData] = None
-        self._is_selected = False
-        self._is_highlighted = False
-
-        # UI components (will be initialized in _setup_ui)
-        self._pictograph_component: Optional[PictographComponent] = None
 
         # START text overlay for preserved start position beat
         self._start_text_overlay: Optional[StartTextOverlay] = None
@@ -61,69 +44,22 @@ class BeatView(QFrame):
         self._beat_number_overlay: Optional[BeatNumberOverlay] = None
         self._show_beat_number = False
 
-        self._setup_ui()
-        self._setup_styling()
+        super().__init__(parent)
 
-    def _setup_ui(self):
-        """Setup the UI components to match legacy layout exactly"""
-        self.setFixedSize(120, 120)
-        self.setFrameStyle(QFrame.Shape.Box)
-
-        # Use zero margins and spacing like legacy
-        layout = QVBoxLayout(self)
-        layout.setContentsMargins(0, 0, 0, 0)
-        layout.setSpacing(
-            0
-        )  # Remove beat number label - legacy doesn't have labels above pictographs
-        # Beat numbers are rendered directly on the pictograph scene
-
-        # Pictograph component fills the entire container like legacy
-        self._pictograph_component = PictographComponent(parent=None)
-        if self._pictograph_component:
-            self._pictograph_component.setParent(self)
-            # CRITICAL FIX: Allow responsive scaling like StartPositionView
-            # Remove minimum size constraint to allow responsive scaling
-            self._pictograph_component.setMinimumSize(1, 1)
-            # CRITICAL FIX: Set proper scaling context for beat frame
-            from application.services.ui.context_aware_scaling_service import (
-                ScalingContext,
-            )
-
-            self._pictograph_component.set_scaling_context(ScalingContext.BEAT_VIEW)
-
-            # CRITICAL FIX: Disable borders in beat frame context (like Legacy)
-            # Beat frames should be borderless, unlike option pickers which show colored borders
-            self._pictograph_component.disable_borders()
-        layout.addWidget(self._pictograph_component)
-
-        # Enable mouse tracking for hover effects
-        self.setMouseTracking(True)
-
-    def _setup_styling(self):
-        """Apply borderless styling like Legacy beat frame"""
-        self.setStyleSheet(
-            """
-            QFrame {
-                background: transparent;
-                border: none;
-            }
-            QFrame:hover {
-                background: rgba(255, 255, 255, 0.05);
-            }
-            QLabel {
-                color: rgba(255, 255, 255, 0.9);
-                background: transparent;
-                border: none;
-            }
-        """
+    def _configure_pictograph_component(self):
+        """Configure the pictograph component for beat view context"""
+        # CRITICAL FIX: Set proper scaling context for beat frame
+        from application.services.ui.context_aware_scaling_service import (
+            ScalingContext,
         )
 
-    # Public API
-    def set_beat_data(self, beat_data: BeatData):
-        """Set the beat data and update display"""
-        self._beat_data = beat_data
-        self._update_display()
+        self._pictograph_component.set_scaling_context(ScalingContext.BEAT_VIEW)
 
+        # CRITICAL FIX: Disable borders in beat frame context (like Legacy)
+        # Beat frames should be borderless, unlike option pickers which show colored borders
+        self._pictograph_component.disable_borders()
+
+    # Public API
     def get_beat_data(self) -> Optional[BeatData]:
         """Get the current beat data"""
         return self._beat_data
@@ -132,32 +68,13 @@ class BeatView(QFrame):
         """Get the beat number"""
         return self._beat_number
 
-    def set_selected(self, selected: bool):
-        """Set selection state and update cursor accordingly"""
-        if self._is_selected != selected:
-            self._is_selected = selected
-            self._update_selection_style()
-            # Update cursor based on new selection state
-            if selected:
-                self.setCursor(Qt.CursorShape.ArrowCursor)  # Selected beats don't show pointer
-            elif self._beat_data:  # Non-selected beats with data show pointer when hovered
-                # Only update cursor if mouse is currently over this widget
-                if self.underMouse():
-                    self.setCursor(Qt.CursorShape.PointingHandCursor)
+    def _update_text_overlays(self):
+        """Update text overlays - shows start text or beat number overlay"""
+        # Update START text overlay (mutual exclusivity with beat content)
+        self._update_start_text_overlay()
 
-    def is_selected(self) -> bool:
-        """Check if beat is selected"""
-        return self._is_selected
-
-    def set_highlighted(self, highlighted: bool):
-        """Set highlight state (for hover, etc.)"""
-        if self._is_highlighted != highlighted:
-            self._is_highlighted = highlighted
-            self._update_highlight_style()
-
-    def is_highlighted(self) -> bool:
-        """Check if beat is highlighted"""
-        return self._is_highlighted
+        # Update beat number overlay
+        self._update_beat_number_overlay()
 
     def set_start_text_visible(self, visible: bool):
         """Set whether START text overlay should be visible (for preserved start position beat)"""
@@ -214,45 +131,6 @@ class BeatView(QFrame):
 
         # Update START text overlay if needed
         self._update_start_text_overlay()
-
-    def _update_selection_style(self):
-        """Update styling based on selection state"""
-        if self._is_selected:
-            self.setStyleSheet(
-                """
-                QFrame {
-                    background: rgba(74, 144, 226, 0.2);
-                    border: none;
-                }
-                QLabel {
-                    color: white;
-                    background: transparent;
-                    border: none;
-                }
-            """
-            )
-        else:
-            self._setup_styling()  # Reset to default
-
-    def _update_highlight_style(self):
-        """Update styling based on highlight state"""
-        if self._is_highlighted and not self._is_selected:
-            self.setStyleSheet(
-                """
-                QFrame {
-                    background: rgba(255, 255, 255, 0.15);
-                    border: 2px solid rgba(74, 144, 226, 0.6);
-                    border-radius: 8px;
-                }
-                QLabel {
-                    color: white;
-                    background: transparent;
-                    border: none;
-                }
-            """
-            )
-        elif not self._is_selected:
-            self._setup_styling()  # Reset to default
 
     def _update_start_text_overlay(self):
         """Update START text overlay based on current state"""
@@ -321,36 +199,18 @@ class BeatView(QFrame):
         finally:
             self._beat_number_overlay = None
 
-    # Event handlers
-    def mousePressEvent(self, event: QMouseEvent):
+    # Override mouse press to emit specific signals
+    def mousePressEvent(self, event):
         """Handle mouse press events"""
+        from PyQt6.QtCore import Qt
+
         if event.button() == Qt.MouseButton.LeftButton:
             self.beat_clicked.emit()
         elif event.button() == Qt.MouseButton.RightButton:
             self.beat_context_menu.emit()
+
+        # Also emit the base class signal
         super().mousePressEvent(event)
-
-    def mouseDoubleClickEvent(self, event: QMouseEvent):
-        """Handle mouse double click events"""
-        if event.button() == Qt.MouseButton.LeftButton:
-            self.beat_double_clicked.emit()
-        super().mouseDoubleClickEvent(event)
-
-    def enterEvent(self, event):
-        """Handle mouse enter events - only show pointer cursor for selectable beats"""
-        # Only show pointer cursor if beat is not currently selected (like legacy)
-        if not self._is_selected and self._beat_data:
-            self.setCursor(Qt.CursorShape.PointingHandCursor)
-        else:
-            self.setCursor(Qt.CursorShape.ArrowCursor)
-        self.set_highlighted(True)
-        super().enterEvent(event)
-
-    def leaveEvent(self, event):
-        """Handle mouse leave events"""
-        self.setCursor(Qt.CursorShape.ArrowCursor)
-        self.set_highlighted(False)
-        super().leaveEvent(event)
 
     def paintEvent(self, event):
         """Custom paint event for additional visual effects"""
@@ -370,21 +230,6 @@ class BeatView(QFrame):
             x = self.width() - indicator_size - 4
             y = 4
             painter.drawEllipse(x, y, indicator_size, indicator_size)
-
-    def sizeHint(self) -> QSize:
-        """Provide size hint for layout management"""
-        return QSize(120, 120)
-
-    def minimumSizeHint(self) -> QSize:
-        """Provide minimum size hint"""
-        return QSize(100, 100)
-
-    def resizeEvent(self, event):
-        """Handle resize events and update overlay scaling"""
-        super().resizeEvent(event)
-
-        # Update overlay scaling when the widget resizes
-        self._update_overlay_scaling()
 
     def _update_overlay_scaling(self):
         """Update scaling for all text overlays"""
@@ -410,26 +255,12 @@ class BeatView(QFrame):
             accessible_desc = f"Empty beat slot {self._beat_number}"
         self.setAccessibleDescription(accessible_desc)
 
-    # Keyboard support
-    def keyPressEvent(self, event):
-        """Handle keyboard events"""
-        if event.key() == Qt.Key.Key_Return or event.key() == Qt.Key.Key_Enter:
-            self.beat_clicked.emit()
-        elif event.key() == Qt.Key.Key_Delete:
-            # Emit signal to delete this beat
-            if self._beat_data:
-                self.beat_modified.emit(BeatData.empty())
-        super().keyPressEvent(event)
-
     # Cleanup and lifecycle management
     def cleanup(self):
         """Cleanup resources when the view is being destroyed"""
         self._cleanup_start_text_overlay()
         self._cleanup_beat_number_overlay()
-
-        if self._pictograph_component:
-            self._pictograph_component.cleanup()
-            self._pictograph_component = None
+        super().cleanup()
 
     def closeEvent(self, event):
         """Handle close event to cleanup resources"""
@@ -440,6 +271,5 @@ class BeatView(QFrame):
         """Destructor to ensure cleanup"""
         try:
             self.cleanup()
-        except:
-            # Ignore errors during destruction
+        except Exception:
             pass

@@ -214,7 +214,7 @@ class ConstructTabLayoutManager:
         print("✅ Connected beat frame to graph editor")
 
     def _on_beat_selected_for_graph_editor(self, beat_index: int):
-        print(f"🔍 DEBUG: Beat selection received - index: {beat_index}")
+        # Removed repetitive debug log
         if not self.graph_editor or not self.workbench:
             print(
                 f"⚠️ Missing components - graph_editor: {bool(self.graph_editor)}, workbench: {bool(self.workbench)}"
@@ -224,7 +224,7 @@ class ConstructTabLayoutManager:
         if not current_sequence:
             print(f"⚠️ No current sequence available")
             return
-        print(f"🔍 DEBUG: Current sequence has {len(current_sequence.beats)} beats")
+        # Removed repetitive debug log
         if beat_index == -1:
             start_position_data = getattr(self.workbench, "_start_position_data", None)
             if start_position_data:
@@ -235,9 +235,7 @@ class ConstructTabLayoutManager:
             return
         if 0 <= beat_index < len(current_sequence.beats):
             beat_data = current_sequence.beats[beat_index]
-            print(
-                f"🔍 DEBUG: Beat data - letter: {beat_data.letter}, beat_number: {beat_data.beat_number}"
-            )
+            # Removed repetitive debug log
             self.graph_editor.set_selected_beat_data(beat_index, beat_data)
             print(f"✅ Graph editor updated with beat {beat_index + 1}")
         else:

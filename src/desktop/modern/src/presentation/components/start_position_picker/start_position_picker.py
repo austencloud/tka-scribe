@@ -13,6 +13,9 @@ from application.services.data.pictograph_dataset_service import (
     PictographDatasetService,
 )
 from presentation.components.pictograph.pictograph_component import PictographComponent
+from presentation.components.workbench.sequence_beat_frame.selection_overlay import (
+    SelectionOverlay,
+)
 
 
 class StartPositionOption(QWidget):
@@ -23,6 +26,11 @@ class StartPositionOption(QWidget):
         self.position_key = position_key
         self.grid_mode = grid_mode
         self.dataset_service = PictographDatasetService()
+
+        # Initialize selection overlay components
+        self._pictograph_component = None
+        self._selection_overlay = None
+
         self._setup_ui()
 
     def _setup_ui(self):
@@ -30,18 +38,17 @@ class StartPositionOption(QWidget):
         layout.setContentsMargins(5, 5, 5, 5)
         layout.setSpacing(5)
 
-        self.pictograph_component = PictographComponent()
-        self.pictograph_component.setFixedSize(200, 200)
-        self.pictograph_component.setStyleSheet(
+        self._pictograph_component = PictographComponent()
+        self.pictograph_component = self._pictograph_component  # Keep legacy reference
+        self._pictograph_component.setFixedSize(200, 200)
+
+        # Remove CSS hover effects - we'll use selection overlay instead
+        self._pictograph_component.setStyleSheet(
             """
             QWidget {
                 border: 2px solid rgba(255,255,255,0.25);
                 border-radius: 18px;
                 background: rgba(255,255,255,0.18);
-            }
-            QWidget:hover {
-                border-color: #007bff;
-                background: rgba(255,255,255,0.28);
             }
             """
         )
@@ -50,8 +57,12 @@ class StartPositionOption(QWidget):
             self.position_key, self.grid_mode
         )
         if beat_data:
-            self.pictograph_component.update_from_beat(beat_data)
-        layout.addWidget(self.pictograph_component)
+            self._pictograph_component.update_from_beat(beat_data)
+        layout.addWidget(self._pictograph_component)
+
+        # Initialize selection overlay after pictograph component is set up
+        self._selection_overlay = SelectionOverlay(self)
+
         self.setFixedSize(220, 220)
         self.setCursor(Qt.CursorShape.PointingHandCursor)
 
@@ -60,12 +71,30 @@ class StartPositionOption(QWidget):
             self.position_selected.emit(self.position_key)
         super().mousePressEvent(event)
 
+    def set_highlighted(self, highlighted: bool) -> None:
+        """Set hover state with scaling compensation"""
+        if self._selection_overlay:
+            if highlighted:
+                self._selection_overlay.show_hover()
+            else:
+                self._selection_overlay.hide_hover_only()
+
+    def set_selected(self, selected: bool) -> None:
+        """Set selection state with scaling compensation"""
+        if self._selection_overlay:
+            if selected:
+                self._selection_overlay.show_selection()
+            else:
+                self._selection_overlay.hide_all()
+
     def enterEvent(self, event):
         self.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.set_highlighted(True)
         super().enterEvent(event)
 
     def leaveEvent(self, event):
         self.setCursor(Qt.CursorShape.ArrowCursor)
+        self.set_highlighted(False)
         super().leaveEvent(event)
 
 
@@ -185,11 +214,9 @@ class StartPositionPicker(QWidget):
 
     def _handle_position_selection(self, position_key: str):
         """Handle position selection and emit signal."""
-        print(
-            f"🔄 [START_POS_PICKER] _handle_position_selection called with: {position_key}"
-        )
+        # Removed repetitive debug logs
         print(f"🎯 Start position selected: {position_key}")
-        print(f"🔄 [START_POS_PICKER] Emitting start_position_selected signal...")
+        # Removed repetitive debug logs
         self.start_position_selected.emit(position_key)
         print(f"✅ [START_POS_PICKER] start_position_selected signal emitted")
 

@@ -2,127 +2,61 @@
 Beat Number Overlay Component for Modern Beat Views
 
 This component adds beat number text overlays directly to beat view widgets,
-using the widget overlay approach that provides reliable visibility and
+using the unified text overlay approach that provides reliable visibility and
 natural scene integration without visual styling artifacts.
 
-Based on successful testing, this approach provides better compatibility
-with Modern's architecture than scene-based text overlays.
+Based on successful testing and unified with StartTextOverlay approach.
 """
 
 from typing import Optional
 
-from PyQt6.QtCore import Qt
-from PyQt6.QtGui import QFont
-from PyQt6.QtWidgets import QLabel, QWidget
+from PyQt6.QtWidgets import QWidget
+
+from .text_overlay_base import (
+    TextOverlayBase,
+    add_text_overlay_to_view,
+    remove_text_overlay_from_view,
+)
 
 
-class BeatNumberOverlay(QLabel):
+class BeatNumberOverlay(TextOverlayBase):
     """
     Beat number overlay widget that displays beat numbers on beat views.
 
-    Uses transparent widget overlay approach for reliable visibility
+    Uses unified text overlay approach for reliable visibility
     and natural integration with the beat frame appearance.
     """
 
     def __init__(self, beat_number: int, parent_widget: Optional[QWidget] = None):
+        # Set beat number specific base size
+        self.beat_number = beat_number
+
+        # Initialize with beat number text
         super().__init__(str(beat_number), parent_widget)
 
-        self.beat_number = beat_number
-        self._parent_widget = parent_widget
-        self._base_font_size = 10  # Base font size for scaling
-        self._base_size = (25, 25)  # Base size for scaling
-        self._base_position = (10, 2)  # Base position for scaling
+        # Beat number uses smaller size than start text
+        self._base_size = (25, 25)
 
-        self._setup_styling()
-        self._setup_positioning()
+    def show_overlay(self):
+        """Show the beat number overlay"""
+        self._show_overlay_common()
 
-        # Initially hidden until explicitly shown
-        self.hide()
-
-    def _setup_styling(self):
-        """Setup the text styling to match Legacy's appearance exactly"""
-        # Use the exact settings determined from successful testing
-        self.setFont(QFont("Georgia", 10, QFont.Weight.DemiBold))
-
-        # Transparent styling for natural scene integration
-        self.setStyleSheet(
-            """
-            QLabel {
-                color: black;
-                background: transparent;
-                border: none;
-                padding: 0px;
-            }
-        """
-        )
-
-        # Ensure text alignment
-        self.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignTop)
-
-    def _setup_positioning(self):
-        """Setup the positioning and sizing based on successful test results"""
-        # Use the exact dimensions determined from testing
-        # Position: (10, 2), Size: 25x25
-        self.setGeometry(10, 2, 25, 25)
+    def hide_overlay(self):
+        """Hide the beat number overlay"""
+        self._hide_overlay_common()
 
     def show_beat_number(self):
-        """Show the beat number overlay"""
-        self.show()
-        self.raise_()  # Bring to front to ensure visibility
+        """Show the beat number overlay (legacy method name)"""
+        self.show_overlay()
 
     def hide_beat_number(self):
-        """Hide the beat number overlay"""
-        self.hide()
+        """Hide the beat number overlay (legacy method name)"""
+        self.hide_overlay()
 
     def update_beat_number(self, new_number: int):
         """Update the displayed beat number"""
         self.beat_number = new_number
-        self.setText(str(new_number))
-
-    def update_position(self, x: int, y: int):
-        """Update the overlay position"""
-        current_geometry = self.geometry()
-        self.setGeometry(x, y, current_geometry.width(), current_geometry.height())
-
-    def update_size(self, width: int, height: int):
-        """Update the overlay size"""
-        current_geometry = self.geometry()
-        self.setGeometry(current_geometry.x(), current_geometry.y(), width, height)
-
-    def update_scaling(self):
-        """Update the overlay scaling based on parent widget size"""
-        if not self._parent_widget:
-            return
-
-        # Calculate scale factor based on parent widget size vs base size (120x120)
-        parent_size = self._parent_widget.size()
-        base_size = 120  # Base size that the original overlay was designed for
-
-        scale_factor = min(
-            parent_size.width() / base_size, parent_size.height() / base_size
-        )
-
-        # Scale font size
-        scaled_font_size = max(
-            6, int(self._base_font_size * scale_factor)
-        )  # Minimum 6pt
-        current_font = self.font()
-        current_font.setPointSize(scaled_font_size)
-        self.setFont(current_font)
-
-        # Scale position and size
-        scaled_x = int(self._base_position[0] * scale_factor)
-        scaled_y = int(self._base_position[1] * scale_factor)
-        scaled_width = int(self._base_size[0] * scale_factor)
-        scaled_height = int(self._base_size[1] * scale_factor)
-
-        self.setGeometry(scaled_x, scaled_y, scaled_width, scaled_height)
-
-    def update_font_size(self, font_size: int):
-        """Update the font size"""
-        current_font = self.font()
-        current_font.setPointSize(font_size)
-        self.setFont(current_font)
+        self.update_text(str(new_number))
 
 
 def add_beat_number_to_view(
@@ -144,14 +78,9 @@ def add_beat_number_to_view(
     try:
         # Create the beat number overlay
         beat_number_overlay = BeatNumberOverlay(beat_number, beat_view)
-        beat_number_overlay.show_beat_number()
 
-        # Store reference on the beat view to prevent garbage collection
-        if not hasattr(beat_view, "_text_overlays"):
-            beat_view._text_overlays = []
-        beat_view._text_overlays.append(beat_number_overlay)
-
-        return beat_number_overlay
+        # Use unified helper function
+        return add_text_overlay_to_view(beat_view, beat_number_overlay)
 
     except Exception as e:
         print(f"Failed to add beat number overlay: {e}")
@@ -168,23 +97,8 @@ def remove_beat_number_from_view(
         beat_view: BeatView widget instance
         beat_number_overlay: BeatNumberOverlay instance to remove
     """
-    if not beat_number_overlay:
-        return
-
-    try:
-        # Remove from beat view's overlay list
-        if (
-            hasattr(beat_view, "_text_overlays")
-            and beat_number_overlay in beat_view._text_overlays
-        ):
-            beat_view._text_overlays.remove(beat_number_overlay)
-
-        # Hide and delete the overlay
-        beat_number_overlay.hide_beat_number()
-        beat_number_overlay.deleteLater()
-
-    except Exception as e:
-        print(f"Failed to remove beat number overlay: {e}")
+    # Use unified helper function
+    remove_text_overlay_from_view(beat_view, beat_number_overlay)
 
 
 def clear_all_beat_numbers_from_view(beat_view: QWidget):
@@ -194,16 +108,7 @@ def clear_all_beat_numbers_from_view(beat_view: QWidget):
     Args:
         beat_view: BeatView widget instance
     """
-    if not hasattr(beat_view, "_text_overlays"):
-        return
+    from .text_overlay_base import clear_all_text_overlays_from_view
 
-    try:
-        # Remove all beat number overlays
-        for overlay in beat_view._text_overlays[
-            :
-        ]:  # Copy list to avoid modification during iteration
-            if isinstance(overlay, BeatNumberOverlay):
-                remove_beat_number_from_view(beat_view, overlay)
-
-    except Exception as e:
-        print(f"Failed to clear beat number overlays: {e}")
+    # Use unified helper function with specific type
+    clear_all_text_overlays_from_view(beat_view, BeatNumberOverlay)

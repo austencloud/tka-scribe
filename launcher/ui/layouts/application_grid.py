@@ -49,9 +49,9 @@ logger = logging.getLogger(__name__)
 from ..components import ReliableApplicationCard
 from ..reliable_effects import get_animation_manager
 
-logger.info("🎨 Reliable UI components loaded successfully")
 
 ApplicationCard = ReliableApplicationCard
+
 
 class ApplicationGridWidget(QWidget):
     """
@@ -70,13 +70,14 @@ class ApplicationGridWidget(QWidget):
         self.setMinimumSize(400, 300)
         self._setup_layout()
         QTimer.singleShot(0, self._deferred_initialization)
-        logger.info("✅ Application grid initialized")
+        # Application grid initialized - log removed to reduce startup noise
 
     def _deferred_initialization(self):
         """Deferred initialization after the widget hierarchy is established."""
         self.updateGeometry()
         self.scroll_area.updateGeometry()
         from PyQt6.QtWidgets import QApplication
+
         QApplication.processEvents()
         self.refresh_applications()
         self._initial_layout_complete = True
@@ -84,20 +85,8 @@ class ApplicationGridWidget(QWidget):
 
     def _log_initial_sizing(self):
         """Log initial sizing information for debugging."""
-        logger.info("🔍 ===== INITIAL SIZING ANALYSIS =====")
-        logger.info(
-            f"ApplicationGridWidget: {self.size().width()}x{self.size().height()}"
-        )
-        logger.info(
-            f"ScrollArea: {self.scroll_area.size().width()}x{self.scroll_area.size().height()}"
-        )
-        logger.info(
-            f"ScrollArea viewport: {self.scroll_area.viewport().size().width()}x{self.scroll_area.viewport().size().height()}"
-        )
-        logger.info(
-            f"Scroll Widget: {self.scroll_widget.size().width()}x{self.scroll_widget.size().height()}"
-        )
-        logger.info("🔍 ===== END INITIAL SIZING =====")
+        # Sizing analysis removed to reduce startup noise
+        pass
 
     def sizeHint(self):
         """Provide a reasonable size hint for the application grid."""
@@ -201,6 +190,7 @@ class ApplicationGridWidget(QWidget):
         """Update the grid display with current applications."""
         self._clear_grid()
         from PyQt6.QtWidgets import QApplication
+
         QApplication.processEvents()
         available_container_width = self._calculate_available_width()
         if available_container_width <= 0:
@@ -243,6 +233,7 @@ class ApplicationGridWidget(QWidget):
     def _organize_apps_by_category(self):
         """Organize applications into 3 rows by category."""
         from domain.models import ApplicationCategory
+
         organized = {"Desktop Apps": [], "Web Apps": [], "Development Tools": []}
         sorted_apps = sorted(
             self.filtered_applications, key=lambda app: app.display_order
@@ -376,6 +367,7 @@ class ApplicationGridWidget(QWidget):
             f"1. Main Window: {main_window.size().width()}x{main_window.size().height()}"
         )
         from PyQt6.QtWidgets import QTabWidget
+
         tab_widget = main_window.findChild(QTabWidget)
         if tab_widget:
             logger.info(

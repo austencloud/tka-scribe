@@ -47,27 +47,21 @@ class SequencePersistenceService:
 
     def save_current_sequence(self, sequence: List[Dict[str, Any]]) -> None:
         """Save current sequence to JSON file - exactly like legacy."""
-        print(
-            f"🔄 [PERSISTENCE] save_current_sequence called with {len(sequence) if sequence else 0} items"
-        )
+        # Removed repetitive debug log
 
         try:
             if not sequence:
                 sequence = self.get_default_sequence()
-                print(
-                    f"🔄 [PERSISTENCE] Using default sequence with {len(sequence)} items"
-                )
+                # Removed repetitive debug log
 
             # Ensure directory exists
             self.current_sequence_json.parent.mkdir(parents=True, exist_ok=True)
-            print(f"🔄 [PERSISTENCE] Writing to file: {self.current_sequence_json}")
+            # Removed repetitive debug log
 
             with open(self.current_sequence_json, "w", encoding="utf-8") as file:
                 json.dump(sequence, file, indent=4, ensure_ascii=False)
 
-            print(
-                f"✅ [PERSISTENCE] Successfully saved current sequence with {len(sequence)} items to {self.current_sequence_json}"
-            )
+            # Removed repetitive debug log
             logger.debug(f"Saved current sequence with {len(sequence)} items")
 
         except Exception as e:

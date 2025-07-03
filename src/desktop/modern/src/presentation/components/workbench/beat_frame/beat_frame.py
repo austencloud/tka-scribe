@@ -134,7 +134,7 @@ class BeatFrame(QScrollArea):
     def _setup_start_position(self):
         """Setup start position view"""
         self._start_position_view = StartPositionView(parent=self._container_widget)
-        self._start_position_view.position_clicked.connect(
+        self._start_position_view.start_pos_beat_clicked.connect(
             self._on_start_position_clicked
         )
 

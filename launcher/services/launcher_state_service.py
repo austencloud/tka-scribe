@@ -196,9 +196,6 @@ class LauncherStateService(ILauncherStateService):
                 applications=self._current_state.applications,  # Keep current apps
             )
 
-            logger.info(
-                f"Launcher state loaded: mode={mode.value}, first_run={first_run}"
-            )
             return state
 
         except Exception as e:

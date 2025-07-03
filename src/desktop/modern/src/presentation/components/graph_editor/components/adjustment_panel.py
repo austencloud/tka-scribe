@@ -109,6 +109,11 @@ class AdjustmentPanel(QWidget):
 
         # 1. Hand Indicator - use color config text
         hand_text = self._color_config["text"]
+        # if hand text is blue, change it to Left, if red, change it to Right
+        if hand_text == "BLUE":
+            hand_text = "Left"
+        elif hand_text == "RED":
+            hand_text = "Right"
         self._hand_indicator = QLabel(hand_text)
         self._hand_indicator.setAlignment(Qt.AlignmentFlag.AlignCenter)
         # Use primary color for text like web version

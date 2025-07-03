@@ -326,7 +326,7 @@ def register_extracted_services(container) -> Result[bool, AppError]:
 
         container.register_singleton(IObjectPoolService, ObjectPoolService)
 
-        logger.info("Successfully registered extracted services in DI container")
+        # DI registration log removed to reduce startup noise
         return success(True)
 
     except Exception as e:

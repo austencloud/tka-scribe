@@ -58,13 +58,11 @@ class LauncherDIContainer:
         if self._use_tka_container:
             try:
                 self._container = get_container()
-                logger.info("Using TKA DI container for launcher services")
             except Exception as e:
                 logger.warning(f"Failed to get TKA container, using standalone: {e}")
                 self._use_tka_container = False
 
-        if not self._use_tka_container:
-            logger.info("Using standalone DI container for launcher")
+
 
         # Register launcher services
         self._register_launcher_services()
@@ -206,7 +204,7 @@ class LauncherDIContainer:
 
         self.register_factory(IApplicationLaunchService, create_launch_service)
 
-        logger.info("Launcher services registered successfully")
+        logger.info("")
 
     def get_settings_service(self) -> ISettingsService:
         """Get the settings service."""

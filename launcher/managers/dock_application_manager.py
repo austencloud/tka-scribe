@@ -51,7 +51,6 @@ class DockApplicationManager(QObject):
         """Load applications from TKA integration."""
         try:
             self.applications = self.tka_integration.get_applications()
-            logger.info(f"📱 Loaded {len(self.applications)} applications in dock")
 
             # Emit signal with application count
             self.application_loaded.emit(len(self.applications))

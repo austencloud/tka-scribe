@@ -129,10 +129,8 @@ class OptionPickerSectionPictographContainer(QFrame):
 
     def update_sizing_reference(self, option_picker_width: int):
         """Update sizing reference for all pictograph frames in this container"""
-        print(
-            f"📏 Container updating sizing reference to {option_picker_width}px for {len(self.pictographs)} pictographs"
-        )
-
+        # Removed repetitive log statement
+        
         for pictograph_frame in self.pictographs:
             if pictograph_frame and hasattr(
                 pictograph_frame, "update_sizing_reference"

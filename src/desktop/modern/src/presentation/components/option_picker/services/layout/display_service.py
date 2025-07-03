@@ -34,9 +34,7 @@ class OptionPickerDisplayManager:
         """Create sections with single-row layout for sections 4,5,6"""
         from PyQt6.QtWidgets import QHBoxLayout
 
-        print(
-            f"📄 [HEIGHT DEBUG] Creating sections - Container size: {self.sections_container.width()} × {self.sections_container.height()}px"
-        )
+        # Removed repetitive log statement
 
         # Create sections 1, 2, 3 normally (vertical layout)
         for section_type in [LetterType.TYPE1, LetterType.TYPE2, LetterType.TYPE3]:
@@ -47,7 +45,7 @@ class OptionPickerDisplayManager:
             )
             self._sections[section_type] = section
             self.sections_layout.addWidget(section)
-            print(f"   Added {section_type} section to vertical layout")
+            # Removed repetitive log statement
 
         # Create transparent horizontal container for sections 4, 5, 6
         self.bottom_row_container = QWidget(self.sections_container)
@@ -58,7 +56,7 @@ class OptionPickerDisplayManager:
         self.bottom_row_layout.setContentsMargins(5, 0, 5, 0)  # Reduced margins
         self.bottom_row_layout.setSpacing(8)  # Reduced spacing
 
-        print(f"   Created bottom row container with margins: 5,0,5,0 and spacing: 8px")
+        # Removed repetitive log statement
 
         # Create sections 4, 5, 6 in horizontal layout
         for section_type in [LetterType.TYPE4, LetterType.TYPE5, LetterType.TYPE6]:
@@ -69,7 +67,7 @@ class OptionPickerDisplayManager:
             )
             self._sections[section_type] = section
             self.bottom_row_layout.addWidget(section)
-            print(f"   Added {section_type} section to horizontal layout")
+            # Removed repetitive log statement
 
             # Calculate proper width accounting for margins and spacing
             if self.mw_size_provider:
@@ -79,20 +77,16 @@ class OptionPickerDisplayManager:
                 available_width = full_width - total_margins - total_spacing
                 section_width = available_width // 3
                 section.setFixedWidth(section_width)
-                print(
-                    f"   Set {section_type} width to: {section_width}px (of {available_width}px available)"
-                )
+                # Removed repetitive log statement
 
         self.sections_layout.addWidget(self.bottom_row_container)
-        print(f"   Added bottom row container to main layout")
+        # Removed repetitive log statement
 
         # Print layout spacing information
         main_spacing = self.sections_layout.spacing()
         main_margins = self.sections_layout.contentsMargins()
-        print(f"   Main layout spacing: {main_spacing}px")
-        print(
-            f"   Main layout margins: {main_margins.left()}, {main_margins.top()}, {main_margins.right()}, {main_margins.bottom()}px"
-        )
+        # Removed repetitive log statement
+        # Removed repetitive log statement
 
         # Make all containers transparent
         if self.sections_container:

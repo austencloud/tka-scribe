@@ -161,9 +161,7 @@ class PictographScene(QGraphicsScene):
             container = ApplicationFactory.create_app_from_args()
             if container:
                 context_service = container.resolve(IPictographContextService)
-                print(
-                    f"✅ [PICTOGRAPH_SCENE] Successfully resolved IPictographContextService: {type(context_service).__name__}"
-                )
+                # Removed repetitive log statement
                 context = context_service.determine_context_from_scene(self)
 
                 # Convert enum to string for backward compatibility
@@ -177,7 +175,7 @@ class PictographScene(QGraphicsScene):
                 }
 
                 result = context_map.get(context, "unknown")
-                print(f"✅ [SCENE_CONTEXT] Context service determined: {result}")
+                # Removed repetitive log statement
                 return result
 
         except Exception as e:

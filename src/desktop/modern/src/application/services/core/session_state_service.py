@@ -207,64 +207,31 @@ class SessionStateService(ISessionStateService):
 
     def update_current_sequence(self, sequence_data: Any, sequence_id: str) -> None:
         """Update current sequence in session state."""
-        print(f"🔍 [SESSION] Updating current sequence: {sequence_id}")
-        if hasattr(sequence_data, "name"):
-            print(f"🔍 [SESSION] Sequence name: {sequence_data.name}")
-        elif isinstance(sequence_data, dict):
-            print(f"🔍 [SESSION] Sequence name: {sequence_data.get('name', 'Unknown')}")
-
-        # Check beat count before conversion
-        if hasattr(sequence_data, "beats"):
-            beat_count = len(sequence_data.beats)
-            print(f"🔍 [SESSION] Sequence has {beat_count} beats before conversion")
-            for i, beat in enumerate(sequence_data.beats):
-                print(f"   Beat {i}: {beat.letter} (duration: {beat.duration})")
-        elif isinstance(sequence_data, dict) and "beats" in sequence_data:
-            beat_count = len(sequence_data["beats"])
-            print(f"🔍 [SESSION] Dict sequence has {beat_count} beats")
-        else:
-            print("⚠️ [SESSION] No beats found in sequence data")
-
+        # Removed repetitive log statements
+        
         try:
             # Convert sequence data to serializable format
-            print("🔍 [SESSION] Converting sequence data to serializable format...")
             if hasattr(sequence_data, "to_dict"):
                 # Use custom to_dict() method which properly handles enum serialization
                 serializable_data = sequence_data.to_dict()
-                print("🔍 [SESSION] Converted using custom to_dict() method")
             elif hasattr(sequence_data, "__dict__"):
                 serializable_data = (
                     asdict(sequence_data)
                     if hasattr(sequence_data, "__dataclass_fields__")
                     else vars(sequence_data)
                 )
-                print("🔍 [SESSION] Converted object to dict (fallback)")
             else:
                 serializable_data = sequence_data
-                print("🔍 [SESSION] Data already serializable")
-
-            # Check beat count after conversion
-            if "beats" in serializable_data:
-                converted_beat_count = len(serializable_data["beats"])
-                print(f"🔍 [SESSION] After conversion: {converted_beat_count} beats")
-                for i, beat in enumerate(serializable_data["beats"]):
-                    print(f"   Converted beat {i}: {beat.get('letter', 'Unknown')}")
-            else:
-                print("⚠️ [SESSION] No beats in serialized data!")
 
             self._current_session.current_sequence_id = sequence_id
             self._current_session.current_sequence_data = serializable_data
-            print("✅ [SESSION] Session state updated with sequence")
 
             # Trigger auto-save
-            print("🔍 [SESSION] Triggering auto-save...")
             self.mark_interaction()
 
             logger.debug(f"Updated current sequence: {sequence_id}")
-            print("✅ [SESSION] Auto-save triggered")
 
         except Exception as e:
-            print(f"⚠️ [SESSION] Failed to update current sequence: {e}")
             logger.error(f"Failed to update current sequence: {e}")
 
     def update_workbench_state(

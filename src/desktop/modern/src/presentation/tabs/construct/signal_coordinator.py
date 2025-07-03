@@ -187,19 +187,14 @@ class SignalCoordinator(QObject):
         # Check if start position is set in workbench
         start_position_set = False
         workbench = self.layout_manager.workbench
-        print(
-            f"🔍 [SIGNAL_COORDINATOR] Direct workbench access: {workbench is not None}"
-        )
+        # Removed repetitive log statements
 
         if workbench and hasattr(workbench, "_start_position_data"):
             start_position_set = workbench._start_position_data is not None
-            print(
-                f"🔍 [SIGNAL_COORDINATOR] Workbench start_position_data: {workbench._start_position_data}"
-            )
+            # Removed repetitive log statements
         else:
-            print(
-                f"🔍 [SIGNAL_COORDINATOR] Workbench missing or no _start_position_data attribute"
-            )
+            # Removed repetitive log statements
+            pass
 
         has_beats = (
             sequence is not None
@@ -212,9 +207,7 @@ class SignalCoordinator(QObject):
             and sequence.metadata.get("cleared") is not True
         )
 
-        print(
-            f"🔍 [SIGNAL_COORDINATOR] Sequence state analysis: start_pos_set={start_position_set}, has_beats={has_beats}, seq_length={sequence.length if sequence else 0}"
-        )
+        # Removed repetitive log statements
 
         if start_position_set or has_beats:
             print(
@@ -269,9 +262,7 @@ class SignalCoordinator(QObject):
 
             has_beats = sequence and sequence.beats and len(sequence.beats) > 0
 
-            print(
-                f"🔍 [SIGNAL_COORDINATOR] Force picker state: start_pos_set={start_position_set}, has_beats={has_beats}, seq_length={sequence.length if sequence else 0}"
-            )
+            # Removed repetitive log statements
 
             if start_position_set or has_beats:
                 # Start position is set OR beats exist → show option picker
