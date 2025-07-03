@@ -21,6 +21,7 @@ from domain.models.core_models import (
     MotionType,
     RotationDirection,
     Location,
+    Orientation,
     VTGMode,
     ElementalType,
     LetterType,
@@ -38,8 +39,8 @@ class TestMotionDataProperties:
         turns=st.floats(
             min_value=0.0, max_value=10.0, allow_nan=False, allow_infinity=False
         ),
-        start_ori=st.sampled_from(["in", "out"]),
-        end_ori=st.sampled_from(["in", "out"]),
+        start_ori=st.sampled_from(Orientation),
+        end_ori=st.sampled_from(Orientation),
     )
     def test_motion_data_creation_invariants(
         self, motion_type, prop_rot_dir, start_loc, end_loc, turns, start_ori, end_ori
@@ -72,8 +73,8 @@ class TestMotionDataProperties:
         turns=st.floats(
             min_value=0.0, max_value=10.0, allow_nan=False, allow_infinity=False
         ),
-        start_ori=st.sampled_from(["in", "out"]),
-        end_ori=st.sampled_from(["in", "out"]),
+        start_ori=st.sampled_from(Orientation),
+        end_ori=st.sampled_from(Orientation),
     )
     def test_motion_data_serialization_roundtrip(
         self, motion_type, prop_rot_dir, start_loc, end_loc, turns, start_ori, end_ori
@@ -123,6 +124,37 @@ class TestMotionDataProperties:
             motion.motion_type = MotionType.PRO
         with pytest.raises(AttributeError):
             motion.turns = 5.0
+
+    @given(
+        motion_type=st.sampled_from(MotionType),
+        prop_rot_dir=st.sampled_from(RotationDirection),
+        start_loc=st.sampled_from(Location),
+        end_loc=st.sampled_from(Location),
+        turns=st.floats(
+            min_value=0.0, max_value=10.0, allow_nan=False, allow_infinity=False
+        ),
+        start_ori=st.sampled_from(["in", "out", "clock", "counter"]),
+        end_ori=st.sampled_from(["in", "out", "clock", "counter"]),
+    )
+    def test_motion_data_string_orientation_conversion(
+        self, motion_type, prop_rot_dir, start_loc, end_loc, turns, start_ori, end_ori
+    ):
+        """Test that MotionData converts string orientations to enums."""
+        motion = MotionData(
+            motion_type=motion_type,
+            prop_rot_dir=prop_rot_dir,
+            start_loc=start_loc,
+            end_loc=end_loc,
+            turns=turns,
+            start_ori=start_ori,
+            end_ori=end_ori,
+        )
+
+        # Invariant: String orientations should be converted to Orientation enums
+        assert isinstance(motion.start_ori, Orientation)
+        assert isinstance(motion.end_ori, Orientation)
+        assert motion.start_ori.value == start_ori
+        assert motion.end_ori.value == end_ori
 
 
 class TestBeatDataProperties:

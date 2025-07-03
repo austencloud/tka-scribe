@@ -130,23 +130,23 @@ class TestOptionOrientationUpdateService:
 
         # Check that start orientations were updated from sequence context
         assert (
-            updated_options[0].blue_motion.start_ori == "out"
+            updated_options[0].blue_motion.start_ori == Orientation.OUT
         )  # From last beat's end_ori
         assert (
-            updated_options[0].red_motion.start_ori == "out"
+            updated_options[0].red_motion.start_ori == Orientation.OUT
         )  # From last beat's end_ori
         assert (
-            updated_options[1].blue_motion.start_ori == "out"
+            updated_options[1].blue_motion.start_ori == Orientation.OUT
         )  # From last beat's end_ori
         assert (
-            updated_options[1].red_motion.start_ori == "out"
+            updated_options[1].red_motion.start_ori == Orientation.OUT
         )  # From last beat's end_ori
 
         # Check that end orientations were calculated (mocked to return OUT)
-        assert updated_options[0].blue_motion.end_ori == "out"
-        assert updated_options[0].red_motion.end_ori == "out"
-        assert updated_options[1].blue_motion.end_ori == "out"
-        assert updated_options[1].red_motion.end_ori == "out"
+        assert updated_options[0].blue_motion.end_ori == Orientation.OUT
+        assert updated_options[0].red_motion.end_ori == Orientation.OUT
+        assert updated_options[1].blue_motion.end_ori == Orientation.OUT
+        assert updated_options[1].red_motion.end_ori == Orientation.OUT
 
     def test_update_option_orientations_empty_sequence(self, service, sample_options):
         """Test handling of empty sequence"""
@@ -194,10 +194,10 @@ class TestOptionOrientationUpdateService:
 
         # Assert - should use second-to-last beat's orientations
         assert (
-            updated_options[0].blue_motion.start_ori == "counter"
+            updated_options[0].blue_motion.start_ori == Orientation.COUNTER
         )  # From valid beat's blue end_ori
         assert (
-            updated_options[0].red_motion.start_ori == "in"
+            updated_options[0].red_motion.start_ori == Orientation.IN
         )  # From valid beat's red end_ori
 
     def test_orientation_calculator_called_correctly(

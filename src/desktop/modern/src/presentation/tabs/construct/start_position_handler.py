@@ -41,20 +41,35 @@ class StartPositionHandler(QObject):
 
     def handle_start_position_selected(self, position_key: str):
         """Handle start position selection from the picker"""
+        print(
+            f"🔄 [START_POS_HANDLER] handle_start_position_selected called with: {position_key}"
+        )
         print(f"✅ Start position handler: Position selected: {position_key}")
 
         # Create start position data (separate from sequence like Legacy)
+        print(f"🔄 [START_POS_HANDLER] Creating start position data...")
         start_position_data = self._create_start_position_data(position_key)
+        print(
+            f"✅ [START_POS_HANDLER] Created start position data: {start_position_data.letter if start_position_data else 'None'}"
+        )
 
         # Set start position in workbench (this does NOT create a sequence)
         if self.workbench_setter:
+            print(f"🔄 [START_POS_HANDLER] Setting in workbench...")
             self.workbench_setter(start_position_data)
+            print(f"✅ [START_POS_HANDLER] Set in workbench")
+        else:
+            print(f"⚠️ [START_POS_HANDLER] No workbench setter available")
 
         # Emit signal with the created data
+        print(f"🔄 [START_POS_HANDLER] Emitting start_position_created signal...")
         self.start_position_created.emit(position_key, start_position_data)
+        print(f"✅ [START_POS_HANDLER] start_position_created signal emitted")
 
         # Request transition to option picker
+        print(f"🔄 [START_POS_HANDLER] Emitting transition_requested signal...")
         self.transition_requested.emit()
+        print(f"✅ [START_POS_HANDLER] transition_requested signal emitted")
 
     def _create_start_position_data(self, position_key: str) -> BeatData:
         """Create start position data from position key using real dataset (separate from sequence beats)"""
@@ -72,16 +87,18 @@ class StartPositionHandler(QObject):
 
             if real_start_position:
                 # Extract the specific end position from position_key (like "gamma13")
-                specific_end_pos = self.data_conversion_service.extract_end_position_from_position_key(
-                    position_key
+                specific_end_pos = (
+                    self.data_conversion_service.extract_end_position_from_position_key(
+                        position_key
+                    )
                 )
-                
+
                 # Create proper glyph data with the specific position
                 glyph_data = GlyphData(
                     start_position=position_key,  # The selected position key
                     end_position=specific_end_pos,  # The specific end position like "gamma13"
                 )
-                
+
                 # Update the beat data with proper glyph data and position info
                 beat_data = real_start_position.update(
                     beat_number=0,  # Start position is beat 0 in persistence
@@ -98,15 +115,17 @@ class StartPositionHandler(QObject):
                     f"⚠️ No real data found for position {position_key}, using fallback"
                 )
                 # Fallback start position with proper glyph data
-                specific_end_pos = self.data_conversion_service.extract_end_position_from_position_key(
-                    position_key
+                specific_end_pos = (
+                    self.data_conversion_service.extract_end_position_from_position_key(
+                        position_key
+                    )
                 )
-                
+
                 glyph_data = GlyphData(
                     start_position=position_key,
                     end_position=specific_end_pos,
                 )
-                
+
                 fallback_beat = BeatData.empty().update(
                     letter=position_key,
                     beat_number=0,
@@ -120,21 +139,24 @@ class StartPositionHandler(QObject):
         except Exception as e:
             print(f"❌ Error loading real start position data: {e}")
             import traceback
+
             traceback.print_exc()
-            
+
             # Fallback to basic beat data with position info
             try:
-                specific_end_pos = self.data_conversion_service.extract_end_position_from_position_key(
-                    position_key
+                specific_end_pos = (
+                    self.data_conversion_service.extract_end_position_from_position_key(
+                        position_key
+                    )
                 )
-            except:
+            except Exception:
                 specific_end_pos = position_key  # Last resort fallback
-                
+
             glyph_data = GlyphData(
                 start_position=position_key,
                 end_position=specific_end_pos,
             )
-            
+
             fallback_beat = BeatData.empty().update(
                 letter=position_key,
                 beat_number=0,

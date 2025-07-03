@@ -183,7 +183,13 @@ class SequenceManager(QObject):
 
     def set_start_position(self, start_position_data: BeatData):
         """Set the start position"""
+        print(
+            f"🔄 [SEQUENCE_MANAGER] set_start_position called with: {start_position_data.letter if start_position_data else 'None'}"
+        )
         self.start_position_manager.set_start_position(start_position_data)
+        print(
+            f"✅ [SEQUENCE_MANAGER] start_position_manager.set_start_position completed"
+        )
 
     def update_start_position_orientation(self, color: str, new_orientation: int):
         """Update start position orientation for a specific color"""

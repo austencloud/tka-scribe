@@ -246,7 +246,7 @@ class DataConversionService:
             end_loc_str = str(external_attrs.get("end_loc", "n")).lower()
             end_loc = self.LOCATION_MAPPING.get(end_loc_str, Location.NORTH)
 
-            # Preserve orientations as strings from external format
+            # Convert orientations to strings (MotionData will convert to enums)
             start_ori = str(external_attrs.get("start_ori", "in"))
             end_ori = str(external_attrs.get("end_ori", "in"))
 
@@ -255,8 +255,8 @@ class DataConversionService:
                 prop_rot_dir=prop_rot_dir,
                 start_loc=start_loc,
                 end_loc=end_loc,
-                start_ori=start_ori,
-                end_ori=end_ori,
+                start_ori=start_ori,  # MotionData will convert string to Orientation enum
+                end_ori=end_ori,  # MotionData will convert string to Orientation enum
             )
 
         except Exception as e:

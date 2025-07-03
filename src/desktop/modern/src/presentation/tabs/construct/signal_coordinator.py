@@ -98,18 +98,28 @@ class SignalCoordinator(QObject):
 
     def _handle_start_position_created(self, position_key: str, start_position_data):
         """Handle start position creation"""
+        print(
+            f"🔄 [SIGNAL_COORDINATOR] _handle_start_position_created called with: {position_key}"
+        )
         print(f"✅ Signal coordinator: Start position created: {position_key}")
 
         # Save start position to current_sequence.json exactly like legacy
+        print(f"🔄 [SIGNAL_COORDINATOR] Calling sequence_manager.set_start_position...")
         self.sequence_manager.set_start_position(start_position_data)
+        print(f"✅ [SIGNAL_COORDINATOR] sequence_manager.set_start_position completed")
 
         # Populate option picker with valid combinations
+        print(f"🔄 [SIGNAL_COORDINATOR] Populating option picker...")
         self.option_picker_manager.populate_from_start_position(
             position_key, start_position_data
         )
+        print(f"✅ [SIGNAL_COORDINATOR] Option picker populated")
 
         # Emit external signal
         self.start_position_set.emit(position_key)
+        print(
+            f"✅ [SIGNAL_COORDINATOR] External signal emitted for position: {position_key}"
+        )
 
     def _handle_start_position_loaded_from_persistence(
         self, position_key: str, start_position_data
@@ -242,8 +252,6 @@ class SignalCoordinator(QObject):
 
         # Handle None case
         if sequence is None:
-            from domain.models.core_models import SequenceData
-
             sequence = SequenceData.empty()
 
         print(

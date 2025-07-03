@@ -18,7 +18,7 @@ class SequencePersistenceService:
         # Use same location as legacy
         modern_dir = Path(__file__).parent.parent.parent.parent.parent
         self.current_sequence_json = modern_dir / "current_sequence.json"
-        
+
         logger.info(f"Sequence persistence initialized: {self.current_sequence_json}")
 
     def load_current_sequence(self) -> List[Dict[str, Any]]:
@@ -47,20 +47,35 @@ class SequencePersistenceService:
 
     def save_current_sequence(self, sequence: List[Dict[str, Any]]) -> None:
         """Save current sequence to JSON file - exactly like legacy."""
+        print(
+            f"🔄 [PERSISTENCE] save_current_sequence called with {len(sequence) if sequence else 0} items"
+        )
+
         try:
             if not sequence:
                 sequence = self.get_default_sequence()
+                print(
+                    f"🔄 [PERSISTENCE] Using default sequence with {len(sequence)} items"
+                )
 
             # Ensure directory exists
             self.current_sequence_json.parent.mkdir(parents=True, exist_ok=True)
+            print(f"🔄 [PERSISTENCE] Writing to file: {self.current_sequence_json}")
 
             with open(self.current_sequence_json, "w", encoding="utf-8") as file:
                 json.dump(sequence, file, indent=4, ensure_ascii=False)
 
+            print(
+                f"✅ [PERSISTENCE] Successfully saved current sequence with {len(sequence)} items to {self.current_sequence_json}"
+            )
             logger.debug(f"Saved current sequence with {len(sequence)} items")
 
         except Exception as e:
+            print(f"❌ [PERSISTENCE] Failed to save current sequence: {e}")
             logger.error(f"Failed to save current sequence: {e}")
+            import traceback
+
+            traceback.print_exc()
             raise
 
     def clear_current_sequence(self) -> None:
@@ -89,7 +104,7 @@ class SequencePersistenceService:
     def update_current_sequence_with_beat(self, beat_data: Dict[str, Any]) -> None:
         """Add a beat to the current sequence - exactly like legacy."""
         sequence = self.load_current_sequence()
-        
+
         # Get metadata and beats
         if sequence and "word" in sequence[0]:
             sequence_metadata = sequence[0]
@@ -103,10 +118,10 @@ class SequencePersistenceService:
             beat_data["beat"] = self.get_next_beat_number(sequence_beats)
 
         sequence_beats.append(beat_data)
-        
+
         # Sort by beat number
         sequence_beats.sort(key=lambda entry: entry.get("beat", float("inf")))
-        
+
         # Rebuild sequence
         sequence = [sequence_metadata] + sequence_beats
         self.save_current_sequence(sequence)
@@ -120,20 +135,20 @@ class SequencePersistenceService:
     def update_sequence_metadata(self, metadata: Dict[str, Any]) -> None:
         """Update sequence metadata - exactly like legacy."""
         sequence = self.load_current_sequence()
-        
+
         if sequence:
             # Update first item (metadata)
             sequence[0].update(metadata)
         else:
             # Create new sequence with metadata
             sequence = [metadata]
-            
+
         self.save_current_sequence(sequence)
 
     def remove_beat_at_index(self, beat_index: int) -> None:
         """Remove a beat from the sequence - exactly like legacy."""
         sequence = self.load_current_sequence()
-        
+
         if len(sequence) > beat_index + 1:  # +1 because index 0 is metadata
             sequence.pop(beat_index + 1)
             self.save_current_sequence(sequence)
@@ -141,19 +156,19 @@ class SequencePersistenceService:
     def clear_all_beats(self) -> None:
         """Remove all beats but keep metadata - exactly like legacy."""
         sequence = self.load_current_sequence()
-        
+
         if sequence:
             # Keep only metadata (first item)
             sequence = [sequence[0]]
         else:
             sequence = self.get_default_sequence()
-            
+
         self.save_current_sequence(sequence)
 
     def update_beat_turns(self, beat_index: int, color: str, new_turns: int) -> None:
         """Update the number of turns for a specific beat - exactly like legacy."""
         sequence = self.load_current_sequence()
-        
+
         actual_index = beat_index + 1  # +1 because index 0 is metadata
         if len(sequence) > actual_index:
             beat = sequence[actual_index]

@@ -29,6 +29,7 @@ from domain.models.core_models import (
     MotionData,
     MotionType,
     Location,
+    Orientation,
 )
 from domain.models.pictograph_models import ArrowData, PictographData
 
@@ -170,10 +171,10 @@ class SpecialPlacementService:
                             with open(file_path, "r", encoding="utf-8") as f:
                                 data = json.load(f)
                                 self.special_placements[mode][subfolder].update(data)
-                        except Exception as e:
+                        except Exception:
                             pass
 
-        except Exception as e:
+        except Exception:
             self.special_placements = {}
 
     def _generate_orientation_key(
@@ -201,11 +202,13 @@ class SpecialPlacementService:
                 blue_motion = blue_arrow.motion_data
                 red_motion = red_arrow.motion_data
 
-                blue_end_ori = getattr(blue_motion, "end_ori", "in")
-                red_end_ori = getattr(red_motion, "end_ori", "in")
+                blue_end_ori = getattr(blue_motion, "end_ori", Orientation.IN)
+                red_end_ori = getattr(red_motion, "end_ori", Orientation.IN)
 
-                blue_layer = 1 if blue_end_ori in ["in", "out"] else 2
-                red_layer = 1 if red_end_ori in ["in", "out"] else 2
+                blue_layer = (
+                    1 if blue_end_ori in [Orientation.IN, Orientation.OUT] else 2
+                )
+                red_layer = 1 if red_end_ori in [Orientation.IN, Orientation.OUT] else 2
 
                 if blue_layer == 1 and red_layer == 1:
                     return "from_layer1"

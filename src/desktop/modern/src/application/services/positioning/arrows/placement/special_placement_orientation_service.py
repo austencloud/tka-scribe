@@ -122,11 +122,11 @@ class SpecialPlacementOrientationService:
             return 1  # Default to layer 1
 
         # Check end orientation to determine layer
-        end_ori = getattr(motion_data, "end_ori", "in")
+        end_ori = getattr(motion_data, "end_ori", Orientation.IN)
 
-        if end_ori in ["in", "out"]:
+        if end_ori in [Orientation.IN, Orientation.OUT]:
             return 1  # Layer 1 (radial)
-        elif end_ori in ["clock", "counter"]:
+        elif end_ori in [Orientation.CLOCK, Orientation.COUNTER]:
             return 2  # Layer 2 (non-radial)
         else:
             return 1  # Default to layer 1
@@ -145,11 +145,11 @@ class SpecialPlacementOrientationService:
             return "from_layer1"  # Default
 
         # Check end orientation
-        end_ori = getattr(motion_data, "end_ori", "in")
+        end_ori = getattr(motion_data, "end_ori", Orientation.IN)
 
-        if end_ori in ["in", "out"]:
+        if end_ori in [Orientation.IN, Orientation.OUT]:
             return "from_layer1"
-        elif end_ori in ["clock", "counter"]:
+        elif end_ori in [Orientation.CLOCK, Orientation.COUNTER]:
             return "from_layer2"
         else:
             return "from_layer1"  # Default fallback

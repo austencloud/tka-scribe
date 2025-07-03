@@ -362,7 +362,7 @@ class PropManagementService(IPropManagementService):
 
         # Determine if prop is radial or nonradial based on end orientation
         # Validated logic: RADIAL = IN/OUT, NONRADIAL = CLOCK/COUNTER
-        is_radial = motion.end_ori in ["in", "out"]
+        is_radial = motion.end_ori in [Orientation.IN, Orientation.OUT]
 
         # Determine grid mode based on location
         if location.value in ["n", "s", "e", "w"]:

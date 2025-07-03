@@ -66,7 +66,7 @@ class TestDirectionCalculationService:
             prop_rot_dir=RotationDirection.CLOCKWISE,
             start_loc=Location.NORTH,
             end_loc=Location.NORTH,
-            end_ori="in",  # Radial orientation
+            end_ori=Orientation.IN,  # Radial orientation
         )
 
         beat_data = BeatData(letter="A", blue_motion=motion)
@@ -87,7 +87,7 @@ class TestDirectionCalculationService:
             prop_rot_dir=RotationDirection.CLOCKWISE,
             start_loc=Location.NORTH,
             end_loc=Location.NORTH,
-            end_ori="clock",  # Nonradial orientation
+            end_ori=Orientation.CLOCK,  # Nonradial orientation
         )
 
         beat_data = BeatData(letter="A", blue_motion=motion)
@@ -108,7 +108,7 @@ class TestDirectionCalculationService:
             prop_rot_dir=RotationDirection.CLOCKWISE,
             start_loc=Location.NORTHEAST,
             end_loc=Location.NORTHEAST,
-            end_ori="in",  # Radial orientation
+            end_ori=Orientation.IN,  # Radial orientation
         )
 
         beat_data = BeatData(letter="A", blue_motion=motion)
@@ -129,7 +129,7 @@ class TestDirectionCalculationService:
             prop_rot_dir=RotationDirection.CLOCKWISE,
             start_loc=Location.NORTHEAST,
             end_loc=Location.NORTHEAST,
-            end_ori="clock",  # Nonradial orientation
+            end_ori=Orientation.CLOCK,  # Nonradial orientation
         )
 
         beat_data = BeatData(letter="A", blue_motion=motion)
@@ -236,7 +236,7 @@ class TestDirectionCalculationService:
             prop_rot_dir=RotationDirection.CLOCKWISE,
             start_loc=Location.NORTH,
             end_loc=Location.NORTH,
-            end_ori="in",
+            end_ori=Orientation.IN,
         )
 
         beat_data = BeatData(letter="A", blue_motion=motion)

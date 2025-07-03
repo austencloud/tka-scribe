@@ -146,31 +146,29 @@ class OptionOrientationUpdateService:
         updated_red_motion = None
 
         if option.blue_motion:
-            # Calculate new end orientation based on updated start orientation
+            # Convert string to Orientation enum
             start_orientation = self._string_to_orientation(blue_start_ori)
             calculated_end_ori = self.orientation_calculator.calculate_end_orientation(
                 option.blue_motion, start_orientation
             )
 
-            # Create updated motion with new orientations
-            updated_blue_motion = replace(
-                option.blue_motion,
-                start_ori=blue_start_ori,
-                end_ori=calculated_end_ori.value.lower(),
+            # Create updated motion with enum orientations (MotionData will handle conversion)
+            updated_blue_motion = option.blue_motion.update(
+                start_ori=start_orientation,
+                end_ori=calculated_end_ori,
             )
 
         if option.red_motion:
-            # Calculate new end orientation based on updated start orientation
+            # Convert string to Orientation enum
             start_orientation = self._string_to_orientation(red_start_ori)
             calculated_end_ori = self.orientation_calculator.calculate_end_orientation(
                 option.red_motion, start_orientation
             )
 
-            # Create updated motion with new orientations
-            updated_red_motion = replace(
-                option.red_motion,
-                start_ori=red_start_ori,
-                end_ori=calculated_end_ori.value.lower(),
+            # Create updated motion with enum orientations (MotionData will handle conversion)
+            updated_red_motion = option.red_motion.update(
+                start_ori=start_orientation,
+                end_ori=calculated_end_ori,
             )
 
         # Return updated BeatData with new motion data
@@ -178,9 +176,14 @@ class OptionOrientationUpdateService:
             option, blue_motion=updated_blue_motion, red_motion=updated_red_motion
         )
 
-    def _string_to_orientation(self, ori_str: str) -> Orientation:
-        """Convert string orientation to Orientation enum."""
-        ori_str = ori_str.lower()
+    def _string_to_orientation(self, ori_value) -> Orientation:
+        """Convert string or enum orientation to Orientation enum."""
+        # If it's already an Orientation enum, return it
+        if isinstance(ori_value, Orientation):
+            return ori_value
+
+        # Convert string to enum
+        ori_str = str(ori_value).lower()
         if ori_str == "in":
             return Orientation.IN
         elif ori_str == "out":
@@ -190,5 +193,5 @@ class OptionOrientationUpdateService:
         elif ori_str == "counter":
             return Orientation.COUNTER
         else:
-            logger.warning(f"Unknown orientation string: {ori_str}, defaulting to IN")
+            logger.warning(f"Unknown orientation value: {ori_value}, defaulting to IN")
             return Orientation.IN

@@ -93,7 +93,7 @@ class DirectionCalculationService(IDirectionCalculationService):
 
         # Determine if prop is radial or nonradial based on end orientation
         # Validated logic: RADIAL = IN/OUT, NONRADIAL = CLOCK/COUNTER
-        is_radial = motion.end_ori in ["in", "out"]
+        is_radial = motion.end_ori in [Orientation.IN, Orientation.OUT]
 
         # Determine grid mode based on location
         grid_mode = self.detect_grid_mode(location)
@@ -181,9 +181,14 @@ class DirectionCalculationService(IDirectionCalculationService):
         else:
             return "box"
 
-    def is_radial_orientation(self, orientation: str) -> bool:
+    def is_radial_orientation(self, orientation) -> bool:
         """Check if orientation is radial (in/out) vs nonradial (clock/counter)."""
-        return orientation in ["in", "out"]
+        if isinstance(orientation, Orientation):
+            return orientation in [Orientation.IN, Orientation.OUT]
+        elif isinstance(orientation, str):
+            return orientation.lower() in ["in", "out"]
+        else:
+            return False
 
     def get_opposite_direction(
         self, direction: SeparationDirection

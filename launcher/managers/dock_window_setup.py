@@ -53,31 +53,48 @@ class DockWindowSetup:
 
         # On Windows, ensure it doesn't deactivate or hide when taskbar is clicked
         try:
-            import sys, ctypes
+            import sys
+            import ctypes
+
             if sys.platform.startswith("win"):
                 hwnd = int(dock_widget.winId())
                 # Apply extended window styles to prevent hiding
                 GWL_EXSTYLE = -20
                 WS_EX_TOOLWINDOW = 0x00000080
-                WS_EX_LAYERED = 0x00080000
+                _ = 0x00080000
                 WS_EX_TOPMOST = 0x00000008
                 WS_EX_NOACTIVATE = 0x08000000
-                
+
                 # Get current extended styles and add our flags
-                current_ex_style = ctypes.windll.user32.GetWindowLongW(hwnd, GWL_EXSTYLE)
-                new_ex_style = current_ex_style | WS_EX_TOOLWINDOW | WS_EX_TOPMOST | WS_EX_NOACTIVATE
+                current_ex_style = ctypes.windll.user32.GetWindowLongW(
+                    hwnd, GWL_EXSTYLE
+                )
+                new_ex_style = (
+                    current_ex_style
+                    | WS_EX_TOOLWINDOW
+                    | WS_EX_TOPMOST
+                    | WS_EX_NOACTIVATE
+                )
                 ctypes.windll.user32.SetWindowLongW(hwnd, GWL_EXSTYLE, new_ex_style)
-                
+
                 # Force topmost positioning
                 SWP_NOMOVE = 0x0002
                 SWP_NOSIZE = 0x0001
                 SWP_NOACTIVATE = 0x0010
                 HWND_TOPMOST = -1
                 ctypes.windll.user32.SetWindowPos(
-                    hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE
+                    hwnd,
+                    HWND_TOPMOST,
+                    0,
+                    0,
+                    0,
+                    0,
+                    SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE,
                 )
         except Exception:
-            logger.warning("⚠️ Failed to configure Win32 extended styles for dock window")
+            logger.warning(
+                "⚠️ Failed to configure Win32 extended styles for dock window"
+            )
 
         logger.debug("✅ Dock window properties configured")
 

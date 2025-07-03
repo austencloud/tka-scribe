@@ -127,7 +127,7 @@ class MotionData:
     REPLACES: Complex motion attribute dictionaries
 
     Immutable motion data for props and arrows.
-    Matches legacy data structure exactly.
+    Uses Orientation enum for type safety while maintaining JSON compatibility.
     """
 
     motion_type: MotionType
@@ -136,9 +136,21 @@ class MotionData:
     end_loc: Location
     turns: float = 0.0
 
-    # Additional legacy fields
-    start_ori: str = "in"
-    end_ori: str = "in"
+    # Orientation fields now use enum types
+    start_ori: Orientation = Orientation.IN
+    end_ori: Orientation = Orientation.IN
+
+    def __post_init__(self):
+        """Ensure orientation fields are converted to enums."""
+        # Convert start_ori if it's not already an Orientation enum
+        if not isinstance(self.start_ori, Orientation):
+            object.__setattr__(
+                self, "start_ori", self._convert_orientation(self.start_ori)
+            )
+
+        # Convert end_ori if it's not already an Orientation enum
+        if not isinstance(self.end_ori, Orientation):
+            object.__setattr__(self, "end_ori", self._convert_orientation(self.end_ori))
 
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary for serialization."""
@@ -148,22 +160,64 @@ class MotionData:
             "start_loc": self.start_loc.value,
             "end_loc": self.end_loc.value,
             "turns": self.turns,
-            "start_ori": self.start_ori,
-            "end_ori": self.end_ori,
+            "start_ori": self.start_ori.value,  # Always Orientation enum after __post_init__
+            "end_ori": self.end_ori.value,  # Always Orientation enum after __post_init__
         }
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "MotionData":
-        """Create from dictionary."""
+        """Create from dictionary with backward compatibility."""
         return cls(
             motion_type=MotionType(data["motion_type"]),
             prop_rot_dir=RotationDirection(data["prop_rot_dir"]),
             start_loc=Location(data["start_loc"]),
             end_loc=Location(data["end_loc"]),
             turns=data.get("turns", 0.0),
-            start_ori=data.get("start_ori", "in"),
-            end_ori=data.get("end_ori", "in"),
+            start_ori=cls._convert_orientation(data.get("start_ori", "in")),
+            end_ori=cls._convert_orientation(data.get("end_ori", "in")),
         )
+
+    @staticmethod
+    def _convert_orientation(value) -> Orientation:
+        """Convert orientation value to Orientation enum with backward compatibility."""
+        if isinstance(value, Orientation):
+            return value
+
+        if isinstance(value, str):
+            # Handle string values from JSON
+            value_lower = value.lower().strip()
+            orientation_map = {
+                "in": Orientation.IN,
+                "out": Orientation.OUT,
+                "clock": Orientation.CLOCK,
+                "counter": Orientation.COUNTER,
+            }
+            return orientation_map.get(value_lower, Orientation.IN)
+
+        if isinstance(value, (int, float)):
+            # Handle legacy numeric values
+            angle_map = {
+                0: Orientation.IN,
+                90: Orientation.CLOCK,
+                180: Orientation.OUT,
+                270: Orientation.COUNTER,
+            }
+            return angle_map.get(int(value), Orientation.IN)
+
+        # Default fallback
+        return Orientation.IN
+
+    def update(self, **kwargs) -> "MotionData":
+        """Create a new MotionData with updated fields."""
+        from dataclasses import replace
+
+        # Convert orientation fields if they're provided as strings
+        if "start_ori" in kwargs:
+            kwargs["start_ori"] = self._convert_orientation(kwargs["start_ori"])
+        if "end_ori" in kwargs:
+            kwargs["end_ori"] = self._convert_orientation(kwargs["end_ori"])
+
+        return replace(self, **kwargs)
 
 
 class VTGMode(Enum):
@@ -538,7 +592,7 @@ class SequenceData:
     @classmethod
     def empty(cls) -> "SequenceData":
         """Create an empty sequence."""
-        return cls(name="Empty Sequence", beats=[])
+        return cls(name="", beats=[])
 
 
 class ArrowColor(Enum):

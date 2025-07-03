@@ -339,8 +339,13 @@ class TKADockWindow(QWidget):
                     SWP_NOACTIVATE = 0x0010
                     HWND_TOPMOST = -1
                     ctypes.windll.user32.SetWindowPos(
-                        hwnd, HWND_TOPMOST, 0, 0, 0, 0, 
-                        SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE
+                        hwnd,
+                        HWND_TOPMOST,
+                        0,
+                        0,
+                        0,
+                        0,
+                        SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE,
                     )
                     self.raise_()
         except Exception:

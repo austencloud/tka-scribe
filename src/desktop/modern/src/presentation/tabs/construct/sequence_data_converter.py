@@ -6,7 +6,16 @@ Responsible for maintaining compatibility with legacy sequence data structures.
 """
 
 from typing import Dict, Any
-from domain.models.core_models import BeatData, SequenceData, MotionData, GlyphData
+from domain.models.core_models import (
+    BeatData,
+    SequenceData,
+    MotionData,
+    GlyphData,
+    MotionType,
+    RotationDirection,
+    Location,
+    Orientation,
+)
 
 
 class SequenceDataConverter:
@@ -24,15 +33,6 @@ class SequenceDataConverter:
         self, beat_dict: dict, beat_number: int
     ) -> BeatData:
         """Convert legacy JSON format back to modern BeatData with full pictograph data"""
-        from domain.models.core_models import (
-            BeatData,
-            MotionData,
-            GlyphData,
-            MotionType,
-            RotationDirection,
-            Location,
-            Orientation,
-        )
 
         # Extract basic beat info
         letter = beat_dict.get("letter", "?")
@@ -109,15 +109,6 @@ class SequenceDataConverter:
         self, start_pos_dict: dict
     ) -> BeatData:
         """Convert legacy start position JSON back to modern BeatData with full data"""
-        from domain.models.core_models import (
-            BeatData,
-            MotionData,
-            GlyphData,
-            MotionType,
-            RotationDirection,
-            Location,
-            Orientation,
-        )
 
         # Extract basic start position info
         letter = start_pos_dict.get("letter", "A")
@@ -307,14 +298,24 @@ class SequenceDataConverter:
                 else sequence_start_position
             ),
             "start_ori": (
-                start_position_data.blue_motion.start_orientation.value
+                start_position_data.blue_motion.start_ori.value
                 if start_position_data.blue_motion
-                else 0
+                and hasattr(start_position_data.blue_motion.start_ori, "value")
+                else (
+                    start_position_data.blue_motion.start_ori
+                    if start_position_data.blue_motion
+                    else "in"
+                )
             ),
             "end_ori": (
-                start_position_data.blue_motion.end_orientation.value
+                start_position_data.blue_motion.end_ori.value
                 if start_position_data.blue_motion
-                else 0
+                and hasattr(start_position_data.blue_motion.end_ori, "value")
+                else (
+                    start_position_data.blue_motion.end_ori
+                    if start_position_data.blue_motion
+                    else "in"
+                )
             ),
             "prop_rot_dir": "no_rot",  # Start positions don't rotate
             "turns": 0,  # Start positions don't have turns
@@ -337,14 +338,24 @@ class SequenceDataConverter:
                 else sequence_start_position
             ),
             "start_ori": (
-                start_position_data.red_motion.start_orientation.value
+                start_position_data.red_motion.start_ori.value
                 if start_position_data.red_motion
-                else 0
+                and hasattr(start_position_data.red_motion.start_ori, "value")
+                else (
+                    start_position_data.red_motion.start_ori
+                    if start_position_data.red_motion
+                    else "in"
+                )
             ),
             "end_ori": (
-                start_position_data.red_motion.end_orientation.value
+                start_position_data.red_motion.end_ori.value
                 if start_position_data.red_motion
-                else 0
+                and hasattr(start_position_data.red_motion.end_ori, "value")
+                else (
+                    start_position_data.red_motion.end_ori
+                    if start_position_data.red_motion
+                    else "in"
+                )
             ),
             "prop_rot_dir": "no_rot",  # Start positions don't rotate
             "turns": 0,  # Start positions don't have turns

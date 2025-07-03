@@ -118,10 +118,6 @@ class SessionStateService(ISessionStateService):
                     "last_interaction": self._current_session.last_interaction.isoformat(),
                     "tka_version": self._current_session.tka_version,
                 },
-                "current_sequence": {
-                    "sequence_id": self._current_session.current_sequence_id,
-                    "sequence_data": self._current_session.current_sequence_data,
-                },
                 "workbench_state": {
                     "selected_beat_index": self._current_session.selected_beat_index,
                     "selected_beat_data": self._current_session.selected_beat_data,

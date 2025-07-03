@@ -66,9 +66,22 @@ class AttributeKeyGenerationService:
             if letter in ["S", "T"]:
                 return f"{lead_state}"
             elif has_hybrid_motions:
-                if start_ori in ["in", "out"]:
+                # Convert string orientation to enum for comparison
+                from domain.models.core_models import Orientation
+
+                ori_enum = start_ori
+                if isinstance(start_ori, str):
+                    ori_map = {
+                        "in": Orientation.IN,
+                        "out": Orientation.OUT,
+                        "clock": Orientation.CLOCK,
+                        "counter": Orientation.COUNTER,
+                    }
+                    ori_enum = ori_map.get(start_ori.lower(), Orientation.IN)
+
+                if ori_enum in [Orientation.IN, Orientation.OUT]:
                     return f"{motion_type}_from_layer1"
-                elif start_ori in ["clock", "counter"]:
+                elif ori_enum in [Orientation.CLOCK, Orientation.COUNTER]:
                     return f"{motion_type}_from_layer2"
                 else:
                     return color
