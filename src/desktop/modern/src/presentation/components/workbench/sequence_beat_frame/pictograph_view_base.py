@@ -32,6 +32,7 @@ class PictographViewBase(QFrame):
     # Common signals - subclasses can add their own
     clicked = pyqtSignal()
     context_menu = pyqtSignal()
+    selection_changed = pyqtSignal(bool)  # Emitted when selection state changes
 
     def __init__(self, parent: Optional[QWidget] = None):
         super().__init__(parent)
