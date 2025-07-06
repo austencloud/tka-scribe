@@ -210,6 +210,16 @@ class ApplicationService(IApplicationService):
             ),
             # Web Applications
             ApplicationData(
+                id="web_v1_legacy",
+                title="TKA Web V1 Legacy",
+                description="Version 1 Legacy web app with XState and Redux patterns",
+                icon="🎭",
+                category=ApplicationCategory.WEB,
+                command="npm run dev",
+                working_dir=tka_root / "src" / "web" / "v1-legacy",
+                display_order=2,
+            ),
+            ApplicationData(
                 id="web_app",
                 title="TKA Web Interface",
                 description="Launch the web-based TKA interface in your browser",

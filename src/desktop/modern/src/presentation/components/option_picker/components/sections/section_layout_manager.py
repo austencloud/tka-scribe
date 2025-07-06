@@ -86,11 +86,11 @@ class SectionLayoutManager:
             )
             total_height = header_height + pictograph_height
             self.section.setMinimumHeight(total_height)
-            
+
             # Force the section to actually take up the calculated space
             # This ensures Type 1 gets enough space for 2 rows, Type 2&3 get space for 1 row
             self.section.resize(self.section.width(), total_height)
-            
+
             # Trigger layout recalculation to respect content-based sizing
             self.section.updateGeometry()
             if self.section.parent():

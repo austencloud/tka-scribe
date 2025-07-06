@@ -196,7 +196,7 @@ class FallbackApplicationService:
         if debug_mode:
             debug_prefix = "python -m debugpy --listen 5678 --wait-for-client "
 
-        return [
+        applications = [
             ApplicationData(
                 id="desktop_modern",
                 title="TKA Desktop (Modern)",
@@ -248,6 +248,26 @@ class FallbackApplicationService:
                 display_order=2,
             ),
             ApplicationData(
+                id="web_v1_legacy",
+                title="TKA Web V1 Legacy",
+                description="Version 1 Legacy web app with XState and Redux patterns",
+                icon="🎭",
+                category=ApplicationCategory.WEB,
+                command="npm run dev",
+                working_dir=tka_root / "src" / "web" / "v1-legacy",
+                display_order=3,
+            ),
+            ApplicationData(
+                id="web_launcher",
+                title="TKA Web Launcher",
+                description="Modern web-based launcher for all TKA applications",
+                icon="🚀",
+                category=ApplicationCategory.WEB,
+                command="npm run dev",
+                working_dir=tka_root / "src" / "web" / "launcher",
+                display_order=4,
+            ),
+            ApplicationData(
                 id="web_app",
                 title="TKA Web Application",
                 description="Web-based TKA interface for browser access",
@@ -255,7 +275,7 @@ class FallbackApplicationService:
                 category=ApplicationCategory.WEB,
                 command="npm run dev",
                 working_dir=tka_root / "src" / "web",
-                display_order=3,
+                display_order=5,
             ),
             ApplicationData(
                 id="dev_tools",
@@ -265,9 +285,11 @@ class FallbackApplicationService:
                 category=ApplicationCategory.DEVELOPMENT,
                 command=f"{debug_prefix}python main.py --dev",
                 working_dir=tka_root,
-                display_order=4,
+                display_order=6,
             ),
         ]
+        
+        return applications
 
 
 class FallbackLaunchService:

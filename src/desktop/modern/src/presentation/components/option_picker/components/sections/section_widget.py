@@ -67,12 +67,15 @@ class OptionPickerSection(QGroupBox):
 
         # Set size policy based on section type to match legacy behavior
         from PyQt6.QtWidgets import QSizePolicy
+
         if self.is_groupable:
             # Types 4, 5, 6: Match legacy group widget size policy
             self.setSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Fixed)
         else:
             # Types 1, 2, 3: Match legacy QGroupBox default size policy
-            self.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred)
+            self.setSizePolicy(
+                QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred
+            )
 
         # Compatibility aliases
         self.pictograph_layout = self.section_pictograph_container.layout
@@ -136,8 +139,10 @@ class OptionPickerSection(QGroupBox):
                     if hasattr(self.header, "get_calculated_height")
                     else 40
                 )
-                content_height = self.section_pictograph_container.calculate_required_height(
-                    pictograph_size
+                content_height = (
+                    self.section_pictograph_container.calculate_required_height(
+                        pictograph_size
+                    )
                 )
 
                 # Total height needed for this section's content
