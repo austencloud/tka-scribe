@@ -86,6 +86,15 @@ class SectionLayoutManager:
             )
             total_height = header_height + pictograph_height
             self.section.setMinimumHeight(total_height)
+            
+            # Force the section to actually take up the calculated space
+            # This ensures Type 1 gets enough space for 2 rows, Type 2&3 get space for 1 row
+            self.section.resize(self.section.width(), total_height)
+            
+            # Trigger layout recalculation to respect content-based sizing
+            self.section.updateGeometry()
+            if self.section.parent():
+                self.section.parent().updateGeometry()
 
             if hasattr(self.section.header, "type_button"):
                 self.section.header.type_button._resizing = True
@@ -97,7 +106,9 @@ class SectionLayoutManager:
                         hasattr(self.section, "option_picker_size_provider")
                         and self.section.option_picker_size_provider
                     ):
-                        parent_height = self.section.option_picker_size_provider().height()
+                        parent_height = (
+                            self.section.option_picker_size_provider().height()
+                        )
                         font_size = max(parent_height // 70, 10)
                         label_height = max(int(font_size * 3), 20)
                         label_width = max(int(label_height * 6), 100)

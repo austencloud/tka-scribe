@@ -27,6 +27,9 @@ from domain.models.core_models import BeatData, Orientation
 from presentation.components.graph_editor.components.turn_adjustment_controls.styling_helpers import (
     apply_modern_panel_styling,
     apply_turn_button_styling,
+    UNIFIED_BUTTON_WIDTH,
+    UNIFIED_BUTTON_HEIGHT,
+    UNIFIED_BUTTON_SPACING,
 )
 from PyQt6.QtCore import pyqtSignal, Qt
 from PyQt6.QtWidgets import (
@@ -171,7 +174,9 @@ class DualOrientationPicker(QWidget):
         ]
         for orientation in orientations:
             btn = QPushButton(orientation.value.upper())
-            btn.setFixedSize(80, 40)  # Larger, more touch-friendly size
+            btn.setFixedSize(
+                UNIFIED_BUTTON_WIDTH, UNIFIED_BUTTON_HEIGHT
+            )  # Use unified sizing
             btn.setCheckable(True)  # Enable checkable state for selection feedback
             btn.clicked.connect(
                 lambda _, ori=orientation, c=color: self._set_orientation(c, ori)

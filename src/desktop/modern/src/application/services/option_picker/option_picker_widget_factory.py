@@ -63,12 +63,12 @@ class OptionPickerWidgetFactory:
         sections_container = QWidget()
         sections_layout = QVBoxLayout(sections_container)
         sections_layout.setContentsMargins(5, 5, 5, 5)  # Minimal margins
-        sections_layout.setSpacing(10)  # Reduced spacing between sections
-        sections_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
+        sections_layout.setSpacing(0)  # Match legacy spacing
+        # Remove AlignTop - let sections size naturally based on content like legacy
 
         sections_container.setSizePolicy(
             QSizePolicy.Policy.Expanding,
-            QSizePolicy.Policy.Minimum,
+            QSizePolicy.Policy.Preferred,  # Changed from Minimum to allow natural expansion
         )
 
         scroll_area.setWidget(sections_container)

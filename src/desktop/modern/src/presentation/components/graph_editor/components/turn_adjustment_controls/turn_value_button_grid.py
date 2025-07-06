@@ -1,7 +1,12 @@
 from PyQt6.QtWidgets import QWidget, QGridLayout, QPushButton
 from typing import Callable
 
-from presentation.components.graph_editor.components.turn_adjustment_controls.styling_helpers import apply_turn_button_styling
+from presentation.components.graph_editor.components.turn_adjustment_controls.styling_helpers import (
+    apply_turn_button_styling,
+    UNIFIED_BUTTON_WIDTH,
+    UNIFIED_BUTTON_HEIGHT,
+    UNIFIED_BUTTON_SPACING,
+)
 
 
 class TurnValueButtonGrid(QWidget):
@@ -20,13 +25,15 @@ class TurnValueButtonGrid(QWidget):
         self.on_value_selected = on_value_selected
         grid_layout = QGridLayout(self)
         grid_layout.setContentsMargins(8, 8, 8, 8)
-        grid_layout.setSpacing(10)  # Increased spacing for better visual separation
+        grid_layout.setSpacing(UNIFIED_BUTTON_SPACING)  # Use unified spacing
         for i, turn_value in enumerate(turn_values):
             row = i // 4
             col = i % 4
             button = QPushButton(turn_value)
             button.setCheckable(True)
-            button.setFixedSize(70, 55)  # Increased size for better clickability
+            button.setFixedSize(
+                UNIFIED_BUTTON_WIDTH, UNIFIED_BUTTON_HEIGHT
+            )  # Use unified sizing
             button.clicked.connect(
                 lambda checked, val=turn_value: self._handle_click(val)
             )

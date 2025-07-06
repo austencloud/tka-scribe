@@ -4,7 +4,7 @@ Split from option_picker_section.py - contains core section widget logic
 """
 
 from typing import Callable
-from PyQt6.QtWidgets import QWidget, QVBoxLayout
+from PyQt6.QtWidgets import QGroupBox, QVBoxLayout
 from PyQt6.QtCore import Qt, QSize
 from presentation.components.option_picker.types.letter_types import LetterType
 from presentation.components.option_picker.components.sections.section_header import (
@@ -15,7 +15,7 @@ from presentation.components.option_picker.components.sections.section_container
 )
 
 
-class OptionPickerSection(QWidget):
+class OptionPickerSection(QGroupBox):
     """
     Main option picker section widget.
     Contains UI setup and basic event handling.
@@ -65,6 +65,15 @@ class OptionPickerSection(QWidget):
         self.setStyleSheet("background-color: transparent; border: none;")
         self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
 
+        # Set size policy based on section type to match legacy behavior
+        from PyQt6.QtWidgets import QSizePolicy
+        if self.is_groupable:
+            # Types 4, 5, 6: Match legacy group widget size policy
+            self.setSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Fixed)
+        else:
+            # Types 1, 2, 3: Match legacy QGroupBox default size policy
+            self.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred)
+
         # Compatibility aliases
         self.pictograph_layout = self.section_pictograph_container.layout
         self.pictographs = self.section_pictograph_container.pictographs
@@ -110,6 +119,40 @@ class OptionPickerSection(QWidget):
         """Handle resize events."""
         self.layout_manager.handle_resize_event(event)
         super().resizeEvent(event)
+
+    def sizeHint(self):
+        """Provide size hint based on actual content requirements."""
+        from PyQt6.QtCore import QSize
+
+        # Calculate content-based height like legacy
+        if hasattr(self, "section_pictograph_container") and hasattr(self, "header"):
+            try:
+                # Get current pictograph size for calculation
+                pictograph_size = self.layout_manager._get_global_pictograph_size()
+
+                # Calculate required heights
+                header_height = (
+                    self.header.get_calculated_height()
+                    if hasattr(self.header, "get_calculated_height")
+                    else 40
+                )
+                content_height = self.section_pictograph_container.calculate_required_height(
+                    pictograph_size
+                )
+
+                # Total height needed for this section's content
+                total_height = header_height + content_height
+
+                # Width should be the full container width
+                width = self.width() if self.width() > 0 else 400
+
+                return QSize(width, total_height)
+            except Exception:
+                # Fallback to reasonable defaults
+                pass
+
+        # Default fallback
+        return super().sizeHint()
 
     # Properties for compatibility
     @property

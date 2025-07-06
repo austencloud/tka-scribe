@@ -36,7 +36,7 @@ class OptionPickerDisplayManager:
 
         # Removed repetitive log statement
 
-        # Create sections 1, 2, 3 normally (vertical layout)
+        # Create sections 1, 2, 3 with natural content-based sizing (like legacy)
         for section_type in [LetterType.TYPE1, LetterType.TYPE2, LetterType.TYPE3]:
             section = OptionPickerSection(
                 section_type,
@@ -44,6 +44,8 @@ class OptionPickerDisplayManager:
                 option_picker_size_provider=self.mw_size_provider,
             )
             self._sections[section_type] = section
+            # Add without stretch factor - sections size naturally to content
+            # Type 1 (2 rows) gets more height, Type 2&3 (1 row each) get less height
             self.sections_layout.addWidget(section)
             # Removed repetitive log statement
 
@@ -79,6 +81,7 @@ class OptionPickerDisplayManager:
                 section.setFixedWidth(section_width)
                 # Removed repetitive log statement
 
+        # Add bottom row container without stretch factor for natural sizing
         self.sections_layout.addWidget(self.bottom_row_container)
         # Removed repetitive log statement
 

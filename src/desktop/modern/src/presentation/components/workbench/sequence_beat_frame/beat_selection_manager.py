@@ -29,9 +29,14 @@ class BeatSelectionManager(QObject):
 
         self._parent_widget = parent_widget
         self._beat_views: List[BeatView] = []
+        self._start_position_view = None  # Reference to start position view
         self._selected_index: Optional[int] = None
         self._selected_indices: List[int] = []  # For future multi-selection
         self._multi_selection_enabled = False
+        self._start_position_selected = False  # Track start position selection
+
+        # Special index for start position (-1)
+        self.START_POSITION_INDEX = -1
 
         # Keyboard navigation
         self._keyboard_navigation_enabled = True
@@ -45,17 +50,28 @@ class BeatSelectionManager(QObject):
         for i, beat_view in enumerate(beat_views):
             beat_view.beat_clicked.connect(lambda idx=i: self.select_beat(idx))
 
+    def register_start_position_view(self, start_position_view):
+        """Register start position view for unified selection management"""
+        self._start_position_view = start_position_view
+
+        # Connect start position click signal
+        if hasattr(start_position_view, "start_pos_beat_clicked"):
+            start_position_view.start_pos_beat_clicked.connect(
+                lambda: self.select_start_position()
+            )
+
     def select_beat(self, beat_index: int):
-        """Select a specific beat"""
+        """Select a specific beat - unified selection management"""
         if not self._is_valid_index(beat_index):
             return
 
-        # Clear previous selection
-        self._clear_visual_selection()
+        # Clear ALL previous selections (beats AND start position)
+        self._clear_all_selections()
 
         # Set new selection
         self._selected_index = beat_index
         self._selected_indices = [beat_index]
+        self._start_position_selected = False
 
         # Update visual state
         self._update_visual_selection()
@@ -63,12 +79,32 @@ class BeatSelectionManager(QObject):
         # Emit signals
         self.selection_changed.emit(beat_index)
 
+    def select_start_position(self):
+        """Select the start position - unified selection management"""
+        if not self._start_position_view:
+            return
+
+        # Clear ALL previous selections (beats AND start position)
+        self._clear_all_selections()
+
+        # Set start position as selected
+        self._selected_index = self.START_POSITION_INDEX
+        self._selected_indices = []
+        self._start_position_selected = True
+
+        # Update visual state
+        self._start_position_view.set_selected(True)
+
+        # Emit signals
+        self.selection_changed.emit(self.START_POSITION_INDEX)
+
     def clear_selection(self):
-        """Clear all selections"""
-        self._clear_visual_selection()
+        """Clear all selections - unified management"""
+        self._clear_all_selections()
 
         self._selected_index = None
         self._selected_indices = []
+        self._start_position_selected = False
 
         self.selection_cleared.emit()
         self.selection_changed.emit(None)
@@ -162,8 +198,6 @@ class BeatSelectionManager(QObject):
             if prev_index >= 0:
                 self.select_beat(prev_index)
 
-
-
     def set_keyboard_navigation_enabled(self, enabled: bool):
         """Enable or disable keyboard navigation"""
         self._keyboard_navigation_enabled = enabled
@@ -185,9 +219,17 @@ class BeatSelectionManager(QObject):
         for beat_view in self._beat_views:
             beat_view.set_selected(False)
 
+    def _clear_all_selections(self):
+        """Clear visual selection from ALL components (beats AND start position)"""
+        # Clear beat views
+        for beat_view in self._beat_views:
+            beat_view.set_selected(False)
+
+        # Clear start position view
+        if self._start_position_view:
+            self._start_position_view.set_selected(False)
+
     def _update_visual_selection(self):
         """Update visual selection state"""
         for i, beat_view in enumerate(self._beat_views):
             beat_view.set_selected(i in self._selected_indices)
-
-

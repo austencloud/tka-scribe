@@ -145,6 +145,13 @@ class SequenceWorkbenchButtonPanel(QWidget):
                 button.setText("✏️")  # Edit icon
                 button.setToolTip("Edit Mode")
 
+    def reset_to_construct_mode(self):
+        """Reset the Edit/Construct button to Construct mode (called when sequence is cleared)"""
+        if self._edit_mode:
+            print("🔄 [BUTTON_PANEL] Resetting to Construct mode after sequence clear")
+            self._edit_mode = False
+            self._update_edit_construct_button()
+
     def _apply_styling(self):
         """Apply glassmorphism styling to the button panel and buttons"""
         # Panel glassmorphism background

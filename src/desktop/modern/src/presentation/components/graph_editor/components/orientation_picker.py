@@ -19,6 +19,13 @@ from PyQt6.QtWidgets import (
 )
 
 from domain.models.core_models import Orientation
+from presentation.components.graph_editor.components.turn_adjustment_controls.styling_helpers import (
+    apply_modern_panel_styling,
+    apply_unified_button_styling,
+    UNIFIED_BUTTON_WIDTH,
+    UNIFIED_BUTTON_HEIGHT,
+    UNIFIED_BUTTON_SPACING,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -82,8 +89,8 @@ class OrientationPickerWidget(QWidget):
         buttons_widget = self._create_orientation_buttons()
         layout.addWidget(buttons_widget)
 
-        # Apply modern styling
-        self._apply_panel_styling(panel)
+        # Apply unified modern styling
+        apply_modern_panel_styling(panel, self._arrow_color)
 
         return panel
 
@@ -118,7 +125,7 @@ class OrientationPickerWidget(QWidget):
         buttons_widget = QWidget()
         buttons_layout = QGridLayout(buttons_widget)
         buttons_layout.setContentsMargins(0, 0, 0, 0)
-        buttons_layout.setSpacing(6)
+        buttons_layout.setSpacing(UNIFIED_BUTTON_SPACING)
 
         # Create buttons in 2x2 grid for better touch accessibility
         for i, orientation in enumerate(self.orientations):
@@ -127,13 +134,15 @@ class OrientationPickerWidget(QWidget):
 
             btn = QPushButton(orientation.value.upper())
             btn.setCheckable(True)
-            btn.setFixedSize(80, 50)  # Larger, more touch-friendly size
+            btn.setFixedSize(
+                UNIFIED_BUTTON_WIDTH, UNIFIED_BUTTON_HEIGHT
+            )  # Use unified sizing
             btn.clicked.connect(
                 lambda _, ori=orientation: self._select_orientation(ori)
             )
 
-            # Apply modern button styling
-            self._apply_button_styling(btn)
+            # Apply unified button styling
+            apply_unified_button_styling(btn, self._arrow_color, "orientation")
 
             buttons_layout.addWidget(btn, row, col)
             self._orientation_buttons[orientation] = btn
@@ -142,76 +151,6 @@ class OrientationPickerWidget(QWidget):
         self._update_button_selection()
 
         return buttons_widget
-
-    def _apply_panel_styling(self, panel: QGroupBox):
-        """Apply modern glassmorphism styling to the panel"""
-        if self._arrow_color == "blue":
-            gradient_start = "rgba(74, 144, 226, 0.3)"
-            gradient_end = "rgba(74, 144, 226, 0.1)"
-            border_color = "rgba(74, 144, 226, 0.4)"
-        else:
-            gradient_start = "rgba(231, 76, 60, 0.3)"
-            gradient_end = "rgba(231, 76, 60, 0.1)"
-            border_color = "rgba(231, 76, 60, 0.4)"
-
-        panel.setStyleSheet(
-            f"""
-            QGroupBox {{
-                background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                    stop:0 {gradient_start},
-                    stop:1 {gradient_end});
-                border: 2px solid {border_color};
-                border-radius: 12px;
-                margin-top: 0px;
-                padding-top: 8px;
-                font-weight: bold;
-                font-size: 12px;
-            }}
-            QGroupBox::title {{
-                subcontrol-origin: margin;
-                left: 10px;
-                padding: 0 5px 0 5px;
-            }}
-            """
-        )
-
-    def _apply_button_styling(self, button: QPushButton):
-        """Apply modern button styling matching turn adjustment controls"""
-        if self._arrow_color == "blue":
-            base_color = "74, 144, 226"
-            hover_color = "94, 164, 246"
-        else:
-            base_color = "231, 76, 60"
-            hover_color = "251, 96, 80"
-
-        button.setStyleSheet(
-            f"""
-            QPushButton {{
-                background: rgba({base_color}, 0.2);
-                border: 2px solid rgba({base_color}, 0.4);
-                border-radius: 8px;
-                color: rgba(255, 255, 255, 0.9);
-                font-size: 12px;
-                font-weight: bold;
-                padding: 4px;
-            }}
-            QPushButton:hover {{
-                background: rgba({hover_color}, 0.3);
-                border-color: rgba({hover_color}, 0.6);
-                color: rgba(255, 255, 255, 1.0);
-            }}
-            QPushButton:pressed {{
-                background: rgba({base_color}, 0.4);
-                border-color: rgba({base_color}, 0.8);
-            }}
-            QPushButton:checked {{
-                background: rgba({base_color}, 0.6);
-                border-color: rgba({base_color}, 0.9);
-                color: rgba(255, 255, 255, 1.0);
-                font-weight: bold;
-            }}
-            """
-        )
 
     def _select_orientation(self, orientation: Orientation):
         """Handle orientation selection"""
@@ -234,15 +173,17 @@ class OrientationPickerWidget(QWidget):
         """Get the current orientation"""
         return self._current_orientation
 
-    def set_orientation(self, orientation: Orientation):
-        """Set orientation programmatically"""
-        self._set_orientation(orientation)
-
-    def set_orientation(self, orientation: str):
-        """Set orientation from external source"""
-        if orientation in self.orientations:
+    def set_orientation(self, orientation: Orientation | str):
+        """Set orientation programmatically (accepts Orientation enum or string)"""
+        if isinstance(orientation, str):
+            # Convert string to Orientation enum
+            for ori in self.orientations:
+                if ori.value.upper() == orientation.upper():
+                    self._set_orientation(ori)
+                    return
+        elif isinstance(orientation, Orientation):
             self._set_orientation(orientation)
 
     def get_orientation(self) -> str:
-        """Get current orientation"""
-        return self._current_orientation
+        """Get current orientation as string"""
+        return self._current_orientation.value

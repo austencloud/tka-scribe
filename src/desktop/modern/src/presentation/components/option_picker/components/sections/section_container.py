@@ -33,6 +33,7 @@ class OptionPickerSectionPictographContainer(QFrame):
 
         from PyQt6.QtWidgets import QSizePolicy
 
+        # Allow sections to size based on content height (like legacy)
         self.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Minimum)
         self.setStyleSheet(
             """
@@ -130,7 +131,7 @@ class OptionPickerSectionPictographContainer(QFrame):
     def update_sizing_reference(self, option_picker_width: int):
         """Update sizing reference for all pictograph frames in this container"""
         # Removed repetitive log statement
-        
+
         for pictograph_frame in self.pictographs:
             if pictograph_frame and hasattr(
                 pictograph_frame, "update_sizing_reference"

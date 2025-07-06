@@ -116,6 +116,13 @@ class WorkbenchBeatFrameSection(QWidget):
     def _handle_clear_sequence_request(self):
         """Handle clear sequence request from button panel"""
         print("🔧 DEBUG: Beat frame section received clear sequence request")
+
+        # Reset button panel to Construct mode when clearing sequence
+        if self._button_panel and hasattr(
+            self._button_panel, "reset_to_construct_mode"
+        ):
+            self._button_panel.reset_to_construct_mode()
+
         self.clear_sequence_requested.emit()
 
     def set_sequence(self, sequence: Optional[SequenceData]):

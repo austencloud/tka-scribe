@@ -208,7 +208,7 @@ class SessionStateService(ISessionStateService):
     def update_current_sequence(self, sequence_data: Any, sequence_id: str) -> None:
         """Update current sequence in session state."""
         # Removed repetitive log statements
-        
+
         try:
             # Convert sequence data to serializable format
             if hasattr(sequence_data, "to_dict"):
