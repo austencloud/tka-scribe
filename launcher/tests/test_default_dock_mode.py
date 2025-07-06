@@ -9,7 +9,7 @@ import os
 from pathlib import Path
 
 # Add the launcher directory to the path
-sys.path.insert(0, str(Path(__file__).parent / "launcher"))
+sys.path.insert(0, str(Path(__file__).parent.parent))
 
 
 def test_default_dock_mode():

@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import DifficultyCircle from './DifficultyCircle.svelte';
-	import { sequenceContainer } from '../state/stores/sequence/SequenceContainer.js';
-	import { useContainer } from '../state/core/svelte5-integration.svelte';
+	import { sequenceContainer } from '../../state/stores/sequence/SequenceContainer.js';
+	import { useContainer } from '../../state/core/svelte5-integration.svelte';
 
 	const { currentWord = 'Word', width = 100 } = $props();
 

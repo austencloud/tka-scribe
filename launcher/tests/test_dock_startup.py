@@ -10,7 +10,7 @@ import logging
 from pathlib import Path
 
 # Add the launcher directory to the path so we can import from it
-launcher_dir = Path(__file__).parent / "launcher"
+launcher_dir = Path(__file__).parent.parent
 sys.path.insert(0, str(launcher_dir))
 
 # Setup logging

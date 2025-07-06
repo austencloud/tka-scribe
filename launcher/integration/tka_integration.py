@@ -1,21 +1,21 @@
 #!/usr/bin/env python3
 """
-TKA Integration Service - Bridge to TKA Services
-===============================================
+TKA Integration Service - Clean Bridge to TKA Services
+====================================================
 
-Clean integration layer between the fluent launcher and TKA's existing
-services and dependency injection system.
+Simple integration layer between the fluent launcher and TKA's 
+dependency injection system.
 
 Responsibilities:
 - Interface with TKA's DI container
-- Application discovery and management
+- Application discovery and management  
 - Launch coordination
 - Settings and state management
 
 Architecture:
-- Adapter pattern for TKA services
-- Graceful fallback for missing services
+- Direct integration with TKA services (no fallbacks)
 - Clean error handling and logging
+- Follows TKA's dependency injection patterns
 """
 
 import logging
@@ -36,8 +36,8 @@ class TKAIntegrationService:
     """
     Service for integrating with TKA's existing infrastructure.
 
-    Provides a clean interface to TKA services while handling
-    fallbacks and error conditions gracefully.
+    Provides a clean interface to TKA services using standard
+    dependency injection patterns.
     """
 
     def __init__(self):
@@ -53,9 +53,9 @@ class TKAIntegrationService:
         logger.info("✅ TKA integration service ready")
 
     def _initialize_tka_services(self):
-        """Initialize TKA services with graceful fallback."""
+        """Initialize TKA services using the launcher DI container."""
         try:
-            # Try to import and use TKA's DI container
+            # Use launcher's DI container with launcher applications
             from core.di_integration import get_launcher_container
             from core.interfaces import (
                 IApplicationService,
@@ -63,31 +63,20 @@ class TKAIntegrationService:
                 ISettingsService,
             )
 
-            # Get the DI container - use launcher's own container for better control
+            # Get the DI container configured with launcher services
+            # Use launcher container to ensure we have launcher applications
             self.container = get_launcher_container(use_tka_container=False)
 
-            # Resolve services by their interfaces (not concrete classes)
+            # Resolve services by their interfaces
             self.app_service = self.container.resolve(IApplicationService)
             self.launch_service = self.container.resolve(IApplicationLaunchService)
             self.settings_service = self.container.resolve(ISettingsService)
 
-        except ImportError as e:
-            logger.warning(f"⚠️ TKA services not available, using fallback: {e}")
-            self._initialize_fallback_services()
+            logger.info("✅ TKA services initialized successfully")
+
         except Exception as e:
             logger.error(f"❌ Failed to initialize TKA services: {e}")
-            self._initialize_fallback_services()
-
-    def _initialize_fallback_services(self):
-        """Initialize fallback services when TKA services are unavailable."""
-        logger.info("🔄 Initializing fallback services...")
-
-        # Create minimal fallback implementations
-        self.app_service = FallbackApplicationService()
-        self.launch_service = FallbackLaunchService()
-        self.settings_service = FallbackSettingsService()
-
-        logger.info("✅ Fallback services initialized")
+            raise RuntimeError("TKA services are required for launcher operation") from e
 
     def get_applications(self) -> List:
         """Get the list of available applications."""
@@ -166,205 +155,7 @@ class TKAIntegrationService:
 
         try:
             # Cleanup any resources if needed
-            pass
+            if self.container:
+                self.container.cleanup()
         except Exception as e:
             logger.warning(f"⚠️ TKA integration cleanup warning: {e}")
-
-
-# Fallback service implementations
-class FallbackApplicationService:
-    """Fallback application service when TKA services are unavailable."""
-
-    def get_all_applications(self):
-        """Return a minimal set of default applications."""
-        from domain.models import ApplicationData, ApplicationCategory
-
-        # Get the TKA root directory (parent of launcher directory)
-        tka_root = Path(__file__).parent.parent
-
-        # Check if we're running in debug mode (debugpy is attached)
-        debug_mode = False
-        try:
-            import debugpy
-
-            debug_mode = debugpy.is_client_connected()
-        except ImportError:
-            pass
-
-        # Prepare debug command prefix if in debug mode
-        debug_prefix = ""
-        if debug_mode:
-            debug_prefix = "python -m debugpy --listen 5678 --wait-for-client "
-
-        applications = [
-            ApplicationData(
-                id="desktop_modern",
-                title="TKA Desktop (Modern)",
-                description="Modern TKA Desktop application with updated architecture",
-                icon="✨",
-                category=ApplicationCategory.DESKTOP,
-                command="python main.py",  # Modern main.py doesn't need --modern flag
-                working_dir=tka_root / "src" / "desktop" / "modern",
-                display_order=1,
-            ),
-            ApplicationData(
-                id="sequence_workbench",
-                title="Sequence Workbench",
-                description="Standalone sequence workbench for development and testing",
-                icon="🎯",
-                category=ApplicationCategory.DESKTOP,
-                command="python standalone_sequence_workbench.py",
-                working_dir=tka_root / "src" / "desktop" / "modern",
-                display_order=3,
-            ),
-            ApplicationData(
-                id="desktop_modern_debug",
-                title="TKA Desktop (Modern) - Debug",
-                description="Modern TKA Desktop with debugger attached (port 5679)",
-                icon="🐛",
-                category=ApplicationCategory.DEVELOPMENT,
-                command="python -m debugpy --listen 5679 --wait-for-client main.py",
-                working_dir=tka_root / "src" / "desktop" / "modern",
-                display_order=1,
-            ),
-            ApplicationData(
-                id="desktop_legacy",
-                title="TKA Desktop (Legacy)",
-                description="Legacy TKA Desktop application with full feature set",
-                icon="🏛️",
-                category=ApplicationCategory.DESKTOP,
-                command=f"{debug_prefix}python main.py",
-                working_dir=tka_root / "src" / "desktop" / "legacy",
-                display_order=2,
-            ),
-            ApplicationData(
-                id="desktop_legacy_debug",
-                title="TKA Desktop (Legacy) - Debug",
-                description="Legacy TKA Desktop with debugger attached (port 5680)",
-                icon="🐛",
-                category=ApplicationCategory.DEVELOPMENT,
-                command="python -m debugpy --listen 5680 --wait-for-client main.py",
-                working_dir=tka_root / "src" / "desktop" / "legacy",
-                display_order=2,
-            ),
-            ApplicationData(
-                id="web_v1_legacy",
-                title="TKA Web V1 Legacy",
-                description="Version 1 Legacy web app with XState and Redux patterns",
-                icon="🎭",
-                category=ApplicationCategory.WEB,
-                command="npm run dev",
-                working_dir=tka_root / "src" / "web" / "v1-legacy",
-                display_order=3,
-            ),
-            ApplicationData(
-                id="web_launcher",
-                title="TKA Web Launcher",
-                description="Modern web-based launcher for all TKA applications",
-                icon="🚀",
-                category=ApplicationCategory.WEB,
-                command="npm run dev",
-                working_dir=tka_root / "src" / "web" / "launcher",
-                display_order=4,
-            ),
-            ApplicationData(
-                id="web_app",
-                title="TKA Web Application",
-                description="Web-based TKA interface for browser access",
-                icon="🌐",
-                category=ApplicationCategory.WEB,
-                command="npm run dev",
-                working_dir=tka_root / "src" / "web",
-                display_order=5,
-            ),
-            ApplicationData(
-                id="dev_tools",
-                title="Development Tools",
-                description="Developer utilities and debugging tools",
-                icon="🔧",
-                category=ApplicationCategory.DEVELOPMENT,
-                command=f"{debug_prefix}python main.py --dev",
-                working_dir=tka_root,
-                display_order=6,
-            ),
-        ]
-        
-        return applications
-
-
-class FallbackLaunchService:
-    """Fallback launch service when TKA services are unavailable."""
-
-    def launch_application(self, request):
-        """Simple fallback launch implementation."""
-        import subprocess
-        from domain.models import LaunchResult
-
-        try:
-            # Get application data
-            app_service = FallbackApplicationService()
-            applications = app_service.get_all_applications()
-            app = next(
-                (a for a in applications if a.id == request.application_id), None
-            )
-
-            if not app:
-                return LaunchResult.error_result(request, "Application not found")
-
-            if not app.command:
-                return LaunchResult.error_result(
-                    request, "No command specified for application"
-                )
-
-            # Log launch details for debugging
-            logger.info(f"🚀 Launching application: {app.title}")
-            logger.info(f"   Command: {app.command}")
-            logger.info(f"   Working directory: {app.working_dir}")
-            logger.info(f"   Category: {app.category}")
-
-            # Launch the process for GUI applications
-            # Don't capture stdout/stderr to allow GUI windows to display properly
-            process = subprocess.Popen(
-                app.command,
-                shell=True,
-                cwd=str(app.working_dir) if app.working_dir else None,
-                # Allow GUI applications to display by not capturing output
-                stdout=None,
-                stderr=None,
-                # Detach from parent process so GUI apps can run independently
-                creationflags=(
-                    subprocess.CREATE_NEW_PROCESS_GROUP
-                    if hasattr(subprocess, "CREATE_NEW_PROCESS_GROUP")
-                    else 0
-                ),
-            )
-
-            # Return success immediately for GUI applications
-            # Don't wait for process completion as GUI apps should run independently
-            logger.info(
-                f"🚀 Successfully launched GUI application: {app.title} (PID: {process.pid})"
-            )
-            return LaunchResult.success_result(request, process.pid, 0)
-
-        except Exception as e:
-            return LaunchResult.error_result(request, str(e))
-
-
-class FallbackSettingsService:
-    """Fallback settings service when TKA services are unavailable."""
-
-    def __init__(self):
-        self.settings = {
-            "theme": "dark",
-            "window_mode": "window",
-            "auto_refresh": True,
-            "show_categories": True,
-        }
-
-    def get_all_settings(self):
-        """Return default settings."""
-        return self.settings.copy()
-
-    def update_settings(self, new_settings):
-        """Update settings."""
-        self.settings.update(new_settings)

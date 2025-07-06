@@ -135,9 +135,12 @@ class TKAModernLauncherApp:
                 self.main_window.show()
                 self._center_window()
         except Exception as e:
-            logger.warning(f"Failed to setup initial mode, defaulting to window: {e}")
-            self.main_window.show()
-            self._center_window()
+            logger.warning(f"Failed to setup initial mode, defaulting to docked: {e}")
+            if hasattr(self.main_window, 'mode_manager'):
+                self.main_window.mode_manager.switch_to_dock_mode()
+            else:
+                self.main_window.show()
+                self._center_window()
 
     def _center_window(self):
         """Center the main window on the screen."""

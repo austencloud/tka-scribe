@@ -3,13 +3,13 @@
 	import { onMount } from 'svelte';
 	import Beat from './Beat.svelte';
 	import type { BeatData } from './BeatData.js';
-	import { defaultPictographData } from '../components/Pictograph/utils/defaultPictographData.js';
-	import { selectedStartPos } from '../stores/sequence/selectionStore.js';
-	import { pictographContainer } from '../state/stores/pictograph/pictographContainer.js';
-	import type { PictographData } from '../types/PictographData.js';
-	import StyledBorderOverlay from '../components/Pictograph/components/StyledBorderOverlay.svelte';
-	import { sequenceContainer } from '../state/stores/sequence/SequenceContainer.js';
-	import hapticFeedbackService from '../services/HapticFeedbackService.js';
+	import { defaultPictographData } from '../../components/Pictograph/utils/defaultPictographData.js';
+	import { selectedStartPos } from '../../stores/sequence/selectionStore.js';
+	import { pictographContainer } from '../../state/stores/pictograph/pictographContainer.js';
+	import type { PictographData } from '../../types/PictographData.js';
+	import StyledBorderOverlay from '../../components/Pictograph/components/StyledBorderOverlay.svelte';
+	import { sequenceContainer } from '../../state/stores/sequence/SequenceContainer.js';
+	import hapticFeedbackService from '../../services/HapticFeedbackService.js';
 
 	// Props using Svelte 5 runes
 	const props = $props<{

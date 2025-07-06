@@ -1,9 +1,9 @@
 <!-- src/lib/components/SequenceWorkbench/ShareDropdown.svelte -->
 <script lang="ts">
 	import { fly } from 'svelte/transition';
-	import { clickOutside } from '../utils/clickOutside.js';
-	import { isWebShareSupported } from '../components/SequenceWorkbench/share/utils/ShareUtils.js';
-	import hapticFeedbackService from '../services/HapticFeedbackService.js';
+	import { clickOutside } from '../../utils/clickOutside.js';
+	import { isWebShareSupported } from '../../components/SequenceWorkbench/share/utils/ShareUtils.js';
+	import hapticFeedbackService from '../../services/HapticFeedbackService.js';
 	import { browser } from '$app/environment';
 
 	// Props

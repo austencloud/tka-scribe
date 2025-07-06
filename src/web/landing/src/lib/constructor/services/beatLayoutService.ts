@@ -1,7 +1,4 @@
-import {
-	fetchDefaultLayouts,
-	type LayoutDict
-} from '../components/SequenceWorkbench/BeatFrame/beatFrameHelpers.js';
+import { fetchDefaultLayouts, type LayoutDict } from "../SequenceWorkbench/BeatFrame/beatFrameHelpers.js";
 
 let layoutsCache: LayoutDict | null = null;
 

@@ -122,7 +122,7 @@ class SettingsManager:
     def get_window_state(self) -> Dict[str, Any]:
         """Get saved window state for restoration."""
         return {
-            "mode": self.get("launch_mode", "window"),
+            "mode": self.get("launch_mode", "docked"),
             "window_geometry": self.get("last_window_geometry"),
             "dock_geometry": self.get("dock_last_geometry"),
             "target_screen": self.get("target_screen_index", 0),
@@ -132,4 +132,4 @@ class SettingsManager:
 
     def should_restore_to_docked(self) -> bool:
         """Check if launcher should start in docked mode."""
-        return self.get("launch_mode", "window") == "docked"
+        return self.get("launch_mode", "docked") == "docked"

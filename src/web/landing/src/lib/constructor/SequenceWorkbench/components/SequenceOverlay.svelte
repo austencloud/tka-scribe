@@ -3,8 +3,8 @@
 	import {
 		sequenceOverlayStore,
 		closeSequenceOverlay
-	} from '../state/sequenceOverlay/sequenceOverlayState.js';
-	import hapticFeedbackService from '../services/HapticFeedbackService.js';
+	} from '../../state/sequenceOverlay/sequenceOverlayState.js';
+	import hapticFeedbackService from '../../services/HapticFeedbackService.js';
 	import { browser } from '$app/environment';
 
 	// Props

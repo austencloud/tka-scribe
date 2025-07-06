@@ -15,9 +15,9 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { browser } from '$app/environment';
-	import { useResizeObserver } from '../composables/useResizeObserver.js';
+	import { useResizeObserver } from '../../composables/useResizeObserver.js';
 	import { autoAdjustLayout, calculateCellSize } from '../beatFrameHelpers.js';
-	import { layoutStore } from '../stores/layout/layoutStore.js';
+	import { layoutStore } from '../../stores/layout/layoutStore.js';
 	import { createEventDispatcher } from 'svelte';
 	import type { BeatFrameLayoutOptions } from '../types/BeatFrameLayoutOptions.js';
 

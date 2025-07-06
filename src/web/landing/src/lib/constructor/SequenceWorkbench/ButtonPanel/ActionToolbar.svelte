@@ -7,7 +7,7 @@
 
 	// Import Stores
 	import { panelStore, buttonSizeStore } from './stores/panelStore.js';
-	import { sequenceActions } from '../state/machines/sequenceMachine.js';
+	import { sequenceActions } from '../../state/machines/sequenceMachine.js';
 
 	// Import Types
 	import type { ButtonDefinition, ActionEventDetail, LayoutOrientation } from './types.js';

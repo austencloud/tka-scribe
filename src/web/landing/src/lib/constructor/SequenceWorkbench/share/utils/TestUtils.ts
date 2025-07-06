@@ -1,7 +1,7 @@
 /**
  * Test utilities for sequence sharing
  */
-import type { BeatData } from '../state/stores/sequence/SequenceContainer.js';
+import type { BeatData } from '../../state/stores/sequence/SequenceContainer.js';
 import { generateShareableUrl } from './UrlUtils.js';
 import { decodeSequenceCompact } from './SequenceDecoder.js';
 

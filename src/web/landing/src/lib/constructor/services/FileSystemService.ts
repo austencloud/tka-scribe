@@ -21,7 +21,7 @@ import {
 	getDirHandleFromLocalStorage,
 	type FileSystemDirectoryHandleWithPermissions,
 	type WindowWithDirectoryPicker
-} from '../utils/fileSystemUtils.js';
+} from './fileSystemUtils.js';
 
 /**
  * Options for saving a file

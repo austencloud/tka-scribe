@@ -3,13 +3,41 @@
     import NavBar from '../components/NavBar.svelte';
     import Footer from '../components/Footer.svelte';
     import SimpleBackgroundCanvas from '../lib/components/Backgrounds/simple/SimpleBackgroundCanvas.svelte';
+    import { onMount } from 'svelte';
+    import type { LayoutData } from './$types.js';
+    import { initializePictographData } from '$lib/constructor/stores/pictograph/pictographStore.js';
+    import { browser } from '$app/environment';
+
+    // Props from layout server
+    export let data: LayoutData;
 
     // Default to deep ocean background - can be changed via settings
     let currentBackground: 'deepOcean' | 'snowfall' | 'nightSky' | 'static' = 'deepOcean';
+    let initialized = false;
 
     function handleBackgroundChange(background: string) {
       currentBackground = background as 'deepOcean' | 'snowfall' | 'nightSky' | 'static';
     }
+
+    onMount(() => {
+        if (browser && !initialized) {
+            // Check if the load function returned data successfully
+            if (data?.csvData && !data.error) {
+                try {
+                    initializePictographData(data.csvData);
+                    initialized = true; // Mark as initialized
+                } catch (initError) {
+                    console.error('Layout onMount: Error calling initializePictographData:', initError);
+                    // Optionally display an error message to the user here
+                }
+            } else if (data?.error) {
+                console.error('Layout onMount: Error from server load function:', data.error);
+                // Optionally display an error message to the user here
+            } else {
+                console.warn('Layout onMount: No CSV data received from server');
+            }
+        }
+    });
   </script>
 
   <!-- Simplified Background System - Direct Canvas -->

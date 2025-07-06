@@ -181,7 +181,7 @@
 	// This ensures immediate UI updates when selection changes
 	$effect(() => {
 		// Create a direct subscription to the sequenceContainer
-		const unsubscribe = sequenceContainer.subscribe((state) => {
+		const unsubscribe = sequenceContainer.subscribe((state: { selectedBeatIds: string[] }) => {
 			// Update the hasSelectedBeat state immediately when selection changes
 			hasSelectedBeat = state.selectedBeatIds.length > 0;
 		});

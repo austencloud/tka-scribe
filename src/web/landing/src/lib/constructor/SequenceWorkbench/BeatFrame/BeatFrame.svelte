@@ -1,26 +1,44 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { useResizeObserver } from '../composables/useResizeObserver.js';
-	import { defaultPictographData } from '../components/Pictograph/utils/defaultPictographData.js';
+	import { useResizeObserver } from '../../composables/useResizeObserver.js';
+	import { defaultPictographData } from '../../components/Pictograph/utils/defaultPictographData.js';
 	import { autoAdjustLayout, calculateCellSize } from './beatFrameHelpers.js';
-	import { selectedStartPos } from '../stores/sequence/selectionStore.js';
-	import type { PictographData } from '../types/PictographData.js';
+	import { selectedStartPos } from '../../stores/sequence/selectionStore.js';
+	import type { PictographData } from '../../types/PictographData.js';
 	import type { BeatData as LegacyBeatData } from './BeatData.js';
 	import { browser } from '$app/environment';
-	import { layoutStore } from '../stores/layout/layoutStore.js';
+	import { layoutStore, updateLayout } from '../../stores/layout/layoutStore.js';
 	import { createEventDispatcher, setContext } from 'svelte';
 
 	// Import the sequence container and integration utilities
-	import { sequenceContainer } from '../state/stores/sequence/SequenceContainer.js';
-	import { useContainer } from '../state/core/svelte5-integration.svelte';
-	import type { BeatFrameLayoutOptions } from '../types/BeatFrameLayoutOptions.js'; // Added import
+	import { sequenceContainer } from '../../state/stores/sequence/SequenceContainer.js';
+	import { useContainer } from '../../state/core/svelte5-integration.svelte';
+	import type { BeatFrameLayoutOptions } from '../../types/BeatFrameLayoutOptions.js';
 	import { BEAT_FRAME_CONTEXT_KEY } from '../context/ElementContext.js';
 
-	// Helper function for safe logging of reactive state
+	// Helper function for safe logging of reactive state with debouncing
+	let lastLogTime = 0;
+	const LOG_THROTTLE_MS = 1000; // Only log once per second for repeated messages
+	const loggedMessages = new Set<string>();
+
 	function safeLog(message: string, data: any) {
 		if (import.meta.env.DEV) {
+			const now = Date.now();
+			const messageKey = `${message}_${JSON.stringify(data)}`;
+
+			// Throttle repeated identical messages
+			if (loggedMessages.has(messageKey) && (now - lastLogTime) < LOG_THROTTLE_MS) {
+				return;
+			}
+
 			// Use $state.snapshot to avoid Svelte 5 proxy warnings
 			console.log(message, data instanceof Object ? $state.snapshot(data) : data);
+
+			lastLogTime = now;
+			loggedMessages.add(messageKey);
+
+			// Clear old messages after 5 seconds
+			setTimeout(() => loggedMessages.delete(messageKey), 5000);
 		}
 	}
 
@@ -29,7 +47,7 @@
 	import AnimatedBeat from './AnimatedBeat.svelte';
 	import ReversalGlyph from './ReversalGlyph.svelte';
 	import EmptyStartPosLabel from './EmptyStartPosLabel.svelte';
-	import { isSequenceEmpty } from '../state/machines/sequenceMachine/persistence.js';
+	// import * as persistenceUtils from '../../state/machines/sequenceMachine/persistence.js';
 
 	// Create event dispatcher for natural height changes and beat selection
 	const dispatch = createEventDispatcher<{
@@ -49,8 +67,16 @@
 		height: $sizeStore?.height || 0
 	});
 
+	// Define the sequence container state type
+	interface SequenceContainerState {
+		beats: any[];
+		startPosition: any;
+		metadata: { name: string; difficulty: number };
+		selectedBeatIds: string[];
+	}
+
 	// Use the sequence container with Svelte 5 runes
-	const sequence = useContainer(sequenceContainer);
+	const sequence = useContainer(sequenceContainer) as SequenceContainerState;
 
 	// Props using Svelte 5 runes
 	const {
@@ -87,17 +113,8 @@
 	// We don't need to track layout orientation locally
 	// as it's already managed by the layoutStore
 
-	// Subscribe to isSequenceEmpty store
-	let sequenceIsEmpty = $state(true);
-	$effect(() => {
-		const unsubscribe = isSequenceEmpty.subscribe((value) => {
-			sequenceIsEmpty = value;
-		});
-
-		return () => {
-			unsubscribe();
-		};
-	});
+	// Calculate if sequence is empty using inline logic
+	const isEmpty = $derived(!sequence.beats || sequence.beats.length === 0);
 
 	// Create start position beat data
 	const startPosBeatData = $derived({
@@ -108,6 +125,9 @@
 
 	// Convert container beats to legacy BeatData format
 	function convertContainerBeatsToLegacyFormat(containerBeats: any[]): LegacyBeatData[] {
+		if (!containerBeats || !Array.isArray(containerBeats)) {
+			return [];
+		}
 		return containerBeats.map((beat) => {
 			// Create a proper pictographData object from the container beat data
 			const pictographData = {
@@ -162,7 +182,7 @@
 			safeLog(`Layout changed`, { from: `${prevRows}x${prevCols}`, to: `${beatRows}x${beatCols}` });
 
 			// Update the layout store
-			layoutStore.updateLayout(beatRows, beatCols, beatCount);
+			updateLayout(beatRows, beatCols, beatCount);
 
 			// Update previous values
 			prevRows = beatRows;
@@ -197,29 +217,47 @@
 	let sequenceWidgetDimensionsListener: (event: CustomEvent) => void;
 
 	// Calculate natural grid height
+	let lastNaturalGridHeight = 0;
+	let lastNaturalHeightLogTime = 0;
+	const NATURAL_HEIGHT_LOG_THROTTLE_MS = 2000; // Only log every 2 seconds max
+
 	$effect(() => {
 		const gridElement = beatFrameContainerRef?.querySelector('.beat-frame');
 		if (gridElement) {
 			naturalGridHeight = gridElement.scrollHeight; // Use scrollHeight for the most accurate content height
 
-			// Log natural height in dev mode
-			safeLog('Natural grid height calculated', {
-				naturalGridHeight,
-				beatRows,
-				cellSize,
-				element: 'scrollHeight'
-			});
+			// Only log when value actually changes AND enough time has passed to reduce spam
+			const now = Date.now();
+			if (naturalGridHeight !== lastNaturalGridHeight && (now - lastNaturalHeightLogTime) > NATURAL_HEIGHT_LOG_THROTTLE_MS) {
+				safeLog('Natural grid height calculated', {
+					naturalGridHeight,
+					beatRows,
+					cellSize,
+					element: 'scrollHeight'
+				});
+				lastNaturalGridHeight = naturalGridHeight;
+				lastNaturalHeightLogTime = now;
+			} else {
+				lastNaturalGridHeight = naturalGridHeight;
+			}
 		} else {
 			// Fallback calculation if element not ready
 			naturalGridHeight = beatRows * cellSize + 20; // Add padding-bottom (20px) of the .beat-frame
 
-			// Log fallback calculation in dev mode
-			safeLog('Natural grid height calculated (fallback)', {
-				naturalGridHeight,
-				beatRows,
-				cellSize,
-				element: 'fallback calculation'
-			});
+			// Only log when value actually changes AND enough time has passed to reduce spam
+			const now = Date.now();
+			if (naturalGridHeight !== lastNaturalGridHeight && (now - lastNaturalHeightLogTime) > NATURAL_HEIGHT_LOG_THROTTLE_MS) {
+				safeLog('Natural grid height calculated (fallback)', {
+					naturalGridHeight,
+					beatRows,
+					cellSize,
+					element: 'fallback calculation'
+				});
+				lastNaturalGridHeight = naturalGridHeight;
+				lastNaturalHeightLogTime = now;
+			} else {
+				lastNaturalGridHeight = naturalGridHeight;
+			}
 		}
 	});
 
@@ -420,6 +458,10 @@
 	});
 
 	// Function to check if content overflows container - for debugging only
+	let lastOverflowState = '';
+	let lastOverflowLogTime = 0;
+	const OVERFLOW_LOG_THROTTLE_MS = 3000; // Only log every 3 seconds max
+
 	function checkForOverflow() {
 		if (!beatFrameContainerRef) return;
 
@@ -441,19 +483,27 @@
 		const heightOverflow = contentHeight > containerHeight + buffer;
 		const widthOverflow = contentWidth > containerWidth + buffer;
 
-		// Log overflow state in dev mode
-		safeLog('Overflow check', {
-			containerHeight,
-			contentHeight,
-			containerWidth,
-			contentWidth,
-			heightOverflow,
-			widthOverflow,
-			isScrollable: isScrollable, // Corrected: Use destructured prop
-			beatRows,
-			beatCols,
-			beatCount
-		});
+		// Create a state signature to detect actual changes
+		const currentState = `${containerHeight}-${contentHeight}-${containerWidth}-${contentWidth}-${heightOverflow}-${widthOverflow}`;
+
+		// Only log when overflow state actually changes AND enough time has passed to reduce spam
+		const now = Date.now();
+		if (currentState !== lastOverflowState && (now - lastOverflowLogTime) > OVERFLOW_LOG_THROTTLE_MS) {
+			safeLog('Overflow check', {
+				containerHeight,
+				contentHeight,
+				containerWidth,
+				contentWidth,
+				heightOverflow,
+				widthOverflow,
+				isScrollable: isScrollable, // Corrected: Use destructured prop
+				beatCount
+			});
+			lastOverflowState = currentState;
+			lastOverflowLogTime = now;
+		} else {
+			lastOverflowState = currentState;
+		}
 	}
 
 	// Initialize dev tools and set up event listeners
@@ -654,7 +704,7 @@
 		{#each Array(beatRows) as _, rowIndex}
 			{#if rowIndex === 0}
 				<div class="beat-container start-position" style="grid-row: 1; grid-column: 1;">
-					{#if sequenceIsEmpty}
+					{#if isEmpty}
 						<EmptyStartPosLabel onClick={handleStartPosBeatClick} />
 					{:else}
 						<StartPosBeat beatData={startPosBeatData} onClick={handleStartPosBeatClick} />

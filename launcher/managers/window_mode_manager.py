@@ -46,28 +46,19 @@ class WindowModeManager(QObject):
     def _initialize_mode_from_settings(self):
         """Initialize the current mode based on saved settings."""
         try:
-            if self.tka_integration and hasattr(
-                self.tka_integration, "settings_service"
-            ):
-                settings_service = self.tka_integration.settings_service
-                launch_mode = settings_service.get_setting("launch_mode", "docked")
-                should_dock = launch_mode == "docked"
-            else:
-                from config.settings import SettingsManager
-                settings_manager = SettingsManager()
-                should_dock = settings_manager.should_restore_to_docked()
-                launch_mode = settings_manager.get("launch_mode", "docked")
-                auto_start = settings_manager.get("auto_start_docked", True)
-                logger.debug(
-                    f"Settings fallback - launch_mode: {launch_mode}, auto_start_docked: {auto_start}, should_restore_to_docked: {should_dock}"
-                )
+            # Always use launcher's settings directly since launcher is part of TKA
+            from config.settings import SettingsManager
+            settings_manager = SettingsManager()
+            should_dock = settings_manager.should_restore_to_docked()
+            launch_mode = settings_manager.get("launch_mode", "docked")
+            auto_start = settings_manager.get("auto_start_docked", True)
 
             self.current_mode = "docked" if should_dock else "window"
         except Exception as e:
             logger.warning(
-                f"Failed to read mode from settings, defaulting to window: {e}"
+                f"Failed to read mode from settings, defaulting to docked: {e}"
             )
-            self.current_mode = "window"
+            self.current_mode = "docked"
 
     def toggle_mode(self):
         """Toggle between window and dock modes."""

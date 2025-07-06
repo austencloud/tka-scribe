@@ -6,7 +6,7 @@
  */
 
 import type { ElementContext } from '../../context/ElementContext.js';
-import { logger } from '../core/logging.js';
+import { logger } from '../../../core/logging/index.js';
 
 /**
  * Find the BeatFrame element in the DOM using multiple strategies

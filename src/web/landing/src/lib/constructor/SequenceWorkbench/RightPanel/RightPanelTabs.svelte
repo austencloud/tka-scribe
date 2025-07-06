@@ -1,6 +1,6 @@
 <!-- src/lib/components/SequenceWorkbench/RightPanel/RightPanelTabs.svelte -->
 <script lang="ts">
-	import hapticFeedbackService from '../services/HapticFeedbackService.js';
+	import hapticFeedbackService from '../../services/HapticFeedbackService.js';
 	import { browser } from '$app/environment';
 
 	// Props using Svelte 5 runes

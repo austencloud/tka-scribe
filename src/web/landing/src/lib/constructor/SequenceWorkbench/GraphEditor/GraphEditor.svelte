@@ -2,7 +2,7 @@
 <script lang="ts">
 	// No store imports needed
 	import TurnsBox from './TurnsBox/TurnsBox.svelte';
-	import Pictograph from '../components/Pictograph/Pictograph.svelte';
+	import Pictograph from '../../components/Pictograph/Pictograph.svelte';
 	import type { PictographData } from '../types/PictographData.js';
 	import { DIAMOND } from '../types/Constants.js';
 

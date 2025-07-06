@@ -5,13 +5,13 @@
   It uses the enhanced image exporter for reliable rendering.
 -->
 <script lang="ts">
-	import { onMount } from '../utils/svelte-lifecycle.js';
+	import { onMount } from '../../utils/svelte-lifecycle.js';
 	import { browser } from '$app/environment';
-	import { sequenceContainer } from '../state/stores/sequence/SequenceContainer.js';
-	import { useContainer } from '../state/core/svelte5-integration.svelte';
+	import { sequenceContainer } from '../../state/stores/sequence/SequenceContainer.js';
+	import { useContainer } from '../../state/core/svelte5-integration.svelte';
 	import { BEAT_FRAME_CONTEXT_KEY, type ElementContext } from '../context/ElementContext.js';
 	import { getContext } from 'svelte';
-	import { showError } from '../components/shared/ToastManager.svelte';
+	import { showError } from '../../components/shared/ToastManager.svelte.js';
 	import {
 		findBeatFrameElement,
 		listenForBeatFrameElement,
@@ -21,7 +21,7 @@
 		isWebShareSupported
 	} from './utils/ShareUtils.js';
 	import ShareDropdown from './ShareDropdown.svelte';
-	import hapticFeedbackService from '../services/HapticFeedbackService.js';
+	import hapticFeedbackService from '../../services/HapticFeedbackService.js';
 	import { fade, scale } from 'svelte/transition';
 	import { quintOut } from 'svelte/easing';
 
