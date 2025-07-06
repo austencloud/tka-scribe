@@ -120,6 +120,7 @@ disable=[
     "W1309",  # f-string without interpolation
     "C0121",  # singleton-comparison (like == False)
     "W0212"   # protected-access
+    "W0401"   # wildcard import
 ]
 
 [tool.pylint.format]

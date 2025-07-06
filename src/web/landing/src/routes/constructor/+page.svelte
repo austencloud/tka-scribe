@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import CallToAction from '../../components/CallToAction.svelte';
+  import ConstructTab from '../../lib/constructor/ConstructTab.svelte';
 
   let mounted = false;
 
@@ -15,394 +15,45 @@
 </svelte:head>
 
 <main class="constructor-page">
-  <!-- Hero Section -->
-  <section class="hero-section">
-    <div class="hero">
-      <div class="hero-content">
-      <div class="hero-badge">
-        <span class="badge-text">Coming Soon</span>
-      </div>
-      <h1 class="hero-title">Kinetic Constructor</h1>
-      <p class="hero-subtitle">The Revolutionary Flow Arts Creation Tool</p>
-      <p class="hero-description">
-        Transform your flow arts practice with the most advanced sequence creation,
-        visualization, and sharing platform ever built. Design complex movements,
-        analyze patterns, and collaborate with the global flow community.
-      </p>
-      <div class="hero-actions">
-        <CallToAction
-          text="Join Early Access"
-          link="mailto:info@thekineticalphabet.com?subject=Kinetic Constructor Early Access"
-          primary={true}
-        />
-        <CallToAction
-          text="Watch Preview"
-          link="https://youtube.com/@thekineticalphabet"
-          primary={false}
-        />
-      </div>
+  {#if mounted}
+    <div class="constructor-container">
+      <ConstructTab />
     </div>
-    <div class="hero-visual">
-      <div class="constructor-preview">
-        <div class="preview-screen">
-          <div class="preview-header">
-            <div class="preview-title-section">
-              <div class="app-icon">🎨</div>
-              <span class="preview-title">Kinetic Constructor v0.2.0</span>
-            </div>
-            <div class="preview-controls">
-              <button class="control-button minimize" aria-label="Minimize">
-                <span class="control-icon">−</span>
-              </button>
-              <button class="control-button maximize" aria-label="Maximize">
-                <span class="control-icon">□</span>
-              </button>
-              <button class="control-button close" aria-label="Close">
-                <span class="control-icon">×</span>
-              </button>
-            </div>
-          </div>
-          <div class="preview-content">
-            <div class="sequence-grid">
-              <div class="sequence-block active"></div>
-              <div class="sequence-block"></div>
-              <div class="sequence-block"></div>
-              <div class="sequence-block active"></div>
-              <div class="sequence-block"></div>
-              <div class="sequence-block active"></div>
-            </div>
-            <div class="timeline">
-              <div class="timeline-track"></div>
-              <div class="timeline-progress"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-      </div>
+  {:else}
+    <div class="loading">
+      <p>Loading constructor...</p>
     </div>
-  </section>
+  {/if}
 
-  <!-- Features Section -->
-  <section class="features">
-    <div class="container">
-      <h2>Revolutionary Features</h2>
-      <div class="features-grid">
-        <div class="feature-card">
-          <div class="feature-icon">🎨</div>
-          <h3>Visual Sequence Builder</h3>
-          <p>Drag-and-drop interface for creating complex flow sequences with real-time 3D visualization and physics simulation.</p>
-        </div>
 
-        <div class="feature-card">
-          <div class="feature-icon">🧠</div>
-          <h3>AI-Powered Analysis</h3>
-          <p>Advanced pattern recognition analyzes your sequences for flow optimization, difficulty assessment, and creative suggestions.</p>
-        </div>
-
-        <div class="feature-card">
-          <div class="feature-icon">🌐</div>
-          <h3>Global Collaboration</h3>
-          <p>Share sequences with the community, collaborate on choreographies, and discover new patterns from artists worldwide.</p>
-        </div>
-
-        <div class="feature-card">
-          <div class="feature-icon">📊</div>
-          <h3>Performance Analytics</h3>
-          <p>Track your progress, analyze movement efficiency, and receive personalized training recommendations based on your style.</p>
-        </div>
-
-        <div class="feature-card">
-          <div class="feature-icon">🎵</div>
-          <h3>Music Integration</h3>
-          <p>Sync sequences to music with beat detection, tempo matching, and automatic choreography suggestions for any track.</p>
-        </div>
-
-        <div class="feature-card">
-          <div class="feature-icon">📱</div>
-          <h3>Cross-Platform Sync</h3>
-          <p>Seamlessly work across desktop, tablet, and mobile devices with cloud synchronization and offline capabilities.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Coming Soon Section -->
-  <section class="coming-soon">
-    <div class="container">
-      <div class="coming-soon-content">
-        <h2>Early Access Program</h2>
-        <p class="coming-soon-description">
-          The Kinetic Constructor is currently in development with a select group of professional flow artists
-          and educators. Join our early access program to be among the first to experience the future of flow arts creation.
-        </p>
-
-        <div class="timeline-preview">
-          <div class="timeline-item completed">
-            <div class="timeline-marker"></div>
-            <div class="timeline-content">
-              <h4>Alpha Testing</h4>
-              <p>Core functionality with professional testers</p>
-              <span class="timeline-status">Completed</span>
-            </div>
-          </div>
-
-          <div class="timeline-item active">
-            <div class="timeline-marker"></div>
-            <div class="timeline-content">
-              <h4>Beta Release</h4>
-              <p>Extended features for early access members</p>
-              <span class="timeline-status">Q2 2024</span>
-            </div>
-          </div>
-
-          <div class="timeline-item">
-            <div class="timeline-marker"></div>
-            <div class="timeline-content">
-              <h4>Public Launch</h4>
-              <p>Full release with all features available</p>
-              <span class="timeline-status">Q3 2024</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="early-access-actions">
-          <CallToAction
-            text="Request Early Access"
-            link="mailto:info@thekineticalphabet.com?subject=Kinetic Constructor Early Access Request"
-            primary={true}
-          />
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Newsletter Section -->
-  <section class="newsletter-section">
-    <div class="container">
-      <div class="newsletter-content">
-        <h2>Stay Updated</h2>
-        <p>Be the first to know about Kinetic Constructor updates, new features, and release announcements.</p>
-        <!-- Newsletter component would go here if we had one -->
-        <div class="newsletter-placeholder">
-          <CallToAction
-            text="Join Our Newsletter"
-            link="mailto:info@thekineticalphabet.com?subject=Newsletter Signup"
-            primary={false}
-          />
-        </div>
-      </div>
-    </div>
-  </section>
 </main>
 
 <style>
-  /*
-   * Kinetic Constructor Page Styling
-   *
-   * Features:
-   * - Consistent glassmorphism design system
-   * - Engaging hero section with preview mockup
-   * - Feature showcase with micro-interactions
-   * - Development timeline visualization
-   * - Mobile-first responsive design
-   * - Accessibility compliance (WCAG 2.1 AA)
-   */
-
   .constructor-page {
     min-height: 100vh;
     background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
     position: relative;
-  }
-
-  .container {
-    width: 100%;
-    max-width: var(--container-max-width-wide);
-    margin: 0 auto;
-    padding: 0 var(--container-padding);
-  }
-
-  /* Hero Section */
-  .hero-section {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-
-  .hero {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: var(--spacing-3xl);
-    align-items: center;
-    min-height: 80vh;
-    padding: var(--spacing-3xl) 0;
-    color: white;
-    max-width: 1200px;
-    margin: 0 auto;
-    width: 100%;
-    box-sizing: border-box;
-    padding-left: var(--spacing-lg);
-    padding-right: var(--spacing-lg);
-  }
-
-  .hero-content {
     display: flex;
     flex-direction: column;
-    gap: var(--spacing-lg);
   }
 
-  .hero-badge {
-    display: inline-flex;
-    align-self: flex-start;
-    padding: var(--spacing-xs) var(--spacing-md);
-    background: rgba(255, 255, 255, 0.2);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    border-radius: var(--border-radius-full);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    font-size: var(--font-size-sm);
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
-
-  .hero-title {
-    font-size: clamp(2.5rem, 5vw, 4rem);
-    font-weight: 800;
-    margin: 0;
-    line-height: 1.1;
-    background: linear-gradient(135deg, #ffffff, #e0e0e0);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-
-  .hero-subtitle {
-    font-size: var(--font-size-xl);
-    font-weight: 600;
-    margin: 0;
-    opacity: 0.9;
-  }
-
-  .hero-description {
-    font-size: var(--font-size-lg);
-    line-height: 1.6;
-    opacity: 0.8;
-    max-width: 500px;
-  }
-
-  .hero-actions {
-    display: flex;
-    gap: var(--spacing-md);
-    flex-wrap: wrap;
-  }
-
-  /* Constructor Preview Mockup */
-  .hero-visual {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-
-  .constructor-preview {
-    position: relative;
-    transform: perspective(1000px) rotateY(-15deg) rotateX(5deg);
-    transition: transform var(--transition-normal);
-  }
-
-  .constructor-preview:hover {
-    transform: perspective(1000px) rotateY(-10deg) rotateX(2deg) scale(1.02);
-  }
-
-  .preview-screen {
-    width: 400px;
-    height: 300px;
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border-radius: var(--border-radius);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    box-shadow:
-      0 20px 40px rgba(0, 0, 0, 0.3),
-      0 0 0 1px rgba(255, 255, 255, 0.1),
-      inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  .constructor-container {
+    flex: 1;
+    width: 100%;
+    height: 100vh;
     overflow: hidden;
   }
 
-  .preview-header {
+  .loading {
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: var(--spacing-sm) var(--spacing-md);
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05));
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-  }
-
-  .preview-title-section {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-sm);
-  }
-
-  .app-icon {
-    font-size: 1rem;
-    width: 20px;
-    height: 20px;
-    display: flex;
-    align-items: center;
     justify-content: center;
-  }
-
-  .preview-title {
-    font-size: var(--font-size-sm);
-    font-weight: 600;
-    color: rgba(255, 255, 255, 0.9);
-  }
-
-  .preview-controls {
-    display: flex;
-    gap: 1px;
-  }
-
-  .control-button {
-    width: 32px;
-    height: 24px;
-    border: none;
-    background: rgba(255, 255, 255, 0.1);
-    color: rgba(255, 255, 255, 0.8);
-    cursor: pointer;
-    display: flex;
     align-items: center;
-    justify-content: center;
-    font-size: 14px;
-    font-weight: 400;
-    transition: background-color var(--transition-fast);
-    border-radius: 0;
-  }
-
-  .control-button:hover {
-    background: rgba(255, 255, 255, 0.2);
-  }
-
-  .control-button.close:hover {
-    background: #e81123;
+    min-height: 400px;
     color: white;
+    font-size: 1.2rem;
   }
+</style>
 
-  .control-button.maximize:hover {
-    background: rgba(255, 255, 255, 0.25);
-  }
-
-  .control-button.minimize:hover {
-    background: rgba(255, 255, 255, 0.25);
-  }
-
-  .control-button:focus-visible {
-    outline: 2px solid rgba(255, 255, 255, 0.8);
-    outline-offset: -2px;
-  }
 
   .control-icon {
     line-height: 1;
