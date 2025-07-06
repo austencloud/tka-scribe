@@ -1,7 +1,7 @@
-import { ServiceContainer } from './ServiceContainer';
-import { SERVICE_TOKENS } from './ServiceTokens';
-import { BackgroundFactory } from '$lib/components/Backgrounds/core/BackgroundFactory';
-import type { BackgroundSystemFactory } from '$lib/core/services/BackgroundSystem';
+import { ServiceContainer } from './ServiceContainer.js';
+import { SERVICE_TOKENS } from './ServiceTokens.js';
+import { BackgroundFactory } from '../components/Backgrounds/core/BackgroundFactory.js';
+import type { BackgroundSystemFactory } from '../core/services/BackgroundSystem.js';
 
 // Import the injectable services to trigger registration
 import '$lib/services/InjectableErrorHandlingService';

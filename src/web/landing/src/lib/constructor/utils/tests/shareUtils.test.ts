@@ -2,14 +2,14 @@
  * Tests for shareUtils.ts
  */
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import type { BeatData } from '$lib/state/stores/sequence/SequenceContainer';
+import type { BeatData } from '../state/stores/sequence/SequenceContainer.js';
 import {
 	testSequenceUrlEncoding,
 	generateShareableUrl,
 	isWebShareSupported,
 	isFileShareSupported,
 	copyToClipboard
-} from '$lib/components/SequenceWorkbench/share/utils/ShareUtils';
+} from '../components/SequenceWorkbench/share/utils/ShareUtils.js';
 
 // Mock browser environment
 vi.mock('$app/environment', () => ({

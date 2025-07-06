@@ -2,7 +2,7 @@
 
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { createActor, waitFor } from 'xstate';
-import { stateRegistry } from '../core/registry';
+import { stateRegistry } from '../core/registry.js';
 
 // --- Mocking Strategy ---
 // We need the actual machine definition, but can mock the initializer
@@ -18,7 +18,7 @@ vi.mock('$lib/utils/appInitializer', () => ({
 }));
 
 // Import the actual machine *after* mocking its dependencies
-import { appMachine } from '../machines/app/app.machine'; // Import the real machine
+import { appMachine } from '../machines/app/app.machine.js'; // Import the real machine
 
 describe('App State Machine', () => {
 	let appActor: ReturnType<typeof createActor<typeof appMachine>>;

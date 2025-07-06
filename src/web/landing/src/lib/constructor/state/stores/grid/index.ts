@@ -6,7 +6,7 @@
  */
 
 // Export the store
-export * from './grid.store';
+export * from './grid.store.js';
 
 // Export selectors
-export * from './grid.selectors';
+export * from './grid.selectors.js';

@@ -4,14 +4,14 @@
  * This file contains the implementation of the supervisor that manages supervised actors.
  */
 
-import { debug, warn, error } from '../logger/logging';
+import { debug, warn, error } from '../logger/logging.js';
 import type {
 	Supervisor as ISupervisor,
 	SupervisedActor,
 	SupervisionStrategy,
 	SupervisionError
-} from './types';
-import { RestartStrategy } from './strategies';
+} from './types.js';
+import { RestartStrategy } from './strategies.js';
 
 /**
  * Implementation of a supervisor

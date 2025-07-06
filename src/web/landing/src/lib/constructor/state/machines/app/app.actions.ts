@@ -5,8 +5,8 @@
  * Actions are functions that send events to the machine to trigger state changes.
  */
 
-import { appService } from './app.machine';
-import type { BackgroundType } from '$lib/components/MainWidget/state/appState';
+import { appService } from './app.machine.js';
+import type { BackgroundType } from '../components/MainWidget/state/appState.js';
 
 /**
  * App actions object containing all available actions

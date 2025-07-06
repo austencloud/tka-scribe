@@ -7,8 +7,8 @@
  */
 
 import { writable, derived, get, type Writable, type Readable } from 'svelte/store';
-import { stateRegistry } from './registry';
-import { createEffect } from './container';
+import { stateRegistry } from './registry.js';
+import { createEffect } from './container.js';
 
 // Check if we're running in a Svelte 5 environment with runes support
 const hasRunes = typeof globalThis.$state !== 'undefined';

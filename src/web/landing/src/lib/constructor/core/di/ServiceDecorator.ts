@@ -1,5 +1,5 @@
-import { getContainer } from './ContainerProvider';
-import type { ServiceScope } from './ServiceContainer';
+import { getContainer } from './ContainerProvider.js';
+import type { ServiceScope } from './ServiceContainer.js';
 
 export interface InjectableOptions {
 	scope?: ServiceScope;

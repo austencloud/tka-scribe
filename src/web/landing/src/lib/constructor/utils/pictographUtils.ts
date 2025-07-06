@@ -1,7 +1,7 @@
 /**
  * Utility functions for handling pictograph data
  */
-import type { PictographData } from '$lib/types/PictographData';
+import type { PictographData } from '../types/PictographData.js';
 
 /**
  * Creates a safe copy of pictograph data that can be serialized to JSON

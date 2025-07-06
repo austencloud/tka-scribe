@@ -4,7 +4,7 @@
 	// when the sequence is empty
 
 	import { onMount } from 'svelte';
-	import hapticFeedbackService from '$lib/services/HapticFeedbackService';
+	import hapticFeedbackService from '../services/HapticFeedbackService.js';
 
 	// Props using Svelte 5 runes
 	const props = $props<{
@@ -28,7 +28,7 @@
 	let isSelected = $state(false);
 
 	// Import the sequence container to check if this beat is selected
-	import { sequenceContainer } from '$lib/state/stores/sequence/SequenceContainer';
+	import { sequenceContainer } from '../state/stores/sequence/SequenceContainer.js';
 
 	// Update isSelected when the selection changes
 	$effect(() => {

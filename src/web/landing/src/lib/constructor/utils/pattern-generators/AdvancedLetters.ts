@@ -1,6 +1,6 @@
-import { generatePatternRow } from './PatternGenerator';
-import { positionCycles } from './PatternGenerator';
-import type { PatternRow } from './PatternGenerator';
+import { generatePatternRow } from './PatternGenerator.js';
+import { positionCycles } from './PatternGenerator.js';
+import type { PatternRow } from './PatternGenerator.js';
 
 // Generate patterns for Letter N (gamma diagonal patterns)
 export function generateLetterN(): PatternRow[] {

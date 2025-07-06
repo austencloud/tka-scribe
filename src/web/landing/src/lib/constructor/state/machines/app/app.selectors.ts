@@ -7,8 +7,8 @@
 
 import { derived } from 'svelte/store';
 import { useSelector } from '@xstate/svelte';
-import { appService } from './app.machine';
-import { createSelector } from '$lib/state/core';
+import { appService } from './app.machine.js';
+import { createSelector } from '../state/core.js';
 
 // Basic selectors
 export const selectAppContext = () => useSelector(appService, (snapshot) => snapshot.context);

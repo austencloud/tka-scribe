@@ -1,5 +1,5 @@
-import { createContainer } from '$lib/state/core/container';
-import { createDerived } from '$lib/state/core/container';
+import { createContainer } from '../state/core/container.js';
+import { createDerived } from '../state/core/container.js';
 import { browser } from '$app/environment';
 
 export interface BeatData {

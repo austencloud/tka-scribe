@@ -6,7 +6,7 @@
  * consistent behavior between the two components.
  */
 
-import { autoAdjustLayout } from '../BeatFrame/beatFrameHelpers';
+import { autoAdjustLayout } from '../BeatFrame/beatFrameHelpers.js';
 
 /**
  * Calculate the optimal cell size for the overlay grid

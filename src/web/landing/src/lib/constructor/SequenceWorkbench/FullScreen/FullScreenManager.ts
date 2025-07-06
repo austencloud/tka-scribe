@@ -2,7 +2,7 @@ import {
 	isSequenceFullScreen,
 	openSequenceFullScreen,
 	closeSequenceFullScreen
-} from '$lib/stores/sequence/sequenceOverlayStore';
+} from '../stores/sequence/sequenceOverlayStore.js';
 import { onDestroy } from 'svelte';
 
 /**

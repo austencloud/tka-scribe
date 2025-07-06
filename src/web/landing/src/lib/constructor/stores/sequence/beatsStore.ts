@@ -1,11 +1,11 @@
 /**
  * @deprecated This file is deprecated and will be removed in a future version.
- * Use sequenceStore from '$lib/state/stores/sequence/sequenceAdapter' instead.
+ * Use sequenceStore from '../state/stores/sequence/sequenceAdapter.js' instead.
  */
 
-import { sequenceStore } from '$lib/state/stores/sequence/sequenceAdapter';
-import type { BeatData as LegacyBeatData } from '$lib/components/SequenceWorkbench/BeatFrame/BeatData';
-import type { BeatData as ModernBeatData } from '$lib/state/stores/sequence/SequenceContainer';
+import { sequenceStore } from '../state/stores/sequence/sequenceAdapter.js';
+import type { BeatData as LegacyBeatData } from '../components/SequenceWorkbench/BeatFrame/BeatData.js';
+import type { BeatData as ModernBeatData } from '../state/stores/sequence/SequenceContainer.js';
 import { derived, get, type Writable } from 'svelte/store';
 
 // Type adapter functions to convert between legacy and modern BeatData types

@@ -2,9 +2,9 @@
  * Utilities for working with the Web Share API
  */
 import { browser } from '$app/environment';
-import { logger } from '$lib/core/logging';
-import { showError, showSuccess } from '$lib/components/shared/ToastManager.svelte';
-import type { ShareData } from './types';
+import { logger } from '../core/logging.js';
+import { showError, showSuccess } from '../components/shared/ToastManager.svelte';
+import type { ShareData } from './types.js';
 
 // Track the last time a share was attempted to prevent issues with multiple rapid calls
 let lastShareApiCallTime = 0;

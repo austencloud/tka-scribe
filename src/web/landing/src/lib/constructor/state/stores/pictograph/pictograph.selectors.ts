@@ -6,8 +6,8 @@
  */
 
 import { derived } from 'svelte/store';
-import { pictographStore } from './pictograph.store';
-import { createSelector } from '$lib/state/core';
+import { pictographStore } from './pictograph.store.js';
+import { createSelector } from '../state/core.js';
 
 // Basic selectors
 export const selectPictographData = createSelector(

@@ -4,5 +4,5 @@
  * Re-exports all auth-related functions for easier imports
  */
 
-export * from './OAuthService';
-export * from './SecureTokenStorage';
+export * from './OAuthService.js';
+export * from './SecureTokenStorage.js';

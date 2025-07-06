@@ -3,7 +3,7 @@
  */
 import { get, type Readable } from 'svelte/store';
 import type { AnyActorRef } from 'xstate';
-import type { StateContainer } from './types';
+import type { StateContainer } from './types.js';
 
 /**
  * Debug helper to log the current state of all containers

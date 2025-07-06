@@ -1,6 +1,6 @@
 // src/lib/utils/SvgPreloader.ts
-import type { Color, MotionType, Orientation, TKATurns } from '$lib/types/Types';
-import { PropType } from '$lib/types/Types';
+import type { Color, MotionType, Orientation, TKATurns } from '../types/Types.js';
+import { PropType } from '../types/Types.js';
 
 // Cache for SVG content
 const svgCache: Record<string, string> = {};

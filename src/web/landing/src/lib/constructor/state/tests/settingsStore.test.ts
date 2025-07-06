@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { settingsStore } from '../stores/settingsStore';
+import { settingsStore } from '../stores/settingsStore.js';
 
 describe('Settings Store', () => {
   beforeEach(() => {

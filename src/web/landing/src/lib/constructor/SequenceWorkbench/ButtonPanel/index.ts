@@ -5,4 +5,4 @@ export { ButtonPanel };
 export default ButtonPanel;
 
 // Optional: Export types if they are needed externally
-export * from './types';
+export * from './types.js';

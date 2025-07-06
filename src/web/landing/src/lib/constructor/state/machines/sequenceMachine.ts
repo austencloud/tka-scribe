@@ -7,4 +7,4 @@
  */
 
 // Re-export everything from the modular sequence machine
-export * from './sequenceMachine/index';
+export * from './sequenceMachine/index.js';

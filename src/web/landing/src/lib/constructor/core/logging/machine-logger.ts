@@ -14,10 +14,10 @@ import {
 	type Actor,
 	type ActorOptions
 } from 'xstate';
-import { logger } from './logger';
-import { LogLevel, type MachineLoggerOptions } from './types';
-import { createStateContext } from './context';
-import { loggingConfig } from '$lib/config/logging';
+import { logger } from './logger.js';
+import { LogLevel, type MachineLoggerOptions } from './types.js';
+import { createStateContext } from './context.js';
+import { loggingConfig } from '../config/logging.js';
 
 /**
  * Default options.

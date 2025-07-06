@@ -1,4 +1,4 @@
-import { Letter } from './Letter';
+import { Letter } from './Letter.js';
 
 const letterFilenameMap: Record<string, Letter[]> = {
 	Omega: [Letter.Ω, Letter.Ω_DASH],

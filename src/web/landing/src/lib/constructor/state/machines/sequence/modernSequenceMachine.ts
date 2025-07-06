@@ -6,7 +6,7 @@
  */
 
 import { assign } from 'xstate';
-import { createModernMachine, createMachineContainer } from '$lib/state/core/modernMachine';
+import { createModernMachine, createMachineContainer } from '../state/core/modernMachine.js';
 
 // Define the sequence machine context
 export interface SequenceMachineContext {

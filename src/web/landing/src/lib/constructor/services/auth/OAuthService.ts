@@ -4,15 +4,15 @@
  * Handles authentication flows for Facebook, Instagram, and TikTok
  */
 import { browser } from '$app/environment';
-import { logger } from '$lib/core/logging';
+import { logger } from '../core/logging.js';
 import {
 	getToken,
 	saveToken,
 	removeToken,
 	TOKEN_STORAGE_KEYS,
 	type TokenData
-} from './SecureTokenStorage';
-import { showError, showSuccess } from '$lib/components/shared/ToastManager.svelte';
+} from './SecureTokenStorage.js';
+import { showError, showSuccess } from '../components/shared/ToastManager.svelte';
 
 // OAuth configuration
 interface OAuthConfig {

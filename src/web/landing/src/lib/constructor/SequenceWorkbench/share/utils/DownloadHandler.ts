@@ -5,15 +5,15 @@
  */
 
 import { browser } from '$app/environment';
-import { logger } from '$lib/core/logging';
-import { showError, showSuccess, showInfo } from '$lib/components/shared/ToastManager.svelte';
+import { logger } from '../core/logging.js';
+import { showError, showSuccess, showInfo } from '../components/shared/ToastManager.svelte';
 import {
 	downloadImage,
 	type DownloadResult
-} from '$lib/components/Pictograph/export/downloadUtils';
-import { getImageExportSettings } from '$lib/state/image-export-settings.svelte';
-import { isMobileDevice } from '$lib/utils/fileSystemUtils';
-import type { SequenceRenderResult } from './ImageUtils';
+} from '../components/Pictograph/export/downloadUtils.js';
+import { getImageExportSettings } from '../state/image-export-settings.svelte';
+import { isMobileDevice } from '../utils/fileSystemUtils.js';
+import type { SequenceRenderResult } from './ImageUtils.js';
 
 /**
  * Options for downloading a sequence image

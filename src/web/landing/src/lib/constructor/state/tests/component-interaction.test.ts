@@ -6,9 +6,9 @@
 
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { get, writable } from 'svelte/store';
-import { stateRegistry } from '../core/registry';
-import { createStore } from '../core/store';
-import { resetAllState } from '../core/testing';
+import { stateRegistry } from '../core/registry.js';
+import { createStore } from '../core/store.js';
+import { resetAllState } from '../core/testing.js';
 import { createMachine, assign, type AnyActorRef } from 'xstate';
 
 // Mock counter store

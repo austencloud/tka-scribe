@@ -6,8 +6,8 @@
  */
 
 import { derived } from 'svelte/store';
-import { settingsStore } from './settings.store';
-import { createSelector } from '$lib/state/core';
+import { settingsStore } from './settings.store.js';
+import { createSelector } from '../state/core.js';
 
 // Display settings selectors
 export const selectTheme = createSelector(

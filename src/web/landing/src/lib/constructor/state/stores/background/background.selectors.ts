@@ -6,8 +6,8 @@
  */
 
 import { derived } from 'svelte/store';
-import { backgroundStore } from './background.store';
-import { createSelector } from '$lib/state/core';
+import { backgroundStore } from './background.store.js';
+import { createSelector } from '../state/core.js';
 
 // Basic selectors
 export const selectCurrentBackground = createSelector(

@@ -1,6 +1,6 @@
-import type { SupervisionStrategy, SupervisedActor, ResumeStrategyOptions } from '../types';
-import { SupervisionStrategyType } from '../types';
-import type { Supervisor } from '../Supervisor';
+import type { SupervisionStrategy, SupervisedActor, ResumeStrategyOptions } from '../types.js';
+import { SupervisionStrategyType } from '../types.js';
+import type { Supervisor } from '../Supervisor.js';
 
 export class ResumeStrategy implements SupervisionStrategy {
 	readonly type = SupervisionStrategyType.RESUME;

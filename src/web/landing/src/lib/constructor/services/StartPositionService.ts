@@ -1,9 +1,9 @@
 // src/lib/services/StartPositionService.ts
-import { sequenceDataService } from './SequenceDataService';
-import type { PictographData } from '$lib/types/PictographData';
-import type { SequenceBeat, SequenceStartPos } from './SequenceDataService';
-import { beatsStore } from '$lib/stores/sequence/beatsStore';
-import { createBeat } from '$lib/components/SequenceWorkbench/BeatFrame/BeatData';
+import { sequenceDataService } from './SequenceDataService.js';
+import type { PictographData } from '../types/PictographData.js';
+import type { SequenceBeat, SequenceStartPos } from './SequenceDataService.js';
+import { beatsStore } from '../stores/sequence/beatsStore.js';
+import { createBeat } from '../components/SequenceWorkbench/BeatFrame/BeatData.js';
 import { browser } from '$app/environment';
 
 export class StartPositionService {

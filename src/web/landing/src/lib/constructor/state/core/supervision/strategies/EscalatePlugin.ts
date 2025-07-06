@@ -2,9 +2,9 @@ import type {
 	SupervisionStrategyPlugin,
 	EscalateStrategyOptions,
 	SupervisionStrategy
-} from '../types';
-import { SupervisionStrategyType } from '../types';
-import { EscalateStrategy } from './EscalateStrategy';
+} from '../types.js';
+import { SupervisionStrategyType } from '../types.js';
+import { EscalateStrategy } from './EscalateStrategy.js';
 
 export const EscalatePlugin: SupervisionStrategyPlugin<EscalateStrategyOptions> = {
 	type: SupervisionStrategyType.ESCALATE,

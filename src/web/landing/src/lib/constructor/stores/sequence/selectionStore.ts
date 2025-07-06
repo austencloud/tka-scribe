@@ -1,8 +1,8 @@
 // src/lib/stores/sequence/selectionStore.ts
 import { writable, derived, type Readable } from 'svelte/store';
-import type { PictographData } from '$lib/types/PictographData';
-import { beatsStore } from './beatsStore';
-import type { BeatData } from '$lib/components/SequenceWorkbench/BeatFrame/BeatData';
+import type { PictographData } from '../types/PictographData.js';
+import { beatsStore } from './beatsStore.js';
+import type { BeatData } from '../components/SequenceWorkbench/BeatFrame/BeatData.js';
 import { browser } from '$app/environment';
 
 // Storage key for the start position

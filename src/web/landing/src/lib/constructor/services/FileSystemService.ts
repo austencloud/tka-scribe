@@ -6,7 +6,7 @@
  */
 
 import { browser } from '$app/environment';
-import { logger } from '$lib/core/logging';
+import { logger } from '../core/logging.js';
 import {
 	isFileSystemAccessSupported,
 	isMobileDevice,
@@ -21,7 +21,7 @@ import {
 	getDirHandleFromLocalStorage,
 	type FileSystemDirectoryHandleWithPermissions,
 	type WindowWithDirectoryPicker
-} from '$lib/utils/fileSystemUtils';
+} from '../utils/fileSystemUtils.js';
 
 /**
  * Options for saving a file

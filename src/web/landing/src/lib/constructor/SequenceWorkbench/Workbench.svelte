@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount, createEventDispatcher } from 'svelte';
 	import SequenceWidget from './SequenceWidget.svelte';
-	import { useResizeObserver } from '$lib/composables/useResizeObserver';
+	import { useResizeObserver } from '../composables/useResizeObserver.js';
 
 	// Props
 

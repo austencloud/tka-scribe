@@ -1,4 +1,4 @@
-import { createStore } from '../core/store';
+import { createStore } from '../core/store.js';
 
 /**
  * Interface for UI state

@@ -1,4 +1,4 @@
-import type { SupervisionStrategyPlugin, StrategyRegistry, SupervisionStrategy } from './types';
+import type { SupervisionStrategyPlugin, StrategyRegistry, SupervisionStrategy } from './types.js';
 
 class StrategyRegistryImpl implements StrategyRegistry {
 	private plugins = new Map<string, SupervisionStrategyPlugin>();

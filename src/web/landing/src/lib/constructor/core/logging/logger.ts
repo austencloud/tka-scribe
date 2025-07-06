@@ -17,13 +17,13 @@ import {
   type LogTransport,
   type PerformanceLogger,
   LogDomain
-} from './types';
+} from './types.js';
 import { 
   DEFAULT_LOGGER_CONFIG, 
   CORRELATION_ID_PREFIX, 
   SESSION_ID 
-} from './constants';
-import { parseLogConfig } from './config';
+} from './constants.js';
+import { parseLogConfig } from './config.js';
 
 /**
  * Implementation of the PerformanceLogger interface

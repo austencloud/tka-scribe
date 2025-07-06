@@ -2,7 +2,7 @@
 <script lang="ts">
 	import { onMount, createEventDispatcher } from 'svelte';
 	import { fly } from 'svelte/transition';
-	import type { ButtonDefinition } from '../ButtonPanel/types';
+	import type { ButtonDefinition } from '../ButtonPanel/types.js';
 
 	// Props
 	export let buttons: ButtonDefinition[] = [];

@@ -6,10 +6,10 @@
  */
 
 // Export the machine and service
-export * from './app.machine';
+export * from './app.machine.js';
 
 // Export selectors
-export * from './app.selectors';
+export * from './app.selectors.js';
 
 // Export actions
-export * from './app.actions';
+export * from './app.actions.js';

@@ -5,9 +5,9 @@
  * using XState v5 and the new container-based approach.
  */
 
-import { createModernMachine, createMachineContainer } from '../../core/modernMachine';
-import { sequenceContainer } from '../../stores/sequence/SequenceContainer';
-import type { GeneratorType, SettingsState } from '../../stores/settingsStore';
+import { createModernMachine, createMachineContainer } from '../../core/modernMachine.js';
+import { sequenceContainer } from '../../stores/sequence/SequenceContainer.js';
+import type { GeneratorType, SettingsState } from '../../stores/settingsStore.js';
 import {
 	updateSequence,
 	selectBeat,
@@ -17,8 +17,8 @@ import {
 	removeBeatAndFollowing,
 	updateBeat,
 	clearSequence
-} from './actions';
-import { generateSequenceActor } from './actors';
+} from './actions.js';
+import { generateSequenceActor } from './actors.js';
 
 /**
  * Interface for the sequence machine context

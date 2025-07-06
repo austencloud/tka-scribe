@@ -6,11 +6,11 @@
 	import ButtonsContainer from './components/ButtonsContainer.svelte';
 
 	// Import Stores
-	import { panelStore, buttonSizeStore } from './stores/panelStore';
-	import { sequenceActions } from '$lib/state/machines/sequenceMachine';
+	import { panelStore, buttonSizeStore } from './stores/panelStore.js';
+	import { sequenceActions } from '../state/machines/sequenceMachine.js';
 
 	// Import Types
-	import type { ButtonDefinition, ActionEventDetail, LayoutOrientation } from './types';
+	import type { ButtonDefinition, ActionEventDetail, LayoutOrientation } from './types.js';
 
 	// --- Component Props ---
 	export let containerWidth = 0;

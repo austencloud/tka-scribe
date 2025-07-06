@@ -6,7 +6,7 @@
  */
 
 // Export the store
-export * from './pictograph.store';
+export * from './pictograph.store.js';
 
 // Export selectors
-export * from './pictograph.selectors';
+export * from './pictograph.selectors.js';

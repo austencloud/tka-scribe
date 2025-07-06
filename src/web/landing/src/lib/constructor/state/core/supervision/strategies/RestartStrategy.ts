@@ -1,6 +1,6 @@
-import type { SupervisionStrategy, SupervisedActor, RestartStrategyOptions } from '../types';
-import { SupervisionStrategyType, BackoffType } from '../types';
-import type { Supervisor } from '../Supervisor';
+import type { SupervisionStrategy, SupervisedActor, RestartStrategyOptions } from '../types.js';
+import { SupervisionStrategyType, BackoffType } from '../types.js';
+import type { Supervisor } from '../Supervisor.js';
 
 export class RestartStrategy implements SupervisionStrategy {
 	readonly type = SupervisionStrategyType.RESTART;

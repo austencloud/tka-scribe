@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { createPersistentState, createPersistentObjectState } from '../runes';
+	import { createPersistentState, createPersistentObjectState } from '../runes.js';
 	import { setContext } from 'svelte';
 
 	// Example 1: Basic state with runes

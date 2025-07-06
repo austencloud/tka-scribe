@@ -6,7 +6,7 @@
  */
 
 import { browser } from '$app/environment';
-import type { BackgroundType } from '$lib/components/Backgrounds/types/types';
+import type { BackgroundType } from '../components/Backgrounds/types/types.js';
 
 // Storage keys
 export const KEYS = {

@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { get } from 'svelte/store';
-import { stateRegistry } from '../core/registry';
-import { createStore, createSelector, combineStores, createPersistentStore } from '../core/store';
+import { stateRegistry } from '../core/registry.js';
+import { createStore, createSelector, combineStores, createPersistentStore } from '../core/store.js';
 
 // Helper to mock localStorage for persistence tests
 const mockLocalStorage = () => {

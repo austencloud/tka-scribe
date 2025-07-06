@@ -5,12 +5,12 @@
  * background state in the application.
  */
 
-import { createContainer } from '$lib/state/core/container';
+import { createContainer } from '../state/core/container.js';
 import type {
   BackgroundType,
   QualityLevel,
   PerformanceMetrics
-} from '$lib/components/Backgrounds/types/types';
+} from '../components/Backgrounds/types/types.js';
 import { browser } from '$app/environment';
 
 // Define the container state interface

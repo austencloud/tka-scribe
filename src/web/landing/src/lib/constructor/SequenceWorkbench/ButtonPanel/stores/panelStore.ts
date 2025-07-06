@@ -1,6 +1,6 @@
 // src/lib/components/SequenceWorkbench/ButtonPanel/stores/panelStore.ts
 import { writable, derived } from 'svelte/store';
-import type { PanelState, LayoutOrientation } from '../types';
+import type { PanelState, LayoutOrientation } from '../types.js';
 import { browser } from '$app/environment'; // Import browser check
 
 // Initial panel state

@@ -1,4 +1,4 @@
-import { ErrorSeverity, type AppError, type ErrorHandler } from '$lib/core/services/ErrorHandling';
+import { ErrorSeverity, type AppError, type ErrorHandler } from '../core/services/ErrorHandling.js';
 import { browser } from '$app/environment';
 
 export class ErrorHandlingServiceImpl implements ErrorHandler {

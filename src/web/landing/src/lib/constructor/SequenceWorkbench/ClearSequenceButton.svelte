@@ -2,8 +2,8 @@
 <script lang="ts">
 	import { fly, fade, scale } from 'svelte/transition';
 	import { browser } from '$app/environment';
-	import hapticFeedbackService from '$lib/services/HapticFeedbackService';
-	import { sequenceActions } from '$lib/state/machines/sequenceMachine';
+	import hapticFeedbackService from '../services/HapticFeedbackService.js';
+	import { sequenceActions } from '../state/machines/sequenceMachine.js';
 
 	// User preference for confirmation dialogs
 	let showConfirmation = $state(true);

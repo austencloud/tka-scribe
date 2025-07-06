@@ -1,8 +1,8 @@
 <script lang="ts">
 	// Import necessary modules and types
-	import type { ButtonDefinition, ActionEventDetail, LayoutOrientation } from '../types'; // Import LayoutOrientation
-	import { getButtonAnimationDelayValue } from '../utils/animations';
-	import hapticFeedbackService from '$lib/services/HapticFeedbackService';
+	import type { ButtonDefinition, ActionEventDetail, LayoutOrientation } from '../types.js'; // Import LayoutOrientation
+	import { getButtonAnimationDelayValue } from '../utils/animations.js';
+	import hapticFeedbackService from '../services/HapticFeedbackService.js';
 	import { browser } from '$app/environment';
 
 	// Props using Svelte 5 runes

@@ -1,22 +1,22 @@
 <script lang="ts">
-	import { useResponsiveLayout } from '$lib/composables/useResponsiveLayout';
+	import { useResponsiveLayout } from '../composables/useResponsiveLayout.js';
 	import { onMount, onDestroy, getContext } from 'svelte';
-	import { useResizeObserver } from '$lib/composables/useResizeObserver';
+	import { useResizeObserver } from '../composables/useResizeObserver.js';
 	import { browser } from '$app/environment';
-	import { BEAT_FRAME_CONTEXT_KEY, type ElementContext } from './context/ElementContext';
+	import { BEAT_FRAME_CONTEXT_KEY, type ElementContext } from './context/ElementContext.js';
 
-	import { handleButtonAction } from './ButtonPanel/ButtonPanelLogic';
+	import { handleButtonAction } from './ButtonPanel/ButtonPanelLogic.js';
 	import {
 		calculateWorkbenchIsPortrait,
 		calculateButtonSizeFactor
-	} from './utils/SequenceLayoutCalculator';
-	import { useSequenceMetadata } from './utils/SequenceMetadataManager';
-	import { openSequenceOverlay } from '$lib/state/sequenceOverlay/sequenceOverlayState';
+	} from './utils/SequenceLayoutCalculator.js';
+	import { useSequenceMetadata } from './utils/SequenceMetadataManager.js';
+	import { openSequenceOverlay } from '../state/sequenceOverlay/sequenceOverlayState.js';
 
-	import type { ActionEventDetail } from './ButtonPanel/types';
-	import { sequenceActions } from '$lib/state/machines/sequenceMachine';
-	import { appActions } from '$lib/state/machines/app/app.actions';
-	import { sequenceContainer } from '$lib/state/stores/sequence/SequenceContainer';
+	import type { ActionEventDetail } from './ButtonPanel/types.js';
+	import { sequenceActions } from '../state/machines/sequenceMachine.js';
+	import { appActions } from '../state/machines/app/app.actions.js';
+	import { sequenceContainer } from '../state/stores/sequence/SequenceContainer.js';
 
 	import SequenceContent from './content/SequenceContent.svelte';
 	import SequenceOverlay from './components/SequenceOverlay.svelte';
@@ -28,8 +28,8 @@
 	import ClearSequenceButton from './ClearSequenceButton.svelte';
 	// Explicitly import ShareButton with a console log to verify it's being imported
 	import ShareButton from './share/ShareButton.svelte';
-	import SettingsButton from '$lib/components/MenuBar/SettingsButton/SettingsButton.svelte';
-	import hapticFeedbackService from '$lib/services/HapticFeedbackService';
+	import SettingsButton from './SettingsButton.svelte';
+	import hapticFeedbackService from '../services/HapticFeedbackService.js';
 
 	// Log to verify ShareButton is imported
 	console.log('SequenceWidget: ShareButton imported:', ShareButton);
@@ -427,7 +427,7 @@
 				/>
 			</div>
 
-			<SettingsButton onClick={handleSettingsClick} />
+			<SettingsButton on:click={handleSettingsClick} />
 			<DeleteButton onClick={handleDeleteButtonClick} />
 			<ClearSequenceButton />
 			<SequenceOverlayButton />

@@ -6,8 +6,8 @@
  */
 
 import { derived } from 'svelte/store';
-import { gridStore } from './grid.store';
-import { createSelector } from '$lib/state/core';
+import { gridStore } from './grid.store.js';
+import { createSelector } from '../state/core.js';
 
 // Basic selectors
 export const selectGridData = createSelector(

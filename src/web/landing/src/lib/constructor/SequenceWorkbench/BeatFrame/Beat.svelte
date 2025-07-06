@@ -1,9 +1,9 @@
 <script lang="ts">
-	import Pictograph from '$lib/components/Pictograph/Pictograph.svelte';
-	import type { BeatData } from './BeatData';
-	import { defaultPictographData } from '$lib/components/Pictograph/utils/defaultPictographData';
-	import StyledBorderOverlay from '$lib/components/Pictograph/components/StyledBorderOverlay.svelte';
-	import hapticFeedbackService from '$lib/services/HapticFeedbackService';
+	import Pictograph from '../components/Pictograph/Pictograph.svelte';
+	import type { BeatData } from './BeatData.js';
+	import { defaultPictographData } from '../components/Pictograph/utils/defaultPictographData.js';
+	import StyledBorderOverlay from '../components/Pictograph/components/StyledBorderOverlay.svelte';
+	import hapticFeedbackService from '../services/HapticFeedbackService.js';
 
 	// Props using Svelte 5 runes
 	const props = $props<{

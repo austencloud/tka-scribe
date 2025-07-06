@@ -3,7 +3,7 @@
  */
 
 import { describe, test, expect } from 'vitest';
-import { createContainer } from './container';
+import { createContainer } from './container.js';
 
 // Test the safeClone function indirectly through the container
 describe('State Container', () => {

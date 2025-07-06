@@ -17,7 +17,7 @@ export {
   type PerformanceLogger,
   type MachineLoggerOptions,
   type ComponentLoggerOptions
-} from './types';
+} from './types.js';
 
 // Export constants
 export {
@@ -33,10 +33,10 @@ export {
   CONSOLE_SYMBOLS,
   DOMAIN_COLORS,
   PERFORMANCE_THRESHOLDS
-} from './constants';
+} from './constants.js';
 
 // Export core logger
-export { logger, LoggerImpl } from './logger';
+export { logger, LoggerImpl } from './logger.js';
 
 // Export context utilities
 export {
@@ -52,7 +52,7 @@ export {
   createComponentContext,
   gatherAutomaticContext,
   initializeGlobalContext
-} from './context';
+} from './context.js';
 
 // Export configuration utilities
 export {
@@ -61,14 +61,14 @@ export {
   createDevTransports,
   createProdTransports,
   createLoggerConfig
-} from './config';
+} from './config.js';
 
 // Export machine logger
 export {
   createMachineInspector,
   withLogging,
   createLoggedActor
-} from './machine-logger';
+} from './machine-logger.js';
 
 // Export error logger
 export {
@@ -76,7 +76,7 @@ export {
   ErrorCategory,
   type AppError,
   errorLogger
-} from './error-logger';
+} from './error-logger.js';
 
 // Export transports
-export * from './transports';
+export * from './transports.js';

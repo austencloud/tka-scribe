@@ -251,19 +251,19 @@
 				<div class="test-buttons">
 					<button 
 						class="test-button" 
-						on:click={() => loadTestSequence('ALFBBLFA')}
+						onclick={() => loadTestSequence('ALFBBLFA')}
 					>
 						Load ALFBBLFA
 					</button>
 					<button 
 						class="test-button" 
-						on:click={() => loadTestSequence('ABC')}
+						onclick={() => loadTestSequence('ABC')}
 					>
 						Load ABC
 					</button>
 					<button 
 						class="test-button" 
-						on:click={() => loadTestSequence('BA')}
+						onclick={() => loadTestSequence('BA')}
 					>
 						Load BA
 					</button>

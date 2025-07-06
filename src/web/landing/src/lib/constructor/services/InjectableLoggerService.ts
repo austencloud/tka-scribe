@@ -4,9 +4,9 @@
  * Provides the logger as an injectable service for the DI system.
  */
 
-import { Injectable } from '$lib/core/di/ServiceDecorator';
-import { SERVICE_TOKENS } from '$lib/core/di/ServiceTokens';
-import { logger, type Logger } from '$lib/core/logging';
+import { Injectable } from '../core/di/ServiceDecorator.js';
+import { SERVICE_TOKENS } from '../core/di/ServiceTokens.js';
+import { logger, type Logger } from '../core/logging.js';
 
 @Injectable(SERVICE_TOKENS.LOGGER)
 export class InjectableLoggerService implements Logger {

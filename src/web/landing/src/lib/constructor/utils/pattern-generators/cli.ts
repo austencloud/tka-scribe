@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { main } from './TestPatterns';
+import { main } from './TestPatterns.js';
 
 // Execute the main test function when this script is run directly
 main();

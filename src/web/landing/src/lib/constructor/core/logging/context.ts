@@ -5,7 +5,7 @@
  */
 
 import { browser } from '$app/environment';
-import { LogDomain, type LoggerContext } from './types';
+import { LogDomain, type LoggerContext } from './types.js';
 
 /**
  * Global context that applies to all loggers

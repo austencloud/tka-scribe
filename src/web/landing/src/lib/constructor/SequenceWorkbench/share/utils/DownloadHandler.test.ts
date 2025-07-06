@@ -5,9 +5,9 @@
  */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { downloadSequenceImage } from './DownloadHandler';
-import * as downloadUtils from '$lib/components/Pictograph/export/downloadUtils';
-import * as toastManager from '$lib/components/shared/ToastManager.svelte';
+import { downloadSequenceImage } from './DownloadHandler.js';
+import * as downloadUtils from '../components/Pictograph/export/downloadUtils.js';
+import * as toastManager from '../components/shared/ToastManager.svelte';
 
 // Mock browser environment
 vi.mock('$app/environment', () => ({

@@ -1,8 +1,8 @@
-import { LogLevel } from './types';
-import { logger } from './Logger';
-export { LogLevel } from './types';
-export type { Logger, LogEntry, LoggerConfig } from './types';
-export { logger } from './Logger';
+import { LogLevel } from './types.js';
+import { logger } from './Logger.js';
+export { LogLevel } from './types.js';
+export type { Logger, LogEntry, LoggerConfig } from './types.js';
+export { logger } from './Logger.js';
 
 // Export convenience methods
 export const debug = (source: string, message: string, data?: unknown): void =>

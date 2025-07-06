@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { fade, scale } from 'svelte/transition';
 	import { createEventDispatcher } from 'svelte';
-	import hapticFeedbackService from '$lib/services/HapticFeedbackService';
+	import hapticFeedbackService from '../services/HapticFeedbackService.js';
 	import { browser } from '$app/environment';
 
 	// Props

@@ -1,5 +1,5 @@
-import { LogLevel } from './types';
-import { logger } from './Logger';
+import { LogLevel } from './types.js';
+import { logger } from './Logger.js';
 
 export const debug = (source: string, message: string, data?: unknown): void => {
 	logger.log({ level: LogLevel.DEBUG, source, message, data });

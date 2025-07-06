@@ -5,7 +5,7 @@
  * and automatic token refresh capabilities.
  */
 import { browser } from '$app/environment';
-import { logger } from '$lib/core/logging';
+import { logger } from '../core/logging.js';
 
 // Storage keys for different platforms
 export const TOKEN_STORAGE_KEYS = {

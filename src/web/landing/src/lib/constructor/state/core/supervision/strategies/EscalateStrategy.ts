@@ -1,6 +1,6 @@
-import type { SupervisionStrategy, SupervisedActor, EscalateStrategyOptions } from '../types';
-import { SupervisionStrategyType } from '../types';
-import type { Supervisor } from '../Supervisor';
+import type { SupervisionStrategy, SupervisedActor, EscalateStrategyOptions } from '../types.js';
+import { SupervisionStrategyType } from '../types.js';
+import type { Supervisor } from '../Supervisor.js';
 
 export class EscalateStrategy implements SupervisionStrategy {
 	readonly type = SupervisionStrategyType.ESCALATE;

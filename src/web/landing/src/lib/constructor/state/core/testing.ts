@@ -5,7 +5,7 @@
  */
 
 import { get, type Readable } from 'svelte/store';
-import { stateRegistry } from './registry';
+import { stateRegistry } from './registry.js';
 import type { AnyActorRef } from 'xstate';
 
 /**

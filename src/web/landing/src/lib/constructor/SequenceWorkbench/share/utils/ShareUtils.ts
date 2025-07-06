@@ -4,11 +4,11 @@
  */
 
 // Re-export types
-export type { ShareData } from './types';
-export type { SequenceRenderResult } from './ImageUtils';
-export type { ShareOptions } from './ShareHandler';
-export type { DownloadOptions } from './DownloadHandler';
-export type { SequenceRenderOptions } from './SequenceRenderer';
+export type { ShareData } from './types.js';
+export type { SequenceRenderResult } from './ImageUtils.js';
+export type { ShareOptions } from './ShareHandler.js';
+export type { DownloadOptions } from './DownloadHandler.js';
+export type { SequenceRenderOptions } from './SequenceRenderer.js';
 
 // Re-export functions from specialized modules
 export {
@@ -20,7 +20,7 @@ export {
 	encodePosition,
 	encodeMotion,
 	compressString
-} from './SequenceEncoder';
+} from './SequenceEncoder.js';
 
 export {
 	// Sequence decoding
@@ -36,7 +36,7 @@ export {
 	inferEndPosition,
 	createStartPositionBeat,
 	createBeatFromMotions
-} from './SequenceDecoder';
+} from './SequenceDecoder.js';
 
 export {
 	// Web Share API utilities
@@ -45,48 +45,48 @@ export {
 	isMobileDevice,
 	shareSequence as shareSequenceWithWebShareApi,
 	shareSequenceWithImage
-} from './WebShareApi';
+} from './WebShareApi.js';
 
 export {
 	// Clipboard operations
 	copyToClipboard,
 	copyImageToClipboard
-} from './ClipboardUtils';
+} from './ClipboardUtils.js';
 
 export {
 	// URL utilities
 	generateShareableUrl,
 	checkForSequenceInUrl
-} from './UrlUtils';
+} from './UrlUtils.js';
 
 export {
 	// Image utilities
 	dataURLtoBlob,
 	createFileFromDataURL
-} from './ImageUtils';
+} from './ImageUtils.js';
 
 export {
 	// Test utilities
 	testSequenceUrlEncoding
-} from './TestUtils';
+} from './TestUtils.js';
 
 export {
 	// Element finder utilities
 	findBeatFrameElement,
 	listenForBeatFrameElement
-} from './ElementFinder';
+} from './ElementFinder.js';
 
 export {
 	// Sequence renderer utilities
 	renderSequence
-} from './SequenceRenderer';
+} from './SequenceRenderer.js';
 
 export {
 	// Share handler utilities
 	shareSequence
-} from './ShareHandler';
+} from './ShareHandler.js';
 
 export {
 	// Download handler utilities
 	downloadSequenceImage
-} from './DownloadHandler';
+} from './DownloadHandler.js';

@@ -1,7 +1,7 @@
 import { onMount, getContext } from 'svelte';
 import { writable, type Writable } from 'svelte/store';
-import { getService } from './serviceContext';
-import type { ServiceToken } from './ServiceTokens';
+import { getService } from './serviceContext.js';
+import type { ServiceToken } from './ServiceTokens.js';
 
 export function useService<T>(token: string | ServiceToken): {
 	service: Writable<T | null>;

@@ -5,7 +5,7 @@ import {
 	formatPatternCSV,
 	letterGenerators,
 	type Pattern
-} from './index';
+} from './index.js';
 
 /**
  * Test the pattern generation system by generating and displaying patterns

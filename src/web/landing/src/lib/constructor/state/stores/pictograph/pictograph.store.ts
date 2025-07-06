@@ -4,9 +4,9 @@
  * This store manages the state of pictographs in the application.
  */
 
-import { createStore } from '$lib/state/core';
-import type { PictographData } from '$lib/types/PictographData';
-import type { ArrowData } from '$lib/components/objects/Arrow/ArrowData';
+import { createStore } from '../state/core.js';
+import type { PictographData } from '../types/PictographData.js';
+import type { ArrowData } from '../components/objects/Arrow/ArrowData.js';
 
 // Define the store state interface
 export interface PictographStoreState {

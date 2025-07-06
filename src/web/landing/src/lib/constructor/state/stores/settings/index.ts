@@ -6,7 +6,7 @@
  */
 
 // Export the store
-export * from './settings.store';
+export * from './settings.store.js';
 
 // Export selectors
-export * from './settings.selectors';
+export * from './settings.selectors.js';

@@ -1,4 +1,4 @@
-import type { PictographData } from './PictographData';
+import type { PictographData } from './PictographData.js';
 
 export interface Beat {
 	id: string;

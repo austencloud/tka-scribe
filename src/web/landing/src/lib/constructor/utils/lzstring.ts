@@ -6,7 +6,7 @@
  */
 
 import { browser } from '$app/environment';
-import { logger } from '$lib/core/logging';
+import { logger } from '../core/logging.js';
 
 // Type definition for LZString
 interface LZStringInterface {

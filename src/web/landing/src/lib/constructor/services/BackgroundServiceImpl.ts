@@ -1,15 +1,15 @@
-import { SERVICE_TOKENS } from '$lib/core/di/ServiceTokens';
-import { Injectable } from '$lib/core/di/ServiceDecorator';
-import type { BackgroundService } from '$lib/core/services/BackgroundService';
-import type { BackgroundSystemFactory } from '$lib/core/services/BackgroundSystem';
-import { ErrorSeverity, type ErrorHandler } from '$lib/core/services/ErrorHandling';
+import { SERVICE_TOKENS } from '../core/di/ServiceTokens.js';
+import { Injectable } from '../core/di/ServiceDecorator.js';
+import type { BackgroundService } from '../core/services/BackgroundService.js';
+import type { BackgroundSystemFactory } from '../core/services/BackgroundSystem.js';
+import { ErrorSeverity, type ErrorHandler } from '../core/services/ErrorHandling.js';
 import type {
 	BackgroundSystem,
 	BackgroundType,
 	QualityLevel,
 	Dimensions
-} from '$lib/components/Backgrounds/types/types';
-import { getContainer } from '$lib/core/di/ContainerProvider';
+} from '../components/Backgrounds/types/types.js';
+import { getContainer } from '../core/di/ContainerProvider.js';
 
 @Injectable(SERVICE_TOKENS.BACKGROUND_SERVICE)
 export class BackgroundServiceImpl implements BackgroundService {

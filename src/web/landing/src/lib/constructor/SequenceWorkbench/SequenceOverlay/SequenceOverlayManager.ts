@@ -2,7 +2,7 @@ import {
 	sequenceOverlayState,
 	openSequenceOverlay,
 	closeSequenceOverlay
-} from '$lib/state/sequenceOverlay/sequenceOverlayState';
+} from '../state/sequenceOverlay/sequenceOverlayState.js';
 
 /**
  * Interface for the sequence overlay manager return value

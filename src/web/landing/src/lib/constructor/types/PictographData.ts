@@ -1,8 +1,8 @@
-import type { ArrowData } from '$lib/components/objects/Arrow/ArrowData.js';
-import type { GridData } from '$lib/components/objects/Grid/GridData.js';
-import type { Motion } from '$lib/components/objects/Motion/Motion.js';
-import type { MotionData } from '$lib/components/objects/Motion/MotionData.js';
-import type { PropData } from '$lib/components/objects/Prop/PropData.js';
+import type { ArrowData } from '../components/objects/Arrow/ArrowData.js';
+import type { GridData } from '../components/objects/Grid/GridData.js';
+import type { Motion } from '../components/objects/Motion/Motion.js';
+import type { MotionData } from '../components/objects/Motion/MotionData.js';
+import type { PropData } from '../components/objects/Prop/PropData.js';
 import type { Letter } from './Letter.js';
 import type { TKAPosition } from './TKAPosition.js';
 import type { GridMode, VTGDir, VTGTiming } from './Types.js';

@@ -5,11 +5,11 @@
  * using XState 5.
  */
 
-import { createModernMachine, createMachineContainer } from '$lib/state/core/modernMachine';
-import type { PictographData } from '$lib/types/PictographData';
-import type { ArrowData } from '$lib/components/objects/Arrow/ArrowData';
-import type { GridData } from '$lib/components/objects/Grid/GridData';
-import type { PropData } from '$lib/components/objects/Prop/PropData';
+import { createModernMachine, createMachineContainer } from '../state/core/modernMachine.js';
+import type { PictographData } from '../types/PictographData.js';
+import type { ArrowData } from '../components/objects/Arrow/ArrowData.js';
+import type { GridData } from '../components/objects/Grid/GridData.js';
+import type { PropData } from '../components/objects/Prop/PropData.js';
 import {
 	setData,
 	updateComponentLoaded,
@@ -19,7 +19,7 @@ import {
 	updateArrowData,
 	reset,
 	checkAllComponentsLoaded
-} from './actions';
+} from './actions.js';
 
 /**
  * Interface for the pictograph machine context

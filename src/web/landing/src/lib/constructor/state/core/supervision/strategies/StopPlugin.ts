@@ -1,6 +1,6 @@
-import type { SupervisionStrategyPlugin, StopStrategyOptions, SupervisionStrategy } from '../types';
-import { SupervisionStrategyType } from '../types';
-import { StopStrategy } from './StopStrategy';
+import type { SupervisionStrategyPlugin, StopStrategyOptions, SupervisionStrategy } from '../types.js';
+import { SupervisionStrategyType } from '../types.js';
+import { StopStrategy } from './StopStrategy.js';
 
 export const StopPlugin: SupervisionStrategyPlugin<StopStrategyOptions> = {
 	type: SupervisionStrategyType.STOP,

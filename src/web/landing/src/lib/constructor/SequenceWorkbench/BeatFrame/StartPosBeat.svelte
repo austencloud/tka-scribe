@@ -2,14 +2,14 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import Beat from './Beat.svelte';
-	import type { BeatData } from './BeatData';
-	import { defaultPictographData } from '$lib/components/Pictograph/utils/defaultPictographData';
-	import { selectedStartPos } from '$lib/stores/sequence/selectionStore';
-	import { pictographContainer } from '$lib/state/stores/pictograph/pictographContainer';
-	import type { PictographData } from '$lib/types/PictographData';
-	import StyledBorderOverlay from '$lib/components/Pictograph/components/StyledBorderOverlay.svelte';
-	import { sequenceContainer } from '$lib/state/stores/sequence/SequenceContainer';
-	import hapticFeedbackService from '$lib/services/HapticFeedbackService';
+	import type { BeatData } from './BeatData.js';
+	import { defaultPictographData } from '../components/Pictograph/utils/defaultPictographData.js';
+	import { selectedStartPos } from '../stores/sequence/selectionStore.js';
+	import { pictographContainer } from '../state/stores/pictograph/pictographContainer.js';
+	import type { PictographData } from '../types/PictographData.js';
+	import StyledBorderOverlay from '../components/Pictograph/components/StyledBorderOverlay.svelte';
+	import { sequenceContainer } from '../state/stores/sequence/SequenceContainer.js';
+	import hapticFeedbackService from '../services/HapticFeedbackService.js';
 
 	// Props using Svelte 5 runes
 	const props = $props<{

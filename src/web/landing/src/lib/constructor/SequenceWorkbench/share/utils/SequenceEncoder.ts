@@ -1,11 +1,11 @@
 /**
  * Utilities for encoding sequences into compact formats for sharing
  */
-import type { BeatData } from '$lib/state/stores/sequence/SequenceContainer';
-import type { MotionData } from '$lib/components/objects/Motion/MotionData';
-import type { MotionType, Loc, PropRotDir, TKATurns, Orientation } from '$lib/types/Types';
+import type { BeatData } from '../state/stores/sequence/SequenceContainer.js';
+import type { MotionData } from '../components/objects/Motion/MotionData.js';
+import type { MotionType, Loc, PropRotDir, TKATurns, Orientation } from '../types/Types.js';
 import { browser } from '$app/environment';
-import { logger } from '$lib/core/logging';
+import { logger } from '../core/logging.js';
 
 /**
  * Encode a sequence of beats into a super-compact format

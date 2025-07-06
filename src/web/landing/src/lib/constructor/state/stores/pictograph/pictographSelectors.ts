@@ -5,8 +5,8 @@
  * These selectors replace the deprecated pictograph.selectors.ts.
  */
 
-import { createDerived } from '$lib/state/core/container';
-import { pictographContainer } from './pictographContainer';
+import { createDerived } from '../state/core/container.js';
+import { pictographContainer } from './pictographContainer.js';
 
 // Basic selectors
 export const pictographData = createDerived(() => 

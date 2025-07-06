@@ -1,7 +1,7 @@
 import { writable, derived, get } from 'svelte/store';
-import { lessonConfigs } from './lesson_configs';
-import { checkAnswerLogic, generateQuestion } from './lessonService';
-import { progressStore } from './progressStore';
+import { lessonConfigs } from './lesson_configs.js';
+import { checkAnswerLogic, generateQuestion } from './lessonService.js';
+import { progressStore } from './progressStore.js';
 
 export type LessonMode = 'fixed_question' | 'countdown';
 export type ViewType = 'selector' | 'lesson' | 'results';

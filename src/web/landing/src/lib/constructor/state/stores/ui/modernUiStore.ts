@@ -5,7 +5,7 @@
  * the new container-based approach.
  */
 
-import { createContainer } from '$lib/state/core/modern';
+import { createContainer } from '../state/core/modern.js';
 
 // Define the UI state interface
 export interface UiState {
@@ -89,7 +89,7 @@ export const uiStore = createUiStore();
 // Create a custom wrapper for the registry
 // We need to use a different approach since the registerContainer function
 // has strict type requirements that our store doesn't meet
-import { stateRegistry } from '$lib/state/core/registry';
+import { stateRegistry } from '../state/core/registry.js';
 import { writable } from 'svelte/store';
 
 // Create a writable store from the UI store state

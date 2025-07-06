@@ -2,7 +2,7 @@
  * Common setup for integration tests
  */
 import { beforeEach, afterEach, vi } from 'vitest';
-import { resetAllState } from '../../core/testing';
+import { resetAllState } from '../../core/testing.js';
 
 export function setupIntegrationTests() {
   beforeEach(() => {

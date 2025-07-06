@@ -18,13 +18,13 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { browser } from '$app/environment';
-	import { defaultPictographData } from '$lib/components/Pictograph/utils/defaultPictographData';
-	import { selectedStartPos } from '$lib/stores/sequence/selectionStore';
-	import type { PictographData } from '$lib/types/PictographData';
-	import type { BeatData as LegacyBeatData } from '../BeatData';
-	import { sequenceContainer } from '$lib/state/stores/sequence/SequenceContainer';
-	import { useContainer } from '$lib/state/core/svelte5-integration.svelte';
-	import { isSequenceEmpty } from '$lib/state/machines/sequenceMachine/persistence';
+	import { defaultPictographData } from '../components/Pictograph/utils/defaultPictographData.js';
+	import { selectedStartPos } from '../stores/sequence/selectionStore.js';
+	import type { PictographData } from '../types/PictographData.js';
+	import type { BeatData as LegacyBeatData } from '../BeatData.js';
+	import { sequenceContainer } from '../state/stores/sequence/SequenceContainer.js';
+	import { useContainer } from '../state/core/svelte5-integration.svelte';
+	import { isSequenceEmpty } from '../state/machines/sequenceMachine/persistence.js';
 
 	// We'll use custom events instead of Svelte's event dispatcher
 	// This function creates a custom event that will bubble up through the DOM

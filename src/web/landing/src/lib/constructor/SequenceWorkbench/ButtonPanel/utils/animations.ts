@@ -1,4 +1,4 @@
-import type { LayoutOrientation } from "../types";
+import type { LayoutOrientation } from '../types.js';
 
 /**
  * Animation timing constants

@@ -8,7 +8,7 @@
  */
 
 import { createMachine, assign } from 'xstate';
-import { stateRegistry } from '../core/registry';
+import { stateRegistry } from '../core/registry.js';
 
 // ─────────────────────────────────────────────────────────────
 // Machine definition

@@ -42,17 +42,57 @@ export class DictionaryLoader {
 	 */
 	private async getKnownSequences(): Promise<Array<{ name: string; versions: string[] }>> {
 		try {
-			// In a browser environment, we need to use dynamic imports to discover sequences
-			// This approach uses Vite's import.meta.glob to scan the dictionary directory
-			const modules = import.meta.glob('/src/lib/animator/dictionary/**/*.png', {
-				as: 'url',
-				eager: false
-			});
+			console.log('DictionaryLoader: Starting to scan for sequences...');
+			
+			// Try multiple possible paths for import.meta.glob
+			let modules: Record<string, () => Promise<any>> = {};
+			
+			// Path 1: Absolute path from project root
+			try {
+				modules = import.meta.glob('/src/lib/animator/dictionary/**/*.png', {
+					query: '?url',
+					import: 'default'
+				});
+				console.log('DictionaryLoader: Path 1 (/src/lib/animator/dictionary/**/*.png) found:', Object.keys(modules).length, 'modules');
+			} catch (e) {
+				console.log('DictionaryLoader: Path 1 failed:', e);
+			}
+			
+			// Path 2: Relative to current file
+			if (Object.keys(modules).length === 0) {
+				try {
+					modules = import.meta.glob('../../dictionary/**/*.png', {
+						query: '?url',
+						import: 'default'
+					});
+					console.log('DictionaryLoader: Path 2 (../../dictionary/**/*.png) found:', Object.keys(modules).length, 'modules');
+				} catch (e) {
+					console.log('DictionaryLoader: Path 2 failed:', e);
+				}
+			}
+			
+			// Path 3: Different absolute path
+			if (Object.keys(modules).length === 0) {
+				try {
+					modules = import.meta.glob('./dictionary/**/*.png', {
+						query: '?url',
+						import: 'default'
+					});
+					console.log('DictionaryLoader: Path 3 (./dictionary/**/*.png) found:', Object.keys(modules).length, 'modules');
+				} catch (e) {
+					console.log('DictionaryLoader: Path 3 failed:', e);
+				}
+			}
+			
+			console.log('DictionaryLoader: Found modules:', modules);
+			console.log('DictionaryLoader: Module paths:', Object.keys(modules));
 
 			const sequenceMap = new Map<string, string[]>();
 
 			// Process each discovered PNG file
 			for (const path in modules) {
+				console.log('DictionaryLoader: Processing path:', path);
+				
 				// Extract sequence name and version from path
 				// Path format: /src/lib/animator/dictionary/SEQUENCE_NAME/SEQUENCE_NAME_verX.png
 				const pathParts = path.split('/');
@@ -80,12 +120,12 @@ export class DictionaryLoader {
 				versions: versions.sort() // Sort versions naturally
 			}));
 
-			// Dynamically discovered sequences from dictionary
+			console.log('DictionaryLoader: Final sequences found:', sequences);
 
 			// Return all sequences sorted alphabetically by name
 			return sequences.sort((a, b) => a.name.localeCompare(b.name));
-		} catch {
-			// Failed to dynamically load sequences - no sequences found in dictionary directory
+		} catch (error) {
+			console.error('DictionaryLoader: Failed to dynamically load sequences:', error);
 
 			// Return empty array - let the UI handle the empty state
 			return [];

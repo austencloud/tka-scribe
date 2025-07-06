@@ -5,4 +5,4 @@
  */
 
 // Re-export types from the modular implementation
-export * from './sequenceMachine/types';
+export * from './sequenceMachine/types.js';

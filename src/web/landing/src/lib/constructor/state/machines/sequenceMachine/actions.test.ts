@@ -3,8 +3,8 @@
  */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { removeBeat, removeBeatAndFollowing } from './actions';
-import { sequenceContainer } from '../../stores/sequence/SequenceContainer';
+import { removeBeat, removeBeatAndFollowing } from './actions.js';
+import { sequenceContainer } from '../../stores/sequence/SequenceContainer.js';
 
 // Mock the document object
 const mockDispatchEvent = vi.fn();

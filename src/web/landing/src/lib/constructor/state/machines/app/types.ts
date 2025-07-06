@@ -4,7 +4,7 @@
  * This file contains shared types for the application state machine.
  */
 
-import type { BackgroundType } from '$lib/components/MainWidget/state/appState';
+import type { BackgroundType } from '../components/MainWidget/state/appState.js';
 
 /**
  * Context for the application state machine

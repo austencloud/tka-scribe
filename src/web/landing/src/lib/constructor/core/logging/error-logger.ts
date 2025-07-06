@@ -5,8 +5,8 @@
  */
 
 import { browser } from '$app/environment';
-import { logger } from './logger';
-import { LogDomain, LogLevel } from './types';
+import { logger } from './logger.js';
+import { LogDomain, LogLevel } from './types.js';
 
 /**
  * Error severity levels

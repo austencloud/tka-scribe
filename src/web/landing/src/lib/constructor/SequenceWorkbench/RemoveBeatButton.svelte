@@ -2,7 +2,7 @@
 <script lang="ts">
 	import { fly, fade } from 'svelte/transition';
 	import { elasticOut } from 'svelte/easing';
-	import hapticFeedbackService from '$lib/services/HapticFeedbackService';
+	import hapticFeedbackService from '../services/HapticFeedbackService.js';
 	import { browser } from '$app/environment';
 
 	// Use Svelte 5 events

@@ -1,7 +1,7 @@
 <!-- src/lib/components/SequenceWorkbench/DeleteButton.svelte -->
 <script lang="ts">
 	import { fly } from 'svelte/transition';
-	import hapticFeedbackService from '$lib/services/HapticFeedbackService';
+	import hapticFeedbackService from '../services/HapticFeedbackService.js';
 
 	// Use Svelte 5 props
 	const dispatch = $props<{

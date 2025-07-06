@@ -26,14 +26,6 @@ export function mapOrientationToAngle(ori: Orientation): number {
 			return PI;
 		case 'out':
 			return 0;
-		case 'n':
-			return -PI / 2;
-		case 'e':
-			return 0;
-		case 's':
-			return PI / 2;
-		case 'w':
-			return PI;
 		default:
 			return 0;
 	}

@@ -7,15 +7,15 @@
 
 import { browser } from '$app/environment';
 import { writable, derived, get } from 'svelte/store';
-import type { PictographData } from '$lib/types/PictographData';
-import type { SortMethod, ReversalFilter } from '$lib/components/ConstructTab/OptionPicker/config';
+import type { PictographData } from '../types/PictographData.js';
+import type { SortMethod, ReversalFilter } from '../components/ConstructTab/OptionPicker/config.js';
 import {
 	getNextOptions,
 	determineGroupKey,
 	getSortedGroupKeys,
 	getSorter
-} from '$lib/components/ConstructTab/OptionPicker/services/OptionsService';
-import { sequenceActions, sequenceSelectors } from '$lib/state/machines/sequenceMachine';
+} from '../components/ConstructTab/OptionPicker/services/OptionsService.js';
+import { sequenceActions, sequenceSelectors } from '../state/machines/sequenceMachine.js';
 
 // ===== Type Definitions =====
 export type LastSelectedTabState = Partial<Record<SortMethod, string | null>>;

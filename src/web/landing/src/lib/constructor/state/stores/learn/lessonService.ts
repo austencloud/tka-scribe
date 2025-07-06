@@ -1,12 +1,12 @@
-import type { LessonConfig } from './lesson_configs';
-import pictographDataStore from '$lib/stores/pictograph/pictographStore';
+import type { LessonConfig } from './lesson_configs.js';
+import pictographDataStore from '../stores/pictograph/pictographStore.js';
 import { get } from 'svelte/store';
 import { writable } from 'svelte/store';
 
 // Import the PictographData type
-import type { PictographData } from '$lib/types/PictographData';
-import type { Letter } from '$lib/types/Letter';
-import { DIAMOND } from '$lib/types/Constants';
+import type { PictographData } from '../types/PictographData.js';
+import type { Letter } from '../types/Letter.js';
+import { DIAMOND } from '../types/Constants.js';
 
 // Track previous question letters to avoid repetition
 const previousLetterStore = writable<Letter | null>(null);

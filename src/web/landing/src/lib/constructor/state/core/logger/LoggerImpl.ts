@@ -1,4 +1,4 @@
-import { LogLevel, type LogEntry, type Logger, type LoggerConfig } from './types';
+import { LogLevel, type LogEntry, type Logger, type LoggerConfig } from './types.js';
 
 export class LoggerImpl implements Logger {
 	private config: LoggerConfig = {

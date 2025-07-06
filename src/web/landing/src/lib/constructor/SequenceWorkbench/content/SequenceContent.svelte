@@ -1,11 +1,11 @@
 <script lang="ts">
-	import { useSequenceMetadata } from '../utils/SequenceMetadataManager';
+	import { useSequenceMetadata } from '../utils/SequenceMetadataManager.js';
 	import CurrentWordLabel from '../Labels/CurrentWordLabel.svelte';
 	import BeatFrame from '../BeatFrame/BeatFrame.svelte';
-	import { calculateBeatFrameShouldScroll } from '../utils/SequenceLayoutCalculator';
+	import { calculateBeatFrameShouldScroll } from '../utils/SequenceLayoutCalculator.js';
 	import { setContext } from 'svelte';
 	import { browser } from '$app/environment';
-	import { BEAT_FRAME_CONTEXT_KEY, type ElementContext } from '../context/ElementContext';
+	import { BEAT_FRAME_CONTEXT_KEY, type ElementContext } from '../context/ElementContext.js';
 
 	// Props with callback for beat selection
 	const {

@@ -4,13 +4,13 @@
 
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { get } from 'svelte/store';
-import { settingsStore } from './settings.store';
+import { settingsStore } from './settings.store.js';
 import { 
   selectTheme, 
   selectBackground, 
   selectEffectiveTheme,
   selectShowGridDebug
-} from './settings.selectors';
+} from './settings.selectors.js';
 
 describe('Settings Store', () => {
   beforeEach(() => {

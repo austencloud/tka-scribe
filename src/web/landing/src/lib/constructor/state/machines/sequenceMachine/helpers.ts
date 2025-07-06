@@ -1,9 +1,9 @@
 /**
  * Helper functions for the sequence state machine
  */
-import type { SequenceGenerationOptions, FreeformSequenceOptions } from './types';
+import type { SequenceGenerationOptions, FreeformSequenceOptions } from './types.js';
 import type { Actor } from 'xstate';
-import type { SequenceMachineEvent } from './types';
+import type { SequenceMachineEvent } from './types.js';
 
 /**
  * Helper functions to interact with the sequence machine

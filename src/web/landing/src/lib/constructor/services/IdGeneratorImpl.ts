@@ -1,6 +1,6 @@
-import { Injectable } from '$lib/core/di/ServiceDecorator';
-import { SERVICE_TOKENS } from '$lib/core/di/ServiceTokens';
-import { IdGeneratorFormat, type IdGenerator } from '$lib/core/services/IdGenerator';
+import { Injectable } from '../core/di/ServiceDecorator.js';
+import { SERVICE_TOKENS } from '../core/di/ServiceTokens.js';
+import { IdGeneratorFormat, type IdGenerator } from '../core/services/IdGenerator.js';
 import { browser } from '$app/environment';
 
 @Injectable(SERVICE_TOKENS.ID_GENERATOR, { scope: 'transient' })

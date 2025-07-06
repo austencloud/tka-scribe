@@ -5,13 +5,13 @@
   It uses the enhanced image exporter for reliable rendering.
 -->
 <script lang="ts">
-	import { onMount } from '$lib/utils/svelte-lifecycle';
+	import { onMount } from '../utils/svelte-lifecycle.js';
 	import { browser } from '$app/environment';
-	import { sequenceContainer } from '$lib/state/stores/sequence/SequenceContainer';
-	import { useContainer } from '$lib/state/core/svelte5-integration.svelte';
-	import { BEAT_FRAME_CONTEXT_KEY, type ElementContext } from '../context/ElementContext';
+	import { sequenceContainer } from '../state/stores/sequence/SequenceContainer.js';
+	import { useContainer } from '../state/core/svelte5-integration.svelte';
+	import { BEAT_FRAME_CONTEXT_KEY, type ElementContext } from '../context/ElementContext.js';
 	import { getContext } from 'svelte';
-	import { showError } from '$lib/components/shared/ToastManager.svelte';
+	import { showError } from '../components/shared/ToastManager.svelte';
 	import {
 		findBeatFrameElement,
 		listenForBeatFrameElement,
@@ -19,9 +19,9 @@
 		shareSequence,
 		downloadSequenceImage,
 		isWebShareSupported
-	} from './utils/ShareUtils';
+	} from './utils/ShareUtils.js';
 	import ShareDropdown from './ShareDropdown.svelte';
-	import hapticFeedbackService from '$lib/services/HapticFeedbackService';
+	import hapticFeedbackService from '../services/HapticFeedbackService.js';
 	import { fade, scale } from 'svelte/transition';
 	import { quintOut } from 'svelte/easing';
 

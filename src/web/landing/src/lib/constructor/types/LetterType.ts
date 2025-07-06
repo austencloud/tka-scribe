@@ -1,4 +1,4 @@
-import { Letter } from './Letter';
+import { Letter } from './Letter.js';
 
 export class LetterType {
 	static Type1 = new LetterType(

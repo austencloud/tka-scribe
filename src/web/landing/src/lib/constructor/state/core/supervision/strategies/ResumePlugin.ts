@@ -2,10 +2,10 @@ import type {
 	SupervisionStrategyPlugin,
 	ResumeStrategyOptions,
 	SupervisionStrategy
-} from '../types';
-import { SupervisionStrategyType } from '../types';
-import { ResumeStrategy } from './ResumeStrategy';
-import { StopStrategy } from './StopStrategy';
+} from '../types.js';
+import { SupervisionStrategyType } from '../types.js';
+import { ResumeStrategy } from './ResumeStrategy.js';
+import { StopStrategy } from './StopStrategy.js';
 
 export const ResumePlugin: SupervisionStrategyPlugin<ResumeStrategyOptions> = {
 	type: SupervisionStrategyType.RESUME,

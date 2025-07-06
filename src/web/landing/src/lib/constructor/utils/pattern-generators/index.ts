@@ -1,8 +1,8 @@
-import { formatPatternCSV, formatPatternDisplay } from './PatternGenerator';
-import type { PatternRow } from './PatternGenerator';
+import { formatPatternCSV, formatPatternDisplay } from './PatternGenerator.js';
+import type { PatternRow } from './PatternGenerator.js';
 
 // Import letter generators from all modules
-import { generateLetterA, generateLetterB, generateLetterC } from './BasicLetters';
+import { generateLetterA, generateLetterB, generateLetterC } from './BasicLetters.js';
 
 import {
 	generateLetterD,
@@ -15,7 +15,7 @@ import {
 	generateLetterK,
 	generateLetterL,
 	generateLetterM
-} from './IntermediateLetters';
+} from './IntermediateLetters.js';
 
 import {
 	generateLetterN,
@@ -31,7 +31,7 @@ import {
 	generateLetterX,
 	generateLetterY,
 	generateLetterZ
-} from './AdvancedLetters';
+} from './AdvancedLetters.js';
 
 import {
 	generateGreekAlpha,
@@ -47,7 +47,7 @@ import {
 	generateGreekTheta,
 	generateGreekPsi,
 	generateGreekLambda
-} from './GreekLetters';
+} from './GreekLetters.js';
 
 // Map of all letter generators
 const letterGenerators = {

@@ -5,12 +5,12 @@
  */
 
 import { browser } from '$app/environment';
-import { logger } from '$lib/core/logging';
-import { exportSequenceImage } from '$lib/components/Pictograph/export/SequenceImageExporter';
+import { logger } from '../core/logging.js';
+import { exportSequenceImage } from '../components/Pictograph/export/SequenceImageExporter.js';
 
-import type { SequenceRenderResult } from './ImageUtils';
-import { findBeatFrameElement } from './ElementFinder';
-import { getImageExportSettings } from '$lib/state/image-export-settings.svelte';
+import type { SequenceRenderResult } from './ImageUtils.js';
+import { findBeatFrameElement } from './ElementFinder.js';
+import { getImageExportSettings } from '../state/image-export-settings.svelte';
 
 /**
  * Options for rendering a sequence

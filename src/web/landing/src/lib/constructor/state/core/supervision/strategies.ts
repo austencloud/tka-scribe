@@ -11,7 +11,7 @@
  * No duplicate declarations; strict‑mode friendly.
  */
 
-import { LogLevel, log } from '../logger';
+import { LogLevel, log } from '../logger.js';
 import type {
 	SupervisedActor,
 	Supervisor,
@@ -20,8 +20,8 @@ import type {
 	StopStrategyOptions,
 	ResumeStrategyOptions,
 	SupervisionStrategy
-} from './types';
-import { SupervisionStrategyType, BackoffType } from './types';
+} from './types.js';
+import { SupervisionStrategyType, BackoffType } from './types.js';
 
 /* -------------------------------------------------------------------------- */
 /*  Base                                                                      */

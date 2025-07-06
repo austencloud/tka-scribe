@@ -7,7 +7,7 @@
  */
 
 import { derived, type Readable } from 'svelte/store';
-import { userContainer, type UserState } from './UserContainer';
+import { userContainer, type UserState } from './UserContainer.js';
 
 // Create a derived store for the current user
 export const currentUserStore: Readable<string> = derived(

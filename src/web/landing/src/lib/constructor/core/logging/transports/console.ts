@@ -4,8 +4,8 @@
  * Outputs logs to the browser console with formatting.
  */
 
-import { LogLevel, type LogEntry, type LogTransport } from '../types';
-import { CONSOLE_COLORS, CONSOLE_SYMBOLS } from '../constants';
+import { LogLevel, type LogEntry, type LogTransport } from '../types.js';
+import { CONSOLE_COLORS, CONSOLE_SYMBOLS } from '../constants.js';
 
 export interface ConsoleTransportOptions {
   prettyPrint?: boolean;

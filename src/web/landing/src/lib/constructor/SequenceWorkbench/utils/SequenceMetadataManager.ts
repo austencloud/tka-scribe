@@ -1,4 +1,4 @@
-import { sequenceStore } from '$lib/state/stores/sequenceStore';
+import { sequenceStore } from '../state/stores/sequenceStore.js';
 
 /**
  * Interface for sequence metadata

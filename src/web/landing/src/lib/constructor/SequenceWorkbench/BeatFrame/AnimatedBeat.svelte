@@ -2,7 +2,7 @@
 	import { onMount } from 'svelte';
 	import Beat from './Beat.svelte';
 	import SelectionBorderOverlay from './SelectionBorderOverlay.svelte';
-	import type { BeatData } from './BeatData';
+	import type { BeatData } from './BeatData.js';
 
 	const props = $props<{
 		beat: BeatData;

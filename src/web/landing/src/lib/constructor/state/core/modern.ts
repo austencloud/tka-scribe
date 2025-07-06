@@ -6,19 +6,19 @@
  */
 
 // Export container utilities
-export * from './container';
+export * from './container.js';
 
 // Export machine utilities
-export * from './modernMachine';
+export * from './modernMachine.js';
 
 // Export adapter utilities
-export * from './adapters';
+export * from './adapters.js';
 
 // Export testing utilities
-export * from './modernTesting';
+export * from './modernTesting.js';
 
 // Re-export types from the registry for compatibility
-export { type StateContainer, type StateContainerType } from './registry/types';
+export { type StateContainer, type StateContainerType } from './registry/types.js';
 
 /**
  * Creates a simple state object with a getter

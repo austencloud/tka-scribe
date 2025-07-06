@@ -13,4 +13,4 @@ export {
 	categoryKeys
 } from './optionPickerContainer.svelte';
 
-export type { OptionPickerState, LastSelectedTabState } from './types';
+export type { OptionPickerState, LastSelectedTabState } from './types.js';

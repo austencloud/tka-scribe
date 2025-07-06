@@ -6,22 +6,22 @@
  */
 
 // Export core utilities
-export * from './core/store';
-export * from './core/registry';
+export * from './core/store.js';
+export * from './core/registry.js';
 
 // Import at the top to avoid circular dependencies
-import { stateRegistry } from './core/registry';
-import { appService as appActor } from './machines/app/app.machine';
-import { appActions } from './machines/app/app.actions';
-import * as appSelectors from './machines/app/app.selectors';
-import { sequenceActor, sequenceActions, sequenceSelectors } from './machines/sequenceMachine';
+import { stateRegistry } from './core/registry.js';
+import { appService as appActor } from './machines/app/app.machine.js';
+import { appActions } from './machines/app/app.actions.js';
+import * as appSelectors from './machines/app/app.selectors.js';
+import { sequenceActor, sequenceActions, sequenceSelectors } from './machines/sequenceMachine.js';
 
 // Export state machines (excluding sequenceContainer to avoid ambiguity)
-export { appMachine } from './machines';
+export { appMachine } from './machines.js';
 
 // Export stores
-export * from './stores/sequenceStore';
-export * from './stores/uiStore';
+export * from './stores/sequenceStore.js';
+export * from './stores/uiStore.js';
 
 // Re-export specific machines for convenience
 export { appActions, appSelectors, appActor };

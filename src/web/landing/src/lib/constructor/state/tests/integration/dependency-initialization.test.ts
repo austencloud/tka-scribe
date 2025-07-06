@@ -3,9 +3,9 @@
  */
 import { describe, it, expect } from 'vitest';
 import { get } from 'svelte/store';
-import { stateRegistry } from '../../core/registry';
-import { createStore } from '../../core/store';
-import { setupIntegrationTests } from './setup';
+import { stateRegistry } from '../../core/registry.js';
+import { createStore } from '../../core/store.js';
+import { setupIntegrationTests } from './setup.js';
 
 describe('Dependency-Aware Initialization', () => {
   setupIntegrationTests();

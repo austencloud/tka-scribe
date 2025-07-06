@@ -1,7 +1,7 @@
 // src/lib/utils/appInitializer.ts
-import { sequenceContainer } from '$lib/state/stores/sequence/SequenceContainer';
-import { checkForSequenceInUrl } from '$lib/components/SequenceWorkbench/share/utils/ShareUtils';
-import { logger } from '$lib/core/logging';
+import { sequenceContainer } from '../state/stores/sequence/SequenceContainer.js';
+import { checkForSequenceInUrl } from '../components/SequenceWorkbench/share/utils/ShareUtils.js';
+import { logger } from '../core/logging.js';
 
 /**
  * Initialize the application, reporting progress via callback for XState

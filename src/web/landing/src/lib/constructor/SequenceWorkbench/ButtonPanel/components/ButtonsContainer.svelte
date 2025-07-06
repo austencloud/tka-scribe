@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
 	import ActionButton from './ActionButton.svelte';
-	import type { ButtonDefinition, ActionEventDetail, LayoutOrientation } from '../types';
-	import { ANIMATION_DURATIONS } from '../utils/animations';
+	import type { ButtonDefinition, ActionEventDetail, LayoutOrientation } from '../types.js';
+	import { ANIMATION_DURATIONS } from '../utils/animations.js';
 
 	// Props
 	export let buttons: ButtonDefinition[];

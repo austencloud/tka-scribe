@@ -2,14 +2,14 @@
  * Tests for the sequence store adapter
  */
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { sequenceContainer } from './SequenceContainer';
+import { sequenceContainer } from './SequenceContainer.js';
 import {
 	sequenceStore,
 	selectedBeatsStore,
 	currentBeatStore,
 	beatCountStore
-} from './sequenceAdapter';
-import type { BeatData } from './SequenceContainer';
+} from './sequenceAdapter.js';
+import type { BeatData } from './SequenceContainer.js';
 import { get } from 'svelte/store';
 
 // Mock localStorage

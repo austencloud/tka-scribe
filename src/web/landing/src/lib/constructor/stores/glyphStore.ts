@@ -1,9 +1,9 @@
 // src/lib/stores/glyphStore.ts
 import { derived, writable, type Readable } from 'svelte/store';
-import type { Letter } from '$lib/types/Letter';
-import type { DirRelation, PropRotDir, TKATurns } from '$lib/types/Types';
-import { LetterType } from '$lib/types/LetterType';
-import { safeAsciiName } from '$lib/types/safeAsciiName';
+import type { Letter } from '../types/Letter.js';
+import type { DirRelation, PropRotDir, TKATurns } from '../types/Types.js';
+import { LetterType } from '../types/LetterType.js';
+import { safeAsciiName } from '../types/safeAsciiName.js';
 
 // Asset cache to prevent repeated fetches
 interface AssetCache {

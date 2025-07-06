@@ -18,7 +18,7 @@
  */
 
 import { browser } from '$app/environment';
-import { settingsStore } from '$lib/state/stores/settings/settings.store';
+import { settingsStore } from '../state/stores/settings/settings.store.js';
 import { get } from 'svelte/store';
 
 // Types of haptic feedback patterns

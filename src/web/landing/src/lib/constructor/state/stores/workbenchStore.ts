@@ -1,5 +1,5 @@
 import { writable } from 'svelte/store';
-import type { GeneratorType } from './settingsStore';
+import type { GeneratorType } from './settingsStore.js';
 
 interface WorkbenchState {
 	toolsPanelOpen: boolean;

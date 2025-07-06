@@ -4,7 +4,7 @@
  * Centralized store for application settings, including sequence generation settings.
  */
 
-import { createStore } from '../core/store';
+import { createStore } from '../core/store.js';
 
 // Types
 export type GeneratorType = 'circular' | 'freeform';

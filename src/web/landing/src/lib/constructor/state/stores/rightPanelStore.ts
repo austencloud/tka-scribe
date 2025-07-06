@@ -7,7 +7,7 @@
 
 import { writable, derived } from 'svelte/store';
 import { browser } from '$app/environment';
-import { isSequenceEmpty } from '$lib/state/machines/sequenceMachine/persistence';
+import { isSequenceEmpty } from '../state/machines/sequenceMachine/persistence.js';
 
 // Define the tab types
 export type RightPanelTab = 'construct' | 'generate';

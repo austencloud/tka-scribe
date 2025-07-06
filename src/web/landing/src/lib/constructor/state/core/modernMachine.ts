@@ -14,8 +14,8 @@ import {
 	type ActorOptions,
 	type SnapshotFrom
 } from 'xstate';
-import { stateRegistry } from './registry';
-import { createContainer, createEffect } from './container';
+import { stateRegistry } from './registry.js';
+import { createContainer, createEffect } from './container.js';
 
 /**
  * Creates an XState machine with improved ergonomics

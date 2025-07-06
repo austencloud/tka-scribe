@@ -6,15 +6,15 @@
  */
 
 import { createMachine, type AnyActorRef, type AnyStateMachine } from 'xstate';
-import { stateRegistry } from './registry';
+import { stateRegistry } from './registry.js';
 import {
   type SupervisedActorOptions,
   type Supervisor,
   type SupervisionStrategy,
   type SupervisedActor as SupervisedActorType
-} from './supervision/types';
-import { SupervisedActor } from './supervision/SupervisedActor';
-import { RootSupervisor } from './supervision/RootSupervisor';
+} from './supervision/types.js';
+import { SupervisedActor } from './supervision/SupervisedActor.js';
+import { RootSupervisor } from './supervision/RootSupervisor.js';
 
 /**
  * Create and register a state machine

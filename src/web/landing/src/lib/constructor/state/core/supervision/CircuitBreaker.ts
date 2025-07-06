@@ -5,9 +5,9 @@
  * to prevent cascading failures in the actor system.
  */
 
-import { debug, warn } from '../logger/logging';
-import type { CircuitBreaker, CircuitBreakerOptions } from './types';
-import { CircuitBreakerState } from './types';
+import { debug, warn } from '../logger/logging.js';
+import type { CircuitBreaker, CircuitBreakerOptions } from './types.js';
+import { CircuitBreakerState } from './types.js';
 
 export class DefaultCircuitBreaker implements CircuitBreaker {
 	private failures: number[] = [];

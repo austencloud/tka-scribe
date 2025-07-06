@@ -2,9 +2,9 @@ import type {
 	SupervisionStrategyPlugin,
 	RestartStrategyOptions,
 	SupervisionStrategy
-} from '../types';
-import { SupervisionStrategyType, BackoffType } from '../types';
-import { RestartStrategy } from './RestartStrategy';
+} from '../types.js';
+import { SupervisionStrategyType, BackoffType } from '../types.js';
+import { RestartStrategy } from './RestartStrategy.js';
 
 export const RestartPlugin: SupervisionStrategyPlugin<RestartStrategyOptions> = {
 	type: SupervisionStrategyType.RESTART,

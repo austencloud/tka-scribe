@@ -1,6 +1,6 @@
-import type { SupervisionStrategy, SupervisedActor, StopStrategyOptions } from '../types';
-import { SupervisionStrategyType } from '../types';
-import type { Supervisor } from '../Supervisor';
+import type { SupervisionStrategy, SupervisedActor, StopStrategyOptions } from '../types.js';
+import { SupervisionStrategyType } from '../types.js';
+import type { Supervisor } from '../Supervisor.js';
 
 export class StopStrategy implements SupervisionStrategy {
 	readonly type = SupervisionStrategyType.STOP;

@@ -5,20 +5,20 @@
  * the container-based approach with Svelte 5 runes.
  */
 
-import { createContainer, createDerived } from '$lib/state/core/container';
-import { createPersistentObjectState } from '$lib/state/core/runes.svelte';
-import type { PictographData } from '$lib/types/PictographData';
-import type { SortMethod, ReversalFilter } from '$lib/components/ConstructTab/OptionPicker/config';
+import { createContainer, createDerived } from '../state/core/container.js';
+import { createPersistentObjectState } from '../state/core/runes.svelte';
+import type { PictographData } from '../types/PictographData.js';
+import type { SortMethod, ReversalFilter } from '../components/ConstructTab/OptionPicker/config.js';
 import {
 	getNextOptions,
 	determineGroupKey,
 	getSortedGroupKeys,
 	getSorter
-} from '$lib/components/ConstructTab/OptionPicker/services/OptionsService';
-import { sequenceActions, sequenceSelectors } from '$lib/state/machines/sequenceMachine';
+} from '../components/ConstructTab/OptionPicker/services/OptionsService.js';
+import { sequenceActions, sequenceSelectors } from '../state/machines/sequenceMachine.js';
 import { browser } from '$app/environment';
-import type { LastSelectedTabState, OptionPickerState } from './types';
-import hapticFeedbackService from '$lib/services/HapticFeedbackService';
+import type { LastSelectedTabState, OptionPickerState } from './types.js';
+import hapticFeedbackService from '../services/HapticFeedbackService.js';
 
 // Initial state for the option picker container
 const initialState: OptionPickerState = {

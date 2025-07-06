@@ -1,4 +1,4 @@
-import { ServiceContainer } from './ServiceContainer';
+import { ServiceContainer } from './ServiceContainer.js';
 import { browser } from '$app/environment';
 
 let container: ServiceContainer;

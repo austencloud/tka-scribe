@@ -3,9 +3,9 @@
  */
 import { get, type Readable } from 'svelte/store';
 import type { AnyActorRef } from 'xstate';
-import { DataCorruptionError, StorageError } from './errors';
-import { validateMachineSnapshot } from './validation';
-import type { PersistedData, PersistedStateCache, StateContainer } from './types';
+import { DataCorruptionError, StorageError } from './errors.js';
+import { validateMachineSnapshot } from './validation.js';
+import type { PersistedData, PersistedStateCache, StateContainer } from './types.js';
 
 /**
  * Load persisted state from localStorage with enhanced validation and recovery

@@ -1,11 +1,11 @@
 <!-- src/lib/components/SequenceWorkbench/RightPanel/RightPanel.svelte -->
 <script lang="ts">
-	import { workbenchStore } from '$lib/state/stores/workbenchStore';
+	import { workbenchStore } from '../state/stores/workbenchStore.js';
 	import ModernGenerationControls from './ModernGenerationControls.svelte';
-	import OptionPickerWithDebug from '$lib/components/ConstructTab/OptionPicker/OptionPickerWithDebug.svelte';
-	import StartPosPicker from '$lib/components/ConstructTab/StartPosPicker/StartPosPicker.svelte';
+	import OptionPickerWithDebug from '../components/ConstructTab/OptionPicker/OptionPickerWithDebug.svelte';
+	import StartPosPicker from '../components/ConstructTab/StartPosPicker/StartPosPicker.svelte';
 	import TransitionWrapper from './TransitionWrapper.svelte';
-	import { isSequenceEmpty } from '$lib/state/machines/sequenceMachine/persistence';
+	import { isSequenceEmpty } from '../state/machines/sequenceMachine/persistence.js';
 	import { fade, fly } from 'svelte/transition';
 	import { cubicInOut } from 'svelte/easing';
 

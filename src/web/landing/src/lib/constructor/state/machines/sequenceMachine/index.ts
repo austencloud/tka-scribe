@@ -12,12 +12,12 @@
  */
 
 // Import legacy dependencies for backward compatibility
-import { stateRegistry } from '../../core/registry';
-import { initializePersistence } from './persistence';
-import { generateSequenceActor } from './actors';
+import { stateRegistry } from '../../core/registry.js';
+import { initializePersistence } from './persistence.js';
+import { generateSequenceActor } from './actors.js';
 
 // Re-export types from the legacy implementation for backward compatibility
-export * from './types';
+export * from './types.js';
 
 // Import from the modern implementation
 import {
@@ -25,7 +25,7 @@ import {
 	modernSequenceContainer,
 	sequenceSelectors as modernSequenceSelectors,
 	sequenceActions as modernSequenceActions
-} from './SequenceMachine';
+} from './SequenceMachine.js';
 
 // Re-export the modern machine as the legacy machine
 export const sequenceMachine = modernSequenceMachine;

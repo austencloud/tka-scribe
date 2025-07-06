@@ -6,13 +6,13 @@
  */
 
 // Export the registry
-export * from './registry';
+export * from './registry.js';
 
 // Export store factories
-export * from './store';
+export * from './store.js';
 
 // Export machine factories
-export * from './machine';
+export * from './machine.js';
 
 // Export testing utilities
-export * from './testing';
+export * from './testing.js';

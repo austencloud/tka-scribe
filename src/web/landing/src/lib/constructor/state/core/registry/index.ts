@@ -30,21 +30,21 @@ import type {
   RegisterMachineOptions,
   RegisterStoreOptions,
   PersistedStateCache
-} from './types';
-import { DataCorruptionError } from './errors';
-import { validateMachineSnapshot, validateStoreData } from './validation';
+} from './types.js';
+import { DataCorruptionError } from './errors.js';
+import { validateMachineSnapshot, validateStoreData } from './validation.js';
 import { 
   addDependency as addDep, 
   getDependencies as getDeps, 
   getDependents as getDepends,
   topologicalSort
-} from './dependencies';
-import { loadPersistedState, performPersist } from './persistence';
-import { debugRegistry } from './debug';
+} from './dependencies.js';
+import { loadPersistedState, performPersist } from './persistence.js';
+import { debugRegistry } from './debug.js';
 
 // Re-export types and errors for external use
-export * from './types';
-export * from './errors';
+export * from './types.js';
+export * from './errors.js';
 
 // The registry itself
 class StateRegistry {

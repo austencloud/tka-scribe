@@ -1,13 +1,13 @@
 /**
  * Utilities for URL handling and sequence URL generation
  */
-import type { BeatData } from '$lib/state/stores/sequence/SequenceContainer';
+import type { BeatData } from '../state/stores/sequence/SequenceContainer.js';
 import { browser } from '$app/environment';
-import { logger } from '$lib/core/logging';
-import { showSuccess } from '$lib/components/shared/ToastManager.svelte';
-import { encodeSequenceCompact } from './SequenceEncoder';
-import { decodeSequenceCompact } from './SequenceDecoder';
-import { compressString, decompressString } from '$lib/utils/lzstring';
+import { logger } from '../core/logging.js';
+import { showSuccess } from '../components/shared/ToastManager.svelte';
+import { encodeSequenceCompact } from './SequenceEncoder.js';
+import { decodeSequenceCompact } from './SequenceDecoder.js';
+import { compressString, decompressString } from '../utils/lzstring.js';
 
 /**
  * Generate a compact shareable URL for a sequence

@@ -1,9 +1,9 @@
 /**
  * Persistence functionality for the sequence state machine
  */
-import { sequenceStore } from '../../stores/sequenceStore';
-import { selectedStartPos } from '$lib/stores/sequence/selectionStore';
-import { pictographStore } from '$lib/state/stores/pictograph/pictograph.store';
+import { sequenceStore } from '../../stores/sequenceStore.js';
+import { selectedStartPos } from '../stores/sequence/selectionStore.js';
+import { pictographStore } from '../state/stores/pictograph/pictograph.store.js';
 import type { Actor } from 'xstate';
 import { writable } from 'svelte/store';
 

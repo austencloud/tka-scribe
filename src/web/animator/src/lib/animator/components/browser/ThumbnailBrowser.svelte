@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { DictionaryItem, SequenceData } from '../../types/core.js';
-	import { DictionaryService } from '../../core/services/dictionary-service.js';
+	import { HybridDictionaryService } from '../../core/services/hybrid-dictionary.js';
 	import SearchBar from './SearchBar.svelte';
 	import BrowserStates from './BrowserStates.svelte';
 	import ResultsInfo from './ResultsInfo.svelte';
@@ -25,7 +25,7 @@
 	let isJSONModalOpen = $state(false);
 
 	// Services
-	const dictionaryService = DictionaryService.getInstance();
+	const dictionaryService = HybridDictionaryService.getInstance();
 
 	// Load dictionary on mount
 	$effect(() => {

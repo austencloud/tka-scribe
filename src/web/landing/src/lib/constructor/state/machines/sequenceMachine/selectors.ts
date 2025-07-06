@@ -1,8 +1,8 @@
 /**
  * Selectors for the sequence state machine
  */
-import type { BeatData as StoreBeatData } from '../../stores/sequenceStore';
-import { sequenceStore } from '../../stores/sequenceStore';
+import type { BeatData as StoreBeatData } from '../../stores/sequenceStore.js';
+import { sequenceStore } from '../../stores/sequenceStore.js';
 import type { Actor } from 'xstate';
 
 /**

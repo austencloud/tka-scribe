@@ -7,12 +7,12 @@
  */
 
 import { writable, derived, type Writable, type Readable } from 'svelte/store';
-import { backgroundContainer, type BackgroundState } from './BackgroundContainer';
+import { backgroundContainer, type BackgroundState } from './BackgroundContainer.js';
 import type {
 	BackgroundType,
 	QualityLevel,
 	PerformanceMetrics
-} from '$lib/components/Backgrounds/types/types';
+} from '../components/Backgrounds/types/types.js';
 
 /**
  * Create a store adapter for the background container
@@ -134,5 +134,5 @@ export const availableBackgroundsStore: Readable<BackgroundType[]> = derived(
 );
 
 // Re-export the container for modern usage
-export { backgroundContainer } from './BackgroundContainer';
-export type { BackgroundState, BackgroundContainer } from './BackgroundContainer';
+export { backgroundContainer } from './BackgroundContainer.js';
+export type { BackgroundState, BackgroundContainer } from './BackgroundContainer.js';

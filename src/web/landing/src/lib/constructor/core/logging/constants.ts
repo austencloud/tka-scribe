@@ -4,9 +4,9 @@
  * Shared constants for the structured logging system.
  */
 
-import { LogLevel, type LoggerConfig } from './types';
+import { LogLevel, type LoggerConfig } from './types.js';
 import { browser } from '$app/environment';
-import { loggingConfig } from '$lib/config/logging';
+import { loggingConfig } from '../config/logging.js';
 
 /**
  * Default log level based on environment

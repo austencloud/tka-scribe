@@ -5,7 +5,7 @@ import {
     calculateBeatFrameShouldScroll,
     calculateCombinedUnitHeight,
     calculateAvailableHeightForBeatFrame
-} from '../SequenceLayoutCalculator';
+} from '../SequenceLayoutCalculator.js';
 
 describe('SequenceLayoutCalculator', () => {
     describe('calculateWorkbenchIsPortrait', () => {

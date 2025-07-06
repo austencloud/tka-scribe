@@ -6,7 +6,7 @@ import {
 	ErrorSeverity as LogErrorSeverity,
 	ErrorCategory,
 	type AppError as LogAppError
-} from '$lib/core/logging/error-logger';
+} from '../core/logging/error-logger.js';
 
 // Re-export error severity for backward compatibility
 export enum ErrorSeverity {

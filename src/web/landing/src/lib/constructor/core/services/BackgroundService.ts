@@ -4,7 +4,7 @@ import type {
 	QualityLevel,
 	AccessibilitySettings,
 	Dimensions
-} from '$lib/components/Backgrounds/types/types';
+} from '../components/Backgrounds/types/types.js';
 
 export interface BackgroundService {
 	loadBackground(type: BackgroundType): Promise<BackgroundSystem>;

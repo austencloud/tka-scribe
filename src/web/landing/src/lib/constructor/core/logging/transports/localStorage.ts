@@ -4,8 +4,8 @@
  * Persists logs to localStorage for later retrieval.
  */
 
-import { type LogEntry, type LogTransport, LogLevel } from '../types';
-import { MAX_STORAGE_LOGS, STORAGE_KEY } from '../constants';
+import { type LogEntry, type LogTransport, LogLevel } from '../types.js';
+import { MAX_STORAGE_LOGS, STORAGE_KEY } from '../constants.js';
 import { browser } from '$app/environment';
 
 export interface LocalStorageTransportOptions {

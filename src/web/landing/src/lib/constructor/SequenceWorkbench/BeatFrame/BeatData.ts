@@ -1,5 +1,5 @@
 // src/lib/components/SequenceWorkbench/BeatFrame/BeatData.ts
-import type { PictographData } from '$lib/types/PictographData.js';
+import type { PictographData } from '../types/PictographData.js.js';
 
 /**
  * Represents a single beat in a sequence

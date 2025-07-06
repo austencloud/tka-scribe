@@ -5,7 +5,7 @@
 	import RightPanel from './RightPanel/RightPanel.svelte';
 	import ToolsPanel from './ToolsPanel/ToolsPanel.svelte';
 	import { fly } from 'svelte/transition';
-	import type { ButtonDefinition } from './ButtonPanel/types';
+	import type { ButtonDefinition } from './ButtonPanel/types.js';
 
 	// Props
 	export let toolsPanelButtons: ButtonDefinition[];

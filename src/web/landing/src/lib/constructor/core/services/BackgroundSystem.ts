@@ -3,7 +3,7 @@ import type {
 	BackgroundType,
 	QualityLevel,
 	AccessibilitySettings
-} from '$lib/components/Backgrounds/types/types';
+} from '../components/Backgrounds/types/types.js';
 
 export interface BackgroundSystemFactory {
 	createBackgroundSystem(

@@ -19,16 +19,16 @@ import {
 	type InputFrom,
 	type EmittedFrom
 } from 'xstate';
-import { debug } from '../logger/logging';
+import { debug } from '../logger/logging.js';
 import type {
 	SupervisedActor as ISupervisedActor,
 	SupervisedActorOptions,
 	ActorHealthMetrics,
 	Supervisor,
 	SupervisionStrategy
-} from './types';
-import { ActorHealthStatus } from './types';
-import { RestartStrategy } from './strategies';
+} from './types.js';
+import { ActorHealthStatus } from './types.js';
+import { RestartStrategy } from './strategies.js';
 
 // Private storage using WeakMap
 const actorStorage = new WeakMap<SupervisedActor<any>, ReturnType<typeof createActor>>();

@@ -5,12 +5,12 @@
  */
 
 import { browser } from '$app/environment';
-import { logger } from '$lib/core/logging';
-import { showError, showSuccess } from '$lib/components/shared/ToastManager.svelte';
-import type { SequenceRenderResult } from './ImageUtils';
-import { dataURLtoBlob } from './ImageUtils';
-import { isWebShareSupported, isFileShareSupported } from './WebShareApi';
-import { generateShareableUrl } from './UrlUtils';
+import { logger } from '../core/logging.js';
+import { showError, showSuccess } from '../components/shared/ToastManager.svelte';
+import type { SequenceRenderResult } from './ImageUtils.js';
+import { dataURLtoBlob } from './ImageUtils.js';
+import { isWebShareSupported, isFileShareSupported } from './WebShareApi.js';
+import { generateShareableUrl } from './UrlUtils.js';
 
 // Track the last time a share was attempted to prevent issues with multiple rapid calls
 let lastShareApiCallTime = 0;

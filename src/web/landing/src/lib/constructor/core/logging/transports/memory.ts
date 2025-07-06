@@ -4,8 +4,8 @@
  * Stores logs in memory for later retrieval, useful for debug panels.
  */
 
-import { type LogEntry, type LogTransport } from '../types';
-import { MAX_MEMORY_LOGS } from '../constants';
+import { type LogEntry, type LogTransport } from '../types.js';
+import { MAX_MEMORY_LOGS } from '../constants.js';
 
 export interface MemoryTransportOptions {
   maxEntries?: number;

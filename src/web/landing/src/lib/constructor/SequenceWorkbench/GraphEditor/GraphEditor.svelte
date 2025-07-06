@@ -2,9 +2,9 @@
 <script lang="ts">
 	// No store imports needed
 	import TurnsBox from './TurnsBox/TurnsBox.svelte';
-	import Pictograph from '$lib/components/Pictograph/Pictograph.svelte';
-	import type { PictographData } from '$lib/types/PictographData';
-	import { DIAMOND } from '$lib/types/Constants';
+	import Pictograph from '../components/Pictograph/Pictograph.svelte';
+	import type { PictographData } from '../types/PictographData.js';
+	import { DIAMOND } from '../types/Constants.js';
 
 	// Component props with defaults
 	export let isExpanded = false;

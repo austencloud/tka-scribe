@@ -9,17 +9,17 @@
  */
 
 import { createMachine, assign, fromPromise } from 'xstate';
-import { createAppMachine } from '$lib/state/core';
-import { initializeApplication } from '$lib/utils/appInitializer';
-import type { BackgroundType } from '$lib/components/MainWidget/state/appState';
+import { createAppMachine } from '../state/core.js';
+import { initializeApplication } from '../utils/appInitializer.js';
+import type { BackgroundType } from '../components/MainWidget/state/appState.js';
 import { browser } from '$app/environment';
-import { type AppMachineContext, type AppMachineEvents } from './types';
+import { type AppMachineContext, type AppMachineEvents } from './types.js';
 import {
 	loadBackgroundPreference,
 	loadActiveTabPreference,
 	saveBackgroundPreference,
 	saveActiveTabPreference
-} from '$lib/utils/preferences';
+} from '../utils/preferences.js';
 
 // --- State Machine Definition ---
 export const appMachine = createMachine(

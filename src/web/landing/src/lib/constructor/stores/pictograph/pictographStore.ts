@@ -1,11 +1,11 @@
 // src/lib/stores/pictographStore.ts
 import { writable } from 'svelte/store';
-import type { PictographData } from '$lib/types/PictographData';
-import type { GridData } from '$lib/components/objects/Grid/GridData';
-import type { PropData } from '$lib/components/objects/Prop/PropData';
-import type { ArrowData } from '$lib/components/objects/Arrow/ArrowData';
-import type { MotionData } from '$lib/components/objects/Motion/MotionData';
-import { LetterUtils } from '$lib/utils/LetterUtils';
+import type { PictographData } from '../types/PictographData.js';
+import type { GridData } from '../components/objects/Grid/GridData.js';
+import type { PropData } from '../components/objects/Prop/PropData.js';
+import type { ArrowData } from '../components/objects/Arrow/ArrowData.js';
+import type { MotionData } from '../components/objects/Motion/MotionData.js';
+import { LetterUtils } from '../utils/LetterUtils.js';
 
 export interface PictographStoreState {
 	status:

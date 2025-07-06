@@ -5,15 +5,15 @@
  * top-level supervisor for the entire application.
  */
 
-import { debug, warn, error } from '../logger/logging';
-import { Supervisor } from './Supervisor';
-import { DefaultCircuitBreaker } from './CircuitBreaker';
+import { debug, warn, error } from '../logger/logging.js';
+import { Supervisor } from './Supervisor.js';
+import { DefaultCircuitBreaker } from './CircuitBreaker.js';
 import type {
 	SupervisedActor,
 	RootSupervisorOptions,
 	CircuitBreaker,
 	SupervisionError
-} from './types';
+} from './types.js';
 
 let rootSupervisorInstance: RootSupervisor | null = null;
 

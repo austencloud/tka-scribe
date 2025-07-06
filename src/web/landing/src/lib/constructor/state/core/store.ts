@@ -6,7 +6,7 @@
  */
 
 import { writable, derived, get, type Writable, type Readable } from 'svelte/store';
-import { stateRegistry, DataCorruptionError, StorageError } from './registry';
+import { stateRegistry, DataCorruptionError, StorageError } from './registry.js';
 
 /**
  * Create a standard store with actions

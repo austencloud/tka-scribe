@@ -1,20 +1,20 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { useResizeObserver } from '$lib/composables/useResizeObserver';
-	import { defaultPictographData } from '$lib/components/Pictograph/utils/defaultPictographData';
-	import { autoAdjustLayout, calculateCellSize } from './beatFrameHelpers';
-	import { selectedStartPos } from '$lib/stores/sequence/selectionStore';
-	import type { PictographData } from '$lib/types/PictographData';
-	import type { BeatData as LegacyBeatData } from './BeatData';
+	import { useResizeObserver } from '../composables/useResizeObserver.js';
+	import { defaultPictographData } from '../components/Pictograph/utils/defaultPictographData.js';
+	import { autoAdjustLayout, calculateCellSize } from './beatFrameHelpers.js';
+	import { selectedStartPos } from '../stores/sequence/selectionStore.js';
+	import type { PictographData } from '../types/PictographData.js';
+	import type { BeatData as LegacyBeatData } from './BeatData.js';
 	import { browser } from '$app/environment';
-	import { layoutStore } from '$lib/stores/layout/layoutStore';
+	import { layoutStore } from '../stores/layout/layoutStore.js';
 	import { createEventDispatcher, setContext } from 'svelte';
 
 	// Import the sequence container and integration utilities
-	import { sequenceContainer } from '$lib/state/stores/sequence/SequenceContainer';
-	import { useContainer } from '$lib/state/core/svelte5-integration.svelte';
-	import type { BeatFrameLayoutOptions } from '$lib/types/BeatFrameLayoutOptions'; // Added import
-	import { BEAT_FRAME_CONTEXT_KEY } from '../context/ElementContext';
+	import { sequenceContainer } from '../state/stores/sequence/SequenceContainer.js';
+	import { useContainer } from '../state/core/svelte5-integration.svelte';
+	import type { BeatFrameLayoutOptions } from '../types/BeatFrameLayoutOptions.js'; // Added import
+	import { BEAT_FRAME_CONTEXT_KEY } from '../context/ElementContext.js';
 
 	// Helper function for safe logging of reactive state
 	function safeLog(message: string, data: any) {
@@ -29,7 +29,7 @@
 	import AnimatedBeat from './AnimatedBeat.svelte';
 	import ReversalGlyph from './ReversalGlyph.svelte';
 	import EmptyStartPosLabel from './EmptyStartPosLabel.svelte';
-	import { isSequenceEmpty } from '$lib/state/machines/sequenceMachine/persistence';
+	import { isSequenceEmpty } from '../state/machines/sequenceMachine/persistence.js';
 
 	// Create event dispatcher for natural height changes and beat selection
 	const dispatch = createEventDispatcher<{

@@ -2,7 +2,7 @@
  * Actors for the sequence state machine
  */
 import { fromCallback } from 'xstate';
-import type { SequenceMachineEvent, GenerateSequenceInput } from './types';
+import type { SequenceMachineEvent, GenerateSequenceInput } from './types.js';
 
 /**
  * Sequence generation actor

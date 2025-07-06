@@ -2,8 +2,8 @@
  * Utilities for clipboard operations
  */
 import { browser } from '$app/environment';
-import { logger } from '$lib/core/logging';
-import { showError, showSuccess } from '$lib/components/shared/ToastManager.svelte';
+import { logger } from '../core/logging.js';
+import { showError, showSuccess } from '../components/shared/ToastManager.svelte';
 
 /**
  * Copy a URL to the clipboard

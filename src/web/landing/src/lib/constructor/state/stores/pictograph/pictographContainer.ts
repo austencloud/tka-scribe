@@ -5,13 +5,13 @@
  * the container-based approach with Svelte 5 runes.
  */
 
-import { createContainer } from '$lib/state/core/container';
-import { createDerived } from '$lib/state/core/container';
-import type { PictographData } from '$lib/types/PictographData';
-import type { ArrowData } from '$lib/components/objects/Arrow/ArrowData';
-import type { GridData } from '$lib/components/objects/Grid/GridData';
-import type { PropData } from '$lib/components/objects/Prop/PropData';
-import { defaultPictographData } from '$lib/components/Pictograph/utils/defaultPictographData';
+import { createContainer } from '../state/core/container.js';
+import { createDerived } from '../state/core/container.js';
+import type { PictographData } from '../types/PictographData.js';
+import type { ArrowData } from '../components/objects/Arrow/ArrowData.js';
+import type { GridData } from '../components/objects/Grid/GridData.js';
+import type { PropData } from '../components/objects/Prop/PropData.js';
+import { defaultPictographData } from '../components/Pictograph/utils/defaultPictographData.js';
 
 /**
  * Interface for the pictograph container state

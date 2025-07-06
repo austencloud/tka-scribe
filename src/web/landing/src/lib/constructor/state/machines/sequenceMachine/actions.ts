@@ -5,13 +5,13 @@
  * instead of the legacy sequence store.
  */
 
-import { sequenceContainer } from '../../stores/sequence/SequenceContainer';
-import type { BeatData } from '../../stores/sequence/SequenceContainer';
-import { convertToStoreBeatData } from './types';
-import { isSequenceEmpty } from './persistence';
-import { selectedStartPos } from '$lib/stores/sequence/selectionStore';
-import { pictographContainer } from '$lib/state/stores/pictograph/pictographContainer';
-import { defaultPictographData } from '$lib/components/Pictograph/utils/defaultPictographData';
+import { sequenceContainer } from '../../stores/sequence/SequenceContainer.js';
+import type { BeatData } from '../../stores/sequence/SequenceContainer.js';
+import { convertToStoreBeatData } from './types.js';
+import { isSequenceEmpty } from './persistence.js';
+import { selectedStartPos } from '../stores/sequence/selectionStore.js';
+import { pictographContainer } from '../state/stores/pictograph/pictographContainer.js';
+import { defaultPictographData } from '../components/Pictograph/utils/defaultPictographData.js';
 import type { Readable } from 'svelte/store';
 
 /**

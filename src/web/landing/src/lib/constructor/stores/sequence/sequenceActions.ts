@@ -1,12 +1,12 @@
 /**
  * @deprecated This file is deprecated and will be removed in a future version.
- * Use sequenceActions from '$lib/state/machines/sequenceMachine' instead.
+ * Use sequenceActions from '../state/machines/sequenceMachine.js' instead.
  */
 
-import { sequenceStore } from '$lib/state/stores/sequence/sequenceAdapter';
-import { sequenceActions as modernSequenceActions } from '$lib/state/machines/sequenceMachine';
-import type { BeatData as LegacyBeatData } from '$lib/components/SequenceWorkbench/BeatFrame/BeatData';
-import type { BeatData as ModernBeatData } from '$lib/state/stores/sequence/SequenceContainer';
+import { sequenceStore } from '../state/stores/sequence/sequenceAdapter.js';
+import { sequenceActions as modernSequenceActions } from '../state/machines/sequenceMachine.js';
+import type { BeatData as LegacyBeatData } from '../components/SequenceWorkbench/BeatFrame/BeatData.js';
+import type { BeatData as ModernBeatData } from '../state/stores/sequence/SequenceContainer.js';
 
 // Type adapter functions to convert between legacy and modern BeatData types
 function convertToModernBeat(legacyBeat: LegacyBeatData): ModernBeatData {

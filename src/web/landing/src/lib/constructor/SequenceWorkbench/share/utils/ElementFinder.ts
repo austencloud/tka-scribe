@@ -5,8 +5,8 @@
  * It uses multiple strategies to ensure the element can be found reliably.
  */
 
-import type { ElementContext } from '../../context/ElementContext';
-import { logger } from '$lib/core/logging';
+import type { ElementContext } from '../../context/ElementContext.js';
+import { logger } from '../core/logging.js';
 
 /**
  * Find the BeatFrame element in the DOM using multiple strategies

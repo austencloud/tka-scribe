@@ -4,9 +4,9 @@
  * This store manages the state of the grid in the application.
  */
 
-import { createStore } from '$lib/state/core';
-import type { GridData, GridMode, GridPoint, Coordinate } from '$lib/components/objects/Grid/types';
-import { parseGridCoordinates } from '$lib/components/objects/Grid/gridUtils';
+import { createStore } from '../state/core.js';
+import type { GridData, GridMode, GridPoint, Coordinate } from '../components/objects/Grid/types.js';
+import { parseGridCoordinates } from '../components/objects/Grid/gridUtils.js';
 
 // Define the store state interface
 export interface GridStoreState {

@@ -11,7 +11,7 @@
  */
 
 // Re-export types from the modern implementation
-export type { BeatData, SequenceState } from './sequence/SequenceContainer';
+export type { BeatData, SequenceState } from './sequence/SequenceContainer.js';
 
 // Re-export the store and derived stores from the adapter
 export {
@@ -20,10 +20,10 @@ export {
 	currentBeatStore as currentBeat,
 	beatCountStore as beatCount,
 	sequenceDifficultyStore as sequenceDifficulty
-} from './sequence/sequenceAdapter';
+} from './sequence/sequenceAdapter.js';
 
 // Export the container for modern usage
-export { sequenceContainer } from './sequence/SequenceContainer';
+export { sequenceContainer } from './sequence/SequenceContainer.js';
 
 // Note: The sequence machine is already connected to the store
 // through the updateSequence action in the sequenceMachine.ts file.

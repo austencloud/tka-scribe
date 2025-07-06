@@ -10,14 +10,14 @@ import {
   LOG_LEVEL_MAP, 
   type LoggerConfig, 
   LogDomain 
-} from './types';
+} from './types.js';
 import { 
   DEFAULT_LOGGER_CONFIG, 
   LOG_URL_PARAM 
-} from './constants';
-import { ConsoleTransport } from './transports/console';
-import { MemoryTransport } from './transports/memory';
-import { LocalStorageTransport } from './transports/localStorage';
+} from './constants.js';
+import { ConsoleTransport } from './transports/console.js';
+import { MemoryTransport } from './transports/memory.js';
+import { LocalStorageTransport } from './transports/localStorage.js';
 
 /**
  * Parse log configuration from URL parameters

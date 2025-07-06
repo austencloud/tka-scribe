@@ -1,10 +1,10 @@
 <!-- src/lib/components/SequenceWorkbench/RightPanel/ModernGenerationControls.svelte -->
 <script lang="ts">
-	import { sequenceActions, sequenceSelectors } from '$lib/state/machines/sequenceMachine';
-	import { settingsStore, type CAPType } from '$lib/state/stores/settingsStore';
-	import GenerateButton from '$lib/components/GenerateTab/components/GenerateButton.svelte';
-	import CircularSequencer from '$lib/components/GenerateTab/components/CircularSequencer.svelte';
-	import FreeformSequencer from '$lib/components/GenerateTab/components/FreeformSequencer.svelte';
+	import { sequenceActions, sequenceSelectors } from '../state/machines/sequenceMachine.js';
+	import { settingsStore, type CAPType } from '../state/stores/settingsStore.js';
+	import GenerateButton from '../components/GenerateTab/components/GenerateButton.svelte';
+	import CircularSequencer from '../components/GenerateTab/components/CircularSequencer.svelte';
+	import FreeformSequencer from '../components/GenerateTab/components/FreeformSequencer.svelte';
 
 	// Generator types for the toggle
 	const generatorTypes = [

@@ -1,11 +1,11 @@
 import { bench, describe, beforeEach } from 'vitest';
 import type { BenchFunction } from 'vitest';
 import { createMachine } from 'xstate';
-import { wrapBenchWithBudget, type PerformanceBudget } from './utils';
-import { createSupervisedMachine } from '../machine';
-import { RestartStrategy, EscalateStrategy } from '../supervision/strategies';
-import { RootSupervisor } from '../supervision/RootSupervisor';
-import { stateRegistry } from '../registry';
+import { wrapBenchWithBudget, type PerformanceBudget } from './utils.js';
+import { createSupervisedMachine } from '../machine.js';
+import { RestartStrategy, EscalateStrategy } from '../supervision/strategies.js';
+import { RootSupervisor } from '../supervision/RootSupervisor.js';
+import { stateRegistry } from '../registry.js';
 
 interface BenchContext {
 	task: (fn: () => void) => Promise<void>;
