@@ -122,7 +122,7 @@ class SequenceDataConverter:
             return str(ori_value) if ori_value else "in"
 
         blue_motion = MotionData(
-            motion_type=(blue_attrs.get("motion_type", "static")),
+            motion_type=self._convert_motion_type(blue_attrs.get("motion_type", "static")),
             start_loc=(
                 convert_location(blue_attrs.get("start_loc", sequence_start_position))
             ),
@@ -131,12 +131,12 @@ class SequenceDataConverter:
             ),
             start_ori=convert_orientation(blue_attrs.get("start_ori", "in")),
             end_ori=convert_orientation(blue_attrs.get("end_ori", "in")),
-            prop_rot_dir=(blue_attrs.get("prop_rot_dir", "no_rot")),
+            prop_rot_dir=self._convert_rotation_direction(blue_attrs.get("prop_rot_dir", "no_rot")),
             turns=blue_attrs.get("turns", 0),
         )
 
         red_motion = MotionData(
-            motion_type=(red_attrs.get("motion_type", "static")),
+            motion_type=self._convert_motion_type(red_attrs.get("motion_type", "static")),
             start_loc=(
                 convert_location(red_attrs.get("start_loc", sequence_start_position))
             ),
@@ -145,7 +145,7 @@ class SequenceDataConverter:
             ),
             start_ori=convert_orientation(red_attrs.get("start_ori", "in")),
             end_ori=convert_orientation(red_attrs.get("end_ori", "in")),
-            prop_rot_dir=(red_attrs.get("prop_rot_dir", "no_rot")),
+            prop_rot_dir=self._convert_rotation_direction(red_attrs.get("prop_rot_dir", "no_rot")),
             turns=red_attrs.get("turns", 0),
         )
 
@@ -444,3 +444,23 @@ class SequenceDataConverter:
                 ),
             },
         }
+
+    def _convert_motion_type(self, motion_type_str: str) -> MotionType:
+        """Convert string motion type to enum."""
+        motion_type_map = {
+            "pro": MotionType.PRO,
+            "anti": MotionType.ANTI,
+            "float": MotionType.FLOAT,
+            "dash": MotionType.DASH,
+            "static": MotionType.STATIC,
+        }
+        return motion_type_map.get(motion_type_str.lower(), MotionType.STATIC)
+
+    def _convert_rotation_direction(self, rot_dir_str: str) -> RotationDirection:
+        """Convert string rotation direction to enum."""
+        rot_dir_map = {
+            "cw": RotationDirection.CLOCKWISE,
+            "ccw": RotationDirection.COUNTER_CLOCKWISE,
+            "no_rot": RotationDirection.NO_ROTATION,
+        }
+        return rot_dir_map.get(rot_dir_str.lower(), RotationDirection.NO_ROTATION)
