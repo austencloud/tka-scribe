@@ -31,6 +31,16 @@
   "dependencies": {
     "@tka/domain": "workspace:*",
     "@types/suncalc": "^1.9.2",
-    "suncalc": "^1.9.0"
+    "suncalc": "^1.9.0",
+    "@fortawesome/fontawesome-free": "^6.7.2",
+    "@fortawesome/free-solid-svg-icons": "^6.7.2",
+    "@xstate/svelte": "^4.0.3",
+    "html2canvas": "^1.4.1",
+    "lodash": "^4.17.21",
+    "lodash-es": "^4.17.21",
+    "lucide-svelte": "^0.486.0",
+    "lz-string": "^1.5.0",
+    "svelte-motion": "^0.12.2",
+    "xstate": "^5.19.2"
   }
 }

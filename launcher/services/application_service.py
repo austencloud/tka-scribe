@@ -198,58 +198,17 @@ class ApplicationService(IApplicationService):
                 working_dir=tka_root / "src" / "desktop" / "modern",
                 display_order=2,
             ),
-            # Web Applications
-            ApplicationData(
-                id="web_v1_legacy",
-                title="TKA Web V1 Legacy",
-                description="Version 1 Legacy web app with XState and Redux patterns",
-                icon="🎭",
-                category=ApplicationCategory.WEB,
-                command="npm run dev",
-                working_dir=tka_root / "src" / "web" / "v1-legacy",
-                display_order=2,
-            ),
-            ApplicationData(
-                id="web_app",
-                title="TKA Web Interface",
-                description="Launch the web-based TKA interface in your browser",
-                icon="🌐",
-                category=ApplicationCategory.WEB,
-                command="npm run dev",
-                working_dir=tka_root / "src" / "web" / "animator",
-                display_order=3,
-            ),
+
             ApplicationData(
                 id="landing_page",
                 title="TKA Landing Page",
                 description="Launch the TKA marketing and information website",
-                icon="🏠",
+                icon="🌐",
                 category=ApplicationCategory.WEB,
                 command="npm run dev",
                 working_dir=tka_root / "src" / "web" / "landing",
                 display_order=4,
             ),
-            ApplicationData(
-                id="animator",
-                title="Pictograph Animator",
-                description="Launch the pictograph animation tool",
-                icon="🎬",
-                category=ApplicationCategory.WEB,
-                command="npm run dev",
-                working_dir=tka_root / "src" / "web" / "animator",
-                display_order=5,
-            ),
-            # Development Tools
-            ApplicationData(
-                id="test_suite",
-                title="Test Suite",
-                description="Run the comprehensive TKA test suite",
-                icon="🧪",
-                category=ApplicationCategory.DEVELOPMENT,
-                command="pytest",
-                working_dir=tka_root,
-                display_order=6,
-            ),
-            # Note: Removed dev_server, test_runner_focused, code_formatter, settings, and about applications
-            # as requested to simplify the launcher interface
+
+
         ]

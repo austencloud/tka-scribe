@@ -8,7 +8,12 @@ Responsible for loading sequences from current_sequence.json and managing startu
 from typing import Optional, Callable
 from PyQt6.QtCore import QObject, pyqtSignal
 
-from domain.models.core_models import SequenceData, BeatData
+from domain.models.pydantic_models import (
+    SequenceData,
+    BeatData,
+    create_default_beat_data,
+    create_default_sequence_data,
+)
 from application.services.core.sequence_persistence_service import (
     SequencePersistenceService,
 )
@@ -98,12 +103,11 @@ class SequenceLoadingService(QObject):
                         print(
                             f"⚠️ [SEQUENCE_LOADING] Failed to convert beat {beat_dict.get('letter', '?')}: {e}"
                         )
-                        # Create fallback beat with proper numbering
-                        fallback_beat = BeatData.empty().update(
-                            letter=beat_dict.get("letter", "?"),
+                        # Create fallback beat with proper numbering using factory function
+                        fallback_beat = create_default_beat_data(
                             beat_number=i + 1,  # Sequential numbering
-                            duration=beat_dict.get("duration", 1.0),
-                        )
+                            letter=beat_dict.get("letter", "?")
+                        ).model_copy(update={'duration': beat_dict.get("duration", 1.0)})
                         beat_objects.append(fallback_beat)
 
             # CRITICAL FIX: Handle start position loading INDEPENDENTLY of beats
@@ -149,12 +153,10 @@ class SequenceLoadingService(QObject):
 
                     traceback.print_exc()
 
-            # Create and set the sequence (even if empty, to maintain state)
-            loaded_sequence = SequenceData(
-                id="loaded_sequence",
-                name=sequence_word or "Loaded Sequence",
-                beats=beat_objects,  # May be empty, that's fine
-            )
+            # Create and set the sequence (even if empty, to maintain state) using factory function
+            loaded_sequence = create_default_sequence_data(
+                name=sequence_word or "Loaded Sequence"
+            ).model_copy(update={'beats': beat_objects})
 
             print(
                 f"✅ [SEQUENCE_LOADING] Created sequence: '{loaded_sequence.name}' with {len(beat_objects)} beats"

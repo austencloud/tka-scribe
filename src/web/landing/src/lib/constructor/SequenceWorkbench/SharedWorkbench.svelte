@@ -103,9 +103,8 @@
 	}
 
 	.tools-panel-active {
-		background: rgba(248, 249, 250, 0.1);
-		backdrop-filter: blur(5px);
-		-webkit-backdrop-filter: blur(5px);
+		background: transparent; /* Let starry background show through */
+		/* Removed backdrop-filter to let the starry night background show through */
 	}
 
 	.tools-panel-overlay {

@@ -32,6 +32,7 @@
     <a href="/">Home</a>
     <a href="/about">About</a>
     <a href="/constructor">Constructor</a>
+    <a href="/animator">Animator</a>
     <a href="/links">Links</a>
     <a href="/contact">Contact</a>
   </div>

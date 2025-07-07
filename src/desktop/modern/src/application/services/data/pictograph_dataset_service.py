@@ -8,7 +8,7 @@ enabling pixel-perfect accuracy for start position selection and motion combinat
 import pandas as pd
 from typing import Dict, Any, Optional, List
 
-from domain.models.core_models import (
+from domain.models.pydantic_models import (
     BeatData,
     MotionData,
     MotionType,

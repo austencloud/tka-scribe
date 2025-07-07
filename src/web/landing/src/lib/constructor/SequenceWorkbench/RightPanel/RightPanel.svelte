@@ -3,7 +3,7 @@
 	import { workbenchStore } from '../../state/stores/workbenchStore.js';
 	import ModernGenerationControls from './ModernGenerationControls.svelte';
 	import OptionPickerWithDebug from '../../components/ConstructTab/OptionPicker/OptionPickerWithDebug.svelte';
-	import StartPosPicker from '../../components/ConstructTab/StartPosPicker/StartPosPicker.svelte';
+	import SimplifiedEnhancedStartPosPicker from '../../components/ConstructTab/StartPosPicker/SimplifiedEnhancedStartPosPicker.svelte';
 	import { sequenceContainer } from '../../state/stores/sequence/SequenceContainer.js';
 	import { useContainer } from '../../state/core/svelte5-integration.svelte';
 	import { fade, fly } from 'svelte/transition';
@@ -47,7 +47,7 @@
 		<!-- Simplified panel switching without complex transitions -->
 		{#if sequenceIsEmpty}
 			<div class="panel-content" in:fly={flyParams} out:fade={fadeParams}>
-				<StartPosPicker />
+				<SimplifiedEnhancedStartPosPicker />
 			</div>
 		{:else}
 			<div class="panel-content" in:fly={flyParams} out:fade={fadeParams}>

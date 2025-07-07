@@ -145,7 +145,7 @@
 		width: 100%;
 		height: 100%;
 		background-color: rgba(0, 0, 0, 0.9);
-		backdrop-filter: blur(3px);
+		/* Removed backdrop-filter to let the starry night background show through */
 		border: none;
 		padding: 0;
 		margin: 0;

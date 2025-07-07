@@ -4,7 +4,7 @@ from PyQt6.QtWidgets import QWidget, QVBoxLayout, QGraphicsView
 from PyQt6.QtCore import pyqtSignal, Qt
 from PyQt6.QtGui import QMouseEvent, QPainter
 
-from domain.models.core_models import BeatData
+from domain.models.pydantic_models import BeatData
 from domain.models.pictograph_models import PictographData
 from application.services.core.pictograph_management_service import (
     PictographManagementService,

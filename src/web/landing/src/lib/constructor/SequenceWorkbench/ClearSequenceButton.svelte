@@ -153,7 +153,7 @@
 		justify-content: center;
 		align-items: center;
 		z-index: 1000;
-		backdrop-filter: blur(2px);
+		/* Removed backdrop-filter to let the starry night background show through */
 	}
 
 	.modal-container {

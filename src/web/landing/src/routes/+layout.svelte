@@ -2,7 +2,7 @@
     import '../app.css';
     import NavBar from '../components/NavBar.svelte';
     import Footer from '../components/Footer.svelte';
-    import SimpleBackgroundCanvas from '../lib/components/Backgrounds/simple/SimpleBackgroundCanvas.svelte';
+    import SimpleNightSkyCanvas from '../lib/components/Backgrounds/SimpleNightSkyCanvas.svelte';
     import { onMount } from 'svelte';
     import type { LayoutData } from './$types.js';
     import { initializePictographData } from '$lib/constructor/stores/pictograph/pictographStore.js';
@@ -11,8 +11,8 @@
     // Props from layout server
     export let data: LayoutData;
 
-    // Default to deep ocean background - can be changed via settings
-    let currentBackground: 'deepOcean' | 'snowfall' | 'nightSky' | 'static' = 'deepOcean';
+    // Default to night sky background - full system with constellations and moon
+    let currentBackground: 'deepOcean' | 'snowfall' | 'nightSky' | 'static' = 'nightSky';
     let initialized = false;
 
     function handleBackgroundChange(background: string) {
@@ -40,14 +40,10 @@
     });
   </script>
 
-  <!-- Simplified Background System - Direct Canvas -->
-  <div class="app-content" data-background={currentBackground}>
-    <!-- Direct Enhanced Background Canvas -->
-    <SimpleBackgroundCanvas
-      backgroundType={currentBackground}
-      quality="medium"
-      appIsLoading={false}
-    />
+  <!-- Simplified Night Sky System -->
+  <div class="app-content" data-background="nightSky">
+    <!-- Direct NightSkyBackgroundSystem implementation -->
+    <SimpleNightSkyCanvas />
 
     <header>
       <NavBar {currentBackground} onBackgroundChange={handleBackgroundChange} />

@@ -71,11 +71,11 @@
     width: 100%;
     height: 100%; /* Take full height of parent */
     overflow: hidden;
-    background: rgba(255, 255, 255, 0.05); /* Subtle transparent background */
+    background: transparent; /* Transparent to show beautiful starry background */
     border-radius: 1.5rem; /* Rounded edges for seamless integration */
-    backdrop-filter: blur(10px); /* Glassmorphism effect */
-    border: 1px solid rgba(255, 255, 255, 0.1); /* Subtle border */
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1); /* Soft shadow */
+    /* Removed backdrop-filter to let the starry night background show through */
+    border: 1px solid rgba(255, 255, 255, 0.05); /* Very subtle border */
+    /* Removed heavy box-shadow to avoid obscuring background */
   }
 
   .loading {

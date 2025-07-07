@@ -18,9 +18,11 @@ from datetime import datetime
 from enum import Enum
 from typing import TYPE_CHECKING, Any, Dict, Optional, cast
 
-from domain.models.core_models import (
+from domain.models.pydantic_models import (
     BeatData,
     SequenceData,
+    create_default_beat_data,
+    create_default_sequence_data,
 )
 
 if TYPE_CHECKING:
@@ -253,23 +255,17 @@ class SequenceManagementService(ISequenceManagementService):
 
         beats = []
 
-        # Create empty beats for the sequence
+        # Create empty beats for the sequence using factory function
         for i in range(length):
-            beat = BeatData(
+            beat = create_default_beat_data(
                 beat_number=i + 1,
-                letter=None,
-                duration=1.0,
-                blue_motion=None,
-                red_motion=None,
+                letter=""  # Empty string instead of None
             )
             beats.append(beat)
 
-        sequence = SequenceData(
-            id=str(uuid.uuid4()),
-            name=name,
-            beats=beats,
-            metadata={"created_by": "sequence_management_service"},
-        )
+        sequence = create_default_sequence_data(
+            name=name
+        ).model_copy(update={'beats': beats, 'length': length})
 
         # Publish sequence created event
         if self.event_bus:

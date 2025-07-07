@@ -237,7 +237,7 @@
 		height: 100%;
 		display: flex;
 		flex-direction: column;
-		background: rgba(248, 249, 250, 0.2); /* Very subtle background */
+		background: transparent; /* Let starry background show through */
 		border-radius: 12px;
 		box-shadow:
 			0 4px 16px rgba(0, 0, 0, 0.1),
@@ -245,8 +245,7 @@
 		overflow: hidden;
 		position: relative;
 		flex: 1;
-		backdrop-filter: blur(5px); /* Enhanced blur effect for the entire panel */
-		-webkit-backdrop-filter: blur(5px);
+		/* Removed backdrop-filter to let the starry night background show through */
 	}
 
 	.tools-header {
@@ -256,8 +255,7 @@
 		padding: 12px 16px;
 		background: linear-gradient(135deg, rgba(106, 17, 203, 0.9), rgba(37, 117, 252, 0.9));
 		color: white;
-		backdrop-filter: blur(8px); /* Enhanced blur effect for the header */
-		-webkit-backdrop-filter: blur(8px);
+		/* Removed backdrop-filter to let the starry night background show through */
 		border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 	}
@@ -346,7 +344,7 @@
 		padding: var(--button-padding, 6px);
 		box-sizing: border-box;
 		position: relative;
-		backdrop-filter: blur(2px); /* Add a slight blur effect */
+		/* Removed backdrop-filter to let the starry night background show through */
 		/* Ensure minimum touch target size for accessibility */
 		min-width: 44px;
 		min-height: 44px;

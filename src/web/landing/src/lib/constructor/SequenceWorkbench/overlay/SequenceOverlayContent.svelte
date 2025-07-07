@@ -358,7 +358,7 @@
 		font-size: 12px;
 		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 		animation: pulse 3s infinite;
-		backdrop-filter: blur(2px);
+		/* Removed backdrop-filter to let the starry night background show through */
 		max-width: 90%;
 	}
 

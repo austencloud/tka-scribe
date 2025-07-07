@@ -18,6 +18,7 @@ from typing import Optional, List, Dict, Any, Literal
 from pydantic import BaseModel, ConfigDict, Field
 from pydantic.alias_generators import to_camel
 from enum import Enum
+import uuid
 
 
 # Base configuration for all TKA domain models
@@ -130,9 +131,10 @@ class BeatData(TKABaseModel):
 class SequenceData(TKABaseModel):
     """
     Sequence data with automatic camelCase JSON serialization.
-    
+
     Matches the sequence-data.json schema.
     """
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     name: str
     beats: List[BeatData] = Field(default_factory=list)
     

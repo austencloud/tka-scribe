@@ -16,7 +16,7 @@ Ported from legacy placement logic for exact parity.
 import logging
 from typing import Optional
 
-from domain.models.core_models import MotionData, Orientation
+from domain.models.pydantic_models import MotionData, Orientation
 from domain.models.pictograph_models import ArrowData, PictographData
 from domain.models.letter_type_classifier import LetterTypeClassifier
 from application.services.validation.pictograph_checker_service import (
