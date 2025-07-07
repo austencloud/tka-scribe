@@ -8,12 +8,13 @@ enabling pixel-perfect accuracy for start position selection and motion combinat
 import pandas as pd
 from typing import Dict, Any, Optional, List
 
-from domain.models.pydantic_models import (
+from domain.models.core_models import (
     BeatData,
     MotionData,
     MotionType,
     RotationDirection,
     Location,
+    Orientation
 )
 from infrastructure.data_path_handler import DataPathHandler
 from .glyph_data_service import GlyphDataService
@@ -185,16 +186,16 @@ class PictographDatasetService:
         red_start_loc = self._parse_location(entry["red_start_loc"])
         red_end_loc = self._parse_location(entry["red_end_loc"])
 
-        # Create motion data
+        # Create motion data (use enum values directly for core models)
         blue_motion = MotionData(
             motion_type=blue_motion_type,
             prop_rot_dir=blue_prop_rot_dir,
             start_loc=blue_start_loc,
             end_loc=blue_end_loc,
             turns=1.0 if blue_motion_type in [MotionType.PRO, MotionType.ANTI] else 0.0,
-            start_ori="in",
+            start_ori=Orientation.IN,
             end_ori=(
-                "out" if blue_motion_type in [MotionType.PRO, MotionType.ANTI] else "in"
+                Orientation.OUT if blue_motion_type in [MotionType.PRO, MotionType.ANTI] else Orientation.IN
             ),
         )
 
@@ -204,9 +205,9 @@ class PictographDatasetService:
             start_loc=red_start_loc,
             end_loc=red_end_loc,
             turns=1.0 if red_motion_type in [MotionType.PRO, MotionType.ANTI] else 0.0,
-            start_ori="in",
+            start_ori=Orientation.IN,
             end_ori=(
-                "out" if red_motion_type in [MotionType.PRO, MotionType.ANTI] else "in"
+                Orientation.OUT if red_motion_type in [MotionType.PRO, MotionType.ANTI] else Orientation.IN
             ),
         )
 

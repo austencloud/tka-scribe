@@ -153,6 +153,11 @@ class ApplicationFactory:
             )
 
         # Removed repetitive log statement
+        
+        # Set this container as the global container so get_container() returns it
+        from core.dependency_injection.di_container import set_container
+        set_container(container)
+        
         return container
 
     @staticmethod
@@ -219,6 +224,10 @@ class ApplicationFactory:
             logger.warning(
                 f"Failed to register extracted services: {register_result.error}"
             )
+
+        # Set this container as the global container so get_container() returns it
+        from core.dependency_injection.di_container import set_container
+        set_container(container)
 
         logger.info("Created test application container")
         return container
@@ -287,6 +296,10 @@ class ApplicationFactory:
             logger.warning(
                 f"Failed to register extracted services: {register_result.error}"
             )
+
+        # Set this container as the global container so get_container() returns it
+        from core.dependency_injection.di_container import set_container
+        set_container(container)
 
         logger.info("Created headless application container")
         return container

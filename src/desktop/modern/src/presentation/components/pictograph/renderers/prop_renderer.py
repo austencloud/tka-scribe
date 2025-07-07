@@ -107,11 +107,21 @@ class PropRenderer:
         new_position = prop_item.pos() + offset
         prop_item.setPos(new_position)
 
-    def _get_location_position(self, location: Location) -> tuple[float, float]:
-        position = self.location_coordinates.get(location.value)
+    def _get_location_position(self, location) -> tuple[float, float]:
+        # Handle both enum and string location values
+        if hasattr(location, 'value'):
+            # It's an enum, use .value
+            location_key = location.value
+        else:
+            # It's already a string
+            location_key = str(location)
+        
+        position = self.location_coordinates.get(location_key)
         if position is None:
             print(f"Warning: Unknown location {location}, using NORTH as fallback")
-            return self.location_coordinates[Location.NORTH.value]
+            # Use fallback for NORTH location
+            fallback_key = 'n'  # NORTH in string format
+            return self.location_coordinates.get(fallback_key, (0, -143.1))
         return position
 
     def _calculate_prop_rotation(self, motion_data: MotionData) -> float:

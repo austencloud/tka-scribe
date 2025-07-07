@@ -283,6 +283,12 @@ class GlyphData:
     show_tka: bool = True
     show_positions: bool = True
 
+    def update(self, **kwargs) -> "GlyphData":
+        """Create a new GlyphData with updated fields."""
+        from dataclasses import replace
+
+        return replace(self, **kwargs)
+
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary for serialization."""
         return {

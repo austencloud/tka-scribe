@@ -1,11 +1,19 @@
 {
   "python.testing.pytestArgs": [
     "tests",
-    "src/desktop/modern/tests", 
+    "src/desktop/modern/tests",
     "launcher/tests",
     "."
   ],
   "python.testing.unittestEnabled": false,
   "python.testing.pytestEnabled": true,
-  "python.testing.pytestPath": "pytest"
+  "python.testing.pytestPath": "pytest",
+  "python.analysis.extraPaths": [
+    "./src/desktop/modern/src",
+    "./src/desktop/modern",
+    "./src",
+    "."
+  ],
+  "python.defaultInterpreterPath": "C:/Python312/python.exe",
+  "python.analysis.diagnosticMode": "workspace"
 }

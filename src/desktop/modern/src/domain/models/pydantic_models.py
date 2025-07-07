@@ -124,6 +124,9 @@ class BeatData(TKABaseModel):
     filled: bool = False
     tags: List[str] = Field(default_factory=list)
     
+    # Additional metadata for extensibility
+    metadata: Optional[Dict[str, Any]] = None
+    
     # Desktop-specific properties (not in schema yet)
     glyph_data: Optional[Dict[str, Any]] = None
 

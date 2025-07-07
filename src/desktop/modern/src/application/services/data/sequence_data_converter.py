@@ -5,17 +5,14 @@ Handles conversion between legacy JSON format and modern domain models.
 Responsible for maintaining compatibility with legacy sequence data structures.
 """
 
-from domain.models.pydantic_models import (
+from domain.models.core_models import (
     BeatData,
-    SequenceData,
     MotionData,
     MotionType,
-    PropRotDir,
+    RotationDirection,
     Location,
     Orientation,
-    create_default_motion_data,
-    create_default_beat_data,
-    create_default_sequence_data,
+    SequenceData,
 )
 
 

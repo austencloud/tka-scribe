@@ -4,8 +4,8 @@
 	import Pictograph from '../../components/Pictograph/Pictograph.svelte';
 	import { sequenceContainer } from '../../state/stores/sequence/SequenceContainer.js';
 	import { selectedStartPos } from '../../stores/sequence/selectionStore.js';
-	import type { PictographData } from '../types/PictographData.js';
 	import { autoAdjustLayout } from '../BeatFrame/beatFrameHelpers.js';
+    import type { PictographData } from '@tka/domain';
 
 	// Props
 	const { title = $bindable('') } = $props<{

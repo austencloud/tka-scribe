@@ -24,6 +24,7 @@ from domain.models.core_models import (
     Location,
     RotationDirection,
 )
+from infrastructure.data_path_handler import DataPathHandler
 
 
 class ICSVDataService(ABC):
@@ -45,19 +46,9 @@ class ICSVDataService(ABC):
 class CSVDataService(ICSVDataService):
     def __init__(self, data_path: Optional[Path] = None):
         if data_path is None:
-            # Find project root by searching for a 'data' folder upwards from this file
-            current = Path(__file__).resolve().parent
-            root_data = None
-            for parent in [current] + list(current.parents):
-                candidate = parent / "data"
-                if candidate.is_dir():
-                    root_data = candidate
-                    break
-            if root_data is None:
-                raise FileNotFoundError(
-                    "Could not locate 'data' directory in parent paths."
-                )
-            data_path = root_data / "DiamondPictographDataframe.csv"
+            # Use DataPathHandler to get the correct CSV path
+            data_handler = DataPathHandler()
+            data_path = data_handler.diamond_csv_path
         self._data_path = data_path
         self._csv_data: Optional[pd.DataFrame] = None
 

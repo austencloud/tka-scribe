@@ -7,7 +7,7 @@
 	let nightSkySystem: NightSkyBackgroundSystem;
 	let animationFrame: number;
 	let isInitialized = false;
-	let resizeTimeout: number;
+	let resizeTimeout: ReturnType<typeof setTimeout>;
 
 	onMount(() => {
 		if (!canvas) return;

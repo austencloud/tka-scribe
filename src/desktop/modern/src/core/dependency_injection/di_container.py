@@ -289,6 +289,12 @@ def get_container() -> DIContainer:
     return _container
 
 
+def set_container(container: DIContainer) -> None:
+    """Set the global container instance."""
+    global _container
+    _container = container
+
+
 def reset_container() -> None:
     """Reset the global container (useful for testing)."""
     global _container

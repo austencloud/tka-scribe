@@ -316,15 +316,53 @@ def register_extracted_services(container) -> Result[bool, AppError]:
 
         container.register_singleton(IPositionMatchingService, PositionMatchingService)
 
-        # Register beat loading service
+        # Register beat loading service with proper dependencies
         from application.services.data.beat_loading_service import BeatLoadingService
-
-        container.register_singleton(IBeatLoadingService, BeatLoadingService)
+        
+        # Register with factory function to inject dependencies
+        def beat_loading_service_factory():
+            position_service = None
+            conversion_service = None
+            orientation_service = None
+            
+            try:
+                position_service = container.resolve(IPositionMatchingService)
+            except:
+                pass  # Will use fallback
+                
+            try:
+                from application.services.data.data_conversion_service import DataConversionService
+                conversion_service = DataConversionService()
+            except:
+                pass  # Will use fallback
+                
+            try:
+                from application.services.option_picker.orientation_update_service import OptionOrientationUpdateService
+                orientation_service = OptionOrientationUpdateService()
+            except:
+                pass  # Will use fallback
+                
+            return BeatLoadingService(position_service, conversion_service, orientation_service)
+        
+        container.register_factory(IBeatLoadingService, beat_loading_service_factory)
 
         # Register object pool service
         from application.services.core.object_pool_service import ObjectPoolService
 
         container.register_singleton(IObjectPoolService, ObjectPoolService)
+
+        # Register positioning services using ServiceRegistrationManager
+        try:
+            from application.services.core.service_registration_manager import (
+                ServiceRegistrationManager,
+            )
+            
+            registration_manager = ServiceRegistrationManager()
+            registration_manager.register_positioning_services(container)
+            logger.debug("Successfully registered positioning services")
+        except Exception as e:
+            logger.warning(f"Failed to register positioning services: {e}")
+            # Don't fail the entire registration process
 
         # DI registration log removed to reduce startup noise
         return success(True)
