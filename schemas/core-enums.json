@@ -1,0 +1,73 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://tka.dev/schemas/core-enums.json",
+  "title": "TKA Core Enums",
+  "description": "Core enumeration types from modern desktop domain models",
+  "definitions": {
+    "MotionType": {
+      "type": "string",
+      "enum": ["pro", "anti", "float", "dash", "static"],
+      "description": "Types of motion for props and arrows"
+    },
+    "HandMotionType": {
+      "type": "string", 
+      "enum": ["shift", "dash", "static"],
+      "description": "Types of hand motion"
+    },
+    "HandPath": {
+      "type": "string",
+      "enum": ["cw", "ccw", "dash", "static"],
+      "description": "Hand rotation directions"
+    },
+    "RotationDirection": {
+      "type": "string",
+      "enum": ["cw", "ccw", "no_rot"],
+      "description": "Prop rotation directions"
+    },
+    "Orientation": {
+      "type": "string",
+      "enum": ["in", "out", "clock", "counter"],
+      "description": "Prop orientations"
+    },
+    "Location": {
+      "type": "string",
+      "enum": ["n", "e", "s", "w", "ne", "se", "sw", "nw"],
+      "description": "Grid locations"
+    },
+    "GridPosition": {
+      "type": "string",
+      "enum": [
+        "alpha1", "alpha2", "alpha3", "alpha4", "alpha5", "alpha6", "alpha7", "alpha8",
+        "beta1", "beta2", "beta3", "beta4", "beta5", "beta6", "beta7", "beta8", 
+        "gamma1", "gamma2", "gamma3", "gamma4", "gamma5", "gamma6", "gamma7", "gamma8",
+        "gamma9", "gamma10", "gamma11", "gamma12", "gamma13", "gamma14", "gamma15", "gamma16"
+      ],
+      "description": "All valid grid positions"
+    },
+    "VTGMode": {
+      "type": "string",
+      "enum": ["SS", "SO", "TS", "TO", "QS", "QO"],
+      "description": "VTG modes for pictograph classification"
+    },
+    "ElementalType": {
+      "type": "string",
+      "enum": ["water", "fire", "earth", "air", "sun", "moon"],
+      "description": "Elemental types for classification"
+    },
+    "LetterType": {
+      "type": "string", 
+      "enum": ["Type1", "Type2", "Type3", "Type4", "Type5", "Type6", "Type7", "Type8", "Type9"],
+      "description": "TKA letter types"
+    },
+    "ArrowColor": {
+      "type": "string",
+      "enum": ["red", "blue"],
+      "description": "Arrow colors"
+    },
+    "GridMode": {
+      "type": "string",
+      "enum": ["diamond", "box"],
+      "description": "Grid rendering modes"
+    }
+  }
+}

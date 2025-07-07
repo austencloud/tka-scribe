@@ -1,101 +1,169 @@
 """
 SequenceDataConverter
 
-Handles conversion between legacy JSON format and modern domain models.
+Handles conversion between legacy JSON format and modern Pydantic domain models.
 Responsible for maintaining compatibility with legacy sequence data structures.
+
+MIGRATION STATUS: Clean cut to Pydantic models - always returns Pydantic types
 """
 
+# Import Pydantic models (primary models)
 from domain.models.pydantic_models import (
+    MotionData,
     BeatData,
     SequenceData,
-    MotionData,
-    MotionType,
-    PropRotDir,
-    Location,
-    Orientation,
     create_default_motion_data,
     create_default_beat_data,
     create_default_sequence_data,
 )
 
+# Import migration adapters for legacy data conversion
+from domain.models.migration_adapters import ModelMigrationAdapter
+
 
 class SequenceDataConverter:
     """
-    Service for converting between legacy JSON format and modern domain models.
+    Service for converting between legacy JSON format and modern Pydantic domain models.
 
     Responsibilities:
-    - Converting legacy JSON to modern BeatData
-    - Converting modern BeatData to legacy JSON
+    - Converting legacy JSON to Pydantic BeatData/SequenceData
+    - Converting Pydantic models to legacy JSON format
     - Handling start position conversions
     - Maintaining data fidelity during conversions
+    - Always returns Pydantic models for clean type safety
     """
+
+    def __init__(self):
+        """Initialize converter - always uses Pydantic models."""
+        pass
 
     def convert_legacy_to_beat_data(
         self, beat_dict: dict, beat_number: int
     ) -> BeatData:
-        """Convert legacy JSON format back to modern BeatData with full pictograph data"""
+        """Convert legacy JSON format to Pydantic BeatData with camelCase JSON support"""
 
         # Extract basic beat info
         letter = beat_dict.get("letter", "?")
         duration = beat_dict.get("duration", 1.0)
 
-        # Extract position data
-        start_pos = beat_dict.get("start_pos", "")
-        end_pos = beat_dict.get("end_pos", "")
-
         # Extract motion attributes
-        blue_attrs = beat_dict.get("blue_attributes", {})
+        blue_attrs = beat_dict.get("blue_attributes", {)
         red_attrs = beat_dict.get("red_attributes", {})
 
-        # Create motion data for blue and red
-        # CORRECTED: Handle location and orientation conversion properly
-        def convert_location(loc_str: str) -> str:
-            """Convert legacy location strings to valid Location enum values"""
-            # Location strings are already correct: "n", "s", "e", "w", "ne", "nw", "se", "sw"
-            # Do NOT convert "alpha", "beta", "gamma" - those are position TYPES, not locations
-            return str(loc_str) if loc_str else "n"
+        # Create Pydantic motion data for blue and red
+        def convert_enum_value(value, default):
+            """Convert enum values to string literals for Pydantic"""
+            if hasattr(value, 'value'):
+                return value.value.lower()
+            return str(value).lower() if value else default
 
         blue_motion = MotionData(
-            motion_type=blue_attrs.get("motion_type", "static"),
-            start_loc=convert_location(blue_attrs.get("start_loc", "n")),
-            end_loc=convert_location(blue_attrs.get("end_loc", "n")),
-            start_ori=blue_attrs.get("start_ori", "in"),
-            end_ori=blue_attrs.get("end_ori", "in"),
-            prop_rot_dir=blue_attrs.get("prop_rot_dir", "no_rot"),
-            turns=blue_attrs.get("turns", 0),
+            motion_type=convert_enum_value(blue_attrs.get("motion_type", "static"), "static"),
+            prop_rot_dir=convert_enum_value(blue_attrs.get("prop_rot_dir", "no_rot"), "no_rot"),
+            start_loc=convert_enum_value(blue_attrs.get("start_loc", "n"), "n"),
+            end_loc=convert_enum_value(blue_attrs.get("end_loc", "n"), "n"),
+            start_ori=convert_enum_value(blue_attrs.get("start_ori", "in"), "in"),
+            end_ori=convert_enum_value(blue_attrs.get("end_ori", "in"), "in"),
+            turns=float(blue_attrs.get("turns", 0.0)),
         )
 
         red_motion = MotionData(
-            motion_type=red_attrs.get("motion_type", "static"),
-            start_loc=convert_location(red_attrs.get("start_loc", "n")),
-            end_loc=convert_location(red_attrs.get("end_loc", "n")),
-            start_ori=red_attrs.get("start_ori", "in"),
-            end_ori=red_attrs.get("end_ori", "in"),
-            prop_rot_dir=red_attrs.get("prop_rot_dir", "no_rot"),
-            turns=red_attrs.get("turns", 0),
+            motion_type=convert_enum_value(red_attrs.get("motion_type", "static"), "static"),
+            prop_rot_dir=convert_enum_value(red_attrs.get("prop_rot_dir", "no_rot"), "no_rot"),
+            start_loc=convert_enum_value(red_attrs.get("start_loc", "n"), "n"),
+            end_loc=convert_enum_value(red_attrs.get("end_loc", "n"), "n"),
+            start_ori=convert_enum_value(red_attrs.get("start_ori", "in"), "in"),
+            end_ori=convert_enum_value(red_attrs.get("end_ori", "in"), "in"),
+            turns=float(red_attrs.get("turns", 0.0)),
         )
 
-        # Create glyph data as dictionary (Pydantic models use Dict[str, Any])
-        glyph_data = {
-            "start_position": start_pos,
-            "end_position": end_pos,
-        }
-
-        # Create complete beat data
+        # Create complete Pydantic beat data
         beat_data = BeatData(
-            letter=letter,
             beat_number=beat_number,
+            letter=letter,
             duration=duration,
-            glyph_data=glyph_data,
             blue_motion=blue_motion,
             red_motion=red_motion,
+            # Additional fields with defaults
+            blue_reversal=beat_dict.get("blue_reversal", False),
+            red_reversal=beat_dict.get("red_reversal", False),
+            filled=beat_dict.get("filled", False),
+            tags=beat_dict.get("tags", []),
+            glyph_data={
+                "start_position": beat_dict.get("start_pos", ""),
+                "end_position": beat_dict.get("end_pos", ""),
+                "timing": beat_dict.get("timing", "same"),
+                "direction": beat_dict.get("direction", "cw"),
+            }
+        )
+
+        return beat_data
+
+    def convert_legacy_to_pydantic_beat_data(
+        self, beat_dict: dict, beat_number: int
+    ) -> PydanticBeatData:
+        """Convert legacy JSON format to Pydantic BeatData with camelCase JSON support"""
+
+        # Extract basic beat info
+        letter = beat_dict.get("letter", "?")
+        duration = beat_dict.get("duration", 1.0)
+
+        # Extract motion attributes
+        blue_attrs = beat_dict.get("blue_attributes", {)
+        red_attrs = beat_dict.get("red_attributes", {})
+
+        # Create Pydantic motion data for blue and red
+        def convert_enum_value(value, default):
+            """Convert enum values to string literals for Pydantic"""
+            if hasattr(value, 'value'):
+                return value.value.lower()
+            return str(value).lower() if value else default
+
+        blue_motion = PydanticMotionData(
+            motion_type=convert_enum_value(blue_attrs.get("motion_type", "static"), "static"),
+            prop_rot_dir=convert_enum_value(blue_attrs.get("prop_rot_dir", "no_rot"), "no_rot"),
+            start_loc=convert_enum_value(blue_attrs.get("start_loc", "n"), "n"),
+            end_loc=convert_enum_value(blue_attrs.get("end_loc", "n"), "n"),
+            start_ori=convert_enum_value(blue_attrs.get("start_ori", "in"), "in"),
+            end_ori=convert_enum_value(blue_attrs.get("end_ori", "in"), "in"),
+            turns=float(blue_attrs.get("turns", 0.0)),
+        )
+
+        red_motion = PydanticMotionData(
+            motion_type=convert_enum_value(red_attrs.get("motion_type", "static"), "static"),
+            prop_rot_dir=convert_enum_value(red_attrs.get("prop_rot_dir", "no_rot"), "no_rot"),
+            start_loc=convert_enum_value(red_attrs.get("start_loc", "n"), "n"),
+            end_loc=convert_enum_value(red_attrs.get("end_loc", "n"), "n"),
+            start_ori=convert_enum_value(red_attrs.get("start_ori", "in"), "in"),
+            end_ori=convert_enum_value(red_attrs.get("end_ori", "in"), "in"),
+            turns=float(red_attrs.get("turns", 0.0)),
+        )
+
+        # Create complete Pydantic beat data
+        beat_data = PydanticBeatData(
+            beat_number=beat_number,
+            letter=letter,
+            duration=duration,
+            blue_motion=blue_motion,
+            red_motion=red_motion,
+            # Additional fields with defaults
+            blue_reversal=beat_dict.get("blue_reversal", False),
+            red_reversal=beat_dict.get("red_reversal", False),
+            filled=beat_dict.get("filled", False),
+            tags=beat_dict.get("tags", []),
+            glyph_data={
+                "start_position": beat_dict.get("start_pos", ""),
+                "end_position": beat_dict.get("end_pos", ""),
+                "timing": beat_dict.get("timing", "same"),
+                "direction": beat_dict.get("direction", "cw"),
+            }
         )
 
         return beat_data
 
     def convert_legacy_start_position_to_beat_data(
         self, start_pos_dict: dict
-    ) -> BeatData:
+    ) -> OldBeatData:
         """Convert legacy start position JSON back to modern BeatData with full data"""
 
         # Extract basic start position info
@@ -104,7 +172,7 @@ class SequenceDataConverter:
         sequence_start_position = start_pos_dict.get("sequence_start_position", "alpha")
 
         # Extract motion attributes
-        blue_attrs = start_pos_dict.get("blue_attributes", {})
+        blue_attrs = start_pos_dict.get("blue_attributes", {)
         red_attrs = start_pos_dict.get("red_attributes", {})
 
         # Create motion data for blue and red (start positions are typically static)
@@ -124,42 +192,42 @@ class SequenceDataConverter:
                 return ori_map.get(int(ori_value), "in")
             return str(ori_value) if ori_value else "in"
 
-        blue_motion = MotionData(
-            motion_type=(blue_attrs.get("motion_type", "static")),
-            start_loc=(
+        blue_motion = OldMotionData(
+            motion_type=MotionType(blue_attrs.get("motion_type", "static")),
+            start_loc=Location(
                 convert_location(blue_attrs.get("start_loc", sequence_start_position))
             ),
-            end_loc=(
+            end_loc=Location(
                 convert_location(blue_attrs.get("end_loc", sequence_start_position))
             ),
             start_ori=convert_orientation(blue_attrs.get("start_ori", "in")),
             end_ori=convert_orientation(blue_attrs.get("end_ori", "in")),
-            prop_rot_dir=(blue_attrs.get("prop_rot_dir", "no_rot")),
+            prop_rot_dir=RotationDirection(blue_attrs.get("prop_rot_dir", "no_rot")),
             turns=blue_attrs.get("turns", 0),
         )
 
-        red_motion = MotionData(
-            motion_type=(red_attrs.get("motion_type", "static")),
-            start_loc=(
+        red_motion = OldMotionData(
+            motion_type=MotionType(red_attrs.get("motion_type", "static")),
+            start_loc=Location(
                 convert_location(red_attrs.get("start_loc", sequence_start_position))
             ),
-            end_loc=(
+            end_loc=Location(
                 convert_location(red_attrs.get("end_loc", sequence_start_position))
             ),
             start_ori=convert_orientation(red_attrs.get("start_ori", "in")),
             end_ori=convert_orientation(red_attrs.get("end_ori", "in")),
-            prop_rot_dir=(red_attrs.get("prop_rot_dir", "no_rot")),
+            prop_rot_dir=RotationDirection(red_attrs.get("prop_rot_dir", "no_rot")),
             turns=red_attrs.get("turns", 0),
         )
 
-        # Create glyph data with position information as dictionary
-        glyph_data = {
-            "start_position": sequence_start_position,
-            "end_position": end_pos,
-        }
+        # Create glyph data with position information
+        glyph_data = GlyphData(
+            start_position=sequence_start_position,
+            end_position=end_pos,
+        )
 
         # Create start position beat data
-        start_position_beat = BeatData(
+        start_position_beat = OldBeatData(
             letter=letter,
             beat_number=0,  # Start position is beat 0
             duration=1.0,
@@ -176,7 +244,7 @@ class SequenceDataConverter:
         return start_position_beat
 
     def convert_beat_data_to_legacy_format(
-        self, beat: BeatData, beat_number: int
+        self, beat: OldBeatData, beat_number: int
     ) -> dict:
         """Convert modern BeatData to legacy JSON format exactly like legacy pictograph_data"""
         # Extract position data from glyph_data if available
@@ -240,7 +308,7 @@ class SequenceDataConverter:
         }
 
     def convert_start_position_to_legacy_format(
-        self, start_position_data: BeatData
+        self, start_position_data: OldBeatData
     ) -> dict:
         """Convert start position BeatData to legacy format exactly like JsonStartPositionHandler"""
         # Extract start position type (alpha, beta, gamma) from glyph_data if available
@@ -353,7 +421,7 @@ class SequenceDataConverter:
             "red_attributes": red_attrs,
         }
 
-    def convert_sequence_to_legacy_format(self, sequence: SequenceData) -> list:
+    def convert_sequence_to_legacy_format(self, sequence: OldSequenceData) -> list:
         """Convert modern SequenceData back to legacy JSON format"""
         try:
             legacy_data = []
@@ -387,7 +455,7 @@ class SequenceDataConverter:
                 )
                 legacy_data.append(start_pos_dict)
 
-            # Convert regular beats to legacy format (starting at index [2])
+            # Add regular beats as items [2], [3], [4], etc.
             for beat in regular_beats:
                 beat_dict = self._convert_beat_to_legacy_dict(beat)
                 legacy_data.append(beat_dict)
@@ -400,7 +468,38 @@ class SequenceDataConverter:
             )
             return []
 
-    def _convert_beat_to_legacy_dict(self, beat: BeatData) -> dict:
+    # Unified conversion methods that choose model type based on configuration
+    def convert_legacy_to_beat_data_unified(self, beat_dict: dict, beat_number: int):
+        """
+        Convert legacy JSON to BeatData using configured model type.
+
+        Returns:
+            PydanticBeatData if use_pydantic=True, OldBeatData otherwise
+        """
+        if self.use_pydantic:
+            return self.convert_legacy_to_pydantic_beat_data(beat_dict, beat_number)
+        else:
+            return self.convert_legacy_to_beat_data(beat_dict, beat_number)
+
+    def get_camel_case_json(self, beat_data) -> str:
+        """
+        Get camelCase JSON representation of beat data.
+
+        Args:
+            beat_data: Either OldBeatData or PydanticBeatData
+
+        Returns:
+            JSON string with camelCase properties
+        """
+        if isinstance(beat_data, PydanticBeatData):
+            # Pydantic models automatically serialize to camelCase
+            return beat_data.model_dump_json()
+        else:
+            # Convert old model to Pydantic for camelCase serialization
+            pydantic_beat = ModelMigrationAdapter.old_beat_to_new(beat_data)
+            return pydantic_beat.model_dump_json()
+
+    def _convert_beat_to_legacy_dict(self, beat: OldBeatData) -> dict:
         """Convert a single BeatData to legacy dictionary format"""
         return {
             "beat": beat.beat_number,

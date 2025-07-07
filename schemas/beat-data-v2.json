@@ -1,0 +1,85 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://tka.dev/schemas/beat-data-v2.json",
+  "title": "BeatData v2",
+  "description": "Pure business data for a single beat based on modern desktop domain model",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique identifier for this beat"
+    },
+    "beat_number": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Position in sequence (0 for start position, 1+ for regular beats)"
+    },
+    "letter": {
+      "anyOf": [
+        {"type": "string"},
+        {"type": "null"}
+      ],
+      "description": "TKA letter for this beat"
+    },
+    "duration": {
+      "type": "number",
+      "minimum": 0,
+      "exclusiveMinimum": true,
+      "default": 1.0,
+      "description": "Duration of this beat in time units"
+    },
+    "blue_motion": {
+      "anyOf": [
+        {"$ref": "motion-data-v2.json"},
+        {"type": "null"}
+      ],
+      "description": "Blue motion data"
+    },
+    "red_motion": {
+      "anyOf": [
+        {"$ref": "motion-data-v2.json"},
+        {"type": "null"}
+      ],
+      "description": "Red motion data"
+    },
+    "glyph_data": {
+      "anyOf": [
+        {"$ref": "glyph-data.json"},
+        {"type": "null"}
+      ],
+      "description": "Glyph rendering data"
+    },
+    "blue_reversal": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether blue motion is reversed"
+    },
+    "red_reversal": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether red motion is reversed"
+    },
+    "is_blank": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether this is a blank/empty beat"
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Additional metadata for this beat",
+      "additionalProperties": true,
+      "properties": {
+        "is_start_position": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether this beat represents a start position"
+        }
+      }
+    }
+  },
+  "required": [
+    "id",
+    "beat_number"
+  ],
+  "additionalProperties": false
+}

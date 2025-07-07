@@ -537,7 +537,7 @@ class SequenceData:
         new_beats = []
         for beat in self.beats:
             if beat.beat_number != beat_number:
-                # Renumber remaining beats
+                # Renumber remaining beats Call
                 new_beat_number = len(new_beats) + 1
                 new_beats.append(beat.update(beat_number=new_beat_number))
 
