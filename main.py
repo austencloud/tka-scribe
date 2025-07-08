@@ -1,100 +1,63 @@
 #!/usr/bin/env python3
 """
-Main entry point for The Kinetic Constructor (TKA).
+TKA - Clean Entry Point
+======================
 
-This script provides a unified entry point that always launches the Modern Launcher,
-which gives access to all TKA applications and development tools:
-
-- TKA Desktop (Modern)
-- TKA Desktop (Legacy)
-- Web Applications
-- Development Tools
-- Test Suites
-- Settings and Utilities
-
-Usage:
-    python main.py                    # Launch TKA Modern Launcher (recommended)
-    python main.py --legacy           # Show deprecation warning, then launch Modern Launcher
-    python main.py --modern           # Show deprecation warning, then launch Modern Launcher
-    python main.py --dev              # Show deprecation warning, then launch Modern Launcher
+This is a simple, reliable entry point that launches the TKA Modern Launcher.
+No path manipulation, no directory changes, no complexity.
 """
 
-import os
 import sys
-import argparse
+import os
 from pathlib import Path
 
 
-def setup_monorepo_paths():
-    """Ensure the working directory and Python paths are set correctly for the monorepo."""
-    # Get the directory where this script is located (TKA root)
-    script_dir = Path(__file__).parent.absolute()
-
-    # Change working directory to TKA root if we're not already there
-    if Path.cwd() != script_dir:
-        os.chdir(script_dir)
-
-    # Add TKA root to Python path if not already there
-    if str(script_dir) not in sys.path:
-        sys.path.insert(0, str(script_dir))
-
-
-def start_launcher():
-    """Launch the TKA Unified Launcher interface."""
-    try:
-        # Import and setup the unified launcher
-        launcher_path = Path(__file__).parent / "launcher"
-        if str(launcher_path) not in sys.path:
-            sys.path.insert(0, str(launcher_path))
-
-        # Change to launcher directory
-        original_cwd = Path.cwd()
-        os.chdir(launcher_path)
-
-        try:
-            from main import main as launcher_main
-
-            return launcher_main()
-        finally:
-            # Restore original working directory
-            os.chdir(original_cwd)
-
-    except ImportError as e:
-        print(f"Error importing TKA Unified Launcher: {e}")
-        print("Please ensure the TKA Unified Launcher is properly set up.")
-        return 1
-
-
-def launch_dev_tools():
-    """Launch TKA development tools."""
-    try:
-        desktop_path = Path(__file__).parent / "src" / "desktop"
-
-        if str(desktop_path) not in sys.path:
-            sys.path.insert(0, str(desktop_path))
-
-        # Change to desktop directory
-        original_cwd = Path.cwd()
-        os.chdir(desktop_path)
-
-        try:
-            import dev_setup
-
-            return dev_setup.main()
-        finally:
-            # Restore original working directory
-            os.chdir(original_cwd)
-
-    except ImportError as dev_error:
-        print(f"Error importing development tools: {dev_error}")
-        print("Please ensure the TKA Desktop development tools are properly set up.")
-        return 1
-
-
 def main():
-    """Main entry point - always launch the Modern Launcher."""
-    # setup_monorepo_paths()
-    return start_launcher()
+    """Launch TKA Modern Launcher directly."""
+    try:
+        print("="*60)
+        print("🚀 ROOT MAIN.PY STARTING (NOT THE LAUNCHER!)")
+        print("="*60)
+        print("⚠️ This is the root main.py, not the launcher main.py")
+        print("⚠️ If you see this, VS Code is running the wrong file!")
+        print("="*60)
+        
+        # Get the launcher directory
+        tka_root = Path(__file__).parent
+        launcher_dir = tka_root / "launcher"
+        launcher_script = launcher_dir / "main.py"
+        
+        if not launcher_script.exists():
+            print("❌ Launcher script not found at:", launcher_script)
+            return 1
+        
+        print("🚀 Starting TKA Modern Launcher...")
+        
+        # Change to launcher directory and add to path
+        original_cwd = os.getcwd()
+        original_path = sys.path.copy()
+        
+        try:
+            os.chdir(str(launcher_dir))
+            sys.path.insert(0, str(launcher_dir))
+            
+            # Import and run the launcher main function
+            import main as launcher_main
+            return launcher_main.main()
+            
+        finally:
+            # Restore original state
+            os.chdir(original_cwd)
+            sys.path[:] = original_path
+        
+    except KeyboardInterrupt:
+        print("⚠️ Interrupted by user")
+        return 0
+    except Exception as e:
+        print(f"❌ Error launching TKA: {e}")
+        import traceback
+        traceback.print_exc()
+        return 1
 
 
 if __name__ == "__main__":

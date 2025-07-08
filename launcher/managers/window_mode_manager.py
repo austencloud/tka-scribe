@@ -46,14 +46,17 @@ class WindowModeManager(QObject):
     def _initialize_mode_from_settings(self):
         """Initialize the current mode based on saved settings."""
         try:
-            # Always use launcher's settings directly since launcher is part of TKA
-            from config.settings import SettingsManager
-            settings_manager = SettingsManager()
-            should_dock = settings_manager.should_restore_to_docked()
-            launch_mode = settings_manager.get("launch_mode", "docked")
-            auto_start = settings_manager.get("auto_start_docked", True)
+            # Create settings service directly - no DI container needed
+            from services.settings_service import SettingsService
 
-            self.current_mode = "docked" if should_dock else "window"
+            settings_service = SettingsService()
+            launch_mode = settings_service.get_setting("launch_mode", "docked")
+            logger.info(f"🔧 Settings service reports launch_mode: {launch_mode}")
+
+            self.current_mode = launch_mode
+            logger.info(
+                f"🎯 WindowModeManager initialized with mode: {self.current_mode}"
+            )
         except Exception as e:
             logger.warning(
                 f"Failed to read mode from settings, defaulting to docked: {e}"
@@ -104,6 +107,7 @@ class WindowModeManager(QObject):
         try:
             from ui.windows.dock_window import TKADockWindow
             from domain.models import DockConfiguration
+
             dock_config = self._load_dock_configuration()
             self.dock_window = TKADockWindow(self.tka_integration, dock_config)
             self.dock_window.application_launched.connect(
@@ -116,6 +120,7 @@ class WindowModeManager(QObject):
     def _load_dock_configuration(self):
         """Load dock configuration."""
         from domain.models import DockConfiguration, DockPosition
+
         return DockConfiguration(
             position=DockPosition.BOTTOM_LEFT,
             width=64,

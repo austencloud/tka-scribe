@@ -117,7 +117,6 @@ class StartPositionPicker(QWidget):
                 background: rgba(255,255,255,0.18);
                 border-radius: 24px;
                 border: 1.5px solid rgba(255,255,255,0.25);
-                backdrop-filter: blur(16px);
             }
             QLabel#GlassTitle {
                 color: #fff;

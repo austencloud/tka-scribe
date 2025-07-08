@@ -14,14 +14,11 @@ from PyQt6.QtWidgets import (
 )
 import logging
 
-from core.modern_components import (
-    SettingCard,
-    ModernToggle,
-    ModernComboBox,
-    HelpTooltip,
+from main_window.main_widget.settings_dialog.core.glassmorphism_styler import GlassmorphismStyler
+from main_window.main_widget.settings_dialog.core.modern_components import HelpTooltip, ModernComboBox, ModernToggle, SettingCard
+from legacy_settings_manager.legacy_settings_manager import (
+    LegacySettingsManager,
 )
-from core.glassmorphism_styler import GlassmorphismStyler
-
 
 class EnhancedGeneralTab(QWidget):
     """

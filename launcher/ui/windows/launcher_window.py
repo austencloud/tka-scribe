@@ -71,6 +71,13 @@ class TKALauncherWindow(QWidget):
         self.mode_manager.set_components(self, tka_integration)
 
         self.setWindowTitle("TKA Modern Launcher")
+
+        # Make window more prominent when launched from VS Code
+        from PyQt6.QtCore import Qt
+
+        self.setWindowFlags(Qt.WindowType.Window)
+        logger.info("🪟 Launcher window created and configured")
+
         self.geometry_manager.setup_window_geometry(self)
         self._setup_modern_styling()
 

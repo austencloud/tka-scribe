@@ -2,6 +2,7 @@
 
 from PyQt6.QtCore import QPointF
 from typing import TYPE_CHECKING
+from data.constants import BOX, DIAMOND
 from objects.prop.prop import Prop
 import logging
 from functools import lru_cache
@@ -67,6 +68,8 @@ class DefaultPropPositioner:
             grid_mode = BOX
         elif prop.state.loc in ["n", "s", "e", "w"]:
             grid_mode = DIAMOND
+        else:
+            grid_mode = DIAMOND  # Default fallback
         return grid_mode
 
     def get_png_center_point(self, prop: Prop) -> QPointF:

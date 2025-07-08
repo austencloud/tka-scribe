@@ -2,66 +2,14 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "Install Dependencies",
+      "label": "🚀 Run TKA Launcher (Terminal)",
       "type": "shell",
-      "command": "pip",
-      "args": ["install", "-e", ".[dev,test-automation]"],
-      "group": "build",
-      "presentation": {
-        "echo": true,
-        "reveal": "always",
-        "focus": false,
-        "panel": "shared"
-      },
+      "command": "python",
+      "args": ["main.py"],
       "options": {
-        "cwd": "${workspaceFolder}"
-      },
-      "problemMatcher": []
-    },
-    {
-      "label": "Format Code (Black)",
-      "type": "shell",
-      "command": "black",
-      "args": ["."],
-      "group": "build",
-      "presentation": {
-        "echo": true,
-        "reveal": "silent",
-        "focus": false,
-        "panel": "shared"
-      },
-      "options": {
-        "cwd": "${workspaceFolder}"
-      },
-      "problemMatcher": []
-    },
-    {
-      "label": "Lint Code (Pylint)",
-      "type": "shell",
-      "command": "pylint",
-      "args": ["src/", "launcher/"],
-      "group": "build",
-      "presentation": {
-        "echo": true,
-        "reveal": "always",
-        "focus": false,
-        "panel": "shared"
-      },
-      "options": {
-        "cwd": "${workspaceFolder}"
-      },
-      "problemMatcher": []
-    },
-    {
-      "label": "🌐 Start Landing Page Dev Server",
-      "type": "shell",
-      "command": "npm",
-      "args": ["run", "dev"],
-      "options": {
-        "cwd": "${workspaceFolder}/src/web/landing"
+        "cwd": "${workspaceFolder}/launcher"
       },
       "group": "build",
-      "isBackground": true,
       "presentation": {
         "echo": true,
         "reveal": "always",
@@ -70,30 +18,7 @@
         "showReuseMessage": true,
         "clear": false
       },
-      "problemMatcher": {
-        "owner": "vite",
-        "pattern": {
-          "regexp": "^(.*):(\\d+):(\\d+):\\s+(warning|error)\\s+(.*)$",
-          "file": 1,
-          "line": 2,
-          "column": 3,
-          "severity": 4,
-          "message": 5
-        },
-        "background": {
-          "activeOnStart": true,
-          "beginsPattern": "dev server running at",
-          "endsPattern": "Local:\\s+http://localhost:\\d+"
-        }
-      }
-    },
-    {
-      "label": "📱 Preview Landing Page in Browser",
-      "type": "shell",
-      "command": "echo",
-      "args": ["Landing page available at http://localhost:5173"],
-      "group": "build",
-      "dependsOn": "🌐 Start Landing Page Dev Server"
+      "problemMatcher": []
     }
   ]
 }

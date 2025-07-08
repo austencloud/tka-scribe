@@ -68,7 +68,10 @@ line_length = 88
 [tool.pylint.master]
 # Add the project root and necessary directories to Python path
 init-hook='''
-import sys; import os; [sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__ if '__file__' in globals() else os.getcwd())), path)) for path in ['src/desktop/legacy/src', 'src/desktop/modern/src', 'launcher', 'packages', 'data', 'packages/shared-types/python', 'packages/constants/python'] if os.path.exists(os.path.join(os.path.dirname(os.path.abspath(__file__ if '__file__' in globals() else os.getcwd())), path))]
+import sys; import os;
+project_root = os.path.dirname(os.path.abspath(__file__ if "__file__" in globals() else os.getcwd()));
+paths = [".", "src", "src/desktop/legacy/src", "src/desktop/modern/src", "launcher", "packages", "packages/shared-types/python", "packages/constants/python", "data", "assets", "schemas"];
+[sys.path.insert(0, os.path.join(project_root, path)) for path in paths if os.path.exists(os.path.join(project_root, path)) and os.path.join(project_root, path) not in sys.path]
 '''
 # PyQt6 support
 extension-pkg-allow-list=["PyQt6"]
@@ -93,6 +96,7 @@ disable=[
     "C0303",  # Trailing whitespace
     "C0301",  # Line too long
     "C0305",  # Trailing newlines
+    "C0325",  # superfluous parentheses
     "C0411",  # Wrong import order
     "C0412",  # Ungrouped imports
     "C0415",  # Import outside toplevel
@@ -119,8 +123,9 @@ disable=[
     "E0401",  # Import error
     "W1309",  # f-string without interpolation
     "C0121",  # singleton-comparison (like == False)
-    "W0212"   # protected-access
+    "W0212",  # protected-access
     "W0401"   # wildcard import
+
 ]
 
 [tool.pylint.format]
@@ -169,15 +174,17 @@ exclude = [
 # Define extra paths for import resolution
 extraPaths = [
     ".",
-    "data",
-    "packages/shared-types/python",
-    "packages/constants/python",
-    "launcher",
     "src",
     "src/desktop/legacy/src",
     "src/desktop/modern/src",
+    "launcher",
     "packages",
-    "assets"
+    "packages/shared-types/python",
+    "packages/constants/python",
+    "data",
+    "assets",
+    "schemas",
+    "tests"
 ]
 
 # TURN OFF ALL TYPE CHECKING AND REPORTS

@@ -261,6 +261,9 @@ class ApplicationGridWidget(QWidget):
         max_cards_per_row = (
             max(len(apps) for apps in organized_apps.values()) if organized_apps else 1
         )
+        # Ensure max_cards_per_row is at least 1 to prevent division by zero
+        max_cards_per_row = max(1, max_cards_per_row)
+
         grid_side_margins = 32
         card_spacing = (max_cards_per_row - 1) * 16 if max_cards_per_row > 1 else 0
         available_card_width = container_width - grid_side_margins - card_spacing

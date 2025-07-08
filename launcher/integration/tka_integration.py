@@ -3,12 +3,12 @@
 TKA Integration Service - Clean Bridge to TKA Services
 ====================================================
 
-Simple integration layer between the fluent launcher and TKA's 
+Simple integration layer between the fluent launcher and TKA's
 dependency injection system.
 
 Responsibilities:
 - Interface with TKA's DI container
-- Application discovery and management  
+- Application discovery and management
 - Launch coordination
 - Settings and state management
 
@@ -19,15 +19,9 @@ Architecture:
 """
 
 import logging
-import sys
-from pathlib import Path
 from typing import List, Optional
 
-# Add paths for TKA imports
-launcher_dir = Path(__file__).parent
-parent_dir = launcher_dir.parent
-if str(parent_dir) not in sys.path:
-    sys.path.insert(0, str(parent_dir))
+# No path manipulation needed - using direct service imports
 
 logger = logging.getLogger(__name__)
 
@@ -53,30 +47,30 @@ class TKAIntegrationService:
         logger.info("✅ TKA integration service ready")
 
     def _initialize_tka_services(self):
-        """Initialize TKA services using the launcher DI container."""
+        """Initialize launcher services directly (no DI container needed)."""
         try:
-            # Use launcher's DI container with launcher applications
-            from core.di_integration import get_launcher_container
-            from launcher.core.interfaces import (
-                IApplicationService,
-                IApplicationLaunchService,
-                ISettingsService,
-            )
+            # Import launcher services directly - no DI container complexity needed
+            from services.application_service import ApplicationService
+            from services.application_launch_service import ApplicationLaunchService
+            from services.settings_service import SettingsService
+            from services.launcher_state_service import LauncherStateService
 
-            # Get the DI container configured with launcher services
-            # Use launcher container to ensure we have launcher applications
-            self.container = get_launcher_container(use_tka_container=False)
+            # Create services directly - much simpler than DI container
+            state_service = LauncherStateService()
+            self.settings_service = SettingsService()
+            self.app_service = ApplicationService(state_service)
+            self.launch_service = ApplicationLaunchService()
 
-            # Resolve services by their interfaces
-            self.app_service = self.container.resolve(IApplicationService)
-            self.launch_service = self.container.resolve(IApplicationLaunchService)
-            self.settings_service = self.container.resolve(ISettingsService)
+            # No container needed - we have the services directly
+            self.container = None
 
             logger.info("✅ TKA services initialized successfully")
 
         except Exception as e:
             logger.error(f"❌ Failed to initialize TKA services: {e}")
-            raise RuntimeError("TKA services are required for launcher operation") from e
+            raise RuntimeError(
+                "TKA services are required for launcher operation"
+            ) from e
 
     def get_applications(self) -> List:
         """Get the list of available applications."""

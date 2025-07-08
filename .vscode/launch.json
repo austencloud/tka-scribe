@@ -5,11 +5,11 @@
       "name": "🚀 TKA Launcher (Multi-Process Debug)",
       "type": "debugpy",
       "request": "launch",
-      "program": "${workspaceFolder}/main.py",
+      "program": "${workspaceFolder}/run_launcher.py",
       "console": "integratedTerminal",
       "justMyCode": false,
       "subProcess": true,
-      "python": "${command:python.interpreterPath}",
+      "python": "C:/Users/Austen/AppData/Local/Programs/Python/Python313/python.exe",
       "cwd": "${workspaceFolder}",
       "env": {
         "PYTHONPATH": "${workspaceFolder}:${workspaceFolder}/src:${workspaceFolder}/launcher:${workspaceFolder}/src/desktop/modern/src:${workspaceFolder}/src/desktop/legacy/src",
@@ -28,7 +28,7 @@
       "request": "launch",
       "program": "${workspaceFolder}/test_print.py",
       "console": "integratedTerminal",
-      "python": "${command:python.interpreterPath}"
+      "python": "C:/Users/Austen/AppData/Local/Programs/Python/Python313/python.exe"
     },
     {
       "name": "✨ TKA Desktop Modern (Direct Debug)",

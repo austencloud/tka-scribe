@@ -8,24 +8,36 @@ clean architecture patterns and service registration conventions.
 from __future__ import annotations
 
 import logging
+import sys
+from pathlib import Path
 from typing import Optional, TYPE_CHECKING, Any
 
-from launcher.core.interfaces import IApplicationLaunchService, IApplicationService, ILauncherStateService, IScreenService
+# CRITICAL: Set up TKA path IMMEDIATELY to handle VS Code debugger
+# The debugger changes import resolution, so we must fix paths first
+current_file = Path(__file__).resolve()
+project_root = current_file.parent.parent.parent  # launcher -> TKA
+modern_src = project_root / "src" / "desktop" / "modern" / "src"
+
+if modern_src.exists() and str(modern_src) not in sys.path:
+    sys.path.insert(0, str(modern_src))
+
+from core.interfaces import (
+    IApplicationLaunchService,
+    IApplicationService,
+    ILauncherStateService,
+    IScreenService,
+)
 
 if TYPE_CHECKING:
     from core.dependency_injection.di_container import DIContainer
 
-# Import TKA's DI container
+# Import TKA's DI container (now that path is set up)
 try:
-    # Ensure project root is set up for imports
-    from project_root import ensure_project_setup
-    ensure_project_setup()
-
+    # Try to import TKA DI directly (path should be available now)
     from core.dependency_injection.di_container import (
         DIContainer,
         get_container,
     )
-
     TKA_DI_AVAILABLE = True
 except ImportError:
     # Fallback for standalone launcher operation
@@ -34,7 +46,7 @@ except ImportError:
     get_container = None
 
 
-from launcher.core.interfaces import ISettingsService
+from core.interfaces import ISettingsService
 from services.launcher_state_service import LauncherStateService
 from services.application_service import ApplicationService
 from services.settings_service import SettingsService
@@ -65,8 +77,6 @@ class LauncherDIContainer:
             except Exception as e:
                 logger.warning(f"Failed to get TKA container, using standalone: {e}")
                 self._use_tka_container = False
-
-
 
         # Register launcher services
         self._register_launcher_services()
