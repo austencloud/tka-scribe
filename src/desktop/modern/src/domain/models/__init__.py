@@ -1,48 +1,73 @@
 # Modern Domain Models Module
+"""
+TKA Domain Models
+
+Clean, immutable dataclass models with JSON serialization support.
+Supports both snake_case (Python) and camelCase (JSON/TypeScript) conventions.
+"""
+
+# Import serialization utilities
+# Import serialization utilities
+# Import serialization utilities
+# Import serialization utilities
+# Import serialization utilities
+# Import serialization utilities
+from ..serialization import (
+    dataclass_to_camel_dict,
+    dict_from_camel_case,
+    domain_model_from_json,
+    domain_model_to_json,
+)
 
 # Export core models first (most important)
-from .core_models import (
-    # Enums
-    MotionType,
+from .core_models import (  # Enums; Data classes
+    ArrowColor,
+    BeatData,
+    ElementalType,
+    GlyphData,
+    GridMode,
+    GridPosition,
     HandMotionType,
     HandPath,
-    RotationDirection,
-    Orientation,
-    Location,
-    GridPosition,
-    VTGMode,
-    ElementalType,
     LetterType,
-    ArrowColor,
-    GridMode,
-    
-    # Data classes
+    Location,
     MotionData,
-    GlyphData,
-    BeatData,
+    MotionType,
+    Orientation,
+    RotationDirection,
     SequenceData,
+    VTGMode,
 )
-
-from .pictograph_models import (
-    # Export pictograph models
+from .letter_type_classifier import (  # Export letter type classifier
+    LetterTypeClassifier,
+)
+from .pictograph_models import (  # Export pictograph models
     ArrowData,
-    PropData,
+    ArrowType,
     GridData,
     PictographData,
+    PropData,
     PropType,
-    ArrowType,
 )
-
-from .positioning_models import (
-    # Export positioning models
+from .positioning_models import (  # Export positioning models
     ArrowPositionResult,
     PropPositionResult,
 )
 
-from .letter_type_classifier import (
-    # Export letter type classifier
-    LetterTypeClassifier,
-)
+# Import serialization utilities
+try:
+    from ..serialization import (
+        dataclass_to_camel_dict,
+        dict_from_camel_case,
+        domain_model_from_json,
+        domain_model_to_json,
+    )
+except ImportError:
+    # Fallback if serialization module not available
+    domain_model_to_json = None
+    domain_model_from_json = None
+    dataclass_to_camel_dict = None
+    dict_from_camel_case = None
 
 # Import generation and settings models with error handling
 try:
@@ -60,58 +85,63 @@ except ImportError as e:
 # Core exports (always available)
 __all__ = [
     # Core models - Enums (most critical)
-    'MotionType',
-    'HandMotionType', 
-    'HandPath',
-    'RotationDirection',
-    'Orientation',
-    'Location',
-    'GridPosition',
-    'VTGMode',
-    'ElementalType',
-    'LetterType',
-    'ArrowColor',
-    'GridMode',
-    
+    "MotionType",
+    "HandMotionType",
+    "HandPath",
+    "RotationDirection",
+    "Orientation",
+    "Location",
+    "GridPosition",
+    "VTGMode",
+    "ElementalType",
+    "LetterType",
+    "ArrowColor",
+    "GridMode",
     # Core models - Data classes
-    'MotionData',
-    'GlyphData', 
-    'BeatData',
-    'SequenceData',
-    
+    "MotionData",
+    "GlyphData",
+    "BeatData",
+    "SequenceData",
     # Pictograph models
-    'ArrowData',
-    'PropData',
-    'GridData',
-    'PictographData',
-    'PropType',
-    'ArrowType',
-    
+    "ArrowData",
+    "PropData",
+    "GridData",
+    "PictographData",
+    "PropType",
+    "ArrowType",
     # Positioning models
-    'ArrowPositionResult',
-    'PropPositionResult',
-    
+    "ArrowPositionResult",
+    "PropPositionResult",
     # Utilities
-    'LetterTypeClassifier',
+    "LetterTypeClassifier",
+    # Serialization utilities
+    "domain_model_to_json",
+    "domain_model_from_json",
+    "dataclass_to_camel_dict",
+    "dict_from_camel_case",
 ]
 
 # Add optional exports if available
 if _GENERATION_AVAILABLE:
-    __all__.extend([
-        'GenerationConfig',
-        'GenerationResult', 
-        'GenerationState',
-    ])
+    __all__.extend(
+        [
+            "GenerationConfig",
+            "GenerationResult",
+            "GenerationState",
+        ]
+    )
 
 if _SETTINGS_AVAILABLE:
-    __all__.extend([
-        'UserProfileData',
-        'VisibilitySettingsData',
-        'BeatLayoutData',
-        'ImageExportSettingsData',
-        'CodexExportSettingsData',
-        'GlobalSettingsData',
-        'SettingsData',
-        'DEFAULT_SETTINGS',
-        'BackgroundType',
-    ])
+    __all__.extend(
+        [
+            "UserProfileData",
+            "VisibilitySettingsData",
+            "BeatLayoutData",
+            "ImageExportSettingsData",
+            "CodexExportSettingsData",
+            "GlobalSettingsData",
+            "SettingsData",
+            "DEFAULT_SETTINGS",
+            "BackgroundType",
+        ]
+    )

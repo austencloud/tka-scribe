@@ -5,17 +5,21 @@ This service provides access to the actual pictograph dataset,
 enabling pixel-perfect accuracy for start position selection and motion combinations.
 """
 
-import pandas as pd
-from typing import Dict, Any, Optional, List
+from typing import Any, Dict, List, Optional
 
-from domain.models.pydantic_models import (
+import pandas as pd
+from domain.models import (
+    ArrowData,
     BeatData,
+    GridData,
     MotionData,
-    MotionType,
-    RotationDirection,
-    Location,
+    PictographData,
+    PropData,
 )
+from domain.models.core_models import Location, MotionType, RotationDirection
+from domain.models.pictograph_models import GridMode
 from infrastructure.data_path_handler import DataPathHandler
+
 from .glyph_data_service import GlyphDataService
 
 
@@ -121,6 +125,53 @@ class PictographDatasetService:
         """Get available box start position keys."""
         return ["alpha2_alpha2", "beta4_beta4", "gamma12_gamma12"]
 
+    def get_start_position_pictograph_data(
+        self, position_key: str, grid_mode: str = "diamond"
+    ) -> Optional[PictographData]:
+        """
+        Get pictograph data for a start position (proper domain model).
+
+        This method returns PictographData instead of BeatData, which is more
+        appropriate for pickers and non-sequence contexts.
+
+        Args:
+            position_key: Position key like "alpha1_alpha1", "beta5_beta5", "gamma11_gamma11"
+            grid_mode: "diamond" or "box"
+
+        Returns:
+            PictographData object with motion data, or None if not found
+        """
+        try:
+            # Parse the position key to get start and end positions
+            if "_" not in position_key:
+                return None
+
+            start_pos, end_pos = position_key.split("_", 1)
+
+            # Choose the appropriate dataset
+            dataset = (
+                self._diamond_dataset if grid_mode == "diamond" else self._box_dataset
+            )
+
+            if dataset is None or dataset.empty:
+                return None
+
+            # Find matching entries
+            matching_entries = dataset[
+                (dataset["start_pos"] == start_pos) & (dataset["end_pos"] == end_pos)
+            ]
+
+            if matching_entries.empty:
+                return None
+
+            # Take the first matching entry and convert directly to PictographData
+            entry = matching_entries.iloc[0]
+            return self._dataset_entry_to_pictograph_data(entry, grid_mode)
+
+        except Exception as e:
+            print(f"❌ Error getting pictograph data for {position_key}: {e}")
+            return None
+
     def find_pictograph_by_criteria(
         self, letter: str, start_pos: str, end_pos: str, grid_mode: str = "diamond"
     ) -> Optional[BeatData]:
@@ -155,21 +206,26 @@ class PictographDatasetService:
 
             # Take the first matching entry
             entry = matching_entries.iloc[0]
-            return self._dataset_entry_to_beat_data(entry)
+            # Convert to pictograph data first, then to beat data for backward compatibility
+            pictograph_data = self._dataset_entry_to_pictograph_data(entry, grid_mode)
+            return self._pictograph_data_to_beat_data(pictograph_data)
 
         except Exception as e:
             print(f"❌ Error finding pictograph: {e}")
             return None
 
-    def _dataset_entry_to_beat_data(self, entry: pd.Series) -> BeatData:
+    def _dataset_entry_to_pictograph_data(
+        self, entry: pd.Series, grid_mode: str
+    ) -> PictographData:
         """
-        Convert a dataset entry to BeatData format.
+        Convert a dataset entry to PictographData format.
 
         Args:
             entry: Pandas Series representing a dataset row
+            grid_mode: Grid mode ("diamond" or "box")
 
         Returns:
-            BeatData object with proper motion data and glyph information
+            PictographData object with proper motion data
         """
         # Parse motion types
         blue_motion_type = self._parse_motion_type(entry["blue_motion_type"])
@@ -210,23 +266,40 @@ class PictographDatasetService:
             ),
         )
 
-        # Create beat data
-        beat_data = BeatData(
-            letter=entry["letter"],
-            duration=1.0,
-            blue_motion=blue_motion,
-            red_motion=red_motion,
+        # Create arrow data using structured models
+        blue_arrow = ArrowData(
+            motion_data=blue_motion,
+            color="blue",
         )
 
-        # Generate glyph data
-        glyph_data = self.glyph_service.determine_glyph_data(beat_data)
+        red_arrow = ArrowData(
+            motion_data=red_motion,
+            color="red",
+        )
 
-        return BeatData(
-            letter=beat_data.letter,
-            duration=beat_data.duration,
-            blue_motion=beat_data.blue_motion,
-            red_motion=beat_data.red_motion,
-            glyph_data=glyph_data,
+        # Create arrows dictionary
+        arrows = {
+            "blue": blue_arrow,
+            "red": red_arrow,
+        }
+
+        # Create grid data using enum
+        grid_data = GridData(
+            grid_mode=GridMode.DIAMOND if grid_mode == "diamond" else GridMode.BOX
+        )
+
+        # Create pictograph data using Pydantic model
+        return PictographData(
+            grid_data=grid_data,
+            arrows=arrows,
+            props={},  # Props will be generated during rendering
+            letter=entry["letter"],
+            start_position=entry.get("start_pos"),
+            end_position=entry.get("end_pos"),
+            metadata={
+                "is_start_position": True,
+                "source": "dataset",
+            },
         )
 
     def _parse_motion_type(self, motion_type_str: str) -> MotionType:
@@ -261,6 +334,47 @@ class PictographDatasetService:
             "nw": Location.NORTHWEST,
         }
         return location_map.get(location_str.lower(), Location.NORTH)
+
+    def _beat_data_to_pictograph_data(
+        self, beat_data: BeatData, grid_mode: str
+    ) -> PictographData:
+        """
+        Convert BeatData to PictographData.
+
+        This extracts the pictograph-specific data from a BeatData object
+        and creates a proper PictographData domain model.
+        """
+        # Create arrow data using structured models
+        arrows = {}
+
+        if beat_data.blue_motion:
+            arrows["blue"] = ArrowData(
+                motion_data=beat_data.blue_motion,
+                color="blue",
+            )
+
+        if beat_data.red_motion:
+            arrows["red"] = ArrowData(
+                motion_data=beat_data.red_motion,
+                color="red",
+            )
+
+        # Create grid data using enum
+        grid_data = GridData(
+            grid_mode=GridMode.DIAMOND if grid_mode == "diamond" else GridMode.BOX
+        )
+
+        # Create pictograph data using Pydantic model
+        return PictographData(
+            grid_data=grid_data,
+            arrows=arrows,
+            props={},  # Props will be generated during rendering
+            letter=beat_data.letter,
+            metadata={
+                "is_start_position": True,
+                "source": "dataset",
+            },
+        )
 
     def get_dataset_info(self) -> Dict[str, Any]:
         """Get information about the loaded datasets."""

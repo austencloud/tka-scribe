@@ -7,21 +7,21 @@ the extracted business service and handles Qt-specific concerns.
 """
 
 import logging
-from typing import TYPE_CHECKING, List, Optional, Callable
-from PyQt6.QtWidgets import QWidget
-from PyQt6.QtCore import QObject
+from typing import TYPE_CHECKING, Callable, List, Optional
 
+from core.interfaces.core_services import IObjectPoolService
 from domain.models.core_models import (
     BeatData,
+    Location,
     MotionData,
     MotionType,
-    Location,
     RotationDirection,
 )
-from core.interfaces.core_services import IObjectPoolService
 from presentation.components.option_picker.components.frames.clickable_pictograph_frame import (
     ClickablePictographFrame,
 )
+from PyQt6.QtCore import QObject
+from PyQt6.QtWidgets import QWidget
 
 if TYPE_CHECKING:
     from application.services.data.pictograph_dataset_service import (
@@ -96,7 +96,6 @@ class PictographPoolManager(QObject):
 
         if not self._pool_service:
             logger.error("Pool service not available, using fallback")
-            self._create_fallback_pool(progress_callback)
             return
 
         try:
@@ -126,7 +125,6 @@ class PictographPoolManager(QObject):
 
         except Exception as e:
             logger.error(f"Error initializing pool via service: {e}")
-            self._create_fallback_pool(progress_callback)
 
     def _create_pictograph_frame(self) -> Optional[ClickablePictographFrame]:
         """
@@ -147,17 +145,19 @@ class PictographPoolManager(QObject):
             position_key = start_positions[
                 len(self._pictograph_pool) % len(start_positions)
             ]
-            real_beat_data = dataset_service.get_start_position_pictograph(
+            # Use the new pictograph-based approach
+            real_pictograph_data = dataset_service.get_start_position_pictograph_data(
                 position_key, "diamond"
             )
 
-            if real_beat_data is None:
-                real_beat_data = self._get_fallback_beat_data(dataset_service)
+            if real_pictograph_data is None:
+                # Fallback to creating minimal pictograph data
+                real_pictograph_data = self._create_minimal_pictograph_data()
 
-            if real_beat_data is None:
-                real_beat_data = self._create_minimal_beat_data()
-
-            frame = ClickablePictographFrame(real_beat_data, parent=self.parent_widget)
+            # Convert pictograph to beat data for the frame (temporary compatibility)
+            # TODO: Update ClickablePictographFrame to work directly with PictographData
+            beat_data = self._pictograph_data_to_beat_data(real_pictograph_data)
+            frame = ClickablePictographFrame(beat_data, parent=self.parent_widget)
 
             # Set up event handlers
             if self._click_handler:
@@ -173,65 +173,6 @@ class PictographPoolManager(QObject):
         except Exception as e:
             logger.error(f"Error creating pictograph frame: {e}")
             return None
-
-    def _get_fallback_beat_data(
-        self, dataset_service: "PictographDatasetService"
-    ) -> Optional[BeatData]:
-        """Get fallback beat data from dataset"""
-        if (
-            hasattr(dataset_service, "_diamond_dataset")
-            and dataset_service._diamond_dataset is not None
-        ):
-            if not dataset_service._diamond_dataset.empty:
-                first_entry = dataset_service._diamond_dataset.iloc[0]
-                return dataset_service._dataset_entry_to_beat_data(first_entry)
-        return None
-
-    def _create_minimal_beat_data(self) -> BeatData:
-        """Create minimal valid beat data as final fallback"""
-        return BeatData(
-            letter="A",
-            blue_motion=MotionData(
-                motion_type=MotionType.PRO,
-                prop_rot_dir=RotationDirection.CLOCKWISE,
-                start_loc=Location.NORTH,
-                end_loc=Location.SOUTH,
-                turns=1.0,
-                start_ori="in",
-                end_ori="out",
-            ),
-            red_motion=MotionData(
-                motion_type=MotionType.ANTI,
-                prop_rot_dir=RotationDirection.COUNTER_CLOCKWISE,
-                start_loc=Location.SOUTH,
-                end_loc=Location.NORTH,
-                turns=1.0,
-                start_ori="in",
-                end_ori="out",
-            ),
-        )
-
-    def _create_fallback_pool(
-        self, progress_callback: Optional[Callable] = None
-    ) -> None:
-        """Create fallback pool with minimal beat data"""
-        if progress_callback:
-            progress_callback("Dataset failed, using fallback pool", 0.7)
-
-        for i in range(self.MAX_PICTOGRAPHS):
-            try:
-                dummy_beat = self._create_minimal_beat_data()
-                frame = ClickablePictographFrame(dummy_beat, parent=self.parent_widget)
-                if self._click_handler:
-                    frame.clicked.connect(self._click_handler)
-                if self._beat_data_click_handler:
-                    frame.beat_data_clicked.connect(self._beat_data_click_handler)
-                frame.setVisible(False)
-                frame.set_container_widget(self.parent_widget)
-                self._pictograph_pool.append(frame)
-            except Exception as e:
-                print(f"❌ Failed to create fallback pool object {i}: {e}")
-                break
 
     def get_pictograph_from_pool(
         self, index: int
@@ -253,3 +194,71 @@ class PictographPoolManager(QObject):
                     frame.resize_frame()
                 except RuntimeError:
                     pass
+
+    def _create_minimal_pictograph_data(self):
+        """Create minimal pictograph data as fallback."""
+        from domain.models.core_models import Location, MotionType, RotationDirection
+        from domain.models.pictograph_models import (
+            ArrowData,
+            GridData,
+            GridMode,
+            PictographData,
+        )
+        from domain.models.pydantic_models import MotionData
+
+        # Create motion data
+        blue_motion = MotionData(
+            motion_type=MotionType.PRO,
+            prop_rot_dir=RotationDirection.CLOCKWISE,
+            start_loc=Location.NORTH,
+            end_loc=Location.SOUTH,
+            turns=1.0,
+            start_ori="in",
+            end_ori="out",
+        )
+
+        red_motion = MotionData(
+            motion_type=MotionType.ANTI,
+            prop_rot_dir=RotationDirection.COUNTER_CLOCKWISE,
+            start_loc=Location.SOUTH,
+            end_loc=Location.NORTH,
+            turns=1.0,
+            start_ori="in",
+            end_ori="out",
+        )
+
+        # Create arrow data
+        blue_arrow = ArrowData(motion_data=blue_motion, color="blue")
+        red_arrow = ArrowData(motion_data=red_motion, color="red")
+
+        # Create grid data
+        grid_data = GridData(grid_mode=GridMode.DIAMOND)
+
+        # Create pictograph data
+        return PictographData(
+            grid_data=grid_data,
+            arrows={"blue": blue_arrow, "red": red_arrow},
+            props={},
+            letter="A",
+            metadata={"source": "fallback"},
+        )
+
+    def _pictograph_data_to_beat_data(self, pictograph_data):
+        """Convert PictographData to BeatData for backward compatibility."""
+        from domain.models.pydantic_models import BeatData
+
+        # Extract motion data from arrows
+        blue_motion = None
+        red_motion = None
+
+        if "blue" in pictograph_data.arrows:
+            blue_motion = pictograph_data.arrows["blue"].motion_data
+        if "red" in pictograph_data.arrows:
+            red_motion = pictograph_data.arrows["red"].motion_data
+
+        return BeatData(
+            beat_number=1,
+            letter=pictograph_data.letter or "A",
+            blue_motion=blue_motion,
+            red_motion=red_motion,
+        )

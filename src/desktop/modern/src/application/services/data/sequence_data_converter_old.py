@@ -7,14 +7,11 @@ Responsible for maintaining compatibility with legacy sequence data structures.
 MIGRATION STATUS: Clean cut to Pydantic models - always returns Pydantic types
 """
 
-# Import Pydantic models (primary models)
-from domain.models.pydantic_models import (
+# Import domain models
+from domain.models import (
     MotionData,
     BeatData,
     SequenceData,
-    create_default_motion_data,
-    create_default_beat_data,
-    create_default_sequence_data,
 )
 
 # Import migration adapters for legacy data conversion

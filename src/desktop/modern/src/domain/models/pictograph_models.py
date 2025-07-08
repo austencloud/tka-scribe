@@ -18,12 +18,41 @@ PROVIDES:
 - Easy testing and serialization
 """
 
-from dataclasses import dataclass, field
-from typing import Dict, Optional, Any, Tuple
-from enum import Enum
+import json
 import uuid
+from dataclasses import dataclass, field, fields, is_dataclass
+from enum import Enum
+from typing import Any, Dict, Optional, Tuple, Union
 
 from domain.models.core_models import MotionData
+
+
+def _process_field_value(value: Any, field_type: Any) -> Any:
+    """Process field value based on type for deserialization."""
+    # Handle Optional types
+    if hasattr(field_type, "__origin__") and field_type.__origin__ is Union:
+        args = field_type.__args__
+        if len(args) == 2 and type(None) in args:
+            actual_type = args[0] if args[1] is type(None) else args[1]
+            if value is None:
+                return None
+            return _process_field_value(value, actual_type)
+
+    # Handle dataclasses
+    if is_dataclass(field_type) and isinstance(value, dict):
+        return field_type.from_dict(value)
+
+    # Handle enums
+    if isinstance(field_type, type) and issubclass(field_type, Enum):
+        return field_type(value)
+
+    # Handle lists
+    if hasattr(field_type, "__origin__") and field_type.__origin__ is list:
+        if isinstance(value, list):
+            list_type = field_type.__args__[0]
+            return [_process_field_value(item, list_type) for item in value]
+
+    return value
 
 
 class GridMode(Enum):
@@ -167,6 +196,32 @@ class ArrowData:
             is_selected=data.get("is_selected", False),
         )
 
+    def to_camel_dict(self) -> Dict[str, Any]:
+        """Convert to dictionary with camelCase keys for JSON APIs."""
+        from ..serialization import dataclass_to_camel_dict
+
+        return dataclass_to_camel_dict(self)
+
+    def to_json(self, camel_case: bool = True, **kwargs) -> str:
+        """Serialize to JSON string."""
+        from ..serialization import domain_model_to_json
+
+        if camel_case:
+            return domain_model_to_json(self, **kwargs)
+        else:
+            return json.dumps(self.to_dict(), **kwargs)
+
+    @classmethod
+    def from_json(cls, json_str: str, camel_case: bool = True) -> "ArrowData":
+        """Create instance from JSON string."""
+        from ..serialization import domain_model_from_json
+
+        if camel_case:
+            return domain_model_from_json(json_str, cls)
+        else:
+            data = json.loads(json_str)
+            return cls.from_dict(data)
+
 
 @dataclass(frozen=True)
 class PropData:
@@ -247,6 +302,32 @@ class PropData:
             is_selected=data.get("is_selected", False),
         )
 
+    def to_camel_dict(self) -> Dict[str, Any]:
+        """Convert to dictionary with camelCase keys for JSON APIs."""
+        from ..serialization import dataclass_to_camel_dict
+
+        return dataclass_to_camel_dict(self)
+
+    def to_json(self, camel_case: bool = True, **kwargs) -> str:
+        """Serialize to JSON string."""
+        from ..serialization import domain_model_to_json
+
+        if camel_case:
+            return domain_model_to_json(self, **kwargs)
+        else:
+            return json.dumps(self.to_dict(), **kwargs)
+
+    @classmethod
+    def from_json(cls, json_str: str, camel_case: bool = True) -> "PropData":
+        """Create instance from JSON string."""
+        from ..serialization import domain_model_from_json
+
+        if camel_case:
+            return domain_model_from_json(json_str, cls)
+        else:
+            data = json.loads(json_str)
+            return cls.from_dict(data)
+
 
 @dataclass(frozen=True)
 class GridData:
@@ -285,6 +366,32 @@ class GridData:
             radius=data.get("radius", 100.0),
             grid_points=data.get("grid_points", {}),
         )
+
+    def to_camel_dict(self) -> Dict[str, Any]:
+        """Convert to dictionary with camelCase keys for JSON APIs."""
+        from ..serialization import dataclass_to_camel_dict
+
+        return dataclass_to_camel_dict(self)
+
+    def to_json(self, camel_case: bool = True, **kwargs) -> str:
+        """Serialize to JSON string."""
+        from ..serialization import domain_model_to_json
+
+        if camel_case:
+            return domain_model_to_json(self, **kwargs)
+        else:
+            return json.dumps(self.to_dict(), **kwargs)
+
+    @classmethod
+    def from_json(cls, json_str: str, camel_case: bool = True) -> "GridData":
+        """Create instance from JSON string."""
+        from ..serialization import domain_model_from_json
+
+        if camel_case:
+            return domain_model_from_json(json_str, cls)
+        else:
+            data = json.loads(json_str)
+            return cls.from_dict(data)
 
 
 @dataclass(frozen=True)
@@ -447,3 +554,29 @@ class PictographData:
             is_mirrored=data.get("is_mirrored", False),
             metadata=data.get("metadata", {}),
         )
+
+    def to_camel_dict(self) -> Dict[str, Any]:
+        """Convert to dictionary with camelCase keys for JSON APIs."""
+        from ..serialization import dataclass_to_camel_dict
+
+        return dataclass_to_camel_dict(self)
+
+    def to_json(self, camel_case: bool = True, **kwargs) -> str:
+        """Serialize to JSON string."""
+        from ..serialization import domain_model_to_json
+
+        if camel_case:
+            return domain_model_to_json(self, **kwargs)
+        else:
+            return json.dumps(self.to_dict(), **kwargs)
+
+    @classmethod
+    def from_json(cls, json_str: str, camel_case: bool = True) -> "PictographData":
+        """Create instance from JSON string."""
+        from ..serialization import domain_model_from_json
+
+        if camel_case:
+            return domain_model_from_json(json_str, cls)
+        else:
+            data = json.loads(json_str)
+            return cls.from_dict(data)

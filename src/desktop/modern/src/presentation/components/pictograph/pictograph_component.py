@@ -75,6 +75,42 @@ class PictographComponent(QGraphicsView, BorderedPictographMixin):
 
         self.pictograph_updated.emit(beat_data)
 
+    def update_from_pictograph(self, pictograph_data) -> None:
+        """
+        Update component from PictographData (for pickers and non-sequence contexts).
+
+        This is the preferred method for pickers since they work with pictographs,
+        not beats. Only sequence beat frames should use update_from_beat().
+        """
+        # Create a minimal BeatData wrapper for internal compatibility
+        # TODO: Refactor PictographScene to work directly with PictographData
+        from domain.models.pydantic_models import BeatData, MotionData
+
+        # Extract motion data from pictograph arrows
+        blue_motion = None
+        red_motion = None
+
+        if "blue" in pictograph_data.arrows:
+            blue_motion = pictograph_data.arrows["blue"].motion_data
+        if "red" in pictograph_data.arrows:
+            red_motion = pictograph_data.arrows["red"].motion_data
+
+        # Create minimal BeatData for internal use
+        temp_beat_data = BeatData(
+            beat_number=0,  # Not relevant for pictograph display
+            letter=pictograph_data.letter or "",
+            blue_motion=blue_motion,
+            red_motion=red_motion,
+            pictograph_data=None,  # Avoid circular reference
+        )
+
+        self.current_beat = temp_beat_data
+        if self.scene:
+            self.scene.update_beat(temp_beat_data)
+            self._fit_view()
+
+        self.pictograph_updated.emit(temp_beat_data)
+
     def get_current_beat(self) -> Optional[BeatData]:
         return self.current_beat
 

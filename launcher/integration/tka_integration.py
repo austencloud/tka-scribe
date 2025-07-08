@@ -59,7 +59,7 @@ class TKAIntegrationService:
             state_service = LauncherStateService()
             self.settings_service = SettingsService()
             self.app_service = ApplicationService(state_service)
-            self.launch_service = ApplicationLaunchService()
+            self.launch_service = ApplicationLaunchService(state_service)
 
             # No container needed - we have the services directly
             self.container = None

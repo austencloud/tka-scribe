@@ -7,33 +7,16 @@ from pydantic import BaseModel, Field
 from datetime import datetime
 from enum import Enum
 
+# Import core enums for consistency
+from domain.models.core_models import MotionType, RotationDirection, Location, Orientation
+
 
 # === Core API Models ===
 
-
-class MotionTypeAPI(str, Enum):
-    PRO = "pro"
-    ANTI = "anti"
-    FLOAT = "float"
-    DASH = "dash"
-    STATIC = "static"
-
-
-class RotationDirectionAPI(str, Enum):
-    CLOCKWISE = "cw"
-    COUNTER_CLOCKWISE = "ccw"
-    NO_ROTATION = "no_rot"
-
-
-class LocationAPI(str, Enum):
-    NORTH = "n"
-    EAST = "e"
-    SOUTH = "s"
-    WEST = "w"
-    NORTHEAST = "ne"
-    SOUTHEAST = "se"
-    SOUTHWEST = "sw"
-    NORTHWEST = "nw"
+# Use core enums directly for API consistency
+MotionTypeAPI = MotionType
+RotationDirectionAPI = RotationDirection
+LocationAPI = Location
 
 
 class MotionAPI(BaseModel):

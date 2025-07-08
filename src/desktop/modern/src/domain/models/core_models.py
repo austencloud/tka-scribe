@@ -16,10 +16,49 @@ ELIMINATES:
 - PyQt dependencies in business logic
 """
 
-from dataclasses import dataclass, field
-from typing import Dict, List, Optional, Any
-from enum import Enum
+import json
 import uuid
+from dataclasses import dataclass, field, fields, is_dataclass
+from enum import Enum
+from typing import Any, Dict, List, Optional, Union
+
+
+def _process_field_value(value: Any, field_type: Any) -> Any:
+    """Process field value based on type for deserialization."""
+    # Handle Optional types
+    if hasattr(field_type, "__origin__") and field_type.__origin__ is Union:
+        args = field_type.__args__
+        if len(args) == 2 and type(None) in args:
+            actual_type = args[0] if args[1] is type(None) else args[1]
+            if value is None:
+                return None
+            return _process_field_value(value, actual_type)
+
+    # Handle dataclasses
+    if is_dataclass(field_type) and isinstance(value, dict):
+        return field_type.from_dict(value)
+
+    # Handle enums
+    if isinstance(field_type, type) and issubclass(field_type, Enum):
+        return field_type(value)
+
+    # Handle lists
+    if hasattr(field_type, "__origin__") and field_type.__origin__ is list:
+        if isinstance(value, list):
+            list_type = field_type.__args__[0]
+            return [_process_field_value(item, list_type) for item in value]
+
+    return value
+
+
+class Timing(Enum):
+    TOGETHER = "together"
+    SPLIT = "split"
+
+
+class Direction(Enum):
+    SAME = "same"
+    OPP = "opp"
 
 
 class MotionType(Enum):
@@ -194,18 +233,56 @@ class MotionData:
             }
             return orientation_map.get(value_lower, Orientation.IN)
 
-        if isinstance(value, (int, float)):
-            # Handle legacy numeric values
-            angle_map = {
-                0: Orientation.IN,
-                90: Orientation.CLOCK,
-                180: Orientation.OUT,
-                270: Orientation.COUNTER,
-            }
-            return angle_map.get(int(value), Orientation.IN)
-
         # Default fallback
         return Orientation.IN
+
+    def to_dict(self) -> Dict[str, Any]:
+        """Convert to dictionary with snake_case keys."""
+        from dataclasses import asdict
+
+        return asdict(self)
+
+    def to_camel_dict(self) -> Dict[str, Any]:
+        """Convert to dictionary with camelCase keys for JSON APIs."""
+        from ..serialization import dataclass_to_camel_dict
+
+        return dataclass_to_camel_dict(self)
+
+    def to_json(self, camel_case: bool = True, **kwargs) -> str:
+        """Serialize to JSON string."""
+        from ..serialization import domain_model_to_json
+
+        if camel_case:
+            return domain_model_to_json(self, **kwargs)
+        else:
+            return json.dumps(self.to_dict(), **kwargs)
+
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> "MotionData":
+        """Create instance from dictionary."""
+        # Handle nested dataclasses and enums
+        field_types = {f.name: f.type for f in fields(cls)}
+
+        processed_data = {}
+        for key, value in data.items():
+            if key in field_types:
+                field_type = field_types[key]
+                processed_data[key] = _process_field_value(value, field_type)
+            else:
+                processed_data[key] = value
+
+        return cls(**processed_data)
+
+    @classmethod
+    def from_json(cls, json_str: str, camel_case: bool = True) -> "MotionData":
+        """Create instance from JSON string."""
+        from ..serialization import domain_model_from_json
+
+        if camel_case:
+            return domain_model_from_json(json_str, cls)
+        else:
+            data = json.loads(json_str)
+            return cls.from_dict(data)
 
     def update(self, **kwargs) -> "MotionData":
         """Create a new MotionData with updated fields."""
@@ -336,6 +413,32 @@ class GlyphData:
             show_positions=data.get("show_positions", True),
         )
 
+    def to_camel_dict(self) -> Dict[str, Any]:
+        """Convert to dictionary with camelCase keys for JSON APIs."""
+        from ..serialization import dataclass_to_camel_dict
+
+        return dataclass_to_camel_dict(self)
+
+    def to_json(self, camel_case: bool = True, **kwargs) -> str:
+        """Serialize to JSON string."""
+        from ..serialization import domain_model_to_json
+
+        if camel_case:
+            return domain_model_to_json(self, **kwargs)
+        else:
+            return json.dumps(self.to_dict(), **kwargs)
+
+    @classmethod
+    def from_json(cls, json_str: str, camel_case: bool = True) -> "GlyphData":
+        """Create instance from JSON string."""
+        from ..serialization import domain_model_from_json
+
+        if camel_case:
+            return domain_model_from_json(json_str, cls)
+        else:
+            data = json.loads(json_str)
+            return cls.from_dict(data)
+
 
 @dataclass(frozen=True)
 class BeatData:
@@ -371,7 +474,7 @@ class BeatData:
 
     def __post_init__(self):
         """Validate beat data."""
-        if self.duration <= 0:
+        if self.duration < 0:
             raise ValueError("Duration must be positive")
         # Allow beat_number=0 for start positions (legacy compatibility)
         if self.beat_number < 0:
@@ -437,6 +540,32 @@ class BeatData:
             is_blank=data.get("is_blank", False),
             metadata=data.get("metadata", {}),
         )
+
+    def to_camel_dict(self) -> Dict[str, Any]:
+        """Convert to dictionary with camelCase keys for JSON APIs."""
+        from ..serialization import dataclass_to_camel_dict
+
+        return dataclass_to_camel_dict(self)
+
+    def to_json(self, camel_case: bool = True, **kwargs) -> str:
+        """Serialize to JSON string."""
+        from ..serialization import domain_model_to_json
+
+        if camel_case:
+            return domain_model_to_json(self, **kwargs)
+        else:
+            return json.dumps(self.to_dict(), **kwargs)
+
+    @classmethod
+    def from_json(cls, json_str: str, camel_case: bool = True) -> "BeatData":
+        """Create instance from JSON string."""
+        from ..serialization import domain_model_from_json
+
+        if camel_case:
+            return domain_model_from_json(json_str, cls)
+        else:
+            data = json.loads(json_str)
+            return cls.from_dict(data)
 
     @classmethod
     def empty(cls) -> "BeatData":
@@ -594,6 +723,32 @@ class SequenceData:
             start_position=data.get("start_position"),
             metadata=data.get("metadata", {}),
         )
+
+    def to_camel_dict(self) -> Dict[str, Any]:
+        """Convert to dictionary with camelCase keys for JSON APIs."""
+        from ..serialization import dataclass_to_camel_dict
+
+        return dataclass_to_camel_dict(self)
+
+    def to_json(self, camel_case: bool = True, **kwargs) -> str:
+        """Serialize to JSON string."""
+        from ..serialization import domain_model_to_json
+
+        if camel_case:
+            return domain_model_to_json(self, **kwargs)
+        else:
+            return json.dumps(self.to_dict(), **kwargs)
+
+    @classmethod
+    def from_json(cls, json_str: str, camel_case: bool = True) -> "SequenceData":
+        """Create instance from JSON string."""
+        from ..serialization import domain_model_from_json
+
+        if camel_case:
+            return domain_model_from_json(json_str, cls)
+        else:
+            data = json.loads(json_str)
+            return cls.from_dict(data)
 
     @classmethod
     def empty(cls) -> "SequenceData":

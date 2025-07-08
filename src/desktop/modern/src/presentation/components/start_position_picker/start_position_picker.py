@@ -53,11 +53,12 @@ class StartPositionOption(QWidget):
             """
         )
 
-        beat_data = self.dataset_service.get_start_position_pictograph(
+        # Use the new pictograph-based approach
+        pictograph_data = self.dataset_service.get_start_position_pictograph_data(
             self.position_key, self.grid_mode
         )
-        if beat_data:
-            self._pictograph_component.update_from_beat(beat_data)
+        if pictograph_data:
+            self._pictograph_component.update_from_pictograph(pictograph_data)
         layout.addWidget(self._pictograph_component)
 
         # Initialize selection overlay after pictograph component is set up
