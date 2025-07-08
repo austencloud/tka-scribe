@@ -9,7 +9,9 @@ from typing import Optional, TYPE_CHECKING
 from dataclasses import replace
 from PyQt6.QtCore import QObject, pyqtSignal
 
-from domain.models.core_models import BeatData, SequenceData, MotionType
+from domain.models.beat_models import BeatData
+from domain.models.sequence_models import SequenceData
+from domain.models.enums import MotionType
 
 if TYPE_CHECKING:
     from core.interfaces.core_services import ISequenceManagementService

@@ -1075,7 +1075,7 @@ class ProductionLikeTKATest:
 
             # Get workbench and clear sequence by setting empty sequence
             if hasattr(self.workbench, "set_sequence"):
-                from domain.models.core_models import SequenceData
+                from domain.models import SequenceData
 
                 empty_sequence = SequenceData(name="", beats=[])
                 self.workbench.set_sequence(empty_sequence)

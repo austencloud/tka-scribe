@@ -14,7 +14,7 @@ Ported from legacy MotionOriCalculator for accuracy.
 
 import logging
 
-from domain.models.core_models import Location, MotionData, MotionType, Orientation
+from domain.models import Location, MotionData, MotionType, Orientation
 
 logger = logging.getLogger(__name__)
 

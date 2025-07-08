@@ -8,9 +8,9 @@ AUTHOR: @ai-integration
 import pytest
 from core.testing.ai_agent_helpers import (
     TKAAITestHelper,
-    ai_test_tka_comprehensive,
-    ai_test_sequence_workflow,
     ai_test_pictograph_workflow,
+    ai_test_sequence_workflow,
+    ai_test_tka_comprehensive,
 )
 
 
@@ -56,7 +56,7 @@ class TestAIAgentIntegrationContract:
         assert result.metadata["has_red_motion"] == True
 
         # Contract: Result must contain actual BeatData
-        from domain.models.core_models import BeatData
+        from domain.models.beat_models import BeatData
 
         assert isinstance(result.data, BeatData)
 

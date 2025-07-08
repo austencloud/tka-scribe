@@ -8,11 +8,9 @@ MIGRATION STATUS: Clean cut to Pydantic models - always returns Pydantic types
 """
 
 # Import domain models
-from domain.models import (
-    MotionData,
-    BeatData,
-    SequenceData,
-)
+from domain.models.motion_models import MotionData
+from domain.models.beat_models import BeatData
+from domain.models.sequence_models import SequenceData
 
 # Import migration adapters for legacy data conversion
 from domain.models.migration_adapters import ModelMigrationAdapter

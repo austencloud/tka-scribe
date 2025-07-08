@@ -17,6 +17,7 @@ Architecture:
 
 import logging
 from typing import Optional
+
 from PyQt6.QtCore import QObject, pyqtSignal
 
 logger = logging.getLogger(__name__)
@@ -105,8 +106,8 @@ class WindowModeManager(QObject):
     def _create_dock_window(self):
         """Create the dock window."""
         try:
-            from ui.windows.dock_window import TKADockWindow
             from domain.models import DockConfiguration
+            from ui.windows.dock_window import TKADockWindow
 
             dock_config = self._load_dock_configuration()
             self.dock_window = TKADockWindow(self.tka_integration, dock_config)

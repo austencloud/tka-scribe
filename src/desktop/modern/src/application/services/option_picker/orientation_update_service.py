@@ -13,7 +13,9 @@ import logging
 from typing import List, Optional
 from dataclasses import replace
 
-from domain.models.core_models import BeatData, SequenceData, Orientation
+from domain.models.beat_models import BeatData
+from domain.models.sequence_models import SequenceData
+from domain.models.enums import Orientation
 from application.services.positioning.arrows.calculation.orientation_calculator import (
     OrientationCalculator,
 )

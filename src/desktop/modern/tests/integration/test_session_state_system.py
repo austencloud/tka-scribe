@@ -9,26 +9,28 @@ Tests the complete session state functionality including:
 - Integration with TKA services
 """
 
-import pytest
 import json
-import time
-import tempfile
-from pathlib import Path
-from datetime import datetime, timedelta
-from unittest.mock import Mock, patch
 import sys
+import tempfile
+import time
+from datetime import datetime, timedelta
+from pathlib import Path
+from unittest.mock import Mock, patch
+
+import pytest
 
 # Add TKA src to path
 tka_src_path = Path(__file__).parent.parent.parent / "src"
 sys.path.insert(0, str(tka_src_path))
 
+from application.services.core.session_state_service import SessionStateService
 from core.application.application_factory import ApplicationFactory
-from core.interfaces.session_services import ISessionStateService, SessionState
 from core.interfaces.core_services import IUIStateManagementService
 from core.interfaces.organization_services import IFileSystemService
-from application.services.core.session_state_service import SessionStateService
+from core.interfaces.session_services import ISessionStateService, SessionState
 from core.testing.ai_agent_helpers import TKAAITestHelper
-from domain.models.core_models import BeatData, SequenceData
+from domain.models.beat_models import BeatData
+from domain.models.sequence_models import SequenceData
 
 
 class TestSessionStateSystem:

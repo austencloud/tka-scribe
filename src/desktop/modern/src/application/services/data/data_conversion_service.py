@@ -5,40 +5,42 @@ This service converts external pictograph data formats to modern BeatData format
 while preserving all motion information and ensuring compatibility.
 """
 
-from typing import Dict, Any, Optional, List
 import logging
+from typing import Any, Dict, List, Optional
 
 try:
     # Try relative imports first (for normal package usage)
-    from domain.models.core_models import (
+    from core.decorators import handle_service_errors
+    from core.exceptions import DataProcessingError, ValidationError
+    from core.monitoring import monitor_performance
+    from domain.models import (
         BeatData,
+        GlyphData,
+        HandMotionType,
+        Location,
         MotionData,
         MotionType,
-        HandMotionType,
         RotationDirection,
-        Location,
-        GlyphData,
     )
+
     from .glyph_data_service import GlyphDataService
-    from core.decorators import handle_service_errors
-    from core.monitoring import monitor_performance
-    from core.exceptions import DataProcessingError, ValidationError
 except ImportError:
     # Fallback to absolute imports (for standalone tests)
     try:
-        from domain.models.core_models import (
+        from core.decorators import handle_service_errors
+        from core.exceptions import DataProcessingError, ValidationError
+        from core.monitoring import monitor_performance
+        from domain.models import (
             BeatData,
+            GlyphData,
+            HandMotionType,
+            Location,
             MotionData,
             MotionType,
-            HandMotionType,
             RotationDirection,
-            Location,
-            GlyphData,
         )
+
         from .glyph_data_service import GlyphDataService
-        from core.decorators import handle_service_errors
-        from core.monitoring import monitor_performance
-        from core.exceptions import DataProcessingError, ValidationError
     except ImportError:
         # For tests, create dummy decorators if imports fail
         def handle_service_errors(*args, **kwargs):

@@ -16,10 +16,10 @@ Architecture:
 """
 
 import logging
-from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QFrame
-from PyQt6.QtCore import Qt
 
 from domain.models import DockConfiguration
+from PyQt6.QtCore import Qt
+from PyQt6.QtWidgets import QFrame, QHBoxLayout, QVBoxLayout, QWidget
 
 logger = logging.getLogger(__name__)
 
@@ -53,8 +53,8 @@ class DockWindowSetup:
 
         # On Windows, ensure it doesn't deactivate or hide when taskbar is clicked
         try:
-            import sys
             import ctypes
+            import sys
 
             if sys.platform.startswith("win"):
                 hwnd = int(dock_widget.winId())

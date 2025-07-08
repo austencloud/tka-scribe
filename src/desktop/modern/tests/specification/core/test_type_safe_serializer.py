@@ -6,25 +6,21 @@ SCOPE: Domain model serialization, type validation, round-trip integrity
 EXPECTED_DURATION: permanent
 """
 
-import pytest
 import json
 from dataclasses import dataclass
-from typing import Dict, Any, List, Optional
 from datetime import datetime
+from typing import Any, Dict, List, Optional
 
+import pytest
 from core.serialization.type_safe_serializer import (
-    TypeSafeSerializer,
     BatchSerializer,
     SerializationError,
+    TypeSafeSerializer,
 )
-from domain.models.core_models import (
-    BeatData,
-    SequenceData,
-    MotionData,
-    MotionType,
-    RotationDirection,
-    Location,
-)
+from domain.models.beat_models import BeatData
+from domain.models.enums import Location, MotionType, RotationDirection
+from domain.models.motion_models import MotionData
+from domain.models.sequence_models import SequenceData
 
 
 @dataclass(frozen=True)

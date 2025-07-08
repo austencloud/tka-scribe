@@ -7,11 +7,11 @@ Removed over-engineered immutable patterns in favor of straightforward state tra
 """
 
 import logging
-from typing import Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
+from domain.models.beat_models import BeatData
+from domain.models.sequence_models import SequenceData
 from PyQt6.QtCore import QObject, pyqtSignal
-
-from domain.models.core_models import SequenceData, BeatData
 
 if TYPE_CHECKING:
     from ..graph_editor import GraphEditor

@@ -7,7 +7,7 @@ It provides comprehensive pictograph analysis functionality.
 """
 
 from typing import Optional
-from domain.models.core_models import (
+from domain.models import (
     BeatData,
     LetterType,
     ArrowColor,

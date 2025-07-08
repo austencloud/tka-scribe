@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Test Script for TKA Dock Functionality
+Test for TKA Dock Functionality
 ======================================
 
 This script tests the dock functionality implementation to ensure:
@@ -14,11 +14,12 @@ Usage:
     python test_dock_functionality.py
 """
 
-import sys
 import logging
+import sys
 from pathlib import Path
-from PyQt6.QtWidgets import QApplication
+
 from PyQt6.QtCore import QTimer
+from PyQt6.QtWidgets import QApplication
 
 # Add launcher directory to path
 launcher_dir = Path(__file__).parent
@@ -33,13 +34,13 @@ logger = logging.getLogger(__name__)
 def test_dock_window_creation():
     """Test dock window creation and basic functionality."""
     try:
-        from ui.windows.dock_window import TKADockWindow
         from domain.models import (
+            ApplicationCategory,
+            ApplicationData,
             DockConfiguration,
             DockPosition,
-            ApplicationData,
-            ApplicationCategory,
         )
+        from ui.windows.dock_window import TKADockWindow
 
         class MockTKAIntegration:
             def __init__(self):
@@ -162,13 +163,13 @@ def test_state_persistence():
 def test_visual_indicators():
     """Test visual state indicators."""
     try:
-        from ui.windows.dock_window import DockApplicationIcon
         from domain.models import (
-            ApplicationData,
             ApplicationCategory,
+            ApplicationData,
             ApplicationStatus,
         )
         from ui.pyqt6_compatible_design_system import get_reliable_style_builder
+        from ui.windows.dock_window import DockApplicationIcon
 
         test_app = ApplicationData(
             id="visual_test",
@@ -202,13 +203,13 @@ def test_visual_indicators():
 def test_application_launching():
     """Test application launching functionality in dock mode."""
     try:
-        from ui.windows.dock_window import TKADockWindow
         from domain.models import (
+            ApplicationCategory,
+            ApplicationData,
             DockConfiguration,
             DockPosition,
-            ApplicationData,
-            ApplicationCategory,
         )
+        from ui.windows.dock_window import TKADockWindow
 
         class MockTKAIntegration:
             def __init__(self):

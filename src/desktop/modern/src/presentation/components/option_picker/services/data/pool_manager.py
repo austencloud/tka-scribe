@@ -10,13 +10,9 @@ import logging
 from typing import TYPE_CHECKING, Callable, List, Optional
 
 from core.interfaces.core_services import IObjectPoolService
-from domain.models.core_models import (
-    BeatData,
-    Location,
-    MotionData,
-    MotionType,
-    RotationDirection,
-)
+from domain.models.beat_models import BeatData
+from domain.models.enums import Location, MotionType, RotationDirection
+from domain.models.motion_models import MotionData
 from presentation.components.option_picker.components.frames.clickable_pictograph_frame import (
     ClickablePictographFrame,
 )
@@ -197,14 +193,14 @@ class PictographPoolManager(QObject):
 
     def _create_minimal_pictograph_data(self):
         """Create minimal pictograph data as fallback."""
-        from domain.models.core_models import Location, MotionType, RotationDirection
+        from domain.models.enums import Location, MotionType, RotationDirection
+        from domain.models.motion_models import MotionData
         from domain.models.pictograph_models import (
             ArrowData,
             GridData,
             GridMode,
             PictographData,
         )
-        from domain.models.pydantic_models import MotionData
 
         # Create motion data
         blue_motion = MotionData(
@@ -245,7 +241,7 @@ class PictographPoolManager(QObject):
 
     def _pictograph_data_to_beat_data(self, pictograph_data):
         """Convert PictographData to BeatData for backward compatibility."""
-        from domain.models.pydantic_models import BeatData
+        from domain.models import BeatData
 
         # Extract motion data from arrows
         blue_motion = None

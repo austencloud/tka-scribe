@@ -1,10 +1,9 @@
-from typing import Dict, Any, Tuple
 import math
-
+from typing import Any, Dict, Tuple
 
 from core.decorators import handle_service_errors
 from core.monitoring import monitor_performance
-from domain.models.core_models import SequenceData
+from domain.models import SequenceData
 
 
 class BeatLayoutCalculator:

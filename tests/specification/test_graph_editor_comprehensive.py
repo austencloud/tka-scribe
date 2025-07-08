@@ -6,29 +6,24 @@ PERMANENT: Graph editor must maintain layout, functionality, and integration con
 AUTHOR: @ai-agent
 """
 
-import pytest
 import sys
 import time
-from typing import Dict, Any
+from typing import Any, Dict
 
-from PyQt6.QtWidgets import QApplication, QWidget
-from PyQt6.QtCore import Qt
-
+import pytest
+from core.application.application_factory import ApplicationFactory
 from core.testing.ai_agent_helpers import (
     TKAAITestHelper,
-    ai_test_tka_comprehensive,
-    ai_test_sequence_workflow,
     ai_test_pictograph_workflow,
+    ai_test_sequence_workflow,
+    ai_test_tka_comprehensive,
 )
-from core.application.application_factory import ApplicationFactory
-from domain.models.core_models import (
-    BeatData,
-    MotionData,
-    MotionType,
-    RotationDirection,
-    Location,
-)
+from domain.models.beat_models import BeatData
+from domain.models.enums import Location, MotionType, RotationDirection
+from domain.models.motion_models import MotionData
 from presentation.components.graph_editor.graph_editor import GraphEditor
+from PyQt6.QtCore import Qt
+from PyQt6.QtWidgets import QApplication, QWidget
 
 
 @pytest.mark.specification
@@ -398,6 +393,10 @@ def run_comprehensive_graph_editor_tests() -> Dict[str, Any]:
             orientation_test_success = blue_ori_correct and red_ori_correct
 
             print(f"   Blue Orientation: {blue_ori_correct}")
+            print(f"   Red Orientation: {red_ori_correct}")
+
+        except Exception as e:
+            orientation_test_success = False
             print(f"   Red Orientation: {red_ori_correct}")
 
         except Exception as e:

@@ -6,10 +6,12 @@ that follow TKA's clean architecture principles.
 """
 
 from abc import ABC, abstractmethod
-from typing import Tuple, Optional, Dict, Any
+from typing import Any, Dict, Optional, Tuple
 
 from core.types import Point
-from domain.models.core_models import MotionData, Location, BeatData
+from domain.models.beat_models import BeatData
+from domain.models.enums import Location
+from domain.models.motion_models import MotionData
 from domain.models.pictograph_models import ArrowData, PictographData
 
 

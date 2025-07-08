@@ -5,7 +5,8 @@ Initializes workbench and graph editor with real data.
 """
 
 from typing import List, Optional, Any
-from domain.models.core_models import BeatData, SequenceData
+from domain.models.beat_models import BeatData
+from domain.models.sequence_models import SequenceData
 
 
 class ComponentInitializer:

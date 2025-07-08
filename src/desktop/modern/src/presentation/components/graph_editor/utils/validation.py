@@ -18,7 +18,7 @@ from pathlib import Path
 modern_src = Path(__file__).parent.parent.parent.parent.parent
 sys.path.insert(0, str(modern_src))
 
-from domain.models.core_models import BeatData, SequenceData, Orientation
+from domain.models import BeatData, SequenceData, Orientation
 
 logger = logging.getLogger(__name__)
 

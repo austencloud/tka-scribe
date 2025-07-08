@@ -35,7 +35,7 @@ class TestBeatManipulationWorkflowContract:
         - Beat properties are preserved
         """
         try:
-            from domain.models.core_models import BeatData
+            from domain.models import BeatData
 
             # Test basic beat creation
             beat = BeatData(beat_number=1, letter="A")
@@ -61,7 +61,8 @@ class TestBeatManipulationWorkflowContract:
         - Beat order is maintained
         """
         try:
-            from domain.models.core_models import SequenceData, BeatData
+            from domain.models.beat_models import BeatData
+from domain.models.sequence_models import SequenceData
             from application.services.core.sequence_management_service import (
                 SequenceManagementService,
             )
@@ -100,7 +101,8 @@ class TestBeatManipulationWorkflowContract:
         - Remaining beats maintain order
         """
         try:
-            from domain.models.core_models import SequenceData, BeatData
+            from domain.models.beat_models import BeatData
+from domain.models.sequence_models import SequenceData
             from application.services.core.sequence_management_service import (
                 SequenceManagementService,
             )
@@ -142,7 +144,8 @@ class TestBeatManipulationWorkflowContract:
         - Modifications don't affect other beats
         """
         try:
-            from domain.models.core_models import SequenceData, BeatData
+            from domain.models.beat_models import BeatData
+from domain.models.sequence_models import SequenceData
 
             # Create sequence with beat
             original_beat = BeatData(beat_number=1, letter="A", duration=1.0)
@@ -186,7 +189,8 @@ class TestBeatManipulationWorkflowContract:
         - Beat numbers can be updated
         """
         try:
-            from domain.models.core_models import SequenceData, BeatData
+            from domain.models.beat_models import BeatData
+from domain.models.sequence_models import SequenceData
 
             # Create sequence with beats
             beats = [
@@ -235,7 +239,7 @@ class TestBeatManipulationWorkflowContract:
         - Validation rules are consistent
         """
         try:
-            from domain.models.core_models import BeatData
+            from domain.models import BeatData
 
             # Test valid beat
             valid_beat = BeatData(beat_number=1, letter="A", duration=1.0)

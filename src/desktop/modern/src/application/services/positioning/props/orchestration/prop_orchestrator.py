@@ -17,7 +17,7 @@ from PyQt6.QtCore import QPointF
 import uuid
 from datetime import datetime
 
-from domain.models.core_models import BeatData
+from domain.models import BeatData
 from domain.models.pictograph_models import PropType
 from ...props.calculation.direction_calculation_service import (
     IDirectionCalculationService,

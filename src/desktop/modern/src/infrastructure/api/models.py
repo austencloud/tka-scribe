@@ -2,14 +2,13 @@
 API data models with comprehensive validation and serialization.
 """
 
-from typing import List, Optional, Dict, Any
-from pydantic import BaseModel, Field
 from datetime import datetime
 from enum import Enum
+from typing import Any, Dict, List, Optional
 
 # Import core enums for consistency
-from domain.models.core_models import MotionType, RotationDirection, Location, Orientation
-
+from domain.models.enums import Location, MotionType, Orientation, RotationDirection
+from pydantic import BaseModel, Field
 
 # === Core API Models ===
 

@@ -7,14 +7,17 @@ integrating with Modern's start position picker and pictograph system.
 
 from typing import Optional
 
-from domain.models.core_models import BeatData
-from PyQt6.QtCore import pyqtSignal
+from domain.models import BeatData
+from PyQt6.QtCore import QSize, Qt, pyqtSignal
+from PyQt6.QtGui import QMouseEvent
+from PyQt6.QtWidgets import QFrame, QVBoxLayout, QWidget
 
-from .pictograph_view_base import PictographViewBase
+from ...pictograph.pictograph_component import PictographComponent
+from .selection_overlay import SelectionOverlay
 from .start_text_overlay import StartTextOverlay, add_start_text_to_view
 
 
-class StartPositionView(PictographViewBase):
+class StartPositionView(QFrame):
     """
     Start position display widget for the sequence workbench.
 
@@ -27,11 +30,74 @@ class StartPositionView(PictographViewBase):
     start_pos_beat_context_menu = pyqtSignal()
 
     def __init__(self, parent=None):
+        super().__init__(parent)
+
+        # Common state (previously from PictographViewBase)
+        self._beat_data: Optional[BeatData] = None
+        self._is_selected = False
+        self._is_highlighted = False
+
+        # UI components
+        self._pictograph_component: Optional[PictographComponent] = None
+        self._selection_overlay: Optional[SelectionOverlay] = None
+
         # Additional state specific to start position
         self._position_key: Optional[str] = None
         self._start_text_overlay: Optional[StartTextOverlay] = None
 
-        super().__init__(parent)
+        # Initialize UI
+        self._setup_ui()
+        self._setup_styling()
+        self._create_selection_overlay()
+
+    def _setup_ui(self):
+        """Setup the UI structure"""
+        self.setFixedSize(120, 120)
+        self.setFrameStyle(QFrame.Shape.Box)
+
+        layout = QVBoxLayout(self)
+        layout.setContentsMargins(0, 0, 0, 0)
+        layout.setSpacing(0)
+
+        # Create pictograph component
+        self._pictograph_component = PictographComponent(parent=self)
+        self._configure_pictograph_component()
+        layout.addWidget(self._pictograph_component)
+
+        # Enable mouse tracking for hover effects
+        self.setMouseTracking(True)
+
+    def _setup_styling(self):
+        """Setup clean base styling"""
+        self.setStyleSheet(
+            """
+            QFrame {
+                background: transparent;
+                border: none;
+            }
+            QFrame:hover {
+                background: rgba(255, 255, 255, 0.05);
+            }
+            QLabel {
+                color: rgba(255, 255, 255, 0.9);
+                background: transparent;
+                border: none;
+            }
+        """
+        )
+        self.setFocusPolicy(Qt.FocusPolicy.NoFocus)
+
+    def _create_selection_overlay(self):
+        """Create the selection overlay widget"""
+        self._selection_overlay = SelectionOverlay(self)
+        self._selection_overlay.hide()
+
+    def _update_display(self):
+        """Update the pictograph display with current beat data"""
+        if self._pictograph_component and self._beat_data:
+            self._pictograph_component.update_from_beat(self._beat_data)
+        elif self._pictograph_component:
+            self._pictograph_component.clear_pictograph()
 
     def _configure_pictograph_component(self):
         """Configure the pictograph component for start position context"""
@@ -48,14 +114,56 @@ class StartPositionView(PictographViewBase):
         self._pictograph_component.disable_borders()
 
     def _setup_styling(self):
-        """Apply start position specific styling - inherits base overlay system"""
-        # Use the base class styling for consistency with beat views
-        # This ensures identical selection/hover behavior
-        super()._setup_styling()
+        """Apply start position specific styling"""
+        # Apply the same styling as beat views for consistency
+        self.setStyleSheet(
+            """
+            QFrame {
+                background: transparent;
+                border: none;
+            }
+            QFrame:hover {
+                background: rgba(255, 255, 255, 0.05);
+            }
+            QLabel {
+                color: rgba(255, 255, 255, 0.9);
+                background: transparent;
+                border: none;
+            }
+        """
+        )
+        self.setFocusPolicy(Qt.FocusPolicy.NoFocus)
 
     def _initialize_start_text_widget(self):
         """Initialize START text widget overlay after component is ready"""
         self._add_start_text_overlay()
+
+    # State management
+    def set_beat_data(self, beat_data: Optional[BeatData]):
+        """Set beat data and update display"""
+        if self._beat_data != beat_data:
+            self._beat_data = beat_data
+            self._update_display()
+
+    def get_beat_data(self) -> Optional[BeatData]:
+        """Get current beat data"""
+        return self._beat_data
+
+    def set_selected(self, selected: bool):
+        """Set selection state"""
+        if self._is_selected != selected:
+            self._is_selected = selected
+            self._update_cursor()
+
+            # Show/hide selection overlay
+            if selected:
+                self._selection_overlay.show_selection()
+            else:
+                self._selection_overlay.hide_selection()
+
+    def is_selected(self) -> bool:
+        """Check if view is selected"""
+        return self._is_selected
 
     def set_position_data(self, beat_data: BeatData):
         """Set the start position data and update display"""
@@ -107,6 +215,51 @@ class StartPositionView(PictographViewBase):
 
         # Also emit the base class signal
         super().mousePressEvent(event)
+
+    def _update_cursor(self):
+        """Update cursor based on state"""
+        if self._is_selected:
+            self.setCursor(Qt.CursorShape.ArrowCursor)
+        elif self._beat_data:
+            self.setCursor(Qt.CursorShape.PointingHandCursor)
+        else:
+            self.setCursor(Qt.CursorShape.ArrowCursor)
+
+    def enterEvent(self, event):
+        """Handle mouse enter events"""
+        if not self._is_selected and self._beat_data:
+            self.setCursor(Qt.CursorShape.PointingHandCursor)
+        else:
+            self.setCursor(Qt.CursorShape.ArrowCursor)
+        super().enterEvent(event)
+
+    def leaveEvent(self, event):
+        """Handle mouse leave events"""
+        self.setCursor(Qt.CursorShape.ArrowCursor)
+        super().leaveEvent(event)
+
+    def sizeHint(self) -> QSize:
+        """Provide size hint for layout management"""
+        return QSize(120, 120)
+
+    def minimumSizeHint(self) -> QSize:
+        """Provide minimum size hint"""
+        return QSize(100, 100)
+
+    def cleanup(self):
+        """Cleanup resources when the view is being destroyed"""
+        # Clean up selection overlay
+        if self._selection_overlay:
+            try:
+                self._selection_overlay.deleteLater()
+            except (RuntimeError, AttributeError):
+                pass
+            self._selection_overlay = None
+
+        # Cleanup pictograph component
+        if self._pictograph_component:
+            self._pictograph_component.cleanup()
+            self._pictograph_component = None
         self._update_display()
 
     def get_position_data(self) -> Optional[BeatData]:

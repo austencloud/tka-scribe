@@ -1,20 +1,20 @@
 import logging
-import subprocess
-import time
-import psutil
 import os
+import subprocess
 import sys
-from typing import List, Optional, Dict
-from pathlib import Path
+import time
 from datetime import datetime
+from pathlib import Path
+from typing import Dict, List, Optional
 
+import psutil
+from core.interfaces import IApplicationLaunchService, ILauncherStateService
 from domain.models import (
     ApplicationData,
+    ApplicationStatus,
     LaunchRequest,
     LaunchResult,
-    ApplicationStatus,
 )
-from core.interfaces import IApplicationLaunchService, ILauncherStateService
 
 logger = logging.getLogger(__name__)
 

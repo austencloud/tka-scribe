@@ -23,7 +23,7 @@ Architecture:
 import logging
 from typing import Optional
 
-from domain.models.core_models import BeatData, Orientation
+from domain.models import BeatData, Orientation
 from presentation.components.graph_editor.components.turn_adjustment_controls.styling_helpers import (
     apply_modern_panel_styling,
     apply_turn_button_styling,

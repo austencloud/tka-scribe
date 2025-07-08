@@ -14,18 +14,19 @@ This version uses clean component-based architecture with:
 """
 
 import logging
-from typing import Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
-from PyQt6.QtWidgets import QFrame, QVBoxLayout, QLabel
-from PyQt6.QtCore import pyqtSignal, Qt
-
-from domain.models.core_models import SequenceData, BeatData
-from core.interfaces.workbench_services import IGraphEditorService
 from core.interfaces.session_services import ISessionStateService
+from core.interfaces.workbench_services import IGraphEditorService
+from domain.models.beat_models import BeatData
+from domain.models.sequence_models import SequenceData
+from PyQt6.QtCore import Qt, pyqtSignal
+from PyQt6.QtWidgets import QFrame, QLabel, QVBoxLayout
+
+from .components.main_adjustment_panel import MainAdjustmentPanel
 
 # Import core components
 from .components.pictograph_display_section import PictographDisplaySection
-from .components.main_adjustment_panel import MainAdjustmentPanel
 
 # Import essential utilities
 from .utils.validation import (

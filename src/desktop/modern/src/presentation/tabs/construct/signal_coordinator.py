@@ -7,7 +7,7 @@ Responsible for connecting signals between components and handling signal routin
 
 from PyQt6.QtCore import QObject, pyqtSignal
 
-from domain.models.core_models import SequenceData
+from domain.models import SequenceData
 from .start_position_handler import StartPositionHandler
 from .option_picker_manager import OptionPickerManager
 from .layout_manager import ConstructTabLayoutManager

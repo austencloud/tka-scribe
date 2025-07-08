@@ -1,7 +1,8 @@
 from typing import Optional
-from PyQt6.QtWidgets import QWidget, QHBoxLayout, QLabel
-from domain.models.pydantic_models import SequenceData
+
 from core.interfaces.workbench_services import IDictionaryService
+from domain.models import SequenceData
+from PyQt6.QtWidgets import QHBoxLayout, QLabel, QWidget
 
 
 class WorkbenchIndicatorSection(QWidget):

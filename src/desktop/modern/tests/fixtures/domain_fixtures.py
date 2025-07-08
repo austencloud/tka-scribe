@@ -9,7 +9,7 @@ Provides reusable domain model fixtures for testing.
 from pathlib import Path
 
 import pytest
-from domain.models.core_models import BeatData, SequenceData
+from domain.models import BeatData, SequenceData
 from domain.models.pictograph_models import PictographData
 
 # Add modern source to path
@@ -20,7 +20,7 @@ modern_src = Path(__file__).parent.parent.parent / "src"
 def sample_beat_data():
     """Provide sample beat data for testing."""
     try:
-        from domain.models.core_models import BeatData
+        from domain.models import BeatData
 
         beat = BeatData(beat_number=1, letter="A", duration=1.0)
 
@@ -34,7 +34,7 @@ def sample_beat_data():
 def sample_sequence_data():
     """Provide sample sequence data for testing."""
     try:
-        from domain.models.core_models import BeatData, SequenceData
+        from domain.models import BeatData, SequenceData
 
         beats = [
             BeatData(beat_number=1, letter="A", duration=1.0),
@@ -55,7 +55,7 @@ def sample_sequence_data():
 def empty_sequence_data():
     """Provide empty sequence data for testing."""
     try:
-        from domain.models.core_models import SequenceData
+        from domain.models import SequenceData
 
         return SequenceData.empty()
 
@@ -67,12 +67,12 @@ def empty_sequence_data():
 def sample_motion_data():
     """Provide sample motion data for testing."""
     try:
-        from domain.models.core_models import (
+        from domain.models import (
             Location,
             MotionData,
             MotionType,
             RotationDirection,
-        )
+)
 
         motion = MotionData(
             motion_type=MotionType.PRO,
@@ -94,12 +94,12 @@ def sample_motion_data():
 def sample_pictograph_data():
     """Provide sample pictograph data for testing."""
     try:
-        from domain.models.core_models import (
+        from domain.models import (
             Location,
             MotionData,
             MotionType,
             RotationDirection,
-        )
+)
         from domain.models.pictograph_models import (
             ArrowData,
             GridData,

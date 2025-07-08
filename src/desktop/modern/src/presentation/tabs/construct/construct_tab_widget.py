@@ -3,7 +3,8 @@ from PyQt6.QtWidgets import QWidget
 from PyQt6.QtCore import pyqtSignal
 
 from core.dependency_injection.di_container import DIContainer
-from domain.models.core_models import SequenceData, BeatData
+from domain.models.sequence_models import SequenceData
+from domain.models.beat_models import BeatData
 from application.services.ui.ui_state_management_service import (
     UIStateManagementService,
 )

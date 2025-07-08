@@ -11,19 +11,12 @@ PROVIDES:
 - File I/O error handling
 """
 
-from typing import List, Optional
 from abc import ABC, abstractmethod
 from pathlib import Path
+from typing import List, Optional
 
 import pandas as pd
-
-from domain.models.core_models import (
-    BeatData,
-    MotionData,
-    MotionType,
-    Location,
-    RotationDirection,
-)
+from domain.models import BeatData, Location, MotionData, MotionType, RotationDirection
 
 
 class ICSVDataService(ABC):

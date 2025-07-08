@@ -18,11 +18,11 @@ USAGE:
 """
 
 import logging
-from typing import Dict, Any, List, Optional
+from typing import Any, Dict, List, Optional
 
 from core.interfaces.core_services import IBeatLoadingService
 from core.interfaces.positioning_services import IPositionMatchingService
-from domain.models.core_models import BeatData, SequenceData
+from domain.models import BeatData, SequenceData
 
 logger = logging.getLogger(__name__)
 
@@ -30,7 +30,7 @@ logger = logging.getLogger(__name__)
 class BeatLoadingService(IBeatLoadingService):
     """
     Business logic service for beat data loading and orchestration.
-    
+
     This service implements the core beat loading logic that was previously
     embedded in the presentation layer. It provides a clean interface for
     beat loading operations without any UI dependencies.
@@ -44,7 +44,7 @@ class BeatLoadingService(IBeatLoadingService):
     ):
         """
         Initialize the beat loading service.
-        
+
         Args:
             position_service: Position matching service for end position extraction
             conversion_service: Data conversion service for format transformations
@@ -53,48 +53,67 @@ class BeatLoadingService(IBeatLoadingService):
         self._position_service = position_service
         self._conversion_service = conversion_service
         self._orientation_service = orientation_service
-        
+
         # Initialize services if not provided (fallback for legacy compatibility)
         if not self._position_service:
             try:
-                from application.services.positioning.position_matching_service import PositionMatchingService
+                from application.services.positioning.position_matching_service import (
+                    PositionMatchingService,
+                )
+
                 self._position_service = PositionMatchingService()
-                logger.warning("Using fallback position service - consider using DI container")
+                logger.warning(
+                    "Using fallback position service - consider using DI container"
+                )
             except ImportError:
                 logger.error("Position matching service not available")
-                
+
         if not self._conversion_service:
             try:
-                from application.services.data.data_conversion_service import DataConversionService
+                from application.services.data.data_conversion_service import (
+                    DataConversionService,
+                )
+
                 self._conversion_service = DataConversionService()
-                logger.warning("Using fallback conversion service - consider using DI container")
+                logger.warning(
+                    "Using fallback conversion service - consider using DI container"
+                )
             except ImportError:
                 logger.error("Data conversion service not available")
-                
+
         if not self._orientation_service:
             try:
-                from application.services.option_picker.orientation_update_service import OptionOrientationUpdateService
+                from application.services.option_picker.orientation_update_service import (
+                    OptionOrientationUpdateService,
+                )
+
                 self._orientation_service = OptionOrientationUpdateService()
-                logger.warning("Using fallback orientation service - consider using DI container")
+                logger.warning(
+                    "Using fallback orientation service - consider using DI container"
+                )
             except ImportError:
                 logger.error("Orientation update service not available")
 
         logger.debug("Beat loading service initialized")
 
-    def load_motion_combinations(self, sequence_data: List[Dict[str, Any]]) -> List[Any]:
+    def load_motion_combinations(
+        self, sequence_data: List[Dict[str, Any]]
+    ) -> List[Any]:
         """
         Load motion combinations with position matching.
-        
+
         Args:
             sequence_data: Sequence data in legacy format
-            
+
         Returns:
             List of beat data options
         """
         try:
             # Validate prerequisites
             if not self._position_service or not self._conversion_service:
-                logger.warning("Required services not available, returning sample options")
+                logger.warning(
+                    "Required services not available, returning sample options"
+                )
                 return self.get_sample_beat_options()
 
             if not sequence_data or len(sequence_data) < 2:
@@ -111,7 +130,10 @@ class BeatLoadingService(IBeatLoadingService):
 
             # Get next options from position service
             try:
-                from application.services.positioning.arrows.utilities.position_matching_service import PositionMatchingService
+                from application.services.positioning.arrows.utilities.position_matching_service import (
+                    PositionMatchingService,
+                )
+
                 legacy_position_service = PositionMatchingService()
                 next_options = legacy_position_service.get_next_options(last_end_pos)
             except Exception as e:
@@ -127,7 +149,9 @@ class BeatLoadingService(IBeatLoadingService):
 
             # Apply orientation updates if available
             if self._orientation_service and len(sequence_data) >= 2:
-                beat_options = self._apply_orientation_updates(sequence_data, beat_options)
+                beat_options = self._apply_orientation_updates(
+                    sequence_data, beat_options
+                )
 
             logger.debug(f"Successfully loaded {len(beat_options)} motion combinations")
             return beat_options
@@ -136,14 +160,16 @@ class BeatLoadingService(IBeatLoadingService):
             logger.error(f"Error loading motion combinations: {e}")
             return self.get_sample_beat_options()
 
-    def filter_valid_options(self, beat_options: List[Any], end_position: str) -> List[Any]:
+    def filter_valid_options(
+        self, beat_options: List[Any], end_position: str
+    ) -> List[Any]:
         """
         Filter beat options based on end position.
-        
+
         Args:
             beat_options: List of beat options to filter
             end_position: Required end position for filtering
-            
+
         Returns:
             Filtered list of beat options
         """
@@ -154,19 +180,21 @@ class BeatLoadingService(IBeatLoadingService):
             filtered_options = []
             for option in beat_options:
                 # Check if option matches the required end position
-                if hasattr(option, 'metadata') and option.metadata:
-                    option_start_pos = option.metadata.get('start_pos')
+                if hasattr(option, "metadata") and option.metadata:
+                    option_start_pos = option.metadata.get("start_pos")
                     if option_start_pos == end_position:
                         filtered_options.append(option)
-                elif hasattr(option, 'get'):
-                    option_start_pos = option.get('start_pos')
+                elif hasattr(option, "get"):
+                    option_start_pos = option.get("start_pos")
                     if option_start_pos == end_position:
                         filtered_options.append(option)
                 else:
                     # Include option if we can't determine position (safe fallback)
                     filtered_options.append(option)
 
-            logger.debug(f"Filtered {len(filtered_options)} options from {len(beat_options)} total")
+            logger.debug(
+                f"Filtered {len(filtered_options)} options from {len(beat_options)} total"
+            )
             return filtered_options
 
         except Exception as e:
@@ -176,7 +204,7 @@ class BeatLoadingService(IBeatLoadingService):
     def get_sample_beat_options(self) -> List[Any]:
         """
         Get fallback sample options.
-        
+
         Returns:
             Empty list as fallback
         """
@@ -186,10 +214,10 @@ class BeatLoadingService(IBeatLoadingService):
     def _batch_convert_options(self, options_list: List[Any]) -> List[Any]:
         """
         Optimized batch conversion of options to BeatData format.
-        
+
         Args:
             options_list: List of options to convert
-            
+
         Returns:
             List of converted beat data options
         """
@@ -224,8 +252,10 @@ class BeatLoadingService(IBeatLoadingService):
 
             # Add other objects as-is
             beat_options.extend(other_objects)
-            
-            logger.debug(f"Batch converted {len(options_list)} options to {len(beat_options)} beat data objects")
+
+            logger.debug(
+                f"Batch converted {len(options_list)} options to {len(beat_options)} beat data objects"
+            )
             return beat_options
 
         except Exception as e:
@@ -237,11 +267,11 @@ class BeatLoadingService(IBeatLoadingService):
     ) -> List[Any]:
         """
         Apply orientation updates to beat options.
-        
+
         Args:
             sequence_data: Sequence data for context
             beat_options: Beat options to update
-            
+
         Returns:
             Updated beat options with correct orientations
         """
@@ -251,23 +281,28 @@ class BeatLoadingService(IBeatLoadingService):
                 return beat_options
 
             start_position_dict = sequence_data[-1]
-            if not isinstance(start_position_dict, dict) or "letter" not in start_position_dict:
+            if (
+                not isinstance(start_position_dict, dict)
+                or "letter" not in start_position_dict
+            ):
                 logger.debug("Invalid start position data for orientation updates")
                 return beat_options
 
             # Convert start position to beat data
-            start_beat = self._conversion_service.convert_external_pictograph_to_beat_data(
-                start_position_dict
+            start_beat = (
+                self._conversion_service.convert_external_pictograph_to_beat_data(
+                    start_position_dict
+                )
             )
 
             # Create temporary sequence for orientation calculation
             temp_sequence = SequenceData.empty().update(beats=[start_beat])
-            
+
             # Apply orientation updates
             updated_options = self._orientation_service.update_option_orientations(
                 temp_sequence, beat_options
             )
-            
+
             logger.debug(f"Applied orientation updates to {len(beat_options)} options")
             return updated_options
 

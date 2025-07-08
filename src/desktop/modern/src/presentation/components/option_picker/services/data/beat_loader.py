@@ -10,14 +10,14 @@ import logging
 from typing import TYPE_CHECKING, Any, Dict, List, Optional
 from PyQt6.QtCore import QObject
 
-from domain.models.core_models import BeatData
+from domain.models import BeatData
 from core.interfaces.core_services import IBeatLoadingService
 from presentation.components.option_picker.services.data.position_matcher import (
     PositionMatcher,
 )
 
 if TYPE_CHECKING:
-    from domain.models.core_models import SequenceData
+    from domain.models import SequenceData
 
 logger = logging.getLogger(__name__)
 
@@ -188,7 +188,7 @@ class BeatDataLoader(QObject):
 
     def _batch_convert_options(self, options_list: List[Any]) -> List[BeatData]:
         """Optimized batch conversion of options to BeatData format."""
-        from domain.models.core_models import BeatData
+        from domain.models import BeatData
 
         beat_options = []
         beat_data_objects = []
@@ -233,7 +233,7 @@ class BeatDataLoader(QObject):
                         start_position_dict
                     )
                 )
-                from domain.models.core_models import SequenceData
+                from domain.models import SequenceData
 
                 temp_sequence = SequenceData.empty().update(beats=[start_beat])
                 beat_options = (

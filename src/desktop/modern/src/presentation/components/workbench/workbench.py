@@ -8,7 +8,7 @@ from core.interfaces.workbench_services import (
     IGraphEditorService,
     ISequenceWorkbenchService,
 )
-from domain.models.core_models import BeatData, SequenceData
+from domain.models import BeatData, SequenceData
 from PyQt6.QtCore import pyqtSignal
 from PyQt6.QtWidgets import QVBoxLayout, QWidget
 

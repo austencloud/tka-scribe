@@ -13,7 +13,7 @@ from typing import Dict, Any, Optional
 # Use framework-agnostic types from core.types
 from core.types import Point
 
-from domain.models.core_models import MotionData, MotionType
+from domain.models import MotionData, MotionType
 
 
 class DefaultPlacementService:

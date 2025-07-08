@@ -7,7 +7,7 @@ providing all the complex dash location maps and calculations with high precisio
 
 from typing import Optional
 
-from domain.models.core_models import (
+from domain.models import (
     ArrowColor,
     LetterType,
     Location,

@@ -29,7 +29,7 @@ from PyQt6.QtWidgets import (
     QScrollArea,
     QWidget,
 )
-from domain.models.core_models import BeatData, SequenceData
+from domain.models import BeatData, SequenceData
 
 
 class BeatFrame(QScrollArea):

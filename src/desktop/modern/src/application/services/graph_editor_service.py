@@ -5,14 +5,13 @@ Provides graph editor functionality for the modern TKA desktop application.
 Manages graph editor state, beat selection, and UI interactions.
 """
 
-from typing import Optional, List
-from core.interfaces.workbench_services import IGraphEditorService
+from typing import List, Optional
+
 from core.interfaces.core_services import IUIStateManagementService
-from domain.models.core_models import (
-    SequenceData,
-    BeatData,
-    MotionType,
-)
+from core.interfaces.workbench_services import IGraphEditorService
+from domain.models.beat_models import BeatData
+from domain.models.enums import MotionType
+from domain.models.sequence_models import SequenceData
 
 
 class GraphEditorService(IGraphEditorService):

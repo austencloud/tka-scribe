@@ -67,7 +67,7 @@ class AttributeKeyGenerationService:
                 return f"{lead_state}"
             elif has_hybrid_motions:
                 # Convert string orientation to enum for comparison
-                from domain.models.core_models import Orientation
+                from domain.models import Orientation
 
                 ori_enum = start_ori
                 if isinstance(start_ori, str):

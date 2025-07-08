@@ -22,7 +22,7 @@ Architecture:
 import logging
 from typing import Optional
 
-from domain.models.core_models import BeatData
+from domain.models import BeatData
 from PyQt6.QtCore import pyqtSignal, Qt
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QSizePolicy
 

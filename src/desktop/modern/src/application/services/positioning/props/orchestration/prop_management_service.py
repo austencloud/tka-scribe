@@ -20,7 +20,7 @@ from enum import Enum
 import uuid
 from datetime import datetime
 
-from domain.models.core_models import (
+from domain.models import (
     BeatData,
     MotionData,
     MotionType,

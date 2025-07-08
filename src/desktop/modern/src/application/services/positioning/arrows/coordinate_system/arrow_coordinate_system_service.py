@@ -16,7 +16,7 @@ import logging
 
 from core.interfaces.positioning_services import IArrowCoordinateSystemService
 from core.types.geometry import Point
-from domain.models.core_models import MotionData, MotionType, Location
+from domain.models import MotionData, MotionType, Location
 
 logger = logging.getLogger(__name__)
 

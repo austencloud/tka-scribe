@@ -1,10 +1,12 @@
-from typing import Optional, TYPE_CHECKING
-from PyQt6.QtWidgets import QWidget, QHBoxLayout
+from typing import TYPE_CHECKING, Optional
+
+from core.interfaces.core_services import ILayoutService
+from domain.models.beat_models import BeatData
+from domain.models.sequence_models import SequenceData
 from PyQt6.QtCore import pyqtSignal
+from PyQt6.QtWidgets import QHBoxLayout, QWidget
 
 from .button_panel import SequenceWorkbenchButtonPanel
-from domain.models.core_models import SequenceData, BeatData
-from core.interfaces.core_services import ILayoutService
 from .sequence_beat_frame.sequence_beat_frame import SequenceBeatFrame
 
 if TYPE_CHECKING:

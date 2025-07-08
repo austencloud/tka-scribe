@@ -24,7 +24,8 @@ from dataclasses import dataclass, field, fields, is_dataclass
 from enum import Enum
 from typing import Any, Dict, Optional, Tuple, Union
 
-from domain.models.core_models import MotionData
+from .glyph_models import GlyphData
+from .motion_models import MotionData
 
 
 def _process_field_value(value: Any, field_type: Any) -> Any:
@@ -419,6 +420,9 @@ class PictographData:
     letter: Optional[str] = None
     start_position: Optional[str] = None
     end_position: Optional[str] = None
+
+    # Glyph data for notation rendering
+    glyph_data: Optional[GlyphData] = None
 
     # Visual state
     is_blank: bool = False

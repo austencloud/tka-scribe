@@ -14,7 +14,7 @@ Ported from legacy quadrant adjustment logic.
 import logging
 from typing import Dict, List, Tuple
 
-from domain.models.core_models import Location, MotionType
+from domain.models import Location, MotionType
 
 # Conditional PyQt6 imports for testing compatibility
 try:

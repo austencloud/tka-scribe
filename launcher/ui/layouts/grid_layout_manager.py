@@ -16,8 +16,9 @@ Architecture:
 """
 
 import logging
-from typing import Dict, List, Tuple, Any
-from domain.models import ApplicationData, ApplicationCategory
+from typing import Any, Dict, List, Tuple
+
+from domain.models import ApplicationCategory, ApplicationData
 
 logger = logging.getLogger(__name__)
 
@@ -36,7 +37,7 @@ class GridLayoutManager:
         """Calculate available width for the grid container."""
         try:
             # Get the scroll area's viewport width
-            if hasattr(container_widget, 'scroll_area'):
+            if hasattr(container_widget, "scroll_area"):
                 viewport_width = container_widget.scroll_area.viewport().width()
                 if viewport_width > 0:
                     return viewport_width
@@ -58,7 +59,9 @@ class GridLayoutManager:
             logger.warning(f"⚠️ Error calculating available width: {e}")
             return 0
 
-    def calculate_card_dimensions_for_3_rows(self, container_width: int, applications: List[ApplicationData]) -> Dict[str, int]:
+    def calculate_card_dimensions_for_3_rows(
+        self, container_width: int, applications: List[ApplicationData]
+    ) -> Dict[str, int]:
         """Calculate card dimensions optimized for 3-row layout."""
         if container_width <= 0:
             return {"width": self.min_card_width, "height": self.card_height}
@@ -70,15 +73,19 @@ class GridLayoutManager:
         )
 
         # Calculate card width with spacing
-        card_spacing_total = (max_cards_per_row - 1) * self.card_spacing if max_cards_per_row > 1 else 0
-        available_card_width = container_width - self.grid_side_margins - card_spacing_total
-        card_width = max(
-            self.min_card_width, available_card_width // max_cards_per_row
+        card_spacing_total = (
+            (max_cards_per_row - 1) * self.card_spacing if max_cards_per_row > 1 else 0
         )
+        available_card_width = (
+            container_width - self.grid_side_margins - card_spacing_total
+        )
+        card_width = max(self.min_card_width, available_card_width // max_cards_per_row)
 
         return {"width": card_width, "height": self.card_height}
 
-    def organize_apps_by_category(self, applications: List[ApplicationData]) -> Dict[str, List[ApplicationData]]:
+    def organize_apps_by_category(
+        self, applications: List[ApplicationData]
+    ) -> Dict[str, List[ApplicationData]]:
         """Organize applications into 3 rows by category."""
         # Initialize organized structure
         organized = {"Desktop Apps": [], "Web Apps": [], "Development Tools": []}
@@ -97,21 +104,27 @@ class GridLayoutManager:
 
         return organized
 
-    def calculate_grid_positions(self, organized_apps: Dict[str, List[ApplicationData]]) -> List[Tuple[int, int, ApplicationData]]:
+    def calculate_grid_positions(
+        self, organized_apps: Dict[str, List[ApplicationData]]
+    ) -> List[Tuple[int, int, ApplicationData]]:
         """Calculate grid positions for organized applications."""
         positions = []
-        
+
         for row_index, (category, apps) in enumerate(organized_apps.items()):
             for col_index, app in enumerate(apps):
                 positions.append((row_index, col_index, app))
-        
+
         return positions
 
-    def get_layout_metrics(self, container_width: int, applications: List[ApplicationData]) -> Dict[str, Any]:
+    def get_layout_metrics(
+        self, container_width: int, applications: List[ApplicationData]
+    ) -> Dict[str, Any]:
         """Get comprehensive layout metrics for debugging and optimization."""
         organized_apps = self.organize_apps_by_category(applications)
-        card_dimensions = self.calculate_card_dimensions_for_3_rows(container_width, applications)
-        
+        card_dimensions = self.calculate_card_dimensions_for_3_rows(
+            container_width, applications
+        )
+
         metrics = {
             "container_width": container_width,
             "card_width": card_dimensions["width"],
@@ -120,28 +133,38 @@ class GridLayoutManager:
             "categories": {
                 category: len(apps) for category, apps in organized_apps.items()
             },
-            "max_cards_per_row": max(len(apps) for apps in organized_apps.values()) if organized_apps else 0,
+            "max_cards_per_row": (
+                max(len(apps) for apps in organized_apps.values())
+                if organized_apps
+                else 0
+            ),
             "grid_side_margins": self.grid_side_margins,
             "card_spacing": self.card_spacing,
         }
-        
+
         return metrics
 
-    def validate_layout(self, container_width: int, applications: List[ApplicationData]) -> bool:
+    def validate_layout(
+        self, container_width: int, applications: List[ApplicationData]
+    ) -> bool:
         """Validate that the layout will work with current parameters."""
         if container_width <= 0:
             return False
-            
+
         if not applications:
             return True  # Empty grid is valid
-            
-        card_dimensions = self.calculate_card_dimensions_for_3_rows(container_width, applications)
-        
+
+        card_dimensions = self.calculate_card_dimensions_for_3_rows(
+            container_width, applications
+        )
+
         # Check if card width is reasonable
         if card_dimensions["width"] < self.min_card_width:
-            logger.warning(f"⚠️ Card width {card_dimensions['width']} below minimum {self.min_card_width}")
+            logger.warning(
+                f"⚠️ Card width {card_dimensions['width']} below minimum {self.min_card_width}"
+            )
             return False
-            
+
         return True
 
     def get_responsive_breakpoints(self) -> Dict[str, int]:
@@ -153,29 +176,35 @@ class GridLayoutManager:
             "large": 1440,
         }
 
-    def suggest_layout_adjustments(self, container_width: int, applications: List[ApplicationData]) -> Dict[str, Any]:
+    def suggest_layout_adjustments(
+        self, container_width: int, applications: List[ApplicationData]
+    ) -> Dict[str, Any]:
         """Suggest layout adjustments based on current conditions."""
-        suggestions = {
-            "adjustments": [],
-            "warnings": [],
-            "optimizations": []
-        }
-        
+        suggestions = {"adjustments": [], "warnings": [], "optimizations": []}
+
         organized_apps = self.organize_apps_by_category(applications)
-        max_cards_per_row = max(len(apps) for apps in organized_apps.values()) if organized_apps else 0
-        
+        max_cards_per_row = (
+            max(len(apps) for apps in organized_apps.values()) if organized_apps else 0
+        )
+
         # Check for uneven distribution
         category_counts = [len(apps) for apps in organized_apps.values()]
         if max(category_counts) - min(category_counts) > 3:
-            suggestions["warnings"].append("Uneven category distribution may cause layout imbalance")
-        
+            suggestions["warnings"].append(
+                "Uneven category distribution may cause layout imbalance"
+            )
+
         # Check container width
         breakpoints = self.get_responsive_breakpoints()
         if container_width < breakpoints["tablet"]:
-            suggestions["adjustments"].append("Consider reducing card spacing for narrow containers")
-        
+            suggestions["adjustments"].append(
+                "Consider reducing card spacing for narrow containers"
+            )
+
         # Check card density
         if max_cards_per_row > 8:
-            suggestions["optimizations"].append("Consider pagination or scrolling for large card counts")
-        
+            suggestions["optimizations"].append(
+                "Consider pagination or scrolling for large card counts"
+            )
+
         return suggestions

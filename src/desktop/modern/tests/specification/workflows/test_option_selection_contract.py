@@ -34,7 +34,8 @@ class TestOptionSelectionWorkflowContract:
         - State transitions are smooth
         """
         try:
-            from domain.models.core_models import SequenceData, BeatData
+            from domain.models.beat_models import BeatData
+from domain.models.sequence_models import SequenceData
 
             # Test empty sequence state
             empty_sequence = SequenceData.empty()
@@ -62,7 +63,7 @@ class TestOptionSelectionWorkflowContract:
         - Selection is preserved
         """
         try:
-            from domain.models.core_models import SequenceData
+            from domain.models import SequenceData
 
             # Test start position selection
             valid_positions = ["alpha1", "alpha2", "beta1", "beta2"]

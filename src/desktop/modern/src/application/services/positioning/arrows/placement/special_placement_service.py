@@ -24,7 +24,7 @@ from pathlib import Path
 from typing import Dict, Any, Optional
 from PyQt6.QtCore import QPointF
 
-from domain.models.core_models import (
+from domain.models import (
     MotionData,
     Orientation,
 )

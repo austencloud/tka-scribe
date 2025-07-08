@@ -5,16 +5,17 @@ Manages sequence operations, workbench interactions, and sequence state for the 
 Responsible for handling beat additions, sequence modifications, and workbench coordination.
 """
 
-from typing import Optional, Callable
-from PyQt6.QtCore import QObject, pyqtSignal
+from typing import Callable, Optional
 
-from domain.models.core_models import SequenceData, BeatData
-from application.services.option_picker.orientation_update_service import (
-    OptionOrientationUpdateService,
-)
 from application.services.core.sequence_persistence_service import (
     SequencePersistenceService,
 )
+from application.services.option_picker.orientation_update_service import (
+    OptionOrientationUpdateService,
+)
+from domain.models.beat_models import BeatData
+from domain.models.sequence_models import SequenceData
+from PyQt6.QtCore import QObject, pyqtSignal
 
 
 class SequenceManager(QObject):
@@ -91,15 +92,15 @@ class SequenceManager(QObject):
         self, beat_dict: dict, beat_number: int
     ) -> BeatData:
         """Convert legacy JSON format back to modern BeatData with full pictograph data"""
-        from domain.models.core_models import (
+        from domain.models import (
             BeatData,
-            MotionData,
             GlyphData,
-            MotionType,
-            RotationDirection,
             Location,
+            MotionData,
+            MotionType,
             Orientation,
-        )
+            RotationDirection,
+)
 
         # Extract basic beat info
         letter = beat_dict.get("letter", "?")
@@ -192,14 +193,14 @@ class SequenceManager(QObject):
         self, start_pos_dict: dict
     ) -> BeatData:
         """Convert legacy start position JSON back to modern BeatData with full data"""
-        from domain.models.core_models import (
+        from domain.models import (
             BeatData,
-            MotionData,
             GlyphData,
+            Location,
+            MotionData,
             MotionType,
             RotationDirection,
-            Location,
-        )
+)
 
         # Extract basic start position info
         letter = start_pos_dict.get("letter", "α")
@@ -722,7 +723,7 @@ class SequenceManager(QObject):
                     )
 
             # Convert beats to modern format with full pictograph data
-            from domain.models.core_models import BeatData, MotionData, GlyphData
+            from domain.models import BeatData, GlyphData, MotionData
 
             beat_objects = []
             for i, beat_dict in enumerate(beats_data):
@@ -785,7 +786,7 @@ class SequenceManager(QObject):
                     traceback.print_exc()
 
             # Create and set the sequence (even if empty, to maintain state)
-            from domain.models.core_models import SequenceData
+            from domain.models import SequenceData
 
             loaded_sequence = SequenceData(
                 id="loaded_sequence",

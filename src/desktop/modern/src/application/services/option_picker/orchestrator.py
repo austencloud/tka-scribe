@@ -24,7 +24,8 @@ from core.interfaces.option_picker_services import (
     IOptionPickerEventService,
     IOptionPickerInitializationService,
 )
-from domain.models.core_models import BeatData, SequenceData
+from domain.models.beat_models import BeatData
+from domain.models.sequence_models import SequenceData
 from PyQt6.QtCore import QObject, pyqtSignal
 from PyQt6.QtWidgets import QWidget
 

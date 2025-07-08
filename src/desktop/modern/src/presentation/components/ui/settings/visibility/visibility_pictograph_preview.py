@@ -11,7 +11,7 @@ from PyQt6.QtWidgets import QWidget, QVBoxLayout, QGraphicsView, QLabel, QSizePo
 from PyQt6.QtCore import Qt, QTimer, pyqtSignal, QPropertyAnimation
 from PyQt6.QtGui import QFont
 
-from domain.models.core_models import (
+from domain.models import (
     BeatData,
     MotionData,
     GlyphData,

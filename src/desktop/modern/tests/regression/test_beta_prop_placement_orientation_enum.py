@@ -10,7 +10,7 @@ because the placement logic was still checking for string values.
 """
 
 import pytest
-from domain.models.core_models import (
+from domain.models import (
     MotionData,
     BeatData,
     MotionType,

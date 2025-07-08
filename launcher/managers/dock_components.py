@@ -15,11 +15,11 @@ Architecture:
 """
 
 import logging
-from PyQt6.QtWidgets import QFrame, QVBoxLayout, QLabel
-from PyQt6.QtCore import Qt, pyqtSignal
-from PyQt6.QtGui import QCursor
 
 from domain.models import ApplicationData, ApplicationStatus
+from PyQt6.QtCore import Qt, pyqtSignal
+from PyQt6.QtGui import QCursor
+from PyQt6.QtWidgets import QFrame, QLabel, QVBoxLayout
 
 logger = logging.getLogger(__name__)
 

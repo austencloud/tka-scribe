@@ -3,8 +3,8 @@
 VS Code workspace debugging script.
 """
 
-import sys
 import os
+import sys
 from pathlib import Path
 
 print("🔍 VS CODE WORKSPACE DEBUG")
@@ -35,10 +35,12 @@ print("\n✅ If you see this, F5 is working and running the correct file!")
 try:
     print("\n🧪 Testing launcher imports...")
     from domain.models import LauncherState
+
     print("✅ domain.models imported successfully")
 except Exception as e:
     print(f"❌ Import failed: {e}")
     import traceback
+
     traceback.print_exc()
 
 if __name__ == "__main__":

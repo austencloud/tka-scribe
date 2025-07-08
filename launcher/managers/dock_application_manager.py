@@ -16,11 +16,11 @@ Architecture:
 """
 
 import logging
-from typing import List, Dict, Optional
-from PyQt6.QtWidgets import QVBoxLayout
-from PyQt6.QtCore import QObject, pyqtSignal, QTimer
+from typing import Dict, List, Optional
 
 from domain.models import ApplicationData, ApplicationStatus
+from PyQt6.QtCore import QObject, QTimer, pyqtSignal
+from PyQt6.QtWidgets import QVBoxLayout
 
 try:
     from .dock_components import DockApplicationIcon

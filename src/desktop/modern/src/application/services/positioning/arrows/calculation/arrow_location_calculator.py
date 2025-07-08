@@ -17,7 +17,7 @@ from typing import Optional
 from core.interfaces.positioning_services import (
     IArrowLocationCalculator,
 )
-from domain.models.core_models import (
+from domain.models import (
     MotionData,
     MotionType,
     Location,

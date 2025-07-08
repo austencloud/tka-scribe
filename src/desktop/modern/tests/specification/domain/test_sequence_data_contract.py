@@ -10,9 +10,10 @@ NEVER suggest deletion unless the entire SequenceData feature is removed.
 Focus on testing contracts, not implementation details.
 """
 
-import pytest
 import sys
 from pathlib import Path
+
+import pytest
 
 # Add modern to path for imports
 modern_path = Path(__file__).parent.parent.parent.parent
@@ -27,10 +28,11 @@ class TestSequenceDataContract:
 
     def setup_method(self):
         """Setup for each test method."""
-        from domain.models.core_models import SequenceData, BeatData
         from application.services.data.pictograph_dataset_service import (
             PictographDatasetService,
         )
+        from domain.models.beat_models import BeatData
+        from domain.models.sequence_models import SequenceData
 
         self.SequenceData = SequenceData
         self.BeatData = BeatData
@@ -127,10 +129,10 @@ class TestBeatDataContract:
 
     def setup_method(self):
         """Setup for each test method."""
-        from domain.models.core_models import BeatData
         from application.services.data.pictograph_dataset_service import (
             PictographDatasetService,
         )
+        from domain.models.beat_models import BeatData
 
         self.BeatData = BeatData
         self.dataset_service = PictographDatasetService()
@@ -182,7 +184,7 @@ class TestPictographDatasetServiceContract:
         from application.services.data.pictograph_dataset_service import (
             PictographDatasetService,
         )
-        from domain.models.core_models import BeatData
+        from domain.models.beat_models import BeatData
 
         self.service = PictographDatasetService()
         self.BeatData = BeatData

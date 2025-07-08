@@ -9,7 +9,8 @@ from abc import ABC, abstractmethod
 from typing import Any, Callable, Dict, List, Optional, Tuple
 
 from core.dependency_injection.di_container import DIContainer
-from domain.models.core_models import BeatData, SequenceData
+from domain.models.beat_models import BeatData
+from domain.models.sequence_models import SequenceData
 
 
 class IOptionPickerInitializationService(ABC):

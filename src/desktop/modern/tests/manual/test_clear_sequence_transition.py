@@ -20,7 +20,7 @@ def test_clear_sequence_logic():
     print("🧪 Testing clear sequence transition logic...")
     
     try:
-        from domain.models.core_models import SequenceData
+        from domain.models import SequenceData
         
         # Step 1: Test empty sequence detection
         print("\n📝 Step 1: Testing empty sequence detection")
@@ -53,7 +53,7 @@ def test_clear_sequence_logic():
         
         # Step 5: Test with a sequence that has beats
         print("\n📝 Step 5: Testing with sequence that has beats")
-        from domain.models.core_models import BeatData
+        from domain.models import BeatData
         beat = BeatData(beat_number=1, letter="A")
         sequence_with_beats = SequenceData(name="Test", beats=[beat])
         

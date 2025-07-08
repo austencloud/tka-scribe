@@ -34,7 +34,7 @@ class TestSequenceCreationWorkflowContract:
         - Empty sequence has default properties
         """
         try:
-            from domain.models.core_models import SequenceData
+            from domain.models import SequenceData
 
             # Create empty sequence
             empty_sequence = SequenceData.empty()
@@ -61,7 +61,8 @@ class TestSequenceCreationWorkflowContract:
         - Sequence properties are calculated correctly
         """
         try:
-            from domain.models.core_models import SequenceData, BeatData
+            from domain.models.beat_models import BeatData
+from domain.models.sequence_models import SequenceData
 
             # Create beats
             beat1 = BeatData(beat_number=1, letter="A")
@@ -130,7 +131,8 @@ class TestSequenceCreationWorkflowContract:
         - Validation rules are consistent
         """
         try:
-            from domain.models.core_models import SequenceData, BeatData
+            from domain.models.beat_models import BeatData
+from domain.models.sequence_models import SequenceData
 
             # Test valid sequence
             valid_beat = BeatData(beat_number=1, letter="A")
@@ -171,7 +173,8 @@ class TestSequenceCreationWorkflowContract:
         - Modifications preserve sequence integrity
         """
         try:
-            from domain.models.core_models import SequenceData, BeatData
+            from domain.models.beat_models import BeatData
+from domain.models.sequence_models import SequenceData
             from application.services.core.sequence_management_service import (
                 SequenceManagementService,
             )
@@ -213,7 +216,8 @@ class TestSequenceCreationWorkflowContract:
         - State changes are atomic
         """
         try:
-            from domain.models.core_models import SequenceData, BeatData
+            from domain.models.beat_models import BeatData
+from domain.models.sequence_models import SequenceData
 
             # Start with empty sequence
             sequence = SequenceData.empty()
@@ -254,7 +258,8 @@ class TestSequenceCreationWorkflowContract:
         - Meaningful error information is provided
         """
         try:
-            from domain.models.core_models import SequenceData, BeatData
+            from domain.models.beat_models import BeatData
+from domain.models.sequence_models import SequenceData
 
             # Test creating sequence with invalid data
             try:

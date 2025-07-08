@@ -17,11 +17,11 @@ Architecture:
 
 import logging
 from typing import List
-from PyQt6.QtWidgets import QMenu
-from PyQt6.QtGui import QAction
-from PyQt6.QtCore import QObject, pyqtSignal
 
 from domain.models import ApplicationData, ApplicationStatus
+from PyQt6.QtCore import QObject, pyqtSignal
+from PyQt6.QtGui import QAction
+from PyQt6.QtWidgets import QMenu
 
 logger = logging.getLogger(__name__)
 
@@ -40,7 +40,9 @@ class DockContextMenuManager(QObject):
     def __init__(self, parent=None):
         super().__init__(parent)
 
-    def create_context_menu(self, app_id: str, applications: List[ApplicationData], position) -> QMenu:
+    def create_context_menu(
+        self, app_id: str, applications: List[ApplicationData], position
+    ) -> QMenu:
         """Create and show context menu for an application."""
         # Find the application
         app = next((a for a in applications if a.id == app_id), None)
@@ -92,7 +94,9 @@ class DockContextMenuManager(QObject):
 
             # Restart action
             restart_action = QAction("🔄 Restart", menu)
-            restart_action.triggered.connect(lambda: self.restart_requested.emit(app.id))
+            restart_action.triggered.connect(
+                lambda: self.restart_requested.emit(app.id)
+            )
             menu.addAction(restart_action)
 
         elif app.status == ApplicationStatus.STARTING:
@@ -110,13 +114,17 @@ class DockContextMenuManager(QObject):
     def _add_process_actions(self, menu: QMenu, app_id: str):
         """Add process management actions to menu."""
         process_info_action = QAction("ℹ️ Process Info", menu)
-        process_info_action.triggered.connect(lambda: self.process_info_requested.emit(app_id))
+        process_info_action.triggered.connect(
+            lambda: self.process_info_requested.emit(app_id)
+        )
         menu.addAction(process_info_action)
 
     def _add_info_actions(self, menu: QMenu, app_id: str):
         """Add application information actions to menu."""
         properties_action = QAction("⚙️ Properties", menu)
-        properties_action.triggered.connect(lambda: self.properties_requested.emit(app_id))
+        properties_action.triggered.connect(
+            lambda: self.properties_requested.emit(app_id)
+        )
         menu.addAction(properties_action)
 
     def _add_dock_actions(self, menu: QMenu):
@@ -161,7 +169,9 @@ class DockContextMenuManager(QObject):
             }
         """
 
-    def show_context_menu(self, app_id: str, applications: List[ApplicationData], position):
+    def show_context_menu(
+        self, app_id: str, applications: List[ApplicationData], position
+    ):
         """Create and show context menu at the specified position."""
         menu = self.create_context_menu(app_id, applications, position)
         if menu:

@@ -9,7 +9,7 @@ from typing import Tuple
 from PyQt6.QtCore import Qt, QRectF
 from PyQt6.QtGui import QPainter, QPen, QColor
 
-from domain.models.core_models import LetterType
+from domain.models import LetterType
 
 
 class PictographBorderManager:

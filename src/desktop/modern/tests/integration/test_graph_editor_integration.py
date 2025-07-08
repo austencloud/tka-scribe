@@ -4,31 +4,28 @@ Integration tests for Graph Editor functionality
 Tests the complete data flow from beat selection through modification to UI updates.
 """
 
-import pytest
 import sys
 from pathlib import Path
-from unittest.mock import Mock, MagicMock, patch
-from PyQt6.QtWidgets import QApplication
+from unittest.mock import MagicMock, Mock, patch
+
+import pytest
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QKeyEvent
+from PyQt6.QtWidgets import QApplication
 
 # Add modern/src to path for imports
 modern_src_path = Path(__file__).parent.parent.parent / "src"
 sys.path.insert(0, str(modern_src_path))
 
-from domain.models.core_models import (
-    BeatData,
-    SequenceData,
-    MotionData,
-    MotionType,
-    Location,
-    RotationDirection,
-)
 from application.services.graph_editor_data_flow_service import (
     GraphEditorDataFlowService,
 )
 from application.services.graph_editor_hotkey_service import GraphEditorHotkeyService
 from core.interfaces.workbench_services import IGraphEditorService
+from domain.models.beat_models import BeatData
+from domain.models.enums import Location, MotionType, RotationDirection
+from domain.models.motion_models import MotionData
+from domain.models.sequence_models import SequenceData
 
 
 class TestGraphEditorIntegration:

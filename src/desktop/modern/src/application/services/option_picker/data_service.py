@@ -19,7 +19,8 @@ from typing import List, Dict, Any, Optional
 from core.interfaces.option_picker_services import (
     IOptionPickerDataService,
 )
-from domain.models.core_models import BeatData, SequenceData
+from domain.models.beat_models import BeatData
+from domain.models.sequence_models import SequenceData
 
 logger = logging.getLogger(__name__)
 

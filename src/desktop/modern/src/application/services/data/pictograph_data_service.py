@@ -15,7 +15,7 @@ from typing import List, Dict, Any, Optional
 from abc import ABC, abstractmethod
 import uuid
 
-from domain.models.core_models import BeatData
+from domain.models.beat_models import BeatData
 from domain.models.pictograph_models import (
     PictographData,
     GridData,

@@ -14,8 +14,9 @@ Defines behavioral contracts for VTG and elemental glyph visibility based on let
 """
 
 import sys
-import pytest
 from pathlib import Path
+
+import pytest
 
 # Add modern source to path
 modern_src = Path(__file__).parent.parent.parent.parent / "src"
@@ -39,7 +40,8 @@ class TestGlyphVisibilityContract:
     def test_letter_type_and_beat_data_imports(self):
         """Test that letter type and beat data can be imported."""
         try:
-            from domain.models.core_models import LetterType, BeatData
+            from domain.models.beat_models import BeatData
+            from domain.models.glyph_models import LetterType
 
             assert LetterType is not None
             assert BeatData is not None
@@ -59,7 +61,7 @@ class TestGlyphVisibilityContract:
             from application.services.core.pictograph_management_service import (
                 PictographManagementService,
             )
-            from domain.models.core_models import LetterType, BeatData
+            from domain.models import BeatData, LetterType
 
             # Initialize the service
             service = PictographManagementService()
@@ -109,7 +111,7 @@ class TestGlyphVisibilityContract:
             from application.services.core.pictograph_management_service import (
                 PictographManagementService,
             )
-            from domain.models.core_models import LetterType, BeatData
+            from domain.models import BeatData, LetterType
 
             # Initialize the service
             service = PictographManagementService()
@@ -159,7 +161,7 @@ class TestGlyphVisibilityContract:
             from application.services.core.pictograph_management_service import (
                 PictographManagementService,
             )
-            from domain.models.core_models import LetterType
+            from domain.models import LetterType
 
             # Initialize the service
             service = PictographManagementService()
@@ -206,7 +208,7 @@ class TestGlyphVisibilityContract:
             from application.services.core.pictograph_management_service import (
                 PictographManagementService,
             )
-            from domain.models.core_models import BeatData
+            from domain.models import BeatData
 
             # Initialize the service
             service = PictographManagementService()
@@ -256,7 +258,7 @@ class TestGlyphVisibilityContract:
             from application.services.core.pictograph_management_service import (
                 PictographManagementService,
             )
-            from domain.models.core_models import LetterType, BeatData
+            from domain.models import BeatData, LetterType
 
             # Initialize the service
             service = PictographManagementService()

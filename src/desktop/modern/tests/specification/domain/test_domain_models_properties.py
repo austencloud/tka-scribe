@@ -12,20 +12,21 @@ TESTS:
 """
 
 import pytest
-from hypothesis import given, strategies as st, assume
-from domain.models.core_models import (
-    MotionData,
-    BeatData,
-    SequenceData,
-    GlyphData,
-    MotionType,
-    RotationDirection,
-    Location,
-    Orientation,
-    VTGMode,
+from domain.models.beat_models import BeatData
+from domain.models.enums import (
     ElementalType,
     LetterType,
+    Location,
+    MotionType,
+    Orientation,
+    RotationDirection,
+    VTGMode,
 )
+from domain.models.glyph_models import GlyphData
+from domain.models.motion_models import MotionData
+from domain.models.sequence_models import SequenceData
+from hypothesis import assume, given
+from hypothesis import strategies as st
 
 
 class TestMotionDataProperties:

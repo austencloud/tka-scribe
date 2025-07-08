@@ -7,19 +7,19 @@ geometry persistence, and application state tracking.
 
 import json
 import logging
-from pathlib import Path
-from typing import Optional, Dict, Any
 from datetime import datetime
+from pathlib import Path
+from typing import Any, Dict, Optional
 
-from domain.models import (
-    LauncherState,
-    ApplicationData,
-    WindowGeometry,
-    LaunchMode,
-    ApplicationStatus,
-    ApplicationCategory,
-)
 from core.interfaces import ILauncherStateService, ISettingsService
+from domain.models import (
+    ApplicationCategory,
+    ApplicationData,
+    ApplicationStatus,
+    LauncherState,
+    LaunchMode,
+    WindowGeometry,
+)
 
 logger = logging.getLogger(__name__)
 

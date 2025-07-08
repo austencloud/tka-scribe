@@ -6,7 +6,8 @@ Responsible for converting between different data formats and optimizing perform
 """
 
 from typing import List, Dict, Any
-from domain.models.core_models import SequenceData, BeatData
+from domain.models.sequence_models import SequenceData
+from domain.models.beat_models import BeatData
 
 
 class DataConversionService:

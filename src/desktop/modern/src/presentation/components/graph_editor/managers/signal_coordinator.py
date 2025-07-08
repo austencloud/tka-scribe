@@ -7,16 +7,17 @@ Simplified to remove over-engineered manager dependencies and complex routing.
 """
 
 import logging
-from typing import Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
+from domain.models.beat_models import BeatData
+from domain.models.sequence_models import SequenceData
 from PyQt6.QtCore import QObject, pyqtSignal
-
-from domain.models.core_models import SequenceData, BeatData
 
 if TYPE_CHECKING:
     from application.services.graph_editor_data_flow_service import (
         GraphEditorDataFlowService,
     )
+
     from ..graph_editor import GraphEditor
 
 logger = logging.getLogger(__name__)

@@ -9,7 +9,7 @@ import pandas as pd
 from typing import Dict, List, Any, Optional
 from ....core.pictograph_management_service import PictographManagementService
 
-from domain.models.core_models import (
+from domain.models import (
     BeatData,
     GlyphData,
     Location,
@@ -158,9 +158,9 @@ class PositionMatchingService:
 
     def _convert_dict_to_beat_data(self, item: Dict[str, Any]) -> BeatData:
         """Convert dictionary item to BeatData using actual motion data from the dictionary."""
-        from domain.models.core_models import (
+        from domain.models import (
             MotionData,
-        )
+)
 
         # Extract basic data
         letter = item.get("letter", "")
@@ -236,7 +236,7 @@ class PositionMatchingService:
 
     def _parse_motion_type(self, motion_type_str: str) -> "MotionType":
         """Parse motion type string to MotionType enum."""
-        from domain.models.core_models import MotionType
+        from domain.models import MotionType
 
         motion_type_map = {
             "pro": MotionType.PRO,
@@ -249,7 +249,7 @@ class PositionMatchingService:
 
     def _parse_rotation_direction(self, rot_dir_str: str) -> "RotationDirection":
         """Parse rotation direction string to RotationDirection enum."""
-        from domain.models.core_models import RotationDirection
+        from domain.models import RotationDirection
 
         rot_dir_map = {
             "cw": RotationDirection.CLOCKWISE,
@@ -260,7 +260,7 @@ class PositionMatchingService:
 
     def _parse_location(self, location_str: str) -> "Location":
         """Parse location string to Location enum."""
-        from domain.models.core_models import Location
+        from domain.models import Location
 
         location_map = {
             "n": Location.NORTH,

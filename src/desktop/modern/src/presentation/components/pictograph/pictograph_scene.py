@@ -4,41 +4,35 @@ Simplified pictograph scene using modular renderers.
 This scene coordinates multiple specialized renderers to create the complete pictograph.
 """
 
-from typing import Optional
 import logging
 import uuid
-from PyQt6.QtWidgets import QGraphicsScene
-from PyQt6.QtGui import QBrush, QColor
-from PyQt6.QtCore import pyqtSignal
+from typing import Optional
 
-from domain.models.core_models import BeatData, LetterType
+from domain.models import BeatData
+from domain.models.enums import LetterType
 from domain.models.letter_type_classifier import LetterTypeClassifier
+from domain.models.pictograph_models import ArrowData, PictographData
+from PyQt6.QtCore import pyqtSignal
+from PyQt6.QtGui import QBrush, QColor
+from PyQt6.QtWidgets import QGraphicsScene
 
 logger = logging.getLogger(__name__)
 
-from presentation.components.pictograph.renderers.grid_renderer import (
-    GridRenderer,
-)
-from presentation.components.pictograph.renderers.prop_renderer import (
-    PropRenderer,
-)
-from presentation.components.pictograph.renderers.arrow_renderer import (
-    ArrowRenderer,
-)
-from presentation.components.pictograph.renderers.letter_renderer import (
-    LetterRenderer,
-)
+from presentation.components.pictograph.renderers.arrow_renderer import ArrowRenderer
 from presentation.components.pictograph.renderers.elemental_glyph_renderer import (
     ElementalGlyphRenderer,
 )
-from presentation.components.pictograph.renderers.vtg_glyph_renderer import (
-    VTGGlyphRenderer,
+from presentation.components.pictograph.renderers.grid_renderer import GridRenderer
+from presentation.components.pictograph.renderers.letter_renderer import LetterRenderer
+from presentation.components.pictograph.renderers.position_glyph_renderer import (
+    PositionGlyphRenderer,
 )
+from presentation.components.pictograph.renderers.prop_renderer import PropRenderer
 from presentation.components.pictograph.renderers.tka_glyph_renderer import (
     TKAGlyphRenderer,
 )
-from presentation.components.pictograph.renderers.position_glyph_renderer import (
-    PositionGlyphRenderer,
+from presentation.components.pictograph.renderers.vtg_glyph_renderer import (
+    VTGGlyphRenderer,
 )
 
 
@@ -49,7 +43,7 @@ class PictographScene(QGraphicsScene):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.beat_data: Optional[BeatData] = None
+        # Removed beat_data storage - scene is now stateless
 
         # Generate unique ID for this scene instance
         self.scene_id = f"pictograph_scene_{uuid.uuid4().hex[:8]}"
@@ -151,11 +145,11 @@ class PictographScene(QGraphicsScene):
         """
         try:
             # Try to get context service from DI container
-            from core.application.application_factory import ApplicationFactory
-            from core.interfaces.core_services import IPictographContextService
             from application.services.ui.context_aware_scaling_service import (
                 RenderingContext,
             )
+            from core.application.application_factory import ApplicationFactory
+            from core.interfaces.core_services import IPictographContextService
 
             # Use proper application factory method
             container = ApplicationFactory.create_app_from_args()
@@ -245,9 +239,8 @@ class PictographScene(QGraphicsScene):
                 # Motion visibility affects props and arrows
                 self._set_motion_visibility(element_name, visible)
 
-            # Re-render the scene with updated visibility
-            if self.beat_data:
-                self._render_pictograph()
+            # Note: Scene no longer auto-renders on visibility changes
+            # Parent component should call update_beat() to re-render with new visibility
 
         except Exception as e:
             logger.error(
@@ -278,81 +271,107 @@ class PictographScene(QGraphicsScene):
                 visible or self._renderer_visibility.get("red_motion", True)
             )
 
-    def update_beat(self, beat_data: BeatData) -> None:
-        """Update the scene with new beat data."""
-        self.beat_data = beat_data
+    def render_pictograph(self, pictograph_data: "PictographData") -> None:
+        """Render a complete pictograph from pictograph data."""
         self.clear()
-        # Clear prop renderer cache for new beat
+        # Clear prop renderer cache for new pictograph
         self.prop_renderer.clear_rendered_props()
-        self._render_pictograph()
+        self._render_pictograph_data(pictograph_data)
 
-    def _render_pictograph(self) -> None:
+    def update_beat(self, beat_data: BeatData) -> None:
+        """Legacy method: Convert beat data to pictograph data and render."""
+        # Convert BeatData to PictographData for rendering
+        pictograph_data = self._beat_data_to_pictograph_data(beat_data)
+        self.render_pictograph(pictograph_data)
+
+    def _beat_data_to_pictograph_data(self, beat_data: BeatData) -> PictographData:
+        """Convert BeatData to PictographData for rendering."""
+        # Create arrow data for both colors
+        arrows = {}
+
+        if beat_data.blue_motion:
+            arrows["blue"] = ArrowData(motion_data=beat_data.blue_motion, color="blue")
+
+        if beat_data.red_motion:
+            arrows["red"] = ArrowData(motion_data=beat_data.red_motion, color="red")
+
+        return PictographData(
+            arrows=arrows,
+            letter=beat_data.letter or "",
+            glyph_data=beat_data.glyph_data,
+        )
+
+    def _render_pictograph_data(self, pictograph_data: PictographData) -> None:
         """Render the pictograph elements using specialized renderers."""
-        if not self.beat_data:
+        if not pictograph_data:
             return
 
         # Render grid (if visible)
         if self._renderer_visibility.get("grid", True):
             self.grid_renderer.render_grid()
 
+        # Extract motion data from arrows
+        blue_motion = None
+        red_motion = None
+        if (
+            "blue" in pictograph_data.arrows
+            and pictograph_data.arrows["blue"].motion_data
+        ):
+            blue_motion = pictograph_data.arrows["blue"].motion_data
+        if (
+            "red" in pictograph_data.arrows
+            and pictograph_data.arrows["red"].motion_data
+        ):
+            red_motion = pictograph_data.arrows["red"].motion_data
+
         # Render props for blue and red motions (if visible)
         if self._renderer_visibility.get("props", True):
-            if self.beat_data.blue_motion and self._renderer_visibility.get(
-                "blue_motion", True
-            ):
-                self.prop_renderer.render_prop("blue", self.beat_data.blue_motion)
-            if self.beat_data.red_motion and self._renderer_visibility.get(
-                "red_motion", True
-            ):
-                self.prop_renderer.render_prop("red", self.beat_data.red_motion)
+            if blue_motion and self._renderer_visibility.get("blue_motion", True):
+                self.prop_renderer.render_prop("blue", blue_motion)
+            if red_motion and self._renderer_visibility.get("red_motion", True):
+                self.prop_renderer.render_prop("red", red_motion)
 
         # Apply beta prop positioning after both props are rendered
-        if self.beat_data.blue_motion and self.beat_data.red_motion:
-            self.prop_renderer.apply_beta_positioning(self.beat_data)
+        # Note: This requires converting back to BeatData temporarily for legacy compatibility
+        if blue_motion and red_motion:
+            # Create temporary BeatData for beta positioning
+            from domain.models import BeatData
 
-        # CRITICAL FIX: Always create full pictograph data for special placement service
-        # The special placement service requires both blue and red arrow data to generate
-        # orientation keys and turns tuples, even when only one arrow is being rendered
-        from domain.models.pictograph_models import PictographData, ArrowData
+            temp_beat = BeatData(
+                beat_number=0,
+                letter=pictograph_data.letter,
+                blue_motion=blue_motion,
+                red_motion=red_motion,
+                glyph_data=pictograph_data.glyph_data,
+            )
+            self.prop_renderer.apply_beta_positioning(temp_beat)
 
-        # Create arrow data for both colors, using None motion_data if not available
-        blue_arrow = (
-            ArrowData(motion_data=self.beat_data.blue_motion, color="blue")
-            if self.beat_data.blue_motion
-            else ArrowData(color="blue")
-        )
-
-        red_arrow = (
-            ArrowData(motion_data=self.beat_data.red_motion, color="red")
-            if self.beat_data.red_motion
-            else ArrowData(color="red")
-        )
-
-        # Always create full pictograph data with both arrows and letter
+        # Use the existing pictograph data for arrow rendering
+        # Ensure both blue and red arrows exist for special placement service
         full_pictograph_data = PictographData(
-            arrows={"blue": blue_arrow, "red": red_arrow},
-            letter=self.beat_data.letter,  # Essential for special placement lookup
+            arrows={
+                "blue": pictograph_data.arrows.get("blue", ArrowData(color="blue")),
+                "red": pictograph_data.arrows.get("red", ArrowData(color="red")),
+            },
+            letter=pictograph_data.letter,  # Essential for special placement lookup
+            glyph_data=pictograph_data.glyph_data,
         )
 
         # Render arrows using the full pictograph data (if visible)
         if self._renderer_visibility.get("arrows", True):
-            if self.beat_data.blue_motion and self._renderer_visibility.get(
-                "blue_motion", True
-            ):
+            if blue_motion and self._renderer_visibility.get("blue_motion", True):
                 self.arrow_renderer.render_arrow(
-                    "blue", self.beat_data.blue_motion, full_pictograph_data
+                    "blue", blue_motion, full_pictograph_data
                 )
-            if self.beat_data.red_motion and self._renderer_visibility.get(
-                "red_motion", True
-            ):
+            if red_motion and self._renderer_visibility.get("red_motion", True):
                 self.arrow_renderer.render_arrow(
-                    "red", self.beat_data.red_motion, full_pictograph_data
+                    "red", red_motion, full_pictograph_data
                 )
 
         # Render glyphs if glyph data is available and visibility allows
         # Note: Letters are rendered via TKA glyph, not simple letter renderer
-        if self.beat_data.glyph_data:
-            glyph_data = self.beat_data.glyph_data
+        if pictograph_data.glyph_data:
+            glyph_data = pictograph_data.glyph_data
 
             # Render elemental glyph (if visible)
             if (
@@ -379,17 +398,17 @@ class PictographScene(QGraphicsScene):
             # Render TKA glyph (if visible)
             if (
                 glyph_data.show_tka
-                and self.beat_data.letter
+                and pictograph_data.letter
                 and self._renderer_visibility.get("tka", True)
             ):
                 # Determine the correct letter type from the actual letter
                 letter_type_str = LetterTypeClassifier.get_letter_type(
-                    self.beat_data.letter
+                    pictograph_data.letter
                 )
                 letter_type = LetterType(letter_type_str)
 
                 self.tka_glyph_renderer.render_tka_glyph(
-                    self.beat_data.letter,
+                    pictograph_data.letter,
                     letter_type,
                     glyph_data.has_dash,
                     glyph_data.turns_data,
@@ -405,5 +424,5 @@ class PictographScene(QGraphicsScene):
                 self.position_glyph_renderer.render_position_glyph(
                     glyph_data.start_position,
                     glyph_data.end_position,
-                    self.beat_data.letter,
+                    pictograph_data.letter,
                 )

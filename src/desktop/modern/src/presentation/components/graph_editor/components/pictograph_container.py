@@ -1,18 +1,17 @@
 import logging
 from typing import Optional
-from PyQt6.QtWidgets import QWidget, QVBoxLayout, QGraphicsView
-from PyQt6.QtCore import pyqtSignal, Qt
-from PyQt6.QtGui import QMouseEvent, QPainter
 
-from domain.models.pydantic_models import BeatData
-from domain.models.pictograph_models import PictographData
 from application.services.core.pictograph_management_service import (
     PictographManagementService,
 )
-from presentation.components.pictograph.pictograph_scene import (
-    PictographScene,
-)
-from ..config import LayoutConfig, UIConfig, ColorConfig, StateConfig, SizeConfig
+from domain.models.beat_models import BeatData
+from domain.models.pictograph_models import PictographData
+from presentation.components.pictograph.pictograph_scene import PictographScene
+from PyQt6.QtCore import Qt, pyqtSignal
+from PyQt6.QtGui import QMouseEvent, QPainter
+from PyQt6.QtWidgets import QGraphicsView, QVBoxLayout, QWidget
+
+from ..config import ColorConfig, LayoutConfig, SizeConfig, StateConfig, UIConfig
 
 logger = logging.getLogger(__name__)
 

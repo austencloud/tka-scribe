@@ -9,7 +9,7 @@ from enum import Enum
 
 
 class Timing(Enum):
-    TOGETHER = "together"
+    TOG = "tog"
     SPLIT = "split"
 
 

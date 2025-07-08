@@ -14,7 +14,7 @@ PROVIDES:
 from typing import Dict, List
 from abc import ABC, abstractmethod
 
-from domain.models.core_models import (
+from domain.models import (
     BeatData,
     MotionData,
     Location,

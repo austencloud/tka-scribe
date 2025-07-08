@@ -5,19 +5,19 @@ Following TKA's Protocol-based interface patterns for clean dependency injection
 and testability. These interfaces define the contracts for launcher services.
 """
 
-from typing import Protocol, List, Optional, Dict, Any
 from pathlib import Path
+from typing import Any, Dict, List, Optional, Protocol
 
 from domain.models import (
-    LauncherState,
+    ApplicationCategory,
     ApplicationData,
+    ApplicationStatus,
+    LauncherState,
+    LaunchMode,
     LaunchRequest,
     LaunchResult,
-    WindowGeometry,
     ScreenData,
-    LaunchMode,
-    ApplicationCategory,
-    ApplicationStatus,
+    WindowGeometry,
 )
 
 

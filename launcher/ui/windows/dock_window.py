@@ -22,31 +22,27 @@ Architecture:
 - PyQt6 implementation with reliable design system
 """
 
-import logging
-from typing import Optional
-from PyQt6.QtWidgets import QWidget
-from PyQt6.QtCore import QTimer, pyqtSignal
 import ctypes
+import logging
 import sys
+from typing import Optional
 
-from domain.models import (
-    DockConfiguration,
-    ApplicationStatus,
-    WindowGeometry,
-)
+from domain.models import ApplicationStatus, DockConfiguration, WindowGeometry
+from PyQt6.QtCore import QTimer, pyqtSignal
+from PyQt6.QtWidgets import QWidget
 from ui.pyqt6_compatible_design_system import get_reliable_style_builder
 from ui.reliable_effects import get_shadow_manager
 
 try:
+    from managers.dock_application_manager import DockApplicationManager
     from managers.dock_context_menu import DockContextMenuManager
     from managers.dock_position_manager import DockPositionManager
-    from managers.dock_application_manager import DockApplicationManager
     from managers.dock_window_setup import DockWindowSetup
 except ImportError:
     # Fallback for direct imports (e.g., in tests)
+    from managers.dock_application_manager import DockApplicationManager
     from managers.dock_context_menu import DockContextMenuManager
     from managers.dock_position_manager import DockPositionManager
-    from managers.dock_application_manager import DockApplicationManager
     from managers.dock_window_setup import DockWindowSetup
 
 logger = logging.getLogger(__name__)

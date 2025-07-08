@@ -17,11 +17,11 @@ from ..events import BeatAddedEvent, BeatRemovedEvent, BeatUpdatedEvent
 
 # Use absolute imports to avoid relative import issues
 if TYPE_CHECKING:
-    from domain.models.core_models import BeatData, SequenceData
+    from domain.models import BeatData, SequenceData
 else:
     # For runtime when imports might fail
     try:
-        from domain.models.core_models import BeatData, SequenceData
+        from domain.models import BeatData, SequenceData
     except ImportError:
         # Create type aliases that work at runtime
         SequenceData = Any

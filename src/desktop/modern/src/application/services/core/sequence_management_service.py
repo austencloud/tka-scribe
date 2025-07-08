@@ -18,12 +18,8 @@ from datetime import datetime
 from enum import Enum
 from typing import TYPE_CHECKING, Any, Dict, Optional, cast
 
-from domain.models.pydantic_models import (
-    BeatData,
-    SequenceData,
-    create_default_beat_data,
-    create_default_sequence_data,
-)
+from domain.models.beat_models import BeatData
+from domain.models.sequence_models import SequenceData
 
 if TYPE_CHECKING:
     from core.commands import CommandProcessor
@@ -118,7 +114,6 @@ class ISequenceManagementService(ABC):
     @abstractmethod
     def remove_beat(self, sequence: SequenceData, position: int) -> SequenceData:
         """Remove beat from sequence at specified position."""
-
 
     @abstractmethod
     def apply_workbench_operation(
@@ -255,17 +250,14 @@ class SequenceManagementService(ISequenceManagementService):
 
         beats = []
 
-        # Create empty beats for the sequence using factory function
+        # Create empty beats for the sequence using direct constructor
         for i in range(length):
-            beat = create_default_beat_data(
-                beat_number=i + 1,
-                letter=""  # Empty string instead of None
+            beat = BeatData(
+                beat_number=i + 1, letter=""  # Empty string instead of None
             )
             beats.append(beat)
 
-        sequence = create_default_sequence_data(
-            name=name
-        ).model_copy(update={'beats': beats, 'length': length})
+        sequence = SequenceData(name=name, beats=beats)
 
         # Publish sequence created event
         if self.event_bus:

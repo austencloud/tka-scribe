@@ -7,40 +7,38 @@ Supports both snake_case (Python) and camelCase (JSON/TypeScript) conventions.
 """
 
 # Import serialization utilities
-# Import serialization utilities
-# Import serialization utilities
-# Import serialization utilities
-# Import serialization utilities
-# Import serialization utilities
+
 from ..serialization import (
     dataclass_to_camel_dict,
     dict_from_camel_case,
     domain_model_from_json,
     domain_model_to_json,
 )
+from .beat_models import BeatData
 
-# Export core models first (most important)
-from .core_models import (  # Enums; Data classes
+# Export core models from their new organized locations
+# Import enums from their new location
+from .enums import (
     ArrowColor,
-    BeatData,
+    Direction,
     ElementalType,
-    GlyphData,
     GridMode,
     GridPosition,
     HandMotionType,
     HandPath,
     LetterType,
     Location,
-    MotionData,
     MotionType,
     Orientation,
     RotationDirection,
-    SequenceData,
+    Timing,
     VTGMode,
 )
+from .glyph_models import GlyphData
 from .letter_type_classifier import (  # Export letter type classifier
     LetterTypeClassifier,
 )
+from .motion_models import MotionData
 from .pictograph_models import (  # Export pictograph models
     ArrowData,
     ArrowType,
@@ -53,6 +51,7 @@ from .positioning_models import (  # Export positioning models
     ArrowPositionResult,
     PropPositionResult,
 )
+from .sequence_models import SequenceData
 
 # Import serialization utilities
 try:

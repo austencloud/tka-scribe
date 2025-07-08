@@ -138,7 +138,7 @@ class EnhancedComprehensiveWorkflowTester:
                 
                 # Test basic functionality
                 from domain.models.pictograph_models import ArrowData, PictographData
-                from domain.models.core_models import MotionData, MotionType, Location, RotationDirection
+                from domain.models import MotionData, MotionType, Location, RotationDirection
                 
                 # Create test data
                 motion_data = MotionData(

@@ -6,23 +6,17 @@ using the existing sophisticated TKA architecture.
 """
 
 import logging
-from typing import Dict, Any, List, Optional
 from dataclasses import dataclass
+from typing import Any, Dict, List, Optional
 
 # Import your existing architecture
 from core.application.application_factory import ApplicationFactory
 from core.interfaces.core_services import (
-    ISequenceManagementService,
     IPictographManagementService,
+    ISequenceManagementService,
     IValidationService,
 )
-from domain.models.core_models import (
-    BeatData,
-    MotionData,
-    MotionType,
-    Location,
-    RotationDirection,
-)
+from domain.models import BeatData, Location, MotionData, MotionType, RotationDirection
 from domain.models.pictograph_models import GridMode
 
 logger = logging.getLogger(__name__)

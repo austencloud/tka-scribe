@@ -1,7 +1,7 @@
 import logging
 from typing import Optional
 
-from domain.models.core_models import BeatData, MotionType
+from domain.models import BeatData, MotionType
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtGui import QCursor, QMouseEvent
 from PyQt6.QtWidgets import (

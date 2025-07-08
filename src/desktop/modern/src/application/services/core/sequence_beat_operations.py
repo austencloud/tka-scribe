@@ -5,16 +5,18 @@ Handles beat-level operations on sequences.
 Responsible for adding, removing, and modifying beats within sequences.
 """
 
-from typing import Optional, Callable
-from PyQt6.QtCore import QObject, pyqtSignal
+from typing import Callable, Optional
 
-from domain.models.core_models import SequenceData, BeatData
-from application.services.option_picker.orientation_update_service import (
-    OptionOrientationUpdateService,
-)
 from application.services.core.sequence_persistence_service import (
     SequencePersistenceService,
 )
+from application.services.option_picker.orientation_update_service import (
+    OptionOrientationUpdateService,
+)
+from PyQt6.QtCore import QObject, pyqtSignal
+
+from domain.models.beat_models import BeatData
+from domain.models.sequence_models import SequenceData
 
 
 class SequenceBeatOperations(QObject):

@@ -1,7 +1,7 @@
 from typing import Optional
 from PyQt6.QtCore import QObject, pyqtSignal
 from PyQt6.QtWidgets import QApplication
-from domain.models.core_models import SequenceData
+from domain.models import SequenceData
 from core.interfaces.workbench_services import (
     ISequenceWorkbenchService,
     IFullScreenService,

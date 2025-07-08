@@ -5,13 +5,14 @@ Handles start position operations and management.
 Responsible for setting, updating, and managing start positions in sequences.
 """
 
-from typing import Optional, Callable
-from PyQt6.QtCore import QObject, pyqtSignal
+from typing import Callable, Optional
 
-from domain.models.core_models import SequenceData, BeatData
 from application.services.core.sequence_persistence_service import (
     SequencePersistenceService,
 )
+from domain.models.beat_models import BeatData
+from domain.models.sequence_models import SequenceData
+from PyQt6.QtCore import QObject, pyqtSignal
 
 
 class SequenceStartPositionManager(QObject):

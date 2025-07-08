@@ -14,13 +14,11 @@ Uses dependency injection and follows TKA's clean architecture.
 """
 
 import logging
-from typing import List, Dict, Any, Callable
-from PyQt6.QtWidgets import QWidget, QVBoxLayout
+from typing import Any, Callable, Dict, List
 
-from core.interfaces.option_picker_services import (
-    IOptionPickerDisplayService,
-)
-from domain.models.core_models import BeatData
+from core.interfaces.option_picker_services import IOptionPickerDisplayService
+from domain.models.beat_models import BeatData
+from PyQt6.QtWidgets import QVBoxLayout, QWidget
 
 logger = logging.getLogger(__name__)
 

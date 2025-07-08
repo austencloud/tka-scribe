@@ -2,19 +2,16 @@
 Direct pictograph view for Kinetic Constructor - matches legacy container hierarchy.
 """
 
-from typing import Optional, Any
-from PyQt6.QtWidgets import QGraphicsView
-from PyQt6.QtCore import pyqtSignal, Qt, QTimer, QEvent
-from PyQt6.QtGui import QPainter, QKeyEvent, QResizeEvent, QEnterEvent
+from typing import Any, Optional
 
-from application.services.ui.context_aware_scaling_service import (
-    ScalingContext,
-)
-from domain.models.core_models import BeatData
+from application.services.ui.context_aware_scaling_service import ScalingContext
+from domain.models import BeatData
+from domain.models.pictograph_models import PictographData
 from presentation.components.pictograph.border_manager import BorderedPictographMixin
 from presentation.components.pictograph.pictograph_scene import PictographScene
-
-
+from PyQt6.QtCore import QEvent, Qt, QTimer, pyqtSignal
+from PyQt6.QtGui import QEnterEvent, QKeyEvent, QPainter, QResizeEvent
+from PyQt6.QtWidgets import QGraphicsView
 
 
 class PictographComponent(QGraphicsView, BorderedPictographMixin):
@@ -31,7 +28,7 @@ class PictographComponent(QGraphicsView, BorderedPictographMixin):
         super().__init__(parent)
         BorderedPictographMixin.__init__(self)
 
-        self.current_beat: Optional[BeatData] = None
+        # Removed current_beat storage - component is now stateless
         self.scene: Optional[PictographScene] = None  # Dimension debugging
         self.debug_enabled = False
         self.debug_timer = QTimer()
@@ -64,7 +61,7 @@ class PictographComponent(QGraphicsView, BorderedPictographMixin):
             print(f"❌ Failed to setup PictographComponent UI: {e}")
 
     def update_from_beat(self, beat_data: BeatData) -> None:
-        self.current_beat = beat_data
+        """Update the pictograph display with beat data (stateless rendering)."""
         if self.scene:
             self.scene.update_beat(beat_data)
             self._fit_view()
@@ -75,7 +72,7 @@ class PictographComponent(QGraphicsView, BorderedPictographMixin):
 
         self.pictograph_updated.emit(beat_data)
 
-    def update_from_pictograph(self, pictograph_data) -> None:
+    def update_from_pictograph(self, pictograph_data: "PictographData") -> None:
         """
         Update component from PictographData (for pickers and non-sequence contexts).
 
@@ -84,7 +81,7 @@ class PictographComponent(QGraphicsView, BorderedPictographMixin):
         """
         # Create a minimal BeatData wrapper for internal compatibility
         # TODO: Refactor PictographScene to work directly with PictographData
-        from domain.models.pydantic_models import BeatData, MotionData
+        from domain.models import BeatData, MotionData
 
         # Extract motion data from pictograph arrows
         blue_motion = None
@@ -95,16 +92,20 @@ class PictographComponent(QGraphicsView, BorderedPictographMixin):
         if "red" in pictograph_data.arrows:
             red_motion = pictograph_data.arrows["red"].motion_data
 
-        # Create minimal BeatData for internal use
+        # Create minimal BeatData for internal use (wrapper around pictograph data)
         temp_beat_data = BeatData(
             beat_number=0,  # Not relevant for pictograph display
             letter=pictograph_data.letter or "",
             blue_motion=blue_motion,
             red_motion=red_motion,
-            pictograph_data=None,  # Avoid circular reference
+            glyph_data=(
+                pictograph_data.glyph_data
+                if hasattr(pictograph_data, "glyph_data")
+                else None
+            ),
         )
 
-        self.current_beat = temp_beat_data
+        # Render directly without storing data
         if self.scene:
             self.scene.update_beat(temp_beat_data)
             self._fit_view()
@@ -112,10 +113,11 @@ class PictographComponent(QGraphicsView, BorderedPictographMixin):
         self.pictograph_updated.emit(temp_beat_data)
 
     def get_current_beat(self) -> Optional[BeatData]:
-        return self.current_beat
+        """Get current beat - component is now stateless, returns None."""
+        return None  # Component no longer stores beat data
 
     def clear_pictograph(self) -> None:
-        self.current_beat = None
+        """Clear the pictograph display."""
         if self.scene:
             self.scene.clear()
 

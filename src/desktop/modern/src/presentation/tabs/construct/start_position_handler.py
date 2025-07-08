@@ -8,7 +8,7 @@ Responsible for handling start position picker interactions and creating start p
 from typing import Optional, Callable
 from PyQt6.QtCore import QObject, pyqtSignal
 
-from domain.models.core_models import BeatData
+from domain.models import BeatData
 from .data_conversion_service import DataConversionService
 
 
@@ -75,7 +75,7 @@ class StartPositionHandler(QObject):
             from application.services.data.pictograph_dataset_service import (
                 PictographDatasetService,
             )
-            from domain.models.core_models import GlyphData
+            from domain.models import GlyphData
 
             dataset_service = PictographDatasetService()
             # Get real start position data from dataset

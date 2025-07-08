@@ -5,12 +5,7 @@ Handles conversion between MotionData and MotionAPI models.
 
 import logging
 
-from domain.models.core_models import (
-    Location,
-    MotionData,
-    MotionType,
-    RotationDirection,
-)
+from domain.models import Location, MotionData, MotionType, RotationDirection
 
 from ..models import LocationAPI, MotionAPI, MotionTypeAPI, RotationDirectionAPI
 

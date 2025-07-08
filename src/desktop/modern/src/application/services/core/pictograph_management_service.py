@@ -23,17 +23,17 @@ from pathlib import Path
 from typing import Dict, List, Optional, Tuple, TypedDict, Union
 
 import pandas as pd
-from domain.models.core_models import (
-    BeatData,
+from domain.models.beat_models import BeatData
+from domain.models.enums import (
     ElementalType,
-    GlyphData,
     LetterType,
     Location,
-    MotionData,
     MotionType,
     RotationDirection,
     VTGMode,
 )
+from domain.models.glyph_models import GlyphData
+from domain.models.motion_models import MotionData
 from domain.models.pictograph_models import (
     ArrowData,
     GridData,

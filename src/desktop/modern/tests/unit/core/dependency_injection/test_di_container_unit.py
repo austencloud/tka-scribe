@@ -16,37 +16,29 @@ from typing import Optional, Protocol
 from unittest.mock import Mock
 
 import pytest
-from domain.models.core_models import BeatData
-
-from core.dependency_injection.di_container import (
-    DIContainer,
-    reset_container,
-)
+from core.dependency_injection.di_container import DIContainer, reset_container
 from core.exceptions import DependencyInjectionError
+from domain.models.beat_models import BeatData
 
 
 class IRepository(Protocol):
     """Test repository interface."""
 
-    def save(self, data: str) -> None:
-        ...
+    def save(self, data: str) -> None: ...
 
-    def load(self, id: str) -> str:
-        ...
+    def load(self, id: str) -> str: ...
 
 
 class IService(Protocol):
     """Test service interface."""
 
-    def process(self, input: str) -> str:
-        ...
+    def process(self, input: str) -> str: ...
 
 
 class IController(Protocol):
     """Test controller interface."""
 
-    def handle(self, request: str) -> str:
-        ...
+    def handle(self, request: str) -> str: ...
 
 
 class Repository:

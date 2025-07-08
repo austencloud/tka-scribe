@@ -18,7 +18,7 @@ from PyQt6.QtWidgets import (
     QGridLayout,
 )
 
-from domain.models.core_models import Orientation
+from domain.models import Orientation
 from presentation.components.graph_editor.components.turn_adjustment_controls.styling_helpers import (
     apply_modern_panel_styling,
     apply_unified_button_styling,

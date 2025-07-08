@@ -14,7 +14,7 @@ PROVIDES:
 from abc import ABC, abstractmethod
 from enum import Enum
 
-from domain.models.core_models import (
+from domain.models import (
     MotionData,
     BeatData,
     Location,

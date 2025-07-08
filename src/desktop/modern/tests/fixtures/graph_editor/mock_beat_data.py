@@ -15,7 +15,7 @@ from typing import List, Optional
 modern_src = Path(__file__).parent.parent.parent.parent / "src"
 sys.path.insert(0, str(modern_src))
 
-from domain.models.core_models import (
+from domain.models import (
     BeatData, 
     SequenceData, 
     MotionData, 

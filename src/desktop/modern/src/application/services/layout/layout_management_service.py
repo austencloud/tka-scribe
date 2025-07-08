@@ -7,18 +7,18 @@ It preserves all existing functionality by using composition and delegation
 to the specialized calculators.
 """
 
-from typing import Dict, Any, Optional, Tuple
 import logging
+from typing import Any, Dict, Optional, Tuple
 
-from core.types import Size
-from domain.models.core_models import SequenceData
 from core.interfaces.core_services import ILayoutService
+from core.types import Size
+from domain.models import SequenceData
 
-from .layout_types import LayoutConfig, LayoutMode, ScalingMode
 from .beat_layout_calculator import BeatLayoutCalculator
-from .responsive_scaling_calculator import ResponsiveScalingCalculator
 from .component_position_calculator import ComponentPositionCalculator
 from .layout_event_handler import LayoutEventHandler
+from .layout_types import LayoutConfig, LayoutMode, ScalingMode
+from .responsive_scaling_calculator import ResponsiveScalingCalculator
 from .ui_layout_provider import UILayoutProvider
 
 # Event-driven architecture imports

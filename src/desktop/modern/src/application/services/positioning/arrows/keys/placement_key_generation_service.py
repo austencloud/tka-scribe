@@ -19,8 +19,9 @@ from typing import Optional
 from application.services.validation.pictograph_checker_service import (
     PictographCheckerService,
 )
-from domain.models import MotionData, Orientation
+from domain.models.enums import Orientation
 from domain.models.letter_type_classifier import LetterTypeClassifier
+from domain.models.motion_models import MotionData
 from domain.models.pictograph_models import ArrowData, PictographData
 
 logger = logging.getLogger(__name__)

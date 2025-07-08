@@ -5,15 +5,10 @@ Handles conversion between legacy JSON format and modern domain models.
 Responsible for maintaining compatibility with legacy sequence data structures.
 """
 
-from domain.models import (
-    BeatData,
-    Location,
-    MotionData,
-    MotionType,
-    Orientation,
-    RotationDirection,
-    SequenceData,
-)
+from domain.models.beat_models import BeatData
+from domain.models.enums import Location, MotionType, Orientation, RotationDirection
+from domain.models.motion_models import MotionData
+from domain.models.sequence_models import SequenceData
 
 
 class SequenceDataConverter:

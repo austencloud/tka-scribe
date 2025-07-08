@@ -1,7 +1,7 @@
 from typing import List, Dict
 from PyQt6.QtWidgets import QWidget, QVBoxLayout
 
-from domain.models.core_models import BeatData
+from domain.models import BeatData
 from presentation.components.option_picker.components.frames.clickable_pictograph_frame import (
     ClickablePictographFrame,
 )

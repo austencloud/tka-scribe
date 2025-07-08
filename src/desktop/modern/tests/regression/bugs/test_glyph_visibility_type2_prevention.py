@@ -14,7 +14,7 @@ from pathlib import Path
 from application.services.core.pictograph_management_service import (
     PictographManagementService,
 )
-from domain.models.core_models import LetterType, BeatData
+from domain.models import LetterType, BeatData
 
 
 class TestGlyphVisibilityType2Prevention:

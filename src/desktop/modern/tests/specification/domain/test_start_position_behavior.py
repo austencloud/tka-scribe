@@ -14,8 +14,9 @@ Defines behavioral contracts for start position management and clearing.
 """
 
 import sys
-import pytest
 from pathlib import Path
+
+import pytest
 
 # Add modern source to path
 modern_src = Path(__file__).parent.parent.parent.parent / "src"
@@ -28,7 +29,8 @@ class TestStartPositionBehaviorContract:
     def test_sequence_data_import(self):
         """Test that sequence data can be imported."""
         try:
-            from domain.models.core_models import SequenceData, BeatData
+            from domain.models.beat_models import BeatData
+            from domain.models.sequence_models import SequenceData
 
             assert SequenceData is not None
             assert BeatData is not None
@@ -45,7 +47,8 @@ class TestStartPositionBehaviorContract:
         - Empty sequences have no start position
         """
         try:
-            from domain.models.core_models import SequenceData, BeatData
+            from domain.models.beat_models import BeatData
+            from domain.models.sequence_models import SequenceData
 
             # Test sequence with start position
             beat = BeatData(beat_number=1, letter="A")
@@ -81,7 +84,8 @@ class TestStartPositionBehaviorContract:
         - Clearing preserves sequence structure
         """
         try:
-            from domain.models.core_models import SequenceData, BeatData
+            from domain.models.beat_models import BeatData
+            from domain.models.sequence_models import SequenceData
 
             # Create sequence with start position
             beat = BeatData(beat_number=1, letter="A")
@@ -119,7 +123,7 @@ class TestStartPositionBehaviorContract:
         - Start position format is consistent
         """
         try:
-            from domain.models.core_models import SequenceData
+            from domain.models.sequence_models import SequenceData
 
             # Test valid start positions
             valid_positions = [
@@ -176,7 +180,8 @@ class TestStartPositionBehaviorContract:
         - Start position integrates with sequence lifecycle
         """
         try:
-            from domain.models.core_models import SequenceData, BeatData
+            from domain.models.beat_models import BeatData
+            from domain.models.sequence_models import SequenceData
 
             # Test state transitions
             states = [
@@ -221,7 +226,8 @@ class TestStartPositionBehaviorContract:
         - Start position works with sequence operations
         """
         try:
-            from domain.models.core_models import SequenceData, BeatData
+            from domain.models.beat_models import BeatData
+            from domain.models.sequence_models import SequenceData
 
             # Test integration with sequence creation
             sequence = SequenceData(

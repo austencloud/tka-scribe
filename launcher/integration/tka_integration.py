@@ -50,10 +50,10 @@ class TKAIntegrationService:
         """Initialize launcher services directly (no DI container needed)."""
         try:
             # Import launcher services directly - no DI container complexity needed
-            from services.application_service import ApplicationService
             from services.application_launch_service import ApplicationLaunchService
-            from services.settings_service import SettingsService
+            from services.application_service import ApplicationService
             from services.launcher_state_service import LauncherStateService
+            from services.settings_service import SettingsService
 
             # Create services directly - much simpler than DI container
             state_service = LauncherStateService()
@@ -91,8 +91,9 @@ class TKAIntegrationService:
         try:
             if self.launch_service:
                 # Create launch request
-                from domain.models import LaunchRequest
                 from datetime import datetime
+
+                from domain.models import LaunchRequest
 
                 request = LaunchRequest(
                     application_id=app_id,

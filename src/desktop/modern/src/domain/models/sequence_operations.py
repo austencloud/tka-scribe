@@ -1,6 +1,8 @@
-from typing import Any
 from dataclasses import dataclass
-from domain.models.core_models import SequenceData, BeatData
+from typing import Any
+
+from domain.models.beat_models import BeatData
+from domain.models.sequence_models import SequenceData
 
 
 @dataclass(frozen=True)

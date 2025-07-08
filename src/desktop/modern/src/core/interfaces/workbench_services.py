@@ -1,5 +1,7 @@
-from typing import Protocol, Optional, List
-from domain.models.core_models import SequenceData, BeatData
+from typing import List, Optional, Protocol
+
+from domain.models.beat_models import BeatData
+from domain.models.sequence_models import SequenceData
 
 
 class ISequenceWorkbenchService(Protocol):

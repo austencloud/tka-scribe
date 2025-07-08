@@ -6,13 +6,13 @@ from PyQt6.QtCore import QPointF
 from PyQt6.QtSvgWidgets import QGraphicsSvgItem
 from PyQt6.QtSvg import QSvgRenderer
 
-from domain.models.core_models import MotionData, Location
+from domain.models import MotionData, Location
 
 from presentation.components.pictograph.asset_utils import (
     get_image_path,
 )
 
-from domain.models.core_models import Orientation
+from domain.models import Orientation
 from application.services.positioning.props.orchestration.prop_management_service import (
     PropManagementService,
 )
@@ -191,7 +191,7 @@ class PropRenderer:
         return svg_data
 
     def apply_beta_positioning(self, beat_data: Any) -> None:
-        from domain.models.core_models import BeatData
+        from domain.models import BeatData
 
         if not isinstance(beat_data, BeatData):
             return

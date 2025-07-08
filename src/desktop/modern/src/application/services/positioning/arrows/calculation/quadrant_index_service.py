@@ -11,7 +11,7 @@ missing from the modern arrow positioning system.
 import logging
 from typing import Literal
 
-from domain.models.core_models import MotionData, MotionType, Location
+from domain.models import MotionData, MotionType, Location
 
 logger = logging.getLogger(__name__)
 

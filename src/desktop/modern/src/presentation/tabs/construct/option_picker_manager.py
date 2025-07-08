@@ -9,7 +9,8 @@ from typing import Optional
 from PyQt6.QtCore import QObject, pyqtSignal
 import time
 
-from domain.models.core_models import SequenceData, BeatData
+from domain.models.sequence_models import SequenceData
+from domain.models.beat_models import BeatData
 from presentation.components.option_picker.core.option_picker import OptionPicker
 
 from .data_conversion_service import DataConversionService

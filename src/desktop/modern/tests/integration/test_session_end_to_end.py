@@ -5,25 +5,27 @@ Tests the complete user workflow from application startup to shutdown,
 validating that users can continue exactly where they left off.
 """
 
-import pytest
+import sys
 import tempfile
 import time
 from pathlib import Path
 from unittest.mock import Mock, patch
-import sys
+
+import pytest
 
 # Add TKA src to path
 tka_src_path = Path(__file__).parent.parent.parent / "src"
 sys.path.insert(0, str(tka_src_path))
 
-from core.application.application_factory import ApplicationFactory
-from core.testing.ai_agent_helpers import TKAAITestHelper
-from core.interfaces.session_services import ISessionStateService
-from core.interfaces.core_services import IUIStateManagementService
 from application.services.core.application_lifecycle_manager import (
     ApplicationLifecycleManager,
 )
-from domain.models.core_models import BeatData, SequenceData
+from core.application.application_factory import ApplicationFactory
+from core.interfaces.core_services import IUIStateManagementService
+from core.interfaces.session_services import ISessionStateService
+from core.testing.ai_agent_helpers import TKAAITestHelper
+from domain.models.beat_models import BeatData
+from domain.models.sequence_models import SequenceData
 
 
 class TestSessionEndToEnd:

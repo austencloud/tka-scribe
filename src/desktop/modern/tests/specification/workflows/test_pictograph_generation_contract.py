@@ -69,7 +69,7 @@ class TestPictographGenerationWorkflowContract:
             from application.services.core.pictograph_management_service import (
                 PictographManagementService,
             )
-            from domain.models.core_models import BeatData
+            from domain.models import BeatData
 
             # Create service
             service = PictographManagementService()

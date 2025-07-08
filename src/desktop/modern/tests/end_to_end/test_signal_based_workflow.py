@@ -158,7 +158,7 @@ class SignalBasedWorkflowTester:
                 option_picker = self.layout_manager.option_picker
 
                 # Create a simple beat data to simulate option selection
-                from domain.models.core_models import BeatData
+                from domain.models import BeatData
 
                 beat = BeatData(beat_number=1, letter="A", duration=1.0)
 
@@ -390,7 +390,7 @@ class SignalBasedWorkflowTester:
                 print(f"⚙️ [MULTI_BEAT] Adding beat {i+1}: {letter}")
 
                 # Create beat with different letter
-                from domain.models.core_models import BeatData
+                from domain.models import BeatData
 
                 beat = BeatData(beat_number=i + 1, letter=letter, duration=1.0)
 

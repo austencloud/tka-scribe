@@ -26,7 +26,7 @@ from PyQt6.QtTest import QTest
 
 from core.application.application_factory import ApplicationFactory
 from core.testing.ai_agent_helpers import TKAAITestHelper, AITestResult
-from domain.models.core_models import BeatData, SequenceData
+from domain.models import BeatData, SequenceData
 from application.services.core.sequence_persistence_service import (
     SequencePersistenceService,
 )

@@ -15,7 +15,7 @@ if TYPE_CHECKING:
     from application.services.positioning.arrows.utilities.position_matching_service import (
         PositionMatchingService,
     )
-    from domain.models.core_models import BeatData
+    from domain.models import BeatData
 
 logger = logging.getLogger(__name__)
 

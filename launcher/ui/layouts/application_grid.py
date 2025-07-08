@@ -49,7 +49,6 @@ logger = logging.getLogger(__name__)
 from ..components import ReliableApplicationCard
 from ..reliable_effects import get_animation_manager
 
-
 ApplicationCard = ReliableApplicationCard
 
 

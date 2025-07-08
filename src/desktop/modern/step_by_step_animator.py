@@ -13,44 +13,40 @@ for component integration patterns in TKA.
 
 import sys
 from pathlib import Path
-from typing import Optional, List, Dict, Any
+from typing import Any, Dict, List, Optional
+
+from presentation.components.graph_editor.components.adjustment_panel import (
+    AdjustmentPanel,
+)
+from PyQt6.QtCore import QEasingCurve, QPropertyAnimation, Qt, QTimer, pyqtSignal
+from PyQt6.QtGui import QColor, QFont, QPalette
 from PyQt6.QtWidgets import (
     QApplication,
-    QMainWindow,
-    QVBoxLayout,
-    QHBoxLayout,
-    QWidget,
-    QLabel,
     QFrame,
-    QPushButton,
-    QSplitter,
-    QSlider,
-    QProgressBar,
-    QGroupBox,
     QGridLayout,
-    QSpacerItem,
+    QGroupBox,
+    QHBoxLayout,
+    QLabel,
+    QMainWindow,
+    QProgressBar,
+    QPushButton,
     QSizePolicy,
+    QSlider,
+    QSpacerItem,
+    QSplitter,
+    QVBoxLayout,
+    QWidget,
 )
-from PyQt6.QtCore import Qt, QTimer, pyqtSignal, QPropertyAnimation, QEasingCurve
-from PyQt6.QtGui import QFont, QPalette, QColor
-
-from presentation.components.graph_editor.components.adjustment_panel import AdjustmentPanel
 
 # Add modern/src to path for imports
 modern_src_path = Path(__file__).parent / "src"
 sys.path.insert(0, str(modern_src_path))
 
-from domain.models.core_models import (
-    BeatData,
-    SequenceData,
-    MotionData,
-    MotionType,
-    Location,
-    RotationDirection,
-    Orientation,
-)
+from domain.models.beat_models import BeatData
+from domain.models.enums import Location, MotionType, Orientation, RotationDirection
+from domain.models.motion_models import MotionData
+from domain.models.sequence_models import SequenceData
 from presentation.components.pictograph.pictograph_component import PictographComponent
-
 
 
 # Component Integration Framework

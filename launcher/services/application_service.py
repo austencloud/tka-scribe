@@ -6,15 +6,11 @@ without dealing with the actual launching process.
 """
 
 import logging
-from typing import List, Optional, Dict, Any
 from pathlib import Path
+from typing import Any, Dict, List, Optional
 
-from domain.models import (
-    ApplicationData,
-    ApplicationCategory,
-    ApplicationStatus,
-)
 from core.interfaces import IApplicationService, ILauncherStateService
+from domain.models import ApplicationCategory, ApplicationData, ApplicationStatus
 
 logger = logging.getLogger(__name__)
 

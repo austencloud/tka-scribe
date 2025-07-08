@@ -18,7 +18,7 @@ import logging
 from core.interfaces.positioning_services import (
     IArrowRotationCalculator,
 )
-from domain.models.core_models import (
+from domain.models import (
     MotionData,
     MotionType,
     Location,
