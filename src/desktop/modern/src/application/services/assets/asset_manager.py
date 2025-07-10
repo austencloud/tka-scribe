@@ -5,14 +5,14 @@ Manages SVG assets, file paths, and color transformations for pictograph renderi
 Framework-agnostic service that handles asset loading, caching, and color transformations.
 """
 
+import logging
 import os
 import re
-import logging
 from functools import lru_cache
-from typing import Dict, Set, Optional
+from typing import Dict, Optional, Set
 
 from domain.models import MotionData, MotionType
-from presentation.components.pictograph.asset_utils import get_image_path
+from application.services.assets.image_asset_utils import get_image_path
 
 logger = logging.getLogger(__name__)
 
@@ -20,21 +20,21 @@ logger = logging.getLogger(__name__)
 class AssetManager:
     """
     Manages SVG assets, file paths, and color transformations.
-    
+
     Provides centralized asset management for pictograph rendering components,
     including SVG file path generation, color transformations, and caching.
     """
 
     # Class-level cache statistics for monitoring
     _cache_stats: Dict[str, int] = {"hits": 0, "misses": 0, "total_files_cached": 0}
-    
+
     # Track cached files for cache management
     _cached_files: Set[str] = set()
-    
+
     # Color mapping for SVG transformations
     COLOR_MAP = {
         "blue": "#2E3192",  # Reference blue color
-        "red": "#ED1C24",   # Reference red color
+        "red": "#ED1C24",  # Reference red color
     }
 
     def __init__(self):
@@ -44,11 +44,11 @@ class AssetManager:
     def get_arrow_asset_path(self, motion_data: MotionData, color: str) -> str:
         """
         Generate SVG file path for arrow assets based on motion type and color.
-        
+
         Args:
             motion_data: Motion data containing type and turns information
             color: Arrow color ("blue" or "red")
-            
+
         Returns:
             String path to the appropriate SVG asset file
         """
@@ -74,7 +74,9 @@ class AssetManager:
             return get_image_path(f"arrows_colored/{color}/float.svg")
         else:
             # Fallback to static for unknown motion types
-            logger.warning(f"Unknown motion type: {motion_data.motion_type}, using static fallback")
+            logger.warning(
+                f"Unknown motion type: {motion_data.motion_type}, using static fallback"
+            )
             return get_image_path(
                 f"arrows_colored/static/{color}/from_radial/static_{turns_str}.svg"
             )
@@ -82,10 +84,10 @@ class AssetManager:
     def get_fallback_arrow_asset_path(self, motion_data: MotionData) -> str:
         """
         Generate fallback SVG file path for original (non-colored) arrow assets.
-        
+
         Args:
             motion_data: Motion data containing type and turns information
-            
+
         Returns:
             String path to the fallback SVG asset file
         """
@@ -103,17 +105,19 @@ class AssetManager:
             return get_image_path("arrows/float.svg")
         else:
             # Fallback to static for unknown motion types
-            logger.warning(f"Unknown motion type: {motion_data.motion_type}, using static fallback")
+            logger.warning(
+                f"Unknown motion type: {motion_data.motion_type}, using static fallback"
+            )
             return get_image_path(f"arrows/static/from_radial/static_{turns_str}.svg")
 
     def get_prop_asset_path(self, prop_type: str, color: Optional[str] = None) -> str:
         """
         Generate prop asset file path.
-        
+
         Args:
             prop_type: Type of prop (e.g., "staff")
             color: Optional color specification
-            
+
         Returns:
             String path to the prop asset file
         """
@@ -127,11 +131,11 @@ class AssetManager:
     def apply_color_transformation(self, svg_data: str, color: str) -> str:
         """
         Apply color transformation to SVG content using regex patterns.
-        
+
         Args:
             svg_data: Original SVG content as string
             color: Target color ("blue" or "red")
-            
+
         Returns:
             Transformed SVG content with applied color
         """
@@ -162,10 +166,10 @@ class AssetManager:
     def load_and_cache_asset(self, path: str) -> str:
         """
         Load SVG file with LRU caching for performance.
-        
+
         Args:
             path: File path to the SVG asset
-            
+
         Returns:
             SVG content as string
         """
@@ -250,7 +254,7 @@ class AssetManager:
         """Clear the SVG file cache and reset statistics."""
         # Find and clear the LRU cache
         for obj in cls.__dict__.values():
-            if hasattr(obj, 'cache_clear'):
+            if hasattr(obj, "cache_clear"):
                 obj.cache_clear()
 
         # Reset tracking
@@ -264,8 +268,8 @@ class AssetManager:
         """Get detailed cache information for debugging."""
         try:
             # Get cache info from the LRU cache
-            cache_method = getattr(cls, '_load_svg_file_cached', None)
-            if cache_method and hasattr(cache_method, 'cache_info'):
+            cache_method = getattr(cls, "_load_svg_file_cached", None)
+            if cache_method and hasattr(cache_method, "cache_info"):
                 cache_info = cache_method.cache_info()
                 hit_rate = (
                     cls._cache_stats["hits"]

@@ -20,7 +20,7 @@ from domain.models.beat_data import BeatData
 from presentation.components.option_picker.types.letter_types import LetterType
 
 
-class DisplayCoordinationService:
+class OptionDisplayCoordinator:
     """
     Pure business service for display coordination.
 

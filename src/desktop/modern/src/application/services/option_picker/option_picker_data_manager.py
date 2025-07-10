@@ -17,14 +17,14 @@ Works exclusively with PictographData - no beat data conversions.
 import logging
 from typing import Any, Dict, List, Optional
 
-from core.interfaces.option_picker_services import IOptionPickerDataService
+from core.interfaces.option_picker_interfaces import IOptionPickerDataManager
 from domain.models.pictograph_models import PictographData
 from domain.models.sequence_models import SequenceData
 
 logger = logging.getLogger(__name__)
 
 
-class OptionPickerDataService(IOptionPickerDataService):
+class OptionPickerDataManager(IOptionPickerDataManager):
     """
     Pure service for option picker data management.
 
@@ -62,38 +62,6 @@ class OptionPickerDataService(IOptionPickerDataService):
         except Exception as e:
             logger.error(f"Failed to initialize position service: {e}")
             self._position_service = None
-
-    def load_pictograph_options(self) -> List[PictographData]:
-        """
-        Load initial pictograph options (the proper way).
-
-        Returns:
-            List of available pictograph data options
-        """
-        try:
-            if not self._position_service:
-                logger.warning(
-                    "Position service not available, returning sample options"
-                )
-                return self._get_sample_pictograph_options()
-
-            # Get sample options from position service
-            try:
-                # Get options for a default start position
-                pictograph_options = self._position_service.get_next_options("alpha1")
-                self._cached_pictographs = pictograph_options
-
-                logger.debug(
-                    f"Loaded {len(pictograph_options)} initial pictograph options"
-                )
-                return pictograph_options
-            except Exception as e:
-                logger.warning(f"Failed to load from position service: {e}")
-                return self._get_sample_pictograph_options()
-
-        except Exception as e:
-            logger.error(f"Error loading pictograph options: {e}")
-            return []
 
     def refresh_pictograph_options(self) -> List[PictographData]:
         """

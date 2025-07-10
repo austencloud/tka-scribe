@@ -1,0 +1,53 @@
+import os
+from typing import Dict, List
+from PyQt6.QtGui import QPixmap
+
+class AssetPathResolver:
+    """Centralized asset path resolution for all background animations"""
+    
+    def __init__(self):
+        self._cached_images: Dict[str, QPixmap] = {}
+        self._asset_root = self._find_asset_root()
+    
+    def get_image_path(self, filename: str) -> str:
+        """Get the path to an image file from the root assets directory"""
+        assets_path = os.path.join(self._asset_root, filename)
+        normalized_path = os.path.normpath(assets_path)
+        
+        if not os.path.exists(normalized_path):
+            print(f"Warning: Asset not found: {normalized_path}")
+            print("Please ensure required assets are in root/images/")
+        
+        return normalized_path
+    
+    def get_cached_image(self, filename: str) -> QPixmap:
+        """Get cached image or load if not cached"""
+        if filename in self._cached_images:
+            return self._cached_images[filename]
+        
+        full_path = self.get_image_path(filename)
+        if os.path.exists(full_path):
+            pixmap = QPixmap(full_path)
+            self._cached_images[filename] = pixmap
+            return pixmap
+        
+        return QPixmap()  # Return empty pixmap if not found
+    
+    def preload_assets(self, asset_list: List[str]) -> None:
+        """Preload a list of assets"""
+        for asset_path in asset_list:
+            self.get_cached_image(asset_path)
+    
+    def clear_cache(self) -> None:
+        """Clear asset cache"""
+        self._cached_images.clear()
+    
+    def _find_asset_root(self) -> str:
+        """Find the root images directory"""
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        for _ in range(6):  # Go up directories to find images
+            images_path = os.path.join(current_dir, "images")
+            if os.path.exists(images_path):
+                return images_path
+            current_dir = os.path.dirname(current_dir)
+        return ""

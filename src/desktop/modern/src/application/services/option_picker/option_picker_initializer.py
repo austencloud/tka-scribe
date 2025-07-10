@@ -18,7 +18,7 @@ from typing import Any, Callable, Dict, Optional, Tuple
 
 from core.dependency_injection.di_container import DIContainer
 from core.interfaces.core_services import ILayoutService
-from core.interfaces.option_picker_services import IOptionPickerInitializer
+from core.interfaces.option_picker_interfaces import IOptionPickerInitializer
 from PyQt6.QtWidgets import QVBoxLayout, QWidget
 
 logger = logging.getLogger(__name__)

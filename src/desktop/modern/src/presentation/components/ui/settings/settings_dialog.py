@@ -1,6 +1,6 @@
 from typing import Any, Dict
 
-from application.services.ui.settings import UISettingsManager
+from application.services.ui.ui_settings_manager import UISettingsManager
 from core.interfaces.core_services import IUIStateManager
 from presentation.components.ui.settings.coordinator import SettingsCoordinator
 from presentation.components.ui.settings.tabs.background_tab import BackgroundTab

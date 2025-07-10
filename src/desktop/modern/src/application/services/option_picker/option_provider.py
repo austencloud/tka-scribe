@@ -13,7 +13,7 @@ Presentation Layer → OptionServiceQtAdapter → OptionService
 import logging
 from typing import TYPE_CHECKING, Any, Dict, List, Optional
 
-from core.interfaces.option_picker_services import (
+from core.interfaces.option_picker_interfaces import (
     IOptionProvider,
     IOptionServiceSignals,
 )

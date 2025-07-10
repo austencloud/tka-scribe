@@ -8,7 +8,7 @@ from PyQt6.QtSvg import QSvgRenderer
 
 from domain.models import MotionData, Location
 
-from presentation.components.pictograph.asset_utils import (
+from application.services.assets.image_asset_utils import (
     get_image_path,
 )
 

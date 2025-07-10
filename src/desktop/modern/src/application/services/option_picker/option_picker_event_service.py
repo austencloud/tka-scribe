@@ -16,8 +16,8 @@ No UI dependencies, completely testable in isolation.
 import logging
 from typing import Any, Callable, Optional
 
-from core.interfaces.option_picker_services import (
-    IOptionPickerDataService,
+from core.interfaces.option_picker_interfaces import (
+    IOptionPickerDataManager,
     IOptionPickerDisplayService,
     IOptionPickerEventService,
 )
@@ -112,7 +112,7 @@ class OptionPickerEventService(IOptionPickerEventService):
     def handle_filter_change(
         self,
         filter_text: str,
-        data_service: IOptionPickerDataService,
+        data_service: IOptionPickerDataManager,
         display_service: IOptionPickerDisplayService,
     ) -> None:
         """

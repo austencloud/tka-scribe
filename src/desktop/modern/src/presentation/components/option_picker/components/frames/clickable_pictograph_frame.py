@@ -34,7 +34,7 @@ class ClickablePictographFrame(QFrame):
 
         self.container_widget: Optional[QWidget] = None
         self._option_picker_width: int = 0
-        
+
         # Initialize component sizer service
         self.component_sizer = ComponentSizer()
 
@@ -94,9 +94,7 @@ class ClickablePictographFrame(QFrame):
             return
 
         try:
-            from application.services.ui.pictograph_scaler import (
-                ScalingContext,
-            )
+            from application.services.ui.pictograph_scaler import ScalingContext
 
             self.pictograph_component.set_scaling_context(ScalingContext.OPTION_VIEW)
 
@@ -106,9 +104,7 @@ class ClickablePictographFrame(QFrame):
                     pictograph_data.glyph_data.letter_type
                 )
         except Exception:
-            from application.services.ui.pictograph_scaler import (
-                ScalingContext,
-            )
+            from application.services.ui.pictograph_scaler import ScalingContext
 
             self.pictograph_component.set_scaling_context(ScalingContext.OPTION_VIEW)
             if pictograph_data.glyph_data and pictograph_data.glyph_data.letter_type:
@@ -132,16 +128,13 @@ class ClickablePictographFrame(QFrame):
 
             # Use ComponentSizer service to calculate optimal size
             constraints = SizeConstraints(
-                min_size=60,
-                max_size=200,
-                border_width_ratio=0.015,
-                spacing=3
+                min_size=60, max_size=200, border_width_ratio=0.015, spacing=3
             )
-            
+
             final_size = self.component_sizer.calculate_pictograph_frame_size(
                 container_width, constraints
             )
-            
+
             self.setFixedSize(final_size, final_size)
         except Exception:
             # Fallback to minimum size if calculation fails
@@ -152,10 +145,41 @@ class ClickablePictographFrame(QFrame):
         self.resize_frame()
 
     def update_pictograph_data(self, pictograph_data: PictographData) -> None:
+        import logging
+
+        logger = logging.getLogger(__name__)
+
+        logger.debug(f"🔄 Frame {id(self)} update_pictograph_data called")
+        logger.debug(
+            f"   📊 Before: pictograph_component = {self.pictograph_component}"
+        )
+
         self.pictograph_data = pictograph_data
+
+        logger.debug(
+            f"   📊 After setting data: pictograph_component = {self.pictograph_component}"
+        )
+
         if self.pictograph_component:
+            logger.debug(
+                f"✅ Frame {id(self)} updating pictograph data with valid component"
+            )
+
+            logger.debug(f"   🔧 Calling _configure_option_picker_context...")
             self._configure_option_picker_context(pictograph_data)
+            logger.debug(
+                f"   📊 After configure: pictograph_component = {self.pictograph_component}"
+            )
+
+            logger.debug(f"   🔧 Calling update_from_pictograph_data...")
             self.pictograph_component.update_from_pictograph_data(pictograph_data)
+            logger.debug(
+                f"   📊 After update: pictograph_component = {self.pictograph_component}"
+            )
+        else:
+            logger.warning(
+                f"❌ Frame {id(self)} has no pictograph_component during update"
+            )
 
     def cleanup(self) -> None:
         if self._selection_overlay:

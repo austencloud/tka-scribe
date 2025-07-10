@@ -18,7 +18,7 @@ No UI dependencies - completely testable in isolation.
 import logging
 from typing import Any, Callable, Dict, List, Tuple
 
-from core.interfaces.option_picker_services import IOptionPickerDisplayService
+from core.interfaces.option_picker_interfaces import IOptionPickerDisplayService
 from domain.models.letter_type_classifier import LetterType, LetterTypeClassifier
 from domain.models.pictograph_models import PictographData
 

@@ -1,10 +1,10 @@
 from typing import TYPE_CHECKING
-from PyQt6.QtWidgets import QFrame, QGridLayout
-from PyQt6.QtCore import Qt
 
 from presentation.components.option_picker.components.frames.clickable_pictograph_frame import (
     ClickablePictographFrame,
 )
+from PyQt6.QtCore import Qt
+from PyQt6.QtWidgets import QFrame, QGridLayout
 
 if TYPE_CHECKING:
     from presentation.components.option_picker.components.sections.section_widget import (
@@ -64,6 +64,20 @@ class OptionPickerSectionPictographContainer(QFrame):
                     pass
         self.pictographs.clear()
 
+    def remove_pictographs_for_reuse(self):
+        """Remove pictographs from container without destroying them (for pool reuse)."""
+        for pictograph in self.pictographs:
+            if pictograph is not None:
+                try:
+                    # Remove from layout but DON'T call cleanup() or deleteLater()
+                    # so the frames can be reused by the pool
+                    self.main_layout.removeWidget(pictograph)
+                    pictograph.setParent(None)
+                    pictograph.setVisible(False)
+                except RuntimeError:
+                    pass
+        self.pictographs.clear()
+
     def clear_pictographs_pool_style(self):
         """Clear pictographs using pool approach (don't delete, just hide)."""
         for pictograph in self.pictographs:
@@ -77,10 +91,29 @@ class OptionPickerSectionPictographContainer(QFrame):
 
     def add_pictograph(self, pictograph_frame: "ClickablePictographFrame"):
         """Add pictograph from pool."""
+        import logging
+
+        logger = logging.getLogger(__name__)
+
+        # Debug: Check frame state at the very start of add_pictograph
+        has_component_start = (
+            hasattr(pictograph_frame, "pictograph_component")
+            and pictograph_frame.pictograph_component
+        )
+        logger.debug(
+            f"🎯 add_pictograph called: Frame {id(pictograph_frame)} has_component={has_component_start}"
+        )
+
         self.pictographs.append(pictograph_frame)
+        logger.debug(
+            f"   📝 After append: has_component={hasattr(pictograph_frame, 'pictograph_component') and pictograph_frame.pictograph_component}"
+        )
 
         if hasattr(pictograph_frame, "set_container_widget"):
             pictograph_frame.set_container_widget(self.section)
+            logger.debug(
+                f"   🏠 After set_container_widget: has_component={hasattr(pictograph_frame, 'pictograph_component') and pictograph_frame.pictograph_component}"
+            )
 
         COLUMN_COUNT = 8
         count = len(self.pictographs)
@@ -90,9 +123,17 @@ class OptionPickerSectionPictographContainer(QFrame):
         pictograph_frame.setVisible(True)
         pictograph_frame.show()
 
-        if hasattr(pictograph_frame, "pictograph_component"):
+        if (
+            hasattr(pictograph_frame, "pictograph_component")
+            and pictograph_frame.pictograph_component
+        ):
             pictograph_frame.pictograph_component.setVisible(True)
             pictograph_frame.pictograph_component.show()
+        else:
+            # Debug: Log when pictograph_component is missing
+            logger.warning(
+                f"Frame {id(pictograph_frame)} has no pictograph_component or it's None"
+            )
 
     def resize_pictographs(self, target_size: int):
         """Resize all pictographs using legacy algorithm."""

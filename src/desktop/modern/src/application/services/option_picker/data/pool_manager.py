@@ -149,9 +149,18 @@ class PictographPoolManager(QObject):
                 real_pictograph_data = self._create_minimal_pictograph_data()
 
             # Create frame directly with PictographData
-            frame = ClickablePictographFrame(
-                real_pictograph_data, parent=self.parent_widget
-            )
+            # Use parent=None to avoid RuntimeError that causes pictograph_component to be None
+            frame = ClickablePictographFrame(real_pictograph_data, parent=None)
+
+            # Debug: Check if pictograph_component was created successfully
+            if hasattr(frame, "pictograph_component") and frame.pictograph_component:
+                logger.debug(
+                    f"✅ Frame {len(self._pictograph_pool)} created with pictograph_component"
+                )
+            else:
+                logger.warning(
+                    f"❌ Frame {len(self._pictograph_pool)} created WITHOUT pictograph_component"
+                )
 
             # Set up event handlers
             if self._click_handler:

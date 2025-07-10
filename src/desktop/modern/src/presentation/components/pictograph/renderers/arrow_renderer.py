@@ -4,29 +4,23 @@ Arrow renderer for pictograph components.
 Handles rendering of arrow elements with positioning, rotation, and mirroring.
 """
 
+import logging
 import os
 import re
-import logging
 from functools import lru_cache
-from typing import Optional, TYPE_CHECKING, Dict, Set
-from PyQt6.QtSvg import QSvgRenderer
+from typing import TYPE_CHECKING, Dict, Optional, Set
 
-from presentation.components.pictograph.asset_utils import (
-    get_image_path,
-)
 from application.services.assets.asset_manager import AssetManager
-from domain.models import (
-    MotionData,
-    Location,
-    MotionType,
-)
-from domain.models.pictograph_models import ArrowData, PictographData
-from core.interfaces.positioning_services import IArrowPositioningOrchestrator, IArrowCoordinateSystemService
 from core.dependency_injection.di_container import get_container
-from presentation.components.pictograph.graphics_items.arrow_item import (
-    ArrowItem,
+from core.interfaces.positioning_services import (
+    IArrowCoordinateSystemService,
+    IArrowPositioningOrchestrator,
 )
-
+from domain.models import Location, MotionData, MotionType
+from domain.models.pictograph_models import ArrowData, PictographData
+from application.services.assets.image_asset_utils import get_image_path
+from presentation.components.pictograph.graphics_items.arrow_item import ArrowItem
+from PyQt6.QtSvg import QSvgRenderer
 
 if TYPE_CHECKING:
     from presentation.components.pictograph.pictograph_scene import PictographScene
@@ -68,7 +62,7 @@ class ArrowRenderer:
 
         # Initialize cache monitoring
         logger.debug("ArrowRenderer initialized with asset management service")
-        
+
         # Fallback coordinates for when coordinate system service is not available
         self._fallback_location_coordinates = {
             Location.NORTH.value: (0, -self.HAND_RADIUS),
@@ -119,11 +113,15 @@ class ArrowRenderer:
             logger.warning(
                 f"Pre-colored SVG not found: {arrow_svg_path}, falling back to original method"
             )
-            original_svg_path = self.asset_manager.get_fallback_arrow_asset_path(motion_data)
+            original_svg_path = self.asset_manager.get_fallback_arrow_asset_path(
+                motion_data
+            )
             if os.path.exists(original_svg_path):
                 # Apply color transformation to SVG data (fallback method)
                 svg_data = self.asset_manager.load_and_cache_asset(original_svg_path)
-                colored_svg_data = self.asset_manager.apply_color_transformation(svg_data, color)
+                colored_svg_data = self.asset_manager.apply_color_transformation(
+                    svg_data, color
+                )
 
                 renderer = QSvgRenderer(bytearray(colored_svg_data, encoding="utf-8"))
                 logger.debug(
@@ -241,11 +239,12 @@ class ArrowRenderer:
             # Since we don't have motion data context, create a dummy static motion
             # for coordinate calculation
             from domain.models import MotionData, MotionType
+
             dummy_motion = MotionData(
                 motion_type=MotionType.STATIC,
                 turns=0.0,
                 start_loc=location,
-                end_loc=location
+                end_loc=location,
             )
             point = self.coordinate_system.get_initial_position(dummy_motion, location)
             return (point.x(), point.y())

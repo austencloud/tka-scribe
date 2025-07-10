@@ -8,7 +8,7 @@ import os
 from PyQt6.QtSvgWidgets import QGraphicsSvgItem
 from PyQt6.QtSvg import QSvgRenderer
 
-from presentation.components.pictograph.asset_utils import (
+from application.services.assets.image_asset_utils import (
     get_image_path,
 )
 

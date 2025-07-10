@@ -86,17 +86,8 @@ class IOptionPickerInitializer(ABC):
         """
 
 
-class IOptionPickerDataService(ABC):
+class IOptionPickerDataManager(ABC):
     """Interface for option picker data management. Works exclusively with PictographData."""
-
-    @abstractmethod
-    def load_pictograph_options(self) -> List[PictographData]:
-        """
-        Load initial pictograph options.
-
-        Returns:
-            List of available pictograph data options
-        """
 
     @abstractmethod
     def refresh_pictograph_options(self) -> List[PictographData]:
@@ -258,7 +249,7 @@ class IOptionPickerEventService(ABC):
     def handle_filter_change(
         self,
         filter_text: str,
-        data_service: IOptionPickerDataService,
+        data_service: IOptionPickerDataManager,
         display_service: IOptionPickerDisplayService,
     ) -> None:
         """

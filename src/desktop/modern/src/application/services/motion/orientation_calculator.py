@@ -18,7 +18,7 @@ from domain.models.enums import Location, MotionType, Orientation
 from domain.models.motion_models import MotionData
 
 
-class IMotionOrientationService(ABC):
+class IOrientationCalculator(ABC):
     """Interface for motion orientation operations."""
 
     @abstractmethod
@@ -32,7 +32,7 @@ class IMotionOrientationService(ABC):
         """Flip orientation between IN and OUT."""
 
 
-class MotionOrientationService(IMotionOrientationService):
+class OrientationCalculator(IOrientationCalculator):
     """
     Focused motion orientation service.
 

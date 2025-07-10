@@ -45,17 +45,17 @@ class OptionPickerSection(QGroupBox):
 
         # Initialize layout manager with service
         from application.services.option_picker.section_layout_manager import (
-            SectionLayoutManager,
+            SectionLayoutManager as BusinessLayoutService,
         )
         from presentation.components.option_picker.components.sections.section_layout_manager import (
-            SectionLayoutManager,
+            SectionLayoutManager as UILayoutManager,
         )
 
         # Use provided service or create default instance
         if layout_service is None:
-            layout_service = SectionLayoutManager()
+            layout_service = BusinessLayoutService()
 
-        self.layout_manager = SectionLayoutManager(self, layout_service)
+        self.layout_manager = UILayoutManager(self, layout_service)
 
         self._setup_ui()
         self._register_for_sizing_updates()
@@ -102,12 +102,28 @@ class OptionPickerSection(QGroupBox):
 
     def add_multiple_pictographs_from_pool(self, pictograph_frames):
         """BATCH add multiple pictographs without intermediate updates"""
+        import logging
+
+        logger = logging.getLogger(__name__)
+
+        logger.debug(
+            f"🎯 add_multiple_pictographs_from_pool called with {len(pictograph_frames)} frames"
+        )
+
         # Defer sizing until all frames are added
 
         try:
-            for frame in pictograph_frames:
+            logger.debug(f"   🏗️ Section container: {self.section_pictograph_container}")
+            logger.debug(
+                f"   🏗️ Container type: {type(self.section_pictograph_container)}"
+            )
+
+            for i, frame in enumerate(pictograph_frames):
+                logger.debug(f"   📦 Processing frame {i}: {id(frame)}")
                 # Add without triggering size updates
+                logger.debug(f"   🔧 Calling add_pictograph on container...")
                 self.section_pictograph_container.add_pictograph(frame)
+                logger.debug(f"   ✅ add_pictograph completed for frame {i}")
 
             # Single size update at the end
             self.layout_manager.update_size_once()
@@ -122,6 +138,10 @@ class OptionPickerSection(QGroupBox):
     def clear_pictographs_pool_style(self):
         """Clear pictographs using pool style."""
         self.section_pictograph_container.clear_pictographs_pool_style()
+
+    def remove_pictographs_for_reuse(self):
+        """Remove pictographs from section without destroying them (for pool reuse)."""
+        self.section_pictograph_container.remove_pictographs_for_reuse()
 
     def toggle_section(self):
         """Toggle section visibility."""
