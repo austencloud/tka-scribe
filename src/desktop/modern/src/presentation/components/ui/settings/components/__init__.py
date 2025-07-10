@@ -7,7 +7,6 @@ from .action_buttons import SettingsActionButtons
 from .animations import SettingsAnimations
 from .content_area import SettingsContentArea
 from .header import SettingsHeader
-from .services import SettingsServices
 from .sidebar import SettingsSidebar
 from .toggle import Toggle
 from .motion_toggle import MotionToggle
@@ -21,7 +20,6 @@ __all__ = [
     "SettingsAnimations",
     "SettingsContentArea",
     "SettingsHeader",
-    "SettingsServices",
     "SettingsSidebar",
     "Toggle",
     "MotionToggle",

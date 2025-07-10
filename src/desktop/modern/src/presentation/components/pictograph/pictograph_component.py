@@ -5,6 +5,8 @@ Direct pictograph view for Kinetic Constructor - matches legacy container hierar
 from typing import Any, Optional
 
 from application.services.ui.context_aware_scaling_service import ScalingContext
+from core.dependency_injection import get_container
+from core.interfaces.core_services import IPictographBorderService
 from domain.models import BeatData
 from domain.models.pictograph_models import PictographData
 from presentation.components.pictograph.border_manager import BorderedPictographMixin
@@ -14,9 +16,13 @@ from PyQt6.QtGui import QEnterEvent, QKeyEvent, QPainter, QResizeEvent
 from PyQt6.QtWidgets import QGraphicsView
 
 
-class PictographComponent(QGraphicsView, BorderedPictographMixin):
+class PictographComponent(BorderedPictographMixin, QGraphicsView):
 
-    def __init__(self, parent: Optional[QGraphicsView] = None):
+    def __init__(
+        self,
+        border_service: IPictographBorderService,
+        parent: Optional[QGraphicsView] = None,
+    ):
         if parent is not None:
             try:
                 _ = parent.isVisible()
@@ -24,8 +30,8 @@ class PictographComponent(QGraphicsView, BorderedPictographMixin):
                 print("❌ Parent widget deleted, cannot create PictographComponent")
                 raise RuntimeError("Parent widget has been deleted") from exc
 
-        super().__init__(parent)
-        BorderedPictographMixin.__init__(self)
+        BorderedPictographMixin.__init__(self, border_service)
+        QGraphicsView.__init__(self, parent)
 
         # Removed current_beat storage - component is now stateless
         self.scene: Optional[PictographScene] = None  # Dimension debugging
@@ -278,3 +284,37 @@ class PictographComponent(QGraphicsView, BorderedPictographMixin):
     def get_scaling_context(self) -> ScalingContext:
         """Get the current scaling context."""
         return self.scaling_context
+
+
+def create_pictograph_component(
+    parent: Optional[QGraphicsView] = None,
+    container=None,
+) -> PictographComponent:
+    """
+    Factory function to create a PictographComponent with injected dependencies.
+
+    This function resolves the border service from the provided or global DI container
+    and creates a properly configured PictographComponent instance.
+
+    Args:
+        parent: Optional parent widget
+        container: Optional DI container (uses global if not provided)
+
+    Returns:
+        PictographComponent: Configured component instance
+    """
+    if container is None:
+        container = get_container()
+
+    try:
+        border_service = container.resolve(IPictographBorderService)
+    except Exception as e:
+        # Fallback: create service directly if DI fails
+        print(f"⚠️ DI resolution failed, creating border service directly: {e}")
+        from application.services.pictographs.border_service import (
+            PictographBorderService,
+        )
+
+        border_service = PictographBorderService()
+
+    return PictographComponent(border_service, parent)

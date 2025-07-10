@@ -5,7 +5,8 @@ These interfaces define the contracts for core services, replacing tightly-coupl
 """
 
 from abc import ABC, abstractmethod
-from typing import List, Optional, Dict, Any, Tuple, Callable
+from typing import Any, Callable, Dict, List, Optional, Tuple
+
 from core.types import Size
 
 
@@ -238,6 +239,62 @@ class IPictographContextService(ABC):
     @abstractmethod
     def determine_context_from_scene(self, scene: Any) -> Any:
         """Determine context from a pictograph scene."""
+
+
+class IPictographBorderService(ABC):
+    """Interface for pictograph border management operations."""
+
+    @abstractmethod
+    def calculate_border_width(self, size: int) -> int:
+        """Calculate border width based on size using the standard formula."""
+
+    @abstractmethod
+    def get_border_adjusted_size(self, original_size: int) -> int:
+        """Get size adjusted for border width."""
+
+    @abstractmethod
+    def calculate_floating_dimensions(self, view_width: int) -> Any:
+        """Calculate floating-point border dimensions for precise drawing."""
+
+    @abstractmethod
+    def apply_letter_type_colors(self, letter_type: Any) -> Any:
+        """Apply border colors based on letter type."""
+
+    @abstractmethod
+    def apply_gold_colors(self) -> Any:
+        """Apply gold colors (typically used for hover states)."""
+
+    @abstractmethod
+    def apply_custom_colors(self, primary: str, secondary: str) -> Any:
+        """Apply custom border colors."""
+
+    @abstractmethod
+    def reset_to_original_colors(self) -> Any:
+        """Reset border colors to original values."""
+
+    @abstractmethod
+    def get_current_colors(self) -> Tuple[str, str]:
+        """Get current border colors as (primary, secondary) tuple."""
+
+    @abstractmethod
+    def get_current_configuration(self) -> Any:
+        """Get current border configuration."""
+
+    @abstractmethod
+    def enable_borders(self) -> Any:
+        """Enable border rendering."""
+
+    @abstractmethod
+    def disable_borders(self) -> Any:
+        """Disable border rendering."""
+
+    @abstractmethod
+    def set_border_width_percentage(self, percentage: float) -> Any:
+        """Set the border width percentage."""
+
+    @abstractmethod
+    def validate_configuration(self) -> bool:
+        """Validate current border configuration."""
 
 
 # ILayoutManagementService has been consolidated into ILayoutService above

@@ -20,7 +20,9 @@ from .core.option_picker import OptionPicker
 from .core.option_picker_widget import OptionPickerWidget
 
 # Services (for advanced usage)
-from .services.data.pool_manager import PictographPoolManager
+# Note: PictographPoolManager has been moved to application.services.option_picker.data.pool_manager
+# Import it directly from there to avoid circular imports
+# from application.services.option_picker.data.pool_manager import PictographPoolManager
 
 # Types
 from .types.letter_types import LetterType
@@ -30,7 +32,7 @@ __all__ = [
     "OptionPicker",
     "OptionPickerWidget",
     "OptionService",
-    "PictographPoolManager",
+    # "PictographPoolManager", # Moved to application.services.option_picker.data.pool_manager
     "LetterType",
 ]
 

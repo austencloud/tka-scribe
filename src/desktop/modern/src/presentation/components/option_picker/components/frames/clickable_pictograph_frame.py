@@ -1,7 +1,10 @@
 from typing import Optional
 
 from domain.models.pictograph_models import PictographData
-from presentation.components.pictograph.pictograph_component import PictographComponent
+from presentation.components.pictograph.pictograph_component import (
+    PictographComponent,
+    create_pictograph_component,
+)
 from presentation.components.workbench.sequence_beat_frame.selection_overlay import (
     SelectionOverlay,
 )
@@ -43,7 +46,7 @@ class ClickablePictographFrame(QFrame):
         layout.setSpacing(0)
 
         try:
-            self._pictograph_component = PictographComponent(parent=None)
+            self._pictograph_component = create_pictograph_component(parent=None)
             self.pictograph_component = (
                 self._pictograph_component
             )  # Keep legacy reference

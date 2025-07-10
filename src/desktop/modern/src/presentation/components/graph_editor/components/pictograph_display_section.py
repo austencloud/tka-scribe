@@ -23,10 +23,13 @@ import logging
 from typing import Optional
 
 from domain.models import BeatData
-from PyQt6.QtCore import pyqtSignal, Qt
-from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QSizePolicy
+from presentation.components.pictograph.pictograph_component import (
+    PictographComponent,
+    create_pictograph_component,
+)
+from PyQt6.QtCore import Qt, pyqtSignal
+from PyQt6.QtWidgets import QHBoxLayout, QSizePolicy, QVBoxLayout, QWidget
 
-from presentation.components.pictograph.pictograph_component import PictographComponent
 from .detailed_info_panel import DetailedInfoPanel
 
 logger = logging.getLogger(__name__)
@@ -186,7 +189,7 @@ class PictographDisplaySection(QWidget):
         pictograph_layout.setSpacing(0)
 
         # Create the TKA pictograph component with responsive sizing
-        self._pictograph_component = PictographComponent(parent=self)
+        self._pictograph_component = create_pictograph_component(parent=self)
 
         # Calculate initial optimal size
         initial_size = self._calculate_optimal_pictograph_size()

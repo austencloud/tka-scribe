@@ -139,7 +139,7 @@ class OptionPickerInitializationService(IOptionPickerInitializationService):
             Configured pool manager
         """
         try:
-            from presentation.components.option_picker.services.data.pool_manager import (
+            from application.services.option_picker.data.pool_manager import (
                 PictographPoolManager,
             )
 

@@ -1,39 +1,59 @@
 """
-Section Layout Manager - Layout and Sizing Logic
-Split from option_picker_section.py - contains layout calculations and resize handling
+Section Layout Manager - Qt Presentation Layer
+
+Handles Qt-specific layout operations while delegating calculations
+to SectionLayoutService.
 """
 
-from presentation.components.option_picker.types.letter_types import LetterType
+from typing import Optional
+
+from application.services.layout.section_layout_service import (
+    LayoutDimensions,
+    SectionLayoutService,
+    SizingConstraints,
+)
 from presentation.components.option_picker.components.sections.section_widget import (
     OptionPickerSection,
 )
+from presentation.components.option_picker.types.letter_types import LetterType
 
 
 class SectionLayoutManager:
-    """Handles layout calculations and sizing for option picker sections."""
+    """
+    Qt presentation manager for section layout.
 
-    def __init__(self, section_widget: "OptionPickerSection"):
+    Handles Qt-specific operations while delegating calculations
+    to SectionLayoutService.
+    """
+
+    def __init__(
+        self,
+        section_widget: "OptionPickerSection",
+        layout_service: SectionLayoutService,
+    ):
         self.section = section_widget
+        self._layout_service = layout_service
         self._last_width = None
         self._resize_in_progress = False
         self._debug_logged = False
         self._option_picker_width = 0
-        self._sizing_deferred = False  # ADD: Support for deferred sizing
+        self._sizing_deferred = False
+        self._current_dimensions: Optional[LayoutDimensions] = None
 
     def defer_sizing_updates(self):
-        """Defer sizing updates for batch operations"""
+        """Defer sizing updates for batch operations."""
         self._sizing_deferred = True
 
     def resume_sizing_updates(self):
-        """Resume sizing updates"""
+        """Resume sizing updates."""
         self._sizing_deferred = False
 
     def update_size_once(self):
-        """Force a single size update"""
-        self._update_size()  # Always update when explicitly called
+        """Force a single size update."""
+        self._update_size()
 
     def add_pictograph_from_pool(self, pictograph_frame):
-        """MODIFIED: Skip sizing if deferred"""
+        """Add pictograph and update layout if not deferred."""
         if not self._sizing_deferred:
             self._ensure_container_ready()
 
@@ -43,115 +63,142 @@ class SectionLayoutManager:
         if not self._sizing_deferred:
             self._update_size()
 
-    def _get_global_pictograph_size(self) -> int:
-        """Calculate consistent pictograph size using layout algorithm."""
-        if self.section.option_picker_size_provider:
-            main_window_width = self.section.option_picker_size_provider().width()
-            frame_width = (
-                self.section.section_pictograph_container.width()
-                if self.section.section_pictograph_container.width() > 0
-                else self.section.width()
-            )
-
-            if frame_width <= 0:
-                frame_width = (
-                    self.section.width()
-                    if self.section.width() > 0
-                    else main_window_width
-                )
-
-            size = max(main_window_width // 16, frame_width // 8)
-            border_width = max(1, int(size * 0.015))
-            spacing = self.section.section_pictograph_container.main_layout.spacing()
-            final_size = size - (2 * border_width) - spacing
-            final_size = max(60, min(final_size, 200))
-            return final_size
-        else:
-            return 100
-
     def _update_size(self):
-        """Update section size using layout calculation."""
+        """Update section size using the layout service."""
         try:
-            self.section.section_pictograph_container.sync_width_with_section()
-            pictograph_size = self._get_global_pictograph_size()
-            self.section.section_pictograph_container.resize_pictographs(
-                pictograph_size
-            )
+            # Prepare constraints
+            constraints = self._create_sizing_constraints()
 
+            # Get header height
             header_height = self.section.header.get_calculated_height()
-            pictograph_height = (
-                self.section.section_pictograph_container.calculate_required_height(
-                    pictograph_size
-                )
+
+            # Calculate dimensions using service
+            dimensions = self._layout_service.calculate_section_height(
+                constraints, header_height
             )
-            total_height = header_height + pictograph_height
-            self.section.setMinimumHeight(total_height)
 
-            # Force the section to actually take up the calculated space
-            # This ensures Type 1 gets enough space for 2 rows, Type 2&3 get space for 1 row
-            self.section.resize(self.section.width(), total_height)
+            # Validate dimensions
+            if not self._layout_service.validate_dimensions(dimensions):
+                print(f"⚠️ Invalid dimensions calculated for {self.section.letter_type}")
+                return
 
-            # Trigger layout recalculation to respect content-based sizing
-            self.section.updateGeometry()
-            if self.section.parent():
-                self.section.parent().updateGeometry()
+            # Apply dimensions to Qt widgets
+            self._apply_dimensions_to_widgets(dimensions)
 
-            if hasattr(self.section.header, "type_button"):
-                self.section.header.type_button._resizing = True
-                try:
-                    calculated_height = self.section.header.get_calculated_height()
-                    self.section.header.setFixedHeight(calculated_height)
-
-                    if (
-                        hasattr(self.section, "option_picker_size_provider")
-                        and self.section.option_picker_size_provider
-                    ):
-                        parent_height = (
-                            self.section.option_picker_size_provider().height()
-                        )
-                        font_size = max(parent_height // 70, 10)
-                        label_height = max(int(font_size * 3), 20)
-                        label_width = max(int(label_height * 6), 100)
-
-                        from PyQt6.QtCore import QSize
-
-                        self.section.header.type_button.setFixedSize(
-                            QSize(label_width, label_height)
-                        )
-                finally:
-                    self.section.header.type_button._resizing = False
-
-            self.section.updateGeometry()
+            # Cache dimensions
+            self._current_dimensions = dimensions
+            self._layout_service.cache_dimensions(constraints, dimensions)
 
         except Exception as e:
             print(f"⚠️ [ERROR] Size update failed for {self.section.letter_type}: {e}")
 
+    def _create_sizing_constraints(self) -> SizingConstraints:
+        """Create sizing constraints from current widget state."""
+        # Get main window width
+        main_window_width = (
+            self.section.option_picker_size_provider().width()
+            if self.section.option_picker_size_provider
+            else 800  # Default fallback
+        )
+
+        # Get container width
+        container_width = (
+            self.section.section_pictograph_container.width()
+            if self.section.section_pictograph_container.width() > 0
+            else self.section.width()
+        )
+
+        if container_width <= 0:
+            container_width = main_window_width
+
+        # Get spacing from layout
+        spacing = (
+            self.section.section_pictograph_container.main_layout.spacing()
+            if hasattr(self.section.section_pictograph_container, "main_layout")
+            else 8  # Default
+        )
+
+        return SizingConstraints(
+            main_window_width=main_window_width,
+            container_width=container_width,
+            letter_type=self.section.letter_type,
+            spacing=spacing,
+        )
+
+    def _apply_dimensions_to_widgets(self, dimensions: LayoutDimensions):
+        """Apply calculated dimensions to Qt widgets."""
+        # Sync container width
+        self.section.section_pictograph_container.sync_width_with_section()
+
+        # Resize pictographs using service-calculated size
+        self.section.section_pictograph_container.resize_pictographs(
+            dimensions.pictograph_size
+        )
+
+        # Set section height
+        self.section.setMinimumHeight(dimensions.section_height)
+        self.section.resize(self.section.width(), dimensions.section_height)
+
+        # Update header if needed
+        self._update_header_with_dimensions(dimensions)
+
+        # Trigger Qt layout updates
+        self.section.updateGeometry()
+        if self.section.parent():
+            self.section.parent().updateGeometry()
+
+    def _update_header_with_dimensions(self, dimensions: LayoutDimensions):
+        """Update header sizing based on calculated dimensions."""
+        if hasattr(self.section.header, "type_button"):
+            self.section.header.type_button._resizing = True
+            try:
+                self.section.header.setFixedHeight(dimensions.header_height)
+
+                # Calculate button size if provider available
+                if (
+                    hasattr(self.section, "option_picker_size_provider")
+                    and self.section.option_picker_size_provider
+                ):
+                    parent_height = self.section.option_picker_size_provider().height()
+                    font_size = max(parent_height // 70, 10)
+                    label_height = max(int(font_size * 3), 20)
+                    label_width = max(int(label_height * 6), 100)
+
+                    from PyQt6.QtCore import QSize
+
+                    self.section.header.type_button.setFixedSize(
+                        QSize(label_width, label_height)
+                    )
+            finally:
+                self.section.header.type_button._resizing = False
+
     def handle_resize_event(self, event):
-        """Handle resize events."""
+        """Handle resize events using the layout service."""
         if self._resize_in_progress:
             return
 
         self._resize_in_progress = True
         try:
+            # Get new width from service calculation
             if self.section.option_picker_size_provider:
                 full_width = self.section.option_picker_size_provider().width()
+                new_width = self._layout_service.calculate_section_width(
+                    self.section.letter_type, full_width
+                )
 
-                if self.section.letter_type in [
-                    LetterType.TYPE4,
-                    LetterType.TYPE5,
-                    LetterType.TYPE6,
-                ]:
-                    section_width = full_width // 3
-                else:
-                    section_width = full_width
+                # Check if resize is significant using service
+                if self._current_dimensions and self._last_width is not None:
+                    new_dimensions = self._layout_service.calculate_resize_dimensions(
+                        self._last_width, new_width, self._current_dimensions
+                    )
 
-                if (
-                    self._last_width is None
-                    or abs(self._last_width - section_width) > 5
-                ):
-                    self._last_width = section_width
-                    self.section.setFixedWidth(section_width)
-                    self.section.section_pictograph_container.sync_width_with_section()
+                    if new_dimensions:
+                        self._apply_dimensions_to_widgets(new_dimensions)
+                        self._current_dimensions = new_dimensions
+
+                self._last_width = new_width
+                self.section.setFixedWidth(new_width)
+                self.section.section_pictograph_container.sync_width_with_section()
 
         except Exception as e:
             print(f"⚠️ [ERROR] Resize failed for {self.section.letter_type}: {e}")
@@ -180,7 +227,7 @@ class SectionLayoutManager:
             )
 
     def _ensure_container_ready(self):
-        """FIXED: Ensure container is ready without forced event processing"""
+        """Ensure container is ready without forced event processing."""
         if self.section.parent():
             widget = self.section.parent()
             while widget:
@@ -189,7 +236,6 @@ class SectionLayoutManager:
                     and "ModernOptionPickerWidget" in widget.__class__.__name__
                 ):
                     widget.updateGeometry()
-                    # REMOVED: QApplication.processEvents()  ← THIS WAS CAUSING SEQUENTIAL LOADING
                     break
                 elif (
                     hasattr(widget, "layout")
@@ -198,6 +244,16 @@ class SectionLayoutManager:
                     and widget.width() > 500
                 ):
                     widget.updateGeometry()
-                    # REMOVED: QApplication.processEvents()  ← THIS WAS CAUSING SEQUENTIAL LOADING
                     break
                 widget = widget.parent()
+
+    # State Access
+    def get_current_dimensions(self) -> Optional[LayoutDimensions]:
+        """Get current layout dimensions."""
+        return self._current_dimensions
+
+    def get_layout_summary(self) -> dict:
+        """Get layout summary for debugging."""
+        if self._current_dimensions:
+            return self._layout_service.get_layout_summary(self._current_dimensions)
+        return {"status": "no_dimensions"}

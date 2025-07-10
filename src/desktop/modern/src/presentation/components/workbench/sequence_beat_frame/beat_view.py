@@ -12,7 +12,7 @@ from PyQt6.QtCore import QSize, Qt, pyqtSignal
 from PyQt6.QtGui import QColor, QMouseEvent, QPainter, QPen
 from PyQt6.QtWidgets import QFrame, QVBoxLayout, QWidget
 
-from ...pictograph.pictograph_component import PictographComponent
+from ...pictograph.pictograph_component import create_pictograph_component
 from .beat_number_overlay import BeatNumberOverlay, add_beat_number_to_view
 from .selection_overlay import SelectionOverlay
 from .start_text_overlay import StartTextOverlay
@@ -72,7 +72,7 @@ class BeatView(QFrame):
         layout.setSpacing(0)
 
         # Create pictograph component
-        self._pictograph_component = PictographComponent(parent=self)
+        self._pictograph_component = create_pictograph_component(parent=self)
         self._configure_pictograph_component()
         layout.addWidget(self._pictograph_component)
 

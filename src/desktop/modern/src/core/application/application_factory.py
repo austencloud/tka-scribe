@@ -134,11 +134,22 @@ class ApplicationFactory:
         from application.services.ui.pictograph_context_service import (
             PictographContextService,
         )
-        from core.interfaces.core_services import IPictographContextService
+        from core.interfaces.core_services import (
+            IPictographBorderService,
+            IPictographContextService,
+        )
 
         container.register_singleton(
             IPictographContextService, PictographContextService
         )
+
+        # Register pictograph border service
+        from application.services.pictographs.border_service import (
+            PictographBorderService,
+        )
+
+        container.register_singleton(IPictographBorderService, PictographBorderService)
+        logger.info("Registered IPictographBorderService in ApplicationFactory")
 
         # Register extracted services
         from core.dependency_injection.config_registration import (
@@ -208,11 +219,22 @@ class ApplicationFactory:
         from application.services.ui.pictograph_context_service import (
             PictographContextService,
         )
-        from core.interfaces.core_services import IPictographContextService
+        from core.interfaces.core_services import (
+            IPictographBorderService,
+            IPictographContextService,
+        )
 
         container.register_singleton(
             IPictographContextService, PictographContextService
         )
+
+        # Register pictograph border service
+        from application.services.pictographs.border_service import (
+            PictographBorderService,
+        )
+
+        container.register_singleton(IPictographBorderService, PictographBorderService)
+        logger.info("Registered IPictographBorderService in test mode")
 
         # Register extracted services
         from core.dependency_injection.config_registration import (
@@ -281,11 +303,22 @@ class ApplicationFactory:
         from application.services.ui.pictograph_context_service import (
             PictographContextService,
         )
-        from core.interfaces.core_services import IPictographContextService
+        from core.interfaces.core_services import (
+            IPictographBorderService,
+            IPictographContextService,
+        )
 
         container.register_singleton(
             IPictographContextService, PictographContextService
         )
+
+        # Register pictograph border service
+        from application.services.pictographs.border_service import (
+            PictographBorderService,
+        )
+
+        container.register_singleton(IPictographBorderService, PictographBorderService)
+        logger.info("Registered IPictographBorderService in headless mode")
 
         # Register extracted services
         from core.dependency_injection.config_registration import (

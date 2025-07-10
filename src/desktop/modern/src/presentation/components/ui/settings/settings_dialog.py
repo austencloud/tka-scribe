@@ -37,9 +37,9 @@ from .components import (
     SettingsAnimations,
     SettingsContentArea,
     SettingsHeader,
-    SettingsServices,
     SettingsSidebar,
 )
+from application.services.ui.settings import SettingsServices
 
 
 class SettingsDialog(QDialog):

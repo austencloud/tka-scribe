@@ -3,16 +3,20 @@ Option Picker Section Widget - Main UI Component
 Split from option_picker_section.py - contains core section widget logic
 """
 
-from typing import Callable
-from PyQt6.QtWidgets import QGroupBox, QVBoxLayout
-from PyQt6.QtCore import Qt, QSize
-from presentation.components.option_picker.types.letter_types import LetterType
-from presentation.components.option_picker.components.sections.section_header import (
-    OptionPickerSectionHeader,
-)
+from typing import TYPE_CHECKING, Callable
+
 from presentation.components.option_picker.components.sections.section_container import (
     OptionPickerSectionPictographContainer,
 )
+from presentation.components.option_picker.components.sections.section_header import (
+    OptionPickerSectionHeader,
+)
+from presentation.components.option_picker.types.letter_types import LetterType
+from PyQt6.QtCore import QSize, Qt
+from PyQt6.QtWidgets import QGroupBox, QVBoxLayout
+
+if TYPE_CHECKING:
+    from application.services.layout.section_layout_service import SectionLayoutService
 
 
 class OptionPickerSection(QGroupBox):
@@ -24,6 +28,7 @@ class OptionPickerSection(QGroupBox):
     def __init__(
         self,
         letter_type: str,
+        layout_service: "SectionLayoutService" = None,
         parent=None,
         option_picker_size_provider: Callable[[], QSize] = None,
     ):
@@ -36,12 +41,19 @@ class OptionPickerSection(QGroupBox):
             LetterType.TYPE6,
         ]
 
-        # Initialize layout manager
+        # Initialize layout manager with service
+        from application.services.layout.section_layout_service import (
+            SectionLayoutService,
+        )
         from presentation.components.option_picker.components.sections.section_layout_manager import (
             SectionLayoutManager,
         )
 
-        self.layout_manager = SectionLayoutManager(self)
+        # Use provided service or create default instance
+        if layout_service is None:
+            layout_service = SectionLayoutService()
+
+        self.layout_manager = SectionLayoutManager(self, layout_service)
 
         self._setup_ui()
         self._register_for_sizing_updates()

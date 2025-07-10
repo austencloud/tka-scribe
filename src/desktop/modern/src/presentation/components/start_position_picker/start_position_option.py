@@ -1,5 +1,7 @@
 from application.services.data.dataset_query_service import DatasetQueryService
-from presentation.components.pictograph.pictograph_component import PictographComponent
+from presentation.components.pictograph.pictograph_component import (
+    create_pictograph_component,
+)
 from presentation.components.workbench.sequence_beat_frame.selection_overlay import (
     SelectionOverlay,
 )
@@ -35,7 +37,7 @@ class StartPositionOption(QWidget):
         layout.setContentsMargins(5, 5, 5, 5)
         layout.setSpacing(5)
 
-        self._pictograph_component = PictographComponent()
+        self._pictograph_component = create_pictograph_component()
         self.pictograph_component = self._pictograph_component  # Keep legacy reference
         self._pictograph_component.setFixedSize(200, 200)
 

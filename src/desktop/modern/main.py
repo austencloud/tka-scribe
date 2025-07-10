@@ -178,6 +178,8 @@ def main():
         app_mode = ApplicationMode.TEST
         logger.info("Starting TKA in TEST mode")
         # For test mode, just create container and return it
+        from core.application.application_factory import ApplicationFactory
+
         container = ApplicationFactory.create_app(app_mode)
 
         # Initialize services for test mode too
@@ -198,6 +200,8 @@ def main():
         app_mode = ApplicationMode.HEADLESS
         logger.info("Starting TKA in HEADLESS mode")
         # For headless mode, create container but no UI
+        from core.application.application_factory import ApplicationFactory
+
         container = ApplicationFactory.create_app(app_mode)
 
         # Initialize services for headless mode too

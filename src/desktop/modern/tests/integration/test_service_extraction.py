@@ -120,10 +120,10 @@ class TestServiceExtractionIntegration:
             from presentation.components.option_picker.services.data.option_service import (
                 OptionService,
             )
-            from presentation.components.option_picker.services.data.pool_manager import (
+            from application.services.option_picker.data.pool_manager import (
                 PictographPoolManager,
             )
-            from presentation.components.option_picker.services.data.position_matcher import (
+            from application.services.option_picker.data.position_matcher import (
                 PositionMatcher,
             )
 
@@ -147,7 +147,7 @@ class TestServiceExtractionIntegration:
         """Test that existing code still works after refactoring."""
         try:
             # Test that old imports still work
-            from presentation.components.option_picker.services.data.position_matcher import (
+            from application.services.option_picker.data.position_matcher import (
                 PositionMatcher,
             )
 

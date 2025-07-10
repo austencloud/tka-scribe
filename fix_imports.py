@@ -97,7 +97,7 @@ def main():
         "src/presentation/components/option_picker/components/frames/clickable_pictograph_frame.py",
         "src/presentation/components/option_picker/core/option_picker.py",
         "src/presentation/components/option_picker/services/data/beat_loader.py",
-        "src/presentation/components/option_picker/services/data/position_matcher.py",
+        "src/application/services/option_picker/data/position_matcher.py",
         "src/presentation/components/option_picker/services/layout/display_service.py",
         "src/presentation/components/pictograph/border_manager.py",
         "src/presentation/components/pictograph/pictograph_component.py",

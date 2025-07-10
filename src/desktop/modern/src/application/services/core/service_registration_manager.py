@@ -4,16 +4,7 @@ Service Registration Manager
 Pure service for managing dependency injection service registration.
 Extracted from KineticConstructorModern to follow single responsibility principle.
 
-```
-Option 2: Create a pylintrc configuration file
 
-Alternatively, you can create a `.pylintrc` file in your project root with the following content:
-```ini
-[MASTER]
-extension-pkg-whitelist=PyQt6
-
-[TYPECHECK]
-generated-members=PyQt6.*
 PROVIDES:
 - Core service registration
 - Motion service registration
@@ -22,11 +13,14 @@ PROVIDES:
 - Event system registration
 """
 
+import logging
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING, Optional
 
 if TYPE_CHECKING:
     from core.dependency_injection.di_container import DIContainer
+
+logger = logging.getLogger(__name__)
 
 try:
     from core.events import IEventBus
@@ -156,6 +150,13 @@ class ServiceRegistrationManager(IServiceRegistrationManager):
 
     def register_layout_services(self, container: "DIContainer") -> None:
         """Register layout services."""
+        from application.services.layout.section_layout_service import (
+            SectionLayoutService,
+        )
+
+        container.register_singleton(SectionLayoutService, SectionLayoutService)
+        logger.info("Layout services registered")
+
         # Note: Layout services have been consolidated into LayoutManagementService
         # which is already registered in register_core_services() as ILayoutService
         #
@@ -168,19 +169,29 @@ class ServiceRegistrationManager(IServiceRegistrationManager):
             IPictographDataService,
             PictographDataService,
         )
+        from application.services.pictographs.border_service import (
+            PictographBorderService,
+        )
         from application.services.pictographs.pictograph_management_service import (
             PictographManagementService,
         )
         from application.services.ui.pictograph_context_service import (
             PictographContextService,
         )
-        from core.interfaces.core_services import IPictographContextService
+        from core.interfaces.core_services import (
+            IPictographBorderService,
+            IPictographContextService,
+        )
 
         # Register service types, not instances - pure DI
         container.register_singleton(IPictographDataService, PictographDataService)
         container.register_singleton(
             PictographManagementService, PictographManagementService
         )
+
+        # Register border service for pictograph border management
+        container.register_singleton(IPictographBorderService, PictographBorderService)
+        print("🔧 [SERVICE_REGISTRATION] Registered IPictographBorderService")
 
         # Register pictograph context service for robust context detection
         container.register_singleton(

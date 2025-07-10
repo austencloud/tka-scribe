@@ -62,9 +62,9 @@ from .components import (
     SettingsAnimations,
     SettingsContentArea,
     SettingsHeader,
-    SettingsServices,
     SettingsSidebar,
 )
+from application.services.ui.settings import SettingsServices
 from .coordinator import SettingsCoordinator
 from .tabs.background_tab import BackgroundTab
 from .tabs.beat_layout_tab import BeatLayoutTab
