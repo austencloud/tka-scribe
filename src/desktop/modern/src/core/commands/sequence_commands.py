@@ -372,7 +372,8 @@ class ClearSequenceCommand(ICommand[Any]):  # ICommand[SequenceData]
         self._original_sequence = self.sequence
 
         # Create empty sequence
-        from domain.models.sequence_models import SequenceData
+        from domain.models.sequence_data import SequenceData
+
         result_sequence = SequenceData.empty()
 
         # Publish events for each removed beat

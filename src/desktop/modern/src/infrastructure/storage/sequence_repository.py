@@ -6,7 +6,7 @@ Provides in-memory storage for sequences with CRUD operations.
 import logging
 from typing import Dict, List, Optional
 
-from domain.models.sequence_models import SequenceData
+from domain.models.sequence_data import SequenceData
 
 logger = logging.getLogger(__name__)
 

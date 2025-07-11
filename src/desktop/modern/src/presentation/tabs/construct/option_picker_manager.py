@@ -10,7 +10,7 @@ from typing import Optional
 
 from application.services.data.data_converter import DataConverter
 from domain.models.pictograph_data import PictographData
-from domain.models.sequence_models import SequenceData
+from domain.models.sequence_data import SequenceData
 from presentation.components.option_picker.core.option_picker import OptionPicker
 from PyQt6.QtCore import QObject, pyqtSignal
 

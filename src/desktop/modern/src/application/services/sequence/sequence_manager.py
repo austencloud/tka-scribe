@@ -18,7 +18,8 @@ from application.services.option_picker.option_orientation_updater import (
 )
 from application.services.sequence.sequence_persister import SequencePersister
 from domain.models.beat_data import BeatData
-from domain.models.sequence_models import SequenceData
+from domain.models.pictograph_data import PictographData
+from domain.models.sequence_data import SequenceData
 
 logger = logging.getLogger(__name__)
 
@@ -851,3 +852,39 @@ class SequenceManager:
             "blue_attributes": blue_attrs,
             "red_attributes": red_attrs,
         }
+
+    # Contract methods for testing
+    def add_beat(
+        self, sequence: SequenceData, beat_data: BeatData, position: int
+    ) -> SequenceData:
+        """Add a beat to a sequence at the specified position (contract method)."""
+        new_beats = sequence.beats.copy()
+        new_beats.insert(position, beat_data)
+
+        return SequenceData(
+            id=sequence.id,
+            name=sequence.name,
+            word=sequence.word,
+            beats=new_beats,
+            start_position=sequence.start_position,
+            metadata=sequence.metadata,
+        )
+
+    def remove_beat(self, sequence: SequenceData, position: int) -> SequenceData:
+        """Remove a beat from a sequence at the specified position (contract method)."""
+        new_beats = sequence.beats.copy()
+        if 0 <= position < len(new_beats):
+            new_beats.pop(position)
+
+            # Renumber remaining beats to be sequential
+            for i, beat in enumerate(new_beats):
+                new_beats[i] = beat.update(beat_number=i + 1)
+
+        return SequenceData(
+            id=sequence.id,
+            name=sequence.name,
+            word=sequence.word,
+            beats=new_beats,
+            start_position=sequence.start_position,
+            metadata=sequence.metadata,
+        )

@@ -47,7 +47,7 @@ from .positioning_models import (  # Export positioning models
     PropPositionResult,
 )
 from .prop_data import PropData, PropType
-from .sequence_models import SequenceData
+from .sequence_data import SequenceData
 
 # Import serialization utilities
 try:

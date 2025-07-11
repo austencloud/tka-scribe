@@ -13,7 +13,7 @@ from application.services.option_picker.option_orientation_updater import (
 from application.services.sequence.sequence_persister import SequencePersister
 from domain.models.beat_data import BeatData
 from domain.models.pictograph_data import PictographData
-from domain.models.sequence_models import SequenceData
+from domain.models.sequence_data import SequenceData
 from PyQt6.QtCore import QObject, pyqtSignal
 
 

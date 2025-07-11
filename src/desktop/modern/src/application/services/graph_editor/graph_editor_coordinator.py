@@ -11,7 +11,7 @@ from core.interfaces.core_services import IUIStateManager
 from core.interfaces.workbench_services import IGraphEditorService
 from domain.models.beat_data import BeatData
 from domain.models.enums import MotionType
-from domain.models.sequence_models import SequenceData
+from domain.models.sequence_data import SequenceData
 
 
 class GraphEditorCoordinator(IGraphEditorService):

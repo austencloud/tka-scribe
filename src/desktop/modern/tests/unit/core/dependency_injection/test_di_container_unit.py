@@ -18,7 +18,7 @@ from unittest.mock import Mock
 import pytest
 from core.dependency_injection.di_container import DIContainer, reset_container
 from core.exceptions import DependencyInjectionError
-from domain.models.beat_models import BeatData
+from domain.models.beat_data import BeatData
 
 
 class IRepository(Protocol):

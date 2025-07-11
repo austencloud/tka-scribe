@@ -21,10 +21,10 @@ from domain.models.pictograph_data import PictographData
 
 if TYPE_CHECKING:
     from domain.models.beat_data import BeatData
-    from domain.models.sequence_models import SequenceData
+    from domain.models.sequence_data import SequenceData
 
 if TYPE_CHECKING:
-    from domain.models.sequence_models import SequenceData
+    from domain.models.sequence_data import SequenceData
 
 logger = logging.getLogger(__name__)
 

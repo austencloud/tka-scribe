@@ -19,7 +19,7 @@ from application.services.graph_editor.graph_editor_coordinator import (
     GraphEditorCoordinator,
 )
 from application.services.sequence.sequence_manager import SequenceManager
-from application.services.ui.full_screen_viewer import FullScreenService
+from application.services.ui.full_screen_viewer import FullScreenViewer
 from application.services.ui.sequence_state_reader import (
     MockSequenceStateReader,
     SequenceStateReader,
@@ -34,7 +34,7 @@ from core.interfaces.core_services import ILayoutService, IUIStateManager
 from core.interfaces.workbench_services import (
     IBeatDeletionService,
     IDictionaryService,
-    IFullScreenService,
+    IFullScreenViewer,
     IGraphEditorService,
     ISequenceWorkbenchService,
 )
@@ -54,7 +54,7 @@ def create_modern_workbench(
     layout_service = container.resolve(ILayoutService)
     beat_selection_service = container.resolve(BeatSelectionService)
     workbench_service = container.resolve(ISequenceWorkbenchService)
-    fullscreen_service = container.resolve(IFullScreenService)
+    fullscreen_service = container.resolve(IFullScreenViewer)
     deletion_service = container.resolve(IBeatDeletionService)
     graph_service = container.resolve(IGraphEditorService)
     dictionary_service = container.resolve(IDictionaryService)
@@ -86,7 +86,7 @@ def configure_workbench_services(container: DIContainer) -> None:
 
     # Create full screen service with dependencies
     fullscreen_service = _create_fullscreen_service(container)
-    container.register_instance(IFullScreenService, fullscreen_service)
+    container.register_instance(IFullScreenViewer, fullscreen_service)
 
     # Register GraphEditorService with UI state service dependency
     graph_editor_service = GraphEditorCoordinator(ui_state_service)
@@ -96,7 +96,7 @@ def configure_workbench_services(container: DIContainer) -> None:
     # No need to register again - using the service registered in main.py
 
 
-def _create_fullscreen_service(container: DIContainer) -> IFullScreenService:
+def _create_fullscreen_service(container: DIContainer) -> IFullScreenViewer:
     """
     Create and configure the full screen service with all dependencies.
 
@@ -120,7 +120,7 @@ def _create_fullscreen_service(container: DIContainer) -> IFullScreenService:
         overlay_factory = FullScreenOverlayFactory(main_window_getter=None)
 
         # Create the full screen service
-        fullscreen_service = FullScreenService(
+        fullscreen_service = FullScreenViewer(
             thumbnail_generator=thumbnail_generator,
             sequence_state_reader=sequence_state_reader,
             overlay_factory=overlay_factory,
@@ -140,7 +140,7 @@ def _create_fullscreen_service(container: DIContainer) -> IFullScreenService:
         sequence_state_reader = MockSequenceStateReader()
         overlay_factory = FullScreenOverlayFactory()
 
-        return FullScreenService(
+        return FullScreenViewer(
             thumbnail_generator=thumbnail_generator,
             sequence_state_reader=sequence_state_reader,
             overlay_factory=overlay_factory,

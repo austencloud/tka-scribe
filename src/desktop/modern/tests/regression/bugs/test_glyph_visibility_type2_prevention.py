@@ -12,8 +12,8 @@ AUTHOR: @austencloud
 from pathlib import Path
 
 import pytest
-from application.services.pictographs.pictograph_management_service import (
-    PictographManagementService,
+from application.services.pictograph.pictograph_manager import (
+    PictographManager as PictographManagementService,
 )
 from domain.models import BeatData, LetterType
 

@@ -9,7 +9,7 @@ from typing import TYPE_CHECKING, Callable, Optional
 
 from application.services.sequence.sequence_persister import SequencePersister
 from domain.models.beat_data import BeatData
-from domain.models.sequence_models import SequenceData
+from domain.models.sequence_data import SequenceData
 from presentation.components.workbench.workbench import SequenceWorkbench
 from PyQt6.QtCore import QObject, pyqtSignal
 

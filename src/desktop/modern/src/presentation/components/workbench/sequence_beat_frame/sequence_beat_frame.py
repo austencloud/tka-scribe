@@ -11,7 +11,7 @@ from application.services.layout.beat_resizer import BeatResizer
 from core.interfaces.core_services import ILayoutService
 from domain.models.beat_data import BeatData
 from domain.models.pictograph_data import PictographData
-from domain.models.sequence_models import SequenceData
+from domain.models.sequence_data import SequenceData
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtWidgets import QFrame, QGridLayout, QScrollArea, QWidget
 

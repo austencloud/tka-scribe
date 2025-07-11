@@ -1,7 +1,7 @@
 from typing import List, Optional, Protocol
 
 from domain.models.beat_data import BeatData
-from domain.models.sequence_models import SequenceData
+from domain.models.sequence_data import SequenceData
 
 
 class ISequenceWorkbenchService(Protocol):
@@ -23,7 +23,7 @@ class ISequenceWorkbenchService(Protocol):
         """Export sequence as JSON string"""
 
 
-class IFullScreenService(Protocol):
+class IFullScreenViewer(Protocol):
     """Interface for full screen viewing functionality"""
 
     def create_sequence_thumbnail(self, sequence: SequenceData) -> bytes:

@@ -7,7 +7,7 @@ Initializes workbench and graph editor with real data.
 from typing import Any, List, Optional
 
 from domain.models.beat_data import BeatData
-from domain.models.sequence_models import SequenceData
+from domain.models.sequence_data import SequenceData
 
 
 class ComponentInitializer:
@@ -24,14 +24,14 @@ class ComponentInitializer:
             from core.interfaces.workbench_services import (
                 IBeatDeletionService,
                 IDictionaryService,
-                IFullScreenService,
+                IFullScreenViewer,
                 IGraphEditorService,
                 ISequenceWorkbenchService,
             )
 
             layout_service = container.resolve(ILayoutService)
             workbench_service = container.resolve(ISequenceWorkbenchService)
-            fullscreen_service = container.resolve(IFullScreenService)
+            fullscreen_service = container.resolve(IFullScreenViewer)
             deletion_service = container.resolve(IBeatDeletionService)
             graph_service = container.resolve(IGraphEditorService)
             dictionary_service = container.resolve(IDictionaryService)

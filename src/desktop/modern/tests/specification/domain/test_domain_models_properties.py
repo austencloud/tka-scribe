@@ -12,7 +12,7 @@ TESTS:
 """
 
 import pytest
-from domain.models.beat_models import BeatData
+from domain.models.beat_data import BeatData
 from domain.models.enums import (
     ElementalType,
     LetterType,
@@ -24,7 +24,7 @@ from domain.models.enums import (
 )
 from domain.models.glyph_models import GlyphData
 from domain.models.motion_models import MotionData
-from domain.models.sequence_models import SequenceData
+from domain.models.sequence_data import SequenceData
 from hypothesis import assume, given
 from hypothesis import strategies as st
 

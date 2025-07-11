@@ -30,7 +30,7 @@ class TestStartPositionBehaviorContract:
         """Test that sequence data can be imported."""
         try:
             from domain.models.beat_models import BeatData
-            from domain.models.sequence_models import SequenceData
+            from domain.models.sequence_data import SequenceData
 
             assert SequenceData is not None
             assert BeatData is not None
@@ -48,7 +48,7 @@ class TestStartPositionBehaviorContract:
         """
         try:
             from domain.models.beat_models import BeatData
-            from domain.models.sequence_models import SequenceData
+            from domain.models.sequence_data import SequenceData
 
             # Test sequence with start position
             beat = BeatData(beat_number=1, letter="A")
@@ -85,7 +85,7 @@ class TestStartPositionBehaviorContract:
         """
         try:
             from domain.models.beat_models import BeatData
-            from domain.models.sequence_models import SequenceData
+            from domain.models.sequence_data import SequenceData
 
             # Create sequence with start position
             beat = BeatData(beat_number=1, letter="A")
@@ -123,7 +123,7 @@ class TestStartPositionBehaviorContract:
         - Start position format is consistent
         """
         try:
-            from domain.models.sequence_models import SequenceData
+            from domain.models.sequence_data import SequenceData
 
             # Test valid start positions
             valid_positions = [
@@ -181,7 +181,7 @@ class TestStartPositionBehaviorContract:
         """
         try:
             from domain.models.beat_models import BeatData
-            from domain.models.sequence_models import SequenceData
+            from domain.models.sequence_data import SequenceData
 
             # Test state transitions
             states = [
@@ -227,7 +227,7 @@ class TestStartPositionBehaviorContract:
         """
         try:
             from domain.models.beat_models import BeatData
-            from domain.models.sequence_models import SequenceData
+            from domain.models.sequence_data import SequenceData
 
             # Test integration with sequence creation
             sequence = SequenceData(

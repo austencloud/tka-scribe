@@ -24,8 +24,8 @@ from core.application.application_factory import ApplicationFactory
 from core.interfaces.core_services import IUIStateManagementService
 from core.interfaces.session_services import ISessionStateService
 from core.testing.ai_agent_helpers import TKAAITestHelper
-from domain.models.beat_models import BeatData
-from domain.models.sequence_models import SequenceData
+from domain.models.beat_data import BeatData
+from domain.models.sequence_data import SequenceData
 
 
 class TestSessionEndToEnd:

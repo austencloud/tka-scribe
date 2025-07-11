@@ -59,6 +59,40 @@ class IVisibilitySettingsManager(ABC):
         pass
 
 
+class IVisibilityService(ABC):
+    """Unified interface for visibility management operations."""
+
+    @abstractmethod
+    def get_glyph_visibility(self, glyph_name: str) -> bool:
+        """Get visibility state for a specific glyph."""
+        pass
+
+    @abstractmethod
+    def set_glyph_visibility(self, glyph_name: str, visible: bool) -> None:
+        """Set visibility state for a specific glyph."""
+        pass
+
+    @abstractmethod
+    def get_motion_visibility(self, color: str) -> bool:
+        """Get visibility state for motion by color."""
+        pass
+
+    @abstractmethod
+    def set_motion_visibility(self, color: str, visible: bool) -> None:
+        """Set visibility state for motion by color."""
+        pass
+
+    @abstractmethod
+    def toggle_glyph_visibility(self, glyph_name: str) -> bool:
+        """Toggle glyph visibility and return new state."""
+        pass
+
+    @abstractmethod
+    def toggle_motion_visibility(self, color: str) -> bool:
+        """Toggle motion visibility and return new state."""
+        pass
+
+
 class IBeatLayoutService(ABC):
     @abstractmethod
     def get_layout_for_length(self, length: int) -> tuple[int, int]:

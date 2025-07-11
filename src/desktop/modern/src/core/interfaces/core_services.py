@@ -328,3 +328,57 @@ class IObjectPoolManager(ABC):
     @abstractmethod
     def reset_pool(self, pool_name: str) -> None:
         """Reset pool state."""
+
+
+class IObjectPoolService(ABC):
+    """Alias for IObjectPoolManager for backward compatibility."""
+
+    @abstractmethod
+    def initialize_pool(
+        self,
+        pool_name: str,
+        max_objects: int,
+        object_factory: Callable[[], Any],
+        progress_callback: Optional[Callable] = None,
+    ) -> None:
+        """Initialize object pool with progress tracking."""
+
+    @abstractmethod
+    def get_pooled_object(self, pool_name: str, index: int) -> Optional[Any]:
+        """Get object from pool by index."""
+
+    @abstractmethod
+    def reset_pool(self, pool_name: str) -> None:
+        """Reset pool state."""
+
+
+class IUIStateManagementService(ABC):
+    """Interface for UI state management operations."""
+
+    @abstractmethod
+    def get_setting(self, key: str, default: Any = None) -> Any:
+        """Get a setting value."""
+
+    @abstractmethod
+    def set_setting(self, key: str, value: Any) -> None:
+        """Set a setting value."""
+
+    @abstractmethod
+    def get_tab_state(self, tab_name: str) -> Dict[str, Any]:
+        """Get state for a specific tab."""
+
+    @abstractmethod
+    def set_tab_state(self, tab_name: str, state: Dict[str, Any]) -> None:
+        """Set state for a specific tab."""
+
+    @abstractmethod
+    def toggle_graph_editor(self) -> bool:
+        """Toggle graph editor visibility."""
+
+    @abstractmethod
+    def save_state(self) -> None:
+        """Save current UI state to persistent storage."""
+
+    @abstractmethod
+    def load_state(self) -> None:
+        """Load UI state from persistent storage."""

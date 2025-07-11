@@ -85,6 +85,12 @@ class DatasetQuery:
                 logger.error(f"Error getting start position {position_key}: {e}")
             return None
 
+    def get_start_position_pictograph(
+        self, position_key: str, grid_mode: str = "diamond"
+    ) -> Optional[BeatData]:
+        """Alias for get_start_position_beat_data for backward compatibility."""
+        return self.get_start_position_beat_data(position_key, grid_mode)
+
     def get_start_position_pictograph_data(
         self, position_key: str, grid_mode: str = "diamond"
     ) -> Optional[PictographData]:

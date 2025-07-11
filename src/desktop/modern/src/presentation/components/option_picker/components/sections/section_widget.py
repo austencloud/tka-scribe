@@ -48,14 +48,14 @@ class OptionPickerSection(QGroupBox):
             SectionLayoutManager as BusinessLayoutService,
         )
         from presentation.components.option_picker.components.sections.section_layout_manager import (
-            SectionLayoutManager as UILayoutManager,
+            SectionLayoutPresenter as UILayoutPresenter,
         )
 
         # Use provided service or create default instance
         if layout_service is None:
             layout_service = BusinessLayoutService()
 
-        self.layout_manager = UILayoutManager(self, layout_service)
+        self.layout_manager = UILayoutPresenter(self, layout_service)
 
         self._setup_ui()
         self._register_for_sizing_updates()

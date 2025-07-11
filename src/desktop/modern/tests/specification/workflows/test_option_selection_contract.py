@@ -13,8 +13,9 @@ Defines behavioral contracts for option selection workflows.
 """
 
 import sys
-import pytest
 from pathlib import Path
+
+import pytest
 
 # Add modern source to path
 modern_src = Path(__file__).parent.parent.parent.parent / "src"
@@ -34,8 +35,8 @@ class TestOptionSelectionWorkflowContract:
         - State transitions are smooth
         """
         try:
-            from domain.models.beat_models import BeatData
-from domain.models.sequence_models import SequenceData
+            from domain.models.beat_data import BeatData
+            from domain.models.sequence_data import SequenceData
 
             # Test empty sequence state
             empty_sequence = SequenceData.empty()

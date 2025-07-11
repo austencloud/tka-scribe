@@ -13,7 +13,7 @@ from application.services.sequence.sequence_start_position_manager import (
 from application.services.ui.coordination.ui_coordinator import UICoordinator
 from core.dependency_injection.di_container import DIContainer
 from domain.models.beat_data import BeatData
-from domain.models.sequence_models import SequenceData
+from domain.models.sequence_data import SequenceData
 from PyQt6.QtCore import pyqtSignal
 from PyQt6.QtWidgets import QWidget
 

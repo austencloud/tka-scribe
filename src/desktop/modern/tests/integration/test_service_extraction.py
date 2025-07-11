@@ -9,7 +9,7 @@ from unittest.mock import Mock, patch
 
 import pytest
 from core.application.application_factory import ApplicationFactory
-from core.interfaces.core_services import IObjectPoolService
+from core.interfaces.core_services import IObjectPoolManager
 from core.interfaces.positioning_services import IPositionMatchingService
 from core.testing.ai_agent_helpers import TKAAITestHelper
 
@@ -29,14 +29,14 @@ class TestServiceExtractionIntegration:
 
             # Test that services can be resolved
             position_service = container.resolve(IPositionMatchingService)
-            object_pool_service = container.resolve(IObjectPoolService)
+            object_pool_service = container.resolve(IObjectPoolManager)
 
             assert position_service is not None
             assert object_pool_service is not None
 
             # Test that they implement the correct interfaces
             assert isinstance(position_service, IPositionMatchingService)
-            assert isinstance(object_pool_service, IObjectPoolService)
+            assert isinstance(object_pool_service, IObjectPoolManager)
 
             # Note: IBeatLoadingService was removed during SRP refactoring
             # Its functionality was split into focused microservices
@@ -65,20 +65,20 @@ class TestServiceExtractionIntegration:
     def test_option_picker_data_service_integration(self):
         """Test option picker data service integration (replacement for beat loading)."""
         try:
-            # Test the new OptionPickerDataService that replaced BeatLoadingService
-            from application.services.option_picker.data_service import (
-                OptionPickerDataService,
+            # Test the new OptionProvider that replaced BeatLoadingService
+            from application.services.option_picker.option_provider import (
+                OptionProvider,
             )
 
-            service = OptionPickerDataService()
+            service = OptionProvider()
 
             # Test basic functionality
-            pictographs = service.load_pictograph_options()
+            pictographs = service.get_current_options()
             assert isinstance(pictographs, list)
 
             # Test filtering by letter
             if pictographs:
-                filtered = service.filter_pictographs_by_letter("A")
+                filtered = service.filter_options_by_letter("A")
                 assert isinstance(filtered, list)
 
         except ImportError as e:
@@ -88,7 +88,7 @@ class TestServiceExtractionIntegration:
         """Test object pool service integration."""
         try:
             container = ApplicationFactory.create_test_app()
-            service = container.resolve(IObjectPoolService)
+            service = container.resolve(IObjectPoolManager)
 
             # Test pool creation
             objects_created = []
@@ -190,7 +190,7 @@ class TestServiceExtractionIntegration:
             assert isinstance(result, list)  # Should return empty list
 
             # Test object pool service error handling
-            pool_service = container.resolve(IObjectPoolService)
+            pool_service = container.resolve(IObjectPoolManager)
             result = pool_service.get_pooled_object("nonexistent", 0)
             assert result is None  # Should handle gracefully
 

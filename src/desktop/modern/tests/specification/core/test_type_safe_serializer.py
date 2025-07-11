@@ -17,10 +17,10 @@ from core.serialization.type_safe_serializer import (
     SerializationError,
     TypeSafeSerializer,
 )
-from domain.models.beat_models import BeatData
+from domain.models.beat_data import BeatData
 from domain.models.enums import Location, MotionType, RotationDirection
 from domain.models.motion_models import MotionData
-from domain.models.sequence_models import SequenceData
+from domain.models.sequence_data import SequenceData
 
 
 @dataclass(frozen=True)
@@ -210,11 +210,12 @@ class TestRoundTripSerialization:
     def test_sequence_data_round_trip(self):
         """Test round-trip serialization of SequenceData."""
         beat = BeatData(letter="A", duration=1.0)
+        start_position_beat = BeatData(letter="α", duration=0.0, beat_number=0)
         original = SequenceData(
             name="Test Sequence",
             word="TEST",
             beats=[beat],
-            start_position="alpha1",
+            start_position=start_position_beat,
             metadata={"author": "test"},
         )
 

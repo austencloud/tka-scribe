@@ -13,8 +13,9 @@ Defines behavioral contracts for service lifecycle management.
 """
 
 import sys
-import pytest
 from pathlib import Path
+
+import pytest
 
 # Add modern source to path
 modern_src = Path(__file__).parent.parent.parent.parent / "src"
@@ -34,11 +35,11 @@ class TestServiceLifecycleContracts:
         - Service creation is consistent
         """
         try:
-            from application.services.layout.layout_management_service import (
-                LayoutManagementService,
+            from application.services.layout.layout_manager import (
+                LayoutManager as LayoutManagementService,
             )
-            from application.services.ui.ui_state_management_service import (
-                UIStateManagementService,
+            from application.services.ui.ui_state_manager import (
+                UIStateManager as UIStateManagementService,
             )
 
             # Test direct instantiation
@@ -65,10 +66,12 @@ class TestServiceLifecycleContracts:
         - Service dependencies are handled correctly
         """
         try:
-            from application.services.ui.ui_state_management_service import (
-                UIStateManagementService,
+            from application.services.graph_editor.graph_editor_coordinator import (
+                GraphEditorCoordinator as GraphEditorService,
             )
-            from application.services.graph_editor_service import GraphEditorService
+            from application.services.ui.ui_state_manager import (
+                UIStateManager as UIStateManagementService,
+            )
 
             # Test service with no dependencies
             ui_service = UIStateManagementService()
@@ -95,12 +98,12 @@ class TestServiceLifecycleContracts:
         - Singleton behavior is consistent
         """
         try:
+            from application.services.layout.layout_manager import (
+                LayoutManager as LayoutManagementService,
+            )
             from core.dependency_injection.di_container import (
                 DIContainer,
                 reset_container,
-            )
-            from application.services.layout.layout_management_service import (
-                LayoutManagementService,
             )
             from core.interfaces.core_services import ILayoutService
 
@@ -134,14 +137,16 @@ class TestServiceLifecycleContracts:
         - Dependency chain works correctly
         """
         try:
+            from application.services.graph_editor.graph_editor_coordinator import (
+                GraphEditorCoordinator as GraphEditorService,
+            )
+            from application.services.ui.ui_state_manager import (
+                UIStateManager as UIStateManagementService,
+            )
             from core.dependency_injection.di_container import (
                 DIContainer,
                 reset_container,
             )
-            from application.services.ui.ui_state_management_service import (
-                UIStateManagementService,
-            )
-            from application.services.graph_editor_service import GraphEditorService
             from core.interfaces.core_services import IUIStateManagementService
             from core.interfaces.workbench_services import IGraphEditorService
 
@@ -178,9 +183,11 @@ class TestServiceLifecycleContracts:
         - State is isolated between instances
         """
         try:
-            from application.services.graph_editor_service import GraphEditorService
-            from application.services.ui.ui_state_management_service import (
-                UIStateManagementService,
+            from application.services.graph_editor.graph_editor_coordinator import (
+                GraphEditorCoordinator as GraphEditorService,
+            )
+            from application.services.ui.ui_state_manager import (
+                UIStateManager as UIStateManagementService,
             )
 
             # Create services
@@ -217,11 +224,11 @@ class TestServiceLifecycleContracts:
         - Resources are properly released
         """
         try:
-            from application.services.layout.layout_management_service import (
-                LayoutManagementService,
+            from application.services.layout.layout_manager import (
+                LayoutManager as LayoutManagementService,
             )
-            from application.services.ui.ui_state_management_service import (
-                UIStateManagementService,
+            from application.services.ui.ui_state_manager import (
+                UIStateManager as UIStateManagementService,
             )
 
             # Create services

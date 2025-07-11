@@ -39,22 +39,32 @@ class MotionData:
 
         # Convert string values to enums if needed
         if isinstance(self.motion_type, str):
-            object.__setattr__(self, 'motion_type', self._convert_motion_type(self.motion_type))
+            object.__setattr__(
+                self, "motion_type", self._convert_motion_type(self.motion_type)
+            )
 
         if isinstance(self.prop_rot_dir, str):
-            object.__setattr__(self, 'prop_rot_dir', self._convert_rotation_direction(self.prop_rot_dir))
+            object.__setattr__(
+                self,
+                "prop_rot_dir",
+                self._convert_rotation_direction(self.prop_rot_dir),
+            )
 
         if isinstance(self.start_loc, str):
-            object.__setattr__(self, 'start_loc', self._convert_location(self.start_loc))
+            object.__setattr__(
+                self, "start_loc", self._convert_location(self.start_loc)
+            )
 
         if isinstance(self.end_loc, str):
-            object.__setattr__(self, 'end_loc', self._convert_location(self.end_loc))
+            object.__setattr__(self, "end_loc", self._convert_location(self.end_loc))
 
         if isinstance(self.start_ori, str):
-            object.__setattr__(self, 'start_ori', self._convert_orientation(self.start_ori))
+            object.__setattr__(
+                self, "start_ori", self._convert_orientation(self.start_ori)
+            )
 
         if isinstance(self.end_ori, str):
-            object.__setattr__(self, 'end_ori', self._convert_orientation(self.end_ori))
+            object.__setattr__(self, "end_ori", self._convert_orientation(self.end_ori))
 
     @staticmethod
     def _convert_orientation(value) -> Orientation:
@@ -140,9 +150,35 @@ class MotionData:
 
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary with snake_case keys."""
-        from dataclasses import asdict
-
-        return asdict(self)
+        return {
+            "motion_type": (
+                self.motion_type.value
+                if hasattr(self.motion_type, "value")
+                else self.motion_type
+            ),
+            "prop_rot_dir": (
+                self.prop_rot_dir.value
+                if hasattr(self.prop_rot_dir, "value")
+                else self.prop_rot_dir
+            ),
+            "start_loc": (
+                self.start_loc.value
+                if hasattr(self.start_loc, "value")
+                else self.start_loc
+            ),
+            "end_loc": (
+                self.end_loc.value if hasattr(self.end_loc, "value") else self.end_loc
+            ),
+            "start_ori": (
+                self.start_ori.value
+                if hasattr(self.start_ori, "value")
+                else self.start_ori
+            ),
+            "end_ori": (
+                self.end_ori.value if hasattr(self.end_ori, "value") else self.end_ori
+            ),
+            "turns": self.turns,
+        }
 
     def to_camel_dict(self) -> Dict[str, Any]:
         """Convert to dictionary with camelCase keys for JSON APIs."""

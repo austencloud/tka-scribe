@@ -7,8 +7,8 @@ Simple, reliable tests that actually pass.
 from unittest.mock import MagicMock, Mock
 
 import pytest
-from application.services.graph_editor.graph_editor_hotkey_service import (
-    GraphEditorHotkeyService,
+from application.services.graph_editor.graph_editor_hotkey_manager import (
+    GraphEditorHotkeyManager as GraphEditorHotkeyService,
 )
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QKeyEvent

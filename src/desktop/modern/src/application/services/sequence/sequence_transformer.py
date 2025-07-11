@@ -11,7 +11,7 @@ from enum import Enum
 from typing import Any, Dict
 
 from domain.models.beat_data import BeatData
-from domain.models.sequence_models import SequenceData
+from domain.models.sequence_data import SequenceData
 
 logger = logging.getLogger(__name__)
 
@@ -78,7 +78,7 @@ class SequenceTransformer:
     def _apply_color_swap(self, sequence: SequenceData) -> SequenceData:
         """Swap blue and red motions in all beats."""
         logger.debug(f"Applying color swap to {len(sequence.beats)} beats")
-        
+
         new_beats = []
         for beat in sequence.beats:
             new_beat = beat.update(
@@ -86,7 +86,7 @@ class SequenceTransformer:
                 red_motion=beat.blue_motion,
             )
             new_beats.append(new_beat)
-        
+
         transformed_sequence = sequence.update(beats=new_beats)
         logger.info(f"Color swap applied successfully")
         return transformed_sequence
@@ -94,14 +94,14 @@ class SequenceTransformer:
     def _apply_horizontal_reflection(self, sequence: SequenceData) -> SequenceData:
         """Apply horizontal reflection to all motions."""
         logger.debug(f"Applying horizontal reflection to {len(sequence.beats)} beats")
-        
+
         new_beats = []
         transformation_matrix = self._transformation_matrices["horizontal_flip"]
-        
+
         for beat in sequence.beats:
             new_beat = self._apply_transformation_to_beat(beat, transformation_matrix)
             new_beats.append(new_beat)
-        
+
         transformed_sequence = sequence.update(beats=new_beats)
         logger.info(f"Horizontal reflection applied successfully")
         return transformed_sequence
@@ -109,14 +109,14 @@ class SequenceTransformer:
     def _apply_vertical_reflection(self, sequence: SequenceData) -> SequenceData:
         """Apply vertical reflection to all motions."""
         logger.debug(f"Applying vertical reflection to {len(sequence.beats)} beats")
-        
+
         new_beats = []
         transformation_matrix = self._transformation_matrices["vertical_flip"]
-        
+
         for beat in sequence.beats:
             new_beat = self._apply_transformation_to_beat(beat, transformation_matrix)
             new_beats.append(new_beat)
-        
+
         transformed_sequence = sequence.update(beats=new_beats)
         logger.info(f"Vertical reflection applied successfully")
         return transformed_sequence
@@ -124,19 +124,19 @@ class SequenceTransformer:
     def _apply_rotation(self, sequence: SequenceData, degrees: int) -> SequenceData:
         """Apply rotation to all motions."""
         logger.debug(f"Applying {degrees}° rotation to {len(sequence.beats)} beats")
-        
+
         # Map degrees to transformation matrix
         rotation_key = f"rotation_{degrees}"
         if rotation_key not in self._transformation_matrices:
             raise ValueError(f"Unsupported rotation angle: {degrees}")
-        
+
         new_beats = []
         transformation_matrix = self._transformation_matrices[rotation_key]
-        
+
         for beat in sequence.beats:
             new_beat = self._apply_transformation_to_beat(beat, transformation_matrix)
             new_beats.append(new_beat)
-        
+
         transformed_sequence = sequence.update(beats=new_beats)
         logger.info(f"{degrees}° rotation applied successfully")
         return transformed_sequence
@@ -144,13 +144,13 @@ class SequenceTransformer:
     def _apply_reverse_sequence(self, sequence: SequenceData) -> SequenceData:
         """Reverse the order of beats in sequence."""
         logger.debug(f"Reversing sequence of {len(sequence.beats)} beats")
-        
+
         new_beats = list(reversed(sequence.beats))
-        
+
         # Update beat numbers to maintain proper sequencing
         for i, beat in enumerate(new_beats):
             new_beats[i] = beat.update(beat_number=i + 1)
-        
+
         reversed_sequence = sequence.update(beats=new_beats)
         logger.info(f"Sequence reversal applied successfully")
         return reversed_sequence
@@ -165,7 +165,7 @@ class SequenceTransformer:
         # 2. Apply the transformation matrix
         # 3. Update the motion data with new coordinates
         # 4. Handle any orientation/direction changes
-        
+
         # For now, return the beat unchanged as the actual transformation
         # logic would depend on the specific motion data structure
         logger.debug(f"Applying transformation matrix to beat {beat.beat_number}")

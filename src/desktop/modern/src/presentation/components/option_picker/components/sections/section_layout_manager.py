@@ -1,8 +1,8 @@
 """
-Section Layout Manager - Qt Presentation Layer
+Section Layout Presenter - Qt Presentation Layer
 
 Handles Qt-specific layout operations while delegating calculations
-to SectionLayoutService.
+to SectionLayoutManager service.
 """
 
 from typing import Optional
@@ -18,12 +18,12 @@ from presentation.components.option_picker.components.sections.section_widget im
 from presentation.components.option_picker.types.letter_types import LetterType
 
 
-class SectionLayoutManager:
+class SectionLayoutPresenter:
     """
     Qt presentation manager for section layout.
 
     Handles Qt-specific operations while delegating calculations
-    to SectionLayoutService.
+    to SectionLayoutManager service.
     """
 
     def __init__(

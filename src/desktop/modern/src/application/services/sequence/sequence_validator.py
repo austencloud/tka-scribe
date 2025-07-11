@@ -10,13 +10,14 @@ import logging
 from typing import Any, Dict, List, Optional
 
 from domain.models.beat_data import BeatData
-from domain.models.sequence_models import SequenceData
+from domain.models.sequence_data import SequenceData
 
 logger = logging.getLogger(__name__)
 
 
 class ValidationError(Exception):
     """Custom exception for validation errors."""
+
     pass
 
 
@@ -40,13 +41,13 @@ class SequenceValidator:
     def validate_sequence(self, sequence: SequenceData) -> bool:
         """
         Validate a complete sequence against all rules.
-        
+
         Args:
             sequence: The sequence to validate
-            
+
         Returns:
             bool: True if valid
-            
+
         Raises:
             ValidationError: If validation fails
         """
@@ -73,14 +74,14 @@ class SequenceValidator:
     def validate_beat(self, beat: BeatData, position: Optional[int] = None) -> bool:
         """
         Validate a single beat against validation rules.
-        
+
         Args:
             beat: The beat to validate
             position: Optional position in sequence for context
-            
+
         Returns:
             bool: True if valid
-            
+
         Raises:
             ValidationError: If validation fails
         """
@@ -112,12 +113,16 @@ class SequenceValidator:
 
         max_length = self._sequence_validation_rules.get("max_name_length", 255)
         if len(name) > max_length:
-            raise ValidationError(f"Sequence name cannot exceed {max_length} characters")
+            raise ValidationError(
+                f"Sequence name cannot exceed {max_length} characters"
+            )
 
         # Check for invalid characters
-        invalid_chars = ['/', '\\', ':', '*', '?', '"', '<', '>', '|']
+        invalid_chars = ["/", "\\", ":", "*", "?", '"', "<", ">", "|"]
         if any(char in name for char in invalid_chars):
-            raise ValidationError(f"Sequence name contains invalid characters: {invalid_chars}")
+            raise ValidationError(
+                f"Sequence name contains invalid characters: {invalid_chars}"
+            )
 
         return True
 
@@ -146,14 +151,16 @@ class SequenceValidator:
             raise ValidationError("Position cannot be negative")
 
         if position >= sequence_length:
-            raise ValidationError(f"Position {position} is beyond sequence length {sequence_length}")
+            raise ValidationError(
+                f"Position {position} is beyond sequence length {sequence_length}"
+            )
 
         return True
 
     def _validate_sequence_structure(self, sequence: SequenceData) -> None:
         """Validate basic sequence structure."""
         required_fields = self._sequence_validation_rules["required_fields"]
-        
+
         for field in required_fields:
             if not hasattr(sequence, field):
                 raise ValidationError(f"Sequence missing required field: {field}")
@@ -191,7 +198,9 @@ class SequenceValidator:
         if not isinstance(beat.beat_number, int) or beat.beat_number < 0:
             raise ValidationError("Beat number must be a non-negative integer")
 
-        if beat.duration is not None and (not isinstance(beat.duration, (int, float)) or beat.duration <= 0):
+        if beat.duration is not None and (
+            not isinstance(beat.duration, (int, float)) or beat.duration <= 0
+        ):
             raise ValidationError("Beat duration must be a positive number")
 
     def _validate_beat_data(self, beat: BeatData) -> None:
@@ -219,8 +228,10 @@ class SequenceValidator:
         logger.debug(f"Validating {color} motion for beat {beat_number}")
 
         # Basic validation - check if motion has required attributes
-        if not hasattr(motion, 'motion_type'):
-            raise ValidationError(f"Motion data missing motion_type for {color} motion in beat {beat_number}")
+        if not hasattr(motion, "motion_type"):
+            raise ValidationError(
+                f"Motion data missing motion_type for {color} motion in beat {beat_number}"
+            )
 
     def _validate_sequence_business_rules(self, sequence: SequenceData) -> None:
         """Validate sequence against business rules."""
@@ -230,7 +241,9 @@ class SequenceValidator:
             raise ValidationError("Sequence contains duplicate beat numbers")
 
         # Validate start position if present
-        start_position_beats = [beat for beat in sequence.beats if beat.beat_number == 0]
+        start_position_beats = [
+            beat for beat in sequence.beats if beat.beat_number == 0
+        ]
         if len(start_position_beats) > 1:
             raise ValidationError("Sequence cannot have multiple start positions")
 
@@ -240,7 +253,9 @@ class SequenceValidator:
             expected_numbers = list(range(1, len(regular_beats) + 1))
             actual_numbers = sorted([beat.beat_number for beat in regular_beats])
             if actual_numbers != expected_numbers:
-                raise ValidationError(f"Beat numbers are not sequential: {actual_numbers}")
+                raise ValidationError(
+                    f"Beat numbers are not sequential: {actual_numbers}"
+                )
 
     def _load_validation_rules(self) -> Dict[str, Any]:
         """Load sequence validation rules."""
@@ -267,7 +282,7 @@ class SequenceValidator:
     def is_valid_sequence(self, sequence: SequenceData) -> bool:
         """
         Check if sequence is valid without raising exceptions.
-        
+
         Returns:
             bool: True if valid, False otherwise
         """
@@ -280,7 +295,7 @@ class SequenceValidator:
     def is_valid_beat(self, beat: BeatData) -> bool:
         """
         Check if beat is valid without raising exceptions.
-        
+
         Returns:
             bool: True if valid, False otherwise
         """
@@ -293,15 +308,15 @@ class SequenceValidator:
     def get_validation_errors(self, sequence: SequenceData) -> List[str]:
         """
         Get list of validation errors for a sequence.
-        
+
         Returns:
             List of error messages, empty if valid
         """
         errors = []
-        
+
         try:
             self.validate_sequence(sequence)
         except ValidationError as e:
             errors.append(str(e))
-        
+
         return errors

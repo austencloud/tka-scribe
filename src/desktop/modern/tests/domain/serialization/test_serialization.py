@@ -1,24 +1,23 @@
 """Test domain model serialization."""
 
 import json
+
 import pytest
 from src.domain.models import (
-    BeatData,
-    SequenceData,
-    MotionData,
-    MotionType,
-    Location,
-    Orientation,
-    RotationDirection,
-)
-from src.domain.models import (
-    PictographData,
     ArrowData,
-    PropData,
+    ArrowType,
+    BeatData,
     GridData,
     GridMode,
-    ArrowType,
+    Location,
+    MotionData,
+    MotionType,
+    Orientation,
+    PictographData,
+    PropData,
     PropType,
+    RotationDirection,
+    SequenceData,
 )
 
 
@@ -33,8 +32,8 @@ class TestMotionDataSerialization:
             start_loc=Location.NORTH,
             end_loc=Location.EAST,
             start_ori=Orientation.IN,
-            end_ori=Orientation.IN,
-            turns=0.0,
+            end_ori=Orientation.OUT,
+            turns=1.5,
         )
 
         # Serialize to camelCase

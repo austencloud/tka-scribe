@@ -23,7 +23,7 @@ from core.interfaces.option_picker_interfaces import (
     IOptionPickerInitializer,
 )
 from domain.models.pictograph_data import PictographData
-from domain.models.sequence_models import SequenceData
+from domain.models.sequence_data import SequenceData
 from presentation.components.option_picker.components.sections.section_widget import (
     OptionPickerSection,
 )

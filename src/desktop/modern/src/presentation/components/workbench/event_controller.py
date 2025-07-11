@@ -3,7 +3,7 @@ from typing import Optional
 from core.interfaces.workbench_services import (
     IBeatDeletionService,
     IDictionaryService,
-    IFullScreenService,
+    IFullScreenViewer,
     ISequenceWorkbenchService,
 )
 from domain.models import SequenceData
@@ -22,7 +22,7 @@ class WorkbenchEventController(QObject):
     def __init__(
         self,
         workbench_service: ISequenceWorkbenchService,
-        fullscreen_service: IFullScreenService,
+        fullscreen_service: IFullScreenViewer,
         deletion_service: IBeatDeletionService,
         dictionary_service: IDictionaryService,
     ):

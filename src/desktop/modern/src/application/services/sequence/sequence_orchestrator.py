@@ -24,7 +24,7 @@ from application.services.sequence.sequence_transformer import SequenceTransform
 from application.services.sequence.sequence_validator import SequenceValidator
 from domain.models.beat_data import BeatData
 from domain.models.pictograph_data import PictographData
-from domain.models.sequence_models import SequenceData
+from domain.models.sequence_data import SequenceData
 
 logger = logging.getLogger(__name__)
 

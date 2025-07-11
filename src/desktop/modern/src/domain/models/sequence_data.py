@@ -152,6 +152,9 @@ class SequenceData:
             "name": self.name,
             "word": self.word,
             "beats": [beat.to_dict() for beat in self.beats],
+            "start_position": (
+                self.start_position.to_dict() if self.start_position else None
+            ),
             "metadata": self.metadata,
         }
 
@@ -160,12 +163,16 @@ class SequenceData:
         """Create from dictionary."""
         beats = [BeatData.from_dict(beat_data) for beat_data in data.get("beats", [])]
 
+        start_position = None
+        if data.get("start_position"):
+            start_position = BeatData.from_dict(data["start_position"])
+
         return cls(
             id=data.get("id", str(uuid.uuid4())),
             name=data.get("name", ""),
             word=data.get("word", ""),
             beats=beats,
-            start_position=data.get("start_position"),
+            start_position=start_position,
             metadata=data.get("metadata", {}),
         )
 

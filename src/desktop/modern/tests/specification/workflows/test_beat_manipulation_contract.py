@@ -13,8 +13,9 @@ Defines behavioral contracts for beat manipulation workflows.
 """
 
 import sys
-import pytest
 from pathlib import Path
+
+import pytest
 
 # Add modern source to path
 modern_src = Path(__file__).parent.parent.parent.parent / "src"
@@ -61,11 +62,9 @@ class TestBeatManipulationWorkflowContract:
         - Beat order is maintained
         """
         try:
-            from domain.models.beat_models import BeatData
-from domain.models.sequence_models import SequenceData
-            from application.services.sequences.sequence_management_service import (
-                SequenceManager,
-            )
+            from application.services.sequence.sequence_manager import SequenceManager
+            from domain.models.beat_data import BeatData
+            from domain.models.sequence_data import SequenceData
 
             # Create initial sequence
             beat1 = BeatData(beat_number=1, letter="A")
@@ -101,11 +100,9 @@ from domain.models.sequence_models import SequenceData
         - Remaining beats maintain order
         """
         try:
-            from domain.models.beat_models import BeatData
-from domain.models.sequence_models import SequenceData
-            from application.services.sequences.sequence_management_service import (
-                SequenceManager,
-            )
+            from application.services.sequence.sequence_manager import SequenceManager
+            from domain.models.beat_data import BeatData
+            from domain.models.sequence_data import SequenceData
 
             # Create sequence with multiple beats
             beats = [
@@ -144,8 +141,8 @@ from domain.models.sequence_models import SequenceData
         - Modifications don't affect other beats
         """
         try:
-            from domain.models.beat_models import BeatData
-from domain.models.sequence_models import SequenceData
+            from domain.models.beat_data import BeatData
+            from domain.models.sequence_data import SequenceData
 
             # Create sequence with beat
             original_beat = BeatData(beat_number=1, letter="A", duration=1.0)
@@ -189,8 +186,8 @@ from domain.models.sequence_models import SequenceData
         - Beat numbers can be updated
         """
         try:
-            from domain.models.beat_models import BeatData
-from domain.models.sequence_models import SequenceData
+            from domain.models.beat_data import BeatData
+            from domain.models.sequence_data import SequenceData
 
             # Create sequence with beats
             beats = [

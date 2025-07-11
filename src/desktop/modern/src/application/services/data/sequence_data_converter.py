@@ -9,7 +9,7 @@ Includes performance optimizations through caching.
 from typing import Any, Dict, List
 
 from domain.models.beat_data import BeatData
-from domain.models.sequence_models import SequenceData
+from domain.models.sequence_data import SequenceData
 
 from .legacy_to_modern_converter import LegacyToModernConverter
 from .modern_to_legacy_converter import ModernToLegacyConverter

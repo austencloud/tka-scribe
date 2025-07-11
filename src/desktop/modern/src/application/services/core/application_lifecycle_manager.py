@@ -171,7 +171,7 @@ class ApplicationLifecycleManager(IApplicationLifecycleManager):
                 if isinstance(sequence_data, dict):
                     print("🔍 [LIFECYCLE] Converting dict to SequenceData object...")
                     from domain.models.beat_data import BeatData
-                    from domain.models.sequence_models import SequenceData
+                    from domain.models.sequence_data import SequenceData
 
                     beats_data = sequence_data.get("beats", [])
                     print(f"🔍 [LIFECYCLE] Sequence has {len(beats_data)} beats")

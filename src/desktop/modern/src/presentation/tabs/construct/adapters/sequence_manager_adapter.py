@@ -13,7 +13,7 @@ from application.services.sequence.sequence_manager import (
     SequenceManager,
 )
 from domain.models.beat_data import BeatData
-from domain.models.sequence_models import SequenceData
+from domain.models.sequence_data import SequenceData
 from PyQt6.QtCore import QObject, pyqtSignal
 
 logger = logging.getLogger(__name__)

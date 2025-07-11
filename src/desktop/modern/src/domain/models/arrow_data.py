@@ -40,9 +40,6 @@ class ArrowData:
     id: str = field(default_factory=lambda: str(uuid.uuid4()))
     arrow_type: ArrowType = ArrowType.BLUE
 
-    # Motion reference (DEPRECATED: motion data now lives in PictographData)
-    # motion_data: Optional[MotionData] = None  # Removed - use PictographData.blue_motion/red_motion
-
     # Visual properties
     color: str = "blue"
     turns: float = 0.0

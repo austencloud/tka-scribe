@@ -11,7 +11,7 @@ from enum import Enum
 from typing import Dict, Any
 
 from domain.models.beat_data import BeatData
-from domain.models.sequence_models import SequenceData
+from domain.models.sequence_data import SequenceData
 
 logger = logging.getLogger(__name__)
 
@@ -29,10 +29,10 @@ class SequenceType(Enum):
 class SequenceGenerator:
     """
     Pure service for generating sequences using various algorithms.
-    
+
     Responsibilities:
     - Freeform sequence generation
-    - Circular sequence generation  
+    - Circular sequence generation
     - Auto-complete sequence generation
     - Mirror sequence generation
     - Continuous sequence generation
@@ -42,7 +42,9 @@ class SequenceGenerator:
         """Initialize the sequence generator."""
         pass
 
-    def generate_sequence(self, sequence_type: SequenceType, name: str, length: int = 16, **kwargs) -> SequenceData:
+    def generate_sequence(
+        self, sequence_type: SequenceType, name: str, length: int = 16, **kwargs
+    ) -> SequenceData:
         """Generate a sequence using the specified algorithm."""
         if sequence_type == SequenceType.FREEFORM:
             return self._generate_freeform_sequence(name, length, **kwargs)
@@ -57,47 +59,57 @@ class SequenceGenerator:
         else:
             raise ValueError(f"Unknown sequence type: {sequence_type}")
 
-    def _generate_freeform_sequence(self, name: str, length: int, **kwargs) -> SequenceData:
+    def _generate_freeform_sequence(
+        self, name: str, length: int, **kwargs
+    ) -> SequenceData:
         """Generate freeform sequence with random valid motions."""
         beats = []
         for i in range(length):
             beat = BeatData(beat_number=i + 1, letter="")
             beats.append(beat)
-        
+
         return SequenceData(name=name, beats=beats)
 
-    def _generate_circular_sequence(self, name: str, length: int, **kwargs) -> SequenceData:
+    def _generate_circular_sequence(
+        self, name: str, length: int, **kwargs
+    ) -> SequenceData:
         """Generate circular sequence where end connects to beginning."""
         beats = []
         for i in range(length):
             beat = BeatData(beat_number=i + 1, letter="")
             beats.append(beat)
-        
+
         return SequenceData(name=name, beats=beats)
 
-    def _generate_auto_complete_sequence(self, name: str, length: int, **kwargs) -> SequenceData:
+    def _generate_auto_complete_sequence(
+        self, name: str, length: int, **kwargs
+    ) -> SequenceData:
         """Generate auto-completed sequence based on pattern recognition."""
         beats = []
         for i in range(length):
             beat = BeatData(beat_number=i + 1, letter="")
             beats.append(beat)
-        
+
         return SequenceData(name=name, beats=beats)
 
-    def _generate_mirror_sequence(self, name: str, length: int, **kwargs) -> SequenceData:
+    def _generate_mirror_sequence(
+        self, name: str, length: int, **kwargs
+    ) -> SequenceData:
         """Generate mirror sequence (palindromic pattern)."""
         beats = []
         for i in range(length):
             beat = BeatData(beat_number=i + 1, letter="")
             beats.append(beat)
-        
+
         return SequenceData(name=name, beats=beats)
 
-    def _generate_continuous_sequence(self, name: str, length: int, **kwargs) -> SequenceData:
+    def _generate_continuous_sequence(
+        self, name: str, length: int, **kwargs
+    ) -> SequenceData:
         """Generate continuous sequence where each beat flows into the next."""
         beats = []
         for i in range(length):
             beat = BeatData(beat_number=i + 1, letter="")
             beats.append(beat)
-        
+
         return SequenceData(name=name, beats=beats)

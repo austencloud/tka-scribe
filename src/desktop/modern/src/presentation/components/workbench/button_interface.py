@@ -13,7 +13,7 @@ from abc import ABC, abstractmethod
 from typing import Optional
 
 from domain.models.beat_data import BeatData
-from domain.models.sequence_models import SequenceData
+from domain.models.sequence_data import SequenceData
 from PyQt6.QtCore import QObject, pyqtSignal
 
 

@@ -45,7 +45,7 @@ sys.path.insert(0, str(modern_src_path))
 from domain.models.beat_models import BeatData
 from domain.models.enums import Location, MotionType, Orientation, RotationDirection
 from domain.models.motion_models import MotionData
-from domain.models.sequence_models import SequenceData
+from domain.models.sequence_data import SequenceData
 from presentation.components.pictograph.pictograph_component import (
     create_pictograph_component,
 )

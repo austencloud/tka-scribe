@@ -21,7 +21,7 @@ from typing import Any, Dict, List, Optional, Tuple
 # Add the src directory to the path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "..", "src"))
 
-from application.services.sequences.persister import SequencePersister
+from application.services.sequence.sequence_persister import SequencePersister
 from core.application.application_factory import ApplicationFactory
 from core.testing.ai_agent_helpers import AITestResult, TKAAITestHelper
 from domain.models import BeatData, SequenceData

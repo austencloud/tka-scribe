@@ -168,29 +168,41 @@ class GlyphDataService:
         This is a simplified implementation. The full logic is quite complex
         and involves grid mode checking, position analysis, etc.
         """
+        # Handle cases where arrows or motions are missing
+        if not hasattr(pictograph_data, "arrows") or not pictograph_data.arrows:
+            return None
+
         if not pictograph_data.arrows.get("blue") or not pictograph_data.arrows.get(
             "red"
         ):
             return None
 
+        # Handle cases where motions are missing
+        if not hasattr(pictograph_data, "motions") or not pictograph_data.motions:
+            return None
+
         blue_motion = pictograph_data.motions.get("blue")
         red_motion = pictograph_data.motions.get("red")
+
+        # If either motion is missing, return None
+        if not blue_motion or not red_motion:
+            return None
 
         # Simplified VTG determination based on motion patterns
         # This would need to be expanded with the full classification logic
 
         # Check if motions are in same or opposite directions
-        same_direction = self._motions_same_direction(blue_motion, red_motion)
+        is_same_direction = self._motions_same_direction(blue_motion, red_motion)
 
         # Check if motions are split, together, or quarter
-        motion_pattern = self._determine_motion_pattern(blue_motion, red_motion)
+        timing = self._determine_timing(blue_motion, red_motion)
 
-        if motion_pattern == "split":
-            return VTGMode.SPLIT_SAME if same_direction else VTGMode.SPLIT_OPP
-        elif motion_pattern == "together":
-            return VTGMode.TOG_SAME if same_direction else VTGMode.TOG_OPP
-        elif motion_pattern == "quarter":
-            return VTGMode.QUARTER_SAME if same_direction else VTGMode.QUARTER_OPP
+        if timing == "split":
+            return VTGMode.SPLIT_SAME if is_same_direction else VTGMode.SPLIT_OPP
+        elif timing == "together":
+            return VTGMode.TOG_SAME if is_same_direction else VTGMode.TOG_OPP
+        elif timing == "quarter":
+            return VTGMode.QUARTER_SAME if is_same_direction else VTGMode.QUARTER_OPP
 
         return VTGMode.SPLIT_SAME  # Default fallback
 
@@ -201,9 +213,7 @@ class GlyphDataService:
         # Simplified check - would need full directional logic
         return blue_motion.prop_rot_dir == red_motion.prop_rot_dir
 
-    def _determine_motion_pattern(
-        self, blue_motion: MotionData, red_motion: MotionData
-    ) -> str:
+    def _determine_timing(self, blue_motion: MotionData, red_motion: MotionData) -> str:
         """Determine if motions are split, together, or quarter pattern."""
         # Simplified pattern detection - would need full pattern analysis logic
         blue_start = blue_motion.start_loc
@@ -248,12 +258,21 @@ class GlyphDataService:
             return pictograph_data.start_position, pictograph_data.end_position
 
         # Fallback to deriving from motion data if available
-        if not pictograph_data.arrows.get("blue"):
+        if (
+            not hasattr(pictograph_data, "arrows")
+            or not pictograph_data.arrows
+            or not pictograph_data.arrows.get("blue")
+        ):
             return None, None
 
         # For now, use blue motion's start and end locations
         # This would need more sophisticated logic in the full implementation
+        if not hasattr(pictograph_data, "motions") or not pictograph_data.motions:
+            return None, None
+
         blue_motion = pictograph_data.motions.get("blue")
+        if not blue_motion:
+            return None, None
 
         # Map locations to position names
         location_to_position = {
@@ -263,7 +282,15 @@ class GlyphDataService:
             Location.WEST: "alpha",  # Simplified mapping
         }
 
-        start_pos = location_to_position.get(blue_motion.start_loc)
-        end_pos = location_to_position.get(blue_motion.end_loc)
+        start_pos = (
+            location_to_position.get(blue_motion.start_loc)
+            if hasattr(blue_motion, "start_loc")
+            else None
+        )
+        end_pos = (
+            location_to_position.get(blue_motion.end_loc)
+            if hasattr(blue_motion, "end_loc")
+            else None
+        )
 
         return start_pos, end_pos

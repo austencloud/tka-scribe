@@ -12,7 +12,7 @@ from application.services.graph_editor.graph_editor_state_manager import (
     GraphEditorStateManager as GraphEditorStateService,
 )
 from domain.models.beat_data import BeatData
-from domain.models.sequence_models import SequenceData
+from domain.models.sequence_data import SequenceData
 from PyQt6.QtCore import QObject, pyqtSignal
 
 if TYPE_CHECKING:

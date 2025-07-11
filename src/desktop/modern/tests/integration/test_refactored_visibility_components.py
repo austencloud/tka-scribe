@@ -6,34 +6,30 @@ PERMANENT: Ensure component decomposition preserves architectural contracts
 AUTHOR: @ai-agent
 """
 
-import pytest
 import logging
 import time
-from typing import Dict, Any, Optional
+from typing import Any, Dict, Optional
 
-from core.application.application_factory import ApplicationFactory
-from core.testing.ai_agent_helpers import TKAAITestHelper
-from core.interfaces.tab_settings_interfaces import IVisibilityService
-
-from application.services.settings.visibility_state_manager import (
-    ModernVisibilityStateManager,
-)
+import pytest
 from application.services.pictograph.global_visibility_service import (
-    GlobalVisibilityService,
+    PictographVisibilityManager as GlobalVisibilityService,
+)
+from application.services.pictograph.visibility_state_manager import (
+    VisibilityStateManager as ModernVisibilityStateManager,
+)
+from core.application.application_factory import ApplicationFactory
+from core.interfaces.tab_settings_interfaces import IVisibilityService
+from core.testing.ai_agent_helpers import TKAAITestHelper
+from presentation.components.ui.settings.components import ElementToggle, MotionToggle
+from presentation.components.ui.settings.visibility.components import (
+    DependencyWarning,
+    ElementVisibilitySection,
+    MotionControlsSection,
+    VisibilityPreviewSection,
 )
 
 # Import refactored components
 from presentation.components.ui.settings.visibility.visibility_tab import VisibilityTab
-from presentation.components.ui.settings.visibility.components import (
-    MotionControlsSection,
-    ElementVisibilitySection,
-    VisibilityPreviewSection,
-    DependencyWarning,
-)
-from presentation.components.ui.settings.components import (
-    MotionToggle,
-    ElementToggle,
-)
 
 logger = logging.getLogger(__name__)
 

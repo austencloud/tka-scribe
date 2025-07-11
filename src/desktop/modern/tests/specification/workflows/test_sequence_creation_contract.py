@@ -63,7 +63,7 @@ class TestSequenceCreationWorkflowContract:
         """
         try:
             from domain.models.beat_models import BeatData
-            from domain.models.sequence_models import SequenceData
+            from domain.models.sequence_data import SequenceData
 
             # Create beats
             beat1 = BeatData(beat_number=1, letter="A")
@@ -133,7 +133,7 @@ class TestSequenceCreationWorkflowContract:
         """
         try:
             from domain.models.beat_models import BeatData
-            from domain.models.sequence_models import SequenceData
+            from domain.models.sequence_data import SequenceData
 
             # Test valid sequence
             valid_beat = BeatData(beat_number=1, letter="A")
@@ -178,7 +178,7 @@ class TestSequenceCreationWorkflowContract:
                 SequenceManager,
             )
             from domain.models.beat_models import BeatData
-            from domain.models.sequence_models import SequenceData
+            from domain.models.sequence_data import SequenceData
 
             # Create initial sequence
             initial_beat = BeatData(beat_number=1, letter="A")
@@ -218,7 +218,7 @@ class TestSequenceCreationWorkflowContract:
         """
         try:
             from domain.models.beat_models import BeatData
-            from domain.models.sequence_models import SequenceData
+            from domain.models.sequence_data import SequenceData
 
             # Start with empty sequence
             sequence = SequenceData.empty()
@@ -260,7 +260,7 @@ class TestSequenceCreationWorkflowContract:
         """
         try:
             from domain.models.beat_models import BeatData
-            from domain.models.sequence_models import SequenceData
+            from domain.models.sequence_data import SequenceData
 
             # Test creating sequence with invalid data
             try:

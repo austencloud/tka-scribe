@@ -19,7 +19,7 @@ def test_full_screen_service_creation():
     print("🧪 Testing FullScreenService creation...")
 
     try:
-        from application.services.ui.full_screen_viewer import FullScreenService
+        from application.services.ui.full_screen_viewer import FullScreenViewer
         from application.services.ui.sequence_state_reader import (
             MockSequenceStateReader,
         )
@@ -34,7 +34,7 @@ def test_full_screen_service_creation():
         overlay_factory = FullScreenOverlayFactory()
 
         # Create service
-        service = FullScreenService(
+        service = FullScreenViewer(
             thumbnail_generator=thumbnail_generator,
             sequence_state_reader=sequence_state_reader,
             overlay_factory=overlay_factory,
@@ -63,7 +63,7 @@ def test_thumbnail_generation():
             app = QApplication(sys.argv)
 
         from domain.models.beat_data import BeatData
-        from domain.models.sequence_models import SequenceData
+        from domain.models.sequence_data import SequenceData
 
         # Create a test sequence
         beats = [
@@ -100,7 +100,7 @@ def test_di_container_integration():
 
     try:
         from core.dependency_injection.di_container import DIContainer
-        from core.interfaces.workbench_services import IFullScreenService
+        from core.interfaces.workbench_services import IFullScreenViewer
         from presentation.factories.workbench_factory import (
             configure_workbench_services,
         )
@@ -112,7 +112,7 @@ def test_di_container_integration():
         configure_workbench_services(container)
 
         # Try to resolve the full screen service
-        fullscreen_service = container.resolve(IFullScreenService)
+        fullscreen_service = container.resolve(IFullScreenViewer)
 
         if fullscreen_service:
             print(

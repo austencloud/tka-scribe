@@ -413,15 +413,26 @@ class PictographManager(IPictographManager):
 
     # Private helper methods
 
-    def _generate_glyph_data(
-        self, pictograph_data: PictographData
-    ) -> Optional[GlyphData]:
-        """Generate glyph data for pictograph data."""
-        if pictograph_data.is_blank or not pictograph_data.letter:
-            return None
+    def _generate_glyph_data(self, data) -> Optional[GlyphData]:
+        """Generate glyph data for pictograph or beat data."""
+        # Handle both BeatData and PictographData for backward compatibility
+        from domain.models.beat_data import BeatData
 
-        # Use the dedicated glyph data service instead of duplicating logic
         from ..data import GlyphDataService
+
+        if isinstance(data, BeatData):
+            # For BeatData, we only need the letter for glyph classification
+            if not data.letter:
+                return None
+            # Create a minimal pictograph data for glyph service
+            from domain.models.pictograph_data import PictographData
+
+            pictograph_data = PictographData(letter=data.letter)
+        else:
+            # PictographData
+            pictograph_data = data
+            if pictograph_data.is_blank or not pictograph_data.letter:
+                return None
 
         glyph_service = GlyphDataService()
         return glyph_service.determine_glyph_data(pictograph_data)

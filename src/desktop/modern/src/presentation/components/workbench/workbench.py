@@ -4,7 +4,7 @@ from core.interfaces.core_services import ILayoutService
 from core.interfaces.workbench_services import (
     IBeatDeletionService,
     IDictionaryService,
-    IFullScreenService,
+    IFullScreenViewer,
     IGraphEditorService,
     ISequenceWorkbenchService,
 )
@@ -45,7 +45,7 @@ class SequenceWorkbench(QWidget):
         layout_service: ILayoutService,
         beat_selection_service: "BeatSelectionService",
         workbench_service: ISequenceWorkbenchService,
-        fullscreen_service: IFullScreenService,
+        fullscreen_service: IFullScreenViewer,
         deletion_service: IBeatDeletionService,
         graph_service: IGraphEditorService,
         dictionary_service: IDictionaryService,
@@ -82,7 +82,7 @@ class SequenceWorkbench(QWidget):
     def _create_event_controller(
         self,
         workbench_service: ISequenceWorkbenchService,
-        fullscreen_service: IFullScreenService,
+        fullscreen_service: IFullScreenViewer,
         deletion_service: IBeatDeletionService,
         dictionary_service: IDictionaryService,
     ):

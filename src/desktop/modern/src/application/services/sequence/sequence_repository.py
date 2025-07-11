@@ -9,7 +9,7 @@ solely on data access and storage operations.
 import logging
 from typing import List, Optional
 
-from domain.models.sequence_models import SequenceData
+from domain.models.sequence_data import SequenceData
 
 logger = logging.getLogger(__name__)
 
@@ -29,7 +29,7 @@ class SequenceRepository:
     def __init__(self, storage_adapter=None):
         """
         Initialize repository with optional storage adapter.
-        
+
         Args:
             storage_adapter: Optional storage implementation (file, database, etc.)
         """
@@ -41,13 +41,13 @@ class SequenceRepository:
     def save(self, sequence: SequenceData) -> SequenceData:
         """
         Save a sequence to storage.
-        
+
         Args:
             sequence: The sequence to save
-            
+
         Returns:
             The saved sequence
-            
+
         Raises:
             RepositoryError: If save operation fails
         """
@@ -74,10 +74,10 @@ class SequenceRepository:
     def get_by_id(self, sequence_id: str) -> Optional[SequenceData]:
         """
         Retrieve a sequence by its ID.
-        
+
         Args:
             sequence_id: The sequence ID to retrieve
-            
+
         Returns:
             The sequence if found, None otherwise
         """
@@ -109,13 +109,13 @@ class SequenceRepository:
     def update(self, sequence: SequenceData) -> SequenceData:
         """
         Update an existing sequence.
-        
+
         Args:
             sequence: The sequence to update
-            
+
         Returns:
             The updated sequence
-            
+
         Raises:
             RepositoryError: If sequence doesn't exist or update fails
         """
@@ -145,13 +145,13 @@ class SequenceRepository:
     def delete(self, sequence_id: str) -> bool:
         """
         Delete a sequence by ID.
-        
+
         Args:
             sequence_id: The sequence ID to delete
-            
+
         Returns:
             True if deleted, False if not found
-            
+
         Raises:
             RepositoryError: If delete operation fails
         """
@@ -169,7 +169,9 @@ class SequenceRepository:
             if self._storage_adapter:
                 success = self._storage_adapter.delete_sequence(sequence_id)
                 if not success:
-                    logger.warning(f"Storage adapter reported failure deleting {sequence_id}")
+                    logger.warning(
+                        f"Storage adapter reported failure deleting {sequence_id}"
+                    )
 
             # Clear current sequence if it was deleted
             if self._current_sequence_id == sequence_id:
@@ -185,10 +187,10 @@ class SequenceRepository:
     def exists(self, sequence_id: str) -> bool:
         """
         Check if a sequence exists.
-        
+
         Args:
             sequence_id: The sequence ID to check
-            
+
         Returns:
             True if sequence exists, False otherwise
         """
@@ -211,7 +213,7 @@ class SequenceRepository:
     def get_all(self) -> List[SequenceData]:
         """
         Get all sequences.
-        
+
         Returns:
             List of all sequences
         """
@@ -240,10 +242,10 @@ class SequenceRepository:
     def find_by_name(self, name: str) -> List[SequenceData]:
         """
         Find sequences by name (partial match).
-        
+
         Args:
             name: The name to search for
-            
+
         Returns:
             List of matching sequences
         """
@@ -254,8 +256,7 @@ class SequenceRepository:
 
         all_sequences = self.get_all()
         matching_sequences = [
-            seq for seq in all_sequences 
-            if name.lower() in seq.name.lower()
+            seq for seq in all_sequences if name.lower() in seq.name.lower()
         ]
 
         logger.debug(f"Found {len(matching_sequences)} sequences matching '{name}'")
@@ -264,7 +265,7 @@ class SequenceRepository:
     def get_current_sequence(self) -> Optional[SequenceData]:
         """
         Get the current active sequence.
-        
+
         Returns:
             The current sequence if set, None otherwise
         """
@@ -282,10 +283,10 @@ class SequenceRepository:
     def set_current_sequence(self, sequence_id: str) -> bool:
         """
         Set the current active sequence.
-        
+
         Args:
             sequence_id: The sequence ID to set as current
-            
+
         Returns:
             True if set successfully, False otherwise
         """
@@ -305,18 +306,15 @@ class SequenceRepository:
     def get_sequences_by_length(self, length: int) -> List[SequenceData]:
         """
         Get sequences by their length.
-        
+
         Args:
             length: The sequence length to filter by
-            
+
         Returns:
             List of sequences with the specified length
         """
         all_sequences = self.get_all()
-        matching_sequences = [
-            seq for seq in all_sequences 
-            if len(seq.beats) == length
-        ]
+        matching_sequences = [seq for seq in all_sequences if len(seq.beats) == length]
 
         logger.debug(f"Found {len(matching_sequences)} sequences with length {length}")
         return matching_sequences
@@ -338,6 +336,7 @@ class SequenceRepository:
 
 class RepositoryError(Exception):
     """Custom exception for repository operations."""
+
     pass
 
 

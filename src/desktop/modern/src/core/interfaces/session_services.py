@@ -190,3 +190,7 @@ class ISessionStateTracker(ABC):
         Args:
             enabled: Whether to enable auto-save
         """
+
+
+# Alias for backward compatibility
+ISessionStateService = ISessionStateTracker

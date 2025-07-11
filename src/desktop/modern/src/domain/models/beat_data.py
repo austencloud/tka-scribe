@@ -37,8 +37,13 @@ class BeatData:
     duration: float = 1.0
 
     # Motion data (DEPRECATED: motion data now lives in PictographData)
-    # blue_motion: Optional[MotionData] = None  # Removed - use PictographData.blue_motion
-    # red_motion: Optional[MotionData] = None   # Removed - use PictographData.red_motion
+    # TODO: Remove these fields once all code migrated to PictographData.motions
+    blue_motion: Optional[MotionData] = (
+        None  # DEPRECATED - use PictographData.motions["blue"]
+    )
+    red_motion: Optional[MotionData] = (
+        None  # DEPRECATED - use PictographData.motions["red"]
+    )
 
     # Pictograph data (NEW: contains motion data)
     pictograph_data: Optional["PictographData"] = None
@@ -72,11 +77,24 @@ class BeatData:
         """Check if beat has valid data for sequence inclusion."""
         if self.is_blank:
             return True
-        return (
-            self.letter is not None
-            and self.blue_motion is not None
-            and self.red_motion is not None
-        )
+
+        # Check if we have motion data (either legacy fields or new pictograph_data)
+        has_motion_data = False
+
+        # Check legacy fields first (deprecated)
+        if self.blue_motion is not None and self.red_motion is not None:
+            has_motion_data = True
+
+        # Check new pictograph_data structure
+        elif (
+            self.pictograph_data
+            and self.pictograph_data.motions
+            and "blue" in self.pictograph_data.motions
+            and "red" in self.pictograph_data.motions
+        ):
+            has_motion_data = True
+
+        return self.letter is not None and has_motion_data
 
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary for serialization."""

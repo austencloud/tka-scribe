@@ -17,15 +17,17 @@ from PyQt6.QtWidgets import QApplication
 modern_src_path = Path(__file__).parent.parent.parent / "src"
 sys.path.insert(0, str(modern_src_path))
 
-from application.services.graph_editor_data_flow_service import (
-    GraphEditorDataFlowService,
+from application.services.graph_editor.graph_editor_data_flow_manager import (
+    GraphEditorDataFlowManager as GraphEditorDataFlowService,
 )
-from application.services.graph_editor_hotkey_service import GraphEditorHotkeyService
+from application.services.graph_editor.graph_editor_hotkey_manager import (
+    GraphEditorHotkeyManager as GraphEditorHotkeyService,
+)
 from core.interfaces.workbench_services import IGraphEditorService
-from domain.models.beat_models import BeatData
+from domain.models.beat_data import BeatData
 from domain.models.enums import Location, MotionType, RotationDirection
 from domain.models.motion_models import MotionData
-from domain.models.sequence_models import SequenceData
+from domain.models.sequence_data import SequenceData
 
 
 class TestGraphEditorIntegration:

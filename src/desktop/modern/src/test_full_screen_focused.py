@@ -28,7 +28,7 @@ def test_full_screen_end_to_end():
 
         # Create test sequence
         from domain.models.beat_data import BeatData
-        from domain.models.sequence_models import SequenceData
+        from domain.models.sequence_data import SequenceData
 
         beats = [
             BeatData(beat_number=0, letter="A", metadata={"is_start_position": True}),
@@ -46,7 +46,7 @@ def test_full_screen_end_to_end():
         )
 
         # Create full screen service
-        from application.services.ui.full_screen_viewer import FullScreenService
+        from application.services.ui.full_screen_viewer import FullScreenViewer
         from application.services.ui.sequence_state_reader import (
             MockSequenceStateReader,
         )
@@ -59,7 +59,7 @@ def test_full_screen_end_to_end():
         sequence_state_reader = MockSequenceStateReader()
         overlay_factory = FullScreenOverlayFactory()
 
-        service = FullScreenService(
+        service = FullScreenViewer(
             thumbnail_generator=thumbnail_generator,
             sequence_state_reader=sequence_state_reader,
             overlay_factory=overlay_factory,
@@ -156,7 +156,7 @@ def test_di_integration_focused():
 
     try:
         from core.dependency_injection.di_container import DIContainer
-        from core.interfaces.workbench_services import IFullScreenService
+        from core.interfaces.workbench_services import IFullScreenViewer
         from presentation.factories.workbench_factory import _create_fullscreen_service
 
         # Create container
@@ -164,10 +164,10 @@ def test_di_integration_focused():
 
         # Create and register just the full screen service
         fullscreen_service = _create_fullscreen_service(container)
-        container.register_instance(IFullScreenService, fullscreen_service)
+        container.register_instance(IFullScreenViewer, fullscreen_service)
 
         # Test resolution
-        resolved_service = container.resolve(IFullScreenService)
+        resolved_service = container.resolve(IFullScreenViewer)
 
         if resolved_service:
             print(f"✅ IFullScreenService resolved: {type(resolved_service).__name__}")

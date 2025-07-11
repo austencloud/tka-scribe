@@ -17,7 +17,7 @@ from core.interfaces.core_services import (
     IValidationService,
 )
 from domain.models import BeatData, Location, MotionData, MotionType, RotationDirection
-from domain.models.arrow_data import GridMode
+from domain.models.enums import GridMode
 
 logger = logging.getLogger(__name__)
 

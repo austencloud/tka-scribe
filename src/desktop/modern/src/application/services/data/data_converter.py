@@ -17,7 +17,7 @@ from typing import Any, Dict, List
 
 from domain.models.beat_data import BeatData
 from domain.models.enums import GridPosition, Location
-from domain.models.sequence_models import SequenceData
+from domain.models.sequence_data import SequenceData
 
 
 class DataConverter:

@@ -1,23 +1,20 @@
 """
 Arrow renderer for pictograph components.
 
-Handles rendering of arrow elements with positioning, rotation, and mirroring.
+Handles Qt-specific arrow rendering while delegating business logic
+to ArrowRenderingService.
 """
 
 import logging
-import os
-import re
-from functools import lru_cache
-from typing import TYPE_CHECKING, Dict, Optional, Set
+from typing import TYPE_CHECKING, Dict, Optional
 
-from application.services.assets.asset_manager import AssetManager
-from application.services.assets.image_asset_utils import get_image_path
+from application.services.pictograph.arrow_rendering_service import ArrowRenderingService
 from core.dependency_injection.di_container import get_container
 from core.interfaces.positioning_services import (
     IArrowCoordinateSystemService,
     IArrowPositioningOrchestrator,
 )
-from domain.models import Location, MotionData, MotionType
+from domain.models import MotionData
 from domain.models.arrow_data import ArrowData
 from domain.models.pictograph_data import PictographData
 from presentation.components.pictograph.graphics_items.arrow_item import ArrowItem
@@ -31,22 +28,20 @@ logger = logging.getLogger(__name__)
 
 
 class ArrowRenderer:
-    """Handles arrow rendering for pictographs with optimized SVG caching."""
-
-    # Class-level cache statistics for monitoring
-    _cache_stats: Dict[str, int] = {"hits": 0, "misses": 0, "total_files_cached": 0}
-
-    # Track cached files for cache management
-    _cached_files: Set[str] = set()
+    """
+    Qt presentation layer for arrow rendering.
+    
+    Handles Qt-specific operations (QSvgRenderer, QPainter, QGraphicsItems)
+    while delegating business logic to ArrowRenderingService.
+    """
 
     def __init__(self, scene: "PictographScene"):
         self.scene = scene
         self.CENTER_X = 475
         self.CENTER_Y = 475
-        self.HAND_RADIUS = 143.1
 
-        # Initialize asset manager service
-        self.asset_manager = AssetManager()
+        # Initialize business service
+        self._rendering_service = ArrowRenderingService()
 
         # Get positioning services from DI container with error handling
         try:
@@ -54,39 +49,13 @@ class ArrowRenderer:
             self.positioning_orchestrator = container.resolve(
                 IArrowPositioningOrchestrator
             )
-            # Get coordinate system service to replace duplicate mappings
             self.coordinate_system = container.resolve(IArrowCoordinateSystemService)
         except Exception as e:
             logger.warning(f"Failed to resolve positioning services: {e}")
             self.positioning_orchestrator = None
             self.coordinate_system = None
 
-        # Initialize cache monitoring
-        logger.debug("ArrowRenderer initialized with asset management service")
-
-        # Fallback coordinates for when coordinate system service is not available
-        self._fallback_location_coordinates = {
-            Location.NORTH.value: (0, -self.HAND_RADIUS),
-            Location.EAST.value: (self.HAND_RADIUS, 0),
-            Location.SOUTH.value: (0, self.HAND_RADIUS),
-            Location.WEST.value: (-self.HAND_RADIUS, 0),
-            Location.NORTHEAST.value: (
-                self.HAND_RADIUS * 0.707,
-                -self.HAND_RADIUS * 0.707,
-            ),
-            Location.SOUTHEAST.value: (
-                self.HAND_RADIUS * 0.707,
-                self.HAND_RADIUS * 0.707,
-            ),
-            Location.SOUTHWEST.value: (
-                -self.HAND_RADIUS * 0.707,
-                self.HAND_RADIUS * 0.707,
-            ),
-            Location.NORTHWEST.value: (
-                -self.HAND_RADIUS * 0.707,
-                -self.HAND_RADIUS * 0.707,
-            ),
-        }
+        logger.debug("ArrowRenderer initialized with service delegation")
 
     def render_arrow(
         self,
@@ -94,18 +63,17 @@ class ArrowRenderer:
         motion_data: MotionData,
         full_pictograph_data: Optional[PictographData] = None,
     ) -> None:
-        """Render an arrow using SVG files."""
-        # Note: Static motions with 0 turns should still show arrows in TKA
-        # Only filter out if explicitly marked as invisible
-        if hasattr(motion_data, "is_visible") and not motion_data.is_visible:
+        """Render an arrow using SVG files with service delegation."""
+        # Validate motion visibility using service
+        if not self._rendering_service.validate_motion_visibility(motion_data):
             return
 
-        # Use asset manager to get SVG path
-        arrow_svg_path = self.asset_manager.get_arrow_asset_path(motion_data, color)
+        # Get SVG path using service
+        arrow_svg_path = self._rendering_service.get_arrow_svg_path(motion_data, color)
         arrow_item = self._create_arrow_item_for_context(color)
         renderer = None
 
-        if os.path.exists(arrow_svg_path):
+        if self._rendering_service.svg_path_exists(arrow_svg_path):
             # Load pre-colored SVG directly (no color transformation needed)
             renderer = QSvgRenderer(arrow_svg_path)
             logger.debug(f"Using pre-colored SVG: {arrow_svg_path}")
@@ -114,20 +82,20 @@ class ArrowRenderer:
             logger.warning(
                 f"Pre-colored SVG not found: {arrow_svg_path}, falling back to original method"
             )
-            original_svg_path = self.asset_manager.get_fallback_arrow_asset_path(
+            original_svg_path = self._rendering_service.get_fallback_arrow_svg_path(
                 motion_data
             )
-            if os.path.exists(original_svg_path):
-                # Apply color transformation to SVG data (fallback method)
-                svg_data = self.asset_manager.load_and_cache_asset(original_svg_path)
-                colored_svg_data = self.asset_manager.apply_color_transformation(
-                    svg_data, color
-                )
-
-                renderer = QSvgRenderer(bytearray(colored_svg_data, encoding="utf-8"))
-                logger.debug(
-                    f"Using original SVG with color transformation: {original_svg_path}"
-                )
+            if self._rendering_service.svg_path_exists(original_svg_path):
+                # Apply color transformation to SVG data using service
+                svg_data = self._rendering_service.load_cached_svg_data(original_svg_path)
+                if svg_data:
+                    colored_svg_data = self._rendering_service.apply_color_transformation(
+                        svg_data, color
+                    )
+                    renderer = QSvgRenderer(bytearray(colored_svg_data, encoding="utf-8"))
+                    logger.debug(
+                        f"Using original SVG with color transformation: {original_svg_path}"
+                    )
             else:
                 logger.error(
                     f"Neither pre-colored nor original SVG found for motion: {motion_data}"
@@ -138,63 +106,85 @@ class ArrowRenderer:
         if renderer and renderer.isValid():
             arrow_item.setSharedRenderer(renderer)
 
+            # Calculate position using service
+            arrow_data = ArrowData(
+                color=color,
+                turns=motion_data.turns,
+                is_visible=True,
+            )
+            
             (
                 position_x,
                 position_y,
                 rotation,
-            ) = self._calculate_arrow_position_with_service(
-                color, motion_data, full_pictograph_data
+            ) = self._rendering_service.calculate_arrow_position(
+                arrow_data,
+                full_pictograph_data,
+                self.positioning_orchestrator,
+                self.coordinate_system,
             )
 
-            # CRITICAL: Set transform origin to arrow's visual center BEFORE rotation
-            bounds = arrow_item.boundingRect()
-            arrow_item.setTransformOriginPoint(bounds.center())
-
-            # Now apply rotation around the visual center
-            arrow_item.setRotation(rotation)
-
-            arrow_data = ArrowData(
-                color=color,
-                turns=motion_data.turns,
-                position_x=position_x,
-                position_y=position_y,
-                rotation_angle=rotation,
-                is_visible=True,
-            )
+            # Qt-specific rendering operations
+            self._apply_arrow_transforms(arrow_item, position_x, position_y, rotation)
+            
             # Apply mirror transform if positioning orchestrator is available
             if self.positioning_orchestrator:
+                arrow_data_with_position = ArrowData(
+                    color=color,
+                    turns=motion_data.turns,
+                    position_x=position_x,
+                    position_y=position_y,
+                    rotation_angle=rotation,
+                    is_visible=True,
+                )
                 self.positioning_orchestrator.apply_mirror_transform(
                     arrow_item,
                     self.positioning_orchestrator.should_mirror_arrow(
-                        arrow_data, full_pictograph_data
+                        arrow_data_with_position, full_pictograph_data
                     ),
                 )
 
-            # POSITIONING FORMULA:
-            # Get bounding rect AFTER all transformations (scaling + rotation)
-            # This ensures we have the correct bounds for positioning calculation
-            final_bounds = (
-                arrow_item.boundingRect()
-            )  # final_pos = calculated_pos - bounding_rect_center
-            # This ensures the arrow's visual center appears exactly at the calculated position
-            # regardless of rotation angle, achieving pixel-perfect positioning accuracy
-            final_x = position_x - final_bounds.center().x()
-            final_y = position_y - final_bounds.center().y()
-
-            arrow_item.setPos(final_x, final_y)
-            arrow_item.setZValue(100)  # Bring arrows to front
-
+            # Final positioning and scene addition
+            self._finalize_arrow_positioning(arrow_item, position_x, position_y)
             self.scene.addItem(arrow_item)
         else:
             logger.error(f"Invalid SVG renderer for motion: {motion_data}")
 
-    def _create_arrow_item_for_context(self, color: str):
+    def _apply_arrow_transforms(
+        self, arrow_item: ArrowItem, position_x: float, position_y: float, rotation: float
+    ) -> None:
+        """Apply Qt-specific transforms to arrow item."""
+        # CRITICAL: Set transform origin to arrow's visual center BEFORE rotation
+        bounds = arrow_item.boundingRect()
+        arrow_item.setTransformOriginPoint(bounds.center())
+
+        # Now apply rotation around the visual center
+        arrow_item.setRotation(rotation)
+
+    def _finalize_arrow_positioning(
+        self, arrow_item: ArrowItem, position_x: float, position_y: float
+    ) -> None:
+        """Finalize arrow positioning in Qt scene."""
+        # POSITIONING FORMULA:
+        # Get bounding rect AFTER all transformations (scaling + rotation)
+        # This ensures we have the correct bounds for positioning calculation
+        final_bounds = arrow_item.boundingRect()
+        # final_pos = calculated_pos - bounding_rect_center
+        # This ensures the arrow's visual center appears exactly at the calculated position
+        # regardless of rotation angle, achieving pixel-perfect positioning accuracy
+        final_x = position_x - final_bounds.center().x()
+        final_y = position_y - final_bounds.center().y()
+
+        arrow_item.setPos(final_x, final_y)
+        arrow_item.setZValue(100)  # Bring arrows to front
+
+    def _create_arrow_item_for_context(self, color: str) -> ArrowItem:
         """Create appropriate arrow item type based on scene context."""
         # Always create an ArrowItem - context detection will configure behavior
         arrow_item = ArrowItem()
         arrow_item.arrow_color = color  # Set color for all contexts
 
-        # Also debug the parent hierarchy
+        # Debug the parent hierarchy for context detection
         parent = self.scene.parent()
         hierarchy = []
         while parent and len(hierarchy) < 5:  # Limit to avoid infinite loops
@@ -204,69 +194,19 @@ class ArrowRenderer:
         # Return the arrow item - it will configure its own behavior based on context
         return arrow_item
 
-    def _calculate_arrow_position_with_service(
-        self,
-        color: str,
-        motion_data: MotionData,
-        full_pictograph_data: Optional[PictographData] = None,
-    ) -> tuple[float, float, float]:
-        """Calculate arrow position using the complete positioning service."""
-        arrow_data = ArrowData(
-            color=color,
-            turns=motion_data.turns,
-            is_visible=True,
-        )
-
-        # Use full pictograph data if available for Type 3 detection
-        if full_pictograph_data:
-            pictograph_data = full_pictograph_data
-        else:
-            pictograph_data = PictographData(arrows={color: arrow_data})
-
-        # Use positioning orchestrator if available, otherwise use fallback positioning
-        if self.positioning_orchestrator:
-            return self.positioning_orchestrator.calculate_arrow_position(
-                arrow_data, pictograph_data
-            )
-        else:
-            # Fallback positioning - center of scene
-            logger.warning(
-                "No positioning orchestrator available, using fallback positioning"
-            )
-            return (self.CENTER_X, self.CENTER_Y, 0.0)
-
-    def _get_location_position(self, location: Location) -> tuple[float, float]:
-        """Get the coordinate position for a location using the coordinate system service."""
-        if self.coordinate_system:
-            # Use the coordinate system service to get proper coordinates
-            # Since we don't have motion data context, create a dummy static motion
-            # for coordinate calculation
-            from domain.models import MotionData, MotionType
-
-            dummy_motion = MotionData(
-                motion_type=MotionType.STATIC,
-                turns=0.0,
-                start_loc=location,
-                end_loc=location,
-            )
-            point = self.coordinate_system.get_initial_position(dummy_motion, location)
-            return (point.x(), point.y())
-        else:
-            # Fallback to manual calculation if service is not available
-            return self._fallback_location_coordinates.get(location.value, (0, 0))
-
+    # Cache Management (delegate to service)
     @classmethod
     def get_cache_stats(cls) -> Dict[str, int]:
         """Get current cache statistics for monitoring."""
-        return AssetManager.get_cache_stats()
+        return ArrowRenderingService.get_cache_statistics()
 
     @classmethod
     def clear_cache(cls) -> None:
         """Clear the SVG file cache and reset statistics."""
-        AssetManager.clear_cache()
-        logger.info("SVG cache cleared and statistics reset")
+        ArrowRenderingService.clear_cache()
+        logger.info("Arrow rendering cache cleared via service")
 
     @classmethod
     def get_cache_info(cls) -> str:
         """Get detailed cache information for debugging."""
-        return AssetManager.get_cache_info()
+        return ArrowRenderingService.get_cache_info()

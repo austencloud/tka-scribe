@@ -13,8 +13,9 @@ Defines behavioral contracts for the dependency injection container system.
 """
 
 import sys
-import pytest
 from pathlib import Path
+
+import pytest
 
 # Add modern source to path
 modern_src = Path(__file__).parent.parent.parent.parent / "src"
@@ -79,12 +80,12 @@ class TestDIContainerContracts:
         - Interface-to-implementation mapping works
         """
         try:
+            from application.services.layout.layout_manager import (
+                LayoutManager as LayoutManagementService,
+            )
             from core.dependency_injection.di_container import (
                 DIContainer,
                 reset_container,
-            )
-            from application.services.layout.layout_management_service import (
-                LayoutManagementService,
             )
             from core.interfaces.core_services import ILayoutService
 
@@ -117,12 +118,12 @@ class TestDIContainerContracts:
         - Unregistered services raise appropriate errors
         """
         try:
+            from application.services.layout.layout_manager import (
+                LayoutManager as LayoutManagementService,
+            )
             from core.dependency_injection.di_container import (
                 DIContainer,
                 reset_container,
-            )
-            from application.services.layout.layout_management_service import (
-                LayoutManagementService,
             )
             from core.interfaces.core_services import ILayoutService
 
@@ -155,12 +156,12 @@ class TestDIContainerContracts:
         - New registrations work after reset
         """
         try:
+            from application.services.layout.layout_manager import (
+                LayoutManager as LayoutManagementService,
+            )
             from core.dependency_injection.di_container import (
                 DIContainer,
                 reset_container,
-            )
-            from application.services.layout.layout_management_service import (
-                LayoutManagementService,
             )
             from core.interfaces.core_services import ILayoutService
 
@@ -200,29 +201,29 @@ class TestDIContainerContracts:
         - Services can be resolved after configuration
         """
         try:
+            from application.services.layout.layout_manager import (
+                LayoutManager as LayoutManagementService,
+            )
+            from application.services.ui.ui_state_manager import (
+                UIStateManager as UIStateManagementService,
+            )
             from core.dependency_injection.di_container import (
                 DIContainer,
                 reset_container,
-            )
-            from presentation.factories.workbench_factory import (
-                configure_workbench_services,
             )
             from core.interfaces.core_services import (
                 ILayoutService,
                 IUIStateManagementService,
             )
             from core.interfaces.workbench_services import (
-                ISequenceWorkbenchService,
-                IFullScreenService,
                 IBeatDeletionService,
-                IGraphEditorService,
                 IDictionaryService,
+                IFullScreenService,
+                IGraphEditorService,
+                ISequenceWorkbenchService,
             )
-            from application.services.layout.layout_management_service import (
-                LayoutManagementService,
-            )
-            from application.services.ui.ui_state_management_service import (
-                UIStateManagementService,
+            from presentation.factories.workbench_factory import (
+                configure_workbench_services,
             )
 
             # Reset and create container

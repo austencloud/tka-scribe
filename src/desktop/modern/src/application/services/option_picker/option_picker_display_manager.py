@@ -246,13 +246,13 @@ class OptionPickerDisplayManager(IOptionPickerDisplayService):
         return organized_pictographs
 
     def _calculate_section_requirements(
-        self, organized_beats: Dict[str, List]
+        self, organized_options: Dict[str, List]
     ) -> Dict[str, dict]:
         """
         Calculate requirements for each section based on organized beats.
 
         Args:
-            organized_beats: Beats organized by letter type
+            organized_options: Options organized by letter type
 
         Returns:
             Dict with section requirements including counts and layout needs
@@ -263,7 +263,7 @@ class OptionPickerDisplayManager(IOptionPickerDisplayService):
         for letter_type in (
             strategy["individual_sections"] + strategy["bottom_row_sections"]
         ):
-            beat_count = len(organized_beats.get(letter_type, []))
+            beat_count = len(organized_options.get(letter_type, []))
 
             # Calculate rows needed (business rule: 8 columns max per section)
             columns = min(beat_count, strategy["max_columns_per_section"])
@@ -277,7 +277,7 @@ class OptionPickerDisplayManager(IOptionPickerDisplayService):
                 "rows": rows,
                 "is_bottom_row": letter_type in strategy["bottom_row_sections"],
                 "needs_shared_width": letter_type in strategy["bottom_row_sections"],
-                "beats": organized_beats.get(letter_type, []),
+                "beats": organized_options.get(letter_type, []),
             }
 
         return section_requirements

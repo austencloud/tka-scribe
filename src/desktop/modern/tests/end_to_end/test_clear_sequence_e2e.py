@@ -20,7 +20,7 @@ from typing import Any, Dict, Optional
 # Add the src directory to Python path
 sys.path.insert(0, str(Path(__file__).parent.parent.parent / "src"))
 
-from application.services.sequences.persister import SequencePersister
+from application.services.sequence.sequence_persister import SequencePersister
 from core.application.application_factory import ApplicationFactory
 from PyQt6.QtCore import QObject, QTimer, pyqtSignal
 from PyQt6.QtTest import QTest

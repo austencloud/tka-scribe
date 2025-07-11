@@ -10,7 +10,7 @@ from typing import TYPE_CHECKING, Optional
 
 from domain.models.beat_data import BeatData
 from domain.models.enums import MotionType
-from domain.models.sequence_models import SequenceData
+from domain.models.sequence_data import SequenceData
 from PyQt6.QtCore import QObject, pyqtSignal
 
 if TYPE_CHECKING:
