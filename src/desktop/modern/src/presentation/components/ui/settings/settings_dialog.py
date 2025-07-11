@@ -38,9 +38,10 @@ class SettingsDialog(QDialog):
 
     settings_changed = pyqtSignal(str, object)
 
-    def __init__(self, ui_state_service: IUIStateManager, parent=None):
+    def __init__(self, ui_state_service: IUIStateManager, parent=None, container=None):
         super().__init__(parent)
         self.ui_state_service = ui_state_service
+        self.container = container
 
         # Initialize drag position for window dragging
         self.drag_position = None
@@ -206,7 +207,33 @@ class SettingsDialog(QDialog):
         self.content_area.add_tab("Prop Type", prop_tab)
 
         # Visibility Tab
-        visibility_tab = VisibilityTab(self.services.get_visibility_service())
+        global_visibility_service = None
+        if self.container:
+            from application.services.pictograph.global_visibility_service import (
+                PictographVisibilityManager,
+            )
+
+            try:
+                global_visibility_service = self.container.resolve(
+                    PictographVisibilityManager
+                )
+            except Exception as e:
+                print(f"Warning: Could not resolve PictographVisibilityManager: {e}")
+
+        if global_visibility_service:
+            visibility_tab = VisibilityTab(
+                self.services.get_visibility_service(), global_visibility_service
+            )
+        else:
+            # Fallback - create instance directly for backward compatibility
+            from application.services.pictograph.global_visibility_service import (
+                PictographVisibilityManager,
+            )
+
+            visibility_tab = VisibilityTab(
+                self.services.get_visibility_service(), PictographVisibilityManager()
+            )
+
         visibility_tab.visibility_changed.connect(self.coordinator.update_setting)
         self.content_area.add_tab("Visibility", visibility_tab)
 

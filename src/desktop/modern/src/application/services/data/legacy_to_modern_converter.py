@@ -52,7 +52,6 @@ class LegacyToModernConverter:
         """
         try:
             # Extract basic beat info
-            letter = beat_dict.get("letter", "?")
             duration = beat_dict.get("duration", 1.0)
 
             # Extract position data
@@ -80,10 +79,8 @@ class LegacyToModernConverter:
 
             # Create complete beat data with pictograph reference
             beat_data = BeatData(
-                letter=letter,
                 beat_number=beat_number,
                 duration=duration,
-                glyph_data=glyph_data,
                 pictograph_data=pictograph_data,  # NEW: Reference to pictograph with motion data
             )
 
@@ -148,24 +145,15 @@ class LegacyToModernConverter:
 
             # Create start position beat data
             start_position_beat = BeatData(
-                letter=letter,
-                beat_number=0,  # Start position is beat 0
-                duration=1.0,
-                glyph_data=glyph_data,
-                pictograph_data=pictograph_data,  # NEW: Use pictograph data with motions
-                metadata={
-                    "timing": start_pos_dict.get("timing", "same"),
-                    "direction": start_pos_dict.get("direction", "none"),
-                    "is_start_position": True,
-                },
+                beat_number=0,
+                duration=0.0,
+                pictograph_data=pictograph_data,
             )
 
             return start_position_beat
 
         except Exception as e:
             logger.error(f"Error converting legacy start position data: {e}")
-            # Return minimal valid start position as fallback
-            return self._create_fallback_start_position()
 
     def _create_motion_data_from_attributes(self, attrs: Dict[str, Any]) -> MotionData:
         """
@@ -276,16 +264,8 @@ class LegacyToModernConverter:
     def _create_fallback_start_position(self) -> BeatData:
         """Create minimal fallback start position when conversion fails."""
         return BeatData(
-            letter="A",
             beat_number=0,
-            duration=1.0,
-            glyph_data={"start_position": "alpha", "end_position": "alpha1"},
-            metadata={
-                "timing": "same",
-                "direction": "none",
-                "is_start_position": True,
-                "source": "fallback_conversion",
-            },
+            duration=0.0,
         )
 
     def validate_legacy_beat_format(self, beat_dict: dict) -> bool:

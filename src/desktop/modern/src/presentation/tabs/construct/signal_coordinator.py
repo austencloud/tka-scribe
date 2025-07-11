@@ -5,6 +5,9 @@ Manages signal connections, emissions, and coordination between construct tab co
 Responsible for connecting signals between components and handling signal routing.
 """
 
+from domain.models import SequenceData
+from PyQt6.QtCore import QObject, pyqtSignal
+
 # Import services from application layer (moved from presentation)
 from application.services.sequence.loader import SequenceLoader
 from application.services.sequence.sequence_beat_operations import (
@@ -13,8 +16,6 @@ from application.services.sequence.sequence_beat_operations import (
 from application.services.sequence.sequence_start_position_manager import (
     SequenceStartPositionManager,
 )
-from domain.models import SequenceData
-from PyQt6.QtCore import QObject, pyqtSignal
 
 from .layout_manager import ConstructTabLayoutManager
 from .option_picker_manager import OptionPickerManager
@@ -121,80 +122,36 @@ class SignalCoordinator(QObject):
 
     def _handle_start_position_created(self, position_key: str, start_position_data):
         """Handle start position creation"""
-        print(
-            f"🔄 [SIGNAL_COORDINATOR] _handle_start_position_created called with: {position_key}"
-        )
-        print(f"✅ Signal coordinator: Start position created: {position_key}")
 
-        # Save start position to current_sequence.json exactly like legacy
-        print(
-            f"🔄 [SIGNAL_COORDINATOR] Calling start_position_manager.set_start_position..."
-        )
         self.start_position_manager.set_start_position(start_position_data)
-        print(
-            f"✅ [SIGNAL_COORDINATOR] start_position_manager.set_start_position completed"
-        )
 
-        # Populate option picker with valid combinations
-        print(f"🔄 [SIGNAL_COORDINATOR] Populating option picker...")
         self.option_picker_manager.populate_from_start_position(
             position_key, start_position_data
         )
-        print(f"✅ [SIGNAL_COORDINATOR] Option picker populated")
-
-        # Transition to option picker since start position is now set
-        print(
-            f"🎯 [SIGNAL_COORDINATOR] Transitioning to option picker (start position created)"
-        )
         self.layout_manager.transition_to_option_picker()
-
-        # Emit external signal
         self.start_position_set.emit(position_key)
-        print(
-            f"✅ [SIGNAL_COORDINATOR] External signal emitted for position: {position_key}"
-        )
 
     def _handle_start_position_loaded_from_persistence(
         self, start_position_data, position_key: str
     ):
         """Handle start position loaded from persistence during startup"""
-        print(
-            f"🎯 [SIGNAL_COORDINATOR] Start position loaded from persistence: {position_key}"
-        )
 
-        # CRITICAL FIX: Populate option picker with valid combinations
-        # This ensures the option picker shows motion options when start position is restored
         self.option_picker_manager.populate_from_start_position(
             position_key, start_position_data
         )
-
-        # Transition to option picker since start position is loaded
-        print(
-            f"🎯 [SIGNAL_COORDINATOR] Transitioning to option picker (start position loaded)"
-        )
         self.layout_manager.transition_to_option_picker()
-
-        print(
-            f"✅ [SIGNAL_COORDINATOR] Option picker populated for restored start position: {position_key}"
-        )
 
     def _handle_sequence_modified(self, sequence: SequenceData):
         """Handle sequence modification from sequence manager"""
         print(
             f"✅ Signal coordinator: Sequence modified with {sequence.length if sequence else 0} beats"
         )
-
-        # CRITICAL FIX: Use direct workbench access for more reliable start position detection
-        # Check if start position is set in workbench
         start_position_set = False
         workbench = self.layout_manager.workbench
-        # Removed repetitive log statements
 
         if workbench and hasattr(workbench, "_start_position_data"):
             start_position_set = workbench._start_position_data is not None
-            # Removed repetitive log statements
         else:
-            # Removed repetitive log statements
             pass
 
         has_beats = (
@@ -211,17 +168,13 @@ class SignalCoordinator(QObject):
         # Removed repetitive log statements
 
         if start_position_set or has_beats:
-            print(
-                f"📊 [SIGNAL_COORDINATOR] Sequence content detected - transitioning to option picker"
-            )
+
             # Ensure we're showing the option picker when start position is set OR beats exist
             self.layout_manager.transition_to_option_picker()
             # Refresh option picker based on sequence state
             self.option_picker_manager.refresh_from_sequence(sequence)
         else:
-            print(
-                "🗑️ [SIGNAL_COORDINATOR] Completely empty sequence - transitioning to start position picker"
-            )
+
             self.layout_manager.transition_to_start_position_picker()
 
         # Emit external signal
@@ -229,7 +182,6 @@ class SignalCoordinator(QObject):
 
     def _handle_sequence_cleared(self):
         """Handle sequence clearing"""
-        print("✅ Signal coordinator: Sequence cleared")
         self.layout_manager.transition_to_start_position_picker()
 
     def _handle_operation_completed(self, message: str):
@@ -351,9 +303,6 @@ class SignalCoordinator(QObject):
 
     def _handle_workbench_modified(self, sequence: SequenceData):
         """Handle workbench sequence modification with circular emission protection"""
-        print(
-            f"🔄 [SIGNAL_COORDINATOR] Workbench modified signal received: seq_length={sequence.length if sequence else 0}"
-        )
 
         if self._handling_sequence_modification:
             print(

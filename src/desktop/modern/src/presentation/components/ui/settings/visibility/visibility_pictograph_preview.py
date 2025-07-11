@@ -5,24 +5,24 @@ Uses modern PictographScene with modular renderers to show actual pictograph
 that updates in real-time as visibility settings change.
 """
 
-from typing import Optional, Dict
 import logging
-from PyQt6.QtWidgets import QWidget, QVBoxLayout, QGraphicsView, QLabel, QSizePolicy
-from PyQt6.QtCore import Qt, QTimer, pyqtSignal, QPropertyAnimation
-from PyQt6.QtGui import QFont
+from typing import Dict, Optional
 
 from domain.models import (
     BeatData,
-    MotionData,
+    ElementalType,
     GlyphData,
+    LetterType,
+    Location,
+    MotionData,
     MotionType,
     RotationDirection,
-    Location,
-    LetterType,
     VTGMode,
-    ElementalType,
 )
 from presentation.components.pictograph.pictograph_scene import PictographScene
+from PyQt6.QtCore import QPropertyAnimation, Qt, QTimer, pyqtSignal
+from PyQt6.QtGui import QFont
+from PyQt6.QtWidgets import QGraphicsView, QLabel, QSizePolicy, QVBoxLayout, QWidget
 
 logger = logging.getLogger(__name__)
 
@@ -118,7 +118,6 @@ class VisibilityPictographPreview(QWidget):
     def _create_sample_data(self):
         """Create authentic TKA pictograph data based on real Alpha 1-3 sequence."""
         try:
-
 
             # Blue motion: pro, clockwise, west to north (basic positioning)
             blue_motion = MotionData(
@@ -230,8 +229,11 @@ class VisibilityPictographPreview(QWidget):
 
         try:
             # Update glyph data for the next render
-            if self.sample_beat_data and self.sample_beat_data.glyph_data:
-                glyph_data = self.sample_beat_data.glyph_data
+            if (
+                self.sample_beat_data
+                and self.sample_beat_data.pictograph_data.glyph_data
+            ):
+                glyph_data = self.sample_beat_data.pictograph_data.glyph_data
 
                 # Update visibility flags in glyph data using dataclasses.replace
                 from dataclasses import replace

@@ -22,6 +22,7 @@ This package provides focused, single-responsibility services for sequence opera
 - Framework-agnostic business logic
 """
 
+from .beat_factory import BeatFactory
 from .sequence_generator import SequenceGenerator, SequenceType
 from .sequence_manager import SequenceManager
 
@@ -42,6 +43,8 @@ __all__ = [
     "SequenceOrchestrator",
     "ISequenceOrchestratorSignals",
     "SequenceManager",
+    # Beat operations
+    "BeatFactory",
     # Focused services
     "SequenceTransformer",
     "WorkbenchOperation",

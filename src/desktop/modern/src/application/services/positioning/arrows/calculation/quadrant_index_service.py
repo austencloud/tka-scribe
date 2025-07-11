@@ -43,11 +43,6 @@ class QuadrantIndexService:
         grid_mode = self._determine_grid_mode(motion)
         motion_type = motion.motion_type
 
-        logger.debug(
-            f"Calculating quadrant index: motion={motion_type.value}, "
-            f"grid={grid_mode}, location={arrow_location.value}"
-        )
-
         if grid_mode == "diamond":
             if motion_type in [MotionType.PRO, MotionType.ANTI, MotionType.FLOAT]:
                 index = self._diamond_shift_quadrant_index(arrow_location)

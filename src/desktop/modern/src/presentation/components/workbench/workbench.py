@@ -408,10 +408,6 @@ class SequenceWorkbench(QWidget):
                 )
                 return
 
-            print(
-                "🔍 [WORKBENCH] Setting up session restoration event subscriptions..."
-            )
-
             # Subscribe to session restoration events
             # UIEvent.event_type returns "ui.{component}.{action}"
             sub_id = self.event_bus.subscribe(
@@ -422,9 +418,7 @@ class SequenceWorkbench(QWidget):
 
             if sub_id:
                 self._subscription_ids.append(sub_id)
-                print(
-                    f"✅ [WORKBENCH] Subscribed to session restoration events (ID: {sub_id})"
-                )
+
             else:
                 print("⚠️ [WORKBENCH] Failed to subscribe to session restoration events")
 

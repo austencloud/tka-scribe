@@ -21,14 +21,14 @@ class IArrowLocationCalculator(ABC):
 
     @abstractmethod
     def calculate_location(
-        self, motion: MotionData, pictograph_data: PictographData = None
+        self, motion: MotionData, pictograph_data: Optional[PictographData] = None
     ) -> Location:
         """
         Calculate the arrow location based on motion type and data.
 
         Args:
             motion: Motion data containing type, start/end locations, rotation direction
-            pictograph_data: Optional pictograph context for Type 3 detection
+            beat_data: Optional beat data for DASH motion Type 3 detection
 
         Returns:
             Location enum value representing the calculated arrow location
@@ -57,14 +57,15 @@ class IArrowAdjustmentCalculator(ABC):
 
     @abstractmethod
     def calculate_adjustment(
-        self, arrow_data: ArrowData, pictograph_data: PictographData
+        self, motion_data: MotionData, letter: str, location: Location
     ) -> Point:
         """
         Calculate position adjustment for arrow based on placement rules.
 
         Args:
-            arrow_data: Arrow data including motion and color
-            pictograph_data: Pictograph context for special placement rules
+            motion_data: Motion data containing type, rotation, and location info
+            letter: Letter for special placement lookup
+            location: Pre-calculated arrow location
 
         Returns:
             Point representing the adjustment offset
@@ -97,14 +98,18 @@ class IArrowPositioningOrchestrator(ABC):
 
     @abstractmethod
     def calculate_arrow_position(
-        self, arrow_data: ArrowData, pictograph_data: PictographData
+        self,
+        arrow_data: ArrowData,
+        pictograph_data: PictographData,
+        motion_data: Optional[MotionData] = None,
     ) -> Tuple[float, float, float]:
         """
         Calculate complete arrow position using the positioning pipeline.
 
         Args:
-            arrow_data: Arrow data including motion and visibility
+            arrow_data: Arrow data including color and visibility
             pictograph_data: Pictograph context
+            motion_data: Optional pre-extracted motion data
 
         Returns:
             Tuple of (x, y, rotation_angle)

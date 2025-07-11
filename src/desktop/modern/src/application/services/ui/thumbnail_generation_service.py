@@ -36,8 +36,6 @@ class ThumbnailGenerationService:
         self._legacy_thumbnail_generator = None
         self._legacy_data_converter = None
 
-        logger.info("ThumbnailGenerationService initialized")
-
     def generate_sequence_thumbnail(
         self,
         sequence: SequenceData,

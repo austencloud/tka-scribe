@@ -1,8 +1,14 @@
 from typing import TYPE_CHECKING, Optional
 
-from application.services.data.sequence_data_converter import SequenceDataConverter
-
 # Import services from application layer (moved from presentation)
+from application.services.data.sequence_data_converter import SequenceDataConverter
+from application.services.ui.coordination.ui_coordinator import UICoordinator
+from core.dependency_injection.di_container import DIContainer
+from domain.models.beat_data import BeatData
+from domain.models.sequence_data import SequenceData
+from PyQt6.QtCore import pyqtSignal
+from PyQt6.QtWidgets import QWidget
+
 from application.services.sequence.loader import SequenceLoader
 from application.services.sequence.sequence_beat_operations import (
     SequenceBeatOperations,
@@ -10,12 +16,6 @@ from application.services.sequence.sequence_beat_operations import (
 from application.services.sequence.sequence_start_position_manager import (
     SequenceStartPositionManager,
 )
-from application.services.ui.coordination.ui_coordinator import UICoordinator
-from core.dependency_injection.di_container import DIContainer
-from domain.models.beat_data import BeatData
-from domain.models.sequence_data import SequenceData
-from PyQt6.QtCore import pyqtSignal
-from PyQt6.QtWidgets import QWidget
 
 # Import refactored components
 from .layout_manager import ConstructTabLayoutManager
@@ -89,8 +89,6 @@ class ConstructTabWidget(QWidget):
         if self.progress_callback:
             self.progress_callback("Construct tab ready", 1.0)
 
-        print("✅ ConstructTabWidget initialization completed")
-
     def _initialize_components(self):
         """Initialize all services directly via dependency injection"""
 
@@ -98,28 +96,24 @@ class ConstructTabWidget(QWidget):
         workbench_getter = self._get_workbench_getter()
         workbench_setter = self._get_workbench_setter()
 
-        # Initialize core services - use enhanced SequenceDataConverter with caching
-        self.data_converter = SequenceDataConverter()
-        # For backward compatibility, alias the enhanced service
-        self.data_conversion_service = self.data_converter
+        data_converter = SequenceDataConverter()
 
         # Initialize sequence services directly
         self.loading_service = SequenceLoader(
             workbench_getter=workbench_getter,
             workbench_setter=workbench_setter,
-            data_converter=self.data_converter,
+            data_converter=data_converter,
         )
 
         self.beat_operations = SequenceBeatOperations(
             workbench_getter=workbench_getter,
             workbench_setter=workbench_setter,
-            data_converter=self.data_converter,
+            data_converter=data_converter,
         )
 
         self.start_position_manager = SequenceStartPositionManager(
             workbench_getter=workbench_getter,
             workbench_setter=workbench_setter,
-            data_converter=self.data_converter,
         )
 
         # Layout manager
@@ -127,9 +121,8 @@ class ConstructTabWidget(QWidget):
             self.container, self.progress_callback
         )
 
-        # Start position handler
         self.start_position_handler = StartPositionHandler(
-            self.data_conversion_service, workbench_setter=workbench_setter
+            workbench_setter=workbench_setter
         )
 
         # Option picker manager (will be initialized after layout)
@@ -215,13 +208,10 @@ class ConstructTabWidget(QWidget):
         # Check construct tab visibility
         tab_visible = self.isVisible()
         parent_visible = self.parent().isVisible() if self.parent() else "No parent"
-        print(
-            f"🔍 [CONSTRUCT_TAB] After setup - tab_visible={tab_visible}, parent_visible={parent_visible}"
-        )
 
         # Initialize option picker manager after layout is created
         self.option_picker_manager = OptionPickerManager(
-            self.layout_manager.option_picker, self.data_conversion_service
+            self.layout_manager.option_picker
         )
 
         # Initialize signal coordinator after all components are ready
@@ -339,10 +329,6 @@ class ConstructTabWidget(QWidget):
         """Get current sequence directly via loading service."""
         return self.loading_service.get_current_sequence_from_workbench()
 
-    def remove_beat(self, beat_index: int):
-        """Remove beat directly via beat operations service."""
-        self.beat_operations.remove_beat(beat_index)
-
     def update_beat_turns(self, beat_index: int, color: str, new_turns: int):
         """Update beat turns directly via beat operations service."""
         self.beat_operations.update_beat_turns(beat_index, color, new_turns)
@@ -356,7 +342,6 @@ class ConstructTabWidget(QWidget):
     def _load_sequence_on_startup(self):
         """Load sequence from current_sequence.json on startup - exactly like legacy"""
         try:
-            print("🔍 [CONSTRUCT_TAB] Checking for sequence to load on startup...")
 
             # Use a small delay to ensure UI is fully ready
             from PyQt6.QtCore import QTimer

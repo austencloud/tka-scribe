@@ -24,7 +24,7 @@ from typing import Optional
 
 from domain.models import BeatData
 from PyQt6.QtCore import Qt
-from PyQt6.QtWidgets import QVBoxLayout, QLabel, QWidget
+from PyQt6.QtWidgets import QLabel, QVBoxLayout, QWidget
 
 logger = logging.getLogger(__name__)
 
@@ -33,12 +33,12 @@ class DetailedInfoPanel(QWidget):
     """
     Panel that displays detailed information about the selected beat/pictograph
     in human-readable format.
-    
+
     This component provides a clean, readable display of beat data including:
     - Beat identification (letter, duration)
     - Motion information (blue/red motion types, directions, locations, turns)
     - Additional properties (reversals, glyph data)
-    
+
     The panel uses glassmorphism styling and centers content vertically for
     optimal visual presentation.
     """
@@ -46,7 +46,7 @@ class DetailedInfoPanel(QWidget):
     def __init__(self, parent=None):
         """
         Initialize the detailed information panel.
-        
+
         Args:
             parent: Parent widget (typically the graph editor)
         """
@@ -140,7 +140,7 @@ class DetailedInfoPanel(QWidget):
     def update_beat_info(self, beat_index: int, beat_data: Optional[BeatData]):
         """
         Update the panel with beat information.
-        
+
         Args:
             beat_index: Index of the beat (-1 for start position)
             beat_data: Beat data to display (None to clear)
@@ -153,7 +153,7 @@ class DetailedInfoPanel(QWidget):
         self._update_beat_details(beat_data)
         self._update_motion_details(beat_data)
         self._update_additional_details(beat_data)
-        
+
         logger.debug(f"Updated info panel for beat {beat_index}: {beat_data.letter}")
 
     def _clear_info(self):
@@ -179,16 +179,18 @@ class DetailedInfoPanel(QWidget):
     def _update_motion_details(self, beat_data: BeatData):
         """Update motion information for blue and red motions"""
         motion_info = ""
-        
+
         # Blue motion details
         if beat_data.blue_motion:
             motion_info += f"Blue Motion: {beat_data.blue_motion.motion_type.value}\n"
-            motion_info += f"Blue Direction: {beat_data.blue_motion.prop_rot_dir.value}\n"
+            motion_info += (
+                f"Blue Direction: {beat_data.blue_motion.prop_rot_dir.value}\n"
+            )
             motion_info += f"Blue Start: {beat_data.blue_motion.start_loc.value}\n"
             motion_info += f"Blue End: {beat_data.blue_motion.end_loc.value}\n"
             if beat_data.blue_motion.turns:
                 motion_info += f"Blue Turns: {beat_data.blue_motion.turns}\n"
-        
+
         # Red motion details
         if beat_data.red_motion:
             motion_info += f"Red Motion: {beat_data.red_motion.motion_type.value}\n"
@@ -197,19 +199,23 @@ class DetailedInfoPanel(QWidget):
             motion_info += f"Red End: {beat_data.red_motion.end_loc.value}\n"
             if beat_data.red_motion.turns:
                 motion_info += f"Red Turns: {beat_data.red_motion.turns}\n"
-        
+
         self._motion_info_label.setText(motion_info)
 
     def _update_additional_details(self, beat_data: BeatData):
         """Update additional information like reversals and glyph data"""
         additional_info = ""
-        
+
         if beat_data.blue_reversal:
             additional_info += "Blue Reversal: Yes\n"
         if beat_data.red_reversal:
             additional_info += "Red Reversal: Yes\n"
-        if beat_data.glyph_data:
-            glyph_type = beat_data.glyph_data.letter_type.value if beat_data.glyph_data.letter_type else 'None'
+        if beat_data.pictograph_data.glyph_data:
+            glyph_type = (
+                beat_data.pictograph_data.glyph_data.letter_type.value
+                if beat_data.pictograph_data.glyph_data.letter_type
+                else "None"
+            )
             additional_info += f"Glyph: {glyph_type}\n"
-        
+
         self._arrow_info_label.setText(additional_info)

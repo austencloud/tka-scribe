@@ -96,7 +96,6 @@ class GraphEditor(QFrame):
             self._connect_signals()
             self._apply_styling()
             self.resize(workbench_width, 300)
-            logger.info("Graph editor initialized successfully")
         except Exception as e:
             logger.error(f"Graph editor initialization failed: {e}")
             self._create_minimal_error_ui(str(e))

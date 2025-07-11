@@ -94,10 +94,6 @@ class SessionStateTracker(ISessionStateTracker):
         self._auto_save_timer = QTimer() if QT_AVAILABLE else None
         self._setup_auto_save_timer()
 
-        logger.info(
-            f"SessionStateService initialized with session file: {self.session_file}"
-        )
-
     def _setup_auto_save_timer(self) -> None:
         """Setup debounced auto-save timer."""
         if self._auto_save_timer:
@@ -183,7 +179,6 @@ class SessionStateTracker(ISessionStateTracker):
             restored_session = self._parse_session_data(session_data)
             self._current_session = restored_session
 
-            logger.info("Session state loaded and restored successfully")
             return SessionRestoreResult(
                 success=True, session_restored=True, session_data=restored_session
             )

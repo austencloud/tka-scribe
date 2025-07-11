@@ -306,10 +306,6 @@ class StartPositionView(QFrame):
         parent = self.parent()
         parent_visible = parent.isVisible() if parent else "No parent"
 
-        print(
-            f"🔍 [START_POSITION_VIEW] Position cleared: visible={self.isVisible()}, size={self.size()}, parent_visible={parent_visible}"
-        )
-
     def _update_display(self):
         """Update the visual display based on position data"""
         if not self._beat_data and not self._position_key:
@@ -327,17 +323,13 @@ class StartPositionView(QFrame):
 
         # NEW APPROACH: Use separate pictograph data if available
         if hasattr(self, "_pictograph_data") and self._pictograph_data is not None:
-            print(
-                "🎯 [START_POSITION_VIEW] Using separate PictographData for rendering"
-            )
+
             self._pictograph_component.update_from_pictograph_data(
                 self._pictograph_data
             )
         elif self._beat_data:
-            print("🔄 [START_POSITION_VIEW] Falling back to BeatData conversion")
             self._pictograph_component.update_from_beat(self._beat_data)
         else:
-            print("🔍 [START_POSITION_VIEW] No data available, clearing pictograph")
             self._pictograph_component.clear_pictograph()
 
         self._add_start_text_overlay()

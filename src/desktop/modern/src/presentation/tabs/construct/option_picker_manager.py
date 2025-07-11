@@ -34,11 +34,9 @@ class OptionPickerManager(QObject):
     def __init__(
         self,
         option_picker: Optional[OptionPicker],
-        data_conversion_service: DataConverter,
     ):
         super().__init__()
         self.option_picker = option_picker
-        self.data_conversion_service = data_conversion_service
 
         self._last_refresh_sequence_id = None
         self._last_refresh_length = None

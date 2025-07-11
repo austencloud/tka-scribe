@@ -9,14 +9,12 @@ build-backend = "setuptools.build_meta"
 name = "tka"
 version = "1.0.0"
 description = "The Kinetic Alphabet"
-authors = [
-    {name = "Austen Cloud", email = "tkaflowarts@gmail.com"}
-]
+authors = [{ name = "Austen Cloud", email = "tkaflowarts@gmail.com" }]
 dependencies = [
     "PyQt6>=6.4.0",
     "requests>=2.31.0",
     "pydantic>=2.0.0",
-    "sqlalchemy>=2.0.0"
+    "sqlalchemy>=2.0.0",
 ]
 
 [project.optional-dependencies]
@@ -27,7 +25,7 @@ dev = [
     "pylint>=2.17.0",
     "mypy>=1.5.0",
     "pytest-cov>=4.1.0",
-    "pytest-asyncio>=0.21.0"
+    "pytest-asyncio>=0.21.0",
 ]
 test-automation = [
     "pre-commit>=3.0.0",
@@ -35,7 +33,7 @@ test-automation = [
     "schedule>=1.2.0",
     "pytest-xdist>=3.0.0",
     "pytest-qt>=4.2.0",
-    "plyer>=2.1.0"
+    "plyer>=2.1.0",
 ]
 
 # ===================================================================
@@ -65,86 +63,121 @@ line_length = 88
 # --- CONSOLIDATED PYLINT CONFIGURATION ---
 [tool.pylint.master]
 # Add the project root and necessary directories to Python path
-init-hook='''
+init-hook = '''
 import sys; import os;
 project_root = os.path.dirname(os.path.abspath(__file__ if "__file__" in globals() else os.getcwd()));
 paths = [".", "src", "src/desktop/legacy/src", "src/desktop/modern/src", "launcher", "packages", "packages/shared-types/python", "packages/constants/python", "data", "assets", "schemas"];
 [sys.path.insert(0, os.path.join(project_root, path)) for path in paths if os.path.exists(os.path.join(project_root, path)) and os.path.join(project_root, path) not in sys.path]
 '''
 # PyQt6 support
-extension-pkg-allow-list=["PyQt6"]
+extension-pkg-allow-list = ["PyQt6"]
 # Ignore generated files and cache directories
-ignore=["__pycache__", ".git", "node_modules", ".pytest_cache", ".vscode", "build", "dist"]
+ignore = [
+    "__pycache__",
+    ".git",
+    "node_modules",
+    ".pytest_cache",
+    ".vscode",
+    "build",
+    "dist",
+]
 
 [tool.pylint.basic]
 # Good variable names
-good-names=["i","j","k","ex","Run","_","x","y","w","h","r","g","b","a","id","ok","ui","db","qt","app","e"]
+good-names = [
+    "i",
+    "j",
+    "k",
+    "ex",
+    "Run",
+    "_",
+    "x",
+    "y",
+    "w",
+    "h",
+    "r",
+    "g",
+    "b",
+    "a",
+    "id",
+    "ok",
+    "ui",
+    "db",
+    "qt",
+    "app",
+    "e",
+]
 
 [tool.pylint.typecheck]
 # Tell Pylint about PyQt6 generated members
-generated-members=["PyQt6.*", "PyQt6.QtWidgets.*", "PyQt6.QtCore.*", "PyQt6.QtGui.*"]
+generated-members = [
+    "PyQt6.*",
+    "PyQt6.QtWidgets.*",
+    "PyQt6.QtCore.*",
+    "PyQt6.QtGui.*",
+]
 # Ignore missing members in certain modules
-ignored-modules=["PyQt6"]
+ignored-modules = ["PyQt6"]
 
 [tool.pylint.messages_control]
 # Disable all the warnings from your .pylintrc, plus the new ones
-disable=[
-    "C0330",  # Wrong hanging indentation
-    "C0326",  # Bad whitespace
-    "C0303",  # Trailing whitespace
-    "C0301",  # Line too long
-    "C0305",  # Trailing newlines
-    "C0325",  # superfluous parentheses
-    "C0411",  # Wrong import order
-    "C0412",  # Ungrouped imports
-    "C0415",  # Import outside toplevel
-    "C2401",  # Non-ASCII name (for Greek letters)
-    "E0213",  # No self argument
-    "W0107",  # Unnecessary pass statement
-    "W0611",  # Unused import
-    "W0201",  # Attribute defined outside __init__
-    "W0613",  # Unused argument (common in Qt signal handlers)
-    "W0621",  # Redefined outer name
-    "W1203",  # logging-fstring-interpolation
-    "W0718",  # broad-exception-caught
-    "R0903",  # Too few public methods (common in Qt widgets)
-    "R0913",  # Too many arguments (common in Qt constructors)
-    "R0914",  # Too many locals
-    "R0912",  # Too many branches
-    "R0915",  # Too many statements
-    "R0201",  # Method could be a function (common in Qt event handlers)
-    "C0103",  # Invalid name (Qt uses camelCase method names)
-    "C0116",  # Missing function or method docstring
-    "C0115",  # Missing class docstring
-    "C0114",  # Missing module docstring
-    "C0413",  # Wrong import position
-    "E0401",  # Import error
-    "W1309",  # f-string without interpolation
-    "C0121",  # singleton-comparison (like == False)
-    "W0212",  # protected-access
-    "W0401"   # wildcard import
+disable = [
+    "C0330", # Wrong hanging indentation
+    "C0326", # Bad whitespace
+    "C0303", # Trailing whitespace
+    "C0301", # Line too long
+    "C0305", # Trailing newlines
+    "C0325", # superfluous parentheses
+    "C0411", # Wrong import order
+    "C0412", # Ungrouped imports
+    "C0415", # Import outside toplevel
+    "C2401", # Non-ASCII name (for Greek letters)
+    "E0213", # No self argument
+    "W0107", # Unnecessary pass statement
+    "W0611", # Unused import
+    "W0201", # Attribute defined outside __init__
+    "W0613", # Unused argument (common in Qt signal handlers)
+    "W0621", # Redefined outer name
+    "W1203", # logging-fstring-interpolation
+    "W0718", # broad-exception-caught
+    "R0903", # Too few public methods (common in Qt widgets)
+    "R0913", # Too many arguments (common in Qt constructors)
+    "R0914", # Too many locals
+    "R0912", # Too many branches
+    "R0915", # Too many statements
+    "R0201", # Method could be a function (common in Qt event handlers)
+    "C0103", # Invalid name (Qt uses camelCase method names)
+    "C0116", # Missing function or method docstring
+    "C0115", # Missing class docstring
+    "C0114", # Missing module docstring
+    "C0413", # Wrong import position
+    "E0401", # Import error
+    "W1309", # f-string without interpolation
+    "C0121", # singleton-comparison (like == False)
+    "W0212", # protected-access
+    "W0401", # wildcard import
 
 ]
 
 [tool.pylint.format]
 # Line length
-max-line-length=120
+max-line-length = 120
 
 [tool.pylint.design]
 # Object limits
-max-args=10
-max-locals=20
-max-returns=6
-max-branches=15
-max-statements=60
-max-parents=7
-max-attributes=15
-max-public-methods=25
-max-bool-expr=5
+max-args = 10
+max-locals = 20
+max-returns = 6
+max-branches = 15
+max-statements = 60
+max-parents = 7
+max-attributes = 15
+max-public-methods = 25
+max-bool-expr = 5
 
 [tool.pylint.imports]
 # Allow relative imports
-allow-wildcard-with-all=false
+allow-wildcard-with-all = false
 
 # --- PYRIGHT / PYLANCE CONFIGURATION ---
 [tool.pyright]
@@ -154,7 +187,7 @@ include = [
     "src/desktop/modern/src",
     "launcher",
     "packages",
-    "tests"
+    "tests",
 ]
 
 # Exclude build artifacts and cache directories
@@ -166,7 +199,7 @@ exclude = [
     "dist",
     "**/.pytest_cache",
     "**/venv",
-    "**/env"
+    "**/env",
 ]
 
 # Define extra paths for import resolution
@@ -182,7 +215,7 @@ extraPaths = [
     "data",
     "assets",
     "schemas",
-    "tests"
+    "tests",
 ]
 
 # TURN OFF ALL TYPE CHECKING AND REPORTS
@@ -228,7 +261,7 @@ reportInvalidTypeForm = "none"
 reportInvalidTypeArguments = "none"
 reportSelfClsParameterName = "none"
 # This one is not a specific report, but turning typeCheckingMode to "off" is the strongest way to disable it.
-reportCallIssue = "none" 
+reportCallIssue = "none"
 
 # --- SETUPTOOLS CONFIGURATION ---
 [tool.setuptools]

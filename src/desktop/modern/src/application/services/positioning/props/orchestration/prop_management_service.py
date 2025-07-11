@@ -21,6 +21,7 @@ from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple
 
 from core.types import Point
 from domain.models import BeatData, Location, MotionData, MotionType, Orientation
+from domain.models.pictograph_data import PictographData
 
 # Event-driven architecture imports
 if TYPE_CHECKING:
@@ -268,7 +269,9 @@ class PropManagementService(IPropManagementService):
 
         return result
 
-    def calculate_separation_offsets(self, beat_data: BeatData) -> Tuple[Point, Point]:
+    def calculate_separation_offsets(
+        self, pictograph_data: PictographData
+    ) -> Tuple[Point, Point]:
         """
         Calculate separation offsets for blue and red props.
 
@@ -278,20 +281,16 @@ class PropManagementService(IPropManagementService):
         blue_motion = None
         red_motion = None
 
-        if beat_data.pictograph_data and beat_data.pictograph_data.motions:
-            blue_motion = beat_data.pictograph_data.motions.get("blue")
-            red_motion = beat_data.pictograph_data.motions.get("red")
+        if pictograph_data and pictograph_data.motions:
+            blue_motion = pictograph_data.motions.get("blue")
+            red_motion = pictograph_data.motions.get("red")
 
         if not blue_motion or not red_motion:
             return Point(0, 0), Point(0, 0)
 
         # Calculate separation directions based on motion types and letter
-        blue_direction = self._calculate_separation_direction(
-            blue_motion, beat_data, "blue"
-        )
-        red_direction = self._calculate_separation_direction(
-            red_motion, beat_data, "red"
-        )
+        blue_direction = self._calculate_separation_direction(blue_motion, "blue")
+        red_direction = self._calculate_separation_direction(red_motion, "red")
 
         # Calculate offsets based on directions and prop types
         blue_offset = self.calculate_directional_offset(
@@ -314,7 +313,7 @@ class PropManagementService(IPropManagementService):
                         "red_offset": {"x": red_offset.x, "y": red_offset.y},
                         "blue_direction": blue_direction.value,
                         "red_direction": red_direction.value,
-                        "letter": beat_data.letter,
+                        "letter": pictograph_data.letter,
                         "prop_type": self._get_current_prop_type().value,
                     },
                 )
@@ -353,13 +352,11 @@ class PropManagementService(IPropManagementService):
         return Orientation.OUT if orientation == Orientation.IN else Orientation.IN
 
     def _calculate_separation_direction(
-        self, motion: MotionData, beat_data: BeatData, color: str
+        self, motion: MotionData, color: str
     ) -> SeparationDirection:
         """
         Calculate the direction props should be separated.
 
-        CRITICAL: This replicates the BetaPropDirectionCalculator logic exactly.
-        DO NOT SIMPLIFY - this complex logic was carefully crafted for correct arrow positioning.
         """
         # Replicate the get_dir_for_non_shift method exactly
         location = motion.end_loc
@@ -369,7 +366,12 @@ class PropManagementService(IPropManagementService):
         is_radial = motion.end_ori in [Orientation.IN, Orientation.OUT]
 
         # Determine grid mode based on location
-        if location.value in ["n", "s", "e", "w"]:
+        if location in [
+            Location.NORTH,
+            Location.EAST,
+            Location.SOUTH,
+            Location.WEST,
+        ]:
             grid_mode = "diamond"
         else:
             grid_mode = "box"

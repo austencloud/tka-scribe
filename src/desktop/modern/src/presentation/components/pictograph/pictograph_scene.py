@@ -89,24 +89,21 @@ class PictographScene(QGraphicsScene):
             from application.services.pictograph.global_visibility_service import (
                 PictographVisibilityManager,
             )
-            from application.services.pictograph.global_visibility_service_singleton import (
-                get_global_visibility_service,
-            )
 
             # Get or create global service instance
             try:
-                from core.application.application_factory import get_container
+                from core.dependency_injection.di_container import get_container
 
                 container = get_container()
                 if container:
                     # Try to resolve from container (if registered)
                     global_service = container.resolve(PictographVisibilityManager)
                 else:
-                    # Fallback to singleton pattern
-                    global_service = get_global_visibility_service()
+                    # Fallback to creating new instance
+                    global_service = PictographVisibilityManager()
             except Exception:
-                # Fallback to singleton pattern
-                global_service = get_global_visibility_service()
+                # Fallback to creating new instance
+                global_service = PictographVisibilityManager()
 
             if global_service:
                 # Determine component type from parent hierarchy
@@ -305,9 +302,9 @@ class PictographScene(QGraphicsScene):
         # Extract position data from glyph_data if available
         start_position = None
         end_position = None
-        if beat_data.glyph_data:
-            start_position = beat_data.glyph_data.start_position
-            end_position = beat_data.glyph_data.end_position
+        if beat_data.pictograph_data.glyph_data:
+            start_position = beat_data.pictograph_data.glyph_data.start_position
+            end_position = beat_data.pictograph_data.glyph_data.end_position
 
         return PictographData(
             arrows=arrows,
@@ -315,7 +312,7 @@ class PictographScene(QGraphicsScene):
             letter=beat_data.letter or "",
             start_position=start_position,
             end_position=end_position,
-            glyph_data=beat_data.glyph_data,
+            glyph_data=beat_data.pictograph_data.glyph_data,
             is_blank=beat_data.is_blank,
             metadata=beat_data.metadata or {},
         )
@@ -347,27 +344,8 @@ class PictographScene(QGraphicsScene):
         # Apply beta prop positioning after both props are rendered
         # Note: This requires converting back to BeatData temporarily for legacy compatibility
         if blue_motion and red_motion:
-            # Create temporary BeatData for beta positioning
-            from domain.models import BeatData
 
-            # Create temporary pictograph data with motions
-            temp_pictograph = PictographData(
-                motions=(
-                    {"blue": blue_motion, "red": red_motion}
-                    if blue_motion or red_motion
-                    else {}
-                ),
-                letter=pictograph_data.letter,
-                glyph_data=pictograph_data.glyph_data,
-            )
-
-            temp_beat = BeatData(
-                beat_number=0,
-                letter=pictograph_data.letter,
-                pictograph_data=temp_pictograph,  # NEW: Use pictograph data with motions
-                glyph_data=pictograph_data.glyph_data,
-            )
-            self.prop_renderer.apply_beta_positioning(temp_beat)
+            self.prop_renderer.apply_beta_positioning(pictograph_data)
 
         # Use the existing pictograph data for arrow rendering
         # Ensure both blue and red arrows exist for special placement service

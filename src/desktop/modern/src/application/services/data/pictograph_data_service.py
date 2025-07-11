@@ -93,42 +93,18 @@ class PictographDataService(IPictographDataService):
             metadata={"created_by": "pictograph_data_service"},
         )
 
-    def create_from_beat(self, beat_data: BeatData) -> PictographData:
-        """Create pictograph from beat data."""
-        pictograph = self.create_pictograph()
+    def create_from_beat(self, beat_data: BeatData) -> Optional[PictographData]:
+        """Get pictograph data from beat (returns embedded pictograph if available)."""
+        if beat_data.has_pictograph:
+            # Return the embedded pictograph data directly
+            return beat_data.pictograph_data
 
-        # Add arrows and motions based on beat data
-        arrows = {}
-        motions = {}
-
-        if beat_data.pictograph_data and beat_data.pictograph_data.motions:
-            # Use motion data from pictograph_data if available
-            if "blue" in beat_data.pictograph_data.motions:
-                blue_motion = beat_data.pictograph_data.motions["blue"]
-                arrows["blue"] = ArrowData(color="blue", is_visible=True)
-                motions["blue"] = blue_motion
-
-            if "red" in beat_data.pictograph_data.motions:
-                red_motion = beat_data.pictograph_data.motions["red"]
-                arrows["red"] = ArrowData(color="red", is_visible=True)
-                motions["red"] = red_motion
-        else:
-            # Fallback: use legacy beat motion fields (deprecated)
-            if hasattr(beat_data, "blue_motion") and beat_data.blue_motion:
-                arrows["blue"] = ArrowData(color="blue", is_visible=True)
-                motions["blue"] = beat_data.blue_motion
-
-            if hasattr(beat_data, "red_motion") and beat_data.red_motion:
-                arrows["red"] = ArrowData(color="red", is_visible=True)
-                motions["red"] = beat_data.red_motion
-
-        return pictograph.update(
-            arrows=arrows,
-            motions=motions,  # NEW: Add motions dictionary
-            is_blank=len(arrows) == 0,
+        # Fallback: create empty pictograph for beats without embedded data
+        return self.create_pictograph().update(
+            is_blank=True,
             metadata={
                 "created_from_beat": beat_data.beat_number,
-                "letter": beat_data.letter,
+                "letter": beat_data.letter or "?",
             },
         )
 

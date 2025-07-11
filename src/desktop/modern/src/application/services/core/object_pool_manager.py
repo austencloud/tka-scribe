@@ -114,10 +114,6 @@ class ObjectPoolManager(IObjectPoolManager):
             if progress_callback:
                 progress_callback(f"{pool_name} pool initialization complete", 1.0)
 
-            logger.info(
-                f"Successfully initialized pool '{pool_name}' with {len(pool_objects)} objects"
-            )
-
         except Exception as e:
             logger.error(f"Error initializing pool '{pool_name}': {e}")
             # Ensure pool exists even if initialization failed

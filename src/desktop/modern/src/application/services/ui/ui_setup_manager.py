@@ -15,6 +15,8 @@ PROVIDES:
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING, Callable, Optional
 
+from core.interfaces.session_services import ISessionStateTracker
+from presentation.tabs.construct.construct_tab_widget import ConstructTabWidget
 from PyQt6.QtCore import Qt, QTimer
 from PyQt6.QtGui import QFont
 from PyQt6.QtWidgets import (
@@ -207,9 +209,6 @@ class UISetupManager(IUISetupManager):
                     mapped_progress = 84 + (progress * 6)  # 6% range for internal steps
                     progress_callback(int(mapped_progress), f"🔧 {step}")
 
-                # Also print detailed progress for debugging
-                print(f"🔍 [CONSTRUCT_TAB] {step} ({progress:.1%})")
-
             if progress_callback:
                 progress_callback(86, "Initializing UI components...")
 
@@ -241,14 +240,6 @@ class UISetupManager(IUISetupManager):
             # Set construct tab as current tab
             self.tab_widget.setCurrentIndex(0)
 
-            # Check visibility status
-            tab_widget_visible = self.tab_widget.isVisible()
-            construct_tab_visible = construct_tab.isVisible()
-            current_tab_index = self.tab_widget.currentIndex()
-            print(
-                f"🔍 [UI_SETUP] Tab widget visible: {tab_widget_visible}, construct tab visible: {construct_tab_visible}, current tab: {current_tab_index}"
-            )
-
             if progress_callback:
                 progress_callback(92, "Construct tab fully loaded and ready!")
 
@@ -269,231 +260,14 @@ class UISetupManager(IUISetupManager):
             )
             self.tab_widget.addTab(fallback_placeholder, "🔧 Construct")
 
-    def _create_lazy_construct_tab(
+    def _connect_construct_tab_to_session(
         self,
-        container: "DIContainer",
-        session_service=None,
+        construct_tab: ConstructTabWidget,
+        session_state_tracker: ISessionStateTracker,
     ) -> None:
-        """Create a lazy-loaded construct tab that loads on first access."""
-        try:
-            # Create a lightweight placeholder widget
-            placeholder_widget = QWidget()
-            placeholder_layout = QVBoxLayout(placeholder_widget)
-            placeholder_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
-
-            # Add loading message
-            loading_label = QLabel("🔧 Construct Tab")
-            loading_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-            loading_label.setStyleSheet(
-                """
-                QLabel {
-                    color: white;
-                    font-size: 24px;
-                    font-weight: bold;
-                    background: transparent;
-                    margin: 20px;
-                }
-            """
-            )
-
-            status_label = QLabel("Click to load construct tools...")
-            status_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-            status_label.setStyleSheet(
-                """
-                QLabel {
-                    color: #cccccc;
-                    font-size: 14px;
-                    background: transparent;
-                    margin: 10px;
-                }
-            """
-            )
-
-            # Add load button
-            load_button = QPushButton("Load Construct Tab")
-            load_button.setStyleSheet(
-                """
-                QPushButton {
-                    background: #4CAF50;
-                    color: white;
-                    border: none;
-                    padding: 12px 24px;
-                    font-size: 14px;
-                    font-weight: bold;
-                    border-radius: 6px;
-                }
-                QPushButton:hover {
-                    background: #45a049;
-                }
-                QPushButton:pressed {
-                    background: #3d8b40;
-                }
-            """
-            )
-
-            placeholder_layout.addWidget(loading_label)
-            placeholder_layout.addWidget(status_label)
-            placeholder_layout.addWidget(load_button)
-
-            # Store references for lazy loading
-            placeholder_widget._container = container
-            placeholder_widget._session_service = session_service
-            placeholder_widget._tab_widget = self.tab_widget
-            placeholder_widget._is_loaded = False
-
-            def load_construct_tab():
-                if placeholder_widget._is_loaded:
-                    return
-
-                # Update status
-                status_label.setText("Loading construct tab components...")
-                load_button.setText("Loading...")
-                load_button.setEnabled(False)
-
-                # Use QTimer to allow UI to update
-                def do_load():
-                    try:
-                        # Load the actual construct tab
-                        self._load_construct_tab(container, None, session_service)
-
-                        # Replace the placeholder with the real tab
-                        tab_index = self.tab_widget.indexOf(placeholder_widget)
-                        if tab_index >= 0:
-                            self.tab_widget.removeTab(tab_index)
-
-                        placeholder_widget._is_loaded = True
-
-                    except Exception as e:
-                        status_label.setText(f"Failed to load: {e}")
-                        load_button.setText("Retry")
-                        load_button.setEnabled(True)
-
-                QTimer.singleShot(50, do_load)
-
-            load_button.clicked.connect(load_construct_tab)
-
-            # Add the placeholder tab
-            self.tab_widget.addTab(placeholder_widget, "🔧 Construct")
-
-            print("✅ Lazy construct tab placeholder created")
-
-        except Exception as e:
-            print(f"❌ Error creating lazy construct tab: {e}")
-            # Fallback to immediate loading
-            self._load_construct_tab(container, None, session_service)
-
-    def _create_auto_loading_construct_tab(
-        self,
-        container: "DIContainer",
-        session_service=None,
-    ) -> None:
-        """Create a construct tab that auto-loads after UI is ready."""
-        try:
-            # Create a lightweight placeholder widget first
-            placeholder_widget = QWidget()
-            placeholder_layout = QVBoxLayout(placeholder_widget)
-            placeholder_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
-
-            # Add loading message with better styling
-            loading_label = QLabel("🔧 Kinetic Constructor")
-            loading_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-            loading_label.setStyleSheet(
-                """
-                QLabel {
-                    color: white;
-                    font-size: 28px;
-                    font-weight: bold;
-                    background: transparent;
-                    margin: 30px;
-                }
-            """
-            )
-
-            status_label = QLabel("⚡ Loading construct tools...")
-            status_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-            status_label.setStyleSheet(
-                """
-                QLabel {
-                    color: #cccccc;
-                    font-size: 16px;
-                    background: transparent;
-                    margin: 15px;
-                }
-            """
-            )
-
-            # Add a subtle loading animation
-            loading_dots_label = QLabel("●●●")
-            loading_dots_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-            loading_dots_label.setStyleSheet(
-                """
-                QLabel {
-                    color: #888888;
-                    font-size: 20px;
-                    background: transparent;
-                    margin: 10px;
-                    letter-spacing: 5px;
-                }
-            """
-            )
-
-            placeholder_layout.addWidget(loading_label)
-            placeholder_layout.addWidget(status_label)
-            placeholder_layout.addWidget(loading_dots_label)
-
-            # Add the placeholder tab immediately and make it the current tab
-            tab_index = self.tab_widget.addTab(placeholder_widget, "🔧 Construct")
-            self.tab_widget.setCurrentIndex(tab_index)  # Ensure this tab is selected
-
-            # Store references for auto-loading
-            placeholder_widget._container = container
-            placeholder_widget._session_service = session_service
-            placeholder_widget._tab_widget = self.tab_widget
-            placeholder_widget._is_loaded = False
-            placeholder_widget._status_label = status_label
-
-            def auto_load_construct_tab():
-                if placeholder_widget._is_loaded:
-                    return
-
-                try:
-                    # Update status
-                    status_label.setText("Loading construct tab components...")
-
-                    # Load the actual construct tab
-                    self._load_construct_tab(container, None, session_service)
-
-                    # Replace the placeholder with the real tab
-                    tab_index = self.tab_widget.indexOf(placeholder_widget)
-                    if tab_index >= 0:
-                        self.tab_widget.removeTab(tab_index)
-                        # Ensure the construct tab remains selected after replacement
-                        if self.tab_widget.count() > 0:
-                            self.tab_widget.setCurrentIndex(
-                                0
-                            )  # Select the first (and only) tab
-
-                    placeholder_widget._is_loaded = True
-                    print("✅ Construct tab auto-loaded successfully")
-
-                except Exception as e:
-                    status_label.setText(f"Failed to load: {e}")
-                    print(f"❌ Error auto-loading construct tab: {e}")
-
-            # Auto-load after a short delay to allow UI to settle
-            QTimer.singleShot(200, auto_load_construct_tab)
-
-            print("✅ Auto-loading construct tab placeholder created")
-
-        except Exception as e:
-            print(f"❌ Error creating auto-loading construct tab: {e}")
-            # Fallback to immediate loading
-            self._load_construct_tab(container, None, session_service)
-
-    def _connect_construct_tab_to_session(self, construct_tab, session_service):
         """Connect construct tab sequence modifications to session service for auto-save."""
         try:
-            if not session_service:
+            if not session_state_tracker:
                 return
 
             # Connect sequence modification signals to session service
@@ -505,7 +279,9 @@ class UISetupManager(IUISetupManager):
                     if hasattr(sequence_data, "id")
                     else str(sequence_data)
                 )
-                session_service.update_current_sequence(sequence_data, sequence_id)
+                session_state_tracker.update_current_sequence(
+                    sequence_data, sequence_id
+                )
 
             # Connect the signal
             construct_tab.sequence_modified.connect(on_sequence_modified)
@@ -531,7 +307,7 @@ class UISetupManager(IUISetupManager):
             # Get UI state service from container
             container = get_container()
             ui_state_service = container.resolve(IUIStateManager)
-            dialog = SettingsDialog(ui_state_service, main_window)
+            dialog = SettingsDialog(ui_state_service, main_window, container)
 
             # Connect to settings changes if needed
             dialog.settings_changed.connect(

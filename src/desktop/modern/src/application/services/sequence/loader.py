@@ -7,6 +7,7 @@ Responsible for loading sequences from current_sequence.json and managing startu
 
 from typing import TYPE_CHECKING, Callable, Optional
 
+from application.services.data.sequence_data_converter import SequenceDataConverter
 from application.services.sequence.sequence_persister import SequencePersister
 from domain.models.beat_data import BeatData
 from domain.models.sequence_data import SequenceData
@@ -40,7 +41,7 @@ class SequenceLoader(QObject):
         super().__init__()
         self.workbench_getter = workbench_getter
         self.workbench_setter = workbench_setter
-        self.data_converter = data_converter
+        self.data_converter: SequenceDataConverter = data_converter
         self.persistence_service = SequencePersister()
 
     def load_sequence_on_startup(self):
@@ -50,21 +51,14 @@ class SequenceLoader(QObject):
             sequence_data = self.persistence_service.load_current_sequence()
 
             if len(sequence_data) <= 1:
-                print("ℹ️ [SEQUENCE_LOADING] Empty sequence detected on startup")
                 # CRITICAL FIX: Always initialize start position component for empty sequences
                 # This ensures the "START" text overlay is visible even when no sequence exists
                 self._initialize_empty_sequence_start_position()
                 return
 
-            print(
-                f"🔍 [SEQUENCE_LOADING] Loading sequence from current_sequence.json..."
-            )
-            print(f"🔍 [SEQUENCE_LOADING] Sequence has {len(sequence_data)} items")
-
             # Extract metadata and beats
             metadata = sequence_data[0]
             sequence_word = metadata.get("word", "")
-            print(f"🔍 [SEQUENCE_LOADING] Sequence word: '{sequence_word}'")
 
             # Find start position (beat 0) and actual beats (beat 1+)
             start_position_data = None
@@ -73,14 +67,9 @@ class SequenceLoader(QObject):
             for item in sequence_data[1:]:
                 if item.get("beat") == 0:
                     start_position_data = item
-                    print(
-                        f"✅ [SEQUENCE_LOADING] Found start position: {item.get('sequence_start_position', 'unknown')}"
-                    )
+
                 elif "letter" in item and not item.get("is_placeholder", False):
                     beats_data.append(item)
-                    print(
-                        f"✅ [SEQUENCE_LOADING] Found beat {item.get('beat', '?')}: {item.get('letter', '?')}"
-                    )
 
             # Convert beats to modern format with full pictograph data
             beat_objects = []
@@ -92,33 +81,19 @@ class SequenceLoader(QObject):
                             beat_dict, i + 1
                         )
                         beat_objects.append(beat_obj)
-                        print(
-                            f"✅ [SEQUENCE_LOADING] Converted beat {beat_obj.letter} with motion data"
-                        )
+
                     except Exception as e:
                         print(
                             f"⚠️ [SEQUENCE_LOADING] Failed to convert beat {beat_dict.get('letter', '?')}: {e}"
                         )
-                        # Create fallback beat with proper numbering using direct constructor
-                        fallback_beat = BeatData(
-                            beat_number=i + 1,  # Sequential numbering
-                            letter=beat_dict.get("letter", "?"),
-                        ).update(update={"duration": beat_dict.get("duration", 1.0)})
-                        beat_objects.append(fallback_beat)
 
             # CRITICAL FIX: Handle start position loading INDEPENDENTLY of beats
             # This ensures start positions are visible even when there are no beats
             if start_position_data:
                 try:
                     # Extract the position key from the start position data
-                    position_key = start_position_data.get(
-                        "sequence_start_position", "alpha"
-                    )
-                    end_pos = start_position_data.get("end_pos", "alpha1")
-
-                    print(
-                        f"🎯 [SEQUENCE_LOADING] Loading start position: {position_key} -> {end_pos}"
-                    )
+                    end_position = start_position_data.get("end_pos", "alpha1")
+                    position_key = f"{end_position}_{end_position}"
 
                     # Create start position data in both formats
                     if self.data_converter:
@@ -130,7 +105,7 @@ class SequenceLoader(QObject):
                         # Create PictographData for option picker using dataset service
                         start_position_pictograph = (
                             self._create_start_position_pictograph_data(
-                                position_key, end_pos
+                                position_key, end_position
                             )
                         )
 
@@ -138,9 +113,6 @@ class SequenceLoader(QObject):
                         workbench = self.workbench_getter()
                         if workbench and hasattr(workbench, "set_start_position"):
                             workbench.set_start_position(start_position_beat)
-                            print(
-                                f"✅ [SEQUENCE_LOADING] Start position loaded into workbench: {end_pos}"
-                            )
 
                             # Emit signal for UI coordination with PictographData for option picker
                             self.start_position_loaded.emit(
@@ -162,27 +134,12 @@ class SequenceLoader(QObject):
                 name=sequence_word or "Loaded Sequence", beats=beat_objects
             )
 
-            print(
-                f"✅ [SEQUENCE_LOADING] Created sequence: '{loaded_sequence.name}' with {len(beat_objects)} beats"
-            )
-
             # Set sequence in workbench
             if self.workbench_setter:
                 self.workbench_setter(loaded_sequence)
-                print(f"✅ [SEQUENCE_LOADING] Sequence loaded into workbench")
 
             # Emit signal for UI coordination
             self.sequence_loaded.emit(loaded_sequence)
-
-            # Handle UI state transition based on what was loaded
-            if start_position_data and not beat_objects:
-                print(
-                    "🎯 [SEQUENCE_LOADING] Start position loaded with no beats - should show option picker"
-                )
-            elif not start_position_data and not beat_objects:
-                print(
-                    "ℹ️ [SEQUENCE_LOADING] No start position or beats found - empty sequence"
-                )
 
         except Exception as e:
             print(f"❌ [SEQUENCE_LOADING] Failed to load sequence on startup: {e}")
@@ -214,9 +171,7 @@ class SequenceLoader(QObject):
                     end_position=end_pos,
                     metadata={"source": "sequence_loading"},
                 )
-                print(
-                    f"✅ [SEQUENCE_LOADING] Created PictographData for position: {position_key}"
-                )
+
                 return pictograph_data
             else:
                 print(
@@ -254,9 +209,6 @@ class SequenceLoader(QObject):
     def _initialize_empty_sequence_start_position(self):
         """Initialize start position component for empty sequences"""
         try:
-            print(
-                "🔧 [SEQUENCE_LOADING] Initializing start position for empty sequence"
-            )
 
             # Get workbench to initialize start position component
             if self.workbench_getter:
@@ -267,9 +219,7 @@ class SequenceLoader(QObject):
                         beat_frame_section, "initialize_cleared_start_position"
                     ):
                         beat_frame_section.initialize_cleared_start_position()
-                        print(
-                            "✅ [SEQUENCE_LOADING] Start position component initialized for empty sequence"
-                        )
+
                     else:
                         print(
                             "⚠️ [SEQUENCE_LOADING] Beat frame section not available for start position initialization"

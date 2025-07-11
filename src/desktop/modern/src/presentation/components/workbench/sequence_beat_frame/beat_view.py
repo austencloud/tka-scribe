@@ -124,7 +124,7 @@ class BeatView(QFrame):
 
     # State management
     def set_beat_data(self, beat_data: Optional[BeatData]):
-        """Set beat data and update display"""
+        """Set beat data and update display."""
         if self._beat_data != beat_data:
             self._beat_data = beat_data
             self._update_display()

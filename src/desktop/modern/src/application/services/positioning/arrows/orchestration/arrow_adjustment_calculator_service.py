@@ -25,6 +25,8 @@ from core.types.coordinates import PositionResult, get_default_point
 from core.types.geometry import Point
 from core.types.result import ErrorType, app_error, failure, success
 from domain.models.arrow_data import ArrowData
+from domain.models.enums import Location
+from domain.models.motion_models import MotionData
 from domain.models.pictograph_data import PictographData
 
 from ...arrows.calculation.directional_tuple_calculator import (
@@ -102,22 +104,26 @@ class ArrowAdjustmentCalculatorService(IArrowAdjustmentCalculator):
         )
 
     def calculate_adjustment(
-        self, arrow_data: ArrowData, pictograph_data: PictographData
+        self,
+        pictograph_data: PictographData,
+        motion_data: MotionData,
+        letter: str,
+        location: Location,
     ) -> Point:
         """
-        Calculate arrow position adjustment (legacy API for compatibility).
-
-        This method maintains the original Point return type for backward compatibility.
-        For new code, use calculate_adjustment_result() which returns Result types.
+        Calculate arrow position adjustment with streamlined parameters.
 
         Args:
-            arrow_data: Arrow data with motion and color information
-            pictograph_data: Pictograph context with letter and sequence data
+            motion_data: Motion data containing type, rotation, and location info
+            letter: Letter for special placement lookup
+            location: Pre-calculated arrow location
 
         Returns:
             Final position adjustment as Point (to be added to initial position)
         """
-        result = self.calculate_adjustment_result(arrow_data, pictograph_data)
+        result = self.calculate_adjustment_result(
+            pictograph_data, motion_data, letter, location
+        )
         if result.is_success():
             return result.value
 
@@ -126,62 +132,42 @@ class ArrowAdjustmentCalculatorService(IArrowAdjustmentCalculator):
         return get_default_point()
 
     def calculate_adjustment_result(
-        self, arrow_data: ArrowData, pictograph_data: PictographData
+        self,
+        pictograph_data: PictographData,
+        motion_data: MotionData,
+        letter: str,
+        location: Location,
     ) -> PositionResult:
         """
         Calculate arrow position adjustment with proper error handling.
 
-        New Result-based API that provides explicit error handling.
-
         Args:
-            arrow_data: Arrow data with motion and color information
-            pictograph_data: Pictograph context with letter and sequence data
+            motion_data: Motion data containing type, rotation, and location info
+            letter: Letter for special placement lookup
+            location: Pre-calculated arrow location
 
         Returns:
             Result containing Point adjustment or AppError
         """
-        logger.info(
-            f"🎯 Calculating adjustment for {arrow_data.color} arrow in letter {pictograph_data.letter}"
-        )
-
-        # Get motion data from the motions dictionary
-        motion = None
-        if hasattr(pictograph_data, "motions") and pictograph_data.motions:
-            motion = pictograph_data.motions.get(arrow_data.color)
-
-        if not motion:
-            return failure(
-                app_error(
-                    ErrorType.VALIDATION_ERROR,
-                    "No motion data available for adjustment calculation",
-                    {"arrow_color": arrow_data.color, "letter": pictograph_data.letter},
-                )
-            )
 
         try:
             # STEP 1: Look up base adjustment (special → default)
             lookup_result = self.lookup_service.get_base_adjustment(
-                arrow_data, pictograph_data
+                pictograph_data, motion_data, letter
             )
             if lookup_result.is_failure():
                 return failure(lookup_result.error)
 
             base_adjustment = lookup_result.value
-            logger.info(
-                f"   Step 1 - Base adjustment: ({base_adjustment.x:.1f}, {base_adjustment.y:.1f})"
-            )
 
             # STEP 2: Process directional tuples
             tuple_result = self.tuple_processor.process_directional_tuples(
-                base_adjustment, arrow_data, pictograph_data
+                base_adjustment, motion_data, location
             )
             if tuple_result.is_failure():
                 return failure(tuple_result.error)
 
             final_adjustment = tuple_result.value
-            logger.info(
-                f"   Final adjustment: ({final_adjustment.x:.1f}, {final_adjustment.y:.1f})"
-            )
 
             return success(final_adjustment)
 
@@ -190,7 +176,7 @@ class ArrowAdjustmentCalculatorService(IArrowAdjustmentCalculator):
                 app_error(
                     ErrorType.POSITIONING_ERROR,
                     f"Unexpected error in adjustment calculation: {e}",
-                    {"arrow_color": arrow_data.color, "letter": pictograph_data.letter},
+                    {"letter": letter},
                     e,
                 )
             )

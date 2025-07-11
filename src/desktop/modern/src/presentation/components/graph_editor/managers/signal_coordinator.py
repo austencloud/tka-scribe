@@ -89,9 +89,6 @@ class GraphEditorSignalCoordinator(QObject):
                 self._data_flow_service.beat_data_updated.connect(
                     self._on_beat_data_updated
                 )
-                self._data_flow_service.pictograph_refresh_needed.connect(
-                    self._on_pictograph_refresh_needed
-                )
                 self._data_flow_service.sequence_modified.connect(
                     self._on_sequence_modified
                 )
@@ -141,26 +138,22 @@ class GraphEditorSignalCoordinator(QObject):
 
     # Simple signal handlers
     def _on_beat_data_updated(self, beat_data: BeatData, beat_index: int) -> None:
-        """Handle beat data updates from data flow service"""
+        """Handle beat data updates from data flow service (includes pictograph refresh)"""
         try:
             if self._state_manager:
                 self._state_manager.set_selected_beat(beat_data, beat_index)
             self.beat_modified.emit(beat_data)
-            logger.debug(f"Beat data updated: {beat_index}")
-        except Exception as e:
-            logger.warning(f"Error handling beat data update: {e}")
 
-    def _on_pictograph_refresh_needed(self, beat_data: BeatData) -> None:
-        """Handle pictograph refresh requests"""
-        try:
+            # Handle pictograph refresh (consolidated from separate signal)
             if (
                 hasattr(self._graph_editor, "_pictograph_display")
                 and self._graph_editor._pictograph_display
             ):
                 self._graph_editor._pictograph_display.refresh_display(beat_data)
-            logger.debug("Pictograph refresh completed")
+
+            logger.debug(f"Beat data updated with pictograph refresh: {beat_index}")
         except Exception as e:
-            logger.warning(f"Error refreshing pictograph: {e}")
+            logger.warning(f"Error handling beat data update: {e}")
 
     def _on_sequence_modified(self, sequence: SequenceData) -> None:
         """Handle sequence modification from data flow service"""

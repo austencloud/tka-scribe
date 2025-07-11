@@ -10,11 +10,13 @@ from typing import Callable, Optional
 from application.services.option_picker.option_orientation_updater import (
     OptionOrientationUpdater,
 )
-from application.services.sequence.sequence_persister import SequencePersister
 from domain.models.beat_data import BeatData
 from domain.models.pictograph_data import PictographData
 from domain.models.sequence_data import SequenceData
 from PyQt6.QtCore import QObject, pyqtSignal
+
+from application.services.sequence.beat_factory import BeatFactory
+from application.services.sequence.sequence_persister import SequencePersister
 
 
 class SequenceBeatOperations(QObject):
@@ -46,17 +48,49 @@ class SequenceBeatOperations(QObject):
         self.persistence_service = SequencePersister()
 
     def add_pictograph_to_sequence(self, pictograph_data: PictographData):
-        """Add pictograph to sequence by converting to beat data first."""
+        """Add pictograph to sequence by creating beat with embedded pictograph."""
         try:
-            # Convert PictographData to BeatData
-            beat_data = self._convert_pictograph_to_beat_data(pictograph_data)
+            # Calculate beat number
+            current_sequence = self._get_current_sequence()
+            beat_number = self._calculate_next_beat_number(current_sequence)
+
+            # Create beat data with embedded pictograph using factory
+            beat_data = BeatFactory.create_from_pictograph(
+                pictograph_data=pictograph_data, beat_number=beat_number
+            )
+
             # Use existing beat addition logic
             self.add_beat_to_sequence(beat_data)
+
         except Exception as e:
             print(f"❌ Error adding pictograph to sequence: {e}")
             import traceback
 
             traceback.print_exc()
+
+    def _calculate_next_beat_number(
+        self, current_sequence: Optional[SequenceData]
+    ) -> int:
+        """Calculate the next beat number for a new beat."""
+        if current_sequence and current_sequence.beats:
+            # Check if first beat is a start position (beat_number=0)
+            has_start_position = (
+                current_sequence.beats[0].metadata.get("is_start_position", False)
+                and current_sequence.beats[0].beat_number == 0
+            )
+
+            if has_start_position:
+                # Regular beats start from 1, so beat_number = number of non-start-position beats + 1
+                regular_beats_count = len(current_sequence.beats) - 1
+                beat_number = regular_beats_count + 1
+            else:
+                # No start position, so beat_number = total beats + 1
+                beat_number = len(current_sequence.beats) + 1
+        else:
+            # Empty sequence, first beat is beat 1
+            beat_number = 1
+
+        return beat_number
 
     def add_beat_to_sequence(self, beat_data: BeatData):
         """Add beat to sequence using the most appropriate method"""
@@ -151,45 +185,6 @@ class SequenceBeatOperations(QObject):
 
             traceback.print_exc()
 
-    def remove_beat(self, beat_index: int):
-        """Remove a beat from the sequence - exactly like legacy"""
-        try:
-            current_sequence = self._get_current_sequence()
-            if not current_sequence or beat_index >= len(current_sequence.beats):
-                return
-
-            # Remove beat from sequence
-            beat_to_remove = current_sequence.beats[beat_index]
-            new_beats = current_sequence.beats.copy()
-            new_beats.pop(beat_index)
-
-            # Update beat numbers for remaining beats
-            for i, beat in enumerate(new_beats):
-                new_beats[i] = beat.update(beat_number=i + 1)
-
-            new_sequence = current_sequence.update(beats=new_beats)
-
-            # Update workbench
-            if self.workbench_setter:
-                self.workbench_setter(new_sequence)
-
-            # Save to persistence
-            self._save_sequence_to_persistence(new_sequence)
-
-            # Remove from persistence service
-            self.persistence_service.remove_beat_at_index(beat_index)
-
-            # Emit signal
-            self.beat_removed.emit(beat_index)
-
-            print(f"✅ Removed beat {beat_to_remove.letter} from position {beat_index}")
-
-        except Exception as e:
-            print(f"❌ Failed to remove beat: {e}")
-            import traceback
-
-            traceback.print_exc()
-
     def update_beat_turns(self, beat_index: int, color: str, new_turns: int):
         """Update the number of turns for a specific beat - exactly like legacy"""
         try:
@@ -200,12 +195,19 @@ class SequenceBeatOperations(QObject):
             beat = current_sequence.beats[beat_index]
 
             # Update the appropriate motion based on color
-            if color.lower() == "blue" and beat.blue_motion:
-                updated_motion = beat.blue_motion.update(turns=new_turns)
-                updated_beat = beat.update(blue_motion=updated_motion)
-            elif color.lower() == "red" and beat.red_motion:
-                updated_motion = beat.red_motion.update(turns=new_turns)
-                updated_beat = beat.update(red_motion=updated_motion)
+            if beat.has_pictograph and color.lower() in beat.pictograph_data.motions:
+                motion = beat.pictograph_data.motions[color.lower()]
+                updated_motion = motion.update(turns=new_turns)
+
+                # Update the motion in pictograph data
+                updated_motions = {
+                    **beat.pictograph_data.motions,
+                    color.lower(): updated_motion,
+                }
+                updated_pictograph = beat.pictograph_data.update(
+                    motions=updated_motions
+                )
+                updated_beat = beat.update(pictograph_data=updated_pictograph)
             else:
                 print(f"⚠️ Invalid color '{color}' or missing motion data")
                 return
@@ -245,16 +247,21 @@ class SequenceBeatOperations(QObject):
             beat = current_sequence.beats[beat_index]
 
             # Update the appropriate motion based on color
-            if color.lower() == "blue" and beat.blue_motion:
-                updated_motion = beat.blue_motion.update(
-                    start_orientation=new_orientation, end_orientation=new_orientation
+            if beat.has_pictograph and color.lower() in beat.pictograph_data.motions:
+                motion = beat.pictograph_data.motions[color.lower()]
+                updated_motion = motion.update(
+                    start_ori=new_orientation, end_ori=new_orientation
                 )
-                updated_beat = beat.update(blue_motion=updated_motion)
-            elif color.lower() == "red" and beat.red_motion:
-                updated_motion = beat.red_motion.update(
-                    start_orientation=new_orientation, end_orientation=new_orientation
+
+                # Update the motion in pictograph data
+                updated_motions = {
+                    **beat.pictograph_data.motions,
+                    color.lower(): updated_motion,
+                }
+                updated_pictograph = beat.pictograph_data.update(
+                    motions=updated_motions
                 )
-                updated_beat = beat.update(red_motion=updated_motion)
+                updated_beat = beat.update(pictograph_data=updated_pictograph)
             else:
                 print(f"⚠️ Invalid color '{color}' or missing motion data")
                 return
@@ -388,70 +395,3 @@ class SequenceBeatOperations(QObject):
             if n % i == 0 and can_form_by_repeating(word, pattern):
                 return pattern
         return word
-
-    def _convert_pictograph_to_beat_data(
-        self, pictograph_data: PictographData
-    ) -> BeatData:
-        """Convert PictographData to BeatData for sequence operations."""
-        try:
-            # NEW: Motion data is now directly in PictographData
-            # No need to extract from arrows - it's already in the right place!
-
-            # Get current sequence to determine beat number
-            current_sequence = self._get_current_sequence()
-
-            if current_sequence and current_sequence.beats:
-                # Check if first beat is a start position (beat_number=0)
-                has_start_position = (
-                    current_sequence.beats[0].metadata.get("is_start_position", False)
-                    and current_sequence.beats[0].beat_number == 0
-                )
-
-                if has_start_position:
-                    # Regular beats start from 1, so beat_number = number of non-start-position beats + 1
-                    regular_beats_count = (
-                        len(current_sequence.beats) - 1
-                    )  # Exclude start position
-                    beat_number = regular_beats_count + 1
-                else:
-                    # No start position, so beat_number = total beats + 1
-                    beat_number = len(current_sequence.beats) + 1
-            else:
-                # Empty sequence, first beat is beat 1
-                beat_number = 1
-
-            # Create metadata for regular beat (not start position)
-            beat_metadata = {
-                "start_position": pictograph_data.start_position,
-                "end_position": pictograph_data.end_position,
-                "converted_from_pictograph": True,
-            }
-
-            # Copy pictograph metadata but exclude start position flags
-            if pictograph_data.metadata:
-                for key, value in pictograph_data.metadata.items():
-                    # Don't copy start position flags to regular beats
-                    if key not in ["is_start_position"]:
-                        beat_metadata[key] = value
-
-            # Create BeatData with PictographData reference
-            beat_data = BeatData(
-                beat_number=beat_number,
-                letter=pictograph_data.letter or "?",
-                pictograph_data=pictograph_data,  # NEW: Store the complete pictograph
-                glyph_data=pictograph_data.glyph_data,
-                is_blank=pictograph_data.is_blank,
-                metadata=beat_metadata,
-            )
-
-            return beat_data
-
-        except Exception as e:
-            print(f"❌ Error converting pictograph to beat data: {e}")
-            # Return a minimal beat data as fallback
-            return BeatData(
-                beat_number=1,
-                letter="?",
-                is_blank=True,
-                metadata={"conversion_error": str(e)},
-            )

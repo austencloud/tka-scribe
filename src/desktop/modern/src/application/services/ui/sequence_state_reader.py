@@ -30,7 +30,6 @@ class SequenceStateReader:
             workbench_getter: Function that returns the current workbench instance
         """
         self._workbench_getter = workbench_getter
-        logger.info("SequenceStateReader initialized")
 
     def get_current_sequence(self) -> Optional[SequenceData]:
         """
@@ -115,9 +114,13 @@ class MockSequenceStateReader(SequenceStateReader):
 
         # Create some mock beats
         beats = [
-            BeatData(beat_number=0, letter="A", metadata={"is_start_position": True}),
-            BeatData(beat_number=1, letter="B"),
-            BeatData(beat_number=2, letter="C"),
+            BeatData(beat_number=0, metadata={"is_start_position": True}),
+            BeatData(
+                beat_number=1,
+            ),
+            BeatData(
+                beat_number=2,
+            ),
         ]
 
         return SequenceData(

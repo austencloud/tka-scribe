@@ -203,7 +203,6 @@ class ConstructTabLayoutManager:
         if not beat_frame:
             return
         beat_frame.beat_selected.connect(self._on_beat_selected_for_graph_editor)
-        print("✅ Connected beat frame to graph editor")
 
     def _on_beat_selected_for_graph_editor(self, beat_index: int):
         # Removed repetitive debug log

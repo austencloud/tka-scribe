@@ -19,8 +19,6 @@ class SequencePersister:
         modern_dir = Path(__file__).parent.parent.parent.parent.parent
         self.current_sequence_json = modern_dir / "current_sequence.json"
 
-        logger.info(f"Sequence persistence initialized: {self.current_sequence_json}")
-
     def load_current_sequence(self) -> List[Dict[str, Any]]:
         """Load current sequence from JSON file - exactly like legacy."""
         try:

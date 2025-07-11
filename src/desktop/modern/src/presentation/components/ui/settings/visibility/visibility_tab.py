@@ -11,9 +11,6 @@ from typing import Any, Dict, Optional
 from application.services.pictograph.global_visibility_service import (
     PictographVisibilityManager,
 )
-from application.services.pictograph.global_visibility_service_singleton import (
-    get_global_visibility_service,
-)
 from application.services.pictograph.visibility_state_manager import (
     VisibilityStateManager,
 )
@@ -51,7 +48,7 @@ class VisibilityTab(QWidget):
     def __init__(
         self,
         visibility_service: IVisibilitySettingsManager,
-        global_visibility_service: Optional[PictographVisibilityManager] = None,
+        global_visibility_service: PictographVisibilityManager,
         parent=None,
     ):
         """
@@ -67,9 +64,7 @@ class VisibilityTab(QWidget):
         # Services
         self.visibility_service = visibility_service
         self.state_manager = VisibilityStateManager(visibility_service)
-        self.global_visibility_service = (
-            global_visibility_service or get_global_visibility_service()
-        )
+        self.global_visibility_service = global_visibility_service
 
         # Component sections
         self.motion_section: Optional[MotionControlsSection] = None

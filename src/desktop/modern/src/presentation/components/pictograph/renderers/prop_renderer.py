@@ -16,6 +16,7 @@ from domain.models import Orientation
 from application.services.positioning.props.orchestration.prop_management_service import (
     PropManagementService,
 )
+from domain.models.pictograph_data import PictographData
 from ui.adapters.qt_geometry_adapter import QtGeometryAdapter
 
 if TYPE_CHECKING:
@@ -190,12 +191,12 @@ class PropRenderer:
 
         return svg_data
 
-    def apply_beta_positioning(self, beat_data: Any) -> None:
-        from domain.models import BeatData
-
-        if not isinstance(beat_data, BeatData):
+    def apply_beta_positioning(self, pictograph_data: PictographData) -> None:
+        if not isinstance(pictograph_data, PictographData):
             return
-        if not self.prop_management_service.should_apply_beta_positioning(beat_data):
+        if not self.prop_management_service.should_apply_beta_positioning(
+            pictograph_data
+        ):
             return
 
         if "blue" not in self.rendered_props or "red" not in self.rendered_props:
@@ -204,7 +205,7 @@ class PropRenderer:
         (
             blue_offset,
             red_offset,
-        ) = self.prop_management_service.calculate_separation_offsets(beat_data)
+        ) = self.prop_management_service.calculate_separation_offsets(pictograph_data)
 
         blue_prop = self.rendered_props["blue"]
         red_prop = self.rendered_props["red"]

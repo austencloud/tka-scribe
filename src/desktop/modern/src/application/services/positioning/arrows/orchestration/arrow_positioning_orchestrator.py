@@ -6,7 +6,7 @@ Uses dependency injection to compose positioning pipeline.
 """
 
 import logging
-from typing import Tuple
+from typing import Optional, Tuple
 
 from core.interfaces.positioning_services import (
     IArrowAdjustmentCalculator,
@@ -47,9 +47,10 @@ class ArrowPositioningOrchestrator(IArrowPositioningOrchestrator):
         self,
         arrow_data: ArrowData,
         pictograph_data: PictographData,
-        motion_data: MotionData,
+        motion_data: MotionData = None,
     ) -> Tuple[float, float, float]:
-        """Calculate arrow position using microservices pipeline."""
+        """Calculate arrow position using streamlined microservices pipeline."""
+        # CENTRALIZED DATA EXTRACTION
         motion = motion_data or self._get_motion_from_pictograph(
             arrow_data, pictograph_data
         )
@@ -61,14 +62,20 @@ class ArrowPositioningOrchestrator(IArrowPositioningOrchestrator):
             center = self.coordinate_system.get_scene_center()
             return center.x(), center.y(), 0.0
 
-        location = self.location_calculator.calculate_location(motion, pictograph_data)
-        initial_position = self.coordinate_system.get_initial_position(motion, location)
+        letter = pictograph_data.letter
 
+        # SINGLE LOCATION CALCULATION
+        # For now, pass None for beat_data since we're simplifying the interface
+        # The location calculator will fall back to start_loc for DASH motions
+        location = self.location_calculator.calculate_location(motion, pictograph_data)
+
+        # PASS MINIMAL DATA TO EACH SERVICE
+        initial_position = self.coordinate_system.get_initial_position(motion, location)
         initial_position = self._ensure_valid_position(initial_position)
 
         rotation = self.rotation_calculator.calculate_rotation(motion, location)
         adjustment = self.adjustment_calculator.calculate_adjustment(
-            arrow_data, pictograph_data
+            pictograph_data, motion, letter, location
         )
 
         adjustment_x, adjustment_y = self._extract_adjustment_values(adjustment)

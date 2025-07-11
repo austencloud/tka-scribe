@@ -48,16 +48,11 @@ class TKAMainWindow(QMainWindow):
         self.parallel_mode = parallel_mode
         self.parallel_geometry = parallel_geometry
 
-        # Only initialize orchestrator if we have a container (production mode)
         if self.container:
             from application.services.core.application_orchestrator import (
                 ApplicationOrchestrator,
             )
 
-            # Pass the container to the orchestrator so it can resolve the session service
-            print(
-                f"🔍 [MAIN] Creating orchestrator with container for session service resolution"
-            )
             self.orchestrator = ApplicationOrchestrator(container=self.container)
             self.tab_widget = self.orchestrator.initialize_application(
                 self,
@@ -97,7 +92,6 @@ class TKAMainWindow(QMainWindow):
             if current_tab:
                 current_tab.show()
                 current_tab.setVisible(True)
-            print("🔍 [MAIN_WINDOW] Tab widget and current tab made visible")
 
     def resizeEvent(self, a0):
         super().resizeEvent(a0)
@@ -166,17 +160,7 @@ def main():
         from core.logging.instant_fix import apply_instant_fix
 
         apply_instant_fix("quiet")
-        logger.info("✅ Smart logging applied - arrow positioning verbosity REDUCED")
-    except ImportError:
-        # Fallback: Direct suppression without smart logging
-        verbose_loggers = [
-            "application.services.positioning.arrows.orchestration.directional_tuple_processor",
-            "application.services.positioning.arrows.orchestration.arrow_adjustment_calculator_service",
-            "application.services.positioning.arrows.orchestration.arrow_adjustment_lookup_service",
-        ]
-        for logger_name in verbose_loggers:
-            logging.getLogger(logger_name).setLevel(logging.ERROR)
-        logger.info("✅ Fallback logging applied - arrow positioning verbosity REDUCED")
+
     except Exception as e:
         logger.warning(
             f"⚠️ Could not apply logging fix: {e} - continuing with default logging"
@@ -187,7 +171,6 @@ def main():
 
     if "--test" in sys.argv:
         app_mode = ApplicationMode.TEST
-        logger.info("Starting TKA in TEST mode")
         # For test mode, just create container and return it
         from core.application.application_factory import ApplicationFactory
 
@@ -209,7 +192,6 @@ def main():
         return container
     elif "--headless" in sys.argv:
         app_mode = ApplicationMode.HEADLESS
-        logger.info("Starting TKA in HEADLESS mode")
         # For headless mode, create container but no UI
         from core.application.application_factory import ApplicationFactory
 
@@ -230,10 +212,6 @@ def main():
         return container
     elif "--record" in sys.argv:
         app_mode = ApplicationMode.RECORDING
-        logger.info("Starting TKA in RECORDING mode")
-    else:
-        logger.info("Starting TKA in PRODUCTION mode")
-
     # For production and recording modes, continue with UI setup
     try:
         # Lazy import ApplicationFactory when needed
@@ -241,19 +219,12 @@ def main():
 
         # Create application using factory
         container = ApplicationFactory.create_app(app_mode)
-        logger.info(
-            f"TKA application container created successfully in {app_mode} mode"
-        )
 
         # Initialize event-driven architecture services
         try:
             from core.service_locator import initialize_services
 
-            if initialize_services():
-                logger.info(
-                    "✅ Event-driven architecture services initialized successfully"
-                )
-            else:
+            if not initialize_services():
                 logger.warning(
                     "⚠️ Failed to initialize event-driven services - falling back to legacy architecture"
                 )
@@ -356,15 +327,12 @@ def main():
             app.processEvents()
 
             print(f"✅ TKA application startup completed successfully!")
-            print(f"🔧 Construct tab fully loaded and ready for use")
 
-            # PERFECT TIMING FIX: Show main window exactly when splash fades away
             def show_main_window():
                 """Show main window exactly when splash finishes fading."""
                 window.show()
                 window.raise_()
                 window.activateWindow()
-                print(f"🔍 [MAIN] Main window shown: visible={window.isVisible()}")
 
             # Hide splash screen with callback to show main window at perfect timing
             splash.hide_animated(callback=show_main_window)

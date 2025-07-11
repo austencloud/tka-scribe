@@ -90,8 +90,6 @@ class FullScreenViewer(IFullScreenViewer):
         # Current overlay instance (for cleanup)
         self._current_overlay: Optional[IFullScreenOverlay] = None
 
-        logger.info("FullScreenService initialized with dependency injection")
-
     def create_sequence_thumbnail(self, sequence: SequenceData) -> bytes:
         """
         Create thumbnail from sequence.

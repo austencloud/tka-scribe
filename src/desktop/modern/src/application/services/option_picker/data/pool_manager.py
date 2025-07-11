@@ -64,9 +64,7 @@ class PictographPoolManager(QObject):
                 )
 
                 self._pool_service = ObjectPoolManager()
-                logger.warning(
-                    "Using fallback object pool service - consider using DI container"
-                )
+
             except ImportError:
                 logger.error("Object pool service not available")
                 self._pool_service = None
@@ -114,10 +112,6 @@ class PictographPoolManager(QObject):
                     self._pictograph_pool.append(frame)
 
             self._pool_initialized = True
-
-            logger.info(
-                f"Pictograph pool initialized with {len(self._pictograph_pool)} objects"
-            )
 
         except Exception as e:
             logger.error(f"Error initializing pool via service: {e}")

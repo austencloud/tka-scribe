@@ -75,9 +75,7 @@ class WorkbenchBeatFrameSection(QWidget):
         self._beat_frame.setVisible(True)
 
         # Create button panel (right side)
-        print("🔧 DEBUG: Creating button panel in beat frame section...")
         self._button_panel = SequenceWorkbenchButtonPanel(self)
-        print(f"🔧 DEBUG: Button panel created: {self._button_panel}")
 
         # Add with proper proportions (10:1 ratio like Legacy)
         layout.addWidget(self._beat_frame, 10)
@@ -144,13 +142,11 @@ class WorkbenchBeatFrameSection(QWidget):
         if self._beat_frame:
             # Removed repetitive debug logs
             self._beat_frame.set_sequence(sequence)
-            print("✅ [BEAT_FRAME_SECTION] Beat frame updated")
         else:
             print("⚠️ [BEAT_FRAME_SECTION] No beat frame available")
 
         # Removed repetitive debug logs
         self._update_button_states()
-        print("✅ [BEAT_FRAME_SECTION] set_sequence() completed")
 
     def set_start_position(
         self,
@@ -171,18 +167,8 @@ class WorkbenchBeatFrameSection(QWidget):
 
     def initialize_cleared_start_position(self):
         """Initialize start position view in cleared state (shows START text only)"""
-        print("🔧 [BEAT_FRAME_SECTION] Initializing cleared start position view")
-
-        # CRITICAL FIX: Ensure beat frame section is visible
         self.show()
         self.setVisible(True)
-
-        # Check visibility status
-        section_visible = self.isVisible()
-        parent_visible = self.parent().isVisible() if self.parent() else "No parent"
-        print(
-            f"🔍 [BEAT_FRAME_SECTION] Visibility status: section_visible={section_visible}, parent_visible={parent_visible}"
-        )
 
         self._start_position_data = None
         if self._beat_frame:

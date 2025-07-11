@@ -29,6 +29,7 @@ import logging
 from core.types.coordinates import PositionResult, qpoint_to_point
 from core.types.result import AppError, ErrorType, Result, app_error, failure, success
 from domain.models.arrow_data import ArrowData
+from domain.models.motion_models import MotionData
 from domain.models.pictograph_data import PictographData
 
 # Conditional PyQt6 imports for testing compatibility
@@ -95,28 +96,25 @@ class ArrowAdjustmentLookupService:
         self.attribute_key_service = attribute_key_service
 
     def get_base_adjustment(
-        self, arrow_data: ArrowData, pictograph_data: PictographData
+        self, pictograph_data: PictographData, motion_data: MotionData, letter: str
     ) -> PositionResult:
         """
-        Get base adjustment using legacy-compatible lookup logic.
+        Get base adjustment using streamlined lookup logic.
 
         Args:
-            arrow_data: Arrow data with motion and color information
-            pictograph_data: Pictograph context with letter and sequence data
+            motion_data: Motion data containing type, rotation, and location info
+            letter: Letter for special placement lookup
 
         Returns:
             Result containing Point adjustment or AppError
         """
-        motion = pictograph_data.motions[arrow_data.color]
-        letter = pictograph_data.letter
-
-        if not motion or not letter:
+        if not motion_data or not letter:
             return failure(
                 app_error(
                     ErrorType.VALIDATION_ERROR,
                     "Missing motion or letter data for adjustment lookup",
                     {
-                        "has_motion": motion is not None,
+                        "has_motion": motion_data is not None,
                         "has_letter": letter is not None,
                     },
                 )
@@ -124,7 +122,9 @@ class ArrowAdjustmentLookupService:
 
         try:
             # Generate required keys for special placement lookup
-            key_result = self._generate_lookup_keys(arrow_data, pictograph_data)
+            key_result = self._generate_lookup_keys(
+                pictograph_data, motion_data, letter
+            )
             if key_result.is_failure():
                 return failure(key_result.error)
 
@@ -136,7 +136,7 @@ class ArrowAdjustmentLookupService:
 
             # STEP 1: Try special placement lookup (stored adjustments)
             special_result = self._lookup_special_placement(
-                arrow_data, pictograph_data, ori_key, turns_tuple, attr_key
+                motion_data, letter, ori_key, turns_tuple, attr_key
             )
 
             if special_result.is_success():
@@ -146,13 +146,9 @@ class ArrowAdjustmentLookupService:
                 return special_result
 
             # STEP 2: Fall back to default calculation
-            default_result = self._calculate_default_adjustment(
-                arrow_data, pictograph_data
-            )
+            default_result = self._calculate_default_adjustment(motion_data, letter)
             if default_result.is_success():
-                logger.info(
-                    f"Using default calculation: ({default_result.value.x:.1f}, {default_result.value.y:.1f})"
-                )
+
                 return default_result
 
             return failure(default_result.error)
@@ -162,24 +158,30 @@ class ArrowAdjustmentLookupService:
                 app_error(
                     ErrorType.POSITIONING_ERROR,
                     f"Error in base adjustment lookup: {e}",
-                    {"arrow_color": arrow_data.color, "letter": pictograph_data.letter},
+                    {"letter": letter},
                     e,
                 )
             )
 
     def _generate_lookup_keys(
-        self, arrow_data: ArrowData, pictograph_data: PictographData
+        self, pictograph_data: PictographData, motion_data: MotionData, letter: str
     ) -> Result[tuple[str, str, str], AppError]:
         """Generate all required keys for special placement lookup."""
         try:
-            motion = pictograph_data.motions[arrow_data.color]
+            # Create minimal pictograph data for legacy services that still need it
+            from domain.models.pictograph_data import PictographData
 
             ori_key = self.orientation_key_service.generate_orientation_key(
-                motion, pictograph_data
+                motion_data, pictograph_data
             )
             turns_tuple = self.turns_tuple_service.generate_turns_tuple(pictograph_data)
+
+            color = "blue"
+            from domain.models.arrow_data import ArrowData
+
+            temp_arrow = ArrowData(color=color)
             attr_key = self.attribute_key_service.get_key_from_arrow(
-                arrow_data, pictograph_data
+                temp_arrow, pictograph_data
             )
 
             return success((ori_key, turns_tuple, attr_key))
@@ -189,15 +191,15 @@ class ArrowAdjustmentLookupService:
                 app_error(
                     ErrorType.SERVICE_OPERATION_ERROR,
                     f"Failed to generate lookup keys: {e}",
-                    {"arrow_color": arrow_data.color, "letter": pictograph_data.letter},
+                    {"letter": letter},
                     e,
                 )
             )
 
     def _lookup_special_placement(
         self,
-        arrow_data: ArrowData,
-        pictograph_data: PictographData,
+        motion_data: MotionData,
+        letter: str,
         ori_key: str,
         turns_tuple: str,
         attr_key: str,
@@ -208,9 +210,16 @@ class ArrowAdjustmentLookupService:
         Returns Result[Point, AppError] instead of Optional[QPointF].
         """
         try:
+            # Create minimal data for legacy service
+            from domain.models.arrow_data import ArrowData
+            from domain.models.pictograph_data import PictographData
+
+            temp_arrow = ArrowData(color="blue")  # Default color
+            minimal_pictograph = PictographData(letter=letter)
+
             # This should return stored adjustment values if they exist
             adjustment = self.special_placement_service.get_special_adjustment(
-                arrow_data, pictograph_data
+                temp_arrow, minimal_pictograph
             )
 
             if adjustment:
@@ -227,8 +236,7 @@ class ArrowAdjustmentLookupService:
                         "ori_key": ori_key,
                         "turns_tuple": turns_tuple,
                         "attr_key": attr_key,
-                        "arrow_color": arrow_data.color,
-                        "letter": pictograph_data.letter,
+                        "letter": letter,
                     },
                 )
             )
@@ -242,7 +250,7 @@ class ArrowAdjustmentLookupService:
                         "ori_key": ori_key,
                         "turns_tuple": turns_tuple,
                         "attr_key": attr_key,
-                        "arrow_color": arrow_data.color,
+                        "letter": letter,
                     },
                     e,
                 )
@@ -250,8 +258,8 @@ class ArrowAdjustmentLookupService:
 
     def _calculate_default_adjustment(
         self,
-        arrow_data: ArrowData,
-        pictograph_data: PictographData,
+        motion_data: MotionData,
+        letter: str,
         grid_mode: str = "diamond",
     ) -> PositionResult:
         """
@@ -259,32 +267,25 @@ class ArrowAdjustmentLookupService:
 
         Returns Result[Point, AppError] instead of QPointF.
         """
-        motion = pictograph_data.motions[arrow_data.color]
-
-        if not motion:
-            return failure(
-                app_error(
-                    ErrorType.VALIDATION_ERROR,
-                    "No motion data for default calculation",
-                    {"arrow_color": arrow_data.color, "letter": pictograph_data.letter},
-                )
-            )
-
         try:
+            # Create minimal pictograph data for legacy services
+            from domain.models.pictograph_data import PictographData
+
+            minimal_pictograph = PictographData(letter=letter)
+
             # Get default placements for the grid mode and motion type
-            grid_mode = pictograph_data.grid_data.grid_mode.value
             default_placements = self.default_placement_service.all_defaults.get(
                 grid_mode, {}
-            ).get(motion.motion_type.value, {})
+            ).get(motion_data.motion_type.value, {})
 
             # Generate placement key for default lookup
             placement_key = self.placement_key_service.generate_placement_key(
-                motion, pictograph_data, default_placements, grid_mode
+                motion_data, minimal_pictograph, default_placements, grid_mode
             )
 
             # Get adjustment from default placement service
             adjustment_point = self.default_placement_service.get_default_adjustment(
-                motion, grid_mode="diamond", placement_key=placement_key
+                motion_data, grid_mode="diamond", placement_key=placement_key
             )
 
             return success(adjustment_point)
@@ -295,10 +296,11 @@ class ArrowAdjustmentLookupService:
                     ErrorType.POSITIONING_ERROR,
                     f"Error calculating default adjustment: {e}",
                     {
-                        "arrow_color": arrow_data.color,
-                        "letter": pictograph_data.letter,
+                        "letter": letter,
                         "grid_mode": grid_mode,
-                        "motion_type": motion.motion_type.value if motion else "None",
+                        "motion_type": (
+                            motion_data.motion_type.value if motion_data else "None"
+                        ),
                     },
                     e,
                 )

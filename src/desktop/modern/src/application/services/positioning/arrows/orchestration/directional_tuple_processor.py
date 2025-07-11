@@ -30,6 +30,7 @@ from core.types.coordinates import PositionResult, point_to_qpoint
 from core.types.geometry import Point
 from core.types.result import AppError, ErrorType, Result, app_error, failure, success
 from domain.models.arrow_data import ArrowData
+from domain.models.enums import Location
 from domain.models.motion_models import MotionData
 from domain.models.pictograph_data import PictographData
 
@@ -85,46 +86,37 @@ class DirectionalTupleProcessor:
     def process_directional_tuples(
         self,
         base_adjustment: Point,
-        arrow_data: ArrowData,
-        pictograph_data: PictographData,
+        motion_data: MotionData,
+        location: Location,
     ) -> PositionResult:
         """
         Process directional tuples to get final adjustment.
 
         Args:
             base_adjustment: Base adjustment point from lookup
-            arrow_data: Arrow data with motion and color information
-            pictograph_data: Pictograph context with letter and sequence data
+            motion_data: Motion data containing type, rotation, and location info
+            location: Pre-calculated arrow location
 
         Returns:
             Result containing final Point adjustment or AppError
         """
-        motion = pictograph_data.motions[arrow_data.color]
-        if not motion:
-            return failure(
-                app_error(
-                    ErrorType.VALIDATION_ERROR,
-                    "No motion data for directional tuple processing",
-                    {"arrow_color": arrow_data.color, "letter": pictograph_data.letter},
-                )
-            )
 
         try:
             # STEP 1: Generate directional tuples using base adjustment
-            tuples_result = self._generate_directional_tuples(motion, base_adjustment)
+            tuples_result = self._generate_directional_tuples(
+                motion_data, base_adjustment
+            )
             if tuples_result.is_failure():
                 return failure(tuples_result.error)
 
             directional_tuples = tuples_result.value
-            logger.info(f"Generated directional tuples: {directional_tuples}")
 
-            # STEP 2: Get quadrant index for selection
-            quadrant_result = self._get_quadrant_index(arrow_data, pictograph_data)
+            # STEP 2: Get quadrant index for selection using pre-calculated location
+            quadrant_result = self._get_quadrant_index(motion_data, location)
             if quadrant_result.is_failure():
                 return failure(quadrant_result.error)
 
             quadrant_index = quadrant_result.value
-            logger.info(f"Quadrant index: {quadrant_index}")
 
             # STEP 3: Select final adjustment from directional tuples
             selection_result = self._select_from_tuples(
@@ -134,9 +126,6 @@ class DirectionalTupleProcessor:
                 return failure(selection_result.error)
 
             final_adjustment = selection_result.value
-            logger.info(
-                f"Final adjustment: ({final_adjustment.x:.1f}, {final_adjustment.y:.1f})"
-            )
 
             return success(final_adjustment)
 
@@ -146,8 +135,10 @@ class DirectionalTupleProcessor:
                     ErrorType.POSITIONING_ERROR,
                     f"Error processing directional tuples: {e}",
                     {
-                        "arrow_color": arrow_data.color,
-                        "letter": pictograph_data.letter,
+                        "motion_type": (
+                            motion_data.motion_type.value if motion_data else "None"
+                        ),
+                        "location": str(location),
                         "base_adjustment": f"({base_adjustment.x:.1f}, {base_adjustment.y:.1f})",
                     },
                     e,
@@ -204,28 +195,17 @@ class DirectionalTupleProcessor:
             )
 
     def _get_quadrant_index(
-        self, arrow_data: ArrowData, pictograph_data: PictographData
+        self, motion_data: MotionData, location: Location
     ) -> Result[int, AppError]:
         """
-        Get quadrant index for directional tuple selection.
+        Get quadrant index for directional tuple selection using pre-calculated location.
 
         Returns Result[int, AppError] instead of int with fallback.
         """
         try:
-            # Calculate arrow location for quadrant determination
-            from ...arrows.calculation.arrow_location_calculator import (
-                ArrowLocationCalculatorService,
-            )
-
-            motion_data = pictograph_data.motions[arrow_data.color]
-            location_calculator = ArrowLocationCalculatorService()
-            arrow_location = location_calculator.calculate_location(
-                motion_data, pictograph_data
-            )
-
-            # Get quadrant index
+            # Use pre-calculated location instead of recalculating
             quadrant_index = self.quadrant_index_service.get_quadrant_index(
-                motion_data, arrow_location
+                motion_data, location
             )
 
             # Validate quadrant index
@@ -235,9 +215,10 @@ class DirectionalTupleProcessor:
                         ErrorType.POSITIONING_ERROR,
                         f"Invalid negative quadrant index: {quadrant_index}",
                         {
-                            "arrow_color": arrow_data.color,
-                            "letter": pictograph_data.letter,
-                            "arrow_location": str(arrow_location),
+                            "motion_type": (
+                                motion_data.motion_type.value if motion_data else "None"
+                            ),
+                            "location": str(location),
                         },
                     )
                 )
@@ -249,7 +230,12 @@ class DirectionalTupleProcessor:
                 app_error(
                     ErrorType.POSITIONING_ERROR,
                     f"Error calculating quadrant index: {e}",
-                    {"arrow_color": arrow_data.color, "letter": pictograph_data.letter},
+                    {
+                        "motion_type": (
+                            motion_data.motion_type.value if motion_data else "None"
+                        ),
+                        "location": str(location),
+                    },
                     e,
                 )
             )

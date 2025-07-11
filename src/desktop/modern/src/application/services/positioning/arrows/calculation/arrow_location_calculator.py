@@ -54,32 +54,36 @@ class ArrowLocationCalculatorService(IArrowLocationCalculator):
         }
 
     def calculate_location(
-        self, motion: MotionData, pictograph_data: Optional[PictographData] = None
+        self, motion_data: MotionData, pictograph_data: Optional[PictographData] = None
     ) -> Location:
         """
         Calculate arrow location based on motion type and data.
 
         Args:
             motion: Motion data containing type, start/end locations, rotation direction
-            pictograph_data: Optional pictograph context for Type 3 detection
+            pictograph_data: Optional beat data for DASH motion Type 3 detection
 
         Returns:
             Location enum value representing the calculated arrow location
 
         Raises:
-            ValueError: If dash motion requires pictograph data but none provided
+            ValueError: If dash motion requires beat data but none provided
         """
-        if motion.motion_type == MotionType.STATIC:
-            return self._calculate_static_location(motion)
-        elif motion.motion_type in [MotionType.PRO, MotionType.ANTI, MotionType.FLOAT]:
-            return self._calculate_shift_location(motion)
-        elif motion.motion_type == MotionType.DASH:
-            return self._calculate_dash_location(motion, pictograph_data)
+        if motion_data.motion_type == MotionType.STATIC:
+            return self._calculate_static_location(motion_data)
+        elif motion_data.motion_type in [
+            MotionType.PRO,
+            MotionType.ANTI,
+            MotionType.FLOAT,
+        ]:
+            return self._calculate_shift_location(motion_data)
+        elif motion_data.motion_type == MotionType.DASH:
+            return self._calculate_dash_location(motion_data, pictograph_data)
         else:
             logger.warning(
-                f"Unknown motion type: {motion.motion_type}, using start location"
+                f"Unknown motion type: {motion_data.motion_type}, using start location"
             )
-            return motion.start_loc
+            return motion_data.start_loc
 
     def _calculate_static_location(self, motion: MotionData) -> Location:
         """
@@ -95,7 +99,7 @@ class ArrowLocationCalculatorService(IArrowLocationCalculator):
         """
         return motion.start_loc
 
-    def _calculate_shift_location(self, motion: MotionData) -> Location:
+    def _calculate_shift_location(self, motion_data: MotionData) -> Location:
         """
         Calculate location for shift arrows (PRO/ANTI/FLOAT).
 
@@ -108,13 +112,13 @@ class ArrowLocationCalculatorService(IArrowLocationCalculator):
         Returns:
             Calculated location based on start/end pair mapping
         """
-        location_pair = frozenset({motion.start_loc, motion.end_loc})
+        location_pair = frozenset({motion_data.start_loc, motion_data.end_loc})
         calculated_location = self._shift_direction_pairs.get(
-            location_pair, motion.start_loc
+            location_pair, motion_data.start_loc
         )
 
         logger.debug(
-            f"Shift location calculation: {motion.start_loc} -> {motion.end_loc} = {calculated_location}"
+            f"Shift location calculation: {motion_data.start_loc} -> {motion_data.end_loc} = {calculated_location}"
         )
 
         return calculated_location
@@ -125,34 +129,28 @@ class ArrowLocationCalculatorService(IArrowLocationCalculator):
         """
         Calculate location for dash arrows.
 
-        Dash arrows use specialized logic that may require pictograph context
+        Dash arrows use specialized logic that may require beat data
         for Type 3 detection and other special cases.
 
         Args:
             motion: Motion data with DASH type
-            pictograph_data: Pictograph context for Type 3 detection
+            beat_data: Beat data for Type 3 detection
 
         Returns:
             Calculated dash location
 
         Raises:
-            ValueError: If pictograph data is required but not provided
+            ValueError: If beat data is required but not provided
         """
         if pictograph_data is None:
-            logger.error("Dash location calculation requires pictograph context")
-            raise ValueError(
-                "Pictograph data is required for dash location calculation"
+            logger.warning(
+                "No beat data provided for dash location calculation, using start location"
             )
+            return motion.start_loc
 
-        beat_data = self.extract_beat_data_from_pictograph(pictograph_data)
-        if beat_data is None:
-            logger.error("Could not extract beat data from pictograph")
-            raise ValueError("Beat data could not be extracted from pictograph")
+        is_blue_arrow = self.is_blue_arrow_motion(motion, pictograph_data)
 
-        # Determine which arrow (blue/red) this motion belongs to
-        is_blue_arrow = self.is_blue_arrow_motion(motion, beat_data)
-        # Use the comprehensive dash location calculation
-        return self.dash_location_service.calculate_dash_location_from_beat(
+        return self.dash_location_service.calculate_dash_location_from_pictograph_data(
             pictograph_data, is_blue_arrow
         )
 
@@ -230,12 +228,14 @@ class ArrowLocationCalculatorService(IArrowLocationCalculator):
             pictograph_data=pictograph_data,
         )
 
-    def is_blue_arrow_motion(self, motion: MotionData, beat_data: BeatData) -> bool:
+    def is_blue_arrow_motion(
+        self, motion: MotionData, pictograph_data: PictographData
+    ) -> bool:
         """Determine if the given motion belongs to the blue arrow."""
         # Compare the motion with blue and red motions in beat data
-        if beat_data.blue_motion == motion:
+        if pictograph_data.motions.get("blue") == motion:
             return True
-        if beat_data.red_motion == motion:
+        if pictograph_data.motions.get("red") == motion:
             return False
         # Fallback: if we can't determine, assume blue
         logger.warning("Could not determine arrow color for motion, assuming blue")

@@ -64,18 +64,10 @@ class ArrowData:
             else self.arrow_type
         )
 
-        # Handle motion_data being either MotionData object or dict
-        motion_data_value = None
-        if self.motion_data:
-            if hasattr(self.motion_data, "to_dict"):
-                motion_data_value = self.motion_data.to_dict()
-            else:
-                motion_data_value = self.motion_data  # Already a dict
-
+        # Note: motion_data is deprecated - motion data now lives in PictographData.motions
         return {
             "id": self.id,
             "arrow_type": arrow_type_value,
-            "motion_data": motion_data_value,
             "color": self.color,
             "turns": self.turns,
             "is_mirrored": self.is_mirrored,

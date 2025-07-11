@@ -54,12 +54,9 @@ class VisibilityStateManager:
             from application.services.pictograph.global_visibility_service import (
                 PictographVisibilityManager,
             )
-            from application.services.pictograph.global_visibility_service_singleton import (
-                get_global_visibility_service,
-            )
 
             try:
-                from core.application.application_factory import get_container
+                from core.dependency_injection.di_container import get_container
 
                 container = get_container()
                 if container:
@@ -67,8 +64,8 @@ class VisibilityStateManager:
             except Exception:
                 pass
 
-            # Fallback to singleton pattern
-            return get_global_visibility_service()
+            # Fallback to creating new instance
+            return PictographVisibilityManager()
 
         except Exception as e:
             logger.warning(f"Could not get GlobalVisibilityService: {e}")

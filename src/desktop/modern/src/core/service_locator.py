@@ -41,11 +41,9 @@ def initialize_services():
     try:
         # Initialize event bus
         _event_bus = TypeSafeEventBus()
-        logger.info("✅ Event bus initialized")
 
         # Initialize command processor
         _command_processor = CommandProcessor(_event_bus)
-        logger.info("✅ Command processor initialized")
 
         # Initialize sequence state manager (import here to avoid circular imports)
         from application.services.sequence.sequence_state_tracker import (
@@ -53,14 +51,12 @@ def initialize_services():
         )
 
         _sequence_state_manager = SequenceStateTracker(_event_bus, _command_processor)
-        logger.info("✅ Sequence state manager initialized")
 
         # Initialize event logger for debugging
         try:
             from core.debugging.event_logger import setup_event_logger
 
             event_logger = setup_event_logger(_event_bus)
-            logger.info("✅ Event logger initialized")
 
             # Optionally enable event logging for debugging
             # Uncomment the next line to enable detailed event logging
@@ -68,7 +64,6 @@ def initialize_services():
         except Exception as e:
             logger.warning(f"⚠️ Could not initialize event logger: {e}")
 
-        logger.info("🎯 All core services initialized successfully")
         return True
 
     except Exception as e:

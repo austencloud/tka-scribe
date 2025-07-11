@@ -36,17 +36,17 @@ class DashLocationCalculator:
         """Initialize the dash location service with pictograph analysis."""
         self.analysis_service = PictographAnalyzer()
 
-    def calculate_dash_location_from_beat(
+    def calculate_dash_location_from_pictograph_data(
         self, pictograph_data: PictographData, is_blue_arrow: bool
     ) -> Location:
         """
-        High-level method to calculate dash location from beat data.
+        High-level method to calculate dash location from pictograph data.
 
-        This method automatically extracts all necessary parameters from the beat data
+        This method automatically extracts all necessary parameters from the pictograph data
         using the pictograph analysis service, then calls the detailed calculation method.
 
         Args:
-            beat_data: The beat data containing motion information
+            pictograph_data: The pictograph data containing motion information
             is_blue_arrow: True if calculating for blue arrow, False for red arrow
 
         Returns:
@@ -71,19 +71,9 @@ class DashLocationCalculator:
         # Use analysis service to extract all the parameters
         letter_info = self.analysis_service.get_letter_info(pictograph_data)
 
-        # Extract beat data for grid info analysis (get_grid_info expects BeatData)
-        from application.services.positioning.arrows.calculation.arrow_location_calculator import (
-            ArrowLocationCalculatorService,
-        )
-
-        location_calculator = ArrowLocationCalculatorService()
-        beat_data = location_calculator.extract_beat_data_from_pictograph(
-            pictograph_data
-        )
-
         grid_info = (
-            self.analysis_service.get_grid_info(beat_data)
-            if beat_data
+            self.analysis_service.get_grid_info(pictograph_data)
+            if pictograph_data
             else {"grid_mode": "diamond", "shift_location": None}
         )
         arrow_color = self.analysis_service.get_arrow_color(is_blue_arrow)

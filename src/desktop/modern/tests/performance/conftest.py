@@ -5,17 +5,17 @@ Pytest configuration and fixtures for performance testing.
 Provides test setup, teardown, and common utilities for performance tests.
 """
 
-import pytest
-import tempfile
 import shutil
+import tempfile
 from pathlib import Path
+from typing import Any, Dict, Generator
 from unittest.mock import Mock, patch
-from typing import Generator, Dict, Any
 
+import pytest
 from core.performance.config import PerformanceConfig, reset_performance_config
+from core.performance.memory_tracker import reset_memory_tracker
 from core.performance.profiler import reset_profiler
 from core.performance.qt_profiler import reset_qt_profiler
-from core.performance.memory_tracker import reset_memory_tracker
 from infrastructure.performance.storage import reset_performance_storage
 
 
@@ -53,10 +53,9 @@ def temp_performance_storage() -> Generator[Path, None, None]:
 @pytest.fixture(scope="function")
 def isolated_profiler(performance_config, temp_performance_storage):
     """Provide an isolated profiler instance for testing."""
-    from core.performance.profiler import AdvancedProfiler
-
     # Update config to use temp storage (create new config with updated storage)
     from core.performance.config import PerformanceConfig
+    from core.performance.profiler import AdvancedProfiler
 
     updated_storage = performance_config.storage.with_database_path(
         str(temp_performance_storage / "test_performance.db")
@@ -281,6 +280,7 @@ def performance_data_generator():
     """Generate test performance data."""
     import random
     from datetime import datetime, timedelta
+
     from core.performance.metrics import FunctionMetrics, SystemMetrics
 
     class PerformanceDataGenerator:

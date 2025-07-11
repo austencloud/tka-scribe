@@ -241,7 +241,6 @@ class OptionPickerOrchestrator(QObject):
                 self.progress_callback("Initialization complete", 1.0)
 
             self._initialized = True
-            logger.info("Option picker orchestrator initialized successfully")
 
         except Exception as e:
             logger.error(f"Failed to initialize option picker orchestrator: {e}")

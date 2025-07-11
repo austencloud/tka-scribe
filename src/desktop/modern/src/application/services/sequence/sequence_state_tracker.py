@@ -55,8 +55,6 @@ class SequenceStateTracker(QObject):
         # Setup event subscriptions
         self._setup_event_subscriptions()
 
-        logger.info("🎯 SequenceStateManager initialized")
-
     def _setup_event_subscriptions(self):
         """Subscribe to events that change state"""
         try:
@@ -64,8 +62,6 @@ class SequenceStateTracker(QObject):
             self.event_bus.subscribe("command.executed", self._on_command_executed)
             self.event_bus.subscribe("command.undone", self._on_command_undone)
             self.event_bus.subscribe("command.redone", self._on_command_redone)
-
-            logger.info("✅ SequenceStateManager event subscriptions setup")
 
         except Exception as e:
             logger.error(f"❌ Failed to setup event subscriptions: {e}")

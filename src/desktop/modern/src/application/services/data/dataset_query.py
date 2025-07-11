@@ -6,7 +6,7 @@ Focused solely on data retrieval and filtering logic.
 """
 
 import logging
-from typing import List, Optional
+from typing import List, Optional, Tuple
 
 import pandas as pd
 from domain.models.beat_data import BeatData
@@ -36,18 +36,18 @@ class DatasetQuery:
         self.pictograph_factory = PictographFactory()
         self.position_resolver = PositionResolver()
 
-    def get_start_position_beat_data(
+    def get_start_position_pictograph(
         self, position_key: str, grid_mode: str = "diamond"
     ) -> Optional[BeatData]:
         """
-        Get the actual pictograph data for a start position as BeatData.
+        Get the actual pictograph data for a start position as BeatData with embedded pictograph.
 
         Args:
             position_key: Position key like "alpha1_alpha1", "beta5_beta5"
             grid_mode: "diamond" or "box"
 
         Returns:
-            BeatData object with real dataset information, or None if not found
+            BeatData object with embedded pictograph data, or None if not found
         """
         try:
             # Validate position key format
@@ -70,26 +70,23 @@ class DatasetQuery:
             if matching_entries.empty:
                 return None
 
-            # Take the first matching entry and convert to BeatData
+            # Take the first matching entry and convert to BeatData with embedded pictograph
             entry = matching_entries.iloc[0]
             pictograph_data = self.pictograph_factory.create_pictograph_data_from_entry(
                 entry, grid_mode
             )
-            return self.pictograph_factory.convert_pictograph_to_beat_data(
-                pictograph_data
-            )
+
+            # Use BeatFactory to create start position beat with embedded pictograph
+            from application.services.sequence.beat_factory import BeatFactory
+
+            beat_data = BeatFactory.create_start_position_beat(pictograph_data)
+            return beat_data
 
         except Exception as e:
             # Only log actual unexpected errors, not validation failures
             if "split" not in str(e) and "NoneType" not in str(e):
                 logger.error(f"Error getting start position {position_key}: {e}")
             return None
-
-    def get_start_position_pictograph(
-        self, position_key: str, grid_mode: str = "diamond"
-    ) -> Optional[BeatData]:
-        """Alias for get_start_position_beat_data for backward compatibility."""
-        return self.get_start_position_beat_data(position_key, grid_mode)
 
     def get_start_position_pictograph_data(
         self, position_key: str, grid_mode: str = "diamond"

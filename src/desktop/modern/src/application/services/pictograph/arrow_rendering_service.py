@@ -163,37 +163,20 @@ class ArrowRenderingService(IArrowRenderingService):
         Returns:
             Tuple[float, float, float]: (x, y, rotation) position data
         """
-        logger.info(
-            f"🎯 [ARROW_RENDERING_SERVICE] calculate_arrow_position called for {arrow_data.color} arrow"
-        )
-        logger.info(
-            f"🎯 [ARROW_RENDERING_SERVICE] positioning_orchestrator available: {positioning_orchestrator is not None}"
-        )
-        logger.info(
-            f"🎯 [ARROW_RENDERING_SERVICE] pictograph_data available: {pictograph_data is not None}"
-        )
 
         # Use positioning orchestrator if available
         if positioning_orchestrator and pictograph_data:
             try:
-                logger.info(
-                    f"🎯 [ARROW_RENDERING_SERVICE] Calling positioning orchestrator..."
-                )
 
                 # Extract motion data for this arrow
                 motion_data = None
                 if hasattr(pictograph_data, "motions") and pictograph_data.motions:
                     motion_data = pictograph_data.motions.get(arrow_data.color)
-                    logger.info(
-                        f"🎯 [ARROW_RENDERING_SERVICE] Found motion data for {arrow_data.color}: {motion_data is not None}"
-                    )
 
                 result = positioning_orchestrator.calculate_arrow_position(
                     arrow_data, pictograph_data, motion_data
                 )
-                logger.info(
-                    f"🎯 [ARROW_RENDERING_SERVICE] Orchestrator returned: {result}"
-                )
+
                 return result
             except Exception as e:
                 logger.error(

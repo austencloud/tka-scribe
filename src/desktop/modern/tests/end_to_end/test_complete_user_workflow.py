@@ -18,11 +18,12 @@ from pathlib import Path
 # Add the src directory to Python path
 sys.path.insert(0, str(Path(__file__).parent.parent.parent / "src"))
 
-from application.services.sequence.sequence_persister import SequencePersister
 from core.application.application_factory import ApplicationFactory
 from PyQt6.QtCore import Qt, QTimer
 from PyQt6.QtTest import QTest
 from PyQt6.QtWidgets import QApplication, QPushButton
+
+from application.services.sequence.sequence_persister import SequencePersister
 
 
 class CompleteUserWorkflowTester:
@@ -306,11 +307,13 @@ class CompleteUserWorkflowTester:
                     print(f"   Letter: {beat_data.letter}")
                     print(f"   Beat Number: {beat_data.beat_number}")
                     print(f"   Duration: {beat_data.duration}")
-                    if beat_data.glyph_data:
+                    if beat_data.pictograph_data.glyph_data:
                         print(
-                            f"   Start Position: {beat_data.glyph_data.start_position}"
+                            f"   Start Position: {beat_data.pictograph_data.glyph_data.start_position}"
                         )
-                        print(f"   End Position: {beat_data.glyph_data.end_position}")
+                        print(
+                            f"   End Position: {beat_data.pictograph_data.glyph_data.end_position}"
+                        )
                     print(
                         f"   Is Start Position: {beat_data.metadata.get('is_start_position', False)}"
                     )
@@ -328,9 +331,10 @@ class CompleteUserWorkflowTester:
                         == expected_is_start
                     )
 
-                    if beat_data.glyph_data:
+                    if beat_data.pictograph_data.glyph_data:
                         start_pos_match = (
-                            beat_data.glyph_data.start_position == expected_start_pos
+                            beat_data.pictograph_data.glyph_data.start_position
+                            == expected_start_pos
                         )
                     else:
                         start_pos_match = False
@@ -344,7 +348,7 @@ class CompleteUserWorkflowTester:
                         f"   Beat number match: {beat_num_match} (expected: {expected_beat_number}, actual: {beat_data.beat_number})"
                     )
                     print(
-                        f"   Start position match: {start_pos_match} (expected: {expected_start_pos}, actual: {beat_data.glyph_data.start_position if beat_data.glyph_data else 'None'})"
+                        f"   Start position match: {start_pos_match} (expected: {expected_start_pos}, actual: {beat_data.pictograph_data.glyph_data.start_position if beat_data.pictograph_data.glyph_data else 'None'})"
                     )
                     print(
                         f"   Is start position match: {is_start_match} (expected: {expected_is_start}, actual: {beat_data.metadata.get('is_start_position', False)})"

@@ -8,11 +8,13 @@ Responsible for setting, updating, and managing start positions in sequences.
 from typing import Callable, Optional
 
 from application.services.data.sequence_data_converter import SequenceDataConverter
-from application.services.sequence.sequence_persister import SequencePersister
 from domain.models.beat_data import BeatData
 from domain.models.pictograph_data import PictographData
 from domain.models.sequence_data import SequenceData
 from PyQt6.QtCore import QObject, pyqtSignal
+
+from application.services.sequence.beat_factory import BeatFactory
+from application.services.sequence.sequence_persister import SequencePersister
 
 
 class SequenceStartPositionManager(QObject):
@@ -33,19 +35,18 @@ class SequenceStartPositionManager(QObject):
         self,
         workbench_getter: Optional[Callable[[], object]] = None,
         workbench_setter: Optional[Callable[[SequenceData], None]] = None,
-        data_converter: SequenceDataConverter = None,
     ):
         super().__init__()
         self.workbench_getter = workbench_getter
         self.workbench_setter = workbench_setter
-        self.data_converter = data_converter
+        self.data_converter = SequenceDataConverter()
         self.persistence_service = SequencePersister()
 
     def set_start_position(self, start_position_data):
         """Set the start position - accepts both PictographData and BeatData"""
-        # Convert PictographData to BeatData if needed for sequence operations
+        # Create start position beat data using factory
         if isinstance(start_position_data, PictographData):
-            beat_data = self._convert_pictograph_to_beat_data(start_position_data)
+            beat_data = BeatFactory.create_start_position_beat(start_position_data)
         else:
             beat_data = start_position_data
 
@@ -245,82 +246,3 @@ class SequenceStartPositionManager(QObject):
         except Exception as e:
             print(f"❌ Error checking start position: {e}")
         return False
-
-    def _convert_pictograph_to_beat_data(
-        self, pictograph_data: PictographData
-    ) -> BeatData:
-        """Convert PictographData to BeatData for sequence operations."""
-        from domain.models.glyph_models import GlyphData
-        from domain.models.motion_models import MotionData
-
-        # Extract motion data from arrows
-        blue_motion = None
-        red_motion = None
-
-        if pictograph_data.arrows:
-            if "blue" in pictograph_data.arrows:
-                arrow = pictograph_data.arrows["blue"]
-                from domain.models.enums import (
-                    Location,
-                    MotionType,
-                    Orientation,
-                    RotationDirection,
-                )
-
-                blue_motion = MotionData(
-                    motion_type=getattr(arrow, "motion_type", MotionType.STATIC),
-                    prop_rot_dir=RotationDirection.CLOCKWISE,  # Default for start positions
-                    start_loc=getattr(arrow, "location", Location.NORTH),
-                    start_ori=getattr(arrow, "orientation", Orientation.IN),
-                    end_loc=getattr(
-                        arrow, "location", Location.NORTH
-                    ),  # For start positions, end = start
-                    end_ori=getattr(arrow, "orientation", Orientation.IN),
-                    turns=0.0,  # Start positions have no turns
-                )
-
-            if "red" in pictograph_data.arrows:
-                arrow = pictograph_data.arrows["red"]
-                from domain.models.enums import (
-                    Location,
-                    MotionType,
-                    Orientation,
-                    RotationDirection,
-                )
-
-                red_motion = MotionData(
-                    motion_type=getattr(arrow, "motion_type", MotionType.STATIC),
-                    prop_rot_dir=RotationDirection.CLOCKWISE,  # Default for start positions
-                    start_loc=getattr(arrow, "location", Location.NORTH),
-                    start_ori=getattr(arrow, "orientation", Orientation.IN),
-                    end_loc=getattr(
-                        arrow, "location", Location.NORTH
-                    ),  # For start positions, end = start
-                    end_ori=getattr(arrow, "orientation", Orientation.IN),
-                    turns=0.0,  # Start positions have no turns
-                )
-
-        # Create glyph data for start position - always show all elements for start positions
-        glyph_data = GlyphData(
-            start_position=pictograph_data.start_position,
-            end_position=pictograph_data.end_position,
-            # For start positions, always show key elements regardless of letter type
-            show_tka=True,  # Always show the letter
-            show_positions=True,  # Always show position indicators for start positions
-            show_vtg=True,  # Show VTG if available
-            show_elemental=True,  # Show elemental if available
-        )
-
-        # Ensure metadata includes start position flag
-        metadata = pictograph_data.metadata or {}
-        metadata["is_start_position"] = True
-
-        return BeatData(
-            letter=pictograph_data.letter,
-            beat_number=0,  # Start position is beat 0
-            duration=1.0,
-            pictograph_data=pictograph_data,  # NEW: Use pictograph data with motions
-            glyph_data=glyph_data,
-            is_blank=pictograph_data.is_blank,
-            metadata=metadata,
-        )

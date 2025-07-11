@@ -83,9 +83,7 @@ class ApplicationOrchestrator(IApplicationOrchestrator):
                     from core.interfaces.session_services import ISessionStateTracker
 
                     session_service = container.resolve(ISessionStateTracker)
-                    print(
-                        f"✅ [ORCHESTRATOR] Session service resolved for lifecycle manager"
-                    )
+
                 except Exception as e:
                     print(f"⚠️ [ORCHESTRATOR] Could not resolve session service: {e}")
 
@@ -105,7 +103,6 @@ class ApplicationOrchestrator(IApplicationOrchestrator):
         target_screen=None,
         parallel_mode=False,
         parallel_geometry=None,
-        enable_api=True,
     ) -> QTabWidget:
         """Initialize complete application using orchestrated services."""
         # Create progress callback
@@ -151,9 +148,6 @@ class ApplicationOrchestrator(IApplicationOrchestrator):
         if progress_callback:
             progress_callback(85, "Restoring session state...")
 
-        print(
-            "🔍 [ORCHESTRATOR] UI setup complete, triggering deferred session restoration..."
-        )
         self.lifecycle_manager.trigger_deferred_session_restoration()
 
         # Step 4: Setup background
@@ -164,30 +158,10 @@ class ApplicationOrchestrator(IApplicationOrchestrator):
             main_window, self.container, progress_callback
         )
 
-        # Step 5: Start API server in background if enabled
-        if enable_api:
-            if progress_callback:
-                progress_callback(95, "Initializing API server...")
-            self._start_api_server_background()
-
         if progress_callback:
             progress_callback(100, "Application ready!")
 
         return self.tab_widget
-
-    def _start_api_server_background(self) -> None:
-        """Start API server in background to avoid blocking startup."""
-
-        def start_api():
-            try:
-                print("🌐 Starting API server in background...")
-                self.lifecycle_manager.start_api_server(True)
-                print("✅ API server started successfully in background")
-            except Exception as e:
-                print(f"⚠️ Failed to start API server in background: {e}")
-
-        # Start API server after a short delay to allow UI to complete
-        QTimer.singleShot(100, start_api)
 
     def handle_window_resize(self, main_window: QMainWindow) -> None:
         """Handle main window resize events."""
@@ -262,10 +236,6 @@ class ApplicationOrchestrator(IApplicationOrchestrator):
 
             return progress_callback
         return None
-
-    def restart_api_server(self) -> bool:
-        """Restart the API server."""
-        return self.lifecycle_manager.start_api_server(enable_api=True)
 
     def get_orchestrator_info(self) -> dict:
         """Get information about the orchestrator and its services."""

@@ -75,8 +75,13 @@ class PictographComponent(BorderedPictographMixin, QGraphicsView):
             self._fit_view()
 
         # Update border colors based on letter type if available
-        if beat_data.glyph_data and beat_data.glyph_data.letter_type:
-            self.update_border_colors_for_letter_type(beat_data.glyph_data.letter_type)
+        if (
+            beat_data.pictograph_data.glyph_data
+            and beat_data.pictograph_data.glyph_data.letter_type
+        ):
+            self.update_border_colors_for_letter_type(
+                beat_data.pictograph_data.glyph_data.letter_type
+            )
 
         # VISIBILITY FIX: Show component when updated with data
         if not self.isVisible():

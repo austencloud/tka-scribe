@@ -19,12 +19,14 @@ from typing import Callable, List, Optional
 from application.services.option_picker.option_orientation_updater import (
     OptionOrientationUpdater,
 )
-from application.services.sequence.sequence_persister import SequencePersister
-from application.services.sequence.sequence_transformer import SequenceTransformer
-from application.services.sequence.sequence_validator import SequenceValidator
 from domain.models.beat_data import BeatData
 from domain.models.pictograph_data import PictographData
 from domain.models.sequence_data import SequenceData
+
+from application.services.sequence.beat_factory import BeatFactory
+from application.services.sequence.sequence_persister import SequencePersister
+from application.services.sequence.sequence_transformer import SequenceTransformer
+from application.services.sequence.sequence_validator import SequenceValidator
 
 logger = logging.getLogger(__name__)
 
@@ -111,12 +113,18 @@ class SequenceOrchestrator:
     # =============================================================================
 
     def add_pictograph_to_sequence(self, pictograph_data: PictographData):
-        """Add pictograph to sequence by converting to beat data first."""
+        """Add pictograph to sequence by creating beat with embedded pictograph."""
         try:
             logger.debug(f"Adding pictograph {pictograph_data.letter} to sequence")
 
-            # Convert PictographData to BeatData
-            beat_data = self._convert_pictograph_to_beat_data(pictograph_data)
+            # Calculate beat number
+            current_sequence = self._get_current_sequence()
+            beat_number = self._calculate_next_beat_number(current_sequence)
+
+            # Create beat data with embedded pictograph using factory
+            beat_data = BeatFactory.create_from_pictograph(
+                pictograph_data=pictograph_data, beat_number=beat_number
+            )
 
             # Use existing beat addition logic
             self.add_beat_to_sequence(beat_data)
@@ -128,6 +136,30 @@ class SequenceOrchestrator:
         except Exception as e:
             logger.error(f"Error adding pictograph to sequence: {e}")
             raise
+
+    def _calculate_next_beat_number(
+        self, current_sequence: Optional[SequenceData]
+    ) -> int:
+        """Calculate the next beat number for a new beat."""
+        if current_sequence and current_sequence.beats:
+            # Check if first beat is a start position (beat_number=0)
+            has_start_position = (
+                current_sequence.beats[0].metadata.get("is_start_position", False)
+                and current_sequence.beats[0].beat_number == 0
+            )
+
+            if has_start_position:
+                # Regular beats start from 1, so beat_number = number of non-start-position beats + 1
+                regular_beats_count = len(current_sequence.beats) - 1
+                beat_number = regular_beats_count + 1
+            else:
+                # No start position, so beat_number = total beats + 1
+                beat_number = len(current_sequence.beats) + 1
+        else:
+            # Empty sequence, first beat is beat 1
+            beat_number = 1
+
+        return beat_number
 
     def add_beat_to_sequence(self, beat_data: BeatData):
         """Add a beat to the current sequence"""
@@ -441,8 +473,6 @@ class SequenceOrchestrator:
                 self.persistence_service.save_current_sequence(sequence)
                 logger.debug("Cleared start position from persistence")
 
-            logger.info("Start position cleared successfully")
-
         except Exception as e:
             logger.error(f"Failed to clear start position: {e}")
             raise
@@ -754,147 +784,13 @@ class SequenceOrchestrator:
                 return pattern
         return word
 
-    def _convert_pictograph_to_beat_data(
-        self, pictograph_data: PictographData
-    ) -> BeatData:
-        """Convert PictographData to BeatData for sequence operations"""
-        try:
-            # Extract motion data from arrows
-            blue_motion = None
-            red_motion = None
-
-            if hasattr(pictograph_data, "arrows") and pictograph_data.arrows:
-                if "blue" in pictograph_data.arrows:
-                    blue_motion = pictograph_data.motions["blue"]
-                if "red" in pictograph_data.arrows:
-                    red_motion = pictograph_data.motions["red"]
-
-            # Get current sequence to determine beat number
-            current_sequence = self._get_current_sequence()
-            beat_number = 1
-
-            if current_sequence and current_sequence.beats:
-                # Check if first beat is a start position
-                has_start_position = (
-                    current_sequence.beats[0].metadata.get("is_start_position", False)
-                    and current_sequence.beats[0].beat_number == 0
-                )
-
-                if has_start_position:
-                    beat_number = len(current_sequence.beats)  # Exclude start position
-                else:
-                    beat_number = len(current_sequence.beats) + 1
-
-            # Create metadata for regular beat
-            beat_metadata = {
-                "start_position": pictograph_data.start_position,
-                "end_position": pictograph_data.end_position,
-                "converted_from_pictograph": True,
-            }
-
-            if pictograph_data.metadata:
-                for key, value in pictograph_data.metadata.items():
-                    if key not in ["is_start_position"]:
-                        beat_metadata[key] = value
-
-            # Create BeatData
-            beat_data = BeatData(
-                beat_number=beat_number,
-                letter=pictograph_data.letter or "?",
-                pictograph_data=pictograph_data,  # NEW: Use pictograph data with motions
-                glyph_data=pictograph_data.glyph_data,
-                is_blank=pictograph_data.is_blank,
-                metadata=beat_metadata,
-            )
-
-            return beat_data
-
-        except Exception as e:
-            logger.error(f"Error converting pictograph to beat data: {e}")
-            # Return minimal beat data as fallback
-            return BeatData(
-                beat_number=1,
-                letter="?",
-                is_blank=True,
-                metadata={"conversion_error": str(e)},
-            )
-
     def _convert_pictograph_to_start_position_beat_data(
         self, pictograph_data: PictographData
     ) -> BeatData:
-        """Convert PictographData to BeatData for start position operations"""
+        """Convert PictographData to BeatData for start position operations using BeatFactory"""
         try:
-            # Extract motion data from arrows
-            blue_motion = None
-            red_motion = None
-
-            if pictograph_data.arrows:
-                if "blue" in pictograph_data.arrows:
-                    arrow = pictograph_data.arrows["blue"]
-                    from domain.models.enums import (
-                        Location,
-                        MotionType,
-                        Orientation,
-                        RotationDirection,
-                    )
-                    from domain.models.motion_models import MotionData
-
-                    blue_motion = MotionData(
-                        motion_type=getattr(arrow, "motion_type", MotionType.STATIC),
-                        prop_rot_dir=RotationDirection.CLOCKWISE,
-                        start_loc=getattr(arrow, "location", Location.NORTH),
-                        start_ori=getattr(arrow, "orientation", Orientation.IN),
-                        end_loc=getattr(arrow, "location", Location.NORTH),
-                        end_ori=getattr(arrow, "orientation", Orientation.IN),
-                        turns=0.0,
-                    )
-
-                if "red" in pictograph_data.arrows:
-                    arrow = pictograph_data.arrows["red"]
-                    from domain.models.enums import (
-                        Location,
-                        MotionType,
-                        Orientation,
-                        RotationDirection,
-                    )
-                    from domain.models.motion_models import MotionData
-
-                    red_motion = MotionData(
-                        motion_type=getattr(arrow, "motion_type", MotionType.STATIC),
-                        prop_rot_dir=RotationDirection.CLOCKWISE,
-                        start_loc=getattr(arrow, "location", Location.NORTH),
-                        start_ori=getattr(arrow, "orientation", Orientation.IN),
-                        end_loc=getattr(arrow, "location", Location.NORTH),
-                        end_ori=getattr(arrow, "orientation", Orientation.IN),
-                        turns=0.0,
-                    )
-
-            # Create glyph data for start position
-            from domain.models.glyph_models import GlyphData
-
-            glyph_data = GlyphData(
-                start_position=pictograph_data.start_position,
-                end_position=pictograph_data.end_position,
-                show_tka=True,
-                show_positions=True,
-                show_vtg=True,
-                show_elemental=True,
-            )
-
-            # Ensure metadata includes start position flag
-            metadata = pictograph_data.metadata or {}
-            metadata["is_start_position"] = True
-
-            return BeatData(
-                letter=pictograph_data.letter,
-                beat_number=0,  # Start position is beat 0
-                duration=1.0,
-                pictograph_data=pictograph_data,  # NEW: Use pictograph data with motions
-                glyph_data=glyph_data,
-                is_blank=pictograph_data.is_blank,
-                metadata=metadata,
-            )
-
+            # Use BeatFactory for consistent start position beat creation
+            return BeatFactory.create_start_position_beat(pictograph_data)
         except Exception as e:
             logger.error(
                 f"Error converting pictograph to start position beat data: {e}"

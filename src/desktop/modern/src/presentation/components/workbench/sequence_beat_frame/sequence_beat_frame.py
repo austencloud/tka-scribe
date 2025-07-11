@@ -141,13 +141,8 @@ class SequenceBeatFrame(QScrollArea):
         )
         self._selection_manager.selection_changed.connect(self._on_selection_changed)
 
-        # CRITICAL: Register beat views with selection manager for click handling
         self._selection_manager.register_beat_views(self._beat_views)
-        print(
-            f"✅ Registered {len(self._beat_views)} beat views with selection manager"
-        )
 
-        # Setup start position view
         self._setup_start_position()
 
     def _on_state_sequence_updated(self, sequence: Optional[SequenceData]):
@@ -219,7 +214,6 @@ class SequenceBeatFrame(QScrollArea):
                 state_manager.start_position_updated.connect(
                     self._on_state_start_position_updated
                 )
-                print("✅ SequenceBeatFrame subscribed to SequenceStateManager")
             else:
                 print("⚠️ SequenceStateManager not available")
 
@@ -285,7 +279,6 @@ class SequenceBeatFrame(QScrollArea):
         self._update_layout()
         # Removed repetitive debug logs
         self._update_display()
-        print("✅ [SEQUENCE_BEAT_FRAME] set_sequence() completed")
 
     def get_sequence(self) -> Optional[SequenceData]:
         """Get the current sequence"""
@@ -311,7 +304,6 @@ class SequenceBeatFrame(QScrollArea):
 
     def initialize_cleared_start_position(self):
         """Initialize start position view in cleared state (shows START text only)"""
-        print("🔧 [SEQUENCE_BEAT_FRAME] Initializing cleared start position view")
 
         # CRITICAL FIX: Ensure the beat frame container itself is visible
         self.show()
@@ -326,9 +318,7 @@ class SequenceBeatFrame(QScrollArea):
 
         if self._start_position_view:
             self._start_position_view.clear_position_data()
-            print(
-                f"✅ [SEQUENCE_BEAT_FRAME] Start position view cleared and initialized: visible={self._start_position_view.isVisible()}, container_visible={self._container_widget.isVisible() if self._container_widget else 'None'}, scroll_area_visible={scroll_area_visible}, parent_visible={parent_visible}"
-            )
+
         else:
             print("❌ [SEQUENCE_BEAT_FRAME] No start position view to initialize!")
 
@@ -406,18 +396,13 @@ class SequenceBeatFrame(QScrollArea):
 
     def _update_display(self):
         """Update all display elements like legacy (no info labels)"""
-        print("🔍 [SEQUENCE_BEAT_FRAME] _update_display() called")
 
         # Always ensure start position is visible at (0,0) - Legacy behavior
         if self._start_position_view:
             self._start_position_view.show()
             self._start_position_view.setVisible(True)
-            print(
-                f"✅ [SEQUENCE_BEAT_FRAME] Start position view shown: visible={self._start_position_view.isVisible()}"
-            )
 
         if not self._current_sequence:
-            print("🔍 [SEQUENCE_BEAT_FRAME] No current sequence - hiding beat numbers")
             # No sequence beats to display, but start position remains visible
             # Hide beat numbers on all beat views when no sequence
             for beat_view in self._beat_views:
@@ -438,12 +423,6 @@ class SequenceBeatFrame(QScrollArea):
                 # Removed repetitive debug logs
             else:
                 print(f"⚠️ [SEQUENCE_BEAT_FRAME] No beat view available for beat {i}")
-
-        print("✅ [SEQUENCE_BEAT_FRAME] _update_display() completed")
-
-        # Start position is always separate from sequence beats (Legacy behavior)
-        # Start position data is managed independently via set_start_position()
-        # Start position always shows START text overlay (handled in StartPositionView)
 
     # Event handlers
     def _on_beat_clicked(self, beat_index: int):

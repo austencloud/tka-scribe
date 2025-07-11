@@ -184,80 +184,19 @@ class PictographFactory:
         self, pictograph_data: PictographData, beat_number: int = 1
     ) -> BeatData:
         """
-        Convert PictographData to BeatData for backward compatibility.
+        Convert PictographData to BeatData using BeatFactory.
 
         Args:
             pictograph_data: The pictograph data to convert
             beat_number: Beat number to assign (default: 1)
 
         Returns:
-            BeatData object with motion data extracted from pictograph
+            BeatData object with embedded pictograph data
         """
-        # Extract motion data from motions dictionary
-        blue_motion = None
-        red_motion = None
+        # Use BeatFactory for consistent beat creation with embedded pictograph
+        from application.services.sequence.beat_factory import BeatFactory
 
-        if "blue" in pictograph_data.motions:
-            blue_motion = pictograph_data.motions["blue"]
-        if "red" in pictograph_data.motions:
-            red_motion = pictograph_data.motions["red"]
-
-        # Create BeatData with extracted information
-        # Note: start_position and end_position should be in glyph_data, not as direct BeatData parameters
-        return BeatData(
-            beat_number=beat_number,
-            blue_motion=blue_motion,
-            red_motion=red_motion,
-            letter=pictograph_data.letter,
-            is_blank=pictograph_data.is_blank,
-            glyph_data=pictograph_data.glyph_data,
-        )
-
-    def convert_beat_to_pictograph_data(
-        self, beat_data: BeatData, grid_mode: str
-    ) -> PictographData:
-        """
-        Convert BeatData to PictographData.
-
-        Args:
-            beat_data: BeatData to convert
-            grid_mode: Grid mode ("diamond" or "box")
-
-        Returns:
-            PictographData object
-        """
-        # Create arrow data (without motion_data - motion data now in motions dictionary)
-        arrows = {}
-        motions = {}
-
-        if beat_data.blue_motion:
-            arrows["blue"] = ArrowData(color="blue", is_visible=True)
-            motions["blue"] = beat_data.blue_motion
-
-        if beat_data.red_motion:
-            arrows["red"] = ArrowData(color="red", is_visible=True)
-            motions["red"] = beat_data.red_motion
-
-        # Create grid data
-        grid_data = GridData(
-            grid_mode=GridMode.DIAMOND if grid_mode == "diamond" else GridMode.BOX
-        )
-
-        # Create pictograph data
-        return PictographData(
-            grid_data=grid_data,
-            arrows=arrows,
-            props={},  # Props will be generated during rendering
-            motions=motions,  # NEW: Motion dictionary
-            letter=beat_data.letter,
-            start_position=beat_data.start_position,
-            end_position=beat_data.end_position,
-            glyph_data=beat_data.glyph_data,
-            metadata={
-                "source": "beat_conversion",
-                "beat_number": beat_data.beat_number,
-            },
-        )
+        return BeatFactory.create_from_pictograph(pictograph_data, beat_number)
 
     def _parse_motion_type(self, motion_type_str: str) -> MotionType:
         """Parse motion type string to MotionType enum."""

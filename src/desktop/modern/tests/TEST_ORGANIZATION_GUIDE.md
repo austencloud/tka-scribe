@@ -60,14 +60,17 @@ tests/
 ## 📋 Template Usage Guide
 
 ### Specification Tests (`specification_test_template.py`)
+
 **Use for**: Permanent behavioral contracts that must never change
 **Examples**:
+
 - Domain model immutability contracts
 - Service interface contracts
 - UI behavior contracts (Legacy parity)
 - Business rule enforcement
 
 **Metadata Required**:
+
 ```python
 """
 TEST LIFECYCLE: SPECIFICATION
@@ -78,14 +81,17 @@ AUTHOR: @username
 ```
 
 ### Regression Tests (`regression_test_template.py`)
+
 **Use for**: Preventing specific bugs from reoccurring
 **Examples**:
+
 - Crash prevention tests
 - Performance regression tests
 - Memory leak prevention
 - Integration failure prevention
 
 **Metadata Required**:
+
 ```python
 """
 TEST LIFECYCLE: REGRESSION
@@ -97,14 +103,17 @@ AUTHOR: @username
 ```
 
 ### Scaffolding Tests (`scaffolding_test_template.py`)
+
 **Use for**: Temporary development aids that should be deleted
 **Examples**:
+
 - Bug reproduction and debugging
 - Legacy behavior exploration
 - Proof of concept testing
 - Development spikes
 
 **Metadata Required**:
+
 ```python
 """
 TEST LIFECYCLE: SCAFFOLDING
@@ -119,18 +128,21 @@ RELATED_ISSUE: #issue_number (if applicable)
 ## 🚨 Critical Rules
 
 ### NEVER DELETE:
+
 - Tests marked `TEST LIFECYCLE: SPECIFICATION`
 - Tests marked `TEST LIFECYCLE: REGRESSION`
 - Tests that verify user-facing functionality
 - Tests that prevent known bugs from returning
 
 ### ALWAYS DELETE:
+
 - Scaffolding tests past their DELETE_AFTER date
 - Tests that always pass or always fail
 - Tests that duplicate existing coverage
 - Tests with no clear purpose
 
 ### REVIEW REGULARLY:
+
 - Scaffolding tests approaching DELETE_AFTER date
 - Tests that haven't been updated in >30 days
 - Tests that test implementation details vs contracts
@@ -138,6 +150,7 @@ RELATED_ISSUE: #issue_number (if applicable)
 ## 🎯 Best Practices
 
 ### For AI Agents:
+
 1. **Always check lifecycle metadata** before suggesting changes
 2. **Suggest deletion** for expired scaffolding tests
 3. **Warn about missing metadata** in scaffolding tests
@@ -145,6 +158,7 @@ RELATED_ISSUE: #issue_number (if applicable)
 5. **Focus on contracts** not implementation details in specification tests
 
 ### For Developers:
+
 1. **Start with the decision tree** when creating tests
 2. **Use appropriate templates** for each lifecycle
 3. **Set realistic DELETE_AFTER dates** for scaffolding tests
@@ -154,6 +168,7 @@ RELATED_ISSUE: #issue_number (if applicable)
 ## 📊 Test Health Metrics
 
 ### Healthy Test Suite Indicators:
+
 - ✅ All scaffolding tests have DELETE_AFTER dates
 - ✅ No expired scaffolding tests
 - ✅ Clear purpose documentation for all tests
@@ -161,6 +176,7 @@ RELATED_ISSUE: #issue_number (if applicable)
 - ✅ Regular cleanup of obsolete tests
 
 ### Warning Signs:
+
 - ⚠️ Scaffolding tests without DELETE_AFTER dates
 - ⚠️ Tests older than 30 days in scaffolding/
 - ⚠️ Tests with unclear or missing purpose

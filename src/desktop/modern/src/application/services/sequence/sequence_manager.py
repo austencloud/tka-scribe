@@ -20,6 +20,7 @@ from application.services.sequence.sequence_persister import SequencePersister
 from domain.models.beat_data import BeatData
 from domain.models.pictograph_data import PictographData
 from domain.models.sequence_data import SequenceData
+from presentation.components.workbench.workbench import SequenceWorkbench
 
 logger = logging.getLogger(__name__)
 
@@ -61,7 +62,7 @@ class SequenceManager:
             start_position_handler: Handler for start position operations
             signal_emitter: Optional signal emitter for notifications
         """
-        self.workbench_getter = workbench_getter
+        self.workbench_getter: Callable[[], SequenceWorkbench] = workbench_getter
         self.workbench_setter = workbench_setter
         self.start_position_handler = start_position_handler
         self._signal_emitter = signal_emitter
@@ -310,7 +311,6 @@ class SequenceManager:
                     )
                     if workbench and hasattr(workbench, "set_start_position"):
                         workbench.set_start_position(start_position_beat)
-                        logger.info(f"Start position loaded into workbench: {end_pos}")
                     else:
                         logger.warning(
                             "Workbench doesn't have set_start_position method"

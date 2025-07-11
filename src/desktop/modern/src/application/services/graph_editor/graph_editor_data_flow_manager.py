@@ -21,9 +21,9 @@ class GraphEditorDataFlowManager(QObject):
     """Bridges graph editor changes to beat frame and pictograph updates"""
 
     # Signals for real-time UI updates
-    beat_data_updated = pyqtSignal(BeatData, int)  # beat_data, beat_index
-    pictograph_refresh_needed = pyqtSignal(BeatData)
-    beat_frame_update_needed = pyqtSignal(BeatData, int)
+    beat_data_updated = pyqtSignal(
+        BeatData, int
+    )  # beat_data, beat_index (includes pictograph refresh)
     sequence_modified = pyqtSignal(SequenceData)
 
     def __init__(self, parent=None):
@@ -67,10 +67,8 @@ class GraphEditorDataFlowManager(QObject):
                     # TODO: Add persistence method to sequence service
                     pass
 
-        # 3. Emit signals for UI updates
+        # 3. Emit consolidated signal for UI updates (includes pictograph refresh)
         self.beat_data_updated.emit(updated_beat, self._current_beat_index or 0)
-        self.pictograph_refresh_needed.emit(updated_beat)
-        self.beat_frame_update_needed.emit(updated_beat, self._current_beat_index or 0)
 
         if self._current_sequence:
             self.sequence_modified.emit(self._current_sequence)
@@ -109,10 +107,8 @@ class GraphEditorDataFlowManager(QObject):
                     # TODO: Add persistence method to sequence service
                     pass
 
-        # 3. Emit signals for UI updates
+        # 3. Emit consolidated signal for UI updates (includes pictograph refresh)
         self.beat_data_updated.emit(updated_beat, self._current_beat_index or 0)
-        self.pictograph_refresh_needed.emit(updated_beat)
-        self.beat_frame_update_needed.emit(updated_beat, self._current_beat_index or 0)
 
         if self._current_sequence:
             self.sequence_modified.emit(self._current_sequence)

@@ -53,7 +53,7 @@ class PictographAnalyzer:
             "letter_type": self._determine_letter_type(pictograph_data),
         }
 
-    def get_grid_info(self, beat_data: BeatData) -> dict:
+    def get_grid_info(self, pictograph_data: PictographData) -> dict:
         """
         Extract grid information from beat data.
 
@@ -67,7 +67,7 @@ class PictographAnalyzer:
         grid_mode = GridMode.DIAMOND
 
         # Extract shift location if this is a Type 3 scenario
-        shift_location = self._get_shift_location(beat_data)
+        shift_location = self._get_shift_location(pictograph_data)
 
         return {"grid_mode": grid_mode, "shift_location": shift_location}
 
@@ -114,15 +114,17 @@ class PictographAnalyzer:
         # For now, default to TYPE1 - this could be enhanced with more analysis
         return LetterType.TYPE1
 
-    def _get_shift_location(self, beat_data: BeatData) -> Optional[Location]:
+    def _get_shift_location(
+        self, pictograph_data: PictographData
+    ) -> Optional[Location]:
         """
         Extract shift arrow location for Type 3 calculations using proven algorithms.
 
         In Type 3 scenarios, we need the calculated location of the shift (non-dash) arrow
         using the frozen set quadrant mapping from the shift location calculation system.
         """
-        blue_motion = beat_data.blue_motion
-        red_motion = beat_data.red_motion
+        blue_motion = pictograph_data.motions.get("blue")
+        red_motion = pictograph_data.motions.get("red")
 
         if not blue_motion or not red_motion:
             return None

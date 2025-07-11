@@ -17,13 +17,11 @@ Business Logic Services (moved to application layer):
 - SequenceDataConverter: Handles data conversion between formats (enhanced with caching)
 """
 
-from application.services.data.sequence_data_converter import SequenceDataConverter
+# Services moved to application layer
+from application.services.sequence.loader import SequenceLoader
 from application.services.sequence.sequence_beat_operations import (
     SequenceBeatOperations,
 )
-
-# Services moved to application layer
-from application.services.sequence.loader import SequenceLoader
 from application.services.sequence.sequence_start_position_manager import (
     SequenceStartPositionManager,
 )
@@ -43,5 +41,4 @@ __all__ = [
     "SequenceLoader",
     "SequenceBeatOperations",
     "SequenceStartPositionManager",
-    "SequenceDataConverter",
 ]

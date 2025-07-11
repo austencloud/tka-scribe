@@ -144,7 +144,6 @@ class ServiceRegistrationManager(IServiceRegistrationManager):
         )
 
         container.register_singleton(SectionLayoutManager, SectionLayoutManager)
-        logger.info("Layout services registered")
 
         # Note: Layout services have been consolidated into LayoutManagementService
         # which is already registered in register_core_services() as ILayoutService
@@ -164,6 +163,9 @@ class ServiceRegistrationManager(IServiceRegistrationManager):
         from application.services.pictograph.context_detection_service import (
             PictographContextDetector,
         )
+        from application.services.pictograph.global_visibility_service import (
+            PictographVisibilityManager,
+        )
         from application.services.pictograph.pictograph_manager import PictographManager
         from core.interfaces.core_services import (
             IPictographBorderManager,
@@ -175,6 +177,10 @@ class ServiceRegistrationManager(IServiceRegistrationManager):
         container.register_singleton(IPictographBorderManager, PictographBorderManager)
         container.register_singleton(
             IPictographContextDetector, PictographContextDetector
+        )
+        # Register global visibility service as singleton to ensure all components use the same instance
+        container.register_singleton(
+            PictographVisibilityManager, PictographVisibilityManager
         )
 
     def register_workbench_services(self, container: "DIContainer") -> None:
