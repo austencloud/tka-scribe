@@ -10,7 +10,7 @@ from typing import Callable, Optional
 from application.services.data.sequence_data_converter import SequenceDataConverter
 from application.services.sequence.sequence_persister import SequencePersister
 from domain.models.beat_data import BeatData
-from domain.models.pictograph_models import PictographData
+from domain.models.pictograph_data import PictographData
 from domain.models.sequence_models import SequenceData
 from PyQt6.QtCore import QObject, pyqtSignal
 
@@ -319,8 +319,7 @@ class SequenceStartPositionManager(QObject):
             letter=pictograph_data.letter,
             beat_number=0,  # Start position is beat 0
             duration=1.0,
-            blue_motion=blue_motion,
-            red_motion=red_motion,
+            pictograph_data=pictograph_data,  # NEW: Use pictograph data with motions
             glyph_data=glyph_data,
             is_blank=pictograph_data.is_blank,
             metadata=metadata,

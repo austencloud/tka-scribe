@@ -7,8 +7,7 @@ Handles prop and arrow motion data with type safety and serialization.
 
 import json
 from dataclasses import dataclass, fields
-from enum import Enum
-from typing import Any, Dict, Union
+from typing import Any, Dict
 
 from ._shared_utils import process_field_value
 from .enums import Location, MotionType, Orientation, RotationDirection

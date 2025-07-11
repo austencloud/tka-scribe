@@ -107,7 +107,7 @@ class SetStartPositionCommand(ICommand[BeatData]):
                 raise ValueError("Data conversion service not available")
 
             # Get the dataset query service
-            from application.services.data.dataset_quiry import DatasetQuery
+            from application.services.data.dataset_query import DatasetQuery
             from domain.models.glyph_models import GlyphData
 
             dataset_service = DatasetQuery()

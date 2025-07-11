@@ -11,16 +11,11 @@ PROVIDES:
 - Overlap detection logic
 """
 
-from typing import Dict, List
 from abc import ABC, abstractmethod
+from typing import Dict, List
 
-from domain.models import (
-    BeatData,
-    MotionData,
-    Location,
-    Orientation,
-)
-from domain.models.pictograph_models import PropType
+from domain.models import BeatData, Location, MotionData, Orientation
+from domain.models.enums import PropType
 
 
 class IPropClassificationService(ABC):

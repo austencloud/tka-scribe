@@ -21,7 +21,7 @@ from core.interfaces.option_picker_interfaces import (
     IOptionPickerDisplayService,
     IOptionPickerEventService,
 )
-from domain.models.pictograph_models import PictographData
+from domain.models.pictograph_data import PictographData
 from PyQt6.QtWidgets import QWidget
 
 logger = logging.getLogger(__name__)

@@ -18,17 +18,15 @@ PROVIDES:
 """
 
 import json
-import time
 import logging
+import time
 from pathlib import Path
-from typing import Dict, Any, Optional
-from PyQt6.QtCore import QPointF
+from typing import Any, Dict, Optional
 
-from domain.models import (
-    MotionData,
-    Orientation,
-)
-from domain.models.pictograph_models import ArrowData, PictographData
+from domain.models import MotionData, Orientation
+from domain.models.arrow_data import ArrowData
+from domain.models.pictograph_data import PictographData
+from PyQt6.QtCore import QPointF
 
 
 class SpecialPlacementService:

@@ -23,7 +23,7 @@ from core.interfaces.option_picker_interfaces import (
     IOptionPickerEventService,
     IOptionPickerInitializer,
 )
-from domain.models.pictograph_models import PictographData
+from domain.models.pictograph_data import PictographData
 from domain.models.sequence_models import SequenceData
 from presentation.components.option_picker.components.sections.section_widget import (
     OptionPickerSection,
@@ -186,7 +186,7 @@ class OptionPickerOrchestrator(QObject):
             self._create_sections()
 
             # Step 5.6: Make widgets visible
-            self._make_widgets_visible()
+            # self._make_widgets_visible()
 
             if self.progress_callback:
                 self.progress_callback("Creating dimension analyzer", 0.6)
@@ -204,7 +204,8 @@ class OptionPickerOrchestrator(QObject):
             if self.progress_callback:
                 self.progress_callback("Initializing pool", 0.7)
 
-            # Step 7: Initialize pool
+            # Step 7: Initialize pool during splash screen
+            # WINDOW MANAGEMENT FIX: Pool creation during splash is fine - widgets are hidden
             self.initialization_service.initialize_pool(
                 self.pool_manager, self.progress_callback
             )
@@ -551,11 +552,24 @@ class OptionPickerOrchestrator(QObject):
                 logger.warning("Orchestrator not initialized")
                 return
 
+            # Load pictograph options based on position matching
             pictograph_options = self.option_service.load_options_from_modern_sequence(
                 sequence
             )
+
+            # Apply orientation updates to match sequence context
+            from application.services.option_picker.option_orientation_updater import (
+                OptionOrientationUpdater,
+            )
+
+            orientation_updater = OptionOrientationUpdater()
+            updated_options = orientation_updater.update_option_orientations(
+                sequence, pictograph_options
+            )
+
+            # Update display with orientation-corrected options
             display_result = self.display_service.update_pictograph_display(
-                pictograph_options
+                updated_options
             )
 
             # Apply the display strategy to actually show the options
@@ -563,7 +577,7 @@ class OptionPickerOrchestrator(QObject):
                 self._apply_display_strategy(display_result["display_strategy"])
 
             logger.debug(
-                f"Refreshed from modern sequence: {len(pictograph_options)} options"
+                f"Refreshed from modern sequence: {len(updated_options)} options with orientation updates"
             )
 
         except Exception as e:

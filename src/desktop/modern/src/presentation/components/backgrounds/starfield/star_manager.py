@@ -1,8 +1,13 @@
-import random
+"""Star Manager - Qt Presentation Layer
+
+Qt rendering for stars - business logic delegated to StarTwinkling service.
+"""
+
 import math
 from PyQt6.QtGui import QColor, QPainter, QPainterPath
 from PyQt6.QtWidgets import QWidget
 from PyQt6.QtCore import Qt
+from application.services.backgrounds.starfield.star_twinkling import StarTwinkling
 
 # A+ Enhancement: Import Qt resource pooling - Temporarily disabled
 # try:
@@ -17,59 +22,34 @@ QT_RESOURCES_AVAILABLE = False
 
 class StarManager:
     """
-    Manages stars with different shapes and twinkling behavior.
+    Qt wrapper for star rendering - business logic in StarTwinkling service.
 
-    Creates a variety of star types including round stars, star-shaped stars,
-    and spiky stars with realistic twinkling effects.
+    Handles Qt-specific rendering while delegating star creation,
+    animation, and twinkling logic to the service.
     """
 
     def __init__(self):
-        # Create diverse star population
-        self.stars = [
-            {
-                "x": random.random(),
-                "y": random.random(),
-                "size": random.random() * 2 + 1,
-                "color": random.choice(
-                    [
-                        QColor(255, 255, 255),  # White stars
-                        QColor(255, 255, 0),  # Yellow stars
-                        QColor(255, 200, 200),  # Reddish stars
-                        QColor(200, 200, 255),  # Bluish stars
-                    ]
-                ),
-                "spikiness": random.choice(
-                    [0, 1, 2]
-                ),  # 0: round, 1: star shape, 2: spiky
-                "twinkle_speed": random.uniform(0.5, 2.0),
-                "twinkle_phase": random.uniform(0, 2 * math.pi),
-            }
-            for _ in range(150)  # More stars for richer sky
-        ]
-
-        # Initialize twinkle states
-        self.twinkle_state = [random.uniform(0.8, 1.0) for _ in range(len(self.stars))]
+        self._twinkling_service = StarTwinkling(150)  # 150 stars for rich sky
 
     def animate_stars(self):
-        """Update star twinkling animation."""
-        for i, star in enumerate(self.stars):
-            # Smooth twinkling using sine waves
-            star["twinkle_phase"] += star["twinkle_speed"] * 0.1
-            twinkle_intensity = (math.sin(star["twinkle_phase"]) + 1) / 2
-            self.twinkle_state[i] = 0.6 + (twinkle_intensity * 0.4)  # Range: 0.6 to 1.0
+        """Delegate animation logic to service."""
+        self._twinkling_service.update_stars()
 
     def draw_stars(self, painter: QPainter, widget: QWidget):
-        """Draw all stars with their current twinkle states."""
-        for i, star in enumerate(self.stars):
-            x = int(star["x"] * widget.width())
-            y = int(star["y"] * widget.height())
+        """Draw all stars using Qt - get state from service."""
+        star_states = self._twinkling_service.get_star_states()
+        twinkle_states = self._twinkling_service.get_twinkle_states()
+        
+        for i, star in enumerate(star_states):
+            x = int(star.position.x * widget.width())
+            y = int(star.position.y * widget.height())
 
             # Apply twinkling to size and opacity
-            twinkle = self.twinkle_state[i]
-            size = int(star["size"] * (1 + twinkle * 0.5))
+            twinkle = twinkle_states[i]
+            size = int(star.size * (1 + twinkle * 0.5))
 
-            # Set color with twinkling opacity
-            color = QColor(star["color"])
+            # Convert service color tuple to QColor
+            color = QColor(*star.color)
             color.setAlphaF(twinkle)
 
             # A+ Enhancement: Use resource pooling - Temporarily disabled
@@ -82,9 +62,9 @@ class StarManager:
             painter.setPen(Qt.PenStyle.NoPen)
 
             # Draw star based on its type
-            if star["spikiness"] == 0:  # Round stars
+            if star.spikiness == 0:  # Round stars
                 painter.drawEllipse(x - size // 2, y - size // 2, size, size)
-            elif star["spikiness"] == 1:  # Star-shaped stars
+            elif star.spikiness == 1:  # Star-shaped stars
                 self._draw_star_shape(painter, x, y, size, color)
             else:  # Spiky stars
                 self._draw_spiky_star(painter, x, y, size, color)

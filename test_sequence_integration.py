@@ -9,6 +9,7 @@ import sys
 import tempfile
 from pathlib import Path
 
+
 # Add the src directory to the path
 sys.path.insert(
     0, os.path.join(os.path.dirname(__file__), "src", "desktop", "modern", "src")
@@ -20,9 +21,11 @@ def test_orchestrator_integration():
     print("🧪 Testing SequenceOrchestrator Integration...")
 
     try:
-        from application.services.sequence.orchestrator import SequenceOrchestrator
+        from application.services.sequence.sequence_orchestrator import (
+            SequenceOrchestrator,
+        )
         from domain.models.beat_data import BeatData
-        from domain.models.pictograph_models import PictographData
+        from domain.models.pictograph_data import PictographData
         from domain.models.sequence_models import SequenceData
 
         # Create orchestrator
@@ -30,7 +33,7 @@ def test_orchestrator_integration():
         print(f"   ✅ SequenceOrchestrator initialized")
 
         # Test 1: Create a test pictograph (no empty() method, use constructor)
-        from domain.models.pictograph_models import GridData
+        from domain.models.grid_data import GridData
 
         test_pictograph = PictographData(
             grid_data=GridData(),
@@ -80,15 +83,17 @@ def test_beat_operations_integration():
     print("\n🧪 Testing SequenceBeatOperations Integration...")
 
     try:
-        from application.services.sequence.beat_operations import SequenceBeatOperations
-        from domain.models.pictograph_models import PictographData
+        from application.services.sequence.sequence_beat_operations import (
+            SequenceBeatOperations,
+        )
+        from domain.models.pictograph_data import PictographData
 
         # Create beat operations service
         beat_ops = SequenceBeatOperations()
         print(f"   ✅ SequenceBeatOperations initialized")
 
         # Test adding a pictograph
-        from domain.models.pictograph_models import GridData
+        from domain.models.grid_data import GridData
 
         test_pictograph = PictographData(
             grid_data=GridData(),
@@ -122,11 +127,15 @@ def test_full_workflow_integration():
     print("\n🧪 Testing Full Workflow Integration...")
 
     try:
-        from application.services.sequence.orchestrator import SequenceOrchestrator
-        from application.services.sequence.persister import SequencePersister
-        from application.services.sequence.transformer import SequenceTransformer
-        from application.services.sequence.validator import SequenceValidator
-        from domain.models.pictograph_models import PictographData
+        from application.services.sequence.sequence_orchestrator import (
+            SequenceOrchestrator,
+        )
+        from application.services.sequence.sequence_persister import SequencePersister
+        from application.services.sequence.sequence_transformer import (
+            SequenceTransformer,
+        )
+        from application.services.sequence.sequence_validator import SequenceValidator
+        from domain.models.pictograph_data import PictographData
 
         # Step 1: Create orchestrator and services
         orchestrator = SequenceOrchestrator()
@@ -137,7 +146,7 @@ def test_full_workflow_integration():
         print(f"   ✅ All services initialized")
 
         # Step 2: Create test pictographs
-        from domain.models.pictograph_models import GridData
+        from domain.models.grid_data import GridData
 
         pictographs = [
             PictographData(

@@ -231,11 +231,12 @@ class UISetupManager(IUISetupManager):
 
             self.tab_widget.addTab(construct_tab, "🔧 Construct")
 
-            # CRITICAL FIX: Ensure tab widget and construct tab are visible
-            self.tab_widget.show()
-            self.tab_widget.setVisible(True)
-            construct_tab.show()
-            construct_tab.setVisible(True)
+            # WINDOW MANAGEMENT FIX: Keep widgets hidden during splash screen
+            # They will be shown when the main window is displayed
+            self.tab_widget.hide()
+            self.tab_widget.setVisible(False)
+            construct_tab.hide()
+            construct_tab.setVisible(False)
 
             # Set construct tab as current tab
             self.tab_widget.setCurrentIndex(0)

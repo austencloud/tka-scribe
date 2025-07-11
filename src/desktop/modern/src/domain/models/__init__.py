@@ -14,6 +14,7 @@ from ..serialization import (
     domain_model_from_json,
     domain_model_to_json,
 )
+from .arrow_data import ArrowData, ArrowType  # Export pictograph models
 from .beat_data import BeatData
 
 # Export core models from their new organized locations
@@ -35,22 +36,17 @@ from .enums import (
     VTGMode,
 )
 from .glyph_models import GlyphData
+from .grid_data import GridData
 from .letter_type_classifier import (  # Export letter type classifier
     LetterTypeClassifier,
 )
 from .motion_models import MotionData
-from .pictograph_models import (  # Export pictograph models
-    ArrowData,
-    ArrowType,
-    GridData,
-    PictographData,
-    PropData,
-    PropType,
-)
+from .pictograph_data import PictographData
 from .positioning_models import (  # Export positioning models
     ArrowPositionResult,
     PropPositionResult,
 )
+from .prop_data import PropData, PropType
 from .sequence_models import SequenceData
 
 # Import serialization utilities

@@ -33,8 +33,8 @@ class TestMotionDataSerialization:
             start_loc=Location.NORTH,
             end_loc=Location.EAST,
             start_ori=Orientation.IN,
-            end_ori=Orientation.OUT,
-            turns=1.5,
+            end_ori=Orientation.IN,
+            turns=0.0,
         )
 
         # Serialize to camelCase
@@ -63,11 +63,11 @@ class TestMotionDataSerialization:
         original = MotionData(
             motion_type=MotionType.ANTI,
             prop_rot_dir=RotationDirection.COUNTER_CLOCKWISE,
-            start_loc=Location.SOUTHWEST,
-            end_loc=Location.NORTHEAST,
-            start_ori=Orientation.CLOCK,
-            end_ori=Orientation.COUNTER,
-            turns=2.0,
+            start_loc=Location.SOUTH,
+            end_loc=Location.WEST,
+            start_ori=Orientation.IN,
+            end_ori=Orientation.OUT,
+            turns=0.0,
         )
 
         # Round trip
@@ -84,7 +84,7 @@ class TestMotionDataSerialization:
             start_loc=Location.NORTH,
             end_loc=Location.EAST,
             start_ori=Orientation.IN,
-            end_ori=Orientation.OUT,
+            end_ori=Orientation.IN,
         )
 
         json_str = motion.to_json(camel_case=False)

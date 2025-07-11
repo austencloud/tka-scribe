@@ -23,7 +23,7 @@ from application.services.sequence.sequence_persister import SequencePersister
 from application.services.sequence.sequence_transformer import SequenceTransformer
 from application.services.sequence.sequence_validator import SequenceValidator
 from domain.models.beat_data import BeatData
-from domain.models.pictograph_models import PictographData
+from domain.models.pictograph_data import PictographData
 from domain.models.sequence_models import SequenceData
 
 logger = logging.getLogger(__name__)
@@ -801,8 +801,7 @@ class SequenceOrchestrator:
             beat_data = BeatData(
                 beat_number=beat_number,
                 letter=pictograph_data.letter or "?",
-                blue_motion=blue_motion,
-                red_motion=red_motion,
+                pictograph_data=pictograph_data,  # NEW: Use pictograph data with motions
                 glyph_data=pictograph_data.glyph_data,
                 is_blank=pictograph_data.is_blank,
                 metadata=beat_metadata,
@@ -890,8 +889,7 @@ class SequenceOrchestrator:
                 letter=pictograph_data.letter,
                 beat_number=0,  # Start position is beat 0
                 duration=1.0,
-                blue_motion=blue_motion,
-                red_motion=red_motion,
+                pictograph_data=pictograph_data,  # NEW: Use pictograph data with motions
                 glyph_data=glyph_data,
                 is_blank=pictograph_data.is_blank,
                 metadata=metadata,

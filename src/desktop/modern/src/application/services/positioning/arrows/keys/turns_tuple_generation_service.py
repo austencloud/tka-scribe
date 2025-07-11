@@ -11,7 +11,7 @@ import logging
 
 from domain.models.letter_type_classifier import LetterTypeClassifier
 from domain.models.motion_models import MotionData
-from domain.models.pictograph_models import PictographData
+from domain.models.pictograph_data import PictographData
 
 logger = logging.getLogger(__name__)
 

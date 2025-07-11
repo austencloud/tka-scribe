@@ -1,4 +1,4 @@
-from application.services.data.dataset_quiry import DatasetQuery
+from application.services.data.dataset_query import DatasetQuery
 from presentation.components.pictograph.pictograph_component import (
     create_pictograph_component,
 )

@@ -27,7 +27,7 @@ def test_option_display():
 
         # Import required components
         from core.application.application_factory import ApplicationFactory
-        from domain.models.pictograph_models import PictographData
+        from domain.models.pictograph_data import PictographData
 
         print("   ✅ Imports successful")
 

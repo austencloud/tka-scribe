@@ -11,17 +11,15 @@ This service provides a clean, focused interface for pictograph data operations
 while maintaining the proven data management algorithms.
 """
 
-from typing import List, Dict, Any, Optional
-from abc import ABC, abstractmethod
 import uuid
+from abc import ABC, abstractmethod
+from typing import Any, Dict, List, Optional
 
+from domain.models.arrow_data import ArrowData
 from domain.models.beat_data import BeatData
-from domain.models.pictograph_models import (
-    PictographData,
-    GridData,
-    GridMode,
-    ArrowData,
-)
+from domain.models.enums import GridMode
+from domain.models.grid_data import GridData
+from domain.models.pictograph_data import PictographData
 
 
 class IPictographDataService(ABC):
@@ -93,25 +91,34 @@ class PictographDataService(IPictographDataService):
         """Create pictograph from beat data."""
         pictograph = self.create_pictograph()
 
-        # Add arrows based on beat motions
+        # Add arrows and motions based on beat data
         arrows = {}
+        motions = {}
 
-        if beat_data.blue_motion:
-            arrows["blue"] = ArrowData(
-                color="blue",
-                motion_data=beat_data.blue_motion,
-                is_visible=True,
-            )
+        if beat_data.pictograph_data and beat_data.pictograph_data.motions:
+            # Use motion data from pictograph_data if available
+            if "blue" in beat_data.pictograph_data.motions:
+                blue_motion = beat_data.pictograph_data.motions["blue"]
+                arrows["blue"] = ArrowData(color="blue", is_visible=True)
+                motions["blue"] = blue_motion
 
-        if beat_data.red_motion:
-            arrows["red"] = ArrowData(
-                color="red",
-                motion_data=beat_data.red_motion,
-                is_visible=True,
-            )
+            if "red" in beat_data.pictograph_data.motions:
+                red_motion = beat_data.pictograph_data.motions["red"]
+                arrows["red"] = ArrowData(color="red", is_visible=True)
+                motions["red"] = red_motion
+        else:
+            # Fallback: use legacy beat motion fields (deprecated)
+            if hasattr(beat_data, "blue_motion") and beat_data.blue_motion:
+                arrows["blue"] = ArrowData(color="blue", is_visible=True)
+                motions["blue"] = beat_data.blue_motion
+
+            if hasattr(beat_data, "red_motion") and beat_data.red_motion:
+                arrows["red"] = ArrowData(color="red", is_visible=True)
+                motions["red"] = beat_data.red_motion
 
         return pictograph.update(
             arrows=arrows,
+            motions=motions,  # NEW: Add motions dictionary
             is_blank=len(arrows) == 0,
             metadata={
                 "created_from_beat": beat_data.beat_number,

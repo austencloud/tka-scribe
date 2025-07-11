@@ -1,8 +1,10 @@
-import random
 import math
+import random
 from typing import Optional
+
 from PyQt6.QtGui import QPixmap
-from ..shared.animation_types import UFOState, Position2D, Velocity2D
+
+from ..shared.animation_types import Position2D, UFOState, Velocity2D
 from ..shared.asset_paths import AssetPathResolver
 
 

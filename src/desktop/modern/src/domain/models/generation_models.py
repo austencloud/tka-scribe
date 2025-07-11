@@ -17,7 +17,6 @@ if TYPE_CHECKING:
         SliceSize,
         CAPType,
         GenerationMetadata,
-        ValidationResult,
     )
 
 

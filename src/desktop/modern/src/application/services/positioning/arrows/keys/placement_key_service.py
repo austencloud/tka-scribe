@@ -18,7 +18,7 @@ from typing import Optional
 from application.services.pictograph.pictograph_validator import PictographValidator
 from domain.models import MotionData, Orientation
 from domain.models.letter_type_classifier import LetterTypeClassifier
-from domain.models.pictograph_models import PictographData
+from domain.models.pictograph_data import PictographData
 
 logger = logging.getLogger(__name__)
 

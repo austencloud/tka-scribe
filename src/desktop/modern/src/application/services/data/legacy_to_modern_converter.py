@@ -6,11 +6,16 @@ Focused solely on legacy-to-modern data transformation.
 """
 
 import logging
-from typing import Any, Dict
+
+# Forward reference for PictographData
+from typing import TYPE_CHECKING, Any, Dict
 
 from domain.models.beat_data import BeatData
 from domain.models.glyph_models import GlyphData
 from domain.models.motion_models import MotionData
+
+if TYPE_CHECKING:
+    from domain.models.pictograph_data import PictographData
 
 from .position_attribute_mapper import PositionAttributeMapper
 
@@ -68,14 +73,18 @@ class LegacyToModernConverter:
                 end_position=end_pos,
             )
 
-            # Create complete beat data
+            # Create PictographData with motion data
+            pictograph_data = self._create_pictograph_data_from_legacy(
+                beat_dict, blue_motion, red_motion, glyph_data
+            )
+
+            # Create complete beat data with pictograph reference
             beat_data = BeatData(
                 letter=letter,
                 beat_number=beat_number,
                 duration=duration,
                 glyph_data=glyph_data,
-                blue_motion=blue_motion,
-                red_motion=red_motion,
+                pictograph_data=pictograph_data,  # NEW: Reference to pictograph with motion data
             )
 
             return beat_data
@@ -125,14 +134,25 @@ class LegacyToModernConverter:
                 end_position=end_pos,
             )
 
+            # Create motions dictionary
+            motions = {}
+            if blue_motion:
+                motions["blue"] = blue_motion
+            if red_motion:
+                motions["red"] = red_motion
+
+            # Create PictographData for start position
+            pictograph_data = self._create_pictograph_data_from_legacy(
+                start_pos_dict, blue_motion, red_motion, glyph_data
+            )
+
             # Create start position beat data
             start_position_beat = BeatData(
                 letter=letter,
                 beat_number=0,  # Start position is beat 0
                 duration=1.0,
                 glyph_data=glyph_data,
-                blue_motion=blue_motion,
-                red_motion=red_motion,
+                pictograph_data=pictograph_data,  # NEW: Use pictograph data with motions
                 metadata={
                     "timing": start_pos_dict.get("timing", "same"),
                     "direction": start_pos_dict.get("direction", "none"),
@@ -168,6 +188,49 @@ class LegacyToModernConverter:
             end_ori=validated_attrs["end_ori"],
             prop_rot_dir=validated_attrs["prop_rot_dir"],
             turns=validated_attrs["turns"],
+        )
+
+    def _create_pictograph_data_from_legacy(
+        self,
+        beat_dict: dict,
+        blue_motion: MotionData,
+        red_motion: MotionData,
+        glyph_data: GlyphData,
+    ) -> "PictographData":
+        """Create PictographData from legacy beat data with motion data."""
+        from domain.models.arrow_data import ArrowData
+        from domain.models.enums import GridMode
+        from domain.models.grid_data import GridData
+        from domain.models.pictograph_data import PictographData
+
+        # Create arrows (without motion data)
+        arrows = {}
+        if blue_motion:
+            arrows["blue"] = ArrowData(color="blue", is_visible=True)
+        if red_motion:
+            arrows["red"] = ArrowData(color="red", is_visible=True)
+
+        # Create grid data
+        grid_data = GridData(grid_mode=GridMode.DIAMOND)
+
+        # Create motions dictionary
+        motions = {}
+        if blue_motion:
+            motions["blue"] = blue_motion
+        if red_motion:
+            motions["red"] = red_motion
+
+        # Create pictograph with motion dictionary
+        return PictographData(
+            grid_data=grid_data,
+            arrows=arrows,
+            props={},
+            motions=motions,  # NEW: Motion dictionary (consistent with arrows/props)
+            letter=beat_dict.get("letter"),
+            start_position=beat_dict.get("start_pos", ""),
+            end_position=beat_dict.get("end_pos", ""),
+            glyph_data=glyph_data,
+            metadata={"source": "legacy_conversion"},
         )
 
     def _create_start_position_motion_data(
@@ -207,24 +270,6 @@ class LegacyToModernConverter:
             beat_number=beat_number,
             duration=1.0,
             glyph_data={"start_position": "", "end_position": ""},
-            blue_motion=MotionData(
-                motion_type="static",
-                start_loc="n",
-                end_loc="n",
-                start_ori="in",
-                end_ori="in",
-                prop_rot_dir="no_rot",
-                turns=0,
-            ),
-            red_motion=MotionData(
-                motion_type="static",
-                start_loc="n",
-                end_loc="n",
-                start_ori="in",
-                end_ori="in",
-                prop_rot_dir="no_rot",
-                turns=0,
-            ),
             metadata={"source": "fallback_conversion"},
         )
 
@@ -235,24 +280,6 @@ class LegacyToModernConverter:
             beat_number=0,
             duration=1.0,
             glyph_data={"start_position": "alpha", "end_position": "alpha1"},
-            blue_motion=MotionData(
-                motion_type="static",
-                start_loc="n",
-                end_loc="n",
-                start_ori="in",
-                end_ori="in",
-                prop_rot_dir="no_rot",
-                turns=0,
-            ),
-            red_motion=MotionData(
-                motion_type="static",
-                start_loc="n",
-                end_loc="n",
-                start_ori="in",
-                end_ori="in",
-                prop_rot_dir="no_rot",
-                turns=0,
-            ),
             metadata={
                 "timing": "same",
                 "direction": "none",

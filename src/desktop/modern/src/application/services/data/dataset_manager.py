@@ -15,10 +15,8 @@ import uuid
 from abc import ABC, abstractmethod
 from typing import Any, Dict, List, Optional, TypedDict
 
-from application.services.pictograph.pictograph_manager import (
-    PictographSearchQuery,
-)
-from domain.models.pictograph_models import PictographData
+from application.services.pictograph.pictograph_manager import PictographSearchQuery
+from domain.models.pictograph_data import PictographData
 
 
 class IDatasetManager(ABC):

@@ -9,9 +9,10 @@ import uuid
 from typing import Optional
 
 from domain.models import BeatData
+from domain.models.arrow_data import ArrowData
 from domain.models.enums import LetterType
 from domain.models.letter_type_classifier import LetterTypeClassifier
-from domain.models.pictograph_models import ArrowData, PictographData
+from domain.models.pictograph_data import PictographData
 from PyQt6.QtCore import pyqtSignal
 from PyQt6.QtGui import QBrush, QColor
 from PyQt6.QtWidgets import QGraphicsScene
@@ -284,14 +285,22 @@ class PictographScene(QGraphicsScene):
 
     def _beat_data_to_pictograph_data(self, beat_data: BeatData) -> PictographData:
         """Convert BeatData to PictographData for rendering."""
-        # Create arrow data for both colors
+        # Use pictograph_data if available, otherwise create from legacy fields
+        if beat_data.pictograph_data:
+            return beat_data.pictograph_data
+
+        # Fallback: create from legacy fields (deprecated)
         arrows = {}
+        motions = {}
 
-        if beat_data.blue_motion:
-            arrows["blue"] = ArrowData(motion_data=beat_data.blue_motion, color="blue")
+        # Check for legacy motion fields (deprecated)
+        if hasattr(beat_data, "blue_motion") and beat_data.blue_motion:
+            arrows["blue"] = ArrowData(color="blue", is_visible=True)
+            motions["blue"] = beat_data.blue_motion
 
-        if beat_data.red_motion:
-            arrows["red"] = ArrowData(motion_data=beat_data.red_motion, color="red")
+        if hasattr(beat_data, "red_motion") and beat_data.red_motion:
+            arrows["red"] = ArrowData(color="red", is_visible=True)
+            motions["red"] = beat_data.red_motion
 
         # Extract position data from glyph_data if available
         start_position = None
@@ -302,6 +311,7 @@ class PictographScene(QGraphicsScene):
 
         return PictographData(
             arrows=arrows,
+            motions=motions,  # NEW: Include motions dictionary
             letter=beat_data.letter or "",
             start_position=start_position,
             end_position=end_position,
@@ -322,16 +332,10 @@ class PictographScene(QGraphicsScene):
         # Extract motion data from arrows
         blue_motion = None
         red_motion = None
-        if (
-            "blue" in pictograph_data.arrows
-            and pictograph_data.arrows["blue"].motion_data
-        ):
-            blue_motion = pictograph_data.arrows["blue"].motion_data
-        if (
-            "red" in pictograph_data.arrows
-            and pictograph_data.arrows["red"].motion_data
-        ):
-            red_motion = pictograph_data.arrows["red"].motion_data
+        if "blue" in pictograph_data.arrows and "blue" in pictograph_data.motions:
+            blue_motion = pictograph_data.motions["blue"]
+        if "red" in pictograph_data.arrows and "red" in pictograph_data.motions:
+            red_motion = pictograph_data.motions["red"]
 
         # Render props for blue and red motions (if visible)
         if self._renderer_visibility.get("props", True):
@@ -346,11 +350,21 @@ class PictographScene(QGraphicsScene):
             # Create temporary BeatData for beta positioning
             from domain.models import BeatData
 
+            # Create temporary pictograph data with motions
+            temp_pictograph = PictographData(
+                motions=(
+                    {"blue": blue_motion, "red": red_motion}
+                    if blue_motion or red_motion
+                    else {}
+                ),
+                letter=pictograph_data.letter,
+                glyph_data=pictograph_data.glyph_data,
+            )
+
             temp_beat = BeatData(
                 beat_number=0,
                 letter=pictograph_data.letter,
-                blue_motion=blue_motion,
-                red_motion=red_motion,
+                pictograph_data=temp_pictograph,  # NEW: Use pictograph data with motions
                 glyph_data=pictograph_data.glyph_data,
             )
             self.prop_renderer.apply_beta_positioning(temp_beat)

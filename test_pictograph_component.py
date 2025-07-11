@@ -51,7 +51,7 @@ def test_pictograph_component_creation():
             # Create pictograph data like the pool manager does
             from application.services.data.dataset_quiry import DatasetQuery
             from application.services.data.position_resolver import PositionResolver
-            from domain.models.pictograph_models import PictographData
+            from domain.models.pictograph_data import PictographData
             from presentation.components.option_picker.components.frames.clickable_pictograph_frame import (
                 ClickablePictographFrame,
             )

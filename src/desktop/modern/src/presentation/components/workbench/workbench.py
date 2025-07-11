@@ -9,7 +9,7 @@ from core.interfaces.workbench_services import (
     ISequenceWorkbenchService,
 )
 from domain.models import BeatData, SequenceData
-from domain.models.pictograph_models import PictographData
+from domain.models.pictograph_data import PictographData
 from PyQt6.QtCore import pyqtSignal
 from PyQt6.QtWidgets import QVBoxLayout, QWidget
 

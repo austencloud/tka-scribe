@@ -1,20 +1,24 @@
 from dataclasses import dataclass
-from typing import Dict, Any, Tuple, List
+from typing import Any, Dict, List, Tuple
+
 
 @dataclass
 class Position2D:
     x: float
     y: float
 
+
 @dataclass
 class Velocity2D:
     dx: float
     dy: float
 
+
 @dataclass
 class AnimationBounds:
     width: float
     height: float
+
 
 # Aurora-specific types
 @dataclass
@@ -26,12 +30,14 @@ class BlobState:
     size_delta: float
     opacity_delta: float
 
+
 @dataclass
 class SparkleState:
     position: Position2D
     size: float
     opacity: float
     pulse_speed: float
+
 
 # Snowfall-specific types
 @dataclass
@@ -42,6 +48,7 @@ class SnowflakeState:
     speed: float
     image_index: int
 
+
 @dataclass
 class SantaState:
     x: float
@@ -50,6 +57,7 @@ class SantaState:
     direction: int
     active: bool
     opacity: float
+
 
 @dataclass
 class ShootingStarState:
@@ -62,6 +70,7 @@ class ShootingStarState:
     tail_opacity: float
     off_screen: bool
 
+
 # Starfield-specific types
 @dataclass
 class StarState:
@@ -71,6 +80,7 @@ class StarState:
     spikiness: int
     twinkle_speed: float
     twinkle_phase: float
+
 
 @dataclass
 class CometState:
@@ -85,6 +95,7 @@ class CometState:
     fading: bool
     off_screen: bool
 
+
 @dataclass
 class UFOState:
     position: Position2D
@@ -96,6 +107,7 @@ class UFOState:
     pause_duration: int
     glow_phase: float
 
+
 # Bubbles-specific types
 @dataclass
 class BubbleState:
@@ -104,6 +116,7 @@ class BubbleState:
     speed: float
     opacity: float
     highlight_factor: float
+
 
 @dataclass
 class FishState:

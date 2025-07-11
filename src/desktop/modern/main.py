@@ -88,6 +88,20 @@ class TKAMainWindow(QMainWindow):
 
             traceback.print_exc()
 
+    def show(self):
+        """Override show to ensure tab widget is properly displayed."""
+        super().show()
+        # WINDOW MANAGEMENT FIX: Ensure tab widget is shown when main window is shown
+        if hasattr(self, "tab_widget") and self.tab_widget:
+            self.tab_widget.show()
+            self.tab_widget.setVisible(True)
+            # Also show the current tab
+            current_tab = self.tab_widget.currentWidget()
+            if current_tab:
+                current_tab.show()
+                current_tab.setVisible(True)
+            print("🔍 [MAIN_WINDOW] Tab widget and current tab made visible")
+
     def resizeEvent(self, a0):
         super().resizeEvent(a0)
         if hasattr(self, "orchestrator"):
@@ -325,8 +339,11 @@ def main():
                     parallel_mode=parallel_mode,
                     parallel_geometry=geometry,
                 )
-                # Ensure window stays hidden until everything is fully loaded
+                # WINDOW MANAGEMENT FIX: Ensure window stays hidden until everything is fully loaded
                 window.hide()
+                window.setVisible(False)
+                # Process events to ensure hide takes effect
+                app.processEvents()
 
                 complete_startup()
             except Exception:
@@ -341,16 +358,19 @@ def main():
             splash.update_progress(100, "Application ready!")
             app.processEvents()
 
-            # Show window - everything is already fully loaded
-            window.show()
-            window.raise_()
-            window.activateWindow()
             print(f"✅ TKA application startup completed successfully!")
             print(f"🔧 Construct tab fully loaded and ready for use")
-            print(f"🔍 [MAIN] Main window shown: visible={window.isVisible()}")
 
-            # Hide splash screen immediately since main window is now visible with everything loaded
-            splash.hide_animated()
+            # PERFECT TIMING FIX: Show main window exactly when splash fades away
+            def show_main_window():
+                """Show main window exactly when splash finishes fading."""
+                window.show()
+                window.raise_()
+                window.activateWindow()
+                print(f"🔍 [MAIN] Main window shown: visible={window.isVisible()}")
+
+            # Hide splash screen with callback to show main window at perfect timing
+            splash.hide_animated(callback=show_main_window)
 
         fade_in_animation.finished.connect(start_initialization)
         return app.exec()

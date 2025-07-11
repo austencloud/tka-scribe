@@ -5,22 +5,13 @@ Handles UI layout setup, panel creation, and widget management for the construct
 Responsible for creating the main layout structure and organizing UI components.
 """
 
-from typing import Optional, Callable
-from PyQt6.QtWidgets import (
-    QWidget,
-    QHBoxLayout,
-    QVBoxLayout,
-    QLabel,
-    QStackedWidget,
-)
-from PyQt6.QtCore import Qt
+from typing import TYPE_CHECKING, Callable, Optional
 
 from core.dependency_injection.di_container import DIContainer
 from presentation.components.option_picker.core.option_picker import OptionPicker
-from presentation.factories.workbench_factory import (
-    create_modern_workbench,
-)
-from typing import TYPE_CHECKING
+from presentation.factories.workbench_factory import create_modern_workbench
+from PyQt6.QtCore import Qt
+from PyQt6.QtWidgets import QHBoxLayout, QLabel, QStackedWidget, QVBoxLayout, QWidget
 
 if TYPE_CHECKING:
     from presentation.components.workbench.sequence_beat_frame.sequence_beat_frame import (
@@ -143,8 +134,11 @@ class ConstructTabLayoutManager:
                     mapped_progress = 76 + (progress * 6)
                     self.progress_callback(f"Option picker: {step}", mapped_progress)
 
+            # WINDOW MANAGEMENT FIX: Create option picker during splash screen
+            # Pool creation happens during splash - no window flashing due to hidden widgets
             self.option_picker = OptionPicker(
-                self.container, progress_callback=option_picker_progress
+                self.container,
+                progress_callback=option_picker_progress,
             )
             self.option_picker.initialize()
             layout.addWidget(self.option_picker.widget)

@@ -11,34 +11,23 @@ This service is responsible for determining when and how to separate props
 to avoid overlaps, particularly for beta-ending letters.
 """
 
-from typing import Tuple, Dict, Any, Optional, List, TYPE_CHECKING
-from abc import ABC, abstractmethod
-from core.types import Point
 import json
-from pathlib import Path
-from enum import Enum
 import uuid
+from abc import ABC, abstractmethod
 from datetime import datetime
+from enum import Enum
+from pathlib import Path
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple
 
-from domain.models import (
-    BeatData,
-    MotionData,
-    MotionType,
-    Location,
-    Orientation,
-)
+from core.types import Point
+from domain.models import BeatData, Location, MotionData, MotionType, Orientation
 
 # Event-driven architecture imports
 if TYPE_CHECKING:
     from core.events import IEventBus
 
 try:
-    from core.events import (
-        IEventBus,
-        get_event_bus,
-        PropPositionedEvent,
-        EventPriority,
-    )
+    from core.events import EventPriority, IEventBus, PropPositionedEvent, get_event_bus
 
     EVENT_SYSTEM_AVAILABLE = True
 except ImportError:
@@ -48,7 +37,7 @@ except ImportError:
     PropPositionedEvent = None
     EventPriority = None
     EVENT_SYSTEM_AVAILABLE = False
-from domain.models.pictograph_models import PropType
+from domain.models.enums import PropType
 
 
 class SeparationDirection(Enum):
@@ -186,11 +175,16 @@ class PropManagementService(IPropManagementService):
 
         Props overlap when they end at the same location with the same orientation.
         """
-        if not beat_data.blue_motion or not beat_data.red_motion:
-            return False
+        # Get motion data from pictograph_data instead of beat_data
+        blue_motion = None
+        red_motion = None
 
-        blue_motion = beat_data.blue_motion
-        red_motion = beat_data.red_motion
+        if beat_data.pictograph_data and beat_data.pictograph_data.motions:
+            blue_motion = beat_data.pictograph_data.motions.get("blue")
+            red_motion = beat_data.pictograph_data.motions.get("red")
+
+        if not blue_motion or not red_motion:
+            return False
 
         # Check if both motions end at same location
         if blue_motion.end_loc != red_motion.end_loc:
@@ -253,13 +247,19 @@ class PropManagementService(IPropManagementService):
                         "letter": beat_data.letter,
                         "positioning_method": positioning_method,
                         "blue_motion_type": (
-                            beat_data.blue_motion.motion_type.value
-                            if beat_data.blue_motion
+                            beat_data.pictograph_data.motions.get(
+                                "blue"
+                            ).motion_type.value
+                            if beat_data.pictograph_data
+                            and beat_data.pictograph_data.motions.get("blue")
                             else None
                         ),
                         "red_motion_type": (
-                            beat_data.red_motion.motion_type.value
-                            if beat_data.red_motion
+                            beat_data.pictograph_data.motions.get(
+                                "red"
+                            ).motion_type.value
+                            if beat_data.pictograph_data
+                            and beat_data.pictograph_data.motions.get("red")
                             else None
                         ),
                     },
@@ -274,15 +274,23 @@ class PropManagementService(IPropManagementService):
 
         Returns tuple of (blue_offset, red_offset) as Point objects.
         """
-        if not beat_data.blue_motion or not beat_data.red_motion:
+        # Get motion data from pictograph_data instead of beat_data
+        blue_motion = None
+        red_motion = None
+
+        if beat_data.pictograph_data and beat_data.pictograph_data.motions:
+            blue_motion = beat_data.pictograph_data.motions.get("blue")
+            red_motion = beat_data.pictograph_data.motions.get("red")
+
+        if not blue_motion or not red_motion:
             return Point(0, 0), Point(0, 0)
 
         # Calculate separation directions based on motion types and letter
         blue_direction = self._calculate_separation_direction(
-            beat_data.blue_motion, beat_data, "blue"
+            blue_motion, beat_data, "blue"
         )
         red_direction = self._calculate_separation_direction(
-            beat_data.red_motion, beat_data, "red"
+            red_motion, beat_data, "red"
         )
 
         # Calculate offsets based on directions and prop types
@@ -474,11 +482,19 @@ class PropManagementService(IPropManagementService):
 
         Based on validated logic for special placement keys.
         """
-        if not beat_data.blue_motion or not beat_data.red_motion:
+        # Get motion data from pictograph_data instead of beat_data
+        blue_motion = None
+        red_motion = None
+
+        if beat_data.pictograph_data and beat_data.pictograph_data.motions:
+            blue_motion = beat_data.pictograph_data.motions.get("blue")
+            red_motion = beat_data.pictograph_data.motions.get("red")
+
+        if not blue_motion or not red_motion:
             return ""
 
-        blue_type = beat_data.blue_motion.motion_type.value
-        red_type = beat_data.red_motion.motion_type.value
+        blue_type = blue_motion.motion_type.value
+        red_type = red_motion.motion_type.value
         letter = beat_data.letter or ""
 
         # Generate key in standard format
@@ -504,7 +520,15 @@ class PropManagementService(IPropManagementService):
 
         Uses classification and repositioning logic.
         """
-        if not beat_data.blue_motion or not beat_data.red_motion:
+        # Get motion data from pictograph_data instead of beat_data
+        blue_motion = None
+        red_motion = None
+
+        if beat_data.pictograph_data and beat_data.pictograph_data.motions:
+            blue_motion = beat_data.pictograph_data.motions.get("blue")
+            red_motion = beat_data.pictograph_data.motions.get("red")
+
+        if not blue_motion or not red_motion:
             return beat_data
 
         # Calculate separation offsets

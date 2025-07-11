@@ -21,16 +21,12 @@ from application.services.glyphs.glyph_generation_service import (
     GlyphGenerationService,
     IGlyphGenerationService,
 )
-from application.services.pictograph.pictograph_manager import (
-    PictographSearchQuery,
-)
+from application.services.pictograph.pictograph_manager import PictographSearchQuery
 from domain.models import BeatData
-from domain.models.pictograph_models import (
-    ArrowData,
-    GridData,
-    GridMode,
-    PictographData,
-)
+from domain.models.arrow_data import ArrowData
+from domain.models.enums import GridMode
+from domain.models.grid_data import GridData
+from domain.models.pictograph_data import PictographData
 
 
 class PictographContext(Enum):
@@ -92,12 +88,7 @@ class PictographOrchestrator(IPictographOrchestrator):
         self, grid_mode: GridMode = GridMode.DIAMOND
     ) -> PictographData:
         """Create a new blank pictograph."""
-        grid_data = GridData(
-            grid_mode=grid_mode,
-            center_x=200.0,
-            center_y=200.0,
-            radius=100.0,
-        )
+        grid_data = GridData(grid_mode=grid_mode)
 
         return PictographData(
             grid_data=grid_data,
@@ -218,22 +209,30 @@ class PictographOrchestrator(IPictographOrchestrator):
         if not pictograph.arrows:
             return None
 
-        # Extract motion data from arrows
+        # Extract motion data from motions dictionary
         blue_motion = None
         red_motion = None
 
-        if "blue" in pictograph.arrows:
-            blue_motion = pictograph.arrows["blue"].motion_data
+        if "blue" in pictograph.motions:
+            blue_motion = pictograph.motions["blue"]
 
-        if "red" in pictograph.arrows:
-            red_motion = pictograph.arrows["red"].motion_data
+        if "red" in pictograph.motions:
+            red_motion = pictograph.motions["red"]
+
+        # Create pictograph data for beat
+        pictograph_data = PictographData(
+            motions=(
+                {"blue": blue_motion, "red": red_motion}
+                if blue_motion or red_motion
+                else {}
+            )
+        )
 
         # Create beat data
         return BeatData(
             beat_number=pictograph.metadata.get("created_from_beat", 1),
             letter=pictograph.metadata.get("letter"),
-            blue_motion=blue_motion,
-            red_motion=red_motion,
+            pictograph_data=pictograph_data,
         )
 
     def _load_context_configs(

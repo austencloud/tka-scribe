@@ -7,11 +7,9 @@ Handles sequence composition, beat management, and validation.
 
 import json
 import uuid
-from dataclasses import dataclass, field, fields
-from enum import Enum
-from typing import Any, Dict, List, Optional, Union
+from dataclasses import dataclass, field
+from typing import Any, Dict, List, Optional
 
-from ._shared_utils import process_field_value
 from .beat_data import BeatData
 
 

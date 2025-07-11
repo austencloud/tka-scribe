@@ -20,7 +20,7 @@ from application.services.pictograph.pictograph_validator import PictographValid
 from domain.models.enums import Orientation
 from domain.models.letter_type_classifier import LetterTypeClassifier
 from domain.models.motion_models import MotionData
-from domain.models.pictograph_models import ArrowData, PictographData
+from domain.models.arrow_data import ArrowData, PictographData
 
 logger = logging.getLogger(__name__)
 

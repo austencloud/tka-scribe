@@ -3,7 +3,7 @@ from typing import Optional
 
 from application.services.pictograph.pictograph_manager import PictographManager
 from domain.models.beat_data import BeatData
-from domain.models.pictograph_models import PictographData
+from domain.models.pictograph_data import PictographData
 from presentation.components.pictograph.pictograph_scene import PictographScene
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtGui import QMouseEvent, QPainter

@@ -9,7 +9,8 @@ It provides comprehensive pictograph analysis functionality.
 from typing import Optional
 
 from domain.models import ArrowColor, BeatData, LetterType, Location
-from domain.models.pictograph_models import GridMode, PictographData
+from domain.models.enums import GridMode
+from domain.models.pictograph_data import PictographData
 
 
 class PictographAnalyzer:

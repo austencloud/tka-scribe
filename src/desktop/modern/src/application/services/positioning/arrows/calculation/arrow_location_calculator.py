@@ -14,16 +14,10 @@ No UI dependencies, completely testable in isolation.
 import logging
 from typing import Optional
 
-from core.interfaces.positioning_services import (
-    IArrowLocationCalculator,
-)
-from domain.models import (
-    MotionData,
-    MotionType,
-    Location,
-    BeatData,
-)
-from domain.models.pictograph_models import PictographData
+from core.interfaces.positioning_services import IArrowLocationCalculator
+from domain.models import BeatData, Location, MotionData, MotionType
+from domain.models.pictograph_data import PictographData
+
 from .dash_location_calculator import DashLocationCalculator
 
 logger = logging.getLogger(__name__)
@@ -210,22 +204,30 @@ class ArrowLocationCalculatorService(IArrowLocationCalculator):
         if not pictograph.arrows:
             return None
 
-        # Extract motion data from arrows
+        # Extract motion data from motions dictionary
         blue_motion = None
         red_motion = None
 
-        if "blue" in pictograph.arrows:
-            blue_motion = pictograph.arrows["blue"].motion_data
+        if "blue" in pictograph.motions:
+            blue_motion = pictograph.motions["blue"]
 
-        if "red" in pictograph.arrows:
-            red_motion = pictograph.arrows["red"].motion_data
+        if "red" in pictograph.motions:
+            red_motion = pictograph.motions["red"]
+
+        # Create pictograph data for beat
+        pictograph_data = PictographData(
+            motions=(
+                {"blue": blue_motion, "red": red_motion}
+                if blue_motion or red_motion
+                else {}
+            )
+        )
 
         # Create beat data
         return BeatData(
             beat_number=pictograph.metadata.get("created_from_beat", 1),
             letter=pictograph.metadata.get("letter"),
-            blue_motion=blue_motion,
-            red_motion=red_motion,
+            pictograph_data=pictograph_data,
         )
 
     def is_blue_arrow_motion(self, motion: MotionData, beat_data: BeatData) -> bool:

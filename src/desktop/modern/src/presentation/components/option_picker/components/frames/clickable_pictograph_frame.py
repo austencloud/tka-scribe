@@ -1,7 +1,7 @@
 from typing import Optional
 
 from application.services.layout.component_sizer import ComponentSizer, SizeConstraints
-from domain.models.pictograph_models import PictographData
+from domain.models.pictograph_data import PictographData
 from presentation.components.pictograph.pictograph_component import (
     PictographComponent,
     create_pictograph_component,
@@ -85,9 +85,11 @@ class ClickablePictographFrame(QFrame):
         """
         )
 
-        self.show()
+        # WINDOW MANAGEMENT FIX: Don't show during creation to prevent flashing
+        # The frame will be shown when needed by the display manager
+        self.hide()
         if self.pictograph_component:
-            self.pictograph_component.show()
+            self.pictograph_component.hide()
 
     def _configure_option_picker_context(self, pictograph_data: PictographData) -> None:
         if not self.pictograph_component:

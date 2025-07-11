@@ -13,14 +13,16 @@ from typing import Any, Dict, List, Optional
 import pandas as pd
 from application.services.pictograph.pictograph_manager import PictographManager
 from domain.models import (
+    ArrowData,
     GlyphData,
+    GridData,
+    GridMode,
     Location,
     MotionData,
     MotionType,
     PictographData,
     RotationDirection,
 )
-from domain.models.pictograph_models import ArrowData, GridData, GridMode
 
 
 class PositionMatchingService:
@@ -195,17 +197,15 @@ class PositionMatchingService:
             end_ori=red_attrs.get("end_ori", "in"),
         )
 
-        # Create arrows from motion data
+        # Create arrows (without motion data - motion data now lives in PictographData)
         arrows = {}
         if blue_motion:
             arrows["blue"] = ArrowData(
-                motion_data=blue_motion,
                 color="blue",
                 is_visible=True,
             )
         if red_motion:
             arrows["red"] = ArrowData(
-                motion_data=red_motion,
                 color="red",
                 is_visible=True,
             )
@@ -218,11 +218,19 @@ class PositionMatchingService:
             radius=100.0,
         )
 
-        # Create initial PictographData object
+        # Create motions dictionary
+        motions = {}
+        if blue_motion:
+            motions["blue"] = blue_motion
+        if red_motion:
+            motions["red"] = red_motion
+
+        # Create initial PictographData object with motion dictionary
         pictograph_data = PictographData(
             grid_data=grid_data,
             arrows=arrows,
             props={},  # Props will be generated during rendering
+            motions=motions,  # NEW: Motion dictionary (consistent with arrows/props)
             letter=letter,
             start_position=item.get("start_pos", "unknown"),
             end_position=item.get("end_pos", "unknown"),

@@ -1,22 +1,22 @@
 import random
 
+from PyQt6.QtCore import QPointF, Qt
 from PyQt6.QtGui import (
     QColor,
-    QPainter,
     QLinearGradient,
+    QPainter,
     QPixmap,
     QRadialGradient,
     QTransform,
 )
 from PyQt6.QtWidgets import QWidget
-from PyQt6.QtCore import Qt, QPointF
-
-from .base_background import BaseBackground
-from .asset_utils import get_image_path
 
 from application.services.backgrounds.bubbles.bubble_physics import BubblePhysics
-from application.services.backgrounds.bubbles.fish_spawning import FishSpawning
 from application.services.backgrounds.bubbles.fish_movement import FishMovement
+from application.services.backgrounds.bubbles.fish_spawning import FishSpawning
+
+from .asset_utils import get_image_path
+from .base_background import BaseBackground
 
 
 class BubblesBackground(BaseBackground):
@@ -54,7 +54,7 @@ class BubblesBackground(BaseBackground):
         # Update using services
         self.bubble_physics.update_bubbles()
         self.fish_spawning.update_fish_spawning()
-        
+
         # Update fish positions and remove offscreen fish
         active_fish = self.fish_spawning.get_active_fish()
         self.fish_movement.update_fish_positions(active_fish)
@@ -78,7 +78,7 @@ class BubblesBackground(BaseBackground):
         self._draw_fish(painter, widget)
 
         painter.setOpacity(1.0)  # Reset opacity after drawing
-    
+
     def _draw_bubbles(self, painter: QPainter, widget: QWidget):
         """Draw bubbles using service data"""
         for bubble in self.bubble_physics.get_bubble_states():

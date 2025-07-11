@@ -2,7 +2,7 @@ from typing import Any, Callable, Dict, List, Optional
 
 from core.dependency_injection.di_container import DIContainer
 from domain.models import SequenceData
-from domain.models.pictograph_models import PictographData
+from domain.models.pictograph_data import PictographData
 from presentation.components.component_base import ViewableComponentBase
 from PyQt6.QtCore import pyqtSignal
 from PyQt6.QtWidgets import QWidget
@@ -52,7 +52,8 @@ class OptionPicker(ViewableComponentBase):
         )
 
         self.orchestrator = OptionPickerOrchestrator(
-            container=container, progress_callback=progress_callback
+            container=container,
+            progress_callback=progress_callback,
         )
 
         # Connect orchestrator signals to our signals

@@ -7,7 +7,6 @@ These models represent settings data without any UI coupling.
 
 from dataclasses import dataclass, field, replace
 from typing import Dict, Optional, Any
-from enum import Enum
 
 from domain.models.enums import BackgroundType, GridMode, PropType
 

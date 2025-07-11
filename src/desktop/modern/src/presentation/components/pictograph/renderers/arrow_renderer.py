@@ -11,14 +11,15 @@ from functools import lru_cache
 from typing import TYPE_CHECKING, Dict, Optional, Set
 
 from application.services.assets.asset_manager import AssetManager
+from application.services.assets.image_asset_utils import get_image_path
 from core.dependency_injection.di_container import get_container
 from core.interfaces.positioning_services import (
     IArrowCoordinateSystemService,
     IArrowPositioningOrchestrator,
 )
 from domain.models import Location, MotionData, MotionType
-from domain.models.pictograph_models import ArrowData, PictographData
-from application.services.assets.image_asset_utils import get_image_path
+from domain.models.arrow_data import ArrowData
+from domain.models.pictograph_data import PictographData
 from presentation.components.pictograph.graphics_items.arrow_item import ArrowItem
 from PyQt6.QtSvg import QSvgRenderer
 
@@ -153,18 +154,20 @@ class ArrowRenderer:
             arrow_item.setRotation(rotation)
 
             arrow_data = ArrowData(
-                motion_data=motion_data,
                 color=color,
                 turns=motion_data.turns,
                 position_x=position_x,
                 position_y=position_y,
                 rotation_angle=rotation,
+                is_visible=True,
             )
             # Apply mirror transform if positioning orchestrator is available
             if self.positioning_orchestrator:
                 self.positioning_orchestrator.apply_mirror_transform(
                     arrow_item,
-                    self.positioning_orchestrator.should_mirror_arrow(arrow_data),
+                    self.positioning_orchestrator.should_mirror_arrow(
+                        arrow_data, full_pictograph_data
+                    ),
                 )
 
             # POSITIONING FORMULA:
@@ -209,9 +212,9 @@ class ArrowRenderer:
     ) -> tuple[float, float, float]:
         """Calculate arrow position using the complete positioning service."""
         arrow_data = ArrowData(
-            motion_data=motion_data,
             color=color,
             turns=motion_data.turns,
+            is_visible=True,
         )
 
         # Use full pictograph data if available for Type 3 detection

@@ -1,12 +1,13 @@
-from .base_background import BaseBackground
+from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QColor, QPainter
 from PyQt6.QtWidgets import QWidget
-from PyQt6.QtCore import Qt
 
-from application.services.backgrounds.starfield.star_twinkling import StarTwinkling
 from application.services.backgrounds.starfield.comet_trajectory import CometTrajectory
 from application.services.backgrounds.starfield.moon_positioning import MoonPositioning
+from application.services.backgrounds.starfield.star_twinkling import StarTwinkling
 from application.services.backgrounds.starfield.ufo_behavior import UFOBehavior
+
+from .base_background import BaseBackground
 
 
 class StarfieldBackground(BaseBackground):
@@ -45,29 +46,29 @@ class StarfieldBackground(BaseBackground):
         self._draw_comet(painter, widget)
         self._draw_moon(painter, widget)
         self._draw_ufo(painter, widget)
-    
+
     def _draw_stars(self, painter: QPainter, widget: QWidget):
         """Draw stars using service data"""
         star_states = self.star_twinkling.get_star_states()
         twinkle_states = self.star_twinkling.get_twinkle_states()
-        
+
         for i, star in enumerate(star_states):
             x = int(star.position.x * widget.width())
             y = int(star.position.y * widget.height())
             size = int(star.size * twinkle_states[i])
-            
+
             # Set star color with twinkle intensity
             color = QColor(*star.color)
             color.setAlpha(int(twinkle_states[i] * 255))
             painter.setBrush(color)
             painter.setPen(color)
-            
+
             # Draw star based on spikiness
             if star.spikiness == 0:  # Round star
                 painter.drawEllipse(x, y, size, size)
             else:  # Star shape - simplified representation
                 painter.drawEllipse(x, y, size, size)
-    
+
     def _draw_comet(self, painter: QPainter, widget: QWidget):
         """Draw comet using service data"""
         comet = self.comet_trajectory.get_comet_state()
@@ -81,30 +82,33 @@ class StarfieldBackground(BaseBackground):
                 color = QColor(*comet.color, alpha)
                 painter.setBrush(color)
                 painter.drawEllipse(int(tail_x), int(tail_y), int(size), int(size))
-            
+
             # Draw comet head
             head_x = comet.position.x * widget.width()
             head_y = comet.position.y * widget.height()
             painter.setBrush(QColor(*comet.color, 255))
-            painter.drawEllipse(int(head_x), int(head_y), int(comet.size), int(comet.size))
-    
+            painter.drawEllipse(
+                int(head_x), int(head_y), int(comet.size), int(comet.size)
+            )
+
     def _draw_moon(self, painter: QPainter, widget: QWidget):
         """Draw moon using service data"""
         moon_x, moon_y, moon_size = self.moon_positioning.calculate_moon_position(
             widget.width(), widget.height()
         )
-        
+
         if self.moon_positioning.should_use_image():
             # Draw actual moon image
             moon_image = self.moon_positioning.get_moon_image()
             if not moon_image.isNull():
                 # Scale the image to the moon size
                 scaled_image = moon_image.scaled(
-                    moon_size, moon_size,
+                    moon_size,
+                    moon_size,
                     Qt.AspectRatioMode.KeepAspectRatio,
-                    Qt.TransformationMode.SmoothTransformation
+                    Qt.TransformationMode.SmoothTransformation,
                 )
-                
+
                 # Draw the moon image
                 painter.drawPixmap(moon_x, moon_y, scaled_image)
         else:
@@ -113,43 +117,46 @@ class StarfieldBackground(BaseBackground):
             painter.setBrush(QColor(220, 220, 200))
             painter.setPen(Qt.PenStyle.NoPen)
             painter.drawEllipse(moon_x, moon_y, moon_size, moon_size)
-            
+
             # Draw craters
             painter.setBrush(QColor(180, 180, 160))
-            for crater_x, crater_y, crater_size in self.moon_positioning.get_crater_positions(
-                moon_x, moon_y, moon_size
-            ):
+            for (
+                crater_x,
+                crater_y,
+                crater_size,
+            ) in self.moon_positioning.get_crater_positions(moon_x, moon_y, moon_size):
                 painter.drawEllipse(crater_x, crater_y, crater_size, crater_size)
-    
+
     def _draw_ufo(self, painter: QPainter, widget: QWidget):
         """Draw UFO using service data"""
         ufo = self.ufo_behavior.get_ufo_state()
         if ufo:
             ufo_x = ufo.position.x * widget.width()
             ufo_y = ufo.position.y * widget.height()
-            
+
             if self.ufo_behavior.should_use_image():
                 # Draw actual UFO image
                 ufo_image = self.ufo_behavior.get_ufo_image()
                 if not ufo_image.isNull():
                     # Scale the image to the UFO size
                     scaled_image = ufo_image.scaled(
-                        int(ufo.size), int(ufo.size * 0.6),
+                        int(ufo.size),
+                        int(ufo.size * 0.6),
                         Qt.AspectRatioMode.KeepAspectRatio,
-                        Qt.TransformationMode.SmoothTransformation
+                        Qt.TransformationMode.SmoothTransformation,
                     )
-                    
+
                     # Apply glow effect with opacity
                     glow_intensity = self.ufo_behavior.get_glow_intensity()
                     painter.setOpacity(0.7 + glow_intensity * 0.3)
-                    
+
                     # Draw the UFO image
                     painter.drawPixmap(
-                        int(ufo_x - ufo.size / 2), 
-                        int(ufo_y - ufo.size * 0.3), 
-                        scaled_image
+                        int(ufo_x - ufo.size / 2),
+                        int(ufo_y - ufo.size * 0.3),
+                        scaled_image,
                     )
-                    
+
                     painter.setOpacity(1.0)
             else:
                 # Fallback to procedural UFO
@@ -157,4 +164,6 @@ class StarfieldBackground(BaseBackground):
                 color = QColor(100, 255, 100, int(glow_intensity * 255))
                 painter.setBrush(color)
                 painter.setPen(Qt.PenStyle.NoPen)
-                painter.drawEllipse(int(ufo_x), int(ufo_y), int(ufo.size), int(ufo.size * 0.6))
+                painter.drawEllipse(
+                    int(ufo_x), int(ufo_y), int(ufo.size), int(ufo.size * 0.6)
+                )

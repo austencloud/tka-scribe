@@ -20,24 +20,34 @@ except ImportError:
     def handle_service_errors(*args, **kwargs):
         def decorator(func):
             return func
+
         return decorator
 
     def monitor_performance(*args, **kwargs):
         def decorator(func):
             return func
+
         return decorator
 
     class DataProcessingError(Exception):
-        def __init__(self, message: str, data_type: Optional[str] = None, processing_stage: Optional[str] = None):
+        def __init__(
+            self,
+            message: str,
+            data_type: Optional[str] = None,
+            processing_stage: Optional[str] = None,
+        ):
             super().__init__(message)
             self.data_type = data_type
             self.processing_stage = processing_stage
 
     class ValidationError(Exception):
-        def __init__(self, message: str, field: Optional[str] = None, value: Any = None):
+        def __init__(
+            self, message: str, field: Optional[str] = None, value: Any = None
+        ):
             super().__init__(message)
             self.field = field
             self.value = value
+
 
 logger = logging.getLogger(__name__)
 
@@ -45,7 +55,7 @@ logger = logging.getLogger(__name__)
 class ExternalDataConverter:
     """
     Converts external pictograph data to modern PictographData format.
-    
+
     Focused solely on external data to PictographData conversion,
     following single responsibility principle.
     """
@@ -88,14 +98,18 @@ class ExternalDataConverter:
 
             # Convert blue motion attributes
             blue_attrs = external_data.get("blue_attributes", {})
-            blue_motion = self.motion_converter.convert_motion_attributes(blue_attrs, "blue")
+            blue_motion = self.motion_converter.convert_motion_attributes(
+                blue_attrs, "blue"
+            )
 
             # Convert red motion attributes
             red_attrs = external_data.get("red_attributes", {})
-            red_motion = self.motion_converter.convert_motion_attributes(red_attrs, "red")
+            red_motion = self.motion_converter.convert_motion_attributes(
+                red_attrs, "red"
+            )
 
             # Create arrows from motion data
-            from domain.models.pictograph_models import ArrowData, GridData
+            from domain.models.arrow_data import ArrowData, GridData
 
             arrows = {}
             if blue_motion:

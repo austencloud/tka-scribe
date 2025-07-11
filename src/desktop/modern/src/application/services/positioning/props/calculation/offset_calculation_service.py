@@ -11,11 +11,12 @@ PROVIDES:
 - Scene-relative offset scaling
 """
 
-from typing import Dict, Tuple
 from abc import ABC, abstractmethod
+from typing import Dict, Tuple
+
+from domain.models.enums import PropType
 from PyQt6.QtCore import QPointF
 
-from domain.models.pictograph_models import PropType
 from ...props.calculation.direction_calculation_service import SeparationDirection
 
 

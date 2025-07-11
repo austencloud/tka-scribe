@@ -16,7 +16,8 @@ from domain.models import (
     MotionType,
     RotationDirection,
 )
-from domain.models.pictograph_models import GridMode, PictographData
+from domain.models.enums import GridMode
+from domain.models.pictograph_data import PictographData
 
 
 class DashLocationCalculator:
@@ -58,9 +59,9 @@ class DashLocationCalculator:
             else pictograph_data.arrows["red"].motion_data
         )
         other_motion = (
-            pictograph_data.arrows["red"].motion_data
+            pictograph_data.motions.get("red")
             if is_blue_arrow
-            else pictograph_data.arrows["blue"].motion_data
+            else pictograph_data.motions.get("blue")
         )
 
         if not motion or motion.motion_type != MotionType.DASH:

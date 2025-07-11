@@ -10,6 +10,7 @@ from typing import Any, Dict
 
 try:
     from domain.models import BeatData
+
     from .external_data_converter import ExternalDataConverter
 except ImportError:
     # Fallback for tests
@@ -21,7 +22,7 @@ logger = logging.getLogger(__name__)
 class BeatDataConverter:
     """
     Converts external pictograph data to BeatData format.
-    
+
     Provides backward compatibility by converting external data to PictographData first,
     then extracting the necessary information to create BeatData objects.
     """
@@ -43,8 +44,10 @@ class BeatDataConverter:
             BeatData object with converted motion information
         """
         # Convert to pictograph data first
-        pictograph_data = self.external_converter.convert_external_pictograph_to_pictograph_data(
-            external_data
+        pictograph_data = (
+            self.external_converter.convert_external_pictograph_to_pictograph_data(
+                external_data
+            )
         )
 
         # Extract motion data from arrows
@@ -59,11 +62,8 @@ class BeatDataConverter:
         # Create BeatData with extracted information
         return BeatData(
             beat_number=1,  # Default beat number for external conversions
-            blue_motion=blue_motion,
-            red_motion=red_motion,
+            pictograph_data=pictograph_data,  # NEW: Use pictograph data with motions
             letter=pictograph_data.letter,
-            start_position=pictograph_data.start_position,
-            end_position=pictograph_data.end_position,
             is_blank=pictograph_data.is_blank,
             glyph_data=pictograph_data.glyph_data,
         )
@@ -81,7 +81,7 @@ class BeatDataConverter:
             List of BeatData objects
         """
         beat_data_list = []
-        
+
         for i, external_data in enumerate(external_pictographs):
             try:
                 beat_data = self.convert_external_pictograph_to_beat_data(external_data)
@@ -111,7 +111,7 @@ class BeatDataConverter:
         return [
             "beat_number",
             "blue_motion",
-            "red_motion", 
+            "red_motion",
             "letter",
             "start_position",
             "end_position",

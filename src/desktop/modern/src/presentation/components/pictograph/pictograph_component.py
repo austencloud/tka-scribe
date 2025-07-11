@@ -8,7 +8,7 @@ from application.services.pictograph.scaling_service import ScalingContext
 from core.dependency_injection import get_container
 from core.interfaces.core_services import IPictographBorderManager
 from domain.models import BeatData
-from domain.models.pictograph_models import PictographData
+from domain.models.pictograph_data import PictographData
 from presentation.components.pictograph.border_manager import BorderedPictographMixin
 from presentation.components.pictograph.pictograph_scene import PictographScene
 from PyQt6.QtCore import QEvent, Qt, QTimer, pyqtSignal
@@ -39,6 +39,9 @@ class PictographComponent(BorderedPictographMixin, QGraphicsView):
         self.debug_timer = QTimer()
         self.debug_timer.timeout.connect(self._print_debug_dimensions)
         self.debug_timer.setSingleShot(True)
+
+        # WINDOW MANAGEMENT FIX: Hide during creation to prevent flashing
+        self.hide()
 
         self._setup_ui()
 

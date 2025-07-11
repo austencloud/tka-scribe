@@ -21,12 +21,32 @@
       "subProcess": true
     },
     {
-      "name": "🚀 TKA Launcher (Just My Code)",
+      "name": "🖥️ TKA Modern Desktop App ",
       "type": "debugpy",
       "request": "launch",
-      "program": "${workspaceFolder}/launcher/main.py",
+      "program": "${workspaceFolder}/src/desktop/modern/main.py",
       "console": "integratedTerminal",
-      "justMyCode": true,
+      "justMyCode": false,
+      "cwd": "${workspaceFolder}/src/desktop/modern",
+      "python": "${workspaceFolder}/.venv/Scripts/python.exe",
+      "env": {
+        "PYTHONUNBUFFERED": "1",
+        "PYTHONPATH": "${workspaceFolder};${workspaceFolder}/src;${workspaceFolder}/launcher;${workspaceFolder}/packages;${workspaceFolder}/.venv/Lib/site-packages",
+        "VIRTUAL_ENV": "${workspaceFolder}/.venv",
+        "PYTHONNOUSERSITE": "1"
+      },
+      "stopOnEntry": false,
+      "showReturnValue": true,
+      "subProcess": true
+    },
+
+    {
+      "name": "🏛️ TKA Legacy Desktop App",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/run_legacy.py",
+      "console": "integratedTerminal",
+      "justMyCode": false,
       "cwd": "${workspaceFolder}",
       "python": "${workspaceFolder}/.venv/Scripts/python.exe",
       "env": {

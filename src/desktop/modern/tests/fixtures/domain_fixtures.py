@@ -10,7 +10,7 @@ from pathlib import Path
 
 import pytest
 from domain.models import BeatData, SequenceData
-from domain.models.pictograph_models import PictographData
+from domain.models.pictograph_data import PictographData
 
 # Add modern source to path
 modern_src = Path(__file__).parent.parent.parent / "src"
@@ -67,12 +67,7 @@ def empty_sequence_data():
 def sample_motion_data():
     """Provide sample motion data for testing."""
     try:
-        from domain.models import (
-            Location,
-            MotionData,
-            MotionType,
-            RotationDirection,
-)
+        from domain.models import Location, MotionData, MotionType, RotationDirection
 
         motion = MotionData(
             motion_type=MotionType.PRO,
@@ -95,16 +90,17 @@ def sample_pictograph_data():
     """Provide sample pictograph data for testing."""
     try:
         from domain.models import (
-            Location,
-            MotionData,
-            MotionType,
-            RotationDirection,
-)
-        from domain.models.pictograph_models import (
             ArrowData,
             GridData,
             GridMode,
+            Location,
+            MotionData,
+            MotionType,
             PictographData,
+            RotationDirection,
+            domain.models.pictograph_models,
+            from,
+            import,
         )
 
         # Create motion data

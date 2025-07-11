@@ -138,7 +138,7 @@ class GlyphDataService:
 
     def _beat_data_to_pictograph_data(self, beat_data: BeatData) -> PictographData:
         """Convert BeatData to PictographData for glyph processing."""
-        from domain.models.pictograph_models import ArrowData, GridData
+        from domain.models.arrow_data import ArrowData, GridData
 
         # Create arrows from motion data
         arrows = {}
@@ -173,8 +173,8 @@ class GlyphDataService:
         ):
             return None
 
-        blue_motion = pictograph_data.arrows["blue"].motion_data
-        red_motion = pictograph_data.arrows["red"].motion_data
+        blue_motion = pictograph_data.motions.get("blue")
+        red_motion = pictograph_data.motions.get("red")
 
         # Simplified VTG determination based on motion patterns
         # This would need to be expanded with the full classification logic
@@ -253,7 +253,7 @@ class GlyphDataService:
 
         # For now, use blue motion's start and end locations
         # This would need more sophisticated logic in the full implementation
-        blue_motion = pictograph_data.arrows["blue"].motion_data
+        blue_motion = pictograph_data.motions.get("blue")
 
         # Map locations to position names
         location_to_position = {

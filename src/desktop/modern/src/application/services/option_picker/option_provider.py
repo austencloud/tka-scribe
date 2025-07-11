@@ -17,7 +17,11 @@ from core.interfaces.option_picker_interfaces import (
     IOptionProvider,
     IOptionServiceSignals,
 )
-from domain.models.pictograph_models import PictographData
+from domain.models.pictograph_data import PictographData
+
+if TYPE_CHECKING:
+    from domain.models.beat_data import BeatData
+    from domain.models.sequence_models import SequenceData
 
 if TYPE_CHECKING:
     from domain.models.sequence_models import SequenceData
@@ -150,18 +154,15 @@ class OptionProvider(IOptionProvider):
             # Get options from position service
             options = self._position_service.get_next_options(end_position)
 
-            # Apply orientation updates to match sequence context
-            updated_options = self._apply_orientation_updates(sequence, options)
-
             # Cache and emit
-            self._pictograph_options = updated_options
+            self._pictograph_options = options
             if self._signal_emitter:
-                self._signal_emitter.emit_options_loaded(updated_options)
+                self._signal_emitter.emit_options_loaded(options)
 
             logger.debug(
-                f"Loaded {len(updated_options)} pictograph options from modern sequence"
+                f"Loaded {len(options)} pictograph options from modern sequence"
             )
-            return updated_options
+            return options
 
         except Exception as e:
             logger.error(f"Error loading options from modern sequence: {e}")

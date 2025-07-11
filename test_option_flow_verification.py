@@ -26,7 +26,7 @@ def test_option_flow():
 
         # Import required components
         from core.application.application_factory import ApplicationFactory
-        from domain.models.pictograph_models import PictographData
+        from domain.models.pictograph_data import PictographData
 
         # Create test application
         container = ApplicationFactory.create_test_app()

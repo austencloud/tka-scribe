@@ -6,7 +6,7 @@ Handles glyph classification and visualization data.
 """
 
 import json
-from dataclasses import dataclass, fields
+from dataclasses import dataclass
 from typing import Any, Dict, Optional, Union
 from enum import Enum
 

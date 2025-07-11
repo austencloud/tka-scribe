@@ -13,8 +13,9 @@ Defines behavioral contracts for pictograph generation workflows.
 """
 
 import sys
-import pytest
 from pathlib import Path
+
+import pytest
 
 # Add modern source to path
 modern_src = Path(__file__).parent.parent.parent.parent / "src"
@@ -34,11 +35,9 @@ class TestPictographGenerationWorkflowContract:
         - Pictograph structure is valid
         """
         try:
-            from domain.models.pictograph_models import (
-                PictographData,
-                GridData,
-                GridMode,
-            )
+            from domain.models.enums import GridMode
+            from domain.models.grid_data import GridData
+            from domain.models.pictograph_data import PictographData
 
             # Create grid data
             grid = GridData(

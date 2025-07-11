@@ -14,7 +14,7 @@ from presentation.components.workbench.workbench import SequenceWorkbench
 from PyQt6.QtCore import QObject, pyqtSignal
 
 if TYPE_CHECKING:
-    from domain.models.pictograph_models import PictographData
+    from domain.models.pictograph_data import PictographData
 
 
 class SequenceLoader(QObject):
@@ -195,8 +195,9 @@ class SequenceLoader(QObject):
     ) -> "PictographData":
         """Create PictographData for start position using dataset service."""
         try:
-            from application.services.data.dataset_quiry import DatasetQuery
-            from domain.models.pictograph_models import GridData, PictographData
+            from application.services.data.dataset_query import DatasetQuery
+            from domain.models.grid_data import GridData
+            from domain.models.pictograph_data import PictographData
 
             dataset_service = DatasetQuery()
             # Get real start position data from dataset as PictographData
@@ -236,7 +237,8 @@ class SequenceLoader(QObject):
         except Exception as e:
             print(f"❌ [SEQUENCE_LOADING] Error creating PictographData: {e}")
             # Last resort fallback
-            from domain.models.pictograph_models import GridData, PictographData
+            from domain.models.grid_data import GridData
+            from domain.models.pictograph_data import PictographData
 
             return PictographData(
                 letter=position_key,

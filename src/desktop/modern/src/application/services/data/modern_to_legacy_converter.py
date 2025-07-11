@@ -55,14 +55,22 @@ class ModernToLegacyConverter:
             timing = beat.metadata.get("timing", "same") if beat.metadata else "same"
             direction = beat.metadata.get("direction", "cw") if beat.metadata else "cw"
 
+            # Get motion data from pictograph_data instead of beat
+            blue_motion = None
+            red_motion = None
+
+            if beat.pictograph_data and beat.pictograph_data.motions:
+                blue_motion = beat.pictograph_data.motions.get("blue")
+                red_motion = beat.pictograph_data.motions.get("red")
+
             # Convert blue motion data
             blue_attrs = self.position_mapper.convert_motion_attributes_to_legacy(
-                beat.blue_motion, "alpha"
+                blue_motion, "alpha"
             )
 
             # Convert red motion data
             red_attrs = self.position_mapper.convert_motion_attributes_to_legacy(
-                beat.red_motion, "alpha"
+                red_motion, "alpha"
             )
 
             return {
@@ -108,12 +116,23 @@ class ModernToLegacyConverter:
                     end_pos
                 )
 
+            # Get motion data from pictograph_data instead of start_position_data
+            blue_motion = None
+            red_motion = None
+
+            if (
+                start_position_data.pictograph_data
+                and start_position_data.pictograph_data.motions
+            ):
+                blue_motion = start_position_data.pictograph_data.motions.get("blue")
+                red_motion = start_position_data.pictograph_data.motions.get("red")
+
             # Convert motion data with start position handling
             blue_attrs = self._convert_start_position_motion_to_legacy(
-                start_position_data.blue_motion, sequence_start_position
+                blue_motion, sequence_start_position
             )
             red_attrs = self._convert_start_position_motion_to_legacy(
-                start_position_data.red_motion, sequence_start_position
+                red_motion, sequence_start_position
             )
 
             return {
@@ -142,12 +161,20 @@ class ModernToLegacyConverter:
             Dictionary in legacy format
         """
         try:
+            # Get motion data from pictograph_data instead of beat
+            blue_motion = None
+            red_motion = None
+
+            if beat.pictograph_data and beat.pictograph_data.motions:
+                blue_motion = beat.pictograph_data.motions.get("blue")
+                red_motion = beat.pictograph_data.motions.get("red")
+
             # Convert motion attributes
             blue_attrs = self.position_mapper.convert_motion_attributes_to_legacy(
-                beat.blue_motion, "s"
+                blue_motion, "s"
             )
             red_attrs = self.position_mapper.convert_motion_attributes_to_legacy(
-                beat.red_motion, "s"
+                red_motion, "s"
             )
 
             return {

@@ -7,13 +7,16 @@ Handles beat data, motion references, and glyph information.
 
 import json
 import uuid
-from dataclasses import dataclass, field, fields
-from enum import Enum
-from typing import Any, Dict, Optional, Union
+from dataclasses import dataclass, field
 
-from ._shared_utils import process_field_value
+# Forward reference for PictographData to avoid circular imports
+from typing import TYPE_CHECKING, Any, Dict, Optional
+
 from .glyph_models import GlyphData
 from .motion_models import MotionData
+
+if TYPE_CHECKING:
+    from .pictograph_data import PictographData
 
 
 @dataclass(frozen=True)
@@ -33,9 +36,12 @@ class BeatData:
     letter: Optional[str] = None
     duration: float = 1.0
 
-    # Motion data (replaces complex dictionaries)
-    blue_motion: Optional[MotionData] = None
-    red_motion: Optional[MotionData] = None
+    # Motion data (DEPRECATED: motion data now lives in PictographData)
+    # blue_motion: Optional[MotionData] = None  # Removed - use PictographData.blue_motion
+    # red_motion: Optional[MotionData] = None   # Removed - use PictographData.red_motion
+
+    # Pictograph data (NEW: contains motion data)
+    pictograph_data: Optional["PictographData"] = None
 
     # Glyph data
     glyph_data: Optional[GlyphData] = None

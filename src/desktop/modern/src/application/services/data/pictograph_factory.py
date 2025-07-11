@@ -10,15 +10,18 @@ from typing import Optional
 
 import pandas as pd
 from application.services.glyphs.glyph_data_service import GlyphDataService
+from domain.models.arrow_data import ArrowData
 from domain.models.beat_data import BeatData
-from domain.models.enums import Location, MotionType, Orientation, RotationDirection
-from domain.models.motion_models import MotionData
-from domain.models.pictograph_models import (
-    ArrowData,
-    GridData,
+from domain.models.enums import (
     GridMode,
-    PictographData,
+    Location,
+    MotionType,
+    Orientation,
+    RotationDirection,
 )
+from domain.models.grid_data import GridData
+from domain.models.motion_models import MotionData
+from domain.models.pictograph_data import PictographData
 
 logger = logging.getLogger(__name__)
 
@@ -81,12 +84,19 @@ class PictographFactory:
             blue_motion = self._create_motion_data_from_entry(entry, "blue")
             red_motion = self._create_motion_data_from_entry(entry, "red")
 
-            # Create arrow data
+            # Create arrow data (without motion_data - motion data now in motions dictionary)
             arrows = {}
             if blue_motion:
-                arrows["blue"] = ArrowData(motion_data=blue_motion, color="blue")
+                arrows["blue"] = ArrowData(color="blue", is_visible=True)
             if red_motion:
-                arrows["red"] = ArrowData(motion_data=red_motion, color="red")
+                arrows["red"] = ArrowData(color="red", is_visible=True)
+
+            # Create motions dictionary
+            motions = {}
+            if blue_motion:
+                motions["blue"] = blue_motion
+            if red_motion:
+                motions["red"] = red_motion
 
             # Create grid data
             grid_data = GridData(
@@ -98,6 +108,7 @@ class PictographFactory:
                 grid_data=grid_data,
                 arrows=arrows,
                 props={},  # Props will be generated during rendering
+                motions=motions,  # NEW: Motion dictionary
                 letter=entry.get("letter", "?"),
                 start_position=entry.get("start_pos"),
                 end_position=entry.get("end_pos"),
@@ -182,14 +193,14 @@ class PictographFactory:
         Returns:
             BeatData object with motion data extracted from pictograph
         """
-        # Extract motion data from arrows
+        # Extract motion data from motions dictionary
         blue_motion = None
         red_motion = None
 
-        if "blue" in pictograph_data.arrows:
-            blue_motion = pictograph_data.arrows["blue"].motion_data
-        if "red" in pictograph_data.arrows:
-            red_motion = pictograph_data.arrows["red"].motion_data
+        if "blue" in pictograph_data.motions:
+            blue_motion = pictograph_data.motions["blue"]
+        if "red" in pictograph_data.motions:
+            red_motion = pictograph_data.motions["red"]
 
         # Create BeatData with extracted information
         # Note: start_position and end_position should be in glyph_data, not as direct BeatData parameters

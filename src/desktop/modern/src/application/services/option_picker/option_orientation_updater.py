@@ -13,11 +13,8 @@ import logging
 from dataclasses import replace
 from typing import List, Optional
 
-from application.services.positioning.arrows.calculation.orientation_calculator import (
-    OrientationCalculator,
-)
 from domain.models.beat_data import BeatData
-from domain.models.enums import Orientation
+from domain.models.pictograph_data import PictographData
 from domain.models.sequence_models import SequenceData
 
 logger = logging.getLogger(__name__)
@@ -25,40 +22,35 @@ logger = logging.getLogger(__name__)
 
 class OptionOrientationUpdater:
     """
-    Service for updating orientations of option beats based on sequence context.
+    Service for updating orientations of pictograph options based on sequence context.
 
     Modern implementation that:
     1. Extract end orientations from last beat in sequence
-    2. Set those as start orientations for all option beats
-    3. Calculate new end orientations using orientation calculator
+    2. Set those as start orientations for all pictograph options
+    3. Update prop orientations to match sequence continuity
     """
 
-    def __init__(self, orientation_calculator: Optional[OrientationCalculator] = None):
-        """
-        Initialize the orientation update service.
-
-        Args:
-            orientation_calculator: Calculator for end orientations (optional, will create if None)
-        """
-        self.orientation_calculator = orientation_calculator or OrientationCalculator()
+    def __init__(self):
+        """Initialize the orientation update service."""
+        pass
 
     def update_option_orientations(
-        self, sequence: SequenceData, options: List[BeatData]
-    ) -> List[BeatData]:
+        self, sequence: SequenceData, options: List[PictographData]
+    ) -> List[PictographData]:
         """
-        Update orientations for option beats based on sequence context.
+        Update orientations for pictograph options based on sequence context.
 
         Modern implementation that:
         - Extract end orientations from last beat in sequence
-        - Set those as start orientations for all options
-        - Calculate new end orientations using modern orientation calculator
+        - Set those as start orientations for all pictograph options
+        - Update prop orientations to match sequence continuity
 
         Args:
             sequence: The current sequence data
-            options: List of option beats to update
+            options: List of pictograph options to update
 
         Returns:
-            List of updated BeatData objects with corrected orientations
+            List of updated PictographData objects with corrected orientations
         """
         if not sequence or sequence.length == 0 or not options:
             logger.debug("No sequence or options to update orientations for")
@@ -80,15 +72,17 @@ class OptionOrientationUpdater:
             f"Updating {len(options)} options with start orientations: blue={last_blue_end_ori}, red={last_red_end_ori}"
         )
 
-        # Update each option
+        # Update each pictograph option
         updated_options = []
         for option in options:
-            updated_option = self._update_single_option_orientation(
+            updated_option = self._update_single_pictograph_orientation(
                 option, last_blue_end_ori, last_red_end_ori
             )
             updated_options.append(updated_option)
 
-        logger.debug(f"Updated orientations for {len(updated_options)} options")
+        logger.debug(
+            f"Updated orientations for {len(updated_options)} pictograph options"
+        )
         return updated_options
 
     def _get_last_valid_beat(self, sequence: SequenceData) -> Optional[BeatData]:
@@ -117,7 +111,7 @@ class OptionOrientationUpdater:
         self, beat: BeatData
     ) -> tuple[Optional[str], Optional[str]]:
         """
-        Extract end orientations from a beat.
+        Extract end orientations from a beat's pictograph data.
 
         Returns:
             Tuple of (blue_end_ori, red_end_ori) as strings
@@ -125,75 +119,42 @@ class OptionOrientationUpdater:
         blue_end_ori = None
         red_end_ori = None
 
-        if beat.blue_motion and hasattr(beat.blue_motion, "end_ori"):
-            blue_end_ori = beat.blue_motion.end_ori
+        # NEW: Get motion data from pictograph_data motions dictionary
+        if beat.pictograph_data and beat.pictograph_data.motions:
+            if "blue" in beat.pictograph_data.motions:
+                blue_motion = beat.pictograph_data.motions["blue"]
+                if blue_motion and hasattr(blue_motion, "end_ori"):
+                    blue_end_ori = blue_motion.end_ori
 
-        if beat.red_motion and hasattr(beat.red_motion, "end_ori"):
-            red_end_ori = beat.red_motion.end_ori
+            if "red" in beat.pictograph_data.motions:
+                red_motion = beat.pictograph_data.motions["red"]
+                if red_motion and hasattr(red_motion, "end_ori"):
+                    red_end_ori = red_motion.end_ori
 
         return blue_end_ori, red_end_ori
 
-    def _update_single_option_orientation(
-        self, option: BeatData, blue_start_ori: str, red_start_ori: str
-    ) -> BeatData:
+    def _update_single_pictograph_orientation(
+        self, pictograph: PictographData, blue_start_ori: str, red_start_ori: str
+    ) -> PictographData:
         """
-        Update orientations for a single option beat.
+        Update orientations for a single pictograph option.
 
         Modern implementation that:
         1. Sets start orientations from sequence context
-        2. Calculates new end orientations using modern orientation calculator
+        2. Updates prop orientations to match sequence continuity
         """
-        # Create updated motion data with new start orientations
-        updated_blue_motion = None
-        updated_red_motion = None
+        updated_props = pictograph.props.copy()
 
-        if option.blue_motion:
-            # Convert string to Orientation enum
-            start_orientation = self._string_to_orientation(blue_start_ori)
-            calculated_end_ori = self.orientation_calculator.calculate_end_orientation(
-                option.blue_motion, start_orientation
-            )
+        # Update blue prop orientation
+        if "blue" in updated_props:
+            blue_prop = updated_props["blue"]
+            updated_blue_prop = replace(blue_prop, orientation=blue_start_ori)
+            updated_props["blue"] = updated_blue_prop
 
-            # Create updated motion with enum orientations (MotionData will handle conversion)
-            updated_blue_motion = option.blue_motion.update(
-                start_ori=start_orientation,
-                end_ori=calculated_end_ori,
-            )
+        # Update red prop orientation
+        if "red" in updated_props:
+            red_prop = updated_props["red"]
+            updated_red_prop = replace(red_prop, orientation=red_start_ori)
+            updated_props["red"] = updated_red_prop
 
-        if option.red_motion:
-            # Convert string to Orientation enum
-            start_orientation = self._string_to_orientation(red_start_ori)
-            calculated_end_ori = self.orientation_calculator.calculate_end_orientation(
-                option.red_motion, start_orientation
-            )
-
-            # Create updated motion with enum orientations (MotionData will handle conversion)
-            updated_red_motion = option.red_motion.update(
-                start_ori=start_orientation,
-                end_ori=calculated_end_ori,
-            )
-
-        # Return updated BeatData with new motion data
-        return replace(
-            option, blue_motion=updated_blue_motion, red_motion=updated_red_motion
-        )
-
-    def _string_to_orientation(self, ori_value) -> Orientation:
-        """Convert string or enum orientation to Orientation enum."""
-        # If it's already an Orientation enum, return it
-        if isinstance(ori_value, Orientation):
-            return ori_value
-
-        # Convert string to enum
-        ori_str = str(ori_value).lower()
-        if ori_str == "in":
-            return Orientation.IN
-        elif ori_str == "out":
-            return Orientation.OUT
-        elif ori_str == "clock":
-            return Orientation.CLOCK
-        elif ori_str == "counter":
-            return Orientation.COUNTER
-        else:
-            logger.warning(f"Unknown orientation value: {ori_value}, defaulting to IN")
-            return Orientation.IN
+        return replace(pictograph, props=updated_props)

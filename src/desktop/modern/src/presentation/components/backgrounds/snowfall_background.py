@@ -1,14 +1,15 @@
 from typing import TYPE_CHECKING
-from PyQt6.QtGui import QPainter, QPixmap, QColor, QLinearGradient
-from PyQt6.QtWidgets import QWidget
+
 from PyQt6.QtCore import Qt
+from PyQt6.QtGui import QColor, QLinearGradient, QPainter, QPixmap
+from PyQt6.QtWidgets import QWidget
 
-from .base_background import BaseBackground
-from .asset_utils import get_image_path
-
-from application.services.backgrounds.snowfall.snowflake_physics import SnowflakePhysics
-from application.services.backgrounds.snowfall.shooting_star import ShootingStar
 from application.services.backgrounds.snowfall.santa_movement import SantaMovement
+from application.services.backgrounds.snowfall.shooting_star import ShootingStar
+from application.services.backgrounds.snowfall.snowflake_physics import SnowflakePhysics
+
+from .asset_utils import get_image_path
+from .base_background import BaseBackground
 
 if TYPE_CHECKING:
     pass
@@ -38,7 +39,7 @@ class SnowfallBackground(BaseBackground):
             self.snowflake_count,
             self.widget_width,
             self.widget_height,
-            len(self.snowflake_images)
+            len(self.snowflake_images),
         )
         self.shooting_star = ShootingStar()
         self.santa_movement = SantaMovement()
@@ -60,35 +61,45 @@ class SnowfallBackground(BaseBackground):
                     Qt.AspectRatioMode.KeepAspectRatio,
                     Qt.TransformationMode.SmoothTransformation,
                 )
-                painter.drawPixmap(
-                    int(snowflake.x), int(snowflake.y), scaled_image
-                )
+                painter.drawPixmap(int(snowflake.x), int(snowflake.y), scaled_image)
 
         # Draw shooting stars and Santa using service data
         self._draw_shooting_star(painter, widget)
         self._draw_santa(painter, widget)
-    
+
     def _draw_shooting_star(self, painter: QPainter, widget: QWidget):
         """Draw shooting star using service data"""
         shooting_star = self.shooting_star.get_shooting_star_state()
         if shooting_star:
             # Draw shooting star tail
-            painter.setBrush(QColor(255, 255, 255, int(shooting_star.tail_opacity * 255)))
+            painter.setBrush(
+                QColor(255, 255, 255, int(shooting_star.tail_opacity * 255))
+            )
             painter.setPen(Qt.PenStyle.NoPen)
-            
+
             for i, (x, y, size) in enumerate(shooting_star.tail):
                 tail_x = x * widget.width()
                 tail_y = y * widget.height()
-                alpha = int((shooting_star.tail_opacity * (i + 1) / len(shooting_star.tail)) * 255)
+                alpha = int(
+                    (shooting_star.tail_opacity * (i + 1) / len(shooting_star.tail))
+                    * 255
+                )
                 painter.setBrush(QColor(255, 255, 255, alpha))
                 painter.drawEllipse(int(tail_x), int(tail_y), int(size), int(size))
-            
+
             # Draw shooting star head
             head_x = shooting_star.position.x * widget.width()
             head_y = shooting_star.position.y * widget.height()
-            painter.setBrush(QColor(255, 255, 255, int(shooting_star.tail_opacity * 255)))
-            painter.drawEllipse(int(head_x), int(head_y), int(shooting_star.size), int(shooting_star.size))
-    
+            painter.setBrush(
+                QColor(255, 255, 255, int(shooting_star.tail_opacity * 255))
+            )
+            painter.drawEllipse(
+                int(head_x),
+                int(head_y),
+                int(shooting_star.size),
+                int(shooting_star.size),
+            )
+
     def _draw_santa(self, painter: QPainter, widget: QWidget):
         """Draw Santa using service data"""
         santa = self.santa_movement.get_santa_state()
@@ -96,7 +107,7 @@ class SnowfallBackground(BaseBackground):
             # Simple Santa representation - you can replace with actual Santa image
             painter.setBrush(QColor(255, 0, 0, int(santa.opacity * 255)))
             painter.setPen(Qt.PenStyle.NoPen)
-            
+
             santa_x = santa.x * widget.width()
             santa_y = santa.y * widget.height()
             painter.drawEllipse(int(santa_x), int(santa_y), 40, 40)

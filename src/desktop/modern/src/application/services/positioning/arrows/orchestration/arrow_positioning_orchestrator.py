@@ -17,7 +17,8 @@ from core.interfaces.positioning_services import (
     IArrowPositioningOrchestrator,
     IArrowRotationCalculator,
 )
-from domain.models.pictograph_models import ArrowData, PictographData
+from domain.models.arrow_data import ArrowData
+from domain.models.pictograph_data import PictographData
 
 
 class ArrowPositioningOrchestrator(IArrowPositioningOrchestrator):
@@ -60,11 +61,14 @@ class ArrowPositioningOrchestrator(IArrowPositioningOrchestrator):
         4. Calculate adjustment (microservice)
         5. Compose final position
         """
-        if not arrow_data.motion_data:
+        # Get motion data from pictograph_data instead of arrow_data
+        motion = None
+        if pictograph_data and pictograph_data.motions:
+            motion = pictograph_data.motions.get(arrow_data.color)
+
+        if not motion:
             center = self.coordinate_system.get_scene_center()
             return center.x, center.y, 0.0
-
-        motion = arrow_data.motion_data
 
         # Step 1: Calculate arrow location
         location = self.location_calculator.calculate_location(motion, pictograph_data)
@@ -117,13 +121,20 @@ class ArrowPositioningOrchestrator(IArrowPositioningOrchestrator):
 
         return updated_pictograph
 
-    def should_mirror_arrow(self, arrow_data: ArrowData) -> bool:
+    def should_mirror_arrow(
+        self, arrow_data: ArrowData, pictograph_data: "PictographData" = None
+    ) -> bool:
         """Determine if arrow should be mirrored (extracted from monolith)."""
-        if not arrow_data.motion_data:
+        # Get motion data from pictograph_data instead of arrow_data
+        motion = None
+        if pictograph_data and pictograph_data.motions:
+            motion = pictograph_data.motions.get(arrow_data.color)
+
+        if not motion:
             return False
 
-        motion_type = arrow_data.motion_data.motion_type.value.lower()
-        prop_rot_dir = arrow_data.motion_data.prop_rot_dir.value.lower()
+        motion_type = motion.motion_type.value.lower()
+        prop_rot_dir = motion.prop_rot_dir.value.lower()
 
         if motion_type == "anti":
             return self.mirror_conditions["anti"].get(prop_rot_dir, False)

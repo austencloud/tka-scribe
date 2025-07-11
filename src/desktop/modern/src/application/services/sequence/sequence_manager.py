@@ -530,13 +530,31 @@ class SequenceManager:
                     end_ori=Orientation.IN,
                 )
 
+        # Create motions dictionary
+        motions = {}
+        if blue_motion:
+            motions["blue"] = blue_motion
+        if red_motion:
+            motions["red"] = red_motion
+
+        # Create PictographData with motion data
+        pictograph_data = PictographData(
+            motions=motions,
+            letter=letter,
+            glyph_data=glyph_data,
+            metadata={
+                "timing": timing,
+                "direction": direction,
+                "original_beat_number": beat_dict.get("beat", beat_number),
+            },
+        )
+
         # Create BeatData with all the extracted data
         beat_data = BeatData(
             beat_number=beat_number,
             letter=letter,
             duration=duration,
-            blue_motion=blue_motion,
-            red_motion=red_motion,
+            pictograph_data=pictograph_data,  # NEW: Use pictograph data with motions
             glyph_data=glyph_data,
             metadata={
                 "timing": timing,
@@ -624,13 +642,32 @@ class SequenceManager:
                     end_loc=Location.SOUTH,
                 )
 
+        # Create motions dictionary
+        motions = {}
+        if blue_motion:
+            motions["blue"] = blue_motion
+        if red_motion:
+            motions["red"] = red_motion
+
+        # Create PictographData with motion data
+        pictograph_data = PictographData(
+            motions=motions,
+            letter=letter,
+            glyph_data=glyph_data,
+            metadata={
+                "is_start_position": True,
+                "sequence_start_position": sequence_start_position,
+                "timing": start_pos_dict.get("timing", "none"),
+                "direction": start_pos_dict.get("direction", "none"),
+            },
+        )
+
         # Create BeatData for start position
         start_position_beat = BeatData(
             beat_number=0,  # Start position is beat 0
             letter=letter,
             duration=1.0,
-            blue_motion=blue_motion,
-            red_motion=red_motion,
+            pictograph_data=pictograph_data,  # NEW: Use pictograph data with motions
             glyph_data=glyph_data,
             metadata={
                 "is_start_position": True,

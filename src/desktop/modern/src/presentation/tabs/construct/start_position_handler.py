@@ -10,7 +10,7 @@ from typing import Callable, Optional
 from application.services.data.data_converter import DataConverter
 from application.services.data.sequence_data_converter import SequenceDataConverter
 from domain.models.beat_data import BeatData
-from domain.models.pictograph_models import PictographData
+from domain.models.pictograph_data import PictographData
 from PyQt6.QtCore import QObject, pyqtSignal
 
 
@@ -80,7 +80,7 @@ class StartPositionHandler(QObject):
     def _create_start_position_data(self, position_key: str) -> PictographData:
         """Create start position data from position key using real dataset (separate from sequence beats)"""
         try:
-            from application.services.data.dataset_quiry import DatasetQuery
+            from application.services.data.dataset_query import DatasetQuery
 
             dataset_service = DatasetQuery()
             # Get real start position data from dataset as PictographData
@@ -146,7 +146,7 @@ class StartPositionHandler(QObject):
         self, position_key: str, specific_end_pos: str
     ) -> PictographData:
         """Create fallback PictographData when dataset lookup fails."""
-        from domain.models.pictograph_models import GridData
+        from domain.models.arrow_data import GridData
 
         return PictographData(
             letter=position_key,
@@ -227,8 +227,7 @@ class StartPositionHandler(QObject):
             letter=pictograph_data.letter,
             beat_number=0,  # Start position is beat 0
             duration=0.0,  # Start position has no duration (not held for any time)
-            blue_motion=blue_motion,
-            red_motion=red_motion,
+            pictograph_data=pictograph_data,  # NEW: Use pictograph data with motions
             glyph_data=glyph_data,
             is_blank=pictograph_data.is_blank,
             metadata=metadata,

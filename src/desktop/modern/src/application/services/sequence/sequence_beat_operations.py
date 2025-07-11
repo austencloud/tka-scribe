@@ -12,7 +12,7 @@ from application.services.option_picker.option_orientation_updater import (
 )
 from application.services.sequence.sequence_persister import SequencePersister
 from domain.models.beat_data import BeatData
-from domain.models.pictograph_models import PictographData
+from domain.models.pictograph_data import PictographData
 from domain.models.sequence_models import SequenceData
 from PyQt6.QtCore import QObject, pyqtSignal
 
@@ -394,15 +394,8 @@ class SequenceBeatOperations(QObject):
     ) -> BeatData:
         """Convert PictographData to BeatData for sequence operations."""
         try:
-            # Extract motion data from arrows
-            blue_motion = None
-            red_motion = None
-
-            if hasattr(pictograph_data, "arrows") and pictograph_data.arrows:
-                if "blue" in pictograph_data.arrows:
-                    blue_motion = pictograph_data.arrows["blue"].motion_data
-                if "red" in pictograph_data.arrows:
-                    red_motion = pictograph_data.arrows["red"].motion_data
+            # NEW: Motion data is now directly in PictographData
+            # No need to extract from arrows - it's already in the right place!
 
             # Get current sequence to determine beat number
             current_sequence = self._get_current_sequence()
@@ -441,12 +434,11 @@ class SequenceBeatOperations(QObject):
                     if key not in ["is_start_position"]:
                         beat_metadata[key] = value
 
-            # Create BeatData from PictographData
+            # Create BeatData with PictographData reference
             beat_data = BeatData(
                 beat_number=beat_number,
                 letter=pictograph_data.letter or "?",
-                blue_motion=blue_motion,
-                red_motion=red_motion,
+                pictograph_data=pictograph_data,  # NEW: Store the complete pictograph
                 glyph_data=pictograph_data.glyph_data,
                 is_blank=pictograph_data.is_blank,
                 metadata=beat_metadata,

@@ -207,9 +207,10 @@ class ConstructTabWidget(QWidget):
         # Delegate UI setup to layout manager
         self.layout_manager.setup_ui(self)
 
-        # CRITICAL FIX: Ensure construct tab is visible
-        self.show()
-        self.setVisible(True)
+        # WINDOW MANAGEMENT FIX: Keep construct tab hidden during splash screen
+        # It will be shown when the main window is displayed
+        self.hide()
+        self.setVisible(False)
 
         # Check construct tab visibility
         tab_visible = self.isVisible()

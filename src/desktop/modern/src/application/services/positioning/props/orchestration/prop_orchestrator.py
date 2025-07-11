@@ -11,29 +11,30 @@ PROVIDES:
 - Event-driven prop positioning
 """
 
-from typing import Tuple, Dict, Any, Optional, List, TYPE_CHECKING
-from abc import ABC, abstractmethod
-from PyQt6.QtCore import QPointF
 import uuid
+from abc import ABC, abstractmethod
 from datetime import datetime
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple
 
 from domain.models import BeatData
-from domain.models.pictograph_models import PropType
+from domain.models.enums import PropType
+from PyQt6.QtCore import QPointF
+
 from ...props.calculation.direction_calculation_service import (
-    IDirectionCalculationService,
     DirectionCalculationService,
+    IDirectionCalculationService,
 )
 from ...props.calculation.offset_calculation_service import (
     IOffsetCalculationService,
     OffsetCalculationService,
 )
-from ...props.configuration.json_configuration_service import (
-    IJSONConfigurationService,
-    JSONConfigurationService,
-)
 from ...props.calculation.prop_classification_service import (
     IPropClassificationService,
     PropClassificationService,
+)
+from ...props.configuration.json_configuration_service import (
+    IJSONConfigurationService,
+    JSONConfigurationService,
 )
 
 # Event-driven architecture imports
@@ -41,11 +42,7 @@ if TYPE_CHECKING:
     from core.events import IEventBus
 
 try:
-    from core.events import (
-        get_event_bus,
-        PropPositionedEvent,
-        EventPriority,
-    )
+    from core.events import EventPriority, PropPositionedEvent, get_event_bus
 
     EVENT_SYSTEM_AVAILABLE = True
 except ImportError:

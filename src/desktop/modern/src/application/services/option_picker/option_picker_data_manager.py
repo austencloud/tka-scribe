@@ -18,7 +18,7 @@ import logging
 from typing import Any, Dict, List, Optional
 
 from core.interfaces.option_picker_interfaces import IOptionPickerDataManager
-from domain.models.pictograph_models import PictographData
+from domain.models.pictograph_data import PictographData
 from domain.models.sequence_models import SequenceData
 
 logger = logging.getLogger(__name__)
@@ -270,7 +270,7 @@ class OptionPickerDataManager(IOptionPickerDataManager):
         """
         try:
             from domain.models.motion_models import MotionData
-            from domain.models.pictograph_models import ArrowData, GridData, GridMode
+            from domain.models.arrow_data import ArrowData, GridData, GridMode
 
             # Create sample pictograph options
             sample_options = []

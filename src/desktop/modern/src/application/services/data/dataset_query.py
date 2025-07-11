@@ -10,7 +10,7 @@ from typing import List, Optional
 
 import pandas as pd
 from domain.models.beat_data import BeatData
-from domain.models.pictograph_models import PictographData
+from domain.models.pictograph_data import PictographData
 
 from .dataset_loader import DatasetLoader
 from .pictograph_factory import PictographFactory

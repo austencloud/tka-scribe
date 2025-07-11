@@ -10,7 +10,7 @@ import logging
 from domain.models.enums import Orientation
 from domain.models.letter_condition import LetterCondition
 from domain.models.motion_models import MotionData
-from domain.models.pictograph_models import PictographData
+from domain.models.pictograph_data import PictographData
 
 logger = logging.getLogger(__name__)
 

@@ -24,7 +24,8 @@ from core.interfaces.positioning_services import IArrowAdjustmentCalculator
 from core.types.coordinates import PositionResult, get_default_point
 from core.types.geometry import Point
 from core.types.result import ErrorType, app_error, failure, success
-from domain.models.pictograph_models import ArrowData, PictographData
+from domain.models.arrow_data import ArrowData
+from domain.models.pictograph_data import PictographData
 
 from ...arrows.calculation.directional_tuple_calculator import (
     DirectionalTupleCalculator,
@@ -38,10 +39,10 @@ from ...arrows.keys.turns_tuple_generation_service import TurnsTupleGenerationSe
 
 # Legacy service imports for backward compatibility
 from ...arrows.placement.default_placement_service import DefaultPlacementService
+from ...arrows.placement.special_placement_service import SpecialPlacementService
 from ..placement.special_placement_ori_key_generator import (
     SpecialPlacementOriKeyGenerator,
 )
-from ...arrows.placement.special_placement_service import SpecialPlacementService
 
 # Import the focused services
 from .arrow_adjustment_lookup_service import ArrowAdjustmentLookupService

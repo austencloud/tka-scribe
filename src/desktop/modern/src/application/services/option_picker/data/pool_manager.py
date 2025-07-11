@@ -20,7 +20,7 @@ from PyQt6.QtCore import QObject
 from PyQt6.QtWidgets import QWidget
 
 if TYPE_CHECKING:
-    from application.services.data.dataset_quiry import DatasetQuery
+    from application.services.data.dataset_query import DatasetQuery
 
 logger = logging.getLogger(__name__)
 
@@ -128,7 +128,7 @@ class PictographPoolManager(QObject):
             ClickablePictographFrame if successful, None otherwise
         """
         try:
-            from application.services.data.dataset_quiry import DatasetQuery
+            from application.services.data.dataset_query import DatasetQuery
             from application.services.data.position_resolver import PositionResolver
 
             dataset_service = DatasetQuery()
@@ -202,7 +202,7 @@ class PictographPoolManager(QObject):
         """Create minimal pictograph data as fallback."""
         from domain.models.enums import Location, MotionType, RotationDirection
         from domain.models.motion_models import MotionData
-        from domain.models.pictograph_models import (
+        from domain.models.arrow_data import (
             ArrowData,
             GridData,
             GridMode,

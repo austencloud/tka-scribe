@@ -28,7 +28,8 @@ import logging
 
 from core.types.coordinates import PositionResult, qpoint_to_point
 from core.types.result import AppError, ErrorType, Result, app_error, failure, success
-from domain.models.pictograph_models import ArrowData, PictographData
+from domain.models.arrow_data import ArrowData
+from domain.models.pictograph_data import PictographData
 
 # Conditional PyQt6 imports for testing compatibility
 try:
@@ -58,10 +59,10 @@ from ...arrows.keys.turns_tuple_generation_service import TurnsTupleGenerationSe
 
 # Import required services
 from ...arrows.placement.default_placement_service import DefaultPlacementService
+from ...arrows.placement.special_placement_service import SpecialPlacementService
 from ..placement.special_placement_ori_key_generator import (
     SpecialPlacementOriKeyGenerator,
 )
-from ...arrows.placement.special_placement_service import SpecialPlacementService
 
 logger = logging.getLogger(__name__)
 
