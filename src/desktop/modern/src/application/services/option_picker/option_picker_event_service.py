@@ -17,7 +17,6 @@ import logging
 from typing import Any, Callable, Optional
 
 from core.interfaces.option_picker_interfaces import (
-    IOptionPickerDataManager,
     IOptionPickerDisplayService,
     IOptionPickerEventService,
 )
@@ -112,7 +111,6 @@ class OptionPickerEventService(IOptionPickerEventService):
     def handle_filter_change(
         self,
         filter_text: str,
-        data_service: IOptionPickerDataManager,
         display_service: IOptionPickerDisplayService,
     ) -> None:
         """
@@ -123,18 +121,8 @@ class OptionPickerEventService(IOptionPickerEventService):
             data_service: Data service for getting options
             display_service: Display service for updating display
         """
-        try:
-            # Get current pictograph options (could be filtered in the future)
-            pictograph_options = data_service.get_current_pictographs()
-
-            # For now, just update display with all options
-            # TODO: Implement actual filtering logic
-            display_service.update_pictograph_display(pictograph_options)
-
-            logger.debug(f"Handled filter change: '{filter_text}'")
-
-        except Exception as e:
-            logger.error(f"Error handling filter change: {e}")
+        pass
+        # TODO: Implement actual filtering logic
 
     def handle_option_click(self, option_id: str) -> None:
         """

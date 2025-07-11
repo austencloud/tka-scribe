@@ -18,13 +18,15 @@ from typing import Any, Callable, Dict, List, Optional
 
 from core.dependency_injection.di_container import DIContainer
 from core.interfaces.option_picker_interfaces import (
-    IOptionPickerDataManager,
     IOptionPickerDisplayService,
     IOptionPickerEventService,
     IOptionPickerInitializer,
 )
 from domain.models.pictograph_data import PictographData
 from domain.models.sequence_models import SequenceData
+from presentation.components.option_picker.components.sections.section_widget import (
+    OptionPickerSection,
+)
 from PyQt6.QtCore import QObject, pyqtSignal
 from PyQt6.QtWidgets import QWidget
 
@@ -53,7 +55,6 @@ class OptionPickerOrchestrator(QObject):
         self,
         container: DIContainer,
         initialization_service: Optional[IOptionPickerInitializer] = None,
-        data_service: Optional[IOptionPickerDataManager] = None,
         display_service: Optional[IOptionPickerDisplayService] = None,
         event_service: Optional[IOptionPickerEventService] = None,
         progress_callback: Optional[Callable[[str, float], None]] = None,
@@ -101,7 +102,6 @@ class OptionPickerOrchestrator(QObject):
         self.event_service = event_service
 
         # Data service will be created after beat loader is available
-        self.data_service = data_service
         self.option_service = None
 
         # Component references
@@ -111,6 +111,9 @@ class OptionPickerOrchestrator(QObject):
         self.filter_widget: Optional[QWidget] = None
         self.pool_manager = None
         self.dimension_analyzer = None
+
+        # Section management (following legacy pattern)
+        self.sections: Dict[str, "OptionPickerSection"] = {}
 
         # Initialization state
         self._initialized = False
@@ -176,6 +179,12 @@ class OptionPickerOrchestrator(QObject):
                 self._create_size_provider(),
             )
 
+            # Step 5.5: Create actual section widgets (missing piece!)
+            self._create_sections()
+
+            # Step 5.6: Make widgets visible
+            # self._make_widgets_visible()
+
             if self.progress_callback:
                 self.progress_callback("Creating dimension analyzer", 0.6)
 
@@ -192,7 +201,8 @@ class OptionPickerOrchestrator(QObject):
             if self.progress_callback:
                 self.progress_callback("Initializing pool", 0.7)
 
-            # Step 7: Initialize pool
+            # Step 7: Initialize pool during splash screen
+            # WINDOW MANAGEMENT FIX: Pool creation during splash is fine - widgets are hidden
             self.initialization_service.initialize_pool(
                 self.pool_manager, self.progress_callback
             )
@@ -305,10 +315,7 @@ class OptionPickerOrchestrator(QObject):
             )
 
             # Apply assignments for each letter type section
-            for letter_type, assignments in pictograph_assignments.items():
-                if letter_type not in organized_pictographs:
-                    continue
-
+            for letter_type in organized_pictographs:
                 pictographs_for_type = organized_pictographs[letter_type]
                 if not pictographs_for_type:
                     continue
@@ -318,8 +325,8 @@ class OptionPickerOrchestrator(QObject):
                 if not section:
                     continue
 
-                # Clear existing pictographs in this section
-                section.clear_pictographs()
+                # Remove existing pictographs from section (without destroying them for pool reuse)
+                section.remove_pictographs_for_reuse()
 
                 # Add new pictographs to the section
                 frames_to_add = []
@@ -327,12 +334,31 @@ class OptionPickerOrchestrator(QObject):
                     # Get frame from pool
                     frame = self.pool_manager.get_pictograph_from_pool(pool_index)
                     if frame:
+                        # Debug: Check frame state before update
+                        has_component_before = (
+                            hasattr(frame, "pictograph_component")
+                            and frame.pictograph_component
+                        )
+                        logger.debug(
+                            f"🔍 Frame {id(frame)} from pool: has_component={has_component_before}"
+                        )
+
                         # Update frame with new pictograph data
                         frame.update_pictograph_data(pictograph_data)
                         frames_to_add.append(frame)
 
                 # Add all frames to the section at once (batch operation)
                 if frames_to_add:
+                    # Debug: Check frame states before passing to section
+                    for i, frame in enumerate(frames_to_add):
+                        has_component = (
+                            hasattr(frame, "pictograph_component")
+                            and frame.pictograph_component
+                        )
+                        logger.debug(
+                            f"   📦 Frame {i} before section: has_component={has_component}"
+                        )
+
                     section.add_multiple_pictographs_from_pool(frames_to_add)
                     logger.debug(
                         f"Added {len(frames_to_add)} options to {letter_type} section"
@@ -346,12 +372,149 @@ class OptionPickerOrchestrator(QObject):
 
             traceback.print_exc()
 
+    def _create_sections(self) -> None:
+        """
+        Create actual section widgets and add them to the layout.
+
+        This implements the missing piece from the modern architecture:
+        creating actual OptionPickerSection widgets and storing them
+        for later access, following the legacy pattern.
+        """
+        try:
+            logger.debug("Creating section widgets...")
+
+            # Get section creation specifications from display service
+            section_specs_result = self.display_service.create_sections()
+            if not section_specs_result.get("success", False):
+                logger.error(
+                    f"Failed to get section specifications: {section_specs_result}"
+                )
+                return
+
+            section_specs = section_specs_result["section_specifications"]
+            bottom_row_config = section_specs_result["bottom_row_configuration"]
+
+            # Import section widget class
+            from presentation.components.option_picker.components.sections.section_widget import (
+                OptionPickerSection,
+            )
+            from presentation.components.option_picker.types.letter_types import (
+                LetterType,
+            )
+            from PyQt6.QtWidgets import QHBoxLayout
+
+            # Create individual sections (Types 1-3)
+            individual_sections = []
+            for letter_type in [LetterType.TYPE1, LetterType.TYPE2, LetterType.TYPE3]:
+                if letter_type in section_specs:
+                    section = OptionPickerSection(
+                        letter_type=letter_type,
+                        parent=self.sections_container,
+                        option_picker_size_provider=self._create_size_provider(),
+                    )
+                    self.sections[letter_type] = section
+                    individual_sections.append(section)
+
+                    # Add to main layout
+                    self.sections_layout.addWidget(section)
+                    logger.debug(f"Created and added individual section: {letter_type}")
+
+            # Create bottom row sections (Types 4-6) in shared layout
+            bottom_row_sections = []
+            for letter_type in [LetterType.TYPE4, LetterType.TYPE5, LetterType.TYPE6]:
+                if letter_type in section_specs:
+                    section = OptionPickerSection(
+                        letter_type=letter_type,
+                        parent=self.sections_container,
+                        option_picker_size_provider=self._create_size_provider(),
+                    )
+                    self.sections[letter_type] = section
+                    bottom_row_sections.append(section)
+                    logger.debug(f"Created bottom row section: {letter_type}")
+
+            # Add bottom row sections to shared horizontal layout
+            if bottom_row_sections:
+                bottom_row_layout = QHBoxLayout()
+                bottom_row_layout.addStretch()  # Center the sections
+
+                for section in bottom_row_sections:
+                    bottom_row_layout.addWidget(section)
+
+                bottom_row_layout.addStretch()  # Center the sections
+                self.sections_layout.addLayout(bottom_row_layout)
+                logger.debug(
+                    f"Added {len(bottom_row_sections)} sections to bottom row layout"
+                )
+
+            logger.debug(f"Successfully created {len(self.sections)} section widgets")
+
+        except Exception as e:
+            logger.error(f"Error creating sections: {e}")
+            import traceback
+
+            traceback.print_exc()
+
+    def _make_widgets_visible(self) -> None:
+        """
+        Make the option picker widgets visible.
+
+        This ensures that the main widget and all sections are visible
+        so that the frames can be displayed to the user.
+        """
+        try:
+            logger.debug("Making widgets visible...")
+
+            # Make main option picker widget visible
+            if self.option_picker_widget:
+                self.option_picker_widget.setVisible(True)
+                self.option_picker_widget.show()
+                logger.debug("Main option picker widget made visible")
+
+            # Make sections container visible
+            if self.sections_container:
+                self.sections_container.setVisible(True)
+                self.sections_container.show()
+                logger.debug("Sections container made visible")
+
+            # Make all sections visible
+            for letter_type, section in self.sections.items():
+                if section:
+                    section.setVisible(True)
+                    section.show()
+
+                    # Also make the section container visible
+                    if hasattr(section, "section_pictograph_container"):
+                        section.section_pictograph_container.setVisible(True)
+                        section.section_pictograph_container.show()
+
+                    logger.debug(f"Section {letter_type} made visible")
+
+            logger.debug(f"Successfully made {len(self.sections)} sections visible")
+
+        except Exception as e:
+            logger.error(f"Error making widgets visible: {e}")
+            import traceback
+
+            traceback.print_exc()
+
     def _get_or_create_section(self, letter_type: str):
-        """Get existing section or create new one for the letter type."""
-        # This would need to be implemented based on how sections are managed
-        # For now, return None and log
-        logger.debug(f"Section management for {letter_type} not yet implemented")
-        return None
+        """Get existing section widget for the letter type."""
+        # Return the actual section widget that was created during initialization
+        logger.debug(f"🔍 Looking for section: {letter_type}")
+        logger.debug(f"   📋 Available sections: {list(self.sections.keys())}")
+        logger.debug(f"   🔢 Total sections: {len(self.sections)}")
+
+        section = self.sections.get(letter_type)
+        if section:
+            logger.debug(
+                f"✅ Found existing section for {letter_type}: {type(section)}"
+            )
+            return section
+        else:
+            logger.warning(
+                f"❌ No section found for {letter_type} - sections available: {list(self.sections.keys())}"
+            )
+            return None
 
     def refresh_options(self) -> None:
         """Refresh the option picker with latest pictograph options."""
@@ -361,7 +524,13 @@ class OptionPickerOrchestrator(QObject):
                 return
 
             pictograph_options = self.option_service.get_current_options()
-            self.display_service.update_pictograph_display(pictograph_options)
+            display_result = self.display_service.update_pictograph_display(
+                pictograph_options
+            )
+
+            # Apply the display strategy to actually show the options
+            if display_result.get("success", False):
+                self._apply_display_strategy(display_result["display_strategy"])
 
             logger.debug(f"Refreshed options: {len(pictograph_options)} options")
 
@@ -380,13 +549,32 @@ class OptionPickerOrchestrator(QObject):
                 logger.warning("Orchestrator not initialized")
                 return
 
+            # Load pictograph options based on position matching
             pictograph_options = self.option_service.load_options_from_modern_sequence(
                 sequence
             )
-            self.display_service.update_pictograph_display(pictograph_options)
+
+            # Apply orientation updates to match sequence context
+            from application.services.option_picker.option_orientation_updater import (
+                OptionOrientationUpdater,
+            )
+
+            orientation_updater = OptionOrientationUpdater()
+            updated_options = orientation_updater.update_option_orientations(
+                sequence, pictograph_options
+            )
+
+            # Update display with orientation-corrected options
+            display_result = self.display_service.update_pictograph_display(
+                updated_options
+            )
+
+            # Apply the display strategy to actually show the options
+            if display_result.get("success", False):
+                self._apply_display_strategy(display_result["display_strategy"])
 
             logger.debug(
-                f"Refreshed from modern sequence: {len(pictograph_options)} options"
+                f"Refreshed from modern sequence: {len(updated_options)} options with orientation updates"
             )
 
         except Exception as e:
@@ -481,6 +669,4 @@ class OptionPickerOrchestrator(QObject):
         """Handle filter changes."""
         if self._initialized:
             # TODO: Update to use option_service instead of data_service
-            self.event_service.handle_filter_change(
-                filter_text, self.data_service, self.display_service
-            )
+            self.event_service.handle_filter_change(filter_text, self.display_service)

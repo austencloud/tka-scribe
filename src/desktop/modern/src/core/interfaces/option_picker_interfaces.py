@@ -86,72 +86,6 @@ class IOptionPickerInitializer(ABC):
         """
 
 
-class IOptionPickerDataManager(ABC):
-    """Interface for option picker data management. Works exclusively with PictographData."""
-
-    @abstractmethod
-    def refresh_pictograph_options(self) -> List[PictographData]:
-        """
-        Refresh pictograph options.
-
-        Returns:
-            Updated list of pictograph data options
-        """
-
-    @abstractmethod
-    def refresh_pictographs_from_sequence_data(
-        self, sequence_data: List[Dict[str, Any]]
-    ) -> List[PictographData]:
-        """
-        Refresh options based on legacy sequence data.
-
-        Args:
-            sequence_data: Legacy sequence data format
-
-        Returns:
-            Updated list of pictograph data options
-        """
-
-    @abstractmethod
-    def refresh_pictographs_from_sequence(
-        self, sequence: SequenceData
-    ) -> List[PictographData]:
-        """
-        Refresh options based on modern sequence data.
-
-        Args:
-            sequence: Modern sequence data
-
-        Returns:
-            Updated list of pictograph data options
-        """
-
-    @abstractmethod
-    def get_pictograph_for_option(self, option_id: str) -> Optional[PictographData]:
-        """
-        Get pictograph data for a specific option ID.
-
-        Args:
-            option_id: Option identifier (e.g., 'option_0', 'option_J')
-
-        Returns:
-            PictographData if found, None otherwise
-        """
-
-    @abstractmethod
-    def get_current_pictographs(self) -> List[PictographData]:
-        """
-        Get currently loaded pictograph options.
-
-        Returns:
-            Current list of pictograph data options
-        """
-
-    @abstractmethod
-    def clear_cache(self) -> None:
-        """Clear cached options."""
-
-
 class IOptionPickerDisplayService(ABC):
     """Interface for option picker display management."""
 
@@ -243,22 +177,6 @@ class IOptionPickerEventService(ABC):
         Args:
             pool_manager: Pictograph pool manager
             display_service: Display service for section resizing
-        """
-
-    @abstractmethod
-    def handle_filter_change(
-        self,
-        filter_text: str,
-        data_service: IOptionPickerDataManager,
-        display_service: IOptionPickerDisplayService,
-    ) -> None:
-        """
-        Handle filter text changes.
-
-        Args:
-            filter_text: New filter text
-            data_service: Data service for getting options
-            display_service: Display service for updating display
         """
 
     @abstractmethod
