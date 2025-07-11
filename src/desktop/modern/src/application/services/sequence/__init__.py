@@ -24,7 +24,6 @@ This package provides focused, single-responsibility services for sequence opera
 
 from .beat_factory import BeatFactory
 from .sequence_generator import SequenceGenerator, SequenceType
-from .sequence_manager import SequenceManager
 
 # Core orchestration
 from .sequence_orchestrator import ISequenceOrchestratorSignals, SequenceOrchestrator
@@ -38,11 +37,14 @@ from .sequence_state_tracker import SequenceStateTracker
 from .sequence_transformer import SequenceTransformer, WorkbenchOperation
 from .sequence_validator import SequenceValidator, ValidationError
 
+# Legacy import - SequenceManager is deprecated, use SequenceOrchestrator instead
+
+
 __all__ = [
     # Core orchestration
     "SequenceOrchestrator",
     "ISequenceOrchestratorSignals",
-    "SequenceManager",
+    # "SequenceManager",  # DEPRECATED - use SequenceOrchestrator
     # Beat operations
     "BeatFactory",
     # Focused services

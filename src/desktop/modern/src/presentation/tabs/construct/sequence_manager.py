@@ -1,36 +1,53 @@
 """
-SequenceManager - Qt Presentation Layer
+SequenceOrchestrator - Qt Presentation Layer
 
-Thin Qt wrapper for sequence operations - business logic delegated to SequenceManager service.
+Thin Qt wrapper for sequence operations - business logic delegated to SequenceOrchestrator service.
 """
 
 from typing import Callable, Optional
 
-from PyQt6.QtCore import QObject, pyqtSignal
+from application.services.sequence.sequence_orchestrator import (
+    ISequenceOrchestratorSignals,
+)
+from application.services.sequence.sequence_orchestrator import (
+    SequenceOrchestrator as SequenceOrchestratorService,
+)
 from domain.models.beat_data import BeatData
 from domain.models.sequence_data import SequenceData
-from application.services.sequence.sequence_manager import (
-    SequenceManager as SequenceManagerService,
-    ISequenceManagerSignals,
-)
+from PyQt6.QtCore import QObject, pyqtSignal
 
 
-class SequenceManagerSignalEmitter(ISequenceManagerSignals):
-    """Qt signal emitter for sequence manager service."""
+class SequenceOrchestratorSignalEmitter(ISequenceOrchestratorSignals):
+    """Qt signal emitter for sequence orchestrator service."""
 
-    def __init__(self, qt_sequence_manager):
-        self.qt_manager = qt_sequence_manager
+    def __init__(self, qt_sequence_orchestrator):
+        self.qt_orchestrator = qt_sequence_orchestrator
 
     def emit_sequence_modified(self, sequence: SequenceData) -> None:
-        self.qt_manager.sequence_modified.emit(sequence)
+        self.qt_orchestrator.sequence_modified.emit(sequence)
 
     def emit_sequence_cleared(self) -> None:
-        self.qt_manager.sequence_cleared.emit()
+        self.qt_orchestrator.sequence_cleared.emit()
+
+    def emit_beat_added(self, beat_data: BeatData, position: int) -> None:
+        self.qt_orchestrator.beat_added.emit(beat_data, position)
+
+    def emit_beat_removed(self, position: int) -> None:
+        self.qt_orchestrator.beat_removed.emit(position)
+
+    def emit_beat_updated(self, beat_data: BeatData, position: int) -> None:
+        self.qt_orchestrator.beat_updated.emit(beat_data, position)
+
+    def emit_start_position_set(self, start_position_data: BeatData) -> None:
+        self.qt_orchestrator.start_position_set.emit(start_position_data)
+
+    def emit_sequence_loaded(self, sequence: SequenceData) -> None:
+        self.qt_orchestrator.sequence_loaded.emit(sequence)
 
 
-class SequenceManager(QObject):
+class SequenceOrchestrator(QObject):
     """
-    Qt wrapper for sequence operations - business logic in SequenceManager service.
+    Qt wrapper for sequence operations - business logic in SequenceOrchestrator service.
 
     Responsibilities:
     - Emit Qt signals for sequence changes
@@ -40,10 +57,20 @@ class SequenceManager(QObject):
     Signals:
     - sequence_modified: Emitted when sequence is modified
     - sequence_cleared: Emitted when sequence is cleared
+    - beat_added: Emitted when beat is added
+    - beat_removed: Emitted when beat is removed
+    - beat_updated: Emitted when beat is updated
+    - start_position_set: Emitted when start position is set
+    - sequence_loaded: Emitted when sequence is loaded
     """
 
     sequence_modified = pyqtSignal(object)  # SequenceData object
     sequence_cleared = pyqtSignal()
+    beat_added = pyqtSignal(object, int)  # BeatData, position
+    beat_removed = pyqtSignal(int)  # position
+    beat_updated = pyqtSignal(object, int)  # BeatData, position
+    start_position_set = pyqtSignal(object)  # BeatData
+    sequence_loaded = pyqtSignal(object)  # SequenceData
 
     def __init__(
         self,
@@ -54,10 +81,10 @@ class SequenceManager(QObject):
         super().__init__()
 
         # Initialize signal emitter for service
-        signal_emitter = SequenceManagerSignalEmitter(self)
+        signal_emitter = SequenceOrchestratorSignalEmitter(self)
 
-        # Initialize the sequence manager service with dependencies
-        self._sequence_service = SequenceManagerService(
+        # Initialize the sequence orchestrator service with dependencies
+        self._sequence_service = SequenceOrchestratorService(
             workbench_getter=workbench_getter,
             workbench_setter=workbench_setter,
             start_position_handler=start_position_handler,

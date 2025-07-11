@@ -21,7 +21,7 @@ from application.services.core.session_state_tracker import SessionStateTracker
 # Import production services
 from application.services.layout.layout_manager import LayoutManager
 from application.services.pictograph.pictograph_manager import PictographManager
-from application.services.sequence.sequence_manager import SequenceManager
+from application.services.sequence.sequence_orchestrator import SequenceOrchestrator
 
 # Import existing service interfaces
 from core.interfaces.core_services import (
@@ -107,7 +107,7 @@ class ApplicationFactory:
         from application.services.ui.coordination.ui_coordinator import UICoordinator
 
         container.register_singleton(IUIStateManager, UICoordinator)
-        container.register_singleton(ISequenceManager, SequenceManager)
+        container.register_singleton(ISequenceManager, SequenceOrchestrator)
         container.register_singleton(IPictographManager, PictographManager)
 
         # Register session service
@@ -247,7 +247,7 @@ class ApplicationFactory:
         container.register_singleton(IFileSystemService, FileSystemService)
 
         # Real business logic services
-        container.register_singleton(ISequenceManager, SequenceManager)
+        container.register_singleton(ISequenceManager, SequenceOrchestrator)
         container.register_singleton(IPictographManager, PictographManager)
 
         # Headless UI services

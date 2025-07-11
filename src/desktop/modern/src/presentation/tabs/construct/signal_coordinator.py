@@ -143,9 +143,7 @@ class SignalCoordinator(QObject):
 
     def _handle_sequence_modified(self, sequence: SequenceData):
         """Handle sequence modification from sequence manager"""
-        print(
-            f"✅ Signal coordinator: Sequence modified with {sequence.length if sequence else 0} beats"
-        )
+
         start_position_set = False
         workbench = self.layout_manager.workbench
 
@@ -186,13 +184,9 @@ class SignalCoordinator(QObject):
 
     def _handle_operation_completed(self, message: str):
         """Handle workbench operation completion"""
-        print(f"✅ Signal coordinator: Operation completed: {message}")
 
     def _handle_edit_construct_toggle(self, edit_mode: bool):
         """Handle Edit/Construct toggle from workbench button panel"""
-        print(
-            f"✅ Signal coordinator: Edit/Construct toggle: {'Edit' if edit_mode else 'Construct'}"
-        )
 
         if edit_mode:
             # Switch to graph editor (index 2)
@@ -233,7 +227,6 @@ class SignalCoordinator(QObject):
     def clear_sequence(self):
         """Clear the current sequence (public interface)"""
         try:
-            print("🔄 [SIGNAL_COORDINATOR] Clearing sequence...")
 
             # Clear persistence FIRST
             from application.services.sequence.sequence_persister import (
@@ -242,7 +235,6 @@ class SignalCoordinator(QObject):
 
             persistence_service = SequencePersister()
             persistence_service.clear_current_sequence()
-            print("✅ [SIGNAL_COORDINATOR] Cleared sequence persistence")
 
             # Clear sequence in workbench
             if hasattr(self.loading_service, "workbench_setter"):
@@ -250,16 +242,12 @@ class SignalCoordinator(QObject):
                 if workbench_setter:
                     empty_sequence = SequenceData.empty()
                     workbench_setter(empty_sequence)
-                    print("✅ [SIGNAL_COORDINATOR] Cleared sequence in workbench")
 
             # Clear start position
             self.start_position_manager.clear_start_position()
-            print("✅ [SIGNAL_COORDINATOR] Cleared start position")
 
             # Transition to start position picker
             self._handle_sequence_cleared()
-
-            print("✅ [SIGNAL_COORDINATOR] Sequence cleared successfully")
 
         except Exception as e:
             print(f"❌ [SIGNAL_COORDINATOR] Failed to clear sequence: {e}")

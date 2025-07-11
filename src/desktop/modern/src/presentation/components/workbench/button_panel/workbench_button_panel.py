@@ -125,7 +125,6 @@ class SequenceWorkbenchButtonPanel(QWidget):
 
     def _handle_button_click(self, signal, tooltip):
         """Handle button click with debug output"""
-        print(f"🔧 DEBUG: Button clicked - {tooltip}")
         signal.emit()
 
     def _handle_edit_construct_toggle(self):

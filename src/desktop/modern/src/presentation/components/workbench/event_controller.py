@@ -137,11 +137,6 @@ class WorkbenchEventController(QObject):
 
             persistence_service = SequencePersister()
             persistence_service.clear_current_sequence()
-            print("✅ [EVENT_CONTROLLER] Cleared sequence persistence")
-
-            # Allow clearing even when no sequence exists - the workbench will handle
-            # clearing start position data. This enables clearing when only a start
-            # position is selected (no beats added yet).
             empty_sequence = SequenceData.empty()
             self._current_sequence = empty_sequence
             return True, "Sequence cleared!", empty_sequence

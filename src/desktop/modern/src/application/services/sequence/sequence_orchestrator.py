@@ -106,8 +106,6 @@ class SequenceOrchestrator:
         self.transformer = SequenceTransformer()
         self.validator = SequenceValidator()
 
-        logger.info("SequenceOrchestrator initialized with all dependent services")
-
     # =============================================================================
     # BEAT OPERATIONS (Consolidated from SequenceBeatOperations)
     # =============================================================================

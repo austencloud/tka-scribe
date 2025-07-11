@@ -18,7 +18,7 @@ except ImportError:
 from application.services.graph_editor.graph_editor_coordinator import (
     GraphEditorCoordinator,
 )
-from application.services.sequence.sequence_manager import SequenceManager
+from application.services.sequence.sequence_orchestrator import SequenceOrchestrator
 from application.services.ui.full_screen_viewer import FullScreenViewer
 from application.services.ui.sequence_state_reader import (
     MockSequenceStateReader,
@@ -78,8 +78,8 @@ def configure_workbench_services(container: DIContainer) -> None:
     # Get UI state service for services that need it
     ui_state_service = container.resolve(IUIStateManager)
 
-    # Create sequence management service
-    sequence_service = SequenceManager()
+    # Create sequence orchestration service
+    sequence_service = SequenceOrchestrator()
     container.register_instance(ISequenceWorkbenchService, sequence_service)
     container.register_instance(IBeatDeletionService, sequence_service)
     container.register_instance(IDictionaryService, sequence_service)

@@ -36,7 +36,6 @@ class SequenceValidator:
     def __init__(self):
         # Load validation rules
         self._sequence_validation_rules = self._load_validation_rules()
-        logger.info("SequenceValidator initialized with validation rules")
 
     def validate_sequence(self, sequence: SequenceData) -> bool:
         """

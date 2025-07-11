@@ -97,7 +97,6 @@ class SequenceBeatOperations(QObject):
         try:
             # If we have a workbench setter, use direct manipulation for immediate UI updates
             if self.workbench_setter:
-                print(f"🎯 Using direct manipulation (workbench setter available)")
                 self._add_beat_direct(beat_data)
                 return
 
@@ -316,9 +315,6 @@ class SequenceBeatOperations(QObject):
             existing_start_position = None
             if len(existing_sequence) > 1 and existing_sequence[1].get("beat") == 0:
                 existing_start_position = existing_sequence[1]
-                print(
-                    f"✅ Preserving existing start position: {existing_start_position.get('sequence_start_position', 'unknown')}"
-                )
 
             # Convert beats to legacy format (these will be beat 1, 2, 3, etc.)
             legacy_beats = []
@@ -360,8 +356,6 @@ class SequenceBeatOperations(QObject):
 
             # Save to persistence
             self.persistence_service.save_current_sequence(complete_sequence)
-
-            print(f"✅ Saved sequence with {len(legacy_beats)} beats to persistence")
 
         except Exception as e:
             print(f"❌ Failed to save sequence to persistence: {e}")

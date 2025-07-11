@@ -102,8 +102,14 @@ class ServiceRegistrationManager(IServiceRegistrationManager):
 
     def register_core_services(self, container: "DIContainer") -> None:
         """Register core services using pure dependency injection."""
+        from application.services.data.legacy_data_converter import LegacyDataConverter
         from application.services.layout.layout_manager import LayoutManager
-        from application.services.sequence.sequence_manager import SequenceManager
+        from application.services.sequence.sequence_beat_operations import (
+            SequenceBeatOperations,
+        )
+        from application.services.sequence.sequence_orchestrator import (
+            SequenceOrchestrator,
+        )
         from application.services.ui.coordination.ui_coordinator import UICoordinator
         from core.interfaces.core_services import ILayoutService, IUIStateManager
 
@@ -125,8 +131,10 @@ class ServiceRegistrationManager(IServiceRegistrationManager):
         # Register UI state service as singleton since it has no dependencies
         container.register_singleton(IUIStateManager, UICoordinator)
 
-        # Register SequenceManager as singleton for centralized sequence management
-        container.register_singleton(SequenceManager, SequenceManager)
+        # Register focused sequence services as singletons
+        container.register_singleton(SequenceOrchestrator, SequenceOrchestrator)
+        container.register_singleton(SequenceBeatOperations, SequenceBeatOperations)
+        container.register_singleton(LegacyDataConverter, LegacyDataConverter)
 
     def register_motion_services(self, container: "DIContainer") -> None:
         """Register motion services using pure dependency injection."""

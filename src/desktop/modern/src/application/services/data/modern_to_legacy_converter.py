@@ -47,9 +47,9 @@ class ModernToLegacyConverter:
             # Extract position data from glyph_data if available
             start_pos = ""
             end_pos = ""
-            if beat.glyph_data:
-                start_pos = beat.glyph_data.start_position or ""
-                end_pos = beat.glyph_data.end_position or ""
+            if beat.pictograph_data.glyph_data:
+                start_pos = beat.pictograph_data.glyph_data.start_position or ""
+                end_pos = beat.pictograph_data.glyph_data.end_position or ""
 
             # Extract timing and direction from metadata
             timing = beat.metadata.get("timing", "same") if beat.metadata else "same"

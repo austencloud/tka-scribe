@@ -54,12 +54,6 @@ class OptionPickerManager(QObject):
             return
 
         try:
-            print(
-                f"🔄 [OPTION_PICKER_MANAGER] Populating from start position: {position_key}"
-            )
-            print(
-                f"📊 [OPTION_PICKER_MANAGER] Start position data: letter={start_position_data.letter}, start_pos={start_position_data.start_position}, end_pos={start_position_data.end_position}"
-            )
 
             # Convert PictographData to legacy format for compatibility
             start_position_dict = {
@@ -77,20 +71,13 @@ class OptionPickerManager(QObject):
                     )
                 )
                 start_position_dict["end_pos"] = extracted_end_pos
-                print(
-                    f"🔧 [OPTION_PICKER_MANAGER] Extracted end position: {extracted_end_pos}"
-                )
 
             sequence_data = [
                 {"metadata": "sequence_info"},
                 start_position_dict,
             ]
 
-            print(
-                f"📤 [OPTION_PICKER_MANAGER] Loading motion combinations with sequence_data: {sequence_data}"
-            )
             self.option_picker.load_motion_combinations(sequence_data)
-            print(f"✅ [OPTION_PICKER_MANAGER] Motion combinations loaded successfully")
 
         except Exception as e:
             print(
@@ -102,9 +89,7 @@ class OptionPickerManager(QObject):
 
             if self.option_picker is not None:
                 try:
-                    print(f"🔄 [OPTION_PICKER_MANAGER] Attempting fallback refresh...")
                     self.option_picker.refresh_options()
-                    print(f"✅ [OPTION_PICKER_MANAGER] Fallback refresh completed")
                 except Exception as fallback_error:
                     print(
                         f"❌ [OPTION_PICKER_MANAGER] Fallback refresh failed: {fallback_error}"
@@ -120,7 +105,6 @@ class OptionPickerManager(QObject):
         try:
             self.option_picker.refresh_options_from_modern_sequence(sequence)
             total_time = (time.perf_counter() - start_time) * 1000
-            print(f"⚡ Option picker refreshed: {total_time:.1f}ms")
         except Exception as e:
             import traceback
 

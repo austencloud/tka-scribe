@@ -1,16 +1,16 @@
 """
-Sequence Manager Qt Adapter - Presentation Layer Interface
+Sequence Orchestrator Qt Adapter - Presentation Layer Interface
 
-This adapter provides Qt signal functionality for the SequenceManager business service.
+This adapter provides Qt signal functionality for the SequenceOrchestrator business service.
 It implements the adapter pattern to maintain separation between presentation and application layers.
 """
 
 import logging
 from typing import Callable, Optional
 
-from application.services.sequence.sequence_manager import (
-    ISequenceManagerSignals,
-    SequenceManager,
+from application.services.sequence.sequence_orchestrator import (
+    ISequenceOrchestratorSignals,
+    SequenceOrchestrator,
 )
 from domain.models.beat_data import BeatData
 from domain.models.sequence_data import SequenceData
@@ -19,12 +19,12 @@ from PyQt6.QtCore import QObject, pyqtSignal
 logger = logging.getLogger(__name__)
 
 
-class SequenceManagerQtAdapter(QObject, ISequenceManagerSignals):
+class SequenceOrchestratorQtAdapter(QObject, ISequenceOrchestratorSignals):
     """
-    Qt adapter for the SequenceManager service.
+    Qt adapter for the SequenceOrchestrator service.
 
     This adapter handles Qt-specific signal emission while delegating
-    all business logic to the SequenceManager service.
+    all business logic to the SequenceOrchestrator service.
     """
 
     sequence_modified = pyqtSignal(object)  # SequenceData object
@@ -47,7 +47,7 @@ class SequenceManagerQtAdapter(QObject, ISequenceManagerSignals):
         super().__init__()
 
         # Create the business service with this adapter as signal emitter
-        self._sequence_manager = SequenceManager(
+        self._sequence_orchestrator = SequenceOrchestrator(
             workbench_getter=workbench_getter,
             workbench_setter=workbench_setter,
             start_position_handler=start_position_handler,
@@ -66,37 +66,37 @@ class SequenceManagerQtAdapter(QObject, ISequenceManagerSignals):
     # Public API - delegate to business service
     def add_beat_to_sequence(self, beat_data: BeatData):
         """Add a beat to the current sequence"""
-        self._sequence_manager.add_beat_to_sequence(beat_data)
+        self._sequence_orchestrator.add_beat_to_sequence(beat_data)
 
     def clear_sequence(self):
         """Clear the current sequence"""
-        self._sequence_manager.clear_sequence()
+        self._sequence_orchestrator.clear_sequence()
 
     def handle_workbench_modified(self, sequence: SequenceData):
         """Handle workbench sequence modification"""
-        self._sequence_manager.handle_workbench_modified(sequence)
+        self._sequence_orchestrator.handle_workbench_modified(sequence)
 
     def update_beat_turns(self, beat_index: int, color: str, new_turns: int):
         """Update the number of turns for a specific beat"""
-        self._sequence_manager.update_beat_turns(beat_index, color, new_turns)
+        self._sequence_orchestrator.update_beat_turns(beat_index, color, new_turns)
 
     def remove_beat(self, beat_index: int):
         """Remove a beat from the sequence"""
-        self._sequence_manager.remove_beat(beat_index)
+        self._sequence_orchestrator.remove_beat(beat_index)
 
     def set_start_position(self, start_position_data: BeatData):
         """Set the start position"""
-        self._sequence_manager.set_start_position(start_position_data)
+        self._sequence_orchestrator.set_start_position(start_position_data)
 
     def load_sequence_on_startup(self):
         """Load sequence from current_sequence.json on startup"""
-        self._sequence_manager.load_sequence_on_startup()
+        self._sequence_orchestrator.load_sequence_on_startup()
 
     def get_current_sequence_length(self) -> int:
         """Get the length of the current sequence"""
-        return self._sequence_manager.get_current_sequence_length()
+        return self._sequence_orchestrator.get_current_sequence_length()
 
     @property
-    def sequence_manager(self) -> SequenceManager:
+    def sequence_orchestrator(self) -> SequenceOrchestrator:
         """Access to the underlying business service (use sparingly)"""
-        return self._sequence_manager
+        return self._sequence_orchestrator

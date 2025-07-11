@@ -161,9 +161,6 @@ class ConstructTabWidget(QWidget):
         self, start_position_data: BeatData, position_key: str
     ):
         """Handle start position loaded."""
-        print(
-            f"🎯 Start position loaded: {start_position_data.letter} ({position_key})"
-        )
         self.start_position_loaded_from_persistence.emit(
             position_key, start_position_data
         )
@@ -272,7 +269,6 @@ class ConstructTabWidget(QWidget):
     def clear_sequence(self):
         """Clear the current sequence and reset to start position picker"""
         try:
-            print("🔄 [CONSTRUCT_TAB] Clearing sequence...")
 
             # Clear persistence FIRST
             from application.services.sequence.sequence_persister import (
@@ -281,24 +277,19 @@ class ConstructTabWidget(QWidget):
 
             persistence_service = SequencePersister()
             persistence_service.clear_current_sequence()
-            print("✅ [CONSTRUCT_TAB] Cleared sequence persistence")
 
             # Clear start position FIRST (before setting empty sequence)
             # This prevents signal coordinator from seeing stale start position data
             self.start_position_manager.clear_start_position()
-            print("✅ [CONSTRUCT_TAB] Cleared start position")
 
             # Clear sequence in workbench AFTER start position is cleared
             workbench_setter = self._get_workbench_setter()
             if workbench_setter:
                 empty_sequence = SequenceData.empty()
                 workbench_setter(empty_sequence)
-                print("✅ [CONSTRUCT_TAB] Cleared sequence in workbench")
 
             # NOTE: UI transition is handled automatically by signal coordinator
             # based on sequence state - no manual transition needed
-
-            print("✅ [CONSTRUCT_TAB] Sequence cleared successfully")
 
         except Exception as e:
             print(f"❌ [CONSTRUCT_TAB] Failed to clear sequence: {e}")

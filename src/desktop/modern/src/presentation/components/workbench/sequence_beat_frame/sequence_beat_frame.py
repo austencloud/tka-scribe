@@ -312,10 +312,6 @@ class SequenceBeatFrame(QScrollArea):
             self._container_widget.show()
             self._container_widget.setVisible(True)
 
-        # Check scroll area visibility
-        scroll_area_visible = self.isVisible()
-        parent_visible = self.parent().isVisible() if self.parent() else "No parent"
-
         if self._start_position_view:
             self._start_position_view.clear_position_data()
 
