@@ -5,9 +5,6 @@ Manages signal connections, emissions, and coordination between construct tab co
 Responsible for connecting signals between components and handling signal routing.
 """
 
-from domain.models import SequenceData
-from PyQt6.QtCore import QObject, pyqtSignal
-
 # Import services from application layer (moved from presentation)
 from application.services.sequence.loader import SequenceLoader
 from application.services.sequence.sequence_beat_operations import (
@@ -16,6 +13,8 @@ from application.services.sequence.sequence_beat_operations import (
 from application.services.sequence.sequence_start_position_manager import (
     SequenceStartPositionManager,
 )
+from domain.models import SequenceData
+from PyQt6.QtCore import QObject, pyqtSignal
 
 from .layout_manager import ConstructTabLayoutManager
 from .option_picker_manager import OptionPickerManager
@@ -237,11 +236,29 @@ class SignalCoordinator(QObject):
             persistence_service.clear_current_sequence()
 
             # Clear sequence in workbench
+            print(
+                f"🔍 [SIGNAL_COORDINATOR] Loading service: {self.loading_service is not None}"
+            )
             if hasattr(self.loading_service, "workbench_setter"):
                 workbench_setter = self.loading_service.workbench_setter
+                print(
+                    f"🔍 [SIGNAL_COORDINATOR] Workbench setter: {workbench_setter is not None}"
+                )
                 if workbench_setter:
                     empty_sequence = SequenceData.empty()
+                    print(
+                        f"🔍 [SIGNAL_COORDINATOR] Calling workbench setter with empty sequence"
+                    )
                     workbench_setter(empty_sequence)
+                    print(
+                        f"✅ [SIGNAL_COORDINATOR] Workbench setter called successfully"
+                    )
+                else:
+                    print(f"❌ [SIGNAL_COORDINATOR] Workbench setter is None")
+            else:
+                print(
+                    f"❌ [SIGNAL_COORDINATOR] Loading service has no workbench_setter attribute"
+                )
 
             # Clear start position
             self.start_position_manager.clear_start_position()

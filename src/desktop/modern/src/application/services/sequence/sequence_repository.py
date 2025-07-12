@@ -7,6 +7,7 @@ solely on data access and storage operations.
 """
 
 import logging
+from abc import ABC, abstractmethod
 from typing import List, Optional
 
 from domain.models.sequence_data import SequenceData
@@ -14,7 +15,57 @@ from domain.models.sequence_data import SequenceData
 logger = logging.getLogger(__name__)
 
 
-class SequenceRepository:
+class RepositoryError(Exception):
+    """Custom exception for repository errors."""
+
+    pass
+
+
+class ISequenceRepository(ABC):
+    """Interface for sequence data access operations."""
+
+    @abstractmethod
+    def save(self, sequence: SequenceData) -> SequenceData:
+        """Save a sequence to storage."""
+        pass
+
+    @abstractmethod
+    def get_by_id(self, sequence_id: str) -> Optional[SequenceData]:
+        """Retrieve a sequence by its ID."""
+        pass
+
+    @abstractmethod
+    def get_all(self) -> List[SequenceData]:
+        """Retrieve all sequences."""
+        pass
+
+    @abstractmethod
+    def delete(self, sequence_id: str) -> bool:
+        """Delete a sequence by ID."""
+        pass
+
+    @abstractmethod
+    def exists(self, sequence_id: str) -> bool:
+        """Check if a sequence exists."""
+        pass
+
+    @abstractmethod
+    def get_current_sequence(self) -> Optional[SequenceData]:
+        """Get the current active sequence."""
+        pass
+
+    @abstractmethod
+    def set_current_sequence(self, sequence: SequenceData) -> None:
+        """Set the current active sequence."""
+        pass
+
+    @abstractmethod
+    def clear_current_sequence(self) -> None:
+        """Clear the current active sequence."""
+        pass
+
+
+class SequenceRepository(ISequenceRepository):
     """
     Repository for sequence data access operations.
 
@@ -332,33 +383,3 @@ class SequenceRepository:
         """Set the storage adapter."""
         self._storage_adapter = adapter
         logger.info(f"Storage adapter set: {type(adapter).__name__}")
-
-
-class RepositoryError(Exception):
-    """Custom exception for repository operations."""
-
-    pass
-
-
-class IStorageAdapter:
-    """Interface for storage adapters."""
-
-    def save_sequence(self, sequence: SequenceData) -> None:
-        """Save a sequence to storage."""
-        raise NotImplementedError
-
-    def load_sequence(self, sequence_id: str) -> Optional[SequenceData]:
-        """Load a sequence from storage."""
-        raise NotImplementedError
-
-    def delete_sequence(self, sequence_id: str) -> bool:
-        """Delete a sequence from storage."""
-        raise NotImplementedError
-
-    def sequence_exists(self, sequence_id: str) -> bool:
-        """Check if a sequence exists in storage."""
-        raise NotImplementedError
-
-    def get_all_sequences(self) -> List[SequenceData]:
-        """Get all sequences from storage."""
-        raise NotImplementedError

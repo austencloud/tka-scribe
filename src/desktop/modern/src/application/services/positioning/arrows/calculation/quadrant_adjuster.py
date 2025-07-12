@@ -39,7 +39,7 @@ except ImportError:
 logger = logging.getLogger(__name__)
 
 
-class QuadrantAdjustmentService:
+class QuadrantAdjuster:
     """
     Service for applying quadrant-based position adjustments.
 

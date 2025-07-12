@@ -32,15 +32,16 @@ from core.config.app_config import (
 from core.config.data_config import DataConfig, create_data_config
 from core.dependency_injection.di_container import DIContainer
 from core.interfaces.core_services import IObjectPoolManager
-from core.interfaces.positioning_services import IPositionMatchingService
-from core.types.result import AppError, ErrorType, Result, app_error, failure, success
+from core.interfaces.positioning_services import IPositionMapper
+
+# Removed Result pattern imports - using simple exceptions
 
 logger = logging.getLogger(__name__)
 
 
 def register_configurations(
     container, config_override: Optional[AppConfig] = None
-) -> Result[bool, AppError]:
+) -> None:
     """
     Register all configuration objects in the DI container.
 
@@ -48,18 +49,19 @@ def register_configurations(
         container: DI container instance
         config_override: Optional configuration override for testing
 
-    Returns:
-        Result indicating success or failure
+    Raises:
+        Exception: If configuration registration fails
     """
     try:
         # Use provided config or create from environment
         if config_override:
             app_config = config_override
         else:
-            config_result = create_app_config()
-            if config_result.is_failure():
-                return failure(config_result.error)
-            app_config = config_result.value
+            try:
+                app_config = create_app_config()
+            except Exception as e:
+                logger.error(f"Failed to create app config: {e}")
+                raise
 
         # Register the main app configuration
         container.register_instance(AppConfig, app_config)
@@ -76,21 +78,15 @@ def register_configurations(
         )
 
         logger.info("Successfully registered all configurations in DI container")
-        return success(True)
 
     except Exception as e:
-        return failure(
-            app_error(
-                ErrorType.DEPENDENCY_INJECTION_ERROR,
-                f"Failed to register configurations: {e}",
-                cause=e,
-            )
-        )
+        logger.error(f"Failed to register configurations: {e}")
+        raise
 
 
 def register_data_config_only(
     container, data_config: Optional[DataConfig] = None
-) -> Result[bool, AppError]:
+) -> None:
     """
     Register only data configuration (useful for services that only need data access).
 
@@ -106,10 +102,11 @@ def register_data_config_only(
         if data_config:
             config = data_config
         else:
-            config_result = create_data_config()
-            if config_result.is_failure():
-                return failure(config_result.error)
-            config = config_result.value
+            try:
+                config = create_data_config()
+            except Exception as e:
+                logger.error(f"Failed to create data config: {e}")
+                raise
 
         # Register data configuration
         container.register_instance(DataConfig, config)
@@ -118,21 +115,15 @@ def register_data_config_only(
         container.register_factory(DataService, lambda: DataService(config))
 
         logger.info("Successfully registered data configuration in DI container")
-        return success(True)
 
     except Exception as e:
-        return failure(
-            app_error(
-                ErrorType.DEPENDENCY_INJECTION_ERROR,
-                f"Failed to register data configuration: {e}",
-                cause=e,
-            )
-        )
+        logger.error(f"Failed to register data configuration: {e}")
+        raise
 
 
 def register_positioning_services_with_config(
     container: "DIContainer", positioning_config: Optional[PositioningConfig] = None
-) -> Result[bool, AppError]:
+) -> None:
     """
     Register positioning services with configuration injection.
 
@@ -176,16 +167,10 @@ def register_positioning_services_with_config(
         )
 
         logger.info("Successfully registered positioning services with configuration")
-        return success(True)
 
     except Exception as e:
-        return failure(
-            app_error(
-                ErrorType.DEPENDENCY_INJECTION_ERROR,
-                f"Failed to register positioning services: {e}",
-                cause=e,
-            )
-        )
+        logger.error(f"Failed to register positioning services: {e}")
+        raise
 
 
 def create_configured_container(config_override: Optional[AppConfig] = None):
@@ -220,7 +205,7 @@ def create_configured_container(config_override: Optional[AppConfig] = None):
     return container
 
 
-def validate_configuration_registration(container) -> Result[bool, AppError]:
+def validate_configuration_registration(container) -> bool:
     """
     Validate that all required configurations are properly registered.
 
@@ -243,56 +228,35 @@ def validate_configuration_registration(container) -> Result[bool, AppError]:
             try:
                 instance = container.resolve(config_type)
                 if instance is None:
-                    return failure(
-                        app_error(
-                            ErrorType.DEPENDENCY_INJECTION_ERROR,
-                            f"Configuration {config_type.__name__} resolved to None",
-                            {"config_type": config_type.__name__},
-                        )
+                    logger.error(
+                        f"Configuration {config_type.__name__} resolved to None"
                     )
+                    return False
             except Exception as e:
-                return failure(
-                    app_error(
-                        ErrorType.DEPENDENCY_INJECTION_ERROR,
-                        f"Failed to resolve configuration {config_type.__name__}: {e}",
-                        {"config_type": config_type.__name__},
-                        e,
-                    )
+                logger.error(
+                    f"Failed to resolve configuration {config_type.__name__}: {e}"
                 )
+                return False
 
         # Validate data service can be resolved
         try:
             data_service = container.resolve(DataService)
             if data_service is None:
-                return failure(
-                    app_error(
-                        ErrorType.DEPENDENCY_INJECTION_ERROR,
-                        "DataService resolved to None",
-                    )
-                )
+                logger.error("DataService resolved to None")
+                return False
         except Exception as e:
-            return failure(
-                app_error(
-                    ErrorType.DEPENDENCY_INJECTION_ERROR,
-                    f"Failed to resolve DataService: {e}",
-                    cause=e,
-                )
-            )
+            logger.error(f"Failed to resolve DataService: {e}")
+            return False
 
         logger.info("All configuration registrations validated successfully")
-        return success(True)
+        return True
 
     except Exception as e:
-        return failure(
-            app_error(
-                ErrorType.DEPENDENCY_INJECTION_ERROR,
-                f"Configuration validation failed: {e}",
-                cause=e,
-            )
-        )
+        logger.error(f"Configuration validation failed: {e}")
+        raise
 
 
-def register_extracted_services(container) -> Result[bool, AppError]:
+def register_extracted_services(container) -> None:
     """
     Register extracted business logic services.
 
@@ -304,11 +268,9 @@ def register_extracted_services(container) -> Result[bool, AppError]:
     """
     try:
         # Register position matching service
-        from application.services.positioning.position_matching_service import (
-            PositionMatchingService,
-        )
+        from application.services.positioning.position_mapper import PositionMapper
 
-        container.register_singleton(IPositionMatchingService, PositionMatchingService)
+        container.register_singleton(IPositionMapper, PositionMapper)
 
         # Note: BeatLoadingService was removed during SRP refactoring
         # Its functionality was split into focused microservices
@@ -332,13 +294,7 @@ def register_extracted_services(container) -> Result[bool, AppError]:
             # Don't fail the entire registration process
 
         # DI registration log removed to reduce startup noise
-        return success(True)
 
     except Exception as e:
-        return failure(
-            app_error(
-                ErrorType.DEPENDENCY_INJECTION_ERROR,
-                f"Failed to register extracted services: {e}",
-                cause=e,
-            )
-        )
+        logger.error(f"Failed to register extracted services: {e}")
+        raise

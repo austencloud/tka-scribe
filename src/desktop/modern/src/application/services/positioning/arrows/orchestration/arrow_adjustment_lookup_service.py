@@ -8,7 +8,7 @@ RESPONSIBILITIES:
 - Special placement lookup (stored adjustments)
 - Default placement calculation fallback
 - Key generation for lookups
-- Error handling with Result types
+- Error handling with Python exceptions
 
 USAGE:
     lookup_service = ArrowAdjustmentLookupService(
@@ -17,17 +17,13 @@ USAGE:
         # ... other dependencies
     )
 
-    result = lookup_service.get_base_adjustment(arrow_data, pictograph_data)
-    if result.is_success():
-        adjustment = result.value
-    else:
-        logger.error(f"Lookup failed: {result.error}")
+    adjustment = lookup_service.get_base_adjustment(pictograph_data, motion_data, letter)
 """
 
 import logging
 
-from core.types.coordinates import PositionResult, qpoint_to_point
-from core.types.result import AppError, ErrorType, Result, app_error, failure, success
+from core.types.coordinates import qpoint_to_point
+from core.types.geometry import Point
 from domain.models.arrow_data import ArrowData
 from domain.models.motion_models import MotionData
 from domain.models.pictograph_data import PictographData
@@ -97,79 +93,62 @@ class ArrowAdjustmentLookupService:
 
     def get_base_adjustment(
         self, pictograph_data: PictographData, motion_data: MotionData, letter: str
-    ) -> PositionResult:
+    ) -> Point:
         """
         Get base adjustment using streamlined lookup logic.
 
         Args:
+            pictograph_data: Pictograph data for context
             motion_data: Motion data containing type, rotation, and location info
             letter: Letter for special placement lookup
 
         Returns:
-            Result containing Point adjustment or AppError
+            Point adjustment
+
+        Raises:
+            ValueError: If input data is invalid
+            RuntimeError: If lookup fails
         """
         if not motion_data or not letter:
-            return failure(
-                app_error(
-                    ErrorType.VALIDATION_ERROR,
-                    "Missing motion or letter data for adjustment lookup",
-                    {
-                        "has_motion": motion_data is not None,
-                        "has_letter": letter is not None,
-                    },
-                )
-            )
+            raise ValueError("Missing motion or letter data for adjustment lookup")
 
         try:
             # Generate required keys for special placement lookup
-            key_result = self._generate_lookup_keys(
+            ori_key, turns_tuple, attr_key = self._generate_lookup_keys(
                 pictograph_data, motion_data, letter
             )
-            if key_result.is_failure():
-                return failure(key_result.error)
-
-            ori_key, turns_tuple, attr_key = key_result.value
 
             logger.debug(
                 f"Generated keys - ori: {ori_key}, turns: {turns_tuple}, attr: {attr_key}"
             )
 
-            # STEP 1: Try special placement lookup (stored adjustments)
-            special_result = self._lookup_special_placement(
-                motion_data, letter, ori_key, turns_tuple, attr_key
-            )
-
-            if special_result.is_success():
-                logger.info(
-                    f"Using special placement: ({special_result.value.x:.1f}, {special_result.value.y:.1f})"
+            try:
+                special_adjustment = self._lookup_special_placement(
+                    motion_data, pictograph_data
                 )
-                return special_result
+                return special_adjustment
+            except ValueError:
+                # No special placement found - fall back to default
+                logger.debug("No special placement found, falling back to default")
 
             # STEP 2: Fall back to default calculation
-            default_result = self._calculate_default_adjustment(motion_data, letter)
-            if default_result.is_success():
-
-                return default_result
-
-            return failure(default_result.error)
+            default_adjustment = self._calculate_default_adjustment(motion_data, letter)
+            logger.debug(
+                f"Using default adjustment: ({default_adjustment.x:.1f}, {default_adjustment.y:.1f})"
+            )
+            return default_adjustment
 
         except Exception as e:
-            return failure(
-                app_error(
-                    ErrorType.POSITIONING_ERROR,
-                    f"Error in base adjustment lookup: {e}",
-                    {"letter": letter},
-                    e,
-                )
-            )
+            logger.error(f"Error in base adjustment lookup: {e}")
+            raise RuntimeError(f"Arrow adjustment lookup failed: {e}") from e
 
     def _generate_lookup_keys(
         self, pictograph_data: PictographData, motion_data: MotionData, letter: str
-    ) -> Result[tuple[str, str, str], AppError]:
+    ) -> tuple[str, str, str]:
         """Generate all required keys for special placement lookup."""
         try:
             # Create minimal pictograph data for legacy services that still need it
-            from domain.models.pictograph_data import PictographData
+            pass
 
             ori_key = self.orientation_key_service.generate_orientation_key(
                 motion_data, pictograph_data
@@ -184,93 +163,57 @@ class ArrowAdjustmentLookupService:
                 temp_arrow, pictograph_data
             )
 
-            return success((ori_key, turns_tuple, attr_key))
+            return (ori_key, turns_tuple, attr_key)
 
         except Exception as e:
-            return failure(
-                app_error(
-                    ErrorType.SERVICE_OPERATION_ERROR,
-                    f"Failed to generate lookup keys: {e}",
-                    {"letter": letter},
-                    e,
-                )
-            )
+            logger.error(f"Failed to generate lookup keys: {e}")
+            raise RuntimeError(f"Key generation failed: {e}") from e
 
     def _lookup_special_placement(
         self,
         motion_data: MotionData,
-        letter: str,
-        ori_key: str,
-        turns_tuple: str,
-        attr_key: str,
-    ) -> PositionResult:
+        pictograph_data: PictographData,
+    ) -> Point:
         """
         Look up special placement using exact legacy logic.
 
-        Returns Result[Point, AppError] instead of Optional[QPointF].
+        Returns Point if found, raises ValueError if not found.
         """
         try:
             # Create minimal data for legacy service
-            from domain.models.arrow_data import ArrowData
-            from domain.models.pictograph_data import PictographData
-
-            temp_arrow = ArrowData(color="blue")  # Default color
-            minimal_pictograph = PictographData(letter=letter)
 
             # This should return stored adjustment values if they exist
             adjustment = self.special_placement_service.get_special_adjustment(
-                temp_arrow, minimal_pictograph
+                motion_data, pictograph_data
             )
 
             if adjustment:
                 # Convert QPointF to Point
                 point = qpoint_to_point(adjustment)
-                return success(point)
+                return point
 
-            # No special placement found - this is not an error, just means fallback to default
-            return failure(
-                app_error(
-                    ErrorType.DATA_ERROR,
-                    "No special placement found",
-                    {
-                        "ori_key": ori_key,
-                        "turns_tuple": turns_tuple,
-                        "attr_key": attr_key,
-                        "letter": letter,
-                    },
-                )
-            )
+            # No special placement found
+            raise ValueError("No special placement found")
 
         except Exception as e:
-            return failure(
-                app_error(
-                    ErrorType.POSITIONING_ERROR,
-                    f"Error in special placement lookup: {e}",
-                    {
-                        "ori_key": ori_key,
-                        "turns_tuple": turns_tuple,
-                        "attr_key": attr_key,
-                        "letter": letter,
-                    },
-                    e,
-                )
-            )
+            if isinstance(e, ValueError):
+                raise  # Re-raise ValueError as-is
+            logger.error(f"Error in special placement lookup: {e}")
+            raise RuntimeError(f"Special placement lookup failed: {e}") from e
 
     def _calculate_default_adjustment(
         self,
         motion_data: MotionData,
         letter: str,
         grid_mode: str = "diamond",
-    ) -> PositionResult:
+    ) -> Point:
         """
         Calculate default adjustment using placement key and motion type.
 
-        Returns Result[Point, AppError] instead of QPointF.
+        Returns Point adjustment.
         """
         try:
             # Create minimal pictograph data for legacy services
-            from domain.models.pictograph_data import PictographData
-
             minimal_pictograph = PictographData(letter=letter)
 
             # Get default placements for the grid mode and motion type
@@ -288,20 +231,8 @@ class ArrowAdjustmentLookupService:
                 motion_data, grid_mode="diamond", placement_key=placement_key
             )
 
-            return success(adjustment_point)
+            return adjustment_point
 
         except Exception as e:
-            return failure(
-                app_error(
-                    ErrorType.POSITIONING_ERROR,
-                    f"Error calculating default adjustment: {e}",
-                    {
-                        "letter": letter,
-                        "grid_mode": grid_mode,
-                        "motion_type": (
-                            motion_data.motion_type.value if motion_data else "None"
-                        ),
-                    },
-                    e,
-                )
-            )
+            logger.error(f"Error calculating default adjustment: {e}")
+            raise RuntimeError(f"Default adjustment calculation failed: {e}") from e

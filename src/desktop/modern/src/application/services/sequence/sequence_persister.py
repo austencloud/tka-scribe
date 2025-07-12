@@ -5,13 +5,38 @@ Updates current_sequence.json whenever sequence changes occur.
 
 import json
 import logging
+from abc import ABC, abstractmethod
 from pathlib import Path
 from typing import Any, Dict, List
 
 logger = logging.getLogger(__name__)
 
 
-class SequencePersister:
+class ISequencePersister(ABC):
+    """Interface for sequence persistence operations."""
+
+    @abstractmethod
+    def load_current_sequence(self) -> List[Dict[str, Any]]:
+        """Load current sequence from JSON file."""
+        pass
+
+    @abstractmethod
+    def save_current_sequence(self, sequence: List[Dict[str, Any]]) -> None:
+        """Save current sequence to JSON file."""
+        pass
+
+    @abstractmethod
+    def clear_current_sequence(self) -> None:
+        """Clear the current sequence."""
+        pass
+
+    @abstractmethod
+    def get_default_sequence(self) -> List[Dict[str, Any]]:
+        """Return default sequence metadata."""
+        pass
+
+
+class SequencePersister(ISequencePersister):
     """Simple sequence persistence that updates current_sequence.json like legacy."""
 
     def __init__(self):
@@ -72,7 +97,7 @@ class SequencePersister:
 
     def clear_current_sequence(self) -> None:
         """Clear the current sequence - exactly like legacy."""
-        self.save_current_sequence([])
+        self.save_current_sequence(self.get_default_sequence())
 
     def get_default_sequence(self) -> List[Dict[str, Any]]:
         """Return default sequence metadata - exactly like legacy."""

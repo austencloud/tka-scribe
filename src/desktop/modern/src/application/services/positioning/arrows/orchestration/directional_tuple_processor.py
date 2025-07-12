@@ -16,49 +16,24 @@ USAGE:
         quadrant_index_service
     )
 
-    result = processor.process_directional_tuples(base_adjustment, arrow_data, pictograph_data)
-    if result.is_success():
-        final_adjustment = result.value
-    else:
-        logger.error(f"Processing failed: {result.error}")
+    try:
+        final_adjustment = processor.process_directional_tuples(base_adjustment, motion_data, location)
+    except Exception as e:
+        logger.error(f"Processing failed: {e}")
 """
 
 import logging
 from typing import List, Tuple
-
-from core.types.coordinates import PositionResult, point_to_qpoint
+from core.types.coordinates import point_to_qpoint
 from core.types.geometry import Point
-from core.types.result import AppError, ErrorType, Result, app_error, failure, success
-from domain.models.arrow_data import ArrowData
 from domain.models.enums import Location
 from domain.models.motion_models import MotionData
-from domain.models.pictograph_data import PictographData
-
-# Conditional PyQt6 imports for testing compatibility
-try:
-    from PyQt6.QtCore import QPointF
-
-    QT_AVAILABLE = True
-except ImportError:
-    # Create mock QPointF for testing when Qt is not available
-    class QPointF:
-        def __init__(self, x=0.0, y=0.0):
-            self._x = x
-            self._y = y
-
-        def x(self):
-            return self._x
-
-        def y(self):
-            return self._y
-
-    QT_AVAILABLE = False
 
 # Import required services
 from ...arrows.calculation.directional_tuple_calculator import (
     DirectionalTupleCalculator,
 )
-from ...arrows.calculation.quadrant_index_service import QuadrantIndexService
+from ..calculation.quadrant_index_calculator import QuadrantIndexCalculator
 
 logger = logging.getLogger(__name__)
 
@@ -77,7 +52,7 @@ class DirectionalTupleProcessor:
     def __init__(
         self,
         directional_tuple_service: DirectionalTupleCalculator,
-        quadrant_index_service: QuadrantIndexService,
+        quadrant_index_service: QuadrantIndexCalculator,
     ):
         """Initialize with required services for tuple processing."""
         self.directional_tuple_service = directional_tuple_service
@@ -88,7 +63,7 @@ class DirectionalTupleProcessor:
         base_adjustment: Point,
         motion_data: MotionData,
         location: Location,
-    ) -> PositionResult:
+    ) -> Point:
         """
         Process directional tuples to get final adjustment.
 
@@ -96,58 +71,31 @@ class DirectionalTupleProcessor:
             base_adjustment: Base adjustment point from lookup
             motion_data: Motion data containing type, rotation, and location info
             location: Pre-calculated arrow location
-
-        Returns:
-            Result containing final Point adjustment or AppError
         """
 
         try:
             # STEP 1: Generate directional tuples using base adjustment
-            tuples_result = self._generate_directional_tuples(
+            directional_tuples = self._generate_directional_tuples(
                 motion_data, base_adjustment
             )
-            if tuples_result.is_failure():
-                return failure(tuples_result.error)
-
-            directional_tuples = tuples_result.value
 
             # STEP 2: Get quadrant index for selection using pre-calculated location
-            quadrant_result = self._get_quadrant_index(motion_data, location)
-            if quadrant_result.is_failure():
-                return failure(quadrant_result.error)
-
-            quadrant_index = quadrant_result.value
+            quadrant_index = self._get_quadrant_index(motion_data, location)
 
             # STEP 3: Select final adjustment from directional tuples
-            selection_result = self._select_from_tuples(
+            final_adjustment = self._select_from_tuples(
                 directional_tuples, quadrant_index
             )
-            if selection_result.is_failure():
-                return failure(selection_result.error)
 
-            final_adjustment = selection_result.value
-
-            return success(final_adjustment)
+            return final_adjustment
 
         except Exception as e:
-            return failure(
-                app_error(
-                    ErrorType.POSITIONING_ERROR,
-                    f"Error processing directional tuples: {e}",
-                    {
-                        "motion_type": (
-                            motion_data.motion_type.value if motion_data else "None"
-                        ),
-                        "location": str(location),
-                        "base_adjustment": f"({base_adjustment.x:.1f}, {base_adjustment.y:.1f})",
-                    },
-                    e,
-                )
-            )
+            logger.error(f"Error processing directional tuples: {e}")
+            raise RuntimeError(f"Directional tuple processing failed: {e}") from e
 
     def _generate_directional_tuples(
         self, motion: MotionData, base_adjustment: Point
-    ) -> Result[List[Tuple[int, int]], AppError]:
+    ) -> List[Tuple[int, int]]:
         """
         Generate directional tuples using rotation matrices.
 
@@ -164,43 +112,17 @@ class DirectionalTupleProcessor:
             )
 
             if not directional_tuples:
-                return failure(
-                    app_error(
-                        ErrorType.POSITIONING_ERROR,
-                        "Directional tuple service returned empty tuples",
-                        {
-                            "motion_type": (
-                                motion.motion_type.value if motion else "None"
-                            ),
-                            "base_x": base_adjustment.x,
-                            "base_y": base_adjustment.y,
-                        },
-                    )
-                )
+                raise ValueError("Directional tuple service returned empty tuples")
 
-            return success(directional_tuples)
+            return directional_tuples
 
         except Exception as e:
-            return failure(
-                app_error(
-                    ErrorType.POSITIONING_ERROR,
-                    f"Error generating directional tuples: {e}",
-                    {
-                        "motion_type": motion.motion_type.value if motion else "None",
-                        "base_x": base_adjustment.x,
-                        "base_y": base_adjustment.y,
-                    },
-                    e,
-                )
-            )
+            logger.error(f"Error generating directional tuples: {e}")
+            raise RuntimeError(f"Directional tuple generation failed: {e}") from e
 
-    def _get_quadrant_index(
-        self, motion_data: MotionData, location: Location
-    ) -> Result[int, AppError]:
+    def _get_quadrant_index(self, motion_data: MotionData, location: Location) -> int:
         """
         Get quadrant index for directional tuple selection using pre-calculated location.
-
-        Returns Result[int, AppError] instead of int with fallback.
         """
         try:
             # Use pre-calculated location instead of recalculating
@@ -210,82 +132,34 @@ class DirectionalTupleProcessor:
 
             # Validate quadrant index
             if quadrant_index < 0:
-                return failure(
-                    app_error(
-                        ErrorType.POSITIONING_ERROR,
-                        f"Invalid negative quadrant index: {quadrant_index}",
-                        {
-                            "motion_type": (
-                                motion_data.motion_type.value if motion_data else "None"
-                            ),
-                            "location": str(location),
-                        },
-                    )
-                )
+                raise ValueError(f"Invalid negative quadrant index: {quadrant_index}")
 
-            return success(quadrant_index)
+            return quadrant_index
 
         except Exception as e:
-            return failure(
-                app_error(
-                    ErrorType.POSITIONING_ERROR,
-                    f"Error calculating quadrant index: {e}",
-                    {
-                        "motion_type": (
-                            motion_data.motion_type.value if motion_data else "None"
-                        ),
-                        "location": str(location),
-                    },
-                    e,
-                )
-            )
+            logger.error(f"Error calculating quadrant index: {e}")
+            raise RuntimeError(f"Quadrant index calculation failed: {e}") from e
 
     def _select_from_tuples(
         self, directional_tuples: List[Tuple[int, int]], quadrant_index: int
-    ) -> PositionResult:
+    ) -> Point:
         """
         Select final adjustment from directional tuples using quadrant index.
-
-        Returns Result[Point, AppError] instead of QPointF with fallback.
         """
         try:
             if not directional_tuples:
-                return failure(
-                    app_error(
-                        ErrorType.POSITIONING_ERROR,
-                        "Cannot select from empty directional tuples",
-                        {"quadrant_index": quadrant_index},
-                    )
-                )
+                raise ValueError("Cannot select from empty directional tuples")
 
             if quadrant_index >= len(directional_tuples):
-                return failure(
-                    app_error(
-                        ErrorType.POSITIONING_ERROR,
-                        f"Quadrant index {quadrant_index} out of range for {len(directional_tuples)} tuples",
-                        {
-                            "quadrant_index": quadrant_index,
-                            "tuple_count": len(directional_tuples),
-                            "available_tuples": directional_tuples,
-                        },
-                    )
+                raise ValueError(
+                    f"Quadrant index {quadrant_index} out of range for {len(directional_tuples)} tuples"
                 )
 
             selected_tuple = directional_tuples[quadrant_index]
             final_point = Point(float(selected_tuple[0]), float(selected_tuple[1]))
 
-            return success(final_point)
+            return final_point
 
         except Exception as e:
-            return failure(
-                app_error(
-                    ErrorType.POSITIONING_ERROR,
-                    f"Error selecting from directional tuples: {e}",
-                    {
-                        "quadrant_index": quadrant_index,
-                        "tuple_count": len(directional_tuples),
-                        "tuples": directional_tuples,
-                    },
-                    e,
-                )
-            )
+            logger.error(f"Error selecting from directional tuples: {e}")
+            raise RuntimeError(f"Tuple selection failed: {e}") from e

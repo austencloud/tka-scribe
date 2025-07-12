@@ -155,7 +155,7 @@ class IArrowPositioningOrchestrator(ABC):
         """
 
 
-class IPositionMatchingService(ABC):
+class IPositionMapper(ABC):
     """Interface for position matching and calculation services."""
 
     @abstractmethod

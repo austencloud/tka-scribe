@@ -6,7 +6,7 @@ Uses dependency injection to compose positioning pipeline.
 """
 
 import logging
-from typing import Optional, Tuple
+from typing import Tuple
 
 from core.interfaces.positioning_services import (
     IArrowAdjustmentCalculator,
@@ -50,7 +50,6 @@ class ArrowPositioningOrchestrator(IArrowPositioningOrchestrator):
         motion_data: MotionData = None,
     ) -> Tuple[float, float, float]:
         """Calculate arrow position using streamlined microservices pipeline."""
-        # CENTRALIZED DATA EXTRACTION
         motion = motion_data or self._get_motion_from_pictograph(
             arrow_data, pictograph_data
         )

@@ -13,6 +13,7 @@ This service handles:
 No UI dependencies - completely testable in isolation.
 """
 
+from abc import ABC, abstractmethod
 from typing import Any, Dict, List
 
 from domain.models.beat_data import BeatData
@@ -20,7 +21,38 @@ from domain.models.enums import GridPosition, Location
 from domain.models.sequence_data import SequenceData
 
 
-class DataConverter:
+class IDataConverter(ABC):
+    """Interface for data conversion operations."""
+
+    @abstractmethod
+    def extract_end_position_from_position_key(self, position_key: str) -> str:
+        """Extract the actual end position from a position key like 'beta5_beta5'."""
+        pass
+
+    @abstractmethod
+    def get_cached_end_position(self, beat: BeatData) -> str:
+        """Get end position with caching to eliminate redundant calculations."""
+        pass
+
+    @abstractmethod
+    def convert_sequence_to_legacy_format(
+        self, sequence: SequenceData
+    ) -> List[Dict[str, Any]]:
+        """Convert Modern SequenceData to Legacy-compatible format for option picker with caching."""
+        pass
+
+    @abstractmethod
+    def clear_caches(self) -> None:
+        """Clear all caches to free memory."""
+        pass
+
+    @abstractmethod
+    def get_cache_stats(self) -> Dict[str, int]:
+        """Get statistics about cache usage."""
+        pass
+
+
+class DataConverter(IDataConverter):
     """
     Pure business service for data conversion operations and caching.
 

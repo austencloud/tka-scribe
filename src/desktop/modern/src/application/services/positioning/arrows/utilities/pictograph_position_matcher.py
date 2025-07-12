@@ -25,7 +25,7 @@ from domain.models import (
 )
 
 
-class PositionMatchingService:
+class PictographPositionMatcher:
     """
     Data-driven position matching service for motion generation.
 

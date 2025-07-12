@@ -12,6 +12,7 @@ import logging
 import sys
 from typing import Optional
 
+# SequenceOrchestrator replaced by SequenceCoordinator - import moved below
 from core.dependency_injection.di_container import DIContainer
 
 logger = logging.getLogger(__name__)
@@ -21,7 +22,9 @@ from application.services.core.session_state_tracker import SessionStateTracker
 # Import production services
 from application.services.layout.layout_manager import LayoutManager
 from application.services.pictograph.pictograph_manager import PictographManager
-from application.services.sequence.sequence_orchestrator import SequenceOrchestrator
+from application.services.sequence.sequence_beat_operations import (
+    SequenceBeatOperations,
+)
 
 # Import existing service interfaces
 from core.interfaces.core_services import (
@@ -107,7 +110,7 @@ class ApplicationFactory:
         from application.services.ui.coordination.ui_coordinator import UICoordinator
 
         container.register_singleton(IUIStateManager, UICoordinator)
-        container.register_singleton(ISequenceManager, SequenceOrchestrator)
+        container.register_singleton(ISequenceManager, SequenceBeatOperations)
         container.register_singleton(IPictographManager, PictographManager)
 
         # Register session service
@@ -126,11 +129,10 @@ class ApplicationFactory:
             register_extracted_services,
         )
 
-        register_result = register_extracted_services(container)
-        if register_result.is_failure():
-            logger.warning(
-                f"Failed to register extracted services: {register_result.error}"
-            )
+        try:
+            register_extracted_services(container)
+        except Exception as e:
+            logger.warning(f"Failed to register extracted services: {e}")
 
         # Removed repetitive log statement
 
@@ -247,7 +249,7 @@ class ApplicationFactory:
         container.register_singleton(IFileSystemService, FileSystemService)
 
         # Real business logic services
-        container.register_singleton(ISequenceManager, SequenceOrchestrator)
+        container.register_singleton(ISequenceManager, SequenceBeatOperations)
         container.register_singleton(IPictographManager, PictographManager)
 
         # Headless UI services

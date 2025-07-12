@@ -20,13 +20,13 @@ USAGE:
 import logging
 from typing import Any, Dict, Optional
 
-from core.interfaces.positioning_services import IPositionMatchingService
+from core.interfaces.positioning_services import IPositionMapper
 from domain.models.beat_data import BeatData
 
 logger = logging.getLogger(__name__)
 
 
-class PositionMatchingService(IPositionMatchingService):
+class PositionMapper(IPositionMapper):
     """
     Business logic service for position matching and calculations.
 
@@ -221,15 +221,18 @@ class PositionMatchingService(IPositionMatchingService):
                 return end_pos
 
             # Calculate from motion data
-            if beat_data.blue_motion and beat_data.red_motion:
+            if (
+                beat_data.pictograph_data.motions["blue"]
+                and beat_data.pictograph_data.motions["red"]
+            ):
                 blue_end = (
-                    beat_data.blue_motion.end_loc.value
-                    if beat_data.blue_motion.end_loc
+                    beat_data.pictograph_data.motions["blue"].end_loc.value
+                    if beat_data.pictograph_data.motions["blue"].end_loc
                     else "s"
                 )
                 red_end = (
-                    beat_data.red_motion.end_loc.value
-                    if beat_data.red_motion.end_loc
+                    beat_data.pictograph_data.motions["red"].end_loc.value
+                    if beat_data.pictograph_data.motions["red"].end_loc
                     else "s"
                 )
                 position_key = (blue_end, red_end)

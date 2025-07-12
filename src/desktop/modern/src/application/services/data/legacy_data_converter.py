@@ -1,131 +1,140 @@
 """
-Legacy Data Converter Service
+Legacy Data Converter Service - REFACTORED
 
 Handles conversion between modern BeatData/PictographData and legacy JSON formats.
-This service consolidates all legacy format conversion logic that was previously
-scattered across multiple managers.
+This service has been refactored to eliminate code duplication, improve error handling,
+and separate concerns following SOLID principles.
 
 ARCHITECTURE:
+- Uses MotionDataConverter for all motion-related conversions
+- Uses LegacyFormatValidator for input validation
+- Uses BeatDataBuilder for complex object construction
 - Converts modern data structures to legacy JSON format for persistence
 - Converts legacy JSON format back to modern data structures for loading
 - Maintains compatibility with existing sequence files
 """
 
 import logging
+from abc import ABC, abstractmethod
 from typing import Any, Dict
 
 from domain.models.beat_data import BeatData
-from domain.models.enums import Location, MotionType, Orientation, RotationDirection
-from domain.models.motion_models import MotionData
+
+from .beat_data_builder import BeatDataBuilder
+from .legacy_format_validator import LegacyFormatValidator, ValidationResult
+from .motion_data_converter import MotionDataConverter
 
 logger = logging.getLogger(__name__)
 
 
+class ILegacyDataConverter(ABC):
+    """Interface for legacy data conversion operations."""
+
+    @abstractmethod
+    def convert_beat_to_legacy_format(
+        self, beat: BeatData, beat_number: int
+    ) -> Dict[str, Any]:
+        """Convert modern BeatData to legacy JSON format exactly like legacy pictograph_data."""
+        pass
+
+    @abstractmethod
+    def convert_start_position_to_legacy_format(
+        self, start_position_data: BeatData
+    ) -> Dict[str, Any]:
+        """Convert start position BeatData to legacy format exactly like JsonStartPositionHandler."""
+        pass
+
+    @abstractmethod
+    def convert_legacy_to_beat_data(
+        self, beat_dict: dict, beat_number: int
+    ) -> BeatData:
+        """Convert legacy JSON format back to modern BeatData with full pictograph data."""
+        pass
+
+    @abstractmethod
+    def convert_legacy_start_position_to_beat_data(
+        self, start_pos_dict: dict
+    ) -> BeatData:
+        """Convert legacy start position JSON back to modern BeatData with full data."""
+        pass
+
+
 class LegacyDataConverter:
     """
-    Service for converting between modern data structures and legacy JSON formats.
+    Refactored service for converting between modern data structures and legacy JSON formats.
 
-    This service handles all the complex conversion logic needed to maintain
-    compatibility with existing sequence files while using modern data structures
-    internally.
+    This service now uses composition to eliminate code duplication and improve maintainability.
+    All motion handling is centralized in MotionDataConverter, validation is handled by
+    LegacyFormatValidator, and complex object construction uses BeatDataBuilder.
     """
+
+    def __init__(
+        self,
+        motion_converter: MotionDataConverter = None,
+        validator: LegacyFormatValidator = None,
+        builder: BeatDataBuilder = None,
+    ):
+        """
+        Initialize converter with optional dependencies for testing.
+
+        Args:
+            motion_converter: Handles motion data conversions
+            validator: Validates legacy format data
+            builder: Builds BeatData objects
+        """
+        self.motion_converter = motion_converter or MotionDataConverter()
+        self.validator = validator or LegacyFormatValidator()
+        self.builder = builder or BeatDataBuilder()
 
     def convert_beat_to_legacy_format(
         self, beat: BeatData, beat_number: int
     ) -> Dict[str, Any]:
-        """Convert modern BeatData to legacy JSON format exactly like legacy pictograph_data"""
-        # Extract position data from glyph_data if available
+        """
+        Convert modern BeatData to legacy JSON format.
+
+        Args:
+            beat: Modern BeatData object
+            beat_number: Beat number for legacy format
+
+        Returns:
+            Dictionary in legacy JSON format
+
+        Raises:
+            ValueError: If beat data is invalid
+        """
+        if not beat:
+            raise ValueError("Beat data cannot be None")
+
+        logger.debug(f"Converting beat {beat.letter} (#{beat_number}) to legacy format")
+
+        # Extract position data from pictograph data if available
         start_pos = ""
         end_pos = ""
-        if beat.glyph_data:
-            start_pos = beat.glyph_data.start_position or ""
-            end_pos = beat.glyph_data.end_position or ""
+        if beat.has_pictograph and beat.pictograph_data:
+            start_pos = beat.pictograph_data.start_position or ""
+            end_pos = beat.pictograph_data.end_position or ""
 
-        # Extract motion data from blue_motion and red_motion
-        blue_attrs = {
-            "motion_type": "static",
-            "start_ori": "in",
-            "end_ori": "in",
-            "prop_rot_dir": "no_rot",
-            "start_loc": "s",
-            "end_loc": "s",
-            "turns": 0,
-        }
-
-        red_attrs = {
-            "motion_type": "static",
-            "start_ori": "in",
-            "end_ori": "in",
-            "prop_rot_dir": "no_rot",
-            "start_loc": "s",
-            "end_loc": "s",
-            "turns": 0,
-        }
-
-        # Extract blue motion data from embedded pictograph if available
-        if (
-            beat.has_pictograph
-            and beat.pictograph_data.motions
-            and "blue" in beat.pictograph_data.motions
-        ):
-            blue_motion = beat.pictograph_data.motions["blue"]
-            blue_attrs.update(
-                {
-                    "motion_type": blue_motion.motion_type.value,
-                    "start_ori": blue_motion.start_ori,
-                    "end_ori": blue_motion.end_ori,
-                    "prop_rot_dir": blue_motion.prop_rot_dir.value,
-                    "start_loc": blue_motion.start_loc.value,
-                    "end_loc": blue_motion.end_loc.value,
-                    "turns": int(blue_motion.turns),
-                }
+        # Extract motion data using centralized converter
+        blue_motion = None
+        red_motion = None
+        if beat.has_pictograph:
+            blue_motion = self.motion_converter.extract_motion_from_pictograph(
+                "blue", beat.pictograph_data
+            )
+            red_motion = self.motion_converter.extract_motion_from_pictograph(
+                "red", beat.pictograph_data
             )
 
-        # Extract red motion data from embedded pictograph if available
-        if (
-            beat.has_pictograph
-            and beat.pictograph_data.motions
-            and "red" in beat.pictograph_data.motions
-        ):
-            red_motion = beat.pictograph_data.motions["red"]
-            red_attrs.update(
-                {
-                    "motion_type": red_motion.motion_type.value,
-                    "start_ori": red_motion.start_ori,
-                    "end_ori": red_motion.end_ori,
-                    "prop_rot_dir": red_motion.prop_rot_dir.value,
-                    "start_loc": red_motion.start_loc.value,
-                    "end_loc": red_motion.end_loc.value,
-                    "turns": int(red_motion.turns),
-                }
-            )
+        # Convert motions to legacy attributes
+        blue_attrs = self.motion_converter.create_legacy_motion_attributes(blue_motion)
+        red_attrs = self.motion_converter.create_legacy_motion_attributes(red_motion)
 
-        # Determine timing and direction from motion data
-        timing = "tog"  # Default
-        direction = "same"  # Default
+        # Determine timing and direction
+        timing, direction = self.motion_converter.determine_timing_and_direction(
+            blue_motion, red_motion
+        )
 
-        # If we have motion data, try to determine timing/direction
-        if (
-            beat.has_pictograph
-            and beat.pictograph_data.motions
-            and "blue" in beat.pictograph_data.motions
-            and "red" in beat.pictograph_data.motions
-        ):
-            blue_motion = beat.pictograph_data.motions["blue"]
-            red_motion = beat.pictograph_data.motions["red"]
-            # Check if blue and red are moving in same direction
-            if (
-                blue_motion.motion_type == red_motion.motion_type
-                and blue_motion.prop_rot_dir == red_motion.prop_rot_dir
-            ):
-                direction = "same"
-            else:
-                direction = "opp"
-
-            # For now, default to "tog" timing - this could be enhanced later
-            timing = "tog"
-
-        return {
+        legacy_format = {
             "beat": beat_number,
             "letter": beat.letter,
             "start_pos": start_pos,
@@ -136,80 +145,57 @@ class LegacyDataConverter:
             "red_attributes": red_attrs,
         }
 
+        logger.debug(f"Successfully converted beat {beat.letter} to legacy format")
+        return legacy_format
+
     def convert_start_position_to_legacy_format(
         self, start_position_data: BeatData
     ) -> Dict[str, Any]:
-        """Convert start position BeatData to legacy format exactly like JsonStartPositionHandler"""
-        # Extract start position type (alpha, beta, gamma) from glyph_data if available
-        end_pos = "alpha1"  # Default
-        sequence_start_position = "alpha1"  # Default
+        """
+        Convert start position BeatData to legacy format.
 
-        if start_position_data.glyph_data:
-            end_pos = start_position_data.glyph_data.end_position or "alpha1"
+        Args:
+            start_position_data: Modern BeatData representing start position
+
+        Returns:
+            Dictionary in legacy JSON format for start positions
+
+        Raises:
+            ValueError: If start position data is invalid
+        """
+        if not start_position_data:
+            raise ValueError("Start position data cannot be None")
+
+        logger.debug(
+            f"Converting start position {start_position_data.letter} to legacy format"
+        )
+
+        # Extract position data with defaults
+        end_pos = "alpha1"
+        sequence_start_position = "alpha1"
+
+        if start_position_data.has_pictograph and start_position_data.pictograph_data:
+            end_pos = start_position_data.pictograph_data.end_position or "alpha1"
             sequence_start_position = (
-                start_position_data.glyph_data.start_position or "alpha1"
+                start_position_data.pictograph_data.start_position or "alpha1"
             )
 
-        # Default attributes for start positions (usually static)
-        blue_attrs = {
-            "end_ori": "in",
-            "start_ori": "in",
-            "prop_rot_dir": "no_rot",
-            "start_loc": "s",
-            "end_loc": "s",
-            "turns": 0,
-            "motion_type": "static",
-        }
-
-        red_attrs = {
-            "end_ori": "in",
-            "start_ori": "in",
-            "prop_rot_dir": "no_rot",
-            "start_loc": "s",
-            "end_loc": "s",
-            "turns": 0,
-            "motion_type": "static",
-        }
-
-        # Extract blue motion data from embedded pictograph if available (though start positions are usually static)
-        if (
-            start_position_data.has_pictograph
-            and start_position_data.pictograph_data.motions
-            and "blue" in start_position_data.pictograph_data.motions
-        ):
-            blue_motion = start_position_data.pictograph_data.motions["blue"]
-            blue_attrs.update(
-                {
-                    "start_loc": blue_motion.start_loc.value,
-                    "end_loc": blue_motion.end_loc.value,
-                    "start_ori": blue_motion.start_ori,
-                    "end_ori": blue_motion.end_ori,
-                    "prop_rot_dir": blue_motion.prop_rot_dir.value,
-                    "turns": int(blue_motion.turns),
-                    "motion_type": blue_motion.motion_type.value,
-                }
+        # Extract motion data using centralized converter
+        blue_motion = None
+        red_motion = None
+        if start_position_data.has_pictograph:
+            blue_motion = self.motion_converter.extract_motion_from_pictograph(
+                "blue", start_position_data.pictograph_data
+            )
+            red_motion = self.motion_converter.extract_motion_from_pictograph(
+                "red", start_position_data.pictograph_data
             )
 
-        # Extract red motion data from embedded pictograph if available
-        if (
-            start_position_data.has_pictograph
-            and start_position_data.pictograph_data.motions
-            and "red" in start_position_data.pictograph_data.motions
-        ):
-            red_motion = start_position_data.pictograph_data.motions["red"]
-            red_attrs.update(
-                {
-                    "start_loc": red_motion.start_loc.value,
-                    "end_loc": red_motion.end_loc.value,
-                    "start_ori": red_motion.start_ori,
-                    "end_ori": red_motion.end_ori,
-                    "prop_rot_dir": red_motion.prop_rot_dir.value,
-                    "turns": int(red_motion.turns),
-                    "motion_type": red_motion.motion_type.value,
-                }
-            )
+        # Convert motions to legacy attributes
+        blue_attrs = self.motion_converter.create_legacy_motion_attributes(blue_motion)
+        red_attrs = self.motion_converter.create_legacy_motion_attributes(red_motion)
 
-        return {
+        legacy_format = {
             "beat": 0,
             "sequence_start_position": sequence_start_position,
             "end_pos": end_pos,
@@ -217,218 +203,175 @@ class LegacyDataConverter:
             "red_attributes": red_attrs,
         }
 
+        logger.debug(
+            f"Successfully converted start position {start_position_data.letter} to legacy format"
+        )
+        return legacy_format
+
     def convert_legacy_to_beat_data(
         self, beat_dict: dict, beat_number: int
     ) -> BeatData:
-        """Convert legacy JSON format back to modern BeatData with full pictograph data"""
-        from domain.models import (
-            ArrowData,
-            BeatData,
-            GlyphData,
-            GridData,
-            PictographData,
-        )
+        """
+        Convert legacy JSON format back to modern BeatData.
 
-        # Extract basic beat information
+        Args:
+            beat_dict: Dictionary containing legacy beat data
+            beat_number: Beat number for the new BeatData
+
+        Returns:
+            Modern BeatData object
+
+        Raises:
+            ValueError: If legacy data is invalid or conversion fails
+        """
+        if not beat_dict:
+            raise ValueError("Beat dictionary cannot be None or empty")
+
+        logger.debug(f"Converting legacy beat data to BeatData (beat #{beat_number})")
+
+        # Validate input data
+        validation_result = self.validator.validate_beat_dict(beat_dict)
+        if not validation_result.is_valid:
+            error_msg = (
+                f"Invalid legacy beat data: {', '.join(validation_result.errors)}"
+            )
+            logger.error(error_msg)
+            raise ValueError(error_msg)
+
+        # Log any warnings
+        for warning in validation_result.warnings:
+            logger.warning(f"Legacy beat validation warning: {warning}")
+
+        # Extract basic information
         letter = beat_dict.get("letter", "")
         start_pos = beat_dict.get("start_pos", "")
         end_pos = beat_dict.get("end_pos", "")
+        timing = beat_dict.get("timing", "tog")
+        direction = beat_dict.get("direction", "same")
 
-        # Create glyph data
-        glyph_data = GlyphData(
-            start_position=start_pos,
-            end_position=end_pos,
-        )
-
-        # Convert blue attributes to MotionData
+        # Convert motion attributes using centralized converter
         blue_motion = None
+        red_motion = None
+
         blue_attrs = beat_dict.get("blue_attributes", {})
         if blue_attrs:
-            try:
-                blue_motion = MotionData(
-                    motion_type=MotionType(blue_attrs.get("motion_type", "static")),
-                    prop_rot_dir=RotationDirection(
-                        blue_attrs.get("prop_rot_dir", "no_rot")
-                    ),
-                    start_loc=Location(blue_attrs.get("start_loc", "s")),
-                    end_loc=Location(blue_attrs.get("end_loc", "s")),
-                    start_ori=Orientation(blue_attrs.get("start_ori", "in")),
-                    end_ori=Orientation(blue_attrs.get("end_ori", "in")),
-                )
-            except Exception as e:
-                logger.warning(f"Failed to create blue motion data: {e}")
-                # Fallback to static motion
-                blue_motion = MotionData(
-                    motion_type=MotionType.STATIC,
-                    prop_rot_dir=RotationDirection.NO_ROTATION,
-                    start_loc=Location.SOUTH,
-                    end_loc=Location.SOUTH,
-                    start_ori=Orientation.IN,
-                    end_ori=Orientation.IN,
-                )
+            blue_result = self.motion_converter.create_motion_from_legacy_attributes(
+                blue_attrs
+            )
+            if blue_result.success:
+                blue_motion = blue_result.motion_data
+            else:
+                logger.error(f"Failed to convert blue motion: {blue_result.error}")
+                # Use the fallback motion from the result
+                blue_motion = blue_result.motion_data
 
-        # Convert red attributes to MotionData
-        red_motion = None
         red_attrs = beat_dict.get("red_attributes", {})
         if red_attrs:
-            try:
-                red_motion = MotionData(
-                    motion_type=MotionType(red_attrs.get("motion_type", "static")),
-                    prop_rot_dir=RotationDirection(
-                        red_attrs.get("prop_rot_dir", "no_rot")
-                    ),
-                    start_loc=Location(red_attrs.get("start_loc", "s")),
-                    end_loc=Location(red_attrs.get("end_loc", "s")),
-                    start_ori=Orientation(red_attrs.get("start_ori", "in")),
-                    end_ori=Orientation(red_attrs.get("end_ori", "in")),
-                )
-            except Exception as e:
-                logger.warning(f"Failed to create red motion data: {e}")
-                # Fallback to static motion
-                red_motion = MotionData(
-                    motion_type=MotionType.STATIC,
-                    prop_rot_dir=RotationDirection.NO_ROTATION,
-                    start_loc=Location.SOUTH,
-                    end_loc=Location.SOUTH,
-                    start_ori=Orientation.IN,
-                    end_ori=Orientation.IN,
-                )
+            red_result = self.motion_converter.create_motion_from_legacy_attributes(
+                red_attrs
+            )
+            if red_result.success:
+                red_motion = red_result.motion_data
+            else:
+                logger.error(f"Failed to convert red motion: {red_result.error}")
+                # Use the fallback motion from the result
+                red_motion = red_result.motion_data
 
-        # Create motions dictionary
-        motions = {}
-        if blue_motion:
-            motions["blue"] = blue_motion
-        if red_motion:
-            motions["red"] = red_motion
-
-        # Create PictographData with motion data
-        pictograph_data = PictographData(
-            motions=motions,
-            letter=letter,
-            start_position=start_pos,
-            end_position=end_pos,
-            grid_data=GridData(),
-            arrows={},  # Will be populated based on motions if needed
-            is_blank=len(motions) == 0,
+        # Build BeatData using builder pattern
+        beat_data = (
+            self.builder.reset()
+            .with_beat_number(beat_number)
+            .with_letter(letter)
+            .with_duration(1.0)
+            .with_motion_data(blue_motion, red_motion)
+            .with_glyph_data(start_pos, end_pos)
+            .add_metadata("timing", timing)
+            .add_metadata("direction", direction)
+            .build()
         )
 
-        # Create BeatData with embedded pictograph
-        beat_data = BeatData(
-            beat_number=beat_number,
-            letter=letter,
-            duration=1.0,
-            pictograph_data=pictograph_data,
-            glyph_data=glyph_data,
-            is_blank=len(motions) == 0,
-            metadata={
-                "timing": beat_dict.get("timing", "tog"),
-                "direction": beat_dict.get("direction", "same"),
-            },
-        )
-
+        logger.debug(f"Successfully converted legacy data to BeatData: {letter}")
         return beat_data
 
     def convert_legacy_start_position_to_beat_data(
         self, start_pos_dict: dict
     ) -> BeatData:
-        """Convert legacy start position JSON back to modern BeatData with full data"""
-        from domain.models import BeatData, GlyphData, GridData, PictographData
+        """
+        Convert legacy start position JSON back to modern BeatData.
 
-        # Extract basic start position information
+        Args:
+            start_pos_dict: Dictionary containing legacy start position data
+
+        Returns:
+            Modern BeatData object configured as start position
+
+        Raises:
+            ValueError: If legacy data is invalid or conversion fails
+        """
+        if not start_pos_dict:
+            raise ValueError("Start position dictionary cannot be None or empty")
+
+        logger.debug("Converting legacy start position data to BeatData")
+
+        # Validate input data
+        validation_result = self.validator.validate_start_position_dict(start_pos_dict)
+        if not validation_result.is_valid:
+            error_msg = f"Invalid legacy start position data: {', '.join(validation_result.errors)}"
+            logger.error(error_msg)
+            raise ValueError(error_msg)
+
+        # Log any warnings
+        for warning in validation_result.warnings:
+            logger.warning(f"Legacy start position validation warning: {warning}")
+
+        # Extract basic information
         letter = start_pos_dict.get("letter", "")
         sequence_start_position = start_pos_dict.get(
             "sequence_start_position", "alpha1"
         )
         end_pos = start_pos_dict.get("end_pos", "alpha1")
 
-        # Create glyph data for start position
-        glyph_data = GlyphData(
-            start_position=sequence_start_position,
-            end_position=end_pos,
-        )
-
-        # Convert blue attributes to MotionData (start positions usually static)
+        # Convert motion attributes using centralized converter
         blue_motion = None
+        red_motion = None
+
         blue_attrs = start_pos_dict.get("blue_attributes", {})
         if blue_attrs:
-            try:
-                blue_motion = MotionData(
-                    motion_type=MotionType(blue_attrs.get("motion_type", "static")),
-                    prop_rot_dir=RotationDirection(
-                        blue_attrs.get("prop_rot_dir", "no_rot")
-                    ),
-                    start_loc=Location(blue_attrs.get("start_loc", "s")),
-                    end_loc=Location(blue_attrs.get("end_loc", "s")),
-                    start_ori=Orientation(blue_attrs.get("start_ori", "in")),
-                    end_ori=Orientation(blue_attrs.get("end_ori", "in")),
+            blue_result = self.motion_converter.create_motion_from_legacy_attributes(
+                blue_attrs
+            )
+            if blue_result.success:
+                blue_motion = blue_result.motion_data
+            else:
+                logger.error(
+                    f"Failed to convert start position blue motion: {blue_result.error}"
                 )
-            except Exception as e:
-                logger.warning(
-                    f"Failed to create blue motion data for start position: {e}"
-                )
-                blue_motion = MotionData(
-                    motion_type=MotionType.STATIC,
-                    prop_rot_dir=RotationDirection.NO_ROTATION,
-                    start_loc=Location.SOUTH,
-                    end_loc=Location.SOUTH,
-                )
+                blue_motion = blue_result.motion_data  # Use fallback
 
-        # Convert red attributes to MotionData
-        red_motion = None
         red_attrs = start_pos_dict.get("red_attributes", {})
         if red_attrs:
-            try:
-                red_motion = MotionData(
-                    motion_type=MotionType(red_attrs.get("motion_type", "static")),
-                    prop_rot_dir=RotationDirection(
-                        red_attrs.get("prop_rot_dir", "no_rot")
-                    ),
-                    start_loc=Location(red_attrs.get("start_loc", "s")),
-                    end_loc=Location(red_attrs.get("end_loc", "s")),
-                    start_ori=Orientation(red_attrs.get("start_ori", "in")),
-                    end_ori=Orientation(red_attrs.get("end_ori", "in")),
+            red_result = self.motion_converter.create_motion_from_legacy_attributes(
+                red_attrs
+            )
+            if red_result.success:
+                red_motion = red_result.motion_data
+            else:
+                logger.error(
+                    f"Failed to convert start position red motion: {red_result.error}"
                 )
-            except Exception as e:
-                logger.warning(
-                    f"Failed to create red motion data for start position: {e}"
-                )
-                red_motion = MotionData(
-                    motion_type=MotionType.STATIC,
-                    prop_rot_dir=RotationDirection.NO_ROTATION,
-                    start_loc=Location.SOUTH,
-                    end_loc=Location.SOUTH,
-                )
+                red_motion = red_result.motion_data  # Use fallback
 
-        # Create motions dictionary
-        motions = {}
-        if blue_motion:
-            motions["blue"] = blue_motion
-        if red_motion:
-            motions["red"] = red_motion
-
-        # Create PictographData with motion data
-        pictograph_data = PictographData(
-            motions=motions,
-            letter=letter,
-            start_position=sequence_start_position,
-            end_position=end_pos,
-            grid_data=GridData(),
-            arrows={},  # Will be populated based on motions if needed
-            is_blank=len(motions) == 0,
+        # Build start position BeatData using builder pattern
+        start_position_beat = (
+            self.builder.reset()
+            .with_letter(letter)
+            .with_motion_data(blue_motion, red_motion)
+            .with_glyph_data(sequence_start_position, end_pos)
+            .as_start_position(sequence_start_position)
+            .build()
         )
 
-        # Create start position BeatData with embedded pictograph
-        start_position_beat = BeatData(
-            beat_number=0,  # Start position is always beat 0
-            letter=letter,
-            duration=0.0,  # Start positions have no duration
-            pictograph_data=pictograph_data,
-            glyph_data=glyph_data,
-            is_blank=len(motions) == 0,
-            metadata={
-                "is_start_position": True,
-                "sequence_start_position": sequence_start_position,
-            },
+        logger.debug(
+            f"Successfully converted legacy start position data to BeatData: {letter}"
         )
-
         return start_position_beat

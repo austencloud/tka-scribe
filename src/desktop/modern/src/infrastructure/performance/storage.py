@@ -6,22 +6,15 @@ and historical performance information. Uses SQLite for local storage
 with proper schema management and data retention policies.
 """
 
-import sqlite3
 import json
-import threading
-from typing import Dict, List, Optional, Any
-from pathlib import Path
-from datetime import datetime, timedelta
 import logging
+import sqlite3
+import threading
+from datetime import datetime, timedelta
+from pathlib import Path
+from typing import Any, Dict, List, Optional
 
-from core.types.result import (
-    Result,
-    AppError,
-    ErrorType,
-    success,
-    failure,
-    app_error,
-)
+# Result pattern removed - using simple exceptions
 from core.performance.config import PerformanceConfig, get_performance_config
 from core.performance.profiler import ProfilerSession
 

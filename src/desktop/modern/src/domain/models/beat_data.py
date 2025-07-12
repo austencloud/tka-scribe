@@ -44,7 +44,6 @@ class BeatData:
         """Validate beat data."""
         if self.duration < 0:
             raise ValueError("Duration must be positive")
-        # Allow beat_number=0 for start positions (legacy compatibility)
         if self.beat_number < 0:
             raise ValueError("Beat number must be non-negative")
 

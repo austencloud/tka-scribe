@@ -7,16 +7,16 @@ Responsible for adding, removing, and modifying beats within sequences.
 
 from typing import Callable, Optional
 
+from application.services.data.sequence_data_converter import SequenceDataConverter
 from application.services.option_picker.option_orientation_updater import (
     OptionOrientationUpdater,
 )
+from application.services.sequence.beat_factory import BeatFactory
+from application.services.sequence.sequence_persister import SequencePersister
 from domain.models.beat_data import BeatData
 from domain.models.pictograph_data import PictographData
 from domain.models.sequence_data import SequenceData
 from PyQt6.QtCore import QObject, pyqtSignal
-
-from application.services.sequence.beat_factory import BeatFactory
-from application.services.sequence.sequence_persister import SequencePersister
 
 
 class SequenceBeatOperations(QObject):
@@ -41,9 +41,9 @@ class SequenceBeatOperations(QObject):
         data_converter: Optional[object] = None,
     ):
         super().__init__()
-        self.workbench_getter = workbench_getter
+        self.workbench_getter: Callable[[], object] = workbench_getter
         self.workbench_setter = workbench_setter
-        self.data_converter = data_converter
+        self.data_converter: SequenceDataConverter = data_converter
         self.orientation_update_service = OptionOrientationUpdater()
         self.persistence_service = SequencePersister()
 
@@ -286,6 +286,51 @@ class SequenceBeatOperations(QObject):
 
         except Exception as e:
             print(f"❌ Failed to update beat orientation: {e}")
+            import traceback
+
+            traceback.print_exc()
+
+    def remove_beat(self, beat_index: int):
+        """Remove a beat from the sequence"""
+        try:
+            current_sequence = self._get_current_sequence()
+            if not current_sequence or beat_index >= len(current_sequence.beats):
+                print(
+                    f"⚠️ Cannot remove beat at index {beat_index}: invalid index or empty sequence"
+                )
+                return
+
+            print(f"🗑️ [BEAT_OPERATIONS] Removing beat at index {beat_index}")
+
+            # Get the beat to remove for logging
+            beat_to_remove = current_sequence.beats[beat_index]
+
+            # Remove the beat
+            updated_beats = list(current_sequence.beats)
+            updated_beats.pop(beat_index)
+
+            # Renumber remaining beats
+            for i, beat in enumerate(updated_beats):
+                updated_beats[i] = beat.update(beat_number=i + 1)
+
+            updated_sequence = current_sequence.update(beats=updated_beats)
+
+            # Update workbench
+            if self.workbench_setter:
+                self.workbench_setter(updated_sequence)
+
+            # Save to persistence
+            self._save_sequence_to_persistence(updated_sequence)
+
+            # Emit signal
+            self.beat_removed.emit(beat_index)
+
+            print(
+                f"✅ [BEAT_OPERATIONS] Successfully removed beat {beat_to_remove.letter} from position {beat_index}"
+            )
+
+        except Exception as e:
+            print(f"❌ [BEAT_OPERATIONS] Failed to remove beat: {e}")
             import traceback
 
             traceback.print_exc()

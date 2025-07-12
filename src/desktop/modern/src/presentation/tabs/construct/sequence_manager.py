@@ -6,48 +6,48 @@ Thin Qt wrapper for sequence operations - business logic delegated to SequenceOr
 
 from typing import Callable, Optional
 
-from application.services.sequence.sequence_orchestrator import (
-    ISequenceOrchestratorSignals,
+from application.services.sequence.sequence_coordinator import (
+    ISequenceCoordinatorSignals,
 )
-from application.services.sequence.sequence_orchestrator import (
-    SequenceOrchestrator as SequenceOrchestratorService,
+from application.services.sequence.sequence_coordinator import (
+    SequenceCoordinator as SequenceCoordinatorService,
 )
 from domain.models.beat_data import BeatData
 from domain.models.sequence_data import SequenceData
 from PyQt6.QtCore import QObject, pyqtSignal
 
 
-class SequenceOrchestratorSignalEmitter(ISequenceOrchestratorSignals):
-    """Qt signal emitter for sequence orchestrator service."""
+class SequenceCoordinatorSignalEmitter(ISequenceCoordinatorSignals):
+    """Qt signal emitter for sequence coordinator service."""
 
-    def __init__(self, qt_sequence_orchestrator):
-        self.qt_orchestrator = qt_sequence_orchestrator
+    def __init__(self, qt_sequence_coordinator):
+        self.qt_coordinator = qt_sequence_coordinator
 
     def emit_sequence_modified(self, sequence: SequenceData) -> None:
-        self.qt_orchestrator.sequence_modified.emit(sequence)
+        self.qt_coordinator.sequence_modified.emit(sequence)
 
     def emit_sequence_cleared(self) -> None:
-        self.qt_orchestrator.sequence_cleared.emit()
+        self.qt_coordinator.sequence_cleared.emit()
 
     def emit_beat_added(self, beat_data: BeatData, position: int) -> None:
-        self.qt_orchestrator.beat_added.emit(beat_data, position)
+        self.qt_coordinator.beat_added.emit(beat_data, position)
 
     def emit_beat_removed(self, position: int) -> None:
-        self.qt_orchestrator.beat_removed.emit(position)
+        self.qt_coordinator.beat_removed.emit(position)
 
     def emit_beat_updated(self, beat_data: BeatData, position: int) -> None:
-        self.qt_orchestrator.beat_updated.emit(beat_data, position)
+        self.qt_coordinator.beat_updated.emit(beat_data, position)
 
     def emit_start_position_set(self, start_position_data: BeatData) -> None:
-        self.qt_orchestrator.start_position_set.emit(start_position_data)
+        self.qt_coordinator.start_position_set.emit(start_position_data)
 
     def emit_sequence_loaded(self, sequence: SequenceData) -> None:
-        self.qt_orchestrator.sequence_loaded.emit(sequence)
+        self.qt_coordinator.sequence_loaded.emit(sequence)
 
 
-class SequenceOrchestrator(QObject):
+class SequenceCoordinator(QObject):
     """
-    Qt wrapper for sequence operations - business logic in SequenceOrchestrator service.
+    Qt wrapper for sequence operations - business logic in SequenceCoordinator service.
 
     Responsibilities:
     - Emit Qt signals for sequence changes
@@ -81,13 +81,13 @@ class SequenceOrchestrator(QObject):
         super().__init__()
 
         # Initialize signal emitter for service
-        signal_emitter = SequenceOrchestratorSignalEmitter(self)
+        signal_emitter = SequenceCoordinatorSignalEmitter(self)
 
-        # Initialize the sequence orchestrator service with dependencies
-        self._sequence_service = SequenceOrchestratorService(
+        # Initialize the sequence coordinator service with dependencies
+        self._sequence_service = SequenceCoordinatorService(
             workbench_getter=workbench_getter,
             workbench_setter=workbench_setter,
-            start_position_handler=start_position_handler,
+            data_converter=start_position_handler,  # Assuming this is the data converter
             signal_emitter=signal_emitter,
         )
 

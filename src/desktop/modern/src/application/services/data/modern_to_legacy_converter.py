@@ -91,7 +91,7 @@ class ModernToLegacyConverter:
             return self._create_fallback_legacy_beat(beat_number)
 
     def convert_start_position_to_legacy_format(
-        self, start_position_data: BeatData
+        self, start_position_beat_data: BeatData
     ) -> dict:
         """
         Convert start position BeatData to legacy format exactly like JsonStartPositionHandler.
@@ -108,10 +108,12 @@ class ModernToLegacyConverter:
             sequence_start_position = "alpha"  # Default
 
             if (
-                start_position_data.glyph_data
-                and start_position_data.glyph_data.end_position
+                start_position_beat_data.pictograph_data.glyph_data
+                and start_position_beat_data.pictograph_data.glyph_data.end_position
             ):
-                end_pos = start_position_data.glyph_data.end_position
+                end_pos = (
+                    start_position_beat_data.pictograph_data.glyph_data.end_position
+                )
                 sequence_start_position = self.position_mapper.extract_position_type(
                     end_pos
                 )
@@ -121,11 +123,13 @@ class ModernToLegacyConverter:
             red_motion = None
 
             if (
-                start_position_data.pictograph_data
-                and start_position_data.pictograph_data.motions
+                start_position_beat_data.pictograph_data
+                and start_position_beat_data.pictograph_data.motions
             ):
-                blue_motion = start_position_data.pictograph_data.motions.get("blue")
-                red_motion = start_position_data.pictograph_data.motions.get("red")
+                blue_motion = start_position_beat_data.pictograph_data.motions.get(
+                    "blue"
+                )
+                red_motion = start_position_beat_data.pictograph_data.motions.get("red")
 
             # Convert motion data with start position handling
             blue_attrs = self._convert_start_position_motion_to_legacy(
@@ -138,7 +142,7 @@ class ModernToLegacyConverter:
             return {
                 "beat": 0,  # Start position is always beat 0
                 "sequence_start_position": sequence_start_position,
-                "letter": start_position_data.letter or "A",
+                "letter": start_position_beat_data.letter or "A",
                 "end_pos": end_pos,
                 "timing": "same",  # Start positions use same timing
                 "direction": "none",

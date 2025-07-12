@@ -6,26 +6,10 @@ These commands integrate with the event system and domain models.
 import uuid
 from dataclasses import dataclass
 from datetime import datetime
-from typing import TYPE_CHECKING, Any, Optional
-
+from typing import Any, Optional
 from .command_system import ICommand
 
-if TYPE_CHECKING:
-    pass
-
 from ..events import BeatAddedEvent, BeatRemovedEvent, BeatUpdatedEvent
-
-# Use absolute imports to avoid relative import issues
-if TYPE_CHECKING:
-    from domain.models import BeatData, SequenceData
-else:
-    # For runtime when imports might fail
-    try:
-        from domain.models import BeatData, SequenceData
-    except ImportError:
-        # Create type aliases that work at runtime
-        SequenceData = Any
-        BeatData = Any
 
 
 @dataclass

@@ -11,12 +11,12 @@ missing from the modern arrow positioning system.
 import logging
 from typing import Literal
 
-from domain.models import MotionData, MotionType, Location
+from domain.models import Location, MotionData, MotionType
 
 logger = logging.getLogger(__name__)
 
 
-class QuadrantIndexService:
+class QuadrantIndexCalculator:
     """
     Service for determining quadrant index for directional tuple selection.
 

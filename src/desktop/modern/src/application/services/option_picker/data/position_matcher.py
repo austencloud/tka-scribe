@@ -9,11 +9,11 @@ using the extracted business service.
 import logging
 from typing import TYPE_CHECKING, Any, Dict, Optional
 
-from core.interfaces.positioning_services import IPositionMatchingService
+from core.interfaces.positioning_services import IPositionMapper
 
 if TYPE_CHECKING:
-    from application.services.positioning.arrows.utilities.position_matching_service import (
-        PositionMatchingService,
+    from application.services.positioning.arrows.utilities.pictograph_position_matcher import (
+        PictographPositionMatcher,
     )
     from domain.models import BeatData
 
@@ -28,7 +28,7 @@ class PositionMatcher:
     while maintaining the same public interface for backward compatibility.
     """
 
-    def __init__(self, position_service: Optional[IPositionMatchingService] = None):
+    def __init__(self, position_service: Optional[IPositionMapper] = None):
         """
         Initialize position matcher with injected business service.
 
@@ -40,11 +40,11 @@ class PositionMatcher:
         # Fallback for legacy compatibility - will be removed in future versions
         if not self._position_service:
             try:
-                from application.services.positioning.position_matching_service import (
-                    PositionMatchingService,
+                from application.services.positioning.position_mapper import (
+                    PositionMapper,
                 )
 
-                self._position_service = PositionMatchingService()
+                self._position_service = PositionMapper()
                 logger.warning(
                     "Using fallback position service - consider using DI container"
                 )
@@ -53,7 +53,7 @@ class PositionMatcher:
                 self._position_service = None
 
     def extract_end_position(
-        self, last_beat: Dict[str, Any], position_service: "PositionMatchingService"
+        self, last_beat: Dict[str, Any], position_service: "PictographPositionMatcher"
     ) -> Optional[str]:
         """
         Extract end position from last beat data using Legacy-compatible logic.

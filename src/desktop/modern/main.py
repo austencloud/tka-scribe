@@ -326,7 +326,7 @@ def main():
             splash.update_progress(100, "Application ready!")
             app.processEvents()
 
-            print(f"✅ TKA application startup completed successfully!")
+            print("SUCCESS: TKA application startup completed successfully!")
 
             def show_main_window():
                 """Show main window exactly when splash finishes fading."""

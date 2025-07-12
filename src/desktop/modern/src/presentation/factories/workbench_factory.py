@@ -18,7 +18,16 @@ except ImportError:
 from application.services.graph_editor.graph_editor_coordinator import (
     GraphEditorCoordinator,
 )
-from application.services.sequence.sequence_orchestrator import SequenceOrchestrator
+from application.services.sequence.loader import SequenceLoader
+from application.services.sequence.sequence_beat_operations import (
+    SequenceBeatOperations,
+)
+from application.services.sequence.sequence_dictionary_service import (
+    SequenceDictionaryService,
+)
+from application.services.sequence.sequence_start_position_manager import (
+    SequenceStartPositionManager,
+)
 from application.services.ui.full_screen_viewer import FullScreenViewer
 from application.services.ui.sequence_state_reader import (
     MockSequenceStateReader,
@@ -53,21 +62,26 @@ def create_modern_workbench(
     # Get services from container
     layout_service = container.resolve(ILayoutService)
     beat_selection_service = container.resolve(BeatSelectionService)
-    workbench_service = container.resolve(ISequenceWorkbenchService)
-    fullscreen_service = container.resolve(IFullScreenViewer)
-    deletion_service = container.resolve(IBeatDeletionService)
-    graph_service = container.resolve(IGraphEditorService)
-    dictionary_service = container.resolve(IDictionaryService)
 
-    # Create and return configured workbench
+    # Get microservices directly instead of interfaces
+    beat_operations = container.resolve(SequenceBeatOperations)
+    start_position_manager = container.resolve(SequenceStartPositionManager)
+    sequence_loader = container.resolve(SequenceLoader)
+    dictionary_service = container.resolve(SequenceDictionaryService)
+
+    fullscreen_service = container.resolve(IFullScreenViewer)
+    graph_service = container.resolve(IGraphEditorService)
+
+    # Create and return configured workbench with microservices directly
     return SequenceWorkbench(
         layout_service=layout_service,
         beat_selection_service=beat_selection_service,
-        workbench_service=workbench_service,
-        fullscreen_service=fullscreen_service,
-        deletion_service=deletion_service,
-        graph_service=graph_service,
+        beat_operations=beat_operations,
+        start_position_manager=start_position_manager,
+        sequence_loader=sequence_loader,
         dictionary_service=dictionary_service,
+        fullscreen_service=fullscreen_service,
+        graph_service=graph_service,
         parent=parent,
     )
 
@@ -78,11 +92,24 @@ def configure_workbench_services(container: DIContainer) -> None:
     # Get UI state service for services that need it
     ui_state_service = container.resolve(IUIStateManager)
 
-    # Create sequence orchestration service
-    sequence_service = SequenceOrchestrator()
-    container.register_instance(ISequenceWorkbenchService, sequence_service)
-    container.register_instance(IBeatDeletionService, sequence_service)
-    container.register_instance(IDictionaryService, sequence_service)
+    # Register microservices directly (CLEAN MICROSERVICES ARCHITECTURE)
+    # Components should inject only the specific microservices they need
+    beat_operations = SequenceBeatOperations()
+    start_position_manager = SequenceStartPositionManager()
+    sequence_loader = SequenceLoader()
+    dictionary_service = SequenceDictionaryService()
+
+    # Register microservices for direct injection
+    container.register_instance(SequenceBeatOperations, beat_operations)
+    container.register_instance(SequenceStartPositionManager, start_position_manager)
+    container.register_instance(SequenceLoader, sequence_loader)
+    container.register_instance(SequenceDictionaryService, dictionary_service)
+
+    # TODO: Remove these legacy interface registrations once components are updated
+    # to use microservices directly instead of going through interfaces
+    # container.register_instance(ISequenceWorkbenchService, ???)
+    # container.register_instance(IBeatDeletionService, ???)
+    # container.register_instance(IDictionaryService, ???)
 
     # Create full screen service with dependencies
     fullscreen_service = _create_fullscreen_service(container)

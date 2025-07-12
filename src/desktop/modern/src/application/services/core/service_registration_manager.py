@@ -70,6 +70,7 @@ class ServiceRegistrationManager(IServiceRegistrationManager):
             container
         )  # Register core services including UI state management
         self.register_data_services(container)
+        self.register_sequence_services(container)  # ✅ NEW - Sequence orchestration
         self.register_motion_services(container)
         self.register_layout_services(container)
         self.register_pictograph_services(container)
@@ -104,12 +105,6 @@ class ServiceRegistrationManager(IServiceRegistrationManager):
         """Register core services using pure dependency injection."""
         from application.services.data.legacy_data_converter import LegacyDataConverter
         from application.services.layout.layout_manager import LayoutManager
-        from application.services.sequence.sequence_beat_operations import (
-            SequenceBeatOperations,
-        )
-        from application.services.sequence.sequence_orchestrator import (
-            SequenceOrchestrator,
-        )
         from application.services.ui.coordination.ui_coordinator import UICoordinator
         from core.interfaces.core_services import ILayoutService, IUIStateManager
 
@@ -131,10 +126,44 @@ class ServiceRegistrationManager(IServiceRegistrationManager):
         # Register UI state service as singleton since it has no dependencies
         container.register_singleton(IUIStateManager, UICoordinator)
 
-        # Register focused sequence services as singletons
-        container.register_singleton(SequenceOrchestrator, SequenceOrchestrator)
-        container.register_singleton(SequenceBeatOperations, SequenceBeatOperations)
         container.register_singleton(LegacyDataConverter, LegacyDataConverter)
+
+    def register_sequence_services(self, container: "DIContainer") -> None:
+        """Register sequence services with interface bindings."""
+        # Import sequence service interfaces and implementations
+        from application.services.sequence.beat_factory import BeatFactory, IBeatFactory
+        from application.services.sequence.loader import SequenceLoader
+        from application.services.sequence.sequence_beat_operations import (
+            SequenceBeatOperations,
+        )
+        from application.services.sequence.sequence_persister import (
+            ISequencePersister,
+            SequencePersister,
+        )
+        from application.services.sequence.sequence_repository import (
+            ISequenceRepository,
+            SequenceRepository,
+        )
+        from application.services.sequence.sequence_start_position_manager import (
+            SequenceStartPositionManager,
+        )
+        from application.services.sequence.sequence_validator import (
+            ISequenceValidator,
+            SequenceValidator,
+        )
+
+        # Register sequence services with interfaces
+        container.register_singleton(IBeatFactory, BeatFactory)
+        container.register_singleton(ISequencePersister, SequencePersister)
+        container.register_singleton(ISequenceRepository, SequenceRepository)
+        container.register_singleton(ISequenceValidator, SequenceValidator)
+
+        # Register services without interfaces yet
+        container.register_singleton(SequenceLoader, SequenceLoader)
+        container.register_singleton(SequenceBeatOperations, SequenceBeatOperations)
+        container.register_singleton(
+            SequenceStartPositionManager, SequenceStartPositionManager
+        )
 
     def register_motion_services(self, container: "DIContainer") -> None:
         """Register motion services using pure dependency injection."""
@@ -339,16 +368,53 @@ class ServiceRegistrationManager(IServiceRegistrationManager):
         """Register the new refactored data services."""
         # Import the new data services
         from application.services.data.csv_reader import CSVReader, ICSVReader
+
+        # Import the Phase 2 conversion services
+        from application.services.data.data_converter import (
+            DataConverter,
+            IDataConverter,
+        )
+
+        # Import the Phase 1 foundation data services
+        from application.services.data.data_service import DataService, IDataService
+        from application.services.data.dataset_loader import (
+            DatasetLoader,
+            IDatasetLoader,
+        )
+        from application.services.data.dataset_query import DatasetQuery, IDatasetQuery
+        from application.services.data.legacy_data_converter import (
+            ILegacyDataConverter,
+            LegacyDataConverter,
+        )
+        from application.services.data.pictograph_data_service import (
+            IPictographDataService,
+            PictographDataService,
+        )
+        from application.services.data.sequence_data_converter import (
+            ISequenceDataConverter,
+            SequenceDataConverter,
+        )
         from application.services.positioning.props.configuration.json_configuration_service import (
             IJSONConfigurationService,
             JSONConfigurationService,
         )
 
-        # Register the data services
+        # Register the existing data services
         container.register_singleton(ICSVReader, CSVReader)
         container.register_singleton(
             IJSONConfigurationService, JSONConfigurationService
         )
+
+        # Register the Phase 1 foundation data services with interfaces
+        container.register_singleton(IDataService, DataService)
+        container.register_singleton(IDatasetLoader, DatasetLoader)
+        container.register_singleton(IDatasetQuery, DatasetQuery)
+        container.register_singleton(IPictographDataService, PictographDataService)
+        container.register_singleton(ISequenceDataConverter, SequenceDataConverter)
+
+        # Register the Phase 2 conversion services with interfaces
+        container.register_singleton(IDataConverter, DataConverter)
+        container.register_singleton(ILegacyDataConverter, LegacyDataConverter)
 
     def register_graph_editor_services(self, container: "DIContainer") -> None:
         """Register graph editor services using pure dependency injection."""

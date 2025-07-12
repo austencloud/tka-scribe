@@ -22,29 +22,37 @@ This package provides focused, single-responsibility services for sequence opera
 - Framework-agnostic business logic
 """
 
+# Core microservices - CLEAN MICROSERVICES ARCHITECTURE
 from .beat_factory import BeatFactory
+from .loader import SequenceLoader
+from .sequence_beat_operations import SequenceBeatOperations
+from .sequence_dictionary_service import SequenceDictionaryService
 from .sequence_generator import SequenceGenerator, SequenceType
-
-# Core orchestration
-from .sequence_orchestrator import ISequenceOrchestratorSignals, SequenceOrchestrator
 
 # Infrastructure services
 from .sequence_persister import SequencePersister
-from .sequence_repository import IStorageAdapter, RepositoryError, SequenceRepository
+from .sequence_repository import RepositoryError, SequenceRepository
+from .sequence_start_position_manager import SequenceStartPositionManager
 from .sequence_state_tracker import SequenceStateTracker
 
 # Focused services
 from .sequence_transformer import SequenceTransformer, WorkbenchOperation
 from .sequence_validator import SequenceValidator, ValidationError
 
+# Legacy orchestration (DEPRECATED - use SequenceCoordinator instead)
+# from .sequence_orchestrator import ISequenceOrchestratorSignals, SequenceOrchestrator
+
+
 # Legacy import - SequenceManager is deprecated, use SequenceOrchestrator instead
 
 
 __all__ = [
-    # Core orchestration
-    "SequenceOrchestrator",
-    "ISequenceOrchestratorSignals",
-    # "SequenceManager",  # DEPRECATED - use SequenceOrchestrator
+    # CLEAN MICROSERVICES ARCHITECTURE
+    # Core microservices - inject these directly into components that need them
+    "SequenceBeatOperations",
+    "SequenceStartPositionManager",
+    "SequenceLoader",
+    "SequenceDictionaryService",
     # Beat operations
     "BeatFactory",
     # Focused services
@@ -54,7 +62,7 @@ __all__ = [
     "ValidationError",
     "SequenceRepository",
     "RepositoryError",
-    "IStorageAdapter",
+    # "IStorageAdapter",  # Removed - doesn't exist
     # Infrastructure
     "SequencePersister",
     "SequenceStateTracker",

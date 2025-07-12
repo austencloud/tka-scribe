@@ -45,7 +45,7 @@ class SpecialPlacementService:
         self._load_special_placements()
 
     def get_special_adjustment(
-        self, arrow_data: ArrowData, pictograph_data: PictographData
+        self, motion_data: MotionData, pictograph_data: PictographData
     ) -> Optional[QPointF]:
         """
         Get special adjustment for arrow based on special placement logic.
@@ -57,7 +57,6 @@ class SpecialPlacementService:
         Returns:
             QPointF with special adjustment or None if no special placement found
         """
-        motion_data = pictograph_data.motions[arrow_data.color]
         if not motion_data or not pictograph_data.letter:
             return None
 
@@ -88,7 +87,11 @@ class SpecialPlacementService:
             return None
 
         # First, try direct color-based coordinate lookup (most common case)
-        color_key = arrow_data.color.lower()  # "blue" or "red"
+        color_key = ""
+        if pictograph_data.motions["blue"] == motion:
+            color_key = "blue"
+        else:
+            color_key = "red"
 
         if color_key in turn_data:
             adjustment_values = turn_data[color_key]

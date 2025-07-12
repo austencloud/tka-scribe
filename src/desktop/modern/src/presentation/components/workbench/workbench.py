@@ -1,13 +1,17 @@
 from typing import TYPE_CHECKING, List, Optional
 
-from core.interfaces.core_services import ILayoutService
-from core.interfaces.workbench_services import (
-    IBeatDeletionService,
-    IDictionaryService,
-    IFullScreenViewer,
-    IGraphEditorService,
-    ISequenceWorkbenchService,
+from application.services.sequence.loader import SequenceLoader
+from application.services.sequence.sequence_beat_operations import (
+    SequenceBeatOperations,
 )
+from application.services.sequence.sequence_dictionary_service import (
+    SequenceDictionaryService,
+)
+from application.services.sequence.sequence_start_position_manager import (
+    SequenceStartPositionManager,
+)
+from core.interfaces.core_services import ILayoutService
+from core.interfaces.workbench_services import IFullScreenViewer, IGraphEditorService
 from domain.models import BeatData, SequenceData
 from domain.models.pictograph_data import PictographData
 from PyQt6.QtCore import pyqtSignal
@@ -44,18 +48,22 @@ class SequenceWorkbench(QWidget):
         self,
         layout_service: ILayoutService,
         beat_selection_service: "BeatSelectionService",
-        workbench_service: ISequenceWorkbenchService,
+        beat_operations: SequenceBeatOperations,
+        start_position_manager: SequenceStartPositionManager,
+        sequence_loader: SequenceLoader,
+        dictionary_service: SequenceDictionaryService,
         fullscreen_service: IFullScreenViewer,
-        deletion_service: IBeatDeletionService,
         graph_service: IGraphEditorService,
-        dictionary_service: IDictionaryService,
         parent: Optional[QWidget] = None,
     ):
         super().__init__(parent)
         self._layout_service = layout_service
         self._beat_selection_service = beat_selection_service
-        self._graph_service = graph_service
+        self._beat_operations = beat_operations
+        self._start_position_manager = start_position_manager
+        self._sequence_loader = sequence_loader
         self._dictionary_service = dictionary_service
+        self._graph_service = graph_service
         self._current_sequence: Optional[SequenceData] = None
         self._start_position_data: Optional[BeatData] = None
         self._indicator_section: Optional[WorkbenchIndicatorSection] = None
@@ -67,9 +75,8 @@ class SequenceWorkbench(QWidget):
         self.event_bus = get_event_bus() if EVENT_SYSTEM_AVAILABLE else None
         self._subscription_ids: List[str] = []
 
-        self._create_event_controller(
-            workbench_service, fullscreen_service, deletion_service, dictionary_service
-        )
+        # Event handling is now done directly through microservices
+        # No need for a centralized event controller
 
         # Setup event subscriptions IMMEDIATELY to catch restoration events
         # This must happen before UI setup completes to receive restoration events
@@ -79,20 +86,7 @@ class SequenceWorkbench(QWidget):
         self._connect_signals()
         self._setup_button_interface()
 
-    def _create_event_controller(
-        self,
-        workbench_service: ISequenceWorkbenchService,
-        fullscreen_service: IFullScreenViewer,
-        deletion_service: IBeatDeletionService,
-        dictionary_service: IDictionaryService,
-    ):
-        """Create centralized event controller"""
-        self._event_controller = WorkbenchEventController(
-            workbench_service=workbench_service,
-            fullscreen_service=fullscreen_service,
-            deletion_service=deletion_service,
-            dictionary_service=dictionary_service,
-        )
+    # Event controller removed - using microservices directly
 
     def _setup_ui(self):
         """Setup the UI layout with proper constraints"""

@@ -11,20 +11,17 @@ ARCHITECTURE:
 
 USAGE:
     calculator = ArrowAdjustmentCalculatorService(lookup_service, tuple_processor)
-    result = calculator.calculate_adjustment(arrow_data, pictograph_data)
-    if result.is_success():
-        adjustment = result.value
-    else:
-        logger.error(f"Calculation failed: {result.error}")
+    try:
+        adjustment = calculator.calculate_adjustment(pictograph_data, motion_data, letter, location)
+    except Exception as e:
+        logger.error(f"Calculation failed: {e}")
 """
 
 import logging
 
 from core.interfaces.positioning_services import IArrowAdjustmentCalculator
-from core.types.coordinates import PositionResult, get_default_point
+from core.types.coordinates import get_default_point
 from core.types.geometry import Point
-from core.types.result import ErrorType, app_error, failure, success
-from domain.models.arrow_data import ArrowData
 from domain.models.enums import Location
 from domain.models.motion_models import MotionData
 from domain.models.pictograph_data import PictographData
@@ -32,7 +29,6 @@ from domain.models.pictograph_data import PictographData
 from ...arrows.calculation.directional_tuple_calculator import (
     DirectionalTupleCalculator,
 )
-from ...arrows.calculation.quadrant_index_service import QuadrantIndexService
 from ...arrows.keys.attribute_key_generation_service import (
     AttributeKeyGenerationService,
 )
@@ -42,6 +38,7 @@ from ...arrows.keys.turns_tuple_generation_service import TurnsTupleGenerationSe
 # Legacy service imports for backward compatibility
 from ...arrows.placement.default_placement_service import DefaultPlacementService
 from ...arrows.placement.special_placement_service import SpecialPlacementService
+from ..calculation.quadrant_index_calculator import QuadrantIndexCalculator
 from ..placement.special_placement_ori_key_generator import (
     SpecialPlacementOriKeyGenerator,
 )
@@ -100,7 +97,7 @@ class ArrowAdjustmentCalculatorService(IArrowAdjustmentCalculator):
         """Create tuple processor with default dependencies."""
         return DirectionalTupleProcessor(
             directional_tuple_service=DirectionalTupleCalculator(),
-            quadrant_index_service=QuadrantIndexService(),
+            quadrant_index_service=QuadrantIndexCalculator(),
         )
 
     def calculate_adjustment(
@@ -121,15 +118,14 @@ class ArrowAdjustmentCalculatorService(IArrowAdjustmentCalculator):
         Returns:
             Final position adjustment as Point (to be added to initial position)
         """
-        result = self.calculate_adjustment_result(
-            pictograph_data, motion_data, letter, location
-        )
-        if result.is_success():
-            return result.value
-
-        # Log error and return default for backward compatibility
-        logger.error(f"Adjustment calculation failed: {result.error}")
-        return get_default_point()
+        try:
+            return self.calculate_adjustment_result(
+                pictograph_data, motion_data, letter, location
+            )
+        except Exception as e:
+            # Log error and return default for backward compatibility
+            logger.error(f"Adjustment calculation failed: {e}")
+            return get_default_point()
 
     def calculate_adjustment_result(
         self,
@@ -137,7 +133,7 @@ class ArrowAdjustmentCalculatorService(IArrowAdjustmentCalculator):
         motion_data: MotionData,
         letter: str,
         location: Location,
-    ) -> PositionResult:
+    ) -> Point:
         """
         Calculate arrow position adjustment with proper error handling.
 
@@ -147,36 +143,25 @@ class ArrowAdjustmentCalculatorService(IArrowAdjustmentCalculator):
             location: Pre-calculated arrow location
 
         Returns:
-            Result containing Point adjustment or AppError
-        """
+            Point adjustment
 
+        Raises:
+            ValueError: If calculation fails due to invalid input
+            RuntimeError: If calculation fails due to system error
+        """
         try:
             # STEP 1: Look up base adjustment (special → default)
-            lookup_result = self.lookup_service.get_base_adjustment(
+            base_adjustment = self.lookup_service.get_base_adjustment(
                 pictograph_data, motion_data, letter
             )
-            if lookup_result.is_failure():
-                return failure(lookup_result.error)
-
-            base_adjustment = lookup_result.value
 
             # STEP 2: Process directional tuples
-            tuple_result = self.tuple_processor.process_directional_tuples(
+            final_adjustment = self.tuple_processor.process_directional_tuples(
                 base_adjustment, motion_data, location
             )
-            if tuple_result.is_failure():
-                return failure(tuple_result.error)
 
-            final_adjustment = tuple_result.value
-
-            return success(final_adjustment)
+            return final_adjustment
 
         except Exception as e:
-            return failure(
-                app_error(
-                    ErrorType.POSITIONING_ERROR,
-                    f"Unexpected error in adjustment calculation: {e}",
-                    {"letter": letter},
-                    e,
-                )
-            )
+            logger.error(f"Adjustment calculation failed for letter {letter}: {e}")
+            raise RuntimeError(f"Arrow adjustment calculation failed: {e}") from e

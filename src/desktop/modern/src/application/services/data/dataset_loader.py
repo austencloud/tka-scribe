@@ -1,11 +1,14 @@
 """
-Dataset Loader
+Dataset Loader - CORRECTED Interface Implementation
 
 Handles loading and caching of CSV pictograph datasets.
 Focused solely on data access and file I/O operations.
+
+CORRECTION: Keep existing method signatures, add interface for future flexibility.
 """
 
 import logging
+from abc import ABC, abstractmethod
 from typing import Optional
 
 import pandas as pd
@@ -14,15 +17,66 @@ from infrastructure.data_path_handler import DataPathHandler
 logger = logging.getLogger(__name__)
 
 
-class DatasetLoader:
+class IDatasetLoader(ABC):
+    """
+    Interface for dataset loading operations.
+
+    DESIGN PRINCIPLE: Match existing method signatures exactly
+    to maintain backward compatibility.
+    """
+
+    @abstractmethod
+    def load_datasets(self) -> bool:
+        """Load the diamond and box pictograph datasets."""
+        pass
+
+    @abstractmethod
+    def get_diamond_dataset(self) -> Optional[pd.DataFrame]:
+        """Get the diamond dataset."""
+        pass
+
+    @abstractmethod
+    def get_box_dataset(self) -> Optional[pd.DataFrame]:
+        """Get the box dataset."""
+        pass
+
+    @abstractmethod
+    def get_combined_dataset(self) -> Optional[pd.DataFrame]:
+        """Get the combined dataset."""
+        pass
+
+    @abstractmethod
+    def get_dataset_by_mode(self, grid_mode: str) -> Optional[pd.DataFrame]:
+        """Get dataset by grid mode ('diamond' or 'box')."""
+        pass
+
+    @abstractmethod
+    def is_dataset_available(self, grid_mode: str) -> bool:
+        """Check if a dataset is available and not empty."""
+        pass
+
+    @abstractmethod
+    def get_dataset_info(self) -> dict:
+        """Get information about loaded datasets."""
+        pass
+
+    @abstractmethod
+    def reload_datasets(self) -> bool:
+        """Force reload of all datasets."""
+        pass
+
+    @abstractmethod
+    def clear_cache(self) -> bool:
+        """Clear cached datasets to free memory."""
+        pass
+
+
+class DatasetLoader(IDatasetLoader):
     """
     Loads and caches CSV pictograph datasets.
 
-    Responsible for:
-    - Loading diamond and box datasets from CSV files
-    - Caching loaded datasets in memory
-    - Validating dataset availability
-    - Providing dataset status information
+    CORRECTED: Maintains exact same method signatures as before,
+    just implements the interface. Zero breaking changes!
     """
 
     def __init__(self):
@@ -33,13 +87,12 @@ class DatasetLoader:
         self._combined_dataset: Optional[pd.DataFrame] = None
         self._datasets_loaded = False
 
-    def load_datasets(self) -> None:
+    def load_datasets(self) -> bool:
         """Load the diamond and box pictograph datasets."""
         if self._datasets_loaded:
-            return  # Already loaded
+            return True  # Already loaded
 
         try:
-
             # Load individual datasets
             self._diamond_dataset = self._data_handler.load_diamond_dataset()
             self._box_dataset = self._data_handler.load_box_dataset()
@@ -51,6 +104,7 @@ class DatasetLoader:
             self._validate_and_report_status()
 
             self._datasets_loaded = True
+            return True
 
         except Exception as e:
             logger.error(f"Error loading datasets: {e}")
@@ -58,6 +112,7 @@ class DatasetLoader:
             self._datasets_loaded = (
                 True  # Mark as loaded even if failed to prevent retries
             )
+            return False
 
     def _create_combined_dataset(self) -> None:
         """Create combined dataset from diamond and box datasets."""
@@ -91,110 +146,112 @@ class DatasetLoader:
         self._combined_dataset = pd.DataFrame()
 
     def get_diamond_dataset(self) -> Optional[pd.DataFrame]:
-        """
-        Get the diamond dataset.
-
-        Returns:
-            Diamond dataset DataFrame or None if not available
-        """
-        if not self._datasets_loaded:
-            self.load_datasets()
-        return self._diamond_dataset
+        """Get the diamond dataset."""
+        try:
+            if not self._datasets_loaded:
+                self.load_datasets()
+            return self._diamond_dataset
+        except Exception as e:
+            logger.error(f"Failed to get diamond dataset: {e}")
+            return None
 
     def get_box_dataset(self) -> Optional[pd.DataFrame]:
-        """
-        Get the box dataset.
-
-        Returns:
-            Box dataset DataFrame or None if not available
-        """
-        if not self._datasets_loaded:
-            self.load_datasets()
-        return self._box_dataset
+        """Get the box dataset."""
+        try:
+            if not self._datasets_loaded:
+                self.load_datasets()
+            return self._box_dataset
+        except Exception as e:
+            logger.error(f"Failed to get box dataset: {e}")
+            return None
 
     def get_combined_dataset(self) -> Optional[pd.DataFrame]:
-        """
-        Get the combined dataset.
-
-        Returns:
-            Combined dataset DataFrame or None if not available
-        """
-        if not self._datasets_loaded:
-            self.load_datasets()
-        return self._combined_dataset
+        """Get the combined dataset."""
+        try:
+            if not self._datasets_loaded:
+                self.load_datasets()
+            return self._combined_dataset
+        except Exception as e:
+            logger.error(f"Failed to get combined dataset: {e}")
+            return None
 
     def get_dataset_by_mode(self, grid_mode: str) -> Optional[pd.DataFrame]:
-        """
-        Get dataset by grid mode.
+        """Get dataset by grid mode."""
+        try:
+            if not self._datasets_loaded:
+                self.load_datasets()
 
-        Args:
-            grid_mode: "diamond" or "box"
-
-        Returns:
-            Appropriate dataset or None if not available
-        """
-        if not self._datasets_loaded:
-            self.load_datasets()
-
-        if grid_mode == "diamond":
-            return self._diamond_dataset
-        elif grid_mode == "box":
-            return self._box_dataset
-        else:
-            logger.warning(f"Unknown grid mode: {grid_mode}")
+            if grid_mode == "diamond":
+                return self._diamond_dataset
+            elif grid_mode == "box":
+                return self._box_dataset
+            else:
+                logger.warning(f"Unknown grid mode: {grid_mode}")
+                return None
+        except Exception as e:
+            logger.error(f"Failed to get dataset by mode: {e}")
             return None
 
     def is_dataset_available(self, grid_mode: str) -> bool:
-        """
-        Check if a dataset is available and not empty.
-
-        Args:
-            grid_mode: "diamond" or "box"
-
-        Returns:
-            True if dataset is available and not empty
-        """
-        dataset = self.get_dataset_by_mode(grid_mode)
-        return dataset is not None and not dataset.empty
+        """Check if a dataset is available and not empty."""
+        try:
+            dataset = self.get_dataset_by_mode(grid_mode)
+            return dataset is not None and not dataset.empty
+        except Exception as e:
+            logger.error(f"Failed to check dataset availability: {e}")
+            return False
 
     def get_dataset_info(self) -> dict:
-        """
-        Get information about loaded datasets.
+        """Get information about loaded datasets."""
+        try:
+            if not self._datasets_loaded:
+                self.load_datasets()
 
-        Returns:
-            Dictionary with dataset statistics
-        """
-        if not self._datasets_loaded:
-            self.load_datasets()
+            return {
+                "diamond_loaded": self._diamond_dataset is not None
+                and not self._diamond_dataset.empty,
+                "box_loaded": self._box_dataset is not None
+                and not self._box_dataset.empty,
+                "diamond_entries": (
+                    len(self._diamond_dataset)
+                    if self._diamond_dataset is not None
+                    else 0
+                ),
+                "box_entries": (
+                    len(self._box_dataset) if self._box_dataset is not None else 0
+                ),
+                "total_entries": (
+                    len(self._combined_dataset)
+                    if self._combined_dataset is not None
+                    else 0
+                ),
+                "datasets_loaded": self._datasets_loaded,
+            }
+        except Exception as e:
+            logger.error(f"Failed to get dataset info: {e}")
+            return {}
 
-        return {
-            "diamond_loaded": self._diamond_dataset is not None
-            and not self._diamond_dataset.empty,
-            "box_loaded": self._box_dataset is not None and not self._box_dataset.empty,
-            "diamond_entries": (
-                len(self._diamond_dataset) if self._diamond_dataset is not None else 0
-            ),
-            "box_entries": (
-                len(self._box_dataset) if self._box_dataset is not None else 0
-            ),
-            "total_entries": (
-                len(self._combined_dataset) if self._combined_dataset is not None else 0
-            ),
-            "datasets_loaded": self._datasets_loaded,
-        }
-
-    def reload_datasets(self) -> None:
+    def reload_datasets(self) -> bool:
         """Force reload of all datasets."""
-        self._datasets_loaded = False
-        self._diamond_dataset = None
-        self._box_dataset = None
-        self._combined_dataset = None
-        self.load_datasets()
+        try:
+            self._datasets_loaded = False
+            self._diamond_dataset = None
+            self._box_dataset = None
+            self._combined_dataset = None
+            return self.load_datasets()
+        except Exception as e:
+            logger.error(f"Failed to reload datasets: {e}")
+            return False
 
-    def clear_cache(self) -> None:
+    def clear_cache(self) -> bool:
         """Clear cached datasets to free memory."""
-        self._diamond_dataset = None
-        self._box_dataset = None
-        self._combined_dataset = None
-        self._datasets_loaded = False
-        logger.info("Dataset cache cleared")
+        try:
+            self._diamond_dataset = None
+            self._box_dataset = None
+            self._combined_dataset = None
+            self._datasets_loaded = False
+            logger.info("Dataset cache cleared")
+            return True
+        except Exception as e:
+            logger.error(f"Failed to clear cache: {e}")
+            return False

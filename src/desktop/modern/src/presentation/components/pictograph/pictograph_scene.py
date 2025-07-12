@@ -270,52 +270,12 @@ class PictographScene(QGraphicsScene):
     def render_pictograph(self, pictograph_data: "PictographData") -> None:
         """Render a complete pictograph from pictograph data."""
         self.clear()
-        # Clear prop renderer cache for new pictograph
         self.prop_renderer.clear_rendered_props()
         self._render_pictograph_data(pictograph_data)
 
     def update_beat(self, beat_data: BeatData) -> None:
         """Legacy method: Convert beat data to pictograph data and render."""
-        # Convert BeatData to PictographData for rendering
-        pictograph_data = self._beat_data_to_pictograph_data(beat_data)
-        self.render_pictograph(pictograph_data)
-
-    def _beat_data_to_pictograph_data(self, beat_data: BeatData) -> PictographData:
-        """Convert BeatData to PictographData for rendering."""
-        # Use pictograph_data if available, otherwise create from legacy fields
-        if beat_data.pictograph_data:
-            return beat_data.pictograph_data
-
-        # Fallback: create from legacy fields (deprecated)
-        arrows = {}
-        motions = {}
-
-        # Check for legacy motion fields (deprecated)
-        if hasattr(beat_data, "blue_motion") and beat_data.blue_motion:
-            arrows["blue"] = ArrowData(color="blue", is_visible=True)
-            motions["blue"] = beat_data.blue_motion
-
-        if hasattr(beat_data, "red_motion") and beat_data.red_motion:
-            arrows["red"] = ArrowData(color="red", is_visible=True)
-            motions["red"] = beat_data.red_motion
-
-        # Extract position data from glyph_data if available
-        start_position = None
-        end_position = None
-        if beat_data.pictograph_data.glyph_data:
-            start_position = beat_data.pictograph_data.glyph_data.start_position
-            end_position = beat_data.pictograph_data.glyph_data.end_position
-
-        return PictographData(
-            arrows=arrows,
-            motions=motions,  # NEW: Include motions dictionary
-            letter=beat_data.letter or "",
-            start_position=start_position,
-            end_position=end_position,
-            glyph_data=beat_data.pictograph_data.glyph_data,
-            is_blank=beat_data.is_blank,
-            metadata=beat_data.metadata or {},
-        )
+        self.render_pictograph(beat_data.pictograph_data)
 
     def _render_pictograph_data(self, pictograph_data: PictographData) -> None:
         """Render the pictograph elements using specialized renderers."""
@@ -341,8 +301,6 @@ class PictographScene(QGraphicsScene):
             if red_motion and self._renderer_visibility.get("red_motion", True):
                 self.prop_renderer.render_prop("red", red_motion)
 
-        # Apply beta prop positioning after both props are rendered
-        # Note: This requires converting back to BeatData temporarily for legacy compatibility
         if blue_motion and red_motion:
 
             self.prop_renderer.apply_beta_positioning(pictograph_data)

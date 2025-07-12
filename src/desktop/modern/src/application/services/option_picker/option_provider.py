@@ -53,11 +53,11 @@ class OptionProvider(IOptionProvider):
     def _initialize_position_service(self):
         """Initialize the position matching service."""
         try:
-            from application.services.positioning.arrows.utilities.position_matching_service import (
-                PositionMatchingService,
+            from application.services.positioning.arrows.utilities.pictograph_position_matcher import (
+                PictographPositionMatcher,
             )
 
-            self._position_service = PositionMatchingService()
+            self._position_service = PictographPositionMatcher()
             logger.debug("Position matching service initialized")
 
         except Exception as e:

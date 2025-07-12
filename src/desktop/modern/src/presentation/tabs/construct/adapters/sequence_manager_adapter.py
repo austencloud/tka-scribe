@@ -1,102 +1,95 @@
 """
-Sequence Orchestrator Qt Adapter - Presentation Layer Interface
+Direct Microservices Access - Clean Dependency Injection
 
-This adapter provides Qt signal functionality for the SequenceOrchestrator business service.
-It implements the adapter pattern to maintain separation between presentation and application layers.
+Components that need sequence operations should directly inject and use
+the specific microservices they need instead of going through adapters.
 """
 
 import logging
-from typing import Callable, Optional
+from typing import Optional
 
-from application.services.sequence.sequence_orchestrator import (
-    ISequenceOrchestratorSignals,
-    SequenceOrchestrator,
+from application.services.sequence.loader import SequenceLoader
+from application.services.sequence.sequence_beat_operations import (
+    SequenceBeatOperations,
+)
+from application.services.sequence.sequence_start_position_manager import (
+    SequenceStartPositionManager,
 )
 from domain.models.beat_data import BeatData
-from domain.models.sequence_data import SequenceData
+from domain.models.pictograph_data import PictographData
 from PyQt6.QtCore import QObject, pyqtSignal
 
 logger = logging.getLogger(__name__)
 
 
-class SequenceOrchestratorQtAdapter(QObject, ISequenceOrchestratorSignals):
+class SequenceSignalEmitter(QObject):
     """
-    Qt adapter for the SequenceOrchestrator service.
+    Simple Qt signal emitter for sequence events.
 
-    This adapter handles Qt-specific signal emission while delegating
-    all business logic to the SequenceOrchestrator service.
+    Components that need sequence operations should inject the specific
+    microservices they need and use this for signal emission only.
     """
 
     sequence_modified = pyqtSignal(object)  # SequenceData object
     sequence_cleared = pyqtSignal()
+    beat_added = pyqtSignal(object, int)  # BeatData, position
+    beat_removed = pyqtSignal(int)  # position
+    beat_updated = pyqtSignal(object, int)  # BeatData, position
+    start_position_set = pyqtSignal(object)  # BeatData
+    sequence_loaded = pyqtSignal(object)  # SequenceData
+
+    def __init__(self):
+        """Initialize the signal emitter."""
+        super().__init__()
+
+
+# Example of how components should use microservices directly:
+class ExampleSequenceComponent:
+    """
+    Example showing how components should directly use microservices.
+
+    Instead of adapters, components should:
+    1. Inject only the microservices they actually need
+    2. Use them directly without wrapper methods
+    3. Emit signals through a simple signal emitter
+    """
 
     def __init__(
         self,
-        workbench_getter: Optional[Callable[[], object]] = None,
-        workbench_setter: Optional[Callable[[SequenceData], None]] = None,
-        start_position_handler: Optional[object] = None,
+        beat_operations: SequenceBeatOperations,
+        start_position_manager: Optional[SequenceStartPositionManager] = None,
+        sequence_loader: Optional[SequenceLoader] = None,
+        signal_emitter: Optional[SequenceSignalEmitter] = None,
     ):
         """
-        Initialize the Qt adapter with the sequence manager.
+        Initialize with only the microservices this component actually needs.
 
         Args:
-            workbench_getter: Function to get current workbench
-            workbench_setter: Function to set workbench sequence
-            start_position_handler: Handler for start position operations
+            beat_operations: Required for beat operations
+            start_position_manager: Optional, only if component needs start position ops
+            sequence_loader: Optional, only if component needs loading ops
+            signal_emitter: Optional signal emitter
         """
-        super().__init__()
+        self.beat_operations = beat_operations
+        self.start_position_manager = start_position_manager
+        self.sequence_loader = sequence_loader
+        self.signal_emitter = signal_emitter
 
-        # Create the business service with this adapter as signal emitter
-        self._sequence_orchestrator = SequenceOrchestrator(
-            workbench_getter=workbench_getter,
-            workbench_setter=workbench_setter,
-            start_position_handler=start_position_handler,
-            signal_emitter=self,
-        )
+    def add_pictograph(self, pictograph_data: PictographData):
+        """Example: Add pictograph directly using microservice."""
+        self.beat_operations.add_pictograph_to_sequence(pictograph_data)
+        # Signal emission is handled by the microservice itself
 
-    # ISequenceManagerSignals implementation
-    def emit_sequence_modified(self, sequence: SequenceData) -> None:
-        """Emit Qt signal when sequence is modified."""
-        self.sequence_modified.emit(sequence)
+    def set_start_position(self, beat_data: BeatData):
+        """Example: Set start position if this component needs that functionality."""
+        if self.start_position_manager:
+            self.start_position_manager.set_start_position(beat_data)
+        else:
+            logger.warning("Start position manager not available")
 
-    def emit_sequence_cleared(self) -> None:
-        """Emit Qt signal when sequence is cleared."""
-        self.sequence_cleared.emit()
-
-    # Public API - delegate to business service
-    def add_beat_to_sequence(self, beat_data: BeatData):
-        """Add a beat to the current sequence"""
-        self._sequence_orchestrator.add_beat_to_sequence(beat_data)
-
-    def clear_sequence(self):
-        """Clear the current sequence"""
-        self._sequence_orchestrator.clear_sequence()
-
-    def handle_workbench_modified(self, sequence: SequenceData):
-        """Handle workbench sequence modification"""
-        self._sequence_orchestrator.handle_workbench_modified(sequence)
-
-    def update_beat_turns(self, beat_index: int, color: str, new_turns: int):
-        """Update the number of turns for a specific beat"""
-        self._sequence_orchestrator.update_beat_turns(beat_index, color, new_turns)
-
-    def remove_beat(self, beat_index: int):
-        """Remove a beat from the sequence"""
-        self._sequence_orchestrator.remove_beat(beat_index)
-
-    def set_start_position(self, start_position_data: BeatData):
-        """Set the start position"""
-        self._sequence_orchestrator.set_start_position(start_position_data)
-
-    def load_sequence_on_startup(self):
-        """Load sequence from current_sequence.json on startup"""
-        self._sequence_orchestrator.load_sequence_on_startup()
-
-    def get_current_sequence_length(self) -> int:
-        """Get the length of the current sequence"""
-        return self._sequence_orchestrator.get_current_sequence_length()
-
-    @property
-    def sequence_orchestrator(self) -> SequenceOrchestrator:
-        """Access to the underlying business service (use sparingly)"""
-        return self._sequence_orchestrator
+    def load_sequence(self):
+        """Example: Load sequence if this component needs that functionality."""
+        if self.sequence_loader:
+            self.sequence_loader.load_sequence_on_startup()
+        else:
+            logger.warning("Sequence loader not available")

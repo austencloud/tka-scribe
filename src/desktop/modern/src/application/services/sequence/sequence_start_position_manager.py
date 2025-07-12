@@ -8,13 +8,12 @@ Responsible for setting, updating, and managing start positions in sequences.
 from typing import Callable, Optional
 
 from application.services.data.sequence_data_converter import SequenceDataConverter
+from application.services.sequence.beat_factory import BeatFactory
+from application.services.sequence.sequence_persister import SequencePersister
 from domain.models.beat_data import BeatData
 from domain.models.pictograph_data import PictographData
 from domain.models.sequence_data import SequenceData
 from PyQt6.QtCore import QObject, pyqtSignal
-
-from application.services.sequence.beat_factory import BeatFactory
-from application.services.sequence.sequence_persister import SequencePersister
 
 
 class SequenceStartPositionManager(QObject):
@@ -218,10 +217,13 @@ class SequenceStartPositionManager(QObject):
             for item in sequence_data[1:]:  # Skip metadata
                 if item.get("beat") == 0:
                     if self.data_converter:
-                        start_position_beat = self.data_converter.convert_legacy_start_position_to_beat_data(
-                            item
-                        )
-                        return start_position_beat
+                        try:
+                            return self.data_converter.convert_legacy_start_position_to_beat_data(
+                                item
+                            )
+                        except Exception as e:
+                            print(f"❌ Failed to convert start position: {e}")
+                            return None
                     else:
                         print(
                             "⚠️ No data converter available for start position loading"

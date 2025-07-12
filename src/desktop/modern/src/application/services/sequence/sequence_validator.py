@@ -7,6 +7,7 @@ solely on validation logic and sequence integrity checks.
 """
 
 import logging
+from abc import ABC, abstractmethod
 from typing import Any, Dict, List, Optional
 
 from domain.models.beat_data import BeatData
@@ -21,7 +22,36 @@ class ValidationError(Exception):
     pass
 
 
-class SequenceValidator:
+class ISequenceValidator(ABC):
+    """Interface for sequence validation operations."""
+
+    @abstractmethod
+    def validate_sequence(self, sequence: SequenceData) -> bool:
+        """Validate a complete sequence against all rules."""
+        pass
+
+    @abstractmethod
+    def validate_beat(self, beat: BeatData, position: Optional[int] = None) -> bool:
+        """Validate a single beat against validation rules."""
+        pass
+
+    @abstractmethod
+    def check_sequence_integrity(self, sequence: SequenceData) -> List[str]:
+        """Check sequence integrity and return list of issues."""
+        pass
+
+    @abstractmethod
+    def is_valid_sequence_length(self, length: int) -> bool:
+        """Check if sequence length is valid."""
+        pass
+
+    @abstractmethod
+    def validate_sequence_continuity(self, sequence: SequenceData) -> bool:
+        """Validate that beats flow correctly in sequence."""
+        pass
+
+
+class SequenceValidator(ISequenceValidator):
     """
     Service for validating sequences and beats against business rules.
 
@@ -319,3 +349,78 @@ class SequenceValidator:
             errors.append(str(e))
 
         return errors
+
+    def check_sequence_integrity(self, sequence: SequenceData) -> List[str]:
+        """
+        Check sequence integrity and return list of issues.
+
+        Args:
+            sequence: The sequence to check
+
+        Returns:
+            List of integrity issues, empty if intact
+        """
+        issues = []
+
+        # Check for missing required fields
+        required_fields = self._sequence_validation_rules["required_fields"]
+        for field in required_fields:
+            if not hasattr(sequence, field):
+                issues.append(f"Missing required field: {field}")
+
+        # Check for duplicate beat numbers
+        beat_numbers = [beat.beat_number for beat in sequence.beats]
+        if len(beat_numbers) != len(set(beat_numbers)):
+            issues.append("Duplicate beat numbers found")
+
+        # Check sequence continuity (beat numbers should be sequential)
+        regular_beats = [beat for beat in sequence.beats if beat.beat_number > 0]
+        if regular_beats:
+            expected_numbers = list(range(1, len(regular_beats) + 1))
+            actual_numbers = sorted([beat.beat_number for beat in regular_beats])
+            if actual_numbers != expected_numbers:
+                issues.append("Beat numbers are not sequential")
+
+        return issues
+
+    def is_valid_sequence_length(self, length: int) -> bool:
+        """
+        Check if sequence length is valid.
+
+        Args:
+            length: The length to check
+
+        Returns:
+            bool: True if valid
+        """
+        if not isinstance(length, int):
+            return False
+
+        min_length = self._sequence_validation_rules["min_length"]
+        max_length = self._sequence_validation_rules["max_length"]
+
+        return min_length <= length <= max_length
+
+    def validate_sequence_continuity(self, sequence: SequenceData) -> bool:
+        """
+        Validate that beats flow correctly in sequence.
+
+        Args:
+            sequence: The sequence to validate
+
+        Returns:
+            bool: True if continuity is correct
+
+        Raises:
+            ValidationError: If continuity validation fails
+        """
+        regular_beats = [beat for beat in sequence.beats if beat.beat_number > 0]
+        if not regular_beats:
+            return True  # No regular beats to validate
+
+        expected_numbers = list(range(1, len(regular_beats) + 1))
+        actual_numbers = sorted([beat.beat_number for beat in regular_beats])
+        if actual_numbers != expected_numbers:
+            raise ValidationError(f"Beat numbers are not sequential: {actual_numbers}")
+
+        return True

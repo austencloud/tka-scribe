@@ -5,17 +5,20 @@ Handles sequence loading from persistence and startup restoration.
 Responsible for loading sequences from current_sequence.json and managing startup workflows.
 """
 
+import logging
 from typing import TYPE_CHECKING, Callable, Optional
 
 from application.services.data.sequence_data_converter import SequenceDataConverter
 from application.services.sequence.sequence_persister import SequencePersister
-from domain.models.beat_data import BeatData
 from domain.models.sequence_data import SequenceData
-from presentation.components.workbench.workbench import SequenceWorkbench
+
+# Removed circular import - workbench should be passed as parameter if needed
 from PyQt6.QtCore import QObject, pyqtSignal
 
 if TYPE_CHECKING:
     from domain.models.pictograph_data import PictographData
+
+logger = logging.getLogger(__name__)
 
 
 class SequenceLoader(QObject):
@@ -34,7 +37,7 @@ class SequenceLoader(QObject):
 
     def __init__(
         self,
-        workbench_getter: Optional[Callable[[], SequenceWorkbench]] = None,
+        workbench_getter: Optional[Callable[[], object]] = None,
         workbench_setter: Optional[Callable[[SequenceData], None]] = None,
         data_converter: Optional[object] = None,
     ):
@@ -97,10 +100,14 @@ class SequenceLoader(QObject):
 
                     # Create start position data in both formats
                     if self.data_converter:
-                        # Create BeatData for workbench
-                        start_position_beat = self.data_converter.convert_legacy_start_position_to_beat_data(
-                            start_position_data
-                        )
+                        # Create BeatData for workbench - direct return
+                        try:
+                            start_position_beat = self.data_converter.convert_legacy_start_position_to_beat_data(
+                                start_position_data
+                            )
+                        except Exception as e:
+                            logger.error(f"Failed to convert start position: {e}")
+                            return  # Skip start position loading if conversion fails
 
                         # Create PictographData for option picker using dataset service
                         start_position_pictograph = (

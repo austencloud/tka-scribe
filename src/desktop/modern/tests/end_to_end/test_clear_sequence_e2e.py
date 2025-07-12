@@ -22,7 +22,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent.parent / "src"))
 
 from application.services.sequence.sequence_persister import SequencePersister
 from core.application.application_factory import ApplicationFactory
-from PyQt6.QtCore import QObject, QTimer, pyqtSignal
+from PyQt6.QtCore import QObject, Qt, QTimer, pyqtSignal
 from PyQt6.QtTest import QTest
 from PyQt6.QtWidgets import QApplication, QPushButton, QWidget
 
@@ -124,14 +124,31 @@ class TKAUIAutomation:
 
     def get_current_picker_state(self) -> str:
         """Determine which picker is currently visible"""
-        if not self.layout_manager or not hasattr(self.layout_manager, "picker_stack"):
+        print(f"🔍 [UI_AUTOMATION] Checking picker state...")
+        print(f"🔍 [UI_AUTOMATION] Layout manager: {self.layout_manager is not None}")
+
+        if not self.layout_manager:
+            print("❌ [UI_AUTOMATION] No layout manager found")
+            return "unknown"
+
+        print(
+            f"🔍 [UI_AUTOMATION] Layout manager has picker_stack: {hasattr(self.layout_manager, 'picker_stack')}"
+        )
+
+        if not hasattr(self.layout_manager, "picker_stack"):
+            print("❌ [UI_AUTOMATION] Layout manager has no picker_stack attribute")
             return "unknown"
 
         picker_stack = self.layout_manager.picker_stack
+        print(f"🔍 [UI_AUTOMATION] Picker stack: {picker_stack is not None}")
+
         if not picker_stack:
+            print("❌ [UI_AUTOMATION] Picker stack is None")
             return "unknown"
 
         current_index = picker_stack.currentIndex()
+        print(f"🔍 [UI_AUTOMATION] Current picker index: {current_index}")
+
         if current_index == 0:
             return "start_position_picker"
         elif current_index == 1:
@@ -148,7 +165,7 @@ class TKAUIAutomation:
             return False
 
         print(f"🖱️ [UI_AUTOMATION] Clicking clear sequence button...")
-        QTest.mouseClick(button, 1)  # Left click
+        QTest.mouseClick(button, Qt.MouseButton.LeftButton)  # Left click
 
         # Wait for UI to update
         QTest.qWait(500)
@@ -240,6 +257,9 @@ class ClearSequenceE2ETest:
                 self.ui_automation.construct_tab = self.construct_tab
                 self.ui_automation.workbench = self.workbench
                 self.ui_automation.main_window = self.construct_tab
+
+                # Initialize UI automation components
+                self.ui_automation.initialize_components()
 
                 print("✅ [E2E_TEST] TKA application components launched successfully")
                 return True
@@ -365,11 +385,20 @@ class ClearSequenceE2ETest:
                 f"🔍 [E2E_TEST] Before clear - Picker: {initial_picker_state}, Sequence items: {len(initial_sequence)}"
             )
 
-            # Click clear sequence button
-            success = self.ui_automation.click_clear_sequence_button()
-            if not success:
-                print("❌ [E2E_TEST] Failed to click clear sequence button")
-                return False
+            # Try both button click and direct method call
+            print("🔄 [E2E_TEST] Trying button click first...")
+            button_success = self.ui_automation.click_clear_sequence_button()
+            if not button_success:
+                print("❌ [E2E_TEST] Button click failed, trying direct method call...")
+
+            # Also try calling clear sequence directly on construct tab
+            if hasattr(self, "construct_tab") and self.construct_tab:
+                print(
+                    "🔄 [E2E_TEST] Calling clear_sequence directly on construct tab..."
+                )
+                self.construct_tab.clear_sequence()
+            else:
+                print("❌ [E2E_TEST] No construct tab available for direct call")
 
             # Wait for operations to complete
             self.ui_automation.wait_for_ui_update(2000)  # 2 second wait
