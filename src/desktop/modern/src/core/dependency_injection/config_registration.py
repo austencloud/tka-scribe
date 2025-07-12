@@ -21,7 +21,7 @@ USAGE:
 import logging
 from typing import Optional
 
-from application.services.data.data_service import DataService
+from application.services.data.data_service import DataManager
 from core.config.app_config import (
     AppConfig,
     LoggingConfig,
@@ -74,7 +74,7 @@ def register_configurations(
 
         # Register data service with configuration injection
         container.register_factory(
-            DataService, lambda: DataService(app_config.data_config)
+            DataManager, lambda: DataManager(app_config.data_config)
         )
 
         logger.info("Successfully registered all configurations in DI container")
@@ -112,7 +112,7 @@ def register_data_config_only(
         container.register_instance(DataConfig, config)
 
         # Register data service with configuration injection
-        container.register_factory(DataService, lambda: DataService(config))
+        container.register_factory(DataManager, lambda: DataManager(config))
 
         logger.info("Successfully registered data configuration in DI container")
 
@@ -240,7 +240,7 @@ def validate_configuration_registration(container) -> bool:
 
         # Validate data service can be resolved
         try:
-            data_service = container.resolve(DataService)
+            data_service = container.resolve(DataManager)
             if data_service is None:
                 logger.error("DataService resolved to None")
                 return False

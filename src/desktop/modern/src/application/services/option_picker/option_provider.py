@@ -20,7 +20,6 @@ from core.interfaces.option_picker_interfaces import (
 from domain.models.pictograph_data import PictographData
 
 if TYPE_CHECKING:
-    from domain.models.beat_data import BeatData
     from domain.models.sequence_data import SequenceData
 
 if TYPE_CHECKING:

@@ -19,7 +19,7 @@ if TYPE_CHECKING:
 
 from PyQt6.QtCore import QTimer
 from PyQt6.QtGui import QGuiApplication, QIcon
-from PyQt6.QtWidgets import QApplication, QMainWindow
+from PyQt6.QtWidgets import QApplication, QMainWindow, QWidget
 
 modern_src_path = Path(__file__).parent / "src"
 sys.path.insert(0, str(modern_src_path))
@@ -307,9 +307,7 @@ def main():
                     parallel_mode=parallel_mode,
                     parallel_geometry=geometry,
                 )
-                # WINDOW MANAGEMENT FIX: Ensure window stays hidden until everything is fully loaded
-                window.hide()
-                window.setVisible(False)
+
                 # Process events to ensure hide takes effect
                 app.processEvents()
 

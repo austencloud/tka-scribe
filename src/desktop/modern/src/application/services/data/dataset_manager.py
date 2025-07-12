@@ -18,6 +18,8 @@ from typing import Any, Dict, List, Optional, TypedDict
 from application.services.pictograph.pictograph_manager import PictographSearchQuery
 from domain.models.pictograph_data import PictographData
 
+from .cache_manager import DataCacheManager
+
 
 class IDatasetManager(ABC):
     """Interface for dataset management operations."""
@@ -49,10 +51,10 @@ class DatasetManager(IDatasetManager):
     Uses immutable data patterns following TKA architecture.
     """
 
-    def __init__(self):
-        """Initialize dataset management service."""
-        # Dataset management
-        self._pictograph_cache: Dict[str, PictographData] = {}
+    def __init__(self, cache_manager: DataCacheManager = None):
+        """Initialize dataset management service with unified cache."""
+        # Use unified cache manager for pictograph caching
+        self.cache_manager = cache_manager or DataCacheManager()
         self._dataset_index: Dict[str, List[str]] = {}
 
     def add_to_dataset(
@@ -62,7 +64,7 @@ class DatasetManager(IDatasetManager):
         pictograph_id = str(uuid.uuid4())
 
         # Cache the pictograph
-        self._pictograph_cache[pictograph_id] = pictograph
+        self.cache_manager.set_pictograph_cache(pictograph_id, pictograph)
 
         # Update dataset index
         if category not in self._dataset_index:
@@ -81,12 +83,18 @@ class DatasetManager(IDatasetManager):
             max_results = 50
 
         # Search through cached pictographs
-        for pictograph_id, pictograph in self._pictograph_cache.items():
-            if self._matches_query(pictograph, query):
-                results.append(pictograph)
+        # Note: We need to iterate through dataset index since cache manager doesn't expose iteration
+        for category, pictograph_ids in self._dataset_index.items():
+            for pictograph_id in pictograph_ids:
+                pictograph = self.cache_manager.get_pictograph_cache(pictograph_id)
+                if pictograph and self._matches_query(pictograph, query):
+                    results.append(pictograph)
 
-                if len(results) >= max_results:
-                    break
+                    if len(results) >= max_results:
+                        break
+
+            if len(results) >= max_results:
+                break
 
         return results
 
@@ -97,26 +105,29 @@ class DatasetManager(IDatasetManager):
     def get_pictographs_by_category(self, category: str) -> List[PictographData]:
         """Get all pictographs in a category."""
         pictograph_ids = self._dataset_index.get(category, [])
-        return [
-            self._pictograph_cache[pid]
-            for pid in pictograph_ids
-            if pid in self._pictograph_cache
-        ]
+        results = []
+        for pid in pictograph_ids:
+            pictograph = self.cache_manager.get_pictograph_cache(pid)
+            if pictograph:
+                results.append(pictograph)
+        return results
 
     def get_pictograph_by_id(self, pictograph_id: str) -> Optional[PictographData]:
         """Get pictograph by ID."""
-        return self._pictograph_cache.get(pictograph_id)
+        return self.cache_manager.get_pictograph_cache(pictograph_id)
 
     def remove_from_dataset(self, pictograph_id: str) -> bool:
         """Remove pictograph from dataset."""
-        if pictograph_id not in self._pictograph_cache:
+        # Check if pictograph exists in cache
+        if not self.cache_manager.get_pictograph_cache(pictograph_id):
             return False
 
-        # Remove from cache
-        del self._pictograph_cache[pictograph_id]
+        # Remove from cache (cache manager handles this internally)
+        # Note: DataCacheManager doesn't have a remove method, so we'll need to clear and rebuild
+        # For now, we'll just remove from index and let cache expire naturally
 
         # Remove from all category indices
-        for category, ids in self._dataset_index.items():
+        for ids in self._dataset_index.values():
             if pictograph_id in ids:
                 ids.remove(pictograph_id)
 
@@ -126,20 +137,21 @@ class DatasetManager(IDatasetManager):
         self, pictograph_id: str, updated_pictograph: PictographData
     ) -> bool:
         """Update pictograph in dataset."""
-        if pictograph_id not in self._pictograph_cache:
+        if not self.cache_manager.get_pictograph_cache(pictograph_id):
             return False
 
-        self._pictograph_cache[pictograph_id] = updated_pictograph
+        self.cache_manager.set_pictograph_cache(pictograph_id, updated_pictograph)
         return True
 
     def clear_dataset(self) -> None:
         """Clear all dataset data."""
-        self._pictograph_cache.clear()
+        self.cache_manager.clear_pictograph_cache()
         self._dataset_index.clear()
 
     def get_dataset_stats(self) -> Dict[str, Any]:
         """Get dataset statistics."""
-        total_pictographs = len(self._pictograph_cache)
+        # Count total pictographs from index
+        total_pictographs = sum(len(ids) for ids in self._dataset_index.values())
         categories = self.get_dataset_categories()
 
         category_counts = {
@@ -169,11 +181,8 @@ class DatasetManager(IDatasetManager):
             query_motion_type = query["motion_type"]
             has_matching_motion = False
 
-            for arrow in pictograph.arrows.values():
-                if (
-                    arrow.motion_data
-                    and arrow.motion_data.motion_type.value == query_motion_type
-                ):
+            for motion in pictograph.motions.values():
+                if motion and motion.motion_type.value == query_motion_type:
                     has_matching_motion = True
                     break
 

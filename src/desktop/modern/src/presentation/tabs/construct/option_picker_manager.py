@@ -8,7 +8,9 @@ Responsible for coordinating between the option picker component and sequence ma
 import time
 from typing import Optional
 
-from application.services.data.data_converter import DataConverter
+from application.services.data.conversion_utils import (
+    extract_end_position_from_position_key,
+)
 from domain.models.pictograph_data import PictographData
 from domain.models.sequence_data import SequenceData
 from presentation.components.option_picker.core.option_picker import OptionPicker
@@ -65,11 +67,7 @@ class OptionPickerManager(QObject):
 
             # Ensure we have a valid end position for option filtering
             if not start_position_dict.get("end_pos"):
-                extracted_end_pos = (
-                    self.data_conversion_service.extract_end_position_from_position_key(
-                        position_key
-                    )
-                )
+                extracted_end_pos = extract_end_position_from_position_key(position_key)
                 start_position_dict["end_pos"] = extracted_end_pos
 
             sequence_data = [

@@ -29,12 +29,8 @@ from application.services.sequence.sequence_start_position_manager import (
     SequenceStartPositionManager,
 )
 from application.services.ui.full_screen_viewer import FullScreenViewer
-from application.services.ui.sequence_state_reader import (
-    MockSequenceStateReader,
-    SequenceStateReader,
-)
+from application.services.ui.sequence_state_reader import SequenceStateReader
 from application.services.ui.thumbnail_generation_service import (
-    MockThumbnailGenerationService,
     ThumbnailGenerationService,
 )
 from application.services.workbench.beat_selection_service import BeatSelectionService
@@ -105,11 +101,7 @@ def configure_workbench_services(container: DIContainer) -> None:
     container.register_instance(SequenceLoader, sequence_loader)
     container.register_instance(SequenceDictionaryService, dictionary_service)
 
-    # TODO: Remove these legacy interface registrations once components are updated
-    # to use microservices directly instead of going through interfaces
-    # container.register_instance(ISequenceWorkbenchService, ???)
-    # container.register_instance(IBeatDeletionService, ???)
-    # container.register_instance(IDictionaryService, ???)
+    # Legacy interface registrations removed - components now use microservices directly
 
     # Create full screen service with dependencies
     fullscreen_service = _create_fullscreen_service(container)
@@ -134,16 +126,13 @@ def _create_fullscreen_service(container: DIContainer) -> IFullScreenViewer:
         Configured FullScreenService instance
     """
     try:
-        # Create thumbnail generation service
-        # For now, use the mock implementation until legacy integration is complete
-        thumbnail_generator = MockThumbnailGenerationService()
+        # Create thumbnail generation service - use real implementation
+        thumbnail_generator = ThumbnailGenerationService()
 
-        # Create sequence state reader
-        # For now, use the mock implementation until workbench integration is complete
-        sequence_state_reader = MockSequenceStateReader()
+        # Create sequence state reader - use real implementation
+        sequence_state_reader = SequenceStateReader()
 
         # Create overlay factory
-        # TODO: Get main window reference for proper parent widget
         overlay_factory = FullScreenOverlayFactory(main_window_getter=None)
 
         # Create the full screen service
@@ -163,8 +152,8 @@ def _create_fullscreen_service(container: DIContainer) -> IFullScreenViewer:
         logger.error(f"Failed to create full screen service: {e}")
 
         # Return a minimal working service
-        thumbnail_generator = MockThumbnailGenerationService()
-        sequence_state_reader = MockSequenceStateReader()
+        thumbnail_generator = ThumbnailGenerationService()
+        sequence_state_reader = SequenceStateReader()
         overlay_factory = FullScreenOverlayFactory()
 
         return FullScreenViewer(

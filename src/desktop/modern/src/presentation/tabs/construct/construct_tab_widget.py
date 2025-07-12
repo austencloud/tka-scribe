@@ -1,14 +1,6 @@
 from typing import TYPE_CHECKING, Optional
 
 # Import services from application layer (moved from presentation)
-from application.services.data.sequence_data_converter import SequenceDataConverter
-from application.services.ui.coordination.ui_coordinator import UICoordinator
-from core.dependency_injection.di_container import DIContainer
-from domain.models.beat_data import BeatData
-from domain.models.sequence_data import SequenceData
-from PyQt6.QtCore import pyqtSignal
-from PyQt6.QtWidgets import QWidget
-
 from application.services.sequence.loader import SequenceLoader
 from application.services.sequence.sequence_beat_operations import (
     SequenceBeatOperations,
@@ -16,6 +8,12 @@ from application.services.sequence.sequence_beat_operations import (
 from application.services.sequence.sequence_start_position_manager import (
     SequenceStartPositionManager,
 )
+from application.services.ui.coordination.ui_coordinator import UICoordinator
+from core.dependency_injection.di_container import DIContainer
+from domain.models.beat_data import BeatData
+from domain.models.sequence_data import SequenceData
+from PyQt6.QtCore import pyqtSignal
+from PyQt6.QtWidgets import QWidget
 
 # Import refactored components
 from .layout_manager import ConstructTabLayoutManager
@@ -96,19 +94,15 @@ class ConstructTabWidget(QWidget):
         workbench_getter = self._get_workbench_getter()
         workbench_setter = self._get_workbench_setter()
 
-        data_converter = SequenceDataConverter()
-
         # Initialize sequence services directly
         self.loading_service = SequenceLoader(
             workbench_getter=workbench_getter,
             workbench_setter=workbench_setter,
-            data_converter=data_converter,
         )
 
         self.beat_operations = SequenceBeatOperations(
             workbench_getter=workbench_getter,
             workbench_setter=workbench_setter,
-            data_converter=data_converter,
         )
 
         self.start_position_manager = SequenceStartPositionManager(

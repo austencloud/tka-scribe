@@ -10,10 +10,11 @@ from abc import ABC, abstractmethod
 from typing import List, Optional, Tuple
 
 import pandas as pd
+from core.config.data_config import create_data_config_with_fallback
 from domain.models.beat_data import BeatData
 from domain.models.pictograph_data import PictographData
 
-from .dataset_loader import DatasetLoader
+from .data_service import DataManager, IDataManager
 from .pictograph_factory import PictographFactory
 from .position_resolver import PositionResolver
 
@@ -80,9 +81,15 @@ class DatasetQuery(IDatasetQuery):
     - Converting query results to domain objects
     """
 
-    def __init__(self):
+    def __init__(self, data_service: Optional[IDataManager] = None):
         """Initialize the dataset query service."""
-        self.dataset_loader = DatasetLoader()
+        if data_service:
+            self.data_service = data_service
+        else:
+            # Create a shared DataManager instance using global caching
+            from core.config.data_config import create_data_config_with_fallback
+
+            self.data_service = DataManager(create_data_config_with_fallback())
         self.pictograph_factory = PictographFactory()
         self.position_resolver = PositionResolver()
 
@@ -108,7 +115,7 @@ class DatasetQuery(IDatasetQuery):
             start_pos, end_pos = parsed
 
             # Get the appropriate dataset
-            dataset = self.dataset_loader.get_dataset_by_mode(grid_mode)
+            dataset = self.data_service.get_dataset_by_mode(grid_mode)
             if dataset is None or dataset.empty:
                 return None
 
@@ -160,7 +167,7 @@ class DatasetQuery(IDatasetQuery):
             start_pos, end_pos = parsed
 
             # Get the appropriate dataset
-            dataset = self.dataset_loader.get_dataset_by_mode(grid_mode)
+            dataset = self.data_service.get_dataset_by_mode(grid_mode)
             if dataset is None or dataset.empty:
                 return None
 
@@ -199,7 +206,7 @@ class DatasetQuery(IDatasetQuery):
         """
         try:
             # Get the appropriate dataset
-            dataset = self.dataset_loader.get_dataset_by_mode(grid_mode)
+            dataset = self.data_service.get_dataset_by_mode(grid_mode)
             if dataset is None or dataset.empty:
                 return None
 
@@ -241,7 +248,7 @@ class DatasetQuery(IDatasetQuery):
         """
         try:
             # Get the appropriate dataset
-            dataset = self.dataset_loader.get_dataset_by_mode(grid_mode)
+            dataset = self.data_service.get_dataset_by_mode(grid_mode)
             if dataset is None or dataset.empty:
                 return []
 
@@ -289,7 +296,7 @@ class DatasetQuery(IDatasetQuery):
         """
         try:
             # Get the appropriate dataset
-            dataset = self.dataset_loader.get_dataset_by_mode(grid_mode)
+            dataset = self.data_service.get_dataset_by_mode(grid_mode)
             if dataset is None or dataset.empty:
                 return []
 
@@ -334,7 +341,7 @@ class DatasetQuery(IDatasetQuery):
         """
         try:
             # Get the appropriate dataset
-            dataset = self.dataset_loader.get_dataset_by_mode(grid_mode)
+            dataset = self.data_service.get_dataset_by_mode(grid_mode)
             if dataset is None or dataset.empty:
                 return []
 
@@ -360,7 +367,7 @@ class DatasetQuery(IDatasetQuery):
         """
         try:
             # Get the appropriate dataset
-            dataset = self.dataset_loader.get_dataset_by_mode(grid_mode)
+            dataset = self.data_service.get_dataset_by_mode(grid_mode)
             if dataset is None or dataset.empty:
                 return {"start_positions": [], "end_positions": []}
 

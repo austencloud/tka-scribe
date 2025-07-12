@@ -118,11 +118,19 @@ class OptionPickerEventService(IOptionPickerEventService):
 
         Args:
             filter_text: New filter text
-            data_service: Data service for getting options
             display_service: Display service for updating display
         """
-        pass
-        # TODO: Implement actual filtering logic
+        try:
+            logger.debug(f"Handling filter change: '{filter_text}'")
+
+            # Call the filter change handler if configured
+            if self.filter_change_handler:
+                self.filter_change_handler(filter_text)
+            else:
+                logger.warning("No filter change handler configured")
+
+        except Exception as e:
+            logger.error(f"Error handling filter change: {e}")
 
     def handle_option_click(self, option_id: str) -> None:
         """

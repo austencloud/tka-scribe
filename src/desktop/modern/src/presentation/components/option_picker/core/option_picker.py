@@ -78,6 +78,11 @@ class OptionPicker(ViewableComponentBase):
             self.emit_error(f"Failed to initialize option picker: {e}", e)
             raise
 
+    def make_widgets_visible(self) -> None:
+        """Make the option picker widgets visible after main window is shown."""
+        if self._initialized and self.orchestrator:
+            self.orchestrator.make_widgets_visible()
+
     def get_widget(self) -> QWidget:
         """Get the main widget for this component."""
         if not self._widget:

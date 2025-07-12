@@ -28,29 +28,19 @@ class PositionMatcher:
     while maintaining the same public interface for backward compatibility.
     """
 
-    def __init__(self, position_service: Optional[IPositionMapper] = None):
+    def __init__(self, position_service: IPositionMapper):
         """
         Initialize position matcher with injected business service.
 
         Args:
-            position_service: Injected position matching service
+            position_service: Required injected position matching service
         """
+        if not position_service:
+            raise ValueError(
+                "Position service is required and must be injected via DI container"
+            )
+
         self._position_service = position_service
-
-        # Fallback for legacy compatibility - will be removed in future versions
-        if not self._position_service:
-            try:
-                from application.services.positioning.position_mapper import (
-                    PositionMapper,
-                )
-
-                self._position_service = PositionMapper()
-                logger.warning(
-                    "Using fallback position service - consider using DI container"
-                )
-            except ImportError:
-                logger.error("Position matching service not available")
-                self._position_service = None
 
     def extract_end_position(
         self, last_beat: Dict[str, Any], position_service: "PictographPositionMatcher"

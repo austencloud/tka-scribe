@@ -7,7 +7,7 @@ Uses simple exceptions for error handling and configuration injection.
 
 import logging
 from abc import ABC, abstractmethod
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 
 import pandas as pd
 from core.config.data_config import DataConfig
@@ -15,7 +15,7 @@ from core.config.data_config import DataConfig
 logger = logging.getLogger(__name__)
 
 
-class IDataService(ABC):
+class IDataManager(ABC):
     """Interface for core data operations."""
 
     @abstractmethod
@@ -48,13 +48,22 @@ class IDataService(ABC):
         """Reload with new configuration."""
         pass
 
+    @abstractmethod
+    def get_dataset_by_mode(self, grid_mode: str) -> pd.DataFrame:
+        """Get dataset by grid mode ('diamond' or 'box')."""
+        pass
 
-class DataService(IDataService):
+
+class DataManager(IDataManager):
     """
     Clean data service with dependency injection and proper error handling.
 
     Replaces the singleton DataPathHandler with a focused, testable service.
     """
+
+    # Class-level cache to ensure singleton behavior across all instances
+    _global_diamond_cache: Optional[pd.DataFrame] = None
+    _global_box_cache: Optional[pd.DataFrame] = None
 
     def __init__(self, config: DataConfig):
         """
@@ -64,10 +73,14 @@ class DataService(IDataService):
             config: Data configuration with validated paths
         """
         self.config = config
+        # Use class-level cache for true singleton behavior
+        # Individual instance caches are kept for backward compatibility
+        self._diamond_dataset_cache: Optional[pd.DataFrame] = None
+        self._box_dataset_cache: Optional[pd.DataFrame] = None
 
     def load_diamond_dataset(self) -> pd.DataFrame:
         """
-        Load diamond pictograph dataset with error handling.
+        Load diamond pictograph dataset with error handling and caching.
 
         Returns:
             DataFrame with diamond pictograph data
@@ -76,6 +89,14 @@ class DataService(IDataService):
             FileNotFoundError: If diamond CSV file doesn't exist
             ValueError: If CSV file is empty or invalid
         """
+        # Check global cache first (shared across all instances)
+        if DataManager._global_diamond_cache is not None:
+            return DataManager._global_diamond_cache
+
+        # Return cached dataset if available
+        if self._diamond_dataset_cache is not None:
+            return self._diamond_dataset_cache
+
         try:
             if not self.config.diamond_csv_path.exists():
                 raise FileNotFoundError(
@@ -88,6 +109,10 @@ class DataService(IDataService):
                 raise ValueError(
                     f"Diamond CSV file is empty: {self.config.diamond_csv_path}"
                 )
+
+            # Cache the dataset globally and locally to prevent multiple loads
+            DataManager._global_diamond_cache = df
+            self._diamond_dataset_cache = df
 
             logger.info(
                 f"Loaded diamond dataset: {df.shape[0]} rows, {df.shape[1]} columns"
@@ -104,7 +129,15 @@ class DataService(IDataService):
             raise ValueError(f"Failed to load diamond dataset: {e}") from e
 
     def load_box_dataset(self) -> pd.DataFrame:
-        """Load box pictograph dataset with error handling."""
+        """Load box pictograph dataset with error handling and caching."""
+        # Check global cache first (shared across all instances)
+        if DataManager._global_box_cache is not None:
+            return DataManager._global_box_cache
+
+        # Return cached dataset if available
+        if self._box_dataset_cache is not None:
+            return self._box_dataset_cache
+
         try:
             if not self.config.box_csv_path.exists():
                 raise FileNotFoundError(
@@ -115,6 +148,10 @@ class DataService(IDataService):
 
             if df.empty:
                 raise ValueError(f"Box CSV file is empty: {self.config.box_csv_path}")
+
+            # Cache the dataset globally and locally to prevent multiple loads
+            DataManager._global_box_cache = df
+            self._box_dataset_cache = df
 
             logger.info(
                 f"Loaded box dataset: {df.shape[0]} rows, {df.shape[1]} columns"
@@ -192,3 +229,25 @@ class DataService(IDataService):
         """
         self.config = new_config
         logger.info(f"Reloaded data service with new config: {new_config.data_dir}")
+
+    def get_dataset_by_mode(self, grid_mode: str) -> pd.DataFrame:
+        """
+        Get dataset by grid mode for backward compatibility.
+
+        Args:
+            grid_mode: Either 'diamond' or 'box'
+
+        Returns:
+            The requested dataset
+
+        Raises:
+            ValueError: If grid_mode is not 'diamond' or 'box'
+        """
+        if grid_mode == "diamond":
+            return self.load_diamond_dataset()
+        elif grid_mode == "box":
+            return self.load_box_dataset()
+        else:
+            raise ValueError(
+                f"Invalid grid_mode: {grid_mode}. Must be 'diamond' or 'box'"
+            )

@@ -21,8 +21,10 @@ from domain.models.enums import GridMode
 from domain.models.grid_data import GridData
 from domain.models.pictograph_data import PictographData
 
+from .cache_manager import DataCacheManager
 
-class IPictographDataService(ABC):
+
+class IPictographDataManager(ABC):
     """Interface for pictograph data operations."""
 
     @abstractmethod
@@ -58,7 +60,7 @@ class IPictographDataService(ABC):
         """Add pictograph to dataset."""
 
 
-class PictographDataService(IPictographDataService):
+class PictographDataManager(IPictographDataManager):
     """
     Focused pictograph data service.
 
@@ -69,9 +71,9 @@ class PictographDataService(IPictographDataService):
     - Category-based organization
     """
 
-    def __init__(self):
-        # Dataset management
-        self._pictograph_cache: Dict[str, PictographData] = {}
+    def __init__(self, cache_manager: DataCacheManager = None):
+        # Use unified cache manager for pictograph caching
+        self.cache_manager = cache_manager or DataCacheManager()
         self._dataset_index: Dict[str, List[str]] = {}
 
     def create_pictograph(
@@ -141,7 +143,7 @@ class PictographDataService(IPictographDataService):
         pictograph_id = str(uuid.uuid4())
 
         # Cache the pictograph
-        self._pictograph_cache[pictograph_id] = pictograph
+        self.cache_manager.set_pictograph_cache(pictograph_id, pictograph)
 
         # Update dataset index
         if category not in self._dataset_index:

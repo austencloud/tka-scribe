@@ -1,6 +1,6 @@
 """Data services for option picker."""
 
-from .pool_manager import PictographPoolManager
+from .option_pool_manager import OptionPoolManager
 from .position_matcher import PositionMatcher
 
-__all__ = ["PictographPoolManager", "PositionMatcher"]
+__all__ = ["OptionPoolManager", "PositionMatcher"]

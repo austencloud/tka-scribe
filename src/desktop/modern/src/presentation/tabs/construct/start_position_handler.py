@@ -7,13 +7,14 @@ Responsible for handling start position picker interactions and creating start p
 
 from typing import Callable, Optional
 
-from application.services.data.data_converter import DataConverter
+from application.services.data.conversion_utils import (
+    extract_end_position_from_position_key,
+)
+from application.services.sequence.beat_factory import BeatFactory
 from domain.models.beat_data import BeatData
 from domain.models.grid_data import GridData
 from domain.models.pictograph_data import PictographData
 from PyQt6.QtCore import QObject, pyqtSignal
-
-from application.services.sequence.beat_factory import BeatFactory
 
 
 class StartPositionHandler(QObject):
@@ -68,23 +69,15 @@ class StartPositionHandler(QObject):
         # Removed repetitive debug logs
         self.transition_requested.emit()
 
-    def extract_end_position_from_position_key(self, position_key: str) -> str:
-        """Extract the actual end position from a position key like 'beta5_beta5'"""
-        # Position keys are in format "start_end", we want the end part
-        if "_" in position_key:
-            parts = position_key.split("_")
-            if len(parts) == 2:
-                return parts[1]  # Return the end position part
-
-        # Fallback: if no underscore, assume it's already the position
-        return position_key
-
     def _create_start_position_data(self, position_key: str) -> PictographData:
         """Create start position data from position key using real dataset (separate from sequence beats)"""
         try:
-            from application.services.data.dataset_query import DatasetQuery
+            # Use dependency injection to get shared services
+            from application.services.data.dataset_query import IDatasetQuery
+            from core.dependency_injection.di_container import get_container
 
-            dataset_service = DatasetQuery()
+            container = get_container()
+            dataset_service = container.resolve(IDatasetQuery)
             # Get real start position data from dataset as PictographData
             real_start_position_pictograph = (
                 dataset_service.get_start_position_pictograph_data(
@@ -94,9 +87,7 @@ class StartPositionHandler(QObject):
 
             if real_start_position_pictograph:
                 # Extract the specific end position from position_key (like "gamma13")
-                specific_end_pos = self.extract_end_position_from_position_key(
-                    position_key
-                )
+                specific_end_pos = extract_end_position_from_position_key(position_key)
 
                 # Update the pictograph data with correct position information
                 pictograph_data = real_start_position_pictograph.update(
@@ -111,9 +102,7 @@ class StartPositionHandler(QObject):
                     f"⚠️ No real data found for position {position_key}, using fallback"
                 )
                 # Fallback start position as PictographData
-                specific_end_pos = self.extract_end_position_from_position_key(
-                    position_key
-                )
+                specific_end_pos = extract_end_position_from_position_key(position_key)
 
                 return self._create_fallback_pictograph_data(
                     position_key, specific_end_pos

@@ -8,7 +8,7 @@ Responsible for loading sequences from current_sequence.json and managing startu
 import logging
 from typing import TYPE_CHECKING, Callable, Optional
 
-from application.services.data.sequence_data_converter import SequenceDataConverter
+from application.services.data.legacy_to_modern_converter import LegacyToModernConverter
 from application.services.sequence.sequence_persister import SequencePersister
 from domain.models.sequence_data import SequenceData
 
@@ -39,12 +39,14 @@ class SequenceLoader(QObject):
         self,
         workbench_getter: Optional[Callable[[], object]] = None,
         workbench_setter: Optional[Callable[[SequenceData], None]] = None,
-        data_converter: Optional[object] = None,
+        legacy_to_modern_converter: Optional[LegacyToModernConverter] = None,
     ):
         super().__init__()
         self.workbench_getter = workbench_getter
         self.workbench_setter = workbench_setter
-        self.data_converter: SequenceDataConverter = data_converter
+        self.legacy_to_modern_converter = (
+            legacy_to_modern_converter or LegacyToModernConverter()
+        )
         self.persistence_service = SequencePersister()
 
     def load_sequence_on_startup(self):
@@ -76,19 +78,20 @@ class SequenceLoader(QObject):
 
             # Convert beats to modern format with full pictograph data
             beat_objects = []
-            if self.data_converter:
-                for i, beat_dict in enumerate(beats_data):
-                    try:
-                        # Convert legacy format back to modern BeatData with full data
-                        beat_obj = self.data_converter.convert_legacy_to_beat_data(
+            for i, beat_dict in enumerate(beats_data):
+                try:
+                    # Convert legacy format back to modern BeatData with full data
+                    beat_obj = (
+                        self.legacy_to_modern_converter.convert_legacy_to_beat_data(
                             beat_dict, i + 1
                         )
-                        beat_objects.append(beat_obj)
+                    )
+                    beat_objects.append(beat_obj)
 
-                    except Exception as e:
-                        print(
-                            f"⚠️ [SEQUENCE_LOADING] Failed to convert beat {beat_dict.get('letter', '?')}: {e}"
-                        )
+                except Exception as e:
+                    print(
+                        f"⚠️ [SEQUENCE_LOADING] Failed to convert beat {beat_dict.get('letter', '?')}: {e}"
+                    )
 
             # CRITICAL FIX: Handle start position loading INDEPENDENTLY of beats
             # This ensures start positions are visible even when there are no beats
@@ -99,15 +102,14 @@ class SequenceLoader(QObject):
                     position_key = f"{end_position}_{end_position}"
 
                     # Create start position data in both formats
-                    if self.data_converter:
-                        # Create BeatData for workbench - direct return
-                        try:
-                            start_position_beat = self.data_converter.convert_legacy_start_position_to_beat_data(
-                                start_position_data
-                            )
-                        except Exception as e:
-                            logger.error(f"Failed to convert start position: {e}")
-                            return  # Skip start position loading if conversion fails
+                    # Create BeatData for workbench - direct return
+                    try:
+                        start_position_beat = self.legacy_to_modern_converter.convert_legacy_start_position_to_beat_data(
+                            start_position_data
+                        )
+                    except Exception as e:
+                        logger.error(f"Failed to convert start position: {e}")
+                        return  # Skip start position loading if conversion fails
 
                         # Create PictographData for option picker using dataset service
                         start_position_pictograph = (
@@ -159,11 +161,14 @@ class SequenceLoader(QObject):
     ) -> "PictographData":
         """Create PictographData for start position using dataset service."""
         try:
-            from application.services.data.dataset_query import DatasetQuery
+            # Use dependency injection to get shared services
+            from application.services.data.dataset_query import IDatasetQuery
+            from core.dependency_injection.di_container import get_container
             from domain.models.grid_data import GridData
             from domain.models.pictograph_data import PictographData
 
-            dataset_service = DatasetQuery()
+            container = get_container()
+            dataset_service = container.resolve(IDatasetQuery)
             # Get real start position data from dataset as PictographData
             real_start_position_pictograph = (
                 dataset_service.get_start_position_pictograph_data(

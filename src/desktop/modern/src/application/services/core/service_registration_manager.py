@@ -103,7 +103,7 @@ class ServiceRegistrationManager(IServiceRegistrationManager):
 
     def register_core_services(self, container: "DIContainer") -> None:
         """Register core services using pure dependency injection."""
-        from application.services.data.legacy_data_converter import LegacyDataConverter
+
         from application.services.layout.layout_manager import LayoutManager
         from application.services.ui.coordination.ui_coordinator import UICoordinator
         from core.interfaces.core_services import ILayoutService, IUIStateManager
@@ -126,7 +126,55 @@ class ServiceRegistrationManager(IServiceRegistrationManager):
         # Register UI state service as singleton since it has no dependencies
         container.register_singleton(IUIStateManager, UICoordinator)
 
-        container.register_singleton(LegacyDataConverter, LegacyDataConverter)
+        # Register new lifecycle services
+        self._register_lifecycle_services(container)
+
+    def _register_lifecycle_services(self, container: "DIContainer") -> None:
+        """Register the new refactored lifecycle services."""
+        from application.services.core.application_initialization_orchestrator import (
+            ApplicationInitializationOrchestrator,
+            IApplicationInitializationOrchestrator,
+        )
+        from application.services.core.session_restoration_coordinator import (
+            ISessionRestorationCoordinator,
+            SessionRestorationCoordinator,
+        )
+        from application.services.core.window_management_service import (
+            IWindowManagementService,
+            WindowManagementService,
+        )
+        from application.services.sequence.sequence_restoration_service import (
+            ISequenceRestorationService,
+            SequenceRestorationService,
+        )
+
+        # Register individual services
+        container.register_singleton(IWindowManagementService, WindowManagementService)
+        container.register_singleton(
+            ISequenceRestorationService, SequenceRestorationService
+        )
+
+        # Register session coordinator with sequence restoration service dependency
+        def create_session_coordinator():
+            sequence_service = container.resolve(ISequenceRestorationService)
+            return SessionRestorationCoordinator(sequence_service)
+
+        container.register_factory(
+            ISessionRestorationCoordinator, create_session_coordinator
+        )
+
+        # Register orchestrator with all dependencies
+        def create_app_init_orchestrator():
+            window_service = container.resolve(IWindowManagementService)
+            session_coordinator = container.resolve(ISessionRestorationCoordinator)
+            # Session service is optional and resolved by ApplicationOrchestrator
+            return ApplicationInitializationOrchestrator(
+                window_service, session_coordinator
+            )
+
+        container.register_factory(
+            IApplicationInitializationOrchestrator, create_app_init_orchestrator
+        )
 
     def register_sequence_services(self, container: "DIContainer") -> None:
         """Register sequence services with interface bindings."""
@@ -191,8 +239,8 @@ class ServiceRegistrationManager(IServiceRegistrationManager):
     def register_pictograph_services(self, container: "DIContainer") -> None:
         """Register pictograph services using pure dependency injection."""
         from application.services.data.pictograph_data_service import (
-            IPictographDataService,
-            PictographDataService,
+            IPictographDataManager,
+            PictographDataManager,
         )
         from application.services.pictograph.border_manager import (
             PictographBorderManager,
@@ -209,7 +257,7 @@ class ServiceRegistrationManager(IServiceRegistrationManager):
             IPictographContextDetector,
         )
 
-        container.register_singleton(IPictographDataService, PictographDataService)
+        container.register_singleton(IPictographDataManager, PictographDataManager)
         container.register_singleton(PictographManager, PictographManager)
         container.register_singleton(IPictographBorderManager, PictographBorderManager)
         container.register_singleton(
@@ -345,14 +393,17 @@ class ServiceRegistrationManager(IServiceRegistrationManager):
         from application.services.option_picker.option_picker_orchestrator import (
             OptionPickerOrchestrator,
         )
+        from application.services.option_picker.option_provider import OptionProvider
         from core.interfaces.option_picker_interfaces import (
             IOptionPickerDisplayService,
             IOptionPickerEventService,
             IOptionPickerInitializer,
             IOptionPickerOrchestrator,
+            IOptionProvider,
         )
 
         # Register the refactored option picker services
+        container.register_singleton(IOptionProvider, OptionProvider)
         container.register_singleton(IOptionPickerInitializer, OptionPickerInitializer)
         container.register_singleton(
             IOptionPickerDisplayService, OptionPickerDisplayManager
@@ -370,51 +421,33 @@ class ServiceRegistrationManager(IServiceRegistrationManager):
         from application.services.data.csv_reader import CSVReader, ICSVReader
 
         # Import the Phase 2 conversion services
-        from application.services.data.data_converter import (
-            DataConverter,
-            IDataConverter,
-        )
-
         # Import the Phase 1 foundation data services
-        from application.services.data.data_service import DataService, IDataService
-        from application.services.data.dataset_loader import (
-            DatasetLoader,
-            IDatasetLoader,
-        )
+        from application.services.data.data_service import DataManager, IDataManager
         from application.services.data.dataset_query import DatasetQuery, IDatasetQuery
-        from application.services.data.legacy_data_converter import (
-            ILegacyDataConverter,
-            LegacyDataConverter,
+        from application.services.data.legacy_to_modern_converter import (
+            LegacyToModernConverter,
+        )
+        from application.services.data.modern_to_legacy_converter import (
+            ModernToLegacyConverter,
         )
         from application.services.data.pictograph_data_service import (
-            IPictographDataService,
-            PictographDataService,
-        )
-        from application.services.data.sequence_data_converter import (
-            ISequenceDataConverter,
-            SequenceDataConverter,
+            IPictographDataManager,
+            PictographDataManager,
         )
         from application.services.positioning.props.configuration.json_configuration_service import (
-            IJSONConfigurationService,
-            JSONConfigurationService,
+            IJSONConfigurator,
+            JSONConfigurator,
         )
 
         # Register the existing data services
         container.register_singleton(ICSVReader, CSVReader)
-        container.register_singleton(
-            IJSONConfigurationService, JSONConfigurationService
-        )
-
-        # Register the Phase 1 foundation data services with interfaces
-        container.register_singleton(IDataService, DataService)
-        container.register_singleton(IDatasetLoader, DatasetLoader)
+        container.register_singleton(IJSONConfigurator, JSONConfigurator)
+        container.register_singleton(IDataManager, DataManager)
         container.register_singleton(IDatasetQuery, DatasetQuery)
-        container.register_singleton(IPictographDataService, PictographDataService)
-        container.register_singleton(ISequenceDataConverter, SequenceDataConverter)
-
-        # Register the Phase 2 conversion services with interfaces
-        container.register_singleton(IDataConverter, DataConverter)
-        container.register_singleton(ILegacyDataConverter, LegacyDataConverter)
+        container.register_singleton(IPictographDataManager, PictographDataManager)
+        # Register microservices directly instead of facades
+        container.register_singleton(LegacyToModernConverter, LegacyToModernConverter)
+        container.register_singleton(ModernToLegacyConverter, ModernToLegacyConverter)
 
     def register_graph_editor_services(self, container: "DIContainer") -> None:
         """Register graph editor services using pure dependency injection."""

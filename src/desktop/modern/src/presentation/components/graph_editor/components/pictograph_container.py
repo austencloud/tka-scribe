@@ -243,6 +243,9 @@ class ModernPictographView(QGraphicsView):
         self._container = parent
         self._current_beat: Optional[BeatData] = None
 
+        # WINDOW MANAGEMENT FIX: Hide during creation to prevent flashing
+        self.hide()
+
         self._setup_view()
 
     def _setup_view(self):

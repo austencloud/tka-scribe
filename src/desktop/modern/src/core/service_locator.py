@@ -8,16 +8,8 @@ without requiring dependency injection in every component.
 import logging
 from typing import Optional
 
-# Import core services
-try:
-    from .commands.command_system import CommandProcessor
-    from .events.event_bus import TypeSafeEventBus
-
-    EVENT_SYSTEM_AVAILABLE = True
-except ImportError:
-    EVENT_SYSTEM_AVAILABLE = False
-    TypeSafeEventBus = None
-    CommandProcessor = None
+from .commands.command_system import CommandProcessor
+from .events.event_bus import TypeSafeEventBus
 
 logger = logging.getLogger(__name__)
 
@@ -27,17 +19,11 @@ _command_processor: Optional[CommandProcessor] = None
 _sequence_state_manager: Optional[object] = (
     None  # Will be imported later to avoid circular imports
 )
-_data_conversion_service: Optional[object] = None
 
 
 def initialize_services():
     """Initialize all core services - call this at app startup"""
     global _event_bus, _command_processor, _sequence_state_manager
-
-    if not EVENT_SYSTEM_AVAILABLE:
-        logger.error("Event system not available - cannot initialize services")
-        return False
-
     try:
         # Initialize event bus
         _event_bus = TypeSafeEventBus()
@@ -96,25 +82,9 @@ def get_sequence_state_manager() -> Optional[object]:
     return _sequence_state_manager
 
 
-def get_data_conversion_service():
-    """Get the data conversion service instance"""
-    global _data_conversion_service  # Declare global before use
-
-    if _data_conversion_service is None:
-        # Lazy initialize data conversion service
-        try:
-            from application.services.data.data_converter import DataConverter
-
-            _data_conversion_service = DataConverter()
-            logger.info("✅ Data conversion service initialized")
-        except Exception as e:
-            logger.error(f"❌ Failed to initialize data conversion service: {e}")
-    return _data_conversion_service
-
-
 def cleanup_services():
     """Cleanup all services - call this at app shutdown"""
-    global _event_bus, _command_processor, _sequence_state_manager, _data_conversion_service
+    global _event_bus, _command_processor, _sequence_state_manager
 
     try:
         if _sequence_state_manager and hasattr(_sequence_state_manager, "cleanup"):
@@ -129,7 +99,6 @@ def cleanup_services():
         _event_bus = None
         _command_processor = None
         _sequence_state_manager = None
-        _data_conversion_service = None
 
         logger.info("🧹 All services cleaned up")
 

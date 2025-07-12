@@ -88,8 +88,20 @@ class ClickablePictographFrame(QFrame):
         # WINDOW MANAGEMENT FIX: Don't show during creation to prevent flashing
         # The frame will be shown when needed by the display manager
         self.hide()
+        self.setVisible(False)
+
+        # POOL CREATION FIX: Ensure pictograph component is completely hidden
         if self.pictograph_component:
             self.pictograph_component.hide()
+            self.pictograph_component.setVisible(False)
+
+        # POOL CREATION FIX: Set window flags to prevent any temporary window appearance
+        from PyQt6.QtCore import Qt
+
+        self.setWindowFlags(Qt.WindowType.Widget)
+
+        # POOL CREATION FIX: Ensure no automatic show during layout
+        self.setAttribute(Qt.WidgetAttribute.WA_DontShowOnScreen, True)
 
     def _configure_option_picker_context(self, pictograph_data: PictographData) -> None:
         if not self.pictograph_component:

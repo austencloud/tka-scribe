@@ -7,7 +7,7 @@ Responsible for adding, removing, and modifying beats within sequences.
 
 from typing import Callable, Optional
 
-from application.services.data.sequence_data_converter import SequenceDataConverter
+from application.services.data.modern_to_legacy_converter import ModernToLegacyConverter
 from application.services.option_picker.option_orientation_updater import (
     OptionOrientationUpdater,
 )
@@ -38,12 +38,14 @@ class SequenceBeatOperations(QObject):
         self,
         workbench_getter: Optional[Callable[[], object]] = None,
         workbench_setter: Optional[Callable[[SequenceData], None]] = None,
-        data_converter: Optional[object] = None,
+        modern_to_legacy_converter: Optional[ModernToLegacyConverter] = None,
     ):
         super().__init__()
         self.workbench_getter: Callable[[], object] = workbench_getter
         self.workbench_setter = workbench_setter
-        self.data_converter: SequenceDataConverter = data_converter
+        self.modern_to_legacy_converter = (
+            modern_to_legacy_converter or ModernToLegacyConverter()
+        )
         self.orientation_update_service = OptionOrientationUpdater()
         self.persistence_service = SequencePersister()
 
@@ -343,9 +345,6 @@ class SequenceBeatOperations(QObject):
 
     def _save_sequence_to_persistence(self, sequence: SequenceData):
         """Convert modern SequenceData to legacy format and save to current_sequence.json"""
-        if not self.data_converter:
-            print("⚠️ No data converter available for persistence")
-            return
 
         try:
             # Load existing sequence to preserve start position
@@ -361,7 +360,7 @@ class SequenceBeatOperations(QObject):
             # Removed repetitive log statements
             for i, beat in enumerate(sequence.beats):
                 try:
-                    beat_dict = self.data_converter.convert_beat_data_to_legacy_format(
+                    beat_dict = self.modern_to_legacy_converter.convert_beat_data_to_legacy_format(
                         beat, i + 1
                     )
                     legacy_beats.append(beat_dict)

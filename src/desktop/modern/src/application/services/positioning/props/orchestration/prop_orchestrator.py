@@ -33,8 +33,8 @@ from ...props.calculation.prop_classification_service import (
     PropClassificationService,
 )
 from ...props.configuration.json_configuration_service import (
-    IJSONConfigurationService,
-    JSONConfigurationService,
+    IJSONConfigurator,
+    JSONConfigurator,
 )
 
 # Event-driven architecture imports
@@ -86,14 +86,14 @@ class PropOrchestrator(IPropOrchestrator):
         self,
         direction_service: Optional[IDirectionCalculationService] = None,
         offset_service: Optional[IOffsetCalculationService] = None,
-        config_service: Optional[IJSONConfigurationService] = None,
+        config_service: Optional[IJSONConfigurator] = None,
         classification_service: Optional[IPropClassificationService] = None,
         event_bus: Optional["IEventBus"] = None,
     ):
         """Initialize with dependency injection."""
         self.direction_service = direction_service or DirectionCalculationService()
         self.offset_service = offset_service or OffsetCalculationService()
-        self.config_service = config_service or JSONConfigurationService()
+        self.config_service = config_service or JSONConfigurator()
         self.classification_service = (
             classification_service or PropClassificationService()
         )

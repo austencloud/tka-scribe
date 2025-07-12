@@ -32,7 +32,6 @@ class OptionOrientationUpdater:
 
     def __init__(self):
         """Initialize the orientation update service."""
-        pass
 
     def update_option_orientations(
         self, sequence: SequenceData, options: List[PictographData]

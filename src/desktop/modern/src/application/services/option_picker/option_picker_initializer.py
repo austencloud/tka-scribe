@@ -80,12 +80,10 @@ class OptionPickerInitializer(IOptionPickerInitializer):
             if progress_callback:
                 progress_callback("Initializing option service", 0.35)
 
-            # Create option service
-            from application.services.option_picker.option_provider import (
-                OptionProvider,
-            )
+            # Resolve option service from DI container
+            from core.interfaces.option_picker_interfaces import IOptionProvider
 
-            option_service = OptionProvider()
+            option_service = container.resolve(IOptionProvider)
             components["option_service"] = option_service
 
             if progress_callback:
@@ -126,28 +124,28 @@ class OptionPickerInitializer(IOptionPickerInitializer):
     def create_pool_manager(
         self,
         main_widget: QWidget,
-        beat_click_handler: Callable[[str], None],
-        beat_data_click_handler: Callable[[object], None],
+        pictograph_click_handler: Callable[[str], None],
+        pictograph_data_click_handler: Callable[[object], None],
     ) -> Any:
         """
         Create and configure the pictograph pool manager.
 
         Args:
             main_widget: Main widget for pool manager
-            beat_click_handler: Handler for beat clicks
-            beat_data_click_handler: Handler for beat data clicks
+            pictograph_click_handler: Handler for pictograph clicks
+            pictograph_data_click_handler: Handler for pictograph data clicks
 
         Returns:
             Configured pool manager
         """
         try:
-            from application.services.option_picker.data.pool_manager import (
-                PictographPoolManager,
+            from application.services.option_picker.data.option_pool_manager import (
+                OptionPoolManager,
             )
 
-            pool_manager = PictographPoolManager(main_widget)
-            pool_manager.set_click_handler(beat_click_handler)
-            pool_manager.set_pictograph_click_handler(beat_data_click_handler)
+            pool_manager = OptionPoolManager(main_widget)
+            pool_manager.set_click_handler(pictograph_click_handler)
+            pool_manager.set_pictograph_click_handler(pictograph_data_click_handler)
 
             return pool_manager
 
@@ -157,19 +155,13 @@ class OptionPickerInitializer(IOptionPickerInitializer):
 
     def create_dimension_calculator(
         self,
-        main_widget: QWidget,
-        sections_container: QWidget,
-        sections_layout: QVBoxLayout,
-        display_manager: Any,
+        container: DIContainer,
     ) -> Any:
         """
         Create and configure the dimension calculator.
 
         Args:
-            main_widget: Main widget
-            sections_container: Sections container
-            sections_layout: Sections layout
-            display_manager: Display manager
+            container: DI container for service resolution
 
         Returns:
             Configured dimension calculator
@@ -180,7 +172,6 @@ class OptionPickerInitializer(IOptionPickerInitializer):
             )
 
             dimension_calculator = DimensionCalculator()
-
             return dimension_calculator
 
         except Exception as e:
@@ -243,7 +234,7 @@ class OptionPickerInitializer(IOptionPickerInitializer):
         Returns:
             True if all components are valid
         """
-        required_components = ["layout_service", "widget_factory", "beat_loader"]
+        required_components = ["layout_service", "widget_factory", "option_service"]
 
         for component_name in required_components:
             if component_name not in components or components[component_name] is None:
@@ -268,5 +259,5 @@ class OptionPickerInitializer(IOptionPickerInitializer):
             "validation_passed": self.validate_initialization(components),
             "layout_service_available": components.get("layout_service") is not None,
             "widget_factory_available": components.get("widget_factory") is not None,
-            "beat_loader_available": components.get("beat_loader") is not None,
+            "option_service_available": components.get("option_service") is not None,
         }

@@ -142,6 +142,10 @@ class ConstructTabLayoutManager:
             )
             self.option_picker.initialize()
             layout.addWidget(self.option_picker.widget)
+
+            # WINDOW MANAGEMENT FIX: Make widgets visible after initialization
+            # This prevents window flashing during splash screen
+            self.option_picker.make_widgets_visible()
         except RuntimeError as e:
             print(f"❌ Failed to create option picker: {e}")
             fallback_label = QLabel("Option picker unavailable")

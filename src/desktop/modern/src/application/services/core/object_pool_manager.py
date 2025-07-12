@@ -80,32 +80,57 @@ class ObjectPoolManager(IObjectPoolManager):
             # Create the pool list
             pool_objects = []
 
-            # Create objects with progress tracking
-            for i in range(max_objects):
-                try:
-                    # Report progress periodically
-                    if i % max(1, max_objects // 10) == 0 and progress_callback:
-                        progress = i / max_objects
-                        progress_callback(
-                            f"Creating {pool_name} object {i+1}/{max_objects}", progress
-                        )
+            # WINDOW MANAGEMENT FIX: Disable Qt event processing during pool creation
+            # to prevent window flashing from rapid QGraphicsView creation
+            from PyQt6.QtWidgets import QApplication
 
-                    # Create object using factory
-                    obj = object_factory()
-                    if obj is not None:
-                        pool_objects.append(obj)
-                        self._pool_states[pool_name]["created_objects"] += 1
-                    else:
-                        logger.warning(
-                            f"Factory returned None for object {i} in pool '{pool_name}'"
-                        )
+            app = QApplication.instance()
 
-                except Exception as e:
-                    logger.error(
-                        f"Failed to create object {i} in pool '{pool_name}': {e}"
-                    )
-                    # Continue creating other objects even if one fails
-                    continue
+            if app:
+                # Temporarily disable automatic event processing
+                app.setQuitOnLastWindowClosed(False)
+
+            try:
+                # Create objects with progress tracking
+                for i in range(max_objects):
+                    try:
+                        # Report progress periodically (but don't process events yet)
+                        if i % max(1, max_objects // 10) == 0 and progress_callback:
+                            progress = i / max_objects
+                            progress_callback(
+                                f"Creating {pool_name} object {i+1}/{max_objects}",
+                                progress,
+                            )
+
+                        # Create object using factory
+                        obj = object_factory()
+                        if obj is not None:
+                            pool_objects.append(obj)
+                            self._pool_states[pool_name]["created_objects"] += 1
+
+                            # WINDOW MANAGEMENT FIX: Ensure object is hidden immediately
+                            if hasattr(obj, "hide"):
+                                obj.hide()
+                            if hasattr(obj, "setVisible"):
+                                obj.setVisible(False)
+                        else:
+                            logger.warning(
+                                f"Factory returned None for object {i} in pool '{pool_name}'"
+                            )
+
+                    except Exception as e:
+                        logger.error(
+                            f"Failed to create object {i} in pool '{pool_name}': {e}"
+                        )
+                        # Continue creating other objects even if one fails
+                        continue
+
+            finally:
+                # WINDOW MANAGEMENT FIX: Process events only once after all objects are created
+                # This prevents window flashing during the creation loop
+                if app:
+                    app.processEvents()
+                    app.setQuitOnLastWindowClosed(True)
 
             # Store the pool
             self._pools[pool_name] = pool_objects

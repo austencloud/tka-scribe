@@ -7,13 +7,12 @@ the extracted business service and handles Qt-specific concerns.
 """
 
 import logging
+import weakref
 from typing import TYPE_CHECKING, Callable, List, Optional
 
 from core.interfaces.core_services import IObjectPoolManager
-from domain.models.beat_data import BeatData
-from domain.models.enums import GridMode, Location, MotionType, RotationDirection
+from domain.models.enums import GridMode
 from domain.models.grid_data import GridData
-from domain.models.motion_data import MotionData
 from domain.models.pictograph_data import PictographData
 from presentation.components.option_picker.components.frames.clickable_pictograph_frame import (
     ClickablePictographFrame,
@@ -22,12 +21,12 @@ from PyQt6.QtCore import QObject
 from PyQt6.QtWidgets import QWidget
 
 if TYPE_CHECKING:
-    from application.services.data.dataset_query import DatasetQuery
+    pass
 
 logger = logging.getLogger(__name__)
 
 
-class PictographPoolManager(QObject):
+class OptionPoolManager(QObject):
     """
     UI adapter for pictograph object pool management.
 
@@ -93,9 +92,36 @@ class PictographPoolManager(QObject):
             return
 
         try:
+            # WINDOW MANAGEMENT FIX: Prevent any window appearance during pool creation
+            from PyQt6.QtCore import Qt
+            from PyQt6.QtWidgets import QApplication
+
+            # Temporarily disable all widget updates during pool creation
+            app = QApplication.instance()
+            if app:
+                app.setQuitOnLastWindowClosed(False)
+
             # Create factory function for pictograph frames
             def pictograph_frame_factory() -> Optional[ClickablePictographFrame]:
-                return self._create_pictograph_frame()
+                frame = self._create_pictograph_frame()
+                # POOL CREATION FIX: Ensure frame is completely hidden during creation
+                if frame:
+                    # Set additional window flags to prevent any appearance
+                    frame.setWindowFlags(frame.windowFlags() | Qt.WindowType.Tool)
+                    frame.setAttribute(Qt.WidgetAttribute.WA_DontShowOnScreen, True)
+                    frame.hide()
+                    frame.setVisible(False)
+
+                    if (
+                        hasattr(frame, "pictograph_component")
+                        and frame.pictograph_component
+                    ):
+                        frame.pictograph_component.setAttribute(
+                            Qt.WidgetAttribute.WA_DontShowOnScreen, True
+                        )
+                        frame.pictograph_component.hide()
+                        frame.pictograph_component.setVisible(False)
+                return frame
 
             # Use business service to initialize pool
             self._pool_service.initialize_pool(
@@ -113,8 +139,16 @@ class PictographPoolManager(QObject):
 
             self._pool_initialized = True
 
+            # WINDOW MANAGEMENT FIX: Restore normal application behavior after pool creation
+            if app:
+                app.setQuitOnLastWindowClosed(True)
+
         except Exception as e:
             logger.error(f"Error initializing pool via service: {e}")
+            # WINDOW MANAGEMENT FIX: Restore normal behavior even on error
+            app = QApplication.instance()
+            if app:
+                app.setQuitOnLastWindowClosed(True)
 
     def _create_pictograph_frame(self) -> Optional[ClickablePictographFrame]:
         """
@@ -124,10 +158,13 @@ class PictographPoolManager(QObject):
             ClickablePictographFrame if successful, None otherwise
         """
         try:
-            from application.services.data.dataset_query import DatasetQuery
+            # Use dependency injection to get shared services
+            from application.services.data.dataset_query import IDatasetQuery
             from application.services.data.position_resolver import PositionResolver
+            from core.dependency_injection.di_container import get_container
 
-            dataset_service = DatasetQuery()
+            container = get_container()
+            dataset_service = container.resolve(IDatasetQuery)
             position_resolver = PositionResolver()
             start_positions = position_resolver.get_start_positions("diamond")
 
@@ -146,7 +183,11 @@ class PictographPoolManager(QObject):
 
             # Create frame directly with PictographData
             # Use parent=None to avoid RuntimeError that causes pictograph_component to be None
+            # The frame is designed to handle parent=None safely with proper cleanup
             frame = ClickablePictographFrame(real_pictograph_data, parent=None)
+
+            # Store reference to main widget for proper cleanup later
+            frame._pool_manager_ref = weakref.ref(self)
 
             # Debug: Check if pictograph_component was created successfully
             if hasattr(frame, "pictograph_component") and frame.pictograph_component:
@@ -237,3 +278,23 @@ class PictographPoolManager(QObject):
             letter="A",
             metadata={"source": "fallback"},
         )
+
+    def cleanup(self) -> None:
+        """Clean up pool manager resources and ensure proper memory management."""
+        try:
+            # Clean up all frames in the pool
+            for frame in self._pictograph_pool:
+                if frame and hasattr(frame, "cleanup"):
+                    frame.cleanup()
+
+            # Clear the pool
+            self._pictograph_pool.clear()
+
+            # Clean up pool service if available
+            if hasattr(self._pool_service, "cleanup"):
+                self._pool_service.cleanup()
+
+            logger.debug("Pool manager cleaned up successfully")
+
+        except Exception as e:
+            logger.error(f"Error during pool manager cleanup: {e}")

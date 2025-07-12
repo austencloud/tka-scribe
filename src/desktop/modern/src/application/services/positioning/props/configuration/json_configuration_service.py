@@ -11,17 +11,17 @@ PROVIDES:
 - Override key generation
 """
 
-from typing import Dict, Any, Optional
-from abc import ABC, abstractmethod
 import json
-import time
 import logging
+import time
+from abc import ABC, abstractmethod
 from pathlib import Path
+from typing import Any, Dict, Optional
 
 from domain.models.beat_data import BeatData
 
 
-class IJSONConfigurationService(ABC):
+class IJSONConfigurator(ABC):
     """Interface for JSON configuration operations."""
 
     @abstractmethod
@@ -41,7 +41,7 @@ class IJSONConfigurationService(ABC):
         """Get swap override data for beat."""
 
 
-class JSONConfigurationService(IJSONConfigurationService):
+class JSONConfigurator(IJSONConfigurator):
     """
     Pure service for JSON configuration operations.
 

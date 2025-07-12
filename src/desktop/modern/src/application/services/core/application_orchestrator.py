@@ -14,9 +14,9 @@ PROVIDES:
 from abc import ABC, abstractmethod
 from typing import Callable, Optional
 
-from application.services.core.application_lifecycle_manager import (
-    ApplicationLifecycleManager,
-    IApplicationLifecycleManager,
+from application.services.core.application_initialization_orchestrator import (
+    ApplicationInitializationOrchestrator,
+    IApplicationInitializationOrchestrator,
 )
 from application.services.core.service_registration_manager import (
     IServiceRegistrationManager,
@@ -67,7 +67,7 @@ class ApplicationOrchestrator(IApplicationOrchestrator):
         service_manager: Optional[IServiceRegistrationManager] = None,
         ui_manager: Optional[IUISetupManager] = None,
         background_manager: Optional[IBackgroundManager] = None,
-        lifecycle_manager: Optional[IApplicationLifecycleManager] = None,
+        lifecycle_manager: Optional[IApplicationInitializationOrchestrator] = None,
         container: Optional[DIContainer] = None,
     ):
         """Initialize with dependency injection."""
@@ -75,19 +75,50 @@ class ApplicationOrchestrator(IApplicationOrchestrator):
         self.ui_manager = ui_manager or UISetupManager()
         self.background_manager = background_manager or BackgroundManager()
 
-        # If no lifecycle manager provided, create one with session service from container
+        # If no lifecycle manager provided, create one with dependencies from container
         if lifecycle_manager is None:
+            # Try to resolve dependencies from container
+            window_service = None
+            session_coordinator = None
             session_service = None
+
             if container:
                 try:
+                    from application.services.core.session_restoration_coordinator import (
+                        ISessionRestorationCoordinator,
+                    )
+                    from application.services.core.window_management_service import (
+                        IWindowManagementService,
+                    )
                     from core.interfaces.session_services import ISessionStateTracker
 
+                    window_service = container.resolve(IWindowManagementService)
+                    session_coordinator = container.resolve(
+                        ISessionRestorationCoordinator
+                    )
                     session_service = container.resolve(ISessionStateTracker)
 
                 except Exception as e:
-                    print(f"⚠️ [ORCHESTRATOR] Could not resolve session service: {e}")
+                    print(f"⚠️ [ORCHESTRATOR] Could not resolve all services: {e}")
 
-            self.lifecycle_manager = ApplicationLifecycleManager(session_service)
+            # Create with available services (fallback to defaults if needed)
+            if not window_service:
+                from application.services.core.window_management_service import (
+                    WindowManagementService,
+                )
+
+                window_service = WindowManagementService()
+
+            if not session_coordinator:
+                from application.services.core.session_restoration_coordinator import (
+                    SessionRestorationCoordinator,
+                )
+
+                session_coordinator = SessionRestorationCoordinator()
+
+            self.lifecycle_manager = ApplicationInitializationOrchestrator(
+                window_service, session_coordinator, session_service
+            )
         else:
             self.lifecycle_manager = lifecycle_manager
 
@@ -141,7 +172,7 @@ class ApplicationOrchestrator(IApplicationOrchestrator):
             main_window,
             self.container,
             progress_callback,
-            self.lifecycle_manager._session_service,
+            self.lifecycle_manager.session_service,
         )
 
         # Step 3.5: Trigger deferred session restoration (after UI is ready)
@@ -196,7 +227,9 @@ class ApplicationOrchestrator(IApplicationOrchestrator):
     def get_available_screens(self) -> list:
         """Get available screens for application placement."""
         screen_config = self.lifecycle_manager.validate_screen_configuration()
-        return screen_config["screen_geometries"]
+        if screen_config.get("valid") and "screens" in screen_config:
+            return [screen["geometry"] for screen in screen_config["screens"]]
+        return []
 
     def switch_to_screen(self, main_window: QMainWindow, screen_index: int) -> bool:
         """Switch application to different screen."""

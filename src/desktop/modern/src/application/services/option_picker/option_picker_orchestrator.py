@@ -182,8 +182,9 @@ class OptionPickerOrchestrator(QObject):
             # Step 5.5: Create actual section widgets (missing piece!)
             self._create_sections()
 
-            # Step 5.6: Make widgets visible
-            # self._make_widgets_visible()
+            # Step 5.6: WINDOW MANAGEMENT FIX: Don't make widgets visible during splash screen
+            # Widgets will be made visible when the main window is shown
+            # self._make_widgets_visible()  # Commented out to prevent window flashing
 
             if self.progress_callback:
                 self.progress_callback("Creating dimension analyzer", 0.6)
@@ -191,10 +192,7 @@ class OptionPickerOrchestrator(QObject):
             # Step 6: Create dimension analyzer
             self.dimension_analyzer = (
                 self.initialization_service.create_dimension_calculator(
-                    self.option_picker_widget,
-                    self.sections_container,
-                    self.sections_layout,
-                    self.display_service,
+                    self.container,
                 )
             )
 
@@ -453,6 +451,14 @@ class OptionPickerOrchestrator(QObject):
 
             traceback.print_exc()
 
+    def make_widgets_visible(self) -> None:
+        """
+        Public method to make the option picker widgets visible.
+
+        Should be called after the main window is shown to prevent window flashing.
+        """
+        self._make_widgets_visible()
+
     def _make_widgets_visible(self) -> None:
         """
         Make the option picker widgets visible.
@@ -667,5 +673,25 @@ class OptionPickerOrchestrator(QObject):
     def _on_filter_changed(self, filter_text: str) -> None:
         """Handle filter changes."""
         if self._initialized:
-            # TODO: Update to use option_service instead of data_service
-            self.event_service.handle_filter_change(filter_text, self.display_service)
+            # Filter options using the option service and update display
+            try:
+                # Apply filter through option service if it supports filtering
+                if hasattr(self.option_service, "apply_filter"):
+                    filtered_options = self.option_service.apply_filter(filter_text)
+                    # Update display with filtered options
+                    display_result = self.display_service.update_pictograph_display(
+                        filtered_options
+                    )
+                    if display_result.get("success", False):
+                        self._apply_display_strategy(display_result["display_strategy"])
+                else:
+                    # Fallback to basic event handling
+                    self.event_service.handle_filter_change(
+                        filter_text, self.display_service
+                    )
+            except Exception as e:
+                logger.error(f"Error handling filter change: {e}")
+                # Fallback to basic event handling
+                self.event_service.handle_filter_change(
+                    filter_text, self.display_service
+                )

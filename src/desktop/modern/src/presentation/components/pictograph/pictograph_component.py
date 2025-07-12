@@ -42,6 +42,11 @@ class PictographComponent(BorderedPictographMixin, QGraphicsView):
 
         # WINDOW MANAGEMENT FIX: Hide during creation to prevent flashing
         self.hide()
+        self.setVisible(False)
+
+        # POOL CREATION FIX: Set attributes to prevent any window appearance during pool creation
+        self.setAttribute(Qt.WidgetAttribute.WA_DontShowOnScreen, True)
+        self.setWindowFlags(Qt.WindowType.Widget)
 
         self._setup_ui()
 

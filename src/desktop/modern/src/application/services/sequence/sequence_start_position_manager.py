@@ -7,7 +7,7 @@ Responsible for setting, updating, and managing start positions in sequences.
 
 from typing import Callable, Optional
 
-from application.services.data.sequence_data_converter import SequenceDataConverter
+from application.services.data.modern_to_legacy_converter import ModernToLegacyConverter
 from application.services.sequence.beat_factory import BeatFactory
 from application.services.sequence.sequence_persister import SequencePersister
 from domain.models.beat_data import BeatData
@@ -38,7 +38,7 @@ class SequenceStartPositionManager(QObject):
         super().__init__()
         self.workbench_getter = workbench_getter
         self.workbench_setter = workbench_setter
-        self.data_converter = SequenceDataConverter()
+        self.modern_to_legacy_converter = ModernToLegacyConverter()
         self.persistence_service = SequencePersister()
 
     def set_start_position(self, start_position_data):
@@ -50,15 +50,11 @@ class SequenceStartPositionManager(QObject):
             beat_data = start_position_data
 
         try:
-            if not self.data_converter:
-                print(
-                    "❌ [START_POS_MGR] No data converter available for start position"
-                )
-                return
-
             # Convert start position to legacy format and save as beat 0
             start_pos_dict = (
-                self.data_converter.convert_start_position_to_legacy_format(beat_data)
+                self.modern_to_legacy_converter.convert_start_position_to_legacy_format(
+                    beat_data
+                )
             )
 
             # Load current sequence to preserve existing beats
@@ -181,13 +177,9 @@ class SequenceStartPositionManager(QObject):
     def _update_start_position_in_persistence(self, start_position_data: BeatData):
         """Update start position in persistence"""
         try:
-            if not self.data_converter:
-                print("⚠️ No data converter available for persistence update")
-                return
-
             # Convert to legacy format
             start_pos_dict = (
-                self.data_converter.convert_start_position_to_legacy_format(
+                self.modern_to_legacy_converter.convert_start_position_to_legacy_format(
                     start_position_data
                 )
             )
@@ -207,37 +199,6 @@ class SequenceStartPositionManager(QObject):
             import traceback
 
             traceback.print_exc()
-
-    def load_start_position_from_persistence(self) -> Optional[BeatData]:
-        """Load start position from persistence if it exists"""
-        try:
-            sequence_data = self.persistence_service.load_current_sequence()
-
-            # Look for start position (beat 0)
-            for item in sequence_data[1:]:  # Skip metadata
-                if item.get("beat") == 0:
-                    if self.data_converter:
-                        try:
-                            return self.data_converter.convert_legacy_start_position_to_beat_data(
-                                item
-                            )
-                        except Exception as e:
-                            print(f"❌ Failed to convert start position: {e}")
-                            return None
-                    else:
-                        print(
-                            "⚠️ No data converter available for start position loading"
-                        )
-                        return None
-
-            return None
-
-        except Exception as e:
-            print(f"❌ Failed to load start position from persistence: {e}")
-            import traceback
-
-            traceback.print_exc()
-            return None
 
     def has_start_position(self) -> bool:
         """Check if a start position is currently set"""

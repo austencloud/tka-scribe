@@ -110,19 +110,13 @@ class SetStartPositionCommand(ICommand[BeatData]):
     def _create_start_position_data(self) -> BeatData:
         """Create start position data using existing business logic"""
         try:
-            # Use existing StartPositionHandler logic
-            from core.service_locator import get_data_conversion_service
-
-            data_converter = get_data_conversion_service()
-
-            if not data_converter:
-                raise ValueError("Data conversion service not available")
-
-            # Get the dataset query service
-            from application.services.data.dataset_query import DatasetQuery
+            # Get the dataset query service via dependency injection
+            from application.services.data.dataset_query import IDatasetQuery
+            from core.dependency_injection.di_container import get_container
             from domain.models.glyph_data import GlyphData
 
-            dataset_service = DatasetQuery()
+            container = get_container()
+            dataset_service = container.resolve(IDatasetQuery)
 
             # Get real start position data from dataset
             start_pos_beat_data = dataset_service.get_start_position_pictograph(
