@@ -13,7 +13,7 @@ from core.interfaces.core_services import IObjectPoolManager
 from domain.models.beat_data import BeatData
 from domain.models.enums import GridMode, Location, MotionType, RotationDirection
 from domain.models.grid_data import GridData
-from domain.models.motion_models import MotionData
+from domain.models.motion_data import MotionData
 from domain.models.pictograph_data import PictographData
 from presentation.components.option_picker.components.frames.clickable_pictograph_frame import (
     ClickablePictographFrame,
@@ -198,7 +198,7 @@ class PictographPoolManager(QObject):
         """Create minimal pictograph data as fallback."""
         from domain.models.arrow_data import ArrowData
         from domain.models.enums import Location, MotionType, RotationDirection
-        from domain.models.motion_models import MotionData
+        from domain.models.motion_data import MotionData
 
         # Create motion data
         blue_motion = MotionData(

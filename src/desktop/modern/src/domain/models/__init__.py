@@ -35,14 +35,14 @@ from .enums import (
     Timing,
     VTGMode,
 )
-from .glyph_models import GlyphData
+from .glyph_data import GlyphData
 from .grid_data import GridData
 from .letter_type_classifier import (  # Export letter type classifier
     LetterTypeClassifier,
 )
-from .motion_models import MotionData
+from .motion_data import MotionData
 from .pictograph_data import PictographData
-from .positioning_models import (  # Export positioning models
+from .positioning_results import (  # Export positioning models
     ArrowPositionResult,
     PropPositionResult,
 )

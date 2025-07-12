@@ -16,7 +16,7 @@ from core.interfaces.positioning_services import (
     IArrowRotationCalculator,
 )
 from domain.models.arrow_data import ArrowData
-from domain.models.motion_models import MotionData
+from domain.models.motion_data import MotionData
 from domain.models.pictograph_data import PictographData
 from presentation.components.pictograph.graphics_items.arrow_item import ArrowItem
 

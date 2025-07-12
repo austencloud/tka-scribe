@@ -10,7 +10,7 @@ from dataclasses import dataclass
 from typing import Any, Dict, Optional
 
 from domain.models.enums import Location, MotionType, Orientation, RotationDirection
-from domain.models.motion_models import MotionData
+from domain.models.motion_data import MotionData
 from domain.models.pictograph_data import PictographData
 
 logger = logging.getLogger(__name__)

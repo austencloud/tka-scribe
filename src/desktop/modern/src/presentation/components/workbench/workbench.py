@@ -43,6 +43,7 @@ class SequenceWorkbench(QWidget):
     operation_completed = pyqtSignal(str)
     error_occurred = pyqtSignal(str)
     edit_construct_toggle_requested = pyqtSignal(bool)
+    clear_sequence_requested = pyqtSignal()
 
     def __init__(
         self,
@@ -297,18 +298,11 @@ class SequenceWorkbench(QWidget):
         self._show_operation_result("rotate_sequence", success, message)
 
     def _handle_clear(self):
-        """Handle clear sequence operation"""
-        if not self._event_controller:
-            return
-        success, message, updated_sequence = self._event_controller.handle_clear()
-        if success and updated_sequence:
-            self._current_sequence = updated_sequence
-            self.clear_start_position()
-            self._update_all_components()
-            self._graph_service.toggle_graph_visibility()
-
-            self.sequence_modified.emit(updated_sequence)
-        self._show_operation_result("clear_sequence", success, message)
+        """Handle clear sequence operation by emitting signal to signal coordinator"""
+        print(
+            "🔄 [WORKBENCH] Clear sequence requested - emitting signal to signal coordinator"
+        )
+        self.clear_sequence_requested.emit()
 
     def _handle_fullscreen(self):
         """Handle full screen view operation"""

@@ -165,7 +165,6 @@ class SequenceBeatOperations(QObject):
             # Update workbench
             if self.workbench_setter:
                 self.workbench_setter(new_sequence)
-                print(f"✅ [BEAT_OPERATIONS] Updated workbench (direct)")
 
             # Save to persistence
             self._save_sequence_to_persistence(new_sequence)
@@ -173,10 +172,6 @@ class SequenceBeatOperations(QObject):
             # Emit signal
             position = len(new_sequence.beats) - 1
             self.beat_added.emit(beat_data, position)
-
-            print(
-                f"✅ [BEAT_OPERATIONS] Added beat {beat_data.letter} to sequence (direct, position {position})"
-            )
 
         except Exception as e:
             print(f"❌ [BEAT_OPERATIONS] Error adding beat to sequence (direct): {e}")

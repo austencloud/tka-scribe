@@ -10,9 +10,9 @@ from typing import Any, Dict, Optional
 
 from domain.models.beat_data import BeatData
 from domain.models.enums import GridMode
-from domain.models.glyph_models import GlyphData
+from domain.models.glyph_data import GlyphData
 from domain.models.grid_data import GridData
-from domain.models.motion_models import MotionData
+from domain.models.motion_data import MotionData
 from domain.models.pictograph_data import PictographData
 
 logger = logging.getLogger(__name__)

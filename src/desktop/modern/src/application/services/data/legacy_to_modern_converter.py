@@ -11,8 +11,8 @@ import logging
 from typing import TYPE_CHECKING, Any, Dict
 
 from domain.models.beat_data import BeatData
-from domain.models.glyph_models import GlyphData
-from domain.models.motion_models import MotionData
+from domain.models.glyph_data import GlyphData
+from domain.models.motion_data import MotionData
 
 if TYPE_CHECKING:
     from domain.models.pictograph_data import PictographData
@@ -124,7 +124,7 @@ class LegacyToModernConverter:
             )
 
             # Create glyph data with position information as proper GlyphData object
-            from domain.models.glyph_models import GlyphData
+            from domain.models.glyph_data import GlyphData
 
             glyph_data = GlyphData(
                 start_position=sequence_start_position,

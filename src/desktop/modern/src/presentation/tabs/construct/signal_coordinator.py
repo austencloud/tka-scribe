@@ -118,6 +118,14 @@ class SignalCoordinator(QObject):
             self.layout_manager.workbench.edit_construct_toggle_requested.connect(
                 self._handle_edit_construct_toggle
             )
+            # Clear sequence signal - connect to signal coordinator
+            if hasattr(self.layout_manager.workbench, "clear_sequence_requested"):
+                self.layout_manager.workbench.clear_sequence_requested.connect(
+                    self.clear_sequence
+                )
+                print(
+                    "✅ [SIGNAL_COORDINATOR] Connected workbench clear_sequence_requested signal"
+                )
 
     def _handle_start_position_created(self, position_key: str, start_position_data):
         """Handle start position creation"""

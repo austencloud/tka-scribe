@@ -23,7 +23,7 @@ from core.interfaces.positioning_services import IArrowAdjustmentCalculator
 from core.types.coordinates import get_default_point
 from core.types.geometry import Point
 from domain.models.enums import Location
-from domain.models.motion_models import MotionData
+from domain.models.motion_data import MotionData
 from domain.models.pictograph_data import PictographData
 
 from ...arrows.calculation.directional_tuple_calculator import (

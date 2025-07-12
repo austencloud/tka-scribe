@@ -19,7 +19,7 @@ from typing import Optional
 from application.services.pictograph.pictograph_validator import PictographValidator
 from domain.models.enums import Orientation
 from domain.models.letter_type_classifier import LetterTypeClassifier
-from domain.models.motion_models import MotionData
+from domain.models.motion_data import MotionData
 from domain.models.arrow_data import ArrowData, PictographData
 
 logger = logging.getLogger(__name__)

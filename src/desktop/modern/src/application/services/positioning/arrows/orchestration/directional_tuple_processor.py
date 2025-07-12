@@ -27,7 +27,7 @@ from typing import List, Tuple
 from core.types.coordinates import point_to_qpoint
 from core.types.geometry import Point
 from domain.models.enums import Location
-from domain.models.motion_models import MotionData
+from domain.models.motion_data import MotionData
 
 # Import required services
 from ...arrows.calculation.directional_tuple_calculator import (

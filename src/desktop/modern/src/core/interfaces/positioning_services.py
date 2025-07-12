@@ -12,7 +12,7 @@ from core.types import Point
 from domain.models.arrow_data import ArrowData
 from domain.models.beat_data import BeatData
 from domain.models.enums import Location
-from domain.models.motion_models import MotionData
+from domain.models.motion_data import MotionData
 from domain.models.pictograph_data import PictographData
 
 

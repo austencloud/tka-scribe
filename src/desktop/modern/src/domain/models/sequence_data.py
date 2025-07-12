@@ -29,7 +29,7 @@ class SequenceData:
 
     # Business data
     beats: List[BeatData] = field(default_factory=list)
-    start_position: Optional[BeatData] = None
+    start_position: BeatData = None
 
     # Metadata
     metadata: Dict[str, Any] = field(default_factory=dict)

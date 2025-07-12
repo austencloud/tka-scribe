@@ -25,7 +25,7 @@ from typing import Any, Dict, Optional
 
 from domain.models.enums import ArrowType
 
-from .motion_models import MotionData
+from .motion_data import MotionData
 
 
 @dataclass(frozen=True)

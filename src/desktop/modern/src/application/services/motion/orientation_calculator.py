@@ -15,7 +15,7 @@ from abc import ABC, abstractmethod
 from typing import Any, Dict
 
 from domain.models.enums import Location, MotionType, Orientation
-from domain.models.motion_models import MotionData
+from domain.models.motion_data import MotionData
 
 
 class IOrientationCalculator(ABC):

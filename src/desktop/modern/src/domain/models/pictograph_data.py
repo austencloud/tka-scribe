@@ -6,11 +6,11 @@ from typing import Any, Dict, Optional, Tuple, Union
 
 from domain.models.arrow_data import ArrowData
 from domain.models.enums import ArrowType, GridMode, PropType
-from domain.models.glyph_models import GlyphData
+from domain.models.glyph_data import GlyphData
 from domain.models.grid_data import GridData
 from domain.models.prop_data import PropData
 
-from .motion_models import MotionData
+from .motion_data import MotionData
 
 
 @dataclass(frozen=True)

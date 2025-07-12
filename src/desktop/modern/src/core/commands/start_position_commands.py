@@ -120,7 +120,7 @@ class SetStartPositionCommand(ICommand[BeatData]):
 
             # Get the dataset query service
             from application.services.data.dataset_query import DatasetQuery
-            from domain.models.glyph_models import GlyphData
+            from domain.models.glyph_data import GlyphData
 
             dataset_service = DatasetQuery()
 

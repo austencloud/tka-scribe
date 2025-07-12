@@ -12,8 +12,8 @@ from dataclasses import dataclass, field
 # Forward reference for PictographData to avoid circular imports
 from typing import TYPE_CHECKING, Any, Dict, Optional
 
-from .glyph_models import GlyphData
-from .motion_models import MotionData
+from .glyph_data import GlyphData
+from .motion_data import MotionData
 
 if TYPE_CHECKING:
     from .pictograph_data import PictographData
