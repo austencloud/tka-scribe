@@ -5,8 +5,6 @@ from typing import Any, Dict, Optional
 
 from domain.models.enums import Orientation, PropType, RotationDirection
 
-from .motion_data import MotionData
-
 
 @dataclass(frozen=True)
 class PropData:
@@ -41,18 +39,9 @@ class PropData:
             self.prop_type.value if hasattr(self.prop_type, "value") else self.prop_type
         )
 
-        # Handle motion_data being either MotionData object or dict
-        motion_data_value = None
-        if self.motion_data:
-            if hasattr(self.motion_data, "to_dict"):
-                motion_data_value = self.motion_data.to_dict()
-            else:
-                motion_data_value = self.motion_data  # Already a dict
-
         return {
             "id": self.id,
             "prop_type": prop_type_value,
-            "motion_data": motion_data_value,
             "color": self.color,
             "orientation": self.orientation,
             "rotation_direction": self.rotation_direction,
@@ -66,14 +55,9 @@ class PropData:
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "PropData":
         """Create from dictionary."""
-        motion_data = None
-        if data.get("motion_data"):
-            motion_data = MotionData.from_dict(data["motion_data"])
-
         return cls(
             id=data.get("id", str(uuid.uuid4())),
             prop_type=PropType(data.get("prop_type", "staff")),
-            motion_data=motion_data,
             color=data.get("color", "blue"),
             orientation=data.get("orientation", "in"),
             rotation_direction=data.get("rotation_direction", "cw"),

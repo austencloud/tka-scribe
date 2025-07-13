@@ -21,13 +21,7 @@ from presentation.components.menu_bar import MenuBarWidget
 from presentation.tabs.construct.construct_tab_widget import ConstructTabWidget
 from PyQt6.QtCore import Qt, QTimer
 from PyQt6.QtGui import QFont
-from PyQt6.QtWidgets import (
-    QLabel,
-    QMainWindow,
-    QTabWidget,
-    QVBoxLayout,
-    QWidget,
-)
+from PyQt6.QtWidgets import QLabel, QMainWindow, QTabWidget, QVBoxLayout, QWidget
 
 from .tab_management import ITabManagementService, TabManagementService
 
@@ -358,7 +352,7 @@ class UISetupManager(IUISetupManager):
             # Get UI state service from container
             container = get_container()
             ui_state_service = container.resolve(IUIStateManager)
-            
+
             print("🔧 Creating settings dialog...")
             dialog = SettingsDialog(ui_state_service, main_window, container)
 

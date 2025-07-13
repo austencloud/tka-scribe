@@ -30,7 +30,7 @@ class SequenceBeatOperations(QObject):
     - Managing beat numbering and sequencing
     """
 
-    beat_added = pyqtSignal(object, int)  # BeatData, position
+    beat_added = pyqtSignal(object, int, object)  # BeatData, position, SequenceData
     beat_removed = pyqtSignal(int)  # position
     beat_updated = pyqtSignal(object, int)  # BeatData, position
 
@@ -49,8 +49,12 @@ class SequenceBeatOperations(QObject):
         self.orientation_update_service = OptionOrientationUpdater()
         self.persistence_service = SequencePersister()
 
+        # Guard to prevent duplicate beat additions
+        self._adding_beat = False
+
     def add_pictograph_to_sequence(self, pictograph_data: PictographData):
         """Add pictograph to sequence by creating beat with embedded pictograph."""
+
         try:
             # Calculate beat number
             current_sequence = self._get_current_sequence()
@@ -96,9 +100,18 @@ class SequenceBeatOperations(QObject):
 
     def add_beat_to_sequence(self, beat_data: BeatData):
         """Add beat to sequence using the most appropriate method"""
+        print(
+            f"🎯 [BEAT_OPERATIONS] add_beat_to_sequence called for: {beat_data.letter}"
+        )
+        print(
+            f"🎯 [BEAT_OPERATIONS] Has workbench_setter: {self.workbench_setter is not None}"
+        )
         try:
             # If we have a workbench setter, use direct manipulation for immediate UI updates
             if self.workbench_setter:
+                print(
+                    f"🎯 [BEAT_OPERATIONS] Using direct manipulation via workbench setter"
+                )
                 self._add_beat_direct(beat_data)
                 return
 
@@ -141,9 +154,10 @@ class SequenceBeatOperations(QObject):
 
             if result.success:
                 print(f"✅ Beat added via command: {beat_data.letter}")
-                # Emit legacy signal for backward compatibility
+                # Emit signal with updated sequence from command result
                 position = len(current_sequence.beats)
-                self.beat_added.emit(beat_data, position)
+                updated_sequence = result  # Command returns the updated sequence
+                self.beat_added.emit(beat_data, position, updated_sequence)
             else:
                 print(f"❌ Failed to add beat via command: {result.error_message}")
                 # Fallback to direct manipulation
@@ -156,30 +170,66 @@ class SequenceBeatOperations(QObject):
 
     def _add_beat_direct(self, beat_data: BeatData):
         """Fallback method: Add beat via direct manipulation (original logic)"""
-        current_sequence = self._get_current_sequence()
-        if current_sequence is None:
-            current_sequence = SequenceData.empty()
+        # Guard against duplicate calls
+        if self._adding_beat:
+            return
 
+        self._adding_beat = True
         try:
-            # Add beat to sequence
-            new_sequence = current_sequence.add_beat(beat_data)
+            current_sequence = self._get_current_sequence()
+            if current_sequence is None:
+                current_sequence = SequenceData.empty()
+                print(f"🎯 [BEAT_OPERATIONS] Creating empty sequence")
 
-            # Update workbench
-            if self.workbench_setter:
-                self.workbench_setter(new_sequence)
+            print(
+                f"🎯 [BEAT_OPERATIONS] Current sequence length before adding: {len(current_sequence.beats)}"
+            )
 
-            # Save to persistence
-            self._save_sequence_to_persistence(new_sequence)
+            try:
+                # Add beat to sequence
+                new_sequence = current_sequence.add_beat(beat_data)
+                print(
+                    f"🎯 [BEAT_OPERATIONS] New sequence length after adding: {len(new_sequence.beats)}"
+                )
 
-            # Emit signal
-            position = len(new_sequence.beats) - 1
-            self.beat_added.emit(beat_data, position)
+                # Update workbench
+                if self.workbench_setter:
+                    print(
+                        f"🎯 [BEAT_OPERATIONS] Calling workbench setter with sequence length: {len(new_sequence.beats)}"
+                    )
 
-        except Exception as e:
-            print(f"❌ [BEAT_OPERATIONS] Error adding beat to sequence (direct): {e}")
-            import traceback
+                    # Add stack trace to see what happens after workbench setter
+                    import traceback
 
-            traceback.print_exc()
+                    print(
+                        "🔍 [BEAT_OPERATIONS] About to call workbench setter, call stack:"
+                    )
+                    for line in traceback.format_stack()[-2:]:  # Show current context
+                        print(f"    {line.strip()}")
+
+                    self.workbench_setter(new_sequence)
+                    print(f"🎯 [BEAT_OPERATIONS] Workbench setter completed")
+
+                # Save to persistence
+                self._save_sequence_to_persistence(new_sequence)
+
+                # Emit signal with updated sequence
+                position = len(new_sequence.beats) - 1
+                print(
+                    f"🎯 [BEAT_OPERATIONS] Emitting beat_added signal for position: {position}"
+                )
+                self.beat_added.emit(beat_data, position, new_sequence)
+
+            except Exception as e:
+                print(
+                    f"❌ [BEAT_OPERATIONS] Error adding beat to sequence (direct): {e}"
+                )
+                import traceback
+
+                traceback.print_exc()
+        finally:
+            # Always reset the guard flag
+            self._adding_beat = False
 
     def update_beat_turns(self, beat_index: int, color: str, new_turns: int):
         """Update the number of turns for a specific beat - exactly like legacy"""
@@ -344,7 +394,6 @@ class SequenceBeatOperations(QObject):
 
                 if workbench and hasattr(workbench, "get_sequence"):
                     sequence = workbench.get_sequence()
-                    print(f"   Sequence from workbench: {sequence}")
                     if sequence:
                         print(f"   Sequence length: {sequence.length}")
                     return sequence

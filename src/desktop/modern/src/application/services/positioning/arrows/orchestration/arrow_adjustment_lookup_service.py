@@ -48,15 +48,12 @@ except ImportError:
 
     QT_AVAILABLE = False
 
-from ...arrows.keys.attribute_key_generation_service import (
-    AttributeKeyGenerationService,
-)
-from ...arrows.keys.placement_key_service import PlacementKeyService
-from ...arrows.keys.turns_tuple_generation_service import TurnsTupleGenerationService
-
 # Import required services
 from ...arrows.placement.default_placement_service import DefaultPlacementService
 from ...arrows.placement.special_placement_service import SpecialPlacementService
+from ..key_generators.attribute_key_generator import AttributeKeyGenerator
+from ..key_generators.placement_key_generator import PlacementKeyGenerator
+from ..key_generators.turns_tuple_key_generator import TurnsTupleKeyGenerator
 from ..placement.special_placement_ori_key_generator import (
     SpecialPlacementOriKeyGenerator,
 )
@@ -79,9 +76,9 @@ class ArrowAdjustmentLookupService:
         special_placement_service: SpecialPlacementService,
         default_placement_service: DefaultPlacementService,
         orientation_key_service: SpecialPlacementOriKeyGenerator,
-        placement_key_service: PlacementKeyService,
-        turns_tuple_service: TurnsTupleGenerationService,
-        attribute_key_service: AttributeKeyGenerationService,
+        placement_key_service: PlacementKeyGenerator,
+        turns_tuple_service: TurnsTupleKeyGenerator,
+        attribute_key_service: AttributeKeyGenerator,
     ):
         """Initialize with required services for lookup operations."""
         self.special_placement_service = special_placement_service
@@ -115,7 +112,7 @@ class ArrowAdjustmentLookupService:
         try:
             # Generate required keys for special placement lookup
             ori_key, turns_tuple, attr_key = self._generate_lookup_keys(
-                pictograph_data, motion_data, letter
+                pictograph_data, motion_data
             )
 
             logger.debug(
@@ -132,7 +129,9 @@ class ArrowAdjustmentLookupService:
                 logger.debug("No special placement found, falling back to default")
 
             # STEP 2: Fall back to default calculation
-            default_adjustment = self._calculate_default_adjustment(motion_data, letter)
+            default_adjustment = self._calculate_default_adjustment(
+                motion_data, pictograph_data
+            )
             logger.debug(
                 f"Using default adjustment: ({default_adjustment.x:.1f}, {default_adjustment.y:.1f})"
             )
@@ -143,7 +142,7 @@ class ArrowAdjustmentLookupService:
             raise RuntimeError(f"Arrow adjustment lookup failed: {e}") from e
 
     def _generate_lookup_keys(
-        self, pictograph_data: PictographData, motion_data: MotionData, letter: str
+        self, pictograph_data: PictographData, motion_data: MotionData
     ) -> tuple[str, str, str]:
         """Generate all required keys for special placement lookup."""
         try:
@@ -204,7 +203,7 @@ class ArrowAdjustmentLookupService:
     def _calculate_default_adjustment(
         self,
         motion_data: MotionData,
-        letter: str,
+        pictograph_data: PictographData,
         grid_mode: str = "diamond",
     ) -> Point:
         """
@@ -214,7 +213,6 @@ class ArrowAdjustmentLookupService:
         """
         try:
             # Create minimal pictograph data for legacy services
-            minimal_pictograph = PictographData(letter=letter)
 
             # Get default placements for the grid mode and motion type
             default_placements = self.default_placement_service.all_defaults.get(
@@ -223,7 +221,7 @@ class ArrowAdjustmentLookupService:
 
             # Generate placement key for default lookup
             placement_key = self.placement_key_service.generate_placement_key(
-                motion_data, minimal_pictograph, default_placements, grid_mode
+                motion_data, pictograph_data, default_placements, grid_mode
             )
 
             # Get adjustment from default placement service

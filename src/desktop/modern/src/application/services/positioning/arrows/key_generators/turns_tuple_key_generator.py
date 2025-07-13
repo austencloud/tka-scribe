@@ -16,7 +16,7 @@ from domain.models.pictograph_data import PictographData
 logger = logging.getLogger(__name__)
 
 
-class TurnsTupleGenerationService:
+class TurnsTupleKeyGenerator:
     """
     Service for generating turns tuples used in special placement lookups.
 

@@ -144,6 +144,16 @@ class OptionPickerSection(QGroupBox):
                     if option_frame:
                         # Setup Qt widget
                         option_frame.update_pictograph(pictograph_data)
+
+                        # CRITICAL: Disconnect any existing connections first to prevent duplicates
+                        try:
+                            option_frame.option_selected.disconnect(
+                                self._on_pictograph_selected
+                            )
+                        except (TypeError, RuntimeError):
+                            # No existing connection - this is fine
+                            pass
+
                         option_frame.option_selected.connect(
                             self._on_pictograph_selected
                         )
@@ -208,7 +218,6 @@ class OptionPickerSection(QGroupBox):
 
     def _on_pictograph_selected(self, pictograph_data: PictographData) -> None:
         """Handle pictograph selection - emit Qt signal."""
-        print(f"🎯 [UI] Pictograph selected: {pictograph_data.letter}")
         self.pictograph_selected.emit(pictograph_data)
 
     def resizeEvent(self, event) -> None:

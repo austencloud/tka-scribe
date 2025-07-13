@@ -37,7 +37,7 @@ class PictographPositionMatcher:
 
     def __init__(self):
         """Initialize position matching service with Modern's native dataset."""
-        self.pictograph_management_service = PictographManager()
+        self.pictograph_manager = PictographManager()
 
         self.pictograph_dataset: Optional[Dict[str, List[Dict[str, Any]]]] = None
         self._load_dataset()
@@ -46,7 +46,7 @@ class PictographPositionMatcher:
         """Load dataset using Modern's native pictograph management service."""
         try:
             # Get the raw CSV dataset from Modern's service
-            raw_dataset = self.pictograph_management_service._load_csv_data()
+            raw_dataset = self.pictograph_manager._load_csv_data()
 
             if raw_dataset is None or raw_dataset.empty:
                 print("❌ Dataset is empty")

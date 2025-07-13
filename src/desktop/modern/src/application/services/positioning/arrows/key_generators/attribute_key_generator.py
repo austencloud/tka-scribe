@@ -15,7 +15,7 @@ from domain.models.pictograph_data import PictographData
 logger = logging.getLogger(__name__)
 
 
-class AttributeKeyGenerationService:
+class AttributeKeyGenerator:
     """Faithful port of legacy AttrKeyGenerator."""
 
     def __init__(self):

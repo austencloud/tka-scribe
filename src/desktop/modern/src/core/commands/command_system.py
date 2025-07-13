@@ -10,6 +10,8 @@ import uuid
 import logging
 from datetime import datetime
 
+from core.events.event_bus import TypeSafeEventBus
+
 if TYPE_CHECKING:
     pass
 
@@ -82,7 +84,7 @@ class CommandProcessor:
     - Error handling and recovery
     """
 
-    def __init__(self, event_bus: Any, max_history: int = 100):
+    def __init__(self, event_bus: TypeSafeEventBus, max_history: int = 100):
         self.event_bus = event_bus
         self.max_history = max_history
         self._history: List[ICommand] = []

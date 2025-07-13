@@ -271,6 +271,9 @@ class OptionPickerScroll(QScrollArea):
             # ✅ Set UI loading state
             self._set_loading_state(True)
 
+            # ✅ Clear all sections and reset pool before loading new options
+            self.clear_all_sections()
+
             # ✅ Use service to get options (pure business logic)
             options_by_type = self._sequence_option_service.get_options_for_sequence(
                 sequence_data

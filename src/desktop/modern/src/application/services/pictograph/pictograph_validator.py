@@ -86,13 +86,16 @@ class PictographValidator:
 
     def ends_with_layer3(self) -> bool:
         try:
-            blue = self.pictograph_data.arrows.get("blue")
-            red = self.pictograph_data.arrows.get("red")
-            if not (blue and red):
+            blue_arrow = self.pictograph_data.arrows.get("blue")
+            red_arrow = self.pictograph_data.arrows.get("red")
+            blue_motion = self.pictograph_data.motions.get("blue")
+            red_motion = self.pictograph_data.motions.get("red")
+
+            if not (blue_arrow and red_arrow):
                 return False
 
-            b_ori = self._get_arrow_end_orientation(blue.motion_data)
-            r_ori = self._get_arrow_end_orientation(red.motion_data)
+            b_ori = self._get_arrow_end_orientation(blue_motion)
+            r_ori = self._get_arrow_end_orientation(red_motion)
 
             # normalize to enum
             b_enum = b_ori if isinstance(b_ori, Orientation) else Orientation(b_ori)
@@ -116,16 +119,16 @@ class PictographValidator:
         try:
             # Check if any arrows have valid motion data
             valid_arrows = [
-                arrow
-                for arrow in self.pictograph_data.arrows.values()
-                if arrow.motion_data
+                arrow for arrow in self.pictograph_data.arrows.values() if arrow
             ]
             if not valid_arrows:
                 return False
 
             # Check if all props are radial
             for arrow_data in valid_arrows:
-                end_ori = self._get_arrow_end_orientation(arrow_data.motion_data)
+                end_ori = self._get_arrow_end_orientation(
+                    self.pictograph_data.motions[arrow_data.color]
+                )
                 if end_ori not in [Orientation.IN, Orientation.OUT]:
                     return False
             return True
@@ -141,9 +144,7 @@ class PictographValidator:
         try:
             # Check if any arrows have valid motion data
             valid_arrows = [
-                arrow
-                for arrow in self.pictograph_data.arrows.values()
-                if arrow.motion_data
+                arrow for arrow in self.pictograph_data.arrows.values() if arrow
             ]
             if not valid_arrows:
                 return False
@@ -151,7 +152,9 @@ class PictographValidator:
             # Check if all props have the same radial/nonradial orientation
             orientations = []
             for arrow_data in valid_arrows:
-                end_ori = self._get_arrow_end_orientation(arrow_data.motion_data)
+                end_ori = self._get_arrow_end_orientation(
+                    self.pictograph_data.motions[arrow_data.color]
+                )
                 is_radial = end_ori in [Orientation.IN, Orientation.OUT]
                 orientations.append(is_radial)
 
@@ -169,16 +172,16 @@ class PictographValidator:
         try:
             # Check if any arrows have valid motion data
             valid_arrows = [
-                arrow
-                for arrow in self.pictograph_data.arrows.values()
-                if arrow.motion_data
+                arrow for arrow in self.pictograph_data.arrows.values() if arrow
             ]
             if not valid_arrows:
                 return False
 
             # Check if all props are nonradial
             for arrow_data in valid_arrows:
-                end_ori = self._get_arrow_end_orientation(arrow_data.motion_data)
+                end_ori = self._get_arrow_end_orientation(
+                    self.pictograph_data.motions[arrow_data.color]
+                )
                 if end_ori not in [Orientation.CLOCK, Orientation.COUNTER]:
                     return False
             return True
@@ -194,16 +197,16 @@ class PictographValidator:
         try:
             # Check if any arrows have valid motion data
             valid_arrows = [
-                arrow
-                for arrow in self.pictograph_data.arrows.values()
-                if arrow.motion_data
+                arrow for arrow in self.pictograph_data.arrows.values() if arrow
             ]
             if not valid_arrows:
                 return False
 
             # Check if all props are nonradial
             for arrow_data in valid_arrows:
-                end_ori = self._get_arrow_end_orientation(arrow_data.motion_data)
+                end_ori = self._get_arrow_end_orientation(
+                    self.pictograph_data.motions[arrow_data.color]
+                )
                 if end_ori not in [Orientation.CLOCK, Orientation.COUNTER]:
                     return False
             return True

@@ -3,8 +3,8 @@ Placement Key Service - Legacy Compatible Implementation
 
 This service generates placement keys with perfect parity to the legacy PlacementKeyGenerator.
 It provides the exact same logic as the legacy system:
-- Motion end orientation key generation
-- Letter suffix generation (with TYPE3/TYPE5 dash logic)
+- Motion end orientation key generation with hybrid orientation checks
+- Letter suffix generation (with TYPE3/TYPE5 dash logic using condition mappings)
 - Key middle generation (layer1/layer2/layer3 with alpha/beta/gamma)
 - Pictograph property analysis (radial/nonradial, alpha/beta/gamma endings)
 - Key selection logic with fallback to available placements
@@ -17,13 +17,14 @@ from typing import Optional
 
 from application.services.pictograph.pictograph_validator import PictographValidator
 from domain.models import MotionData, Orientation
-from domain.models.letter_type_classifier import LetterTypeClassifier
+from domain.models.enums import MotionType
+from domain.models.letter_condition import LetterCondition
 from domain.models.pictograph_data import PictographData
 
 logger = logging.getLogger(__name__)
 
 
-class PlacementKeyService:
+class PlacementKeyGenerator:
     """
     Service that generates placement keys for arrow positioning with legacy parity.
 
@@ -33,6 +34,11 @@ class PlacementKeyService:
 
     def __init__(self):
         """Initialize the placement key service."""
+        # Legacy letter condition mappings (exact copy from legacy system)
+        self._letter_condition_mappings = {
+            LetterCondition.TYPE3: ["W-", "X-", "Y-", "Z-", "Σ-", "Δ-", "θ-", "Ω-"],
+            LetterCondition.TYPE5: ["Φ-", "Ψ-", "Λ-"],
+        }
 
     def generate_placement_key(
         self,
@@ -65,15 +71,10 @@ class PlacementKeyService:
         has_radial_props = pictograph_checker.ends_with_radial_ori()
         has_nonradial_props = pictograph_checker.ends_with_nonradial_ori()
 
-        # Get motion end orientation
         motion_end_ori = self._get_motion_end_orientation(motion_data)
+        motion_type = self._get_motion_type(motion_data)
 
-        # Get motion type
-        motion_type = self._get_motion_type_string(motion_data)
-
-        # Build key components following legacy logic
         key_suffix = "_to_"
-
         motion_end_ori_key = self._get_motion_end_ori_key(
             has_hybrid_orientation, motion_end_ori
         )
@@ -89,31 +90,39 @@ class PlacementKeyService:
             has_gamma_props,
         )
 
-        # Combine components following legacy logic
-        key = motion_type + (
+        key_with_radiality = motion_type.value + (
             key_suffix + motion_end_ori_key + key_middle if key_middle else ""
         )
-        key_with_letter = f"{key}{letter_suffix}"
 
-        # Select final key using legacy selection logic
-        return self._select_key(key_with_letter, key, motion_type, default_placements)
+        key_with_letter = f"{key_with_radiality}{letter_suffix}"
+
+        return self._select_key(
+            key_with_letter, key_with_radiality, motion_type.value, default_placements
+        )
 
     def _get_motion_end_ori_key(
-        self, has_hybrid_orientation: bool, motion_end_ori: str
+        self, has_hybrid_orientation: bool, motion_end_ori: Orientation
     ) -> str:
         """
         Generate motion end orientation key component.
 
         Legacy logic:
-        - If hybrid orientation and end_ori is IN/OUT -> "radial_"
-        - If hybrid orientation and end_ori is CLOCK/COUNTER -> "nonradial_"
+        - If hybrid orientation and end_ori is IN/OUT -> "RADIAL_"
+        - If hybrid orientation and end_ori is CLOCK/COUNTER -> "NONRADIAL_"
         - Otherwise -> ""
         """
-        if has_hybrid_orientation and motion_end_ori.upper() in ["IN", "OUT"]:
-            return "radial_"
-        if has_hybrid_orientation and motion_end_ori.upper() in ["CLOCK", "COUNTER"]:
-            return "nonradial_"
-        return ""
+        if has_hybrid_orientation and motion_end_ori in [
+            Orientation.IN,
+            Orientation.OUT,
+        ]:
+            return "RADIAL_"
+        elif has_hybrid_orientation and motion_end_ori in [
+            Orientation.CLOCK,
+            Orientation.COUNTER,
+        ]:
+            return "NONRADIAL_"
+        else:
+            return ""
 
     def _get_letter_suffix(self, letter: Optional[str]) -> str:
         """
@@ -127,13 +136,13 @@ class PlacementKeyService:
         if not letter:
             return ""
 
-        # Check if letter is TYPE3 or TYPE5 using the letter type classifier
-        letter_type = LetterTypeClassifier.get_letter_type(letter)
-
-        if letter_type in ["Type3", "Type5"]:
-            # Remove the dash and add "_dash" suffix
+        # Check if letter is TYPE3 or TYPE5 using exact legacy condition mappings
+        if letter in self._get_letters_by_condition(
+            LetterCondition.TYPE3
+        ) or letter in self._get_letters_by_condition(LetterCondition.TYPE5):
             return f"_{letter[:-1]}_dash"
-        return f"_{letter}"
+        else:
+            return f"_{letter}"
 
     def _get_key_middle(
         self,
@@ -176,6 +185,14 @@ class PlacementKeyService:
 
         return key_middle
 
+    def _get_letters_by_condition(self, condition: LetterCondition) -> list[str]:
+        """
+        Get letters by condition using exact legacy letter_condition_mappings.
+
+        This replicates the legacy Letter.get_letters_by_condition() method.
+        """
+        return self._letter_condition_mappings.get(condition, [])
+
     def _select_key(
         self, key_with_letter: str, key: str, motion_type: str, default_placements: dict
     ) -> str:
@@ -193,10 +210,10 @@ class PlacementKeyService:
             return key
         return motion_type
 
-    def _get_motion_end_orientation(self, motion_data: MotionData) -> str:
+    def _get_motion_end_orientation(self, motion_data: MotionData) -> Orientation:
         """Extract motion end orientation as string."""
         if not motion_data:
-            return "IN"  # Default
+            return Orientation.IN  # Default
 
         # Calculate end orientation similar to legacy
         from application.services.positioning.arrows.calculation.orientation_calculator import (
@@ -210,11 +227,11 @@ class PlacementKeyService:
             start_ori = getattr(Orientation, start_ori.upper(), Orientation.IN)
 
         end_ori = orientation_service.calculate_end_orientation(motion_data, start_ori)
-        return end_ori.value
+        return end_ori
 
-    def _get_motion_type_string(self, motion_data: MotionData) -> str:
+    def _get_motion_type(self, motion_data: MotionData) -> MotionType:
         """Extract motion type as string."""
         if not motion_data or not motion_data.motion_type:
             return "static"  # Default fallback
 
-        return motion_data.motion_type.value
+        return motion_data.motion_type

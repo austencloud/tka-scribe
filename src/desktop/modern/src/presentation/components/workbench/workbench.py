@@ -158,15 +158,33 @@ class SequenceWorkbench(QWidget):
 
     def set_sequence(self, sequence: SequenceData):
         """Set the current sequence to display/edit"""
+        print(
+            f"🏗️ [WORKBENCH] set_sequence called with sequence length: {len(sequence.beats)}"
+        )
+
+        # Add stack trace to see who called this
+        import traceback
+
+        print("🔍 [WORKBENCH] set_sequence call stack:")
+        for line in traceback.format_stack()[-3:-1]:  # Show last 2 callers
+            print(f"    {line.strip()}")
+
         self._current_sequence = sequence
+        print(f"🏗️ [WORKBENCH] About to update all components...")
         self._update_all_components()
+        print(f"🏗️ [WORKBENCH] Components updated")
 
         # Only emit sequence_modified if we're not in restoration mode
         # This prevents auto-save loops during sequence restoration
         if not getattr(self, "_restoring_sequence", False):
             # Include start position in the sequence data when emitting
             complete_sequence = self._get_complete_sequence_with_start_position()
+            print(
+                f"🏗️ [WORKBENCH] Emitting sequence_modified signal with length: {len(complete_sequence.beats)}"
+            )
             self.sequence_modified.emit(complete_sequence)
+        else:
+            print(f"🏗️ [WORKBENCH] Skipping signal emission (restoration mode)")
 
     def get_sequence(self) -> Optional[SequenceData]:
         """Get the current sequence"""

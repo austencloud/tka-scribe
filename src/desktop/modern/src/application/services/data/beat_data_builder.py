@@ -9,7 +9,7 @@ import logging
 from typing import Any, Dict, Optional
 
 from domain.models.beat_data import BeatData
-from domain.models.enums import GridMode
+from domain.models.enums import GridMode, GridPosition
 from domain.models.glyph_data import GlyphData
 from domain.models.grid_data import GridData
 from domain.models.motion_data import MotionData
@@ -32,8 +32,8 @@ class BeatDataBuilder:
         self._pictograph_data: Optional[PictographData] = None
         self._blue_motion: Optional[MotionData] = None
         self._red_motion: Optional[MotionData] = None
-        self._start_position: str = ""
-        self._end_position: str = ""
+        self._start_position: Optional[GridPosition] = None
+        self._end_position: Optional[GridPosition] = None
 
     def with_beat_number(self, beat_number: int) -> "BeatDataBuilder":
         """Set the beat number."""

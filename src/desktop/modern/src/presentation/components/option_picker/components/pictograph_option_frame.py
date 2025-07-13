@@ -36,6 +36,10 @@ class PictographOptionFrame(QFrame):
         self._pictograph_component = pictograph_component
         self._size_calculator = size_calculator
 
+        # Debounce mechanism to prevent rapid duplicate selections
+        self._last_click_time = 0
+        self._debounce_delay = 500  # 500ms debounce delay
+
         self._setup_ui()
         self._setup_styling()
 
@@ -138,8 +142,18 @@ class PictographOptionFrame(QFrame):
         return self._pictograph_data
 
     def mousePressEvent(self, event):
-        """Handle mouse press events for selection."""
+        """Handle mouse press events for selection with debounce protection."""
         if event.button() == Qt.MouseButton.LeftButton and self._pictograph_data:
+            import time
+
+            current_time = time.time() * 1000  # Convert to milliseconds
+
+            # Check if enough time has passed since last click
+            if current_time - self._last_click_time < self._debounce_delay:
+                logger.debug(f"Debounced rapid click on {self._pictograph_data.letter}")
+                return
+
+            self._last_click_time = current_time
             logger.debug(f"Pictograph option selected: {self._pictograph_data.letter}")
             self.option_selected.emit(self._pictograph_data)
         super().mousePressEvent(event)

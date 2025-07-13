@@ -29,16 +29,14 @@ from domain.models.pictograph_data import PictographData
 from ...arrows.calculation.directional_tuple_calculator import (
     DirectionalTupleCalculator,
 )
-from ...arrows.keys.attribute_key_generation_service import (
-    AttributeKeyGenerationService,
-)
-from ...arrows.keys.placement_key_service import PlacementKeyService
-from ...arrows.keys.turns_tuple_generation_service import TurnsTupleGenerationService
 
 # Legacy service imports for backward compatibility
 from ...arrows.placement.default_placement_service import DefaultPlacementService
 from ...arrows.placement.special_placement_service import SpecialPlacementService
 from ..calculation.quadrant_index_calculator import QuadrantIndexCalculator
+from ..key_generators.attribute_key_generator import AttributeKeyGenerator
+from ..key_generators.placement_key_generator import PlacementKeyGenerator
+from ..key_generators.turns_tuple_key_generator import TurnsTupleKeyGenerator
 from ..placement.special_placement_ori_key_generator import (
     SpecialPlacementOriKeyGenerator,
 )
@@ -88,9 +86,9 @@ class ArrowAdjustmentCalculatorService(IArrowAdjustmentCalculator):
             special_placement_service=SpecialPlacementService(),
             default_placement_service=DefaultPlacementService(),
             orientation_key_service=SpecialPlacementOriKeyGenerator(),
-            placement_key_service=PlacementKeyService(),
-            turns_tuple_service=TurnsTupleGenerationService(),
-            attribute_key_service=AttributeKeyGenerationService(),
+            placement_key_service=PlacementKeyGenerator(),
+            turns_tuple_service=TurnsTupleKeyGenerator(),
+            attribute_key_service=AttributeKeyGenerator(),
         )
 
     def _create_default_tuple_processor(self) -> DirectionalTupleProcessor:

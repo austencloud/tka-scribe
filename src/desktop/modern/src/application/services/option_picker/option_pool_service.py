@@ -11,7 +11,7 @@ from typing import Dict, Optional, Set
 class OptionPoolService:
     """
     Pure service for managing option pool availability.
-    
+
     No Qt dependencies - manages pool identifiers only.
     """
 
@@ -24,26 +24,24 @@ class OptionPoolService:
     def checkout_item(self) -> Optional[int]:
         """
         Get available pool item ID.
-        
+
         Returns pool ID (int) - presentation layer maps to actual Qt widgets.
         """
         if self._available_ids:
             item_id = self._available_ids.pop()
             self._in_use_ids.add(item_id)
             return item_id
-        
-        # If no available items, reuse the first one (cycling behavior)
-        if self._in_use_ids:
-            # Take the first in-use item for reuse
-            item_id = next(iter(self._in_use_ids))
-            return item_id
-            
+
+        # If no available items, we should not reuse items that are still in use
+        # This prevents the "disappearing first pictograph" bug
+        # Instead, return None to indicate pool exhaustion
+        print(f"⚠️ [OPTION_POOL] Pool exhausted - all {self._max_items} items in use")
         return None
 
     def checkin_item(self, item_id: int) -> None:
         """
         Return item ID to pool.
-        
+
         Pure pool management - no Qt widget handling.
         """
         if item_id in self._in_use_ids:
@@ -61,7 +59,7 @@ class OptionPoolService:
             "available": len(self._available_ids),
             "in_use": len(self._in_use_ids),
             "total": self._max_items,
-            "utilization_percent": int((len(self._in_use_ids) / self._max_items) * 100)
+            "utilization_percent": int((len(self._in_use_ids) / self._max_items) * 100),
         }
 
     def is_item_available(self, item_id: int) -> bool:

@@ -8,7 +8,6 @@ Responsible for coordinating between the option picker component and sequence ma
 import time
 from typing import Optional
 
-
 from application.services.data.conversion_utils import (
     extract_end_position_from_position_key,
 )

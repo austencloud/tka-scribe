@@ -80,7 +80,15 @@ class SignalCoordinator(QObject):
             self.layout_manager.transition_to_option_picker
         )
 
-        # Option picker manager signals
+        # Option picker manager signals - Prevent duplicate connections
+        try:
+            self.option_picker_manager.pictograph_selected.disconnect(
+                self.beat_operations.add_pictograph_to_sequence
+            )
+        except TypeError:
+            # Signal was not connected, which is fine
+            pass
+
         self.option_picker_manager.pictograph_selected.connect(
             self.beat_operations.add_pictograph_to_sequence
         )
@@ -298,9 +306,25 @@ class SignalCoordinator(QObject):
 
     def _on_beat_modified(self, *args):
         """Handle any beat modification (added, removed, updated)."""
-        current_sequence = self.loading_service.get_current_sequence_from_workbench()
-        if current_sequence:
-            self._handle_sequence_modified(current_sequence)
+        # For beat_added signal, we now receive (beat_data, position, updated_sequence)
+        # For other signals, fall back to fetching from workbench
+        if len(args) >= 3:
+            # beat_added signal with updated sequence
+            beat_data, position, updated_sequence = args[0], args[1], args[2]
+            print(
+                f"🔄 [SIGNAL_COORDINATOR] Beat added - refreshing option picker with sequence length: {updated_sequence.length}"
+            )
+            self._handle_sequence_modified(updated_sequence)
+        else:
+            # Other beat modification signals - fetch from workbench
+            current_sequence = (
+                self.loading_service.get_current_sequence_from_workbench()
+            )
+            if current_sequence:
+                print(
+                    f"🔄 [SIGNAL_COORDINATOR] Beat modified - refreshing option picker with sequence length: {current_sequence.length}"
+                )
+                self._handle_sequence_modified(current_sequence)
 
     def _on_start_position_set(self, start_position_data):
         """Handle start position set."""
@@ -316,6 +340,16 @@ class SignalCoordinator(QObject):
 
     def _handle_workbench_modified(self, sequence: SequenceData):
         """Handle workbench sequence modification with circular emission protection"""
+        print(
+            f"🔄 [SIGNAL_COORDINATOR] _handle_workbench_modified called with sequence length: {len(sequence.beats)}"
+        )
+
+        # Add stack trace to see who called this
+        import traceback
+
+        print("🔍 [SIGNAL_COORDINATOR] Workbench modified call stack:")
+        for line in traceback.format_stack()[-3:-1]:  # Show last 2 callers
+            print(f"    {line.strip()}")
 
         if self._handling_sequence_modification:
             print(
@@ -325,9 +359,13 @@ class SignalCoordinator(QObject):
 
         try:
             self._handling_sequence_modification = True
+            print(f"🔄 [SIGNAL_COORDINATOR] Processing workbench modification...")
             # Save sequence to persistence
             self._save_sequence_to_persistence(sequence)
             self._handle_sequence_modified(sequence)
+            print(
+                f"🔄 [SIGNAL_COORDINATOR] Workbench modification processing completed"
+            )
         except Exception as e:
             print(f"❌ Signal coordinator: Workbench modification failed: {e}")
             import traceback

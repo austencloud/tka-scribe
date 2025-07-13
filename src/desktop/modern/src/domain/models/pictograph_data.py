@@ -5,7 +5,7 @@ from enum import Enum
 from typing import Any, Dict, Optional, Tuple, Union
 
 from domain.models.arrow_data import ArrowData
-from domain.models.enums import ArrowType, GridMode, PropType
+from domain.models.enums import ArrowType, GridMode, GridPosition, PropType
 from domain.models.glyph_data import GlyphData
 from domain.models.grid_data import GridData
 from domain.models.prop_data import PropData
@@ -37,8 +37,8 @@ class PictographData:
 
     # Letter and position data
     letter: Optional[str] = None
-    start_position: Optional[str] = None
-    end_position: Optional[str] = None
+    start_position: Optional[GridPosition] = None
+    end_position: Optional[GridPosition] = None
 
     # Glyph data for notation rendering
     glyph_data: Optional[GlyphData] = None
@@ -123,7 +123,7 @@ class PictographData:
             raise ValueError(f"Prop color '{color}' not found")
 
         current_prop = self.props[color]
-        # Use from_dict to properly handle motion_data conversion
+        # Use from_dict to properly handle field updates
         updated_prop = PropData.from_dict({**current_prop.to_dict(), **kwargs})
         new_props = {**self.props, color: updated_prop}
 
