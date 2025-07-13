@@ -8,7 +8,7 @@ Focused solely on legacy-to-modern data transformation.
 import logging
 
 # Forward reference for PictographData
-from typing import TYPE_CHECKING, Any, Dict
+from typing import TYPE_CHECKING, Any, Dict, Optional
 
 from domain.models.beat_data import BeatData
 from domain.models.glyph_data import GlyphData
@@ -155,3 +155,10 @@ class LegacyToModernConverter:
             glyph_data=glyph_data,
             metadata={"source": "legacy_conversion"},
         )
+
+    def convert_legacy_start_position_to_beat_data(
+        self, legacy_start_position: str
+    ) -> Optional[BeatData]:
+        """Convert a legacy start position to a BeatData object."""
+        # TODO: Implement this method
+        pass

@@ -16,8 +16,8 @@ All domain/application/presentation absolute imports are preserved.
 from application.services.option_picker.option_provider import OptionProvider
 
 # Core components (primary public API)
-from .core.option_picker import OptionPicker
-from .core.option_picker_widget import OptionPickerWidget
+from .components.option_picker import OptionPicker
+from .components.option_picker_widget import OptionPickerWidget
 
 # Types
 from .types.letter_types import LetterType

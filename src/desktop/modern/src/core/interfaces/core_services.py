@@ -81,11 +81,31 @@ class ISettingsCoordinator(ABC):
         """Set a setting value."""
 
     @abstractmethod
-    def save_settings(self) -> None:
+    def update_setting(self, key: str, value: Any) -> None:
+        """Update a setting value (alias for set_setting for UI compatibility)."""
+
+    @abstractmethod
+    def add_change_listener(self, listener: Callable[[str, Any], None]) -> None:
+        """Add a listener for setting changes."""
+
+    @abstractmethod
+    def remove_change_listener(self, listener: Callable[[str, Any], None]) -> None:
+        """Remove a listener for setting changes."""
+
+    @abstractmethod
+    def get_all_settings(self) -> Dict[str, Any]:
+        """Get all settings."""
+
+    @abstractmethod
+    def reset_to_defaults(self) -> None:
+        """Reset all settings to defaults."""
+
+    @abstractmethod
+    def save_settings(self) -> bool:
         """Save settings to persistent storage."""
 
     @abstractmethod
-    def load_settings(self) -> None:
+    def load_settings(self) -> bool:
         """Load settings from persistent storage."""
 
 
@@ -215,6 +235,22 @@ class IUIStateManager(ABC):
     @abstractmethod
     def get_tab_state(self, tab_name: str) -> Dict[str, Any]:
         """Get state for a specific tab."""
+
+    @abstractmethod
+    def get_all_settings(self) -> Dict[str, Any]:
+        """Get all settings."""
+
+    @abstractmethod
+    def clear_settings(self) -> None:
+        """Clear all settings."""
+
+    @abstractmethod
+    def save_state(self) -> None:
+        """Save current state to persistent storage."""
+
+    @abstractmethod
+    def load_state(self) -> None:
+        """Load state from persistent storage."""
 
     @abstractmethod
     def toggle_graph_editor(self) -> bool:

@@ -111,27 +111,6 @@ class SequenceLoader(QObject):
                         logger.error(f"Failed to convert start position: {e}")
                         return  # Skip start position loading if conversion fails
 
-                        # Create PictographData for option picker using dataset service
-                        start_position_pictograph = (
-                            self._create_start_position_pictograph_data(
-                                position_key, end_position
-                            )
-                        )
-
-                        # Set start position directly in workbench (don't trigger selection flow)
-                        workbench = self.workbench_getter()
-                        if workbench and hasattr(workbench, "set_start_position"):
-                            workbench.set_start_position(start_position_beat)
-
-                            # Emit signal for UI coordination with PictographData for option picker
-                            self.start_position_loaded.emit(
-                                start_position_pictograph, position_key
-                            )
-                        else:
-                            print(
-                                f"⚠️ [SEQUENCE_LOADING] Workbench doesn't have set_start_position method"
-                            )
-
                 except Exception as e:
                     print(f"⚠️ [SEQUENCE_LOADING] Failed to load start position: {e}")
                     import traceback

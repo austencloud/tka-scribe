@@ -56,21 +56,13 @@ class LetterType:
 
     @classmethod
     def get_type_description(cls, letter_type: str) -> tuple[str, str]:
+        """Get the correct Legacy section names and descriptions."""
         descriptions = {
-            cls.TYPE1: (
-                '<span style="color: #36c3ff;">Shift</span>-<span style="color: #6F2DA8;">Static</span>',
-                "Type 1",
-            ),
-            cls.TYPE2: ('<span style="color: #6F2DA8;">Shift</span>', "Type 2"),
-            cls.TYPE3: (
-                '<span style="color: #26e600;">Dash</span>-<span style="color: #6F2DA8;">Shift</span>',
-                "Type 3",
-            ),
-            cls.TYPE4: ('<span style="color: #26e600;">Static</span>', "Type 4"),
-            cls.TYPE5: (
-                '<span style="color: #00b3ff;">Dash</span>-<span style="color: #26e600;">Static</span>',
-                "Type 5",
-            ),
-            cls.TYPE6: ('<span style="color: #eb7d00;">Beta</span>', "Type 6"),
+            cls.TYPE1: ("Dual-Shift", "Type1"),
+            cls.TYPE2: ("Shift", "Type2"),
+            cls.TYPE3: ("Cross-Shift", "Type3"),
+            cls.TYPE4: ("Dash", "Type4"),
+            cls.TYPE5: ("Dual-Dash", "Type5"),
+            cls.TYPE6: ("Static", "Type6"),
         }
         return descriptions.get(letter_type, ("Unknown", "Type ?"))

@@ -135,9 +135,15 @@ class SettingsDialog(QDialog):
         from application.services.settings.settings_coordinator import (
             SettingsCoordinator,
         )
+        from presentation.components.ui.settings.settings_ui_adapter import (
+            SettingsUIAdapter,
+        )
 
+        # Create the framework-agnostic service
         settings_service = SettingsCoordinator(self.ui_state_service)
-        self.coordinator = SettingsCoordinator(settings_service)
+
+        # Create the UI adapter to bridge Qt and the service
+        self.coordinator = SettingsUIAdapter(settings_service)
         self.coordinator.settings_changed.connect(self.settings_changed.emit)
 
     def _setup_dialog(self):

@@ -334,13 +334,29 @@ class SequenceBeatOperations(QObject):
 
     def _get_current_sequence(self) -> Optional[SequenceData]:
         """Get the current sequence from workbench"""
+        print(f"🔍 [BEAT_OPERATIONS] Getting current sequence...")
+        print(f"   Workbench getter: {self.workbench_getter}")
+
         if self.workbench_getter:
             try:
                 workbench = self.workbench_getter()
+                print(f"   Workbench from getter: {workbench}")
+
                 if workbench and hasattr(workbench, "get_sequence"):
-                    return workbench.get_sequence()
+                    sequence = workbench.get_sequence()
+                    print(f"   Sequence from workbench: {sequence}")
+                    if sequence:
+                        print(f"   Sequence length: {sequence.length}")
+                    return sequence
+                else:
+                    print(f"   ❌ Workbench is None or has no get_sequence method")
             except Exception as e:
                 print(f"❌ Error getting current sequence: {e}")
+                import traceback
+
+                traceback.print_exc()
+        else:
+            print(f"   ❌ No workbench getter configured")
         return None
 
     def _save_sequence_to_persistence(self, sequence: SequenceData):

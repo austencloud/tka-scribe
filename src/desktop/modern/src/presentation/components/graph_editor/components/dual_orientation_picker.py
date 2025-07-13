@@ -25,19 +25,19 @@ from typing import Optional
 
 from domain.models import BeatData, Orientation
 from presentation.components.graph_editor.components.turn_adjustment_controls.styling_helpers import (
+    UNIFIED_BUTTON_HEIGHT,
+    UNIFIED_BUTTON_WIDTH,
     apply_modern_panel_styling,
     apply_turn_button_styling,
-    UNIFIED_BUTTON_WIDTH,
-    UNIFIED_BUTTON_HEIGHT,
 )
-from PyQt6.QtCore import pyqtSignal, Qt
+from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtWidgets import (
-    QWidget,
-    QHBoxLayout,
-    QVBoxLayout,
     QGroupBox,
+    QHBoxLayout,
     QLabel,
     QPushButton,
+    QVBoxLayout,
+    QWidget,
 )
 
 logger = logging.getLogger(__name__)
@@ -230,8 +230,10 @@ class DualOrientationPicker(QWidget):
 
         if beat_data:
             # Extract current orientations from beat data
-            if beat_data.blue_motion:
-                blue_ori = getattr(beat_data.blue_motion, "start_ori", None)
+            if beat_data.pictograph_data.motions["blue"]:
+                blue_ori = getattr(
+                    beat_data.pictograph_data.motions["blue"], "start_ori", None
+                )
                 if blue_ori:
                     # Handle both enum and string values
                     if isinstance(blue_ori, Orientation):
@@ -247,8 +249,10 @@ class DualOrientationPicker(QWidget):
             else:
                 self._blue_orientation = Orientation.IN
 
-            if beat_data.red_motion:
-                red_ori = getattr(beat_data.red_motion, "start_ori", None)
+            if beat_data.pictograph_data.motions["red"]:
+                red_ori = getattr(
+                    beat_data.pictograph_data.motions["red"], "start_ori", None
+                )
                 if red_ori:
                     # Handle both enum and string values
                     if isinstance(red_ori, Orientation):

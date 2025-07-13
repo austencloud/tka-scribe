@@ -22,7 +22,7 @@ class OptionPickerWidgetFactory:
 
     def create_option_picker(self, parent: Optional[QWidget] = None) -> QWidget:
         """Create an option picker widget."""
-        from presentation.components.option_picker.core.option_picker_widget import (
+        from presentation.components.option_picker.components.option_picker_widget import (
             OptionPickerWidget,
         )
 
@@ -30,7 +30,7 @@ class OptionPickerWidgetFactory:
 
     def create_filter_widget(self, parent: Optional[QWidget] = None) -> QWidget:
         """Create a filter widget for the option picker."""
-        from presentation.components.option_picker.components.filters.option_filter import (
+        from presentation.components.option_picker.components.option_filter import (
             OptionPickerFilter,
         )
 

@@ -13,7 +13,7 @@ from application.services.data.conversion_utils import (
 )
 from domain.models.pictograph_data import PictographData
 from domain.models.sequence_data import SequenceData
-from presentation.components.option_picker.core.option_picker import OptionPicker
+from presentation.components.option_picker.components.option_picker import OptionPicker
 from PyQt6.QtCore import QObject, pyqtSignal
 
 

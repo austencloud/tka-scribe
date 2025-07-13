@@ -27,7 +27,7 @@ class PictographPoolManager:
         self.container = container
         self._pool: Queue[PictographComponent] = Queue()
         self._checked_out: Set[PictographComponent] = set()
-        self._pool_size = 36  # Pre-create 36 components for multiple refreshes
+        self._pool_size = 50  # Pre-create 50 components to match option picker frames
         self._lock = threading.Lock()
         self._initialized = False
 

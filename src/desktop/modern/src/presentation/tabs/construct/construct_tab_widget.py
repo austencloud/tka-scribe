@@ -239,7 +239,20 @@ class ConstructTabWidget(QWidget):
         """Get a function that returns the workbench"""
 
         def get_workbench():
-            return getattr(self.layout_manager, "workbench", None)
+            workbench = getattr(self.layout_manager, "workbench", None)
+            if workbench is None:
+                print("🚨 [WORKBENCH_GETTER] Layout manager has no workbench!")
+                print(f"   Layout manager: {self.layout_manager}")
+                print(
+                    f"   Has workbench attr: {hasattr(self.layout_manager, 'workbench')}"
+                )
+            else:
+                print(
+                    f"✅ [WORKBENCH_GETTER] Workbench found: {type(workbench).__name__}"
+                )
+                if not hasattr(workbench, "get_sequence"):
+                    print("🚨 [WORKBENCH_GETTER] Workbench has no get_sequence method!")
+            return workbench
 
         return get_workbench
 

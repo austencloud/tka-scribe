@@ -19,6 +19,8 @@ from domain.models import (
     RotationDirection,
     VTGMode,
 )
+from domain.models.enums import Orientation
+from domain.models.pictograph_data import PictographData
 from presentation.components.pictograph.pictograph_scene import PictographScene
 from PyQt6.QtCore import QPropertyAnimation, Qt, QTimer, pyqtSignal
 from PyQt6.QtGui import QFont
@@ -126,8 +128,8 @@ class VisibilityPictographPreview(QWidget):
                 start_loc=Location.SOUTH,
                 end_loc=Location.WEST,
                 turns=0.0,  # Basic positioning without turns
-                start_ori="in",
-                end_ori="in",
+                start_ori=Orientation.IN,
+                end_ori=Orientation.IN,
             )
 
             # Red motion: pro, clockwise, east to south (basic positioning)
@@ -137,8 +139,8 @@ class VisibilityPictographPreview(QWidget):
                 start_loc=Location.NORTH,
                 end_loc=Location.EAST,
                 turns=0.0,  # Basic positioning without turns
-                start_ori="in",
-                end_ori="in",
+                start_ori=Orientation.IN,
+                end_ori=Orientation.IN,
             )
 
             # Create comprehensive glyph data with all elements
@@ -156,14 +158,31 @@ class VisibilityPictographPreview(QWidget):
                 show_positions=True,
             )
 
+            motions = {
+                "blue": blue_motion,
+                "red": red_motion,
+            }
+            self.sample_pictograph_data = PictographData(
+                motions=motions,
+                letter="A",
+                start_position="alpha1",
+                end_position="alpha3",
+                glyph_data=glyph_data,
+                is_blank=False,
+                metadata={
+                    "preview_mode": True,
+                    "start_position": "alpha1",
+                    "end_position": "alpha3",
+                    "timing": "split",
+                    "direction": "same",
+                },
+            )
+
             # Create comprehensive beat data
             self.sample_beat_data = BeatData(
                 beat_number=1,
-                letter="A",
                 duration=1.0,
-                blue_motion=blue_motion,
-                red_motion=red_motion,
-                glyph_data=glyph_data,
+                pictograph_data=self.sample_pictograph_data,
                 blue_reversal=False,  # No reversals in basic Alpha sequence
                 red_reversal=False,  # No reversals in basic Alpha sequence
                 is_blank=False,

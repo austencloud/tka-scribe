@@ -7,10 +7,10 @@ Contains all resolver implementations using the Strategy Pattern:
 - FactoryResolver: Handles factory-based service creation
 """
 
-from typing import Type, Any, Dict, get_type_hints
-from abc import ABC, abstractmethod
 import inspect
 import logging
+from abc import ABC, abstractmethod
+from typing import Any, Dict, Type, get_type_hints
 
 logger = logging.getLogger(__name__)
 
@@ -153,8 +153,8 @@ class ConstructorResolver(IServiceResolver):
 
     def _is_primitive_type(self, param_type: Type) -> bool:
         """Check if a type is a primitive type that should not be resolved as a dependency."""
-        from pathlib import Path
         from datetime import datetime, timedelta
+        from pathlib import Path
         from typing import Union
 
         primitive_types = {
@@ -212,7 +212,12 @@ class FactoryResolver(IServiceResolver):
         if callable(factory_or_implementation) and not inspect.isclass(
             factory_or_implementation
         ):
-            return factory_or_implementation()
+            # Try to call with container parameter first, fallback to no parameters
+            try:
+                return factory_or_implementation(container)
+            except TypeError:
+                # Factory doesn't accept container parameter
+                return factory_or_implementation()
         else:
             # It's a class, create with constructor injection
             constructor_resolver = ConstructorResolver()

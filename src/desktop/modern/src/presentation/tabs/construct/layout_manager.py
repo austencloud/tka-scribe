@@ -8,7 +8,7 @@ Responsible for creating the main layout structure and organizing UI components.
 from typing import TYPE_CHECKING, Callable, Optional
 
 from core.dependency_injection.di_container import DIContainer
-from presentation.components.option_picker.core.option_picker import OptionPicker
+from presentation.components.option_picker.components.option_picker import OptionPicker
 from presentation.factories.workbench_factory import create_modern_workbench
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QHBoxLayout, QLabel, QStackedWidget, QVBoxLayout, QWidget
@@ -136,9 +136,11 @@ class ConstructTabLayoutManager:
 
             # WINDOW MANAGEMENT FIX: Create option picker during splash screen
             # Pool creation happens during splash - no window flashing due to hidden widgets
+            # SIZE PROVIDER FIX: Pass widget as parent so option picker can find main window
             self.option_picker = OptionPicker(
                 self.container,
                 progress_callback=option_picker_progress,
+                parent=widget,  # CRITICAL: Pass parent so size provider can find main window
             )
             self.option_picker.initialize()
             layout.addWidget(self.option_picker.widget)
@@ -224,7 +226,6 @@ class ConstructTabLayoutManager:
             start_position_data = getattr(self.workbench, "_start_position_data", None)
             if start_position_data:
                 self.graph_editor.set_selected_beat_data(-1, start_position_data)
-                print(f"✅ Graph editor updated with start position")
             else:
                 print(f"⚠️ No start position data available")
             return
@@ -232,7 +233,6 @@ class ConstructTabLayoutManager:
             beat_data = current_sequence.beats[beat_index]
             # Removed repetitive debug log
             self.graph_editor.set_selected_beat_data(beat_index, beat_data)
-            print(f"✅ Graph editor updated with beat {beat_index + 1}")
         else:
             print(
                 f"⚠️ Invalid beat index: {beat_index} (sequence has {len(current_sequence.beats)} beats)"

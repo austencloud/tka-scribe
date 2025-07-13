@@ -181,24 +181,30 @@ class DetailedInfoPanel(QWidget):
         motion_info = ""
 
         # Blue motion details
-        if beat_data.blue_motion:
-            motion_info += f"Blue Motion: {beat_data.blue_motion.motion_type.value}\n"
+        if beat_data.pictograph_data.motions["blue"]:
+            motion_info += f"Blue Motion: {beat_data.pictograph_data.motions['blue'].motion_type.value}\n"
+            motion_info += f"Blue Direction: {beat_data.pictograph_data.motions['blue'].prop_rot_dir.value}\n"
+            motion_info += f"Blue Start: {beat_data.pictograph_data.motions['blue'].start_loc.value}\n"
             motion_info += (
-                f"Blue Direction: {beat_data.blue_motion.prop_rot_dir.value}\n"
+                f"Blue End: {beat_data.pictograph_data.motions['blue'].end_loc.value}\n"
             )
-            motion_info += f"Blue Start: {beat_data.blue_motion.start_loc.value}\n"
-            motion_info += f"Blue End: {beat_data.blue_motion.end_loc.value}\n"
-            if beat_data.blue_motion.turns:
-                motion_info += f"Blue Turns: {beat_data.blue_motion.turns}\n"
+            if beat_data.pictograph_data.motions["blue"].turns:
+                motion_info += (
+                    f"Blue Turns: {beat_data.pictograph_data.motions['blue'].turns}\n"
+                )
 
         # Red motion details
-        if beat_data.red_motion:
-            motion_info += f"Red Motion: {beat_data.red_motion.motion_type.value}\n"
-            motion_info += f"Red Direction: {beat_data.red_motion.prop_rot_dir.value}\n"
-            motion_info += f"Red Start: {beat_data.red_motion.start_loc.value}\n"
-            motion_info += f"Red End: {beat_data.red_motion.end_loc.value}\n"
-            if beat_data.red_motion.turns:
-                motion_info += f"Red Turns: {beat_data.red_motion.turns}\n"
+        if beat_data.pictograph_data.motions["red"]:
+            motion_info += f"Red Motion: {beat_data.pictograph_data.motions["red"].motion_type.value}\n"
+            motion_info += f"Red Direction: {beat_data.pictograph_data.motions["red"].prop_rot_dir.value}\n"
+            motion_info += f"Red Start: {beat_data.pictograph_data.motions["red"].start_loc.value}\n"
+            motion_info += (
+                f"Red End: {beat_data.pictograph_data.motions["red"].end_loc.value}\n"
+            )
+            if beat_data.pictograph_data.motions["red"].turns:
+                motion_info += (
+                    f"Red Turns: {beat_data.pictograph_data.motions["red"].turns}\n"
+                )
 
         self._motion_info_label.setText(motion_info)
 

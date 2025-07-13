@@ -8,19 +8,19 @@ Features glassmorphism styling and direct turn value selection.
 
 import logging
 from typing import Optional
-from domain.models import BeatData, MotionData
-from PyQt6.QtCore import pyqtSignal
-from PyQt6.QtWidgets import QWidget, QHBoxLayout, QVBoxLayout, QGroupBox
 
+from domain.models import BeatData, MotionData
 from presentation.components.graph_editor.components.turn_adjustment_controls.current_turn_display import (
     CurrentTurnDisplay,
-)
-from presentation.components.graph_editor.components.turn_adjustment_controls.turn_value_button_grid import (
-    TurnValueButtonGrid,
 )
 from presentation.components.graph_editor.components.turn_adjustment_controls.styling_helpers import (
     apply_modern_panel_styling,
 )
+from presentation.components.graph_editor.components.turn_adjustment_controls.turn_value_button_grid import (
+    TurnValueButtonGrid,
+)
+from PyQt6.QtCore import pyqtSignal
+from PyQt6.QtWidgets import QGroupBox, QHBoxLayout, QVBoxLayout, QWidget
 
 logger = logging.getLogger(__name__)
 
@@ -82,7 +82,7 @@ class TurnAdjustmentControls(QWidget):
 
         blue_panel = self._create_modern_turn_panel("blue")
         red_panel = self._create_modern_turn_panel("red")
-        
+
         layout.addWidget(blue_panel, 1)
         layout.addWidget(red_panel, 1)
 
@@ -160,30 +160,42 @@ class TurnAdjustmentControls(QWidget):
             updated_beat = self._current_beat_data
 
             # Update blue motion if it exists
-            if updated_beat.blue_motion and self._blue_turn_amount != 0:
+            if (
+                updated_beat.pictograph_data.motions["blue"]
+                and self._blue_turn_amount != 0
+            ):
                 blue_motion = MotionData(
-                    motion_type=updated_beat.blue_motion.motion_type,
-                    prop_rot_dir=updated_beat.blue_motion.prop_rot_dir,
-                    start_loc=updated_beat.blue_motion.start_loc,
-                    end_loc=updated_beat.blue_motion.end_loc,
+                    motion_type=updated_beat.pictograph_data.motions[
+                        "blue"
+                    ].motion_type,
+                    prop_rot_dir=updated_beat.pictograph_data.motions[
+                        "blue"
+                    ].prop_rot_dir,
+                    start_loc=updated_beat.pictograph_data.motions["blue"].start_loc,
+                    end_loc=updated_beat.pictograph_data.motions["blue"].end_loc,
                     turns=self._blue_turn_amount,
-                    start_ori=updated_beat.blue_motion.start_ori,
-                    end_ori=updated_beat.blue_motion.end_ori,
+                    start_ori=updated_beat.pictograph_data.motions["blue"].start_ori,
+                    end_ori=updated_beat.pictograph_data.motions["blue"].end_ori,
                 )
-                updated_beat = updated_beat.update(blue_motion=blue_motion)
+                updated_beat.pictograph_data.motions["blue"] = blue_motion
 
             # Update red motion if it exists
-            if updated_beat.red_motion and self._red_turn_amount != 0:
+            if (
+                updated_beat.pictograph_data.motions["red"]
+                and self._red_turn_amount != 0
+            ):
                 red_motion = MotionData(
-                    motion_type=updated_beat.red_motion.motion_type,
-                    prop_rot_dir=updated_beat.red_motion.prop_rot_dir,
-                    start_loc=updated_beat.red_motion.start_loc,
-                    end_loc=updated_beat.red_motion.end_loc,
+                    motion_type=updated_beat.pictograph_data.motions["red"].motion_type,
+                    prop_rot_dir=updated_beat.pictograph_data.motions[
+                        "red"
+                    ].prop_rot_dir,
+                    start_loc=updated_beat.pictograph_data.motions["red"].start_loc,
+                    end_loc=updated_beat.pictograph_data.motions["red"].end_loc,
                     turns=self._red_turn_amount,
-                    start_ori=updated_beat.red_motion.start_ori,
-                    end_ori=updated_beat.red_motion.end_ori,
+                    start_ori=updated_beat.pictograph_data.motions["red"].start_ori,
+                    end_ori=updated_beat.pictograph_data.motions["red"].end_ori,
                 )
-                updated_beat = updated_beat.update(red_motion=red_motion)
+                updated_beat.pictograph_data.motions["red"] = red_motion
 
             self._current_beat_data = updated_beat
             self.beat_data_updated.emit(updated_beat)
@@ -198,13 +210,17 @@ class TurnAdjustmentControls(QWidget):
 
         if beat_data:
             # Extract current turn amounts from beat data
-            if beat_data.blue_motion:
-                self._blue_turn_amount = getattr(beat_data.blue_motion, "turns", 0.0)
+            if beat_data.pictograph_data.motions["blue"]:
+                self._blue_turn_amount = getattr(
+                    beat_data.pictograph_data.motions["blue"], "turns", 0.0
+                )
             else:
                 self._blue_turn_amount = 0.0
 
-            if beat_data.red_motion:
-                self._red_turn_amount = getattr(beat_data.red_motion, "turns", 0.0)
+            if beat_data.pictograph_data.motions["red"]:
+                self._red_turn_amount = getattr(
+                    beat_data.pictograph_data.motions["red"], "turns", 0.0
+                )
             else:
                 self._red_turn_amount = 0.0
         else:

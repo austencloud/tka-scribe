@@ -6,6 +6,7 @@ Extracted from KineticConstructorModern to follow single responsibility principl
 
 PROVIDES:
 - Main window UI setup
+- Menu bar and navigation integration
 - Tab widget creation and configuration
 - Header layout with title and settings
 - Construct tab loading with progress tracking
@@ -16,18 +17,19 @@ from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING, Callable, Optional
 
 from core.interfaces.session_services import ISessionStateTracker
+from presentation.components.menu_bar import MenuBarWidget
 from presentation.tabs.construct.construct_tab_widget import ConstructTabWidget
 from PyQt6.QtCore import Qt, QTimer
 from PyQt6.QtGui import QFont
 from PyQt6.QtWidgets import (
-    QHBoxLayout,
     QLabel,
     QMainWindow,
-    QPushButton,
     QTabWidget,
     QVBoxLayout,
     QWidget,
 )
+
+from .tab_management import ITabManagementService, TabManagementService
 
 if TYPE_CHECKING:
     from core.dependency_injection.di_container import DIContainer
@@ -46,10 +48,6 @@ class IUISetupManager(ABC):
         """Setup the main UI components and return the tab widget."""
 
     @abstractmethod
-    def create_header_layout(self, main_window: QMainWindow) -> QHBoxLayout:
-        """Create header layout with title and settings button."""
-
-    @abstractmethod
     def create_tab_widget(self) -> QTabWidget:
         """Create and configure the main tab widget."""
 
@@ -65,7 +63,8 @@ class UISetupManager(IUISetupManager):
     def __init__(self):
         """Initialize UI setup manager."""
         self.tab_widget: Optional[QTabWidget] = None
-        self.settings_button = None
+        self.menu_bar: Optional[MenuBarWidget] = None
+        self.tab_management_service: ITabManagementService = TabManagementService()
 
     def setup_main_ui(
         self,
@@ -88,21 +87,31 @@ class UISetupManager(IUISetupManager):
 
         # Create main layout
         layout = QVBoxLayout(central_widget)
-        layout.setContentsMargins(20, 20, 20, 20)
+        layout.setContentsMargins(0, 0, 0, 0)  # Remove margins for menu bar
+        layout.setSpacing(0)
 
         if progress_callback:
-            progress_callback(70, "Creating header interface...")
+            progress_callback(68, "Creating menu bar...")
 
-        # Create header
-        header_layout = self.create_header_layout(main_window)
-        layout.addLayout(header_layout)
+        # Create menu bar with size provider
+        size_provider = lambda: main_window.size()
+        self.menu_bar = MenuBarWidget(
+            parent=central_widget, size_provider=size_provider
+        )
+        layout.addWidget(self.menu_bar)
 
         if progress_callback:
-            progress_callback(72, "Creating tab interface...")
+            progress_callback(70, "Creating tab interface...")
 
         # Create tab widget
         self.tab_widget = self.create_tab_widget()
         layout.addWidget(self.tab_widget)
+
+        if progress_callback:
+            progress_callback(72, "Initializing tab management...")
+
+        # Initialize tab management service
+        self.tab_management_service.initialize_tabs(self.tab_widget, container)
 
         if progress_callback:
             progress_callback(75, "Loading construct tab...")
@@ -111,39 +120,22 @@ class UISetupManager(IUISetupManager):
         self._load_construct_tab(container, progress_callback, session_service)
 
         if progress_callback:
+            progress_callback(90, "Connecting menu bar signals...")
+
+        # Connect menu bar to tab management
+        self._connect_menu_bar_signals()
+
+        if progress_callback:
             progress_callback(95, "Finalizing interface...")
 
-        # Note: Only Construct tab is needed - placeholder tabs removed for cleaner UI
-
         return self.tab_widget
-
-    def create_header_layout(self, main_window: QMainWindow) -> QHBoxLayout:
-        """Create header layout with title and settings button."""
-        header_layout = QHBoxLayout()
-
-        # Create title
-        title = QLabel("🚀 Kinetic Constructor")
-        title.setFont(QFont("Arial", 20, QFont.Weight.Bold))
-        title.setStyleSheet("color: white; margin: 20px; background: transparent;")
-
-        # Create settings button using dependency injection
-        self.settings_button = self._create_settings_button()
-        self.settings_button.settings_requested.connect(
-            lambda: self._show_settings(main_window)
-        )
-
-        header_layout.addWidget(title)
-        header_layout.addStretch()
-        header_layout.addWidget(self.settings_button)
-
-        return header_layout
 
     def create_tab_widget(self) -> QTabWidget:
         """Create and configure the main tab widget."""
         tab_widget = QTabWidget()
         tab_widget.setTabPosition(QTabWidget.TabPosition.North)
 
-        # Hide tab bar since we only have one tab for cleaner UI
+        # Hide the tab bar since we use the menu bar navigation instead
         tab_widget.tabBar().setVisible(False)
 
         tab_widget.setStyleSheet(
@@ -151,22 +143,7 @@ class UISetupManager(IUISetupManager):
             QTabWidget::pane {
                 border: none;
                 background: transparent;
-            }
-            QTabBar::tab {
-                background: rgba(255, 255, 255, 0.1);
-                color: white;
-                padding: 8px 16px;
-                margin: 2px;
-                border-top-left-radius: 8px;
-                border-top-right-radius: 8px;
-                border-bottom-color: transparent;
-            }
-            QTabBar::tab:selected {
-                background: rgba(255, 255, 255, 0.2);
-                border-bottom-color: transparent;
-            }
-            QTabBar::tab:hover {
-                background: rgba(255, 255, 255, 0.15);
+                margin-top: 0px;
             }
         """
         )
@@ -228,7 +205,12 @@ class UISetupManager(IUISetupManager):
             if progress_callback:
                 progress_callback(90, "Adding construct tab to interface...")
 
-            self.tab_widget.addTab(construct_tab, "🔧 Construct")
+            tab_index = self.tab_widget.addTab(construct_tab, "🔧 Construct")
+
+            # Register construct tab with tab management service
+            self.tab_management_service.register_existing_tab(
+                "construct", construct_tab, tab_index
+            )
 
             # WINDOW MANAGEMENT FIX: Keep widgets hidden during splash screen
             # They will be shown when the main window is displayed
@@ -337,3 +319,55 @@ class UISetupManager(IUISetupManager):
 
             background_manager = BackgroundManager()
             background_manager.apply_background_change(main_window, value)
+
+    def _connect_menu_bar_signals(self):
+        """Connect menu bar signals to tab management."""
+        if self.menu_bar and self.tab_management_service:
+            # Connect tab change signal
+            self.menu_bar.tab_changed.connect(self.tab_management_service.switch_to_tab)
+
+            # Connect settings signal to actually open the settings dialog
+            self.menu_bar.settings_requested.connect(self._handle_settings_request)
+
+    def _handle_settings_request(self):
+        """Handle settings button click by opening the settings dialog."""
+        try:
+            from core.dependency_injection.di_container import get_container
+            from core.interfaces.core_services import IUIStateManager
+            from presentation.components.ui.settings.settings_dialog import (
+                SettingsDialog,
+            )
+
+            # Get main window reference
+            main_window = None
+            if self.menu_bar and self.menu_bar.parent():
+                widget = self.menu_bar.parent()
+                while widget and not isinstance(widget, QMainWindow):
+                    widget = widget.parent()
+                main_window = widget
+
+            if not main_window:
+                print("⚠️ Could not find main window for settings dialog")
+                return
+
+            # Get UI state service from container
+            container = get_container()
+            ui_state_service = container.resolve(IUIStateManager)
+            dialog = SettingsDialog(ui_state_service, main_window, container)
+
+            # Connect to settings changes if needed
+            dialog.settings_changed.connect(
+                lambda key, value: self._on_setting_changed(key, value, main_window)
+            )
+
+            # Show the dialog
+            _ = dialog.exec()
+
+            # Clean up dialog resources after it closes
+            dialog.deleteLater()
+
+        except Exception as e:
+            print(f"⚠️ Failed to open settings dialog: {e}")
+            import traceback
+
+            traceback.print_exc()

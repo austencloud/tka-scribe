@@ -116,8 +116,26 @@ class ApplicationOrchestrator(IApplicationOrchestrator):
 
                 session_coordinator = SessionRestorationCoordinator()
 
+            # Create window discovery service if needed
+            window_discovery_service = None
+            try:
+                from application.services.ui.window_discovery_service import (
+                    IWindowDiscoveryService,
+                )
+
+                window_discovery_service = container.resolve(IWindowDiscoveryService)
+            except Exception:
+                from application.services.ui.window_discovery_service import (
+                    WindowDiscoveryService,
+                )
+
+                window_discovery_service = WindowDiscoveryService()
+
             self.lifecycle_manager = ApplicationInitializationOrchestrator(
-                window_service, session_coordinator, session_service
+                window_service,
+                session_coordinator,
+                window_discovery_service,
+                session_service,
             )
         else:
             self.lifecycle_manager = lifecycle_manager
@@ -170,10 +188,12 @@ class ApplicationOrchestrator(IApplicationOrchestrator):
 
         try:
             from application.services.pictograph_pool_manager import (
-                initialize_pictograph_pool,
+                PictographPoolManager,
             )
 
-            initialize_pictograph_pool(self.container)
+            # Initialize the pool using the DI container instance (not global function)
+            pool_manager = self.container.resolve(PictographPoolManager)
+            pool_manager.initialize_pool()
             if progress_callback:
                 progress_callback(59, "Pictograph pool initialized")
         except Exception as e:

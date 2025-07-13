@@ -18,6 +18,7 @@ from application.services.core.session_restoration_coordinator import (
     ISessionRestorationCoordinator,
 )
 from application.services.core.window_management_service import IWindowManagementService
+from application.services.ui.window_discovery_service import IWindowDiscoveryService
 from core.interfaces.session_services import ISessionStateTracker
 from PyQt6.QtWidgets import QMainWindow
 
@@ -57,11 +58,13 @@ class ApplicationInitializationOrchestrator(IApplicationInitializationOrchestrat
         self,
         window_service: IWindowManagementService,
         session_coordinator: ISessionRestorationCoordinator,
+        window_discovery_service: IWindowDiscoveryService,
         session_service: Optional[ISessionStateTracker] = None,
     ):
         """Initialize application initialization orchestrator."""
         self.window_service = window_service
         self.session_coordinator = session_coordinator
+        self.window_discovery_service = window_discovery_service
         self.session_service = session_service
         self.api_enabled = True
 
@@ -76,6 +79,9 @@ class ApplicationInitializationOrchestrator(IApplicationInitializationOrchestrat
         """Initialize application with proper lifecycle management."""
         if progress_callback:
             progress_callback(10, "Initializing application lifecycle...")
+
+        # Register main window with discovery service for size provider functionality
+        self.window_discovery_service.register_main_window(main_window)
 
         # Set window title based on mode
         if parallel_mode:
