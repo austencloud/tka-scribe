@@ -18,7 +18,7 @@ from domain.models.beat_data import BeatData
 from domain.models.sequence_data import SequenceData
 
 
-class ISequenceRestorationService(ABC):
+class ISequenceRestorer(ABC):
     """Interface for sequence restoration operations."""
 
     @abstractmethod
@@ -32,7 +32,7 @@ class ISequenceRestorationService(ABC):
         """Calculate sequence name from beat letters."""
 
 
-class SequenceRestorationService(ISequenceRestorationService):
+class SequenceRestorer(ISequenceRestorer):
     """
     Domain-specific service for sequence restoration logic.
 

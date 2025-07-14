@@ -28,7 +28,7 @@ class PictographPoolManager:
         self.container = container
         self._pool: Queue[PictographComponent] = Queue()
         self._checked_out: Set[PictographComponent] = set()
-        self._pool_size = 100
+        self._pool_size = 50
         self._lock = threading.Lock()
         self._initialized = False
         self._dummy_parent = None  # Will hold dummy parent widget

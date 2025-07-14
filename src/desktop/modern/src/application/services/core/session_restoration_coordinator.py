@@ -13,9 +13,7 @@ PROVIDES:
 from abc import ABC, abstractmethod
 from typing import Optional
 
-from application.services.sequence.sequence_restoration_service import (
-    ISequenceRestorationService,
-)
+from application.services.sequence.sequence_restorer import ISequenceRestorer
 from core.events.event_bus import EventPriority, UIEvent, get_event_bus
 from core.interfaces.session_services import ISessionStateTracker, SessionState
 
@@ -47,7 +45,7 @@ class SessionRestorationCoordinator(ISessionRestorationCoordinator):
     """
 
     def __init__(
-        self, sequence_restoration_service: Optional[ISequenceRestorationService] = None
+        self, sequence_restoration_service: Optional[ISequenceRestorer] = None
     ):
         """Initialize session restoration coordinator."""
         self.sequence_restoration_service = sequence_restoration_service

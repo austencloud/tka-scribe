@@ -404,9 +404,9 @@ class ServiceRegistrationManager(IServiceRegistrationManager):
             IWindowManagementService,
             WindowManagementService,
         )
-        from application.services.sequence.sequence_restoration_service import (
-            ISequenceRestorationService,
-            SequenceRestorationService,
+        from application.services.sequence.sequence_restorer import (
+            ISequenceRestorer,
+            SequenceRestorer,
         )
         from application.services.ui.window_discovery_service import (
             IWindowDiscoveryService,
@@ -416,13 +416,11 @@ class ServiceRegistrationManager(IServiceRegistrationManager):
         # Register individual services
         container.register_singleton(IWindowManagementService, WindowManagementService)
         container.register_singleton(IWindowDiscoveryService, WindowDiscoveryService)
-        container.register_singleton(
-            ISequenceRestorationService, SequenceRestorationService
-        )
+        container.register_singleton(ISequenceRestorer, SequenceRestorer)
 
         # Register session coordinator with sequence restoration service dependency
         def create_session_coordinator():
-            sequence_service = container.resolve(ISequenceRestorationService)
+            sequence_service = container.resolve(ISequenceRestorer)
             return SessionRestorationCoordinator(sequence_service)
 
         container.register_factory(

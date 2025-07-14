@@ -13,10 +13,10 @@ from domain.models.sequence_data import SequenceData
 logger = logging.getLogger(__name__)
 
 
-class SequenceDictionaryService:
+class SequenceDictionaryManager:
     """
     Simple dictionary service for sequence operations.
-    
+
     Provides basic functionality for calculating words from sequences
     and assessing difficulty levels.
     """
@@ -29,18 +29,18 @@ class SequenceDictionaryService:
         """Get word associated with sequence."""
         try:
             logger.debug("Calculating word from sequence beats")
-            
+
             # Calculate word from beat letters (excluding start position)
             if not sequence.beats:
                 return ""
-            
+
             word = "".join(
                 beat.letter for beat in sequence.beats if beat.beat_number > 0
             )
-            
+
             logger.debug(f"Calculated word: '{word}'")
             return word
-            
+
         except Exception as e:
             logger.error(f"Error getting word for sequence: {e}")
             return None
@@ -49,11 +49,11 @@ class SequenceDictionaryService:
         """Calculate sequence difficulty level."""
         try:
             logger.debug("Calculating sequence difficulty")
-            
+
             # Simple difficulty calculation based on sequence length
             # This could be enhanced with more sophisticated algorithms
             length = len([beat for beat in sequence.beats if beat.beat_number > 0])
-            
+
             if length <= 3:
                 difficulty = 1
             elif length <= 6:
@@ -62,10 +62,10 @@ class SequenceDictionaryService:
                 difficulty = 3
             else:
                 difficulty = 4
-            
+
             logger.debug(f"Calculated difficulty: {difficulty} (length: {length})")
             return difficulty
-            
+
         except Exception as e:
             logger.error(f"Error calculating difficulty: {e}")
             return 1  # Default to easiest difficulty on error
@@ -74,15 +74,15 @@ class SequenceDictionaryService:
         """Add sequence to dictionary."""
         try:
             logger.debug(f"Adding sequence to dictionary: {word}")
-            
+
             # TODO: Integrate with actual dictionary service when available
             # For now, this is a placeholder implementation
             logger.warning("Dictionary service integration not yet implemented")
-            
+
             # Simulate successful addition
             logger.info(f"Sequence '{word}' added to dictionary (placeholder)")
             return True
-            
+
         except Exception as e:
             logger.error(f"Error adding sequence to dictionary: {e}")
             return False

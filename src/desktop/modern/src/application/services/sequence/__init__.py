@@ -26,7 +26,7 @@ This package provides focused, single-responsibility services for sequence opera
 from .beat_factory import BeatFactory
 from .loader import SequenceLoader
 from .sequence_beat_operations import SequenceBeatOperations
-from .sequence_dictionary_service import SequenceDictionaryService
+from .sequence_dictionary_manager import SequenceDictionaryManager
 from .sequence_generator import SequenceGenerator, SequenceType
 
 # Infrastructure services
@@ -52,7 +52,7 @@ __all__ = [
     "SequenceBeatOperations",
     "SequenceStartPositionManager",
     "SequenceLoader",
-    "SequenceDictionaryService",
+    "SequenceDictionaryManager",
     # Beat operations
     "BeatFactory",
     # Focused services
