@@ -146,10 +146,21 @@ class SetStartPositionCommand(ICommand[BeatData]):
                 )
 
                 return start_pos_beat_data
+            else:
+                # Fallback: Create start position data using the handler's logic
+                logger.warning(
+                    f"No dataset entry found for {self.position_key}, using fallback"
+                )
+                return self._create_fallback_start_position_data()
 
         except Exception as e:
             logger.error(f"❌ Error creating start position data: {e}")
-            raise
+            # Try fallback before giving up
+            try:
+                return self._create_fallback_start_position_data()
+            except Exception as fallback_error:
+                logger.error(f"❌ Fallback also failed: {fallback_error}")
+                raise
 
     def _save_to_persistence(self, beat_data: BeatData):
         """Save start position to persistence"""
@@ -166,6 +177,46 @@ class SetStartPositionCommand(ICommand[BeatData]):
 
         except Exception as e:
             logger.error(f"❌ Error saving start position to persistence: {e}")
+            raise
+
+    def _create_fallback_start_position_data(self) -> BeatData:
+        """Create fallback start position data when dataset lookup fails"""
+        try:
+            from application.services.data.conversion_utils import (
+                extract_end_position_from_position_key,
+            )
+            from application.services.sequence.beat_factory import BeatFactory
+            from domain.models.glyph_data import GlyphData
+            from domain.models.pictograph_data import PictographData
+
+            # Extract end position from position key
+            specific_end_pos = extract_end_position_from_position_key(self.position_key)
+
+            # Create basic glyph data
+            glyph_data = GlyphData(
+                start_position=self.position_key,
+                end_position=specific_end_pos,
+            )
+
+            # Create minimal pictograph data for fallback
+            pictograph_data = PictographData(
+                glyph_data=glyph_data,
+                arrows={},  # Empty arrows for now
+                props={},  # Empty props for now
+                motions={},  # Empty motions for now
+                metadata={"source": "fallback", "position_key": self.position_key},
+            )
+
+            # Create beat data using factory
+            beat_data = BeatFactory.create_start_position_beat_data(pictograph_data)
+
+            logger.info(
+                f"✅ Created fallback start position data for {self.position_key}"
+            )
+            return beat_data
+
+        except Exception as e:
+            logger.error(f"❌ Error creating fallback start position data: {e}")
             raise
 
     def _clear_from_persistence(self):

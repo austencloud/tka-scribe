@@ -1,0 +1,54 @@
+{
+  "timestamp": "2025-07-14 12:25:59",
+  "project_root": "F:\\CODE\\TKA",
+  "summary": {
+    "overall_status": "PASSED",
+    "total_tests": 8,
+    "passed_tests": 8,
+    "failed_tests": 0,
+    "critical_errors": 0,
+    "warnings": 0
+  },
+  "detailed_results": {
+    "syntax_check": {
+      "passed": 4,
+      "failed": 0,
+      "errors": []
+    },
+    "import_check": {
+      "passed": 4,
+      "failed": 0,
+      "errors": []
+    },
+    "unit_tests": {
+      "passed": 0,
+      "failed": 0,
+      "errors": [
+        "Pytest failed with return code 3221226505"
+      ],
+      "warnings": [],
+      "output": "============================= test session starts =============================\ncollecting ... collected 64 items\n\nsrc\\desktop\\modern\\tests\\unit\\presentation\\start_position_picker\\test_enhanced_start_position_picker.py::TestEnhancedStartPositionPicker::test_initialization ",
+      "return_code": 3221226505
+    },
+    "integration_tests": {
+      "passed": 0,
+      "failed": 0,
+      "errors": [
+        "Integration tests failed with return code 3221226505"
+      ],
+      "output": "============================= test session starts =============================\ncollecting ... collected 20 items\n\nsrc\\desktop\\modern\\tests\\unit\\presentation\\start_position_picker\\test_integration.py::TestSystemIntegration::test_full_application_startup ",
+      "return_code": 3221226505
+    },
+    "dependencies": {
+      "issues": [],
+      "recommendations": []
+    },
+    "code_quality": {
+      "issues": [],
+      "suggestions": []
+    }
+  },
+  "errors": [],
+  "warnings": [],
+  "recommendations": []
+}

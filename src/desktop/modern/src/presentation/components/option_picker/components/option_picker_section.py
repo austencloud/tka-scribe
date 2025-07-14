@@ -171,9 +171,6 @@ class OptionPickerSection(QGroupBox):
                                 effect = QGraphicsOpacityEffect()
                                 effect.setOpacity(1.0)  # Ensure it starts visible
                                 frame.setGraphicsEffect(effect)
-                                print(
-                                    f"🎭 [FADE] Created opacity effect for frame in {self.letter_type}"
-                                )
 
                             # Create fade out animation
                             animation = QPropertyAnimation(
@@ -196,16 +193,12 @@ class OptionPickerSection(QGroupBox):
 
                     # Step 2: When fade out completes, update content and fade in
                     def on_fade_out_complete():
-                        print(
-                            f"🎭 [FADE] Fade out complete, updating content for {self.letter_type}"
-                        )
 
                         # Update content
                         self.clear_pictographs()
                         self._load_options_directly(pictographs_for_section)
 
                         # Step 3: Fade in new frames
-                        print(f"🎭 [FADE] Scheduling fade in for {self.letter_type}")
                         QTimer.singleShot(
                             50, self._fade_in_new_frames
                         )  # Small delay for content update
@@ -216,11 +209,8 @@ class OptionPickerSection(QGroupBox):
                     fade_out_group.finished.connect(on_fade_out_complete)
 
                     # Add debug for animation start/state
-                    print(
-                        f"🎭 [FADE] Starting fade out group for {self.letter_type} with {fade_out_group.animationCount()} animations"
-                    )
+
                     fade_out_group.start()
-                    print(f"🎭 [FADE] Fade out group state: {fade_out_group.state()}")
 
                 except Exception as e:
                     print(f"❌ [FADE] Qt fade animation failed: {e}")
@@ -228,10 +218,6 @@ class OptionPickerSection(QGroupBox):
                     self.clear_pictographs()
                     self._load_options_directly(pictographs_for_section)
             else:
-                # Direct update (fallback or initial load)
-                print(
-                    f"⚡ [DIRECT] Direct update for {self.letter_type} (no animation: orchestrator={bool(self._animation_orchestrator)}, frames={len(existing_frames) if existing_frames else 0})"
-                )
                 self._load_options_directly(pictographs_for_section)
 
         except Exception as e:

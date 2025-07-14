@@ -16,6 +16,7 @@ from presentation.components.pictograph.pictograph_component import (
     PictographComponent,
     create_pictograph_component,
 )
+from PyQt6.QtCore import Qt
 
 logger = logging.getLogger(__name__)
 
@@ -27,9 +28,10 @@ class PictographPoolManager:
         self.container = container
         self._pool: Queue[PictographComponent] = Queue()
         self._checked_out: Set[PictographComponent] = set()
-        self._pool_size = 50  # Pre-create 50 components to match option picker frames
+        self._pool_size = 100
         self._lock = threading.Lock()
         self._initialized = False
+        self._dummy_parent = None  # Will hold dummy parent widget
 
     def initialize_pool(self) -> None:
         """Initialize the pictograph pool with pre-created components (public method)."""
@@ -50,14 +52,26 @@ class PictographPoolManager:
 
         start_time = time.perf_counter()
 
-        # Pre-create components
+        # Create a dummy parent widget to prevent components from becoming top-level windows
+        from PyQt6.QtWidgets import QWidget
+
+        dummy_parent = QWidget()
+        dummy_parent.hide()  # Keep it hidden
+        dummy_parent.setAttribute(Qt.WidgetAttribute.WA_DontShowOnScreen, True)
+
+        # Pre-create components with dummy parent
         for i in range(self._pool_size):
             try:
-                component = create_pictograph_component(container=self.container)
+                # Create component with dummy parent to prevent window creation
+                component = create_pictograph_component(
+                    parent=dummy_parent, container=self.container
+                )
                 # Set a reasonable default size
                 component.setFixedSize(100, 100)
-                # Hide initially
+                # Hide initially and set window attributes
                 component.setVisible(False)
+                component.setAttribute(Qt.WidgetAttribute.WA_DontShowOnScreen, True)
+                component.setWindowFlags(Qt.WindowType.Widget)
                 self._pool.put(component)
 
                 if i % 10 == 0:  # Log progress every 10 components
@@ -67,6 +81,9 @@ class PictographPoolManager:
 
             except Exception as e:
                 logger.error(f"❌ [POOL] Failed to create component {i}: {e}")
+
+        # Store dummy parent to keep it alive
+        self._dummy_parent = dummy_parent
 
         init_time = (time.perf_counter() - start_time) * 1000
         logger.info(
@@ -106,12 +123,16 @@ class PictographPoolManager:
             component = self._pool.get()
             self._checked_out.add(component)
 
-            # Set parent if provided
+            # CRITICAL FIX: Set parent BEFORE making visible to prevent window creation
             if parent:
                 component.setParent(parent)
+                # Reset window flags to ensure it's a proper child widget
+                component.setWindowFlags(Qt.WindowType.Widget)
+                # Remove the WA_DontShowOnScreen attribute now that it has a parent
+                component.setAttribute(Qt.WidgetAttribute.WA_DontShowOnScreen, False)
 
-            # Make component visible (components are hidden during pool initialization)
-            # This is necessary but much faster than calling show()
+            # Make component visible only AFTER proper parenting
+            # This prevents the component from appearing as a separate window
             component.setVisible(True)
 
             # Only log in debug mode to avoid string formatting overhead
@@ -131,8 +152,13 @@ class PictographPoolManager:
                 return
 
             # Reset component state (minimal operations for performance)
-            component.setParent(None)
             component.setVisible(False)
+            component.setParent(None)
+
+            # CRITICAL FIX: Reset window attributes to prevent window creation
+            component.setWindowFlags(Qt.WindowType.Widget)
+            component.setAttribute(Qt.WidgetAttribute.WA_DontShowOnScreen, True)
+
             # Clear any pictograph data
             if hasattr(component, "scene") and component.scene:
                 component.scene.clear()

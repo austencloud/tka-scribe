@@ -1,46 +1,33 @@
 """
-Advanced Start Position Picker with comprehensive position options and modern design.
+Advanced Start Position Picker with 16 positions in a 4x4 grid layout.
 
-This component displays all available start positions in a searchable, filterable
-grid layout with contemporary styling and smooth interactions.
+This component displays the standard 16 start positions (like legacy) with
+modern glassmorphism design and grid mode toggle functionality.
 """
-import logging
-from typing import List, Optional, Dict, Any
 
-from application.services.pictograph_pool_manager import PictographPoolManager
+import logging
+from typing import Any, Dict, List, Optional
+
 from application.services.data.dataset_query import DatasetQuery
+from application.services.pictograph_pool_manager import PictographPoolManager
 from presentation.components.start_position_picker.start_position_option import (
     StartPositionOption,
 )
-from PyQt6.QtCore import (
-    QSize, 
-    Qt, 
-    pyqtSignal, 
-    QPropertyAnimation, 
-    QEasingCurve,
-    QTimer
-)
-from PyQt6.QtGui import (
-    QFont, 
-    QPainter, 
-    QColor, 
-    QLinearGradient, 
-    QPainterPath,
-    QIcon
-)
+from PyQt6.QtCore import QEasingCurve, QPropertyAnimation, QSize, Qt, QTimer, pyqtSignal
+from PyQt6.QtGui import QColor, QFont, QIcon, QLinearGradient, QPainter, QPainterPath
 from PyQt6.QtWidgets import (
-    QGridLayout, 
-    QLabel, 
-    QScrollArea, 
-    QVBoxLayout, 
-    QHBoxLayout,
-    QWidget,
-    QPushButton,
-    QLineEdit,
     QComboBox,
     QFrame,
     QGraphicsDropShadowEffect,
-    QSizePolicy
+    QGridLayout,
+    QHBoxLayout,
+    QLabel,
+    QLineEdit,
+    QPushButton,
+    QScrollArea,
+    QSizePolicy,
+    QVBoxLayout,
+    QWidget,
 )
 
 logger = logging.getLogger(__name__)
@@ -48,63 +35,95 @@ logger = logging.getLogger(__name__)
 
 class AdvancedStartPositionPicker(QWidget):
     """
-    Advanced start position picker with comprehensive filtering and search capabilities.
-    
+    Advanced start position picker with 16 positions in a 4x4 grid.
+
     Features:
-    - Displays all available start positions for both grid modes
-    - Search and filter functionality
-    - Modern glassmorphism design with responsive layout
+    - Displays 16 standard start positions (matching legacy)
+    - Grid mode toggle (Diamond/Box)
+    - Modern glassmorphism design with fixed 4x4 layout
     - Back button to return to basic picker
-    - Enhanced accessibility and user experience
+    - Legacy-compatible sizing and spacing
     """
-    
+
     position_selected = pyqtSignal(str)
     back_requested = pyqtSignal()
-    
+
     def __init__(self, pool_manager: PictographPoolManager, grid_mode: str = "diamond"):
         super().__init__()
         self.pool_manager = pool_manager
         self.current_grid_mode = grid_mode
         self.dataset_service = DatasetQuery()
-        
+
         # UI state
         self.position_options: List[StartPositionOption] = []
         self.all_positions: List[Dict[str, Any]] = []
         self.filtered_positions: List[Dict[str, Any]] = []
-        
+
         # Animation properties
         self.fade_animation: Optional[QPropertyAnimation] = None
         self.search_timer: Optional[QTimer] = None
-        
+
         self._setup_ui()
         self._setup_animations()
         self._load_all_positions()
+
+        logger.info(
+            f"Advanced picker initialized with {len(self.position_options)} options in {grid_mode} mode"
+        )
+
+    def force_visibility_update(self):
+        """Force all position options to be visible - call this after adding to parent."""
+        # Ensure this widget is visible
+        self.show()
+        self.setVisible(True)
+
+        # Ensure container is visible
+        if hasattr(self, "positions_container"):
+            self.positions_container.show()
+            self.positions_container.setVisible(True)
+
+        # Ensure all position options are visible
+        for option in self.position_options:
+            option.show()
+            option.setVisible(True)
+            option.update()
+            option.repaint()
+
+        # Force layout updates
+        if hasattr(self, "positions_layout"):
+            self.positions_layout.update()
+        if hasattr(self, "positions_container"):
+            self.positions_container.update()
+            self.positions_container.repaint()
+
+        self.update()
+        self.repaint()
+
+        logger.info(
+            f"Advanced picker visibility forced for {len(self.position_options)} options"
+        )
 
     def _setup_ui(self):
         """Set up the advanced picker UI with modern styling."""
         self.setStyleSheet(self._get_advanced_picker_styles())
         self.setObjectName("AdvancedPickerContainer")
-        
+
         # Main layout
         layout = QVBoxLayout(self)
         layout.setContentsMargins(20, 20, 20, 20)
         layout.setSpacing(16)
 
-        # Header section
+        # Header section with back button
         header_widget = self._create_header_section()
         layout.addWidget(header_widget)
 
-        # Controls section (search, filter, grid mode)
-        controls_widget = self._create_controls_section()
+        # Grid mode toggle section
+        controls_widget = self._create_grid_mode_toggle()
         layout.addWidget(controls_widget)
 
-        # Positions grid with enhanced scroll area
-        scroll_area = self._create_positions_scroll_area()
-        layout.addWidget(scroll_area)
-
-        # Footer with back button
-        footer_widget = self._create_footer_section()
-        layout.addWidget(footer_widget)
+        # Positions grid (4x4 fixed layout)
+        positions_widget = self._create_positions_grid()
+        layout.addWidget(positions_widget, 1)  # Give it stretch factor
 
         # Add drop shadow effect
         self._add_drop_shadow()
@@ -195,6 +214,26 @@ class AdvancedStartPositionPicker(QWidget):
             QPushButton#BackButton:pressed {
                 background: rgba(107, 114, 128, 0.35);
             }
+
+            QPushButton#GridModeToggle {
+                background: rgba(99, 102, 241, 0.15);
+                border: 2px solid rgba(99, 102, 241, 0.3);
+                border-radius: 12px;
+                color: #4338ca;
+                font-weight: 600;
+                padding: 10px 20px;
+                min-width: 120px;
+            }
+
+            QPushButton#GridModeToggle:hover {
+                background: rgba(99, 102, 241, 0.25);
+                border: 2px solid rgba(99, 102, 241, 0.4);
+                color: #3730a3;
+            }
+
+            QPushButton#GridModeToggle:pressed {
+                background: rgba(99, 102, 241, 0.35);
+            }
             
             QScrollArea {
                 background: transparent;
@@ -221,95 +260,85 @@ class AdvancedStartPositionPicker(QWidget):
         """
 
     def _create_header_section(self) -> QWidget:
-        """Create header with title and subtitle."""
-        widget = QWidget()
-        layout = QVBoxLayout(widget)
-        layout.setContentsMargins(0, 0, 0, 0)
-        layout.setSpacing(4)
-        
-        # Title
-        title = QLabel("Advanced Start Positions")
-        title.setFont(QFont("Segoe UI", 20, QFont.Weight.Bold))
-        title.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        title.setObjectName("AdvancedTitle")
-        layout.addWidget(title)
-        
-        # Subtitle
-        subtitle = QLabel("Explore all available starting positions and variations")
-        subtitle.setFont(QFont("Segoe UI", 13))
-        subtitle.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        subtitle.setObjectName("AdvancedSubtitle")
-        layout.addWidget(subtitle)
-        
-        return widget
-
-    def _create_controls_section(self) -> QWidget:
-        """Create controls section with search and filters."""
+        """Create header section with back button and title."""
         widget = QWidget()
         layout = QHBoxLayout(widget)
-        layout.setContentsMargins(0, 0, 0, 0)
+        layout.setContentsMargins(0, 0, 0, 8)
         layout.setSpacing(12)
-        
-        # Search field
-        self.search_field = QLineEdit()
-        self.search_field.setObjectName("SearchField")
-        self.search_field.setPlaceholderText("🔍 Search positions...")
-        self.search_field.textChanged.connect(self._on_search_text_changed)
-        layout.addWidget(self.search_field, 2)
-        
-        # Grid mode filter
-        self.grid_mode_combo = QComboBox()
-        self.grid_mode_combo.setObjectName("FilterCombo")
-        self.grid_mode_combo.addItems(["Diamond Grid", "Box Grid", "All Grids"])
-        self.grid_mode_combo.setCurrentText(
-            "Diamond Grid" if self.current_grid_mode == "diamond" else "Box Grid"
-        )
-        self.grid_mode_combo.currentTextChanged.connect(self._on_grid_mode_changed)
-        layout.addWidget(self.grid_mode_combo, 1)
-        
-        # Letter filter
-        self.letter_filter_combo = QComboBox()
-        self.letter_filter_combo.setObjectName("FilterCombo")
-        self.letter_filter_combo.addItems(["All Letters", "Alpha (α)", "Beta (β)", "Gamma (Γ)"])
-        self.letter_filter_combo.currentTextChanged.connect(self._on_letter_filter_changed)
-        layout.addWidget(self.letter_filter_combo, 1)
-        
-        return widget
 
-    def _create_positions_scroll_area(self) -> QScrollArea:
-        """Create enhanced scroll area for positions grid."""
-        scroll_area = QScrollArea()
-        scroll_area.setWidgetResizable(True)
-        scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
-        scroll_area.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
-        
-        # Positions container
-        self.positions_container = QWidget()
-        self.positions_layout = QGridLayout(self.positions_container)
-        self.positions_layout.setSpacing(16)
-        self.positions_layout.setContentsMargins(8, 8, 8, 8)
-        
-        scroll_area.setWidget(self.positions_container)
-        return scroll_area
-
-    def _create_footer_section(self) -> QWidget:
-        """Create footer section with back button."""
-        widget = QWidget()
-        layout = QHBoxLayout(widget)
-        layout.setContentsMargins(0, 8, 0, 0)
-        layout.setSpacing(0)
-        
-        # Back button
-        self.back_button = QPushButton("← Back to Basic")
+        # Back button (top left)
+        self.back_button = QPushButton("← Back")
         self.back_button.setObjectName("BackButton")
         self.back_button.setFont(QFont("Segoe UI", 12, QFont.Weight.Medium))
         self.back_button.clicked.connect(self.back_requested.emit)
         self.back_button.setCursor(Qt.CursorShape.PointingHandCursor)
-        
         layout.addWidget(self.back_button)
-        layout.addStretch()
-        
+
+        # Title (centered)
+        title_container = QWidget()
+        title_layout = QVBoxLayout(title_container)
+        title_layout.setContentsMargins(0, 0, 0, 0)
+        title_layout.setSpacing(2)
+
+        layout.addWidget(title_container, 1)  # Center with stretch
+        layout.addStretch()  # Balance the back button
+
         return widget
+
+    def _create_grid_mode_toggle(self) -> QWidget:
+        """Create simple grid mode toggle button (Diamond/Box)."""
+        widget = QWidget()
+        layout = QHBoxLayout(widget)
+        layout.setContentsMargins(0, 0, 0, 0)
+        layout.setSpacing(12)
+
+        # Grid mode toggle button
+        self.grid_mode_button = QPushButton()
+        self.grid_mode_button.setObjectName("GridModeToggle")
+        self.grid_mode_button.setFont(QFont("Segoe UI", 12, QFont.Weight.Medium))
+        self.grid_mode_button.clicked.connect(self._toggle_grid_mode)
+        self.grid_mode_button.setCursor(Qt.CursorShape.PointingHandCursor)
+        self._update_grid_mode_button_text()
+
+        layout.addStretch()
+        layout.addWidget(self.grid_mode_button)
+        layout.addStretch()
+
+        return widget
+
+    def _create_positions_grid(self) -> QWidget:
+        """Create fixed 4x4 grid for 16 positions (legacy-style)."""
+        # Positions container
+        self.positions_container = QWidget()
+        self.positions_layout = QGridLayout(self.positions_container)
+
+        # Legacy-style spacing (match advanced picker sizing)
+        self.positions_layout.setSpacing(10)  # Legacy SPACING = 10
+        self.positions_layout.setContentsMargins(20, 20, 20, 20)
+
+        # Set size policy to expand
+        self.positions_container.setSizePolicy(
+            QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding
+        )
+
+        return self.positions_container
+
+    def _update_grid_mode_button_text(self):
+        """Update the grid mode button text based on current mode."""
+        if self.current_grid_mode == "diamond":
+            self.grid_mode_button.setText("Diamond Grid")
+        else:
+            self.grid_mode_button.setText("Box Grid")
+
+    def _toggle_grid_mode(self):
+        """Toggle between diamond and box grid modes."""
+        if self.current_grid_mode == "diamond":
+            self.current_grid_mode = "box"
+        else:
+            self.current_grid_mode = "diamond"
+
+        self._update_grid_mode_button_text()
+        self._load_all_positions()
 
     def _add_drop_shadow(self):
         """Add subtle drop shadow effect for depth."""
@@ -324,59 +353,79 @@ class AdvancedStartPositionPicker(QWidget):
         self.fade_animation = QPropertyAnimation(self, b"windowOpacity")
         self.fade_animation.setDuration(300)
         self.fade_animation.setEasingCurve(QEasingCurve.Type.OutCubic)
-        
-        # Search delay timer
-        self.search_timer = QTimer()
-        self.search_timer.setSingleShot(True)
-        self.search_timer.timeout.connect(self._perform_search)
 
     def _load_all_positions(self):
         """Load all available start positions from the dataset."""
         try:
             # Get all available positions from dataset
             self.all_positions = []
-            
-            # Define all possible position keys for both grid modes
+
+            # Define 16 standard positions for each grid mode (legacy-compatible)
             diamond_positions = [
-                "alpha1_alpha1", "beta5_beta5", "gamma11_gamma11",
-                "alpha3_alpha3", "beta7_beta7", "gamma9_gamma9",
-                "alpha5_alpha5", "beta1_beta1", "gamma1_gamma1",
-                "alpha7_alpha7", "beta3_beta3", "gamma3_gamma3",
-                "alpha9_alpha9", "beta9_beta9", "gamma5_gamma5",
-                "alpha11_alpha11", "beta11_beta11", "gamma7_gamma7"
+                "alpha1_alpha1",
+                "alpha3_alpha3",
+                "alpha5_alpha5",
+                "alpha7_alpha7",
+                "beta1_beta1",
+                "beta3_beta3",
+                "beta5_beta5",
+                "beta7_beta7",
+                "gamma1_gamma1",
+                "gamma3_gamma3",
+                "gamma5_gamma5",
+                "gamma7_gamma7",
+                "gamma9_gamma9",
+                "gamma11_gamma11",
+                "gamma13_gamma13",
+                "gamma15_gamma15",
             ]
-            
+
             box_positions = [
-                "alpha2_alpha2", "beta4_beta4", "gamma12_gamma12",
-                "alpha4_alpha4", "beta6_beta6", "gamma10_gamma10",
-                "alpha6_alpha6", "beta2_beta2", "gamma2_gamma2",
-                "alpha8_alpha8", "beta8_beta8", "gamma4_gamma4",
-                "alpha10_alpha10", "beta10_beta10", "gamma6_gamma6",
-                "alpha12_alpha12", "beta12_beta12", "gamma8_gamma8"
+                "alpha2_alpha2",
+                "alpha4_alpha4",
+                "alpha6_alpha6",
+                "alpha8_alpha8",
+                "beta2_beta2",
+                "beta4_beta4",
+                "beta6_beta6",
+                "beta8_beta8",
+                "gamma2_gamma2",
+                "gamma4_gamma4",
+                "gamma6_gamma6",
+                "gamma8_gamma8",
+                "gamma10_gamma10",
+                "gamma12_gamma12",
+                "gamma14_gamma14",
+                "gamma16_gamma16",
             ]
-            
-            # Create position data
-            for grid_mode, positions in [("diamond", diamond_positions), ("box", box_positions)]:
-                for position_key in positions:
-                    start_pos, end_pos = position_key.split("_")
-                    letter = self._extract_letter_from_position(start_pos)
-                    
-                    position_data = {
-                        "position_key": position_key,
-                        "start_pos": start_pos,
-                        "end_pos": end_pos,
-                        "letter": letter,
-                        "grid_mode": grid_mode,
-                        "display_name": f"{letter.upper()} - {position_key.replace('_', ' → ')}"
-                    }
-                    self.all_positions.append(position_data)
-            
+
+            # Create position data for current grid mode only
+            positions = (
+                diamond_positions
+                if self.current_grid_mode == "diamond"
+                else box_positions
+            )
+
+            for position_key in positions:
+                start_pos, end_pos = position_key.split("_")
+                letter = self._extract_letter_from_position(start_pos)
+
+                position_data = {
+                    "position_key": position_key,
+                    "start_pos": start_pos,
+                    "end_pos": end_pos,
+                    "letter": letter,
+                    "grid_mode": self.current_grid_mode,
+                    "display_name": f"{letter.upper()} - {position_key.replace('_', ' → ')}",
+                }
+                self.all_positions.append(position_data)
+
             # Initialize filtered positions
             self.filtered_positions = self.all_positions.copy()
             self._update_positions_display()
-            
+
             logger.info(f"Loaded {len(self.all_positions)} start positions")
-            
+
         except Exception as e:
             logger.error(f"Error loading start positions: {e}")
             self.all_positions = []
@@ -392,77 +441,13 @@ class AdvancedStartPositionPicker(QWidget):
             return "Γ"
         return "?"
 
-    def _on_search_text_changed(self, text: str):
-        """Handle search text changes with debouncing."""
-        if self.search_timer:
-            self.search_timer.stop()
-            self.search_timer.start(300)  # 300ms delay
-
-    def _perform_search(self):
-        """Perform the actual search filtering."""
-        search_text = self.search_field.text().lower().strip()
-        self._apply_filters()
-
-    def _on_grid_mode_changed(self, mode_text: str):
-        """Handle grid mode filter changes."""
-        if mode_text == "Diamond Grid":
-            self.current_grid_mode = "diamond"
-        elif mode_text == "Box Grid":
-            self.current_grid_mode = "box"
-        else:
-            self.current_grid_mode = "all"
-        
-        self._apply_filters()
-
-    def _on_letter_filter_changed(self, letter_text: str):
-        """Handle letter filter changes."""
-        self._apply_filters()
-
-    def _apply_filters(self):
-        """Apply all active filters to the positions list."""
-        search_text = self.search_field.text().lower().strip()
-        grid_mode_text = self.grid_mode_combo.currentText()
-        letter_text = self.letter_filter_combo.currentText()
-        
-        # Start with all positions
-        filtered = self.all_positions.copy()
-        
-        # Apply search filter
-        if search_text:
-            filtered = [
-                pos for pos in filtered
-                if search_text in pos["display_name"].lower() or 
-                   search_text in pos["position_key"].lower() or
-                   search_text in pos["letter"].lower()
-            ]
-        
-        # Apply grid mode filter
-        if grid_mode_text == "Diamond Grid":
-            filtered = [pos for pos in filtered if pos["grid_mode"] == "diamond"]
-        elif grid_mode_text == "Box Grid":
-            filtered = [pos for pos in filtered if pos["grid_mode"] == "box"]
-        
-        # Apply letter filter
-        if letter_text != "All Letters":
-            letter_map = {
-                "Alpha (α)": "α",
-                "Beta (β)": "β", 
-                "Gamma (Γ)": "Γ"
-            }
-            target_letter = letter_map.get(letter_text)
-            if target_letter:
-                filtered = [pos for pos in filtered if pos["letter"] == target_letter]
-        
-        self.filtered_positions = filtered
-        self._update_positions_display()
-
     def _update_positions_display(self):
         """Update the positions grid display."""
         # Clear existing options
         for option in self.position_options:
             option.setParent(None)
         self.position_options.clear()
-        
+
         # Clear layout
         for i in reversed(range(self.positions_layout.count())):
             item = self.positions_layout.itemAt(i)
@@ -470,28 +455,111 @@ class AdvancedStartPositionPicker(QWidget):
                 widget = item.widget()
                 if widget:
                     widget.setParent(None)
-        
-        # Create new options for filtered positions
-        for i, position_data in enumerate(self.filtered_positions):
+
+        # Create new options for filtered positions (limit to 16 for 4x4 grid)
+        positions_to_show = self.filtered_positions[:16]  # Ensure exactly 16 positions
+
+        for i, position_data in enumerate(positions_to_show):
             try:
                 option = StartPositionOption(
-                    position_data["position_key"], 
-                    self.pool_manager, 
-                    position_data["grid_mode"]
+                    position_data["position_key"],
+                    self.pool_manager,
+                    position_data["grid_mode"],
                 )
                 option.position_selected.connect(self._handle_position_selection)
-                
-                # Calculate grid position (4 columns for advanced picker)
+
+                # CRITICAL FIX: Add to layout FIRST, then apply sizing and visibility
                 row = i // 4
                 col = i % 4
                 self.positions_layout.addWidget(option, row, col)
                 self.position_options.append(option)
-                
+
+                # Apply legacy-style sizing AFTER adding to layout
+                self._apply_legacy_sizing(option)
+
+                # Ensure option is visible and properly sized
+                option.show()
+                option.setVisible(True)  # Explicitly set visible
+                option.update()
+
+                # Force immediate visibility update
+                option.repaint()
+
             except Exception as e:
-                logger.warning(f"Failed to create option for position {position_data['position_key']}: {e}")
-        
-        # Update container
+                logger.warning(
+                    f"Failed to create option for position {position_data['position_key']}: {e}"
+                )
+
+        # Update container and force layout
+        self.positions_container.show()
+        self.positions_container.setVisible(True)
         self.positions_container.update()
+        self.positions_layout.update()
+
+        # Force immediate layout and visibility updates
+        self.positions_container.repaint()
+        self.update()
+        self.repaint()
+
+        logger.info(
+            f"Advanced picker loaded {len(self.position_options)} positions in 4x4 grid"
+        )
+
+    def _apply_legacy_sizing(self, option: StartPositionOption):
+        """Apply legacy-style sizing to position option (main_window_width // 12)."""
+        try:
+            # Get main window width using the same approach as legacy
+            main_window_width = self._get_main_window_width()
+
+            # Legacy formula: main_window_width // 12 for advanced picker
+            size = main_window_width // 12
+
+            # Ensure reasonable size range for visibility and usability
+            size = max(size, 70)  # Minimum 70px (same as legacy)
+            size = min(size, 150)  # Maximum 150px to prevent too large
+
+            # Apply the size
+            option.setFixedSize(size, size)
+
+            # Update pictograph size to match container
+            if hasattr(option, "_update_pictograph_size"):
+                option._update_pictograph_size()
+
+            # Ensure the option is visible
+            option.show()
+            option.setVisible(True)
+
+        except Exception as e:
+            logger.warning(f"Failed to apply legacy sizing: {e}")
+            # Fallback to reasonable default size
+            option.setFixedSize(100, 100)
+            option.show()
+
+    def _get_main_window_width(self) -> int:
+        """Get main window width using the same approach as legacy size_provider."""
+        try:
+            # Try to find main window by traversing up the parent hierarchy
+            widget = self
+            while widget and widget.parent():
+                widget = widget.parent()
+                if hasattr(widget, "__class__"):
+                    class_name = widget.__class__.__name__
+                    if "MainWindow" in class_name or hasattr(widget, "menuBar"):
+                        return widget.width()
+
+            # Fallback: try QApplication active window
+            from PyQt6.QtWidgets import QApplication
+
+            app = QApplication.instance()
+            if app and app.activeWindow():
+                return app.activeWindow().width()
+
+            # Final fallback
+            return 1200
+
+        except Exception as e:
+            logger.warning(f"Failed to get main window width: {e}")
+            return 1200
 
     def _handle_position_selection(self, position_key: str):
         """Handle position selection from advanced picker."""
@@ -499,27 +567,56 @@ class AdvancedStartPositionPicker(QWidget):
         self.position_selected.emit(position_key)
 
     def set_grid_mode(self, grid_mode: str):
-        """Set the grid mode and update filters."""
+        """Set the grid mode and update display."""
         self.current_grid_mode = grid_mode
-        
-        # Update combo box
-        if grid_mode == "diamond":
-            self.grid_mode_combo.setCurrentText("Diamond Grid")
-        elif grid_mode == "box":
-            self.grid_mode_combo.setCurrentText("Box Grid")
-        
-        self._apply_filters()
+
+        # Update button text
+        self._update_grid_mode_button_text()
+
+        # Reload positions for the new grid mode
+        self._load_all_positions()
 
     def showEvent(self, event):
         """Handle show event with entrance animation."""
         super().showEvent(event)
-        
+
+        # Ensure proper sizing when shown
+        self._ensure_proper_sizing()
+
+        logger.info(f"Advanced picker shown with {len(self.position_options)} options")
+
         # Animate entrance if animation is set up
         if self.fade_animation:
             self.setWindowOpacity(0.0)
             self.fade_animation.setStartValue(0.0)
             self.fade_animation.setEndValue(1.0)
             self.fade_animation.start()
+
+    def _ensure_proper_sizing(self):
+        """Ensure all components are properly sized when the widget is shown."""
+        # Force layout update
+        self.updateGeometry()
+        self.positions_container.updateGeometry()
+
+        # Apply sizing to all position options
+        for option in self.position_options:
+            self._apply_legacy_sizing(option)
+
+        # Force container visibility
+        self.positions_container.show()
+        self.positions_container.setVisible(True)
+
+        logger.info(
+            f"Advanced picker sizing ensured - container size: {self.positions_container.size()}"
+        )
+
+    def resizeEvent(self, event):
+        """Handle resize events to update position option sizes."""
+        super().resizeEvent(event)
+
+        # Update sizing for all position options
+        for option in self.position_options:
+            self._apply_legacy_sizing(option)
 
     def sizeHint(self) -> QSize:
         """Provide size hint for the advanced picker."""

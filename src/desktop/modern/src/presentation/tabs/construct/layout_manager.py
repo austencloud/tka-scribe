@@ -117,13 +117,13 @@ class ConstructTabLayoutManager:
         layout = QVBoxLayout(widget)
         from application.services.pictograph_pool_manager import PictographPoolManager
 
-        from ...components.start_position_picker.start_position_picker import (
-            StartPositionPicker,
+        from ...components.start_position_picker.enhanced_start_position_picker import (
+            EnhancedStartPositionPicker,
         )
 
         # Get pool manager from DI container
         pool_manager = self.container.resolve(PictographPoolManager)
-        self.start_position_picker = StartPositionPicker(pool_manager)
+        self.start_position_picker = EnhancedStartPositionPicker(pool_manager)
         layout.addWidget(self.start_position_picker)
         return widget
 

@@ -305,14 +305,10 @@ class OptionPickerScroll(QScrollArea):
             ]
 
             if self._animation_orchestrator and existing_sections:
-                print(
-                    f"🎭 [SCROLL] Starting whole-picker fade transition with {len(existing_sections)} sections"
-                )
+
                 self._fade_and_update_all_sections(sequence_data)
             else:
-                print(
-                    "🎭 [SCROLL] Direct update (no existing content or no animation orchestrator)"
-                )
+
                 self._update_all_sections_directly(sequence_data)
 
         except Exception as e:
@@ -373,10 +369,6 @@ class OptionPickerScroll(QScrollArea):
                 self._update_all_sections_directly(sequence_data)
                 return
 
-            print(
-                f"🎭 [SCROLL] Fading out {len(pictograph_frames)} pictographs (keeping headers)"
-            )
-
             # Step 1: Create fade out animation group for pictographs only
             fade_out_group = QParallelAnimationGroup(self)
 
@@ -396,7 +388,6 @@ class OptionPickerScroll(QScrollArea):
 
             # Step 2: When fade out completes, update content and fade in (with tiny buffer)
             def on_fade_out_complete():
-                print("🎭 [SCROLL] Fade out complete, updating all sections")
 
                 # Add tiny delay to ensure fade out animation fully completes
                 # This prevents the freeze/pause issue during fade out
@@ -454,13 +445,8 @@ class OptionPickerScroll(QScrollArea):
                     pictograph_frames.extend(section.pictographs.values())
 
             if not pictograph_frames:
-                print("🎭 [SCROLL] No pictographs to fade in")
                 self._set_loading_state(False)
                 return
-
-            print(
-                f"🎭 [SCROLL] Fading in {len(pictograph_frames)} pictographs (headers stay)"
-            )
 
             # Create fade in animation group for pictographs only
             fade_in_group = QParallelAnimationGroup(self)
@@ -480,7 +466,6 @@ class OptionPickerScroll(QScrollArea):
                 fade_in_group.addAnimation(animation)
 
             def on_fade_in_complete():
-                print("✅ [SCROLL] Pictograph fade transition completed")
 
                 # Clear graphics effects after fade in completes (like legacy)
                 for frame in pictograph_frames:
