@@ -209,8 +209,8 @@ class TestRoundTripSerialization:
 
     def test_sequence_data_round_trip(self):
         """Test round-trip serialization of SequenceData."""
-        beat = BeatData(letter="A", duration=1.0)
-        start_position_beat = BeatData(letter="α", duration=0.0, beat_number=0)
+        beat = BeatData(duration=1.0)
+        start_position_beat = BeatData(duration=0.0, beat_number=0)
         original = SequenceData(
             name="Test Sequence",
             word="TEST",
