@@ -79,8 +79,8 @@ class SequenceWorkbench(ViewableComponentBase):
         self._state_manager: WorkbenchStateManager = container.resolve(
             WorkbenchStateManager
         )
-        self._operation_coordinator: WorkbenchOperationCoordinator = (
-            container.resolve(WorkbenchOperationCoordinator)
+        self._operation_coordinator: WorkbenchOperationCoordinator = container.resolve(
+            WorkbenchOperationCoordinator
         )
         self._session_manager: WorkbenchSessionManager = container.resolve(
             WorkbenchSessionManager
@@ -213,11 +213,15 @@ class SequenceWorkbench(ViewableComponentBase):
     # Public API - State Management
     def set_sequence(self, sequence: SequenceData):
         """Set the current sequence via state manager."""
-        print(f"🎯 [WORKBENCH] set_sequence called with: {sequence.length if sequence else 0} beats")
-        
+        print(
+            f"🎯 [WORKBENCH] set_sequence called with: {sequence.length if sequence else 0} beats"
+        )
+
         result = self._state_manager.set_sequence(sequence)
-        
-        print(f"🎯 [WORKBENCH] State manager result: changed={result.changed}, seq_changed={result.sequence_changed}")
+
+        print(
+            f"🎯 [WORKBENCH] State manager result: changed={result.changed}, seq_changed={result.sequence_changed}"
+        )
 
         if result.changed:
             print(f"🎯 [WORKBENCH] Updating UI from state...")
@@ -229,12 +233,16 @@ class SequenceWorkbench(ViewableComponentBase):
                     self._state_manager.get_complete_sequence_with_start_position()
                 )
                 self.sequence_modified.emit(complete_sequence)
-                
+
                 # Debug output to track sequence updates
-                print(f"🔄 [WORKBENCH] Sequence updated: {sequence.length if sequence else 0} beats")
+                print(
+                    f"🔄 [WORKBENCH] Sequence updated: {sequence.length if sequence else 0} beats"
+                )
                 if sequence:
                     for i, beat in enumerate(sequence.beats):
-                        print(f"   Beat {i+1}: {beat.letter if hasattr(beat, 'letter') else 'Unknown'}")
+                        print(
+                            f"   Beat {i+1}: {beat.letter if hasattr(beat, 'letter') else 'Unknown'}"
+                        )
         else:
             print(f"🎯 [WORKBENCH] No change detected, UI not updated")
 
@@ -248,11 +256,13 @@ class SequenceWorkbench(ViewableComponentBase):
         pictograph_data: Optional["PictographData"] = None,
     ):
         """Set the start position via state manager."""
-        print(f"🎯 [WORKBENCH] set_start_position called with: {start_position_data.letter if hasattr(start_position_data, 'letter') else 'BeatData'}")
+        print(
+            f"🎯 [WORKBENCH] set_start_position called with: {start_position_data.letter if hasattr(start_position_data, 'letter') else 'BeatData'}"
+        )
         print(f"🎯 [WORKBENCH] pictograph_data provided: {pictograph_data is not None}")
-        
+
         result = self._state_manager.set_start_position(start_position_data)
-        
+
         print(f"🎯 [WORKBENCH] Start position state result: changed={result.changed}")
 
         if result.changed:
@@ -312,49 +322,73 @@ class SequenceWorkbench(ViewableComponentBase):
 
     def _handle_delete_beat(self):
         """Handle delete beat operation."""
+        print("🗑️ [WORKBENCH] Delete beat operation requested")
+        print(f"🔍 [WORKBENCH] Workbench state manager: {self._state_manager}")
+        print(f"🔍 [WORKBENCH] Workbench state manager ID: {id(self._state_manager)}")
+        print(f"🔍 [WORKBENCH] Operation coordinator: {self._operation_coordinator}")
+
         selected_index = None
         if self._beat_frame_section:
             selected_index = self._beat_frame_section.get_selected_beat_index()
+            print(f"📊 [WORKBENCH] Selected beat index: {selected_index}")
 
+        print("🔄 [WORKBENCH] Calling operation coordinator...")
         result = self._operation_coordinator.delete_beat(selected_index)
+        print(
+            f"📊 [WORKBENCH] Operation result: success={result.success}, message='{result.message}'"
+        )
         self._handle_operation_result(result)
 
     def _handle_clear(self):
         """Handle clear sequence operation."""
         print(f"🧹 [WORKBENCH] Clear sequence requested")
-        
+
         # Clear the sequence via state manager
         result = self._state_manager.set_sequence(None)
-        
+
         if result.changed:
             print(f"🧹 [WORKBENCH] Sequence cleared, updating UI...")
             # Update UI to reflect the cleared sequence
             self._update_ui_from_state()
-            
-            # IMPORTANT: Clear the start position data from state manager 
+
+            # IMPORTANT: Clear the start position data from state manager
             # so that when a new start position is selected, it will be detected as a change
             print(f"🧹 [WORKBENCH] Clearing start position data from state manager...")
             self._state_manager.set_start_position(None)
-            
+
             # Reset start position to text-only mode (no pictograph)
             if self._beat_frame_section:
                 print(f"🧹 [WORKBENCH] Initializing cleared start position view...")
                 self._beat_frame_section.initialize_cleared_start_position()
-        
+
         # Also emit the signal for any parent handlers
         self.clear_sequence_requested.emit()
 
     def _handle_operation_result(self, result: OperationResult):
         """Handle operation result from coordinator."""
+        print(f"📊 [WORKBENCH] Handling operation result: success={result.success}")
         if result.success:
+            print(f"✅ [WORKBENCH] Operation successful: {result.message}")
             self.operation_completed.emit(result.message)
 
             # Update state if sequence was modified
             if result.updated_sequence:
+                print(
+                    f"🔄 [WORKBENCH] Updating state with sequence: {len(result.updated_sequence.beats)} beats"
+                )
                 state_result = self._state_manager.set_sequence(result.updated_sequence)
+                print(
+                    f"📊 [WORKBENCH] State update result: changed={state_result.changed}"
+                )
                 if state_result.changed:
+                    print("🔄 [WORKBENCH] Updating UI from state...")
                     self._update_ui_from_state()
                     self.sequence_modified.emit(result.updated_sequence)
+                    print(
+                        "✅ [WORKBENCH] UI updated and sequence_modified signal emitted"
+                    )
+            else:
+                print("⚠️ [WORKBENCH] No updated sequence in result")
 
             # Show success message on button
             if self._beat_frame_section:
@@ -400,13 +434,17 @@ class SequenceWorkbench(ViewableComponentBase):
             new_beats = list(sequence.beats)
             new_beats[beat_index] = beat_data
             updated_sequence = sequence.update(beats=new_beats)
-            
-            print(f"🔧 [WORKBENCH] Beat {beat_index + 1} modified: {beat_data.letter if hasattr(beat_data, 'letter') else 'Unknown'}")
+
+            print(
+                f"🔧 [WORKBENCH] Beat {beat_index + 1} modified: {beat_data.letter if hasattr(beat_data, 'letter') else 'Unknown'}"
+            )
             self.set_sequence(updated_sequence)
 
     def _on_sequence_modified(self, sequence):
         """Handle sequence modification from UI."""
-        print(f"📝 [WORKBENCH] Sequence modified from UI: {sequence.length if sequence else 0} beats")
+        print(
+            f"📝 [WORKBENCH] Sequence modified from UI: {sequence.length if sequence else 0} beats"
+        )
         self.set_sequence(sequence)
 
     # Cleanup

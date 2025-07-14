@@ -71,7 +71,6 @@ class OptionPickerSection(QGroupBox):
         self._animation_orchestrator = animation_orchestrator
 
         # Store the current option picker width (updated via signal)
-        self._current_option_picker_width = 680  # Default fallback
 
         # UI state management
         self._loading_options = False
@@ -79,7 +78,6 @@ class OptionPickerSection(QGroupBox):
 
     def update_option_picker_width(self, width: int) -> None:
         """Update the stored option picker width - called by parent scroll area."""
-        self._current_option_picker_width = width
 
         # ✅ Use service for business rule
         self.is_groupable = self._option_config_service.is_groupable_type(
@@ -447,7 +445,6 @@ class OptionPickerSection(QGroupBox):
         dimensions = self._option_sizing_service.calculate_section_dimensions(
             letter_type=self.letter_type,
             main_window_width=main_window_size.width(),
-            available_container_width=self._current_option_picker_width,
         )
 
         # ✅ Apply to Qt widget

@@ -1,0 +1,390 @@
+"""
+Enhanced Start Position Picker with modern glassmorphism design and variations support.
+
+This component provides an improved user interface for selecting start positions
+with contemporary design trends including glassmorphism, smooth animations,
+and an advanced variations picker.
+"""
+import logging
+from typing import Optional
+
+from application.services.pictograph_pool_manager import PictographPoolManager
+from presentation.components.start_position_picker.start_position_option import (
+    StartPositionOption,
+)
+from presentation.components.start_position_picker.variations_button import (
+    VariationsButton,
+)
+from presentation.components.start_position_picker.advanced_start_position_picker import (
+    AdvancedStartPositionPicker,
+)
+from PyQt6.QtCore import QSize, Qt, pyqtSignal, QPropertyAnimation, QEasingCurve, QRect
+from PyQt6.QtGui import QFont, QPainter, QColor, QLinearGradient, QPainterPath
+from PyQt6.QtWidgets import (
+    QGridLayout, 
+    QLabel, 
+    QScrollArea, 
+    QVBoxLayout, 
+    QHBoxLayout,
+    QWidget,
+    QStackedWidget,
+    QGraphicsDropShadowEffect
+)
+
+logger = logging.getLogger(__name__)
+
+
+class EnhancedStartPositionPicker(QWidget):
+    """
+    Enhanced start position picker with glassmorphism design and variations support.
+    
+    Features:
+    - Modern glassmorphism styling with transparency and blur effects
+    - Smooth animations and transitions
+    - Variations button that opens advanced picker
+    - Responsive layout that adapts to container size
+    - Improved accessibility and user experience
+    """
+    
+    start_position_selected = pyqtSignal(str)
+    variations_requested = pyqtSignal()
+    
+    # Start position configurations
+    DIAMOND_START_POSITIONS = ["alpha1_alpha1", "beta5_beta5", "gamma11_gamma11"]
+    BOX_START_POSITIONS = ["alpha2_alpha2", "beta4_beta4", "gamma12_gamma12"]
+    
+    def __init__(self, pool_manager: PictographPoolManager):
+        super().__init__()
+        self.pool_manager = pool_manager
+        self.current_grid_mode = "diamond"
+        self.position_options: list[StartPositionOption] = []
+        self.advanced_picker: Optional[AdvancedStartPositionPicker] = None
+        
+        # Animation properties
+        self.fade_animation: Optional[QPropertyAnimation] = None
+        
+        self._setup_ui()
+        self._setup_animations()
+        self._load_start_positions()
+
+    def _setup_ui(self):
+        """Set up the enhanced UI with glassmorphism styling."""
+        self.setStyleSheet(self._get_glassmorphism_styles())
+        self.setObjectName("EnhancedGlassContainer")
+        
+        # Main layout
+        layout = QVBoxLayout(self)
+        layout.setContentsMargins(24, 24, 24, 24)
+        layout.setSpacing(20)
+
+        # Title with enhanced typography
+        self.title_label = self._create_title_label()
+        layout.addWidget(self.title_label)
+
+        # Subtitle/instructions
+        self.subtitle_label = self._create_subtitle_label()
+        layout.addWidget(self.subtitle_label)
+
+        # Main content area with stacked widget for smooth transitions
+        self.stacked_widget = QStackedWidget()
+        
+        # Basic picker widget
+        self.basic_picker_widget = self._create_basic_picker_widget()
+        self.stacked_widget.addWidget(self.basic_picker_widget)
+        
+        layout.addWidget(self.stacked_widget)
+
+        # Variations button
+        self.variations_button = VariationsButton(self)
+        self.variations_button.clicked.connect(self._handle_variations_clicked)
+        
+        button_layout = QHBoxLayout()
+        button_layout.addStretch()
+        button_layout.addWidget(self.variations_button)
+        button_layout.addStretch()
+        
+        layout.addLayout(button_layout)
+
+        # Add subtle drop shadow effect
+        self._add_drop_shadow()
+
+    def _get_glassmorphism_styles(self) -> str:
+        """Return comprehensive glassmorphism stylesheet."""
+        return """
+            QWidget#EnhancedGlassContainer {
+                background: qlineargradient(
+                    x1:0, y1:0, x2:1, y2:1,
+                    stop:0 rgba(255, 255, 255, 0.25),
+                    stop:0.5 rgba(255, 255, 255, 0.18),
+                    stop:1 rgba(255, 255, 255, 0.15)
+                );
+                border-radius: 28px;
+                border: 2px solid rgba(255, 255, 255, 0.3);
+            }
+            
+            QLabel#EnhancedGlassTitle {
+                color: #1a202c;
+                background: transparent;
+                font-weight: 700;
+                text-align: center;
+                padding: 8px 0;
+            }
+            
+            QLabel#EnhancedGlassSubtitle {
+                color: #4a5568;
+                background: transparent;
+                font-weight: 400;
+                text-align: center;
+                padding: 4px 0;
+            }
+            
+            QScrollArea {
+                background: transparent;
+                border: none;
+                border-radius: 16px;
+            }
+            
+            QScrollArea > QWidget > QWidget {
+                background: transparent;
+            }
+            
+            QScrollBar:vertical {
+                background: rgba(255, 255, 255, 0.1);
+                width: 8px;
+                border-radius: 4px;
+            }
+            
+            QScrollBar::handle:vertical {
+                background: rgba(255, 255, 255, 0.3);
+                border-radius: 4px;
+                min-height: 20px;
+            }
+            
+            QScrollBar::handle:vertical:hover {
+                background: rgba(255, 255, 255, 0.5);
+            }
+        """
+
+    def _create_title_label(self) -> QLabel:
+        """Create enhanced title label with modern typography."""
+        title = QLabel("Choose Your Start Position")
+        title.setFont(QFont("Segoe UI", 24, QFont.Weight.Bold))
+        title.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        title.setObjectName("EnhancedGlassTitle")
+        return title
+
+    def _create_subtitle_label(self) -> QLabel:
+        """Create subtitle with improved messaging."""
+        subtitle = QLabel("Select a starting position to begin crafting your sequence")
+        subtitle.setFont(QFont("Segoe UI", 14))
+        subtitle.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        subtitle.setObjectName("EnhancedGlassSubtitle")
+        return subtitle
+
+    def _create_basic_picker_widget(self) -> QWidget:
+        """Create the basic picker widget with enhanced scroll area."""
+        widget = QWidget()
+        layout = QVBoxLayout(widget)
+        layout.setContentsMargins(0, 0, 0, 0)
+        layout.setSpacing(16)
+        
+        # Enhanced scroll area
+        scroll_area = QScrollArea()
+        scroll_area.setWidgetResizable(True)
+        scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        scroll_area.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
+        
+        # Positions container with improved spacing
+        self.positions_container = QWidget()
+        self.positions_layout = QGridLayout(self.positions_container)
+        self.positions_layout.setSpacing(20)
+        self.positions_layout.setContentsMargins(12, 12, 12, 12)
+        
+        scroll_area.setWidget(self.positions_container)
+        layout.addWidget(scroll_area)
+        
+        return widget
+
+    def _add_drop_shadow(self):
+        """Add subtle drop shadow effect for depth."""
+        shadow = QGraphicsDropShadowEffect()
+        shadow.setBlurRadius(30)
+        shadow.setColor(QColor(0, 0, 0, 50))
+        shadow.setOffset(0, 8)
+        self.setGraphicsEffect(shadow)
+
+    def _setup_animations(self):
+        """Set up smooth animations for transitions."""
+        self.fade_animation = QPropertyAnimation(self, b"windowOpacity")
+        self.fade_animation.setDuration(300)
+        self.fade_animation.setEasingCurve(QEasingCurve.Type.OutCubic)
+
+    def _load_start_positions(self):
+        """Load start positions with enhanced options."""
+        # Clear existing options
+        for option in self.position_options:
+            option.setParent(None)
+        self.position_options.clear()
+        
+        # Get position keys based on current grid mode
+        position_keys = (
+            self.DIAMOND_START_POSITIONS
+            if self.current_grid_mode == "diamond"
+            else self.BOX_START_POSITIONS
+        )
+        
+        # Create enhanced start position options
+        for i, position_key in enumerate(position_keys):
+            option = StartPositionOption(
+                position_key, self.pool_manager, self.current_grid_mode
+            )
+            option.position_selected.connect(self._handle_position_selection)
+            
+            # Arrange in responsive grid
+            row = i // 3
+            col = i % 3
+            self.positions_layout.addWidget(option, row, col)
+            self.position_options.append(option)
+
+    def _handle_position_selection(self, position_key: str):
+        """Handle position selection with enhanced feedback."""
+        try:
+            # Import command and services
+            from core.commands.start_position_commands import SetStartPositionCommand
+            from core.service_locator import get_command_processor, get_event_bus
+
+            # Get services
+            command_processor = get_command_processor()
+            event_bus = get_event_bus()
+
+            if not command_processor or not event_bus:
+                logger.warning("Command processor or event bus not available, falling back to signal")
+                self.start_position_selected.emit(position_key)
+                return
+
+            # Create and execute command
+            command = SetStartPositionCommand(
+                position_key=position_key, event_bus=event_bus
+            )
+
+            result = command_processor.execute(command)
+
+            if result.success:
+                logger.info(f"Start position set via command: {position_key}")
+                # Emit signal for UI transition
+                self.start_position_selected.emit(position_key)
+                # Add selection feedback animation
+                self._animate_selection_feedback()
+            else:
+                logger.error(f"Failed to set start position: {result.error_message}")
+
+        except Exception as e:
+            logger.error(f"Error in start position selection: {e}")
+            # Fallback to original behavior
+            self.start_position_selected.emit(position_key)
+
+    def _handle_variations_clicked(self):
+        """Handle variations button click with smooth transition."""
+        if not self.advanced_picker:
+            self.advanced_picker = AdvancedStartPositionPicker(
+                self.pool_manager, self.current_grid_mode
+            )
+            self.advanced_picker.position_selected.connect(self._handle_advanced_position_selection)
+            self.advanced_picker.back_requested.connect(self._handle_back_to_basic)
+            self.stacked_widget.addWidget(self.advanced_picker)
+        
+        # Animate transition to advanced picker
+        self._animate_to_advanced_picker()
+
+    def _handle_advanced_position_selection(self, position_key: str):
+        """Handle position selection from advanced picker."""
+        self._handle_position_selection(position_key)
+
+    def _handle_back_to_basic(self):
+        """Handle back button from advanced picker."""
+        self._animate_to_basic_picker()
+
+    def _animate_to_advanced_picker(self):
+        """Animate transition to advanced picker."""
+        self.stacked_widget.setCurrentWidget(self.advanced_picker)
+        self.variations_button.hide()
+        
+        # Update title and subtitle
+        self.title_label.setText("Advanced Start Positions")
+        self.subtitle_label.setText("Explore all available starting positions and variations")
+
+    def _animate_to_basic_picker(self):
+        """Animate transition back to basic picker."""
+        self.stacked_widget.setCurrentWidget(self.basic_picker_widget)
+        self.variations_button.show()
+        
+        # Restore original title and subtitle
+        self.title_label.setText("Choose Your Start Position")
+        self.subtitle_label.setText("Select a starting position to begin crafting your sequence")
+
+    def _animate_selection_feedback(self):
+        """Provide visual feedback for selection."""
+        # Add subtle pulse animation or similar feedback
+        if self.fade_animation:
+            self.fade_animation.setStartValue(1.0)
+            self.fade_animation.setEndValue(0.95)
+            self.fade_animation.finished.connect(self._restore_opacity)
+            self.fade_animation.start()
+
+    def _restore_opacity(self):
+        """Restore opacity after selection feedback."""
+        if self.fade_animation:
+            self.fade_animation.finished.disconnect()
+            self.fade_animation.setStartValue(0.95)
+            self.fade_animation.setEndValue(1.0)
+            self.fade_animation.start()
+
+    def update_layout_for_size(self, container_size: QSize):
+        """Update layout responsively based on container size."""
+        if not self.position_options:
+            return
+            
+        container_width = container_size.width()
+        position_width = 240  # Slightly larger for better visual impact
+        total_positions = len(self.position_options)
+        spacing = 20
+        
+        # Calculate optimal layout
+        total_width_needed = (
+            total_positions * position_width + (total_positions - 1) * spacing
+        )
+        
+        # Clear current layout
+        for i in reversed(range(self.positions_layout.count())):
+            item = self.positions_layout.itemAt(i)
+            if item:
+                widget = item.widget()
+                if widget:
+                    widget.setParent(None)
+        
+        # Determine layout based on available space
+        if container_width >= total_width_needed + 100:
+            # Single row layout
+            for i, option in enumerate(self.position_options):
+                self.positions_layout.addWidget(option, 0, i)
+        else:
+            # Multi-row layout
+            max_cols = max(1, (container_width - 100) // (position_width + spacing))
+            for i, option in enumerate(self.position_options):
+                row = i // max_cols
+                col = i % max_cols
+                self.positions_layout.addWidget(option, row, col)
+        
+        self.positions_container.update()
+
+    def get_current_grid_mode(self) -> str:
+        """Get the current grid mode."""
+        return self.current_grid_mode
+
+    def set_grid_mode(self, grid_mode: str):
+        """Set the grid mode and refresh positions."""
+        if grid_mode != self.current_grid_mode:
+            self.current_grid_mode = grid_mode
+            self._load_start_positions()
+            if self.advanced_picker:
+                self.advanced_picker.set_grid_mode(grid_mode)

@@ -48,6 +48,13 @@ class WorkbenchServiceRegistrar(BaseServiceRegistrar):
         except Exception:
             return None
 
+    def _safe_resolve_class(self, container: "DIContainer", service_class):
+        """Safely resolve a service by class type, returning None if not available."""
+        try:
+            return container.resolve(service_class)
+        except Exception:
+            return None
+
     def register_services(self, container: "DIContainer") -> None:
         """Register workbench services."""
         self._update_progress("Registering workbench services...")
@@ -80,28 +87,39 @@ class WorkbenchServiceRegistrar(BaseServiceRegistrar):
             container.register_singleton(BeatSelectionService, BeatSelectionService)
             self._mark_service_available("BeatSelectionService")
 
-            # Register workbench state manager with optional dependencies
-            container.register_factory(
-                WorkbenchStateManager,
-                lambda c: WorkbenchStateManager(
-                    sequence_state_tracker=self._safe_resolve(c, "SequenceStateTracker")
-                ),
+            # Register workbench state manager as singleton with optional dependencies
+            # Create the instance once and register it
+            state_manager_instance = WorkbenchStateManager(
+                sequence_state_tracker=self._safe_resolve(
+                    container, "SequenceStateTracker"
+                )
             )
+            container.register_instance(WorkbenchStateManager, state_manager_instance)
             self._mark_service_available("WorkbenchStateManager")
 
             # Register workbench operation coordinator with dependencies
-            container.register_factory(
-                WorkbenchOperationCoordinator,
-                lambda c: WorkbenchOperationCoordinator(
-                    workbench_state_manager=c.resolve(WorkbenchStateManager),
-                    beat_operations=self._safe_resolve(c, "SequenceBeatOperations"),
-                    dictionary_service=self._safe_resolve(
-                        c, "SequenceDictionaryService"
-                    ),
-                    fullscreen_service=self._safe_resolve(c, "IFullScreenViewer"),
-                    sequence_transformer=self._safe_resolve(c, "SequenceTransformer"),
-                    sequence_persister=self._safe_resolve(c, "SequencePersister"),
+            # Import the required services
+            from application.services.sequence.sequence_beat_operations import (
+                SequenceBeatOperations,
+            )
+
+            # Create the instance once using the same state manager and register it
+            operation_coordinator_instance = WorkbenchOperationCoordinator(
+                workbench_state_manager=state_manager_instance,
+                beat_operations=self._safe_resolve_class(
+                    container, SequenceBeatOperations
                 ),
+                dictionary_service=self._safe_resolve(
+                    container, "SequenceDictionaryService"
+                ),
+                fullscreen_service=self._safe_resolve(container, "IFullScreenViewer"),
+                sequence_transformer=self._safe_resolve(
+                    container, "SequenceTransformer"
+                ),
+                sequence_persister=self._safe_resolve(container, "SequencePersister"),
+            )
+            container.register_instance(
+                WorkbenchOperationCoordinator, operation_coordinator_instance
             )
             self._mark_service_available("WorkbenchOperationCoordinator")
 

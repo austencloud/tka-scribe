@@ -114,13 +114,24 @@ class WorkbenchBeatFrameSection(QWidget):
 
             # Sequence management operations
             self._button_panel.copy_json_requested.connect(self.copy_json_requested)
-            self._button_panel.delete_beat_requested.connect(self.delete_beat_requested)
+            self._button_panel.delete_beat_requested.connect(
+                self._handle_delete_beat_request
+            )
             self._button_panel.clear_sequence_requested.connect(
                 self._handle_clear_sequence_request
             )
             self._button_panel.edit_construct_toggle_requested.connect(
                 self.edit_construct_toggle_requested
             )
+
+    def _handle_delete_beat_request(self):
+        """Handle delete beat request from button panel"""
+        print("🗑️ [BEAT_FRAME_SECTION] Delete beat requested from button panel")
+        print(
+            f"📊 [BEAT_FRAME_SECTION] Current selected beat index: {self.get_selected_beat_index()}"
+        )
+        self.delete_beat_requested.emit()
+        print("✅ [BEAT_FRAME_SECTION] Delete beat signal emitted")
 
     def _handle_clear_sequence_request(self):
         """Handle clear sequence request from button panel"""
@@ -135,7 +146,9 @@ class WorkbenchBeatFrameSection(QWidget):
 
     def set_sequence(self, sequence: Optional[SequenceData]):
         """Set the current sequence"""
-        print(f"🎯 [BEAT_FRAME_SECTION] Setting sequence: {sequence.length if sequence else 0} beats")
+        print(
+            f"🎯 [BEAT_FRAME_SECTION] Setting sequence: {sequence.length if sequence else 0} beats"
+        )
 
         self._current_sequence = sequence
         if self._beat_frame:

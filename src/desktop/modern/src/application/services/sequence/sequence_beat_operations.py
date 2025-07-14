@@ -382,6 +382,51 @@ class SequenceBeatOperations(QObject):
 
             traceback.print_exc()
 
+    def delete_beat(self, sequence: SequenceData, beat_index: int) -> SequenceData:
+        """
+        Delete beat and all following beats from the sequence (legacy behavior).
+
+        This matches the exact behavior from the legacy version where deleting a beat
+        removes that beat and all subsequent beats from the sequence.
+
+        Args:
+            sequence: The sequence to modify
+            beat_index: Index of the beat to delete (and all following)
+
+        Returns:
+            Updated sequence with beat and following beats removed
+
+        Raises:
+            ValueError: If beat_index is invalid
+        """
+        if not sequence or beat_index < 0 or beat_index >= len(sequence.beats):
+            raise ValueError(f"Invalid beat index: {beat_index}")
+
+        print(
+            f"🗑️ [BEAT_OPERATIONS] Deleting beat at index {beat_index} and all following beats"
+        )
+
+        # Get the beat being deleted for logging
+        beat_to_delete = sequence.beats[beat_index]
+        beats_to_remove = sequence.beats[beat_index:]
+
+        print(
+            f"🗑️ [BEAT_OPERATIONS] Removing {len(beats_to_remove)} beats starting from {beat_to_delete.letter}"
+        )
+
+        # Keep only beats before the deletion point
+        remaining_beats = list(sequence.beats[:beat_index])
+
+        # Create updated sequence with remaining beats
+        updated_sequence = sequence.update(beats=remaining_beats)
+
+        print(
+            f"✅ [BEAT_OPERATIONS] Successfully deleted beat {beat_to_delete.letter} and {len(beats_to_remove) - 1} following beats"
+        )
+        print(f"📊 [BEAT_OPERATIONS] Sequence now has {len(remaining_beats)} beats")
+
+        return updated_sequence
+
     def get_current_sequence(self) -> Optional[SequenceData]:
         """Get the current sequence from workbench"""
         print(f"🔍 [BEAT_OPERATIONS] Getting current sequence...")

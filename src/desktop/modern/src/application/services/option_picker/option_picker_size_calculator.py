@@ -57,7 +57,6 @@ class OptionPickerSizeCalculator:
         self,
         letter_type: LetterType,
         main_window_width: int,
-        available_container_width: int = None,
     ) -> Dict[str, int]:
         """
         Calculate section layout dimensions.
@@ -67,10 +66,8 @@ class OptionPickerSizeCalculator:
         """
         try:
             # SIMPLIFIED: Use available container width if provided, otherwise fall back to legacy calculation
-            if available_container_width:
-                base_width = available_container_width  # Use full container width
-            else:
-                base_width = main_window_width // 2  # Legacy fallback
+
+            base_width = main_window_width // 2  # Legacy fallback
 
             if letter_type in [LetterType.TYPE1, LetterType.TYPE2, LetterType.TYPE3]:
                 # Individual sections: use full available width

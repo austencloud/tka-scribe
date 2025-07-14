@@ -1,7 +1,8 @@
-from typing import Optional, Dict
-from PyQt6.QtWidgets import QWidget, QVBoxLayout, QPushButton, QSpacerItem, QSizePolicy
-from PyQt6.QtCore import pyqtSignal, Qt
+from typing import Dict, Optional
+
+from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtGui import QFont
+from PyQt6.QtWidgets import QPushButton, QSizePolicy, QSpacerItem, QVBoxLayout, QWidget
 
 
 class SequenceWorkbenchButtonPanel(QWidget):
@@ -125,7 +126,10 @@ class SequenceWorkbenchButtonPanel(QWidget):
 
     def _handle_button_click(self, signal, tooltip):
         """Handle button click with debug output"""
+        print(f"🖱️ [BUTTON_PANEL] Button clicked: {tooltip}")
+        print(f"🔄 [BUTTON_PANEL] Emitting signal: {signal}")
         signal.emit()
+        print(f"✅ [BUTTON_PANEL] Signal emitted successfully")
 
     def _handle_edit_construct_toggle(self):
         """Handle Edit/Construct toggle button click"""
@@ -152,12 +156,12 @@ class SequenceWorkbenchButtonPanel(QWidget):
             self._update_edit_construct_button()
 
     def _apply_styling(self):
-        """Apply glassmorphism styling to the button panel and buttons"""
-        # Panel glassmorphism background
+        """Apply glassmorphism styling to the button panel and buttons, with a black border"""
+        # Panel glassmorphism background with visible black border
         panel_style = """
             QWidget {
                 background: rgba(255, 255, 255, 0.1);
-                border: 1px solid rgba(255, 255, 255, 0.2);
+                border: 2px solid black;
                 border-radius: 12px;
             }
         """
