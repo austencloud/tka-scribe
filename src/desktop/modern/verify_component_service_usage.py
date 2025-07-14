@@ -65,19 +65,19 @@ def verify_service_usage():
     except Exception as e:
         print(f"  ❌ Component imports failed: {e}")
 
-    # Test StartPositionOption service usage
+    # Test StartPositionOption constructor
     total_tests += 1
     try:
-        # Test if service injection works
+        # Test if correct constructor works
         option = StartPositionOption(
-            "alpha1_alpha1", mock_pool, "diamond", data_service=data_service
+            "alpha1_alpha1", mock_pool, "diamond", True
         )
-        assert hasattr(option, "data_service")
-        assert option.data_service == data_service
-        print("  ✅ StartPositionOption accepts injected data service")
+        assert option.position_key == "alpha1_alpha1"
+        assert option.grid_mode == "diamond"
+        print("  ✅ StartPositionOption constructor works correctly")
         tests_passed += 1
     except Exception as e:
-        print(f"  ❌ StartPositionOption service usage failed: {e}")
+        print(f"  ❌ StartPositionOption constructor failed: {e}")
 
     # Test StartPositionPicker service usage
     total_tests += 1

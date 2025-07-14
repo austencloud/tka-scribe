@@ -76,38 +76,38 @@ def test_presentation_layer_integration():
         print(f"    ❌ Mock pool manager creation failed: {e}")
         return success_count, total_tests
     
-    # Test 4: StartPositionOption with Services
+    # Test 4: StartPositionOption with correct constructor
     total_tests += 1
     try:
-        print("  🎯 Testing StartPositionOption with injected services...")
+        print("  🎯 Testing StartPositionOption with correct constructor...")
         option = StartPositionOption(
             "alpha1_alpha1",
             mock_pool,
             "diamond",
-            data_service=data_service
+            True  # enhanced_styling
         )
-        assert hasattr(option, 'data_service')
-        assert option.data_service == data_service
-        print("    ✅ StartPositionOption works with injected services")
+        assert option.position_key == "alpha1_alpha1"
+        assert option.grid_mode == "diamond"
+        print("    ✅ StartPositionOption works with correct constructor")
         success_count += 1
     except Exception as e:
-        print(f"    ❌ StartPositionOption with services failed: {e}")
+        print(f"    ❌ StartPositionOption with correct constructor failed: {e}")
     
-    # Test 5: StartPositionOption Backward Compatibility
+    # Test 5: StartPositionOption Enhanced Styling
     total_tests += 1
     try:
-        print("  🔄 Testing StartPositionOption backward compatibility...")
-        option_fallback = StartPositionOption(
+        print("  🎯 Testing StartPositionOption with enhanced styling...")
+        option_enhanced = StartPositionOption(
             "alpha1_alpha1",
             mock_pool,
-            "diamond"
-            # No data_service parameter - should use fallback
+            "diamond",
+            True  # enhanced_styling
         )
-        assert hasattr(option_fallback, 'data_service')
-        print("    ✅ StartPositionOption backward compatibility works")
+        assert option_enhanced.enhanced_styling == True
+        print("    ✅ StartPositionOption enhanced styling works")
         success_count += 1
     except Exception as e:
-        print(f"    ❌ StartPositionOption backward compatibility failed: {e}")
+        print(f"    ❌ StartPositionOption enhanced styling failed: {e}")
     
     # Test 6: StartPositionPicker with Services
     total_tests += 1

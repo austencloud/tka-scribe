@@ -60,8 +60,8 @@ def test_clean_architecture():
         option = StartPositionOption(
             "alpha1_alpha1",
             mock_pool,
-            data_service,
-            "diamond"
+            "diamond",
+            True  # enhanced_styling
         )
         print("✅ Component construction with clean signature successful")
     except Exception as e:

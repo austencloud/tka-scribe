@@ -9,45 +9,83 @@ Follows TKA testing protocols and architectural patterns.
 
 import sys
 from pathlib import Path
-from typing import Dict, Any
+from typing import Any, Dict
+from unittest.mock import MagicMock, Mock
+
 import pytest
-from unittest.mock import Mock, MagicMock
 
 # Add modern source to path
 modern_src = Path(__file__).parent.parent.parent.parent / "src"
 sys.path.insert(0, str(modern_src))
 
-# Import TKA testing infrastructure
-from core.testing.ai_agent_helpers import TKAAITestHelper
 from core.application.application_factory import ApplicationFactory
 
-# Import mock infrastructure
-from .mock_services import (
-    MockGraphEditorService,
-    MockDataFlowService,
-    MockHotkeyService,
-    create_all_mock_services,
-)
+# Import TKA testing infrastructure
+from core.testing.ai_agent_helpers import TKAAITestHelper
+
 from .mock_beat_data import (
+    GraphEditorTestData,
+    create_complex_beat,
+    create_regular_beat,
     create_sample_beat_data,
     create_sample_sequence_data,
     create_start_position_beat,
-    create_regular_beat,
-    create_complex_beat,
-    GraphEditorTestData,
+)
+
+# Import mock infrastructure
+from .mock_services import (
+    MockDataFlowService,
+    MockGraphEditorService,
+    MockHotkeyService,
+    create_all_mock_services,
 )
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def qapp():
-    """Create QApplication for Qt tests."""
+    """
+    Create session-scoped QApplication for Qt tests.
+
+    This follows pytest-qt best practices:
+    - Session scope prevents multiple QApplication instances
+    - Proper cleanup prevents memory leaks
+    - Compatible with pytest-qt fixtures
+    """
+    import gc
+
+    from PyQt6.QtCore import QTimer
     from PyQt6.QtWidgets import QApplication
 
+    # Check if QApplication already exists
     app = QApplication.instance()
     if app is None:
+        # Create new QApplication with minimal arguments
         app = QApplication([])
+        app.setQuitOnLastWindowClosed(False)
+        created_app = True
+    else:
+        created_app = False
+
     yield app
-    # Don't quit the app as it might be used by other tests
+
+    # Cleanup: Process pending events and clean up Qt objects
+    if created_app:
+        # Process any remaining events
+        app.processEvents()
+
+        # Close all windows
+        for widget in app.allWidgets():
+            if widget.isWindow():
+                widget.close()
+
+        # Process events again to handle window closing
+        app.processEvents()
+
+        # Force garbage collection
+        gc.collect()
+
+        # Quit the application
+        app.quit()
 
 
 @pytest.fixture
@@ -152,7 +190,11 @@ def mock_parent_widget(qapp):
     parent = QWidget()
     parent.container = Mock()  # Mock DI container
     yield parent
+
+    # Proper Qt widget cleanup
+    parent.close()
     parent.deleteLater()
+    qapp.processEvents()  # Process deletion events
 
 
 @pytest.fixture

@@ -131,10 +131,21 @@ def test_all_fallback_scenarios():
             def checkin_pictograph(self, component): pass
         mock_pool = MockPool()
         
+        # Create data service for mandatory injection
+        from application.services.start_position.start_position_data_service import StartPositionDataService
+        from application.services.start_position.start_position_selection_service import StartPositionSelectionService
+        from application.services.start_position.start_position_ui_service import StartPositionUIService
+        from application.services.start_position.start_position_orchestrator import StartPositionOrchestrator
+        
+        data_service = StartPositionDataService()
+        selection_service = StartPositionSelectionService()
+        ui_service = StartPositionUIService()
+        orchestrator = StartPositionOrchestrator(data_service, selection_service, ui_service)
+        
         test_cases = [
-            ("StartPositionOption with None service", lambda: 
+            ("StartPositionOption with correct constructor", lambda: 
                 __import__('presentation.components.start_position_picker.start_position_option', fromlist=['StartPositionOption']).StartPositionOption(
-                    "alpha1_alpha1", mock_pool, "diamond", data_service=None
+                    "alpha1_alpha1", mock_pool, "diamond", True
                 )
             ),
             ("StartPositionPicker without services", lambda:
@@ -143,8 +154,10 @@ def test_all_fallback_scenarios():
             ("EnhancedStartPositionPicker without services", lambda:
                 __import__('presentation.components.start_position_picker.enhanced_start_position_picker', fromlist=['EnhancedStartPositionPicker']).EnhancedStartPositionPicker(mock_pool)
             ),
-            ("AdvancedStartPositionPicker without services", lambda:
-                __import__('presentation.components.start_position_picker.advanced_start_position_picker', fromlist=['AdvancedStartPositionPicker']).AdvancedStartPositionPicker(mock_pool, "diamond")
+            ("AdvancedStartPositionPicker with services", lambda:
+                __import__('presentation.components.start_position_picker.advanced_start_position_picker', fromlist=['AdvancedStartPositionPicker']).AdvancedStartPositionPicker(
+                    mock_pool, data_service, selection_service, ui_service, orchestrator, "diamond"
+                )
             )
         ]
         

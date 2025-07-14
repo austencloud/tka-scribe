@@ -23,20 +23,21 @@ def test_start_position_option_fallback():
         
         mock_pool = MockPoolManager()
         
-        # Test 1: StartPositionOption with None data_service (triggers fallback)
-        print("  Testing StartPositionOption with data_service=None...")
+        # Test 1: StartPositionOption with correct constructor parameters
+        print("  Testing StartPositionOption with correct constructor...")
         from presentation.components.start_position_picker.start_position_option import StartPositionOption
         
         option = StartPositionOption(
             "alpha1_alpha1",
             mock_pool,
             "diamond",
-            data_service=None  # This should trigger fallback to StartPositionDataService
+            True  # enhanced_styling
         )
         
-        # Verify it has the right service type
-        from application.services.start_position.start_position_data_service import StartPositionDataService
-        assert isinstance(option.data_service, StartPositionDataService)
+        # Verify it was created successfully
+        assert option.position_key == "alpha1_alpha1"
+        assert option.grid_mode == "diamond"
+        assert option.enhanced_styling == True
         
         # Verify the service has the get_position_data method
         assert hasattr(option.data_service, 'get_position_data')

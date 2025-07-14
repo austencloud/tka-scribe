@@ -8,8 +8,9 @@ Provides global pytest fixtures and configuration for all TKA modern tests.
 
 import sys
 from pathlib import Path
-import pytest
 from unittest.mock import Mock
+
+import pytest
 
 # Add modern source to path
 modern_src = Path(__file__).parent.parent / "src"
@@ -17,26 +18,26 @@ sys.path.insert(0, str(modern_src))
 
 # Import specific fixtures from graph editor to avoid conflicts
 from tests.fixtures.graph_editor.conftest import (
-    qapp,
-    tka_test_helper,
-    test_di_container,
-    mock_graph_service,
-    mock_data_flow_service,
-    mock_hotkey_service,
     all_mock_services,
-    sample_beat_data,
-    sample_sequence_data,
-    start_position_beat,
-    regular_beat,
-    complex_beat,
     basic_test_data,
+    complex_beat,
     complex_test_data,
-    edge_case_data,
     comprehensive_test_data,
+    edge_case_data,
+    mock_data_flow_service,
+    mock_graph_service,
+    mock_hotkey_service,
     mock_parent_widget,
     mock_workbench,
-    signal_spy,
+    qapp,
+    regular_beat,
     reset_mocks,
+    sample_beat_data,
+    sample_sequence_data,
+    signal_spy,
+    start_position_beat,
+    test_di_container,
+    tka_test_helper,
 )
 
 
@@ -75,3 +76,32 @@ def pytest_collection_modifyitems(config, items):
         # Add UI marker for tests that use qapp fixture
         if "qapp" in item.fixturenames:
             item.add_marker(pytest.mark.ui)
+
+
+def pytest_runtest_teardown(item, nextitem):
+    """
+    Clean up Qt objects between tests to prevent memory leaks.
+
+    This follows pytest-qt best practices for preventing Qt memory leaks
+    that can cause process termination in large test suites.
+    """
+    import gc
+
+    from PyQt6.QtWidgets import QApplication
+
+    app = QApplication.instance()
+    if app is not None:
+        # Process any pending Qt events
+        app.processEvents()
+
+        # Close any remaining windows (except main application windows)
+        for widget in app.allWidgets():
+            if widget.isWindow() and not widget.isVisible():
+                widget.close()
+                widget.deleteLater()
+
+        # Process deletion events
+        app.processEvents()
+
+        # Force garbage collection to clean up Python objects
+        gc.collect()

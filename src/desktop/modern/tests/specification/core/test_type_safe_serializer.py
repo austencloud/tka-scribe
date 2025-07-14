@@ -184,22 +184,12 @@ class TestRoundTripSerialization:
 
     def test_beat_data_round_trip(self):
         """Test round-trip serialization of BeatData."""
-        motion = MotionData(
-            motion_type=MotionType.DASH,
-            prop_rot_dir=RotationDirection.COUNTER_CLOCKWISE,
-            start_loc=Location.EAST,
-            end_loc=Location.WEST,
-            turns=2.0,
-        )
 
         original = BeatData(
             beat_number=1,
-            letter="A",
             duration=1.5,
-            blue_motion=motion,
-            red_motion=motion,
             blue_reversal=True,
-            metadata={"test": "value"},
+            metadata={"test": "value", "letter": "A"},
         )
 
         serialized = TypeSafeSerializer.serialize(original)

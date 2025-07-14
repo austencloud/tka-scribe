@@ -177,7 +177,10 @@ class TestBeatDataProperties:
     ):
         """Test that BeatData maintains invariants during creation."""
         beat = BeatData(
-            beat_number=beat_number, duration=duration, letter=letter, is_blank=is_blank
+            beat_number=beat_number,
+            duration=duration,
+            is_blank=is_blank,
+            metadata={"letter": letter},
         )
 
         # Invariant: Beat number must be positive
@@ -199,7 +202,7 @@ class TestBeatDataProperties:
     def test_beat_data_update_immutability(self, beat_number, duration):
         """Test that BeatData.update() creates new instances."""
         original = BeatData(beat_number=beat_number, duration=duration)
-        updated = original.update(letter="A")
+        updated = original.update(metadata={"letter": "A"})
 
         # Invariant: Update should create new instance
         assert original is not updated
@@ -265,7 +268,9 @@ class TestSequenceDataProperties:
         # Add beats one by one
         for i in range(beat_count):
             beat = BeatData(
-                beat_number=i + 1, duration=1.0, letter=chr(ord("A") + i % 26)
+                beat_number=i + 1,
+                duration=1.0,
+                metadata={"letter": chr(ord("A") + i % 26)},
             )
             sequence = sequence.add_beat(beat)
 
