@@ -224,7 +224,7 @@ class TestBeatDataProperties:
             )
         )
 
-        original = BeatData(beat_number=beat_number, duration=duration, letter=letter)
+        original = BeatData(beat_number=beat_number, duration=duration)
 
         # Serialize to dict and back
         data_dict = original.to_dict()

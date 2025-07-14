@@ -253,6 +253,46 @@ def validate_configuration_registration(container) -> bool:
         raise
 
 
+def register_start_position_services(container: DIContainer) -> None:
+    """
+    Register start position services in the DI container.
+    
+    Args:
+        container: DI container instance
+        
+    Raises:
+        Exception: If service registration fails
+    """
+    try:
+        # Import start position interfaces
+        from core.interfaces.start_position_services import (
+            IStartPositionDataService,
+            IStartPositionSelectionService,
+            IStartPositionUIService,
+            IStartPositionOrchestrator
+        )
+        
+        # Import start position service implementations
+        from application.services.start_position import (
+            StartPositionDataService,
+            StartPositionSelectionService,
+            StartPositionUIService,
+            StartPositionOrchestrator
+        )
+        
+        # Register individual services
+        container.register_singleton(IStartPositionDataService, StartPositionDataService)
+        container.register_singleton(IStartPositionSelectionService, StartPositionSelectionService)
+        container.register_singleton(IStartPositionUIService, StartPositionUIService)
+        container.register_singleton(IStartPositionOrchestrator, StartPositionOrchestrator)
+        
+        logger.debug("Successfully registered start position services")
+        
+    except Exception as e:
+        logger.error(f"Failed to register start position services: {e}")
+        raise
+
+
 def register_extracted_services(container: DIContainer) -> None:
     """
     Register extracted business logic services.
@@ -268,6 +308,9 @@ def register_extracted_services(container: DIContainer) -> None:
         from application.services.positioning.position_mapper import PositionMapper
 
         container.register_singleton(IPositionMapper, PositionMapper)
+
+        # Register start position services
+        register_start_position_services(container)
 
         # Note: BeatLoadingService was removed during SRP refactoring
         # Its functionality was split into focused microservices

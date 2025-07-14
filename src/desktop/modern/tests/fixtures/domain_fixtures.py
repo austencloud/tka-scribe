@@ -22,7 +22,7 @@ def sample_beat_data():
     try:
         from domain.models import BeatData
 
-        beat = BeatData(beat_number=1, letter="A", duration=1.0)
+        beat = BeatData(beat_number=1, duration=1.0)
 
         return beat
 
