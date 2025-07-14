@@ -25,7 +25,9 @@ from .start_position_handler import StartPositionHandler
 
 
 if TYPE_CHECKING:
-    from presentation.components.workbench.workbench import SequenceWorkbench
+    from presentation.components.sequence_workbench.sequence_workbench import (
+        SequenceWorkbench,
+    )
 
 
 class ConstructTabWidget(QWidget):

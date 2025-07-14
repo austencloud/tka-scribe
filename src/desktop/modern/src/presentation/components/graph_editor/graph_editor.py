@@ -36,7 +36,9 @@ from .utils.validation import (
 )
 
 if TYPE_CHECKING:
-    from presentation.components.workbench.workbench import SequenceWorkbench
+    from presentation.components.sequence_workbench.sequence_workbench import (
+        SequenceWorkbench,
+    )
 
 logger = logging.getLogger(__name__)
 

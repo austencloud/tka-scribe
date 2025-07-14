@@ -37,7 +37,9 @@ class ComponentInitializer:
             dictionary_service = container.resolve(IDictionaryService)
 
             # Create workbench
-            from presentation.components.workbench.workbench import SequenceWorkbench
+            from presentation.components.sequence_workbench.sequence_workbench import (
+                SequenceWorkbench,
+            )
 
             workbench = SequenceWorkbench(
                 layout_service=layout_service,

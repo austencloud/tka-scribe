@@ -1,6 +1,6 @@
 from application.services.data.dataset_query import DatasetQuery
 from application.services.pictograph_pool_manager import PictographPoolManager
-from presentation.components.workbench.sequence_beat_frame.selection_overlay import (
+from presentation.components.sequence_workbench.sequence_beat_frame.selection_overlay import (
     SelectionOverlay,
 )
 from PyQt6.QtCore import Qt, pyqtSignal

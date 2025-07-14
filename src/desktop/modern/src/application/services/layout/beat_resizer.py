@@ -12,8 +12,10 @@ from PyQt6.QtWidgets import QScrollArea, QWidget
 
 if TYPE_CHECKING:
     from presentation.components.graph_editor.graph_editor import GraphEditor
-    from presentation.components.workbench.beat_frame.beat_frame import BeatFrame
-    from presentation.components.workbench.sequence_beat_frame.sequence_beat_frame import (
+    from presentation.components.sequence_workbench.beat_frame.beat_frame import (
+        BeatFrame,
+    )
+    from presentation.components.sequence_workbench.sequence_beat_frame.sequence_beat_frame import (
         SequenceBeatFrame,
     )
 

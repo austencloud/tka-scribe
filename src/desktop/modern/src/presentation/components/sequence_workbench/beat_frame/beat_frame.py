@@ -10,11 +10,13 @@ from typing import Dict, List, Optional
 from application.services.layout.beat_resizer import BeatResizer
 from application.services.layout.layout_manager import LayoutManager
 from domain.models import BeatData, SequenceData
-from presentation.components.workbench.sequence_beat_frame.beat_selector import (
+from presentation.components.sequence_workbench.sequence_beat_frame.beat_selector import (
     BeatSelector,
 )
-from presentation.components.workbench.sequence_beat_frame.beat_view import BeatView
-from presentation.components.workbench.sequence_beat_frame.start_position_view import (
+from presentation.components.sequence_workbench.sequence_beat_frame.beat_view import (
+    BeatView,
+)
+from presentation.components.sequence_workbench.sequence_beat_frame.start_position_view import (
     StartPositionView,
 )
 from PyQt6.QtCore import Qt, pyqtSignal

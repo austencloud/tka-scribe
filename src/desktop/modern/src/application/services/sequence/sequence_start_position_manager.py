@@ -16,7 +16,9 @@ from domain.models.sequence_data import SequenceData
 from PyQt6.QtCore import QObject, pyqtSignal
 
 if TYPE_CHECKING:
-    from presentation.components.workbench.workbench import SequenceWorkbench
+    from presentation.components.sequence_workbench.sequence_workbench import (
+        SequenceWorkbench,
+    )
 
 
 class SequenceStartPositionManager(QObject):

@@ -445,9 +445,31 @@ class SequenceBuildingTest(QMainWindow):
             # Update current end position
             self.current_end_position = end_pos
 
-            # Load NEW options that start from this end position (with fade animation!)
-            self.log(f"🔄 Loading NEW options starting from {end_pos} (FADE ANIMATION)")
-            self.load_options_for_position(end_pos)
+            # NOW trigger the option picker refresh with the UPDATED sequence
+            # This is the key - refresh with the new sequence state to show new options
+            self.log(f"🔄 Refreshing options with updated sequence (FADE ANIMATION)")
+
+            # Measure performance for the fade transition
+            start_time = time.perf_counter()
+
+            # Refresh option picker with the updated sequence - this should trigger fade animations
+            self.option_picker.refresh_options_from_modern_sequence(
+                self.current_sequence
+            )
+
+            # Record timing
+            transition_time = (time.perf_counter() - start_time) * 1000
+            self.transition_times.append(transition_time)
+            self.update_performance_display(transition_time)
+
+            # Update state display
+            self.state_label.setText(
+                f"Sequence updated! Next options will start from: {end_pos}"
+            )
+
+            self.log(
+                f"✅ Options refreshed with fade animation - {transition_time:.1f}ms"
+            )
 
         except Exception as e:
             self.log(f"Error handling pictograph selection: {e}")

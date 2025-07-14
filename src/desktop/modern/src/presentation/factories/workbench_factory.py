@@ -44,7 +44,9 @@ from core.interfaces.workbench_services import (
     ISequenceWorkbenchService,
 )
 from presentation.components.ui.full_screen import FullScreenOverlayFactory
-from presentation.components.workbench.modern_workbench import SequenceWorkbench
+from presentation.components.sequence_workbench.sequence_workbench import (
+    SequenceWorkbench,
+)
 
 
 def create_modern_workbench(

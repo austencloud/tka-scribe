@@ -14,7 +14,7 @@ from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QHBoxLayout, QLabel, QStackedWidget, QVBoxLayout, QWidget
 
 if TYPE_CHECKING:
-    from presentation.components.workbench.sequence_beat_frame.sequence_beat_frame import (
+    from presentation.components.sequence_workbench.sequence_beat_frame.sequence_beat_frame import (
         SequenceBeatFrame,
     )
 
