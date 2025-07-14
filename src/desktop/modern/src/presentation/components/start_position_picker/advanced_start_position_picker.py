@@ -290,7 +290,7 @@ class AdvancedStartPositionPicker(QWidget):
         widget = QWidget()
         layout = QHBoxLayout(widget)
         layout.setContentsMargins(0, 0, 0, 0)
-        layout.setSpacing(12)
+        layout.setSpacing(0)
 
         # Grid mode toggle button
         self.grid_mode_button = QPushButton()
@@ -313,8 +313,8 @@ class AdvancedStartPositionPicker(QWidget):
         self.positions_layout = QGridLayout(self.positions_container)
 
         # Legacy-style spacing (match advanced picker sizing)
-        self.positions_layout.setSpacing(10)  # Legacy SPACING = 10
-        self.positions_layout.setContentsMargins(20, 20, 20, 20)
+        self.positions_layout.setSpacing(0)  # Legacy SPACING = 10
+        self.positions_layout.setContentsMargins(0, 0, 0, 0)
 
         # Set size policy to expand
         self.positions_container.setSizePolicy(
@@ -516,7 +516,6 @@ class AdvancedStartPositionPicker(QWidget):
 
             # Ensure reasonable size range for visibility and usability
             size = max(size, 70)  # Minimum 70px (same as legacy)
-            size = min(size, 150)  # Maximum 150px to prevent too large
 
             # Apply the size
             option.setFixedSize(size, size)

@@ -9,8 +9,10 @@ from unittest.mock import Mock, patch
 
 import pytest
 from core.application.application_factory import ApplicationFactory
-from core.interfaces.core_services import IObjectPoolManager
-from core.interfaces.positioning_services import IPositionMatchingService
+from core.interfaces.core_services import IObjectPoolService as IObjectPoolManager
+from core.interfaces.positioning_services import (
+    IPositionMapper as IPositionMatchingService,
+)
 from core.testing.ai_agent_helpers import TKAAITestHelper
 
 

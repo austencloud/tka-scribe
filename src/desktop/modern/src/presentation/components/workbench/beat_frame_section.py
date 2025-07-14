@@ -4,11 +4,14 @@ from core.interfaces.core_services import ILayoutService
 from domain.models.beat_data import BeatData
 from domain.models.pictograph_data import PictographData
 from domain.models.sequence_data import SequenceData
+from presentation.components.sequence_workbench.button_panel import (
+    SequenceWorkbenchButtonPanel,
+)
+from presentation.components.sequence_workbench.sequence_beat_frame.sequence_beat_frame import (
+    SequenceBeatFrame,
+)
 from PyQt6.QtCore import pyqtSignal
 from PyQt6.QtWidgets import QHBoxLayout, QWidget
-
-from .button_panel import SequenceWorkbenchButtonPanel
-from .sequence_beat_frame.sequence_beat_frame import SequenceBeatFrame
 
 if TYPE_CHECKING:
     from application.services.workbench.beat_selection_service import (

@@ -22,8 +22,8 @@ from domain.models.enums import (
     RotationDirection,
     VTGMode,
 )
-from domain.models.glyph_models import GlyphData
-from domain.models.motion_models import MotionData
+from domain.models.glyph_data import GlyphData
+from domain.models.motion_data import MotionData
 from domain.models.sequence_data import SequenceData
 from hypothesis import assume, given
 from hypothesis import strategies as st

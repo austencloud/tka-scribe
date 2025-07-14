@@ -19,7 +19,7 @@ from core.serialization.type_safe_serializer import (
 )
 from domain.models.beat_data import BeatData
 from domain.models.enums import Location, MotionType, RotationDirection
-from domain.models.motion_models import MotionData
+from domain.models.motion_data import MotionData
 from domain.models.sequence_data import SequenceData
 
 

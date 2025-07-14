@@ -33,12 +33,16 @@ from core.interfaces.core_services import ILayoutService
 from domain.models import BeatData, SequenceData
 from domain.models.pictograph_data import PictographData
 from presentation.components.component_base import ViewableComponentBase
+from presentation.components.sequence_workbench.button_interface import (
+    WorkbenchButtonInterfaceAdapter,
+)
+from presentation.components.sequence_workbench.indicator_section import (
+    WorkbenchIndicatorSection,
+)
 from PyQt6.QtCore import pyqtSignal
 from PyQt6.QtWidgets import QVBoxLayout, QWidget
 
 from .beat_frame_section import WorkbenchBeatFrameSection
-from .button_interface import WorkbenchButtonInterfaceAdapter
-from .indicator_section import WorkbenchIndicatorSection
 
 if TYPE_CHECKING:
     from application.services.workbench.beat_selection_service import (

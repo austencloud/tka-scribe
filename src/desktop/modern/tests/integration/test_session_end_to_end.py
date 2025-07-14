@@ -17,8 +17,8 @@ import pytest
 tka_src_path = Path(__file__).parent.parent.parent / "src"
 sys.path.insert(0, str(tka_src_path))
 
-from application.services.core.application_lifecycle_manager import (
-    ApplicationLifecycleManager,
+from application.services.core.application_initialization_orchestrator import (
+    ApplicationInitializationOrchestrator as ApplicationLifecycleManager,
 )
 from core.application.application_factory import ApplicationFactory
 from core.interfaces.core_services import IUIStateManagementService
