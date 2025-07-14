@@ -5,8 +5,8 @@ Runner script for TKA Legacy Desktop Application.
 This script provides a convenient way to run the legacy desktop app from the project root.
 """
 
-import sys
 import os
+import sys
 from pathlib import Path
 
 # Add the project root to the Python path
@@ -22,4 +22,5 @@ if __name__ == "__main__":
     # Import the main module from the legacy app
     sys.path.insert(0, str(legacy_dir))
     from main import main
+
     main()

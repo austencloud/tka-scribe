@@ -1,6 +1,5 @@
 from application.services.data.dataset_query import DatasetQuery
-from application.services.pictograph_pool_manager import get_pictograph_pool
-from core.dependency_injection.di_container import get_container
+from application.services.pictograph_pool_manager import PictographPoolManager
 from presentation.components.workbench.sequence_beat_frame.selection_overlay import (
     SelectionOverlay,
 )
@@ -12,16 +11,16 @@ from PyQt6.QtWidgets import QVBoxLayout, QWidget
 class StartPositionOption(QWidget):
     position_selected = pyqtSignal(str)
 
-    def __init__(self, position_key: str, grid_mode: str = "diamond"):
+    def __init__(self, position_key: str, pool_manager: PictographPoolManager, grid_mode: str = "diamond"):
         super().__init__()
         self.position_key = position_key
         self.grid_mode = grid_mode
         self.dataset_service = DatasetQuery()
+        self._pool_manager = pool_manager
 
         # Initialize selection overlay components
         self._pictograph_component = None
         self._selection_overlay = None
-        self._pool_manager = None  # Store pool manager for cleanup
 
         self._setup_ui()
 
@@ -30,9 +29,7 @@ class StartPositionOption(QWidget):
         layout.setContentsMargins(5, 5, 5, 5)
         layout.setSpacing(5)
 
-        # Use pool manager for consistent visibility management
-        container = get_container()
-        self._pool_manager = get_pictograph_pool(container)
+        # Use injected pool manager
         self._pictograph_component = self._pool_manager.checkout_pictograph(parent=self)
         self.pictograph_component = self._pictograph_component  # Keep legacy reference
 

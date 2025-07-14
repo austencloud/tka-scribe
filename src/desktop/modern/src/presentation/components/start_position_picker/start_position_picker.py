@@ -1,6 +1,7 @@
 # Import for command-based architecture
 import logging
 
+from application.services.pictograph_pool_manager import PictographPoolManager
 from presentation.components.start_position_picker.start_position_option import (
     StartPositionOption,
 )
@@ -16,8 +17,9 @@ class StartPositionPicker(QWidget):
     DIAMOND_START_POSITIONS = ["alpha1_alpha1", "beta5_beta5", "gamma11_gamma11"]
     BOX_START_POSITIONS = ["alpha2_alpha2", "beta4_beta4", "gamma12_gamma12"]
 
-    def __init__(self):
+    def __init__(self, pool_manager: PictographPoolManager):
         super().__init__()
+        self.pool_manager = pool_manager
         self.current_grid_mode = "diamond"
         self.position_options: list[StartPositionOption] = []
         self._setup_ui()
@@ -95,7 +97,7 @@ class StartPositionPicker(QWidget):
             else self.BOX_START_POSITIONS
         )
         for i, position_key in enumerate(position_keys):
-            option = StartPositionOption(position_key, self.current_grid_mode)
+            option = StartPositionOption(position_key, self.pool_manager, self.current_grid_mode)
             option.position_selected.connect(self._handle_position_selection)
             row = i // 3
             col = i % 3

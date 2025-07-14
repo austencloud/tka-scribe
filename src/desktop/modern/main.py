@@ -24,9 +24,6 @@ from PyQt6.QtWidgets import QApplication, QMainWindow, QWidget
 modern_src_path = Path(__file__).parent / "src"
 sys.path.insert(0, str(modern_src_path))
 
-# Lazy imports for performance optimization
-# These will be imported when needed to reduce startup time
-
 
 class TKAMainWindow(QMainWindow):
     def __init__(
@@ -64,7 +61,8 @@ class TKAMainWindow(QMainWindow):
 
     def _attach_production_debugger(self) -> None:
         try:
-            from debug import attach_to_application
+            from debug import attach_to_application, get_production_debugger
+            from PyQt6.QtCore import QTimer
 
             QTimer.singleShot(1000, lambda: self._do_debugger_attachment())
         except Exception:
@@ -124,6 +122,19 @@ def create_application():
         app = QApplication(sys.argv)
         app.setStyle("Fusion")
 
+    # Create container for dependency injection
+    from core.application.application_factory import ApplicationFactory, ApplicationMode
+
+    container = ApplicationFactory.create_app(ApplicationMode.PRODUCTION)
+
+    # Initialize services
+    try:
+        from core.service_locator import initialize_services
+
+        initialize_services()
+    except Exception as e:
+        print(f"Warning: Could not initialize services: {e}")
+
     parallel_mode, monitor, geometry = detect_parallel_testing_mode()
     screens = QGuiApplication.screens()
     if parallel_mode and monitor == "secondary" and len(screens) > 1:
@@ -136,6 +147,7 @@ def create_application():
         )
 
     window = TKAMainWindow(
+        container=container,
         splash_screen=None,
         target_screen=target_screen,
         parallel_mode=parallel_mode,
@@ -298,8 +310,10 @@ def main():
                 )
                 app.processEvents()
 
-                # Create window with full initialization (including construct tab loading)
-                # This happens during splash screen phase so everything is ready when window appears
+                splash.update_progress(
+                    15, "Creating main window and loading all components..."
+                )
+
                 window = TKAMainWindow(
                     container=container,
                     splash_screen=splash,

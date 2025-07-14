@@ -1,0 +1,88 @@
+"""
+Dependency Injection configuration for the modern animation system.
+"""
+
+from core.dependency_injection.di_container import DIContainer
+from core.interfaces.animation_core_interfaces import (
+    IAnimationOrchestrator,
+    IAnimationEngine,
+    IEventBus
+)
+
+from .animation_orchestrator import (
+    ModernAnimationOrchestrator,
+    LegacyFadeManagerWrapper,
+    create_modern_animation_system
+)
+
+
+class ModernAnimationServiceRegistration:
+    """Registers modern animation services with the DI container."""
+    
+    @staticmethod
+    def register_services(container: DIContainer) -> None:
+        """Register all modern animation services."""
+        
+        # Register factory function that creates the complete system
+        def create_animation_system(container):
+            # Get settings coordinator if available
+            settings_coordinator = None
+            try:
+                from core.interfaces.settings_interfaces import ISettingsCoordinator
+                settings_coordinator = container.resolve(ISettingsCoordinator)
+            except:
+                pass  # Settings coordinator not available
+            
+            orchestrator, legacy_wrapper = create_modern_animation_system(settings_coordinator)
+            return orchestrator, legacy_wrapper
+        
+        # Register as singleton factory
+        container.register_factory(
+            "animation_system_factory",
+            create_animation_system,
+            lifecycle='singleton'
+        )
+        
+        # Register orchestrator
+        def orchestrator_factory(container):
+            orchestrator, _ = container.resolve("animation_system_factory")
+            return orchestrator
+        
+        container.register_factory(
+            IAnimationOrchestrator,
+            orchestrator_factory,
+            lifecycle='singleton'
+        )
+        
+        # Register legacy wrapper for migration
+        def legacy_wrapper_factory(container):
+            _, legacy_wrapper = container.resolve("animation_system_factory")
+            return legacy_wrapper
+        
+        container.register_factory(
+            LegacyFadeManagerWrapper,
+            legacy_wrapper_factory,
+            lifecycle='singleton'
+        )
+
+
+def setup_modern_animation_services(container: DIContainer) -> None:
+    """
+    Setup function for modern animation services.
+    
+    Call this from your main DI configuration.
+    """
+    ModernAnimationServiceRegistration.register_services(container)
+
+
+# For testing and simple usage without DI
+def create_simple_animation_orchestrator(settings_coordinator=None) -> IAnimationOrchestrator:
+    """Create animation orchestrator without DI container."""
+    orchestrator, _ = create_modern_animation_system(settings_coordinator)
+    return orchestrator
+
+
+def create_legacy_adapter(settings_coordinator=None) -> LegacyFadeManagerWrapper:
+    """Create legacy adapter without DI container."""
+    _, legacy_wrapper = create_modern_animation_system(settings_coordinator)
+    return legacy_wrapper

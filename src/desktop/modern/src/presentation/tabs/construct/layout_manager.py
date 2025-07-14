@@ -118,8 +118,11 @@ class ConstructTabLayoutManager:
         from ...components.start_position_picker.start_position_picker import (
             StartPositionPicker,
         )
+        from application.services.pictograph_pool_manager import PictographPoolManager
 
-        self.start_position_picker = StartPositionPicker()
+        # Get pool manager from DI container
+        pool_manager = self.container.resolve(PictographPoolManager)
+        self.start_position_picker = StartPositionPicker(pool_manager)
         layout.addWidget(self.start_position_picker)
         return widget
 

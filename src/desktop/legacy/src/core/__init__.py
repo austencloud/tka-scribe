@@ -17,7 +17,9 @@ try:
 except ImportError:
     try:
         # Try absolute import from project root
-        from src.desktop.legacy.src.main_window.main_widget.settings_dialog.core import GlassmorphismStyler
+        from src.desktop.legacy.src.main_window.main_widget.settings_dialog.core import (
+            GlassmorphismStyler,
+        )
     except ImportError:
         try:
             # Try direct import (when paths are set up)
