@@ -21,6 +21,7 @@ from application.services.option_picker.sequence_option_service import (
     SequenceOptionService,
 )
 from application.services.pictograph_pool_manager import PictographPoolManager
+from core.interfaces.animation_core_interfaces import IAnimationOrchestrator
 from domain.models.pictograph_data import PictographData
 from domain.models.sequence_data import SequenceData
 from presentation.components.option_picker.components.pictograph_option_frame import (
@@ -58,6 +59,7 @@ class OptionPickerScroll(QScrollArea):
         pictograph_pool_manager: "PictographPoolManager",
         parent=None,
         mw_size_provider: Callable[[], QSize] = None,
+        animation_orchestrator: Optional[IAnimationOrchestrator] = None,
     ):
         """Initialize with injected services - no service location."""
         super().__init__(parent)
@@ -68,6 +70,7 @@ class OptionPickerScroll(QScrollArea):
         self._option_sizing_service = option_sizing_service
         self._option_config_service = option_config_service
         self._pictograph_pool_manager = pictograph_pool_manager
+        self._animation_orchestrator = animation_orchestrator
 
         self._mw_size_provider = mw_size_provider or self._default_size_provider
 
@@ -184,6 +187,7 @@ class OptionPickerScroll(QScrollArea):
                 option_pool_service=self._option_pool_service,
                 option_config_service=self._option_config_service,
                 size_calculator=self._option_sizing_service,
+                animation_orchestrator=self._animation_orchestrator,
             )
             self.sections[letter_type] = section
             section.setup_components()

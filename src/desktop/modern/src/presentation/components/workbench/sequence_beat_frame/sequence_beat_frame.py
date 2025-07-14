@@ -267,19 +267,9 @@ class SequenceBeatFrame(QScrollArea):
     # Public API methods
     def set_sequence(self, sequence: Optional[SequenceData]):
         """Set the current sequence and update display"""
-        if sequence:
-            print(
-                f"🎞️ [SEQUENCE_BEAT_FRAME] set_sequence called with sequence length: {len(sequence.beats)}"
-            )
-        else:
-            print(f"🎞️ [SEQUENCE_BEAT_FRAME] set_sequence called with None sequence")
-
         self._current_sequence = sequence
-        print(f"🎞️ [SEQUENCE_BEAT_FRAME] About to update layout...")
         self._update_layout()
-        print(f"🎞️ [SEQUENCE_BEAT_FRAME] About to update display...")
         self._update_display()
-        print(f"🎞️ [SEQUENCE_BEAT_FRAME] set_sequence completed")
 
     def get_sequence(self) -> Optional[SequenceData]:
         """Get the current sequence"""

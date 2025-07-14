@@ -11,7 +11,8 @@ Key principles:
 - Simple section layout and display
 """
 
-from typing import Callable, Dict, List
+import asyncio
+from typing import Callable, Dict, List, Optional
 
 from application.services.option_picker.option_configuration_service import (
     OptionConfigurationService,
@@ -20,6 +21,11 @@ from application.services.option_picker.option_picker_size_calculator import (
     OptionPickerSizeCalculator,
 )
 from application.services.option_picker.option_pool_service import OptionPoolService
+from core.interfaces.animation_core_interfaces import (
+    AnimationConfig,
+    EasingType,
+    IAnimationOrchestrator,
+)
 from domain.models.pictograph_data import PictographData
 from presentation.components.option_picker.components.option_picker_scroll import (
     OptionPickerScroll,
@@ -50,6 +56,7 @@ class OptionPickerSection(QGroupBox):
         option_pool_service: OptionPoolService,
         option_config_service: OptionConfigurationService,
         size_calculator: OptionPickerSizeCalculator,
+        animation_orchestrator: Optional[IAnimationOrchestrator] = None,
     ):
         """Initialize with injected services - no service location."""
         super().__init__(None)
@@ -61,9 +68,14 @@ class OptionPickerSection(QGroupBox):
         self._option_pool_service = option_pool_service
         self._option_config_service = option_config_service
         self._option_sizing_service = size_calculator
+        self._animation_orchestrator = animation_orchestrator
 
         # Store the current option picker width (updated via signal)
         self._current_option_picker_width = 680  # Default fallback
+
+        # UI state management
+        self._loading_options = False
+        self.pictographs: Dict[str, PictographOptionFrame] = {}
 
     def update_option_picker_width(self, width: int) -> None:
         """Update the stored option picker width - called by parent scroll area."""
@@ -73,10 +85,6 @@ class OptionPickerSection(QGroupBox):
         self.is_groupable = self._option_config_service.is_groupable_type(
             self.letter_type
         )
-
-        # UI state management
-        self._loading_options = False
-        self.pictographs: Dict[str, PictographOptionFrame] = {}
 
     def setup_components(self) -> None:
         """Setup Qt components - pure UI logic."""
@@ -125,49 +133,122 @@ class OptionPickerSection(QGroupBox):
     def load_options_from_sequence(
         self, pictographs_for_section: List[PictographData]
     ) -> None:
-        """Load options for this section - UI coordination logic."""
+        """Load options for this section with modern animation transitions."""
         try:
             # ✅ Set UI loading state
             self._loading_options = True
 
-            # ✅ Clear existing UI elements
-            self.clear_pictographs()
+            # Get existing frames for fade out
+            existing_frames = list(self.pictographs.values())
 
-            # ✅ Create and setup Qt widgets
-            frames = []
-            for pictograph_data in pictographs_for_section:
-                # Get widget from pool using service
-                pool_id = self._option_pool_service.checkout_item()
-                if pool_id is not None:
-                    # Get Qt widget from scroll area's widget pool
-                    option_frame = self.scroll_area.get_widget_from_pool(pool_id)
-                    if option_frame:
-                        # Setup Qt widget
-                        option_frame.update_pictograph(pictograph_data)
-
-                        # CRITICAL: Disconnect any existing connections first to prevent duplicates
-                        try:
-                            option_frame.option_selected.disconnect(
-                                self._on_pictograph_selected
-                            )
-                        except (TypeError, RuntimeError):
-                            # No existing connection - this is fine
-                            pass
-
-                        option_frame.option_selected.connect(
-                            self._on_pictograph_selected
-                        )
-                        frames.append(option_frame)
-
-            # ✅ Add Qt widgets to layout
-            for frame in frames:
-                self.add_pictograph(frame)
+            # Use modern animation system if available, otherwise fall back to direct update
+            if self._animation_orchestrator and existing_frames:
+                # Modern animated transition (replicates legacy fade_and_update behavior)
+                asyncio.create_task(
+                    self._load_with_fade_transition(
+                        pictographs_for_section, existing_frames
+                    )
+                )
+            else:
+                # Direct update (fallback or initial load)
+                self._load_options_directly(pictographs_for_section)
 
         except Exception as e:
             print(f"❌ [UI] Error loading options for {self.letter_type}: {e}")
         finally:
             # ✅ Always clear loading state
             self._loading_options = False
+
+    async def _load_with_fade_transition(
+        self,
+        pictographs_for_section: List[PictographData],
+        existing_frames: List[PictographOptionFrame],
+    ) -> None:
+        """Load options with smooth fade transition (replicates legacy behavior)."""
+        try:
+            # Animation config matching legacy timing (200ms)
+            config = AnimationConfig(
+                duration=0.2, easing=EasingType.EASE_IN_OUT  # 200ms to match legacy
+            )
+
+            # Fade out existing frames
+            if existing_frames:
+                fade_out_tasks = []
+                for frame in existing_frames:
+                    if frame.isVisible():
+                        task = self._animation_orchestrator.fade_target(
+                            frame, fade_in=False, config=config
+                        )
+                        fade_out_tasks.append(task)
+
+                # Wait for all fade outs to complete
+                if fade_out_tasks:
+                    await asyncio.gather(*fade_out_tasks)
+
+            # Update content (equivalent to legacy callback)
+            self._update_pictograph_content(pictographs_for_section)
+
+            # Fade in new frames
+            new_frames = list(self.pictographs.values())
+            if new_frames:
+                fade_in_tasks = []
+                for frame in new_frames:
+                    if frame.isVisible():
+                        task = self._animation_orchestrator.fade_target(
+                            frame, fade_in=True, config=config
+                        )
+                        fade_in_tasks.append(task)
+
+                # Start all fade ins
+                if fade_in_tasks:
+                    await asyncio.gather(*fade_in_tasks)
+
+        except Exception as e:
+            print(
+                f"❌ [ANIMATION] Error in fade transition for {self.letter_type}: {e}"
+            )
+            # Fallback to direct update
+            self._load_options_directly(pictographs_for_section)
+
+    def _load_options_directly(
+        self, pictographs_for_section: List[PictographData]
+    ) -> None:
+        """Direct option loading without animation (fallback)."""
+        # ✅ Clear existing UI elements
+        self.clear_pictographs()
+        self._update_pictograph_content(pictographs_for_section)
+
+    def _update_pictograph_content(
+        self, pictographs_for_section: List[PictographData]
+    ) -> None:
+        """Update pictograph content (extracted for reuse in animation and direct modes)."""
+        # ✅ Create and setup Qt widgets
+        frames = []
+        for pictograph_data in pictographs_for_section:
+            # Get widget from pool using service
+            pool_id = self._option_pool_service.checkout_item()
+            if pool_id is not None:
+                # Get Qt widget from scroll area's widget pool
+                option_frame = self.scroll_area.get_widget_from_pool(pool_id)
+                if option_frame:
+                    # Setup Qt widget
+                    option_frame.update_pictograph(pictograph_data)
+
+                    # CRITICAL: Disconnect any existing connections first to prevent duplicates
+                    try:
+                        option_frame.option_selected.disconnect(
+                            self._on_pictograph_selected
+                        )
+                    except (TypeError, RuntimeError):
+                        # No existing connection - this is fine
+                        pass
+
+                    option_frame.option_selected.connect(self._on_pictograph_selected)
+                    frames.append(option_frame)
+
+        # ✅ Add Qt widgets to layout
+        for frame in frames:
+            self.add_pictograph(frame)
 
     def clear_pictographs(self) -> None:
         """Clear pictographs from Qt layout."""

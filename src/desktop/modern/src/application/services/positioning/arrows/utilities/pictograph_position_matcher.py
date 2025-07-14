@@ -215,9 +215,6 @@ class PictographPositionMatcher:
         # Create grid data
         grid_data = GridData(
             grid_mode=GridMode.DIAMOND,
-            center_x=200.0,
-            center_y=200.0,
-            radius=100.0,
         )
 
         # Create motions dictionary

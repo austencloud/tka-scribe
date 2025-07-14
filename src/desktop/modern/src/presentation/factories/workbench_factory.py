@@ -44,7 +44,7 @@ from core.interfaces.workbench_services import (
     ISequenceWorkbenchService,
 )
 from presentation.components.ui.full_screen import FullScreenOverlayFactory
-from presentation.components.workbench import SequenceWorkbench
+from presentation.components.workbench.modern_workbench import SequenceWorkbench
 
 
 def create_modern_workbench(
@@ -55,31 +55,22 @@ def create_modern_workbench(
     # Configure all services if not already done
     configure_workbench_services(container)
 
-    # Get services from container
+    # Get required services from container
     layout_service = container.resolve(ILayoutService)
     beat_selection_service = container.resolve(BeatSelectionService)
 
-    # Get microservices directly instead of interfaces
-    beat_operations = container.resolve(SequenceBeatOperations)
-    start_position_manager = container.resolve(SequenceStartPositionManager)
-    sequence_loader = container.resolve(SequenceLoader)
-    dictionary_service = container.resolve(SequenceDictionaryService)
-
-    fullscreen_service = container.resolve(IFullScreenViewer)
-    graph_service = container.resolve(IGraphEditorService)
-
-    # Create and return configured workbench with microservices directly
-    return SequenceWorkbench(
+    # Create and return configured workbench with simplified constructor
+    workbench = SequenceWorkbench(
+        container=container,
         layout_service=layout_service,
         beat_selection_service=beat_selection_service,
-        beat_operations=beat_operations,
-        start_position_manager=start_position_manager,
-        sequence_loader=sequence_loader,
-        dictionary_service=dictionary_service,
-        fullscreen_service=fullscreen_service,
-        graph_service=graph_service,
         parent=parent,
     )
+
+    # Initialize the workbench
+    workbench.initialize()
+
+    return workbench
 
 
 def configure_workbench_services(container: DIContainer) -> None:

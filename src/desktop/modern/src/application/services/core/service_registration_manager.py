@@ -762,16 +762,27 @@ class ServiceRegistrationManager(IServiceRegistrationManager):
             )
 
             # Register OptionPickerScroll factory with injected microservices
-            container.register_factory(
-                OptionPickerScroll,
-                lambda c: OptionPickerScroll(
+            def create_option_picker_scroll(c):
+                try:
+                    from core.interfaces.animation_core_interfaces import (
+                        IAnimationOrchestrator,
+                    )
+
+                    animation_orchestrator = c.resolve(IAnimationOrchestrator)
+                except Exception:
+                    # Animation system not available - continue without it
+                    animation_orchestrator = None
+
+                return OptionPickerScroll(
                     sequence_option_service=c.resolve(SequenceOptionService),
                     option_pool_service=c.resolve(OptionPoolService),
                     option_sizing_service=c.resolve(OptionPickerSizeCalculator),
                     option_config_service=c.resolve(OptionConfigurationService),
                     pictograph_pool_manager=c.resolve(PictographPoolManager),
-                ),
-            )
+                    animation_orchestrator=animation_orchestrator,
+                )
+
+            container.register_factory(OptionPickerScroll, create_option_picker_scroll)
 
             self._update_progress("Option picker component factories registered")
 

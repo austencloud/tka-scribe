@@ -135,18 +135,12 @@ class WorkbenchBeatFrameSection(QWidget):
 
     def set_sequence(self, sequence: Optional[SequenceData]):
         """Set the current sequence"""
-        if sequence:
-            print(
-                f"🎬 [BEAT_FRAME_SECTION] set_sequence called with sequence length: {len(sequence.beats)}"
-            )
-        else:
-            print(f"🎬 [BEAT_FRAME_SECTION] set_sequence called with None sequence")
+        print(f"🎯 [BEAT_FRAME_SECTION] Setting sequence: {sequence.length if sequence else 0} beats")
 
         self._current_sequence = sequence
         if self._beat_frame:
-            print(f"🎬 [BEAT_FRAME_SECTION] Calling beat_frame.set_sequence...")
             self._beat_frame.set_sequence(sequence)
-            print(f"🎬 [BEAT_FRAME_SECTION] beat_frame.set_sequence completed")
+            print(f"✅ [BEAT_FRAME_SECTION] Beat frame updated with sequence")
         else:
             print("⚠️ [BEAT_FRAME_SECTION] No beat frame available")
 

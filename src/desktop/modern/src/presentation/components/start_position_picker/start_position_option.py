@@ -11,7 +11,12 @@ from PyQt6.QtWidgets import QVBoxLayout, QWidget
 class StartPositionOption(QWidget):
     position_selected = pyqtSignal(str)
 
-    def __init__(self, position_key: str, pool_manager: PictographPoolManager, grid_mode: str = "diamond"):
+    def __init__(
+        self,
+        position_key: str,
+        pool_manager: PictographPoolManager,
+        grid_mode: str = "diamond",
+    ):
         super().__init__()
         self.position_key = position_key
         self.grid_mode = grid_mode

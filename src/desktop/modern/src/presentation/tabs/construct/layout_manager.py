@@ -73,7 +73,7 @@ class ConstructTabLayoutManager:
         layout.setContentsMargins(8, 8, 8, 8)
         layout.setSpacing(8)
         self.workbench = create_modern_workbench(self.container, panel)
-        layout.addWidget(self.workbench)
+        layout.addWidget(self.workbench.get_widget())
         return panel
 
     def _create_picker_panel_with_progress(self) -> QWidget:
@@ -115,10 +115,11 @@ class ConstructTabLayoutManager:
     def _create_start_position_widget(self) -> QWidget:
         widget = QWidget()
         layout = QVBoxLayout(widget)
+        from application.services.pictograph_pool_manager import PictographPoolManager
+
         from ...components.start_position_picker.start_position_picker import (
             StartPositionPicker,
         )
-        from application.services.pictograph_pool_manager import PictographPoolManager
 
         # Get pool manager from DI container
         pool_manager = self.container.resolve(PictographPoolManager)

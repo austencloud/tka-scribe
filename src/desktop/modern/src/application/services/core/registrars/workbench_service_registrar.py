@@ -7,6 +7,9 @@ sequence editing and management functionality.
 
 Services Registered:
 - BeatSelectionService: Beat selection business logic
+- WorkbenchStateManager: Framework-agnostic workbench state management
+- WorkbenchOperationCoordinator: Framework-agnostic operation coordination
+- WorkbenchSessionManager: Framework-agnostic session restoration
 - Workbench presentation services: UI components and factories
 """
 
@@ -38,6 +41,13 @@ class WorkbenchServiceRegistrar(BaseServiceRegistrar):
         """Workbench services are critical for sequence editing functionality."""
         return True
 
+    def _safe_resolve(self, container: "DIContainer", service_key: str):
+        """Safely resolve a service, returning None if not available."""
+        try:
+            return container.resolve(service_key)
+        except Exception:
+            return None
+
     def register_services(self, container: "DIContainer") -> None:
         """Register workbench services."""
         self._update_progress("Registering workbench services...")
@@ -56,10 +66,53 @@ class WorkbenchServiceRegistrar(BaseServiceRegistrar):
             from application.services.workbench.beat_selection_service import (
                 BeatSelectionService,
             )
+            from application.services.workbench.workbench_operation_coordinator import (
+                WorkbenchOperationCoordinator,
+            )
+            from application.services.workbench.workbench_session_manager import (
+                WorkbenchSessionManager,
+            )
+            from application.services.workbench.workbench_state_manager import (
+                WorkbenchStateManager,
+            )
 
-            # Register pure business services
+            # Register beat selection service (no dependencies)
             container.register_singleton(BeatSelectionService, BeatSelectionService)
             self._mark_service_available("BeatSelectionService")
+
+            # Register workbench state manager with optional dependencies
+            container.register_factory(
+                WorkbenchStateManager,
+                lambda c: WorkbenchStateManager(
+                    sequence_state_tracker=self._safe_resolve(c, "SequenceStateTracker")
+                ),
+            )
+            self._mark_service_available("WorkbenchStateManager")
+
+            # Register workbench operation coordinator with dependencies
+            container.register_factory(
+                WorkbenchOperationCoordinator,
+                lambda c: WorkbenchOperationCoordinator(
+                    workbench_state_manager=c.resolve(WorkbenchStateManager),
+                    beat_operations=self._safe_resolve(c, "SequenceBeatOperations"),
+                    dictionary_service=self._safe_resolve(c, "SequenceDictionaryService"),
+                    fullscreen_service=self._safe_resolve(c, "IFullScreenViewer"),
+                    sequence_transformer=self._safe_resolve(c, "SequenceTransformer"),
+                    sequence_persister=self._safe_resolve(c, "SequencePersister"),
+                ),
+            )
+            self._mark_service_available("WorkbenchOperationCoordinator")
+
+            # Register workbench session manager with dependencies
+            container.register_factory(
+                WorkbenchSessionManager,
+                lambda c: WorkbenchSessionManager(
+                    workbench_state_manager=c.resolve(WorkbenchStateManager),
+                    session_restoration_coordinator=self._safe_resolve(c, "SessionRestorationCoordinator"),
+                    event_bus=self._safe_resolve(c, "EventBus"),
+                ),
+            )
+            self._mark_service_available("WorkbenchSessionManager")
 
         except ImportError as e:
             error_msg = f"Failed to register workbench business services: {e}"

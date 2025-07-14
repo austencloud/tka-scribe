@@ -158,10 +158,6 @@ class SequenceWorkbench(QWidget):
 
     def set_sequence(self, sequence: SequenceData):
         """Set the current sequence to display/edit"""
-        print(
-            f"🏗️ [WORKBENCH] set_sequence called with sequence length: {len(sequence.beats)}"
-        )
-
         # Add stack trace to see who called this
         import traceback
 
@@ -170,21 +166,14 @@ class SequenceWorkbench(QWidget):
             print(f"    {line.strip()}")
 
         self._current_sequence = sequence
-        print(f"🏗️ [WORKBENCH] About to update all components...")
         self._update_all_components()
-        print(f"🏗️ [WORKBENCH] Components updated")
 
         # Only emit sequence_modified if we're not in restoration mode
         # This prevents auto-save loops during sequence restoration
         if not getattr(self, "_restoring_sequence", False):
             # Include start position in the sequence data when emitting
             complete_sequence = self._get_complete_sequence_with_start_position()
-            print(
-                f"🏗️ [WORKBENCH] Emitting sequence_modified signal with length: {len(complete_sequence.beats)}"
-            )
             self.sequence_modified.emit(complete_sequence)
-        else:
-            print(f"🏗️ [WORKBENCH] Skipping signal emission (restoration mode)")
 
     def get_sequence(self) -> Optional[SequenceData]:
         """Get the current sequence"""
@@ -348,6 +337,18 @@ class SequenceWorkbench(QWidget):
                 self._beat_frame_section.show_button_message(
                     button_name, f"❌ {message}", 3000
                 )
+
+    def _on_beat_selected(self, beat_index: int):
+        """Handle beat selection from beat frame and update graph editor"""
+        if self._beat_frame_section:
+            self._beat_frame_section.set_button_enabled(
+                "delete_beat", beat_index is not None
+            )
+
+    def _on_beat_modified(self, beat_index: int, beat_data):
+        """Handle beat modification from beat frame"""
+        if not self._current_sequence:
+            return
 
     def _on_beat_selected(self, beat_index: int):
         """Handle beat selection from beat frame and update graph editor"""

@@ -97,7 +97,9 @@ class StartPositionPicker(QWidget):
             else self.BOX_START_POSITIONS
         )
         for i, position_key in enumerate(position_keys):
-            option = StartPositionOption(position_key, self.pool_manager, self.current_grid_mode)
+            option = StartPositionOption(
+                position_key, self.pool_manager, self.current_grid_mode
+            )
             option.position_selected.connect(self._handle_position_selection)
             row = i // 3
             col = i % 3

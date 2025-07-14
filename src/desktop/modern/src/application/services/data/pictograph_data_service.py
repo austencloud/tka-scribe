@@ -82,9 +82,6 @@ class PictographDataManager(IPictographDataManager):
         """Create a new blank pictograph."""
         grid_data = GridData(
             grid_mode=grid_mode,
-            center_x=200.0,
-            center_y=200.0,
-            radius=100.0,
         )
 
         return PictographData(

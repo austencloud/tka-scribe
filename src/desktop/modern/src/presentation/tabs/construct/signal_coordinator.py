@@ -181,8 +181,6 @@ class SignalCoordinator(QObject):
             and sequence.metadata.get("cleared") is not True
         )
 
-        # Removed repetitive log statements
-
         if start_position_set or has_beats:
 
             # Ensure we're showing the option picker when start position is set OR beats exist
@@ -226,8 +224,6 @@ class SignalCoordinator(QObject):
                 start_position_set = workbench._start_position_data is not None
 
             has_beats = sequence and sequence.beats and len(sequence.beats) > 0
-
-            # Removed repetitive log statements
 
             if start_position_set or has_beats:
                 # Start position is set OR beats exist → show option picker
@@ -314,9 +310,6 @@ class SignalCoordinator(QObject):
         if len(args) >= 3:
             # beat_added signal with updated sequence
             beat_data, position, updated_sequence = args[0], args[1], args[2]
-            print(
-                f"🔄 [SIGNAL_COORDINATOR] Beat added - refreshing option picker with sequence length: {updated_sequence.length}"
-            )
             self._handle_sequence_modified(updated_sequence)
         else:
             # Other beat modification signals - fetch from workbench
@@ -324,9 +317,6 @@ class SignalCoordinator(QObject):
                 self.loading_service.get_current_sequence_from_workbench()
             )
             if current_sequence:
-                print(
-                    f"🔄 [SIGNAL_COORDINATOR] Beat modified - refreshing option picker with sequence length: {current_sequence.length}"
-                )
                 self._handle_sequence_modified(current_sequence)
 
     def _on_start_position_set(self, start_position_data):
@@ -362,13 +352,9 @@ class SignalCoordinator(QObject):
 
         try:
             self._handling_sequence_modification = True
-            print(f"🔄 [SIGNAL_COORDINATOR] Processing workbench modification...")
             # Save sequence to persistence
             self._save_sequence_to_persistence(sequence)
             self._handle_sequence_modified(sequence)
-            print(
-                f"🔄 [SIGNAL_COORDINATOR] Workbench modification processing completed"
-            )
         except Exception as e:
             print(f"❌ Signal coordinator: Workbench modification failed: {e}")
             import traceback
