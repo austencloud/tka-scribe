@@ -110,16 +110,6 @@ class SpecialPlacementService:
                 result = QPointF(adjustment_values[0], adjustment_values[1])
                 return result
 
-        # Third, check for special placement boolean flags (swap rules)
-        # Note: Boolean flags like "swap_beta_*" are for PROP SWAPPING, not arrow adjustments
-        # The arrow placement service should ignore these and return None
-        # The prop placement system will handle these flags separately
-        for _, value in turn_data.items():
-            if isinstance(value, bool) and value is True:
-                # Boolean flags are for prop swapping, not arrow placement
-                # Return None so the arrow uses default positioning
-                return None
-
         return None
 
     def _load_special_placements(self) -> None:

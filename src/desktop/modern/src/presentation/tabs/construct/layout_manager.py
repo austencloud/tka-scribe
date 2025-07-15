@@ -9,6 +9,9 @@ from typing import TYPE_CHECKING, Callable, Optional
 
 from core.dependency_injection.di_container import DIContainer
 from presentation.components.option_picker.components.option_picker import OptionPicker
+from presentation.components.start_position_picker.unified_start_position_picker import (
+    UnifiedStartPositionPicker, PickerMode
+)
 from presentation.factories.workbench_factory import create_modern_workbench
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QHBoxLayout, QLabel, QStackedWidget, QVBoxLayout, QWidget
@@ -116,14 +119,26 @@ class ConstructTabLayoutManager:
         widget = QWidget()
         layout = QVBoxLayout(widget)
         from application.services.pictograph_pool_manager import PictographPoolManager
-
-        from ...components.start_position_picker.enhanced_start_position_picker import (
-            EnhancedStartPositionPicker,
+        from core.interfaces.start_position_services import (
+            IStartPositionDataService,
+            IStartPositionOrchestrator,
+            IStartPositionSelectionService,
+            IStartPositionUIService,
         )
 
-        # Get pool manager from DI container
+        # Using unified start position picker - import moved to top
+
+        # Get pool manager and services from DI container
         pool_manager = self.container.resolve(PictographPoolManager)
-        self.start_position_picker = EnhancedStartPositionPicker(pool_manager)
+        data_service = self.container.resolve(IStartPositionDataService)
+        selection_service = self.container.resolve(IStartPositionSelectionService)
+        ui_service = self.container.resolve(IStartPositionUIService)
+        orchestrator = self.container.resolve(IStartPositionOrchestrator)
+
+        self.start_position_picker = UnifiedStartPositionPicker(
+            pool_manager, data_service, selection_service, ui_service, orchestrator,
+            initial_mode=PickerMode.AUTO  # Start in auto mode for responsive behavior
+        )
         layout.addWidget(self.start_position_picker)
         return widget
 

@@ -28,7 +28,12 @@ class PictographPoolManager:
         self.container = container
         self._pool: Queue[PictographComponent] = Queue()
         self._checked_out: Set[PictographComponent] = set()
-        self._pool_size = 50
+        self._on_demand_components: Set[PictographComponent] = (
+            set()
+        )  # Track on-demand components
+        self._pool_size = (
+            100  # Increased from 50 to handle advanced mode with 16 positions
+        )
         self._lock = threading.Lock()
         self._initialized = False
         self._dummy_parent = None  # Will hold dummy parent widget
@@ -110,15 +115,19 @@ class PictographPoolManager:
                 logger.warning(
                     "⚠️ [POOL] Pool initialization failed, creating component on-demand"
                 )
-                return create_pictograph_component(
+                component = create_pictograph_component(
                     parent=parent, container=self.container
                 )
+                self._on_demand_components.add(component)
+                return component
 
             if self._pool.empty():
                 logger.warning("⚠️ [POOL] Pool exhausted, creating component on-demand")
-                return create_pictograph_component(
+                component = create_pictograph_component(
                     parent=parent, container=self.container
                 )
+                self._on_demand_components.add(component)
+                return component
 
             component = self._pool.get()
             self._checked_out.add(component)
@@ -145,10 +154,27 @@ class PictographPoolManager:
     def checkin_pictograph(self, component: PictographComponent) -> None:
         """Return a pictograph component to the pool."""
         with self._lock:
+            # Check if it's an on-demand component first
+            if component in self._on_demand_components:
+                logger.debug("🔄 [POOL] Destroying on-demand component")
+                self._on_demand_components.remove(component)
+                try:
+                    component.setParent(None)
+                    component.deleteLater()
+                except Exception as e:
+                    logger.warning(f"Error destroying on-demand component: {e}")
+                return
+
             if component not in self._checked_out:
                 logger.warning(
-                    "⚠️ [POOL] Attempting to check in component not from pool"
+                    "⚠️ [POOL] Attempting to check in component not from pool - destroying it"
                 )
+                # For unknown components, just destroy them
+                try:
+                    component.setParent(None)
+                    component.deleteLater()
+                except Exception as e:
+                    logger.warning(f"Error destroying unknown component: {e}")
                 return
 
             # Reset component state (minimal operations for performance)

@@ -20,8 +20,8 @@ from PyQt6.QtGui import (
 from PyQt6.QtWidgets import QGraphicsDropShadowEffect, QPushButton
 
 if TYPE_CHECKING:
-    from presentation.components.start_position_picker.enhanced_start_position_picker import (
-        EnhancedStartPositionPicker,
+    from presentation.components.start_position_picker.start_position_picker import (
+        StartPositionPicker,
     )
 
 
@@ -36,7 +36,7 @@ class VariationsButton(QPushButton):
     - Subtle visual feedback and accessibility support
     """
 
-    def __init__(self, start_pos_picker: "EnhancedStartPositionPicker") -> None:
+    def __init__(self, start_pos_picker: "StartPositionPicker") -> None:
         super().__init__(start_pos_picker)
         self.start_pos_picker = start_pos_picker
 

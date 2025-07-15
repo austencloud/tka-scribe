@@ -150,6 +150,7 @@ class ServiceRegistrationCoordinator:
             PictographServiceRegistrar,
             PositioningServiceRegistrar,
             SequenceServiceRegistrar,
+            StartPositionServiceRegistrar,
             WorkbenchServiceRegistrar,
         )
 
@@ -163,6 +164,7 @@ class ServiceRegistrationCoordinator:
             CoreServiceRegistrar(self.progress_callback),
             SequenceServiceRegistrar(self.progress_callback),
             PictographServiceRegistrar(self.progress_callback),
+            StartPositionServiceRegistrar(self.progress_callback),  # Add start position services
             WorkbenchServiceRegistrar(self.progress_callback),
             # Phase 3: Complex services (depend on core services)
             PositioningServiceRegistrar(self.progress_callback),

@@ -246,13 +246,15 @@ class QtArrowRenderer:
                     ):
                         motion_data = full_pictograph_data.motions.get(color)
 
+                    arrow_data = ArrowData(
+                        color=color,
+                        turns=motion_data.turns if motion_data else 0,
+                        is_visible=True,
+                    )
+
                     position_x, position_y, rotation = (
                         self.positioning_orchestrator.calculate_arrow_position(
-                            ArrowData(
-                                color=color,
-                                turns=motion_data.turns if motion_data else 0,
-                                is_visible=True,
-                            ),
+                            arrow_data,
                             full_pictograph_data,
                             motion_data,
                         )

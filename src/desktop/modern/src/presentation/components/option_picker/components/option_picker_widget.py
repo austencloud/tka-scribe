@@ -14,6 +14,9 @@ from typing import Callable, Optional
 
 # Services are resolved via DI container - no direct imports needed
 from core.dependency_injection.di_container import DIContainer
+from presentation.components.option_picker.components.choose_your_next_option_label import (
+    ChooseYourNextOptionLabel,
+)
 from presentation.components.option_picker.components.option_picker_scroll import (
     OptionPickerScroll,
 )
@@ -45,6 +48,11 @@ class OptionPickerWidget(QWidget):
         self.progress_callback = progress_callback
         self.container = container
 
+        # ✅ Create the "Choose your next option" label (matching legacy)
+        self.choose_next_label = ChooseYourNextOptionLabel(
+            size_provider=self.mw_size_provider, parent=self
+        )
+
         # ✅ Use DI container to create OptionPickerScroll with injected services
         if not container:
             raise ValueError(
@@ -69,10 +77,13 @@ class OptionPickerWidget(QWidget):
             self.pictograph_selected.emit
         )
 
-        # ✅ Setup Qt layout
+        # ✅ Setup Qt layout with label and scroll area
         layout = QVBoxLayout(self)
         layout.setContentsMargins(0, 0, 0, 0)
-        layout.setSpacing(0)
+        layout.setSpacing(5)  # Small spacing between label and scroll area
+        
+        # Add the label first, then the scroll area
+        layout.addWidget(self.choose_next_label)
         layout.addWidget(self.option_picker_scroll)
 
         # Report progress
@@ -107,6 +118,10 @@ class OptionPickerWidget(QWidget):
         """Cleanup resources."""
         if hasattr(self, "option_picker_scroll") and self.option_picker_scroll:
             self.option_picker_scroll.clear_all_sections()
+        
+        # Clean up the label
+        if hasattr(self, "choose_next_label") and self.choose_next_label:
+            self.choose_next_label.setParent(None)
 
     def get_service_status(self) -> dict:
         """Get status of injected services (for debugging)."""

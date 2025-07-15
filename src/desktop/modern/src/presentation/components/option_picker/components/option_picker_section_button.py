@@ -14,6 +14,7 @@ Key principles from Legacy:
 from typing import TYPE_CHECKING
 
 from presentation.components.option_picker.types.letter_types import LetterType
+from presentation.utils.letter_type_text_painter import LetterTypeTextPainter
 from PyQt6.QtCore import QSize, Qt, pyqtSignal
 from PyQt6.QtGui import QFont, QMouseEvent
 from PyQt6.QtWidgets import QHBoxLayout, QLabel, QPushButton
@@ -62,10 +63,14 @@ class OptionPickerSectionButton(QPushButton):
         self.label.setText(html_text)
 
     def _generate_html_text(self, letter_type: str) -> str:
-        """Generate HTML text for letter type - simplified version."""
+        """Generate HTML text for letter type with colored styling."""
         # Get description from LetterType class
         description, type_name = LetterType.get_type_description(letter_type)
-        return f"{type_name}: {description}"
+        
+        # Use LetterTypeTextPainter to generate colored HTML (matching legacy)
+        styled_description = LetterTypeTextPainter.get_colored_text(description)
+        
+        return f"{type_name}: {styled_description}"
 
     def _set_initial_styles(self) -> None:
         """Set initial styles exactly like Legacy."""

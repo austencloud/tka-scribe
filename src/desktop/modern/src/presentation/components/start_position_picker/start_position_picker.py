@@ -5,6 +5,7 @@ from application.services.pictograph_pool_manager import PictographPoolManager
 from presentation.components.start_position_picker.start_position_option import (
     StartPositionOption,
 )
+from presentation.utils.dynamic_text_color import get_glassmorphism_text_color
 from PyQt6.QtCore import QSize, Qt, pyqtSignal
 from PyQt6.QtGui import QFont
 from PyQt6.QtWidgets import QGridLayout, QLabel, QScrollArea, QVBoxLayout, QWidget

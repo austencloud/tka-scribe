@@ -22,8 +22,8 @@ from application.services.sequence.loader import SequenceLoader
 from application.services.sequence.sequence_beat_operations import (
     SequenceBeatOperations,
 )
-from application.services.sequence.sequence_dictionary_service import (
-    SequenceDictionaryService,
+from application.services.sequence.sequence_dictionary_manager import (
+    SequenceDictionaryManager,
 )
 from application.services.sequence.sequence_start_position_manager import (
     SequenceStartPositionManager,
@@ -43,10 +43,10 @@ from core.interfaces.workbench_services import (
     IGraphEditorService,
     ISequenceWorkbenchService,
 )
-from presentation.components.ui.full_screen import FullScreenOverlayFactory
 from presentation.components.sequence_workbench.sequence_workbench import (
     SequenceWorkbench,
 )
+from presentation.components.ui.full_screen import FullScreenOverlayFactory
 
 
 def create_modern_workbench(
@@ -86,13 +86,13 @@ def configure_workbench_services(container: DIContainer) -> None:
     beat_operations = SequenceBeatOperations()
     start_position_manager = SequenceStartPositionManager()
     sequence_loader = SequenceLoader()
-    dictionary_service = SequenceDictionaryService()
+    dictionary_service = SequenceDictionaryManager()
 
     # Register microservices for direct injection
     container.register_instance(SequenceBeatOperations, beat_operations)
     container.register_instance(SequenceStartPositionManager, start_position_manager)
     container.register_instance(SequenceLoader, sequence_loader)
-    container.register_instance(SequenceDictionaryService, dictionary_service)
+    container.register_instance(SequenceDictionaryManager, dictionary_service)
 
     # Legacy interface registrations removed - components now use microservices directly
 

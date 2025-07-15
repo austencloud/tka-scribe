@@ -26,6 +26,7 @@ from .pictograph_service_registrar import PictographServiceRegistrar
 from .positioning_service_registrar import PositioningServiceRegistrar
 from .sequence_service_registrar import SequenceServiceRegistrar
 from .workbench_service_registrar import WorkbenchServiceRegistrar
+from .start_position_service_registrar import StartPositionServiceRegistrar
 
 __all__ = [
     "MotionServiceRegistrar",
@@ -38,4 +39,5 @@ __all__ = [
     "PositioningServiceRegistrar",
     "OptionPickerServiceRegistrar",
     "WorkbenchServiceRegistrar",
+    "StartPositionServiceRegistrar",
 ]

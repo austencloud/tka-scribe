@@ -19,6 +19,7 @@ from presentation.components.start_position_picker.start_position_option import 
 from presentation.components.start_position_picker.variations_button import (
     VariationsButton,
 )
+from presentation.utils.dynamic_text_color import get_glassmorphism_text_color
 from PyQt6.QtCore import QEasingCurve, QPropertyAnimation, QRect, QSize, Qt, pyqtSignal
 from PyQt6.QtGui import QColor, QFont, QLinearGradient, QPainter, QPainterPath
 from PyQt6.QtWidgets import (
@@ -45,6 +46,7 @@ class EnhancedStartPositionPicker(QWidget):
     - Variations button that opens advanced picker
     - Responsive layout that adapts to container size
     - Improved accessibility and user experience
+    - Dynamic text color for optimal readability
     """
 
     start_position_selected = pyqtSignal(str)
@@ -127,7 +129,6 @@ class EnhancedStartPositionPicker(QWidget):
             }
             
             QLabel#EnhancedGlassTitle {
-                color: #2C3E50;
                 background: transparent;
                 font-weight: 700;
                 text-align: center;
@@ -135,7 +136,6 @@ class EnhancedStartPositionPicker(QWidget):
             }
             
             QLabel#EnhancedGlassSubtitle {
-                color: #34495E;
                 background: transparent;
                 font-weight: 400;
                 text-align: center;
@@ -196,7 +196,30 @@ class EnhancedStartPositionPicker(QWidget):
         self.title_label = title
         self.subtitle_label = subtitle
 
+        # Apply dynamic text color for optimal readability
+        self._apply_dynamic_text_colors()
+
         return card
+
+    def _apply_dynamic_text_colors(self):
+        """Apply dynamic text colors to ensure optimal readability on glassmorphism background."""
+        # Get the optimal text color for glassmorphism background
+        title_color = get_glassmorphism_text_color(
+            self.title_label,
+            glassmorphism_base_color=(255, 255, 255),
+            glassmorphism_opacity=0.2
+        )
+        subtitle_color = get_glassmorphism_text_color(
+            self.subtitle_label,
+            glassmorphism_base_color=(255, 255, 255),
+            glassmorphism_opacity=0.15
+        )
+
+        # Apply the colors to the labels
+        self.title_label.setStyleSheet(f"color: {title_color};")
+        self.subtitle_label.setStyleSheet(f"color: {subtitle_color};")
+
+        logger.debug(f"Applied dynamic text colors - Title: {title_color}, Subtitle: {subtitle_color}")
 
     def _create_basic_picker_widget(self) -> QWidget:
         """Create the basic picker widget with enhanced scroll area."""

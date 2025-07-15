@@ -4,36 +4,32 @@ Enhanced Start Position Option with modern glassmorphism design and smooth anima
 This component represents a single start position choice with contemporary styling,
 hover effects, and improved user interaction feedback.
 """
-import logging
-from PyQt6.QtCore import (
-    Qt, 
-    pyqtSignal, 
-    QPropertyAnimation, 
-    QEasingCurve,
-    QRect,
-    QPoint
-)
-from PyQt6.QtGui import (
-    QMouseEvent, 
-    QPainter, 
-    QColor, 
-    QLinearGradient, 
-    QPainterPath,
-    QFont,
-    QPen
-)
-from PyQt6.QtWidgets import (
-    QVBoxLayout, 
-    QWidget, 
-    QLabel,
-    QGraphicsDropShadowEffect
-)
 
-from application.services.data.dataset_query import DatasetQuery
+import logging
+
 from application.services.pictograph_pool_manager import PictographPoolManager
+from core.interfaces.start_position_services import IStartPositionDataService
 from presentation.components.sequence_workbench.sequence_beat_frame.selection_overlay import (
     SelectionOverlay,
 )
+from PyQt6.QtCore import (
+    QEasingCurve,
+    QPoint,
+    QPropertyAnimation,
+    QRectF,
+    Qt,
+    pyqtSignal,
+)
+from PyQt6.QtGui import (
+    QColor,
+    QFont,
+    QLinearGradient,
+    QMouseEvent,
+    QPainter,
+    QPainterPath,
+    QPen,
+)
+from PyQt6.QtWidgets import QGraphicsDropShadowEffect, QLabel, QVBoxLayout, QWidget
 
 logger = logging.getLogger(__name__)
 
@@ -41,7 +37,7 @@ logger = logging.getLogger(__name__)
 class EnhancedStartPositionOption(QWidget):
     """
     Enhanced start position option with modern glassmorphism design.
-    
+
     Features:
     - Modern glassmorphism styling with transparency and blur effects
     - Smooth hover and selection animations
@@ -49,21 +45,23 @@ class EnhancedStartPositionOption(QWidget):
     - Responsive sizing and improved accessibility
     - Enhanced visual hierarchy with position labels
     """
-    
+
     position_selected = pyqtSignal(str)
 
     def __init__(
         self,
         position_key: str,
         pool_manager: PictographPoolManager,
+        data_service: IStartPositionDataService,
         grid_mode: str = "diamond",
         enhanced_styling: bool = True,
+        parent=None,
     ):
-        super().__init__()
+        super().__init__(parent)
         self.position_key = position_key
         self.grid_mode = grid_mode
         self.enhanced_styling = enhanced_styling
-        self.dataset_service = DatasetQuery()
+        self.data_service = data_service
         self._pool_manager = pool_manager
 
         # State management
@@ -102,18 +100,17 @@ class EnhancedStartPositionOption(QWidget):
         self.pictograph_component = self._pictograph_component  # Keep legacy reference
 
         if self._pictograph_component:
-            if self.enhanced_styling:
-                self._pictograph_component.setFixedSize(200, 200)
-            else:
-                self._pictograph_component.setFixedSize(180, 180)
+            # Start with default size - will be updated by parent when sizing is applied
+            initial_size = 200 if self.enhanced_styling else 180
+            self._pictograph_component.setFixedSize(initial_size, initial_size)
 
             # Load pictograph data
-            pictograph_data = self.dataset_service.get_start_position_pictograph_data(
+            pictograph_data = self.data_service.get_position_data(
                 self.position_key, self.grid_mode
             )
             if pictograph_data:
                 self._pictograph_component.update_from_pictograph_data(pictograph_data)
-            
+
             layout.addWidget(self._pictograph_component)
         else:
             logger.warning(
@@ -128,11 +125,8 @@ class EnhancedStartPositionOption(QWidget):
         # Selection overlay
         self._selection_overlay = SelectionOverlay(self)
 
-        # Set size based on styling mode
-        if self.enhanced_styling:
-            self.setFixedSize(240, 260)
-        else:
-            self.setFixedSize(220, 220)
+        # Don't set fixed size here - let parent control sizing dynamically
+        # Size will be set by the unified picker's _apply_option_sizing method
 
         self.setCursor(Qt.CursorShape.PointingHandCursor)
 
@@ -190,15 +184,15 @@ class EnhancedStartPositionOption(QWidget):
         # Extract readable position information
         start_pos, end_pos = self.position_key.split("_")
         letter = self._extract_letter_from_position(start_pos)
-        
+
         # Format label text
         position_text = f"{letter} - {start_pos.replace(letter.lower(), '').replace('alpha', '').replace('beta', '').replace('gamma', '')}"
-        
+
         label = QLabel(position_text)
         label.setObjectName("PositionLabel")
         label.setFont(QFont("Segoe UI", 10, QFont.Weight.Medium))
         label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        
+
         return label
 
     def _extract_letter_from_position(self, position: str) -> str:
@@ -238,13 +232,13 @@ class EnhancedStartPositionOption(QWidget):
         """Handle mouse press with enhanced feedback."""
         if event.button() == Qt.MouseButton.LeftButton:
             self._is_pressed = True
-            
+
             # Trigger click animation for enhanced version
             if self.enhanced_styling and self.click_animation:
                 self._animate_click()
-            
+
             self.position_selected.emit(self.position_key)
-            
+
         super().mousePressEvent(event)
 
     def mouseReleaseEvent(self, event: QMouseEvent):
@@ -256,11 +250,11 @@ class EnhancedStartPositionOption(QWidget):
         """Handle mouse enter with enhanced hover effects."""
         self._is_hovered = True
         self.setCursor(Qt.CursorShape.PointingHandCursor)
-        
+
         # Enhanced hover animation
         if self.enhanced_styling and self.hover_animation and not self._is_pressed:
             self._animate_hover(True)
-        
+
         # Standard selection overlay
         self.set_highlighted(True)
         super().enterEvent(event)
@@ -269,11 +263,11 @@ class EnhancedStartPositionOption(QWidget):
         """Handle mouse leave with smooth transition."""
         self._is_hovered = False
         self.setCursor(Qt.CursorShape.ArrowCursor)
-        
+
         # Enhanced hover animation out
         if self.enhanced_styling and self.hover_animation and not self._is_pressed:
             self._animate_hover(False)
-        
+
         # Standard selection overlay
         self.set_highlighted(False)
         super().leaveEvent(event)
@@ -284,7 +278,7 @@ class EnhancedStartPositionOption(QWidget):
             return
 
         current_rect = self.geometry()
-        
+
         if hover_in:
             # Scale up slightly
             target_rect = current_rect.adjusted(-3, -3, 3, 3)
@@ -303,7 +297,7 @@ class EnhancedStartPositionOption(QWidget):
 
         current_rect = self.geometry()
         click_rect = current_rect.adjusted(2, 2, -2, -2)  # Scale down
-        
+
         # Animate scale down
         self.click_animation.setStartValue(current_rect)
         self.click_animation.setEndValue(click_rect)
@@ -318,7 +312,7 @@ class EnhancedStartPositionOption(QWidget):
         self.click_animation.finished.disconnect()
         current_rect = self.geometry()
         normal_rect = current_rect.adjusted(-2, -2, 2, 2)  # Scale back up
-        
+
         self.click_animation.setStartValue(current_rect)
         self.click_animation.setEndValue(normal_rect)
         self.click_animation.start()
@@ -334,7 +328,7 @@ class EnhancedStartPositionOption(QWidget):
     def set_selected(self, selected: bool) -> None:
         """Set selection state with visual feedback."""
         self._is_selected = selected
-        
+
         if self._selection_overlay:
             if selected:
                 self._selection_overlay.show_selection()
@@ -344,33 +338,47 @@ class EnhancedStartPositionOption(QWidget):
     def paintEvent(self, event):
         """Custom paint event for additional visual effects."""
         super().paintEvent(event)
-        
+
         if not self.enhanced_styling:
             return
 
         # Add subtle highlight gradient for enhanced version
         painter = QPainter(self)
         painter.setRenderHint(QPainter.RenderHint.Antialiasing)
-        
+
         # Create highlight gradient
         if self._is_hovered:
             highlight_gradient = QLinearGradient(0, 0, 0, self.height() * 0.4)
             highlight_gradient.setColorAt(0, QColor(255, 255, 255, 40))
             highlight_gradient.setColorAt(1, QColor(255, 255, 255, 0))
-            
+
             # Create rounded rectangle path
             path = QPainterPath()
-            path.addRoundedRect(self.rect().adjusted(2, 2, -2, -2), 18, 18)
-            
+            rect_f = QRectF(self.rect().adjusted(2, 2, -2, -2))
+            path.addRoundedRect(rect_f, 18, 18)
+
             # Draw highlight
             painter.fillPath(path, highlight_gradient)
-        
+
         # Add selection indicator if selected
         if self._is_selected:
             painter.setPen(QPen(QColor(99, 102, 241), 3))
-            painter.drawRoundedRect(self.rect().adjusted(1, 1, -1, -1), 20, 20)
-        
+            rect_f = QRectF(self.rect().adjusted(1, 1, -1, -1))
+            painter.drawRoundedRect(rect_f, 20, 20)
+
         painter.end()
+
+    def update_pictograph_size(self, container_size: int):
+        """Update the pictograph size to match the container."""
+        if self._pictograph_component:
+            # Calculate pictograph size (slightly smaller than container to account for margins)
+            pictograph_size = max(
+                container_size - 40, 80
+            )  # Leave 40px for margins/padding
+            self._pictograph_component.setFixedSize(pictograph_size, pictograph_size)
+            logger.debug(
+                f"Updated pictograph size to {pictograph_size}px for position {self.position_key}"
+            )
 
     def closeEvent(self, event):
         """Clean up pool resources when widget is closed."""
@@ -384,12 +392,10 @@ class EnhancedStartPositionOption(QWidget):
                 self._pool_manager.checkin_pictograph(self._pictograph_component)
                 self._pictograph_component = None
             except Exception as e:
-                logger.warning(f"Failed to return start position component to pool: {e}")
+                logger.warning(
+                    f"Failed to return start position component to pool: {e}"
+                )
 
     def __del__(self):
         """Ensure cleanup on deletion."""
         self._cleanup_pool_resources()
-
-
-# Backward compatibility alias
-StartPositionOption = EnhancedStartPositionOption
