@@ -76,6 +76,13 @@ class StartPositionPicker(QWidget):
         instructions.setObjectName("GlassInstructions")
         layout.addWidget(instructions)
 
+        # Store references for dynamic text color
+        self.title_label = title
+        self.instructions_label = instructions
+
+        # Apply dynamic text color for optimal readability
+        self._apply_dynamic_text_colors()
+
         scroll_area = QScrollArea()
         scroll_area.setWidgetResizable(True)
         scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
@@ -87,6 +94,26 @@ class StartPositionPicker(QWidget):
 
         scroll_area.setWidget(self.positions_container)
         layout.addWidget(scroll_area)
+
+    def _apply_dynamic_text_colors(self):
+        """Apply dynamic text colors to ensure optimal readability on glassmorphism background."""
+        # Get the optimal text color for glassmorphism background
+        title_color = get_glassmorphism_text_color(
+            self.title_label,
+            glassmorphism_base_color=(255, 255, 255),
+            glassmorphism_opacity=0.18
+        )
+        instructions_color = get_glassmorphism_text_color(
+            self.instructions_label,
+            glassmorphism_base_color=(255, 255, 255),
+            glassmorphism_opacity=0.18
+        )
+
+        # Apply the colors to the labels
+        self.title_label.setStyleSheet(f"color: {title_color};")
+        self.instructions_label.setStyleSheet(f"color: {instructions_color};")
+
+        logger.debug(f"Applied dynamic text colors - Title: {title_color}, Instructions: {instructions_color}")
 
     def _load_start_positions(self):
         for option in self.position_options:

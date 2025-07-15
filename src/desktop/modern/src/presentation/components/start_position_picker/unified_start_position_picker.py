@@ -415,8 +415,11 @@ class UnifiedStartPositionPicker(QWidget):
             # Create position options
             self._create_position_options(position_keys)
 
-            # Arrange in grid
+            # Arrange in grid first
             self._arrange_positions_for_mode()
+
+            # Apply sizing after layout is arranged to avoid interference
+            self._apply_sizing_to_all_options()
 
             logger.info(
                 f"Loaded {len(self.position_options)} positions in {self.current_mode.value} mode"
@@ -461,9 +464,6 @@ class UnifiedStartPositionPicker(QWidget):
                 option.position_selected.connect(self._handle_position_selection)
                 self.position_options.append(option)
 
-                # Apply appropriate sizing
-                self._apply_option_sizing(option)
-
             except Exception as e:
                 logger.warning(f"Failed to create option for {position_key}: {e}")
 
@@ -507,6 +507,11 @@ class UnifiedStartPositionPicker(QWidget):
             if hasattr(option, "update_pictograph_size"):
                 option.update_pictograph_size(default_size)
 
+    def _apply_sizing_to_all_options(self):
+        """Apply sizing to all position options after layout is arranged."""
+        for option in self.position_options:
+            self._apply_option_sizing(option)
+
     def _arrange_positions_for_mode(self):
         """Arrange position options based on current mode."""
         # Determine layout based on actual mode and position count
@@ -543,9 +548,6 @@ class UnifiedStartPositionPicker(QWidget):
         from PyQt6.QtWidgets import QApplication
 
         QApplication.processEvents()
-
-        # Add diagnostic logging after a short delay to check actual positions
-        QTimer.singleShot(100, self._debug_basic_layout_positions)
 
         logger.debug(
             f"✅ Arranged {len(self.position_options)} positions horizontally in basic mode"

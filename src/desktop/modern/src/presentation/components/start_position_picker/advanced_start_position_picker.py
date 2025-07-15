@@ -18,6 +18,7 @@ from core.interfaces.start_position_services import (
 from presentation.components.start_position_picker.enhanced_start_position_option import (
     EnhancedStartPositionOption,
 )
+from presentation.utils.dynamic_text_color import get_glassmorphism_text_color
 from PyQt6.QtCore import QEasingCurve, QPropertyAnimation, QSize, Qt, QTimer, pyqtSignal
 from PyQt6.QtGui import QColor, QFont, QIcon, QLinearGradient, QPainter, QPainterPath
 from PyQt6.QtWidgets import (
@@ -224,6 +225,10 @@ class AdvancedStartPositionPicker(QWidget):
         title.setAlignment(Qt.AlignmentFlag.AlignCenter)
         title.setObjectName("AdvancedTitle")
         layout.addWidget(title, 1)  # Give it stretch
+
+        # Store reference for dynamic text color
+        self.title_label = title
+        self._apply_dynamic_text_color()
 
         # Spacer for symmetry
         layout.addWidget(QWidget())  # Empty widget for balance
@@ -597,23 +602,23 @@ class AdvancedStartPositionPicker(QWidget):
 
         # Apply sizing to all position options
         for option in self.position_options:
-            self._apply_advanced_picker_sizing(option)
+            self._apply_option_sizing(option)
 
-        # Force container visibility
-        self.positions_container.show()
-        self.positions_container.setVisible(True)
+        logger.debug(f"Advanced picker sizing ensured - {len(self.position_options)} options")
 
-        logger.info(
-            f"Advanced picker sizing ensured - container size: {self.positions_container.size()}"
+    def _apply_dynamic_text_color(self):
+        """Apply dynamic text color to ensure optimal readability on glassmorphism background."""
+        # Get the optimal text color for glassmorphism background
+        title_color = get_glassmorphism_text_color(
+            self.title_label,
+            glassmorphism_base_color=(255, 255, 255),
+            glassmorphism_opacity=0.25
         )
 
-    def resizeEvent(self, event):
-        """Handle resize events to update position option sizes."""
-        super().resizeEvent(event)
+        # Apply the color to the title
+        self.title_label.setStyleSheet(f"color: {title_color};")
 
-        # Update sizing for all position options
-        for option in self.position_options:
-            self._apply_advanced_picker_sizing(option)
+        logger.debug(f"Applied dynamic text color to advanced picker title: {title_color}")
 
     def sizeHint(self) -> QSize:
         """Provide size hint for the advanced picker."""
