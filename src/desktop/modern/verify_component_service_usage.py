@@ -69,9 +69,7 @@ def verify_service_usage():
     total_tests += 1
     try:
         # Test if correct constructor works
-        option = StartPositionOption(
-            "alpha1_alpha1", mock_pool, "diamond", True
-        )
+        option = StartPositionOption("alpha1_alpha1", mock_pool, "diamond", True)
         assert option.position_key == "alpha1_alpha1"
         assert option.grid_mode == "diamond"
         print("  ✅ StartPositionOption constructor works correctly")
