@@ -8,14 +8,18 @@ and click handling, replacing the placeholder widgets.
 import logging
 from typing import Optional
 
+from application.services.option_picker.option_picker_size_calculator import (
+    OptionPickerSizeCalculator,
+)
 from domain.models.pictograph_data import PictographData
+from presentation.components.pictograph.pictograph_component import PictographComponent
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtWidgets import QFrame, QVBoxLayout
 
 logger = logging.getLogger(__name__)
 
 
-class PictographOptionFrame(QFrame):
+class OptionPictograph(QFrame):
     """Frame for displaying a single pictograph option."""
 
     # Signal emitted when this option is clicked
@@ -33,8 +37,8 @@ class PictographOptionFrame(QFrame):
         super().__init__(parent)
 
         self._pictograph_data: Optional[PictographData] = None
-        self._pictograph_component = pictograph_component
-        self._size_calculator = size_calculator
+        self._pictograph_component: "PictographComponent" = pictograph_component
+        self._size_calculator: OptionPickerSizeCalculator = size_calculator
 
         # Debounce mechanism to prevent rapid duplicate selections
         self._last_click_time = 0
@@ -46,7 +50,7 @@ class PictographOptionFrame(QFrame):
     def _setup_ui(self):
         """Set up the UI components."""
         layout = QVBoxLayout(self)
-        layout.setContentsMargins(2, 2, 2, 2)
+        layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(0)
 
         # ✅ Use injected pictograph component instead of service location
@@ -59,36 +63,11 @@ class PictographOptionFrame(QFrame):
         # Set parent for the injected component
         self._pictograph_component.setParent(self)
 
-        # Use Legacy sizing strategy - will be set in resize_option_view()
-        self._pictograph_component.setFixedSize(
-            100, 100
-        )  # Default size, will be updated
-
-        # Make the frame itself square to match the pictograph
-        self.setFixedSize(108, 108)  # Default size + padding, will be updated
-
         layout.addWidget(self._pictograph_component)
 
     def _setup_styling(self):
         """Set up the frame styling."""
-        self.setStyleSheet(
-            """
-            PictographOptionFrame {
-                border: 1px solid rgba(255, 255, 255, 0.3);
-                border-radius: 8px;
-                background: rgba(255, 255, 255, 0.1);
-            }
-            PictographOptionFrame:hover {
-                border: 2px solid rgba(255, 255, 255, 0.6);
-                background: rgba(255, 255, 255, 0.2);
-            }
-        """
-        )
-
-        # Enable mouse tracking for hover effects
         self.setMouseTracking(True)
-
-        # Make clickable
         self.setCursor(Qt.CursorShape.PointingHandCursor)
 
     def update_pictograph(self, pictograph_data: PictographData):
@@ -97,7 +76,6 @@ class PictographOptionFrame(QFrame):
 
         if self._pictograph_component and pictograph_data:
             try:
-                # Use the real pictograph component from pool
                 self._pictograph_component.update_from_pictograph_data(pictograph_data)
                 logger.debug(
                     f"Updated pictograph option with letter: {pictograph_data.letter}"
@@ -109,7 +87,6 @@ class PictographOptionFrame(QFrame):
         """Clear the displayed pictograph."""
         self._pictograph_data = None
         if self._pictograph_component:
-            # Clear the pictograph component
             if (
                 hasattr(self._pictograph_component, "scene")
                 and self._pictograph_component.scene
@@ -162,9 +139,7 @@ class PictographOptionFrame(QFrame):
         """Handle mouse enter for hover effects."""
         self.setStyleSheet(
             """
-            PictographOptionFrame {
-                border: 2px solid rgba(255, 255, 255, 0.6);
-                border-radius: 8px;
+            OptionPictograph {
                 background: rgba(255, 255, 255, 0.2);
             }
         """
@@ -175,9 +150,7 @@ class PictographOptionFrame(QFrame):
         """Handle mouse leave to restore normal styling."""
         self.setStyleSheet(
             """
-            PictographOptionFrame {
-                border: 1px solid rgba(255, 255, 255, 0.3);
-                border-radius: 8px;
+            OptionPictograph {
                 background: rgba(255, 255, 255, 0.1);
             }
         """
@@ -186,15 +159,16 @@ class PictographOptionFrame(QFrame):
 
     def resize_option_view(self, main_window_size, option_picker_width, spacing=3):
         """Resize using OptionPickerSizeCalculator service - clean architecture."""
-        if not self._size_calculator:
-            # Fallback to simple sizing if service not available
-            logger.warning("No size calculator available - using fallback sizing")
-            fallback_size = 60
-            self._pictograph_component.setFixedSize(fallback_size, fallback_size)
-            self.setFixedSize(fallback_size + 8, fallback_size + 8)
-            return
 
         try:
+            # Debug: Show the complete sizing chain
+            print(f"📏 [FRAME] Resizing option frame:")
+            print(
+                f"   Main window: {main_window_size.width()}x{main_window_size.height()}"
+            )
+            print(f"   Option picker width: {option_picker_width}px")
+            print(f"   Spacing: {spacing}px")
+
             # ✅ Use injected service for all sizing calculations
             dimensions = self._size_calculator.calculate_frame_dimensions(
                 main_window_size, option_picker_width, spacing
@@ -207,6 +181,10 @@ class PictographOptionFrame(QFrame):
             # Update frame size
             frame_size = dimensions["frame_size"]
             self.setFixedSize(frame_size, frame_size)
+
+            print(
+                f"   Final component: {component_size}x{component_size}px, frame: {frame_size}x{frame_size}px"
+            )
 
         except Exception as e:
             logger.error(f"Error resizing option view: {e}")

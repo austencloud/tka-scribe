@@ -24,8 +24,8 @@ from application.services.pictograph_pool_manager import PictographPoolManager
 from core.interfaces.animation_core_interfaces import IAnimationOrchestrator
 from domain.models.pictograph_data import PictographData
 from domain.models.sequence_data import SequenceData
-from presentation.components.option_picker.components.pictograph_option_frame import (
-    PictographOptionFrame,
+from presentation.components.option_picker.components.option_pictograph import (
+    OptionPictograph,
 )
 from presentation.components.option_picker.types.letter_types import LetterType
 from PyQt6.QtCore import QSize, Qt, QTimer, pyqtSignal
@@ -75,7 +75,7 @@ class OptionPickerScroll(QScrollArea):
         self._mw_size_provider = mw_size_provider or self._default_size_provider
 
         # Qt widget management - presentation layer responsibility
-        self._widget_pool: Dict[int, PictographOptionFrame] = {}
+        self._widget_pool: Dict[int, OptionPictograph] = {}
         self._loading_options = False
 
         # UI setup
@@ -130,6 +130,14 @@ class OptionPickerScroll(QScrollArea):
         self.container.setAutoFillBackground(True)
         self.container.setStyleSheet("background: transparent;")
         self.container.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground, True)
+
+        # FIXED: Ensure container fills the full scroll area width
+        from PyQt6.QtWidgets import QSizePolicy
+
+        self.container.setSizePolicy(
+            QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred
+        )
+
         self.container.setLayout(self.layout)
         self.setWidget(self.container)
 
@@ -159,7 +167,7 @@ class OptionPickerScroll(QScrollArea):
             )
 
             # Create frame with injected dependencies (component + size calculator)
-            frame = PictographOptionFrame(
+            frame = OptionPictograph(
                 parent=self,
                 pictograph_component=pictograph_component,
                 size_calculator=self._option_sizing_service,
@@ -227,51 +235,50 @@ class OptionPickerScroll(QScrollArea):
         """Get section by letter type."""
         return self.sections.get(letter_type)
 
-    def get_widget_from_pool(self, pool_id: int) -> Optional[PictographOptionFrame]:
+    def get_widget_from_pool(self, pool_id: int) -> Optional[OptionPictograph]:
         """Get Qt widget from pool by service-provided ID."""
         return self._widget_pool.get(pool_id)
 
     def _update_size(self):
         """Update picker size using service calculation."""
-        # Get the correct container width by traversing up the parent hierarchy
-        available_width = self._get_container_width()
+        # FIXED: Use immediate parent width instead of traversing up hierarchy
+        if self.parent():
+            # Use the immediate parent's width - this ensures we fit within our container
+            available_width = self.parent().width()
+            print(f"🔍 [SIZING] Using immediate parent width: {available_width}px")
+        else:
+            # Fallback to main window calculation if no parent
+            main_window_size = self._mw_size_provider()
+            available_width = main_window_size.width() // 2
+            print(f"🔍 [SIZING] No parent, using MW/2: {available_width}px")
 
-        # ✅ Use service for calculation with available container width
-        picker_width = self._option_sizing_service.calculate_picker_width(
-            available_width
+        # The scroll area should fit exactly within its parent's width
+        picker_width = available_width
+
+        print(
+            f"🔍 [SIZING] Setting scroll area width to: {picker_width}px (parent: {available_width}px)"
         )
 
-        # ✅ Apply to Qt widget
+        # DEBUG: Check container width vs scroll area width
+        container_width = self.container.width() if hasattr(self, "container") else 0
+        print(
+            f"🔍 [CONTAINER] Container width: {container_width}px vs Scroll area: {picker_width}px"
+        )
+
+        # ✅ Apply to Qt widget - constrain to parent width
         self.setFixedWidth(picker_width)
+
+        # FIXED: Ensure container also uses full width
+        if hasattr(self, "container"):
+            print(
+                f"🔍 [CONTAINER] Setting container width to match scroll area: {picker_width}px"
+            )
+            # Don't use setFixedWidth as it might interfere with scroll area resizing
+            # Instead, ensure the container's minimum width matches the scroll area
+            self.container.setMinimumWidth(picker_width)
 
         # MODERN: Update all sections with the new picker width
         self._update_sections_picker_width(picker_width)
-
-    def _get_container_width(self) -> int:
-        """Get the correct container width by traversing parent hierarchy."""
-        # Try to find the main container (usually 2-3 levels up)
-        current = self.parent()
-        container_width = None
-
-        # Traverse up to find a substantial container width
-        for _ in range(5):  # Limit traversal to prevent infinite loops
-            if current is None:
-                break
-
-            width = current.width()
-            if width > 400:  # Lower threshold to find container sooner
-                container_width = width
-                break
-
-            current = current.parent()
-
-        # Fallback to main window calculation if no suitable parent found
-        if container_width is None:
-            main_window_size = self._mw_size_provider()
-            container_width = main_window_size.width() // 2
-
-        # Use nearly the full container width (leave small margin for borders)
-        return max(300, int(container_width * 0.98))  # Use 98% of container width
 
     def _update_sections_picker_width(self, picker_width: int) -> None:
         """Update all sections with the current picker width - modern dependency injection."""
@@ -345,10 +352,10 @@ class OptionPickerScroll(QScrollArea):
             for letter_type, section in self.sections.items():
                 section._animation_orchestrator = original_orchestrators[letter_type]
 
-            # ✅ Apply sizing using service (defer to avoid blocking)
-            from PyQt6.QtCore import QTimer
-
-            QTimer.singleShot(0, self._apply_sizing_to_all_frames)
+            # ✅ Apply sizing using service (defer with longer delay during startup)
+            # Use longer delay during sequence restoration to ensure UI is fully initialized
+            delay = 500 if self._is_during_startup() else 50
+            QTimer.singleShot(delay, self._apply_sizing_to_all_frames)
 
         except Exception as e:
             print(f"❌ [UI] Error in direct update: {e}")
@@ -492,22 +499,29 @@ class OptionPickerScroll(QScrollArea):
 
     def _apply_sizing_to_all_frames(self):
         """Apply sizing to all frames using service calculations."""
+        # Check if UI is properly initialized before applying sizing
+        if not self._is_ui_ready_for_sizing():
+            print("⏳ [SIZING] UI not ready for sizing, deferring...")
+            # Defer sizing until UI is ready
+            QTimer.singleShot(100, self._apply_sizing_to_all_frames)
+            return
+
         # Always get main window size for frame sizing
         main_window_size = self._mw_size_provider()
 
-        # Use current width if available, otherwise calculate from container
+        # FIXED: Use actual widget width like legacy, not calculated width
         picker_width = self.width()
-        if not picker_width:
-            # FIXED: Use parent container width instead of main window width
-            if self.parent():
-                available_width = self.parent().width()
-            else:
-                # Fallback to main window calculation if no parent
-                available_width = main_window_size.width() // 2
 
-            picker_width = self._option_sizing_service.calculate_picker_width(
-                available_width
+        # Enhanced validation for accurate width
+        if not self._is_picker_width_accurate(picker_width, main_window_size):
+            print(
+                f"⚠️ [SIZING] Option picker width {picker_width}px appears inaccurate, deferring sizing..."
             )
+            # Defer sizing until we get an accurate width
+            QTimer.singleShot(200, self._apply_sizing_to_all_frames)
+            return
+
+        print(f"✅ [SIZING] Using validated option picker width: {picker_width}px")
 
         # ✅ Use service for size calculation
         layout_config = self._option_config_service.get_layout_config()
@@ -520,6 +534,88 @@ class OptionPickerScroll(QScrollArea):
                         main_window_size, picker_width, spacing=layout_config["spacing"]
                     )
 
+    def _is_ui_ready_for_sizing(self) -> bool:
+        """Check if the UI is ready for accurate sizing calculations."""
+        try:
+            # Check if main window is visible and properly initialized
+            main_window = self.window()
+            if not main_window:
+                return False
+
+            # Check if main window is visible (not during splash screen)
+            if not main_window.isVisible():
+                return False
+
+            # Check if this widget is visible and has been shown
+            if not self.isVisible():
+                return False
+
+            # Check if widget has been properly sized (not default/zero size)
+            if self.width() <= 0 or self.height() <= 0:
+                return False
+
+            return True
+
+        except Exception as e:
+            print(f"⚠️ [SIZING] Error checking UI readiness: {e}")
+            return False
+
+    def _is_picker_width_accurate(self, picker_width: int, main_window_size) -> bool:
+        """Check if the picker width appears accurate and not from premature measurement."""
+        try:
+            # Width should be positive
+            if picker_width <= 0:
+                return False
+
+            # Width should be reasonable relative to main window
+            main_window_width = main_window_size.width()
+            if main_window_width <= 0:
+                return False
+
+            # Picker width should be between 20% and 80% of main window width
+            # (typical range for option picker in a layout)
+            min_expected = main_window_width * 0.2
+            max_expected = main_window_width * 0.8
+
+            if not (min_expected <= picker_width <= max_expected):
+                print(
+                    f"⚠️ [SIZING] Picker width {picker_width}px outside expected range "
+                    f"[{min_expected:.0f}-{max_expected:.0f}px] for main window {main_window_width}px"
+                )
+                return False
+
+            # Additional check: avoid the specific problematic width mentioned (622px)
+            # This suggests the widget was measured during an intermediate layout state
+            if picker_width == 622:
+                print(
+                    f"⚠️ [SIZING] Detected problematic width {picker_width}px, likely from startup timing issue"
+                )
+                return False
+
+            return True
+
+        except Exception as e:
+            print(f"⚠️ [SIZING] Error validating picker width: {e}")
+            return False
+
+    def _is_during_startup(self) -> bool:
+        """Check if we're currently during application startup phase."""
+        try:
+            # Check if main window is not yet visible (splash screen phase)
+            main_window = self.window()
+            if not main_window or not main_window.isVisible():
+                return True
+
+            # Check if this widget hasn't been properly shown yet
+            if not self.isVisible() or self.width() <= 0:
+                return True
+
+            return False
+
+        except Exception:
+            # If we can't determine, assume we're during startup to be safe
+            return True
+
     def resizeEvent(self, event):
         """Handle Qt resize events."""
         # Skip resizing during option loading
@@ -527,6 +623,10 @@ class OptionPickerScroll(QScrollArea):
             return
 
         super().resizeEvent(event)
+
+        # Debug: Log resize event details
+        print(f"🔍 [RESIZE] Option picker resize event: {self.width()}x{self.height()}")
+
         self._update_size()
 
     def _on_pictograph_selected(self, pictograph_data: PictographData):

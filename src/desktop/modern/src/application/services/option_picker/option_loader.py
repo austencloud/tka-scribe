@@ -17,8 +17,8 @@ from typing import Callable, List
 from application.services.option_picker.frame_pool_service import FramePoolService
 from core.monitoring import performance_monitor
 from domain.models.pictograph_data import PictographData
-from presentation.components.option_picker.components.pictograph_option_frame import (
-    PictographOptionFrame,
+from presentation.components.option_picker.components.option_pictograph import (
+    OptionPictograph,
 )
 from presentation.components.option_picker.types.letter_types import LetterType
 
@@ -51,7 +51,7 @@ class OptionLoader:
         letter_type: LetterType,
         pictographs: List[PictographData],
         selection_callback: Callable[[PictographData], None],
-    ) -> List["PictographOptionFrame"]:
+    ) -> List["OptionPictograph"]:
         """
         Load pictographs into frames for a section.
 
@@ -96,7 +96,7 @@ class OptionLoader:
         selection_callback: Callable[[PictographData], None],
         index: int,
         letter_type: LetterType,
-    ) -> "PictographOptionFrame":
+    ) -> "OptionPictograph":
         """
         Load a single pictograph option into a frame.
 
@@ -145,7 +145,7 @@ class OptionLoader:
             logger.error(f"Error loading single option for {letter_type}[{index}]: {e}")
             return None
 
-    def unload_section_options(self, frames: List["PictographOptionFrame"]) -> None:
+    def unload_section_options(self, frames: List["OptionPictograph"]) -> None:
         """
         Unload options and return frames to pool.
 
@@ -174,7 +174,7 @@ class OptionLoader:
         self,
         sections_data: dict[LetterType, List[PictographData]],
         selection_callback: Callable[[PictographData], None],
-    ) -> dict[LetterType, List["PictographOptionFrame"]]:
+    ) -> dict[LetterType, List["OptionPictograph"]]:
         """
         Load options for all sections in batch.
 
@@ -207,7 +207,7 @@ class OptionLoader:
         return loaded_sections
 
     def clear_all_sections(
-        self, sections_frames: dict[LetterType, List["PictographOptionFrame"]]
+        self, sections_frames: dict[LetterType, List["OptionPictograph"]]
     ) -> None:
         """
         Clear all loaded sections and return frames to pool.

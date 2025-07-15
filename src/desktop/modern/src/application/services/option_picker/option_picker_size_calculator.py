@@ -61,26 +61,39 @@ class OptionPickerSizeCalculator:
         """
         Calculate section layout dimensions.
 
-        FIXED: Added available_container_width parameter to respect container constraints.
+        FIXED: When called with scroll_area_width, use it directly for proper section sizing.
         Returns dimension dictionary - presentation layer applies to Qt layouts.
         """
         try:
-            # SIMPLIFIED: Use available container width if provided, otherwise fall back to legacy calculation
+            # CRITICAL FIX: The caller now passes scroll_area_width as main_window_width
+            # So we should use it directly, not divide by 2
+            container_width = (
+                main_window_width  # This is actually the scroll area width
+            )
 
-            base_width = main_window_width // 2  # Legacy fallback
+            print(f"📊 [CALC] Section calculation for {letter_type}:")
+            print(f"   Container width: {container_width}px")
 
             if letter_type in [LetterType.TYPE1, LetterType.TYPE2, LetterType.TYPE3]:
-                # Individual sections: use full available width
-                return {"width": base_width, "columns": 8, "section_type": "individual"}
+                # Individual sections: use FULL container width
+                section_width = container_width
+                print(f"   Individual section width: {section_width}px (full width)")
+                return {
+                    "width": section_width,
+                    "columns": 8,
+                    "section_type": "individual",
+                }
 
             elif letter_type in [LetterType.TYPE4, LetterType.TYPE5, LetterType.TYPE6]:
-                # FIXED: Grouped sections should be 1/3 of container width minus spacing
+                # Grouped sections: 1/3 of container width minus spacing
                 # Account for spacing between sections (1px × 2 = 2px total)
                 spacing_total = 2  # 1px spacing × 2 gaps between 3 sections
-                available_for_sections = base_width - spacing_total
-                section_width = (
-                    available_for_sections // 3
-                )  # Each section gets 1/3 of remaining space
+                available_for_sections = container_width - spacing_total
+                section_width = available_for_sections // 3  # Each section gets 1/3
+
+                print(f"   Grouped section calculation:")
+                print(f"     Available after spacing: {available_for_sections}px")
+                print(f"     Each grouped section: {section_width}px (1/3 width)")
 
                 return {
                     "width": section_width,
@@ -90,7 +103,11 @@ class OptionPickerSizeCalculator:
 
             else:
                 # Fallback for unknown types
-                return {"width": base_width, "columns": 8, "section_type": "fallback"}
+                return {
+                    "width": container_width,
+                    "columns": 8,
+                    "section_type": "fallback",
+                }
 
         except Exception as e:
             print(f"❌ [OPTION_SIZING] Error calculating section dimensions: {e}")
@@ -182,21 +199,40 @@ class OptionPickerSizeCalculator:
         but now it's constrained to fit within its container panel.
         """
         try:
+            main_window_width = main_window_size.width()
+
+            # Debug logging to track the calculation
+            print(f"📊 [CALC] Frame size calculation:")
+            print(f"   Main window width: {main_window_width}px")
+            print(f"   Option picker width: {option_picker_width}px")
+            print(f"   Spacing: {spacing}px")
+
             # SIMPLIFIED: Use the standard legacy formula without artificial compensation
             # Since option picker now uses full container width, no compensation needed
-            size_option_1 = main_window_size.width() // 16
+            size_option_1 = main_window_width // 16
             size_option_2 = option_picker_width // 8
 
+            print(f"   Size option 1 (MW/16): {size_option_1}px")
+            print(f"   Size option 2 (OP/8): {size_option_2}px")
+
             base_size = max(size_option_1, size_option_2)
+            print(f"   Base size (max): {base_size}px")
 
             # Calculate border width using existing method
             border_width = self.calculate_border_width(base_size)
+            print(f"   Border width: {border_width}px")
 
             # Adjust for border and spacing (Legacy: size -= 2 * bw + spacing)
             adjusted_size = base_size - (2 * border_width) - spacing
+            print(
+                f"   Adjusted size: {adjusted_size}px (after -{2 * border_width}-{spacing})"
+            )
 
             # Apply minimum size constraint
-            return max(adjusted_size, self._min_frame_size)
+            final_size = max(adjusted_size, self._min_frame_size)
+            print(f"   Final size: {final_size}px (min {self._min_frame_size}px)")
+
+            return final_size
 
         except Exception as e:
             print(f"❌ [OPTION_SIZING] Error calculating frame size: {e}")
@@ -240,7 +276,7 @@ class OptionPickerSizeCalculator:
             )
 
             # Frame size includes padding (Legacy: +8 for frame padding)
-            frame_padding = 8
+            frame_padding = 0
             frame_size = component_size + frame_padding
 
             return {

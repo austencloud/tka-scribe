@@ -13,8 +13,8 @@ Replaces object management logic previously embedded in OptionFactory.
 import logging
 from typing import List, Optional
 
-from presentation.components.option_picker.components.pictograph_option_frame import (
-    PictographOptionFrame,
+from presentation.components.option_picker.components.option_pictograph import (
+    OptionPictograph,
 )
 from PyQt6.QtWidgets import QWidget
 
@@ -40,7 +40,7 @@ class FramePoolService:
             max_frames: Maximum number of frames in pool (default 36 for 6 sections × 6 frames)
         """
         self._max_frames = max_frames
-        self._pool: List["PictographOptionFrame"] = []
+        self._pool: List["OptionPictograph"] = []
         self._parent_widget: Optional[QWidget] = None
         self._initialized = False
 
@@ -66,14 +66,14 @@ class FramePoolService:
 
         try:
             # Import here to avoid circular dependencies
-            from presentation.components.option_picker.components.pictograph_option_frame import (
-                PictographOptionFrame,
+            from presentation.components.option_picker.components.option_pictograph import (
+                OptionPictograph,
             )
 
             # Create all frames upfront
             self._pool = []
             for i in range(self._max_frames):
-                frame = PictographOptionFrame(parent=parent_widget)
+                frame = OptionPictograph(parent=parent_widget)
                 frame.hide()  # Start hidden
                 self._pool.append(frame)
 
@@ -84,7 +84,7 @@ class FramePoolService:
             logger.error(f"Failed to initialize frame pool: {e}")
             self._pool = []
 
-    def checkout_frame(self) -> Optional["PictographOptionFrame"]:
+    def checkout_frame(self) -> Optional["OptionPictograph"]:
         """
         Get available frame from pool.
 
@@ -117,7 +117,7 @@ class FramePoolService:
         logger.debug(f"Reused first frame (total checkouts: {self._checkout_count})")
         return frame
 
-    def checkin_frame(self, frame: "PictographOptionFrame") -> None:
+    def checkin_frame(self, frame: "OptionPictograph") -> None:
         """
         Return frame to pool.
 

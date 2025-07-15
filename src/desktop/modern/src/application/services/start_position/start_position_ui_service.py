@@ -101,17 +101,24 @@ class StartPositionUIService(IStartPositionUIService):
             Size in pixels for the option components
         """
         try:
-            # Sizing formula as specified: 1/12th of main window size per pictograph
+            # Improved sizing formula for better space utilization
             if is_advanced:
-                # Advanced picker uses 1/12th of main window width per pictograph
-                size = container_width // 10
-                min_size = 120  # Larger minimum for better visibility
-                max_size = 400  # Higher maximum for better detail
+                # Advanced picker: size for 4x4 grid to fit in available space
+                # Account for spacing and margins in the calculation
+                spacing_total = 10 * 3  # 3 gaps between 4 items (reduced spacing)
+                margin_total = 8 * 2  # margins on both sides (reduced margins)
+                available_width = container_width - spacing_total - margin_total
+                size = available_width // 4  # Divide by 4 for 4 columns
+                min_size = 80  # Smaller minimum for better fit
+                max_size = 150  # Smaller maximum to prevent overflow
             else:
-                # Regular picker uses legacy formula (main_window_width // 10)
-                size = container_width // 10
-                min_size = 80
-                max_size = 400
+                # Regular picker: size for 3 items in a row
+                spacing_total = 15 * 2  # 2 gaps between 3 items (reduced spacing)
+                margin_total = 12 * 2  # margins on both sides (reduced margins)
+                available_width = container_width - spacing_total - margin_total
+                size = available_width // 3  # Divide by 3 for 3 columns
+                min_size = 100
+                max_size = 200
 
             # Ensure reasonable size range
             size = max(size, min_size)
@@ -125,7 +132,7 @@ class StartPositionUIService(IStartPositionUIService):
         except Exception as e:
             logger.error(f"Error calculating option size: {e}")
             # Safe fallback
-            return 100 if not is_advanced else 80
+            return 80 if is_advanced else 100
 
     def get_grid_layout_config(
         self, grid_mode: str, is_advanced: bool = False
@@ -142,12 +149,12 @@ class StartPositionUIService(IStartPositionUIService):
         """
         try:
             if is_advanced:
-                # Advanced picker: 4x4 grid layout
+                # Advanced picker: 4x4 grid layout with reduced spacing
                 config = {
                     "rows": 4,
                     "cols": 4,
-                    "spacing": 15,
-                    "margin": 12,
+                    "spacing": 10,  # Reduced from 15 to fit better
+                    "margin": 8,  # Reduced from 12 to fit better
                     "fixed_layout": True,
                     "position_count": 16,
                 }
@@ -156,8 +163,8 @@ class StartPositionUIService(IStartPositionUIService):
                 config = {
                     "rows": 1,  # Prefer single row if space allows
                     "cols": 3,
-                    "spacing": 20,
-                    "margin": 18,
+                    "spacing": 15,  # Reduced from 20
+                    "margin": 12,  # Reduced from 18
                     "fixed_layout": False,  # Responsive layout
                     "position_count": 3,
                 }

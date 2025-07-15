@@ -22,14 +22,13 @@ from PyQt6.QtCore import (
 )
 from PyQt6.QtGui import (
     QColor,
-    QFont,
     QLinearGradient,
     QMouseEvent,
     QPainter,
     QPainterPath,
     QPen,
 )
-from PyQt6.QtWidgets import QGraphicsDropShadowEffect, QLabel, QVBoxLayout, QWidget
+from PyQt6.QtWidgets import QGraphicsDropShadowEffect, QVBoxLayout, QWidget
 
 logger = logging.getLogger(__name__)
 
@@ -43,7 +42,7 @@ class StartPositionOption(QWidget):
     - Smooth hover and selection animations
     - Visual feedback for user interactions
     - Responsive sizing and improved accessibility
-    - Enhanced visual hierarchy with position labels
+    - Clean visual design focused on pictographs
     """
 
     position_selected = pyqtSignal(str)
@@ -77,7 +76,6 @@ class StartPositionOption(QWidget):
         # Components
         self._pictograph_component = None
         self._selection_overlay = None
-        self.position_label = None
 
         self._setup_ui()
         self._setup_animations()
@@ -85,8 +83,11 @@ class StartPositionOption(QWidget):
     def _setup_ui(self):
         """Set up the enhanced UI with modern styling."""
         layout = QVBoxLayout(self)
-        layout.setContentsMargins(8, 8, 8, 8)
-        layout.setSpacing(8)
+        # Reduce margins to center pictograph better and minimize container size
+        layout.setContentsMargins(4, 4, 4, 4)
+        layout.setSpacing(0)
+        # Center the pictograph in the container
+        layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         # Apply enhanced styling
         if self.enhanced_styling:
@@ -117,10 +118,7 @@ class StartPositionOption(QWidget):
                 f"Failed to get pictograph component from pool for start position: {self.position_key}"
             )
 
-        # Add position label for enhanced version
-        if self.enhanced_styling:
-            self.position_label = self._create_position_label()
-            layout.addWidget(self.position_label)
+        # Position labels removed - they were redundant
 
         # Selection overlay
         self._selection_overlay = SelectionOverlay(self)
@@ -157,16 +155,6 @@ class StartPositionOption(QWidget):
                 );
                 border: 2px solid rgba(255, 255, 255, 0.45);
             }
-            
-            QLabel#PositionLabel {
-                background: rgba(255, 255, 255, 0.2);
-                border: 1px solid rgba(255, 255, 255, 0.3);
-                border-radius: 8px;
-                color: #2d3748;
-                font-weight: 600;
-                padding: 6px 12px;
-                margin: 2px;
-            }
         """
 
     def _get_basic_styles(self) -> str:
@@ -178,32 +166,6 @@ class StartPositionOption(QWidget):
                 background: rgba(255,255,255,0.18);
             }
         """
-
-    def _create_position_label(self) -> QLabel:
-        """Create position label with formatted text."""
-        # Extract readable position information
-        start_pos, end_pos = self.position_key.split("_")
-        letter = self._extract_letter_from_position(start_pos)
-
-        # Format label text
-        position_text = f"{letter} - {start_pos.replace(letter.lower(), '').replace('alpha', '').replace('beta', '').replace('gamma', '')}"
-
-        label = QLabel(position_text)
-        label.setObjectName("PositionLabel")
-        label.setFont(QFont("Segoe UI", 10, QFont.Weight.Medium))
-        label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-
-        return label
-
-    def _extract_letter_from_position(self, position: str) -> str:
-        """Extract Greek letter from position string."""
-        if position.startswith("alpha"):
-            return "α"
-        elif position.startswith("beta"):
-            return "β"
-        elif position.startswith("gamma"):
-            return "Γ"
-        return "?"
 
     def _add_drop_shadow(self):
         """Add subtle drop shadow effect for enhanced depth."""
@@ -371,10 +333,11 @@ class StartPositionOption(QWidget):
     def update_pictograph_size(self, container_size: int):
         """Update the pictograph size to match the container."""
         if self._pictograph_component:
-            # Calculate pictograph size (slightly smaller than container to account for margins)
+            # Calculate pictograph size to better fill the container
+            # Leave minimal space for margins (8px total = 4px on each side)
             pictograph_size = max(
-                container_size - 40, 80
-            )  # Leave 40px for margins/padding
+                container_size - 8, 60
+            )  # Minimal margins for better centering
             self._pictograph_component.setFixedSize(pictograph_size, pictograph_size)
             logger.debug(
                 f"Updated pictograph size to {pictograph_size}px for position {self.position_key}"

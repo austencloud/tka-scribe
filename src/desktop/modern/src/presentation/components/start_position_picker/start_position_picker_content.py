@@ -78,6 +78,7 @@ class StartPositionPickerContent(QWidget):
         # Main content area (single container that adapts)
         self.main_container = QWidget()
         self.grid_layout = QGridLayout(self.main_container)
+        # Initial spacing - will be updated based on mode in load_positions
         self.grid_layout.setSpacing(15)
 
         # Scroll area for content
@@ -118,6 +119,16 @@ class StartPositionPickerContent(QWidget):
         try:
             mode_str = "advanced" if is_advanced else "basic"
             logger.debug(f"Starting to load positions for {mode_str} mode")
+
+            # Update grid spacing based on mode
+            grid_config = self.ui_service.get_grid_layout_config(grid_mode, is_advanced)
+            self.grid_layout.setSpacing(grid_config.get("spacing", 15))
+            self.grid_layout.setContentsMargins(
+                grid_config.get("margin", 12),
+                grid_config.get("margin", 12),
+                grid_config.get("margin", 12),
+                grid_config.get("margin", 12),
+            )
 
             # Get position keys for current mode using UI service
             position_keys = self.ui_service.get_positions_for_mode(

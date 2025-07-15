@@ -30,8 +30,8 @@ from domain.models.pictograph_data import PictographData
 from presentation.components.option_picker.components.option_picker_scroll import (
     OptionPickerScroll,
 )
-from presentation.components.option_picker.components.pictograph_option_frame import (
-    PictographOptionFrame,
+from presentation.components.option_picker.components.option_pictograph import (
+    OptionPictograph,
 )
 from presentation.components.option_picker.types.letter_types import LetterType
 from PyQt6.QtCore import QSize, Qt, pyqtSignal
@@ -74,7 +74,7 @@ class OptionPickerSection(QGroupBox):
 
         # UI state management
         self._loading_options = False
-        self.pictographs: Dict[str, PictographOptionFrame] = {}
+        self.pictographs: Dict[str, OptionPictograph] = {}
 
     def update_option_picker_width(self, width: int) -> None:
         """Update the stored option picker width - called by parent scroll area."""
@@ -271,7 +271,7 @@ class OptionPickerSection(QGroupBox):
     async def _load_with_fade_transition(
         self,
         pictographs_for_section: List[PictographData],
-        existing_frames: List[PictographOptionFrame],
+        existing_frames: List[OptionPictograph],
     ) -> None:
         """Load options with smooth fade transition (replicates legacy behavior)."""
         try:
@@ -389,7 +389,7 @@ class OptionPickerSection(QGroupBox):
         # Clear tracking dictionary
         self.pictographs = {}
 
-    def add_pictograph(self, pictograph_frame: PictographOptionFrame) -> None:
+    def add_pictograph(self, pictograph_frame: OptionPictograph) -> None:
         """Add pictograph to Qt grid layout."""
         # Generate tracking key
         key = f"pictograph_{len(self.pictographs)}"
@@ -417,8 +417,13 @@ class OptionPickerSection(QGroupBox):
         if self._loading_options:
             return
 
-        # ✅ Use service for dimension calculation
+        # FIXED: Use scroll area's actual width instead of main window width
+        scroll_area_width = self.scroll_area.width()
         main_window_size = self.mw_size_provider()
+
+        print(f"🔍 [SECTION] {self.letter_type} resize event:")
+        print(f"   Scroll area width: {scroll_area_width}px")
+        print(f"   Main window width: {main_window_size.width()}px")
 
         # 🔍 REGRESSION TEST: Ensure we're not using fallback size provider
         if main_window_size.width() == 800 and main_window_size.height() == 600:
@@ -427,11 +432,23 @@ class OptionPickerSection(QGroupBox):
             )
             print(f"🚨 This will cause incorrect section sizing in the real app!")
 
-        # MODERN: Use stored option picker width instead of fragile parent navigation
-        dimensions = self._option_sizing_service.calculate_section_dimensions(
-            letter_type=self.letter_type,
-            main_window_width=main_window_size.width(),
-        )
+        # FIXED: Use scroll area width for section dimension calculation
+        if scroll_area_width > 0:
+            # Use actual scroll area width for proper section sizing
+            dimensions = self._option_sizing_service.calculate_section_dimensions(
+                letter_type=self.letter_type,
+                main_window_width=scroll_area_width,  # Use scroll area width, not main window
+            )
+            print(
+                f"   Calculated section width: {dimensions['width']}px for {self.letter_type}"
+            )
+        else:
+            # Fallback if scroll area width is not available yet
+            dimensions = self._option_sizing_service.calculate_section_dimensions(
+                letter_type=self.letter_type,
+                main_window_width=main_window_size.width() // 2,  # Fallback calculation
+            )
+            print(f"   Using fallback calculation for {self.letter_type}")
 
         # ✅ Apply to Qt widget
         self.setFixedWidth(dimensions["width"])
@@ -439,7 +456,37 @@ class OptionPickerSection(QGroupBox):
         # Call parent resize event
         super().resizeEvent(event)
 
+        # CRITICAL DEBUG: Show ACTUAL widget dimensions after Qt applies them
+        from PyQt6.QtCore import QTimer
+
+        def show_actual_dimensions():
+            actual_width = self.width()
+            actual_height = self.height()
+            print(
+                f"✅ [ACTUAL] {self.letter_type} final size: {actual_width}x{actual_height}px"
+            )
+
+            # Also show pictograph frame dimensions if available
+            if hasattr(self, "pictographs") and self.pictographs:
+                first_frame = next(iter(self.pictographs.values()))
+                frame_width = first_frame.width()
+                frame_height = first_frame.height()
+                print(
+                    f"✅ [ACTUAL] First pictograph frame: {frame_width}x{frame_height}px"
+                )
+
+                # Calculate if 8 frames + spacing fit within section width
+                spacing = 3  # From config
+                total_frames_width = 8 * frame_width + 7 * spacing
+                fits = total_frames_width <= actual_width
+                print(
+                    f"✅ [ACTUAL] 8 frames fit? {fits} (need {total_frames_width}px, have {actual_width}px)"
+                )
+
+        # Use timer to ensure dimensions are applied
+        QTimer.singleShot(10, show_actual_dimensions)
+
     @property
-    def pictograph_frames(self) -> List[PictographOptionFrame]:
+    def pictograph_frames(self) -> List[OptionPictograph]:
         """Get list of pictograph frames for compatibility."""
         return list(self.pictographs.values())

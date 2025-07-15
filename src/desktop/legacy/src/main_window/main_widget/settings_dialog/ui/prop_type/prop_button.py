@@ -1,9 +1,10 @@
 from typing import TYPE_CHECKING
-from PyQt6.QtWidgets import QPushButton
-from PyQt6.QtGui import QIcon, QCursor
-from PyQt6.QtCore import Qt, QSize
-from enums.prop_type import PropType
+
 from core import GlassmorphismStyler
+from enums.prop_type import PropType
+from PyQt6.QtCore import QSize, Qt
+from PyQt6.QtGui import QCursor, QIcon
+from PyQt6.QtWidgets import QPushButton
 
 if TYPE_CHECKING:
     from .prop_type_tab import PropTypeTab

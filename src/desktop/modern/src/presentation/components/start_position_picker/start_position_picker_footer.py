@@ -6,20 +6,15 @@ Extracted from the main StartPositionPicker for better maintainability.
 """
 
 import logging
-from enum import Enum
+from typing import TYPE_CHECKING
 
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtWidgets import QHBoxLayout, QPushButton, QWidget
 
+if TYPE_CHECKING:
+    from .start_position_picker import PickerMode
+
 logger = logging.getLogger(__name__)
-
-
-class PickerMode(Enum):
-    """Picker display modes."""
-
-    BASIC = "basic"
-    ADVANCED = "advanced"
-    AUTO = "auto"
 
 
 class StartPositionPickerFooter(QWidget):
@@ -55,7 +50,6 @@ class StartPositionPickerFooter(QWidget):
         self.variations_button = QPushButton("✨ Show All Variations")
         self.variations_button.setObjectName("VariationsButton")
         self.variations_button.clicked.connect(self._on_variations_button_clicked)
-        self.variations_button.setVisible(True)  # Visible by default (basic mode)
 
         # Apply styling
         self.variations_button.setStyleSheet(self._get_variations_button_styles())
@@ -66,13 +60,19 @@ class StartPositionPickerFooter(QWidget):
         self.back_button = QPushButton("← Back to Simple")
         self.back_button.setObjectName("BackButton")
         self.back_button.clicked.connect(self._on_back_button_clicked)
-        self.back_button.setVisible(False)  # Hidden by default
 
         # Apply styling
         self.back_button.setStyleSheet(self._get_back_button_styles())
 
         layout.addWidget(self.back_button)
         layout.addStretch()
+
+        # Initialize to BASIC mode (variations button visible, back button hidden)
+        # Create a simple object with value attribute to simulate PickerMode.BASIC
+        class BasicMode:
+            value = "basic"
+
+        self.update_for_mode(BasicMode())
 
     def _get_variations_button_styles(self) -> str:
         """Get variations button styling - EXACT copy from original."""
@@ -120,16 +120,29 @@ class StartPositionPickerFooter(QWidget):
             }
         """
 
-    def update_for_mode(self, mode: PickerMode):
+    def update_for_mode(self, mode: "PickerMode"):
         """Update footer elements based on current mode."""
-        if mode == PickerMode.ADVANCED:
+        logger.debug(f"Footer updating for mode: {mode.value}")
+
+        if mode.value == "advanced":
             # In advanced mode: hide variations button, show back button
+            logger.debug(
+                "Setting ADVANCED mode: hiding variations button, showing back button"
+            )
             self.variations_button.setVisible(False)
             self.back_button.setVisible(True)
         else:
             # In basic/auto mode: show variations button, hide back button
+            logger.debug(
+                "Setting BASIC/AUTO mode: showing variations button, hiding back button"
+            )
             self.variations_button.setVisible(True)
             self.back_button.setVisible(False)
+
+        # Log final state for debugging
+        logger.debug(
+            f"Final state - Variations visible: {self.variations_button.isVisible()}, Back visible: {self.back_button.isVisible()}"
+        )
 
     def _on_variations_button_clicked(self):
         """Handle variations button click."""
