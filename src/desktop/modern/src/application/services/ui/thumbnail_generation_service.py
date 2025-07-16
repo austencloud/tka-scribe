@@ -10,12 +10,13 @@ import tempfile
 from pathlib import Path
 from typing import Optional
 
+from core.interfaces.ui_services import IThumbnailGenerationService
 from domain.models.sequence_data import SequenceData
 
 logger = logging.getLogger(__name__)
 
 
-class ThumbnailGenerationService:
+class ThumbnailGenerationService(IThumbnailGenerationService):
     """
     Service for generating sequence thumbnails.
 
@@ -212,12 +213,21 @@ class ThumbnailGenerationService:
             return None
 
 
-class MockThumbnailGenerationService(ThumbnailGenerationService):
+class MockThumbnailGenerationService(IThumbnailGenerationService):
     """
     Mock implementation for testing and development.
 
     Creates placeholder thumbnails instead of real ones.
     """
+
+    def __init__(self, temp_directory: Optional[Path] = None):
+        """
+        Initialize the mock thumbnail generation service.
+
+        Args:
+            temp_directory: Directory for temporary files (defaults to system temp)
+        """
+        self._temp_directory = temp_directory or Path(tempfile.gettempdir())
 
     def generate_sequence_thumbnail(
         self,
@@ -234,36 +244,21 @@ class MockThumbnailGenerationService(ThumbnailGenerationService):
             if len(sequence.beats) <= 1:
                 return None
 
-            # Create a simple placeholder image
-            from PyQt6.QtGui import QPixmap, QPainter, QColor, QFont
-            from PyQt6.QtCore import Qt
-
-            # Create a placeholder image
-            pixmap = QPixmap(800, 600)
-            pixmap.fill(QColor(240, 240, 240))
-
-            painter = QPainter(pixmap)
-            painter.setPen(QColor(100, 100, 100))
-            painter.setFont(QFont("Arial", 24))
-
-            # Draw placeholder text
-            text = f"Sequence: {sequence.name}\nBeats: {len(sequence.beats)}"
-            if fullscreen_preview:
-                text += "\n(Fullscreen Preview)"
-
-            painter.drawText(pixmap.rect(), Qt.AlignmentFlag.AlignCenter, text)
-            painter.end()
-
+            # Create a simple placeholder file without Qt dependencies
             # Ensure output directory exists
             output_path.parent.mkdir(parents=True, exist_ok=True)
 
-            # Save the placeholder
-            if pixmap.save(str(output_path), "PNG"):
-                logger.info(f"Generated mock thumbnail: {output_path}")
-                return output_path
-            else:
-                logger.error("Failed to save mock thumbnail")
-                return None
+            # Create a simple text-based placeholder
+            placeholder_content = f"Mock Thumbnail\nSequence: {sequence.name}\nBeats: {len(sequence.beats)}"
+            if fullscreen_preview:
+                placeholder_content += "\n(Fullscreen Preview)"
+
+            # Write placeholder content to file
+            with open(output_path, "w") as f:
+                f.write(placeholder_content)
+
+            logger.info(f"Generated mock thumbnail: {output_path}")
+            return output_path
 
         except Exception as e:
             logger.error(f"Failed to generate mock thumbnail: {e}")

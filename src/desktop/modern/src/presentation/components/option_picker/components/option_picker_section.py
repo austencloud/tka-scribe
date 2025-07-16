@@ -245,16 +245,26 @@ class OptionPickerSection(QGroupBox):
 
                     for frame in existing_frames:
                         try:
+                            # Validate frame is still valid and visible
+                            if not frame or frame.isHidden() or not frame.parent():
+                                continue
+
                             # Create opacity effect if not present
                             if not frame.graphicsEffect():
                                 effect = QGraphicsOpacityEffect()
                                 effect.setOpacity(1.0)  # Ensure it starts visible
                                 frame.setGraphicsEffect(effect)
 
+                            # Validate graphics effect is properly set
+                            graphics_effect = frame.graphicsEffect()
+                            if not graphics_effect:
+                                print(
+                                    f"⚠️ [FADE] No graphics effect for fade-out frame in {self.letter_type}"
+                                )
+                                continue
+
                             # Create fade out animation
-                            animation = QPropertyAnimation(
-                                frame.graphicsEffect(), b"opacity"
-                            )
+                            animation = QPropertyAnimation(graphics_effect, b"opacity")
                             animation.setDuration(200)  # 200ms
                             animation.setStartValue(1.0)
                             animation.setEndValue(0.0)
@@ -263,33 +273,42 @@ class OptionPickerSection(QGroupBox):
 
                         except Exception as e:
                             print(
-                                f"❌ [FADE] Failed to create animation for frame: {e}"
+                                f"⚠️ [FADE] Skipping invalid fade-out frame in {self.letter_type}: {e}"
                             )
 
                     print(
                         f"🎭 [FADE] Created {animations_added} fade out animations for {self.letter_type}"
                     )
 
-                    # Step 2: When fade out completes, update content and fade in
-                    def on_fade_out_complete():
+                    # Only start animation if we have valid animations
+                    if animations_added > 0:
+                        # Step 2: When fade out completes, update content and fade in
+                        def on_fade_out_complete():
 
-                        # Update content
+                            # Update content
+                            self.clear_pictographs()
+                            self._load_options_directly(pictographs_for_section)
+
+                            # Step 3: Fade in new frames
+                            QTimer.singleShot(
+                                50, self._fade_in_new_frames
+                            )  # Small delay for content update
+
+                        # Store reference to prevent garbage collection
+                        self._current_fade_animation = fade_out_group
+
+                        fade_out_group.finished.connect(on_fade_out_complete)
+
+                        # Add debug for animation start/state
+
+                        fade_out_group.start()
+                    else:
+                        print(
+                            f"⚠️ [FADE] No valid fade-out animations for {self.letter_type}, using direct update"
+                        )
+                        # Fallback to direct update
                         self.clear_pictographs()
                         self._load_options_directly(pictographs_for_section)
-
-                        # Step 3: Fade in new frames
-                        QTimer.singleShot(
-                            50, self._fade_in_new_frames
-                        )  # Small delay for content update
-
-                    # Store reference to prevent garbage collection
-                    self._current_fade_animation = fade_out_group
-
-                    fade_out_group.finished.connect(on_fade_out_complete)
-
-                    # Add debug for animation start/state
-
-                    fade_out_group.start()
 
                 except Exception as e:
                     print(f"❌ [FADE] Qt fade animation failed: {e}")
@@ -322,20 +341,47 @@ class OptionPickerSection(QGroupBox):
 
             # Create fade in animations for new frames
             fade_in_group = QParallelAnimationGroup(self)  # Parent to prevent GC
+            valid_animations = 0
 
             for frame in new_frames:
-                # Create opacity effect if not present
-                if not frame.graphicsEffect():
-                    effect = QGraphicsOpacityEffect()
-                    frame.setGraphicsEffect(effect)
-                    effect.setOpacity(0.0)  # Start invisible
+                try:
+                    # Validate frame is still valid and visible
+                    if not frame or frame.isHidden() or not frame.parent():
+                        continue
 
-                # Create fade in animation
-                animation = QPropertyAnimation(frame.graphicsEffect(), b"opacity")
-                animation.setDuration(200)  # 200ms
-                animation.setStartValue(0.0)
-                animation.setEndValue(1.0)
-                fade_in_group.addAnimation(animation)
+                    # Create opacity effect if not present
+                    if not frame.graphicsEffect():
+                        effect = QGraphicsOpacityEffect()
+                        frame.setGraphicsEffect(effect)
+                        effect.setOpacity(0.0)  # Start invisible
+
+                    # Validate graphics effect is properly set
+                    graphics_effect = frame.graphicsEffect()
+                    if not graphics_effect:
+                        print(
+                            f"⚠️ [FADE] No graphics effect for frame in {self.letter_type}"
+                        )
+                        continue
+
+                    # Create fade in animation
+                    animation = QPropertyAnimation(graphics_effect, b"opacity")
+                    animation.setDuration(200)  # 200ms
+                    animation.setStartValue(0.0)
+                    animation.setEndValue(1.0)
+                    fade_in_group.addAnimation(animation)
+                    valid_animations += 1
+
+                except Exception as e:
+                    print(f"⚠️ [FADE] Skipping invalid frame in {self.letter_type}: {e}")
+                    continue
+
+            if valid_animations == 0:
+                print(f"⚠️ [FADE] No valid frames to animate for {self.letter_type}")
+                return
+
+            print(
+                f"🎭 [FADE] Created {valid_animations} valid animations for {self.letter_type}"
+            )
 
             # When fade in completes
             def on_fade_in_complete():

@@ -173,6 +173,7 @@ class ArrowItem(QGraphicsSvgItem):
                         arrow_data, self.pictograph_data, motion_data
                     )
                 )
+
             except Exception as e:
                 logger.error(f"Positioning orchestrator failed: {e}")
                 traceback.print_exc()
@@ -247,6 +248,9 @@ class ArrowItem(QGraphicsSvgItem):
         # Re-setup with new data
         if self.arrow_color and self.motion_data:
             self._setup_arrow()
+            # CRITICAL FIX: Ensure positioning is calculated when arrow is updated with real data
+            if self.pictograph_data and self.arrow_color:
+                self._calculate_and_apply_position()
 
     def get_arrow_info(self) -> dict:
         """Get information about this arrow for debugging."""

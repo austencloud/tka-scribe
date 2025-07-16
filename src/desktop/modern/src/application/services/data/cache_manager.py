@@ -8,10 +8,12 @@ duplicate cache implementations and provide consistent cache behavior.
 import logging
 from typing import Any, Dict, Optional, Set
 
+from core.interfaces.data_services import IDataCacheManager
+
 logger = logging.getLogger(__name__)
 
 
-class DataCacheManager:
+class DataCacheManager(IDataCacheManager):
     """
     Unified cache manager for all data service caching needs.
 

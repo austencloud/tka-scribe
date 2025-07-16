@@ -15,43 +15,18 @@ import logging
 from typing import Optional, NamedTuple, List
 from enum import Enum
 
+from core.interfaces.workbench_session_services import (
+    IWorkbenchSessionManager,
+    SessionRestorationPhase,
+    SessionRestorationResult,
+)
 from domain.models.beat_data import BeatData
 from domain.models.sequence_data import SequenceData
 
 logger = logging.getLogger(__name__)
 
 
-class SessionRestorationPhase(Enum):
-    """Phases of session restoration."""
-    NOT_STARTED = "not_started"
-    PREPARING = "preparing"
-    RESTORING_SEQUENCE = "restoring_sequence"
-    RESTORING_START_POSITION = "restoring_start_position"
-    FINALIZING = "finalizing"
-    COMPLETED = "completed"
-    FAILED = "failed"
-
-
-class SessionRestorationResult(NamedTuple):
-    """Result of a session restoration operation."""
-    success: bool
-    phase: SessionRestorationPhase
-    sequence_restored: bool
-    start_position_restored: bool
-    errors: List[str]
-
-    @classmethod
-    def success_result(cls, phase: SessionRestorationPhase, sequence_restored: bool = False, start_position_restored: bool = False):
-        """Create a successful restoration result."""
-        return cls(True, phase, sequence_restored, start_position_restored, [])
-
-    @classmethod
-    def failure_result(cls, phase: SessionRestorationPhase, errors: List[str]):
-        """Create a failed restoration result."""
-        return cls(False, phase, False, False, errors)
-
-
-class WorkbenchSessionManager:
+class WorkbenchSessionManager(IWorkbenchSessionManager):
     """
     Framework-agnostic session management for workbench.
     

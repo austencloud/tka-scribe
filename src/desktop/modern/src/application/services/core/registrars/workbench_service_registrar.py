@@ -82,6 +82,9 @@ class WorkbenchServiceRegistrar(BaseServiceRegistrar):
             from application.services.workbench.workbench_state_manager import (
                 WorkbenchStateManager,
             )
+            from core.interfaces.workbench_session_services import (
+                IWorkbenchSessionManager,
+            )
 
             # Register beat selection service (no dependencies)
             container.register_singleton(BeatSelectionService, BeatSelectionService)
@@ -95,7 +98,13 @@ class WorkbenchServiceRegistrar(BaseServiceRegistrar):
                 )
             )
             container.register_instance(WorkbenchStateManager, state_manager_instance)
+            
+            # Register interface
+            from core.interfaces.workbench_services import IWorkbenchStateManager
+            container.register_instance(IWorkbenchStateManager, state_manager_instance)
+            
             self._mark_service_available("WorkbenchStateManager")
+            self._mark_service_available("IWorkbenchStateManager")
 
             # Register workbench operation coordinator with dependencies
             # Import the required services
@@ -124,17 +133,19 @@ class WorkbenchServiceRegistrar(BaseServiceRegistrar):
             self._mark_service_available("WorkbenchOperationCoordinator")
 
             # Register workbench session manager with dependencies
-            container.register_factory(
-                WorkbenchSessionManager,
-                lambda c: WorkbenchSessionManager(
+            def create_workbench_session_manager(c):
+                return WorkbenchSessionManager(
                     workbench_state_manager=c.resolve(WorkbenchStateManager),
                     session_restoration_coordinator=self._safe_resolve(
                         c, "SessionRestorationCoordinator"
                     ),
                     event_bus=self._safe_resolve(c, "EventBus"),
-                ),
-            )
+                )
+            
+            container.register_factory(IWorkbenchSessionManager, create_workbench_session_manager)
+            container.register_factory(WorkbenchSessionManager, create_workbench_session_manager)
             self._mark_service_available("WorkbenchSessionManager")
+            self._mark_service_available("IWorkbenchSessionManager")
 
         except ImportError as e:
             error_msg = f"Failed to register workbench business services: {e}"

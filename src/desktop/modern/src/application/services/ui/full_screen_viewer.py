@@ -198,3 +198,35 @@ class FullScreenViewer(IFullScreenViewer):
         """
         logger.error(f"Full screen error: {message}")
         print(f"❌ Full screen error: {message}")
+
+    # Interface implementation methods
+    def show_fullscreen(self, content: any = None) -> None:
+        """Show content in fullscreen mode."""
+        if content is None:
+            # Get current sequence from state reader
+            content = self._sequence_state_reader.get_current_sequence()
+
+        if content:
+            self.show_full_screen_view(content)
+        else:
+            self._show_error_message("No content to display in fullscreen")
+
+    def hide_fullscreen(self) -> None:
+        """Hide fullscreen mode."""
+        if self._current_overlay:
+            self._current_overlay.close()
+            self._current_overlay = None
+            logger.info("🖥️ Full screen view hidden")
+
+    def is_fullscreen(self) -> bool:
+        """Check if currently in fullscreen mode."""
+        return self._current_overlay is not None
+
+    def toggle_fullscreen(self, content: any = None) -> bool:
+        """Toggle fullscreen mode."""
+        if self.is_fullscreen():
+            self.hide_fullscreen()
+            return False
+        else:
+            self.show_fullscreen(content)
+            return True

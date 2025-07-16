@@ -76,10 +76,18 @@ class PictographServiceRegistrar(BaseServiceRegistrar):
             from application.services.pictograph.pictograph_position_matcher import (
                 PictographCSVManager,
             )
+            from application.services.pictograph.pictograph_validator import (
+                PictographValidator,
+            )
+            from application.services.pictograph.scaling_service import (
+                PictographScaler,
+            )
             from core.interfaces.core_services import (
                 IPictographBorderManager,
                 IPictographContextDetector,
             )
+            from core.interfaces.scaling_services import IPictographScaler
+            from core.interfaces.validation_services import IPictographValidator
 
             # Register pictograph data manager
             container.register_singleton(IPictographDataManager, PictographDataManager)
@@ -106,6 +114,14 @@ class PictographServiceRegistrar(BaseServiceRegistrar):
                 PictographVisibilityManager, PictographVisibilityManager
             )
             self._mark_service_available("PictographVisibilityManager")
+
+            # Register pictograph validator
+            container.register_factory(IPictographValidator, PictographValidator)
+            self._mark_service_available("PictographValidator")
+
+            # Register pictograph scaler
+            container.register_singleton(IPictographScaler, PictographScaler)
+            self._mark_service_available("PictographScaler")
 
         except ImportError as e:
             error_msg = f"Failed to register core pictograph services: {e}"

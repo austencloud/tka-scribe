@@ -2,11 +2,12 @@ import math
 from typing import Any, Dict, Tuple
 
 from core.decorators import handle_service_errors
+from core.interfaces.layout_calculation_services import IBeatLayoutCalculator
 from core.monitoring import monitor_performance
 from domain.models import SequenceData
 
 
-class BeatLayoutCalculator:
+class BeatLayoutCalculator(IBeatLayoutCalculator):
     """
     Handles comprehensive beat layout calculations with detailed default layouts.
 

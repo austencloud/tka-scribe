@@ -8,6 +8,7 @@ Updated to work with the modern domain models and letter type classification sys
 import logging
 from typing import Optional
 
+from core.interfaces.validation_services import IPictographValidator
 from domain.models.enums import Orientation
 from domain.models.letter_condition import LetterCondition
 from domain.models.motion_data import MotionData
@@ -16,7 +17,7 @@ from domain.models.pictograph_data import PictographData
 logger = logging.getLogger(__name__)
 
 
-class PictographValidator:
+class PictographValidator(IPictographValidator):
     """
     Service for checking pictograph properties and conditions.
 

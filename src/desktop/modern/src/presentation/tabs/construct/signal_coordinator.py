@@ -181,8 +181,8 @@ class SignalCoordinator(QObject):
 
         self.start_position_manager.set_start_position(start_position_beat_data)
 
-        # Pre-load option picker content before transition to avoid redundant fades
-        self.option_picker_manager.populate_from_start_position(
+        # Pre-load option picker content WITHOUT animations to avoid double fade
+        self.option_picker_manager.prepare_from_start_position(
             position_key, start_position_beat_data
         )
 

@@ -97,6 +97,63 @@ class OptionPickerManager(QObject):
                         f"❌ [OPTION_PICKER_MANAGER] Fallback refresh failed: {fallback_error}"
                     )
 
+    def prepare_from_start_position(
+        self, position_key: str, start_position_beat_data: BeatData
+    ):
+        """Prepare option picker content WITHOUT animations for widget transitions"""
+        if self.option_picker is None:
+            return
+
+        try:
+            # Create proper modern SequenceData with start position as beat 0
+            from domain.models.beat_data import BeatData
+            from domain.models.sequence_data import SequenceData
+
+            # Ensure we have a valid end position
+            pictograph_data = start_position_beat_data.pictograph_data
+            end_position = pictograph_data.end_position
+            if not end_position:
+                end_position = extract_end_position_from_position_key(position_key)
+                # Update the pictograph data with the extracted end position
+                pictograph_data = pictograph_data.update(end_position=end_position)
+
+            # Create beat data for the start position (beat 1)
+            start_beat = BeatData(
+                beat_number=1, pictograph_data=pictograph_data, is_blank=False
+            )
+
+            # Create modern sequence data
+            sequence_data = SequenceData(
+                beats=[start_beat], start_position=position_key
+            )
+
+            # Store sequence data for preparation
+            if (
+                hasattr(self.option_picker, "option_picker_widget")
+                and self.option_picker.option_picker_widget
+            ):
+                if hasattr(
+                    self.option_picker.option_picker_widget, "option_picker_scroll"
+                ):
+                    scroll = (
+                        self.option_picker.option_picker_widget.option_picker_scroll
+                    )
+                    # Set the pending sequence data
+                    scroll._pending_sequence_data = sequence_data
+                    # Prepare content without animations
+                    scroll.prepare_for_transition()
+
+        except Exception as e:
+            print(
+                f"❌ [OPTION_PICKER_MANAGER] Error preparing from start position: {e}"
+            )
+            import traceback
+
+            traceback.print_exc()
+
+            # Fallback to regular populate
+            self.populate_from_start_position(position_key, start_position_beat_data)
+
     def refresh_from_sequence(self, sequence: SequenceData):
         """Refresh option picker based on current sequence state - PURE Modern IMPLEMENTATION"""
         if not self.option_picker or not sequence or sequence.length == 0:

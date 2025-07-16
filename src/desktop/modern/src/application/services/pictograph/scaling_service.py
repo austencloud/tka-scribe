@@ -10,31 +10,14 @@ from enum import Enum
 from PyQt6.QtCore import QSize
 from PyQt6.QtWidgets import QWidget
 
-
-class ScalingContext(Enum):
-    """Different contexts where pictographs are displayed, each with specific scaling needs."""
-
-    OPTION_VIEW = "option_view"
-    START_POS_PICKER = "start_pos_picker"
-    ADVANCED_START_POS = "advanced_start_pos"
-    CODEX_VIEW = "codex_view"
-    BEAT_VIEW = "beat_view"
-    GRAPH_EDITOR_VIEW = "graph_editor_view"
-    DEFAULT = "default"
+from core.interfaces.scaling_services import (
+    IPictographScaler,
+    ScalingContext,
+    RenderingContext,
+)
 
 
-class RenderingContext(Enum):
-    """Different contexts where pictographs are rendered, affecting arrow behavior."""
-
-    GRAPH_EDITOR = "graph_editor"
-    BEAT_FRAME = "beat_frame"
-    OPTION_PICKER = "option_picker"
-    PREVIEW = "preview"
-    SEQUENCE_VIEWER = "sequence_viewer"
-    UNKNOWN = "unknown"
-
-
-class PictographScaler:
+class PictographScaler(IPictographScaler):
     """
     Service that provides context-aware scaling calculations matching proven behavior.
 

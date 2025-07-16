@@ -58,6 +58,7 @@ class DataServiceRegistrar(BaseServiceRegistrar):
     def _register_core_data_services(self, container: "DIContainer") -> None:
         """Register core data management services."""
         try:
+            from application.services.data.cache_manager import DataCacheManager
             from application.services.data.csv_reader import CSVReader, ICSVReader
             from application.services.data.data_service import DataManager, IDataManager
             from application.services.data.dataset_query import (
@@ -72,6 +73,13 @@ class DataServiceRegistrar(BaseServiceRegistrar):
                 IJSONConfigurator,
                 JSONConfigurator,
             )
+            from core.interfaces.data_services import IDataCacheManager
+
+            # Register cache manager
+            container.register_singleton(DataCacheManager, DataCacheManager)
+            container.register_singleton(IDataCacheManager, DataCacheManager)
+            self._mark_service_available("DataCacheManager")
+            self._mark_service_available("IDataCacheManager")
 
             # Register core data services
             container.register_singleton(ICSVReader, CSVReader)
@@ -106,17 +114,29 @@ class DataServiceRegistrar(BaseServiceRegistrar):
             from application.services.data.modern_to_legacy_converter import (
                 ModernToLegacyConverter,
             )
+            from core.interfaces.data_services import (
+                ILegacyToModernConverter,
+                IModernToLegacyConverter,
+            )
 
             # Register microservices directly instead of facades
             container.register_singleton(
                 LegacyToModernConverter, LegacyToModernConverter
             )
+            container.register_singleton(
+                ILegacyToModernConverter, LegacyToModernConverter
+            )
             self._mark_service_available("LegacyToModernConverter")
+            self._mark_service_available("ILegacyToModernConverter")
 
             container.register_singleton(
                 ModernToLegacyConverter, ModernToLegacyConverter
             )
+            container.register_singleton(
+                IModernToLegacyConverter, ModernToLegacyConverter
+            )
             self._mark_service_available("ModernToLegacyConverter")
+            self._mark_service_available("IModernToLegacyConverter")
 
         except ImportError as e:
             error_msg = f"Failed to register conversion services: {e}"

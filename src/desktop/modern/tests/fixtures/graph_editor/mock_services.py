@@ -147,11 +147,15 @@ class MockDataFlowService:
     ) -> BeatData:
         """Process turn change and return updated beat."""
         # Create updated beat data
-        if arrow_color == "blue" and beat_data.blue_motion:
-            updated_motion = beat_data.blue_motion.update(turns=new_turns)
+        if arrow_color == "blue" and beat_data.pictograph_data.motions["blue"]:
+            updated_motion = beat_data.pictograph_data.motions["blue"].update(
+                turns=new_turns
+            )
             updated_beat = beat_data.update(blue_motion=updated_motion)
-        elif arrow_color == "red" and beat_data.red_motion:
-            updated_motion = beat_data.red_motion.update(turns=new_turns)
+        elif arrow_color == "red" and beat_data.pictograph_data.motions["red"]:
+            updated_motion = beat_data.pictograph_data.motions["red"].update(
+                turns=new_turns
+            )
             updated_beat = beat_data.update(red_motion=updated_motion)
         else:
             updated_beat = beat_data

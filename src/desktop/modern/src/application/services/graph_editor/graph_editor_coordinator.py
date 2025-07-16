@@ -224,3 +224,68 @@ class GraphEditorCoordinator(IGraphEditorService):
         self._selected_beat_index = None
         self._selected_arrow_id = None
         self._is_visible = False
+
+    # IGraphEditorService interface implementation
+    def create_graph(self, sequence_data: any) -> any:
+        """Create a graph from sequence data."""
+        # For now, just store the sequence and return a simple graph representation
+        self._current_sequence = sequence_data
+        return {
+            "id": f"graph_{sequence_data.id if sequence_data else 'unknown'}",
+            "sequence": sequence_data,
+            "created": True,
+        }
+
+    def update_graph(self, graph_id: str, updates: any) -> bool:
+        """Update an existing graph."""
+        # For now, just update the current sequence if it matches
+        try:
+            if updates and hasattr(updates, "id") and self._current_sequence:
+                if self._current_sequence.id == updates.id:
+                    self._current_sequence = updates
+                    return True
+            return False
+        except Exception:
+            return False
+
+    def delete_graph(self, graph_id: str) -> bool:
+        """Delete a graph."""
+        # For now, just clear the current sequence if it matches
+        try:
+            if (
+                self._current_sequence
+                and f"graph_{self._current_sequence.id}" == graph_id
+            ):
+                self._current_sequence = None
+                return True
+            return False
+        except Exception:
+            return False
+
+    def get_graph(self, graph_id: str) -> Optional[any]:
+        """Get graph by ID."""
+        # For now, return the current sequence if it matches
+        try:
+            if (
+                self._current_sequence
+                and f"graph_{self._current_sequence.id}" == graph_id
+            ):
+                return {"id": graph_id, "sequence": self._current_sequence}
+            return None
+        except Exception:
+            return None
+
+    def list_graphs(self) -> List[any]:
+        """List all available graphs."""
+        # For now, return the current sequence if available
+        try:
+            if self._current_sequence:
+                return [
+                    {
+                        "id": f"graph_{self._current_sequence.id}",
+                        "sequence": self._current_sequence,
+                    }
+                ]
+            return []
+        except Exception:
+            return []

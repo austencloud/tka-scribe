@@ -146,7 +146,7 @@ class OptionPickerWidget(QWidget):
 
     def get_widget(self) -> QWidget:
         """Get the main widget for integration."""
-        return self.option_picker_scroll
+        return self
 
     def load_motion_combinations(self, sequence_data) -> None:
         """Load motion combinations based on sequence data."""

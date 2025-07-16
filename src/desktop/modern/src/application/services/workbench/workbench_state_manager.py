@@ -17,55 +17,15 @@ from typing import NamedTuple, Optional
 
 from domain.models.beat_data import BeatData
 from domain.models.sequence_data import SequenceData
+from core.interfaces.workbench_services import IWorkbenchStateManager, WorkbenchState, StateChangeResult
 
 logger = logging.getLogger(__name__)
 
 
-class WorkbenchState(Enum):
-    """Workbench operational states."""
-
-    EMPTY = "empty"
-    SEQUENCE_LOADED = "sequence_loaded"
-    START_POSITION_SET = "start_position_set"
-    BOTH_SET = "both_set"
-    RESTORING = "restoring"
+# Note: WorkbenchState and StateChangeResult are now imported from the interface
 
 
-class StateChangeResult(NamedTuple):
-    """Result of a state change operation."""
-
-    changed: bool
-    previous_state: WorkbenchState
-    new_state: WorkbenchState
-    sequence_changed: bool
-    start_position_changed: bool
-
-    @classmethod
-    def create_no_change(cls, current_state: WorkbenchState):
-        """Create a no-change result."""
-        return cls(False, current_state, current_state, False, False)
-
-    @classmethod
-    def create_sequence_changed(
-        cls, prev_state: WorkbenchState, new_state: WorkbenchState
-    ):
-        """Create a sequence change result."""
-        return cls(True, prev_state, new_state, True, False)
-
-    @classmethod
-    def create_start_position_changed(
-        cls, prev_state: WorkbenchState, new_state: WorkbenchState
-    ):
-        """Create a start position change result."""
-        return cls(True, prev_state, new_state, False, True)
-
-    @classmethod
-    def create_both_changed(cls, prev_state: WorkbenchState, new_state: WorkbenchState):
-        """Create a both changed result."""
-        return cls(True, prev_state, new_state, True, True)
-
-
-class WorkbenchStateManager:
+class WorkbenchStateManager(IWorkbenchStateManager):
     """
     Framework-agnostic workbench state management.
 

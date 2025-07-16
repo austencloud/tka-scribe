@@ -57,11 +57,22 @@ class CoreServiceRegistrar(BaseServiceRegistrar):
     def _register_basic_core_services(self, container: "DIContainer") -> None:
         """Register basic core services (layout, UI coordination)."""
         try:
+            from application.services.layout.beat_layout_calculator import (
+                BeatLayoutCalculator,
+            )
             from application.services.layout.layout_manager import LayoutManager
             from application.services.ui.coordination.ui_coordinator import (
                 UICoordinator,
             )
+            from application.services.ui.thumbnail_generation_service import (
+                ThumbnailGenerationService,
+            )
+            from application.services.ui.ui_state_manager import UIStateManager
             from core.interfaces.core_services import ILayoutService, IUIStateManager
+            from core.interfaces.layout_calculation_services import (
+                IBeatLayoutCalculator,
+            )
+            from core.interfaces.ui_services import IThumbnailGenerationService
 
             # Register service types with factory functions for proper DI
             def create_layout_service():
@@ -82,6 +93,24 @@ class CoreServiceRegistrar(BaseServiceRegistrar):
             # Register UI state service as singleton since it has no dependencies
             container.register_singleton(IUIStateManager, UICoordinator)
             self._mark_service_available("UICoordinator")
+
+            # Register modern UI state manager
+            container.register_singleton(UIStateManager, UIStateManager)
+            self._mark_service_available("UIStateManager")
+
+            # Register thumbnail generation service
+            container.register_singleton(
+                ThumbnailGenerationService, ThumbnailGenerationService
+            )
+            container.register_singleton(
+                IThumbnailGenerationService, ThumbnailGenerationService
+            )
+            self._mark_service_available("ThumbnailGenerationService")
+            self._mark_service_available("IThumbnailGenerationService")
+
+            # Register beat layout calculator
+            container.register_singleton(IBeatLayoutCalculator, BeatLayoutCalculator)
+            self._mark_service_available("BeatLayoutCalculator")
 
         except ImportError as e:
             error_msg = f"Failed to register basic core services: {e}"
