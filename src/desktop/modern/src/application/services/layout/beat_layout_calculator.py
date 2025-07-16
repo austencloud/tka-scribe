@@ -2,7 +2,7 @@ import math
 from typing import Any, Dict, Tuple
 
 from core.decorators import handle_service_errors
-from core.interfaces.layout_calculation_services import IBeatLayoutCalculator
+from core.interfaces.layout_services import IBeatLayoutCalculator
 from core.monitoring import monitor_performance
 from domain.models import SequenceData
 
@@ -138,7 +138,7 @@ class BeatLayoutCalculator(IBeatLayoutCalculator):
 
         return (rows, cols)
 
-    def _calculate_horizontal_beat_layout(
+    def calculate_horizontal_beat_layout(
         self,
         beat_count: int,
         container_size: Tuple[int, int],
@@ -168,7 +168,7 @@ class BeatLayoutCalculator(IBeatLayoutCalculator):
             "total_size": (total_width, beat_height + 2 * padding),
         }
 
-    def _calculate_grid_beat_layout(
+    def calculate_grid_beat_layout(
         self,
         beat_count: int,
         container_size: Tuple[int, int],
@@ -206,10 +206,10 @@ class BeatLayoutCalculator(IBeatLayoutCalculator):
         spacing = 5
 
         if beat_count <= 8:  # Use horizontal layout
-            return self._calculate_horizontal_beat_layout(
+            return self.calculate_horizontal_beat_layout(
                 beat_count, container_size, base_size, padding, spacing
             )
         else:  # Use grid layout
-            return self._calculate_grid_beat_layout(
+            return self.calculate_grid_beat_layout(
                 beat_count, container_size, base_size, padding, spacing
             )

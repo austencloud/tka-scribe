@@ -139,17 +139,12 @@ class OptionPickerSection(QGroupBox):
             return
 
         scroll_area_width = self.scroll_area.width()
-        print(
-            f"🔍 [RESIZE] {self.letter_type} performing delayed resize with width: {scroll_area_width}px"
-        )
 
         # Calculate dimensions using only scroll area width
         dimensions = self._option_sizing_service.calculate_section_dimensions(
             letter_type=self.letter_type,
             main_window_width=scroll_area_width,  # Use scroll area width directly
         )
-
-        print(f"📊 [CALC] {self.letter_type} calculated width: {dimensions['width']}px")
 
         # Apply the calculated width
         self.setFixedWidth(dimensions["width"])
@@ -568,24 +563,17 @@ class OptionPickerSection(QGroupBox):
         """Show actual widget dimensions after Qt applies them."""
         actual_width = self.width()
         actual_height = self.height()
-        print(
-            f"✅ [ACTUAL] {self.letter_type} final size: {actual_width}x{actual_height}px"
-        )
 
         # Also show pictograph frame dimensions if available
         if hasattr(self, "pictographs") and self.pictographs:
             first_frame = next(iter(self.pictographs.values()))
             frame_width = first_frame.width()
             frame_height = first_frame.height()
-            print(f"✅ [ACTUAL] First pictograph frame: {frame_width}x{frame_height}px")
 
             # Calculate if 8 frames + spacing fit within section width
             spacing = 3  # From config
             total_frames_width = 8 * frame_width + 7 * spacing
             fits = total_frames_width <= actual_width
-            print(
-                f"✅ [ACTUAL] 8 frames fit? {fits} (need {total_frames_width}px, have {actual_width}px)"
-            )
 
     @property
     def pictograph_frames(self) -> List[OptionPictograph]:

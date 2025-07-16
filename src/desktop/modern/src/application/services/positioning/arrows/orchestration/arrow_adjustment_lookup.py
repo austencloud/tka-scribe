@@ -48,15 +48,16 @@ except ImportError:
 
     QT_AVAILABLE = False
 
-# Import required services
-from ..placement.default_placement_service import DefaultPlacementService
-from ..placement.special_placement_service import SpecialPlacementService
 from ..key_generators.attribute_key_generator import AttributeKeyGenerator
 from ..key_generators.placement_key_generator import PlacementKeyGenerator
 from ..key_generators.turns_tuple_key_generator import TurnsTupleKeyGenerator
+
+# Import required services
+from ..placement.default_placement_service import DefaultPlacementService
 from ..placement.special_placement_ori_key_generator import (
     SpecialPlacementOriKeyGenerator,
 )
+from ..placement.special_placement_service import SpecialPlacementService
 
 logger = logging.getLogger(__name__)
 
@@ -89,7 +90,11 @@ class ArrowAdjustmentLookup:
         self.attribute_key_service = attribute_key_service
 
     def get_base_adjustment(
-        self, pictograph_data: PictographData, motion_data: MotionData, letter: str
+        self,
+        pictograph_data: PictographData,
+        motion_data: MotionData,
+        letter: str,
+        arrow_color: str = None,
     ) -> Point:
         """
         Get base adjustment using streamlined lookup logic.
@@ -98,6 +103,7 @@ class ArrowAdjustmentLookup:
             pictograph_data: Pictograph data for context
             motion_data: Motion data containing type, rotation, and location info
             letter: Letter for special placement lookup
+            arrow_color: Color of the arrow ('red' or 'blue')
 
         Returns:
             Point adjustment
@@ -121,7 +127,7 @@ class ArrowAdjustmentLookup:
 
             try:
                 special_adjustment = self._lookup_special_placement(
-                    motion_data, pictograph_data
+                    motion_data, pictograph_data, arrow_color
                 )
                 return special_adjustment
             except ValueError:
@@ -172,6 +178,7 @@ class ArrowAdjustmentLookup:
         self,
         motion_data: MotionData,
         pictograph_data: PictographData,
+        arrow_color: str = None,
     ) -> Point:
         """
         Look up special placement using exact legacy logic.
@@ -183,7 +190,7 @@ class ArrowAdjustmentLookup:
 
             # This should return stored adjustment values if they exist
             adjustment = self.special_placement_service.get_special_adjustment(
-                motion_data, pictograph_data
+                motion_data, pictograph_data, arrow_color
             )
 
             if adjustment:

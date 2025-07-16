@@ -10,14 +10,14 @@ from enum import Enum
 from PyQt6.QtCore import QSize
 from PyQt6.QtWidgets import QWidget
 
-from core.interfaces.scaling_services import (
-    IPictographScaler,
+from core.interfaces.pictograph_services import (
+    IScalingService,
     ScalingContext,
     RenderingContext,
 )
 
 
-class PictographScaler(IPictographScaler):
+class PictographScaler(IScalingService):
     """
     Service that provides context-aware scaling calculations matching proven behavior.
 

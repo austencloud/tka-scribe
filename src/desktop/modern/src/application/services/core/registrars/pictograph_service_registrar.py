@@ -86,8 +86,10 @@ class PictographServiceRegistrar(BaseServiceRegistrar):
                 IPictographBorderManager,
                 IPictographContextDetector,
             )
-            from core.interfaces.scaling_services import IPictographScaler
-            from core.interfaces.validation_services import IPictographValidator
+            from core.interfaces.pictograph_services import (
+                IPictographValidator,
+                IScalingService,
+            )
 
             # Register pictograph data manager
             container.register_singleton(IPictographDataManager, PictographDataManager)
@@ -120,7 +122,7 @@ class PictographServiceRegistrar(BaseServiceRegistrar):
             self._mark_service_available("PictographValidator")
 
             # Register pictograph scaler
-            container.register_singleton(IPictographScaler, PictographScaler)
+            container.register_singleton(IScalingService, PictographScaler)
             self._mark_service_available("PictographScaler")
 
         except ImportError as e:

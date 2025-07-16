@@ -21,89 +21,13 @@
       "subProcess": true
     },
     {
-      "name": "🚀 TKA Launcher (Just My Code)",
-      "type": "debugpy",
-      "request": "launch",
-      "program": "${workspaceFolder}/launcher/main.py",
-      "console": "integratedTerminal",
-      "justMyCode": true,
-      "cwd": "${workspaceFolder}",
-      "python": "${workspaceFolder}/.venv/Scripts/python.exe",
-      "env": {
-        "PYTHONUNBUFFERED": "1",
-        "PYTHONPATH": "${workspaceFolder};${workspaceFolder}/src;${workspaceFolder}/launcher;${workspaceFolder}/packages;${workspaceFolder}/.venv/Lib/site-packages",
-        "VIRTUAL_ENV": "${workspaceFolder}/.venv",
-        "PYTHONNOUSERSITE": "1"
-      },
-      "stopOnEntry": false,
-      "showReturnValue": true,
-      "subProcess": true
-    },
-    {
-      "name": "🖥️ TKA Modern Desktop App",
-      "type": "debugpy",
-      "request": "launch",
-      "program": "${workspaceFolder}/main.py",
-      "console": "integratedTerminal",
-      "justMyCode": false,
-      "cwd": "${workspaceFolder}",
-      "python": "${workspaceFolder}/.venv/Scripts/python.exe",
-      "env": {
-        "PYTHONUNBUFFERED": "1",
-        "PYTHONPATH": "${workspaceFolder};${workspaceFolder}/src;${workspaceFolder}/launcher;${workspaceFolder}/packages;${workspaceFolder}/.venv/Lib/site-packages",
-        "VIRTUAL_ENV": "${workspaceFolder}/.venv",
-        "PYTHONNOUSERSITE": "1"
-      },
-      "stopOnEntry": false,
-      "showReturnValue": true,
-      "subProcess": true
-    },
-    {
-      "name": "🖥️ TKA Modern Desktop App (Just My Code)",
-      "type": "debugpy",
-      "request": "launch",
-      "program": "${workspaceFolder}/main.py",
-      "console": "integratedTerminal",
-      "justMyCode": true,
-      "cwd": "${workspaceFolder}",
-      "python": "${workspaceFolder}/.venv/Scripts/python.exe",
-      "env": {
-        "PYTHONUNBUFFERED": "1",
-        "PYTHONPATH": "${workspaceFolder};${workspaceFolder}/src;${workspaceFolder}/launcher;${workspaceFolder}/packages;${workspaceFolder}/.venv/Lib/site-packages",
-        "VIRTUAL_ENV": "${workspaceFolder}/.venv",
-        "PYTHONNOUSERSITE": "1"
-      },
-      "stopOnEntry": false,
-      "showReturnValue": true,
-      "subProcess": true
-    },
-    {
-      "name": "🖥️ TKA Modern Desktop App (Direct)",
+      "name": "🖥️ TKA Desktop App",
       "type": "debugpy",
       "request": "launch",
       "program": "${workspaceFolder}/src/desktop/modern/main.py",
       "console": "integratedTerminal",
       "justMyCode": false,
-      "cwd": "${workspaceFolder}/src/desktop/modern",
-      "python": "${workspaceFolder}/.venv/Scripts/python.exe",
-      "env": {
-        "PYTHONUNBUFFERED": "1",
-        "PYTHONPATH": "${workspaceFolder};${workspaceFolder}/src;${workspaceFolder}/launcher;${workspaceFolder}/packages;${workspaceFolder}/.venv/Lib/site-packages",
-        "VIRTUAL_ENV": "${workspaceFolder}/.venv",
-        "PYTHONNOUSERSITE": "1"
-      },
-      "stopOnEntry": false,
-      "showReturnValue": true,
-      "subProcess": true
-    },
-    {
-      "name": "🖥️ TKA Modern Desktop App (Direct - Just My Code)",
-      "type": "debugpy",
-      "request": "launch",
-      "program": "${workspaceFolder}/src/desktop/modern/main.py",
-      "console": "integratedTerminal",
-      "justMyCode": true,
-      "cwd": "${workspaceFolder}/src/desktop/modern",
+      "cwd": "${workspaceFolder}",
       "python": "${workspaceFolder}/.venv/Scripts/python.exe",
       "env": {
         "PYTHONUNBUFFERED": "1",
@@ -176,6 +100,104 @@
       "console": "integratedTerminal",
       "internalConsoleOptions": "openOnSessionStart",
       "skipFiles": ["<node_internals>/**"]
+    },
+    {
+      "name": "🧪 TKA Test Runner - All Tests",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/scripts/tka_test_runner.py",
+      "console": "integratedTerminal",
+      "justMyCode": false,
+      "cwd": "${workspaceFolder}",
+      "python": "${workspaceFolder}/.venv/Scripts/python.exe",
+      "env": {
+        "PYTHONUNBUFFERED": "1",
+        "PYTHONPATH": "${workspaceFolder};${workspaceFolder}/src;${workspaceFolder}/launcher;${workspaceFolder}/packages;${workspaceFolder}/.venv/Lib/site-packages",
+        "VIRTUAL_ENV": "${workspaceFolder}/.venv",
+        "PYTHONNOUSERSITE": "1"
+      },
+      "stopOnEntry": false,
+      "showReturnValue": true,
+      "subProcess": true
+    },
+    {
+      "name": "🧪 TKA Test Runner - Discover Only",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/scripts/tka_test_runner.py",
+      "args": ["--discover"],
+      "console": "integratedTerminal",
+      "justMyCode": false,
+      "cwd": "${workspaceFolder}",
+      "python": "${workspaceFolder}/.venv/Scripts/python.exe",
+      "env": {
+        "PYTHONUNBUFFERED": "1",
+        "PYTHONPATH": "${workspaceFolder};${workspaceFolder}/src;${workspaceFolder}/launcher;${workspaceFolder}/packages;${workspaceFolder}/.venv/Lib/site-packages",
+        "VIRTUAL_ENV": "${workspaceFolder}/.venv",
+        "PYTHONNOUSERSITE": "1"
+      },
+      "stopOnEntry": false,
+      "showReturnValue": true,
+      "subProcess": true
+    },
+    {
+      "name": "🧪 TKA Test Runner - Unit Tests Only",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/scripts/tka_test_runner.py",
+      "args": ["--unit", "--fast"],
+      "console": "integratedTerminal",
+      "justMyCode": false,
+      "cwd": "${workspaceFolder}",
+      "python": "${workspaceFolder}/.venv/Scripts/python.exe",
+      "env": {
+        "PYTHONUNBUFFERED": "1",
+        "PYTHONPATH": "${workspaceFolder};${workspaceFolder}/src;${workspaceFolder}/launcher;${workspaceFolder}/packages;${workspaceFolder}/.venv/Lib/site-packages",
+        "VIRTUAL_ENV": "${workspaceFolder}/.venv",
+        "PYTHONNOUSERSITE": "1"
+      },
+      "stopOnEntry": false,
+      "showReturnValue": true,
+      "subProcess": true
+    },
+    {
+      "name": "🧪 TKA Test Runner - Integration Tests",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/scripts/tka_test_runner.py",
+      "args": ["--integration", "--continue-on-error"],
+      "console": "integratedTerminal",
+      "justMyCode": false,
+      "cwd": "${workspaceFolder}",
+      "python": "${workspaceFolder}/.venv/Scripts/python.exe",
+      "env": {
+        "PYTHONUNBUFFERED": "1",
+        "PYTHONPATH": "${workspaceFolder};${workspaceFolder}/src;${workspaceFolder}/launcher;${workspaceFolder}/packages;${workspaceFolder}/.venv/Lib/site-packages",
+        "VIRTUAL_ENV": "${workspaceFolder}/.venv",
+        "PYTHONNOUSERSITE": "1"
+      },
+      "stopOnEntry": false,
+      "showReturnValue": true,
+      "subProcess": true
+    },
+    {
+      "name": "🧪 TKA Test Validation Suite",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/validate_test_runner.py",
+      "console": "integratedTerminal",
+      "justMyCode": false,
+      "cwd": "${workspaceFolder}",
+      "python": "${workspaceFolder}/.venv/Scripts/python.exe",
+      "env": {
+        "PYTHONUNBUFFERED": "1",
+        "PYTHONPATH": "${workspaceFolder};${workspaceFolder}/src;${workspaceFolder}/launcher;${workspaceFolder}/packages;${workspaceFolder}/.venv/Lib/site-packages",
+        "VIRTUAL_ENV": "${workspaceFolder}/.venv",
+        "PYTHONNOUSERSITE": "1"
+      },
+      "stopOnEntry": false,
+      "showReturnValue": true,
+      "subProcess": true
     }
   ]
 }

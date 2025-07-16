@@ -117,6 +117,13 @@ class SequenceWorkbench(ViewableComponentBase):
             self._connect_signals()
             self._setup_button_interface()
 
+            # CRITICAL FIX: Ensure workbench widget is visible
+            self._widget.show()
+            self._widget.setVisible(True)
+            print(
+                f"🔧 [WORKBENCH] Workbench widget made visible: {self._widget.isVisible()}"
+            )
+
             # Mark as initialized
             self._initialized = True
             self.component_ready.emit()
@@ -211,6 +218,10 @@ class SequenceWorkbench(ViewableComponentBase):
         """Setup session restoration event subscriptions."""
         try:
             self._subscription_ids = self._session_manager.setup_event_subscriptions()
+
+            # CRITICAL FIX: Set workbench callback for restoration UI updates
+            self._session_manager.set_workbench_callback(self.set_start_position)
+
         except Exception as e:
             # Don't fail initialization due to session subscription errors
             self.emit_error(f"Failed to setup session subscriptions: {e}", e)
@@ -262,18 +273,24 @@ class SequenceWorkbench(ViewableComponentBase):
         self,
         start_position_data: BeatData,
         pictograph_data: Optional["PictographData"] = None,
+        from_restoration: bool = False,
     ):
         """Set the start position via state manager."""
         print(
             f"🎯 [WORKBENCH] set_start_position called with: {start_position_data.letter if hasattr(start_position_data, 'letter') else 'BeatData'}"
         )
         print(f"🎯 [WORKBENCH] pictograph_data provided: {pictograph_data is not None}")
+        print(f"🎯 [WORKBENCH] from_restoration: {from_restoration}")
 
-        result = self._state_manager.set_start_position(start_position_data)
+        result = self._state_manager.set_start_position(
+            start_position_data, from_restoration
+        )
 
         print(f"🎯 [WORKBENCH] Start position state result: changed={result.changed}")
 
-        if result.changed:
+        # CRITICAL FIX: Always update UI during restoration, even if state didn't change
+        # This ensures visibility is properly set after restoration
+        if result.changed or from_restoration:
             print(f"🎯 [WORKBENCH] Updating beat frame with start position...")
             # Update beat frame section
             if self._beat_frame_section:

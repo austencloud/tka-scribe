@@ -82,7 +82,7 @@ class WorkbenchServiceRegistrar(BaseServiceRegistrar):
             from application.services.workbench.workbench_state_manager import (
                 WorkbenchStateManager,
             )
-            from core.interfaces.workbench_session_services import (
+            from core.interfaces.workbench_services import (
                 IWorkbenchSessionManager,
             )
 

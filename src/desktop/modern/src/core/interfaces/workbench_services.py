@@ -264,33 +264,180 @@ class IWorkbenchExportService(ABC):
         pass
 
 
+class SessionRestorationPhase(Enum):
+    """Phases of session restoration."""
+    NOT_STARTED = "not_started"
+    PREPARING = "preparing"
+    RESTORING_SEQUENCE = "restoring_sequence"
+    RESTORING_START_POSITION = "restoring_start_position"
+    FINALIZING = "finalizing"
+    COMPLETED = "completed"
+    FAILED = "failed"
+
+
+class SessionRestorationResult(NamedTuple):
+    """Result of a session restoration operation."""
+    success: bool
+    phase: SessionRestorationPhase
+    sequence_restored: bool
+    start_position_restored: bool
+    errors: List[str]
+
+    @classmethod
+    def success_result(
+        cls, 
+        phase: SessionRestorationPhase, 
+        sequence_restored: bool = False, 
+        start_position_restored: bool = False
+    ):
+        """Create a successful restoration result."""
+        return cls(True, phase, sequence_restored, start_position_restored, [])
+
+    @classmethod
+    def failure_result(cls, phase: SessionRestorationPhase, errors: List[str]):
+        """Create a failed restoration result."""
+        return cls(False, phase, False, False, errors)
+
+
 class IWorkbenchSessionManager(ABC):
-    """Interface for workbench session management."""
+    """Interface for workbench session management and restoration."""
+
+    @abstractmethod
+    def begin_restoration_from_event(self, event_data: dict) -> SessionRestorationResult:
+        """
+        Begin restoration from session restoration event.
+
+        Args:
+            event_data: Event data from session restoration event
+
+        Returns:
+            SessionRestorationResult with restoration details
+        """
+
+    @abstractmethod
+    def execute_restoration(self) -> SessionRestorationResult:
+        """
+        Execute the restoration with pending session data.
+
+        Returns:
+            SessionRestorationResult with restoration details
+        """
+
+    @abstractmethod
+    def handle_restoration_event(self, event_data: dict) -> SessionRestorationResult:
+        """
+        Handle complete restoration from event (convenience method).
+
+        Args:
+            event_data: Event data from session restoration event
+
+        Returns:
+            SessionRestorationResult with restoration details
+        """
+
+    @abstractmethod
+    def handle_missing_start_position_restoration(self) -> None:
+        """
+        Handle restoration when no start position data is available.
+
+        This ensures the start position view is properly initialized even when cleared.
+        """
+
+    @abstractmethod
+    def get_current_phase(self) -> SessionRestorationPhase:
+        """
+        Get current restoration phase.
+
+        Returns:
+            SessionRestorationPhase: Current phase of restoration
+        """
+
+    @abstractmethod
+    def is_restoration_completed(self) -> bool:
+        """
+        Check if restoration has completed.
+
+        Returns:
+            bool: True if restoration completed, False otherwise
+        """
+
+    @abstractmethod
+    def is_restoration_in_progress(self) -> bool:
+        """
+        Check if restoration is currently in progress.
+
+        Returns:
+            bool: True if restoration in progress, False otherwise
+        """
+
+    @abstractmethod
+    def has_pending_restoration_data(self) -> bool:
+        """
+        Check if there's pending restoration data.
+
+        Returns:
+            bool: True if pending data exists, False otherwise
+        """
+
+    @abstractmethod
+    def get_restoration_errors(self) -> List[str]:
+        """
+        Get list of restoration errors.
+
+        Returns:
+            List[str]: List of error messages from restoration attempts
+        """
+
+    @abstractmethod
+    def setup_event_subscriptions(self) -> List[str]:
+        """
+        Setup event subscriptions for session restoration.
+
+        Returns:
+            List[str]: List of subscription IDs for cleanup
+        """
+
+    @abstractmethod
+    def cleanup_event_subscriptions(self, subscription_ids: List[str]) -> None:
+        """
+        Clean up event subscriptions.
+
+        Args:
+            subscription_ids: List of subscription IDs to clean up
+        """
+
+    @abstractmethod
+    def reset_restoration_state(self) -> None:
+        """Reset all restoration state."""
+
+    @abstractmethod
+    def get_restoration_status_summary(self) -> dict:
+        """
+        Get comprehensive restoration status for debugging.
+
+        Returns:
+            dict: Status summary with restoration details
+        """
 
     @abstractmethod
     def save_session(self, session_name: str) -> bool:
         """Save current workbench session."""
-        pass
 
     @abstractmethod
     def load_session(self, session_name: str) -> bool:
         """Load workbench session."""
-        pass
 
     @abstractmethod
     def get_available_sessions(self) -> List[str]:
         """Get list of available sessions."""
-        pass
 
     @abstractmethod
     def delete_session(self, session_name: str) -> bool:
         """Delete a session."""
-        pass
 
     @abstractmethod
     def get_session_info(self, session_name: str) -> Optional[Dict[str, Any]]:
         """Get session information."""
-        pass
 
 
 class IBeatSelectionService(ABC):

@@ -28,6 +28,8 @@ from domain.models.arrow_data import ArrowData
 from domain.models.pictograph_data import PictographData
 from PyQt6.QtCore import QPointF
 
+logger = logging.getLogger(__name__)
+
 
 class SpecialPlacementService:
     """
@@ -41,18 +43,31 @@ class SpecialPlacementService:
     """
 
     def __init__(self):
+        self.root_path = self._find_project_root()
         self.special_placements: Dict[str, Dict[str, Dict[str, Any]]] = {}
         self._load_special_placements()
 
+    def _find_project_root(self) -> Path:
+        """Automatically find the project root by looking for pyproject.toml or .git."""
+        current = Path(__file__).resolve()
+        for parent in [current] + list(current.parents):
+            if (parent / "pyproject.toml").exists() or (parent / ".git").exists():
+                return parent
+        return current.parent  # fallback
+
     def get_special_adjustment(
-        self, motion_data: MotionData, pictograph_data: PictographData
+        self,
+        motion_data: MotionData,
+        pictograph_data: PictographData,
+        arrow_color: str = None,
     ) -> Optional[QPointF]:
         """
         Get special adjustment for arrow based on special placement logic.
 
         Args:
-            arrow_data: Arrow data containing motion information
+            motion_data: Motion data containing motion information
             pictograph_data: Pictograph data containing letter and context
+            arrow_color: Color of the arrow ('red' or 'blue') - if not provided, will try to determine from motion
 
         Returns:
             QPointF with special adjustment or None if no special placement found
@@ -63,6 +78,12 @@ class SpecialPlacementService:
         motion = motion_data
         letter = pictograph_data.letter
 
+        # DEBUG: Track special placement calls for G pictographs
+        if letter == "G":
+            logger.info(
+                f"🔍 SPECIAL_PLACEMENT - G pictograph: motion={motion.motion_type.value if motion else 'None'}"
+            )
+
         # Generate orientation key using validated logic
         ori_key = self._generate_orientation_key(motion, pictograph_data)
 
@@ -72,31 +93,70 @@ class SpecialPlacementService:
         # Generate turns tuple for lookup
         turns_tuple = self._generate_turns_tuple(pictograph_data)
 
+        if letter == "G":
+            logger.info(
+                f"🔍 SPECIAL_PLACEMENT - G lookup: grid={grid_mode}, ori_key={ori_key}, turns={turns_tuple}"
+            )
+
         # Look up special placement data
         letter_data: Dict[str, Dict[Tuple[int], Dict[str, float]]] = (
             self.special_placements.get(grid_mode, {}).get(ori_key, {}).get(letter, {})
         )
 
         if not letter_data:
+            if letter == "G":
+                logger.warning(
+                    f"🚨 SPECIAL_PLACEMENT - G: No letter data found for {grid_mode}/{ori_key}"
+                )
             return None
 
         # Get turn-specific data
         turn_data = letter_data.get(turns_tuple, {})
 
         if not turn_data:
+            if letter == "G":
+                logger.warning(
+                    f"🚨 SPECIAL_PLACEMENT - G: No turn data found for {turns_tuple}"
+                )
+                logger.info(
+                    f"🔍 SPECIAL_PLACEMENT - G: Available turns: {list(letter_data.keys())}"
+                )
             return None
 
         # First, try direct color-based coordinate lookup (most common case)
         color_key = ""
-        if pictograph_data.motions["blue"] == motion:
+        if arrow_color:
+            # Use provided arrow color directly
+            color_key = arrow_color
+        elif (
+            pictograph_data.motions
+            and "blue" in pictograph_data.motions
+            and pictograph_data.motions["blue"] == motion
+        ):
             color_key = "blue"
-        else:
+        elif (
+            pictograph_data.motions
+            and "red" in pictograph_data.motions
+            and pictograph_data.motions["red"] == motion
+        ):
             color_key = "red"
+        else:
+            # Fallback: try to determine from motion data
+            color_key = "blue"  # Default fallback
+
+        if letter == "G":
+            logger.info(
+                f"🔍 SPECIAL_PLACEMENT - G: color_key={color_key}, available_keys={list(turn_data.keys())}"
+            )
 
         if color_key in turn_data:
             adjustment_values = turn_data[color_key]
             if isinstance(adjustment_values, list) and len(adjustment_values) == 2:
                 result = QPointF(adjustment_values[0], adjustment_values[1])
+                if letter == "G":
+                    logger.info(
+                        f"✅ SPECIAL_PLACEMENT - G: Found {color_key} adjustment: {adjustment_values}"
+                    )
                 return result
 
         # Second, try motion-type-specific adjustment (for letters like I)
@@ -130,9 +190,14 @@ class SpecialPlacementService:
                 for subfolder in subfolders:
                     self.special_placements[mode][subfolder] = {}
 
-                    # Build path to special placement directory
+                    # Build path to special placement directory using project root
                     directory = (
-                        Path("data") / "arrow_placement" / mode / "special" / subfolder
+                        self.root_path
+                        / "data"
+                        / "arrow_placement"
+                        / mode
+                        / "special"
+                        / subfolder
                     )
 
                     if not directory.exists():

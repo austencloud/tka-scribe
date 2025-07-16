@@ -7,9 +7,10 @@ execution method. It automatically sets up the TKA Desktop import environment
 before any tests run.
 """
 
-import pytest
 import sys
 from pathlib import Path
+
+import pytest
 
 # Add the TKA monorepo root to the path so we can import project_root
 tka_root = Path(__file__).parent.parent.parent
@@ -44,7 +45,10 @@ def pytest_configure(config):
 def pytest_sessionstart(session):
     """Called after the Session object has been created."""
     if session.config.option.verbose >= 1:
-        print("\n🚀 TKA Desktop test environment initialized successfully!")
+        try:
+            print("\n🚀 TKA Desktop test environment initialized successfully!")
+        except UnicodeEncodeError:
+            print("\nTKA Desktop test environment initialized successfully!")
 
 
 @pytest.fixture(scope="session")

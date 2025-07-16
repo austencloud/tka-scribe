@@ -8,7 +8,7 @@ Updated to work with the modern domain models and letter type classification sys
 import logging
 from typing import Optional
 
-from core.interfaces.validation_services import IPictographValidator
+from core.interfaces.pictograph_services import IPictographValidator
 from domain.models.enums import Orientation
 from domain.models.letter_condition import LetterCondition
 from domain.models.motion_data import MotionData

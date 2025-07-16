@@ -47,11 +47,29 @@ class PictographComponent(BorderedPictographMixin, QGraphicsView):
         self.hide()
         self.setVisible(False)
 
-        # POOL CREATION FIX: Set attributes to prevent any window appearance during pool creation
-        self.setAttribute(Qt.WidgetAttribute.WA_DontShowOnScreen, True)
+        # POOL CREATION FIX: Set window flags but allow showing later
+        # Note: Removed WA_DontShowOnScreen as it permanently prevents visibility
         self.setWindowFlags(Qt.WindowType.Widget)
 
         self._setup_ui()
+
+    def enable_visibility(self) -> None:
+        """
+        Enable visibility for this pictograph component.
+
+        This should be called after pool creation to allow the component
+        to be shown when needed. Removes any visibility-blocking attributes.
+        """
+        # Remove any attributes that might block visibility
+        self.setAttribute(Qt.WidgetAttribute.WA_DontShowOnScreen, False)
+
+        # Also ensure the widget is properly configured for visibility
+        self.setWindowFlags(Qt.WindowType.Widget)
+
+        print(f"🔧 [PICTOGRAPH_COMPONENT] Visibility enabled for component {id(self)}")
+
+        # Component is still hidden by default - parent must call show() explicitly
+        # This just ensures show() will actually work when called
 
     def _setup_ui(self) -> None:
         try:

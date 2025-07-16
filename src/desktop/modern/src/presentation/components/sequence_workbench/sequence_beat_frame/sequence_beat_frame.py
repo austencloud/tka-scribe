@@ -188,6 +188,7 @@ class SequenceBeatFrame(QScrollArea):
 
     def _setup_start_position(self):
         """Setup start position view"""
+        print("🔧 [BEAT_FRAME] Setting up start position view...")
         self._start_position_view = StartPositionView(parent=self._container_widget)
         self._start_position_view.start_pos_beat_clicked.connect(
             self._on_start_position_clicked
@@ -199,6 +200,13 @@ class SequenceBeatFrame(QScrollArea):
         # CRITICAL FIX: Ensure start position view is visible
         self._start_position_view.show()
         self._start_position_view.setVisible(True)
+        print(
+            f"🔧 [BEAT_FRAME] Start position view setup complete, visible: {self._start_position_view.isVisible()}"
+        )
+        if self._start_position_view._pictograph_component:
+            print(
+                f"🔧 [BEAT_FRAME] Start position pictograph visible: {self._start_position_view._pictograph_component.isVisible()}"
+            )
 
     def _setup_event_subscriptions(self):
         """Setup event subscriptions for reactive UI updates."""
@@ -295,6 +303,7 @@ class SequenceBeatFrame(QScrollArea):
 
     def initialize_cleared_start_position(self):
         """Initialize start position view in cleared state (shows START text only)"""
+        print("🔧 [BEAT_FRAME] Initializing cleared start position...")
 
         # CRITICAL FIX: Ensure the beat frame container itself is visible
         self.show()
@@ -305,7 +314,13 @@ class SequenceBeatFrame(QScrollArea):
 
         if self._start_position_view:
             self._start_position_view.clear_position_data()
-
+            print(
+                f"🔧 [BEAT_FRAME] After clearing, start position view visible: {self._start_position_view.isVisible()}"
+            )
+            if self._start_position_view._pictograph_component:
+                print(
+                    f"🔧 [BEAT_FRAME] After clearing, pictograph visible: {self._start_position_view._pictograph_component.isVisible()}"
+                )
         else:
             print("❌ [SEQUENCE_BEAT_FRAME] No start position view to initialize!")
 

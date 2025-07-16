@@ -154,6 +154,10 @@ class WorkbenchBeatFrameSection(QWidget):
         else:
             print("⚠️ [BEAT_FRAME_SECTION] No beat frame available")
 
+        # Initialize cleared start position for empty sequences
+        if not sequence or sequence.length == 0:
+            self.initialize_cleared_start_position()
+
         self._update_button_states()
 
     def set_start_position(
@@ -175,8 +179,18 @@ class WorkbenchBeatFrameSection(QWidget):
 
     def initialize_cleared_start_position(self):
         """Initialize start position view in cleared state (shows START text only)"""
+        print(f"🔧 [BEAT_FRAME_SECTION] Making beat frame section visible...")
         self.show()
         self.setVisible(True)
+        print(
+            f"🔧 [BEAT_FRAME_SECTION] Beat frame section visible after show(): {self.isVisible()}"
+        )
+
+        # Debug parent visibility
+        parent = self.parent()
+        if parent:
+            print(f"🔧 [BEAT_FRAME_SECTION] Parent visible: {parent.isVisible()}")
+            print(f"🔧 [BEAT_FRAME_SECTION] Parent class: {parent.__class__.__name__}")
 
         self._start_position_data = None
         if self._beat_frame:

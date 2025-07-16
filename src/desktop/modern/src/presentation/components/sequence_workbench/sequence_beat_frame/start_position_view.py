@@ -34,6 +34,9 @@ class StartPositionView(QFrame):
 
     def __init__(self, parent=None):
         super().__init__(parent)
+        print(
+            f"🔧 [START_POS_VIEW] Initializing StartPositionView with parent: {parent}"
+        )
 
         # Common state (previously from PictographViewBase)
         self._beat_data: Optional[BeatData] = None
@@ -69,6 +72,15 @@ class StartPositionView(QFrame):
         # Create pictograph component
         self._pictograph_component = create_pictograph_component(parent=self)
         self._configure_pictograph_component()
+
+        # Enable visibility for start position pictographs
+        if hasattr(self._pictograph_component, "enable_visibility"):
+            self._pictograph_component.enable_visibility()
+
+        # Ensure pictograph component is visible (needed for blank white background)
+        self._pictograph_component.show()
+        self._pictograph_component.setVisible(True)
+
         layout.addWidget(self._pictograph_component)
 
         # Enable mouse tracking for hover effects
@@ -206,7 +218,7 @@ class StartPositionView(QFrame):
             print(f"Error cleaning up start text overlay: {e}")
         finally:
             self._start_text_overlay = None
-            if hasattr(self, '_text_overlays'):
+            if hasattr(self, "_text_overlays"):
                 self._text_overlays.clear()
 
     # Override mouse press to emit specific signals
@@ -269,9 +281,13 @@ class StartPositionView(QFrame):
 
         self.show()
         self.setVisible(True)
+        print(
+            f"🔧 [START_POS_VIEW] Start position view cleared and made visible: {self.isVisible()}"
+        )
 
         parent = self.parent()
         parent_visible = parent.isVisible() if parent else "No parent"
+        print(f"🔧 [START_POS_VIEW] Parent visibility: {parent_visible}")
 
     def _update_display(self):
         """Update the visual display based on position data"""
@@ -298,6 +314,10 @@ class StartPositionView(QFrame):
         else:
             self._pictograph_component.clear_pictograph()
 
+        # CRITICAL FIX: Ensure pictograph component is visible when it has content
+        self._pictograph_component.show()
+        self._pictograph_component.setVisible(True)
+
         self._add_start_text_overlay()
 
     def _show_empty_state(self):
@@ -310,10 +330,11 @@ class StartPositionView(QFrame):
         self._add_start_text_overlay()
 
     def _show_cleared_state(self):
-        """Show cleared state - ONLY START text, no pictograph content (V1 behavior)"""
+        """Show cleared state - blank white pictograph with START text overlay"""
         self._mark_overlay_invalid()
 
         if self._pictograph_component:
+            # Clear any existing pictograph data
             self._pictograph_component.clear_pictograph()
 
             if (
@@ -321,6 +342,10 @@ class StartPositionView(QFrame):
                 and self._pictograph_component.scene
             ):
                 self._pictograph_component.scene.clear()
+
+            # CRITICAL: Ensure pictograph component is visible to show blank white background
+            self._pictograph_component.show()
+            self._pictograph_component.setVisible(True)
 
         self._add_start_text_overlay()
 
@@ -364,7 +389,7 @@ class StartPositionView(QFrame):
         """Cleanup resources when the view is being destroyed"""
         # Clean up overlays
         self._cleanup_existing_overlay()
-        
+
         # Clean up selection overlay
         if self._selection_overlay:
             try:

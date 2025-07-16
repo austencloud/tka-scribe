@@ -108,8 +108,6 @@ class ArrowItem(QGraphicsSvgItem):
         # Business Logic: Calculate position and apply transforms
         self._calculate_and_apply_position()
 
-        logger.debug(f"Successfully set up {self.arrow_color} arrow")
-
     def _load_svg_renderer(self) -> Optional[QSvgRenderer]:
         """Load SVG renderer using business logic for asset management."""
         # Business Logic: Get primary SVG path
@@ -178,9 +176,15 @@ class ArrowItem(QGraphicsSvgItem):
                 logger.error(f"Positioning orchestrator failed: {e}")
                 traceback.print_exc()
                 position_x, position_y, rotation = 475.0, 475.0, 0.0  # Fallback
+                logger.warning(
+                    f"🚨 FALLBACK - {self.arrow_color}: Using center position (475, 475, 0°)"
+                )
         else:
             logger.warning("Using fallback arrow positioning (center)")
             position_x, position_y, rotation = 475.0, 475.0, 0.0
+            logger.warning(
+                f"🚨 FALLBACK - {self.arrow_color}: Using center position (475, 475, 0°)"
+            )
 
         # Qt Operations: Apply transforms
         self._apply_transforms(position_x, position_y, rotation)
@@ -251,6 +255,14 @@ class ArrowItem(QGraphicsSvgItem):
             # CRITICAL FIX: Ensure positioning is calculated when arrow is updated with real data
             if self.pictograph_data and self.arrow_color:
                 self._calculate_and_apply_position()
+            else:
+                logger.warning(
+                    f"⚠️ POSITIONING SKIPPED - {self.arrow_color}: pictograph_data={self.pictograph_data is not None}, color={self.arrow_color}"
+                )
+        else:
+            logger.warning(
+                f"⚠️ SETUP SKIPPED - {self.arrow_color}: color={self.arrow_color}, motion_data={self.motion_data is not None}"
+            )
 
     def get_arrow_info(self) -> dict:
         """Get information about this arrow for debugging."""

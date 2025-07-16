@@ -69,7 +69,7 @@ class CoreServiceRegistrar(BaseServiceRegistrar):
             )
             from application.services.ui.ui_state_manager import UIStateManager
             from core.interfaces.core_services import ILayoutService, IUIStateManager
-            from core.interfaces.layout_calculation_services import (
+            from core.interfaces.layout_services import (
                 IBeatLayoutCalculator,
             )
             from core.interfaces.ui_services import IThumbnailGenerationService

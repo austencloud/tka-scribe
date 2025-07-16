@@ -102,6 +102,7 @@ class ArrowAdjustmentCalculator(IArrowAdjustmentCalculator):
         motion_data: MotionData,
         letter: str,
         location: Location,
+        arrow_color: str = None,
     ) -> Point:
         """
         Calculate arrow position adjustment with streamlined parameters.
@@ -110,13 +111,14 @@ class ArrowAdjustmentCalculator(IArrowAdjustmentCalculator):
             motion_data: Motion data containing type, rotation, and location info
             letter: Letter for special placement lookup
             location: Pre-calculated arrow location
+            arrow_color: Color of the arrow ('red' or 'blue')
 
         Returns:
             Final position adjustment as Point (to be added to initial position)
         """
         try:
             return self.calculate_adjustment_result(
-                pictograph_data, motion_data, letter, location
+                pictograph_data, motion_data, letter, location, arrow_color
             )
         except Exception as e:
             # Log error and return default for backward compatibility
@@ -129,6 +131,7 @@ class ArrowAdjustmentCalculator(IArrowAdjustmentCalculator):
         motion_data: MotionData,
         letter: str,
         location: Location,
+        arrow_color: str = None,
     ) -> Point:
         """
         Calculate arrow position adjustment with proper error handling.
@@ -137,6 +140,7 @@ class ArrowAdjustmentCalculator(IArrowAdjustmentCalculator):
             motion_data: Motion data containing type, rotation, and location info
             letter: Letter for special placement lookup
             location: Pre-calculated arrow location
+            arrow_color: Color of the arrow ('red' or 'blue')
 
         Returns:
             Point adjustment
@@ -148,7 +152,7 @@ class ArrowAdjustmentCalculator(IArrowAdjustmentCalculator):
         try:
             # STEP 1: Look up base adjustment (special → default)
             base_adjustment = self.lookup_service.get_base_adjustment(
-                pictograph_data, motion_data, letter
+                pictograph_data, motion_data, letter, arrow_color
             )
 
             # STEP 2: Process directional tuples

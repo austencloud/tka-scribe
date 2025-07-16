@@ -202,6 +202,12 @@ class QtArrowRenderer:
             motion_data, color
         )
         arrow_item = self._create_arrow_item_for_context(color)
+
+        # CRITICAL FIX: Update arrow item with proper data so positioning works
+        arrow_item.update_arrow(
+            color=color, motion_data=motion_data, pictograph_data=full_pictograph_data
+        )
+
         renderer = None
 
         if self._rendering_service.asset_manager.svg_path_exists(arrow_svg_path):
@@ -236,58 +242,10 @@ class QtArrowRenderer:
         if renderer and renderer.isValid():
             arrow_item.setSharedRenderer(renderer)
 
-            # Delegate position calculation to the positioning orchestrator directly
-            if self.positioning_orchestrator and full_pictograph_data:
-                try:
-                    motion_data = None
-                    if (
-                        hasattr(full_pictograph_data, "motions")
-                        and full_pictograph_data.motions
-                    ):
-                        motion_data = full_pictograph_data.motions.get(color)
+            # NOTE: Positioning is now handled by arrow_item.update_arrow() call above
+            # which triggers _calculate_and_apply_position() with proper data
 
-                    arrow_data = ArrowData(
-                        color=color,
-                        turns=motion_data.turns if motion_data else 0,
-                        is_visible=True,
-                    )
-
-                    position_x, position_y, rotation = (
-                        self.positioning_orchestrator.calculate_arrow_position(
-                            arrow_data,
-                            full_pictograph_data,
-                            motion_data,
-                        )
-                    )
-                except Exception as e:
-                    logger.error(f"Positioning orchestrator failed: {e}")
-                    position_x, position_y, rotation = self.CENTER_X, self.CENTER_Y, 0.0
-            else:
-                logger.warning("Using fallback arrow positioning (center)")
-                position_x, position_y, rotation = self.CENTER_X, self.CENTER_Y, 0.0
-
-            # Qt-specific rendering operations
-            self._apply_arrow_transforms(arrow_item, position_x, position_y, rotation)
-
-            # Apply mirror transform if positioning orchestrator is available
-            if self.positioning_orchestrator:
-                arrow_data_with_position = ArrowData(
-                    color=color,
-                    turns=motion_data.turns,
-                    position_x=position_x,
-                    position_y=position_y,
-                    rotation_angle=rotation,
-                    is_visible=True,
-                )
-                self.positioning_orchestrator.apply_mirror_transform(
-                    arrow_item,
-                    self.positioning_orchestrator.should_mirror_arrow(
-                        arrow_data_with_position, full_pictograph_data
-                    ),
-                )
-
-            # Final positioning and scene addition
-            self._finalize_arrow_positioning(arrow_item, position_x, position_y)
+            # Add arrow to scene (positioning already handled by ArrowItem)
             self.scene.addItem(arrow_item)
         else:
             logger.error(f"Invalid SVG renderer for motion: {motion_data}")

@@ -12,10 +12,10 @@ Following established patterns:
 """
 
 import logging
-from typing import Optional, NamedTuple, List
 from enum import Enum
+from typing import Any, Dict, List, NamedTuple, Optional
 
-from core.interfaces.workbench_session_services import (
+from core.interfaces.workbench_services import (
     IWorkbenchSessionManager,
     SessionRestorationPhase,
     SessionRestorationResult,
@@ -29,7 +29,7 @@ logger = logging.getLogger(__name__)
 class WorkbenchSessionManager(IWorkbenchSessionManager):
     """
     Framework-agnostic session management for workbench.
-    
+
     Responsibilities:
     - Handle workbench-specific session restoration
     - Coordinate with SessionRestorationCoordinator
@@ -46,7 +46,7 @@ class WorkbenchSessionManager(IWorkbenchSessionManager):
     ):
         """
         Initialize workbench session manager.
-        
+
         Args:
             workbench_state_manager: WorkbenchStateManager for state coordination
             session_restoration_coordinator: SessionRestorationCoordinator for session operations
@@ -55,70 +55,90 @@ class WorkbenchSessionManager(IWorkbenchSessionManager):
         self._state_manager = workbench_state_manager
         self._session_coordinator = session_restoration_coordinator
         self._event_bus = event_bus
-        
+
         # Restoration state
         self._current_phase = SessionRestorationPhase.NOT_STARTED
         self._restoration_errors: List[str] = []
         self._restoration_completed = False
         self._pending_session_data = None
-        
+
+        # Workbench callback for UI updates during restoration
+        self._workbench_callback = None
+
         logger.debug("WorkbenchSessionManager initialized")
 
+    def set_workbench_callback(self, callback):
+        """
+        Set callback to notify workbench of restoration events.
+
+        Args:
+            callback: Function to call with (start_position_data, pictograph_data, from_restoration)
+        """
+        self._workbench_callback = callback
+
     # Session Restoration Operations
-    def begin_restoration_from_event(self, event_data: dict) -> SessionRestorationResult:
+    def begin_restoration_from_event(
+        self, event_data: dict
+    ) -> SessionRestorationResult:
         """
         Begin restoration from session restoration event.
-        
+
         Args:
             event_data: Event data from session restoration event
-            
+
         Returns:
             SessionRestorationResult with restoration details
         """
         try:
             self._current_phase = SessionRestorationPhase.PREPARING
             self._restoration_errors = []
-            
+
             # Extract session data from event
             state_data = event_data.get("state_data", {})
             sequence_data = state_data.get("sequence_data")
             start_position_data = state_data.get("start_position_data")
-            
+
             # Check for sequence start position in sequence data itself
             sequence_start_position = None
             if sequence_data:
-                if hasattr(sequence_data, "start_position") and sequence_data.start_position:
+                if (
+                    hasattr(sequence_data, "start_position")
+                    and sequence_data.start_position
+                ):
                     sequence_start_position = sequence_data.start_position
-                elif isinstance(sequence_data, dict) and sequence_data.get("start_position"):
+                elif isinstance(sequence_data, dict) and sequence_data.get(
+                    "start_position"
+                ):
                     sequence_start_position = sequence_data["start_position"]
-            
+
             # Activate restoration mode in state manager
             if self._state_manager:
                 self._state_manager.begin_restoration()
-            
+
             # Store data for restoration
             self._pending_session_data = {
                 "sequence_data": sequence_data,
                 "start_position_data": start_position_data or sequence_start_position,
-                "original_event_data": event_data
+                "original_event_data": event_data,
             }
-            
+
             logger.debug("Session restoration prepared from event")
-            return SessionRestorationResult.success_result(SessionRestorationPhase.PREPARING)
-            
+            return SessionRestorationResult.success_result(
+                SessionRestorationPhase.PREPARING
+            )
+
         except Exception as e:
             logger.error(f"Failed to prepare restoration from event: {e}")
             self._restoration_errors.append(str(e))
             self._current_phase = SessionRestorationPhase.FAILED
             return SessionRestorationResult.failure_result(
-                SessionRestorationPhase.FAILED,
-                [str(e)]
+                SessionRestorationPhase.FAILED, [str(e)]
             )
 
     def execute_restoration(self) -> SessionRestorationResult:
         """
         Execute the restoration with pending session data.
-        
+
         Returns:
             SessionRestorationResult with restoration details
         """
@@ -127,81 +147,98 @@ class WorkbenchSessionManager(IWorkbenchSessionManager):
             logger.warning(error)
             self._restoration_errors.append(error)
             return SessionRestorationResult.failure_result(
-                SessionRestorationPhase.FAILED,
-                [error]
+                SessionRestorationPhase.FAILED, [error]
             )
-            
+
         try:
             sequence_restored = False
             start_position_restored = False
-            
+
             sequence_data = self._pending_session_data.get("sequence_data")
             start_position_data = self._pending_session_data.get("start_position_data")
-            
+
             # Restore sequence
             if sequence_data and self._state_manager:
                 self._current_phase = SessionRestorationPhase.RESTORING_SEQUENCE
-                result = self._state_manager.set_sequence(sequence_data, from_restoration=True)
+                result = self._state_manager.set_sequence(
+                    sequence_data, from_restoration=True
+                )
                 if result.changed:
                     sequence_restored = True
                     logger.debug("Sequence restored from session")
                 else:
                     logger.debug("Sequence restoration had no changes")
-            
+
             # Restore start position
             if start_position_data and self._state_manager:
                 self._current_phase = SessionRestorationPhase.RESTORING_START_POSITION
-                
+
                 # Convert dict to BeatData if needed
                 if isinstance(start_position_data, dict):
                     start_position_data = BeatData.from_dict(start_position_data)
-                
-                result = self._state_manager.set_start_position(start_position_data, from_restoration=True)
+
+                result = self._state_manager.set_start_position(
+                    start_position_data, from_restoration=True
+                )
                 if result.changed:
                     start_position_restored = True
                     logger.debug("Start position restored from session")
                 else:
                     logger.debug("Start position restoration had no changes")
-            
+
+                # CRITICAL FIX: Notify workbench UI during restoration
+                # This ensures the UI is updated even if state didn't change
+                if self._workbench_callback:
+                    try:
+                        self._workbench_callback(start_position_data, None, True)
+                        logger.debug(
+                            "Workbench UI notified of start position restoration"
+                        )
+                    except Exception as e:
+                        logger.error(
+                            f"Failed to notify workbench during restoration: {e}"
+                        )
+
             # Finalize restoration
             self._current_phase = SessionRestorationPhase.FINALIZING
-            
+
             if self._state_manager:
                 self._state_manager.complete_restoration()
-            
+
             self._current_phase = SessionRestorationPhase.COMPLETED
             self._restoration_completed = True
             self._pending_session_data = None
-            
-            logger.info(f"Session restoration completed - sequence: {sequence_restored}, start_position: {start_position_restored}")
-            
+
+            logger.info(
+                f"Session restoration completed - sequence: {sequence_restored}, start_position: {start_position_restored}"
+            )
+
             return SessionRestorationResult.success_result(
                 SessionRestorationPhase.COMPLETED,
                 sequence_restored,
-                start_position_restored
+                start_position_restored,
             )
-            
+
         except Exception as e:
             logger.error(f"Failed to execute restoration: {e}")
             self._restoration_errors.append(str(e))
             self._current_phase = SessionRestorationPhase.FAILED
-            
+
             # Reset restoration state on failure
             if self._state_manager:
                 self._state_manager.reset_restoration_state()
-                
+
             return SessionRestorationResult.failure_result(
-                SessionRestorationPhase.FAILED,
-                [str(e)]
+                SessionRestorationPhase.FAILED, [str(e)]
             )
 
     def handle_restoration_event(self, event_data: dict) -> SessionRestorationResult:
         """
         Handle complete restoration from event (convenience method).
-        
+
         Args:
             event_data: Event data from session restoration event
-            
+
         Returns:
             SessionRestorationResult with restoration details
         """
@@ -209,7 +246,7 @@ class WorkbenchSessionManager(IWorkbenchSessionManager):
         prepare_result = self.begin_restoration_from_event(event_data)
         if not prepare_result.success:
             return prepare_result
-            
+
         # Execute restoration
         return self.execute_restoration()
 
@@ -217,16 +254,16 @@ class WorkbenchSessionManager(IWorkbenchSessionManager):
     def handle_missing_start_position_restoration(self) -> None:
         """
         Handle restoration when no start position data is available.
-        
+
         This ensures the start position view is properly initialized even when cleared.
         """
         try:
             if self._state_manager:
                 # Set start position to None to trigger proper clearing
                 self._state_manager.set_start_position(None, from_restoration=True)
-                
+
             logger.debug("Missing start position restoration handled")
-            
+
         except Exception as e:
             logger.error(f"Failed to handle missing start position restoration: {e}")
             self._restoration_errors.append(str(e))
@@ -245,7 +282,7 @@ class WorkbenchSessionManager(IWorkbenchSessionManager):
         return self._current_phase not in [
             SessionRestorationPhase.NOT_STARTED,
             SessionRestorationPhase.COMPLETED,
-            SessionRestorationPhase.FAILED
+            SessionRestorationPhase.FAILED,
         ]
 
     def has_pending_restoration_data(self) -> bool:
@@ -260,20 +297,22 @@ class WorkbenchSessionManager(IWorkbenchSessionManager):
     def setup_event_subscriptions(self) -> List[str]:
         """
         Setup event subscriptions for session restoration.
-        
+
         Returns:
             List of subscription IDs for cleanup
         """
         subscription_ids = []
-        
+
         try:
             if not self._event_bus:
-                logger.warning("Event bus not available - skipping session restoration subscription")
+                logger.warning(
+                    "Event bus not available - skipping session restoration subscription"
+                )
                 return subscription_ids
 
             # Subscribe to session restoration events
             from core.events.event_bus import EventPriority
-            
+
             sub_id = self._event_bus.subscribe(
                 "ui.session_restoration.sequence_restored",
                 self._on_sequence_restored_event,
@@ -288,19 +327,19 @@ class WorkbenchSessionManager(IWorkbenchSessionManager):
 
         except Exception as e:
             logger.error(f"Error setting up event subscriptions: {e}")
-            
+
         return subscription_ids
 
     def _on_sequence_restored_event(self, event):
         """Handle sequence restoration event."""
         try:
             result = self.handle_restoration_event(event.__dict__)
-            
+
             if not result.success:
                 logger.error(f"Session restoration failed: {result.errors}")
             else:
                 logger.info(f"Session restoration succeeded: {result.phase}")
-                
+
         except Exception as e:
             logger.error(f"Error handling sequence restoration event: {e}")
 
@@ -321,10 +360,10 @@ class WorkbenchSessionManager(IWorkbenchSessionManager):
         self._restoration_errors = []
         self._restoration_completed = False
         self._pending_session_data = None
-        
+
         if self._state_manager:
             self._state_manager.reset_restoration_state()
-            
+
         logger.debug("Restoration state reset")
 
     # Diagnostics
@@ -341,3 +380,64 @@ class WorkbenchSessionManager(IWorkbenchSessionManager):
             "session_coordinator_available": self._session_coordinator is not None,
             "event_bus_available": self._event_bus is not None,
         }
+
+    # Legacy Session Management Methods (for backward compatibility)
+    def save_session(self, session_name: str) -> bool:
+        """Save current workbench session."""
+        try:
+            # This is a basic implementation - could be enhanced
+            # to use a more sophisticated session storage system
+            logger.info(f"Session save requested: {session_name}")
+            # Delegate to session coordinator if available
+            if self._session_coordinator:
+                return self._session_coordinator.save_named_session(session_name)
+            return False
+        except Exception as e:
+            logger.error(f"Failed to save session {session_name}: {e}")
+            return False
+
+    def load_session(self, session_name: str) -> bool:
+        """Load workbench session."""
+        try:
+            logger.info(f"Session load requested: {session_name}")
+            # Delegate to session coordinator if available
+            if self._session_coordinator:
+                return self._session_coordinator.load_named_session(session_name)
+            return False
+        except Exception as e:
+            logger.error(f"Failed to load session {session_name}: {e}")
+            return False
+
+    def get_available_sessions(self) -> List[str]:
+        """Get list of available sessions."""
+        try:
+            # Delegate to session coordinator if available
+            if self._session_coordinator:
+                return self._session_coordinator.get_available_sessions()
+            return []
+        except Exception as e:
+            logger.error(f"Failed to get available sessions: {e}")
+            return []
+
+    def delete_session(self, session_name: str) -> bool:
+        """Delete a session."""
+        try:
+            logger.info(f"Session delete requested: {session_name}")
+            # Delegate to session coordinator if available
+            if self._session_coordinator:
+                return self._session_coordinator.delete_named_session(session_name)
+            return False
+        except Exception as e:
+            logger.error(f"Failed to delete session {session_name}: {e}")
+            return False
+
+    def get_session_info(self, session_name: str) -> Optional[Dict[str, Any]]:
+        """Get session information."""
+        try:
+            # Delegate to session coordinator if available
+            if self._session_coordinator:
+                return self._session_coordinator.get_session_info(session_name)
+            return None
+        except Exception as e:
+            logger.error(f"Failed to get session info for {session_name}: {e}")
+            return None

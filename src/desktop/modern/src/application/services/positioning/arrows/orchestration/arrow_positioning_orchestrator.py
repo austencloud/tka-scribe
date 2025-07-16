@@ -69,7 +69,7 @@ class ArrowPositioningOrchestrator(IArrowPositioningOrchestrator):
 
         rotation = self.rotation_calculator.calculate_rotation(motion, location)
         adjustment = self.adjustment_calculator.calculate_adjustment(
-            pictograph_data, motion, letter, location
+            pictograph_data, motion, letter, location, arrow_data.color
         )
 
         adjustment_x, adjustment_y = self._extract_adjustment_values(adjustment)

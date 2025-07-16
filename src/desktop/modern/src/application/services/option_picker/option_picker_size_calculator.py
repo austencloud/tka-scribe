@@ -40,13 +40,9 @@ class OptionPickerSizeCalculator:
                 main_window_width  # This is actually the scroll area width
             )
 
-            print(f"📊 [CALC] Section calculation for {letter_type}:")
-            print(f"   Container width: {container_width}px")
-
             if letter_type in [LetterType.TYPE1, LetterType.TYPE2, LetterType.TYPE3]:
                 # Individual sections: use FULL container width
                 section_width = container_width
-                print(f"   Individual section width: {section_width}px (full width)")
                 return {
                     "width": section_width,
                     "columns": 8,
