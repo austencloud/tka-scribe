@@ -95,23 +95,17 @@ class OptionPickerSectionButton(QPushButton):
             f"  padding: 5px;"
             f"  color: black;"
             f"}}"
-            f"QPushButton:hover {{"
-            f"  background: rgba(255, 255, 255, 0.3);"
-            f"  border: 2px solid rgba(255, 255, 255, 0.5);"
-            f"}}"
         )
         self.setStyleSheet(style)
 
     def enterEvent(self, event) -> None:
-        """Handle hover enter with glassmorphism effect."""
-        # Use a slightly more opaque glassmorphism effect on hover
-        hover_background = "rgba(255, 255, 255, 0.3)"
-        self._update_style(background_color=hover_background)
+        """Handle hover enter - simplified without glassmorphism."""
+        # Keep original functionality without glassmorphism styling
         super().enterEvent(event)
 
     def leaveEvent(self, event) -> None:
-        """Handle hover leave exactly like Legacy."""
-        self._update_style()
+        """Handle hover leave - simplified without glassmorphism."""
+        # Keep original functionality without glassmorphism styling
         super().leaveEvent(event)
 
     def mousePressEvent(self, event: QMouseEvent) -> None:

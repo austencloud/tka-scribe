@@ -6,8 +6,9 @@ Focused solely on modern-to-legacy data transformation.
 """
 
 import logging
-from typing import Any, Dict
+from typing import Any, Dict, List, Optional
 
+from core.interfaces.data_services import IModernToLegacyConverter
 from domain.models.beat_data import BeatData
 from domain.models.enums import Orientation
 from domain.models.motion_data import MotionData
@@ -17,7 +18,7 @@ from .position_attribute_mapper import PositionAttributeMapper
 logger = logging.getLogger(__name__)
 
 
-class ModernToLegacyConverter:
+class ModernToLegacyConverter(IModernToLegacyConverter):
     """
     Converts modern domain models to legacy JSON format.
 
@@ -219,3 +220,70 @@ class ModernToLegacyConverter:
             return str(orientation)
         else:
             return "in"
+
+    # Interface implementation methods
+    def convert_modern_data(self, modern_data: Any) -> Dict[str, Any]:
+        """Convert modern data to legacy format (interface implementation)."""
+        if hasattr(modern_data, "beats"):
+            return self.convert_sequence_to_legacy(modern_data)
+        elif hasattr(modern_data, "letter"):
+            return self.convert_beat_to_legacy(modern_data)
+        else:
+            return {"error": "Unknown modern data type"}
+
+    def validate_modern_format(self, data: Any) -> bool:
+        """Validate modern data format (interface implementation)."""
+        try:
+            # Check if it's a modern sequence or beat
+            if hasattr(data, "beats") or hasattr(data, "letter"):
+                return True
+            return False
+        except Exception:
+            return False
+
+    def get_conversion_metadata(self, modern_data: Any) -> Dict[str, Any]:
+        """Get metadata about conversion (interface implementation)."""
+        return {
+            "source_format": "modern",
+            "target_format": "legacy",
+            "data_type": "sequence" if hasattr(modern_data, "beats") else "beat",
+            "conversion_timestamp": "runtime",
+            "converter_version": "1.0",
+        }
+
+    # Interface implementation methods
+    def convert_sequence(self, modern_sequence: Any) -> Optional[List[Dict[str, Any]]]:
+        """Convert modern sequence to legacy format."""
+        try:
+            if hasattr(modern_sequence, "beats"):
+                result = []
+                for i, beat in enumerate(modern_sequence.beats):
+                    legacy_beat = self.convert_beat_data_to_legacy_format(beat, i + 1)
+                    if legacy_beat:
+                        result.append(legacy_beat)
+                return result
+            return None
+        except Exception as e:
+            logger.error(f"Error converting sequence: {e}")
+            return None
+
+    def convert_beat(self, modern_beat: Any) -> Optional[Dict[str, Any]]:
+        """Convert modern beat to legacy format."""
+        try:
+            if hasattr(modern_beat, "beat_number"):
+                return self.convert_beat_data_to_legacy_format(
+                    modern_beat, modern_beat.beat_number
+                )
+            return None
+        except Exception as e:
+            logger.error(f"Error converting beat: {e}")
+            return None
+
+    def convert_pictograph(self, modern_pictograph: Any) -> Optional[Dict[str, Any]]:
+        """Convert modern pictograph to legacy format."""
+        try:
+            # TODO: Implement pictograph conversion
+            return None
+        except Exception as e:
+            logger.error(f"Error converting pictograph: {e}")
+            return None

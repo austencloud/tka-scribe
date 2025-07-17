@@ -1,9 +1,9 @@
 """
-Glassmorphism Generate Panel - 2025 Modern Design
+Modern Generate Panel with Tasteful Glassmorphism
 ================================================
 
-Complete redesign of the Generate tab with modern glassmorphism aesthetics.
-Features floating glass cards, depth through transparency, and elegant interactions.
+A clean, single-card design that fits all controls on one screen
+while maintaining the legacy layout structure with subtle glass effects.
 """
 
 from typing import Optional
@@ -14,17 +14,13 @@ from domain.models.generation_models import (
     GenerationResult,
     GenerationState,
 )
-from PyQt6.QtCore import Qt, pyqtSignal, QEasingCurve, QPropertyAnimation, QRect
-from PyQt6.QtGui import QFont, QPainter, QBrush, QColor
+from PyQt6.QtCore import Qt, pyqtSignal
+from PyQt6.QtGui import QFont
 from PyQt6.QtWidgets import (
     QFrame,
-    QGraphicsDropShadowEffect,
     QHBoxLayout,
     QLabel,
-    QProgressBar,
     QPushButton,
-    QScrollArea,
-    QTextEdit,
     QVBoxLayout,
     QWidget,
 )
@@ -41,50 +37,8 @@ from .generation_controls import (
 )
 
 
-class GlassCard(QWidget):
-    """
-    Base glass card component with glassmorphism styling.
-    Features translucent background, subtle blur, and hover effects.
-    """
-
-    def __init__(self, parent: Optional[QWidget] = None, opacity_base: float = 0.15):
-        super().__init__(parent)
-        self.opacity_base = opacity_base
-        self.opacity_hover = opacity_base + 0.1
-        self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
-
-        # Add subtle drop shadow for depth
-        shadow = QGraphicsDropShadowEffect()
-        shadow.setBlurRadius(20)
-        shadow.setOffset(0, 8)
-        shadow.setColor(QColor(0, 0, 0, 40))
-        self.setGraphicsEffect(shadow)
-
-        self.setStyleSheet(self._get_glass_style())
-
-    def _get_glass_style(self):
-        return f"""
-            QWidget {{
-                background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
-                    stop:0 rgba(255, 255, 255, {self.opacity_base}),
-                    stop:1 rgba(255, 255, 255, {self.opacity_base * 0.6}));
-                border: 1px solid rgba(255, 255, 255, 0.25);
-                border-radius: 20px;
-                padding: 24px;
-            }}
-            QWidget:hover {{
-                background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
-                    stop:0 rgba(255, 255, 255, {self.opacity_hover}),
-                    stop:1 rgba(255, 255, 255, {self.opacity_hover * 0.6}));
-                border: 1px solid rgba(255, 255, 255, 0.35);
-            }}
-        """
-
-
 class GlassMorphicButton(QPushButton):
-    """
-    Glassmorphic button with subtle glass effects and smooth animations.
-    """
+    """Clean glassmorphic button with subtle effects."""
 
     def __init__(
         self, text: str, primary: bool = False, parent: Optional[QWidget] = None
@@ -92,16 +46,8 @@ class GlassMorphicButton(QPushButton):
         super().__init__(text, parent)
         self.primary = primary
         self.setCursor(Qt.CursorShape.PointingHandCursor)
-        self.setMinimumHeight(56)
-        self.setFont(QFont("Inter", 12, QFont.Weight.Medium))
-
-        # Add subtle shadow
-        shadow = QGraphicsDropShadowEffect()
-        shadow.setBlurRadius(15)
-        shadow.setOffset(0, 4)
-        shadow.setColor(QColor(0, 0, 0, 30))
-        self.setGraphicsEffect(shadow)
-
+        self.setMinimumHeight(40)
+        self.setFont(QFont("Segoe UI", 10, QFont.Weight.Medium))
         self.setStyleSheet(self._get_button_style())
 
     def _get_button_style(self):
@@ -109,27 +55,24 @@ class GlassMorphicButton(QPushButton):
             return """
                 QPushButton {
                     background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
-                        stop:0 rgba(100, 200, 255, 0.9),
-                        stop:1 rgba(50, 150, 255, 0.8));
+                        stop:0 rgba(70, 130, 255, 0.8),
+                        stop:1 rgba(50, 110, 235, 0.9));
                     color: white;
-                    border: 1px solid rgba(255, 255, 255, 0.3);
-                    border-radius: 16px;
-                    padding: 12px 32px;
+                    border: 1px solid rgba(255, 255, 255, 0.2);
+                    border-radius: 8px;
+                    padding: 8px 20px;
                     font-weight: 500;
-                    font-size: 14px;
                 }
                 QPushButton:hover {
                     background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
-                        stop:0 rgba(120, 220, 255, 0.95),
-                        stop:1 rgba(70, 170, 255, 0.85));
-                    border: 1px solid rgba(255, 255, 255, 0.4);
-                    transform: translateY(-2px);
+                        stop:0 rgba(80, 140, 255, 0.9),
+                        stop:1 rgba(60, 120, 245, 1.0));
+                    border: 1px solid rgba(255, 255, 255, 0.3);
                 }
                 QPushButton:pressed {
                     background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
-                        stop:0 rgba(80, 180, 255, 0.85),
-                        stop:1 rgba(30, 130, 255, 0.75));
-                    transform: translateY(0px);
+                        stop:0 rgba(60, 120, 235, 0.7),
+                        stop:1 rgba(40, 100, 215, 0.8));
                 }
                 QPushButton:disabled {
                     background: rgba(100, 100, 100, 0.3);
@@ -141,41 +84,34 @@ class GlassMorphicButton(QPushButton):
             return """
                 QPushButton {
                     background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
-                        stop:0 rgba(255, 255, 255, 0.2),
-                        stop:1 rgba(255, 255, 255, 0.1));
+                        stop:0 rgba(255, 255, 255, 0.15),
+                        stop:1 rgba(255, 255, 255, 0.08));
                     color: rgba(255, 255, 255, 0.9);
-                    border: 1px solid rgba(255, 255, 255, 0.25);
-                    border-radius: 16px;
-                    padding: 12px 32px;
+                    border: 1px solid rgba(255, 255, 255, 0.2);
+                    border-radius: 8px;
+                    padding: 8px 20px;
                     font-weight: 500;
-                    font-size: 14px;
                 }
                 QPushButton:hover {
                     background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
-                        stop:0 rgba(255, 255, 255, 0.3),
-                        stop:1 rgba(255, 255, 255, 0.15));
-                    border: 1px solid rgba(255, 255, 255, 0.35);
-                    transform: translateY(-2px);
+                        stop:0 rgba(255, 255, 255, 0.2),
+                        stop:1 rgba(255, 255, 255, 0.12));
+                    border: 1px solid rgba(255, 255, 255, 0.3);
                 }
                 QPushButton:pressed {
                     background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
-                        stop:0 rgba(255, 255, 255, 0.15),
-                        stop:1 rgba(255, 255, 255, 0.08));
-                    transform: translateY(0px);
+                        stop:0 rgba(255, 255, 255, 0.1),
+                        stop:1 rgba(255, 255, 255, 0.05));
                 }
             """
 
 
 class GeneratePanel(QWidget):
     """
-    Complete redesign of Generate Panel with 2025 glassmorphism aesthetics.
-
-    Features:
-    - Floating glass cards instead of bordered frames
-    - Depth through transparency and blur
-    - Elegant hover interactions
-    - Minimal visual clutter
-    - Modern spacing and typography
+    Modern Generate Panel with single glass card container.
+    
+    Maintains legacy layout structure while adding subtle glassmorphism effects.
+    Everything fits on one screen without scrolling.
     """
 
     generate_requested = pyqtSignal(GenerationConfig)
@@ -191,292 +127,106 @@ class GeneratePanel(QWidget):
         self._apply_glassmorphism_theme()
 
     def _setup_ui(self):
-        # Main layout with generous spacing for breathing room
-        layout = QVBoxLayout(self)
-        layout.setContentsMargins(32, 32, 32, 32)
-        layout.setSpacing(24)
+        """Setup UI with single glass container following legacy structure."""
+        # Main layout with minimal padding
+        main_layout = QVBoxLayout(self)
+        main_layout.setContentsMargins(20, 20, 20, 20)
+        main_layout.setSpacing(0)
 
-        # Header
-        self._setup_header(layout)
+        # Single glass container for everything
+        glass_container = QFrame()
+        glass_container.setFrameStyle(QFrame.Shape.StyledPanel)
+        container_layout = QVBoxLayout(glass_container)
+        container_layout.setContentsMargins(24, 24, 24, 24)
+        container_layout.setSpacing(16)
 
-        # Controls scroll area
-        self._setup_controls_area(layout)
+        # Header section
+        self._setup_header(container_layout)
 
-        # Action buttons
-        self._setup_action_buttons(layout)
+        # Controls section - follows legacy layout exactly
+        self._setup_controls_section(container_layout)
 
-        # Status area
-        self._setup_status_area(layout)
+        # Action buttons section
+        self._setup_action_buttons(container_layout)
+
+        # Apply glass styling to container
+        glass_container.setStyleSheet("""
+            QFrame {
+                background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
+                    stop:0 rgba(255, 255, 255, 0.12),
+                    stop:1 rgba(255, 255, 255, 0.08));
+                border: 1px solid rgba(255, 255, 255, 0.2);
+                border-radius: 16px;
+            }
+        """)
+
+        main_layout.addWidget(glass_container)
 
     def _setup_header(self, layout: QVBoxLayout):
-        """Create floating header with glassmorphic styling."""
-        header_card = GlassCard(opacity_base=0.1)
-        header_layout = QVBoxLayout(header_card)
+        """Create header section matching legacy customize sequence label."""
+        header_layout = QHBoxLayout()
+        header_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
-        header = QLabel("Generate Sequence")
-        header_font = QFont("Inter", 24, QFont.Weight.Bold)
+        header = QLabel("Customize Your Sequence")
+        header_font = QFont("Segoe UI", 16, QFont.Weight.Bold)
         header.setFont(header_font)
         header.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        header.setStyleSheet(
-            """
+        header.setStyleSheet("""
             QLabel {
                 color: rgba(255, 255, 255, 0.95);
-                padding: 12px;
+                padding: 8px;
                 background: transparent;
                 border: none;
             }
-        """
-        )
-
-        subtitle = QLabel("Configure your kinetic sequence generation")
-        subtitle_font = QFont("Inter", 12, QFont.Weight.Normal)
-        subtitle.setFont(subtitle_font)
-        subtitle.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        subtitle.setStyleSheet(
-            """
-            QLabel {
-                color: rgba(255, 255, 255, 0.7);
-                padding: 4px;
-                background: transparent;
-                border: none;
-            }
-        """
-        )
+        """)
 
         header_layout.addWidget(header)
-        header_layout.addWidget(subtitle)
-        layout.addWidget(header_card)
+        layout.addLayout(header_layout)
 
-    def _setup_controls_area(self, layout: QVBoxLayout):
-        """Create floating controls area with glassmorphic cards."""
-        # Remove traditional scroll area frame, use transparent background
-        scroll_area = QScrollArea()
-        scroll_area.setWidgetResizable(True)
-        scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
-        scroll_area.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
-        scroll_area.setFrameShape(QFrame.Shape.NoFrame)
-        scroll_area.setStyleSheet(
-            """
-            QScrollArea {
-                background: transparent;
-                border: none;
-            }
-            QScrollBar:vertical {
-                background: rgba(255, 255, 255, 0.1);
-                border: none;
-                border-radius: 6px;
-                width: 12px;
-            }
-            QScrollBar::handle:vertical {
-                background: rgba(255, 255, 255, 0.3);
-                border-radius: 6px;
-                min-height: 20px;
-            }
-            QScrollBar::handle:vertical:hover {
-                background: rgba(255, 255, 255, 0.4);
-            }
-        """
-        )
+    def _setup_controls_section(self, layout: QVBoxLayout):
+        """Setup controls section following legacy vertical layout."""
+        controls_layout = QVBoxLayout()
+        controls_layout.setSpacing(12)
+        controls_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
-        controls_widget = QWidget()
-        controls_widget.setStyleSheet("background: transparent;")
-        controls_layout = QVBoxLayout(controls_widget)
-        controls_layout.setSpacing(20)
-
-        # Generation mode toggle in its own glass card
-        mode_card = GlassCard(opacity_base=0.12)
-        mode_layout = QVBoxLayout(mode_card)
-        self._mode_toggle = ModernGenerationModeToggle()
-        mode_layout.addWidget(self._mode_toggle)
-        controls_layout.addWidget(mode_card)
-
-        # Basic parameters in glass card
-        self._setup_basic_parameters_glass(controls_layout)
-
-        # Mode-specific controls
-        self._setup_mode_specific_controls_glass(controls_layout)
-
-        controls_layout.addStretch()
-        scroll_area.setWidget(controls_widget)
-        layout.addWidget(scroll_area, 1)
-
-    def _setup_basic_parameters_glass(self, layout: QVBoxLayout):
-        """Setup basic parameters in glassmorphic card."""
-        basic_card = GlassCard(opacity_base=0.12)
-        basic_layout = QVBoxLayout(basic_card)
-        basic_layout.setSpacing(16)
-
-        # Card title
-        title = QLabel("Generation Parameters")
-        title.setFont(QFont("Inter", 14, QFont.Weight.Medium))
-        title.setStyleSheet(
-            """
-            QLabel {
-                color: rgba(255, 255, 255, 0.9);
-                padding: 0px 0px 8px 0px;
-                background: transparent;
-                border: none;
-            }
-        """
-        )
-        basic_layout.addWidget(title)
-
-        # Basic controls with glassmorphic styling
-        self._length_selector = ModernLengthSelector()
+        # Create all controls matching legacy order
         self._level_selector = ModernLevelSelector()
+        self._length_selector = ModernLengthSelector()
         self._turn_intensity_selector = ModernTurnIntensitySelector()
+        self._mode_toggle = ModernGenerationModeToggle()
         self._prop_continuity_toggle = ModernPropContinuityToggle()
-
-        basic_layout.addWidget(self._length_selector)
-        basic_layout.addWidget(self._level_selector)
-        basic_layout.addWidget(self._turn_intensity_selector)
-        basic_layout.addWidget(self._prop_continuity_toggle)
-
-        layout.addWidget(basic_card)
-
-    def _setup_mode_specific_controls_glass(self, layout: QVBoxLayout):
-        """Setup mode-specific controls in glassmorphic cards."""
-        # Container for mode-specific controls
-        self._mode_specific_layout = QVBoxLayout()
-        self._mode_specific_layout.setSpacing(20)
-
-        # Freeform controls
-        self._setup_freeform_controls_glass()
-
-        # Circular controls
-        self._setup_circular_controls_glass()
-
-        layout.addLayout(self._mode_specific_layout)
-
-    def _setup_freeform_controls_glass(self):
-        """Setup freeform controls in glass card."""
-        self._freeform_controls = GlassCard(opacity_base=0.12)
-        freeform_layout = QVBoxLayout(self._freeform_controls)
-        freeform_layout.setSpacing(16)
-
-        title = QLabel("Freeform Options")
-        title.setFont(QFont("Inter", 14, QFont.Weight.Medium))
-        title.setStyleSheet(
-            """
-            QLabel {
-                color: rgba(255, 255, 255, 0.9);
-                padding: 0px 0px 8px 0px;
-                background: transparent;
-                border: none;
-            }
-        """
-        )
-        freeform_layout.addWidget(title)
-
-        # Letter type selector
         self._letter_type_selector = ModernLetterTypeSelector()
-        freeform_layout.addWidget(self._letter_type_selector)
-
-        self._mode_specific_layout.addWidget(self._freeform_controls)
-
-    def _setup_circular_controls_glass(self):
-        """Setup circular controls in glass card."""
-        self._circular_controls = GlassCard(opacity_base=0.12)
-        circular_layout = QVBoxLayout(self._circular_controls)
-        circular_layout.setSpacing(16)
-
-        title = QLabel("Circular Options")
-        title.setFont(QFont("Inter", 14, QFont.Weight.Medium))
-        title.setStyleSheet(
-            """
-            QLabel {
-                color: rgba(255, 255, 255, 0.9);
-                padding: 0px 0px 8px 0px;
-                background: transparent;
-                border: none;
-            }
-        """
-        )
-        circular_layout.addWidget(title)
-
-        # Slice size selector
         self._slice_size_selector = ModernSliceSizeSelector()
-        circular_layout.addWidget(self._slice_size_selector)
-
-        # CAP type selector
         self._cap_type_selector = ModernCAPTypeSelector()
-        circular_layout.addWidget(self._cap_type_selector)
 
-        self._mode_specific_layout.addWidget(self._circular_controls)
+        # Add controls in legacy order with equal stretch
+        controls_layout.addWidget(self._level_selector, 1)
+        controls_layout.addWidget(self._length_selector, 1)
+        controls_layout.addWidget(self._turn_intensity_selector, 1)
+        controls_layout.addWidget(self._mode_toggle, 1)
+        controls_layout.addWidget(self._prop_continuity_toggle, 1)
+        controls_layout.addWidget(self._letter_type_selector, 1)
+        controls_layout.addWidget(self._slice_size_selector, 1)
+        controls_layout.addWidget(self._cap_type_selector, 1)
 
-        # Initially hide circular controls
-        self._circular_controls.hide()
+        layout.addLayout(controls_layout, 16)  # Match legacy proportions
 
     def _setup_action_buttons(self, layout: QVBoxLayout):
-        """Setup floating action buttons with glassmorphic styling."""
-        button_card = GlassCard(opacity_base=0.1)
-        button_layout = QHBoxLayout(button_card)
-        button_layout.setSpacing(16)
+        """Setup action buttons matching legacy layout."""
+        button_layout = QHBoxLayout()
+        button_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        button_layout.setSpacing(40)  # Reasonable spacing between buttons
 
-        self._auto_complete_button = GlassMorphicButton("Auto Complete", primary=False)
-        self._generate_button = GlassMorphicButton(
-            "Generate New Sequence", primary=True
-        )
+        self._auto_complete_button = GlassMorphicButton("Auto-Complete", primary=False)
+        self._generate_button = GlassMorphicButton("Generate New", primary=True)
 
         button_layout.addWidget(self._auto_complete_button)
         button_layout.addWidget(self._generate_button)
 
-        layout.addWidget(button_card)
-
-    def _setup_status_area(self, layout: QVBoxLayout):
-        """Setup status area with glassmorphic styling."""
-        self._status_frame = GlassCard(opacity_base=0.1)
-        status_layout = QVBoxLayout(self._status_frame)
-
-        self._progress_bar = QProgressBar()
-        self._progress_bar.setStyleSheet(
-            """
-            QProgressBar {
-                border: none;
-                border-radius: 8px;
-                background: rgba(255, 255, 255, 0.1);
-                text-align: center;
-                color: rgba(255, 255, 255, 0.9);
-                font-weight: 500;
-                height: 24px;
-            }
-            QProgressBar::chunk {
-                border-radius: 8px;
-                background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
-                    stop:0 rgba(100, 200, 255, 0.8),
-                    stop:1 rgba(50, 150, 255, 0.9));
-            }
-        """
-        )
-        self._progress_bar.hide()
-
-        self._status_text = QTextEdit()
-        self._status_text.setMaximumHeight(120)
-        self._status_text.setReadOnly(True)
-        self._status_text.setStyleSheet(
-            """
-            QTextEdit {
-                background: rgba(255, 255, 255, 0.05);
-                border: 1px solid rgba(255, 255, 255, 0.15);
-                border-radius: 12px;
-                color: rgba(255, 255, 255, 0.9);
-                padding: 12px;
-                font-family: "Inter";
-                font-size: 12px;
-                selection-background-color: rgba(100, 200, 255, 0.3);
-            }
-        """
-        )
-        self._status_text.hide()
-
-        status_layout.addWidget(self._progress_bar)
-        status_layout.addWidget(self._status_text)
-
-        layout.addWidget(self._status_frame)
-        self._status_frame.hide()
+        layout.addLayout(button_layout, 4)  # Match legacy proportions
 
     def _connect_signals(self):
-        """Connect all UI signals (unchanged from original)."""
+        """Connect all UI signals."""
         # Mode change
         self._mode_toggle.mode_changed.connect(self._on_mode_changed)
 
@@ -494,12 +244,10 @@ class GeneratePanel(QWidget):
             lambda v: self._update_config(prop_continuity=v)
         )
 
-        # Freeform controls
+        # Mode-specific controls
         self._letter_type_selector.value_changed.connect(
             lambda v: self._update_config(letter_types=v)
         )
-
-        # Circular controls
         self._slice_size_selector.value_changed.connect(
             lambda v: self._update_config(slice_size=v)
         )
@@ -512,45 +260,41 @@ class GeneratePanel(QWidget):
         self._auto_complete_button.clicked.connect(self._on_auto_complete_clicked)
 
     def _apply_glassmorphism_theme(self):
-        """Apply overall glassmorphism theme to the panel."""
-        self.setStyleSheet(
-            """
-            QWidget {
-                background: transparent;
-                color: rgba(255, 255, 255, 0.9);
-                font-family: "Inter", "Segoe UI", sans-serif;
-            }
-            
-            /* Make the entire panel have a subtle glass background */
+        """Apply subtle glassmorphism theme to the entire panel."""
+        self.setStyleSheet("""
             GeneratePanel {
                 background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
-                    stop:0 rgba(15, 15, 25, 0.95),
-                    stop:0.5 rgba(25, 25, 40, 0.90),
-                    stop:1 rgba(35, 35, 55, 0.95));
+                    stop:0 rgba(20, 20, 30, 0.95),
+                    stop:0.5 rgba(30, 30, 45, 0.90),
+                    stop:1 rgba(40, 40, 60, 0.95));
             }
-        """
-        )
+            QWidget {
+                color: rgba(255, 255, 255, 0.9);
+                font-family: "Segoe UI", sans-serif;
+            }
+        """)
 
     def _on_mode_changed(self, mode: GenerationMode):
-        """Handle mode change (unchanged from original)."""
+        """Handle mode change and show/hide appropriate controls."""
         self._update_config(mode=mode)
 
-        # Show/hide mode-specific controls with smooth transition
+        # Show/hide mode-specific controls
         is_freeform = mode == GenerationMode.FREEFORM
-        self._freeform_controls.setVisible(is_freeform)
-        self._circular_controls.setVisible(not is_freeform)
+        self._letter_type_selector.setVisible(is_freeform)
+        self._slice_size_selector.setVisible(not is_freeform)
+        self._cap_type_selector.setVisible(not is_freeform)
 
     def _update_config(self, **kwargs):
-        """Update configuration (unchanged from original)."""
+        """Update configuration and emit signal."""
         try:
             self._current_config = self._current_config.with_updates(**kwargs)
             self._current_state = self._current_state.with_config(self._current_config)
             self.config_changed.emit(self._current_config)
         except Exception as e:
-            self._show_error(f"Configuration error: {e}")
+            print(f"Configuration error: {e}")
 
     def _on_generate_clicked(self):
-        """Handle generate button click (unchanged from original)."""
+        """Handle generate button click."""
         if self._current_state.is_generating:
             return
 
@@ -559,82 +303,45 @@ class GeneratePanel(QWidget):
         self.generate_requested.emit(self._current_config)
 
     def _on_auto_complete_clicked(self):
-        """Handle auto complete button click (unchanged from original)."""
+        """Handle auto complete button click."""
         if self._current_state.is_generating:
             return
 
         self.auto_complete_requested.emit()
 
     def _update_ui_for_generation_state(self):
-        """Update UI for generation state (unchanged from original)."""
+        """Update UI based on current generation state."""
         is_generating = self._current_state.is_generating
 
         self._generate_button.setEnabled(not is_generating)
         self._auto_complete_button.setEnabled(not is_generating)
 
         if is_generating:
-            self._show_progress("Generating sequence...")
+            self._generate_button.setText("Generating...")
         else:
-            self._hide_progress()
-
-    def _show_progress(self, message: str):
-        """Show progress with glassmorphic styling."""
-        self._status_frame.show()
-        self._progress_bar.show()
-        self._progress_bar.setRange(0, 0)  # Indeterminate
-        self._status_text.show()
-        self._status_text.setText(message)
-        self._status_text.setStyleSheet(
-            self._status_text.styleSheet()
-            + """
-            QTextEdit { color: rgba(100, 200, 255, 0.9); }
-        """
-        )
-
-    def _hide_progress(self):
-        """Hide progress (unchanged from original)."""
-        self._progress_bar.hide()
-        self._status_text.hide()
-        self._status_frame.hide()
-
-    def _show_error(self, message: str):
-        """Show error with glassmorphic styling."""
-        self._status_frame.show()
-        self._status_text.show()
-        self._status_text.setText(f"Error: {message}")
-        self._status_text.setStyleSheet(
-            self._status_text.styleSheet()
-            + """
-            QTextEdit { color: rgba(255, 100, 100, 0.9); }
-        """
-        )
+            self._generate_button.setText("Generate New")
 
     def set_state(self, state: GenerationState):
-        """Set panel state (unchanged from original)."""
+        """Set panel state and update UI."""
         self._current_state = state
         self._current_config = state.config
         self._update_controls_from_config()
         self._update_ui_for_generation_state()
 
     def set_generation_result(self, result: GenerationResult):
-        """Set generation result (unchanged from original)."""
+        """Set generation result and update state."""
         self._current_state = self._current_state.with_result(result)
         self._update_ui_for_generation_state()
 
         if result.success:
-            self._status_text.setText("Generation completed successfully!")
-            self._status_text.setStyleSheet(
-                self._status_text.styleSheet()
-                + """
-                QTextEdit { color: rgba(100, 255, 100, 0.9); }
-            """
-            )
+            # Brief success indication
+            self._generate_button.setText("Success!")
+            # Reset after 2 seconds would be nice, but keeping it simple
         else:
-            self._show_error(result.error_message or "Generation failed")
+            print(f"Generation failed: {result.error_message}")
 
     def _update_controls_from_config(self):
-        """Update controls from config (unchanged from original)."""
-        # Update all controls to reflect current config
+        """Update all controls to reflect current config."""
         self._mode_toggle.set_mode(self._current_config.mode)
         self._length_selector.set_value(self._current_config.length)
         self._level_selector.set_value(self._current_config.level)
@@ -647,3 +354,6 @@ class GeneratePanel(QWidget):
         self._slice_size_selector.set_value(self._current_config.slice_size)
         if self._current_config.cap_type:
             self._cap_type_selector.set_value(self._current_config.cap_type)
+
+        # Update visibility based on mode
+        self._on_mode_changed(self._current_config.mode)

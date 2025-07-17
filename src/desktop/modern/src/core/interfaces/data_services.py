@@ -439,25 +439,15 @@ class IModernToLegacyConverter(ABC):
     """Interface for modern to legacy data conversion."""
 
     @abstractmethod
-    def convert_sequence(self, modern_sequence: Any) -> Optional[List[Dict[str, Any]]]:
+    def convert_beat_data_to_legacy_format(
+        self, beat: Any, beat_number: int
+    ) -> Optional[Dict[str, Any]]:
         """
-        Convert modern sequence to legacy format.
+        Convert modern BeatData to legacy format.
 
         Args:
-            modern_sequence: Modern sequence object
-
-        Returns:
-            Legacy sequence data or None if conversion failed
-        """
-        pass
-
-    @abstractmethod
-    def convert_beat(self, modern_beat: Any) -> Optional[Dict[str, Any]]:
-        """
-        Convert modern beat to legacy format.
-
-        Args:
-            modern_beat: Modern beat object
+            beat: Modern BeatData object
+            beat_number: Beat number for legacy format
 
         Returns:
             Legacy beat data or None if conversion failed
@@ -465,15 +455,17 @@ class IModernToLegacyConverter(ABC):
         pass
 
     @abstractmethod
-    def convert_pictograph(self, modern_pictograph: Any) -> Optional[Dict[str, Any]]:
+    def convert_start_position_to_legacy_format(
+        self, start_position_beat_data: Any
+    ) -> Optional[Dict[str, Any]]:
         """
-        Convert modern pictograph to legacy format.
+        Convert start position BeatData to legacy format.
 
         Args:
-            modern_pictograph: Modern pictograph object
+            start_position_beat_data: BeatData representing start position
 
         Returns:
-            Legacy pictograph data or None if conversion failed
+            Legacy start position data or None if conversion failed
         """
         pass
 

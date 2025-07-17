@@ -7,9 +7,14 @@ Extracted from the main StartPositionPicker for better maintainability.
 
 import logging
 from enum import Enum
-from typing import List
+from typing import List, Optional
 
 from application.services.pictograph_pool_manager import PictographPoolManager
+from core.interfaces.animation_core_interfaces import (
+    AnimationConfig,
+    EasingType,
+    IAnimationOrchestrator,
+)
 from core.interfaces.start_position_services import (
     IStartPositionDataService,
     IStartPositionUIService,
@@ -50,6 +55,7 @@ class StartPositionPickerContent(QWidget):
         data_service: IStartPositionDataService,
         ui_service: IStartPositionUIService,
         parent=None,
+        animation_orchestrator: Optional[IAnimationOrchestrator] = None,
     ):
         super().__init__(parent)
 
@@ -57,10 +63,12 @@ class StartPositionPickerContent(QWidget):
         self.pool_manager = pool_manager
         self.data_service = data_service
         self.ui_service = ui_service
+        self._animation_orchestrator = animation_orchestrator
 
         # State
         self.position_options: List[StartPositionOption] = []
         self._loading_positions = False  # Flag to prevent infinite loops
+        self._is_in_transition = False  # Track transition state
 
         # UI components
         self.main_container = None
@@ -106,7 +114,7 @@ class StartPositionPickerContent(QWidget):
         layout.addWidget(self.scroll_area)
 
     def load_positions(self, grid_mode: str, is_advanced: bool):
-        """Load position options based on mode - EXACT logic from original."""
+        """Load position options with fade transition if available."""
         # Prevent infinite loops with a stronger guard
         if self._loading_positions:
             logger.warning(
@@ -114,7 +122,73 @@ class StartPositionPickerContent(QWidget):
             )
             return
 
-        self._loading_positions = True
+        # Use fade transition if animation orchestrator is available and we have existing options
+        if (
+            self._animation_orchestrator
+            and self.position_options
+            and not self._is_in_transition
+        ):
+            self._load_positions_with_fade_transition(grid_mode, is_advanced)
+        else:
+            self._load_positions_directly(grid_mode, is_advanced)
+
+    def _load_positions_with_fade_transition(self, grid_mode: str, is_advanced: bool):
+        """Load positions with smooth fade transition."""
+        try:
+            self._is_in_transition = True
+            self._loading_positions = True
+
+            mode_str = "advanced" if is_advanced else "basic"
+            logger.debug(f"Starting fade transition to {mode_str} mode")
+
+            # Get existing position widgets for fade out
+            existing_widgets = [
+                option for option in self.position_options if option.isVisible()
+            ]
+
+            if not existing_widgets:
+                # No existing widgets to fade, load directly
+                self._load_positions_directly(grid_mode, is_advanced)
+                return
+
+            # Create animation config matching option picker timing
+            config = AnimationConfig(
+                duration=0.2,  # 200ms to match option picker
+                easing=EasingType.EASE_IN_OUT,
+            )
+
+            # Define update callback
+            def update_callback():
+                self._load_positions_directly(grid_mode, is_advanced)
+
+            # Use the modern animation orchestrator for fade transition
+            import asyncio
+
+            async def run_fade_transition():
+                try:
+                    await self._animation_orchestrator.transition_targets(
+                        existing_widgets, update_callback, config
+                    )
+                except Exception as e:
+                    logger.error(f"Fade transition failed: {e}")
+                    # Fallback to direct update
+                    update_callback()
+                finally:
+                    self._is_in_transition = False
+                    self._loading_positions = False
+
+            # Run the async fade transition
+            asyncio.create_task(run_fade_transition())
+
+        except Exception as e:
+            logger.error(f"Error in fade transition: {e}")
+            self._is_in_transition = False
+            self._load_positions_directly(grid_mode, is_advanced)
+
+    def _load_positions_directly(self, grid_mode: str, is_advanced: bool):
+        """Load position options directly without animation."""
+        if not self._is_in_transition:
+            self._loading_positions = True
 
         try:
             mode_str = "advanced" if is_advanced else "basic"
@@ -155,8 +229,9 @@ class StartPositionPickerContent(QWidget):
             # Create fallback options
             self._create_fallback_options(grid_mode)
         finally:
-            # Use QTimer to reset the flag after a short delay to prevent rapid calls
-            QTimer.singleShot(50, self._reset_loading_flag)
+            if not self._is_in_transition:
+                # Use QTimer to reset the flag after a short delay to prevent rapid calls
+                QTimer.singleShot(50, self._reset_loading_flag)
 
     def _reset_loading_flag(self):
         """Reset the loading flag after a delay - EXACT copy from original."""

@@ -27,15 +27,17 @@ from application.services.sequence.sequence_start_position_manager import (
 # Services moved to application layer
 from presentation.adapters.qt.sequence_loader_adapter import QtSequenceLoaderAdapter
 
+from ...components.option_picker.option_picker_manager import OptionPickerManager
+from ...components.start_position_picker.start_position_selection_handler import (
+    StartPositionSelectionHandler,
+)
 from .layout_manager import ConstructTabLayoutManager
-from .option_picker_manager import OptionPickerManager
 from .signal_coordinator import SignalCoordinator
-from .start_position_handler import StartPositionHandler
 
 __all__ = [
     # Presentation components (local)
     "ConstructTabLayoutManager",
-    "StartPositionHandler",
+    "StartPositionSelectionHandler",
     "OptionPickerManager",
     "SignalCoordinator",
     # Business services (re-exported from application layer)

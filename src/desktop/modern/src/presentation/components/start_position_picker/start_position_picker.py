@@ -115,8 +115,29 @@ class StartPositionPicker(QWidget):
 
         # Create sub-components
         self.header = StartPositionPickerHeader(self)
+
+        # Try to get animation orchestrator from the orchestrator service
+        animation_orchestrator = None
+        try:
+            # The orchestrator service might have access to animation services
+            if hasattr(self.orchestrator, "_container"):
+                from core.interfaces.animation_core_interfaces import (
+                    IAnimationOrchestrator,
+                )
+
+                animation_orchestrator = self.orchestrator._container.resolve(
+                    IAnimationOrchestrator
+                )
+        except Exception:
+            # Animation system not available - continue without it
+            pass
+
         self.content = StartPositionPickerContent(
-            self.pool_manager, self.data_service, self.ui_service, self
+            self.pool_manager,
+            self.data_service,
+            self.ui_service,
+            self,
+            animation_orchestrator,
         )
         self.footer = StartPositionPickerFooter(self)
 

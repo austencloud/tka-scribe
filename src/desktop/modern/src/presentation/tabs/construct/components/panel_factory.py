@@ -74,6 +74,19 @@ class PanelFactory:
             ui_service = self.container.resolve(IStartPositionUIService)
             orchestrator = self.container.resolve(IStartPositionOrchestrator)
 
+            # Try to get animation orchestrator for fade transitions
+            try:
+                from core.interfaces.animation_core_interfaces import (
+                    IAnimationOrchestrator,
+                )
+
+                animation_orchestrator = self.container.resolve(IAnimationOrchestrator)
+                # Store it in the orchestrator for the picker to access
+                orchestrator._container = self.container
+            except Exception:
+                # Animation system not available - continue without it
+                pass
+
             start_position_picker = StartPositionPicker(
                 pool_manager=pool_manager,
                 data_service=data_service,

@@ -4,13 +4,15 @@ Settings dialog services initialization.
 Handles the creation and initialization of all services required by the settings dialog.
 """
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, Dict, List
+
+from core.interfaces.core_services import IUIStateManager
 
 if TYPE_CHECKING:
-    from core.interfaces.core_services import IUIStateManager
+    pass
 
 
-class UISettingsManager:
+class UISettingsManager(IUIStateManager):
     """Service factory and manager for the settings dialog."""
 
     def __init__(self, ui_state_service: "IUIStateManager"):
@@ -70,3 +72,36 @@ class UISettingsManager:
     def get_background_service(self):
         """Get the background service."""
         return self.background_service
+
+    # Interface implementation methods
+    def get_setting(self, key: str, default: Any = None) -> Any:
+        """Get a setting value (interface implementation)."""
+        return self.ui_state_service.get_setting(key, default)
+
+    def set_setting(self, key: str, value: Any) -> None:
+        """Set a setting value (interface implementation)."""
+        self.ui_state_service.set_setting(key, value)
+
+    def get_tab_state(self, tab_name: str) -> Dict[str, Any]:
+        """Get state for a specific tab (interface implementation)."""
+        return self.ui_state_service.get_tab_state(tab_name)
+
+    def get_all_settings(self) -> Dict[str, Any]:
+        """Get all settings (interface implementation)."""
+        return self.ui_state_service.get_all_settings()
+
+    def clear_settings(self) -> None:
+        """Clear all settings (interface implementation)."""
+        self.ui_state_service.clear_settings()
+
+    def save_state(self) -> None:
+        """Save current state to persistent storage (interface implementation)."""
+        self.ui_state_service.save_state()
+
+    def load_state(self) -> None:
+        """Load state from persistent storage (interface implementation)."""
+        self.ui_state_service.load_state()
+
+    def toggle_graph_editor(self) -> bool:
+        """Toggle graph editor visibility (interface implementation)."""
+        return self.ui_state_service.toggle_graph_editor()

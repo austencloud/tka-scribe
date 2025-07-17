@@ -19,117 +19,93 @@ from PyQt6.QtGui import QEnterEvent, QKeyEvent, QPainter, QResizeEvent
 from PyQt6.QtWidgets import QGraphicsView
 
 
-class PictographComponent(BorderedPictographMixin, QGraphicsView):
+class PictographComponent(PictographScene):
 
     def __init__(
         self,
         border_service: IPictographBorderManager,
         parent: Optional[QGraphicsView] = None,
     ):
-        if parent is not None:
-            try:
-                _ = parent.isVisible()
-            except RuntimeError as exc:
-                print("❌ Parent widget deleted, cannot create PictographComponent")
-                raise RuntimeError("Parent widget has been deleted") from exc
-
-        BorderedPictographMixin.__init__(self, border_service)
-        QGraphicsView.__init__(self, parent)
-
-        # Removed current_beat storage - component is now stateless
-        self.scene: Optional[PictographScene] = None  # Dimension debugging
+        # Initialize scene first
+        super().__init__(parent)
+        
+        # Store border service and view management
+        self._border_service = border_service
+        self._current_view: Optional[QGraphicsView] = None
+        self._scaling_context = ScalingContext.MEDIUM
+        self._context_params = {}
+        
+        # Debug functionality
         self.debug_enabled = False
         self.debug_timer = QTimer()
         self.debug_timer.timeout.connect(self._print_debug_dimensions)
         self.debug_timer.setSingleShot(True)
 
-        # WINDOW MANAGEMENT FIX: Hide during creation to prevent flashing
-        self.hide()
-        self.setVisible(False)
-
-        # POOL CREATION FIX: Set window flags but allow showing later
-        # Note: Removed WA_DontShowOnScreen as it permanently prevents visibility
-        self.setWindowFlags(Qt.WindowType.Widget)
-
-        self._setup_ui()
-
-    def enable_visibility(self) -> None:
+    def attach_view(self, view: QGraphicsView) -> None:
         """
-        Enable visibility for this pictograph component.
-
-        This should be called after pool creation to allow the component
-        to be shown when needed. Removes any visibility-blocking attributes.
+        Attach this scene to a view for display.
+        
+        This is called when the component needs to be displayed.
+        The view is managed by the PictographViewPool.
         """
-        # Remove any attributes that might block visibility
-        self.setAttribute(Qt.WidgetAttribute.WA_DontShowOnScreen, False)
+        if self._current_view:
+            self.detach_view()
+            
+        self._current_view = view
+        view.setScene(self)
+        
+        # Apply view configuration
+        self._setup_view_properties(view)
+        
+        # Fit view to scene
+        self._fit_view_to_scene(view)
 
-        # Also ensure the widget is properly configured for visibility
-        self.setWindowFlags(Qt.WindowType.Widget)
+    def detach_view(self) -> None:
+        """Detach the current view, allowing it to be reused."""
+        if self._current_view:
+            self._current_view.setScene(None)
+            self._current_view = None
 
-        print(f"🔧 [PICTOGRAPH_COMPONENT] Visibility enabled for component {id(self)}")
+    def _setup_view_properties(self, view: QGraphicsView) -> None:
+        """Configure view properties for optimal pictograph display."""
+        view.setRenderHint(QPainter.RenderHint.Antialiasing)
+        view.setRenderHint(QPainter.RenderHint.SmoothPixmapTransform)
+        view.setDragMode(QGraphicsView.DragMode.NoDrag)
+        view.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        view.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        view.setFrameStyle(0)
+        view.setContentsMargins(0, 0, 0, 0)
+        
+        viewport = view.viewport()
+        if viewport:
+            viewport.setContentsMargins(0, 0, 0, 0)
+        view.setViewportMargins(0, 0, 0, 0)
+        view.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignTop)
 
-        # Component is still hidden by default - parent must call show() explicitly
-        # This just ensures show() will actually work when called
-
-    def _setup_ui(self) -> None:
-        try:
-            self.scene = PictographScene(parent=self)
-            self.setScene(self.scene)
-
-            self.setRenderHint(QPainter.RenderHint.Antialiasing)
-            self.setRenderHint(QPainter.RenderHint.SmoothPixmapTransform)
-            self.setDragMode(QGraphicsView.DragMode.NoDrag)
-            self.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
-            self.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
-            self.setFrameStyle(0)
-
-            self.setContentsMargins(0, 0, 0, 0)
-            viewport = self.viewport()
-            if viewport:
-                viewport.setContentsMargins(0, 0, 0, 0)
-            self.setViewportMargins(0, 0, 0, 0)
-            self.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignTop)
-
-            self._fit_view()
-        except RuntimeError as e:
-            print(f"❌ Failed to setup PictographComponent UI: {e}")
+    def _fit_view_to_scene(self, view: QGraphicsView) -> None:
+        """Fit the view to display the scene optimally."""
+        if view and view.scene():
+            try:
+                view.setSceneRect(self.itemsBoundingRect())
+                view.fitInView(self.sceneRect(), Qt.AspectRatioMode.KeepAspectRatio)
+            except RuntimeError:
+                pass
 
     def update_from_beat(self, beat_data: BeatData) -> None:
-        """Update the pictograph display with beat data (stateless rendering)."""
-        if self.scene:
-            self.scene.update_beat(beat_data)
-            self._fit_view()
+        """Update the pictograph display with beat data."""
+        self.render_pictograph(beat_data.pictograph_data)
+        
+        # Update view if attached
+        if self._current_view:
+            self._fit_view_to_scene(self._current_view)
 
-        # Update border colors based on letter type if available
-        if (
-            beat_data.pictograph_data.glyph_data
-            and beat_data.pictograph_data.glyph_data.letter_type
-        ):
-            self.update_border_colors_for_letter_type(
-                beat_data.pictograph_data.glyph_data.letter_type
-            )
-
-        # VISIBILITY FIX: Show component when updated with data
-        if not self.isVisible():
-            self.show()
-
-    def update_from_pictograph_data(self, pictograph_data: "PictographData") -> None:
-        """
-        Update component from PictographData (for pickers and non-sequence contexts).
-
-        This is the preferred method for pickers since they work with pictographs,
-        not beats. Only sequence beat frames should use update_from_beat().
-        """
-        # FIXED: Use scene's direct pictograph rendering method
-        # No more unnecessary BeatData conversion!
-        if self.scene:
-            self.scene.render_pictograph(pictograph_data)
-            self._fit_view()
-
-        # PERFORMANCE: Don't call show() here - let parent container manage visibility
-        # The expensive show() call was causing 79ms delays in option picker refresh
-
-        # Emit the actual data we're working with - no unnecessary conversion!
+    def update_from_pictograph_data(self, pictograph_data: PictographData) -> None:
+        """Update component from PictographData."""
+        self.render_pictograph(pictograph_data)
+        
+        # Update view if attached
+        if self._current_view:
+            self._fit_view_to_scene(self._current_view)
 
     def get_current_beat(self) -> Optional[BeatData]:
         """Get current beat - component is now stateless, returns None."""

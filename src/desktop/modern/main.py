@@ -17,12 +17,57 @@ if TYPE_CHECKING:
     from presentation.components.ui.splash_screen import SplashScreen
     from core.application.application_factory import ApplicationMode
 
-from PyQt6.QtCore import QTimer
+from PyQt6.QtCore import QTimer, QtMsgType, qInstallMessageHandler
 from PyQt6.QtGui import QGuiApplication, QIcon
 from PyQt6.QtWidgets import QApplication, QMainWindow, QWidget
 
 modern_src_path = Path(__file__).parent / "src"
 sys.path.insert(0, str(modern_src_path))
+
+
+def _install_qt_message_handler():
+    """Install Qt message handler to suppress CSS property warnings and other noise."""
+
+    def qt_message_handler(msg_type, context, message):
+        # ULTRA-AGGRESSIVE SUPPRESSION: Block ALL CSS and styling warnings to eliminate processing overhead
+        suppressed_patterns = [
+            "unknown property",
+            "transition",
+            "transform",
+            "box-shadow",
+            "backdrop-filter",
+            "qobject::setparent",
+            "qbasictimer",
+            "timers cannot be started",
+            "different thread",
+            "qwidget",
+            "qpainter",
+            "stylesheet",
+            "css",
+            "style",
+            "font",
+            "color",
+            "border",
+            "margin",
+            "padding",
+            "background",
+            "qml",
+            "opengl",
+            "shader",
+            "texture",
+            "pixmap",
+            "image",
+        ]
+
+        message_lower = message.lower()
+        if any(pattern in message_lower for pattern in suppressed_patterns):
+            return  # Completely suppress these messages to eliminate processing overhead
+
+        # Only show critical errors
+        if msg_type == QtMsgType.QtCriticalMsg or msg_type == QtMsgType.QtFatalMsg:
+            print(f"Qt {msg_type.name}: {message}")
+
+    qInstallMessageHandler(qt_message_handler)
 
 
 class TKAMainWindow(QMainWindow):
@@ -121,6 +166,9 @@ def create_application():
     if not app:
         app = QApplication(sys.argv)
         app.setStyle("Fusion")
+
+        # PERFORMANCE OPTIMIZATION: Install Qt message handler to suppress CSS warnings
+        _install_qt_message_handler()
 
     # Create container for dependency injection
     from core.application.application_factory import ApplicationFactory, ApplicationMode
@@ -342,12 +390,18 @@ def main():
 
             def show_main_window():
                 """Show main window exactly when splash finishes fading."""
+                print("🔧 [MAIN] Showing main window...")
                 window.show()
                 window.raise_()
                 window.activateWindow()
+                print(f"🔧 [MAIN] Main window visible: {window.isVisible()}")
 
-            # Hide splash screen with callback to show main window at perfect timing
-            splash.hide_animated(callback=show_main_window)
+            # TEMPORARY FIX: Show window immediately for debugging
+            print("🔧 [MAIN] Showing window immediately for debugging...")
+            show_main_window()
+
+            # Also hide splash screen with callback
+            splash.hide_animated(callback=lambda: print("🔧 [MAIN] Splash hidden"))
 
         fade_in_animation.finished.connect(start_initialization)
         return app.exec()

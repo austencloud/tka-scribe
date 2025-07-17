@@ -17,7 +17,7 @@ from domain.models.pictograph_data import PictographData
 from PyQt6.QtCore import QObject, pyqtSignal
 
 
-class StartPositionHandler(QObject):
+class StartPositionSelectionHandler(QObject):
     """
     Handles start position selection and data creation.
 

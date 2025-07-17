@@ -152,18 +152,29 @@ class ConstructTabLayoutManager:
             "start_position_creation", "Start positions loaded"
         )
 
-        # Option picker
+        # PERFORMANCE OPTIMIZATION: Defer option picker creation for faster startup
         self.progress_reporter.start_phase(
-            "option_picker_creation", "Loading option picker..."
+            "option_picker_creation", "Preparing option picker..."
         )
-        option_widget, self.option_picker = (
-            self.panel_factory.create_option_picker_panel()
+        # Create placeholder widget for now
+        from PyQt6.QtWidgets import QLabel
+
+        option_widget = QLabel("Loading option picker...")
+        option_widget.setStyleSheet(
+            "color: #888; font-size: 14px; padding: 20px; text-align: center;"
         )
+        self.option_picker = None  # Will be created later
         self.picker_stack.addWidget(option_widget)
+        self._option_placeholder = option_widget  # Store reference for replacement
         self.layout_orchestrator.register_component("option_picker", self.option_picker)
         self.progress_reporter.complete_phase(
-            "option_picker_creation", "Option picker loaded"
+            "option_picker_creation", "Option picker prepared"
         )
+
+        # Schedule deferred option picker creation
+        from PyQt6.QtCore import QTimer
+
+        QTimer.singleShot(500, self._create_real_option_picker)
 
         # Graph editor
         self.progress_reporter.start_phase(
@@ -282,3 +293,36 @@ class ConstructTabLayoutManager:
     def get_component_connector(self):
         """Get the component connector for signal access."""
         return self.component_connector
+
+    def _create_real_option_picker(self):
+        """Create the real option picker after main window is shown."""
+        try:
+            print("🔧 [LAYOUT_MANAGER] Creating deferred option picker...")
+
+            # Create the real option picker
+            option_widget, self.option_picker = (
+                self.panel_factory.create_option_picker_panel()
+            )
+
+            # Replace placeholder with real option picker
+            if hasattr(self, "_option_placeholder"):
+                placeholder_index = self.picker_stack.indexOf(self._option_placeholder)
+                if placeholder_index >= 0:
+                    self.picker_stack.removeWidget(self._option_placeholder)
+                    self._option_placeholder.deleteLater()
+                    self.picker_stack.insertWidget(placeholder_index, option_widget)
+
+                    # Update orchestrator registration
+                    self.layout_orchestrator.register_component(
+                        "option_picker", self.option_picker
+                    )
+
+                    print(
+                        "✅ [LAYOUT_MANAGER] Option picker created and replaced placeholder"
+                    )
+
+        except Exception as e:
+            print(f"❌ [LAYOUT_MANAGER] Error creating deferred option picker: {e}")
+            import traceback
+
+            traceback.print_exc()

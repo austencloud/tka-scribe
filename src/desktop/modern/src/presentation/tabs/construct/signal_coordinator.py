@@ -18,9 +18,11 @@ from domain.models.beat_data import BeatData
 from presentation.adapters.qt.sequence_loader_adapter import QtSequenceLoaderAdapter
 from PyQt6.QtCore import QObject, pyqtSignal
 
+from ...components.option_picker.option_picker_manager import OptionPickerManager
+from ...components.start_position_picker.start_position_selection_handler import (
+    StartPositionSelectionHandler,
+)
 from .layout_manager import ConstructTabLayoutManager
-from .option_picker_manager import OptionPickerManager
-from .start_position_handler import StartPositionHandler
 
 
 class SignalCoordinator(QObject):
@@ -46,7 +48,7 @@ class SignalCoordinator(QObject):
     def __init__(
         self,
         layout_manager: ConstructTabLayoutManager,
-        start_position_handler: StartPositionHandler,
+        start_position_handler: StartPositionSelectionHandler,
         option_picker_manager: OptionPickerManager,
         loading_service: QtSequenceLoaderAdapter,
         beat_operations: SequenceBeatOperations,
@@ -192,9 +194,12 @@ class SignalCoordinator(QObject):
         self.start_position_set.emit(position_key)
 
     def _handle_start_position_loaded_from_persistence(
-        self, start_position_data, position_key: str
+        self, position_key: str, start_position_data
     ):
         """Handle start position loaded from persistence during startup"""
+        print(
+            f"🔍 [SIGNAL_COORDINATOR] Handling start position loaded: position_key={position_key}, start_position_data={start_position_data}"
+        )
 
         self.option_picker_manager.populate_from_start_position(
             position_key, start_position_data

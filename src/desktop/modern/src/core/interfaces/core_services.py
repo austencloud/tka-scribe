@@ -483,3 +483,99 @@ class ISessionRestorationCoordinator(ABC):
     @abstractmethod
     def trigger_deferred_restoration_if_pending(self) -> None:
         """Trigger deferred session restoration if there's pending data."""
+
+
+class IBeatResizer(ABC):
+    """Interface for beat resizing operations."""
+
+    @abstractmethod
+    def resize_beat(self, beat_data: Any, new_size: Tuple[int, int]) -> Any:
+        """Resize beat to new dimensions."""
+        pass
+
+    @abstractmethod
+    def calculate_optimal_size(
+        self, beat_data: Any, container_size: Tuple[int, int]
+    ) -> Tuple[int, int]:
+        """Calculate optimal size for beat within container."""
+        pass
+
+    @abstractmethod
+    def validate_size_constraints(self, size: Tuple[int, int]) -> bool:
+        """Validate size constraints."""
+        pass
+
+
+class IComponentSizer(ABC):
+    """Interface for component sizing operations."""
+
+    @abstractmethod
+    def calculate_component_size(
+        self, component_type: str, content_size: Tuple[int, int]
+    ) -> Tuple[int, int]:
+        """Calculate component size based on content."""
+        pass
+
+    @abstractmethod
+    def get_size_constraints(self, component_type: str) -> Dict[str, Any]:
+        """Get size constraints for component type."""
+        pass
+
+    @abstractmethod
+    def apply_responsive_sizing(
+        self, base_size: Tuple[int, int], viewport_size: Tuple[int, int]
+    ) -> Tuple[int, int]:
+        """Apply responsive sizing rules."""
+        pass
+
+
+class IDimensionCalculator(ABC):
+    """Interface for dimension calculation operations."""
+
+    @abstractmethod
+    def calculate_dimensions(
+        self, content: Any, constraints: Dict[str, Any]
+    ) -> Tuple[int, int]:
+        """Calculate dimensions for content with constraints."""
+        pass
+
+    @abstractmethod
+    def get_aspect_ratio(self, dimensions: Tuple[int, int]) -> float:
+        """Get aspect ratio from dimensions."""
+        pass
+
+    @abstractmethod
+    def scale_dimensions(
+        self, dimensions: Tuple[int, int], scale_factor: float
+    ) -> Tuple[int, int]:
+        """Scale dimensions by factor."""
+        pass
+
+
+class IFramePoolService(ABC):
+    """Interface for frame pool service operations."""
+
+    @abstractmethod
+    def initialize_pool(self, pool_size: int) -> None:
+        """Initialize frame pool with specified size."""
+        pass
+
+    @abstractmethod
+    def get_frame(self, index: int) -> Optional[Any]:
+        """Get frame from pool by index."""
+        pass
+
+    @abstractmethod
+    def return_frame(self, frame: Any) -> None:
+        """Return frame to pool."""
+        pass
+
+    @abstractmethod
+    def get_pool_size(self) -> int:
+        """Get current pool size."""
+        pass
+
+    @abstractmethod
+    def is_initialized(self) -> bool:
+        """Check if pool is initialized."""
+        pass

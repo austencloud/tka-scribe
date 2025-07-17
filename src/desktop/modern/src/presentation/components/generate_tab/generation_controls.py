@@ -2,7 +2,7 @@
 Modern generation control components for Modern Generate Tab.
 
 These components provide clean, modern UI controls for sequence generation
-parameters, following Modern's architecture patterns.
+parameters, with minimal styling that works well in glassmorphic containers.
 """
 
 from typing import Optional, Set
@@ -31,7 +31,7 @@ from PyQt6.QtWidgets import (
 
 
 class ModernControlBase(QWidget):
-    """Base class for modern generation controls"""
+    """Base class for modern generation controls with minimal styling"""
 
     def __init__(
         self, title: str, description: str = "", parent: Optional[QWidget] = None
@@ -42,23 +42,37 @@ class ModernControlBase(QWidget):
         self._setup_base_ui()
 
     def _setup_base_ui(self):
-        """Setup the base UI structure"""
+        """Setup the base UI structure with minimal styling"""
         layout = QVBoxLayout(self)
-        layout.setContentsMargins(12, 12, 12, 12)
-        layout.setSpacing(8)
+        layout.setContentsMargins(8, 8, 8, 8)
+        layout.setSpacing(6)
 
-        # Title
+        # Title with clean styling
         title_label = QLabel(self._title)
-        title_font = QFont()
-        title_font.setPointSize(11)
-        title_font.setBold(True)
+        title_font = QFont("Segoe UI", 10, QFont.Weight.Medium)
         title_label.setFont(title_font)
+        title_label.setStyleSheet("""
+            QLabel {
+                color: rgba(255, 255, 255, 0.9);
+                padding: 0px;
+                background: transparent;
+                border: none;
+            }
+        """)
         layout.addWidget(title_label)
 
-        # Description (if provided)
+        # Description (if provided) with subtle styling
         if self._description:
             desc_label = QLabel(self._description)
-            desc_label.setStyleSheet("color: #666666; font-size: 10px;")
+            desc_label.setFont(QFont("Segoe UI", 8))
+            desc_label.setStyleSheet("""
+                QLabel {
+                    color: rgba(255, 255, 255, 0.6);
+                    padding: 0px;
+                    background: transparent;
+                    border: none;
+                }
+            """)
             desc_label.setWordWrap(True)
             layout.addWidget(desc_label)
 
@@ -67,24 +81,19 @@ class ModernControlBase(QWidget):
         self._content_layout.setContentsMargins(0, 4, 0, 0)
         layout.addWidget(self._create_content_widget())
 
-        # Apply styling
-        self.setStyleSheet(
-            """
+        # Remove background and borders for clean look
+        self.setStyleSheet("""
             ModernControlBase {
-                background-color: white;
-                border: 1px solid #E0E0E0;
-                border-radius: 8px;
+                background: transparent;
+                border: none;
             }
-            ModernControlBase:hover {
-                border-color: #BDBDBD;
-            }
-        """
-        )
+        """)
 
     def _create_content_widget(self) -> QWidget:
         """Create the content widget (override in subclasses)"""
         content_widget = QWidget()
         content_widget.setLayout(self._content_layout)
+        content_widget.setStyleSheet("background: transparent;")
         return content_widget
 
 
@@ -105,7 +114,7 @@ class ModernGenerationModeToggle(ModernControlBase):
     def _setup_controls(self):
         """Setup the mode toggle controls"""
         button_layout = QHBoxLayout()
-        button_layout.setSpacing(4)
+        button_layout.setSpacing(8)
 
         # Create button group for exclusive selection
         self._button_group = QButtonGroup(self)
@@ -139,24 +148,25 @@ class ModernGenerationModeToggle(ModernControlBase):
         """Apply modern toggle button styling"""
         button_style = """
             QPushButton {
-                background-color: #F5F5F5;
-                border: 1px solid #E0E0E0;
-                border-radius: 4px;
+                background: rgba(255, 255, 255, 0.1);
+                border: 1px solid rgba(255, 255, 255, 0.2);
+                border-radius: 6px;
                 padding: 6px 12px;
                 font-weight: 500;
-                color: #424242;
+                color: rgba(255, 255, 255, 0.8);
             }
             QPushButton:hover {
-                background-color: #E8F5E8;
-                border-color: #4CAF50;
+                background: rgba(255, 255, 255, 0.15);
+                border-color: rgba(255, 255, 255, 0.3);
+                color: rgba(255, 255, 255, 0.9);
             }
             QPushButton:checked {
-                background-color: #4CAF50;
-                border-color: #4CAF50;
+                background: rgba(70, 130, 255, 0.7);
+                border-color: rgba(70, 130, 255, 0.8);
                 color: white;
             }
             QPushButton:checked:hover {
-                background-color: #45a049;
+                background: rgba(80, 140, 255, 0.8);
             }
         """
         self._freeform_button.setStyleSheet(button_style)
@@ -206,6 +216,28 @@ class ModernLengthSelector(ModernControlBase):
         self._slider.setValue(16)
         self._slider.setTickPosition(QSlider.TickPosition.TicksBelow)
         self._slider.setTickInterval(4)
+        self._slider.setStyleSheet("""
+            QSlider::groove:horizontal {
+                border: 1px solid rgba(255, 255, 255, 0.2);
+                height: 4px;
+                background: rgba(255, 255, 255, 0.1);
+                border-radius: 2px;
+            }
+            QSlider::handle:horizontal {
+                background: rgba(70, 130, 255, 0.8);
+                border: 1px solid rgba(255, 255, 255, 0.3);
+                width: 16px;
+                margin: -6px 0;
+                border-radius: 8px;
+            }
+            QSlider::handle:horizontal:hover {
+                background: rgba(80, 140, 255, 0.9);
+            }
+            QSlider::sub-page:horizontal {
+                background: rgba(70, 130, 255, 0.5);
+                border-radius: 2px;
+            }
+        """)
         control_layout.addWidget(self._slider, 1)
 
         # Value display/input
@@ -214,6 +246,22 @@ class ModernLengthSelector(ModernControlBase):
         self._spinbox.setMaximum(32)
         self._spinbox.setValue(16)
         self._spinbox.setMinimumWidth(60)
+        self._spinbox.setStyleSheet("""
+            QSpinBox {
+                background: rgba(255, 255, 255, 0.1);
+                border: 1px solid rgba(255, 255, 255, 0.2);
+                border-radius: 4px;
+                padding: 4px 8px;
+                color: rgba(255, 255, 255, 0.9);
+            }
+            QSpinBox:hover {
+                background: rgba(255, 255, 255, 0.15);
+                border-color: rgba(255, 255, 255, 0.3);
+            }
+            QSpinBox:focus {
+                border-color: rgba(70, 130, 255, 0.8);
+            }
+        """)
         control_layout.addWidget(self._spinbox)
 
         self._content_layout.addLayout(control_layout)
@@ -257,7 +305,7 @@ class ModernLevelSelector(ModernControlBase):
     def _setup_controls(self):
         """Setup level selector controls"""
         button_layout = QHBoxLayout()
-        button_layout.setSpacing(4)
+        button_layout.setSpacing(6)
 
         self._button_group = QButtonGroup(self)
         self._buttons = []
@@ -265,8 +313,8 @@ class ModernLevelSelector(ModernControlBase):
         for i in range(1, 7):
             button = QPushButton(str(i))
             button.setCheckable(True)
-            button.setMinimumSize(32, 32)
-            button.setMaximumSize(32, 32)
+            button.setMinimumSize(28, 28)
+            button.setMaximumSize(28, 28)
             button.setCursor(Qt.CursorShape.PointingHandCursor)
             if i == 1:
                 button.setChecked(True)
@@ -288,19 +336,20 @@ class ModernLevelSelector(ModernControlBase):
         """Apply styling to level buttons"""
         button_style = """
             QPushButton {
-                background-color: #F5F5F5;
-                border: 1px solid #E0E0E0;
-                border-radius: 16px;
+                background: rgba(255, 255, 255, 0.1);
+                border: 1px solid rgba(255, 255, 255, 0.2);
+                border-radius: 14px;
                 font-weight: bold;
-                color: #424242;
+                color: rgba(255, 255, 255, 0.8);
             }
             QPushButton:hover {
-                background-color: #E3F2FD;
-                border-color: #2196F3;
+                background: rgba(255, 255, 255, 0.15);
+                border-color: rgba(255, 255, 255, 0.3);
+                color: rgba(255, 255, 255, 0.9);
             }
             QPushButton:checked {
-                background-color: #2196F3;
-                border-color: #2196F3;
+                background: rgba(70, 130, 255, 0.7);
+                border-color: rgba(70, 130, 255, 0.8);
                 color: white;
             }
         """
@@ -337,12 +386,9 @@ class ModernTurnIntensitySelector(ModernControlBase):
 
     def _setup_controls(self):
         """Setup turn intensity controls"""
-        control_layout = QHBoxLayout()
-        control_layout.setSpacing(12)
-
         # Preset buttons for common values
         preset_layout = QHBoxLayout()
-        preset_layout.setSpacing(4)
+        preset_layout.setSpacing(6)
 
         self._preset_group = QButtonGroup(self)
         presets = [
@@ -357,7 +403,7 @@ class ModernTurnIntensitySelector(ModernControlBase):
         for i, (label, value) in enumerate(presets):
             button = QPushButton(label)
             button.setCheckable(True)
-            button.setMinimumSize(32, 24)
+            button.setMinimumSize(32, 28)
             button.setCursor(Qt.CursorShape.PointingHandCursor)
             if value == 1.0:
                 button.setChecked(True)
@@ -381,19 +427,20 @@ class ModernTurnIntensitySelector(ModernControlBase):
         """Apply styling to preset buttons"""
         button_style = """
             QPushButton {
-                background-color: #F5F5F5;
-                border: 1px solid #E0E0E0;
+                background: rgba(255, 255, 255, 0.1);
+                border: 1px solid rgba(255, 255, 255, 0.2);
                 border-radius: 4px;
                 font-weight: 500;
-                color: #424242;
+                color: rgba(255, 255, 255, 0.8);
             }
             QPushButton:hover {
-                background-color: #FFF3E0;
-                border-color: #FF9800;
+                background: rgba(255, 255, 255, 0.15);
+                border-color: rgba(255, 255, 255, 0.3);
+                color: rgba(255, 255, 255, 0.9);
             }
             QPushButton:checked {
-                background-color: #FF9800;
-                border-color: #FF9800;
+                background: rgba(255, 152, 0, 0.7);
+                border-color: rgba(255, 152, 0, 0.8);
                 color: white;
             }
         """
@@ -435,7 +482,7 @@ class ModernPropContinuityToggle(ModernControlBase):
     def _setup_controls(self):
         """Setup prop continuity controls"""
         button_layout = QHBoxLayout()
-        button_layout.setSpacing(4)
+        button_layout.setSpacing(8)
 
         self._button_group = QButtonGroup(self)
 
@@ -468,20 +515,21 @@ class ModernPropContinuityToggle(ModernControlBase):
         """Apply toggle button styling"""
         button_style = """
             QPushButton {
-                background-color: #F5F5F5;
-                border: 1px solid #E0E0E0;
-                border-radius: 4px;
+                background: rgba(255, 255, 255, 0.1);
+                border: 1px solid rgba(255, 255, 255, 0.2);
+                border-radius: 6px;
                 padding: 6px 12px;
                 font-weight: 500;
-                color: #424242;
+                color: rgba(255, 255, 255, 0.8);
             }
             QPushButton:hover {
-                background-color: #E8F5E8;
-                border-color: #4CAF50;
+                background: rgba(255, 255, 255, 0.15);
+                border-color: rgba(255, 255, 255, 0.3);
+                color: rgba(255, 255, 255, 0.9);
             }
             QPushButton:checked {
-                background-color: #4CAF50;
-                border-color: #4CAF50;
+                background: rgba(76, 175, 80, 0.7);
+                border-color: rgba(76, 175, 80, 0.8);
                 color: white;
             }
         """
@@ -545,6 +593,31 @@ class ModernLetterTypeSelector(ModernControlBase):
         for letter_type, description in letter_type_info:
             checkbox = QCheckBox(description)
             checkbox.setChecked(True)
+            checkbox.setStyleSheet("""
+                QCheckBox {
+                    color: rgba(255, 255, 255, 0.8);
+                    spacing: 8px;
+                    font-size: 9px;
+                }
+                QCheckBox::indicator {
+                    width: 16px;
+                    height: 16px;
+                    border-radius: 3px;
+                    border: 1px solid rgba(255, 255, 255, 0.3);
+                    background: rgba(255, 255, 255, 0.1);
+                }
+                QCheckBox::indicator:hover {
+                    border-color: rgba(255, 255, 255, 0.4);
+                    background: rgba(255, 255, 255, 0.15);
+                }
+                QCheckBox::indicator:checked {
+                    background: rgba(76, 175, 80, 0.7);
+                    border-color: rgba(76, 175, 80, 0.8);
+                }
+                QCheckBox::indicator:checked:hover {
+                    background: rgba(76, 175, 80, 0.8);
+                }
+            """)
             checkbox.stateChanged.connect(self._on_checkbox_changed)
             self._checkboxes[letter_type] = checkbox
             checkbox_layout.addWidget(checkbox)
@@ -588,7 +661,7 @@ class ModernSliceSizeSelector(ModernControlBase):
     def _setup_controls(self):
         """Setup slice size controls"""
         button_layout = QHBoxLayout()
-        button_layout.setSpacing(4)
+        button_layout.setSpacing(8)
 
         self._button_group = QButtonGroup(self)
 
@@ -621,20 +694,21 @@ class ModernSliceSizeSelector(ModernControlBase):
         """Apply toggle button styling"""
         button_style = """
             QPushButton {
-                background-color: #F5F5F5;
-                border: 1px solid #E0E0E0;
-                border-radius: 4px;
+                background: rgba(255, 255, 255, 0.1);
+                border: 1px solid rgba(255, 255, 255, 0.2);
+                border-radius: 6px;
                 padding: 6px 12px;
                 font-weight: 500;
-                color: #424242;
+                color: rgba(255, 255, 255, 0.8);
             }
             QPushButton:hover {
-                background-color: #E8F5E8;
-                border-color: #4CAF50;
+                background: rgba(255, 255, 255, 0.15);
+                border-color: rgba(255, 255, 255, 0.3);
+                color: rgba(255, 255, 255, 0.9);
             }
             QPushButton:checked {
-                background-color: #4CAF50;
-                border-color: #4CAF50;
+                background: rgba(156, 39, 176, 0.7);
+                border-color: rgba(156, 39, 176, 0.8);
                 color: white;
             }
         """
@@ -672,6 +746,41 @@ class ModernCAPTypeSelector(ModernControlBase):
     def _setup_controls(self):
         """Setup CAP type controls"""
         combo = QComboBox()
+        combo.setMinimumHeight(32)
+        combo.setStyleSheet("""
+            QComboBox {
+                background: rgba(255, 255, 255, 0.1);
+                border: 1px solid rgba(255, 255, 255, 0.2);
+                border-radius: 6px;
+                padding: 4px 8px;
+                color: rgba(255, 255, 255, 0.9);
+            }
+            QComboBox:hover {
+                background: rgba(255, 255, 255, 0.15);
+                border-color: rgba(255, 255, 255, 0.3);
+            }
+            QComboBox:focus {
+                border-color: rgba(70, 130, 255, 0.8);
+            }
+            QComboBox::drop-down {
+                border: none;
+                width: 20px;
+            }
+            QComboBox::down-arrow {
+                image: none;
+                border-left: 4px solid transparent;
+                border-right: 4px solid transparent;
+                border-top: 4px solid rgba(255, 255, 255, 0.6);
+                margin-right: 6px;
+            }
+            QComboBox QAbstractItemView {
+                background: rgba(40, 40, 60, 0.95);
+                border: 1px solid rgba(255, 255, 255, 0.2);
+                border-radius: 6px;
+                color: rgba(255, 255, 255, 0.9);
+                selection-background-color: rgba(70, 130, 255, 0.7);
+            }
+        """)
 
         # Add all Legacy CAP types
         cap_types = [

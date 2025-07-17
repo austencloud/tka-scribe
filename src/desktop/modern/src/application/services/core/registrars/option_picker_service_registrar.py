@@ -156,17 +156,36 @@ class OptionPickerServiceRegistrar(BaseServiceRegistrar):
             self._mark_service_available("OptionPickerSizeCalculator")
 
             # Register services with dependencies
-            container.register_factory(
-                SequenceOptionService,
-                lambda c: SequenceOptionService(
-                    position_matcher=c.resolve(PictographPositionMatcher)
-                ),
-            )
+            # Try direct singleton registration first to test
+            try:
+                position_matcher = PictographPositionMatcher()
+                sequence_option_service = SequenceOptionService(
+                    position_matcher=position_matcher
+                )
+                container.register_instance(
+                    SequenceOptionService, sequence_option_service
+                )
+            except Exception as e:
+                logger.error(f"Failed to create SequenceOptionService instance: {e}")
+
+                # Fallback to factory registration
+                def create_sequence_option_service(c):
+                    return SequenceOptionService(
+                        position_matcher=c.resolve(PictographPositionMatcher)
+                    )
+
+                container.register_factory(
+                    SequenceOptionService,
+                    create_sequence_option_service,
+                )
             self._mark_service_available("SequenceOptionService")
+
+            def create_option_loader(c):
+                return OptionLoader(frame_pool_service=c.resolve(FramePoolService))
 
             container.register_factory(
                 OptionLoader,
-                lambda c: OptionLoader(frame_pool_service=c.resolve(FramePoolService)),
+                create_option_loader,
             )
             self._mark_service_available("OptionLoader")
 

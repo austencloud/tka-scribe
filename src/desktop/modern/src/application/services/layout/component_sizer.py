@@ -7,7 +7,9 @@ Framework-agnostic service for responsive component sizing.
 
 import logging
 from enum import Enum
-from typing import NamedTuple, Optional
+from typing import Any, Dict, NamedTuple, Optional, Tuple
+
+from core.interfaces.core_services import IComponentSizer
 
 logger = logging.getLogger(__name__)
 
@@ -43,7 +45,7 @@ class Size(NamedTuple):
     height: int
 
 
-class ComponentSizer:
+class ComponentSizer(IComponentSizer):
     """
     Calculates optimal component sizes based on container constraints.
 
@@ -193,3 +195,53 @@ class ComponentSizer:
             Final size after accounting for borders and spacing
         """
         return base_size - (2 * border_width) - spacing
+
+    # Interface implementation methods
+    def calculate_component_size(
+        self, component_type: str, content_size: Tuple[int, int]
+    ) -> Tuple[int, int]:
+        """Calculate component size based on content (interface implementation)."""
+        content_width, content_height = content_size
+
+        # Map string to enum
+        comp_type = ComponentType.PICTOGRAPH_FRAME
+        if component_type == "beat_frame":
+            comp_type = ComponentType.BEAT_FRAME
+        elif component_type == "option_frame":
+            comp_type = ComponentType.OPTION_FRAME
+
+        # Use existing calculation logic
+        dimensions = self.calculate_size(comp_type, content_width, content_height)
+        return (dimensions.width, dimensions.height)
+
+    def get_size_constraints(self, component_type: str) -> Dict[str, Any]:
+        """Get size constraints for component type (interface implementation)."""
+        return {
+            "min_width": 50,
+            "min_height": 50,
+            "max_width": 2000,
+            "max_height": 2000,
+            "aspect_ratio": 1.0,
+            "border_width": 2,
+            "spacing": 4,
+        }
+
+    def apply_responsive_sizing(
+        self, base_size: Tuple[int, int], viewport_size: Tuple[int, int]
+    ) -> Tuple[int, int]:
+        """Apply responsive sizing rules (interface implementation)."""
+        base_width, base_height = base_size
+        viewport_width, viewport_height = viewport_size
+
+        # Calculate scale factor based on viewport
+        scale_x = viewport_width / 1920  # Assume 1920 as base width
+        scale_y = viewport_height / 1080  # Assume 1080 as base height
+        scale_factor = min(
+            scale_x, scale_y
+        )  # Use smaller scale to maintain aspect ratio
+
+        # Apply scaling with minimum bounds
+        scaled_width = max(50, int(base_width * scale_factor))
+        scaled_height = max(50, int(base_height * scale_factor))
+
+        return (scaled_width, scaled_height)

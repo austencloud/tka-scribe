@@ -12,9 +12,10 @@ Replaces complex orchestration logic previously embedded in OptionPickerSection.
 
 import logging
 import time
-from typing import Callable, List
+from typing import Any, Callable, Dict, List
 
 from application.services.option_picker.frame_pool_service import FramePoolService
+from core.interfaces.sequence_operation_services import IOptionLoader
 from core.monitoring import performance_monitor
 from domain.models.pictograph_data import PictographData
 from presentation.components.option_picker.components.option_pictograph import (
@@ -25,7 +26,7 @@ from presentation.components.option_picker.types.letter_types import LetterType
 logger = logging.getLogger(__name__)
 
 
-class OptionLoader:
+class OptionLoader(IOptionLoader):
     """
     Microservice for orchestrating option loading operations.
 
@@ -256,3 +257,36 @@ class OptionLoader:
 
         pool_size = self._frame_pool_service.get_pool_size()
         return required_frames <= pool_size
+
+    # Interface implementation methods
+    def load_options(self, criteria: Dict[str, Any]) -> List[Any]:
+        """Load options based on criteria (interface implementation)."""
+        pictographs = criteria.get("pictographs", [])
+        letter_type = criteria.get("letter_type", LetterType.Type1)
+
+        # Use existing load_pictographs method
+        self.load_pictographs(pictographs, letter_type)
+
+        # Return loaded pictographs
+        return pictographs
+
+    def get_available_options(self, context: str) -> List[Any]:
+        """Get available options for context (interface implementation)."""
+        # Return empty list for now - would be populated based on context
+        return []
+
+    def validate_option_criteria(self, criteria: Dict[str, Any]) -> bool:
+        """Validate option loading criteria (interface implementation)."""
+        try:
+            # Check required fields
+            if "pictographs" not in criteria:
+                return False
+
+            pictographs = criteria["pictographs"]
+            if not isinstance(pictographs, list):
+                return False
+
+            # Check if we can handle the required frames
+            return self.can_handle_load(len(pictographs))
+        except Exception:
+            return False

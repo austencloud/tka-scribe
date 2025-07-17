@@ -8,6 +8,13 @@ These interfaces complete the coverage for data building and factory operations.
 from abc import ABC, abstractmethod
 from typing import Any, Dict, List, Optional, Tuple
 
+from domain.models.beat_data import BeatData
+from domain.models.enums import ElementalType, VTGMode
+from domain.models.glyph_data import GlyphData
+from domain.models.motion_data import MotionData
+from domain.models.pictograph_data import PictographData
+from presentation.components.option_picker.types.letter_types import LetterType
+
 
 class IBeatDataBuilder(ABC):
     """Interface for beat data building operations."""
@@ -69,11 +76,7 @@ class IPictographFactory(ABC):
     """Interface for pictograph factory operations."""
 
     @abstractmethod
-    def create_pictograph(
-        self, 
-        pictograph_type: str, 
-        config: Dict[str, Any]
-    ) -> Any:
+    def create_pictograph(self, pictograph_type: str, config: Dict[str, Any]) -> Any:
         """
         Create pictograph instance.
 
@@ -98,9 +101,7 @@ class IPictographFactory(ABC):
 
     @abstractmethod
     def validate_pictograph_config(
-        self, 
-        pictograph_type: str, 
-        config: Dict[str, Any]
+        self, pictograph_type: str, config: Dict[str, Any]
     ) -> bool:
         """
         Validate pictograph configuration.
@@ -133,10 +134,7 @@ class IConversionUtils(ABC):
 
     @abstractmethod
     def convert_coordinates(
-        self, 
-        coords: Tuple[float, float], 
-        from_system: str, 
-        to_system: str
+        self, coords: Tuple[float, float], from_system: str, to_system: str
     ) -> Tuple[float, float]:
         """
         Convert coordinates between systems.
@@ -152,12 +150,7 @@ class IConversionUtils(ABC):
         pass
 
     @abstractmethod
-    def convert_color_format(
-        self, 
-        color: str, 
-        from_format: str, 
-        to_format: str
-    ) -> str:
+    def convert_color_format(self, color: str, from_format: str, to_format: str) -> str:
         """
         Convert color between formats.
 
@@ -172,12 +165,7 @@ class IConversionUtils(ABC):
         pass
 
     @abstractmethod
-    def convert_units(
-        self, 
-        value: float, 
-        from_unit: str, 
-        to_unit: str
-    ) -> float:
+    def convert_units(self, value: float, from_unit: str, to_unit: str) -> float:
         """
         Convert units between measurement systems.
 
@@ -224,9 +212,7 @@ class IDatasetQuery(ABC):
 
     @abstractmethod
     def filter_by_attributes(
-        self, 
-        dataset: List[Any], 
-        attributes: Dict[str, Any]
+        self, dataset: List[Any], attributes: Dict[str, Any]
     ) -> List[Any]:
         """
         Filter dataset by attributes.
@@ -242,10 +228,7 @@ class IDatasetQuery(ABC):
 
     @abstractmethod
     def sort_dataset(
-        self, 
-        dataset: List[Any], 
-        sort_key: str, 
-        reverse: bool = False
+        self, dataset: List[Any], sort_key: str, reverse: bool = False
     ) -> List[Any]:
         """
         Sort dataset by key.
@@ -276,10 +259,7 @@ class IDatasetQuery(ABC):
 
     @abstractmethod
     def aggregate_data(
-        self, 
-        dataset: List[Any], 
-        group_by: str, 
-        aggregation_func: str
+        self, dataset: List[Any], group_by: str, aggregation_func: str
     ) -> Dict[str, Any]:
         """
         Aggregate dataset by grouping criteria.
@@ -296,9 +276,7 @@ class IDatasetQuery(ABC):
 
     @abstractmethod
     def apply_filters(
-        self, 
-        dataset: List[Any], 
-        filters: List[Dict[str, Any]]
+        self, dataset: List[Any], filters: List[Dict[str, Any]]
     ) -> List[Any]:
         """
         Apply multiple filters to dataset.
@@ -425,9 +403,7 @@ class IPictographDataService(ABC):
 
     @abstractmethod
     def update_pictograph_metadata(
-        self, 
-        pictograph_id: str, 
-        metadata: Dict[str, Any]
+        self, pictograph_id: str, metadata: Dict[str, Any]
     ) -> bool:
         """
         Update pictograph metadata.
@@ -442,4 +418,126 @@ class IPictographDataService(ABC):
         Note:
             Web implementation: Updates cached metadata
         """
+        pass
+
+
+class IPositionAttributeMapper(ABC):
+    """Interface for position attribute mapping services."""
+
+    @abstractmethod
+    def map_position_attributes(self, position_data: Dict[str, Any]) -> Dict[str, Any]:
+        """Map position attributes between formats."""
+        pass
+
+    @abstractmethod
+    def validate_position_data(self, position_data: Dict[str, Any]) -> bool:
+        """Validate position data structure."""
+        pass
+
+    @abstractmethod
+    def get_default_position_attributes(self) -> Dict[str, Any]:
+        """Get default position attributes."""
+        pass
+
+
+class IPositionResolver(ABC):
+    """Interface for position resolution services."""
+
+    @abstractmethod
+    def resolve_position(self, position_key: str) -> Optional[Any]:
+        """Resolve position from key."""
+        pass
+
+    @abstractmethod
+    def get_valid_positions(self) -> List[str]:
+        """Get list of valid position keys."""
+        pass
+
+    @abstractmethod
+    def validate_position_key(self, position_key: str) -> bool:
+        """Validate position key format."""
+        pass
+
+
+class IGlyphDataService(ABC):
+    """Interface for glyph data services."""
+
+    @abstractmethod
+    def determine_glyph_data(
+        self, pictograph_data: "PictographData"
+    ) -> Optional["GlyphData"]:
+        """
+        Determine glyph data from pictograph information.
+
+        Args:
+            pictograph_data: The pictograph data to analyze
+
+        Returns:
+            GlyphData with determined glyph information, or None if no glyphs needed
+        """
+        pass
+
+    @abstractmethod
+    def determine_glyph_data_from_beat(
+        self, beat_data: "BeatData"
+    ) -> Optional["GlyphData"]:
+        """
+        Backward compatibility method to determine glyph data from beat data.
+
+        Args:
+            beat_data: The beat data to analyze
+
+        Returns:
+            GlyphData with determined glyph information, or None if no glyphs needed
+        """
+        pass
+
+    @abstractmethod
+    def _beat_data_to_pictograph_data(self, beat_data: "BeatData") -> "PictographData":
+        """Convert BeatData to PictographData for glyph processing."""
+        pass
+
+    @abstractmethod
+    def _determine_letter_type(self, letter: str) -> Optional["LetterType"]:
+        """Determine the letter type from the letter string."""
+        pass
+
+    @abstractmethod
+    def _determine_vtg_mode(
+        self, pictograph_data: "PictographData"
+    ) -> Optional["VTGMode"]:
+        """
+        Determine VTG mode from motion data.
+
+        This is a simplified implementation. The full logic is quite complex
+        and involves grid mode checking, position analysis, etc.
+        """
+        pass
+
+    @abstractmethod
+    def _motions_same_direction(
+        self, blue_motion: "MotionData", red_motion: "MotionData"
+    ) -> bool:
+        """Check if two motions are in the same direction."""
+        pass
+
+    @abstractmethod
+    def _determine_timing(
+        self, blue_motion: "MotionData", red_motion: "MotionData"
+    ) -> str:
+        """Determine if motions are split, together, or quarter pattern."""
+        pass
+
+    @abstractmethod
+    def _vtg_to_elemental(
+        self, vtg_mode: Optional["VTGMode"]
+    ) -> Optional["ElementalType"]:
+        """Convert VTG mode to elemental type."""
+        pass
+
+    @abstractmethod
+    def _determine_positions(
+        self, pictograph_data: "PictographData"
+    ) -> Tuple[Optional[str], Optional[str]]:
+        """Determine start and end positions from pictograph data."""
         pass

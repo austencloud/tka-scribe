@@ -3,13 +3,14 @@ Dimension Calculator - Pure Calculation Functions
 Merged from responsive_sizing_manager.py and dimension_analyzer.py
 """
 
-from typing import Dict, Tuple
+from typing import Any, Dict, Tuple
 
+from core.interfaces.core_services import IDimensionCalculator
 from PyQt6.QtCore import QSize
 from PyQt6.QtWidgets import QApplication, QWidget
 
 
-class DimensionCalculator:
+class DimensionCalculator(IDimensionCalculator):
     """Handles all dimension calculations for option picker layout."""
 
     def __init__(self):
@@ -185,3 +186,48 @@ class DimensionCalculator:
                 "rows_needed": (pictograph_count - 1) // columns + 1,
             }
         return results
+
+    # Interface implementation methods
+    def calculate_dimensions(
+        self, content: Any, constraints: Dict[str, Any]
+    ) -> Tuple[int, int]:
+        """Calculate dimensions for content with constraints (interface implementation)."""
+        # Extract constraints
+        max_width = constraints.get("max_width", 800)
+        max_height = constraints.get("max_height", 600)
+        aspect_ratio = constraints.get("aspect_ratio", 1.0)
+
+        # Calculate based on content type
+        if hasattr(content, "width") and hasattr(content, "height"):
+            base_width = content.width
+            base_height = content.height
+        else:
+            # Default content size
+            base_width = 200
+            base_height = 200
+
+        # Apply aspect ratio
+        if aspect_ratio != 1.0:
+            base_height = int(base_width / aspect_ratio)
+
+        # Ensure within constraints
+        width = min(base_width, max_width)
+        height = min(base_height, max_height)
+
+        return (max(1, width), max(1, height))
+
+    def get_aspect_ratio(self, dimensions: Tuple[int, int]) -> float:
+        """Get aspect ratio from dimensions (interface implementation)."""
+        width, height = dimensions
+        if height == 0:
+            return 1.0
+        return width / height
+
+    def scale_dimensions(
+        self, dimensions: Tuple[int, int], scale_factor: float
+    ) -> Tuple[int, int]:
+        """Scale dimensions by factor (interface implementation)."""
+        width, height = dimensions
+        scaled_width = max(1, int(width * scale_factor))
+        scaled_height = max(1, int(height * scale_factor))
+        return (scaled_width, scaled_height)

@@ -5,8 +5,9 @@ This service determines glyph information (VTG mode, elemental type, letter type
 from pictograph data and motion information, following validated glyph classification logic.
 """
 
-from typing import Optional
+from typing import Any, Dict, Optional
 
+from core.interfaces.data_builder_services import IGlyphDataService
 from domain.models import (
     BeatData,
     ElementalType,
@@ -19,7 +20,7 @@ from domain.models import (
 )
 
 
-class GlyphDataService:
+class GlyphDataService(IGlyphDataService):
     """Service for determining glyph data from beat information."""
 
     # Complete mapping from letters to letter types

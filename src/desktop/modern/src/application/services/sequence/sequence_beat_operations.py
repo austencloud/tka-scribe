@@ -12,6 +12,7 @@ from application.services.option_picker.option_orientation_updater import (
     OptionOrientationUpdater,
 )
 from application.services.sequence.beat_factory import BeatFactory
+from application.services.sequence.sequence_beat_service import SequenceBeatService
 from application.services.sequence.sequence_persister import SequencePersister
 from domain.models.beat_data import BeatData
 from domain.models.pictograph_data import PictographData
@@ -538,3 +539,13 @@ class SequenceBeatOperations(QObject):
             if n % i == 0 and can_form_by_repeating(word, pattern):
                 return pattern
         return word
+
+    def get_beat_service(self) -> SequenceBeatService:
+        """Get the pure beat service for interface-based operations."""
+        if not hasattr(self, "_beat_service"):
+            self._beat_service = SequenceBeatService(
+                sequence_getter=self.get_current_sequence,
+                sequence_setter=self.workbench_setter,
+                persister=self.persister,
+            )
+        return self._beat_service

@@ -16,11 +16,14 @@ from presentation.adapters.qt.sequence_loader_adapter import QtSequenceLoaderAda
 from PyQt6.QtCore import pyqtSignal
 from PyQt6.QtWidgets import QWidget
 
+from ...components.option_picker.option_picker_manager import OptionPickerManager
+from ...components.start_position_picker.start_position_selection_handler import (
+    StartPositionSelectionHandler,
+)
+
 # Import refactored components
 from .layout_manager import ConstructTabLayoutManager
-from .option_picker_manager import OptionPickerManager
 from .signal_coordinator import SignalCoordinator
-from .start_position_handler import StartPositionHandler
 
 # DataConversionService moved to application layer and imported above
 
@@ -118,7 +121,7 @@ class ConstructTabWidget(QWidget):
             self.container, self.progress_callback
         )
 
-        self.start_position_handler = StartPositionHandler(
+        self.start_position_handler = StartPositionSelectionHandler(
             workbench_setter=workbench_setter
         )
 
@@ -218,9 +221,9 @@ class ConstructTabWidget(QWidget):
             self.start_position_manager,
         )
 
-        # Load sequence from current_sequence.json on startup if no session restoration
-        # This mimics the legacy behavior of automatically loading the current sequence
-        self._load_sequence_on_startup()
+        # PERFORMANCE OPTIMIZATION: Defer sequence loading to after UI is fully ready
+        # This reduces construct tab initialization time
+        self._schedule_deferred_sequence_loading()
 
     def _connect_external_signals(self):
         """Connect external signals from the signal coordinator to this widget"""
@@ -339,6 +342,19 @@ class ConstructTabWidget(QWidget):
     ):
         """Update beat orientation directly via beat operations service."""
         self.beat_operations.update_beat_orientation(beat_index, color, new_orientation)
+
+    def _schedule_deferred_sequence_loading(self):
+        """Schedule sequence loading to happen after UI is fully ready - PERFORMANCE OPTIMIZED"""
+        try:
+            # PERFORMANCE OPTIMIZATION: Use longer delay to ensure main window is fully loaded
+            # This prevents sequence loading from blocking the startup process
+            from PyQt6.QtCore import QTimer
+
+            # Defer sequence loading by 1 second to let startup complete
+            QTimer.singleShot(1000, self._perform_sequence_load)
+
+        except Exception as e:
+            print(f"❌ [CONSTRUCT_TAB] Failed to setup deferred sequence loading: {e}")
 
     def _load_sequence_on_startup(self):
         """Load sequence from current_sequence.json on startup - exactly like legacy"""

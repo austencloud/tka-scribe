@@ -3,10 +3,12 @@ Right Panel Tab Navigation Widget
 
 A tab-based navigation widget for the top of the right panel in the construct tab.
 Provides 3 tabs for switching between Picker, Graph Editor, and Generate Controls.
+Uses the centralized glassmorphism style system for consistent modern aesthetics.
 """
 
 from typing import Optional
 
+from presentation.styles.glassmorphism_styles import GlassmorphismStyleGenerator
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtWidgets import QFrame, QHBoxLayout, QPushButton, QSizePolicy, QWidget
 
@@ -57,12 +59,20 @@ class RightPanelTabWidget(QWidget):
     def _create_tab_button(
         self, text: str, index: int, signal: pyqtSignal
     ) -> QPushButton:
-        """Create a single tab button."""
+        """Create a single tab button with glassmorphism styling."""
         button = QPushButton(text)
         button.setCheckable(True)
         button.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
-        button.setMinimumHeight(40)
-        button.setMaximumHeight(40)
+        button.setMinimumHeight(48)
+        button.setMaximumHeight(48)
+
+        # Add tooltip for better UX
+        tooltips = {
+            0: "Build and construct your sequence",
+            1: "Generate AI-powered content",
+            2: "Edit and refine your sequence",
+        }
+        button.setToolTip(tooltips.get(index, ""))
 
         # Connect the button click to both the signal and tab switching
         button.clicked.connect(lambda: self._on_tab_clicked(index))
@@ -92,43 +102,21 @@ class RightPanelTabWidget(QWidget):
         return self._current_tab
 
     def _apply_styling(self):
-        """Apply modern tab styling."""
-        self.setStyleSheet(
-            """
-            RightPanelTabWidget {
-                background-color: #f0f0f0;
-                border-bottom: 2px solid #d0d0d0;
-            }
-            
-            QPushButton {
-                background-color: #e8e8e8;
-                border: none;
-                border-right: 1px solid #d0d0d0;
-                color: #666666;
-                font-size: 12px;
-                font-weight: 500;
-                padding: 8px 12px;
-                text-align: center;
-            }
-            
-            QPushButton:last-child {
-                border-right: none;
-            }
-            
-            QPushButton:hover {
-                background-color: #f5f5f5;
-                color: #333333;
-            }
-            
-            QPushButton:checked {
-                background-color: #ffffff;
-                color: #000000;
-                font-weight: 600;
-                border-bottom: 2px solid #007acc;
-            }
-            
-            QPushButton:pressed {
-                background-color: #e0e0e0;
-            }
+        """Apply modern glassmorphism tab styling using the centralized style system."""
+        # Container styling
+        container_style = """
+        RightPanelTabWidget {
+            background: rgba(255, 255, 255, 0.05);
+            border: none;
+            border-radius: 12px;
+            margin: 4px;
+        }
         """
+
+        # Tab button styling using the glassmorphism style generator
+        tab_style = GlassmorphismStyleGenerator.create_tab_style(
+            active_variant="accent"
         )
+
+        # Combine all styles
+        self.setStyleSheet(container_style + tab_style)

@@ -9,6 +9,8 @@ import logging
 from enum import Enum
 from typing import List, NamedTuple, Optional
 
+from core.interfaces.workbench_services import IBeatSelectionService
+
 logger = logging.getLogger(__name__)
 
 
@@ -45,7 +47,7 @@ class SelectionChangeResult(NamedTuple):
         return cls(True, SelectionType.START_POSITION, -1, previous, [])
 
 
-class BeatSelectionService:
+class BeatSelectionService(IBeatSelectionService):
     """
     Pure business service for beat selection management.
 
@@ -386,3 +388,47 @@ class BeatSelectionService:
             "has_selection": self.has_selection(),
             "state_valid": self.validate_selection_state(),
         }
+
+    # Missing interface methods implementation
+    def select_multiple_beats(self, beat_indices: List[int]) -> bool:
+        """Select multiple beats (interface implementation)."""
+        try:
+            # Clear current selection first
+            self._selected_beats.clear()
+
+            # Add all valid indices
+            valid_indices = []
+            for index in beat_indices:
+                if self._is_valid_beat_index(index):
+                    self._selected_beats.add(index)
+                    valid_indices.append(index)
+
+            # Update primary selection to first valid index
+            if valid_indices:
+                self._primary_selection = valid_indices[0]
+                logger.info(f"✅ [SELECTION] Selected multiple beats: {valid_indices}")
+                return True
+            else:
+                logger.warning("❌ [SELECTION] No valid indices in multiple selection")
+                return False
+        except Exception as e:
+            logger.error(f"❌ [SELECTION] Error in select_multiple_beats: {e}")
+            return False
+
+    def deselect_all(self) -> None:
+        """Deselect all beats (interface implementation)."""
+        try:
+            previous_count = len(self._selected_beats)
+            self._selected_beats.clear()
+            self._primary_selection = None
+            logger.info(f"✅ [SELECTION] Deselected all beats (was {previous_count})")
+        except Exception as e:
+            logger.error(f"❌ [SELECTION] Error in deselect_all: {e}")
+
+    def get_selected_beats(self) -> List[int]:
+        """Get list of selected beat indices (interface implementation)."""
+        return sorted(list(self._selected_beats))
+
+    def get_primary_selection(self) -> Optional[int]:
+        """Get primary selected beat index (interface implementation)."""
+        return self._primary_selection

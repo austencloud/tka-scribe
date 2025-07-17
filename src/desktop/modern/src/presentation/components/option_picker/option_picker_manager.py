@@ -57,6 +57,29 @@ class OptionPickerManager(QObject):
             return
 
         try:
+            print(
+                f"🔍 [OPTION_PICKER_MANAGER] populate_from_start_position called with:"
+            )
+            print(f"  position_key: {position_key}")
+            print(f"  start_position_beat_data: {start_position_beat_data}")
+            print(f"  start_position_beat_data type: {type(start_position_beat_data)}")
+
+            # Validate input parameters
+            if start_position_beat_data is None:
+                print(
+                    f"❌ [OPTION_PICKER_MANAGER] start_position_beat_data is None for position_key: {position_key}"
+                )
+                return
+
+            if (
+                not hasattr(start_position_beat_data, "pictograph_data")
+                or start_position_beat_data.pictograph_data is None
+            ):
+                print(
+                    f"❌ [OPTION_PICKER_MANAGER] start_position_beat_data.pictograph_data is None for position_key: {position_key}"
+                )
+                return
+
             # Create proper modern SequenceData with start position as beat 0
             from domain.models.beat_data import BeatData
             from domain.models.sequence_data import SequenceData
@@ -105,6 +128,22 @@ class OptionPickerManager(QObject):
             return
 
         try:
+            # Validate input parameters
+            if start_position_beat_data is None:
+                print(
+                    f"❌ [OPTION_PICKER_MANAGER] start_position_beat_data is None for position_key: {position_key}"
+                )
+                return
+
+            if (
+                not hasattr(start_position_beat_data, "pictograph_data")
+                or start_position_beat_data.pictograph_data is None
+            ):
+                print(
+                    f"❌ [OPTION_PICKER_MANAGER] start_position_beat_data.pictograph_data is None for position_key: {position_key}"
+                )
+                return
+
             # Create proper modern SequenceData with start position as beat 0
             from domain.models.beat_data import BeatData
             from domain.models.sequence_data import SequenceData
@@ -138,9 +177,10 @@ class OptionPickerManager(QObject):
                     scroll = (
                         self.option_picker.option_picker_widget.option_picker_scroll
                     )
-                    # Set the pending sequence data
-                    scroll._pending_sequence_data = sequence_data
-                    # Prepare content without animations
+                    # Use the refresh orchestrator to prepare content without animations
+                    scroll._refresh_orchestrator.load_options_from_sequence(
+                        sequence_data
+                    )
                     scroll.prepare_for_transition()
 
         except Exception as e:

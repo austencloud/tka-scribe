@@ -6,17 +6,18 @@ Extracted from UIStateManager to follow single responsibility principle.
 """
 
 import logging
-from typing import Any, Dict
+from typing import Any, Dict, List
 
 from core.events.event_bus import EventPriority, UIEvent, get_event_bus
+from core.interfaces.core_services import IUIStateManager
 
 logger = logging.getLogger(__name__)
 
 
-class TabStateManager:
+class TabStateManager(IUIStateManager):
     """
     Tab state management.
-    
+
     Handles:
     - Active tab tracking
     - Tab switching logic
@@ -117,3 +118,40 @@ class TabStateManager:
             self._active_tab = state["active_tab"]
         if "tab_states" in state:
             self._tab_states = state["tab_states"]
+
+    # Interface implementation methods
+    def get_setting(self, key: str, default: Any = None) -> Any:
+        """Get a setting value (interface implementation)."""
+        return self._tab_states.get(self._active_tab, {}).get(key, default)
+
+    def set_setting(self, key: str, value: Any) -> None:
+        """Set a setting value (interface implementation)."""
+        if self._active_tab not in self._tab_states:
+            self._tab_states[self._active_tab] = {}
+        self._tab_states[self._active_tab][key] = value
+
+    def get_all_settings(self) -> Dict[str, Any]:
+        """Get all settings (interface implementation)."""
+        return self._tab_states.copy()
+
+    def clear_settings(self) -> None:
+        """Clear all settings (interface implementation)."""
+        self._tab_states.clear()
+
+    def save_state(self) -> None:
+        """Save current state to persistent storage (interface implementation)."""
+        state_data = {"active_tab": self._active_tab, "tab_states": self._tab_states}
+        # Emit save event
+        get_event_bus().emit(UIEvent("tab_state_save_requested", state_data))
+
+    def load_state(self) -> None:
+        """Load state from persistent storage (interface implementation)."""
+        # Emit load event
+        get_event_bus().emit(UIEvent("tab_state_load_requested", {}))
+
+    def toggle_graph_editor(self) -> bool:
+        """Toggle graph editor visibility (interface implementation)."""
+        current_state = self.get_setting("graph_editor_visible", False)
+        new_state = not current_state
+        self.set_setting("graph_editor_visible", new_state)
+        return new_state

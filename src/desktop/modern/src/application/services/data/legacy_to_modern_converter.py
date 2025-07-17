@@ -8,8 +8,9 @@ Focused solely on legacy-to-modern data transformation.
 import logging
 
 # Forward reference for PictographData
-from typing import TYPE_CHECKING, Any, Dict, Optional
+from typing import TYPE_CHECKING, Any, Dict, List, Optional
 
+from core.interfaces.data_services import ILegacyToModernConverter
 from domain.models.beat_data import BeatData
 from domain.models.glyph_data import GlyphData
 from domain.models.motion_data import MotionData
@@ -22,7 +23,7 @@ from .position_attribute_mapper import PositionAttributeMapper
 logger = logging.getLogger(__name__)
 
 
-class LegacyToModernConverter:
+class LegacyToModernConverter(ILegacyToModernConverter):
     """
     Converts legacy JSON format to modern domain models.
 
@@ -162,3 +163,72 @@ class LegacyToModernConverter:
         """Convert a legacy start position to a BeatData object."""
         # TODO: Implement this method
         pass
+
+    # Interface implementation methods
+    def convert_legacy_data(self, legacy_data: Dict[str, Any]) -> Any:
+        """Convert legacy data to modern format (interface implementation)."""
+        if "beats" in legacy_data:
+            return self.convert_legacy_sequence_to_modern(legacy_data)
+        elif "letter" in legacy_data:
+            return self.convert_legacy_beat_to_modern(legacy_data)
+        else:
+            return legacy_data
+
+    def validate_legacy_format(self, data: Dict[str, Any]) -> bool:
+        """Validate legacy data format (interface implementation)."""
+        try:
+            # Check for basic legacy structure
+            if isinstance(data, dict):
+                # Legacy sequence should have beats
+                if "beats" in data:
+                    return isinstance(data["beats"], list)
+                # Legacy beat should have letter
+                elif "letter" in data:
+                    return isinstance(data["letter"], str)
+            return False
+        except Exception:
+            return False
+
+    def get_conversion_metadata(self, legacy_data: Dict[str, Any]) -> Dict[str, Any]:
+        """Get metadata about conversion (interface implementation)."""
+        return {
+            "source_format": "legacy",
+            "target_format": "modern",
+            "data_type": "sequence" if "beats" in legacy_data else "beat",
+            "conversion_timestamp": "runtime",
+            "converter_version": "1.0",
+        }
+
+    # Interface implementation methods
+    def convert_sequence(self, legacy_sequence: List[Dict[str, Any]]) -> Optional[Any]:
+        """Convert legacy sequence to modern format."""
+        try:
+            from domain.models.sequence_data import SequenceData
+
+            beats = []
+            for i, beat_dict in enumerate(legacy_sequence):
+                beat_data = self.convert_legacy_to_beat_data(beat_dict, i + 1)
+                if beat_data:
+                    beats.append(beat_data)
+            return SequenceData(beats=beats)
+        except Exception as e:
+            logger.error(f"Error converting legacy sequence: {e}")
+            return None
+
+    def convert_beat(self, legacy_beat: Dict[str, Any]) -> Optional[Any]:
+        """Convert legacy beat to modern format."""
+        try:
+            beat_number = legacy_beat.get("beat_number", 1)
+            return self.convert_legacy_to_beat_data(legacy_beat, beat_number)
+        except Exception as e:
+            logger.error(f"Error converting legacy beat: {e}")
+            return None
+
+    def convert_pictograph(self, legacy_pictograph: Dict[str, Any]) -> Optional[Any]:
+        """Convert legacy pictograph to modern format."""
+        try:
+            # TODO: Implement pictograph conversion
+            return None
+        except Exception as e:
+            logger.error(f"Error converting legacy pictograph: {e}")
+            return None

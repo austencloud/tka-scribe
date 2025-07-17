@@ -204,12 +204,7 @@ class ISequenceBeatOperations(ABC):
         pass
 
     @abstractmethod
-    def move_beat(
-        self, 
-        sequence: Any, 
-        from_index: int, 
-        to_index: int
-    ) -> Any:
+    def move_beat(self, sequence: Any, from_index: int, to_index: int) -> Any:
         """
         Move beat within sequence.
 
@@ -262,12 +257,7 @@ class ISequenceBeatOperations(ABC):
         pass
 
     @abstractmethod
-    def swap_beats(
-        self, 
-        sequence: Any, 
-        index1: int, 
-        index2: int
-    ) -> Any:
+    def swap_beats(self, sequence: Any, index1: int, index2: int) -> Any:
         """
         Swap two beats in sequence.
 
@@ -404,9 +394,7 @@ class ISequenceGenerator(ABC):
 
     @abstractmethod
     def generate_random_sequence(
-        self, 
-        length: int, 
-        constraints: Optional[Dict[str, Any]] = None
+        self, length: int, constraints: Optional[Dict[str, Any]] = None
     ) -> Any:
         """
         Generate random sequence.
@@ -508,9 +496,7 @@ class ISequenceStartPositionManager(ABC):
 
     @abstractmethod
     def validate_start_position(
-        self, 
-        start_position: Any, 
-        sequence: Any
+        self, start_position: Any, sequence: Any
     ) -> Tuple[bool, List[str]]:
         """
         Validate start position for sequence.
@@ -610,11 +596,7 @@ class ISequenceTransformer(ABC):
 
     @abstractmethod
     def interpolate_beats(
-        self, 
-        sequence: Any, 
-        start_index: int, 
-        end_index: int, 
-        num_interpolated: int
+        self, sequence: Any, start_index: int, end_index: int, num_interpolated: int
     ) -> Any:
         """
         Interpolate beats between two positions.
@@ -704,9 +686,7 @@ class ISequenceValidator(ABC):
 
     @abstractmethod
     def validate_with_custom_rules(
-        self, 
-        sequence: Any, 
-        rules: List[Dict[str, Any]]
+        self, sequence: Any, rules: List[Dict[str, Any]]
     ) -> Tuple[bool, List[str]]:
         """
         Validate sequence with custom rules.
@@ -718,4 +698,68 @@ class ISequenceValidator(ABC):
         Returns:
             Tuple of (is_valid, error_messages)
         """
+        pass
+
+
+class IOptionLoader(ABC):
+    """Interface for option loading operations."""
+
+    @abstractmethod
+    def load_options(self, criteria: Dict[str, Any]) -> List[Any]:
+        """Load options based on criteria."""
+        pass
+
+    @abstractmethod
+    def get_available_options(self, context: str) -> List[Any]:
+        """Get available options for context."""
+        pass
+
+    @abstractmethod
+    def validate_option_criteria(self, criteria: Dict[str, Any]) -> bool:
+        """Validate option loading criteria."""
+        pass
+
+
+class ISequenceOptionService(ABC):
+    """Interface for sequence option services."""
+
+    @abstractmethod
+    def get_sequence_options(self, sequence_state: Any) -> List[Any]:
+        """Get options for sequence state."""
+        pass
+
+    @abstractmethod
+    def filter_options_by_continuity(
+        self, options: List[Any], last_beat: Any
+    ) -> List[Any]:
+        """Filter options to maintain sequence continuity."""
+        pass
+
+    @abstractmethod
+    def validate_option_continuity(self, option: Any, last_beat: Any) -> bool:
+        """Validate if option maintains continuity."""
+        pass
+
+
+class ISequenceStateTracker(ABC):
+    """Interface for sequence state tracking operations."""
+
+    @abstractmethod
+    def get_current_sequence(self) -> Optional[Any]:
+        """Get current sequence."""
+        pass
+
+    @abstractmethod
+    def set_current_sequence(self, sequence: Any) -> None:
+        """Set current sequence."""
+        pass
+
+    @abstractmethod
+    def get_sequence_state(self) -> Dict[str, Any]:
+        """Get complete sequence state."""
+        pass
+
+    @abstractmethod
+    def track_state_change(self, change_type: str, data: Any) -> None:
+        """Track state change."""
         pass

@@ -15,7 +15,7 @@ class OptionPoolService:
     No Qt dependencies - manages pool identifiers only.
     """
 
-    def __init__(self, max_items: int = 36):
+    def __init__(self, max_items: int = 100):
         """Initialize pool with specified maximum items."""
         self._max_items = max_items
         self._available_ids: Set[int] = set(range(max_items))

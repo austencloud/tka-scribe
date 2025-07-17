@@ -5,14 +5,16 @@ Handles mapping and conversion of position and orientation attributes between fo
 Focused solely on attribute transformation logic.
 """
 
-from enum import Enum
 import logging
-from typing import Any, Union
+from enum import Enum
+from typing import Any, Dict, Union
+
+from core.interfaces.data_builder_services import IPositionAttributeMapper
 
 logger = logging.getLogger(__name__)
 
 
-class PositionAttributeMapper:
+class PositionAttributeMapper(IPositionAttributeMapper):
     """
     Maps and converts position and orientation attributes between different formats.
 
@@ -177,3 +179,35 @@ class PositionAttributeMapper:
         )
 
         return validated
+
+    # Interface implementation methods
+    def map_position_attributes(self, position_data: Dict[str, Any]) -> Dict[str, Any]:
+        """Map position attributes between formats (interface implementation)."""
+        return self.validate_and_convert_attributes(position_data)
+
+    def validate_position_data(self, position_data: Dict[str, Any]) -> bool:
+        """Validate position data structure (interface implementation)."""
+        try:
+            # Check for required position attributes
+            if not isinstance(position_data, dict):
+                return False
+
+            # Basic validation - check if it has position-related keys
+            position_keys = ["start_pos", "end_pos", "start_ori", "end_ori", "location"]
+            has_position_data = any(key in position_data for key in position_keys)
+
+            return has_position_data
+        except Exception:
+            return False
+
+    def get_default_position_attributes(self) -> Dict[str, Any]:
+        """Get default position attributes (interface implementation)."""
+        return {
+            "start_pos": "alpha1",
+            "end_pos": "alpha1",
+            "start_ori": "in",
+            "end_ori": "in",
+            "location": "n",
+            "prop_rot_dir": "no_rot",
+            "turns": 0,
+        }

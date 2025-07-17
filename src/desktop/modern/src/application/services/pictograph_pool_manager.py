@@ -32,19 +32,88 @@ class PictographPoolManager(IPictographPoolManager):
         self._on_demand_components: Set[PictographComponent] = (
             set()
         )  # Track on-demand components
-        self._pool_size = (
-            100  # Increased from 50 to handle advanced mode with 16 positions
-        )
+        # PERFORMANCE OPTIMIZATION: Reduced from 100 to 25 for faster startup
+        # Pool will grow on-demand as needed
+        self._initial_pool_size = 35  # Larger initial pool to reduce on-demand creation (no expansion allowed)
+        self._max_pool_size = 100  # Restore original working size
+
         self._lock = threading.Lock()
         self._initialized = False
+        self._lazy_initialization = True  # Enable lazy initialization by default
         self._dummy_parent = None  # Will hold dummy parent widget
         self._progress_callback = None  # Progress callback for initialization
+        self._background_initialization_started = False
+        self._startup_complete = False  # Track if startup is complete
+        self._expansion_in_progress = False  # Prevent infinite expansion loops
 
-    def initialize_pool(self, progress_callback=None) -> None:
+    def initialize_pool(self, progress_callback=None, lazy=None) -> None:
         """Initialize the pictograph pool with pre-created components (public method)."""
         self._progress_callback = progress_callback
+
+        # Use lazy initialization setting if not explicitly specified
+        if lazy is None:
+            lazy = self._lazy_initialization
+
+        if lazy:
+            # Lazy initialization: create minimal pool and defer the rest
+            self._initialize_minimal_pool()
+            # DISABLED: Background initialization causes 30+ second delays
+            # self._start_background_initialization()
+        else:
+            # Full initialization during startup (original behavior)
+            with self._lock:
+                self._initialize_pool_internal()
+
+    def _initialize_minimal_pool(self) -> None:
+        """Initialize full pool during startup to eliminate on-demand creation."""
         with self._lock:
-            self._initialize_pool_internal()
+            if self._initialized:
+                return
+
+            logger.info(
+                f"🏊 [POOL] Initializing full pictograph pool ({self._initial_pool_size} components) to eliminate on-demand creation..."
+            )
+
+            # AGGRESSIVE OPTIMIZATION: Create full pool during splash to prevent option picker delays
+            self._create_pool_components(
+                self._initial_pool_size, progress_range=(57, 58)
+            )
+
+            self._initialized = True
+            logger.info(
+                f"✅ [POOL] Full pool ready with {self._pool.qsize()} components - no on-demand creation needed"
+            )
+
+    def _start_background_initialization(self) -> None:
+        """Start background initialization of the remaining pool components."""
+        if self._background_initialization_started:
+            return
+
+        self._background_initialization_started = True
+
+        # THREADING FIX: Use QTimer to run on main thread instead of background thread
+        from PyQt6.QtCore import QTimer
+
+        def main_thread_init():
+            """Main thread function to complete pool initialization."""
+            try:
+                with self._lock:
+                    remaining_size = self._initial_pool_size - self._pool.qsize()
+                    if remaining_size > 0:
+                        logger.info(
+                            f"🏊 [POOL] Background initialization of {remaining_size} components..."
+                        )
+                        self._create_pool_components(
+                            remaining_size, progress_range=(58, 59)
+                        )
+                        logger.info(
+                            f"✅ [POOL] Background initialization complete. Pool size: {self._pool.qsize()}"
+                        )
+            except Exception as e:
+                logger.error(f"❌ [POOL] Background initialization failed: {e}")
+
+        # Schedule on main thread with 500ms delay to let UI settle
+        QTimer.singleShot(500, main_thread_init)
 
     def _initialize_pool_internal(self) -> None:
         """Internal pool initialization method (called with lock held)."""
@@ -53,30 +122,48 @@ class PictographPoolManager(IPictographPoolManager):
             return
 
         logger.info(
-            f"🏊 [POOL] Initializing pictograph pool with {self._pool_size} components..."
+            f"🏊 [POOL] Initializing pictograph pool with {self._initial_pool_size} components..."
         )
+
+        # Create the full initial pool
+        self._create_pool_components(self._initial_pool_size, progress_range=(57, 59))
+        self._initialized = True
+
+    def _create_pool_components(
+        self, count: int, progress_range: tuple = (57, 59)
+    ) -> None:
+        """Create a specified number of pool components with progress reporting."""
+        if count <= 0:
+            return
 
         import time
 
         start_time = time.perf_counter()
+        start_progress, end_progress = progress_range
 
         # Report initialization start
         if self._progress_callback:
-            self._progress_callback(57, "Creating pictograph pool...")
+            self._progress_callback(
+                start_progress, f"Creating {count} pictograph components..."
+            )
 
-        # Create a dummy parent widget to prevent components from becoming top-level windows
-        from PyQt6.QtWidgets import QWidget
+        # Create dummy parent if not exists
+        if self._dummy_parent is None:
+            from PyQt6.QtWidgets import QWidget
 
-        dummy_parent = QWidget()
-        dummy_parent.hide()  # Keep it hidden
-        dummy_parent.setAttribute(Qt.WidgetAttribute.WA_DontShowOnScreen, True)
+            self._dummy_parent = QWidget()
+            self._dummy_parent.hide()
+            self._dummy_parent.setAttribute(
+                Qt.WidgetAttribute.WA_DontShowOnScreen, True
+            )
 
         # Pre-create components with dummy parent
-        for i in range(self._pool_size):
+        created_count = 0
+        for i in range(count):
             try:
                 # Create component with dummy parent to prevent window creation
                 component = create_pictograph_component(
-                    parent=dummy_parent, container=self.container
+                    parent=self._dummy_parent, container=self.container
                 )
                 # Set a reasonable default size
                 component.setFixedSize(100, 100)
@@ -85,39 +172,41 @@ class PictographPoolManager(IPictographPoolManager):
                 component.setAttribute(Qt.WidgetAttribute.WA_DontShowOnScreen, True)
                 component.setWindowFlags(Qt.WindowType.Widget)
                 self._pool.put(component)
+                created_count += 1
 
                 # Enhanced progress reporting every 5 components for smoother feedback
-                if i % 5 == 0 or i == self._pool_size - 1:
+                if i % 5 == 0 or i == count - 1:
                     progress_percent = int(
-                        57 + (i + 1) / self._pool_size * 2
-                    )  # 57-59% range
-                    components_created = i + 1
+                        start_progress
+                        + (i + 1) / count * (end_progress - start_progress)
+                    )
                     if self._progress_callback:
                         self._progress_callback(
                             progress_percent,
-                            f"Created {components_created}/{self._pool_size} components",
+                            f"Created {created_count}/{count} components",
                         )
 
                     logger.debug(
-                        f"🏊 [POOL] Created {components_created}/{self._pool_size} components"
+                        f"🏊 [POOL] Created {created_count}/{count} components"
                     )
 
             except Exception as e:
                 logger.error(f"❌ [POOL] Failed to create component {i}: {e}")
 
-        # Store dummy parent to keep it alive
-        self._dummy_parent = dummy_parent
-
         init_time = (time.perf_counter() - start_time) * 1000
 
         # Report completion
         if self._progress_callback:
-            self._progress_callback(59, "Pictograph pool ready")
+            self._progress_callback(end_progress, f"Created {created_count} components")
 
         logger.info(
-            f"✅ [POOL] Pool initialized in {init_time:.1f}ms with {self._pool.qsize()} components"
+            f"✅ [POOL] Created {created_count} components in {init_time:.1f}ms. Pool size: {self._pool.qsize()}"
         )
-        self._initialized = True
+
+    def mark_startup_complete(self) -> None:
+        """Mark startup as complete to allow pool expansion."""
+        self._startup_complete = True
+        logger.info("🏊 [POOL] Startup complete - pool expansion now enabled")
 
     def checkout_pictograph(self, parent=None) -> Optional[PictographComponent]:
         """
@@ -145,6 +234,49 @@ class PictographPoolManager(IPictographPoolManager):
                 return component
 
             if self._pool.empty():
+                # SIMPLIFIED: Only expand if we have very few components and startup is complete
+                total_created = (
+                    len(self._checked_out)
+                    + len(self._on_demand_components)
+                    + self._pool.qsize()
+                )
+                # CRITICAL FIX: Disable automatic pool expansion to prevent post-startup freezing
+                # Pool expansion was causing 30+ second delays after "Application ready"
+                if False:  # Completely disable automatic expansion
+                    self._expansion_in_progress = True
+                    try:
+                        expand_count = min(
+                            10, self._max_pool_size - total_created
+                        )  # Reasonable expansion for functionality
+                        if expand_count > 0:
+                            logger.info(
+                                f"🏊 [POOL] Expanding pool by {expand_count} components (total: {total_created}/{self._max_pool_size})..."
+                            )
+                            self._create_pool_components(
+                                expand_count, progress_range=(0, 0)
+                            )  # No progress callback for expansion
+                    finally:
+                        self._expansion_in_progress = False
+
+                    # Try to get component from expanded pool
+                    if not self._pool.empty():
+                        component = self._pool.get()
+                        self._checked_out.add(component)
+
+                        # Set parent and configure component
+                        if parent:
+                            component.setParent(parent)
+                            component.setWindowFlags(Qt.WindowType.Widget)
+                            component.setAttribute(
+                                Qt.WidgetAttribute.WA_DontShowOnScreen, False
+                            )
+
+                        logger.debug(
+                            f"🏊 [POOL] Checked out component from expanded pool"
+                        )
+                        return component
+
+                # Pool still empty or at max size, create on-demand
                 logger.warning("⚠️ [POOL] Pool exhausted, creating component on-demand")
                 component = create_pictograph_component(
                     parent=parent, container=self.container

@@ -480,3 +480,66 @@ class SessionStateTracker(ISessionStateTracker):
             logger.error(f"Failed to parse session data: {e}")
             # Return default session state on parse error
             return SessionState()
+
+    # Missing interface methods implementation
+    def export_session_state(self) -> str:
+        """Export current session state as JSON string (interface implementation)."""
+        try:
+            current_state = self._capture_current_state()
+            session_data = {
+                "version": "1.0",
+                "timestamp": datetime.now().isoformat(),
+                "session_id": str(uuid.uuid4()),
+                "state": asdict(current_state),
+            }
+            return json.dumps(session_data, indent=2)
+        except Exception as e:
+            logger.error(f"Failed to export session state: {e}")
+            return "{}"
+
+    def import_session_state(self, session_json: str) -> bool:
+        """Import session state from JSON string (interface implementation)."""
+        try:
+            session_data = json.loads(session_json)
+
+            # Validate basic structure
+            if "state" not in session_data:
+                logger.error("Invalid session data: missing 'state' field")
+                return False
+
+            # Parse the session state
+            session_state = self._parse_session_data(session_data["state"])
+
+            # Restore the state
+            result = self.restore_session(session_state)
+            return result.success
+
+        except json.JSONDecodeError as e:
+            logger.error(f"Failed to parse session JSON: {e}")
+            return False
+        except Exception as e:
+            logger.error(f"Failed to import session state: {e}")
+            return False
+
+    def migrate_session_state(self, from_version: str, to_version: str) -> bool:
+        """Migrate session state between versions (interface implementation)."""
+        try:
+            logger.info(f"Migrating session state from {from_version} to {to_version}")
+
+            # For now, we only support migration to current version
+            if to_version != "1.0":
+                logger.warning(f"Unsupported target version: {to_version}")
+                return False
+
+            # Version 1.0 is our current format, so no migration needed
+            if from_version == "1.0":
+                logger.info("No migration needed - already at target version")
+                return True
+
+            # Add migration logic here for future versions
+            logger.warning(f"Migration from {from_version} not implemented yet")
+            return False
+
+        except Exception as e:
+            logger.error(f"Failed to migrate session state: {e}")
+            return False

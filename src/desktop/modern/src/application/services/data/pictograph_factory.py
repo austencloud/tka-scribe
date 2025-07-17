@@ -6,10 +6,11 @@ Focused solely on object creation and data transformation logic.
 """
 
 import logging
-from typing import Optional
+from typing import Any, Dict, List, Optional
 
 import pandas as pd
 from application.services.glyphs.glyph_data_service import GlyphDataService
+from core.interfaces.data_builder_services import IPictographFactory
 from domain.models.arrow_data import ArrowData
 from domain.models.beat_data import BeatData
 from domain.models.enums import (
@@ -26,7 +27,7 @@ from domain.models.pictograph_data import PictographData
 logger = logging.getLogger(__name__)
 
 
-class PictographFactory:
+class PictographFactory(IPictographFactory):
     """
     Creates PictographData and BeatData objects from dataset entries.
 
@@ -236,3 +237,50 @@ class PictographFactory:
                 "error": "Failed to parse dataset entry",
             },
         )
+
+    # Interface implementation methods
+    def create_pictograph(self, pictograph_type: str, config: Dict[str, Any]) -> Any:
+        """Create pictograph instance (interface implementation)."""
+        if pictograph_type == "from_entry":
+            entry = config.get("entry", {})
+            grid_mode = config.get("grid_mode", "diamond")
+            return self.create_pictograph_data_from_entry(entry, grid_mode)
+
+        elif pictograph_type == "start_position":
+            entry = config.get("entry", {})
+            grid_mode = config.get("grid_mode", "diamond")
+            return self.create_start_position_pictograph_data(entry, grid_mode)
+
+        else:
+            raise ValueError(f"Unknown pictograph type: {pictograph_type}")
+
+    def get_available_types(self) -> List[str]:
+        """Get available pictograph types (interface implementation)."""
+        return ["from_entry", "start_position"]
+
+    def validate_pictograph_config(
+        self, pictograph_type: str, config: Dict[str, Any]
+    ) -> bool:
+        """Validate pictograph configuration (interface implementation)."""
+        if pictograph_type not in self.get_available_types():
+            return False
+
+        if pictograph_type in ["from_entry", "start_position"]:
+            return "entry" in config and isinstance(config["entry"], dict)
+
+        return False
+
+    def create_from_beat_data(self, beat_data: Any) -> Any:
+        """Create pictograph from beat data (interface implementation)."""
+        # Extract pictograph data from beat data if it exists
+        if hasattr(beat_data, "pictograph_data") and beat_data.pictograph_data:
+            return beat_data.pictograph_data
+
+        # Create minimal pictograph from beat metadata
+        entry = {
+            "letter": getattr(beat_data, "letter", "?"),
+            "start_pos": getattr(beat_data, "start_position", None),
+            "end_pos": getattr(beat_data, "end_position", None),
+        }
+
+        return self.create_pictograph_data_from_entry(entry, "diamond")

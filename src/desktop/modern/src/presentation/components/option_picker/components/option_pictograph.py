@@ -70,6 +70,15 @@ class OptionPictograph(QFrame):
         self.setMouseTracking(True)
         self.setCursor(Qt.CursorShape.PointingHandCursor)
 
+        # Apply baseline styling for proper appearance
+        self.setStyleSheet(
+            """
+            OptionPictograph {
+                background: rgba(255, 255, 255, 0.1);
+            }
+            """
+        )
+
     def update_pictograph(self, pictograph_data: PictographData):
         """Update the displayed pictograph using pool component."""
         self._pictograph_data = pictograph_data
@@ -136,25 +145,13 @@ class OptionPictograph(QFrame):
         super().mousePressEvent(event)
 
     def enterEvent(self, event):
-        """Handle mouse enter for hover effects."""
-        self.setStyleSheet(
-            """
-            OptionPictograph {
-                background: rgba(255, 255, 255, 0.2);
-            }
-        """
-        )
+        """Handle mouse enter - simplified without hover effects."""
+        # Keep original functionality without styling changes
         super().enterEvent(event)
 
     def leaveEvent(self, event):
-        """Handle mouse leave to restore normal styling."""
-        self.setStyleSheet(
-            """
-            OptionPictograph {
-                background: rgba(255, 255, 255, 0.1);
-            }
-        """
-        )
+        """Handle mouse leave - simplified without hover effects."""
+        # Keep original functionality without styling changes
         super().leaveEvent(event)
 
     def resize_option_view(self, main_window_size, option_picker_width, spacing=3):

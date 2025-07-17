@@ -8,8 +8,9 @@ solely on sequence transformations and spatial operations.
 
 import logging
 from enum import Enum
-from typing import Any, Dict
+from typing import Any, Dict, List
 
+from core.interfaces.sequence_operation_services import ISequenceTransformer
 from domain.models.beat_data import BeatData
 from domain.models.sequence_data import SequenceData
 
@@ -28,7 +29,7 @@ class WorkbenchOperation(Enum):
     REVERSE_SEQUENCE = "reverse_sequence"
 
 
-class SequenceTransformer:
+class SequenceTransformer(ISequenceTransformer):
     """
     Service for applying workbench transformations to sequences.
 
@@ -192,3 +193,44 @@ class SequenceTransformer:
             return True
         except ValueError:
             return False
+
+    # Interface implementation methods
+    def mirror_sequence(self, sequence: Any, axis: str = "vertical") -> Any:
+        """Mirror sequence along axis (interface implementation)."""
+        if axis == "vertical":
+            return self.apply_transformation(
+                sequence, WorkbenchOperation.VERTICAL_REFLECTION
+            )
+        elif axis == "horizontal":
+            return self.apply_transformation(
+                sequence, WorkbenchOperation.HORIZONTAL_REFLECTION
+            )
+        else:
+            return sequence
+
+    def rotate_sequence(self, sequence: Any, degrees: float) -> Any:
+        """Rotate sequence (interface implementation)."""
+        if degrees == 90:
+            return self.apply_transformation(sequence, WorkbenchOperation.ROTATION_90)
+        elif degrees == 180:
+            return self.apply_transformation(sequence, WorkbenchOperation.ROTATION_180)
+        elif degrees == 270:
+            return self.apply_transformation(sequence, WorkbenchOperation.ROTATION_270)
+        else:
+            return sequence
+
+    def scale_sequence(self, sequence: Any, scale_factor: float) -> Any:
+        """Scale sequence (interface implementation)."""
+        # Scaling not implemented in current transformer
+        return sequence
+
+    def reverse_sequence(self, sequence: Any) -> Any:
+        """Reverse sequence order (interface implementation)."""
+        return self.apply_transformation(sequence, WorkbenchOperation.SEQUENCE_REVERSAL)
+
+    def interpolate_beats(
+        self, sequence: Any, start_index: int, end_index: int, num_interpolated: int
+    ) -> Any:
+        """Interpolate beats between positions (interface implementation)."""
+        # Interpolation not implemented in current transformer
+        return sequence

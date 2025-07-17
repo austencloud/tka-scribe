@@ -110,12 +110,10 @@ class SequenceWorkbench(ViewableComponentBase):
             return None
 
     def initialize(self) -> None:
-        """Initialize the workbench component."""
+        """Initialize the workbench component with optimized startup."""
         try:
-            self._setup_session_subscriptions()
-            self._setup_ui()
-            self._connect_signals()
-            self._setup_button_interface()
+            # PERFORMANCE OPTIMIZATION: Defer non-critical initialization
+            self._setup_ui_minimal()  # Create minimal UI first
 
             # CRITICAL FIX: Ensure workbench widget is visible
             self._widget.show()
@@ -124,13 +122,29 @@ class SequenceWorkbench(ViewableComponentBase):
                 f"🔧 [WORKBENCH] Workbench widget made visible: {self._widget.isVisible()}"
             )
 
-            # Mark as initialized
+            # Mark as initialized early for faster startup
             self._initialized = True
             self.component_ready.emit()
+
+            # DEFERRED: Complete initialization after main window is shown
+            from PyQt6.QtCore import QTimer
+
+            QTimer.singleShot(100, self._complete_initialization)
 
         except Exception as e:
             self.emit_error(f"Failed to initialize workbench: {e}", e)
             raise
+
+    def _complete_initialization(self) -> None:
+        """Complete workbench initialization after main window is shown."""
+        try:
+            self._setup_session_subscriptions()
+            self._complete_ui_setup()
+            self._connect_signals()
+            self._setup_button_interface()
+            print("🔧 [WORKBENCH] Deferred initialization completed")
+        except Exception as e:
+            print(f"⚠️ [WORKBENCH] Error in deferred initialization: {e}")
 
     def get_widget(self) -> QWidget:
         """Get the main widget for this component."""
@@ -141,27 +155,43 @@ class SequenceWorkbench(ViewableComponentBase):
         return self._widget
 
     # UI Setup
-    def _setup_ui(self):
-        """Setup UI layout using existing components."""
-        # Create main widget
+    def _setup_ui_minimal(self):
+        """Setup minimal UI for fast startup."""
+        # Create main widget only
         self._widget = QWidget(self.parent())
-        main_layout = QVBoxLayout(self._widget)
-        main_layout.setSpacing(8)
-        main_layout.setContentsMargins(8, 8, 8, 8)
+        self._main_layout = QVBoxLayout(self._widget)
+        self._main_layout.setSpacing(8)
+        self._main_layout.setContentsMargins(8, 8, 8, 8)
+
+        # Add placeholder for sections (will be created in deferred initialization)
+        from PyQt6.QtWidgets import QLabel
+
+        placeholder = QLabel("Loading workbench...")
+        placeholder.setStyleSheet("color: #888; font-size: 14px; padding: 20px;")
+        self._main_layout.addWidget(placeholder)
+        self._placeholder = placeholder
+
+    def _complete_ui_setup(self):
+        """Complete UI setup with all components."""
+        # Remove placeholder
+        if hasattr(self, "_placeholder"):
+            self._main_layout.removeWidget(self._placeholder)
+            self._placeholder.deleteLater()
+            del self._placeholder
 
         # Create sections using existing components
         self._indicator_section = WorkbenchIndicatorSection(
             dictionary_service=self._safe_resolve("SequenceDictionaryService"),
             parent=self._widget,
         )
-        main_layout.addWidget(self._indicator_section, 0)
+        self._main_layout.addWidget(self._indicator_section, 0)
 
         self._beat_frame_section = WorkbenchBeatFrameSection(
             layout_service=self._layout_service,
             beat_selection_service=self._beat_selection_service,
             parent=self._widget,
         )
-        main_layout.addWidget(self._beat_frame_section, 1)
+        self._main_layout.addWidget(self._beat_frame_section, 1)
 
     def _connect_signals(self):
         """Connect component signals to business logic."""

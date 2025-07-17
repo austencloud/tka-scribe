@@ -5,8 +5,9 @@ Implements sophisticated beat sizing logic with precise
 dimension calculations and intelligent responsive behavior.
 """
 
-from typing import TYPE_CHECKING, Optional, Tuple, Union
+from typing import TYPE_CHECKING, Any, Dict, Optional, Tuple, Union
 
+from core.interfaces.core_services import IBeatResizer
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QScrollArea, QWidget
 
@@ -28,7 +29,7 @@ def ensure_positive_size(size: int, min_value: int = 1) -> int:
     return max(size, min_value)
 
 
-class BeatResizer:
+class BeatResizer(IBeatResizer):
     """
     Enhanced beat frame resizer with validated sizing algorithms.
 
@@ -239,3 +240,60 @@ class BeatResizer:
         """Clear size calculation cache"""
         self._size_cache.clear()
         self._last_calculated_size = None
+
+    # Interface implementation methods
+    def resize_beat(self, beat_data: Any, new_size: Tuple[int, int]) -> Any:
+        """Resize beat to new dimensions (interface implementation)."""
+        # For Qt-based implementation, this would resize the actual widget
+        # For web implementation, this would update CSS dimensions
+        width, height = new_size
+
+        # Ensure positive sizes
+        width = ensure_positive_size(width)
+        height = ensure_positive_size(height)
+
+        # Return updated beat data with new size
+        if hasattr(beat_data, "update"):
+            return beat_data.update(width=width, height=height)
+        else:
+            # For dict-like beat data
+            updated_data = dict(beat_data) if hasattr(beat_data, "items") else {}
+            updated_data.update({"width": width, "height": height})
+            return updated_data
+
+    def calculate_optimal_size(
+        self, beat_data: Any, container_size: Tuple[int, int]
+    ) -> Tuple[int, int]:
+        """Calculate optimal size for beat within container (interface implementation)."""
+        container_width, container_height = container_size
+
+        # Use existing calculation logic
+        calculated_size = self.calculate_beat_frame_size(container_width)
+
+        # Ensure it fits within container
+        optimal_width = min(calculated_size, container_width)
+        optimal_height = min(calculated_size, container_height)
+
+        return (
+            ensure_positive_size(optimal_width),
+            ensure_positive_size(optimal_height),
+        )
+
+    def validate_size_constraints(self, size: Tuple[int, int]) -> bool:
+        """Validate size constraints (interface implementation)."""
+        width, height = size
+
+        # Basic validation
+        if width <= 0 or height <= 0:
+            return False
+
+        # Check reasonable bounds (not too large or too small)
+        min_size = 50
+        max_size = 2000
+
+        if width < min_size or height < min_size:
+            return False
+        if width > max_size or height > max_size:
+            return False
+
+        return True

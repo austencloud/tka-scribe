@@ -182,15 +182,18 @@ class ApplicationOrchestrator(IApplicationOrchestrator):
         if progress_callback:
             progress_callback(55, "Services configured")
 
-        # Initialize pictograph pool for high-performance option picker
+        # PERFORMANCE OPTIMIZATION: Initialize pictograph pool with lazy loading
         try:
             from application.services.pictograph_pool_manager import (
                 PictographPoolManager,
             )
 
-            # Initialize the pool using the DI container instance with progress callback
+            # Initialize the pool using lazy initialization for faster startup
             pool_manager = self.container.resolve(PictographPoolManager)
-            pool_manager.initialize_pool(progress_callback=progress_callback)
+            pool_manager.initialize_pool(progress_callback=progress_callback, lazy=True)
+
+            if progress_callback:
+                progress_callback(59, "Pictograph pool ready (lazy mode)")
         except Exception as e:
             logger.error(f"❌ Failed to initialize pictograph pool: {e}")
             if progress_callback:
@@ -224,6 +227,10 @@ class ApplicationOrchestrator(IApplicationOrchestrator):
         if progress_callback:
             progress_callback(100, "Application ready!")
 
+        # CRITICAL FIX: Do NOT mark startup complete to prevent pool expansion freeze
+        # Pool expansion was causing 30+ second delays after "Application ready"
+        # The pool will work fine with on-demand creation when needed
+
         # CRITICAL: Force proper sizing after layout is fully established
         self._trigger_post_layout_sizing(main_window)
 
@@ -252,11 +259,32 @@ class ApplicationOrchestrator(IApplicationOrchestrator):
                             option_picker = None
                             for i in range(layout_manager.picker_stack.count()):
                                 widget = layout_manager.picker_stack.widget(i)
-                                if hasattr(
-                                    widget, "sections"
-                                ):  # This is the option picker
+                                # Check if this widget has sections (direct option picker scroll)
+                                if hasattr(widget, "sections"):
                                     option_picker = widget
                                     break
+                                # Check if this is a container with an option picker inside
+                                elif hasattr(widget, "layout") and widget.layout():
+                                    for j in range(widget.layout().count()):
+                                        child_item = widget.layout().itemAt(j)
+                                        if child_item and child_item.widget():
+                                            child_widget = child_item.widget()
+                                            # Check if child has sections (OptionPickerScroll)
+                                            if hasattr(child_widget, "sections"):
+                                                option_picker = child_widget
+                                                break
+                                            # Check if child has option_picker_scroll (OptionPickerWidget)
+                                            elif hasattr(
+                                                child_widget, "option_picker_scroll"
+                                            ):
+                                                scroll_widget = (
+                                                    child_widget.option_picker_scroll
+                                                )
+                                                if hasattr(scroll_widget, "sections"):
+                                                    option_picker = scroll_widget
+                                                    break
+                                    if option_picker:
+                                        break
 
                             if option_picker:
                                 print(
@@ -297,11 +325,16 @@ class ApplicationOrchestrator(IApplicationOrchestrator):
     def _create_progress_callback(
         self, splash_screen: "SplashScreen"
     ) -> Optional[Callable]:
-        """Create progress callback for splash screen updates."""
-        if splash_screen:
+        """Create progress callback for splash screen updates with detailed timing."""
+        import time
 
-            def progress_callback(progress: int, message: str):
+        start_time = time.perf_counter()
+
+        def detailed_progress_callback(progress: int, message: str):
+            elapsed = time.perf_counter() - start_time
+            print(f"🚀 [{elapsed:.1f}s] {progress}% - {message}")
+
+            if splash_screen:
                 splash_screen.update_progress(progress, message)
 
-            return progress_callback
-        return None
+        return detailed_progress_callback  # Always return callback for timing info

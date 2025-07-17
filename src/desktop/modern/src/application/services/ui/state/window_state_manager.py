@@ -6,14 +6,15 @@ Extracted from UIStateManager to follow single responsibility principle.
 """
 
 import logging
-from typing import Dict
+from typing import Any, Dict, List
 
 from core.events.event_bus import UIEvent, get_event_bus
+from core.interfaces.core_services import IUIStateManager
 
 logger = logging.getLogger(__name__)
 
 
-class WindowStateManager:
+class WindowStateManager(IUIStateManager):
     """
     Window state management service.
 
@@ -107,3 +108,51 @@ class WindowStateManager:
             self._window_geometry = state["window_geometry"]
         if "window_maximized" in state:
             self._window_maximized = state["window_maximized"]
+
+    # Interface implementation methods
+    def get_setting(self, key: str, default: Any = None) -> Any:
+        """Get a setting value."""
+        if key == "window_geometry":
+            return self._window_geometry
+        elif key == "window_maximized":
+            return self._window_maximized
+        return default
+
+    def set_setting(self, key: str, value: Any) -> None:
+        """Set a setting value."""
+        if key == "window_geometry":
+            self._window_geometry = value
+        elif key == "window_maximized":
+            self._window_maximized = value
+
+    def get_tab_state(self, tab_name: str) -> Dict[str, Any]:
+        """Get state for a specific tab."""
+        # Window state manager doesn't handle tabs
+        return {}
+
+    def get_all_settings(self) -> Dict[str, Any]:
+        """Get all settings."""
+        return {
+            "window_geometry": self._window_geometry,
+            "window_maximized": self._window_maximized,
+        }
+
+    def clear_settings(self) -> None:
+        """Clear all settings."""
+        self._window_geometry = {}
+        self._window_maximized = False
+
+    def save_state(self) -> None:
+        """Save current state to persistent storage."""
+        # TODO: Implement persistence
+        pass
+
+    def load_state(self) -> None:
+        """Load state from persistent storage."""
+        # TODO: Implement persistence
+        pass
+
+    def toggle_graph_editor(self) -> bool:
+        """Toggle graph editor visibility."""
+        # Window state manager doesn't handle graph editor
+        return False

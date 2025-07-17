@@ -5,7 +5,7 @@ Handles sequence state analysis and option generation without Qt dependencies.
 Extracted from option_picker_scroll.py to maintain clean architecture.
 """
 
-from typing import Dict, List, Union
+from typing import Any, Dict, List, Union
 
 from application.services.option_picker.option_orientation_updater import (
     OptionOrientationUpdater,
@@ -16,6 +16,7 @@ from application.services.positioning.arrows.calculation.orientation_calculator 
 from application.services.positioning.arrows.utilities.pictograph_position_matcher import (
     PictographPositionMatcher,
 )
+from core.interfaces.sequence_operation_services import ISequenceOptionService
 from domain.models.enums import Location, MotionType, Orientation, RotationDirection
 from domain.models.letter_type_classifier import LetterTypeClassifier
 from domain.models.motion_data import MotionData
@@ -24,7 +25,7 @@ from domain.models.sequence_data import SequenceData
 from presentation.components.option_picker.types.letter_types import LetterType
 
 
-class SequenceOptionService:
+class SequenceOptionService(ISequenceOptionService):
     """
     Pure service for generating options based on sequence state.
 
@@ -373,4 +374,44 @@ class SequenceOptionService:
 
         except Exception as e:
             print(f"❌ [SEQUENCE_OPTION] Error validating sequence state: {e}")
+            return False
+
+    # Interface implementation methods
+    def get_sequence_options(self, sequence_state: Any) -> List[Any]:
+        """Get options for sequence state (interface implementation)."""
+        if isinstance(sequence_state, SequenceData):
+            return self.get_options_for_sequence(sequence_state)
+        else:
+            # Handle other sequence state formats
+            return []
+
+    def filter_options_by_continuity(
+        self, options: List[Any], last_beat: Any
+    ) -> List[Any]:
+        """Filter options to maintain sequence continuity (interface implementation)."""
+        if not last_beat or not options:
+            return options
+
+        filtered_options = []
+        for option in options:
+            if self.validate_option_continuity(option, last_beat):
+                filtered_options.append(option)
+
+        return filtered_options
+
+    def validate_option_continuity(self, option: Any, last_beat: Any) -> bool:
+        """Validate if option maintains continuity (interface implementation)."""
+        try:
+            # Check if option's start position matches last beat's end position
+            if hasattr(option, "start_position") and hasattr(last_beat, "end_position"):
+                return option.start_position == last_beat.end_position
+
+            # For pictograph data, check grid positions
+            if hasattr(option, "grid_data") and hasattr(last_beat, "grid_data"):
+                option_start = getattr(option.grid_data, "start_position", None)
+                beat_end = getattr(last_beat.grid_data, "end_position", None)
+                return option_start == beat_end
+
+            return True  # Default to allowing if we can't determine
+        except Exception:
             return False

@@ -496,7 +496,10 @@ class OptionPickerSection(QGroupBox):
                 pictograph_frame.clear_pictograph()
 
                 # Return to pool (find pool ID)
-                for pool_id, widget in self.scroll_area._widget_pool.items():
+                for (
+                    pool_id,
+                    widget,
+                ) in self.scroll_area._widget_pool_manager._widget_pool.items():
                     if widget == pictograph_frame:
                         self._option_pool_service.checkin_item(pool_id)
                         break

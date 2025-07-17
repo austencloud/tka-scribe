@@ -31,6 +31,14 @@ from presentation.components.option_picker.types.letter_types import LetterType
 from PyQt6.QtCore import QSize, Qt, QTimer, pyqtSignal
 from PyQt6.QtWidgets import QScrollArea, QVBoxLayout, QWidget
 
+# Import our new focused components
+from .option_picker_animator import OptionPickerAnimator
+from .option_picker_layout_orchestrator import OptionPickerLayoutOrchestrator
+from .option_picker_refresh_orchestrator import OptionPickerRefreshOrchestrator
+from .option_picker_section_manager import OptionPickerSectionManager
+from .option_picker_size_manager import OptionPickerSizeManager
+from .option_picker_widget_pool_manager import OptionPickerWidgetPoolManager
+
 if TYPE_CHECKING:
     from application.services.option_picker.option_configuration_service import (
         OptionConfigurationService,
@@ -74,30 +82,20 @@ class OptionPickerScroll(QScrollArea):
 
         self._mw_size_provider = mw_size_provider or self._default_size_provider
 
-        # Qt widget management - presentation layer responsibility
-        self._widget_pool: Dict[int, OptionPictograph] = {}
+        # State tracking
         self._loading_options = False
-        self._is_preparing_for_transition = False
 
         # UI setup
         self._setup_layout()
-        self._initialize_widget_pool()
-        self._initialize_sections()
+        self._initialize_components()
         self._setup_ui_properties()
 
-        # Debounced refresh setup
-        debounce_delay = self._option_config_service.get_debounce_delay()
-        self._refresh_timer = QTimer()
-        self._refresh_timer.setSingleShot(True)
-        self._refresh_timer.timeout.connect(self._perform_refresh)
-        self._pending_sequence_data = None
-
-        # Fade transition state
+        # Fade transition state (legacy compatibility)
         self._pending_fade_sequence_data = None
         self._pending_fade_pictograph_frames = None
 
-        # Set initial size
-        # self._update_size()
+        # Initial size update (deferred to allow parent layout to complete)
+        QTimer.singleShot(100, self._update_size)
 
     @property
     def mw_size_provider(self) -> Callable[[], QSize]:
@@ -116,6 +114,40 @@ class OptionPickerScroll(QScrollArea):
     def _default_size_provider(self) -> QSize:
         """Default size provider if none provided."""
         return QSize(800, 600)
+
+    def _initialize_components(self):
+        """Initialize all focused components."""
+        # Initialize size manager
+        self._size_manager = OptionPickerSizeManager(
+            self.container, self._mw_size_provider
+        )
+
+        # Initialize layout orchestrator
+        self._layout_orchestrator = OptionPickerLayoutOrchestrator(
+            self.layout, self.container, self._option_config_service
+        )
+
+        # Initialize animator
+        self._animator = OptionPickerAnimator(self.container)
+
+        # Initialize widget pool manager
+        max_widgets = self._option_config_service.get_total_max_pictographs()
+        self._widget_pool_manager = OptionPickerWidgetPoolManager(
+            self.container,
+            self._option_pool_service,
+            self._pictograph_pool_manager,
+            self._option_sizing_service,
+            max_widgets,
+        )
+
+        # Initialize sections and section manager
+        self._initialize_sections()
+        self._section_manager = OptionPickerSectionManager(self.sections)
+
+        # Initialize refresh orchestrator
+        self._refresh_orchestrator = OptionPickerRefreshOrchestrator(
+            self._option_config_service, self._handle_refresh_request
+        )
 
     def _setup_layout(self):
         """Setup Qt layout - pure UI logic."""
@@ -155,29 +187,6 @@ class OptionPickerScroll(QScrollArea):
         # Transparency setup
         self.viewport().setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
         self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
-
-    def _initialize_widget_pool(self):
-        """Initialize Qt widget pool with proper dependency injection."""
-        max_widgets = self._option_config_service.get_total_max_pictographs()
-
-        # ✅ Create Qt widgets with injected pictograph components
-        for i in range(max_widgets):
-            # Get pictograph component from pool service
-            pictograph_component = self._pictograph_pool_manager.checkout_pictograph(
-                parent=self
-            )
-
-            # Create frame with injected dependencies (component + size calculator)
-            frame = OptionPictograph(
-                parent=self,
-                pictograph_component=pictograph_component,
-                size_calculator=self._option_sizing_service,
-            )
-            frame.hide()  # CRITICAL: Hide frames initially to prevent random display
-            self._widget_pool[i] = frame
-
-        # Initialize service pool with same IDs
-        self._option_pool_service.reset_pool()
 
     def _initialize_sections(self) -> None:
         """Create and add sections - Qt layout management."""
@@ -224,108 +233,17 @@ class OptionPickerScroll(QScrollArea):
             # This allows the group to use the full available width
             self.layout.addWidget(group_widget)
 
-        # Add balanced spacing after all sections are created
-        # This creates equal spacing between header and sections, and between each section
-        print(
-            f"🔧 [INIT] Checking for header widget... hasattr: {hasattr(self, 'header_widget')}, widget: {getattr(self, 'header_widget', None)}"
-        )
-        if hasattr(self, "header_widget") and self.header_widget:
-            print("🔧 [INIT] Calling _add_balanced_spacing...")
-            self._add_balanced_spacing()
-        else:
-            print("🔧 [INIT] No header widget found, skipping balanced spacing")
+        # Layout orchestrator will handle spacing when header is added
 
     def add_header_label(self, header_widget: QWidget) -> None:
         """Add a header label widget at the top of the scroll area with balanced spacing."""
-        # Store the header widget for later use in layout balancing
-        self.header_widget = header_widget
-
-        # Insert the header at the very top of the layout
-        self.layout.insertWidget(0, header_widget)
-
-        # Don't add initial stretch here - let _add_balanced_spacing handle all stretches
-
-        # Call balanced spacing now that we have the header
-        print("🔧 [HEADER] Header added, calling _add_balanced_spacing...")
-        self._add_balanced_spacing()
-
-    def _add_balanced_spacing(self):
-        """Add balanced spacing between header-section pairs."""
-        # Create spacing between header-section PAIRS, not individual elements
-        # Each header should hug its section, with equal spacing between the pairs
-        print("🔧 [SPACING] Setting up header-section pair spacing...")
-
-        # Step 1: Remove all existing stretches
-        items_to_remove = []
-        for i in range(self.layout.count()):
-            item = self.layout.itemAt(i)
-            if item and item.spacerItem():
-                items_to_remove.append(item)
-
-        print(f"🔧 [SPACING] Removing {len(items_to_remove)} existing stretches...")
-        for item in items_to_remove:
-            self.layout.removeItem(item)
-
-        # Step 2: Identify all widgets in layout order
-        all_widgets = []
-        for i in range(self.layout.count()):
-            item = self.layout.itemAt(i)
-            if item and item.widget():
-                all_widgets.append((i, item.widget()))
-
-        print(f"🔧 [SPACING] Found {len(all_widgets)} total widgets in layout")
-
-        # Step 3: Find the last widget in each header-section pair
-        # This is where we'll add stretches to separate the pairs
-        pair_end_indices = []
-
-        for i, (index, widget) in enumerate(all_widgets):
-            # Skip the main header
-            if widget == self.header_widget:
-                continue
-
-            # Check if this is a section widget (end of a pair)
-            if (
-                hasattr(widget, "letter_type")
-                or "OptionPickerGroupWidget" in str(type(widget))
-                or "OptionPickerSection" in str(type(widget))
-            ):
-                pair_end_indices.append(index)
-
-        print(
-            f"🔧 [SPACING] Found {len(pair_end_indices)} header-section pairs ending at indices: {pair_end_indices}"
-        )
-
-        # Step 4: Add stretches after each pair (work backwards to preserve indices)
-        for pair_end_index in reversed(pair_end_indices):
-            self.layout.insertStretch(pair_end_index + 1)
-            print(
-                f"🔧 [SPACING] Added stretch after pair ending at index {pair_end_index}"
-            )
-
-        # Step 5: Add initial stretch after main header to push first pair down
-        header_index = -1
-        for i, (index, widget) in enumerate(all_widgets):
-            if widget == self.header_widget:
-                header_index = index
-                break
-
-        if header_index >= 0:
-            self.layout.insertStretch(header_index + 1)
-            print(
-                f"🔧 [SPACING] Added initial stretch after main header at index {header_index}"
-            )
-
-        print(
-            f"🔧 [SPACING] Header-section pair spacing complete! Final layout count: {self.layout.count()}"
-        )
+        # Delegate to layout orchestrator
+        self._layout_orchestrator.add_header_widget(header_widget)
+        self._layout_orchestrator.apply_balanced_spacing()
 
     def clear_all_sections(self):
-        """Clear all pictographs from all sections - Qt widget management."""
-        for section in self.sections.values():
-            section.clear_pictographs()
-
-        # Reset service pool
+        """Clear all pictographs from all sections using section manager."""
+        self._section_manager.clear_all_sections()
         self._option_pool_service.reset_pool()
 
     def get_section(self, letter_type: LetterType) -> "OptionPickerSection":
@@ -334,100 +252,65 @@ class OptionPickerScroll(QScrollArea):
 
     def get_widget_from_pool(self, pool_id: int) -> Optional[OptionPictograph]:
         """Get Qt widget from pool by service-provided ID."""
-        return self._widget_pool.get(pool_id)
+        return self._widget_pool_manager.get_widget_by_id(pool_id)
 
     def _update_size(self):
-        """Update picker size using service calculation."""
-        # FIXED: Use immediate parent width instead of traversing up hierarchy
-        if self.parent():
-            # Use the immediate parent's width - this ensures we fit within our container
-            available_width = self.parent().width()
-            print(f"🔍 [SIZING] Using immediate parent width: {available_width}px")
-        else:
-            # Fallback to main window calculation if no parent
-            main_window_size = self._mw_size_provider()
-            available_width = main_window_size.width() // 2
-            print(f"🔍 [SIZING] No parent, using MW/2: {available_width}px")
+        """Update picker size using legacy-style approach."""
+        try:
+            # Legacy approach: use parent container width directly
+            # This mimics: self.option_scroll.setFixedWidth(self.parent().parent().width() // 2)
 
-        # Validate that we have a reasonable width (not the default 640px)
-        if available_width <= 640:
-            print(
-                f"⚠️ [SIZING] Parent width {available_width}px seems too small, checking main window..."
-            )
-            main_window_size = self._mw_size_provider()
-            if main_window_size.width() > 1000:
-                # Use half the main window width as a better estimate
-                available_width = main_window_size.width() // 2
-                print(f"🔍 [SIZING] Using main window half-width: {available_width}px")
+            # Try to get parent width first (immediate parent)
+            if self.parent():
+                parent_width = self.parent().width()
+                print(f"🔍 [SIZING] Parent width: {parent_width}px")
 
-        # The scroll area should fit exactly within its parent's width
-        picker_width = available_width
+                if parent_width > 200:  # Valid parent width
+                    # Use the full parent width (the parent should be sized correctly)
+                    width = parent_width
+                    print(f"🔍 [SIZING] Using parent width: {width}px")
+                else:
+                    # Fallback to main window calculation
+                    main_window_size = self._mw_size_provider()
+                    width = main_window_size.width() // 2
+                    print(f"🔍 [SIZING] Using main window fallback: {width}px")
+            else:
+                # No parent, use main window calculation
+                main_window_size = self._mw_size_provider()
+                width = main_window_size.width() // 2
+                print(f"🔍 [SIZING] No parent, using main window: {width}px")
 
-        print(
-            f"🔍 [SIZING] Setting scroll area width to: {picker_width}px (parent: {available_width}px)"
-        )
+            # Set the width
+            self.setFixedWidth(width)
 
-        # DEBUG: Check container width vs scroll area width
-        container_width = self.container.width() if hasattr(self, "container") else 0
-        print(
-            f"🔍 [CONTAINER] Container width: {container_width}px vs Scroll area: {picker_width}px"
-        )
+            # Ensure container also uses full width
+            if hasattr(self, "container"):
+                self.container.setMinimumWidth(width)
 
-        # ✅ Apply to Qt widget - constrain to parent width
-        self.setFixedWidth(picker_width)
+            # Update all sections with the new picker width
+            self._section_manager.update_all_sections_picker_width(width)
 
-        # FIXED: Ensure container also uses full width
-        if hasattr(self, "container"):
-            print(
-                f"🔍 [CONTAINER] Setting container width to match scroll area: {picker_width}px"
-            )
-            # Don't use setFixedWidth as it might interfere with scroll area resizing
-            # Instead, ensure the container's minimum width matches the scroll area
-            self.container.setMinimumWidth(picker_width)
-
-        # MODERN: Update all sections with the new picker width
-        self._update_sections_picker_width(picker_width)
-
-    def _update_sections_picker_width(self, picker_width: int) -> None:
-        """Update all sections with the current picker width - modern dependency injection."""
-        for section in self.sections.values():
-            if hasattr(section, "update_option_picker_width"):
-                section.update_option_picker_width(picker_width)
+        except Exception as e:
+            print(f"⚠️ [SIZING] Error in _update_size: {e}")
+            # Fallback to a reasonable default
+            self.setFixedWidth(400)
 
     def load_options_from_sequence(self, sequence_data: SequenceData) -> None:
-        """Load options with debouncing - UI coordination logic."""
-        self._pending_sequence_data = sequence_data
-
-        # Get debounce delay from config service
-        delay = self._option_config_service.get_debounce_delay()
-        self._refresh_timer.start(delay)
+        """Load options with debouncing - delegated to refresh orchestrator."""
+        self._refresh_orchestrator.load_options_from_sequence(sequence_data)
 
     def prepare_for_transition(self) -> None:
-        """Prepare content for widget transition by loading without fade animations."""
-        self._is_preparing_for_transition = True
+        """Prepare content for widget transition - delegated to refresh orchestrator."""
+        self._refresh_orchestrator.prepare_for_transition()
+
+    def _handle_refresh_request(self, sequence_data: SequenceData) -> None:
+        """Handle refresh request from orchestrator."""
         try:
-            # If we have pending sequence data, load it directly without fades
-            if self._pending_sequence_data:
-                sequence_data = self._pending_sequence_data
-                self._pending_sequence_data = None
-                self._update_all_sections_directly(sequence_data)
-        finally:
-            self._is_preparing_for_transition = False
-
-    def _perform_refresh(self) -> None:
-        """Perform refresh with whole-picker fade transition (legacy approach)."""
-        if self._pending_sequence_data is None:
-            return
-
-        sequence_data = self._pending_sequence_data
-        self._pending_sequence_data = None
-
-        try:
-            # ✅ Set UI loading state
+            # Set UI loading state
             self._set_loading_state(True)
 
             # Skip fade animations if preparing for widget transition
-            if self._is_preparing_for_transition:
+            if self._refresh_orchestrator.is_preparing_for_transition():
                 self._update_all_sections_directly(sequence_data)
                 return
 
@@ -437,10 +320,8 @@ class OptionPickerScroll(QScrollArea):
             ]
 
             if self._animation_orchestrator and existing_sections:
-
                 self._fade_and_update_all_sections(sequence_data)
             else:
-
                 self._update_all_sections_directly(sequence_data)
 
         except Exception as e:
@@ -450,7 +331,7 @@ class OptionPickerScroll(QScrollArea):
             traceback.print_exc()
 
     def _update_all_sections_directly(self, sequence_data: SequenceData) -> None:
-        """Update all sections directly without animation (optimized for fade callback)."""
+        """Update all sections directly without animation using section manager."""
         try:
             # ✅ Use service to get options (pure business logic)
             options_by_type = self._sequence_option_service.get_options_for_sequence(
@@ -461,297 +342,73 @@ class OptionPickerScroll(QScrollArea):
                 print("❌ [UI] No options received from service")
                 return
 
-            # ✅ Update UI sections with options (bypass individual section animations)
-            # Temporarily disable all section animations for performance
-            original_orchestrators = {}
-            for letter_type, section in self.sections.items():
-                original_orchestrators[letter_type] = section._animation_orchestrator
-                section._animation_orchestrator = None
-
-            # Update all sections quickly
-            for letter_type, section in self.sections.items():
-                section_options = options_by_type.get(letter_type, [])
-                section.load_options_from_sequence(section_options)
-
-            # Restore animation orchestrators
-            for letter_type, section in self.sections.items():
-                section._animation_orchestrator = original_orchestrators[letter_type]
+            # ✅ Update UI sections using section manager
+            self._section_manager.update_all_sections_directly(
+                sequence_data, options_by_type
+            )
 
             # ✅ Apply sizing using service (defer with longer delay during startup)
             # Use longer delay during sequence restoration to ensure UI is fully initialized
-            delay = 500 if self._is_during_startup() else 50
+            delay = 500 if self._size_manager.should_defer_sizing() else 50
             QTimer.singleShot(delay, self._apply_sizing_to_all_frames)
 
         except Exception as e:
             print(f"❌ [UI] Error in direct update: {e}")
 
     def _fade_and_update_all_sections(self, sequence_data: SequenceData) -> None:
-        """Fade pictographs only (keeping headers stable) - improved approach."""
+        """Fade pictographs only (keeping headers stable) using animator component."""
         try:
-            from PyQt6.QtCore import QParallelAnimationGroup, QPropertyAnimation, QTimer
-            from PyQt6.QtWidgets import QGraphicsOpacityEffect
-
             # Get all pictograph frames (not the whole sections)
-            pictograph_frames = []
-            for section in self.sections.values():
-                if section.pictographs:
-                    pictograph_frames.extend(section.pictographs.values())
+            pictograph_frames = self._section_manager.get_all_pictograph_frames()
 
             if not pictograph_frames:
                 self._update_all_sections_directly(sequence_data)
                 return
 
-            # Step 1: Create fade out animation group for pictographs only
-            fade_out_group = QParallelAnimationGroup(self)
+            # Use animator component for fade transition
+            def update_callback():
+                self._update_all_sections_directly(sequence_data)
 
-            for frame in pictograph_frames:
-                # Ensure opacity effect exists
-                if not frame.graphicsEffect():
-                    effect = QGraphicsOpacityEffect()
-                    effect.setOpacity(1.0)
-                    frame.setGraphicsEffect(effect)
-
-                # Create fade out animation
-                animation = QPropertyAnimation(frame.graphicsEffect(), b"opacity")
-                animation.setDuration(200)  # 200ms like legacy
-                animation.setStartValue(1.0)
-                animation.setEndValue(0.0)
-                fade_out_group.addAnimation(animation)
-
-            # Step 2: When fade out completes, update content and fade in (with tiny buffer)
-            def on_fade_out_complete():
-
-                # Add tiny delay to ensure fade out animation fully completes
-                # This prevents the freeze/pause issue during fade out
-                from PyQt6.QtCore import QTimer
-
-                QTimer.singleShot(10, self._complete_fade_transition)
-
-            # Store sequence data for the delayed callback
-            self._pending_fade_sequence_data = sequence_data
-            self._pending_fade_pictograph_frames = pictograph_frames
-
-            fade_out_group.finished.connect(on_fade_out_complete)
-            fade_out_group.start()
+            self._animator.fade_out_and_update(pictograph_frames, update_callback)
 
         except Exception as e:
             print(f"❌ [SCROLL] Fade transition failed: {e}")
             # Fallback to direct update
             self._update_all_sections_directly(sequence_data)
 
-    def _complete_fade_transition(self) -> None:
-        """Complete the fade transition after ensuring fade out is fully done."""
-        try:
-            sequence_data = self._pending_fade_sequence_data
-            pictograph_frames = self._pending_fade_pictograph_frames
-
-            # Clear graphics effects from old pictographs
-            if pictograph_frames:
-                for frame in pictograph_frames:
-                    if frame.graphicsEffect():
-                        frame.setGraphicsEffect(None)
-
-            # Update content
-            self._update_all_sections_directly(sequence_data)
-
-            # Start fade in for new pictographs
-            self._fade_in_all_pictographs()
-
-        except Exception as e:
-            print(f"❌ [SCROLL] Failed to complete fade transition: {e}")
-        finally:
-            # Clean up pending data
-            self._pending_fade_sequence_data = None
-            self._pending_fade_pictograph_frames = None
-
-    def _fade_in_all_pictographs(self) -> None:
-        """Fade in pictographs only (keeping headers stable) - improved approach."""
-        try:
-            from PyQt6.QtCore import QParallelAnimationGroup, QPropertyAnimation
-            from PyQt6.QtWidgets import QGraphicsOpacityEffect
-
-            # Get all new pictograph frames
-            pictograph_frames = []
-            for section in self.sections.values():
-                if section.pictographs:
-                    pictograph_frames.extend(section.pictographs.values())
-
-            if not pictograph_frames:
-                self._set_loading_state(False)
-                return
-
-            # Create fade in animation group for pictographs only
-            fade_in_group = QParallelAnimationGroup(self)
-
-            for frame in pictograph_frames:
-                # Ensure opacity effect exists and is set to 0
-                if not frame.graphicsEffect():
-                    effect = QGraphicsOpacityEffect()
-                    effect.setOpacity(0.0)
-                    frame.setGraphicsEffect(effect)
-
-                # Create fade in animation
-                animation = QPropertyAnimation(frame.graphicsEffect(), b"opacity")
-                animation.setDuration(200)  # 200ms like legacy
-                animation.setStartValue(0.0)
-                animation.setEndValue(1.0)
-                fade_in_group.addAnimation(animation)
-
-            def on_fade_in_complete():
-
-                # Clear graphics effects after fade in completes (like legacy)
-                for frame in pictograph_frames:
-                    if frame.graphicsEffect():
-                        frame.setGraphicsEffect(None)
-
-            fade_in_group.finished.connect(on_fade_in_complete)
-            fade_in_group.start()
-
-        except Exception as e:
-            print(f"❌ [SCROLL] Pictograph fade in failed: {e}")
-        finally:
-            # ✅ Always clear loading state
-            self._set_loading_state(False)
-
     def _set_loading_state(self, loading: bool):
         """Set loading state for UI - prevents resize events during loading."""
         self._loading_options = loading
-
-        # Propagate to sections
-        for section in self.sections.values():
-            if hasattr(section, "_loading_options"):
-                section._loading_options = loading
+        # Delegate to section manager
+        self._section_manager.set_loading_state_for_all_sections(loading)
 
     def _apply_sizing_to_all_frames(self):
-        """Apply sizing to all frames using service calculations."""
-        # Check if UI is properly initialized before applying sizing
-        if not self._is_ui_ready_for_sizing():
-            print("⏳ [SIZING] UI not ready for sizing, deferring...")
-            # Defer sizing until UI is ready
+        """Apply sizing to all frames using size manager and section manager."""
+        # Delegate sizing logic to size manager
+        if not self._size_manager.is_ui_ready_for_sizing():
             QTimer.singleShot(100, self._apply_sizing_to_all_frames)
             return
 
-        # Always get main window size for frame sizing
         main_window_size = self._mw_size_provider()
-
-        # FIXED: Use actual widget width like legacy, not calculated width
         picker_width = self.width()
 
-        # Enhanced validation for accurate width
-        if not self._is_picker_width_accurate(picker_width, main_window_size):
-            print(
-                f"⚠️ [SIZING] Option picker width {picker_width}px appears inaccurate, deferring sizing..."
-            )
-            # Defer sizing until we get an accurate width
+        if not self._size_manager.is_width_accurate(picker_width):
             QTimer.singleShot(200, self._apply_sizing_to_all_frames)
             return
 
-        print(f"✅ [SIZING] Using validated option picker width: {picker_width}px")
-
-        # ✅ Use service for size calculation
+        # Get layout config and apply sizing through section manager
         layout_config = self._option_config_service.get_layout_config()
-
-        # ✅ Apply to Qt widgets in presentation layer
-        for section in self.sections.values():
-            for frame in section.pictographs.values():
-                if hasattr(frame, "resize_option_view"):
-                    frame.resize_option_view(
-                        main_window_size, picker_width, spacing=layout_config["spacing"]
-                    )
-
-    def _is_ui_ready_for_sizing(self) -> bool:
-        """Check if the UI is ready for accurate sizing calculations."""
-        try:
-            # Check if main window is visible and properly initialized
-            main_window = self.window()
-            if not main_window:
-                return False
-
-            # Check if main window is visible (not during splash screen)
-            if not main_window.isVisible():
-                return False
-
-            # Check if this widget is visible and has been shown
-            if not self.isVisible():
-                return False
-
-            # Check if widget has been properly sized (not default/zero size)
-            if self.width() <= 0 or self.height() <= 0:
-                return False
-
-            return True
-
-        except Exception as e:
-            print(f"⚠️ [SIZING] Error checking UI readiness: {e}")
-            return False
-
-    def _is_picker_width_accurate(self, picker_width: int, main_window_size) -> bool:
-        """Check if the picker width appears accurate and not from premature measurement."""
-        try:
-            # Width should be positive
-            if picker_width <= 0:
-                return False
-
-            # Width should be reasonable relative to main window
-            main_window_width = main_window_size.width()
-            if main_window_width <= 0:
-                return False
-
-            # Picker width should be between 20% and 80% of main window width
-            # (typical range for option picker in a layout)
-            min_expected = main_window_width * 0.2
-            max_expected = main_window_width * 0.8
-
-            if not (min_expected <= picker_width <= max_expected):
-                print(
-                    f"⚠️ [SIZING] Picker width {picker_width}px outside expected range "
-                    f"[{min_expected:.0f}-{max_expected:.0f}px] for main window {main_window_width}px"
-                )
-                return False
-
-            # Additional check: avoid the specific problematic width mentioned (622px)
-            # This suggests the widget was measured during an intermediate layout state
-            if picker_width == 622:
-                print(
-                    f"⚠️ [SIZING] Detected problematic width {picker_width}px, likely from startup timing issue"
-                )
-                return False
-
-            return True
-
-        except Exception as e:
-            print(f"⚠️ [SIZING] Error validating picker width: {e}")
-            return False
-
-    def _is_during_startup(self) -> bool:
-        """Check if we're currently during application startup phase."""
-        try:
-            # Check if main window is not yet visible (splash screen phase)
-            main_window = self.window()
-            if not main_window or not main_window.isVisible():
-                return True
-
-            # Check if this widget hasn't been properly shown yet
-            if not self.isVisible() or self.width() <= 0:
-                return True
-
-            return False
-
-        except Exception:
-            # If we can't determine, assume we're during startup to be safe
-            return True
+        # CRITICAL FIX: Pass the full layout_config dict, not just spacing value
+        self._section_manager.apply_sizing_to_all_sections(
+            main_window_size, picker_width, layout_config
+        )
 
     def resizeEvent(self, event):
         """Handle Qt resize events."""
-        # Skip resizing during option loading
         if self._loading_options:
             return
 
         super().resizeEvent(event)
-
-        # Debug: Log resize event details
-        print(f"🔍 [RESIZE] Option picker resize event: {self.width()}x{self.height()}")
-
         self._update_size()
 
     def _on_pictograph_selected(self, pictograph_data: PictographData):

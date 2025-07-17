@@ -13,14 +13,16 @@ Ported from legacy MotionOriCalculator for accuracy.
 """
 
 import logging
+from typing import Any, Dict
 
+from core.interfaces.positioning_services import IOrientationCalculator
 from domain.models import HandPath, Location, MotionData, MotionType, Orientation
 from domain.models.enums import RotationDirection
 
 logger = logging.getLogger(__name__)
 
 
-class OrientationCalculator:
+class OrientationCalculator(IOrientationCalculator):
     """
     Pure service for orientation calculations using exact legacy logic.
 
@@ -280,3 +282,43 @@ class OrientationCalculator:
             Orientation.COUNTER: Orientation.CLOCK,
         }
         return switch_map.get(orientation, orientation)
+
+    # Interface implementation methods
+    def calculate_orientation(self, motion_data: Any, context: Any) -> Any:
+        """Calculate orientation based on motion and context (interface implementation)."""
+        if isinstance(motion_data, MotionData):
+            start_orientation = (
+                getattr(context, "start_orientation", Orientation.IN)
+                if context
+                else Orientation.IN
+            )
+            return self.calculate_end_orientation(motion_data, start_orientation)
+        else:
+            # Handle other motion data formats
+            return Orientation.IN
+
+    def get_orientation_adjustments(self, orientation: Any) -> Dict[str, Any]:
+        """Get adjustments for orientation (interface implementation)."""
+        if isinstance(orientation, Orientation):
+            return {
+                "orientation": orientation.value,
+                "switched": self.switch_orientation(orientation).value,
+                "is_in_out": orientation in [Orientation.IN, Orientation.OUT],
+                "is_clock_counter": orientation
+                in [Orientation.CLOCK, Orientation.COUNTER],
+            }
+        else:
+            return {"orientation": "unknown", "switched": "unknown"}
+
+    def validate_orientation(self, orientation: Any) -> bool:
+        """Validate orientation data (interface implementation)."""
+        try:
+            if isinstance(orientation, Orientation):
+                return True
+            elif isinstance(orientation, str):
+                # Check if string can be converted to Orientation
+                return orientation.upper() in [o.value for o in Orientation]
+            else:
+                return False
+        except Exception:
+            return False
