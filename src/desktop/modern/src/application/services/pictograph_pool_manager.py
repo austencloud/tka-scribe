@@ -8,9 +8,10 @@ to avoid the expensive creation/destruction cycle during option loading.
 import logging
 import threading
 from queue import Queue
-from typing import Dict, List, Optional, Set
+from typing import Any, Dict, List, Optional, Set
 
 from core.dependency_injection.di_container import DIContainer
+from core.interfaces.pool_manager_services import IPictographPoolManager
 from domain.models.pictograph_data import PictographData
 from presentation.components.pictograph.pictograph_component import (
     PictographComponent,
@@ -21,7 +22,7 @@ from PyQt6.QtCore import Qt
 logger = logging.getLogger(__name__)
 
 
-class PictographPoolManager:
+class PictographPoolManager(IPictographPoolManager):
     """Manages a pool of reusable PictographComponent instances for performance."""
 
     def __init__(self, container: Optional[DIContainer] = None):
@@ -250,6 +251,54 @@ class PictographPoolManager:
             self._initialized = False
 
             logger.info("✅ [POOL] Pool cleanup complete")
+
+    # Interface implementation methods
+    def get_pictograph(self, pictograph_data: Any) -> Any:
+        """Get pictograph from pool (interface implementation)."""
+        return self.checkout_pictograph(pictograph_data)
+
+    def return_pictograph(self, pictograph: Any) -> None:
+        """Return pictograph to pool (interface implementation)."""
+        self.checkin_pictograph(pictograph)
+
+    def preload_pictographs(self, pictograph_types: List[str], count: int) -> None:
+        """Preload pictographs into pool (interface implementation)."""
+        # Current implementation already preloads during initialization
+        # This could be extended to support dynamic preloading
+        if not self._initialized:
+            self.initialize_pool()
+
+    def get_pictograph_count(self) -> int:
+        """Get total count of pictographs in pool (interface implementation)."""
+        with self._lock:
+            return self._pool.qsize()
+
+    def clear_pictographs(self) -> None:
+        """Clear all pictographs from pool (interface implementation)."""
+        self.cleanup()
+
+    def reset_pictograph(self, pictograph: Any) -> None:
+        """Reset pictograph to default state (interface implementation)."""
+        if pictograph and hasattr(pictograph, "reset"):
+            pictograph.reset()
+
+    def configure_pictograph(self, pictograph: Any, config: Dict[str, Any]) -> None:
+        """Configure pictograph with properties (interface implementation)."""
+        if not pictograph:
+            return
+
+        # Apply configuration properties
+        for key, value in config.items():
+            if key == "position":
+                pictograph.setPos(value[0], value[1])
+            elif key == "rotation":
+                pictograph.setRotation(value)
+            elif key == "scale":
+                pictograph.setScale(value)
+            elif key == "visible":
+                pictograph.setVisible(value)
+            elif key == "opacity":
+                pictograph.setOpacity(value)
 
 
 # Global pool instance

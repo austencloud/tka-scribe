@@ -6,7 +6,7 @@ allowing the core layer to remain UI framework independent.
 """
 
 from dataclasses import dataclass
-from typing import Union, Tuple
+from typing import Tuple, Union
 
 
 @dataclass(frozen=True)
@@ -164,7 +164,29 @@ class Rect:
         )
 
 
+@dataclass
+class Widget:
+    """Framework-agnostic widget representation for interface definitions."""
+
+    element_id: str
+    visible: bool = True
+    opacity: float = 1.0
+
+    def set_visible(self, visible: bool) -> None:
+        """Set widget visibility."""
+        self.visible = visible
+
+    def set_opacity(self, opacity: float) -> None:
+        """Set widget opacity."""
+        self.opacity = opacity
+
+    def is_visible(self) -> bool:
+        """Check if widget is visible."""
+        return self.visible
+
+
 # Type aliases for common use cases
 SizeType = Union[Size, Tuple[int, int]]
 PointType = Union[Point, Tuple[float, float]]
 RectType = Union[Rect, Tuple[int, int, int, int]]
+WidgetType = Union[Widget, str]  # Widget object or element ID

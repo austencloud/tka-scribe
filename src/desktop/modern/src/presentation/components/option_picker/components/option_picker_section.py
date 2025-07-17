@@ -378,11 +378,6 @@ class OptionPickerSection(QGroupBox):
                 f"🎭 [FADE] Created {valid_animations} valid animations for {self.letter_type}"
             )
 
-            # When fade in completes
-            def on_fade_in_complete():
-                print(f"✅ [FADE] Fade transition completed for {self.letter_type}")
-
-            fade_in_group.finished.connect(on_fade_in_complete)
             fade_in_group.start()
 
         except Exception as e:

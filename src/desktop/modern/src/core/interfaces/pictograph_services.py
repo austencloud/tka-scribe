@@ -9,8 +9,8 @@ from abc import ABC, abstractmethod
 from enum import Enum
 from typing import Any, Dict, List, Optional, Tuple
 
+from core.types import Size
 from domain.models.pictograph_data import PictographData
-from PyQt6.QtCore import QSize
 
 
 class ScalingContext(Enum):
@@ -138,8 +138,8 @@ class IScalingService(ABC):
     def calculate_scale(
         self,
         context: ScalingContext,
-        container_size: QSize,
-        scene_size: QSize,
+        container_size: Size,
+        scene_size: Size,
         **context_params,
     ) -> Tuple[float, float]:
         """

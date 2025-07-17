@@ -8,14 +8,15 @@ across all pictograph scenes for optimal performance.
 import logging
 from queue import Queue
 from threading import Lock
-from typing import Dict, List, Optional
+from typing import Any, Dict, List, Optional
 
+from core.interfaces.pool_manager_services import IArrowItemPoolManager
 from presentation.components.pictograph.graphics_items.arrow_item import ArrowItem
 
 logger = logging.getLogger(__name__)
 
 
-class ArrowItemPoolManager:
+class ArrowItemPoolManager(IArrowItemPoolManager):
     """
     Centralized manager for arrow graphics item pooling.
 
@@ -244,3 +245,60 @@ class ArrowItemPoolManager:
             logger.warning(f"⚠️ [ARROW_POOL] Cleanup failed: {e}")
 
     # Removed __del__ method to prevent premature cleanup during startup
+
+    # Interface implementation methods
+    def get_arrow_item(self, arrow_type: str) -> Any:
+        """Get arrow item from pool (interface implementation)."""
+        return self.checkout_arrow_item(arrow_type)
+
+    def return_arrow_item(self, arrow_item: Any) -> None:
+        """Return arrow item to pool (interface implementation)."""
+        self.checkin_arrow_item(arrow_item)
+
+    def preload_arrows(self, arrow_types: List[str], count: int) -> None:
+        """Preload arrow items into pool (interface implementation)."""
+        # Current implementation already preloads during initialization
+        # This could be extended to support dynamic preloading
+        if not self._initialized:
+            self.initialize_pool()
+
+    def get_arrow_count_by_type(self, arrow_type: str) -> int:
+        """Get count of specific arrow type in pool (interface implementation)."""
+        if arrow_type not in self._pools:
+            return 0
+        with self._lock:
+            return self._pools[arrow_type].qsize()
+
+    def clear_arrow_type(self, arrow_type: str) -> None:
+        """Clear specific arrow type from pool (interface implementation)."""
+        if arrow_type not in self._pools:
+            return
+        with self._lock:
+            while not self._pools[arrow_type].empty():
+                try:
+                    self._pools[arrow_type].get_nowait()
+                except:
+                    break
+            self._active_items[arrow_type].clear()
+
+    def reset_arrow_item(self, arrow_item: Any) -> None:
+        """Reset arrow item to default state (interface implementation)."""
+        self._reset_arrow_item(arrow_item)
+
+    def configure_arrow_item(self, arrow_item: Any, config: Dict[str, Any]) -> None:
+        """Configure arrow item with properties (interface implementation)."""
+        if not arrow_item:
+            return
+
+        # Apply configuration properties
+        for key, value in config.items():
+            if key == "color":
+                arrow_item.arrow_color = value
+            elif key == "position":
+                arrow_item.setPos(value[0], value[1])
+            elif key == "rotation":
+                arrow_item.setRotation(value)
+            elif key == "scale":
+                arrow_item.setScale(value)
+            elif key == "visible":
+                arrow_item.setVisible(value)

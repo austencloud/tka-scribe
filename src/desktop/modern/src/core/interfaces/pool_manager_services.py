@@ -6,10 +6,9 @@ These interfaces handle efficient object pooling for performance optimization.
 """
 
 from abc import ABC, abstractmethod
-from typing import Any, Dict, List, Optional, Set, TypeVar, Generic
+from typing import Any, Dict, Generic, List, Optional, Set, TypeVar
 
-
-T = TypeVar('T')
+T = TypeVar("T")
 
 
 class IPoolManager(ABC, Generic[T]):
@@ -193,11 +192,7 @@ class IArrowItemPoolManager(ABC):
         pass
 
     @abstractmethod
-    def configure_arrow_item(
-        self, 
-        arrow_item: Any, 
-        config: Dict[str, Any]
-    ) -> None:
+    def configure_arrow_item(self, arrow_item: Any, config: Dict[str, Any]) -> None:
         """
         Configure arrow item with properties.
 
@@ -244,11 +239,7 @@ class IPictographPoolManager(ABC):
         pass
 
     @abstractmethod
-    def preload_pictographs(
-        self, 
-        pictograph_types: List[str], 
-        count: int
-    ) -> None:
+    def preload_pictographs(self, pictograph_types: List[str], count: int) -> None:
         """
         Preload pictographs into pool.
 
@@ -258,35 +249,6 @@ class IPictographPoolManager(ABC):
 
         Note:
             Web implementation: Pre-creates Canvas/SVG elements
-        """
-        pass
-
-    @abstractmethod
-    def get_pictograph_count_by_type(self, pictograph_type: str) -> int:
-        """
-        Get count of specific pictograph type in pool.
-
-        Args:
-            pictograph_type: Pictograph type to count
-
-        Returns:
-            Number of pictographs of specified type
-
-        Note:
-            Web implementation: Returns cached element count
-        """
-        pass
-
-    @abstractmethod
-    def clear_pictograph_type(self, pictograph_type: str) -> None:
-        """
-        Clear specific pictograph type from pool.
-
-        Args:
-            pictograph_type: Pictograph type to clear
-
-        Note:
-            Web implementation: Removes elements of specified type
         """
         pass
 
@@ -304,11 +266,7 @@ class IPictographPoolManager(ABC):
         pass
 
     @abstractmethod
-    def configure_pictograph(
-        self, 
-        pictograph: Any, 
-        config: Dict[str, Any]
-    ) -> None:
+    def configure_pictograph(self, pictograph: Any, config: Dict[str, Any]) -> None:
         """
         Configure pictograph with properties.
 
@@ -318,40 +276,6 @@ class IPictographPoolManager(ABC):
 
         Note:
             Web implementation: Sets Canvas properties or SVG attributes
-        """
-        pass
-
-    @abstractmethod
-    def capture_pictograph_state(self, pictograph: Any) -> Dict[str, Any]:
-        """
-        Capture current pictograph state.
-
-        Args:
-            pictograph: Pictograph to capture state from
-
-        Returns:
-            State dictionary
-
-        Note:
-            Web implementation: Captures Canvas ImageData or SVG state
-        """
-        pass
-
-    @abstractmethod
-    def restore_pictograph_state(
-        self, 
-        pictograph: Any, 
-        state: Dict[str, Any]
-    ) -> None:
-        """
-        Restore pictograph state.
-
-        Args:
-            pictograph: Pictograph to restore state to
-            state: State dictionary to restore
-
-        Note:
-            Web implementation: Restores Canvas ImageData or SVG state
         """
         pass
 

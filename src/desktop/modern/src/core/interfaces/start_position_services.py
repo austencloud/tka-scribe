@@ -8,30 +8,19 @@ that follow TKA's clean architecture principles.
 from abc import ABC, abstractmethod
 from typing import Any, Dict, List, Optional, Tuple
 
+from core.commands.start_position_commands import SetStartPositionCommand
+from core.types import Size
 from domain.models.beat_data import BeatData
 from domain.models.pictograph_data import PictographData
-from core.commands.start_position_commands import SetStartPositionCommand
-try:
-    from PyQt6.QtCore import QSize
-except ImportError:
-    # Mock QSize for environments without PyQt6
-    class QSize:
-        def __init__(self, width=0, height=0):
-            self._width = width
-            self._height = height
-        
-        def width(self):
-            return self._width
-        
-        def height(self):
-            return self._height
 
 
 class IStartPositionDataService(ABC):
     """Interface for start position data retrieval and caching."""
 
     @abstractmethod
-    def get_position_data(self, position_key: str, grid_mode: str = "diamond") -> Optional[PictographData]:
+    def get_position_data(
+        self, position_key: str, grid_mode: str = "diamond"
+    ) -> Optional[PictographData]:
         """
         Get pictograph data for a start position.
 
@@ -56,7 +45,9 @@ class IStartPositionDataService(ABC):
         """
 
     @abstractmethod
-    def get_position_beat_data(self, position_key: str, grid_mode: str = "diamond") -> Optional[BeatData]:
+    def get_position_beat_data(
+        self, position_key: str, grid_mode: str = "diamond"
+    ) -> Optional[BeatData]:
         """
         Get complete beat data for a start position.
 
@@ -113,7 +104,9 @@ class IStartPositionUIService(ABC):
     """Interface for start position UI state and layout management."""
 
     @abstractmethod
-    def calculate_option_size(self, container_width: int, is_advanced: bool = False) -> int:
+    def calculate_option_size(
+        self, container_width: int, is_advanced: bool = False
+    ) -> int:
         """
         Calculate the appropriate size for start position options.
 
@@ -126,7 +119,9 @@ class IStartPositionUIService(ABC):
         """
 
     @abstractmethod
-    def get_grid_layout_config(self, grid_mode: str, is_advanced: bool = False) -> Dict[str, Any]:
+    def get_grid_layout_config(
+        self, grid_mode: str, is_advanced: bool = False
+    ) -> Dict[str, Any]:
         """
         Get grid layout configuration for positioning options.
 
@@ -139,7 +134,9 @@ class IStartPositionUIService(ABC):
         """
 
     @abstractmethod
-    def get_positions_for_mode(self, grid_mode: str, is_advanced: bool = False) -> List[str]:
+    def get_positions_for_mode(
+        self, grid_mode: str, is_advanced: bool = False
+    ) -> List[str]:
         """
         Get the list of positions to display for a given mode.
 
@@ -168,7 +165,9 @@ class IStartPositionOrchestrator(ABC):
         """
 
     @abstractmethod
-    def get_position_data_for_display(self, position_key: str, grid_mode: str) -> Optional[PictographData]:
+    def get_position_data_for_display(
+        self, position_key: str, grid_mode: str
+    ) -> Optional[PictographData]:
         """
         Get position data optimized for display in the UI.
 
@@ -181,7 +180,9 @@ class IStartPositionOrchestrator(ABC):
         """
 
     @abstractmethod
-    def calculate_responsive_layout(self, container_size: QSize, position_count: int) -> Dict[str, Any]:
+    def calculate_responsive_layout(
+        self, container_size: Size, position_count: int
+    ) -> Dict[str, Any]:
         """
         Calculate responsive layout parameters for position options.
 

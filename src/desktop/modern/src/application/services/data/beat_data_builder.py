@@ -8,6 +8,7 @@ with optional fields and proper validation.
 import logging
 from typing import Any, Dict, Optional
 
+from core.interfaces.data_builder_services import IBeatDataBuilder
 from domain.models.beat_data import BeatData
 from domain.models.enums import GridMode, GridPosition
 from domain.models.glyph_data import GlyphData
@@ -18,7 +19,7 @@ from domain.models.pictograph_data import PictographData
 logger = logging.getLogger(__name__)
 
 
-class BeatDataBuilder:
+class BeatDataBuilder(IBeatDataBuilder):
     """Builder pattern for creating BeatData objects with complex construction."""
 
     def __init__(self):
@@ -153,3 +154,101 @@ class BeatDataBuilder:
         """Reset builder to default state for reuse."""
         self.__init__()
         return self
+
+    # Interface implementation methods
+    def build_beat_data(self, beat_config: Dict[str, Any]) -> Any:
+        """Build beat data from configuration (interface implementation)."""
+        # Reset builder and apply configuration
+        self.reset()
+
+        if "beat_number" in beat_config:
+            self.with_beat_number(beat_config["beat_number"])
+        if "letter" in beat_config:
+            self.with_letter(beat_config["letter"])
+        if "duration" in beat_config:
+            self.with_duration(beat_config["duration"])
+        if "blue_motion" in beat_config or "red_motion" in beat_config:
+            self.with_motion_data(
+                beat_config.get("blue_motion"), beat_config.get("red_motion")
+            )
+        if "start_position" in beat_config and "end_position" in beat_config:
+            self.with_positions(
+                beat_config["start_position"], beat_config["end_position"]
+            )
+        if "metadata" in beat_config:
+            for key, value in beat_config["metadata"].items():
+                self.add_metadata(key, value)
+
+        return self.build()
+
+    def validate_beat_config(self, beat_config: Dict[str, Any]) -> bool:
+        """Validate beat configuration (interface implementation)."""
+        try:
+            # Check required fields exist and are valid types
+            if "beat_number" in beat_config:
+                if (
+                    not isinstance(beat_config["beat_number"], int)
+                    or beat_config["beat_number"] < 0
+                ):
+                    return False
+
+            if "duration" in beat_config:
+                if (
+                    not isinstance(beat_config["duration"], (int, float))
+                    or beat_config["duration"] < 0
+                ):
+                    return False
+
+            if "letter" in beat_config:
+                if not isinstance(beat_config["letter"], str):
+                    return False
+
+            # Validate motion data if present
+            for motion_key in ["blue_motion", "red_motion"]:
+                if motion_key in beat_config:
+                    motion = beat_config[motion_key]
+                    if motion is not None and not hasattr(motion, "__dict__"):
+                        return False
+
+            return True
+        except Exception:
+            return False
+
+    def get_default_beat_config(self) -> Dict[str, Any]:
+        """Get default beat configuration (interface implementation)."""
+        return {
+            "beat_number": 1,
+            "letter": "",
+            "duration": 1.0,
+            "blue_motion": None,
+            "red_motion": None,
+            "start_position": None,
+            "end_position": None,
+            "metadata": {},
+        }
+
+    def build_from_legacy_data(self, legacy_data: Dict[str, Any]) -> Any:
+        """Build beat data from legacy format (interface implementation)."""
+        # Reset and configure from legacy data
+        self.reset()
+
+        # Map legacy fields to modern configuration
+        if "beat" in legacy_data:
+            self.with_beat_number(legacy_data["beat"])
+        if "letter" in legacy_data:
+            self.with_letter(legacy_data["letter"])
+        if "duration" in legacy_data:
+            self.with_duration(legacy_data["duration"])
+
+        # Handle legacy motion format
+        if "motions" in legacy_data:
+            motions = legacy_data["motions"]
+            blue_motion = motions.get("blue")
+            red_motion = motions.get("red")
+            self.with_motion_data(blue_motion, red_motion)
+
+        # Handle legacy position format
+        if "start_pos" in legacy_data and "end_pos" in legacy_data:
+            self.with_positions(legacy_data["start_pos"], legacy_data["end_pos"])
+
+        return self.build()
