@@ -113,25 +113,13 @@ class OptionPickerSection(QGroupBox):
                 parent_width > 800
             )  # Parent should also be properly sized
 
-            print(
-                f"🔍 [SIZING] {self.letter_type} width check: scroll={scroll_width}px, parent={parent_width}px"
-            )
-            print(
-                f"🔍 [SIZING] {self.letter_type} validation: reasonable={is_reasonable_width}, not_default={is_not_default}, parent_ok={has_parent_width}"
-            )
-
             if is_reasonable_width and is_not_default and has_parent_width:
                 if not self._scroll_area_ready:
-                    print(
-                        f"✅ [SIZING] {self.letter_type} scroll area ready: {scroll_width}px (parent: {parent_width}px)"
-                    )
                     self._scroll_area_ready = True
                     # Trigger a resize now that we're ready
                     self._perform_delayed_resize()
             else:
-                print(
-                    f"⏳ [SIZING] {self.letter_type} scroll area not ready: {scroll_width}px (waiting for proper layout)"
-                )
+                pass
 
     def _perform_delayed_resize(self) -> None:
         """Perform resize calculation now that scroll area is ready."""
@@ -216,9 +204,6 @@ class OptionPickerSection(QGroupBox):
             # Use modern animation system if available, otherwise fall back to direct update
             if self._animation_orchestrator and existing_frames:
                 # Modern animated transition (replicates legacy fade_and_update behavior)
-                print(
-                    f"🎭 [FADE] Starting fade transition for {self.letter_type} with {len(existing_frames)} existing frames"
-                )
                 # Use simple Qt-based fade animation (no asyncio)
                 try:
                     from PyQt6.QtCore import (
@@ -227,10 +212,6 @@ class OptionPickerSection(QGroupBox):
                         QTimer,
                     )
                     from PyQt6.QtWidgets import QGraphicsOpacityEffect
-
-                    print(
-                        f"🎭 [FADE] Starting Qt-based fade transition for {self.letter_type}"
-                    )
 
                     # Step 1: Create fade out animations for existing frames
                     fade_out_group = QParallelAnimationGroup(
@@ -271,10 +252,6 @@ class OptionPickerSection(QGroupBox):
                                 f"⚠️ [FADE] Skipping invalid fade-out frame in {self.letter_type}: {e}"
                             )
 
-                    print(
-                        f"🎭 [FADE] Created {animations_added} fade out animations for {self.letter_type}"
-                    )
-
                     # Only start animation if we have valid animations
                     if animations_added > 0:
                         # Step 2: When fade out completes, update content and fade in
@@ -298,9 +275,6 @@ class OptionPickerSection(QGroupBox):
 
                         fade_out_group.start()
                     else:
-                        print(
-                            f"⚠️ [FADE] No valid fade-out animations for {self.letter_type}, using direct update"
-                        )
                         # Fallback to direct update
                         self.clear_pictographs()
                         self._load_options_directly(pictographs_for_section)
@@ -327,12 +301,7 @@ class OptionPickerSection(QGroupBox):
 
             new_frames = list(self.pictographs.values())
             if not new_frames:
-                print(f"🎭 [FADE] No new frames to fade in for {self.letter_type}")
                 return
-
-            print(
-                f"🎭 [FADE] Fading in {len(new_frames)} new frames for {self.letter_type}"
-            )
 
             # Create fade in animations for new frames
             fade_in_group = QParallelAnimationGroup(self)  # Parent to prevent GC
@@ -374,10 +343,6 @@ class OptionPickerSection(QGroupBox):
                 print(f"⚠️ [FADE] No valid frames to animate for {self.letter_type}")
                 return
 
-            print(
-                f"🎭 [FADE] Created {valid_animations} valid animations for {self.letter_type}"
-            )
-
             fade_in_group.start()
 
         except Exception as e:
@@ -390,7 +355,6 @@ class OptionPickerSection(QGroupBox):
     ) -> None:
         """Load options with smooth fade transition (replicates legacy behavior)."""
         try:
-            print(f"🎭 [FADE] _load_with_fade_transition called for {self.letter_type}")
             # Animation config matching legacy timing (200ms)
             config = AnimationConfig(
                 duration=0.2, easing=EasingType.EASE_IN_OUT  # 200ms to match legacy
@@ -537,18 +501,12 @@ class OptionPickerSection(QGroupBox):
 
         # NEW: Only proceed if UI is properly initialized and scroll area is ready
         if not self._ui_initialized:
-            print(
-                f"⏳ [SIZING] {self.letter_type} UI not ready for sizing, deferring..."
-            )
             return
 
         # Check if scroll area is ready, and if not, try to make it ready
         if not self._scroll_area_ready:
             self._check_scroll_area_readiness()
             if not self._scroll_area_ready:
-                print(
-                    f"⏳ [SIZING] {self.letter_type} scroll area not ready, deferring..."
-                )
                 return
 
         # If we get here, everything is ready - perform the resize

@@ -39,7 +39,6 @@ class OptionPickerSizeManager:
             if self._widget.parent():
                 parent_width = self._widget.parent().width()
                 if parent_width > 100:  # Valid width
-                    print(f"🔍 [SIZING] Using parent width: {parent_width}px")
                     self._last_calculated_width = parent_width
                     return parent_width
 
@@ -48,15 +47,11 @@ class OptionPickerSizeManager:
             if main_window_size.width() > 800:
                 # Use half the main window width (legacy approach)
                 calculated_width = main_window_size.width() // 2
-                print(
-                    f"🔍 [SIZING] Using main window width calculation: {calculated_width}px"
-                )
                 self._last_calculated_width = calculated_width
                 return calculated_width
 
             # Final fallback
             fallback_width = 400
-            print(f"🔍 [SIZING] Using fallback width: {fallback_width}px")
             self._last_calculated_width = fallback_width
             return fallback_width
 
@@ -173,7 +168,6 @@ class OptionPickerSizeManager:
             return False
 
         if not self.is_ui_ready_for_sizing():
-            print("⏳ [SIZING] UI not ready for sizing, deferring...")
             self._sizing_deferred_count += 1
 
             if self._sizing_deferred_count < self._max_deferred_attempts:
@@ -186,9 +180,7 @@ class OptionPickerSizeManager:
 
         current_width = self._widget.width()
         if not self.is_width_accurate(current_width):
-            print(
-                f"⚠️ [SIZING] Width {current_width}px appears inaccurate, deferring..."
-            )
+            print("⚠️ [SIZING] Width appears inaccurate, deferring...")
             self._sizing_deferred_count += 1
 
             if self._sizing_deferred_count < self._max_deferred_attempts:

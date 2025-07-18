@@ -79,7 +79,8 @@ class ModernSequenceImageViewer(QFrame):
 
     def _apply_styling(self) -> None:
         """Apply modern styling to the image viewer."""
-        self.setStyleSheet("""
+        self.setStyleSheet(
+            """
             ModernSequenceImageViewer {
                 background: rgba(255, 255, 255, 0.05);
                 border: 1px solid rgba(255, 255, 255, 0.1);
@@ -115,19 +116,22 @@ class ModernSequenceImageViewer(QFrame):
                 border: 1px solid rgba(255, 255, 255, 0.1);
                 color: rgba(255, 255, 255, 0.3);
             }
-        """)
+        """
+        )
 
     def _show_placeholder(self) -> None:
         """Show placeholder when no image is selected."""
         self.image_label.setText("🎭\n\nSelect a sequence\nto view details")
-        self.image_label.setStyleSheet("""
+        self.image_label.setStyleSheet(
+            """
             QLabel {
                 color: rgba(255, 255, 255, 0.5);
                 font-size: 16px;
                 font-weight: bold;
                 text-align: center;
             }
-        """)
+        """
+        )
         self.variation_label.setText("0 / 0")
         self.prev_button.setEnabled(False)
         self.next_button.setEnabled(False)
@@ -158,13 +162,15 @@ class ModernSequenceImageViewer(QFrame):
             scaled_pixmap = pixmap.scaled(
                 self.image_label.size(),
                 Qt.AspectRatioMode.KeepAspectRatio,
-                Qt.TransformationMode.SmoothTransformation
+                Qt.TransformationMode.SmoothTransformation,
             )
             self.image_label.setPixmap(scaled_pixmap)
             self.image_label.setStyleSheet("QLabel { color: white; }")
         else:
             self.image_label.setText("❌\n\nImage not found")
-            self.image_label.setStyleSheet("QLabel { color: rgba(255, 100, 100, 0.8); }")
+            self.image_label.setStyleSheet(
+                "QLabel { color: rgba(255, 100, 100, 0.8); }"
+            )
 
         # Update navigation
         total = len(self.current_thumbnails)
@@ -226,7 +232,8 @@ class ModernSequenceMetadata(QFrame):
 
     def _apply_styling(self) -> None:
         """Apply modern styling to the metadata panel."""
-        self.setStyleSheet("""
+        self.setStyleSheet(
+            """
             ModernSequenceMetadata {
                 background: rgba(255, 255, 255, 0.05);
                 border: 1px solid rgba(255, 255, 255, 0.1);
@@ -254,7 +261,8 @@ class ModernSequenceMetadata(QFrame):
                 background: rgba(255, 255, 255, 0.3);
                 border-radius: 6px;
             }
-        """)
+        """
+        )
 
     def _show_placeholder(self) -> None:
         """Show placeholder when no sequence is selected."""
@@ -279,10 +287,13 @@ class ModernSequenceMetadata(QFrame):
         metadata_items = [
             ("Word", sequence_data.word or "Unknown"),
             ("Length", str(sequence_data.sequence_length)),
-            ("Level", getattr(sequence_data, 'difficulty_level', 'Unknown')),
-            ("Variations", str(len(sequence_data.thumbnails) if sequence_data.thumbnails else 0)),
-            ("Date Added", getattr(sequence_data, 'date_added', 'Unknown')),
-            ("Author", getattr(sequence_data, 'author', 'Unknown')),
+            ("Level", getattr(sequence_data, "difficulty_level", "Unknown")),
+            (
+                "Variations",
+                str(len(sequence_data.thumbnails) if sequence_data.thumbnails else 0),
+            ),
+            ("Date Added", getattr(sequence_data, "date_added", "Unknown")),
+            ("Author", getattr(sequence_data, "author", "Unknown")),
         ]
 
         for label, value in metadata_items:
@@ -364,7 +375,8 @@ class ModernSequenceActionPanel(QFrame):
 
     def _apply_styling(self) -> None:
         """Apply modern styling to the action panel."""
-        self.setStyleSheet("""
+        self.setStyleSheet(
+            """
             ModernSequenceActionPanel {
                 background: rgba(255, 255, 255, 0.05);
                 border: 1px solid rgba(255, 255, 255, 0.1);
@@ -395,7 +407,8 @@ class ModernSequenceActionPanel(QFrame):
                 border: 1px solid rgba(255, 255, 255, 0.1);
                 color: rgba(255, 255, 255, 0.3);
             }
-        """)
+        """
+        )
 
     def set_sequence(self, sequence_id: str, variation_index: int = 0) -> None:
         """Set the current sequence and variation."""
@@ -429,18 +442,22 @@ class ModernSequenceActionPanel(QFrame):
     def _on_delete_clicked(self) -> None:
         """Handle delete button click."""
         if self.current_sequence_id:
-            self.delete_variation.emit(self.current_sequence_id, self.current_variation_index)
+            self.delete_variation.emit(
+                self.current_sequence_id, self.current_variation_index
+            )
 
     def _on_fullscreen_clicked(self) -> None:
         """Handle fullscreen button click."""
         if self.current_sequence_id:
-            self.view_fullscreen.emit(self.current_sequence_id, self.current_variation_index)
+            self.view_fullscreen.emit(
+                self.current_sequence_id, self.current_variation_index
+            )
 
 
 class ModernSequenceViewerPanel(QFrame):
     """
     Modern sequence viewer panel with clean glassmorphism design.
-    
+
     Features:
     - Image viewer with navigation
     - Metadata display
@@ -453,9 +470,7 @@ class ModernSequenceViewerPanel(QFrame):
     back_to_browser = pyqtSignal()
 
     def __init__(
-        self,
-        state_service: BrowseStateService,
-        parent: Optional[QWidget] = None
+        self, state_service: BrowseStateService, parent: Optional[QWidget] = None
     ):
         super().__init__(parent)
 
@@ -487,7 +502,8 @@ class ModernSequenceViewerPanel(QFrame):
         # Back button
         self.back_button = QPushButton("← Back to Browser")
         self.back_button.setFont(QFont("Segoe UI", 10))
-        self.back_button.setStyleSheet("""
+        self.back_button.setStyleSheet(
+            """
             QPushButton {
                 background: rgba(255, 255, 255, 0.1);
                 border: 1px solid rgba(255, 255, 255, 0.2);
@@ -499,7 +515,8 @@ class ModernSequenceViewerPanel(QFrame):
                 background: rgba(255, 255, 255, 0.2);
                 border: 1px solid rgba(255, 255, 255, 0.3);
             }
-        """)
+        """
+        )
         header_layout.addWidget(self.back_button)
 
         layout.addLayout(header_layout)
@@ -519,24 +536,34 @@ class ModernSequenceViewerPanel(QFrame):
 
     def _apply_styling(self) -> None:
         """Apply modern glassmorphism styling."""
-        self.setStyleSheet("""
+        self.setStyleSheet(
+            """
             ModernSequenceViewerPanel {
                 background: rgba(255, 255, 255, 0.02);
                 border: 1px solid rgba(255, 255, 255, 0.1);
                 border-radius: 16px;
             }
-        """)
+        """
+        )
 
     def _connect_signals(self) -> None:
         """Connect component signals."""
         self.back_button.clicked.connect(self.back_to_browser.emit)
         self.image_viewer.variation_changed.connect(self._on_variation_changed)
-        
+
         # Action panel signals
-        self.action_panel.edit_sequence.connect(lambda seq_id: self.sequence_action.emit("edit", seq_id))
-        self.action_panel.save_image.connect(lambda seq_id: self.sequence_action.emit("save", seq_id))
-        self.action_panel.delete_variation.connect(lambda seq_id, idx: self.sequence_action.emit("delete", seq_id))
-        self.action_panel.view_fullscreen.connect(lambda seq_id, idx: self.sequence_action.emit("fullscreen", seq_id))
+        self.action_panel.edit_sequence.connect(
+            lambda seq_id: self.sequence_action.emit("edit", seq_id)
+        )
+        self.action_panel.save_image.connect(
+            lambda seq_id: self.sequence_action.emit("save", seq_id)
+        )
+        self.action_panel.delete_variation.connect(
+            lambda seq_id, idx: self.sequence_action.emit("delete", seq_id)
+        )
+        self.action_panel.view_fullscreen.connect(
+            lambda seq_id, idx: self.sequence_action.emit("fullscreen", seq_id)
+        )
 
     def show_sequence(self, sequence_data: SequenceData) -> None:
         """Display a sequence in the viewer."""

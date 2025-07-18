@@ -176,12 +176,10 @@ class GlassmorphismStyleGenerator:
             background: {hover_bg};
             border: 1px solid {hover_border};
             color: {GlassmorphismColors.TEXT_PRIMARY};
-            transform: translateY(-1px);
         }}
         
         QPushButton:pressed {{
             background: {GlassmorphismColors.GLASS_LIGHTER};
-            transform: translateY(0px);
         }}
         
         QPushButton:disabled {{

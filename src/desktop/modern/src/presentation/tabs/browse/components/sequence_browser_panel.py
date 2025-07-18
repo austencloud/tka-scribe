@@ -5,8 +5,8 @@ Displays filtered sequences in a responsive thumbnail grid.
 Handles the complex thumbnail management identified in the Legacy audit.
 """
 
-from typing import List, Optional
 from datetime import datetime
+from typing import List, Optional
 
 from domain.models.sequence_data import SequenceData
 from presentation.tabs.browse.models import FilterType
@@ -234,93 +234,110 @@ class SequenceBrowserPanel(QWidget):
                     print(f"  DEBUG: {seq.word} has date: {seq.date_added}")
                 else:
                     print(f"  DEBUG: {seq.word} has no date_added")
-            print(f"  DEBUG: Found {date_count} sequences with dates out of {len(self.current_sequences)}")
+            print(
+                f"  DEBUG: Found {date_count} sequences with dates out of {len(self.current_sequences)}"
+            )
 
         # Re-sort and re-display current sequences
         if self.current_sequences:
             self._sort_and_display_sequences(self.current_sequences, sort_method)
 
-    def _sort_and_display_sequences(self, sequences: List[SequenceData], sort_method: str) -> None:
+    def _sort_and_display_sequences(
+        self, sequences: List[SequenceData], sort_method: str
+    ) -> None:
         """Sort sequences and display them with section headers."""
         # Sort sequences based on the selected method
         sorted_sequences = self._sort_sequences(sequences, sort_method)
-        
+
         # Group sequences into sections
         sections = self._group_sequences_into_sections(sorted_sequences, sort_method)
-        
+
         # Update navigation sidebar
         if self.navigation_sidebar:
             section_names = list(sections.keys())
             self.navigation_sidebar.update_sections(section_names, sort_method)
-        
+
         # Clear existing grid
         self._clear_grid()
         self.thumbnail_widgets.clear()
-        
+
         # Display sequences with section headers
         current_row = 0
         thumbnail_count = 0
-        
+
         for section_name, section_sequences in sections.items():
             # Add section header
             if section_name:  # Only add header if section name is not empty
                 current_row = self._add_section_header(section_name, current_row)
-            
+
             # Add sequences for this section
             for sequence in section_sequences:
                 thumbnail = self._create_sequence_thumbnail(sequence)
                 self.thumbnail_widgets.append(thumbnail)
-                
+
                 # Calculate position in 3-column grid
                 col = thumbnail_count % 3
                 if col == 0 and thumbnail_count > 0:  # Start new row
                     current_row += 1
-                
+
                 self.grid_layout.addWidget(thumbnail, current_row, col)
                 thumbnail_count += 1
-            
+
             # If we finished a section and have incomplete row, start fresh for next section
             if thumbnail_count % 3 != 0:
                 current_row += 1
-                thumbnail_count = ((thumbnail_count // 3) + 1) * 3  # Round up to next multiple of 3
-        
+                thumbnail_count = (
+                    (thumbnail_count // 3) + 1
+                ) * 3  # Round up to next multiple of 3
+
         # Add stretch to bottom
         self.grid_layout.setRowStretch(self.grid_layout.rowCount(), 1)
-        
+
         # Schedule sizing after layout is complete
         from PyQt6.QtCore import QTimer
+
         QTimer.singleShot(10, self._calculate_and_apply_sizes)
 
-    def _sort_sequences(self, sequences: List[SequenceData], sort_method: str) -> List[SequenceData]:
+    def _sort_sequences(
+        self, sequences: List[SequenceData], sort_method: str
+    ) -> List[SequenceData]:
         """Sort sequences based on the selected method."""
         print(f"🔄 Sorting {len(sequences)} sequences by {sort_method}")
-        
+
         if sort_method == "alphabetical":
             result = sorted(sequences, key=lambda s: s.word.lower() if s.word else "")
         elif sort_method == "length":
-            result = sorted(sequences, key=lambda s: s.sequence_length if s.sequence_length else 0)
+            result = sorted(
+                sequences, key=lambda s: s.sequence_length if s.sequence_length else 0
+            )
         elif sort_method == "level":
             result = sorted(sequences, key=lambda s: s.level if s.level else 0)
         elif sort_method == "date_added":
             print("  DEBUG: Sorting by date_added")
-            result = sorted(sequences, key=lambda s: s.date_added if s.date_added else datetime.min, reverse=True)
+            result = sorted(
+                sequences,
+                key=lambda s: s.date_added if s.date_added else datetime.min,
+                reverse=True,
+            )
             print(f"  DEBUG: Sorted order: {[seq.word for seq in result]}")
         else:
             # Default to alphabetical
             result = sorted(sequences, key=lambda s: s.word.lower() if s.word else "")
-        
+
         return result
 
-    def _group_sequences_into_sections(self, sequences: List[SequenceData], sort_method: str) -> dict[str, List[SequenceData]]:
+    def _group_sequences_into_sections(
+        self, sequences: List[SequenceData], sort_method: str
+    ) -> dict[str, List[SequenceData]]:
         """Group sequences into sections based on sort method."""
         sections = {}
-        
+
         for sequence in sequences:
             section_key = self._get_section_key(sequence, sort_method)
             if section_key not in sections:
                 sections[section_key] = []
             sections[section_key].append(sequence)
-        
+
         return sections
 
     def _get_section_key(self, sequence: SequenceData, sort_method: str) -> str:
@@ -328,7 +345,11 @@ class SequenceBrowserPanel(QWidget):
         if sort_method == "alphabetical":
             return sequence.word[0].upper() if sequence.word else "?"
         elif sort_method == "length":
-            return f"Length {sequence.sequence_length}" if sequence.sequence_length else "Unknown Length"
+            return (
+                f"Length {sequence.sequence_length}"
+                if sequence.sequence_length
+                else "Unknown Length"
+            )
         elif sort_method == "level":
             return f"Level {sequence.level}" if sequence.level else "Unknown Level"
         elif sort_method == "date_added":
@@ -344,46 +365,52 @@ class SequenceBrowserPanel(QWidget):
         """Add a section header to the grid."""
         # Create section header widget
         header_widget = QFrame()
-        header_widget.setStyleSheet("""
+        header_widget.setStyleSheet(
+            """
             QFrame {
                 background: rgba(255, 255, 255, 0.05);
                 border: 1px solid rgba(255, 255, 255, 0.1);
                 border-radius: 6px;
                 margin: 10px 0px;
             }
-        """)
-        
+        """
+        )
+
         header_layout = QHBoxLayout(header_widget)
         header_layout.setContentsMargins(15, 8, 15, 8)
-        
+
         # Section title
         title_label = QLabel(section_name)
         title_label.setFont(QFont("Segoe UI", 14, QFont.Weight.Bold))
-        title_label.setStyleSheet("color: rgba(255, 255, 255, 0.9); background: transparent; border: none;")
+        title_label.setStyleSheet(
+            "color: rgba(255, 255, 255, 0.9); background: transparent; border: none;"
+        )
         header_layout.addWidget(title_label)
-        
+
         header_layout.addStretch()
-        
+
         # Add header spanning all 3 columns
         current_row += 1
         self.grid_layout.addWidget(header_widget, current_row, 0, 1, 3)
-        
+
         return current_row
 
     def _on_section_selected(self, section: str) -> None:
         """Handle navigation sidebar section selection."""
         print(f"🧭 Navigating to section: {section}")
-        
+
         # Find the section header in the grid
         for i in range(self.grid_layout.count()):
             item = self.grid_layout.itemAt(i)
             if item and item.widget():
                 widget = item.widget()
                 # Check if this is a section header
-                if (hasattr(widget, 'findChild') and 
-                    widget.findChild(QLabel) and 
-                    widget.findChild(QLabel).text() == section):
-                    
+                if (
+                    hasattr(widget, "findChild")
+                    and widget.findChild(QLabel)
+                    and widget.findChild(QLabel).text() == section
+                ):
+
                     # Scroll to this widget
                     self.scroll_area.ensureWidgetVisible(widget)
                     break

@@ -38,7 +38,6 @@ class OptionPickerSectionManager:
     ) -> None:
         """Update all sections directly without animation."""
         if self._update_in_progress:
-            print("🔄 [SECTION_MGR] Update already in progress, queuing...")
             self._pending_updates.append((sequence_data, options_by_type))
             return
 
@@ -66,8 +65,6 @@ class OptionPickerSectionManager:
                         letter_type
                     )
 
-            print("✅ [SECTION_MGR] All sections updated successfully")
-
         except Exception as e:
             print(f"❌ [SECTION_MGR] Error updating sections: {e}")
         finally:
@@ -78,7 +75,6 @@ class OptionPickerSectionManager:
         """Process any pending updates that were queued."""
         if self._pending_updates:
             sequence_data, options_by_type = self._pending_updates.pop(0)
-            print(f"🔄 [SECTION_MGR] Processing queued update...")
             QTimer.singleShot(
                 10,
                 lambda: self.update_all_sections_directly(
@@ -91,7 +87,6 @@ class OptionPickerSectionManager:
         for section in self._sections.values():
             if hasattr(section, "clear_pictographs"):
                 section.clear_pictographs()
-        print("🧹 [SECTION_MGR] All sections cleared")
 
     def get_all_pictograph_frames(self) -> List:
         """Get all pictograph frames from all sections."""
@@ -106,16 +101,12 @@ class OptionPickerSectionManager:
         for section in self._sections.values():
             if hasattr(section, "update_option_picker_width"):
                 section.update_option_picker_width(picker_width)
-        print(
-            f"📏 [SECTION_MGR] Updated all sections with picker width: {picker_width}px"
-        )
 
     def set_loading_state_for_all_sections(self, loading: bool) -> None:
         """Set loading state for all sections."""
         for section in self._sections.values():
             if hasattr(section, "_loading_options"):
                 section._loading_options = loading
-        print(f"⏳ [SECTION_MGR] Set loading state for all sections: {loading}")
 
     def apply_sizing_to_all_sections(
         self, main_window_size, picker_width: int, layout_config: dict
@@ -129,9 +120,6 @@ class OptionPickerSectionManager:
                         picker_width,
                         spacing=layout_config.get("spacing", 10),
                     )
-        print(
-            f"📏 [SECTION_MGR] Applied sizing to all sections: {picker_width}px width"
-        )
 
     def get_sections_with_content(self) -> List["OptionPickerSection"]:
         """Get sections that have pictograph content."""

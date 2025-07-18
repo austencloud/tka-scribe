@@ -14,11 +14,11 @@ from domain.models.sequence_data import SequenceData
 from presentation.tabs.browse.components.filter_selection_panel import (
     FilterSelectionPanel,
 )
-from presentation.tabs.browse.components.sequence_browser_panel import (
-    SequenceBrowserPanel,
-)
 from presentation.tabs.browse.components.modern_sequence_viewer_panel import (
     ModernSequenceViewerPanel,
+)
+from presentation.tabs.browse.components.sequence_browser_panel import (
+    SequenceBrowserPanel,
 )
 from presentation.tabs.browse.models import FilterType
 from presentation.tabs.browse.services.browse_service import BrowseService
@@ -261,10 +261,10 @@ class ModernBrowseTab(QWidget):
                 difficulty_level=record.difficulty_level,
                 tags=record.tags,
             )
-            
+
             # Store mapping from UUID to word for quick lookup
             self.sequence_id_to_word[sequence_data.id] = record.word
-            
+
             sequence_data_list.append(sequence_data)
 
         return sequence_data_list
@@ -305,21 +305,21 @@ class ModernBrowseTab(QWidget):
         if not word:
             print(f"❌ No word mapping found for sequence_id: {sequence_id}")
             return None
-        
+
         # Get all records from dictionary manager
         all_records = self.dictionary_manager.get_all_records()
-        
+
         # Find the record by word
         target_record = None
         for record in all_records:
             if record.word == word:
                 target_record = record
                 break
-        
+
         if not target_record:
             print(f"❌ No record found for word: {word}")
             return None
-        
+
         # Convert SequenceRecord to SequenceData
         sequence_data = SequenceData(
             id=sequence_id,  # Use the original UUID
@@ -337,7 +337,7 @@ class ModernBrowseTab(QWidget):
             difficulty_level=target_record.difficulty_level,
             tags=target_record.tags,
         )
-        
+
         return sequence_data
 
     def _show_filter_selection(self) -> None:

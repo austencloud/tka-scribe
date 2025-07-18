@@ -91,7 +91,6 @@ class QuickAccessSection(QFrame):
             QPushButton:hover {{
                 background: {accent_color}20;
                 border: 2px solid {accent_color}60;
-                transform: translateY(-2px);
             }}
             QPushButton:pressed {{
                 background: {accent_color}30;

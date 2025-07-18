@@ -39,7 +39,7 @@ class FilterCategorySection(QFrame):
     ):
         """
         Initialize filter category section.
-        
+
         Args:
             title: Display title for the category (e.g., "📝 By Sequence Name")
             filter_type: Base filter type for this category
@@ -48,12 +48,12 @@ class FilterCategorySection(QFrame):
             parent: Parent widget
         """
         super().__init__(parent)
-        
+
         self.title = title
         self.filter_type = filter_type
         self.options = options
         self.grid_columns = grid_columns
-        
+
         self._setup_ui()
         self._apply_styling()
 
@@ -69,14 +69,16 @@ class FilterCategorySection(QFrame):
         self.title_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         title_font = QFont("Segoe UI", 14, QFont.Weight.Bold)
         self.title_label.setFont(title_font)
-        self.title_label.setStyleSheet("""
+        self.title_label.setStyleSheet(
+            """
             QLabel {
                 color: white;
                 background: transparent;
                 margin-bottom: 8px;
                 padding: 4px;
             }
-        """)
+        """
+        )
         layout.addWidget(self.title_label)
 
         # Options grid
@@ -91,11 +93,11 @@ class FilterCategorySection(QFrame):
     def _create_option_buttons(self) -> None:
         """Create the grid of option buttons."""
         self.option_buttons = {}
-        
+
         for i, option in enumerate(self.options):
             row = i // self.grid_columns
             col = i % self.grid_columns
-            
+
             # Parse option data
             if isinstance(option, tuple) and len(option) >= 2:
                 # Styled option with custom label and value
@@ -107,7 +109,7 @@ class FilterCategorySection(QFrame):
                 label = str(option)
                 value = option
                 color = None
-            
+
             # Create button
             button = self._create_option_button(label, value, color)
             self.option_buttons[value] = button
@@ -119,7 +121,7 @@ class FilterCategorySection(QFrame):
         """Create a single option button."""
         button = QPushButton(label)
         button.setMinimumSize(80, 35)
-        
+
         # Set font
         font = QFont("Segoe UI", 11, QFont.Weight.Medium)
         button.setFont(font)
@@ -127,7 +129,8 @@ class FilterCategorySection(QFrame):
         # Apply styling based on whether color is provided
         if color:
             # Special colored button (for difficulty levels, etc.)
-            button.setStyleSheet(f"""
+            button.setStyleSheet(
+                f"""
                 QPushButton {{
                     background: {color}20;
                     border: 1px solid {color}40;
@@ -139,15 +142,16 @@ class FilterCategorySection(QFrame):
                 QPushButton:hover {{
                     background: {color}30;
                     border: 1px solid {color}60;
-                    transform: scale(1.05);
                 }}
                 QPushButton:pressed {{
                     background: {color}40;
                 }}
-            """)
+            """
+            )
         else:
             # Standard button styling
-            button.setStyleSheet("""
+            button.setStyleSheet(
+                """
                 QPushButton {
                     background: rgba(255, 255, 255, 0.1);
                     border: 1px solid rgba(255, 255, 255, 0.2);
@@ -159,21 +163,22 @@ class FilterCategorySection(QFrame):
                 QPushButton:hover {
                     background: rgba(255, 255, 255, 0.2);
                     border: 1px solid rgba(255, 255, 255, 0.3);
-                    transform: scale(1.05);
                 }
                 QPushButton:pressed {
                     background: rgba(255, 255, 255, 0.15);
                 }
-            """)
+            """
+            )
 
         # Connect to filter selection
         button.clicked.connect(lambda: self._on_option_clicked(value))
-        
+
         return button
 
     def _apply_styling(self) -> None:
         """Apply glass-morphism container styling."""
-        self.setStyleSheet("""
+        self.setStyleSheet(
+            """
             FilterCategorySection {
                 background: rgba(255, 255, 255, 0.08);
                 border: 1px solid rgba(255, 255, 255, 0.15);
@@ -184,7 +189,8 @@ class FilterCategorySection(QFrame):
                 background: rgba(255, 255, 255, 0.12);
                 border: 1px solid rgba(255, 255, 255, 0.25);
             }
-        """)
+        """
+        )
 
     def _on_option_clicked(self, option_value: str) -> None:
         """Handle option button click."""

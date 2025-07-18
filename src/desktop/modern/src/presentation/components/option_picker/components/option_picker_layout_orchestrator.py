@@ -41,7 +41,6 @@ class OptionPickerLayoutOrchestrator:
 
     def add_header_widget(self, header_widget: QWidget) -> None:
         """Add a header widget at the top of the layout."""
-        print("🏗️ [LAYOUT] Adding header widget")
 
         # Store reference for spacing calculations
         self._header_widget = header_widget
@@ -52,30 +51,20 @@ class OptionPickerLayoutOrchestrator:
         # Apply balanced spacing
         self.apply_balanced_spacing()
 
-        print("✅ [LAYOUT] Header widget added")
-
     def add_section_widget(self, section_widget: QWidget) -> None:
         """Add a section widget to the layout."""
         self._section_widgets.append(section_widget)
         self._layout.addWidget(section_widget)
-        print(
-            f"📄 [LAYOUT] Added section widget, total sections: {len(self._section_widgets)}"
-        )
 
     def add_group_widget(self, group_widget: QWidget) -> None:
         """Add a group widget to the layout."""
         self._group_widgets.append(group_widget)
         self._layout.addWidget(group_widget)
-        print(
-            f"📦 [LAYOUT] Added group widget, total groups: {len(self._group_widgets)}"
-        )
 
     def apply_balanced_spacing(self) -> None:
         """Apply balanced spacing between header-section pairs."""
         if not self._header_widget:
             return
-
-        print("🔧 [LAYOUT] Applying balanced spacing for header-section pairs")
 
         # Step 1: Remove all existing stretches
         items_to_remove = []
@@ -84,7 +73,6 @@ class OptionPickerLayoutOrchestrator:
             if item and item.spacerItem():
                 items_to_remove.append(item)
 
-        print(f"🧹 [LAYOUT] Removing {len(items_to_remove)} existing stretches")
         for item in items_to_remove:
             self._layout.removeItem(item)
 
@@ -94,8 +82,6 @@ class OptionPickerLayoutOrchestrator:
             item = self._layout.itemAt(i)
             if item and item.widget():
                 all_widgets.append((i, item.widget()))
-
-        print(f"🔍 [LAYOUT] Found {len(all_widgets)} widgets in layout")
 
         # Step 3: Find header-section pair boundaries
         pair_end_indices = []
@@ -109,26 +95,14 @@ class OptionPickerLayoutOrchestrator:
             if self._is_section_or_group_widget(widget):
                 pair_end_indices.append(index)
 
-        print(
-            f"📍 [LAYOUT] Found {len(pair_end_indices)} pair boundaries at indices: {pair_end_indices}"
-        )
-
         # Step 4: Add stretches after each pair (work backwards to preserve indices)
         for pair_end_index in reversed(pair_end_indices):
             self._layout.insertStretch(pair_end_index + 1)
-            print(f"↔️ [LAYOUT] Added stretch after pair at index {pair_end_index}")
 
         # Step 5: Add initial stretch after main header
         header_index = self._find_header_index(all_widgets)
         if header_index >= 0:
             self._layout.insertStretch(header_index + 1)
-            print(
-                f"↔️ [LAYOUT] Added initial stretch after header at index {header_index}"
-            )
-
-        print(
-            f"✅ [LAYOUT] Balanced spacing applied, final layout count: {self._layout.count()}"
-        )
 
     def _is_section_or_group_widget(self, widget: QWidget) -> bool:
         """Check if widget is a section or group widget."""
@@ -148,7 +122,6 @@ class OptionPickerLayoutOrchestrator:
 
     def clear_layout(self) -> None:
         """Clear all widgets from the layout."""
-        print("🧹 [LAYOUT] Clearing layout")
 
         # Remove all widgets
         while self._layout.count():
@@ -160,8 +133,6 @@ class OptionPickerLayoutOrchestrator:
         self._header_widget = None
         self._section_widgets.clear()
         self._group_widgets.clear()
-
-        print("✅ [LAYOUT] Layout cleared")
 
     def get_layout_info(self) -> dict:
         """Get information about the current layout."""
