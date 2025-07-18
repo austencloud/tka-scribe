@@ -20,9 +20,6 @@ if TYPE_CHECKING:
         SequenceBeatFrame,
     )
 
-# Type alias for beat frame components
-BeatFrameType = Union["SequenceBeatFrame", "BeatFrame"]
-
 
 def ensure_positive_size(size: int, min_value: int = 1) -> int:
     """Ensure a size value is positive to avoid Qt warnings"""
@@ -51,7 +48,7 @@ class BeatResizer(IBeatResizer):
         self._graph_editor_ref = graph_editor
 
     def resize_beat_frame(
-        self, beat_frame: BeatFrameType, num_rows: int, num_columns: int
+        self, beat_frame: "SequenceBeatFrame", num_rows: int, num_columns: int
     ) -> int:
         """
         Complete beat frame resize using validated algorithm.
@@ -70,7 +67,7 @@ class BeatResizer(IBeatResizer):
         self.configure_scroll_behavior(beat_frame, num_rows)
         return beat_size
 
-    def calculate_dimensions(self, beat_frame: BeatFrameType) -> Tuple[int, int]:
+    def calculate_dimensions(self, beat_frame: "SequenceBeatFrame") -> Tuple[int, int]:
         """
         Calculate available container dimensions using validated logic.
 
@@ -81,29 +78,23 @@ class BeatResizer(IBeatResizer):
         - Subtracts graph editor height from available height
         """
         # Find the main widget and related components
-        main_widget = self._find_main_widget(beat_frame)
-        scroll_area = self._find_scroll_area_parent(beat_frame)
-
-        if not main_widget or not scroll_area:
-            # Fallback to widget size
-            return int(beat_frame.width() * 0.8), int(beat_frame.height() * 0.8)
-
+        main_window = self._find_main_window(beat_frame)
         # Validated calculation
-        scrollbar_width = scroll_area.verticalScrollBar().width()
+        scrollbar_width = beat_frame.verticalScrollBar().width() if beat_frame else 0
 
         # Main widget width divided by 2 (workbench takes half the screen)
-        half_main_width = main_widget.width() // 2
+        half_main_width = main_window.width() // 2
 
         # Find button panel width (or estimate if not found)
-        button_panel_width = self._get_button_panel_width(main_widget)
+        button_panel_width = self._get_button_panel_width(main_window)
 
         # Calculate available width with validated formula
         available_width = half_main_width - button_panel_width - scrollbar_width
         width = int(available_width * 0.8)
 
         # Calculate available height (subtract graph editor space)
-        graph_editor_height = self._get_graph_editor_height(main_widget)
-        available_height = main_widget.height() - int(graph_editor_height * 0.8)
+        graph_editor_height = self._get_graph_editor_height(main_window)
+        available_height = main_window.height() - int(graph_editor_height * 0.8)
 
         return width, available_height
 
@@ -115,6 +106,8 @@ class BeatResizer(IBeatResizer):
         - Width constraint: available_width // num_columns
         - Height constraint: available_height // 6 (fixed ratio!)
         - Final size: min(width_constraint, height_constraint)
+        - Special case: When num_columns == 1 (cleared sequence), use width // 6 instead
+          to maintain consistent sizing with when options are present
         """
         # Caching for performance
         cache_key = (width, height, num_columns)
@@ -123,8 +116,11 @@ class BeatResizer(IBeatResizer):
 
         if num_columns == 0:
             beat_size = 0
+        elif num_columns == 1:
+            width_constraint = int(width // 6)
+            height_constraint = int(height // 6)  # Fixed ratio of 6!
+            beat_size = min(width_constraint, height_constraint)
         else:
-            # Validated calculation - THIS IS THE KEY LOGIC!
             width_constraint = int(width // num_columns)
             height_constraint = int(height // 6)  # Fixed ratio of 6!
             beat_size = min(width_constraint, height_constraint)
@@ -135,7 +131,7 @@ class BeatResizer(IBeatResizer):
         self._size_cache[cache_key] = beat_size
         return beat_size
 
-    def resize_beats(self, beat_frame: BeatFrameType, beat_size: int):
+    def resize_beats(self, beat_frame: "SequenceBeatFrame", beat_size: int):
         """
         Resize beat views using validated logic.
 
@@ -162,7 +158,7 @@ class BeatResizer(IBeatResizer):
             if hasattr(start_position_view, "setMinimumSize"):
                 start_position_view.setMinimumSize(min_size, min_size)
 
-    def configure_scroll_behavior(self, beat_frame: BeatFrameType, num_rows: int):
+    def configure_scroll_behavior(self, beat_frame: "SequenceBeatFrame", num_rows: int):
         """
         Configure scroll bar behavior using validated logic.
 
@@ -170,7 +166,11 @@ class BeatResizer(IBeatResizer):
         - Show scrollbar if rows > 4
         - Hide scrollbar if rows <= 4
         """
+        # The beat frame itself might be a scroll area (SequenceBeatFrame inherits from QScrollArea)
         scroll_area = self._find_scroll_area_parent(beat_frame)
+        if not scroll_area and isinstance(beat_frame, QScrollArea):
+            scroll_area = beat_frame
+
         if scroll_area:
             if num_rows > 4:
                 scroll_area.setVerticalScrollBarPolicy(
@@ -181,16 +181,15 @@ class BeatResizer(IBeatResizer):
                     Qt.ScrollBarPolicy.ScrollBarAlwaysOff
                 )
 
-    def _find_main_widget(self, widget: QWidget) -> Optional[QWidget]:
-        """Find the main widget by traversing up the parent hierarchy"""
-        parent = widget.parent()
-        while parent:
-            # Look for a widget that looks like a main widget
-            if (
-                isinstance(parent, QWidget) and parent.width() > 1000
-            ):  # Reasonable main window size
-                return parent
-            parent = parent.parent()
+    def _find_main_window(self, widget: QWidget) -> Optional[QWidget]:
+        """Find the main widget by traversing up to the top-level window"""
+        # Get the top-level widget (main window)
+        top_level = widget.window()
+
+        # Ensure it's actually a top-level window
+        if top_level and top_level.isWindow():
+            return top_level
+
         return None
 
     def _find_scroll_area_parent(self, widget: QWidget) -> Optional[QScrollArea]:
@@ -262,13 +261,14 @@ class BeatResizer(IBeatResizer):
             return updated_data
 
     def calculate_optimal_size(
-        self, beat_data: Any, container_size: Tuple[int, int]
+        self, beat_data: Any, container_size: Tuple[int, int]  # noqa: ARG002
     ) -> Tuple[int, int]:
         """Calculate optimal size for beat within container (interface implementation)."""
+        # Note: beat_data parameter is part of interface but not used in this implementation
         container_width, container_height = container_size
 
-        # Use existing calculation logic
-        calculated_size = self.calculate_beat_frame_size(container_width)
+        # Use existing calculation logic - fallback to simple calculation
+        calculated_size = min(container_width, container_height) // 6
 
         # Ensure it fits within container
         optimal_width = min(calculated_size, container_width)

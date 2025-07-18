@@ -26,15 +26,15 @@ class BeatLayoutCalculator(IBeatLayoutCalculator):
         self, sequence: SequenceData, container_size: Tuple[int, int]
     ) -> Dict[str, Any]:
         """Calculate layout for beat frames using your original carefully designed algorithm."""
-        beat_count = len(sequence.beats)
+        beat_count = len(sequence.beats) if sequence else 0
 
         # Your original complete default layouts (rows, columns) for all beat counts
         # This preserves your careful layout design decisions
         default_layouts = {
-            "0": [1, 0],
-            "1": [1, 1],
-            "2": [1, 2],
-            "3": [1, 3],
+            "0": [1, 4],
+            "1": [1, 4],
+            "2": [1, 4],
+            "3": [1, 4],
             "4": [1, 4],
             "5": [2, 4],
             "6": [2, 4],

@@ -346,13 +346,8 @@ class SequenceBeatFrame(QScrollArea):
     def _update_layout(self):
         """Update grid layout based on sequence length"""
         if not self._current_sequence:
-            self._apply_layout(1, 8)  # Default layout
+            self._apply_layout(1, 4)  # Default layout
             return  # Calculate optimal layout using service
-
-        # Special case: empty sequence should still show start position with minimal layout
-        if self._current_sequence.length == 0:
-            self._apply_layout(1, 1)  # 1 row, 1 column for start position only
-            return
 
         container_size = (self.width(), self.height())
         layout_config = self._layout_service.calculate_beat_frame_layout(
@@ -376,20 +371,19 @@ class SequenceBeatFrame(QScrollArea):
         self._current_layout = {"rows": rows, "columns": columns}
 
         # Add beats to new layout
-        beat_count = self._current_sequence.length if self._current_sequence else 0
+        beat_count_including_start = (
+            self._current_sequence.length if self._current_sequence else 0
+        )
 
-        # Only add beat views if there are beats and columns > 0
-        if beat_count > 0 and columns > 0:
-            for i in range(min(beat_count, len(self._beat_views))):
+        if beat_count_including_start > 0 and columns > 0:
+            for i in range(min(beat_count_including_start, len(self._beat_views))):
                 row = i // columns
-                col = (i % columns) + 1  # +1 to account for start position
+                col = i % columns + 1  # +1 to account for start position
 
                 beat_view = self._beat_views[i]
                 self._grid_layout.addWidget(beat_view, row, col, 1, 1)
                 beat_view.show()
 
-        # CRITICAL: Apply Legacy's beat sizing after layout change
-        # Ensure we have at least 1 column for resizing calculations
         resize_columns = max(columns, 1)
         self._resizer_service.resize_beat_frame(self, rows, resize_columns)
 

@@ -37,6 +37,8 @@ class FilterType(Enum):
     AUTHOR = "author"
     GRID_MODE = "grid_mode"
     ALL_SEQUENCES = "all_sequences"
+    FAVORITES = "favorites"
+    MOST_RECENT = "most_recent"
 
 
 class NavigationMode(Enum):

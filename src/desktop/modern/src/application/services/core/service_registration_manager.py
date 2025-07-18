@@ -486,7 +486,29 @@ class ServiceRegistrationManager(IServiceRegistrationManager):
 
         # Register services without interfaces yet
         container.register_singleton(SequenceLoader, SequenceLoader)
-        container.register_singleton(SequenceBeatOperations, SequenceBeatOperations)
+
+        # Register SequenceBeatOperations with proper workbench getter injection
+        def create_sequence_beat_operations(c):
+            from core.interfaces.workbench_services import IWorkbenchStateManager
+
+            # Get the workbench state manager
+            state_manager = c.resolve(IWorkbenchStateManager)
+
+            # Create workbench getter that gets sequence from state manager
+            def workbench_getter():
+                return state_manager
+
+            # Create workbench setter that sets sequence in state manager
+            def workbench_setter(sequence_data):
+                state_manager.set_sequence(sequence_data)
+
+            return SequenceBeatOperations(
+                workbench_getter=workbench_getter, workbench_setter=workbench_setter
+            )
+
+        container.register_factory(
+            SequenceBeatOperations, create_sequence_beat_operations
+        )
 
         # Register SequenceStartPositionManager with dependency injection
         def create_sequence_start_position_manager(c):
