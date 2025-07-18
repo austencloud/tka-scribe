@@ -5,16 +5,16 @@ This service replicates context-specific scaling logic to ensure Modern pictogra
 achieve the same visual prominence as proven pictographs in different usage contexts.
 """
 
-from typing import Optional, Tuple
 from enum import Enum
-from PyQt6.QtCore import QSize
-from PyQt6.QtWidgets import QWidget
+from typing import Optional, Tuple
 
 from core.interfaces.pictograph_services import (
     IScalingService,
-    ScalingContext,
     RenderingContext,
+    ScalingContext,
 )
+from PyQt6.QtCore import QSize
+from PyQt6.QtWidgets import QWidget
 
 
 class PictographScaler(IScalingService):
@@ -109,13 +109,23 @@ class PictographScaler(IScalingService):
         self, container_size: QSize, scene_size: QSize, **context_params
     ) -> Tuple[float, float]:
         """Calculate scaling for start position picker context."""
-        # Use container width divided by 10 (proven formula)
-        target_size = container_size.width() // 10
+        # CRITICAL FIX: Use main window width divided by 10 (like legacy system)
+        # Legacy formula: main_window_width // 10, not container_width // 10
+        main_window_width = context_params.get("main_window_width", 1200)
+        target_size = main_window_width // 10
+
+        # Apply border calculation like legacy
+        border_width = max(1, int(target_size * 0.015))
+        target_size = target_size - (2 * border_width)
         target_size = max(target_size, 80)  # Minimum size
 
         # Calculate scale factors
         scale_x = target_size / scene_size.width()
         scale_y = target_size / scene_size.height()
+
+        print(
+            f"🔧 [SCALING_SERVICE] START_POS_PICKER: main_window_width={main_window_width}, target_size={target_size}, scene_size={scene_size.width()}x{scene_size.height()}, scale={scale_x:.3f}x{scale_y:.3f}"
+        )
 
         return (scale_x, scale_y)
 
@@ -123,8 +133,14 @@ class PictographScaler(IScalingService):
         self, container_size: QSize, scene_size: QSize, **context_params
     ) -> Tuple[float, float]:
         """Calculate scaling for advanced start position context."""
-        # Use container width divided by 12 (proven formula)
-        target_size = container_size.width() // 12
+        # CRITICAL FIX: Use main window width divided by 12 (like legacy system)
+        # Legacy formula: main_window_width // 12, not container_width // 12
+        main_window_width = context_params.get("main_window_width", 1200)
+        target_size = main_window_width // 12
+
+        # Apply border calculation like legacy
+        border_width = max(1, int(target_size * 0.015))
+        target_size = target_size - (2 * border_width)
         target_size = max(target_size, 70)  # Minimum size
 
         # Calculate scale factors

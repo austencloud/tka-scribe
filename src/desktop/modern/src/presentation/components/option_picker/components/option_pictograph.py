@@ -12,7 +12,7 @@ from application.services.option_picker.option_picker_size_calculator import (
     OptionPickerSizeCalculator,
 )
 from domain.models.pictograph_data import PictographData
-from presentation.components.pictograph.pictograph_component import PictographWidget
+from presentation.components.pictograph.pictograph_widget import PictographWidget
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtWidgets import QFrame, QVBoxLayout
 

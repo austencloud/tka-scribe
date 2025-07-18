@@ -393,6 +393,13 @@ class ServiceRegistrationManager(IServiceRegistrationManager):
         # Register UI state service as singleton since it has no dependencies
         container.register_singleton(IUIStateManager, UICoordinator)
 
+        # Register window resize coordinator for pictograph re-scaling
+        from application.services.ui.window_resize_coordinator import (
+            WindowResizeCoordinator,
+        )
+
+        container.register_singleton(WindowResizeCoordinator, WindowResizeCoordinator)
+
         # Register new lifecycle services
         self._register_lifecycle_services(container)
 
@@ -523,17 +530,16 @@ class ServiceRegistrationManager(IServiceRegistrationManager):
         from application.services.pictograph.context_detection_service import (
             PictographContextDetector,
         )
-        from application.services.pictograph.global_visibility_service import (
-            PictographVisibilityManager,
-        )
         from application.services.pictograph.pictograph_position_matcher import (
             PictographCSVManager,
         )
+        from application.services.pictograph.scaling_service import PictographScaler
         from application.services.pictograph_pool_manager import PictographPoolManager
         from core.interfaces.core_services import (
             IPictographBorderManager,
             IPictographContextDetector,
         )
+        from core.interfaces.pictograph_services import IScalingService
 
         container.register_singleton(IPictographDataManager, PictographDataManager)
         container.register_singleton(PictographCSVManager, PictographCSVManager)
@@ -541,10 +547,9 @@ class ServiceRegistrationManager(IServiceRegistrationManager):
         container.register_singleton(
             IPictographContextDetector, PictographContextDetector
         )
-        # Register global visibility service as singleton to ensure all components use the same instance
-        container.register_singleton(
-            PictographVisibilityManager, PictographVisibilityManager
-        )
+
+        # CRITICAL FIX: Register scaling service for context-aware pictograph scaling
+        container.register_singleton(IScalingService, PictographScaler)
 
         # Register pictograph pool manager as singleton for high-performance option picker
         # CRITICAL: Must be singleton so all components use the same initialized pool

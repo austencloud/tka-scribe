@@ -96,370 +96,407 @@ BrowseTab Dependencies:
 6. State Changes → PersistenceManager → Settings Storage
 ```
 
-## Modern Architecture Design
+## Revised Modern Architecture Design (Based on Legacy Code Reality)
 
-### Component Hierarchy
+### Component Hierarchy (Simplified)
 
 ```
-ModernBrowseTab (QWidget)
-├── BrowseTabCoordinator (orchestrates all components)
+ModernBrowseTab (QWidget) - Main container with 2/3 - 1/3 split
 ├── Left Panel: ModernBrowsePanel (2/3 width)
-│   ├── BrowseNavigationStack (manages filter/browse mode switching)
+│   ├── NavigationStack (QStackedWidget - same as legacy)
 │   │   ├── [0] ModernFilterSelectionPanel
-│   │   │   ├── FilterCategorySelector
-│   │   │   ├── FilterOptionsPanel
-│   │   │   └── FilterActionButtons
-│   │   └── [1] ModernSequenceBrowserPanel
-│   │       ├── BrowserControlPanel
-│   │       ├── SequenceNavigationSidebar
-│   │       ├── SequenceThumbnailGrid
-│   │       └── BrowserStatusBar
-└── Right Panel: ModernSequencePreviewPanel (1/3 width)
-    ├── SequencePreviewContainer
-    │   ├── ThumbnailDisplayWidget
-    │   ├── SequenceMetadataPanel
-    │   └── VariationNavigationControls
-    └── SequenceActionPanel
-        ├── EditInConstructButton
-        ├── FavoriteToggleButton
-        ├── ExportOptionsButton
-        └── DeleteSequenceButton
+│   │   │   ├── FilterCategoryGrid (A-Z, levels, etc.)
+│   │   │   ├── StartingLetterSection
+│   │   │   ├── ContainsLettersSection
+│   │   │   ├── SequenceLengthSection
+│   │   │   ├── FilterByLevelSection
+│   │   │   ├── StartingPositionSection
+│   │   │   ├── AuthorSection
+│   │   │   └── GridModeSection
+│   │   └── [1] ModernSequenceBrowser
+│   │       ├── ControlPanel (sorting, navigation)
+│   │       ├── NavigationSidebar
+│   │       ├── ThumbnailGrid (responsive)
+│   │       └── ProgressBar
+└── Right Panel: ModernThumbnailBox (1/3 width)
+    ├── ThumbnailDisplay (image + metadata)
+    ├── VariationNavigation
+    └── ActionButtons (Edit, Favorite, Export, Delete)
 ```
 
-### Service Layer Design
+### Simplified Service Layer (2 Services Only)
 
-#### IBrowseDataService
+#### BrowseService
 
 ```python
-class IBrowseDataService(Protocol):
-    """Core service for browse data management"""
+class BrowseService:
+    """Handles data loading and filtering - replaces legacy BrowseTabFilterManager"""
 
-    def get_all_sequences(self) -> List[SequenceEntry]
-    def get_filtered_sequences(self, filter_criteria: FilterCriteria) -> List[SequenceEntry]
-    def get_sequence_metadata(self, sequence_id: str) -> SequenceMetadata
-    def get_sequence_thumbnails(self, sequence_id: str) -> List[str]
-    def get_sequence_variations(self, sequence_id: str) -> List[SequenceVariation]
+    def __init__(self, json_manager, metadata_extractor):
+        self.json_manager = json_manager
+        self.metadata_extractor = metadata_extractor
+        self._cached_sequences = None
 
-    async def load_sequence_data_async(self, sequence_id: str) -> SequenceData
-    async def refresh_sequence_cache(self) -> None
+    def load_all_sequences(self) -> List[Tuple[str, List[str], int]]:
+        """Load all sequences - returns (word, thumbnails, sequence_length)"""
+        if not self._cached_sequences:
+            self._cached_sequences = self._load_from_json()
+        return self._cached_sequences
+
+    def apply_starting_letter_filter(self, letter: str) -> List[Tuple[str, List[str], int]]:
+        """Apply starting letter filter - exact legacy logic"""
+        sequences = self.load_all_sequences()
+        return [(word, thumbs, length) for word, thumbs, length in sequences
+                if word.upper().startswith(letter.upper())]
+
+    def apply_contains_letters_filter(self, letters: List[str]) -> List[Tuple[str, List[str], int]]:
+        """Apply contains letters filter - exact legacy logic"""
+        sequences = self.load_all_sequences()
+        return [(word, thumbs, length) for word, thumbs, length in sequences
+                if all(letter.upper() in word.upper() for letter in letters)]
+
+    def apply_length_filter(self, length: int) -> List[Tuple[str, List[str], int]]:
+        """Apply sequence length filter - exact legacy logic"""
+        sequences = self.load_all_sequences()
+        return [(word, thumbs, seq_length) for word, thumbs, seq_length in sequences
+                if seq_length == length]
+
+    def apply_level_filter(self, level: int) -> List[Tuple[str, List[str], int]]:
+        """Apply difficulty level filter - exact legacy logic"""
+        # Implementation mirrors legacy level filtering
+        pass
+
+    def get_sequence_metadata(self, thumbnail_path: str) -> dict:
+        """Get metadata for sequence - exact legacy logic"""
+        return self.metadata_extractor.get_metadata(thumbnail_path)
+
+    def sort_sequences(self, sequences: List[Tuple], method: str) -> List[Tuple]:
+        """Sort sequences by method (alphabetical, date_added, etc.)"""
+        if method == "alphabetical":
+            return sorted(sequences, key=lambda x: x[0])
+        elif method == "length":
+            return sorted(sequences, key=lambda x: x[2])
+        # Add other sort methods...
 ```
 
-#### ISequenceFilterService
+#### BrowseStateService
 
 ```python
-class ISequenceFilterService(Protocol):
-    """Service for filtering and sorting sequences"""
+class BrowseStateService:
+    """Handles state persistence - this is genuinely complex in legacy"""
 
-    def apply_filter(self, filter_type: FilterType, filter_value: Any) -> FilterCriteria
-    def get_available_filter_options(self, filter_type: FilterType) -> List[FilterOption]
-    def combine_filters(self, filters: List[FilterCriteria]) -> FilterCriteria
-    def sort_sequences(self, sequences: List[SequenceEntry], sort_method: SortMethod) -> List[SequenceEntry]
+    def __init__(self, settings_manager):
+        self.settings_manager = settings_manager
 
-    def get_filter_statistics(self, filter_criteria: FilterCriteria) -> FilterStats
-    def validate_filter_criteria(self, criteria: FilterCriteria) -> bool
+    def save_browse_state(self, state: dict) -> None:
+        """Save current browse state"""
+        self.settings_manager.browse_settings.save_state({
+            'current_filter_type': state.get('filter_type'),
+            'filter_values': state.get('filter_values'),
+            'selected_sequence': state.get('selected_sequence'),
+            'selected_variation': state.get('selected_variation'),
+            'navigation_mode': state.get('navigation_mode'),
+            'sort_method': state.get('sort_method')
+        })
+
+    def load_browse_state(self) -> dict:
+        """Load previous browse state"""
+        return self.settings_manager.browse_settings.load_state()
+
+    def save_selection_state(self, sequence_word: str, variation_index: int) -> None:
+        """Save current selection"""
+        self.settings_manager.browse_settings.save_selection(sequence_word, variation_index)
+
+    def load_selection_state(self) -> Tuple[Optional[str], Optional[int]]:
+        """Load previous selection"""
+        return self.settings_manager.browse_settings.load_selection()
 ```
 
-#### IBrowseStateService
+### Simplified Data Models (Keep It Simple Like Legacy)
 
 ```python
-class IBrowseStateService(Protocol):
-    """Service for browse tab state management"""
+# Legacy uses simple tuples - let's enhance slightly but keep simple
 
-    def save_browse_state(self, state: BrowseState) -> None
-    def load_browse_state(self) -> BrowseState
-    def get_current_filter_state(self) -> FilterState
-    def set_current_filter_state(self, state: FilterState) -> None
-
-    def get_selected_sequence_id(self) -> Optional[str]
-    def set_selected_sequence_id(self, sequence_id: str) -> None
-    def get_current_navigation_mode(self) -> NavigationMode
-    def set_current_navigation_mode(self, mode: NavigationMode) -> None
-```
-
-#### ISequenceActionService
-
-```python
-class ISequenceActionService(Protocol):
-    """Service for sequence actions and operations"""
-
-    async def delete_sequence(self, sequence_id: str) -> OperationResult
-    async def delete_variation(self, sequence_id: str, variation_id: str) -> OperationResult
-    async def toggle_favorite_status(self, sequence_id: str, variation_id: str) -> bool
-    async def export_sequence_image(self, sequence_id: str, export_options: ExportOptions) -> str
-
-    def can_delete_sequence(self, sequence_id: str) -> bool
-    def can_edit_sequence(self, sequence_id: str) -> bool
-    def get_export_options(self, sequence_id: str) -> List[ExportOption]
-```
-
-### Domain Models
-
-```python
 @dataclass
-class SequenceEntry:
-    """Core sequence entry domain model"""
-    id: str
+class SequenceData:
+    """Simple sequence data - minimal enhancement over legacy tuples"""
     word: str
-    variations: List[SequenceVariation]
-    metadata: SequenceMetadata
     thumbnail_paths: List[str]
-    date_added: datetime
-    author: str
-    tags: List[str]
-
-@dataclass
-class SequenceVariation:
-    """Individual sequence variation model"""
-    id: str
-    sequence_id: str
-    thumbnail_path: str
-    difficulty_level: int
-    length: int
-    is_favorite: bool
-    grid_mode: GridMode
-
-@dataclass
-class FilterCriteria:
-    """Filter criteria domain model"""
-    filter_type: FilterType
-    values: List[Any]
-    is_active: bool
-    display_name: str
+    sequence_length: int
+    metadata: dict  # From metadata extractor
 
 @dataclass
 class BrowseState:
-    """Complete browse tab state model"""
-    current_mode: NavigationMode
-    active_filters: List[FilterCriteria]
-    selected_sequence_id: Optional[str]
-    selected_variation_id: Optional[str]
-    sort_method: SortMethod
-    view_preferences: ViewPreferences
+    """Browse state for persistence"""
+    filter_type: Optional[str] = None
+    filter_values: Optional[Any] = None
+    selected_sequence: Optional[str] = None
+    selected_variation: Optional[int] = None
+    navigation_mode: str = "filter_selector"
+    sort_method: str = "alphabetical"
 ```
 
-## Implementation Steps
+## Implementation Steps (Revised - Focus on Real Complexity)
 
-### Phase 1: Foundation & Domain Models (Day 1)
+### Phase 1: Core Structure & Services (Day 1)
 
-1. **Create domain models** in `modern/src/domain/models/browse_models.py`
-2. **Define service interfaces** in `modern/src/core/interfaces/browse_services.py`
-3. **Set up dependency injection** configuration for browse services
-4. **Create base event system** for browse tab communication
+1. **Create BrowseService** - port basic filtering logic from legacy BrowseTabFilterManager
+2. **Create BrowseStateService** - handle state persistence (this is genuinely complex)
+3. **Set up ModernBrowseTab** - basic layout with glassmorphism styling
+4. **Create NavigationStack** - QStackedWidget for filter/browse mode switching
 
-### Phase 2: Core Services Implementation (Day 2)
+### Phase 2: Filter System UI (Days 2-3) - This Is The Real Work
 
-1. **BrowseDataService** - port sequence data access logic
-2. **SequenceFilterService** - implement filtering and sorting algorithms
-3. **BrowseStateService** - handle state persistence and management
-4. **SequenceActionService** - implement all sequence operations
+1. **ModernFilterSelectionPanel** - main filter container with glassmorphism
+2. **All 8 filter sections** - these are the bulk of the UI work:
+   - StartingLetterSection (A-Z grid with hover effects)
+   - ContainsLettersSection (multi-select letter grid)
+   - SequenceLengthSection (4-32 range slider)
+   - FilterByLevelSection (1-6 level selector)
+   - StartingPositionSection (position grid layout)
+   - AuthorSection (searchable dropdown)
+   - GridModeSection (diamond/box toggle)
+3. **Filter coordination** - wire up filter selection to navigation
 
-### Phase 3: Filter System Components (Day 3)
+### Phase 3: Thumbnail System (Days 4-5) - The Complex Part
 
-1. **ModernFilterSelectionPanel** - main filter interface
-2. **FilterCategorySelector** - beautiful category picker with glassmorphism
-3. **FilterOptionsPanel** - dynamic options based on filter type
-4. **FilterActionButtons** - apply/clear/reset with smooth animations
+1. **ModernThumbnailBox** - this is where legacy complexity lives:
+   - Responsive thumbnail sizing
+   - Variation navigation (left/right arrows)
+   - Favorites toggling
+   - State management for selected sequence/variation
+2. **ThumbnailGrid** - responsive grid layout for sequence browser
+3. **Action buttons** - Edit, Favorite, Export, Delete with proper integration
 
-### Phase 4: Browse Interface Components (Day 4)
+### Phase 4: Responsive Layout & Polish (Day 6)
 
-1. **ModernSequenceBrowserPanel** - main browsing interface
-2. **SequenceNavigationSidebar** - enhanced sidebar with smooth scrolling
-3. **SequenceThumbnailGrid** - responsive grid with hover effects
-4. **BrowserControlPanel** - sorting and view controls
+1. **Responsive behavior** - handle all the custom resize logic from legacy
+2. **State persistence integration** - ensure all state saves/loads correctly
+3. **Animation polish** - smooth transitions between modes
+4. **Integration testing** - ensure all components work together
 
-### Phase 5: Preview & Actions (Day 5)
+## Key Technical Challenges & Simplified Solutions
 
-1. **ModernSequencePreviewPanel** - enhanced preview with glassmorphism
-2. **ThumbnailDisplayWidget** - high-quality image display
-3. **SequenceActionPanel** - modern action buttons with feedback
-4. **BrowseTabCoordinator** - orchestrates all components
+### Challenge 1: Filter System UI Complexity
 
-### Phase 6: Integration & Polish (Day 6)
-
-1. **Complete event wiring** between all components
-2. **State synchronization** across the entire browse system
-3. **Animation and transition polish** for all interactions
-4. **Performance optimization** and caching strategies
-
-## Key Technical Challenges & Solutions
-
-### Challenge 1: Complex Filter System Migration
-
-**Problem**: Legacy has 8 different filter types with complex interdependencies
+**Reality**: 8 different filter sections with complex layouts (especially A-Z grid)
 **Solution**:
 
-- Create unified `ISequenceFilterService` that handles all filter types
-- Use strategy pattern for different filter implementations
-- Maintain filter state through `IBrowseStateService`
-- Event-driven filter updates for real-time results
+- Create base `FilterSectionBase` class (like legacy)
+- Implement glassmorphism styling for each section
+- Use Qt layouts with modern styling instead of complex custom components
 
-### Challenge 2: Thumbnail Loading Performance
+### Challenge 2: ThumbnailBox Complexity
 
-**Problem**: Legacy has complex thumbnail loading and caching logic
+**Reality**: Legacy ThumbnailBox has complex state management and responsive behavior
 **Solution**:
 
-- Implement async thumbnail loading in `IBrowseDataService`
-- Use modern caching strategies with proper memory management
-- Progressive loading for smooth user experience
-- Background preloading for anticipated selections
+- Port the existing logic directly but with modern styling
+- Focus on the responsive sizing logic that legacy already has
+- Enhance with smooth animations and glassmorphism
 
-### Challenge 3: State Persistence Complexity
+### Challenge 3: State Persistence
 
-**Problem**: Browse tab has extensive state that must persist across sessions
+**Reality**: Browse settings, selection state, filter states are complex in legacy
 **Solution**:
 
-- Centralize all state management in `IBrowseStateService`
-- Use immutable state objects for predictable updates
-- Implement robust serialization/deserialization
-- Event-driven state synchronization
+- Use BrowseStateService to centralize this complexity
+- Mirror legacy state structure but with cleaner interface
+- Ensure compatibility with existing settings files
 
-### Challenge 4: Navigation Mode Switching
-
-**Problem**: Complex logic for switching between filter and browse modes
-**Solution**:
-
-- Create `BrowseNavigationStack` component to manage mode switching
-- Use state machines for predictable mode transitions
-- Smooth animations for visual continuity
-- Proper focus management for accessibility
-
-## Component Specifications
+## Component Specifications (Simplified)
 
 ### ModernBrowseTab
 
 ```python
 class ModernBrowseTab(QWidget):
-    """Main browse tab container with modern styling"""
+    """Main browse tab container - direct port of legacy structure"""
 
-    # Signals
-    sequence_selected = pyqtSignal(str)  # sequence_id
-    variation_selected = pyqtSignal(str, str)  # sequence_id, variation_id
-    filter_applied = pyqtSignal(FilterCriteria)
-    navigation_mode_changed = pyqtSignal(NavigationMode)
+    # Signals (same as legacy)
+    sequence_selected = pyqtSignal(str)  # sequence_word
+    variation_selected = pyqtSignal(int)  # variation_index
 
-    def __init__(self,
-                 browse_data_service: IBrowseDataService,
-                 filter_service: ISequenceFilterService,
-                 state_service: IBrowseStateService,
-                 action_service: ISequenceActionService,
-                 parent=None):
+    def __init__(self, json_manager, metadata_extractor, settings_manager, parent=None):
         super().__init__(parent)
-        self.browse_data_service = browse_data_service
-        self.filter_service = filter_service
-        self.state_service = state_service
-        self.action_service = action_service
+        # Simple dependency injection - not complex service containers
+        self.browse_service = BrowseService(json_manager, metadata_extractor)
+        self.state_service = BrowseStateService(settings_manager)
         self._setup_ui()
-        self._setup_coordinator()
-        self._connect_signals()
+        self._restore_previous_state()
 
     def _setup_ui(self):
-        # Create modern layout with glassmorphism styling
-        # Implement responsive 2/3 - 1/3 split
-        pass
+        """Create modern layout with glassmorphism - mirrors legacy structure"""
+        # Horizontal splitter 2/3 - 1/3 (same as legacy)
+        main_splitter = QSplitter(Qt.Horizontal)
 
-    def restore_previous_state(self):
-        # Load and apply previous browse state
-        pass
+        # Left panel with navigation stack (same as legacy)
+        left_panel = ModernBrowsePanel(self.browse_service, self.state_service)
+
+        # Right panel - enhanced ThumbnailBox
+        right_panel = ModernThumbnailBox(self.browse_service, self.state_service)
+
+        main_splitter.addWidget(left_panel)
+        main_splitter.addWidget(right_panel)
+        main_splitter.setSizes([667, 333])  # 2/3 - 1/3 split
 ```
 
 ### ModernFilterSelectionPanel
 
 ```python
 class ModernFilterSelectionPanel(QWidget):
-    """Beautiful filter selection interface with glassmorphism"""
+    """Filter selection with glassmorphism - complex UI work"""
 
-    filter_selected = pyqtSignal(FilterType)
-    filter_applied = pyqtSignal(FilterCriteria)
-    back_to_browse_requested = pyqtSignal()
-
-    def __init__(self, filter_service: ISequenceFilterService, parent=None):
+    def __init__(self, browse_service: BrowseService, parent=None):
         super().__init__(parent)
-        self.filter_service = filter_service
+        self.browse_service = browse_service
         self._setup_glassmorphism_ui()
-        self._create_filter_categories()
+        self._create_all_filter_sections()
 
-    def _setup_glassmorphism_ui(self):
-        # Beautiful glassmorphism cards for each filter category
-        # Smooth hover effects and transitions
-        # Clear visual hierarchy
-        pass
+    def _create_all_filter_sections(self):
+        """Create all 8 filter sections with glassmorphism styling"""
+        self.starting_letter_section = StartingLetterSection(self.browse_service)
+        self.contains_letters_section = ContainsLettersSection(self.browse_service)
+        self.sequence_length_section = SequenceLengthSection(self.browse_service)
+        self.level_section = FilterByLevelSection(self.browse_service)
+        self.starting_position_section = StartingPositionSection(self.browse_service)
+        self.author_section = AuthorSection(self.browse_service)
+        self.grid_mode_section = GridModeSection(self.browse_service)
 
-    def _create_filter_categories(self):
-        # Create beautiful category cards:
-        # - Starting Letter (A-Z grid)
-        # - Contains Letters (multi-select)
-        # - Sequence Length (4-32 range slider)
-        # - Difficulty Level (1-6 level selector)
-        # - Starting Position (position grid)
-        # - Author (searchable list)
-        # - Grid Mode (diamond/box toggle)
-        pass
+        # Layout all sections in grid (like legacy)
+        layout = QGridLayout()
+        layout.addWidget(self.starting_letter_section, 0, 0)
+        layout.addWidget(self.contains_letters_section, 0, 1)
+        # ... add all sections
 ```
 
-### ModernSequenceBrowserPanel
+### StartingLetterSection (Example of Filter Complexity)
 
 ```python
-class ModernSequenceBrowserPanel(QWidget):
-    """Main sequence browsing interface with enhanced UX"""
+class StartingLetterSection(FilterSectionBase):
+    """Starting letter filter - most complex filter UI"""
 
-    sequence_selected = pyqtSignal(str)
-    filter_mode_requested = pyqtSignal()
-
-    def __init__(self,
-                 browse_data_service: IBrowseDataService,
-                 filter_service: ISequenceFilterService,
-                 parent=None):
+    def __init__(self, browse_service: BrowseService, parent=None):
         super().__init__(parent)
-        self.browse_data_service = browse_data_service
-        self.filter_service = filter_service
+        self.browse_service = browse_service
+        self._create_letter_grid()
+
+    def _create_letter_grid(self):
+        """Create A-Z grid with glassmorphism hover effects"""
+        layout = QGridLayout()
+        letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+
+        for i, letter in enumerate(letters):
+            button = GlassmorphismButton(letter)
+            button.clicked.connect(lambda checked, l=letter: self._on_letter_selected(l))
+
+            # Add glassmorphism styling
+            button.setStyleSheet("""
+                QPushButton {
+                    background: rgba(255, 255, 255, 0.1);
+                    border: 1px solid rgba(255, 255, 255, 0.2);
+                    border-radius: 8px;
+                    color: white;
+                    font-weight: bold;
+                    min-width: 40px;
+                    min-height: 40px;
+                }
+                QPushButton:hover {
+                    background: rgba(255, 255, 255, 0.2);
+                    transform: scale(1.05);
+                }
+                QPushButton:pressed {
+                    background: rgba(255, 255, 255, 0.3);
+                }
+            """)
+
+            row = i // 6
+            col = i % 6
+            layout.addWidget(button, row, col)
+
+    def _on_letter_selected(self, letter: str):
+        """Handle letter selection - apply filter and switch to browse mode"""
+        filtered_sequences = self.browse_service.apply_starting_letter_filter(letter)
+        self.filter_applied.emit("starting_letter", letter, filtered_sequences)
+```
+
+### ModernThumbnailBox (The Complex Component)
+
+```python
+class ModernThumbnailBox(QWidget):
+    """Enhanced ThumbnailBox - where legacy complexity lives"""
+
+    def __init__(self, browse_service: BrowseService, state_service: BrowseStateService, parent=None):
+        super().__init__(parent)
+        self.browse_service = browse_service
+        self.state_service = state_service
+        self.current_thumbnails = []
+        self.current_variation_index = 0
         self._setup_responsive_ui()
-        self._setup_thumbnail_grid()
 
     def _setup_responsive_ui(self):
-        # Responsive layout that adapts to content
-        # Navigation sidebar with smooth scrolling
-        # Control panel with sorting options
-        pass
+        """Set up responsive thumbnail display with navigation"""
+        layout = QVBoxLayout()
 
-    def _setup_thumbnail_grid(self):
-        # Responsive grid of sequence thumbnails
-        # Hover effects and selection states
-        # Progressive loading for performance
-        pass
-```
+        # Header with sequence word
+        self.header_label = QLabel()
+        self.header_label.setStyleSheet("font-size: 18px; font-weight: bold; color: white;")
 
-### ModernSequencePreviewPanel
+        # Main thumbnail display
+        self.thumbnail_label = QLabel()
+        self.thumbnail_label.setMinimumSize(200, 200)
+        self.thumbnail_label.setScaledContents(True)
 
-```python
-class ModernSequencePreviewPanel(QWidget):
-    """Enhanced sequence preview with modern styling"""
+        # Navigation controls
+        nav_layout = QHBoxLayout()
+        self.prev_button = QPushButton("◀")
+        self.variation_info = QLabel("1 / 1")
+        self.next_button = QPushButton("▶")
 
-    edit_sequence_requested = pyqtSignal(str)
-    favorite_toggled = pyqtSignal(str, str, bool)
-    export_requested = pyqtSignal(str, ExportOptions)
-    delete_requested = pyqtSignal(str, str)  # sequence_id, variation_id
+        nav_layout.addWidget(self.prev_button)
+        nav_layout.addStretch()
+        nav_layout.addWidget(self.variation_info)
+        nav_layout.addStretch()
+        nav_layout.addWidget(self.next_button)
 
-    def __init__(self,
-                 browse_data_service: IBrowseDataService,
-                 action_service: ISequenceActionService,
-                 parent=None):
-        super().__init__(parent)
-        self.browse_data_service = browse_data_service
-        self.action_service = action_service
-        self._setup_preview_ui()
-        self._setup_action_buttons()
+        # Action buttons
+        self.action_panel = ModernActionPanel()
 
-    def _setup_preview_ui(self):
-        # High-quality thumbnail display
-        # Glassmorphism metadata panel
-        # Smooth variation navigation
-        pass
+        layout.addWidget(self.header_label)
+        layout.addWidget(self.thumbnail_label)
+        layout.addLayout(nav_layout)
+        layout.addWidget(self.action_panel)
+        layout.addStretch()
 
-    def _setup_action_buttons(self):
-        # Modern action buttons with feedback
-        # Edit, Favorite, Export, Delete
-        # Confirmation dialogs for destructive actions
-        pass
+    def update_sequence(self, sequence_data: SequenceData):
+        """Update thumbnail box with new sequence - complex responsive logic"""
+        self.current_thumbnails = sequence_data.thumbnail_paths
+        self.current_variation_index = 0
+
+        # Update header
+        self.header_label.setText(sequence_data.word)
+
+        # Load first thumbnail
+        self._load_thumbnail(0)
+
+        # Update navigation
+        self._update_navigation_controls()
+
+        # Handle responsive sizing (legacy has complex logic here)
+        self._handle_responsive_sizing()
+
+    def _handle_responsive_sizing(self):
+        """Handle responsive thumbnail sizing - port legacy logic"""
+        # Legacy has complex resize calculations based on:
+        # - Available space
+        # - Thumbnail aspect ratio
+        # - Minimum/maximum sizes
+        # - Window resize events
+
+        available_width = self.width() - 40  # padding
+        available_height = self.height() - 200  # space for controls
+
+        # Calculate optimal thumbnail size maintaining aspect ratio
+        # ... complex sizing logic from legacy
 ```
 
 ## Styling & UX Improvements
@@ -788,7 +825,170 @@ class LegacyCompatibilityService:
         return migration_map.get(legacy_string, SortMethod.ALPHABETICAL)
 ```
 
-## Comprehensive Testing Protocol
+## Simplified Testing Strategy
+
+### Focus on Real Complexity Areas
+
+#### 1. Filter Parity Tests
+
+```python
+class FilterParityTests(unittest.TestCase):
+    """Ensure each filter produces identical results to legacy"""
+
+    def test_starting_letter_filter_exact_match(self):
+        """Test A-Z filters produce exact same results"""
+        legacy_results = self.legacy_browse_tab.apply_starting_letter_filter("T")
+        modern_results = self.modern_browse_tab.browse_service.apply_starting_letter_filter("T")
+
+        # Compare word lists
+        legacy_words = [item[0] for item in legacy_results]  # (word, thumbnails, length)
+        modern_words = [item[0] for item in modern_results]
+
+        self.assertEqual(set(legacy_words), set(modern_words))
+
+    def test_contains_letters_filter_exact_match(self):
+        """Test contains letters filter exact match"""
+        test_combinations = [["A"], ["T", "O"], ["F", "L", "O", "W"]]
+
+        for letters in test_combinations:
+            legacy_results = self.legacy_browse_tab.apply_contains_letters_filter(letters)
+            modern_results = self.modern_browse_tab.browse_service.apply_contains_letters_filter(letters)
+
+            self.assertEqual(len(legacy_results), len(modern_results))
+
+    def test_all_other_filters(self):
+        """Test length, level, position, author, grid mode filters"""
+        # Test each filter type with representative values
+        pass
+```
+
+#### 2. UI Layout Tests
+
+```python
+class UILayoutTests(unittest.TestCase):
+    """Test responsive behavior and layout"""
+
+    def test_main_splitter_proportions(self):
+        """Ensure 2/3 - 1/3 split is maintained"""
+        for width in range(800, 2000, 100):
+            self.modern_browse_tab.resize(width, 600)
+
+            left_width = self.modern_browse_tab.left_panel.width()
+            right_width = self.modern_browse_tab.right_panel.width()
+            ratio = left_width / right_width
+
+            self.assertAlmostEqual(ratio, 2.0, delta=0.1)
+
+    def test_thumbnail_responsive_behavior(self):
+        """Test thumbnail box responsive sizing"""
+        thumbnail_box = self.modern_browse_tab.right_panel
+
+        for height in range(400, 1000, 100):
+            thumbnail_box.resize(300, height)
+
+            # Verify thumbnail scales appropriately
+            thumbnail_size = thumbnail_box.thumbnail_label.size()
+            self.assertLessEqual(thumbnail_size.height(), height - 200)  # Space for controls
+```
+
+#### 3. State Persistence Tests
+
+```python
+class StatePersistenceTests(unittest.TestCase):
+    """Test state saving/loading works correctly"""
+
+    def test_filter_state_persistence(self):
+        """Test filter state survives app restart"""
+        # Apply complex filter
+        self.modern_browse_tab.apply_starting_letter_filter("T")
+
+        # Save state
+        current_state = self.modern_browse_tab.state_service.get_current_state()
+        self.modern_browse_tab.state_service.save_browse_state(current_state)
+
+        # Create new instance and restore
+        new_browse_tab = ModernBrowseTab(...)
+        new_browse_tab.restore_previous_state()
+
+        # Verify same filter is applied
+        self.assertEqual(
+            new_browse_tab.state_service.get_current_state()["filter_type"],
+            "starting_letter"
+        )
+
+    def test_selection_state_persistence(self):
+        """Test sequence selection survives app restart"""
+        # Select specific sequence and variation
+        self.modern_browse_tab.select_sequence("TEST_WORD")
+        self.modern_browse_tab.select_variation(2)
+
+        # Save and restore
+        self.modern_browse_tab.state_service.save_selection_state("TEST_WORD", 2)
+
+        restored_selection = self.modern_browse_tab.state_service.load_selection_state()
+        self.assertEqual(restored_selection, ("TEST_WORD", 2))
+```
+
+## Revised Timeline (Realistic)
+
+### Week 1: Core Structure
+
+- **Day 1**: Set up ModernBrowseTab basic structure
+- **Day 2**: Implement BrowseService with basic filtering
+- **Day 3**: Implement BrowseStateService with persistence
+
+### Week 2: Filter System (The Real Work)
+
+- **Day 1-2**: Create all 8 filter sections with glassmorphism
+- **Day 3**: Wire up filter selection to navigation
+- **Day 4**: Test all filters for exact legacy parity
+
+### Week 3: Thumbnail System
+
+- **Day 1-2**: Implement ModernThumbnailBox with responsive behavior
+- **Day 3**: Implement action buttons and state management
+- **Day 4**: Test thumbnail navigation and selection
+
+### Week 4: Polish & Integration
+
+- **Day 1**: Responsive layout improvements
+- **Day 2**: Animation and transition polish
+- **Day 3**: Performance optimization
+- **Day 4**: Final testing and validation
+
+## Critical Insights from Legacy Code Audit
+
+### What's Actually Simple (Don't Over-Engineer)
+
+1. **Filtering Logic** - Just basic list comprehensions, no complex algorithms needed
+2. **Data Structures** - Legacy uses simple tuples `(word, thumbnails, length)` - keep it simple
+3. **Communication** - Simple Qt signals and direct method calls work fine
+4. **Service Architecture** - 2 services (BrowseService + StateService) are sufficient
+
+### What's Actually Complex (Focus Here)
+
+1. **Filter UI System** - 8 different filter sections with complex layouts (especially A-Z grid)
+2. **ThumbnailBox** - Complex responsive sizing, navigation, state management
+3. **State Persistence** - Multiple types of state that must survive app restarts
+4. **Responsive Layout** - Lots of custom resize logic throughout legacy
+
+### Key Success Factors
+
+1. **Exact Filter Parity** - Every filter must produce identical results to legacy
+2. **Perfect State Persistence** - All state management must work identically
+3. **Responsive ThumbnailBox** - Complex layout logic needs careful porting
+4. **Glassmorphism Enhancement** - Modern styling without breaking functionality
+
+## Bottom Line
+
+The plan was initially over-engineered with 6 services and complex domain models. The reality is:
+
+- Legacy code is ~500 lines of mostly straightforward UI and filtering
+- Real complexity is in responsive layout and thumbnail management
+- Simple tuple data structures work fine
+- 2 services are sufficient for clean architecture
+
+Focus on **enhancing what exists** rather than **rebuilding with complex abstractions**.
 
 ### Phase 1: Legacy Functionality Verification Tests
 

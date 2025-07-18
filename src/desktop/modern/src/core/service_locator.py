@@ -19,6 +19,21 @@ _command_processor: Optional[CommandProcessor] = None
 _sequence_state_manager: Optional[object] = (
     None  # Will be imported later to avoid circular imports
 )
+_services: dict = {}  # Additional services registry
+
+
+class ServiceLocator:
+    """Legacy service locator for backward compatibility."""
+
+    @staticmethod
+    def get_service(service_name: str):
+        """Get a service by name - used for backward compatibility."""
+        return _services.get(service_name)
+
+    @staticmethod
+    def register_service(service_name: str, service_instance):
+        """Register a service - used for backward compatibility."""
+        _services[service_name] = service_instance
 
 
 def initialize_services():

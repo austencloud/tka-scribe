@@ -23,7 +23,7 @@ import logging
 from typing import Optional
 
 from domain.models import BeatData
-from presentation.components.pictograph.pictograph_component import (
+from presentation.components.pictograph.pictograph_widget import (
     PictographWidget,
     create_pictograph_widget,
 )

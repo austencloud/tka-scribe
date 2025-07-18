@@ -6,6 +6,7 @@ This scene coordinates multiple specialized renderers to create the complete pic
 
 import logging
 import uuid
+from typing import Optional
 
 from domain.models import BeatData
 from domain.models.arrow_data import ArrowData
@@ -37,6 +38,7 @@ class PictographScene(QGraphicsScene):
     """Graphics scene for rendering pictographs using modular renderers."""
 
     arrow_selected = pyqtSignal(str)  # Signal for arrow selection
+    visibility_changed = pyqtSignal()  # Signal when visibility settings change
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -45,7 +47,10 @@ class PictographScene(QGraphicsScene):
         self.scene_id = f"pictograph_scene_{uuid.uuid4().hex[:8]}"
 
         # Get simple visibility service
-        from application.services.pictograph.simple_visibility_service import get_visibility_service
+        from application.services.pictograph.simple_visibility_service import (
+            get_visibility_service,
+        )
+
         self._visibility_service = get_visibility_service()
 
         self.SCENE_SIZE = 950
@@ -61,6 +66,12 @@ class PictographScene(QGraphicsScene):
         self._arrow_rendering_service = None
         self._services_initialized = False
 
+        # Store the last rendered data for refresh capability
+        self._last_pictograph_data: Optional["PictographData"] = None
+
+        # Store the last rendered data for refresh capability
+        self._last_pictograph_data: Optional["PictographData"] = None
+
         # Use shared rendering service instead of per-scene renderers
         self._shared_rendering_service = None
 
@@ -74,7 +85,9 @@ class PictographScene(QGraphicsScene):
             try:
                 self._shared_rendering_service = self._get_shared_rendering_service()
             except Exception as e:
-                logger.debug(f"[SCENE] Deferred rendering service resolution failed: {e}")
+                logger.debug(
+                    f"[SCENE] Deferred rendering service resolution failed: {e}"
+                )
                 return None
         return self._shared_rendering_service
 
@@ -88,7 +101,9 @@ class PictographScene(QGraphicsScene):
 
             container = get_container()
             service = container.resolve(IPictographRenderingService)
-            logger.debug(f"[SCENE] Connected to shared rendering service: {self.scene_id}")
+            logger.debug(
+                f"[SCENE] Connected to shared rendering service: {self.scene_id}"
+            )
             return service
 
         except Exception as e:
@@ -109,7 +124,9 @@ class PictographScene(QGraphicsScene):
         )
 
         self.addItem(arrow_item)
-        logger.debug(f"[SCENE] Created {color} arrow directly for scene {self.scene_id}")
+        logger.debug(
+            f"[SCENE] Created {color} arrow directly for scene {self.scene_id}"
+        )
 
     def _initialize_glyph_renderers(self):
         """Initialize glyph renderers (lazy-loaded)."""
@@ -141,43 +158,164 @@ class PictographScene(QGraphicsScene):
 
             container = get_container()
 
-            self._positioning_orchestrator = container.resolve(IArrowPositioningOrchestrator)
+            self._positioning_orchestrator = container.resolve(
+                IArrowPositioningOrchestrator
+            )
             self._coordinate_system = container.resolve(IArrowCoordinateSystemService)
             self._arrow_rendering_service = ArrowRenderingService()
 
-            logger.debug(f"Scene {self.scene_id}: Successfully initialized shared services")
+            logger.debug(
+                f"Scene {self.scene_id}: Successfully initialized shared services"
+            )
             self._services_initialized = True
 
         except Exception as e:
-            logger.debug(f"Scene {self.scene_id}: Deferred shared services initialization: {e}")
+            logger.debug(
+                f"Scene {self.scene_id}: Deferred shared services initialization: {e}"
+            )
 
     def update_visibility(self, element_type: str, element_name: str, visible: bool):
         """
-        Update visibility of specific elements in this scene.
-        
+        Update visibility of specific elements in this scene using targeted visibility updates.
+
         This method is called by external visibility controls to update what should be rendered.
         """
         try:
-            logger.debug(f"PictographScene {self.scene_id}: Updating {element_name} visibility to {visible}")
-            
+            logger.debug(
+                f"PictographScene {self.scene_id}: Updating {element_name} visibility to {visible}"
+            )
+
             # Update the simple visibility service
-            self._visibility_service.set_element_visibility(element_type, element_name, visible)
-            
-            # No need to re-render here - parent component should call render_pictograph() when needed
+            self._visibility_service.set_element_visibility(
+                element_type, element_name, visible
+            )
+
+            # Apply targeted visibility update to specific rendered elements
+            self._update_element_visibility(element_type, element_name, visible)
+
+            # Emit signal that visibility changed
+            self.visibility_changed.emit()
+
+            logger.debug(
+                f"Successfully updated {element_name} visibility to {visible} in scene {self.scene_id}"
+            )
 
         except Exception as e:
-            logger.error(f"Error updating visibility in PictographScene {self.scene_id}: {e}")
+            logger.error(
+                f"Error updating visibility in PictographScene {self.scene_id}: {e}"
+            )
+            import traceback
+
+            logger.error(f"Traceback: {traceback.format_exc()}")
+
+    def _update_element_visibility(
+        self, element_type: str, element_name: str, visible: bool
+    ):
+        """
+        Update visibility of specific rendered elements without full re-rendering.
+        """
+        try:
+            logger.debug(
+                f"Starting targeted visibility update: {element_type} {element_name} -> {visible}"
+            )
+
+            if element_type == "motion":
+                # Handle motion visibility (affects both props and arrows)
+                color = element_name.replace("_motion", "")
+                updated_items = 0
+
+                # Find and update arrow items
+                for item in self.items():
+                    if hasattr(item, "arrow_color") and item.arrow_color == color:
+                        item.setVisible(visible)
+                        updated_items += 1
+                        logger.debug(f"Set {color} arrow visibility to {visible}")
+
+                # Force immediate view update for targeted changes
+                if updated_items > 0:
+                    logger.debug(
+                        f"Forcing view update after updating {updated_items} {color} arrows"
+                    )
+                    self._force_view_update()
+
+                # For props and other elements, we need to check if dependency handling is needed
+                # For now, fall back to refresh for complex cases
+                if updated_items == 0:
+                    logger.debug(
+                        f"No {color} motion items found, falling back to refresh"
+                    )
+                    self.refresh_with_current_visibility()
+                    return
+
+            elif element_type == "glyph" or element_type == "other":
+                # For glyphs and other elements, use the full refresh approach
+                # since identifying specific glyph items is complex
+                logger.debug(
+                    f"Using refresh for {element_type} {element_name} visibility update"
+                )
+                self.refresh_with_current_visibility()
+                return
+
+            logger.debug(
+                f"Completed targeted visibility update: {element_type} {element_name}"
+            )
+
+        except Exception as e:
+            logger.error(f"Error in targeted visibility update: {e}")
+            import traceback
+
+            logger.error(f"Traceback: {traceback.format_exc()}")
+            # Fallback to full refresh if targeted update fails
+            try:
+                self.refresh_with_current_visibility()
+            except Exception as refresh_error:
+                logger.error(f"Even refresh failed: {refresh_error}")
 
     def render_pictograph(self, pictograph_data: "PictographData") -> None:
         """Render a complete pictograph from pictograph data."""
         self._initialize_shared_services()
         self._initialize_glyph_renderers()
 
+        # Store the data for potential refresh operations
+        self._last_pictograph_data = pictograph_data
+
         self.clear()
-        if self.rendering_service and hasattr(self.rendering_service, "clear_rendered_props"):
+        if self.rendering_service and hasattr(
+            self.rendering_service, "clear_rendered_props"
+        ):
             self.rendering_service.clear_rendered_props()
-            
+
         self._render_pictograph_data(pictograph_data)
+
+    def refresh_with_current_visibility(self) -> None:
+        """Re-render the pictograph with current visibility settings."""
+        if self._last_pictograph_data:
+            # Re-render with the same data but current visibility settings
+            self.render_pictograph(self._last_pictograph_data)
+            # Force immediate graphics view update
+            self._force_view_update()
+            logger.debug(
+                f"Refreshed pictograph scene {self.scene_id} with current visibility settings"
+            )
+
+    def _force_view_update(self) -> None:
+        """Force all views of this scene to immediately update their display."""
+        try:
+            views = self.views()
+            if not views:
+                logger.debug(f"No views found for scene {self.scene_id}")
+                return
+
+            for view in views:
+                if view and hasattr(view, "viewport") and hasattr(view, "update"):
+                    try:
+                        view.viewport().update()
+                        view.update()
+                        logger.debug(f"Forced update for view of scene {self.scene_id}")
+                    except Exception as view_error:
+                        logger.debug(f"Error updating individual view: {view_error}")
+        except Exception as e:
+            logger.debug(f"Error forcing view update for scene {self.scene_id}: {e}")
 
     def update_beat(self, beat_data: BeatData) -> None:
         """Legacy method: Convert beat data to pictograph data and render."""
@@ -198,7 +336,9 @@ class PictographScene(QGraphicsScene):
                 )
                 self.rendering_service.render_grid(self, grid_mode)
             else:
-                logger.warning(f"[SCENE] No rendering service available for grid: {self.scene_id}")
+                logger.warning(
+                    f"[SCENE] No rendering service available for grid: {self.scene_id}"
+                )
 
         # Extract motion data
         blue_motion = pictograph_data.motions.get("blue")
@@ -208,15 +348,23 @@ class PictographScene(QGraphicsScene):
         if self._visibility_service.get_element_visibility("other", "props"):
             if blue_motion and self._visibility_service.get_motion_visibility("blue"):
                 if self.rendering_service:
-                    self.rendering_service.render_prop(self, "blue", blue_motion, pictograph_data)
+                    self.rendering_service.render_prop(
+                        self, "blue", blue_motion, pictograph_data
+                    )
                 else:
-                    logger.warning(f"[SCENE] No rendering service available for blue prop: {self.scene_id}")
-                    
+                    logger.warning(
+                        f"[SCENE] No rendering service available for blue prop: {self.scene_id}"
+                    )
+
             if red_motion and self._visibility_service.get_motion_visibility("red"):
                 if self.rendering_service:
-                    self.rendering_service.render_prop(self, "red", red_motion, pictograph_data)
+                    self.rendering_service.render_prop(
+                        self, "red", red_motion, pictograph_data
+                    )
                 else:
-                    logger.warning(f"[SCENE] No rendering service available for red prop: {self.scene_id}")
+                    logger.warning(
+                        f"[SCENE] No rendering service available for red prop: {self.scene_id}"
+                    )
 
         # Create full pictograph data for arrow rendering
         full_pictograph_data = PictographData(
@@ -268,7 +416,9 @@ class PictographScene(QGraphicsScene):
                 and pictograph_data.letter
                 and self._visibility_service.get_glyph_visibility("TKA")
             ):
-                letter_type_str = LetterTypeClassifier.get_letter_type(pictograph_data.letter)
+                letter_type_str = LetterTypeClassifier.get_letter_type(
+                    pictograph_data.letter
+                )
                 letter_type = LetterType(letter_type_str)
 
                 self.tka_glyph_renderer.render_tka_glyph(

@@ -18,7 +18,7 @@ from typing import TYPE_CHECKING, Callable, Optional
 
 from core.interfaces.session_services import ISessionStateTracker
 from presentation.components.menu_bar import MenuBarWidget
-from presentation.tabs.construct.construct_tab_widget import ConstructTabWidget
+from presentation.tabs.construct.modern_construct_tab import ConstructTabWidget
 from PyQt6.QtCore import Qt, QTimer
 from PyQt6.QtGui import QFont
 from PyQt6.QtWidgets import QLabel, QMainWindow, QTabWidget, QVBoxLayout, QWidget
@@ -204,7 +204,7 @@ class UISetupManager(IUISetupManager):
                     print("🔧 Background: Starting full construct tab loading...")
 
                     # Import and create real construct tab with progress feedback
-                    from presentation.tabs.construct.construct_tab_widget import (
+                    from presentation.tabs.construct.modern_construct_tab import (
                         ConstructTabWidget,
                     )
 
@@ -273,7 +273,7 @@ class UISetupManager(IUISetupManager):
                 progress_callback(76, "Loading construct tab (optimized)...")
 
             # OPTIMIZATION 1: Import only when needed to reduce import time
-            from presentation.tabs.construct.construct_tab_widget import (
+            from presentation.tabs.construct.modern_construct_tab import (
                 ConstructTabWidget,
             )
 
@@ -393,7 +393,7 @@ class UISetupManager(IUISetupManager):
                     tab_index = self.tab_widget.indexOf(minimal_tab)
 
                     # Import and create real construct tab
-                    from presentation.tabs.construct.construct_tab_widget import (
+                    from presentation.tabs.construct.modern_construct_tab import (
                         ConstructTabWidget,
                     )
 
@@ -475,7 +475,7 @@ class UISetupManager(IUISetupManager):
                 progress_callback(76, "Initializing construct tab...")
 
             # OPTIMIZATION 1: Import only when needed
-            from presentation.tabs.construct.construct_tab_widget import (
+            from presentation.tabs.construct.modern_construct_tab import (
                 ConstructTabWidget,
             )
 
@@ -585,7 +585,7 @@ class UISetupManager(IUISetupManager):
                 )
 
                 # Create the construct tab directly without using _load_construct_tab
-                from presentation.tabs.construct.construct_tab_widget import (
+                from presentation.tabs.construct.modern_construct_tab import (
                     ConstructTabWidget,
                 )
 
@@ -758,7 +758,7 @@ class UISetupManager(IUISetupManager):
             print("🔧 [LAZY_LOAD] Starting background construct tab loading...")
 
             # Load the actual construct tab
-            from presentation.tabs.construct.construct_tab_widget import (
+            from presentation.tabs.construct.modern_construct_tab import (
                 ConstructTabWidget,
             )
 
@@ -860,7 +860,7 @@ class UISetupManager(IUISetupManager):
                 progress_callback(78, "Loading pictograph dataset...")
 
             # Lazy import construct tab only when loading
-            from presentation.tabs.construct.construct_tab_widget import (
+            from presentation.tabs.construct.modern_construct_tab import (
                 ConstructTabWidget,
             )
 

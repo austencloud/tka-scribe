@@ -18,13 +18,13 @@ src_path = Path(__file__).parent / "src" / "desktop" / "modern" / "src"
 sys.path.insert(0, str(src_path))
 
 
-def test_pictograph_component_visibility():
-    """Test that PictographComponent can be made visible after pool creation."""
-    print("🧪 Testing PictographComponent visibility...")
+def test_pictograph_widget_visibility():
+    """Test that PictographWidget can be made visible after pool creation."""
+    print("🧪 Testing PictographWidget visibility...")
 
     try:
-        from presentation.components.pictograph.pictograph_component import (
-            create_pictograph_component,
+        from presentation.components.pictograph.pictograph_widget import (
+            create_pictograph_widget,
         )
         from PyQt6.QtWidgets import QApplication, QWidget
 
@@ -32,8 +32,8 @@ def test_pictograph_component_visibility():
         app = QApplication.instance() or QApplication([])
         parent = QWidget()
 
-        # Create pictograph component (simulates pool creation)
-        component = create_pictograph_component(parent=parent)
+        # Create pictograph widget (simulates pool creation)
+        component = create_pictograph_widget()
 
         # Initially should be hidden due to pool creation settings
         print(f"   Initial visibility: {component.isVisible()}")
@@ -63,17 +63,17 @@ def test_pictograph_component_visibility():
         print(f"   Parent visibility: {parent.isVisible()}")
 
         if component.isVisible() and not dont_show_attr:
-            print("   ✅ PictographComponent visibility test PASSED")
+            print("   ✅ PictographWidget visibility test PASSED")
             return True
         else:
-            print("   ❌ PictographComponent visibility test FAILED")
+            print("   ❌ PictographWidget visibility test FAILED")
             print(
                 f"   Component visible: {component.isVisible()}, DontShow: {dont_show_attr}"
             )
             return False
 
     except Exception as e:
-        print(f"   ❌ Error testing PictographComponent: {e}")
+        print(f"   ❌ Error testing PictographWidget: {e}")
         return False
 
 
@@ -179,7 +179,7 @@ def main():
     print("🚀 Starting start position visibility tests...\n")
 
     tests = [
-        test_pictograph_component_visibility,
+        test_pictograph_widget_visibility,
         test_start_position_view_creation,
         test_session_manager_callback,
     ]

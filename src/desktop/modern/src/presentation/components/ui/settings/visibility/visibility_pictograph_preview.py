@@ -21,10 +21,13 @@ from domain.models import (
 )
 from domain.models.enums import Orientation
 from domain.models.pictograph_data import PictographData
-from presentation.components.pictograph.pictograph_scene import PictographScene
+from presentation.components.pictograph.pictograph_widget import (
+    PictographWidget,
+    create_pictograph_widget,
+)
 from PyQt6.QtCore import QPropertyAnimation, Qt, QTimer, pyqtSignal
 from PyQt6.QtGui import QFont
-from PyQt6.QtWidgets import QGraphicsView, QLabel, QSizePolicy, QVBoxLayout, QWidget
+from PyQt6.QtWidgets import QLabel, QSizePolicy, QVBoxLayout, QWidget
 
 logger = logging.getLogger(__name__)
 
@@ -39,8 +42,7 @@ class VisibilityPictographPreview(QWidget):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.scene: Optional[PictographScene] = None
-        self.view: Optional[QGraphicsView] = None
+        self.pictograph_widget: Optional[PictographWidget] = None
         self.sample_beat_data: Optional[BeatData] = None
 
         # Animation properties
@@ -51,7 +53,7 @@ class VisibilityPictographPreview(QWidget):
 
         self._setup_ui()
         self._create_sample_data()
-        self._initialize_scene()
+        self._initialize_widget()
 
     def _setup_ui(self):
         """Setup the compact UI layout for settings dialog."""
@@ -59,21 +61,16 @@ class VisibilityPictographPreview(QWidget):
         layout.setContentsMargins(0, 0, 0, 0)  # Very compact margins
         layout.setSpacing(0)  # Minimal spacing
 
-        # Graphics view for pictograph scene (much smaller)
-        self.view = QGraphicsView()
-        self.view.setMinimumSize(180, 140)  # Much smaller for settings dialog
+        # Create pictograph widget (much smaller for settings dialog)
+        self.pictograph_widget = create_pictograph_widget()
+        self.pictograph_widget.setMinimumSize(
+            180, 140
+        )  # Much smaller for settings dialog
         # set the aspect ratio to 1:1
-        self.view.setSizePolicy(
+        self.pictograph_widget.setSizePolicy(
             QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding
         )
-        from PyQt6.QtGui import QPainter
-
-        self.view.setRenderHint(QPainter.RenderHint.Antialiasing)
-        self.view.setDragMode(QGraphicsView.DragMode.NoDrag)
-        self.view.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
-        self.view.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
-
-        layout.addWidget(self.view)
+        layout.addWidget(self.pictograph_widget)
 
         # Compact info label
         info_label = QLabel("Live preview")
@@ -198,41 +195,21 @@ class VisibilityPictographPreview(QWidget):
         except Exception as e:
             logger.error(f"Error creating sample data: {e}")
             # Create minimal fallback data
-            self.sample_beat_data = BeatData(beat_number=1, letter="A", is_blank=True)
+            self.sample_beat_data = BeatData(beat_number=1, is_blank=True)
 
-    def _initialize_scene(self):
-        """Initialize the pictograph scene with sample data."""
+    def _initialize_widget(self):
+        """Initialize the pictograph widget with sample data."""
         try:
-            self.scene = PictographScene()
-            self.view.setScene(self.scene)
-
-            # Update scene with sample data
+            # Update widget with sample data
             if self.sample_beat_data:
-                self.scene.update_beat(self.sample_beat_data)
+                self.pictograph_widget.update_from_beat(self.sample_beat_data)
 
-            # Fit the view to show the entire pictograph
-            self._fit_view()
-
-            logger.debug("Initialized pictograph scene for preview")
+            logger.debug("Initialized pictograph widget for preview")
 
         except Exception as e:
-            logger.error(f"Error initializing scene: {e}")
+            logger.error(f"Error initializing widget: {e}")
 
-    def _fit_view(self):
-        """Fit the view to show the entire pictograph optimally."""
-        if self.scene and self.view:
-            # Get scene bounds and add some padding
-            scene_rect = self.scene.itemsBoundingRect()
-            if not scene_rect.isEmpty():
-                # Add 10% padding around the content
-                padding = max(scene_rect.width(), scene_rect.height()) * 0.1
-                padded_rect = scene_rect.adjusted(-padding, -padding, padding, padding)
-                self.view.fitInView(padded_rect, Qt.AspectRatioMode.KeepAspectRatio)
-            else:
-                # Fallback to scene rect if no items
-                self.view.fitInView(
-                    self.scene.sceneRect(), Qt.AspectRatioMode.KeepAspectRatio
-                )
+    # _fit_view method removed - PictographWidget handles scaling automatically
 
     def update_visibility(self, element_type: str, visible: bool, animate: bool = True):
         """
@@ -267,8 +244,11 @@ class VisibilityPictographPreview(QWidget):
                     glyph_data = replace(glyph_data, show_positions=visible)
 
                 # Update beat data with new glyph data
+                updated_pictograph_data = replace(
+                    self.sample_beat_data.pictograph_data, glyph_data=glyph_data
+                )
                 self.sample_beat_data = self.sample_beat_data.update(
-                    glyph_data=glyph_data
+                    pictograph_data=updated_pictograph_data
                 )
 
             # Handle motion visibility by updating motion data
@@ -330,13 +310,13 @@ class VisibilityPictographPreview(QWidget):
         self._perform_immediate_update()
 
     def _perform_immediate_update(self):
-        """Immediately update the scene with current data."""
-        if self.scene and self.sample_beat_data:
+        """Immediately update the widget with current data."""
+        if self.pictograph_widget and self.sample_beat_data:
             try:
-                self.scene.update_beat(self.sample_beat_data)
+                self.pictograph_widget.update_from_beat(self.sample_beat_data)
                 self.preview_updated.emit()
             except Exception as e:
-                logger.error(f"Error updating scene: {e}")
+                logger.error(f"Error updating widget: {e}")
 
     def refresh_preview(self):
         """Force refresh the entire preview."""
@@ -352,10 +332,10 @@ class VisibilityPictographPreview(QWidget):
                 animation.stop()
             self._fade_animations.clear()
 
-            # Clean up scene
-            if self.scene:
-                self.scene.clear()
-                self.scene = None
+            # Clean up widget
+            if self.pictograph_widget:
+                self.pictograph_widget.cleanup()
+                self.pictograph_widget = None
 
         except Exception as e:
             logger.error(f"Error during cleanup: {e}")

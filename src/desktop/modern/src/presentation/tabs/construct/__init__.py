@@ -26,13 +26,18 @@ from application.services.sequence.sequence_start_position_manager import (
 
 # Services moved to application layer
 from presentation.adapters.qt.sequence_loader_adapter import QtSequenceLoaderAdapter
-
-from ...components.option_picker.option_picker_manager import OptionPickerManager
-from ...components.start_position_picker.start_position_selection_handler import (
+from presentation.components.option_picker.option_picker_manager import (
+    OptionPickerManager,
+)
+from presentation.components.start_position_picker.start_position_selection_handler import (
     StartPositionSelectionHandler,
 )
-from .layout_manager import ConstructTabLayoutManager
-from .signal_coordinator import SignalCoordinator
+from presentation.tabs.construct.layout_manager import ConstructTabLayoutManager
+from presentation.tabs.construct.modern_construct_tab import ConstructTabWidget
+from presentation.tabs.construct.signal_coordinator import SignalCoordinator
+
+# Create alias for backward compatibility
+ModernConstructTab = ConstructTabWidget
 
 __all__ = [
     # Presentation components (local)
@@ -40,6 +45,8 @@ __all__ = [
     "StartPositionSelectionHandler",
     "OptionPickerManager",
     "SignalCoordinator",
+    "ConstructTabWidget",
+    "ModernConstructTab",  # Alias for backward compatibility
     # Business services (re-exported from application layer)
     "QtSequenceLoaderAdapter",
     "SequenceBeatOperations",

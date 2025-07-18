@@ -46,8 +46,8 @@ from domain.models.beat_models import BeatData
 from domain.models.enums import Location, MotionType, Orientation, RotationDirection
 from domain.models.motion_models import MotionData
 from domain.models.sequence_data import SequenceData
-from presentation.components.pictograph.pictograph_component import (
-    create_pictograph_component,
+from presentation.components.pictograph.pictograph_widget import (
+    create_pictograph_widget,
 )
 
 
@@ -532,7 +532,7 @@ class ComprehensiveSequenceWorkbench(QMainWindow):
         pictograph_layout.setContentsMargins(10, 10, 10, 10)
 
         # Create actual pictograph component
-        self.pictograph_component = create_pictograph_component()
+        self.pictograph_component = create_pictograph_widget()
         self.pictograph_component.setMinimumSize(380, 300)
         pictograph_layout.addWidget(self.pictograph_component)
 

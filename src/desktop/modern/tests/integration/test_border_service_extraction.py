@@ -170,11 +170,11 @@ class TestBorderServiceExtraction:
     def test_pictograph_component_factory(self):
         """Test that pictograph component factory works with border service."""
         try:
-            from presentation.components.pictograph.pictograph_component import (
-                create_pictograph_component,
+            from presentation.components.pictograph.pictograph_widget import (
+                create_pictograph_widget,
             )
 
-            component = create_pictograph_component()
+            component = create_pictograph_widget()
             assert component is not None
 
             # Test that component has border functionality

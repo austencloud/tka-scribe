@@ -12,10 +12,7 @@ from domain.models.pictograph_data import PictographData
 from PyQt6.QtCore import QSize, Qt, pyqtSignal
 from PyQt6.QtWidgets import QFrame, QVBoxLayout
 
-from ...pictograph.pictograph_component import (
-    PictographWidget,
-    create_pictograph_widget,
-)
+from ...pictograph.pictograph_widget import PictographWidget, create_pictograph_widget
 from .selection_overlay import SelectionOverlay
 from .start_text_overlay import StartTextOverlay, add_start_text_to_view
 
@@ -318,6 +315,9 @@ class StartPositionView(QFrame):
         self._pictograph_component.show()
         self._pictograph_component.setVisible(True)
 
+        # CRITICAL FIX: Apply manual scaling after pictograph is updated
+        # self._apply_manual_scaling()
+
         self._add_start_text_overlay()
 
     def _show_empty_state(self):
@@ -359,12 +359,58 @@ class StartPositionView(QFrame):
         super().resizeEvent(event)
         self._update_overlay_scaling()
 
+        # CRITICAL FIX: Apply manual scaling like legacy system
+        self._apply_manual_scaling()
+
     def _update_overlay_scaling(self):
         """Update scaling for START text overlay"""
         if self._start_text_overlay and hasattr(
             self._start_text_overlay, "update_scaling"
         ):
             self._start_text_overlay.update_scaling()
+
+    def _apply_manual_scaling(self):
+        """Apply manual scaling to pictograph like legacy system"""
+        if not self._pictograph_component or not hasattr(
+            self._pictograph_component, "view"
+        ):
+            return
+
+        try:
+            # Get the graphics view from the simplified pictograph widget
+            graphics_view = self._pictograph_component.view
+            if not graphics_view or not graphics_view.scene():
+                return
+
+            # Get scene dimensions (like legacy pictograph.width())
+            scene_rect = graphics_view.scene().sceneRect()
+            if scene_rect.width() <= 0 or scene_rect.height() <= 0:
+                return
+
+            # Calculate target size like legacy: container size minus borders
+            # StartPositionView is fixed at 120x120, so use that as container size
+            container_size = min(self.width(), self.height())
+            if container_size <= 0:
+                container_size = 120  # Fallback to fixed size
+
+            # Apply border calculation like legacy (responsive border width)
+            border_width = max(1, int(container_size * 0.015))
+            target_size = container_size - (2 * border_width)
+            target_size = max(target_size, 60)  # Minimum size
+
+            # Calculate scale factor like legacy: target_size / scene_width
+            scale_factor = target_size / max(scene_rect.width(), scene_rect.height())
+
+            # Apply manual scaling like legacy: resetTransform() then scale()
+            graphics_view.resetTransform()
+            graphics_view.scale(scale_factor, scale_factor)
+
+            print(
+                f"🔧 [START_POS_VIEW] Manual scaling applied: container={container_size}, target={target_size}, scale={scale_factor:.3f}"
+            )
+
+        except Exception as e:
+            print(f"⚠️ [START_POS_VIEW] Error applying manual scaling: {e}")
 
     def setAccessibleName(self, name: str):
         """Set accessible name for screen readers"""

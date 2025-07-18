@@ -57,7 +57,9 @@ class VisibilityTab(QWidget):
         super().__init__(parent)
 
         # Services - use simple visibility service instead of complex ones
-        self.visibility_service = visibility_service  # Legacy interface for compatibility
+        self.visibility_service = (
+            visibility_service  # Legacy interface for compatibility
+        )
         self.simple_visibility_service = get_visibility_service()
 
         # Component sections
@@ -244,7 +246,7 @@ class VisibilityTab(QWidget):
     def _apply_global_updates(self):
         """
         Apply visibility changes to all pictographs globally.
-        
+
         This simplified version directly calls update_visibility on all pictograph scenes
         instead of using the complex global registration system.
         """
@@ -259,21 +261,100 @@ class VisibilityTab(QWidget):
             if self.element_section:
                 element_states = self.element_section.get_element_states()
 
-            # For now, we'll rely on pictograph components to check the simple visibility service
-            # when they render, rather than pushing updates to them.
-            # This is simpler and more reliable than the complex global registration system.
+            # Update the simple visibility service with all states
+            from application.services.pictograph.simple_visibility_service import (
+                get_visibility_service,
+            )
 
-            # Log the changes for debugging
+            visibility_service = get_visibility_service()
+
+            # Apply motion visibility changes to the service
             for color, visible in motion_states.items():
+                visibility_service.set_motion_visibility(color, visible)
                 logger.debug(f"Applied motion visibility {color}={visible}")
 
+            # Apply element visibility changes to the service
             for element_name, visible in element_states.items():
+                visibility_service.set_glyph_visibility(element_name, visible)
                 logger.debug(f"Applied element visibility {element_name}={visible}")
+
+            # Find and update all pictograph scenes in the application
+            self._update_all_pictograph_scenes()
 
             logger.info("Successfully applied global visibility updates")
 
         except Exception as e:
-            logger.error(f"Error applying global updates: {e}")
+            logger.error(f"Error applying global visibility updates: {e}")
+
+    def _update_all_pictograph_scenes(self):
+        """
+        Find and update all pictograph scenes in the application.
+
+        This method searches for PictographScene instances throughout the application
+        and triggers them to re-render with the new visibility settings.
+        """
+        try:
+            from presentation.components.pictograph.pictograph_scene import (
+                PictographScene,
+            )
+            from PyQt6.QtWidgets import QApplication
+
+            # Get the main application instance
+            app = QApplication.instance()
+            if not app:
+                logger.warning("No QApplication instance found")
+                return
+
+            updated_count = 0
+
+            # Find all widgets in the application
+            for widget in app.allWidgets():
+                # Look for QGraphicsView widgets that might contain pictograph scenes
+                if hasattr(widget, "scene") and callable(
+                    getattr(widget, "scene", None)
+                ):
+                    try:
+                        scene = widget.scene()
+                        if scene and isinstance(scene, PictographScene):
+                            # Trigger the scene to re-render with current visibility settings
+                            scene.refresh_with_current_visibility()
+                            updated_count += 1
+                            logger.debug(
+                                f"Refreshed pictograph scene: {scene.scene_id}"
+                            )
+                    except Exception as e:
+                        logger.warning(f"Error updating pictograph scene: {e}")
+
+                # Also look for any widgets that might have direct references to pictograph scenes
+                if hasattr(widget, "pictograph_scene"):
+                    try:
+                        scene = widget.pictograph_scene
+                        if scene and isinstance(scene, PictographScene):
+                            scene.refresh_with_current_visibility()
+                            updated_count += 1
+                            logger.debug(
+                                f"Refreshed pictograph scene from widget: {scene.scene_id}"
+                            )
+                    except Exception as e:
+                        logger.warning(
+                            f"Error updating pictograph scene from widget: {e}"
+                        )
+
+            logger.info(
+                f"Updated {updated_count} pictograph scenes with immediate visual feedback"
+            )
+
+            # Force application to process all pending events to ensure immediate updates
+            if app:
+                app.processEvents()
+
+        except Exception as e:
+            logger.error(f"Error finding pictograph scenes: {e}")
+
+    def _schedule_global_update(self):
+        """Schedule a global update with debouncing."""
+        self._update_timer.stop()
+        self._update_timer.start(200)  # 200ms delay for batching
 
     def _on_preview_updated(self):
         """Handle preview update notifications."""

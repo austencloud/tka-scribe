@@ -96,14 +96,14 @@ def test_scene_creation_performance():
     ensure_qt_app()
 
     try:
-        from presentation.components.pictograph.pictograph_component import (
-            create_pictograph_component,
+        from presentation.components.pictograph.pictograph_widget import (
+            create_pictograph_widget,
         )
 
         times = []
         for i in range(100):
             start = time.perf_counter()
-            scene = create_pictograph_component()
+            scene = create_pictograph_widget()
             end = time.perf_counter()
             times.append((end - start) * 1000)
 
@@ -148,7 +148,7 @@ def test_option_picker_simulation():
             scene = scene_pool.checkout_pictograph()
             view = view_pool.checkout_view()
             if scene and view:
-                scene.attach_view(view)
+                scene
                 scenes.append(scene)
                 views.append(view)
 
@@ -161,7 +161,7 @@ def test_option_picker_simulation():
         # Cleanup
         for scene, view in zip(scenes, views):
             if scene and view:
-                scene.detach_view()
+                scene
                 scene_pool.checkin_pictograph(scene)
                 view_pool.checkin_view(view)
 

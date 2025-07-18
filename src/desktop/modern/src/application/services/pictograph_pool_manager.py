@@ -13,8 +13,8 @@ from typing import Any, Dict, List, Optional, Set
 from core.dependency_injection.di_container import DIContainer
 from core.interfaces.pool_manager_services import IPictographPoolManager
 from domain.models.pictograph_data import PictographData
-from presentation.components.pictograph.simplified_pictograph import (
-    SimplifiedPictographWidget,
+from presentation.components.pictograph.pictograph_widget import (
+    PictographWidget,
     create_simplified_pictograph_widget,
 )
 from PyQt6.QtCore import Qt
@@ -27,9 +27,9 @@ class PictographPoolManager(IPictographPoolManager):
 
     def __init__(self, container: Optional[DIContainer] = None):
         self.container = container
-        self._pool: Queue[SimplifiedPictographWidget] = Queue()
-        self._checked_out: Set[SimplifiedPictographWidget] = set()
-        self._on_demand_components: Set[SimplifiedPictographWidget] = (
+        self._pool: Queue[PictographWidget] = Queue()
+        self._checked_out: Set[PictographWidget] = set()
+        self._on_demand_components: Set[PictographWidget] = (
             set()
         )  # Track on-demand components
         # PERFORMANCE OPTIMIZATION: Increased pool size to handle option picker demand
@@ -49,12 +49,7 @@ class PictographPoolManager(IPictographPoolManager):
 
     def initialize_pool(self, progress_callback=None, lazy=None) -> None:
         """Initialize the pictograph pool with pre-created components (public method)."""
-        from presentation.components.pictograph.component_specific_view_pools import (
-            initialize_component_view_pools,
-        )
-
-        # Initialize component-specific view pools
-        initialize_component_view_pools()
+        # Note: Component-specific view pools have been removed in favor of simplified architecture
         self._progress_callback = progress_callback
 
         # Use lazy initialization setting if not explicitly specified
@@ -197,7 +192,7 @@ class PictographPoolManager(IPictographPoolManager):
         self._startup_complete = True
         logger.info("🏊 [POOL] Startup complete - pool expansion now enabled")
 
-    def checkout_pictograph(self, parent=None) -> Optional[SimplifiedPictographWidget]:
+    def checkout_pictograph(self, parent=None) -> Optional[PictographWidget]:
         """
         Get an available pictograph component from the pool.
 
@@ -281,7 +276,7 @@ class PictographPoolManager(IPictographPoolManager):
                 )
             return component
 
-    def checkin_pictograph(self, component: SimplifiedPictographWidget) -> None:
+    def checkin_pictograph(self, component: PictographWidget) -> None:
         """Return a pictograph component to the pool."""
         with self._lock:
             # Check if it's an on-demand component first

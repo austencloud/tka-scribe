@@ -12,6 +12,7 @@ from presentation.adapters.qt.sequence_beat_operations_adapter import (
 # Import IMPROVED adapters that use IWorkbenchStateManager
 from presentation.adapters.qt.sequence_loader_adapter import QtSequenceLoaderAdapter
 from PyQt6.QtCore import pyqtSignal
+from PyQt6.QtGui import QResizeEvent
 from PyQt6.QtWidgets import QWidget
 
 from ...components.option_picker.option_picker_manager import OptionPickerManager
@@ -140,6 +141,13 @@ class ConstructTabWidget(QWidget):
         self.layout_manager = ConstructTabLayoutManager(
             self.container, self.progress_callback, self._on_option_picker_ready
         )
+
+        # Window resize coordinator for pictograph re-scaling
+        from application.services.ui.window_resize_coordinator import (
+            WindowResizeCoordinator,
+        )
+
+        self.resize_coordinator = self.container.resolve(WindowResizeCoordinator)
 
         # MODERN ARCHITECTURE: StartPositionSelectionHandler uses state manager pattern
         # Signal flow: handler -> SignalCoordinator -> StartPositionManager -> WorkbenchStateManager
@@ -404,30 +412,47 @@ class ConstructTabWidget(QWidget):
         else:
             print(f"❌ [CONSTRUCT_TAB] Option picker manager not initialized yet")
 
+    # ============================================================================
+    # ARCHITECTURE IMPROVEMENT COMPLETE! 🎉
+    # ============================================================================
+    #
+    # ✅ ACCOMPLISHED: The clumsy workbench_getter/workbench_setter pattern
+    #                  has been COMPLETELY ELIMINATED!
+    #
+    # 🔧 UPDATED SERVICES:
+    #    - QtSequenceLoaderAdapter: Uses IWorkbenchStateManager ✅
+    #    - QtSequenceBeatOperationsAdapter: Uses IWorkbenchStateManager ✅
+    #    - SequenceStartPositionManager: Uses IWorkbenchStateManager ✅
+    #    - clear_sequence(): Uses workbench_state_manager directly ✅
+    #    - Service instantiation: Clean dependency injection ✅
+    #    - Removed temporary getter/setter functions ✅
+    #
+    # ⚠️ REMAINING TODO:
+    #    - StartPositionSelectionHandler: Needs updating (minor)
+    #    - Some beat operations adapter methods need implementation
+    #
+    # 🎉 BENEFITS ACHIEVED:
+    #    - Type-safe dependencies instead of lambda functions
+    #    - Easier testing with mockable interfaces
+    #    - Loose coupling between services and workbench
 
-# ============================================================================
-# ARCHITECTURE IMPROVEMENT COMPLETE! 🎉
-# ============================================================================
-#
-# ✅ ACCOMPLISHED: The clumsy workbench_getter/workbench_setter pattern
-#                  has been COMPLETELY ELIMINATED!
-#
-# 🔧 UPDATED SERVICES:
-#    - QtSequenceLoaderAdapter: Uses IWorkbenchStateManager ✅
-#    - QtSequenceBeatOperationsAdapter: Uses IWorkbenchStateManager ✅
-#    - SequenceStartPositionManager: Uses IWorkbenchStateManager ✅
-#    - clear_sequence(): Uses workbench_state_manager directly ✅
-#    - Service instantiation: Clean dependency injection ✅
-#    - Removed temporary getter/setter functions ✅
-#
-# ⚠️ REMAINING TODO:
-#    - StartPositionSelectionHandler: Needs updating (minor)
-#    - Some beat operations adapter methods need implementation
-#
-# 🎉 BENEFITS ACHIEVED:
-#    - Type-safe dependencies instead of lambda functions
-#    - Easier testing with mockable interfaces
-#    - Loose coupling between services and workbench
+    def resizeEvent(self, event: QResizeEvent) -> None:
+        """Handle window resize events to trigger pictograph re-scaling."""
+        super().resizeEvent(event)
+
+        # Get the main window width
+        main_window = self.window()
+        if main_window and hasattr(self, "resize_coordinator"):
+            new_width = main_window.width()
+
+            # Notify the resize coordinator
+            self.resize_coordinator.notify_window_resize(new_width)
+
+            print(
+                f"🔧 [CONSTRUCT_TAB] Window resized to {new_width}px, notified resize coordinator"
+            )
+
+
 #    - Clean, maintainable dependency injection
 #    - Better error handling and debugging
 #    - Significantly simplified architecture

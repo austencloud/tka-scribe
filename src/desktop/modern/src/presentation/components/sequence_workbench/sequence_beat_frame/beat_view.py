@@ -12,10 +12,7 @@ from PyQt6.QtCore import QSize, Qt, pyqtSignal
 from PyQt6.QtGui import QColor, QPainter, QPen
 from PyQt6.QtWidgets import QFrame, QVBoxLayout
 
-from ...pictograph.pictograph_component import (
-    PictographWidget,
-    create_pictograph_widget,
-)
+from ...pictograph.pictograph_widget import PictographWidget, create_pictograph_widget
 from .beat_number_overlay import BeatNumberOverlay, add_beat_number_to_view
 from .selection_overlay import SelectionOverlay
 from .start_text_overlay import StartTextOverlay
@@ -226,7 +223,7 @@ class BeatView(QFrame):
             return
 
         # Get the scene from the PictographWidget
-        scene = getattr(self._pictograph_component, "_pictograph_component", None)
+        scene = getattr(self._pictograph_component, "scene", None)
         if not scene:
             return
 

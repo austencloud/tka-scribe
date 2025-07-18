@@ -69,9 +69,7 @@ class CoreServiceRegistrar(BaseServiceRegistrar):
             )
             from application.services.ui.ui_state_manager import UIStateManager
             from core.interfaces.core_services import ILayoutService, IUIStateManager
-            from core.interfaces.layout_services import (
-                IBeatLayoutCalculator,
-            )
+            from core.interfaces.layout_services import IBeatLayoutCalculator
             from core.interfaces.ui_services import IThumbnailGenerationService
 
             # Register service types with factory functions for proper DI
@@ -97,6 +95,16 @@ class CoreServiceRegistrar(BaseServiceRegistrar):
             # Register modern UI state manager
             container.register_singleton(UIStateManager, UIStateManager)
             self._mark_service_available("UIStateManager")
+
+            # Register window resize coordinator for pictograph re-scaling
+            from application.services.ui.window_resize_coordinator import (
+                WindowResizeCoordinator,
+            )
+
+            container.register_singleton(
+                WindowResizeCoordinator, WindowResizeCoordinator
+            )
+            self._mark_service_available("WindowResizeCoordinator")
 
             # Register thumbnail generation service
             container.register_singleton(

@@ -55,7 +55,7 @@ class WidgetFactory:
 
     def create_pictograph_widget(self, parent: Optional[QWidget] = None):
         """Create a pictograph widget with injected dependencies."""
-        from presentation.components.pictograph.pictograph_component import (
+        from presentation.components.pictograph.pictograph_widget import (
             create_pictograph_widget,
         )
 

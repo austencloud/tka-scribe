@@ -44,7 +44,7 @@ from domain.models.enums import Location, MotionType, RotationDirection
 from domain.models.grid_data import GridData, GridMode
 from domain.models.motion_data import MotionData
 from domain.models.pictograph_data import PictographData
-from presentation.components.pictograph.pictograph_component import PictographComponent
+from presentation.components.pictograph.pictograph_widget import PictographWidget
 
 
 class InteractiveAnimationDemo(QMainWindow):
@@ -67,7 +67,7 @@ class InteractiveAnimationDemo(QMainWindow):
         self.pictograph_factory = PictographFactory()
 
         # Store pictographs and their components
-        self.pictographs: List[PictographComponent] = []
+        self.pictographs: List[PictographWidget] = []
         self.current_pictograph_index = 0
 
         # Animation state
@@ -307,11 +307,11 @@ class InteractiveAnimationDemo(QMainWindow):
                     )
 
                     # Create pictograph component using the factory function
-                    from presentation.components.pictograph.pictograph_component import (
-                        create_pictograph_component,
+                    from presentation.components.pictograph.pictograph_widget import (
+                        create_pictograph_widget,
                     )
 
-                    pictograph = create_pictograph_component(
+                    pictograph = create_pictograph_widget(
                         parent=self.display_area, container=self.container
                     )
 
@@ -381,7 +381,7 @@ class InteractiveAnimationDemo(QMainWindow):
         }
         self.current_easing = easing_map.get(easing_name, EasingType.EASE_IN_OUT)
 
-    def get_current_pictograph(self) -> Optional[PictographComponent]:
+    def get_current_pictograph(self) -> Optional[PictographWidget]:
         """Get the currently active pictograph."""
         if 0 <= self.current_pictograph_index < len(self.pictographs):
             return self.pictographs[self.current_pictograph_index]

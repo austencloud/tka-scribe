@@ -31,6 +31,14 @@ class SequenceData:
     beats: List[BeatData] = field(default_factory=list)
     start_position: BeatData = None
 
+    # Browse tab data (for sequence browsing and filtering)
+    thumbnail_paths: List[str] = field(default_factory=list)
+    sequence_length: int = 0  # Cached length for filtering (may differ from len(beats))
+    author: str = ""
+    difficulty_level: str = ""
+    date_added: str = ""
+    is_favorite: bool = False
+
     # Metadata
     metadata: Dict[str, Any] = field(default_factory=dict)
 
@@ -155,6 +163,12 @@ class SequenceData:
             "start_position": (
                 self.start_position.to_dict() if self.start_position else None
             ),
+            "thumbnail_paths": self.thumbnail_paths,
+            "sequence_length": self.sequence_length,
+            "author": self.author,
+            "difficulty_level": self.difficulty_level,
+            "date_added": self.date_added,
+            "is_favorite": self.is_favorite,
             "metadata": self.metadata,
         }
 
@@ -173,6 +187,12 @@ class SequenceData:
             word=data.get("word", ""),
             beats=beats,
             start_position=start_position,
+            thumbnail_paths=data.get("thumbnail_paths", []),
+            sequence_length=data.get("sequence_length", 0),
+            author=data.get("author", ""),
+            difficulty_level=data.get("difficulty_level", ""),
+            date_added=data.get("date_added", ""),
+            is_favorite=data.get("is_favorite", False),
             metadata=data.get("metadata", {}),
         )
 

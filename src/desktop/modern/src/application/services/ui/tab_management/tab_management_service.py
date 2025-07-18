@@ -93,8 +93,12 @@ class TabManagementService(ITabManagementService):
             # Construct tab should already be loaded
             return True
 
-        # Create placeholder for other tabs
-        placeholder = self._create_placeholder_tab(tab_name)
+        # Create actual tab implementations
+        if tab_name == "browse":
+            tab_widget = self._create_browse_tab()
+        else:
+            # Create placeholder for other tabs
+            tab_widget = self._create_placeholder_tab(tab_name)
 
         # Get display name with emoji
         display_names = {
@@ -106,10 +110,10 @@ class TabManagementService(ITabManagementService):
         display_name = display_names.get(tab_name, tab_name.title())
 
         # Add tab to widget
-        tab_index = self._tab_widget.addTab(placeholder, display_name)
+        tab_index = self._tab_widget.addTab(tab_widget, display_name)
 
         # Track the tab
-        self._tabs[tab_name] = placeholder
+        self._tabs[tab_name] = tab_widget
         self._tab_index_map[tab_name] = tab_index
 
         print(f"✅ Created {tab_name} tab on-demand")
@@ -144,6 +148,19 @@ class TabManagementService(ITabManagementService):
 
         layout.addWidget(label)
         return placeholder
+
+    def _create_browse_tab(self) -> QWidget:
+        """Create the actual browse tab widget."""
+        from pathlib import Path
+        from presentation.tabs.browse import ModernBrowseTab
+        
+        # Create browse tab with default paths
+        # In a real implementation, these paths would come from configuration
+        sequences_dir = Path("data/sequences")  # Default sequences directory
+        settings_file = Path("settings.json")    # Default settings file
+        
+        browse_tab = ModernBrowseTab(sequences_dir, settings_file)
+        return browse_tab
 
     def get_current_tab_name(self) -> Optional[str]:
         """Get the name of the currently active tab."""

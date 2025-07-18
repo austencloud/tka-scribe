@@ -94,9 +94,11 @@ src/desktop/modern/src/
 ## Revised Implementation Phases
 
 ### Phase 1: Core Business Services (Week 1-2)
+
 **Target**: Platform-agnostic business logic
 
 #### Services to Implement:
+
 1. **`SequenceDataManager`**
    - File system scanning and filtering
    - Metadata extraction and validation
@@ -113,6 +115,7 @@ src/desktop/modern/src/
    - Change notifications
 
 #### Key Interfaces:
+
 ```python
 class ISequenceDataManager(Protocol):
     def get_sequences_by_length(self, path: str, length: int) -> List[SequenceData]
@@ -127,15 +130,18 @@ class ISequenceCacheManager(Protocol):
 ```
 
 #### Testing Strategy Phase 1:
+
 - **Unit Tests**: Business logic without Qt dependencies
 - **Integration Tests**: Service interactions
 - **Performance Tests**: Cache behavior and memory usage
 - **File System Tests**: Directory scanning accuracy
 
 ### Phase 2: Qt Model Integration (Week 3-4)
+
 **Target**: Qt Model/View implementation
 
 #### Components to Implement:
+
 4. **`SequenceCardModel`** (inherits `QAbstractItemModel`)
    - Integrates with business services
    - Implements Qt model interface
@@ -148,60 +154,65 @@ class ISequenceCacheManager(Protocol):
    - Progress reporting integration
 
 #### Key Qt Integration:
+
 ```python
 class SequenceCardModel(QAbstractItemModel):
-    def __init__(self, data_manager: ISequenceDataManager, 
+    def __init__(self, data_manager: ISequenceDataManager,
                  cache_manager: ISequenceCacheManager):
         super().__init__()
         self._data_manager = data_manager
         self._cache_manager = cache_manager
         self._sequences: List[SequenceData] = []
-        
+
     def rowCount(self, parent: QModelIndex = QModelIndex()) -> int:
         return len(self._sequences)
-        
+
     def data(self, index: QModelIndex, role: int = Qt.DisplayRole) -> Any:
         # Delegate to business services
         # Handle Qt-specific data conversion
-        
+
     def refresh_sequences(self, length: int) -> None:
         # Coordinate with data manager
         # Emit model change signals
 ```
 
 #### Testing Strategy Phase 2:
+
 - **Qt Model Tests**: Model interface compliance
 - **Signal/Slot Tests**: Event propagation
 - **Data Binding Tests**: Business service integration
 - **Memory Tests**: Qt object lifecycle management
 
 ### Phase 3: UI Components (Week 5-6)
+
 **Target**: Modern Qt UI implementation
 
 #### Components to Implement:
+
 6. **`SequenceCardView`** (main container)
 7. **`HeaderComponent`** (controls, progress, actions)
 8. **`NavigationComponent`** (length/column selection)
 9. **`ContentComponent`** (scrollable sequence display)
 
 #### Modern Qt Patterns:
+
 ```python
 class SequenceCardView(QWidget):
     def __init__(self, data_manager: ISequenceDataManager,
                  cache_manager: ISequenceCacheManager):
         super().__init__()
-        
+
         # Create model
         self._model = SequenceCardModel(data_manager, cache_manager)
-        
+
         # Create view components
         self._header = HeaderComponent(self)
         self._navigation = NavigationComponent(self)
         self._content = ContentComponent(self)
-        
+
         # Connect signals
         self._setup_signal_connections()
-        
+
     def _setup_signal_connections(self) -> None:
         # Wire Qt signals between components
         self._navigation.length_changed.connect(self._model.refresh_sequences)
@@ -209,15 +220,18 @@ class SequenceCardView(QWidget):
 ```
 
 #### Testing Strategy Phase 3:
+
 - **Visual Tests**: Screenshot comparison
 - **Interaction Tests**: User input handling
 - **Layout Tests**: Responsive behavior
 - **Integration Tests**: Component communication
 
 ### Phase 4: Export System (Week 7-8)
+
 **Target**: Export functionality with progress tracking
 
 #### Components to Implement:
+
 10. **`SequenceExportManager`**
     - Integrates with legacy TempBeatFrame
     - Batch processing with cancellation
@@ -225,15 +239,18 @@ class SequenceCardView(QWidget):
     - Quality settings management
 
 #### Testing Strategy Phase 4:
+
 - **Export Tests**: File output validation
 - **Performance Tests**: Large dataset exports
 - **Quality Tests**: Image comparison
 - **Progress Tests**: Cancellation and resumption
 
 ### Phase 5: Integration & Polish (Week 9-10)
+
 **Target**: Full system integration and optimization
 
 #### Final Integration:
+
 - Dependency injection setup
 - Error handling standardization
 - Performance optimization
@@ -243,12 +260,14 @@ class SequenceCardView(QWidget):
 ## Testing Strategy - Pragmatic Approach
 
 ### What NOT to Test (Based on Qt Best Practices):
+
 - ❌ Qt widget internal behavior (trust Qt framework)
 - ❌ Signal/slot mechanism (Qt's responsibility)
 - ❌ Layout calculations (unless custom logic)
 - ❌ Paint events (unless custom painting)
 
 ### What TO Test:
+
 - ✅ Business logic in isolation
 - ✅ Data transformations
 - ✅ Cache behavior and performance
@@ -260,22 +279,24 @@ class SequenceCardView(QWidget):
 ### Testing Tools & Approaches:
 
 #### 1. Business Logic Tests (Python unittest):
+
 ```python
 class TestSequenceDataManager(unittest.TestCase):
     def setUp(self):
         self.temp_dir = tempfile.mkdtemp()
         self.data_manager = SequenceDataManager()
-        
+
     def test_sequence_filtering_by_length(self):
         # Create test data
         sequences = self.data_manager.get_sequences_by_length(self.temp_dir, 16)
         # Assert accuracy vs legacy behavior
-        
+
     def test_metadata_extraction_accuracy(self):
         # Compare with legacy MetaDataExtractor
 ```
 
 #### 2. Qt Model Tests (pytest-qt):
+
 ```python
 def test_model_data_access(qtmodeltester):
     model = SequenceCardModel(mock_data_manager, mock_cache_manager)
@@ -283,26 +304,28 @@ def test_model_data_access(qtmodeltester):
 ```
 
 #### 3. Visual Regression Tests:
+
 ```python
 def test_sequence_card_layout(qtbot):
     view = SequenceCardView(mock_services)
     qtbot.addWidget(view)
-    
+
     # Take screenshot
     pixmap = view.grab()
     # Compare with reference image
 ```
 
 #### 4. Performance Tests:
+
 ```python
 def test_cache_performance():
     cache_manager = SequenceCacheManager(cache_size=1000)
-    
+
     # Load test data
     start_time = time.time()
     for i in range(1000):
         cache_manager.get_cached_image(f"test_path_{i}", 1.0)
-    
+
     # Assert performance targets
     assert time.time() - start_time < 2.0  # Sub-2 second target
 ```
@@ -310,28 +333,34 @@ def test_cache_performance():
 ## Risk Mitigation - Lessons from Research
 
 ### 1. **Avoid Microservice Patterns in Desktop Apps**
+
 - **Risk**: Over-engineering with too many services
 - **Solution**: Use 3-4 well-defined managers instead of 7+ micro-services
 
 ### 2. **Embrace Qt Patterns**
+
 - **Risk**: Fighting Qt's architecture
 - **Solution**: Use Model/View pattern as intended by Qt
 
 ### 3. **Incremental UI Migration**
+
 - **Risk**: Big-bang UI replacement
 - **Solution**: Component-by-component replacement with adapter pattern
 
 ### 4. **Memory Management Focus**
+
 - **Risk**: Memory leaks in Qt applications
 - **Solution**: Explicit resource management and testing
 
 ### 5. **Cache Complexity**
+
 - **Risk**: Cache inconsistency
 - **Solution**: Single source of truth with event-driven invalidation
 
 ## Success Criteria (Revised)
 
 ### Functional Parity Checkpoints:
+
 - [ ] **Week 2**: Business services pass legacy comparison tests
 - [ ] **Week 4**: Qt model provides same data as legacy display
 - [ ] **Week 6**: UI components match legacy visual appearance
@@ -339,6 +368,7 @@ def test_cache_performance():
 - [ ] **Week 10**: Full integration passes stress tests
 
 ### Performance Benchmarks:
+
 - [ ] Sequence loading: <2 seconds for 1000+ sequences (vs legacy)
 - [ ] Memory usage: <400MB peak (vs legacy 500MB+)
 - [ ] Cache hit rate: >85% for repeated operations
@@ -346,6 +376,7 @@ def test_cache_performance():
 - [ ] Export speed: Match legacy ±10%
 
 ### Code Quality Gates:
+
 - [ ] Business logic: 90%+ test coverage
 - [ ] Qt integration: 70%+ test coverage (realistic for Qt apps)
 - [ ] Zero memory leaks in 24-hour stress test
@@ -355,6 +386,7 @@ def test_cache_performance():
 ## Common Pitfalls Prevention
 
 ### 1. **Qt Object Lifecycle Issues**
+
 ```python
 # ❌ Wrong: Creates memory leaks
 def create_temporary_widget():
@@ -368,6 +400,7 @@ def create_managed_widget(parent):
 ```
 
 ### 2. **Signal Connection Memory Leaks**
+
 ```python
 # ❌ Wrong: Lambda captures can create cycles
 signal.connect(lambda: self.some_method(large_object))
@@ -377,6 +410,7 @@ signal.connect(self.some_method)
 ```
 
 ### 3. **Model/View Data Consistency**
+
 ```python
 # ❌ Wrong: Direct data manipulation
 self._sequences.append(new_sequence)  # View won't update
@@ -388,6 +422,7 @@ self.endInsertRows()
 ```
 
 ### 4. **Threading Issues with Qt**
+
 ```python
 # ❌ Wrong: Direct UI updates from worker thread
 def worker_thread():
@@ -401,6 +436,7 @@ def worker_thread():
 ```
 
 This revised plan addresses the architectural concerns by:
+
 1. **Following Qt patterns** rather than fighting them
 2. **Reducing complexity** to manageable components
 3. **Focusing on testable business logic** separation
