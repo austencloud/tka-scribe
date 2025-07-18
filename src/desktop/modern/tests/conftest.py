@@ -16,9 +16,8 @@ import pytest
 modern_src = Path(__file__).parent.parent / "src"
 sys.path.insert(0, str(modern_src))
 
-# Import specific fixtures from graph editor to avoid conflicts
+# Import specific fixtures from graph editor (excluding problematic autouse fixtures)
 from tests.fixtures.graph_editor.conftest import (
-    all_mock_services,
     basic_test_data,
     complex_beat,
     complex_test_data,
@@ -28,16 +27,23 @@ from tests.fixtures.graph_editor.conftest import (
     mock_graph_service,
     mock_hotkey_service,
     mock_parent_widget,
-    mock_workbench,
     qapp,
     regular_beat,
-    reset_mocks,
     sample_beat_data,
     sample_sequence_data,
     signal_spy,
     start_position_beat,
     test_di_container,
     tka_test_helper,
+)
+
+# Import mock configurations for manual use
+from tests.fixtures.mock_configurations import (
+    DataCacheManagerMock,
+    SectionManagerMock,
+    WidgetPoolManagerMock,
+    create_mock_with_iterables,
+    get_configured_mock,
 )
 
 
@@ -80,15 +86,16 @@ def pytest_collection_modifyitems(config, items):
 
 def pytest_runtest_teardown(item, nextitem):
     """
-    Clean up Qt objects between tests to prevent memory leaks.
+    Clean up Qt objects and global state between tests.
 
     This follows pytest-qt best practices for preventing Qt memory leaks
-    that can cause process termination in large test suites.
+    and ensures proper test isolation by cleaning up global state.
     """
     import gc
 
     from PyQt6.QtWidgets import QApplication
 
+    # Clean up Qt objects
     app = QApplication.instance()
     if app is not None:
         # Process any pending Qt events
@@ -103,5 +110,13 @@ def pytest_runtest_teardown(item, nextitem):
         # Process deletion events
         app.processEvents()
 
-        # Force garbage collection to clean up Python objects
-        gc.collect()
+    # Clean up DI container global state
+    try:
+        from core.dependency_injection.di_container import reset_container
+
+        reset_container()
+    except ImportError:
+        pass  # DI container not available
+
+    # Force garbage collection to clean up Python objects
+    gc.collect()

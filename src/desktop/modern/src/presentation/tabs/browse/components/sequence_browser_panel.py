@@ -6,8 +6,10 @@ Handles the complex thumbnail management identified in the Legacy audit.
 """
 
 from typing import List, Optional
+from datetime import datetime
 
 from domain.models.sequence_data import SequenceData
+from presentation.tabs.browse.models import FilterType
 from presentation.tabs.browse.services.browse_service import BrowseService
 from presentation.tabs.browse.services.browse_state_service import BrowseStateService
 from PyQt6.QtCore import QSize, Qt, pyqtSignal
@@ -22,6 +24,9 @@ from PyQt6.QtWidgets import (
     QVBoxLayout,
     QWidget,
 )
+
+from .modern_browse_control_panel import ModernBrowseControlPanel
+from .modern_navigation_sidebar import ModernNavigationSidebar
 
 
 class SequenceBrowserPanel(QWidget):
@@ -54,6 +59,16 @@ class SequenceBrowserPanel(QWidget):
         self.thumbnail_width = 150  # Minimum width
         self.thumbnail_height = 120  # Base height
         self.thumbnail_widgets: List[QWidget] = []
+
+        # Navigation sidebar
+        self.navigation_sidebar: Optional[ModernNavigationSidebar] = None
+
+        # Control panel
+        self.control_panel: Optional[ModernBrowseControlPanel] = None
+
+        # Current filter state
+        self.current_filter_type: Optional[FilterType] = None
+        self.current_filter_values: any = None
 
         self._setup_ui()
         self._connect_signals()
@@ -104,14 +119,16 @@ class SequenceBrowserPanel(QWidget):
         scrollbar_width = 20
         content_margins = 40
         grid_margins = 30
-        usable_width = actual_scroll_width - scrollbar_width - content_margins - grid_margins
+        usable_width = (
+            actual_scroll_width - scrollbar_width - content_margins - grid_margins
+        )
         grid_spacing = 15 * 2
         width_per_column = (usable_width - grid_spacing) // 3
         thumbnail_width = max(150, width_per_column)
-        
+
         # Update stored values
         self.thumbnail_width = thumbnail_width
-        
+
         for thumbnail in self.thumbnail_widgets:
             # Set the thumbnail container to the calculated width
             thumbnail.setFixedWidth(thumbnail_width)
@@ -122,16 +139,16 @@ class SequenceBrowserPanel(QWidget):
             self._update_image_in_thumbnail(thumbnail)
 
     def _setup_ui(self) -> None:
-        """Setup the browser UI."""
+        """Setup the browser UI with control panel and navigation sidebar."""
         layout = QVBoxLayout(self)
         layout.setContentsMargins(20, 20, 20, 20)
         layout.setSpacing(15)
 
-        # Header with back button and title
-        header = self._create_header()
-        layout.addWidget(header)
+        # Control panel (replaces the old header)
+        self.control_panel = ModernBrowseControlPanel(self.state_service)
+        layout.addWidget(self.control_panel)
 
-        # Main content area
+        # Main content area with horizontal layout (sidebar + grid)
         content_panel = QFrame()
         content_panel.setStyleSheet(
             """
@@ -146,13 +163,17 @@ class SequenceBrowserPanel(QWidget):
         content_layout.setContentsMargins(20, 20, 20, 20)
         content_layout.setSpacing(15)
 
-        # Results info
-        self.results_label = QLabel("No sequences loaded")
-        self.results_label.setFont(QFont("Segoe UI", 12))
-        self.results_label.setStyleSheet("color: rgba(255, 255, 255, 0.8);")
-        content_layout.addWidget(self.results_label)
+        # Main browsing area: sidebar + grid
+        browsing_layout = QHBoxLayout()
+        browsing_layout.setSpacing(15)
 
-        # Thumbnail grid scroll area
+        # Navigation sidebar (15% of width)
+        self.navigation_sidebar = ModernNavigationSidebar()
+        self.navigation_sidebar.set_minimum_width(150)
+        self.navigation_sidebar.setMaximumWidth(250)
+        browsing_layout.addWidget(self.navigation_sidebar, 0)  # Fixed size
+
+        # Thumbnail grid scroll area (85% of width)
         self.scroll_area = QScrollArea()
         self.scroll_area.setWidgetResizable(True)
         self.scroll_area.setStyleSheet(
@@ -172,6 +193,9 @@ class SequenceBrowserPanel(QWidget):
             }
         """
         )
+        browsing_layout.addWidget(self.scroll_area, 1)  # Takes remaining space
+
+        content_layout.addLayout(browsing_layout)
 
         # Grid widget
         self.grid_widget = QWidget()
@@ -184,90 +208,214 @@ class SequenceBrowserPanel(QWidget):
 
         self.scroll_area.setWidget(self.grid_widget)
 
-        content_layout.addWidget(self.scroll_area)
         layout.addWidget(content_panel)
-
-    def _create_header(self) -> QWidget:
-        """Create the header with back button and title."""
-        header = QFrame()
-        layout = QHBoxLayout(header)
-        layout.setContentsMargins(0, 0, 0, 0)
-
-        # Back button
-        self.back_button = QPushButton("← Back to Filters")
-        self.back_button.setFont(QFont("Segoe UI", 12))
-        self.back_button.setStyleSheet(
-            """
-            QPushButton {
-                background: rgba(255, 255, 255, 0.1);
-                border: 1px solid rgba(255, 255, 255, 0.2);
-                border-radius: 8px;
-                color: white;
-                padding: 8px 16px;
-            }
-            QPushButton:hover {
-                background: rgba(255, 255, 255, 0.2);
-            }
-        """
-        )
-        layout.addWidget(self.back_button)
-
-        layout.addStretch()
-
-        # Title
-        self.title_label = QLabel("Sequence Browser")
-        self.title_label.setFont(QFont("Segoe UI", 18, QFont.Weight.Bold))
-        self.title_label.setStyleSheet("color: white;")
-        layout.addWidget(self.title_label)
-
-        layout.addStretch()
-
-        return header
 
     def _connect_signals(self) -> None:
         """Connect component signals."""
-        self.back_button.clicked.connect(self.back_to_filters.emit)
+        # Control panel signals
+        if self.control_panel:
+            self.control_panel.back_to_filters.connect(self.back_to_filters.emit)
+            self.control_panel.sort_changed.connect(self._on_sort_changed)
 
-    def show_sequences(self, sequences: List[SequenceData]) -> None:
-        """Display sequences in the thumbnail grid."""
-        self.current_sequences = sequences
+        # Navigation sidebar signals
+        if self.navigation_sidebar:
+            self.navigation_sidebar.section_selected.connect(self._on_section_selected)
 
-        # Update results label
-        count = len(sequences)
-        if count == 0:
-            self.results_label.setText(
-                "No sequences found matching the filter criteria"
-            )
-        elif count == 1:
-            self.results_label.setText("1 sequence found")
-        else:
-            self.results_label.setText(f"{count} sequences found")
+    def _on_sort_changed(self, sort_method: str) -> None:
+        """Handle sort method change from control panel."""
+        print(f"🔄 Sort method changed to: {sort_method}")
 
+        # Debug: Check if we have sequences with dates
+        if sort_method == "date_added" and self.current_sequences:
+            date_count = 0
+            for seq in self.current_sequences:
+                if seq.date_added:
+                    date_count += 1
+                    print(f"  DEBUG: {seq.word} has date: {seq.date_added}")
+                else:
+                    print(f"  DEBUG: {seq.word} has no date_added")
+            print(f"  DEBUG: Found {date_count} sequences with dates out of {len(self.current_sequences)}")
+
+        # Re-sort and re-display current sequences
+        if self.current_sequences:
+            self._sort_and_display_sequences(self.current_sequences, sort_method)
+
+    def _sort_and_display_sequences(self, sequences: List[SequenceData], sort_method: str) -> None:
+        """Sort sequences and display them with section headers."""
+        # Sort sequences based on the selected method
+        sorted_sequences = self._sort_sequences(sequences, sort_method)
+        
+        # Group sequences into sections
+        sections = self._group_sequences_into_sections(sorted_sequences, sort_method)
+        
+        # Update navigation sidebar
+        if self.navigation_sidebar:
+            section_names = list(sections.keys())
+            self.navigation_sidebar.update_sections(section_names, sort_method)
+        
         # Clear existing grid
         self._clear_grid()
         self.thumbnail_widgets.clear()
-
-        # Create thumbnails with initial minimal sizing
-        # The actual sizing will be done after layout is complete
-        for i, sequence in enumerate(sequences):
-            thumbnail = self._create_sequence_thumbnail(sequence)
-            self.thumbnail_widgets.append(thumbnail)
-
-            # Use 3-column grid layout (legacy style)
-            row = i // 3
-            col = i % 3
-            self.grid_layout.addWidget(thumbnail, row, col)
+        
+        # Display sequences with section headers
+        current_row = 0
+        thumbnail_count = 0
+        
+        for section_name, section_sequences in sections.items():
+            # Add section header
+            if section_name:  # Only add header if section name is not empty
+                current_row = self._add_section_header(section_name, current_row)
             
-            # DEBUG: Log initial thumbnail creation
-            print(f"📏 Initial thumbnail {i} ({sequence.word}): size={thumbnail.size()}")
-
+            # Add sequences for this section
+            for sequence in section_sequences:
+                thumbnail = self._create_sequence_thumbnail(sequence)
+                self.thumbnail_widgets.append(thumbnail)
+                
+                # Calculate position in 3-column grid
+                col = thumbnail_count % 3
+                if col == 0 and thumbnail_count > 0:  # Start new row
+                    current_row += 1
+                
+                self.grid_layout.addWidget(thumbnail, current_row, col)
+                thumbnail_count += 1
+            
+            # If we finished a section and have incomplete row, start fresh for next section
+            if thumbnail_count % 3 != 0:
+                current_row += 1
+                thumbnail_count = ((thumbnail_count // 3) + 1) * 3  # Round up to next multiple of 3
+        
         # Add stretch to bottom
         self.grid_layout.setRowStretch(self.grid_layout.rowCount(), 1)
-
+        
         # Schedule sizing after layout is complete
         from PyQt6.QtCore import QTimer
-
         QTimer.singleShot(10, self._calculate_and_apply_sizes)
+
+    def _sort_sequences(self, sequences: List[SequenceData], sort_method: str) -> List[SequenceData]:
+        """Sort sequences based on the selected method."""
+        print(f"🔄 Sorting {len(sequences)} sequences by {sort_method}")
+        
+        if sort_method == "alphabetical":
+            result = sorted(sequences, key=lambda s: s.word.lower() if s.word else "")
+        elif sort_method == "length":
+            result = sorted(sequences, key=lambda s: s.sequence_length if s.sequence_length else 0)
+        elif sort_method == "level":
+            result = sorted(sequences, key=lambda s: s.level if s.level else 0)
+        elif sort_method == "date_added":
+            print("  DEBUG: Sorting by date_added")
+            result = sorted(sequences, key=lambda s: s.date_added if s.date_added else datetime.min, reverse=True)
+            print(f"  DEBUG: Sorted order: {[seq.word for seq in result]}")
+        else:
+            # Default to alphabetical
+            result = sorted(sequences, key=lambda s: s.word.lower() if s.word else "")
+        
+        return result
+
+    def _group_sequences_into_sections(self, sequences: List[SequenceData], sort_method: str) -> dict[str, List[SequenceData]]:
+        """Group sequences into sections based on sort method."""
+        sections = {}
+        
+        for sequence in sequences:
+            section_key = self._get_section_key(sequence, sort_method)
+            if section_key not in sections:
+                sections[section_key] = []
+            sections[section_key].append(sequence)
+        
+        return sections
+
+    def _get_section_key(self, sequence: SequenceData, sort_method: str) -> str:
+        """Get the section key for a sequence based on sort method."""
+        if sort_method == "alphabetical":
+            return sequence.word[0].upper() if sequence.word else "?"
+        elif sort_method == "length":
+            return f"Length {sequence.sequence_length}" if sequence.sequence_length else "Unknown Length"
+        elif sort_method == "level":
+            return f"Level {sequence.level}" if sequence.level else "Unknown Level"
+        elif sort_method == "date_added":
+            if sequence.date_added:
+                # Format date exactly like legacy: "%m-%d-%Y"
+                return sequence.date_added.strftime("%m-%d-%Y")
+            else:
+                return "Unknown"
+        else:
+            return sequence.word[0].upper() if sequence.word else "?"
+
+    def _add_section_header(self, section_name: str, current_row: int) -> int:
+        """Add a section header to the grid."""
+        # Create section header widget
+        header_widget = QFrame()
+        header_widget.setStyleSheet("""
+            QFrame {
+                background: rgba(255, 255, 255, 0.05);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                border-radius: 6px;
+                margin: 10px 0px;
+            }
+        """)
+        
+        header_layout = QHBoxLayout(header_widget)
+        header_layout.setContentsMargins(15, 8, 15, 8)
+        
+        # Section title
+        title_label = QLabel(section_name)
+        title_label.setFont(QFont("Segoe UI", 14, QFont.Weight.Bold))
+        title_label.setStyleSheet("color: rgba(255, 255, 255, 0.9); background: transparent; border: none;")
+        header_layout.addWidget(title_label)
+        
+        header_layout.addStretch()
+        
+        # Add header spanning all 3 columns
+        current_row += 1
+        self.grid_layout.addWidget(header_widget, current_row, 0, 1, 3)
+        
+        return current_row
+
+    def _on_section_selected(self, section: str) -> None:
+        """Handle navigation sidebar section selection."""
+        print(f"🧭 Navigating to section: {section}")
+        
+        # Find the section header in the grid
+        for i in range(self.grid_layout.count()):
+            item = self.grid_layout.itemAt(i)
+            if item and item.widget():
+                widget = item.widget()
+                # Check if this is a section header
+                if (hasattr(widget, 'findChild') and 
+                    widget.findChild(QLabel) and 
+                    widget.findChild(QLabel).text() == section):
+                    
+                    # Scroll to this widget
+                    self.scroll_area.ensureWidgetVisible(widget)
+                    break
+        else:
+            # If no section found, scroll to top
+            self.scroll_area.verticalScrollBar().setValue(0)
+
+    def show_sequences(
+        self,
+        sequences: List[SequenceData],
+        filter_type: Optional[FilterType] = None,
+        filter_values: any = None,
+    ) -> None:
+        """Display sequences in the thumbnail grid."""
+        self.current_sequences = sequences
+        self.current_filter_type = filter_type
+        self.current_filter_values = filter_values
+
+        # Update control panel
+        if self.control_panel:
+            self.control_panel.update_filter_description(filter_type, filter_values)
+            self.control_panel.update_count(len(sequences))
+
+        # Get current sort method
+        sort_method = (
+            self.state_service.get_sort_order()
+            if self.state_service
+            else "alphabetical"
+        )
+
+        # Sort and display sequences with proper sectioning
+        self._sort_and_display_sequences(sequences, sort_method)
 
     def _calculate_and_apply_sizes(self) -> None:
         """Calculate thumbnail sizes based on actual scroll area width and apply them."""
@@ -310,72 +458,86 @@ class SequenceBrowserPanel(QWidget):
             self._update_image_in_thumbnail(thumbnail)
 
     def _update_image_in_thumbnail(self, thumbnail: QWidget) -> None:
-        """Update the image size in a specific thumbnail based on its actual width."""
-        layout = thumbnail.layout()
-        if layout:
-            for i in range(layout.count()):
-                item = layout.itemAt(i)
-                if item and item.widget():
-                    widget = item.widget()
-                    # Look for the image container (it has a specific background style)
-                    if isinstance(widget, QWidget) and widget.styleSheet().startswith(
-                        "background: rgba(0, 0, 0, 0.2)"
-                    ):
-                        # This is our image container
-                        actual_thumbnail_width = thumbnail.width()
-                        if actual_thumbnail_width > 0:
-                            # Account for margins and use the actual available width
-                            available_width = (
-                                actual_thumbnail_width - 20
-                            )  # 10px margin each side
+        """Update the image size in a thumbnail based on its actual width."""
+        if not hasattr(thumbnail, "_image_box"):
+            return
 
-                            # Check if this container has a stored pixmap path
-                            if hasattr(widget, "_thumbnail_path"):
-                                pixmap = QPixmap(widget._thumbnail_path)
-                                if not pixmap.isNull():
-                                    # Re-scale the pixmap to new width (legacy behavior)
-                                    scaled_pixmap = pixmap.scaledToWidth(
-                                        available_width,
-                                        Qt.TransformationMode.SmoothTransformation,
-                                    )
-                                    
-                                    # Set the container size to match the image
-                                    widget.setFixedSize(scaled_pixmap.width(), scaled_pixmap.height())
-                                    
-                                    # Find the image label inside the container and update it
-                                    container_layout = widget.layout()
-                                    if container_layout and container_layout.count() > 0:
-                                        image_label = container_layout.itemAt(0).widget()
-                                        if isinstance(image_label, QLabel):
-                                            image_label.setPixmap(scaled_pixmap)
-                                    
-                                    # DEBUG: Log size measurements
-                                    container_height = thumbnail.height()
-                                    image_height = scaled_pixmap.height()
-                                    print(f"📏 Thumbnail debug: Container={actual_thumbnail_width}x{container_height}, Image={available_width}x{image_height}, Pixmap={scaled_pixmap.width()}x{scaled_pixmap.height()}")
-                                else:
-                                    # Fallback for failed image load
-                                    widget.setFixedSize(available_width, 60)
-                                    container_layout = widget.layout()
-                                    if container_layout and container_layout.count() > 0:
-                                        image_label = container_layout.itemAt(0).widget()
-                                        if isinstance(image_label, QLabel):
-                                            image_label.setText("🎭")
-                                            image_label.setStyleSheet(
-                                                "background: transparent; color: rgba(255, 255, 255, 0.7); font-size: 24px;"
-                                            )
-                            else:
-                                # This is a fallback container without image
-                                widget.setFixedSize(available_width, 60)
-                                container_layout = widget.layout()
-                                if container_layout and container_layout.count() > 0:
-                                    image_label = container_layout.itemAt(0).widget()
-                                    if isinstance(image_label, QLabel):
-                                        image_label.setText("🎭")
-                                        image_label.setStyleSheet(
-                                            "background: transparent; color: rgba(255, 255, 255, 0.7); font-size: 24px;"
-                                        )
-                        break
+        image_box = thumbnail._image_box
+        image_label = image_box._image_label
+
+        # Calculate available width for the image
+        actual_thumbnail_width = thumbnail.width()
+        if actual_thumbnail_width <= 0:
+            return
+
+        # Account for thumbnail margins (10px each side)
+        available_width = actual_thumbnail_width - 20
+
+        # Update the image box width
+        image_box.setFixedWidth(available_width)
+
+        # Update the image inside the box
+        if hasattr(image_box, "_thumbnail_path"):
+            pixmap = QPixmap(image_box._thumbnail_path)
+            if not pixmap.isNull():
+                # Scale the image to fit the available width
+                scaled_pixmap = pixmap.scaledToWidth(
+                    available_width, Qt.TransformationMode.SmoothTransformation
+                )
+                image_label.setPixmap(scaled_pixmap)
+                image_label.setFixedSize(scaled_pixmap.size())
+
+                # Update the image box height to match the image
+                image_box.setFixedHeight(scaled_pixmap.height())
+
+                # Force the container to recalculate its size
+                # Remove any height constraints that might be preventing expansion
+                thumbnail.setMinimumHeight(0)
+                thumbnail.setMaximumHeight(16777215)  # Qt's maximum
+
+                # Calculate the required container height
+                layout = thumbnail.layout()
+                word_height = thumbnail._word_label.height()
+                info_height = thumbnail._info_label.height()
+                spacing = layout.spacing()
+                margins = layout.contentsMargins()
+
+                required_height = (
+                    word_height
+                    + scaled_pixmap.height()
+                    + info_height
+                    + (spacing * 2)
+                    + margins.top()
+                    + margins.bottom()
+                )
+
+                # Set the container to the required height
+                thumbnail.setMinimumHeight(required_height)
+
+                # Force layout update
+                thumbnail.updateGeometry()
+
+                # DEBUG: Log size measurements
+                container_height = thumbnail.height()
+                image_height = scaled_pixmap.height()
+                box_height = image_box.height()
+
+            else:
+                # Fallback for failed image load
+                image_label.setText("🎭")
+                image_label.setFixedSize(available_width, 60)
+                image_box.setFixedHeight(60)
+                image_label.setStyleSheet(
+                    "background: transparent; border: none; color: rgba(255, 255, 255, 0.7); font-size: 24px;"
+                )
+        else:
+            # This is a fallback without image
+            image_label.setText("🎭")
+            image_label.setFixedSize(available_width, 60)
+            image_box.setFixedHeight(60)
+            image_label.setStyleSheet(
+                "background: transparent; border: none; color: rgba(255, 255, 255, 0.7); font-size: 24px;"
+            )
 
     def _clear_grid(self) -> None:
         """Clear all items from the grid layout."""
@@ -412,9 +574,9 @@ class SequenceBrowserPanel(QWidget):
         word_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         layout.addWidget(word_label)
 
-        # Actual thumbnail image
-        image_label = self._create_thumbnail_image(sequence)
-        layout.addWidget(image_label)
+        # Thumbnail image box (like legacy version)
+        image_box = self._create_thumbnail_image_box(sequence)
+        layout.addWidget(image_box)
 
         # Sequence info
         info_text = f"Length: {sequence.sequence_length}"
@@ -427,6 +589,11 @@ class SequenceBrowserPanel(QWidget):
         info_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         layout.addWidget(info_label)
 
+        # Store references for easier access
+        thumbnail._word_label = word_label
+        thumbnail._image_box = image_box
+        thumbnail._info_label = info_label
+
         # Make clickable
         thumbnail.mousePressEvent = (
             lambda event, seq_id=sequence.id: self._on_thumbnail_clicked(seq_id)
@@ -434,31 +601,41 @@ class SequenceBrowserPanel(QWidget):
 
         return thumbnail
 
-    def _create_thumbnail_image(self, sequence: SequenceData) -> QWidget:
-        """Create thumbnail image container with proper sizing like legacy version."""
-        # Create a container widget for the image (like legacy thumbnail box)
-        image_container = QWidget()
-        image_container.setStyleSheet("background: rgba(0, 0, 0, 0.2); border-radius: 4px;")
-        
-        # Use a simple layout for the container
-        container_layout = QVBoxLayout(image_container)
-        container_layout.setContentsMargins(0, 0, 0, 0)
-        container_layout.setSpacing(0)
-        
+    def _create_thumbnail_image_box(self, sequence: SequenceData) -> QWidget:
+        """Create a thumbnail image box (container) similar to legacy version."""
+        # Create the image box container
+        image_box = QFrame()
+        image_box.setStyleSheet(
+            """
+            QFrame {
+                background: rgba(0, 0, 0, 0.2);
+                border-radius: 4px;
+            }
+            """
+        )
+
+        # Use a layout to center the image within the box
+        box_layout = QVBoxLayout(image_box)
+        box_layout.setContentsMargins(0, 0, 0, 0)
+        box_layout.setSpacing(0)
+
         # Create the actual image label
         image_label = QLabel()
         image_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        image_label.setStyleSheet("background: transparent;")  # No background - container handles it
-        
+        image_label.setStyleSheet("background: transparent; border: none;")
+
+        # Store sequence data for later use
+        image_box._sequence = sequence
+        image_box._image_label = image_label
+
         # Set initial size - will be updated later
-        image_container.setMinimumSize(130, 40)  # Basic fallback size
-        
+        image_box.setMinimumHeight(80)  # Minimum height to prevent collapse
+
         # Load actual thumbnail if available
         if sequence.thumbnails and len(sequence.thumbnails) > 0:
             thumbnail_path = sequence.thumbnails[0]  # Use first thumbnail
-            # Store the path for later use
-            image_container._thumbnail_path = thumbnail_path
-            
+            image_box._thumbnail_path = thumbnail_path
+
             # Load and set a basic version of the image
             pixmap = QPixmap(thumbnail_path)
             if not pixmap.isNull():
@@ -467,26 +644,72 @@ class SequenceBrowserPanel(QWidget):
                     130, Qt.TransformationMode.SmoothTransformation
                 )
                 image_label.setPixmap(scaled_pixmap)
-                # Container manages the size, not the label
-                image_container.setFixedSize(scaled_pixmap.width(), scaled_pixmap.height())
+                image_label.setFixedSize(scaled_pixmap.size())
             else:
                 # Fallback to text if image fails to load
                 image_label.setText("🎭")
-                image_label.setStyleSheet("background: transparent; color: rgba(255, 255, 255, 0.7); font-size: 24px;")
-                image_container.setFixedSize(130, 60)
+                image_label.setFixedSize(130, 60)
+                image_label.setStyleSheet(
+                    "background: transparent; border: none; color: rgba(255, 255, 255, 0.7); font-size: 24px;"
+                )
         else:
             # No thumbnails available - use fallback
             image_label.setText("🎭")
-            image_label.setStyleSheet("background: transparent; color: rgba(255, 255, 255, 0.7); font-size: 24px;")
-            image_container.setFixedSize(130, 60)
-        
-        # Add the image label to the container
-        container_layout.addWidget(image_label)
-        
-        return image_container
+            image_label.setFixedSize(130, 60)
+            image_label.setStyleSheet(
+                "background: transparent; border: none; color: rgba(255, 255, 255, 0.7); font-size: 24px;"
+            )
+
+        box_layout.addWidget(image_label)
+
+        return image_box
 
     def _on_thumbnail_clicked(self, sequence_id: str) -> None:
         """Handle thumbnail click."""
         self.sequence_selected.emit(sequence_id)
         # For now, also emit open in construct
         self.open_in_construct.emit(sequence_id)
+
+    def _extract_sections(self, sequences: List[SequenceData]) -> List[str]:
+        """Extract navigation sections from sequences based on current sort order."""
+        if not sequences:
+            return []
+
+        # Get current sort order
+        sort_order = (
+            self.state_service.get_sort_order()
+            if self.state_service
+            else "alphabetical"
+        )
+
+        sections = set()
+
+        for sequence in sequences:
+            if sort_order == "alphabetical":
+                # Group by first letter
+                if sequence.word:
+                    sections.add(sequence.word[0].upper())
+            elif sort_order == "length":
+                # Group by sequence length
+                if hasattr(sequence, "length") and sequence.length:
+                    sections.add(str(sequence.length))
+            elif sort_order == "level":
+                # Group by difficulty level
+                if hasattr(sequence, "level") and sequence.level:
+                    sections.add(str(sequence.level))
+            elif sort_order == "date_added":
+                # Group by date (simplified - could be more sophisticated)
+                if hasattr(sequence, "date_added") and sequence.date_added:
+                    sections.add(sequence.date_added.strftime("%Y-%m"))
+            else:
+                # Default to alphabetical
+                if sequence.word:
+                    sections.add(sequence.word[0].upper())
+
+        # Sort sections appropriately
+        if sort_order == "alphabetical":
+            return sorted(list(sections))
+        elif sort_order in ["length", "level"]:
+            return sorted(list(sections), key=lambda x: int(x) if x.isdigit() else 0)
+        else:
+            return sorted(list(sections))

@@ -176,6 +176,18 @@ class BrowseStateService:
         except ValueError:
             return SortMethod.ALPHABETICAL
 
+    def get_sort_order(self) -> str:
+        """Get current sort order as string (compatibility method)."""
+        sort_method = self.get_current_sort_method()
+        # Convert SortMethod enum to string format expected by components
+        sort_mapping = {
+            SortMethod.ALPHABETICAL: "alphabetical",
+            SortMethod.SEQUENCE_LENGTH: "length",
+            SortMethod.DIFFICULTY_LEVEL: "level",
+            SortMethod.DATE_ADDED: "date_added",
+        }
+        return sort_mapping.get(sort_method, "alphabetical")
+
     def clear_selection(self) -> None:
         """Clear selected sequence."""
         self.set_selected_sequence(None, None)

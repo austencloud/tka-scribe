@@ -40,6 +40,7 @@ class OptionPickerSizeManager:
                 parent_width = self._widget.parent().width()
                 if parent_width > 100:  # Valid width
                     print(f"🔍 [SIZING] Using parent width: {parent_width}px")
+                    self._last_calculated_width = parent_width
                     return parent_width
 
             # Fallback to main window calculation (legacy: parent().parent().width() // 2)
@@ -50,28 +51,51 @@ class OptionPickerSizeManager:
                 print(
                     f"🔍 [SIZING] Using main window width calculation: {calculated_width}px"
                 )
+                self._last_calculated_width = calculated_width
                 return calculated_width
 
             # Final fallback
             fallback_width = 400
             print(f"🔍 [SIZING] Using fallback width: {fallback_width}px")
+            self._last_calculated_width = fallback_width
             return fallback_width
 
         except Exception as e:
             print(f"⚠️ [SIZING] Error calculating width: {e}")
+            self._last_calculated_width = 400
             return 400
 
     def is_width_accurate(self, picker_width: int) -> bool:
-        """Check if the picker width appears accurate - simplified approach."""
-        # Simple check: width should be positive and reasonable
+        """Check if the picker width appears accurate - percentage-based validation."""
+        # Simple check: width should be positive
         if picker_width <= 0:
             return False
 
-        # Don't be too restrictive - just check it's not obviously wrong
-        if picker_width < 100 or picker_width > 2000:
-            return False
+        # Get main window size for percentage calculations
+        try:
+            main_window_size = self._mw_size_provider()
+            main_window_width = main_window_size.width()
 
-        return True
+            if main_window_width > 0:
+                # Calculate percentage of main window width
+                percentage = (picker_width / main_window_width) * 100
+
+                # Valid range: 20% to 80% of main window width
+                if percentage < 20 or percentage > 80:
+                    return False
+
+                # Check for known problematic widths
+                if picker_width == 622:
+                    return False
+
+                return True
+            else:
+                # Fallback to absolute values if main window size unavailable
+                return 200 <= picker_width <= 2000
+
+        except Exception:
+            # Fallback to absolute values on error
+            return 200 <= picker_width <= 2000
 
     def is_ui_ready_for_sizing(self) -> bool:
         """Check if the UI is ready for accurate sizing calculations."""

@@ -8,16 +8,17 @@ Rewritten to match the Legacy browse tab layout exactly:
 """
 
 from pathlib import Path
-from typing import List, Optional
+from typing import Dict, List, Optional
 
+from domain.models.sequence_data import SequenceData
 from presentation.tabs.browse.components.filter_selection_panel import (
     FilterSelectionPanel,
 )
 from presentation.tabs.browse.components.sequence_browser_panel import (
     SequenceBrowserPanel,
 )
-from presentation.tabs.browse.components.sequence_viewer_panel import (
-    SequenceViewerPanel,
+from presentation.tabs.browse.components.modern_sequence_viewer_panel import (
+    ModernSequenceViewerPanel,
 )
 from presentation.tabs.browse.models import FilterType
 from presentation.tabs.browse.services.browse_service import BrowseService
@@ -62,6 +63,9 @@ class ModernBrowseTab(QWidget):
         self.browse_service = BrowseService(sequences_dir)
         self.state_service = BrowseStateService(settings_file)
 
+        # Mapping from sequence UUID to word (for quick lookup)
+        self.sequence_id_to_word: dict[str, str] = {}
+
         # Connect data manager signals
         self.dictionary_manager.data_loaded.connect(self._on_data_loaded)
         self.dictionary_manager.loading_progress.connect(self._on_loading_progress)
@@ -103,7 +107,7 @@ class ModernBrowseTab(QWidget):
         self.internal_left_stack.setCurrentIndex(0)
 
         # Right side - Sequence viewer
-        self.sequence_viewer_panel = SequenceViewerPanel()
+        self.sequence_viewer_panel = ModernSequenceViewerPanel(self.state_service)
 
         # Add to main layout with 2:1 ratio (matching Legacy exactly)
         main_layout.addWidget(self.internal_left_stack, 2)  # 66.7% width
@@ -116,12 +120,16 @@ class ModernBrowseTab(QWidget):
 
         # Browser panel signals
         self.sequence_browser_panel.sequence_selected.connect(
-            self.sequence_selected.emit
+            self._on_sequence_selected
         )
         self.sequence_browser_panel.open_in_construct.connect(
             self.open_in_construct.emit
         )
         self.sequence_browser_panel.back_to_filters.connect(self._show_filter_selection)
+
+        # Sequence viewer panel signals
+        self.sequence_viewer_panel.sequence_action.connect(self._on_sequence_action)
+        self.sequence_viewer_panel.back_to_browser.connect(self._show_sequence_browser)
 
     def _load_initial_state(self) -> None:
         """Load initial data and restore state."""
@@ -158,7 +166,9 @@ class ModernBrowseTab(QWidget):
 
         # Apply filter using dictionary manager
         filtered_sequences = self._apply_dictionary_filter(filter_type, filter_value)
-        self.sequence_browser_panel.show_sequences(filtered_sequences)
+        self.sequence_browser_panel.show_sequences(
+            filtered_sequences, filter_type, filter_value
+        )
         print(f"📋 Filtered to {len(filtered_sequences)} sequences")
 
         # Switch to sequence browser view (matching Legacy navigation)
@@ -251,9 +261,84 @@ class ModernBrowseTab(QWidget):
                 difficulty_level=record.difficulty_level,
                 tags=record.tags,
             )
+            
+            # Store mapping from UUID to word for quick lookup
+            self.sequence_id_to_word[sequence_data.id] = record.word
+            
             sequence_data_list.append(sequence_data)
 
         return sequence_data_list
+
+    def _on_sequence_selected(self, sequence_id: str) -> None:
+        """Handle sequence selection from browser panel."""
+        # Get sequence data
+        sequence_data = self._get_sequence_data(sequence_id)
+        if sequence_data:
+            # Show sequence in viewer
+            self.sequence_viewer_panel.show_sequence(sequence_data)
+            print(f"🎭 Sequence selected: {sequence_data.word} ({sequence_id})")
+
+        # Also emit the external signal
+        self.sequence_selected.emit(sequence_id)
+
+    def _on_sequence_action(self, action_type: str, sequence_id: str) -> None:
+        """Handle sequence action from viewer panel."""
+        print(f"🎬 Sequence action: {action_type} on {sequence_id}")
+
+        if action_type == "edit":
+            # Emit signal to open in construct tab
+            self.open_in_construct.emit(sequence_id)
+        elif action_type == "save":
+            # TODO: Implement save image functionality
+            print(f"💾 Save image for sequence {sequence_id}")
+        elif action_type == "delete":
+            # TODO: Implement delete variation functionality
+            print(f"🗑️ Delete variation for sequence {sequence_id}")
+        elif action_type == "fullscreen":
+            # TODO: Implement fullscreen view
+            print(f"🔍 Fullscreen view for sequence {sequence_id}")
+
+    def _get_sequence_data(self, sequence_id: str) -> Optional[SequenceData]:
+        """Get sequence data by ID."""
+        # Get the word from the mapping
+        word = self.sequence_id_to_word.get(sequence_id)
+        if not word:
+            print(f"❌ No word mapping found for sequence_id: {sequence_id}")
+            return None
+        
+        # Get all records from dictionary manager
+        all_records = self.dictionary_manager.get_all_records()
+        
+        # Find the record by word
+        target_record = None
+        for record in all_records:
+            if record.word == word:
+                target_record = record
+                break
+        
+        if not target_record:
+            print(f"❌ No record found for word: {word}")
+            return None
+        
+        # Convert SequenceRecord to SequenceData
+        sequence_data = SequenceData(
+            id=sequence_id,  # Use the original UUID
+            word=target_record.word,
+            thumbnails=target_record.thumbnails,
+            author=target_record.author,
+            level=target_record.level,
+            sequence_length=target_record.sequence_length,
+            date_added=target_record.date_added,
+            grid_mode=target_record.grid_mode,
+            prop_type=target_record.prop_type,
+            is_favorite=target_record.is_favorite,
+            is_circular=target_record.is_circular,
+            starting_position=target_record.starting_position,
+            difficulty_level=target_record.difficulty_level,
+            tags=target_record.tags,
+        )
+        
+        return sequence_data
 
     def _show_filter_selection(self) -> None:
         """Show filter selection panel (index 0)."""

@@ -215,44 +215,6 @@ class TestOptionPickerSectionManager:
         section1.clear_pictographs.assert_called_once()
         section2.clear_pictographs.assert_called_once()
 
-    def test_get_all_pictograph_frames(self):
-        """Test getting all pictograph frames."""
-        frame1 = Mock()
-        frame2 = Mock()
-
-        section1 = Mock()
-        section1.pictographs = {"frame1": frame1}
-
-        section2 = Mock()
-        section2.pictographs = {"frame2": frame2}
-
-        sections = {
-            LetterType.TYPE1: section1,
-            LetterType.TYPE2: section2,
-        }
-
-        section_manager = OptionPickerSectionManager(sections)
-
-        # This test may fail due to mock iteration issues, but that's expected
-        # We'll skip it for now rather than require new infrastructure
-        pytest.skip("Skipping due to mock iteration issues - needs refactoring")
-
-
-class TestOptionPickerWidgetPoolManager:
-    """Test the OptionPickerWidgetPoolManager component."""
-
-    def test_widget_pool_manager_initialization(self, qtbot):
-        """Test widget pool manager initializes correctly."""
-        pytest.skip("Skipping due to mock iteration issues - needs refactoring")
-
-    def test_get_widget_by_id(self, qtbot):
-        """Test getting widget by ID."""
-        pytest.skip("Skipping due to mock iteration issues - needs refactoring")
-
-    def test_reset_pool(self, qtbot):
-        """Test resetting the widget pool."""
-        pytest.skip("Skipping due to mock iteration issues - needs refactoring")
-
 
 class TestOptionPickerLayoutOrchestrator:
     """Test the OptionPickerLayoutOrchestrator component."""

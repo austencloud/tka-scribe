@@ -1,8 +1,9 @@
 """
-Browse Service Implementation
+Browse Service Implementation - Enhanced for Organized Filters
 
 Handles data loading and filtering for the browse tab.
-Simple service that mirrors the complexity found in legacy BrowseTabFilterManager.
+Enhanced to support organized filter structure with letter ranges,
+difficulty levels, and other categorized options.
 """
 
 from pathlib import Path
@@ -14,10 +15,13 @@ from presentation.tabs.browse.models import FilterType, SortMethod
 
 class BrowseService:
     """
-    Handles data loading and filtering - mirrors legacy BrowseTabFilterManager complexity.
+    Enhanced browse service supporting organized filter categories.
 
-    Based on audit findings that legacy filtering is mostly basic list comprehensions
-    and data access rather than complex algorithms.
+    Now handles:
+    - Letter ranges (A-D, E-H, etc.)
+    - Difficulty levels with proper matching
+    - Length filtering with "All" options
+    - Author filtering with "All Authors" option
     """
 
     def __init__(self, sequences_dir: Path):
@@ -62,11 +66,11 @@ class BrowseService:
         self, filter_type: FilterType, filter_value: Any
     ) -> List[SequenceData]:
         """
-        Apply filter to sequences - mirrors legacy filter logic.
+        Apply filter to sequences - enhanced for organized filter structure.
 
         Args:
             filter_type: Type of filter to apply
-            filter_value: Value to filter by
+            filter_value: Value to filter by (supports ranges, "All" options, etc.)
 
         Returns:
             Filtered list of sequences
@@ -75,49 +79,121 @@ class BrowseService:
 
         if filter_type == FilterType.ALL_SEQUENCES:
             return sequences
+
         elif filter_type == FilterType.STARTING_LETTER:
+            return self._filter_by_starting_letter(sequences, filter_value)
+
+        elif filter_type == FilterType.CONTAINS_LETTERS:
             if filter_value is None:
-                # Return all sequences when no specific letter is chosen
                 return sequences
+            return [s for s in sequences if filter_value.lower() in s.word.lower()]
+
+        elif filter_type == FilterType.LENGTH:
+            return self._filter_by_length(sequences, filter_value)
+
+        elif filter_type == FilterType.DIFFICULTY:
+            return self._filter_by_difficulty(sequences, filter_value)
+
+        elif filter_type == FilterType.STARTING_POSITION:
+            return self._filter_by_starting_position(sequences, filter_value)
+
+        elif filter_type == FilterType.AUTHOR:
+            return self._filter_by_author(sequences, filter_value)
+
+        elif filter_type == FilterType.GRID_MODE:
+            return self._filter_by_grid_mode(sequences, filter_value)
+
+        elif filter_type == FilterType.FAVORITES:
+            # Return sequences marked as favorites
+            return [s for s in sequences if s.is_favorite]
+
+        elif filter_type == FilterType.RECENT:
+            # Sort by date and return recent sequences (for demo, return all)
+            return sorted(sequences, key=lambda s: s.date_added, reverse=True)
+
+        else:
+            return sequences
+
+    def _filter_by_starting_letter(
+        self, sequences: List[SequenceData], filter_value: Any
+    ) -> List[SequenceData]:
+        """Filter by starting letter, supporting ranges like A-D."""
+        if filter_value is None or filter_value == "All Letters":
+            return sequences
+
+        elif "-" in str(filter_value):  # Handle ranges like "A-D"
+            start_letter, end_letter = filter_value.split("-")
+            return [
+                s
+                for s in sequences
+                if s.word and start_letter <= s.word[0].upper() <= end_letter
+            ]
+
+        else:  # Handle single letters
             return [
                 s
                 for s in sequences
                 if s.word and s.word[0].upper() == filter_value.upper()
             ]
-        elif filter_type == FilterType.CONTAINS_LETTERS:
-            if filter_value is None:
-                return sequences
-            return [s for s in sequences if filter_value.lower() in s.word.lower()]
-        elif filter_type == FilterType.SEQUENCE_LENGTH:
-            if filter_value is None:
-                return sequences
-            return [s for s in sequences if s.sequence_length == filter_value]
-        elif filter_type == FilterType.DIFFICULTY_LEVEL:
-            if filter_value is None:
-                return sequences
-            return [s for s in sequences if s.difficulty_level == filter_value]
-        elif filter_type == FilterType.STARTING_POSITION:
-            if filter_value is None:
-                return sequences
-            return [
-                s for s in sequences if self._matches_starting_position(s, filter_value)
-            ]
-        elif filter_type == FilterType.AUTHOR:
-            if filter_value is None:
-                return sequences
-            return [s for s in sequences if s.author == filter_value]
-        elif filter_type == FilterType.GRID_MODE:
-            if filter_value is None:
-                return sequences
-            return [s for s in sequences if self._matches_grid_mode(s, filter_value)]
-        elif filter_type == FilterType.FAVORITES:
-            # For now, return all sequences as favorites
+
+    def _filter_by_length(
+        self, sequences: List[SequenceData], filter_value: Any
+    ) -> List[SequenceData]:
+        """Filter by sequence length, supporting 'All' option."""
+        if filter_value is None or filter_value == "All":
             return sequences
-        elif filter_type == FilterType.MOST_RECENT:
-            # For now, return all sequences as most recent
+
+        try:
+            target_length = int(filter_value)
+            return [s for s in sequences if s.sequence_length == target_length]
+        except (ValueError, TypeError):
             return sequences
-        else:
+
+    def _filter_by_difficulty(
+        self, sequences: List[SequenceData], filter_value: Any
+    ) -> List[SequenceData]:
+        """Filter by difficulty level, supporting 'All Levels' option."""
+        if (
+            filter_value is None
+            or filter_value == "all"
+            or filter_value == "All Levels"
+        ):
             return sequences
+
+        return [s for s in sequences if s.difficulty_level == filter_value]
+
+    def _filter_by_starting_position(
+        self, sequences: List[SequenceData], filter_value: Any
+    ) -> List[SequenceData]:
+        """Filter by starting position, supporting 'All Positions' option."""
+        if filter_value is None or filter_value == "All Positions":
+            return sequences
+
+        return [
+            s for s in sequences if self._matches_starting_position(s, filter_value)
+        ]
+
+    def _filter_by_author(
+        self, sequences: List[SequenceData], filter_value: Any
+    ) -> List[SequenceData]:
+        """Filter by author, supporting 'All Authors' option."""
+        if filter_value is None or filter_value == "All Authors":
+            return sequences
+
+        return [s for s in sequences if s.author == filter_value]
+
+    def _filter_by_grid_mode(
+        self, sequences: List[SequenceData], filter_value: Any
+    ) -> List[SequenceData]:
+        """Filter by grid mode, supporting 'All Styles' option."""
+        if (
+            filter_value is None
+            or filter_value == "all"
+            or filter_value == "All Styles"
+        ):
+            return sequences
+
+        return [s for s in sequences if self._matches_grid_mode(s, filter_value)]
 
     def sort_sequences(
         self, sequences: List[SequenceData], sort_method: SortMethod
@@ -182,10 +258,10 @@ class BrowseService:
                 if seq.word:
                     letters.add(seq.word[0].upper())
             return sorted(list(letters))
-        elif filter_type == FilterType.SEQUENCE_LENGTH:
+        elif filter_type == FilterType.LENGTH:
             lengths = set(seq.sequence_length for seq in sequences)
             return sorted(list(lengths))
-        elif filter_type == FilterType.DIFFICULTY_LEVEL:
+        elif filter_type == FilterType.DIFFICULTY:
             levels = set(
                 seq.difficulty_level for seq in sequences if seq.difficulty_level
             )
@@ -256,19 +332,26 @@ class BrowseService:
         self._cached_sequences = None
 
     def _create_test_sequences(self) -> List[SequenceData]:
-        """Create test sequences for demo purposes."""
+        """Create enhanced test sequences for demo purposes."""
         test_sequences = []
 
-        # Sample sequence data for testing
+        # Sample sequence data for testing organized filters
         sample_data = [
             ("ALPHA", 3, "beginner", "Demo Author", True),
             ("BETA", 5, "intermediate", "Demo Author", False),
             ("GAMMA", 4, "beginner", "Test User", True),
             ("DELTA", 6, "advanced", "Demo Author", False),
             ("EPSILON", 3, "intermediate", "Test User", False),
-            ("ZETA", 7, "advanced", "Expert User", True),
+            ("ZETA", 8, "advanced", "Expert User", True),
             ("ETA", 4, "beginner", "Demo Author", False),
-            ("THETA", 5, "intermediate", "Test User", True),
+            ("THETA", 10, "intermediate", "Test User", True),
+            ("IOTA", 12, "advanced", "Expert User", False),
+            ("KAPPA", 5, "beginner", "Demo Author", True),
+            ("LAMBDA", 6, "intermediate", "Test User", False),
+            ("MU", 8, "advanced", "Expert User", True),
+            ("NU", 3, "beginner", "Demo Author", False),
+            ("XI", 16, "advanced", "Expert User", True),
+            ("OMICRON", 4, "intermediate", "Test User", False),
         ]
 
         for i, (word, length, difficulty, author, is_favorite) in enumerate(
@@ -286,7 +369,7 @@ class BrowseService:
                 difficulty_level=difficulty,
                 date_added="2024-01-01",
                 is_favorite=is_favorite,
-                metadata={"created_by": "test_data_generator"},
+                metadata={"created_by": "test_data_generator", "grid_mode": "diamond"},
             )
             test_sequences.append(sequence)
 

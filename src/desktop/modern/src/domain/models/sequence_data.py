@@ -172,7 +172,7 @@ class SequenceData:
             "start_position": (
                 self.start_position.to_dict() if self.start_position else None
             ),
-            "thumbnail_paths": self.thumbnail_paths,
+            "thumbnails": self.thumbnails,
             "sequence_length": self.sequence_length,
             "author": self.author,
             "difficulty_level": self.difficulty_level,
@@ -196,7 +196,7 @@ class SequenceData:
             word=data.get("word", ""),
             beats=beats,
             start_position=start_position,
-            thumbnail_paths=data.get("thumbnail_paths", []),
+            thumbnails=data.get("thumbnails", []),
             sequence_length=data.get("sequence_length", 0),
             author=data.get("author", ""),
             difficulty_level=data.get("difficulty_level", ""),
