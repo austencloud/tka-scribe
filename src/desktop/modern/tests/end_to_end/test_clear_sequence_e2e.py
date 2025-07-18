@@ -1,4 +1,4 @@
-Good  #!/usr/bin/env python3
+#!/usr/bin/env python3
 """
 END-TO-END TEST: Clear Sequence Functionality
 MANDATORY: Full application testing with UI automation
