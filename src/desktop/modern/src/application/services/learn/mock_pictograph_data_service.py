@@ -192,6 +192,38 @@ class MockPictographDataService(IPictographDataService):
             },
         ]
 
+    def get_pictograph_dataset(self) -> Dict[str, List[Dict[str, Any]]]:
+        """
+        Get the complete pictograph dataset for question generation.
+
+        Returns:
+            Dictionary mapping letters to lists of pictograph data
+        """
+        dataset = {}
+        test_letters = [
+            "A",
+            "B",
+            "C",
+            "D",
+            "E",
+            "F",
+            "G",
+            "H",
+            "I",
+            "J",
+            "K",
+            "L",
+            "M",
+            "N",
+            "O",
+            "P",
+        ]
+
+        for letter in test_letters:
+            dataset[letter] = self.get_pictographs_by_letter(letter)
+
+        return dataset
+
     def _initialize_test_data(self) -> None:
         """Initialize mock test data for common letters."""
         test_letters = ["A", "B", "C", "D", "E", "F", "G", "H"]

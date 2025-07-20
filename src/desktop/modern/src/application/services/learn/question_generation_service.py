@@ -83,11 +83,14 @@ class QuestionGenerationService(IQuestionGenerationService):
                 raise ValueError(f"Unknown lesson type: {lesson_type}")
 
             # Add metadata
-            question.lesson_type = lesson_type.value
+            lesson_type_str = (
+                lesson_type.value if hasattr(lesson_type, "value") else str(lesson_type)
+            )
+            question.lesson_type = lesson_type_str
             question.generation_timestamp = datetime.now().isoformat()
 
             logger.debug(
-                f"Generated {lesson_type.value} question for session {session_id}"
+                f"Generated {lesson_type_str} question for session {session_id}"
             )
             return question
 
@@ -113,13 +116,19 @@ class QuestionGenerationService(IQuestionGenerationService):
             wrong_answers = self._generate_wrong_letters(
                 correct_letter, pictograph_dataset
             )
-            options = [correct_letter.value] + wrong_answers
+            # Handle both string and enum correct_letter
+            correct_letter_str = (
+                correct_letter.value
+                if hasattr(correct_letter, "value")
+                else str(correct_letter)
+            )
+            options = [correct_letter_str] + wrong_answers
             random.shuffle(options)
 
             return QuestionData(
                 question_content=correct_pictograph_data,
                 answer_options=options,
-                correct_answer=correct_letter.value,
+                correct_answer=correct_letter_str,
                 question_type="pictograph_to_letter",
             )
 
@@ -149,8 +158,15 @@ class QuestionGenerationService(IQuestionGenerationService):
             pictographs = [correct_pictograph] + wrong_pictographs
             random.shuffle(pictographs)
 
+            # Handle both string and enum correct_letter
+            correct_letter_str = (
+                correct_letter.value
+                if hasattr(correct_letter, "value")
+                else str(correct_letter)
+            )
+
             return QuestionData(
-                question_content=correct_letter.value,
+                question_content=correct_letter_str,
                 answer_options=pictographs,
                 correct_answer=correct_pictograph,
                 question_type="letter_to_pictograph",
@@ -250,9 +266,15 @@ class QuestionGenerationService(IQuestionGenerationService):
     def _generate_wrong_letters(self, correct_letter: Any, dataset: Dict) -> List[str]:
         """Generate 3 wrong letter answers."""
         try:
-            available_letters = [
-                letter.value for letter in dataset.keys() if letter != correct_letter
-            ]
+            # Handle both string keys (mock service) and enum keys (real service)
+            available_letters = []
+            for letter in dataset.keys():
+                if letter != correct_letter:
+                    # If letter is an enum, use .value, otherwise use as string
+                    letter_str = (
+                        letter.value if hasattr(letter, "value") else str(letter)
+                    )
+                    available_letters.append(letter_str)
 
             if len(available_letters) < 3:
                 logger.warning(

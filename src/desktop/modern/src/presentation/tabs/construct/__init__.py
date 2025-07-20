@@ -33,11 +33,11 @@ from presentation.components.start_position_picker.start_position_selection_hand
     StartPositionSelectionHandler,
 )
 from presentation.tabs.construct.layout_manager import ConstructTabLayoutManager
-from presentation.tabs.construct.modern_construct_tab import ConstructTabWidget
+from presentation.tabs.construct.construct_tab import ConstructTab
 from presentation.tabs.construct.signal_coordinator import SignalCoordinator
 
 # Create alias for backward compatibility
-ModernConstructTab = ConstructTabWidget
+ModernConstructTab = ConstructTab
 
 __all__ = [
     # Presentation components (local)
@@ -45,7 +45,7 @@ __all__ = [
     "StartPositionSelectionHandler",
     "OptionPickerManager",
     "SignalCoordinator",
-    "ConstructTabWidget",
+    "ConstructTab",
     "ModernConstructTab",  # Alias for backward compatibility
     # Business services (re-exported from application layer)
     "QtSequenceLoaderAdapter",

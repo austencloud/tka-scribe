@@ -18,7 +18,7 @@ from typing import TYPE_CHECKING, Callable, Optional
 
 from core.interfaces.session_services import ISessionStateTracker
 from presentation.components.menu_bar import MenuBarWidget
-from presentation.tabs.construct.modern_construct_tab import ConstructTabWidget
+from presentation.tabs.construct.construct_tab import ConstructTab
 from PyQt6.QtCore import Qt, QTimer
 from PyQt6.QtGui import QFont
 from PyQt6.QtWidgets import QLabel, QMainWindow, QTabWidget, QVBoxLayout, QWidget
@@ -204,11 +204,11 @@ class UISetupManager(IUISetupManager):
                     print("🔧 Background: Starting full construct tab loading...")
 
                     # Import and create real construct tab with progress feedback
-                    from presentation.tabs.construct.modern_construct_tab import (
-                        ConstructTabWidget,
+                    from presentation.tabs.construct.construct_tab import (
+                        ConstructTab,
                     )
 
-                    construct_tab = ConstructTabWidget(
+                    construct_tab = ConstructTab(
                         container, progress_callback=background_progress_callback
                     )
 
@@ -273,8 +273,8 @@ class UISetupManager(IUISetupManager):
                 progress_callback(76, "Loading construct tab (optimized)...")
 
             # OPTIMIZATION 1: Import only when needed to reduce import time
-            from presentation.tabs.construct.modern_construct_tab import (
-                ConstructTabWidget,
+            from presentation.tabs.construct.construct_tab import (
+                ConstructTab,
             )
 
             if progress_callback:
@@ -294,7 +294,7 @@ class UISetupManager(IUISetupManager):
 
             try:
                 # Create construct tab with minimal pool usage
-                construct_tab = ConstructTabWidget(
+                construct_tab = ConstructTab(
                     container, progress_callback=progress_callback
                 )
 
@@ -393,14 +393,12 @@ class UISetupManager(IUISetupManager):
                     tab_index = self.tab_widget.indexOf(minimal_tab)
 
                     # Import and create real construct tab
-                    from presentation.tabs.construct.modern_construct_tab import (
-                        ConstructTabWidget,
+                    from presentation.tabs.construct.construct_tab import (
+                        ConstructTab,
                     )
 
                     print("🔧 Loading full construct tab...")
-                    construct_tab = ConstructTabWidget(
-                        container, progress_callback=None
-                    )
+                    construct_tab = ConstructTab(container, progress_callback=None)
 
                     # Connect to session service
                     self._connect_construct_tab_to_session(
@@ -475,17 +473,15 @@ class UISetupManager(IUISetupManager):
                 progress_callback(76, "Initializing construct tab...")
 
             # OPTIMIZATION 1: Import only when needed
-            from presentation.tabs.construct.modern_construct_tab import (
-                ConstructTabWidget,
+            from presentation.tabs.construct.construct_tab import (
+                ConstructTab,
             )
 
             if progress_callback:
                 progress_callback(78, "Creating construct tab components...")
 
             # OPTIMIZATION 2: Create construct tab with progress tracking
-            construct_tab = ConstructTabWidget(
-                container, progress_callback=progress_callback
-            )
+            construct_tab = ConstructTab(container, progress_callback=progress_callback)
 
             if progress_callback:
                 progress_callback(85, "Configuring construct tab...")
@@ -585,12 +581,12 @@ class UISetupManager(IUISetupManager):
                 )
 
                 # Create the construct tab directly without using _load_construct_tab
-                from presentation.tabs.construct.modern_construct_tab import (
-                    ConstructTabWidget,
+                from presentation.tabs.construct.construct_tab import (
+                    ConstructTab,
                 )
 
                 print("🔧 Creating construct tab widget...")
-                construct_tab = ConstructTabWidget(container, progress_callback=None)
+                construct_tab = ConstructTab(container, progress_callback=None)
 
                 # Connect to session service
                 self._connect_construct_tab_to_session(construct_tab, session_service)
@@ -758,12 +754,12 @@ class UISetupManager(IUISetupManager):
             print("🔧 [LAZY_LOAD] Starting background construct tab loading...")
 
             # Load the actual construct tab
-            from presentation.tabs.construct.modern_construct_tab import (
-                ConstructTabWidget,
+            from presentation.tabs.construct.construct_tab import (
+                ConstructTab,
             )
 
             # Create construct tab without progress callback (background loading)
-            construct_tab = ConstructTabWidget(
+            construct_tab = ConstructTab(
                 self._construct_container, progress_callback=None
             )
 
@@ -860,8 +856,8 @@ class UISetupManager(IUISetupManager):
                 progress_callback(78, "Loading pictograph dataset...")
 
             # Lazy import construct tab only when loading
-            from presentation.tabs.construct.modern_construct_tab import (
-                ConstructTabWidget,
+            from presentation.tabs.construct.construct_tab import (
+                ConstructTab,
             )
 
             if progress_callback:
@@ -875,9 +871,7 @@ class UISetupManager(IUISetupManager):
                 progress_callback(84, "🔧 Creating construct tab widget...")
 
             # Create construct tab with direct progress callback
-            construct_tab = ConstructTabWidget(
-                container, progress_callback=progress_callback
-            )
+            construct_tab = ConstructTab(container, progress_callback=progress_callback)
 
             # CRITICAL: Connect construct tab to session service for auto-save
             self._connect_construct_tab_to_session(construct_tab, session_service)
@@ -999,7 +993,7 @@ class UISetupManager(IUISetupManager):
 
     def _connect_construct_tab_to_session(
         self,
-        construct_tab: ConstructTabWidget,
+        construct_tab: ConstructTab,
         session_state_tracker: ISessionStateTracker,
     ) -> None:
         """Connect construct tab sequence modifications to session service for auto-save."""

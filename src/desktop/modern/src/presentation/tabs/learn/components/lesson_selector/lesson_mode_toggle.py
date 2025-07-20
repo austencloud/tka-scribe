@@ -8,8 +8,9 @@ and countdown quiz modes.
 import logging
 from typing import Optional
 
-from PyQt6.QtWidgets import QWidget, QHBoxLayout, QRadioButton, QLabel
-from PyQt6.QtCore import Qt, pyqtSignal
+from PyQt6.QtWidgets import QWidget, QHBoxLayout, QPushButton, QLabel
+from PyQt6.QtCore import Qt, pyqtSignal, QPropertyAnimation, QEasingCurve
+from PyQt6.QtGui import QPainter, QColor, QPen, QBrush
 
 from core.interfaces.learn_services import ILearnUIService
 from domain.models.learn import QuizMode
@@ -20,160 +21,186 @@ logger = logging.getLogger(__name__)
 class LessonModeToggle(QWidget):
     """
     Widget for toggling between quiz modes.
-    
+
     Provides radio button interface for selecting fixed question mode
     or countdown mode with descriptive labels.
     """
-    
+
     # Signals
     mode_changed = pyqtSignal(str)  # mode value
-    
-    def __init__(
-        self, 
-        ui_service: ILearnUIService,
-        parent: Optional[QWidget] = None
-    ):
+
+    def __init__(self, ui_service: ILearnUIService, parent: Optional[QWidget] = None):
         """
         Initialize lesson mode toggle.
-        
+
         Args:
             ui_service: Service for UI calculations
             parent: Parent widget
         """
         super().__init__(parent)
-        
+
         self.ui_service = ui_service
-        
+
         self._setup_ui()
         self._setup_connections()
-        
+
         logger.debug("Lesson mode toggle initialized")
-    
+
     def _setup_ui(self) -> None:
         """Setup mode toggle UI."""
         try:
-            layout = QHBoxLayout(self)
-            layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
-            
-            # Fixed question mode
-            self.fixed_question_radio = QRadioButton("Fixed Questions (20)")
-            self.fixed_question_radio.setChecked(True)  # Default selection
-            self.fixed_question_label = QLabel("Answer 20 questions")
-            
-            # Countdown mode
-            self.countdown_radio = QRadioButton("Countdown (2 min)")
-            self.countdown_label = QLabel("Answer as many as possible in 2 minutes")
-            
+            # Main layout
+            main_layout = QHBoxLayout(self)
+            main_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
+            main_layout.setContentsMargins(0, 0, 0, 0)
+
+            # Container for the toggle group
+            self.toggle_container = QWidget()
+            toggle_layout = QHBoxLayout(self.toggle_container)
+            toggle_layout.setContentsMargins(4, 4, 4, 4)
+            toggle_layout.setSpacing(0)
+
+            # Create toggle buttons
+            self.fixed_question_btn = QPushButton("Fixed Questions")
+            self.countdown_btn = QPushButton("Countdown")
+
+            # Set button properties
+            self.fixed_question_btn.setCheckable(True)
+            self.countdown_btn.setCheckable(True)
+            self.fixed_question_btn.setChecked(True)  # Default selection
+
+            # Set fixed sizes for consistent appearance
+            button_width = 120
+            button_height = 36
+            self.fixed_question_btn.setFixedSize(button_width, button_height)
+            self.countdown_btn.setFixedSize(button_width, button_height)
+
+            # Add buttons to toggle layout
+            toggle_layout.addWidget(self.fixed_question_btn)
+            toggle_layout.addWidget(self.countdown_btn)
+
             # Apply styling
             self._apply_styling()
-            
-            # Add to layout
-            layout.addWidget(self.fixed_question_radio)
-            layout.addWidget(self.fixed_question_label)
-            layout.addStretch()
-            layout.addWidget(self.countdown_radio)
-            layout.addWidget(self.countdown_label)
-            
+
+            # Add toggle container to main layout
+            main_layout.addWidget(self.toggle_container)
+
         except Exception as e:
             logger.error(f"Failed to setup mode toggle UI: {e}")
-    
+
     def _setup_connections(self) -> None:
         """Setup signal connections."""
         try:
-            self.fixed_question_radio.toggled.connect(self._on_mode_changed)
-            self.countdown_radio.toggled.connect(self._on_mode_changed)
+            self.fixed_question_btn.clicked.connect(self._on_fixed_question_clicked)
+            self.countdown_btn.clicked.connect(self._on_countdown_clicked)
         except Exception as e:
             logger.error(f"Failed to setup mode toggle connections: {e}")
-    
+
     def _apply_styling(self) -> None:
         """Apply styling to mode toggle components."""
         try:
-            # Radio button styling
-            radio_style = """
-                QRadioButton {
-                    color: white;
-                    font-family: Georgia;
-                    font-weight: bold;
-                }
-                QRadioButton::indicator {
-                    width: 16px;
-                    height: 16px;
-                    border-radius: 8px;
-                    border: 2px solid rgba(255, 255, 255, 0.5);
-                    background-color: transparent;
-                }
-                QRadioButton::indicator:checked {
-                    background-color: rgba(255, 255, 255, 0.8);
-                    border: 2px solid white;
-                }
-                QRadioButton::indicator:hover {
-                    border: 2px solid rgba(255, 255, 255, 0.7);
+            # Container styling (creates the border around the toggle group)
+            container_style = """
+                QWidget {
+                    background-color: rgba(255, 255, 255, 0.05);
+                    border: 1px solid rgba(255, 255, 255, 0.2);
+                    border-radius: 6px;
                 }
             """
-            
-            # Label styling
-            label_style = """
-                QLabel {
+
+            # Button styling for modern toggle appearance
+            button_style = """
+                QPushButton {
+                    background-color: transparent;
+                    border: none;
                     color: rgba(255, 255, 255, 0.8);
                     font-family: Georgia;
-                    margin-left: 5px;
+                    font-size: 12px;
+                    font-weight: 500;
+                    padding: 8px 16px;
+                    border-radius: 4px;
+                }
+                QPushButton:hover {
+                    background-color: rgba(255, 255, 255, 0.1);
+                    color: rgba(255, 255, 255, 0.9);
+                }
+                QPushButton:checked {
+                    background-color: rgba(62, 99, 221, 0.8);
+                    color: white;
+                    font-weight: bold;
+                }
+                QPushButton:checked:hover {
+                    background-color: rgba(62, 99, 221, 0.9);
                 }
             """
-            
-            self.fixed_question_radio.setStyleSheet(radio_style)
-            self.countdown_radio.setStyleSheet(radio_style)
-            self.fixed_question_label.setStyleSheet(label_style)
-            self.countdown_label.setStyleSheet(label_style)
-            
+
+            # Apply styles
+            self.toggle_container.setStyleSheet(container_style)
+            self.fixed_question_btn.setStyleSheet(button_style)
+            self.countdown_btn.setStyleSheet(button_style)
+
         except Exception as e:
             logger.error(f"Failed to apply mode toggle styling: {e}")
-    
-    def _on_mode_changed(self) -> None:
-        """Handle mode selection change."""
+
+    def _on_fixed_question_clicked(self) -> None:
+        """Handle fixed question button click."""
         try:
-            selected_mode = self.get_selected_mode()
-            self.mode_changed.emit(selected_mode.value)
-            logger.debug(f"Mode changed to: {selected_mode.value}")
+            self.fixed_question_btn.setChecked(True)
+            self.countdown_btn.setChecked(False)
+            self.mode_changed.emit(QuizMode.FIXED_QUESTION.value)
+            logger.debug("Mode changed to: fixed_question")
         except Exception as e:
-            logger.error(f"Failed to handle mode change: {e}")
-    
+            logger.error(f"Failed to handle fixed question click: {e}")
+
+    def _on_countdown_clicked(self) -> None:
+        """Handle countdown button click."""
+        try:
+            self.countdown_btn.setChecked(True)
+            self.fixed_question_btn.setChecked(False)
+            self.mode_changed.emit(QuizMode.COUNTDOWN.value)
+            logger.debug("Mode changed to: countdown")
+        except Exception as e:
+            logger.error(f"Failed to handle countdown click: {e}")
+
     def get_selected_mode(self) -> QuizMode:
         """
         Get currently selected quiz mode.
-        
+
         Returns:
             Selected quiz mode
         """
         try:
-            if self.fixed_question_radio.isChecked():
+            if self.fixed_question_btn.isChecked():
                 return QuizMode.FIXED_QUESTION
             else:
                 return QuizMode.COUNTDOWN
         except Exception as e:
             logger.error(f"Failed to get selected mode: {e}")
             return QuizMode.FIXED_QUESTION  # Default fallback
-    
+
     def set_selected_mode(self, mode: QuizMode) -> None:
         """
         Set the selected quiz mode.
-        
+
         Args:
             mode: Quiz mode to select
         """
         try:
             if mode == QuizMode.FIXED_QUESTION:
-                self.fixed_question_radio.setChecked(True)
+                self.fixed_question_btn.setChecked(True)
+                self.countdown_btn.setChecked(False)
             elif mode == QuizMode.COUNTDOWN:
-                self.countdown_radio.setChecked(True)
+                self.countdown_btn.setChecked(True)
+                self.fixed_question_btn.setChecked(False)
             else:
                 logger.warning(f"Unknown quiz mode: {mode}")
         except Exception as e:
             logger.error(f"Failed to set selected mode: {e}")
-    
+
     def update_responsive_styling(self, parent_width: int, parent_height: int) -> None:
         """
         Update styling based on parent widget size.
-        
+
         Args:
             parent_width: Parent widget width
             parent_height: Parent widget height
@@ -181,22 +208,14 @@ class LessonModeToggle(QWidget):
         try:
             # Get responsive font sizes
             font_sizes = self.ui_service.get_font_sizes(parent_width, parent_height)
-            
-            # Update radio button fonts
-            radio_font_size = font_sizes.get("mode_label", 12)
-            for radio in [self.fixed_question_radio, self.countdown_radio]:
-                font = radio.font()
+
+            # Update button fonts
+            button_font_size = font_sizes.get("mode_label", 12)
+            for button in [self.fixed_question_btn, self.countdown_btn]:
+                font = button.font()
                 font.setFamily("Georgia")
-                font.setPointSize(radio_font_size)
-                radio.setFont(font)
-            
-            # Update label fonts
-            label_font_size = font_sizes.get("mode_description", 10)
-            for label in [self.fixed_question_label, self.countdown_label]:
-                font = label.font()
-                font.setFamily("Georgia")
-                font.setPointSize(label_font_size)
-                label.setFont(font)
-            
+                font.setPointSize(button_font_size)
+                button.setFont(font)
+
         except Exception as e:
             logger.error(f"Failed to update responsive styling: {e}")

@@ -34,7 +34,7 @@ from application.services.learn.mock_pictograph_data_service import (
     MockPictographDataService,
 )
 from infrastructure.file_system.file_system_service import FileSystemService
-from presentation.tabs.learn import ModernLearnTab
+from presentation.tabs.learn import LearnTab
 
 logger = logging.getLogger(__name__)
 
@@ -72,7 +72,7 @@ def register_learn_services(container: DIContainer) -> None:
         container.register_singleton(ILearnDataService, LearnDataService)
 
         # Main learn tab (transient to allow multiple instances if needed)
-        container.register_transient(ModernLearnTab, ModernLearnTab)
+        container.register_transient(LearnTab, LearnTab)
 
         logger.info("Learn services registration completed successfully")
 
@@ -108,7 +108,7 @@ def validate_learn_service_registration(container: DIContainer) -> bool:
 
         # Test main component (skip in headless environments)
         try:
-            learn_tab = container.resolve(ModernLearnTab)
+            learn_tab = container.resolve(LearnTab)
         except Exception as e:
             if "QApplication" in str(e):
                 logger.warning("Skipping UI component test in headless environment")

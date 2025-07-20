@@ -33,7 +33,7 @@ if TYPE_CHECKING:
     )
 
 
-class ConstructTabWidget(QWidget):
+class ConstructTab(QWidget):
     """
     IMPROVED ConstructTabWidget using clean dependency injection with IWorkbenchStateManager.
 
