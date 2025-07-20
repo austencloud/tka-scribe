@@ -11,7 +11,7 @@ from unittest.mock import Mock, patch
 import pytest
 from domain.models.sequence_data import SequenceData
 from presentation.tabs.browse.models import FilterType
-from presentation.tabs.browse.modern_browse_tab import ModernBrowseTab
+from presentation.tabs.browse.browse_tab import BrowseTab
 from presentation.tabs.browse.services.browse_service import BrowseService
 from PyQt6.QtCore import QTimer
 from PyQt6.QtWidgets import QApplication
@@ -37,7 +37,7 @@ class TestModernBrowseTabInteraction:
     @pytest.fixture
     def browse_tab(self, mock_sequences_dir, mock_settings_file):
         """Create a ModernBrowseTab instance for testing."""
-        return ModernBrowseTab(mock_sequences_dir, mock_settings_file)
+        return BrowseTab(mock_sequences_dir, mock_settings_file)
 
     def test_browse_tab_initialization(self, browse_tab):
         """Test that browse tab initializes without crashing."""

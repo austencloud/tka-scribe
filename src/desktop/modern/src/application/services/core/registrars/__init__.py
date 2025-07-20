@@ -14,6 +14,7 @@ Registrars:
 - PositioningServiceRegistrar: Arrow and prop positioning services
 - OptionPickerServiceRegistrar: Option picker services and components
 - WorkbenchServiceRegistrar: Workbench business and presentation services
+- LearnServiceRegistrar: Learn Tab services and components
 """
 
 from .animation_service_registrar import AnimationServiceRegistrar
@@ -21,6 +22,7 @@ from .core_service_registrar import CoreServiceRegistrar
 from .data_service_registrar import DataServiceRegistrar
 from .event_system_registrar import EventSystemRegistrar
 from .graph_editor_service_registrar import GraphEditorServiceRegistrar
+from .learn_service_registrar import LearnServiceRegistrar
 from .motion_service_registrar import MotionServiceRegistrar
 from .option_picker_service_registrar import OptionPickerServiceRegistrar
 from .pictograph_service_registrar import PictographServiceRegistrar
@@ -42,4 +44,5 @@ __all__ = [
     "OptionPickerServiceRegistrar",
     "WorkbenchServiceRegistrar",
     "StartPositionServiceRegistrar",
+    "LearnServiceRegistrar",
 ]

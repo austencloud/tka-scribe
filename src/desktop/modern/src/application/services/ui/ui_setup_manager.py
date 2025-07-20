@@ -949,7 +949,7 @@ class UISetupManager(IUISetupManager):
             import os
             from pathlib import Path
 
-            from presentation.tabs.browse.modern_browse_tab import ModernBrowseTab
+            from presentation.tabs.browse.browse_tab import BrowseTab
 
             # Get TKA root directory
             tka_root = Path(
@@ -962,7 +962,7 @@ class UISetupManager(IUISetupManager):
             sequences_dir.mkdir(parents=True, exist_ok=True)
 
             # Create browse tab
-            browse_tab = ModernBrowseTab(
+            browse_tab = BrowseTab(
                 sequences_dir=sequences_dir, settings_file=settings_file
             )
 

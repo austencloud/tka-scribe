@@ -11,10 +11,10 @@ from presentation.tabs.browse.models import (
     NavigationMode,
     SortMethod,
 )
-from presentation.tabs.browse.modern_browse_tab import ModernBrowseTab
+from presentation.tabs.browse.browse_tab import BrowseTab
 
 __all__ = [
-    "ModernBrowseTab",
+    "BrowseTab",
     "FilterType",
     "NavigationMode",
     "SortMethod",

@@ -30,7 +30,7 @@ from PyQt6.QtCore import QTimer, pyqtSignal
 from PyQt6.QtWidgets import QHBoxLayout, QStackedWidget, QWidget
 
 
-class ModernBrowseTab(QWidget):
+class BrowseTab(QWidget):
     """
     Modern Browse Tab matching Legacy layout structure exactly.
 

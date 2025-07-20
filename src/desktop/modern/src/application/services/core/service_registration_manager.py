@@ -146,6 +146,7 @@ class ServiceRegistrationCoordinator:
             DataServiceRegistrar,
             EventSystemRegistrar,
             GraphEditorServiceRegistrar,
+            LearnServiceRegistrar,
             MotionServiceRegistrar,
             OptionPickerServiceRegistrar,
             PictographServiceRegistrar,
@@ -176,6 +177,7 @@ class ServiceRegistrationCoordinator:
             EventSystemRegistrar(self.progress_callback),
             GraphEditorServiceRegistrar(self.progress_callback),
             AnimationServiceRegistrar(self.progress_callback),
+            LearnServiceRegistrar(self.progress_callback),
         ]
 
     def register_all_services(self, container: "DIContainer") -> None:

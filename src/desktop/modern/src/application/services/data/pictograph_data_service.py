@@ -50,28 +50,6 @@ class IPictographDataManager(ABC):
     def create_from_beat(self, beat_data: BeatData) -> PictographData:
         """Create pictograph from beat data."""
 
-    @abstractmethod
-    def update_pictograph_arrows(
-        self, pictograph: PictographData, arrows: Dict[str, ArrowData]
-    ) -> PictographData:
-        """Update arrows in pictograph."""
-
-    @abstractmethod
-    def search_dataset(self, query: Dict[str, Any]) -> List[PictographData]:
-        """Search pictograph dataset with query."""
-
-    @abstractmethod
-    def get_start_position_pictograph(
-        self, position_key: str, prop_type: str
-    ) -> Optional[BeatData]:
-        """Get start position pictograph as BeatData."""
-
-    @abstractmethod
-    def add_to_dataset(
-        self, pictograph: PictographData, category: str = "user_created"
-    ) -> str:
-        """Add pictograph to dataset."""
-
 
 class PictographDataManager(IPictographDataManager):
     """
@@ -120,48 +98,6 @@ class PictographDataManager(IPictographDataManager):
             },
         )
 
-    def update_pictograph_arrows(
-        self, pictograph: PictographData, arrows: Dict[str, ArrowData]
-    ) -> PictographData:
-        """Update arrows in pictograph."""
-        return pictograph.update(
-            arrows=arrows,
-            is_blank=len(arrows) == 0,
-        )
-
-    def search_dataset(self, query: Dict[str, Any]) -> List[PictographData]:
-        """Search pictograph dataset with query."""
-        results = []
-
-        # Extract search criteria
-        max_results = query.get("max_results", 50)
-
-        # Search through cached pictographs
-        for pictograph_id, pictograph in self._pictograph_cache.items():
-            if self._matches_query(pictograph, query):
-                results.append(pictograph)
-
-                if len(results) >= max_results:
-                    break
-
-        return results
-
-    def add_to_dataset(
-        self, pictograph: PictographData, category: str = "user_created"
-    ) -> str:
-        """Add pictograph to dataset."""
-        pictograph_id = str(uuid.uuid4())
-
-        # Cache the pictograph
-        self.cache_manager.set_pictograph_cache(pictograph_id, pictograph)
-
-        # Update dataset index
-        if category not in self._dataset_index:
-            self._dataset_index[category] = []
-        self._dataset_index[category].append(pictograph_id)
-
-        return pictograph_id
-
     def get_dataset_categories(self) -> List[str]:
         """Get all available dataset categories."""
         return list(self._dataset_index.keys())
@@ -208,35 +144,6 @@ class PictographDataManager(IPictographDataManager):
         """Clear the pictograph cache."""
         self._pictograph_cache.clear()
         self._dataset_index.clear()
-
-    def get_start_position_pictograph(
-        self, position_key: str, prop_type: str
-    ) -> Optional[BeatData]:
-        """Get start position pictograph as BeatData."""
-        try:
-            # Create a basic start position beat data
-            # This is a simplified implementation for testing
-            if position_key and prop_type:
-                # Map position keys to Greek letters for consistency
-                position_to_letter = {
-                    "alpha1": "α",
-                    "alpha1_alpha1": "α",
-                    "beta5": "β",
-                    "beta5_beta5": "β",
-                    "gamma": "γ",
-                    "delta": "δ",
-                }
-
-                letter = position_to_letter.get(position_key, "α")  # Default to α
-
-                return BeatData(
-                    letter=letter,
-                    duration=1.0,
-                    beat_number=1,  # Regular beats start from 1
-                )
-            return None
-        except Exception:
-            return None
 
     # Private helper methods
 
