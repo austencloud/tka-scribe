@@ -130,7 +130,7 @@ class PanelFactory:
 
             return widget, option_picker
 
-        except RuntimeError as e:
+        except Exception as e:
             print(f"❌ Failed to create option picker: {e}")
             fallback_label = QLabel("Option picker unavailable")
             fallback_label.setAlignment(Qt.AlignmentFlag.AlignCenter)

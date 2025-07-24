@@ -53,11 +53,19 @@ class OptionPickerGroupWidget(QWidget):
         section.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
 
         # FIXED: Force the section to use its calculated width, not expand
-        if hasattr(section, "calculated_width"):
+        if (
+            hasattr(section, "calculated_width")
+            and section.calculated_width is not None
+        ):
             section.setFixedWidth(section.calculated_width)
         else:
             # Fallback to size hint if calculated width not available
-            section.setMinimumWidth(section.sizeHint().width())
-            section.setMaximumWidth(section.sizeHint().width())
+            size_hint = section.sizeHint()
+            if size_hint.width() > 0:
+                section.setMinimumWidth(size_hint.width())
+                section.setMaximumWidth(size_hint.width())
+            else:
+                # Final fallback to a reasonable default width
+                section.setFixedWidth(300)
 
         self.layout.addWidget(section, alignment=Qt.AlignmentFlag.AlignCenter)

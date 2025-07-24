@@ -254,9 +254,9 @@ class StartPositionPicker(QWidget):
         """Handle grid mode change from the PyToggle system."""
         old_grid_mode = self.grid_mode
         self.grid_mode = new_mode
-        
+
         logger.info(f"Grid mode changed from {old_grid_mode} to {self.grid_mode}")
-        
+
         # Reload content for new grid mode with a small delay to avoid conflicts
         QTimer.singleShot(10, self._reload_content_for_grid_mode)
 

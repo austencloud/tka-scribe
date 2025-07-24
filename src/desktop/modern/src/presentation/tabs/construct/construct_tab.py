@@ -264,6 +264,9 @@ class ConstructTab(QWidget):
         # Connect signal coordinator to construct tab signals
         self.signal_coordinator.connect_construct_tab_signals(self)
 
+        # Connect generation signals
+        self._connect_generation_signals()
+
         # PERFORMANCE OPTIMIZATION: Defer sequence loading to after UI is fully ready
         # This reduces construct tab initialization time
         self._schedule_deferred_sequence_loading()
@@ -283,6 +286,66 @@ class ConstructTab(QWidget):
 
             # NOTE: Workbench signals are already connected in signal_coordinator._setup_signal_connections()
             # No need for additional external connections here
+
+    def _connect_generation_signals(self):
+        """Connect generation signals from the layout manager's component connector."""
+        if hasattr(self.layout_manager, "component_connector"):
+            self.layout_manager.component_connector.generate_requested.connect(
+                self._on_generate_requested
+            )
+
+    def _on_generate_requested(self, generation_config):
+        """Handle generation request and create sequence."""
+        try:
+            print(
+                f"🤖 [CONSTRUCT_TAB] Handling generation request: {generation_config}"
+            )
+
+            # Get the sequence generator service
+            from application.services.sequence.sequence_generator import (
+                SequenceGenerator,
+                SequenceType,
+            )
+
+            generator = SequenceGenerator()
+
+            # Determine sequence type from config
+            sequence_type = (
+                SequenceType.FREEFORM
+                if generation_config.mode.value == "freeform"
+                else SequenceType.CIRCULAR
+            )
+
+            # Generate the sequence
+            generated_sequence = generator.generate_sequence(
+                sequence_type=sequence_type,
+                name=f"Generated_{sequence_type.value}",
+                length=generation_config.length,
+                level=generation_config.level,
+                turn_intensity=generation_config.turn_intensity,
+                prop_continuity=generation_config.prop_continuity,
+                letter_types=getattr(generation_config, "letter_types", []),
+                cap_type=getattr(generation_config, "cap_type", None),
+            )
+
+            # Set the generated sequence in the workbench
+            workbench_state_manager = self.container.resolve(IWorkbenchStateManager)
+            if workbench_state_manager:
+                workbench_state_manager.set_sequence(generated_sequence)
+                print(
+                    f"✅ [CONSTRUCT_TAB] Generated sequence with {len(generated_sequence.beats)} beats"
+                )
+
+                # Emit sequence created signal
+                self.sequence_created.emit(generated_sequence)
+            else:
+                print("❌ [CONSTRUCT_TAB] No workbench state manager available")
+
+        except Exception as e:
+            print(f"❌ [CONSTRUCT_TAB] Generation failed: {e}")
+            import traceback
+
+            traceback.print_exc()
 
     # Public interface methods
     def clear_sequence(self):

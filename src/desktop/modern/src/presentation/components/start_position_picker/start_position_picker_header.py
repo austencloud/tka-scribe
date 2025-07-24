@@ -76,29 +76,13 @@ class StartPositionPickerHeader(QWidget):
         layout.setSpacing(2)  # Minimal spacing between sections
         layout.setContentsMargins(0, 0, 0, 0)  # Remove all margins
 
-        # Control bar - only back button now (hide entire section when not needed)
-        self.controls = QWidget()
-        controls_layout = QHBoxLayout(self.controls)
-        controls_layout.setContentsMargins(0, 0, 0, 0)  # No margins
-
-        # Back button (shown in advanced mode)
-        self.back_button = QPushButton("← Back to Simple")
-        self.back_button.setObjectName("BackButton")
-        self.back_button.clicked.connect(self._on_back_button_clicked)
-        self.back_button.setVisible(False)
-        controls_layout.addWidget(self.back_button)
-
-        controls_layout.addStretch()
-
-        # Hide the entire controls section initially (this prevents taking up space)
-        self.controls.setVisible(False)
-        layout.addWidget(self.controls)
-
         # Title section - match option picker margins exactly
         title_section = QWidget()
         title_layout = QVBoxLayout(title_section)
         title_layout.setSpacing(8)  # Match option picker spacing
-        title_layout.setContentsMargins(16, 16, 16, 16)  # Match option picker margins exactly
+        title_layout.setContentsMargins(
+            16, 16, 16, 16
+        )  # Match option picker margins exactly
 
         # Title
         self.title_label = QLabel("Choose Your Start Position")
@@ -119,13 +103,28 @@ class StartPositionPickerHeader(QWidget):
         title_section.setObjectName("TitleSection")
         layout.addWidget(title_section)
 
-        # Grid mode toggle section - Using LabeledToggleBase pattern
-        grid_toggle_section = QWidget()
-        grid_toggle_layout = QHBoxLayout(grid_toggle_section)
-        grid_toggle_layout.setSpacing(8)  # Reduced spacing
-        grid_toggle_layout.setContentsMargins(0, 0, 0, 0)  # Remove all margins
+        # Control and toggle bar - back button (left), diamond/box toggle (center), future controls (right)
+        controls_toggle_section = QWidget()
+        controls_toggle_layout = QHBoxLayout(controls_toggle_section)
+        controls_toggle_layout.setSpacing(8)
+        controls_toggle_layout.setContentsMargins(
+            16, 8, 16, 8
+        )  # Consistent side margins
 
-                # Create clickable labels (Diamond on left, Box on right)
+        # Left: Back button (shown in advanced mode)
+        self.back_button = QPushButton("← Back to Simple")
+        self.back_button.setObjectName("BackButton")
+        self.back_button.clicked.connect(self._on_back_button_clicked)
+        self.back_button.setVisible(False)
+        controls_toggle_layout.addWidget(self.back_button)
+
+        # Center: Diamond/Box toggle
+        toggle_container = QWidget()
+        toggle_layout = QHBoxLayout(toggle_container)
+        toggle_layout.setSpacing(8)
+        toggle_layout.setContentsMargins(0, 0, 0, 0)
+
+        # Create clickable labels (Diamond on left, Box on right)
         self.diamond_label = QLabel("Diamond")
         self.diamond_label.setFont(QFont("Segoe UI", 14, QFont.Weight.Medium))
         self.diamond_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -133,14 +132,14 @@ class StartPositionPickerHeader(QWidget):
         self.diamond_label.setAttribute(Qt.WidgetAttribute.WA_Hover, True)
         self.diamond_label.installEventFilter(self)
 
-        # Create the PyToggle with proper legacy styling  
+        # Create the PyToggle with proper legacy styling
         self.grid_mode_toggle = PyToggle(
             width=80,
-            bg_color="#3B82F6",      # Blue for diamond (unchecked)
+            bg_color="#3B82F6",  # Blue for diamond (unchecked)
             active_color="#10B981",  # Green for box (checked)
             circle_color="#FFFFFF",  # White circle
             animation_curve=QEasingCurve.Type.OutCubic,
-            change_bg_on_state=True
+            change_bg_on_state=True,
         )
         self.grid_mode_toggle.stateChanged.connect(self._on_grid_mode_toggled)
 
@@ -151,20 +150,24 @@ class StartPositionPickerHeader(QWidget):
         self.box_label.setAttribute(Qt.WidgetAttribute.WA_Hover, True)
         self.box_label.installEventFilter(self)
 
-        # Center everything horizontally with dynamic spacing for better text visibility
-        grid_toggle_layout.addStretch(2)  # More stretch on left
-        grid_toggle_layout.addWidget(self.diamond_label)
-        grid_toggle_layout.addSpacing(8)  # Smaller gap between diamond and toggle
-        grid_toggle_layout.addWidget(self.grid_mode_toggle)
-        grid_toggle_layout.addSpacing(4)  # Tighter gap between toggle and box  
-        grid_toggle_layout.addWidget(self.box_label)
-        grid_toggle_layout.addStretch(3)  # More stretch on right to balance longer "Diamond"
+        # Add toggle elements to container
+        toggle_layout.addWidget(self.diamond_label)
+        toggle_layout.addWidget(self.grid_mode_toggle)
+        toggle_layout.addWidget(self.box_label)
 
-        # Set appropriate widths - Diamond needs more space, Box can be smaller
-        self.diamond_label.setFixedWidth(70)  # Enough for "DIAMOND"
-        self.box_label.setFixedWidth(40)      # Tight for "BOX"
+        # Set wider label width for "Diamond" visibility
+        self.diamond_label.setFixedWidth(80)  # Wider for full "DIAMOND" text
+        self.box_label.setFixedWidth(50)  # Sufficient for "BOX"
 
-        layout.addWidget(grid_toggle_section)
+        # Add toggle container to center with stretch on both sides
+        controls_toggle_layout.addStretch(1)  # Push toggle to center
+        controls_toggle_layout.addWidget(toggle_container)
+        controls_toggle_layout.addStretch(1)  # Keep toggle centered
+
+        # Right: Future controls placeholder (empty for now)
+        # Could add export button, settings, etc. here later
+
+        layout.addWidget(controls_toggle_section)
 
         # Update label styles based on initial state (Diamond is default)
         self._update_label_styles()
@@ -219,15 +222,13 @@ class StartPositionPickerHeader(QWidget):
         if mode == PickerMode.ADVANCED:
             self.title_label.setText("All Start Positions")
             self.subtitle_label.setText("Choose from 16 available starting positions")
-            self.back_button.setVisible(True)
-            self.controls.setVisible(True)  # Show controls section for back button
+            self.back_button.setVisible(True)  # Show back button on left
         else:
             self.title_label.setText("Choose Your Start Position")
             self.subtitle_label.setText(
                 "Select a starting position to begin crafting your sequence"
             )
-            self.back_button.setVisible(False)
-            self.controls.setVisible(False)  # Hide entire controls section
+            self.back_button.setVisible(False)  # Hide back button, leave space empty
 
         # Update grid mode toggle
         self.set_grid_mode(grid_mode)
@@ -272,10 +273,11 @@ class StartPositionPickerHeader(QWidget):
     def _update_label_styles(self):
         """Update label styles based on current toggle state."""
         is_box_mode = self.grid_mode_toggle.isChecked()
-        
+
         if is_box_mode:
             # Box mode active - emphasize box label
-            self.diamond_label.setStyleSheet("""
+            self.diamond_label.setStyleSheet(
+                """
                 QLabel {
                     color: #6B7280;
                     font-weight: normal;
@@ -287,8 +289,10 @@ class StartPositionPickerHeader(QWidget):
                     color: #4B5563;
                     transform: scale(1.05);
                 }
-            """)
-            self.box_label.setStyleSheet("""
+            """
+            )
+            self.box_label.setStyleSheet(
+                """
                 QLabel {
                     color: #10B981;
                     font-weight: bold;
@@ -301,10 +305,12 @@ class StartPositionPickerHeader(QWidget):
                     color: #059669;
                     transform: scale(1.05);
                 }
-            """)
+            """
+            )
         else:
             # Diamond mode active - emphasize diamond label
-            self.diamond_label.setStyleSheet("""
+            self.diamond_label.setStyleSheet(
+                """
                 QLabel {
                     color: #3B82F6;
                     font-weight: bold;
@@ -317,8 +323,10 @@ class StartPositionPickerHeader(QWidget):
                     color: #2563EB;
                     transform: scale(1.05);
                 }
-            """)
-            self.box_label.setStyleSheet("""
+            """
+            )
+            self.box_label.setStyleSheet(
+                """
                 QLabel {
                     color: #6B7280;
                     font-weight: normal;
@@ -330,7 +338,8 @@ class StartPositionPickerHeader(QWidget):
                     color: #4B5563;
                     transform: scale(1.05);
                 }
-            """)
+            """
+            )
 
     def eventFilter(self, obj, event):
         """Handle click events on labels to toggle the state."""

@@ -104,6 +104,26 @@ class TurnIntensityManager(ITurnIntensityManager):
 
         return sequence_data
 
+    def get_intensity_range(self) -> Tuple[float, float]:
+        """Get the valid range for turn intensity."""
+        return (0.5, 3.0)
+
+    def get_recommended_intensity(self, level: int) -> float:
+        """Get recommended turn intensity for a given level."""
+        if level == 1:
+            return 1.0
+        elif level == 2:
+            return 1.5
+        elif level == 3:
+            return 2.0
+        else:
+            return 1.0
+
+    def validate_intensity(self, intensity: float) -> bool:
+        """Validate if the given intensity is within acceptable range."""
+        min_intensity, max_intensity = self.get_intensity_range()
+        return min_intensity <= intensity <= max_intensity
+
 
 class TurnIntensityManagerFactory:
     """Factory for creating TurnIntensityManager instances."""

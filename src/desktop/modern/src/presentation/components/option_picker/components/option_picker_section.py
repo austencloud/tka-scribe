@@ -1,18 +1,18 @@
 """
-Option Picker Section Widget - Clean UI Layer
+Option Picker Section Widget - Clean Component Architecture
 
-Pure Qt presentation component for displaying option sections.
-All business logic extracted to injected services.
+Qt presentation component that orchestrates specialized manager components.
+Uses clean separation of concerns with focused, testable components.
 
-Key principles:
-- Pure Qt UI logic only - no business logic
-- Clean dependency injection of services
-- Qt widget management in presentation layer
-- Simple section layout and display
+Architecture:
+- OptionPickerSectionStateManager: Handles all state management
+- OptionPickerSectionLayoutManager: Handles layout and sizing
+- OptionPickerSectionWidgetManager: Handles widget pooling and lifecycle
+- OptionPickerSectionAnimationHandler: Handles animations
+- OptionPickerSectionContentLoader: Orchestrates content loading
 """
 
-import asyncio
-from typing import Callable, Dict, List, Optional
+from typing import Callable, List, Optional
 
 from application.services.option_picker.option_configuration_service import (
     OptionConfigurationService,
@@ -21,28 +21,34 @@ from application.services.option_picker.option_picker_size_calculator import (
     OptionPickerSizeCalculator,
 )
 from application.services.option_picker.option_pool_service import OptionPoolService
-from core.interfaces.animation_core_interfaces import (
-    AnimationConfig,
-    EasingType,
-    IAnimationOrchestrator,
-)
+from core.interfaces.animation_core_interfaces import IAnimationOrchestrator
 from domain.models.pictograph_data import PictographData
-from presentation.components.option_picker.components.option_picker_scroll import (
-    OptionPickerScroll,
+from presentation.components.option_picker.components.option_picker_section_animation_handler import (
+    OptionPickerSectionAnimationHandler,
 )
-from presentation.components.option_picker.components.option_pictograph import (
-    OptionPictograph,
+from presentation.components.option_picker.components.option_picker_section_content_loader import (
+    OptionPickerSectionContentLoader,
+)
+from presentation.components.option_picker.components.option_picker_section_layout_manager import (
+    OptionPickerSectionLayoutManager,
+)
+from presentation.components.option_picker.components.option_picker_section_state_manager import (
+    OptionPickerSectionStateManager,
+)
+from presentation.components.option_picker.components.option_picker_section_widget_manager import (
+    OptionPickerSectionWidgetManager,
 )
 from presentation.components.option_picker.types.letter_types import LetterType
 from PyQt6.QtCore import QSize, Qt, pyqtSignal
-from PyQt6.QtWidgets import QFrame, QGridLayout, QGroupBox, QVBoxLayout
+from PyQt6.QtWidgets import QGroupBox
 
 
 class OptionPickerSection(QGroupBox):
     """
-    Clean UI component for option picker sections.
+    Option Picker Section with clean component architecture.
 
-    All business logic extracted to injected services.
+    Delegates responsibilities to specialized manager components
+    for maintainable, testable code.
     """
 
     # Signal emitted when a pictograph is selected in this section
@@ -52,148 +58,62 @@ class OptionPickerSection(QGroupBox):
         self,
         letter_type: LetterType,
         scroll_area,  # Parent scroll area
-        mw_size_provider: Optional[
-            Callable[[], QSize]
-        ] = None,  # Made optional since we use scroll area width
+        mw_size_provider: Optional[Callable[[], QSize]] = None,
         option_pool_service: OptionPoolService = None,
         option_config_service: OptionConfigurationService = None,
         size_calculator: OptionPickerSizeCalculator = None,
         animation_orchestrator: Optional[IAnimationOrchestrator] = None,
     ):
-        """Initialize with injected services - no service location."""
+        """Initialize with injected services."""
         super().__init__(None)
 
-        # ✅ Clean dependency injection - no service location
+        # Store dependencies
         self.letter_type = letter_type
-        self.scroll_area: OptionPickerScroll = scroll_area
+        self.scroll_area = scroll_area
         self.mw_size_provider = mw_size_provider
-        self._option_pool_service = option_pool_service
-        self._option_config_service = option_config_service
-        self._option_sizing_service = size_calculator
-        self._animation_orchestrator = animation_orchestrator
 
-        # Store the current option picker width (updated via signal)
-
-        # UI state management
-        self._loading_options = False
-        self._ui_initialized = False  # Track if UI components are ready
-        self._scroll_area_ready = False  # Track if scroll area has valid dimensions
-        self.pictographs: Dict[str, OptionPictograph] = {}
-
-    def update_option_picker_width(self, width: int) -> None:
-        """Update the stored option picker width - called by parent scroll area."""
-        # Store the width (though we primarily use scroll area width now)
-        self.option_picker_width = width
-
-        # ✅ Use service for business rule
-        self.is_groupable = self._option_config_service.is_groupable_type(
-            self.letter_type
+        # Initialize manager components
+        self._state_manager = OptionPickerSectionStateManager(
+            letter_type, scroll_area, option_config_service
         )
 
-        # Check if scroll area is now ready for sizing
-        self._check_scroll_area_readiness()
-
-    def _check_scroll_area_readiness(self) -> None:
-        """Check if scroll area has valid dimensions and mark as ready."""
-        if not self._ui_initialized:
-            return
-
-        if hasattr(self, "scroll_area") and self.scroll_area:
-            scroll_width = self.scroll_area.width()
-            parent_width = (
-                self.scroll_area.parent().width() if self.scroll_area.parent() else 0
-            )
-
-            # More robust validation - check if we have a reasonable width that's not the default
-            is_reasonable_width = (
-                scroll_width > 800
-            )  # Should be much larger than 640px default
-            is_not_default = scroll_width != 640  # Avoid the default fallback value
-            has_parent_width = (
-                parent_width > 800
-            )  # Parent should also be properly sized
-
-            if is_reasonable_width and is_not_default and has_parent_width:
-                if not self._scroll_area_ready:
-                    self._scroll_area_ready = True
-                    # Trigger a resize now that we're ready
-                    self._perform_delayed_resize()
-            else:
-                pass
-
-    def _perform_delayed_resize(self) -> None:
-        """Perform resize calculation now that scroll area is ready."""
-        if not self._scroll_area_ready or not self._ui_initialized:
-            return
-
-        scroll_area_width = self.scroll_area.width()
-
-        # Calculate dimensions using only scroll area width
-        dimensions = self._option_sizing_service.calculate_section_dimensions(
-            letter_type=self.letter_type,
-            main_window_width=scroll_area_width,  # Use scroll area width directly
+        self._widget_manager = OptionPickerSectionWidgetManager(
+            letter_type, scroll_area, option_pool_service, self._on_pictograph_selected
         )
 
-        # Store the calculated width for group widget constraints
-        self.calculated_width = dimensions["width"]
+        self._layout_manager = OptionPickerSectionLayoutManager(
+            self,
+            letter_type,
+            scroll_area,
+            option_config_service,
+            size_calculator,
+            mw_size_provider,
+        )
 
-        # Apply the calculated width
-        self.setFixedWidth(dimensions["width"])
+        self._animation_handler = OptionPickerSectionAnimationHandler(
+            self, letter_type, animation_orchestrator
+        )
 
-        # Show actual dimensions after Qt applies them
-        from PyQt6.QtCore import QTimer
+        self._content_loader = OptionPickerSectionContentLoader(
+            letter_type,
+            self._state_manager,
+            self._widget_manager,
+            self._layout_manager,
+            self._animation_handler,
+        )
 
-        QTimer.singleShot(10, self._show_actual_dimensions)
+        # Header will be set during setup_components
+        self.header = None
 
     def setup_components(self) -> None:
-        """Setup Qt components - pure UI logic."""
-        # Create container frame for pictographs
-        self.pictograph_frame = QFrame(self)
-        self.pictograph_frame.setStyleSheet("QFrame {border: none;}")
-
+        """Setup Qt components."""
         self._setup_header()
-        self._setup_layout()
+        self._layout_manager.setup_layout(self.header)
         self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
-
-        # Mark UI as initialized
-        self._ui_initialized = True
-        self._check_scroll_area_readiness()
-
-    def _setup_layout(self) -> None:
-        """Setup Qt layout - pure UI logic."""
-        # Main vertical layout for header + pictographs
-        self.layout: QVBoxLayout = QVBoxLayout(self)
-        self.layout.setAlignment(Qt.AlignmentFlag.AlignVCenter)
-        self.layout.setSpacing(0)
-        self.layout.setContentsMargins(0, 0, 0, 0)
-
-        # Create container frame for pictographs (like legacy)
-        self.pictograph_frame = QFrame(self)
-        self.pictograph_frame.setStyleSheet("QFrame {border: none;}")
-
-        # FIXED: Use expanding size policy like legacy
-        from PyQt6.QtWidgets import QSizePolicy
-
-        self.pictograph_frame.setSizePolicy(
-            QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum
-        )
-
-        # Get layout config from service
-        layout_config = self._option_config_service.get_layout_config()
-
-        # Grid layout for pictographs (attached to pictograph_frame, not main layout)
-        self.pictographs_layout: QGridLayout = QGridLayout(self.pictograph_frame)
-        self.pictographs_layout.setSpacing(layout_config["spacing"])
-        self.pictographs_layout.setContentsMargins(0, 0, 0, 0)
-        # FIXED: Add alignment to center grid content within the frame (like legacy)
-        self.pictographs_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
-
-        # Add header first, then pictograph frame (not layout directly)
-        self.layout.addWidget(self.header)
-        self.layout.addWidget(self.pictograph_frame)
+        self._state_manager.set_ui_initialized(True)
 
     def _setup_header(self) -> None:
-        """Setup section header - Qt UI logic."""
+        """Setup section header."""
         from presentation.components.option_picker.components.option_picker_section_header import (
             OptionPickerSectionHeader,
         )
@@ -201,379 +121,103 @@ class OptionPickerSection(QGroupBox):
         self.header = OptionPickerSectionHeader(self)
         self.header.type_button.clicked.connect(self.toggle_section)
 
-    def toggle_section(self) -> None:
-        """Toggle section visibility - Qt UI logic."""
-        is_visible = not self.pictograph_frame.isVisible()
-        self.pictograph_frame.setVisible(is_visible)
-
     def load_options_from_sequence(
         self, pictographs_for_section: List[PictographData]
     ) -> None:
-        """Load options for this section with modern animation transitions."""
-        try:
-            # ✅ Set UI loading state
-            self._loading_options = True
-
-            # Get existing frames for fade out
-            existing_frames = list(self.pictographs.values())
-
-            # Use modern animation system if available, otherwise fall back to direct update
-            if self._animation_orchestrator and existing_frames:
-                # Modern animated transition (replicates legacy fade_and_update behavior)
-                # Use simple Qt-based fade animation (no asyncio)
-                try:
-                    from PyQt6.QtCore import (
-                        QParallelAnimationGroup,
-                        QPropertyAnimation,
-                        QTimer,
-                    )
-                    from PyQt6.QtWidgets import QGraphicsOpacityEffect
-
-                    # Step 1: Create fade out animations for existing frames
-                    fade_out_group = QParallelAnimationGroup(
-                        self
-                    )  # Parent to this widget to prevent GC
-                    animations_added = 0
-
-                    for frame in existing_frames:
-                        try:
-                            # Validate frame is still valid and visible
-                            if not frame or frame.isHidden() or not frame.parent():
-                                continue
-
-                            # Create opacity effect if not present
-                            if not frame.graphicsEffect():
-                                effect = QGraphicsOpacityEffect()
-                                effect.setOpacity(1.0)  # Ensure it starts visible
-                                frame.setGraphicsEffect(effect)
-
-                            # Validate graphics effect is properly set
-                            graphics_effect = frame.graphicsEffect()
-                            if not graphics_effect:
-                                print(
-                                    f"⚠️ [FADE] No graphics effect for fade-out frame in {self.letter_type}"
-                                )
-                                continue
-
-                            # Create fade out animation
-                            animation = QPropertyAnimation(graphics_effect, b"opacity")
-                            animation.setDuration(200)  # 200ms
-                            animation.setStartValue(1.0)
-                            animation.setEndValue(0.0)
-                            fade_out_group.addAnimation(animation)
-                            animations_added += 1
-
-                        except Exception as e:
-                            print(
-                                f"⚠️ [FADE] Skipping invalid fade-out frame in {self.letter_type}: {e}"
-                            )
-
-                    # Only start animation if we have valid animations
-                    if animations_added > 0:
-                        # Step 2: When fade out completes, update content and fade in
-                        def on_fade_out_complete():
-
-                            # Update content
-                            self.clear_pictographs()
-                            self._load_options_directly(pictographs_for_section)
-
-                            # Step 3: Fade in new frames
-                            QTimer.singleShot(
-                                50, self._fade_in_new_frames
-                            )  # Small delay for content update
-
-                        # Store reference to prevent garbage collection
-                        self._current_fade_animation = fade_out_group
-
-                        fade_out_group.finished.connect(on_fade_out_complete)
-
-                        # Add debug for animation start/state
-
-                        fade_out_group.start()
-                    else:
-                        # Fallback to direct update
-                        self.clear_pictographs()
-                        self._load_options_directly(pictographs_for_section)
-
-                except Exception as e:
-                    print(f"❌ [FADE] Qt fade animation failed: {e}")
-                    # Fallback to direct update
-                    self.clear_pictographs()
-                    self._load_options_directly(pictographs_for_section)
-            else:
-                self._load_options_directly(pictographs_for_section)
-
-        except Exception as e:
-            print(f"❌ [UI] Error loading options for {self.letter_type}: {e}")
-        finally:
-            # ✅ Always clear loading state
-            self._loading_options = False
-
-    def _fade_in_new_frames(self):
-        """Fade in newly loaded frames."""
-        try:
-            from PyQt6.QtCore import QParallelAnimationGroup, QPropertyAnimation
-            from PyQt6.QtWidgets import QGraphicsOpacityEffect
-
-            new_frames = list(self.pictographs.values())
-            if not new_frames:
-                return
-
-            # Create fade in animations for new frames
-            fade_in_group = QParallelAnimationGroup(self)  # Parent to prevent GC
-            valid_animations = 0
-
-            for frame in new_frames:
-                try:
-                    # Validate frame is still valid and visible
-                    if not frame or frame.isHidden() or not frame.parent():
-                        continue
-
-                    # Create opacity effect if not present
-                    if not frame.graphicsEffect():
-                        effect = QGraphicsOpacityEffect()
-                        frame.setGraphicsEffect(effect)
-                        effect.setOpacity(0.0)  # Start invisible
-
-                    # Validate graphics effect is properly set
-                    graphics_effect = frame.graphicsEffect()
-                    if not graphics_effect:
-                        print(
-                            f"⚠️ [FADE] No graphics effect for frame in {self.letter_type}"
-                        )
-                        continue
-
-                    # Create fade in animation
-                    animation = QPropertyAnimation(graphics_effect, b"opacity")
-                    animation.setDuration(200)  # 200ms
-                    animation.setStartValue(0.0)
-                    animation.setEndValue(1.0)
-                    fade_in_group.addAnimation(animation)
-                    valid_animations += 1
-
-                except Exception as e:
-                    print(f"⚠️ [FADE] Skipping invalid frame in {self.letter_type}: {e}")
-                    continue
-
-            if valid_animations == 0:
-                print(f"⚠️ [FADE] No valid frames to animate for {self.letter_type}")
-                return
-
-            fade_in_group.start()
-
-        except Exception as e:
-            print(f"❌ [FADE] Fade in failed for {self.letter_type}: {e}")
-
-    async def _load_with_fade_transition(
-        self,
-        pictographs_for_section: List[PictographData],
-        existing_frames: List[OptionPictograph],
-    ) -> None:
-        """Load options with smooth fade transition (replicates legacy behavior)."""
-        try:
-            # Animation config matching legacy timing (200ms)
-            config = AnimationConfig(
-                duration=0.2, easing=EasingType.EASE_IN_OUT  # 200ms to match legacy
-            )
-
-            # Fade out existing frames
-            if existing_frames:
-                fade_out_tasks = []
-                for frame in existing_frames:
-                    if frame.isVisible():
-                        task = self._animation_orchestrator.fade_target(
-                            frame, fade_in=False, config=config
-                        )
-                        fade_out_tasks.append(task)
-
-                # Wait for all fade outs to complete
-                if fade_out_tasks:
-                    await asyncio.gather(*fade_out_tasks)
-
-            # Update content (equivalent to legacy callback)
-            self._update_pictograph_content(pictographs_for_section)
-
-            # Fade in new frames
-            new_frames = list(self.pictographs.values())
-            if new_frames:
-                fade_in_tasks = []
-                for frame in new_frames:
-                    if frame.isVisible():
-                        task = self._animation_orchestrator.fade_target(
-                            frame, fade_in=True, config=config
-                        )
-                        fade_in_tasks.append(task)
-
-                # Start all fade ins
-                if fade_in_tasks:
-                    await asyncio.gather(*fade_in_tasks)
-
-        except Exception as e:
-            print(
-                f"❌ [ANIMATION] Error in fade transition for {self.letter_type}: {e}"
-            )
-            # Fallback to direct update
-            self._load_options_directly(pictographs_for_section)
-
-    def _load_options_directly(
-        self, pictographs_for_section: List[PictographData]
-    ) -> None:
-        """Direct option loading without animation (fallback)."""
-        # ✅ Clear existing UI elements
-        self.clear_pictographs()
-        self._update_pictograph_content(pictographs_for_section)
-
-    def _update_pictograph_content(
-        self, pictographs_for_section: List[PictographData]
-    ) -> None:
-        """Update pictograph content (extracted for reuse in animation and direct modes)."""
-        # PAGINATION DEBUG: Log section content update
-        print(f"🔍 [PAGINATION_DEBUG] OptionPickerSection._update_pictograph_content:")
-        print(f"   Section: {self.letter_type}")
-        print(f"   Received {len(pictographs_for_section)} pictographs to display")
-
-        # ✅ Create and setup Qt widgets
-        frames = []
-        for i, pictograph_data in enumerate(pictographs_for_section):
-            # Get widget from pool using service
-            pool_id = self._option_pool_service.checkout_item()
-            if pool_id is not None:
-                # Get Qt widget from scroll area's widget pool
-                option_frame = self.scroll_area.get_widget_from_pool(pool_id)
-                if option_frame:
-                    # Setup Qt widget
-                    option_frame.update_pictograph(pictograph_data)
-
-                    # CRITICAL: Disconnect any existing connections first to prevent duplicates
-                    try:
-                        option_frame.option_selected.disconnect(
-                            self._on_pictograph_selected
-                        )
-                    except (TypeError, RuntimeError):
-                        # No existing connection - this is fine
-                        pass
-
-                    option_frame.option_selected.connect(self._on_pictograph_selected)
-                    frames.append(option_frame)
-
-        # PAGINATION DEBUG: Log frames created and added
+        """Load options for this section."""
         print(
-            f"   Created {len(frames)} frames from {len(pictographs_for_section)} pictographs"
+            f"🔧 [SECTION] {self.letter_type} load_options_from_sequence called with {len(pictographs_for_section)} pictographs"
         )
-
-        # ✅ Add Qt widgets to layout
-        for frame in frames:
-            self.add_pictograph(frame)
-
-        # PAGINATION DEBUG: Log final section state
-        final_count = len(self.pictographs) if hasattr(self, "pictographs") else 0
-        print(
-            f"   Section {self.letter_type} now has {final_count} pictographs in layout"
-        )
+        self._content_loader.load_options_from_sequence(pictographs_for_section)
 
     def clear_pictographs(self) -> None:
-        """Clear pictographs from Qt layout."""
-        # PAGINATION DEBUG: Log section clearing
-        initial_count = len(self.pictographs)
-        print(f"🔍 [PAGINATION_DEBUG] OptionPickerSection.clear_pictographs:")
-        print(f"   Section: {self.letter_type}")
-        print(f"   Clearing {initial_count} pictographs")
+        """Clear pictographs."""
+        self._content_loader.clear_all_content()
 
-        items_returned = 0
-        for pictograph_frame in self.pictographs.values():
-            if hasattr(pictograph_frame, "setVisible"):
-                # Remove from Qt layout
-                self.pictographs_layout.removeWidget(pictograph_frame)
-                pictograph_frame.setVisible(False)
+    def toggle_section(self) -> None:
+        """Toggle section visibility."""
+        self._layout_manager.toggle_pictograph_frame_visibility()
 
-                # Disconnect our specific signal connection safely
-                try:
-                    pictograph_frame.option_selected.disconnect(
-                        self._on_pictograph_selected
-                    )
-                except (TypeError, RuntimeError):
-                    # Signal was already disconnected or never connected - this is fine
-                    pass
+    def update_option_picker_width(self, width: int) -> None:
+        """Update option picker width."""
+        self._state_manager.update_option_picker_width(width)
+        self._layout_manager.update_option_picker_width(width)
 
-                # Clean up widget content
-                pictograph_frame.clear_pictograph()
-
-                # Return to pool (find pool ID)
-                for (
-                    pool_id,
-                    widget,
-                ) in self.scroll_area._widget_pool_manager._widget_pool.items():
-                    if widget == pictograph_frame:
-                        self._option_pool_service.checkin_item(pool_id)
-                        items_returned += 1
-                        break
-
-        print(f"   Returned {items_returned} items to pool")
-
-        # Clear tracking dictionary
-        self.pictographs = {}
-
-    def add_pictograph(self, pictograph_frame: OptionPictograph) -> None:
-        """Add pictograph to Qt grid layout."""
-        # Generate tracking key
-        key = f"pictograph_{len(self.pictographs)}"
-        self.pictographs[key] = pictograph_frame
-
-        # ✅ Use service for grid layout calculation
-        layout_config = self._option_config_service.get_layout_config()
-        column_count = layout_config["column_count"]
-
-        # Calculate grid position
-        count = len(self.pictographs)
-        row, col = divmod(count - 1, column_count)
-
-        # ✅ Add to Qt grid layout
-        self.pictographs_layout.addWidget(pictograph_frame, row, col)
-        pictograph_frame.setVisible(True)
+    def resizeEvent(self, event) -> None:
+        """Handle Qt resize events."""
+        if self._layout_manager.handle_resize_event(self._state_manager.is_loading()):
+            super().resizeEvent(event)
 
     def _on_pictograph_selected(self, pictograph_data: PictographData) -> None:
         """Handle pictograph selection - emit Qt signal."""
         self.pictograph_selected.emit(pictograph_data)
 
-    def resizeEvent(self, event) -> None:
-        """Handle Qt resize events with proper initialization checks."""
-        # Skip resizing during option loading
-        if self._loading_options:
-            return
-
-        # NEW: Only proceed if UI is properly initialized and scroll area is ready
-        if not self._ui_initialized:
-            return
-
-        # Check if scroll area is ready, and if not, try to make it ready
-        if not self._scroll_area_ready:
-            self._check_scroll_area_readiness()
-            if not self._scroll_area_ready:
-                return
-
-        # If we get here, everything is ready - perform the resize
-        self._perform_delayed_resize()
-
-        # Call parent resize event
-        super().resizeEvent(event)
-
-    def _show_actual_dimensions(self) -> None:
-        """Show actual widget dimensions after Qt applies them."""
-        actual_width = self.width()
-        actual_height = self.height()
-
-        # Also show pictograph frame dimensions if available
-        if hasattr(self, "pictographs") and self.pictographs:
-            first_frame = next(iter(self.pictographs.values()))
-            frame_width = first_frame.width()
-            frame_height = first_frame.height()
-
-            # Calculate if 8 frames + spacing fit within section width
-            spacing = 3  # From config
-            total_frames_width = 8 * frame_width + 7 * spacing
-            fits = total_frames_width <= actual_width
+    # Compatibility properties and methods for backward compatibility
 
     @property
-    def pictograph_frames(self) -> List[OptionPictograph]:
+    def pictographs(self):
+        """Get pictographs dict for compatibility."""
+        return self._widget_manager.get_widgets_dict()
+
+    @property
+    def pictograph_frames(self) -> List:
         """Get list of pictograph frames for compatibility."""
-        return list(self.pictographs.values())
+        return self._widget_manager.get_active_widgets()
+
+    @property
+    def pictograph_frame(self):
+        """Get pictograph frame for compatibility."""
+        return self._layout_manager.get_pictograph_frame()
+
+    @property
+    def pictographs_layout(self):
+        """Get pictographs layout for compatibility."""
+        return self._layout_manager.get_pictographs_layout()
+
+    @property
+    def is_groupable(self):
+        """Get groupable status for compatibility."""
+        return self._state_manager.is_groupable()
+
+    @property
+    def calculated_width(self):
+        """Get calculated width for compatibility."""
+        return self._layout_manager.get_calculated_width()
+
+    @property
+    def option_picker_width(self):
+        """Get option picker width for compatibility."""
+        return self._state_manager.get_option_picker_width()
+
+    # Additional compatibility methods that may be called externally
+
+    def add_pictograph(self, pictograph_frame) -> None:
+        """Add pictograph for compatibility - delegates to layout manager."""
+        # Check if layout is initialized before adding
+        if not self._layout_manager.is_layout_initialized():
+            print(
+                f"❌ [SECTION] Layout not initialized for {self.letter_type}, skipping add_pictograph"
+            )
+            return
+
+        position = self._widget_manager.get_active_widget_count()
+        self._layout_manager.add_widget_to_grid(pictograph_frame, position)
+
+    def _loading_options(self) -> bool:
+        """Get loading state for compatibility."""
+        return self._state_manager.is_loading()
+
+    def _ui_initialized(self) -> bool:
+        """Get UI initialized state for compatibility."""
+        return self._state_manager.is_ui_initialized()
+
+    def _scroll_area_ready(self) -> bool:
+        """Get scroll area ready state for compatibility."""
+        return self._state_manager.is_scroll_area_ready()
+
+    def cleanup(self) -> None:
+        """Clean up all manager components."""
+        self._content_loader.cleanup()
+        self._animation_handler.cleanup()
+        self._widget_manager.cleanup()
+        self._state_manager.cleanup()

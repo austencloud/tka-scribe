@@ -26,6 +26,9 @@ from presentation.tabs.browse.services.browse_state_service import BrowseStateSe
 from presentation.tabs.browse.services.modern_dictionary_data_manager import (
     ModernDictionaryDataManager,
 )
+from presentation.tabs.browse.services.progressive_loading_service import (
+    ProgressiveLoadingService,
+)
 from PyQt6.QtCore import QTimer, pyqtSignal
 from PyQt6.QtWidgets import QHBoxLayout, QStackedWidget, QWidget
 
@@ -62,6 +65,7 @@ class BrowseTab(QWidget):
         self.dictionary_manager = ModernDictionaryDataManager(data_dir)
         self.browse_service = BrowseService(sequences_dir)
         self.state_service = BrowseStateService(settings_file)
+        self.progressive_loading_service = ProgressiveLoadingService(self.dictionary_manager)
 
         # Mapping from sequence UUID to word (for quick lookup)
         self.sequence_id_to_word: dict[str, str] = {}
@@ -69,6 +73,14 @@ class BrowseTab(QWidget):
         # Connect data manager signals
         self.dictionary_manager.data_loaded.connect(self._on_data_loaded)
         self.dictionary_manager.loading_progress.connect(self._on_loading_progress)
+        
+        # Connect progressive loading service signals for debugging
+        self.progressive_loading_service.loading_started.connect(
+            lambda count: print(f"🚀 Progressive loading started: {count} sequences")
+        )
+        self.progressive_loading_service.loading_completed.connect(
+            lambda sequences: print(f"✅ Progressive loading completed: {len(sequences)} sequences")
+        )
 
         # Setup Legacy-matching layout
         self._setup_legacy_layout()
@@ -92,7 +104,7 @@ class BrowseTab(QWidget):
             self.browse_service, self.dictionary_manager
         )
         self.sequence_browser_panel = SequenceBrowserPanel(
-            self.browse_service, self.state_service
+            self.browse_service, self.state_service, self.progressive_loading_service
         )
 
         # Add panels to stack (matching Legacy indexes)
@@ -158,21 +170,21 @@ class BrowseTab(QWidget):
             print(f"🔄 {message} ({current}/{total})")
 
     def _on_filter_selected(self, filter_type: FilterType, filter_value) -> None:
-        """Handle filter selection - switch to sequence browser."""
+        """Handle filter selection - switch to sequence browser with progressive loading."""
         print(f"🔍 Filter selected: {filter_type} = {filter_value}")
 
         # Save filter state
         self.state_service.set_filter(filter_type, filter_value)
 
-        # Apply filter using dictionary manager
-        filtered_sequences = self._apply_dictionary_filter(filter_type, filter_value)
-        self.sequence_browser_panel.show_sequences(
-            filtered_sequences, filter_type, filter_value
-        )
-        print(f"📋 Filtered to {len(filtered_sequences)} sequences")
-
-        # Switch to sequence browser view (matching Legacy navigation)
+        # IMMEDIATE NAVIGATION: Switch to sequence browser view first
+        print("🎬 Immediately switching to sequence browser for progressive loading")
         self._show_sequence_browser()
+
+        # Start progressive loading - this will show incremental results
+        self.sequence_browser_panel.show_sequences_progressive(
+            filter_type, filter_value, chunk_size=8
+        )
+        print(f"🚀 Started progressive loading for {filter_type} = {filter_value}")
 
     def _apply_dictionary_filter(self, filter_type: FilterType, filter_value) -> List:
         """Apply filter using the dictionary data manager."""
@@ -564,8 +576,16 @@ class BrowseTab(QWidget):
 
     def _get_sequence_data(self, sequence_id: str) -> Optional[SequenceData]:
         """Get sequence data by ID."""
-        # Get the word from the mapping
-        word = self.sequence_id_to_word.get(sequence_id)
+        # First try to get the word from the progressive loading service mapping
+        word = None
+        if self.progressive_loading_service:
+            mapping = self.progressive_loading_service.get_sequence_id_mapping()
+            word = mapping.get(sequence_id)
+        
+        # Fallback to the old mapping if progressive loading didn't have it
+        if not word:
+            word = self.sequence_id_to_word.get(sequence_id)
+            
         if not word:
             print(f"❌ No word mapping found for sequence_id: {sequence_id}")
             return None
@@ -622,7 +642,8 @@ class BrowseTab(QWidget):
         # If we're currently showing filtered results, reapply the filter
         filter_type, filter_value = self.state_service.get_current_filter()
         if filter_type:
-            filtered_sequences = self._apply_dictionary_filter(
-                filter_type, filter_value
+            print(f"♾️ Refreshing with progressive loading: {filter_type} = {filter_value}")
+            # Use progressive loading for refresh as well
+            self.sequence_browser_panel.show_sequences_progressive(
+                filter_type, filter_value, chunk_size=8
             )
-            self.sequence_browser_panel.show_sequences(filtered_sequences)

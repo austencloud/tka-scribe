@@ -404,6 +404,29 @@ def main():
             splash.hide_animated(callback=lambda: print("🔧 [MAIN] Splash hidden"))
 
         fade_in_animation.finished.connect(start_initialization)
+
+        # Run generation tests if requested
+        if "--test-generation" in sys.argv:
+
+            def run_tests_after_init():
+                print("\n🧪 Running generation tests...")
+                try:
+                    from test_generation_simple import test_generation_functionality
+
+                    test_success = test_generation_functionality()
+                    if test_success:
+                        print("🎉 Generation tests passed!")
+                    else:
+                        print("❌ Generation tests failed!")
+                except Exception as e:
+                    print(f"❌ Failed to run generation tests: {e}")
+                    import traceback
+
+                    traceback.print_exc()
+
+            # Run tests after a short delay to ensure app is fully initialized
+            QTimer.singleShot(2000, run_tests_after_init)
+
         return app.exec()
 
     except Exception as e:

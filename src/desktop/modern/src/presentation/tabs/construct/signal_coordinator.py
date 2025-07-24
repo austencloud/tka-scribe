@@ -192,24 +192,6 @@ class SignalCoordinator(QObject):
             f"🎯 [SIGNAL_COORDINATOR] _handle_start_position_created called with position: {position_key}"
         )
 
-        # PAGINATION DEBUG: Track consecutive selections of the same position
-        if not hasattr(self, "_last_selected_position"):
-            self._last_selected_position = None
-            self._consecutive_selections = 0
-
-        if self._last_selected_position == position_key:
-            self._consecutive_selections += 1
-            print(
-                f"🔍 [PAGINATION_DEBUG] SignalCoordinator: Consecutive selection #{self._consecutive_selections} of position '{position_key}'"
-            )
-        else:
-            self._consecutive_selections = 1
-            print(
-                f"🔍 [PAGINATION_DEBUG] SignalCoordinator: First selection of position '{position_key}'"
-            )
-
-        self._last_selected_position = position_key
-
         self.start_position_manager.set_start_position(start_position_beat_data)
 
         # Pre-load option picker content WITHOUT animations to avoid double fade
@@ -233,10 +215,20 @@ class SignalCoordinator(QObject):
             f"🔍 [SIGNAL_COORDINATOR] Handling start position loaded: position_key={position_key}, start_position_data={start_position_data}"
         )
 
-        self.option_picker_manager.populate_from_start_position(
-            position_key, start_position_data
-        )
-        self.layout_manager.transition_to_option_picker()
+        # Only populate option picker if we have valid start position data
+        if start_position_data is not None:
+            print(
+                f"✅ [SIGNAL_COORDINATOR] Valid start position data found, populating option picker"
+            )
+            self.option_picker_manager.populate_from_start_position(
+                position_key, start_position_data
+            )
+            self.layout_manager.transition_to_option_picker()
+        else:
+            print(
+                f"⚠️ [SIGNAL_COORDINATOR] No start position data found, skipping option picker population"
+            )
+            # Don't transition to option picker if there's no data
 
     def _handle_sequence_modified(self, sequence: SequenceData):
         """Handle sequence modification from sequence manager"""

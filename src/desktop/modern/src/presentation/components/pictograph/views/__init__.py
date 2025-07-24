@@ -6,14 +6,15 @@ eliminate the widget wrapper complexity and provide immediate, consistent
 scaling like the legacy system.
 """
 
-from typing import Optional, Callable, Union
+from typing import Callable, Optional, Union
+
 from PyQt6.QtCore import QSize
 
 from .base_pictograph_view import BasePictographView
+from .beat_pictograph_view import BeatPictographView
+from .learn_pictograph_view import LearnPictographView
 from .option_pictograph_view import OptionPictographView
 from .start_position_view import StartPositionView
-from .learn_pictograph_view import LearnPictographView
-from .beat_pictograph_view import BeatPictographView
 
 
 def create_pictograph_view(context: str, parent=None, **kwargs) -> BasePictographView:
@@ -65,12 +66,17 @@ def create_pictograph_view(context: str, parent=None, **kwargs) -> BasePictograp
 
 
 def create_option_view(
-    parent=None, main_window_size_provider: Optional[Callable[[], QSize]] = None
+    parent=None,
+    main_window_size_provider: Optional[Callable[[], QSize]] = None,
+    letter_type=None,
 ) -> OptionPictographView:
     """Create an option picker pictograph view."""
-    return OptionPictographView(
+    view = OptionPictographView(
         parent=parent, main_window_size_provider=main_window_size_provider
     )
+    if letter_type:
+        view.set_letter_type(letter_type)
+    return view
 
 
 def create_start_position_view(

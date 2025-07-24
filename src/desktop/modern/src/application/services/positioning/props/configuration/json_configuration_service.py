@@ -165,8 +165,8 @@ class JSONConfigurator(IJSONConfigurator):
                 )
                 continue
 
-        # No configuration file found
-        print("Warning: No special placements configuration file found")
+        # No configuration file found - this is normal, suppress warning
+        # print("Warning: No special placements configuration file found")
         self._special_placements = {}
 
     def _get_default_config_paths(self) -> list:

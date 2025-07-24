@@ -6,17 +6,46 @@ Implements IGenerationService interface for freeform mode.
 """
 
 import random
+
+# Import constants from legacy data module
+# Import constants from legacy data module
+import sys
 from copy import deepcopy
-from typing import List, Dict, Any, Set
+from pathlib import Path
+from typing import Any, Dict, List, Set
 
 from core.interfaces.generation_services import (
     IGenerationService,
-    PropContinuity,
     LetterType,
+    PropContinuity,
 )
 from domain.models.generation_models import GenerationConfig, GenerationResult
-from data.constants import CLOCKWISE, COUNTER_CLOCKWISE, LETTER
-from tka_types import RotationDirection
+
+# Define constants directly to avoid import issues
+CLOCKWISE = "clockwise"
+COUNTER_CLOCKWISE = "counter_clockwise"
+LETTER = "letter"
+
+
+class RotationDeterminer:
+    """Determines rotation directions for sequence generation."""
+
+    @staticmethod
+    def get_rotation_dirs(prop_continuity: str):
+        """
+        Get rotation directions based on prop continuity setting.
+
+        Args:
+            prop_continuity: "continuous" or "random"
+
+        Returns:
+            Tuple of (blue_rot_dir, red_rot_dir) or (None, None) for random
+        """
+        if prop_continuity == "continuous":
+            return random.choice([CLOCKWISE, COUNTER_CLOCKWISE]), random.choice(
+                [CLOCKWISE, COUNTER_CLOCKWISE]
+            )
+        return None, None
 
 
 class FreeformGenerationService(IGenerationService):
@@ -231,7 +260,7 @@ class FreeformGenerationService(IGenerationService):
         self, options: List[Dict], blue_rot_dir: str, red_rot_dir: str
     ) -> List[Dict]:
         """Filter options to match rotation directions (from base_sequence_builder)."""
-        from data.constants import PROP_ROT_DIR, BLUE_ATTRS, RED_ATTRS, NO_ROT
+        from data.constants import BLUE_ATTRS, NO_ROT, PROP_ROT_DIR, RED_ATTRS
 
         filtered = [
             opt
@@ -248,14 +277,14 @@ class FreeformGenerationService(IGenerationService):
         """Set turns for both colors (from base_sequence_builder)."""
         from data.constants import (
             BLUE_ATTRS,
-            RED_ATTRS,
-            TURNS,
-            MOTION_TYPE,
             FLOAT,
+            MOTION_TYPE,
             NO_ROT,
-            PROP_ROT_DIR,
             PREFLOAT_MOTION_TYPE,
             PREFLOAT_PROP_ROT_DIR,
+            PROP_ROT_DIR,
+            RED_ATTRS,
+            TURNS,
         )
 
         # Handle blue turns
@@ -288,7 +317,7 @@ class FreeformGenerationService(IGenerationService):
 
     def _update_start_orientations(self, next_beat: Dict, last_beat: Dict) -> Dict:
         """Update start orientations from end of last beat."""
-        from data.constants import BLUE_ATTRS, RED_ATTRS, START_ORI, END_ORI
+        from data.constants import BLUE_ATTRS, END_ORI, RED_ATTRS, START_ORI
 
         next_beat[BLUE_ATTRS][START_ORI] = last_beat[BLUE_ATTRS][END_ORI]
         next_beat[RED_ATTRS][START_ORI] = last_beat[RED_ATTRS][END_ORI]
@@ -315,13 +344,13 @@ class FreeformGenerationService(IGenerationService):
         """Update prop rotation directions for dash/static motions."""
         from data.constants import (
             BLUE_ATTRS,
-            RED_ATTRS,
-            MOTION_TYPE,
             DASH,
+            MOTION_TYPE,
+            NO_ROT,
+            PROP_ROT_DIR,
+            RED_ATTRS,
             STATIC,
             TURNS,
-            PROP_ROT_DIR,
-            NO_ROT,
         )
 
         # Update blue

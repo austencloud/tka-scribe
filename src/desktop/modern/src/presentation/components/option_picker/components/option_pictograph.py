@@ -25,7 +25,13 @@ class OptionPictograph(QFrame):
     # Signal emitted when this option is clicked
     option_selected = pyqtSignal(object)  # PictographData
 
-    def __init__(self, parent=None, pictograph_component=None, size_calculator=None):
+    def __init__(
+        self,
+        parent=None,
+        pictograph_component=None,
+        size_calculator=None,
+        letter_type=None,
+    ):
         """
         Initialize the pictograph option frame.
 
@@ -33,10 +39,12 @@ class OptionPictograph(QFrame):
             parent: Parent widget
             pictograph_component: DEPRECATED - now creates direct view
             size_calculator: OptionPickerSizeCalculator service for sizing calculations (injected)
+            letter_type: Letter type for border coloring
         """
         super().__init__(parent)
 
         self._pictograph_data: Optional[PictographData] = None
+        self._letter_type = letter_type
 
         # Create direct pictograph view (no widget wrapper)
         def get_main_window_size():
@@ -44,7 +52,9 @@ class OptionPictograph(QFrame):
             return main_window.size() if main_window else QSize(1000, 800)
 
         self._pictograph_component = create_option_view(
-            parent=self, main_window_size_provider=get_main_window_size
+            parent=self,
+            main_window_size_provider=get_main_window_size,
+            letter_type=letter_type,
         )
 
         self._size_calculator: OptionPickerSizeCalculator = size_calculator

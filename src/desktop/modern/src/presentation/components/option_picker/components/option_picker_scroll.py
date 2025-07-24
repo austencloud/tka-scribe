@@ -94,6 +94,9 @@ class OptionPickerScroll(QScrollArea):
         self._pending_fade_sequence_data = None
         self._pending_fade_pictograph_frames = None
 
+        # Initialization state
+        self._all_sections_initialized = False
+
         # Initial size update (deferred to allow parent layout to complete)
         QTimer.singleShot(100, self._update_size)
 
@@ -193,9 +196,6 @@ class OptionPickerScroll(QScrollArea):
         from presentation.components.option_picker.components.group_widget import (
             OptionPickerGroupWidget,
         )
-        from presentation.components.option_picker.components.option_picker_section import (
-            OptionPickerSection,
-        )
 
         self.sections: Dict[LetterType, "OptionPickerSection"] = {}
         individual_sections = []
@@ -203,6 +203,10 @@ class OptionPickerScroll(QScrollArea):
 
         for letter_type in LetterType.ALL_TYPES:
             # Pass services to sections via dependency injection
+            from presentation.components.option_picker.components.option_picker_section import (
+                OptionPickerSection,
+            )
+
             section = OptionPickerSection(
                 letter_type=letter_type,
                 scroll_area=self,
@@ -237,6 +241,13 @@ class OptionPickerScroll(QScrollArea):
 
         # Layout orchestrator will handle spacing when header is added
 
+        # Mark all sections as initialized
+        print(f"🔧 [SCROLL] Setting _all_sections_initialized = True")
+        self._all_sections_initialized = True
+        print(
+            f"🔧 [SCROLL] Verification: _all_sections_initialized = {self._all_sections_initialized}"
+        )
+
     def add_header_label(self, header_widget: QWidget) -> None:
         """Add a header label widget at the top of the scroll area with balanced spacing."""
         # Delegate to layout orchestrator
@@ -261,8 +272,6 @@ class OptionPickerScroll(QScrollArea):
         try:
             # Check if main window is properly shown before sizing
             if not self._is_main_window_ready():
-                print(f"🔍 [SIZING] Main window not ready, deferring sizing...")
-                # Defer sizing until main window is properly shown
                 QTimer.singleShot(200, self._update_size)
                 return
 
@@ -272,22 +281,18 @@ class OptionPickerScroll(QScrollArea):
             # Try to get parent width first (immediate parent)
             if self.parent():
                 parent_width = self.parent().width()
-                print(f"🔍 [SIZING] Parent width: {parent_width}px")
 
                 if parent_width > 622:  # Valid parent width (not splash screen size)
                     # Use the full parent width (the parent should be sized correctly)
                     width = parent_width
-                    print(f"🔍 [SIZING] Using parent width: {width}px")
                 else:
                     # Fallback to main window calculation
                     main_window_size = self._mw_size_provider()
                     width = main_window_size.width() // 2
-                    print(f"🔍 [SIZING] Using main window fallback: {width}px")
             else:
                 # No parent, use main window calculation
                 main_window_size = self._mw_size_provider()
                 width = main_window_size.width() // 2
-                print(f"🔍 [SIZING] No parent, using main window: {width}px")
 
             # Set the width
             self.setFixedWidth(width)
@@ -342,6 +347,12 @@ class OptionPickerScroll(QScrollArea):
         print(
             f"🔄 [OPTION_PICKER] _handle_refresh_request called with sequence: {sequence_data}"
         )
+
+        # TEMPORARILY DISABLED: Don't process refresh requests until all sections are initialized
+        # if not self._all_sections_initialized:
+        #     print(f"❌ [SCROLL] Sections not fully initialized, deferring refresh")
+        #     return
+
         try:
             # Set UI loading state
             self._set_loading_state(True)
@@ -384,25 +395,12 @@ class OptionPickerScroll(QScrollArea):
             )
             print(f"🔄 [OPTION_PICKER] Received options: {options_by_type}")
 
-            # PAGINATION DEBUG: Log detailed option counts at UI layer
-            total_ui_options = sum(len(options) for options in options_by_type.values())
-            print(
-                f"🔍 [PAGINATION_DEBUG] OptionPickerScroll._update_all_sections_directly:"
-            )
-            print(f"   Total options received from service: {total_ui_options}")
-            for letter_type, options in options_by_type.items():
-                if options:
-                    print(f"     {letter_type}: {len(options)} options")
-
             if not options_by_type:
                 print("❌ [UI] No options received from service")
                 return
 
             # PAGINATION FIX: Reset widget pool to ensure clean state
             # This prevents pool exhaustion that causes the pagination issue
-            print(
-                f"🔧 [PAGINATION_FIX] Resetting widget pool before loading options..."
-            )
             if hasattr(self, "_widget_pool_manager") and self._widget_pool_manager:
                 self._widget_pool_manager.reset_pool()
 
