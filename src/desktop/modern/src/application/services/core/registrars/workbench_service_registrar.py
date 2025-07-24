@@ -82,9 +82,7 @@ class WorkbenchServiceRegistrar(BaseServiceRegistrar):
             from application.services.workbench.workbench_state_manager import (
                 WorkbenchStateManager,
             )
-            from core.interfaces.workbench_services import (
-                IWorkbenchSessionManager,
-            )
+            from core.interfaces.workbench_services import IWorkbenchSessionManager
 
             # Register beat selection service (no dependencies)
             container.register_singleton(BeatSelectionService, BeatSelectionService)
@@ -98,11 +96,12 @@ class WorkbenchServiceRegistrar(BaseServiceRegistrar):
                 )
             )
             container.register_instance(WorkbenchStateManager, state_manager_instance)
-            
+
             # Register interface
             from core.interfaces.workbench_services import IWorkbenchStateManager
+
             container.register_instance(IWorkbenchStateManager, state_manager_instance)
-            
+
             self._mark_service_available("WorkbenchStateManager")
             self._mark_service_available("IWorkbenchStateManager")
 
@@ -111,6 +110,14 @@ class WorkbenchServiceRegistrar(BaseServiceRegistrar):
             from application.services.sequence.sequence_beat_operations import (
                 SequenceBeatOperations,
             )
+            from application.services.workbench.workbench_export_service import (
+                WorkbenchExportService,
+            )
+
+            # Register export service
+            export_service_instance = WorkbenchExportService()
+            container.register_instance(WorkbenchExportService, export_service_instance)
+            self._mark_service_available("WorkbenchExportService")
 
             # Create the instance once using the same state manager and register it
             operation_coordinator_instance = WorkbenchOperationCoordinator(
@@ -126,6 +133,7 @@ class WorkbenchServiceRegistrar(BaseServiceRegistrar):
                     container, "SequenceTransformer"
                 ),
                 sequence_persister=self._safe_resolve(container, "SequencePersister"),
+                export_service=export_service_instance,
             )
             container.register_instance(
                 WorkbenchOperationCoordinator, operation_coordinator_instance
@@ -141,9 +149,13 @@ class WorkbenchServiceRegistrar(BaseServiceRegistrar):
                     ),
                     event_bus=self._safe_resolve(c, "EventBus"),
                 )
-            
-            container.register_factory(IWorkbenchSessionManager, create_workbench_session_manager)
-            container.register_factory(WorkbenchSessionManager, create_workbench_session_manager)
+
+            container.register_factory(
+                IWorkbenchSessionManager, create_workbench_session_manager
+            )
+            container.register_factory(
+                WorkbenchSessionManager, create_workbench_session_manager
+            )
             self._mark_service_available("WorkbenchSessionManager")
             self._mark_service_available("IWorkbenchSessionManager")
 

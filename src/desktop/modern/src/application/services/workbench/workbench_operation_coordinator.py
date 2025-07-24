@@ -84,6 +84,7 @@ class WorkbenchOperationCoordinator:
         fullscreen_service=None,
         sequence_transformer=None,
         sequence_persister=None,
+        export_service=None,
     ):
         """
         Initialize operation coordinator with injected dependencies.
@@ -95,6 +96,7 @@ class WorkbenchOperationCoordinator:
             fullscreen_service: IFullScreenViewer for fullscreen operations
             sequence_transformer: SequenceTransformer for transform operations
             sequence_persister: SequencePersister for persistence operations
+            export_service: WorkbenchExportService for export operations
         """
         self._state_manager = workbench_state_manager
         self._beat_operations = beat_operations
@@ -102,6 +104,7 @@ class WorkbenchOperationCoordinator:
         self._fullscreen_service = fullscreen_service
         self._sequence_transformer = sequence_transformer
         self._sequence_persister = sequence_persister
+        self._export_service = export_service
 
         logger.debug("WorkbenchOperationCoordinator initialized")
 
@@ -148,25 +151,59 @@ class WorkbenchOperationCoordinator:
     # Export Operations
     def save_image(self) -> OperationResult:
         """
-        Save current sequence as image.
+        Save current sequence as image using export service.
 
         Returns:
             OperationResult with operation details
         """
         try:
             # Check preconditions
-            if not self._state_manager or not self._state_manager.has_sequence():
+            logger.debug(f"Save image: state_manager={self._state_manager}")
+            if not self._state_manager:
+                logger.error("Save image failed: No state manager")
+                return OperationResult.failure_result(
+                    OperationType.SAVE_IMAGE, "No state manager available"
+                )
+
+            has_sequence = self._state_manager.has_sequence()
+            logger.debug(f"Save image: has_sequence={has_sequence}")
+            if not has_sequence:
+                logger.error("Save image failed: No sequence to export")
                 return OperationResult.failure_result(
                     OperationType.SAVE_IMAGE, "No sequence to export"
                 )
 
-            sequence = self._state_manager.get_current_sequence()
+            logger.debug(f"Save image: export_service={self._export_service}")
+            if not self._export_service:
+                logger.error("Save image failed: Export service not available")
+                return OperationResult.failure_result(
+                    OperationType.SAVE_IMAGE, "Export service not available"
+                )
 
-            # For now, return success - actual implementation would use export service
-            # TODO: Inject proper export service when available
-            return OperationResult.success_result(
-                OperationType.SAVE_IMAGE, "Image saved!"
+            sequence = self._state_manager.get_current_sequence()
+            logger.debug(
+                f"Save image: sequence={sequence}, length={sequence.length if sequence else 'None'}"
             )
+
+            # Use export service to save image
+            logger.debug("Save image: Calling export service...")
+            success, result_message = self._export_service.export_sequence_image(
+                sequence
+            )
+            logger.debug(
+                f"Save image: Export result: success={success}, message='{result_message}'"
+            )
+
+            if success:
+                # result_message contains the file path
+                return OperationResult.success_result(
+                    OperationType.SAVE_IMAGE,
+                    f"Image saved successfully to: {result_message}",
+                )
+            else:
+                return OperationResult.failure_result(
+                    OperationType.SAVE_IMAGE, f"Image export failed: {result_message}"
+                )
 
         except Exception as e:
             logger.error(f"Failed to save image: {e}")

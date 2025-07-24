@@ -49,33 +49,18 @@ class OptionPickerSizeCalculator:
                 }
 
             elif letter_type in [LetterType.TYPE4, LetterType.TYPE5, LetterType.TYPE6]:
-                # FIXED: Use exact legacy calculation logic
-                COLUMN_COUNT = 8  # Legacy constant
-                spacing = 5  # Legacy spacing constant
-                
-                # Legacy calculation:
-                # calculated_width = int((width / COLUMN_COUNT) - (spacing))
-                # view_width = calculated_width if calculated_width < mw_height // 8 else mw_height // 8
-                # final_width = int(view_width * 8) // 3
-                
-                calculated_width = int((base_width / COLUMN_COUNT) - spacing)
-                
-                # For now, use a reasonable height constraint (can be refined later)
-                height_constraint = 600 // 8  # Approximate constraint
-                view_width = calculated_width if calculated_width < height_constraint else height_constraint
-                
-                final_width = int(view_width * 8) // 3
+                # FIXED: Each individual grouped section gets 1/3 of the available width
+                # They are displayed side by side, so each one should be 1/3 width
+                section_width = base_width // 3
 
-                print(f"   Legacy-style grouped section calculation:")
+                print(f"   Individual grouped section calculation:")
                 print(f"     Base width: {base_width}px")
-                print(f"     Calculated width: {calculated_width}px")
-                print(f"     View width: {view_width}px")
-                print(f"     Final width: {final_width}px")
+                print(f"     Section width (1/3): {section_width}px")
 
                 return {
-                    "width": final_width,
+                    "width": section_width,
                     "columns": 8,  # Keep 8 columns for consistency
-                    "section_type": "grouped",
+                    "section_type": "grouped_individual",
                 }
 
             else:

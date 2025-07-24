@@ -75,17 +75,17 @@ class StartPositionPickerFooter(QWidget):
         self.update_for_mode(BasicMode())
 
     def _get_variations_button_styles(self) -> str:
-        """Get variations button styling - EXACT copy from original."""
+        """Get variations button styling - Improved readability against any background."""
         return """
             QPushButton#VariationsButton {
                 background: qlineargradient(
                     x1:0, y1:0, x2:1, y2:1,
-                    stop:0 rgba(99, 102, 241, 0.15),
-                    stop:1 rgba(168, 85, 247, 0.1)
+                    stop:0 rgba(59, 130, 246, 0.9),
+                    stop:1 rgba(37, 99, 235, 0.8)
                 );
-                border: 2px solid rgba(255, 255, 255, 0.25);
+                border: 2px solid rgba(255, 255, 255, 0.6);
                 border-radius: 16px;
-                color: #4c1d95;
+                color: white;
                 font-weight: 600;
                 padding: 12px 24px;
                 min-width: 160px;
@@ -94,10 +94,11 @@ class StartPositionPickerFooter(QWidget):
             QPushButton#VariationsButton:hover {
                 background: qlineargradient(
                     x1:0, y1:0, x2:1, y2:1,
-                    stop:0 rgba(99, 102, 241, 0.25),
-                    stop:1 rgba(168, 85, 247, 0.2)
+                    stop:0 rgba(59, 130, 246, 1.0),
+                    stop:1 rgba(37, 99, 235, 0.9)
                 );
-                border: 2px solid rgba(255, 255, 255, 0.4);
+                border: 2px solid rgba(255, 255, 255, 0.8);
+                color: white;
             }
         """
 

@@ -53,7 +53,7 @@ class OptionPickerGroupWidget(QWidget):
         section.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
 
         # FIXED: Force the section to use its calculated width, not expand
-        if hasattr(section, 'calculated_width'):
+        if hasattr(section, "calculated_width"):
             section.setFixedWidth(section.calculated_width)
         else:
             # Fallback to size hint if calculated width not available

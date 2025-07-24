@@ -198,7 +198,8 @@ class OptionPickerScroll(QScrollArea):
         )
 
         self.sections: Dict[LetterType, "OptionPickerSection"] = {}
-        groupable_sections = []
+        individual_sections = []
+        grouped_sections = []
 
         for letter_type in LetterType.ALL_TYPES:
             # Pass services to sections via dependency injection
@@ -217,20 +218,21 @@ class OptionPickerScroll(QScrollArea):
             # Connect Qt signals
             section.pictograph_selected.connect(self._on_pictograph_selected)
 
-            # Organize sections by grouping (business rule from config service)
+            # Organize sections by type
             if self._option_config_service.is_groupable_type(letter_type):
-                groupable_sections.append(section)
+                grouped_sections.append(section)
             else:
-                self.layout.addWidget(section)
+                individual_sections.append(section)
 
-        # Group sections if any are groupable
-        if groupable_sections:
+        # Add individual sections first (Type 1, 2, 3)
+        for section in individual_sections:
+            self.layout.addWidget(section)
+
+        # Add grouped sections in a horizontal layout (Type 4, 5, 6)
+        if grouped_sections:
             group_widget = OptionPickerGroupWidget(self)
-            for section in groupable_sections:
+            for section in grouped_sections:
                 group_widget.add_section_widget(section)
-
-            # FIXED: Remove stretches that center the group widget
-            # This allows the group to use the full available width
             self.layout.addWidget(group_widget)
 
         # Layout orchestrator will handle spacing when header is added

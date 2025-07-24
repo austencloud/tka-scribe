@@ -6,12 +6,12 @@ QGraphicsView-based pictograph display like the legacy system.
 """
 
 from typing import Optional
-from PyQt6.QtWidgets import QGraphicsView
-from PyQt6.QtCore import Qt
-from PyQt6.QtGui import QResizeEvent
 
 from domain.models.pictograph_data import PictographData
 from presentation.components.pictograph.pictograph_scene import PictographScene
+from PyQt6.QtCore import Qt
+from PyQt6.QtGui import QResizeEvent
+from PyQt6.QtWidgets import QGraphicsView
 
 
 class BasePictographView(QGraphicsView):
@@ -43,6 +43,9 @@ class BasePictographView(QGraphicsView):
         self.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
         self.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
 
+        # FIXED: Set alignment to center content like legacy
+        self.setAlignment(Qt.AlignmentFlag.AlignCenter)
+
         # Enable antialiasing for smooth graphics
         from PyQt6.QtGui import QPainter
 
@@ -54,6 +57,17 @@ class BasePictographView(QGraphicsView):
 
         # Disable drag mode - pictographs are display-only
         self.setDragMode(QGraphicsView.DragMode.NoDrag)
+
+        # FIXED: Set frame style and background like legacy
+        from PyQt6.QtWidgets import QFrame
+
+        self.setFrameStyle(QFrame.Shape.NoFrame)
+        self.setStyleSheet("background: transparent; border: none;")
+
+        # FIXED: Set margins to 0 like legacy
+        self.setContentsMargins(0, 0, 0, 0)
+        self.viewport().setContentsMargins(0, 0, 0, 0)
+        self.setViewportMargins(0, 0, 0, 0)
 
     # === PUBLIC INTERFACE ===
 

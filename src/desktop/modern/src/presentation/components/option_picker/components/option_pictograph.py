@@ -13,7 +13,7 @@ from application.services.option_picker.option_picker_size_calculator import (
 )
 from domain.models.pictograph_data import PictographData
 from presentation.components.pictograph.views import create_option_view
-from PyQt6.QtCore import Qt, pyqtSignal, QSize
+from PyQt6.QtCore import QSize, Qt, pyqtSignal
 from PyQt6.QtWidgets import QFrame, QVBoxLayout
 
 logger = logging.getLogger(__name__)
@@ -62,6 +62,12 @@ class OptionPictograph(QFrame):
         layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(0)
 
+        # DEBUG: Log layout setup
+        print(f"🔍 [LAYOUT DEBUG] Setting up option pictograph layout")
+
+        # FIXED: Center the pictograph component within the frame
+        layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
+
         # ✅ Use injected pictograph component instead of service location
         if self._pictograph_component is None:
             logger.error(
@@ -72,7 +78,12 @@ class OptionPictograph(QFrame):
         # Set parent for the injected component
         self._pictograph_component.setParent(self)
 
-        layout.addWidget(self._pictograph_component)
+        # FIXED: Add widget with center alignment
+        layout.addWidget(self._pictograph_component, 0, Qt.AlignmentFlag.AlignCenter)
+
+        print(f"   Layout alignment set to: AlignCenter")
+        print(f"   Widget added with AlignCenter alignment")
+        print(f"   ---")
 
     def _setup_styling(self):
         """Set up the frame styling."""
@@ -99,18 +110,22 @@ class OptionPictograph(QFrame):
                 # FIXED: Use actual section width for sizing calculations instead of parent container
                 main_window = self.window()
                 main_window_width = main_window.width() if main_window else 1200
-                
+
                 # Get the actual section width from the section container
                 section_container = self.parent()
-                while section_container and not hasattr(section_container, 'letter_type'):
+                while section_container and not hasattr(
+                    section_container, "letter_type"
+                ):
                     section_container = section_container.parent()
-                
-                if section_container and hasattr(section_container, 'width'):
+
+                if section_container and hasattr(section_container, "width"):
                     # Use the actual section width, not the scroll area width
                     option_picker_width = section_container.width()
                 else:
                     # Fallback to parent width if section not found
-                    option_picker_width = self.parent().width() if self.parent() else 800
+                    option_picker_width = (
+                        self.parent().width() if self.parent() else 800
+                    )
 
                 # Legacy formula: size = max(mw_width // 16, option_picker.width() // 8)
                 size_option_1 = main_window_width // 16
@@ -201,10 +216,10 @@ class OptionPictograph(QFrame):
         try:
             # FIXED: Get actual section width instead of scroll area width
             section_container = self.parent()
-            while section_container and not hasattr(section_container, 'letter_type'):
+            while section_container and not hasattr(section_container, "letter_type"):
                 section_container = section_container.parent()
-            
-            if section_container and hasattr(section_container, 'width'):
+
+            if section_container and hasattr(section_container, "width"):
                 # Use the actual section width for sizing calculations
                 actual_section_width = section_container.width()
             else:
@@ -223,6 +238,34 @@ class OptionPictograph(QFrame):
             # Update frame size
             frame_size = dimensions["frame_size"]
             self.setFixedSize(frame_size, frame_size)
+
+            # DEBUG: Log positioning information after resize
+            if section_container and hasattr(section_container, "letter_type"):
+                print(f"\n🔍 [RESIZE DEBUG] {section_container.letter_type}:")
+                print(f"   Section width: {section_container.width()}px")
+                print(f"   Frame size: {frame_size}x{frame_size}")
+                print(f"   Component size: {component_size}x{component_size}")
+                print(
+                    f"   Frame position in section: {self.pos().x()}, {self.pos().y()}"
+                )
+
+                # Check component positioning within frame
+                component_pos = self._pictograph_component.pos()
+                expected_center_x = (frame_size - component_size) // 2
+                expected_center_y = (frame_size - component_size) // 2
+                print(
+                    f"   Component position in frame: {component_pos.x()}, {component_pos.y()}"
+                )
+                print(
+                    f"   Expected center position: {expected_center_x}, {expected_center_y}"
+                )
+
+                is_centered = (
+                    abs(component_pos.x() - expected_center_x) < 2
+                    and abs(component_pos.y() - expected_center_y) < 2
+                )
+                print(f"   ✅ Component centered: {is_centered}")
+                print(f"   ---")
 
         except Exception as e:
             logger.error(f"Error resizing option view: {e}")

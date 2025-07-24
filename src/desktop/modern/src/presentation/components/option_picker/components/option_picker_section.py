@@ -170,10 +170,13 @@ class OptionPickerSection(QGroupBox):
         # Create container frame for pictographs (like legacy)
         self.pictograph_frame = QFrame(self)
         self.pictograph_frame.setStyleSheet("QFrame {border: none;}")
-        
+
         # FIXED: Use expanding size policy like legacy
         from PyQt6.QtWidgets import QSizePolicy
-        self.pictograph_frame.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.pictograph_frame.setSizePolicy(
+            QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum
+        )
 
         # Get layout config from service
         layout_config = self._option_config_service.get_layout_config()

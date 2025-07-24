@@ -8,9 +8,15 @@ Extracted from the main StartPositionPicker for better maintainability.
 import logging
 from enum import Enum
 
-from PyQt6.QtCore import Qt, pyqtSignal
-from PyQt6.QtGui import QFont
+from PyQt6.QtCore import Qt, pyqtSignal, QEasingCurve, QEvent
+from PyQt6.QtGui import QFont, QCursor
 from PyQt6.QtWidgets import QHBoxLayout, QLabel, QPushButton, QVBoxLayout, QWidget
+
+# Import the legacy PyToggle for animated grid mode switching
+import sys
+import os
+sys.path.append(os.path.join(os.path.dirname(__file__), "..", "..", "..", "..", "..", "legacy", "src", "base_widgets"))
+from pytoggle import PyToggle
 
 logger = logging.getLogger(__name__)
 
@@ -36,13 +42,16 @@ class StartPositionPickerHeader(QWidget):
 
     back_to_basic_requested = pyqtSignal()
     grid_mode_toggle_requested = pyqtSignal()
+    grid_mode_changed = pyqtSignal(str)  # Emits the new grid mode ("diamond" or "box")
 
     def __init__(self, parent=None):
         super().__init__(parent)
 
         # UI components
         self.back_button = None
-        self.mode_toggle_button = None
+        self.grid_mode_toggle = None
+        self.diamond_label = None
+        self.box_label = None
         self.title_label = None
         self.subtitle_label = None
 
@@ -50,11 +59,12 @@ class StartPositionPickerHeader(QWidget):
         logger.debug("StartPositionPickerHeader initialized")
 
     def _setup_ui(self):
-        """Setup the header UI - EXACT copy from original."""
+        """Setup the header UI with PyToggle for grid mode switching."""
         layout = QVBoxLayout(self)
-        layout.setSpacing(12)
+        layout.setSpacing(6)  # Further reduced spacing to move title up more
+        layout.setContentsMargins(0, 0, 0, 0)  # Remove margins
 
-        # Control bar
+        # Control bar - only back button now
         controls = QWidget()
         controls_layout = QHBoxLayout(controls)
 
@@ -67,19 +77,13 @@ class StartPositionPickerHeader(QWidget):
 
         controls_layout.addStretch()
 
-        # Mode toggle (grid mode switcher)
-        self.mode_toggle_button = QPushButton("⚡ Diamond Grid")
-        self.mode_toggle_button.setObjectName("ModeToggleButton")
-        self.mode_toggle_button.clicked.connect(self._on_mode_toggle_clicked)
-        controls_layout.addWidget(self.mode_toggle_button)
-
         layout.addWidget(controls)
 
         # Title section
         title_section = QWidget()
         title_layout = QVBoxLayout(title_section)
-        title_layout.setSpacing(8)
-        title_layout.setContentsMargins(16, 16, 16, 16)
+        title_layout.setSpacing(6)  # Reduced spacing
+        title_layout.setContentsMargins(16, 4, 16, 4)  # Minimal margins
 
         # Title
         self.title_label = QLabel("Choose Your Start Position")
@@ -100,11 +104,59 @@ class StartPositionPickerHeader(QWidget):
         title_section.setObjectName("TitleSection")
         layout.addWidget(title_section)
 
-        # Apply styling - EXACT copy from original
+        # Grid mode toggle section - Using LabeledToggleBase pattern
+        grid_toggle_section = QWidget()
+        grid_toggle_layout = QHBoxLayout(grid_toggle_section)
+        grid_toggle_layout.setSpacing(12)
+        grid_toggle_layout.setContentsMargins(0, 4, 0, 4)  # Minimal spacing
+
+        # Create clickable labels (Diamond on left, Box on right)
+        self.diamond_label = QLabel("⚡ Diamond Grid")
+        self.diamond_label.setFont(QFont("Segoe UI", 12, QFont.Weight.Medium))
+        self.diamond_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.diamond_label.setObjectName("GridModeLabel")
+        self.diamond_label.setAttribute(Qt.WidgetAttribute.WA_Hover, True)
+        self.diamond_label.installEventFilter(self)
+
+        # Create the PyToggle with proper legacy styling  
+        self.grid_mode_toggle = PyToggle(
+            width=80,
+            bg_color="#3B82F6",      # Blue for diamond (unchecked)
+            active_color="#10B981",  # Green for box (checked)
+            circle_color="#FFFFFF",  # White circle
+            animation_curve=QEasingCurve.Type.OutCubic,
+            change_bg_on_state=True
+        )
+        self.grid_mode_toggle.stateChanged.connect(self._on_grid_mode_toggled)
+
+        self.box_label = QLabel("⬜ Box Grid")
+        self.box_label.setFont(QFont("Segoe UI", 12, QFont.Weight.Medium))
+        self.box_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.box_label.setObjectName("GridModeLabel")
+        self.box_label.setAttribute(Qt.WidgetAttribute.WA_Hover, True)
+        self.box_label.installEventFilter(self)
+
+        # Center everything horizontally with fixed spacing to prevent layout shifts
+        grid_toggle_layout.addStretch(1)
+        grid_toggle_layout.addWidget(self.diamond_label)
+        grid_toggle_layout.addWidget(self.grid_mode_toggle)
+        grid_toggle_layout.addWidget(self.box_label)
+        grid_toggle_layout.addStretch(1)
+
+        # Set fixed widths to prevent layout shifts
+        self.diamond_label.setFixedWidth(120)
+        self.box_label.setFixedWidth(120)
+
+        layout.addWidget(grid_toggle_section)
+
+        # Update label styles based on initial state (Diamond is default)
+        self._update_label_styles()
+
+        # Apply styling
         self.setStyleSheet(self._get_header_styles())
 
     def _get_header_styles(self) -> str:
-        """Get header styling - EXACT copy from original."""
+        """Get header styling - Updated for cleaner design."""
         return """
             QWidget#TitleSection {
                 background: rgba(255, 255, 255, 0.2);
@@ -124,6 +176,12 @@ class StartPositionPickerHeader(QWidget):
                 font-weight: 400;
             }
             
+            QLabel#GridModeLabel {
+                color: rgba(0, 0, 0, 0.8);
+                background: transparent;
+                font-weight: 500;
+            }
+            
             QPushButton#BackButton {
                 background: rgba(239, 68, 68, 0.9);
                 color: white;
@@ -137,50 +195,110 @@ class StartPositionPickerHeader(QWidget):
             QPushButton#BackButton:hover {
                 background: rgba(239, 68, 68, 1.0);
             }
-            
-            QPushButton#ModeToggleButton {
-                background: rgba(59, 130, 246, 0.9);
-                color: white;
-                border: none;
-                border-radius: 14px;
-                padding: 6px 14px;
-                font-weight: 600;
-                font-size: 12px;
-            }
-            
-            QPushButton#ModeToggleButton:hover {
-                background: rgba(59, 130, 246, 1.0);
-            }
         """
 
     def update_for_mode(self, mode: PickerMode, grid_mode: str):
-        """Update header elements based on current mode - EXACT logic from original."""
+        """Update header elements based on current mode."""
         if mode == PickerMode.ADVANCED:
             self.title_label.setText("All Start Positions")
             self.subtitle_label.setText("Choose from 16 available starting positions")
             self.back_button.setVisible(True)
-            self.mode_toggle_button.setVisible(True)
         else:
             self.title_label.setText("Choose Your Start Position")
             self.subtitle_label.setText(
                 "Select a starting position to begin crafting your sequence"
             )
             self.back_button.setVisible(False)
-            self.mode_toggle_button.setVisible(True)
 
-        # Update grid mode button text
-        self.set_grid_mode_button_text(grid_mode)
+        # Update grid mode toggle
+        self.set_grid_mode(grid_mode)
+
+    def set_grid_mode(self, grid_mode: str):
+        """Set grid mode toggle state and label."""
+        is_box_mode = grid_mode == "box"
+        self.grid_mode_toggle.setChecked(is_box_mode)
+        self.grid_mode_label.setText("Box Grid" if is_box_mode else "Diamond Grid")
+    
+    def get_current_grid_mode(self) -> str:
+        """Get currently selected grid mode."""
+        return "box" if self.grid_mode_toggle.isChecked() else "diamond"
 
     def set_grid_mode_button_text(self, grid_mode: str):
-        """Update grid mode button text - EXACT logic from original."""
-        self.mode_toggle_button.setText(f"⚡ {grid_mode.title()} Grid")
+        """Update grid mode button text - DEPRECATED: Now using toggle and label."""
+        # This method is kept for compatibility but the label is updated in set_grid_mode
+        pass
 
     def _on_back_button_clicked(self):
         """Handle back button click."""
         logger.debug("Back button clicked")
         self.back_to_basic_requested.emit()
 
-    def _on_mode_toggle_clicked(self):
-        """Handle mode toggle button click."""
-        logger.debug("Mode toggle button clicked")
-        self.grid_mode_toggle_requested.emit()
+    def _on_grid_mode_toggled(self, checked):
+        """Handle grid mode toggle change."""
+        # Get the new mode
+        new_mode = "box" if checked else "diamond"
+        
+        # Update label styles to reflect current state
+        self._update_label_styles()
+        
+        # Notify about the change
+        self.grid_mode_changed.emit(new_mode)
+        
+    def _update_label_styles(self):
+        """Update label styles based on current toggle state."""
+        is_box_mode = self.grid_mode_toggle.isChecked()
+        
+        if is_box_mode:
+            # Box mode active - emphasize box label
+            self.diamond_label.setStyleSheet("""
+                QLabel {
+                    color: #9CA3AF;
+                    font-weight: normal;
+                }
+                QLabel:hover {
+                    color: #6B7280;
+                }
+            """)
+            self.box_label.setStyleSheet("""
+                QLabel {
+                    color: #10B981;
+                    font-weight: bold;
+                }
+                QLabel:hover {
+                    color: #059669;
+                }
+            """)
+        else:
+            # Diamond mode active - emphasize diamond label
+            self.diamond_label.setStyleSheet("""
+                QLabel {
+                    color: #3B82F6;
+                    font-weight: bold;
+                }
+                QLabel:hover {
+                    color: #2563EB;
+                }
+            """)
+            self.box_label.setStyleSheet("""
+                QLabel {
+                    color: #9CA3AF;
+                    font-weight: normal;
+                }
+                QLabel:hover {
+                    color: #6B7280;
+                }
+            """)
+
+    def eventFilter(self, obj, event):
+        """Handle click events on labels to toggle the state."""
+        if event.type() == QEvent.Type.MouseButtonPress:
+            if obj == self.diamond_label and self.grid_mode_toggle.isChecked():
+                # Click diamond label when in box mode - switch to diamond
+                self.grid_mode_toggle.setChecked(False)
+                return True
+            elif obj == self.box_label and not self.grid_mode_toggle.isChecked():
+                # Click box label when in diamond mode - switch to box
+                self.grid_mode_toggle.setChecked(True)
+                return True
+        
+        return super().eventFilter(obj, event)
