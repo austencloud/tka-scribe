@@ -103,16 +103,17 @@ class SequenceCardLayoutService(ISequenceCardLayoutService):
     """Implementation of sequence card layout calculations."""
 
     # Grid mappings from legacy system - EXACT replication
+    # CRITICAL FIX: Use correct legacy grid mappings (cols, rows) - REVERSED!
     GRID_MAPPINGS = {
-        2: (2, 3),
-        3: (2, 3),
-        4: (2, 10),
-        5: (3, 2),
-        6: (3, 2),
-        8: (2, 5),
-        10: (3, 4),
-        12: (3, 4),
-        16: (2, 3),
+        2: (2, 3),  # 2 columns, 3 rows (legacy: (3, 2) reversed)
+        3: (2, 3),  # 2 columns, 3 rows (legacy: (3, 2) reversed)
+        4: (2, 10),  # 2 columns, 10 rows (legacy: (10, 2) reversed)
+        5: (3, 2),  # 3 columns, 2 rows (legacy: (2, 3) reversed)
+        6: (3, 2),  # 3 columns, 2 rows (legacy: (2, 3) reversed)
+        8: (2, 5),  # 2 columns, 5 rows (legacy: (5, 2) reversed)
+        10: (3, 4),  # 3 columns, 4 rows (legacy: (4, 3) reversed)
+        12: (3, 4),  # 3 columns, 4 rows (legacy: (4, 3) reversed)
+        16: (2, 3),  # 2 columns, 3 rows (legacy: (3, 2) reversed) - FIXED!
     }
 
     def __init__(self):

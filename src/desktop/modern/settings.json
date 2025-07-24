@@ -1,7 +1,7 @@
 {
   "browse_tab": {
     "filter_type": "length",
-    "filter_values": "6",
+    "filter_values": "All",
     "selected_sequence": null,
     "selected_variation": null,
     "navigation_mode": "filter_selector",

@@ -63,7 +63,10 @@ class SequenceCardContentComponent(QWidget):
 
         # Initialize page layout manager after UI setup
         self.page_layout_manager = PageLayoutManager(
-            self.layout_service, self.content_layout, self.image_loader
+            self.layout_service,
+            self.content_layout,
+            self.image_loader,
+            self.cache_service,
         )
 
     def _setup_ui(self) -> None:
@@ -163,17 +166,35 @@ class SequenceCardContentComponent(QWidget):
         self.content_layout.addWidget(empty_label)
 
     def _clear_content(self) -> None:
-        """Clear all content widgets and stop any ongoing loading."""
+        """Clear all content widgets and stop any ongoing loading (legacy behavior)."""
         # Stop progressive loading if active
         self._stop_progressive_loading()
+
+        # CRITICAL: Clear page layout manager's internal state first (legacy pattern)
+        # Check if page_layout_manager exists (it's created after _setup_ui)
+        if hasattr(self, "page_layout_manager"):
+            self.page_layout_manager.clear_all_pages()
 
         # Clear page widgets list
         self.page_widgets = []
 
-        while self.content_layout.count():
-            child = self.content_layout.takeAt(0)
-            if child.widget():
-                child.widget().deleteLater()
+        # Clear all widgets from content layout (only if content_layout exists)
+        if hasattr(self, "content_layout"):
+            while self.content_layout.count():
+                child = self.content_layout.takeAt(0)
+                if child and child.widget():
+                    widget = child.widget()
+                    widget.setParent(None)
+                    widget.deleteLater()
+                elif child and child.layout():
+                    # Handle nested layouts (page row layouts)
+                    nested_layout = child.layout()
+                    while nested_layout.count():
+                        subchild = nested_layout.takeAt(0)
+                        if subchild and subchild.widget():
+                            subwidget = subchild.widget()
+                            subwidget.setParent(None)
+                            subwidget.deleteLater()
 
     def _stop_progressive_loading(self) -> None:
         """Stop any ongoing progressive loading."""
@@ -196,6 +217,13 @@ class SequenceCardContentComponent(QWidget):
             return
 
         try:
+            # Check if page_layout_manager is available
+            if not hasattr(self, "page_layout_manager"):
+                logger.warning(
+                    "PageLayoutManager not yet initialized, skipping display"
+                )
+                return
+
             # IMMEDIATE UI RESPONSE: Show page structure instantly with placeholders
             page_widgets = self.page_layout_manager.display_page_structure_immediately(
                 self.current_sequences, self.current_column_count
@@ -230,6 +258,13 @@ class SequenceCardContentComponent(QWidget):
             return
 
         try:
+            # Check if page_layout_manager is available
+            if not hasattr(self, "page_layout_manager"):
+                logger.warning(
+                    "PageLayoutManager not yet initialized, skipping refresh"
+                )
+                return
+
             # Use page layout manager for display
             page_widgets = self.page_layout_manager.display_sequences_in_pages(
                 self.current_sequences, self.current_column_count

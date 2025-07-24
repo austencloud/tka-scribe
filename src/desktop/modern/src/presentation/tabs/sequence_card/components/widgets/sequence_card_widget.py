@@ -11,7 +11,10 @@ from PyQt6.QtWidgets import QLabel, QSizePolicy
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QPixmap
 
-from core.interfaces.sequence_card_services import SequenceCardData
+from core.interfaces.sequence_card_services import (
+    SequenceCardData,
+    ISequenceCardCacheService,
+)
 from ..image_loading.image_loader import ImageLoader
 
 logger = logging.getLogger(__name__)
@@ -24,15 +27,23 @@ class SequenceCardWidget(QLabel):
         self,
         sequence_data: SequenceCardData,
         image_loader: Optional[ImageLoader] = None,
+        cache_service: Optional[ISequenceCardCacheService] = None,
         parent=None,
     ):
         super().__init__(parent)
         self.sequence_data = sequence_data
         self.image_loader = image_loader
+        self.cache_service = cache_service
         self.is_image_loaded = False
         self.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.setMinimumSize(150, 100)
-        self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
+
+        # BALANCED FIX: Set a reasonable minimum size that scales with container
+        # Cards should take up a good portion of their grid cell (60-80%)
+        # Start with a base minimum that will be adjusted by parent
+        self.setMinimumSize(80, 60)  # Base minimum - will be scaled by parent
+
+        # Use preferred policy to respect minimum size without expanding too much
+        self.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred)
         self._apply_styling()
 
         # Show word text initially, load image asynchronously
@@ -51,6 +62,10 @@ class SequenceCardWidget(QLabel):
         """Set the image loader and connect signals."""
         self.image_loader = image_loader
         self._connect_image_loader_signals()
+
+    def set_cache_service(self, cache_service: ISequenceCardCacheService):
+        """Set the cache service for optimized image loading."""
+        self.cache_service = cache_service
 
     def load_image_async(self):
         """Request image to be loaded asynchronously."""
@@ -77,7 +92,7 @@ class SequenceCardWidget(QLabel):
             )
 
     def load_image_optimized(self):
-        """Load image with maximum performance optimizations."""
+        """Load image with maximum performance optimizations and caching (legacy behavior)."""
         if self.is_image_loaded:
             return
 
@@ -85,15 +100,54 @@ class SequenceCardWidget(QLabel):
             # Safety check: ensure widget still exists
             if not self or self.isVisible() is None:
                 return
-                
-            # Ultra-optimized loading: Use the fastest possible method
+
             path_str = str(self.sequence_data.path)
 
-            # Load with format hint for faster processing
+            # CRITICAL: Check cache first (legacy pattern)
+            if self.cache_service:
+                cached_image_data = self.cache_service.get_cached_image(
+                    self.sequence_data.path
+                )
+                if cached_image_data:
+                    # Load from cache
+                    pixmap = QPixmap()
+                    if pixmap.loadFromData(cached_image_data):
+                        self.setPixmap(pixmap)
+                        self.setText("")  # Clear placeholder text
+                        self.setStyleSheet("")  # Clear placeholder styling
+                        self.is_image_loaded = True
+                        logger.debug(f"Cache hit for image: {path_str}")
+                        return
+
+            # Cache miss - load from disk and cache
             pixmap = QPixmap()
             if pixmap.load(path_str, "PNG"):  # Explicit format hint
-                # Set pixmap directly without any processing
-                self.setPixmap(pixmap)
+                # Cache the loaded image for future use
+                if self.cache_service:
+                    # Convert pixmap to bytes for caching
+                    from PyQt6.QtCore import QBuffer, QIODevice
+
+                    buffer = QBuffer()
+                    buffer.open(QIODevice.OpenModeFlag.WriteOnly)
+                    pixmap.save(buffer, "PNG")
+                    image_data = buffer.data().data()
+                    self.cache_service.cache_image(self.sequence_data.path, image_data)
+                    logger.debug(f"Cached image: {path_str}")
+
+                # LEGACY BEHAVIOR: Scale pixmap to fit grid cell size
+                widget_size = self.size()
+                if widget_size.width() > 0 and widget_size.height() > 0:
+                    # Scale to fit current widget size (determined by grid layout)
+                    scaled_pixmap = pixmap.scaled(
+                        widget_size,
+                        Qt.AspectRatioMode.KeepAspectRatio,
+                        Qt.TransformationMode.SmoothTransformation,
+                    )
+                    self.setPixmap(scaled_pixmap)
+                else:
+                    # Widget not sized yet, set pixmap directly
+                    self.setPixmap(pixmap)
+
                 self.setText("")  # Clear placeholder text
                 self.setStyleSheet("")  # Clear placeholder styling
                 self.is_image_loaded = True
@@ -117,13 +171,22 @@ class SequenceCardWidget(QLabel):
     def _on_image_loaded(self, path_str: str, pixmap: QPixmap):
         """Handle successful image loading."""
         if str(self.sequence_data.path) == path_str and not self.is_image_loaded:
-            # Scale pixmap to fit while maintaining aspect ratio
-            scaled_pixmap = pixmap.scaled(
-                self.size(),
-                Qt.AspectRatioMode.KeepAspectRatio,
-                Qt.TransformationMode.SmoothTransformation,
-            )
-            self.setPixmap(scaled_pixmap)
+            # LEGACY BEHAVIOR: Scale pixmap to fit grid cell size
+            # Get current widget size (determined by grid layout)
+            widget_size = self.size()
+
+            # Only scale if widget has been sized by layout
+            if widget_size.width() > 0 and widget_size.height() > 0:
+                scaled_pixmap = pixmap.scaled(
+                    widget_size,
+                    Qt.AspectRatioMode.KeepAspectRatio,
+                    Qt.TransformationMode.SmoothTransformation,
+                )
+                self.setPixmap(scaled_pixmap)
+            else:
+                # Widget not sized yet, set pixmap directly
+                self.setPixmap(pixmap)
+
             self.setText("")  # Clear text when image is loaded
             self.is_image_loaded = True
 
