@@ -417,6 +417,23 @@ class ComprehensiveSaveImageTest:
 
             if result.changed:
                 print(f"✅ Start position set successfully: {selected_position_key}")
+
+                # Create initial sequence with start position
+                from domain.models.sequence_data import SequenceData
+
+                initial_sequence = SequenceData(
+                    name="Comprehensive Test Sequence",
+                    word="TEST",
+                    beats=[],  # Start with empty beats, will add them next
+                )
+
+                # Set the sequence in state manager
+                sequence_result = state_manager.set_sequence(initial_sequence)
+                if sequence_result.changed:
+                    print("✅ Initial sequence created")
+                else:
+                    print("⚠️ Failed to create initial sequence")
+
                 self.sequence_data_log.append(
                     {
                         "action": "start_position_set",

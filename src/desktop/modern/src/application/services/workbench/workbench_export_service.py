@@ -57,6 +57,9 @@ class WorkbenchExportService(QObject):
         register_image_export_services(self._container)
         self._image_export_service = self._container.resolve(IImageExportService)
 
+        # Store reference to original global container for restoration
+        self._original_container = None
+
         logger.debug(
             f"WorkbenchExportService initialized with directory: {self._base_directory}"
         )
@@ -148,6 +151,9 @@ class WorkbenchExportService(QObject):
             logger.info("Attempting real image export with error handling...")
 
             try:
+                # CRITICAL FIX: Set export container as global so pictograph scenes can access services
+                self._set_export_container_as_global()
+
                 # Use the modern image export service
                 result = self._image_export_service.export_sequence_image(
                     sequence_data, word, Path(file_path), options
@@ -182,10 +188,11 @@ class WorkbenchExportService(QObject):
                     logger.error(
                         f"Failed to create fallback placeholder: {fallback_error}"
                     )
-                    return (
-                        False,
-                        f"Export failed: {e}. Fallback also failed: {fallback_error}",
-                    )
+                    return False, f"Image export failed: {e}"
+
+            finally:
+                # CRITICAL: Always restore original container
+                self._restore_original_container()
 
         except Exception as e:
             logger.error(f"Image export failed: {e}")
@@ -407,3 +414,37 @@ class WorkbenchExportService(QObject):
             attributes["reversal"] = beat.red_reversal
 
         return attributes
+
+    def _set_export_container_as_global(self) -> None:
+        """Set the export container as the global container for pictograph scene access."""
+        try:
+            from core.dependency_injection.di_container import (
+                get_container,
+                set_container,
+            )
+
+            # Store the current global container
+            self._original_container = get_container()
+
+            # Set our export container as the global one
+            set_container(self._container, force=True)
+
+            logger.debug("Export container set as global for pictograph scene access")
+
+        except Exception as e:
+            logger.warning(f"Failed to set export container as global: {e}")
+
+    def _restore_original_container(self) -> None:
+        """Restore the original global container."""
+        try:
+            if self._original_container is not None:
+                from core.dependency_injection.di_container import set_container
+
+                # Restore the original container
+                set_container(self._original_container, force=True)
+                self._original_container = None
+
+                logger.debug("Original container restored")
+
+        except Exception as e:
+            logger.warning(f"Failed to restore original container: {e}")

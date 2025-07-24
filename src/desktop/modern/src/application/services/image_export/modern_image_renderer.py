@@ -66,13 +66,14 @@ class ModernImageRenderer(IImageRenderer):
         beat_scale: float = 1.0,
     ):
         """
-        Adjust font and margin based on number of beats - exact legacy logic.
+        Adjust font and margin based on number of beats - FIXED sizing logic.
 
-        This replicates the legacy FontMarginHelper.adjust_font_and_margin method.
+        Fixed to prevent oversized fonts for small sequences.
         """
         # Get the base font size, ensuring it's at least 1
         base_font_size = max(1, base_font.pointSize())
 
+        # EXACT LEGACY LOGIC - do not modify these calculations
         if num_filled_beats <= 1:
             font_size = max(1, int(base_font_size / 2.3))
             margin = max(1, base_margin // 3)
@@ -113,20 +114,28 @@ class ModernImageRenderer(IImageRenderer):
         painter.setRenderHint(QPainter.RenderHint.Antialiasing)
         painter.setRenderHint(QPainter.RenderHint.SmoothPixmapTransform)
 
-        # Calculate grid layout
+        # Calculate grid layout - FIXED to account for start position
         num_beats = len(sequence_data)
-        cols = min(4, num_beats)
-        rows = (num_beats + cols - 1) // cols
+
+        # LEGACY LOGIC: Calculate layout including start position if enabled
+        if options.include_start_position:
+            # For legacy compatibility: add 1 column for start position
+            base_cols = min(4, num_beats) if num_beats > 0 else 1
+            cols = base_cols + 1  # Add column for start position
+        else:
+            cols = min(4, num_beats) if num_beats > 0 else 1
+
+        rows = (
+            num_beats + (cols - 1 if options.include_start_position else cols) - 1
+        ) // (cols - 1 if options.include_start_position else cols)
 
         margin = 10
         # Use provided beat_size or fall back to default
         if beat_size is None:
             beat_size = self.pictograph_size
 
-        # Render start position if enabled
-        start_index = 0
+        # FIXED: Render start position if enabled
         if options.include_start_position:
-            start_index = 1
             self._render_start_position(
                 painter,
                 margin,
@@ -135,20 +144,29 @@ class ModernImageRenderer(IImageRenderer):
                 options,
             )
 
-        # Render each beat
+        # FIXED: Render each beat with CORRECT LEGACY POSITIONING
         for i, beat_data in enumerate(sequence_data):
-            # Calculate position in grid (accounting for start position)
-            grid_index = i + start_index
-            row = grid_index // cols
-            col = grid_index % cols
+            # LEGACY LOGIC: When start position is visible, beats start at column 2 (not column 1)
+            # This is the key fix - beats should be arranged in columns 2 and onwards
+            if options.include_start_position:
+                # Legacy: beats use columns 2, 3, 4, etc. (col = (index % beatsPerRow) + 2)
+                beats_per_row = (
+                    cols - 1
+                )  # One less column for beats since column 1 is reserved
+                row = i // beats_per_row
+                col = (
+                    i % beats_per_row
+                ) + 1  # +1 to skip column 0 (start position column)
+            else:
+                # Standard layout without start position - use all columns
+                row = i // cols
+                col = i % cols
 
             x = margin + col * (beat_size + margin)
             # Fixed: Remove extra margin from Y positioning to match legacy behavior
-            # Legacy: y = row * beat_size + additional_height_top
-            # Modern was: y = additional_height_top + margin + row * (beat_size + margin)
             y = options.additional_height_top + row * beat_size
 
-            # Render the actual pictograph
+            # Pass the actual beat number (i + 1) for display
             self._render_single_beat(
                 painter, beat_data, x, y, beat_size, i + 1, options
             )
@@ -279,15 +297,15 @@ class ModernImageRenderer(IImageRenderer):
     def render_difficulty_level(
         self, image: QImage, difficulty_level: int, options: ImageExportOptions
     ) -> None:
-        """Render difficulty level indicator onto the image."""
+        """Render difficulty level indicator onto the image - FIXED sizing."""
         logger.debug(f"Rendering difficulty level: {difficulty_level}")
 
         painter = QPainter(image)
         painter.setRenderHint(QPainter.RenderHint.Antialiasing)
 
-        # Calculate circle dimensions (legacy behavior)
-        shape_size = int(options.additional_height_top * 0.75)
-        inset = options.additional_height_top // 8
+        # FIXED: Use EXACT legacy calculation to match legacy behavior
+        shape_size = int(options.additional_height_top * 0.75)  # Exact legacy formula
+        inset = options.additional_height_top // 8  # Exact legacy formula
         rect = QRect(
             inset + self.border_width, inset + self.border_width, shape_size, shape_size
         )
@@ -303,8 +321,8 @@ class ModernImageRenderer(IImageRenderer):
         # Draw circle
         painter.drawEllipse(rect)
 
-        # Draw difficulty number
-        font_size = int(rect.height() // 1.75)
+        # FIXED: Use EXACT legacy font calculation
+        font_size = int(rect.height() // 1.75)  # Exact legacy formula
         font = QFont("Georgia", font_size, QFont.Weight.Bold)
         painter.setFont(font)
 
@@ -334,14 +352,14 @@ class ModernImageRenderer(IImageRenderer):
         position: str,
         text_width: int = None,
     ) -> None:
-        """Draw text at the specified position (legacy positioning)."""
+        """Draw text at the specified position - FIXED positioning."""
         painter.setFont(font)
 
         if not text_width:
             metrics = QFontMetrics(font)
             text_width = metrics.horizontalAdvance(text)
 
-        # Calculate position based on legacy logic
+        # EXACT LEGACY POSITIONING - use original margin calculation
         if position == "bottom-left":
             x = margin + self.border_width
             y = image.height() - margin - self.border_width

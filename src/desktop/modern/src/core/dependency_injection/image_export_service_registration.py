@@ -5,22 +5,23 @@ This module registers all image export services with the dependency injection co
 """
 
 import logging
-from core.dependency_injection.di_container import DIContainer
-from core.interfaces.image_export_services import (
-    IImageExportService,
-    IImageRenderer,
-    ISequenceMetadataExtractor,
-    IImageLayoutCalculator,
-)
+
 from application.services.image_export.modern_image_export_service import (
     ModernImageExportService,
 )
 from application.services.image_export.modern_image_renderer import ModernImageRenderer
+from application.services.image_export.modern_layout_calculator import (
+    ModernLayoutCalculator,
+)
 from application.services.image_export.modern_metadata_extractor import (
     ModernMetadataExtractor,
 )
-from application.services.image_export.modern_layout_calculator import (
-    ModernLayoutCalculator,
+from core.dependency_injection.di_container import DIContainer
+from core.interfaces.image_export_services import (
+    IImageExportService,
+    IImageLayoutCalculator,
+    IImageRenderer,
+    ISequenceMetadataExtractor,
 )
 
 logger = logging.getLogger(__name__)
@@ -73,8 +74,32 @@ def _register_pictograph_services(container: DIContainer) -> None:
         pictograph_registrar = PictographServiceRegistrar()
         pictograph_registrar.register_services(container)
 
+        # CRITICAL FIX: Also register positioning services that pictograph scenes need
+        _register_positioning_services(container)
+
         logger.info("Pictograph services registered for image export")
 
     except Exception as e:
         logger.warning(f"Failed to register pictograph services: {e}")
         logger.info("Image export will fall back to simplified pictograph rendering")
+
+
+def _register_positioning_services(container: DIContainer) -> None:
+    """Register positioning services needed for pictograph scenes."""
+    try:
+        logger.info("Registering positioning services for image export...")
+
+        # Import and register the positioning service registrar
+        from application.services.core.registrars.positioning_service_registrar import (
+            PositioningServiceRegistrar,
+        )
+
+        # Create and use the positioning service registrar
+        positioning_registrar = PositioningServiceRegistrar()
+        positioning_registrar.register_services(container)
+
+        logger.info("Positioning services registered for image export")
+
+    except Exception as e:
+        logger.warning(f"Failed to register positioning services: {e}")
+        logger.info("Image export will fall back to center positioning")

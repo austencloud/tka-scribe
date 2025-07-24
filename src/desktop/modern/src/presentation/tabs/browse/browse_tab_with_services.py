@@ -1,16 +1,22 @@
 """
-Modern Browse Tab - Layout Matching Legacy Structure
+Modern Browse Tab - Complete Implementation with Service Integration
 
-Rewritten to match the Legacy browse tab layout exactly:
-- Horizontal layout with 2:1 ratio (left stack : sequence viewer)
-- Left stack contains filter selection and sequence browser
-- Navigation via QStackedWidget switching
+Updated to include:
+- DI container integration for service access
+- Complete action handler implementations
+- Full screen overlay functionality
+- Image export capability
+- Sequence deletion with confirmation
 """
 
 from pathlib import Path
 from typing import Dict, List, Optional
 
+from core.dependency_injection.di_container import DIContainer
+from core.interfaces.browse_services import ISequenceDeletionService
+from core.interfaces.image_export_services import IImageExportService, ISequenceMetadataExtractor, ImageExportOptions
 from domain.models.sequence_data import SequenceData
+from presentation.components.ui.full_screen.full_screen_overlay import FullScreenOverlay
 from presentation.tabs.browse.components.filter_selection_panel import (
     FilterSelectionPanel,
 )
@@ -27,12 +33,17 @@ from presentation.tabs.browse.services.modern_dictionary_data_manager import (
     ModernDictionaryDataManager,
 )
 from PyQt6.QtCore import QTimer, pyqtSignal
-from PyQt6.QtWidgets import QHBoxLayout, QStackedWidget, QWidget
+from PyQt6.QtGui import QPixmap
+from PyQt6.QtWidgets import QHBoxLayout, QMessageBox, QStackedWidget, QWidget
+
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class BrowseTab(QWidget):
     """
-    Modern Browse Tab matching Legacy layout structure exactly.
+    Modern Browse Tab with complete service integration.
 
     Layout:
     - Main horizontal layout (2:1 ratio)
@@ -40,6 +51,12 @@ class BrowseTab(QWidget):
       - Index 0: Filter selection panel
       - Index 1: Sequence browser panel
     - Right: Sequence viewer panel
+    
+    Features:
+    - Full image export functionality via DI services
+    - Sequence deletion with confirmation dialogs
+    - Full screen image viewing
+    - Complete metadata extraction and handling
     """
 
     # Signals for communication with main app
@@ -47,12 +64,39 @@ class BrowseTab(QWidget):
     open_in_construct = pyqtSignal(str)  # sequence_id
 
     def __init__(
-        self, sequences_dir: Path, settings_file: Path, parent: Optional[QWidget] = None
+        self, 
+        sequences_dir: Path, 
+        settings_file: Path, 
+        container: DIContainer,
+        parent: Optional[QWidget] = None
     ):
-        """Initialize the modern browse tab with Legacy-matching layout."""
+        """
+        Initialize the modern browse tab with complete service integration.
+        
+        Args:
+            sequences_dir: Directory containing sequence files
+            settings_file: Settings file path
+            container: Dependency injection container with registered services
+            parent: Parent widget
+        """
         super().__init__(parent)
+        
+        # Store services and data
+        self.sequences_dir = sequences_dir
+        self.container = container
+        
+        # Initialize services from DI container
+        try:
+            self.image_export_service = container.get_service(IImageExportService)
+            self.metadata_extractor = container.get_service(ISequenceMetadataExtractor)
+            self.deletion_service = container.get_service(ISequenceDeletionService)
+            logger.info("✅ All services initialized from DI container")
+        except Exception as e:
+            logger.error(f"❌ Failed to initialize services from DI container: {e}")
+            # Create fallback services if needed
+            self._initialize_fallback_services()
 
-        # Initialize services
+        # Initialize data managers and state
         # Find the TKA root directory and construct the data path
         tka_root = Path(__file__).resolve()
         while tka_root.parent != tka_root and tka_root.name != "TKA":
@@ -70,12 +114,24 @@ class BrowseTab(QWidget):
         self.dictionary_manager.data_loaded.connect(self._on_data_loaded)
         self.dictionary_manager.loading_progress.connect(self._on_loading_progress)
 
-        # Setup Legacy-matching layout
+        # Setup layout and UI
         self._setup_legacy_layout()
         self._connect_signals()
 
         # Load initial state
         QTimer.singleShot(100, self._load_initial_state)
+
+    def _initialize_fallback_services(self):
+        """Initialize fallback services if DI container services are not available."""
+        logger.warning("Initializing fallback services")
+        
+        # Create basic fallback implementations
+        from application.services.image_export.modern_metadata_extractor import ModernMetadataExtractor
+        from application.services.browse.sequence_deletion_service import SequenceDeletionService
+        
+        self.metadata_extractor = ModernMetadataExtractor()
+        self.deletion_service = SequenceDeletionService(self.sequences_dir)
+        self.image_export_service = None  # Will show error if used
 
     def _setup_legacy_layout(self) -> None:
         """Setup layout exactly matching Legacy structure."""
@@ -141,25 +197,25 @@ class BrowseTab(QWidget):
 
     def _on_data_loaded(self, count: int) -> None:
         """Handle data loading completion."""
-        print(f"📚 Loaded {count} sequences from dictionary")
+        logger.info(f"📚 Loaded {count} sequences from dictionary")
 
         # Check for loading errors
         errors = self.dictionary_manager.get_loading_errors()
         if errors:
-            print(f"⚠️  {len(errors)} loading errors occurred")
+            logger.warning(f"⚠️  {len(errors)} loading errors occurred")
             for error in errors[:5]:  # Show first 5 errors
-                print(f"   - {error}")
+                logger.warning(f"   - {error}")
 
     def _on_loading_progress(self, message: str, current: int, total: int) -> None:
         """Handle loading progress updates."""
         if (
             current % 10 == 0 or current == total
         ):  # Update every 10th item or at completion
-            print(f"🔄 {message} ({current}/{total})")
+            logger.info(f"🔄 {message} ({current}/{total})")
 
     def _on_filter_selected(self, filter_type: FilterType, filter_value) -> None:
         """Handle filter selection - switch to sequence browser."""
-        print(f"🔍 Filter selected: {filter_type} = {filter_value}")
+        logger.info(f"🔍 Filter selected: {filter_type} = {filter_value}")
 
         # Save filter state
         self.state_service.set_filter(filter_type, filter_value)
@@ -169,7 +225,7 @@ class BrowseTab(QWidget):
         self.sequence_browser_panel.show_sequences(
             filtered_sequences, filter_type, filter_value
         )
-        print(f"📋 Filtered to {len(filtered_sequences)} sequences")
+        logger.info(f"📋 Filtered to {len(filtered_sequences)} sequences")
 
         # Switch to sequence browser view (matching Legacy navigation)
         self._show_sequence_browser()
@@ -241,8 +297,6 @@ class BrowseTab(QWidget):
 
     def _convert_records_to_sequence_data(self, records) -> List:
         """Convert SequenceRecord objects to SequenceData format."""
-        from domain.models.sequence_data import SequenceData
-
         sequence_data_list = []
         for record in records:
             # Create SequenceData object
@@ -276,14 +330,14 @@ class BrowseTab(QWidget):
         if sequence_data:
             # Show sequence in viewer
             self.sequence_viewer_panel.show_sequence(sequence_data)
-            print(f"🎭 Sequence selected: {sequence_data.word} ({sequence_id})")
+            logger.info(f"🎭 Sequence selected: {sequence_data.word} ({sequence_id})")
 
         # Also emit the external signal
         self.sequence_selected.emit(sequence_id)
 
     def _on_sequence_action(self, action_type: str, sequence_id: str) -> None:
         """Handle sequence action from viewer panel - COMPLETE IMPLEMENTATION."""
-        print(f"🎬 Sequence action: {action_type} on {sequence_id}")
+        logger.info(f"🎬 Sequence action: {action_type} on {sequence_id}")
 
         if action_type == "edit":
             self._handle_edit_sequence(sequence_id)
@@ -294,96 +348,25 @@ class BrowseTab(QWidget):
         elif action_type == "fullscreen":
             self._handle_fullscreen_view(sequence_id)
         else:
-            print(f"Unknown action type: {action_type}")
+            logger.warning(f"Unknown action type: {action_type}")
 
     def _handle_edit_sequence(self, sequence_id: str) -> None:
         """Handle edit sequence action."""
-        print(f"✏️ Opening sequence {sequence_id} in construct tab")
+        logger.info(f"✏️ Opening sequence {sequence_id} in construct tab")
         self.open_in_construct.emit(sequence_id)
 
     def _handle_save_image(self, sequence_id: str) -> None:
-        """Handle save image action using basic file copy."""
+        """Handle save image action using the modern image export service."""
         try:
-            from PyQt6.QtWidgets import QMessageBox, QFileDialog
-            from pathlib import Path
-            import shutil
+            logger.info(f"💾 Saving image for sequence {sequence_id}")
             
-            print(f"💾 Saving image for sequence {sequence_id}")
-            
-            # Get sequence data
-            sequence_data = self._get_sequence_data(sequence_id)
-            if not sequence_data:
+            if not self.image_export_service:
                 QMessageBox.warning(
                     self, 
-                    "No Sequence", 
-                    "Please select a sequence first."
+                    "Service Unavailable", 
+                    "Image export service is not available."
                 )
                 return
-            
-            # Get current variation index from the action panel
-            current_variation = 0
-            if (hasattr(self.sequence_viewer_panel, 'action_panel') and 
-                hasattr(self.sequence_viewer_panel.action_panel, 'current_variation_index')):
-                current_variation = self.sequence_viewer_panel.action_panel.current_variation_index
-            
-            # Get the thumbnail path for the current variation
-            if (not sequence_data.thumbnails or 
-                current_variation < 0 or 
-                current_variation >= len(sequence_data.thumbnails)):
-                QMessageBox.warning(
-                    self, 
-                    "No Image", 
-                    "No image available for the selected variation."
-                )
-                return
-            
-            current_thumbnail_path = sequence_data.thumbnails[current_variation]
-            
-            # Use file dialog to get save location
-            suggested_name = f"{sequence_data.word}_exported.png"
-            file_path, _ = QFileDialog.getSaveFileName(
-                self,
-                "Save Sequence Image",
-                suggested_name,
-                "PNG Images (*.png);;All Files (*)"
-            )
-            
-            if file_path:
-                output_path = Path(file_path)
-                source_path = Path(current_thumbnail_path)
-                
-                if source_path.exists():
-                    shutil.copy2(source_path, output_path)
-                    QMessageBox.information(
-                        self,
-                        "Export Successful",
-                        f"Image saved successfully to:\n{output_path}"
-                    )
-                    print(f"✅ Successfully exported image to {output_path}")
-                else:
-                    QMessageBox.critical(
-                        self,
-                        "Export Failed",
-                        f"Source image not found:\n{source_path}"
-                    )
-                    print(f"❌ Source image not found: {source_path}")
-            
-        except Exception as e:
-            print(f"Error during image save: {e}")
-            from PyQt6.QtWidgets import QMessageBox
-            QMessageBox.critical(
-                self,
-                "Export Error", 
-                f"An error occurred while saving the image:\n{str(e)}"
-            )
-
-    def _handle_delete_variation(self, sequence_id: str) -> None:
-        """Handle delete variation action with confirmation."""
-        try:
-            from PyQt6.QtWidgets import QMessageBox
-            from pathlib import Path
-            
-            print(f"🗑️ Deleting variation for sequence {sequence_id}")
             
             # Get sequence data
             sequence_data = self._get_sequence_data(sequence_id)
@@ -396,10 +379,103 @@ class BrowseTab(QWidget):
                 return
             
             # Get current variation index
-            current_variation = 0
-            if (hasattr(self.sequence_viewer_panel, 'action_panel') and 
-                hasattr(self.sequence_viewer_panel.action_panel, 'current_variation_index')):
-                current_variation = self.sequence_viewer_panel.action_panel.current_variation_index
+            current_variation = self.sequence_viewer_panel.action_panel.current_variation_index
+            
+            # Get the thumbnail path for the current variation
+            if (not sequence_data.thumbnails or 
+                current_variation < 0 or 
+                current_variation >= len(sequence_data.thumbnails)):
+                QMessageBox.warning(
+                    self, 
+                    "No Image", 
+                    "No image available for the selected variation."
+                )
+                return
+            
+            current_thumbnail_path = Path(sequence_data.thumbnails[current_variation])
+            
+            # Extract sequence JSON from thumbnail metadata
+            sequence_json_data = self.metadata_extractor.extract_metadata(current_thumbnail_path)
+            if not sequence_json_data:
+                QMessageBox.warning(
+                    self, 
+                    "No Metadata", 
+                    "Could not extract sequence data from the selected image."
+                )
+                return
+            
+            # Create export options (using default settings for now)
+            export_options = ImageExportOptions(
+                add_word=True,
+                add_user_info=True,
+                add_difficulty_level=True,
+                include_start_position=True
+            )
+            
+            # Use file dialog to get save location
+            from PyQt6.QtWidgets import QFileDialog
+            suggested_name = f"{sequence_data.word}_exported.png"
+            file_path, _ = QFileDialog.getSaveFileName(
+                self,
+                "Save Sequence Image",
+                suggested_name,
+                "PNG Images (*.png);;All Files (*)"
+            )
+            
+            if file_path:
+                output_path = Path(file_path)
+                
+                # Extract sequence beats from metadata
+                sequence_beats = sequence_json_data.get("sequence", [])
+                
+                # Export the image
+                result = self.image_export_service.export_sequence_image(
+                    sequence_beats,
+                    sequence_data.word,
+                    output_path,
+                    export_options
+                )
+                
+                if result.success:
+                    QMessageBox.information(
+                        self,
+                        "Export Successful",
+                        f"Image saved successfully to:\n{output_path}"
+                    )
+                    logger.info(f"✅ Successfully exported image to {output_path}")
+                else:
+                    QMessageBox.critical(
+                        self,
+                        "Export Failed",
+                        f"Failed to export image:\n{result.error_message}"
+                    )
+                    logger.error(f"❌ Failed to export image: {result.error_message}")
+            
+        except Exception as e:
+            logger.error(f"Error during image save: {e}", exc_info=True)
+            QMessageBox.critical(
+                self,
+                "Export Error", 
+                f"An error occurred while saving the image:\n{str(e)}"
+            )
+
+    def _handle_delete_variation(self, sequence_id: str) -> None:
+        """Handle delete variation action using the deletion service."""
+        try:
+            logger.info(f"🗑️ Deleting variation for sequence {sequence_id}")
+            
+            # Get sequence data
+            sequence_data = self._get_sequence_data(sequence_id)
+            if not sequence_data:
+                QMessageBox.warning(
+                    self, 
+                    "No Sequence", 
+                    "Please select a sequence first."
+                )
+                return
+            
+            # Get current variation index
+            current_variation = self.sequence_viewer_panel.action_panel.current_variation_index
             
             if not sequence_data.thumbnails:
                 QMessageBox.warning(
@@ -409,54 +485,32 @@ class BrowseTab(QWidget):
                 )
                 return
             
-            # Show confirmation dialog
-            reply = QMessageBox.question(
-                self,
-                "Confirm Deletion",
-                f"Are you sure you want to delete variation {current_variation + 1} of '{sequence_data.word}'?\n\nThis action cannot be undone.",
-                QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
-                QMessageBox.StandardButton.No
+            # Perform deletion using the service
+            success = self.deletion_service.delete_variation(
+                sequence_data.word,
+                sequence_data.thumbnails,
+                current_variation,
+                self  # parent widget for dialogs
             )
             
-            if reply == QMessageBox.StandardButton.Yes:
-                # Get the file path to delete
-                if current_variation < len(sequence_data.thumbnails):
-                    file_to_delete = Path(sequence_data.thumbnails[current_variation])
-                    
-                    # Delete the file
-                    if file_to_delete.exists():
-                        file_to_delete.unlink()
-                        print(f"✅ Successfully deleted {file_to_delete}")
-                        
-                        QMessageBox.information(
-                            self,
-                            "Deletion Successful",
-                            f"Variation {current_variation + 1} has been deleted."
-                        )
-                        
-                        # Refresh to show changes
-                        self.refresh_sequences()
-                        
-                        # Update the viewer if there are remaining variations
-                        updated_sequence_data = self._get_sequence_data(sequence_id)
-                        if updated_sequence_data and updated_sequence_data.thumbnails:
-                            self.sequence_viewer_panel.show_sequence(updated_sequence_data)
-                        else:
-                            # No variations left, clear viewer
-                            self.sequence_viewer_panel.clear_sequence()
-                            self._show_sequence_browser()
-                    else:
-                        QMessageBox.warning(
-                            self,
-                            "File Not Found",
-                            f"The file to delete was not found:\n{file_to_delete}"
-                        )
-            else:
-                print("Deletion cancelled by user")
+            if success:
+                logger.info(f"✅ Successfully deleted variation {current_variation} of {sequence_data.word}")
+                
+                # Refresh the data to reflect changes
+                self.refresh_sequences()
+                
+                # Update the viewer
+                updated_sequence_data = self._get_sequence_data(sequence_id)
+                if updated_sequence_data and updated_sequence_data.thumbnails:
+                    # Show updated sequence
+                    self.sequence_viewer_panel.show_sequence(updated_sequence_data)
+                else:
+                    # No variations left, clear viewer
+                    self.sequence_viewer_panel.clear_sequence()
+                    self._show_sequence_browser()
             
         except Exception as e:
-            print(f"Error during variation deletion: {e}")
-            from PyQt6.QtWidgets import QMessageBox
+            logger.error(f"Error during variation deletion: {e}", exc_info=True)
             QMessageBox.critical(
                 self,
                 "Deletion Error",
@@ -464,23 +518,13 @@ class BrowseTab(QWidget):
             )
 
     def _handle_fullscreen_view(self, sequence_id: str) -> None:
-        """Handle fullscreen view action using basic overlay."""
+        """Handle fullscreen view action using the full screen overlay."""
         try:
-            from PyQt6.QtGui import QPixmap
-            from PyQt6.QtWidgets import QMessageBox, QLabel, QVBoxLayout, QWidget
-            from PyQt6.QtCore import Qt
-            from pathlib import Path
+            logger.info(f"🔍 Opening fullscreen view for sequence {sequence_id}")
             
-            print(f"🔍 Opening fullscreen view for sequence {sequence_id}")
-            
-            # Get current image info from the viewer
-            current_thumbnails = []
-            current_index = 0
-            
-            if (hasattr(self.sequence_viewer_panel, 'image_viewer') and 
-                hasattr(self.sequence_viewer_panel.image_viewer, 'current_thumbnails')):
-                current_thumbnails = self.sequence_viewer_panel.image_viewer.current_thumbnails
-                current_index = getattr(self.sequence_viewer_panel.image_viewer, 'current_index', 0)
+            # Get current image info
+            current_thumbnails = self.sequence_viewer_panel.image_viewer.current_thumbnails
+            current_index = self.sequence_viewer_panel.image_viewer.current_index
             
             if (not current_thumbnails or 
                 current_index < 0 or 
@@ -502,60 +546,14 @@ class BrowseTab(QWidget):
                 )
                 return
             
-            # Create and show basic fullscreen overlay
-            overlay = QWidget(self)
-            overlay.setWindowFlags(Qt.WindowType.FramelessWindowHint | Qt.WindowType.WindowStaysOnTopHint)
-            overlay.setStyleSheet("background-color: rgba(0, 0, 0, 0.9);")
-            overlay.setAttribute(Qt.WidgetAttribute.WA_DeleteOnClose)
-            overlay.setCursor(Qt.CursorShape.PointingHandCursor)
+            # Create and show full screen overlay
+            overlay = FullScreenOverlay(self)
+            overlay.show_image(current_thumbnail_path)
             
-            # Setup image display
-            layout = QVBoxLayout(overlay)
-            layout.setContentsMargins(0, 0, 0, 0)
-            
-            image_label = QLabel()
-            image_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-            image_label.setCursor(Qt.CursorShape.PointingHandCursor)
-            layout.addWidget(image_label)
-            
-            # Load and scale image
-            pixmap = QPixmap(str(current_thumbnail_path))
-            if not pixmap.isNull():
-                # Scale to fit screen while maintaining aspect ratio
-                screen_size = self.size()
-                scaled_pixmap = pixmap.scaled(
-                    screen_size,
-                    Qt.AspectRatioMode.KeepAspectRatio,
-                    Qt.TransformationMode.SmoothTransformation
-                )
-                image_label.setPixmap(scaled_pixmap)
-                
-                # Make it cover the parent window
-                overlay.setGeometry(self.geometry())
-                
-                # Click to close
-                def close_overlay(event=None):
-                    overlay.close()
-                
-                overlay.mousePressEvent = close_overlay
-                image_label.mousePressEvent = close_overlay
-                
-                # Show overlay
-                overlay.show()
-                overlay.raise_()
-                overlay.activateWindow()
-                
-                print(f"✅ Opened fullscreen view for {current_thumbnail_path}")
-            else:
-                QMessageBox.warning(
-                    self,
-                    "Invalid Image",
-                    f"Could not load image:\n{current_thumbnail_path}"
-                )
+            logger.info(f"✅ Opened fullscreen view for {current_thumbnail_path}")
             
         except Exception as e:
-            print(f"Error during fullscreen view: {e}")
-            from PyQt6.QtWidgets import QMessageBox
+            logger.error(f"Error during fullscreen view: {e}", exc_info=True)
             QMessageBox.critical(
                 self,
                 "Fullscreen Error",
@@ -567,7 +565,7 @@ class BrowseTab(QWidget):
         # Get the word from the mapping
         word = self.sequence_id_to_word.get(sequence_id)
         if not word:
-            print(f"❌ No word mapping found for sequence_id: {sequence_id}")
+            logger.error(f"❌ No word mapping found for sequence_id: {sequence_id}")
             return None
 
         # Get all records from dictionary manager
@@ -581,7 +579,7 @@ class BrowseTab(QWidget):
                 break
 
         if not target_record:
-            print(f"❌ No record found for word: {word}")
+            logger.error(f"❌ No record found for word: {word}")
             return None
 
         # Convert SequenceRecord to SequenceData
@@ -607,12 +605,12 @@ class BrowseTab(QWidget):
     def _show_filter_selection(self) -> None:
         """Show filter selection panel (index 0)."""
         self.internal_left_stack.setCurrentIndex(0)
-        print("🔄 Switched to filter selection view")
+        logger.info("🔄 Switched to filter selection view")
 
     def _show_sequence_browser(self) -> None:
         """Show sequence browser panel (index 1)."""
         self.internal_left_stack.setCurrentIndex(1)
-        print("🔄 Switched to sequence browser view")
+        logger.info("🔄 Switched to sequence browser view")
 
     def refresh_sequences(self) -> None:
         """Refresh sequence data from disk."""
@@ -625,4 +623,6 @@ class BrowseTab(QWidget):
             filtered_sequences = self._apply_dictionary_filter(
                 filter_type, filter_value
             )
-            self.sequence_browser_panel.show_sequences(filtered_sequences)
+            self.sequence_browser_panel.show_sequences(
+                filtered_sequences, filter_type, filter_value
+            )

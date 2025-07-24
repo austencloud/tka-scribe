@@ -173,7 +173,7 @@ class StartPositionPicker(QWidget):
         # Header signals
         self.header.back_to_basic_requested.connect(self._switch_to_basic_mode)
         self.header.grid_mode_toggle_requested.connect(self._toggle_grid_mode)
-        self.header.grid_mode_changed.connect(self._on_grid_mode_changed)
+        self.header.grid_mode_changed.connect(self.header._on_grid_mode_toggled)
 
         # Content signals
         self.content.position_selected.connect(self._handle_position_selection)
@@ -242,7 +242,7 @@ class StartPositionPicker(QWidget):
     def _toggle_grid_mode(self):
         """Toggle between diamond and box grid modes - EXACT logic from original."""
         old_grid_mode = self.grid_mode
-        
+
         # Get the current grid mode from the header radio buttons
         self.grid_mode = self.header.get_current_grid_mode()
 
