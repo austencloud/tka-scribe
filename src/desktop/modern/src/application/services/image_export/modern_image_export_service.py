@@ -9,20 +9,19 @@ import json
 import logging
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, Any, List, Optional, Callable
-
-from PyQt6.QtGui import QImage
-from PyQt6.QtCore import Qt
+from typing import Any, Callable, Dict, List, Optional
 
 from core.interfaces.image_export_services import (
-    IImageExportService,
-    IImageRenderer,
-    ISequenceMetadataExtractor,
-    IImageLayoutCalculator,
-    ImageExportOptions,
-    ExportResult,
     ExportProgress,
+    ExportResult,
+    IImageExportService,
+    IImageLayoutCalculator,
+    IImageRenderer,
+    ImageExportOptions,
+    ISequenceMetadataExtractor,
 )
+from PyQt6.QtCore import Qt
+from PyQt6.QtGui import QImage
 
 logger = logging.getLogger(__name__)
 
@@ -169,6 +168,34 @@ class ModernImageExportService(IImageExportService):
         logger.info(f"Export complete: {results}")
         return results
 
+    def _calculate_legacy_compatible_beat_size(
+        self, num_beats: int, columns: int
+    ) -> int:
+        """
+        Calculate beat size using legacy-compatible algorithm.
+
+        Legacy calculation: min(width // num_cols, height // 6)
+        This ensures exported images match legacy dimensions and font scaling.
+        """
+        # Estimate typical legacy beat frame dimensions
+        # These values are based on analysis of legacy beat frame resizer
+        typical_width = 1200  # Typical legacy beat frame width
+        typical_height = 800  # Typical legacy beat frame height
+
+        # Apply legacy calculation
+        width_constraint = typical_width // columns if columns > 0 else 0
+        height_constraint = typical_height // 6
+
+        beat_size = min(width_constraint, height_constraint) if columns > 0 else 0
+
+        # Ensure minimum size for very small calculations
+        beat_size = max(beat_size, 100)  # Minimum 100px for readability
+
+        logger.debug(
+            f"Calculated legacy-compatible beat size: {beat_size}px for {num_beats} beats, {columns} columns"
+        )
+        return beat_size
+
     def create_sequence_image(
         self,
         sequence_data: List[Dict[str, Any]],
@@ -186,12 +213,17 @@ class ModernImageExportService(IImageExportService):
             num_beats, options.include_start_position
         )
 
-        # Calculate additional heights for text elements
-        additional_height = self._calculate_additional_height(options, num_beats)
+        # Calculate legacy-compatible beat size
+        beat_size = self._calculate_legacy_compatible_beat_size(num_beats, columns)
+
+        # Calculate additional heights for text elements (must be done after beat_size calculation)
+        additional_height = self._calculate_additional_height(
+            options, num_beats, beat_size
+        )
 
         # Calculate image dimensions
         width, height = self.layout_calculator.calculate_image_dimensions(
-            columns, rows, self.beat_size, additional_height
+            columns, rows, beat_size, additional_height
         )
 
         # Create the image
@@ -200,8 +232,13 @@ class ModernImageExportService(IImageExportService):
 
         # Note: additional_height_top and additional_height_bottom are set in _calculate_additional_height
 
-        # Render sequence beats
-        self.image_renderer.render_sequence_beats(image, sequence_data, options)
+        # Add beat_size to options for font scaling calculations
+        options.beat_size = beat_size
+
+        # Render sequence beats with calculated beat size
+        self.image_renderer.render_sequence_beats(
+            image, sequence_data, options, beat_size
+        )
 
         # Render additional elements with legacy scaling
         if options.add_word:
@@ -292,11 +329,13 @@ class ModernImageExportService(IImageExportService):
         return source_mtime > output_mtime
 
     def _calculate_additional_height(
-        self, options: ImageExportOptions, num_beats: int
+        self, options: ImageExportOptions, num_beats: int, beat_size: int
     ) -> int:
         """Calculate additional height needed for text elements using legacy logic."""
         # Legacy HeightDeterminer logic - exact replication
-        beat_scale = 1.0  # For now, can be adjusted based on image size if needed
+        # Calculate beat_scale based on beat_size ratio to reference size
+        reference_beat_size = 280  # Reference size (modern default)
+        beat_scale = beat_size / reference_beat_size
 
         if num_beats == 0:
             additional_height_top = 0

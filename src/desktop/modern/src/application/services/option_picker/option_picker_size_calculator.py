@@ -30,19 +30,18 @@ class OptionPickerSizeCalculator:
         """
         Calculate section layout dimensions.
 
-        FIXED: When called with scroll_area_width, use it directly for proper section sizing.
+        FIXED: Use legacy calculation logic to match legacy behavior exactly.
         Returns dimension dictionary - presentation layer applies to Qt layouts.
         """
         try:
-            # CRITICAL FIX: The caller now passes scroll_area_width as main_window_width
-            # So we should use it directly, not divide by 2
-            container_width = (
-                main_window_width  # This is actually the scroll area width
-            )
+            # FIXED: Use legacy logic exactly
+            # Legacy: width = self.mw_size_provider().width() // 2
+            # But main_window_width is now the scroll area width, so use it directly
+            base_width = main_window_width  # This is actually the scroll area width
 
             if letter_type in [LetterType.TYPE1, LetterType.TYPE2, LetterType.TYPE3]:
-                # Individual sections: use FULL container width
-                section_width = container_width
+                # Individual sections: use FULL base width (matches legacy)
+                section_width = base_width
                 return {
                     "width": section_width,
                     "columns": 8,
@@ -50,18 +49,31 @@ class OptionPickerSizeCalculator:
                 }
 
             elif letter_type in [LetterType.TYPE4, LetterType.TYPE5, LetterType.TYPE6]:
-                # Grouped sections: 1/3 of container width minus spacing
-                # Account for spacing between sections (1px × 2 = 2px total)
-                spacing_total = 2  # 1px spacing × 2 gaps between 3 sections
-                available_for_sections = container_width - spacing_total
-                section_width = available_for_sections // 3  # Each section gets 1/3
+                # FIXED: Use exact legacy calculation logic
+                COLUMN_COUNT = 8  # Legacy constant
+                spacing = 5  # Legacy spacing constant
+                
+                # Legacy calculation:
+                # calculated_width = int((width / COLUMN_COUNT) - (spacing))
+                # view_width = calculated_width if calculated_width < mw_height // 8 else mw_height // 8
+                # final_width = int(view_width * 8) // 3
+                
+                calculated_width = int((base_width / COLUMN_COUNT) - spacing)
+                
+                # For now, use a reasonable height constraint (can be refined later)
+                height_constraint = 600 // 8  # Approximate constraint
+                view_width = calculated_width if calculated_width < height_constraint else height_constraint
+                
+                final_width = int(view_width * 8) // 3
 
-                print(f"   Grouped section calculation:")
-                print(f"     Available after spacing: {available_for_sections}px")
-                print(f"     Each grouped section: {section_width}px (1/3 width)")
+                print(f"   Legacy-style grouped section calculation:")
+                print(f"     Base width: {base_width}px")
+                print(f"     Calculated width: {calculated_width}px")
+                print(f"     View width: {view_width}px")
+                print(f"     Final width: {final_width}px")
 
                 return {
-                    "width": section_width,
+                    "width": final_width,
                     "columns": 8,  # Keep 8 columns for consistency
                     "section_type": "grouped",
                 }
@@ -69,7 +81,7 @@ class OptionPickerSizeCalculator:
             else:
                 # Fallback for unknown types
                 return {
-                    "width": container_width,
+                    "width": base_width,
                     "columns": 8,
                     "section_type": "fallback",
                 }

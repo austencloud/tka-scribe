@@ -30,6 +30,7 @@ class OptionPickerGroupWidget(QWidget):
     Simplified group widget using Legacy success pattern.
 
     Direct copy of Legacy OptionPickerSectionGroupWidget with minimal changes.
+    FIXED: Added proper width constraints to prevent pictograph alignment issues.
     """
 
     def __init__(self, scroll_area: "OptionPickerScroll") -> None:
@@ -42,14 +43,21 @@ class OptionPickerGroupWidget(QWidget):
         self.layout.setContentsMargins(0, 0, 0, 0)
         self.layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
-        self.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
+        # FIXED: Use Expanding policy to fill available width properly
+        self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
         self.setLayout(self.layout)
 
     def add_section_widget(self, section: "OptionPickerSection") -> None:
         """Add a section widget to the group exactly like Legacy."""
-        section.setSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Fixed)
+        # FIXED: Use Fixed size policy and set exact constraints to prevent stretching
+        section.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
 
-        section.setMinimumWidth(section.sizeHint().width())
-        section.setMaximumWidth(section.sizeHint().width())
+        # FIXED: Force the section to use its calculated width, not expand
+        if hasattr(section, 'calculated_width'):
+            section.setFixedWidth(section.calculated_width)
+        else:
+            # Fallback to size hint if calculated width not available
+            section.setMinimumWidth(section.sizeHint().width())
+            section.setMaximumWidth(section.sizeHint().width())
 
         self.layout.addWidget(section, alignment=Qt.AlignmentFlag.AlignCenter)

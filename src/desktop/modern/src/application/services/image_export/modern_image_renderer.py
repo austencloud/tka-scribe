@@ -6,27 +6,26 @@ replicating the legacy system's visual output exactly.
 """
 
 import logging
-from typing import Dict, Any, List, Optional
+from typing import Any, Dict, List, Optional
 
+from application.services.data.pictograph_factory import PictographFactory
+from core.interfaces.image_export_services import IImageRenderer, ImageExportOptions
+from domain.models.enums import GridMode
+from domain.models.pictograph_data import PictographData
+from presentation.components.pictograph.pictograph_scene import PictographScene
+from PyQt6.QtCore import QPoint, QRect, QRectF, Qt
 from PyQt6.QtGui import (
-    QImage,
-    QPainter,
+    QBrush,
+    QColor,
     QFont,
     QFontMetrics,
-    QPen,
-    QBrush,
+    QImage,
     QLinearGradient,
-    QColor,
+    QPainter,
+    QPen,
     QPixmap,
 )
-from PyQt6.QtCore import Qt, QRect, QPoint, QRectF
 from PyQt6.QtWidgets import QGraphicsView
-
-from core.interfaces.image_export_services import IImageRenderer, ImageExportOptions
-from presentation.components.pictograph.pictograph_scene import PictographScene
-from domain.models.pictograph_data import PictographData
-from domain.models.enums import GridMode
-from application.services.data.pictograph_factory import PictographFactory
 
 logger = logging.getLogger(__name__)
 
@@ -101,6 +100,7 @@ class ModernImageRenderer(IImageRenderer):
         image: QImage,
         sequence_data: List[Dict[str, Any]],
         options: ImageExportOptions,
+        beat_size: int = None,
     ) -> None:
         """Render sequence beats onto the image using modern pictograph system."""
         logger.debug(f"Rendering {len(sequence_data)} sequence beats")
@@ -119,7 +119,9 @@ class ModernImageRenderer(IImageRenderer):
         rows = (num_beats + cols - 1) // cols
 
         margin = 10
-        beat_size = self.pictograph_size
+        # Use provided beat_size or fall back to default
+        if beat_size is None:
+            beat_size = self.pictograph_size
 
         # Render start position if enabled
         start_index = 0
@@ -128,7 +130,7 @@ class ModernImageRenderer(IImageRenderer):
             self._render_start_position(
                 painter,
                 margin,
-                options.additional_height_top + margin,
+                options.additional_height_top,  # Fixed: Remove extra margin to match legacy
                 beat_size,
                 options,
             )
@@ -141,7 +143,10 @@ class ModernImageRenderer(IImageRenderer):
             col = grid_index % cols
 
             x = margin + col * (beat_size + margin)
-            y = options.additional_height_top + margin + row * (beat_size + margin)
+            # Fixed: Remove extra margin from Y positioning to match legacy behavior
+            # Legacy: y = row * beat_size + additional_height_top
+            # Modern was: y = additional_height_top + margin + row * (beat_size + margin)
+            y = options.additional_height_top + row * beat_size
 
             # Render the actual pictograph
             self._render_single_beat(
@@ -161,8 +166,12 @@ class ModernImageRenderer(IImageRenderer):
         """Render the word text onto the image using legacy scaling."""
         logger.debug(f"Rendering word: '{word}' for {num_filled_beats} beats")
 
-        # Calculate beat scale (legacy logic)
-        beat_scale = 1.0  # For now, can be adjusted based on image size if needed
+        # Calculate beat scale based on beat size (legacy logic)
+        # Legacy uses beat_scale = 1.0, but the actual scaling comes from beat_size
+        # We need to calculate beat_scale based on the ratio to a reference size
+        reference_beat_size = 280  # Reference size (modern default)
+        actual_beat_size = getattr(options, "beat_size", reference_beat_size)
+        beat_scale = actual_beat_size / reference_beat_size
 
         # Apply legacy font and margin adjustment
         font, margin = self._adjust_font_and_margin_legacy(
@@ -216,8 +225,12 @@ class ModernImageRenderer(IImageRenderer):
         """Render user information onto the image using legacy scaling."""
         logger.debug("Rendering user info")
 
-        # Calculate beat scale (legacy logic)
-        beat_scale = 1.0  # For now, can be adjusted based on image size if needed
+        # Calculate beat scale based on beat size (legacy logic)
+        # Legacy uses beat_scale = 1.0, but the actual scaling comes from beat_size
+        # We need to calculate beat_scale based on the ratio to a reference size
+        reference_beat_size = 280  # Reference size (modern default)
+        actual_beat_size = getattr(options, "beat_size", reference_beat_size)
+        beat_scale = actual_beat_size / reference_beat_size
 
         # Apply legacy font and margin adjustment for both fonts
         font_bold, margin = self._adjust_font_and_margin_legacy(

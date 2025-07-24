@@ -4,7 +4,7 @@ Test to verify section names are correct and header clicking works.
 
 import sys
 
-from application.services.pictograph_pool_manager import initialize_pictograph_pool
+from application.services.pictograph_pool_manager import PictographPoolManager
 from core.application.application_factory import ApplicationFactory
 from presentation.tabs.construct.modern_construct_tab import ConstructTabWidget
 from PyQt6.QtWidgets import QApplication
@@ -24,7 +24,8 @@ def test_section_names():
 
         # Initialize pictograph pool
         try:
-            initialize_pictograph_pool(container)
+            pool_manager = PictographPoolManager(container)
+            pool_manager.initialize_pool()
             print("✅ Pictograph pool initialized")
         except Exception as e:
             print(f"⚠️ Pool initialization failed: {e}")

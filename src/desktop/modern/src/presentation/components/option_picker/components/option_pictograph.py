@@ -79,11 +79,13 @@ class OptionPictograph(QFrame):
         self.setMouseTracking(True)
         self.setCursor(Qt.CursorShape.PointingHandCursor)
 
-        # Apply baseline styling for proper appearance
+        # FIXED: Remove glassmorphism background to match legacy behavior
+        # Legacy doesn't have background styling on the option frames
         self.setStyleSheet(
             """
             OptionPictograph {
-                background: rgba(255, 255, 255, 0.1);
+                background: transparent;
+                border: none;
             }
             """
         )
@@ -94,10 +96,21 @@ class OptionPictograph(QFrame):
 
         if self._pictograph_component and pictograph_data:
             try:
-                # LEGACY-STYLE SIZING: Calculate size like legacy system
+                # FIXED: Use actual section width for sizing calculations instead of parent container
                 main_window = self.window()
                 main_window_width = main_window.width() if main_window else 1200
-                option_picker_width = self.parent().width() if self.parent() else 800
+                
+                # Get the actual section width from the section container
+                section_container = self.parent()
+                while section_container and not hasattr(section_container, 'letter_type'):
+                    section_container = section_container.parent()
+                
+                if section_container and hasattr(section_container, 'width'):
+                    # Use the actual section width, not the scroll area width
+                    option_picker_width = section_container.width()
+                else:
+                    # Fallback to parent width if section not found
+                    option_picker_width = self.parent().width() if self.parent() else 800
 
                 # Legacy formula: size = max(mw_width // 16, option_picker.width() // 8)
                 size_option_1 = main_window_width // 16
@@ -109,15 +122,13 @@ class OptionPictograph(QFrame):
                 target_size = target_size - (2 * border_width)
                 target_size = max(target_size, 100)  # Minimum size
 
-                # DIRECT VIEW APPROACH: Set size and update option picker width
-                self._pictograph_component.set_option_picker_width(
-                    self.parent().width() if self.parent() else 800
-                )
+                # DIRECT VIEW APPROACH: Set size and update option picker width with section width
+                self._pictograph_component.set_option_picker_width(option_picker_width)
 
                 # Update pictograph data - direct view handles scaling automatically
                 self._pictograph_component.update_from_pictograph_data(pictograph_data)
                 logger.debug(
-                    f"Updated pictograph option with letter: {pictograph_data.letter}, size: {target_size}x{target_size}"
+                    f"Updated pictograph option with letter: {pictograph_data.letter}, size: {target_size}x{target_size}, section_width: {option_picker_width}"
                 )
             except Exception as e:
                 logger.error(f"Error updating pictograph option: {e}")
@@ -188,9 +199,21 @@ class OptionPictograph(QFrame):
         """Resize using OptionPickerSizeCalculator service - clean architecture."""
 
         try:
-            # ✅ Use injected service for all sizing calculations
+            # FIXED: Get actual section width instead of scroll area width
+            section_container = self.parent()
+            while section_container and not hasattr(section_container, 'letter_type'):
+                section_container = section_container.parent()
+            
+            if section_container and hasattr(section_container, 'width'):
+                # Use the actual section width for sizing calculations
+                actual_section_width = section_container.width()
+            else:
+                # Fallback to provided option_picker_width
+                actual_section_width = option_picker_width
+
+            # ✅ Use injected service for all sizing calculations with correct section width
             dimensions = self._size_calculator.calculate_frame_dimensions(
-                main_window_size, option_picker_width, spacing
+                main_window_size, actual_section_width, spacing
             )
 
             # Update pictograph component size

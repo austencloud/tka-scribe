@@ -9,8 +9,8 @@ from typing import Optional
 
 from domain.models import BeatData
 from PyQt6.QtCore import QSize, Qt, pyqtSignal
-from PyQt6.QtGui import QColor, QPainter, QPen
-from PyQt6.QtWidgets import QFrame, QVBoxLayout
+from PyQt6.QtGui import QAction, QColor, QPainter, QPen
+from PyQt6.QtWidgets import QFileDialog, QFrame, QMenu, QMessageBox, QVBoxLayout
 
 from ...pictograph.views import create_beat_view
 from ...pictograph.views.beat_pictograph_view import BeatPictographView
@@ -286,10 +286,106 @@ class BeatView(QFrame):
         if event.button() == Qt.MouseButton.LeftButton:
             self.beat_clicked.emit()
         elif event.button() == Qt.MouseButton.RightButton:
-            self.beat_context_menu.emit()
+            # Show context menu if beat has data
+            if self._beat_data:
+                self._show_context_menu(event.globalPosition().toPoint())
+            else:
+                self.beat_context_menu.emit()
 
         # Also emit the base class signal
         super().mousePressEvent(event)
+
+    def _show_context_menu(self, global_pos):
+        """Show context menu for beat export"""
+        menu = QMenu(self)
+
+        # Export action
+        export_action = QAction("Export Beat as Image...", self)
+        export_action.triggered.connect(self._export_beat)
+        menu.addAction(export_action)
+
+        # Show menu
+        menu.exec(global_pos)
+
+    def _export_beat(self):
+        """Export this individual beat as an image"""
+        if not self._beat_data:
+            QMessageBox.warning(self, "Export Error", "No beat data to export.")
+            return
+
+        # Get save file path
+        file_path, _ = QFileDialog.getSaveFileName(
+            self,
+            f"Export Beat {self._beat_number}",
+            f"beat_{self._beat_number}.png",
+            "PNG Images (*.png);;All Files (*)",
+        )
+
+        if not file_path:
+            return  # User cancelled
+
+        try:
+            # Create a single-beat sequence for export
+            single_beat_sequence = [self._beat_data.to_dict()]
+
+            # Import export service
+            from datetime import datetime
+            from pathlib import Path
+
+            from core.dependency_injection.di_container import DIContainer
+            from core.dependency_injection.image_export_service_registration import (
+                register_image_export_services,
+            )
+            from core.interfaces.image_export_services import (
+                IImageExportService,
+                ImageExportOptions,
+            )
+
+            # Setup export service
+            container = DIContainer()
+            register_image_export_services(container)
+            export_service = container.resolve(IImageExportService)
+
+            # Create export options for single beat
+            options = ImageExportOptions(
+                add_word=False,  # No word for single beat
+                add_user_info=False,  # No user info for single beat
+                add_difficulty_level=False,  # No difficulty for single beat
+                add_beat_numbers=True,  # Show beat number
+                add_reversal_symbols=True,  # Show reversals if any
+                include_start_position=False,  # No start position for single beat
+                user_name="",
+                export_date=datetime.now().strftime("%m-%d-%Y"),
+                notes=f"Single beat export - Beat {self._beat_number}",
+            )
+
+            # Export the beat
+            result = export_service.export_sequence_image(
+                single_beat_sequence,
+                f"Beat_{self._beat_number}",
+                Path(file_path),
+                options,
+            )
+
+            if result.success:
+                QMessageBox.information(
+                    self,
+                    "Export Successful",
+                    f"Beat {self._beat_number} exported successfully to:\n{file_path}",
+                )
+            else:
+                QMessageBox.warning(
+                    self,
+                    "Export Failed",
+                    f"Failed to export beat: {result.error_message}",
+                )
+
+        except Exception as e:
+            QMessageBox.critical(
+                self,
+                "Export Error",
+                f"An error occurred while exporting the beat:\n{str(e)}",
+            )
 
     def _update_cursor(self):
         """Update cursor based on state"""

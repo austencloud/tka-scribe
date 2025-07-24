@@ -134,6 +134,9 @@ class OptionPickerSection(QGroupBox):
             main_window_width=scroll_area_width,  # Use scroll area width directly
         )
 
+        # Store the calculated width for group widget constraints
+        self.calculated_width = dimensions["width"]
+
         # Apply the calculated width
         self.setFixedWidth(dimensions["width"])
 
@@ -164,17 +167,27 @@ class OptionPickerSection(QGroupBox):
         self.layout.setSpacing(0)
         self.layout.setContentsMargins(0, 0, 0, 0)
 
+        # Create container frame for pictographs (like legacy)
+        self.pictograph_frame = QFrame(self)
+        self.pictograph_frame.setStyleSheet("QFrame {border: none;}")
+        
+        # FIXED: Use expanding size policy like legacy
+        from PyQt6.QtWidgets import QSizePolicy
+        self.pictograph_frame.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
         # Get layout config from service
         layout_config = self._option_config_service.get_layout_config()
 
-        # Grid layout for pictographs
-        self.pictographs_layout: QGridLayout = QGridLayout()
+        # Grid layout for pictographs (attached to pictograph_frame, not main layout)
+        self.pictographs_layout: QGridLayout = QGridLayout(self.pictograph_frame)
         self.pictographs_layout.setSpacing(layout_config["spacing"])
         self.pictographs_layout.setContentsMargins(0, 0, 0, 0)
+        # FIXED: Add alignment to center grid content within the frame (like legacy)
+        self.pictographs_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
-        # Add header first, then grid layout for pictographs
+        # Add header first, then pictograph frame (not layout directly)
         self.layout.addWidget(self.header)
-        self.layout.addLayout(self.pictographs_layout)
+        self.layout.addWidget(self.pictograph_frame)
 
     def _setup_header(self) -> None:
         """Setup section header - Qt UI logic."""

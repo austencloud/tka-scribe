@@ -6,9 +6,9 @@ from application.services.pictograph.pictograph_position_matcher import (
 )
 from domain.models.beat_data import BeatData
 from domain.models.pictograph_data import PictographData
-from presentation.components.pictograph.pictograph_widget import (
-    PictographWidget,
-    create_pictograph_widget,
+from presentation.components.pictograph.views import (
+    BasePictographView,
+    create_pictograph_view,
 )
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtGui import QMouseEvent, QPainter
@@ -53,8 +53,7 @@ class GraphEditorPictographContainer(QWidget):
         )
         layout.setSpacing(LayoutConfig.CONTAINER_SPACING)
 
-        self._pictograph_widget = create_pictograph_widget()
-        self._pictograph_widget.setParent(self)
+        self._pictograph_widget = create_pictograph_view("base", parent=self)
         # Connect arrow selection signal from the scene
         if hasattr(self._pictograph_widget.scene, "arrow_selected"):
             self._pictograph_widget.scene.arrow_selected.connect(self._on_arrow_clicked)
@@ -84,8 +83,10 @@ class GraphEditorPictographContainer(QWidget):
 
     def set_beat(self, beat_data: Optional[BeatData]):
         self._current_beat = beat_data
-        if beat_data:
-            self._pictograph_widget.update_from_beat(beat_data)
+        if beat_data and beat_data.pictograph_data:
+            self._pictograph_widget.update_from_pictograph_data(
+                beat_data.pictograph_data
+            )
         else:
             self._pictograph_widget.clear_pictograph()
 

@@ -54,12 +54,10 @@ class WidgetFactory:
         return self.option_picker_factory.create_filter_widget(parent)
 
     def create_pictograph_widget(self, parent: Optional[QWidget] = None):
-        """Create a pictograph widget with injected dependencies."""
-        from presentation.components.pictograph.pictograph_widget import (
-            create_pictograph_widget,
-        )
+        """Create a pictograph view with injected dependencies."""
+        from presentation.components.pictograph.views import create_pictograph_view
 
-        return create_pictograph_widget()
+        return create_pictograph_view("base", parent=parent)
 
 
 # Export the main classes

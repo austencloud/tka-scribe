@@ -46,9 +46,9 @@ class OptionConfigurationService:
             LetterType.TYPE1: 16,  # Type1 has 16 pictographs
             LetterType.TYPE2: 8,  # Type2 has 8 pictographs
             LetterType.TYPE3: 8,  # Type3 has 8 pictographs
-            LetterType.TYPE4: 6,  # Grouped sections can be smaller
-            LetterType.TYPE5: 6,
-            LetterType.TYPE6: 6,
+            LetterType.TYPE4: 2,  # Grouped sections can be smaller
+            LetterType.TYPE5: 1,
+            LetterType.TYPE6: 1,
         }
         return type_limits.get(letter_type, self._config["max_pictographs_per_section"])
 

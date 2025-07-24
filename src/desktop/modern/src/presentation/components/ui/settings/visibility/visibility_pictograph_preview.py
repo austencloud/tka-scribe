@@ -21,9 +21,9 @@ from domain.models import (
 )
 from domain.models.enums import Orientation
 from domain.models.pictograph_data import PictographData
-from presentation.components.pictograph.pictograph_widget import (
-    PictographWidget,
-    create_pictograph_widget,
+from presentation.components.pictograph.views import (
+    BasePictographView,
+    create_pictograph_view,
 )
 from PyQt6.QtCore import QPropertyAnimation, Qt, QTimer, pyqtSignal
 from PyQt6.QtGui import QFont
@@ -42,7 +42,7 @@ class VisibilityPictographPreview(QWidget):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.pictograph_widget: Optional[PictographWidget] = None
+        self.pictograph_view: Optional[BasePictographView] = None
         self.sample_beat_data: Optional[BeatData] = None
 
         # Animation properties
@@ -61,16 +61,16 @@ class VisibilityPictographPreview(QWidget):
         layout.setContentsMargins(0, 0, 0, 0)  # Very compact margins
         layout.setSpacing(0)  # Minimal spacing
 
-        # Create pictograph widget (much smaller for settings dialog)
-        self.pictograph_widget = create_pictograph_widget()
-        self.pictograph_widget.setMinimumSize(
+        # Create pictograph view (much smaller for settings dialog)
+        self.pictograph_view = create_pictograph_view("base", parent=self)
+        self.pictograph_view.setMinimumSize(
             180, 140
         )  # Much smaller for settings dialog
         # set the aspect ratio to 1:1
-        self.pictograph_widget.setSizePolicy(
+        self.pictograph_view.setSizePolicy(
             QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding
         )
-        layout.addWidget(self.pictograph_widget)
+        layout.addWidget(self.pictograph_view)
 
         # Compact info label
         info_label = QLabel("Live preview")
@@ -198,16 +198,18 @@ class VisibilityPictographPreview(QWidget):
             self.sample_beat_data = BeatData(beat_number=1, is_blank=True)
 
     def _initialize_widget(self):
-        """Initialize the pictograph widget with sample data."""
+        """Initialize the pictograph view with sample data."""
         try:
-            # Update widget with sample data
-            if self.sample_beat_data:
-                self.pictograph_widget.update_from_beat(self.sample_beat_data)
+            # Update view with sample data
+            if self.sample_beat_data and self.sample_beat_data.pictograph_data:
+                self.pictograph_view.update_from_pictograph_data(
+                    self.sample_beat_data.pictograph_data
+                )
 
-            logger.debug("Initialized pictograph widget for preview")
+            logger.debug("Initialized pictograph view for preview")
 
         except Exception as e:
-            logger.error(f"Error initializing widget: {e}")
+            logger.error(f"Error initializing view: {e}")
 
     # _fit_view method removed - PictographWidget handles scaling automatically
 
@@ -220,74 +222,30 @@ class VisibilityPictographPreview(QWidget):
             visible: Whether element should be visible
             animate: Whether to animate the change
         """
-        if not self.scene:
+        if not self.pictograph_view or not self.pictograph_view.scene:
             return
 
         try:
-            # Update glyph data for the next render
-            if (
-                self.sample_beat_data
-                and self.sample_beat_data.pictograph_data.glyph_data
-            ):
-                glyph_data = self.sample_beat_data.pictograph_data.glyph_data
-
-                # Update visibility flags in glyph data using dataclasses.replace
-                from dataclasses import replace
-
-                if element_type == "TKA":
-                    glyph_data = replace(glyph_data, show_tka=visible)
-                elif element_type == "VTG":
-                    glyph_data = replace(glyph_data, show_vtg=visible)
-                elif element_type == "Elemental":
-                    glyph_data = replace(glyph_data, show_elemental=visible)
-                elif element_type == "Positions":
-                    glyph_data = replace(glyph_data, show_positions=visible)
-
-                # Update beat data with new glyph data
-                updated_pictograph_data = replace(
-                    self.sample_beat_data.pictograph_data, glyph_data=glyph_data
+            # Map element types to scene visibility categories
+            if element_type in ["TKA", "VTG", "Elemental", "Positions", "Reversals"]:
+                # Glyph visibility
+                self.pictograph_view.scene.update_visibility(
+                    "glyph", element_type, visible
                 )
-                self.sample_beat_data = self.sample_beat_data.update(
-                    pictograph_data=updated_pictograph_data
+            elif element_type in ["red_motion", "blue_motion"]:
+                # Motion visibility
+                color = element_type.replace("_motion", "")
+                self.pictograph_view.scene.update_visibility("motion", color, visible)
+            elif element_type in ["grid", "props", "arrows", "non_radial"]:
+                # Other element visibility
+                self.pictograph_view.scene.update_visibility(
+                    "other", element_type, visible
                 )
-
-            # Handle motion visibility by updating motion data
-            if element_type in ["red_motion", "blue_motion"]:
-                color = element_type.split("_")[0]
-                if not visible:
-                    # Remove motion data
-                    if color == "red":
-                        self.sample_beat_data = self.sample_beat_data.update(
-                            red_motion=None
-                        )
-                    else:
-                        self.sample_beat_data = self.sample_beat_data.update(
-                            blue_motion=None
-                        )
-                else:
-                    # Restore motion data (recreate if needed)
-                    if color == "red" and not self.sample_beat_data.red_motion:
-                        red_motion = MotionData(
-                            motion_type=MotionType.PRO,
-                            prop_rot_dir=RotationDirection.CLOCKWISE,
-                            start_loc=Location.NORTH,
-                            end_loc=Location.EAST,
-                            turns=0.0,
-                        )
-                        self.sample_beat_data = self.sample_beat_data.update(
-                            red_motion=red_motion
-                        )
-                    elif color == "blue" and not self.sample_beat_data.blue_motion:
-                        blue_motion = MotionData(
-                            motion_type=MotionType.PRO,
-                            prop_rot_dir=RotationDirection.CLOCKWISE,
-                            start_loc=Location.SOUTH,
-                            end_loc=Location.WEST,
-                            turns=0.0,
-                        )
-                        self.sample_beat_data = self.sample_beat_data.update(
-                            blue_motion=blue_motion
-                        )
+            else:
+                logger.warning(
+                    f"Unknown element type for visibility update: {element_type}"
+                )
+                return
 
             # Schedule delayed update to avoid rapid successive updates
             if animate:
@@ -310,13 +268,19 @@ class VisibilityPictographPreview(QWidget):
         self._perform_immediate_update()
 
     def _perform_immediate_update(self):
-        """Immediately update the widget with current data."""
-        if self.pictograph_widget and self.sample_beat_data:
+        """Immediately update the view with current data."""
+        if (
+            self.pictograph_view
+            and self.sample_beat_data
+            and self.sample_beat_data.pictograph_data
+        ):
             try:
-                self.pictograph_widget.update_from_beat(self.sample_beat_data)
+                self.pictograph_view.update_from_pictograph_data(
+                    self.sample_beat_data.pictograph_data
+                )
                 self.preview_updated.emit()
             except Exception as e:
-                logger.error(f"Error updating widget: {e}")
+                logger.error(f"Error updating view: {e}")
 
     def refresh_preview(self):
         """Force refresh the entire preview."""
@@ -332,10 +296,10 @@ class VisibilityPictographPreview(QWidget):
                 animation.stop()
             self._fade_animations.clear()
 
-            # Clean up widget
-            if self.pictograph_widget:
-                self.pictograph_widget.cleanup()
-                self.pictograph_widget = None
+            # Clean up view
+            if self.pictograph_view:
+                self.pictograph_view.cleanup()
+                self.pictograph_view = None
 
         except Exception as e:
             logger.error(f"Error during cleanup: {e}")

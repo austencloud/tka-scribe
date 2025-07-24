@@ -23,9 +23,9 @@ import logging
 from typing import Optional
 
 from domain.models import BeatData
-from presentation.components.pictograph.pictograph_widget import (
-    PictographWidget,
-    create_pictograph_widget,
+from presentation.components.pictograph.views import (
+    BasePictographView,
+    create_pictograph_view,
 )
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtWidgets import QHBoxLayout, QSizePolicy, QVBoxLayout, QWidget
@@ -84,7 +84,7 @@ class PictographDisplaySection(QWidget):
         self._resize_pending = False
 
         # Initialize components
-        self._pictograph_component: Optional[PictographWidget] = None
+        self._pictograph_component: Optional[BasePictographView] = None
         self._info_panel: Optional[DetailedInfoPanel] = None
 
         self._setup_ui()
@@ -188,8 +188,8 @@ class PictographDisplaySection(QWidget):
         )  # Small margin for glassmorphism border
         pictograph_layout.setSpacing(0)
 
-        # Create the TKA pictograph widget with responsive sizing
-        self._pictograph_component = create_pictograph_widget()
+        # Create the TKA pictograph view with responsive sizing
+        self._pictograph_component = create_pictograph_view("base", parent=self)
 
         # Calculate initial optimal size
         initial_size = self._calculate_optimal_pictograph_size()
@@ -251,8 +251,10 @@ class PictographDisplaySection(QWidget):
         self._current_beat_data = beat_data
 
         # Update pictograph component
-        if beat_data and self._pictograph_component:
-            self._pictograph_component.update_from_beat(beat_data)
+        if beat_data and beat_data.pictograph_data and self._pictograph_component:
+            self._pictograph_component.update_from_pictograph_data(
+                beat_data.pictograph_data
+            )
             self.pictograph_updated.emit(beat_index, beat_data)
             logger.debug(
                 f"Pictograph updated for beat {beat_index}: {beat_data.letter}"
@@ -277,8 +279,10 @@ class PictographDisplaySection(QWidget):
             beat_index: Index of the beat being updated
             beat_data: Beat data to display in the pictograph
         """
-        if self._pictograph_component:
-            self._pictograph_component.update_from_beat(beat_data)
+        if self._pictograph_component and beat_data and beat_data.pictograph_data:
+            self._pictograph_component.update_from_pictograph_data(
+                beat_data.pictograph_data
+            )
             self.pictograph_updated.emit(beat_index, beat_data)
             logger.debug(f"Pictograph-only update: {beat_data.letter}")
 
@@ -301,12 +305,12 @@ class PictographDisplaySection(QWidget):
         """Clear both the pictograph and information panel"""
         self.update_display(-1, None)
 
-    def get_pictograph_component(self) -> Optional[PictographWidget]:
+    def get_pictograph_component(self) -> Optional[BasePictographView]:
         """
-        Get the pictograph widget for direct access if needed.
+        Get the pictograph view for direct access if needed.
 
         Returns:
-            PictographWidget: The pictograph widget instance
+            BasePictographView: The pictograph view instance
         """
         return self._pictograph_component
 
