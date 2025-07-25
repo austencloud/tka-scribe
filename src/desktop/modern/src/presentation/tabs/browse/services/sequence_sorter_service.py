@@ -15,9 +15,7 @@ class SequenceSorterService(ISequenceSorter):
     """Service for sorting sequences and organizing them into sections."""
 
     def sort_sequences(
-        self, 
-        sequences: List[SequenceData], 
-        sort_method: str
+        self, sequences: List[SequenceData], sort_method: str
     ) -> List[SequenceData]:
         """Sort sequences based on the selected method."""
         print(f"🔄 Sorting {len(sequences)} sequences by {sort_method}")
@@ -46,9 +44,7 @@ class SequenceSorterService(ISequenceSorter):
         return result
 
     def group_sequences_into_sections(
-        self, 
-        sequences: List[SequenceData], 
-        sort_method: str
+        self, sequences: List[SequenceData], sort_method: str
     ) -> Dict[str, List[SequenceData]]:
         """Group sequences into sections based on sort method."""
         sections = {}
@@ -85,7 +81,7 @@ class SequenceSorterService(ISequenceSorter):
         """Get the preferred display order for sections based on sort method."""
         if sort_method == "alphabetical":
             # Return alphabetical order A-Z, with special characters at end
-            letters = [chr(i) for i in range(ord('A'), ord('Z') + 1)]
+            letters = [chr(i) for i in range(ord("A"), ord("Z") + 1)]
             return letters + ["?"]
         elif sort_method == "length":
             # Return numerical order for lengths

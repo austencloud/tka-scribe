@@ -6,20 +6,19 @@ Service for handling navigation and scrolling within the sequence browser.
 
 from typing import List, Optional
 
+from core.interfaces.browse_services import INavigationHandler
 from PyQt6.QtCore import QPoint
 from PyQt6.QtWidgets import QGridLayout, QLabel, QScrollArea
-
-from core.interfaces.browse_services import INavigationHandler
 
 
 class NavigationHandlerService(INavigationHandler):
     """Service for handling navigation and scrolling."""
 
     def __init__(
-        self, 
+        self,
         scroll_area: QScrollArea,
         grid_layout: QGridLayout,
-        navigation_sidebar: Optional = None
+        navigation_sidebar: Optional = None,
     ):
         """Initialize with UI components."""
         self.scroll_area = scroll_area
@@ -35,7 +34,7 @@ class NavigationHandlerService(INavigationHandler):
             item = self.grid_layout.itemAt(i)
             if item and item.widget():
                 widget = item.widget()
-                
+
                 # Check if this widget contains a label with the section name
                 if (
                     hasattr(widget, "findChild")
@@ -48,7 +47,7 @@ class NavigationHandlerService(INavigationHandler):
                         header_global_pos
                     )
                     vertical_pos = content_widget_pos.y()
-                    
+
                     # Scroll to the section
                     self.scroll_area.verticalScrollBar().setValue(vertical_pos)
                     return
@@ -57,9 +56,7 @@ class NavigationHandlerService(INavigationHandler):
         self.scroll_area.verticalScrollBar().setValue(0)
 
     def update_navigation_sections(
-        self, 
-        section_names: List[str], 
-        sort_method: str
+        self, section_names: List[str], sort_method: str
     ) -> None:
         """Update the navigation sidebar with new sections."""
         if self.navigation_sidebar:

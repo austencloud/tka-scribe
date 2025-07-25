@@ -2,20 +2,20 @@
 
 from .browse_service import BrowseService
 from .browse_state_service import BrowseStateService
-from .progressive_loading_service import ProgressiveLoadingService
+from .layout_manager_service import LayoutManagerService
+from .loading_state_manager_service import LoadingStateManagerService
 from .modern_dictionary_data_manager import ModernDictionaryDataManager
+from .navigation_handler_service import NavigationHandlerService
+from .progressive_loading_service import ProgressiveLoadingService
+from .sequence_display_coordinator_service import SequenceDisplayCoordinatorService
+from .sequence_sorter_service import SequenceSorterService
 
 # New refactored services
 from .thumbnail_factory_service import ThumbnailFactoryService
-from .layout_manager_service import LayoutManagerService
-from .loading_state_manager_service import LoadingStateManagerService
-from .sequence_sorter_service import SequenceSorterService
-from .navigation_handler_service import NavigationHandlerService
-from .sequence_display_coordinator_service import SequenceDisplayCoordinatorService
 
 __all__ = [
     "BrowseService",
-    "BrowseStateService", 
+    "BrowseStateService",
     "ProgressiveLoadingService",
     "ModernDictionaryDataManager",
     "ThumbnailFactoryService",

@@ -109,9 +109,10 @@ class PropManagementService(IPropManagementService):
         self.UPLEFT = "upleft"
         self.UPRIGHT = "upright"
         self.DOWNLEFT = "downleft"
-        self.DOWNRIGHT = "downright"  # Load special placements for beta prop swaps
-        self._special_placements: Optional[Dict[str, Any]] = None
-        self._load_special_placements()
+        self.DOWNRIGHT = "downright"
+
+        # Use JSONConfigurator singleton for special placements
+        self._json_configurator = self._get_json_configurator()
 
     def _init_prop_offset_map(self) -> None:
         """Initialize prop offset mapping based on modern PropType enum."""
@@ -472,11 +473,12 @@ class PropManagementService(IPropManagementService):
 
     def _has_swap_override(self, beat_data: BeatData) -> bool:
         """Check if beat has manual swap override in special placements."""
-        if not self._special_placements:
+        special_placements = self._get_special_placements()
+        if not special_placements:
             return False
 
         override_key = self._generate_override_key(beat_data)
-        return override_key in self._special_placements
+        return override_key in special_placements
 
     def _generate_override_key(self, beat_data: BeatData) -> str:
         """
@@ -509,7 +511,8 @@ class PropManagementService(IPropManagementService):
         Loads specific positioning data for this configuration.
         """
         override_key = self._generate_override_key(beat_data)
-        override_data = self._special_placements.get(override_key, {})
+        special_placements = self._get_special_placements()
+        override_data = special_placements.get(override_key, {})
 
         # Apply override adjustments
         # TODO: Implement specific override application logic
@@ -542,25 +545,27 @@ class PropManagementService(IPropManagementService):
 
         return beat_data
 
-    def _load_special_placements(self) -> None:
-        """Load special placement data from JSON configuration files."""
+    def _get_json_configurator(self):
+        """Get JSONConfigurator singleton from DI container."""
         try:
-            # Look for special placements file in data directory
-            placements_file = Path("data/special_placements.json")
-            if placements_file.exists():
-                with open(placements_file, "r") as f:
-                    self._special_placements = json.load(f)
-            else:
-                # Try alternative path as fallback
-                alt_placements_file = Path("v1/src/resources/special_placements.json")
-                if alt_placements_file.exists():
-                    with open(alt_placements_file, "r") as f:
-                        self._special_placements = json.load(f)
-                else:
-                    self._special_placements = {}
-        except Exception as e:
-            print(f"Warning: Could not load special placements: {e}")
-            self._special_placements = {}
+            from application.services.positioning.props.configuration.json_configuration_service import (
+                IJSONConfigurator,
+            )
+            from core.dependency_injection.di_container import get_container
+
+            container = get_container()
+            return container.get(IJSONConfigurator)
+        except Exception:
+            # Fallback to creating new instance if DI fails
+            from application.services.positioning.props.configuration.json_configuration_service import (
+                JSONConfigurator,
+            )
+
+            return JSONConfigurator()
+
+    def _get_special_placements(self) -> Dict[str, Any]:
+        """Get special placements using JSONConfigurator singleton."""
+        return self._json_configurator.load_special_placements()
 
     def classify_props_by_size(self, beat_data: BeatData) -> Dict[str, list]:
         """

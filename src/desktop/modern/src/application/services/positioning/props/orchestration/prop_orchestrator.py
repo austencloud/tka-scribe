@@ -93,7 +93,20 @@ class PropOrchestrator(IPropOrchestrator):
         """Initialize with dependency injection."""
         self.direction_service = direction_service or DirectionCalculationService()
         self.offset_service = offset_service or OffsetCalculationService()
-        self.config_service = config_service or JSONConfigurator()
+
+        # Use dependency injection for config service to avoid creating multiple instances
+        if config_service is None:
+            try:
+                from core.dependency_injection.di_container import get_container
+
+                container = get_container()
+                self.config_service = container.get(IJSONConfigurator)
+            except Exception:
+                # Fallback to creating new instance if DI fails
+                self.config_service = JSONConfigurator()
+        else:
+            self.config_service = config_service
+
         self.classification_service = (
             classification_service or PropClassificationService()
         )

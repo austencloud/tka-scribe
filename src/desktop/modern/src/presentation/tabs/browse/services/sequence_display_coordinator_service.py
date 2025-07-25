@@ -4,18 +4,17 @@ Sequence Display Coordinator Service
 Service for coordinating the display of sequences using other services.
 """
 
-from typing import List, Optional, Callable
-
-from PyQt6.QtWidgets import QApplication, QWidget
+from typing import Callable, List, Optional
 
 from core.interfaces.browse_services import (
-    IThumbnailFactory,
     ILayoutManager,
     ILoadingStateManager,
+    INavigationHandler,
     ISequenceSorter,
-    INavigationHandler
+    IThumbnailFactory,
 )
 from domain.models.sequence_data import SequenceData
+from PyQt6.QtWidgets import QApplication, QWidget
 
 
 class SequenceDisplayCoordinatorService:
@@ -28,7 +27,7 @@ class SequenceDisplayCoordinatorService:
         loading_state_manager: ILoadingStateManager,
         sequence_sorter: ISequenceSorter,
         navigation_handler: INavigationHandler,
-        thumbnail_width: int = 150
+        thumbnail_width: int = 150,
     ):
         """Initialize with service dependencies."""
         self.thumbnail_factory = thumbnail_factory
@@ -37,7 +36,7 @@ class SequenceDisplayCoordinatorService:
         self.sequence_sorter = sequence_sorter
         self.navigation_handler = navigation_handler
         self.thumbnail_width = thumbnail_width
-        
+
         # Callback for when thumbnails are clicked
         self.thumbnail_click_callback: Optional[Callable[[str], None]] = None
 
@@ -46,9 +45,7 @@ class SequenceDisplayCoordinatorService:
         self.thumbnail_click_callback = callback
 
     def display_sequences_with_stable_layout(
-        self, 
-        sequences: List[SequenceData], 
-        sort_method: str
+        self, sequences: List[SequenceData], sort_method: str
     ) -> None:
         """Display sequences using stable layout with sections."""
         # Sort sequences
@@ -71,7 +68,9 @@ class SequenceDisplayCoordinatorService:
 
         for section_name, section_sequences in sections.items():
             # Add section header
-            current_row = self.layout_manager.add_section_header(section_name, current_row)
+            current_row = self.layout_manager.add_section_header(
+                section_name, current_row
+            )
             current_row += 1
 
             # Create thumbnails for this section
@@ -83,7 +82,9 @@ class SequenceDisplayCoordinatorService:
                 # Make clickable
                 if self.thumbnail_click_callback:
                     thumbnail.mousePressEvent = (
-                        lambda event, seq_id=sequence.id: self.thumbnail_click_callback(seq_id)
+                        lambda event, seq_id=sequence.id: self.thumbnail_click_callback(
+                            seq_id
+                        )
                     )
 
                 # Calculate position in 3-column grid
@@ -103,9 +104,7 @@ class SequenceDisplayCoordinatorService:
         self.layout_manager.set_row_stretch(self.layout_manager.get_row_count(), 1)
 
     def add_sequences_progressively(
-        self, 
-        sequences: List[SequenceData], 
-        sort_method: str
+        self, sequences: List[SequenceData], sort_method: str
     ) -> None:
         """Add sequences using progressive loading approach."""
         if not sequences:
@@ -120,7 +119,9 @@ class SequenceDisplayCoordinatorService:
             # Make clickable
             if self.thumbnail_click_callback:
                 thumbnail.mousePressEvent = (
-                    lambda event, seq_id=sequence.id: self.thumbnail_click_callback(seq_id)
+                    lambda event, seq_id=sequence.id: self.thumbnail_click_callback(
+                        seq_id
+                    )
                 )
 
             # Add to grid layout (simple approach for progressive loading)
@@ -139,9 +140,7 @@ class SequenceDisplayCoordinatorService:
         print(f"🎨 Layout initialized for {sort_method} sorting")
 
     def finalize_progressive_layout(
-        self, 
-        all_sequences: List[SequenceData], 
-        sort_method: str
+        self, all_sequences: List[SequenceData], sort_method: str
     ) -> None:
         """Finalize the layout after progressive loading is complete."""
         if not all_sequences:

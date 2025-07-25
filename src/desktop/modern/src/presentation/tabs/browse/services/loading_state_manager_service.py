@@ -4,11 +4,10 @@ Loading State Manager Service
 Service for managing loading states, progress, and loading UI components.
 """
 
+from core.interfaces.browse_services import ILoadingStateManager
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QFont
 from PyQt6.QtWidgets import QLabel, QProgressBar, QWidget
-
-from core.interfaces.browse_services import ILoadingStateManager
 
 
 class LoadingStateManagerService(ILoadingStateManager):
@@ -20,7 +19,7 @@ class LoadingStateManagerService(ILoadingStateManager):
         browsing_widget: QWidget,
         loading_progress_bar: QProgressBar,
         loading_label: QLabel,
-        layout_manager
+        layout_manager,
     ):
         """Initialize with UI components."""
         self.loading_widget = loading_widget
@@ -28,7 +27,7 @@ class LoadingStateManagerService(ILoadingStateManager):
         self.loading_progress_bar = loading_progress_bar
         self.loading_label = loading_label
         self.layout_manager = layout_manager
-        
+
         self._is_progressive_loading = False
         self._loading_cancelled = False
 

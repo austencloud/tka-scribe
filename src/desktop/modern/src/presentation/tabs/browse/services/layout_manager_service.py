@@ -4,11 +4,10 @@ Layout Manager Service
 Service for managing grid layout and section organization.
 """
 
+from core.interfaces.browse_services import ILayoutManager
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QFont
 from PyQt6.QtWidgets import QFrame, QGridLayout, QHBoxLayout, QLabel, QWidget
-
-from core.interfaces.browse_services import ILayoutManager
 
 
 class LayoutManagerService(ILayoutManager):
@@ -56,12 +55,7 @@ class LayoutManagerService(ILayoutManager):
 
         return current_row
 
-    def add_thumbnail_to_grid(
-        self, 
-        thumbnail: QWidget, 
-        row: int, 
-        col: int
-    ) -> None:
+    def add_thumbnail_to_grid(self, thumbnail: QWidget, row: int, col: int) -> None:
         """Add a thumbnail widget to the grid at specified position."""
         self.grid_layout.addWidget(thumbnail, row, col)
 
