@@ -1,14 +1,5 @@
 from typing import Any, Dict
 
-from shared.application.services.ui.ui_settings_manager import UISettingsManager
-from desktop.modern.core.interfaces.core_services import IUIStateManager
-from desktop.modern.presentation.components.ui.settings.tabs.background_tab import BackgroundTab
-from desktop.modern.presentation.components.ui.settings.tabs.beat_layout_tab import BeatLayoutTab
-from desktop.modern.presentation.components.ui.settings.tabs.codex_exporter_tab import CodexExporterTab
-from desktop.modern.presentation.components.ui.settings.tabs.general_tab import GeneralTab
-from desktop.modern.presentation.components.ui.settings.tabs.image_export_tab import ImageExportTab
-from desktop.modern.presentation.components.ui.settings.tabs.prop_type_tab import PropTypeTab
-from desktop.modern.presentation.components.ui.settings.visibility.visibility_tab import VisibilityTab
 from PyQt6.QtCore import QRectF, Qt, pyqtSignal
 from PyQt6.QtGui import QBrush, QColor, QLinearGradient, QPainter, QPainterPath, QRegion
 from PyQt6.QtWidgets import (
@@ -22,8 +13,34 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
+from desktop.modern.core.interfaces.core_services import IUIStateManager
+from desktop.modern.presentation.components.ui.settings.tabs.background_tab import (
+    BackgroundTab,
+)
+from desktop.modern.presentation.components.ui.settings.tabs.beat_layout_tab import (
+    BeatLayoutTab,
+)
+from desktop.modern.presentation.components.ui.settings.tabs.codex_exporter_tab import (
+    CodexExporterTab,
+)
+from desktop.modern.presentation.components.ui.settings.tabs.general_tab import (
+    GeneralTab,
+)
+from desktop.modern.presentation.components.ui.settings.tabs.image_export_tab import (
+    ImageExportTab,
+)
+from desktop.modern.presentation.components.ui.settings.tabs.prop_type_tab import (
+    PropTypeTab,
+)
+from desktop.modern.presentation.components.ui.settings.visibility.visibility_tab import (
+    VisibilityTab,
+)
+
+# Import new design system instead of scattered components
+from desktop.modern.presentation.styles.mixins import StyleMixin
+from shared.application.services.ui.ui_settings_manager import UISettingsManager
+
 from .components import (
-    GlassmorphismStyles,
     SettingsActionButtons,
     SettingsAnimations,
     SettingsContentArea,
@@ -32,7 +49,7 @@ from .components import (
 )
 
 
-class SettingsDialog(QDialog):
+class SettingsDialog(QDialog, StyleMixin):
     """Modern settings dialog with sidebar navigation and glassmorphism design."""
 
     settings_changed = pyqtSignal(str, object)
@@ -132,11 +149,11 @@ class SettingsDialog(QDialog):
 
     def _setup_coordinator(self):
         """Setup the settings coordinator for managing state."""
-        from shared.application.services.settings.settings_coordinator import (
-            SettingsCoordinator,
-        )
         from desktop.modern.presentation.components.ui.settings.settings_ui_adapter import (
             SettingsUIAdapter,
+        )
+        from shared.application.services.settings.settings_coordinator import (
+            SettingsCoordinator,
         )
 
         # Create the framework-agnostic service
@@ -260,8 +277,8 @@ class SettingsDialog(QDialog):
         self.current_tab_index = index
 
     def _apply_styling(self):
-        """Apply the glassmorphism styling."""
-        self.setStyleSheet(GlassmorphismStyles.get_dialog_styles())
+        """Apply the glassmorphism styling using the centralized design system."""
+        self.apply_dialog_style()
 
     def showEvent(self, event):
         """Override show event to add fade in animation."""

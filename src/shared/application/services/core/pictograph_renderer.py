@@ -104,7 +104,6 @@ class CorePictographRenderer(IPictographRenderer):
         """Initialize with asset provider."""
         self.asset_provider = asset_provider
         self._command_counter = 0
-        logger.info("Core pictograph renderer initialized")
 
     def create_render_commands(
         self, pictograph_data: Dict, target_size: Size, options: Optional[Dict] = None
@@ -622,6 +621,5 @@ def create_pictograph_renderer(
         )
 
         asset_provider = create_real_asset_provider()
-        logger.info("Created real asset provider for pictograph renderer")
 
     return CorePictographRenderer(asset_provider)

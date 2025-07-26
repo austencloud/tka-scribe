@@ -3,6 +3,7 @@ Modern Styled Button Component
 
 A modern PyQt6 button with context-aware styling, smooth animations, and clean design.
 Adapted for the TKA modern desktop app with dependency injection principles.
+Uses the centralized design system for consistent styling.
 """
 
 from enum import Enum
@@ -18,6 +19,11 @@ from PyQt6.QtCore import (
 )
 from PyQt6.QtGui import QCursor, QFont, QIcon
 from PyQt6.QtWidgets import QPushButton
+
+from desktop.modern.presentation.styles.core.types import StyleVariant
+
+# Import new design system
+from desktop.modern.presentation.styles.mixins import StyleMixin
 
 
 class ButtonContext(Enum):
@@ -40,7 +46,7 @@ class ButtonState(Enum):
     DISABLED = "disabled"
 
 
-class StyledButton(QPushButton):
+class StyledButton(QPushButton, StyleMixin):
     """A context-aware modern PyQt6 button with adaptive styling based on usage context."""
 
     clicked_signal = pyqtSignal(str)
@@ -150,6 +156,48 @@ class StyledButton(QPushButton):
 
     def update_appearance(self):
         """Update button appearance based on current state and context."""
+        # Try to use new design system for supported contexts
+        if self._context == ButtonContext.NAVIGATION:
+            self._apply_design_system_styling()
+        elif self._context == ButtonContext.STANDARD:
+            self._apply_design_system_styling()
+        else:
+            # Fall back to legacy styling for unsupported contexts
+            self._apply_legacy_styling()
+
+    def _apply_design_system_styling(self):
+        """Apply styling using the new centralized design system."""
+        try:
+            # Map ButtonContext to StyleVariant
+            variant = StyleVariant.DEFAULT
+
+            if self._is_selected:
+                variant = StyleVariant.ACCENT
+            elif self._state == ButtonState.HOVERED:
+                variant = StyleVariant.PROMINENT
+            elif self._context == ButtonContext.NAVIGATION:
+                variant = (
+                    StyleVariant.SUBTLE
+                    if not self._is_selected
+                    else StyleVariant.ACCENT
+                )
+
+            # Apply the centralized button styling
+            self.apply_button_style(
+                variant=variant,
+                size="medium",
+                custom_properties={
+                    "border-radius": f"{self.config['border_radius']}px",
+                    "padding": self.config["padding"],
+                },
+            )
+        except Exception as e:
+            # Fallback to legacy styling if design system fails
+            print(f"Design system styling failed, falling back: {e}")
+            self._apply_legacy_styling()
+
+    def _apply_legacy_styling(self):
+        """Apply legacy styling as fallback."""
         if self._context == ButtonContext.NAVIGATION:
             self._apply_navigation_styling()
         elif self._context == ButtonContext.STANDARD:

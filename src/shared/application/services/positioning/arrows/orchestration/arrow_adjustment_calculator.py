@@ -153,12 +153,12 @@ class ArrowAdjustmentCalculator(IArrowAdjustmentCalculator):
             RuntimeError: If calculation fails due to system error
         """
         try:
-            # STEP 1: Look up base adjustment (special → default)
+            # STEP 1: Look up base adjustment (special → default) - EXACTLY like legacy
             base_adjustment = self.lookup_service.get_base_adjustment(
                 pictograph_data, motion_data, letter, arrow_color
             )
 
-            # STEP 2: Process directional tuples
+            # STEP 2: Process directional tuples - EXACTLY like legacy
             final_adjustment = self.tuple_processor.process_directional_tuples(
                 base_adjustment, motion_data, location
             )

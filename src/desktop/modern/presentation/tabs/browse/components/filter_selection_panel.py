@@ -11,15 +11,6 @@ Features:
 
 from typing import Optional
 
-from desktop.modern.presentation.tabs.browse.components.filter_sections import (
-    FilterCategorySection,
-    QuickAccessSection,
-)
-from desktop.modern.presentation.tabs.browse.models import FilterType
-from desktop.modern.presentation.tabs.browse.services.browse_service import BrowseService
-from desktop.modern.presentation.tabs.browse.services.modern_dictionary_data_manager import (
-    ModernDictionaryDataManager,
-)
 from PyQt6.QtCore import Qt, QTimer, pyqtSignal
 from PyQt6.QtGui import QFont, QResizeEvent
 from PyQt6.QtWidgets import (
@@ -32,8 +23,24 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
+from desktop.modern.presentation.styles.core.types import ComponentType, StyleVariant
 
-class FilterSelectionPanel(QWidget):
+# Import design system for consistent styling
+from desktop.modern.presentation.styles.mixins import StyleMixin, apply_style_to_widget
+from desktop.modern.presentation.tabs.browse.components.filter_sections import (
+    FilterCategorySection,
+    QuickAccessSection,
+)
+from desktop.modern.presentation.tabs.browse.models import FilterType
+from desktop.modern.presentation.tabs.browse.services.browse_service import (
+    BrowseService,
+)
+from desktop.modern.presentation.tabs.browse.services.modern_dictionary_data_manager import (
+    ModernDictionaryDataManager,
+)
+
+
+class FilterSelectionPanel(QWidget, StyleMixin):
     """
     Modern organized filter selection interface.
 
@@ -110,14 +117,14 @@ class FilterSelectionPanel(QWidget):
         self.title_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         title_font = QFont("Segoe UI", 20, QFont.Weight.Bold)
         self.title_label.setFont(title_font)
-        self.title_label.setStyleSheet(
-            """
-            QLabel {
-                color: white;
-                background: transparent;
-                padding: 16px;
-            }
-        """
+
+        # Apply centralized label styling using design system
+        apply_style_to_widget(
+            self.title_label,
+            ComponentType.LABEL,
+            StyleVariant.ACCENT,
+            size="3xl",
+            weight="bold",
         )
 
         header_layout.addWidget(self.title_label)
@@ -130,14 +137,14 @@ class FilterSelectionPanel(QWidget):
         quick_title.setAlignment(Qt.AlignmentFlag.AlignLeft)
         quick_font = QFont("Segoe UI", 16, QFont.Weight.Bold)
         quick_title.setFont(quick_font)
-        quick_title.setStyleSheet(
-            """
-            QLabel {
-                color: white;
-                background: transparent;
-                margin-bottom: 8px;
-            }
-        """
+
+        # Apply centralized label styling
+        apply_style_to_widget(
+            quick_title,
+            ComponentType.LABEL,
+            StyleVariant.PROMINENT,
+            size="2xl",
+            weight="bold",
         )
         self.main_layout.addWidget(quick_title)
 
@@ -152,15 +159,14 @@ class FilterSelectionPanel(QWidget):
         categories_title.setAlignment(Qt.AlignmentFlag.AlignLeft)
         categories_font = QFont("Segoe UI", 16, QFont.Weight.Bold)
         categories_title.setFont(categories_font)
-        categories_title.setStyleSheet(
-            """
-            QLabel {
-                color: white;
-                background: transparent;
-                margin-bottom: 8px;
-                margin-top: 16px;
-            }
-        """
+
+        # Apply centralized label styling
+        apply_style_to_widget(
+            categories_title,
+            ComponentType.LABEL,
+            StyleVariant.PROMINENT,
+            size="2xl",
+            weight="bold",
         )
         self.main_layout.addWidget(categories_title)
 
@@ -272,19 +278,9 @@ class FilterSelectionPanel(QWidget):
         self.filter_selected.emit(filter_type, filter_value)
 
     def _apply_container_styling(self) -> None:
-        """Apply modern container styling."""
-        self.setStyleSheet(
-            """
-            FilterSelectionPanel {
-                background: rgba(255, 255, 255, 0.02);
-                border: 1px solid rgba(255, 255, 255, 0.05);
-            }
-            QScrollArea {
-                background: transparent;
-                border: none;
-            }
-        """
-        )
+        """Apply modern container styling using the design system."""
+        # Apply panel styling to the main container
+        self.apply_panel_style(StyleVariant.SUBTLE)
 
     def _finalize_layout_initialization(self) -> None:
         """Finalize layout initialization after widget is shown."""

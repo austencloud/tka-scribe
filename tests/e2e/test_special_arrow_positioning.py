@@ -5,10 +5,7 @@ This test validates that arrows are correctly positioned for special letters
 that require custom placement adjustments, ensuring the special placement
 management logic is working correctly.
 
-Tests cover:
-- Letter G: Color-specific adjustments (red/blue)
-- Letter H: Complex positioning scenarios
-- Letter I: Motion-type-specific adjustments (pro/anti)
+
 """
 
 import logging
@@ -67,7 +64,7 @@ class SpecialArrowPositioningE2ETest(BaseE2ETest):
             return False
 
         finally:
-            self._cleanup()
+            self.cleanup()
 
     def _setup_test_environment(self) -> bool:
         """Set up the test environment and discover components."""
@@ -79,7 +76,7 @@ class SpecialArrowPositioningE2ETest(BaseE2ETest):
                 logger.error("ERROR: Failed to setup application")
                 return False
 
-            if not self.navigate_to_construct_tab():
+            if not self.find_construct_tab():
                 logger.error("ERROR: Failed to navigate to construct tab")
                 return False
 
@@ -418,6 +415,109 @@ class SpecialArrowPositioningE2ETest(BaseE2ETest):
         except Exception as e:
             logger.error(f"ERROR: Failed to validate color-specific positioning: {e}")
             return False
+
+    def _get_real_pictographs_for_letter(self, letter: str) -> list:
+        """Get real pictographs for the specified letter from the TKA dataset."""
+        try:
+            logger.info(f"QUERY: Getting real pictographs for letter {letter}")
+
+            # Use the pictograph data manager to get real pictographs
+            from desktop.modern.core.dependency_injection.di_container import (
+                get_container,
+            )
+
+            container = get_container()
+
+            # Get the dataset query service
+            from shared.application.services.data.dataset_query import IDatasetQuery
+
+            dataset_query = container.resolve(IDatasetQuery)
+
+            # Query for beat data with this letter
+            beat_data_list = dataset_query.find_pictographs_by_letter(letter)
+
+            # Extract pictograph data from beat data
+            pictographs = []
+            for beat_data in beat_data_list:
+                if beat_data.has_pictograph:
+                    pictographs.append(beat_data.pictograph_data)
+
+            logger.info(f"FOUND: {len(pictographs)} pictographs for letter {letter}")
+            return pictographs
+
+        except Exception as e:
+            logger.error(
+                f"ERROR: Failed to get real pictographs for letter {letter}: {e}"
+            )
+            import traceback
+
+            traceback.print_exc()
+            return []
+
+    def _test_real_pictograph_positioning(
+        self, letter: str, pictograph_data: Any, index: int
+    ) -> bool:
+        """Test positioning for a real pictograph from the dataset."""
+        try:
+            logger.info(f"REAL: Testing positioning for {letter} pictograph {index}")
+
+            # Log the pictograph details
+            self._log_pictograph_details(letter, pictograph_data, index)
+
+            # Calculate arrow positions using the orchestrator
+            positioning_results = self._calculate_arrow_positions(pictograph_data)
+
+            if not positioning_results:
+                logger.error(
+                    f"ERROR: Failed to calculate positions for {letter} pictograph {index}"
+                )
+                return False
+
+            # Store results for validation
+            result_key = f"{letter}_{index}"
+            self.positioning_results[result_key] = {
+                "letter": letter,
+                "index": index,
+                "pictograph_data": pictograph_data,
+                "positions": positioning_results,
+            }
+
+            logger.info(
+                f"SUCCESS: Positioning calculated for {letter} pictograph {index}"
+            )
+            return True
+
+        except Exception as e:
+            logger.error(
+                f"ERROR: Real pictograph positioning test failed for {letter} {index}: {e}"
+            )
+            return False
+
+    def _log_pictograph_details(
+        self, letter: str, pictograph_data: Any, index: int
+    ) -> None:
+        """Log details about the pictograph being tested."""
+        try:
+            logger.info(f"DETAILS: {letter} pictograph {index}:")
+            logger.info(f"  Letter: {pictograph_data.letter}")
+            logger.info(
+                f"  Grid mode: {getattr(pictograph_data, 'grid_mode', 'unknown')}"
+            )
+
+            # Log motion details
+            if hasattr(pictograph_data, "motions"):
+                for color, motion in pictograph_data.motions.items():
+                    logger.info(
+                        f"  {color} motion: {motion.motion_type.value} {motion.start_loc.value}→{motion.end_loc.value} ({motion.turns} turns)"
+                    )
+
+            # Log arrow visibility
+            if hasattr(pictograph_data, "arrows"):
+                for color, arrow in pictograph_data.arrows.items():
+                    logger.info(f"  {color} arrow: visible={arrow.is_visible}")
+
+        except Exception as e:
+            logger.warning(f"WARNING: Could not log pictograph details: {e}")
 
 
 def run_special_arrow_positioning_test() -> bool:

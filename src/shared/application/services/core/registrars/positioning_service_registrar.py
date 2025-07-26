@@ -52,6 +52,9 @@ class PositioningServiceRegistrar(BaseServiceRegistrar):
         # Register arrow positioning services
         self._register_arrow_positioning_services(container)
 
+        # Register arrow placement services (special placement, default placement, etc.)
+        self._register_arrow_placement_services(container)
+
         # Register position matching service
         self._register_position_matching_service(container)
 
@@ -136,6 +139,82 @@ class PositioningServiceRegistrar(BaseServiceRegistrar):
                 "Arrow positioning services",
                 e,
                 "Arrow positioning calculations in pictographs",
+            )
+
+    def _register_arrow_placement_services(self, container: "DIContainer") -> None:
+        """Register arrow placement services (special placement, default placement, etc.)."""
+        try:
+            # Import arrow placement services
+            from desktop.modern.application.services.positioning.arrows.placement.special_placement_service import (
+                SpecialPlacementService,
+            )
+            from shared.application.services.positioning.arrows.key_generators.attribute_key_generator import (
+                AttributeKeyGenerator,
+            )
+            from shared.application.services.positioning.arrows.key_generators.placement_key_generator import (
+                PlacementKeyGenerator,
+            )
+            from shared.application.services.positioning.arrows.key_generators.turns_tuple_key_generator import (
+                TurnsTupleKeyGenerator,
+            )
+            from shared.application.services.positioning.arrows.placement.default_placement_service import (
+                DefaultPlacementService,
+            )
+            from shared.application.services.positioning.arrows.placement.special_placement_ori_key_generator import (
+                SpecialPlacementOriKeyGenerator,
+            )
+
+            # Register placement services as singletons
+            container.register_singleton(
+                SpecialPlacementService, SpecialPlacementService
+            )
+            container.register_singleton(
+                DefaultPlacementService, DefaultPlacementService
+            )
+            container.register_singleton(
+                SpecialPlacementOriKeyGenerator, SpecialPlacementOriKeyGenerator
+            )
+            container.register_singleton(PlacementKeyGenerator, PlacementKeyGenerator)
+            container.register_singleton(TurnsTupleKeyGenerator, TurnsTupleKeyGenerator)
+            container.register_singleton(AttributeKeyGenerator, AttributeKeyGenerator)
+
+            # Register arrow adjustment services that depend on placement services
+            from desktop.modern.application.services.positioning.arrows.orchestration.arrow_adjustment_lookup import (
+                ArrowAdjustmentLookup,
+            )
+            from shared.application.services.positioning.arrows.orchestration.arrow_adjustment_calculator import (
+                ArrowAdjustmentCalculator,
+            )
+            from shared.application.services.positioning.arrows.orchestration.directional_tuple_processor import (
+                DirectionalTupleProcessor,
+            )
+
+            # Register the adjustment services (now that dependencies are available)
+            container.register_factory(
+                ArrowAdjustmentLookup,
+                lambda c: ArrowAdjustmentLookup(
+                    special_placement_service=c.resolve(SpecialPlacementService),
+                    default_placement_service=c.resolve(DefaultPlacementService),
+                    orientation_key_service=c.resolve(SpecialPlacementOriKeyGenerator),
+                    placement_key_service=c.resolve(PlacementKeyGenerator),
+                    turns_tuple_service=c.resolve(TurnsTupleKeyGenerator),
+                    attribute_key_service=c.resolve(AttributeKeyGenerator),
+                ),
+            )
+            container.register_singleton(
+                DirectionalTupleProcessor, DirectionalTupleProcessor
+            )
+            container.register_singleton(
+                ArrowAdjustmentCalculator, ArrowAdjustmentCalculator
+            )
+
+            self._mark_service_available("ArrowPlacementServices")
+
+        except ImportError as e:
+            self._handle_service_unavailable(
+                "Arrow placement services",
+                e,
+                "Special placement and default placement calculations",
             )
 
     def _register_position_matching_service(self, container: "DIContainer") -> None:

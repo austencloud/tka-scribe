@@ -102,7 +102,6 @@ class QtRenderEngine:
     def __init__(self):
         """Initialize QT render engine."""
         self._created_items: Dict[str, QGraphicsItem] = {}
-        logger.info("QT render engine initialized")
 
     def execute_command(self, command: RenderCommand, target: RenderTarget) -> bool:
         """Execute a render command on QT graphics scene."""
@@ -249,7 +248,6 @@ class QtAssetProvider(IPictographAssetProvider):
         self.legacy_asset_manager = legacy_asset_manager
         if not self.legacy_asset_manager:
             logger.warning("No legacy asset manager provided to QT asset provider")
-        logger.info("QT asset provider initialized")
 
     def get_grid_asset(self, grid_mode: str) -> Optional["SvgAsset"]:
         """Get grid asset from existing QT asset management."""
@@ -721,8 +719,6 @@ class QtPictographRenderingAdapter:
         )
         self.qt_engine = QtRenderEngine()
 
-        logger.info("QT pictograph rendering adapter initialized")
-
     # ========================================================================
     # LEGACY INTERFACE COMPATIBILITY
     # ========================================================================
@@ -885,5 +881,4 @@ def create_qt_pictograph_adapter(
 
     adapter = QtPictographRenderingAdapter(core_renderer, asset_provider)
 
-    logger.info("Created QT pictograph adapter with integrated asset management")
     return adapter

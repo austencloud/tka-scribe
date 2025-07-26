@@ -7,17 +7,22 @@ Handles widget creation, pooling, and cleanup.
 
 from typing import TYPE_CHECKING, Dict, Optional
 
+from PyQt6.QtWidgets import QWidget
+
 from desktop.modern.presentation.components.option_picker.components.option_pictograph import (
     OptionPictograph,
 )
-from PyQt6.QtWidgets import QWidget
 
 if TYPE_CHECKING:
     from shared.application.services.option_picker.option_picker_size_calculator import (
         OptionPickerSizeCalculator,
     )
-    from shared.application.services.option_picker.option_pool_service import OptionPoolService
-    from shared.application.services.pictograph_pool_manager import PictographPoolManager
+    from shared.application.services.option_picker.option_pool_service import (
+        OptionPoolService,
+    )
+    from shared.application.services.pictograph_pool_manager import (
+        PictographPoolManager,
+    )
 
 
 class OptionPickerWidgetPoolManager:
@@ -71,10 +76,6 @@ class OptionPickerWidgetPoolManager:
         # Initialize service pool with same IDs
         self._option_pool_service.reset_pool()
 
-        print(
-            f"✅ [WIDGET_POOL] Widget pool initialized with {len(self._widget_pool)} widgets"
-        )
-
     def get_widget_by_id(self, pool_id: int) -> Optional[OptionPictograph]:
         """Get Qt widget from pool by service-provided ID."""
         return self._widget_pool.get(pool_id)
@@ -93,7 +94,6 @@ class OptionPickerWidgetPoolManager:
 
     def reset_pool(self) -> None:
         """Reset the widget pool to initial state."""
-        print("🔄 [WIDGET_POOL] Resetting widget pool")
 
         # Hide all widgets
         for widget in self._widget_pool.values():
@@ -102,11 +102,8 @@ class OptionPickerWidgetPoolManager:
         # Reset service pool
         self._option_pool_service.reset_pool()
 
-        print("✅ [WIDGET_POOL] Widget pool reset complete")
-
     def cleanup_widget_pool(self) -> None:
         """Clean up widget pool resources."""
-        print("🧹 [WIDGET_POOL] Cleaning up widget pool")
 
         # Hide and cleanup all widgets
         for widget in self._widget_pool.values():
@@ -116,8 +113,6 @@ class OptionPickerWidgetPoolManager:
 
         # Clear the pool
         self._widget_pool.clear()
-
-        print("✅ [WIDGET_POOL] Widget pool cleanup complete")
 
     def get_widget_pool_status(self) -> Dict[str, int]:
         """Get status information about the widget pool."""

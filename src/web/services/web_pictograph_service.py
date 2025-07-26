@@ -192,10 +192,6 @@ class WebAssetProvider(IPictographAssetProvider):
 class WebRenderEngine:
     """Web-specific render engine that converts commands to web formats."""
 
-    def __init__(self):
-        """Initialize web render engine."""
-        logger.info("Web render engine initialized")
-
     def render_to_svg(self, commands: List[RenderCommand], canvas_size: Size) -> str:
         """Render commands to a complete SVG document."""
         try:

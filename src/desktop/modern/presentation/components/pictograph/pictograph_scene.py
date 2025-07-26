@@ -114,9 +114,6 @@ class PictographScene(QGraphicsScene):
 
             container = get_container()
             service = container.resolve(IPictographRenderingService)
-            logger.debug(
-                f"[SCENE] Connected to shared rendering service: {self.scene_id}"
-            )
             return service
 
         except Exception as e:
@@ -137,9 +134,6 @@ class PictographScene(QGraphicsScene):
         )
 
         self.addItem(arrow_item)
-        logger.debug(
-            f"[SCENE] Created {color} arrow directly for scene {self.scene_id}"
-        )
 
     def _initialize_glyph_renderers(self):
         """Initialize glyph renderers (lazy-loaded)."""
@@ -179,9 +173,6 @@ class PictographScene(QGraphicsScene):
             self._coordinate_system = container.resolve(IArrowCoordinateSystemService)
             self._arrow_rendering_service = ArrowRenderingService()
 
-            logger.debug(
-                f"Scene {self.scene_id}: Successfully initialized shared services"
-            )
             self._services_initialized = True
 
         except Exception as e:
@@ -196,10 +187,6 @@ class PictographScene(QGraphicsScene):
         This method is called by external visibility controls to update what should be rendered.
         """
         try:
-            logger.debug(
-                f"PictographScene {self.scene_id}: Updating {element_name} visibility to {visible}"
-            )
-
             # Update the simple visibility service
             self._visibility_service.set_element_visibility(
                 element_type, element_name, visible
@@ -210,10 +197,6 @@ class PictographScene(QGraphicsScene):
 
             # Emit signal that visibility changed
             self.visibility_changed.emit()
-
-            logger.debug(
-                f"Successfully updated {element_name} visibility to {visible} in scene {self.scene_id}"
-            )
 
         except Exception as e:
             logger.error(
@@ -230,10 +213,6 @@ class PictographScene(QGraphicsScene):
         Update visibility of specific rendered elements without full re-rendering.
         """
         try:
-            logger.debug(
-                f"Starting targeted visibility update: {element_type} {element_name} -> {visible}"
-            )
-
             if element_type == "motion":
                 # Handle motion visibility (affects both props and arrows)
                 color = element_name.replace("_motion", "")
@@ -244,36 +223,22 @@ class PictographScene(QGraphicsScene):
                     if hasattr(item, "arrow_color") and item.arrow_color == color:
                         item.setVisible(visible)
                         updated_items += 1
-                        logger.debug(f"Set {color} arrow visibility to {visible}")
 
                 # Force immediate view update for targeted changes
                 if updated_items > 0:
-                    logger.debug(
-                        f"Forcing view update after updating {updated_items} {color} arrows"
-                    )
                     self._force_view_update()
 
                 # For props and other elements, we need to check if dependency handling is needed
                 # For now, fall back to refresh for complex cases
                 if updated_items == 0:
-                    logger.debug(
-                        f"No {color} motion items found, falling back to refresh"
-                    )
                     self.refresh_with_current_visibility()
                     return
 
             elif element_type == "glyph" or element_type == "other":
                 # For glyphs and other elements, use the full refresh approach
                 # since identifying specific glyph items is complex
-                logger.debug(
-                    f"Using refresh for {element_type} {element_name} visibility update"
-                )
                 self.refresh_with_current_visibility()
                 return
-
-            logger.debug(
-                f"Completed targeted visibility update: {element_type} {element_name}"
-            )
 
         except Exception as e:
             logger.error(f"Error in targeted visibility update: {e}")
@@ -309,9 +274,6 @@ class PictographScene(QGraphicsScene):
             self.render_pictograph(self._last_pictograph_data)
             # Force immediate graphics view update
             self._force_view_update()
-            logger.debug(
-                f"Refreshed pictograph scene {self.scene_id} with current visibility settings"
-            )
 
     def _force_view_update(self) -> None:
         """Force all views of this scene to immediately update their display."""
@@ -326,7 +288,6 @@ class PictographScene(QGraphicsScene):
                     try:
                         view.viewport().update()
                         view.update()
-                        logger.debug(f"Forced update for view of scene {self.scene_id}")
                     except Exception as view_error:
                         logger.debug(f"Error updating individual view: {view_error}")
         except Exception as e:
@@ -343,25 +304,15 @@ class PictographScene(QGraphicsScene):
 
         # Render grid using shared service (if visible)
         grid_visible = self._visibility_service.get_element_visibility("other", "grid")
-        logger.debug(f"🔲 [SCENE] Grid visibility: {grid_visible}")
 
         if grid_visible:
-            logger.debug(
-                f"🔲 [SCENE] Rendering service available: {self.rendering_service is not None}"
-            )
-            logger.debug(
-                f"🔲 [SCENE] Rendering service type: {type(self.rendering_service)}"
-            )
-
             if self.rendering_service:
                 grid_mode = (
                     pictograph_data.grid_data.grid_mode.value
                     if pictograph_data.grid_data
                     else "diamond"
                 )
-                logger.debug(f"🔲 [SCENE] Calling render_grid with mode: {grid_mode}")
-                result = self.rendering_service.render_grid(self, grid_mode)
-                logger.debug(f"🔲 [SCENE] render_grid result: {result}")
+                self.rendering_service.render_grid(self, grid_mode)
             else:
                 logger.warning(
                     f"[SCENE] No rendering service available for grid: {self.scene_id}"
@@ -373,18 +324,10 @@ class PictographScene(QGraphicsScene):
 
         # Render props using shared service (if visible)
         if self._visibility_service.get_element_visibility("other", "props"):
-            logger.info(f"🎭 [SCENE] Props are visible, checking motions...")
-
             if blue_motion and self._visibility_service.get_motion_visibility("blue"):
-                logger.info(
-                    f"🔵 [SCENE] Rendering blue prop with motion: {blue_motion.motion_type} from {blue_motion.start_loc} to {blue_motion.end_loc}"
-                )
                 if self.rendering_service:
-                    result = self.rendering_service.render_prop(
+                    self.rendering_service.render_prop(
                         self, "blue", blue_motion, pictograph_data
-                    )
-                    logger.info(
-                        f"🔵 [SCENE] Blue prop render result: {result is not None}"
                     )
                 else:
                     logger.warning(
@@ -392,15 +335,9 @@ class PictographScene(QGraphicsScene):
                     )
 
             if red_motion and self._visibility_service.get_motion_visibility("red"):
-                logger.info(
-                    f"🔴 [SCENE] Rendering red prop with motion: {red_motion.motion_type} from {red_motion.start_loc} to {red_motion.end_loc}"
-                )
                 if self.rendering_service:
-                    result = self.rendering_service.render_prop(
+                    self.rendering_service.render_prop(
                         self, "red", red_motion, pictograph_data
-                    )
-                    logger.info(
-                        f"🔴 [SCENE] Red prop render result: {result is not None}"
                     )
                 else:
                     logger.warning(

@@ -193,26 +193,14 @@ class SignalCoordinator(QObject):
     ):
         """Handle start position creation with pre-loaded transition"""
 
-        logger.info(
-            f"🎯 [SIGNAL_COORDINATOR] Handling start position created: {position_key}"
-        )
-        logger.info(
-            f"🎯 [SIGNAL_COORDINATOR] Beat data type: {type(start_position_beat_data)}"
-        )
-        logger.info(
-            f"🎯 [SIGNAL_COORDINATOR] Has pictograph data: {hasattr(start_position_beat_data, 'pictograph_data') and start_position_beat_data.pictograph_data is not None}"
-        )
-
         self.start_position_manager.set_start_position(start_position_beat_data)
 
         # Pre-load option picker content WITHOUT animations to avoid double fade
-        logger.info(f"🎯 [SIGNAL_COORDINATOR] Calling prepare_from_start_position...")
         self.option_picker_manager.prepare_from_start_position(
             position_key, start_position_beat_data
         )
 
         # Transition to option picker with content already loaded
-        logger.info(f"🎯 [SIGNAL_COORDINATOR] Transitioning to option picker...")
         self.layout_manager.transition_to_option_picker()
         self.start_position_set.emit(position_key)
 
