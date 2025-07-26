@@ -24,7 +24,7 @@ logger = logging.getLogger(__name__)
 class BrowseDataManager:
     """
     Manages data operations for the Browse tab.
-    
+
     Handles conversion between data formats, filtering operations,
     and maintains sequence mappings for efficient lookups.
     """
@@ -32,15 +32,15 @@ class BrowseDataManager:
     def __init__(self, data_dir: Path):
         """
         Initialize the browse data manager.
-        
+
         Args:
             data_dir: Directory containing dictionary data
         """
         self.dictionary_manager = ModernDictionaryDataManager(data_dir)
-        
+
         # Mapping from sequence UUID to word (for quick lookup)
         self.sequence_id_to_word: Dict[str, str] = {}
-        
+
         # Connect to dictionary manager signals
         self.dictionary_manager.data_loaded.connect(self._on_data_loaded)
         self.dictionary_manager.loading_progress.connect(self._on_loading_progress)
@@ -57,14 +57,18 @@ class BrowseDataManager:
     def apply_filter(self, filter_type: FilterType, filter_value) -> List[SequenceData]:
         """
         Apply filter using the dictionary data manager.
-        
+
         Args:
             filter_type: Type of filter to apply
             filter_value: Value to filter by
-            
+
         Returns:
             List of filtered SequenceData objects
         """
+        logger.info(
+            f"🔍 [DATA_MANAGER] Applying filter: {filter_type.value} = {filter_value} (type: {type(filter_value)})"
+        )
+
         records = []
 
         if filter_type == FilterType.STARTING_LETTER:
@@ -75,6 +79,7 @@ class BrowseDataManager:
                     letters = [
                         chr(i) for i in range(ord(start_letter), ord(end_letter) + 1)
                     ]
+                    logger.info(f"📝 Letter range {filter_value} -> {letters}")
                     records = self.dictionary_manager.get_records_by_starting_letters(
                         letters
                     )
@@ -91,15 +96,32 @@ class BrowseDataManager:
                 )
 
         elif filter_type == FilterType.LENGTH:
-            if isinstance(filter_value, int):
+            # Convert string to int if needed
+            if isinstance(filter_value, str):
+                if filter_value == "All":
+                    records = self.dictionary_manager.get_all_records()
+                else:
+                    try:
+                        length_value = int(filter_value)
+                        logger.info(
+                            f"📏 Converting length '{filter_value}' to {length_value}"
+                        )
+                        records = self.dictionary_manager.get_records_by_length(
+                            length_value
+                        )
+                    except ValueError:
+                        logger.warning(f"⚠️ Invalid length value: {filter_value}")
+                        records = []
+            elif isinstance(filter_value, int):
                 records = self.dictionary_manager.get_records_by_length(filter_value)
-            elif filter_value == "All":
+            else:
                 records = self.dictionary_manager.get_all_records()
 
         elif filter_type == FilterType.DIFFICULTY:
-            if filter_value == "All":
+            if filter_value == "All" or filter_value == "All Levels":
                 records = self.dictionary_manager.get_all_records()
             else:
+                logger.info(f"📊 Filtering by difficulty: {filter_value}")
                 records = self.dictionary_manager.get_records_by_difficulty(
                     filter_value
                 )
@@ -111,30 +133,49 @@ class BrowseDataManager:
                 records = self.dictionary_manager.get_records_by_author(filter_value)
 
         elif filter_type == FilterType.GRID_MODE:
-            if filter_value == "All":
+            if filter_value == "All" or filter_value == "All Styles":
                 records = self.dictionary_manager.get_all_records()
             else:
                 records = self.dictionary_manager.get_records_by_grid_mode(filter_value)
 
         elif filter_type == FilterType.FAVORITES:
+            logger.info("⭐ Getting favorite records")
             records = self.dictionary_manager.get_favorite_records()
 
         elif filter_type == FilterType.RECENT:
+            logger.info("🔥 Getting recent records")
             records = self.dictionary_manager.get_recent_records()
 
         else:
+            logger.info("📊 Getting all records (default)")
             records = self.dictionary_manager.get_all_records()
 
+        logger.info(f"📊 [DATA_MANAGER] Filter returned {len(records)} records")
+
         # Convert SequenceRecord to SequenceData format for compatibility
-        return self._convert_records_to_sequence_data(records)
+        sequence_data = self._convert_records_to_sequence_data(records)
+        logger.info(
+            f"📊 [DATA_MANAGER] Converted to {len(sequence_data)} SequenceData objects"
+        )
+
+        # Debug: Log first few sequence words to verify real data
+        if sequence_data:
+            sample_words = [
+                seq.word for seq in sequence_data[:3] if hasattr(seq, "word")
+            ]
+            logger.info(f"📊 [DATA_MANAGER] Sample sequences: {sample_words}")
+        else:
+            logger.warning("📊 [DATA_MANAGER] No sequence data returned!")
+
+        return sequence_data
 
     def get_sequence_data(self, sequence_id: str) -> Optional[SequenceData]:
         """
         Get sequence data by ID.
-        
+
         Args:
             sequence_id: UUID of the sequence
-            
+
         Returns:
             SequenceData object if found, None otherwise
         """
@@ -181,6 +222,52 @@ class BrowseDataManager:
     def get_loading_errors(self) -> List[str]:
         """Get any loading errors from the dictionary manager."""
         return self.dictionary_manager.get_loading_errors()
+
+    def get_all_sequences(self) -> List[SequenceData]:
+        """
+        Get all sequences as SequenceData objects.
+
+        Returns:
+            List of SequenceData objects converted from SequenceRecords
+        """
+        # Get all records from dictionary manager
+        all_records = self.dictionary_manager.get_all_records()
+
+        # Convert SequenceRecords to SequenceData objects
+        sequences = []
+        for record in all_records:
+            # Generate a UUID for this sequence if not already mapped
+            sequence_id = None
+            for existing_id, word in self.sequence_id_to_word.items():
+                if word == record.word:
+                    sequence_id = existing_id
+                    break
+
+            if not sequence_id:
+                import uuid
+
+                sequence_id = str(uuid.uuid4())
+                self.sequence_id_to_word[sequence_id] = record.word
+
+            sequence_data = SequenceData(
+                id=sequence_id,
+                word=record.word,
+                thumbnails=record.thumbnails,
+                author=record.author,
+                level=record.level,
+                sequence_length=record.sequence_length,
+                date_added=record.date_added,
+                grid_mode=record.grid_mode,
+                prop_type=record.prop_type,
+                is_favorite=record.is_favorite,
+                is_circular=record.is_circular,
+                starting_position=record.starting_position,
+                difficulty_level=record.difficulty_level,
+                tags=record.tags,
+            )
+            sequences.append(sequence_data)
+
+        return sequences
 
     def _convert_records_to_sequence_data(self, records) -> List[SequenceData]:
         """Convert SequenceRecord objects to SequenceData format."""

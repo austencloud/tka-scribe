@@ -19,6 +19,14 @@ BUSINESS LOGIC DELEGATED TO:
 
 from typing import TYPE_CHECKING, List, Optional
 
+from PyQt6.QtCore import pyqtSignal
+from PyQt6.QtWidgets import QVBoxLayout, QWidget
+
+from desktop.modern.core.dependency_injection.di_container import DIContainer
+from desktop.modern.core.interfaces.core_services import ILayoutService
+from desktop.modern.domain.models import BeatData, SequenceData
+from desktop.modern.domain.models.pictograph_data import PictographData
+from desktop.modern.presentation.components.component_base import ViewableComponentBase
 from shared.application.services.workbench.workbench_operation_coordinator import (
     OperationResult,
     OperationType,
@@ -27,14 +35,9 @@ from shared.application.services.workbench.workbench_operation_coordinator impor
 from shared.application.services.workbench.workbench_session_manager import (
     WorkbenchSessionManager,
 )
-from shared.application.services.workbench.workbench_state_manager import WorkbenchStateManager
-from desktop.modern.core.dependency_injection.di_container import DIContainer
-from desktop.modern.core.interfaces.core_services import ILayoutService
-from desktop.modern.domain.models import BeatData, SequenceData
-from desktop.modern.domain.models.pictograph_data import PictographData
-from desktop.modern.presentation.components.component_base import ViewableComponentBase
-from PyQt6.QtCore import pyqtSignal
-from PyQt6.QtWidgets import QVBoxLayout, QWidget
+from shared.application.services.workbench.workbench_state_manager import (
+    WorkbenchStateManager,
+)
 
 from .beat_frame_section import WorkbenchBeatFrameSection
 from .button_interface import WorkbenchButtonInterfaceAdapter
@@ -139,6 +142,7 @@ class SequenceWorkbench(ViewableComponentBase):
             self._complete_ui_setup()
             self._connect_signals()
             self._setup_button_interface()
+            self._setup_state_monitoring()  # CRITICAL FIX: Monitor state manager changes
 
         except Exception as e:
             pass  # Error in deferred initialization
@@ -240,6 +244,34 @@ class SequenceWorkbench(ViewableComponentBase):
                 self.operation_completed
             )
             self._button_interface.signals.operation_failed.connect(self.error_occurred)
+
+    def _setup_state_monitoring(self):
+        """Setup monitoring of state manager changes for automatic UI updates."""
+        print(f"🔗 [WORKBENCH] Setting up state monitoring...")
+
+        # Store the original state manager methods to intercept changes
+        if hasattr(self._state_manager, "set_sequence"):
+            original_set_sequence = self._state_manager.set_sequence
+
+            def monitored_set_sequence(sequence, from_restoration=False):
+                print(
+                    f"🔍 [WORKBENCH] State manager set_sequence intercepted: {sequence}"
+                )
+                result = original_set_sequence(sequence, from_restoration)
+
+                # If the state changed, update our UI
+                if result.changed and result.sequence_changed:
+                    print(f"🔄 [WORKBENCH] State changed externally, updating UI...")
+                    self._update_ui_from_state()
+                    self._update_button_panel_sequence_state()
+
+                return result
+
+            # Replace the method with our monitored version
+            self._state_manager.set_sequence = monitored_set_sequence
+            print(f"✅ [WORKBENCH] State monitoring setup complete")
+        else:
+            print(f"❌ [WORKBENCH] State manager has no set_sequence method!")
 
     def _setup_session_subscriptions(self):
         """Setup session restoration event subscriptions."""
@@ -510,16 +542,25 @@ class SequenceWorkbench(ViewableComponentBase):
     def _update_ui_from_state(self):
         """Update UI components based on current business state."""
         sequence = self._state_manager.get_current_sequence()
+        print(f"🔄 [WORKBENCH] Updating UI from state - sequence: {sequence}")
+        print(
+            f"🔄 [WORKBENCH] Sequence length: {sequence.length if sequence else 'None'}"
+        )
 
         # Update indicator section
         if self._indicator_section:
+            print(f"🔄 [WORKBENCH] Updating indicator section...")
             self._indicator_section.update_sequence(sequence)
 
         # Update beat frame section
         if self._beat_frame_section:
+            print(f"🔄 [WORKBENCH] Updating beat frame section...")
             self._beat_frame_section.set_sequence(sequence)
+        else:
+            print(f"❌ [WORKBENCH] No beat frame section available!")
 
         # Update button panel state
+        print(f"🔄 [WORKBENCH] Updating button panel state...")
         self._update_button_panel_sequence_state()
 
     def _on_beat_selected(self, beat_index: int):

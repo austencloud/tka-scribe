@@ -52,12 +52,7 @@ addopts = [
     "--disable-warnings",
     "-ra",
 ]
-testpaths = [
-    "tests",
-    "tests/unit",
-    "tests/integration", 
-    "tests/e2e",
-]
+testpaths = ["tests", "tests/unit", "tests/integration", "tests/e2e"]
 python_files = ["test_*.py", "*_test.py"]
 python_classes = ["Test*"]
 python_functions = ["test_*"]

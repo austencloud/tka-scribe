@@ -20,6 +20,7 @@ logger = logging.getLogger(__name__)
 
 class BrowsePanel(Enum):
     """Enumeration of browse tab panels."""
+
     FILTER_SELECTION = "filter_selection"
     BROWSER = "browser"
     VIEWER = "viewer"
@@ -28,32 +29,36 @@ class BrowsePanel(Enum):
 class BrowseNavigationManager(QObject):
     """
     Manages navigation between different panels in the Browse tab.
-    
-    Handles transitions between filter selection, browser, and viewer panels
-    with proper state management and signal coordination.
+
+    Handles transitions between filter selection and browser panels in the stacked widget.
+    The viewer panel is separate and managed differently.
     """
 
     # Signals
     panel_changed = pyqtSignal(str)  # Emitted when panel changes
-    navigation_requested = pyqtSignal(str, object)  # Emitted when navigation is requested
+    navigation_requested = pyqtSignal(
+        str, object
+    )  # Emitted when navigation is requested
 
-    def __init__(self, stacked_widget: QStackedWidget):
+    def __init__(self, stacked_widget: QStackedWidget, viewer_panel=None):
         """
         Initialize the browse navigation manager.
-        
+
         Args:
-            stacked_widget: The stacked widget containing all panels
+            stacked_widget: The stacked widget containing filter and browser panels
+            viewer_panel: Optional separate viewer panel widget
         """
         super().__init__()
         self.stacked_widget = stacked_widget
+        self.viewer_panel = viewer_panel
         self.current_panel = BrowsePanel.FILTER_SELECTION
         self.previous_panel: Optional[BrowsePanel] = None
-        
-        # Panel indices in the stacked widget
+
+        # Panel indices in the stacked widget (only filter and browser)
         self.panel_indices = {
             BrowsePanel.FILTER_SELECTION: 0,
             BrowsePanel.BROWSER: 1,
-            BrowsePanel.VIEWER: 2,
+            # VIEWER is not in the stacked widget - it's a separate panel
         }
 
     def navigate_to_filter_selection(self) -> None:
@@ -63,7 +68,7 @@ class BrowseNavigationManager(QObject):
     def navigate_to_browser(self, filter_data=None) -> None:
         """
         Navigate to the browser panel.
-        
+
         Args:
             filter_data: Optional filter data to pass to the browser
         """
@@ -72,16 +77,36 @@ class BrowseNavigationManager(QObject):
     def navigate_to_viewer(self, sequence_data=None) -> None:
         """
         Navigate to the viewer panel.
-        
+
         Args:
             sequence_data: Optional sequence data to pass to the viewer
         """
-        self._navigate_to_panel(BrowsePanel.VIEWER, sequence_data)
+        # The viewer is not in the stacked widget, so we handle it differently
+        # We just update the viewer panel directly and emit signals
+        try:
+            if self.viewer_panel and sequence_data:
+                # Update the viewer panel with sequence data
+                if hasattr(self.viewer_panel, "show_sequence"):
+                    self.viewer_panel.show_sequence(sequence_data)
+
+            # Update current panel state
+            self.previous_panel = self.current_panel
+            self.current_panel = BrowsePanel.VIEWER
+
+            logger.info(f"📍 Navigated to {BrowsePanel.VIEWER.value} panel")
+
+            # Emit signals
+            self.panel_changed.emit(BrowsePanel.VIEWER.value)
+            if sequence_data is not None:
+                self.navigation_requested.emit(BrowsePanel.VIEWER.value, sequence_data)
+
+        except Exception as e:
+            logger.error(f"❌ Failed to navigate to viewer: {e}")
 
     def go_back(self) -> bool:
         """
         Navigate back to the previous panel.
-        
+
         Returns:
             True if navigation was successful, False if no previous panel
         """
@@ -124,15 +149,40 @@ class BrowseNavigationManager(QObject):
     def _navigate_to_panel(self, target_panel: BrowsePanel, data=None) -> None:
         """
         Internal method to navigate to a specific panel.
-        
+
         Args:
             target_panel: The panel to navigate to
             data: Optional data to pass with the navigation
         """
         try:
-            # Don't navigate if already at target panel
+            logger.info(
+                f"🔍 _navigate_to_panel called: current={self.current_panel.value}, target={target_panel.value}"
+            )
+
+            # Check actual stacked widget state to ensure we're in sync
+            actual_index = self.stacked_widget.currentIndex()
+            logger.info(f"🔍 Actual stacked widget index: {actual_index}")
+
+            # Update our internal state to match reality
+            for panel, index in self.panel_indices.items():
+                if index == actual_index:
+                    if self.current_panel != panel:
+                        logger.info(
+                            f"🔄 Syncing navigation state: {self.current_panel.value} → {panel.value}"
+                        )
+                        self.current_panel = panel
+                    break
+
+            # Don't navigate if already at target panel (after sync)
             if self.current_panel == target_panel:
-                logger.debug(f"Already at {target_panel.value} panel")
+                logger.info(
+                    f"⚠️ Already at {target_panel.value} panel - skipping navigation"
+                )
+                return
+
+            # Handle viewer panel separately (not in stacked widget)
+            if target_panel == BrowsePanel.VIEWER:
+                self.navigate_to_viewer(data)
                 return
 
             # Store previous panel for back navigation
@@ -150,7 +200,17 @@ class BrowseNavigationManager(QObject):
                 return
 
             # Switch to the target panel
+            logger.info(
+                f"🔄 Setting stacked widget index to {panel_index} for {target_panel.value} panel"
+            )
             self.stacked_widget.setCurrentIndex(panel_index)
+
+            # Verify the change took effect
+            actual_index = self.stacked_widget.currentIndex()
+            logger.info(
+                f"🔍 Stacked widget index after setCurrentIndex: {actual_index}"
+            )
+
             self.current_panel = target_panel
 
             logger.info(f"📍 Navigated to {target_panel.value} panel")
@@ -166,7 +226,7 @@ class BrowseNavigationManager(QObject):
     def get_navigation_breadcrumb(self) -> str:
         """
         Get a breadcrumb string showing current navigation state.
-        
+
         Returns:
             String representation of current navigation
         """
@@ -179,10 +239,10 @@ class BrowseNavigationManager(QObject):
     def get_panel_display_name(self, panel: BrowsePanel) -> str:
         """
         Get display name for a panel.
-        
+
         Args:
             panel: The panel to get display name for
-            
+
         Returns:
             Human-readable panel name
         """
@@ -198,6 +258,8 @@ class BrowseNavigationManager(QObject):
         logger.debug(f"Navigation State:")
         logger.debug(f"  Current: {self.get_panel_display_name(self.current_panel)}")
         if self.previous_panel:
-            logger.debug(f"  Previous: {self.get_panel_display_name(self.previous_panel)}")
+            logger.debug(
+                f"  Previous: {self.get_panel_display_name(self.previous_panel)}"
+            )
         logger.debug(f"  Breadcrumb: {self.get_navigation_breadcrumb()}")
         logger.debug(f"  Can go back: {self.can_go_back()}")

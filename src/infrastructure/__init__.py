@@ -6,7 +6,7 @@ Core infrastructure components for the TKA application.
 
 This package contains:
 - Path management system
-- Configuration management  
+- Configuration management
 - Testing utilities
 - Other infrastructure components
 

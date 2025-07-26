@@ -60,6 +60,8 @@ class SequenceCardCacheService(ISequenceCardCacheService):
         self.scaled_cache = LRUCache(max_scaled_cache_size)
         self.stats = CacheStats()
         self.memory_limit_mb = 500  # 500MB limit
+        self._last_memory_check = 0
+        self._memory_check_interval = 5.0  # Check memory every 5 seconds max
 
     def get_cached_image(self, path: Path, scale: float = 1.0) -> Optional[bytes]:
         """Get cached image data."""
@@ -88,8 +90,13 @@ class SequenceCardCacheService(ISequenceCardCacheService):
         """Cache image data."""
         cache_key = self._get_cache_key(path, scale)
 
-        # Check memory usage before caching
-        self._check_memory_usage()
+        # Check memory usage periodically (not on every call)
+        import time
+
+        current_time = time.time()
+        if current_time - self._last_memory_check > self._memory_check_interval:
+            self._check_memory_usage()
+            self._last_memory_check = current_time
 
         if scale == 1.0:
             self.raw_cache.put(cache_key, image_data)

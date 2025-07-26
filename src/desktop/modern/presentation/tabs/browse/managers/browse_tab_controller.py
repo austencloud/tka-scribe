@@ -36,7 +36,7 @@ logger = logging.getLogger(__name__)
 class BrowseTabController(QObject):
     """
     Main controller for the Browse tab.
-    
+
     Coordinates between all managers and components to provide
     a unified interface for browse tab operations.
     """
@@ -54,35 +54,40 @@ class BrowseTabController(QObject):
         sequences_dir: Path,
         stacked_widget: QStackedWidget,
         parent_widget: QWidget,
+        viewer_panel=None,
     ):
         """
         Initialize the browse tab controller.
-        
+
         Args:
             container: Dependency injection container
             data_dir: Directory containing dictionary data
             sequences_dir: Directory containing sequence files
             stacked_widget: The stacked widget for panel navigation
             parent_widget: Parent widget for dialogs
+            viewer_panel: Optional viewer panel widget (separate from stacked widget)
         """
         super().__init__()
-        
+
         self.container = container
         self.data_dir = data_dir
         self.sequences_dir = sequences_dir
+        self.stacked_widget = stacked_widget
         self.parent_widget = parent_widget
-        
+
         # Initialize managers
         self.data_manager = BrowseDataManager(data_dir)
-        self.action_handler = BrowseActionHandler(container, sequences_dir, parent_widget)
-        self.navigation_manager = BrowseNavigationManager(stacked_widget)
-        
+        self.action_handler = BrowseActionHandler(
+            container, sequences_dir, parent_widget
+        )
+        self.navigation_manager = BrowseNavigationManager(stacked_widget, viewer_panel)
+
         # Current state
         self.current_filter_type: Optional[FilterType] = None
         self.current_filter_value = None
         self.current_sequences: list[SequenceData] = []
         self.current_sequence: Optional[SequenceData] = None
-        
+
         # Connect signals
         self._connect_signals()
 
@@ -90,16 +95,21 @@ class BrowseTabController(QObject):
         """Initialize the controller and load initial data."""
         try:
             logger.info("🚀 Initializing Browse Tab Controller...")
-            
+
             # Start data loading
             self.data_loading_started.emit()
             self.data_manager.load_all_sequences()
-            
-            # Navigate to initial panel
-            self.navigation_manager.navigate_to_filter_selection()
-            
+
+            # Don't navigate to filter selection - the browse tab already starts there
+            # and we don't want to interfere with any ongoing navigation
+            logger.info(
+                "📊 Data loaded: {} sequences".format(
+                    len(self.data_manager.get_all_sequences())
+                )
+            )
+
             logger.info("✅ Browse Tab Controller initialized successfully")
-            
+
         except Exception as e:
             logger.error(f"❌ Failed to initialize Browse Tab Controller: {e}")
             self.error_occurred.emit(f"Failed to initialize: {str(e)}")
@@ -107,26 +117,34 @@ class BrowseTabController(QObject):
     def apply_filter(self, filter_type: FilterType, filter_value) -> None:
         """
         Apply a filter and navigate to browser panel.
-        
+
         Args:
             filter_type: Type of filter to apply
             filter_value: Value to filter by
         """
         try:
             logger.info(f"🔍 Applying filter: {filter_type.value} = {filter_value}")
-            
+
             # Store current filter
             self.current_filter_type = filter_type
             self.current_filter_value = filter_value
-            
-            # Apply filter using data manager
-            self.current_sequences = self.data_manager.apply_filter(filter_type, filter_value)
-            
-            logger.info(f"📊 Filter applied: {len(self.current_sequences)} sequences found")
-            
-            # Navigate to browser with filtered data
-            self.navigation_manager.navigate_to_browser(self.current_sequences)
-            
+
+            # Navigate to browser panel IMMEDIATELY (before loading data)
+            logger.info("🚀 Navigating to browser panel immediately...")
+            logger.info(f"🔍 Navigation manager: {self.navigation_manager}")
+            logger.info(f"🔍 Navigation manager type: {type(self.navigation_manager)}")
+
+            if self.navigation_manager:
+                logger.info("🔄 Calling navigate_to_browser...")
+                self.navigation_manager.navigate_to_browser([])
+                logger.info("✅ navigate_to_browser call completed")
+            else:
+                logger.error("❌ Navigation manager is None!")
+
+            # Start progressive loading instead of blocking loading
+            logger.info("📊 Starting progressive loading...")
+            self._start_progressive_loading(filter_type, filter_value)
+
         except Exception as e:
             logger.error(f"❌ Failed to apply filter: {e}")
             self.error_occurred.emit(f"Failed to apply filter: {str(e)}")
@@ -134,28 +152,28 @@ class BrowseTabController(QObject):
     def select_sequence(self, sequence_id: str) -> None:
         """
         Select a sequence and navigate to viewer panel.
-        
+
         Args:
             sequence_id: ID of the sequence to select
         """
         try:
             logger.info(f"🎯 Selecting sequence: {sequence_id}")
-            
+
             # Get sequence data
             sequence_data = self.data_manager.get_sequence_data(sequence_id)
             if not sequence_data:
                 logger.error(f"❌ Sequence not found: {sequence_id}")
                 self.error_occurred.emit(f"Sequence not found: {sequence_id}")
                 return
-            
+
             # Store current sequence
             self.current_sequence = sequence_data
-            
+
             # Navigate to viewer with sequence data
             self.navigation_manager.navigate_to_viewer(sequence_data)
-            
+
             logger.info(f"✅ Sequence selected: {sequence_data.word}")
-            
+
         except Exception as e:
             logger.error(f"❌ Failed to select sequence: {e}")
             self.error_occurred.emit(f"Failed to select sequence: {str(e)}")
@@ -163,7 +181,9 @@ class BrowseTabController(QObject):
     def edit_current_sequence(self) -> None:
         """Edit the currently selected sequence."""
         if self.current_sequence:
-            sequence_id = self.action_handler.handle_edit_sequence(self.current_sequence.id)
+            sequence_id = self.action_handler.handle_edit_sequence(
+                self.current_sequence.id
+            )
             self.sequence_selected_for_editing.emit(sequence_id)
         else:
             logger.warning("⚠️ No sequence selected for editing")
@@ -171,10 +191,10 @@ class BrowseTabController(QObject):
     def save_current_image(self, variation_index: int = 0) -> bool:
         """
         Save the current sequence image.
-        
+
         Args:
             variation_index: Index of the variation to save
-            
+
         Returns:
             True if save was successful, False otherwise
         """
@@ -189,10 +209,10 @@ class BrowseTabController(QObject):
     def delete_current_variation(self, variation_index: int = 0) -> bool:
         """
         Delete a variation of the current sequence.
-        
+
         Args:
             variation_index: Index of the variation to delete
-            
+
         Returns:
             True if deletion was successful, False otherwise
         """
@@ -211,10 +231,10 @@ class BrowseTabController(QObject):
     def view_fullscreen(self, variation_index: int = 0) -> bool:
         """
         View the current sequence in fullscreen.
-        
+
         Args:
             variation_index: Index of the variation to view
-            
+
         Returns:
             True if fullscreen was opened successfully, False otherwise
         """
@@ -229,7 +249,7 @@ class BrowseTabController(QObject):
     def go_back(self) -> bool:
         """
         Navigate back to the previous panel.
-        
+
         Returns:
             True if navigation was successful, False otherwise
         """
@@ -240,13 +260,13 @@ class BrowseTabController(QObject):
         try:
             logger.info("🔄 Refreshing browse data...")
             self.data_manager.refresh_data()
-            
+
             # Re-apply current filter if any
             if self.current_filter_type and self.current_filter_value:
                 self.apply_filter(self.current_filter_type, self.current_filter_value)
-            
+
             logger.info("✅ Data refreshed successfully")
-            
+
         except Exception as e:
             logger.error(f"❌ Failed to refresh data: {e}")
             self.error_occurred.emit(f"Failed to refresh data: {str(e)}")
@@ -270,19 +290,81 @@ class BrowseTabController(QObject):
     def _connect_signals(self) -> None:
         """Connect signals between managers and components."""
         # Data manager signals
-        self.data_manager.dictionary_manager.data_loaded.connect(
-            self._on_data_loaded
-        )
-        
+        self.data_manager.dictionary_manager.data_loaded.connect(self._on_data_loaded)
+
         # Navigation manager signals
-        self.navigation_manager.panel_changed.connect(
-            self._on_panel_changed
-        )
+        self.navigation_manager.panel_changed.connect(self._on_panel_changed)
 
     def _on_data_loaded(self, count: int) -> None:
         """Handle data loading completion."""
         logger.info(f"📊 Data loaded: {count} sequences")
         self.data_loading_finished.emit(count)
+
+    def _update_browser_panel_with_sequences(self) -> None:
+        """Update the browser panel with the current filtered sequences."""
+        try:
+            # Get the browser panel from the stacked widget
+            browser_panel = self.stacked_widget.widget(1)  # Browser panel is at index 1
+
+            if browser_panel and hasattr(browser_panel, "show_sequences"):
+                logger.info(
+                    f"🔄 Updating browser panel with {len(self.current_sequences)} sequences"
+                )
+                browser_panel.show_sequences(
+                    self.current_sequences,
+                    self.current_filter_type,
+                    self.current_filter_value,
+                )
+            else:
+                logger.warning(
+                    "⚠️ Browser panel not found or doesn't have show_sequences method"
+                )
+
+        except Exception as e:
+            logger.error(f"❌ Failed to update browser panel: {e}")
+
+    def _show_loading_state(self) -> None:
+        """Show loading state in the browser panel."""
+        try:
+            browser_panel = self.stacked_widget.widget(1)  # Browser panel is at index 1
+
+            if browser_panel and hasattr(browser_panel, "show_loading"):
+                logger.info("⏳ Showing loading state in browser panel")
+                browser_panel.show_loading()
+            elif browser_panel and hasattr(browser_panel, "show_sequences"):
+                # Fallback: show empty sequences with loading message
+                logger.info("⏳ Showing empty state while loading")
+                browser_panel.show_sequences([], self.current_filter_type, "Loading...")
+            else:
+                logger.warning(
+                    "⚠️ Browser panel not found or doesn't have loading methods"
+                )
+
+        except Exception as e:
+            logger.error(f"❌ Failed to show loading state: {e}")
+
+    def _start_progressive_loading(self, filter_type: FilterType, filter_value) -> None:
+        """Start progressive loading of sequences."""
+        try:
+            browser_panel = self.stacked_widget.widget(1)  # Browser panel is at index 1
+
+            if browser_panel and hasattr(browser_panel, "show_sequences_progressive"):
+                logger.info("🔄 Starting progressive loading in browser panel")
+                browser_panel.show_sequences_progressive(
+                    filter_type, filter_value, chunk_size=6
+                )
+            else:
+                # Fallback to blocking loading if progressive not available
+                logger.warning(
+                    "⚠️ Progressive loading not available, falling back to blocking"
+                )
+                self.current_sequences = self.data_manager.apply_filter(
+                    filter_type, filter_value
+                )
+                self._update_browser_panel_with_sequences()
+
+        except Exception as e:
+            logger.error(f"❌ Failed to start progressive loading: {e}")
 
     def _on_panel_changed(self, panel_name: str) -> None:
         """Handle panel change events."""

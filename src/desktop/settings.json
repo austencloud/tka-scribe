@@ -1,10 +1,10 @@
 {
   "browse_tab": {
-    "filter_type": "length",
-    "filter_values": "3",
+    "filter_type": "starting_letter",
+    "filter_values": "A-D",
     "selected_sequence": null,
     "selected_variation": null,
     "navigation_mode": "filter_selector",
-    "sort_method": "alphabetical"
+    "sort_method": "length"
   }
 }

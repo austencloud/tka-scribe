@@ -107,6 +107,7 @@ class BrowseTab(QWidget):
             sequences_dir=sequences_dir,
             stacked_widget=self.internal_left_stack,
             parent_widget=self,
+            viewer_panel=self.sequence_viewer_panel,
         )
 
         # Connect signals
@@ -123,10 +124,16 @@ class BrowseTab(QWidget):
         from desktop.modern.presentation.tabs.browse.services.modern_dictionary_data_manager import (
             ModernDictionaryDataManager,
         )
+        from desktop.modern.presentation.tabs.browse.services.progressive_loading_service import (
+            ProgressiveLoadingService,
+        )
 
         # Create services for components
         self.browse_service = BrowseService(self.sequences_dir)
         self.dictionary_manager = ModernDictionaryDataManager(self.data_dir)
+        self.progressive_loading_service = ProgressiveLoadingService(
+            self.dictionary_manager
+        )
 
     def _setup_layout(self) -> None:
         """Setup layout exactly matching Legacy structure."""
@@ -143,7 +150,7 @@ class BrowseTab(QWidget):
             self.browse_service, self.dictionary_manager
         )
         self.sequence_browser_panel = SequenceBrowserPanel(
-            self.browse_service, self.state_service
+            self.browse_service, self.state_service, self.progressive_loading_service
         )
 
         # Add panels to stack (matching Legacy indexes)
@@ -197,14 +204,8 @@ class BrowseTab(QWidget):
         # Save filter state for backward compatibility
         self.state_service.set_filter(filter_type, filter_value)
 
-        # Delegate to controller
+        # Delegate to controller - it should handle everything including updating the browser panel
         self.controller.apply_filter(filter_type, filter_value)
-
-        # Update UI components with filtered data
-        filtered_sequences = self.controller.get_current_sequences()
-        self.sequence_browser_panel.show_sequences(
-            filtered_sequences, filter_type, filter_value
-        )
 
     def _on_sequence_selected(self, sequence_id: str) -> None:
         """Handle sequence selection - delegate to controller."""

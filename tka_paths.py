@@ -11,8 +11,8 @@ WARNING: This is a compatibility layer. New code should import from:
 This file will be removed in a future version.
 """
 
-import warnings
 import sys
+import warnings
 from pathlib import Path
 
 # Add src to path to enable the new import
@@ -26,12 +26,12 @@ warnings.warn(
     "Importing 'tka_paths' from root is deprecated. "
     "Use 'from src.infrastructure.paths import tka_paths' instead.",
     DeprecationWarning,
-    stacklevel=2
+    stacklevel=2,
 )
 
+# Ensure automatic setup still works
 # Import and re-export everything from the new location
 from src.infrastructure.paths.tka_paths import *  # noqa: F403, F401
-
-# Ensure automatic setup still works
 from src.infrastructure.paths.tka_paths import setup_all_paths
+
 setup_all_paths(verbose=False)

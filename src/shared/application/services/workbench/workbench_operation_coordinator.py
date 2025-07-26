@@ -474,18 +474,58 @@ class WorkbenchOperationCoordinator:
             OperationResult with operation details
         """
         try:
-            # Execute operation
-            if self._sequence_persister:
-                self._sequence_persister.clear_current_sequence()
+            print(f"🧹 [OPERATION_COORDINATOR] Starting clear sequence operation...")
 
+            # CRITICAL FIX: Use state manager's set_sequence(None) instead of clear_all_state()
+            # This ensures proper UI update notifications are sent
             if self._state_manager:
-                self._state_manager.clear_all_state()
+                print(
+                    f"🧹 [OPERATION_COORDINATOR] Setting sequence to None via state manager..."
+                )
+                sequence_result = self._state_manager.set_sequence(None)
+                print(
+                    f"🧹 [OPERATION_COORDINATOR] Sequence clear result: {sequence_result}"
+                )
 
+                print(
+                    f"🧹 [OPERATION_COORDINATOR] Setting start position to None via state manager..."
+                )
+                start_pos_result = self._state_manager.set_start_position(None)
+                print(
+                    f"🧹 [OPERATION_COORDINATOR] Start position clear result: {start_pos_result}"
+                )
+
+                # Verify the state is actually cleared
+                current_sequence = self._state_manager.get_current_sequence()
+                print(
+                    f"🧹 [OPERATION_COORDINATOR] Current sequence after clear: {current_sequence}"
+                )
+            else:
+                print(f"❌ [OPERATION_COORDINATOR] No state manager available!")
+                return OperationResult.failure_result(
+                    OperationType.CLEAR_SEQUENCE,
+                    "Clear failed",
+                    "No state manager available",
+                )
+
+            # Execute persistence clearing if available
+            if self._sequence_persister:
+                print(f"🧹 [OPERATION_COORDINATOR] Clearing sequence persistence...")
+                self._sequence_persister.clear_current_sequence()
+            else:
+                print(
+                    f"⚠️ [OPERATION_COORDINATOR] No sequence persister available - skipping persistence clear"
+                )
+
+            print(
+                f"✅ [OPERATION_COORDINATOR] Clear sequence operation completed successfully"
+            )
             return OperationResult.success_result(
                 OperationType.CLEAR_SEQUENCE, "Sequence cleared!"
             )
 
         except Exception as e:
+            print(f"❌ [OPERATION_COORDINATOR] Failed to clear sequence: {e}")
             logger.error(f"Failed to clear sequence: {e}")
             return OperationResult.failure_result(
                 OperationType.CLEAR_SEQUENCE, "Clear failed", str(e)

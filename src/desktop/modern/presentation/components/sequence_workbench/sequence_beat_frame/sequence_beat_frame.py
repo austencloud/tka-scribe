@@ -7,13 +7,14 @@ replacing Legacy's SequenceBeatFrame with modern architecture patterns.
 
 from typing import TYPE_CHECKING, Dict, List, Optional
 
+from PyQt6.QtCore import Qt, pyqtSignal
+from PyQt6.QtWidgets import QFrame, QGridLayout, QScrollArea, QWidget
+
 from desktop.modern.application.services.layout.beat_resizer import BeatResizer
 from desktop.modern.core.interfaces.core_services import ILayoutService
 from desktop.modern.domain.models.beat_data import BeatData
 from desktop.modern.domain.models.pictograph_data import PictographData
 from desktop.modern.domain.models.sequence_data import SequenceData
-from PyQt6.QtCore import Qt, pyqtSignal
-from PyQt6.QtWidgets import QFrame, QGridLayout, QScrollArea, QWidget
 
 from .beat_selector import BeatSelector
 from .beat_view import BeatView
@@ -21,10 +22,10 @@ from .start_position_view import StartPositionView
 
 # Event-driven architecture imports
 if TYPE_CHECKING:
+    from desktop.modern.core.events import IEventBus
     from shared.application.services.workbench.beat_selection_service import (
         BeatSelectionService,
     )
-    from desktop.modern.core.events import IEventBus
 
 try:
     from desktop.modern.core.events import (
@@ -376,23 +377,43 @@ class SequenceBeatFrame(QScrollArea):
             self._start_position_view.show()
             self._start_position_view.setVisible(True)
 
-        if not self._current_sequence:
+        if not self._current_sequence or len(self._current_sequence.beats) == 0:
             # No sequence beats to display, but start position remains visible
-            # Hide beat numbers on all beat views when no sequence
+            # CRITICAL FIX: Hide all beat widgets when sequence is empty/cleared
+            print(
+                f"🧹 [SEQUENCE_BEAT_FRAME] Hiding all beat widgets - sequence is empty"
+            )
             for beat_view in self._beat_views:
+                beat_view.hide()
+                beat_view.setVisible(False)
                 beat_view.set_beat_number_visible(False)
+                # Clear any beat data to ensure clean state
+                beat_view.set_beat_data(None)
             return
 
         # Update beat views with sequence data
+        beat_count = len(self._current_sequence.beats)
+        print(f"🔄 [SEQUENCE_BEAT_FRAME] Updating display for {beat_count} beats")
+
         for i, beat_data in enumerate(self._current_sequence.beats):
             if i < len(self._beat_views):
                 beat_view = self._beat_views[i]
                 beat_view.set_beat_data(beat_data)
+                beat_view.show()
+                beat_view.setVisible(True)
 
                 # Enable beat number overlay for sequence beats (like Legacy)
                 beat_view.set_beat_number_visible(True)
             else:
                 print(f"⚠️ [SEQUENCE_BEAT_FRAME] No beat view available for beat {i}")
+
+        # Hide any remaining beat views that don't have data
+        for i in range(beat_count, len(self._beat_views)):
+            beat_view = self._beat_views[i]
+            beat_view.hide()
+            beat_view.setVisible(False)
+            beat_view.set_beat_number_visible(False)
+            beat_view.set_beat_data(None)
 
     # Event handlers
     def _on_beat_clicked(self, beat_index: int):

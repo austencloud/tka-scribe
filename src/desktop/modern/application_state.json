@@ -1,0 +1,92 @@
+{
+  "current_tab": "construct",
+  "window_geometry": "01d9d0cb00030000fffff18000000028fffffa7f00000529fffff18000000046fffffa7f0000052900000001000000000a00fffff18000000046fffffa7f00000529",
+  "window_state": "000000ff00000000fd0000000000000900000004e400000004000000040000000800000008fc00000000",
+  "session_data": {
+    "current_sequence_id": null,
+    "current_sequence_data": null,
+    "selected_beat_index": null,
+    "selected_beat_data": null,
+    "start_position_data": null,
+    "graph_editor_visible": false,
+    "graph_editor_selected_beat_index": null,
+    "graph_editor_selected_arrow": null,
+    "graph_editor_height": 300,
+    "active_tab": "sequence_builder",
+    "beat_layout": {},
+    "component_visibility": {},
+    "last_interaction": "2025-07-26T17:04:13.123084",
+    "session_id": "cd5d17ed-b7ea-48ce-a73b-cc401d7a1084",
+    "created_at": "2025-07-26T17:04:11.122284",
+    "tka_version": "modern"
+  },
+  "settings_snapshot": {
+    "app": {
+      "current_tab": "sequence",
+      "zoom_level": "1.5"
+    },
+    "demo": {
+      "auto_save": "true",
+      "language": "en",
+      "theme": "dark",
+      "user_name": "DemoUser"
+    },
+    "edge": {
+      "empty": "",
+      "none": null
+    },
+    "global": {
+      "background_type": "Snowfall",
+      "current_tab": "construct",
+      "grid_mode": "diamond",
+      "prop_type": "FAN"
+    },
+    "layout": {
+      "default_sequence_length": 16
+    },
+    "legacy_test": {
+      "old_key": "old_value",
+      "test_key": "test_value"
+    },
+    "perf_test": {},
+    "section1": {
+      "key1": "value1",
+      "key2": "value2"
+    },
+    "section2": {
+      "key3": "value3"
+    },
+    "test": {
+      "demo_key": "demo_value",
+      "key": "value",
+      "key1": "value1"
+    },
+    "ui": {
+      "panel_width": 300,
+      "show_tooltips": "true"
+    },
+    "ui_state": {
+      "current_tab_index": 0,
+      "current_tab_name": "\ud83d\udd27 Construct"
+    },
+    "users": {
+      "user_list": "[\"DefaultUser\"]"
+    },
+    "visibility": {
+      "glyph_elemental": "true",
+      "glyph_letter": "true",
+      "glyph_vtg": "false"
+    },
+    "workbench": {
+      "beat_count": 16
+    },
+    "worker": {
+      "id_0": "value_0",
+      "id_1": "value_1",
+      "id_2": "value_2",
+      "id_3": "value_3",
+      "id_4": "value_4"
+    }
+  },
+  "timestamp": "2025-07-26T17:04:17.206814"
+}

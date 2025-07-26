@@ -7,8 +7,10 @@ replacing Legacy's SequenceBeatFrame with modern architecture patterns.
 
 from typing import Dict, List, Optional
 
+from PyQt6.QtCore import Qt, pyqtSignal
+from PyQt6.QtWidgets import QFrame, QGridLayout, QScrollArea, QWidget
+
 from desktop.modern.application.services.layout.beat_resizer import BeatResizer
-from shared.application.services.layout.layout_manager import LayoutManager
 from desktop.modern.domain.models import BeatData, SequenceData
 from desktop.modern.presentation.components.sequence_workbench.sequence_beat_frame.beat_selector import (
     BeatSelector,
@@ -19,8 +21,7 @@ from desktop.modern.presentation.components.sequence_workbench.sequence_beat_fra
 from desktop.modern.presentation.components.sequence_workbench.sequence_beat_frame.start_position_view import (
     StartPositionView,
 )
-from PyQt6.QtCore import Qt, pyqtSignal
-from PyQt6.QtWidgets import QFrame, QGridLayout, QScrollArea, QWidget
+from shared.application.services.layout.layout_manager import LayoutManager
 
 
 class BeatFrame(QScrollArea):
@@ -221,14 +222,34 @@ class BeatFrame(QScrollArea):
         if self._start_position_view:
             self._start_position_view.show()
 
-        if not self._current_sequence:
+        if not self._current_sequence or len(self._current_sequence.beats) == 0:
             # No sequence beats to display, but start position remains visible
+            # CRITICAL FIX: Hide all beat widgets when sequence is empty/cleared
+            print(f"🧹 [BEAT_FRAME] Hiding all beat widgets - sequence is empty")
+            for beat_view in self._beat_views:
+                beat_view.hide()
+                beat_view.setVisible(False)
+                # Clear any beat data to ensure clean state
+                beat_view.set_beat_data(None)
             return
 
         # Update beat views with sequence data
+        beat_count = len(self._current_sequence.beats)
+        print(f"🔄 [BEAT_FRAME] Updating display for {beat_count} beats")
+
         for i, beat_data in enumerate(self._current_sequence.beats):
             if i < len(self._beat_views):
-                self._beat_views[i].set_beat_data(beat_data)
+                beat_view = self._beat_views[i]
+                beat_view.set_beat_data(beat_data)
+                beat_view.show()
+                beat_view.setVisible(True)
+
+        # Hide any remaining beat views that don't have data
+        for i in range(beat_count, len(self._beat_views)):
+            beat_view = self._beat_views[i]
+            beat_view.hide()
+            beat_view.setVisible(False)
+            beat_view.set_beat_data(None)
 
         # Start position is always separate from sequence beats (Legacy behavior)
         # Start position data is managed independently via set_start_position()

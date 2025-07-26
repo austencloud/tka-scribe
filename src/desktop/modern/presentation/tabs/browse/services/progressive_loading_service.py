@@ -5,7 +5,11 @@ This service handles progressive loading of sequences with visual feedback,
 ensuring the UI remains responsive during heavy operations.
 """
 
+import logging
 from typing import Any, List
+
+from PyQt6.QtCore import QObject, QTimer, pyqtSignal
+from PyQt6.QtWidgets import QApplication
 
 from desktop.modern.domain.models.sequence_data import SequenceData
 from desktop.modern.presentation.tabs.browse.models import FilterType
@@ -13,8 +17,8 @@ from desktop.modern.presentation.tabs.browse.services.modern_dictionary_data_man
     ModernDictionaryDataManager,
     SequenceRecord,
 )
-from PyQt6.QtCore import QObject, QTimer, pyqtSignal
-from PyQt6.QtWidgets import QApplication
+
+logger = logging.getLogger(__name__)
 
 
 class ProgressiveLoadingService(QObject):
@@ -146,7 +150,12 @@ class ProgressiveLoadingService(QObject):
         self, filter_type: FilterType, filter_value: Any
     ) -> List[SequenceRecord]:
         """Get filtered records from dictionary manager."""
-        # This uses the existing dictionary manager filtering logic
+        logger.info(
+            f"🔍 [PROGRESSIVE] Getting filtered records: {filter_type.value} = {filter_value} (type: {type(filter_value)})"
+        )
+
+        records = []
+
         if filter_type == FilterType.STARTING_LETTER:
             if isinstance(filter_value, str):
                 if "-" in filter_value and len(filter_value) == 3:
@@ -154,52 +163,97 @@ class ProgressiveLoadingService(QObject):
                     letters = [
                         chr(i) for i in range(ord(start_letter), ord(end_letter) + 1)
                     ]
-                    return self.dictionary_manager.get_records_by_starting_letters(
+                    logger.info(
+                        f"📝 [PROGRESSIVE] Letter range {filter_value} -> {letters}"
+                    )
+                    records = self.dictionary_manager.get_records_by_starting_letters(
                         letters
                     )
                 elif filter_value == "All Letters":
-                    return self.dictionary_manager.get_all_records()
+                    records = self.dictionary_manager.get_all_records()
                 else:
-                    return self.dictionary_manager.get_records_by_starting_letter(
+                    records = self.dictionary_manager.get_records_by_starting_letter(
                         filter_value
                     )
             elif isinstance(filter_value, list):
-                return self.dictionary_manager.get_records_by_starting_letters(
+                records = self.dictionary_manager.get_records_by_starting_letters(
+                    filter_value
+                )
+            else:
+                logger.warning(
+                    f"⚠️ [PROGRESSIVE] Unexpected starting letter filter value: {filter_value}"
+                )
+                records = []
+
+        elif filter_type == FilterType.LENGTH:
+            # Convert string to int if needed
+            if isinstance(filter_value, str):
+                if filter_value == "All":
+                    records = self.dictionary_manager.get_all_records()
+                else:
+                    try:
+                        length_value = int(filter_value)
+                        logger.info(
+                            f"📏 [PROGRESSIVE] Converting length '{filter_value}' to {length_value}"
+                        )
+                        records = self.dictionary_manager.get_records_by_length(
+                            length_value
+                        )
+                    except ValueError:
+                        logger.warning(
+                            f"⚠️ [PROGRESSIVE] Invalid length value: {filter_value}"
+                        )
+                        records = []
+            elif isinstance(filter_value, int):
+                records = self.dictionary_manager.get_records_by_length(filter_value)
+            else:
+                logger.warning(
+                    f"⚠️ [PROGRESSIVE] Unexpected length filter value: {filter_value}"
+                )
+                records = []
+
+        elif filter_type == FilterType.DIFFICULTY:
+            if filter_value == "All" or filter_value == "All Levels":
+                records = self.dictionary_manager.get_all_records()
+            else:
+                logger.info(f"📊 [PROGRESSIVE] Filtering by difficulty: {filter_value}")
+                records = self.dictionary_manager.get_records_by_difficulty(
                     filter_value
                 )
 
-        elif filter_type == FilterType.LENGTH:
-            if isinstance(filter_value, int):
-                return self.dictionary_manager.get_records_by_length(filter_value)
-            elif filter_value == "All":
-                return self.dictionary_manager.get_all_records()
-
-        elif filter_type == FilterType.DIFFICULTY:
-            if filter_value == "All":
-                return self.dictionary_manager.get_all_records()
-            else:
-                return self.dictionary_manager.get_records_by_difficulty(filter_value)
-
         elif filter_type == FilterType.AUTHOR:
             if filter_value == "All Authors":
-                return self.dictionary_manager.get_all_records()
+                records = self.dictionary_manager.get_all_records()
             else:
-                return self.dictionary_manager.get_records_by_author(filter_value)
+                records = self.dictionary_manager.get_records_by_author(filter_value)
 
         elif filter_type == FilterType.GRID_MODE:
-            if filter_value == "All":
-                return self.dictionary_manager.get_all_records()
+            if filter_value == "All" or filter_value == "All Styles":
+                records = self.dictionary_manager.get_all_records()
             else:
-                return self.dictionary_manager.get_records_by_grid_mode(filter_value)
+                records = self.dictionary_manager.get_records_by_grid_mode(filter_value)
 
         elif filter_type == FilterType.FAVORITES:
-            return self.dictionary_manager.get_favorite_records()
+            logger.info("⭐ [PROGRESSIVE] Getting favorite records")
+            records = self.dictionary_manager.get_favorite_records()
 
         elif filter_type == FilterType.RECENT:
-            return self.dictionary_manager.get_recent_records()
+            logger.info("🔥 [PROGRESSIVE] Getting recent records")
+            records = self.dictionary_manager.get_recent_records()
 
         else:
-            return self.dictionary_manager.get_all_records()
+            logger.info("📊 [PROGRESSIVE] Getting all records (default)")
+            records = self.dictionary_manager.get_all_records()
+
+        # Ensure we always return a list, never None
+        if records is None:
+            logger.warning(
+                f"⚠️ [PROGRESSIVE] Dictionary manager returned None for {filter_type.value}"
+            )
+            records = []
+
+        logger.info(f"📊 [PROGRESSIVE] Filter returned {len(records)} records")
+        return records
 
     def _convert_record_to_sequence_data(self, record: SequenceRecord) -> SequenceData:
         """Convert SequenceRecord to SequenceData."""
