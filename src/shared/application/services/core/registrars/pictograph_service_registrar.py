@@ -3,7 +3,7 @@ Pictograph Service Registrar
 
 Handles registration of pictograph-related services following microservices architecture.
 This registrar manages complex pictograph services including data management,
-border management, context detection, visibility management, and object pooling.
+border management, context detection, and visibility management.
 
 Services Registered:
 - PictographDataManager: Pictograph data management operations
@@ -11,7 +11,6 @@ Services Registered:
 - PictographBorderManager: Border management for pictographs
 - PictographContextDetector: Context detection services
 - PictographVisibilityService: Visibility management
-- PictographPoolManager: High-performance object pooling
 """
 
 import logging
@@ -48,9 +47,6 @@ class PictographServiceRegistrar(BaseServiceRegistrar):
 
         # Register core pictograph services
         self._register_core_pictograph_services(container)
-
-        # Register pictograph pool manager (performance critical)
-        self._register_pictograph_pool_manager(container)
 
         # Register pictograph rendering service (performance critical)
         self._register_pictograph_rendering_service(container)
@@ -129,30 +125,6 @@ class PictographServiceRegistrar(BaseServiceRegistrar):
             if self.is_critical():
                 raise ImportError(
                     f"Critical pictograph services unavailable: {e}"
-                ) from e
-
-    def _register_pictograph_pool_manager(self, container: "DIContainer") -> None:
-        """Register pictograph pool manager for high-performance option picker."""
-        try:
-            from shared.application.services.pictograph_pool_manager import (
-                PictographPoolManager,
-            )
-
-            # Register pictograph pool manager as singleton for high-performance option picker
-            # CRITICAL: Must be singleton so all components use the same initialized pool
-            # Use factory registration but ensure singleton behavior by storing instance
-            _pool_manager_instance = PictographPoolManager(container=container)
-            container.register_instance(PictographPoolManager, _pool_manager_instance)
-            self._mark_service_available("PictographPoolManager")
-
-        except ImportError as e:
-            error_msg = f"Failed to register pictograph pool manager: {e}"
-            logger.error(error_msg)
-
-            # Pool manager is critical for performance, so re-raise the error
-            if self.is_critical():
-                raise ImportError(
-                    f"Critical pictograph pool manager unavailable: {e}"
                 ) from e
 
     def _register_pictograph_rendering_service(self, container: "DIContainer") -> None:

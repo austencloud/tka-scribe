@@ -7,9 +7,12 @@ Handles section creation, updates, and inter-section communication.
 
 from typing import TYPE_CHECKING, Dict, List
 
-from desktop.modern.domain.models.sequence_data import SequenceData
-from desktop.modern.presentation.components.option_picker.types.letter_types import LetterType
 from PyQt6.QtCore import QTimer
+
+from desktop.modern.domain.models.sequence_data import SequenceData
+from desktop.modern.presentation.components.option_picker.types.letter_types import (
+    LetterType,
+)
 
 if TYPE_CHECKING:
     from desktop.modern.presentation.components.option_picker.components.option_picker_section import (
@@ -61,7 +64,11 @@ class OptionPickerSectionManager:
             # Update all sections quickly
             for letter_type, section in self._sections.items():
                 section_options = options_by_type.get(letter_type, [])
+                print(
+                    f"🔍 [SECTION_MGR] Updating {letter_type} with {len(section_options)} options"
+                )
                 section.load_options_from_sequence(section_options)
+                print(f"🔍 [SECTION_MGR] Section {letter_type} updated successfully")
 
             # Restore animation orchestrators
             for letter_type, section in self._sections.items():

@@ -5,7 +5,7 @@ Orchestrates application startup using focused services.
 Replaces the monolithic KineticConstructorModern with clean architecture.
 
 FIXES APPLIED:
-- ✅ Resolved circular import dependencies  
+- ✅ Resolved circular import dependencies
 - ✅ Standardized error handling using StandardErrorHandler
 - ✅ Clear dependency injection in constructor
 - ✅ Background pictograph pool initialization
@@ -22,15 +22,15 @@ import logging
 from abc import ABC, abstractmethod
 from typing import Callable, Optional
 
-from desktop.modern.core.dependency_injection.di_container import DIContainer
-from desktop.modern.core.error_handling import StandardErrorHandler, ErrorSeverity
-from PyQt6.QtWidgets import QMainWindow, QTabWidget
 from PyQt6.QtCore import QTimer
+from PyQt6.QtWidgets import QMainWindow, QTabWidget
 
 from desktop.modern.application.services.core.application_initialization_orchestrator import (
     ApplicationInitializationOrchestrator,
     IApplicationInitializationOrchestrator,
 )
+from desktop.modern.core.dependency_injection.di_container import DIContainer
+from desktop.modern.core.error_handling import ErrorSeverity, StandardErrorHandler
 from shared.application.services.core.service_registration_manager import (
     IServiceRegistrationManager,
     ServiceRegistrationManager,
@@ -81,42 +81,49 @@ class ApplicationOrchestrator(IApplicationOrchestrator):
         self.ui_manager = ui_manager or UISetupManager()
         self.background_manager = background_manager or BackgroundManager()
         self.lifecycle_manager = lifecycle_manager
-        
+
         # Import error recovery service
         from ..ui.error_recovery import UIErrorRecoveryService
+
         self.error_recovery = UIErrorRecoveryService()
 
         # Store references for cleanup
         self.container = None
         self.background_widget = None
         self.tab_widget = None
-    
+
     def ensure_lifecycle_manager(self, container: DIContainer) -> None:
         """
         Ensure lifecycle manager is available, create default if needed.
-        
+
         SIMPLIFIED: No complex dependency resolution in constructor.
         """
         if self.lifecycle_manager is not None:
             return
-            
+
         try:
             # Try to create with default services
-            from desktop.modern.application.services.core.window_management_service import WindowManagementService
-            from shared.application.services.core.session_restoration_coordinator import SessionRestorationCoordinator
-            from desktop.modern.application.services.ui.window_discovery_service import WindowDiscoveryService
-            
+            from desktop.modern.application.services.core.window_management_service import (
+                WindowManagementService,
+            )
+            from desktop.modern.application.services.ui.window_discovery_service import (
+                WindowDiscoveryService,
+            )
+            from shared.application.services.core.session_restoration_coordinator import (
+                SessionRestorationCoordinator,
+            )
+
             window_service = WindowManagementService()
             session_coordinator = SessionRestorationCoordinator()
             window_discovery_service = WindowDiscoveryService()
-            
+
             self.lifecycle_manager = ApplicationInitializationOrchestrator(
                 window_service,
                 session_coordinator,
                 window_discovery_service,
                 None,  # No session service in default mode
             )
-            
+
         except Exception as e:
             StandardErrorHandler.handle_initialization_error(
                 "Default lifecycle manager creation", e, logger, is_critical=True
@@ -133,7 +140,7 @@ class ApplicationOrchestrator(IApplicationOrchestrator):
     ) -> QTabWidget:
         """
         Initialize complete application using orchestrated services.
-        
+
         REFACTORED: Simplified error handling using dedicated error recovery service.
         """
         # Create progress callback
@@ -141,10 +148,13 @@ class ApplicationOrchestrator(IApplicationOrchestrator):
 
         try:
             # Step 1: Ensure lifecycle manager is available
-            from desktop.modern.core.dependency_injection.di_container import get_container
+            from desktop.modern.core.dependency_injection.di_container import (
+                get_container,
+            )
+
             self.container = get_container()
             self.ensure_lifecycle_manager(self.container)
-            
+
             # Step 2: Initialize application lifecycle
             self.lifecycle_manager.initialize_application(
                 main_window,
@@ -179,7 +189,9 @@ class ApplicationOrchestrator(IApplicationOrchestrator):
                 "Application initialization", e, logger, is_critical=True
             )
             # Use dedicated error recovery service
-            return self.error_recovery.create_fallback_main_ui(main_window, "application initialization failure")
+            return self.error_recovery.create_fallback_main_ui(
+                main_window, "application initialization failure"
+            )
 
     def _configure_services(self, progress_callback: Optional[Callable]) -> None:
         """Configure dependency injection services."""
@@ -201,7 +213,9 @@ class ApplicationOrchestrator(IApplicationOrchestrator):
             )
             raise
 
-    def _setup_ui(self, main_window: QMainWindow, progress_callback: Optional[Callable]) -> None:
+    def _setup_ui(
+        self, main_window: QMainWindow, progress_callback: Optional[Callable]
+    ) -> None:
         """Setup user interface."""
         try:
             if progress_callback:
@@ -211,7 +225,7 @@ class ApplicationOrchestrator(IApplicationOrchestrator):
                 main_window,
                 self.container,
                 progress_callback,
-                getattr(self.lifecycle_manager, 'session_service', None),
+                getattr(self.lifecycle_manager, "session_service", None),
             )
 
             if progress_callback:
@@ -219,12 +233,16 @@ class ApplicationOrchestrator(IApplicationOrchestrator):
 
         except Exception as e:
             StandardErrorHandler.handle_ui_error(
-                "UI setup", e, logger,
-                fallback_action=lambda: self._create_emergency_fallback_ui(main_window)
+                "UI setup",
+                e,
+                logger,
+                fallback_action=lambda: self._create_emergency_fallback_ui(main_window),
             )
             raise
 
-    def _setup_background(self, main_window: QMainWindow, progress_callback: Optional[Callable]) -> None:
+    def _setup_background(
+        self, main_window: QMainWindow, progress_callback: Optional[Callable]
+    ) -> None:
         """Setup background elements."""
         try:
             if progress_callback:
@@ -239,39 +257,46 @@ class ApplicationOrchestrator(IApplicationOrchestrator):
 
         except Exception as e:
             StandardErrorHandler.handle_service_error(
-                "Background setup", e, logger, ErrorSeverity.WARNING,
-                {"note": "Background is optional, continuing without it"}
+                "Background setup",
+                e,
+                logger,
+                ErrorSeverity.WARNING,
+                {"note": "Background is optional, continuing without it"},
             )
 
-    def _start_background_initialization(self, progress_callback: Optional[Callable]) -> None:
+    def _start_background_initialization(
+        self, progress_callback: Optional[Callable]
+    ) -> None:
         """
         Start background initialization tasks (non-blocking).
-        
+
         CRITICAL FIX: Move heavy initialization to background to prevent UI blocking.
         """
+
         def background_init():
             """Initialize heavy services in background."""
             try:
-                from shared.application.services.pictograph_pool_manager import PictographPoolManager
-                
-                logger.info("🔄 Starting background pictograph pool initialization...")
-                pool_manager = self.container.resolve(PictographPoolManager)
-                
-                # Initialize with true async behavior
-                pool_manager.initialize_pool_async()
-                
-                logger.info("✅ Background pictograph pool initialization started")
-                
+                # Background initialization tasks can be added here as needed
+                # Removed pictograph pool initialization as it's no longer needed with direct views
+                logger.info(
+                    "🔄 Background initialization complete - using direct view approach"
+                )
+
             except Exception as e:
                 StandardErrorHandler.handle_service_error(
-                    "Background pictograph pool initialization", e, logger, 
-                    ErrorSeverity.WARNING, {"note": "Pool will initialize on-demand"}
+                    "Background initialization",
+                    e,
+                    logger,
+                    ErrorSeverity.WARNING,
+                    {"note": "Background tasks failed but application can continue"},
                 )
 
         # PERFORMANCE FIX: Start background tasks after a short delay to ensure UI is responsive
         QTimer.singleShot(200, background_init)
 
-    def _finalize_initialization(self, main_window: QMainWindow, progress_callback: Optional[Callable]) -> None:
+    def _finalize_initialization(
+        self, main_window: QMainWindow, progress_callback: Optional[Callable]
+    ) -> None:
         """Finalize initialization with session restoration and layout."""
         try:
             # Trigger deferred session restoration (after UI is ready)
@@ -285,12 +310,16 @@ class ApplicationOrchestrator(IApplicationOrchestrator):
 
         except Exception as e:
             StandardErrorHandler.handle_service_error(
-                "Initialization finalization", e, logger, ErrorSeverity.WARNING,
-                {"note": "Core application is ready, some features may be limited"}
+                "Initialization finalization",
+                e,
+                logger,
+                ErrorSeverity.WARNING,
+                {"note": "Core application is ready, some features may be limited"},
             )
 
     def _trigger_post_layout_sizing(self, main_window: QMainWindow) -> None:
         """Trigger proper sizing after main window layout is fully established."""
+
         def trigger_layout_update():
             """Simple layout update without complex widget traversal."""
             try:
@@ -300,9 +329,9 @@ class ApplicationOrchestrator(IApplicationOrchestrator):
                     self.tab_widget.update()
                     # Notify current tab to update if it has the method
                     current_widget = self.tab_widget.currentWidget()
-                    if current_widget and hasattr(current_widget, 'update_layout'):
+                    if current_widget and hasattr(current_widget, "update_layout"):
                         current_widget.update_layout()
-                        
+
             except Exception as e:
                 StandardErrorHandler.handle_service_error(
                     "Post-layout sizing", e, logger, ErrorSeverity.WARNING

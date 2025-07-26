@@ -9,7 +9,9 @@ import logging
 from enum import Enum
 from typing import List, Optional
 
-from shared.application.services.pictograph_pool_manager import PictographPoolManager
+from PyQt6.QtCore import Qt, QTimer, pyqtSignal
+from PyQt6.QtWidgets import QApplication, QGridLayout, QScrollArea, QVBoxLayout, QWidget
+
 from desktop.modern.core.interfaces.animation_core_interfaces import (
     AnimationConfig,
     EasingType,
@@ -22,8 +24,6 @@ from desktop.modern.core.interfaces.start_position_services import (
 from desktop.modern.presentation.components.start_position_picker.start_position_option import (
     StartPositionOption,
 )
-from PyQt6.QtCore import Qt, QTimer, pyqtSignal
-from PyQt6.QtWidgets import QApplication, QGridLayout, QScrollArea, QVBoxLayout, QWidget
 
 logger = logging.getLogger(__name__)
 
@@ -51,7 +51,6 @@ class StartPositionPickerContent(QWidget):
 
     def __init__(
         self,
-        pool_manager: PictographPoolManager,
         data_service: IStartPositionDataService,
         ui_service: IStartPositionUIService,
         parent=None,
@@ -60,7 +59,6 @@ class StartPositionPickerContent(QWidget):
         super().__init__(parent)
 
         # Dependencies
-        self.pool_manager = pool_manager
         self.data_service = data_service
         self.ui_service = ui_service
         self._animation_orchestrator = animation_orchestrator
@@ -255,7 +253,6 @@ class StartPositionPickerContent(QWidget):
             try:
                 option = StartPositionOption(
                     position_key=position_key,
-                    pool_manager=self.pool_manager,
                     data_service=self.data_service,
                     grid_mode=grid_mode,
                     enhanced_styling=True,

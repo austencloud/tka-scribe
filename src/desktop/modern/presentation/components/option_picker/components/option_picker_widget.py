@@ -58,7 +58,6 @@ class OptionPickerWidget(QWidget):
             # Set the parent and size provider after creation
             self.option_picker_scroll.setParent(self)
             self.option_picker_scroll.mw_size_provider = self.mw_size_provider
-            print("✅ [OPTION_WIDGET] Created OptionPickerScroll with proper DI")
         except Exception as e:
             print(
                 f"❌ [OPTION_WIDGET] Failed to resolve OptionPickerScroll from container: {e}"

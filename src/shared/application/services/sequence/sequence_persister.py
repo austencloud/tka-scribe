@@ -9,6 +9,12 @@ from abc import ABC, abstractmethod
 from pathlib import Path
 from typing import Any, Dict, List
 
+try:
+    from desktop.modern.domain.serialization.json_serializers import DomainJSONEncoder
+except ImportError:
+    # Fallback if the encoder is not available
+    DomainJSONEncoder = None
+
 logger = logging.getLogger(__name__)
 
 
@@ -39,6 +45,14 @@ class SequencePersister(ISequencePersister):
         # Use same location as legacy
         modern_dir = Path(__file__).parent.parent.parent.parent.parent
         self.current_sequence_json = modern_dir / "current_sequence.json"
+
+    def _enum_serializer(self, obj):
+        """Fallback serializer for enum objects."""
+        from enum import Enum
+
+        if isinstance(obj, Enum):
+            return obj.value
+        raise TypeError(f"Object of type {type(obj)} is not JSON serializable")
 
     def load_current_sequence(self) -> List[Dict[str, Any]]:
         """Load current sequence from JSON file - exactly like legacy."""
@@ -78,7 +92,23 @@ class SequencePersister(ISequencePersister):
             # Removed repetitive debug log
 
             with open(self.current_sequence_json, "w", encoding="utf-8") as file:
-                json.dump(sequence, file, indent=4, ensure_ascii=False)
+                if DomainJSONEncoder:
+                    json.dump(
+                        sequence,
+                        file,
+                        indent=4,
+                        ensure_ascii=False,
+                        cls=DomainJSONEncoder,
+                    )
+                else:
+                    # Fallback: convert enums to their values manually
+                    json.dump(
+                        sequence,
+                        file,
+                        indent=4,
+                        ensure_ascii=False,
+                        default=self._enum_serializer,
+                    )
 
             # Removed repetitive debug log
             logger.debug(f"Saved current sequence with {len(sequence)} items")

@@ -16,18 +16,6 @@ from typing import TYPE_CHECKING, Callable, Dict, Optional
 from PyQt6.QtCore import QSize, Qt, QTimer, pyqtSignal
 from PyQt6.QtWidgets import QScrollArea, QVBoxLayout, QWidget
 
-from shared.application.services.option_picker.option_picker_size_calculator import (
-    OptionPickerSizeCalculator,
-)
-from shared.application.services.option_picker.option_pool_service import (
-    OptionPoolService,
-)
-from shared.application.services.option_picker.sequence_option_service import (
-    SequenceOptionService,
-)
-from shared.application.services.pictograph_pool_manager import (
-    PictographPoolManager,
-)
 from desktop.modern.core.interfaces.animation_core_interfaces import (
     IAnimationOrchestrator,
 )
@@ -39,6 +27,15 @@ from desktop.modern.presentation.components.option_picker.components.option_pict
 from desktop.modern.presentation.components.option_picker.types.letter_types import (
     LetterType,
 )
+from shared.application.services.option_picker.option_picker_size_calculator import (
+    OptionPickerSizeCalculator,
+)
+from shared.application.services.option_picker.option_pool_service import (
+    OptionPoolService,
+)
+from shared.application.services.option_picker.sequence_option_service import (
+    SequenceOptionService,
+)
 
 # Import our new focused components
 from .option_picker_animator import OptionPickerAnimator
@@ -46,14 +43,13 @@ from .option_picker_layout_orchestrator import OptionPickerLayoutOrchestrator
 from .option_picker_refresh_orchestrator import OptionPickerRefreshOrchestrator
 from .option_picker_section_manager import OptionPickerSectionManager
 from .option_picker_size_manager import OptionPickerSizeManager
-from .option_picker_widget_pool_manager import OptionPickerWidgetPoolManager
 
 if TYPE_CHECKING:
-    from shared.application.services.option_picker.option_configuration_service import (
-        OptionConfigurationService,
-    )
     from desktop.modern.presentation.components.option_picker.components.option_picker_section import (
         OptionPickerSection,
+    )
+    from shared.application.services.option_picker.option_configuration_service import (
+        OptionConfigurationService,
     )
 
 
@@ -73,7 +69,6 @@ class OptionPickerScroll(QScrollArea):
         option_pool_service: OptionPoolService,
         option_sizing_service: OptionPickerSizeCalculator,
         option_config_service: "OptionConfigurationService",
-        pictograph_pool_manager: "PictographPoolManager",
         parent=None,
         mw_size_provider: Callable[[], QSize] = None,
         animation_orchestrator: Optional[IAnimationOrchestrator] = None,
@@ -86,7 +81,6 @@ class OptionPickerScroll(QScrollArea):
         self._option_pool_service = option_pool_service
         self._option_sizing_service = option_sizing_service
         self._option_config_service = option_config_service
-        self._pictograph_pool_manager = pictograph_pool_manager
         self._animation_orchestrator = animation_orchestrator
 
         self._mw_size_provider = mw_size_provider or self._default_size_provider
@@ -142,15 +136,12 @@ class OptionPickerScroll(QScrollArea):
         # Initialize animator
         self._animator = OptionPickerAnimator(self.container)
 
-        # Initialize widget pool manager
-        max_widgets = self._option_config_service.get_total_max_pictographs()
-        self._widget_pool_manager = OptionPickerWidgetPoolManager(
-            self.container,
-            self._option_pool_service,
-            self._pictograph_pool_manager,
-            self._option_sizing_service,
-            max_widgets,
-        )
+        # Initialize widget pool with lazy loading for better memory efficiency
+        self._widget_pool: Dict[int, OptionPictograph] = {}
+        self._max_widgets = self._option_config_service.get_total_max_pictographs()
+
+        # OPTIMIZED: Use lazy initialization instead of pre-creating all widgets
+        # Widgets will be created on-demand when requested
 
         # Initialize sections and section manager
         self._initialize_sections()
@@ -268,9 +259,43 @@ class OptionPickerScroll(QScrollArea):
         """Get section by letter type."""
         return self.sections.get(letter_type)
 
+    def _initialize_widget_pool(self) -> None:
+        """Initialize widget pool - now uses lazy loading for better memory efficiency."""
+        # OPTIMIZED: No longer pre-create widgets - they will be created on-demand
+        # This reduces initial memory usage and widget count
+        pass
+
     def get_widget_from_pool(self, pool_id: int) -> Optional[OptionPictograph]:
-        """Get Qt widget from pool by service-provided ID."""
-        return self._widget_pool_manager.get_widget_by_id(pool_id)
+        """Get Qt widget from pool by ID - creates on-demand if not exists."""
+        # Check if widget already exists
+        if pool_id in self._widget_pool:
+            return self._widget_pool[pool_id]
+
+        # OPTIMIZED: Create widget on-demand only when needed
+        if pool_id < self._max_widgets:
+            widget = OptionPictograph(
+                parent=self.container,
+                pictograph_component=None,  # Uses direct view approach
+                size_calculator=self._option_sizing_service,
+            )
+            widget.hide()  # Start hidden
+            self._widget_pool[pool_id] = widget
+            return widget
+
+        # Pool ID exceeds maximum
+        return None
+
+    def _reset_widget_cache(self) -> None:
+        """Reset widget pool by hiding and cleaning up all widgets."""
+        for widget in self._widget_pool.values():
+            widget.hide()
+            # CRITICAL FIX: Remove widget from parent to prevent findChildren() from finding it
+            if widget.parent():
+                widget.setParent(None)
+
+        # OPTIMIZED: Clear the pool completely for better memory management
+        # Widgets will be recreated on-demand when needed
+        self._widget_pool.clear()
 
     def _update_size(self):
         """Update picker size using legacy-style approach, but defer until main window is properly shown."""
@@ -387,10 +412,9 @@ class OptionPickerScroll(QScrollArea):
                 print("❌ [UI] No options received from service")
                 return
 
-            # PAGINATION FIX: Reset widget pool to ensure clean state
+            # PAGINATION FIX: Reset widget cache to ensure clean state
             # This prevents pool exhaustion that causes the pagination issue
-            if hasattr(self, "_widget_pool_manager") and self._widget_pool_manager:
-                self._widget_pool_manager.reset_pool()
+            self._reset_widget_cache()
 
             # ✅ Update UI sections using section manager
             self._section_manager.update_all_sections_directly(

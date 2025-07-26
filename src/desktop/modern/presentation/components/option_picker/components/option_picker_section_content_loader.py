@@ -25,7 +25,9 @@ from desktop.modern.presentation.components.option_picker.components.option_pick
 from desktop.modern.presentation.components.option_picker.components.option_picker_section_widget_manager import (
     OptionPickerSectionWidgetManager,
 )
-from desktop.modern.presentation.components.option_picker.types.letter_types import LetterType
+from desktop.modern.presentation.components.option_picker.types.letter_types import (
+    LetterType,
+)
 
 
 class OptionPickerSectionContentLoader:
@@ -85,11 +87,16 @@ class OptionPickerSectionContentLoader:
 
             # Get existing widgets for potential animation
             existing_widgets = self._widget_manager.get_active_widgets()
+            print(
+                f"🔍 [CONTENT_LOADER] {self._letter_type}: Found {len(existing_widgets)} existing widgets"
+            )
 
             # Decide on loading strategy
             if self._should_use_animation(existing_widgets):
+                print(f"🔍 [CONTENT_LOADER] {self._letter_type}: Using animation path")
                 self._load_with_animation(pictographs_for_section, existing_widgets)
             else:
+                print(f"🔍 [CONTENT_LOADER] {self._letter_type}: Using direct path")
                 self._load_directly(pictographs_for_section)
 
         except Exception as e:
@@ -142,8 +149,8 @@ class OptionPickerSectionContentLoader:
         self, pictographs_for_section: List[PictographData]
     ) -> None:
         """Update content directly (used by both animated and direct loading)."""
-        # Clear any existing content first
-        self._clear_existing_content()
+        # NOTE: Cleanup is handled by the caller (_load_directly or animation workflow)
+        # Do NOT clear here to avoid double cleanup
 
         # Create new widgets for pictographs
         new_widgets = self._widget_manager.create_widgets_for_pictographs(

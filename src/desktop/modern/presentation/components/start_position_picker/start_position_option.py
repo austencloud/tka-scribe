@@ -27,7 +27,6 @@ from desktop.modern.presentation.components.pictograph.views import (
 from desktop.modern.presentation.components.sequence_workbench.sequence_beat_frame.selection_overlay import (
     SelectionOverlay,
 )
-from shared.application.services.pictograph_pool_manager import PictographPoolManager
 
 logger = logging.getLogger(__name__)
 
@@ -49,7 +48,6 @@ class StartPositionOption(QWidget):
     def __init__(
         self,
         position_key: str,
-        pool_manager: PictographPoolManager,
         data_service: IStartPositionDataService,
         grid_mode: str = "diamond",
         enhanced_styling: bool = True,
@@ -60,7 +58,6 @@ class StartPositionOption(QWidget):
         self.grid_mode = grid_mode
         self.enhanced_styling = enhanced_styling
         self.data_service = data_service
-        self._pool_manager = pool_manager
 
         # State management
         self._is_hovered = False

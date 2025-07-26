@@ -13,6 +13,9 @@ import logging
 from pathlib import Path
 from typing import List, Optional
 
+from PyQt6.QtCore import QTimer, pyqtSignal
+from PyQt6.QtWidgets import QHBoxLayout, QMessageBox, QStackedWidget, QWidget
+
 from desktop.modern.core.dependency_injection.di_container import DIContainer
 from desktop.modern.core.interfaces.browse_services import ISequenceDeletionService
 from desktop.modern.core.interfaces.image_export_services import (
@@ -21,7 +24,9 @@ from desktop.modern.core.interfaces.image_export_services import (
     ISequenceMetadataExtractor,
 )
 from desktop.modern.domain.models.sequence_data import SequenceData
-from desktop.modern.presentation.components.ui.full_screen.full_screen_overlay import FullScreenOverlay
+from desktop.modern.presentation.components.ui.full_screen.full_screen_overlay import (
+    FullScreenOverlay,
+)
 from desktop.modern.presentation.tabs.browse.components.filter_selection_panel import (
     FilterSelectionPanel,
 )
@@ -32,13 +37,15 @@ from desktop.modern.presentation.tabs.browse.components.sequence_browser_panel i
     SequenceBrowserPanel,
 )
 from desktop.modern.presentation.tabs.browse.models import FilterType
-from desktop.modern.presentation.tabs.browse.services.browse_service import BrowseService
-from desktop.modern.presentation.tabs.browse.services.browse_state_service import BrowseStateService
+from desktop.modern.presentation.tabs.browse.services.browse_service import (
+    BrowseService,
+)
+from desktop.modern.presentation.tabs.browse.services.browse_state_service import (
+    BrowseStateService,
+)
 from desktop.modern.presentation.tabs.browse.services.modern_dictionary_data_manager import (
     ModernDictionaryDataManager,
 )
-from PyQt6.QtCore import QTimer, pyqtSignal
-from PyQt6.QtWidgets import QHBoxLayout, QMessageBox, QStackedWidget, QWidget
 
 logger = logging.getLogger(__name__)
 
@@ -89,9 +96,9 @@ class BrowseTab(QWidget):
 
         # Initialize services from DI container
         try:
-            self.image_export_service = container.get_service(ISequenceImageExporter)
-            self.metadata_extractor = container.get_service(ISequenceMetadataExtractor)
-            self.deletion_service = container.get_service(ISequenceDeletionService)
+            self.image_export_service = container.resolve(ISequenceImageExporter)
+            self.metadata_extractor = container.resolve(ISequenceMetadataExtractor)
+            self.deletion_service = container.resolve(ISequenceDeletionService)
             logger.info("✅ All services initialized from DI container")
         except Exception as e:
             logger.error(f"❌ Failed to initialize services from DI container: {e}")

@@ -66,7 +66,9 @@ class OptionPickerServiceRegistrar(BaseServiceRegistrar):
     def _register_animation_services(self, container: "DIContainer") -> None:
         """Register modern animation services for option picker fade transitions."""
         # Check if already registered to prevent duplicate registration
-        from desktop.modern.core.interfaces.animation_core_interfaces import IAnimationOrchestrator
+        from desktop.modern.core.interfaces.animation_core_interfaces import (
+            IAnimationOrchestrator,
+        )
 
         try:
             container.resolve(IAnimationOrchestrator)
@@ -92,13 +94,15 @@ class OptionPickerServiceRegistrar(BaseServiceRegistrar):
     def _register_core_option_services(self, container: "DIContainer") -> None:
         """Register core option picker services."""
         try:
+            from desktop.modern.core.interfaces.option_picker_interfaces import (
+                IOptionProvider,
+            )
             from shared.application.services.option_picker.option_provider import (
                 OptionProvider,
             )
             from shared.application.services.positioning.arrows.utilities.pictograph_position_matcher import (
                 PictographPositionMatcher,
             )
-            from desktop.modern.core.interfaces.option_picker_interfaces import IOptionProvider
 
             # Register core option provider
             container.register_singleton(IOptionProvider, OptionProvider)
@@ -124,7 +128,9 @@ class OptionPickerServiceRegistrar(BaseServiceRegistrar):
             from shared.application.services.option_picker.option_configuration_service import (
                 OptionConfigurationService,
             )
-            from shared.application.services.option_picker.option_loader import OptionLoader
+            from shared.application.services.option_picker.option_loader import (
+                OptionLoader,
+            )
             from shared.application.services.option_picker.option_picker_size_calculator import (
                 OptionPickerSizeCalculator,
             )
@@ -197,6 +203,9 @@ class OptionPickerServiceRegistrar(BaseServiceRegistrar):
     def _register_presentation_components(self, container: "DIContainer") -> None:
         """Register option picker presentation component factories."""
         try:
+            from desktop.modern.presentation.components.option_picker.components.option_picker_scroll import (
+                OptionPickerScroll,
+            )
             from shared.application.services.option_picker.option_configuration_service import (
                 OptionConfigurationService,
             )
@@ -208,12 +217,6 @@ class OptionPickerServiceRegistrar(BaseServiceRegistrar):
             )
             from shared.application.services.option_picker.sequence_option_service import (
                 SequenceOptionService,
-            )
-            from shared.application.services.pictograph_pool_manager import (
-                PictographPoolManager,
-            )
-            from desktop.modern.presentation.components.option_picker.components.option_picker_scroll import (
-                OptionPickerScroll,
             )
 
             # Register OptionPickerScroll factory with injected microservices
@@ -233,7 +236,6 @@ class OptionPickerServiceRegistrar(BaseServiceRegistrar):
                     option_pool_service=c.resolve(OptionPoolService),
                     option_sizing_service=c.resolve(OptionPickerSizeCalculator),
                     option_config_service=c.resolve(OptionConfigurationService),
-                    pictograph_pool_manager=c.resolve(PictographPoolManager),
                     animation_orchestrator=animation_orchestrator,
                 )
 

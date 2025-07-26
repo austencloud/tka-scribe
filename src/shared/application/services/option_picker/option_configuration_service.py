@@ -7,7 +7,9 @@ Extracted from hardcoded values in presentation components.
 
 from typing import Dict
 
-from desktop.modern.presentation.components.option_picker.types.letter_types import LetterType
+from desktop.modern.presentation.components.option_picker.types.letter_types import (
+    LetterType,
+)
 
 
 class OptionConfigurationService:
@@ -20,8 +22,8 @@ class OptionConfigurationService:
     def __init__(self):
         """Initialize with default configuration values."""
         self._config = {
-            # Pool configuration
-            "total_max_pictographs": 50,  # 16+8+8+6+6+6 = 50 total
+            # Pool configuration - OPTIMIZED: Reduced from 50 to 36 to match actual usage
+            "total_max_pictographs": 36,  # 16+8+8+2+1+1 = 36 total (corrected calculation)
             # Performance configuration
             "debounce_delay_ms": 50,
             "performance_logging_threshold_ms": 100,

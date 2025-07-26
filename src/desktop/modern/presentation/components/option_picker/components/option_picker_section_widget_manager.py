@@ -12,12 +12,16 @@ Extracted from OptionPickerSection to follow Single Responsibility Principle.
 
 from typing import TYPE_CHECKING, Callable, Dict, List, Optional
 
-from shared.application.services.option_picker.option_pool_service import OptionPoolService
 from desktop.modern.domain.models.pictograph_data import PictographData
 from desktop.modern.presentation.components.option_picker.components.option_pictograph import (
     OptionPictograph,
 )
-from desktop.modern.presentation.components.option_picker.types.letter_types import LetterType
+from desktop.modern.presentation.components.option_picker.types.letter_types import (
+    LetterType,
+)
+from shared.application.services.option_picker.option_pool_service import (
+    OptionPoolService,
+)
 
 if TYPE_CHECKING:
     from desktop.modern.presentation.components.option_picker.components.option_picker_scroll import (
@@ -49,9 +53,8 @@ class OptionPickerSectionWidgetManager:
         self._option_pool_service = option_pool_service
         self._selection_callback = selection_callback
 
-        # Widget tracking
+        # Widget tracking (no pooling)
         self._active_widgets: Dict[str, OptionPictograph] = {}
-        self._widget_pool_mapping: Dict[OptionPictograph, int] = {}
 
     def create_widgets_for_pictographs(
         self, pictographs_for_section: List[PictographData]
@@ -68,24 +71,24 @@ class OptionPickerSectionWidgetManager:
             widget = self._checkout_and_setup_widget(pictograph_data)
             if widget:
                 widgets.append(widget)
+            else:
+                print(
+                    f"❌ [WIDGET_MGR] Failed to create widget {i+1}/{len(pictographs_for_section)} for {pictograph_data.letter}"
+                )
 
         return widgets
 
     def _checkout_and_setup_widget(
         self, pictograph_data: PictographData
     ) -> Optional[OptionPictograph]:
-        """Checkout widget from pool and setup with pictograph data."""
-        # Get widget from pool using service
-        pool_id = self._option_pool_service.checkout_item()
-        if pool_id is None:
-            return None
+        """Create widget directly without pooling and setup with pictograph data."""
 
-        # Get Qt widget from scroll area's widget pool
-        option_frame = self._scroll_area.get_widget_from_pool(pool_id)
-        if not option_frame:
-            # Return pool ID if widget checkout failed
-            self._option_pool_service.checkin_item(pool_id)
-            return None
+        # Create widget directly without pooling
+        option_frame = OptionPictograph(
+            parent=self._scroll_area.container,
+            pictograph_component=None,  # Uses direct view approach
+            size_calculator=self._scroll_area._option_sizing_service,
+        )
 
         # Setup Qt widget
         option_frame.update_pictograph(pictograph_data)
@@ -93,13 +96,15 @@ class OptionPickerSectionWidgetManager:
         # Setup signal connections
         self._connect_widget_signals(option_frame)
 
-        # Track widget and its pool mapping
+        # Track widget (no pool mapping needed)
         key = f"pictograph_{len(self._active_widgets)}"
         self._active_widgets[key] = option_frame
-        self._widget_pool_mapping[option_frame] = pool_id
 
         # Set the letter type on the pictograph for border coloring
         self._setup_widget_letter_type(option_frame)
+
+        # Show the widget
+        option_frame.show()
 
         return option_frame
 
@@ -130,21 +135,28 @@ class OptionPickerSectionWidgetManager:
                 widget._pictograph_component.set_letter_type(self._letter_type)
 
     def clear_all_widgets(self) -> None:
-        """Clear all widgets and return them to pool."""
-        for widget in list(self._active_widgets.values()):
-            self._cleanup_and_return_widget(widget)
+        """Clear all widgets and destroy them (no pooling)."""
+
+        widgets_to_clear = list(self._active_widgets.values())
+
+        for widget in widgets_to_clear:
+            self._cleanup_and_destroy_widget(widget)
 
         # Clear tracking dictionaries
         self._active_widgets.clear()
-        self._widget_pool_mapping.clear()
+        # No longer need widget_pool_mapping since we're not using pools
 
-    def _cleanup_and_return_widget(self, widget: OptionPictograph) -> None:
-        """Clean up widget and return it to pool."""
+    def _cleanup_and_destroy_widget(self, widget: OptionPictograph) -> None:
+        """Clean up widget and destroy it (no pooling)."""
         if not widget:
             return
 
         # Remove from layout (handled by layout manager)
         widget.setVisible(False)
+
+        # CRITICAL FIX: Remove widget from parent immediately to prevent findChildren() from finding it
+        if widget.parent():
+            widget.setParent(None)
 
         # Disconnect signals
         self._disconnect_widget_signals(widget)
@@ -152,11 +164,8 @@ class OptionPickerSectionWidgetManager:
         # Clean up widget content
         widget.clear_pictograph()
 
-        # Return to pool
-        pool_id = self._widget_pool_mapping.get(widget)
-        if pool_id is not None:
-            self._option_pool_service.checkin_item(pool_id)
-            del self._widget_pool_mapping[widget]
+        # Destroy the widget instead of returning to pool
+        widget.deleteLater()
 
     def get_active_widgets(self) -> List[OptionPictograph]:
         """Get list of currently active widgets."""
@@ -178,7 +187,7 @@ class OptionPickerSectionWidgetManager:
         self, widget: OptionPictograph, pictograph_data: PictographData
     ) -> None:
         """Update a widget with new pictograph data."""
-        if widget in self._widget_pool_mapping:
+        if widget in self._active_widgets.values():
             widget.update_pictograph(pictograph_data)
             self._setup_widget_letter_type(widget)
 

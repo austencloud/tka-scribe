@@ -314,14 +314,16 @@ def register_extracted_services(container: DIContainer) -> None:
         # Register positioning services using ServiceRegistrationManager
         try:
             from shared.application.services.core.service_registration_manager import (
-                ServiceRegistrationManager,
+                ServiceRegistrationCoordinator,
             )
 
-            registration_manager = ServiceRegistrationManager()
-            registration_manager.register_positioning_services(container)
-            logger.debug("Successfully registered positioning services")
+            registration_coordinator = ServiceRegistrationCoordinator()
+            registration_coordinator.register_all_services(container)
+            logger.debug(
+                "Successfully registered all services including positioning services"
+            )
         except Exception as e:
-            logger.warning(f"Failed to register positioning services: {e}")
+            logger.warning(f"Failed to register services: {e}")
             # Don't fail the entire registration process
 
         # Register sequence card services

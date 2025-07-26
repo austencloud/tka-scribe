@@ -13,18 +13,21 @@ Extracted from OptionPickerSection to follow Single Responsibility Principle.
 
 from typing import TYPE_CHECKING, Callable, Optional
 
+from PyQt6.QtCore import QSize, Qt, QTimer
+from PyQt6.QtWidgets import QFrame, QGridLayout, QGroupBox, QSizePolicy, QVBoxLayout
+
+from desktop.modern.presentation.components.option_picker.components.option_pictograph import (
+    OptionPictograph,
+)
+from desktop.modern.presentation.components.option_picker.types.letter_types import (
+    LetterType,
+)
 from shared.application.services.option_picker.option_configuration_service import (
     OptionConfigurationService,
 )
 from shared.application.services.option_picker.option_picker_size_calculator import (
     OptionPickerSizeCalculator,
 )
-from desktop.modern.presentation.components.option_picker.components.option_pictograph import (
-    OptionPictograph,
-)
-from desktop.modern.presentation.components.option_picker.types.letter_types import LetterType
-from PyQt6.QtCore import QSize, Qt, QTimer
-from PyQt6.QtWidgets import QFrame, QGridLayout, QGroupBox, QSizePolicy, QVBoxLayout
 
 if TYPE_CHECKING:
     from desktop.modern.presentation.components.option_picker.components.option_picker_scroll import (
@@ -136,7 +139,11 @@ class OptionPickerSectionLayoutManager:
         while self._pictographs_layout.count():
             child = self._pictographs_layout.takeAt(0)
             if child.widget():
-                child.widget().setVisible(False)
+                widget = child.widget()
+                widget.setVisible(False)
+                # CRITICAL FIX: Remove widget from parent to prevent findChildren() from finding it
+                if widget.parent():
+                    widget.setParent(None)
 
     def handle_resize_event(self, loading_options: bool) -> bool:
         """

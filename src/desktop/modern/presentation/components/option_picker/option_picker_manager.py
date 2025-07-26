@@ -8,14 +8,17 @@ Responsible for coordinating between the option picker component and sequence ma
 import time
 from typing import Optional
 
-from shared.application.services.data.conversion_utils import (
-    extract_end_position_from_position_key,
-)
+from PyQt6.QtCore import QObject, pyqtSignal
+
 from desktop.modern.domain.models.beat_data import BeatData
 from desktop.modern.domain.models.pictograph_data import PictographData
 from desktop.modern.domain.models.sequence_data import SequenceData
-from desktop.modern.presentation.components.option_picker.components.option_picker import OptionPicker
-from PyQt6.QtCore import QObject, pyqtSignal
+from desktop.modern.presentation.components.option_picker.components.option_picker import (
+    OptionPicker,
+)
+from shared.application.services.data.conversion_utils import (
+    extract_end_position_from_position_key,
+)
 
 
 class OptionPickerManager(QObject):
@@ -180,8 +183,13 @@ class OptionPickerManager(QObject):
             # Ensure we have a valid end position
             pictograph_data = start_position_beat_data.pictograph_data
             end_position = pictograph_data.end_position
+            print(f"🔍 [OPTION_PICKER_MANAGER] Initial end_position: {end_position}")
+
             if not end_position:
                 end_position = extract_end_position_from_position_key(position_key)
+                print(
+                    f"🔍 [OPTION_PICKER_MANAGER] Extracted end_position: {end_position}"
+                )
                 # Update the pictograph data with the extracted end position
                 pictograph_data = pictograph_data.update(end_position=end_position)
 
@@ -195,6 +203,13 @@ class OptionPickerManager(QObject):
                 beats=[start_beat], start_position=position_key
             )
 
+            print(
+                f"🔍 [OPTION_PICKER_MANAGER] Created sequence with {len(sequence_data.beats)} beats"
+            )
+            print(
+                f"🔍 [OPTION_PICKER_MANAGER] Sequence start_position: {sequence_data.start_position}"
+            )
+
             # Store sequence data for preparation
             if (
                 hasattr(self.option_picker, "option_picker_widget")
@@ -206,11 +221,21 @@ class OptionPickerManager(QObject):
                     scroll = (
                         self.option_picker.option_picker_widget.option_picker_scroll
                     )
+                    print(
+                        f"🔍 [OPTION_PICKER_MANAGER] Found scroll widget, calling load_options_from_sequence"
+                    )
                     # Use the refresh orchestrator to prepare content without animations
                     scroll._refresh_orchestrator.load_options_from_sequence(
                         sequence_data
                     )
                     scroll.prepare_for_transition()
+                    print(
+                        f"🔍 [OPTION_PICKER_MANAGER] Completed load_options_from_sequence and prepare_for_transition"
+                    )
+                else:
+                    print(f"❌ [OPTION_PICKER_MANAGER] No option_picker_scroll found")
+            else:
+                print(f"❌ [OPTION_PICKER_MANAGER] No option_picker_widget found")
 
         except Exception as e:
             print(
@@ -234,6 +259,7 @@ class OptionPickerManager(QObject):
             self.option_picker.refresh_options_from_modern_sequence(sequence)
             total_time = (time.perf_counter() - start_time) * 1000
         except Exception as e:
+            print(f"❌ [OPTION_PICKER_MANAGER] Error during refresh: {e}")
             import traceback
 
             traceback.print_exc()

@@ -15,7 +15,9 @@ Features:
 import logging
 from enum import Enum
 
-from shared.application.services.pictograph_pool_manager import PictographPoolManager
+from PyQt6.QtCore import QEasingCurve, QPropertyAnimation, QSize, QTimer, pyqtSignal
+from PyQt6.QtWidgets import QVBoxLayout, QWidget
+
 from desktop.modern.core.interfaces.start_position_services import (
     IStartPositionDataService,
     IStartPositionOrchestrator,
@@ -30,8 +32,6 @@ from desktop.modern.presentation.components.start_position_picker.start_position
 from desktop.modern.presentation.components.start_position_picker.start_position_picker_header import (
     StartPositionPickerHeader,
 )
-from PyQt6.QtCore import QEasingCurve, QPropertyAnimation, QSize, QTimer, pyqtSignal
-from PyQt6.QtWidgets import QVBoxLayout, QWidget
 
 logger = logging.getLogger(__name__)
 
@@ -64,7 +64,6 @@ class StartPositionPicker(QWidget):
 
     def __init__(
         self,
-        pool_manager: PictographPoolManager,
         data_service: IStartPositionDataService,
         ui_service: IStartPositionUIService,
         orchestrator: IStartPositionOrchestrator,
@@ -73,8 +72,7 @@ class StartPositionPicker(QWidget):
     ):
         super().__init__(parent)
 
-        # Store dependencies (only 4 needed now!)
-        self.pool_manager = pool_manager
+        # Store dependencies (only 3 needed now!)
         self.data_service = data_service
         self.ui_service = ui_service
         self.orchestrator = orchestrator
@@ -133,7 +131,6 @@ class StartPositionPicker(QWidget):
             pass
 
         self.content = StartPositionPickerContent(
-            self.pool_manager,
             self.data_service,
             self.ui_service,
             self,

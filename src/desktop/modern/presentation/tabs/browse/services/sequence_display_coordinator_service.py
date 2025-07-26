@@ -160,4 +160,3 @@ class SequenceDisplayCoordinatorService:
     def update_thumbnail_width(self, new_width: int) -> None:
         """Update the thumbnail width for future thumbnail creation."""
         self.thumbnail_width = new_width
-        print(f"🔧 Updated thumbnail width to {new_width}px")

@@ -8,15 +8,20 @@ graph editor, and generate controls panels.
 
 from typing import Callable, Optional
 
+from PyQt6.QtCore import Qt
+from PyQt6.QtWidgets import QLabel, QVBoxLayout, QWidget
+
 from desktop.modern.core.dependency_injection.di_container import DIContainer
-from desktop.modern.presentation.components.option_picker.components.option_picker import OptionPicker
+from desktop.modern.presentation.components.option_picker.components.option_picker import (
+    OptionPicker,
+)
 from desktop.modern.presentation.components.start_position_picker.start_position_picker import (
     PickerMode,
     StartPositionPicker,
 )
-from desktop.modern.presentation.factories.workbench_factory import create_modern_workbench
-from PyQt6.QtCore import Qt
-from PyQt6.QtWidgets import QLabel, QVBoxLayout, QWidget
+from desktop.modern.presentation.factories.workbench_factory import (
+    create_modern_workbench,
+)
 
 
 class PanelFactory:
@@ -60,16 +65,13 @@ class PanelFactory:
         layout = QVBoxLayout(widget)
 
         try:
-            from shared.application.services.pictograph_pool_manager import (
-                PictographPoolManager,
-            )
+
             from desktop.modern.core.interfaces.start_position_services import (
                 IStartPositionDataService,
                 IStartPositionOrchestrator,
                 IStartPositionUIService,
             )
 
-            pool_manager = self.container.resolve(PictographPoolManager)
             data_service = self.container.resolve(IStartPositionDataService)
             ui_service = self.container.resolve(IStartPositionUIService)
             orchestrator = self.container.resolve(IStartPositionOrchestrator)
@@ -88,7 +90,6 @@ class PanelFactory:
                 pass
 
             start_position_picker = StartPositionPicker(
-                pool_manager=pool_manager,
                 data_service=data_service,
                 ui_service=ui_service,
                 orchestrator=orchestrator,
@@ -145,7 +146,9 @@ class PanelFactory:
         layout.setSpacing(0)
 
         try:
-            from desktop.modern.presentation.components.graph_editor.graph_editor import GraphEditor
+            from desktop.modern.presentation.components.graph_editor.graph_editor import (
+                GraphEditor,
+            )
 
             graph_editor = GraphEditor(
                 graph_service=None,

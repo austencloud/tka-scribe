@@ -7,14 +7,22 @@ Extracted from option_picker_scroll.py to maintain clean architecture.
 
 from typing import Any, Dict, List, Union
 
-from desktop.modern.core.interfaces.sequence_operation_services import ISequenceOptionService
-from desktop.modern.domain.models.enums import Location, MotionType, Orientation, RotationDirection
+from desktop.modern.core.interfaces.sequence_operation_services import (
+    ISequenceOptionService,
+)
+from desktop.modern.domain.models.enums import (
+    Location,
+    MotionType,
+    Orientation,
+    RotationDirection,
+)
 from desktop.modern.domain.models.letter_type_classifier import LetterTypeClassifier
 from desktop.modern.domain.models.motion_data import MotionData
 from desktop.modern.domain.models.pictograph_data import PictographData
 from desktop.modern.domain.models.sequence_data import SequenceData
-from desktop.modern.presentation.components.option_picker.types.letter_types import LetterType
-
+from desktop.modern.presentation.components.option_picker.types.letter_types import (
+    LetterType,
+)
 from shared.application.services.option_picker.option_orientation_updater import (
     OptionOrientationUpdater,
 )
@@ -56,6 +64,7 @@ class SequenceOptionService(ISequenceOptionService):
         try:
             # Extract end position from sequence
             end_position = self._extract_end_position(sequence_data)
+            print(f"🔍 [SEQUENCE_OPTION] Extracted end_position: {end_position}")
 
             if not end_position:
                 print(
@@ -65,12 +74,18 @@ class SequenceOptionService(ISequenceOptionService):
 
             # Get all valid next options
             all_options = self._position_matcher.get_next_options(end_position)
+            print(
+                f"🔍 [SEQUENCE_OPTION] Position matcher returned {len(all_options)} options"
+            )
 
             # FIXED: Use the new sequence orientation validator for proper orientation handling
             if isinstance(sequence_data, SequenceData):
                 # Use modern sequence orientation validator for accurate orientation continuity
                 updated_options = self._sequence_orientation_validator.calculate_option_start_orientations(
                     sequence_data, all_options
+                )
+                print(
+                    f"🔍 [SEQUENCE_OPTION] After orientation validation: {len(updated_options)} options"
                 )
             else:
                 # Fallback for legacy format - use old method
@@ -81,10 +96,19 @@ class SequenceOptionService(ISequenceOptionService):
                 print("Using legacy format - orientation handling may be less accurate")
 
             # Group by letter type
-            return self._group_options_by_type(updated_options)
+            grouped_options = self._group_options_by_type(updated_options)
+            total_grouped = sum(len(options) for options in grouped_options.values())
+            print(
+                f"🔍 [SEQUENCE_OPTION] After grouping: {total_grouped} options in {len(grouped_options)} groups"
+            )
+
+            return grouped_options
 
         except Exception as e:
             print(f"❌ [SEQUENCE_OPTION] Error getting options for sequence: {e}")
+            import traceback
+
+            traceback.print_exc()
             return {}
 
     def _extract_end_position(self, sequence_data: SequenceData) -> str:

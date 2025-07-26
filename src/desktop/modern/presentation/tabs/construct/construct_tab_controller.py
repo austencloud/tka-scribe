@@ -184,7 +184,7 @@ class ConstructTabController(QObject):
 
     def _on_start_position_updated(self, start_position_data: BeatData) -> None:
         """Handle start position updated."""
-        print(f"🎯 Start position updated: {start_position_data.letter}")
+        pass
 
     def _load_sequence_on_startup(self) -> None:
         """Load sequence from persistence on startup."""
@@ -216,7 +216,6 @@ class ConstructTabController(QObject):
             if self._workbench_state_manager:
                 empty_sequence = SequenceData.empty()
                 self._workbench_state_manager.set_sequence(empty_sequence)
-                print("✅ Sequence cleared via state manager")
 
         except Exception as e:
             print(f"❌ Failed to clear sequence: {e}")
@@ -229,7 +228,7 @@ class ConstructTabController(QObject):
     def add_beat_to_sequence(self, beat_data: BeatData) -> None:
         """Add beat to sequence via beat operations service."""
         # TODO: Implement in beat operations adapter
-        print("⚠️ add_beat_to_sequence needs implementation in adapter")
+        pass
 
     def set_start_position(self, start_position_data: BeatData) -> None:
         """Set start position via start position manager."""
@@ -242,14 +241,14 @@ class ConstructTabController(QObject):
     def update_beat_turns(self, beat_index: int, color: str, new_turns: int) -> None:
         """Update beat turns via beat operations service."""
         # TODO: Implement in beat operations adapter
-        print("⚠️ update_beat_turns needs implementation in adapter")
+        pass
 
     def update_beat_orientation(
         self, beat_index: int, color: str, new_orientation: int
     ) -> None:
         """Update beat orientation via beat operations service."""
         # TODO: Implement in beat operations adapter
-        print("⚠️ update_beat_orientation needs implementation in adapter")
+        pass
 
     def handle_resize(self, event, main_window) -> None:
         """Handle window resize events."""
@@ -296,9 +295,6 @@ class ConstructTabController(QObject):
             if self._workbench_state_manager:
                 self._workbench_state_manager.set_sequence(generated_sequence)
                 self.sequence_created.emit(generated_sequence)
-                print(
-                    f"✅ Generated sequence with {len(generated_sequence.beats)} beats"
-                )
 
         except Exception as e:
             print(f"❌ Generation failed: {e}")
@@ -308,7 +304,6 @@ class ConstructTabController(QObject):
         try:
             # Store reference for potential future use
             self._option_picker = option_picker
-            print("✅ Option picker ready in controller")
 
             # Create OptionPickerManager now that we have the option picker
             self._create_option_picker_manager()
@@ -330,7 +325,6 @@ class ConstructTabController(QObject):
             )
 
             self._option_picker_manager = OptionPickerManager(self._option_picker)
-            print("✅ OptionPickerManager created successfully")
 
         except Exception as e:
             print(f"❌ Failed to create OptionPickerManager: {e}")
@@ -363,8 +357,6 @@ class ConstructTabController(QObject):
 
             # Connect construct tab signals
             self._signal_coordinator.connect_construct_tab_signals(self._widget)
-
-            print("✅ SignalCoordinator created and connected successfully")
 
         except Exception as e:
             print(f"❌ Failed to create SignalCoordinator: {e}")

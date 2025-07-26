@@ -1,7 +1,7 @@
 {
   "browse_tab": {
-    "filter_type": "starting_letter",
-    "filter_values": "M-P",
+    "filter_type": "starting_position",
+    "filter_values": "Gamma",
     "selected_sequence": null,
     "selected_variation": null,
     "navigation_mode": "filter_selector",

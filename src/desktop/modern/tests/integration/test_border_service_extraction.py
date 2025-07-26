@@ -7,6 +7,7 @@ while properly separating business logic from presentation layer.
 """
 
 import pytest
+
 from desktop.modern.domain.models import LetterType
 
 
@@ -110,11 +111,11 @@ class TestBorderServiceExtraction:
     def test_border_manager_integration(self):
         """Test that border manager integrates with service correctly."""
         try:
-            from shared.application.services.pictograph.border_manager import (
-                PictographBorderManager as PictographBorderService,
-            )
             from desktop.modern.presentation.components.pictograph.border_manager import (
                 PictographBorderManager,
+            )
+            from shared.application.services.pictograph.border_manager import (
+                PictographBorderManager as PictographBorderService,
             )
 
             service = PictographBorderService()
@@ -137,21 +138,23 @@ class TestBorderServiceExtraction:
     def test_service_registration(self):
         """Test that border service is properly registered in DI container."""
         try:
+            from desktop.modern.core.dependency_injection.di_container import (
+                DIContainer,
+            )
+            from desktop.modern.core.interfaces.core_services import (
+                IPictographBorderManager as IPictographBorderService,
+            )
             from shared.application.services.core.service_registration_manager import (
-                ServiceRegistrationManager,
+                ServiceRegistrationCoordinator,
             )
             from shared.application.services.pictograph.border_manager import (
                 PictographBorderManager as PictographBorderService,
             )
-            from desktop.modern.core.dependency_injection.di_container import DIContainer
-            from desktop.modern.core.interfaces.core_services import (
-                IPictographBorderManager as IPictographBorderService,
-            )
 
             # Create container and register services
             container = DIContainer()
-            registration_manager = ServiceRegistrationManager()
-            registration_manager.register_pictograph_services(container)
+            registration_coordinator = ServiceRegistrationCoordinator()
+            registration_coordinator.register_all_services(container)
 
             # Test interface resolution
             service = container.resolve(IPictographBorderService)
