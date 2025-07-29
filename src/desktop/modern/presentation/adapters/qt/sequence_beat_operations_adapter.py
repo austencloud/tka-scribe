@@ -7,16 +7,17 @@ This maintains the separation between platform-agnostic services and Qt-specific
 
 from typing import Optional
 
+from PyQt6.QtCore import QObject, pyqtSignal
+
+from desktop.modern.core.interfaces.workbench_services import IWorkbenchStateManager
+from desktop.modern.domain.models.beat_data import BeatData
+from desktop.modern.domain.models.pictograph_data import PictographData
+from desktop.modern.domain.models.sequence_data import SequenceData
 from shared.application.services.sequence.beat_factory import BeatFactory
 from shared.application.services.sequence.sequence_beat_operations_service import (
     SequenceBeatOperationsService,
 )
 from shared.application.services.sequence.sequence_persister import SequencePersister
-from desktop.modern.core.interfaces.workbench_services import IWorkbenchStateManager
-from desktop.modern.domain.models.beat_data import BeatData
-from desktop.modern.domain.models.pictograph_data import PictographData
-from desktop.modern.domain.models.sequence_data import SequenceData
-from PyQt6.QtCore import QObject, pyqtSignal
 
 
 class QtSequenceBeatOperationsAdapter(QObject):
@@ -122,11 +123,28 @@ class QtSequenceBeatOperationsAdapter(QObject):
     def add_pictograph_to_sequence(self, pictograph_data: PictographData) -> None:
         """Add pictograph to sequence (compatibility method for signal connections)."""
         try:
+            print(f"🔍 [BEAT_OPERATIONS] add_pictograph_to_sequence called")
+            print(f"🔍 [BEAT_OPERATIONS] Pictograph: {pictograph_data.letter}")
+
             # Get current sequence from workbench state manager
             current_sequence = self._workbench_state_manager.get_current_sequence()
+            print(
+                f"🔍 [BEAT_OPERATIONS] Current sequence: {current_sequence.length if current_sequence else 0} beats"
+            )
+
+            if current_sequence and current_sequence.beats:
+                for i, beat in enumerate(current_sequence.beats):
+                    print(
+                        f"🔍 [BEAT_OPERATIONS] Existing Beat {i}: beat_number={beat.beat_number}, is_blank={beat.is_blank}"
+                    )
+                    if hasattr(beat, "pictograph_data") and beat.pictograph_data:
+                        print(
+                            f"🔍 [BEAT_OPERATIONS] Existing Beat {i} pictograph: letter={beat.pictograph_data.letter}"
+                        )
 
             # Calculate next position
             position = len(current_sequence.beats) if current_sequence else 0
+            print(f"🔍 [BEAT_OPERATIONS] Adding at position: {position}")
 
             # Use the add_beat method
             self.add_beat(pictograph_data, position, current_sequence, persist=True)

@@ -34,6 +34,7 @@ class PanelFactory:
     - Creating option picker panel
     - Creating graph editor panel
     - Creating generate controls panel
+    - Creating export panel (NEW)
     - Handling fallback widgets on errors
     """
 
@@ -106,6 +107,49 @@ class PanelFactory:
                 "color: orange; font-size: 14px; padding: 20px;"
             )
             layout.addWidget(fallback_label)
+            return widget, None
+
+    def create_export_panel(self) -> tuple[QWidget, Optional[object]]:
+        """Create the export panel (NEW)."""
+        widget = QWidget()
+        layout = QVBoxLayout(widget)
+        layout.setContentsMargins(0, 0, 0, 0)
+        layout.setSpacing(0)
+
+        try:
+            # Import our new ExportPanel
+            from desktop.modern.presentation.components.export_panel.export_panel import (
+                ExportPanel,
+            )
+
+            # Report progress if callback available
+            if self.progress_callback:
+                self.progress_callback(90, "Creating export panel...")
+
+            export_panel = ExportPanel(
+                container=self.container,
+                parent=widget,
+            )
+            layout.addWidget(export_panel)
+
+            if self.progress_callback:
+                self.progress_callback(95, "Export panel created")
+
+            return widget, export_panel
+
+        except Exception as e:
+            fallback_label = QLabel(f"Export panel unavailable: {e}")
+            fallback_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+            fallback_label.setStyleSheet(
+                "color: red; font-size: 14px; padding: 20px;"
+            )
+            layout.addWidget(fallback_label)
+
+            import logging
+
+            logger = logging.getLogger(__name__)
+            logger.error(f"Failed to create export panel: {e}", exc_info=True)
+
             return widget, None
 
     def create_option_picker_panel(self) -> tuple[QWidget, Optional[OptionPicker]]:

@@ -1,7 +1,9 @@
 {
   "include": [
-    "src/desktop/legacy/src",
-    "src/desktop/modern/src", 
+    "src/desktop/legacy",
+    "src/desktop/modern",
+    "src/shared",
+    "src/infrastructure",
     "launcher",
     "packages",
     "data",
@@ -10,12 +12,16 @@
   "extraPaths": [
     ".",
     "src",
-    "src/desktop/legacy/src",
-    "src/desktop/modern/src",
+    "src/shared",
+    "src/infrastructure",
+    "src/desktop",
+    "src/desktop/legacy",
+    "src/desktop/modern",
+    "src/web",
     "launcher",
     "packages",
     "packages/shared-types/python",
-    "packages/constants/python", 
+    "packages/constants/python",
     "data",
     "assets",
     "schemas"

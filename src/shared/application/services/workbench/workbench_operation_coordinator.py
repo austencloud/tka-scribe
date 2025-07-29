@@ -211,7 +211,7 @@ class WorkbenchOperationCoordinator:
                 OperationType.SAVE_IMAGE, "Image export failed", str(e)
             )
 
-    def copy_json(self) -> OperationResult:
+    def copy_json(self, sequence: Optional["SequenceData"] = None) -> OperationResult:
         """
         Copy sequence JSON to clipboard.
 
@@ -219,19 +219,56 @@ class WorkbenchOperationCoordinator:
             OperationResult with operation details
         """
         try:
-            # Check preconditions
-            if not self._state_manager or not self._state_manager.has_sequence():
+            # Use passed sequence or get from state manager
+            if sequence is None:
+                # Check preconditions
+                if not self._state_manager or not self._state_manager.has_sequence():
+                    return OperationResult.failure_result(
+                        OperationType.COPY_JSON, "No sequence to copy"
+                    )
+                sequence = self._state_manager.get_current_sequence()
+
+            # Final check that we have a sequence
+            if not sequence:
                 return OperationResult.failure_result(
                     OperationType.COPY_JSON, "No sequence to copy"
                 )
 
-            sequence = self._state_manager.get_current_sequence()
+            # Check if export service is available
+            if not self._export_service:
+                return OperationResult.failure_result(
+                    OperationType.COPY_JSON, "Export service not available"
+                )
 
-            # For now, return success - actual implementation would use export service
-            # TODO: Inject proper JSON export service when available
-            return OperationResult.success_result(
-                OperationType.COPY_JSON, "JSON copied to clipboard!"
-            )
+            # Export sequence to JSON
+            success, json_data = self._export_service.export_sequence_json(sequence)
+
+            if not success:
+                return OperationResult.failure_result(
+                    OperationType.COPY_JSON, f"JSON export failed: {json_data}"
+                )
+
+            # Copy to clipboard using Qt clipboard
+            try:
+                from PyQt6.QtWidgets import QApplication
+
+                clipboard = QApplication.clipboard()
+                clipboard.setText(json_data)
+
+                logger.info(
+                    f"Sequence JSON copied to clipboard: {len(json_data)} characters"
+                )
+                return OperationResult.success_result(
+                    OperationType.COPY_JSON,
+                    f"JSON copied to clipboard! ({len(json_data)} characters)",
+                )
+
+            except Exception as clipboard_error:
+                logger.error(f"Failed to copy to clipboard: {clipboard_error}")
+                return OperationResult.failure_result(
+                    OperationType.COPY_JSON,
+                    f"Clipboard operation failed: {clipboard_error}",
+                )
 
         except Exception as e:
             logger.error(f"Failed to copy JSON: {e}")

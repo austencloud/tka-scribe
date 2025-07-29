@@ -14,13 +14,13 @@ Following established patterns:
 import logging
 from typing import Optional
 
-from desktop.modern.domain.models.beat_data import BeatData
-from desktop.modern.domain.models.sequence_data import SequenceData
 from desktop.modern.core.interfaces.workbench_services import (
     IWorkbenchStateManager,
-    WorkbenchState,
     StateChangeResult,
+    WorkbenchState,
 )
+from desktop.modern.domain.models.beat_data import BeatData
+from desktop.modern.domain.models.sequence_data import SequenceData
 
 logger = logging.getLogger(__name__)
 
@@ -74,6 +74,7 @@ class WorkbenchStateManager(IWorkbenchStateManager):
         Returns:
             StateChangeResult with change details
         """
+
         previous_state = self._current_state
         previous_sequence = self._current_sequence
 
@@ -84,6 +85,27 @@ class WorkbenchStateManager(IWorkbenchStateManager):
         # Set new sequence
         self._current_sequence = sequence
 
+        # DEBUG: Add comprehensive logging for sequence changes
+        print(f"🔍 [WORKBENCH_STATE] set_sequence called")
+        print(
+            f"🔍 [WORKBENCH_STATE] Previous sequence: {previous_sequence.length if previous_sequence else 0} beats"
+        )
+        print(
+            f"🔍 [WORKBENCH_STATE] New sequence: {sequence.length if sequence else 0} beats"
+        )
+        if sequence:
+            print(f"🔍 [WORKBENCH_STATE] New sequence ID: {sequence.id}")
+            print(f"🔍 [WORKBENCH_STATE] New sequence name: {sequence.name}")
+            if sequence.beats:
+                for i, beat in enumerate(sequence.beats):
+                    print(
+                        f"🔍 [WORKBENCH_STATE] Beat {i}: beat_number={beat.beat_number}, is_blank={beat.is_blank}"
+                    )
+                    if hasattr(beat, "pictograph_data") and beat.pictograph_data:
+                        print(
+                            f"🔍 [WORKBENCH_STATE] Beat {i} pictograph: letter={beat.pictograph_data.letter}"
+                        )
+
         # Calculate new state
         new_state = self._calculate_workbench_state()
         state_changed = new_state != previous_state
@@ -92,6 +114,9 @@ class WorkbenchStateManager(IWorkbenchStateManager):
         if sequence_changed:
             logger.debug(
                 f"Sequence changed: {sequence.length if sequence else 0} beats"
+            )
+            print(
+                f"🔍 [WORKBENCH_STATE] Sequence changed detected: {previous_sequence != sequence}"
             )
 
         if state_changed:
@@ -191,7 +216,9 @@ class WorkbenchStateManager(IWorkbenchStateManager):
 
     def has_sequence(self) -> bool:
         """Check if workbench has a sequence."""
-        return self._current_sequence is not None and self._current_sequence.length > 0
+        return (
+            self._current_sequence is not None and len(self._current_sequence.beats) > 0
+        )
 
     def has_start_position(self) -> bool:
         """Check if workbench has a start position."""

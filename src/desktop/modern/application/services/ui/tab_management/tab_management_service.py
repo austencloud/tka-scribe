@@ -3,7 +3,7 @@ Tab Management Service - SIMPLIFIED VERSION
 
 REFACTORED:
 - ✅ Removed complex on-demand tab creation (100+ lines)
-- ✅ Simplified switch_to_tab method  
+- ✅ Simplified switch_to_tab method
 - ✅ Tabs are now created upfront by TabFactory
 - ✅ Single responsibility: tab switching and registration only
 
@@ -11,9 +11,9 @@ Service for managing application tabs in the modern TKA desktop app.
 Handles tab switching and registration - tab creation is handled by TabFactory.
 """
 
+import logging
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING, Dict, Optional
-import logging
 
 from PyQt6.QtWidgets import QTabWidget, QWidget
 
@@ -46,7 +46,7 @@ class ITabManagementService(ABC):
 class TabManagementService(ITabManagementService):
     """
     SIMPLIFIED tab management service.
-    
+
     REFACTORED: Removed complex on-demand creation - tabs are now created upfront by TabFactory.
     Single responsibility: Switch between tabs and track current tab.
     """
@@ -60,20 +60,18 @@ class TabManagementService(ITabManagementService):
     def initialize_tabs(self, tab_widget: QTabWidget, container: "DIContainer") -> None:
         """
         Initialize tab widget reference.
-        
+
         SIMPLIFIED: TabFactory handles actual tab creation.
         """
         self._tab_widget = tab_widget
 
         # Keep tab bar hidden since we use menu bar navigation
         self._tab_widget.tabBar().setVisible(False)
-        
-        logger.info("📋 Tab management service initialized")
 
     def switch_to_tab(self, tab_name: str) -> bool:
         """
         Switch to the specified tab.
-        
+
         SIMPLIFIED: No more on-demand creation - tabs are created upfront.
         """
         if not self._tab_widget:
@@ -82,7 +80,9 @@ class TabManagementService(ITabManagementService):
 
         # Check if tab exists
         if tab_name not in self._tabs:
-            logger.warning(f"Tab {tab_name} not found. Available tabs: {list(self._tabs.keys())}")
+            logger.warning(
+                f"Tab {tab_name} not found. Available tabs: {list(self._tabs.keys())}"
+            )
             return False
 
         # Switch to the tab
@@ -90,10 +90,12 @@ class TabManagementService(ITabManagementService):
             tab_index = self._tab_index_map[tab_name]
             self._tab_widget.setCurrentIndex(tab_index)
             self._current_tab = tab_name
-            logger.info(f"✅ Switched to {tab_name} tab")
+
             return True
 
-        logger.error(f"Tab {tab_name} exists but not in index map - this shouldn't happen")
+        logger.error(
+            f"Tab {tab_name} exists but not in index map - this shouldn't happen"
+        )
         return False
 
     def get_current_tab_name(self) -> Optional[str]:
@@ -104,12 +106,13 @@ class TabManagementService(ITabManagementService):
         """Get list of available tab names."""
         return list(self._tabs.keys())
 
-    def register_existing_tab(self, tab_name: str, tab_widget: QWidget, tab_index: int) -> None:
+    def register_existing_tab(
+        self, tab_name: str, tab_widget: QWidget, tab_index: int
+    ) -> None:
         """
         Register an existing tab (called by UISetupManager after TabFactory creates tabs).
-        
+
         SIMPLIFIED: This is the only way tabs are added now.
         """
         self._tabs[tab_name] = tab_widget
         self._tab_index_map[tab_name] = tab_index
-        logger.info(f"📋 Registered tab: {tab_name} at index {tab_index}")

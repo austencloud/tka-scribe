@@ -10,7 +10,7 @@ from typing import TYPE_CHECKING, Callable, Optional
 from PyQt6.QtCore import QSize, pyqtSignal
 from PyQt6.QtWidgets import QHBoxLayout, QVBoxLayout, QWidget
 
-from .buttons.styled_button import ButtonContext, StyledButton
+from ..ui.buttons.styled_button import ButtonContext, StyledButton
 from .navigation.menu_bar_navigation_widget import MenuBarNavigationWidget
 
 if TYPE_CHECKING:

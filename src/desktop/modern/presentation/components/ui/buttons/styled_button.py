@@ -82,7 +82,7 @@ class StyledButton(QPushButton, StyleMixin):
         """Setup properties based on button context."""
         context_configs = {
             ButtonContext.NAVIGATION: {
-                "base_height": 40,
+                "base_height": 50,
                 "base_width": 140,
                 "font_size": 11,
                 "font_weight": QFont.Weight.Medium,
@@ -221,10 +221,17 @@ class StyledButton(QPushButton, StyleMixin):
                 font-weight: {self.config['font_weight'].value};
                 text-align: center;
                 outline: none;
+                /* Prevent text clipping issues */
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                line-height: 1.2;
             }}
             QPushButton:hover {{
                 background: {self._get_navigation_hover_background()};
                 border: {self._get_navigation_hover_border()};
+                /* Ensure font-weight doesn't change on hover to prevent text shifting */
+                font-weight: {self.config['font_weight'].value};
             }}
             QPushButton:pressed {{
                 background: {self._get_navigation_pressed_background()};
@@ -355,7 +362,9 @@ class StyledButton(QPushButton, StyleMixin):
         """Handle mouse enter event."""
         if self._state != ButtonState.SELECTED:
             self._state = ButtonState.HOVERED
-        self._animate_scale(1.05)
+        # Only apply scaling animation for non-navigation buttons to prevent text clipping
+        if self._context != ButtonContext.NAVIGATION:
+            self._animate_scale(1.05)
         self.update_appearance()
         super().enterEvent(event)
 
@@ -363,14 +372,18 @@ class StyledButton(QPushButton, StyleMixin):
         """Handle mouse leave event."""
         if self._state != ButtonState.SELECTED:
             self._state = ButtonState.NORMAL
-        self._animate_scale(1.0)
+        # Only apply scaling animation for non-navigation buttons to prevent text clipping
+        if self._context != ButtonContext.NAVIGATION:
+            self._animate_scale(1.0)
         self.update_appearance()
         super().leaveEvent(event)
 
     def mousePressEvent(self, event):
         """Handle mouse press event."""
         self._state = ButtonState.PRESSED
-        self._animate_scale(0.95)
+        # Only apply scaling animation for non-navigation buttons to prevent text clipping
+        if self._context != ButtonContext.NAVIGATION:
+            self._animate_scale(0.95)
         self.update_appearance()
         super().mousePressEvent(event)
 
@@ -380,7 +393,9 @@ class StyledButton(QPushButton, StyleMixin):
             self._state = (
                 ButtonState.HOVERED if self.underMouse() else ButtonState.NORMAL
             )
-        self._animate_scale(1.05 if self.underMouse() else 1.0)
+        # Only apply scaling animation for non-navigation buttons to prevent text clipping
+        if self._context != ButtonContext.NAVIGATION:
+            self._animate_scale(1.05 if self.underMouse() else 1.0)
         self.update_appearance()
         super().mouseReleaseEvent(event)
 

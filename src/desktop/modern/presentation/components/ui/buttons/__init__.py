@@ -1,4 +1,4 @@
-"""Button components for menu bar."""
+"""UI Button components for TKA modern desktop app."""
 
 from .styled_button import ButtonContext, ButtonState, StyledButton
 

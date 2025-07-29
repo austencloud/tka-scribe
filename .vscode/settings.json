@@ -51,14 +51,13 @@
     "**/Thumbs.db": true
   },
   "cSpell.enabled": false,
-  "python.testing.pytestArgs": [
-    ".",
-    "-v",
-    "--tb=short"
-  ],
+  "python.testing.pytestArgs": [".", "-v", "--tb=short"],
   "python.testing.unittestEnabled": false,
   "python.testing.pytestEnabled": true,
   "python.testing.cwd": "${workspaceFolder}",
   "python.testing.autoTestDiscoverOnSaveEnabled": true,
-  "python.testing.pytestPath": "./.venv/Scripts/pytest.exe"
+  "python.testing.pytestPath": "./.venv/Scripts/pytest.exe",
+  "python.analysis.autoImportCompletions": true,
+  "python.analysis.diagnosticMode": "workspace",
+  "python.analysis.indexing": true
 }

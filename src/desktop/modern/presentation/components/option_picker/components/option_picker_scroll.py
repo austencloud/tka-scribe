@@ -412,6 +412,14 @@ class OptionPickerScroll(QScrollArea):
                 print("❌ [UI] No options received from service")
                 return
 
+            # DEBUG: Check if orientations are preserved when options reach the UI (simplified)
+            total_options = sum(
+                len(options_list) for options_list in options_by_type.values()
+            )
+            print(
+                f"🔍 [OPTION_PICKER_SCROLL] UI received {total_options} total options across {len(options_by_type)} letter types"
+            )
+
             # PAGINATION FIX: Reset widget cache to ensure clean state
             # This prevents pool exhaustion that causes the pagination issue
             self._reset_widget_cache()

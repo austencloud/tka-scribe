@@ -244,6 +244,21 @@ class SignalCoordinator(QObject):
         )
 
         if start_position_set or has_beats:
+            # DEBUG: Add logging for option picker refresh
+            print(f"🔍 [SIGNAL_COORDINATOR] Refreshing option picker with sequence")
+            print(
+                f"🔍 [SIGNAL_COORDINATOR] Sequence: {sequence.length if sequence else 0} beats"
+            )
+            if sequence and sequence.beats:
+                for i, beat in enumerate(sequence.beats):
+                    print(
+                        f"🔍 [SIGNAL_COORDINATOR] Beat {i}: beat_number={beat.beat_number}, is_blank={beat.is_blank}"
+                    )
+                    if hasattr(beat, "pictograph_data") and beat.pictograph_data:
+                        print(
+                            f"🔍 [SIGNAL_COORDINATOR] Beat {i} pictograph: letter={beat.pictograph_data.letter}"
+                        )
+
             # Pre-load option picker content before transition
             self.option_picker_manager.refresh_from_sequence(sequence)
             # Ensure we're showing the option picker when start position is set OR beats exist

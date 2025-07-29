@@ -98,14 +98,11 @@ class BrowseTabController(QObject):
     def initialize(self) -> None:
         """Initialize the controller and load initial data."""
         try:
-            logger.info("🚀 Initializing Browse Tab Controller...")
 
             # Start data loading
             self.view_model.set_loading(True)
             self.data_loading_started.emit()
             self.data_manager.load_all_sequences()
-
-            logger.info("✅ Browse Tab Controller initialized successfully")
 
         except Exception as e:
             error_msg = f"Failed to initialize: {str(e)}"
@@ -309,7 +306,7 @@ class BrowseTabController(QObject):
 
     def _on_data_loaded(self, count: int) -> None:
         """Handle data loading completion."""
-        logger.info(f"📊 Data loaded: {count} sequences")
+
         self.view_model.set_loading(False)
         self.data_loading_finished.emit(count)
 

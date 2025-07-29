@@ -106,7 +106,7 @@ class LessonSelector(QWidget):
         super().resizeEvent(event)
 
     def _resize_title_label(self):
-        title_font_size = self.main_widget.width() // 50
+        title_font_size = max(16, self.main_widget.width() // 35)  # Larger title, minimum 16pt
         font = self.title_label.font()
         font.setFamily("Georgia")
         font.setPointSize(title_font_size)
@@ -122,7 +122,8 @@ class LessonSelector(QWidget):
             self.mode_toggle_widget.fixed_question_label,
             self.mode_toggle_widget.countdown_label,
         ]:
-            label_font_size = self.main_widget.width() // 85
+            # Larger mode label font size with minimum
+            label_font_size = max(10, self.main_widget.width() // 60)
             font = label.font()
             font.setPointSize(label_font_size)
             label.setFont(font)
@@ -130,20 +131,23 @@ class LessonSelector(QWidget):
     def _resize_buttons(self):
         """Manually resize each button based on parent size."""
         for button in self.buttons.values():
-            button_width = self.main_widget.width() // 4
-            button_height = self.main_widget.height() // 10
+            # Make buttons larger and more proportional
+            button_width = max(200, self.main_widget.width() // 3)  # Larger buttons, minimum 200px
+            button_height = max(60, self.main_widget.height() // 8)  # Taller buttons, minimum 60px
 
             button.setFixedSize(button_width, button_height)  # Manually set size
             button.resize(button_width, button_height)  # Force resize event
 
             font = button.font()
             font.setFamily("Georgia")
-            font.setPointSize(self.main_widget.width() // 80)
+            # Much larger font size with reasonable minimum
+            font.setPointSize(max(12, self.main_widget.width() // 45))
             button.setFont(font)
 
     def _resize_descriptions(self):
         for description in self.description_labels.values():
-            description_font_size = self.main_widget.width() // 140
+            # Much larger description font size with minimum
+            description_font_size = max(10, self.main_widget.width() // 70)
             font = description.font()
             font.setPointSize(description_font_size)
             description.setFont(font)

@@ -87,8 +87,9 @@ class WorkbenchServiceRegistrar(BaseServiceRegistrar):
                 sys.path.remove(shared_src_str)
                 sys.path.insert(0, shared_src_str)
 
-            from desktop.modern.core.interfaces.workbench_services import IWorkbenchSessionManager
-
+            from desktop.modern.core.interfaces.workbench_services import (
+                IWorkbenchSessionManager,
+            )
             from shared.application.services.workbench.beat_selection_service import (
                 BeatSelectionService,
             )
@@ -116,7 +117,9 @@ class WorkbenchServiceRegistrar(BaseServiceRegistrar):
             container.register_instance(WorkbenchStateManager, state_manager_instance)
 
             # Register interface
-            from desktop.modern.core.interfaces.workbench_services import IWorkbenchStateManager
+            from desktop.modern.core.interfaces.workbench_services import (
+                IWorkbenchStateManager,
+            )
 
             container.register_instance(IWorkbenchStateManager, state_manager_instance)
 
@@ -131,11 +134,16 @@ class WorkbenchServiceRegistrar(BaseServiceRegistrar):
             from desktop.modern.application.services.workbench.workbench_export_service import (
                 WorkbenchExportService,
             )
+            from desktop.modern.core.interfaces.workbench_export_services import (
+                IWorkbenchExportService,
+            )
 
-            # Register export service
+            # Register export service with interface
             export_service_instance = WorkbenchExportService()
-            container.register_instance(WorkbenchExportService, export_service_instance)
-            self._mark_service_available("WorkbenchExportService")
+            container.register_instance(
+                IWorkbenchExportService, export_service_instance
+            )
+            self._mark_service_available("IWorkbenchExportService")
 
             # Create the instance once using the same state manager and register it
             operation_coordinator_instance = WorkbenchOperationCoordinator(

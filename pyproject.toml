@@ -97,7 +97,7 @@ line_length = 88
 init-hook = '''
 import sys; import os;
 project_root = os.path.dirname(os.path.abspath(__file__ if "__file__" in globals() else os.getcwd()));
-paths = [".", "src", "src/shared", "src/desktop/modern", "src/desktop/legacy", "src/web", "launcher", "packages", "packages/shared-types/python", "packages/constants/python", "data", "assets", "schemas"];
+paths = [".", "src", "src/shared", "src/infrastructure", "src/desktop", "src/desktop/modern", "src/desktop/legacy", "src/web", "launcher", "packages", "packages/shared-types/python", "packages/constants/python", "data", "assets", "schemas"];
 [sys.path.insert(0, os.path.join(project_root, path)) for path in paths if os.path.exists(os.path.join(project_root, path)) and os.path.join(project_root, path) not in sys.path]
 '''
 # PyQt6 support
@@ -215,6 +215,7 @@ allow-wildcard-with-all = false
 # Include all source directories
 include = [
     "src/shared",
+    "src/infrastructure",
     "src/desktop/modern",
     "src/desktop/legacy",
     "src/web",
@@ -240,6 +241,8 @@ extraPaths = [
     ".",
     "src",
     "src/shared",
+    "src/infrastructure",
+    "src/desktop",
     "src/desktop/modern",
     "src/desktop/legacy",
     "src/web",

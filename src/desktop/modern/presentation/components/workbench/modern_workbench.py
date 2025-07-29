@@ -19,15 +19,9 @@ BUSINESS LOGIC DELEGATED TO:
 
 from typing import TYPE_CHECKING, List, Optional
 
-from shared.application.services.workbench.workbench_operation_coordinator import (
-    OperationResult,
-    OperationType,
-    WorkbenchOperationCoordinator,
-)
-from shared.application.services.workbench.workbench_session_manager import (
-    WorkbenchSessionManager,
-)
-from shared.application.services.workbench.workbench_state_manager import WorkbenchStateManager
+from PyQt6.QtCore import pyqtSignal
+from PyQt6.QtWidgets import QVBoxLayout, QWidget
+
 from desktop.modern.core.dependency_injection.di_container import DIContainer
 from desktop.modern.core.interfaces.core_services import ILayoutService
 from desktop.modern.domain.models import BeatData, SequenceData
@@ -39,8 +33,17 @@ from desktop.modern.presentation.components.sequence_workbench.button_interface 
 from desktop.modern.presentation.components.sequence_workbench.indicator_section import (
     WorkbenchIndicatorSection,
 )
-from PyQt6.QtCore import pyqtSignal
-from PyQt6.QtWidgets import QVBoxLayout, QWidget
+from shared.application.services.workbench.workbench_operation_coordinator import (
+    OperationResult,
+    OperationType,
+    WorkbenchOperationCoordinator,
+)
+from shared.application.services.workbench.workbench_session_manager import (
+    WorkbenchSessionManager,
+)
+from shared.application.services.workbench.workbench_state_manager import (
+    WorkbenchStateManager,
+)
 
 from .beat_frame_section import WorkbenchBeatFrameSection
 
@@ -173,9 +176,7 @@ class SequenceWorkbench(ViewableComponentBase):
             self._beat_frame_section.add_to_dictionary_requested.connect(
                 lambda: self._execute_operation(OperationType.ADD_TO_DICTIONARY)
             )
-            self._beat_frame_section.save_image_requested.connect(
-                lambda: self._execute_operation(OperationType.SAVE_IMAGE)
-            )
+            # save_image_requested signal removed - functionality moved to Export tab
             self._beat_frame_section.view_fullscreen_requested.connect(
                 lambda: self._execute_operation(OperationType.VIEW_FULLSCREEN)
             )

@@ -63,7 +63,6 @@ def register_settings_services(container: DIContainer) -> None:
         Exception: If service registration fails
     """
     try:
-        logger.info("🔧 Registering settings services...")
 
         # Create shared QSettings instance
         def create_shared_settings():
@@ -105,8 +104,6 @@ def register_settings_services(container: DIContainer) -> None:
             ModernSettingsService, lambda: _create_settings_service(container)
         )
 
-        logger.info("✅ Settings services registered successfully")
-
     except Exception as e:
         logger.error(f"❌ Failed to register settings services: {e}")
         raise
@@ -139,7 +136,6 @@ def validate_settings_registration(container: DIContainer) -> bool:
         True if all services are working, False otherwise
     """
     try:
-        logger.info("🔍 Validating settings service registration...")
 
         # Test main settings service
         settings_service = container.resolve(ModernSettingsService)

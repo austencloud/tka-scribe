@@ -22,6 +22,7 @@ from desktop.modern.core.interfaces.browse_services import (
 )
 from desktop.modern.core.interfaces.image_export_services import (
     ISequenceImageExporter,
+    ISequenceImageRenderer,
     ISequenceMetadataExtractor,
 )
 
@@ -55,18 +56,12 @@ def register_browse_services(
             ISequenceDeletionService, lambda: SequenceDeletionService(sequences_dir)
         )
 
-        # Register image export services
-        from desktop.modern.application.services.image_export.sequence_image_exporter import (
-            SequenceImageExporter,
-        )
-        from shared.application.services.image_export.sequence_metadata_extractor import (
-            SequenceMetadataExtractor,
+        # Register complete image export services (including ISequenceImageRenderer)
+        from desktop.modern.core.dependency_injection.image_export_service_registration import (
+            register_image_export_services,
         )
 
-        container.register_singleton(ISequenceImageExporter, SequenceImageExporter)
-        container.register_singleton(
-            ISequenceMetadataExtractor, SequenceMetadataExtractor
-        )
+        register_image_export_services(container)
 
         # Register browse service
         from desktop.modern.presentation.tabs.browse.services.browse_service import (
@@ -150,6 +145,11 @@ def validate_browse_service_registration(container: DIContainer) -> bool:
         container.resolve(IDictionaryDataManager)
         container.resolve(IProgressiveLoadingService)
         container.resolve(IBrowseDataManager)
+
+        # Test image export services
+        container.resolve(ISequenceImageExporter)
+        container.resolve(ISequenceMetadataExtractor)
+        container.resolve(ISequenceImageRenderer)
 
         logger.info("✅ Browse service registration validation successful")
         return True

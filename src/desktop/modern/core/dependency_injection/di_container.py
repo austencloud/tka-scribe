@@ -306,11 +306,11 @@ def get_container() -> DIContainer:
 def set_container(container: DIContainer, force: bool = False) -> None:
     """Set the global container instance with improved safety."""
     global _container, _container_initialized
-    
+
     # Validate input
     if container is None:
         raise ValueError("Cannot set container to None. Use reset_container() instead.")
-    
+
     # Prevent overwriting an existing container unless forced
     if _container is not None and not force:
         error_msg = (
@@ -320,16 +320,9 @@ def set_container(container: DIContainer, force: bool = False) -> None:
         logger.error(f"🚨 [DI_CONTAINER] {error_msg}")
         # CRITICAL FIX: Raise exception instead of silent failure
         raise RuntimeError(error_msg)
-        
-    if _container is not None:
-        logger.info(
-            f"🔄 [DI_CONTAINER] Replacing container {id(_container)} with {id(container)}"
-        )
-    else:
-        logger.info(
-            f"🆕 [DI_CONTAINER] Setting initial container instance {id(container)}"
-        )
-        
+
+    # Container replacement/initialization (logging removed for cleaner startup)
+
     _container = container
     _container_initialized = True
 

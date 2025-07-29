@@ -5,7 +5,10 @@ Handles sequence state analysis and option generation without Qt dependencies.
 Extracted from option_picker_scroll.py to maintain clean architecture.
 """
 
+import logging
 from typing import Any, Dict, List, Union
+
+logger = logging.getLogger(__name__)
 
 from desktop.modern.core.interfaces.sequence_operation_services import (
     ISequenceOptionService,
@@ -64,7 +67,6 @@ class SequenceOptionService(ISequenceOptionService):
         try:
             # Extract end position from sequence
             end_position = self._extract_end_position(sequence_data)
-            print(f"🔍 [SEQUENCE_OPTION] Extracted end_position: {end_position}")
 
             if not end_position:
                 print(
@@ -74,19 +76,44 @@ class SequenceOptionService(ISequenceOptionService):
 
             # Get all valid next options
             all_options = self._position_matcher.get_next_options(end_position)
-            print(
-                f"🔍 [SEQUENCE_OPTION] Position matcher returned {len(all_options)} options"
-            )
 
             # FIXED: Use the new sequence orientation validator for proper orientation handling
-            if isinstance(sequence_data, SequenceData):
+            # More robust check for SequenceData - handle module path inconsistencies
+            is_sequence_data = isinstance(sequence_data, SequenceData) or (
+                hasattr(sequence_data, "__class__")
+                and sequence_data.__class__.__name__ == "SequenceData"
+                and hasattr(sequence_data, "beats")
+                and hasattr(sequence_data, "length")
+            )
+
+            # DEBUG: Check sequence data type detection
+            print(f"🔍 [SEQUENCE_OPTION] Sequence data type: {type(sequence_data)}")
+            print(
+                f"🔍 [SEQUENCE_OPTION] Sequence data class name: {sequence_data.__class__.__name__}"
+            )
+            print(f"🔍 [SEQUENCE_OPTION] Is SequenceData: {is_sequence_data}")
+            print(f"🔍 [SEQUENCE_OPTION] Has beats: {hasattr(sequence_data, 'beats')}")
+            if hasattr(sequence_data, "beats"):
+                print(
+                    f"🔍 [SEQUENCE_OPTION] Number of beats: {len(sequence_data.beats)}"
+                )
+
+            if is_sequence_data:
+                print(
+                    f"✅ [SEQUENCE_OPTION] Using modern SequenceData with {len(sequence_data.beats)} beats"
+                )
+                logger.debug(
+                    f"Using modern SequenceData with {len(sequence_data.beats)} beats"
+                )
+
                 # Use modern sequence orientation validator for accurate orientation continuity
                 updated_options = self._sequence_orientation_validator.calculate_option_start_orientations(
                     sequence_data, all_options
                 )
-                print(
-                    f"🔍 [SEQUENCE_OPTION] After orientation validation: {len(updated_options)} options"
+                logger.debug(
+                    f"Orientation validator returned {len(updated_options)} options"
                 )
+
             else:
                 # Fallback for legacy format - use old method
                 end_orientations = self._extract_end_orientations(sequence_data)
@@ -98,9 +125,18 @@ class SequenceOptionService(ISequenceOptionService):
             # Group by letter type
             grouped_options = self._group_options_by_type(updated_options)
             total_grouped = sum(len(options) for options in grouped_options.values())
-            print(
-                f"🔍 [SEQUENCE_OPTION] After grouping: {total_grouped} options in {len(grouped_options)} groups"
-            )
+
+            # DEBUG: Check if orientations are preserved after grouping
+            if grouped_options:
+                for letter_type, options_list in grouped_options.items():
+                    if options_list:
+                        first_option = options_list[0]
+                        blue_motion = first_option.motions.get("blue")
+                        red_motion = first_option.motions.get("red")
+                        logger.debug(
+                            f"After grouping - {letter_type} first option ({first_option.letter}): Blue={blue_motion.start_ori if blue_motion else 'None'}, Red={red_motion.start_ori if red_motion else 'None'}"
+                        )
+                        break  # Only check first group
 
             return grouped_options
 

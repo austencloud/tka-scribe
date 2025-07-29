@@ -15,20 +15,20 @@ PROVIDES:
 - Testable components
 """
 
+import logging
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING, Callable, Optional
-import logging
 
-from PyQt6.QtWidgets import QMainWindow, QTabWidget, QVBoxLayout, QWidget
 from PyQt6.QtCore import Qt
+from PyQt6.QtWidgets import QMainWindow, QTabWidget, QVBoxLayout, QWidget
 
+from desktop.modern.core.error_handling import ErrorSeverity, StandardErrorHandler
 from desktop.modern.core.interfaces.session_services import ISessionStateTracker
-from desktop.modern.core.error_handling import StandardErrorHandler, ErrorSeverity
 from desktop.modern.presentation.components.menu_bar import MenuBarWidget
 
-from .tab_management import ITabManagementService, TabManagementService
-from .tab_factory import TabFactory
 from .error_recovery import UIErrorRecoveryService
+from .tab_factory import TabFactory
+from .tab_management import ITabManagementService, TabManagementService
 
 if TYPE_CHECKING:
     from desktop.modern.core.dependency_injection.di_container import DIContainer
@@ -53,7 +53,7 @@ class IUISetupManager(ABC):
 class UISetupManager(IUISetupManager):
     """
     REFACTORED UI setup manager using TabFactory and UIErrorRecoveryService.
-    
+
     Single responsibility: Setup main UI structure and coordinate component loading.
     """
 
@@ -94,11 +94,17 @@ class UISetupManager(IUISetupManager):
 
         except Exception as e:
             StandardErrorHandler.handle_ui_error(
-                "UI setup", e, logger,
-                fallback_action=lambda: self.error_recovery.create_fallback_main_ui(main_window, "UI setup failure")
+                "UI setup",
+                e,
+                logger,
+                fallback_action=lambda: self.error_recovery.create_fallback_main_ui(
+                    main_window, "UI setup failure"
+                ),
             )
             # Return the fallback UI using error recovery service
-            return self.error_recovery.create_fallback_main_ui(main_window, "UI setup failure")
+            return self.error_recovery.create_fallback_main_ui(
+                main_window, "UI setup failure"
+            )
 
     def _create_main_structure(
         self, main_window: QMainWindow, progress_callback: Optional[Callable] = None
@@ -130,9 +136,7 @@ class UISetupManager(IUISetupManager):
             layout.addWidget(self.tab_widget)
 
         except Exception as e:
-            StandardErrorHandler.handle_ui_error(
-                "main structure creation", e, logger
-            )
+            StandardErrorHandler.handle_ui_error("main structure creation", e, logger)
             raise
 
     def _create_tab_widget(self) -> QTabWidget:
@@ -174,7 +178,7 @@ class UISetupManager(IUISetupManager):
     ) -> None:
         """
         Load all UI components using TabFactory.
-        
+
         REFACTORED: 20 lines instead of 100+ lines with duplicate patterns.
         """
         if progress_callback:
@@ -183,39 +187,48 @@ class UISetupManager(IUISetupManager):
         try:
             # Use TabFactory to create all tabs with consistent error handling
             tab_results = self.tab_factory.create_all_tabs(container)
-            
+
             # Add all created tabs to the widget
             for tab_id, tab_info in tab_results.items():
                 self.tab_widget.addTab(tab_info["widget"], tab_info["display_name"])
-                
+
                 # Register tab with management service
                 tab_index = self.tab_widget.indexOf(tab_info["widget"])
-                self.tab_management_service.register_existing_tab(tab_id, tab_info["widget"], tab_index)
-                
+                self.tab_management_service.register_existing_tab(
+                    tab_id, tab_info["widget"], tab_index
+                )
+
                 if tab_info["success"]:
-                    logger.info(f"✅ Added {tab_id} tab successfully")
+                    pass  # Tab added successfully
                 else:
                     logger.warning(f"⚠️ Added {tab_id} tab in recovery mode")
-            
+
             if progress_callback:
                 progress_callback(75, f"Loaded {len(tab_results)} tabs")
-                
+
+            # CRITICAL FIX: Switch to default tab after all tabs are created
+            self.tab_management_service.switch_to_tab("construct")
+            logger.info("✅ Switched to default construct tab")
+
         except Exception as e:
             StandardErrorHandler.handle_ui_error(
-                "component loading", e, logger,
-                fallback_action=lambda: self._add_emergency_tab()
+                "component loading",
+                e,
+                logger,
+                fallback_action=lambda: self._add_emergency_tab(),
             )
             # Add emergency tab if TabFactory completely fails
             self._add_emergency_tab()
 
-        # Hide during startup - will be shown when main window shows
-        self.tab_widget.hide()
-        self.tab_widget.setVisible(False)
-    
+        # CRITICAL FIX: Don't hide the tab widget - it should be visible
+        # The tab widget needs to be visible for tabs to display properly
+
     def _add_emergency_tab(self) -> None:
         """Add emergency tab when TabFactory fails completely."""
         try:
-            emergency_tab = self.error_recovery.create_recovery_info_tab("TabFactory failure")
+            emergency_tab = self.error_recovery.create_recovery_info_tab(
+                "TabFactory failure"
+            )
             self.tab_widget.addTab(emergency_tab, "🚨 Emergency")
         except Exception as e:
             logger.error(f"❌ Even emergency tab creation failed: {e}")
@@ -227,7 +240,9 @@ class UISetupManager(IUISetupManager):
                 progress_callback(90, "Connecting signals...")
 
             if self.menu_bar and self.tab_management_service:
-                self.menu_bar.tab_changed.connect(self.tab_management_service.switch_to_tab)
+                self.menu_bar.tab_changed.connect(
+                    self.tab_management_service.switch_to_tab
+                )
                 self.menu_bar.settings_requested.connect(self._handle_settings_request)
 
         except Exception as e:
@@ -238,7 +253,9 @@ class UISetupManager(IUISetupManager):
     def _handle_settings_request(self) -> None:
         """Handle settings button click - delegate to settings service."""
         try:
-            from desktop.modern.application.services.ui.settings_service import SettingsService
+            from desktop.modern.application.services.ui.settings_service import (
+                SettingsService,
+            )
 
             # Find main window
             main_window = None

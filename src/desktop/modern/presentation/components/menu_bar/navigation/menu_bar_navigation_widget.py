@@ -11,7 +11,7 @@ from PyQt6.QtCore import QSize, pyqtSignal
 from PyQt6.QtGui import QFont
 from PyQt6.QtWidgets import QHBoxLayout, QVBoxLayout, QWidget
 
-from ..buttons.styled_button import ButtonContext, StyledButton
+from ...ui.buttons.styled_button import ButtonContext, StyledButton
 
 if TYPE_CHECKING:
     pass
@@ -136,11 +136,15 @@ class MenuBarNavigationWidget(QWidget):
             // (total_buttons + 1.5),  # Less spacing allowance for wider buttons
         )
         button_width = min(base_width, 220)  # Increased max width cap from 180 to 220
-        button_height = 40
 
         # Apply font sizing
         font_size = max(10, min(14, available_size.width() // 100))
         font = QFont("Segoe UI", font_size, QFont.Weight.Medium)
+
+        # Update button height based on font size to prevent text clipping
+        button_height = max(
+            44, int(font_size * 2.8)
+        )  # Dynamic height based on font size, minimum 44px
 
         # Update all buttons
         try:

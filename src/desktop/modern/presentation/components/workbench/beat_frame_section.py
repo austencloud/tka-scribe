@@ -1,5 +1,8 @@
 from typing import TYPE_CHECKING, Optional
 
+from PyQt6.QtCore import pyqtSignal
+from PyQt6.QtWidgets import QHBoxLayout, QWidget
+
 from desktop.modern.core.interfaces.core_services import ILayoutService
 from desktop.modern.domain.models.beat_data import BeatData
 from desktop.modern.domain.models.pictograph_data import PictographData
@@ -10,8 +13,6 @@ from desktop.modern.presentation.components.sequence_workbench.button_panel impo
 from desktop.modern.presentation.components.sequence_workbench.sequence_beat_frame.sequence_beat_frame import (
     SequenceBeatFrame,
 )
-from PyQt6.QtCore import pyqtSignal
-from PyQt6.QtWidgets import QHBoxLayout, QWidget
 
 if TYPE_CHECKING:
     from shared.application.services.workbench.beat_selection_service import (
@@ -30,7 +31,7 @@ class WorkbenchBeatFrameSection(QWidget):
 
     # Button panel signals
     add_to_dictionary_requested = pyqtSignal()
-    save_image_requested = pyqtSignal()
+    # save_image_requested = pyqtSignal()  # REMOVED - functionality moved to Export tab
     view_fullscreen_requested = pyqtSignal()
     mirror_sequence_requested = pyqtSignal()
     swap_colors_requested = pyqtSignal()
@@ -101,7 +102,7 @@ class WorkbenchBeatFrameSection(QWidget):
             self._button_panel.add_to_dictionary_requested.connect(
                 self.add_to_dictionary_requested
             )
-            self._button_panel.save_image_requested.connect(self.save_image_requested)
+            # save_image_requested signal removed - functionality moved to Export tab
             self._button_panel.view_fullscreen_requested.connect(
                 self.view_fullscreen_requested
             )

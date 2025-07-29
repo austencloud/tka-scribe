@@ -77,7 +77,6 @@ class TabFactory:
 
         for tab_def in self.tab_definitions:
             try:
-                logger.info(f"🔄 Creating {tab_def.tab_id} tab...")
 
                 # Create the tab
                 tab_widget = tab_def.creator_func(container)
@@ -89,7 +88,7 @@ class TabFactory:
                         "success": True,
                     }
                     self.created_tabs[tab_def.tab_id] = tab_widget
-                    logger.info(f"✅ Successfully created {tab_def.tab_id} tab")
+
                 else:
                     raise Exception(f"Tab creator returned None for {tab_def.tab_id}")
 

@@ -29,6 +29,7 @@ class ComponentConnector(QObject):
     beat_selected_for_graph_editor = pyqtSignal(int)  # beat_index
     generate_requested = pyqtSignal(object)  # generation_config
     graph_beat_modified = pyqtSignal(int, object)  # beat_index, beat_data
+    export_requested = pyqtSignal(str, dict)  # NEW: export_type, options
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -36,6 +37,7 @@ class ComponentConnector(QObject):
         self.graph_editor = None
         self.generate_panel = None
         self.start_position_picker = None
+        self.export_panel = None  # NEW: Export panel reference
 
     def set_workbench(self, workbench):
         """Set the workbench and connect its signals."""
@@ -62,6 +64,26 @@ class ComponentConnector(QObject):
     def set_start_position_picker(self, start_position_picker):
         """Set the start position picker for transition management."""
         self.start_position_picker = start_position_picker
+
+    def set_export_panel(self, export_panel):
+        """Set the export panel and connect its signals (NEW)."""
+        self.export_panel = export_panel
+        if export_panel and hasattr(export_panel, "export_requested"):
+            export_panel.export_requested.connect(self._on_export_requested)
+            print("🔤 [COMPONENT_CONNECTOR] Export panel connected")
+
+        # Connect to sequence changes to update export preview
+        if self.workbench and export_panel:
+            self._connect_export_panel_updates()
+
+    def _connect_export_panel_updates(self):
+        """Connect workbench changes to export panel preview updates (NEW)."""
+        if not (self.workbench and self.export_panel):
+            return
+
+        # Connect sequence modification signals to update export preview
+        if hasattr(self.workbench, "sequence_modified"):
+            self.workbench.sequence_modified.connect(self._on_sequence_changed_for_export)
 
     def _connect_beat_frame_signals(self):
         """Connect beat frame signals to graph editor."""
@@ -121,10 +143,71 @@ class ComponentConnector(QObject):
         )
         self.generate_requested.emit(generation_config)
 
+    def _on_export_requested(self, export_type: str, options: dict):
+        """Handle export request from export panel (NEW)."""
+        print(
+            f"🔤 [COMPONENT_CONNECTOR] Export requested: {export_type} with options: {options}"
+        )
+        self.export_requested.emit(export_type, options)
+
+        # Trigger actual export based on type
+        if export_type == "export_current" and self.workbench:
+            self._handle_current_sequence_export(options)
+        elif export_type == "export_all":
+            self._handle_all_pictographs_export(options)
+
+    def _handle_current_sequence_export(self, options: dict):
+        """Handle current sequence export (replaces old save image button) (NEW)."""
+        print("🔤 [COMPONENT_CONNECTOR] Handling current sequence export...")
+        
+        if not self.workbench:
+            print("⚠️ No workbench available for export")
+            return
+
+        # Get current sequence
+        current_sequence = self.workbench.get_sequence()
+        if not current_sequence or current_sequence.length == 0:
+            print("⚠️ No sequence available to export")
+            return
+
+        # Use the workbench's operation coordinator to handle export
+        # This maintains consistency with other workbench operations
+        try:
+            if hasattr(self.workbench, '_operation_coordinator'):
+                from shared.application.services.workbench.workbench_operation_coordinator import OperationType
+                result = self.workbench._operation_coordinator.save_image()
+                
+                if result.success:
+                    print(f"✅ Export successful: {result.message}")
+                    # Update export panel with success feedback
+                    if self.export_panel and hasattr(self.export_panel, '_reset_export_button'):
+                        self.export_panel._reset_export_button()
+                else:
+                    print(f"❌ Export failed: {result.message}")
+            else:
+                print("⚠️ No operation coordinator available in workbench")
+        except Exception as e:
+            print(f"❌ Export error: {e}")
+
+    def _handle_all_pictographs_export(self, options: dict):
+        """Handle export all pictographs functionality (NEW)."""
+        print("📚 [COMPONENT_CONNECTOR] Export all pictographs not yet implemented")
+        # This would be implemented later as part of extended export functionality
+
+    def _on_sequence_changed_for_export(self, sequence):
+        """Handle sequence changes to update export panel preview (NEW)."""
+        if self.export_panel and hasattr(self.export_panel, 'update_preview_from_external'):
+            print("🔄 [COMPONENT_CONNECTOR] Updating export panel preview after sequence change")
+            self.export_panel.update_preview_from_external()
+
     def _on_graph_beat_modified(self, beat_index: int, beat_data):
         """Handle beat modification from graph editor."""
         print(f"✅ Graph editor modified beat {beat_index}")
         self.graph_beat_modified.emit(beat_index, beat_data)
+
+        # Update export panel preview if available
+        if self.export_panel and hasattr(self.export_panel, 'update_preview_from_external'):
+            self.export_panel.update_preview_from_external()
 
     def prepare_for_transition(self, target_mode: str):
         """Prepare components for transition based on target mode."""
@@ -134,9 +217,16 @@ class ComponentConnector(QObject):
         elif target_mode == "option_picker":
             # Prepare option picker for transition if needed
             pass
+        elif target_mode == "export_panel" and self.export_panel:
+            # Prepare export panel for transition
+            if hasattr(self.export_panel, "update_preview_from_external"):
+                self.export_panel.update_preview_from_external()
 
     def finalize_transition(self, target_mode: str):
         """Finalize transition cleanup."""
         if target_mode == "start_position" and self.start_position_picker:
             if hasattr(self.start_position_picker, "set_transition_mode"):
                 self.start_position_picker.set_transition_mode(False)
+        elif target_mode == "export_panel" and self.export_panel:
+            # Finalize export panel transition
+            print("🔤 [COMPONENT_CONNECTOR] Export panel transition finalized")

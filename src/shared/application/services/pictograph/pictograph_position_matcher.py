@@ -11,9 +11,7 @@ the principle that pictographs should be standalone without beat-specific fields
 from typing import Any, Dict, List, Optional
 
 import pandas as pd
-from shared.application.services.pictograph.pictograph_csv_manager import (
-    PictographCSVManager,
-)
+
 from desktop.modern.domain.models import (
     ArrowData,
     GridData,
@@ -23,6 +21,9 @@ from desktop.modern.domain.models import (
     MotionType,
     PictographData,
     RotationDirection,
+)
+from shared.application.services.pictograph.pictograph_csv_manager import (
+    PictographCSVManager,
 )
 
 
@@ -185,8 +186,8 @@ class PictographPositionMatcher:
             start_loc=self._parse_location(blue_attrs.get("start_loc", "s")),
             end_loc=self._parse_location(blue_attrs.get("end_loc", "s")),
             turns=float(blue_attrs.get("turns", 0.0)),
-            start_ori=blue_attrs.get("start_ori", "in"),
-            end_ori=blue_attrs.get("end_ori", "in"),
+            start_ori=self._parse_orientation(blue_attrs.get("start_ori", "in")),
+            end_ori=self._parse_orientation(blue_attrs.get("end_ori", "in")),
         )
 
         # Convert red motion
@@ -198,8 +199,8 @@ class PictographPositionMatcher:
             start_loc=self._parse_location(red_attrs.get("start_loc", "s")),
             end_loc=self._parse_location(red_attrs.get("end_loc", "s")),
             turns=float(red_attrs.get("turns", 0.0)),
-            start_ori=red_attrs.get("start_ori", "in"),
-            end_ori=red_attrs.get("end_ori", "in"),
+            start_ori=self._parse_orientation(red_attrs.get("start_ori", "in")),
+            end_ori=self._parse_orientation(red_attrs.get("end_ori", "in")),
         )
 
         # Create arrows (without motion data - motion data now lives in PictographData)
@@ -231,7 +232,9 @@ class PictographPositionMatcher:
         letter_type = None
         if letter and letter != "unknown":
             from desktop.modern.domain.models.enums import LetterType
-            from desktop.modern.domain.models.letter_type_classifier import LetterTypeClassifier
+            from desktop.modern.domain.models.letter_type_classifier import (
+                LetterTypeClassifier,
+            )
 
             letter_type_str = LetterTypeClassifier.get_letter_type(letter)
             # Convert string to enum
@@ -262,7 +265,9 @@ class PictographPositionMatcher:
 
     def _generate_glyph_data(self, pictograph_data: PictographData) -> None:
         """Generate glyph data for pictograph data using the glyph data service."""
-        from shared.application.services.glyphs.glyph_data_service import GlyphDataService
+        from shared.application.services.glyphs.glyph_data_service import (
+            GlyphDataService,
+        )
 
         glyph_service = GlyphDataService()
         glyph_service.determine_glyph_data(pictograph_data)
@@ -306,6 +311,18 @@ class PictographPositionMatcher:
             "nw": Location.NORTHWEST,
         }
         return location_map.get(location_str.lower(), Location.SOUTH)
+
+    def _parse_orientation(self, orientation_str: str):
+        """Parse orientation string to Orientation enum."""
+        from desktop.modern.domain.models import Orientation
+
+        orientation_map = {
+            "in": Orientation.IN,
+            "out": Orientation.OUT,
+            "clock": Orientation.CLOCK,
+            "counter": Orientation.COUNTER,
+        }
+        return orientation_map.get(orientation_str.lower(), Orientation.IN)
 
     def get_alpha1_options(self) -> List[PictographData]:
         """
@@ -356,7 +373,9 @@ class PictographPositionMatcher:
             }
 
         # Import here to avoid circular imports
-        from desktop.modern.domain.models.letter_type_classifier import LetterTypeClassifier
+        from desktop.modern.domain.models.letter_type_classifier import (
+            LetterTypeClassifier,
+        )
 
         letters = [opt.letter or "Unknown" for opt in options]
         letter_types = {}

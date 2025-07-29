@@ -6,11 +6,16 @@ from PyQt6.QtWidgets import QPushButton, QSizePolicy, QSpacerItem, QVBoxLayout, 
 
 
 class SequenceWorkbenchButtonPanel(QWidget):
-    """Modern button panel for sequence workbench with glassmorphism styling and signals"""
+    """
+    Updated button panel for sequence workbench - Save Image button REMOVED.
+    
+    The export functionality has been moved to the Export tab in the right panel
+    to provide a better user experience with live preview and comprehensive settings.
+    """
 
-    # Signals for button actions
+    # Signals for button actions - save_image_requested REMOVED
     add_to_dictionary_requested = pyqtSignal()
-    save_image_requested = pyqtSignal()
+    # save_image_requested = pyqtSignal()  # REMOVED - Now handled by Export tab
     view_fullscreen_requested = pyqtSignal()
     mirror_sequence_requested = pyqtSignal()
     swap_colors_requested = pyqtSignal()
@@ -36,14 +41,14 @@ class SequenceWorkbenchButtonPanel(QWidget):
 
         # Button configurations with emojis for modern appeal
         button_configs = [
-            # Dictionary & Export group
+            # Dictionary & View group
             (
                 "add_to_dictionary",
                 "📚",
                 "Add to Dictionary",
                 self.add_to_dictionary_requested,
             ),
-            ("save_image", "💾", "Save Image", self.save_image_requested),
+            # REMOVED: ("save_image", "💾", "Save Image", self.save_image_requested),
             (
                 "view_fullscreen",
                 "👁️",

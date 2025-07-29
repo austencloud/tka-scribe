@@ -183,13 +183,10 @@ class OptionPickerManager(QObject):
             # Ensure we have a valid end position
             pictograph_data = start_position_beat_data.pictograph_data
             end_position = pictograph_data.end_position
-            print(f"🔍 [OPTION_PICKER_MANAGER] Initial end_position: {end_position}")
 
             if not end_position:
                 end_position = extract_end_position_from_position_key(position_key)
-                print(
-                    f"🔍 [OPTION_PICKER_MANAGER] Extracted end_position: {end_position}"
-                )
+
                 # Update the pictograph data with the extracted end position
                 pictograph_data = pictograph_data.update(end_position=end_position)
 

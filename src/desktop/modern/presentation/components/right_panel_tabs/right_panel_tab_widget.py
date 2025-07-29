@@ -8,29 +8,34 @@ Uses the centralized glassmorphism style system for consistent modern aesthetics
 
 from typing import Optional
 
-from desktop.modern.presentation.styles.glassmorphism_styles import GlassmorphismStyleGenerator
 from PyQt6.QtCore import pyqtSignal
 from PyQt6.QtWidgets import QHBoxLayout, QPushButton, QSizePolicy, QWidget
+
+from desktop.modern.presentation.styles.glassmorphism_styles import (
+    GlassmorphismStyleGenerator,
+)
 
 
 class RightPanelTabWidget(QWidget):
     """
     Tab navigation widget for the right panel.
 
-    Provides 3 equally-sized tabs:
-    - 🔨 Picker (Start Position Picker/Option Picker)
-    - 🔧 Graph Editor
-    - 🤖 Generate Controls
+    Provides 4 equally-sized tabs:
+    - 🔨 Build (Start Position Picker/Option Picker)
+    - 🤖 Generate (Generate Controls)
+    - 🔧 Edit (Graph Editor)
+    - 🔤 Export (Export Panel with live preview)
     """
 
     # Signals emitted when tabs are clicked
     picker_tab_clicked = pyqtSignal()
     graph_editor_tab_clicked = pyqtSignal()
     generate_controls_tab_clicked = pyqtSignal()
+    export_tab_clicked = pyqtSignal()  # NEW: Export tab signal
 
     def __init__(self, parent: Optional[QWidget] = None):
         super().__init__(parent)
-        self._current_tab = 0  # 0=Picker, 1=Graph Editor, 2=Generate Controls
+        self._current_tab = 0  # 0=Build, 1=Generate, 2=Edit, 3=Export
         self._tab_buttons = []
         self._setup_ui()
         self._apply_styling()
@@ -41,7 +46,7 @@ class RightPanelTabWidget(QWidget):
         layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(0)
 
-        # Tab definitions
+        # Tab definitions - Updated to include Export tab
         tab_configs = {
             0: {
                 "text": "🔨 Build",
@@ -57,6 +62,11 @@ class RightPanelTabWidget(QWidget):
                 "text": "🔧 Edit",
                 "signal": self.graph_editor_tab_clicked,
                 "tooltip": "Edit and refine your sequence",
+            },
+            3: {  # NEW: Export tab
+                "text": "🔤 Export",
+                "signal": self.export_tab_clicked,
+                "tooltip": "Export your sequence with live preview",
             },
         }
 
@@ -123,10 +133,18 @@ class RightPanelTabWidget(QWidget):
         }
         """
 
-        # Tab button styling using the glassmorphism style generator
+        # Tab button styling using the glassmorphism style generator with custom font size
         tab_style = GlassmorphismStyleGenerator.create_tab_style(
             active_variant="accent"
         )
 
+        # Add larger font size to the tab style
+        font_size_override = """
+        QPushButton {
+            font-size: 16px;
+            font-weight: 600;
+        }
+        """
+
         # Combine all styles
-        self.setStyleSheet(container_style + tab_style)
+        self.setStyleSheet(container_style + tab_style + font_size_override)

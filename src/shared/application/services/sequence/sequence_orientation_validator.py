@@ -51,8 +51,18 @@ class SequenceOrientationValidator:
         Returns:
             Dictionary mapping color to actual end orientation from sequence
         """
+        # DEBUG: Add logging to trace sequence data (simplified)
+        if sequence and sequence.beats:
+            logger.debug(f"Processing sequence with {len(sequence.beats)} beats")
+        else:
+            logger.debug("No sequence or beats found")
+            logger.debug("No sequence or beats found")
+
         if not sequence or not sequence.beats:
             logger.debug("No sequence or beats found, using default orientations")
+            logger.debug(
+                f"Returning default orientations: {self._default_orientations}"
+            )
             return self._default_orientations.copy()
 
         # Find the last valid beat (non-blank, non-placeholder)
@@ -135,13 +145,26 @@ class SequenceOrientationValidator:
 
         # Get the actual end orientations from the sequence
         sequence_end_orientations = self.get_sequence_end_orientations(sequence)
+        logger.debug(
+            f"Sequence end orientations: Blue={sequence_end_orientations['blue']}, Red={sequence_end_orientations['red']}"
+        )
 
         updated_options = []
-        for option in options:
+        for i, option in enumerate(options):
             updated_option = self._update_option_start_orientations(
                 option, sequence_end_orientations
             )
             updated_options.append(updated_option)
+
+            # Debug first option only
+            if i == 0:
+                blue_motion = updated_option.motions.get("blue")
+                red_motion = updated_option.motions.get("red")
+                blue_start = blue_motion.start_ori if blue_motion else "None"
+                red_start = red_motion.start_ori if red_motion else "None"
+                logger.debug(
+                    f"First option ({updated_option.letter}): Blue={blue_start}, Red={red_start}"
+                )
 
         logger.debug(f"Updated start orientations for {len(updated_options)} options")
         return updated_options
@@ -225,7 +248,9 @@ class SequenceOrientationValidator:
     ) -> PictographData:
         """
         Update a single pictograph option with correct start orientations.
-        Also calculates correct end orientations based on the motion.
+        Also calculates correct end orientations and updates prop orientations.
+
+        FIXED: Following legacy pattern - props use motion END orientations.
         """
         updated_motions = {}
         updated_props = {}
@@ -239,33 +264,41 @@ class SequenceOrientationValidator:
 
         # Update motion start orientations and calculate end orientations
         for color in ["blue", "red"]:
-            sequence_end_ori = sequence_end_orientations[color]
+            motion_start_ori = sequence_end_orientations[color]
 
             if color in option.motions:
                 original_motion = option.motions[color]
 
                 # Update motion with correct start orientation
-                motion_with_start = original_motion.update(start_ori=sequence_end_ori)
+                motion_with_start = original_motion.update(start_ori=motion_start_ori)
 
                 # Calculate correct end orientation based on motion type and turns
                 calculated_end_ori = orientation_calculator.calculate_end_orientation(
-                    motion_with_start, sequence_end_ori
+                    motion_with_start, motion_start_ori
                 )
 
                 # Update motion with both correct start and calculated end orientations
                 updated_motion = motion_with_start.update(end_ori=calculated_end_ori)
                 updated_motions[color] = updated_motion
+
+                # FIXED: Update prop orientation to match motion END orientation (legacy pattern)
+                if color in option.props:
+                    original_prop = option.props[color]
+                    # Prop uses motion's END orientation (not start)
+                    from dataclasses import replace
+
+                    updated_prop = replace(
+                        original_prop, orientation=calculated_end_ori
+                    )
+                    updated_props[color] = updated_prop
+
+                    logger.debug(
+                        f"Updated {color} prop orientation: {motion_start_ori} → {calculated_end_ori}"
+                    )
+                else:
+                    updated_props[color] = option.props.get(color)
             else:
                 updated_motions[color] = option.motions.get(color)
-
-            # Update prop orientations to match start orientation
-            if color in option.props:
-                original_prop = option.props[color]
-                from dataclasses import replace
-
-                updated_prop = replace(original_prop, orientation=sequence_end_ori)
-                updated_props[color] = updated_prop
-            else:
                 updated_props[color] = option.props.get(color)
 
         # Create updated pictograph with corrected orientations

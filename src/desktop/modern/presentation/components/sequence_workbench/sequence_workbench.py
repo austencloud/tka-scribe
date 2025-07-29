@@ -138,14 +138,30 @@ class SequenceWorkbench(ViewableComponentBase):
     def _complete_initialization(self) -> None:
         """Complete workbench initialization after main window is shown."""
         try:
+            print("🔧 [WORKBENCH] Starting deferred initialization...")
             self._setup_session_subscriptions()
+            print("🔧 [WORKBENCH] Session subscriptions setup complete")
+
             self._complete_ui_setup()
+            print("🔧 [WORKBENCH] UI setup complete")
+
             self._connect_signals()
+            print("🔧 [WORKBENCH] Signals connected")
+
             self._setup_button_interface()
+            print("🔧 [WORKBENCH] Button interface setup complete")
+
             self._setup_state_monitoring()  # CRITICAL FIX: Monitor state manager changes
+            print("🔧 [WORKBENCH] State monitoring setup complete")
+
+            print("✅ [WORKBENCH] Deferred initialization completed successfully")
 
         except Exception as e:
-            pass  # Error in deferred initialization
+            print(f"❌ [WORKBENCH] Error in deferred initialization: {e}")
+            import traceback
+
+            traceback.print_exc()
+            # Don't raise - allow application to continue with partial workbench
 
     def get_widget(self) -> QWidget:
         """Get the main widget for this component."""
@@ -174,25 +190,34 @@ class SequenceWorkbench(ViewableComponentBase):
 
     def _complete_ui_setup(self):
         """Complete UI setup with all components."""
+        print("🔧 [WORKBENCH] Starting complete UI setup...")
+
         # Remove placeholder
         if hasattr(self, "_placeholder"):
+            print("🔧 [WORKBENCH] Removing placeholder...")
             self._main_layout.removeWidget(self._placeholder)
             self._placeholder.deleteLater()
             del self._placeholder
 
         # Create sections using existing components
+        print("🔧 [WORKBENCH] Creating indicator section...")
         self._indicator_section = WorkbenchIndicatorSection(
             dictionary_service=self._safe_resolve("SequenceDictionaryService"),
             parent=self._widget,
         )
         self._main_layout.addWidget(self._indicator_section, 0)
+        print("✅ [WORKBENCH] Indicator section created and added")
 
+        print("🔧 [WORKBENCH] Creating beat frame section...")
         self._beat_frame_section = WorkbenchBeatFrameSection(
             layout_service=self._layout_service,
             beat_selection_service=self._beat_selection_service,
             parent=self._widget,
         )
         self._main_layout.addWidget(self._beat_frame_section, 1)
+        print("✅ [WORKBENCH] Beat frame section created and added")
+
+        print("🔧 [WORKBENCH] Complete UI setup finished")
 
     def _connect_signals(self):
         """Connect component signals to business logic."""
@@ -208,9 +233,7 @@ class SequenceWorkbench(ViewableComponentBase):
             self._beat_frame_section.add_to_dictionary_requested.connect(
                 lambda: self._execute_operation(OperationType.ADD_TO_DICTIONARY)
             )
-            self._beat_frame_section.save_image_requested.connect(
-                lambda: self._execute_operation(OperationType.SAVE_IMAGE)
-            )
+            # save_image_requested signal removed - functionality moved to Export tab
             self._beat_frame_section.view_fullscreen_requested.connect(
                 lambda: self._execute_operation(OperationType.VIEW_FULLSCREEN)
             )
@@ -419,6 +442,16 @@ class SequenceWorkbench(ViewableComponentBase):
     # Event Handlers - Delegation to Business Logic
     def _execute_operation(self, operation_type: OperationType):
         """Execute operation via operation coordinator."""
+
+        # Handle copy JSON specially to pass the current sequence
+        if operation_type == OperationType.COPY_JSON:
+            current_sequence = self._state_manager.get_current_sequence()
+            result: OperationResult = self._operation_coordinator.copy_json(
+                current_sequence
+            )
+            self._handle_operation_result(result)
+            return
+
         # Get operation method from coordinator
         operation_methods = {
             OperationType.ADD_TO_DICTIONARY: self._operation_coordinator.add_to_dictionary,
@@ -427,7 +460,6 @@ class SequenceWorkbench(ViewableComponentBase):
             OperationType.MIRROR_SEQUENCE: self._operation_coordinator.mirror_sequence,
             OperationType.SWAP_COLORS: self._operation_coordinator.swap_colors,
             OperationType.ROTATE_SEQUENCE: self._operation_coordinator.rotate_sequence,
-            OperationType.COPY_JSON: self._operation_coordinator.copy_json,
         }
 
         operation_method = operation_methods.get(operation_type)
@@ -441,17 +473,10 @@ class SequenceWorkbench(ViewableComponentBase):
 
     def _handle_delete_beat(self):
         """Handle delete beat operation."""
-        print("🗑️ [WORKBENCH] Delete beat operation requested")
-        print(f"🔍 [WORKBENCH] Workbench state manager: {self._state_manager}")
-        print(f"🔍 [WORKBENCH] Workbench state manager ID: {id(self._state_manager)}")
-        print(f"🔍 [WORKBENCH] Operation coordinator: {self._operation_coordinator}")
-
         selected_index = None
         if self._beat_frame_section:
             selected_index = self._beat_frame_section.get_selected_beat_index()
-            print(f"📊 [WORKBENCH] Selected beat index: {selected_index}")
 
-        print("🔄 [WORKBENCH] Calling operation coordinator...")
         result = self._operation_coordinator.delete_beat(selected_index)
         print(
             f"📊 [WORKBENCH] Operation result: success={result.success}, message='{result.message}'"
@@ -495,6 +520,10 @@ class SequenceWorkbench(ViewableComponentBase):
     def _handle_operation_result(self, result: OperationResult):
         """Handle operation result from coordinator."""
         print(f"📊 [WORKBENCH] Handling operation result: success={result.success}")
+        if not result.success:
+            print(f"❌ [WORKBENCH] Operation failed: {result.message}")
+            if hasattr(result, "error_details") and result.error_details:
+                print(f"🔍 [WORKBENCH] Error details: {result.error_details}")
         if result.success:
             print(f"✅ [WORKBENCH] Operation successful: {result.message}")
             self.operation_completed.emit(result.message)

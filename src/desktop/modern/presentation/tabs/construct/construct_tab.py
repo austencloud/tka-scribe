@@ -6,7 +6,7 @@ This version focuses ONLY on being a Qt widget with clean separation.
 
 ELIMINATED:
 - Complex service orchestration (moved to controller)
-- Business logic (moved to controller) 
+- Business logic (moved to controller)
 - Signal coordination (moved to controller)
 - Progress reporting mixed with UI (separated)
 - Manual dependency injection (simplified)
@@ -20,6 +20,7 @@ PROVIDES:
 """
 
 from typing import Optional
+
 from PyQt6.QtCore import pyqtSignal
 from PyQt6.QtWidgets import QWidget
 
@@ -34,10 +35,10 @@ from .construct_tab_view import ConstructTabView
 class ConstructTab(QWidget):
     """
     SIMPLIFIED ConstructTab - Pure Qt widget with single responsibility.
-    
+
     No longer a god object! Business logic moved to ConstructTabController.
     UI creation moved to ConstructTabView.
-    
+
     This class now ONLY handles:
     - Qt widget lifecycle
     - Signal forwarding between view and controller
@@ -46,8 +47,8 @@ class ConstructTab(QWidget):
 
     # Public signals for external listeners
     sequence_created = pyqtSignal(object)  # SequenceData
-    sequence_modified = pyqtSignal(object)  # SequenceData  
-    start_position_set = pyqtSignal(str)   # position key
+    sequence_modified = pyqtSignal(object)  # SequenceData
+    start_position_set = pyqtSignal(str)  # position key
     start_position_loaded_from_persistence = pyqtSignal(str, object)  # key, BeatData
 
     def __init__(
@@ -60,39 +61,38 @@ class ConstructTab(QWidget):
         SIMPLIFIED initialization - no more complex choreography.
         """
         super().__init__(parent)
-        
+
         # Create view (handles UI only)
         self._view = ConstructTabView(self)
-        
+
         # Create controller (handles business logic)
         self._controller = ConstructTabController(container, progress_callback)
-        
+
         # Setup the UI through the view
         self._view.setup_ui(
             container=container,
             progress_callback=progress_callback,
-            option_picker_ready_callback=self._on_option_picker_ready
+            option_picker_ready_callback=self._on_option_picker_ready,
         )
-        
+
         # Connect view and controller
         self._connect_view_controller()
-        
+
         # Initialize the controller with view reference
         self._controller.initialize(self._view, self)
-        
-        # Hide during startup (will be shown by parent)
-        self.hide()
-        self.setVisible(False)
+
+        # CRITICAL FIX: Don't hide the tab - let QTabWidget manage visibility
+        # The tab should be visible when it's the active tab
 
     def _on_option_picker_ready(self, option_picker):
         """Handle option picker ready callback from layout manager."""
         # Forward to controller for business logic handling
-        if hasattr(self._controller, 'handle_option_picker_ready'):
+        if hasattr(self._controller, "handle_option_picker_ready"):
             self._controller.handle_option_picker_ready(option_picker)
 
     def _connect_view_controller(self) -> None:
         """Connect view events to controller and controller events to external signals."""
-        
+
         # Forward controller signals to our public signals
         self._controller.sequence_created.connect(self.sequence_created.emit)
         self._controller.sequence_modified.connect(self.sequence_modified.emit)
@@ -129,7 +129,9 @@ class ConstructTab(QWidget):
         """Update beat turns."""
         self._controller.update_beat_turns(beat_index, color, new_turns)
 
-    def update_beat_orientation(self, beat_index: int, color: str, new_orientation: int) -> None:
+    def update_beat_orientation(
+        self, beat_index: int, color: str, new_orientation: int
+    ) -> None:
         """Update beat orientation."""
         self._controller.update_beat_orientation(beat_index, color, new_orientation)
 
