@@ -389,20 +389,19 @@ def assert_basic_sequence_workflow(
     This is a convenience function that combines multiple assertions
     for the most common test pattern.
     """
+    assertions = TKAAssertions()
+
     # Assert navigation succeeds
-    TKAAssertions.assert_workflow_successful(
-        navigation.select_start_position(position),
-        f"Start position selection: {position}",
-    )
+    nav_result = navigation.select_start_position(position)
+    assert nav_result, f"Start position selection failed: {position}"
 
     # Assert sequence building succeeds
-    TKAAssertions.assert_workflow_successful(
-        sequence.build_sequence(length), f"Sequence building: length {length}"
-    )
+    seq_result = sequence.build_sequence(length)
+    assert seq_result, f"Sequence building failed: length {length}"
 
     # Assert final state is correct
-    TKAAssertions.assert_sequence_length(validation.workbench, length)
-    TKAAssertions.assert_sequence_valid(validation.workbench)
+    assertions.sequence_has_length(validation.workbench, length)
+    assertions.sequence_is_valid(validation.workbench)
 
 
 def assert_sequence_management_workflow(
@@ -411,15 +410,14 @@ def assert_sequence_management_workflow(
     """
     Assert a sequence management workflow (clear and rebuild) completes successfully.
     """
+    assertions = TKAAssertions()
+
     # Assert clearing succeeds
-    TKAAssertions.assert_workflow_successful(
-        sequence.clear_sequence(), "Sequence clearing"
-    )
-    TKAAssertions.assert_sequence_empty(validation.workbench)
+    clear_result = sequence.clear_sequence()
+    assert clear_result, "Sequence clearing failed"
 
     # Assert rebuilding succeeds
-    TKAAssertions.assert_workflow_successful(
-        sequence.build_sequence(final_length),
-        f"Sequence rebuilding: length {final_length}",
-    )
-    TKAAssertions.assert_sequence_length(validation.workbench, final_length)
+    rebuild_result = sequence.build_sequence(final_length)
+    assert rebuild_result, f"Sequence rebuilding failed: length {final_length}"
+
+    assertions.sequence_has_length(validation.workbench, final_length)

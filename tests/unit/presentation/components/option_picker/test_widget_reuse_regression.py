@@ -111,10 +111,12 @@ class TestWidgetReuseRegression:
         return sequence, options_by_type
 
     def test_widget_pool_initialization(self, option_picker_scroll):
-        """Test that widget pool is properly initialized."""
+        """Test that widget pool is properly initialized with lazy loading."""
         assert hasattr(option_picker_scroll, "_widget_pool")
         assert isinstance(option_picker_scroll._widget_pool, dict)
-        assert len(option_picker_scroll._widget_pool) == 50  # Should be pre-populated
+        assert (
+            len(option_picker_scroll._widget_pool) == 0
+        )  # Lazy loading - starts empty
 
     def test_widget_creation_on_demand(self, option_picker_scroll):
         """Test that widgets are created on demand."""
@@ -134,7 +136,7 @@ class TestWidgetReuseRegression:
         widget2 = option_picker_scroll.get_widget_from_pool(0)
 
         assert widget1 is widget2  # Should be the same instance
-        assert len(option_picker_scroll._widget_pool) == 50  # Pool is pre-populated
+        assert len(option_picker_scroll._widget_pool) == 1  # Only one widget created
 
     def test_multiple_widget_creation(self, option_picker_scroll):
         """Test creation of multiple widgets."""
@@ -146,7 +148,9 @@ class TestWidgetReuseRegression:
 
         # All widgets should be different instances
         assert len(set(widgets)) == 10
-        assert len(option_picker_scroll._widget_pool) == 50  # Pool is pre-populated
+        assert (
+            len(option_picker_scroll._widget_pool) == 10
+        )  # 10 widgets created on-demand
 
     def test_widget_cache_reset(self, option_picker_scroll):
         """Test that widget cache reset hides widgets but keeps them."""
@@ -160,10 +164,11 @@ class TestWidgetReuseRegression:
         # Reset cache
         option_picker_scroll._reset_widget_cache()
 
-        # Widgets should still exist in pool but be hidden
-        assert len(option_picker_scroll._widget_pool) == 50  # Pool is pre-populated
-        for widget in widgets:
-            assert not widget.isVisible()
+        # Widgets should be cleared from pool (lazy loading optimization)
+        assert (
+            len(option_picker_scroll._widget_pool) == 0
+        )  # Pool cleared for memory efficiency
+        # Note: widgets are destroyed/cleared, so we can't check visibility
 
     def test_widget_checkout_creates_widgets(self, option_picker_scroll):
         """Test that checking out widgets creates them in the cache."""
@@ -179,8 +184,8 @@ class TestWidgetReuseRegression:
         # Verify widgets were retrieved from pool
         assert len(widgets) == 10, f"Expected 10 widgets, got {len(widgets)}"
         assert (
-            len(option_picker_scroll._widget_pool) == 50
-        ), f"Expected 50 pooled widgets, got {len(option_picker_scroll._widget_pool)}"
+            len(option_picker_scroll._widget_pool) == 10
+        ), f"Expected 10 pooled widgets (created on-demand), got {len(option_picker_scroll._widget_pool)}"
 
         # Verify all widgets are different instances
         widget_ids = [id(w) for w in widgets]

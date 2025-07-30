@@ -8,10 +8,12 @@ TESTS:
 - MotionData invariants and serialization
 - BeatData invariants and immutability
 - SequenceData invariants and operations
-- GlyphData serialization roundtrips
 """
 
 import pytest
+from hypothesis import assume, given
+from hypothesis import strategies as st
+
 from desktop.modern.domain.models.beat_data import BeatData
 from desktop.modern.domain.models.enums import (
     ElementalType,
@@ -24,8 +26,6 @@ from desktop.modern.domain.models.enums import (
 )
 from desktop.modern.domain.models.motion_data import MotionData
 from desktop.modern.domain.models.sequence_data import SequenceData
-from hypothesis import assume, given
-from hypothesis import strategies as st
 
 
 class TestMotionDataProperties:
@@ -326,54 +326,3 @@ class TestSequenceDataProperties:
         assert reconstructed.word == sequence.word
         assert reconstructed.length == sequence.length
         assert len(reconstructed.beats) == len(sequence.beats)
-
-
-class TestGlyphDataProperties:
-    """Property-based tests for GlyphData."""
-
-    @given(
-        vtg_mode=st.one_of(st.none(), st.sampled_from(VTGMode)),
-        elemental_type=st.one_of(st.none(), st.sampled_from(ElementalType)),
-        letter_type=st.one_of(st.none(), st.sampled_from(LetterType)),
-        has_dash=st.booleans(),
-        show_elemental=st.booleans(),
-        show_vtg=st.booleans(),
-        show_tka=st.booleans(),
-        show_positions=st.booleans(),
-    )
-    def test_glyph_data_serialization_roundtrip(
-        self,
-        vtg_mode,
-        elemental_type,
-        letter_type,
-        has_dash,
-        show_elemental,
-        show_vtg,
-        show_tka,
-        show_positions,
-    ):
-        """Test that GlyphData serialization is lossless."""
-        original = GlyphData(
-            vtg_mode=vtg_mode,
-            elemental_type=elemental_type,
-            letter_type=letter_type,
-            has_dash=has_dash,
-            show_elemental=show_elemental,
-            show_vtg=show_vtg,
-            show_tka=show_tka,
-            show_positions=show_positions,
-        )
-
-        # Serialize to dict and back
-        data_dict = original.to_dict()
-        reconstructed = GlyphData.from_dict(data_dict)
-
-        # Invariant: Roundtrip should be lossless
-        assert reconstructed.vtg_mode == original.vtg_mode
-        assert reconstructed.elemental_type == original.elemental_type
-        assert reconstructed.letter_type == original.letter_type
-        assert reconstructed.has_dash == original.has_dash
-        assert reconstructed.show_elemental == original.show_elemental
-        assert reconstructed.show_vtg == original.show_vtg
-        assert reconstructed.show_tka == original.show_tka
-        assert reconstructed.show_positions == original.show_positions

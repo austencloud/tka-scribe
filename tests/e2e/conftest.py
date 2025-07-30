@@ -153,8 +153,11 @@ def workflow_steps(tka_pages):
 
     pages = tka_pages
 
+    # Get the main window from the construct tab page object
+    main_window = pages["construct_tab"].parent
+
     steps = {
-        "navigation": NavigationSteps(pages["start_position_picker"]),
+        "navigation": NavigationSteps(main_window),
         "sequence": SequenceSteps(pages["sequence_workbench"], pages["option_picker"]),
         "validation": ValidationSteps(pages["sequence_workbench"]),
     }

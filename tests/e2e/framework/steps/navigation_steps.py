@@ -33,8 +33,40 @@ class NavigationSteps:
         """
         self.main_window = main_window
         self.start_position_picker = None  # Will be set when needed
+        self._construct_tab = None  # Cache for construct tab page object
 
         logger.debug("NavigationSteps initialized with main window")
+
+    def _ensure_start_position_picker(self) -> bool:
+        """
+        Ensure start position picker is initialized.
+
+        Returns:
+            bool: True if picker is available, False otherwise
+        """
+        if self.start_position_picker is not None:
+            return True
+
+        # Get construct tab page object
+        if self._construct_tab is None:
+            from tests.e2e.framework.page_objects.construct_tab import ConstructTabPage
+
+            self._construct_tab = ConstructTabPage(self.main_window)
+
+        # Navigate to construct tab if not already there
+        if not self._construct_tab.is_loaded():
+            if not self._construct_tab.navigate_to_tab():
+                logger.error("Failed to navigate to construct tab")
+                return False
+
+        # Get start position picker
+        self.start_position_picker = self._construct_tab.get_start_position_picker()
+        if self.start_position_picker is None:
+            logger.error("Failed to get start position picker")
+            return False
+
+        logger.debug("Start position picker initialized successfully")
+        return True
 
     def select_start_position(self, position: str) -> bool:
         """
@@ -50,8 +82,8 @@ class NavigationSteps:
         """
         logger.info(f"Navigation: Selecting start position '{position}'")
 
-        if not self.start_position_picker:
-            logger.error("Start position picker not initialized")
+        if not self._ensure_start_position_picker():
+            logger.error("Start position picker not available")
             return False
 
         # Ensure start position picker is loaded
@@ -78,8 +110,8 @@ class NavigationSteps:
         """
         logger.info("Navigation: Selecting first available start position")
 
-        if not self.start_position_picker:
-            logger.error("Start position picker not initialized")
+        if not self._ensure_start_position_picker():
+            logger.error("Start position picker not available")
             return None
 
         # Get available positions
@@ -110,6 +142,10 @@ class NavigationSteps:
 
         logger.info("Navigation: Selecting random start position")
 
+        if not self._ensure_start_position_picker():
+            logger.error("Start position picker not available")
+            return None
+
         # Get available positions
         positions = self.start_position_picker.get_available_positions()
         if not positions:
@@ -137,6 +173,10 @@ class NavigationSteps:
         """
         logger.debug(f"Verifying position '{expected_position}' is selected")
 
+        if not self._ensure_start_position_picker():
+            logger.error("Start position picker not available")
+            return False
+
         current_position = self.start_position_picker.get_current_position()
         if current_position == expected_position:
             logger.debug(f"Position verification successful: '{expected_position}'")
@@ -156,6 +196,10 @@ class NavigationSteps:
         """
         logger.debug("Getting available start positions")
 
+        if not self._ensure_start_position_picker():
+            logger.error("Start position picker not available")
+            return []
+
         positions = self.start_position_picker.get_available_positions()
         logger.debug(f"Found {len(positions)} available positions")
 
@@ -169,6 +213,10 @@ class NavigationSteps:
             bool: True if picker is ready, False otherwise
         """
         logger.debug("Ensuring start position picker is ready")
+
+        if not self._ensure_start_position_picker():
+            logger.error("Start position picker not available")
+            return False
 
         # Check if picker is loaded
         if not self.start_position_picker.is_loaded():

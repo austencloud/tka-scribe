@@ -75,6 +75,9 @@ class IBackgroundSettingsManager(ABC):
 
         Returns:
             True if valid, False otherwise
+
+        Note:
+            Web implementation: May need to check asset availability in browser
         """
 
 
