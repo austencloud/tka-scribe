@@ -193,36 +193,16 @@ class ServiceRegistrationHelper:
             )
 
     @staticmethod
-    def register_all_common_services(container: "DIContainer") -> None:
-        """Register all common services used across application modes."""
-        try:
-            # Register services in dependency order
-            ServiceRegistrationHelper.register_common_data_services(container)
-            ServiceRegistrationHelper.register_common_core_services(container)
-            ServiceRegistrationHelper.register_common_pictograph_services(container)
-            ServiceRegistrationHelper.register_common_session_services(container)
-            ServiceRegistrationHelper.register_generation_services(container)
-            ServiceRegistrationHelper.register_visibility_services(container)
-            
-            logger.info("✅ All common services registered successfully")
-            
-        except Exception as e:
-            StandardErrorHandler.handle_service_error(
-                "Common services registration", e, logger, ErrorSeverity.CRITICAL
-            )
-            raise
-
-    @staticmethod
     def register_generation_services(container: "DIContainer") -> None:
         """Register generation services for sequence creation."""
         try:
             from desktop.modern.application.services.generation.generation_service_registration import (
                 register_generation_services,
             )
-            
+
             register_generation_services(container)
             logger.info("✅ Generation services registered successfully")
-            
+
         except Exception as e:
             StandardErrorHandler.handle_service_error(
                 "Generation services registration", e, logger, ErrorSeverity.CRITICAL
@@ -268,11 +248,14 @@ class ServiceRegistrationHelper:
         # Phase 3: Session and lifecycle services
         ServiceRegistrationHelper.register_common_session_services(container)
 
-        # Phase 4: Optional services
+        # Phase 4: Generation services (CRITICAL - was missing!)
+        ServiceRegistrationHelper.register_generation_services(container)
+
+        # Phase 5: Optional services
         ServiceRegistrationHelper.register_common_pictograph_services(container)
         ServiceRegistrationHelper.register_visibility_services(container)
 
-        # Phase 5: Settings services (needed for export panel)
+        # Phase 6: Settings services (needed for export panel)
         ServiceRegistrationHelper.register_settings_services(container)
 
     @staticmethod
@@ -386,7 +369,6 @@ class ServiceRegistrationHelper:
                 f"All services in batch '{batch_name}' failed to register"
             )
 
-
     @staticmethod
     def apply_service_registration_manager(container: "DIContainer") -> None:
         """Apply service registration manager for additional services."""
@@ -394,19 +376,24 @@ class ServiceRegistrationHelper:
             # This would apply any additional service registrations
             # that are defined in the service registration manager
             logger.debug("✅ Service registration manager applied")
-            
+
         except Exception as e:
             StandardErrorHandler.handle_service_error(
-                "Service registration manager application", e, logger, ErrorSeverity.WARNING
+                "Service registration manager application",
+                e,
+                logger,
+                ErrorSeverity.WARNING,
             )
 
     @staticmethod
-    def register_extracted_services_with_error_handling(container: "DIContainer") -> None:
+    def register_extracted_services_with_error_handling(
+        container: "DIContainer",
+    ) -> None:
         """Register extracted services with comprehensive error handling."""
         try:
             # This would register any services that were extracted from legacy code
             logger.debug("✅ Extracted services registered")
-            
+
         except Exception as e:
             StandardErrorHandler.handle_service_error(
                 "Extracted services registration", e, logger, ErrorSeverity.WARNING

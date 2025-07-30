@@ -109,22 +109,37 @@ class DifficultyLevelDrawer(IDifficultyLevelDrawer):
             float(rect.bottom()),
         )
 
-        # EXACT LEGACY DIFFICULTY COLORS
+        # EXACT LEGACY DIFFICULTY COLORS from DifficultyLevelGradients class
         if difficulty_level == 1:
-            gradient.setColorAt(0, QColor(144, 238, 144))  # Light green
-            gradient.setColorAt(1, QColor(0, 128, 0))  # Dark green
+            # Level 1: Single light gray color
+            gradient.setColorAt(0, QColor(245, 245, 245))
+            gradient.setColorAt(1, QColor(245, 245, 245))
         elif difficulty_level == 2:
-            gradient.setColorAt(0, QColor(255, 255, 0))  # Yellow
-            gradient.setColorAt(1, QColor(255, 215, 0))  # Gold
+            # Level 2: Complex gray gradient - simplified for image export
+            gradient.setColorAt(0, QColor(170, 170, 170))
+            gradient.setColorAt(0.3, QColor(120, 120, 120))
+            gradient.setColorAt(0.6, QColor(180, 180, 180))
+            gradient.setColorAt(1, QColor(110, 110, 110))
         elif difficulty_level == 3:
-            gradient.setColorAt(0, QColor(255, 165, 0))  # Orange
-            gradient.setColorAt(1, QColor(255, 140, 0))  # Dark orange
+            # Level 3: Gold to dark olive gradient 
+            gradient.setColorAt(0, QColor(255, 215, 0))  # Gold
+            gradient.setColorAt(0.2, QColor(238, 201, 0))  # Goldenrod
+            gradient.setColorAt(0.4, QColor(218, 165, 32))  # Goldenrod darker
+            gradient.setColorAt(0.6, QColor(184, 134, 11))  # Dark goldenrod
+            gradient.setColorAt(0.8, QColor(139, 69, 19))  # Saddle brown
+            gradient.setColorAt(1, QColor(85, 107, 47))  # Dark olive green
         elif difficulty_level == 4:
-            gradient.setColorAt(0, QColor(255, 99, 71))  # Tomato
-            gradient.setColorAt(1, QColor(220, 20, 60))  # Crimson
+            # Legacy level 4 (for compatibility if needed)
+            gradient.setColorAt(0, QColor(200, 162, 200))
+            gradient.setColorAt(0.3, QColor(170, 132, 170))
+            gradient.setColorAt(0.6, QColor(148, 0, 211))
+            gradient.setColorAt(1, QColor(100, 0, 150))
         else:  # difficulty_level >= 5
-            gradient.setColorAt(0, QColor(139, 0, 0))  # Dark red
-            gradient.setColorAt(1, QColor(75, 0, 130))  # Indigo
+            # Legacy level 5+ (for compatibility if needed)
+            gradient.setColorAt(0, QColor(255, 69, 0))
+            gradient.setColorAt(0.4, QColor(255, 0, 0))
+            gradient.setColorAt(0.8, QColor(139, 0, 0))
+            gradient.setColorAt(1, QColor(100, 0, 0))
 
         return gradient
 
@@ -163,11 +178,11 @@ class DifficultyLevelDrawer(IDifficultyLevelDrawer):
             Tuple of (start_color, end_color) for gradient
         """
         color_map = {
-            1: (QColor(144, 238, 144), QColor(0, 128, 0)),  # Green
-            2: (QColor(255, 255, 0), QColor(255, 215, 0)),  # Yellow/Gold
-            3: (QColor(255, 165, 0), QColor(255, 140, 0)),  # Orange
-            4: (QColor(255, 99, 71), QColor(220, 20, 60)),  # Red
+            1: (QColor(245, 245, 245), QColor(245, 245, 245)),  # Light gray
+            2: (QColor(170, 170, 170), QColor(110, 110, 110)),  # Gray gradient
+            3: (QColor(255, 215, 0), QColor(85, 107, 47)),  # Gold to olive
+            4: (QColor(200, 162, 200), QColor(100, 0, 150)),  # Purple (legacy compat)
         }
 
-        # Default for difficulty 5+ (very hard)
-        return color_map.get(difficulty_level, (QColor(139, 0, 0), QColor(75, 0, 130)))
+        # Default for difficulty 5+ (legacy compatibility)
+        return color_map.get(difficulty_level, (QColor(255, 69, 0), QColor(100, 0, 0)))

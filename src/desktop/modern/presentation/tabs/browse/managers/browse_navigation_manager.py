@@ -61,6 +61,29 @@ class BrowseNavigationManager(QObject):
             # VIEWER is not in the stacked widget - it's a separate panel
         }
 
+    def set_viewer_panel(self, viewer_panel) -> None:
+        """Set the viewer panel after initialization."""
+        try:
+            self.viewer_panel = viewer_panel
+            logger.info(f"🔗 Viewer panel set: {viewer_panel is not None}")
+            
+            # Validate the viewer panel has required methods
+            if viewer_panel is not None:
+                if hasattr(viewer_panel, 'show_sequence'):
+                    logger.info("✅ Viewer panel has show_sequence method")
+                else:
+                    logger.error("❌ Viewer panel missing show_sequence method")
+                    
+                # Log the type for debugging
+                logger.info(f"🔍 Viewer panel type: {type(viewer_panel).__name__}")
+            else:
+                logger.warning("⚠️ Viewer panel set to None")
+                
+        except Exception as e:
+            logger.error(f"❌ Failed to set viewer panel: {e}")
+            import traceback
+            traceback.print_exc()
+
     def navigate_to_filter_selection(self) -> None:
         """Navigate to the filter selection panel."""
         self._navigate_to_panel(BrowsePanel.FILTER_SELECTION)
@@ -84,10 +107,33 @@ class BrowseNavigationManager(QObject):
         # The viewer is not in the stacked widget, so we handle it differently
         # We just update the viewer panel directly and emit signals
         try:
-            if self.viewer_panel and sequence_data:
-                # Update the viewer panel with sequence data
-                if hasattr(self.viewer_panel, "show_sequence"):
-                    self.viewer_panel.show_sequence(sequence_data)
+            logger.info(
+                f"🎭 navigate_to_viewer called with sequence_data: {sequence_data.word if sequence_data else None}"
+            )
+            logger.info(f"🎭 viewer_panel available: {self.viewer_panel is not None}")
+
+            # CRITICAL FIX: Validate viewer panel is available before proceeding
+            if not self.viewer_panel:
+                logger.error(f"❌ viewer_panel is None - cannot show sequence")
+                logger.error(f"❌ This indicates a DI initialization order problem")
+                # Try to recover by waiting a bit and checking again
+                from PyQt6.QtCore import QTimer
+                QTimer.singleShot(100, lambda: self._retry_navigate_to_viewer(sequence_data))
+                return
+
+            if not sequence_data:
+                logger.error(f"❌ sequence_data is None - cannot show sequence")
+                return
+
+            # Update the viewer panel with sequence data
+            if hasattr(self.viewer_panel, "show_sequence"):
+                logger.info(
+                    f"🎭 Calling viewer_panel.show_sequence({sequence_data.word})"
+                )
+                self.viewer_panel.show_sequence(sequence_data)
+            else:
+                logger.error(f"❌ viewer_panel missing show_sequence method")
+                return
 
             # Update current panel state
             self.previous_panel = self.current_panel
@@ -97,11 +143,20 @@ class BrowseNavigationManager(QObject):
 
             # Emit signals
             self.panel_changed.emit(BrowsePanel.VIEWER.value)
-            if sequence_data is not None:
-                self.navigation_requested.emit(BrowsePanel.VIEWER.value, sequence_data)
+            self.navigation_requested.emit(BrowsePanel.VIEWER.value, sequence_data)
 
         except Exception as e:
             logger.error(f"❌ Failed to navigate to viewer: {e}")
+            import traceback
+            traceback.print_exc()
+
+    def _retry_navigate_to_viewer(self, sequence_data) -> None:
+        """Retry navigation to viewer after a short delay (recovery mechanism)."""
+        if self.viewer_panel:
+            logger.info(f"🔄 Retrying navigation to viewer - panel now available")
+            self.navigate_to_viewer(sequence_data)
+        else:
+            logger.error(f"❌ Viewer panel still not available after retry - giving up")
 
     def go_back(self) -> bool:
         """

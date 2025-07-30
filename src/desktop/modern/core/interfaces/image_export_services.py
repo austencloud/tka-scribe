@@ -11,8 +11,8 @@ from typing import Any, Dict, List, Optional
 
 from PyQt6.QtGui import QImage, QPainter
 
-from domain.models.pictograph_data import PictographData
-from domain.models.sequence_data import SequenceData
+from desktop.modern.domain.models.pictograph_data import PictographData
+from desktop.modern.domain.models.sequence_data import SequenceData
 
 
 @dataclass

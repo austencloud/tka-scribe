@@ -1,36 +1,25 @@
 """
 Generation Services Package
 
-Contains all services related to sequence generation including:
-- Main generation orchestration
-- Freeform and circular generation algorithms
-- Configuration management and validation
-- Turn intensity management
-- Service registration utilities
+Simplified generation system using practical generators:
+- Main generation orchestration (GenerationService)
+- Freeform generator (core/freeform_generator.py)
+- Circular generator (core/circular_generator.py)
+- Data management and filtering (core/data_and_filtering.py)
+- Turn application (core/turn_applicator.py)
+- Workbench integration (core/workbench_integration.py)
 
-This package implements the generation functionality for the modern TKA application,
-porting logic from the legacy generation system while maintaining clean architecture.
+This package provides clean, focused generation functionality without over-engineering.
 """
 
 from .generation_service import GenerationService
-from .freeform_generation_service import FreeformGenerationService
-from .circular_generation_service import CircularGenerationService
-from .generation_validation_service import GenerationValidationService
-from .sequence_configuration_service import SequenceConfigurationService
-from .turn_intensity_manager import TurnIntensityManager, ModernTurnIntensityManager
 from .generation_service_registration import (
-    register_generation_services,
     GenerationServiceRegistrationHelper,
+    register_generation_services,
 )
 
 __all__ = [
     "GenerationService",
-    "FreeformGenerationService", 
-    "CircularGenerationService",
-    "GenerationValidationService",
-    "SequenceConfigurationService",
-    "TurnIntensityManager",
-    "ModernTurnIntensityManager",
     "register_generation_services",
     "GenerationServiceRegistrationHelper",
 ]

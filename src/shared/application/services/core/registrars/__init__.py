@@ -8,6 +8,7 @@ for framework-agnostic services that can be used across desktop and web platform
 from .animation_service_registrar import AnimationServiceRegistrar
 from .core_service_registrar import CoreServiceRegistrar
 from .data_service_registrar import DataServiceRegistrar
+from .generation_service_registrar import GenerationServiceRegistrar
 from .graph_editor_service_registrar import GraphEditorServiceRegistrar
 from .learn_service_registrar import LearnServiceRegistrar
 from .motion_service_registrar import MotionServiceRegistrar
@@ -22,6 +23,7 @@ __all__ = [
     "AnimationServiceRegistrar",
     "CoreServiceRegistrar",
     "DataServiceRegistrar",
+    "GenerationServiceRegistrar",
     "GraphEditorServiceRegistrar",
     "LearnServiceRegistrar",
     "MotionServiceRegistrar",

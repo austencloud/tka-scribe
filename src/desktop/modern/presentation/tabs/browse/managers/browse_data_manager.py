@@ -207,26 +207,46 @@ class BrowseDataManager:
         Get sequence data by ID.
 
         Args:
-            sequence_id: UUID of the sequence
+            sequence_id: Deterministic ID of the sequence
 
         Returns:
             SequenceData object if found, None otherwise
         """
-        # Get the word from the mapping
-        word = self.sequence_id_to_word.get(sequence_id)
-        if not word:
-            logger.error(f"❌ No word mapping found for sequence_id: {sequence_id}")
-            return None
+        logger.info(f"🔍 [DATA_MANAGER] Looking for sequence with ID: {sequence_id}")
 
+        # Since we now use deterministic IDs, we can search directly by ID
         # Get all sequences from dictionary manager
         all_sequences = self.dictionary_manager.get_all_sequences()
 
-        # Find the sequence by word
-        for sequence in all_sequences:
-            if sequence.word == word:
+        logger.info(
+            f"🔍 [DATA_MANAGER] Searching through {len(all_sequences)} sequences"
+        )
+
+        # DEBUG: Log the first few sequence IDs for comparison
+        logger.info(f"🔍 [DATA_MANAGER] First 3 sequence IDs in data:")
+        for i, sequence in enumerate(all_sequences[:3]):
+            logger.info(f"   {i}: {sequence.id}")
+        logger.info(f"🔍 [DATA_MANAGER] Requested ID: {sequence_id}")
+        logger.info(f"🔍 [DATA_MANAGER] ID length: {len(sequence_id)} vs expected ~64")
+
+        # Find the sequence by ID directly
+        for i, sequence in enumerate(all_sequences):
+            logger.debug(
+                f"🔍 [DATA_MANAGER] Sequence {i}: id={sequence.id[:16]}..., word={sequence.word}"
+            )
+            if sequence.id == sequence_id:
+                logger.info(
+                    f"✅ [DATA_MANAGER] Found matching sequence: {sequence.word}"
+                )
                 return sequence
 
-        logger.error(f"❌ No sequence found for word: {word}")
+        logger.error(
+            f"❌ [DATA_MANAGER] No sequence found for sequence_id: {sequence_id}"
+        )
+        logger.info(f"🔍 [DATA_MANAGER] Available sequence IDs:")
+        for i, sequence in enumerate(all_sequences[:5]):  # Show first 5 for debugging
+            logger.info(f"🔍 [DATA_MANAGER]   {i}: {sequence.id} -> {sequence.word}")
+
         return None
 
     def get_loading_errors(self) -> List[str]:

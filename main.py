@@ -7,7 +7,7 @@ import os
 import sys
 
 # Use the existing universal path management system
-import tka_paths
+from src.infrastructure.paths import tka_paths
 
 
 def main():

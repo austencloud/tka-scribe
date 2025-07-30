@@ -9,7 +9,7 @@ import logging
 from typing import Any, Dict, List, Optional
 
 import pandas as pd
-from shared.application.services.glyphs.glyph_data_service import GlyphDataService
+
 from desktop.modern.core.interfaces.data_builder_services import IPictographFactory
 from desktop.modern.domain.models.arrow_data import ArrowData
 from desktop.modern.domain.models.beat_data import BeatData
@@ -23,6 +23,7 @@ from desktop.modern.domain.models.enums import (
 from desktop.modern.domain.models.grid_data import GridData
 from desktop.modern.domain.models.motion_data import MotionData
 from desktop.modern.domain.models.pictograph_data import PictographData
+from shared.application.services.glyphs.glyph_data_service import GlyphDataService
 
 logger = logging.getLogger(__name__)
 
@@ -108,12 +109,53 @@ class PictographFactory(IPictographFactory):
             letter = entry.get("letter", "?")
             letter_type = None
             if letter and letter != "?":
-                from desktop.modern.domain.models.enums import LetterType
-                from desktop.modern.domain.models.letter_type_classifier import LetterTypeClassifier
+                try:
+                    from desktop.modern.domain.models.enums import LetterType
+                    from desktop.modern.domain.models.letter_type_classifier import (
+                        LetterTypeClassifier,
+                    )
 
-                letter_type_str = LetterTypeClassifier.get_letter_type(letter)
-                # Convert string to enum
-                letter_type = getattr(LetterType, letter_type_str.upper(), None)
+                    letter_type_str = LetterTypeClassifier.get_letter_type(letter)
+                    logger.debug(
+                        f"Letter '{letter}' classified as: '{letter_type_str}'"
+                    )
+
+                    # Convert string to enum - the classifier returns the enum value directly
+                    # So we need to find the enum member that has this value
+                    letter_type = None
+                    for enum_member in LetterType:
+                        logger.debug(
+                            f"Checking enum member {enum_member} with value '{enum_member.value}' against '{letter_type_str}'"
+                        )
+                        if enum_member.value == letter_type_str:
+                            letter_type = enum_member
+                            logger.debug(f"✅ Found matching enum: {letter_type}")
+                            break
+
+                    if letter_type is None:
+                        logger.debug(
+                            f"❌ No matching enum found for letter_type_str: '{letter_type_str}'"
+                        )
+                        # List all available enum values for debugging
+                        available_values = [
+                            f"{member.name}='{member.value}'" for member in LetterType
+                        ]
+                        logger.debug(f"Available enum values: {available_values}")
+
+                    if letter_type is None:
+                        logger.warning(
+                            f"Failed to convert letter_type_str '{letter_type_str}' to enum for letter '{letter}'"
+                        )
+                    else:
+                        logger.debug(
+                            f"✅ Set letter_type for '{letter}': {letter_type}"
+                        )
+
+                except Exception as e:
+                    logger.error(
+                        f"Failed to determine letter_type for letter '{letter}': {e}"
+                    )
+                    letter_type = None
 
             # Create initial pictograph data
             pictograph_data = PictographData(
@@ -244,11 +286,17 @@ class PictographFactory(IPictographFactory):
         letter_type = None
         if letter and letter != "?":
             from desktop.modern.domain.models.enums import LetterType
-            from desktop.modern.domain.models.letter_type_classifier import LetterTypeClassifier
+            from desktop.modern.domain.models.letter_type_classifier import (
+                LetterTypeClassifier,
+            )
 
             letter_type_str = LetterTypeClassifier.get_letter_type(letter)
-            # Convert string to enum
-            letter_type = getattr(LetterType, letter_type_str.upper(), None)
+            # Convert string to enum - find the enum member with matching value
+            letter_type = None
+            for enum_member in LetterType:
+                if enum_member.value == letter_type_str:
+                    letter_type = enum_member
+                    break
 
         return PictographData(
             grid_data=grid_data,

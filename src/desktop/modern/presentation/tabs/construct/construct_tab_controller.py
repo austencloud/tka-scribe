@@ -40,6 +40,7 @@ class ConstructTabController(QObject):
     sequence_modified = pyqtSignal(object)
     start_position_set = pyqtSignal(str)
     start_position_loaded_from_persistence = pyqtSignal(str, object)
+    generation_completed = pyqtSignal(bool, str)  # success, error_message
 
     def __init__(self, container: DIContainer, progress_callback=None):
         super().__init__()
@@ -266,41 +267,153 @@ class ConstructTabController(QObject):
         return None
 
     def handle_generation_request(self, generation_config) -> None:
-        """Handle sequence generation request."""
+        """Handle sequence generation request using modern generation services."""
         try:
-            from shared.application.services.sequence.sequence_generator import (
-                SequenceGenerator,
-                SequenceType,
+            print(
+                f"🎯 [CONSTRUCT_TAB_CONTROLLER] ===== GENERATION REQUESTED ===== {generation_config.mode.value}"
+            )
+            print(
+                f"🔍 [CONSTRUCT_TAB_CONTROLLER] RECEIVED LENGTH: {generation_config.length}"
+            )
+            print(
+                f"🔍 [CONSTRUCT_TAB_CONTROLLER] This is the REAL execution path from Generate button click"
             )
 
-            generator = SequenceGenerator()
-
-            # Determine sequence type
-            sequence_type = (
-                SequenceType.FREEFORM
-                if generation_config.mode.value == "freeform"
-                else SequenceType.CIRCULAR
+            # Get the unified modern generation service
+            from desktop.modern.core.interfaces.generation_services import (
+                IGenerationService,
             )
 
-            # Generate sequence
-            generated_sequence = generator.generate_sequence(
-                sequence_type=sequence_type,
-                name=f"Generated_{sequence_type.value}",
-                length=generation_config.length,
-                level=generation_config.level,
-                turn_intensity=generation_config.turn_intensity,
-                prop_continuity=generation_config.prop_continuity,
-                letter_types=getattr(generation_config, "letter_types", []),
-                cap_type=getattr(generation_config, "cap_type", None),
+            generation_service = self._container.resolve(IGenerationService)
+            if not generation_service:
+                raise RuntimeError("Generation service not available")
+
+            # Use the appropriate method based on mode
+            if generation_config.mode.value == "freeform":
+                result = generation_service.generate_freeform_sequence(
+                    generation_config
+                )
+            elif generation_config.mode.value == "circular":
+                result = generation_service.generate_circular_sequence(
+                    generation_config
+                )
+            else:
+                raise ValueError(
+                    f"Unknown generation mode: {generation_config.mode.value}"
+                )
+
+            # Check result
+            if not result or not result.success:
+                error_msg = (
+                    result.error_message
+                    if result
+                    else "Generation failed with no result"
+                )
+                raise RuntimeError(error_msg)
+
+            print(
+                f"✅ [CONSTRUCT_TAB_CONTROLLER] Modern generation successful: {len(result.sequence_data or [])} beats"
             )
 
-            # Set generated sequence
-            if self._workbench_state_manager:
-                self._workbench_state_manager.set_sequence(generated_sequence)
-                self.sequence_created.emit(generated_sequence)
+            # CRITICAL FIX: Process generated sequence using legacy-style incremental approach
+            if result.sequence_data:
+                print(
+                    f"🔧 [CONSTRUCT_TAB_CONTROLLER] Starting incremental beat processing (legacy-style): {len(result.sequence_data)} beats"
+                )
+
+                # Clear existing sequence first
+                self._workbench_state_manager.set_sequence(None)
+
+                # Import required modules
+                from PyQt6.QtWidgets import QApplication
+
+                from desktop.modern.domain.models.beat_data import BeatData
+
+                # Process each pictograph individually like legacy system
+                for i, pictograph_data in enumerate(result.sequence_data):
+                    print(
+                        f"� [CONSTRUCT_TAB_CONTROLLER] Processing beat {i+1}/{len(result.sequence_data)} incrementally"
+                    )
+
+                    # Apply arrow positioning to this individual pictograph
+                    positioned_pictograph_data = (
+                        self._apply_arrow_positioning_to_pictograph(pictograph_data)
+                    )
+
+                    # Create BeatData for this individual beat
+                    beat_data = BeatData(
+                        beat_number=i + 1,
+                        pictograph_data=positioned_pictograph_data,
+                    )
+
+                    # Add this beat to the sequence incrementally (like legacy)
+                    self._add_beat_to_sequence_incrementally(beat_data)
+
+                    # Process UI events like legacy system for visual feedback
+                    QApplication.processEvents()
+
+                    print(
+                        f"✅ [CONSTRUCT_TAB_CONTROLLER] Beat {i+1} added incrementally with correct arrow positioning"
+                    )
+
+                print(
+                    f"✅ [CONSTRUCT_TAB_CONTROLLER] All beats processed incrementally using legacy-style approach"
+                )
+
+            # Notify generation completion
+            self.generation_completed.emit(True, "")
+            print(f"✅ Generation completed successfully using modern services")
 
         except Exception as e:
             print(f"❌ Generation failed: {e}")
+            import traceback
+
+            traceback.print_exc()
+            # Notify generation failure
+            self.generation_completed.emit(False, str(e))
+
+    def _add_beat_to_sequence_incrementally(self, beat_data: BeatData) -> None:
+        """
+        Add a single beat to the sequence incrementally, following legacy pattern.
+
+        This mimics the legacy approach where each beat is added individually
+        and immediately visible in the UI, ensuring proper arrow positioning.
+        """
+        try:
+            # Get current sequence or create empty one
+            current_sequence = self._workbench_state_manager.get_current_sequence()
+
+            if current_sequence is None:
+                # Create new sequence with this beat
+                import uuid
+
+                from desktop.modern.domain.models.sequence_data import SequenceData
+
+                new_sequence = SequenceData(
+                    id=str(uuid.uuid4()),
+                    name="Generated Sequence",
+                    beats=[beat_data],
+                    sequence_length=1,
+                )
+            else:
+                # Add beat to existing sequence
+                new_sequence = current_sequence.add_beat(beat_data)
+
+            # Update workbench state with the new sequence
+            self._workbench_state_manager.set_sequence(new_sequence)
+
+            # Emit signal for UI updates (like legacy system)
+            self.sequence_created.emit(new_sequence)
+
+            print(
+                f"🔧 [CONSTRUCT_TAB_CONTROLLER] Beat {beat_data.beat_number} added incrementally"
+            )
+
+        except Exception as e:
+            print(
+                f"❌ [CONSTRUCT_TAB_CONTROLLER] Failed to add beat incrementally: {e}"
+            )
+            raise
 
     def handle_option_picker_ready(self, option_picker) -> None:
         """Handle option picker ready event from layout manager."""
@@ -360,6 +473,7 @@ class ConstructTabController(QObject):
                 loading_service=self._loading_service,
                 beat_operations=self._beat_operations,
                 start_position_manager=self._start_position_manager,
+                construct_tab_controller=self,
             )
 
             # Connect construct tab signals
@@ -402,6 +516,7 @@ class ConstructTabController(QObject):
                     loading_service=self._loading_service,
                     beat_operations=self._beat_operations,
                     start_position_manager=self._start_position_manager,
+                    construct_tab_controller=self,
                 )
 
                 # Connect construct tab signals
@@ -412,3 +527,125 @@ class ConstructTabController(QObject):
             import traceback
 
             traceback.print_exc()
+
+    def _apply_arrow_positioning_to_pictograph(self, pictograph_data):
+        """
+        Apply proper arrow positioning to a generated pictograph.
+
+        This is the CRITICAL FIX that ensures generated sequences have correctly
+        positioned arrows just like manually created sequences.
+        """
+        try:
+            # DIRECT FIX: Create arrow positioning orchestrator directly
+            print(
+                f"🔧 [CONSTRUCT_TAB_CONTROLLER] Creating arrow positioning orchestrator directly for {pictograph_data.letter}"
+            )
+
+            from desktop.modern.application.services.positioning.arrows.orchestration.arrow_positioning_orchestrator import (
+                ArrowPositioningOrchestrator,
+            )
+            from shared.application.services.positioning.arrows.calculation.arrow_location_calculator import (
+                ArrowLocationCalculatorService,
+            )
+            from shared.application.services.positioning.arrows.calculation.arrow_rotation_calculator import (
+                ArrowRotationCalculatorService,
+            )
+            from shared.application.services.positioning.arrows.coordinate_system.arrow_coordinate_system_service import (
+                ArrowCoordinateSystemService,
+            )
+            from shared.application.services.positioning.arrows.orchestration.arrow_adjustment_calculator import (
+                ArrowAdjustmentCalculator,
+            )
+
+            # Create dependencies directly
+            coordinate_system = ArrowCoordinateSystemService()
+            location_calculator = ArrowLocationCalculatorService()
+            rotation_calculator = ArrowRotationCalculatorService()
+            adjustment_calculator = ArrowAdjustmentCalculator()
+
+            # Create orchestrator
+            orchestrator = ArrowPositioningOrchestrator(
+                location_calculator=location_calculator,
+                rotation_calculator=rotation_calculator,
+                adjustment_calculator=adjustment_calculator,
+                coordinate_system=coordinate_system,
+            )
+
+            # Apply arrow positioning
+            positioned_pictograph = orchestrator.calculate_all_arrow_positions(
+                pictograph_data
+            )
+            print(
+                f"✅ [CONSTRUCT_TAB_CONTROLLER] Applied direct arrow positioning to {pictograph_data.letter}"
+            )
+            return positioned_pictograph
+
+        except Exception as e:
+            print(
+                f"❌ [CONSTRUCT_TAB_CONTROLLER] Direct arrow positioning failed for {pictograph_data.letter}: {e}"
+            )
+            import traceback
+
+            traceback.print_exc()
+            # Return original pictograph if positioning fails
+            return pictograph_data
+
+    def _apply_fallback_arrow_positioning(self, pictograph_data):
+        """Fallback arrow positioning when DI container fails."""
+        try:
+            # Try to get services from DI container first
+            from desktop.modern.core.dependency_injection.di_container import (
+                get_container,
+            )
+            from desktop.modern.core.interfaces.positioning_services import (
+                IArrowAdjustmentCalculator,
+                IArrowCoordinateSystemService,
+                IArrowLocationCalculator,
+                IArrowPositioningOrchestrator,
+                IArrowRotationCalculator,
+            )
+
+            container = get_container()
+
+            # Try to resolve from container
+            try:
+                orchestrator = container.resolve(IArrowPositioningOrchestrator)
+                positioned_pictograph = orchestrator.calculate_all_arrow_positions(
+                    pictograph_data
+                )
+                print(
+                    f"✅ [CONSTRUCT_TAB_CONTROLLER] Applied container arrow positioning to {pictograph_data.letter}"
+                )
+                return positioned_pictograph
+            except Exception:
+                # Fallback to manual creation
+                location_calculator = container.resolve(IArrowLocationCalculator)
+                rotation_calculator = container.resolve(IArrowRotationCalculator)
+                adjustment_calculator = container.resolve(IArrowAdjustmentCalculator)
+                coordinate_system = container.resolve(IArrowCoordinateSystemService)
+
+                from desktop.modern.application.services.positioning.arrows.orchestration.arrow_positioning_orchestrator import (
+                    ArrowPositioningOrchestrator,
+                )
+
+                orchestrator = ArrowPositioningOrchestrator(
+                    location_calculator=location_calculator,
+                    rotation_calculator=rotation_calculator,
+                    adjustment_calculator=adjustment_calculator,
+                    coordinate_system=coordinate_system,
+                )
+
+                positioned_pictograph = orchestrator.calculate_all_arrow_positions(
+                    pictograph_data
+                )
+                print(
+                    f"✅ [CONSTRUCT_TAB_CONTROLLER] Applied fallback arrow positioning to {pictograph_data.letter}"
+                )
+                return positioned_pictograph
+
+        except Exception as e:
+            print(
+                f"❌ [CONSTRUCT_TAB_CONTROLLER] Fallback arrow positioning failed for {pictograph_data.letter}: {e}"
+            )
+            # Return original pictograph if all positioning fails
+            return pictograph_data

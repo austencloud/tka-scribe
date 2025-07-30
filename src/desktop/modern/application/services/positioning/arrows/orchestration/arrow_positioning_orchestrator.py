@@ -18,7 +18,9 @@ from desktop.modern.core.interfaces.positioning_services import (
 from desktop.modern.domain.models.arrow_data import ArrowData
 from desktop.modern.domain.models.motion_data import MotionData
 from desktop.modern.domain.models.pictograph_data import PictographData
-from desktop.modern.presentation.components.pictograph.graphics_items.arrow_item import ArrowItem
+from desktop.modern.presentation.components.pictograph.graphics_items.arrow_item import (
+    ArrowItem,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -82,19 +84,28 @@ class ArrowPositioningOrchestrator(IArrowPositioningOrchestrator):
     def calculate_all_arrow_positions(
         self, pictograph_data: PictographData
     ) -> PictographData:
-        """Calculate positions for all arrows in the pictograph."""
+        """Calculate positions and mirror states for all arrows in the pictograph."""
         updated_pictograph = pictograph_data
 
         for color, arrow_data in pictograph_data.arrows.items():
             motion_data = pictograph_data.motions.get(color)
 
             if arrow_data.is_visible and motion_data:
+                # Calculate position and rotation
                 x, y, rotation = self.calculate_arrow_position(
                     arrow_data, pictograph_data, motion_data
                 )
 
+                # Calculate mirror state
+                should_mirror = self.should_mirror_arrow(arrow_data, pictograph_data)
+
+                # Update arrow with all calculated values
                 updated_pictograph = updated_pictograph.update_arrow(
-                    color, position_x=x, position_y=y, rotation_angle=rotation
+                    color,
+                    position_x=x,
+                    position_y=y,
+                    rotation_angle=rotation,
+                    is_mirrored=should_mirror,
                 )
 
         return updated_pictograph

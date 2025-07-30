@@ -69,8 +69,7 @@ class SequenceStateTrackerService:
         ] = []
         self._state_changed_callbacks: List[Callable[[], None]] = []
 
-        # Setup event subscriptions
-        self._setup_event_subscriptions()
+        # Event bus subscriptions removed - using direct Qt signals instead
 
     def add_sequence_updated_callback(
         self, callback: Callable[[Optional[SequenceData]], None]
@@ -87,57 +86,6 @@ class SequenceStateTrackerService:
     def add_state_changed_callback(self, callback: Callable[[], None]):
         """Add callback for when state changes."""
         self._state_changed_callbacks.append(callback)
-
-    def _setup_event_subscriptions(self):
-        """Subscribe to events that change state"""
-        try:
-            # Subscribe to command events for state updates
-            self.event_bus.subscribe("command.executed", self._on_command_executed)
-            self.event_bus.subscribe("command.undone", self._on_command_undone)
-            self.event_bus.subscribe("command.redone", self._on_command_redone)
-
-        except Exception as e:
-            logger.error(f"❌ Failed to setup event subscriptions: {e}")
-
-    def _on_command_executed(self, event: CommandExecutedEvent):
-        """Update state when commands execute successfully"""
-        try:
-            command_type = event.command_type
-
-            if command_type == "SetStartPositionCommand":
-                # Start position was set
-                if hasattr(event, "result") and event.result:
-                    self._update_start_position(event.result)
-
-            elif command_type == "AddBeatCommand":
-                # Beat was added to sequence
-                if hasattr(event, "result") and event.result:
-                    self._update_sequence(event.result)
-
-            elif command_type == "RemoveBeatCommand":
-                # Beat was removed from sequence
-                if hasattr(event, "result") and event.result:
-                    self._update_sequence(event.result)
-
-            elif command_type == "ClearSequenceCommand":
-                # Sequence was cleared
-                self._clear_all_state()
-
-            logger.debug(f"✅ State updated from command: {command_type}")
-
-        except Exception as e:
-            logger.error(f"❌ Error updating state from command: {e}")
-
-    def _on_command_undone(self, event: CommandUndoneEvent):
-        """Update state when commands are undone"""
-        # For undo, we need to get the current state from the command processor
-        # The command should have restored the previous state
-        self._refresh_state_from_persistence()
-
-    def _on_command_redone(self, event: CommandRedoneEvent):
-        """Update state when commands are redone"""
-        # Similar to command executed
-        self._on_command_executed(event)
 
     def _update_sequence(self, new_sequence: Optional[SequenceData]):
         """Update the current sequence and notify callbacks"""

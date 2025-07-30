@@ -60,6 +60,7 @@ class SignalCoordinator(QObject):
         loading_service: QtSequenceLoaderAdapter,
         beat_operations: SequenceBeatOperations,
         start_position_manager: SequenceStartPositionManager,
+        construct_tab_controller=None,
     ):
         super().__init__()
         self.layout_manager = layout_manager
@@ -68,6 +69,7 @@ class SignalCoordinator(QObject):
         self.loading_service = loading_service
         self.beat_operations = beat_operations
         self.start_position_manager = start_position_manager
+        self.construct_tab_controller = construct_tab_controller
 
         # Add signal emission protection to prevent cascade refreshes
         self._handling_sequence_modification = False
@@ -137,6 +139,18 @@ class SignalCoordinator(QObject):
 
             self.option_picker_manager.pictograph_selected.connect(
                 self.beat_operations.add_pictograph_to_sequence
+            )
+
+        # ComponentConnector signals - Connect generation requests
+        if self.layout_manager.component_connector:
+            self.layout_manager.component_connector.generate_requested.connect(
+                self._handle_generation_request
+            )
+
+        # Construct tab controller signals - Connect generation completion
+        if self.construct_tab_controller:
+            self.construct_tab_controller.generation_completed.connect(
+                self._handle_generation_completed
             )
 
         # Connect to construct tab signals (which bridge loading service callbacks)
@@ -329,6 +343,34 @@ class SignalCoordinator(QObject):
         else:
             # Completely empty (no start position AND no beats) → show start position picker
             self.layout_manager.transition_to_start_position_picker()
+
+    def _handle_generation_request(self, generation_config):
+        """Handle generation request from ComponentConnector."""
+        print(
+            f"🎯 [SIGNAL_COORDINATOR] Handling generation request: {generation_config}"
+        )
+
+        # Use the construct tab controller reference
+        if self.construct_tab_controller and hasattr(
+            self.construct_tab_controller, "handle_generation_request"
+        ):
+            self.construct_tab_controller.handle_generation_request(generation_config)
+        else:
+            print(
+                "❌ [SIGNAL_COORDINATOR] No construct tab controller or handle_generation_request method"
+            )
+
+    def _handle_generation_completed(self, success: bool, error_message: str):
+        """Handle generation completion from construct tab controller."""
+        print(f"🎯 [SIGNAL_COORDINATOR] Generation completed: success={success}")
+
+        # Notify the generate panel through the component connector
+        if self.layout_manager.component_connector:
+            self.layout_manager.component_connector.notify_generation_completed(
+                success, error_message
+            )
+        else:
+            print("❌ [SIGNAL_COORDINATOR] No component connector to notify")
 
     def clear_sequence(self):
         """Clear the current sequence (public interface)"""

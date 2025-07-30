@@ -10,26 +10,15 @@ import logging
 from pathlib import Path
 from typing import Any, Dict, Optional
 
-# Event system imports with fallback
-try:
-    from desktop.modern.core.events.event_bus import UIEvent, get_event_bus
-
-    EVENT_SYSTEM_AVAILABLE = True
-except ImportError:
-    # Event system not available - use fallbacks
-    UIEvent = object
-
-    def get_event_bus():
-        return None
-
-    EVENT_SYSTEM_AVAILABLE = False
+# Use PyQt6 signals instead of event bus
+from PyQt6.QtCore import QObject, pyqtSignal
 
 logger = logging.getLogger(__name__)
 
 
-class SettingsManager:
+class SettingsManager(QObject):
     """
-    Core settings management service.
+    Core settings management service using Qt signals.
 
     Handles:
     - Getting and setting individual settings
@@ -38,17 +27,21 @@ class SettingsManager:
     - Settings import/export
     """
 
+    # Qt signals for settings changes
+    setting_changed = pyqtSignal(str, object)  # key, value
+    settings_loaded = pyqtSignal(dict)  # all_settings
+    settings_saved = pyqtSignal(str)  # file_path
+
     def __init__(self, settings_file_path: Optional[Path] = None):
         """Initialize settings service."""
+        super().__init__()
+
         # Settings file path - use modern directory if not provided
         if settings_file_path is None:
             modern_dir = Path(__file__).parent.parent.parent.parent.parent.parent
             self._settings_file = modern_dir / "user_settings.json"
         else:
             self._settings_file = settings_file_path
-
-        # Event bus for notifications (optional)
-        self._event_bus = get_event_bus() if EVENT_SYSTEM_AVAILABLE else None
 
         # Settings storage
         self._user_settings: Dict[str, Any] = {}

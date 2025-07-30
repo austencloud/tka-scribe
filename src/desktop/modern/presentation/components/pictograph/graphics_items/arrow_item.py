@@ -10,9 +10,11 @@ import os
 import traceback
 from typing import Optional
 
-from shared.application.services.pictograph.arrow_rendering_service import (
-    ArrowRenderingService,
-)
+from PyQt6.QtCore import Qt
+from PyQt6.QtGui import QColor, QPen
+from PyQt6.QtSvg import QSvgRenderer
+from PyQt6.QtSvgWidgets import QGraphicsSvgItem
+
 from desktop.modern.core.dependency_injection.di_container import get_container
 from desktop.modern.core.interfaces.positioning_services import (
     IArrowCoordinateSystemService,
@@ -21,10 +23,9 @@ from desktop.modern.core.interfaces.positioning_services import (
 from desktop.modern.domain.models.arrow_data import ArrowData
 from desktop.modern.domain.models.motion_data import MotionData
 from desktop.modern.domain.models.pictograph_data import PictographData
-from PyQt6.QtCore import Qt
-from PyQt6.QtGui import QColor, QPen
-from PyQt6.QtSvg import QSvgRenderer
-from PyQt6.QtSvgWidgets import QGraphicsSvgItem
+from shared.application.services.pictograph.arrow_rendering_service import (
+    ArrowRenderingService,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -150,65 +151,120 @@ class ArrowItem(QGraphicsSvgItem):
 
     def _calculate_and_apply_position(self):
         """Calculate position using business logic and apply Qt transforms."""
-        # Business Logic: Create arrow data for positioning
-        arrow_data = ArrowData(
-            color=self.arrow_color,
-            turns=getattr(self.motion_data, "turns", 0),
-            is_visible=True,
-        )
-        # Delegate directly to the positioning orchestrator if available
-        if self._positioning_orchestrator and self.pictograph_data:
-            try:
-                motion_data = None
-                if (
-                    hasattr(self.pictograph_data, "motions")
-                    and self.pictograph_data.motions
-                ):
-                    motion_data = self.pictograph_data.motions.get(arrow_data.color)
+        # CRITICAL FIX: Check if arrow data already has pre-calculated positions
+        existing_arrow_data = None
+        if (
+            self.pictograph_data
+            and hasattr(self.pictograph_data, "arrows")
+            and self.pictograph_data.arrows
+            and self.arrow_color in self.pictograph_data.arrows
+        ):
+            existing_arrow_data = self.pictograph_data.arrows[self.arrow_color]
 
-                position_x, position_y, rotation = (
-                    self._positioning_orchestrator.calculate_arrow_position(
-                        arrow_data, self.pictograph_data, motion_data
+        # Use pre-calculated positions if available (from generation pipeline)
+        if (
+            existing_arrow_data
+            and existing_arrow_data.position_x != 0.0
+            and existing_arrow_data.position_y != 0.0
+        ):
+            position_x = existing_arrow_data.position_x
+            position_y = existing_arrow_data.position_y
+            rotation = existing_arrow_data.rotation_angle
+            logger.debug(
+                f"✅ Using pre-calculated position for {self.arrow_color}: ({position_x}, {position_y}, {rotation}°)"
+            )
+        else:
+            # Fallback: Calculate position using orchestrator
+            arrow_data = ArrowData(
+                color=self.arrow_color,
+                turns=getattr(self.motion_data, "turns", 0),
+                is_visible=True,
+            )
+            # Delegate directly to the positioning orchestrator if available
+            if self._positioning_orchestrator and self.pictograph_data:
+                try:
+                    motion_data = None
+                    if (
+                        hasattr(self.pictograph_data, "motions")
+                        and self.pictograph_data.motions
+                    ):
+                        motion_data = self.pictograph_data.motions.get(arrow_data.color)
+
+                    position_x, position_y, rotation = (
+                        self._positioning_orchestrator.calculate_arrow_position(
+                            arrow_data, self.pictograph_data, motion_data
+                        )
                     )
-                )
+                    logger.debug(
+                        f"🔄 Calculated position for {self.arrow_color}: ({position_x}, {position_y}, {rotation}°)"
+                    )
 
-            except Exception as e:
-                logger.error(f"Positioning orchestrator failed: {e}")
-                traceback.print_exc()
-                position_x, position_y, rotation = 475.0, 475.0, 0.0  # Fallback
+                except Exception as e:
+                    logger.error(f"Positioning orchestrator failed: {e}")
+                    traceback.print_exc()
+                    position_x, position_y, rotation = 475.0, 475.0, 0.0  # Fallback
+                    logger.warning(
+                        f"🚨 FALLBACK - {self.arrow_color}: Using center position (475, 475, 0°)"
+                    )
+            else:
+                logger.warning("Using fallback arrow positioning (center)")
+                position_x, position_y, rotation = 475.0, 475.0, 0.0
                 logger.warning(
                     f"🚨 FALLBACK - {self.arrow_color}: Using center position (475, 475, 0°)"
                 )
-        else:
-            logger.warning("Using fallback arrow positioning (center)")
-            position_x, position_y, rotation = 475.0, 475.0, 0.0
-            logger.warning(
-                f"🚨 FALLBACK - {self.arrow_color}: Using center position (475, 475, 0°)"
-            )
 
         # Qt Operations: Apply transforms
         self._apply_transforms(position_x, position_y, rotation)
 
         # Business Logic: Apply mirror transform if positioning orchestrator available
         if self._positioning_orchestrator:
-            arrow_data_with_position = ArrowData(
-                color=self.arrow_color,
-                turns=getattr(self.motion_data, "turns", 0),
-                position_x=position_x,
-                position_y=position_y,
-                rotation_angle=rotation,
-                is_visible=True,
-            )
-            should_mirror = self._positioning_orchestrator.should_mirror_arrow(
-                arrow_data_with_position, self.pictograph_data
-            )
-            if should_mirror:
-                self._positioning_orchestrator.apply_mirror_transform(
-                    self, should_mirror
+            # Use existing arrow data if available, otherwise create new
+            if existing_arrow_data:
+                arrow_data_for_mirror = existing_arrow_data
+                # Check if mirror state is already set in the data
+                if existing_arrow_data.is_mirrored:
+                    logger.debug(
+                        f"✅ Using pre-calculated mirror state for {self.arrow_color}: {existing_arrow_data.is_mirrored}"
+                    )
+                    # Apply the pre-calculated mirror transformation
+                    if existing_arrow_data.is_mirrored:
+                        self._apply_mirror_transform()
+                else:
+                    # Calculate mirror state
+                    should_mirror = self._positioning_orchestrator.should_mirror_arrow(
+                        existing_arrow_data, self.pictograph_data
+                    )
+                    if should_mirror:
+                        self._positioning_orchestrator.apply_mirror_transform(
+                            self, should_mirror
+                        )
+            else:
+                # Fallback: create arrow data for mirror calculation
+                arrow_data_with_position = ArrowData(
+                    color=self.arrow_color,
+                    turns=getattr(self.motion_data, "turns", 0),
+                    position_x=position_x,
+                    position_y=position_y,
+                    rotation_angle=rotation,
+                    is_visible=True,
                 )
+                should_mirror = self._positioning_orchestrator.should_mirror_arrow(
+                    arrow_data_with_position, self.pictograph_data
+                )
+                if should_mirror:
+                    self._positioning_orchestrator.apply_mirror_transform(
+                        self, should_mirror
+                    )
 
         # Final positioning
         self._finalize_positioning(position_x, position_y)
+
+    def _apply_mirror_transform(self):
+        """Apply mirror transformation to the arrow."""
+        # Apply horizontal flip transformation
+        transform = self.transform()
+        transform.scale(-1, 1)  # Flip horizontally
+        self.setTransform(transform)
 
     def _apply_transforms(self, position_x: float, position_y: float, rotation: float):
         """Apply Qt-specific transforms to the arrow item."""

@@ -144,6 +144,7 @@ class ServiceRegistrationCoordinator:
             AnimationServiceRegistrar,
             CoreServiceRegistrar,
             DataServiceRegistrar,
+            GenerationServiceRegistrar,
             GraphEditorServiceRegistrar,
             LearnServiceRegistrar,
             MotionServiceRegistrar,
@@ -171,6 +172,9 @@ class ServiceRegistrationCoordinator:
             WorkbenchServiceRegistrar(self.progress_callback),
             # Phase 3: Complex services (depend on core services)
             PositioningServiceRegistrar(self.progress_callback),
+            GenerationServiceRegistrar(
+                self.progress_callback
+            ),  # Add generation services
             OptionPickerServiceRegistrar(self.progress_callback),
             # Phase 4: Optional services
             GraphEditorServiceRegistrar(self.progress_callback),
@@ -187,8 +191,12 @@ class ServiceRegistrationCoordinator:
 
         for registrar in self._registrars:
             try:
+                print(
+                    f"🔧 [SERVICE_MANAGER] Registering {registrar.get_domain_name()}..."
+                )
                 registrar.register_services(container)
                 self._update_progress(f"{registrar.get_domain_name()} configured")
+                print(f"✅ [SERVICE_MANAGER] {registrar.get_domain_name()} completed")
 
             except Exception as e:
                 if registrar.is_critical():

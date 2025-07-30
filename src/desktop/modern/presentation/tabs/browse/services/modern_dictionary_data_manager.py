@@ -64,7 +64,9 @@ class ModernDictionaryDataManager(QObject):
             return
 
         if not self.dictionary_dir.exists():
-            raise DataLoadError(f"Dictionary directory not found: {self.dictionary_dir}")
+            raise DataLoadError(
+                f"Dictionary directory not found: {self.dictionary_dir}"
+            )
 
         # Get all sequence directories
         sequence_dirs = [
@@ -74,7 +76,7 @@ class ModernDictionaryDataManager(QObject):
         ]
 
         total_dirs = len(sequence_dirs)
-        
+
         for i, sequence_dir in enumerate(sequence_dirs):
             try:
                 # Emit progress
@@ -90,20 +92,38 @@ class ModernDictionaryDataManager(QObject):
 
                 # Extract metadata from the first thumbnail
                 metadata = self._extract_metadata_from_thumbnail(thumbnails[0])
-                
-                # Create SequenceData directly
+
+                # Create SequenceData directly with deterministic ID based on word + thumbnail paths
+                # This ensures the same sequence always has the same ID across loads
+                deterministic_id = self._generate_deterministic_id(
+                    sequence_dir.name, thumbnails
+                )
+
                 sequence_data = SequenceData(
+                    id=deterministic_id,
                     word=sequence_dir.name,
                     thumbnails=thumbnails,
                     author=metadata.get("author") if metadata else None,
                     level=metadata.get("level") if metadata else None,
-                    sequence_length=metadata.get("sequence_length") if metadata else len(sequence_dir.name),
+                    sequence_length=(
+                        metadata.get("sequence_length")
+                        if metadata
+                        else len(sequence_dir.name)
+                    ),
                     date_added=metadata.get("date_added") if metadata else None,
-                    grid_mode=metadata.get("grid_mode", "diamond") if metadata else "diamond",
+                    grid_mode=(
+                        metadata.get("grid_mode", "diamond") if metadata else "diamond"
+                    ),
                     prop_type=metadata.get("prop_type") if metadata else None,
-                    is_favorite=metadata.get("is_favorite", False) if metadata else False,
-                    is_circular=metadata.get("is_circular", False) if metadata else False,
-                    starting_position=metadata.get("starting_position") if metadata else None,
+                    is_favorite=(
+                        metadata.get("is_favorite", False) if metadata else False
+                    ),
+                    is_circular=(
+                        metadata.get("is_circular", False) if metadata else False
+                    ),
+                    starting_position=(
+                        metadata.get("starting_position") if metadata else None
+                    ),
                     difficulty_level=self._map_level_to_difficulty(
                         metadata.get("level") if metadata else None
                     ),
@@ -160,7 +180,8 @@ class ModernDictionaryDataManager(QObject):
                         "is_circular": first_entry.get("is_circular", False),
                         "starting_position": first_entry.get("sequence_start_position"),
                         "word": first_entry.get("word"),
-                        "sequence_length": len(metadata["sequence"]) - 2,  # Exclude metadata entries
+                        "sequence_length": len(metadata["sequence"])
+                        - 2,  # Exclude metadata entries
                         "tags": metadata.get("tags", []),
                     }
 
@@ -180,6 +201,37 @@ class ModernDictionaryDataManager(QObject):
             pass  # Error extracting metadata
 
         return None
+
+    def _generate_deterministic_id(self, word: str, thumbnails: List[str]) -> str:
+        """
+        Generate a deterministic ID based on word and thumbnail paths.
+
+        This ensures the same sequence always has the same ID across loads,
+        following the pattern used in the legacy system where sequences are
+        identified by word + thumbnail paths rather than random UUIDs.
+
+        Args:
+            word: The sequence word (directory name)
+            thumbnails: List of thumbnail file paths
+
+        Returns:
+            A deterministic string ID that uniquely identifies this sequence
+        """
+        import hashlib
+
+        # Create a stable identifier using word + sorted thumbnail paths
+        # Sort thumbnail paths to ensure consistent ordering
+        sorted_thumbnails = sorted(thumbnails)
+
+        # Create a string combining word and thumbnail paths
+        identifier_parts = [word] + sorted_thumbnails
+        identifier_string = "|".join(identifier_parts)
+
+        # Generate a hash to create a shorter, deterministic ID
+        hash_object = hashlib.sha256(identifier_string.encode("utf-8"))
+        deterministic_id = hash_object.hexdigest()
+
+        return deterministic_id
 
     def _map_level_to_difficulty(self, level: Optional[int]) -> Optional[str]:
         """Map numeric level to difficulty string."""
@@ -203,7 +255,8 @@ class ModernDictionaryDataManager(QObject):
         """Get sequences starting with the specified letter."""
         self.load_all_sequences()
         return [
-            s for s in self._loaded_sequences 
+            s
+            for s in self._loaded_sequences
             if s.word and s.word.upper().startswith(letter.upper())
         ]
 
@@ -214,7 +267,8 @@ class ModernDictionaryDataManager(QObject):
         self.load_all_sequences()
         letter_set = {letter.upper() for letter in letters}
         return [
-            s for s in self._loaded_sequences 
+            s
+            for s in self._loaded_sequences
             if s.word and s.word[0].upper() in letter_set
         ]
 
@@ -227,7 +281,8 @@ class ModernDictionaryDataManager(QObject):
         """Get sequences with the specified difficulty level."""
         self.load_all_sequences()
         return [
-            s for s in self._loaded_sequences 
+            s
+            for s in self._loaded_sequences
             if s.difficulty_level == difficulty.lower()
         ]
 
@@ -240,8 +295,7 @@ class ModernDictionaryDataManager(QObject):
         """Get sequences with the specified starting position."""
         self.load_all_sequences()
         return [
-            s for s in self._loaded_sequences 
-            if s.starting_position == position.lower()
+            s for s in self._loaded_sequences if s.starting_position == position.lower()
         ]
 
     def get_sequences_by_author(self, author: str) -> List[SequenceData]:
@@ -264,7 +318,9 @@ class ModernDictionaryDataManager(QObject):
         self.load_all_sequences()
 
         # Filter sequences with valid dates and sort by date
-        dated_sequences = [s for s in self._loaded_sequences if s.date_added is not None]
+        dated_sequences = [
+            s for s in self._loaded_sequences if s.date_added is not None
+        ]
         dated_sequences.sort(key=lambda x: x.date_added, reverse=True)
 
         return dated_sequences[:limit]
@@ -276,7 +332,8 @@ class ModernDictionaryDataManager(QObject):
         self.load_all_sequences()
         letter_set = {letter.upper() for letter in letters}
         return [
-            s for s in self._loaded_sequences
+            s
+            for s in self._loaded_sequences
             if s.word and any(char.upper() in letter_set for char in s.word)
         ]
 

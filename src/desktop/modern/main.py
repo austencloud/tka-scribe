@@ -15,17 +15,12 @@ if "tka_paths" not in sys.modules:
     # Only do manual path setup if tka_paths hasn't been imported
     # Get the TKA project root (3 levels up from this file)
     current_file = Path(__file__).resolve()
-    project_root = current_file.parents[2]  # main.py -> modern -> desktop -> TKA
+    project_root = current_file.parents[3]  # main.py -> modern -> desktop -> src -> TKA
 
-    # Define the same paths as root main.py - MUST match exactly
+    # Define the correct paths for the TKA project
     src_paths = [
-        project_root
-        / "src"
-        / "desktop"
-        / "modern"
-        / "src",  # Modern src (highest priority)
+        project_root / "src",  # Main src directory (highest priority)
         project_root / "src" / "desktop",  # Desktop directory
-        project_root / "src",  # Shared src (lowest priority)
         project_root / "launcher",
         project_root / "packages",
     ]
@@ -34,13 +29,6 @@ if "tka_paths" not in sys.modules:
     for path in reversed(src_paths):
         if path.exists() and str(path) not in sys.path:
             sys.path.insert(0, str(path))
-
-    print(
-        f"[PATH_SETUP] Added {len([p for p in src_paths if p.exists()])} paths for VS Code debugger compatibility"
-    )
-    print(f"[PATH_SETUP] First 5 sys.path entries:")
-    for i, path in enumerate(sys.path[:5]):
-        print(f"  {i}: {path}")
 
 # Now safe to import everything else
 import logging

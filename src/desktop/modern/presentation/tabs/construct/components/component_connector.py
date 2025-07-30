@@ -83,7 +83,9 @@ class ComponentConnector(QObject):
 
         # Connect sequence modification signals to update export preview
         if hasattr(self.workbench, "sequence_modified"):
-            self.workbench.sequence_modified.connect(self._on_sequence_changed_for_export)
+            self.workbench.sequence_modified.connect(
+                self._on_sequence_changed_for_export
+            )
 
     def _connect_beat_frame_signals(self):
         """Connect beat frame signals to graph editor."""
@@ -159,7 +161,7 @@ class ComponentConnector(QObject):
     def _handle_current_sequence_export(self, options: dict):
         """Handle current sequence export (replaces old save image button) (NEW)."""
         print("🔤 [COMPONENT_CONNECTOR] Handling current sequence export...")
-        
+
         if not self.workbench:
             print("⚠️ No workbench available for export")
             return
@@ -173,14 +175,19 @@ class ComponentConnector(QObject):
         # Use the workbench's operation coordinator to handle export
         # This maintains consistency with other workbench operations
         try:
-            if hasattr(self.workbench, '_operation_coordinator'):
-                from shared.application.services.workbench.workbench_operation_coordinator import OperationType
+            if hasattr(self.workbench, "_operation_coordinator"):
+                from shared.application.services.workbench.workbench_operation_coordinator import (
+                    OperationType,
+                )
+
                 result = self.workbench._operation_coordinator.save_image()
-                
+
                 if result.success:
                     print(f"✅ Export successful: {result.message}")
                     # Update export panel with success feedback
-                    if self.export_panel and hasattr(self.export_panel, '_reset_export_button'):
+                    if self.export_panel and hasattr(
+                        self.export_panel, "_reset_export_button"
+                    ):
                         self.export_panel._reset_export_button()
                 else:
                     print(f"❌ Export failed: {result.message}")
@@ -196,8 +203,12 @@ class ComponentConnector(QObject):
 
     def _on_sequence_changed_for_export(self, sequence):
         """Handle sequence changes to update export panel preview (NEW)."""
-        if self.export_panel and hasattr(self.export_panel, 'update_preview_from_external'):
-            print("🔄 [COMPONENT_CONNECTOR] Updating export panel preview after sequence change")
+        if self.export_panel and hasattr(
+            self.export_panel, "update_preview_from_external"
+        ):
+            print(
+                "🔄 [COMPONENT_CONNECTOR] Updating export panel preview after sequence change"
+            )
             self.export_panel.update_preview_from_external()
 
     def _on_graph_beat_modified(self, beat_index: int, beat_data):
@@ -206,8 +217,30 @@ class ComponentConnector(QObject):
         self.graph_beat_modified.emit(beat_index, beat_data)
 
         # Update export panel preview if available
-        if self.export_panel and hasattr(self.export_panel, 'update_preview_from_external'):
+        if self.export_panel and hasattr(
+            self.export_panel, "update_preview_from_external"
+        ):
             self.export_panel.update_preview_from_external()
+
+    def notify_generation_completed(self, success: bool, error_message: str):
+        """Notify the generate panel that generation has completed."""
+        print(
+            f"🔔 [COMPONENT_CONNECTOR] Notifying generation completion: success={success}"
+        )
+
+        if self.generate_panel and hasattr(
+            self.generate_panel, "set_generation_result"
+        ):
+            from desktop.modern.domain.models.generation_models import GenerationResult
+
+            result = GenerationResult(
+                success=success, error_message=error_message if not success else None
+            )
+            self.generate_panel.set_generation_result(result)
+        else:
+            print(
+                "❌ [COMPONENT_CONNECTOR] No generate panel or set_generation_result method"
+            )
 
     def prepare_for_transition(self, target_mode: str):
         """Prepare components for transition based on target mode."""

@@ -405,8 +405,12 @@ class SequenceBrowserPanel(QWidget):
 
     def _on_thumbnail_clicked(self, sequence_id: str) -> None:
         """Handle thumbnail click."""
+        logger.info(
+            f"🖱️ [BROWSER_PANEL] Thumbnail clicked with sequence_id: {sequence_id}"
+        )
+        # Emit sequence_selected to show the sequence in the viewer panel
         self.sequence_selected.emit(sequence_id)
-        self.open_in_construct.emit(sequence_id)
+        # Note: open_in_construct is only emitted for explicit edit actions, not thumbnail clicks
 
     def _update_navigation_progressively(self) -> None:
         """Update navigation as sections are added."""

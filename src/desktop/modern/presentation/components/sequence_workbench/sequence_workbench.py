@@ -44,7 +44,10 @@ from shared.application.services.workbench.workbench_state_manager import (
 
 from .beat_frame_section import WorkbenchBeatFrameSection
 from .button_interface import WorkbenchButtonInterfaceAdapter
+from .event_handler_helper import EventHandlerHelper
 from .indicator_section import WorkbenchIndicatorSection
+from .signal_connection_helper import SignalConnectionHelper
+from .ui_setup_helper import UISetupHelper
 
 if TYPE_CHECKING:
     from shared.application.services.workbench.beat_selection_service import (
@@ -108,6 +111,11 @@ class SequenceWorkbench(ViewableComponentBase):
         # Session restoration tracking
         self._subscription_ids: List[str] = []
 
+        # Helper instances for extracted functionality
+        self._ui_setup = UISetupHelper(self)
+        self._signal_connector = SignalConnectionHelper(self)
+        self._event_handler = EventHandlerHelper(self)
+
     def _safe_resolve(self, service_key: str):
         """Safely resolve a service, returning None if not available."""
         try:
@@ -119,7 +127,7 @@ class SequenceWorkbench(ViewableComponentBase):
         """Initialize the workbench component with optimized startup."""
         try:
             # PERFORMANCE OPTIMIZATION: Defer non-critical initialization
-            self._setup_ui_minimal()  # Create minimal UI first
+            self._ui_setup.setup_ui_minimal()  # Create minimal UI first
 
             # CRITICAL FIX: Ensure workbench widget is visible
             self._widget.show()
@@ -145,13 +153,13 @@ class SequenceWorkbench(ViewableComponentBase):
             self._setup_session_subscriptions()
             print("🔧 [WORKBENCH] Session subscriptions setup complete")
 
-            self._complete_ui_setup()
+            self._ui_setup.complete_ui_setup()
             print("🔧 [WORKBENCH] UI setup complete")
 
-            self._connect_signals()
+            self._signal_connector.connect_signals()
             print("🔧 [WORKBENCH] Signals connected")
 
-            self._setup_button_interface()
+            self._ui_setup.setup_button_interface()
             print("🔧 [WORKBENCH] Button interface setup complete")
 
             self._setup_state_monitoring()  # CRITICAL FIX: Monitor state manager changes
@@ -177,102 +185,7 @@ class SequenceWorkbench(ViewableComponentBase):
             )
         return self._widget
 
-    # UI Setup
-    def _setup_ui_minimal(self):
-        """Setup minimal UI for fast startup."""
-        # Create main widget only
-        self._widget = QWidget(self.parent())
-        self._main_layout = QVBoxLayout(self._widget)
-        self._main_layout.setSpacing(8)
-        self._main_layout.setContentsMargins(8, 8, 8, 8)
-
-        # Add placeholder for sections (will be created in deferred initialization)
-        from PyQt6.QtWidgets import QLabel
-
-        placeholder = QLabel("Loading workbench...")
-        placeholder.setStyleSheet("color: #888; font-size: 14px; padding: 20px;")
-        self._main_layout.addWidget(placeholder)
-        self._placeholder = placeholder
-
-    def _complete_ui_setup(self):
-        """Complete UI setup with all components."""
-        print("🔧 [WORKBENCH] Starting complete UI setup...")
-
-        # Remove placeholder
-        if hasattr(self, "_placeholder"):
-            print("🔧 [WORKBENCH] Removing placeholder...")
-            self._main_layout.removeWidget(self._placeholder)
-            self._placeholder.deleteLater()
-            del self._placeholder
-
-        # Create sections using existing components
-        print("🔧 [WORKBENCH] Creating indicator section...")
-        self._indicator_section = WorkbenchIndicatorSection(
-            dictionary_service=self._safe_resolve("SequenceDictionaryService"),
-            parent=self._widget,
-        )
-        self._main_layout.addWidget(self._indicator_section, 0)
-        print("✅ [WORKBENCH] Indicator section created and added")
-
-        print("🔧 [WORKBENCH] Creating beat frame section...")
-        self._beat_frame_section = WorkbenchBeatFrameSection(
-            layout_service=self._layout_service,
-            beat_selection_service=self._beat_selection_service,
-            parent=self._widget,
-        )
-        self._main_layout.addWidget(self._beat_frame_section, 1)
-        print("✅ [WORKBENCH] Beat frame section created and added")
-
-        print("🔧 [WORKBENCH] Complete UI setup finished")
-
-    def _connect_signals(self):
-        """Connect component signals to business logic."""
-        if self._beat_frame_section:
-            # Beat frame signals -> business logic
-            self._beat_frame_section.beat_selected.connect(self._on_beat_selected)
-            self._beat_frame_section.beat_modified.connect(self._on_beat_modified)
-            self._beat_frame_section.sequence_modified.connect(
-                self._on_sequence_modified
-            )
-
-            # Operation signals -> operation coordinator
-            self._beat_frame_section.add_to_dictionary_requested.connect(
-                lambda: self._execute_operation(OperationType.ADD_TO_DICTIONARY)
-            )
-            # save_image_requested signal removed - functionality moved to Export tab
-            self._beat_frame_section.view_fullscreen_requested.connect(
-                lambda: self._execute_operation(OperationType.VIEW_FULLSCREEN)
-            )
-            self._beat_frame_section.mirror_sequence_requested.connect(
-                lambda: self._execute_operation(OperationType.MIRROR_SEQUENCE)
-            )
-            self._beat_frame_section.swap_colors_requested.connect(
-                lambda: self._execute_operation(OperationType.SWAP_COLORS)
-            )
-            self._beat_frame_section.rotate_sequence_requested.connect(
-                lambda: self._execute_operation(OperationType.ROTATE_SEQUENCE)
-            )
-            self._beat_frame_section.copy_json_requested.connect(
-                lambda: self._execute_operation(OperationType.COPY_JSON)
-            )
-            self._beat_frame_section.delete_beat_requested.connect(
-                self._handle_delete_beat
-            )
-            self._beat_frame_section.clear_sequence_requested.connect(
-                self._handle_clear
-            )
-
-    def _setup_button_interface(self):
-        """Setup button interface adapter."""
-        self._button_interface = WorkbenchButtonInterfaceAdapter(self._widget)
-        if self._button_interface.signals:
-            self._button_interface.signals.sequence_modified.connect(
-                self.sequence_modified
-            )
-            self._button_interface.signals.operation_completed.connect(
-                self.operation_completed
-            )
-            self._button_interface.signals.operation_failed.connect(self.error_occurred)
+    # UI Setup methods moved to UISetupHelper
 
     def _setup_state_monitoring(self):
         """Setup monitoring of state manager changes for automatic UI updates."""
@@ -453,80 +366,15 @@ class SequenceWorkbench(ViewableComponentBase):
     # Event Handlers - Delegation to Business Logic
     def _execute_operation(self, operation_type: OperationType):
         """Execute operation via operation coordinator."""
-
-        # Handle copy JSON specially to pass the current sequence
-        if operation_type == OperationType.COPY_JSON:
-            current_sequence = self._state_manager.get_current_sequence()
-            result: OperationResult = self._operation_coordinator.copy_json(
-                current_sequence
-            )
-            self._handle_operation_result(result)
-            return
-
-        # Get operation method from coordinator
-        operation_methods = {
-            OperationType.ADD_TO_DICTIONARY: self._operation_coordinator.add_to_dictionary,
-            OperationType.SAVE_IMAGE: self._operation_coordinator.save_image,
-            OperationType.VIEW_FULLSCREEN: self._operation_coordinator.view_fullscreen,
-            OperationType.MIRROR_SEQUENCE: self._operation_coordinator.mirror_sequence,
-            OperationType.SWAP_COLORS: self._operation_coordinator.swap_colors,
-            OperationType.ROTATE_SEQUENCE: self._operation_coordinator.rotate_sequence,
-        }
-
-        operation_method = operation_methods.get(operation_type)
-        if not operation_method:
-            self.error_occurred.emit(f"Unknown operation: {operation_type}")
-            return
-
-        # Execute operation
-        result: OperationResult = operation_method()
-        self._handle_operation_result(result)
+        self._event_handler.execute_operation(operation_type)
 
     def _handle_delete_beat(self):
         """Handle delete beat operation."""
-        selected_index = None
-        if self._beat_frame_section:
-            selected_index = self._beat_frame_section.get_selected_beat_index()
-
-        result = self._operation_coordinator.delete_beat(selected_index)
-        print(
-            f"📊 [WORKBENCH] Operation result: success={result.success}, message='{result.message}'"
-        )
-        self._handle_operation_result(result)
+        self._event_handler.handle_delete_beat()
 
     def _handle_clear(self):
         """Handle clear sequence operation."""
-        print(f"🧹 [WORKBENCH] Clear sequence requested")
-
-        # Clear the sequence via state manager
-        result = self._state_manager.set_sequence(None)
-
-        if result.changed:
-            print(f"🧹 [WORKBENCH] Sequence cleared, updating UI...")
-            # Update UI to reflect the cleared sequence
-            self._update_ui_from_state()
-
-            # IMPORTANT: Clear the start position data from state manager
-            # so that when a new start position is selected, it will be detected as a change
-            print(f"🧹 [WORKBENCH] Clearing start position data from state manager...")
-            self._state_manager.set_start_position(None)
-
-            # Reset start position to text-only mode (no pictograph)
-            if self._beat_frame_section:
-                print(f"🧹 [WORKBENCH] Initializing cleared start position view...")
-                self._beat_frame_section.initialize_cleared_start_position()
-
-            # Update button panel state after clearing
-            self._update_button_panel_sequence_state()
-
-        # Also emit the signal for any parent handlers
-        self.clear_sequence_requested.emit()
-
-        # Reset button panel to picker mode
-        if self._beat_frame_section and hasattr(
-            self._beat_frame_section, "reset_to_picker_mode"
-        ):
-            self._beat_frame_section.reset_to_picker_mode()
+        self._event_handler.handle_clear()
 
     def _handle_operation_result(self, result: OperationResult):
         """Handle operation result from coordinator."""
@@ -721,33 +569,15 @@ class SequenceWorkbench(ViewableComponentBase):
     # New panel mode handlers
     def _handle_picker_mode_request(self):
         """Handle picker mode request with smart switching."""
-        current_sequence = self._state_manager.get_current_sequence()
-        start_position = self._state_manager.get_start_position()
-
-        # Smart switching logic
-        if not start_position:
-            print(
-                "📍 [WORKBENCH] No start position - transitioning to start position picker"
-            )
-        elif not current_sequence or len(current_sequence.beats) == 0:
-            print(
-                "⚡ [WORKBENCH] Has start position but no sequence - transitioning to option picker"
-            )
-        else:
-            print("⚡ [WORKBENCH] Has sequence - staying in option picker")
-
-        # Emit signal to parent to handle layout transition
-        self.picker_mode_requested.emit()
+        self._event_handler.handle_picker_mode_request()
 
     def _handle_graph_editor_request(self):
         """Handle graph editor mode request."""
-        print("📊 [WORKBENCH] Graph editor mode requested")
-        self.graph_editor_requested.emit()
+        self._event_handler.handle_graph_editor_request()
 
     def _handle_generate_request(self):
         """Handle generate controls mode request."""
-        print("🤖 [WORKBENCH] Generate controls mode requested")
-        self.generate_requested.emit()
+        self._event_handler.handle_generate_request()
 
     def _handle_panel_mode_change(self, mode: str):
         """Handle panel mode change notification."""

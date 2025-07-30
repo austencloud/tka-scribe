@@ -326,10 +326,27 @@ def set_container(container: DIContainer, force: bool = False) -> None:
     _container = container
     _container_initialized = True
 
+    # Initialize the service locator with the new container
+    try:
+        from desktop.modern.core.service_locator import initialize_service_locator
+
+        initialize_service_locator(container)
+    except ImportError as e:
+        logger.warning(f"Could not initialize service locator: {e}")
+
 
 def reset_container() -> None:
     """Reset the global container (useful for testing)."""
     global _container, _container_initialized
+
+    # Clean up the service locator
+    try:
+        from desktop.modern.core.service_locator import cleanup
+
+        cleanup()
+    except ImportError:
+        pass  # Service locator not available, that's fine
+
     _container = None
     _container_initialized = False
 

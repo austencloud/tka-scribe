@@ -38,6 +38,8 @@ class TestServiceLifecycleContracts:
             from shared.application.services.layout.layout_manager import (
                 LayoutManager as LayoutManagementService,
             )
+
+            # Use concrete implementation that has all required methods
             from shared.application.services.ui.ui_state_manager import (
                 UIStateManager as UIStateManagementService,
             )
@@ -98,14 +100,14 @@ class TestServiceLifecycleContracts:
         - Singleton behavior is consistent
         """
         try:
-            from shared.application.services.layout.layout_manager import (
-                LayoutManager as LayoutManagementService,
-            )
             from desktop.modern.core.dependency_injection.di_container import (
                 DIContainer,
                 reset_container,
             )
             from desktop.modern.core.interfaces.core_services import ILayoutService
+            from shared.application.services.layout.layout_manager import (
+                LayoutManager as LayoutManagementService,
+            )
 
             # Reset and create container
             reset_container()
@@ -137,18 +139,22 @@ class TestServiceLifecycleContracts:
         - Dependency chain works correctly
         """
         try:
+            from desktop.modern.core.dependency_injection.di_container import (
+                DIContainer,
+                reset_container,
+            )
+            from desktop.modern.core.interfaces.core_services import (
+                IUIStateManagementService,
+            )
+            from desktop.modern.core.interfaces.workbench_services import (
+                IGraphEditorService,
+            )
             from shared.application.services.graph_editor.graph_editor_coordinator import (
                 GraphEditorCoordinator as GraphEditorService,
             )
             from shared.application.services.ui.ui_state_manager import (
                 UIStateManager as UIStateManagementService,
             )
-            from desktop.modern.core.dependency_injection.di_container import (
-                DIContainer,
-                reset_container,
-            )
-            from desktop.modern.core.interfaces.core_services import IUIStateManagementService
-            from desktop.modern.core.interfaces.workbench_services import IGraphEditorService
 
             # Reset and create container
             reset_container()

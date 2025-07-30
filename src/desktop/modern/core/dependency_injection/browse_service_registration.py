@@ -100,14 +100,21 @@ def register_browse_services(
         )
 
         # Register navigation manager if stacked widget provided
+        # NOTE: viewer_panel will be set later via set_viewer_panel() after creation
         if stacked_widget is not None:
             from desktop.modern.presentation.tabs.browse.managers.browse_navigation_manager import (
                 BrowseNavigationManager,
             )
 
-            container.register_factory(
+            # CRITICAL FIX: Register as instance, not factory
+            # This ensures all components get the same instance
+            nav_manager = BrowseNavigationManager(stacked_widget, viewer_panel)
+            if viewer_panel is None:
+                logger.warning(f"⚠️ Navigation manager created without viewer panel - will be set later")
+            
+            container.register_instance(
                 IBrowseNavigationManager,
-                lambda: BrowseNavigationManager(stacked_widget, viewer_panel),
+                nav_manager,
             )
 
         # Register action handler if parent widget provided

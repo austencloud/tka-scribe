@@ -42,12 +42,15 @@ class PositioningServiceRegistrar(BaseServiceRegistrar):
         return "Positioning Services"
 
     def is_critical(self) -> bool:
-        """Positioning services are optional with graceful degradation."""
-        return False
+        """Positioning services are critical for arrow positioning."""
+        return True
 
     def register_services(self, container: "DIContainer") -> None:
         """Register positioning services with graceful degradation."""
         self._update_progress("Registering positioning services...")
+        print(
+            "🔧 [POSITIONING_REGISTRAR] Starting positioning services registration..."
+        )
 
         # Register arrow positioning services
         self._register_arrow_positioning_services(container)
@@ -68,6 +71,7 @@ class PositioningServiceRegistrar(BaseServiceRegistrar):
 
     def _register_arrow_positioning_services(self, container: "DIContainer") -> None:
         """Register arrow positioning microservices."""
+        print("🔧 [POSITIONING_REGISTRAR] Registering arrow positioning services...")
         try:
             from desktop.modern.application.services.positioning.arrows.orchestration.arrow_positioning_orchestrator import (
                 ArrowPositioningOrchestrator,
@@ -133,13 +137,23 @@ class PositioningServiceRegistrar(BaseServiceRegistrar):
                 IArrowPositioningOrchestrator, orchestrator_instance
             )
             self._mark_service_available("ArrowPositioningOrchestrator")
+            print(
+                "✅ [POSITIONING_REGISTRAR] Arrow positioning orchestrator registered successfully"
+            )
 
         except ImportError as e:
+            print(f"❌ [POSITIONING_REGISTRAR] Import error: {e}")
             self._handle_service_unavailable(
                 "Arrow positioning services",
                 e,
                 "Arrow positioning calculations in pictographs",
             )
+        except Exception as e:
+            print(f"❌ [POSITIONING_REGISTRAR] Registration error: {e}")
+            import traceback
+
+            traceback.print_exc()
+            raise
 
     def _register_arrow_placement_services(self, container: "DIContainer") -> None:
         """Register arrow placement services (special placement, default placement, etc.)."""

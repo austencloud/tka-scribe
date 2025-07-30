@@ -6,20 +6,18 @@ for sequence generation, following Modern's clean architecture principles.
 """
 
 from dataclasses import dataclass, replace
-from typing import TYPE_CHECKING, List, Optional, Set
+from typing import List, Optional, Set
 
-# Import enums for runtime use
+# Import enums and data classes for runtime use
 from desktop.modern.core.interfaces.generation_services import (
     CAPType,
+    GenerationMetadata,
     GenerationMode,
     LetterType,
     PropContinuity,
     SliceSize,
 )
-
-# Use TYPE_CHECKING to avoid circular imports for complex types
-if TYPE_CHECKING:
-    from desktop.modern.core.interfaces.generation_services import GenerationMetadata
+from desktop.modern.domain.models.enums import GridMode
 
 
 @dataclass(frozen=True)
@@ -30,6 +28,7 @@ class GenerationConfig:
     length: int = 16
     level: int = 1
     turn_intensity: float = 1.0
+    grid_mode: "GridMode" = None
     prop_continuity: "PropContinuity" = None
     letter_types: Optional[Set["LetterType"]] = None
     slice_size: "SliceSize" = None
@@ -40,6 +39,8 @@ class GenerationConfig:
         # Set defaults if None
         if self.mode is None:
             object.__setattr__(self, "mode", GenerationMode.FREEFORM)
+        if self.grid_mode is None:
+            object.__setattr__(self, "grid_mode", GridMode.DIAMOND)
         if self.prop_continuity is None:
             object.__setattr__(self, "prop_continuity", PropContinuity.CONTINUOUS)
         if self.slice_size is None:
@@ -68,7 +69,7 @@ class GenerationConfig:
         """Check if configuration is valid"""
         return (
             4 <= self.length <= 32
-            and 1 <= self.level <= 6
+            and 1 <= self.level <= 3  # Updated to match legacy 3-level system
             and 0.5 <= self.turn_intensity <= 3.0
             and self.letter_types is not None
             and len(self.letter_types) > 0

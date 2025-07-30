@@ -101,6 +101,7 @@ class BrowseTab(QWidget):
         self._create_panels()
 
         # Initialize the controller with all components
+        # NOTE: Fixed initialization order - viewer_panel is now created in _create_panels()
         self.controller = BrowseTabController(
             container=container,
             data_dir=self.data_dir,
@@ -196,6 +197,28 @@ class BrowseTab(QWidget):
         # Add viewer panel to main layout
         self.main_layout.addWidget(self.sequence_viewer_panel, 1)
 
+        # Update navigation manager with viewer panel reference
+        # (Since services were registered before viewer panel was created)
+        from desktop.modern.core.interfaces.browse_services import (
+            IBrowseNavigationManager,
+        )
+
+        try:
+            navigation_manager = self.container.resolve(IBrowseNavigationManager)
+            navigation_manager.set_viewer_panel(self.sequence_viewer_panel)
+            logger.info(f"🔗 Updated navigation manager with viewer panel: {self.sequence_viewer_panel}")
+            
+            # Validate the setup worked
+            if hasattr(navigation_manager, 'viewer_panel') and navigation_manager.viewer_panel is not None:
+                logger.info("✅ Viewer panel successfully set in navigation manager")
+            else:
+                logger.error("❌ Failed to set viewer panel in navigation manager")
+                
+        except Exception as e:
+            logger.error(f"❌ Failed to update navigation manager with viewer panel: {e}")
+            import traceback
+            traceback.print_exc()
+
     def _initialize_controller(self) -> None:
         """Initialize the controller and start the browse tab."""
         # Connect controller signals
@@ -239,16 +262,31 @@ class BrowseTab(QWidget):
 
     def _on_sequence_selected(self, sequence_id: str) -> None:
         """Handle sequence selection - delegate to controller."""
-        # Delegate to controller
-        self.controller.select_sequence(sequence_id)
+        try:
+            logger.info(f"🎯 Sequence selected: {sequence_id}")
+            
+            # Delegate to controller
+            self.controller.select_sequence(sequence_id)
 
-        # Update UI components with selected sequence
-        sequence_data = self.controller.get_current_sequence()
-        if sequence_data:
-            self.sequence_viewer_panel.show_sequence(sequence_data)
+            # Update UI components with selected sequence
+            sequence_data = self.controller.get_current_sequence()
+            if sequence_data:
+                # Directly update viewer panel as backup (in case navigation manager fails)
+                if hasattr(self.sequence_viewer_panel, 'show_sequence'):
+                    self.sequence_viewer_panel.show_sequence(sequence_data)
+                    logger.info(f"✅ Viewer panel updated directly with sequence: {sequence_data.word}")
+                else:
+                    logger.error(f"❌ Viewer panel missing show_sequence method")
+            else:
+                logger.error(f"❌ No sequence data available for {sequence_id}")
 
-        # Emit signal for external listeners
-        self.sequence_selected.emit(sequence_id)
+            # Emit signal for external listeners
+            self.sequence_selected.emit(sequence_id)
+            
+        except Exception as e:
+            logger.error(f"❌ Failed to handle sequence selection for {sequence_id}: {e}")
+            import traceback
+            traceback.print_exc()
 
     def _on_sequence_action(self, action_type: str, sequence_id: str) -> None:
         """Handle sequence action from viewer panel - delegate to controller."""
