@@ -193,6 +193,43 @@ class ServiceRegistrationHelper:
             )
 
     @staticmethod
+    def register_all_common_services(container: "DIContainer") -> None:
+        """Register all common services used across application modes."""
+        try:
+            # Register services in dependency order
+            ServiceRegistrationHelper.register_common_data_services(container)
+            ServiceRegistrationHelper.register_common_core_services(container)
+            ServiceRegistrationHelper.register_common_pictograph_services(container)
+            ServiceRegistrationHelper.register_common_session_services(container)
+            ServiceRegistrationHelper.register_generation_services(container)
+            ServiceRegistrationHelper.register_visibility_services(container)
+            
+            logger.info("✅ All common services registered successfully")
+            
+        except Exception as e:
+            StandardErrorHandler.handle_service_error(
+                "Common services registration", e, logger, ErrorSeverity.CRITICAL
+            )
+            raise
+
+    @staticmethod
+    def register_generation_services(container: "DIContainer") -> None:
+        """Register generation services for sequence creation."""
+        try:
+            from desktop.modern.application.services.generation.generation_service_registration import (
+                register_generation_services,
+            )
+            
+            register_generation_services(container)
+            logger.info("✅ Generation services registered successfully")
+            
+        except Exception as e:
+            StandardErrorHandler.handle_service_error(
+                "Generation services registration", e, logger, ErrorSeverity.CRITICAL
+            )
+            raise
+
+    @staticmethod
     def register_visibility_services(container: "DIContainer") -> None:
         """Register visibility settings services."""
         try:

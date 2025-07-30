@@ -10,12 +10,8 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import TYPE_CHECKING, Any, Dict, Generic, List, Optional, TypeVar
 
-from ..events.event_bus import TypeSafeEventBus
-
 if TYPE_CHECKING:
     pass
-
-from ..events import CommandExecutedEvent, CommandRedoneEvent, CommandUndoneEvent
 
 T = TypeVar("T")
 logger = logging.getLogger(__name__)
@@ -80,8 +76,7 @@ class CommandProcessor:
     - Error handling and recovery
     """
 
-    def __init__(self, event_bus: TypeSafeEventBus, max_history: int = 100):
-        self.event_bus = event_bus
+    def __init__(self, max_history: int = 100):
         self.max_history = max_history
         self._history: List[ICommand] = []
         self._current_index = -1
@@ -114,19 +109,8 @@ class CommandProcessor:
                 self._history = self._history[-self.max_history :]
                 self._current_index = len(self._history) - 1
 
-            # Publish command executed event
-            self.event_bus.publish(
-                CommandExecutedEvent(
-                    event_id=str(uuid.uuid4()),
-                    timestamp=datetime.now(),
-                    source="CommandProcessor",
-                    command_id=command_id,
-                    command_type=type(command).__name__,
-                    command_description=command.description,
-                    can_undo=self.can_undo(),
-                    can_redo=self.can_redo(),
-                )
-            )
+            # Command executed successfully
+            pass
 
             self._logger.info(f"Command executed successfully: {command.description}")
             return CommandResult(success=True, result=result, command_id=command_id)
@@ -157,19 +141,8 @@ class CommandProcessor:
             result = command.undo()
             self._current_index -= 1
 
-            # Publish command undone event
-            self.event_bus.publish(
-                CommandUndoneEvent(
-                    event_id=str(uuid.uuid4()),
-                    timestamp=datetime.now(),
-                    source="CommandProcessor",
-                    command_id=command_id,
-                    command_type=type(command).__name__,
-                    command_description=command.description,
-                    can_undo=self.can_undo(),
-                    can_redo=self.can_redo(),
-                )
-            )
+            # Command undone successfully
+            pass
 
             self._logger.info(f"Command undone successfully: {command.description}")
             return CommandResult(success=True, result=result, command_id=command_id)
@@ -201,19 +174,8 @@ class CommandProcessor:
             self._logger.info(f"Redoing command: {command.description}")
             result = command.execute()
 
-            # Publish command redone event
-            self.event_bus.publish(
-                CommandRedoneEvent(
-                    event_id=str(uuid.uuid4()),
-                    timestamp=datetime.now(),
-                    source="CommandProcessor",
-                    command_id=command_id,
-                    command_type=type(command).__name__,
-                    command_description=command.description,
-                    can_undo=self.can_undo(),
-                    can_redo=self.can_redo(),
-                )
-            )
+            # Command redone successfully
+            pass
 
             self._logger.info(f"Command redone successfully: {command.description}")
             return CommandResult(success=True, result=result, command_id=command_id)

@@ -144,7 +144,6 @@ class ServiceRegistrationCoordinator:
             AnimationServiceRegistrar,
             CoreServiceRegistrar,
             DataServiceRegistrar,
-            EventSystemRegistrar,
             GraphEditorServiceRegistrar,
             LearnServiceRegistrar,
             MotionServiceRegistrar,
@@ -173,8 +172,7 @@ class ServiceRegistrationCoordinator:
             # Phase 3: Complex services (depend on core services)
             PositioningServiceRegistrar(self.progress_callback),
             OptionPickerServiceRegistrar(self.progress_callback),
-            # Phase 4: Optional services
-            EventSystemRegistrar(self.progress_callback),
+            # Phase 4: Optional services  
             GraphEditorServiceRegistrar(self.progress_callback),
             AnimationServiceRegistrar(self.progress_callback),
             LearnServiceRegistrar(self.progress_callback),

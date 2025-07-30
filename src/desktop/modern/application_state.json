@@ -1,7 +1,7 @@
 {
-  "current_tab": "construct",
-  "window_geometry": "01d9d0cb00030000fffff18000000028fffffa7f00000529fffff18000000046fffffa7f0000052900000001000000000a00fffff18000000046fffffa7f00000529",
-  "window_state": "000000ff00000000fd0000000000000900000004e400000004000000040000000800000008fc00000000",
+  "current_tab": "sequence",
+  "window_geometry": null,
+  "window_state": null,
   "session_data": {
     "current_sequence_id": null,
     "current_sequence_data": null,
@@ -15,9 +15,9 @@
     "active_tab": "sequence_builder",
     "beat_layout": {},
     "component_visibility": {},
-    "last_interaction": "2025-07-29T13:53:27.214294",
-    "session_id": "8e49e076-05eb-4c66-af6b-8c918cf83f59",
-    "created_at": "2025-07-29T13:53:25.204541",
+    "last_interaction": "2025-07-30T01:25:18.895319",
+    "session_id": "44e8b956-28f8-4fdb-903b-29df9de1e942",
+    "created_at": "2025-07-30T01:25:18.894788",
     "tka_version": "modern"
   },
   "settings_snapshot": {
@@ -37,12 +37,15 @@
     },
     "global": {
       "background_type": "Snowfall",
-      "current_tab": "construct",
+      "current_tab": "sequence",
       "grid_mode": "diamond",
-      "prop_type": "FAN"
+      "prop_type": "Staff"
     },
     "layout": {
       "default_sequence_length": 16
+    },
+    "legacy": {
+      "test": "value"
     },
     "legacy_test": {
       "old_key": "old_value",
@@ -58,10 +61,15 @@
     },
     "test": {
       "demo_key": "demo_value",
-      "key": "value",
+      "key": "test_value",
       "key1": "value1"
     },
+    "test_section": {
+      "key1": "value1",
+      "key2": "value2"
+    },
     "ui": {
+      "panel_visible": "true",
       "panel_width": 300,
       "show_tooltips": "true"
     },
@@ -88,5 +96,5 @@
       "id_4": "value_4"
     }
   },
-  "timestamp": "2025-07-29T13:53:31.868792"
+  "timestamp": "2025-07-30T01:25:18.896244"
 }

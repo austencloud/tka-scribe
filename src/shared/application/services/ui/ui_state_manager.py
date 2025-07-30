@@ -19,7 +19,7 @@ from enum import Enum
 from pathlib import Path
 from typing import Any, Callable, Dict, Optional
 
-from desktop.modern.core.events.event_bus import EventPriority, UIEvent, get_event_bus
+from PyQt6.QtCore import QObject, pyqtSignal
 from desktop.modern.core.interfaces.core_services import IUIStateManager
 from desktop.modern.core.interfaces.session_services import ISessionStateTracker
 
@@ -73,7 +73,7 @@ class UIState:
     user_settings: Dict[str, Any] = field(default_factory=dict)
 
 
-class UIStateManager(IUIStateManager):
+class UIStateManager(QObject, IUIStateManager):
     """
     Unified UI state management service consolidating all UI state operations.
 
@@ -83,10 +83,19 @@ class UIStateManager(IUIStateManager):
     - Component visibility management
     - Graph editor state management
     - Option picker state management
-    - Event-driven state synchronization
+    - Qt signal-driven state synchronization
     """
+    
+    # Qt Signals for state changes
+    setting_changed = pyqtSignal(str, object)  # key, value
+    tab_state_changed = pyqtSignal(str, dict)  # tab_name, state
+    ui_state_changed = pyqtSignal(str, object)  # component, state_data
+    component_visibility_changed = pyqtSignal(str, bool)  # component, visible
+    hotkey_triggered = pyqtSignal(str)  # hotkey_name
 
     def __init__(self, session_service: Optional[ISessionStateTracker] = None):
+        QObject.__init__(self)
+        
         # Core state
         self._ui_state = UIState()
 
@@ -94,9 +103,6 @@ class UIStateManager(IUIStateManager):
         # Navigate from: src/application/services/ui/ -> modern/
         modern_dir = Path(__file__).parent.parent.parent.parent.parent
         self._settings_file = modern_dir / "user_settings.json"
-
-        # Event bus for state synchronization
-        self._event_bus = get_event_bus()
 
         # Session service integration (optional for backward compatibility)
         self._session_service = session_service
@@ -109,9 +115,6 @@ class UIStateManager(IUIStateManager):
 
         # Load saved state
         self._load_state()
-
-        # Subscribe to UI events
-        self._setup_event_subscriptions()
 
     def get_setting(self, key: str, default: Any = None) -> Any:
         """Get a setting value."""
@@ -128,14 +131,8 @@ class UIStateManager(IUIStateManager):
         if self._session_service:
             self._session_service.mark_interaction()
 
-        # Publish setting change event
-        event = UIEvent(
-            component="settings",
-            action="updated",
-            state_data={"key": key, "value": value},
-            source="ui_state_management_service",
-        )
-        self._event_bus.publish(event)
+        # Emit Qt signal for setting change
+        self.setting_changed.emit(key, value)
 
     def get_tab_state(self, tab_name: str) -> Dict[str, Any]:
         """Get state for a specific tab."""
@@ -149,14 +146,8 @@ class UIStateManager(IUIStateManager):
         self._ui_state.tab_states[tab_name].update(state)
         self._save_state()
 
-        # Publish tab state change event
-        event = UIEvent(
-            component="tab",
-            action="state_updated",
-            state_data={"tab_name": tab_name, "state": state},
-            source="ui_state_management_service",
-        )
-        self._event_bus.publish(event)
+        # Emit Qt signal for tab state change
+        self.tab_state_changed.emit(tab_name, state)
 
     def set_active_tab(self, tab_name: str) -> None:
         """Set the active tab."""
