@@ -31,6 +31,7 @@ from desktop.modern.application.services.core.application_initialization_orchest
 )
 from desktop.modern.core.dependency_injection.di_container import DIContainer
 from desktop.modern.core.error_handling import ErrorSeverity, StandardErrorHandler
+from presentation.components.ui.splash_screen import SplashScreen
 from shared.application.services.core.service_registration_manager import (
     IServiceRegistrationManager,
     ServiceRegistrationManager,

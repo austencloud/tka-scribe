@@ -429,7 +429,6 @@ class ModernLevelSelector(ModernControlBase):
             }
             QPushButton:checked {
                 border: 4px solid rgba(255, 255, 255, 0.95);
-                box-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
             }
         """
 
