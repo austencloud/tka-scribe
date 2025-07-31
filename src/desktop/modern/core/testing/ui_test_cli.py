@@ -6,9 +6,8 @@ Provides command-line interface for running UI tests with various options.
 
 import argparse
 import logging
-from pathlib import Path
 import sys
-from typing import Optional
+from pathlib import Path
 
 # Add the src directory to the Python path
 current_dir = Path(__file__).parent
@@ -32,7 +31,7 @@ def setup_logging(verbose: bool = False):
     )
 
 
-def run_button_test(button_name: Optional[str] = None, verbose: bool = False):
+def run_button_test(button_name: str | None = None, verbose: bool = False):
     """Run button tests."""
     print("🚀 Starting button testing...")
 

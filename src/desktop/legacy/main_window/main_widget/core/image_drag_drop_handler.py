@@ -7,8 +7,9 @@ onto the application window.
 """
 
 import logging
+from collections.abc import Callable
 from pathlib import Path
-from typing import TYPE_CHECKING, Callable, Optional
+from typing import TYPE_CHECKING
 
 from PyQt6.QtCore import QMimeData, QObject, pyqtSignal
 from PyQt6.QtGui import QDragEnterEvent, QDragMoveEvent, QDropEvent
@@ -69,8 +70,8 @@ class ImageDragDropHandler(QObject):
         self.enabled = True
 
         # Callbacks for different drop scenarios
-        self.single_image_callback: Optional[Callable[[str], None]] = None
-        self.multiple_images_callback: Optional[Callable[[list[str]], None]] = None
+        self.single_image_callback: Callable[[str], None] | None = None
+        self.multiple_images_callback: Callable[[list[str]], None] | None = None
 
         # Enable drag and drop on the parent widget
         self._setup_drag_drop()

@@ -5,9 +5,8 @@ Manages quiz sessions, state tracking, and session lifecycle
 for the learning module.
 """
 
-from datetime import datetime
 import logging
-from typing import Optional
+from datetime import datetime
 
 from desktop.modern.core.interfaces.learn_services import IQuizSessionService
 from desktop.modern.domain.models.learn import LessonType, QuizMode, QuizSession
@@ -74,7 +73,7 @@ class QuizSessionService(IQuizSessionService):
             logger.error(f"Failed to create quiz session: {e}")
             raise
 
-    def get_session(self, session_id: str) -> Optional[QuizSession]:
+    def get_session(self, session_id: str) -> QuizSession | None:
         """
         Get quiz session by ID.
 

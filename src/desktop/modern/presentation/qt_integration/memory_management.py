@@ -8,14 +8,15 @@ ARCHITECTURE: Provides smart pointer management, memory leak detection,
 and automatic cleanup for Qt objects to prevent memory leaks.
 """
 
-from dataclasses import dataclass
 import gc
 import logging
 import os
-from threading import Lock
 import time
-from typing import Any, Callable, Generic, Optional, TypeVar
 import weakref
+from collections.abc import Callable
+from dataclasses import dataclass
+from threading import Lock
+from typing import Any, Generic, TypeVar
 
 # Import Qt modules with compatibility
 try:
@@ -95,13 +96,13 @@ class SmartQtPointer(Generic[T]):
 
         logger.debug(f"SmartQtPointer created for object {self._obj_id}")
 
-    def get(self) -> Optional[T]:
+    def get(self) -> T | None:
         """Get the managed object."""
         if self._is_deleted:
             return None
         return self._obj_ref()
 
-    def reset(self, new_obj: Optional[T] = None) -> None:
+    def reset(self, new_obj: T | None = None) -> None:
         """Reset pointer to new object or None."""
         old_obj = self.get()
         if old_obj and self._auto_delete:
@@ -178,7 +179,7 @@ class QtMemoryLeakDetector:
         self._tracked_objects: dict[int, weakref.ReferenceType] = {}
         self._lock = Lock()
         self._monitoring_active = False
-        self._timer: Optional[QTimer] = None
+        self._timer: QTimer | None = None
 
         # Leak detection thresholds
         self.memory_growth_threshold_mb = 50.0  # MB
@@ -336,7 +337,7 @@ class QtMemoryLeakDetector:
         except Exception as e:
             logger.error(f"Error in periodic memory check: {e}")
 
-    def _analyze_for_leaks(self) -> Optional[LeakReport]:
+    def _analyze_for_leaks(self) -> LeakReport | None:
         """Analyze memory snapshots for potential leaks."""
         if len(self._snapshots) < 3:
             return None
@@ -429,7 +430,7 @@ class QtMemoryLeakDetector:
 
 
 # Global memory detector instance
-_memory_detector: Optional[QtMemoryLeakDetector] = None
+_memory_detector: QtMemoryLeakDetector | None = None
 
 
 def memory_detector() -> QtMemoryLeakDetector:

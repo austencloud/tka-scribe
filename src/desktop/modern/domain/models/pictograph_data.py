@@ -1,7 +1,7 @@
-from dataclasses import dataclass, field
 import json
-from typing import Any, Optional
 import uuid
+from dataclasses import dataclass, field
+from typing import Any, Optional
 
 from desktop.modern.domain.models.arrow_data import ArrowData
 from desktop.modern.domain.models.enums import (
@@ -40,15 +40,15 @@ class PictographData:
     motions: dict[str, MotionData] = field(default_factory=dict)  # "blue", "red"
 
     # Letter and position data
-    letter: Optional[str] = None
-    start_position: Optional[GridPosition] = None
-    end_position: Optional[GridPosition] = None
+    letter: str | None = None
+    start_position: GridPosition | None = None
+    end_position: GridPosition | None = None
 
     # Letter determination fields
     beat: int = 0
     timing: Optional["Timing"] = None  # Timing.SPLIT or Timing.TOG
     direction: Optional["Direction"] = None  # Direction.SAME or Direction.OPP
-    duration: Optional[int] = None
+    duration: int | None = None
     letter_type: Optional["LetterType"] = None
 
     # Visual state

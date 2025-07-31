@@ -9,12 +9,13 @@ This module provides intelligent logging that:
 - Integrates with TKA's service architecture
 """
 
-from dataclasses import dataclass
-from enum import Enum
 import functools
 import logging
 import time
-from typing import Any, Callable
+from collections.abc import Callable
+from dataclasses import dataclass
+from enum import Enum
+from typing import Any
 
 
 class LogLevel(Enum):

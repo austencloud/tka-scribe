@@ -1,7 +1,7 @@
 # grid_mode_section.py
 
-from functools import partial
 import os
+from functools import partial
 from typing import TYPE_CHECKING
 
 from main_window.main_widget.metadata_extractor import MetaDataExtractor

@@ -1,5 +1,5 @@
-from dataclasses import dataclass, field
 import json
+from dataclasses import dataclass, field
 from typing import Any
 
 from desktop.modern.domain.models.enums import GridMode

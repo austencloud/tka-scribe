@@ -38,7 +38,6 @@ if TYPE_CHECKING:
 
 
 from dataclasses import dataclass
-from typing import Optional
 
 
 @dataclass
@@ -61,23 +60,23 @@ class PictographElements:
     props: dict[str, Prop] = None
     pictograph_dict: dict[str, str | dict[str, str]] = None
     locations: dict[str, tuple[int, int, int, int]] = None
-    grid: Optional[Grid] = None
+    grid: Grid | None = None
 
     # Symbols
-    blue_reversal_symbol: Optional[QGraphicsTextItem] = None
-    red_reversal_symbol: Optional[QGraphicsTextItem] = None
+    blue_reversal_symbol: QGraphicsTextItem | None = None
+    red_reversal_symbol: QGraphicsTextItem | None = None
 
     # Items
-    selected_arrow: Optional[Arrow] = None
-    blue_arrow: Optional[Arrow] = None
-    red_arrow: Optional[Arrow] = None
-    blue_motion: Optional[Motion] = None
-    red_motion: Optional[Motion] = None
-    blue_prop: Optional[Prop] = None
-    red_prop: Optional[Prop] = None
+    selected_arrow: Arrow | None = None
+    blue_arrow: Arrow | None = None
+    red_arrow: Arrow | None = None
+    blue_motion: Motion | None = None
+    red_motion: Motion | None = None
+    blue_prop: Prop | None = None
+    red_prop: Prop | None = None
 
-    tka_glyph: Optional[TKA_Glyph] = None
-    vtg_glyph: Optional[VTG_Glyph] = None
-    elemental_glyph: Optional[ElementalGlyph] = None
-    start_to_end_pos_glyph: Optional[StartToEndPosGlyph] = None
-    reversal_glyph: Optional[ReversalGlyph] = None
+    tka_glyph: TKA_Glyph | None = None
+    vtg_glyph: VTG_Glyph | None = None
+    elemental_glyph: ElementalGlyph | None = None
+    start_to_end_pos_glyph: StartToEndPosGlyph | None = None
+    reversal_glyph: ReversalGlyph | None = None

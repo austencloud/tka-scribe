@@ -5,10 +5,10 @@ Ensures data integrity for cross-language communication and provides
 validation for all domain model serialization operations.
 """
 
-from dataclasses import is_dataclass
-from datetime import datetime
 import json
 import logging
+from dataclasses import is_dataclass
+from datetime import datetime
 from typing import Any, TypeVar
 
 T = TypeVar("T")

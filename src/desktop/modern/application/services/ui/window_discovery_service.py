@@ -14,9 +14,9 @@ This service complements WindowManagementService by focusing on discovery
 rather than positioning/management.
 """
 
-from abc import ABC, abstractmethod
 import logging
-from typing import Callable, Optional
+from abc import ABC, abstractmethod
+from collections.abc import Callable
 
 from PyQt6.QtCore import QSize
 from PyQt6.QtWidgets import QApplication, QWidget
@@ -32,7 +32,7 @@ class IWindowDiscoveryService(ABC):
         """Register the main window during application startup."""
 
     @abstractmethod
-    def find_main_window(self) -> Optional[QWidget]:
+    def find_main_window(self) -> QWidget | None:
         """Find the main window using discovery logic."""
 
     @abstractmethod
@@ -58,7 +58,7 @@ class WindowDiscoveryService(IWindowDiscoveryService):
 
     def __init__(self):
         """Initialize the window discovery service."""
-        self._main_window: Optional[QWidget] = None
+        self._main_window: QWidget | None = None
         self._fallback_size = QSize(1200, 800)
 
     def register_main_window(self, window: QWidget) -> None:
@@ -70,7 +70,7 @@ class WindowDiscoveryService(IWindowDiscoveryService):
         self._main_window = window
         logger.info(f"Main window registered: {window.__class__.__name__}")
 
-    def find_main_window(self) -> Optional[QWidget]:
+    def find_main_window(self) -> QWidget | None:
         """Find the main window using discovery logic."""
         # First, check if we have a registered main window
         if self._main_window and not self._main_window.isHidden():

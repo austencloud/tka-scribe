@@ -6,7 +6,8 @@ import copy
 import json
 import logging
 import time
-from typing import Any, Callable, Optional
+from collections.abc import Callable
+from typing import Any
 
 from PyQt6.QtCore import QObject, pyqtSignal
 
@@ -136,7 +137,7 @@ class SettingsStateManager(QObject):
         """Get current value of a setting."""
         return self._current_state.get(setting_key, default)
 
-    def is_modified(self, setting_key: Optional[str] = None) -> bool:
+    def is_modified(self, setting_key: str | None = None) -> bool:
         """Check if settings have been modified."""
         if setting_key:
             return setting_key in self._modified_keys
@@ -254,7 +255,7 @@ class SettingsStateManager(QObject):
         # For now, we'll just clear modifications
         self.revert_changes()
 
-    def create_backup(self, backup_path: Optional[str] = None) -> str:
+    def create_backup(self, backup_path: str | None = None) -> str:
         """Create a backup of current settings."""
         if not backup_path:
             backup_path = f"settings_backup_{int(time.time())}.json"

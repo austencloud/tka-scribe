@@ -1,4 +1,4 @@
-from typing import Callable
+from collections.abc import Callable
 
 from interfaces.settings_manager_interface import ISettingsManager
 from PyQt6.QtCore import QSize, Qt

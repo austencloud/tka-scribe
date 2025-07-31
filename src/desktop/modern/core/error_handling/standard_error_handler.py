@@ -12,7 +12,8 @@ PROVIDES:
 """
 
 import logging
-from typing import Any, Callable, Optional
+from collections.abc import Callable
+from typing import Any
 
 
 class ErrorSeverity:
@@ -37,7 +38,7 @@ class StandardErrorHandler:
         error: Exception,
         logger: logging.Logger,
         severity: str = ErrorSeverity.ERROR,
-        context: Optional[dict[str, Any]] = None,
+        context: dict[str, Any] | None = None,
     ) -> None:
         """
         Handle service-related errors with consistent logging format.
@@ -70,8 +71,8 @@ class StandardErrorHandler:
         operation: str,
         error: Exception,
         logger: logging.Logger,
-        fallback_action: Optional[Callable] = None,
-        context: Optional[dict[str, Any]] = None,
+        fallback_action: Callable | None = None,
+        context: dict[str, Any] | None = None,
     ) -> Any:
         """
         Handle UI-related errors with optional fallback action.
@@ -109,7 +110,7 @@ class StandardErrorHandler:
         error: Exception,
         logger: logging.Logger,
         is_critical: bool = True,
-        suggested_action: Optional[str] = None,
+        suggested_action: str | None = None,
     ) -> None:
         """
         Handle component initialization errors with severity assessment.
@@ -136,7 +137,7 @@ class StandardErrorHandler:
         interface_name: str,
         error: Exception,
         logger: logging.Logger,
-        available_services: Optional[list] = None,
+        available_services: list | None = None,
     ) -> None:
         """
         Handle dependency resolution errors with helpful context.

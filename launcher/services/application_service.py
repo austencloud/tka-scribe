@@ -6,9 +6,8 @@ without dealing with the actual launching process.
 """
 
 import logging
-from pathlib import Path
 import sys
-from typing import Optional
+from pathlib import Path
 
 from desktop.modern.core.interfaces import IApplicationService, ILauncherStateService
 from desktop.modern.domain.models import (
@@ -27,7 +26,7 @@ class ApplicationService(IApplicationService):
     and separation of concerns.
     """
 
-    def __init__(self, state_service: Optional[ILauncherStateService] = None):
+    def __init__(self, state_service: ILauncherStateService | None = None):
         """Initialize the application service."""
         self._state_service = state_service
         self._default_applications = self._create_default_applications()
@@ -44,7 +43,7 @@ class ApplicationService(IApplicationService):
         else:
             return [app for app in self._default_applications if app.enabled]
 
-    def get_application(self, app_id: str) -> Optional[ApplicationData]:
+    def get_application(self, app_id: str) -> ApplicationData | None:
         """Get application by ID."""
         if self._state_service:
             state = self._state_service.get_current_state()
@@ -144,7 +143,7 @@ class ApplicationService(IApplicationService):
                 if app.is_favorite and app.enabled
             ]
 
-    def toggle_favorite(self, app_id: str) -> Optional[ApplicationData]:
+    def toggle_favorite(self, app_id: str) -> ApplicationData | None:
         """Toggle favorite status of an application."""
         app = self.get_application(app_id)
         if not app:

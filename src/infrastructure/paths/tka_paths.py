@@ -24,18 +24,17 @@ FEATURES:
 """
 
 import os
-from pathlib import Path
 import sys
-from typing import Optional
 import warnings
+from pathlib import Path
 
 # Global state
 _PATHS_CONFIGURED = False
-_TKA_ROOT: Optional[Path] = None
+_TKA_ROOT: Path | None = None
 _CONFIGURED_PATHS: set[str] = set()
 
 
-def find_tka_root(start_path: Optional[Path] = None) -> Path:
+def find_tka_root(start_path: Path | None = None) -> Path:
     """
     Find the TKA project root directory with 100% reliability.
 

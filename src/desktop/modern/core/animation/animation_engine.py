@@ -4,11 +4,12 @@ This is the canonical animation system that works across platforms.
 """
 
 import asyncio
-from dataclasses import dataclass, field
 import math
 import time
-from typing import Any, Callable, Optional
 import uuid
+from collections.abc import Callable
+from dataclasses import dataclass, field
+from typing import Any
 
 from desktop.modern.core.interfaces.animation_core_interfaces import (
     AnimationConfig,
@@ -126,7 +127,7 @@ class ActiveAnimation:
     start_time: float
     state: AnimationState = AnimationState.PENDING
     current_progress: float = 0.0
-    pause_time: Optional[float] = None
+    pause_time: float | None = None
     total_paused_duration: float = 0.0
     completion_callbacks: list[Callable] = field(default_factory=list)
 
@@ -309,7 +310,7 @@ class CoreAnimationEngine(IAnimationEngine):
         self._cleanup_animation(animation_id)
         return True
 
-    def get_animation_state(self, animation_id: str) -> Optional[AnimationState]:
+    def get_animation_state(self, animation_id: str) -> AnimationState | None:
         """Get current state of an animation."""
         animation = self.active_animations.get(animation_id)
         return animation.state if animation else None

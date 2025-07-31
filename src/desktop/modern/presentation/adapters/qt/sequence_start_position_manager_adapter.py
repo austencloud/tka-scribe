@@ -5,7 +5,7 @@ This adapter wraps the pure SequenceStartPositionService and provides Qt signal 
 This maintains the separation between platform-agnostic services and Qt-specific presentation logic.
 """
 
-from typing import Callable, Optional
+from collections.abc import Callable
 
 from PyQt6.QtCore import QObject, pyqtSignal
 
@@ -36,10 +36,10 @@ class QtSequenceStartPositionManagerAdapter(QObject):
 
     def __init__(
         self,
-        workbench_getter: Optional[Callable[[], object]] = None,
-        modern_to_legacy_converter: Optional[ModernToLegacyConverter] = None,
-        beat_factory: Optional[BeatFactory] = None,
-        persistence_service: Optional[SequencePersister] = None,
+        workbench_getter: Callable[[], object] | None = None,
+        modern_to_legacy_converter: ModernToLegacyConverter | None = None,
+        beat_factory: BeatFactory | None = None,
+        persistence_service: SequencePersister | None = None,
     ):
         super().__init__()
 
@@ -69,7 +69,7 @@ class QtSequenceStartPositionManagerAdapter(QObject):
     def set_start_position(
         self,
         pictograph_data: PictographData,
-        sequence_data: Optional[SequenceData] = None,
+        sequence_data: SequenceData | None = None,
         persist: bool = True,
     ):
         """Set the start position for the sequence."""
@@ -78,7 +78,7 @@ class QtSequenceStartPositionManagerAdapter(QObject):
     def update_start_position(
         self,
         pictograph_data: PictographData,
-        sequence_data: Optional[SequenceData] = None,
+        sequence_data: SequenceData | None = None,
         persist: bool = True,
     ):
         """Update the existing start position."""
@@ -87,13 +87,13 @@ class QtSequenceStartPositionManagerAdapter(QObject):
         )
 
     def get_start_position(
-        self, sequence_data: Optional[SequenceData] = None
-    ) -> Optional[BeatData]:
+        self, sequence_data: SequenceData | None = None
+    ) -> BeatData | None:
         """Get the current start position."""
         return self._service.get_start_position(sequence_data)
 
     def clear_start_position(
-        self, sequence_data: Optional[SequenceData] = None, persist: bool = True
+        self, sequence_data: SequenceData | None = None, persist: bool = True
     ):
         """Clear the start position."""
         return self._service.clear_start_position(sequence_data, persist)

@@ -5,7 +5,8 @@ Main menu bar component for the TKA modern desktop app.
 Provides navigation, settings access, and social media integration.
 """
 
-from typing import TYPE_CHECKING, Callable, Optional
+from collections.abc import Callable
+from typing import TYPE_CHECKING
 
 from PyQt6.QtCore import QSize, pyqtSignal
 from PyQt6.QtWidgets import QHBoxLayout, QVBoxLayout, QWidget
@@ -23,9 +24,7 @@ class MenuBarWidget(QWidget):
     tab_changed = pyqtSignal(str)  # Forward navigation signals
     settings_requested = pyqtSignal()
 
-    def __init__(
-        self, parent=None, size_provider: Optional[Callable[[], QSize]] = None
-    ):
+    def __init__(self, parent=None, size_provider: Callable[[], QSize] | None = None):
         super().__init__(parent)
 
         self._size_provider = size_provider or self._default_size_provider

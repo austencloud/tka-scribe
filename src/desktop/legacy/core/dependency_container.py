@@ -6,7 +6,8 @@ following the Dependency Inversion Principle.
 """
 
 import logging
-from typing import Any, Callable, Optional, Protocol, TypeVar
+from collections.abc import Callable
+from typing import Any, Protocol, TypeVar
 
 T = TypeVar("T")
 
@@ -47,9 +48,9 @@ class ServiceDescriptor:
     def __init__(
         self,
         interface: type,
-        implementation: Optional[type] = None,
-        instance: Optional[Any] = None,
-        factory: Optional[Callable] = None,
+        implementation: type | None = None,
+        instance: Any | None = None,
+        factory: Callable | None = None,
         lifetime: str = ServiceLifetime.TRANSIENT,
     ):
         self.interface = interface
@@ -202,7 +203,7 @@ class DependencyContainer:
 
 
 # Global container instance (this is the only global we allow)
-_container: Optional[DependencyContainer] = None
+_container: DependencyContainer | None = None
 
 
 def get_container() -> DependencyContainer:

@@ -17,10 +17,10 @@ Architecture:
 - AccessibilityTheme: WCAG-compliant variants
 """
 
-from abc import abstractmethod
 import datetime
 import logging
-from typing import Any, Optional
+from abc import abstractmethod
+from typing import Any
 
 from PyQt6.QtCore import QObject, QTimer, pyqtSignal
 from PyQt6.QtGui import QPalette
@@ -335,7 +335,7 @@ class SmartThemeManager(QObject):
         else:
             logger.warning(f"Theme not found: {theme_name}")
 
-    def get_current_theme(self) -> Optional[BaseTheme]:
+    def get_current_theme(self) -> BaseTheme | None:
         """Get the current active theme."""
         return self.current_theme
 

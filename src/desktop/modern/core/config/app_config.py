@@ -18,9 +18,8 @@ USAGE:
     container.register_singleton(AppConfig, lambda: app_config)
 """
 
-from dataclasses import dataclass
 import os
-from typing import Optional
+from dataclasses import dataclass
 
 # Result pattern removed - using simple exceptions
 from desktop.modern.core.config.data_config import DataConfig, create_data_config
@@ -180,10 +179,10 @@ class AppConfig:
 
 
 def create_app_config(
-    data_config: Optional[DataConfig] = None,
-    positioning_config: Optional[PositioningConfig] = None,
-    ui_config: Optional[UIConfig] = None,
-    logging_config: Optional[LoggingConfig] = None,
+    data_config: DataConfig | None = None,
+    positioning_config: PositioningConfig | None = None,
+    ui_config: UIConfig | None = None,
+    logging_config: LoggingConfig | None = None,
 ) -> AppConfig:
     """
     Create application configuration with optional overrides.

@@ -11,7 +11,7 @@ Extracted from OptionPickerSection to follow Single Responsibility Principle.
 """
 
 import asyncio
-from typing import Callable, Optional
+from collections.abc import Callable
 
 from PyQt6.QtCore import QParallelAnimationGroup, QPropertyAnimation, QTimer
 from PyQt6.QtWidgets import QGraphicsOpacityEffect, QWidget
@@ -45,7 +45,7 @@ class OptionPickerSectionAnimationHandler:
         self,
         parent_widget: QWidget,
         letter_type: LetterType,
-        animation_orchestrator: Optional[IAnimationOrchestrator] = None,
+        animation_orchestrator: IAnimationOrchestrator | None = None,
     ):
         """Initialize animation handler."""
         self._parent_widget = parent_widget
@@ -53,7 +53,7 @@ class OptionPickerSectionAnimationHandler:
         self._animation_orchestrator = animation_orchestrator
 
         # Animation state
-        self._current_fade_animation: Optional[QParallelAnimationGroup] = None
+        self._current_fade_animation: QParallelAnimationGroup | None = None
         self._is_animating = False
 
     def animate_content_update(

@@ -5,10 +5,10 @@ Commands for handling start position operations with undo/redo support.
 These replace the complex signal chains in the original architecture.
 """
 
-from dataclasses import dataclass
 import logging
-from typing import Any, Optional
 import uuid
+from dataclasses import dataclass
+from typing import Any
 
 from desktop.modern.core.commands.command_system import ICommand
 from desktop.modern.domain.models.beat_data import BeatData
@@ -23,8 +23,8 @@ class SetStartPositionCommand(ICommand[BeatData]):
     position_key: str
     event_bus: Any  # IEventBus
     _command_id: str = ""
-    _previous_position: Optional[BeatData] = None
-    _new_beat_data: Optional[BeatData] = None
+    _previous_position: BeatData | None = None
+    _new_beat_data: BeatData | None = None
 
     def __post_init__(self):
         if not self._command_id:
@@ -74,7 +74,7 @@ class SetStartPositionCommand(ICommand[BeatData]):
             logger.error(f"❌ Error executing SetStartPositionCommand: {e}")
             raise
 
-    def undo(self) -> Optional[BeatData]:
+    def undo(self) -> BeatData | None:
         """Undo: Restore previous start position"""
         try:
             if self._previous_position:
@@ -237,7 +237,7 @@ class ClearStartPositionCommand(ICommand[None]):
 
     event_bus: Any  # IEventBus
     _command_id: str = ""
-    _previous_position: Optional[BeatData] = None
+    _previous_position: BeatData | None = None
 
     def __post_init__(self):
         if not self._command_id:

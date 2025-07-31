@@ -11,12 +11,12 @@ PROVIDES:
 - Type-safe event publishing
 """
 
+import sys
+import uuid
 from abc import ABC, abstractmethod
 from datetime import datetime
 from pathlib import Path
-import sys
 from typing import TYPE_CHECKING, Any, Optional
-import uuid
 
 
 # Add project root to path using pathlib (standardized approach)
@@ -178,7 +178,7 @@ class PropPositioningEventPublisher(IPropPositioningEventPublisher):
 
         self.event_bus.publish(event)
 
-    def _get_motion_type_value(self, beat_data: BeatData, color: str) -> Optional[str]:
+    def _get_motion_type_value(self, beat_data: BeatData, color: str) -> str | None:
         """Get motion type value for specified color."""
         if not beat_data.pictograph_data or not beat_data.pictograph_data.motions:
             return None

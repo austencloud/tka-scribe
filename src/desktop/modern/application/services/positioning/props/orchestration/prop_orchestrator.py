@@ -12,10 +12,10 @@ PROVIDES:
 """
 
 import os
-from pathlib import Path
 import sys
-from typing import TYPE_CHECKING, Optional
 import uuid
+from pathlib import Path
+from typing import TYPE_CHECKING, Optional
 
 
 # Add project root to path using pathlib (standardized approach)
@@ -33,9 +33,9 @@ def _get_project_root() -> Path:
 _project_root = _get_project_root()
 sys.path.insert(0, str(_project_root))
 sys.path.insert(0, str(_project_root / "src"))
+import sys
 from abc import ABC, abstractmethod
 from datetime import datetime
-import sys
 from typing import Any
 
 # Add project root to path (following established pattern)
@@ -113,10 +113,10 @@ class PropOrchestrator(IPropOrchestrator):
 
     def __init__(
         self,
-        direction_service: Optional[IDirectionCalculationService] = None,
-        offset_service: Optional[IOffsetCalculationService] = None,
-        config_service: Optional[IJSONConfigurator] = None,
-        classification_service: Optional[IPropClassificationService] = None,
+        direction_service: IDirectionCalculationService | None = None,
+        offset_service: IOffsetCalculationService | None = None,
+        config_service: IJSONConfigurator | None = None,
+        classification_service: IPropClassificationService | None = None,
         event_bus: Optional["IEventBus"] = None,
     ):
         """Initialize with dependency injection."""

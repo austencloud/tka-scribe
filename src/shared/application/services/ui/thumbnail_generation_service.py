@@ -6,9 +6,8 @@ Wraps existing thumbnail generation infrastructure with clean interfaces.
 """
 
 import logging
-from pathlib import Path
 import tempfile
-from typing import Optional
+from pathlib import Path
 
 from desktop.modern.core.interfaces.ui_services import IThumbnailGenerationService
 from desktop.modern.domain.models.sequence_data import SequenceData
@@ -24,7 +23,7 @@ class ThumbnailGenerationService(IThumbnailGenerationService):
     with a clean, modern interface.
     """
 
-    def __init__(self, temp_directory: Optional[Path] = None):
+    def __init__(self, temp_directory: Path | None = None):
         """
         Initialize the thumbnail generation service.
 
@@ -42,7 +41,7 @@ class ThumbnailGenerationService(IThumbnailGenerationService):
         sequence: SequenceData,
         output_path: Path,
         fullscreen_preview: bool = False,
-    ) -> Optional[Path]:
+    ) -> Path | None:
         """
         Generate a thumbnail image for the given sequence.
 
@@ -89,7 +88,7 @@ class ThumbnailGenerationService(IThumbnailGenerationService):
             logger.error(f"Failed to generate sequence thumbnail: {e}")
             return None
 
-    def _convert_to_legacy_format(self, sequence: SequenceData) -> Optional[list]:
+    def _convert_to_legacy_format(self, sequence: SequenceData) -> list | None:
         """
         Convert modern SequenceData to legacy format.
 
@@ -124,7 +123,7 @@ class ThumbnailGenerationService(IThumbnailGenerationService):
 
     def _generate_with_legacy_system(
         self, legacy_sequence: list, output_path: Path, fullscreen_preview: bool
-    ) -> Optional[str]:
+    ) -> str | None:
         """
         Generate thumbnail using the legacy thumbnail generation system.
 
@@ -220,7 +219,7 @@ class MockThumbnailGenerationService(IThumbnailGenerationService):
     Creates placeholder thumbnails instead of real ones.
     """
 
-    def __init__(self, temp_directory: Optional[Path] = None):
+    def __init__(self, temp_directory: Path | None = None):
         """
         Initialize the mock thumbnail generation service.
 
@@ -234,7 +233,7 @@ class MockThumbnailGenerationService(IThumbnailGenerationService):
         sequence: SequenceData,
         output_path: Path,
         fullscreen_preview: bool = False,
-    ) -> Optional[Path]:
+    ) -> Path | None:
         """Generate a mock thumbnail for testing"""
         try:
             # Validate inputs

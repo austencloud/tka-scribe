@@ -7,8 +7,9 @@ and state coordination that must work identically across desktop and web platfor
 """
 
 from abc import ABC, abstractmethod
+from collections.abc import Callable
 from enum import Enum
-from typing import Any, Callable, Optional
+from typing import Any
 
 from desktop.modern.domain.models.beat_data import BeatData
 from desktop.modern.domain.models.enums import MotionType
@@ -128,7 +129,7 @@ class IGraphEditorDataFlowManager(ABC):
         """
 
     @abstractmethod
-    def undo_last_change(self) -> Optional[BeatData]:
+    def undo_last_change(self) -> BeatData | None:
         """
         Undo the last change made.
 
@@ -140,7 +141,7 @@ class IGraphEditorDataFlowManager(ABC):
         """
 
     @abstractmethod
-    def redo_last_change(self) -> Optional[BeatData]:
+    def redo_last_change(self) -> BeatData | None:
         """
         Redo the last undone change.
 
@@ -261,7 +262,7 @@ class IGraphEditorStateManager(ABC):
     """Interface for graph editor state management operations."""
 
     @abstractmethod
-    def get_current_beat_data(self) -> Optional[BeatData]:
+    def get_current_beat_data(self) -> BeatData | None:
         """
         Get current beat data being edited.
 
@@ -285,7 +286,7 @@ class IGraphEditorStateManager(ABC):
         """
 
     @abstractmethod
-    def get_current_sequence(self) -> Optional[SequenceData]:
+    def get_current_sequence(self) -> SequenceData | None:
         """
         Get current sequence being edited.
 
@@ -306,7 +307,7 @@ class IGraphEditorStateManager(ABC):
         """
 
     @abstractmethod
-    def get_current_beat_index(self) -> Optional[int]:
+    def get_current_beat_index(self) -> int | None:
         """
         Get index of current beat being edited.
 

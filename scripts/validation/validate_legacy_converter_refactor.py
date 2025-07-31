@@ -7,9 +7,9 @@ and its supporting classes to ensure everything works correctly.
 """
 
 import logging
-from pathlib import Path
 import sys
 import traceback
+from pathlib import Path
 
 # Add project paths
 project_root = Path(__file__).parent

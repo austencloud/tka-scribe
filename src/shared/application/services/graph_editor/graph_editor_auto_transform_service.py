@@ -6,7 +6,8 @@ Qt-specific signal coordination is handled by adapters in the presentation layer
 """
 
 import logging
-from typing import TYPE_CHECKING, Any, Callable, Optional
+from collections.abc import Callable
+from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     from desktop.modern.presentation.components.graph_editor.graph_editor import (
@@ -32,7 +33,7 @@ class GraphEditorAutoTransformService:
 
     def __init__(
         self,
-        graph_editor_getter: Optional[Callable[[], "GraphEditor"]] = None,
+        graph_editor_getter: Callable[[], "GraphEditor"] | None = None,
     ):
         self.graph_editor_getter = graph_editor_getter
         self._auto_transform_enabled = True
@@ -101,7 +102,7 @@ class GraphEditorAutoTransformService:
         self,
         element_ids: list[str],
         alignment_type: str = "center",
-        context: Optional[dict[str, Any]] = None,
+        context: dict[str, Any] | None = None,
     ) -> bool:
         """
         Automatically align elements.
@@ -149,7 +150,7 @@ class GraphEditorAutoTransformService:
         self,
         element_ids: list[str],
         distribution_type: str = "horizontal",
-        context: Optional[dict[str, Any]] = None,
+        context: dict[str, Any] | None = None,
     ) -> bool:
         """
         Automatically distribute elements.
@@ -196,8 +197,8 @@ class GraphEditorAutoTransformService:
     def auto_resize_elements(
         self,
         element_ids: list[str],
-        target_size: Optional[dict[str, float]] = None,
-        context: Optional[dict[str, Any]] = None,
+        target_size: dict[str, float] | None = None,
+        context: dict[str, Any] | None = None,
     ) -> bool:
         """
         Automatically resize elements.
@@ -242,8 +243,8 @@ class GraphEditorAutoTransformService:
     def snap_to_grid(
         self,
         element_ids: list[str],
-        grid_size: Optional[int] = None,
-        context: Optional[dict[str, Any]] = None,
+        grid_size: int | None = None,
+        context: dict[str, Any] | None = None,
     ) -> bool:
         """
         Snap elements to grid.
@@ -291,8 +292,8 @@ class GraphEditorAutoTransformService:
     def auto_layout(
         self,
         layout_type: str = "flow",
-        element_ids: Optional[list[str]] = None,
-        context: Optional[dict[str, Any]] = None,
+        element_ids: list[str] | None = None,
+        context: dict[str, Any] | None = None,
     ) -> bool:
         """
         Apply automatic layout to elements.
@@ -337,8 +338,8 @@ class GraphEditorAutoTransformService:
     def animate_transform(
         self,
         transform_id: str,
-        duration: Optional[int] = None,
-        context: Optional[dict[str, Any]] = None,
+        duration: int | None = None,
+        context: dict[str, Any] | None = None,
     ) -> bool:
         """
         Animate a transform operation.

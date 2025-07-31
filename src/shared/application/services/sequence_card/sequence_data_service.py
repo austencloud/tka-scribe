@@ -5,8 +5,9 @@ Handles file system operations, metadata extraction, and data validation.
 """
 
 import logging
+from collections.abc import Callable
 from pathlib import Path
-from typing import Any, Callable
+from typing import Any
 
 from desktop.modern.core.interfaces.sequence_card_services import (
     ISequenceCardDataService,

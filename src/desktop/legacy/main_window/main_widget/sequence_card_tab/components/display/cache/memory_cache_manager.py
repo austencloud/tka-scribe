@@ -5,9 +5,9 @@ Extracted from the monolithic ImageProcessor class to follow SRP.
 """
 
 import collections
-from collections import OrderedDict as OrderedDictType
 import logging
-from typing import Generic, Optional, TypeVar
+from collections import OrderedDict as OrderedDictType
+from typing import Generic, TypeVar
 
 T = TypeVar("T")
 
@@ -33,7 +33,7 @@ class MemoryCacheManager(Generic[T]):
         self.hits = 0
         self.misses = 0
 
-    def get(self, key: str) -> Optional[T]:
+    def get(self, key: str) -> T | None:
         """
         Get item from cache.
 

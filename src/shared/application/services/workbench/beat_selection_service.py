@@ -5,9 +5,9 @@ Handles all beat selection logic including multi-selection, keyboard navigation,
 and validation without any Qt dependencies.
 """
 
-from enum import Enum
 import logging
-from typing import NamedTuple, Optional
+from enum import Enum
+from typing import NamedTuple
 
 from desktop.modern.core.interfaces.workbench_services import IBeatSelectionService
 
@@ -27,7 +27,7 @@ class SelectionChangeResult(NamedTuple):
 
     changed: bool
     selection_type: SelectionType
-    selected_index: Optional[int]
+    selected_index: int | None
     previous_indices: list[int]
     current_indices: list[int]
 
@@ -59,7 +59,7 @@ class BeatSelectionService(IBeatSelectionService):
 
     def __init__(self):
         """Initialize the selection service with default values."""
-        self._selected_index: Optional[int] = None
+        self._selected_index: int | None = None
         self._selected_indices: list[int] = []
         self._multi_selection_enabled = False
         self._start_position_selected = False
@@ -296,7 +296,7 @@ class BeatSelectionService(IBeatSelectionService):
         return SelectionChangeResult.no_change()
 
     # Query Methods
-    def get_selected_index(self) -> Optional[int]:
+    def get_selected_index(self) -> int | None:
         """Get the primary selected beat index."""
         return self._selected_index
 
@@ -429,6 +429,6 @@ class BeatSelectionService(IBeatSelectionService):
         """Get list of selected beat indices (interface implementation)."""
         return sorted(list(self._selected_beats))
 
-    def get_primary_selection(self) -> Optional[int]:
+    def get_primary_selection(self) -> int | None:
         """Get primary selected beat index (interface implementation)."""
         return self._primary_selection

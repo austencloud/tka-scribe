@@ -1,7 +1,7 @@
 import logging
 import os
-from pathlib import Path
 import sys
+from pathlib import Path
 
 # Simple path setup - add project root and run setup_paths
 project_root = Path(__file__).resolve().parent.parent.parent.parent

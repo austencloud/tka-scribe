@@ -17,13 +17,12 @@ USAGE:
     python run_critical_fixes_tests.py [--verbose] [--report] [--fix-only]
 """
 
-from dataclasses import dataclass
-from pathlib import Path
 import subprocess
 import sys
 import time
 import traceback
-from typing import Optional
+from dataclasses import dataclass
+from pathlib import Path
 
 # Add src to path for imports
 project_root = Path(__file__).parent
@@ -49,8 +48,8 @@ class TestResult:
     name: str
     passed: bool
     duration: float
-    error_message: Optional[str] = None
-    details: Optional[str] = None
+    error_message: str | None = None
+    details: str | None = None
 
 
 @dataclass
@@ -70,7 +69,7 @@ class TKAFixesTestRunner:
     Provides comprehensive validation of all applied fixes and reports results.
     """
 
-    def __init__(self, verbose: bool = False, report_file: Optional[str] = None):
+    def __init__(self, verbose: bool = False, report_file: str | None = None):
         self.verbose = verbose
         self.report_file = report_file
         self.test_results: list[TestResult] = []

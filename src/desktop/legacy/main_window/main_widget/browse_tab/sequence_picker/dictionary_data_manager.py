@@ -1,9 +1,8 @@
 # data_manager.py
-from dataclasses import dataclass, field
-from datetime import datetime
 import json
 import os
-from typing import Optional
+from dataclasses import dataclass, field
+from datetime import datetime
 
 from PIL import Image
 from utils.path_helpers import get_data_path
@@ -13,10 +12,10 @@ from utils.path_helpers import get_data_path
 class SequenceRecord:
     word: str
     thumbnails: list[str]
-    author: Optional[str] = None
-    level: Optional[int] = None
-    date_added: Optional[datetime] = None
-    grid_mode: Optional[str] = None
+    author: str | None = None
+    level: int | None = None
+    date_added: datetime | None = None
+    grid_mode: str | None = None
     # Add more fields as needed: favorites, length, start_pos, etc.
 
 

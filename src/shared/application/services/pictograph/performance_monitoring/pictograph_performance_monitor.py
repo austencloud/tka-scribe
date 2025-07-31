@@ -11,8 +11,8 @@ This service handles:
 
 import logging
 import time
-from typing import Any
 import uuid
+from typing import Any
 
 from desktop.modern.core.interfaces.pictograph_rendering_services import (
     IPictographPerformanceMonitor,

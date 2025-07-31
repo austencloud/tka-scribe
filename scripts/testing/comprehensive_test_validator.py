@@ -7,12 +7,11 @@ Executes ALL 382 tests individually and categorizes their status.
 Provides detailed analysis of pass/fail/error states with specific diagnostics.
 """
 
-from dataclasses import asdict, dataclass
 import json
-from pathlib import Path
 import subprocess
 import time
-from typing import Optional
+from dataclasses import asdict, dataclass
+from pathlib import Path
 
 
 @dataclass
@@ -24,9 +23,9 @@ class TestResult:
     test_name: str
     status: str  # PASS, FAIL_IMPORT, FAIL_LOGIC, COLLECTION_ERROR, SKIP
     execution_time: float
-    error_message: Optional[str] = None
-    error_type: Optional[str] = None
-    output: Optional[str] = None
+    error_message: str | None = None
+    error_type: str | None = None
+    output: str | None = None
 
 
 class ComprehensiveTestValidator:

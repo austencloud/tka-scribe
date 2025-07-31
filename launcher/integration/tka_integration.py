@@ -19,8 +19,8 @@ Architecture:
 """
 
 import logging
-from pathlib import Path
 import sys
+from pathlib import Path
 
 # Add paths for TKA imports
 launcher_dir = Path(__file__).parent

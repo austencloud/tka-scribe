@@ -13,7 +13,7 @@ via the BeatOperationCoordinator. The God Object has been broken down into:
 REFACTORING COMPLETE: From 21KB God Object to clean coordinator pattern!
 """
 
-from typing import Callable, Optional
+from collections.abc import Callable
 
 from PyQt6.QtCore import QObject, pyqtSignal
 
@@ -46,9 +46,9 @@ class SequenceBeatOperations(QObject):
 
     def __init__(
         self,
-        workbench_getter: Optional[Callable[[], object]] = None,
-        workbench_setter: Optional[Callable[[SequenceData], None]] = None,
-        modern_to_legacy_converter: Optional[ModernToLegacyConverter] = None,
+        workbench_getter: Callable[[], object] | None = None,
+        workbench_setter: Callable[[SequenceData], None] | None = None,
+        modern_to_legacy_converter: ModernToLegacyConverter | None = None,
     ):
         super().__init__()
 
@@ -100,15 +100,13 @@ class SequenceBeatOperations(QObject):
         """Delete beat and all following beats from the sequence (legacy behavior)."""
         return self.coordinator.delete_beat(sequence, beat_index)
 
-    def get_current_sequence(self) -> Optional[SequenceData]:
+    def get_current_sequence(self) -> SequenceData | None:
         """Get the current sequence from workbench"""
         return self.coordinator.get_current_sequence()
 
     # LEGACY METHODS - Keep for backward compatibility
 
-    def _calculate_next_beat_number(
-        self, current_sequence: Optional[SequenceData]
-    ) -> int:
+    def _calculate_next_beat_number(self, current_sequence: SequenceData | None) -> int:
         """Calculate the next beat number for a new beat."""
         return self.coordinator.beat_creator.calculate_next_beat_number(
             current_sequence

@@ -6,7 +6,8 @@ Qt-specific signal coordination is handled by adapters in the presentation layer
 """
 
 import logging
-from typing import TYPE_CHECKING, Any, Callable, Optional
+from collections.abc import Callable
+from typing import TYPE_CHECKING, Any
 
 from desktop.modern.domain.models.beat_data import BeatData
 from desktop.modern.domain.models.sequence_data import SequenceData
@@ -34,7 +35,7 @@ class GraphEditorDataFlowService:
 
     def __init__(
         self,
-        graph_editor_getter: Optional[Callable[[], "GraphEditor"]] = None,
+        graph_editor_getter: Callable[[], "GraphEditor"] | None = None,
     ):
         self.graph_editor_getter = graph_editor_getter
 

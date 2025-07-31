@@ -1,6 +1,7 @@
+from collections.abc import Callable
 from copy import deepcopy
 from functools import partial
-from typing import TYPE_CHECKING, Callable
+from typing import TYPE_CHECKING
 
 from base_widgets.pictograph.legacy_pictograph import LegacyPictograph
 from PyQt6.QtWidgets import QGridLayout, QHBoxLayout, QVBoxLayout

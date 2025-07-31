@@ -1,4 +1,5 @@
-from typing import Any, Callable, Optional
+from collections.abc import Callable
+from typing import Any, Optional
 
 from PyQt6.QtCore import QSize, pyqtSignal
 from PyQt6.QtWidgets import QWidget
@@ -31,7 +32,7 @@ class OptionPicker(ViewableComponentBase):
     def __init__(
         self,
         container: DIContainer,
-        progress_callback: Optional[Callable[[str, float], None]] = None,
+        progress_callback: Callable[[str, float], None] | None = None,
         parent=None,
     ):
         """

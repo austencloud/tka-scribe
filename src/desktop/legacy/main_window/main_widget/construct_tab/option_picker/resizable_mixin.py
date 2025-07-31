@@ -1,4 +1,5 @@
-from typing import Callable, Union
+from collections.abc import Callable
+from typing import Union
 
 from PyQt6.QtCore import QSize
 from PyQt6.QtGui import QFontMetrics

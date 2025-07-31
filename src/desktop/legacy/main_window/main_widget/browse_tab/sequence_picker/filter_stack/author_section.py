@@ -1,7 +1,7 @@
 # author_section.py (refactored)
 
-from functools import partial
 import os
+from functools import partial
 from typing import TYPE_CHECKING
 
 from legacy_settings_manager.global_settings.app_context import AppContext

@@ -14,12 +14,13 @@ while maintaining the proven algorithms from the individual services.
 Uses Qt signals for clean inter-component communication.
 """
 
+import json
 from abc import ABCMeta
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from enum import Enum
-import json
 from pathlib import Path
-from typing import Any, Callable, Optional
+from typing import Any
 
 from PyQt6.QtCore import QObject, pyqtSignal
 
@@ -69,7 +70,7 @@ class UIState:
     tab_states: dict[str, dict[str, Any]] = field(default_factory=dict)
 
     # Option picker state
-    option_picker_selection: Optional[str] = None
+    option_picker_selection: str | None = None
     option_picker_filters: dict[str, Any] = field(default_factory=dict)
 
     # Settings
@@ -98,7 +99,7 @@ class UIStateManager(QObject, IUIStateManager, metaclass=QObjectABCMeta):
     hotkey_triggered = pyqtSignal(str)  # hotkey_name
     window_geometry_changed = pyqtSignal(dict)  # geometry
 
-    def __init__(self, session_service: Optional[ISessionStateTracker] = None):
+    def __init__(self, session_service: ISessionStateTracker | None = None):
         QObject.__init__(self)
 
         # Core state
@@ -205,7 +206,7 @@ class UIStateManager(QObject, IUIStateManager, metaclass=QObjectABCMeta):
         self._ui_state.option_picker_selection = selection
         self._save_state()
 
-    def get_option_picker_selection(self) -> Optional[str]:
+    def get_option_picker_selection(self) -> str | None:
         """Get option picker selection."""
         return self._ui_state.option_picker_selection
 
@@ -280,9 +281,9 @@ class UIStateManager(QObject, IUIStateManager, metaclass=QObjectABCMeta):
 
     def update_ui_state_with_session(
         self,
-        active_tab: Optional[str] = None,
-        beat_layout: Optional[dict[str, Any]] = None,
-        component_visibility: Optional[dict[str, bool]] = None,
+        active_tab: str | None = None,
+        beat_layout: dict[str, Any] | None = None,
+        component_visibility: dict[str, bool] | None = None,
     ) -> None:
         """Update UI state and save to session."""
         if active_tab:

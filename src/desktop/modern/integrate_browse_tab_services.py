@@ -5,8 +5,8 @@ This script integrates the new service-enabled browse tab into the modern archit
 """
 
 import logging
-from pathlib import Path
 import shutil
+from pathlib import Path
 
 logger = logging.getLogger(__name__)
 

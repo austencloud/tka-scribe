@@ -1,7 +1,7 @@
+import logging
 from dataclasses import dataclass
 from enum import Enum
-import logging
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 # Event-driven architecture imports
 if TYPE_CHECKING:
@@ -86,7 +86,7 @@ class LayoutConfig:
     spacing: int = 5
     min_item_size: tuple[int, int] = (100, 100)
     max_item_size: tuple[int, int] = (300, 300)
-    items_per_row: Optional[int] = None
+    items_per_row: int | None = None
     maintain_aspect_ratio: bool = True
 
 

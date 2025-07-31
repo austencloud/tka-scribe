@@ -9,8 +9,8 @@ Modern: y = options.additional_height_top + margin + row * (beat_size + margin)
 The modern version incorrectly adds margin to the Y positioning, which creates extra space.
 """
 
-from pathlib import Path
 import sys
+from pathlib import Path
 
 # Add the src directory to the Python path
 src_dir = Path(__file__).parent.parent / "src"

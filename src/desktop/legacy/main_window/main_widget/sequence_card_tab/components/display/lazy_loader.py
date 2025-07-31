@@ -1,6 +1,7 @@
 # src/main_window/main_widget/sequence_card_tab/components/display/lazy_loader.py
 import logging
-from typing import Any, Callable, Optional
+from collections.abc import Callable
+from typing import Any
 
 from PyQt6.QtCore import QObject, QTimer, pyqtSignal
 from PyQt6.QtGui import QPixmap
@@ -48,7 +49,7 @@ class LazyImageLoader(QObject):
         self.visible_images: set[str] = set()
 
         # Placeholder pixmap for unloaded images
-        self.placeholder_pixmap: Optional[QPixmap] = None
+        self.placeholder_pixmap: QPixmap | None = None
         self._create_placeholder()
 
         # Timer for debounced loading

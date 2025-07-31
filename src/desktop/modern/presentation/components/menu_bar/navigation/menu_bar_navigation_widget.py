@@ -5,7 +5,8 @@ Navigation component for the TKA modern desktop app with tab management.
 Provides clean button-based navigation between different application sections.
 """
 
-from typing import TYPE_CHECKING, Callable, Optional
+from collections.abc import Callable
+from typing import TYPE_CHECKING
 
 from PyQt6.QtCore import QSize, pyqtSignal
 from PyQt6.QtGui import QFont
@@ -22,9 +23,7 @@ class MenuBarNavigationWidget(QWidget):
 
     tab_changed = pyqtSignal(str)  # Emit tab name instead of index
 
-    def __init__(
-        self, parent=None, size_provider: Optional[Callable[[], QSize]] = None
-    ):
+    def __init__(self, parent=None, size_provider: Callable[[], QSize] | None = None):
         super().__init__(parent)
 
         self._size_provider = size_provider or self._default_size_provider

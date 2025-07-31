@@ -18,9 +18,9 @@ Architecture:
 - AnimationPresets: Reusable animation configurations
 """
 
+import logging
 from dataclasses import dataclass
 from enum import Enum
-import logging
 from typing import Any
 
 from PyQt6.QtCore import QObject, pyqtSignal

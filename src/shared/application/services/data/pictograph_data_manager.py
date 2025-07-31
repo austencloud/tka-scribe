@@ -11,9 +11,9 @@ This service provides a clean, focused interface for pictograph data operations
 while maintaining the proven data management algorithms.
 """
 
-from abc import ABC, abstractmethod
 import logging
-from typing import Any, Optional
+from abc import ABC, abstractmethod
+from typing import Any
 
 from desktop.modern.core.interfaces.pictograph_services import IPictographDataManager
 from desktop.modern.domain.models.beat_data import BeatData
@@ -74,7 +74,7 @@ class PictographDataManager(IPictographDataManager):
         self._dataset_index: dict[str, list[str]] = {}
         self._dataset_query = dataset_query
         self._pictograph_cache: dict[str, Any] = {}
-        self._dataset_cache: Optional[dict[str, list[dict[str, Any]]]] = None
+        self._dataset_cache: dict[str, list[dict[str, Any]]] | None = None
 
     def create_pictograph(
         self, grid_mode: GridMode = GridMode.DIAMOND
@@ -92,7 +92,7 @@ class PictographDataManager(IPictographDataManager):
             metadata={"created_by": "pictograph_data_service"},
         )
 
-    def create_from_beat(self, beat_data: BeatData) -> Optional[PictographData]:
+    def create_from_beat(self, beat_data: BeatData) -> PictographData | None:
         """Get pictograph data from beat (returns embedded pictograph if available)."""
         if beat_data.has_pictograph:
             # Return the embedded pictograph data directly
@@ -120,7 +120,7 @@ class PictographDataManager(IPictographDataManager):
             if pid in self._pictograph_cache
         ]
 
-    def get_pictograph_by_id(self, pictograph_id: str) -> Optional[PictographData]:
+    def get_pictograph_by_id(self, pictograph_id: str) -> PictographData | None:
         """Get pictograph by ID."""
         return self._pictograph_cache.get(pictograph_id)
 
@@ -154,7 +154,7 @@ class PictographDataManager(IPictographDataManager):
         self._pictograph_cache.clear()
         self._dataset_index.clear()
 
-    def get_pictograph_data(self, pictograph_id: str) -> Optional[PictographData]:
+    def get_pictograph_data(self, pictograph_id: str) -> PictographData | None:
         """
         Get pictograph data by ID.
 

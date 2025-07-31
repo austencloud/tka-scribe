@@ -4,8 +4,8 @@ Final Comprehensive Validation
 Tests all components of the start position service refactoring.
 """
 
-from pathlib import Path
 import sys
+from pathlib import Path
 
 # Add src to path
 modern_src_path = Path(__file__).parent / "src"

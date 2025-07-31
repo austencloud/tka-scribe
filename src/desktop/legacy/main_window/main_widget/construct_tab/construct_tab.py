@@ -1,4 +1,4 @@
-from typing import Callable
+from collections.abc import Callable
 
 from base_widgets.pictograph.legacy_pictograph import LegacyPictograph
 from enums.letter.letter import Letter

@@ -1,12 +1,14 @@
 # src/main_window/main_widget/sequence_card_tab/export/image_exporter.py
-from datetime import datetime
 import gc
 import io
 import json
 import os
 import time
+from datetime import datetime
 from typing import TYPE_CHECKING
 
+import numpy as np
+import psutil
 from main_window.main_widget.browse_tab.temp_beat_frame.temp_beat_frame import (
     TempBeatFrame,
 )
@@ -14,9 +16,7 @@ from main_window.main_widget.metadata_extractor import MetaDataExtractor
 from main_window.main_widget.sequence_workbench.legacy_beat_frame.image_export_manager.image_export_manager import (
     ImageExportManager,
 )
-import numpy as np
 from PIL import Image, PngImagePlugin
-import psutil
 from PyQt6.QtCore import QBuffer, Qt
 from PyQt6.QtGui import QImage
 from PyQt6.QtWidgets import QApplication

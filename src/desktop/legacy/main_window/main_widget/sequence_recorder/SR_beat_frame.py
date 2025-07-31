@@ -1,7 +1,8 @@
 from typing import TYPE_CHECKING
 
-from base_widgets.pictograph.legacy_pictograph import LegacyPictograph
 import cv2
+import numpy as np
+from base_widgets.pictograph.legacy_pictograph import LegacyPictograph
 from main_window.main_widget.sequence_recorder.SR_beat_selection_manager import (
     SR_BeatSelectionManager,
 )
@@ -9,7 +10,6 @@ from main_window.main_widget.sequence_workbench.legacy_beat_frame.beat import (
     Beat,
     LegacyBeatView,
 )
-import numpy as np
 from PyQt6.QtCore import QSize, Qt, QTimer
 from PyQt6.QtGui import QImage, QPixmap
 from PyQt6.QtWidgets import QApplication, QFrame, QGridLayout

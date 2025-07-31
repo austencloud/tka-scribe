@@ -7,9 +7,9 @@ following clean architecture principles.
 """
 
 import logging
-from pathlib import Path
 import tempfile
-from typing import Optional, Protocol
+from pathlib import Path
+from typing import Protocol
 
 from desktop.modern.core.interfaces.workbench_services import IFullScreenViewer
 from desktop.modern.domain.models.sequence_data import SequenceData
@@ -25,14 +25,14 @@ class IThumbnailGenerator(Protocol):
         sequence: SequenceData,
         output_path: Path,
         fullscreen_preview: bool = False,
-    ) -> Optional[Path]:
+    ) -> Path | None:
         """Generate thumbnail image for sequence"""
 
 
 class ISequenceStateReader(Protocol):
     """Interface for reading current sequence state from UI"""
 
-    def get_current_sequence(self) -> Optional[SequenceData]:
+    def get_current_sequence(self) -> SequenceData | None:
         """Get the current sequence from workbench UI state"""
 
 
@@ -66,7 +66,7 @@ class FullScreenViewer(IFullScreenViewer):
         thumbnail_generator: IThumbnailGenerator,
         sequence_state_reader: ISequenceStateReader,
         overlay_factory: IFullScreenOverlayFactory,
-        temp_directory: Optional[Path] = None,
+        temp_directory: Path | None = None,
     ):
         """
         Initialize the full screen service.
@@ -83,7 +83,7 @@ class FullScreenViewer(IFullScreenViewer):
         self._temp_directory = temp_directory or Path(tempfile.gettempdir())
 
         # Current overlay instance (for cleanup)
-        self._current_overlay: Optional[IFullScreenOverlay] = None
+        self._current_overlay: IFullScreenOverlay | None = None
 
     def create_sequence_thumbnail(self, sequence: SequenceData) -> bytes:
         """

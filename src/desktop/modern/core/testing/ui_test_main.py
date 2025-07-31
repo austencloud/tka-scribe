@@ -8,8 +8,8 @@ This script can be run directly or imported as a module.
 
 import argparse
 import logging
-from pathlib import Path
 import sys
+from pathlib import Path
 
 # Add the src directory to the Python path
 current_dir = Path(__file__).parent

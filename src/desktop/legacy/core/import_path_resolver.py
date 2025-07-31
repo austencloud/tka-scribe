@@ -7,9 +7,8 @@ finding the correct core directory regardless of the current file's location.
 
 import importlib.util
 import logging
-from pathlib import Path
 import sys
-from typing import Optional
+from pathlib import Path
 
 logger = logging.getLogger(__name__)
 
@@ -43,7 +42,7 @@ class CoreImportResolver:
         if project_root:
             self._scan_directory_for_cores(project_root)
 
-    def _find_project_root(self, start_path: Path) -> Optional[Path]:
+    def _find_project_root(self, start_path: Path) -> Path | None:
         """Find the project root by looking for key indicators."""
         current = start_path
 
@@ -96,8 +95,8 @@ class CoreImportResolver:
             logger.warning(f"Error scanning core modules in {core_dir}: {e}")
 
     def resolve_core_import(
-        self, module_name: str, requesting_file: Optional[str] = None
-    ) -> Optional[Path]:
+        self, module_name: str, requesting_file: str | None = None
+    ) -> Path | None:
         """
         Resolve a core module import to its actual file path.
 
@@ -130,7 +129,7 @@ class CoreImportResolver:
 
     def _context_aware_resolve(
         self, module_name: str, requesting_file: str
-    ) -> Optional[Path]:
+    ) -> Path | None:
         """
         Attempt to resolve based on the requesting file's location.
         """

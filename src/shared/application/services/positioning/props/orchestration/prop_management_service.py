@@ -11,11 +11,11 @@ This service is responsible for determining when and how to separate props
 to avoid overlaps, particularly for beta-ending letters.
 """
 
+import uuid
 from abc import ABC, abstractmethod
 from datetime import datetime
 from enum import Enum
-from typing import TYPE_CHECKING, Any, Optional
-import uuid
+from typing import TYPE_CHECKING, Any
 
 from desktop.modern.core.types import Point
 from desktop.modern.domain.models import (
@@ -94,7 +94,7 @@ class PropManagementService(IPropManagementService):
     - Prop overlap detection and resolution
     """
 
-    def __init__(self, event_bus: Optional[IEventBus] = None):
+    def __init__(self, event_bus: IEventBus | None = None):
         # Event system integration
         self.event_bus = event_bus or (
             get_event_bus() if EVENT_SYSTEM_AVAILABLE else None
@@ -372,7 +372,7 @@ class PropManagementService(IPropManagementService):
         return Orientation.OUT if orientation == Orientation.IN else Orientation.IN
 
     def _calculate_separation_direction(
-        self, motion: MotionData, color: str, letter: Optional[str] = None
+        self, motion: MotionData, color: str, letter: str | None = None
     ) -> SeparationDirection:
         """
         Calculate the direction props should be separated.

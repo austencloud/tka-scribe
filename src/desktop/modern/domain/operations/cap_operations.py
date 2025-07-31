@@ -5,10 +5,9 @@ Direct port of Circular Algorithmic Permutation logic from legacy system.
 These are the mathematical transformations that make circular sequences work.
 """
 
+import logging
 from abc import ABC, abstractmethod
 from enum import Enum
-import logging
-from typing import Optional
 
 from desktop.modern.domain.models.beat_data import BeatData
 from desktop.modern.domain.models.sequence_data import SequenceData
@@ -121,7 +120,7 @@ class StrictRotatedCAP(CAPOperation):
         ]
         return len(non_start_beats) > 0
 
-    def _get_first_sequence_beat(self, sequence: SequenceData) -> Optional[BeatData]:
+    def _get_first_sequence_beat(self, sequence: SequenceData) -> BeatData | None:
         """Get the first beat that's not a start position."""
         for beat in sequence.beats:
             if not beat.metadata.get("is_start_position"):

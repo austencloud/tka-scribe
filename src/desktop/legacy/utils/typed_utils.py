@@ -6,11 +6,10 @@ that were previously untyped or poorly typed.
 """
 
 import logging
+from collections.abc import Callable
 from typing import (
     Any,
-    Callable,
     Generic,
-    Optional,
     Protocol,
     TypeVar,
     runtime_checkable,
@@ -44,7 +43,7 @@ def calc_font_size(
     parent_height: int,
     factor: float = 0.03,
     min_size: int = 10,
-    max_size: Optional[int] = None,
+    max_size: int | None = None,
 ) -> int:
     """
     Calculate font size based on parent height with proper type safety.
@@ -107,9 +106,9 @@ def calc_label_size(text: str, font: QFont) -> tuple[int, int]:
 def safe_get_dict_value(
     dictionary: dict[K, V],
     key: K,
-    default: Optional[V] = None,
-    expected_type: Optional[type] = None,
-) -> Optional[V]:
+    default: V | None = None,
+    expected_type: type | None = None,
+) -> V | None:
     """
     Safely get a value from a dictionary with type checking.
 
@@ -143,9 +142,7 @@ def safe_get_dict_value(
     return value
 
 
-def safe_cast(
-    value: Any, target_type: type, default: Optional[T] = None
-) -> Optional[T]:
+def safe_cast(value: Any, target_type: type, default: T | None = None) -> T | None:
     """
     Safely cast a value to a target type.
 
@@ -174,7 +171,7 @@ def safe_cast(
         return default
 
 
-def validate_widget_size(widget: QWidget, min_size: Optional[QSize] = None) -> bool:
+def validate_widget_size(widget: QWidget, min_size: QSize | None = None) -> bool:
     """
     Validate that a widget has a reasonable size.
 
@@ -202,8 +199,8 @@ def validate_widget_size(widget: QWidget, min_size: Optional[QSize] = None) -> b
 
 def create_safe_callback(
     callback: Callable[..., Any],
-    error_handler: Optional[Callable[[Exception], None]] = None,
-) -> Callable[..., Optional[Any]]:
+    error_handler: Callable[[Exception], None] | None = None,
+) -> Callable[..., Any | None]:
     """
     Create a safe wrapper around a callback that handles exceptions.
 
@@ -215,7 +212,7 @@ def create_safe_callback(
         A safe wrapper function
     """
 
-    def safe_wrapper(*args, **kwargs) -> Optional[Any]:
+    def safe_wrapper(*args, **kwargs) -> Any | None:
         try:
             return callback(*args, **kwargs)
         except Exception as e:
@@ -287,7 +284,7 @@ def ensure_list(value: T | list[T]) -> list[T]:
     return [value]
 
 
-def filter_none_values(dictionary: dict[K, Optional[V]]) -> dict[K, V]:
+def filter_none_values(dictionary: dict[K, V | None]) -> dict[K, V]:
     """
     Filter out None values from a dictionary.
 

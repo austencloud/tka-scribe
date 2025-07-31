@@ -1,7 +1,7 @@
 # base_classes/start_position_manager.py
 
-from copy import deepcopy
 import random
+from copy import deepcopy
 from typing import TYPE_CHECKING, Any
 
 from main_window.main_widget.sequence_workbench.legacy_beat_frame.legacy_start_pos_beat import (

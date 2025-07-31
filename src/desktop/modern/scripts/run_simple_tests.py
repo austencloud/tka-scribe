@@ -4,8 +4,8 @@ Simple test runner for Start Position Services.
 """
 
 import os
-from pathlib import Path
 import sys
+from pathlib import Path
 
 # Add src to path
 src_path = Path(__file__).parent / "src"

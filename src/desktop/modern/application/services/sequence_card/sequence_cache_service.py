@@ -6,9 +6,8 @@ Multi-level LRU caching with memory management.
 
 import gc
 import logging
-from pathlib import Path
 import time
-from typing import Optional
+from pathlib import Path
 
 from desktop.modern.core.interfaces.sequence_card_services import (
     CacheLevel,
@@ -27,7 +26,7 @@ class LRUCache:
         self.cache: dict[str, any] = {}
         self.access_order = []
 
-    def get(self, key: str) -> Optional[any]:
+    def get(self, key: str) -> any | None:
         if key in self.cache:
             self.access_order.remove(key)
             self.access_order.append(key)
@@ -63,7 +62,7 @@ class SequenceCardCacheService(ISequenceCardCacheService):
         self._last_memory_check = 0
         self._memory_check_interval = 5.0  # Check memory every 5 seconds max
 
-    def get_cached_image(self, path: Path, scale: float = 1.0) -> Optional[bytes]:
+    def get_cached_image(self, path: Path, scale: float = 1.0) -> bytes | None:
         """Get cached image data."""
         cache_key = self._get_cache_key(path, scale)
 
@@ -102,7 +101,7 @@ class SequenceCardCacheService(ISequenceCardCacheService):
         else:
             self.scaled_cache.put(cache_key, image_data)
 
-    def clear_cache(self, cache_level: Optional[CacheLevel] = None) -> None:
+    def clear_cache(self, cache_level: CacheLevel | None = None) -> None:
         """Clear cache."""
         if cache_level is None:
             self.raw_cache.clear()

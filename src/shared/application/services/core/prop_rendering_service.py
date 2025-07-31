@@ -6,9 +6,8 @@ It generates render commands and positioning data that can be executed
 by any rendering framework.
 """
 
-from abc import ABC, abstractmethod
 import logging
-from typing import Optional
+from abc import ABC, abstractmethod
 
 from desktop.modern.domain.models import MotionData, PictographData
 from shared.application.services.core.pictograph_renderer import (
@@ -28,7 +27,7 @@ class IPropRenderingService(ABC):
         color: str,
         motion_data: MotionData,
         target_size: Size,
-        pictograph_data: Optional[PictographData] = None,
+        pictograph_data: PictographData | None = None,
     ) -> RenderCommand:
         """Create render command for prop."""
 
@@ -38,7 +37,7 @@ class IPropRenderingService(ABC):
         motion_data: MotionData,
         color: str,
         target_size: Size,
-        pictograph_data: Optional[PictographData] = None,
+        pictograph_data: PictographData | None = None,
     ) -> Point:
         """Calculate prop position based on motion data and beta positioning."""
 
@@ -73,7 +72,7 @@ class CorePropRenderingService(IPropRenderingService):
         color: str,
         motion_data: MotionData,
         target_size: Size,
-        pictograph_data: Optional[PictographData] = None,
+        pictograph_data: PictographData | None = None,
     ) -> RenderCommand:
         """
         Create render command for prop.
@@ -150,7 +149,7 @@ class CorePropRenderingService(IPropRenderingService):
         motion_data: MotionData,
         color: str,
         target_size: Size,
-        pictograph_data: Optional[PictographData] = None,
+        pictograph_data: PictographData | None = None,
     ) -> Point:
         """
         Calculate prop position based on motion data and beta positioning.
@@ -214,7 +213,7 @@ class CorePropRenderingService(IPropRenderingService):
             return 0.0
 
     def _determine_prop_type(
-        self, motion_data: MotionData, pictograph_data: Optional[PictographData]
+        self, motion_data: MotionData, pictograph_data: PictographData | None
     ) -> str:
         """Determine prop type from motion data or pictograph settings."""
         # For now, default to staff - this should integrate with settings

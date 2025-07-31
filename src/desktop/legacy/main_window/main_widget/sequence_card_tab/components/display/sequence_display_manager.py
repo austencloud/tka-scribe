@@ -1,8 +1,8 @@
 # src/main_window/main_widget/sequence_card_tab/components/display/sequence_display_manager.py
-from dataclasses import dataclass
 import logging
 import os
-from typing import TYPE_CHECKING, Any, Optional
+from dataclasses import dataclass
+from typing import TYPE_CHECKING, Any
 
 from PyQt6.QtCore import Qt, QTimer
 from PyQt6.QtWidgets import QApplication, QGridLayout, QWidget
@@ -145,7 +145,7 @@ class SequenceDisplayManager:
         finally:
             self.sequence_card_tab.setCursor(Qt.CursorShape.ArrowCursor)
 
-    def display_sequences(self, selected_length: Optional[int] = None) -> None:
+    def display_sequences(self, selected_length: int | None = None) -> None:
         """
         Display sequence card images. Clears existing UI pages and re-populates.
         Relies on ImageProcessor's LRU cache for image data.

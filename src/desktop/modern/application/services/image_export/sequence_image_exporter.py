@@ -6,8 +6,9 @@ while following clean architecture patterns and using modern data types.
 """
 
 import logging
+from collections.abc import Callable
 from pathlib import Path
-from typing import Any, Callable, Optional
+from typing import Any
 
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QImage
@@ -95,7 +96,7 @@ class SequenceImageExporter(ISequenceImageExporter):
         source_directory: Path,
         export_directory: Path,
         options: ImageExportOptions,
-        progress_callback: Optional[Callable[[ExportProgress], None]] = None,
+        progress_callback: Callable[[ExportProgress], None] | None = None,
     ) -> dict[str, Any]:
         """Export all sequences from a directory."""
         logger.info(

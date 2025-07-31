@@ -5,8 +5,9 @@ Interface definitions for UI-related services following TKA's clean architecture
 """
 
 from abc import ABC, abstractmethod
+from collections.abc import Callable
 from pathlib import Path
-from typing import Any, Callable, Optional
+from typing import Any
 
 from desktop.modern.domain.models.sequence_data import SequenceData
 
@@ -20,7 +21,7 @@ class IThumbnailGenerationService(ABC):
         sequence: SequenceData,
         output_path: Path,
         fullscreen_preview: bool = False,
-    ) -> Optional[Path]:
+    ) -> Path | None:
         """
         Generate a thumbnail image for the given sequence.
 
@@ -90,7 +91,7 @@ class ISequenceStateReader(ABC):
         """
 
     @abstractmethod
-    def get_beat_state(self, beat_index: int) -> Optional[dict[str, Any]]:
+    def get_beat_state(self, beat_index: int) -> dict[str, Any] | None:
         """
         Get state for specific beat.
 
@@ -124,7 +125,7 @@ class IWindowDiscoveryService(ABC):
     """Interface for window discovery operations."""
 
     @abstractmethod
-    def discover_main_window(self) -> Optional[Any]:
+    def discover_main_window(self) -> Any | None:
         """
         Discover the main application window.
 
@@ -145,7 +146,7 @@ class IWindowDiscoveryService(ABC):
         """
 
     @abstractmethod
-    def find_window_by_title(self, title: str) -> Optional[Any]:
+    def find_window_by_title(self, title: str) -> Any | None:
         """
         Find window by title.
 
@@ -157,7 +158,7 @@ class IWindowDiscoveryService(ABC):
         """
 
     @abstractmethod
-    def find_window_by_class(self, class_name: str) -> Optional[Any]:
+    def find_window_by_class(self, class_name: str) -> Any | None:
         """
         Find window by class name.
 
@@ -237,7 +238,7 @@ class ITabStateManager(ABC):
         """
 
     @abstractmethod
-    def get_active_tab(self) -> Optional[str]:
+    def get_active_tab(self) -> str | None:
         """
         Get active tab.
 
@@ -353,7 +354,7 @@ class IWindowStateManager(ABC):
         """
 
     @abstractmethod
-    def load_window_state(self, window_id: str) -> Optional[dict[str, Any]]:
+    def load_window_state(self, window_id: str) -> dict[str, Any] | None:
         """
         Load window state.
 

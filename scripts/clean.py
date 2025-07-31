@@ -4,9 +4,9 @@ Clean script for TKA monorepo.
 This script cleans up build artifacts, cache files, and temporary files.
 """
 
-from pathlib import Path
 import shutil
 import sys
+from pathlib import Path
 
 
 def clean_directory(path, patterns, description):

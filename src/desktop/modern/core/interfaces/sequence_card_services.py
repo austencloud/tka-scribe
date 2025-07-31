@@ -5,10 +5,11 @@ Defines contracts for sequence card functionality following clean architecture.
 """
 
 from abc import ABC, abstractmethod
+from collections.abc import Callable
 from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
-from typing import Any, Callable, Optional
+from typing import Any
 
 
 class CacheLevel(Enum):
@@ -27,8 +28,8 @@ class SequenceCardData:
     word: str
     length: int
     metadata: dict[str, Any]
-    thumbnail_path: Optional[Path] = None
-    high_res_path: Optional[Path] = None
+    thumbnail_path: Path | None = None
+    high_res_path: Path | None = None
     is_favorite: bool = False
     tags: list[str] = None
 
@@ -108,7 +109,7 @@ class ISequenceCardCacheService(ABC):
     """Service for sequence card caching operations."""
 
     @abstractmethod
-    def get_cached_image(self, path: Path, scale: float = 1.0) -> Optional[bytes]:
+    def get_cached_image(self, path: Path, scale: float = 1.0) -> bytes | None:
         """Get cached image data."""
 
     @abstractmethod
@@ -116,7 +117,7 @@ class ISequenceCardCacheService(ABC):
         """Cache image data."""
 
     @abstractmethod
-    def clear_cache(self, cache_level: Optional[CacheLevel] = None) -> None:
+    def clear_cache(self, cache_level: CacheLevel | None = None) -> None:
         """Clear cache."""
 
     @abstractmethod

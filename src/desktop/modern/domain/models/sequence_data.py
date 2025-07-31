@@ -5,11 +5,11 @@ Immutable data structures for complete kinetic sequences.
 Handles sequence composition, beat management, and validation.
 """
 
+import json
+import uuid
 from dataclasses import dataclass, field
 from datetime import datetime
-import json
-from typing import Any, Optional
-import uuid
+from typing import Any
 
 from .beat_data import BeatData
 
@@ -34,18 +34,18 @@ class SequenceData:
 
     # Browse tab data (for sequence browsing and filtering)
     thumbnails: list[str] = field(default_factory=list)  # Changed from thumbnail_paths
-    sequence_length: Optional[int] = (
+    sequence_length: int | None = (
         None  # Cached length for filtering (may differ from len(beats))
     )
-    author: Optional[str] = None
-    level: Optional[int] = None
-    date_added: Optional[datetime] = None
-    grid_mode: Optional[str] = None
-    prop_type: Optional[str] = None
+    author: str | None = None
+    level: int | None = None
+    date_added: datetime | None = None
+    grid_mode: str | None = None
+    prop_type: str | None = None
     is_favorite: bool = False
     is_circular: bool = False
-    starting_position: Optional[str] = None
-    difficulty_level: Optional[str] = None
+    starting_position: str | None = None
+    difficulty_level: str | None = None
     tags: list[str] = field(default_factory=list)
 
     # Metadata
@@ -108,7 +108,7 @@ class SequenceData:
             return False
         return all(beat.is_valid() for beat in self.beats)
 
-    def get_beat(self, beat_number: int) -> Optional[BeatData]:
+    def get_beat(self, beat_number: int) -> BeatData | None:
         """Get a beat by its number."""
         for beat in self.beats:
             if beat.beat_number == beat_number:

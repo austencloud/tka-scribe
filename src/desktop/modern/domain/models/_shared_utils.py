@@ -5,9 +5,9 @@ This module contains common functions used across all domain models
 to avoid code duplication and ensure consistency.
 """
 
+import json
 from dataclasses import fields, is_dataclass
 from enum import Enum
-import json
 from typing import Any, Union
 
 

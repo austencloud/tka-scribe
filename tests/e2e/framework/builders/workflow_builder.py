@@ -6,7 +6,8 @@ for creating readable, chainable test workflows that combine multiple operations
 """
 
 import logging
-from typing import Any, Callable, Optional
+from collections.abc import Callable
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
@@ -462,7 +463,7 @@ class WorkflowResult:
     def __init__(self):
         """Initialize workflow result."""
         self.successful = False
-        self.error_message: Optional[str] = None
+        self.error_message: str | None = None
         self.operation_results: dict[int, bool] = {}
         self.validation_results: dict[int, bool] = {}
 

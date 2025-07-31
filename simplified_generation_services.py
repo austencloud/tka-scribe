@@ -5,12 +5,12 @@ This demonstrates what the refactored services should actually look like
 without over-engineering. Based on analysis of original service functionality.
 """
 
-from copy import deepcopy
 import csv
 import logging
-from pathlib import Path
 import random
-from typing import Any, Optional
+from copy import deepcopy
+from pathlib import Path
+from typing import Any
 
 
 # Mock imports for demonstration
@@ -96,7 +96,7 @@ class SimpleCSVConverter:
 
     def convert(
         self, csv_row: dict[str, Any], beat_number: int
-    ) -> Optional[PictographData]:
+    ) -> PictographData | None:
         """Convert CSV row to PictographData - simple and direct."""
         try:
             return PictographData(
@@ -145,8 +145,8 @@ class SimpleFilter:
         self,
         options: list[dict[str, Any]],
         config: GenerationConfig,
-        current_end_position: Optional[str] = None,
-        grid_mode: Optional[str] = None,
+        current_end_position: str | None = None,
+        grid_mode: str | None = None,
     ) -> list[dict[str, Any]]:
         """Filter options based on config - simple sequential filtering."""
 
@@ -267,8 +267,8 @@ class SimpleFreeformGenerator:
         self.data_loader = SimpleDataLoader()
         self.converter = SimpleCSVConverter()
         self.filter = SimpleFilter()
-        self.current_end_position: Optional[str] = None
-        self.grid_mode: Optional[str] = None
+        self.current_end_position: str | None = None
+        self.grid_mode: str | None = None
 
     def generate_sequence(self, config: GenerationConfig) -> list[PictographData]:
         """Generate freeform sequence - simple and direct."""

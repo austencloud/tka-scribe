@@ -1,5 +1,5 @@
-from collections.abc import Hashable
 import os
+from collections.abc import Hashable
 from typing import Any
 
 import pandas as pd

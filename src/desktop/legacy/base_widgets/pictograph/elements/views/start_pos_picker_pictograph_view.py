@@ -1,4 +1,5 @@
-from typing import TYPE_CHECKING, Callable
+from collections.abc import Callable
+from typing import TYPE_CHECKING
 
 from base_widgets.pictograph.elements.views.bordered_pictograph_view import (
     BorderedPictographView,

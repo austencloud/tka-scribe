@@ -5,9 +5,8 @@ Handles data retrieval and caching for start position operations.
 Extracts data access logic from presentation components.
 """
 
-from functools import lru_cache
 import logging
-from typing import Optional
+from functools import lru_cache
 
 from desktop.modern.core.interfaces.start_position_services import (
     IStartPositionDataService,
@@ -30,7 +29,7 @@ class StartPositionDataService(IStartPositionDataService):
     - Error handling for data access operations
     """
 
-    def __init__(self, dataset_service: Optional[IDatasetQuery] = None):
+    def __init__(self, dataset_service: IDatasetQuery | None = None):
         """
         Initialize the start position data service.
 
@@ -42,7 +41,7 @@ class StartPositionDataService(IStartPositionDataService):
 
     def get_position_data(
         self, position_key: str, grid_mode: str = "diamond"
-    ) -> Optional[PictographData]:
+    ) -> PictographData | None:
         """
         Get pictograph data for a start position.
 
@@ -109,7 +108,7 @@ class StartPositionDataService(IStartPositionDataService):
 
     def get_position_beat_data(
         self, position_key: str, grid_mode: str = "diamond"
-    ) -> Optional[BeatData]:
+    ) -> BeatData | None:
         """
         Get complete beat data for a start position.
 
@@ -144,7 +143,7 @@ class StartPositionDataService(IStartPositionDataService):
     @lru_cache(maxsize=128)
     def _get_cached_position_data(
         self, position_key: str, grid_mode: str
-    ) -> Optional[PictographData]:
+    ) -> PictographData | None:
         """
         Internal cached method for frequently accessed position data.
 

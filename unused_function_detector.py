@@ -14,8 +14,8 @@ Usage:
 
 import argparse
 import ast
-from collections import defaultdict
 import json
+from collections import defaultdict
 from pathlib import Path
 from typing import NamedTuple
 

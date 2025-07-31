@@ -6,7 +6,8 @@ Qt-specific signal coordination is handled by adapters in the presentation layer
 """
 
 import logging
-from typing import TYPE_CHECKING, Callable, Optional
+from collections.abc import Callable
+from typing import TYPE_CHECKING
 
 from desktop.modern.core.interfaces.workbench_services import IWorkbenchStateManager
 from desktop.modern.domain.models.beat_data import BeatData
@@ -37,9 +38,9 @@ class SequenceBeatOperationsService:
 
     def __init__(
         self,
-        workbench_state_manager: Optional[IWorkbenchStateManager] = None,
-        beat_factory: Optional[BeatFactory] = None,
-        persistence_service: Optional[SequencePersister] = None,
+        workbench_state_manager: IWorkbenchStateManager | None = None,
+        beat_factory: BeatFactory | None = None,
+        persistence_service: SequencePersister | None = None,
     ):
         self.workbench_state_manager = workbench_state_manager
         self.beat_factory = beat_factory or BeatFactory()
@@ -70,7 +71,7 @@ class SequenceBeatOperationsService:
         self,
         pictograph_data: PictographData,
         position: int,
-        sequence_data: Optional[SequenceData] = None,
+        sequence_data: SequenceData | None = None,
         persist: bool = True,
     ) -> SequenceData:
         """
@@ -142,7 +143,7 @@ class SequenceBeatOperationsService:
     def remove_beat(
         self,
         position: int,
-        sequence_data: Optional[SequenceData] = None,
+        sequence_data: SequenceData | None = None,
         persist: bool = True,
     ) -> SequenceData:
         """
@@ -196,7 +197,7 @@ class SequenceBeatOperationsService:
         self,
         position: int,
         pictograph_data: PictographData,
-        sequence_data: Optional[SequenceData] = None,
+        sequence_data: SequenceData | None = None,
         persist: bool = True,
     ) -> SequenceData:
         """
@@ -257,8 +258,8 @@ class SequenceBeatOperationsService:
     def get_beat(
         self,
         position: int,
-        sequence_data: Optional[SequenceData] = None,
-    ) -> Optional[BeatData]:
+        sequence_data: SequenceData | None = None,
+    ) -> BeatData | None:
         """
         Get a beat from the sequence at the specified position.
 
@@ -287,7 +288,7 @@ class SequenceBeatOperationsService:
             logger.error(f"Failed to get beat: {e}")
             return None
 
-    def get_beat_count(self, sequence_data: Optional[SequenceData] = None) -> int:
+    def get_beat_count(self, sequence_data: SequenceData | None = None) -> int:
         """
         Get the number of beats in the sequence.
 

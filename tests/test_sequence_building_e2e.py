@@ -7,8 +7,8 @@ works correctly in practice.
 """
 
 import logging
-from pathlib import Path
 import sys
+from pathlib import Path
 from typing import Any
 
 # Add src to path for imports

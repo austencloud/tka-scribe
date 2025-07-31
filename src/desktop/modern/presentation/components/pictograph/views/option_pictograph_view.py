@@ -5,7 +5,7 @@ This provides the same direct scaling approach as the legacy OptionView
 without widget wrapper complexity.
 """
 
-from typing import Callable, Optional
+from collections.abc import Callable
 
 from PyQt6.QtCore import QRectF, QSize, Qt
 from PyQt6.QtGui import QColor, QPainter, QPen, QResizeEvent
@@ -41,7 +41,7 @@ class OptionPictographView(BasePictographView):
     def __init__(
         self,
         parent=None,
-        main_window_size_provider: Optional[Callable[[], QSize]] = None,
+        main_window_size_provider: Callable[[], QSize] | None = None,
     ):
         super().__init__(parent)
 

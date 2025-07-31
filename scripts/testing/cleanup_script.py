@@ -6,8 +6,8 @@ Automated cleanup of dead code identified by Vulture analysis.
 Focus on safe removals with high confidence.
 """
 
-from pathlib import Path
 import re
+from pathlib import Path
 
 
 class TKADeadCodeCleaner:

@@ -12,7 +12,8 @@ Replaces complex orchestration logic previously embedded in OptionPickerSection.
 
 import logging
 import time
-from typing import Any, Callable
+from collections.abc import Callable
+from typing import Any
 
 from desktop.modern.application.services.option_picker.frame_pool_service import (
     FramePoolService,

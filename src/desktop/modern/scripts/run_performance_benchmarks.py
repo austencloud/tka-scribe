@@ -14,9 +14,9 @@ Options:
 """
 
 import argparse
-from pathlib import Path
 import sys
 import time
+from pathlib import Path
 
 # Add src to path for imports
 modern_src_path = Path(__file__).parent.parent / "src"

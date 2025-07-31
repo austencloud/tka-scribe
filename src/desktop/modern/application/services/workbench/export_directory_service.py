@@ -6,11 +6,11 @@ Follows the Single Responsibility Principle by focusing solely on
 file system operations.
 """
 
-from datetime import datetime
 import logging
 import os
+from datetime import datetime
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 
 from desktop.modern.core.interfaces.export_services import IExportDirectoryService
 
@@ -28,7 +28,7 @@ class ExportDirectoryService(IExportDirectoryService):
     - Export statistics and debugging info
     """
 
-    def __init__(self, base_export_directory: Optional[str] = None):
+    def __init__(self, base_export_directory: str | None = None):
         """
         Initialize the directory service.
 
@@ -83,7 +83,7 @@ class ExportDirectoryService(IExportDirectoryService):
         word: str,
         beat_count: int,
         file_extension: str = ".png",
-        custom_path: Optional[str] = None,
+        custom_path: str | None = None,
     ) -> str:
         """Generate a file path for export with timestamp and proper naming."""
         try:

@@ -3,9 +3,9 @@ import hashlib
 import json
 import logging
 import os
-from pathlib import Path
 import time
-from typing import Any, Optional
+from pathlib import Path
+from typing import Any
 
 from PyQt6.QtCore import QSize
 from PyQt6.QtGui import QPixmap
@@ -115,7 +115,7 @@ class DiskCacheManager:
 
     def get_cached_image(
         self, image_path: str, target_size: QSize, scale_factor: float = 1.0
-    ) -> Optional[QPixmap]:
+    ) -> QPixmap | None:
         """
         Retrieve a cached image if available and valid.
 

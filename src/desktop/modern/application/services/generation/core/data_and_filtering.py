@@ -5,11 +5,11 @@ Handles data loading and filtering without over-engineered patterns.
 Focused, testable, and maintainable - around 150 lines.
 """
 
-from copy import deepcopy
 import csv
 import logging
+from copy import deepcopy
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 
 from desktop.modern.core.interfaces.generation_services import (
     LetterType,
@@ -68,7 +68,7 @@ class PictographDataManager:
             logger.error(f"❌ Failed to load pictograph data: {e}")
             self.all_data = []
 
-    def _find_data_directory(self) -> Optional[Path]:
+    def _find_data_directory(self) -> Path | None:
         """Find the data directory using multiple strategies."""
         # Try common locations
         possible_paths = [
@@ -170,12 +170,12 @@ class PictographFilter:
     def filter_options(
         self,
         options: list[dict[str, Any]],
-        letter_types: Optional[set[LetterType]] = None,
-        current_end_position: Optional[str] = None,
-        grid_mode: Optional[str] = None,
-        prop_continuity: Optional[PropContinuity] = None,
-        blue_rot_dir: Optional[str] = None,
-        red_rot_dir: Optional[str] = None,
+        letter_types: set[LetterType] | None = None,
+        current_end_position: str | None = None,
+        grid_mode: str | None = None,
+        prop_continuity: PropContinuity | None = None,
+        blue_rot_dir: str | None = None,
+        red_rot_dir: str | None = None,
     ) -> list[dict[str, Any]]:
         """
         Filter options using simple, direct logic.
@@ -248,8 +248,8 @@ class PictographFilter:
     def _filter_by_rotation_continuity(
         self,
         options: list[dict[str, Any]],
-        blue_rot_dir: Optional[str],
-        red_rot_dir: Optional[str],
+        blue_rot_dir: str | None,
+        red_rot_dir: str | None,
     ) -> list[dict[str, Any]]:
         """Filter by rotation continuity for continuous prop mode."""
         if not (blue_rot_dir or red_rot_dir):
@@ -270,7 +270,7 @@ class PictographFilter:
 
         return filtered
 
-    def determine_grid_mode(self, position: str) -> Optional[str]:
+    def determine_grid_mode(self, position: str) -> str | None:
         """Determine grid mode from position."""
         if self._is_diamond_position(position):
             return "diamond"
@@ -287,7 +287,7 @@ class CSVToPictographConverter:
 
     def convert(
         self, csv_row: dict[str, Any], beat_number: int
-    ) -> Optional[PictographData]:
+    ) -> PictographData | None:
         """Convert CSV row to PictographData."""
         try:
             # Extract basic data
@@ -319,7 +319,7 @@ class CSVToPictographConverter:
 
     def _create_motion_data(
         self, csv_row: dict[str, Any], color: str
-    ) -> Optional[MotionData]:
+    ) -> MotionData | None:
         """Create MotionData from CSV row for specified color."""
         try:
             motion_type_str = csv_row.get(f"{color}_motion_type", "").strip()

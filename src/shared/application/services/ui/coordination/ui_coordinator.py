@@ -7,9 +7,12 @@ Replaces the monolithic UIStateManager with a composition of focused managers.
 
 import json
 import logging
+from collections.abc import Callable
 from pathlib import Path
-from typing import Any, Callable, Optional
+from typing import Any
 
+from desktop.modern.core.interfaces.core_services import IUIStateManager
+from desktop.modern.core.interfaces.session_services import ISessionStateTracker
 from shared.application.services.ui.settings.settings_manager import SettingsManager
 from shared.application.services.ui.state.component_visibility_manager import (
     ComponentVisibilityManager,
@@ -23,20 +26,6 @@ from shared.application.services.ui.state.option_picker_state_manager import (
 )
 from shared.application.services.ui.state.tab_state_manager import TabStateManager
 from shared.application.services.ui.state.window_state_manager import WindowStateManager
-
-# Event system imports with fallback
-try:
-    from desktop.modern.core.events.event_bus import get_event_bus
-
-    EVENT_SYSTEM_AVAILABLE = True
-except ImportError:
-    # Event system not available - use fallback
-    def get_event_bus():
-        return None
-
-    EVENT_SYSTEM_AVAILABLE = False
-from desktop.modern.core.interfaces.core_services import IUIStateManager
-from desktop.modern.core.interfaces.session_services import ISessionStateTracker
 
 logger = logging.getLogger(__name__)
 
@@ -56,7 +45,7 @@ class UICoordinator(IUIStateManager):
     better separation of concerns and focused responsibilities.
     """
 
-    def __init__(self, session_service: Optional[ISessionStateTracker] = None):
+    def __init__(self, session_service: ISessionStateTracker | None = None):
         """Initialize UI coordinator with focused managers."""
         # Initialize focused managers
         self.settings = SettingsManager()
@@ -71,7 +60,6 @@ class UICoordinator(IUIStateManager):
         self._session_service = session_service
 
         # Event bus for coordination (optional)
-        self._event_bus = get_event_bus() if EVENT_SYSTEM_AVAILABLE else None
 
         # State file for persistence
         modern_dir = Path(__file__).parent.parent.parent.parent.parent.parent
@@ -182,7 +170,7 @@ class UICoordinator(IUIStateManager):
         """Get option picker state."""
         return self.option_picker_state.get_option_picker_state()
 
-    def set_option_picker_selection(self, selection: Optional[str]) -> None:
+    def set_option_picker_selection(self, selection: str | None) -> None:
         """Set option picker selection."""
         self.option_picker_state.set_option_picker_selection(selection)
 
@@ -288,19 +276,10 @@ class UICoordinator(IUIStateManager):
         if self._session_service:
             self._session_service.update_current_sequence(sequence_data, sequence_id)
 
-    def update_workbench_selection_with_session(
-        self, beat_index: Optional[int], beat_data: Any, start_position: Any
-    ) -> None:
-        """Update workbench selection and save to session."""
-        if self._session_service:
-            self._session_service.update_workbench_selection(
-                beat_index, beat_data, start_position
-            )
-
     def update_graph_editor_with_session(
         self,
         visible: bool,
-        beat_index: Optional[int] = None,
+        beat_index: int | None = None,
         beat_data: Any = None,
         start_position: Any = None,
     ) -> None:
@@ -316,13 +295,13 @@ class UICoordinator(IUIStateManager):
 
     def update_ui_state_with_session(
         self,
-        active_tab: Optional[str] = None,
-        beat_layout: Optional[dict[str, Any]] = None,
-        component_visibility: Optional[dict[str, bool]] = None,
-        graph_editor_visible: Optional[bool] = None,
-        graph_editor_height: Optional[int] = None,
-        option_picker_selection: Optional[str] = None,
-        option_picker_filters: Optional[dict[str, Any]] = None,
+        active_tab: str | None = None,
+        beat_layout: dict[str, Any] | None = None,
+        component_visibility: dict[str, bool] | None = None,
+        graph_editor_visible: bool | None = None,
+        graph_editor_height: int | None = None,
+        option_picker_selection: str | None = None,
+        option_picker_filters: dict[str, Any] | None = None,
     ) -> None:
         """Update UI state and save to session."""
         # Update local state
@@ -352,27 +331,3 @@ class UICoordinator(IUIStateManager):
                 beat_layout=beat_layout,
                 component_visibility=component_visibility,
             )
-
-    def restore_session_on_startup(self) -> bool:
-        """Restore session state on application startup."""
-        if not self._session_service:
-            return False
-
-        try:
-            session_data = self._session_service.get_session_data()
-            if not session_data:
-                return False
-
-            # Restore UI state from session
-            if "ui_state" in session_data:
-                ui_state = session_data["ui_state"]
-                self.update_ui_state_with_session(
-                    active_tab=ui_state.get("active_tab"),
-                    beat_layout=ui_state.get("beat_layout"),
-                    component_visibility=ui_state.get("component_visibility"),
-                )
-
-            return True
-        except Exception as e:
-            logger.error(f"Failed to restore session on startup: {e}")
-            return False

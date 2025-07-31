@@ -100,8 +100,8 @@ def _register_pictograph_services(container: DIContainer) -> None:
     """Register pictograph services needed for real pictograph rendering."""
     try:
         # Temporarily ensure shared src is accessible for imports
-        from pathlib import Path
         import sys
+        from pathlib import Path
 
         # Find shared src path
         current_file = Path(__file__).resolve()

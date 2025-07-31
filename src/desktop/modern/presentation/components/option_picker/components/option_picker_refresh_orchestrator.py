@@ -5,7 +5,8 @@ Handles debounced loading and refresh coordination for option picker.
 Manages the complex refresh logic with animation coordination.
 """
 
-from typing import TYPE_CHECKING, Callable, Optional
+from collections.abc import Callable
+from typing import TYPE_CHECKING
 
 from PyQt6.QtCore import QTimer
 
@@ -37,7 +38,7 @@ class OptionPickerRefreshOrchestrator:
         self._refresh_callback = refresh_callback
 
         # State tracking
-        self._pending_sequence_data: Optional[SequenceData] = None
+        self._pending_sequence_data: SequenceData | None = None
         self._is_preparing_for_transition = False
 
         # Debounced refresh setup

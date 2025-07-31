@@ -7,10 +7,10 @@ Bypasses conftest.py issues and runs all tests with proper path setup.
 """
 
 import json
-from pathlib import Path
 import subprocess
 import sys
 import time
+from pathlib import Path
 
 
 def setup_python_path():

@@ -5,9 +5,9 @@ Provides simple interfaces for AI agents to test complex workflows
 using the existing sophisticated TKA architecture.
 """
 
-from dataclasses import dataclass
 import logging
-from typing import Any, Optional
+from dataclasses import dataclass
+from typing import Any
 
 # Import your existing architecture
 from desktop.modern.core.application.application_factory import ApplicationFactory
@@ -33,7 +33,7 @@ class AITestResult:
     """Simple result format for AI agents."""
 
     success: bool
-    data: Optional[Any] = None
+    data: Any | None = None
     errors: list[str] = None
     execution_time: float = 0.0
     metadata: dict[str, Any] = None

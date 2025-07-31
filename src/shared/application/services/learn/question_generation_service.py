@@ -5,9 +5,9 @@ Generates quiz questions based on lesson types and pictograph data.
 Handles different question formats and answer generation.
 """
 
-from datetime import datetime
 import logging
 import random
+from datetime import datetime
 from typing import Any
 
 from desktop.modern.core.interfaces.learn_services import (

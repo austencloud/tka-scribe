@@ -5,9 +5,10 @@ Handles sequence loading from persistence and startup restoration.
 Responsible for loading sequences from current_sequence.json and managing startup workflows.
 """
 
-from abc import ABCMeta
 import logging
-from typing import TYPE_CHECKING, Callable, Optional
+from abc import ABCMeta
+from collections.abc import Callable
+from typing import TYPE_CHECKING
 
 # Removed circular import - workbench should be passed as parameter if needed
 from PyQt6.QtCore import QObject, pyqtSignal
@@ -46,9 +47,9 @@ class SequenceLoader(QObject, ISequenceLoader, metaclass=QObjectABCMeta):
 
     def __init__(
         self,
-        workbench_getter: Optional[Callable[[], object]] = None,
-        workbench_setter: Optional[Callable[[SequenceData], None]] = None,
-        legacy_to_modern_converter: Optional[LegacyToModernConverter] = None,
+        workbench_getter: Callable[[], object] | None = None,
+        workbench_setter: Callable[[SequenceData], None] | None = None,
+        legacy_to_modern_converter: LegacyToModernConverter | None = None,
     ):
         super().__init__()
         self.workbench_getter = workbench_getter
@@ -242,7 +243,7 @@ class SequenceLoader(QObject, ISequenceLoader, metaclass=QObjectABCMeta):
 
             traceback.print_exc()
 
-    def get_current_sequence_from_workbench(self) -> Optional[SequenceData]:
+    def get_current_sequence_from_workbench(self) -> SequenceData | None:
         """Get the current sequence from workbench"""
         if self.workbench_getter:
             try:
@@ -253,7 +254,7 @@ class SequenceLoader(QObject, ISequenceLoader, metaclass=QObjectABCMeta):
                 print(f"❌ Error getting current sequence: {e}")
         return None
 
-    def load_sequence_from_file(self, filepath: str) -> Optional[SequenceData]:
+    def load_sequence_from_file(self, filepath: str) -> SequenceData | None:
         """
         Load sequence from file.
 
@@ -269,7 +270,7 @@ class SequenceLoader(QObject, ISequenceLoader, metaclass=QObjectABCMeta):
             logger.error(f"Failed to load sequence from file {filepath}: {e}")
             return None
 
-    def load_current_sequence(self) -> Optional[SequenceData]:
+    def load_current_sequence(self) -> SequenceData | None:
         """
         Load the current sequence from default location.
 

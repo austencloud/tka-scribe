@@ -1,4 +1,5 @@
-from typing import TYPE_CHECKING, Any, Callable
+from collections.abc import Callable
+from typing import TYPE_CHECKING, Any
 
 from PyQt6.QtCore import Qt
 from styles.styled_button import StyledButton

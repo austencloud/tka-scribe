@@ -11,8 +11,8 @@ PROVIDES:
 - Dataset indexing
 """
 
-from typing import Any, Optional
 import uuid
+from typing import Any
 
 from desktop.modern.core.interfaces.data_services import IDatasetManager
 from desktop.modern.domain.models.pictograph_data import PictographData
@@ -92,7 +92,7 @@ class DatasetManager(IDatasetManager):
                 results.append(pictograph)
         return results
 
-    def get_pictograph_by_id(self, pictograph_id: str) -> Optional[PictographData]:
+    def get_pictograph_by_id(self, pictograph_id: str) -> PictographData | None:
         """Get pictograph by ID."""
         return self.cache_manager.get_pictograph_cache(pictograph_id)
 

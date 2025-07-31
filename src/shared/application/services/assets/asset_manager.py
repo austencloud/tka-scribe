@@ -5,11 +5,10 @@ Manages SVG assets, file paths, and color transformations for pictograph renderi
 Framework-agnostic service that handles asset loading, caching, and color transformations.
 """
 
-from functools import lru_cache
 import logging
 import os
 import re
-from typing import Optional
+from functools import lru_cache
 
 from desktop.modern.core.interfaces.core_services import IAssetManager
 from desktop.modern.domain.models import MotionData, MotionType
@@ -111,7 +110,7 @@ class AssetManager(IAssetManager):
             )
             return get_image_path(f"arrows/static/from_radial/static_{turns_str}.svg")
 
-    def get_prop_asset_path(self, prop_type: str, color: Optional[str] = None) -> str:
+    def get_prop_asset_path(self, prop_type: str, color: str | None = None) -> str:
         """
         Generate prop asset file path.
 

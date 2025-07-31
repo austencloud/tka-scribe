@@ -5,11 +5,11 @@ Handles data persistence and retrieval for the learning module,
 including lesson progress, results, and session data.
 """
 
-from datetime import datetime
 import json
 import logging
+from datetime import datetime
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 
 from desktop.modern.core.interfaces.learn_services import ILearnDataService
 from desktop.modern.core.interfaces.organization_services import IFileSystemService
@@ -115,7 +115,7 @@ class LearnDataService(ILearnDataService):
             )
             return False
 
-    def load_lesson_progress(self, session_id: str) -> Optional[dict[str, Any]]:
+    def load_lesson_progress(self, session_id: str) -> dict[str, Any] | None:
         """
         Load lesson progress from persistent storage.
 

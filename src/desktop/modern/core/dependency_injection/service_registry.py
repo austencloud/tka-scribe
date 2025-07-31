@@ -10,10 +10,11 @@ Handles all service registration operations including:
 - Lazy registration
 """
 
+import logging
+from collections.abc import Callable
 from dataclasses import dataclass
 from enum import Enum
-import logging
-from typing import Any, Callable, Optional, TypeVar
+from typing import Any, TypeVar
 
 logger = logging.getLogger(__name__)
 
@@ -36,7 +37,7 @@ class ServiceDescriptor:
     interface: type
     implementation: type
     scope: ServiceScope = ServiceScope.SINGLETON
-    factory: Optional[Callable] = None
+    factory: Callable | None = None
     lazy: bool = False
 
 
@@ -57,7 +58,7 @@ class ServiceRegistry:
         # Advanced features
         self._service_descriptors: dict[type, ServiceDescriptor] = {}
         self._scoped_instances: dict[str, dict[type, Any]] = {}
-        self._current_scope: Optional[str] = None
+        self._current_scope: str | None = None
 
     def register_singleton(self, interface: type[T], implementation: type[T]) -> None:
         """Register a service as singleton (one instance per container)."""
@@ -123,7 +124,7 @@ class ServiceRegistry:
             or interface in self.singletons
         )
 
-    def get_service_implementation(self, interface: type) -> Optional[type]:
+    def get_service_implementation(self, interface: type) -> type | None:
         """Get the implementation type for a service interface."""
         if interface in self.services:
             return self.services[interface]
@@ -131,7 +132,7 @@ class ServiceRegistry:
             return self._factories[interface]
         return None
 
-    def get_singleton_instance(self, interface: type) -> Optional[Any]:
+    def get_singleton_instance(self, interface: type) -> Any | None:
         """Get existing singleton instance if available."""
         return self.singletons.get(interface)
 
@@ -151,7 +152,7 @@ class ServiceRegistry:
         """Check if service has singleton registration."""
         return interface in self.services
 
-    def get_factory_or_implementation(self, interface: type) -> Optional[Any]:
+    def get_factory_or_implementation(self, interface: type) -> Any | None:
         """Get factory function or implementation class."""
         return self._factories.get(interface)
 
@@ -171,7 +172,7 @@ class ServiceRegistry:
 
         return registrations
 
-    def get_service_descriptor(self, interface: type) -> Optional[ServiceDescriptor]:
+    def get_service_descriptor(self, interface: type) -> ServiceDescriptor | None:
         """Get service descriptor for advanced features."""
         return self._service_descriptors.get(interface)
 

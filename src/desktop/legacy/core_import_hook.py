@@ -11,9 +11,8 @@ locates the correct core directory based on the calling file's location.
 import importlib.machinery
 import importlib.util
 import os
-from pathlib import Path
 import sys
-from typing import Optional
+from pathlib import Path
 
 
 class CoreImportFinder:
@@ -38,7 +37,7 @@ class CoreImportFinder:
 
         return core_dirs
 
-    def find_spec(self, fullname: str, path: Optional[list[str]], target=None):
+    def find_spec(self, fullname: str, path: list[str] | None, target=None):
         """Find the module spec for core.* imports."""
         if not fullname.startswith("core."):
             return None
@@ -56,7 +55,7 @@ class CoreImportFinder:
 
     def _find_best_core_directory(
         self, calling_path: Path, module_name: str
-    ) -> Optional[Path]:
+    ) -> Path | None:
         """Find the best core directory for the given module."""
         candidates = []
 

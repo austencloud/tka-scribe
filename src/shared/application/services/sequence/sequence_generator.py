@@ -8,9 +8,9 @@ CRITICAL FIXES:
 4. Proper error handling and fallbacks
 """
 
-from enum import Enum
 import logging
 import random
+from enum import Enum
 
 from desktop.modern.core.interfaces.sequence_data_services import ISequenceGenerator
 from desktop.modern.domain.models.beat_data import BeatData

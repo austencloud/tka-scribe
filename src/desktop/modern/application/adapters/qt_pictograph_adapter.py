@@ -6,10 +6,10 @@ presentation layer. Converts render commands to QT graphics items.
 """
 
 import logging
-from pathlib import Path
 
 # Add project root to path for core services
 import sys
+from pathlib import Path
 
 # Import the framework-agnostic core services
 from typing import Optional
@@ -276,7 +276,7 @@ class QtAssetProvider(IPictographAssetProvider):
             return None
 
     def get_prop_asset(
-        self, prop_type: str, color: str, pictograph_data: Optional[dict] = None
+        self, prop_type: str, color: str, pictograph_data: dict | None = None
     ) -> Optional["SvgAsset"]:
         """Get prop asset from existing QT asset management with color transformation and beta positioning support."""
         try:
@@ -364,7 +364,7 @@ class QtAssetProvider(IPictographAssetProvider):
             logger.error(f"Failed to get arrow asset: {e}")
             return None
 
-    def _load_grid_from_existing_system(self, grid_mode: str) -> Optional[str]:
+    def _load_grid_from_existing_system(self, grid_mode: str) -> str | None:
         """Load grid SVG from your existing asset system."""
         try:
             # If no legacy asset manager, use direct file loading
@@ -416,7 +416,7 @@ class QtAssetProvider(IPictographAssetProvider):
             logger.error(f"Failed to load grid from existing system: {e}")
             return self._load_grid_directly(grid_mode)
 
-    def _load_prop_from_existing_system(self, prop_type: str) -> Optional[str]:
+    def _load_prop_from_existing_system(self, prop_type: str) -> str | None:
         """Load prop SVG from your existing asset system."""
         try:
             # If no legacy asset manager, use direct file loading
@@ -448,7 +448,7 @@ class QtAssetProvider(IPictographAssetProvider):
 
     def _load_glyph_from_existing_system(
         self, glyph_type: str, glyph_id: str
-    ) -> Optional[str]:
+    ) -> str | None:
         """Load glyph SVG from your existing asset system."""
         try:
             # If no legacy asset manager, use direct file loading
@@ -482,7 +482,7 @@ class QtAssetProvider(IPictographAssetProvider):
             logger.error(f"Failed to load glyph from existing system: {e}")
             return self._load_glyph_directly(glyph_type, glyph_id)
 
-    def _load_arrow_from_existing_system(self, arrow_type: str) -> Optional[str]:
+    def _load_arrow_from_existing_system(self, arrow_type: str) -> str | None:
         """Load arrow SVG from your existing asset system."""
         try:
             # TODO: Replace with your actual arrow loading logic
@@ -499,7 +499,7 @@ class QtAssetProvider(IPictographAssetProvider):
             logger.error(f"Failed to load arrow from existing system: {e}")
             return None
 
-    def _load_grid_directly(self, grid_mode: str) -> Optional[str]:
+    def _load_grid_directly(self, grid_mode: str) -> str | None:
         """Load grid SVG directly from file system."""
         try:
             from shared.application.services.assets.image_asset_utils import (
@@ -515,7 +515,7 @@ class QtAssetProvider(IPictographAssetProvider):
             logger.error(f"Failed to load grid directly: {e}")
             return None
 
-    def _load_prop_directly(self, prop_type: str) -> Optional[str]:
+    def _load_prop_directly(self, prop_type: str) -> str | None:
         """Load prop SVG directly from file system."""
         try:
             from shared.application.services.assets.image_asset_utils import (
@@ -531,7 +531,7 @@ class QtAssetProvider(IPictographAssetProvider):
             logger.error(f"Failed to load prop directly: {e}")
             return None
 
-    def _load_glyph_directly(self, glyph_type: str, glyph_id: str) -> Optional[str]:
+    def _load_glyph_directly(self, glyph_type: str, glyph_id: str) -> str | None:
         """Load glyph SVG directly from file system."""
         try:
             from shared.application.services.assets.image_asset_utils import (
@@ -565,8 +565,8 @@ class QtAssetProvider(IPictographAssetProvider):
         """
         try:
             # Import constants to ensure we use the exact same colors as legacy
-            from pathlib import Path
             import sys
+            from pathlib import Path
 
             sys.path.insert(
                 0,
@@ -709,8 +709,8 @@ class QtPictographRenderingAdapter:
 
     def __init__(
         self,
-        core_renderer: Optional[CorePictographRenderer] = None,
-        asset_provider: Optional[QtAssetProvider] = None,
+        core_renderer: CorePictographRenderer | None = None,
+        asset_provider: QtAssetProvider | None = None,
     ):
         """Initialize the adapter."""
         self.asset_provider = asset_provider or QtAssetProvider()
@@ -725,7 +725,7 @@ class QtPictographRenderingAdapter:
 
     def render_grid(
         self, scene: QGraphicsScene, grid_mode: str = "diamond"
-    ) -> Optional[QGraphicsItem]:
+    ) -> QGraphicsItem | None:
         """Render grid using core service + QT execution (legacy interface)."""
         try:
             # Convert QT scene to render target
@@ -754,8 +754,8 @@ class QtPictographRenderingAdapter:
         scene: QGraphicsScene,
         color: str,
         motion_data: dict,
-        pictograph_data: Optional[dict] = None,
-    ) -> Optional[QGraphicsItem]:
+        pictograph_data: dict | None = None,
+    ) -> QGraphicsItem | None:
         """Render prop using core service + QT execution (legacy interface)."""
         try:
             target = QtTypeConverter.create_render_target_from_scene(scene)
@@ -785,7 +785,7 @@ class QtPictographRenderingAdapter:
 
     def render_glyph(
         self, scene: QGraphicsScene, glyph_type: str, glyph_data: dict
-    ) -> Optional[QGraphicsItem]:
+    ) -> QGraphicsItem | None:
         """Render glyph using core service + QT execution (legacy interface)."""
         try:
             target = QtTypeConverter.create_render_target_from_scene(scene)
@@ -817,7 +817,7 @@ class QtPictographRenderingAdapter:
         self,
         scene: QGraphicsScene,
         pictograph_data: dict,
-        options: Optional[dict] = None,
+        options: dict | None = None,
     ) -> bool:
         """Render complete pictograph using core service."""
         try:

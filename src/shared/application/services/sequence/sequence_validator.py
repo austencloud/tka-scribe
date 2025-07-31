@@ -6,9 +6,9 @@ Extracted from the monolithic sequence management service to focus
 solely on validation logic and sequence integrity checks.
 """
 
-from abc import ABC, abstractmethod
 import logging
-from typing import Any, Optional
+from abc import ABC, abstractmethod
+from typing import Any
 
 from desktop.modern.domain.models.beat_data import BeatData
 from desktop.modern.domain.models.sequence_data import SequenceData
@@ -28,7 +28,7 @@ class ISequenceValidator(ABC):
         """Validate a complete sequence against all rules."""
 
     @abstractmethod
-    def validate_beat(self, beat: BeatData, position: Optional[int] = None) -> bool:
+    def validate_beat(self, beat: BeatData, position: int | None = None) -> bool:
         """Validate a single beat against validation rules."""
 
     @abstractmethod
@@ -93,7 +93,7 @@ class SequenceValidator(ISequenceValidator):
         logger.info(f"Sequence '{sequence.name}' passed all validations")
         return True
 
-    def validate_beat(self, beat: BeatData, position: Optional[int] = None) -> bool:
+    def validate_beat(self, beat: BeatData, position: int | None = None) -> bool:
         """
         Validate a single beat against validation rules.
 

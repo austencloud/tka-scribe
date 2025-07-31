@@ -3,9 +3,8 @@ Application Manager for TKA Unified Launcher.
 Handles launching and managing TKA applications.
 """
 
-from pathlib import Path
 import subprocess
-from typing import Optional
+from pathlib import Path
 
 from PyQt6.QtCore import QObject, pyqtSignal
 
@@ -58,7 +57,7 @@ class ApplicationManager(QObject):
             self.app_error.emit(app_id, str(e))
             return False
 
-    def _get_launch_command(self, app) -> Optional[str]:
+    def _get_launch_command(self, app) -> str | None:
         """Get the launch command for an application."""
         if app.id == "desktop_legacy":
             return "python main.py --legacy"

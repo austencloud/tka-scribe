@@ -9,10 +9,10 @@ This module provides shared fixtures for:
 """
 
 import logging
-from pathlib import Path
 import sys
 import time
 import warnings
+from pathlib import Path
 
 import pytest
 

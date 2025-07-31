@@ -7,9 +7,8 @@ Provides confirmation dialogs and maintains data integrity after deletion.
 
 import logging
 import os
-from pathlib import Path
 import shutil
-from typing import Optional
+from pathlib import Path
 
 from PyQt6.QtCore import QObject, pyqtSignal
 from PyQt6.QtWidgets import QMessageBox, QWidget
@@ -33,7 +32,7 @@ class SequenceDeletionService(QObject):
     sequence_deleted = pyqtSignal(str)  # word
     deletion_cancelled = pyqtSignal()
 
-    def __init__(self, sequences_directory: Path, parent: Optional[QObject] = None):
+    def __init__(self, sequences_directory: Path, parent: QObject | None = None):
         """
         Initialize the deletion service.
 
@@ -52,7 +51,7 @@ class SequenceDeletionService(QObject):
         word: str,
         thumbnails: list[str],
         variation_index: int,
-        parent_widget: Optional[QWidget] = None,
+        parent_widget: QWidget | None = None,
     ) -> bool:
         """
         Delete a specific variation of a sequence.
@@ -130,7 +129,7 @@ class SequenceDeletionService(QObject):
             return False
 
     def delete_entire_sequence(
-        self, word: str, parent_widget: Optional[QWidget] = None
+        self, word: str, parent_widget: QWidget | None = None
     ) -> bool:
         """
         Delete an entire sequence (all variations).
@@ -176,7 +175,7 @@ class SequenceDeletionService(QObject):
             return False
 
     def _confirm_deletion(
-        self, word: str, variation_index: int, parent_widget: Optional[QWidget]
+        self, word: str, variation_index: int, parent_widget: QWidget | None
     ) -> bool:
         """Show confirmation dialog for variation deletion."""
         reply = QMessageBox.question(
@@ -189,7 +188,7 @@ class SequenceDeletionService(QObject):
         return reply == QMessageBox.StandardButton.Yes
 
     def _confirm_sequence_deletion(
-        self, word: str, parent_widget: Optional[QWidget]
+        self, word: str, parent_widget: QWidget | None
     ) -> bool:
         """Show confirmation dialog for entire sequence deletion."""
         reply = QMessageBox.question(
@@ -326,7 +325,7 @@ class SequenceDeletionService(QObject):
             pass
         return 0
 
-    def _show_error_dialog(self, message: str, parent_widget: Optional[QWidget]):
+    def _show_error_dialog(self, message: str, parent_widget: QWidget | None):
         """Show error dialog to user."""
         QMessageBox.critical(
             parent_widget, "Deletion Error", message, QMessageBox.StandardButton.Ok

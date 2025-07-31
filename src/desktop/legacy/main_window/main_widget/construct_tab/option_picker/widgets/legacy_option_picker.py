@@ -1,4 +1,4 @@
-from typing import Callable
+from collections.abc import Callable
 
 from base_widgets.pictograph.legacy_pictograph import LegacyPictograph
 from main_window.main_widget.construct_tab.add_to_sequence_manager.add_to_sequence_manager import (

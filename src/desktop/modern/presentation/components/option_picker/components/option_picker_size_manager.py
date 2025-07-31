@@ -5,7 +5,7 @@ Qt-specific wrapper for OptionPickerSizeService.
 Handles Qt widget interactions and timing.
 """
 
-from typing import Callable
+from collections.abc import Callable
 
 from PyQt6.QtCore import QSize, QTimer
 from PyQt6.QtWidgets import QWidget

@@ -11,7 +11,8 @@ Key principles:
 - Coordination between UI and services
 """
 
-from typing import TYPE_CHECKING, Callable, Optional
+from collections.abc import Callable
+from typing import TYPE_CHECKING
 
 from PyQt6.QtCore import QSize, Qt, QTimer, pyqtSignal
 from PyQt6.QtWidgets import QScrollArea, QVBoxLayout, QWidget
@@ -71,7 +72,7 @@ class OptionPickerScroll(QScrollArea):
         option_config_service: "OptionConfigurationService",
         parent=None,
         mw_size_provider: Callable[[], QSize] = None,
-        animation_orchestrator: Optional[IAnimationOrchestrator] = None,
+        animation_orchestrator: IAnimationOrchestrator | None = None,
     ):
         """Initialize with injected services - no service location."""
         super().__init__(parent)
@@ -264,7 +265,7 @@ class OptionPickerScroll(QScrollArea):
         # OPTIMIZED: No longer pre-create widgets - they will be created on-demand
         # This reduces initial memory usage and widget count
 
-    def get_widget_from_pool(self, pool_id: int) -> Optional[OptionPictograph]:
+    def get_widget_from_pool(self, pool_id: int) -> OptionPictograph | None:
         """Get Qt widget from pool by ID - creates on-demand if not exists."""
         # Check if widget already exists
         if pool_id in self._widget_pool:

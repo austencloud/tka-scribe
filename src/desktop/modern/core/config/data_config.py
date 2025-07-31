@@ -21,10 +21,9 @@ USAGE:
             self.config = config
 """
 
-from dataclasses import dataclass
 import os
+from dataclasses import dataclass
 from pathlib import Path
-from typing import Optional
 
 # Removed Result pattern - using simple exceptions instead
 
@@ -67,7 +66,7 @@ class DataConfig:
 
 
 def create_data_config(
-    base_path: Optional[Path] = None,
+    base_path: Path | None = None,
 ) -> DataConfig:
     """
     Create data configuration with simple, predictable logic.

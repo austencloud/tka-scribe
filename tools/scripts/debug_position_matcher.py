@@ -3,8 +3,8 @@
 Debug script to test the position matcher directly and see why it's not finding alpha1 options.
 """
 
-from pathlib import Path
 import sys
+from pathlib import Path
 
 # Add src to path
 sys.path.insert(0, str(Path(__file__).parent / "src"))

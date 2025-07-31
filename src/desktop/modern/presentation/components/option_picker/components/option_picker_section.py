@@ -12,7 +12,7 @@ Architecture:
 - OptionPickerSectionContentLoader: Orchestrates content loading
 """
 
-from typing import Callable, Optional
+from collections.abc import Callable
 
 from PyQt6.QtCore import QSize, Qt, pyqtSignal
 from PyQt6.QtWidgets import QGroupBox
@@ -65,11 +65,11 @@ class OptionPickerSection(QGroupBox):
         self,
         letter_type: LetterType,
         scroll_area,  # Parent scroll area
-        mw_size_provider: Optional[Callable[[], QSize]] = None,
+        mw_size_provider: Callable[[], QSize] | None = None,
         option_pool_service: OptionPoolService = None,
         option_config_service: OptionConfigurationService = None,
         size_calculator: OptionPickerSizeCalculator = None,
-        animation_orchestrator: Optional[IAnimationOrchestrator] = None,
+        animation_orchestrator: IAnimationOrchestrator | None = None,
     ):
         """Initialize with injected services."""
         super().__init__(None)

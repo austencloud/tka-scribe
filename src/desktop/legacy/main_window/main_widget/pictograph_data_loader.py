@@ -1,9 +1,9 @@
-from copy import deepcopy
 import os
-from typing import TYPE_CHECKING, Optional
+from copy import deepcopy
+from typing import TYPE_CHECKING
 
-from enums.letter.letter import Letter
 import pandas as pd
+from enums.letter.letter import Letter
 from utils.path_helpers import get_data_path
 
 from data.constants import (
@@ -240,7 +240,7 @@ class PictographDataLoader:
         self._cached_dataset = self.load_pictograph_dataset()
         return self._cached_dataset
 
-    def find_pictograph_data(self, simplified_dict: dict) -> Optional[dict]:
+    def find_pictograph_data(self, simplified_dict: dict) -> dict | None:
         from enums.letter.letter import Letter
 
         target_letter = next(

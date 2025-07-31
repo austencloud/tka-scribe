@@ -1,5 +1,5 @@
 # main_window/main_widget/construct_tab/option_picker/choose_your_next_pictograph_label.py
-from typing import Callable
+from collections.abc import Callable
 
 from main_window.main_widget.construct_tab.option_picker.resizable_mixin import (
     ResizableMixin,

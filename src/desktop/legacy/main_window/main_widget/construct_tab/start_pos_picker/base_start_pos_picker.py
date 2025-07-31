@@ -1,5 +1,5 @@
+from collections.abc import Callable
 from copy import deepcopy
-from typing import Callable
 
 from base_widgets.pictograph.elements.views.start_pos_picker_pictograph_view import (
     StartPosPickerPictographView,

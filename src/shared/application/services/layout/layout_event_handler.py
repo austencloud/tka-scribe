@@ -7,10 +7,10 @@ beat added/removed events, sequence creation events, and component
 resize events with automatic layout recalculation.
 """
 
-from datetime import datetime
 import logging
-from typing import Any
 import uuid
+from datetime import datetime
+from typing import Any
 
 from desktop.modern.core.types import Size
 

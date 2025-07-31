@@ -16,15 +16,16 @@ INTEGRATION:
 - Provides foundation for advanced profiling capabilities
 """
 
+import logging
+import threading
+import time
 from collections import deque
+from collections.abc import Callable
 from contextlib import contextmanager
 from dataclasses import dataclass, field
 from datetime import datetime
 from functools import wraps
-import logging
-import threading
-import time
-from typing import Any, Callable, Optional
+from typing import Any
 
 import psutil
 
@@ -129,7 +130,7 @@ class PerformanceMonitor:
         operation: str,
         duration_ms: float,
         memory_mb: float,
-        context: Optional[dict[str, Any]] = None,
+        context: dict[str, Any] | None = None,
     ):
         """
         Record a performance metric.
@@ -193,7 +194,7 @@ class PerformanceMonitor:
                 f"(threshold: {self.warning_thresholds['memory_mb']}MB)"
             )
 
-    def get_operation_stats(self, operation: str) -> Optional[OperationStats]:
+    def get_operation_stats(self, operation: str) -> OperationStats | None:
         """Get statistics for a specific operation."""
         with self._lock:
             return self.operation_stats.get(operation)
@@ -296,7 +297,7 @@ class PerformanceMonitor:
         logger.info(f"Started profiling session: {session_id}")
         return True
 
-    def stop_profiling_session(self, session_id: str) -> Optional[dict[str, Any]]:
+    def stop_profiling_session(self, session_id: str) -> dict[str, Any] | None:
         """
         Stop a profiling session and return collected data.
 
@@ -327,7 +328,7 @@ class PerformanceMonitor:
         function_name: str,
         duration_ms: float,
         memory_mb: float,
-        context: Optional[dict[str, Any]] = None,
+        context: dict[str, Any] | None = None,
     ):
         """Update function-level metrics for profiling."""
         if function_name not in self._function_metrics:
@@ -432,7 +433,7 @@ class PerformanceMonitor:
         return summary
 
     @contextmanager
-    def profile_block(self, block_name: str, session_id: Optional[str] = None):
+    def profile_block(self, block_name: str, session_id: str | None = None):
         """
         Context manager for profiling code blocks.
 
@@ -474,7 +475,7 @@ performance_monitor = PerformanceMonitor()
 
 
 def monitor_performance(
-    operation_name: Optional[str] = None, context: Optional[dict[str, Any]] = None
+    operation_name: str | None = None, context: dict[str, Any] | None = None
 ):
     """
     Decorator to monitor operation performance.
@@ -543,10 +544,10 @@ def monitor_performance(
 
 
 def set_performance_thresholds(
-    warning_duration_ms: Optional[float] = None,
-    error_duration_ms: Optional[float] = None,
-    warning_memory_mb: Optional[float] = None,
-    error_memory_mb: Optional[float] = None,
+    warning_duration_ms: float | None = None,
+    error_duration_ms: float | None = None,
+    warning_memory_mb: float | None = None,
+    error_memory_mb: float | None = None,
 ):
     """
     Configure performance monitoring thresholds.

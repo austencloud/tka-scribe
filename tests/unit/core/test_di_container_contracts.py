@@ -12,8 +12,8 @@ DI Container Contract Tests
 Defines behavioral contracts for the dependency injection container system.
 """
 
-from pathlib import Path
 import sys
+from pathlib import Path
 
 import pytest
 

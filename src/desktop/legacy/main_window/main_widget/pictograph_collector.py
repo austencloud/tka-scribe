@@ -1,5 +1,5 @@
-from collections.abc import Iterator
-from typing import TYPE_CHECKING, Callable
+from collections.abc import Callable, Iterator
+from typing import TYPE_CHECKING
 
 from base_widgets.pictograph.elements.views.lesson_pictograph_view import (
     LessonPictographView,

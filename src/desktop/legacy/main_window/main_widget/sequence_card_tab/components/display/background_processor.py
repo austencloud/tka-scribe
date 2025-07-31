@@ -1,7 +1,8 @@
 # src/main_window/main_widget/sequence_card_tab/components/display/background_processor.py
 import logging
 import time
-from typing import Any, Callable
+from collections.abc import Callable
+from typing import Any
 
 from PyQt6.QtCore import QObject, QTimer, pyqtSignal
 from PyQt6.QtWidgets import QApplication

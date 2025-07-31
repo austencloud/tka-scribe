@@ -11,7 +11,8 @@ Handles all layout management and sizing calculations for OptionPickerSection in
 Extracted from OptionPickerSection to follow Single Responsibility Principle.
 """
 
-from typing import TYPE_CHECKING, Callable, Optional
+from collections.abc import Callable
+from typing import TYPE_CHECKING
 
 from PyQt6.QtCore import QSize, Qt, QTimer
 from PyQt6.QtWidgets import QFrame, QGridLayout, QGroupBox, QSizePolicy, QVBoxLayout
@@ -54,7 +55,7 @@ class OptionPickerSectionLayoutManager:
         scroll_area: "OptionPickerScroll",
         option_config_service: OptionConfigurationService,
         size_calculator: OptionPickerSizeCalculator,
-        mw_size_provider: Optional[Callable[[], QSize]] = None,
+        mw_size_provider: Callable[[], QSize] | None = None,
     ):
         """Initialize layout manager."""
         self._section_widget = section_widget
@@ -65,14 +66,14 @@ class OptionPickerSectionLayoutManager:
         self._mw_size_provider = mw_size_provider
 
         # Layout components
-        self._main_layout: Optional[QVBoxLayout] = None
-        self._pictograph_frame: Optional[QFrame] = None
-        self._pictographs_layout: Optional[QGridLayout] = None
+        self._main_layout: QVBoxLayout | None = None
+        self._pictograph_frame: QFrame | None = None
+        self._pictographs_layout: QGridLayout | None = None
 
         # State tracking
         self._ui_initialized = False
         self._scroll_area_ready = False
-        self._calculated_width: Optional[int] = None
+        self._calculated_width: int | None = None
 
     def setup_layout(self, header_widget) -> None:
         """Setup the complete layout structure."""
@@ -247,11 +248,11 @@ class OptionPickerSectionLayoutManager:
                 # This could be used for debugging or metrics
                 # Currently just calculated for potential future use
 
-    def get_pictograph_frame(self) -> Optional[QFrame]:
+    def get_pictograph_frame(self) -> QFrame | None:
         """Get the pictograph container frame."""
         return self._pictograph_frame
 
-    def get_pictographs_layout(self) -> Optional[QGridLayout]:
+    def get_pictographs_layout(self) -> QGridLayout | None:
         """Get the pictographs grid layout."""
         return self._pictographs_layout
 
@@ -263,7 +264,7 @@ class OptionPickerSectionLayoutManager:
         """Check if scroll area is ready for sizing calculations."""
         return self._scroll_area_ready
 
-    def get_calculated_width(self) -> Optional[int]:
+    def get_calculated_width(self) -> int | None:
         """Get the last calculated width."""
         return self._calculated_width
 

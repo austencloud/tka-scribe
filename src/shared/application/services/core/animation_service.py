@@ -6,10 +6,10 @@ It generates animation commands and data that can be executed
 by any animation framework.
 """
 
+import logging
 from abc import ABC, abstractmethod
 from enum import Enum
-import logging
-from typing import Any, Optional
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
@@ -49,7 +49,7 @@ class AnimationCommand:
         end_values: dict[str, Any],
         easing: EasingType = EasingType.EASE_IN_OUT,
         delay: float = 0.0,
-        metadata: Optional[dict[str, Any]] = None,
+        metadata: dict[str, Any] | None = None,
     ):
         self.command_id = command_id
         self.target_id = target_id
@@ -120,7 +120,7 @@ class CoreAnimationService(IAnimationService):
         end_values: dict[str, Any],
         easing: EasingType = EasingType.EASE_IN_OUT,
         delay: float = 0.0,
-        metadata: Optional[dict[str, Any]] = None,
+        metadata: dict[str, Any] | None = None,
     ) -> AnimationCommand:
         """
         Create an animation command.

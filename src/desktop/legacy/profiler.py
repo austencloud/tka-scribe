@@ -2,7 +2,8 @@ import cProfile
 import os
 import pstats
 import tempfile
-from typing import IO, Any, Callable
+from collections.abc import Callable
+from typing import IO, Any
 
 
 class Profiler:

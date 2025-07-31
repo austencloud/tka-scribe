@@ -7,11 +7,12 @@ Provides structured logging utilities for graph editor components
 with context information and consistent formatting.
 """
 
-from datetime import datetime
 import functools
 import logging
 import traceback
-from typing import Any, Callable
+from collections.abc import Callable
+from datetime import datetime
+from typing import Any
 
 
 class GraphEditorLogger:

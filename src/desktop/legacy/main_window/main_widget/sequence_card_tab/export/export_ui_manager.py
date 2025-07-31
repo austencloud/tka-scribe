@@ -1,8 +1,8 @@
 # src/main_window/main_widget/sequence_card_tab/export/export_ui_manager.py
-from datetime import datetime
 import logging
 import os
-from typing import TYPE_CHECKING, Optional
+from datetime import datetime
+from typing import TYPE_CHECKING
 
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import (
@@ -31,10 +31,10 @@ class ExportUIManager:
     def __init__(self, sequence_card_tab: "SequenceCardTab"):
         self.sequence_card_tab = sequence_card_tab
         self.logger = logging.getLogger(__name__)
-        self.progress_dialog: Optional[QProgressDialog] = None
+        self.progress_dialog: QProgressDialog | None = None
         self.cancel_requested = False
 
-    def get_export_directory(self) -> Optional[str]:
+    def get_export_directory(self) -> str | None:
         """
         Show a file dialog to select an export directory.
 

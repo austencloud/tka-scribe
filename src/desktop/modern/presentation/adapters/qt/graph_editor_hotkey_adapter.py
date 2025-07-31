@@ -5,7 +5,8 @@ This adapter wraps the pure GraphEditorHotkeyService to provide Qt-specific sign
 """
 
 import logging
-from typing import TYPE_CHECKING, Any, Callable, Optional
+from collections.abc import Callable
+from typing import TYPE_CHECKING, Any
 
 from PyQt6.QtCore import QObject, pyqtSignal
 
@@ -42,7 +43,7 @@ class QtGraphEditorHotkeyAdapter(QObject):
 
     def __init__(
         self,
-        graph_editor_getter: Optional[Callable[[], "GraphEditor"]] = None,
+        graph_editor_getter: Callable[[], "GraphEditor"] | None = None,
     ):
         super().__init__()
 
@@ -56,8 +57,8 @@ class QtGraphEditorHotkeyAdapter(QObject):
     def process_hotkey(
         self,
         hotkey: str,
-        beat_data: Optional[object] = None,
-        context: Optional[dict[str, Any]] = None,
+        beat_data: object | None = None,
+        context: dict[str, Any] | None = None,
     ) -> bool:
         """
         Process a hotkey action.
@@ -77,7 +78,7 @@ class QtGraphEditorHotkeyAdapter(QObject):
         arrow_id: str,
         delta_x: int,
         delta_y: int,
-        beat_data: Optional[object] = None,
+        beat_data: object | None = None,
     ) -> bool:
         """
         Move an arrow by the specified delta.

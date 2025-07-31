@@ -6,7 +6,8 @@ Qt-specific signal coordination is handled by adapters in the presentation layer
 """
 
 import logging
-from typing import TYPE_CHECKING, Callable, Optional
+from collections.abc import Callable
+from typing import TYPE_CHECKING
 
 from desktop.modern.core.interfaces.sequence_data_services import ISequenceLoader
 from desktop.modern.core.interfaces.workbench_services import IWorkbenchStateManager
@@ -38,8 +39,8 @@ class SequenceLoaderService(ISequenceLoader):
 
     def __init__(
         self,
-        workbench_state_manager: Optional[IWorkbenchStateManager] = None,
-        legacy_to_modern_converter: Optional[LegacyToModernConverter] = None,
+        workbench_state_manager: IWorkbenchStateManager | None = None,
+        legacy_to_modern_converter: LegacyToModernConverter | None = None,
     ):
         self.workbench_state_manager = workbench_state_manager
         self.legacy_to_modern_converter = (
@@ -231,7 +232,7 @@ class SequenceLoaderService(ISequenceLoader):
         except Exception as e:
             logger.error(f"Failed to initialize empty sequence start position: {e}")
 
-    def get_current_sequence_from_workbench(self) -> Optional[SequenceData]:
+    def get_current_sequence_from_workbench(self) -> SequenceData | None:
         """Get the current sequence from workbench via state manager"""
         if self.workbench_state_manager:
             try:
@@ -240,7 +241,7 @@ class SequenceLoaderService(ISequenceLoader):
                 logger.error(f"Error getting current sequence: {e}")
         return None
 
-    def load_sequence_from_file(self, filepath: str) -> Optional[SequenceData]:
+    def load_sequence_from_file(self, filepath: str) -> SequenceData | None:
         """
         Load sequence from file.
 
@@ -256,7 +257,7 @@ class SequenceLoaderService(ISequenceLoader):
             logger.error(f"Failed to load sequence from file {filepath}: {e}")
             return None
 
-    def load_current_sequence(self) -> Optional[SequenceData]:
+    def load_current_sequence(self) -> SequenceData | None:
         """
         Load the current sequence from default location.
 

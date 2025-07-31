@@ -1,11 +1,10 @@
-from datetime import datetime
 import logging
 import os
-from pathlib import Path
 import subprocess
 import sys
 import time
-from typing import Optional
+from datetime import datetime
+from pathlib import Path
 
 from desktop.modern.core.interfaces import (
     IApplicationLaunchService,
@@ -22,7 +21,7 @@ logger = logging.getLogger(__name__)
 
 
 class ApplicationLaunchService(IApplicationLaunchService):
-    def __init__(self, state_service: Optional[ILauncherStateService] = None):
+    def __init__(self, state_service: ILauncherStateService | None = None):
         self._state_service = state_service
         self._running_processes: dict[str, subprocess.Popen] = {}
 
@@ -89,7 +88,7 @@ class ApplicationLaunchService(IApplicationLaunchService):
 
     def _launch_with_debugger_support(
         self, app: ApplicationData, request: LaunchRequest
-    ) -> Optional[subprocess.Popen]:
+    ) -> subprocess.Popen | None:
         python_executable = sys.executable
 
         if self._is_tka_desktop_app(app):
@@ -193,7 +192,7 @@ class ApplicationLaunchService(IApplicationLaunchService):
 
     def _launch_process(
         self, app: ApplicationData, request: LaunchRequest
-    ) -> Optional[subprocess.Popen]:
+    ) -> subprocess.Popen | None:
         try:
             command = app.command
             working_dir = app.working_dir or Path.cwd()
@@ -282,7 +281,7 @@ class ApplicationLaunchService(IApplicationLaunchService):
         state = self._state_service.get_current_state()
         return state.get_running_applications()
 
-    def get_application_process_id(self, app_id: str) -> Optional[int]:
+    def get_application_process_id(self, app_id: str) -> int | None:
         if app_id in self._running_processes:
             process = self._running_processes[app_id]
             if process.poll() is None:

@@ -8,11 +8,11 @@ ARCHITECTURE: Provides runtime Qt version detection, feature adaptation,
 and compatibility fallbacks for unsupported Qt features.
 """
 
-from dataclasses import dataclass
-from enum import Enum
 import logging
 import sys
-from typing import Any, Optional
+from dataclasses import dataclass
+from enum import Enum
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
@@ -69,7 +69,7 @@ class QtCompatibilityManager:
 
     def __init__(self):
         """Initialize Qt compatibility manager."""
-        self._environment: Optional[QtEnvironment] = None
+        self._environment: QtEnvironment | None = None
         self._feature_cache: dict[str, bool] = {}
         self._compatibility_warnings: list[str] = []
 
@@ -311,7 +311,7 @@ class QtCompatibilityManager:
         return available
 
     def require_feature(
-        self, feature_name: str, fallback_message: Optional[str] = None
+        self, feature_name: str, fallback_message: str | None = None
     ) -> bool:
         """Require a specific Qt feature, log warning if not available."""
         if self.has_feature(feature_name):
@@ -357,7 +357,7 @@ class QtCompatibilityManager:
 
 
 # Global compatibility manager instance
-_qt_compat_manager: Optional[QtCompatibilityManager] = None
+_qt_compat_manager: QtCompatibilityManager | None = None
 
 
 def qt_compat() -> QtCompatibilityManager:

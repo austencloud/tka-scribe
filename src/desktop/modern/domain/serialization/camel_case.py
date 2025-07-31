@@ -1,8 +1,8 @@
 """CamelCase conversion utilities for domain models."""
 
+import re
 from dataclasses import fields, is_dataclass
 from enum import Enum
-import re
 from typing import Any
 
 

@@ -7,8 +7,8 @@ to help debug why Lesson3 is only showing 1 answer option.
 """
 
 import logging
-from pathlib import Path
 import sys
+from pathlib import Path
 
 # Add src to Python path
 sys.path.insert(0, str(Path(__file__).parent / "src"))

@@ -6,9 +6,9 @@ A simple tool to quickly generate sequences and export them as images for testin
 This tool can grab example sequences from metadata or create custom ones.
 """
 
+import sys
 from datetime import datetime
 from pathlib import Path
-import sys
 
 # Add the src directory to the Python path
 src_dir = Path(__file__).parent.parent / "src"

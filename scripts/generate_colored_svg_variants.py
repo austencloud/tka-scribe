@@ -26,8 +26,8 @@ OUTPUT STRUCTURE:
 """
 
 import logging
-from pathlib import Path
 import re
+from pathlib import Path
 
 # Configure logging
 logging.basicConfig(

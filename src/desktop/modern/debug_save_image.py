@@ -4,8 +4,8 @@ Debug script to test Save Image functionality step by step.
 """
 
 import logging
-from pathlib import Path
 import sys
+from pathlib import Path
 
 # Add src to Python path
 project_root = Path(__file__).parent

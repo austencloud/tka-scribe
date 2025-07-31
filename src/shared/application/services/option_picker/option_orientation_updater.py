@@ -9,9 +9,8 @@ This ensures that options display with correct orientations that flow from the s
 rather than using default "in,in" orientations.
 """
 
-from dataclasses import replace
 import logging
-from typing import Optional
+from dataclasses import replace
 
 from desktop.modern.domain.models.beat_data import BeatData
 from desktop.modern.domain.models.pictograph_data import PictographData
@@ -84,7 +83,7 @@ class OptionOrientationUpdater:
         )
         return updated_options
 
-    def _get_last_valid_beat(self, sequence: SequenceData) -> Optional[BeatData]:
+    def _get_last_valid_beat(self, sequence: SequenceData) -> BeatData | None:
         """
         Get the last valid beat from sequence, excluding blank beats.
 
@@ -108,7 +107,7 @@ class OptionOrientationUpdater:
 
     def _extract_end_orientations(
         self, beat: BeatData
-    ) -> tuple[Optional[str], Optional[str]]:
+    ) -> tuple[str | None, str | None]:
         """
         Extract end orientations from a beat's pictograph data.
 

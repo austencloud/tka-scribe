@@ -1,10 +1,10 @@
 import json
 import os
-from pathlib import Path
 import shutil
 import threading
 import time
-from typing import Any, Optional
+from pathlib import Path
+from typing import Any
 
 
 class SequenceCardCacheManager:
@@ -92,7 +92,7 @@ class SequenceCardCacheManager:
             print(f"Error saving to cache: {e}")
             return False
 
-    def load_from_cache(self, length: int) -> Optional[list[dict[str, Any]]]:
+    def load_from_cache(self, length: int) -> list[dict[str, Any]] | None:
         """
         Load sequence data from cache file if it exists and is valid.
 

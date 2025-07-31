@@ -6,7 +6,8 @@ These interfaces handle application lifecycle and coordination operations.
 """
 
 from abc import ABC, abstractmethod
-from typing import Any, Callable, Optional
+from collections.abc import Callable
+from typing import Any
 
 
 class IApplicationOrchestrator(ABC):
@@ -14,7 +15,7 @@ class IApplicationOrchestrator(ABC):
 
     @abstractmethod
     def initialize_application(
-        self, progress_callback: Optional[Callable[[str, int], None]] = None
+        self, progress_callback: Callable[[str, int], None] | None = None
     ) -> bool:
         """
         Initialize the complete application.
@@ -103,7 +104,7 @@ class IApplicationInitializationOrchestrator(ABC):
     def initialize_services(
         self,
         container: Any,
-        progress_callback: Optional[Callable[[str, int], None]] = None,
+        progress_callback: Callable[[str, int], None] | None = None,
     ) -> bool:
         """
         Initialize all application services.
@@ -123,7 +124,7 @@ class IApplicationInitializationOrchestrator(ABC):
     def initialize_ui_components(
         self,
         main_window: Any,
-        progress_callback: Optional[Callable[[str, int], None]] = None,
+        progress_callback: Callable[[str, int], None] | None = None,
     ) -> bool:
         """
         Initialize UI components.

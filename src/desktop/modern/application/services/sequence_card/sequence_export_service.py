@@ -5,7 +5,7 @@ Handles export and regeneration of sequence card images.
 """
 
 import logging
-from typing import Callable, Optional
+from collections.abc import Callable
 
 from PyQt6.QtCore import QThread, pyqtSignal
 
@@ -119,8 +119,8 @@ class SequenceCardExportService(ISequenceCardExportService):
     """Implementation of sequence card export operations."""
 
     def __init__(self):
-        self.export_progress_callback: Optional[Callable[[int, int, str], None]] = None
-        self._current_worker: Optional[ExportWorker] = None
+        self.export_progress_callback: Callable[[int, int, str], None] | None = None
+        self._current_worker: ExportWorker | None = None
 
     def export_all_sequences(self) -> bool:
         """Export all sequence cards."""

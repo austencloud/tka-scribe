@@ -5,11 +5,11 @@ This module processes images that are dropped onto the application,
 providing various options for what to do with them.
 """
 
-from datetime import datetime
 import logging
 import os
-from pathlib import Path
 import shutil
+from datetime import datetime
+from pathlib import Path
 from typing import TYPE_CHECKING
 
 from PyQt6.QtCore import QObject, pyqtSignal

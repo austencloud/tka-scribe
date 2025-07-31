@@ -5,8 +5,8 @@ Handles mapping and conversion of position and orientation attributes between fo
 Focused solely on attribute transformation logic.
 """
 
-from enum import Enum
 import logging
+from enum import Enum
 from typing import Any
 
 from desktop.modern.core.interfaces.data_builder_services import (

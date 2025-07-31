@@ -6,10 +6,9 @@ Now acts as an orchestrator that coordinates specialized export services
 rather than handling all responsibilities itself.
 """
 
-from datetime import datetime
 import logging
+from datetime import datetime
 from pathlib import Path
-from typing import Optional
 
 from PyQt6.QtCore import QObject
 
@@ -48,13 +47,13 @@ class WorkbenchExportService(QObject):
 
     def __init__(
         self,
-        base_export_directory: Optional[str] = None,
+        base_export_directory: str | None = None,
         parent=None,
         # Dependency injection for services (optional for backward compatibility)
-        directory_service: Optional[IExportDirectoryService] = None,
-        data_transformer: Optional[ISequenceDataTransformer] = None,
-        json_exporter: Optional[ISequenceJsonExporter] = None,
-        container_manager: Optional[IExportContainerManager] = None,
+        directory_service: IExportDirectoryService | None = None,
+        data_transformer: ISequenceDataTransformer | None = None,
+        json_exporter: ISequenceJsonExporter | None = None,
+        container_manager: IExportContainerManager | None = None,
     ):
         """
         Initialize export service with specialized services.
@@ -84,7 +83,7 @@ class WorkbenchExportService(QObject):
         )
 
     def export_sequence_image(
-        self, sequence: SequenceData, file_path: Optional[str] = None
+        self, sequence: SequenceData, file_path: str | None = None
     ) -> tuple[bool, str]:
         """
         Export sequence as image file using the modern image export service.

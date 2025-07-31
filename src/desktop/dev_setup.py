@@ -14,9 +14,9 @@ Usage:
 """
 
 import argparse
-from pathlib import Path
 import shutil
 import sys
+from pathlib import Path
 
 
 def create_missing_init_files() -> list[Path]:

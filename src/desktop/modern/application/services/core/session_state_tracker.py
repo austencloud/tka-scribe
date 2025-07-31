@@ -5,13 +5,13 @@ Provides robust auto-save/restore functionality for TKA applications.
 Automatically saves user state after interactions and restores exactly where they left off.
 """
 
-from dataclasses import asdict
-from datetime import datetime, timedelta
 import json
 import logging
-from pathlib import Path
-from typing import Any, Optional
 import uuid
+from dataclasses import asdict
+from datetime import datetime, timedelta
+from pathlib import Path
+from typing import Any
 
 # Conditional PyQt6 imports for testing compatibility
 try:
@@ -74,7 +74,7 @@ class SessionStateTracker(ISessionStateTracker):
         self,
         ui_state_service: IUIStateManager,
         file_system_service: IFileSystemService,
-        event_bus: Optional[Any] = None,
+        event_bus: Any | None = None,
     ):
         """
         Initialize session state service.
@@ -242,9 +242,9 @@ class SessionStateTracker(ISessionStateTracker):
 
     def update_workbench_state(
         self,
-        beat_index: Optional[int],
-        beat_data: Optional[Any],
-        start_position: Optional[Any],
+        beat_index: int | None,
+        beat_data: Any | None,
+        start_position: Any | None,
     ) -> None:
         """Update workbench selection state."""
         try:
@@ -298,9 +298,9 @@ class SessionStateTracker(ISessionStateTracker):
     def update_graph_editor_state(
         self,
         visible: bool,
-        beat_index: Optional[int],
-        selected_arrow: Optional[str],
-        height: Optional[int] = None,
+        beat_index: int | None,
+        selected_arrow: str | None,
+        height: int | None = None,
     ) -> None:
         """Update graph editor state."""
         try:
@@ -324,8 +324,8 @@ class SessionStateTracker(ISessionStateTracker):
     def update_ui_state(
         self,
         active_tab: str,
-        beat_layout: Optional[dict[str, Any]] = None,
-        component_visibility: Optional[dict[str, bool]] = None,
+        beat_layout: dict[str, Any] | None = None,
+        component_visibility: dict[str, bool] | None = None,
     ) -> None:
         """Update UI state information."""
         try:
@@ -401,7 +401,7 @@ class SessionStateTracker(ISessionStateTracker):
             logger.error(f"Failed to clear session: {e}")
             return False
 
-    def get_current_session_state(self) -> Optional[SessionState]:
+    def get_current_session_state(self) -> SessionState | None:
         """Get current session state without loading from file."""
         return self._current_session
 

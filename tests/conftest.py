@@ -6,8 +6,8 @@ Minimal conftest.py that relies on proper package installation
 instead of sys.path manipulation.
 """
 
-from pathlib import Path
 import warnings
+from pathlib import Path
 
 import pytest
 

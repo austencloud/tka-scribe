@@ -10,7 +10,7 @@ Key principles:
 - No business logic - pure widget composition
 """
 
-from typing import Callable, Optional
+from collections.abc import Callable
 
 from PyQt6.QtCore import QSize, Qt, pyqtSignal
 from PyQt6.QtGui import QFont
@@ -37,8 +37,8 @@ class OptionPickerWidget(QWidget):
         self,
         parent=None,
         mw_size_provider: Callable[[], QSize] = None,
-        progress_callback: Optional[Callable[[str, float], None]] = None,
-        container: Optional[DIContainer] = None,
+        progress_callback: Callable[[str, float], None] | None = None,
+        container: DIContainer | None = None,
     ):
         """Initialize with service resolution from DI container."""
         super().__init__(parent)

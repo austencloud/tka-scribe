@@ -3,10 +3,10 @@ Settings management for TKA Unified Launcher.
 Enhanced with state persistence and smart initialization.
 """
 
-from dataclasses import asdict, dataclass
 import json
+from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 
 
 @dataclass
@@ -17,10 +17,10 @@ class LauncherSettings:
     launch_mode: str = "docked"  # "window" or "docked" - default to docked
     window_width: int = 1000
     window_height: int = 700
-    window_x: Optional[int] = None
-    window_y: Optional[int] = None
+    window_x: int | None = None
+    window_y: int | None = None
     target_screen_index: int = 0  # Which screen to use (0 = primary)
-    last_window_geometry: Optional[dict[str, int]] = None  # x, y, width, height
+    last_window_geometry: dict[str, int] | None = None  # x, y, width, height
 
     # Docked Mode Settings
     dock_position: str = "left"  # "left", "right", "top", "bottom"
@@ -29,7 +29,7 @@ class LauncherSettings:
     dock_offset_ratio: float = 0.0  # Position ratio along screen edge (0 = top/left)
     dock_auto_hide: bool = False
     dock_icon_size: int = 48
-    dock_last_geometry: Optional[dict[str, int]] = None  # Store last dock position
+    dock_last_geometry: dict[str, int] | None = None  # Store last dock position
 
     # Behavior Settings
     auto_start_docked: bool = True  # Start in dock mode by default
@@ -53,7 +53,7 @@ class LauncherSettings:
 class SettingsManager:
     """Manages launcher settings persistence with enhanced state management."""
 
-    def __init__(self, settings_path: Optional[Path] = None):
+    def __init__(self, settings_path: Path | None = None):
         if settings_path is None:
             settings_path = Path.home() / ".tka" / "launcher_settings.json"
         self.settings_path = settings_path

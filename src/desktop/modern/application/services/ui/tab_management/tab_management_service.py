@@ -11,9 +11,9 @@ Service for managing application tabs in the modern TKA desktop app.
 Handles tab switching and registration - tab creation is handled by TabFactory.
 """
 
-from abc import ABC, abstractmethod
 import logging
-from typing import TYPE_CHECKING, Optional
+from abc import ABC, abstractmethod
+from typing import TYPE_CHECKING
 
 from PyQt6.QtWidgets import QTabWidget, QWidget
 
@@ -35,7 +35,7 @@ class ITabManagementService(ABC):
         """Switch to the specified tab."""
 
     @abstractmethod
-    def get_current_tab_name(self) -> Optional[str]:
+    def get_current_tab_name(self) -> str | None:
         """Get the name of the currently active tab."""
 
     @abstractmethod
@@ -52,7 +52,7 @@ class TabManagementService(ITabManagementService):
     """
 
     def __init__(self):
-        self._tab_widget: Optional[QTabWidget] = None
+        self._tab_widget: QTabWidget | None = None
         self._tabs: dict[str, QWidget] = {}
         self._tab_index_map: dict[str, int] = {}
         self._current_tab = "construct"  # Default tab
@@ -98,7 +98,7 @@ class TabManagementService(ITabManagementService):
         )
         return False
 
-    def get_current_tab_name(self) -> Optional[str]:
+    def get_current_tab_name(self) -> str | None:
         """Get the name of the currently active tab."""
         return self._current_tab
 

@@ -8,11 +8,10 @@ This service handles:
 - File existence validation
 """
 
-from functools import lru_cache
 import logging
 import os
 import re
-from typing import Optional
+from functools import lru_cache
 
 from desktop.modern.core.interfaces.pictograph_rendering_services import (
     IPictographAssetManager,
@@ -109,7 +108,7 @@ class PictographAssetManager(IPictographAssetManager):
             return ""
 
     @lru_cache(maxsize=64)
-    def load_svg_data(self, svg_path: str) -> Optional[str]:
+    def load_svg_data(self, svg_path: str) -> str | None:
         """Load SVG file with LRU caching for performance."""
         try:
             with open(svg_path, encoding="utf-8") as file:
@@ -234,7 +233,7 @@ class PictographAssetManager(IPictographAssetManager):
             logger.warning(f"🔲 [ASSET_MANAGER] Unknown grid mode: {grid_mode}")
             return ""
 
-    def get_prop_svg(self, prop_type: str) -> Optional[str]:
+    def get_prop_svg(self, prop_type: str) -> str | None:
         """Get prop SVG content directly."""
         svg_path = self.get_prop_svg_path(prop_type)
         if svg_path and self.svg_path_exists(svg_path):
@@ -244,7 +243,7 @@ class PictographAssetManager(IPictographAssetManager):
             logger.debug(f"🔧 [ASSET_MANAGER] Using fallback for prop: {prop_type}")
             return self.create_fallback_prop_svg("blue")  # Default color
 
-    def get_glyph_svg(self, glyph_type: str, glyph_id: str) -> Optional[str]:
+    def get_glyph_svg(self, glyph_type: str, glyph_id: str) -> str | None:
         """Get glyph SVG content directly."""
         svg_path = self.get_glyph_svg_path(glyph_type, glyph_id)
         if svg_path and self.svg_path_exists(svg_path):
@@ -255,7 +254,7 @@ class PictographAssetManager(IPictographAssetManager):
             )
             return None
 
-    def get_grid_svg(self, grid_mode: str) -> Optional[str]:
+    def get_grid_svg(self, grid_mode: str) -> str | None:
         """Get grid SVG content directly."""
         svg_path = self.get_grid_svg_path(grid_mode)
         if svg_path and self.svg_path_exists(svg_path):
@@ -265,7 +264,7 @@ class PictographAssetManager(IPictographAssetManager):
             logger.debug(f"🔧 [ASSET_MANAGER] Using fallback for grid: {grid_mode}")
             return self.create_fallback_grid_svg(grid_mode)
 
-    def get_prop_asset(self, prop_type: str, color: str) -> Optional[SvgAsset]:
+    def get_prop_asset(self, prop_type: str, color: str) -> SvgAsset | None:
         """Get prop asset as SvgAsset object for framework-agnostic renderer."""
         try:
             # Get SVG content
@@ -292,7 +291,7 @@ class PictographAssetManager(IPictographAssetManager):
             )
             return None
 
-    def get_grid_asset(self, grid_mode: str) -> Optional[SvgAsset]:
+    def get_grid_asset(self, grid_mode: str) -> SvgAsset | None:
         """Get grid asset as SvgAsset object for framework-agnostic renderer."""
         try:
             svg_content = self.get_grid_svg(grid_mode)
@@ -312,7 +311,7 @@ class PictographAssetManager(IPictographAssetManager):
             )
             return None
 
-    def get_glyph_asset(self, glyph_type: str, glyph_id: str) -> Optional[SvgAsset]:
+    def get_glyph_asset(self, glyph_type: str, glyph_id: str) -> SvgAsset | None:
         """Get glyph asset as SvgAsset object for framework-agnostic renderer."""
         try:
             svg_content = self.get_glyph_svg(glyph_type, glyph_id)

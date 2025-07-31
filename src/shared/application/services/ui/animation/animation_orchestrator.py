@@ -7,7 +7,8 @@ The shared package should not depend on desktop.modern at module level.
 """
 
 import asyncio
-from typing import Any, Callable, Optional
+from collections.abc import Callable
+from typing import Any
 
 # FIXED: Import only framework-agnostic components at module level
 from desktop.modern.core.animation.animation_engine import (
@@ -60,7 +61,7 @@ class ModernAnimationOrchestrator(IAnimationOrchestrator):
         self.event_bus.subscribe("animation.frame", self._on_animation_frame)
 
     async def fade_target(
-        self, target: Any, fade_in: bool, config: Optional[AnimationConfig] = None
+        self, target: Any, fade_in: bool, config: AnimationConfig | None = None
     ) -> str:
         """Fade a target in or out."""
         if config is None:
@@ -84,7 +85,7 @@ class ModernAnimationOrchestrator(IAnimationOrchestrator):
         self,
         targets: list[Any],
         fade_in: bool,
-        config: Optional[AnimationConfig] = None,
+        config: AnimationConfig | None = None,
     ) -> list[str]:
         """Fade multiple targets simultaneously."""
         if not targets:
@@ -106,7 +107,7 @@ class ModernAnimationOrchestrator(IAnimationOrchestrator):
         self,
         targets: list[Any],
         update_callback: Callable[[], None],
-        config: Optional[AnimationConfig] = None,
+        config: AnimationConfig | None = None,
     ) -> None:
         """Fade out targets, execute callback, then fade in."""
         if not targets:
@@ -131,7 +132,7 @@ class ModernAnimationOrchestrator(IAnimationOrchestrator):
         self,
         stack: Any,  # QStackedWidget
         new_index: int,
-        config: Optional[AnimationConfig] = None,
+        config: AnimationConfig | None = None,
     ) -> str:
         """Animate stack widget transition."""
         if config is None:
@@ -159,7 +160,7 @@ class ModernAnimationOrchestrator(IAnimationOrchestrator):
         return fade_in_id
 
     async def cross_fade_targets(
-        self, out_target: Any, in_target: Any, config: Optional[AnimationConfig] = None
+        self, out_target: Any, in_target: Any, config: AnimationConfig | None = None
     ) -> tuple[str, str]:
         """Cross-fade between two targets simultaneously."""
         if config is None:
@@ -183,7 +184,7 @@ class ModernAnimationOrchestrator(IAnimationOrchestrator):
         property_name: str,
         from_value: Any,
         to_value: Any,
-        config: Optional[AnimationConfig] = None,
+        config: AnimationConfig | None = None,
     ) -> str:
         """Animate a specific property of a target."""
         if config is None:

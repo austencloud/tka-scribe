@@ -5,9 +5,9 @@ Immutable data structures for motion representation in TKA.
 Handles prop and arrow motion data with type safety and serialization.
 """
 
-from dataclasses import dataclass, fields
 import json
-from typing import Any, Optional
+from dataclasses import dataclass, fields
+from typing import Any
 
 from ._shared_utils import process_field_value
 from .enums import Location, MotionType, Orientation, RotationDirection
@@ -33,8 +33,8 @@ class MotionData:
     is_visible: bool = True
 
     # Prefloat attributes for letter determination
-    prefloat_motion_type: Optional[MotionType] = None
-    prefloat_prop_rot_dir: Optional[RotationDirection] = None
+    prefloat_motion_type: MotionType | None = None
+    prefloat_prop_rot_dir: RotationDirection | None = None
 
     def __post_init__(self):
         """Validate and convert motion data fields to proper enum types."""

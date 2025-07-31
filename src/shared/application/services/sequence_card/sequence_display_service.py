@@ -6,8 +6,8 @@ Framework-agnostic service layer.
 """
 
 import logging
+from collections.abc import Callable
 from pathlib import Path
-from typing import Callable, Optional
 
 from desktop.modern.core.interfaces.sequence_card_services import (
     DisplayState,
@@ -29,7 +29,7 @@ class SequenceCardDisplayService(ISequenceCardDisplayService):
         data_service: ISequenceCardDataService,
         cache_service: ISequenceCardCacheService,
         layout_service: ISequenceCardLayoutService,
-        dictionary_path: Optional[Path] = None,
+        dictionary_path: Path | None = None,
     ):
         self.data_service = data_service
         self.cache_service = cache_service
@@ -46,11 +46,11 @@ class SequenceCardDisplayService(ISequenceCardDisplayService):
             self.dictionary_path = path_service.get_dictionary_path()
 
         self.display_state = DisplayState()
-        self.progress_callback: Optional[Callable[[int, int], None]] = None
-        self.sequences_loaded_callback: Optional[
-            Callable[[list[SequenceCardData]], None]
-        ] = None
-        self.loading_state_callback: Optional[Callable[[bool], None]] = None
+        self.progress_callback: Callable[[int, int], None] | None = None
+        self.sequences_loaded_callback: (
+            Callable[[list[SequenceCardData]], None] | None
+        ) = None
+        self.loading_state_callback: Callable[[bool], None] | None = None
         self._cancel_requested = False
         self._current_sequences: list[SequenceCardData] = []
 

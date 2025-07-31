@@ -8,11 +8,12 @@ ARCHITECTURE: Provides automatic lifecycle management for Qt objects with
 smart cleanup registration, resource tracking, and automatic memory management.
 """
 
-from dataclasses import dataclass
 import logging
-from threading import Lock
-from typing import Any, Callable, Optional, TypeVar
 import weakref
+from collections.abc import Callable
+from dataclasses import dataclass
+from threading import Lock
+from typing import Any, TypeVar
 
 # Import Qt modules with compatibility
 try:
@@ -255,7 +256,7 @@ class AutoManagedWidget(QWidget):
     and memory management for Qt widgets.
     """
 
-    def __init__(self, parent: Optional[QWidget] = None):
+    def __init__(self, parent: QWidget | None = None):
         """Initialize auto-managed widget."""
         super().__init__(parent)
 
@@ -330,7 +331,7 @@ AsyncViewableComponentBase = AutoManagedWidget  # Fallback for direct usage
 
 
 # Global Qt object factory instance
-_qt_factory: Optional[QtObjectFactory] = None
+_qt_factory: QtObjectFactory | None = None
 
 
 def qt_factory() -> QtObjectFactory:

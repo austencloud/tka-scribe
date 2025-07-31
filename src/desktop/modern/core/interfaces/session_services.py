@@ -5,11 +5,11 @@ Defines interfaces for session state management in TKA applications.
 Provides auto-save/restore functionality for user workflow continuity.
 """
 
+import uuid
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Any, Optional
-import uuid
+from typing import Any
 
 
 @dataclass
@@ -23,18 +23,18 @@ class SessionState:
     """
 
     # Current sequence data
-    current_sequence_id: Optional[str] = None
-    current_sequence_data: Optional[dict[str, Any]] = None
+    current_sequence_id: str | None = None
+    current_sequence_data: dict[str, Any] | None = None
 
     # Workbench state
-    selected_beat_index: Optional[int] = None
-    selected_beat_data: Optional[dict[str, Any]] = None
-    start_position_data: Optional[dict[str, Any]] = None
+    selected_beat_index: int | None = None
+    selected_beat_data: dict[str, Any] | None = None
+    start_position_data: dict[str, Any] | None = None
 
     # Graph editor state
     graph_editor_visible: bool = False
-    graph_editor_selected_beat_index: Optional[int] = None
-    graph_editor_selected_arrow: Optional[str] = None
+    graph_editor_selected_beat_index: int | None = None
+    graph_editor_selected_arrow: str | None = None
     graph_editor_height: int = 300
 
     # Active tab and workbench configuration
@@ -64,8 +64,8 @@ class SessionRestoreResult:
 
     success: bool
     session_restored: bool = False
-    session_data: Optional[SessionState] = None
-    error_message: Optional[str] = None
+    session_data: SessionState | None = None
+    error_message: str | None = None
     warnings: list = field(default_factory=list)
 
 
@@ -116,9 +116,9 @@ class ISessionStateTracker(ABC):
     @abstractmethod
     def update_workbench_state(
         self,
-        beat_index: Optional[int],
-        beat_data: Optional[Any],
-        start_position: Optional[Any],
+        beat_index: int | None,
+        beat_data: Any | None,
+        start_position: Any | None,
     ) -> None:
         """
         Update workbench selection state.
@@ -136,9 +136,9 @@ class ISessionStateTracker(ABC):
     def update_graph_editor_state(
         self,
         visible: bool,
-        beat_index: Optional[int],
-        selected_arrow: Optional[str],
-        height: Optional[int] = None,
+        beat_index: int | None,
+        selected_arrow: str | None,
+        height: int | None = None,
     ) -> None:
         """
         Update graph editor state.
@@ -157,8 +157,8 @@ class ISessionStateTracker(ABC):
     def update_ui_state(
         self,
         active_tab: str,
-        beat_layout: Optional[dict[str, Any]] = None,
-        component_visibility: Optional[dict[str, bool]] = None,
+        beat_layout: dict[str, Any] | None = None,
+        component_visibility: dict[str, bool] | None = None,
     ) -> None:
         """
         Update UI state information.
@@ -207,7 +207,7 @@ class ISessionStateTracker(ABC):
         """
 
     @abstractmethod
-    def get_current_session_state(self) -> Optional[SessionState]:
+    def get_current_session_state(self) -> SessionState | None:
         """
         Get current session state without loading from file.
 

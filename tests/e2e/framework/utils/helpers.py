@@ -7,7 +7,8 @@ that support the testing framework and make tests more reliable and maintainable
 
 import logging
 import time
-from typing import Any, Callable, Optional
+from collections.abc import Callable
+from typing import Any
 
 from PyQt6.QtTest import QTest
 
@@ -230,7 +231,7 @@ class LoggingHelpers:
     """
 
     @staticmethod
-    def log_test_start(test_name: str, parameters: Optional[dict[str, Any]] = None):
+    def log_test_start(test_name: str, parameters: dict[str, Any] | None = None):
         """
         Log test start with parameters.
 
@@ -244,7 +245,7 @@ class LoggingHelpers:
                 logger.info(f"  {key}: {value}")
 
     @staticmethod
-    def log_test_end(test_name: str, success: bool, duration: Optional[float] = None):
+    def log_test_end(test_name: str, success: bool, duration: float | None = None):
         """
         Log test completion.
 
@@ -258,7 +259,7 @@ class LoggingHelpers:
         logger.info(f"=== {status}: {test_name}{duration_str} ===")
 
     @staticmethod
-    def log_workflow_step(step_name: str, details: Optional[str] = None):
+    def log_workflow_step(step_name: str, details: str | None = None):
         """
         Log workflow step execution.
 

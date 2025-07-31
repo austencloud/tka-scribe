@@ -5,8 +5,8 @@ This script tests that generated sequences have proper positional flow.
 """
 
 import logging
-from pathlib import Path
 import sys
+from pathlib import Path
 
 # Use the same path setup as the main application
 current_file = Path(__file__).resolve()

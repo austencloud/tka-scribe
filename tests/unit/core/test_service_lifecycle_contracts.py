@@ -12,8 +12,8 @@ Service Lifecycle Contract Tests
 Defines behavioral contracts for service lifecycle management.
 """
 
-from pathlib import Path
 import sys
+from pathlib import Path
 
 import pytest
 

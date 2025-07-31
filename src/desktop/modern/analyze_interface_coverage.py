@@ -6,10 +6,10 @@ which services need interfaces for complete cross-platform coverage.
 """
 
 import ast
-from dataclasses import dataclass
 import os
-from pathlib import Path
 import re
+from dataclasses import dataclass
+from pathlib import Path
 
 
 @dataclass

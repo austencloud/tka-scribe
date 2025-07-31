@@ -4,8 +4,8 @@ VS Code workspace debugging script.
 """
 
 import os
-from pathlib import Path
 import sys
+from pathlib import Path
 
 print("🔍 VS CODE WORKSPACE DEBUG")
 print("=" * 50)

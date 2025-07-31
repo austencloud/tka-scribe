@@ -12,9 +12,9 @@ PROVIDES:
 - Event-driven prop positioning
 """
 
+import sys
 from abc import ABC, abstractmethod
 from pathlib import Path
-import sys
 from typing import TYPE_CHECKING, Optional
 
 
@@ -109,15 +109,15 @@ class PropPositioningOrchestrator(IPropPositioningOrchestrator):
 
     def __init__(
         self,
-        beta_detector: Optional[IBetaPositioningDetector] = None,
-        overlap_detector: Optional[IPropOverlapDetector] = None,
-        direction_service: Optional[IDirectionCalculationService] = None,
-        letter_i_service: Optional[ILetterIPositioningService] = None,
-        offset_calculator: Optional[IOffsetCalculationService] = None,
-        classification_service: Optional[IPropClassificationService] = None,
-        rotation_calculator: Optional[IPropRotationCalculator] = None,
-        override_service: Optional[ISpecialPlacementOverrideService] = None,
-        event_publisher: Optional[IPropPositioningEventPublisher] = None,
+        beta_detector: IBetaPositioningDetector | None = None,
+        overlap_detector: IPropOverlapDetector | None = None,
+        direction_service: IDirectionCalculationService | None = None,
+        letter_i_service: ILetterIPositioningService | None = None,
+        offset_calculator: IOffsetCalculationService | None = None,
+        classification_service: IPropClassificationService | None = None,
+        rotation_calculator: IPropRotationCalculator | None = None,
+        override_service: ISpecialPlacementOverrideService | None = None,
+        event_publisher: IPropPositioningEventPublisher | None = None,
         event_bus: Optional["IEventBus"] = None,
     ):
         """Initialize with dependency injection of all services."""

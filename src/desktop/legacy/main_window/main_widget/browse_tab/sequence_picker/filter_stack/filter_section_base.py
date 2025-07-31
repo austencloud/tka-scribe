@@ -1,5 +1,5 @@
-from datetime import datetime
 import os
+from datetime import datetime
 from typing import TYPE_CHECKING
 
 from main_window.main_widget.metadata_extractor import MetaDataExtractor

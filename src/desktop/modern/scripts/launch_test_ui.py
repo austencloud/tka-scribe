@@ -3,9 +3,9 @@
 Simple launcher for the Image Export Test UI
 """
 
-from pathlib import Path
 import subprocess
 import sys
+from pathlib import Path
 
 
 def main():

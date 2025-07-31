@@ -5,7 +5,8 @@ Clean service implementation without Qt dependencies that implements ISequenceBe
 This service handles beat operations on sequences using pure business logic.
 """
 
-from typing import Any, Callable, Optional
+from collections.abc import Callable
+from typing import Any
 
 from desktop.modern.core.interfaces.sequence_operation_services import (
     ISequenceBeatOperations,
@@ -30,9 +31,9 @@ class SequenceBeatService(ISequenceBeatOperations):
 
     def __init__(
         self,
-        sequence_getter: Optional[Callable[[], SequenceData]] = None,
-        sequence_setter: Optional[Callable[[SequenceData], None]] = None,
-        persister: Optional[SequencePersister] = None,
+        sequence_getter: Callable[[], SequenceData] | None = None,
+        sequence_setter: Callable[[SequenceData], None] | None = None,
+        persister: SequencePersister | None = None,
     ):
         """
         Initialize the sequence beat service.
@@ -47,7 +48,7 @@ class SequenceBeatService(ISequenceBeatOperations):
         self.persister = persister or SequencePersister()
         self.converter = ModernToLegacyConverter()
 
-    def get_current_sequence(self) -> Optional[SequenceData]:
+    def get_current_sequence(self) -> SequenceData | None:
         """Get the current sequence."""
         if self.sequence_getter:
             return self.sequence_getter()
@@ -59,7 +60,7 @@ class SequenceBeatService(ISequenceBeatOperations):
             self.sequence_setter(sequence)
 
     # Interface implementation methods
-    def add_beat(self, sequence: Any, beat: Any, position: Optional[int] = None) -> Any:
+    def add_beat(self, sequence: Any, beat: Any, position: int | None = None) -> Any:
         """Add beat to sequence (interface implementation)."""
         if not isinstance(sequence, SequenceData):
             sequence = self.get_current_sequence()
@@ -142,7 +143,7 @@ class SequenceBeatService(ISequenceBeatOperations):
         return 0
 
     def validate_beat_addition(
-        self, sequence: Any, beat: Any, position: Optional[int] = None
+        self, sequence: Any, beat: Any, position: int | None = None
     ) -> bool:
         """Validate if beat can be added (interface implementation)."""
         try:

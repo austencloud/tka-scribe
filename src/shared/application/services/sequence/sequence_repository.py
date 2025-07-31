@@ -6,9 +6,8 @@ Extracted from the monolithic sequence management service to focus
 solely on data access and storage operations.
 """
 
-from abc import ABC, abstractmethod
 import logging
-from typing import Optional
+from abc import ABC, abstractmethod
 
 from desktop.modern.domain.models.sequence_data import SequenceData
 
@@ -27,7 +26,7 @@ class ISequenceRepository(ABC):
         """Save a sequence to storage."""
 
     @abstractmethod
-    def get_by_id(self, sequence_id: str) -> Optional[SequenceData]:
+    def get_by_id(self, sequence_id: str) -> SequenceData | None:
         """Retrieve a sequence by its ID."""
 
     @abstractmethod
@@ -43,7 +42,7 @@ class ISequenceRepository(ABC):
         """Check if a sequence exists."""
 
     @abstractmethod
-    def get_current_sequence(self) -> Optional[SequenceData]:
+    def get_current_sequence(self) -> SequenceData | None:
         """Get the current active sequence."""
 
     @abstractmethod
@@ -112,7 +111,7 @@ class SequenceRepository(ISequenceRepository):
             logger.error(f"Failed to save sequence {sequence.name}: {e}")
             raise RepositoryError(f"Failed to save sequence: {e}") from e
 
-    def get_by_id(self, sequence_id: str) -> Optional[SequenceData]:
+    def get_by_id(self, sequence_id: str) -> SequenceData | None:
         """
         Retrieve a sequence by its ID.
 
@@ -303,7 +302,7 @@ class SequenceRepository(ISequenceRepository):
         logger.debug(f"Found {len(matching_sequences)} sequences matching '{name}'")
         return matching_sequences
 
-    def get_current_sequence(self) -> Optional[SequenceData]:
+    def get_current_sequence(self) -> SequenceData | None:
         """
         Get the current active sequence.
 

@@ -5,7 +5,8 @@ These interfaces define the contracts for core services, replacing tightly-coupl
 """
 
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING, Any, Callable, Optional
+from collections.abc import Callable
+from typing import TYPE_CHECKING, Any
 
 from desktop.modern.core.types import Size
 
@@ -120,7 +121,7 @@ class ISequenceDataService(ABC):
         """Get all available sequences."""
 
     @abstractmethod
-    def get_sequence_by_id(self, sequence_id: str) -> Optional[dict[str, Any]]:
+    def get_sequence_by_id(self, sequence_id: str) -> dict[str, Any] | None:
         """Get a specific sequence by ID."""
 
     @abstractmethod
@@ -356,12 +357,12 @@ class IObjectPoolService(ABC):
         pool_name: str,
         max_objects: int,
         object_factory: Callable[[], Any],
-        progress_callback: Optional[Callable] = None,
+        progress_callback: Callable | None = None,
     ) -> None:
         """Initialize object pool with progress tracking."""
 
     @abstractmethod
-    def get_pooled_object(self, pool_name: str, index: int) -> Optional[Any]:
+    def get_pooled_object(self, pool_name: str, index: int) -> Any | None:
         """Get object from pool by index."""
 
 
@@ -441,7 +442,7 @@ class IAssetManager(ABC):
         """Generate fallback SVG file path for original (non-colored) arrow assets."""
 
     @abstractmethod
-    def get_prop_asset_path(self, prop_type: str, color: Optional[str] = None) -> str:
+    def get_prop_asset_path(self, prop_type: str, color: str | None = None) -> str:
         """Get asset path for prop (hand) assets."""
 
     @abstractmethod
@@ -473,7 +474,7 @@ class ISessionRestorationCoordinator(ABC):
     """Interface for session restoration coordination."""
 
     @abstractmethod
-    def load_and_prepare_session(self, session_service) -> Optional[Any]:
+    def load_and_prepare_session(self, session_service) -> Any | None:
         """Load and prepare session data for restoration."""
 
     @abstractmethod
@@ -551,7 +552,7 @@ class IFramePoolService(ABC):
         """Initialize frame pool with specified size."""
 
     @abstractmethod
-    def get_frame(self, index: int) -> Optional[Any]:
+    def get_frame(self, index: int) -> Any | None:
         """Get frame from pool by index."""
 
     @abstractmethod

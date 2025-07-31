@@ -7,13 +7,13 @@ Provides comprehensive input validation for graph editor components
 following TKA architectural patterns and error handling best practices.
 """
 
-from dataclasses import dataclass
 import logging
-from pathlib import Path
 
 # Import domain models for validation
 import sys
-from typing import Any, Optional
+from dataclasses import dataclass
+from pathlib import Path
+from typing import Any
 
 modern_src = Path(__file__).parent.parent.parent.parent.parent
 sys.path.insert(0, str(modern_src))
@@ -94,7 +94,7 @@ class GraphEditorValidator:
 
     @staticmethod
     def validate_beat_data(
-        beat_data: Optional[BeatData],
+        beat_data: BeatData | None,
         allow_none: bool = True,
         context: dict[str, Any] = None,
     ) -> ValidationResult:
@@ -257,7 +257,7 @@ class GraphEditorValidator:
 
     @staticmethod
     def validate_sequence_data(
-        sequence_data: Optional[SequenceData],
+        sequence_data: SequenceData | None,
         allow_none: bool = True,
         context: dict[str, Any] = None,
     ) -> ValidationResult:
@@ -410,7 +410,7 @@ class GraphEditorValidator:
 
     @staticmethod
     def validate_arrow_id(
-        arrow_id: Optional[str], allow_none: bool = True, context: dict[str, Any] = None
+        arrow_id: str | None, allow_none: bool = True, context: dict[str, Any] = None
     ) -> ValidationResult:
         """
         Validate arrow ID.
@@ -531,7 +531,7 @@ class GraphEditorValidator:
 
 # Convenience functions for quick validation
 def validate_beat_data(
-    beat_data: Optional[BeatData],
+    beat_data: BeatData | None,
     allow_none: bool = True,
     context: dict[str, Any] = None,
 ) -> ValidationResult:
@@ -540,7 +540,7 @@ def validate_beat_data(
 
 
 def validate_sequence_data(
-    sequence_data: Optional[SequenceData],
+    sequence_data: SequenceData | None,
     allow_none: bool = True,
     context: dict[str, Any] = None,
 ) -> ValidationResult:
@@ -563,7 +563,7 @@ def validate_beat_index(
 
 
 def validate_arrow_id(
-    arrow_id: Optional[str], allow_none: bool = True, context: dict[str, Any] = None
+    arrow_id: str | None, allow_none: bool = True, context: dict[str, Any] = None
 ) -> ValidationResult:
     """Quick validation function for arrow ID."""
     return GraphEditorValidator.validate_arrow_id(arrow_id, allow_none, context)

@@ -11,8 +11,8 @@ Following established patterns:
 - Returns structured results
 """
 
-from enum import Enum
 import logging
+from enum import Enum
 from typing import NamedTuple, Optional
 
 from desktop.modern.domain.models.sequence_data import SequenceData
@@ -40,15 +40,15 @@ class OperationResult(NamedTuple):
     success: bool
     operation_type: OperationType
     message: str
-    updated_sequence: Optional[SequenceData] = None
-    error_details: Optional[str] = None
+    updated_sequence: SequenceData | None = None
+    error_details: str | None = None
 
     @classmethod
     def success_result(
         cls,
         operation_type: OperationType,
         message: str,
-        updated_sequence: Optional[SequenceData] = None,
+        updated_sequence: SequenceData | None = None,
     ):
         """Create a successful operation result."""
         return cls(True, operation_type, message, updated_sequence, None)
@@ -58,7 +58,7 @@ class OperationResult(NamedTuple):
         cls,
         operation_type: OperationType,
         message: str,
-        error_details: Optional[str] = None,
+        error_details: str | None = None,
     ):
         """Create a failed operation result."""
         return cls(False, operation_type, message, None, error_details)
@@ -415,7 +415,7 @@ class WorkbenchOperationCoordinator:
             )
 
     # Beat Operations
-    def delete_beat(self, beat_index: Optional[int]) -> OperationResult:
+    def delete_beat(self, beat_index: int | None) -> OperationResult:
         """
         Delete beat at specified index (legacy behavior: delete beat and all following).
 

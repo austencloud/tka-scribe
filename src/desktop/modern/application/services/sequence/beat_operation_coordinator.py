@@ -5,7 +5,7 @@ Single Responsibility: Coordinating beat operations using focused services.
 Replaces the monolithic SequenceBeatOperations God Object.
 """
 
-from typing import Callable, Optional
+from collections.abc import Callable
 
 from PyQt6.QtCore import QObject, pyqtSignal
 
@@ -40,12 +40,12 @@ class BeatOperationCoordinator(QObject):
 
     def __init__(
         self,
-        workbench_getter: Optional[Callable[[], object]] = None,
-        workbench_setter: Optional[Callable[[SequenceData], None]] = None,
-        beat_creator: Optional[BeatCreationService] = None,
-        sequence_service: Optional[BeatSequenceService] = None,
-        word_calculator: Optional[SequenceWordCalculator] = None,
-        persistence: Optional[SequencePersister] = None,
+        workbench_getter: Callable[[], object] | None = None,
+        workbench_setter: Callable[[SequenceData], None] | None = None,
+        beat_creator: BeatCreationService | None = None,
+        sequence_service: BeatSequenceService | None = None,
+        word_calculator: SequenceWordCalculator | None = None,
+        persistence: SequencePersister | None = None,
     ):
         super().__init__()
 
@@ -311,7 +311,7 @@ class BeatOperationCoordinator(QObject):
             traceback.print_exc()
             raise
 
-    def get_current_sequence(self) -> Optional[SequenceData]:
+    def get_current_sequence(self) -> SequenceData | None:
         """
         Get the current sequence from workbench.
 

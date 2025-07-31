@@ -18,10 +18,10 @@ PROVIDES:
 - Easy testing and serialization
 """
 
-from dataclasses import dataclass, field
 import json
-from typing import Any, Optional
 import uuid
+from dataclasses import dataclass, field
+from typing import Any
 
 from desktop.modern.domain.models.enums import ArrowType
 
@@ -44,7 +44,7 @@ class ArrowData:
     is_mirrored: bool = False
 
     # Position data (calculated by positioning system)
-    location: Optional[str] = None
+    location: str | None = None
     position_x: float = 0.0
     position_y: float = 0.0
     rotation_angle: float = 0.0

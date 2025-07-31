@@ -6,9 +6,9 @@ instead of directly manipulating UI frameworks. Can be used by both desktop (QT)
 and web services.
 """
 
-from abc import ABC, abstractmethod
 import logging
-from typing import Optional, Protocol
+from abc import ABC, abstractmethod
+from typing import Protocol
 
 from .types import (
     Color,
@@ -30,19 +30,19 @@ logger = logging.getLogger(__name__)
 class IPictographAssetProvider(Protocol):
     """Protocol for providing pictograph assets."""
 
-    def get_grid_asset(self, grid_mode: str) -> Optional[SvgAsset]:
+    def get_grid_asset(self, grid_mode: str) -> SvgAsset | None:
         """Get grid SVG asset."""
         ...
 
-    def get_prop_asset(self, prop_type: str, color: str) -> Optional[SvgAsset]:
+    def get_prop_asset(self, prop_type: str, color: str) -> SvgAsset | None:
         """Get prop SVG asset."""
         ...
 
-    def get_glyph_asset(self, glyph_type: str, glyph_id: str) -> Optional[SvgAsset]:
+    def get_glyph_asset(self, glyph_type: str, glyph_id: str) -> SvgAsset | None:
         """Get glyph SVG asset."""
         ...
 
-    def get_arrow_asset(self, arrow_type: str) -> Optional[SvgAsset]:
+    def get_arrow_asset(self, arrow_type: str) -> SvgAsset | None:
         """Get arrow SVG asset."""
         ...
 
@@ -52,7 +52,7 @@ class IPictographRenderer(ABC):
 
     @abstractmethod
     def create_render_commands(
-        self, pictograph_data: dict, target_size: Size, options: Optional[dict] = None
+        self, pictograph_data: dict, target_size: Size, options: dict | None = None
     ) -> list[RenderCommand]:
         """Create list of render commands for pictograph."""
 
@@ -68,7 +68,7 @@ class IPictographRenderer(ABC):
         prop_type: str,
         color: str,
         position: Point,
-        motion_data: Optional[dict] = None,
+        motion_data: dict | None = None,
     ) -> RenderCommand:
         """Create render command for prop."""
 
@@ -98,7 +98,7 @@ class CorePictographRenderer(IPictographRenderer):
         self._command_counter = 0
 
     def create_render_commands(
-        self, pictograph_data: dict, target_size: Size, options: Optional[dict] = None
+        self, pictograph_data: dict, target_size: Size, options: dict | None = None
     ) -> list[RenderCommand]:
         """
         Create complete list of render commands for pictograph.
@@ -203,8 +203,8 @@ class CorePictographRenderer(IPictographRenderer):
         prop_type: str,
         color: str,
         position: Point,
-        motion_data: Optional[dict] = None,
-        pictograph_data: Optional[dict] = None,
+        motion_data: dict | None = None,
+        pictograph_data: dict | None = None,
     ) -> RenderCommand:
         """Create render command for prop."""
         try:
@@ -363,7 +363,7 @@ class CorePictographRenderer(IPictographRenderer):
             logger.error(f"Failed to parse color {color_str}: {e}")
             return Colors.BLACK
 
-    def _calculate_prop_size(self, motion_data: Optional[dict]) -> Size:
+    def _calculate_prop_size(self, motion_data: dict | None) -> Size:
         """
         Calculate prop size - LEGACY COMPATIBLE approach.
 
@@ -375,7 +375,7 @@ class CorePictographRenderer(IPictographRenderer):
         # This matches legacy behavior where props use their natural SVG size
         return Size(253, 78)  # Rounded natural staff.svg dimensions
 
-    def _calculate_prop_rotation(self, motion_data: Optional[dict]) -> float:
+    def _calculate_prop_rotation(self, motion_data: dict | None) -> float:
         """
         Calculate prop rotation using existing modern rotation services.
 
@@ -447,8 +447,8 @@ class CorePictographRenderer(IPictographRenderer):
         self,
         base_position: Point,
         color: str,
-        motion_data: Optional[dict],
-        pictograph_data: Optional[dict],
+        motion_data: dict | None,
+        pictograph_data: dict | None,
     ) -> Point:
         """
         Apply beta positioning logic using existing modern services.
@@ -526,7 +526,7 @@ class CorePictographRenderer(IPictographRenderer):
             return base_position
 
     def _calculate_prop_position(
-        self, base_position: Point, motion_data: Optional[dict]
+        self, base_position: Point, motion_data: dict | None
     ) -> Point:
         """Calculate final prop position based on motion data using legacy coordinates."""
         if not motion_data:
@@ -595,7 +595,7 @@ class CorePictographRenderer(IPictographRenderer):
 
 
 def create_pictograph_renderer(
-    asset_provider: Optional[IPictographAssetProvider] = None, asset_manager=None
+    asset_provider: IPictographAssetProvider | None = None, asset_manager=None
 ) -> CorePictographRenderer:
     """
     Factory function to create pictograph renderer.

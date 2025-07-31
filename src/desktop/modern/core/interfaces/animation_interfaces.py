@@ -4,9 +4,10 @@ These interfaces define the contracts for fade and animation services.
 """
 
 from abc import ABC, abstractmethod
+from collections.abc import Callable
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Callable, Optional
+from typing import Any
 
 from desktop.modern.core.types import (
     AnimationGroupType,
@@ -32,9 +33,9 @@ class FadeOptions:
 
     duration: int = 250
     easing: EasingType = EasingType.IN_OUT_QUAD
-    callback: Optional[Callable[[], None]] = None
-    start_opacity: Optional[float] = None
-    end_opacity: Optional[float] = None
+    callback: Callable[[], None] | None = None
+    start_opacity: float | None = None
+    end_opacity: float | None = None
 
 
 @dataclass
@@ -42,7 +43,7 @@ class StackFadeOptions(FadeOptions):
     """Configuration options for stack fade animations."""
 
     resize_layout: bool = False
-    layout_ratio: Optional[tuple[int, int]] = None
+    layout_ratio: tuple[int, int] | None = None
 
 
 @dataclass
@@ -112,7 +113,7 @@ class IAnimationService(ABC):
 
     @abstractmethod
     async def fade_widget(
-        self, widget: WidgetType, fade_in: bool, options: Optional[FadeOptions] = None
+        self, widget: WidgetType, fade_in: bool, options: FadeOptions | None = None
     ) -> None:
         """Fade a single widget in or out."""
 
@@ -121,13 +122,13 @@ class IAnimationService(ABC):
         self,
         widgets: list[WidgetType],
         fade_in: bool,
-        options: Optional[FadeOptions] = None,
+        options: FadeOptions | None = None,
     ) -> None:
         """Fade multiple widgets in or out."""
 
     @abstractmethod
     async def fade_to_opacity(
-        self, widget: WidgetType, opacity: float, options: Optional[FadeOptions] = None
+        self, widget: WidgetType, opacity: float, options: FadeOptions | None = None
     ) -> None:
         """Fade widget to specific opacity."""
 
@@ -136,13 +137,13 @@ class IAnimationService(ABC):
         self,
         out_widget: WidgetType,
         in_widget: WidgetType,
-        options: Optional[FadeOptions] = None,
+        options: FadeOptions | None = None,
     ) -> None:
         """Cross-fade between two widgets."""
 
     @abstractmethod
     def fade_widget_sync(
-        self, widget: WidgetType, fade_in: bool, options: Optional[FadeOptions] = None
+        self, widget: WidgetType, fade_in: bool, options: FadeOptions | None = None
     ) -> None:
         """Synchronous fade for backward compatibility."""
 
@@ -155,7 +156,7 @@ class IStackAnimationService(ABC):
         self,
         stack: StackWidget,
         new_index: int,
-        options: Optional[StackFadeOptions] = None,
+        options: StackFadeOptions | None = None,
     ) -> None:
         """Fade transition between stack widgets."""
 
@@ -172,7 +173,7 @@ class IFadeOrchestrator(ABC):
         self,
         widgets: list[WidgetType],
         update_callback: Callable[[], None],
-        options: Optional[FadeOptions] = None,
+        options: FadeOptions | None = None,
     ) -> None:
         """Fade out, execute callback, fade in (legacy fade_and_update replacement)."""
 
@@ -181,7 +182,7 @@ class IFadeOrchestrator(ABC):
         self,
         stack: StackWidget,
         new_index: int,
-        options: Optional[StackFadeOptions] = None,
+        options: StackFadeOptions | None = None,
     ) -> None:
         """High-level stack transition."""
 

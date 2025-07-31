@@ -16,9 +16,8 @@ ARCHITECTURE:
 """
 
 import logging
-from pathlib import Path
 import sys
-from typing import Optional
+from pathlib import Path
 
 
 # Add project root to path using pathlib (standardized approach)
@@ -107,8 +106,8 @@ class PropRenderingService:
         scene: QGraphicsScene,
         color: str,
         motion_data: MotionData,
-        pictograph_data: Optional[PictographData] = None,
-    ) -> Optional[QGraphicsSvgItem]:
+        pictograph_data: PictographData | None = None,
+    ) -> QGraphicsSvgItem | None:
         """
         Render prop to Qt scene - REFACTORED to use framework-agnostic adapter.
 

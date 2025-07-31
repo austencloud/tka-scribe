@@ -5,8 +5,8 @@ Handles layout calculations and responsive design.
 Replicates legacy system's exact page sizing and grid layout specifications.
 """
 
-from enum import Enum
 import logging
+from enum import Enum
 
 from PyQt6.QtCore import QRect, QSize
 

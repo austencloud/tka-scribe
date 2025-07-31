@@ -1,5 +1,5 @@
-from functools import cache
 import logging
+from functools import cache
 from typing import TYPE_CHECKING
 
 from enums.letter.letter import Letter

@@ -10,7 +10,8 @@ Handles all widget management and pooling logic for OptionPickerSection includin
 Extracted from OptionPickerSection to follow Single Responsibility Principle.
 """
 
-from typing import TYPE_CHECKING, Callable, Optional
+from collections.abc import Callable
+from typing import TYPE_CHECKING
 
 from desktop.modern.domain.models.pictograph_data import PictographData
 from desktop.modern.presentation.components.option_picker.components.option_pictograph import (
@@ -80,7 +81,7 @@ class OptionPickerSectionWidgetManager:
 
     def _checkout_and_setup_widget(
         self, pictograph_data: PictographData
-    ) -> Optional[OptionPictograph]:
+    ) -> OptionPictograph | None:
         """Create widget directly without pooling and setup with pictograph data."""
 
         # Create widget directly without pooling
@@ -175,7 +176,7 @@ class OptionPickerSectionWidgetManager:
         """Get count of currently active widgets."""
         return len(self._active_widgets)
 
-    def get_widget_by_key(self, key: str) -> Optional[OptionPictograph]:
+    def get_widget_by_key(self, key: str) -> OptionPictograph | None:
         """Get widget by tracking key."""
         return self._active_widgets.get(key)
 

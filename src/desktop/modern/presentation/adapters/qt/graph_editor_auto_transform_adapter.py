@@ -5,7 +5,8 @@ This adapter wraps the pure GraphEditorAutoTransformService to provide Qt-specif
 """
 
 import logging
-from typing import TYPE_CHECKING, Any, Callable, Optional
+from collections.abc import Callable
+from typing import TYPE_CHECKING, Any
 
 from PyQt6.QtCore import QObject, pyqtSignal
 
@@ -43,7 +44,7 @@ class QtGraphEditorAutoTransformAdapter(QObject):
 
     def __init__(
         self,
-        graph_editor_getter: Optional[Callable[[], "GraphEditor"]] = None,
+        graph_editor_getter: Callable[[], "GraphEditor"] | None = None,
     ):
         super().__init__()
 
@@ -76,7 +77,7 @@ class QtGraphEditorAutoTransformAdapter(QObject):
         self,
         element_ids: list[str],
         alignment_type: str = "center",
-        context: Optional[dict[str, Any]] = None,
+        context: dict[str, Any] | None = None,
     ) -> bool:
         """
         Automatically align elements.
@@ -99,7 +100,7 @@ class QtGraphEditorAutoTransformAdapter(QObject):
         self,
         element_ids: list[str],
         distribution_type: str = "horizontal",
-        context: Optional[dict[str, Any]] = None,
+        context: dict[str, Any] | None = None,
     ) -> bool:
         """
         Automatically distribute elements.
@@ -123,8 +124,8 @@ class QtGraphEditorAutoTransformAdapter(QObject):
     def auto_resize_elements(
         self,
         element_ids: list[str],
-        target_size: Optional[dict[str, float]] = None,
-        context: Optional[dict[str, Any]] = None,
+        target_size: dict[str, float] | None = None,
+        context: dict[str, Any] | None = None,
     ) -> bool:
         """
         Automatically resize elements.
@@ -146,8 +147,8 @@ class QtGraphEditorAutoTransformAdapter(QObject):
     def snap_to_grid(
         self,
         element_ids: list[str],
-        grid_size: Optional[int] = None,
-        context: Optional[dict[str, Any]] = None,
+        grid_size: int | None = None,
+        context: dict[str, Any] | None = None,
     ) -> bool:
         """
         Snap elements to grid.
@@ -173,8 +174,8 @@ class QtGraphEditorAutoTransformAdapter(QObject):
     def auto_layout(
         self,
         layout_type: str = "flow",
-        element_ids: Optional[list[str]] = None,
-        context: Optional[dict[str, Any]] = None,
+        element_ids: list[str] | None = None,
+        context: dict[str, Any] | None = None,
     ) -> bool:
         """
         Apply automatic layout to elements.
@@ -196,8 +197,8 @@ class QtGraphEditorAutoTransformAdapter(QObject):
     def animate_transform(
         self,
         transform_id: str,
-        duration: Optional[int] = None,
-        context: Optional[dict[str, Any]] = None,
+        duration: int | None = None,
+        context: dict[str, Any] | None = None,
     ) -> bool:
         """
         Animate a transform operation.

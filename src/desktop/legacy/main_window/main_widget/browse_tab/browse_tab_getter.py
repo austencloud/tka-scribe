@@ -1,5 +1,5 @@
-from collections.abc import Generator
 import os
+from collections.abc import Generator
 from typing import TYPE_CHECKING, Any
 
 from main_window.main_widget.metadata_extractor import MetaDataExtractor

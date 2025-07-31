@@ -4,11 +4,11 @@ File-based Sequence Data Service for TKA
 Provides persistent sequence data storage using JSON files.
 """
 
-from datetime import datetime
 import json
 import logging
+from datetime import datetime
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 
 from desktop.modern.core.interfaces.core_services import ISequenceDataService
 
@@ -77,7 +77,7 @@ class FileBasedSequenceDataService(ISequenceDataService):
         logger.debug(f"Loaded {len(sequences)} sequences from {self.data_dir}")
         return sequences
 
-    def get_sequence_by_id(self, sequence_id: str) -> Optional[dict[str, Any]]:
+    def get_sequence_by_id(self, sequence_id: str) -> dict[str, Any] | None:
         """Get sequence by ID from file."""
         file_path = self._get_file_path(sequence_id)
 

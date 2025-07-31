@@ -131,8 +131,8 @@ class PictographServiceRegistrar(BaseServiceRegistrar):
         """Register the pictograph rendering service with microservice dependencies."""
         try:
             # Temporarily ensure shared src is accessible for imports
-            from pathlib import Path
             import sys
+            from pathlib import Path
 
             # Find shared src path
             current_file = Path(__file__).resolve()

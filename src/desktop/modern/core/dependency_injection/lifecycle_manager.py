@@ -9,7 +9,8 @@ Handles:
 """
 
 import logging
-from typing import Any, Callable, Optional
+from collections.abc import Callable
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
@@ -25,7 +26,7 @@ class LifecycleManager:
     def __init__(self):
         self.cleanup_handlers: list[Callable] = []
         self._scoped_instances: dict[str, dict[type, Any]] = {}
-        self._current_scope: Optional[str] = None
+        self._current_scope: str | None = None
         self._initialized_services: list[Any] = []
 
     def create_with_lifecycle(self, instance: Any) -> Any:
@@ -101,7 +102,7 @@ class LifecycleManager:
 
         logger.debug(f"Disposed scope: {scope_id}")
 
-    def get_scoped_instance(self, scope_id: str, service_type: type) -> Optional[Any]:
+    def get_scoped_instance(self, scope_id: str, service_type: type) -> Any | None:
         """Get an instance from a specific scope."""
         if scope_id not in self._scoped_instances:
             return None
@@ -119,11 +120,11 @@ class LifecycleManager:
             f"Stored scoped instance: {type(instance).__name__} in scope {scope_id}"
         )
 
-    def get_current_scope(self) -> Optional[str]:
+    def get_current_scope(self) -> str | None:
         """Get the current active scope."""
         return self._current_scope
 
-    def set_current_scope(self, scope_id: Optional[str]) -> None:
+    def set_current_scope(self, scope_id: str | None) -> None:
         """Set the current active scope."""
         self._current_scope = scope_id
         logger.debug(f"Set current scope to: {scope_id}")

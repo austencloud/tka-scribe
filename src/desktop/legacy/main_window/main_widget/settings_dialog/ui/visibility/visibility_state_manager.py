@@ -1,4 +1,5 @@
-from typing import TYPE_CHECKING, Callable
+from collections.abc import Callable
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from legacy_settings_manager.legacy_settings_manager import (

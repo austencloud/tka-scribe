@@ -19,9 +19,9 @@ Usage:
 
 import argparse
 import ast
+import re
 from collections import Counter, defaultdict
 from pathlib import Path
-import re
 from typing import NamedTuple
 
 

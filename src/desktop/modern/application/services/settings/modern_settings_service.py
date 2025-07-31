@@ -12,11 +12,11 @@ Architecture:
 - QSettings integration: Platform-independent persistence
 """
 
-from datetime import datetime
 import json
 import logging
+from datetime import datetime
 from pathlib import Path
-from typing import Any, Optional, TypeVar
+from typing import Any, TypeVar
 
 from PyQt6.QtCore import QObject, QSettings, pyqtSignal
 
@@ -46,10 +46,10 @@ class ApplicationStateMemento:
     def __init__(
         self,
         current_tab: str,
-        window_geometry: Optional[bytes] = None,
-        window_state: Optional[bytes] = None,
-        session_data: Optional[dict] = None,
-        settings_snapshot: Optional[dict] = None,
+        window_geometry: bytes | None = None,
+        window_state: bytes | None = None,
+        session_data: dict | None = None,
+        settings_snapshot: dict | None = None,
     ):
         self.current_tab = current_tab
         self.window_geometry = window_geometry
@@ -118,8 +118,8 @@ class ApplicationStateMemento:
 
     def to_json(self) -> str:
         """Convert memento to JSON string for serialization."""
-        from datetime import datetime
         import json
+        from datetime import datetime
 
         def datetime_serializer(obj):
             """JSON serializer for datetime objects."""
@@ -191,15 +191,15 @@ class ModernSettingsService(QObject):
         self.settings = QSettings(organization_name, application_name)
 
         # Initialize specialized managers (dependency injection)
-        self._background_manager: Optional[IBackgroundSettingsManager] = None
-        self._visibility_manager: Optional[IVisibilitySettingsManager] = None
-        self._layout_manager: Optional[IBeatLayoutSettingsManager] = None
-        self._prop_manager: Optional[IPropTypeSettingsManager] = None
-        self._user_manager: Optional[IUserProfileSettingsManager] = None
-        self._export_manager: Optional[IImageExportSettingsManager] = None
+        self._background_manager: IBackgroundSettingsManager | None = None
+        self._visibility_manager: IVisibilitySettingsManager | None = None
+        self._layout_manager: IBeatLayoutSettingsManager | None = None
+        self._prop_manager: IPropTypeSettingsManager | None = None
+        self._user_manager: IUserProfileSettingsManager | None = None
+        self._export_manager: IImageExportSettingsManager | None = None
 
         # State management
-        self._current_state_memento: Optional[ApplicationStateMemento] = None
+        self._current_state_memento: ApplicationStateMemento | None = None
 
         logger.info(
             f"Initialized ModernSettingsService with QSettings: {self.settings.fileName()}"
@@ -411,9 +411,9 @@ class ModernSettingsService(QObject):
     def create_state_memento(
         self,
         current_tab: str,
-        window_geometry: Optional[bytes] = None,
-        window_state: Optional[bytes] = None,
-        session_data: Optional[dict[str, Any]] = None,
+        window_geometry: bytes | None = None,
+        window_state: bytes | None = None,
+        session_data: dict[str, Any] | None = None,
     ) -> ApplicationStateMemento:
         """
         Create a state memento for the current application state.
@@ -482,7 +482,7 @@ class ModernSettingsService(QObject):
             return False
 
     def save_state_memento(
-        self, memento: ApplicationStateMemento, file_path: Optional[Path] = None
+        self, memento: ApplicationStateMemento, file_path: Path | None = None
     ) -> bool:
         """
         Save a state memento to file.
@@ -513,8 +513,8 @@ class ModernSettingsService(QObject):
             return False
 
     def load_state_memento(
-        self, file_path: Optional[Path] = None
-    ) -> Optional[ApplicationStateMemento]:
+        self, file_path: Path | None = None
+    ) -> ApplicationStateMemento | None:
         """
         Load a state memento from file.
 
@@ -552,8 +552,8 @@ class ModernSettingsService(QObject):
     def save_application_state(
         self,
         current_tab: str,
-        window_geometry: Optional[bytes] = None,
-        window_state: Optional[bytes] = None,
+        window_geometry: bytes | None = None,
+        window_state: bytes | None = None,
     ) -> bool:
         """
         Save complete application state (settings + session + window state).
@@ -589,7 +589,7 @@ class ModernSettingsService(QObject):
             logger.error(f"Failed to save application state: {e}")
             return False
 
-    def restore_application_state(self) -> Optional[ApplicationStateMemento]:
+    def restore_application_state(self) -> ApplicationStateMemento | None:
         """
         Restore complete application state from persistent storage.
 
@@ -620,27 +620,27 @@ class ModernSettingsService(QObject):
     # MANAGER ACCESS METHODS
     # ============================================================================
 
-    def get_background_manager(self) -> Optional[IBackgroundSettingsManager]:
+    def get_background_manager(self) -> IBackgroundSettingsManager | None:
         """Get the background settings manager."""
         return self._background_manager
 
-    def get_visibility_manager(self) -> Optional[IVisibilitySettingsManager]:
+    def get_visibility_manager(self) -> IVisibilitySettingsManager | None:
         """Get the visibility settings manager."""
         return self._visibility_manager
 
-    def get_layout_manager(self) -> Optional[IBeatLayoutSettingsManager]:
+    def get_layout_manager(self) -> IBeatLayoutSettingsManager | None:
         """Get the layout settings manager."""
         return self._layout_manager
 
-    def get_prop_manager(self) -> Optional[IPropTypeSettingsManager]:
+    def get_prop_manager(self) -> IPropTypeSettingsManager | None:
         """Get the prop type settings manager."""
         return self._prop_manager
 
-    def get_user_manager(self) -> Optional[IUserProfileSettingsManager]:
+    def get_user_manager(self) -> IUserProfileSettingsManager | None:
         """Get the user profile settings manager."""
         return self._user_manager
 
-    def get_export_manager(self) -> Optional[IImageExportSettingsManager]:
+    def get_export_manager(self) -> IImageExportSettingsManager | None:
         """Get the image export settings manager."""
         return self._export_manager
 

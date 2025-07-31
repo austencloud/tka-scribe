@@ -4,8 +4,8 @@ Debug script to test application startup and find the tab widget.
 """
 
 import logging
-from pathlib import Path
 import sys
+from pathlib import Path
 
 # Add project root to path
 project_root = Path(__file__).resolve().parent.parent

@@ -8,7 +8,7 @@ existing asset infrastructure.
 
 import logging
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 
 from shared.application.services.core.types import Size, SvgAsset
 
@@ -26,7 +26,7 @@ class RealAssetProvider(IAssetProvider):
     headless environments.
     """
 
-    def __init__(self, assets_base_path: Optional[str] = None):
+    def __init__(self, assets_base_path: str | None = None):
         """Initialize with base path to assets."""
         self._assets_base_path = (
             Path(assets_base_path)
@@ -35,7 +35,7 @@ class RealAssetProvider(IAssetProvider):
         )
         self._svg_cache: dict[str, str] = {}
 
-    def get_grid_svg(self, grid_mode: str) -> Optional[str]:
+    def get_grid_svg(self, grid_mode: str) -> str | None:
         """Get grid SVG content."""
         try:
             cache_key = f"grid_{grid_mode}"
@@ -57,7 +57,7 @@ class RealAssetProvider(IAssetProvider):
             logger.error(f"Failed to load grid SVG for {grid_mode}: {e}")
             return None
 
-    def get_prop_svg(self, prop_type: str, color: str) -> Optional[str]:
+    def get_prop_svg(self, prop_type: str, color: str) -> str | None:
         """Get prop SVG content with color applied."""
         try:
             cache_key = f"prop_{prop_type}_{color}"
@@ -83,7 +83,7 @@ class RealAssetProvider(IAssetProvider):
             logger.error(f"Failed to load prop SVG for {prop_type}/{color}: {e}")
             return None
 
-    def get_arrow_svg(self, arrow_data: dict[str, Any]) -> Optional[str]:
+    def get_arrow_svg(self, arrow_data: dict[str, Any]) -> str | None:
         """Get arrow SVG content."""
         try:
             # Create cache key from arrow data
@@ -115,9 +115,7 @@ class RealAssetProvider(IAssetProvider):
             logger.error(f"Failed to load arrow SVG: {e}")
             return None
 
-    def get_glyph_svg(
-        self, glyph_type: str, glyph_data: dict[str, Any]
-    ) -> Optional[str]:
+    def get_glyph_svg(self, glyph_type: str, glyph_data: dict[str, Any]) -> str | None:
         """Get glyph SVG content."""
         try:
             if glyph_type == "letter":
@@ -162,8 +160,8 @@ class RealAssetProvider(IAssetProvider):
         """
         try:
             # Import constants to ensure we use the exact same colors as legacy
-            from pathlib import Path
             import sys
+            from pathlib import Path
 
             sys.path.insert(
                 0,
@@ -257,8 +255,8 @@ class RealAssetProvider(IAssetProvider):
     # ============================================================================
 
     def get_prop_asset(
-        self, prop_type: str, color: str, pictograph_data: Optional[dict] = None
-    ) -> Optional[SvgAsset]:
+        self, prop_type: str, color: str, pictograph_data: dict | None = None
+    ) -> SvgAsset | None:
         """Get prop asset as SvgAsset object (IPictographAssetProvider compatibility)."""
         try:
             # Get colored SVG content
@@ -281,7 +279,7 @@ class RealAssetProvider(IAssetProvider):
             logger.error(f"Failed to get prop asset for {prop_type}/{color}: {e}")
             return None
 
-    def get_grid_asset(self, grid_mode: str) -> Optional[SvgAsset]:
+    def get_grid_asset(self, grid_mode: str) -> SvgAsset | None:
         """Get grid asset (IPictographAssetProvider compatibility)."""
         try:
             svg_content = self.get_grid_svg(grid_mode)
@@ -298,7 +296,7 @@ class RealAssetProvider(IAssetProvider):
             logger.error(f"Failed to get grid asset for {grid_mode}: {e}")
             return None
 
-    def get_glyph_asset(self, glyph_type: str, glyph_id: str) -> Optional[SvgAsset]:
+    def get_glyph_asset(self, glyph_type: str, glyph_id: str) -> SvgAsset | None:
         """Get glyph asset (IPictographAssetProvider compatibility)."""
         try:
             glyph_data = (
@@ -318,7 +316,7 @@ class RealAssetProvider(IAssetProvider):
             logger.error(f"Failed to get glyph asset for {glyph_type}:{glyph_id}: {e}")
             return None
 
-    def get_arrow_asset(self, arrow_type: str) -> Optional[SvgAsset]:
+    def get_arrow_asset(self, arrow_type: str) -> SvgAsset | None:
         """Get arrow asset (IPictographAssetProvider compatibility)."""
         try:
             arrow_data = {"motion_type": arrow_type, "color": "blue"}
@@ -338,8 +336,8 @@ class RealAssetProvider(IAssetProvider):
 
     def _get_color_hex(self, color: str) -> str:
         """Get hex color value for color name."""
-        from pathlib import Path
         import sys
+        from pathlib import Path
 
         sys.path.insert(
             0, str(Path(__file__).parent.parent.parent.parent.parent.parent / "data")
@@ -362,7 +360,7 @@ class RealAssetProvider(IAssetProvider):
 
 # Factory function for easy creation
 def create_real_asset_provider(
-    assets_base_path: Optional[str] = None,
+    assets_base_path: str | None = None,
 ) -> RealAssetProvider:
     """Create real asset provider with optional base path."""
     return RealAssetProvider(assets_base_path)

@@ -6,8 +6,8 @@ with the modern sequence card tab and display correctly.
 """
 
 import logging
-from pathlib import Path
 import sys
+from pathlib import Path
 
 # Add the modern src directory to the path
 modern_src_path = Path(__file__).parent.parent / "src"

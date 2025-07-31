@@ -18,9 +18,9 @@ Following established patterns:
 - Returns structured results
 """
 
-from enum import Enum
 import logging
-from typing import NamedTuple, Optional
+from enum import Enum
+from typing import NamedTuple
 
 from desktop.modern.domain.models.sequence_data import SequenceData
 
@@ -47,17 +47,17 @@ class OperationResult(NamedTuple):
     success: bool
     operation_type: OperationType
     message: str
-    updated_sequence: Optional[SequenceData] = None
-    error_details: Optional[str] = None
-    additional_data: Optional[dict] = None
+    updated_sequence: SequenceData | None = None
+    error_details: str | None = None
+    additional_data: dict | None = None
 
     @classmethod
     def success_result(
         cls,
         operation_type: OperationType,
         message: str,
-        updated_sequence: Optional[SequenceData] = None,
-        additional_data: Optional[dict] = None,
+        updated_sequence: SequenceData | None = None,
+        additional_data: dict | None = None,
     ):
         """Create a successful operation result."""
         return cls(
@@ -69,8 +69,8 @@ class OperationResult(NamedTuple):
         cls,
         operation_type: OperationType,
         message: str,
-        error_details: Optional[str] = None,
-        additional_data: Optional[dict] = None,
+        error_details: str | None = None,
+        additional_data: dict | None = None,
     ):
         """Create a failed operation result."""
         return cls(False, operation_type, message, None, error_details, additional_data)
@@ -446,7 +446,7 @@ class EnhancedWorkbenchOperationCoordinator:
             )
 
     # Beat Operations (unchanged but with enhanced logging)
-    def delete_beat(self, beat_index: Optional[int]) -> OperationResult:
+    def delete_beat(self, beat_index: int | None) -> OperationResult:
         """
         Delete beat at specified index.
 

@@ -4,9 +4,10 @@ These interfaces define the canonical animation system that can be adapted to an
 """
 
 from abc import ABC, abstractmethod
+from collections.abc import Callable
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Callable, Optional
+from typing import Any
 
 
 class EasingType(Enum):
@@ -147,7 +148,7 @@ class IAnimationEngine(ABC):
         """Cancel an animation."""
 
     @abstractmethod
-    def get_animation_state(self, animation_id: str) -> Optional[AnimationState]:
+    def get_animation_state(self, animation_id: str) -> AnimationState | None:
         """Get current state of an animation."""
 
 
@@ -227,7 +228,7 @@ class FadeCommand(IAnimationCommand):
     fade_in: bool
     config: AnimationConfig
     engine: IAnimationEngine
-    _animation_id: Optional[str] = None
+    _animation_id: str | None = None
 
     @property
     def command_id(self) -> str:
@@ -346,7 +347,7 @@ class IAnimationOrchestrator(ABC):
         self,
         target: Any,  # Framework-specific target
         fade_in: bool,
-        config: Optional[AnimationConfig] = None,
+        config: AnimationConfig | None = None,
     ) -> str:
         """Fade a target in or out."""
 
@@ -355,7 +356,7 @@ class IAnimationOrchestrator(ABC):
         self,
         targets: list[Any],
         fade_in: bool,
-        config: Optional[AnimationConfig] = None,
+        config: AnimationConfig | None = None,
     ) -> list[str]:
         """Fade multiple targets."""
 
@@ -364,7 +365,7 @@ class IAnimationOrchestrator(ABC):
         self,
         targets: list[Any],
         update_callback: Callable[[], None],
-        config: Optional[AnimationConfig] = None,
+        config: AnimationConfig | None = None,
     ) -> None:
         """Fade out, update, then fade in."""
 

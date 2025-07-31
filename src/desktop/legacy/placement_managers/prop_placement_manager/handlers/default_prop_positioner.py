@@ -1,7 +1,7 @@
 # default_prop_positioner.py
 
-from functools import lru_cache
 import logging
+from functools import lru_cache
 from typing import TYPE_CHECKING
 
 from objects.prop.prop import Prop

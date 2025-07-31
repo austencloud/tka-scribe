@@ -10,9 +10,9 @@ PROVIDES:
 - Validation helpers for method length
 """
 
-from dataclasses import dataclass
 import inspect
-from typing import Callable
+from collections.abc import Callable
+from dataclasses import dataclass
 
 
 @dataclass

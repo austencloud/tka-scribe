@@ -5,7 +5,7 @@ Platform-agnostic service for option picker sizing calculations and validation.
 Contains pure business logic extracted from OptionPickerSizeManager.
 """
 
-from typing import Callable
+from collections.abc import Callable
 
 from PyQt6.QtCore import QSize
 

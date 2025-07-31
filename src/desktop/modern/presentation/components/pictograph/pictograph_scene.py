@@ -5,7 +5,6 @@ This scene coordinates multiple specialized renderers to create the complete pic
 """
 
 import logging
-from typing import Optional
 import uuid
 
 from PyQt6.QtCore import pyqtSignal
@@ -78,10 +77,10 @@ class PictographScene(QGraphicsScene):
         self._services_initialized = False
 
         # Store the last rendered data for refresh capability
-        self._last_pictograph_data: Optional[PictographData] = None
+        self._last_pictograph_data: PictographData | None = None
 
         # Store the last rendered data for refresh capability
-        self._last_pictograph_data: Optional[PictographData] = None
+        self._last_pictograph_data: PictographData | None = None
 
         # Use shared rendering service instead of per-scene renderers
         self._shared_rendering_service = None

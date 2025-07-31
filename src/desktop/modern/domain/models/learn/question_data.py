@@ -5,9 +5,9 @@ Represents quiz questions with content, options, and metadata
 for the learning module.
 """
 
-from dataclasses import dataclass, field
-from typing import Any, Optional
 import uuid
+from dataclasses import dataclass, field
+from typing import Any
 
 
 @dataclass
@@ -36,8 +36,8 @@ class QuestionData:
     lesson_type: str = ""
 
     # Additional metadata
-    generation_timestamp: Optional[str] = None
-    difficulty_level: Optional[int] = None
+    generation_timestamp: str | None = None
+    difficulty_level: int | None = None
 
     def to_dict(self) -> dict[str, Any]:
         """

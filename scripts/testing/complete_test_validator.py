@@ -7,12 +7,11 @@ Executes ALL 387 tests with segmentation fault avoidance and provides
 comprehensive categorization and analysis.
 """
 
-from dataclasses import asdict, dataclass
 import json
-from pathlib import Path
 import subprocess
 import time
-from typing import Optional
+from dataclasses import asdict, dataclass
+from pathlib import Path
 
 
 @dataclass
@@ -24,8 +23,8 @@ class TestResult:
     test_name: str
     status: str  # PASS, FAIL_IMPORT, FAIL_LOGIC, COLLECTION_ERROR, SKIP, SEGFAULT
     execution_time: float
-    error_message: Optional[str] = None
-    error_type: Optional[str] = None
+    error_message: str | None = None
+    error_type: str | None = None
 
 
 class CompleteTestValidator:

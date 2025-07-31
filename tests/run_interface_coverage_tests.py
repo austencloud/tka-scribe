@@ -13,9 +13,9 @@ Usage:
 """
 
 import argparse
-from pathlib import Path
 import sys
 import time
+from pathlib import Path
 from typing import Any
 
 # Add src to path for imports

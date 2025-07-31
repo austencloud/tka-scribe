@@ -12,9 +12,9 @@ Features:
 - Responsive layout that adapts to container size
 """
 
+import logging
 from datetime import datetime
 from enum import Enum
-import logging
 
 from PyQt6.QtCore import QEasingCurve, QPropertyAnimation, QSize, QTimer, pyqtSignal
 from PyQt6.QtWidgets import QVBoxLayout, QWidget

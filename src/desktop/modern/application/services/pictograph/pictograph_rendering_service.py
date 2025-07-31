@@ -13,11 +13,11 @@ ARCHITECTURE:
 """
 
 import logging
-from pathlib import Path
 
 # Import framework-agnostic core services
 import sys
-from typing import Any, Optional
+from pathlib import Path
+from typing import Any
 
 
 # Add project root to path using pathlib (standardized approach)
@@ -160,7 +160,7 @@ class PictographRenderingService:
 
     def render_grid(
         self, scene: QGraphicsScene, grid_mode: str = "diamond"
-    ) -> Optional[QGraphicsSvgItem]:
+    ) -> QGraphicsSvgItem | None:
         """
         Render grid using framework-agnostic core service + Qt adapter.
 
@@ -184,7 +184,7 @@ class PictographRenderingService:
         color: str,
         motion_data: MotionData,
         pictograph_data=None,
-    ) -> Optional[QGraphicsSvgItem]:
+    ) -> QGraphicsSvgItem | None:
         """
         Render prop using framework-agnostic core service + Qt adapter.
 
@@ -218,7 +218,7 @@ class PictographRenderingService:
 
     def render_glyph(
         self, scene: QGraphicsScene, glyph_type: str, glyph_data: Any
-    ) -> Optional[QGraphicsSvgItem]:
+    ) -> QGraphicsSvgItem | None:
         """
         Render glyph using framework-agnostic core service + Qt adapter.
 

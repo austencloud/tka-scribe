@@ -3,10 +3,10 @@ Sequence-specific commands for undoable sequence operations.
 These commands integrate with the event system and domain models.
 """
 
+import uuid
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Any, Optional
-import uuid
+from typing import Any
 
 from ..events import BeatAddedEvent, BeatRemovedEvent, BeatUpdatedEvent
 from .command_system import ICommand
@@ -21,7 +21,7 @@ class AddBeatCommand(ICommand[Any]):  # Use Any for generic parameter
     position: int
     event_bus: Any  # IEventBus
     _command_id: str = ""
-    _result_sequence: Optional[Any] = None  # Optional[SequenceData]
+    _result_sequence: Any | None = None  # Optional[SequenceData]
 
     def __post_init__(self):
         if not self._command_id:
@@ -114,7 +114,7 @@ class RemoveBeatCommand(ICommand[Any]):  # ICommand[SequenceData]
     position: int
     event_bus: Any  # IEventBus
     _command_id: str = ""
-    _removed_beat: Optional[Any] = None  # Optional[BeatData]
+    _removed_beat: Any | None = None  # Optional[BeatData]
 
     def __post_init__(self):
         if not self._command_id:
@@ -336,7 +336,7 @@ class ClearSequenceCommand(ICommand[Any]):  # ICommand[SequenceData]
     sequence: Any  # SequenceData
     event_bus: Any  # IEventBus
     _command_id: str = ""
-    _original_sequence: Optional[Any] = None  # Optional[SequenceData]
+    _original_sequence: Any | None = None  # Optional[SequenceData]
 
     def __post_init__(self):
         if not self._command_id:

@@ -2,7 +2,8 @@
 Settings dialog coordinator for managing settings state and updates.
 """
 
-from typing import Any, Callable
+from collections.abc import Callable
+from typing import Any
 
 from PyQt6.QtCore import QObject, pyqtSignal
 

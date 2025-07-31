@@ -5,9 +5,10 @@ This service tracks sequence state without any Qt dependencies.
 Qt-specific signal coordination is handled by adapters in the presentation layer.
 """
 
-from dataclasses import dataclass
 import logging
-from typing import Any, Callable, Optional
+from collections.abc import Callable
+from dataclasses import dataclass
+from typing import Any
 
 from desktop.modern.domain.models.beat_data import BeatData
 from desktop.modern.domain.models.sequence_data import SequenceData
@@ -57,28 +58,28 @@ class SequenceStateTrackerService:
         self.command_processor = command_processor
 
         # Current state (single source of truth)
-        self.current_sequence: Optional[SequenceData] = None
-        self.start_position: Optional[BeatData] = None
+        self.current_sequence: SequenceData | None = None
+        self.start_position: BeatData | None = None
 
         # Platform-agnostic event callbacks
         self._sequence_updated_callbacks: list[
-            Callable[[Optional[SequenceData]], None]
+            Callable[[SequenceData | None], None]
         ] = []
         self._start_position_updated_callbacks: list[
-            Callable[[Optional[BeatData]], None]
+            Callable[[BeatData | None], None]
         ] = []
         self._state_changed_callbacks: list[Callable[[], None]] = []
 
         # Event bus subscriptions removed - using direct Qt signals instead
 
     def add_sequence_updated_callback(
-        self, callback: Callable[[Optional[SequenceData]], None]
+        self, callback: Callable[[SequenceData | None], None]
     ):
         """Add callback for when sequence is updated."""
         self._sequence_updated_callbacks.append(callback)
 
     def add_start_position_updated_callback(
-        self, callback: Callable[[Optional[BeatData]], None]
+        self, callback: Callable[[BeatData | None], None]
     ):
         """Add callback for when start position is updated."""
         self._start_position_updated_callbacks.append(callback)
@@ -87,7 +88,7 @@ class SequenceStateTrackerService:
         """Add callback for when state changes."""
         self._state_changed_callbacks.append(callback)
 
-    def _update_sequence(self, new_sequence: Optional[SequenceData]):
+    def _update_sequence(self, new_sequence: SequenceData | None):
         """Update the current sequence and notify callbacks"""
         if self.current_sequence != new_sequence:
             self.current_sequence = new_sequence
@@ -97,7 +98,7 @@ class SequenceStateTrackerService:
                 f"📊 Sequence updated: {new_sequence.length if new_sequence else 'None'} beats"
             )
 
-    def _update_start_position(self, new_start_position: Optional[BeatData]):
+    def _update_start_position(self, new_start_position: BeatData | None):
         """Update the start position and notify callbacks"""
         if self.start_position != new_start_position:
             self.start_position = new_start_position
@@ -138,11 +139,11 @@ class SequenceStateTrackerService:
             logger.error(f"❌ Error refreshing state from persistence: {e}")
 
     # Public API for accessing current state
-    def get_sequence(self) -> Optional[SequenceData]:
+    def get_sequence(self) -> SequenceData | None:
         """Get the current sequence"""
         return self.current_sequence
 
-    def get_start_position(self) -> Optional[BeatData]:
+    def get_start_position(self) -> BeatData | None:
         """Get the current start position"""
         return self.start_position
 
@@ -159,11 +160,11 @@ class SequenceStateTrackerService:
         return not self.has_sequence() and not self.has_start_position()
 
     # Direct state setting methods (for non-command scenarios like loading)
-    def set_sequence_direct(self, sequence: Optional[SequenceData]):
+    def set_sequence_direct(self, sequence: SequenceData | None):
         """Set sequence directly (for loading scenarios, bypasses commands)"""
         self._update_sequence(sequence)
 
-    def set_start_position_direct(self, start_position: Optional[BeatData]):
+    def set_start_position_direct(self, start_position: BeatData | None):
         """Set start position directly (for loading scenarios, bypasses commands)"""
         self._update_start_position(start_position)
 
@@ -199,12 +200,12 @@ class SequenceStateTrackerService:
         except Exception as e:
             logger.error(f"❌ Error during SequenceStateTrackerService cleanup: {e}")
 
-    def _notify_sequence_updated(self, sequence: Optional[SequenceData]):
+    def _notify_sequence_updated(self, sequence: SequenceData | None):
         """Notify callbacks that sequence was updated."""
         for callback in self._sequence_updated_callbacks:
             callback(sequence)
 
-    def _notify_start_position_updated(self, start_position: Optional[BeatData]):
+    def _notify_start_position_updated(self, start_position: BeatData | None):
         """Notify callbacks that start position was updated."""
         for callback in self._start_position_updated_callbacks:
             callback(start_position)

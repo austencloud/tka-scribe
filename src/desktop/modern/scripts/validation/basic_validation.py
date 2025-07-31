@@ -116,8 +116,8 @@ if __name__ == "__main__":
     print("🚀 Start Position Services - Basic Structure Validation")
     print("=" * 60)
 
-    from pathlib import Path
     import sys
+    from pathlib import Path
 
     # Add src to path
     modern_src_path = Path(__file__).parent / "src"

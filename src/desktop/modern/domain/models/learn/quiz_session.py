@@ -5,10 +5,10 @@ Represents the state and progress of an active quiz session,
 including timing, scoring, and progression data.
 """
 
+import uuid
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Any, Optional
-import uuid
+from typing import Any
 
 from .lesson_config import LessonType, QuizMode
 
@@ -26,8 +26,8 @@ class QuizSession:
     session_id: str = field(default_factory=lambda: str(uuid.uuid4()))
 
     # Lesson configuration
-    lesson_type: Optional[LessonType] = None
-    quiz_mode: Optional[QuizMode] = None
+    lesson_type: LessonType | None = None
+    quiz_mode: QuizMode | None = None
 
     # Progress tracking
     current_question: int = 1

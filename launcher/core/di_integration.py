@@ -8,9 +8,9 @@ clean architecture patterns and service registration conventions.
 from __future__ import annotations
 
 import logging
-from pathlib import Path
 import sys
-from typing import TYPE_CHECKING, Optional
+from pathlib import Path
+from typing import TYPE_CHECKING
 
 # CRITICAL: Set up TKA path IMMEDIATELY to handle VS Code debugger
 # The debugger changes import resolution, so we must fix paths first
@@ -69,7 +69,7 @@ class LauncherDIContainer:
     def __init__(self, use_tka_container: bool = True):
         """Initialize the launcher DI container."""
         self._use_tka_container = use_tka_container and TKA_DI_AVAILABLE
-        self._container: Optional[DIContainer] = None
+        self._container: DIContainer | None = None
         self._services = {}
         self._singletons = {}
 
@@ -260,7 +260,7 @@ class LauncherDIContainer:
 
 
 # Global launcher container instance
-_launcher_container: Optional[LauncherDIContainer] = None
+_launcher_container: LauncherDIContainer | None = None
 
 
 def get_launcher_container(use_tka_container: bool = True) -> LauncherDIContainer:
@@ -284,7 +284,7 @@ def reset_launcher_container():
 
 
 def configure_launcher_services(
-    container: Optional[LauncherDIContainer] = None,
+    container: LauncherDIContainer | None = None,
 ) -> LauncherDIContainer:
     """Configure launcher services in the DI container."""
     if container is None:

@@ -12,8 +12,8 @@ Error Aggregation Contract Tests
 Defines behavioral contracts for error collection and aggregation patterns.
 """
 
-from pathlib import Path
 import sys
+from pathlib import Path
 
 import pytest
 

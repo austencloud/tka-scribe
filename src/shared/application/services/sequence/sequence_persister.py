@@ -3,9 +3,9 @@ Sequence persistence service - exactly like the legacy version.
 Updates current_sequence.json whenever sequence changes occur.
 """
 
-from abc import ABC, abstractmethod
 import json
 import logging
+from abc import ABC, abstractmethod
 from pathlib import Path
 from typing import Any
 

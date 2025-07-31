@@ -11,9 +11,9 @@ PROVIDES:
 - Scene-relative offset scaling
 """
 
+import sys
 from abc import ABC, abstractmethod
 from pathlib import Path
-import sys
 
 
 # Add project root to path using pathlib (standardized approach)

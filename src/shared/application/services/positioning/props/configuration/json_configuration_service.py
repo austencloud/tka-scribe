@@ -11,11 +11,11 @@ PROVIDES:
 - Override key generation
 """
 
-from abc import ABC, abstractmethod
 import json
 import logging
-from pathlib import Path
 import time
+from abc import ABC, abstractmethod
+from pathlib import Path
 from typing import Any, Optional
 
 from desktop.modern.domain.models.beat_data import BeatData
@@ -52,13 +52,13 @@ class JSONConfigurator(IJSONConfigurator):
     _instance: Optional["JSONConfigurator"] = None
     _initialized: bool = False
 
-    def __new__(cls, config_paths: Optional[list] = None):
+    def __new__(cls, config_paths: list | None = None):
         """Ensure singleton behavior to prevent redundant initialization."""
         if cls._instance is None:
             cls._instance = super().__new__(cls)
         return cls._instance
 
-    def __init__(self, config_paths: Optional[list] = None):
+    def __init__(self, config_paths: list | None = None):
         """Initialize with optional custom configuration paths and eager loading."""
         # Prevent re-initialization of singleton
         if self._initialized:
@@ -68,7 +68,7 @@ class JSONConfigurator(IJSONConfigurator):
         logger = logging.getLogger(__name__)
 
         self._config_paths = config_paths or self._get_default_config_paths()
-        self._special_placements: Optional[dict[str, Any]] = None
+        self._special_placements: dict[str, Any] | None = None
 
         # Eager load special placements during initialization
         self._load_special_placements()

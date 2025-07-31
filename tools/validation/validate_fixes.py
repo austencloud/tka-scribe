@@ -8,10 +8,10 @@ USAGE:
     python validate_fixes.py [--quick] [--list]
 """
 
-from pathlib import Path
 import sys
 import time
 import traceback
+from pathlib import Path
 
 # Add src to path for imports
 project_root = Path(__file__).parent

@@ -6,7 +6,8 @@ Qt-specific signal coordination is handled by adapters in the presentation layer
 """
 
 import logging
-from typing import TYPE_CHECKING, Any, Callable, Optional
+from collections.abc import Callable
+from typing import TYPE_CHECKING, Any
 
 from desktop.modern.domain.models.beat_data import BeatData
 
@@ -33,7 +34,7 @@ class GraphEditorHotkeyService:
 
     def __init__(
         self,
-        graph_editor_getter: Optional[Callable[[], "GraphEditor"]] = None,
+        graph_editor_getter: Callable[[], "GraphEditor"] | None = None,
     ):
         self.graph_editor_getter = graph_editor_getter
 
@@ -56,8 +57,8 @@ class GraphEditorHotkeyService:
     def process_hotkey(
         self,
         hotkey: str,
-        beat_data: Optional[BeatData] = None,
-        context: Optional[dict[str, Any]] = None,
+        beat_data: BeatData | None = None,
+        context: dict[str, Any] | None = None,
     ) -> bool:
         """
         Process a hotkey action.
@@ -100,7 +101,7 @@ class GraphEditorHotkeyService:
         arrow_id: str,
         delta_x: int,
         delta_y: int,
-        beat_data: Optional[BeatData] = None,
+        beat_data: BeatData | None = None,
     ) -> bool:
         """
         Move an arrow by the specified delta.
@@ -149,7 +150,7 @@ class GraphEditorHotkeyService:
             logger.error(f"Failed to select all: {e}")
             return False
 
-    def _copy(self, beat_data: Optional[BeatData], context: dict[str, Any]) -> bool:
+    def _copy(self, beat_data: BeatData | None, context: dict[str, Any]) -> bool:
         """Copy selected elements."""
         try:
             if self.graph_editor_getter:
@@ -192,7 +193,7 @@ class GraphEditorHotkeyService:
             return False
 
     def _process_shift_hotkey(
-        self, hotkey: str, beat_data: Optional[BeatData], context: dict[str, Any]
+        self, hotkey: str, beat_data: BeatData | None, context: dict[str, Any]
     ) -> bool:
         """Process shift-based hotkeys."""
         try:
@@ -210,7 +211,7 @@ class GraphEditorHotkeyService:
             return False
 
     def _process_ctrl_hotkey(
-        self, hotkey: str, beat_data: Optional[BeatData], context: dict[str, Any]
+        self, hotkey: str, beat_data: BeatData | None, context: dict[str, Any]
     ) -> bool:
         """Process ctrl-based hotkeys."""
         try:
@@ -228,7 +229,7 @@ class GraphEditorHotkeyService:
             return False
 
     def _process_arrow_key(
-        self, hotkey: str, beat_data: Optional[BeatData], context: dict[str, Any]
+        self, hotkey: str, beat_data: BeatData | None, context: dict[str, Any]
     ) -> bool:
         """Process arrow key movements."""
         try:
@@ -255,7 +256,7 @@ class GraphEditorHotkeyService:
             return False
 
     def _process_custom_hotkey(
-        self, hotkey: str, beat_data: Optional[BeatData], context: dict[str, Any]
+        self, hotkey: str, beat_data: BeatData | None, context: dict[str, Any]
     ) -> bool:
         """Process custom hotkeys."""
         try:
@@ -324,14 +325,14 @@ class GraphEditorHotkeyService:
             return False
 
     def _process_custom_shift_hotkey(
-        self, key: str, beat_data: Optional[BeatData], context: dict[str, Any]
+        self, key: str, beat_data: BeatData | None, context: dict[str, Any]
     ) -> bool:
         """Process custom shift hotkeys."""
         logger.info(f"Custom shift hotkey not implemented: Shift+{key}")
         return False
 
     def _process_custom_ctrl_hotkey(
-        self, key: str, beat_data: Optional[BeatData], context: dict[str, Any]
+        self, key: str, beat_data: BeatData | None, context: dict[str, Any]
     ) -> bool:
         """Process custom ctrl hotkeys."""
         logger.info(f"Custom ctrl hotkey not implemented: Ctrl+{key}")

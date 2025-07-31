@@ -5,11 +5,10 @@ This script uses the modern image exporter to regenerate all sequence card image
 with complete information, replacing the legacy exported images.
 """
 
-from datetime import datetime
 import logging
-from pathlib import Path
 import sys
-from typing import Optional
+from datetime import datetime
+from pathlib import Path
 
 # Add the modern src directory to the path
 modern_src_path = Path(__file__).parent.parent / "src"
@@ -134,8 +133,8 @@ class SequenceImageRegenerator:
 
     def regenerate_all_images(
         self,
-        source_path: Optional[Path] = None,
-        export_path: Optional[Path] = None,
+        source_path: Path | None = None,
+        export_path: Path | None = None,
         force_regenerate: bool = False,
     ) -> bool:
         """

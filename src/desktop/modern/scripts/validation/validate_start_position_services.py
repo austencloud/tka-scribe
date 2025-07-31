@@ -5,8 +5,8 @@ This script validates that the services can be properly imported and instantiate
 Run this to verify the basic structure is correct.
 """
 
-from pathlib import Path
 import sys
+from pathlib import Path
 
 # Add src to path for imports
 modern_src_path = Path(__file__).parent / "src"

@@ -6,9 +6,8 @@ inherit from, providing common functionality for element discovery, caching,
 wait conditions, and error handling.
 """
 
-from abc import ABC, abstractmethod
 import logging
-from typing import Optional
+from abc import ABC, abstractmethod
 
 from PyQt6.QtCore import QObject
 from PyQt6.QtTest import QTest
@@ -74,7 +73,7 @@ class BasePage(ABC):
 
         return self._loaded
 
-    def get_element(self, name: str, force_refresh: bool = False) -> Optional[QWidget]:
+    def get_element(self, name: str, force_refresh: bool = False) -> QWidget | None:
         """
         Get element by name with caching.
 
@@ -147,7 +146,7 @@ class BasePage(ABC):
         """
 
     @abstractmethod
-    def _find_element(self, name: str) -> Optional[QWidget]:
+    def _find_element(self, name: str) -> QWidget | None:
         """
         Find element implementation specific to this page.
 
@@ -160,7 +159,7 @@ class BasePage(ABC):
 
     # Helper methods for common element discovery patterns
 
-    def _find_widget_by_class_name(self, class_name_contains: str) -> Optional[QWidget]:
+    def _find_widget_by_class_name(self, class_name_contains: str) -> QWidget | None:
         """
         Helper to find widget by class name pattern.
 
@@ -208,7 +207,7 @@ class BasePage(ABC):
         )
         return matches
 
-    def _find_widget_by_object_name(self, object_name: str) -> Optional[QWidget]:
+    def _find_widget_by_object_name(self, object_name: str) -> QWidget | None:
         """
         Helper to find widget by Qt object name.
 

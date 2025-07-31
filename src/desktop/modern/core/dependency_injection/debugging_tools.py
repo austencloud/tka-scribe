@@ -9,9 +9,9 @@ Provides:
 - Diagnostic information
 """
 
-from datetime import datetime
 import inspect
 import logging
+from datetime import datetime
 from typing import Any, get_type_hints
 
 logger = logging.getLogger(__name__)

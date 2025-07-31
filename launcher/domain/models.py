@@ -5,11 +5,11 @@ Following TKA's clean architecture patterns with frozen dataclasses and .update(
 These models represent the core business entities without any UI coupling.
 """
 
+import uuid
 from dataclasses import dataclass, field, replace
 from enum import Enum
 from pathlib import Path
-from typing import Any, Optional
-import uuid
+from typing import Any
 
 
 class LaunchMode(Enum):
@@ -68,28 +68,28 @@ class ApplicationData:
     category: ApplicationCategory
 
     # Launch configuration
-    command: Optional[str] = None
-    working_dir: Optional[Path] = None
+    command: str | None = None
+    working_dir: Path | None = None
     environment_vars: dict[str, str] = field(default_factory=dict)
 
     # State and metadata
     enabled: bool = True
     status: ApplicationStatus = ApplicationStatus.STOPPED
-    process_id: Optional[int] = None
-    last_launched: Optional[str] = None  # ISO timestamp
+    process_id: int | None = None
+    last_launched: str | None = None  # ISO timestamp
     launch_count: int = 0
 
     # UI preferences
     display_order: int = 0
     is_favorite: bool = False
-    custom_icon_path: Optional[Path] = None
+    custom_icon_path: Path | None = None
 
     def update(self, **kwargs) -> "ApplicationData":
         """Create a new instance with updated fields."""
         return replace(self, **kwargs)
 
     def with_status(
-        self, status: ApplicationStatus, process_id: Optional[int] = None
+        self, status: ApplicationStatus, process_id: int | None = None
     ) -> "ApplicationData":
         """Update application status and process ID."""
         return self.update(status=status, process_id=process_id)
@@ -99,7 +99,7 @@ class ApplicationData:
         return self.update(launch_count=self.launch_count + 1)
 
     def mark_launched(
-        self, timestamp: str, process_id: Optional[int] = None
+        self, timestamp: str, process_id: int | None = None
     ) -> "ApplicationData":
         """Mark application as launched with timestamp."""
         return self.update(
@@ -210,8 +210,8 @@ class LauncherState:
     mode: LaunchMode = LaunchMode.WINDOW
 
     # Window state
-    window_geometry: Optional[WindowGeometry] = None
-    docked_geometry: Optional[WindowGeometry] = None
+    window_geometry: WindowGeometry | None = None
+    docked_geometry: WindowGeometry | None = None
     dock_configuration: DockConfiguration = field(default_factory=DockConfiguration)
 
     # Screen configuration
@@ -223,7 +223,7 @@ class LauncherState:
 
     # UI state
     search_query: str = ""
-    selected_category: Optional[ApplicationCategory] = None
+    selected_category: ApplicationCategory | None = None
     show_favorites_only: bool = False
 
     # Session data
@@ -260,7 +260,7 @@ class LauncherState:
         return self.update(applications=new_apps)
 
     def with_application_status(
-        self, app_id: str, status: ApplicationStatus, process_id: Optional[int] = None
+        self, app_id: str, status: ApplicationStatus, process_id: int | None = None
     ) -> "LauncherState":
         """Update application status."""
         if app_id not in self.applications:
@@ -274,12 +274,12 @@ class LauncherState:
         return self.update(search_query=query)
 
     def with_selected_category(
-        self, category: Optional[ApplicationCategory]
+        self, category: ApplicationCategory | None
     ) -> "LauncherState":
         """Update selected category."""
         return self.update(selected_category=category)
 
-    def get_application(self, app_id: str) -> Optional[ApplicationData]:
+    def get_application(self, app_id: str) -> ApplicationData | None:
         """Get application by ID."""
         return self.applications.get(app_id)
 
@@ -329,8 +329,8 @@ class LaunchResult:
 
     request: LaunchRequest
     success: bool
-    process_id: Optional[int] = None
-    error_message: Optional[str] = None
+    process_id: int | None = None
+    error_message: str | None = None
     execution_time_ms: int = 0
 
     def update(self, **kwargs) -> "LaunchResult":

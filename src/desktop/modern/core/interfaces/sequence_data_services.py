@@ -7,8 +7,9 @@ and transformation that must work identically across desktop and web platforms.
 """
 
 from abc import ABC, abstractmethod
+from collections.abc import Callable
 from enum import Enum
-from typing import Any, Callable, Optional
+from typing import Any
 
 from desktop.modern.domain.models.beat_data import BeatData
 from desktop.modern.domain.models.sequence_data import SequenceData
@@ -42,7 +43,7 @@ class ISequenceRepository(ABC):
         """
 
     @abstractmethod
-    def load_sequence(self, filepath: str) -> Optional[SequenceData]:
+    def load_sequence(self, filepath: str) -> SequenceData | None:
         """
         Load sequence data from file.
 
@@ -87,7 +88,7 @@ class ISequenceRepository(ABC):
         """
 
     @abstractmethod
-    def get_sequence_metadata(self, filepath: str) -> Optional[dict[str, Any]]:
+    def get_sequence_metadata(self, filepath: str) -> dict[str, Any] | None:
         """
         Get metadata for a sequence file.
 
@@ -288,7 +289,7 @@ class IPictographDataManager(ABC):
     """Interface for pictograph data management operations."""
 
     @abstractmethod
-    def get_pictograph_data(self, pictograph_id: str) -> Optional[dict[str, Any]]:
+    def get_pictograph_data(self, pictograph_id: str) -> dict[str, Any] | None:
         """
         Get pictograph data by ID.
 
@@ -334,7 +335,7 @@ class IPictographDataManager(ABC):
         """
 
     @abstractmethod
-    def list_pictographs(self, category: Optional[str] = None) -> list[str]:
+    def list_pictographs(self, category: str | None = None) -> list[str]:
         """
         List available pictographs.
 
@@ -349,7 +350,7 @@ class IPictographDataManager(ABC):
         """
 
     @abstractmethod
-    def get_pictograph_metadata(self, pictograph_id: str) -> Optional[dict[str, Any]]:
+    def get_pictograph_metadata(self, pictograph_id: str) -> dict[str, Any] | None:
         """
         Get metadata for a pictograph.
 
@@ -365,7 +366,7 @@ class IPictographDataManager(ABC):
 
     @abstractmethod
     def search_pictographs(
-        self, query: str, filters: Optional[dict[str, Any]] = None
+        self, query: str, filters: dict[str, Any] | None = None
     ) -> list[str]:
         """
         Search pictographs by query.
@@ -607,7 +608,7 @@ class IDataImportService(ABC):
     @abstractmethod
     def import_sequence(
         self, filepath: str, format_type: SequenceFormat
-    ) -> Optional[SequenceData]:
+    ) -> SequenceData | None:
         """
         Import sequence data.
 
@@ -623,7 +624,7 @@ class IDataImportService(ABC):
         """
 
     @abstractmethod
-    def import_beat_data(self, filepath: str, format_type: str) -> Optional[BeatData]:
+    def import_beat_data(self, filepath: str, format_type: str) -> BeatData | None:
         """
         Import beat data.
 
@@ -641,7 +642,7 @@ class IDataImportService(ABC):
     @abstractmethod
     def import_pictograph_data(
         self, filepath: str, format_type: str
-    ) -> Optional[dict[str, Any]]:
+    ) -> dict[str, Any] | None:
         """
         Import pictograph data.
 
@@ -693,7 +694,7 @@ class ISequenceLoader(ABC):
     """
 
     @abstractmethod
-    def load_sequence_from_file(self, filepath: str) -> Optional[SequenceData]:
+    def load_sequence_from_file(self, filepath: str) -> SequenceData | None:
         """
         Load sequence from file.
 
@@ -705,7 +706,7 @@ class ISequenceLoader(ABC):
         """
 
     @abstractmethod
-    def load_current_sequence(self) -> Optional[SequenceData]:
+    def load_current_sequence(self) -> SequenceData | None:
         """
         Load the current sequence from default location.
 
@@ -723,7 +724,7 @@ class ISequenceDictionaryManager(ABC):
     """
 
     @abstractmethod
-    def get_word_for_sequence(self, sequence: SequenceData) -> Optional[str]:
+    def get_word_for_sequence(self, sequence: SequenceData) -> str | None:
         """
         Get word associated with sequence.
 
@@ -814,7 +815,7 @@ class ISequenceStartPositionManager(ABC):
         """
 
     @abstractmethod
-    def get_current_start_position(self) -> Optional[BeatData]:
+    def get_current_start_position(self) -> BeatData | None:
         """
         Get current start position.
 

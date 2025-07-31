@@ -5,7 +5,8 @@ This adapter wraps the pure GraphEditorDataFlowService and provides Qt signal co
 This maintains the separation between platform-agnostic services and Qt-specific presentation logic.
 """
 
-from typing import Any, Callable, Optional
+from collections.abc import Callable
+from typing import Any
 
 from PyQt6.QtCore import QObject, pyqtSignal
 
@@ -32,7 +33,7 @@ class QtGraphEditorDataFlowManagerAdapter(QObject):
 
     def __init__(
         self,
-        graph_editor_getter: Optional[Callable[[], object]] = None,
+        graph_editor_getter: Callable[[], object] | None = None,
     ):
         super().__init__()
 

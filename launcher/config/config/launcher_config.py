@@ -15,11 +15,11 @@ Architecture:
 - Automatic migration and validation
 """
 
-from dataclasses import asdict, dataclass
 import json
 import logging
+from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 
 from PyQt6.QtCore import QRect
 
@@ -32,8 +32,8 @@ class WindowConfig:
 
     width: int = 1200  # 50% of typical 1920px screen width
     height: int = 800  # 50% of typical 1600px screen height
-    x: Optional[int] = None
-    y: Optional[int] = None
+    x: int | None = None
+    y: int | None = None
     maximized: bool = False
     mode: str = "docked"  # "window" or "docked" - default to docked
 
@@ -58,7 +58,7 @@ class ApplicationConfig:
     search_delay_ms: int = 300
     launch_timeout_seconds: int = 30
     remember_selection: bool = True
-    last_selected_app: Optional[str] = None
+    last_selected_app: str | None = None
 
 
 @dataclass
@@ -88,7 +88,7 @@ class LauncherConfig:
     with automatic migration and sensible defaults.
     """
 
-    def __init__(self, config_file: Optional[Path] = None):
+    def __init__(self, config_file: Path | None = None):
         """Initialize configuration manager."""
         self.config_file = config_file or self._get_default_config_path()
         self.config = self._load_configuration()
@@ -254,11 +254,11 @@ class LauncherConfig:
         """Enable or disable auto refresh."""
         self.config.application.auto_refresh = enabled
 
-    def get_last_selected_app(self) -> Optional[str]:
+    def get_last_selected_app(self) -> str | None:
         """Get last selected application ID."""
         return self.config.application.last_selected_app
 
-    def set_last_selected_app(self, app_id: Optional[str]):
+    def set_last_selected_app(self, app_id: str | None):
         """Set last selected application ID."""
         self.config.application.last_selected_app = app_id
 

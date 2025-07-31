@@ -3,10 +3,10 @@ Command pattern implementation for undoable operations.
 Provides type-safe, undoable commands with event integration.
 """
 
+import logging
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-import logging
-from typing import TYPE_CHECKING, Any, Generic, Optional, TypeVar
+from typing import TYPE_CHECKING, Any, Generic, TypeVar
 
 if TYPE_CHECKING:
     pass
@@ -20,8 +20,8 @@ class CommandResult(Generic[T]):
     """Result of command execution."""
 
     success: bool
-    result: Optional[T] = None
-    error_message: Optional[str] = None
+    result: T | None = None
+    error_message: str | None = None
     command_id: str = ""
 
 
@@ -191,13 +191,13 @@ class CommandProcessor:
         """Check if redo is possible."""
         return self._current_index < len(self._history) - 1
 
-    def get_undo_description(self) -> Optional[str]:
+    def get_undo_description(self) -> str | None:
         """Get description of command that would be undone."""
         if self.can_undo():
             return self._history[self._current_index].description
         return None
 
-    def get_redo_description(self) -> Optional[str]:
+    def get_redo_description(self) -> str | None:
         """Get description of command that would be redone."""
         if self.can_redo():
             return self._history[self._current_index + 1].description

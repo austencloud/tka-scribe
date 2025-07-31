@@ -8,9 +8,9 @@ import hashlib
 import json
 import logging
 import os
-from pathlib import Path
 import time  # ← add this at the top
-from typing import Any, Optional
+from pathlib import Path
+from typing import Any
 
 from PyQt6.QtCore import QSize
 from PyQt6.QtGui import QPixmap
@@ -41,7 +41,7 @@ class ThumbnailCacheManager:
 
     def get_cached_thumbnail(
         self, image_path: str, target_size: QSize
-    ) -> Optional[QPixmap]:
+    ) -> QPixmap | None:
         """
         Get cached thumbnail if available and valid.
 

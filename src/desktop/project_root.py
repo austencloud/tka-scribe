@@ -11,8 +11,8 @@ Import this at the top of any script that needs reliable imports:
 """
 
 import os
-from pathlib import Path
 import sys
+from pathlib import Path
 
 # Global flag to prevent duplicate setup
 _SETUP_COMPLETED = False

@@ -5,9 +5,8 @@ Handles SVG caching, asset management, color transforms, and positioning
 calculations without any Qt dependencies.
 """
 
-from functools import lru_cache
 import logging
-from typing import Optional
+from functools import lru_cache
 
 from desktop.modern.core.interfaces.arrow_rendering_services import (
     IArrowRenderingService,
@@ -30,13 +29,13 @@ class ArrowRenderingService(IArrowRenderingService):
 
     def __init__(
         self,
-        asset_manager: Optional[AssetManager] = None,
+        asset_manager: AssetManager | None = None,
     ):
         self.asset_manager = asset_manager or AssetManager()
 
     # Caching Operations
     @lru_cache(maxsize=128)
-    def load_cached_svg_data(self, svg_path: str) -> Optional[str]:
+    def load_cached_svg_data(self, svg_path: str) -> str | None:
         try:
             svg_data = self.asset_manager.load_and_cache_asset(svg_path)
             self._cached_files.add(svg_path)

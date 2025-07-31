@@ -9,13 +9,13 @@ support, thread-safe operations, and automatic resource management.
 """
 
 import asyncio
-from collections.abc import Awaitable
-from concurrent.futures import Future, ThreadPoolExecutor
-from dataclasses import dataclass
 import logging
 import threading
 import time
-from typing import Any, Callable, Optional, TypeVar
+from collections.abc import Awaitable, Callable
+from concurrent.futures import Future, ThreadPoolExecutor
+from dataclasses import dataclass
+from typing import Any, TypeVar
 
 # Import Qt modules with compatibility
 try:
@@ -247,7 +247,7 @@ class AsyncQtWidget(QWidget):
     and automatic resource management.
     """
 
-    def __init__(self, parent: Optional[Any] = None):
+    def __init__(self, parent: Any | None = None):
         """Initialize async Qt widget."""
         super().__init__(parent)
 
@@ -465,8 +465,8 @@ class QtThreadManager:
 
 
 # Global instances
-_qt_async_bridge: Optional[QtAsyncBridge] = None
-_qt_thread_manager: Optional[QtThreadManager] = None
+_qt_async_bridge: QtAsyncBridge | None = None
+_qt_thread_manager: QtThreadManager | None = None
 
 
 def qt_async_bridge() -> QtAsyncBridge:

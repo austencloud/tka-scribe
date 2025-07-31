@@ -8,12 +8,13 @@ ARCHITECTURE: Provides resource pooling for expensive Qt objects (brushes, pens,
 fonts, graphics items) with automatic lifecycle management and performance optimization.
 """
 
-from collections import defaultdict
-from dataclasses import dataclass
 import hashlib
 import logging
+from collections import defaultdict
+from collections.abc import Callable
+from dataclasses import dataclass
 from threading import Lock
-from typing import Any, Callable, Generic, Optional, TypeVar
+from typing import Any, Generic, TypeVar
 
 # Import Qt modules with compatibility
 try:
@@ -105,7 +106,7 @@ class ResourcePool(Generic[T]):
         )
 
     def get_or_create(
-        self, factory: Callable[[], T], cache_key: Optional[str] = None
+        self, factory: Callable[[], T], cache_key: str | None = None
     ) -> T:
         """
         Get resource from pool or create new one.
@@ -459,7 +460,7 @@ def pooled_font(
 
 
 # Global Qt resource manager instance
-_qt_resources: Optional[QtResourceManager] = None
+_qt_resources: QtResourceManager | None = None
 
 
 def qt_resources() -> QtResourceManager:

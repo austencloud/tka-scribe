@@ -12,7 +12,7 @@ PROVIDES:
 """
 
 from abc import ABC, abstractmethod
-from typing import Callable, Optional
+from collections.abc import Callable
 
 from PyQt6.QtWidgets import QMainWindow
 
@@ -38,7 +38,7 @@ class IApplicationInitializationOrchestrator(ABC):
         target_screen=None,
         parallel_mode=False,
         parallel_geometry=None,
-        progress_callback: Optional[Callable] = None,
+        progress_callback: Callable | None = None,
     ) -> None:
         """Initialize application with proper lifecycle management."""
 
@@ -64,7 +64,7 @@ class ApplicationInitializationOrchestrator(IApplicationInitializationOrchestrat
         window_service: IWindowManagementService,
         session_coordinator: ISessionRestorationCoordinator,
         window_discovery_service: IWindowDiscoveryService,
-        session_service: Optional[ISessionStateTracker] = None,
+        session_service: ISessionStateTracker | None = None,
     ):
         """Initialize application initialization orchestrator."""
         self.window_service = window_service
@@ -79,7 +79,7 @@ class ApplicationInitializationOrchestrator(IApplicationInitializationOrchestrat
         target_screen=None,
         parallel_mode=False,
         parallel_geometry=None,
-        progress_callback: Optional[Callable] = None,
+        progress_callback: Callable | None = None,
     ) -> None:
         """Initialize application with proper lifecycle management."""
         if progress_callback:

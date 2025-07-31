@@ -6,7 +6,8 @@ Qt-specific signal coordination is handled by adapters in the presentation layer
 """
 
 import logging
-from typing import TYPE_CHECKING, Callable, Optional
+from collections.abc import Callable
+from typing import TYPE_CHECKING
 
 from desktop.modern.core.interfaces.sequence_data_services import (
     ISequenceStartPositionManager,
@@ -44,10 +45,10 @@ class SequenceStartPositionService(ISequenceStartPositionManager):
 
     def __init__(
         self,
-        workbench_getter: Optional[Callable[[], "SequenceWorkbench"]] = None,
-        modern_to_legacy_converter: Optional[ModernToLegacyConverter] = None,
-        beat_factory: Optional[BeatFactory] = None,
-        persistence_service: Optional[SequencePersister] = None,
+        workbench_getter: Callable[[], "SequenceWorkbench"] | None = None,
+        modern_to_legacy_converter: ModernToLegacyConverter | None = None,
+        beat_factory: BeatFactory | None = None,
+        persistence_service: SequencePersister | None = None,
     ):
         self.workbench_getter = workbench_getter
         self.modern_to_legacy_converter = (
@@ -71,7 +72,7 @@ class SequenceStartPositionService(ISequenceStartPositionManager):
     def set_start_position(
         self,
         pictograph_data: PictographData,
-        sequence_data: Optional[SequenceData] = None,
+        sequence_data: SequenceData | None = None,
         persist: bool = True,
     ):
         """
@@ -129,7 +130,7 @@ class SequenceStartPositionService(ISequenceStartPositionManager):
     def update_start_position(
         self,
         pictograph_data: PictographData,
-        sequence_data: Optional[SequenceData] = None,
+        sequence_data: SequenceData | None = None,
         persist: bool = True,
     ):
         """
@@ -185,8 +186,8 @@ class SequenceStartPositionService(ISequenceStartPositionManager):
             raise
 
     def get_start_position(
-        self, sequence_data: Optional[SequenceData] = None
-    ) -> Optional[BeatData]:
+        self, sequence_data: SequenceData | None = None
+    ) -> BeatData | None:
         """
         Get the current start position.
 
@@ -216,7 +217,7 @@ class SequenceStartPositionService(ISequenceStartPositionManager):
             return None
 
     def _persist_start_position(
-        self, start_position_beat: BeatData, sequence_data: Optional[SequenceData]
+        self, start_position_beat: BeatData, sequence_data: SequenceData | None
     ):
         """
         Persist the start position to storage.
@@ -242,7 +243,7 @@ class SequenceStartPositionService(ISequenceStartPositionManager):
             logger.error(f"Failed to persist start position: {e}")
 
     def clear_start_position(
-        self, sequence_data: Optional[SequenceData] = None, persist: bool = True
+        self, sequence_data: SequenceData | None = None, persist: bool = True
     ):
         """
         Clear the start position.

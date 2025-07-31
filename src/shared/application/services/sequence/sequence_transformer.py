@@ -6,8 +6,8 @@ Extracted from the monolithic sequence management service to focus
 solely on sequence transformations and spatial operations.
 """
 
-from enum import Enum
 import logging
+from enum import Enum
 from typing import Any
 
 from desktop.modern.core.interfaces.sequence_operation_services import (

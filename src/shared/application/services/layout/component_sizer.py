@@ -5,9 +5,9 @@ Calculates optimal component sizes based on container constraints.
 Framework-agnostic service for responsive component sizing.
 """
 
-from enum import Enum
 import logging
-from typing import Any, NamedTuple, Optional
+from enum import Enum
+from typing import Any, NamedTuple
 
 from desktop.modern.core.interfaces.core_services import IComponentSizer
 
@@ -57,7 +57,7 @@ class ComponentSizer(IComponentSizer):
         """Initialize the component sizer."""
 
     def calculate_pictograph_frame_size(
-        self, container_width: int, constraints: Optional[SizeConstraints] = None
+        self, container_width: int, constraints: SizeConstraints | None = None
     ) -> int:
         """
         Calculate optimal frame size for pictograph components.

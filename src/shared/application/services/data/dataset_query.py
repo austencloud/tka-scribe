@@ -5,9 +5,8 @@ Handles querying and searching operations on pictograph datasets.
 Focused solely on data retrieval and filtering logic.
 """
 
-from abc import ABC, abstractmethod
 import logging
-from typing import Optional
+from abc import ABC, abstractmethod
 
 from desktop.modern.domain.models.beat_data import BeatData
 from desktop.modern.domain.models.pictograph_data import PictographData
@@ -25,19 +24,19 @@ class IDatasetQuery(ABC):
     @abstractmethod
     def get_start_position_pictograph(
         self, position_key: str, grid_mode: str = "diamond"
-    ) -> Optional[BeatData]:
+    ) -> BeatData | None:
         """Get the actual pictograph data for a start position as BeatData with embedded pictograph."""
 
     @abstractmethod
     def get_start_position_pictograph_data(
         self, position_key: str, grid_mode: str = "diamond"
-    ) -> Optional[PictographData]:
+    ) -> PictographData | None:
         """Get pictograph data for a start position (proper domain model)."""
 
     @abstractmethod
     def find_pictograph_by_criteria(
         self, letter: str, start_pos: str, end_pos: str, grid_mode: str = "diamond"
-    ) -> Optional[BeatData]:
+    ) -> BeatData | None:
         """Find a pictograph by specific criteria."""
 
     @abstractmethod
@@ -72,7 +71,7 @@ class DatasetQuery(IDatasetQuery):
     - Converting query results to domain objects
     """
 
-    def __init__(self, data_service: Optional[IDataManager] = None):
+    def __init__(self, data_service: IDataManager | None = None):
         """Initialize the dataset query service."""
         if data_service:
             self.data_service = data_service
@@ -88,7 +87,7 @@ class DatasetQuery(IDatasetQuery):
 
     def get_start_position_pictograph(
         self, position_key: str, grid_mode: str = "diamond"
-    ) -> Optional[BeatData]:
+    ) -> BeatData | None:
         """
         Get the actual pictograph data for a start position as BeatData with embedded pictograph.
 
@@ -140,7 +139,7 @@ class DatasetQuery(IDatasetQuery):
 
     def get_start_position_pictograph_data(
         self, position_key: str, grid_mode: str = "diamond"
-    ) -> Optional[PictographData]:
+    ) -> PictographData | None:
         """
         Get pictograph data for a start position (proper domain model).
 
@@ -184,7 +183,7 @@ class DatasetQuery(IDatasetQuery):
 
     def find_pictograph_by_criteria(
         self, letter: str, start_pos: str, end_pos: str, grid_mode: str = "diamond"
-    ) -> Optional[BeatData]:
+    ) -> BeatData | None:
         """
         Find a pictograph by specific criteria.
 

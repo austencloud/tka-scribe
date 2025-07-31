@@ -6,7 +6,7 @@ Provides clean abstraction over workbench state access.
 """
 
 import logging
-from typing import Callable, Optional
+from collections.abc import Callable
 
 from desktop.modern.domain.models.sequence_data import SequenceData
 
@@ -22,7 +22,7 @@ class SequenceStateReader:
     of how the workbench stores and manages state.
     """
 
-    def __init__(self, workbench_getter: Optional[Callable] = None):
+    def __init__(self, workbench_getter: Callable | None = None):
         """
         Initialize the sequence state reader.
 
@@ -31,7 +31,7 @@ class SequenceStateReader:
         """
         self._workbench_getter = workbench_getter
 
-    def get_current_sequence(self) -> Optional[SequenceData]:
+    def get_current_sequence(self) -> SequenceData | None:
         """
         Get the current sequence from the workbench UI state.
 
@@ -103,7 +103,7 @@ class MockSequenceStateReader(SequenceStateReader):
         super().__init__(workbench_getter=None)
         self._mock_sequence = self._create_mock_sequence()
 
-    def get_current_sequence(self) -> Optional[SequenceData]:
+    def get_current_sequence(self) -> SequenceData | None:
         """Return a mock sequence for testing"""
         logger.info("Returning mock sequence for testing")
         return self._mock_sequence

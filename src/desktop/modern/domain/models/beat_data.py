@@ -5,12 +5,12 @@ Immutable data structures for individual beats in kinetic sequences.
 Handles beat data, motion references, and glyph information.
 """
 
-from dataclasses import dataclass, field
 import json
+import uuid
+from dataclasses import dataclass, field
 
 # Forward reference for PictographData to avoid circular imports
 from typing import TYPE_CHECKING, Any, Optional
-import uuid
 
 from .motion_data import MotionData
 
@@ -62,7 +62,7 @@ class BeatData:
         return self.pictograph_data is not None
 
     @property
-    def letter(self) -> Optional[str]:
+    def letter(self) -> str | None:
         """Get beat letter from pictograph data if available, fallback to metadata."""
         if self.has_pictograph and self.pictograph_data.letter:
             return self.pictograph_data.letter

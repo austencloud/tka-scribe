@@ -1,5 +1,5 @@
-from datetime import datetime
 import json
+from datetime import datetime
 from typing import TYPE_CHECKING
 
 from enums.letter.letter_type import LetterType

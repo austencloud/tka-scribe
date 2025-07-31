@@ -12,10 +12,9 @@ This class centralizes all configuration concerns including:
 - Parallel testing configuration
 """
 
-from dataclasses import dataclass
 import logging
 import sys
-from typing import Optional
+from dataclasses import dataclass
 
 from desktop.modern.core.application.application_factory import ApplicationMode
 from desktop.modern.core.error_handling import StandardErrorHandler
@@ -38,7 +37,7 @@ class ConfigurationManager:
 
     def __init__(self):
         self.logger = logging.getLogger(__name__)
-        self._config: Optional[ApplicationConfiguration] = None
+        self._config: ApplicationConfiguration | None = None
 
     def load_configuration(self) -> ApplicationConfiguration:
         """

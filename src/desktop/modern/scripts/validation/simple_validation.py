@@ -2,8 +2,8 @@
 Simple service validation test
 """
 
-from pathlib import Path
 import sys
+from pathlib import Path
 
 # Add src to path
 modern_src_path = Path(__file__).parent / "src"

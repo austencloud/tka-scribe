@@ -14,7 +14,8 @@ DECORATORS:
 import functools
 import logging
 import time
-from typing import Any, Callable, Optional
+from collections.abc import Callable
+from typing import Any
 
 from .exceptions import (
     TKABaseException,
@@ -27,7 +28,7 @@ logger = logging.getLogger(__name__)
 
 
 def handle_service_errors(
-    operation_name: Optional[str] = None,
+    operation_name: str | None = None,
     reraise_validation_errors: bool = True,
     default_return: Any = None,
     log_level: int = logging.ERROR,
@@ -284,9 +285,9 @@ def retry_on_failure(
 
 
 def performance_critical(
-    max_duration_ms: Optional[float] = None,
-    max_memory_mb: Optional[float] = None,
-    warn_threshold_ms: Optional[float] = None,
+    max_duration_ms: float | None = None,
+    max_memory_mb: float | None = None,
+    warn_threshold_ms: float | None = None,
 ) -> Callable:
     """
     Decorator for performance-critical operations.
