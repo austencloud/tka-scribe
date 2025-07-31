@@ -158,7 +158,7 @@ def show_builder_pattern_examples():
 sequence_spec = simple_sequence(length=3, position="alpha1_alpha1")
         """,
         """
-# Performance test sequence  
+# Performance test sequence
 perf_spec = performance_sequence(length=10)
         """,
         """
@@ -198,13 +198,13 @@ assert_tka.component_loaded(picker, "Start Position Picker")
         """,
         """
 # Workflow assertions
-assert_sequence_workflow_success(nav_result, seq_result, val_result, 
+assert_sequence_workflow_success(nav_result, seq_result, val_result,
                                 context="my_test")
         """,
         """
 # State transition assertions
-assert_state_transition(initial_state, final_state, 
-                       {"length": 3, "valid": True}, 
+assert_state_transition(initial_state, final_state,
+                       {"length": 3, "valid": True},
                        context="sequence_building")
         """,
     ]

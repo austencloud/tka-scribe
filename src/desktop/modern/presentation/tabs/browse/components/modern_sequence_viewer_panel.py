@@ -89,13 +89,13 @@ class ModernSequenceImageViewer(QFrame):
                 border: 1px solid rgba(255, 255, 255, 0.1);
                 border-radius: 12px;
             }
-            
+
             QLabel {
                 color: rgba(255, 255, 255, 0.8);
                 background: transparent;
                 border: none;
             }
-            
+
             QPushButton {
                 background: rgba(255, 255, 255, 0.1);
                 border: 1px solid rgba(255, 255, 255, 0.2);
@@ -104,16 +104,16 @@ class ModernSequenceImageViewer(QFrame):
                 font-weight: bold;
                 font-size: 14px;
             }
-            
+
             QPushButton:hover {
                 background: rgba(255, 255, 255, 0.2);
                 border: 1px solid rgba(255, 255, 255, 0.3);
             }
-            
+
             QPushButton:pressed {
                 background: rgba(255, 255, 255, 0.15);
             }
-            
+
             QPushButton:disabled {
                 background: rgba(255, 255, 255, 0.05);
                 border: 1px solid rgba(255, 255, 255, 0.1);
@@ -242,24 +242,24 @@ class ModernSequenceMetadata(QFrame):
                 border: 1px solid rgba(255, 255, 255, 0.1);
                 border-radius: 12px;
             }
-            
+
             QLabel {
                 color: rgba(255, 255, 255, 0.8);
                 background: transparent;
                 border: none;
             }
-            
+
             QScrollArea {
                 background: transparent;
                 border: none;
             }
-            
+
             QScrollBar:vertical {
                 background: rgba(255, 255, 255, 0.1);
                 width: 12px;
                 border-radius: 6px;
             }
-            
+
             QScrollBar::handle:vertical {
                 background: rgba(255, 255, 255, 0.3);
                 border-radius: 6px;
@@ -385,7 +385,7 @@ class ModernSequenceActionPanel(QFrame):
                 border: 1px solid rgba(255, 255, 255, 0.1);
                 border-radius: 12px;
             }
-            
+
             QPushButton {
                 background: rgba(255, 255, 255, 0.1);
                 border: 1px solid rgba(255, 255, 255, 0.2);
@@ -395,16 +395,16 @@ class ModernSequenceActionPanel(QFrame):
                 font-size: 11px;
                 padding: 8px 12px;
             }
-            
+
             QPushButton:hover {
                 background: rgba(255, 255, 255, 0.2);
                 border: 1px solid rgba(255, 255, 255, 0.3);
             }
-            
+
             QPushButton:pressed {
                 background: rgba(255, 255, 255, 0.15);
             }
-            
+
             QPushButton:disabled {
                 background: rgba(255, 255, 255, 0.05);
                 border: 1px solid rgba(255, 255, 255, 0.1);

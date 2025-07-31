@@ -86,7 +86,7 @@ class FormatSettingsCard(QFrame):
                 border-radius: 12px;
                 margin: 5px;
             }
-            
+
             QLabel#subsection_title {
                 color: rgba(255, 255, 255, 0.9);
                 font-size: 14px;
@@ -95,7 +95,7 @@ class FormatSettingsCard(QFrame):
                 background: transparent;
                 border: none;
             }
-            
+
             QLabel#setting_label {
                 color: rgba(255, 255, 255, 0.8);
                 font-size: 12px;
@@ -104,7 +104,7 @@ class FormatSettingsCard(QFrame):
                 background: transparent;
                 border: none;
             }
-            
+
             QComboBox#setting_combo {
                 background: rgba(255, 255, 255, 0.1);
                 border: 1px solid rgba(255, 255, 255, 0.2);
@@ -114,22 +114,22 @@ class FormatSettingsCard(QFrame):
                 padding: 6px 10px;
                 min-height: 20px;
             }
-            
+
             QComboBox#setting_combo:hover {
                 background: rgba(255, 255, 255, 0.15);
                 border: 1px solid rgba(255, 255, 255, 0.3);
             }
-            
+
             QComboBox#setting_combo:focus {
                 border: 1px solid rgba(100, 200, 255, 0.6);
                 background: rgba(255, 255, 255, 0.12);
             }
-            
+
             QComboBox#setting_combo::drop-down {
                 border: none;
                 width: 20px;
             }
-            
+
             QComboBox#setting_combo::down-arrow {
                 image: none;
                 border-left: 4px solid transparent;
@@ -137,7 +137,7 @@ class FormatSettingsCard(QFrame):
                 border-top: 6px solid rgba(255, 255, 255, 0.7);
                 margin-right: 8px;
             }
-            
+
             QComboBox#setting_combo QAbstractItemView {
                 background: rgba(40, 40, 40, 0.95);
                 border: 1px solid rgba(255, 255, 255, 0.2);
@@ -146,7 +146,7 @@ class FormatSettingsCard(QFrame):
                 selection-background-color: rgba(100, 200, 255, 0.3);
                 outline: none;
             }
-            
+
             QLineEdit#setting_input {
                 background: rgba(255, 255, 255, 0.1);
                 border: 1px solid rgba(255, 255, 255, 0.2);
@@ -156,17 +156,17 @@ class FormatSettingsCard(QFrame):
                 padding: 6px 10px;
                 min-height: 20px;
             }
-            
+
             QLineEdit#setting_input:hover {
                 background: rgba(255, 255, 255, 0.15);
                 border: 1px solid rgba(255, 255, 255, 0.3);
             }
-            
+
             QLineEdit#setting_input:focus {
                 border: 1px solid rgba(100, 200, 255, 0.6);
                 background: rgba(255, 255, 255, 0.12);
             }
-            
+
             QLineEdit#setting_input::placeholder {
                 color: rgba(255, 255, 255, 0.5);
             }

@@ -353,27 +353,27 @@ class ImageExportTab(QWidget):
                 background: transparent;
                 color: white;
             }
-            
+
             QLabel#section_title {
                 color: white;
                 font-size: 18px;
                 font-weight: bold;
                 margin-bottom: 10px;
             }
-            
+
             QLabel#description {
                 color: rgba(255, 255, 255, 0.8);
                 font-size: 14px;
                 margin-bottom: 20px;
             }
-            
+
             QLabel#subsection_title {
                 color: rgba(255, 255, 255, 0.9);
                 font-size: 16px;
                 font-weight: bold;
                 margin-bottom: 15px;
             }
-            
+
             QLabel#input_label {
                 color: rgba(255, 255, 255, 0.9);
                 font-size: 14px;
@@ -381,7 +381,7 @@ class ImageExportTab(QWidget):
                 margin-bottom: 5px;
                 margin-top: 10px;
             }
-            
+
             QFrame#settings_section {
                 background: rgba(255, 255, 255, 0.1);
                 border: 2px solid rgba(255, 255, 255, 0.2);
@@ -390,7 +390,7 @@ class ImageExportTab(QWidget):
                 margin: 5px;
                 min-width: 300px;
             }
-            
+
             QLineEdit#export_input {
                 background: rgba(255, 255, 255, 0.1);
                 border: 2px solid rgba(255, 255, 255, 0.3);
@@ -400,11 +400,11 @@ class ImageExportTab(QWidget):
                 font-size: 14px;
                 margin-bottom: 10px;
             }
-            
+
             QLineEdit#export_input:focus {
                 border-color: rgba(59, 130, 246, 0.8);
             }
-            
+
             QPushButton#action_button {
                 background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
                     stop:0 rgba(59, 130, 246, 0.8),
@@ -417,14 +417,14 @@ class ImageExportTab(QWidget):
                 padding: 12px;
                 margin: 5px 0;
             }
-            
+
             QPushButton#action_button:hover {
                 background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
                     stop:0 rgba(59, 130, 246, 1.0),
                     stop:1 rgba(59, 130, 246, 0.8));
                 border-color: rgba(59, 130, 246, 0.8);
             }
-            
+
             QPushButton#action_button:pressed {
                 background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
                     stop:0 rgba(59, 130, 246, 0.6),

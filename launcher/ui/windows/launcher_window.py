@@ -97,7 +97,7 @@ class TKALauncherWindow(QWidget):
                 background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
                     stop:0 rgba(15, 15, 15, 0.95),
                     stop:1 rgba(30, 30, 30, 0.95));
-                color: 
+                color:
                 {style_builder.typography()}
             }}
 
@@ -123,7 +123,7 @@ class TKALauncherWindow(QWidget):
 
             QTabBar::tab:selected {{
                 {style_builder.glass_surface("selected")}
-                color: 
+                color:
                 border: {style_builder.tokens.BORDERS["selected"]};
             }}
         """

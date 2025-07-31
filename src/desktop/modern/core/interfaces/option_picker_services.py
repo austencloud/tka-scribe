@@ -8,7 +8,7 @@ and state management that must work identically across desktop and web platforms
 
 from abc import ABC, abstractmethod
 from enum import Enum
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Optional
 
 
 class OptionType(Enum):
@@ -55,12 +55,12 @@ class IOptionConfigurationService(ABC):
         """
 
     @abstractmethod
-    def get_all_configurations(self) -> Dict[str, Any]:
+    def get_all_configurations(self) -> dict[str, Any]:
         """
         Get all configuration values.
 
         Returns:
-            Dictionary of all configuration values
+            dictionary of all configuration values
 
         Note:
             Web implementation: Retrieved from browser storage or server config
@@ -124,7 +124,7 @@ class IOptionConfigurationService(ABC):
         """
 
     @abstractmethod
-    def validate_configuration(self, config: Dict[str, Any]) -> Tuple[bool, List[str]]:
+    def validate_configuration(self, config: dict[str, Any]) -> tuple[bool, list[str]]:
         """
         Validate configuration data.
 
@@ -132,7 +132,7 @@ class IOptionConfigurationService(ABC):
             config: Configuration data to validate
 
         Returns:
-            Tuple of (is_valid, error_messages)
+            tuple of (is_valid, error_messages)
 
         Note:
             Web implementation: Same validation logic across platforms
@@ -143,7 +143,7 @@ class IOptionLoader(ABC):
     """Interface for option loader operations."""
 
     @abstractmethod
-    def load_options(self, option_type: OptionType) -> List[Dict[str, Any]]:
+    def load_options(self, option_type: OptionType) -> list[dict[str, Any]]:
         """
         Load options for a specific type.
 
@@ -151,7 +151,7 @@ class IOptionLoader(ABC):
             option_type: Type of options to load
 
         Returns:
-            List of option dictionaries
+            list of option dictionaries
 
         Note:
             Web implementation: Loads from server or browser storage
@@ -159,8 +159,8 @@ class IOptionLoader(ABC):
 
     @abstractmethod
     def load_filtered_options(
-        self, option_type: OptionType, filters: Dict[str, Any]
-    ) -> List[Dict[str, Any]]:
+        self, option_type: OptionType, filters: dict[str, Any]
+    ) -> list[dict[str, Any]]:
         """
         Load filtered options for a specific type.
 
@@ -169,14 +169,14 @@ class IOptionLoader(ABC):
             filters: Filters to apply
 
         Returns:
-            List of filtered option dictionaries
+            list of filtered option dictionaries
 
         Note:
             Web implementation: Applies filters client-side or server-side
         """
 
     @abstractmethod
-    def load_option_by_id(self, option_id: str) -> Optional[Dict[str, Any]]:
+    def load_option_by_id(self, option_id: str) -> Optional[dict[str, Any]]:
         """
         Load specific option by ID.
 
@@ -222,7 +222,7 @@ class IOptionLoader(ABC):
 
     @abstractmethod
     def cache_options(
-        self, option_type: OptionType, options: List[Dict[str, Any]]
+        self, option_type: OptionType, options: list[dict[str, Any]]
     ) -> bool:
         """
         Cache options for a specific type.
@@ -263,7 +263,7 @@ class IOptionProvider(ABC):
     """Interface for option provider operations."""
 
     @abstractmethod
-    def get_available_options(self, option_type: OptionType) -> List[Dict[str, Any]]:
+    def get_available_options(self, option_type: OptionType) -> list[dict[str, Any]]:
         """
         Get available options for a specific type.
 
@@ -271,14 +271,14 @@ class IOptionProvider(ABC):
             option_type: Type of options to retrieve
 
         Returns:
-            List of available option dictionaries
+            list of available option dictionaries
 
         Note:
             Web implementation: Retrieved from server or browser storage
         """
 
     @abstractmethod
-    def get_option_details(self, option_id: str) -> Optional[Dict[str, Any]]:
+    def get_option_details(self, option_id: str) -> Optional[dict[str, Any]]:
         """
         Get detailed information for a specific option.
 
@@ -294,13 +294,13 @@ class IOptionProvider(ABC):
 
     @abstractmethod
     def filter_options(
-        self, options: List[Dict[str, Any]], filters: Dict[str, Any]
-    ) -> List[Dict[str, Any]]:
+        self, options: list[dict[str, Any]], filters: dict[str, Any]
+    ) -> list[dict[str, Any]]:
         """
         Filter options based on criteria.
 
         Args:
-            options: List of options to filter
+            options: list of options to filter
             filters: Filter criteria
 
         Returns:
@@ -312,13 +312,13 @@ class IOptionProvider(ABC):
 
     @abstractmethod
     def sort_options(
-        self, options: List[Dict[str, Any]], sort_key: str, reverse: bool = False
-    ) -> List[Dict[str, Any]]:
+        self, options: list[dict[str, Any]], sort_key: str, reverse: bool = False
+    ) -> list[dict[str, Any]]:
         """
         Sort options by a key.
 
         Args:
-            options: List of options to sort
+            options: list of options to sort
             sort_key: Key to sort by
             reverse: Whether to reverse sort order
 
@@ -332,7 +332,7 @@ class IOptionProvider(ABC):
     @abstractmethod
     def search_options(
         self, query: str, option_type: OptionType
-    ) -> List[Dict[str, Any]]:
+    ) -> list[dict[str, Any]]:
         """
         Search options by query.
 
@@ -341,7 +341,7 @@ class IOptionProvider(ABC):
             option_type: Type of options to search
 
         Returns:
-            List of matching options
+            list of matching options
 
         Note:
             Web implementation: Client-side search with fuzzy matching
@@ -363,7 +363,7 @@ class IOptionProvider(ABC):
         """
 
     @abstractmethod
-    def validate_option(self, option_data: Dict[str, Any]) -> Tuple[bool, List[str]]:
+    def validate_option(self, option_data: dict[str, Any]) -> tuple[bool, list[str]]:
         """
         Validate option data.
 
@@ -371,7 +371,7 @@ class IOptionProvider(ABC):
             option_data: Option data to validate
 
         Returns:
-            Tuple of (is_valid, error_messages)
+            tuple of (is_valid, error_messages)
 
         Note:
             Web implementation: Same validation logic across platforms
@@ -382,7 +382,7 @@ class ISequenceOptionService(ABC):
     """Interface for sequence option service operations."""
 
     @abstractmethod
-    def get_sequence_options(self, sequence_id: str) -> List[Dict[str, Any]]:
+    def get_sequence_options(self, sequence_id: str) -> list[dict[str, Any]]:
         """
         Get options available for a specific sequence.
 
@@ -390,7 +390,7 @@ class ISequenceOptionService(ABC):
             sequence_id: ID of sequence to get options for
 
         Returns:
-            List of available options for the sequence
+            list of available options for the sequence
 
         Note:
             Web implementation: Retrieved from server or calculated client-side
@@ -415,7 +415,7 @@ class ISequenceOptionService(ABC):
     @abstractmethod
     def get_compatible_options(
         self, sequence_id: str, position: int
-    ) -> List[Dict[str, Any]]:
+    ) -> list[dict[str, Any]]:
         """
         Get options compatible with a specific position in sequence.
 
@@ -424,7 +424,7 @@ class ISequenceOptionService(ABC):
             position: Position in sequence
 
         Returns:
-            List of compatible options
+            list of compatible options
 
         Note:
             Web implementation: Compatibility checking client-side
@@ -433,7 +433,7 @@ class ISequenceOptionService(ABC):
     @abstractmethod
     def validate_option_compatibility(
         self, sequence_id: str, option_id: str, position: int
-    ) -> Tuple[bool, List[str]]:
+    ) -> tuple[bool, list[str]]:
         """
         Validate option compatibility with sequence.
 
@@ -443,14 +443,14 @@ class ISequenceOptionService(ABC):
             position: Position in sequence
 
         Returns:
-            Tuple of (is_compatible, incompatibility_reasons)
+            tuple of (is_compatible, incompatibility_reasons)
 
         Note:
             Web implementation: Same compatibility logic across platforms
         """
 
     @abstractmethod
-    def get_next_recommended_options(self, sequence_id: str) -> List[Dict[str, Any]]:
+    def get_next_recommended_options(self, sequence_id: str) -> list[dict[str, Any]]:
         """
         Get recommended next options for a sequence.
 
@@ -458,14 +458,14 @@ class ISequenceOptionService(ABC):
             sequence_id: ID of sequence
 
         Returns:
-            List of recommended options
+            list of recommended options
 
         Note:
             Web implementation: Recommendation algorithm client-side
         """
 
     @abstractmethod
-    def analyze_sequence_patterns(self, sequence_id: str) -> Dict[str, Any]:
+    def analyze_sequence_patterns(self, sequence_id: str) -> dict[str, Any]:
         """
         Analyze patterns in a sequence to suggest options.
 
@@ -473,7 +473,7 @@ class ISequenceOptionService(ABC):
             sequence_id: ID of sequence to analyze
 
         Returns:
-            Dictionary of pattern analysis results
+            dictionary of pattern analysis results
 
         Note:
             Web implementation: Pattern analysis client-side
@@ -484,7 +484,7 @@ class IOptionPickerSizeCalculator(ABC):
     """Interface for option picker size calculator operations."""
 
     @abstractmethod
-    def calculate_picker_size(self, container_size: Tuple[int, int]) -> Tuple[int, int]:
+    def calculate_picker_size(self, container_size: tuple[int, int]) -> tuple[int, int]:
         """
         Calculate option picker size based on container.
 
@@ -500,8 +500,8 @@ class IOptionPickerSizeCalculator(ABC):
 
     @abstractmethod
     def calculate_option_size(
-        self, picker_size: Tuple[int, int], option_count: int
-    ) -> Tuple[int, int]:
+        self, picker_size: tuple[int, int], option_count: int
+    ) -> tuple[int, int]:
         """
         Calculate individual option size.
 
@@ -518,8 +518,8 @@ class IOptionPickerSizeCalculator(ABC):
 
     @abstractmethod
     def calculate_grid_dimensions(
-        self, option_count: int, picker_size: Tuple[int, int]
-    ) -> Tuple[int, int]:
+        self, option_count: int, picker_size: tuple[int, int]
+    ) -> tuple[int, int]:
         """
         Calculate grid dimensions for options.
 
@@ -535,7 +535,7 @@ class IOptionPickerSizeCalculator(ABC):
         """
 
     @abstractmethod
-    def get_minimum_picker_size(self) -> Tuple[int, int]:
+    def get_minimum_picker_size(self) -> tuple[int, int]:
         """
         Get minimum picker size.
 
@@ -547,7 +547,7 @@ class IOptionPickerSizeCalculator(ABC):
         """
 
     @abstractmethod
-    def get_maximum_picker_size(self) -> Tuple[int, int]:
+    def get_maximum_picker_size(self) -> tuple[int, int]:
         """
         Get maximum picker size.
 
@@ -563,7 +563,7 @@ class IPositionMatcher(ABC):
     """Interface for position matcher operations."""
 
     @abstractmethod
-    def match_position(self, position_data: Dict[str, Any]) -> Optional[str]:
+    def match_position(self, position_data: dict[str, Any]) -> Optional[str]:
         """
         Match position data to a position ID.
 
@@ -578,7 +578,7 @@ class IPositionMatcher(ABC):
         """
 
     @abstractmethod
-    def get_matching_positions(self, criteria: Dict[str, Any]) -> List[str]:
+    def get_matching_positions(self, criteria: dict[str, Any]) -> list[str]:
         """
         Get positions matching criteria.
 
@@ -586,7 +586,7 @@ class IPositionMatcher(ABC):
             criteria: Matching criteria
 
         Returns:
-            List of matching position IDs
+            list of matching position IDs
 
         Note:
             Web implementation: Same matching logic across platforms
@@ -610,7 +610,7 @@ class IPositionMatcher(ABC):
 
     @abstractmethod
     def update_position_mapping(
-        self, position_id: str, position_data: Dict[str, Any]
+        self, position_id: str, position_data: dict[str, Any]
     ) -> bool:
         """
         Update position mapping.

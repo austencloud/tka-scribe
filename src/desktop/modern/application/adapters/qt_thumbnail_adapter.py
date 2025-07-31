@@ -389,19 +389,19 @@ def demonstrate_migration():
     migration_example = """
     # OLD WAY - Direct QT dependency:
     from desktop.modern.src.presentation.tabs.browse.services.thumbnail_factory_service import ThumbnailFactoryService
-    
+
     old_factory = ThumbnailFactoryService()
     thumbnail_widget = old_factory.create_thumbnail(sequence, 150, "alphabetical")
-    
+
     # NEW WAY - Framework-agnostic with QT adapter:
     from desktop.modern.src.application.adapters.qt_thumbnail_adapter import create_qt_thumbnail_adapter
-    
+
     new_adapter = create_qt_thumbnail_adapter()
     thumbnail_widget = new_adapter.create_thumbnail(sequence, 150, "alphabetical")  # Same interface!
-    
+
     # NEW CAPABILITIES - Batch processing:
     thumbnail_widgets = new_adapter.batch_create_thumbnails(sequences, 150, "alphabetical")
-    
+
     # DEBUGGING - Get framework-agnostic data:
     thumbnail_data = new_adapter.get_thumbnail_data(sequence, 150)
     print(f"Thumbnail has image: {thumbnail_data.has_image}")

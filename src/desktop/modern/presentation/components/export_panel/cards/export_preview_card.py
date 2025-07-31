@@ -87,7 +87,7 @@ class ExportPreviewCard(QFrame):
                 border-radius: 12px;
                 margin: 5px;
             }
-            
+
             QLabel#subsection_title {
                 color: rgba(255, 255, 255, 0.9);
                 font-size: 14px;
@@ -96,7 +96,7 @@ class ExportPreviewCard(QFrame):
                 background: transparent;
                 border: none;
             }
-            
+
             QLabel#preview_display {
                 background: rgba(0, 0, 0, 0.3);
                 border: 1px solid rgba(255, 255, 255, 0.2);
@@ -106,7 +106,7 @@ class ExportPreviewCard(QFrame):
                 padding: 20px;
                 min-height: 200px;
             }
-            
+
             QLabel#preview_info {
                 color: rgba(255, 255, 255, 0.7);
                 font-size: 12px;
@@ -114,7 +114,7 @@ class ExportPreviewCard(QFrame):
                 border: none;
                 margin-top: 5px;
             }
-            
+
             QLabel#preview_status {
                 color: rgba(100, 200, 255, 0.8);
                 font-size: 11px;

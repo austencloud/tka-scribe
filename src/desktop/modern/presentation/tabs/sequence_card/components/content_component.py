@@ -107,23 +107,23 @@ class SequenceCardContentComponent(QWidget):
                 border: none;
                 background: transparent;
             }
-            
+
             QScrollBar:vertical {
                 background: rgba(0,0,0,0.1);
                 width: 8px;
                 border-radius: 4px;
             }
-            
+
             QScrollBar::handle:vertical {
                 background: rgba(0,0,0,0.3);
                 border-radius: 4px;
                 min-height: 20px;
             }
-            
+
             QScrollBar::handle:vertical:hover {
                 background: rgba(0,0,0,0.5);
             }
-            
+
             QScrollBar::add-line:vertical,
             QScrollBar::sub-line:vertical {
                 height: 0px;

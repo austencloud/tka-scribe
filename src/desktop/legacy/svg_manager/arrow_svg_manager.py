@@ -33,7 +33,7 @@ class ArrowSvgManager:
             turns = float(arrow_turns)
         else:
             turns = arrow_turns
-        if not turns == "fl":
+        if turns != "fl":
             if start_ori in [IN, OUT]:
                 return get_image_path(
                     f"arrows/{arrow.motion.state.motion_type}/from_radial/"

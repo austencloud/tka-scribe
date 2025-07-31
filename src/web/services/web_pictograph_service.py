@@ -85,7 +85,7 @@ class WebAssetProvider(IPictographAssetProvider):
         if grid_mode == "diamond":
             svg_content = """
             <svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
-                <polygon points="200,50 350,200 200,350 50,200" 
+                <polygon points="200,50 350,200 200,350 50,200"
                          fill="none" stroke="#cccccc" stroke-width="2"/>
                 <line x1="200" y1="50" x2="200" y2="350" stroke="#cccccc" stroke-width="1" opacity="0.5"/>
                 <line x1="50" y1="200" x2="350" y2="200" stroke="#cccccc" stroke-width="1" opacity="0.5"/>
@@ -94,7 +94,7 @@ class WebAssetProvider(IPictographAssetProvider):
         else:  # box
             svg_content = """
             <svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
-                <rect x="50" y="50" width="300" height="300" 
+                <rect x="50" y="50" width="300" height="300"
                       fill="none" stroke="#cccccc" stroke-width="2"/>
                 <line x1="200" y1="50" x2="200" y2="350" stroke="#cccccc" stroke-width="1" opacity="0.5"/>
                 <line x1="50" y1="200" x2="350" y2="200" stroke="#cccccc" stroke-width="1" opacity="0.5"/>
@@ -143,7 +143,7 @@ class WebAssetProvider(IPictographAssetProvider):
         """Create web-optimized glyph asset."""
         svg_content = f"""
         <svg viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg">
-            <text x="25" y="35" text-anchor="middle" font-family="Arial, sans-serif" 
+            <text x="25" y="35" text-anchor="middle" font-family="Arial, sans-serif"
                   font-size="28" font-weight="bold" fill="#000000">{glyph_id}</text>
         </svg>
         """
@@ -160,12 +160,12 @@ class WebAssetProvider(IPictographAssetProvider):
         svg_content = """
         <svg viewBox="0 0 100 20" xmlns="http://www.w3.org/2000/svg">
             <defs>
-                <marker id="arrowhead" markerWidth="10" markerHeight="7" 
+                <marker id="arrowhead" markerWidth="10" markerHeight="7"
                  refX="10" refY="3.5" orient="auto">
                     <polygon points="0 0, 10 3.5, 0 7" fill="#000000"/>
                 </marker>
             </defs>
-            <line x1="5" y1="10" x2="90" y2="10" stroke="#000000" 
+            <line x1="5" y1="10" x2="90" y2="10" stroke="#000000"
                   stroke-width="2" marker-end="url(#arrowhead)"/>
         </svg>
         """
@@ -461,17 +461,17 @@ def create_fastapi_pictograph_endpoints():
     from fastapi import FastAPI, HTTPException
     from pydantic import BaseModel
     from typing import Dict, Optional
-    
+
     app = FastAPI()
     pictograph_service = WebPictographService()
-    
+
     class PictographRequest(BaseModel):
         pictograph_data: Dict
         width: Optional[int] = 400
         height: Optional[int] = 400
         format: Optional[str] = "svg"  # "svg" or "canvas_js"
         options: Optional[Dict] = None
-    
+
     @app.post("/render/pictograph")
     async def render_pictograph(request: PictographRequest):
         """Render pictograph in requested format."""
@@ -484,22 +484,22 @@ def create_fastapi_pictograph_endpoints():
                     request.options
                 )
                 return {"format": "svg", "content": result}
-            
+
             elif request.format == "canvas_js":
                 result = pictograph_service.render_pictograph_canvas_js(
                     request.pictograph_data,
-                    request.width, 
+                    request.width,
                     request.height,
                     request.options
                 )
                 return {"format": "canvas_js", "content": result}
-            
+
             else:
                 raise HTTPException(status_code=400, detail="Invalid format")
-                
+
         except Exception as e:
             raise HTTPException(status_code=500, detail=str(e))
-    
+
     @app.post("/render/thumbnail")
     async def render_thumbnail(pictograph_data: Dict, size: Optional[int] = 150):
         """Render small thumbnail."""
@@ -508,7 +508,7 @@ def create_fastapi_pictograph_endpoints():
             return {"format": "svg", "content": svg_content}
         except Exception as e:
             raise HTTPException(status_code=500, detail=str(e))
-    
+
     @app.post("/analyze/pictograph")
     async def analyze_pictograph(pictograph_data: Dict):
         """Get pictograph metadata and analysis."""

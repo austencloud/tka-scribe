@@ -158,25 +158,25 @@ class StartPositionPickerHeader(QWidget):
                 border: 1px solid rgba(255, 255, 255, 0.3);
                 border-radius: 16px;
             }
-            
+
             QLabel#UnifiedTitle {
                 color: black;
                 background: transparent;
                 font-weight: 700;
             }
-            
+
             QLabel#UnifiedSubtitle {
                 color: black;
                 background: transparent;
                 font-weight: 400;
             }
-            
+
             QLabel#GridModeLabel {
                 color: rgba(0, 0, 0, 0.8);
                 background: transparent;
                 font-weight: 500;
             }
-            
+
             QPushButton#BackButton {
                 background: rgba(239, 68, 68, 0.9);
                 color: white;
@@ -186,7 +186,7 @@ class StartPositionPickerHeader(QWidget):
                 font-weight: 600;
                 font-size: 14px;
             }
-            
+
             QPushButton#BackButton:hover {
                 background: rgba(239, 68, 68, 1.0);
             }

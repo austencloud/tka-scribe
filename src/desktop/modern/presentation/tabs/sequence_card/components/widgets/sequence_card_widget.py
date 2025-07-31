@@ -207,7 +207,7 @@ class SequenceCardWidget(QLabel):
                 padding: 5px;
                 margin: 5px;
             }
-            
+
             QLabel:hover {
                 border: 2px solid #3498db;
                 background: #f8f9fa;

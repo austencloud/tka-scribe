@@ -84,9 +84,9 @@ def test_modern_state_persistence():
 
         # Test query execution
         result = settings_service.query_setting("test", "demo_key")
-        assert result == "demo_value", (
-            f"Query failed: expected 'demo_value', got '{result}'"
-        )
+        assert (
+            result == "demo_value"
+        ), f"Query failed: expected 'demo_value', got '{result}'"
 
         # Test bulk command
         bulk_settings = {
@@ -138,9 +138,9 @@ def test_modern_state_persistence():
         memento = settings_service.create_state_memento("test_tab")
         assert memento is not None, "Failed to create memento"
         assert memento.current_tab == "test_tab", "Memento tab incorrect"
-        assert isinstance(memento.settings_snapshot, dict), (
-            "Settings snapshot not captured"
-        )
+        assert isinstance(
+            memento.settings_snapshot, dict
+        ), "Settings snapshot not captured"
         print("✅ Memento creation working correctly")
 
         # Test memento serialization
@@ -154,9 +154,9 @@ def test_modern_state_persistence():
         )
 
         restored_memento = ApplicationStateMemento.from_dict(memento_dict)
-        assert restored_memento.current_tab == memento.current_tab, (
-            "Memento deserialization failed"
-        )
+        assert (
+            restored_memento.current_tab == memento.current_tab
+        ), "Memento deserialization failed"
         print("✅ Memento serialization/deserialization working correctly")
 
         # Test 6: Application State Manager

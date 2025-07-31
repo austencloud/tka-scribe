@@ -89,24 +89,24 @@ class ModernNavigationSidebar(QWidget):
                 border: 1px solid rgba(255, 255, 255, 0.2);
                 border-radius: 10px;
             }
-            
+
             QScrollArea {
                 background: transparent;
                 border: none;
             }
-            
+
             QScrollBar:vertical {
                 background: rgba(255, 255, 255, 0.1);
                 width: 8px;
                 border-radius: 4px;
             }
-            
+
             QScrollBar::handle:vertical {
                 background: rgba(255, 255, 255, 0.3);
                 border-radius: 4px;
                 min-height: 20px;
             }
-            
+
             QScrollBar::handle:vertical:hover {
                 background: rgba(255, 255, 255, 0.5);
             }
@@ -369,13 +369,13 @@ class ModernNavigationSidebar(QWidget):
                 font-weight: normal;
                 min-height: 20px;
             }
-            
+
             QPushButton:hover {
                 background: rgba(255, 255, 255, 0.2);
                 border-color: rgba(255, 255, 255, 0.4);
                 color: white;
             }
-            
+
             QPushButton:pressed {
                 background: rgba(255, 255, 255, 0.25);
                 border-color: rgba(255, 255, 255, 0.5);
@@ -419,13 +419,13 @@ class ModernNavigationSidebar(QWidget):
                     font-weight: normal;
                     min-height: 20px;
                 }
-                
+
                 QPushButton:hover {
                     background: rgba(255, 255, 255, 0.2);
                     border-color: rgba(255, 255, 255, 0.4);
                     color: white;
                 }
-                
+
                 QPushButton:pressed {
                     background: rgba(255, 255, 255, 0.25);
                     border-color: rgba(255, 255, 255, 0.5);
@@ -447,12 +447,12 @@ class ModernNavigationSidebar(QWidget):
                 font-weight: bold;
                 min-height: 20px;
             }
-            
+
             QPushButton:hover {
                 background: rgba(100, 150, 255, 0.5);
                 border-color: rgba(100, 150, 255, 0.7);
             }
-            
+
             QPushButton:pressed {
                 background: rgba(100, 150, 255, 0.6);
                 border-color: rgba(100, 150, 255, 0.8);

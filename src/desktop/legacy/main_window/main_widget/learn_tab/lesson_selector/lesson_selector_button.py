@@ -12,7 +12,7 @@ class LessonSelectorButton(QPushButton):
                 border: 2px solid black;
             }
             QPushButton:hover {
-                background-color: lightgray; 
+                background-color: lightgray;
             }
         """
         self.setStyleSheet(self._default_stylesheet)

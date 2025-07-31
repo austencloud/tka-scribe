@@ -1,10 +1,10 @@
 # Pre-commit configuration using Ruff (replaces Black + isort + Pylint)
 repos:
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.8.4
+    rev: v0.12.7
     hooks:
       # Run the linter
-      - id: ruff
+      - id: ruff-check
         args: [--fix]
       # Run the formatter
       - id: ruff-format

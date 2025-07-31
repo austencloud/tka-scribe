@@ -219,9 +219,9 @@ await animationSystem.fadeTarget(document.getElementById('myElement'), true);
 
 // Animate property
 await animationSystem.animateProperty(
-    element, 
-    'transform', 
-    'translateX(0px)', 
+    element,
+    'transform',
+    'translateX(0px)',
     'translateX(100px)',
     { duration: 0.5, easing: 'ease-in-out' }
 );
@@ -232,11 +232,11 @@ For React:
 function MyComponent() {
     const elementRef = useRef();
     const animationSystem = useAnimationSystem();
-    
+
     const handleClick = async () => {
         await animationSystem.fadeTarget(elementRef.current, true);
     };
-    
+
     return <div ref={elementRef} onClick={handleClick}>Animated Element</div>;
 }
 """

@@ -122,13 +122,13 @@ class OptionPickerWidget(QWidget):
                 border: 1px solid rgba(255, 255, 255, 0.3);
                 border-radius: 16px;
             }
-            
+
             QLabel#UnifiedTitle {
                 color: black;
                 background: transparent;
                 font-weight: 700;
             }
-            
+
             QLabel#UnifiedSubtitle {
                 color: black;
                 background: transparent;

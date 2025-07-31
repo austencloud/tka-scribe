@@ -151,7 +151,7 @@ class StartPositionOption(QWidget):
                 border: 2px solid rgba(255, 255, 255, 0.3);
                 border-radius: 20px;
             }
-            
+
             QWidget#StartPositionOption:hover {
                 background: qlineargradient(
                     x1:0, y1:0, x2:1, y2:1,

@@ -46,14 +46,14 @@ class RainbowProgressBar(QWidget):
             QProgressBar::chunk {
                 border-radius: 5px;
                 background: qlineargradient(
-                    spread:pad, 
-                    x1:0, y1:0, x2:1, y2:0, 
-                    stop:0 red, 
-                    stop:0.16 orange, 
-                    stop:0.33 yellow, 
-                    stop:0.49 green, 
-                    stop:0.66 blue, 
-                    stop:0.82 indigo, 
+                    spread:pad,
+                    x1:0, y1:0, x2:1, y2:0,
+                    stop:0 red,
+                    stop:0.16 orange,
+                    stop:0.33 yellow,
+                    stop:0.49 green,
+                    stop:0.66 blue,
+                    stop:0.82 indigo,
                     stop:1 violet
                 );
             }

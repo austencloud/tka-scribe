@@ -17,7 +17,7 @@ class BaseFontColorUpdater:
                     color: {self.font_color};
                 }}
                 QCheckBox::indicator {{
-                    background-color: white; 
+                    background-color: white;
                     border: 2px solid #ccc;
                     width: 18px;
                     height: 18px;

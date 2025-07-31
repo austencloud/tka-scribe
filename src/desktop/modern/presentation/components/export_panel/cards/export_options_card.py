@@ -120,7 +120,7 @@ class ExportOptionsCard(QFrame):
                 border-radius: 12px;
                 margin: 5px;
             }
-            
+
             QLabel#subsection_title {
                 color: rgba(255, 255, 255, 0.9);
                 font-size: 14px;
@@ -129,7 +129,7 @@ class ExportOptionsCard(QFrame):
                 background: transparent;
                 border: none;
             }
-            
+
             QCheckBox#export_checkbox {
                 color: rgba(255, 255, 255, 0.9);
                 font-size: 13px;
@@ -138,7 +138,7 @@ class ExportOptionsCard(QFrame):
                 border: none;
                 padding: 4px 0px;
             }
-            
+
             QCheckBox#export_checkbox::indicator {
                 width: 16px;
                 height: 16px;
@@ -146,19 +146,19 @@ class ExportOptionsCard(QFrame):
                 border: 2px solid rgba(255, 255, 255, 0.3);
                 background: rgba(255, 255, 255, 0.1);
             }
-            
+
             QCheckBox#export_checkbox::indicator:hover {
                 border: 2px solid rgba(255, 255, 255, 0.5);
                 background: rgba(255, 255, 255, 0.15);
             }
-            
+
             QCheckBox#export_checkbox::indicator:checked {
                 border: 2px solid rgba(100, 200, 255, 0.8);
                 background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
                     stop:0 rgba(100, 200, 255, 0.6),
                     stop:1 rgba(50, 150, 255, 0.4));
             }
-            
+
             QCheckBox#export_checkbox::indicator:checked:hover {
                 border: 2px solid rgba(120, 220, 255, 0.9);
                 background: qlineargradient(x1:0, y1:0, x2:0, y2:1,

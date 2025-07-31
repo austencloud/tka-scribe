@@ -139,7 +139,7 @@ class TKATestDiscovery:
 
     def _is_valid_test_file(self, file_path: Path) -> bool:
         """Check if file is a valid Python test file."""
-        if not file_path.suffix == ".py":
+        if file_path.suffix != ".py":
             return False
 
         # Skip files in virtual environments, build directories, and other non-test locations

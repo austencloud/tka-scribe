@@ -202,7 +202,7 @@ class StrictRotatedCAPExecutor(CAPExecutor):
                 new_entry[RED_ATTRS][TURNS] = previous_matching_beat[RED_ATTRS][TURNS]
                 new_entry[BEAT] = beat_number
                 blue_turns = new_entry[BLUE_ATTRS][TURNS]
-                if not blue_turns == "fl":
+                if blue_turns != "fl":
                     if float(blue_turns) > 0 and new_entry[BLUE_ATTRS][MOTION_TYPE] in [
                         DASH,
                         STATIC,
@@ -217,7 +217,7 @@ class StrictRotatedCAPExecutor(CAPExecutor):
                     new_entry[BLUE_ATTRS][PROP_ROT_DIR] = NO_ROT
 
                 red_turns = new_entry[RED_ATTRS][TURNS]
-                if not red_turns == "fl":
+                if red_turns != "fl":
                     if float(red_turns) > 0 and new_entry[RED_ATTRS][MOTION_TYPE] in [
                         DASH,
                         STATIC,

@@ -4,7 +4,7 @@
 
 Your VS Code was running out of memory because it was running multiple heavy Python tools simultaneously:
 - **Black** (formatter)
-- **isort** (import organizer) 
+- **isort** (import organizer)
 - **Pylint** (linter)
 - **Pyright** (type checker)
 
@@ -13,7 +13,7 @@ Your VS Code was running out of memory because it was running multiple heavy Pyt
 ## 📁 Files Updated
 
 ✅ **`.vscode/settings.json`** - Performance optimizations + Ruff configuration
-✅ **`pyproject.toml`** - Ruff rules replacing old tool configurations  
+✅ **`pyproject.toml`** - Ruff rules replacing old tool configurations
 ✅ **`requirements.txt`** - Added Ruff, removed old tools
 ✅ **`.pre-commit-config.yaml`** - Updated hooks to use Ruff
 ✅ **`migrate_to_ruff.py`** - Automated migration script
@@ -68,7 +68,7 @@ ruff format .
 
 ### Before (Memory Hogs):
 - **Black**: ~100MB RAM, slow formatting
-- **isort**: ~50MB RAM, slow import sorting  
+- **isort**: ~50MB RAM, slow import sorting
 - **Pylint**: ~200-500MB RAM, very slow analysis
 - **Multiple file watchers**: High CPU usage
 

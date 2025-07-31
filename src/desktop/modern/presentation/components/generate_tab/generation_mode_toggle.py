@@ -77,7 +77,7 @@ class GenerationModeToggle(GenerationControlBase):
                 border-color: rgba(255, 255, 255, 0.3);
                 color: rgba(255, 255, 255, 0.9);
             }
-            
+
             QPushButton:checked {
                 background: rgba(70, 130, 255, 0.7);
                 border-color: rgba(70, 130, 255, 0.8);

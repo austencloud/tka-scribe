@@ -109,34 +109,34 @@ class BeatLayoutTab(QWidget):
                 background: transparent;
                 color: white;
             }
-            
+
             QLabel#section_title {
                 color: white;
                 font-size: 18px;
                 font-weight: bold;
                 margin-bottom: 10px;
             }
-            
+
             QLabel#description {
                 color: rgba(255, 255, 255, 0.8);
                 font-size: 14px;
                 margin-bottom: 20px;
             }
-            
+
             QLabel#subsection_title {
                 color: rgba(255, 255, 255, 0.9);
                 font-size: 16px;
                 font-weight: bold;
                 margin-bottom: 15px;
             }
-            
+
             QLabel#length_label {
                 color: rgba(255, 255, 255, 0.9);
                 font-size: 14px;
                 font-weight: 500;
                 padding: 8px;
             }
-            
+
             QLabel#note {
                 color: rgba(255, 255, 255, 0.7);
                 font-size: 12px;
@@ -147,7 +147,7 @@ class BeatLayoutTab(QWidget):
                 border-radius: 6px;
                 border-left: 3px solid rgba(59, 130, 246, 0.8);
             }
-            
+
             QFrame#settings_section {
                 background: rgba(255, 255, 255, 0.1);
                 border: 2px solid rgba(255, 255, 255, 0.2);
@@ -155,7 +155,7 @@ class BeatLayoutTab(QWidget):
                 padding: 20px;
                 margin: 5px 0;
             }
-            
+
             QSpinBox#layout_spinbox {
                 background: rgba(255, 255, 255, 0.1);
                 border: 2px solid rgba(255, 255, 255, 0.3);
@@ -165,17 +165,17 @@ class BeatLayoutTab(QWidget):
                 font-size: 14px;
                 min-width: 60px;
             }
-            
+
             QSpinBox#layout_spinbox:focus {
                 border-color: rgba(59, 130, 246, 0.8);
             }
-            
+
             QSpinBox#layout_spinbox::up-button, QSpinBox#layout_spinbox::down-button {
                 background: rgba(255, 255, 255, 0.2);
                 border: none;
                 width: 20px;
             }
-            
+
             QSpinBox#layout_spinbox::up-button:hover, QSpinBox#layout_spinbox::down-button:hover {
                 background: rgba(255, 255, 255, 0.3);
             }

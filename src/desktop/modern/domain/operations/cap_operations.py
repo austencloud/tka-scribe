@@ -402,7 +402,7 @@ from .cap_operations import (
 
 __all__ = [
     "CAPType",
-    "CAPOperation", 
+    "CAPOperation",
     "StrictRotatedCAP",
     "StrictMirroredCAP",
     "CAPExecutorFactory",

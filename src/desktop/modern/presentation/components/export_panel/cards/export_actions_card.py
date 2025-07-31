@@ -73,7 +73,7 @@ class ExportActionsCard(QFrame):
                 border-radius: 12px;
                 margin: 5px;
             }
-            
+
             QLabel#subsection_title {
                 color: rgba(255, 255, 255, 0.9);
                 font-size: 14px;
@@ -82,7 +82,7 @@ class ExportActionsCard(QFrame):
                 background: transparent;
                 border: none;
             }
-            
+
             QPushButton#action_button {
                 background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
                     stop:0 rgba(100, 200, 255, 0.8),
@@ -95,26 +95,26 @@ class ExportActionsCard(QFrame):
                 padding: 12px 20px;
                 margin: 3px;
             }
-            
+
             QPushButton#action_button:hover {
                 background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
                     stop:0 rgba(120, 220, 255, 0.9),
                     stop:1 rgba(70, 170, 255, 0.7));
                 border: 1px solid rgba(255, 255, 255, 0.3);
             }
-            
+
             QPushButton#action_button:pressed {
                 background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
                     stop:0 rgba(80, 180, 255, 0.7),
                     stop:1 rgba(30, 130, 255, 0.5));
             }
-            
+
             QPushButton#action_button:disabled {
                 background: rgba(100, 100, 100, 0.3);
                 color: rgba(255, 255, 255, 0.5);
                 border: 1px solid rgba(255, 255, 255, 0.1);
             }
-            
+
             QPushButton#secondary_button {
                 background: rgba(255, 255, 255, 0.1);
                 border: 1px solid rgba(255, 255, 255, 0.2);
@@ -125,13 +125,13 @@ class ExportActionsCard(QFrame):
                 padding: 10px 20px;
                 margin: 3px;
             }
-            
+
             QPushButton#secondary_button:hover {
                 background: rgba(255, 255, 255, 0.15);
                 border: 1px solid rgba(255, 255, 255, 0.3);
                 color: white;
             }
-            
+
             QPushButton#secondary_button:pressed {
                 background: rgba(255, 255, 255, 0.08);
             }

@@ -286,13 +286,13 @@ class FileSystemImageLoader(IThumbnailImageLoader):
         """Create simple placeholder image data."""
         try:
             # Create minimal SVG placeholder
-            svg_content = f'''
+            svg_content = f"""
             <svg width="{size.width}" height="{size.height}" xmlns="http://www.w3.org/2000/svg">
                 <rect width="100%" height="100%" fill="#f0f0f0" stroke="#ccc"/>
-                <text x="50%" y="50%" text-anchor="middle" dy=".3em" 
+                <text x="50%" y="50%" text-anchor="middle" dy=".3em"
                       font-family="Arial" font-size="12" fill="#666">{text}</text>
             </svg>
-            '''
+            """
 
             return ImageData(
                 width=size.width,

@@ -171,17 +171,17 @@ class GlassmorphismStyleGenerator:
             {" ".join(css_properties)}
             margin: {GlassmorphismEffects.MARGIN_SMALL};
         }}
-        
+
         QPushButton:hover {{
             background: {hover_bg};
             border: 1px solid {hover_border};
             color: {GlassmorphismColors.TEXT_PRIMARY};
         }}
-        
+
         QPushButton:pressed {{
             background: {GlassmorphismColors.GLASS_LIGHTER};
         }}
-        
+
         QPushButton:disabled {{
             background: {GlassmorphismColors.GLASS_BASE};
             border: 1px solid {GlassmorphismColors.BORDER_SUBTLE};
@@ -229,25 +229,25 @@ class GlassmorphismStyleGenerator:
             min-height: 48px;
             max-height: 48px;
         }}
-        
+
         QPushButton:hover {{
             background: {GlassmorphismColors.GLASS_LIGHT};
             border: 1px solid {GlassmorphismColors.BORDER_STRONG};
             color: {GlassmorphismColors.TEXT_PRIMARY};
         }}
-        
+
         QPushButton:checked {{
             background: {active_bg};
             border: 1px solid {active_border};
             color: {GlassmorphismColors.TEXT_PRIMARY};
             font-weight: 600;
         }}
-        
+
         QPushButton:checked:hover {{
             background: {active_hover_bg};
             border: 1px solid {active_hover_border};
         }}
-        
+
         QPushButton:pressed {{
             background: {GlassmorphismColors.GLASS_LIGHTER};
         }}

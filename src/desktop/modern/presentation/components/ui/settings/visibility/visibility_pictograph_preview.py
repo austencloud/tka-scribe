@@ -86,7 +86,7 @@ class VisibilityPictographPreview(QWidget):
                 background: rgba(255, 255, 255, 0.1);
                 color: white;
             }
-            
+
             QLabel#preview_title {
                 background: transparent;
                 border: none;
@@ -94,7 +94,7 @@ class VisibilityPictographPreview(QWidget):
                 font-weight: bold;
                 margin-bottom: 5px;
             }
-            
+
             QLabel#preview_info {
                 background: transparent;
                 border: none;
@@ -103,7 +103,7 @@ class VisibilityPictographPreview(QWidget):
                 font-style: italic;
                 margin-top: 5px;
             }
-            
+
             QGraphicsView {
                 background: rgba(0, 0, 0, 0.3);
                 border-radius: 8px;

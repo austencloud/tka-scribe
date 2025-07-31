@@ -263,7 +263,7 @@ class AdjustmentPanel(QWidget):
                 border: 4px solid {primary_color};
                 border-radius: 8px;
             }}
-            
+
             QLabel {{
                 color: {primary_color};
                 font-weight: bold;

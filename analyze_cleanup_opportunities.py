@@ -137,7 +137,7 @@ def cleanup_files(files_to_delete):
     """Delete specified files."""
     deleted = 0
     errors = 0
-    
+
     for file_path in files_to_delete:
         try:
             if os.path.exists(file_path):
@@ -149,7 +149,7 @@ def cleanup_files(files_to_delete):
         except Exception as e:
             print(f"❌ Error deleting {os.path.basename(file_path)}: {e}")
             errors += 1
-    
+
     print(f"\\n📊 Cleanup completed: {deleted} deleted, {errors} errors")
 
 if __name__ == "__main__":
@@ -161,10 +161,10 @@ if __name__ == "__main__":
         script_content += f'        "{file_path}",\n'
 
     script_content += """    ]
-    
+
     print("🗑️  Cleaning up temporary verification files...")
     cleanup_files(temporary_files)
-    
+
     # MEDIUM PRIORITY: Redundant services (evaluate first)
     print("\\n⚠️  Manual evaluation needed for redundant services")
     print("   Check if these provide value over existing services:")
