@@ -147,5 +147,73 @@
   // === TYPESCRIPT PERFORMANCE (for web components) ===
   "typescript.preferences.includePackageJsonAutoImports": "off",
   "typescript.suggest.autoImports": false,
-  "typescript.disableAutomaticTypeAcquisition": true
+  "typescript.disableAutomaticTypeAcquisition": true,
+
+  // === ADDITIONAL PERFORMANCE OPTIMIZATIONS ===
+  // Reduce VS Code's own resource usage
+  "workbench.enableExperiments": false,
+  "workbench.settings.enableNaturalLanguageSearch": false,
+  "extensions.autoCheckUpdates": false,
+  "extensions.autoUpdate": false,
+  "update.enableWindowsBackgroundUpdates": false,
+  "telemetry.telemetryLevel": "off",
+
+  // Optimize file operations
+  "files.hotExit": "onExitAndWindowClose",
+  "files.enableTrash": false,
+  "files.simpleDialog.enable": true,
+  "files.maxMemoryForLargeFilesMB": 4096,
+
+  // Reduce editor overhead
+  "editor.hover.delay": 1000,
+  "editor.quickSuggestions": {
+    "other": false,
+    "comments": false,
+    "strings": false
+  },
+  "editor.suggestOnTriggerCharacters": false,
+  "editor.acceptSuggestionOnEnter": "off",
+  "editor.wordBasedSuggestions": "off",
+  "editor.parameterHints.enabled": false,
+  "editor.renderWhitespace": "none",
+  "editor.renderControlCharacters": false,
+  "editor.minimap.enabled": false,
+  "editor.codeLens": false,
+  "editor.bracketPairColorization.enabled": true,
+  "editor.guides.bracketPairs": false,
+
+  // Disable heavy IntelliSense features
+  "editor.inlineSuggest.enabled": false,
+  "editor.unicodeHighlight.ambiguousCharacters": false,
+  "editor.unicodeHighlight.invisibleCharacters": false,
+
+  // Window performance
+  "window.titleBarStyle": "custom",
+  "window.experimentalControlOverlay": false,
+
+  // Git performance improvements
+  "git.decorations.enabled": false,
+  "git.enableCommitSigning": false,
+  "scm.diffDecorations": "none",
+
+  // Disable resource-heavy features
+  "problems.decorations.enabled": false,
+  "outline.problems.enabled": false,
+  "breadcrumbs.enabled": false,
+
+  // Reduce Git notifications
+  "git.showProgress": false,
+  "git.showActionButton": {
+    "commit": false,
+    "publish": false,
+    "sync": false
+  },
+  "git.verboseCommit": false,
+
+  // Fix pre-commit popup issues
+  "git.allowNoVerifyCommit": true,
+  "git.alwaysSignOff": false,
+  "git.confirmSync": false,
+  "git.showCommitInput": true,
+  "git.showInlineOpenFileAction": false
 }
