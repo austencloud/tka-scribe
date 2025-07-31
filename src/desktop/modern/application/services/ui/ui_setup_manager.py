@@ -124,7 +124,9 @@ class UISetupManager(IUISetupManager):
             layout.setSpacing(0)
 
             # Create menu bar
-            size_provider = lambda: main_window.size()
+            def size_provider():
+                return main_window.size()
+
             self.menu_bar = MenuBarWidget(
                 parent=central_widget, size_provider=size_provider
             )

@@ -5,11 +5,11 @@ Demonstrates how the thumbnail factory service can be refactored to be
 framework-agnostic while maintaining compatibility with existing QT code.
 """
 
+import logging
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-import logging
 from pathlib import Path
-from typing import Optional, Protocol
+from typing import Protocol
 
 # Import framework-agnostic types
 from shared.application.services.core.types import (
@@ -34,8 +34,8 @@ class ThumbnailSpec:
     sequence_name: str
     beat_count: int
     thumbnail_size: Size
-    word: Optional[str] = None
-    thumbnail_paths: Optional[list[str]] = None
+    word: str | None = None
+    thumbnail_paths: list[str] | None = None
     metadata: dict = None
 
 
@@ -45,9 +45,9 @@ class ThumbnailData:
 
     thumbnail_id: str
     spec: ThumbnailSpec
-    image_data: Optional[ImageData] = None
-    placeholder_text: Optional[str] = None
-    error_message: Optional[str] = None
+    image_data: ImageData | None = None
+    placeholder_text: str | None = None
+    error_message: str | None = None
 
     @property
     def has_image(self) -> bool:
@@ -61,7 +61,7 @@ class ThumbnailData:
 class IThumbnailImageLoader(Protocol):
     """Protocol for loading thumbnail images."""
 
-    def load_image(self, image_path: str, target_size: Size) -> Optional[ImageData]:
+    def load_image(self, image_path: str, target_size: Size) -> ImageData | None:
         """Load and resize image from path."""
         ...
 
@@ -75,13 +75,13 @@ class IThumbnailFactory(ABC):
 
     @abstractmethod
     def create_thumbnail_data(
-        self, sequence_spec: ThumbnailSpec, options: Optional[dict] = None
+        self, sequence_spec: ThumbnailSpec, options: dict | None = None
     ) -> ThumbnailData:
         """Create thumbnail data (framework-agnostic)."""
 
     @abstractmethod
     def batch_create_thumbnails(
-        self, sequence_specs: list[ThumbnailSpec], options: Optional[dict] = None
+        self, sequence_specs: list[ThumbnailSpec], options: dict | None = None
     ) -> list[ThumbnailData]:
         """Create multiple thumbnails efficiently."""
 
@@ -106,7 +106,7 @@ class CoreThumbnailService(IThumbnailFactory):
         logger.info("Core thumbnail service initialized")
 
     def create_thumbnail_data(
-        self, sequence_spec: ThumbnailSpec, options: Optional[dict] = None
+        self, sequence_spec: ThumbnailSpec, options: dict | None = None
     ) -> ThumbnailData:
         """
         Create thumbnail data from sequence specification.
@@ -156,7 +156,7 @@ class CoreThumbnailService(IThumbnailFactory):
             )
 
     def batch_create_thumbnails(
-        self, sequence_specs: list[ThumbnailSpec], options: Optional[dict] = None
+        self, sequence_specs: list[ThumbnailSpec], options: dict | None = None
     ) -> list[ThumbnailData]:
         """Create multiple thumbnails efficiently."""
         try:
@@ -181,9 +181,7 @@ class CoreThumbnailService(IThumbnailFactory):
                 for spec in sequence_specs
             ]
 
-    def _load_sequence_thumbnail_image(
-        self, spec: ThumbnailSpec
-    ) -> Optional[ImageData]:
+    def _load_sequence_thumbnail_image(self, spec: ThumbnailSpec) -> ImageData | None:
         """Load thumbnail image for sequence."""
         if not spec.thumbnail_paths:
             return None
@@ -248,7 +246,7 @@ class FileSystemImageLoader(IThumbnailImageLoader):
         """Initialize with asset base path."""
         self.asset_base_path = Path(asset_base_path)
 
-    def load_image(self, image_path: str, target_size: Size) -> Optional[ImageData]:
+    def load_image(self, image_path: str, target_size: Size) -> ImageData | None:
         """Load image from file system."""
         try:
             image_path = Path(image_path)
@@ -317,27 +315,6 @@ class FileSystemImageLoader(IThumbnailImageLoader):
 # ============================================================================
 # FACTORY FUNCTION
 # ============================================================================
-
-
-def create_thumbnail_service(
-    image_loader: Optional[IThumbnailImageLoader] = None,
-    asset_base_path: str = "assets",
-) -> CoreThumbnailService:
-    """
-    Factory function to create thumbnail service.
-
-    Args:
-        image_loader: Image loader implementation (creates real loader if None)
-        asset_base_path: Base path for asset loading
-
-    Returns:
-        Configured thumbnail service
-    """
-    if image_loader is None:
-        image_loader = FileSystemImageLoader(asset_base_path)
-        logger.info("Created filesystem image loader for thumbnail service")
-
-    return CoreThumbnailService(image_loader)
 
 
 # ============================================================================

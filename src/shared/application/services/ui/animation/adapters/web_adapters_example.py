@@ -182,32 +182,6 @@ class ReactTargetAdapter(ITargetAdapter):
             return False
 
 
-def create_web_animation_components():
-    """Factory for web animation components."""
-    target_adapter = WebTargetAdapter()
-    renderer = WebAnimationRenderer(target_adapter)
-    scheduler = WebAnimationScheduler()
-
-    return {
-        "target_adapter": target_adapter,
-        "renderer": renderer,
-        "scheduler": scheduler,
-    }
-
-
-def create_react_animation_components():
-    """Factory for React animation components."""
-    target_adapter = ReactTargetAdapter()
-    renderer = WebAnimationRenderer(target_adapter)  # Can reuse web renderer
-    scheduler = WebAnimationScheduler()  # Can reuse web scheduler
-
-    return {
-        "target_adapter": target_adapter,
-        "renderer": renderer,
-        "scheduler": scheduler,
-    }
-
-
 """
 Usage example for web:
 

@@ -9,11 +9,11 @@ framework-agnostic implementation that follows the same pattern as your
 existing core services.
 """
 
+import logging
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from enum import Enum
-import logging
-from typing import Any, Optional, Protocol
+from typing import Any, Protocol
 
 from desktop.modern.core.types import Point, Size
 from desktop.modern.domain.models import MotionData, PictographData
@@ -39,13 +39,13 @@ class RenderCommand:
     command_type: RenderCommandType
     position: Point
     size: Size
-    svg_content: Optional[str] = None
-    svg_path: Optional[str] = None
-    color: Optional[str] = None
+    svg_content: str | None = None
+    svg_path: str | None = None
+    color: str | None = None
     rotation: float = 0.0
     opacity: float = 1.0
     z_index: int = 0
-    metadata: Optional[dict[str, Any]] = None
+    metadata: dict[str, Any] | None = None
 
 
 @dataclass
@@ -75,21 +75,19 @@ class IAssetProvider(ABC):
     """Abstract interface for asset providers."""
 
     @abstractmethod
-    def get_grid_svg(self, grid_mode: str) -> Optional[str]:
+    def get_grid_svg(self, grid_mode: str) -> str | None:
         """Get grid SVG content."""
 
     @abstractmethod
-    def get_prop_svg(self, prop_type: str, color: str) -> Optional[str]:
+    def get_prop_svg(self, prop_type: str, color: str) -> str | None:
         """Get prop SVG content with color applied."""
 
     @abstractmethod
-    def get_arrow_svg(self, arrow_data: dict[str, Any]) -> Optional[str]:
+    def get_arrow_svg(self, arrow_data: dict[str, Any]) -> str | None:
         """Get arrow SVG content."""
 
     @abstractmethod
-    def get_glyph_svg(
-        self, glyph_type: str, glyph_data: dict[str, Any]
-    ) -> Optional[str]:
+    def get_glyph_svg(self, glyph_type: str, glyph_data: dict[str, Any]) -> str | None:
         """Get glyph SVG content."""
 
 
@@ -165,7 +163,7 @@ class CorePictographRenderingService:
 
     def _generate_grid_command(
         self, context: RenderContext, command_id: str
-    ) -> Optional[RenderCommand]:
+    ) -> RenderCommand | None:
         """Generate grid render command."""
         try:
             svg_content = self._asset_provider.get_grid_svg(context.grid_mode)
@@ -214,7 +212,7 @@ class CorePictographRenderingService:
         color: str,
         context: RenderContext,
         command_id: str,
-    ) -> Optional[RenderCommand]:
+    ) -> RenderCommand | None:
         """Generate render command for a single prop."""
         try:
             # Get prop type from motion data or default to staff
@@ -282,7 +280,7 @@ class CorePictographRenderingService:
         color: str,
         context: RenderContext,
         command_id: str,
-    ) -> Optional[RenderCommand]:
+    ) -> RenderCommand | None:
         """Generate render command for a single arrow."""
         try:
             # Create arrow data for asset provider
@@ -348,7 +346,7 @@ class CorePictographRenderingService:
 
     def _generate_letter_glyph_command(
         self, letter: str, context: RenderContext, command_id: str
-    ) -> Optional[RenderCommand]:
+    ) -> RenderCommand | None:
         """Generate render command for letter glyph."""
         try:
             glyph_data = {"letter": letter, "type": "letter"}
@@ -401,11 +399,3 @@ class CorePictographRenderingService:
         center_x = context.target_size.width / 2
         center_y = context.target_size.height / 2
         return Point(center_x, center_y)
-
-
-# Factory function for easy creation
-def create_core_pictograph_rendering_service(
-    asset_provider: IAssetProvider,
-) -> CorePictographRenderingService:
-    """Create core pictograph rendering service with asset provider."""
-    return CorePictographRenderingService(asset_provider)

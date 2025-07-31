@@ -9,7 +9,6 @@ Just simple state management.
 """
 
 import logging
-from typing import Optional
 
 logger = logging.getLogger(__name__)
 
@@ -251,7 +250,7 @@ class PictographVisibilityService:
 
 
 # Global instance for backward compatibility
-_global_visibility_service: Optional[PictographVisibilityService] = None
+_global_visibility_service: PictographVisibilityService | None = None
 
 
 def get_visibility_service() -> PictographVisibilityService:
@@ -277,9 +276,3 @@ def get_visibility_service() -> PictographVisibilityService:
         _global_visibility_service = PictographVisibilityService(base_service)
 
     return _global_visibility_service
-
-
-def reset_visibility_service() -> None:
-    """Reset the global visibility service (mainly for testing)."""
-    global _global_visibility_service
-    _global_visibility_service = None

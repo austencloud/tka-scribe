@@ -6,9 +6,9 @@ instead of directly manipulating Qt objects. It can be used by both desktop
 and web services.
 """
 
-from abc import ABC, abstractmethod
 import logging
-from typing import Any, Optional
+from abc import ABC, abstractmethod
+from typing import Any
 
 from .pictograph_renderer import CorePictographRenderer, IPictographAssetProvider
 from .types import Point, RenderCommand, Size
@@ -24,7 +24,7 @@ class IPictographOrchestrationService(ABC):
         self,
         pictograph_data: dict[str, Any],
         target_size: Size,
-        options: Optional[dict] = None,
+        options: dict | None = None,
     ) -> list[RenderCommand]:
         """Create render commands for complete pictograph."""
 
@@ -40,7 +40,7 @@ class IPictographOrchestrationService(ABC):
         color: str,
         motion_data: dict[str, Any],
         position: Point,
-        pictograph_data: Optional[dict] = None,
+        pictograph_data: dict | None = None,
     ) -> RenderCommand:
         """Create render command for prop."""
 
@@ -68,7 +68,7 @@ class CorePictographOrchestrationService(IPictographOrchestrationService):
         self,
         pictograph_data: dict[str, Any],
         target_size: Size,
-        options: Optional[dict] = None,
+        options: dict | None = None,
     ) -> list[RenderCommand]:
         """
         Create render commands for complete pictograph.
@@ -141,7 +141,7 @@ class CorePictographOrchestrationService(IPictographOrchestrationService):
         color: str,
         motion_data: dict[str, Any],
         position: Point,
-        pictograph_data: Optional[dict] = None,
+        pictograph_data: dict | None = None,
     ) -> RenderCommand:
         """Create render command for prop."""
         prop_type = motion_data.get("prop_type", "staff")
@@ -170,11 +170,3 @@ class CorePictographOrchestrationService(IPictographOrchestrationService):
     def reset_performance_stats(self):
         """Reset performance statistics."""
         self._performance_stats = {"commands_created": 0, "errors": 0}
-
-
-# Factory function
-def create_pictograph_orchestration_service(
-    asset_provider: IPictographAssetProvider,
-) -> CorePictographOrchestrationService:
-    """Create pictograph orchestration service."""
-    return CorePictographOrchestrationService(asset_provider)

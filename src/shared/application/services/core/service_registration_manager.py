@@ -16,9 +16,9 @@ This file is being refactored into specialized registrars following microservice
 The goal is to split this large manager into focused, domain-specific registrars.
 """
 
-from abc import ABC, abstractmethod
 import logging
-from typing import TYPE_CHECKING, Optional
+from abc import ABC, abstractmethod
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from desktop.modern.core.dependency_injection.di_container import DIContainer
@@ -67,7 +67,7 @@ class BaseServiceRegistrar(IServiceRegistrar):
     - Standardized error handling
     """
 
-    def __init__(self, progress_callback: Optional[callable] = None):
+    def __init__(self, progress_callback=None):
         """Initialize with optional progress callback."""
         self.progress_callback = progress_callback
         self._service_availability: dict[str, bool] = {}
@@ -132,7 +132,7 @@ class ServiceRegistrationCoordinator:
     maintainable architecture following single responsibility principle.
     """
 
-    def __init__(self, progress_callback: Optional[callable] = None):
+    def __init__(self, progress_callback=None):
         """Initialize coordinator with optional progress callback."""
         self.progress_callback = progress_callback
         self._registrars: list[IServiceRegistrar] = []
@@ -292,7 +292,7 @@ class ServiceRegistrationManager(IServiceRegistrationManager):
     This wrapper will be deprecated once all consumers are migrated.
     """
 
-    def __init__(self, progress_callback: Optional[callable] = None):
+    def __init__(self, progress_callback=None):
         """Initialize with optional progress callback."""
         self.progress_callback = progress_callback
 
@@ -396,25 +396,3 @@ class ServiceRegistrationManager(IServiceRegistrationManager):
         service_key = service_name.lower().replace(" ", "_")
         if service_key in self._service_availability:
             self._service_availability[service_key] = False
-
-    def get_service_availability_summary(self) -> str:
-        """
-        Get a human-readable summary of service availability.
-
-        Useful for debugging and monitoring which optional services are available.
-        """
-        available = [
-            name for name, status in self._service_availability.items() if status
-        ]
-        missing = [
-            name for name, status in self._service_availability.items() if not status
-        ]
-
-        summary = "Service Availability Summary:\n"
-        summary += f"  Available ({len(available)}): {', '.join(available) if available else 'None'}\n"
-        summary += (
-            f"  Missing ({len(missing)}): {', '.join(missing) if missing else 'None'}\n"
-        )
-        summary += f"  Total optional services: {len(self._service_availability)}"
-
-        return summary

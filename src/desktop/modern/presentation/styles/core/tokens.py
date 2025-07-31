@@ -94,8 +94,9 @@ class DesignTokens:
             }
 
         if self.transitions is None:
+            # Note: CSS transitions not supported in PyQt6 - use QPropertyAnimation instead
             self.transitions = {
-                "fast": GlassmorphismEffects.TRANSITION_FAST,
-                "normal": GlassmorphismEffects.TRANSITION_NORMAL,
-                "slow": GlassmorphismEffects.TRANSITION_SLOW,
+                "fast": "0.15s ease",
+                "normal": "0.2s ease",
+                "slow": "0.3s ease",
             }

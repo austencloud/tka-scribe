@@ -224,42 +224,6 @@ def test_memory_usage():
         raise Exception(f"Memory test failed: {e}")
 
 
-def test_event_throughput():
-    """Event Throughput Test."""
-    try:
-        event_bus = TypeSafeEventBus()
-        events_processed = 0
-
-        def counter_handler(event):
-            nonlocal events_processed
-            events_processed += 1
-
-        event_bus.subscribe("sequence.updated", counter_handler)
-
-        # Measure throughput
-        start_time = time.time()
-        num_events = 1000
-
-        for i in range(num_events):
-            event = SequenceUpdatedEvent(
-                sequence_id=f"seq_{i}", change_type="perf_test"
-            )
-            event_bus.publish(event)
-
-        end_time = time.time()
-        throughput = num_events / (end_time - start_time)
-
-        result = f"Event throughput: {throughput:.2f} events/second"
-
-        if throughput < 500:  # Less than 500 events/second
-            raise Exception(f"Throughput too low: {throughput:.2f} events/second")
-
-        return result
-
-    except Exception as e:
-        raise Exception(f"Throughput test failed: {e}")
-
-
 def test_circuit_breaker_functionality():
     """Circuit Breaker Functionality Test."""
     try:

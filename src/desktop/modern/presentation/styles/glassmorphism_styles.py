@@ -6,8 +6,6 @@ across the application. This system maintains the app's modern glass aesthetic
 with subtle transparency, blur effects, and elegant interactions.
 """
 
-from typing import Optional
-
 
 class GlassmorphismColors:
     """Central color palette for glassmorphism effects."""
@@ -68,11 +66,6 @@ class GlassmorphismEffects:
     SHADOW_ACCENT = f"0 4px 15px {GlassmorphismColors.SHADOW_ACCENT}"
     SHADOW_ACCENT_HOVER = f"0 6px 20px {GlassmorphismColors.SHADOW_ACCENT_HOVER}"
 
-    # Transitions
-    TRANSITION_FAST = "all 0.15s ease"
-    TRANSITION_NORMAL = "all 0.2s ease"
-    TRANSITION_SLOW = "all 0.3s ease"
-
 
 class GlassmorphismStyleGenerator:
     """Utility class for generating consistent glassmorphism styles."""
@@ -81,7 +74,7 @@ class GlassmorphismStyleGenerator:
     def create_button_style(
         variant: str = "default",
         size: str = "medium",
-        custom_properties: Optional[dict[str, str]] = None,
+        custom_properties: dict[str, str] | None = None,
     ) -> str:
         """
         Generate glassmorphism button styling.
@@ -99,7 +92,7 @@ class GlassmorphismStyleGenerator:
             "border-radius": GlassmorphismEffects.RADIUS_MEDIUM,
             "font-weight": "500",
             "text-align": "center",
-            "transition": GlassmorphismEffects.TRANSITION_NORMAL,
+            # Note: PyQt6 doesn't support CSS transitions - use QPropertyAnimation instead
         }
 
         # Size-specific properties
@@ -131,24 +124,18 @@ class GlassmorphismStyleGenerator:
             hover_bg = GlassmorphismColors.ACCENT_HOVER
             hover_border = GlassmorphismColors.ACCENT_BORDER_HOVER
             text_color = GlassmorphismColors.TEXT_PRIMARY
-            shadow = GlassmorphismEffects.SHADOW_ACCENT
-            hover_shadow = GlassmorphismEffects.SHADOW_ACCENT_HOVER
         elif variant == "subtle":
             normal_bg = GlassmorphismColors.GLASS_BASE
             normal_border = GlassmorphismColors.BORDER_SUBTLE
             hover_bg = GlassmorphismColors.GLASS_LIGHT
             hover_border = GlassmorphismColors.BORDER_NORMAL
             text_color = GlassmorphismColors.TEXT_MUTED
-            shadow = GlassmorphismEffects.SHADOW_SUBTLE
-            hover_shadow = GlassmorphismEffects.SHADOW_NORMAL
         else:  # default
             normal_bg = GlassmorphismColors.GLASS_BASE
             normal_border = GlassmorphismColors.BORDER_NORMAL
             hover_bg = GlassmorphismColors.GLASS_LIGHT
             hover_border = GlassmorphismColors.BORDER_STRONG
             text_color = GlassmorphismColors.TEXT_SECONDARY
-            shadow = GlassmorphismEffects.SHADOW_SUBTLE
-            hover_shadow = GlassmorphismEffects.SHADOW_NORMAL
 
         # Merge all properties
         properties = {
@@ -205,15 +192,11 @@ class GlassmorphismStyleGenerator:
             active_border = GlassmorphismColors.ACCENT_BORDER
             active_hover_bg = GlassmorphismColors.ACCENT_HOVER
             active_hover_border = GlassmorphismColors.ACCENT_BORDER_HOVER
-            active_shadow = GlassmorphismEffects.SHADOW_ACCENT
-            active_hover_shadow = GlassmorphismEffects.SHADOW_ACCENT_HOVER
         else:
             active_bg = GlassmorphismColors.GLASS_LIGHT
             active_border = GlassmorphismColors.BORDER_STRONG
             active_hover_bg = GlassmorphismColors.GLASS_LIGHTER
             active_hover_border = GlassmorphismColors.BORDER_STRONG
-            active_shadow = GlassmorphismEffects.SHADOW_NORMAL
-            active_hover_shadow = GlassmorphismEffects.SHADOW_NORMAL
 
         return f"""
         QPushButton {{
@@ -257,7 +240,7 @@ class GlassmorphismStyleGenerator:
     def create_container_style(
         variant: str = "default",
         blur_effect: bool = True,
-        custom_properties: Optional[dict[str, str]] = None,
+        custom_properties: dict[str, str] | None = None,
     ) -> str:
         """
         Generate glassmorphism container styling.

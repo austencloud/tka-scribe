@@ -7,7 +7,6 @@ visibility settings for elemental, VTG, TKA, and position glyphs.
 """
 
 from dataclasses import dataclass
-from typing import Optional
 
 from desktop.modern.domain.models.enums import LetterType
 from desktop.modern.domain.models.pictograph_utils import (
@@ -50,7 +49,7 @@ class PictographVisibilityState:
 
     @classmethod
     def from_letter_type(
-        cls, letter_type: Optional[LetterType]
+        cls, letter_type: LetterType | None
     ) -> "PictographVisibilityState":
         """
         Create visibility state based on letter type defaults.
@@ -194,7 +193,7 @@ class PictographVisibilityManager:
         return self._global_visibility.get(glyph_type, True)
 
     def initialize_pictograph_visibility(
-        self, pictograph_id: str, letter_type: Optional[LetterType]
+        self, pictograph_id: str, letter_type: LetterType | None
     ) -> None:
         """
         Initialize visibility state for a pictograph based on its letter type.
@@ -230,7 +229,7 @@ class PictographVisibilityManager:
 
 
 # Global instance for application-wide use
-_visibility_manager: Optional[PictographVisibilityManager] = None
+_visibility_manager: PictographVisibilityManager | None = None
 
 
 def get_pictograph_visibility_manager() -> PictographVisibilityManager:
@@ -244,9 +243,3 @@ def get_pictograph_visibility_manager() -> PictographVisibilityManager:
     if _visibility_manager is None:
         _visibility_manager = PictographVisibilityManager()
     return _visibility_manager
-
-
-def reset_pictograph_visibility_manager() -> None:
-    """Reset the global pictograph visibility manager instance."""
-    global _visibility_manager
-    _visibility_manager = None
