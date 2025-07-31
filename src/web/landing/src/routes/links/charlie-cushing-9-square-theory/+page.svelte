@@ -1,13 +1,13 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  
+
   interface RelatedResource {
     name: string;
     url: string;
     description: string;
     type: 'internal' | 'external';
   }
-  
+
   const relatedResources: RelatedResource[] = [
     {
       name: "Vulcan Tech Gospel (VTG)",
@@ -40,9 +40,9 @@
       type: 'external'
     }
   ];
-  
+
   let currentSection = '';
-  
+
   onMount(() => {
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
@@ -51,11 +51,11 @@
         }
       });
     }, { threshold: 0.6 });
-    
+
     document.querySelectorAll('section[id]').forEach((section) => {
       observer.observe(section);
     });
-    
+
     return () => observer.disconnect();
   });
 </script>
@@ -64,18 +64,18 @@
   <title>Charlie Cushing's 9 Square Theory - Complete Guide | The Kinetic Alphabet</title>
   <meta name="description" content="Master Charlie Cushing's revolutionary 9 Square Theory for poi spinning. Learn advanced unit circle connections, spatial relationships, and technical poi applications from the former helicopter pilot's systematic approach." />
   <meta name="keywords" content="9 square theory, Charlie Cushing, poi theory, unit circles, technical poi, helicopter pilot, LanternSmith, advanced poi, spatial relationships" />
-  
+
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="article" />
   <meta property="og:title" content="Charlie Cushing's 9 Square Theory - Complete Guide" />
   <meta property="og:description" content="Master the advanced framework for connecting unit circles in technical poi spinning with Charlie Cushing's revolutionary 9 Square Theory." />
   <meta property="og:url" content="https://thekineticalphabet.com/links/charlie-cushing-9-square-theory" />
-  
+
   <!-- Twitter -->
   <meta property="twitter:card" content="summary_large_image" />
   <meta property="twitter:title" content="Charlie Cushing's 9 Square Theory - Complete Guide" />
   <meta property="twitter:description" content="Master the advanced framework for connecting unit circles in technical poi spinning with Charlie Cushing's revolutionary 9 Square Theory." />
-  
+
   <!-- Schema.org markup -->
   <script type="application/ld+json">
   {
@@ -147,24 +147,24 @@
     <section id="overview" class="content-section">
       <h2>Overview</h2>
       <p>
-        Charlie Cushing's 9 Square Theory represents one of the most sophisticated and mathematically rigorous 
-        approaches to technical poi spinning ever developed. Building upon the foundational concepts of Vulcan 
-        Tech Gospel (VTG), this advanced framework provides a systematic method for understanding and executing 
+        Charlie Cushing's 9 Square Theory represents one of the most sophisticated and mathematically rigorous
+        approaches to technical poi spinning ever developed. Building upon the foundational concepts of Vulcan
+        Tech Gospel (VTG), this advanced framework provides a systematic method for understanding and executing
         complex transitions between unit circles in three-dimensional space.
       </p>
-      
+
       <p>
-        The theory emerged from Cushing's unique background as a former helicopter pilot, bringing principles 
-        of spatial navigation and three-dimensional thinking to poi spinning. His analytical approach to movement 
-        has created a framework that allows advanced spinners to navigate complex technical sequences with 
+        The theory emerged from Cushing's unique background as a former helicopter pilot, bringing principles
+        of spatial navigation and three-dimensional thinking to poi spinning. His analytical approach to movement
+        has created a framework that allows advanced spinners to navigate complex technical sequences with
         precision and intentionality.
       </p>
 
       <div class="highlight-box">
         <h3>Why 9 Square Theory Matters</h3>
         <p>
-          9 Square Theory provides the missing link between basic poi movements and truly advanced technical 
-          spinning. It offers a systematic approach to understanding spatial relationships that would otherwise 
+          9 Square Theory provides the missing link between basic poi movements and truly advanced technical
+          spinning. It offers a systematic approach to understanding spatial relationships that would otherwise
           require years of intuitive development to master.
         </p>
       </div>
@@ -172,11 +172,11 @@
 
     <section id="creator-background" class="content-section">
       <h2>Creator Background: Charlie Cushing</h2>
-      
+
       <p>
-        Charlie Cushing brought a unique perspective to poi theory development through his background as a 
-        helicopter pilot and founder of LanternSmith, a respected poi equipment manufacturer. His aviation 
-        experience provided him with an intuitive understanding of three-dimensional navigation and spatial 
+        Charlie Cushing brought a unique perspective to poi theory development through his background as a
+        helicopter pilot and founder of LanternSmith, a respected poi equipment manufacturer. His aviation
+        experience provided him with an intuitive understanding of three-dimensional navigation and spatial
         relationships that directly translated to poi movement analysis.
       </p>
 
@@ -190,18 +190,18 @@
 
       <h3>Theoretical Contributions</h3>
       <p>
-        Cushing's approach to poi theory was revolutionary in its systematic nature. Rather than relying on 
-        intuitive understanding, he created a framework that could be taught, learned, and applied consistently. 
-        His work represents the evolution of poi from an art form to a technical discipline with its own 
+        Cushing's approach to poi theory was revolutionary in its systematic nature. Rather than relying on
+        intuitive understanding, he created a framework that could be taught, learned, and applied consistently.
+        His work represents the evolution of poi from an art form to a technical discipline with its own
         mathematical foundations.
       </p>
 
       <div class="creator-insight">
         <h4>Aviation Influence</h4>
         <p>
-          Cushing's helicopter piloting experience directly influenced his approach to poi theory. The same 
-          spatial awareness and three-dimensional thinking required for aviation translated perfectly to 
-          understanding poi movement in space, leading to insights that purely ground-based practitioners 
+          Cushing's helicopter piloting experience directly influenced his approach to poi theory. The same
+          spatial awareness and three-dimensional thinking required for aviation translated perfectly to
+          understanding poi movement in space, leading to insights that purely ground-based practitioners
           might never develop.
         </p>
       </div>
@@ -209,36 +209,36 @@
 
     <section id="key-concepts" class="content-section">
       <h2>Key Concepts</h2>
-      
+
       <div class="concept-grid">
         <div class="concept-card">
           <h3>The 9 Square Grid</h3>
           <p>
-            A three-dimensional conceptual framework that maps all possible poi positions relative to the 
+            A three-dimensional conceptual framework that maps all possible poi positions relative to the
             spinner's body, providing a systematic way to understand and navigate spatial relationships.
           </p>
         </div>
-        
+
         <div class="concept-card">
           <h3>Unit Circle Connections</h3>
           <p>
-            Methods for transitioning between different circular patterns while maintaining flow and avoiding 
+            Methods for transitioning between different circular patterns while maintaining flow and avoiding
             tangles, building upon VTG flower concepts with greater precision.
           </p>
         </div>
-        
+
         <div class="concept-card">
           <h3>Spatial Navigation</h3>
           <p>
-            Systematic approaches to moving poi through three-dimensional space with intentionality and 
+            Systematic approaches to moving poi through three-dimensional space with intentionality and
             precision, drawing from aviation navigation principles.
           </p>
         </div>
-        
+
         <div class="concept-card">
           <h3>Advanced Timing Systems</h3>
           <p>
-            Complex timing relationships that allow for sophisticated pattern combinations and seamless 
+            Complex timing relationships that allow for sophisticated pattern combinations and seamless
             transitions between different movement vocabularies.
           </p>
         </div>
@@ -246,15 +246,15 @@
 
       <h3>The Mathematical Foundation</h3>
       <p>
-        Unlike earlier poi theories that relied heavily on intuitive understanding, 9 Square Theory provides 
-        a mathematical framework for understanding poi movement. This systematic approach allows practitioners 
+        Unlike earlier poi theories that relied heavily on intuitive understanding, 9 Square Theory provides
+        a mathematical framework for understanding poi movement. This systematic approach allows practitioners
         to predict outcomes, plan sequences, and troubleshoot problems with unprecedented precision.
       </p>
 
       <h3>Integration with VTG</h3>
       <p>
-        9 Square Theory doesn't replace VTG but rather builds upon it, providing advanced tools for practitioners 
-        who have mastered the foundational concepts. The theory assumes familiarity with poi flowers and basic 
+        9 Square Theory doesn't replace VTG but rather builds upon it, providing advanced tools for practitioners
+        who have mastered the foundational concepts. The theory assumes familiarity with poi flowers and basic
         transition theory, then extends these concepts into more complex spatial relationships.
       </p>
     </section>

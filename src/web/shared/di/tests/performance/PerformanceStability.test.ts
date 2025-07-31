@@ -1,6 +1,6 @@
 /**
  * 🧪 PERFORMANCE AND STABILITY TESTS
- * 
+ *
  * Comprehensive performance benchmarks and stability tests to ensure
  * the DI system performs well under various load conditions.
  */
@@ -49,7 +49,7 @@ describe('Performance and Stability Tests', () => {
             const averageTime = totalTime / iterations;
 
             console.log(`Singleton resolution: ${averageTime.toFixed(3)}ms average over ${iterations} iterations`);
-            
+
             // Should resolve in less than 1ms on average
             expect(averageTime).toBeLessThan(1);
         });
@@ -78,7 +78,7 @@ describe('Performance and Stability Tests', () => {
             const averageTime = totalTime / iterations;
 
             console.log(`Transient resolution: ${averageTime.toFixed(3)}ms average over ${iterations} iterations`);
-            
+
             // Transient should be reasonably fast (less than 2ms on average)
             expect(averageTime).toBeLessThan(2);
         });
@@ -125,7 +125,7 @@ describe('Performance and Stability Tests', () => {
             const averageTime = totalTime / iterations;
 
             console.log(`Complex chain resolution: ${averageTime.toFixed(3)}ms average over ${iterations} iterations`);
-            
+
             // Complex chains should still be reasonably fast
             expect(averageTime).toBeLessThan(5);
         });
@@ -145,7 +145,7 @@ describe('Performance and Stability Tests', () => {
             container.registerTransient(ITransientService, TransientService);
 
             const initialMemory = (performance as any).memory?.usedJSHeapSize || 0;
-            
+
             // Create many transient instances
             for (let i = 0; i < 1000; i++) {
                 const service = container.resolve(ITransientService);
@@ -158,12 +158,12 @@ describe('Performance and Stability Tests', () => {
             }
 
             const finalMemory = (performance as any).memory?.usedJSHeapSize || 0;
-            
+
             // Memory should not grow excessively (allowing for some variance)
             if (initialMemory > 0 && finalMemory > 0) {
                 const memoryGrowth = finalMemory - initialMemory;
                 console.log(`Memory growth: ${(memoryGrowth / 1024 / 1024).toFixed(2)}MB`);
-                
+
                 // Should not grow more than 50MB
                 expect(memoryGrowth).toBeLessThan(50 * 1024 * 1024);
             }
@@ -188,10 +188,10 @@ describe('Performance and Stability Tests', () => {
                 const scopeId = `scope-${i}`;
                 container.createScope(scopeId);
                 container.setCurrentScope(scopeId);
-                
+
                 const service = container.resolve(IScopedService);
                 expect(service.getValue()).toBe('scoped');
-                
+
                 container.disposeScope(scopeId);
             }
 
@@ -230,7 +230,7 @@ describe('Performance and Stability Tests', () => {
 
             // All should return the same value
             expect(results.every(r => r === 'singleton')).toBe(true);
-            
+
             // Constructor should only be called once
             expect(constructorCallCount).toBe(1);
         });
@@ -244,11 +244,11 @@ describe('Performance and Stability Tests', () => {
 
             class TransientService {
                 private id: number;
-                
+
                 constructor() {
                     this.id = ++constructorCallCount;
                 }
-                
+
                 getId(): number { return this.id; }
             }
 
@@ -268,7 +268,7 @@ describe('Performance and Stability Tests', () => {
             // All should have unique IDs
             const uniqueIds = new Set(results);
             expect(uniqueIds.size).toBe(100);
-            
+
             // Constructor should be called 100 times
             expect(constructorCallCount).toBe(100);
         });
@@ -287,9 +287,9 @@ describe('Performance and Stability Tests', () => {
                 const serviceInterface = createServiceInterface(serviceName, class {
                     getValue(): string { return ''; }
                 });
-                
+
                 interfaces.push(serviceInterface);
-                
+
                 container.registerSingleton(serviceInterface, class {
                     getValue(): string { return `service-${i}`; }
                 });
@@ -415,7 +415,7 @@ describe('Performance and Stability Tests', () => {
 
             // Test with metrics enabled
             const iterations = 1000;
-            
+
             const startWithMetrics = performance.now();
             for (let i = 0; i < iterations; i++) {
                 container.resolve(IMetricsService);
@@ -424,7 +424,7 @@ describe('Performance and Stability Tests', () => {
 
             // Clear metrics and test again
             container.clearMetrics();
-            
+
             const startWithoutMetrics = performance.now();
             for (let i = 0; i < iterations; i++) {
                 container.resolve(IMetricsService);

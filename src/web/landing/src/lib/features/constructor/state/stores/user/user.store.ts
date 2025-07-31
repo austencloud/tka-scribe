@@ -1,6 +1,6 @@
 /**
  * User Store Adapter
- * 
+ *
  * This module provides an adapter between the modern user container
  * and the legacy store-based API. This allows for a gradual migration
  * to the new container-based approach.
@@ -25,13 +25,13 @@ export const hasCompletedSetupStore: Readable<boolean> = derived(
 export const userStore = {
   // Provide a getSnapshot method for compatibility with existing code
   getSnapshot: () => userContainer.state,
-  
+
   // Provide methods that match the container's API
   setUsername: userContainer.setUsername,
   completeSetup: userContainer.completeSetup,
   resetUser: userContainer.resetUser,
   isFirstVisit: userContainer.isFirstVisit,
-  
+
   // Subscribe method for Svelte store compatibility
   subscribe: userContainer.subscribe
 };

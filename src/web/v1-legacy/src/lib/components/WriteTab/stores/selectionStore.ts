@@ -19,7 +19,7 @@ function createSelectionStore() {
 
   return {
     subscribe,
-    
+
     /**
      * Select a beat at the specified row and column
      */
@@ -30,7 +30,7 @@ function createSelectionStore() {
         selectedCol: col
       }));
     },
-    
+
     /**
      * Clear the current selection
      */
@@ -45,14 +45,14 @@ export const selectionStore = createSelectionStore();
 
 // Create derived store for the currently selected beat
 export const selectedBeat = derived(
-  [selectionStore, actStore], 
+  [selectionStore, actStore],
   ([$selection, $actStore]) => {
     const { selectedRow, selectedCol } = $selection;
-    
+
     if (selectedRow === null || selectedCol === null) {
       return null;
     }
-    
+
     const sequences = $actStore.act.sequences;
     if (selectedRow < sequences.length) {
       const sequence = sequences[selectedRow];
@@ -64,7 +64,7 @@ export const selectedBeat = derived(
         };
       }
     }
-    
+
     return null;
   }
 );

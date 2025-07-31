@@ -63,24 +63,24 @@
 	function mirrorSequenceData(beats: any[]): any[] {
 		return beats.map((beat) => {
 			const mirrored = { ...beat };
-			
+
 			// Mirror red prop location (swap left/right)
 			if (mirrored.redMotionData?.startLoc?.side) {
-				mirrored.redMotionData.startLoc.side = 
+				mirrored.redMotionData.startLoc.side =
 					mirrored.redMotionData.startLoc.side === 'L' ? 'R' : 'L';
 			}
 			if (mirrored.redMotionData?.endLoc?.side) {
-				mirrored.redMotionData.endLoc.side = 
+				mirrored.redMotionData.endLoc.side =
 					mirrored.redMotionData.endLoc.side === 'L' ? 'R' : 'L';
 			}
 
 			// Mirror blue prop location (swap left/right)
 			if (mirrored.blueMotionData?.startLoc?.side) {
-				mirrored.blueMotionData.startLoc.side = 
+				mirrored.blueMotionData.startLoc.side =
 					mirrored.blueMotionData.startLoc.side === 'L' ? 'R' : 'L';
 			}
 			if (mirrored.blueMotionData?.endLoc?.side) {
-				mirrored.blueMotionData.endLoc.side = 
+				mirrored.blueMotionData.endLoc.side =
 					mirrored.blueMotionData.endLoc.side === 'L' ? 'R' : 'L';
 			}
 
@@ -92,7 +92,7 @@
 	function rotateSequenceData(beats: any[]): any[] {
 		return beats.map((beat) => {
 			const rotated = { ...beat };
-			
+
 			// Rotate orientations by 90 degrees
 			if (rotated.redMotionData?.startOri !== undefined) {
 				rotated.redMotionData.startOri = (rotated.redMotionData.startOri + 90) % 360;
@@ -115,7 +115,7 @@
 	function swapSequenceColors(beats: any[]): any[] {
 		return beats.map((beat) => {
 			const swapped = { ...beat };
-			
+
 			// Swap red and blue motion data
 			const tempRed = swapped.redMotionData;
 			swapped.redMotionData = swapped.blueMotionData;
@@ -210,7 +210,7 @@
 					}
 
 					const sequenceName = generateSequenceName(beats);
-					
+
 					// Save to localStorage dictionary
 					const existingDictionary = JSON.parse(localStorage.getItem('sequence_dictionary') || '[]');
 					const newEntry = {
@@ -308,8 +308,8 @@
 				try {
 					const selectedBeatIds = sequenceContainer.state.selectedBeatIds;
 					if (selectedBeatIds.length > 0) {
-						sequenceActions.removeBeatAndFollowing({ 
-							event: { type: 'REMOVE_BEAT_AND_FOLLOWING', beatId: selectedBeatIds[0] } 
+						sequenceActions.removeBeatAndFollowing({
+							event: { type: 'REMOVE_BEAT_AND_FOLLOWING', beatId: selectedBeatIds[0] }
 						});
 						showSuccess('Beat deleted');
 						if (browser && hapticFeedbackService.isAvailable()) {

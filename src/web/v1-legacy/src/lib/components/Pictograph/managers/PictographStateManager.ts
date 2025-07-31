@@ -1,6 +1,6 @@
 /**
  * Pictograph State Manager
- * 
+ *
  * This module provides state management functionality for the Pictograph component.
  */
 
@@ -13,7 +13,7 @@ import { PictographService } from '../PictographService';
 
 /**
  * Creates a pictograph data store with the provided initial data
- * 
+ *
  * @param initialData The initial pictograph data
  * @returns A writable store containing the pictograph data
  */
@@ -23,7 +23,7 @@ export function createPictographDataStore(initialData?: PictographData): Writabl
 
 /**
  * Initializes the pictograph service with the current data
- * 
+ *
  * @param pictographDataStore The pictograph data store
  * @returns The initialized pictograph service
  */
@@ -33,7 +33,7 @@ export function initializePictographService(pictographDataStore: Writable<Pictog
 
 /**
  * Checks if the pictograph data has changed
- * 
+ *
  * @param newData The new pictograph data
  * @param lastDataSnapshot The last data snapshot for comparison
  * @returns True if the data has changed, along with the updated snapshot
@@ -54,8 +54,8 @@ export function checkForDataChanges(
         const fieldsChanged = hasDataChanged(newData, lastDataSnapshot);
 
         // Create updated snapshot if changed
-        const updatedSnapshot = fieldsChanged 
-            ? createDataSnapshot(newData) 
+        const updatedSnapshot = fieldsChanged
+            ? createDataSnapshot(newData)
             : lastDataSnapshot;
 
         return { hasChanged: fieldsChanged, updatedSnapshot };
@@ -70,7 +70,7 @@ export function checkForDataChanges(
 
 /**
  * Updates the pictograph components based on the current data
- * 
+ *
  * @param pictographDataStore The pictograph data store
  * @param service The pictograph service
  * @param state The current state
@@ -142,7 +142,7 @@ export function updateComponentsFromData(
 
 /**
  * Sets up a subscription to the pictograph data store
- * 
+ *
  * @param pictographDataStore The pictograph data store
  * @param service The pictograph service
  * @param lastDataSnapshot The last data snapshot for comparison
@@ -184,8 +184,8 @@ export function setupPictographDataSubscription(
         }
     });
 
-    return { 
-        unsubscribe, 
-        getSnapshot: () => currentSnapshot 
+    return {
+        unsubscribe,
+        getSnapshot: () => currentSnapshot
     };
 }

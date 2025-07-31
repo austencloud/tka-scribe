@@ -22,11 +22,11 @@
 
 	onMount(() => {
 		console.log('🎨 SimpleBackgroundAdapter: Initializing lightweight background system');
-		
+
 		// Check for performance preferences
 		const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 		const isLowEndDevice = navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 2;
-		
+
 		// Decide which background system to use
 		if (props.useCSSOnly || prefersReducedMotion || isLowEndDevice || props.quality === 'low') {
 			console.log('🎨 Using CSS-only background for optimal performance');

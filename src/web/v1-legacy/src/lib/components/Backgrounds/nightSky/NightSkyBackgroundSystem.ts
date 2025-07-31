@@ -294,19 +294,19 @@ export class NightSkyBackgroundSystem implements BackgroundSystem {
 	private drawCelestialBody(ctx: CanvasRenderingContext2D) {
 		const b = this.celestialBody;
 		if (!b || !b.illumination) return;
-	
+
 		const { x, y, radius, color } = b; // color is the lit color from config
 		const { fraction, phaseValue } = b.illumination;
 		const R = radius;
-	
+
 		ctx.save();
-	
+
 		// 1. Draw the base illuminated moon disk (color is the bright part of the moon)
 		ctx.fillStyle = color;
 		ctx.beginPath();
 		ctx.arc(x, y, R, 0, 2 * Math.PI);
 		ctx.fill();
-	
+
 		// Apply shadow for phases other than full moon
 		if (fraction < 0.99) { // If not almost full moon
 			// Get background gradient colors
@@ -314,58 +314,58 @@ export class NightSkyBackgroundSystem implements BackgroundSystem {
 				{ position: 0, color: '#0A0E2C' },
 				{ position: 1, color: '#4A5490' }
 			];
-			
+
 			// Calculate relative position of the moon in the sky to determine which gradient color to use
 			const relativeYPosition = y / ctx.canvas.height;
-			
+
 			// Find the appropriate color from the gradient based on moon's position
 			let shadowBaseColor = '#0A0E2C'; // Default dark sky color
-			
+
 			// Simple interpolation between gradient stops based on moon's vertical position
 			if (gradientStops.length >= 2) {
 				// Find the two gradient stops that surround the moon's position
 				let lowerStop = gradientStops[0];
 				let upperStop = gradientStops[gradientStops.length - 1];
-				
+
 				for (let i = 0; i < gradientStops.length - 1; i++) {
-					if (gradientStops[i].position <= relativeYPosition && 
+					if (gradientStops[i].position <= relativeYPosition &&
 						gradientStops[i + 1].position >= relativeYPosition) {
 						lowerStop = gradientStops[i];
 						upperStop = gradientStops[i + 1];
 						break;
 					}
 				}
-				
+
 				// Use the color closer to the moon's position for simplicity
-				shadowBaseColor = Math.abs(relativeYPosition - lowerStop.position) < 
-								  Math.abs(relativeYPosition - upperStop.position) ? 
+				shadowBaseColor = Math.abs(relativeYPosition - lowerStop.position) <
+								  Math.abs(relativeYPosition - upperStop.position) ?
 								  lowerStop.color : upperStop.color;
 			} else if (gradientStops.length === 1) {
 				shadowBaseColor = gradientStops[0].color;
 			}
-			
+
 			// Determine shadow color - use black for high contrast or calculated color
 			const shadowColor = this.a11y.highContrast ? '#000000' : shadowBaseColor;
-			
+
 			ctx.fillStyle = shadowColor;
-	
+
 			const phaseAngleForShadow = (phaseValue - 0.5) * 2 * Math.PI;
 			const shadowDiscCenterX = x - R * Math.cos(phaseAngleForShadow);
-	
+
 			// Create a clipping path that restricts drawing to only the moon's circle
 			ctx.save();
 			ctx.beginPath();
 			ctx.arc(x, y, R, 0, 2 * Math.PI);
 			ctx.clip();
-	
+
 			// Draw the shadow circle - now it will only be visible where it overlaps the moon
 			ctx.beginPath();
 			ctx.arc(shadowDiscCenterX, y, R, 0, 2 * Math.PI);
 			ctx.fill();
-	
+
 			ctx.restore(); // Restore context to remove the clipping
 		}
-	
+
 		// Optional: Add a very faint outline for the new moon if it's not high contrast mode
 		// and it's nearly new but not full
 		if (fraction < 0.03 && !this.a11y.highContrast && fraction < 0.98) {
@@ -375,7 +375,7 @@ export class NightSkyBackgroundSystem implements BackgroundSystem {
 			ctx.arc(x, y, R, 0, 2 * Math.PI);
 			ctx.stroke();
 		}
-	
+
 		ctx.restore();
 	}
 	// ---- spaceship ----

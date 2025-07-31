@@ -129,7 +129,7 @@ function getAdjustmentKey(
 		const letterVal = pictographData.letter as string;
 		const letter = LetterUtils.getLetter(letterVal);
 		const letterType = LetterType.getLetterType(letter);
-		
+
 		if (letterType && (letterType === LetterType.Type3 || letterType === LetterType.Type5)) {
 			const char = letterVal.slice(0, -1);
 			letterSuffix = `_${char}_dash`;

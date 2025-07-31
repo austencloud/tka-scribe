@@ -22,7 +22,7 @@ export interface ErrorHandlerContext {
 /**
  * Handles errors that occur during pictograph component operations
  * Logs the error, updates component state, and dispatches events
- * 
+ *
  * @param source The source of the error (e.g., 'initialization', 'grid loading')
  * @param error The error object or message
  * @param context The error handler context containing necessary data and functions
@@ -105,7 +105,7 @@ export function handleError(
     // Set minimal error state
     context.errorMessage.set('Error in Pictograph component');
     context.state.set('error');
-    
+
     // Dispatch minimal error events
     context.dispatch('error', { source, error: null, message: 'Error in Pictograph component' });
     context.dispatch('loaded', {
@@ -119,7 +119,7 @@ export function handleError(
 /**
  * Handles errors that occur in specific pictograph components (Prop, Arrow, etc.)
  * Applies fallback positioning and continues loading
- * 
+ *
  * @param component The component that experienced the error (e.g., 'redProp', 'blueArrow')
  * @param error The error object or message
  * @param context Additional context for error handling
@@ -173,7 +173,7 @@ export function handleComponentError(
 /**
  * Applies fallback positioning to components that failed to load properly
  * Ensures the pictograph still displays something meaningful despite errors
- * 
+ *
  * @param component The component that needs fallback positioning
  * @param data Object containing the data that needs fallback positioning
  */

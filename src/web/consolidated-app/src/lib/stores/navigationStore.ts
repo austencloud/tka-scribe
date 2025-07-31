@@ -17,7 +17,7 @@ function createNavigationStore() {
 
 	return {
 		subscribe,
-		
+
 		navigate: (route: string) => {
 			update(state => ({
 				...state,
@@ -26,10 +26,10 @@ function createNavigationStore() {
 				history: [...state.history, route]
 			}));
 		},
-		
+
 		setNavigating: (navigating: boolean) =>
 			update(state => ({ ...state, isNavigating: navigating })),
-		
+
 		goBack: () => {
 			update(state => {
 				if (state.history.length > 1) {
@@ -44,7 +44,7 @@ function createNavigationStore() {
 				return state;
 			});
 		},
-		
+
 		reset: () => set(initialState)
 	};
 }

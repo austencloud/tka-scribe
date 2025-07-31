@@ -22,12 +22,12 @@ export function calculateAdjustment(arrow: ArrowData, config: ArrowPlacementConf
 
   // 1. Try to get special adjustment first (matches Python's flow)
   const specialAdjustment = getSpecialAdjustment(arrow, config);
-  
+
   // 2. Get base adjustment values - either from special placement or default
   let x: number, y: number;
   if (specialAdjustment) {
     [x, y] = specialAdjustment;
-    
+
   } else {
     // Fall back to default adjustment (matches Python behavior)
     [x, y] = getDefaultAdjustment(arrow, config);

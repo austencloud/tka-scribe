@@ -1,13 +1,13 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  
+
   interface RelatedResource {
     name: string;
     url: string;
     description: string;
     type: 'internal' | 'external';
   }
-  
+
   const relatedResources: RelatedResource[] = [
     {
       name: "Charlie Cushing's 9 Square Theory",
@@ -40,9 +40,9 @@
       type: 'external'
     }
   ];
-  
+
   let currentSection = '';
-  
+
   onMount(() => {
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
@@ -51,11 +51,11 @@
         }
       });
     }, { threshold: 0.6 });
-    
+
     document.querySelectorAll('section[id]').forEach((section) => {
       observer.observe(section);
     });
-    
+
     return () => observer.disconnect();
   });
 </script>
@@ -64,18 +64,18 @@
   <title>Vulcan Tech Gospel (VTG) - Complete Guide | The Kinetic Alphabet</title>
   <meta name="description" content="Comprehensive guide to Vulcan Tech Gospel (VTG) - the foundational theory for poi tech, poi flowers, and transition theory developed by Noel Yee. Learn core concepts, applications, and practice methods." />
   <meta name="keywords" content="Vulcan Tech Gospel, VTG, poi theory, Noel Yee, poi flowers, transition theory, technical poi, flow arts theory" />
-  
+
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="article" />
   <meta property="og:title" content="Vulcan Tech Gospel (VTG) - Complete Guide" />
   <meta property="og:description" content="Master the foundational theory of technical poi spinning with our comprehensive guide to Vulcan Tech Gospel by Noel Yee." />
   <meta property="og:url" content="https://thekineticalphabet.com/links/vulcan-tech-gospel" />
-  
+
   <!-- Twitter -->
   <meta property="twitter:card" content="summary_large_image" />
   <meta property="twitter:title" content="Vulcan Tech Gospel (VTG) - Complete Guide" />
   <meta property="twitter:description" content="Master the foundational theory of technical poi spinning with our comprehensive guide to Vulcan Tech Gospel by Noel Yee." />
-  
+
   <!-- Schema.org markup -->
   <script type="application/ld+json">
   {
@@ -147,24 +147,24 @@
     <section id="overview" class="content-section">
       <h2>Overview</h2>
       <p>
-        The Vulcan Tech Gospel (VTG) represents one of the most significant theoretical frameworks in modern poi spinning, 
-        developed by <strong>Noel Yee</strong> in the early 2000s. This comprehensive system provides a structured approach 
-        to understanding and executing technical poi movements, particularly focusing on the concept of "poi flowers" and 
+        The Vulcan Tech Gospel (VTG) represents one of the most significant theoretical frameworks in modern poi spinning,
+        developed by <strong>Noel Yee</strong> in the early 2000s. This comprehensive system provides a structured approach
+        to understanding and executing technical poi movements, particularly focusing on the concept of "poi flowers" and
         seamless transitions between different spinning planes.
       </p>
-      
+
       <p>
-        VTG emerged during a pivotal period in poi evolution when the community was transitioning from traditional fire 
-        spinning to more technical, dance-oriented approaches. Noel Yee's background in mathematics and movement analysis 
-        enabled him to codify what many spinners were discovering intuitively, creating a shared language for technical 
+        VTG emerged during a pivotal period in poi evolution when the community was transitioning from traditional fire
+        spinning to more technical, dance-oriented approaches. Noel Yee's background in mathematics and movement analysis
+        enabled him to codify what many spinners were discovering intuitively, creating a shared language for technical
         poi concepts.
       </p>
 
       <div class="highlight-box">
         <h3>Why VTG Matters</h3>
         <p>
-          VTG provides the theoretical foundation that enables poi spinners to understand the geometric relationships 
-          between different movements, making it possible to create smooth, flowing sequences that would otherwise 
+          VTG provides the theoretical foundation that enables poi spinners to understand the geometric relationships
+          between different movements, making it possible to create smooth, flowing sequences that would otherwise
           require years of trial-and-error to discover.
         </p>
       </div>
@@ -172,36 +172,36 @@
 
     <section id="key-concepts" class="content-section">
       <h2>Key Concepts</h2>
-      
+
       <div class="concept-grid">
         <div class="concept-card">
           <h3>Poi Flowers</h3>
           <p>
-            The central concept of VTG, poi flowers describe the geometric patterns created when poi move through 
+            The central concept of VTG, poi flowers describe the geometric patterns created when poi move through
             specific orbital relationships. These patterns form the building blocks for more complex movements.
           </p>
         </div>
-        
+
         <div class="concept-card">
           <h3>Transition Theory</h3>
           <p>
-            VTG provides systematic methods for moving between different spinning planes and patterns while 
+            VTG provides systematic methods for moving between different spinning planes and patterns while
             maintaining flow and avoiding tangles.
           </p>
         </div>
-        
+
         <div class="concept-card">
           <h3>Geometric Relationships</h3>
           <p>
-            Understanding how poi move in three-dimensional space relative to the body and each other, 
+            Understanding how poi move in three-dimensional space relative to the body and each other,
             enabling predictable and repeatable movements.
           </p>
         </div>
-        
+
         <div class="concept-card">
           <h3>Timing and Rhythm</h3>
           <p>
-            VTG emphasizes the importance of consistent timing in creating clean transitions and 
+            VTG emphasizes the importance of consistent timing in creating clean transitions and
             maintaining the integrity of patterns.
           </p>
         </div>
@@ -210,7 +210,7 @@
 
     <section id="getting-started" class="content-section">
       <h2>Getting Started with VTG</h2>
-      
+
       <div class="getting-started-content">
         <h3>Prerequisites</h3>
         <ul>
@@ -232,8 +232,8 @@
         <div class="practice-tip">
           <h4>Practice Tip</h4>
           <p>
-            Start with very slow, deliberate movements. VTG concepts become much clearer when you can observe 
-            the geometric relationships without the distraction of speed. Gradually increase tempo only after 
+            Start with very slow, deliberate movements. VTG concepts become much clearer when you can observe
+            the geometric relationships without the distraction of speed. Gradually increase tempo only after
             the movements become second nature.
           </p>
         </div>

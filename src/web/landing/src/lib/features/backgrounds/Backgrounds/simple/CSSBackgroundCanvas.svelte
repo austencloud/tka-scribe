@@ -174,7 +174,7 @@
 			animation-duration: 10s;
 			animation-iteration-count: 1;
 		}
-		
+
 		.star {
 			animation: none;
 			opacity: 0.6;

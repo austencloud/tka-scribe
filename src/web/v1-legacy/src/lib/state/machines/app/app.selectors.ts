@@ -1,6 +1,6 @@
 /**
  * Application State Selectors
- * 
+ *
  * This file contains selectors for the app state machine.
  * Selectors are functions that extract specific pieces of state from the machine.
  */

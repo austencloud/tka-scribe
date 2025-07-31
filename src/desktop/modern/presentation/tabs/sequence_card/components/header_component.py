@@ -133,23 +133,23 @@ class SequenceCardHeaderComponent(QFrame):
                 font-weight: 600;
                 min-width: 100px;
             }
-            
+
             QPushButton:hover {
                 background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
                     stop:0 #5dade2, stop:1 #3498db);
             }
-            
+
             QPushButton:pressed {
                 background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
                     stop:0 #2980b9, stop:1 #1f618d);
             }
-            
+
             QPushButton:disabled {
                 background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
                     stop:0 #7f8c8d, stop:1 #95a5a6);
                 color: #bdc3c7;
             }
-            
+
             QProgressBar {
                 border: none;
                 border-radius: 6px;
@@ -160,7 +160,7 @@ class SequenceCardHeaderComponent(QFrame):
                 font-size: 10px;
                 font-weight: bold;
             }
-            
+
             QProgressBar::chunk {
                 background: #3498db;
                 border-radius: 6px;

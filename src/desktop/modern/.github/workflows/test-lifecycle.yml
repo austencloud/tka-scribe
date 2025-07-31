@@ -146,15 +146,15 @@ jobs:
 
             if (fs.existsSync(path)) {
               const report = fs.readFileSync(path, 'utf8');
-              
+
               // Check if there are any issues that need attention
               const hasExpired = report.includes('🗑️ Expired Tests');
               const hasProblems = report.includes('⚠️ Tests Needing Attention');
-              
+
               if (hasExpired || hasProblems) {
                 const title = `🧹 Weekly Test Maintenance - ${new Date().toISOString().split('T')[0]}`;
                 const body = `# Weekly Test Lifecycle Maintenance\n\n${report}\n\n---\n\n**This issue was automatically created by the test lifecycle management system.**`;
-                
+
                 await github.rest.issues.create({
                   owner: context.repo.owner,
                   repo: context.repo.repo,

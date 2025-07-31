@@ -2,22 +2,22 @@
   import { onMount, onDestroy } from 'svelte';
   import { modalState, modalData, modalActions, type ResourceModalData } from '$lib/stores/modalStore';
   import { focusTrap } from '$lib/utils/focusTrap';
-  
+
   // Props that extend ResourceGuideLayout props
   export let isOpen = false;
   export let onClose: () => void = () => {};
-  
+
   // Modal-specific props
   let modalContainer: HTMLElement;
   let modalContent: HTMLElement;
   let closeButton: HTMLElement;
   let previouslyFocusedElement: HTMLElement | null = null;
   let currentSection = '';
-  
+
   // Reactive data from store
   $: data = $modalData;
   $: loading = $modalState.isLoading;
-  
+
   // Handle body scroll lock
   function lockBodyScroll() {
     if (typeof document !== 'undefined') {
@@ -25,39 +25,39 @@
       document.body.style.paddingRight = getScrollbarWidth() + 'px';
     }
   }
-  
+
   function unlockBodyScroll() {
     if (typeof document !== 'undefined') {
       document.body.style.overflow = '';
       document.body.style.paddingRight = '';
     }
   }
-  
+
   function getScrollbarWidth(): number {
     if (typeof window === 'undefined') return 0;
     return window.innerWidth - document.documentElement.clientWidth;
   }
-  
+
   // Handle backdrop click
   function handleBackdropClick(event: MouseEvent) {
     if (event.target === modalContainer) {
       handleClose();
     }
   }
-  
+
   // Handle close
   function handleClose() {
     onClose();
     modalActions.closeModal();
   }
-  
+
   // Handle escape key
   function handleEscape(event: KeyboardEvent) {
     if (event.key === 'Escape') {
       handleClose();
     }
   }
-  
+
   // Intersection observer for table of contents
   onMount(() => {
     const observer = new IntersectionObserver((entries) => {
@@ -67,10 +67,10 @@
         }
       });
     }, { threshold: 0.6 });
-    
+
     return () => observer.disconnect();
   });
-  
+
   // Watch for modal state changes
   $: if (isOpen) {
     lockBodyScroll();
@@ -80,7 +80,7 @@
   } else {
     unlockBodyScroll();
   }
-  
+
   onDestroy(() => {
     unlockBodyScroll();
   });
@@ -107,7 +107,7 @@
     <!-- Modal Container -->
     <div class="modal-container" bind:this={modalContent}>
       <!-- Close Button -->
-      <button 
+      <button
         class="modal-close"
         bind:this={closeButton}
         on:click={handleClose}
@@ -118,7 +118,7 @@
           <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
       </button>
-      
+
       {#if loading}
         <!-- Loading State -->
         <div class="modal-loading">
@@ -170,8 +170,8 @@
               <h2>Related Resources</h2>
               <div class="related-grid">
                 {#each data.relatedResources as resource}
-                  <a 
-                    href={resource.url} 
+                  <a
+                    href={resource.url}
                     class="related-card"
                     class:external={resource.type === 'external'}
                     target={resource.type === 'external' ? '_blank' : '_self'}

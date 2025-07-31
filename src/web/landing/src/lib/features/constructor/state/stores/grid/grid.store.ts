@@ -1,6 +1,6 @@
 /**
  * Grid Store
- * 
+ *
  * This store manages the state of the grid in the application.
  */
 
@@ -32,7 +32,7 @@ export const gridStore = createStore<GridStoreState, {
   loadData: (mode?: GridMode) => Promise<void>;
   setDebugMode: (enabled: boolean) => void;
   findClosestPoint: (
-    coords: Coordinate, 
+    coords: Coordinate,
     pointType?: 'hand' | 'layer2' | 'outer' | 'all',
     variant?: 'normal' | 'strict'
   ) => GridPoint | null;
@@ -48,11 +48,11 @@ export const gridStore = createStore<GridStoreState, {
           mode
         }));
       },
-      
+
       loadData: async (mode?: GridMode) => {
         // Use provided mode or current mode
         const gridMode = mode || get().mode;
-        
+
         // Update mode if provided
         if (mode) {
           update(state => ({
@@ -60,21 +60,21 @@ export const gridStore = createStore<GridStoreState, {
             mode: gridMode
           }));
         }
-        
+
         // Set loading state
         update(state => ({
           ...state,
           status: 'loading',
           error: null
         }));
-        
+
         try {
           // Parse the grid coordinates based on the mode
           const parsedData = parseGridCoordinates(gridMode);
-          
+
           // Artificial delay for demo purposes (remove in production)
           await new Promise(resolve => setTimeout(resolve, 100));
-          
+
           // Set loaded state with data
           update(state => ({
             ...state,
@@ -84,7 +84,7 @@ export const gridStore = createStore<GridStoreState, {
           }));
         } catch (error) {
           console.error(`Failed to load grid data for mode ${gridMode}:`, error);
-          
+
           update(state => ({
             ...state,
             status: 'error',
@@ -92,44 +92,44 @@ export const gridStore = createStore<GridStoreState, {
           }));
         }
       },
-      
+
       setDebugMode: (enabled: boolean) => {
         update(state => ({
           ...state,
           debugMode: enabled
         }));
       },
-      
+
       findClosestPoint: (
-        coords: Coordinate, 
+        coords: Coordinate,
         pointType: 'hand' | 'layer2' | 'outer' | 'all' = 'hand',
         variant: 'normal' | 'strict' = 'normal'
       ): GridPoint | null => {
         const state = get();
         if (state.status !== 'loaded' || !state.data) return null;
-        
+
         const data = state.data;
         let points: GridPoint[] = [];
-        
+
         // Collect points based on type
         if (pointType === 'hand' || pointType === 'all') {
           points = [...points, ...Object.values(data.handPoints[variant])];
         }
-        
+
         if (pointType === 'layer2' || pointType === 'all') {
           points = [...points, ...Object.values(data.layer2Points[variant])];
         }
-        
+
         if (pointType === 'outer' || pointType === 'all') {
           points = [...points, ...Object.values(data.outerPoints)];
         }
-        
+
         if (points.length === 0) return null;
-        
+
         // Find closest point
         let closestPoint = points[0];
         let minDistance = calculateDistance(coords, closestPoint.coordinates);
-        
+
         for (let i = 1; i < points.length; i++) {
           const distance = calculateDistance(coords, points[i].coordinates);
           if (distance < minDistance) {
@@ -137,39 +137,39 @@ export const gridStore = createStore<GridStoreState, {
             closestPoint = points[i];
           }
         }
-        
+
         return closestPoint;
       },
-      
+
       getPointByKey: (key: string): GridPoint | null => {
         const state = get();
         if (state.status !== 'loaded' || !state.data) return null;
-        
+
         const data = state.data;
-        
+
         // Search through all point collections
         for (const variant of ['normal', 'strict'] as const) {
           // Check hand points
           if (data.handPoints[variant][key]) {
             return data.handPoints[variant][key];
           }
-          
+
           // Check layer2 points
           if (data.layer2Points[variant][key]) {
             return data.layer2Points[variant][key];
           }
         }
-        
+
         // Check outer points
         if (data.outerPoints[key]) {
           return data.outerPoints[key];
         }
-        
+
         // Check if it's the center point
         if (key === 'center') {
           return data.centerPoint;
         }
-        
+
         return null;
       }
     };

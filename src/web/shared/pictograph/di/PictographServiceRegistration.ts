@@ -1,9 +1,9 @@
 /**
  * 🏭 PICTOGRAPH SERVICE REGISTRATION
- * 
+ *
  * Enterprise DI container registration for pictograph services.
  * Integrates sophisticated pictograph architecture with the TKA enterprise DI system.
- * 
+ *
  * Based on: src/desktop/modern/src/application/services/core/service_registration_manager.py
  */
 
@@ -36,28 +36,28 @@ import { PropPositioningService } from '../services/PropPositioningService.js';
 // ============================================================================
 
 export class PictographServiceRegistration {
-  
+
   /**
    * Register all pictograph services with the DI container
    */
   static registerServices(container: ServiceContainer): void {
     console.log('🎨 Registering pictograph services...');
-    
+
     try {
       // Register core services first (dependencies)
       this.registerCoreServices(container);
-      
+
       // Register positioning services
       this.registerPositioningServices(container);
-      
+
       // Register renderers
       this.registerRenderers(container);
-      
+
       // Register orchestrator (depends on all others)
       this.registerOrchestrator(container);
-      
+
       console.log('✅ Pictograph services registered successfully');
-      
+
     } catch (error) {
       console.error('❌ Failed to register pictograph services:', error);
       throw error;
@@ -73,7 +73,7 @@ export class PictographServiceRegistration {
       'ISVGAssetManager',
       () => new SVGAssetManager('/assets/pictograph')
     );
-    
+
     console.log('  📦 Registered SVG Asset Manager');
   }
 
@@ -86,13 +86,13 @@ export class PictographServiceRegistration {
       'IArrowPositioningOrchestrator',
       () => new ArrowPositioningOrchestrator()
     );
-    
+
     // Prop Positioning Service - singleton for consistency
     container.registerSingleton(
       'IPropPositioningService',
       () => new PropPositioningService()
     );
-    
+
     console.log('  🎯 Registered positioning services');
   }
 
@@ -108,7 +108,7 @@ export class PictographServiceRegistration {
         return new GridRenderer(assetManager);
       }
     );
-    
+
     // Arrow Renderer
     container.registerSingleton(
       'IArrowRenderer',
@@ -118,7 +118,7 @@ export class PictographServiceRegistration {
         return new ArrowRenderer(assetManager, positioning);
       }
     );
-    
+
     // Prop Renderer
     container.registerSingleton(
       'IPropRenderer',
@@ -128,7 +128,7 @@ export class PictographServiceRegistration {
         return new PropRenderer(assetManager, positioning);
       }
     );
-    
+
     // TODO: Glyph Renderer (will be implemented in next phase)
     container.registerSingleton(
       'IGlyphRenderer',
@@ -142,7 +142,7 @@ export class PictographServiceRegistration {
         } as IGlyphRenderer;
       }
     );
-    
+
     console.log('  🎨 Registered specialized renderers');
   }
 
@@ -161,7 +161,7 @@ export class PictographServiceRegistration {
         const assetManager = container.resolve<ISVGAssetManager>('ISVGAssetManager');
         const arrowPositioning = container.resolve<IArrowPositioningOrchestrator>('IArrowPositioningOrchestrator');
         const propPositioning = container.resolve<IPropPositioningService>('IPropPositioningService');
-        
+
         return new PictographOrchestrator(
           gridRenderer,
           arrowRenderer,
@@ -173,7 +173,7 @@ export class PictographServiceRegistration {
         );
       }
     );
-    
+
     // Main Pictograph Renderer interface (alias to orchestrator)
     container.registerSingleton(
       'IPictographRenderer',
@@ -194,7 +194,7 @@ export class PictographServiceRegistration {
         } as IPictographRenderer;
       }
     );
-    
+
     console.log('  🎭 Registered pictograph orchestrator');
   }
 
@@ -214,7 +214,7 @@ export class PictographServiceRegistration {
         'IPictographOrchestrator',
         'IPictographRenderer'
       ];
-      
+
       for (const service of requiredServices) {
         const instance = container.resolve(service);
         if (!instance) {
@@ -222,10 +222,10 @@ export class PictographServiceRegistration {
           return false;
         }
       }
-      
+
       console.log('✅ All pictograph services validated successfully');
       return true;
-      
+
     } catch (error) {
       console.error('❌ Service validation failed:', error);
       return false;
@@ -246,7 +246,7 @@ export class PictographServiceRegistration {
       'IGlyphRenderer': ['ISVGAssetManager'],
       'IPictographOrchestrator': [
         'IGridRenderer',
-        'IArrowRenderer', 
+        'IArrowRenderer',
         'IPropRenderer',
         'IGlyphRenderer',
         'ISVGAssetManager',
@@ -263,7 +263,7 @@ export class PictographServiceRegistration {
   static async preloadAssets(container: ServiceContainer): Promise<void> {
     try {
       const assetManager = container.resolve<ISVGAssetManager>('ISVGAssetManager');
-      
+
       const essentialAssets = [
         'grid/diamond_grid.svg',
         'grid/box_grid.svg',
@@ -274,11 +274,11 @@ export class PictographServiceRegistration {
         'props/staff.svg',
         'props/hand.svg'
       ];
-      
+
       console.log('🚀 Preloading essential pictograph assets...');
       await assetManager.preloadAssets(essentialAssets);
       console.log('✅ Essential assets preloaded');
-      
+
     } catch (error) {
       console.warn('⚠️ Asset preloading failed (non-critical):', error);
     }
@@ -289,7 +289,7 @@ export class PictographServiceRegistration {
    */
   static createStartPositionPictographs(container: ServiceContainer): any[] {
     const orchestrator = container.resolve<IPictographOrchestrator>('IPictographOrchestrator');
-    
+
     // Create the three standard start positions
     const startPositions = [
       {
@@ -301,7 +301,7 @@ export class PictographServiceRegistration {
         description: 'Alpha start position'
       },
       {
-        id: 'beta', 
+        id: 'beta',
         name: 'Beta',
         letter: 'β',
         gridMode: 'diamond',
@@ -310,14 +310,14 @@ export class PictographServiceRegistration {
       },
       {
         id: 'gamma',
-        name: 'Gamma', 
+        name: 'Gamma',
         letter: 'γ',
         gridMode: 'diamond',
         startPosition: 'gamma',
         description: 'Gamma start position'
       }
     ];
-    
+
     return startPositions.map(pos => ({
       ...pos,
       pictographData: orchestrator.createPictograph(pos.gridMode as any)

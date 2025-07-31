@@ -4,7 +4,7 @@
     export let title = "Show layout debug info";
     export let ariaLabel = "Show layout debug info";
   </script>
-  
+
   <button
     class="debug-layout-button"
     on:click={toggleInfo}
@@ -29,7 +29,7 @@
       ></line><line x1="9" y1="21" x2="9" y2="9"></line></svg
     >
   </button>
-  
+
   <style>
     .debug-layout-button {
       background: #1e293b;
@@ -46,14 +46,14 @@
       opacity: 0.7;
       transition: all 0.2s ease;
     }
-    
+
     .debug-layout-button:hover {
       opacity: 1;
       background: #334155;
       box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
       transform: scale(1.05);
     }
-    
+
     .debug-layout-button svg {
       width: 16px;
       height: 16px;

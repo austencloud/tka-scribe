@@ -10,40 +10,40 @@
 
 	// Track if this is the initial render
 	let initialRender = true;
-	
+
 	// Create a unique key that only changes when options meaningfully change
 	let transitionKey = '';
-	
+
 	// Update key when options change meaningfully
 	$: {
 		if (!initialRender) {
 			// Generate a simple signature for the options
-			const newKey = options.length + '-' + 
-			      (options[0]?.letter || '') + 
-			      (options[0]?.startPos || '') + 
+			const newKey = options.length + '-' +
+			      (options[0]?.letter || '') +
+			      (options[0]?.startPos || '') +
 			      (options[0]?.endPos || '');
-			
+
 			// Only update the key if it's different
 			if (newKey !== transitionKey) {
 				transitionKey = newKey;
 			}
 		}
 	}
-	
+
 	onMount(() => {
 		// After initial render, mark it as complete
 		initialRender = false;
-		
+
 		// Set an initial key
-		transitionKey = options.length + '-' + 
-			(options[0]?.letter || '') + 
-			(options[0]?.startPos || '') + 
+		transitionKey = options.length + '-' +
+			(options[0]?.letter || '') +
+			(options[0]?.startPos || '') +
 			(options[0]?.endPos || '');
 	});
 </script>
 
 {#key transitionKey}
-	<div 
+	<div
 		class="options-container"
 		in:fade={{ duration: initialRender ? 0 : ($prefersReducedMotion ? 50 : 200) }}
 	>

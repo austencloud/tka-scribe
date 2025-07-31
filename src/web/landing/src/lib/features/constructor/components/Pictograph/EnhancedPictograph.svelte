@@ -10,10 +10,10 @@ Based on: Modern desktop app pictograph patterns + TKA enterprise DI system
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte';
   import { ApplicationFactory } from '$lib/shared/di/ApplicationFactory.js';
-  import type { 
+  import type {
     IPictographRenderer,
     IPictographOrchestrator,
-    RendererVisibilityOptions 
+    RendererVisibilityOptions
   } from '$lib/shared/pictograph/interfaces/IPictographRenderer.js';
   import type { PictographData } from '@tka/domain';
 
@@ -71,11 +71,11 @@ Based on: Modern desktop app pictograph patterns + TKA enterprise DI system
     try {
       // Create application container
       const container = ApplicationFactory.createProductionApp();
-      
+
       // Resolve pictograph services
       pictographRenderer = container.resolve('IPictographRenderer');
       pictographOrchestrator = container.resolve('IPictographOrchestrator');
-      
+
       // Configure visibility options
       const visibilityOptions: RendererVisibilityOptions = {
         grid: showGrid,
@@ -88,9 +88,9 @@ Based on: Modern desktop app pictograph patterns + TKA enterprise DI system
         blueMotion: true,
         redMotion: true
       };
-      
+
       pictographRenderer.setVisibility(visibilityOptions);
-      
+
     } catch (error) {
       console.error('Failed to initialize pictograph services:', error);
       throw error;
@@ -112,16 +112,16 @@ Based on: Modern desktop app pictograph patterns + TKA enterprise DI system
 
       // Create pictograph data if not provided
       const dataToRender = pictographData || createDefaultPictograph();
-      
+
       // Render pictograph
       svgElement = await pictographRenderer.renderPictograph(dataToRender);
-      
+
       // Configure SVG element
       configureSVGElement(svgElement);
-      
+
       // Add to container
       containerElement.appendChild(svgElement);
-      
+
     } catch (error) {
       console.error('Failed to render pictograph:', error);
       renderErrorState();
@@ -132,7 +132,7 @@ Based on: Modern desktop app pictograph patterns + TKA enterprise DI system
     if (!pictographOrchestrator) {
       throw new Error('Pictograph orchestrator not initialized');
     }
-    
+
     return pictographOrchestrator.createPictograph();
   }
 
@@ -141,21 +141,21 @@ Based on: Modern desktop app pictograph patterns + TKA enterprise DI system
     svg.setAttribute('width', width.toString());
     svg.setAttribute('height', height.toString());
     svg.setAttribute('viewBox', '0 0 950 950');
-    
+
     // Set styling
     svg.style.maxWidth = '100%';
     svg.style.maxHeight = '100%';
     svg.style.display = 'block';
-    
+
     // Add interaction classes
     if (isInteractive) {
       svg.classList.add('pictograph-interactive');
     }
-    
+
     if (isSelected) {
       svg.classList.add('pictograph-selected');
     }
-    
+
     // Add custom classes
     if (className) {
       svg.classList.add(...className.split(' '));
@@ -171,7 +171,7 @@ Based on: Modern desktop app pictograph patterns + TKA enterprise DI system
 
   function renderErrorState(): void {
     if (!containerElement) return;
-    
+
     const errorDiv = document.createElement('div');
     errorDiv.className = 'pictograph-error';
     errorDiv.innerHTML = `
@@ -181,13 +181,13 @@ Based on: Modern desktop app pictograph patterns + TKA enterprise DI system
         <div class="error-details">${error || 'Unknown error'}</div>
       </div>
     `;
-    
+
     containerElement.appendChild(errorDiv);
   }
 
   function renderLoadingState(): void {
     if (!containerElement) return;
-    
+
     const loadingDiv = document.createElement('div');
     loadingDiv.className = 'pictograph-loading';
     loadingDiv.innerHTML = `
@@ -196,7 +196,7 @@ Based on: Modern desktop app pictograph patterns + TKA enterprise DI system
         <div class="loading-message">Loading pictograph...</div>
       </div>
     `;
-    
+
     containerElement.appendChild(loadingDiv);
   }
 
@@ -220,7 +220,7 @@ Based on: Modern desktop app pictograph patterns + TKA enterprise DI system
       blueMotion: true,
       redMotion: true
     };
-    
+
     pictographRenderer.setVisibility(visibilityOptions);
     renderPictograph();
   }
@@ -241,27 +241,27 @@ Based on: Modern desktop app pictograph patterns + TKA enterprise DI system
 
   function handleClick(event: MouseEvent): void {
     if (!isInteractive) return;
-    
+
     // Dispatch custom event for parent components
     const detail = {
       pictographData,
       svgElement,
       clickPosition: { x: event.offsetX, y: event.offsetY }
     };
-    
+
     const customEvent = new CustomEvent('pictographClick', { detail });
     containerElement?.dispatchEvent(customEvent);
   }
 
   function handleMouseEnter(): void {
     if (!isInteractive || !svgElement) return;
-    
+
     svgElement.classList.add('pictograph-hover');
   }
 
   function handleMouseLeave(): void {
     if (!isInteractive || !svgElement) return;
-    
+
     svgElement.classList.remove('pictograph-hover');
   }
 </script>
@@ -270,7 +270,7 @@ Based on: Modern desktop app pictograph patterns + TKA enterprise DI system
 <!-- COMPONENT TEMPLATE -->
 <!-- ============================================================================ -->
 
-<div 
+<div
   class="pictograph-container {className}"
   class:interactive={isInteractive}
   class:selected={isSelected}
@@ -290,7 +290,7 @@ Based on: Modern desktop app pictograph patterns + TKA enterprise DI system
       </div>
     </div>
   {/if}
-  
+
   {#if error}
     <div class="pictograph-error">
       <div class="error-content">

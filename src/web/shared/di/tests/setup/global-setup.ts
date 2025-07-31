@@ -1,6 +1,6 @@
 /**
  * 🧪 GLOBAL TEST SETUP
- * 
+ *
  * Global configuration and setup for TKA DI tests,
  * ensuring consistent test environment and utilities.
  */
@@ -174,7 +174,7 @@ export class TestDataFactory {
 
   static createMockContainer() {
     const services = new Map();
-    
+
     return {
       register: (name: string, service: any) => services.set(name, service),
       resolve: (name: string) => services.get(name),
@@ -200,7 +200,7 @@ export class BenchmarkUtils {
     maxTime: number;
   }> {
     const times: number[] = [];
-    
+
     for (let i = 0; i < iterations; i++) {
       const start = performance.now();
       await fn();

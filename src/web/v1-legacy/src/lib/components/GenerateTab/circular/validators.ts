@@ -6,7 +6,7 @@ export interface ValidationResult {
 }
 
 export function validateCircularSequence(
-  sequence: any[], 
+  sequence: any[],
   capType: CAPType
 ): ValidationResult {
   const validators = [
@@ -32,7 +32,7 @@ export function validateCircularSequence(
 }
 
 function validateSequenceLength(
-  sequence: any[], 
+  sequence: any[],
   capType: CAPType
 ): ValidationResult {
   const errors: string[] = [];
@@ -53,7 +53,7 @@ function validateSequenceLength(
 }
 
 function validateCAPCompatibility(
-  sequence: any[], 
+  sequence: any[],
   capType: CAPType
 ): ValidationResult {
   const errors: string[] = [];
@@ -79,7 +79,7 @@ function validateCAPCompatibility(
 }
 
 function validateOrientations(
-  sequence: any[], 
+  sequence: any[],
   capType: CAPType
 ): ValidationResult {
   const errors: string[] = [];
@@ -97,7 +97,7 @@ function validateOrientations(
 }
 
 function validatePositions(
-  sequence: any[], 
+  sequence: any[],
   capType: CAPType
 ): ValidationResult {
   const errors: string[] = [];
@@ -141,9 +141,9 @@ function isRotationCompatible(sequence: any[]): boolean {
 }
 
 function isValidOrientation(orientation: any): boolean {
-  return orientation && 
-         typeof orientation === 'object' && 
-         'blue' in orientation && 
+  return orientation &&
+         typeof orientation === 'object' &&
+         'blue' in orientation &&
          'red' in orientation;
 }
 

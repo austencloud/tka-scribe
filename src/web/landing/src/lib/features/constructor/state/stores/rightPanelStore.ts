@@ -1,6 +1,6 @@
 /**
  * Right Panel Store
- * 
+ *
  * Manages the state of the right panel in the sequence interface,
  * including which tab is active and which picker to show.
  */
@@ -35,17 +35,17 @@ function createRightPanelStore() {
   // Return the store with custom methods
   return {
     subscribe,
-    
+
     // Set the active tab
     setActiveTab: (tab: RightPanelTab) => {
       update(state => ({ ...state, activeTab: tab }));
     },
-    
+
     // Set the construct picker type
     setConstructPicker: (picker: ConstructPickerType) => {
       update(state => ({ ...state, constructPicker: picker }));
     },
-    
+
     // Reset to default state
     reset: () => {
       set(initialState);
@@ -64,12 +64,12 @@ export const activePicker = derived(
     if ($rightPanelStore.activeTab === 'generate') {
       return null;
     }
-    
+
     // If the sequence is empty, show the start position picker
     if ($isEmpty) {
       return 'startPosition';
     }
-    
+
     // Otherwise, use the stored picker type
     return $rightPanelStore.constructPicker;
   }

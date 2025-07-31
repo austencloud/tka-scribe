@@ -31,7 +31,7 @@ export function directionTransition(node: HTMLElement, params: DirectionTransiti
         fadeIn = false,
         fadeOut = false
     } = params;
-    
+
     // Skip animations if user prefers reduced motion
     if (get(prefersReducedMotion)) {
         return {
@@ -39,15 +39,15 @@ export function directionTransition(node: HTMLElement, params: DirectionTransiti
             css: () => 'opacity: 1'
         };
     }
-    
+
     // Determine the direction of movement
-    const dx = direction === 'forward' ? distance : 
+    const dx = direction === 'forward' ? distance :
                direction === 'backward' ? -distance : 0;
 
     // For fade in/out effects
-    const initialOpacity = fadeIn ? 0 : 1;  
+    const initialOpacity = fadeIn ? 0 : 1;
     const finalOpacity = fadeOut ? 0 : 1;
-    
+
     return {
         duration,
         delay,
@@ -68,7 +68,7 @@ export function directionTransition(node: HTMLElement, params: DirectionTransiti
                 // No fade
                 opacity = 1;
             }
-            
+
             return `
                 opacity: ${opacity};
                 transform: translateX(${dx * u}px);
@@ -87,7 +87,7 @@ export function emptyStateTransition(node: HTMLElement, params: TransitionParams
         delay = 0,
         easing = quintOut
     } = params;
-    
+
     // Skip animations if user prefers reduced motion
     if (get(prefersReducedMotion)) {
         return {
@@ -95,7 +95,7 @@ export function emptyStateTransition(node: HTMLElement, params: TransitionParams
             css: () => 'opacity: 1'
         };
     }
-    
+
     return {
         duration,
         delay,
@@ -119,7 +119,7 @@ export function staggeredItemTransition(node: HTMLElement, params: { index: numb
         duration = 350,
         easing = quintOut
     } = params;
-    
+
     // Skip animations if user prefers reduced motion
     if (get(prefersReducedMotion)) {
         return {
@@ -127,18 +127,18 @@ export function staggeredItemTransition(node: HTMLElement, params: { index: numb
             css: () => 'opacity: 1'
         };
     }
-    
+
     // Calculate a more natural stagger delay based on grid position
     // This creates a wave-like effect through the grid
     const rowSize = Math.ceil(Math.sqrt(total));
     const row = Math.floor(index / rowSize);
     const col = index % rowSize;
-    
+
     // Creates a wave-like stagger pattern
     const baseDelay = (row + col) * 20;
     const maxDelay = 150; // Cap maximum delay
     const delay = Math.min(baseDelay, maxDelay);
-    
+
     return {
         duration,
         delay,
@@ -155,12 +155,12 @@ export function staggeredItemTransition(node: HTMLElement, params: { index: numb
  */
 export function optionGridTransition(node: HTMLElement, params: TransitionParams & { isEntering?: boolean }) {
     const {
-        duration = 300, 
+        duration = 300,
         delay = 0,
         easing = cubicOut,
         isEntering = true
     } = params;
-    
+
     // Skip animations if user prefers reduced motion
     if (get(prefersReducedMotion)) {
         return {
@@ -168,7 +168,7 @@ export function optionGridTransition(node: HTMLElement, params: TransitionParams
             css: () => 'opacity: 1'
         };
     }
-    
+
     // Entering and exiting have different animations
     if (isEntering) {
         return {
@@ -201,7 +201,7 @@ export function optionGridTransition(node: HTMLElement, params: TransitionParams
  */
 export function swipeFeedbackTransition(node: HTMLElement, params: { percent: number; direction: 'left' | 'right' }) {
     const { percent, direction } = params;
-    
+
     // Skip animations if user prefers reduced motion
     if (get(prefersReducedMotion)) {
         return {
@@ -209,11 +209,11 @@ export function swipeFeedbackTransition(node: HTMLElement, params: { percent: nu
             css: () => ''
         };
     }
-    
+
     const sign = direction === 'left' ? -1 : 1;
     const translateX = sign * percent * 20; // Max 20px movement
     const opacity = 0.2 + (percent * 0.8); // Fade in as swipe progresses
-    
+
     return {
         duration: 0, // Immediate update
         css: () => `

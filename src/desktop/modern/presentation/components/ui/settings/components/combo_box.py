@@ -65,22 +65,22 @@ class ComboBox(QComboBox):
                 font-weight: 500;
                 min-height: 20px;
             }
-            
+
             QComboBox:hover {
                 background: rgba(255, 255, 255, 0.15);
                 border: 1px solid rgba(255, 255, 255, 0.3);
             }
-            
+
             QComboBox:focus {
                 background: rgba(255, 255, 255, 0.15);
                 border: 1px solid rgba(42, 130, 218, 0.6);
             }
-            
+
             QComboBox::drop-down {
                 border: none;
                 width: 20px;
             }
-            
+
             QComboBox::down-arrow {
                 image: none;
                 border-left: 4px solid transparent;
@@ -88,7 +88,7 @@ class ComboBox(QComboBox):
                 border-top: 6px solid rgba(255, 255, 255, 0.7);
                 margin-right: 8px;
             }
-            
+
             QComboBox QAbstractItemView {
                 background: rgba(40, 40, 50, 0.95);
                 border: 1px solid rgba(255, 255, 255, 0.2);
@@ -98,17 +98,17 @@ class ComboBox(QComboBox):
                 selection-background-color: rgba(42, 130, 218, 0.3);
                 outline: none;
             }
-            
+
             QComboBox QAbstractItemView::item {
                 padding: 8px 12px;
                 border-radius: 4px;
                 min-height: 20px;
             }
-            
+
             QComboBox QAbstractItemView::item:hover {
                 background: rgba(255, 255, 255, 0.1);
             }
-            
+
             QComboBox QAbstractItemView::item:selected {
                 background: rgba(42, 130, 218, 0.3);
             }

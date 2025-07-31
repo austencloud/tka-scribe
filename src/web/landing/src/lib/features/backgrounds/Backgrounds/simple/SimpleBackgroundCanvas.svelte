@@ -24,7 +24,7 @@
 		if (!browser) return;
 
 		console.log('✅ SimpleBackgroundCanvas: Initializing lightweight background system');
-		
+
 		if (!canvas) {
 			console.error('SimpleBackgroundCanvas: Canvas element not found');
 			return;
@@ -44,7 +44,7 @@
 		// Initialize background system with non-reactive values
 		const bgType = props.backgroundType || 'nightSky';
 		const qualityLevel = props.quality || 'medium';
-		
+
 		backgroundSystem = new EnhancedBackgroundSystem(bgType, qualityLevel);
 		backgroundSystem.initialize(canvas, dimensions);
 
@@ -52,12 +52,12 @@
 		resizeObserver = new ResizeObserver((entries) => {
 			for (const entry of entries) {
 				const { width, height } = entry.contentRect;
-				
+
 				if (width > 0 && height > 0) {
 					// Update canvas size
 					canvas.width = width;
 					canvas.height = height;
-					
+
 					// Update background system dimensions
 					if (backgroundSystem) {
 						backgroundSystem.updateDimensions({ width, height });
@@ -88,12 +88,12 @@
 	// Cleanup
 	onDestroy(() => {
 		console.log('🧹 SimpleBackgroundCanvas: Cleaning up background system');
-		
+
 		if (backgroundSystem) {
 			backgroundSystem.cleanup();
 			backgroundSystem = null;
 		}
-		
+
 		if (resizeObserver) {
 			resizeObserver.disconnect();
 			resizeObserver = null;

@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://tka.dev/schemas/glyph-data.json",
-  "title": "GlyphData", 
+  "title": "GlyphData",
   "description": "Data for pictograph glyphs (elemental, VTG, TKA, position)",
   "type": "object",
   "properties": {
@@ -63,7 +63,7 @@
       "description": "Whether to show VTG glyph"
     },
     "show_tka": {
-      "type": "boolean", 
+      "type": "boolean",
       "default": true,
       "description": "Whether to show TKA glyph"
     },

@@ -9,9 +9,9 @@
 </script>
 
 {#if visible}
-	<div 
-		class="loading-overlay" 
-		in:fade={{ duration: transitionDuration }} 
+	<div
+		class="loading-overlay"
+		in:fade={{ duration: transitionDuration }}
 		out:fade={{ duration: transitionDuration }}
 	>
 		<div class="loading-content">

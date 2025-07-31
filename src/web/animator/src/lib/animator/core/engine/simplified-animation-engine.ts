@@ -115,7 +115,7 @@ export class SimplifiedAnimationEngine {
   private calculatePropFromStep(propState: PropState, currentAttrs: PropAttributes, nextAttrs: PropAttributes, t: number): void {
     // Calculate endpoints using standalone logic
     const endpoints = this.calculateStepEndpoints(currentAttrs, nextAttrs);
-    
+
     // Interpolate angles
     propState.centerPathAngle = this.lerpAngle(endpoints.startCenterAngle, endpoints.targetCenterAngle, t);
     propState.staffRotationAngle = this.lerpAngle(endpoints.startStaffAngle, endpoints.targetStaffAngle, t);
@@ -139,14 +139,14 @@ export class SimplifiedAnimationEngine {
     const startCenterAngle = this.mapPositionToAngle(currentAttrs.start_loc);
     const startStaffAngle = this.mapOrientationToAngle(currentAttrs.start_ori || 'in', startCenterAngle);
     const targetCenterAngle = this.mapPositionToAngle(nextAttrs.start_loc || currentAttrs.end_loc);
-    
+
     let targetStaffAngle: number;
 
     switch (currentAttrs.motion_type) {
       case 'pro':
         targetStaffAngle = this.calculateProIsolationStaffAngle(targetCenterAngle, currentAttrs.prop_rot_dir);
         break;
-        
+
       case 'anti':
         targetStaffAngle = this.calculateAntispinTargetAngle(
           startCenterAngle,
@@ -156,11 +156,11 @@ export class SimplifiedAnimationEngine {
           currentAttrs.prop_rot_dir
         );
         break;
-        
+
       case 'static':
         targetStaffAngle = this.calculateStaticStaffAngle(targetCenterAngle, currentAttrs.end_ori || currentAttrs.start_ori);
         break;
-        
+
       case 'dash':
         targetStaffAngle = this.calculateDashTargetAngle(
           startCenterAngle,
@@ -169,7 +169,7 @@ export class SimplifiedAnimationEngine {
           currentAttrs.prop_rot_dir
         );
         break;
-        
+
       default:
         targetStaffAngle = startStaffAngle;
         break;
@@ -197,14 +197,14 @@ export class SimplifiedAnimationEngine {
    */
   private mapPositionToAngle(position: string | undefined): number {
     if (!position) return 0;
-    
+
     const locationAngles: Record<string, number> = {
       e: 0,
       s: this.HALF_PI,
       w: this.PI,
       n: -this.HALF_PI
     };
-    
+
     return locationAngles[position.toLowerCase()] || 0;
   }
 
@@ -213,9 +213,9 @@ export class SimplifiedAnimationEngine {
    */
   private mapOrientationToAngle(orientation: string | undefined, centerPathAngle: number): number {
     if (!orientation) return this.normalizeAnglePositive(centerPathAngle + this.PI);
-    
+
     const ori = orientation.toLowerCase();
-    
+
     // Direct angle mappings
     const locationAngles: Record<string, number> = {
       e: 0,
@@ -223,15 +223,15 @@ export class SimplifiedAnimationEngine {
       w: this.PI,
       n: -this.HALF_PI
     };
-    
+
     if (locationAngles.hasOwnProperty(ori)) {
       return locationAngles[ori];
     }
-    
+
     // Relative orientations
     if (ori === 'in') return this.normalizeAnglePositive(centerPathAngle + this.PI);
     if (ori === 'out') return this.normalizeAnglePositive(centerPathAngle);
-    
+
     return this.normalizeAnglePositive(centerPathAngle + this.PI);
   }
 
@@ -256,7 +256,7 @@ export class SimplifiedAnimationEngine {
     const base = -delta;
     const turn = this.PI * turns;
     const dir = propRotDir?.toLowerCase() === 'ccw' ? -1 : 1;
-    
+
     return this.normalizeAnglePositive(startStaffAngle + base + turn * dir);
   }
 
@@ -286,7 +286,7 @@ export class SimplifiedAnimationEngine {
     const centerX = this.GRID_CENTER;
     const centerY = this.GRID_CENTER;
     const inwardFactor = 0.95;
-    
+
     propState.x = centerX + Math.cos(propState.centerPathAngle) * this.GRID_HALFWAY_POINT_OFFSET * inwardFactor;
     propState.y = centerY + Math.sin(propState.centerPathAngle) * this.GRID_HALFWAY_POINT_OFFSET * inwardFactor;
   }
@@ -330,7 +330,7 @@ export class SimplifiedAnimationEngine {
 		}
 
     const startState = this.sequenceData[1] as SequenceStep;
-    
+
     // Initialize blue prop
     const blueStartAngle = this.mapPositionToAngle(startState.blue_attributes.start_loc);
     this.bluePropState.centerPathAngle = blueStartAngle;

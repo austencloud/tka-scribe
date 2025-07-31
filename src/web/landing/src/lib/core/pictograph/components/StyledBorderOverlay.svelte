@@ -17,11 +17,11 @@
     border-radius: 4px;
     pointer-events: none;
   }
-  
+
   .selected {
     border-color: gold;
   }
-  
+
   .hovered {
     border-color: blue;
   }

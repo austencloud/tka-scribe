@@ -1,6 +1,6 @@
 /**
  * Data Factories v2
- * 
+ *
  * Factory functions that match the behavior of Python Pydantic models.
  * These provide immutable data creation and validation.
  */
@@ -25,22 +25,22 @@ import type {
 
 // Runtime validation helpers
 function isValidMotionType(value: unknown): value is MotionType {
-  return typeof value === 'string' && 
+  return typeof value === 'string' &&
     ['pro', 'anti', 'float', 'dash', 'static'].includes(value);
 }
 
 function isValidPropRotDir(value: unknown): value is PropRotDir {
-  return typeof value === 'string' && 
+  return typeof value === 'string' &&
     ['cw', 'ccw', 'no_rot'].includes(value);
 }
 
 function isValidLocation(value: unknown): value is Location {
-  return typeof value === 'string' && 
+  return typeof value === 'string' &&
     ['n', 'e', 's', 'w', 'ne', 'nw', 'se', 'sw'].includes(value);
 }
 
 function isValidOrientation(value: unknown): value is Orientation {
-  return typeof value === 'string' && 
+  return typeof value === 'string' &&
     ['in', 'out', 'clock', 'counter'].includes(value);
 }
 
@@ -49,14 +49,14 @@ export const createMotionDataFactory = (): MotionDataFactory => ({
   createDefault: (overrides: Partial<MotionData> = {}): MotionData => {
     const defaults: MotionData = {
       motionType: 'pro',
-      propRotDir: 'cw', 
+      propRotDir: 'cw',
       startLoc: 'n',
       endLoc: 'e',
       turns: 0.0,
       startOri: 'in',
       endOri: 'in'
     };
-    
+
     return { ...defaults, ...overrides };
   },
 
@@ -94,9 +94,9 @@ export const createMotionDataFactory = (): MotionDataFactory => ({
 
   validate: (data: unknown): data is MotionData => {
     if (typeof data !== 'object' || data === null) return false;
-    
+
     const obj = data as Record<string, unknown>;
-    
+
     return isValidMotionType(obj.motionType) &&
            isValidPropRotDir(obj.propRotDir) &&
            isValidLocation(obj.startLoc) &&
@@ -110,7 +110,7 @@ export const createMotionDataFactory = (): MotionDataFactory => ({
 // BeatData Factory (matches create_default_beat_data)
 export const createBeatDataFactory = (): BeatDataFactory => {
   const motionFactory = createMotionDataFactory();
-  
+
   return {
     createDefault: (beatNumber: number, letter: string, overrides: Partial<BeatData> = {}): BeatData => {
       if (beatNumber < 0) {
@@ -133,7 +133,7 @@ export const createBeatDataFactory = (): BeatDataFactory => {
         tags: [],
         glyphData: null
       };
-      
+
       return { ...defaults, ...overrides };
     },
 
@@ -162,10 +162,10 @@ export const createBeatDataFactory = (): BeatDataFactory => {
 
     validate: (data: unknown): data is BeatData => {
       if (typeof data !== 'object' || data === null) return false;
-      
+
       const obj = data as Record<string, unknown>;
       const motionFactory = createMotionDataFactory();
-      
+
       return typeof obj.beatNumber === 'number' &&
              obj.beatNumber >= 0 &&
              typeof obj.letter === 'string' &&
@@ -185,7 +185,7 @@ export const createBeatDataFactory = (): BeatDataFactory => {
 // SequenceData Factory (matches create_default_sequence_data)
 export const createSequenceDataFactory = (): SequenceDataFactory => {
   const beatFactory = createBeatDataFactory();
-  
+
   return {
     createDefault: (name: string, length: number = 8): SequenceData => {
       if (!name || typeof name !== 'string') {
@@ -212,7 +212,7 @@ export const createSequenceDataFactory = (): SequenceDataFactory => {
         throw new Error(`Invalid name: ${json.name}`);
       }
 
-      const beats = Array.isArray(json.beats) 
+      const beats = Array.isArray(json.beats)
         ? json.beats.map(beatData => beatFactory.fromJson(beatData))
         : [];
 
@@ -230,9 +230,9 @@ export const createSequenceDataFactory = (): SequenceDataFactory => {
 
     validate: (data: unknown): data is SequenceData => {
       if (typeof data !== 'object' || data === null) return false;
-      
+
       const obj = data as Record<string, unknown>;
-      
+
       return typeof obj.name === 'string' &&
              obj.name.length > 0 &&
              Array.isArray(obj.beats) &&
@@ -289,9 +289,9 @@ export function updateBeatData(beat: BeatData, updates: BeatDataUpdate): BeatDat
 }
 
 export function updateSequenceData(sequence: SequenceData, updates: SequenceDataUpdate): SequenceData {
-  return { 
-    ...sequence, 
-    ...updates, 
-    updatedAt: new Date().toISOString() 
+  return {
+    ...sequence,
+    ...updates,
+    updatedAt: new Date().toISOString()
   };
 }

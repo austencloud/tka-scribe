@@ -16,10 +16,10 @@
 
 		// Load settings from localStorage
 		loadImageExportSettings();
-		
+
 		// Add event listener to save settings before unload
 		window.addEventListener('beforeunload', saveImageExportSettings);
-		
+
 		// Mark as initialized
 		initialized = true;
 	});
@@ -27,7 +27,7 @@
 	// Clean up event listeners when component is destroyed
 	onDestroy(() => {
 		if (!browser) return;
-		
+
 		// Remove event listener
 		window.removeEventListener('beforeunload', saveImageExportSettings);
 	});

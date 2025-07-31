@@ -36,7 +36,7 @@ export class CanvasRenderer {
 		ctx.save();
 
 		const gridScaleFactor = canvasWidth / ANIMATION_CONSTANTS.GRID_VIEWBOX_SIZE;
-		
+
 		// Use coordinates directly from the simplified engine
 		const canvasX = prop.x * gridScaleFactor;
 		const canvasY = prop.y * gridScaleFactor;

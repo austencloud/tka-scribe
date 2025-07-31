@@ -1,6 +1,6 @@
 /**
  * Pictograph Store
- * 
+ *
  * This store manages the state of pictographs in the application.
  */
 
@@ -92,13 +92,13 @@ export const pictographStore = createStore<PictographStoreState, {
         };
       });
     }
-    
+
     return {
       setData: (data: PictographData) => {
         transitionTo('initializing', 'Starting to load pictograph');
         update(state => ({ ...state, data, status: 'grid_loading' }));
       },
-      
+
       updateComponentLoaded: (component: keyof PictographStoreState['components']) => {
         update(state => {
           const updatedComponents = {
@@ -117,7 +117,7 @@ export const pictographStore = createStore<PictographStoreState, {
           };
         });
       },
-      
+
       setError: (message: string, component?: string) => {
         update(state => ({
           ...state,
@@ -129,7 +129,7 @@ export const pictographStore = createStore<PictographStoreState, {
           }
         }));
       },
-      
+
       updatePropData: (color: 'red' | 'blue', propData: any) => {
         update(state => {
           if (!state.data) return state;
@@ -142,7 +142,7 @@ export const pictographStore = createStore<PictographStoreState, {
           };
         });
       },
-      
+
       updateArrowData: (color: 'red' | 'blue', arrowData: ArrowData) => {
         update(state => {
           if (!state.data) return state;
@@ -155,7 +155,7 @@ export const pictographStore = createStore<PictographStoreState, {
           };
         });
       },
-      
+
       transitionTo
     };
   },

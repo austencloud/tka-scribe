@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { fade } from 'svelte/transition';
-	
+
 	export let animationDuration = 300;
 </script>
 

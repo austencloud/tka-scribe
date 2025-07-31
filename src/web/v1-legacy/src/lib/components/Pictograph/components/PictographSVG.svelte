@@ -1,6 +1,6 @@
 <!--
   PictographSVG Component
-  
+
   This component provides the SVG element for the pictograph.
 -->
 <script lang="ts">

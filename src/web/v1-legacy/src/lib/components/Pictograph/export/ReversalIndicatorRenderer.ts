@@ -8,7 +8,7 @@ import type { Beat } from '$lib/types/Beat';
 
 /**
  * Draws reversal indicators for a beat
- * 
+ *
  * @param ctx The canvas rendering context
  * @param beat The beat to draw reversal indicators for
  * @param x The x position of the beat

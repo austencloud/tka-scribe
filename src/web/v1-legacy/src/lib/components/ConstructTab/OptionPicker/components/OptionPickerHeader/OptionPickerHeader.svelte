@@ -171,7 +171,7 @@
 			align-items: center; /* Center align items vertically */
 			flex-wrap: nowrap; /* Prevent wrapping to next line */
 			padding-right: 10px; /* Added padding for right side of ViewControl, need twice the amount of the items in the sequence widget for some reason */
-		
+
 		}
 
 		:global(.tabs),

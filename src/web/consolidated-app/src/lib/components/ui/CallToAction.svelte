@@ -4,7 +4,7 @@
     link: string;
     primary?: boolean;
   }
-  
+
   let { text, link, primary = true }: Props = $props();
 </script>
 

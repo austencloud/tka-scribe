@@ -30,7 +30,7 @@
 		<LetterTypePicker
 			options={letterTypeOptionsData}
 			bind:selectedTypes={selectedLetterTypes}
-			on:select={handleLetterTypesChange} 
+			on:select={handleLetterTypesChange}
 		/>
 		<div class="info-panel">
 			Selected Types: {selectedLetterTypes.length > 0 ? selectedLetterTypes.map(id => letterTypeOptionsData.find(opt => opt.id === id)?.label || id).join(', ') : 'All (Default)'}

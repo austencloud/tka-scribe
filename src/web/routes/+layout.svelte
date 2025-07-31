@@ -1,19 +1,19 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	
+
 	// Import global styles
 	import '$lib/styles/global.css';
 	import '$lib/styles/variables.css';
 	import '$lib/styles/themes.css';
-	
+
 	// Import runes-based components
 	import NavBar from '$lib/components/landing/NavBar.svelte';
-	
+
 	// Pure runes state management
 	let currentTheme = $state('dark');
 	let currentBackground = $state('deepOcean');
 	let isLoading = $state(false);
-	
+
 	// Computed values using $derived
 	let isAppMode = $derived($page.url.pathname.startsWith('/app'));
 	let isAnimatorMode = $derived($page.url.pathname.startsWith('/animator'));
@@ -26,7 +26,7 @@
 		if (path.startsWith('/about')) return 'about';
 		return 'home';
 	})());
-	
+
 	// Initialize theme and background using $effect
 	$effect(() => {
 		// Initialize theme from localStorage
@@ -34,7 +34,7 @@
 		currentTheme = savedTheme;
 		document.documentElement.setAttribute('data-theme', savedTheme);
 	});
-	
+
 	$effect(() => {
 		// Initialize background from localStorage
 		const savedBackground = localStorage.getItem('tka-background') || 'deepOcean';
@@ -45,8 +45,8 @@
 
 <svelte:head>
 	<title>{
-		isAppMode ? 'Constructor - TKA' : 
-		isAnimatorMode ? 'Animator - TKA' : 
+		isAppMode ? 'Constructor - TKA' :
+		isAnimatorMode ? 'Animator - TKA' :
 		'The Kinetic Alphabet'
 	}</title>
 </svelte:head>
@@ -56,7 +56,7 @@
 	{#if isLandingMode || $page.url.pathname === '/app'}
 		<NavBar {currentPage} />
 	{/if}
-	
+
 	<!-- Main Content -->
 	<main class="main-content" class:app-mode={isAppMode} class:full-screen={isAppMode && $page.url.pathname !== '/app'}>
 		{#if isLoading}
@@ -79,18 +79,18 @@
 		color: var(--text-color);
 		transition: background-color var(--transition-normal), color var(--transition-normal);
 	}
-	
+
 	.main-content {
 		position: relative;
 		z-index: 1;
 		min-height: 100vh;
 		transition: all 0.3s ease;
 	}
-	
+
 	.main-content.app-mode {
 		padding-top: 0;
 	}
-	
+
 	.main-content.full-screen {
 		position: fixed;
 		top: 0;
@@ -99,12 +99,12 @@
 		height: 100%;
 		z-index: 10;
 	}
-	
+
 	/* Landing mode has normal padding for nav */
 	.main-content:not(.app-mode) {
 		padding-top: 80px; /* Account for fixed navigation */
 	}
-	
+
 	.loading-overlay {
 		position: fixed;
 		top: 0;
@@ -119,7 +119,7 @@
 		z-index: 1000;
 		backdrop-filter: blur(4px);
 	}
-	
+
 	.loading-spinner {
 		width: 40px;
 		height: 40px;
@@ -129,12 +129,12 @@
 		animation: spin 1s linear infinite;
 		margin-bottom: var(--spacing-md);
 	}
-	
+
 	@keyframes spin {
 		0% { transform: rotate(0deg); }
 		100% { transform: rotate(360deg); }
 	}
-	
+
 	@media (max-width: 768px) {
 		.main-content:not(.app-mode) {
 			padding-top: 120px; /* Account for mobile nav height */

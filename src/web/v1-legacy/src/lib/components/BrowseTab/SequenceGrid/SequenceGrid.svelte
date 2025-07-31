@@ -4,12 +4,12 @@
   import { groupedSequences, browseTabStore } from '$lib/stores/browseTab/browseTabStore';
   import SectionHeader from './SectionHeader.svelte';
   import Thumbnail from './Thumbnail.svelte';
-  
+
   // Create event dispatcher
   const dispatch = createEventDispatcher<{
     selectSequence: string;
   }>();
-  
+
   // Handle thumbnail click
   function handleThumbnailClick(sequenceId: string) {
     dispatch('selectSequence', sequenceId);
@@ -28,10 +28,10 @@
     {#each $groupedSequences as group}
       <div class="sequence-section">
         <SectionHeader title={group.section} />
-        
+
         <div class="thumbnails-container">
           {#each group.sequences as sequence}
-            <Thumbnail 
+            <Thumbnail
               sequence={sequence}
               isSelected={$browseTabStore.selectedSequenceId === sequence.id}
               on:click={() => handleThumbnailClick(sequence.id)}
@@ -49,19 +49,19 @@
     flex-direction: column;
     gap: 2rem;
   }
-  
+
   .sequence-section {
     display: flex;
     flex-direction: column;
     gap: 1rem;
   }
-  
+
   .thumbnails-container {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
     gap: 1rem;
   }
-  
+
   .empty-state {
     display: flex;
     flex-direction: column;
@@ -72,12 +72,12 @@
     background-color: var(--background-color-secondary, #252525);
     border-radius: 8px;
   }
-  
+
   .empty-state p {
     margin-bottom: 1rem;
     color: var(--text-color-secondary, #aaaaaa);
   }
-  
+
   .reset-button {
     padding: 0.5rem 1rem;
     background-color: var(--primary-color, #4a90e2);
@@ -87,18 +87,18 @@
     cursor: pointer;
     font-weight: bold;
   }
-  
+
   .reset-button:hover {
     background-color: var(--primary-color-hover, #3a80d2);
   }
-  
+
   /* Responsive layout */
   @media (max-width: 768px) {
     .thumbnails-container {
       grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
     }
   }
-  
+
   @media (max-width: 480px) {
     .thumbnails-container {
       grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));

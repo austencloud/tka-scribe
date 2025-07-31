@@ -15,13 +15,13 @@
 
 <div class="control-group">
 	<label for="beatSlider">Time:</label>
-	<input 
-		type="range" 
-		id="beatSlider" 
-		min="0" 
-		max={totalBeats} 
-		step="0.01" 
-		value={currentBeat} 
+	<input
+		type="range"
+		id="beatSlider"
+		min="0"
+		max={totalBeats}
+		step="0.01"
+		value={currentBeat}
 		class="slider"
 		oninput={handleBeatChange}
 	/>

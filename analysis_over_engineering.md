@@ -24,7 +24,7 @@ Based on testing the original services, here's what they **actually** do:
 
 ## ❌ **OVER-ENGINEERED COMPONENTS** (Should Remove/Simplify)
 
-### **1. Complex Validation Layer** 
+### **1. Complex Validation Layer**
 - **Original**: Simple config validation (4 lines)
 - **Refactored**: 3 separate validator classes with complex validation chains
 - **Verdict**: **OVER-ENGINEERED** - original just checks length/level bounds
@@ -114,7 +114,7 @@ Based on testing the original services, here's what they **actually** do:
 
 ### **Phase 2: Create Simplified Services**
 1. **SimpleFreeformGenerator** - ~150 lines
-2. **SimpleCircularGenerator** - ~200 lines  
+2. **SimpleCircularGenerator** - ~200 lines
 3. **SimpleDataLoader** - ~100 lines
 4. **SimpleCSVConverter** - ~100 lines
 5. **SimpleTurnApplicator** - ~100 lines

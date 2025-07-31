@@ -19,10 +19,10 @@
 </script>
 
 <div class="canvas-container">
-	<canvas 
+	<canvas
 		bind:this={canvasElement}
-		id="animationCanvas" 
-		width={canvasSize} 
+		id="animationCanvas"
+		width={canvasSize}
 		height={canvasSize}
 	></canvas>
 	{#if !canvasState.imagesLoaded && canvasState.canvasReady}

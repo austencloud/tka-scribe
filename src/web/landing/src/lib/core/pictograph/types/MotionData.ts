@@ -1,6 +1,6 @@
 /**
  * UI-Specific MotionData Interface
- * 
+ *
  * This extends the core domain MotionData with UI-specific properties.
  * TODO: Migrate to use @tka/domain MotionData as base and extend it.
  */

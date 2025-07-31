@@ -20,7 +20,7 @@
     border-radius: 8px;
     background: #f9f9f9;
   }
-  
+
   .generate-btn {
     padding: 10px 20px;
     background: #28a745;
@@ -30,7 +30,7 @@
     cursor: pointer;
     margin-top: 10px;
   }
-  
+
   .generate-btn:hover {
     background: #218838;
   }

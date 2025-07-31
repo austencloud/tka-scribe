@@ -5,7 +5,7 @@ export interface Coordinate {
     x: number;
     y: number;
   }
-  
+
   /**
    * Grid point with additional metadata
    */
@@ -15,12 +15,12 @@ export interface Coordinate {
     type: 'hand' | 'layer2' | 'outer' | 'center';
     variant: 'normal' | 'strict' | 'none';
   }
-  
+
   /**
    * Type of grid layout
    */
   export type GridMode = 'diamond' | 'box';
-  
+
   /**
    * Grid data representing all points in a grid
    */
@@ -37,7 +37,7 @@ export interface Coordinate {
     centerPoint: GridPoint;
     mode: GridMode;
   }
-  
+
   /**
    * Loading states for grid data
    */
@@ -46,7 +46,7 @@ export interface Coordinate {
     | { status: 'loading' }
     | { status: 'error'; error: Error }
     | { status: 'loaded'; data: GridData };
-  
+
   /**
    * Point finder function result
    */

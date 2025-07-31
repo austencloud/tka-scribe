@@ -1,8 +1,8 @@
 <script lang="ts">
 	import Hero from '$lib/components/landing/Hero.svelte';
-	
+
 	let isVisible = $state(false);
-	
+
 	// Use $effect to handle mounting behavior with runes
 	$effect(() => {
 		isVisible = true;
@@ -24,12 +24,12 @@
 		transform: translateY(20px);
 		transition: all 0.8s ease;
 	}
-	
+
 	.landing-page.visible {
 		opacity: 1;
 		transform: translateY(0);
 	}
-	
+
 	@media (prefers-reduced-motion: reduce) {
 		.landing-page {
 			opacity: 1;

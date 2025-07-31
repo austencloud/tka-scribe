@@ -1,6 +1,6 @@
 /**
  * Settings State
- * 
+ *
  * This is the entry point for the settings state.
  * It exports the store and selectors.
  */

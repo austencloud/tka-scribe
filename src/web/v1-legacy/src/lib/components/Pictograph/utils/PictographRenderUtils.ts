@@ -1,6 +1,6 @@
 /**
  * Pictograph Rendering Utilities
- * 
+ *
  * This module provides helper functions for rendering the Pictograph component.
  */
 
@@ -8,7 +8,7 @@ import type { PictographData } from '$lib/types/PictographData';
 
 /**
  * Determines if the pictograph should show a beat label
- * 
+ *
  * @param beatNumber The beat number to display
  * @param isStartPosition Whether this is a start position
  * @returns True if a beat label should be shown
@@ -19,7 +19,7 @@ export function shouldShowBeatLabel(beatNumber: number | null, isStartPosition: 
 
 /**
  * Determines if the pictograph should show motion components
- * 
+ *
  * @param state The current state of the pictograph
  * @returns True if motion components should be shown
  */
@@ -29,7 +29,7 @@ export function shouldShowMotionComponents(state: string): boolean {
 
 /**
  * Determines if the pictograph should show loading indicators
- * 
+ *
  * @param state The current state of the pictograph
  * @param showLoadingIndicator Whether loading indicators are enabled
  * @returns True if loading indicators should be shown
@@ -40,7 +40,7 @@ export function shouldShowLoadingIndicator(state: string, showLoadingIndicator: 
 
 /**
  * Determines if the pictograph should show debug information
- * 
+ *
  * @param debug Whether debug mode is enabled
  * @returns True if debug information should be shown
  */
@@ -50,7 +50,7 @@ export function shouldShowDebugInfo(debug: boolean): boolean {
 
 /**
  * Gets the appropriate ARIA role for the pictograph
- * 
+ *
  * @param onClick The click handler, if any
  * @returns The ARIA role ('button' or 'img')
  */
@@ -60,7 +60,7 @@ export function getPictographRole(onClick: (() => void) | undefined): string {
 
 /**
  * Gets the appropriate HTML element for the pictograph
- * 
+ *
  * @param onClick The click handler, if any
  * @returns The HTML element name ('button' or 'div')
  */

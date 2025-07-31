@@ -16,8 +16,8 @@
 </script>
 
 <div class="info">
-	Elapsed Time: <span>{clampedBeat.toFixed(2)}</span> | 
-	Current Beat: <span>{displayBeatNum}</span> | 
+	Elapsed Time: <span>{clampedBeat.toFixed(2)}</span> |
+	Current Beat: <span>{displayBeatNum}</span> |
 	Progress (t): <span>{t.toFixed(3)}</span>
 </div>
 

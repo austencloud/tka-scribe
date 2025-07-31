@@ -1,26 +1,26 @@
 <!-- src/lib/components/SequenceWorkbench/GraphEditor/TurnsBox/TurnsBox.svelte -->
 <script lang="ts">
 	import { fly } from 'svelte/transition';
-	import { 
-	  turnsStore, 
-	  blueTurns, 
-	  redTurns, 
+	import {
+	  turnsStore,
+	  blueTurns,
+	  redTurns,
 	  type Direction,
-	  isMinTurns, 
-	  isMaxTurns 
+	  isMinTurns,
+	  isMaxTurns
 	} from '../stores/sequence/turnsStore.js';
-	
+
 	// Component props
 	export let color: 'blue' | 'red';
-	
+
 	// Simple component state (UI only, not duplicating store data)
 	let isDialogOpen = false;
-	
+
 	// Get derived state from stores
 	$: turnsData = color === 'blue' ? $blueTurns : $redTurns;
 	$: direction = turnsData.direction;
 	$: turns = turnsData.turns;
-	
+
 	// Color configurations
 	const COLORS = {
 	  blue: {
@@ -38,47 +38,47 @@
 		gradient: 'linear-gradient(135deg, rgba(237,28,36,0.1), rgba(237,28,36,0.8)), #fff'
 	  }
 	};
-	
+
 	// Available turns values for the dialog
 	const TURNS_VALUES = ['fl', '0', '0.5', '1', '1.5', '2', '2.5', '3'];
-	
+
 	// Computed values based on color
 	$: colorConfig = COLORS[color];
 	$: dialogBackground = `linear-gradient(135deg, ${colorConfig.light}, ${colorConfig.medium}), #fff`;
-	
+
 	// Icon paths
 	const iconPaths = {
 	  clockwise: '/icons/clockwise.png',
 	  counterClockwise: '/icons/counter_clockwise.png'
 	};
-	
+
 	// Event handlers
 	function handleSetDirection(newDirection: Direction) {
 	  turnsStore.setDirection(color, newDirection);
 	}
-	
+
 	function handleOpenDialog() {
 	  isDialogOpen = true;
 	}
-	
+
 	function handleCloseDialog() {
 	  isDialogOpen = false;
 	}
-	
+
 	function handleSelectTurns(value: string) {
 	  const turns = value === 'fl' ? 'fl' : parseFloat(value);
 	  turnsStore.setTurns(color, turns);
 	  isDialogOpen = false;
 	}
-	
+
 	function handleIncrement() {
 	  turnsStore.incrementTurns(color);
 	}
-	
+
 	function handleDecrement() {
 	  turnsStore.decrementTurns(color);
 	}
-	
+
 	// Close dialog on escape key
 	function handleKeydown(event: KeyboardEvent) {
 	  if (event.key === 'Escape' && isDialogOpen) {
@@ -86,16 +86,16 @@
 	  }
 	}
   </script>
-  
+
   <svelte:window on:keydown={handleKeydown}/>
-  
+
   <div class="turns-box" style="--box-color: {colorConfig.primary}; --box-gradient: {colorConfig.gradient};">
 	<!-- Header with direction buttons -->
 	<div class="turns-box-header">
 	  <!-- Counter-clockwise button -->
 	  <button
 		class="direction-button"
-		style="--color: {colorConfig.primary}; 
+		style="--color: {colorConfig.primary};
 			   --background-color: {direction === 'counterclockwise' ? colorConfig.primary : 'white'};"
 		on:click={() => handleSetDirection('counterclockwise')}
 		aria-label="Counter-clockwise rotation"
@@ -103,14 +103,14 @@
 	  >
 		<img class="icon" src={iconPaths.counterClockwise} alt="Counter-clockwise Icon" />
 	  </button>
-	  
+
 	  <!-- Label -->
 	  <div class="header-label" style="color: {colorConfig.primary};">{colorConfig.text}</div>
-	  
+
 	  <!-- Clockwise button -->
 	  <button
 		class="direction-button"
-		style="--color: {colorConfig.primary}; 
+		style="--color: {colorConfig.primary};
 			   --background-color: {direction === 'clockwise' ? colorConfig.primary : 'white'};"
 		on:click={() => handleSetDirection('clockwise')}
 		aria-label="Clockwise rotation"
@@ -119,11 +119,11 @@
 		<img class="icon" src={iconPaths.clockwise} alt="Clockwise Icon" />
 	  </button>
 	</div>
-	
+
 	<!-- Turns widget -->
 	<div class="turns-widget">
 	  <div class="turns-text-label">Turns</div>
-	  
+
 	  <div class="turns-display-frame">
 		<!-- Decrement button -->
 		<button
@@ -135,7 +135,7 @@
 		>
 		  −
 		</button>
-		
+
 		<!-- Turns label/button -->
 		<button
 		  class="turns-label"
@@ -145,7 +145,7 @@
 		>
 		  {turns}
 		</button>
-		
+
 		<!-- Increment button -->
 		<button
 		  class="increment-button"
@@ -157,10 +157,10 @@
 		  +
 		</button>
 	  </div>
-	  
+
 	  <div class="motion-type-label">Pro</div>
 	</div>
-	
+
 	<!-- Direct set dialog (appears when turns label is clicked) -->
 	{#if isDialogOpen}
 	  <div class="dialog-container" transition:fly={{ y: 20, duration: 200 }}>
@@ -173,7 +173,7 @@
 		  tabindex="0"
 		  role="button"
 		></div>
-		
+
 		<!-- Dialog content -->
 		<div
 		  class="dialog"
@@ -196,7 +196,7 @@
 	  </div>
 	{/if}
   </div>
-  
+
   <style>
 	/* Box container */
 	.turns-box {
@@ -209,7 +209,7 @@
 	  align-self: stretch;
 	  min-width: 0;
 	}
-	
+
 	/* Header styles */
 	.turns-box-header {
 	  display: flex;
@@ -218,13 +218,13 @@
 	  padding: 5px;
 	  border-bottom: 3px solid var(--box-color);
 	}
-	
+
 	.header-label {
 	  font-size: 1.8rem;
 	  font-weight: bold;
 	  transition: color 0.3s ease;
 	}
-	
+
 	.direction-button {
 	  width: 4rem;
 	  height: 4rem;
@@ -242,7 +242,7 @@
 	  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.2),
 		inset 0px 1px 3px rgba(255, 255, 255, 0.5);
 	}
-	
+
 	.direction-button:hover {
 	  background-color: #f5f5f5;
 	  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3),
@@ -250,7 +250,7 @@
 		0px 0px 5px rgba(255, 255, 255, 0.8);
 	  transform: scale(1.05);
 	}
-	
+
 	.direction-button:active,
 	.direction-button[aria-pressed='true'] {
 	  background-color: var(--color);
@@ -258,18 +258,18 @@
 		inset 0px 2px 4px rgba(255, 255, 255, 0.3);
 	  transform: translateY(2px);
 	}
-	
+
 	.direction-button[aria-pressed='true'] {
 	  cursor: default;
 	}
-	
+
 	.icon {
 	  width: 100%;
 	  height: 100%;
 	  object-fit: contain;
 	  filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.3));
 	}
-	
+
 	/* Turns widget styles */
 	.turns-widget {
 	  display: flex;
@@ -279,21 +279,21 @@
 	  flex: 1;
 	  justify-content: space-evenly;
 	}
-	
+
 	.turns-text-label {
 	  font-weight: bold;
 	  text-decoration: underline;
 	  text-align: center;
 	  font-size: 1.5rem;
 	}
-	
+
 	.turns-display-frame {
 	  display: flex;
 	  justify-content: space-evenly;
 	  align-items: center;
 	  width: 100%;
 	}
-	
+
 	.increment-button {
 	  width: 20%;
 	  background-color: white;
@@ -306,22 +306,22 @@
 	  transition-duration: 0.1s;
 	  font-size: 2em;
 	}
-	
+
 	.increment-button:hover:enabled {
 	  transform: scale(1.1);
 	  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3),
 		inset 0px 1px 3px rgba(255, 255, 255, 0.5);
 	}
-	
+
 	.increment-button:active:enabled {
 	  transform: scale(0.9);
 	}
-	
+
 	.increment-button:disabled {
 	  opacity: 0.5;
 	  cursor: not-allowed;
 	}
-	
+
 	.turns-label {
 	  color: black;
 	  font-weight: bold;
@@ -339,25 +339,25 @@
 		transform 0.1s,
 		background-color 0.2s;
 	}
-	
+
 	.turns-label:hover {
 	  transform: scale(1.1);
 	  box-shadow:
 		0px 4px 8px rgba(0, 0, 0, 0.3),
 		inset 0px 1px 3px rgba(255, 255, 255, 0.5);
 	}
-	
+
 	.turns-label:active {
 	  transform: scale(0.9);
 	}
-	
+
 	.motion-type-label {
 	  font-style: italic;
 	  text-align: center;
 	  color: black;
 	  font-size: 1.5rem;
 	}
-	
+
 	/* Dialog styles */
 	.dialog-container {
 	  position: absolute;
@@ -367,7 +367,7 @@
 	  justify-content: center;
 	  z-index: 10;
 	}
-	
+
 	.overlay {
 	  position: absolute;
 	  inset: 0;
@@ -375,7 +375,7 @@
 	  z-index: 0;
 	  cursor: pointer;
 	}
-	
+
 	.dialog {
 	  position: relative;
 	  display: grid;
@@ -390,7 +390,7 @@
 	  align-items: center;
 	  justify-content: space-evenly;
 	}
-	
+
 	.direct-set-button {
 	  border-radius: 50%;
 	  display: flex;
@@ -408,13 +408,13 @@
 	  font-size: 2em;
 	  border: 4px solid;
 	}
-	
+
 	.direct-set-button:hover {
 	  background-color: #e0e7ff;
 	  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
 	  transform: scale(1.1);
 	}
-	
+
 	.direct-set-button:active {
 	  background-color: #c7d2fe;
 	  box-shadow: inset 0px 4px 8px rgba(0, 0, 0, 0.2);

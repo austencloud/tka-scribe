@@ -307,8 +307,8 @@
       {/each}
     </select>
 
-    <button 
-      class="load-btn" 
+    <button
+      class="load-btn"
       onclick={loadSelectedSequence}
       disabled={!selectedSequence}
     >

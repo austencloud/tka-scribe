@@ -46,10 +46,10 @@ TKA Enterprise DI System
 ### Basic Usage
 
 ```typescript
-import { 
-    createProductionContainer, 
-    defineService, 
-    resolve 
+import {
+    createProductionContainer,
+    defineService,
+    resolve
 } from '@tka/di';
 
 // Define service interface

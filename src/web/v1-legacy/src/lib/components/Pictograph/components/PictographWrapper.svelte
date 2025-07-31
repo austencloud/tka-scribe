@@ -1,6 +1,6 @@
 <!--
   PictographWrapper Component
-  
+
   This component provides the wrapper element for the pictograph.
 -->
 <script lang="ts">

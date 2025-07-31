@@ -14,14 +14,14 @@ export const transitionLoading = {
   start: () => {
     transitionLoadingStore.set(true);
   },
-  
+
   /**
    * End the loading state
    */
   end: () => {
     transitionLoadingStore.set(false);
   },
-  
+
   /**
    * Toggle the loading state
    */

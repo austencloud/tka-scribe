@@ -36,7 +36,7 @@ const checks = [
         required: true
     },
     {
-        name: 'Import render sequence utilities', 
+        name: 'Import render sequence utilities',
         pattern: /import.*renderSequence.*downloadSequenceImage.*from.*ShareUtils/,
         required: true
     },
@@ -119,7 +119,7 @@ console.log('\n📋 Checking implementation...\n');
 
 for (const check of checks) {
     const matches = check.pattern.test(content);
-    
+
     if (matches) {
         console.log(`✅ ${check.name}`);
         passedChecks++;
@@ -137,13 +137,13 @@ console.log(`❌ Failed: ${failedChecks}`);
 
 if (failedChecks === 0) {
     console.log('\n🎉 All critical checks passed! ConstructTab implementation looks good.');
-    
+
     console.log('\n🔧 Next steps:');
     console.log('1. Install dependencies: npm install');
     console.log('2. Start dev server: npm run dev');
     console.log('3. Test in browser: http://localhost:5173/constructor');
     console.log('4. Test button actions by creating a sequence and trying each button');
-    
+
 } else {
     console.log('\n⚠️ Some critical checks failed. Review the implementation.');
     process.exit(1);
@@ -155,16 +155,16 @@ if (fs.existsSync(packageJsonPath)) {
     const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
     const requiredDeps = [
         'xstate',
-        '@xstate/svelte', 
+        '@xstate/svelte',
         'html2canvas',
         'lodash',
         'lucide-svelte',
         'lz-string',
         'svelte-motion'
     ];
-    
+
     console.log('\n📦 Checking dependencies:');
-    
+
     let missingDeps = 0;
     for (const dep of requiredDeps) {
         if (packageJson.dependencies?.[dep]) {
@@ -174,7 +174,7 @@ if (fs.existsSync(packageJsonPath)) {
             missingDeps++;
         }
     }
-    
+
     if (missingDeps === 0) {
         console.log('\n✅ All required dependencies are present in package.json');
     } else {

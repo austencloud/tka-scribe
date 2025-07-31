@@ -14,31 +14,31 @@ export function createSequenceSelectors(sequenceActor: Actor<any>) {
     isGenerating: () => {
       return sequenceActor.getSnapshot().matches('generating');
     },
-    
+
     hasError: () => {
       return sequenceActor.getSnapshot().matches('error');
     },
-    
+
     error: () => {
       return sequenceActor.getSnapshot().context.error;
     },
-    
+
     progress: () => {
       return sequenceActor.getSnapshot().context.generationProgress;
     },
-    
+
     message: () => {
       return sequenceActor.getSnapshot().context.generationMessage;
     },
-    
+
     generationMessage: () => {
       return sequenceActor.getSnapshot().context.generationMessage;
     },
-    
+
     generationType: () => {
       return sequenceActor.getSnapshot().context.generationType;
     },
-    
+
     generationOptions: () => {
       return sequenceActor.getSnapshot().context.generationOptions;
     },

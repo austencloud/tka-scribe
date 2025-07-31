@@ -70,7 +70,7 @@ export function loadPersistedState(persistenceKey: string): {
   } catch (error) {
     console.error('Failed to load or parse persisted state from localStorage:', error);
     // Reset on critical errors and attempt recovery
-    
+
     // Optionally backup and clear the corrupted data
     if (typeof localStorage !== 'undefined') {
       try {

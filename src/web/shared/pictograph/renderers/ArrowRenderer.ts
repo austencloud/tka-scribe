@@ -1,15 +1,15 @@
 /**
  * 🏹 ARROW RENDERER
- * 
+ *
  * Enterprise-grade arrow rendering service with positioning, rotation, and color transformation.
  * Based on modern desktop app arrow rendering patterns.
- * 
+ *
  * Source: src/desktop/modern/src/presentation/components/pictograph/renderers/arrow_renderer.py
  */
 
-import type { 
-  IArrowRenderer, 
-  ISVGAssetManager, 
+import type {
+  IArrowRenderer,
+  ISVGAssetManager,
   IArrowPositioningOrchestrator,
   ArrowPosition,
   MotionType,
@@ -92,16 +92,16 @@ export class ArrowRenderer implements IArrowRenderer {
     // Get the SVG content as string for transformation
     const svgContent = element.outerHTML;
     const transformedContent = this.assetManager.applyColorTransformation(svgContent, color);
-    
+
     // Parse the transformed content back to element
     const parser = new DOMParser();
     const doc = parser.parseFromString(transformedContent, 'image/svg+xml');
     const transformedElement = doc.querySelector('svg');
-    
+
     if (transformedElement) {
       // Replace the element's content with transformed content
       element.innerHTML = transformedElement.innerHTML;
-      
+
       // Copy any new attributes
       Array.from(transformedElement.attributes).forEach(attr => {
         if (attr.name !== 'xmlns') {
@@ -118,7 +118,7 @@ export class ArrowRenderer implements IArrowRenderer {
 
     const turns = this.formatTurns(motionData.turns);
     const identifier = `${motionData.motionType}_${turns}`;
-    
+
     return this.assetManager.getAssetPath('arrow', identifier);
   }
 
@@ -129,11 +129,11 @@ export class ArrowRenderer implements IArrowRenderer {
   private applyPositioning(element: SVGElement, position: ArrowPosition): void {
     // Set transform origin to center of arrow for proper rotation
     element.style.transformOrigin = 'center center';
-    
+
     // Apply position and rotation
     const transform = `translate(${position.x}px, ${position.y}px) rotate(${position.rotation}deg)`;
     element.style.transform = transform;
-    
+
     // Ensure proper positioning context
     element.style.position = 'absolute';
     element.style.top = '0';
@@ -151,17 +151,17 @@ export class ArrowRenderer implements IArrowRenderer {
     element.setAttribute('data-arrow-id', arrowData.id);
     element.setAttribute('data-arrow-color', arrowData.color);
     element.setAttribute('data-arrow-turns', arrowData.turns.toString());
-    
+
     if (arrowData.motionData) {
       element.setAttribute('data-motion-type', arrowData.motionData.motionType);
       element.setAttribute('data-start-loc', arrowData.motionData.startLoc);
       element.setAttribute('data-end-loc', arrowData.motionData.endLoc);
     }
-    
+
     // Add CSS classes for styling and interaction
     element.classList.add('pictograph-arrow');
     element.classList.add(`arrow-${arrowData.color}`);
-    
+
     if (arrowData.isSelected) {
       element.classList.add('arrow-selected');
     }
@@ -191,23 +191,23 @@ export class ArrowRenderer implements IArrowRenderer {
     svg.setAttribute('viewBox', '0 0 100 100');
     svg.setAttribute('width', '60');
     svg.setAttribute('height', '60');
-    
+
     // Create a simple arrow shape
     const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
     path.setAttribute('d', 'M20,50 L60,30 L60,40 L80,40 L80,60 L60,60 L60,70 Z');
     path.setAttribute('fill', this.getFallbackColor(arrowData.color));
     path.setAttribute('stroke', this.getFallbackStrokeColor(arrowData.color));
     path.setAttribute('stroke-width', '2');
-    
+
     svg.appendChild(path);
-    
+
     // Apply positioning
     const position = this.calculateArrowPosition(arrowData);
     this.applyPositioning(svg, position);
-    
+
     // Set metadata
     this.setArrowMetadata(svg, arrowData);
-    
+
     console.warn(`Using fallback arrow for ${arrowData.color} arrow`);
     return svg;
   }
@@ -239,7 +239,7 @@ export class ArrowRenderer implements IArrowRenderer {
 
   private normalizeMotionType(motionType: string): MotionType {
     const normalized = motionType.toLowerCase();
-    
+
     switch (normalized) {
       case 'static':
         return MotionType.STATIC;
@@ -264,7 +264,7 @@ export class ArrowRenderer implements IArrowRenderer {
   private shouldUseCache(arrowData: ArrowData): boolean {
     // Determine if this arrow configuration should be cached
     // Cache static arrows and common configurations
-    return arrowData.motionData?.motionType === 'static' || 
+    return arrowData.motionData?.motionType === 'static' ||
            arrowData.turns === 0;
   }
 
@@ -274,7 +274,7 @@ export class ArrowRenderer implements IArrowRenderer {
     const turns = arrowData.turns;
     const color = arrowData.color;
     const mirrored = arrowData.isMirrored ? 'mirrored' : 'normal';
-    
+
     return `arrow_${motionType}_${turns}_${color}_${mirrored}`;
   }
 }

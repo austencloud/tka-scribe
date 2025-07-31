@@ -1,11 +1,11 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  
+
   // Props
   const { enabled = $bindable(false) } = $props<{
     enabled?: boolean;
   }>();
-  
+
   // State
   let insets = $state({
     top: '0px',
@@ -13,11 +13,11 @@
     bottom: '0px',
     left: '0px'
   });
-  
+
   // Update inset values
   function updateInsets() {
     if (typeof window === 'undefined') return;
-    
+
     // Get computed values from CSS variables
     const computedStyle = getComputedStyle(document.documentElement);
     insets = {
@@ -27,14 +27,14 @@
       left: computedStyle.getPropertyValue('--safe-inset-left') || '0px'
     };
   }
-  
+
   onMount(() => {
     updateInsets();
-    
+
     // Update on resize and orientation change
     window.addEventListener('resize', updateInsets);
     window.addEventListener('orientationchange', updateInsets);
-    
+
     return () => {
       window.removeEventListener('resize', updateInsets);
       window.removeEventListener('orientationchange', updateInsets);
@@ -48,17 +48,17 @@
     <div class="inset-indicator top" style="height: {insets.top};">
       <span class="inset-label">Top: {insets.top}</span>
     </div>
-    
+
     <!-- Right inset -->
     <div class="inset-indicator right" style="width: {insets.right};">
       <span class="inset-label">Right: {insets.right}</span>
     </div>
-    
+
     <!-- Bottom inset -->
     <div class="inset-indicator bottom" style="height: {insets.bottom};">
       <span class="inset-label">Bottom: {insets.bottom}</span>
     </div>
-    
+
     <!-- Left inset -->
     <div class="inset-indicator left" style="width: {insets.left};">
       <span class="inset-label">Left: {insets.left}</span>
@@ -76,7 +76,7 @@
     pointer-events: none;
     z-index: 10000;
   }
-  
+
   .inset-indicator {
     position: absolute;
     display: flex;
@@ -87,31 +87,31 @@
     box-sizing: border-box;
     overflow: hidden;
   }
-  
+
   .inset-indicator.top {
     top: 0;
     left: 0;
     width: 100%;
   }
-  
+
   .inset-indicator.right {
     top: 0;
     right: 0;
     height: 100%;
   }
-  
+
   .inset-indicator.bottom {
     bottom: 0;
     left: 0;
     width: 100%;
   }
-  
+
   .inset-indicator.left {
     top: 0;
     left: 0;
     height: 100%;
   }
-  
+
   .inset-label {
     font-size: 10px;
     color: white;

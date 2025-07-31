@@ -23,19 +23,19 @@ export function testSequenceUrlEncoding(beats: BeatData[]): {
     try {
         // Generate a shareable URL
         const url = generateShareableUrl(beats, 'Test Sequence');
-        
+
         // Extract the encoded sequence from the URL
         const urlObj = new URL(url);
         const encodedSequence = urlObj.searchParams.get('seq') || '';
-        
+
         // Decode the sequence
         const decodedBeats = decodeSequenceCompact(encodedSequence);
-        
+
         // Calculate compression stats
         const originalLength = JSON.stringify(beats).length;
         const compressedLength = encodedSequence.length;
         const compressionRatio = compressedLength / originalLength;
-        
+
         return {
             success: true,
             originalBeats: beats,

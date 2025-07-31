@@ -1,6 +1,6 @@
 /**
  * 🎯 TKA ENTERPRISE DI TYPE SYSTEM
- * 
+ *
  * Sophisticated type definitions that provide compile-time safety
  * and runtime validation for the dependency injection system.
  */
@@ -23,7 +23,7 @@ export interface ServiceInterface<T = any> {
  * Create a type-safe service interface
  */
 export function createServiceInterface<T>(
-    name: string, 
+    name: string,
     type: new (...args: any[]) => T,
     metadata?: ServiceMetadata
 ): ServiceInterface<T> {
@@ -57,28 +57,28 @@ export interface ServiceMetadata {
 export enum ServiceScope {
     /** One instance per container */
     Singleton = 'singleton',
-    
+
     /** New instance per resolution */
     Transient = 'transient',
-    
+
     /** One instance per scope */
     Scoped = 'scoped',
-    
+
     /** Deferred instantiation */
     Lazy = 'lazy',
-    
+
     /** Custom factory function */
     Factory = 'factory',
-    
+
     /** Specific instance */
     Instance = 'instance',
-    
+
     /** One instance per request (web-specific) */
     Request = 'request',
-    
+
     /** One instance per session (web-specific) */
     Session = 'session',
-    
+
     /** One instance per component tree (Svelte-specific) */
     Component = 'component'
 }

@@ -1,6 +1,6 @@
 <!--
   LoadingOverlay Component
-  
+
   Shows a loading overlay during transitions.
 -->
 <script lang="ts">
@@ -13,8 +13,8 @@
 </script>
 
 {#if visible}
-	<div 
-		class="loading-overlay" 
+	<div
+		class="loading-overlay"
 		transition:fade={{ duration: transitionDuration }}
 	>
 		<div class="loading-content">

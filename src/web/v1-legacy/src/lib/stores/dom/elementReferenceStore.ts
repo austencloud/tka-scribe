@@ -1,6 +1,6 @@
 /**
  * Element Reference Store
- * 
+ *
  * A centralized store for managing DOM element references across components.
  * This solves the problem of sharing element references between components
  * in a way that's resilient to component lifecycle events and hot module reloads.
@@ -32,7 +32,7 @@ const createElementReferenceStore = () => {
 
   return {
     subscribe,
-    
+
     /**
      * Set an element reference by key
      */
@@ -41,13 +41,13 @@ const createElementReferenceStore = () => {
         console.warn(`ElementReferenceStore: Attempted to set null element for key "${key}"`);
         return false;
       }
-      
+
       console.log(`ElementReferenceStore: Setting element for key "${key}"`, element);
-      
+
       update(refs => {
         // Create a new object to ensure reactivity
         const newRefs = { ...refs, [key]: element };
-        
+
         // Store the key in localStorage for persistence
         if (browser) {
           try {
@@ -57,25 +57,25 @@ const createElementReferenceStore = () => {
             console.error('ElementReferenceStore: Error storing reference keys:', error);
           }
         }
-        
+
         return newRefs;
       });
-      
+
       // Also store in global fallback for maximum compatibility
       if (browser) {
         (window as any)[`__element_ref_${key}`] = element;
       }
-      
+
       return true;
     },
-    
+
     /**
      * Get an element reference by key
      */
     getElement: (key: string): HTMLElement | null => {
       const refs = get({ subscribe });
       const element = refs[key];
-      
+
       // If not found in store, try global fallback
       if (!element && browser) {
         const globalFallback = (window as any)[`__element_ref_${key}`] as HTMLElement | null;
@@ -86,17 +86,17 @@ const createElementReferenceStore = () => {
           return globalFallback;
         }
       }
-      
+
       return element || null;
     },
-    
+
     /**
      * Remove an element reference by key
      */
     removeElement: (key: string) => {
       update(refs => {
         const { [key]: _, ...rest } = refs;
-        
+
         // Update localStorage
         if (browser) {
           try {
@@ -106,22 +106,22 @@ const createElementReferenceStore = () => {
             console.error('ElementReferenceStore: Error updating reference keys:', error);
           }
         }
-        
+
         // Also remove from global fallback
         if (browser) {
           delete (window as any)[`__element_ref_${key}`];
         }
-        
+
         return rest;
       });
     },
-    
+
     /**
      * Clear all element references
      */
     clearAll: () => {
       set({});
-      
+
       // Clear localStorage
       if (browser) {
         try {

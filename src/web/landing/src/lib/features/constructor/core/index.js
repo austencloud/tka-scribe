@@ -2,7 +2,7 @@
 export function createStore(initialState) {
   let state = initialState;
   const subscribers = [];
-  
+
   return {
     subscribe: (callback) => {
       subscribers.push(callback);

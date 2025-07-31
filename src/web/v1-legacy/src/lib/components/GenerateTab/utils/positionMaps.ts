@@ -1,4 +1,4 @@
-export type Position = 
+export type Position =
   | 'alpha1_alpha1'
   | 'alpha2_alpha2'
   | 'beta4_beta4'
@@ -33,7 +33,7 @@ class PositionMapper {
   };
 
   mapPosition(
-    beatIndex: number, 
+    beatIndex: number,
     gridMode: GridMode = 'diamond'
   ): Position {
     const positions = this.POSITION_MAPPING[gridMode];
@@ -50,7 +50,7 @@ class PositionMapper {
 
   // Advanced: Find possible positions between two locations
   findPositionPath(
-    startPos: Position, 
+    startPos: Position,
     endPos: Position
   ): Position[] {
     // This would implement logic to find valid transitions between positions

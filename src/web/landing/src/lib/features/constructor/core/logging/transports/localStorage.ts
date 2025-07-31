@@ -1,6 +1,6 @@
 /**
  * LocalStorage Transport
- * 
+ *
  * Persists logs to localStorage for later retrieval.
  */
 
@@ -44,7 +44,7 @@ export class LocalStorageTransport implements LogTransport {
 
     // Add to buffer
     this.buffer.push(entry);
-    
+
     // Schedule a write if not already scheduled
     if (!this.throttleTimeout) {
       this.throttleTimeout = setTimeout(() => {
@@ -63,7 +63,7 @@ export class LocalStorageTransport implements LogTransport {
         clearTimeout(this.throttleTimeout);
         this.throttleTimeout = null;
       }
-      
+
       this.flushToStorage();
       resolve();
     });
@@ -88,7 +88,7 @@ export class LocalStorageTransport implements LogTransport {
    */
   getEntries(): LogEntry[] {
     if (!browser) return [];
-    
+
     const entries = this.loadFromStorage();
     return [...entries, ...this.buffer];
   }
@@ -98,11 +98,11 @@ export class LocalStorageTransport implements LogTransport {
    */
   private loadFromStorage(): LogEntry[] {
     if (!browser) return [];
-    
+
     try {
       const storedData = localStorage.getItem(this.options.storageKey!);
       if (!storedData) return [];
-      
+
       return JSON.parse(storedData) as LogEntry[];
     } catch (error) {
       console.error('Error loading logs from localStorage:', error);
@@ -115,28 +115,28 @@ export class LocalStorageTransport implements LogTransport {
    */
   private flushToStorage(): void {
     if (!browser || this.buffer.length === 0) return;
-    
+
     try {
       // Get existing entries
       const existingEntries = this.loadFromStorage();
-      
+
       // Combine with buffer
       const allEntries = [...existingEntries, ...this.buffer];
-      
+
       // Trim to max size
       const trimmedEntries = allEntries.slice(-this.options.maxEntries!);
-      
+
       // Save to localStorage
       localStorage.setItem(
         this.options.storageKey!,
         JSON.stringify(trimmedEntries)
       );
-      
+
       // Clear buffer
       this.buffer = [];
     } catch (error) {
       console.error('Error writing logs to localStorage:', error);
-      
+
       // If it's a quota error, try to reduce the number of entries
       if (error instanceof DOMException && error.name === 'QuotaExceededError') {
         try {

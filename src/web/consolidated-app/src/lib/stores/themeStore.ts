@@ -22,10 +22,10 @@ function createThemeStore() {
 	if (browser) {
 		const savedTheme = localStorage.getItem('tka-theme') as Theme | null;
 		const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-		
+
 		const theme = savedTheme || 'auto';
 		const effectiveTheme = theme === 'auto' ? systemTheme : theme;
-		
+
 		set({
 			theme,
 			systemTheme,
@@ -45,32 +45,32 @@ function createThemeStore() {
 
 	return {
 		subscribe,
-		
+
 		setTheme: (theme: Theme) => {
 			update(state => {
 				const effectiveTheme = theme === 'auto' ? state.systemTheme : theme;
 				const newState = { ...state, theme, effectiveTheme };
-				
+
 				if (browser) {
 					localStorage.setItem('tka-theme', theme);
 					document.documentElement.setAttribute('data-theme', effectiveTheme);
 				}
-				
+
 				return newState;
 			});
 		},
-		
+
 		toggleTheme: () => {
 			update(state => {
-				const newTheme: Theme = state.theme === 'dark' ? 'light' : 
+				const newTheme: Theme = state.theme === 'dark' ? 'light' :
 								  	   state.theme === 'light' ? 'auto' : 'dark';
 				const effectiveTheme = newTheme === 'auto' ? state.systemTheme : newTheme;
-				
+
 				if (browser) {
 					localStorage.setItem('tka-theme', newTheme);
 					document.documentElement.setAttribute('data-theme', effectiveTheme);
 				}
-				
+
 				return { ...state, theme: newTheme, effectiveTheme };
 			});
 		}

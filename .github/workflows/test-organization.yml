@@ -39,13 +39,13 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               body: `❌ **Test Organization Validation Failed**
-              
+
               Please ensure:
               - Tests are in correct directories
               - All tests have proper lifecycle metadata
               - Scaffolding tests have DELETE_AFTER dates
-              
+
               Run locally: \`python modern/tests/scripts/validate_test_placement.py\`
-              
+
               See: \`modern/tests/TEST_ORGANIZATION_GUIDE.md\``
             })

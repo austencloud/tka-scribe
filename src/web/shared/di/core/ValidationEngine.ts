@@ -1,14 +1,14 @@
 /**
  * ✅ TKA VALIDATION ENGINE
- * 
+ *
  * Comprehensive validation system for service registration and resolution
  * with detailed error reporting and suggestions.
  */
 
-import { 
-    ServiceInterface, 
-    ValidationResult, 
-    ValidationError, 
+import {
+    ServiceInterface,
+    ValidationResult,
+    ValidationError,
     ValidationWarning,
     ServiceFactory,
     Constructor
@@ -26,7 +26,7 @@ export class ValidationEngine {
      * Validate service registration
      */
     validateRegistration<T>(
-        serviceInterface: ServiceInterface<T>, 
+        serviceInterface: ServiceInterface<T>,
         implementation: Constructor<T>
     ): ValidationResult {
         const errors: ValidationError[] = [];
@@ -61,7 +61,7 @@ export class ValidationEngine {
      * Validate factory registration
      */
     validateFactoryRegistration<T>(
-        serviceInterface: ServiceInterface<T>, 
+        serviceInterface: ServiceInterface<T>,
         factory: ServiceFactory<T>
     ): ValidationResult {
         const errors: ValidationError[] = [];
@@ -95,7 +95,7 @@ export class ValidationEngine {
      * Validate instance registration
      */
     validateInstanceRegistration<T>(
-        serviceInterface: ServiceInterface<T>, 
+        serviceInterface: ServiceInterface<T>,
         instance: T
     ): ValidationResult {
         const errors: ValidationError[] = [];
@@ -285,7 +285,7 @@ export class ValidationEngine {
 
     private _findMissingMethods(instance: any, prototype: any): string[] {
         const missing: string[] = [];
-        
+
         if (!prototype) return missing;
 
         const prototypeProps = Object.getOwnPropertyNames(prototype);

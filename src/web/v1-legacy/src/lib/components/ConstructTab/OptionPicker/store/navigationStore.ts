@@ -26,7 +26,7 @@ const createNavigationStore = () => {
 
     return {
         subscribe,
-        
+
         /**
          * Navigate to a new tab with direction awareness
          */
@@ -34,27 +34,27 @@ const createNavigationStore = () => {
             update(state => {
                 // Prevent rapid navigation during transitions
                 if (state.transitionLock) return state;
-                
+
                 // If same tab, no navigation needed
                 if (state.currentTab === newTab) return state;
-                
+
                 // Determine direction based on tab order
                 let direction: NavigationDirection = 'initial';
-                
+
                 if (state.currentTab && newTab) {
                     const prevIndex = state.tabOrder.indexOf(state.currentTab);
                     const newIndex = state.tabOrder.indexOf(newTab);
-                    
+
                     if (prevIndex !== -1 && newIndex !== -1) {
                         direction = prevIndex < newIndex ? 'forward' : 'backward';
                     }
                 }
-                
+
                 // Set transition lock
                 setTimeout(() => {
                     update(s => ({ ...s, transitionLock: false }));
                 }, 350); // Slightly longer than transition duration
-                
+
                 return {
                     ...state,
                     previousTab: state.currentTab,
@@ -64,7 +64,7 @@ const createNavigationStore = () => {
                 };
             });
         },
-        
+
         /**
          * Update the tab order based on available tabs
          */
@@ -74,7 +74,7 @@ const createNavigationStore = () => {
                 tabOrder
             }));
         },
-        
+
         /**
          * Reset the navigation state
          */

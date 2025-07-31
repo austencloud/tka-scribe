@@ -146,22 +146,22 @@ class DockContextMenuManager(QObject):
                 font-family: 'Inter', 'Segoe UI', sans-serif;
                 font-size: 12px;
             }
-            
+
             QMenu::item {
                 background: transparent;
                 padding: 6px 12px;
                 border-radius: 4px;
                 margin: 1px;
             }
-            
+
             QMenu::item:selected {
                 background: rgba(255, 255, 255, 0.1);
             }
-            
+
             QMenu::item:disabled {
                 color: rgba(255, 255, 255, 0.5);
             }
-            
+
             QMenu::separator {
                 height: 1px;
                 background: rgba(255, 255, 255, 0.1);

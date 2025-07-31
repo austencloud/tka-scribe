@@ -1,6 +1,6 @@
 /**
  * Pictograph State
- * 
+ *
  * This is the entry point for the pictograph state.
  * It exports the store and selectors.
  */

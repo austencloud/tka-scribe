@@ -31,21 +31,21 @@ export function createSequenceActions(sequenceActor: Actor<any>) {
         };
       }
 
-      sequenceActor.send({ 
-        type: 'GENERATE', 
-        options: validOptions, 
-        generationType: type 
+      sequenceActor.send({
+        type: 'GENERATE',
+        options: validOptions,
+        generationType: type
       } as SequenceMachineEvent);
     },
-    
+
     cancel: () => {
       sequenceActor.send({ type: 'CANCEL' } as SequenceMachineEvent);
     },
-    
+
     retry: () => {
       sequenceActor.send({ type: 'RETRY' } as SequenceMachineEvent);
     },
-    
+
     reset: () => {
       sequenceActor.send({ type: 'RESET' } as SequenceMachineEvent);
     },
@@ -54,27 +54,27 @@ export function createSequenceActions(sequenceActor: Actor<any>) {
     selectBeat: (beatId: string) => {
       sequenceActor.send({ type: 'SELECT_BEAT', beatId } as SequenceMachineEvent);
     },
-    
+
     deselectBeat: (beatId?: string) => {
       sequenceActor.send({ type: 'DESELECT_BEAT', beatId } as SequenceMachineEvent);
     },
-    
+
     addBeat: (beat: any) => {
       sequenceActor.send({ type: 'ADD_BEAT', beat } as SequenceMachineEvent);
     },
-    
+
     removeBeat: (beatId: string) => {
       sequenceActor.send({ type: 'REMOVE_BEAT', beatId } as SequenceMachineEvent);
     },
-    
+
     removeBeatAndFollowing: (beatId: string) => {
       sequenceActor.send({ type: 'REMOVE_BEAT_AND_FOLLOWING', beatId } as SequenceMachineEvent);
     },
-    
+
     updateBeat: (beatId: string, updates: any) => {
       sequenceActor.send({ type: 'UPDATE_BEAT', beatId, updates } as SequenceMachineEvent);
     },
-    
+
     clearSequence: () => {
       sequenceActor.send({ type: 'CLEAR_SEQUENCE' } as SequenceMachineEvent);
     }

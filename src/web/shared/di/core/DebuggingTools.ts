@@ -1,17 +1,17 @@
 /**
  * 🔍 TKA DEBUGGING TOOLS
- * 
+ *
  * Enterprise-grade debugging and monitoring tools for the dependency injection system.
  * Provides comprehensive logging, performance tracking, and diagnostic capabilities.
  */
 
-import { 
-    DebugInfo, 
-    RegistrationEvent, 
-    ResolutionEvent, 
-    ScopeEvent, 
+import {
+    DebugInfo,
+    RegistrationEvent,
+    ResolutionEvent,
+    ScopeEvent,
     ErrorEvent,
-    ResolutionContext 
+    ResolutionContext
 } from './types.js';
 
 export class DebuggingTools {
@@ -20,7 +20,7 @@ export class DebuggingTools {
     private readonly _resolutionHistory: ResolutionEvent[] = [];
     private readonly _scopeHistory: ScopeEvent[] = [];
     private readonly _errorHistory: ErrorEvent[] = [];
-    
+
     private _debugMode = false;
     private _maxHistorySize = 1000;
     private _performanceThreshold = 10; // ms
@@ -347,11 +347,11 @@ export class DebuggingTools {
     private _isDebugEnvironment(): boolean {
         // Check various debug indicators
         if (typeof window !== 'undefined') {
-            return !!(window as any).__TKA_DEBUG__ || 
+            return !!(window as any).__TKA_DEBUG__ ||
                    location.hostname === 'localhost' ||
                    location.hostname === '127.0.0.1';
         }
-        
+
         if (typeof process !== 'undefined') {
             return process.env.NODE_ENV === 'development' ||
                    process.env.TKA_DEBUG === 'true';

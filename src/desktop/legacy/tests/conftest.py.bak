@@ -41,7 +41,7 @@ def legacy_src_path():
     """Provide the legacy src path."""
     return legacy_src
 
-@pytest.fixture(scope="session") 
+@pytest.fixture(scope="session")
 def legacy_root_path():
     """Provide the legacy root path."""
     return legacy_root

@@ -9,7 +9,7 @@ if [ $? -eq 0 ]; then
 else
     echo "❌ CRITICAL TESTS FAILED after merge!"
     echo "🚨 Your codebase may be broken!"
-    
+
     # Optional: Send notification
     # python scripts/notify_dev.py "Tests failed after git merge"
 fi

@@ -8,7 +8,7 @@ across desktop and web platforms for complete coverage.
 
 from abc import ABC, abstractmethod
 from enum import Enum
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Optional
 
 
 class SessionState(Enum):
@@ -24,7 +24,7 @@ class ISessionRestorationCoordinator(ABC):
     """Interface for session restoration coordination operations."""
 
     @abstractmethod
-    def save_session_state(self, session_data: Dict[str, Any]) -> bool:
+    def save_session_state(self, session_data: dict[str, Any]) -> bool:
         """
         Save current session state.
 
@@ -39,7 +39,7 @@ class ISessionRestorationCoordinator(ABC):
         """
 
     @abstractmethod
-    def restore_session_state(self) -> Optional[Dict[str, Any]]:
+    def restore_session_state(self) -> Optional[dict[str, Any]]:
         """
         Restore session state from storage.
 
@@ -113,15 +113,15 @@ class IDatasetManager(ABC):
         """
 
     @abstractmethod
-    def list_datasets(self) -> List[str]:
+    def list_datasets(self) -> list[str]:
         """
-        List available datasets.
+        list available datasets.
 
         Returns:
-            List of dataset names
+            list of dataset names
 
         Note:
-            Web implementation: Lists from server or browser storage
+            Web implementation: lists from server or browser storage
         """
 
 
@@ -199,12 +199,12 @@ class IDataManager(ABC):
         """
 
     @abstractmethod
-    def get_data_keys(self) -> List[str]:
+    def get_data_keys(self) -> list[str]:
         """
         Get all data keys.
 
         Returns:
-            List of data keys
+            list of data keys
 
         Note:
             Web implementation: Retrieved from browser storage or server
@@ -230,7 +230,7 @@ class IOptionDataService(ABC):
     """Interface for option data service operations."""
 
     @abstractmethod
-    def get_option_data(self, option_id: str) -> Optional[Dict[str, Any]]:
+    def get_option_data(self, option_id: str) -> Optional[dict[str, Any]]:
         """
         Get option data by ID.
 
@@ -245,7 +245,7 @@ class IOptionDataService(ABC):
         """
 
     @abstractmethod
-    def save_option_data(self, option_id: str, data: Dict[str, Any]) -> bool:
+    def save_option_data(self, option_id: str, data: dict[str, Any]) -> bool:
         """
         Save option data.
 
@@ -280,7 +280,7 @@ class IPictographCSVManager(ABC):
     """Interface for pictograph CSV management operations."""
 
     @abstractmethod
-    def load_csv_data(self, csv_path: str) -> Optional[List[Dict[str, Any]]]:
+    def load_csv_data(self, csv_path: str) -> Optional[list[dict[str, Any]]]:
         """
         Load CSV data from file.
 
@@ -288,20 +288,20 @@ class IPictographCSVManager(ABC):
             csv_path: Path to CSV file
 
         Returns:
-            List of CSV row dictionaries or None if failed
+            list of CSV row dictionaries or None if failed
 
         Note:
             Web implementation: Loads from server or file upload
         """
 
     @abstractmethod
-    def save_csv_data(self, csv_path: str, data: List[Dict[str, Any]]) -> bool:
+    def save_csv_data(self, csv_path: str, data: list[dict[str, Any]]) -> bool:
         """
         Save CSV data to file.
 
         Args:
             csv_path: Path to save CSV file
-            data: List of CSV row dictionaries
+            data: list of CSV row dictionaries
 
         Returns:
             True if saved successfully, False otherwise
@@ -311,7 +311,7 @@ class IPictographCSVManager(ABC):
         """
 
     @abstractmethod
-    def validate_csv_format(self, data: List[Dict[str, Any]]) -> Tuple[bool, List[str]]:
+    def validate_csv_format(self, data: list[dict[str, Any]]) -> tuple[bool, list[str]]:
         """
         Validate CSV data format.
 
@@ -319,7 +319,7 @@ class IPictographCSVManager(ABC):
             data: CSV data to validate
 
         Returns:
-            Tuple of (is_valid, error_messages)
+            tuple of (is_valid, error_messages)
 
         Note:
             Web implementation: Same validation logic across platforms
@@ -373,24 +373,24 @@ class IVisibilityStateManager(ABC):
         """
 
     @abstractmethod
-    def get_all_visibility_states(self) -> Dict[str, bool]:
+    def get_all_visibility_states(self) -> dict[str, bool]:
         """
         Get visibility states for all managed elements.
 
         Returns:
-            Dictionary mapping element IDs to visibility states
+            dictionary mapping element IDs to visibility states
 
         Note:
             Web implementation: Retrieved from DOM or state management
         """
 
     @abstractmethod
-    def set_all_visibility_states(self, states: Dict[str, bool]) -> None:
+    def set_all_visibility_states(self, states: dict[str, bool]) -> None:
         """
         Set visibility states for all managed elements.
 
         Args:
-            states: Dictionary mapping element IDs to visibility states
+            states: dictionary mapping element IDs to visibility states
 
         Note:
             Web implementation: Updates DOM or state management
@@ -427,12 +427,12 @@ class IVisibilityStateManager(ABC):
         """
 
     @abstractmethod
-    def get_saved_states(self) -> List[str]:
+    def get_saved_states(self) -> list[str]:
         """
         Get list of saved visibility states.
 
         Returns:
-            List of saved state names
+            list of saved state names
 
         Note:
             Web implementation: Retrieved from browser storage
@@ -489,15 +489,15 @@ class ISequenceRepository(ABC):
         """
 
     @abstractmethod
-    def list_sequences(self) -> List[str]:
+    def list_sequences(self) -> list[str]:
         """
-        List available sequences.
+        list available sequences.
 
         Returns:
-            List of sequence IDs
+            list of sequence IDs
 
         Note:
-            Web implementation: Lists from browser storage or server
+            Web implementation: lists from browser storage or server
         """
 
     @abstractmethod
@@ -513,7 +513,7 @@ class ISequenceRepository(ABC):
         """
 
     @abstractmethod
-    def get_sequence_metadata(self, sequence_id: str) -> Optional[Dict[str, Any]]:
+    def get_sequence_metadata(self, sequence_id: str) -> Optional[dict[str, Any]]:
         """
         Get metadata for a sequence.
 

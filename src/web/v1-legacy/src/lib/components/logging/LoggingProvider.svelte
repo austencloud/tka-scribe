@@ -5,7 +5,7 @@
 
 <!--
   Logging Provider Component
-  
+
   Provides logging context to Svelte components and initializes the logging system.
 -->
 <script lang="ts">

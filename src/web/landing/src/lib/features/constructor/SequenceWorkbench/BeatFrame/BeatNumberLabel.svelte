@@ -69,17 +69,17 @@
 		position: absolute;
 		top: 5px;
 		left: 5px;
-		
+
 		text-shadow:
 			0px 0px 2px #fff,
 			0px 0px 3px #fff,
 			0px 0px 4px #fff;
-		
+
 		user-select: none;
-		
+
 		pointer-events: none;
 		z-index: 5;
-		
+
 		margin: 0;
 		width: auto;
 		height: auto;

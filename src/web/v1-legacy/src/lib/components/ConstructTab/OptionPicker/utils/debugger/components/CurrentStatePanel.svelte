@@ -3,15 +3,15 @@
     import { activeLayoutRule } from '../../layoutUtils';
     import { get } from 'svelte/store';
     import CopyButton from './CopyButton.svelte';
-    
+
     export let layoutContext: any;
-    
+
     // Function to build the current state text for copying
     async function buildCurrentStateText(): Promise<string> {
       // Get active rule info
       const activeRule = get(activeLayoutRule);
       const ruleName = activeRule ? activeRule.description : 'No rule matched';
-      
+
       // Get foldable info from context
       const foldableInfo = layoutContext.foldableInfo || {
         isFoldable: false,
@@ -19,11 +19,11 @@
         foldableType: 'unknown',
         confidence: 0
       };
-  
+
       // User agent info
       const ua = typeof navigator !== 'undefined' ? navigator.userAgent : 'Unknown';
       const uaShort = ua.substring(0, 80) + (ua.length > 80 ? '...' : '');
-  
+
       return `Current State:
     - Active Rule: ${ruleName}
     - Columns: ${layoutContext.layoutConfig.gridColumns.match(/repeat\((\d+)\)/)?.[1] || 'unknown'}
@@ -37,18 +37,18 @@
     - User Agent: ${uaShort}`;
     }
   </script>
-  
+
   <div class="current-state">
     <div class="state-header">
       <span>Current State:</span>
-      <CopyButton 
+      <CopyButton
         onClick={buildCurrentStateText}
         className="copy-current-state-button"
         iconOnly={true}
         smallIcon={true}
       />
     </div>
-    
+
     <ul class="state-list">
       <li class="highlight-rule">
         <strong>Rule Applied:</strong>
@@ -67,7 +67,7 @@
             ? '(tablet)'
             : '(desktop)'}
       </li>
-  
+
       <!-- Foldable Device Information -->
       {#if layoutContext.foldableInfo?.isFoldable}
         <li class="foldable-info highlight-foldable">
@@ -98,7 +98,7 @@
       {:else}
         <li><strong>Foldable:</strong> No</li>
       {/if}
-  
+
       <li><strong>Aspect:</strong> {layoutContext.containerAspect}</li>
       <li>
         <strong>Orientation:</strong>
@@ -123,7 +123,7 @@
       </li>
     </ul>
   </div>
-  
+
   <style>
     /* --- Current State --- */
     .current-state {
@@ -135,7 +135,7 @@
       font-size: 11px;
       color: #cbd5e1;
     }
-    
+
     .state-header {
       display: flex;
       justify-content: space-between;
@@ -144,26 +144,26 @@
       color: #7dd3fc;
       margin-bottom: 6px;
     }
-    
+
     .state-header span {
       flex-grow: 1;
     }
-    
+
     .current-state ul {
       margin: 4px 0 0 0;
       padding-left: 16px;
     }
-    
+
     .current-state li {
       margin: 3px 0;
     }
-  
+
     /* --- Specific styled elements --- */
     .state-list li {
       margin: 5px 0;
       line-height: 1.3;
     }
-  
+
     .highlight-rule {
       background-color: #1e3a8a20;
       border-left: 3px solid #3b82f6;
@@ -171,35 +171,35 @@
       margin-left: -8px !important;
       margin-bottom: 8px !important;
     }
-  
+
     .highlight-foldable {
       background-color: #065f4620;
       border-left: 3px solid #10b981;
       padding: 4px 8px;
       margin-left: -8px !important;
     }
-  
+
     .foldable-info ul {
       margin-top: 3px !important;
       margin-bottom: 3px !important;
     }
-  
+
     .foldable-info li {
       margin: 2px 0 !important;
     }
-  
+
     .ua-info {
       margin-top: 8px !important;
       font-size: 9px;
       word-break: break-all;
     }
-  
+
     .ua-details {
       max-height: 32px;
       overflow-y: auto;
       color: #94a3b8;
     }
-  
+
     /* --- Copy button styles --- */
     :global(.copy-current-state-button) {
       background-color: transparent;
@@ -209,14 +209,14 @@
       border-radius: 4px;
       line-height: 1;
     }
-  
+
     :global(.copy-current-state-button:not(:disabled):hover) {
       background-color: #334155;
       color: #e2e8f0;
       transform: none;
       box-shadow: none;
     }
-  
+
     :global(.state-copy-error) {
       font-size: 9px;
       text-align: left;

@@ -1,19 +1,19 @@
 /**
  * Logging Configuration System
- * 
+ *
  * Handles parsing and applying logging configuration from various sources.
  */
 
 import { browser } from '$app/environment';
-import { 
-  LogLevel, 
-  LOG_LEVEL_MAP, 
-  type LoggerConfig, 
-  LogDomain 
+import {
+  LogLevel,
+  LOG_LEVEL_MAP,
+  type LoggerConfig,
+  LogDomain
 } from './types.js';
-import { 
-  DEFAULT_LOGGER_CONFIG, 
-  LOG_URL_PARAM 
+import {
+  DEFAULT_LOGGER_CONFIG,
+  LOG_URL_PARAM
 } from './constants.js';
 import { ConsoleTransport } from './transports/console.js';
 import { MemoryTransport } from './transports/memory.js';
@@ -21,7 +21,7 @@ import { LocalStorageTransport } from './transports/localStorage.js';
 
 /**
  * Parse log configuration from URL parameters
- * 
+ *
  * Supports formats like:
  * - ?log=debug (global level)
  * - ?log=app=debug,sequence=error (domain-specific levels)
@@ -30,48 +30,48 @@ import { LocalStorageTransport } from './transports/localStorage.js';
  */
 export function parseLogConfig(): Partial<LoggerConfig> | null {
   if (!browser) return null;
-  
+
   const url = new URL(window.location.href);
   const logParam = url.searchParams.get(LOG_URL_PARAM);
-  
+
   if (!logParam) return null;
-  
+
   const config: Partial<LoggerConfig> = {
     transports: []
   };
-  
+
   // Check if it's a simple global level like "debug"
   if (logParam in LOG_LEVEL_MAP) {
     config.minLevel = LOG_LEVEL_MAP[logParam as keyof typeof LOG_LEVEL_MAP];
     config.transports = createDefaultTransports();
     return config;
   }
-  
+
   // Parse more complex configurations
   const enabledDomains: LogDomain[] = [];
   const disabledDomains: LogDomain[] = [];
-  
+
   logParam.split(',').forEach(part => {
     // Check for domain=level:transports format
     if (part.includes('=')) {
       const [domain, levelAndTransports] = part.split('=');
-      
+
       // Parse level and transports
       let level: string;
       let transports: string[] = [];
-      
+
       if (levelAndTransports.includes(':')) {
         [level, ...transports] = levelAndTransports.split(':');
       } else {
         level = levelAndTransports;
       }
-      
+
       // Handle domain-specific configuration
       if (domain && level) {
         // Check if it's a negation (e.g., !app=debug)
         const isDomainDisabled = domain.startsWith('!');
         const domainName = isDomainDisabled ? domain.substring(1) : domain;
-        
+
         // Check if it's a valid domain
         if (Object.values(LogDomain).includes(domainName as LogDomain)) {
           if (isDomainDisabled) {
@@ -80,17 +80,17 @@ export function parseLogConfig(): Partial<LoggerConfig> | null {
             enabledDomains.push(domainName as LogDomain);
           }
         }
-        
+
         // Set global level if domain is 'all'
         if (domainName === 'all' && level in LOG_LEVEL_MAP) {
           config.minLevel = LOG_LEVEL_MAP[level as keyof typeof LOG_LEVEL_MAP];
         }
       }
-    } 
+    }
     // Check for level:transports format
     else if (part.includes(':')) {
       const [level, ...transports] = part.split(':');
-      
+
       if (level in LOG_LEVEL_MAP) {
         config.minLevel = LOG_LEVEL_MAP[level as keyof typeof LOG_LEVEL_MAP];
       }
@@ -100,21 +100,21 @@ export function parseLogConfig(): Partial<LoggerConfig> | null {
       config.minLevel = LOG_LEVEL_MAP[part as keyof typeof LOG_LEVEL_MAP];
     }
   });
-  
+
   // Set enabled/disabled domains
   if (enabledDomains.length > 0) {
     config.enabledDomains = enabledDomains;
   }
-  
+
   if (disabledDomains.length > 0) {
     config.disabledDomains = disabledDomains;
   }
-  
+
   // Create default transports if none specified
   if (!config.transports || config.transports.length === 0) {
     config.transports = createDefaultTransports();
   }
-  
+
   return config;
 }
 
@@ -177,14 +177,14 @@ export function createProdTransports(): (ConsoleTransport | LocalStorageTranspor
  */
 export function createLoggerConfig(config: Partial<LoggerConfig> = {}): LoggerConfig {
   const baseConfig = { ...DEFAULT_LOGGER_CONFIG };
-  
+
   // Set environment-appropriate transports if none provided
   if (!config.transports || config.transports.length === 0) {
-    baseConfig.transports = import.meta.env.DEV 
-      ? createDevTransports() 
+    baseConfig.transports = import.meta.env.DEV
+      ? createDevTransports()
       : createProdTransports();
   }
-  
+
   return {
     ...baseConfig,
     ...config,

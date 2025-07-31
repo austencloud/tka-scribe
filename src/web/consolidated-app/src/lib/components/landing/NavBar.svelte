@@ -25,10 +25,10 @@
       <span class="logo-subtitle">The Kinetic Alphabet</span>
     </a>
   </div>
-  
+
   <!-- Mobile menu button -->
-  <button 
-    class="mobile-menu-toggle" 
+  <button
+    class="mobile-menu-toggle"
     class:active={mobileMenuOpen}
     onclick={toggleMobileMenu}
     aria-label="Toggle navigation menu"
@@ -46,7 +46,7 @@
     <a href="/animator" class:active={currentPage === 'animator'} onclick={closeMobileMenu}>Animator</a>
     <a href="/about" class:active={currentPage === 'about'} onclick={closeMobileMenu}>About</a>
   </div>
-  
+
   <div class="nav-controls">
     <ThemeToggle />
   </div>

@@ -1,6 +1,6 @@
 /**
  * 🧪 VITEST CONFIGURATION FOR TKA DI TESTS
- * 
+ *
  * Comprehensive test configuration for the TKA Enterprise DI system,
  * optimized for performance, coverage, and reliability.
  */
@@ -13,7 +13,7 @@ export default defineConfig({
     // Test Environment
     environment: 'jsdom', // For browser-like environment
     globals: true, // Enable global test functions
-    
+
     // Test Discovery
     include: [
       '**/*.test.ts',
@@ -29,18 +29,18 @@ export default defineConfig({
     testTimeout: 10000, // 10 seconds for complex DI tests
     hookTimeout: 5000,  // 5 seconds for setup/teardown
     teardownTimeout: 5000,
-    
+
     // Parallel Execution
     threads: true,
     maxThreads: 4,
     minThreads: 1,
-    
+
     // Coverage Configuration
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html', 'lcov'],
       reportsDirectory: './coverage',
-      
+
       // Coverage Thresholds (Enterprise Standards)
       thresholds: {
         global: {
@@ -50,7 +50,7 @@ export default defineConfig({
           statements: 95
         }
       },
-      
+
       // Include/Exclude Patterns
       include: [
         'src/web/shared/di/**/*.ts'
@@ -93,13 +93,13 @@ export default defineConfig({
 
     // Watch Mode
     watch: false, // Disable for CI
-    
+
     // Retry Configuration
     retry: 2, // Retry flaky tests
-    
+
     // Isolation
     isolate: true, // Run each test file in isolation
-    
+
     // Pool Options
     pool: 'threads',
     poolOptions: {

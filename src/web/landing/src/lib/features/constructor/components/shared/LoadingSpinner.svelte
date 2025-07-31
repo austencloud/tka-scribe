@@ -1,6 +1,6 @@
 <!--
   LoadingSpinner Component
-  
+
   A reusable loading spinner component.
 -->
 <script lang="ts">

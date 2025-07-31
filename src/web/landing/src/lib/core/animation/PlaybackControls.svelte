@@ -9,15 +9,15 @@
 </script>
 
 <div class="control-group">
-	<button 
-		onclick={onReset} 
+	<button
+		onclick={onReset}
 		class="control-button"
 		aria-label="Reset animation"
 	>
 		⏮
 	</button>
-	<button 
-		onclick={onPlayPause} 
+	<button
+		onclick={onPlayPause}
 		class="control-button primary"
 		class:active={isPlaying}
 		aria-label={isPlaying ? 'Pause animation' : 'Play animation'}

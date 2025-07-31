@@ -1,6 +1,6 @@
 /**
  * 🎭 TKA DI SVELTE INTEGRATION EXAMPLE
- * 
+ *
  * Demonstrates how to integrate the TKA Enterprise DI system with Svelte
  * applications, including context providers, reactive services, and component injection.
  */
@@ -69,10 +69,10 @@ export function tryInject<T>(serviceInterface: any): T | null {
 export function createServiceStore<T>(serviceInterface: any) {
     const container = getDIContainer();
     const service = container.resolve(serviceInterface);
-    
+
     // Create a writable store with the service
     const store = writable(service);
-    
+
     return {
         subscribe: store.subscribe,
         get: () => service,
@@ -94,12 +94,12 @@ export function createReactiveServiceStore<T, R>(
 ) {
     const container = getDIContainer();
     const service = container.resolve(serviceInterface);
-    
+
     return readable(selector(service), (set) => {
         const intervalId = setInterval(() => {
             set(selector(service));
         }, interval);
-        
+
         return () => clearInterval(intervalId);
     });
 }
@@ -117,15 +117,15 @@ export function createComponentScopedService<T>(
 ): T {
     const container = getDIContainer();
     const scopeId = componentId || `component_${Math.random().toString(36).substr(2, 9)}`;
-    
+
     // Create component scope if it doesn't exist
     if (!container.isRegistered(serviceInterface)) {
         throw new Error(`Service ${serviceInterface.name} is not registered`);
     }
-    
+
     container.createScope(scopeId);
     container.setCurrentScope(scopeId);
-    
+
     return container.resolve(serviceInterface);
 }
 
@@ -183,7 +183,7 @@ class ReactiveCounterService {
     subscribe(callback: (count: number) => void): () => void {
         this._subscribers.add(callback);
         callback(this._count); // Initial call
-        
+
         return () => {
             this._subscribers.delete(callback);
         };
@@ -207,7 +207,7 @@ class ReactiveThemeService {
         if (this._availableThemes.includes(theme)) {
             this._currentTheme = theme;
             this._notify();
-            
+
             // Apply theme to document
             if (typeof document !== 'undefined') {
                 document.documentElement.setAttribute('data-theme', theme);
@@ -222,7 +222,7 @@ class ReactiveThemeService {
     subscribe(callback: (theme: string) => void): () => void {
         this._subscribers.add(callback);
         callback(this._currentTheme); // Initial call
-        
+
         return () => {
             this._subscribers.delete(callback);
         };
@@ -248,10 +248,10 @@ class ReactiveNotificationService {
             type,
             timestamp: new Date()
         };
-        
+
         this._notifications.push(notification);
         this._notify();
-        
+
         // Auto-remove after 5 seconds
         setTimeout(() => {
             this.removeNotification(notification.id);
@@ -269,7 +269,7 @@ class ReactiveNotificationService {
     subscribe(callback: (notifications: any[]) => void): () => void {
         this._subscribers.add(callback);
         callback(this._notifications); // Initial call
-        
+
         return () => {
             this._subscribers.delete(callback);
         };
@@ -294,7 +294,7 @@ export function serviceToStore<T>(service: any, selector: (service: any) => T) {
                 set(selector(service));
             });
         }
-        
+
         // Fallback for non-reactive services
         set(selector(service));
         return () => {};
@@ -312,13 +312,13 @@ export function createServiceStores(container: ServiceContainer) {
     return {
         // Counter store
         count: serviceToStore(counterService, s => s.count),
-        
+
         // Theme store
         theme: serviceToStore(themeService, s => s.currentTheme),
-        
+
         // Notifications store
         notifications: serviceToStore(notificationService, s => s.notifications),
-        
+
         // Service actions
         actions: {
             counter: {
@@ -348,15 +348,15 @@ export function createServiceStores(container: ServiceContainer) {
 export function setupSvelteDI() {
     // Create container with reactive services
     const container = ApplicationFactory.createDevelopmentApp();
-    
+
     // Register reactive services
     container.registerSingleton(ICounterService, ReactiveCounterService);
     container.registerSingleton(IThemeService, ReactiveThemeService);
     container.registerSingleton(INotificationService, ReactiveNotificationService);
-    
+
     // Create stores
     const stores = createServiceStores(container);
-    
+
     return {
         container,
         stores,
@@ -377,12 +377,12 @@ export const SVELTE_COMPONENT_EXAMPLES = `
 <!-- App.svelte -->
 <script>
   import { setupSvelteDI } from './di/examples/svelte-integration.js';
-  
+
   const { container, stores, setDIContainer } = setupSvelteDI();
-  
+
   // Set DI container in context for child components
   setDIContainer();
-  
+
   // Use reactive stores
   $: count = $stores.count;
   $: theme = $stores.theme;
@@ -393,10 +393,10 @@ export const SVELTE_COMPONENT_EXAMPLES = `
 <script>
   import { inject } from './di/examples/svelte-integration.js';
   import { ICounterService } from './di/examples/svelte-integration.js';
-  
+
   // Inject service directly
   const counterService = inject(ICounterService);
-  
+
   // Create reactive store
   const countStore = serviceToStore(counterService, s => s.count);
 </script>
@@ -412,7 +412,7 @@ export const SVELTE_COMPONENT_EXAMPLES = `
 <script>
   import { inject } from './di/examples/svelte-integration.js';
   import { IThemeService } from './di/examples/svelte-integration.js';
-  
+
   const themeService = inject(IThemeService);
   const themeStore = serviceToStore(themeService, s => s.currentTheme);
   const availableThemes = themeService.getAvailableThemes();

@@ -27,7 +27,7 @@ Based on v1-legacy implementation using Svelte 5 runes
 	// Derived values
 	const transform = $derived(() => {
 		if (!props.arrowData.coords) return '';
-		
+
 		// Basic positioning - more sophisticated rotation logic would go here
 		const rotation = calculateRotation(props.arrowData);
 		return `translate(${props.arrowData.coords.x}, ${props.arrowData.coords.y}) rotate(${rotation})`;
@@ -36,7 +36,7 @@ Based on v1-legacy implementation using Svelte 5 runes
 	const arrowSvgPath = $derived(() => {
 		// Simplified arrow SVG path selection based on motion type and color
 		const { motionType, color } = props.arrowData;
-		
+
 		// For now, use a basic arrow - this would be expanded with proper SVG loading
 		if (motionType === 'pro') {
 			return `/images/arrows/${color}/pro_arrow.svg`;
@@ -45,7 +45,7 @@ Based on v1-legacy implementation using Svelte 5 runes
 		} else if (motionType === 'static') {
 			return `/images/arrows/${color}/static_arrow.svg`;
 		}
-		
+
 		return `/images/arrows/${color}/default_arrow.svg`;
 	});
 
@@ -53,7 +53,7 @@ Based on v1-legacy implementation using Svelte 5 runes
 		// Simplified rotation calculation
 		// Real implementation would use proper TKA rotation logic
 		const { startLoc, endLoc, turns } = arrowData;
-		
+
 		// Basic rotation based on direction
 		const locationRotations: Record<string, number> = {
 			'n': 0,
@@ -65,10 +65,10 @@ Based on v1-legacy implementation using Svelte 5 runes
 			'w': 270,
 			'nw': 315
 		};
-		
+
 		const baseRotation = locationRotations[startLoc] || 0;
 		const turnRotation = (turns || 0) * 90; // 90 degrees per turn
-		
+
 		return baseRotation + turnRotation;
 	}
 

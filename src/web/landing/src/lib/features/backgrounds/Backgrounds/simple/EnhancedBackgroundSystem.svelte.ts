@@ -56,14 +56,14 @@ export class EnhancedBackgroundSystem {
   private animationId: number | null = null;
   private lastTime = 0;
   private isActive = true;
-  
+
   // Background-specific particles
   private stars: Star[] = [];
   private snowflakes: Snowflake[] = [];
   private fish: Fish[] = [];
   private bubbles: Bubble[] = [];
   private shootingStars: Star[] = [];
-  
+
   // Configuration
   private backgroundType: BackgroundType = 'nightSky';
   private quality: QualityLevel = 'medium';
@@ -121,7 +121,7 @@ export class EnhancedBackgroundSystem {
     if (!this.dimensions.width || !this.dimensions.height) return;
 
     const qualityMultiplier = this.quality === 'high' ? 1 : this.quality === 'medium' ? 0.7 : 0.4;
-    
+
     // Clear all particles
     this.stars = [];
     this.snowflakes = [];
@@ -174,7 +174,7 @@ export class EnhancedBackgroundSystem {
 
   private initializeSnowfall(qualityMultiplier: number): void {
     const snowflakeCount = Math.floor(80 * qualityMultiplier);
-    
+
     for (let i = 0; i < snowflakeCount; i++) {
       this.snowflakes.push({
         x: Math.random() * this.dimensions.width,
@@ -196,7 +196,7 @@ export class EnhancedBackgroundSystem {
   private initializeDeepOcean(qualityMultiplier: number): void {
     const fishCount = Math.floor(8 * qualityMultiplier);
     const bubbleCount = Math.floor(25 * qualityMultiplier);
-    
+
     // Create swimming fish
     for (let i = 0; i < fishCount; i++) {
       this.fish.push({
@@ -322,7 +322,7 @@ export class EnhancedBackgroundSystem {
 
     const gradient = this.ctx.createLinearGradient(0, 0, 0, this.dimensions.height);
     const stops = gradients[this.backgroundType] || gradients.static;
-    
+
     stops.forEach(stop => {
       gradient.addColorStop(stop.position, stop.color);
     });

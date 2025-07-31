@@ -10,7 +10,7 @@
 export function isMobileDevice() {
   // Check user agent for mobile indicators
   const userAgent = navigator.userAgent || navigator.vendor || window.opera;
-  
+
   // Mobile device patterns
   const mobilePatterns = [
     /Android/i,
@@ -23,14 +23,14 @@ export function isMobileDevice() {
     /Mobile/i,
     /Tablet/i
   ];
-  
+
   // Check if any mobile pattern matches
   const isMobileUA = mobilePatterns.some(pattern => pattern.test(userAgent));
-  
+
   // Also check for touch capability and screen size
   const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
   const isSmallScreen = window.innerWidth <= 768;
-  
+
   return isMobileUA || (isTouchDevice && isSmallScreen);
 }
 
@@ -40,7 +40,7 @@ export function isMobileDevice() {
  */
 export function isTabletDevice() {
   const userAgent = navigator.userAgent || navigator.vendor || window.opera;
-  
+
   // Tablet-specific patterns
   const tabletPatterns = [
     /iPad/i,
@@ -50,11 +50,11 @@ export function isTabletDevice() {
     /Silk/i,
     /PlayBook/i
   ];
-  
+
   const isTabletUA = tabletPatterns.some(pattern => pattern.test(userAgent));
   const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
   const isTabletScreen = window.innerWidth >= 768 && window.innerWidth <= 1024;
-  
+
   return isTabletUA || (isTouchDevice && isTabletScreen);
 }
 
@@ -89,8 +89,8 @@ export function isFileSystemAccessSupported() {
  * @returns {boolean} True if file downloads are supported
  */
 export function isDownloadSupported() {
-  return typeof document !== 'undefined' && 
-         'createElement' in document && 
+  return typeof document !== 'undefined' &&
+         'createElement' in document &&
          'createObjectURL' in URL;
 }
 

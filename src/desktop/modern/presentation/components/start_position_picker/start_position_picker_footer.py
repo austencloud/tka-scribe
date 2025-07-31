@@ -90,7 +90,7 @@ class StartPositionPickerFooter(QWidget):
                 padding: 12px 24px;
                 min-width: 160px;
             }
-            
+
             QPushButton#VariationsButton:hover {
                 background: qlineargradient(
                     x1:0, y1:0, x2:1, y2:1,

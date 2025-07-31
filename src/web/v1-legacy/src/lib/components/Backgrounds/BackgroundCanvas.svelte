@@ -33,7 +33,7 @@
 	let activeContext = browser ? useBackgroundContext() : null;
 	// Track the current background system
 	let currentBackgroundSystem: BackgroundSystem | null = null;
-	
+
 	// Flag to prevent changes during initialization
 	let isInitialized = $state(false);
 
@@ -58,10 +58,10 @@
 			if (backgroundType && backgroundType !== activeContext.backgroundType) {
 				activeContext.setBackgroundType(backgroundType);
 			}
-			
+
 			if (appIsLoading !== undefined && appIsLoading !== activeContext.isLoading) {
 				activeContext.setLoading(appIsLoading);
-				
+
 				const quality: QualityLevel = appIsLoading ? 'medium' : 'high';
 				if (quality !== activeContext.qualityLevel) {
 					activeContext.setQuality(quality);
@@ -79,7 +79,7 @@
 				if ('backgroundSystem' in activeContext) {
 					currentBackgroundSystem = (activeContext as any).backgroundSystem;
 				}
-				
+
 				// Call the onReady callback if provided
 				if (props.onReady) {
 					props.onReady();
@@ -93,7 +93,7 @@
 					if ('backgroundSystem' in activeContext) {
 						currentBackgroundSystem = (activeContext as any).backgroundSystem;
 					}
-					
+
 					if (currentBackgroundSystem) {
 						currentBackgroundSystem.update(dimensions);
 						currentBackgroundSystem.draw(ctx, dimensions);
@@ -130,7 +130,7 @@
 						});
 						currentBackgroundSystem.initialize(dimensions, 'medium');
 					}
-					
+
 					if (currentBackgroundSystem) {
 						currentBackgroundSystem.update(dimensions);
 						currentBackgroundSystem.draw(ctx, dimensions);
@@ -145,7 +145,7 @@
 			);
 		}
 	});
-	
+
 	// Listen for background change events - only in browser
 	function handleBackgroundChange(event: CustomEvent) {
 		if (!browser || !isInitialized) return;
@@ -156,7 +156,7 @@
 			// Only update if the background type has changed
 			if (backgroundType !== newBackgroundType) {
 				backgroundType = newBackgroundType;
-				
+
 				// Update context directly
 				if (activeContext) {
 					activeContext.setBackgroundType(newBackgroundType);
@@ -175,7 +175,7 @@
 		if (activeContext) {
 			activeContext.stopAnimation();
 		}
-		
+
 		// Clean up background system if needed
 		if (currentBackgroundSystem) {
 			currentBackgroundSystem.cleanup();

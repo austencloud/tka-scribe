@@ -1,6 +1,6 @@
 /**
  * Core Logger Implementation
- * 
+ *
  * The main logger implementation that handles log processing, context management,
  * and dispatching to transports.
  */
@@ -18,10 +18,10 @@ import {
   type PerformanceLogger,
   LogDomain
 } from './types';
-import { 
-  DEFAULT_LOGGER_CONFIG, 
-  CORRELATION_ID_PREFIX, 
-  SESSION_ID 
+import {
+  DEFAULT_LOGGER_CONFIG,
+  CORRELATION_ID_PREFIX,
+  SESSION_ID
 } from './constants';
 import { parseLogConfig } from './config';
 
@@ -48,22 +48,22 @@ class PerformanceLoggerImpl implements PerformanceLogger {
 
   checkpoint(name: string, data?: Record<string, unknown>): void {
     if (!this.active) return;
-    
+
     const time = performance.now();
     this.checkpoints.push({
       name,
       time,
       data
     });
-    
+
     // Log the checkpoint
     this.logger.debug(`Checkpoint: ${name}`, {
       data: {
         ...data,
         operation: this.operation,
         elapsedSinceStart: time - this.startTime,
-        elapsedSincePrevious: this.checkpoints.length > 1 
-          ? time - this.checkpoints[this.checkpoints.length - 2].time 
+        elapsedSincePrevious: this.checkpoints.length > 1
+          ? time - this.checkpoints[this.checkpoints.length - 2].time
           : time - this.startTime
       }
     });
@@ -71,10 +71,10 @@ class PerformanceLoggerImpl implements PerformanceLogger {
 
   end(data?: Record<string, unknown>): void {
     if (!this.active) return;
-    
+
     const endTime = performance.now();
     const duration = endTime - this.startTime;
-    
+
     this.logger.info(`Completed: ${this.operation}`, {
       duration,
       startTime: this.startTime,
@@ -88,7 +88,7 @@ class PerformanceLoggerImpl implements PerformanceLogger {
         }))
       }
     });
-    
+
     this.active = false;
   }
 
@@ -108,18 +108,18 @@ export class LoggerImpl implements Logger {
   constructor(source: string, config?: Partial<LoggerConfig>, context?: Partial<LoggerContext>) {
     // Initialize with default config
     this.config = { ...DEFAULT_LOGGER_CONFIG };
-    
+
     // Apply provided config
     if (config) {
       this.setConfig(config);
     }
-    
+
     // Initialize context
     this.context = {
       source,
       ...context
     };
-    
+
     // Apply URL configuration if in browser
     if (browser) {
       const urlConfig = parseLogConfig();
@@ -166,8 +166,8 @@ export class LoggerImpl implements Logger {
         ...this.context,
         source,
         // If parent has a correlationId, set it as parentCorrelationId in child
-        ...(this.context.correlationId 
-          ? { parentCorrelationId: this.context.correlationId } 
+        ...(this.context.correlationId
+          ? { parentCorrelationId: this.context.correlationId }
           : {}),
         ...context
       }
@@ -251,9 +251,9 @@ export class LoggerImpl implements Logger {
     data?: Record<string, unknown>;
   }): void {
     const { letter, gridMode, componentState, renderMetrics, error, data } = params;
-    
+
     const level = error ? LogLevel.ERROR : LogLevel.INFO;
-    
+
     this.log(level, message, {
       domain: LogDomain.PICTOGRAPH,
       letterContext: letter,
@@ -280,7 +280,7 @@ export class LoggerImpl implements Logger {
     data?: Record<string, unknown>;
   }): void {
     const { path, component, fallbackApplied, error, data } = params;
-    
+
     this.error(message, {
       domain: LogDomain.SVG,
       error: error ? {
@@ -309,7 +309,7 @@ export class LoggerImpl implements Logger {
     data?: Record<string, unknown>;
   }): void {
     const { machine, from, to, event, duration, data } = params;
-    
+
     this.info(`Transition: ${from} → ${to} (${event})`, {
       domain: LogDomain.STATE,
       duration,
@@ -329,13 +329,13 @@ export class LoggerImpl implements Logger {
   log(level: LogLevel, message: string, params?: Omit<LogEntryParams, 'message' | 'source'>): void {
     // Skip if level is below minimum
     if (!this.isEnabled(level)) return;
-    
+
     // Skip if sampling is enabled and this log should be sampled out
     if (this.shouldSample(level)) return;
-    
+
     // Create the log entry
     const entry = this.createLogEntry(level, message, params);
-    
+
     // Send to all transports
     this.dispatchToTransports(entry);
   }
@@ -350,7 +350,7 @@ export class LoggerImpl implements Logger {
   ): LogEntry {
     const timestamp = Date.now();
     const correlationId = params?.correlationId || this.context.correlationId || this.generateCorrelationId();
-    
+
     return {
       id: this.generateId(),
       timestamp,
@@ -390,8 +390,8 @@ export class LoggerImpl implements Logger {
    * Generate a unique ID for a log entry
    */
   private generateId(): string {
-    return browser 
-      ? crypto.randomUUID() 
+    return browser
+      ? crypto.randomUUID()
       : `log_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
   }
 
@@ -407,13 +407,13 @@ export class LoggerImpl implements Logger {
    */
   private shouldSample(level: LogLevel): boolean {
     const { sampling } = this.config;
-    
+
     // If sampling is not configured or rate is 1.0, don't sample
     if (!sampling || sampling.rate >= 1.0) return false;
-    
+
     // Never sample logs above the minimum sampling level
     if (level >= sampling.minLevel) return false;
-    
+
     // Sample based on rate
     return Math.random() > sampling.rate;
   }

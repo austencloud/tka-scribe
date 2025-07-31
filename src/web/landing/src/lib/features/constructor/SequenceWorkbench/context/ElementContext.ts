@@ -1,6 +1,6 @@
 /**
  * ElementContext.ts
- * 
+ *
  * This module provides shared context keys and utilities for element references
  * across components in the SequenceWorkbench.
  */

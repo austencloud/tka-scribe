@@ -20,11 +20,11 @@
 			const updateCanvasSize = () => {
 				const rect = canvas.getBoundingClientRect();
 				const dpr = window.devicePixelRatio || 1;
-				
+
 				// Use viewport dimensions for full coverage
 				const width = window.innerWidth;
 				const height = window.innerHeight;
-				
+
 				canvas.width = width * dpr;
 				canvas.height = height * dpr;
 				ctx.scale(dpr, dpr);
@@ -68,14 +68,14 @@
 				// Debounce resize events to avoid excessive updates
 				resizeTimeout = setTimeout(async () => {
 					const newDimensions = updateCanvasSize();
-					
+
 					// Check if dimensions actually changed significantly
 					const widthChange = Math.abs(newDimensions.width - dimensions.width);
 					const heightChange = Math.abs(newDimensions.height - dimensions.height);
-					
+
 					if (widthChange > 10 || heightChange > 10) {
 						dimensions = newDimensions;
-						
+
 						// Re-initialize the night sky system with new dimensions
 						if (nightSkySystem && isInitialized) {
 							nightSkySystem.cleanup();

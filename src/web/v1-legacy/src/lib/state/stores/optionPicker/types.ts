@@ -15,7 +15,7 @@ export interface OptionPickerState {
   sequence: PictographData[];
   options: PictographData[];
   selectedPictograph: PictographData | null;
-  
+
   // UI state
   sortMethod: SortMethod;
   reversalFilter?: ReversalFilter;

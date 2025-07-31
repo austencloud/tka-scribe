@@ -1,6 +1,6 @@
 /**
  * Memory Transport
- * 
+ *
  * Stores logs in memory for later retrieval, useful for debug panels.
  */
 
@@ -27,13 +27,13 @@ export class MemoryTransport implements LogTransport {
   log(entry: LogEntry): void {
     // Add the entry to the buffer
     this.entries.push(entry);
-    
+
     // If we've exceeded the max entries and circular buffer is enabled,
     // remove the oldest entry
     if (this.circular && this.entries.length > this.maxEntries) {
       this.entries.shift();
     }
-    
+
     // Notify listeners
     this.notifyListeners();
   }
@@ -52,7 +52,7 @@ export class MemoryTransport implements LogTransport {
    */
   addListener(listener: (entries: LogEntry[]) => void): () => void {
     this.listeners.add(listener);
-    
+
     // Return a function to remove the listener
     return () => {
       this.listeners.delete(listener);

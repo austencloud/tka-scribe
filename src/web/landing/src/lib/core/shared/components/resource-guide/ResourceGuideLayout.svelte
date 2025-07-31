@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  
+
   export let title: string;
   export let subtitle: string;
   export let creator: string;
@@ -14,9 +14,9 @@
   export let relatedResources: Array<{name: string, url: string, description: string, type: 'internal' | 'external'}> = [];
   export let heroGradient: string = 'linear-gradient(135deg, rgba(168, 28, 237, 0.05) 0%, rgba(74, 144, 226, 0.05) 100%)';
   export let creatorColor: string = 'var(--primary-color)';
-  
+
   let currentSection = '';
-  
+
   onMount(() => {
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
@@ -25,11 +25,11 @@
         }
       });
     }, { threshold: 0.6 });
-    
+
     document.querySelectorAll('section[id]').forEach((section) => {
       observer.observe(section);
     });
-    
+
     return () => observer.disconnect();
   });
 </script>
@@ -38,18 +38,18 @@
   <title>{title} | The Kinetic Alphabet</title>
   <meta name="description" content={description} />
   <meta name="keywords" content={keywords} />
-  
+
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="article" />
   <meta property="og:title" content={title} />
   <meta property="og:description" content={description} />
   <meta property="og:url" content="https://thekineticalphabet.com/links/{resourceName}" />
-  
+
   <!-- Twitter -->
   <meta property="twitter:card" content="summary_large_image" />
   <meta property="twitter:title" content={title} />
   <meta property="twitter:description" content={description} />
-  
+
   <!-- Schema.org markup -->
   <script type="application/ld+json">
   {
@@ -132,8 +132,8 @@
       <h2>Related Resources</h2>
       <div class="related-grid">
         {#each relatedResources as resource}
-          <a 
-            href={resource.url} 
+          <a
+            href={resource.url}
             class="related-card"
             class:external={resource.type === 'external'}
             target={resource.type === 'external' ? '_blank' : '_self'}

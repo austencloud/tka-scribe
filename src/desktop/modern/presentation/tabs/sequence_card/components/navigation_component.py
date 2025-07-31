@@ -52,13 +52,13 @@ class LengthOptionButton(QPushButton):
                 font-weight: 500;
                 text-align: center;
             }
-            
+
             QPushButton:hover {
                 background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
                     stop:0 rgba(100, 116, 139, 0.4), stop:1 rgba(71, 85, 105, 0.6));
                 border: 1px solid rgba(148, 163, 184, 0.5);
             }
-            
+
             QPushButton:checked {
                 background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
                     stop:0 #3b82f6, stop:1 #2563eb);
@@ -223,30 +223,30 @@ class SequenceCardNavigationComponent(QWidget):
                 border-radius: 12px;
                 border: 1px solid rgba(100, 116, 139, 0.3);
             }
-            
+
             #sidebarHeader {
                 background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
                     stop:0 rgba(71, 85, 105, 0.5), stop:1 rgba(51, 65, 85, 0.7));
                 border-radius: 10px;
                 border: 1px solid rgba(100, 116, 139, 0.4);
             }
-            
+
             #sidebarHeader QLabel {
                 color: #f8fafc;
                 font-weight: bold;
             }
-            
+
             #columnSelector {
                 background: rgba(71, 85, 105, 0.3);
                 border-radius: 8px;
                 border: 1px solid rgba(100, 116, 139, 0.4);
             }
-            
+
             #columnSelector QLabel {
                 color: #f8fafc;
                 font-weight: medium;
             }
-            
+
             QComboBox {
                 background: rgba(71, 85, 105, 0.6);
                 border: 1px solid rgba(100, 116, 139, 0.5);
@@ -256,12 +256,12 @@ class SequenceCardNavigationComponent(QWidget):
                 font-size: 12px;
                 min-height: 20px;
             }
-            
+
             QComboBox::drop-down {
                 border: none;
                 width: 20px;
             }
-            
+
             QComboBox::down-arrow {
                 image: none;
                 border-left: 4px solid transparent;
@@ -269,7 +269,7 @@ class SequenceCardNavigationComponent(QWidget):
                 border-top: 6px solid #f8fafc;
                 margin-right: 5px;
             }
-            
+
             QComboBox QAbstractItemView {
                 background: rgba(71, 85, 105, 0.9);
                 border: 1px solid rgba(100, 116, 139, 0.5);
@@ -277,24 +277,24 @@ class SequenceCardNavigationComponent(QWidget):
                 color: #f8fafc;
                 selection-background-color: rgba(59, 130, 246, 0.6);
             }
-            
+
             QScrollArea {
                 border: none;
                 background: transparent;
             }
-            
+
             QScrollBar:vertical {
                 background: rgba(0, 0, 0, 0.1);
                 width: 8px;
                 border-radius: 4px;
             }
-            
+
             QScrollBar::handle:vertical {
                 background: rgba(0, 0, 0, 0.3);
                 border-radius: 4px;
                 min-height: 20px;
             }
-            
+
             QScrollBar::handle:vertical:hover {
                 background: rgba(0, 0, 0, 0.5);
             }

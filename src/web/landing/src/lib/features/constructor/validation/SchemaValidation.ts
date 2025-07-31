@@ -1,7 +1,7 @@
 /**
  * Runtime Schema Validation for Web App
- * 
- * Provides runtime validation against the JSON schemas to ensure 
+ *
+ * Provides runtime validation against the JSON schemas to ensure
  * data compatibility between Python backend and TypeScript frontend.
  */
 
@@ -13,7 +13,7 @@ import type { MotionData, BeatData, SequenceData } from '../types/GeneratedTypes
 // Motion data validation (matches motion-data-v2.json schema)
 export function validateMotionData(data: unknown): { valid: boolean; errors: string[] } {
   const errors: string[] = [];
-  
+
   if (typeof data !== 'object' || data === null) {
     return { valid: false, errors: ['Data must be an object'] };
   }
@@ -66,7 +66,7 @@ export function validateMotionData(data: unknown): { valid: boolean; errors: str
 // Beat data validation (matches beat-data-v2.json schema)
 export function validateBeatData(data: unknown): { valid: boolean; errors: string[] } {
   const errors: string[] = [];
-  
+
   if (typeof data !== 'object' || data === null) {
     return { valid: false, errors: ['Data must be an object'] };
   }
@@ -124,7 +124,7 @@ export function validateBeatData(data: unknown): { valid: boolean; errors: strin
 // Sequence data validation (matches sequence-data-v2.json schema)
 export function validateSequenceData(data: unknown): { valid: boolean; errors: string[] } {
   const errors: string[] = [];
-  
+
   if (typeof data !== 'object' || data === null) {
     return { valid: false, errors: ['Data must be an object'] };
   }

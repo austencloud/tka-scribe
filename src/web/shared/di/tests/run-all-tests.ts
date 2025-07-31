@@ -2,7 +2,7 @@
 
 /**
  * 🧪 COMPREHENSIVE TEST RUNNER
- * 
+ *
  * Master test runner that executes all test suites with detailed reporting,
  * performance monitoring, and quality gates for enterprise CI/CD pipelines.
  */
@@ -77,7 +77,7 @@ class TKATestRunner {
 
   private async runCoreTests(): Promise<void> {
     console.log('🔧 Running Core DI System Tests...');
-    
+
     const suites = [
       { name: 'ServiceContainer', pattern: 'core/ServiceContainer.test.ts' },
       { name: 'ServiceRegistry', pattern: 'core/ServiceRegistry.test.ts' },
@@ -92,7 +92,7 @@ class TKATestRunner {
 
   private async runPerformanceTests(): Promise<void> {
     console.log('⚡ Running Performance Tests...');
-    
+
     await this.runTestSuite(
       'Performance & Stability',
       'performance/PerformanceStability.test.ts',
@@ -102,7 +102,7 @@ class TKATestRunner {
 
   private async runIntegrationTests(): Promise<void> {
     console.log('🔗 Running Integration Tests...');
-    
+
     await this.runTestSuite(
       'Cross-Platform Compatibility',
       'integration/CrossPlatformCompatibility.test.ts',
@@ -112,10 +112,10 @@ class TKATestRunner {
 
   private async runCompatibilityTests(): Promise<void> {
     console.log('🌐 Running Compatibility Tests...');
-    
+
     // Test with different environments
     const environments = ['jsdom', 'node'];
-    
+
     for (const env of environments) {
       try {
         const result = await this.runWithEnvironment(env);
@@ -138,13 +138,13 @@ class TKATestRunner {
 
   private async runStabilityTests(): Promise<void> {
     console.log('🛡️ Running Stability Tests...');
-    
+
     // Long-running stability test
     try {
       const command = 'vitest run performance/PerformanceStability.test.ts --reporter=json';
       const output = execSync(command, { encoding: 'utf8', timeout: 300000 }); // 5 min timeout
       const result = JSON.parse(output);
-      
+
       this.results.push({
         name: 'Long-Running Stability',
         passed: result.success,
@@ -163,12 +163,12 @@ class TKATestRunner {
 
   private async runCoverageAnalysis(): Promise<void> {
     console.log('📊 Running Coverage Analysis...');
-    
+
     try {
       const command = 'vitest run --coverage --reporter=json';
       const output = execSync(command, { encoding: 'utf8' });
       const result = JSON.parse(output);
-      
+
       this.results.push({
         name: 'Coverage Analysis',
         passed: result.success,
@@ -189,36 +189,36 @@ class TKATestRunner {
 
   private async runTestSuite(name: string, pattern: string, category: string): Promise<void> {
     const startTime = Date.now();
-    
+
     try {
       console.log(`  📝 ${name}...`);
-      
+
       const command = `vitest run ${pattern} --reporter=json`;
       const output = execSync(command, { encoding: 'utf8' });
       const result = JSON.parse(output);
-      
+
       const duration = Date.now() - startTime;
       const passed = result.success || result.testResults?.every((t: any) => t.status === 'passed');
-      
+
       this.results.push({
         name,
         passed,
         duration,
         details: result
       });
-      
+
       console.log(`    ${passed ? '✅' : '❌'} ${name} (${duration}ms)`);
-      
+
     } catch (error) {
       const duration = Date.now() - startTime;
-      
+
       this.results.push({
         name,
         passed: false,
         duration,
         details: { error: error.message }
       });
-      
+
       console.log(`    ❌ ${name} FAILED (${duration}ms)`);
       console.error(`       Error: ${error.message}`);
     }
@@ -226,12 +226,12 @@ class TKATestRunner {
 
   private async runWithEnvironment(environment: string): Promise<any> {
     const startTime = Date.now();
-    
+
     try {
       const command = `vitest run --environment=${environment} --reporter=json`;
       const output = execSync(command, { encoding: 'utf8' });
       const result = JSON.parse(output);
-      
+
       return {
         success: result.success,
         duration: Date.now() - startTime,
@@ -252,7 +252,7 @@ class TKATestRunner {
     const totalDuration = Date.now() - this.startTime;
     const passedSuites = this.results.filter(r => r.passed).length;
     const failedSuites = this.results.filter(r => !r.passed).length;
-    
+
     // Calculate overall coverage
     const coverageResults = this.results.filter(r => r.coverage !== undefined);
     const overallCoverage = coverageResults.length > 0
@@ -415,7 +415,7 @@ Generated: ${new Date().toISOString()}
     console.log('\n' + '='.repeat(60));
     console.log('🧪 TKA DI COMPREHENSIVE TEST RESULTS');
     console.log('='.repeat(60));
-    
+
     console.log(`\n📊 Summary:`);
     console.log(`  Status: ${result.success ? '✅ PASSED' : '❌ FAILED'}`);
     console.log(`  Total Suites: ${result.totalSuites}`);
@@ -437,7 +437,7 @@ Generated: ${new Date().toISOString()}
     }
 
     console.log('\n' + '='.repeat(60));
-    console.log(result.success 
+    console.log(result.success
       ? '🎉 ALL TESTS PASSED - Your DI system is enterprise-ready!'
       : '💥 TESTS FAILED - Please review and fix issues before deployment'
     );
@@ -448,14 +448,14 @@ Generated: ${new Date().toISOString()}
 // Main execution
 async function main() {
   const runner = new TKATestRunner();
-  
+
   try {
     const result = await runner.runAllTests();
     runner.printFinalSummary(result);
-    
+
     // Exit with appropriate code for CI/CD
     process.exit(result.success ? 0 : 1);
-    
+
   } catch (error) {
     console.error('💥 Test runner failed:', error);
     process.exit(1);

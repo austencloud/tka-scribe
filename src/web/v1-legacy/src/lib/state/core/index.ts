@@ -1,6 +1,6 @@
 /**
  * State Management Core
- * 
+ *
  * This is the entry point for the state management system.
  * It exports all the core functionality for state management.
  */

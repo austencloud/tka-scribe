@@ -1,6 +1,6 @@
 /**
  * Logging System Index
- * 
+ *
  * Main entry point for the structured logging system.
  */
 

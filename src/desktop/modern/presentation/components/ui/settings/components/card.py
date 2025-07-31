@@ -91,14 +91,14 @@ class SettingCard(QFrame):
                 border-radius: 12px;
                 margin: 2px 0;
             }
-            
+
             QFrame#setting_card:hover {
                 background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
                     stop:0 rgba(255, 255, 255, 0.22),
                     stop:1 rgba(255, 255, 255, 0.16));
                 border-color: rgba(255, 255, 255, 0.35);
             }
-            
+
             QLabel#setting_title {
                 color: rgba(255, 255, 255, 0.95);
                 background: transparent;
@@ -107,7 +107,7 @@ class SettingCard(QFrame):
                 font-weight: 600;
                 letter-spacing: 0.2px;
             }
-            
+
             QLabel#setting_description {
                 color: rgba(255, 255, 255, 0.75);
                 background: transparent;

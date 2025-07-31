@@ -19,7 +19,7 @@ export const scrollActions = {
             [key]: position
         }));
     },
-    
+
     /**
      * Get the saved scroll position for a specific key
      * @param key Unique identifier (usually tab name)
@@ -33,7 +33,7 @@ export const scrollActions = {
         unsubscribe();
         return position;
     },
-    
+
     /**
      * Restore the scroll position for an element
      * @param element The DOM element to scroll
@@ -42,7 +42,7 @@ export const scrollActions = {
      */
     restorePosition(element: HTMLElement | null, key: string, delay: number = 50) {
         if (!element) return;
-        
+
         const savedPosition = this.getPosition(key);
         setTimeout(() => {
             if (element) {
@@ -50,7 +50,7 @@ export const scrollActions = {
             }
         }, delay);
     },
-    
+
     /**
      * Clear all saved scroll positions
      */

@@ -3,21 +3,21 @@
 	import { fade } from 'svelte/transition';
 	import { browser } from '$app/environment';
 	import hapticFeedbackService from '$lib/services/HapticFeedbackService';
-	
+
 	// Define tab types
 	export type SettingsTab = {
 		id: string;
 		label: string;
 		icon: string;
 	};
-	
+
 	// Props
 	const { tabs, activeTab = '', onTabChange } = $props<{
 		tabs: SettingsTab[];
 		activeTab: string;
 		onTabChange: (tabId: string) => void;
 	}>();
-	
+
 	// Handle tab click
 	function handleTabClick(tabId: string) {
 		if (tabId !== activeTab) {
@@ -25,7 +25,7 @@
 			if (browser) {
 				hapticFeedbackService.trigger('navigation');
 			}
-			
+
 			// Call the tab change handler
 			onTabChange(tabId);
 		}
@@ -57,7 +57,7 @@
 		border-bottom: 1px solid rgba(108, 156, 233, 0.2);
 		background-color: rgba(20, 30, 50, 0.5);
 	}
-	
+
 	.tabs-container {
 		display: flex;
 		overflow-x: auto;
@@ -65,20 +65,20 @@
 		scrollbar-color: rgba(108, 156, 233, 0.3) transparent;
 		padding: 0 0.5rem;
 	}
-	
+
 	.tabs-container::-webkit-scrollbar {
 		height: 4px;
 	}
-	
+
 	.tabs-container::-webkit-scrollbar-track {
 		background: transparent;
 	}
-	
+
 	.tabs-container::-webkit-scrollbar-thumb {
 		background-color: rgba(108, 156, 233, 0.3);
 		border-radius: 2px;
 	}
-	
+
 	.tab-button {
 		display: flex;
 		align-items: center;
@@ -95,22 +95,22 @@
 		gap: 0.5rem;
 		min-width: 100px;
 	}
-	
+
 	.tab-button:hover {
 		color: white;
 		background-color: rgba(108, 156, 233, 0.1);
 	}
-	
+
 	.tab-button.active {
 		color: #6c9ce9;
 		border-bottom: 2px solid #6c9ce9;
 		background-color: rgba(108, 156, 233, 0.15);
 	}
-	
+
 	.tab-label {
 		font-size: 0.9rem;
 	}
-	
+
 	/* Mobile styles */
 	@media (max-width: 480px) {
 		.tab-button {

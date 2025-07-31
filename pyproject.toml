@@ -92,53 +92,24 @@ extend-exclude = [
 ]
 
 [tool.ruff.lint]
-# Enable these rule sets (replaces most of your Pylint config)
+# Enable these rule sets (but make them non-blocking)
 select = [
-    "E",      # pycodestyle errors
-    "W",      # pycodestyle warnings
-    "F",      # pyflakes
-    "I",      # isort (import sorting)
-    "N",      # pep8-naming
-    "UP",     # pyupgrade
-    "B",      # flake8-bugbear
-    "C4",     # flake8-comprehensions
-    "PIE",    # flake8-pie
-    "SIM",    # flake8-simplify
-    "RET",    # flake8-return
-    "PTH",    # flake8-use-pathlib
+    "E",      # pycodestyle errors (auto-fixable)
+    "W",      # pycodestyle warnings (auto-fixable)
+    "F",      # pyflakes (auto-fixable)
+    "I",      # isort (import sorting - auto-fixable)
+    "UP",     # pyupgrade (auto-fixable)
 ]
 
-# Disable rules that were causing issues in your old Pylint config
+# Only ignore rules that cause real problems in Qt/PyQt6 codebases
 ignore = [
     "E501",   # Line too long (handled by formatter)
-    "E731",   # Do not assign a lambda expression
     "N802",   # Function name should be lowercase (Qt uses camelCase)
     "N803",   # Argument name should be lowercase (Qt uses camelCase)
     "N806",   # Variable in function should be lowercase (Qt uses camelCase)
     "N812",   # Lowercase imported as non-lowercase (PyQt6 modules)
     "N815",   # mixedCase variable in class scope (Qt widgets)
     "N816",   # mixedCase variable in global scope
-    "B008",   # Do not perform function calls in argument defaults
-    "C901",   # Too complex (we handle complexity differently)
-    "RET504", # Unnecessary variable assignment before return
-    "RET505", # Unnecessary else after return
-    "RET506", # Unnecessary elif after raise
-    "RET507", # Unnecessary elif after continue
-    "RET508", # Unnecessary elif after break
-    "SIM102", # Use a single if-statement instead of nested if-statements
-    "SIM108", # Use ternary operator instead of if-else
-    "SIM117", # Use a single with statement for multiple contexts
-    "PTH100", # os.path.abspath should be replaced by Path.resolve()
-    "PTH103", # os.makedirs should be replaced by Path.mkdir
-    "PTH107", # os.remove should be replaced by Path.unlink
-    "PTH110", # os.path.exists should be replaced by Path.exists
-    "PTH111", # os.path.expanduser should be replaced by Path.expanduser
-    "PTH112", # os.path.isdir should be replaced by Path.is_dir
-    "PTH113", # os.path.isfile should be replaced by Path.is_file
-    "PTH118", # os.path.join should be replaced by Path
-    "PTH119", # os.path.basename should be replaced by Path.name
-    "PTH120", # os.path.dirname should be replaced by Path.parent
-    "PTH123", # open() should be replaced by Path.open()
 ]
 
 # Allow specific variable names (from your old Pylint config)

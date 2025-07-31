@@ -1,6 +1,6 @@
 /**
  * 🧪 CIRCULAR DEPENDENCY DETECTION TESTS
- * 
+ *
  * Critical tests for circular dependency detection and prevention,
  * ensuring the DI system handles complex dependency scenarios gracefully.
  */
@@ -28,7 +28,7 @@ describe('Circular Dependency Detection', () => {
             const IServiceA = createServiceInterface('IServiceA', class {
                 getValue(): string { return ''; }
             });
-            
+
             const IServiceB = createServiceInterface('IServiceB', class {
                 getValue(): string { return ''; }
             });
@@ -142,7 +142,7 @@ describe('Circular Dependency Detection', () => {
             // B depends on D
             container.registerFactory(IServiceB, () => {
                 const serviceD = container.resolve(IServiceD);
-                return { 
+                return {
                     getValue: () => `B->${serviceD.getValue()}`
                 };
             });
@@ -150,7 +150,7 @@ describe('Circular Dependency Detection', () => {
             // C depends on D
             container.registerFactory(IServiceC, () => {
                 const serviceD = container.resolve(IServiceD);
-                return { 
+                return {
                     getValue: () => `C->${serviceD.getValue()}`
                 };
             });
@@ -159,7 +159,7 @@ describe('Circular Dependency Detection', () => {
             container.registerFactory(IServiceA, () => {
                 const serviceB = container.resolve(IServiceB);
                 const serviceC = container.resolve(IServiceC);
-                return { 
+                return {
                     getValue: () => `A->${serviceB.getValue()},${serviceC.getValue()}`
                 };
             });
@@ -172,7 +172,7 @@ describe('Circular Dependency Detection', () => {
 
         test('should allow deep linear dependency chain', () => {
             const interfaces = [];
-            
+
             // Create a linear chain: A -> B -> C -> D -> E
             for (let i = 0; i < 5; i++) {
                 const serviceName = `ILinearService${String.fromCharCode(65 + i)}`;
@@ -210,7 +210,7 @@ describe('Circular Dependency Detection', () => {
     describe('Resolution Stack Tracking', () => {
         test('should track resolution stack depth', () => {
             const IDeepService = createServiceInterface('IDeepService', class {});
-            
+
             let resolutionDepth = 0;
             container.registerFactory(IDeepService, () => {
                 resolutionDepth++;
@@ -223,7 +223,7 @@ describe('Circular Dependency Detection', () => {
             expect(() => {
                 container.resolve(IDeepService);
             }).not.toThrow();
-            
+
             expect(resolutionDepth).toBe(1);
         });
 
@@ -319,7 +319,7 @@ describe('Circular Dependency Detection', () => {
             const ILazyBreaker = createServiceInterface('ILazyBreaker', class {
                 getValue(): string { return ''; }
             });
-            
+
             const IRegularService = createServiceInterface('IRegularService', class {
                 getValue(): string { return ''; }
             });

@@ -21,7 +21,7 @@
 export async function downloadImage(imageData, filename, options = {}) {
   try {
     let blob;
-    
+
     // Convert data URL to blob if needed
     if (typeof imageData === 'string') {
       if (imageData.startsWith('data:')) {
@@ -40,21 +40,21 @@ export async function downloadImage(imageData, filename, options = {}) {
     const link = document.createElement('a');
     link.href = url;
     link.download = filename;
-    
+
     // Trigger download
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-    
+
     // Clean up
     URL.revokeObjectURL(url);
-    
+
     return {
       success: true,
       message: 'Image downloaded successfully',
       filename: filename
     };
-    
+
   } catch (error) {
     console.error('Download failed:', error);
     return {
@@ -74,24 +74,24 @@ function dataURLToBlob(dataURL) {
   const parts = dataURL.split(',');
   const header = parts[0];
   const data = parts[1];
-  
+
   const mimeMatch = header.match(/data:([^;]+)/);
   const mime = mimeMatch ? mimeMatch[1] : 'application/octet-stream';
-  
+
   const isBase64 = header.includes('base64');
   let bytes;
-  
+
   if (isBase64) {
     bytes = atob(data);
   } else {
     bytes = decodeURIComponent(data);
   }
-  
+
   const uint8Array = new Uint8Array(bytes.length);
   for (let i = 0; i < bytes.length; i++) {
     uint8Array[i] = bytes.charCodeAt(i);
   }
-  
+
   return new Blob([uint8Array], { type: mime });
 }
 
@@ -141,7 +141,7 @@ export async function downloadJSON(data, filename) {
  * @returns {boolean} True if downloads are supported
  */
 export function isDownloadSupported() {
-  return typeof document !== 'undefined' && 
-         'createElement' in document && 
+  return typeof document !== 'undefined' &&
+         'createElement' in document &&
          'createObjectURL' in URL;
 }

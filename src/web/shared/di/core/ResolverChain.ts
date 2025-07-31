@@ -1,6 +1,6 @@
 /**
  * 🔗 TKA RESOLVER CHAIN
- * 
+ *
  * Sophisticated service resolution system with multiple resolution strategies,
  * fallback mechanisms, and advanced dependency injection patterns.
  */
@@ -16,8 +16,8 @@ export interface IServiceResolver {
     readonly priority: number;
     canResolve<T>(serviceInterface: ServiceInterface<T>, registry: ServiceRegistry): boolean;
     resolve<T>(
-        serviceInterface: ServiceInterface<T>, 
-        registry: ServiceRegistry, 
+        serviceInterface: ServiceInterface<T>,
+        registry: ServiceRegistry,
         container: any,
         context: ResolutionContext
     ): T | null;
@@ -36,8 +36,8 @@ export class SingletonResolver implements IServiceResolver {
     }
 
     resolve<T>(
-        serviceInterface: ServiceInterface<T>, 
-        registry: ServiceRegistry, 
+        serviceInterface: ServiceInterface<T>,
+        registry: ServiceRegistry,
         container: any,
         context: ResolutionContext
     ): T | null {
@@ -67,7 +67,7 @@ export class SingletonResolver implements IServiceResolver {
     }
 
     private _createInstance<T>(
-        implementation: new (...args: any[]) => T, 
+        implementation: new (...args: any[]) => T,
         container: any,
         context: ResolutionContext
     ): T {
@@ -90,8 +90,8 @@ export class TransientResolver implements IServiceResolver {
     }
 
     resolve<T>(
-        serviceInterface: ServiceInterface<T>, 
-        registry: ServiceRegistry, 
+        serviceInterface: ServiceInterface<T>,
+        registry: ServiceRegistry,
         container: any,
         context: ResolutionContext
     ): T | null {
@@ -108,7 +108,7 @@ export class TransientResolver implements IServiceResolver {
     }
 
     private _createInstance<T>(
-        implementation: new (...args: any[]) => T, 
+        implementation: new (...args: any[]) => T,
         container: any,
         context: ResolutionContext
     ): T {
@@ -125,15 +125,15 @@ export class ScopedResolver implements IServiceResolver {
 
     canResolve<T>(serviceInterface: ServiceInterface<T>, registry: ServiceRegistry): boolean {
         const descriptor = registry.getDescriptor(serviceInterface);
-        return descriptor?.scope === ServiceScope.Scoped || 
+        return descriptor?.scope === ServiceScope.Scoped ||
                descriptor?.scope === ServiceScope.Request ||
                descriptor?.scope === ServiceScope.Session ||
                descriptor?.scope === ServiceScope.Component;
     }
 
     resolve<T>(
-        serviceInterface: ServiceInterface<T>, 
-        registry: ServiceRegistry, 
+        serviceInterface: ServiceInterface<T>,
+        registry: ServiceRegistry,
         container: any,
         context: ResolutionContext
     ): T | null {
@@ -173,7 +173,7 @@ export class ScopedResolver implements IServiceResolver {
     }
 
     private _createInstance<T>(
-        implementation: new (...args: any[]) => T, 
+        implementation: new (...args: any[]) => T,
         container: any,
         context: ResolutionContext
     ): T {
@@ -194,8 +194,8 @@ export class FactoryResolver implements IServiceResolver {
     }
 
     resolve<T>(
-        serviceInterface: ServiceInterface<T>, 
-        registry: ServiceRegistry, 
+        serviceInterface: ServiceInterface<T>,
+        registry: ServiceRegistry,
         container: any,
         context: ResolutionContext
     ): T | null {
@@ -219,8 +219,8 @@ export class LazyResolver implements IServiceResolver {
     }
 
     resolve<T>(
-        serviceInterface: ServiceInterface<T>, 
-        registry: ServiceRegistry, 
+        serviceInterface: ServiceInterface<T>,
+        registry: ServiceRegistry,
         container: any,
         context: ResolutionContext
     ): T | null {
@@ -243,8 +243,8 @@ export class InstanceResolver implements IServiceResolver {
     }
 
     resolve<T>(
-        serviceInterface: ServiceInterface<T>, 
-        registry: ServiceRegistry, 
+        serviceInterface: ServiceInterface<T>,
+        registry: ServiceRegistry,
         container: any,
         context: ResolutionContext
     ): T | null {
@@ -266,8 +266,8 @@ export class FallbackResolver implements IServiceResolver {
     }
 
     resolve<T>(
-        serviceInterface: ServiceInterface<T>, 
-        registry: ServiceRegistry, 
+        serviceInterface: ServiceInterface<T>,
+        registry: ServiceRegistry,
         container: any,
         context: ResolutionContext
     ): T | null {
@@ -310,8 +310,8 @@ export class ResolverChain {
      * Resolve a service using the resolver chain
      */
     resolve<T>(
-        serviceInterface: ServiceInterface<T>, 
-        registry: ServiceRegistry, 
+        serviceInterface: ServiceInterface<T>,
+        registry: ServiceRegistry,
         container: any,
         context: ResolutionContext
     ): T | null {

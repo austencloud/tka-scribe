@@ -1,12 +1,12 @@
 /**
  * Difficulty Drawer
- * 
+ *
  * This module provides functionality to draw a difficulty label on the exported image.
  */
 
 /**
  * Draws a difficulty label in the top-left corner of the canvas
- * 
+ *
  * @param ctx The canvas rendering context
  * @param difficultyLevel The difficulty level (1-5)
  * @param x The x position for the label
@@ -20,15 +20,15 @@ export function drawDifficultyLabel(
 ): void {
   // Validate difficulty level
   const level = Math.max(1, Math.min(5, Math.round(difficultyLevel || 1)));
-  
+
   // Save context for restoration
   ctx.save();
-  
+
   // Draw background
   const width = 100;
   const height = 30;
   const radius = 5;
-  
+
   // Draw rounded rectangle
   ctx.beginPath();
   ctx.moveTo(x + radius, y);
@@ -41,10 +41,10 @@ export function drawDifficultyLabel(
   ctx.lineTo(x, y + radius);
   ctx.quadraticCurveTo(x, y, x + radius, y);
   ctx.closePath();
-  
+
   // Fill with gradient based on difficulty
   const gradient = ctx.createLinearGradient(x, y, x + width, y + height);
-  
+
   // Set gradient colors based on difficulty
   switch (level) {
     case 1:
@@ -71,28 +71,28 @@ export function drawDifficultyLabel(
       gradient.addColorStop(0, 'rgba(100, 100, 100, 0.8)');
       gradient.addColorStop(1, 'rgba(150, 150, 150, 0.8)');
   }
-  
+
   ctx.fillStyle = gradient;
   ctx.fill();
-  
+
   // Add subtle border
   ctx.strokeStyle = 'rgba(0, 0, 0, 0.3)';
   ctx.lineWidth = 1;
   ctx.stroke();
-  
+
   // Draw text
   ctx.fillStyle = '#FFFFFF';
   ctx.font = 'bold 14px Arial';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
   ctx.fillText(`Level ${level}`, x + width / 2, y + height / 2);
-  
+
   // Add shadow for better readability
   ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
   ctx.shadowBlur = 2;
   ctx.shadowOffsetX = 1;
   ctx.shadowOffsetY = 1;
-  
+
   // Restore context
   ctx.restore();
 }

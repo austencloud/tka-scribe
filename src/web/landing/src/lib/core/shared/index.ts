@@ -4,7 +4,7 @@
 // Export utilities
 export * from './utils/index.js';
 
-// Export components  
+// Export components
 export * from './components/index.js';
 
 // Export types

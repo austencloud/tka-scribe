@@ -1,6 +1,6 @@
 /**
  * State Machine Logger
- * 
+ *
  * Configurable logging for state machines to control verbosity
  */
 
@@ -57,7 +57,7 @@ export function shouldLog(machineId: string, level: LogLevel): boolean {
  */
 export function log(machineId: string, level: LogLevel, ...args: any[]): void {
   if (!shouldLog(machineId, level)) return;
-  
+
   switch (level) {
     case LogLevel.ERROR:
       console.error(`[${machineId}]`, ...args);
@@ -78,7 +78,7 @@ export function log(machineId: string, level: LogLevel, ...args: any[]): void {
 if (browser) {
   const url = new URL(window.location.href);
   const logParam = url.searchParams.get('log');
-  
+
   if (logParam) {
     // Parse log level from URL
     const levelMap: Record<string, LogLevel> = {
@@ -88,7 +88,7 @@ if (browser) {
       'info': LogLevel.INFO,
       'debug': LogLevel.DEBUG
     };
-    
+
     // Check for machine-specific settings like "app=debug,sequence=error"
     if (logParam.includes('=')) {
       logParam.split(',').forEach(part => {
@@ -97,7 +97,7 @@ if (browser) {
           setMachineLogLevel(machineId, levelMap[levelName]);
         }
       });
-    } 
+    }
     // Or a global setting like "debug"
     else if (logParam in levelMap) {
       setGlobalLogLevel(levelMap[logParam]);

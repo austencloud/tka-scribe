@@ -10,7 +10,7 @@ export class PictographErrorHandler {
 
 	handleError(error: any, component?: string) {
 		console.error('Pictograph error:', error);
-		
+
 		const errorMessage = this.extractErrorMessage(error);
 		this.stateManager.setError(errorMessage, component);
 	}
@@ -19,11 +19,11 @@ export class PictographErrorHandler {
 		if (typeof error === 'string') {
 			return error;
 		}
-		
+
 		if (error instanceof Error) {
 			return error.message;
 		}
-		
+
 		if (error && typeof error === 'object') {
 			if (error.message) {
 				return error.message;
@@ -32,7 +32,7 @@ export class PictographErrorHandler {
 				return error.detail;
 			}
 		}
-		
+
 		return 'An unknown error occurred';
 	}
 

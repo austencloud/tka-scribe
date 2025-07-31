@@ -7,7 +7,7 @@ import { ANTI, DASH, FLOAT, PRO, STATIC } from '$lib/types/Constants';
  * Gets the initial position for an arrow based on its type and location
  */
 export function getInitialPosition(
-  arrow: ArrowData, 
+  arrow: ArrowData,
   config: ArrowPlacementConfig
 ): Coordinates {
   const { motionType } = arrow;
@@ -36,18 +36,18 @@ export function getInitialPosition(
  * Gets coordinates for shift-type motions (Pro, Anti, Float)
  */
 function getShiftCoordinates(
-  arrow: ArrowData, 
-  pictographData: any, 
+  arrow: ArrowData,
+  pictographData: any,
   gridData: any
 ): Coordinates {
   const pointName = `${arrow.loc}_${pictographData.gridMode || 'diamond'}_layer2_point`;
   const point = gridData.allLayer2PointsNormal[pointName];
-  
+
   if (!point?.coordinates) {
     console.warn(`Shift coordinate for '${pointName}' not found.`);
     return { x: 0, y: 0 };
   }
-  
+
   return point.coordinates;
 }
 
@@ -55,17 +55,17 @@ function getShiftCoordinates(
  * Gets coordinates for static or dash motions
  */
 function getStaticDashCoordinates(
-  arrow: ArrowData, 
-  pictographData: any, 
+  arrow: ArrowData,
+  pictographData: any,
   gridData: any
 ): Coordinates {
   const pointName = `${arrow.loc}_${pictographData.gridMode || 'diamond'}_hand_point`;
   const point = gridData.allHandPointsNormal[pointName];
-  
+
   if (!point?.coordinates) {
     console.warn(`Static coordinate for '${pointName}' not found.`);
     return { x: 0, y: 0 };
   }
-  
+
   return point.coordinates;
 }

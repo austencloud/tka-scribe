@@ -13,10 +13,10 @@ export function parseTurnsTupleString(
   turnsStr: string
 ): [DirRelation | PropRotDir | null, TKATurns, TKATurns] {
   if (!turnsStr) return [null, 0, 0];
-  
+
   const cleaned = turnsStr.replace(/[()]/g, '').trim();
   const parts = cleaned.split(',').map((p) => p.trim());
-  
+
   // Destructure with proper defaults
   const [dirRaw = null, topRaw = null, bottomRaw = null] = parts;
 
@@ -29,17 +29,17 @@ export function parseTurnsTupleString(
 
 function parseDirection(item: string | null): DirRelation | PropRotDir | null {
   if (!item) return null;
-  
+
   const validDirections = ['s', 'o', 'cw', 'ccw'] as const;
-  return validDirections.includes(item as any) 
-    ? (item as DirRelation | PropRotDir) 
+  return validDirections.includes(item as any)
+    ? (item as DirRelation | PropRotDir)
     : null;
 }
 
 function parseTurnValue(item: string | null): TKATurns | null {
   if (!item) return null;
   if (item === 'fl') return 'fl';
-  
+
   const num = Number(item);
   return !isNaN(num) && VALID_TURN_NUMS.includes(num as ValidTurnNum)
     ? (num as TKATurns)

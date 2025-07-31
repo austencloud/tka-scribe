@@ -10,11 +10,10 @@ export function resizeObserver(
       }
     });
     ro.observe(node);
-  
+
     return {
       destroy() {
         ro.unobserve(node);
       },
     };
   }
-  

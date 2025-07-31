@@ -1,6 +1,6 @@
 /**
  * Settings Store Selectors
- * 
+ *
  * This file contains selectors for the settings store.
  * Selectors are functions that extract specific pieces of state from the store.
  */

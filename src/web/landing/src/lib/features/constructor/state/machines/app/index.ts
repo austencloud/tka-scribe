@@ -1,6 +1,6 @@
 /**
  * Application State
- * 
+ *
  * This is the entry point for the application state machine.
  * It exports the machine, selectors, and actions.
  */

@@ -7,7 +7,7 @@
 
   // Use both old and new state management during migration
   export let useNewStateManagement = true;
-  
+
   // Get state from sequence machine
   $: newGeneratorType = sequenceSelectors.generationType();
 </script>

@@ -1,6 +1,6 @@
 /**
  * SequenceLayoutCalculator.ts
- * 
+ *
  * This utility provides functions for calculating layout properties for the SequenceWidget
  * and related components. It centralizes layout logic to ensure consistent behavior across
  * the refactored components.
@@ -9,7 +9,7 @@
 /**
  * Calculate whether the workbench should use portrait orientation
  * based on container dimensions
- * 
+ *
  * @param width Container width
  * @param height Container height
  * @returns Whether to use portrait orientation
@@ -21,7 +21,7 @@ export function calculateWorkbenchIsPortrait(width: number, height: number): boo
 
 /**
  * Calculate the button size factor based on container dimensions
- * 
+ *
  * @param width Container width
  * @param height Container height
  * @returns Button size factor (0-1)
@@ -29,7 +29,7 @@ export function calculateWorkbenchIsPortrait(width: number, height: number): boo
 export function calculateButtonSizeFactor(width: number, height: number): number {
     // Base size on the smaller dimension
     const smallerDimension = Math.min(width, height);
-    
+
     // Scale factor based on container size
     // Smaller containers get smaller buttons
     if (smallerDimension < 400) {
@@ -44,7 +44,7 @@ export function calculateButtonSizeFactor(width: number, height: number): number
 /**
  * Calculate if the beat frame should scroll based on its natural height
  * and available space
- * 
+ *
  * @param beatFrameNaturalHeight Natural height of the beat frame
  * @param containerHeight Available container height
  * @param labelHeight Height of the label above the beat frame
@@ -74,7 +74,7 @@ export function calculateBeatFrameShouldScroll(
 
 /**
  * Calculate the combined height of the label and beat frame unit
- * 
+ *
  * @param labelHeight Height of the label
  * @param beatFrameHeight Height of the beat frame
  * @returns Combined height of the label and beat frame unit
@@ -88,7 +88,7 @@ export function calculateCombinedUnitHeight(
 
 /**
  * Calculate the available height for the beat frame
- * 
+ *
  * @param containerHeight Total container height
  * @param labelHeight Height of the label
  * @param verticalPadding Vertical padding of the container

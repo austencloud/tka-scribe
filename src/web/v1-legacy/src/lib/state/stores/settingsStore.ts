@@ -1,6 +1,6 @@
 /**
  * Settings Store
- * 
+ *
  * Centralized store for application settings, including sequence generation settings.
  */
 
@@ -31,11 +31,11 @@ export interface SettingsState {
   propContinuity: PropContinuityType;
   capType: CAPType;
   level: number; // Difficulty level 1-5
-  
+
   // UI settings
   theme: 'light' | 'dark' | 'system';
   animationsEnabled: boolean;
-  
+
   // User preferences
   lastUsedGeneratorType: GeneratorType;
   favoriteCapTypes: CAPType[];
@@ -49,10 +49,10 @@ const DEFAULT_SETTINGS: SettingsState = {
   propContinuity: 'continuous',
   capType: 'mirrored',
   level: 1,
-  
+
   theme: 'system',
   animationsEnabled: true,
-  
+
   lastUsedGeneratorType: 'circular',
   favoriteCapTypes: ['mirrored', 'rotated']
 };
@@ -84,56 +84,56 @@ export const settingsStore = createStore<
         lastUsedGeneratorType: type
       }));
     },
-    
+
     setNumBeats: (beats: number) => {
       update((state) => ({
         ...state,
         numBeats: Math.max(1, Math.min(32, beats)) // Clamp between 1-32
       }));
     },
-    
+
     setTurnIntensity: (intensity: number) => {
       update((state) => ({
         ...state,
         turnIntensity: Math.max(1, Math.min(5, intensity)) // Clamp between 1-5
       }));
     },
-    
+
     setPropContinuity: (continuity: PropContinuityType) => {
       update((state) => ({
         ...state,
         propContinuity: continuity
       }));
     },
-    
+
     setCAPType: (type: CAPType) => {
       update((state) => ({
         ...state,
         capType: type
       }));
     },
-    
+
     setLevel: (level: number) => {
       update((state) => ({
         ...state,
         level: Math.max(1, Math.min(5, level)) // Clamp between 1-5
       }));
     },
-    
+
     setTheme: (theme: 'light' | 'dark' | 'system') => {
       update((state) => ({
         ...state,
         theme
       }));
     },
-    
+
     toggleAnimations: () => {
       update((state) => ({
         ...state,
         animationsEnabled: !state.animationsEnabled
       }));
     },
-    
+
     addFavoriteCapType: (type: CAPType) => {
       update((state) => {
         if (state.favoriteCapTypes.includes(type)) {
@@ -145,14 +145,14 @@ export const settingsStore = createStore<
         };
       });
     },
-    
+
     removeFavoriteCapType: (type: CAPType) => {
       update((state) => ({
         ...state,
         favoriteCapTypes: state.favoriteCapTypes.filter((t) => t !== type)
       }));
     },
-    
+
     resetSettings: () => {
       set(DEFAULT_SETTINGS);
     }

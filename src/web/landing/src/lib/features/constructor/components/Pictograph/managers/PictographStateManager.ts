@@ -6,7 +6,7 @@ export class PictographStateManager {
 
 	updateState(status: PictographStateData['status'], reason?: string) {
 		const previousStatus = this.state.status;
-		
+
 		this.state.stateHistory.push({
 			from: previousStatus,
 			to: status,
@@ -15,7 +15,7 @@ export class PictographStateManager {
 		});
 
 		this.state.status = status;
-		
+
 		// Update load progress based on status
 		this.updateLoadProgress();
 	}

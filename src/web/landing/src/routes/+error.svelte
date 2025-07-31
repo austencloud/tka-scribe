@@ -1,13 +1,13 @@
 <script lang="ts">
   import { page } from '$app/stores';
   import { onMount } from 'svelte';
-  
+
   let mounted = false;
-  
+
   onMount(() => {
     mounted = true;
   });
-  
+
   $: status = ($page.error as any)?.status || 500;
   $: message = $page.error?.message || 'Something went wrong';
 </script>
@@ -28,7 +28,7 @@
         ❌
       {/if}
     </div>
-    
+
     <h1 class="error-title">
       {#if status === 404}
         Page Not Found
@@ -38,7 +38,7 @@
         Error {status}
       {/if}
     </h1>
-    
+
     <p class="error-message">
       {#if status === 404}
         The page you're looking for doesn't exist or has been moved.
@@ -48,17 +48,17 @@
         {message}
       {/if}
     </p>
-    
+
     <div class="error-actions">
       <a href="/" class="btn btn-primary">Go Home</a>
-      <button 
-        class="btn btn-secondary" 
+      <button
+        class="btn btn-secondary"
         on:click={() => window.history.back()}
       >
         Go Back
       </button>
     </div>
-    
+
     {#if status === 404}
       <div class="suggestions">
         <h3>You might be looking for:</h3>
@@ -84,12 +84,12 @@
     transform: translateY(20px);
     transition: all 0.6s ease;
   }
-  
+
   .error-container.mounted {
     opacity: 1;
     transform: translateY(0);
   }
-  
+
   .error-content {
     text-align: center;
     max-width: 500px;
@@ -104,32 +104,32 @@
     box-shadow: var(--shadow-glass-hover);
 
   }
-  
+
   .error-icon {
     font-size: 4rem;
     margin-bottom: var(--spacing-lg);
   }
-  
+
   .error-title {
     color: var(--text-color);
     margin-bottom: var(--spacing-md);
     font-size: var(--font-size-3xl);
   }
-  
+
   .error-message {
     color: var(--text-secondary);
     margin-bottom: var(--spacing-2xl);
     font-size: var(--font-size-lg);
     line-height: 1.6;
   }
-  
+
   .error-actions {
     display: flex;
     gap: var(--spacing-md);
     justify-content: center;
     margin-bottom: var(--spacing-xl);
   }
-  
+
   .btn {
     /* Use global glassmorphism button styling */
     display: inline-flex;
@@ -182,49 +182,49 @@
     transform: translateY(-2px);
     box-shadow: var(--shadow-glass-hover);
   }
-  
+
   .suggestions {
     margin-top: var(--spacing-xl);
     padding-top: var(--spacing-xl);
     border-top: 1px solid var(--border-color);
   }
-  
+
   .suggestions h3 {
     color: var(--text-color);
     margin-bottom: var(--spacing-md);
     font-size: var(--font-size-lg);
   }
-  
+
   .suggestions ul {
     list-style: none;
     padding: 0;
     margin: 0;
   }
-  
+
   .suggestions li {
     margin: var(--spacing-sm) 0;
   }
-  
+
   .suggestions a {
     color: var(--primary-color);
     text-decoration: none;
     font-weight: 500;
   }
-  
+
   .suggestions a:hover {
     text-decoration: underline;
   }
-  
+
   @media (max-width: 768px) {
     .error-content {
       padding: var(--spacing-2xl);
       margin: var(--spacing-md);
     }
-    
+
     .error-actions {
       flex-direction: column;
     }
-    
+
     .btn {
       width: 100%;
     }

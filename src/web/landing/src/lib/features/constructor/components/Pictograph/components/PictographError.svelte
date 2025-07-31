@@ -1,6 +1,6 @@
 <!--
   PictographError Component
-  
+
   Shows error state for pictograph components.
 -->
 <script lang="ts">
@@ -43,18 +43,18 @@
 			</text>
 		</svg>
 	</div>
-	
+
 	<div class="error-content">
 		<div class="error-title">Error</div>
 		<div class="error-message">{errorMessage}</div>
-		
+
 		{#if debug && error}
 			<details class="error-details">
 				<summary>Debug Info</summary>
 				<pre>{JSON.stringify(error, null, 2)}</pre>
 			</details>
 		{/if}
-		
+
 		<button class="retry-button" on:click={handleRetry}>
 			Retry
 		</button>

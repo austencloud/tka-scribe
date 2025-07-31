@@ -1,6 +1,6 @@
 /**
  * Web-specific implementations of animation protocols.
- * 
+ *
  * This module provides web browser implementations of the animation protocols
  * using CSS transitions, Web Animations API, and DOM manipulation to achieve
  * cross-platform animation compatibility.
@@ -18,11 +18,11 @@ class WebStackAdapter {
     constructor(containerElement) {
         this.container = containerElement;
         this.currentIndex = 0;
-        
+
         // Initialize by hiding all children except the first
         this._initializeStack();
     }
-    
+
     /**
      * Initialize the stack by hiding all children except the first visible one.
      * @private
@@ -30,11 +30,11 @@ class WebStackAdapter {
     _initializeStack() {
         const children = this.container.children;
         let firstVisibleFound = false;
-        
+
         for (let i = 0; i < children.length; i++) {
             const child = children[i];
             const isVisible = child.style.display !== 'none';
-            
+
             if (isVisible && !firstVisibleFound) {
                 this.currentIndex = i;
                 firstVisibleFound = true;
@@ -43,7 +43,7 @@ class WebStackAdapter {
             }
         }
     }
-    
+
     /**
      * Get the index of the currently visible element.
      * @returns {number} Current index
@@ -51,26 +51,26 @@ class WebStackAdapter {
     getCurrentIndex() {
         return this.currentIndex;
     }
-    
+
     /**
      * Set which element should be visible by index.
      * @param {number} index - Index of element to show
      */
     setCurrentIndex(index) {
         const children = this.container.children;
-        
+
         // Hide all children
         for (let i = 0; i < children.length; i++) {
             children[i].style.display = 'none';
         }
-        
+
         // Show selected child
         if (children[index]) {
             children[index].style.display = 'block';
             this.currentIndex = index;
         }
     }
-    
+
     /**
      * Get the element at the specified index.
      * @param {number} index - Index of element to get
@@ -79,7 +79,7 @@ class WebStackAdapter {
     getWidgetAt(index) {
         return this.container.children[index] || null;
     }
-    
+
     /**
      * Get the total number of elements in the stack.
      * @returns {number} Number of child elements
@@ -101,7 +101,7 @@ class WebOpacityEffectAdapter {
     constructor(element) {
         this.element = element;
     }
-    
+
     /**
      * Get the current opacity value.
      * @returns {number} Opacity value (0.0 to 1.0)
@@ -110,7 +110,7 @@ class WebOpacityEffectAdapter {
         const opacity = this.element.style.opacity;
         return opacity === '' ? 1.0 : parseFloat(opacity);
     }
-    
+
     /**
      * Set the opacity value.
      * @param {number} opacity - Opacity value (0.0 to 1.0)
@@ -137,11 +137,11 @@ class WebPropertyAnimationAdapter {
         this.startValue = null;
         this.endValue = null;
         this.animation = null;
-        
+
         // Check for reduced motion preference
         this.respectsReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     }
-    
+
     /**
      * Start the animation.
      */
@@ -151,7 +151,7 @@ class WebPropertyAnimationAdapter {
             this.element.style[this.property] = this.endValue;
             return;
         }
-        
+
         // Use Web Animations API if available, fallback to CSS transitions
         if (this.element.animate && this.startValue !== null && this.endValue !== null) {
             this._startWebAnimation();
@@ -159,7 +159,7 @@ class WebPropertyAnimationAdapter {
             this._startCSSTransition();
         }
     }
-    
+
     /**
      * Stop the animation.
      */
@@ -170,7 +170,7 @@ class WebPropertyAnimationAdapter {
         }
         this.element.style.transition = '';
     }
-    
+
     /**
      * Set the animation duration in milliseconds.
      * @param {number} duration - Duration in milliseconds
@@ -178,7 +178,7 @@ class WebPropertyAnimationAdapter {
     setDuration(duration) {
         this.duration = duration;
     }
-    
+
     /**
      * Set the starting value for the animated property.
      * @param {any} value - Starting value
@@ -186,7 +186,7 @@ class WebPropertyAnimationAdapter {
     setStartValue(value) {
         this.startValue = value;
     }
-    
+
     /**
      * Set the ending value for the animated property.
      * @param {any} value - Ending value
@@ -194,7 +194,7 @@ class WebPropertyAnimationAdapter {
     setEndValue(value) {
         this.endValue = value;
     }
-    
+
     /**
      * Start animation using Web Animations API.
      * @private
@@ -204,16 +204,16 @@ class WebPropertyAnimationAdapter {
             { [this.property]: this.startValue },
             { [this.property]: this.endValue }
         ];
-        
+
         const options = {
             duration: this.duration,
             easing: 'ease-in-out',
             fill: 'forwards'
         };
-        
+
         this.animation = this.element.animate(keyframes, options);
     }
-    
+
     /**
      * Start animation using CSS transitions.
      * @private
@@ -223,10 +223,10 @@ class WebPropertyAnimationAdapter {
         if (this.startValue !== null) {
             this.element.style[this.property] = this.startValue;
         }
-        
+
         // Set up transition
         this.element.style.transition = `${this.property} ${this.duration}ms ease-in-out`;
-        
+
         // Trigger transition by setting end value
         if (this.endValue !== null) {
             // Use requestAnimationFrame to ensure the transition is applied
@@ -248,7 +248,7 @@ class WebAnimationGroupAdapter {
     constructor() {
         this.animations = [];
     }
-    
+
     /**
      * Add an animation to the group.
      * @param {WebPropertyAnimationAdapter} animation - Animation to add
@@ -260,14 +260,14 @@ class WebAnimationGroupAdapter {
             console.warn('WebAnimationGroupAdapter: Expected WebPropertyAnimationAdapter');
         }
     }
-    
+
     /**
      * Start all animations in the group simultaneously.
      */
     start() {
         this.animations.forEach(animation => animation.start());
     }
-    
+
     /**
      * Stop all animations in the group.
      */

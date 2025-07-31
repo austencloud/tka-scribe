@@ -41,7 +41,7 @@ export const modalActions = {
       resourceName,
       isLoading: true
     }));
-    
+
     // Update URL hash for browser back button support
     if (typeof window !== 'undefined') {
       window.location.hash = `#modal-${resourceName}`;
@@ -55,9 +55,9 @@ export const modalActions = {
       resourceName: null,
       isLoading: false
     }));
-    
+
     modalData.set(null);
-    
+
     // Clear URL hash
     if (typeof window !== 'undefined') {
       window.location.hash = '';
@@ -94,7 +94,7 @@ if (typeof window !== 'undefined') {
       modalActions.closeModal();
     }
   });
-  
+
   // Handle initial page load with hash
   window.addEventListener('DOMContentLoaded', () => {
     const hash = window.location.hash;

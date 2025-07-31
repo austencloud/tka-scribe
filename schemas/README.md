@@ -18,7 +18,7 @@ graph TD
     B --> C[TypeScript Types]
     B --> D[API Validation]
     B --> E[Data Storage]
-    
+
     A --> F[Desktop App]
     C --> G[Web Apps]
     D --> H[API Layer]

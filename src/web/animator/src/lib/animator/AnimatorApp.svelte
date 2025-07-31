@@ -21,13 +21,13 @@
 	import ThemeManager from './components/theme/ThemeManager.svelte';
 	import SidebarManager from './components/layout/SidebarManager.svelte';
 	import SidebarControls from './components/layout/SidebarControls.svelte';
-	
+
 	// Import hardcoded sequences for testing
 	import { EXAMPLE_SEQUENCES } from './core/services/hardcoded-dictionary.js';
 
 	// Import global styles
 	import './styles/global.css';
-	
+
 	// Add type import for DictionaryItem
 
 	// Import utilities (these are used in the functions but not currently imported)
@@ -131,7 +131,7 @@
 			animationController.jumpToBeat(beatNumber);
 		}
 	}
-	
+
 	// Quick test functions to load hardcoded sequences
 	function loadTestSequence(sequenceName: string): void {
 		const testSequence = EXAMPLE_SEQUENCES[sequenceName];
@@ -146,7 +146,7 @@
 				thumbnailUrl: '',
 				versions: ['v1']
 			};
-			
+
 			// Auto-play after loading
 			setTimeout(() => {
 				animationController?.playSequence();
@@ -244,25 +244,25 @@
 			</div>
 		{:else}
 			<WelcomeSection />
-			
+
 			<!-- Quick test buttons for debugging -->
 			<div class="test-section">
 				<h3>Quick Test Sequences</h3>
 				<div class="test-buttons">
-					<button 
-						class="test-button" 
+					<button
+						class="test-button"
 						onclick={() => loadTestSequence('ALFBBLFA')}
 					>
 						Load ALFBBLFA
 					</button>
-					<button 
-						class="test-button" 
+					<button
+						class="test-button"
 						onclick={() => loadTestSequence('ABC')}
 					>
 						Load ABC
 					</button>
-					<button 
-						class="test-button" 
+					<button
+						class="test-button"
 						onclick={() => loadTestSequence('BA')}
 					>
 						Load BA
@@ -346,12 +346,12 @@
 	border: 1px solid var(--color-border);
 	margin: 1rem;
 	}
-		
+
 	.test-section h3 {
 	margin: 0 0 1rem;
 	color: var(--color-text-primary);
 	}
-		
+
 	.test-buttons {
 	display: flex;
 	gap: 1rem;
@@ -359,7 +359,7 @@
 	 flex-wrap: wrap;
 			margin-bottom: 1rem;
 		}
-		
+
 		.test-button {
 			padding: 0.75rem 1.5rem;
 			background: #3b82f6;
@@ -370,11 +370,11 @@
 			font-weight: 500;
 			transition: background 0.2s ease;
 		}
-		
+
 		.test-button:hover {
 			background: #2563eb;
 		}
-		
+
 		.test-note {
 			margin: 0;
 			color: var(--color-text-secondary);
@@ -401,7 +401,7 @@
 				padding: 1rem;
 				gap: 1rem;
 			}
-			
+
 			.test-buttons {
 				flex-direction: column;
 				align-items: center;

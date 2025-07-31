@@ -61,18 +61,18 @@ def validate_ui_tester_creation():
         print("✅ SimpleUITester creation successful")
 
         # Test basic methods exist
-        assert hasattr(
-            tester, "setup_test_environment"
-        ), "Missing setup_test_environment method"
-        assert hasattr(
-            tester, "test_workbench_buttons"
-        ), "Missing test_workbench_buttons method"
-        assert hasattr(
-            tester, "test_graph_editor_interactions"
-        ), "Missing test_graph_editor_interactions method"
-        assert hasattr(
-            tester, "run_comprehensive_tests"
-        ), "Missing run_comprehensive_tests method"
+        assert hasattr(tester, "setup_test_environment"), (
+            "Missing setup_test_environment method"
+        )
+        assert hasattr(tester, "test_workbench_buttons"), (
+            "Missing test_workbench_buttons method"
+        )
+        assert hasattr(tester, "test_graph_editor_interactions"), (
+            "Missing test_graph_editor_interactions method"
+        )
+        assert hasattr(tester, "run_comprehensive_tests"), (
+            "Missing run_comprehensive_tests method"
+        )
 
         print("✅ Required methods present")
         return True
@@ -113,16 +113,16 @@ def validate_runner_interface():
         print("✅ UITestRunner creation successful")
 
         # Test basic methods exist
-        assert hasattr(
-            runner, "run_quick_validation"
-        ), "Missing run_quick_validation method"
+        assert hasattr(runner, "run_quick_validation"), (
+            "Missing run_quick_validation method"
+        )
         assert hasattr(runner, "run_button_tests"), "Missing run_button_tests method"
-        assert hasattr(
-            runner, "run_graph_editor_tests"
-        ), "Missing run_graph_editor_tests method"
-        assert hasattr(
-            runner, "run_comprehensive_tests"
-        ), "Missing run_comprehensive_tests method"
+        assert hasattr(runner, "run_graph_editor_tests"), (
+            "Missing run_graph_editor_tests method"
+        )
+        assert hasattr(runner, "run_comprehensive_tests"), (
+            "Missing run_comprehensive_tests method"
+        )
 
         print("✅ Required runner methods present")
         return True

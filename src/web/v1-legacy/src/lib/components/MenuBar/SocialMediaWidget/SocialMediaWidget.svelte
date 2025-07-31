@@ -41,9 +41,9 @@
 </div>
 
 <style>
-	/* 
-    1) The container: we let each cell define the button’s size 
-       with a CSS grid. 
+	/*
+    1) The container: we let each cell define the button’s size
+       with a CSS grid.
   */
 	.social-container {
 		display: grid;
@@ -52,14 +52,14 @@
     gap: 4%;
 	}
 
-	/* 
-    2) The button: use aspect-ratio to keep it square. 
-       We do NOT fix a height or reference window size. 
+	/*
+    2) The button: use aspect-ratio to keep it square.
+       We do NOT fix a height or reference window size.
        The grid cell will define the button’s area.
   */
 	.button {
-		/* Fill the parent's height while maintaining aspect ratio 
-     or some limit. 
+		/* Fill the parent's height while maintaining aspect ratio
+     or some limit.
   */
   width: clamp(40px, 6vw, 60px);
   height: clamp(40px, 6vw, 60px);
@@ -90,9 +90,9 @@
 		box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 	}
 
-	/* 
-    3) The icon: let it scale automatically using max-width/height 
-       inside the button’s area. 
+	/*
+    3) The icon: let it scale automatically using max-width/height
+       inside the button’s area.
   */
 	.icon {
 		max-width: 70%;

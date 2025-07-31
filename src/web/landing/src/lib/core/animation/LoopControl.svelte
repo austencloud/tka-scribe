@@ -14,9 +14,9 @@
 
 <div class="control-group">
 	<label for="loopCheckbox" class="checkbox-label">
-		<input 
-			type="checkbox" 
-			id="loopCheckbox" 
+		<input
+			type="checkbox"
+			id="loopCheckbox"
 			checked={continuousLoop}
 			onchange={handleLoopChange}
 		/>

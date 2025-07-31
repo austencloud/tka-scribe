@@ -1,6 +1,6 @@
 /**
  * 🎯 TKA DI COMPREHENSIVE EXAMPLE
- * 
+ *
  * This example demonstrates the full power and sophistication of the TKA
  * Enterprise Dependency Injection system, showcasing all major features.
  */

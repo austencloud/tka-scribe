@@ -1,6 +1,6 @@
 /**
  * 🔄 TKA LAZY PROXY
- * 
+ *
  * Sophisticated lazy loading proxy that defers service instantiation
  * until first access, with transparent method forwarding.
  */
@@ -146,7 +146,7 @@ export class LazyProxy<T> {
  * Create a lazy proxy for a service
  */
 export function createLazyProxy<T>(
-    serviceInterface: ServiceInterface<T>, 
+    serviceInterface: ServiceInterface<T>,
     container: any
 ): T {
     return new LazyProxy(serviceInterface, container) as any;

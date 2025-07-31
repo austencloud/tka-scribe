@@ -23,9 +23,9 @@ export function createTabTransition(
   options: TransitionOptions = {}
 ): (node: Element) => TransitionConfig {
   const { duration = 300, delay = 0 } = options;
-  
+
   const distance = 50;
-  
+
   return (node: Element) => {
     const getCoordinates = () => {
       switch (direction) {
@@ -39,9 +39,9 @@ export function createTabTransition(
           return { x: 0, y: distance };
       }
     };
-    
+
     const { x, y } = getCoordinates();
-    
+
     // Use fly transition function directly
     return fly(node, {
       duration,
@@ -70,7 +70,7 @@ export function createContentFade(
   options: TransitionOptions = {}
 ): (node: Element) => TransitionConfig {
   const { duration = 200, delay = 0 } = options;
-  
+
   return (node: Element) => {
     return fade(node, {
       duration,

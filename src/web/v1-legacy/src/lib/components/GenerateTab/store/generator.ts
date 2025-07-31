@@ -2,7 +2,7 @@
 import { writable, derived } from 'svelte/store';
 
 // Generator states
-export type GeneratorStatus = 
+export type GeneratorStatus =
   | 'idle'           // Ready to generate
   | 'generating'     // Currently generating
   | 'complete'       // Generation complete

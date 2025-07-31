@@ -58,5 +58,5 @@ Desktop (Qt) ←→ Platform-Agnostic Core ←→ Web (React/Vue/etc.)
 
 ---
 
-**Last Updated**: December 2024  
+**Last Updated**: December 2024
 **Status**: Web development in progress, leveraging platform-agnostic foundation

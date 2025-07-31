@@ -14,16 +14,16 @@ function createSelectionStore() {
 
   return {
     subscribe,
-    
+
     selectBeat: (beatIndex: number) => update(state => {
       switch (state.selectionMode) {
         case 'single':
-          return { 
-            ...state, 
+          return {
+            ...state,
             selectedBeats: [beatIndex],
-            lastSelectedBeat: beatIndex 
+            lastSelectedBeat: beatIndex
           };
-        
+
         case 'multi':
           const isAlreadySelected = state.selectedBeats.includes(beatIndex);
           return {
@@ -33,24 +33,24 @@ function createSelectionStore() {
               : [...state.selectedBeats, beatIndex],
             lastSelectedBeat: beatIndex
           };
-        
+
         case 'range':
           const { lastSelectedBeat } = state;
           if (lastSelectedBeat === undefined) {
-            return { 
-              ...state, 
+            return {
+              ...state,
               selectedBeats: [beatIndex],
-              lastSelectedBeat: beatIndex 
+              lastSelectedBeat: beatIndex
             };
           }
-          
+
           const start = Math.min(lastSelectedBeat, beatIndex);
           const end = Math.max(lastSelectedBeat, beatIndex);
           const rangeBeats = Array.from(
-            { length: end - start + 1 }, 
+            { length: end - start + 1 },
             (_, i) => start + i
           );
-          
+
           return {
             ...state,
             selectedBeats: rangeBeats,
@@ -59,10 +59,10 @@ function createSelectionStore() {
       }
     }),
 
-    setSelectionMode: (mode: SequenceSelection['selectionMode']) => 
+    setSelectionMode: (mode: SequenceSelection['selectionMode']) =>
       update(state => ({ ...state, selectionMode: mode })),
 
-    clearSelection: () => 
+    clearSelection: () =>
       update(state => ({ ...state, selectedBeats: [], lastSelectedBeat: undefined })),
 
     isSelected: (beatIndex: number) => {
@@ -79,11 +79,11 @@ export const selectionStore = createSelectionStore();
 
 // Derived stores for convenience
 export const selectedBeats = derived(
-  selectionStore, 
+  selectionStore,
   $selection => $selection.selectedBeats
 );
 
 export const selectionMode = derived(
-  selectionStore, 
+  selectionStore,
   $selection => $selection.selectionMode
 );

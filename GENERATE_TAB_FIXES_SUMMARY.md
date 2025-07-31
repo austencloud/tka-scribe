@@ -14,7 +14,7 @@ background: rgb(245, 245, 245);  # Single solid color
 
 ### **Level 2**: Complex 7-Step Gray Gradient
 ```python
-# From DifficultyLevelGradients.gradients[2] 
+# From DifficultyLevelGradients.gradients[2]
 background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
     stop:0 rgb(170, 170, 170),      # 0.0
     stop:0.15 rgb(210, 210, 210),   # 0.15

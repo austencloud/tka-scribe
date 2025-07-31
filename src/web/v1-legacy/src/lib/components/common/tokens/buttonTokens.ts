@@ -207,7 +207,7 @@ export const fallbackGradients = {
         135deg,
         #1e3c72 0%,
         #6c9ce9 30%,
-        #4a77d4 60%, 
+        #4a77d4 60%,
         #2a52be 100%
       );
     `,

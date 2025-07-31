@@ -23,9 +23,9 @@ import {
 } from 'xstate';
 
 // Import from our modules
-import type { 
-  StateContainer, 
-  StateContainerType, 
+import type {
+  StateContainer,
+  StateContainerType,
   RegisterOptions,
   RegisterMachineOptions,
   RegisterStoreOptions,
@@ -33,9 +33,9 @@ import type {
 } from './types';
 import { DataCorruptionError } from './errors';
 import { validateMachineSnapshot, validateStoreData } from './validation';
-import { 
-  addDependency as addDep, 
-  getDependencies as getDeps, 
+import {
+  addDependency as addDep,
+  getDependencies as getDeps,
   getDependents as getDepends,
   topologicalSort
 } from './dependencies';
@@ -100,9 +100,9 @@ class StateRegistry {
    */
   addDependency(dependentId: string, dependencyId: string): boolean {
     return addDep(
-      this.dependencies, 
-      (id) => this.containers.has(id), 
-      dependentId, 
+      this.dependencies,
+      (id) => this.containers.has(id),
+      dependentId,
       dependencyId
     );
   }
@@ -368,8 +368,8 @@ class StateRegistry {
     // Set a new debounce timer
     this.persistenceDebounceTimer = setTimeout(() => {
       this.lastPersistedState = performPersist(
-        this.containers, 
-        this.lastPersistedState, 
+        this.containers,
+        this.lastPersistedState,
         this.persistenceKey
       );
     }, this.persistenceDebounceDelay);
@@ -380,8 +380,8 @@ class StateRegistry {
    */
   debug(): void {
     debugRegistry(
-      this.getAll(), 
-      (id) => this.getDependencies(id), 
+      this.getAll(),
+      (id) => this.getDependencies(id),
       (id) => this.getDependents(id)
     );
   }

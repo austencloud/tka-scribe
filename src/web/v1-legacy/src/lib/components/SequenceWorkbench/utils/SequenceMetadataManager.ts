@@ -29,16 +29,16 @@ export function useSequenceMetadata(
         name: '',
         difficulty: 0
     };
-    
+
     // Subscribe to the sequence store for metadata updates
     const unsubscribe = sequenceStore.subscribe((store) => {
         metadata.name = store.metadata.name;
         metadata.difficulty = store.metadata.difficulty;
-        
+
         // Call the update callback with the new metadata
         onUpdate(metadata);
     });
-    
+
     return {
         metadata,
         unsubscribe

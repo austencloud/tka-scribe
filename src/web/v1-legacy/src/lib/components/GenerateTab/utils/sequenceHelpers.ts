@@ -7,12 +7,12 @@ export interface Beat {
     position: string;
     turnIntensity: number;
   }
-  
+
   export function generateBaseSequence(
-    length: number, 
-    options: { 
-      turnIntensity: number, 
-      propContinuity: 'continuous' | 'random' 
+    length: number,
+    options: {
+      turnIntensity: number,
+      propContinuity: 'continuous' | 'random'
     }
   ): Beat[] {
     return Array.from({ length }, (_, index) => ({
@@ -22,39 +22,39 @@ export interface Beat {
       turnIntensity: calculateTurnIntensity(options.turnIntensity)
     }));
   }
-  
+
   function generateOrientation(options: { propContinuity: 'continuous' | 'random' }) {
-    const generateSingleOrientation = () => 
+    const generateSingleOrientation = () =>
       ['in', 'out', 'cw', 'ccw'][Math.floor(Math.random() * 4)];
-  
+
     if (options.propContinuity === 'continuous') {
       const baseOrientation = generateSingleOrientation();
       return { blue: baseOrientation, red: baseOrientation };
     }
-  
-    return { 
-      blue: generateSingleOrientation(), 
-      red: generateSingleOrientation() 
+
+    return {
+      blue: generateSingleOrientation(),
+      red: generateSingleOrientation()
     };
   }
-  
+
   function determinePosition(index: number): string {
     const positions = [
-      'alpha1_alpha1', 
-      'beta5_beta5', 
+      'alpha1_alpha1',
+      'beta5_beta5',
       'gamma11_gamma11'
     ];
     return positions[index % positions.length];
   }
-  
+
   function calculateTurnIntensity(baseTurnIntensity: number): number {
     // Add some randomness to turn intensity
     const variation = Math.random() * 0.5 - 0.25;
     return Math.max(0, baseTurnIntensity + variation);
   }
-  
+
   export function transformSequence(
-    sequence: Beat[], 
+    sequence: Beat[],
     transformationType: string
   ): Beat[] {
     switch (transformationType) {
@@ -66,7 +66,7 @@ export interface Beat {
         return sequence;
     }
   }
-  
+
   function mirrorSequence(sequence: Beat[]): Beat[] {
     return sequence.map(beat => ({
       ...beat,
@@ -76,14 +76,14 @@ export interface Beat {
       }
     }));
   }
-  
+
   function rotateSequence(sequence: Beat[]): Beat[] {
     return sequence.map(beat => ({
       ...beat,
       position: rotatePosition(beat.position)
     }));
   }
-  
+
   function invertOrientation(orientation: string): string {
     const invertMap: Record<string, string> = {
       'in': 'out',
@@ -93,7 +93,7 @@ export interface Beat {
     };
     return invertMap[orientation] || orientation;
   }
-  
+
   function rotatePosition(position: string): string {
     const rotationMap: Record<string, string> = {
       'alpha1_alpha1': 'beta5_beta5',
@@ -102,7 +102,7 @@ export interface Beat {
     };
     return rotationMap[position] || position;
   }
-  
+
   export const sequenceUtils = {
     generateBaseSequence,
     transformSequence

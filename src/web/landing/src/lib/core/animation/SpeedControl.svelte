@@ -14,13 +14,13 @@
 
 <div class="control-group">
 	<label for="speedSlider">Speed:</label>
-	<input 
-		type="range" 
-		id="speedSlider" 
-		min="0.1" 
-		max="3" 
-		step="0.1" 
-		value={speed} 
+	<input
+		type="range"
+		id="speedSlider"
+		min="0.1"
+		max="3"
+		step="0.1"
+		value={speed}
 		class="slider"
 		oninput={handleSpeedChange}
 	/>

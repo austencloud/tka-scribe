@@ -4,7 +4,7 @@ Letter type selector component.
 Provides multi-select checkboxes for letter types in freeform mode.
 """
 
-from typing import Optional, Set
+from typing import Optional
 
 from PyQt6.QtCore import pyqtSignal
 from PyQt6.QtWidgets import QCheckBox, QVBoxLayout, QWidget
@@ -97,7 +97,7 @@ class LetterTypeSelector(GenerationControlBase):
             self._current_value = new_value
             self.value_changed.emit(new_value)
 
-    def set_value(self, value: Set[LetterType]):
+    def set_value(self, value: set[LetterType]):
         """Set the current value"""
         self._current_value = value
         for letter_type, checkbox in self._checkboxes.items():

@@ -1,6 +1,6 @@
 /**
  * 🔄 TKA LIFECYCLE MANAGER
- * 
+ *
  * Advanced service lifecycle management with sophisticated scoping,
  * disposal patterns, and resource cleanup.
  */

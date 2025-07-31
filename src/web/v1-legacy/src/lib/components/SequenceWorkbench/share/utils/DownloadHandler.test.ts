@@ -29,7 +29,7 @@ describe('DownloadHandler', () => {
   beforeEach(() => {
     // Reset mocks
     vi.clearAllMocks();
-    
+
     // Mock localStorage
     const localStorageMock = {
       getItem: vi.fn(),
@@ -53,7 +53,7 @@ describe('DownloadHandler', () => {
         height: 100
       }
     };
-    
+
     // Mock downloadImage to return success
     vi.mocked(downloadUtils.downloadImage).mockResolvedValue(true);
 
@@ -79,7 +79,7 @@ describe('DownloadHandler', () => {
         height: 100
       }
     };
-    
+
     // Mock downloadImage to return failure
     vi.mocked(downloadUtils.downloadImage).mockResolvedValue(false);
 
@@ -105,7 +105,7 @@ describe('DownloadHandler', () => {
         height: 100
       }
     };
-    
+
     // Mock downloadImage to throw a cancellation error
     vi.mocked(downloadUtils.downloadImage).mockRejectedValue(new Error('Operation cancelled by user'));
 

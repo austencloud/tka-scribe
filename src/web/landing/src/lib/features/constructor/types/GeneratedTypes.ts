@@ -1,9 +1,9 @@
 /**
  * Generated TypeScript Types v2
- * 
+ *
  * Based on modern desktop Pydantic models with camelCase JSON serialization.
  * These types ensure compatibility between Python backend and TypeScript frontend.
- * 
+ *
  * GENERATED FROM: Desktop Pydantic models
  * DO NOT EDIT MANUALLY - Regenerate when Python models change
  */
@@ -14,9 +14,9 @@ export type PropRotDir = 'cw' | 'ccw' | 'no_rot';
 export type Location = 'n' | 'e' | 's' | 'w' | 'ne' | 'nw' | 'se' | 'sw';
 export type Orientation = 'in' | 'out' | 'clock' | 'counter';
 export type GridMode = 'diamond' | 'box';
-export type StartEndPos = 
+export type StartEndPos =
   | 'alpha1' | 'alpha2' | 'alpha3' | 'alpha4' | 'alpha5' | 'alpha6' | 'alpha7' | 'alpha8'
-  | 'beta1' | 'beta2' | 'beta3' | 'beta4' | 'beta5' | 'beta6' | 'beta7' | 'beta8'  
+  | 'beta1' | 'beta2' | 'beta3' | 'beta4' | 'beta5' | 'beta6' | 'beta7' | 'beta8'
   | 'gamma1' | 'gamma2' | 'gamma3' | 'gamma4' | 'gamma5' | 'gamma6' | 'gamma7' | 'gamma8';
 export type Timing = 'together' | 'split';
 export type Direction = 'same' | 'opp';
@@ -38,7 +38,7 @@ export interface MotionData {
 }
 
 /**
- * Pictograph data with camelCase JSON serialization  
+ * Pictograph data with camelCase JSON serialization
  * Matches: PictographData from pydantic_models.py
  */
 export interface PictographData {
@@ -73,7 +73,7 @@ export interface BeatData {
 
 /**
  * Sequence data with camelCase JSON serialization
- * Matches: SequenceData from pydantic_models.py  
+ * Matches: SequenceData from pydantic_models.py
  */
 export interface SequenceData {
   name: string;

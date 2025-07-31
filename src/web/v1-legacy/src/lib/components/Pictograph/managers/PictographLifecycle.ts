@@ -1,6 +1,6 @@
 /**
  * Pictograph Lifecycle Manager
- * 
+ *
  * This module provides lifecycle management functionality for the Pictograph component.
  */
 
@@ -27,7 +27,7 @@ export interface InitializationContext {
 
 /**
  * Initializes the pictograph component
- * 
+ *
  * @param context The initialization context
  * @param debug Whether debug mode is enabled
  * @returns Performance metrics for the initialization
@@ -95,7 +95,7 @@ export function initializePictograph(
 
 /**
  * Creates a cleanup function for the pictograph component
- * 
+ *
  * @param loadedComponents The set of loaded components to clear
  * @param unsubscribe The function to unsubscribe from the data store
  * @returns A cleanup function
@@ -113,7 +113,7 @@ export function createCleanupFunction(
 
 /**
  * Creates a context for pictograph initialization
- * 
+ *
  * @param pictographDataStore The pictograph data store
  * @param service The pictograph service
  * @param state The current state

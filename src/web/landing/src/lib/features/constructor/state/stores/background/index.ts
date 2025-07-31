@@ -1,6 +1,6 @@
 /**
  * Background State
- * 
+ *
  * This is the entry point for the background state.
  * It exports the store and selectors.
  */

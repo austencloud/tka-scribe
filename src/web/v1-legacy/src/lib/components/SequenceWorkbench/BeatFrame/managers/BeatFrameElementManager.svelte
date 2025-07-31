@@ -13,8 +13,8 @@
 	import { BEAT_FRAME_CONTEXT_KEY } from '../../context/ElementContext';
 
 	// Props
-	const { 
-		containerRef, 
+	const {
+		containerRef,
 		elementReceiver = $bindable<(element: HTMLElement | null) => void>(() => {})
 	} = $props<{
 		containerRef: HTMLElement | null;

@@ -53,7 +53,7 @@
 			</label>
 		{/if}
 	</div>
-	
+
 	<!-- Use a named slot for the footer -->
 	<div class="modal-footer-buttons" slot="footer">
 		<button class="cancel-button" on:click={close}>

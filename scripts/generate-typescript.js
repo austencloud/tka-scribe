@@ -34,7 +34,7 @@ async function generateTypeScript(schemaPath, outputPath) {
       },
       bannerComment: `/**
  * Generated from ${schemaPath}
- * 
+ *
  * This file is auto-generated. Do not edit manually.
  * To make changes, update the JSON schema and regenerate.
  */`,

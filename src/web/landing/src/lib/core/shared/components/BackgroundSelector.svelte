@@ -1,16 +1,16 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte';
-  
+
   const dispatch = createEventDispatcher();
-  
+
   export let currentBackground = 'deepOcean';
-  
+
   const backgrounds = [
     { id: 'deepOcean', name: 'Deep Ocean', description: 'Serene underwater environment' },
     { id: 'nightSky', name: 'Night Sky', description: 'Starry cosmic atmosphere' },
     { id: 'snowfall', name: 'Snowfall', description: 'Peaceful winter scene' }
   ];
-  
+
   function selectBackground(backgroundId: string) {
     currentBackground = backgroundId;
     dispatch('backgroundChange', backgroundId);
@@ -21,7 +21,7 @@
   <h3>Background Theme</h3>
   <div class="background-options">
     {#each backgrounds as bg}
-      <button 
+      <button
         class="background-option"
         class:active={currentBackground === bg.id}
         on:click={() => selectBackground(bg.id)}
@@ -84,7 +84,7 @@
   .background-option.active {
     border-color: var(--primary-color);
     background: var(--surface-active);
-    box-shadow: 
+    box-shadow:
       var(--shadow-glass),
       0 0 0 2px rgba(102, 126, 234, 0.3);
   }
@@ -133,12 +133,12 @@
     .background-options {
       gap: var(--spacing-xs);
     }
-    
+
     .background-option {
       padding: var(--spacing-xs);
       gap: var(--spacing-sm);
     }
-    
+
     .background-preview {
       width: 30px;
       height: 24px;

@@ -15,7 +15,7 @@
     gap: 1rem;
     margin-bottom: 0.5rem;
   }
-  
+
   h3 {
     margin: 0;
     font-size: 1.2rem;
@@ -23,7 +23,7 @@
     color: var(--text-color-emphasis, #ffffff);
     white-space: nowrap;
   }
-  
+
   .divider {
     flex: 1;
     height: 1px;

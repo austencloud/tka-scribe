@@ -17,12 +17,12 @@ const createLayoutStore = () => {
     beatCount: 0,
     lastChanged: Date.now()
   };
-  
+
   const { subscribe, set, update } = writable<LayoutInfo>(initialLayout);
-  
+
   return {
     subscribe,
-    
+
     // Update the layout information
     updateLayout: (rows: number, cols: number, beatCount: number) => {
       update(layout => {
@@ -36,7 +36,7 @@ const createLayoutStore = () => {
         };
       });
     },
-    
+
     // Reset the layout to initial values
     reset: () => set(initialLayout)
   };

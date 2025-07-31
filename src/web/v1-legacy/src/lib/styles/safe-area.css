@@ -1,6 +1,6 @@
 /* src/lib/styles/safe-area.css
  * Safe area inset handling for mobile devices
- * 
+ *
  * This file provides CSS variables and utility classes for handling
  * safe area insets on mobile devices with notches, punch holes,
  * dynamic islands, and other hardware elements that may obstruct content.
@@ -12,23 +12,23 @@
   --safe-inset-right: env(safe-area-inset-right, 0px);
   --safe-inset-bottom: env(safe-area-inset-bottom, 0px);
   --safe-inset-left: env(safe-area-inset-left, 0px);
-  
+
   /* Base spacing variable that can be used throughout the app */
   --base-spacing: 8px;
-  
+
   /* Combined variables that integrate with existing spacing system */
   --content-padding-top: calc(var(--base-spacing) + var(--safe-inset-top));
   --content-padding-right: calc(var(--base-spacing) + var(--safe-inset-right));
   --content-padding-bottom: calc(var(--base-spacing) + var(--safe-inset-bottom));
   --content-padding-left: calc(var(--base-spacing) + var(--safe-inset-left));
-  
+
   /* Shorthand for all sides */
-  --safe-area-padding: 
+  --safe-area-padding:
     var(--content-padding-top)
     var(--content-padding-right)
     var(--content-padding-bottom)
     var(--content-padding-left);
-    
+
   /* Variables for fixed position elements */
   --safe-position-top: var(--safe-inset-top);
   --safe-position-right: var(--safe-inset-right);
@@ -76,7 +76,7 @@
 
 /* Fullscreen overlay specific classes */
 .safe-area-fullscreen {
-  padding: 
+  padding:
     var(--safe-inset-top, 0px)
     var(--safe-inset-right, 0px)
     var(--safe-inset-bottom, 0px)
@@ -88,7 +88,7 @@
   /* Additional device-specific adjustments can be added here if needed */
   .safe-area-fullscreen {
     /* Ensure content doesn't get cut off by notches or rounded corners */
-    padding: 
+    padding:
       max(env(safe-area-inset-top), 8px)
       max(env(safe-area-inset-right), 8px)
       max(env(safe-area-inset-bottom), 8px)

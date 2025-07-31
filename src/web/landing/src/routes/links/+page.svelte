@@ -23,7 +23,7 @@
   // Modal state
   $: isModalOpen = $modalState.isOpen;
   $: currentResourceName = $modalState.resourceName;
-  
+
   // Enhanced Resource Interface
   interface EnhancedResource extends Resource {
     status: 'active' | 'historical' | 'vendor';
@@ -262,7 +262,7 @@
       modalType: "archive"
     }
   ];
-  
+
   const categories = [
     { value: 'all', label: 'All Categories' },
     { value: 'active-learning', label: 'Active Learning Resources' },
@@ -271,14 +271,14 @@
     { value: 'vendors', label: 'Flow Arts Vendors & Equipment' },
     { value: 'historical-archives', label: 'Historical Archives' }
   ];
-  
+
   const levels = [
     { value: 'all', label: 'All Levels' },
     { value: 'beginner', label: 'Beginner' },
     { value: 'intermediate', label: 'Intermediate' },
     { value: 'advanced', label: 'Advanced' }
   ];
-  
+
   function filterResources() {
     filteredResources = resources.filter(resource => {
       const matchesSearch = resource.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -287,11 +287,11 @@
       return matchesSearch && matchesCategory;
     });
   }
-  
+
   onMount(() => {
     filterResources();
   });
-  
+
   $: {
     searchTerm, selectedCategory;
     filterResources();
@@ -560,7 +560,7 @@
       to essential vendors and historical archives preserving our art form's rich heritage.
     </p>
   </div>
-  
+
   <div class="search-section">
     <div class="search-container">
       <input
@@ -597,7 +597,7 @@
       </button>
     {/each}
   </nav>
-  
+
   <div class="resources-grid" id="resources-grid">
     {#each filteredResources as resource}
       <article class="resource-card">
@@ -627,9 +627,9 @@
             {/if}
           </div>
         </div>
-        
+
         <p class="resource-description">{resource.description}</p>
-        
+
         {#if resource.status === 'vendor' && resource.specialties}
           <div class="vendor-specialties">
             <strong>Specialties:</strong>
@@ -662,7 +662,7 @@
       </article>
     {/each}
   </div>
-  
+
   {#if filteredResources.length === 0}
     <div class="no-results">
       <h3>No resources found</h3>

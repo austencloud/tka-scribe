@@ -46,7 +46,7 @@
   <!-- Background System -->
   <BackgroundProvider backgroundType={currentBackground}>
     <BackgroundCanvas backgroundType={currentBackground} />
-    
+
     <!-- App Content with Dynamic Background -->
     <div class="app-content" data-background={currentBackground}>
 

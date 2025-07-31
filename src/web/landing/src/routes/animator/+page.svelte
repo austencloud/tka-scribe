@@ -60,19 +60,19 @@
 	function getIsPlaying(): boolean {
 		return animationEngine?.isPlaying ?? false;
 	}
-	
+
 	function getCurrentBeat(): number {
 		return animationEngine?.currentBeat ?? 0;
 	}
-	
+
 	function getSpeed(): number {
 		return animationEngine?.speed ?? 1.0;
 	}
-	
+
 	function getContinuousLoop(): boolean {
 		return animationEngine?.continuousLoop ?? false;
 	}
-	
+
 	function getTotalBeats(): number {
 		return animationEngine?.totalBeats ?? 0;
 	}
@@ -94,7 +94,7 @@
 	$effect(() => {
 		if (canvasElement && !canvasState.ctx && !isLoading) {
 			console.log('🎯 EFFECT: Canvas element detected, starting initialization...');
-			
+
 			setTimeout(() => {
 				console.log('🎯 CANVAS: Getting 2D context...');
 				if (canvasElement) {
@@ -102,7 +102,7 @@
 					if (canvasState.ctx) {
 						canvasState.canvasReady = true;
 						console.log('✅ CANVAS: Context created successfully!');
-						
+
 						// Test drawing to verify canvas works
 						try {
 							drawLoadingMessage(canvasState.ctx);
@@ -110,7 +110,7 @@
 						} catch (error) {
 							console.error('❌ CANVAS: Error drawing test pattern:', error);
 						}
-						
+
 						loadImages();
 					} else {
 						console.error('❌ CANVAS: Failed to get 2D context');
@@ -142,7 +142,7 @@
 				handleUIUpdate,
 				handleAnimationEnd
 			);
-			
+
 			// Load default sequence
 			loadDefaultSequence();
 		}
@@ -153,12 +153,12 @@
 		try {
 			console.log('🖼️ IMAGES: Starting to load images...');
 			const images = await loadAllImages();
-			
+
 			canvasState.gridImage = images.gridImage;
 			canvasState.blueStaffImage = images.blueStaffImage;
 			canvasState.redStaffImage = images.redStaffImage;
 			canvasState.imagesLoaded = true;
-			
+
 			console.log('✅ IMAGES: All images loaded successfully!');
 			handleRender(); // Initial render
 		} catch (error) {
@@ -186,7 +186,7 @@
 	// Load default sequence
 	function loadDefaultSequence() {
 		if (!animationEngine) return;
-		
+
 		try {
 			currentSequence = defaultSequence;
 			const { parsedSteps, totalBeats } = processSequenceData(currentSequence);
@@ -234,7 +234,7 @@
 	// Sequence loading
 	function handleSequenceLoad(jsonString: string) {
 		if (!animationEngine || !sequenceInputComponent) return;
-		
+
 		try {
 			const pastedData = JSON.parse(jsonString);
 			animationEngine.pause();
@@ -285,48 +285,48 @@
 				<h1>Step-by-Step Animator</h1>
 				<p>Professional flow art sequence visualization</p>
 			</header>
-			
+
 			<div class="animator-content">
-				<SequenceInput 
+				<SequenceInput
 					bind:this={sequenceInputComponent}
 					onSequenceLoad={handleSequenceLoad}
 				/>
-				
-				<AnimationCanvas 
+
+				<AnimationCanvas
 					{canvasState}
 					canvasSize={CANVAS_SIZE}
 					onCanvasReady={handleCanvasReady}
 				/>
 
 				<div class="controls">
-					<PlaybackControls 
+					<PlaybackControls
 						{isPlaying}
 						onPlayPause={handlePlayPause}
 						onReset={handleReset}
 					/>
-					
-					<SpeedControl 
+
+					<SpeedControl
 						{speed}
 						onSpeedChange={handleSpeedChange}
 					/>
-					
-					<BeatControl 
+
+					<BeatControl
 						{currentBeat}
 						{totalBeats}
 						onBeatChange={handleBeatChange}
 					/>
-					
-					<LoopControl 
+
+					<LoopControl
 						{continuousLoop}
 						onLoopChange={handleLoopChange}
 					/>
 				</div>
 
-				<InfoDisplay 
+				<InfoDisplay
 					{currentBeat}
 					{totalBeats}
 				/>
-				
+
 				<!-- Debug Panel - Remove this once working -->
 				<div class="debug-panel">
 					<h4>Debug Info</h4>

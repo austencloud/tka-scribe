@@ -29,7 +29,7 @@ declare namespace svelteHTML {
     onmouseup?: (event: MouseEvent) => any;
     onresize?: (event: UIEvent) => any;
     onsubmit?: (event: SubmitEvent) => any;
-    
+
     // Svelte event directives
     "on:blur"?: (event: FocusEvent) => any;
     "on:change"?: (event: Event) => any;
@@ -48,7 +48,7 @@ declare namespace svelteHTML {
     "on:mouseup"?: (event: MouseEvent) => any;
     "on:resize"?: (event: UIEvent) => any;
     "on:submit"?: (event: SubmitEvent) => any;
-    
+
     // Svelte event modifiers
     "on:click|capture"?: (event: MouseEvent) => any;
     "on:click|once"?: (event: MouseEvent) => any;
@@ -62,7 +62,7 @@ declare namespace svelteHTML {
     "on:keydown|preventDefault"?: (event: KeyboardEvent) => any;
     "on:keydown|self"?: (event: KeyboardEvent) => any;
     "on:keydown|stopPropagation"?: (event: KeyboardEvent) => any;
-    
+
     // Svelte binding directives
     "bind:checked"?: boolean;
     "bind:clientHeight"?: number;
@@ -72,7 +72,7 @@ declare namespace svelteHTML {
     "bind:offsetWidth"?: number;
     "bind:this"?: any;
     "bind:value"?: any;
-    
+
     // Svelte class directives
     "class:active"?: boolean;
     "class:disabled"?: boolean;
@@ -80,7 +80,7 @@ declare namespace svelteHTML {
     "class:hidden"?: boolean;
     "class:selected"?: boolean;
     "class:visible"?: boolean;
-    
+
     // Svelte transition directives
     "in:fade"?: any;
     "in:fly"?: any;
@@ -92,17 +92,17 @@ declare namespace svelteHTML {
     "transition:fly"?: any;
     "transition:scale"?: any;
     "transition:slide"?: any;
-    
+
     // Svelte action directives
     "use:action"?: any;
-    
+
     // Svelte slot directives
     slot?: string;
-    
+
     // Other Svelte directives
     "let:index"?: number;
     "let:item"?: any;
-    
+
     // Custom events
     "on:letterLoaded"?: (event: CustomEvent<any>) => any;
   }

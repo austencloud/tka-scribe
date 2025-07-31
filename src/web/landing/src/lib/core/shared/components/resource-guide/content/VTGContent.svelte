@@ -2,24 +2,24 @@
 <section id="overview" class="content-section">
   <h2>Overview</h2>
   <p>
-    The Vulcan Tech Gospel (VTG) represents one of the most significant theoretical frameworks in modern poi spinning, 
-    developed by <strong>Noel Yee</strong> in the early 2000s. This comprehensive system provides a structured approach 
-    to understanding and executing technical poi movements, particularly focusing on the concept of "poi flowers" and 
+    The Vulcan Tech Gospel (VTG) represents one of the most significant theoretical frameworks in modern poi spinning,
+    developed by <strong>Noel Yee</strong> in the early 2000s. This comprehensive system provides a structured approach
+    to understanding and executing technical poi movements, particularly focusing on the concept of "poi flowers" and
     seamless transitions between different spinning planes.
   </p>
-  
+
   <p>
-    VTG emerged during a pivotal period in poi evolution when the community was transitioning from traditional fire 
-    spinning to more technical, dance-oriented approaches. Noel Yee's background in mathematics and movement analysis 
-    enabled him to codify what many spinners were discovering intuitively, creating a shared language for technical 
+    VTG emerged during a pivotal period in poi evolution when the community was transitioning from traditional fire
+    spinning to more technical, dance-oriented approaches. Noel Yee's background in mathematics and movement analysis
+    enabled him to codify what many spinners were discovering intuitively, creating a shared language for technical
     poi concepts.
   </p>
 
   <div class="highlight-box">
     <h3>Why VTG Matters</h3>
     <p>
-      VTG provides the theoretical foundation that enables poi spinners to understand the geometric relationships 
-      between different movements, making it possible to create smooth, flowing sequences that would otherwise 
+      VTG provides the theoretical foundation that enables poi spinners to understand the geometric relationships
+      between different movements, making it possible to create smooth, flowing sequences that would otherwise
       require years of trial-and-error to discover.
     </p>
   </div>
@@ -27,36 +27,36 @@
 
 <section id="key-concepts" class="content-section">
   <h2>Key Concepts</h2>
-  
+
   <div class="concept-grid">
     <div class="concept-card">
       <h3>Poi Flowers</h3>
       <p>
-        The central concept of VTG, poi flowers describe the geometric patterns created when poi move through 
+        The central concept of VTG, poi flowers describe the geometric patterns created when poi move through
         specific orbital relationships. These patterns form the building blocks for more complex movements.
       </p>
     </div>
-    
+
     <div class="concept-card">
       <h3>Transition Theory</h3>
       <p>
-        VTG provides systematic methods for moving between different spinning planes and patterns while 
+        VTG provides systematic methods for moving between different spinning planes and patterns while
         maintaining flow and avoiding tangles.
       </p>
     </div>
-    
+
     <div class="concept-card">
       <h3>Geometric Relationships</h3>
       <p>
-        Understanding how poi move in three-dimensional space relative to the body and each other, 
+        Understanding how poi move in three-dimensional space relative to the body and each other,
         enabling predictable and repeatable movements.
       </p>
     </div>
-    
+
     <div class="concept-card">
       <h3>Timing and Rhythm</h3>
       <p>
-        VTG emphasizes the importance of consistent timing in creating clean transitions and 
+        VTG emphasizes the importance of consistent timing in creating clean transitions and
         maintaining the integrity of patterns.
       </p>
     </div>
@@ -65,7 +65,7 @@
 
 <section id="getting-started" class="content-section">
   <h2>Getting Started with VTG</h2>
-  
+
   <div class="getting-started-content">
     <h3>Prerequisites</h3>
     <ul>
@@ -87,8 +87,8 @@
     <div class="practice-tip">
       <h4>Practice Tip</h4>
       <p>
-        Start with very slow, deliberate movements. VTG concepts become much clearer when you can observe 
-        the geometric relationships without the distraction of speed. Gradually increase tempo only after 
+        Start with very slow, deliberate movements. VTG concepts become much clearer when you can observe
+        the geometric relationships without the distraction of speed. Gradually increase tempo only after
         the movements become second nature.
       </p>
     </div>
@@ -99,8 +99,8 @@
   <h2>Advanced Applications</h2>
 
   <p>
-    Once you've mastered the fundamental VTG concepts, the system opens up a vast landscape of advanced 
-    possibilities. These applications represent the cutting edge of technical poi spinning and continue 
+    Once you've mastered the fundamental VTG concepts, the system opens up a vast landscape of advanced
+    possibilities. These applications represent the cutting edge of technical poi spinning and continue
     to influence new developments in the art form.
   </p>
 
@@ -126,8 +126,8 @@
   <div class="advanced-tip">
     <h4>Advanced Practice Focus</h4>
     <p>
-      At advanced levels, VTG becomes less about specific movements and more about understanding the 
-      underlying principles that govern poi motion. This understanding allows for real-time improvisation 
+      At advanced levels, VTG becomes less about specific movements and more about understanding the
+      underlying principles that govern poi motion. This understanding allows for real-time improvisation
       and the creation of entirely new patterns.
     </p>
   </div>
@@ -137,29 +137,29 @@
   <h2>Community Impact & Legacy</h2>
 
   <p>
-    The introduction of VTG marked a watershed moment in poi history, transforming the art form from an 
-    intuitive practice to a systematic discipline. Its impact extends far beyond individual technique 
+    The introduction of VTG marked a watershed moment in poi history, transforming the art form from an
+    intuitive practice to a systematic discipline. Its impact extends far beyond individual technique
     improvement, fundamentally changing how the poi community approaches learning and teaching.
   </p>
 
   <h3>Educational Revolution</h3>
   <p>
-    Before VTG, poi instruction relied heavily on imitation and personal discovery. VTG provided the first 
-    comprehensive framework that allowed instructors to break down complex movements into teachable components, 
+    Before VTG, poi instruction relied heavily on imitation and personal discovery. VTG provided the first
+    comprehensive framework that allowed instructors to break down complex movements into teachable components,
     dramatically accelerating the learning process for new spinners.
   </p>
 
   <h3>Theoretical Foundation</h3>
   <p>
-    VTG established poi as a legitimate movement discipline with its own theoretical framework, comparable 
-    to dance or martial arts. This legitimacy helped poi gain recognition in academic and artistic circles, 
+    VTG established poi as a legitimate movement discipline with its own theoretical framework, comparable
+    to dance or martial arts. This legitimacy helped poi gain recognition in academic and artistic circles,
     leading to university courses and formal performance opportunities.
   </p>
 
   <h3>Innovation Catalyst</h3>
   <p>
-    By providing a common language and theoretical foundation, VTG enabled rapid innovation in poi technique. 
-    Spinners could now build systematically on each other's work rather than starting from scratch, leading 
+    By providing a common language and theoretical foundation, VTG enabled rapid innovation in poi technique.
+    Spinners could now build systematically on each other's work rather than starting from scratch, leading
     to an explosion of new techniques and styles.
   </p>
 
@@ -178,8 +178,8 @@
   <h2>Official Resources & Further Learning</h2>
 
   <p>
-    To truly master VTG, it's essential to study the original materials and engage with the broader 
-    community of practitioners. These resources provide authoritative information and ongoing support 
+    To truly master VTG, it's essential to study the original materials and engage with the broader
+    community of practitioners. These resources provide authoritative information and ongoing support
     for your VTG journey.
   </p>
 
@@ -191,13 +191,13 @@
         <p>The original and most authoritative source for VTG theory and practice</p>
         <span class="link-indicator">Visit Resource →</span>
       </a>
-      
+
       <a href="https://playpoi.com/lessons/intermediate/vulcan-tech-gospel/" target="_blank" rel="noopener noreferrer" class="resource-link">
         <h4>Playpoi VTG Lessons</h4>
         <p>Community-driven tutorials and discussions expanding on VTG concepts</p>
         <span class="link-indicator">Visit Resource →</span>
       </a>
-      
+
       <a href="https://www.spinmorepoi.com/intermediate/vulcan-tech-gospel/" target="_blank" rel="noopener noreferrer" class="resource-link">
         <h4>Spin More Poi VTG Section</h4>
         <p>Structured practice sequences and progressive skill development</p>
@@ -212,7 +212,7 @@
         <p>Visual demonstrations and step-by-step breakdowns</p>
         <span class="link-indicator">Visit Resource →</span>
       </a>
-      
+
       <a href="https://drexfactor.com/tutorials/vulcan-tech-gospel" target="_blank" rel="noopener noreferrer" class="resource-link">
         <h4>DrexFactor VTG Analysis</h4>
         <p>Technical analysis and advanced applications</p>
@@ -227,7 +227,7 @@
         <p>Active discussions, questions, and shared experiences</p>
         <span class="link-indicator">Visit Resource →</span>
       </a>
-      
+
       <a href="https://www.facebook.com/groups/poispinners" target="_blank" rel="noopener noreferrer" class="resource-link">
         <h4>Facebook Poi Groups</h4>
         <p>Global community sharing VTG insights and variations</p>

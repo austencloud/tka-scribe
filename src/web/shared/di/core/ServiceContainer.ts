@@ -1,9 +1,9 @@
 /**
  * 🚀 TKA ENTERPRISE-GRADE SERVICE CONTAINER
- * 
+ *
  * Next-generation dependency injection container that matches and exceeds
  * the sophistication of the desktop Python DI system.
- * 
+ *
  * Features:
  * - Advanced lifecycle management (Singleton, Transient, Scoped, Lazy, Factory)
  * - Circular dependency detection and resolution
@@ -30,12 +30,12 @@ export class ServiceContainer {
     private readonly _validationEngine: ValidationEngine;
     private readonly _debuggingTools: DebuggingTools;
     private readonly _metrics: ServiceMetrics;
-    
+
     // Resolution state tracking
     private readonly _resolutionStack: Set<string> = new Set();
     private readonly _resolutionDepth: number = 0;
     private readonly _maxResolutionDepth: number = 50;
-    
+
     // Container metadata
     private readonly _containerId: string;
     private readonly _createdAt: Date;
@@ -44,7 +44,7 @@ export class ServiceContainer {
     constructor(containerId?: string) {
         this._containerId = containerId || `container_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
         this._createdAt = new Date();
-        
+
         // Initialize sophisticated modules
         this._registry = new ServiceRegistry();
         this._resolverChain = new ResolverChain();
@@ -52,7 +52,7 @@ export class ServiceContainer {
         this._validationEngine = new ValidationEngine();
         this._debuggingTools = new DebuggingTools(this._containerId);
         this._metrics = new ServiceMetrics();
-        
+
         this._debuggingTools.logContainerCreation(this._containerId, this._createdAt);
     }
 
@@ -64,7 +64,7 @@ export class ServiceContainer {
      * Register a service as singleton (one instance per container)
      */
     registerSingleton<T>(
-        serviceInterface: ServiceInterface<T>, 
+        serviceInterface: ServiceInterface<T>,
         implementation: new (...args: any[]) => T
     ): void {
         this._ensureNotDisposed();
@@ -77,7 +77,7 @@ export class ServiceContainer {
      * Register a service as transient (new instance per resolution)
      */
     registerTransient<T>(
-        serviceInterface: ServiceInterface<T>, 
+        serviceInterface: ServiceInterface<T>,
         implementation: new (...args: any[]) => T
     ): void {
         this._ensureNotDisposed();
@@ -90,7 +90,7 @@ export class ServiceContainer {
      * Register a service with specific scope
      */
     registerScoped<T>(
-        serviceInterface: ServiceInterface<T>, 
+        serviceInterface: ServiceInterface<T>,
         implementation: new (...args: any[]) => T,
         scope: ServiceScope
     ): void {
@@ -104,7 +104,7 @@ export class ServiceContainer {
      * Register a factory function for custom instantiation
      */
     registerFactory<T>(
-        serviceInterface: ServiceInterface<T>, 
+        serviceInterface: ServiceInterface<T>,
         factory: () => T,
         scope: ServiceScope = ServiceScope.Singleton
     ): void {
@@ -118,7 +118,7 @@ export class ServiceContainer {
      * Register a specific instance
      */
     registerInstance<T>(
-        serviceInterface: ServiceInterface<T>, 
+        serviceInterface: ServiceInterface<T>,
         instance: T
     ): void {
         this._ensureNotDisposed();
@@ -131,7 +131,7 @@ export class ServiceContainer {
      * Register a lazy service that will be instantiated on first access
      */
     registerLazy<T>(
-        serviceInterface: ServiceInterface<T>, 
+        serviceInterface: ServiceInterface<T>,
         implementation: new (...args: any[]) => T
     ): void {
         this._ensureNotDisposed();
@@ -149,10 +149,10 @@ export class ServiceContainer {
      */
     resolve<T>(serviceInterface: ServiceInterface<T>): T {
         this._ensureNotDisposed();
-        
+
         const startTime = performance.now();
         const context = this._createResolutionContext(serviceInterface);
-        
+
         try {
             // Check for circular dependencies
             if (this._resolutionStack.has(serviceInterface.name)) {
@@ -170,8 +170,8 @@ export class ServiceContainer {
 
             // Use resolver chain for sophisticated resolution
             const instance = this._resolverChain.resolve<T>(
-                serviceInterface, 
-                this._registry, 
+                serviceInterface,
+                this._registry,
                 this,
                 context
             );
@@ -307,7 +307,7 @@ export class ServiceContainer {
         this._registry.clear();
         this._metrics.clear();
         this._debuggingTools.dispose();
-        
+
         this._isDisposed = true;
         this._debuggingTools.logContainerDisposal(this._containerId);
     }

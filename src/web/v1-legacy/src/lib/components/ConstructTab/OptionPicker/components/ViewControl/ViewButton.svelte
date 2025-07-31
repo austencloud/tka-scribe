@@ -128,7 +128,7 @@
 		display: none;
 	}
 
-	/* 
+	/*
 		The ::after pseudo-element for glow is removed as it's not typical for SequenceWidget buttons.
 		The .view-button.compact class styles are removed as the base style now dictates the compact, round look.
 		Responsive media queries (@media) that previously handled compactness are removed for the same reason.

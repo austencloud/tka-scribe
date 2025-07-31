@@ -93,14 +93,14 @@ The UI accepts sequence data in this JSON format:
     "beat": "1",
     "red_attributes": {
       "start_loc": "n",
-      "end_loc": "s", 
+      "end_loc": "s",
       "motion_type": "pro",
       "turns": 0
     },
     "blue_attributes": {
       "start_loc": "s",
       "end_loc": "n",
-      "motion_type": "pro", 
+      "motion_type": "pro",
       "turns": 0
     },
     "start_position": "alpha",

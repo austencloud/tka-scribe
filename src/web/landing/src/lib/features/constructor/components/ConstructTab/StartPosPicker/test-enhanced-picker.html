@@ -11,7 +11,7 @@
             padding: 20px;
             background: #f5f7fa;
         }
-        
+
         .test-container {
             max-width: 1200px;
             margin: 0 auto;
@@ -20,39 +20,39 @@
             padding: 24px;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
-        
+
         .test-header {
             text-align: center;
             margin-bottom: 32px;
         }
-        
+
         .test-title {
             font-size: 28px;
             font-weight: 600;
             color: #1a202c;
             margin: 0 0 8px 0;
         }
-        
+
         .test-description {
             font-size: 16px;
             color: #718096;
             margin: 0;
         }
-        
+
         .test-section {
             margin-bottom: 32px;
             padding: 20px;
             border: 1px solid #e2e8f0;
             border-radius: 8px;
         }
-        
+
         .section-title {
             font-size: 20px;
             font-weight: 600;
             color: #2d3748;
             margin: 0 0 16px 0;
         }
-        
+
         .test-result {
             padding: 12px 16px;
             border-radius: 6px;
@@ -60,25 +60,25 @@
             font-family: 'Monaco', 'Menlo', monospace;
             font-size: 14px;
         }
-        
+
         .test-success {
             background: #f0fff4;
             border: 1px solid #9ae6b4;
             color: #22543d;
         }
-        
+
         .test-error {
             background: #fed7d7;
             border: 1px solid #fc8181;
             color: #742a2a;
         }
-        
+
         .test-info {
             background: #ebf8ff;
             border: 1px solid #90cdf4;
             color: #2a4365;
         }
-        
+
         .test-button {
             background: #007acc;
             color: white;
@@ -91,16 +91,16 @@
             margin: 8px 8px 8px 0;
             transition: background-color 0.2s ease;
         }
-        
+
         .test-button:hover {
             background: #005a9e;
         }
-        
+
         .test-button:disabled {
             background: #a0aec0;
             cursor: not-allowed;
         }
-        
+
         .pictograph-preview {
             border: 1px solid #e2e8f0;
             border-radius: 8px;
@@ -112,7 +112,7 @@
             align-items: center;
             justify-content: center;
         }
-        
+
         .loading-spinner {
             width: 32px;
             height: 32px;
@@ -121,7 +121,7 @@
             border-radius: 50%;
             animation: spin 1s linear infinite;
         }
-        
+
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
@@ -174,12 +174,12 @@
         window.testDIContainer = async function() {
             const resultsDiv = document.getElementById('di-results');
             resultsDiv.innerHTML = '<div class="test-info">Testing DI container initialization...</div>';
-            
+
             try {
                 // This would normally import from the actual modules
                 // For now, we'll simulate the test
                 await new Promise(resolve => setTimeout(resolve, 1000));
-                
+
                 resultsDiv.innerHTML = `
                     <div class="test-success">✅ DI Container initialized successfully</div>
                     <div class="test-info">Container type: ServiceContainer</div>
@@ -195,13 +195,13 @@
         window.testPictographServices = async function() {
             const resultsDiv = document.getElementById('pictograph-results');
             resultsDiv.innerHTML = '<div class="test-info">Testing pictograph service registration...</div>';
-            
+
             try {
                 await new Promise(resolve => setTimeout(resolve, 1500));
-                
+
                 const services = [
                     'ISVGAssetManager',
-                    'IArrowPositioningOrchestrator', 
+                    'IArrowPositioningOrchestrator',
                     'IPropPositioningService',
                     'IGridRenderer',
                     'IArrowRenderer',
@@ -210,12 +210,12 @@
                     'IPictographOrchestrator',
                     'IPictographRenderer'
                 ];
-                
+
                 let html = '<div class="test-success">✅ All pictograph services registered successfully</div>';
                 services.forEach(service => {
                     html += `<div class="test-info">✓ ${service}</div>`;
                 });
-                
+
                 resultsDiv.innerHTML = html;
             } catch (error) {
                 resultsDiv.innerHTML = `
@@ -227,17 +227,17 @@
         window.testStartPositionData = async function() {
             const resultsDiv = document.getElementById('startpos-results');
             resultsDiv.innerHTML = '<div class="test-info">Testing start position data creation...</div>';
-            
+
             try {
                 await new Promise(resolve => setTimeout(resolve, 1000));
-                
+
                 const positions = ['Alpha', 'Beta', 'Gamma'];
-                
+
                 let html = '<div class="test-success">✅ Start position data created successfully</div>';
                 positions.forEach(pos => {
                     html += `<div class="test-info">✓ ${pos} position with pictograph data</div>`;
                 });
-                
+
                 resultsDiv.innerHTML = html;
             } catch (error) {
                 resultsDiv.innerHTML = `
@@ -250,14 +250,14 @@
             const resultsDiv = document.getElementById('rendering-results');
             const previewDiv = document.getElementById('pictograph-preview');
             const spinner = previewDiv.querySelector('.loading-spinner');
-            
+
             resultsDiv.innerHTML = '<div class="test-info">Testing pictograph rendering...</div>';
             spinner.style.display = 'block';
             previewDiv.innerHTML = '<div class="loading-spinner"></div>';
-            
+
             try {
                 await new Promise(resolve => setTimeout(resolve, 2000));
-                
+
                 // Create a mock SVG pictograph
                 const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
                 svg.setAttribute('viewBox', '0 0 300 300');
@@ -266,7 +266,7 @@
                 svg.style.background = 'white';
                 svg.style.border = '1px solid #e2e8f0';
                 svg.style.borderRadius = '8px';
-                
+
                 // Add a simple grid
                 const grid = document.createElementNS('http://www.w3.org/2000/svg', 'path');
                 grid.setAttribute('d', 'M150,50 L250,150 L150,250 L50,150 Z');
@@ -274,7 +274,7 @@
                 grid.setAttribute('stroke', '#ddd');
                 grid.setAttribute('stroke-width', '2');
                 svg.appendChild(grid);
-                
+
                 // Add center point
                 const center = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
                 center.setAttribute('cx', '150');
@@ -282,7 +282,7 @@
                 center.setAttribute('r', '4');
                 center.setAttribute('fill', '#007acc');
                 svg.appendChild(center);
-                
+
                 // Add alpha symbol
                 const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
                 text.setAttribute('x', '150');
@@ -293,10 +293,10 @@
                 text.setAttribute('fill', '#2d3748');
                 text.textContent = 'α';
                 svg.appendChild(text);
-                
+
                 previewDiv.innerHTML = '';
                 previewDiv.appendChild(svg);
-                
+
                 resultsDiv.innerHTML = `
                     <div class="test-success">✅ Pictograph rendered successfully</div>
                     <div class="test-info">✓ Grid renderer: Diamond grid</div>
@@ -314,20 +314,20 @@
         window.runFullTest = async function() {
             const resultsDiv = document.getElementById('integration-results');
             resultsDiv.innerHTML = '<div class="test-info">Running full integration test...</div>';
-            
+
             try {
                 // Run all tests in sequence
                 await window.testDIContainer();
                 await new Promise(resolve => setTimeout(resolve, 500));
-                
+
                 await window.testPictographServices();
                 await new Promise(resolve => setTimeout(resolve, 500));
-                
+
                 await window.testStartPositionData();
                 await new Promise(resolve => setTimeout(resolve, 500));
-                
+
                 await window.testPictographRendering();
-                
+
                 resultsDiv.innerHTML = `
                     <div class="test-success">🎉 Full integration test completed successfully!</div>
                     <div class="test-info">✓ DI Container: Initialized</div>

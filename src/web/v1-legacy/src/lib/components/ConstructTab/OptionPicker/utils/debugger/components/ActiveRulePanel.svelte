@@ -2,7 +2,7 @@
 <script lang="ts">
     export let activeRule: any;
   </script>
-  
+
   <h3>Active Layout Rule:</h3>
   {#if activeRule}
     <div class="rule-info">
@@ -44,7 +44,7 @@
   {:else}
     <div class="no-rule">No layout rule currently matched.</div>
   {/if}
-  
+
   <style>
     h3 {
       margin: 0 0 10px 0;
@@ -54,12 +54,12 @@
       border-bottom: 1px solid #334155;
       padding-bottom: 6px;
     }
-  
+
     /* --- Rule Info & Conditions --- */
     .rule-info {
       margin-bottom: 14px;
     }
-    
+
     .rule-desc {
       display: block;
       font-weight: 600;
@@ -67,7 +67,7 @@
       margin-bottom: 8px;
       font-style: italic;
     }
-    
+
     .rule-details {
       display: flex;
       align-items: center;
@@ -75,35 +75,35 @@
       margin-bottom: 8px;
       font-weight: 500;
     }
-    
+
     .columns b {
       color: #e2e8f0;
     }
-    
+
     .columns {
       color: #7dd3fc;
     }
-    
+
     .max-cols {
       color: #94a3b8;
       font-size: 11px;
     }
-    
+
     .conditions {
       font-size: 11px;
       margin-top: 8px;
       color: #cbd5e1;
     }
-    
+
     .conditions ul {
       margin: 4px 0 0 0;
       padding-left: 16px;
     }
-    
+
     .conditions li {
       margin: 3px 0;
     }
-    
+
     .no-rule {
       padding: 10px 0;
       color: #fb7185;

@@ -59,7 +59,7 @@ export class FocusTrap {
     // Handle Tab key for focus cycling
     if (event.key === 'Tab') {
       const focusableElements = this.getFocusableElements();
-      
+
       if (focusableElements.length === 0) {
         event.preventDefault();
         return;

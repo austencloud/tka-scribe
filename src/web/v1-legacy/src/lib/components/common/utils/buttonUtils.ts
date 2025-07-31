@@ -5,14 +5,14 @@ import { type ButtonState, type ButtonVariant, fallbackGradients, gradientTokens
 // Memoization utility
 export function memoize<T extends (...args: any[]) => any>(fn: T): T {
   const cache = new Map();
-  
+
   return ((...args: any[]) => {
     const key = JSON.stringify(args);
-    
+
     if (cache.has(key)) {
       return cache.get(key);
     }
-    
+
     const result = fn(...args);
     cache.set(key, result);
     return result;
@@ -20,8 +20,8 @@ export function memoize<T extends (...args: any[]) => any>(fn: T): T {
 }
 
 export const computeButtonStyles = memoize((
-  variant: ButtonVariant, 
-  state: ButtonState, 
+  variant: ButtonVariant,
+  state: ButtonState,
   isFullWidth: boolean,
   isRounded: boolean
 ): string => {

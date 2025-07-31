@@ -61,12 +61,12 @@ function createProgressStore() {
 
     return {
         subscribe,
-        
+
         // Update progress for a specific lesson
         updateLessonProgress: (
-            lessonId: string, 
-            score: number, 
-            questionsCompleted: number, 
+            lessonId: string,
+            score: number,
+            questionsCompleted: number,
             totalQuestions: number
         ) => {
             update((state) => {
@@ -77,7 +77,7 @@ function createProgressStore() {
                     lastScore: 0,
                     attempts: 0
                 };
-                
+
                 // Update the progress
                 const updatedProgress = {
                     ...currentProgress,
@@ -87,23 +87,23 @@ function createProgressStore() {
                     lastCompletedDate: new Date().toISOString(),
                     attempts: currentProgress.attempts + 1
                 };
-                
+
                 // Calculate new totals
                 const allLessons = Object.values({
                     ...state.lessonProgress,
                     [lessonId]: updatedProgress
                 });
-                
+
                 const totalStarted = allLessons.filter(l => l.attempts > 0).length;
                 const totalCompleted = allLessons.filter(l => l.completed === l.total).length;
                 const totalAnswered = allLessons.reduce((sum, l) => sum + l.completed, 0);
-                
+
                 // Calculate average score (only for lessons with attempts)
                 const lessonsWithScores = allLessons.filter(l => l.lastScore > 0);
                 const avgScore = lessonsWithScores.length > 0
                     ? Math.round(lessonsWithScores.reduce((sum, l) => sum + l.lastScore, 0) / lessonsWithScores.length)
                     : 0;
-                
+
                 return {
                     lessonProgress: {
                         ...state.lessonProgress,
@@ -116,12 +116,12 @@ function createProgressStore() {
                 };
             });
         },
-        
+
         // Reset progress for a specific lesson
         resetLessonProgress: (lessonId: string) => {
             update((state) => {
                 const lessonProgress = { ...state.lessonProgress };
-                
+
                 if (lessonId in lessonProgress) {
                     lessonProgress[lessonId] = {
                         ...lessonProgress[lessonId],
@@ -130,14 +130,14 @@ function createProgressStore() {
                         attempts: 0
                     };
                 }
-                
+
                 return {
                     ...state,
                     lessonProgress
                 };
             });
         },
-        
+
         // Reset all progress
         resetAllProgress: () => {
             set(initialState);
@@ -151,7 +151,7 @@ export const progressStore = createProgressStore();
 // Derived store for badge status
 export const badgeStatus = derived(progressStore, ($progress) => {
     const badges: Record<string, 'none' | 'bronze' | 'silver' | 'gold'> = {};
-    
+
     Object.entries($progress.lessonProgress).forEach(([lessonId, progress]) => {
         if (progress.lastScore === 0) {
             badges[lessonId] = 'none';
@@ -165,6 +165,6 @@ export const badgeStatus = derived(progressStore, ($progress) => {
             badges[lessonId] = 'none';
         }
     });
-    
+
     return badges;
 });

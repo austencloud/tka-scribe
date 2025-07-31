@@ -6,7 +6,7 @@
 	}
 
 	let { onSequenceLoad }: Props = $props();
-	
+
 	let sequenceInput = $state('');
 	let message = $state('');
 	let messageType: MessageType = $state('success');
@@ -17,7 +17,7 @@
 			displayMessage('error', 'Textarea is empty.');
 			return;
 		}
-		
+
 		// Clear previous messages and call parent handler
 		showMessage = false;
 		onSequenceLoad(sequenceInput.trim());
@@ -40,9 +40,9 @@
 
 <div class="input-section">
 	<label for="sequenceInput" class="input-label">Paste Sequence JSON:</label>
-	<textarea 
+	<textarea
 		bind:value={sequenceInput}
-		id="sequenceInput" 
+		id="sequenceInput"
 		placeholder="Paste your sequence JSON array here..."
 		class="sequence-textarea"
 	></textarea>

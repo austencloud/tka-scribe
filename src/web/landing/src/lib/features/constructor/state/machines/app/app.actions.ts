@@ -1,6 +1,6 @@
 /**
  * Application State Actions
- * 
+ *
  * This file contains action creators for the app state machine.
  * Actions are functions that send events to the machine to trigger state changes.
  */
@@ -19,14 +19,14 @@ export const appActions = {
   changeTab: (tab: number): void => {
     appService.send({ type: 'CHANGE_TAB', tab });
   },
-  
+
   /**
    * Toggle fullscreen mode
    */
   toggleFullScreen: (): void => {
     appService.send({ type: 'TOGGLE_FULLSCREEN' });
   },
-  
+
   /**
    * Set fullscreen mode
    * @param isFullScreen Whether to enable fullscreen mode
@@ -37,21 +37,21 @@ export const appActions = {
       appService.send({ type: 'TOGGLE_FULLSCREEN' });
     }
   },
-  
+
   /**
    * Open the settings panel
    */
   openSettings: (): void => {
     appService.send({ type: 'OPEN_SETTINGS' });
   },
-  
+
   /**
    * Close the settings panel
    */
   closeSettings: (): void => {
     appService.send({ type: 'CLOSE_SETTINGS' });
   },
-  
+
   /**
    * Update the background type
    * @param background The new background type
@@ -59,14 +59,14 @@ export const appActions = {
   updateBackground: (background: BackgroundType): void => {
     appService.send({ type: 'UPDATE_BACKGROUND', background });
   },
-  
+
   /**
    * Signal that the background is ready
    */
   backgroundReady: (): void => {
     appService.send({ type: 'BACKGROUND_READY' });
   },
-  
+
   /**
    * Retry initialization after a failure
    */

@@ -1,6 +1,6 @@
 /**
  * Svelte lifecycle functions
- * 
+ *
  * This file provides type-safe wrappers for Svelte lifecycle functions
  * to avoid importing directly from svelte/internal.
  */

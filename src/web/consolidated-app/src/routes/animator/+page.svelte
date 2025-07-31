@@ -1,9 +1,9 @@
 <script lang="ts">
 	import AnimatorApp from '$lib/animator/AnimatorApp.svelte';
 	import { onMount } from 'svelte';
-	
+
 	let isLoaded = $state(false);
-	
+
 	onMount(() => {
 		// Initialize animator
 		setTimeout(() => {
@@ -33,7 +33,7 @@
 		height: 100vh;
 		background: var(--surface-color);
 	}
-	
+
 	.loading-state {
 		display: flex;
 		flex-direction: column;
@@ -43,7 +43,7 @@
 		gap: 1rem;
 		color: var(--text-color);
 	}
-	
+
 	.loading-spinner {
 		width: 40px;
 		height: 40px;
@@ -52,7 +52,7 @@
 		border-radius: 50%;
 		animation: spin 1s linear infinite;
 	}
-	
+
 	@keyframes spin {
 		0% { transform: rotate(0deg); }
 		100% { transform: rotate(360deg); }

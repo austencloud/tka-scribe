@@ -1,6 +1,6 @@
 /**
  * 🧪 SERVICE REGISTRY TESTS
- * 
+ *
  * Comprehensive tests for the ServiceRegistry component,
  * ensuring robust service registration and metadata management.
  */
@@ -25,7 +25,7 @@ describe('ServiceRegistry', () => {
             class TestService {}
 
             registry.registerSingleton(ITestService, TestService);
-            
+
             expect(registry.isRegistered(ITestService)).toBe(true);
             const descriptor = registry.getDescriptor(ITestService);
             expect(descriptor?.scope).toBe(ServiceScope.Singleton);
@@ -36,7 +36,7 @@ describe('ServiceRegistry', () => {
             class TestService {}
 
             registry.registerTransient(ITestService, TestService);
-            
+
             expect(registry.isRegistered(ITestService)).toBe(true);
             const descriptor = registry.getDescriptor(ITestService);
             expect(descriptor?.scope).toBe(ServiceScope.Transient);
@@ -47,7 +47,7 @@ describe('ServiceRegistry', () => {
             class TestService {}
 
             registry.registerScoped(ITestService, TestService, ServiceScope.Request);
-            
+
             expect(registry.isRegistered(ITestService)).toBe(true);
             const descriptor = registry.getDescriptor(ITestService);
             expect(descriptor?.scope).toBe(ServiceScope.Request);
@@ -58,7 +58,7 @@ describe('ServiceRegistry', () => {
             const factory = () => ({ test: 'factory' });
 
             registry.registerFactory(ITestService, factory, ServiceScope.Singleton);
-            
+
             expect(registry.isRegistered(ITestService)).toBe(true);
             const descriptor = registry.getDescriptor(ITestService);
             expect(descriptor?.factory).toBe(factory);
@@ -69,7 +69,7 @@ describe('ServiceRegistry', () => {
             const instance = { test: 'instance' };
 
             registry.registerInstance(ITestService, instance);
-            
+
             expect(registry.isRegistered(ITestService)).toBe(true);
             const descriptor = registry.getDescriptor(ITestService);
             expect(descriptor?.instance).toBe(instance);
@@ -96,7 +96,7 @@ describe('ServiceRegistry', () => {
 
             registry.setSingletonInstance(ITestService, instance);
             const retrieved = registry.getSingletonInstance(ITestService);
-            
+
             expect(retrieved).toBe(instance);
         });
 
@@ -107,7 +107,7 @@ describe('ServiceRegistry', () => {
 
             registry.setScopedInstance(ITestService, scopeId, instance);
             const retrieved = registry.getScopedInstance(ITestService, scopeId);
-            
+
             expect(retrieved).toBe(instance);
         });
 
@@ -270,9 +270,9 @@ describe('ServiceRegistry', () => {
             registry.registerSingleton(ITestService, class TestService {});
 
             expect(registry.isRegistered(ITestService)).toBe(true);
-            
+
             registry.clear();
-            
+
             expect(registry.isRegistered(ITestService)).toBe(false);
             expect(registry.getRegisteredServices()).toHaveLength(0);
         });
@@ -301,7 +301,7 @@ describe('ServiceRegistry', () => {
             registry.registerScoped(IScoped, class Scoped {}, ServiceScope.Request);
 
             const stats = registry.getStatistics();
-            
+
             expect(stats.totalServices).toBe(3);
             expect(stats.scopeCounts[ServiceScope.Singleton]).toBe(1);
             expect(stats.scopeCounts[ServiceScope.Transient]).toBe(1);
@@ -320,9 +320,9 @@ describe('ServiceRegistry', () => {
             class TestService {}
 
             registry.registerSingleton(ITestService, TestService);
-            
+
             const descriptor = registry.getDescriptor(ITestService);
-            
+
             expect(descriptor).toBeDefined();
             expect(descriptor?.serviceInterface).toBe(ITestService);
             expect(descriptor?.implementation).toBe(TestService);
@@ -335,7 +335,7 @@ describe('ServiceRegistry', () => {
 
         test('should handle missing descriptors gracefully', () => {
             const IUnregisteredService = createServiceInterface('IUnregisteredService', class {});
-            
+
             const descriptor = registry.getDescriptor(IUnregisteredService);
             expect(descriptor).toBeNull();
         });

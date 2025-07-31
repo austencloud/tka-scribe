@@ -54,7 +54,7 @@ export interface ButtonActionHandlerParams {
 
 export function handleButtonAction(params: ButtonActionHandlerParams): void {
     const { id, activeMode, setActiveMode, closeToolsPanel, openFullScreen } = params;
-    
+
     switch (id) {
         case 'constructMode':
             hapticFeedbackService.trigger('navigation');
@@ -112,7 +112,7 @@ export function handleButtonAction(params: ButtonActionHandlerParams): void {
             sequenceActions.clearSequence();
             break;
     }
-    
+
     if (closeToolsPanel) {
         closeToolsPanel();
     }

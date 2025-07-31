@@ -1,6 +1,6 @@
 /**
  * User Container
- * 
+ *
  * This module provides a container for managing user information
  * using the modern container-based approach with Svelte 5 runes.
  */
@@ -68,7 +68,7 @@ function createUserContainer() {
 
       // Trim and limit length
       username = username.trim().substring(0, 50);
-      
+
       // Use default if empty after trimming
       if (username === '') {
         username = 'User';

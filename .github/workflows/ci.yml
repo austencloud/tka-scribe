@@ -17,12 +17,12 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
+
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: ${{ env.PYTHON_VERSION }}
-      
+
       - name: Cache Python dependencies
         uses: actions/cache@v3
         with:
@@ -30,7 +30,7 @@ jobs:
           key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt', '**/pyproject.toml') }}
           restore-keys: |
             ${{ runner.os }}-pip-
-      
+
       - name: Install Python dependencies
         run: |
           cd apps/desktop
@@ -40,13 +40,13 @@ jobs:
           elif [ -f pyproject.toml ]; then
             pip install -e .[dev]
           fi
-      
+
       - name: Run Python tests
         run: |
           cd apps/desktop
           python -m pytest modern/tests/ -v --tb=short --cov=modern/src --cov-report=xml
         continue-on-error: true
-      
+
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
         with:
@@ -64,19 +64,19 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
+
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
           cache-dependency-path: apps/${{ matrix.app }}/package-lock.json
-      
+
       - name: Install dependencies
         run: |
           cd apps/${{ matrix.app }}
           npm ci
-      
+
       - name: Run linting
         run: |
           cd apps/${{ matrix.app }}
@@ -86,7 +86,7 @@ jobs:
             echo "Linting failed or not configured"
           fi
         continue-on-error: true
-      
+
       - name: Run tests
         run: |
           cd apps/${{ matrix.app }}
@@ -96,7 +96,7 @@ jobs:
             echo "Tests failed or not configured"
           fi
         continue-on-error: true
-      
+
       - name: Run build
         run: |
           cd apps/${{ matrix.app }}
@@ -108,16 +108,16 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
+
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
-      
+
       - name: Install root dependencies
         run: npm install
-      
+
       - name: Type check shared packages
         run: |
           for package in packages/*/; do
@@ -141,22 +141,22 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
+
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: ${{ env.PYTHON_VERSION }}
-      
+
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-      
+
       - name: Install all dependencies
         run: |
           python scripts/setup.py
         continue-on-error: true
-      
+
       - name: Run integration tests
         run: |
           if [ -f scripts/test_integration.py ]; then
@@ -174,25 +174,25 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
+
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: ${{ env.PYTHON_VERSION }}
-      
+
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-      
+
       - name: Install dependencies
         run: |
           python scripts/setup.py
-      
+
       - name: Build all applications
         run: |
           python scripts/dev.py build
-      
+
       - name: Create release artifacts
         run: |
           mkdir -p dist
@@ -210,7 +210,7 @@ jobs:
           echo "Build Date: $(date)" > dist/build-info.txt
           echo "Commit: ${{ github.sha }}" >> dist/build-info.txt
           echo "Branch: ${{ github.ref_name }}" >> dist/build-info.txt
-      
+
       - name: Upload build artifacts
         uses: actions/upload-artifact@v3
         with:
@@ -224,7 +224,7 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
+
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
         with:
@@ -233,7 +233,7 @@ jobs:
           format: 'sarif'
           output: 'trivy-results.sarif'
         continue-on-error: true
-      
+
       - name: Upload Trivy scan results to GitHub Security tab
         uses: github/codeql-action/upload-sarif@v2
         with:

@@ -1,6 +1,6 @@
 /**
  * 🧪 SERVICE CONTAINER CORE TESTS
- * 
+ *
  * Comprehensive unit tests for the ServiceContainer core functionality,
  * following enterprise testing patterns from Spring, NestJS, and Autofac.
  */
@@ -47,7 +47,7 @@ describe('ServiceContainer Core Functionality', () => {
         test('should throw when using disposed container', () => {
             const ITestService = createServiceInterface('ITestService', class {});
             container.dispose();
-            
+
             expect(() => {
                 container.registerSingleton(ITestService, class TestService {});
             }).toThrow(/disposed/);
@@ -124,7 +124,7 @@ describe('ServiceContainer Core Functionality', () => {
 
             container.registerSingleton(ITestService, TestService);
             const service = container.resolve(ITestService);
-            
+
             expect(service).toBeDefined();
             expect(service.getValue()).toBe('singleton-value');
         });
@@ -134,10 +134,10 @@ describe('ServiceContainer Core Functionality', () => {
             class TestService {}
 
             container.registerSingleton(ITestService, TestService);
-            
+
             const service1 = container.resolve(ITestService);
             const service2 = container.resolve(ITestService);
-            
+
             expect(service1).toBe(service2);
         });
 
@@ -146,10 +146,10 @@ describe('ServiceContainer Core Functionality', () => {
             class TestService {}
 
             container.registerTransient(ITestService, TestService);
-            
+
             const service1 = container.resolve(ITestService);
             const service2 = container.resolve(ITestService);
-            
+
             expect(service1).not.toBe(service2);
             expect(service1).toBeInstanceOf(TestService);
             expect(service2).toBeInstanceOf(TestService);
@@ -162,7 +162,7 @@ describe('ServiceContainer Core Functionality', () => {
 
             const factory = () => ({ getValue: () => 'factory-value' });
             container.registerFactory(ITestService, factory);
-            
+
             const service = container.resolve(ITestService);
             expect(service.getValue()).toBe('factory-value');
         });
@@ -174,7 +174,7 @@ describe('ServiceContainer Core Functionality', () => {
 
             const instance = { getValue: () => 'instance-value' };
             container.registerInstance(ITestService, instance);
-            
+
             const service = container.resolve(ITestService);
             expect(service).toBe(instance);
             expect(service.getValue()).toBe('instance-value');
@@ -182,7 +182,7 @@ describe('ServiceContainer Core Functionality', () => {
 
         test('should throw for unregistered service', () => {
             const IUnregisteredService = createServiceInterface('IUnregisteredService', class {});
-            
+
             expect(() => {
                 container.resolve(IUnregisteredService);
             }).toThrow(/Service not found/);
@@ -190,7 +190,7 @@ describe('ServiceContainer Core Functionality', () => {
 
         test('should return null for tryResolve with unregistered service', () => {
             const IUnregisteredService = createServiceInterface('IUnregisteredService', class {});
-            
+
             const result = container.tryResolve(IUnregisteredService);
             expect(result).toBeNull();
         });
@@ -199,7 +199,7 @@ describe('ServiceContainer Core Functionality', () => {
     describe('Lazy Resolution', () => {
         test('should create lazy proxy without instantiating service', () => {
             let instantiated = false;
-            
+
             const ILazyService = createServiceInterface('ILazyService', class {
                 test(): string { return ''; }
             });
@@ -213,14 +213,14 @@ describe('ServiceContainer Core Functionality', () => {
 
             container.registerLazy(ILazyService, LazyService);
             const lazyProxy = container.resolveLazy(ILazyService);
-            
+
             expect(instantiated).toBe(false);
             expect(lazyProxy).toBeDefined();
         });
 
         test('should instantiate service on first access', () => {
             let instantiated = false;
-            
+
             const ILazyService = createServiceInterface('ILazyService', class {
                 test(): string { return ''; }
             });
@@ -234,11 +234,11 @@ describe('ServiceContainer Core Functionality', () => {
 
             container.registerLazy(ILazyService, LazyService);
             const lazyProxy = container.resolveLazy(ILazyService);
-            
+
             expect(instantiated).toBe(false);
-            
+
             const result = lazyProxy.test();
-            
+
             expect(instantiated).toBe(true);
             expect(result).toBe('lazy-result');
         });
@@ -247,15 +247,15 @@ describe('ServiceContainer Core Functionality', () => {
     describe('Scope Management', () => {
         test('should create and manage scopes', () => {
             const scopeId = 'test-scope';
-            
+
             expect(() => {
                 container.createScope(scopeId);
             }).not.toThrow();
-            
+
             expect(() => {
                 container.setCurrentScope(scopeId);
             }).not.toThrow();
-            
+
             expect(() => {
                 container.disposeScope(scopeId);
             }).not.toThrow();
@@ -311,7 +311,7 @@ describe('ServiceContainer Core Functionality', () => {
     describe('Error Handling and Validation', () => {
         test('should validate service registration', () => {
             const ITestService = createServiceInterface('ITestService', class {});
-            
+
             expect(() => {
                 container.registerSingleton(null as any, null as any);
             }).toThrow();
@@ -339,7 +339,7 @@ describe('ServiceContainer Core Functionality', () => {
             class TestService {}
 
             container.registerSingleton(ITestService, TestService);
-            
+
             // Perform multiple resolutions
             for (let i = 0; i < 5; i++) {
                 container.resolve(ITestService);
@@ -358,7 +358,7 @@ describe('ServiceContainer Core Functionality', () => {
             container.resolve(ITestService);
 
             const diagnostics = container.getDiagnostics();
-            
+
             expect(diagnostics.containerId).toBeDefined();
             expect(diagnostics.createdAt).toBeInstanceOf(Date);
             expect(diagnostics.isDisposed).toBe(false);
@@ -396,7 +396,7 @@ describe('ServiceContainer Core Functionality', () => {
 
         test('should track debug information when enabled', () => {
             container.setDebugMode(true);
-            
+
             const ITestService = createServiceInterface('ITestService', class {});
             class TestService {}
 

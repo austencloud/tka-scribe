@@ -1,6 +1,6 @@
 /**
  * 🧪 CROSS-PLATFORM COMPATIBILITY TESTS
- * 
+ *
  * Ensures the web DI system maintains full parity with the desktop
  * Python DI system, validating equivalent functionality and behavior.
  */
@@ -110,7 +110,7 @@ describe('Cross-Platform Compatibility', () => {
             // Test disposal patterns
             let disposed = false;
             const IDisposableService = createServiceInterface('IDisposableService', class {});
-            
+
             container.registerSingleton(IDisposableService, class DisposableService {
                 dispose(): void { disposed = true; }
             });
@@ -162,7 +162,7 @@ describe('Cross-Platform Compatibility', () => {
 
             // Should have multiple test categories like desktop version
             expect(results.totalTests).toBeGreaterThanOrEqual(8);
-            
+
             // Should pass all tests
             expect(results.success).toBe(true);
             expect(results.failedTests).toBe(0);
@@ -295,7 +295,7 @@ describe('Cross-Platform Compatibility', () => {
 
             // Test unregistered service error
             const IUnregistered = createServiceInterface('IUnregistered', class {});
-            
+
             expect(() => {
                 container.resolve(IUnregistered);
             }).toThrow(/Service not found/);
@@ -329,9 +329,9 @@ describe('Cross-Platform Compatibility', () => {
 
             // Test disposed container
             container.dispose();
-            
+
             const ITestService = createServiceInterface('ITestService', class {});
-            
+
             expect(() => {
                 container.registerSingleton(ITestService, class TestService {});
             }).toThrow(/disposed/);
@@ -400,7 +400,7 @@ describe('Cross-Platform Compatibility', () => {
             // Verify all major features are available
             const features = [
                 'registerSingleton',
-                'registerTransient', 
+                'registerTransient',
                 'registerScoped',
                 'registerFactory',
                 'registerInstance',

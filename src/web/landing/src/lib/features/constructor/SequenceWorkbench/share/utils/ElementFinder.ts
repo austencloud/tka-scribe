@@ -1,6 +1,6 @@
 /**
  * Element Finder
- * 
+ *
  * This module provides functions for finding the BeatFrame element in the DOM.
  * It uses multiple strategies to ensure the element can be found reliably.
  */
@@ -10,7 +10,7 @@ import { logger } from '../../../core/logging/index.js';
 
 /**
  * Find the BeatFrame element in the DOM using multiple strategies
- * 
+ *
  * @param beatFrameContext Optional context that may contain the element
  * @returns The found element or null if not found
  */
@@ -70,7 +70,7 @@ export function findBeatFrameElement(
 
 /**
  * Set up an event listener for the beatframe-element-available event
- * 
+ *
  * @param callback Function to call when the element is available
  * @returns Cleanup function to remove the event listener
  */

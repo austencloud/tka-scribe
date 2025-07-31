@@ -1,6 +1,6 @@
 /**
  * Logging Context Management
- * 
+ *
  * Provides utilities for managing and enriching log context.
  */
 
@@ -132,7 +132,7 @@ export function gatherAutomaticContext(): Partial<LoggerContext> {
       }
     };
   }
-  
+
   return {
     data: {
       environment: 'browser',

@@ -92,10 +92,10 @@ In a Svelte 5 component (`.svelte` or `.svelte.ts` file):
 <script lang="ts">
   import { counterContainer } from './counterContainer';
   import { useContainer } from '$lib/state/core/svelte5-integration.svelte';
-  
+
   // Use the container with Svelte 5 runes
   const counter = useContainer(counterContainer);
-  
+
   // Create derived values
   const doubleCount = $derived(counter.count * 2);
 </script>
@@ -115,7 +115,7 @@ In a Svelte 5 component (`.svelte` or `.svelte.ts` file):
 <script lang="ts">
   import { counterMachineContainer } from './counterMachine';
   import { useMachine } from '$lib/state/core/svelte5-integration.svelte';
-  
+
   // Use the machine with Svelte 5 runes
   const counter = useMachine(counterMachineContainer);
 </script>

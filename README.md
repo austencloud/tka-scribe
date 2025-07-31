@@ -18,7 +18,7 @@ TKA (The Kinetic Alphabet) is a sophisticated desktop application built with PyQ
 
 ### Prerequisites
 
-- Python 3.9+ 
+- Python 3.9+
 - PyQt6
 - Node.js (for web components)
 
@@ -45,7 +45,7 @@ python main.py
 TKA/
 ├── src/                        # Source code
 │   ├── desktop/               # Desktop application
-│   │   ├── modern/           # Current desktop implementation  
+│   │   ├── modern/           # Current desktop implementation
 │   │   └── legacy/           # Legacy desktop code
 │   ├── shared/               # Shared components
 │   ├── web/                  # Web interface components
@@ -88,7 +88,7 @@ TKA/
 TKA follows a modern, modular architecture:
 
 - **Desktop Application**: PyQt6-based GUI with modern design patterns
-- **Shared Components**: Reusable business logic and data models  
+- **Shared Components**: Reusable business logic and data models
 - **Web Integration**: Web components for enhanced functionality
 - **Testing Framework**: Comprehensive test suite with unit, integration, and E2E tests
 
@@ -117,7 +117,7 @@ pytest
 
 # Run specific test categories
 pytest tests/unit/           # Unit tests
-pytest tests/integration/    # Integration tests  
+pytest tests/integration/    # Integration tests
 pytest tests/e2e/           # End-to-end tests
 
 # Run with coverage
@@ -161,7 +161,7 @@ The project maintains high code quality standards:
 - **SQLAlchemy**: Database ORM
 - **Requests**: HTTP client
 
-#### Development Dependencies  
+#### Development Dependencies
 - **pytest**: Testing framework with Qt support
 - **Black**: Code formatting
 - **Pylint**: Code analysis
@@ -221,7 +221,7 @@ The project maintains high code quality standards:
 #### Application Won't Start
 [To be documented - common startup issues and solutions]
 
-#### Performance Issues  
+#### Performance Issues
 [To be documented - performance optimization tips]
 
 #### Testing Issues
@@ -253,7 +253,7 @@ This README is currently being developed section by section. Sections marked wit
 - [x] Development setup
 - [x] Testing framework
 - [ ] Detailed usage instructions
-- [ ] Core concepts explanation  
+- [ ] Core concepts explanation
 - [ ] API documentation
 - [ ] Troubleshooting guide
 - [ ] Contributing guidelines details

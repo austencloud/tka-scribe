@@ -10,7 +10,7 @@
       "description": "Types of motion for props and arrows"
     },
     "HandMotionType": {
-      "type": "string", 
+      "type": "string",
       "enum": ["shift", "dash", "static"],
       "description": "Types of hand motion"
     },
@@ -38,7 +38,7 @@
       "type": "string",
       "enum": [
         "alpha1", "alpha2", "alpha3", "alpha4", "alpha5", "alpha6", "alpha7", "alpha8",
-        "beta1", "beta2", "beta3", "beta4", "beta5", "beta6", "beta7", "beta8", 
+        "beta1", "beta2", "beta3", "beta4", "beta5", "beta6", "beta7", "beta8",
         "gamma1", "gamma2", "gamma3", "gamma4", "gamma5", "gamma6", "gamma7", "gamma8",
         "gamma9", "gamma10", "gamma11", "gamma12", "gamma13", "gamma14", "gamma15", "gamma16"
       ],
@@ -55,7 +55,7 @@
       "description": "Elemental types for classification"
     },
     "LetterType": {
-      "type": "string", 
+      "type": "string",
       "enum": ["Type1", "Type2", "Type3", "Type4", "Type5", "Type6", "Type7", "Type8", "Type9"],
       "description": "TKA letter types"
     },

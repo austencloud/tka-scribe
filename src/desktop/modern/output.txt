@@ -12,5 +12,5 @@ UnicodeEncodeError: 'charmap' codec can't encode character '\u2705' in position 
 Traceback (most recent call last):
   File "F:\CODE\TKA\src\desktop\modern\src\presentation\components\backgrounds\background_widget.py", line 63, in _animate_background
     def _animate_background(self):
-    
+
 KeyboardInterrupt

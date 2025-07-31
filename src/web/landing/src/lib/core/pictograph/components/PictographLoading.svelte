@@ -1,6 +1,6 @@
 <!--
   PictographLoading Component
-  
+
   Shows loading state for pictograph components.
 -->
 <script lang="ts">
@@ -51,7 +51,7 @@
 			</path>
 		</svg>
 	</div>
-	
+
 	{#if debug}
 		<div class="loading-info">
 			<div class="status">{statusText}</div>

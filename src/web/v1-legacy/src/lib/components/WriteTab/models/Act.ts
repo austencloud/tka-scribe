@@ -28,7 +28,7 @@ export interface Act {
  */
 export function createEmptyAct(rows: number = 24, columns: number = 8): Act {
   const sequences: Sequence[] = [];
-  
+
   for (let row = 0; row < rows; row++) {
     const sequence: Sequence = {
       sequence_start_marker: row === 0,
@@ -41,7 +41,7 @@ export function createEmptyAct(rows: number = 24, columns: number = 8): Act {
     };
     sequences.push(sequence);
   }
-  
+
   return {
     title: "Act",
     prop_type: "Staff",

@@ -182,10 +182,10 @@ describe('Feature Name', () => {
     test('should behave correctly', () => {
       // Arrange
       const service = createTestService();
-      
+
       // Act
       const result = service.performAction();
-      
+
       // Assert
       expect(result).toBe(expectedValue);
     });
@@ -212,15 +212,15 @@ test('should meet performance requirements', async () => {
 ```typescript
 test('should not leak memory', () => {
   const initialMemory = TestUtils.getMemoryUsage();
-  
+
   // Perform operations that might leak memory
   for (let i = 0; i < 1000; i++) {
     container.resolve(ITransientService);
   }
-  
+
   TestUtils.forceGarbageCollection();
   const finalMemory = TestUtils.getMemoryUsage();
-  
+
   TestAssertions.assertNoMemoryLeak(initialMemory, finalMemory);
 });
 ```

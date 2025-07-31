@@ -25,7 +25,7 @@ class MenuBarStyleProvider(StyleProvider):
             border: none;
             min-height: 60px;
         }}
-        
+
         MenuBarWidget > QWidget {{
             background: {colors.GLASS_BASE};
             border-bottom: 2px solid {colors.ACCENT_BORDER};
@@ -80,7 +80,7 @@ class DialogStyleProvider(StyleProvider):
         QDialog {{
             background: transparent;
         }}
-        
+
         #glassmorphism_container {{
             background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
                 stop:0 {colors.GLASS_LIGHTER},
@@ -89,7 +89,7 @@ class DialogStyleProvider(StyleProvider):
             border: 1px solid {colors.BORDER_STRONG};
             border-radius: {tokens.radius["xl"]};
         }}
-        
+
         #header_frame {{
             background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
                 stop:0 {colors.GLASS_LIGHT},

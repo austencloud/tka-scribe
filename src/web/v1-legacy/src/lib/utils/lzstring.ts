@@ -1,6 +1,6 @@
 /**
  * LZString Utility Module
- * 
+ *
  * This module provides a centralized way to access the LZString library
  * with proper error handling and performance optimizations.
  */
@@ -43,7 +43,7 @@ export async function initLZString(): Promise<void> {
 
   // Only attempt to load once
   if (hasAttemptedLoad) return;
-  
+
   hasAttemptedLoad = true;
 
   try {
@@ -64,32 +64,32 @@ export async function initLZString(): Promise<void> {
 /**
  * Get the LZString module
  * This will attempt to load the module if it hasn't been loaded yet
- * 
+ *
  * @returns The LZString module or null if not available
  */
 export async function getLZString(): Promise<LZStringInterface | null> {
   if (!browser) return null;
-  
+
   // If we haven't loaded the module yet, try to load it
   if (!lzStringModule && !hasAttemptedLoad) {
     await initLZString();
   }
-  
+
   return lzStringModule;
 }
 
 /**
  * Compress a string using LZString
- * 
+ *
  * @param input The string to compress
  * @returns The compressed string or the original if compression failed
  */
 export async function compressString(input: string): Promise<string> {
   if (!browser || !input) return input;
-  
+
   const lzString = await getLZString();
   if (!lzString) return input;
-  
+
   try {
     const compressed = lzString.compressToEncodedURIComponent(input);
     if (compressed && compressed.length < input.length) {
@@ -100,22 +100,22 @@ export async function compressString(input: string): Promise<string> {
       error: error instanceof Error ? error : new Error(String(error))
     });
   }
-  
+
   return input;
 }
 
 /**
  * Decompress a string using LZString
- * 
+ *
  * @param input The string to decompress
  * @returns The decompressed string or the original if decompression failed
  */
 export async function decompressString(input: string): Promise<string> {
   if (!browser || !input) return input;
-  
+
   const lzString = await getLZString();
   if (!lzString) return input;
-  
+
   try {
     // Try to decompress
     const decompressed = lzString.decompressFromEncodedURIComponent(input);
@@ -127,7 +127,7 @@ export async function decompressString(input: string): Promise<string> {
       error: error instanceof Error ? error : new Error(String(error))
     });
   }
-  
+
   return input;
 }
 

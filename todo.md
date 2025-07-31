@@ -16,7 +16,7 @@ tests/e2e/
 
 ├── README.md                      # documentation
 
-├── 
+├──
 
 ├── framework/                     # Core testing framework
 
@@ -40,7 +40,7 @@ tests/e2e/
 
 ├── README.md                      # documentation
 
-├── 
+├──
 
 ├── framework/                     # Core testing framework
 
@@ -92,7 +92,7 @@ tests/e2e/
 
 │       └── validation\_steps.py
 
-├── 
+├──
 
 ├── workflows/                     # High-level workflow tests
 
@@ -104,7 +104,7 @@ tests/e2e/
 
 │   └── test\_complete\_user\_journey.py
 
-├── 
+├──
 
 ├── features/                      # Feature-specific tests
 
@@ -116,7 +116,7 @@ tests/e2e/
 
 │   └── data\_management/
 
-├── 
+├──
 
 └── regression/                    # Regression tests
 
@@ -158,7 +158,7 @@ class BasePage(ABC):
 
 &nbsp;   """Base class for all page objects."""
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   def \_\_init\_\_(self, parent\_widget: QWidget):
 
@@ -166,7 +166,7 @@ class BasePage(ABC):
 
 &nbsp;       self.\_elements = {}
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   def wait\_for\_element(self, element\_name: str, timeout: int = 5000) -> bool:
 
@@ -182,7 +182,7 @@ class BasePage(ABC):
 
 &nbsp;       return False
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   @abstractmethod
 
@@ -192,7 +192,7 @@ class BasePage(ABC):
 
 &nbsp;       pass
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   def get\_element(self, name: str) -> Optional\[QWidget]:
 
@@ -204,7 +204,7 @@ class BasePage(ABC):
 
 &nbsp;       return self.\_elements\[name]
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   @abstractmethod
 
@@ -222,13 +222,13 @@ class StartPositionPickerPage(BasePage):
 
 &nbsp;   """Page object for Start Position Picker."""
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   def is\_loaded(self) -> bool:
 
 &nbsp;       return self.get\_element("picker\_widget") is not None
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   def \_find\_element(self, name: str) -> Optional\[QWidget]:
 
@@ -238,7 +238,7 @@ class StartPositionPickerPage(BasePage):
 
 &nbsp;       # ... other elements
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   def select\_position(self, position: str) -> bool:
 
@@ -254,7 +254,7 @@ class StartPositionPickerPage(BasePage):
 
 &nbsp;       return False
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   def get\_available\_positions(self) -> List\[str]:
 
@@ -376,7 +376,7 @@ class SequenceSteps:
 
 &nbsp;   """Reusable sequence building steps."""
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   def \_\_init\_\_(self, workbench: SequenceWorkbenchPage, option\_picker: OptionPickerPage):
 
@@ -384,7 +384,7 @@ class SequenceSteps:
 
 &nbsp;       self.option\_picker = option\_picker
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   def build\_sequence(self, length: int) -> bool:
 
@@ -398,7 +398,7 @@ class SequenceSteps:
 
 &nbsp;       return True
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   def \_add\_next\_option(self) -> bool:
 
@@ -410,11 +410,11 @@ class SequenceSteps:
 
 &nbsp;           return False
 
-&nbsp;       
+&nbsp;
 
 &nbsp;       return self.option\_picker.select\_option(options\[0])
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   def validate\_sequence\_length(self, expected\_length: int) -> bool:
 
@@ -450,15 +450,15 @@ class TestSequenceBuilding:
 
 &nbsp;   """Test sequence building workflows."""
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   def test\_basic\_sequence\_creation(
 
-&nbsp;       self, 
+&nbsp;       self,
 
-&nbsp;       start\_position\_picker, 
+&nbsp;       start\_position\_picker,
 
-&nbsp;       option\_picker, 
+&nbsp;       option\_picker,
 
 &nbsp;       sequence\_workbench
 
@@ -472,7 +472,7 @@ class TestSequenceBuilding:
 
 &nbsp;       sequence\_steps = SequenceSteps(sequence\_workbench, option\_picker)
 
-&nbsp;       
+&nbsp;
 
 &nbsp;       # Act
 
@@ -480,25 +480,25 @@ class TestSequenceBuilding:
 
 &nbsp;       assert sequence\_steps.build\_sequence(length=3)
 
-&nbsp;       
+&nbsp;
 
 &nbsp;       # Assert
 
 &nbsp;       assert sequence\_steps.validate\_sequence\_length(3)
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   @pytest.mark.parametrize("sequence\_length", \[1, 2, 3, 5])
 
 &nbsp;   def test\_sequence\_length\_variations(
 
-&nbsp;       self, 
+&nbsp;       self,
 
 &nbsp;       sequence\_length,
 
 &nbsp;       start\_position\_picker,
 
-&nbsp;       option\_picker, 
+&nbsp;       option\_picker,
 
 &nbsp;       sequence\_workbench
 
@@ -510,7 +510,7 @@ class TestSequenceBuilding:
 
 &nbsp;       sequence\_steps = SequenceSteps(sequence\_workbench, option\_picker)
 
-&nbsp;       
+&nbsp;
 
 &nbsp;       assert navigation.select\_start\_position("alpha1\_alpha1")
 
@@ -538,13 +538,13 @@ class SequenceBuilder:
 
 &nbsp;   """Builder for creating test sequences."""
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   def \_\_init\_\_(self):
 
 &nbsp;       self.reset()
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   def reset(self):
 
@@ -556,7 +556,7 @@ class SequenceBuilder:
 
 &nbsp;       return self
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   def with\_start\_position(self, position: str):
 
@@ -564,7 +564,7 @@ class SequenceBuilder:
 
 &nbsp;       return self
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   def with\_options(self, options: List\[str]):
 
@@ -574,7 +574,7 @@ class SequenceBuilder:
 
 &nbsp;       return self
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   def with\_length(self, length: int):
 
@@ -582,7 +582,7 @@ class SequenceBuilder:
 
 &nbsp;       return self
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   def build(self) -> Dict\[str, Any]:
 
@@ -610,7 +610,7 @@ def test\_custom\_sequence(sequence\_workbench):
 
 &nbsp;                   .build())
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   # Use sequence\_spec in test
 
@@ -630,7 +630,7 @@ class TKAAssertions:
 
 &nbsp;   """Custom assertions for TKA testing."""
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   @staticmethod
 
@@ -642,7 +642,7 @@ class TKAAssertions:
 
 &nbsp;       assert actual == expected, f"Expected sequence length {expected}, got {actual}"
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   @staticmethod
 
@@ -654,7 +654,7 @@ class TKAAssertions:
 
 &nbsp;       assert len(options) >= min\_count, f"Expected at least {min\_count} options, got {len(options)}"
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   @staticmethod
 
@@ -696,7 +696,7 @@ class WorkflowBuilder:
 
 &nbsp;   """Fluent interface for building test workflows."""
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   def \_\_init\_\_(self, test\_context):
 
@@ -704,7 +704,7 @@ class WorkflowBuilder:
 
 &nbsp;       self.steps = \[]
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   def navigate\_to\_construct\_tab(self):
 
@@ -712,7 +712,7 @@ class WorkflowBuilder:
 
 &nbsp;       return self
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   def select\_start\_position(self, position: str):
 
@@ -720,7 +720,7 @@ class WorkflowBuilder:
 
 &nbsp;       return self
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   def build\_sequence(self, length: int):
 
@@ -728,7 +728,7 @@ class WorkflowBuilder:
 
 &nbsp;       return self
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   def validate\_sequence\_length(self, expected: int):
 
@@ -736,7 +736,7 @@ class WorkflowBuilder:
 
 &nbsp;       return self
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   def execute(self) -> bool:
 
@@ -768,7 +768,7 @@ def test\_fluent\_workflow(test\_context):
 
 &nbsp;            .execute())
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   assert result, "Workflow execution failed"
 
@@ -882,7 +882,7 @@ This approach aligns with modern testing frameworks like Playwright, Cypress, an
 
 │       └── validation\_steps.py
 
-├── 
+├──
 
 ├── workflows/                     # High-level workflow tests
 
@@ -894,7 +894,7 @@ This approach aligns with modern testing frameworks like Playwright, Cypress, an
 
 │   └── test\_complete\_user\_journey.py
 
-├── 
+├──
 
 ├── features/                      # Feature-specific tests
 
@@ -906,7 +906,7 @@ This approach aligns with modern testing frameworks like Playwright, Cypress, an
 
 │   └── data\_management/
 
-├── 
+├──
 
 └── regression/                    # Regression tests
 
@@ -948,7 +948,7 @@ class BasePage(ABC):
 
 &nbsp;   """Base class for all page objects."""
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   def \_\_init\_\_(self, parent\_widget: QWidget):
 
@@ -956,7 +956,7 @@ class BasePage(ABC):
 
 &nbsp;       self.\_elements = {}
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   def wait\_for\_element(self, element\_name: str, timeout: int = 5000) -> bool:
 
@@ -972,7 +972,7 @@ class BasePage(ABC):
 
 &nbsp;       return False
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   @abstractmethod
 
@@ -982,7 +982,7 @@ class BasePage(ABC):
 
 &nbsp;       pass
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   def get\_element(self, name: str) -> Optional\[QWidget]:
 
@@ -994,7 +994,7 @@ class BasePage(ABC):
 
 &nbsp;       return self.\_elements\[name]
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   @abstractmethod
 
@@ -1012,13 +1012,13 @@ class StartPositionPickerPage(BasePage):
 
 &nbsp;   """Page object for Start Position Picker."""
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   def is\_loaded(self) -> bool:
 
 &nbsp;       return self.get\_element("picker\_widget") is not None
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   def \_find\_element(self, name: str) -> Optional\[QWidget]:
 
@@ -1028,7 +1028,7 @@ class StartPositionPickerPage(BasePage):
 
 &nbsp;       # ... other elements
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   def select\_position(self, position: str) -> bool:
 
@@ -1044,7 +1044,7 @@ class StartPositionPickerPage(BasePage):
 
 &nbsp;       return False
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   def get\_available\_positions(self) -> List\[str]:
 
@@ -1166,7 +1166,7 @@ class SequenceSteps:
 
 &nbsp;   """Reusable sequence building steps."""
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   def \_\_init\_\_(self, workbench: SequenceWorkbenchPage, option\_picker: OptionPickerPage):
 
@@ -1174,7 +1174,7 @@ class SequenceSteps:
 
 &nbsp;       self.option\_picker = option\_picker
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   def build\_sequence(self, length: int) -> bool:
 
@@ -1188,7 +1188,7 @@ class SequenceSteps:
 
 &nbsp;       return True
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   def \_add\_next\_option(self) -> bool:
 
@@ -1200,11 +1200,11 @@ class SequenceSteps:
 
 &nbsp;           return False
 
-&nbsp;       
+&nbsp;
 
 &nbsp;       return self.option\_picker.select\_option(options\[0])
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   def validate\_sequence\_length(self, expected\_length: int) -> bool:
 
@@ -1240,15 +1240,15 @@ class TestSequenceBuilding:
 
 &nbsp;   """Test sequence building workflows."""
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   def test\_basic\_sequence\_creation(
 
-&nbsp;       self, 
+&nbsp;       self,
 
-&nbsp;       start\_position\_picker, 
+&nbsp;       start\_position\_picker,
 
-&nbsp;       option\_picker, 
+&nbsp;       option\_picker,
 
 &nbsp;       sequence\_workbench
 
@@ -1262,7 +1262,7 @@ class TestSequenceBuilding:
 
 &nbsp;       sequence\_steps = SequenceSteps(sequence\_workbench, option\_picker)
 
-&nbsp;       
+&nbsp;
 
 &nbsp;       # Act
 
@@ -1270,25 +1270,25 @@ class TestSequenceBuilding:
 
 &nbsp;       assert sequence\_steps.build\_sequence(length=3)
 
-&nbsp;       
+&nbsp;
 
 &nbsp;       # Assert
 
 &nbsp;       assert sequence\_steps.validate\_sequence\_length(3)
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   @pytest.mark.parametrize("sequence\_length", \[1, 2, 3, 5])
 
 &nbsp;   def test\_sequence\_length\_variations(
 
-&nbsp;       self, 
+&nbsp;       self,
 
 &nbsp;       sequence\_length,
 
 &nbsp;       start\_position\_picker,
 
-&nbsp;       option\_picker, 
+&nbsp;       option\_picker,
 
 &nbsp;       sequence\_workbench
 
@@ -1300,7 +1300,7 @@ class TestSequenceBuilding:
 
 &nbsp;       sequence\_steps = SequenceSteps(sequence\_workbench, option\_picker)
 
-&nbsp;       
+&nbsp;
 
 &nbsp;       assert navigation.select\_start\_position("alpha1\_alpha1")
 
@@ -1328,13 +1328,13 @@ class SequenceBuilder:
 
 &nbsp;   """Builder for creating test sequences."""
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   def \_\_init\_\_(self):
 
 &nbsp;       self.reset()
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   def reset(self):
 
@@ -1346,7 +1346,7 @@ class SequenceBuilder:
 
 &nbsp;       return self
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   def with\_start\_position(self, position: str):
 
@@ -1354,7 +1354,7 @@ class SequenceBuilder:
 
 &nbsp;       return self
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   def with\_options(self, options: List\[str]):
 
@@ -1364,7 +1364,7 @@ class SequenceBuilder:
 
 &nbsp;       return self
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   def with\_length(self, length: int):
 
@@ -1372,7 +1372,7 @@ class SequenceBuilder:
 
 &nbsp;       return self
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   def build(self) -> Dict\[str, Any]:
 
@@ -1400,7 +1400,7 @@ def test\_custom\_sequence(sequence\_workbench):
 
 &nbsp;                   .build())
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   # Use sequence\_spec in test
 
@@ -1420,7 +1420,7 @@ class TKAAssertions:
 
 &nbsp;   """Custom assertions for TKA testing."""
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   @staticmethod
 
@@ -1432,7 +1432,7 @@ class TKAAssertions:
 
 &nbsp;       assert actual == expected, f"Expected sequence length {expected}, got {actual}"
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   @staticmethod
 
@@ -1444,7 +1444,7 @@ class TKAAssertions:
 
 &nbsp;       assert len(options) >= min\_count, f"Expected at least {min\_count} options, got {len(options)}"
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   @staticmethod
 
@@ -1486,7 +1486,7 @@ class WorkflowBuilder:
 
 &nbsp;   """Fluent interface for building test workflows."""
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   def \_\_init\_\_(self, test\_context):
 
@@ -1494,7 +1494,7 @@ class WorkflowBuilder:
 
 &nbsp;       self.steps = \[]
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   def navigate\_to\_construct\_tab(self):
 
@@ -1502,7 +1502,7 @@ class WorkflowBuilder:
 
 &nbsp;       return self
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   def select\_start\_position(self, position: str):
 
@@ -1510,7 +1510,7 @@ class WorkflowBuilder:
 
 &nbsp;       return self
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   def build\_sequence(self, length: int):
 
@@ -1518,7 +1518,7 @@ class WorkflowBuilder:
 
 &nbsp;       return self
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   def validate\_sequence\_length(self, expected: int):
 
@@ -1526,7 +1526,7 @@ class WorkflowBuilder:
 
 &nbsp;       return self
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   def execute(self) -> bool:
 
@@ -1558,7 +1558,7 @@ def test\_fluent\_workflow(test\_context):
 
 &nbsp;            .execute())
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   assert result, "Workflow execution failed"
 
@@ -1640,7 +1640,7 @@ class SequenceBuildingWorkflowTest(BaseE2ETest):
 
 &nbsp;   """Current implementation with lots of boilerplate."""
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   def \_\_init\_\_(self):
 
@@ -1652,7 +1652,7 @@ class SequenceBuildingWorkflowTest(BaseE2ETest):
 
 &nbsp;       self.sequence\_states = \[]
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   def execute\_test\_logic(self) -> bool:
 
@@ -1664,7 +1664,7 @@ class SequenceBuildingWorkflowTest(BaseE2ETest):
 
 &nbsp;               return False
 
-&nbsp;           
+&nbsp;
 
 &nbsp;           # Phase 2: Build sequence step by step
 
@@ -1672,11 +1672,11 @@ class SequenceBuildingWorkflowTest(BaseE2ETest):
 
 &nbsp;               return False
 
-&nbsp;           
+&nbsp;
 
 &nbsp;           # ... more phases with lots of manual setup
 
-&nbsp;           
+&nbsp;
 
 &nbsp;       except Exception as e:
 
@@ -1684,7 +1684,7 @@ class SequenceBuildingWorkflowTest(BaseE2ETest):
 
 &nbsp;           return False
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   def \_initialize\_sequence\_building(self) -> bool:
 
@@ -1698,13 +1698,13 @@ class SequenceBuildingWorkflowTest(BaseE2ETest):
 
 &nbsp;               return False
 
-&nbsp;           
+&nbsp;
 
 &nbsp;           initial\_state = self.\_get\_workbench\_sequence\_state()
 
 &nbsp;           # ... manual state tracking
 
-&nbsp;           
+&nbsp;
 
 &nbsp;           start\_positions = self.\_get\_available\_start\_positions()
 
@@ -1714,7 +1714,7 @@ class SequenceBuildingWorkflowTest(BaseE2ETest):
 
 &nbsp;               return False
 
-&nbsp;           
+&nbsp;
 
 &nbsp;           # ... more manual setup
 
@@ -1752,13 +1752,13 @@ def tka\_pages(tka\_app):
 
 &nbsp;   app, main\_window = tka\_app
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   construct\_tab = ConstructTabPage(main\_window)
 
 &nbsp;   construct\_tab.navigate\_to\_tab()
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   return {
 
@@ -1800,7 +1800,7 @@ class TestSequenceBuilding:
 
 &nbsp;   """Refactored sequence building tests with minimal duplication."""
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   def test\_basic\_sequence\_creation(self, workflow\_steps):
 
@@ -1812,7 +1812,7 @@ class TestSequenceBuilding:
 
 &nbsp;       validation = workflow\_steps\['validation']
 
-&nbsp;       
+&nbsp;
 
 &nbsp;       # Act
 
@@ -1820,7 +1820,7 @@ class TestSequenceBuilding:
 
 &nbsp;       assert sequence.build\_sequence(length=3)
 
-&nbsp;       
+&nbsp;
 
 &nbsp;       # Assert
 
@@ -1828,7 +1828,7 @@ class TestSequenceBuilding:
 
 &nbsp;       assert validation.sequence\_is\_valid()
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   @pytest.mark.parametrize("length", \[1, 2, 3, 5])
 
@@ -1842,7 +1842,7 @@ class TestSequenceBuilding:
 
 &nbsp;       validation = workflow\_steps\['validation']
 
-&nbsp;       
+&nbsp;
 
 &nbsp;       assert navigation.select\_start\_position("alpha1\_alpha1")
 
@@ -1850,7 +1850,7 @@ class TestSequenceBuilding:
 
 &nbsp;       assert validation.sequence\_has\_length(length)
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   def test\_sequence\_management\_operations(self, workflow\_steps):
 
@@ -1862,7 +1862,7 @@ class TestSequenceBuilding:
 
 &nbsp;       validation = workflow\_steps\['validation']
 
-&nbsp;       
+&nbsp;
 
 &nbsp;       # Build initial sequence
 
@@ -1872,7 +1872,7 @@ class TestSequenceBuilding:
 
 &nbsp;       assert validation.sequence\_has\_length(3)
 
-&nbsp;       
+&nbsp;
 
 &nbsp;       # Test clear operation
 
@@ -1880,7 +1880,7 @@ class TestSequenceBuilding:
 
 &nbsp;       assert validation.sequence\_has\_length(0)
 
-&nbsp;       
+&nbsp;
 
 &nbsp;       # Test rebuild
 
@@ -1904,7 +1904,7 @@ class SequenceWorkbenchPage(BasePage):
 
 &nbsp;   """Page object for sequence workbench - encapsulates all interaction logic."""
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   def get\_sequence\_length(self) -> int:
 
@@ -1916,7 +1916,7 @@ class SequenceWorkbenchPage(BasePage):
 
 &nbsp;               return self.parent.get\_sequence\_length()
 
-&nbsp;           
+&nbsp;
 
 &nbsp;           # Fallback: count beat widgets
 
@@ -1928,7 +1928,7 @@ class SequenceWorkbenchPage(BasePage):
 
 &nbsp;           return 0
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   def is\_sequence\_valid(self) -> bool:
 
@@ -1944,7 +1944,7 @@ class SequenceWorkbenchPage(BasePage):
 
 &nbsp;           return False
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   def \_find\_beat\_widgets(self) -> List\[QWidget]:
 
@@ -1954,11 +1954,11 @@ class SequenceWorkbenchPage(BasePage):
 
 &nbsp;           return \[]
 
-&nbsp;       
+&nbsp;
 
 &nbsp;       children = self.parent.findChildren(QObject)
 
-&nbsp;       return \[child for child in children 
+&nbsp;       return \[child for child in children
 
 &nbsp;               if "beat" in child.\_\_class\_\_.\_\_name\_\_.lower()]
 
@@ -1970,7 +1970,7 @@ class SequenceSteps:
 
 &nbsp;   """Reusable sequence operations - no duplication across tests."""
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   def \_\_init\_\_(self, workbench: SequenceWorkbenchPage, option\_picker: OptionPickerPage):
 
@@ -1978,7 +1978,7 @@ class SequenceSteps:
 
 &nbsp;       self.option\_picker = option\_picker
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   def build\_sequence(self, length: int) -> bool:
 
@@ -1992,23 +1992,23 @@ class SequenceSteps:
 
 &nbsp;               return False
 
-&nbsp;           
+&nbsp;
 
 &nbsp;           if not self.option\_picker.select\_option(options\[0]):
 
 &nbsp;               return False
 
-&nbsp;           
+&nbsp;
 
 &nbsp;           # Wait for update
 
 &nbsp;           QTest.qWait(500)
 
-&nbsp;       
+&nbsp;
 
 &nbsp;       return True
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   def clear\_sequence(self) -> bool:
 
@@ -2038,13 +2038,13 @@ class ValidationSteps:
 
 &nbsp;   """Reusable validation operations."""
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   def \_\_init\_\_(self, workbench: SequenceWorkbenchPage):
 
 &nbsp;       self.workbench = workbench
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   def sequence\_has\_length(self, expected: int) -> bool:
 
@@ -2060,7 +2060,7 @@ class ValidationSteps:
 
 &nbsp;       return True
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   def sequence\_is\_valid(self) -> bool:
 
@@ -2068,7 +2068,7 @@ class ValidationSteps:
 
 &nbsp;       return self.workbench.is\_sequence\_valid()
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   def options\_are\_available(self, min\_count: int = 1) -> bool:
 
@@ -2220,7 +2220,7 @@ def qapp():
 
 
 
-@pytest.fixture(scope="function") 
+@pytest.fixture(scope="function")
 
 def tka\_app(qapp):
 
@@ -2230,7 +2230,7 @@ def tka\_app(qapp):
 
 &nbsp;   from desktop.modern.main import create\_application
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   app, main\_window = create\_application()
 
@@ -2238,11 +2238,11 @@ def tka\_app(qapp):
 
 &nbsp;   QTest.qWait(3000)  # Wait for initialization
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   yield app, main\_window
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   # Cleanup
 
@@ -2284,7 +2284,7 @@ class BasePage(ABC):
 
 &nbsp;   """Base class for all page objects."""
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   def \_\_init\_\_(self, parent\_widget: QWidget):
 
@@ -2294,7 +2294,7 @@ class BasePage(ABC):
 
 &nbsp;       self.\_loaded = False
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   def wait\_for\_load(self, timeout: int = 5000) -> bool:
 
@@ -2308,13 +2308,13 @@ class BasePage(ABC):
 
 &nbsp;           start\_time += 100
 
-&nbsp;       
+&nbsp;
 
 &nbsp;       self.\_loaded = self.is\_loaded()
 
 &nbsp;       return self.\_loaded
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   def get\_element(self, name: str, force\_refresh: bool = False) -> Optional\[QWidget]:
 
@@ -2326,7 +2326,7 @@ class BasePage(ABC):
 
 &nbsp;       return self.\_elements\[name]
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   def clear\_cache(self):
 
@@ -2334,7 +2334,7 @@ class BasePage(ABC):
 
 &nbsp;       self.\_elements.clear()
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   @abstractmethod
 
@@ -2344,9 +2344,9 @@ class BasePage(ABC):
 
 &nbsp;       pass
 
-&nbsp;   
+&nbsp;
 
-&nbsp;   @abstractmethod  
+&nbsp;   @abstractmethod
 
 &nbsp;   def \_find\_element(self, name: str) -> Optional\[QWidget]:
 
@@ -2354,7 +2354,7 @@ class BasePage(ABC):
 
 &nbsp;       pass
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   def \_find\_widget\_by\_class\_name(self, class\_name\_contains: str) -> Optional\[QWidget]:
 
@@ -2364,7 +2364,7 @@ class BasePage(ABC):
 
 &nbsp;           return None
 
-&nbsp;       
+&nbsp;
 
 &nbsp;       children = self.parent.findChildren(QObject)
 
@@ -2400,7 +2400,7 @@ from .base\_page import BasePage
 
 from .start\_position\_picker import StartPositionPickerPage
 
-from .option\_picker import OptionPickerPage  
+from .option\_picker import OptionPickerPage
 
 from .sequence\_workbench import SequenceWorkbenchPage
 
@@ -2410,7 +2410,7 @@ class ConstructTabPage(BasePage):
 
 &nbsp;   """Page object for the Construct Tab."""
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   def is\_loaded(self) -> bool:
 
@@ -2422,7 +2422,7 @@ class ConstructTabPage(BasePage):
 
 &nbsp;           return False
 
-&nbsp;       
+&nbsp;
 
 &nbsp;       current\_index = tab\_widget.currentIndex()
 
@@ -2430,7 +2430,7 @@ class ConstructTabPage(BasePage):
 
 &nbsp;           return False
 
-&nbsp;       
+&nbsp;
 
 &nbsp;       # Check if current tab contains construct-related components
 
@@ -2438,7 +2438,7 @@ class ConstructTabPage(BasePage):
 
 &nbsp;       return current\_widget is not None
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   def navigate\_to\_tab(self) -> bool:
 
@@ -2450,7 +2450,7 @@ class ConstructTabPage(BasePage):
 
 &nbsp;           return False
 
-&nbsp;       
+&nbsp;
 
 &nbsp;       construct\_index = self.\_find\_construct\_tab\_index(tab\_widget)
 
@@ -2458,7 +2458,7 @@ class ConstructTabPage(BasePage):
 
 &nbsp;           return False
 
-&nbsp;       
+&nbsp;
 
 &nbsp;       tab\_widget.setCurrentIndex(construct\_index)
 
@@ -2466,11 +2466,11 @@ class ConstructTabPage(BasePage):
 
 &nbsp;       self.clear\_cache()  # Clear cache after navigation
 
-&nbsp;       
+&nbsp;
 
 &nbsp;       return self.is\_loaded()
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   def get\_start\_position\_picker(self) -> StartPositionPickerPage:
 
@@ -2478,7 +2478,7 @@ class ConstructTabPage(BasePage):
 
 &nbsp;       return StartPositionPickerPage(self.parent)
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   def get\_option\_picker(self) -> OptionPickerPage:
 
@@ -2486,7 +2486,7 @@ class ConstructTabPage(BasePage):
 
 &nbsp;       return OptionPickerPage(self.parent)
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   def get\_sequence\_workbench(self) -> SequenceWorkbenchPage:
 
@@ -2494,7 +2494,7 @@ class ConstructTabPage(BasePage):
 
 &nbsp;       return SequenceWorkbenchPage(self.parent)
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   def \_find\_element(self, name: str) -> Optional\[QWidget]:
 
@@ -2512,7 +2512,7 @@ class ConstructTabPage(BasePage):
 
 &nbsp;       return None
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   def \_find\_tab\_widget(self) -> Optional\[QTabWidget]:
 
@@ -2526,7 +2526,7 @@ class ConstructTabPage(BasePage):
 
 &nbsp;           return tab\_widget
 
-&nbsp;       
+&nbsp;
 
 &nbsp;       # Fallback search
 
@@ -2534,7 +2534,7 @@ class ConstructTabPage(BasePage):
 
 &nbsp;       return children\[0] if children else None
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   def \_find\_construct\_tab\_index(self, tab\_widget: QTabWidget) -> int:
 
@@ -2578,7 +2578,7 @@ class StartPositionPickerPage(BasePage):
 
 &nbsp;   """Page object for Start Position Picker."""
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   def is\_loaded(self) -> bool:
 
@@ -2588,7 +2588,7 @@ class StartPositionPickerPage(BasePage):
 
 &nbsp;       return picker is not None
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   def select\_position(self, position: str) -> bool:
 
@@ -2602,7 +2602,7 @@ class StartPositionPickerPage(BasePage):
 
 &nbsp;           return False
 
-&nbsp;       
+&nbsp;
 
 &nbsp;       try:
 
@@ -2616,7 +2616,7 @@ class StartPositionPickerPage(BasePage):
 
 &nbsp;               return True
 
-&nbsp;           
+&nbsp;
 
 &nbsp;           # Add other selection strategies here
 
@@ -2624,7 +2624,7 @@ class StartPositionPickerPage(BasePage):
 
 &nbsp;           return True
 
-&nbsp;           
+&nbsp;
 
 &nbsp;       except Exception as e:
 
@@ -2632,7 +2632,7 @@ class StartPositionPickerPage(BasePage):
 
 &nbsp;           return False
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   def get\_available\_positions(self) -> List\[str]:
 
@@ -2646,7 +2646,7 @@ class StartPositionPickerPage(BasePage):
 
 &nbsp;           return \["alpha1\_alpha1", "beta5\_beta5", "gamma11\_gamma11"]
 
-&nbsp;       
+&nbsp;
 
 &nbsp;       try:
 
@@ -2654,13 +2654,13 @@ class StartPositionPickerPage(BasePage):
 
 &nbsp;               return picker.get\_available\_positions()
 
-&nbsp;           
+&nbsp;
 
 &nbsp;           # Fallback to common positions
 
 &nbsp;           return \["alpha1\_alpha1", "beta5\_beta5", "gamma11\_gamma11"]
 
-&nbsp;           
+&nbsp;
 
 &nbsp;       except Exception as e:
 
@@ -2668,7 +2668,7 @@ class StartPositionPickerPage(BasePage):
 
 &nbsp;           return \[]
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   def \_find\_element(self, name: str) -> Optional\[QWidget]:
 
@@ -2680,7 +2680,7 @@ class StartPositionPickerPage(BasePage):
 
 &nbsp;       return None
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   def \_find\_start\_position\_picker(self) -> Optional\[QWidget]:
 
@@ -2694,7 +2694,7 @@ class StartPositionPickerPage(BasePage):
 
 &nbsp;           return picker
 
-&nbsp;       
+&nbsp;
 
 &nbsp;       # Try alternative patterns
 
@@ -2704,7 +2704,7 @@ class StartPositionPickerPage(BasePage):
 
 &nbsp;           return picker
 
-&nbsp;       
+&nbsp;
 
 &nbsp;       return None
 
@@ -2738,13 +2738,13 @@ class NavigationSteps:
 
 &nbsp;   """Reusable navigation step definitions."""
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   def \_\_init\_\_(self, start\_position\_picker: StartPositionPickerPage):
 
 &nbsp;       self.picker = start\_position\_picker
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   def select\_start\_position(self, position: str) -> bool:
 
@@ -2752,7 +2752,7 @@ class NavigationSteps:
 
 &nbsp;       logger.info(f"Selecting start position: {position}")
 
-&nbsp;       
+&nbsp;
 
 &nbsp;       # Ensure picker is loaded
 
@@ -2762,7 +2762,7 @@ class NavigationSteps:
 
 &nbsp;           return False
 
-&nbsp;       
+&nbsp;
 
 &nbsp;       # Verify position is available
 
@@ -2774,7 +2774,7 @@ class NavigationSteps:
 
 &nbsp;           # Continue anyway for testing purposes
 
-&nbsp;       
+&nbsp;
 
 &nbsp;       # Perform selection
 
@@ -2788,7 +2788,7 @@ class NavigationSteps:
 
 &nbsp;           logger.error(f"Failed to select position: {position}")
 
-&nbsp;       
+&nbsp;
 
 &nbsp;       return success
 
@@ -2816,7 +2816,7 @@ class TestStartPositionWorkflow:
 
 &nbsp;   """Modern test for start position workflow."""
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   @pytest.fixture(autouse=True)
 
@@ -2826,31 +2826,31 @@ class TestStartPositionWorkflow:
 
 &nbsp;       self.app, self.main\_window = tka\_app
 
-&nbsp;       
+&nbsp;
 
 &nbsp;       # Create page objects
 
 &nbsp;       self.construct\_tab = ConstructTabPage(self.main\_window)
 
-&nbsp;       
+&nbsp;
 
 &nbsp;       # Navigate to construct tab
 
 &nbsp;       assert self.construct\_tab.navigate\_to\_tab(), "Failed to navigate to construct tab"
 
-&nbsp;       
+&nbsp;
 
 &nbsp;       # Create component page objects
 
 &nbsp;       self.start\_position\_picker = self.construct\_tab.get\_start\_position\_picker()
 
-&nbsp;       
+&nbsp;
 
 &nbsp;       # Create step objects
 
 &nbsp;       self.navigation = NavigationSteps(self.start\_position\_picker)
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   def test\_start\_position\_selection(self):
 
@@ -2858,25 +2858,25 @@ class TestStartPositionWorkflow:
 
 &nbsp;       # Arrange - already done in setup
 
-&nbsp;       
+&nbsp;
 
 &nbsp;       # Act
 
 &nbsp;       success = self.navigation.select\_start\_position("alpha1\_alpha1")
 
-&nbsp;       
+&nbsp;
 
 &nbsp;       # Assert
 
 &nbsp;       assert success, "Start position selection failed"
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   @pytest.mark.parametrize("position", \[
 
-&nbsp;       "alpha1\_alpha1", 
+&nbsp;       "alpha1\_alpha1",
 
-&nbsp;       "beta5\_beta5", 
+&nbsp;       "beta5\_beta5",
 
 &nbsp;       "gamma11\_gamma11"
 
@@ -2944,7 +2944,7 @@ def old\_way():
 
 &nbsp;   test = BaseE2ETest("Demo")
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   # 20+ lines of setup code
 
@@ -2960,7 +2960,7 @@ def old\_way():
 
 &nbsp;       return False
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   # 10+ lines of position selection logic
 
@@ -2970,7 +2970,7 @@ def old\_way():
 
 &nbsp;       return False
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   selected\_position = start\_positions\[0]
 
@@ -2978,7 +2978,7 @@ def old\_way():
 
 &nbsp;       return False
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   # Cleanup
 
@@ -2996,17 +2996,17 @@ def new\_way(tka\_app):
 
 &nbsp;   construct\_tab = ConstructTabPage(main\_window)
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   assert construct\_tab.navigate\_to\_tab()
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   picker = construct\_tab.get\_start\_position\_picker()
 
 &nbsp;   navigation = NavigationSteps(picker)
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   assert navigation.select\_start\_position("alpha1\_alpha1")
 
@@ -3036,7 +3036,7 @@ Follow the same pattern for other components:
 
 
 
-1\. Create `OptionPickerPage` 
+1\. Create `OptionPickerPage`
 
 2\. Create `SequenceWorkbenchPage`
 
@@ -3058,7 +3058,7 @@ class TestCompleteWorkflow:
 
 &nbsp;   """Test complete user workflows."""
 
-&nbsp;   
+&nbsp;
 
 &nbsp;   def test\_end\_to\_end\_sequence\_building(self, workflow\_components):
 
@@ -3066,7 +3066,7 @@ class TestCompleteWorkflow:
 
 &nbsp;       navigation, sequence, validation = workflow\_components
 
-&nbsp;       
+&nbsp;
 
 &nbsp;       # Build complete workflow
 
@@ -3110,7 +3110,7 @@ After implementing this approach, you should see:
 
 \- \*\*Week 2\*\*: First working modern test
 
-\- \*\*Week 3\*\*: Complete component coverage  
+\- \*\*Week 3\*\*: Complete component coverage
 
 \- \*\*Week 4\*\*: Migrate existing tests incrementally
 
@@ -3119,4 +3119,3 @@ After implementing this approach, you should see:
 
 
 This approach transforms your e2e testing from a maintenance burden into a powerful development tool!
-

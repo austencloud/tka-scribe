@@ -59,7 +59,7 @@ fi
 echo ""
 echo "📋 Next steps:"
 echo "   1. Review debug files for continued relevance"
-echo "   2. Review fix-specific tests for obsolescence" 
+echo "   2. Review fix-specific tests for obsolescence"
 echo "   3. Decide fate of construct_tab.py"
 echo "   4. Test application: python main.py"
 echo ""

@@ -1,6 +1,6 @@
 /**
  * Pictograph Store Selectors
- * 
+ *
  * This file contains selectors for the pictograph store.
  * Selectors are functions that extract specific pieces of state from the store.
  */

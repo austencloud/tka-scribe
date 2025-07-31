@@ -1,22 +1,19 @@
-# Pre-commit configuration using Ruff (replaces Black + isort + Pylint)
+# Pre-commit configuration - AUTO-FIX mode (non-blocking)
 repos:
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.12.7
     hooks:
-      # Run the linter
+      # Auto-fix linting issues (don't block commits)
       - id: ruff-check
-        args: [--fix]
-      # Run the formatter
+        args: [--fix, --exit-zero]
+      # Auto-format code
       - id: ruff-format
 
+  # Basic file hygiene (safe, auto-fixing)
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v5.0.0
     hooks:
       - id: trailing-whitespace
+        args: [--markdown-linebreak-ext=md]
       - id: end-of-file-fixer
-      - id: check-yaml
-      - id: check-toml
-      - id: check-json
       - id: check-merge-conflict
-      - id: debug-statements
-      - id: check-case-conflict

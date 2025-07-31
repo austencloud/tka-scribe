@@ -2,21 +2,21 @@
   import { backgroundContainer } from '$lib/state/stores/background/BackgroundContainer';
   import { useContainer } from '$lib/state/core/svelte5-integration.svelte';
   import type { BackgroundType, QualityLevel } from './types/types';
-  
+
   // Use the background container with Svelte 5 runes
   const background = useContainer(backgroundContainer);
-  
+
   // Event handlers
   function handleBackgroundChange(event: Event) {
     const select = event.target as HTMLSelectElement;
     backgroundContainer.setBackground(select.value as BackgroundType);
   }
-  
+
   function handleQualityChange(event: Event) {
     const select = event.target as HTMLSelectElement;
     backgroundContainer.setQuality(select.value as QualityLevel);
   }
-  
+
   function handleToggleVisibility() {
     backgroundContainer.setVisible(!background.isVisible);
   }
@@ -24,12 +24,12 @@
 
 <div class="background-settings">
   <h3>Background Settings</h3>
-  
+
   <div class="settings-group">
     <label for="background-select">Background:</label>
-    <select 
-      id="background-select" 
-      value={background.currentBackground} 
+    <select
+      id="background-select"
+      value={background.currentBackground}
       on:change={handleBackgroundChange}
     >
       {#each background.availableBackgrounds as bg}
@@ -37,12 +37,12 @@
       {/each}
     </select>
   </div>
-  
+
   <div class="settings-group">
     <label for="quality-select">Quality:</label>
-    <select 
-      id="quality-select" 
-      value={background.quality} 
+    <select
+      id="quality-select"
+      value={background.quality}
       on:change={handleQualityChange}
     >
       <option value="low">Low</option>
@@ -50,19 +50,19 @@
       <option value="high">High</option>
     </select>
   </div>
-  
+
   <div class="settings-group">
     <label for="visibility-toggle">Visibility:</label>
-    <button 
+    <button
       id="visibility-toggle"
-      class="toggle-button" 
+      class="toggle-button"
       class:active={background.isVisible}
       on:click={handleToggleVisibility}
     >
       {background.isVisible ? 'Visible' : 'Hidden'}
     </button>
   </div>
-  
+
   {#if background.performanceMetrics}
     <div class="performance-metrics">
       <h4>Performance</h4>
@@ -78,7 +78,7 @@
       {/if}
     </div>
   {/if}
-  
+
   {#if background.error}
     <div class="error-message">
       <p>Error: {background.error.message}</p>
@@ -95,7 +95,7 @@
     width: 100%;
     max-width: 300px;
   }
-  
+
   h3 {
     margin-top: 0;
     margin-bottom: 1rem;
@@ -103,19 +103,19 @@
     border-bottom: 1px solid rgba(255, 255, 255, 0.2);
     padding-bottom: 0.5rem;
   }
-  
+
   .settings-group {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 0.75rem;
   }
-  
+
   label {
     font-size: 0.9rem;
     margin-right: 0.5rem;
   }
-  
+
   select {
     background-color: #333;
     color: white;
@@ -124,7 +124,7 @@
     border-radius: 0.25rem;
     font-size: 0.9rem;
   }
-  
+
   .toggle-button {
     background-color: #333;
     color: white;
@@ -135,35 +135,35 @@
     transition: all 0.2s ease;
     font-size: 0.9rem;
   }
-  
+
   .toggle-button.active {
     background-color: #4caf50;
     border-color: #4caf50;
   }
-  
+
   .performance-metrics {
     margin-top: 1rem;
     padding-top: 0.5rem;
     border-top: 1px solid rgba(255, 255, 255, 0.2);
   }
-  
+
   h4 {
     margin-top: 0;
     margin-bottom: 0.5rem;
     font-size: 1rem;
   }
-  
+
   .metric {
     display: flex;
     justify-content: space-between;
     font-size: 0.9rem;
     margin-bottom: 0.25rem;
   }
-  
+
   .value {
     font-weight: bold;
   }
-  
+
   .error-message {
     margin-top: 1rem;
     padding: 0.5rem;
@@ -172,7 +172,7 @@
     border-left: 3px solid red;
     font-size: 0.9rem;
   }
-  
+
   .error-message p {
     margin: 0;
   }

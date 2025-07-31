@@ -1,6 +1,6 @@
 /**
  * 📊 TKA SERVICE METRICS
- * 
+ *
  * Advanced performance monitoring and metrics collection for the dependency injection system.
  */
 
@@ -187,8 +187,8 @@ class ServiceMetricsData {
     }
 
     toInterface(): IServiceMetrics {
-        const averageResolutionTime = this._successfulResolutions > 0 
-            ? this._totalResolutionTime / this._successfulResolutions 
+        const averageResolutionTime = this._successfulResolutions > 0
+            ? this._totalResolutionTime / this._successfulResolutions
             : 0;
 
         const cacheHitRate = (this._totalResolutions + this._cacheHits) > 0

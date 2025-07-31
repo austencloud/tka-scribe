@@ -102,7 +102,7 @@ export class SimpleBackgroundSystem {
 	private animationId: number | null = null;
 	private particles: Particle[] = [];
 	private lastTime = 0;
-	
+
 	// Non-reactive state - captured once to avoid Svelte reactivity issues
 	private config!: BackgroundConfig;
 	private dimensions: Dimensions;
@@ -122,7 +122,7 @@ export class SimpleBackgroundSystem {
 		this.canvas = canvas;
 		this.ctx = canvas.getContext('2d');
 		this.dimensions = { ...dimensions };
-		
+
 		if (this.ctx && this.config) {
 			this.initializeParticles();
 			this.startAnimation();
@@ -167,9 +167,9 @@ export class SimpleBackgroundSystem {
 
 		const qualityMultiplier = this.quality === 'high' ? 1 : this.quality === 'medium' ? 0.7 : 0.4;
 		const particleCount = Math.floor(this.config.particles.count * qualityMultiplier);
-		
+
 		this.particles = [];
-		
+
 		for (let i = 0; i < particleCount; i++) {
 			this.particles.push(this.createParticle());
 		}
@@ -177,7 +177,7 @@ export class SimpleBackgroundSystem {
 
 	private createParticle(): Particle {
 		const { particles } = this.config;
-		
+
 		return {
 			x: Math.random() * this.dimensions.width,
 			y: Math.random() * this.dimensions.height,
@@ -225,7 +225,7 @@ export class SimpleBackgroundSystem {
 		if (!this.ctx) return;
 
 		const gradient = this.ctx.createLinearGradient(0, 0, 0, this.dimensions.height);
-		
+
 		this.config.gradient.forEach(stop => {
 			gradient.addColorStop(stop.position, stop.color);
 		});

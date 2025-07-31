@@ -1,6 +1,6 @@
 /**
  * Transports Index
- * 
+ *
  * Exports all available log transports.
  */
 

@@ -1,14 +1,14 @@
 /**
  * 📋 TKA SERVICE REGISTRY
- * 
+ *
  * Advanced service registration and metadata management system
  * that maintains comprehensive information about all registered services.
  */
 
-import { 
-    ServiceInterface, 
-    ServiceDescriptor, 
-    ServiceScope, 
+import {
+    ServiceInterface,
+    ServiceDescriptor,
+    ServiceScope,
     ServiceMetadata,
     Constructor,
     ServiceFactory
@@ -19,7 +19,7 @@ export class ServiceRegistry {
     private readonly _singletonInstances = new Map<string, any>();
     private readonly _scopedInstances = new Map<string, Map<string, any>>();
     private readonly _registrationOrder: string[] = [];
-    
+
     // Advanced indexing for fast lookups
     private readonly _servicesByScope = new Map<ServiceScope, Set<string>>();
     private readonly _servicesByTag = new Map<string, Set<string>>();
@@ -33,7 +33,7 @@ export class ServiceRegistry {
      * Register a singleton service
      */
     registerSingleton<T>(
-        serviceInterface: ServiceInterface<T>, 
+        serviceInterface: ServiceInterface<T>,
         implementation: Constructor<T>
     ): void {
         this._registerService(serviceInterface, implementation, ServiceScope.Singleton);
@@ -43,7 +43,7 @@ export class ServiceRegistry {
      * Register a transient service
      */
     registerTransient<T>(
-        serviceInterface: ServiceInterface<T>, 
+        serviceInterface: ServiceInterface<T>,
         implementation: Constructor<T>
     ): void {
         this._registerService(serviceInterface, implementation, ServiceScope.Transient);
@@ -53,7 +53,7 @@ export class ServiceRegistry {
      * Register a scoped service
      */
     registerScoped<T>(
-        serviceInterface: ServiceInterface<T>, 
+        serviceInterface: ServiceInterface<T>,
         implementation: Constructor<T>,
         scope: ServiceScope
     ): void {
@@ -64,7 +64,7 @@ export class ServiceRegistry {
      * Register a factory function
      */
     registerFactory<T>(
-        serviceInterface: ServiceInterface<T>, 
+        serviceInterface: ServiceInterface<T>,
         factory: ServiceFactory<T>,
         scope: ServiceScope = ServiceScope.Singleton
     ): void {
@@ -84,7 +84,7 @@ export class ServiceRegistry {
      * Register a specific instance
      */
     registerInstance<T>(
-        serviceInterface: ServiceInterface<T>, 
+        serviceInterface: ServiceInterface<T>,
         instance: T
     ): void {
         const descriptor: ServiceDescriptor<T> = {
@@ -104,7 +104,7 @@ export class ServiceRegistry {
      * Register a lazy service
      */
     registerLazy<T>(
-        serviceInterface: ServiceInterface<T>, 
+        serviceInterface: ServiceInterface<T>,
         implementation: Constructor<T>
     ): void {
         this._registerService(serviceInterface, implementation, ServiceScope.Lazy);
@@ -344,7 +344,7 @@ export class ServiceRegistry {
         }
 
         targetRegistry._registrationOrder.push(...this._registrationOrder);
-        
+
         // Copy indexes
         for (const [scope, services] of this._servicesByScope) {
             targetRegistry._servicesByScope.set(scope, new Set(services));
@@ -383,7 +383,7 @@ export class ServiceRegistry {
     // ============================================================================
 
     private _registerService<T>(
-        serviceInterface: ServiceInterface<T>, 
+        serviceInterface: ServiceInterface<T>,
         implementation: Constructor<T>,
         scope: ServiceScope
     ): void {
@@ -431,7 +431,7 @@ export class ServiceRegistry {
         // Basic dependency analysis - in a real implementation, this would use
         // reflection or metadata to determine constructor dependencies
         const dependencies = new Set<string>();
-        
+
         // For now, we'll extract dependencies from metadata if available
         const descriptor = this._descriptors.get(serviceName);
         if (descriptor?.metadata?.dependencies) {

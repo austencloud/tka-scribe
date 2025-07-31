@@ -65,7 +65,7 @@ export function updateGridData(
   event: { type: 'UPDATE_GRID_DATA'; gridData: GridData }
 ) {
   if (!context.data) return;
-  
+
   context.data = { ...context.data, gridData: event.gridData };
   context.components.grid = true;
   addStateTransition(context, context.status, 'props_loading', 'Grid data loaded');
@@ -79,10 +79,10 @@ export function updatePropData(
   event: { type: 'UPDATE_PROP_DATA'; color: 'red' | 'blue'; propData: PropData }
 ) {
   if (!context.data) return;
-  
+
   const key = event.color === 'red' ? 'redPropData' : 'bluePropData';
   const componentKey = event.color === 'red' ? 'redProp' : 'blueProp';
-  
+
   context.data = { ...context.data, [key]: event.propData };
   context.components[componentKey] = true;
   addStateTransition(context, context.status, 'arrows_loading', `${event.color} prop loaded`);
@@ -96,10 +96,10 @@ export function updateArrowData(
   event: { type: 'UPDATE_ARROW_DATA'; color: 'red' | 'blue'; arrowData: ArrowData }
 ) {
   if (!context.data) return;
-  
+
   const key = event.color === 'red' ? 'redArrowData' : 'blueArrowData';
   const componentKey = event.color === 'red' ? 'redArrow' : 'blueArrow';
-  
+
   context.data = { ...context.data, [key]: event.arrowData };
   context.components[componentKey] = true;
 }
