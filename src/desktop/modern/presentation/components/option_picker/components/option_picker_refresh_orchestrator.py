@@ -84,12 +84,3 @@ class OptionPickerRefreshOrchestrator:
     def is_preparing_for_transition(self) -> bool:
         """Check if currently preparing for transition."""
         return self._is_preparing_for_transition
-
-    def has_pending_data(self) -> bool:
-        """Check if there is pending sequence data."""
-        return self._pending_sequence_data is not None
-
-    def clear_pending_data(self) -> None:
-        """Clear any pending sequence data."""
-        self._pending_sequence_data = None
-        self._refresh_timer.stop()

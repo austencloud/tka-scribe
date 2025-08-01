@@ -152,19 +152,6 @@ class ElementVisibilitySection(QFrame):
         return {
             name: toggle.isChecked() for name, toggle in self.element_toggles.items()
         }
-
-    def get_dependent_elements(self) -> dict[str, bool]:
-        """
-        Get elements that depend on motion visibility.
-
-        Returns:
-            Dictionary mapping dependent element names to their dependency status
-        """
-        return {
-            name: toggle.get_is_dependent()
-            for name, toggle in self.element_toggles.items()
-        }
-
     def _apply_styling(self):
         """Apply glassmorphism styling to the section."""
         self.setStyleSheet(

@@ -53,11 +53,3 @@ class SettingsSidebar(QListWidget):
         """Programmatically select a tab by index."""
         if 0 <= index < self.count():
             self.setCurrentRow(index)
-
-    def select_tab_by_name(self, tab_name: str):
-        """Programmatically select a tab by name."""
-        try:
-            index = self.tab_names.index(tab_name)
-            self.select_tab(index)
-        except ValueError:
-            pass  # Tab name not found

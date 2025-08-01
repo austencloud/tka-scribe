@@ -1,0 +1,28 @@
+@echo off
+echo 🚀 Launching VSCode with Memory Optimizations...
+echo.
+
+REM Set memory limits and performance flags for 128GB system
+set VSCODE_ARGS=--max-memory=65536 --disable-workspace-trust --disable-crash-reporter --disable-telemetry --disable-updates --no-sandbox
+
+REM Optional: Set process priority to below normal to prevent system freezing
+echo ⚙️  Setting up memory-optimized environment...
+
+REM Launch VSCode with optimizations
+echo 📂 Opening TKA project...
+code %VSCODE_ARGS% "F:\CODE\TKA"
+
+echo.
+echo ✅ VSCode launched with the following optimizations:
+echo    • Maximum memory: 64GB (you have 128GB available!)
+echo    • Telemetry disabled
+echo    • Updates disabled
+echo    • Crash reporter disabled
+echo    • IntelliSense and syntax highlighting ENABLED
+echo.
+echo 💡 If still experiencing OOM errors:
+echo    • Close other applications
+echo    • Use File Explorer to navigate large directories instead of VSCode
+echo    • Consider opening specific subdirectories instead of the entire repo
+echo.
+pause

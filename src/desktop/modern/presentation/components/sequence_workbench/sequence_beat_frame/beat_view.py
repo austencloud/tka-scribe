@@ -120,11 +120,6 @@ class BeatView(QFrame):
         if self._beat_data != beat_data:
             self._beat_data = beat_data
             self._update_display()
-
-    def get_beat_data(self) -> Optional[BeatData]:
-        """Get the current beat data"""
-        return self._beat_data
-
     def set_selected(self, selected: bool):
         """Set selection state"""
         if self._is_selected != selected:
@@ -140,39 +135,11 @@ class BeatView(QFrame):
     def is_selected(self) -> bool:
         """Check if view is selected"""
         return self._is_selected
-
-    def get_beat_number(self) -> int:
-        """Get the beat number"""
-        return self._beat_number
-
-    def _update_text_overlays(self):
-        """Update text overlays - shows start text or beat number overlay"""
-        # Update START text overlay (mutual exclusivity with beat content)
-        self._update_start_text_overlay()
-
-        # Update beat number overlay
-        self._update_beat_number_overlay()
-
-    def set_start_text_visible(self, visible: bool):
-        """Set whether START text overlay should be visible (for preserved start position beat)"""
-        if self._show_start_text != visible:
-            self._show_start_text = visible
-            self._update_start_text_overlay()
-
-    def is_start_text_visible(self) -> bool:
-        """Check if START text overlay is visible"""
-        return self._show_start_text
-
     def set_beat_number_visible(self, visible: bool):
         """Set whether beat number overlay should be visible"""
         if self._show_beat_number != visible:
             self._show_beat_number = visible
             self._update_beat_number_overlay()
-
-    def is_beat_number_visible(self) -> bool:
-        """Check if beat number overlay is visible"""
-        return self._show_beat_number
-
     # Display updates
     def _update_display(self):
         """Update the visual display based on beat data"""
@@ -415,11 +382,6 @@ class BeatView(QFrame):
     def sizeHint(self) -> QSize:
         """Provide size hint for layout management"""
         return QSize(120, 120)
-
-    def minimumSizeHint(self) -> QSize:
-        """Provide minimum size hint"""
-        return QSize(100, 100)
-
     def cleanup(self):
         """Cleanup resources when the view is being destroyed"""
         # Clean up selection overlay

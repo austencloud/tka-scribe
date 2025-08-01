@@ -41,21 +41,9 @@ class BeatNumberOverlay(TextOverlayBase):
     def hide_overlay(self):
         """Hide the beat number overlay"""
         self._hide_overlay_common()
-
-    def show_beat_number(self):
-        """Show the beat number overlay (legacy method name)"""
-        self.show_overlay()
-
     def hide_beat_number(self):
         """Hide the beat number overlay (legacy method name)"""
         self.hide_overlay()
-
-    def update_beat_number(self, new_number: int):
-        """Update the displayed beat number"""
-        self.beat_number = new_number
-        self.update_text(str(new_number))
-
-
 def add_beat_number_to_view(
     beat_view: QWidget, beat_number: int
 ) -> BeatNumberOverlay | None:

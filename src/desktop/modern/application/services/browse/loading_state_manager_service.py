@@ -44,7 +44,7 @@ class LoadingStateManagerService(ILoadingStateManager):
             self.loading_progress_bar.setMaximum(100)
 
         if self.loading_label:
-            self.loading_label.setText("Preparing to load sequences...")
+            self.loading_label.setText("Loading...")
 
     def hide_loading_state(self) -> None:
         """Hide loading UI and show main content."""

@@ -363,13 +363,6 @@ class VisibilityTab(QWidget):
     def _on_preview_updated(self):
         """Handle preview update notifications."""
         logger.debug("Preview updated")
-
-    def refresh_all_settings(self):
-        """Force refresh all settings from the service."""
-        self._load_initial_settings()
-        if self.preview_section:
-            self.preview_section.refresh_preview()
-
     def cleanup(self):
         """Clean up resources when tab is destroyed."""
         try:

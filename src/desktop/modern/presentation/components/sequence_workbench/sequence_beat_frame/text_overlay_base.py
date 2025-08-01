@@ -305,26 +305,3 @@ def remove_text_overlay_from_view(view_widget: QWidget, overlay_instance):
 
     except Exception as e:
         print(f"Failed to remove text overlay: {e}")
-
-
-def clear_all_text_overlays_from_view(view_widget: QWidget, overlay_type=None):
-    """
-    Clear all text overlays from a view widget.
-
-    Args:
-        view_widget: View widget instance
-        overlay_type: Optional specific overlay type to clear (e.g., BeatNumberOverlay)
-    """
-    if not hasattr(view_widget, "_text_overlays"):
-        return
-
-    try:
-        # Remove all text overlays (or specific type)
-        for overlay in view_widget._text_overlays[
-            :
-        ]:  # Copy list to avoid modification during iteration
-            if overlay_type is None or isinstance(overlay, overlay_type):
-                remove_text_overlay_from_view(view_widget, overlay)
-
-    except Exception as e:
-        print(f"Failed to clear text overlays: {e}")

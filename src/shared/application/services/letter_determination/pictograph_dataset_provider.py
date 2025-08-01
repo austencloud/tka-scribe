@@ -6,17 +6,15 @@ Converts existing pictograph data to letter determination format.
 """
 
 import logging
-from typing import Optional
 
 from desktop.modern.core.interfaces.letter_determination.letter_determination_services import (
     IPictographDatasetProvider,
 )
 from desktop.modern.domain.models.enums import Letter
-from desktop.modern.domain.models.pictograph_data import PictographData
-from shared.application.services.data.dataset_query import DatasetQuery
-from shared.application.services.pictograph.pictograph_csv_manager import (
-    PictographCSVManager,
+from desktop.modern.domain.models.motion.letter_determination_pictograph_data import (
+    LetterDeterminationPictographData,
 )
+from desktop.modern.domain.models.pictograph_data import PictographData
 
 logger = logging.getLogger(__name__)
 
@@ -29,17 +27,21 @@ class PictographDatasetProvider(IPictographDatasetProvider):
     the established PictographCSVManager and DatasetQuery services.
     """
 
-    def __init__(
-        self,
-        csv_manager: Optional[PictographCSVManager] = None,
-        dataset_query: Optional[DatasetQuery] = None,
-    ):
-        """Initialize with existing data services."""
-        self._csv_manager = csv_manager or PictographCSVManager()
-        self._dataset_query = dataset_query or DatasetQuery()
-        self._cached_dataset: Optional[
-            dict[Letter, list[LetterDeterminationPictographData]]
-        ] = None
+    def __init__(self):
+        """Initialize with dependency injection."""
+        from desktop.modern.core.dependency_injection.di_container import get_container
+        from shared.application.services.data.dataset_query import IDatasetQuery
+        from shared.application.services.pictograph.pictograph_csv_manager import (
+            IPictographCSVManager,
+        )
+
+        container = get_container()
+        self._csv_manager = container.resolve(IPictographCSVManager)
+        self._dataset_query = container.resolve(IDatasetQuery)
+
+        self._cached_dataset: (
+            dict[Letter, list[LetterDeterminationPictographData]] | None
+        ) = None
         self._dataset_metadata: dict[str, any] = {}
 
     def get_pictograph_dataset(

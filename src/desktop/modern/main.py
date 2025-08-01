@@ -73,6 +73,29 @@ def _position_window_on_secondary_monitor(window):
     window.setMinimumSize(1400, 900)
 
 
+def create_application():
+    """
+    Create application for testing - returns (app, main_window) tuple.
+
+    Returns:
+        tuple: (QApplication, TKAMainWindow)
+    """
+    from PyQt6.QtWidgets import QApplication
+
+    from desktop.modern.core.application.application_factory import ApplicationFactory
+
+    # Create Qt application
+    app = QApplication.instance() or QApplication([])
+
+    # Create container in production mode
+    container = ApplicationFactory.create_app("production")
+
+    # Create main window
+    window = TKAMainWindow(container)
+
+    return app, window
+
+
 def main():
     """
     Main entry point - simple and direct.

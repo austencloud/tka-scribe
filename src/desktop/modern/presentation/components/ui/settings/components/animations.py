@@ -27,12 +27,3 @@ class SettingsAnimations:
         self.fade_animation.setStartValue(0)
         self.fade_animation.setEndValue(1)
         self.fade_animation.start()
-
-    def fade_out(self, on_finished=None):
-        """Fade out the dialog."""
-        if on_finished:
-            self.fade_animation.finished.connect(on_finished)
-
-        self.fade_animation.setStartValue(self.dialog.windowOpacity())
-        self.fade_animation.setEndValue(0)
-        self.fade_animation.start()

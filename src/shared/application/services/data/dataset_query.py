@@ -11,7 +11,7 @@ from abc import ABC, abstractmethod
 from desktop.modern.domain.models.beat_data import BeatData
 from desktop.modern.domain.models.pictograph_data import PictographData
 
-from .data_service import DataManager, IDataManager
+from .data_service import IDataManager
 from .pictograph_factory import PictographFactory
 from .position_resolver import PositionResolver
 
@@ -71,17 +71,9 @@ class DatasetQuery(IDatasetQuery):
     - Converting query results to domain objects
     """
 
-    def __init__(self, data_service: IDataManager | None = None):
+    def __init__(self, data_service: IDataManager):
         """Initialize the dataset query service."""
-        if data_service:
-            self.data_service = data_service
-        else:
-            # Create a shared DataManager instance using global caching
-            from desktop.modern.core.config.data_config import (
-                create_data_config_with_fallback,
-            )
-
-            self.data_service = DataManager(create_data_config_with_fallback())
+        self.data_service = data_service
         self.pictograph_factory = PictographFactory()
         self.position_resolver = PositionResolver()
 

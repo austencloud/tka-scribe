@@ -219,15 +219,6 @@ class StartPositionPickerHeader(QWidget):
 
         # Update label styles to reflect the current state
         self._update_label_styles()
-
-    def get_current_grid_mode(self) -> str:
-        """Get currently selected grid mode."""
-        return "box" if self.grid_mode_toggle.isChecked() else "diamond"
-
-    def set_grid_mode_button_text(self, grid_mode: str):
-        """Update grid mode button text - DEPRECATED: Now using toggle and label."""
-        # This method is kept for compatibility but the label is updated in set_grid_mode
-
     def _on_back_button_clicked(self):
         """Handle back button click."""
         logger.debug("Back button clicked")

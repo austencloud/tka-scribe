@@ -175,15 +175,6 @@ class OptionPickerAnimator:
                 if hasattr(section, "pictographs") and section.pictographs:
                     frames.extend(section.pictographs.values())
         return frames
-
-    def skip_animation_and_update(self, update_callback: Callable):
-        """Skip animation and call update callback directly."""
-        if self._is_animating:
-            print("🎭 [ANIMATOR] Skipping animation - update called directly")
-            self._is_animating = False
-
-        update_callback()
-
     def cleanup(self):
         """Clean up any ongoing animations."""
         self._is_animating = False

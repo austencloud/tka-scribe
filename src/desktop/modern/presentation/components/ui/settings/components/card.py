@@ -158,12 +158,6 @@ class ToggleCard(SettingCard):
         """Set the toggle value programmatically."""
         self.current_value = value
         self.toggle.setChecked(value)
-
-    def get_value(self) -> bool:
-        """Get the current toggle value."""
-        return self.current_value
-
-
 class ComboCard(SettingCard):
     """Setting card with a styled combo box."""
 

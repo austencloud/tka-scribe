@@ -103,12 +103,3 @@ class VisibilityPreviewSection(QWidget):
                 logger.debug("Preview section cleaned up")
             except Exception as e:
                 logger.error(f"Error during preview cleanup: {e}")
-
-    def get_preview_widget(self) -> Optional[VisibilityPictographPreview]:
-        """
-        Get the preview widget for direct access if needed.
-
-        Returns:
-            The VisibilityPictographPreview widget or None
-        """
-        return self.preview

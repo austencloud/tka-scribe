@@ -104,22 +104,6 @@ class IAnimationCommand(ABC):
         """Check if this command can be undone."""
 
 
-class IEventBus(ABC):
-    """Event bus for animation system events."""
-
-    @abstractmethod
-    def emit(self, event_type: str, data: Any) -> None:
-        """Emit an event."""
-
-    @abstractmethod
-    def subscribe(self, event_type: str, handler: Callable[[Any], None]) -> str:
-        """Subscribe to events. Returns subscription ID."""
-
-    @abstractmethod
-    def unsubscribe(self, subscription_id: str) -> None:
-        """Unsubscribe from events."""
-
-
 class IAnimationEngine(ABC):
     """Core animation engine - framework agnostic."""
 

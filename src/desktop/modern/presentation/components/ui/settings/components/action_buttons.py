@@ -47,11 +47,6 @@ class SettingsActionButtons(QFrame):
         layout.addWidget(self.reset_button)
         layout.addWidget(self.apply_button)
         layout.addWidget(self.ok_button)
-
-    def set_apply_enabled(self, enabled: bool):
-        """Enable or disable the apply button."""
-        self.apply_button.setEnabled(enabled)
-
     def set_reset_enabled(self, enabled: bool):
         """Enable or disable the reset button."""
         self.reset_button.setEnabled(enabled)

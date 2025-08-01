@@ -5,7 +5,6 @@ Showcases the modern animation system with actual TKA pictograph data.
 
 import asyncio
 import sys
-from typing import Optional
 
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QFont
@@ -26,6 +25,9 @@ from PyQt6.QtWidgets import (
 # Add src to path for imports
 sys.path.insert(0, "src")
 
+from desktop.modern.application.services.ui.animation.modern_service_registration import (
+    setup_modern_animation_services,
+)
 from desktop.modern.core.dependency_injection.di_container import DIContainer
 from desktop.modern.core.interfaces.animation_core_interfaces import (
     AnimationConfig,
@@ -38,9 +40,6 @@ from desktop.modern.presentation.components.pictograph.pictograph_widget import 
 from shared.application.services.data.pictograph_factory import PictographFactory
 from shared.application.services.pictograph.pictograph_csv_manager import (
     PictographCSVManager,
-)
-from shared.application.services.ui.animation.modern_service_registration import (
-    setup_modern_animation_services,
 )
 
 
@@ -378,7 +377,7 @@ class InteractiveAnimationDemo(QMainWindow):
         }
         self.current_easing = easing_map.get(easing_name, EasingType.EASE_IN_OUT)
 
-    def get_current_pictograph(self) -> Optional[PictographWidget]:
+    def get_current_pictograph(self) -> PictographWidget | None:
         """Get the currently active pictograph."""
         if 0 <= self.current_pictograph_index < len(self.pictographs):
             return self.pictographs[self.current_pictograph_index]

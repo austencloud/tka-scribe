@@ -233,6 +233,11 @@ class BrowseTab(QWidget):
         # Initialize the controller
         self.controller.initialize()
 
+    def _connect_controller_signals(self) -> None:
+        """Connect controller signals."""
+        # TODO: Add controller signal connections if needed
+        pass
+
     def _connect_signals(self) -> None:
         """Connect component signals to controller methods."""
         # Filter selection signals
@@ -353,14 +358,4 @@ class BrowseTab(QWidget):
             f"🎯 Immediately switched to stable sequence browser for {filter_type.value}: {filter_value}"
         )
 
-    def refresh_sequences(self) -> None:
-        """Refresh sequence data from disk."""
-        self.controller.refresh_data()
-
     # Connect controller signals after initialization
-    def _connect_controller_signals(self) -> None:
-        """Connect controller signals to update UI components."""
-        # Connect controller signals
-        self.controller.sequence_selected_for_editing.connect(
-            self.open_in_construct.emit
-        )

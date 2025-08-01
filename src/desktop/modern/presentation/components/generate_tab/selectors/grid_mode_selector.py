@@ -111,11 +111,6 @@ class ModernGridModeSelector(GenerationControlBase):
         if checked:
             self._current_mode = GridMode.BOX
             self.value_changed.emit(self._current_mode)
-
-    def get_value(self) -> GridMode:
-        """Get the current grid mode value."""
-        return self._current_mode
-
     def set_value(self, mode: GridMode):
         """Set the grid mode value."""
         if mode != self._current_mode:

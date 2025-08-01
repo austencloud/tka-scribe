@@ -182,11 +182,6 @@ class OptionPictograph(QFrame):
 
         # Clear internal state
         self._pictograph_data = None
-
-    def get_pictograph_data(self) -> Optional[PictographData]:
-        """Get the current pictograph data."""
-        return self._pictograph_data
-
     def mousePressEvent(self, event):
         """Handle mouse press events for selection with debounce protection."""
         if event.button() == Qt.MouseButton.LeftButton and self._pictograph_data:

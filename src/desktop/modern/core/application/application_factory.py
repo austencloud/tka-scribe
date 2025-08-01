@@ -16,7 +16,6 @@ FIXES APPLIED:
 
 import logging
 import sys
-from typing import Optional
 
 from desktop.modern.core.dependency_injection.di_container import DIContainer
 from desktop.modern.core.error_handling import ErrorSeverity, StandardErrorHandler
@@ -58,6 +57,13 @@ class ApplicationFactory:
             # CRITICAL: Set this container as the global container immediately
             ApplicationFactory._set_global_container(container)
 
+            # Register configurations first (required by services)
+            from desktop.modern.core.dependency_injection.config_registration import (
+                register_configurations,
+            )
+
+            register_configurations(container)
+
             # Use helper to register common services (eliminates duplication)
             ServiceRegistrationHelper.register_all_common_services(container)
 
@@ -92,6 +98,13 @@ class ApplicationFactory:
         """
         try:
             container = DIContainer()
+
+            # Register configurations first (required by services)
+            from desktop.modern.core.dependency_injection.config_registration import (
+                register_configurations,
+            )
+
+            register_configurations(container)
 
             # Register test doubles
             TestDoubleRegistrationHelper.register_test_doubles(container)
@@ -160,7 +173,7 @@ class ApplicationFactory:
             raise
 
     @staticmethod
-    def create_app_from_args(args: Optional[list] = None) -> DIContainer:
+    def create_app_from_args(args: list | None = None) -> DIContainer:
         """
         Create application based on command line arguments.
 

@@ -55,12 +55,6 @@ class OptionPickerLayoutOrchestrator:
         """Add a section widget to the layout."""
         self._section_widgets.append(section_widget)
         self._layout.addWidget(section_widget)
-
-    def add_group_widget(self, group_widget: QWidget) -> None:
-        """Add a group widget to the layout."""
-        self._group_widgets.append(group_widget)
-        self._layout.addWidget(group_widget)
-
     def apply_balanced_spacing(self) -> None:
         """Apply balanced spacing between header-section pairs."""
         if not self._header_widget:
@@ -119,55 +113,3 @@ class OptionPickerLayoutOrchestrator:
             if widget == self._header_widget:
                 return index
         return -1
-
-    def clear_layout(self) -> None:
-        """Clear all widgets from the layout."""
-
-        # Remove all widgets
-        while self._layout.count():
-            item = self._layout.takeAt(0)
-            if item.widget():
-                item.widget().hide()
-
-        # Clear references
-        self._header_widget = None
-        self._section_widgets.clear()
-        self._group_widgets.clear()
-
-    def get_layout_info(self) -> dict:
-        """Get information about the current layout."""
-        return {
-            "total_items": self._layout.count(),
-            "header_widget": self._header_widget is not None,
-            "section_count": len(self._section_widgets),
-            "group_count": len(self._group_widgets),
-        }
-
-    def validate_layout_integrity(self) -> bool:
-        """Validate that layout is in a consistent state."""
-        try:
-            # Check that layout count matches tracked widgets
-            expected_count = 0
-            if self._header_widget:
-                expected_count += 1
-            expected_count += len(self._section_widgets)
-            expected_count += len(self._group_widgets)
-
-            # Account for stretches (they're not widgets)
-            actual_widget_count = sum(
-                1
-                for i in range(self._layout.count())
-                if self._layout.itemAt(i).widget()
-            )
-
-            if actual_widget_count != expected_count:
-                print(
-                    f"❌ [LAYOUT] Widget count mismatch: expected {expected_count}, found {actual_widget_count}"
-                )
-                return False
-
-            return True
-
-        except Exception as e:
-            print(f"❌ [LAYOUT] Error validating layout: {e}")
-            return False

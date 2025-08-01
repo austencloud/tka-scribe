@@ -15,7 +15,6 @@ from desktop.modern.core.interfaces.animation_core_interfaces import (
     AnimationTarget,
     IAnimationRenderer,
     IAnimationScheduler,
-    IEventBus,
     ITargetAdapter,
 )
 
@@ -195,23 +194,6 @@ class QtAnimationScheduler(IAnimationScheduler):
         import time
 
         return time.time()
-
-
-class QtEventBridge(QObject):
-    """Bridge between Qt signals and the animation event bus."""
-
-    animation_event = pyqtSignal(str, object)  # event_type, data
-
-    def __init__(self, event_bus: IEventBus):
-        super().__init__()
-        self.event_bus = event_bus
-
-        # Subscribe to all animation events
-        self.event_bus.subscribe("animation.*", self._on_animation_event)
-
-    def _on_animation_event(self, event: AnimationEvent) -> None:
-        """Handle animation events and emit Qt signals."""
-        self.animation_event.emit(f"animation.{event.state.value}", event)
 
 
 class QtStackWidgetAdapter:

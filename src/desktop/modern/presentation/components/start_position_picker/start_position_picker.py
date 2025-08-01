@@ -305,41 +305,6 @@ class StartPositionPicker(QWidget):
         self.transition_animation = QPropertyAnimation(self, b"windowOpacity")
         self.transition_animation.setDuration(300)
         self.transition_animation.setEasingCurve(QEasingCurve.Type.OutCubic)
-
-    def update_layout_for_size(self, container_size: QSize):
-        """Update layout when container size changes - EXACT logic from original."""
-        try:
-            # Auto-switch modes if in AUTO mode (but only if mode actually needs to change)
-            if self.current_mode == PickerMode.AUTO:
-                target_mode = None
-                if container_size.width() > 1000 and container_size.height() > 600:
-                    target_mode = PickerMode.ADVANCED
-                else:
-                    target_mode = PickerMode.BASIC
-
-                # Only switch if we're not already in the target mode
-                if target_mode != self.current_mode:
-                    logger.debug(
-                        f"Auto-switching from {self.current_mode} to {target_mode}"
-                    )
-                    self.set_mode(target_mode)
-                    return  # Exit early since set_mode will handle the rest
-
-            # Re-apply sizing to all options
-            is_advanced = self.current_mode == PickerMode.ADVANCED
-            self.content.apply_sizing(container_size.width(), is_advanced)
-
-        except Exception as e:
-            logger.error(f"Error updating layout for size: {e}")
-
-    def get_current_mode(self) -> PickerMode:
-        """Get the current picker mode."""
-        return self.current_mode
-
-    def get_current_grid_mode(self) -> str:
-        """Get the current grid mode."""
-        return self.grid_mode
-
     def set_transition_mode(self, in_transition: bool):
         """Set transition mode to prevent sizing updates during fade transitions."""
         self._is_in_transition = in_transition

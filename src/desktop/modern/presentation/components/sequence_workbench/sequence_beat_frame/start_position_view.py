@@ -110,32 +110,17 @@ class StartPositionView(QFrame):
         self._update_pictograph()
 
     # Direct view handles its own scaling and styling - no configuration needed
-
-    def _initialize_start_text_widget(self):
-        """Initialize START text widget overlay after component is ready"""
-        self._add_start_text_overlay()
-
     # State management
     def set_beat_data(self, beat_data: Optional[BeatData]):
         """Set beat data and update display"""
         if self._beat_data != beat_data:
             self._beat_data = beat_data
             self._update_display()
-
-    def get_beat_data(self) -> Optional[BeatData]:
-        """Get current beat data"""
-        return self._beat_data
-
     def set_pictograph_data(self, pictograph_data: Optional["PictographData"]):
         """Set pictograph data for direct rendering (separate approach)"""
         if self._pictograph_data != pictograph_data:
             self._pictograph_data = pictograph_data
             self._update_display()
-
-    def get_pictograph_data(self) -> Optional["PictographData"]:
-        """Get current pictograph data"""
-        return getattr(self, "_pictograph_data", None)
-
     def set_selected(self, selected: bool):
         """Set selection state"""
         if self._is_selected != selected:
@@ -169,15 +154,6 @@ class StartPositionView(QFrame):
         else:
             # Legacy mode: clear pictograph data to force reconstruction
             self._pictograph_data = None
-
-    def set_position_key(self, position_key: str):
-        """Set the position key (e.g., 'alpha1', 'beta3')"""
-        self._position_key = position_key
-
-    def _update_text_overlays(self):
-        """Update text overlays - shows start text overlay"""
-        self._add_start_text_overlay()
-
     def _add_start_text_overlay(self):
         """Add START text overlay using the unified widget approach"""
         self._cleanup_existing_overlay()
@@ -243,19 +219,9 @@ class StartPositionView(QFrame):
     def sizeHint(self) -> QSize:
         """Provide size hint for layout management"""
         return QSize(120, 120)
-
-    def minimumSizeHint(self) -> QSize:
-        """Provide minimum size hint"""
-        return QSize(100, 100)
-
     def get_position_data(self) -> Optional[BeatData]:
         """Get the current position data"""
         return self._beat_data
-
-    def get_position_key(self) -> Optional[str]:
-        """Get the current position key"""
-        return self._position_key
-
     def clear_position_data(self):
         """Clear position data and show only START text (V1-style clear behavior)"""
         self._beat_data = None
@@ -396,10 +362,6 @@ class StartPositionView(QFrame):
             self.cleanup()
         except Exception:
             pass
-
-    def pulse_animation(self):
-        """Pulse animation to draw attention to start position"""
-
     def set_loading_state(self, loading: bool):
         """Set loading state while position is being processed"""
         if loading:

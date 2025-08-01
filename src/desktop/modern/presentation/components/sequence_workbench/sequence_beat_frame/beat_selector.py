@@ -110,13 +110,6 @@ class BeatSelector(QObject):
         """Select the previous beat (keyboard navigation)."""
         result = self._selection_service.select_previous_beat()
         self._handle_selection_change(result)
-
-    def focus_selected_beat(self):
-        """Set focus to the currently selected beat."""
-        selected_index = self._selection_service.get_selected_index()
-        if selected_index is not None and selected_index < len(self._beat_views):
-            self._beat_views[selected_index].setFocus()
-
     # Query Methods
     def get_selected_index(self) -> Optional[int]:
         """Get the currently selected beat index."""
@@ -173,13 +166,3 @@ class BeatSelector(QObject):
         elif result.selection_type == SelectionType.START_POSITION:
             if self._start_position_view:
                 self._start_position_view.set_selected(True)
-
-    def _clear_all_visual_selections(self):
-        """Clear visual selection from all components."""
-        # Clear beat views
-        for beat_view in self._beat_views:
-            beat_view.set_selected(False)
-
-        # Clear start position view
-        if self._start_position_view:
-            self._start_position_view.set_selected(False)

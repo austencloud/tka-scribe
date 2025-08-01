@@ -7,7 +7,6 @@ Uses the centralized design system for consistent styling.
 """
 
 from enum import Enum
-from typing import Optional
 
 from PyQt6.QtCore import (
     QEasingCurve,
@@ -54,7 +53,7 @@ class StyledButton(QPushButton, StyleMixin):
     def __init__(
         self,
         label: str,
-        icon_path: Optional[str] = None,
+        icon_path: str | None = None,
         context: ButtonContext = ButtonContext.STANDARD,
         parent=None,
     ):
@@ -138,15 +137,6 @@ class StyledButton(QPushButton, StyleMixin):
         font = QFont("Segoe UI", self.config["font_size"], self.config["font_weight"])
         font.setHintingPreference(QFont.HintingPreference.PreferFullHinting)
         self.setFont(font)
-
-    @pyqtProperty(float)
-    def animationScale(self):
-        return self._animation_scale
-
-    @animationScale.setter
-    def animationScale(self, value):
-        self._animation_scale = value
-        self.update_appearance()
 
     def set_selected(self, selected: bool):
         """Set the selected state of the button."""
@@ -406,3 +396,14 @@ class StyledButton(QPushButton, StyleMixin):
         self._animation.setStartValue(self._animation_scale)
         self._animation.setEndValue(target_scale)
         self._animation.start()
+
+    @pyqtProperty(float)
+    def animationScale(self):
+        """Get the current animation scale."""
+        return self._animation_scale
+
+    @animationScale.setter
+    def animationScale(self, value: float):
+        """Set the animation scale."""
+        self._animation_scale = value
+        self.update()

@@ -160,37 +160,9 @@ class WorkbenchExportService(QObject):
         except Exception as e:
             logger.error(f"Image export failed: {e}")
             return False, f"Image export failed: {e}"
-
-    def export_sequence_json(self, sequence: SequenceData) -> tuple[bool, str]:
-        """
-        Export sequence as JSON string in legacy-compatible format.
-
-        Now delegates to the specialized JSON export service.
-        """
-        try:
-            # Delegate to the JSON export service
-            return self._json_exporter.export_to_json_string(sequence)
-
-        except Exception as e:
-            logger.error(f"JSON export orchestration failed: {e}")
-            return False, f"JSON export failed: {e}"
-
     def get_export_directory(self) -> str:
         """Get the directory where exports are saved."""
         return self._directory_service.get_export_directory()
-
-    def validate_export_directory(self) -> bool:
-        """Validate that export directory exists and is writable."""
-        return self._directory_service.validate_directory(
-            self._directory_service.get_export_directory()
-        )
-
-    def get_export_stats(self) -> dict:
-        """Get statistics about exports for debugging."""
-        return self._directory_service.get_directory_stats(
-            self._directory_service.get_export_directory()
-        )
-
     def _create_fallback_placeholder(
         self, file_path: str, word: str, beat_count: int, error: Exception
     ) -> tuple[bool, str]:

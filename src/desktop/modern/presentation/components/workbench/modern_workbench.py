@@ -319,11 +319,6 @@ class SequenceWorkbench(ViewableComponentBase):
         self._state_manager.set_start_position(None)
         if self._beat_frame_section:
             self._beat_frame_section.initialize_cleared_start_position()
-
-    def get_button_interface(self) -> Optional[WorkbenchButtonInterfaceAdapter]:
-        """Get the button interface adapter."""
-        return self._button_interface
-
     # Event Handlers - Delegation to Business Logic
     def _execute_operation(self, operation_type: OperationType):
         """Execute operation via operation coordinator."""

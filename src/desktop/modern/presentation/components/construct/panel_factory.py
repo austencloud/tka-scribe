@@ -45,6 +45,7 @@ class PanelFactory:
     ):
         self.container = container
         self.progress_callback = progress_callback
+        self.progress_reporter = progress_callback  # Alias for compatibility
 
     def create_workbench_panel(self) -> QWidget:
         """Create the workbench panel (left side)."""
@@ -155,15 +156,9 @@ class PanelFactory:
         layout = QVBoxLayout(widget)
 
         try:
-
-            def option_picker_progress(step: str, progress: float):
-                if self.progress_callback:
-                    mapped_progress = int(76 + (progress * 6))
-                    self.progress_callback(mapped_progress, f"Option picker: {step}")
-
             option_picker = OptionPicker(
                 self.container,
-                progress_callback=option_picker_progress,
+                progress_callback=self.option_picker_progress,
                 parent=widget,
             )
             option_picker.initialize()
@@ -178,6 +173,12 @@ class PanelFactory:
             fallback_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
             layout.addWidget(fallback_label)
             return widget, None
+
+    def option_picker_progress(self, message: str, progress: float) -> None:
+        """Progress callback for option picker creation."""
+        if self.progress_callback:
+            # Simple progress callback - just call with progress and message
+            self.progress_callback(int(progress), message)
 
     def create_graph_editor_panel(self) -> tuple[QWidget, object | None]:
         """Create the graph editor panel."""

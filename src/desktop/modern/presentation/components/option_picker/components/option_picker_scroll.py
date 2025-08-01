@@ -11,6 +11,8 @@ Key principles:
 - Coordination between UI and services
 """
 
+import logging
+import traceback
 from collections.abc import Callable
 from typing import TYPE_CHECKING
 
@@ -83,6 +85,13 @@ class OptionPickerScroll(QScrollArea):
         self._option_sizing_service = option_sizing_service
         self._option_config_service = option_config_service
         self._animation_orchestrator = animation_orchestrator
+
+        # DEBUG: Log animation orchestrator availability
+        logger = logging.getLogger(__name__)
+        if self._animation_orchestrator:
+            logger.info("✅ OptionPickerScroll initialized WITH animation orchestrator")
+        else:
+            logger.warning("⚠️ OptionPickerScroll initialized WITHOUT animation orchestrator")
 
         self._mw_size_provider = mw_size_provider or self._default_size_provider
 
@@ -255,36 +264,6 @@ class OptionPickerScroll(QScrollArea):
         """Clear all pictographs from all sections using section manager."""
         self._section_manager.clear_all_sections()
         self._option_pool_service.reset_pool()
-
-    def get_section(self, letter_type: LetterType) -> "OptionPickerSection":
-        """Get section by letter type."""
-        return self.sections.get(letter_type)
-
-    def _initialize_widget_pool(self) -> None:
-        """Initialize widget pool - now uses lazy loading for better memory efficiency."""
-        # OPTIMIZED: No longer pre-create widgets - they will be created on-demand
-        # This reduces initial memory usage and widget count
-
-    def get_widget_from_pool(self, pool_id: int) -> OptionPictograph | None:
-        """Get Qt widget from pool by ID - creates on-demand if not exists."""
-        # Check if widget already exists
-        if pool_id in self._widget_pool:
-            return self._widget_pool[pool_id]
-
-        # OPTIMIZED: Create widget on-demand only when needed
-        if pool_id < self._max_widgets:
-            widget = OptionPictograph(
-                parent=self.container,
-                pictograph_component=None,  # Uses direct view approach
-                size_calculator=self._option_sizing_service,
-            )
-            widget.hide()  # Start hidden
-            self._widget_pool[pool_id] = widget
-            return widget
-
-        # Pool ID exceeds maximum
-        return None
-
     def _reset_widget_cache(self) -> None:
         """Reset widget pool by hiding and cleaning up all widgets."""
         for widget in self._widget_pool.values():
@@ -335,7 +314,8 @@ class OptionPickerScroll(QScrollArea):
             self._section_manager.update_all_sections_picker_width(width)
 
         except Exception as e:
-            print(f"⚠️ [SIZING] Error in _update_size: {e}")
+            logger = logging.getLogger(__name__)
+            logger.warning(f"Error in _update_size: {e}")
             # Fallback to a reasonable default
             self.setFixedWidth(400)
 
@@ -361,7 +341,8 @@ class OptionPickerScroll(QScrollArea):
             return False
 
         except Exception as e:
-            print(f"⚠️ [SIZING] Error checking main window readiness: {e}")
+            logger = logging.getLogger(__name__)
+            logger.warning(f"Error checking main window readiness: {e}")
             return False
 
     def load_options_from_sequence(self, sequence_data: SequenceData) -> None:
@@ -374,6 +355,7 @@ class OptionPickerScroll(QScrollArea):
 
     def _handle_refresh_request(self, sequence_data: SequenceData) -> None:
         """Handle refresh request from orchestrator."""
+        logger = logging.getLogger(__name__)
 
         try:
             # Set UI loading state
@@ -389,16 +371,31 @@ class OptionPickerScroll(QScrollArea):
                 section for section in self.sections.values() if section.pictographs
             ]
 
+            # DEBUG: Log animation decision
+            logger.debug(f"Animation orchestrator available: {self._animation_orchestrator is not None}")
+            logger.debug(f"Existing sections count: {len(existing_sections)}")
+
             if self._animation_orchestrator and existing_sections:
+                logger.info("🎭 Using fade animations for option update")
                 self._fade_and_update_all_sections(sequence_data)
             else:
+                if not self._animation_orchestrator:
+                    logger.warning("⚠️ No animation orchestrator - using direct update")
+                if not existing_sections:
+                    logger.debug("No existing sections - using direct update")
                 self._update_all_sections_directly(sequence_data)
 
         except Exception as e:
-            print(f"❌ [UI] Error during refresh: {e}")
-            import traceback
-
+            logger.error(f"Error during refresh: {e}")
             traceback.print_exc()
+            # Fallback to direct update to ensure UI doesn't get stuck
+            try:
+                self._update_all_sections_directly(sequence_data)
+            except Exception as fallback_error:
+                logger.error(f"Fallback update also failed: {fallback_error}")
+        finally:
+            # Always reset loading state
+            self._set_loading_state(False)
 
     def _update_all_sections_directly(self, sequence_data: SequenceData) -> None:
         """Update all sections directly without animation using section manager."""
@@ -409,15 +406,17 @@ class OptionPickerScroll(QScrollArea):
             )
 
             if not options_by_type:
-                print("❌ [UI] No options received from service")
+                logger = logging.getLogger(__name__)
+                logger.warning("No options received from service")
                 return
 
             # DEBUG: Check if orientations are preserved when options reach the UI (simplified)
             total_options = sum(
                 len(options_list) for options_list in options_by_type.values()
             )
-            print(
-                f"🔍 [OPTION_PICKER_SCROLL] UI received {total_options} total options across {len(options_by_type)} letter types"
+            logger = logging.getLogger(__name__)
+            logger.debug(
+                f"UI received {total_options} total options across {len(options_by_type)} letter types"
             )
 
             # PAGINATION FIX: Reset widget cache to ensure clean state
@@ -435,7 +434,8 @@ class OptionPickerScroll(QScrollArea):
             QTimer.singleShot(delay, self._apply_sizing_to_all_frames)
 
         except Exception as e:
-            print(f"❌ [UI] Error in direct update: {e}")
+            logger = logging.getLogger(__name__)
+            logger.error(f"Error in direct update: {e}")
 
     def _fade_and_update_all_sections(self, sequence_data: SequenceData) -> None:
         """Fade pictographs only (keeping headers stable) using animator component."""
@@ -471,7 +471,8 @@ class OptionPickerScroll(QScrollArea):
             )
 
         except Exception as e:
-            print(f"❌ [SCROLL] Fade transition failed: {e}")
+            logger = logging.getLogger(__name__)
+            logger.error(f"Fade transition failed: {e}")
             # Fallback to direct update
             self._update_all_sections_directly(sequence_data)
 

@@ -251,6 +251,9 @@ class ServiceRegistrationHelper:
         # Phase 4: Generation services (CRITICAL - was missing!)
         ServiceRegistrationHelper.register_generation_services(container)
 
+        # Phase 5: Animation services (CRITICAL - needed for fade transitions!)
+        ServiceRegistrationHelper.register_animation_services(container)
+
         # Phase 5: Optional services
         ServiceRegistrationHelper.register_common_pictograph_services(container)
         ServiceRegistrationHelper.register_visibility_services(container)
@@ -303,6 +306,134 @@ class ServiceRegistrationHelper:
                 logger,
                 ErrorSeverity.WARNING,
                 {"note": "Application will continue without extracted services"},
+            )
+
+    @staticmethod
+    def register_animation_services(container: "DIContainer") -> None:
+        """Register animation services needed for fade transitions."""
+        try:
+            from desktop.modern.application.services.ui.animation.modern_service_registration import (
+                setup_modern_animation_services,
+            )
+
+            setup_modern_animation_services(container)
+
+            # CRITICAL: Register option picker services first (dependencies)
+            ServiceRegistrationHelper._register_option_picker_services(container)
+
+            # Then register OptionPickerScroll with animation orchestrator injection
+            ServiceRegistrationHelper._register_option_picker_components(container)
+
+            logger.info("✅ Registered animation services for fade transitions")
+
+        except Exception as e:
+            StandardErrorHandler.handle_service_error(
+                "Animation services registration",
+                e,
+                logger,
+                ErrorSeverity.WARNING,
+                {"note": "Application will continue without fade animations"},
+            )
+
+    @staticmethod
+    def _register_option_picker_services(container: "DIContainer") -> None:
+        """Register the core option picker services that OptionPickerScroll depends on."""
+        try:
+            from shared.application.services.option_picker.option_configuration_service import (
+                OptionConfigurationService,
+            )
+            from shared.application.services.option_picker.option_picker_size_calculator import (
+                OptionPickerSizeCalculator,
+            )
+            from shared.application.services.option_picker.option_pool_service import (
+                OptionPoolService,
+            )
+            from shared.application.services.option_picker.sequence_option_service import (
+                SequenceOptionService,
+            )
+
+            # Register option picker services as singletons
+            container.register_singleton(SequenceOptionService, SequenceOptionService)
+            container.register_singleton(OptionPoolService, OptionPoolService)
+            container.register_singleton(
+                OptionPickerSizeCalculator, OptionPickerSizeCalculator
+            )
+            container.register_singleton(
+                OptionConfigurationService, OptionConfigurationService
+            )
+
+            logger.info("✅ Registered option picker services")
+
+        except Exception as e:
+            StandardErrorHandler.handle_service_error(
+                "Option picker services registration",
+                e,
+                logger,
+                ErrorSeverity.WARNING,
+                {"note": "Option picker services not available"},
+            )
+
+    @staticmethod
+    def _register_option_picker_components(container: "DIContainer") -> None:
+        """Register option picker components with proper animation orchestrator injection."""
+        try:
+            from desktop.modern.core.interfaces.animation_core_interfaces import (
+                IAnimationOrchestrator,
+            )
+            from desktop.modern.presentation.components.option_picker.components.option_picker_scroll import (
+                OptionPickerScroll,
+            )
+            from shared.application.services.option_picker.option_picker_size_calculator import (
+                OptionPickerSizeCalculator,
+            )
+            from shared.application.services.option_picker.option_pool_service import (
+                OptionPoolService,
+            )
+            from shared.application.services.option_picker.sequence_option_service import (
+                SequenceOptionService,
+            )
+
+            # Register OptionPickerScroll with factory that injects animation orchestrator
+            def create_option_picker_scroll():
+                sequence_option_service = container.resolve(SequenceOptionService)
+                option_pool_service = container.resolve(OptionPoolService)
+                option_sizing_service = container.resolve(OptionPickerSizeCalculator)
+
+                # Get option config service
+                from shared.application.services.option_picker.option_configuration_service import (
+                    OptionConfigurationService,
+                )
+
+                option_config_service = container.resolve(OptionConfigurationService)
+
+                # Get animation orchestrator (may be None if not available)
+                animation_orchestrator = None
+                try:
+                    animation_orchestrator = container.resolve(IAnimationOrchestrator)
+                except Exception:
+                    # Animation orchestrator not available - continue without it
+                    pass
+
+                return OptionPickerScroll(
+                    sequence_option_service=sequence_option_service,
+                    option_pool_service=option_pool_service,
+                    option_sizing_service=option_sizing_service,
+                    option_config_service=option_config_service,
+                    animation_orchestrator=animation_orchestrator,
+                )
+
+            container.register_factory(OptionPickerScroll, create_option_picker_scroll)
+            logger.info(
+                "✅ Registered OptionPickerScroll with animation orchestrator injection"
+            )
+
+        except Exception as e:
+            StandardErrorHandler.handle_service_error(
+                "Option picker components registration",
+                e,
+                logger,
+                ErrorSeverity.WARNING,
+                {"note": "Option picker will continue without proper DI"},
             )
 
     @staticmethod

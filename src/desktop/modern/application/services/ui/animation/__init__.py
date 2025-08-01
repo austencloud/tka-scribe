@@ -97,7 +97,6 @@ from desktop.modern.core.animation.animation_engine import (
     CoreAnimationEngine,
     DefaultSettingsProvider,
     EasingFunctions,
-    SimpleEventBus,
     create_default_animation_engine,
 )
 from desktop.modern.core.interfaces.animation_core_interfaces import (
@@ -110,7 +109,6 @@ from desktop.modern.core.interfaces.animation_core_interfaces import (
     IAnimationCommand,
     IAnimationEngine,
     IAnimationOrchestrator,
-    IEventBus,
     TransitionCommand,
 )
 
@@ -118,7 +116,6 @@ from desktop.modern.core.interfaces.animation_core_interfaces import (
 from .adapters.qt_adapters import (
     QtAnimationRenderer,
     QtAnimationScheduler,
-    QtEventBridge,
     QtGraphicsEffectManager,
     QtStackWidgetAdapter,
     QtTargetAdapter,
@@ -131,8 +128,9 @@ from .animation_orchestrator import (
     ModernAnimationOrchestrator,
     create_modern_animation_system,
 )
-from .animation_service import AnimationService as LegacyAnimationService
 
+# Legacy animation service removed due to shared dependency issues
+# from .animation_service import AnimationService as LegacyAnimationService
 # Legacy compatibility (keeping old exports)
 from .fade_orchestrator import FadeOrchestrator as LegacyFadeOrchestrator
 
@@ -147,7 +145,6 @@ __all__ = [
     "IAnimationOrchestrator",
     "IAnimationEngine",
     "IAnimationCommand",
-    "IEventBus",
     # Data classes
     "AnimationTarget",
     "AnimationConfig",
@@ -159,7 +156,6 @@ __all__ = [
     "TransitionCommand",
     # Core engine
     "CoreAnimationEngine",
-    "SimpleEventBus",
     "DefaultSettingsProvider",
     "EasingFunctions",
     "create_default_animation_engine",
@@ -167,7 +163,6 @@ __all__ = [
     "QtTargetAdapter",
     "QtAnimationRenderer",
     "QtAnimationScheduler",
-    "QtEventBridge",
     "QtStackWidgetAdapter",
     "QtGraphicsEffectManager",
     "create_qt_animation_components",
@@ -180,7 +175,6 @@ __all__ = [
     "ModernAnimationServiceRegistration",
     # Legacy compatibility
     "LegacyFadeOrchestrator",
-    "LegacyAnimationService",
 ]
 
 # Version info

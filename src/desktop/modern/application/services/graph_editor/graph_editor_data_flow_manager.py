@@ -32,16 +32,6 @@ class GraphEditorDataFlowManager(QObject):
         self._current_sequence: Optional[SequenceData] = None
         self._current_beat_index: Optional[int] = None
         self._sequence_service: Optional[ISequenceManager] = None
-
-    def set_context(self, sequence: SequenceData, beat_index: int):
-        """Set current sequence and beat context"""
-        self._current_sequence = sequence
-        self._current_beat_index = beat_index
-
-    def set_sequence_service(self, sequence_service: "ISequenceManager"):
-        """Set the sequence management service for persistence"""
-        self._sequence_service = sequence_service
-
     def process_turn_change(
         self, beat_data: BeatData, arrow_color: str, new_turns: float
     ) -> BeatData:
@@ -115,24 +105,6 @@ class GraphEditorDataFlowManager(QObject):
             self.sequence_modified.emit(self._current_sequence)
 
         return updated_beat
-
-    def determine_panel_mode(self, beat_data: Optional[BeatData]) -> str:
-        """Determine whether to show orientation picker or turns controls"""
-        if not beat_data:
-            return "orientation"
-
-        # Check if this is start position using multiple indicators for robustness
-        is_start = (
-            getattr(beat_data, "is_start_position", False)
-            or getattr(beat_data, "beat_number", 1) == 0
-            or getattr(beat_data, "sequence_position", 1) == 0
-            or str(getattr(beat_data, "beat_number", "1")).lower()
-            in ["start", "0", "start_pos"]
-            or beat_data.metadata.get("is_start_position", False)
-        )
-
-        return "orientation" if is_start else "turns"
-
     def get_current_sequence(self) -> Optional[SequenceData]:
         """Get the current sequence"""
         return self._current_sequence

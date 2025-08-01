@@ -144,6 +144,34 @@ class UIStateManager(QObject, IUIStateManager, metaclass=QObjectABCMeta):
         """Get state for a specific tab."""
         return self._ui_state.tab_states.get(tab_name, {})
 
+    def get_all_settings(self) -> dict[str, Any]:
+        """Get all settings."""
+        return self._ui_state.user_settings.copy()
+
+    def clear_settings(self) -> None:
+        """Clear all settings."""
+        self._ui_state.user_settings.clear()
+        self._save_state()
+
+    def save_state(self) -> None:
+        """Save current state to persistent storage."""
+        self._save_state()
+
+    def load_state(self) -> None:
+        """Load state from persistent storage."""
+        self._load_state()
+
+    def toggle_graph_editor(self) -> bool:
+        """Toggle graph editor visibility."""
+        current_visibility = self._ui_state.component_visibility.get(
+            "graph_editor", False
+        )
+        new_visibility = not current_visibility
+        self._ui_state.component_visibility["graph_editor"] = new_visibility
+        self.component_visibility_changed.emit("graph_editor", new_visibility)
+        self._save_state()
+        return new_visibility
+
     def update_tab_state(self, tab_name: str, state: dict[str, Any]) -> None:
         """Update state for a specific tab."""
         if tab_name not in self._ui_state.tab_states:

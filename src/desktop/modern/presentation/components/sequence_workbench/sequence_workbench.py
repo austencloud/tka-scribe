@@ -27,9 +27,6 @@ from desktop.modern.core.interfaces.core_services import ILayoutService
 from desktop.modern.domain.models import BeatData, SequenceData
 from desktop.modern.domain.models.pictograph_data import PictographData
 from desktop.modern.presentation.components.component_base import ViewableComponentBase
-
-# Event bus removed - using Qt signals instead
-EVENT_BUS_AVAILABLE = False
 from shared.application.services.workbench.workbench_operation_coordinator import (
     OperationResult,
     OperationType,
@@ -83,7 +80,7 @@ class SequenceWorkbench(ViewableComponentBase):
         container: DIContainer,
         layout_service: ILayoutService,
         beat_selection_service: "BeatSelectionService",
-        parent: Optional[QWidget] = None,
+        parent: QWidget | None = None,
     ):
         """Initialize workbench with injected services."""
         super().__init__(container, parent)
@@ -104,9 +101,9 @@ class SequenceWorkbench(ViewableComponentBase):
         )
 
         # Qt components
-        self._indicator_section: Optional[WorkbenchIndicatorSection] = None
-        self._beat_frame_section: Optional[WorkbenchBeatFrameSection] = None
-        self._button_interface: Optional[WorkbenchButtonInterfaceAdapter] = None
+        self._indicator_section: WorkbenchIndicatorSection | None = None
+        self._beat_frame_section: WorkbenchBeatFrameSection | None = None
+        self._button_interface: WorkbenchButtonInterfaceAdapter | None = None
 
         # Session restoration tracking
         self._subscription_ids: list[str] = []
@@ -205,7 +202,6 @@ class SequenceWorkbench(ViewableComponentBase):
                 if result.changed and result.sequence_changed:
                     print("🔄 [WORKBENCH] State changed externally, updating UI...")
                     self._update_ui_from_state()
-                    self._update_button_panel_sequence_state()
 
                 return result
 
@@ -244,9 +240,6 @@ class SequenceWorkbench(ViewableComponentBase):
             print("🎯 [WORKBENCH] Updating UI from state...")
             self._update_ui_from_state()
 
-            # Update button panel sequence state for smart picker button
-            self._update_button_panel_sequence_state()
-
             # Emit sequence_modified if not in restoration mode
             if not self._state_manager.should_prevent_auto_save():
                 complete_sequence = (
@@ -266,11 +259,11 @@ class SequenceWorkbench(ViewableComponentBase):
         else:
             print("🎯 [WORKBENCH] No change detected, UI not updated")
 
-    def get_sequence(self) -> Optional[SequenceData]:
+    def get_sequence(self) -> SequenceData | None:
         """Get the current sequence from state manager."""
         return self._state_manager.get_current_sequence()
 
-    def get_start_position_data(self) -> Optional[BeatData]:
+    def get_start_position_data(self) -> BeatData | None:
         """Get the current start position from state manager."""
         return self._state_manager.get_start_position()
 
@@ -285,9 +278,6 @@ class SequenceWorkbench(ViewableComponentBase):
         if result.changed:
             print("🎯 [WORKBENCH] Start position changed, updating UI")
             self._update_ui_from_state()
-
-            # Update button panel sequence state for smart picker button
-            self._update_button_panel_sequence_state()
 
             # Emit signals if not in restoration mode
             if not self._state_manager.should_prevent_auto_save():
@@ -333,9 +323,6 @@ class SequenceWorkbench(ViewableComponentBase):
                 start_position_data, pictograph_data
             )
 
-        # Update button panel sequence state for smart picker button
-        self._update_button_panel_sequence_state()
-
         # Only emit sequence_modified if state actually changed and not in restoration mode
         if result.changed and not self._state_manager.should_prevent_auto_save():
             complete_sequence = (
@@ -349,7 +336,7 @@ class SequenceWorkbench(ViewableComponentBase):
                 f"🎯 [WORKBENCH] Skipping sequence modified signal (changed={result.changed}, auto_save_prevented={self._state_manager.should_prevent_auto_save()})"
             )
 
-    def get_start_position(self) -> Optional[BeatData]:
+    def get_start_position(self) -> BeatData | None:
         """Get the current start position from state manager."""
         return self._state_manager.get_start_position()
 
@@ -358,10 +345,6 @@ class SequenceWorkbench(ViewableComponentBase):
         self._state_manager.set_start_position(None)
         if self._beat_frame_section:
             self._beat_frame_section.initialize_cleared_start_position()
-
-    def get_button_interface(self) -> Optional[WorkbenchButtonInterfaceAdapter]:
-        """Get the button interface adapter."""
-        return self._button_interface
 
     # Event Handlers - Delegation to Business Logic
     def _execute_operation(self, operation_type: OperationType):
@@ -447,10 +430,6 @@ class SequenceWorkbench(ViewableComponentBase):
         else:
             print("❌ [WORKBENCH] No beat frame section available!")
 
-        # Update button panel state
-        print("🔄 [WORKBENCH] Updating button panel state...")
-        self._update_button_panel_sequence_state()
-
     def _on_beat_selected(self, beat_index: int):
         """Handle beat selection from UI."""
         # Update button states based on selection
@@ -478,20 +457,6 @@ class SequenceWorkbench(ViewableComponentBase):
         )
         self.set_sequence(sequence)
 
-    def _update_button_panel_sequence_state(self):
-        """Update button panel with current sequence state for smart picker button."""
-        if self._beat_frame_section and hasattr(
-            self._beat_frame_section, "set_sequence_state"
-        ):
-            current_sequence = self._state_manager.get_current_sequence()
-            start_position = self._state_manager.get_start_position()
-            has_sequence = current_sequence and len(current_sequence.beats) > 0
-            has_start_position = start_position is not None
-
-            self._beat_frame_section.set_sequence_state(
-                has_sequence, has_start_position
-            )
-
     # Cleanup
     def cleanup(self) -> None:
         """Clean up workbench resources."""
@@ -514,84 +479,7 @@ class SequenceWorkbench(ViewableComponentBase):
         except Exception as e:
             self.emit_error(f"Error during cleanup: {e}", e)
 
-    def _setup_event_subscriptions(self):
-        """Setup event bus subscriptions."""
-        if self.event_bus and EVENT_BUS_AVAILABLE:
-            try:
-                # Subscribe to start position selection events
-                self.event_bus.subscribe(
-                    "sequence.start_position_selected",
-                    self._handle_start_position_selected_event,
-                )
-                print("📡 [WORKBENCH] Subscribed to start position events")
-            except Exception as e:
-                print(f"❌ [WORKBENCH] Failed to setup event subscriptions: {e}")
-        else:
-            print("⚠️ [WORKBENCH] Event bus not available, skipping subscriptions")
-
-    def _handle_start_position_selected_event(self, event):
-        """Handle start position selected event from event bus."""
-        try:
-            print(f"📡 [WORKBENCH] Received start position event: {event.position_key}")
-
-            # Convert event data to beat data format
-            if event.beat_data:
-                # Create a simple beat data object from the event
-                from desktop.modern.domain.models import BeatData
-
-                beat_data = BeatData(
-                    letter=event.beat_data.get("letter", event.position_key),
-                    position_key=event.position_key,
-                    # Add other required fields with defaults
-                )
-
-                # Set the start position using the state manager
-                result = self._state_manager.set_start_position(beat_data)
-                if result.changed:
-                    print(
-                        f"✅ [WORKBENCH] Start position set via event bus: {event.position_key}"
-                    )
-                    # Trigger UI update
-                    self._update_ui_from_state()
-                else:
-                    print(
-                        f"⚠️ [WORKBENCH] Start position unchanged: {event.position_key}"
-                    )
-            else:
-                print("⚠️ [WORKBENCH] No beat data in start position event")
-
-        except Exception as e:
-            print(f"❌ [WORKBENCH] Error handling start position event: {e}")
-            import traceback
-
-            traceback.print_exc()
-
     # New panel mode handlers
     def _handle_picker_mode_request(self):
         """Handle picker mode request with smart switching."""
         self._event_handler.handle_picker_mode_request()
-
-    def _handle_graph_editor_request(self):
-        """Handle graph editor mode request."""
-        self._event_handler.handle_graph_editor_request()
-
-    def _handle_generate_request(self):
-        """Handle generate controls mode request."""
-        self._event_handler.handle_generate_request()
-
-    def _handle_panel_mode_change(self, mode: str):
-        """Handle panel mode change notification."""
-        print(f"🔄 [WORKBENCH] Panel mode changed to: {mode}")
-        # Update internal state if needed
-
-        # Update button panel sequence state for smart picker button
-        if self._beat_frame_section:
-            current_sequence = self._state_manager.get_current_sequence()
-            start_position = self._state_manager.get_start_position()
-            has_sequence = current_sequence and len(current_sequence.beats) > 0
-            has_start_position = start_position is not None
-
-            if hasattr(self._beat_frame_section, "set_sequence_state"):
-                self._beat_frame_section.set_sequence_state(
-                    has_sequence, has_start_position
-                )

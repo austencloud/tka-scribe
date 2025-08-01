@@ -319,37 +319,9 @@ class ArrowItem(QGraphicsSvgItem):
             logger.warning(
                 f"⚠️ SETUP SKIPPED - {self.arrow_color}: color={self.arrow_color}, motion_data={self.motion_data is not None}"
             )
-
-    def get_arrow_info(self) -> dict:
-        """Get information about this arrow for debugging."""
-        return {
-            "color": self.arrow_color,
-            "has_motion_data": self.motion_data is not None,
-            "has_pictograph_data": self.pictograph_data is not None,
-            "is_visible": self.isVisible(),
-            "is_selectable": bool(
-                self.flags() & self.GraphicsItemFlag.ItemIsSelectable
-            ),
-            "position": (self.pos().x(), self.pos().y()),
-            "rotation": self.rotation(),
-        }
-
     # =============================================================================
     # SELECTION AND INTERACTION METHODS (Preserved from original)
     # =============================================================================
-
-    def enable_selection(self):
-        """Enable arrow selection - called by graph editor container."""
-        self.setFlag(self.GraphicsItemFlag.ItemIsSelectable, True)
-        self.setAcceptHoverEvents(True)
-        self.setCursor(Qt.CursorShape.PointingHandCursor)
-
-    def disable_selection(self):
-        """Disable arrow selection - default state."""
-        self.setFlag(self.GraphicsItemFlag.ItemIsSelectable, False)
-        self.setAcceptHoverEvents(False)
-        self.setCursor(Qt.CursorShape.ArrowCursor)
-
     def mousePressEvent(self, event):
         """Handle mouse press - emit signal if selectable."""
         if event.button() == Qt.MouseButton.LeftButton:
@@ -397,12 +369,6 @@ class ArrowItem(QGraphicsSvgItem):
             self.highlight_color = color
         self.is_highlighted = True
         self.update()
-
-    def remove_selection_highlight(self):
-        """Remove selection highlighting."""
-        self.is_highlighted = False
-        self.update()
-
     def paint(self, painter, option, widget=None):
         """Custom paint to show selection highlight."""
         # Draw the SVG first

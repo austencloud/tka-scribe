@@ -6,7 +6,6 @@ functionality without modifying the core domain model.
 """
 
 from dataclasses import dataclass
-from typing import Optional
 
 from desktop.modern.domain.models.enums import Direction, GridPosition, Letter, Timing
 from desktop.modern.domain.models.pictograph_data import PictographData
@@ -28,11 +27,11 @@ class LetterDeterminationPictographData:
 
     # Letter determination specific fields
     beat: int = 0
-    letter: Optional[Letter] = None
-    timing: Optional[Timing] = None
-    direction: Optional[Direction] = None
-    duration: Optional[int] = None
-    letter_type: Optional[str] = None
+    letter: Letter | None = None
+    timing: Timing | None = None
+    direction: Direction | None = None
+    duration: int | None = None
+    letter_type: str | None = None
 
     @property
     def blue_motion(self) -> ExtendedMotionData:
@@ -41,10 +40,6 @@ class LetterDeterminationPictographData:
         if blue_motion_data:
             return ExtendedMotionData.from_motion_data(blue_motion_data)
 
-        # Fallback - create from arrow data if motion data not available
-        blue_arrow = self.pictograph_data.blue_arrow
-        return ExtendedMotionData.from_motion_data(blue_arrow.motion_data)
-
     @property
     def red_motion(self) -> ExtendedMotionData:
         """Get red motion as ExtendedMotionData."""
@@ -52,17 +47,13 @@ class LetterDeterminationPictographData:
         if red_motion_data:
             return ExtendedMotionData.from_motion_data(red_motion_data)
 
-        # Fallback - create from arrow data if motion data not available
-        red_arrow = self.pictograph_data.red_arrow
-        return ExtendedMotionData.from_motion_data(red_arrow.motion_data)
-
     @property
-    def start_pos(self) -> Optional[GridPosition]:
+    def start_pos(self) -> GridPosition | None:
         """Get start position."""
         return self.pictograph_data.start_position
 
     @property
-    def end_pos(self) -> Optional[GridPosition]:
+    def end_pos(self) -> GridPosition | None:
         """Get end position."""
         return self.pictograph_data.end_position
 
@@ -98,7 +89,7 @@ class LetterDeterminationPictographData:
 
         return (blue_is_float and red_is_shift) or (red_is_float and blue_is_shift)
 
-    def get_float_motion(self) -> Optional[ExtendedMotionData]:
+    def get_float_motion(self) -> ExtendedMotionData | None:
         """Get the float motion if present."""
         if self.blue_motion.is_float:
             return self.blue_motion
@@ -106,7 +97,7 @@ class LetterDeterminationPictographData:
             return self.red_motion
         return None
 
-    def get_shift_motion(self) -> Optional[ExtendedMotionData]:
+    def get_shift_motion(self) -> ExtendedMotionData | None:
         """Get the shift motion if present."""
         if self.blue_motion.is_shift:
             return self.blue_motion

@@ -19,45 +19,8 @@ from desktop.modern.core.interfaces.animation_core_interfaces import (
     EasingType,
     IAnimationEngine,
     IAnimationScheduler,
-    IEventBus,
     ISettingsProvider,
 )
-
-
-class SimpleEventBus(IEventBus):
-    """Simple in-memory event bus implementation."""
-
-    def __init__(self):
-        self._subscribers: dict[str, dict[str, Callable]] = {}
-        self._subscription_counter = 0
-
-    def emit(self, event_type: str, data: Any) -> None:
-        """Emit an event to all subscribers."""
-        if event_type in self._subscribers:
-            for handler in self._subscribers[event_type].values():
-                try:
-                    handler(data)
-                except Exception as e:
-                    # Log error but don't let one handler break others
-                    print(f"Event handler error: {e}")
-
-    def subscribe(self, event_type: str, handler: Callable[[Any], None]) -> str:
-        """Subscribe to events."""
-        if event_type not in self._subscribers:
-            self._subscribers[event_type] = {}
-
-        subscription_id = f"{event_type}_{self._subscription_counter}"
-        self._subscription_counter += 1
-
-        self._subscribers[event_type][subscription_id] = handler
-        return subscription_id
-
-    def unsubscribe(self, subscription_id: str) -> None:
-        """Unsubscribe from events."""
-        for event_type, subscribers in self._subscribers.items():
-            if subscription_id in subscribers:
-                del subscribers[subscription_id]
-                break
 
 
 class EasingFunctions:
@@ -217,11 +180,9 @@ class CoreAnimationEngine(IAnimationEngine):
 
     def __init__(
         self,
-        event_bus: IEventBus,
         scheduler: IAnimationScheduler,
         settings_provider: ISettingsProvider,
     ):
-        self.event_bus = event_bus
         self.scheduler = scheduler
         self.settings_provider = settings_provider
         self.active_animations: dict[str, ActiveAnimation] = {}
@@ -330,8 +291,7 @@ class CoreAnimationEngine(IAnimationEngine):
             timestamp=self.scheduler.get_current_time(),
         )
 
-        self.event_bus.emit("animation.started", event)
-        self.event_bus.emit("animation.completed", event)
+        # Animation completed immediately (no events needed)
 
         return animation_id
 
@@ -371,7 +331,7 @@ class CoreAnimationEngine(IAnimationEngine):
                         "animation_type": animation.config.animation_type,
                     },
                 )
-                self.event_bus.emit("animation.frame", frame_event)
+                # Frame update (no events needed)
 
             # Run the animation
             await self.scheduler.schedule_animation(
@@ -396,7 +356,7 @@ class CoreAnimationEngine(IAnimationEngine):
                 timestamp=self.scheduler.get_current_time(),
                 metadata={"error": str(e)},
             )
-            self.event_bus.emit("animation.failed", event)
+            # Animation failed (no events needed)
         finally:
             self._cleanup_animation(animation.id)
 
@@ -428,9 +388,7 @@ class CoreAnimationEngine(IAnimationEngine):
             timestamp=self.scheduler.get_current_time(),
         )
 
-        event_name = f"animation.{state.value}"
-        self.event_bus.emit(event_name, event)
-        self.event_bus.emit("animation.*", event)  # Wildcard event
+        # Animation state changed (no events needed)
 
     def _cleanup_animation(self, animation_id: str) -> None:
         """Clean up completed/cancelled animation."""
@@ -479,8 +437,7 @@ class DefaultSettingsProvider(ISettingsProvider):
 
 def create_default_animation_engine() -> IAnimationEngine:
     """Create a default animation engine with all dependencies."""
-    event_bus = SimpleEventBus()
     scheduler = DefaultAnimationScheduler(fps=60)
     settings_provider = DefaultSettingsProvider()
 
-    return CoreAnimationEngine(event_bus, scheduler, settings_provider)
+    return CoreAnimationEngine(scheduler, settings_provider)

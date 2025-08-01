@@ -43,13 +43,13 @@ class PyToggle(QCheckBox):
     def circle_position(self):
         return self._circle_position
 
-    def hitButton(self, pos):
-        return self.contentsRect().contains(pos)
-
     @circle_position.setter
     def circle_position(self, pos):
         self._circle_position = pos
         self.update()
+
+    def hitButton(self, pos):
+        return self.contentsRect().contains(pos)
 
     def paintEvent(self, e):
         painter = QPainter(self)

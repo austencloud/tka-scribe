@@ -126,14 +126,6 @@ class MotionControlsSection(QFrame):
             toggle = self.motion_toggles.get(color)
             if toggle:
                 toggle.set_active(not visible)
-
-    def update_motion_toggles(self):
-        """Update motion toggle states from simple visibility service."""
-        for color, toggle in self.motion_toggles.items():
-            visible = self.simple_visibility_service.get_motion_visibility(color)
-            if toggle.get_is_active() != visible:
-                toggle.set_active(visible)
-
     def get_motion_states(self) -> dict[str, bool]:
         """
         Get current motion visibility states.

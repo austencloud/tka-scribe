@@ -421,39 +421,6 @@ class ConstructTabLayoutManager:
         """Handle beat modification from graph editor."""
         self.component_connector._on_graph_beat_modified(beat_index, beat_data)
 
-    def _connect_beat_frame_to_graph_editor(self):
-        """Connect beat frame to graph editor (legacy compatibility)."""
-        self.component_connector._connect_beat_frame_signals()
-
-    # Component access methods
-    def get_workbench(self):
-        """Get the workbench component."""
-        return self.workbench
-
-    def get_option_picker(self):
-        """Get the option picker component."""
-        return self.option_picker
-
-    def get_start_position_picker(self):
-        """Get the start position picker component."""
-        return self.start_position_picker
-
-    def get_graph_editor(self):
-        """Get the graph editor component."""
-        return self.graph_editor
-
-    def get_generate_panel(self):
-        """Get the generate panel component."""
-        return self.generate_panel
-
-    def get_export_panel(self):
-        """Get the export panel component (NEW)."""
-        return self.export_panel
-
-    def get_component_connector(self):
-        """Get the component connector for signal access."""
-        return self.component_connector
-
     def _create_real_option_picker(self):
         """Create the real option picker after main window is shown."""
         try:
@@ -462,25 +429,22 @@ class ConstructTabLayoutManager:
                 self.panel_factory.create_option_picker_panel()
             )
 
-            # Replace placeholder with real option picker
-            if hasattr(self, "_option_placeholder"):
-                placeholder_index = self.picker_stack.indexOf(self._option_placeholder)
-                if placeholder_index >= 0:
-                    self.picker_stack.removeWidget(self._option_placeholder)
-                    self._option_placeholder.deleteLater()
-                    self.picker_stack.insertWidget(placeholder_index, option_widget)
+            # Replace the placeholder at index 1
+            self.picker_stack.removeWidget(self.picker_stack.widget(1))
+            self.picker_stack.insertWidget(1, option_widget)
 
-                    # Update orchestrator registration
-                    self.layout_orchestrator.register_component(
-                        "option_picker", self.option_picker
-                    )
+            # Register with orchestrator
+            self.layout_orchestrator.register_component(
+                "option_picker", self.option_picker
+            )
 
-                    # Notify callback that option picker is ready
-                    if self.option_picker_ready_callback:
-                        self.option_picker_ready_callback(self.option_picker)
+            print("✅ Real option picker created and integrated")
+
+            # Notify callback if provided
+            if self.option_picker_ready_callback:
+                self.option_picker_ready_callback(self.option_picker)
 
         except Exception as e:
-            print(f"❌ [LAYOUT_MANAGER] Error creating deferred option picker: {e}")
-            import traceback
+            print(f"❌ Failed to create real option picker: {e}")
 
-            traceback.print_exc()
+    # Component access methods

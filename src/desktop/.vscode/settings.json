@@ -1,0 +1,204 @@
+{
+  // === Python Configuration ===
+  "python.defaultInterpreterPath": ".venv/Scripts/python.exe",
+  "python.analysis.autoImportCompletions": true,
+  "python.analysis.autoSearchPaths": true,
+  "python.analysis.extraPaths": [
+    "./modern/src",
+    "./legacy",
+    "../..",
+    "../../src",
+    "../../src/desktop/modern/src",
+    "../../launcher",
+    "../../packages"
+  ],
+  "python.analysis.include": [
+    "./modern/**",
+    "./legacy/**",
+    "./data/**",
+    "./images/**"
+  ],
+  "python.analysis.exclude": [
+    "**/__pycache__/**",
+    "**/.pytest_cache/**",
+    "**/node_modules/**",
+    "**/*.pyc"
+  ],
+  "python.analysis.useLibraryCodeForTypes": true,
+  "python.analysis.typeCheckingMode": "basic",
+  "python.analysis.diagnosticMode": "workspace",
+  "python.analysis.completeFunctionParens": true,
+
+  // === Testing Configuration ===
+  "python.testing.pytestEnabled": true,
+  "python.testing.unittestEnabled": false,
+  "python.testing.pytestArgs": [
+    "tests",
+    "--tb=short",
+    "-v"
+  ],
+  "python.testing.autoTestDiscoverOnSaveEnabled": true,
+
+  // === Linting & Formatting ===
+  // Using Ruff as the primary linter and formatter (replaces Black + Flake8)
+  "ruff.enable": true,
+  "ruff.lineLength": 88,
+  "ruff.fixAll": true,
+  "ruff.organizeImports": true,
+  "ruff.codeAction.fixViolation.enable": true,
+  "ruff.codeAction.disableRuleComment.enable": true,
+  "ruff.lint.enable": true,
+  "ruff.lint.select": [
+    "E",    // pycodestyle errors
+    "W",    // pycodestyle warnings
+    "F",    // Pyflakes
+    "I",    // isort
+    "B",    // flake8-bugbear
+    "C4",   // flake8-comprehensions
+    "UP",   // pyupgrade
+    "SIM",  // flake8-simplify
+    "RUF"   // Ruff-specific rules
+  ],
+  "ruff.lint.ignore": [
+    "E203",   // whitespace before ':'
+    "E501",   // line too long (handled by formatter)
+    "W503"    // line break before binary operator
+  ],
+  
+  // Disable old linting/formatting tools in favor of Ruff
+  "python.linting.enabled": false,
+  "python.linting.pylintEnabled": false,
+  "python.linting.flake8Enabled": false,
+  "python.formatting.provider": "none",
+  "[python]": {
+    "editor.formatOnSave": true,
+    "editor.formatOnType": false,
+    "editor.codeActionsOnSave": {
+      "source.fixAll": "explicit",
+      "source.organizeImports": "explicit"
+    },
+    "editor.defaultFormatter": "charliermarsh.ruff"
+  },
+
+  // === Editor Configuration ===
+  "editor.rulers": [88, 120],
+  "editor.tabSize": 4,
+  "editor.insertSpaces": true,
+  "editor.detectIndentation": false,
+  "editor.trimAutoWhitespace": true,
+  "editor.renderWhitespace": "boundary",
+  "editor.wordWrap": "on",
+  "editor.wordWrapColumn": 88,
+  "editor.bracketPairColorization.enabled": true,
+  "editor.guides.bracketPairs": true,
+  "editor.minimap.enabled": true,
+  "editor.minimap.maxColumn": 88,
+
+  // === File Associations ===
+  "files.associations": {
+    "*.py": "python",
+    "*.pyx": "python",
+    "*.pyi": "python",
+    "*.json": "jsonc",
+    "*.ini": "ini",
+    "settings.json": "jsonc",
+    "launch.json": "jsonc",
+    "tasks.json": "jsonc"
+  },
+
+  // === File Exclusions ===
+  "files.exclude": {
+    "**/__pycache__": true,
+    "**/*.pyc": true,
+    "**/.pytest_cache": true,
+    "**/node_modules": true,
+    "**/.git": true,
+    "**/.DS_Store": true,
+    "**/Thumbs.db": true,
+    "**/*.egg-info": true,
+    "**/build": true,
+    "**/dist": true
+  },
+
+  // === Search Configuration ===
+  "search.exclude": {
+    "**/__pycache__": true,
+    "**/*.pyc": true,
+    "**/.pytest_cache": true,
+    "**/node_modules": true,
+    "**/.git": true,
+    "**/*.egg-info": true,
+    "**/build": true,
+    "**/dist": true,
+    "**/.venv": true,
+    "**/venv": true
+  },
+
+  // === IntelliSense & Autocomplete ===
+  "editor.suggest.insertMode": "replace",
+  "editor.suggest.showStatusBar": true,
+  "editor.acceptSuggestionOnCommitCharacter": true,
+  "editor.acceptSuggestionOnEnter": "on",
+  "editor.quickSuggestions": {
+    "other": true,
+    "comments": false,
+    "strings": true
+  },
+
+  // === Git Configuration ===
+  "git.ignoreLimitWarning": true,
+  "git.autofetch": true,
+  "git.confirmSync": false,
+  "git.enableSmartCommit": true,
+
+  // === Terminal Configuration ===
+  "terminal.integrated.defaultProfile.windows": "Git Bash",
+  "terminal.integrated.profiles.windows": {
+    "PowerShell": {
+      "source": "PowerShell",
+      "icon": "terminal-powershell"
+    },
+    "Command Prompt": {
+      "path": [
+        "${env:windir}\\Sysnative\\cmd.exe",
+        "${env:windir}\\System32\\cmd.exe"
+      ],
+      "args": [],
+      "icon": "terminal-cmd"
+    },
+    "Git Bash": {
+      "source": "Git Bash"
+    }
+  },
+
+  // === Workspace Specific ===
+  "workbench.colorTheme": "Default Dark+",
+  "workbench.iconTheme": "vs-seti",
+  "workbench.editor.enablePreview": false,
+  "workbench.editor.enablePreviewFromQuickOpen": false,
+  "explorer.confirmDragAndDrop": false,
+  "explorer.confirmDelete": false,
+
+  // === PyQt/Qt Specific ===
+  "qt.searchPaths": [
+    "./modern/src",
+    "./legacy"
+  ],
+
+  // === Debug Configuration ===
+  "debug.console.fontSize": 14,
+  "debug.console.lineHeight": 22,
+  "debug.inlineValues": "auto",
+  "debug.showBreakpointsInOverviewRuler": true,
+
+  // === Performance ===
+  "files.watcherExclude": {
+    "**/__pycache__/**": true,
+    "**/.pytest_cache/**": true,
+    "**/node_modules/**": true,
+    "**/.git/**": true,
+    "**/build/**": true,
+    "**/dist/**": true,
+    "**/.venv/**": true
+  }
+}

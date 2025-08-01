@@ -81,9 +81,6 @@ class EventHandlerHelper:
                 print("🧹 [WORKBENCH] Initializing cleared start position view...")
                 self.workbench._beat_frame_section.initialize_cleared_start_position()
 
-            # Update button panel state after clearing
-            self.workbench._update_button_panel_sequence_state()
-
         # Also emit the signal for any parent handlers
         self.workbench.clear_sequence_requested.emit()
 

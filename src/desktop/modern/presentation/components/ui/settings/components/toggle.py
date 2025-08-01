@@ -29,15 +29,6 @@ class Toggle(QCheckBox):
 
         self.setFixedSize(self._switch_width, self._switch_height)
 
-    def get_thumb_position(self):
-        return self._thumb_position
-
-    def set_thumb_position(self, pos):
-        self._thumb_position = pos
-        self.update()
-
-    thumb_position = property(get_thumb_position, set_thumb_position)
-
     def _animate_toggle(self, checked):
         """Animate toggle switch."""
         start_pos = 0.0 if not checked else 1.0

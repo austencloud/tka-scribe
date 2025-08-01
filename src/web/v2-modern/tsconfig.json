@@ -1,0 +1,51 @@
+{
+	"extends": "./.svelte-kit/tsconfig.json",
+	"compilerOptions": {
+		"allowJs": true,
+		"checkJs": true,
+		"esModuleInterop": true,
+		"forceConsistentCasingInFileNames": true,
+		"resolveJsonModule": true,
+		"skipLibCheck": true,
+		"sourceMap": true,
+		"strict": true,
+		"moduleResolution": "bundler",
+		"target": "ES2022",
+		"module": "ESNext",
+		"lib": ["ES2022", "DOM", "DOM.Iterable"],
+		"declaration": true,
+		"declarationMap": true,
+		"allowSyntheticDefaultImports": true,
+		
+		// Path mapping for clean imports
+		"paths": {
+			"$lib": ["./src/lib"],
+			"$lib/*": ["./src/lib/*"],
+			"$domain": ["./src/lib/domain"],
+			"$domain/*": ["./src/lib/domain/*"],
+			"$services": ["./src/lib/services"],
+			"$services/*": ["./src/lib/services/*"],
+			"$stores": ["./src/lib/stores"],
+			"$stores/*": ["./src/lib/stores/*"],
+			"$components": ["./src/lib/components"],
+			"$components/*": ["./src/lib/components/*"],
+			"$utils": ["./src/lib/utils"],
+			"$utils/*": ["./src/lib/utils/*"],
+			"@tka/schemas": ["../../../schemas/generated-types.ts"],
+			"@tka/shared": ["../shared"],
+			"@tka/shared/*": ["../shared/*"]
+		}
+	},
+	"include": [
+		"src/**/*.d.ts",
+		"src/**/*.ts",
+		"src/**/*.js",
+		"src/**/*.svelte"
+	],
+	"exclude": [
+		"node_modules/**",
+		".svelte-kit/**",
+		"dist/**",
+		"build/**"
+	]
+}

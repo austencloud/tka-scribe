@@ -2,6 +2,22 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "name": "🚀 TKA Modern Desktop App (F5 Default)",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/src/desktop/modern/main.py",
+      "console": "integratedTerminal",
+      "justMyCode": false,
+      "cwd": "${workspaceFolder}",
+      "env": {
+        "PYTHONUNBUFFERED": "1",
+        "PYTHONPATH": "${workspaceFolder};${workspaceFolder}/src/desktop/modern/src;${workspaceFolder}/src/desktop;${workspaceFolder}/src;${workspaceFolder}/launcher;${workspaceFolder}/packages"
+      },
+      "stopOnEntry": false,
+      "showReturnValue": true,
+      "subProcess": true
+    },
+    {
       "name": "🚀 TKA Launcher",
       "type": "debugpy",
       "request": "launch",
@@ -22,22 +38,6 @@
       "type": "debugpy",
       "request": "launch",
       "program": "${workspaceFolder}/main.py",
-      "console": "integratedTerminal",
-      "justMyCode": false,
-      "cwd": "${workspaceFolder}",
-      "env": {
-        "PYTHONUNBUFFERED": "1",
-        "PYTHONPATH": "${workspaceFolder};${workspaceFolder}/src/desktop/modern/src;${workspaceFolder}/src/desktop;${workspaceFolder}/src;${workspaceFolder}/launcher;${workspaceFolder}/packages"
-      },
-      "stopOnEntry": false,
-      "showReturnValue": true,
-      "subProcess": true
-    },
-    {
-      "name": "🚀 TKA Modern Desktop App",
-      "type": "debugpy",
-      "request": "launch",
-      "program": "${workspaceFolder}/src/desktop/modern/main.py",
       "console": "integratedTerminal",
       "justMyCode": false,
       "cwd": "${workspaceFolder}",

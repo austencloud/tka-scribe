@@ -328,12 +328,6 @@ class SplashScreen(QWidget):
             x = screen_geometry.x() + (screen_geometry.width() - self.width()) // 2
             y = screen_geometry.y() + (screen_geometry.height() - self.height()) // 2
             self.move(x, y)
-
-    def show_animated(self):
-        self.show()
-        self.fade_in_animation.start()
-        return self.fade_in_animation  # Return animation for callback connection
-
     def update_progress(self, value: int, message: str = ""):
         if self.is_closing:
             return
@@ -354,34 +348,6 @@ class SplashScreen(QWidget):
             from PyQt6.QtWidgets import QApplication
 
             QApplication.processEvents()
-
-    def hide_animated(self, callback=None):
-        if self.is_closing:
-            return
-
-        self.is_closing = True
-        if hasattr(self, "pulse_timer"):
-            self.pulse_timer.stop()
-        if hasattr(self, "loading_timer"):
-            self.loading_timer.stop()
-
-        fade_out = QPropertyAnimation(self, b"windowOpacity")
-        fade_out.setDuration(600)
-        fade_out.setStartValue(1.0)
-        fade_out.setEndValue(0.0)
-        fade_out.setEasingCurve(QEasingCurve.Type.InCubic)
-
-        def on_finished():
-            self.close()
-            if callback:
-                callback()
-
-        fade_out.finished.connect(on_finished)
-        fade_out.start()
-
-        # Store reference to prevent garbage collection
-        self._fade_out_animation = fade_out
-
     def close(self):
         self.is_closing = True
         if hasattr(self, "pulse_timer"):

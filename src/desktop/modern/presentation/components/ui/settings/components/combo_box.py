@@ -114,18 +114,3 @@ class ComboBox(QComboBox):
             }
         """
         )
-
-    def set_items(self, items: list[str]):
-        """Set combo box items."""
-        self.clear()
-        self.addItems(items)
-
-    def get_current_data(self) -> Any:
-        """Get current item data."""
-        return self.currentData()
-
-    def set_current_by_data(self, data: Any):
-        """Set current item by data."""
-        index = self.findData(data)
-        if index >= 0:
-            self.setCurrentIndex(index)

@@ -12,8 +12,9 @@
   "editor.formatOnSave": true,
   "editor.formatOnPaste": true,
   "editor.formatOnType": false,
+  "editor.largeFileOptimizations": true,
 
-  // === RUFF CONFIGURATION (REPLACES BLACK + ISORT + PYLINT) ===
+  // === RUFF CONFIGURATION - AUTO FORMATTING ENABLED ===
   "[python]": {
     "editor.defaultFormatter": "charliermarsh.ruff",
     "editor.formatOnSave": true,
@@ -23,19 +24,65 @@
     }
   },
 
-  // === DISABLE OLD TOOLS TO SAVE MEMORY ===
+  // === RUFF EXTENSION SETTINGS ===
+  "ruff.enable": true,
+  "ruff.organizeImports": true,
+  "ruff.fixAll": true,
+
+  // === DISABLE OLD TOOLS TO AVOID CONFLICTS ===
   "python.linting.enabled": false,
   "python.linting.pylintEnabled": false,
   "python.formatting.provider": "none",
   "python.formatting.blackEnabled": false,
   "isort.check": false,
 
-  // === PERFORMANCE OPTIMIZATIONS ===
-  // Reduce Python analysis memory usage
+  // === PYTHON LANGUAGE SERVER - FIXED FOR CONSISTENT HIGHLIGHTING ===
+  "python.languageServer": "Pylance",
+  "python.analysis.typeCheckingMode": "basic",
+  "python.analysis.autoSearchPaths": true,
   "python.analysis.memory.keepLibraryAst": false,
-  "python.analysis.autoImportCompletions": false,
-  "python.analysis.indexing": false,
-  "python.analysis.diagnosticMode": "openFilesOnly",
+  "python.analysis.autoImportCompletions": true,
+  "python.analysis.indexing": true,
+  "python.analysis.diagnosticMode": "workspace",
+
+  // === EDITOR FEATURES - ALL ENABLED FOR PROPER CODING ===
+  "editor.semanticHighlighting.enabled": true,
+  "editor.inlineSuggest.enabled": true,
+  "editor.minimap.enabled": true,
+  "editor.codeLens": true,
+  "editor.parameterHints.enabled": true,
+  "editor.quickSuggestions": {
+    "other": true,
+    "comments": false,
+    "strings": true
+  },
+  "editor.suggestOnTriggerCharacters": true,
+  "editor.acceptSuggestionOnEnter": "on",
+  "editor.wordBasedSuggestions": "matchingDocuments",
+  "editor.bracketPairColorization.enabled": true,
+  "editor.guides.bracketPairs": true,
+
+  // === INTELLISENSE - ALL ESSENTIAL FEATURES ENABLED ===
+  "editor.suggest.showMethods": true,
+  "editor.suggest.showFunctions": true,
+  "editor.suggest.showConstructors": true,
+  "editor.suggest.showFields": true,
+  "editor.suggest.showVariables": true,
+  "editor.suggest.showClasses": true,
+  "editor.suggest.showStructs": true,
+  "editor.suggest.showInterfaces": true,
+  "editor.suggest.showModules": true,
+  "editor.suggest.showProperties": true,
+  "editor.suggest.showEvents": true,
+  "editor.suggest.showOperators": true,
+  "editor.suggest.showValues": true,
+  "editor.suggest.showConstants": true,
+  "editor.suggest.showEnums": true,
+  "editor.suggest.showEnumMembers": true,
+  "editor.suggest.showKeywords": true,
+  "editor.suggest.showSnippets": true,
+  "editor.suggest.showReferences": true,
+  "editor.suggest.showTypeParameters": true,
 
   // === WEB/JS FORMATTERS ===
   "[javascript]": {
@@ -66,35 +113,48 @@
     "**/*.pyo": true,
     "**/.pytest_cache": true,
     "**/.mypy_cache": true,
+    "**/.ruff_cache": true,
     "**/node_modules": true,
     "**/.git": true,
     "**/.DS_Store": true,
     "**/Thumbs.db": true,
-    // TKA specific - exclude heavy directories
     "**/image_cache/**": true,
     "**/exports/**": true,
-    "**/.benchmarks/**": true
+    "**/.benchmarks/**": true,
+    "**/function_removal_backups/**": true,
+    "**/test_reports/**": true,
+    "**/.venv/**": true,
+    "**/venv/**": true,
+    "**/env/**": true,
+    "**/*.log": true,
+    "**/*.tmp": true,
+    "**/*.backup": true,
+    "**/.hypothesis/**": true
   },
 
-  // === AGGRESSIVE FILE WATCHER EXCLUSIONS ===
+  // === FILE WATCHER EXCLUSIONS ===
   "files.watcherExclude": {
-    "**/.git/objects/**": true,
-    "**/.git/subtree-cache/**": true,
+    "**/.git/**": true,
     "**/.venv/**": true,
     "**/env/**": true,
     "**/venv/**": true,
     "**/__pycache__/**": true,
     "**/.pytest_cache/**": true,
     "**/.mypy_cache/**": true,
+    "**/.ruff_cache/**": true,
     "**/node_modules/**": true,
     "**/dist/**": true,
     "**/build/**": true,
-    // TKA specific heavy directories
     "**/images/**": true,
     "**/image_cache/**": true,
     "**/exports/**": true,
     "**/.benchmarks/**": true,
-    "**/test_reports/**": true
+    "**/test_reports/**": true,
+    "**/function_removal_backups/**": true,
+    "**/.hypothesis/**": true,
+    "**/*.backup": true,
+    "**/*.log": true,
+    "**/*.tmp": true
   },
 
   // === SEARCH EXCLUSIONS ===
@@ -104,22 +164,51 @@
     "**/build/**": true,
     "**/__pycache__/**": true,
     "**/.pytest_cache/**": true,
+    "**/.ruff_cache/**": true,
     "**/.venv/**": true,
     "**/venv/**": true,
     "**/env/**": true,
-    // TKA specific
+    "**/.git/**": true,
     "**/images/**": true,
     "**/image_cache/**": true,
     "**/exports/**": true,
-    "**/.benchmarks/**": true
+    "**/.benchmarks/**": true,
+    "**/function_removal_backups/**": true,
+    "**/test_reports/**": true,
+    "**/.hypothesis/**": true,
+    "**/*.backup": true,
+    "**/*.log": true,
+    "**/*.json.backup": true
   },
+
+  // === HIGH MEMORY SYSTEM CONFIGURATION ===
+  "files.maxMemoryForLargeFilesMB": 65536,
+  "typescript.tsserver.maxTsServerMemory": 16384,
+  "python.analysis.memory.keepLibraryLocalVariables": false,
 
   // === GIT PERFORMANCE ===
   "git.autoRepositoryDetection": "subFolders",
   "git.autofetch": false,
   "git.enableStatusBarSync": false,
 
-  // === DISABLE HEAVY EXTENSIONS ===
+  // === TESTING CONFIGURATION ===
+  "python.testing.pytestArgs": [".", "-v", "--tb=short"],
+  "python.testing.unittestEnabled": false,
+  "python.testing.pytestEnabled": true,
+  "python.testing.cwd": "${workspaceFolder}",
+  "python.testing.autoTestDiscoverOnSaveEnabled": false,
+  "python.testing.pytestPath": "./.venv/Scripts/pytest.exe",
+
+  // === TYPESCRIPT PERFORMANCE ===
+  "typescript.preferences.includePackageJsonAutoImports": "off",
+  "typescript.suggest.autoImports": true,
+
+  // === MINIMAL BACKGROUND OPTIMIZATIONS ===
+  "extensions.autoCheckUpdates": false,
+  "extensions.autoUpdate": false,
+  "telemetry.telemetryLevel": "off",
+
+  // === SPELL CHECK ===
   "cSpell.enabled": false,
   "cSpell.ignorePaths": [
     "**/node_modules/**",
@@ -133,112 +222,5 @@
     "**/*.dll",
     "**/*.pyd",
     "**/*.pyc"
-  ],
-
-  // === TESTING CONFIGURATION ===
-  "python.testing.pytestArgs": [".", "-v", "--tb=short"],
-  "python.testing.unittestEnabled": false,
-  "python.testing.pytestEnabled": true,
-  "python.testing.cwd": "${workspaceFolder}",
-  "python.testing.autoTestDiscoverOnSaveEnabled": false,
-  "python.testing.pytestPath": "./.venv/Scripts/pytest.exe",
-
-  // === TYPESCRIPT PERFORMANCE (for web components) ===
-  "typescript.preferences.includePackageJsonAutoImports": "off",
-  "typescript.suggest.autoImports": false,
-  "typescript.disableAutomaticTypeAcquisition": true,
-
-  // === ADDITIONAL PERFORMANCE OPTIMIZATIONS ===
-  // Reduce VS Code's own resource usage
-  "workbench.enableExperiments": false,
-  "workbench.settings.enableNaturalLanguageSearch": false,
-  "extensions.autoCheckUpdates": false,
-  "extensions.autoUpdate": false,
-  "update.enableWindowsBackgroundUpdates": false,
-  "telemetry.telemetryLevel": "off",
-
-  // Optimize file operations
-  "files.hotExit": "onExitAndWindowClose",
-  "files.enableTrash": false,
-  "files.simpleDialog.enable": true,
-  "files.maxMemoryForLargeFilesMB": 4096,
-
-  // Reduce editor overhead
-  "editor.hover.delay": 1000,
-  "editor.quickSuggestions": {
-    "other": false,
-    "comments": false,
-    "strings": false
-  },
-  "editor.suggestOnTriggerCharacters": false,
-  "editor.acceptSuggestionOnEnter": "off",
-  "editor.wordBasedSuggestions": "off",
-  "editor.parameterHints.enabled": false,
-  "editor.renderWhitespace": "none",
-  "editor.renderControlCharacters": false,
-  "editor.minimap.enabled": false,
-  "editor.codeLens": false,
-  "editor.bracketPairColorization.enabled": true,
-  "editor.guides.bracketPairs": false,
-
-  // Disable heavy IntelliSense features
-  "editor.inlineSuggest.enabled": false,
-  "editor.unicodeHighlight.ambiguousCharacters": false,
-  "editor.unicodeHighlight.invisibleCharacters": false,
-
-  // Window performance
-  "window.titleBarStyle": "custom",
-  "window.experimentalControlOverlay": false,
-
-  // Git performance improvements
-  "git.decorations.enabled": false,
-  "git.enableCommitSigning": false,
-  "scm.diffDecorations": "none",
-
-  // Disable resource-heavy features
-  "problems.decorations.enabled": false,
-  "outline.problems.enabled": false,
-  "breadcrumbs.enabled": false,
-
-  // Reduce Git notifications
-  "git.showProgress": false,
-  "git.showActionButton": {
-    "commit": false,
-    "publish": false,
-    "sync": false
-  },
-
-  // NUCLEAR OPTION: ELIMINATE ALL GIT POPUPS AND NOTIFICATIONS FOREVER
-  "git.allowNoVerifyCommit": true,
-  "git.alwaysSignOff": false,
-  "git.confirmSync": false,
-  "git.showCommitInput": false,
-  "git.showInlineOpenFileAction": false,
-  "git.showPushSuccessNotification": false,
-  "git.showCommitSuccessNotification": false,
-  "git.showHookOutput": false,
-  "git.showOutputTab": false,
-  "git.verboseCommit": false,
-  "git.silenceUntrackedChanges": true,
-  "git.ignoredByDefault": true,
-  "git.promptToSaveFilesBeforeCommit": "never",
-  "git.promptToSaveFilesBeforeStash": "never",
-  "git.allowForcePush": true,
-  "git.allowNoVerifyPush": true,
-  "git.rebaseWhenSync": false,
-  "git.fetchOnPull": false,
-  "git.pruneOnFetch": false,
-  "git.showUnpublishedCommitsButton": "never",
-  "git.showSyncButton": false,
-  "git.suggestSmartCommit": false,
-  "git.enableSmartCommit": false,
-  "git.smartCommitChanges": false,
-  "git.useCommitInputAsStashMessage": false,
-  "git.inputValidation": true,
-  "git.inputValidationLength": 50000,
-  "git.inputValidationSubjectLength": 50000,
-  "git.untrackedChanges": "hidden",
-  "git.ignoreSubmodules": true,
-  "git.detectSubmodules": false,
-  "git.detectSubmodulesLimit": 0
+  ]
 }

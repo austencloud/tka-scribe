@@ -36,7 +36,15 @@ class StartPositionDataService(IStartPositionDataService):
         Args:
             dataset_service: Optional dataset service for dependency injection
         """
-        self.dataset_service = dataset_service or DatasetQuery()
+        if dataset_service:
+            self.dataset_service = dataset_service
+        else:
+            # Create DataManager and DatasetQuery
+            from desktop.modern.core.config.data_config import create_data_config
+            from shared.application.services.data.data_service import DataManager
+
+            data_manager = DataManager(create_data_config())
+            self.dataset_service = DatasetQuery(data_manager)
         logger.debug("StartPositionDataService initialized")
 
     def get_position_data(

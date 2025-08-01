@@ -10,7 +10,6 @@ Phase 0 - Days 2-3: Strategic partial refactoring for Sprint 2 preparation.
 """
 
 from abc import ABC, abstractmethod
-from typing import Optional
 
 from PyQt6.QtCore import QObject, pyqtSignal
 
@@ -36,15 +35,15 @@ class IWorkbenchButtonInterface(ABC):
         """Delete the currently selected beat from the sequence."""
 
     @abstractmethod
-    def get_current_sequence(self) -> Optional[SequenceData]:
+    def get_current_sequence(self) -> SequenceData | None:
         """Get the current sequence being edited."""
 
     @abstractmethod
-    def get_selected_beat_index(self) -> Optional[int]:
+    def get_selected_beat_index(self) -> int | None:
         """Get the index of the currently selected beat."""
 
     @abstractmethod
-    def get_start_position(self) -> Optional[BeatData]:
+    def get_start_position(self) -> BeatData | None:
         """Get the current start position data."""
 
     @abstractmethod
