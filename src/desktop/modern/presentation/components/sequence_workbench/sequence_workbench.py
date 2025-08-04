@@ -21,12 +21,6 @@ from typing import TYPE_CHECKING, Optional
 
 from PyQt6.QtCore import pyqtSignal
 from PyQt6.QtWidgets import QWidget
-
-from desktop.modern.core.dependency_injection.di_container import DIContainer
-from desktop.modern.core.interfaces.core_services import ILayoutService
-from desktop.modern.domain.models import BeatData, SequenceData
-from desktop.modern.domain.models.pictograph_data import PictographData
-from desktop.modern.presentation.components.component_base import ViewableComponentBase
 from shared.application.services.workbench.workbench_operation_coordinator import (
     OperationResult,
     OperationType,
@@ -38,6 +32,12 @@ from shared.application.services.workbench.workbench_session_manager import (
 from shared.application.services.workbench.workbench_state_manager import (
     WorkbenchStateManager,
 )
+
+from desktop.modern.core.dependency_injection.di_container import DIContainer
+from desktop.modern.core.interfaces.core_services import ILayoutService
+from desktop.modern.domain.models import BeatData, SequenceData
+from desktop.modern.domain.models.pictograph_data import PictographData
+from desktop.modern.presentation.components.component_base import ViewableComponentBase
 
 from .beat_frame_section import WorkbenchBeatFrameSection
 from .button_interface import WorkbenchButtonInterfaceAdapter
@@ -161,9 +161,6 @@ class SequenceWorkbench(ViewableComponentBase):
 
             self._setup_state_monitoring()  # CRITICAL FIX: Monitor state manager changes
             print("🔧 [WORKBENCH] State monitoring setup complete")
-
-            self._setup_event_subscriptions()  # NEW: Subscribe to event bus events
-            print("🔧 [WORKBENCH] Event subscriptions setup complete")
 
             print("✅ [WORKBENCH] Deferred initialization completed successfully")
 

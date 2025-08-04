@@ -13,40 +13,7 @@ from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Any
 
-# Conditional PyQt6 imports for testing compatibility
-try:
-    from PyQt6.QtCore import QTimer
-
-    QT_AVAILABLE = True
-except ImportError:
-    # Mock QTimer for testing when Qt is not available
-    class QTimer:
-        def __init__(self):
-            self.timeout = None
-            self._single_shot = False
-
-        def setSingleShot(self, single_shot: bool):
-            self._single_shot = single_shot
-
-        def start(self, msec: int):
-            pass
-
-        def stop(self):
-            pass
-
-    QT_AVAILABLE = False
-
-# Event system imports with fallback
-try:
-    from desktop.modern.core.events.event_bus import get_event_bus
-
-    EVENT_SYSTEM_AVAILABLE = True
-except ImportError:
-    # Event system not available - use fallback
-    def get_event_bus():
-        return None
-
-    EVENT_SYSTEM_AVAILABLE = False
+from PyQt6.QtCore import QTimer
 
 from desktop.modern.core.interfaces.core_services import IUIStateManager
 from desktop.modern.core.interfaces.organization_services import IFileSystemService
@@ -102,7 +69,7 @@ class SessionStateTracker(ISessionStateTracker):
         self.session_staleness_hours = 24  # Consider session stale after 24 hours
 
         # Setup auto-save timer
-        self._auto_save_timer = QTimer() if QT_AVAILABLE else None
+        self._auto_save_timer = QTimer()
         self._setup_auto_save_timer()
 
     def _setup_auto_save_timer(self) -> None:

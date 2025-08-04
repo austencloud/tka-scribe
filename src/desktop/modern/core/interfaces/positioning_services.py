@@ -6,7 +6,7 @@ that follow TKA's clean architecture principles.
 """
 
 from abc import ABC, abstractmethod
-from typing import Any, Optional
+from typing import Any
 
 from desktop.modern.core.types import Point
 from desktop.modern.domain.models.arrow_data import ArrowData
@@ -21,7 +21,7 @@ class IArrowLocationCalculator(ABC):
 
     @abstractmethod
     def calculate_location(
-        self, motion: MotionData, pictograph_data: Optional[PictographData] = None
+        self, motion: MotionData, pictograph_data: PictographData | None = None
     ) -> Location:
         """
         Calculate the arrow location based on motion type and data.
@@ -101,7 +101,7 @@ class IArrowPositioningOrchestrator(ABC):
         self,
         arrow_data: ArrowData,
         pictograph_data: PictographData,
-        motion_data: Optional[MotionData] = None,
+        motion_data: MotionData | None = None,
     ) -> tuple[float, float, float]:
         """
         Calculate complete arrow position using the positioning pipeline.
@@ -159,19 +159,17 @@ class IPositionMapper(ABC):
     """Interface for position matching and calculation services."""
 
     @abstractmethod
-    def extract_end_position(self, last_beat: dict[str, Any]) -> Optional[str]:
+    def extract_end_position(self, last_beat: dict[str, Any]) -> str | None:
         """Extract end position from beat data."""
 
     @abstractmethod
     def calculate_end_position_from_motions(
         self, beat_data: dict[str, Any]
-    ) -> Optional[str]:
+    ) -> str | None:
         """Calculate end position from motion attributes."""
 
     @abstractmethod
-    def get_position_from_locations(
-        self, start_loc: str, end_loc: str
-    ) -> Optional[str]:
+    def get_position_from_locations(self, start_loc: str, end_loc: str) -> str | None:
         """Get position key from start and end locations."""
 
     @abstractmethod
@@ -179,7 +177,7 @@ class IPositionMapper(ABC):
         """Check if beat data has motion attributes."""
 
     @abstractmethod
-    def extract_modern_end_position(self, beat_data: BeatData) -> Optional[str]:
+    def extract_modern_end_position(self, beat_data: BeatData) -> str | None:
         """Extract end position directly from Modern BeatData."""
 
 
@@ -355,19 +353,3 @@ class IOrientationCalculator(ABC):
     @abstractmethod
     def validate_orientation(self, orientation: Any) -> bool:
         """Validate orientation data."""
-
-
-class IQuadrantAdjuster(ABC):
-    """Interface for quadrant adjustment operations."""
-
-    @abstractmethod
-    def adjust_for_quadrant(self, position: Any, quadrant: str) -> Any:
-        """Adjust position for specific quadrant."""
-
-    @abstractmethod
-    def get_quadrant(self, position: Any) -> str:
-        """Get quadrant for position."""
-
-    @abstractmethod
-    def validate_quadrant(self, quadrant: str) -> bool:
-        """Validate quadrant identifier."""

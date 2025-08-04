@@ -7,43 +7,10 @@ Shift/Ctrl modifiers, and X/Z/C special commands.
 This is a pure service implementation that follows TKA testing patterns.
 """
 
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
-# Conditional Qt imports for testing compatibility
-try:
-    from PyQt6.QtCore import Qt
-    from PyQt6.QtGui import QKeyEvent
-
-    QT_AVAILABLE = True
-except ImportError:
-    # Mock Qt classes for testing
-    class Qt:
-        class Key:
-            Key_W = "w"
-            Key_A = "a"
-            Key_S = "s"
-            Key_D = "d"
-            Key_X = "x"
-            Key_Z = "z"
-            Key_C = "c"
-
-        class KeyboardModifier:
-            NoModifier = 0
-            ShiftModifier = 1
-            ControlModifier = 2
-
-    class QKeyEvent:
-        def __init__(self, key, modifiers=0):
-            self._key = key
-            self._modifiers = modifiers
-
-        def key(self):
-            return self._key
-
-        def modifiers(self):
-            return self._modifiers
-
-    QT_AVAILABLE = False
+from PyQt6.QtCore import Qt
+from PyQt6.QtGui import QKeyEvent
 
 if TYPE_CHECKING:
     from desktop.modern.core.interfaces.workbench_services import IGraphEditorService
@@ -57,7 +24,7 @@ class GraphEditorHotkeyManager:
     making it easier to test and more service-layer appropriate.
     """
 
-    def __init__(self, graph_service: "IGraphEditorService"):
+    def __init__(self, graph_service: "IGraphEditorService", callback_handler=None):
         self.graph_service = graph_service
 
         # Movement increment settings
@@ -65,11 +32,24 @@ class GraphEditorHotkeyManager:
         self.shift_increment = 20
         self.ctrl_shift_increment = 200
 
-        # Callback handlers (set externally)
-        self.on_arrow_moved = None
-        self.on_rotation_override = None
-        self.on_special_placement_removal = None
-        self.on_prop_placement_override = None
+        # Set up callback handlers
+        if callback_handler:
+            self.on_arrow_moved = getattr(callback_handler, "on_arrow_moved", None)
+            self.on_rotation_override = getattr(
+                callback_handler, "on_rotation_override_requested", None
+            )
+            self.on_special_placement_removal = getattr(
+                callback_handler, "on_special_placement_removal_requested", None
+            )
+            self.on_prop_placement_override = getattr(
+                callback_handler, "on_prop_placement_override_requested", None
+            )
+        else:
+            # Callback handlers (set externally)
+            self.on_arrow_moved = None
+            self.on_rotation_override = None
+            self.on_special_placement_removal = None
+            self.on_prop_placement_override = None
 
     def handle_key_event(self, event: QKeyEvent) -> bool:
         """Handle keyboard events and return True if handled"""
@@ -101,16 +81,12 @@ class GraphEditorHotkeyManager:
 
         return False
 
-    def _get_selected_arrow(self) -> Optional[str]:
+    def _get_selected_arrow(self) -> str | None:
         """Get the currently selected arrow from the graph service"""
         # TODO: Add method to graph service interface to get selected arrow
-        # For now, assume we have a selected arrow if we have a selected beat
-        if hasattr(self.graph_service, "get_selected_beat"):
-            beat = self.graph_service.get_selected_beat()
-            if beat:
-                # Default to blue arrow for now
-                return "blue"
-        return None
+        # For now, return a default arrow since the interface doesn't have selection methods yet
+        # This will need to be updated when the interface is extended
+        return "blue"  # Default to blue arrow for now
 
     def _handle_arrow_movement(self, key, modifiers, arrow_id: str) -> bool:
         """Handle WASD arrow movement with modifier support"""

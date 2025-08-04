@@ -19,7 +19,6 @@ USAGE:
 """
 
 import logging
-from typing import Optional
 
 from desktop.modern.core.config.app_config import (
     AppConfig,
@@ -39,7 +38,7 @@ logger = logging.getLogger(__name__)
 
 
 def register_configurations(
-    container, config_override: Optional[AppConfig] = None
+    container, config_override: AppConfig | None = None
 ) -> None:
     """
     Register all configuration objects in the DI container.
@@ -83,9 +82,7 @@ def register_configurations(
         raise
 
 
-def register_data_config_only(
-    container, data_config: Optional[DataConfig] = None
-) -> None:
+def register_data_config_only(container, data_config: DataConfig | None = None) -> None:
     """
     Register only data configuration (useful for services that only need data access).
 
@@ -121,7 +118,7 @@ def register_data_config_only(
 
 
 def register_positioning_services_with_config(
-    container: "DIContainer", positioning_config: Optional[PositioningConfig] = None
+    container: "DIContainer", positioning_config: PositioningConfig | None = None
 ) -> None:
     """
     Register positioning services with configuration injection.
@@ -153,7 +150,7 @@ def register_positioning_services_with_config(
         raise
 
 
-def create_configured_container(config_override: Optional[AppConfig] = None):
+def create_configured_container(config_override: AppConfig | None = None):
     """
     Create a fully configured DI container with all configurations registered.
 
@@ -336,6 +333,20 @@ def register_extracted_services(container: DIContainer) -> None:
             logger.debug("Successfully registered sequence card services")
         except Exception as e:
             logger.warning(f"Failed to register sequence card services: {e}")
+            # Don't fail the entire registration process
+
+        # Register construct tab services
+        try:
+            from desktop.modern.core.dependency_injection.construct_tab_service_registration import (
+                register_construct_tab_services,
+                register_legacy_compatibility_services,
+            )
+
+            register_construct_tab_services(container)
+            register_legacy_compatibility_services(container)
+            logger.debug("Successfully registered construct tab services")
+        except Exception as e:
+            logger.warning(f"Failed to register construct tab services: {e}")
             # Don't fail the entire registration process
 
         # DI registration log removed to reduce startup noise

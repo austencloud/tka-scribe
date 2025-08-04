@@ -128,12 +128,26 @@ class TabFactory:
         return self.created_tabs.get(tab_id)
 
     def _create_construct_tab(self, container: "DIContainer") -> QWidget:
-        """Create the construct tab."""
-        from desktop.modern.presentation.views.construct.construct_tab import (
-            ConstructTab,
-        )
+        """Create the construct tab using the new simplified architecture."""
+        try:
+            # Try to use the new simplified construct tab
+            from desktop.modern.presentation.views.construct.simplified_construct_tab import (
+                SimplifiedConstructTab,
+            )
 
-        return ConstructTab(container=container)
+            construct_tab = SimplifiedConstructTab(container=container)
+            construct_tab.initialize()
+            return construct_tab
+
+        except Exception as e:
+            print(f"Warning: Could not create simplified construct tab: {e}")
+
+            # Fallback to original construct tab
+            from desktop.modern.presentation.views.construct.construct_tab import (
+                ConstructTab,
+            )
+
+            return ConstructTab(container=container)
 
     def _create_browse_tab(self, container: "DIContainer") -> QWidget:
         """Create the browse tab."""

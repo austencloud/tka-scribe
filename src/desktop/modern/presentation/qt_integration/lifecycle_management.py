@@ -15,24 +15,8 @@ from dataclasses import dataclass
 from threading import Lock
 from typing import Any, TypeVar
 
-# Import Qt modules with compatibility
-try:
-    from PyQt6.QtCore import QObject, QTimer, pyqtSignal
-    from PyQt6.QtWidgets import QApplication, QWidget
-except ImportError:
-    try:
-        from PyQt6.QtCore import QObject, QTimer, pyqtSignal
-        from PyQt6.QtWidgets import QApplication, QWidget
-    except ImportError:
-        # Fallback for testing without Qt
-        QObject = object
-        QWidget = object
-        QTimer = object
-        QApplication = object
-
-        def pyqtSignal(*args, **kwargs):
-            return lambda: None
-
+from PyQt6.QtCore import QObject
+from PyQt6.QtWidgets import QWidget
 
 # Note: Removed qt_compat import to avoid circular dependencies
 
@@ -188,6 +172,7 @@ class QtObjectFactory:
             self._metrics.objects_destroyed += 1
 
             logger.debug(f"Object destroyed and cleaned up: {obj_id}")
+
     def get_metrics(self) -> LifecycleMetrics:
         """Get lifecycle management metrics."""
         with self._lock:
@@ -196,6 +181,7 @@ class QtObjectFactory:
                 0, self._metrics.objects_created - self._metrics.objects_destroyed
             )
             return self._metrics
+
     def _get_current_time(self) -> str:
         """Get current time as string."""
         import datetime
@@ -224,6 +210,7 @@ class AutoManagedWidget(QWidget):
 
         # Register with factory for automatic cleanup (lazy)
         self._register_with_factory()
+
     def _register_with_factory(self) -> None:
         """Register with factory for automatic cleanup (lazy initialization)."""
         if not self._factory_registered:

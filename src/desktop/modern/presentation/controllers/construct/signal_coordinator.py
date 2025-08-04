@@ -83,6 +83,7 @@ class SignalCoordinator(QObject):
         self._pending_start_position_signals = []
 
         self._setup_signal_connections()
+
     def connect_construct_tab_signals(self, construct_tab_widget):
         """Connect to construct tab signals after initialization."""
         # Connect to construct tab signals (which bridge loading service callbacks)
@@ -365,19 +366,6 @@ class SignalCoordinator(QObject):
             persistence_service = SequencePersister()
             persistence_service.clear_current_sequence()
 
-            # Clear sequence in workbench
-            if hasattr(self.loading_service, "workbench_setter"):
-                workbench_setter = self.loading_service.workbench_setter
-                if workbench_setter:
-                    empty_sequence = SequenceData.empty()
-                    workbench_setter(empty_sequence)
-                else:
-                    print("❌ [SIGNAL_COORDINATOR] Workbench setter is None")
-            else:
-                print(
-                    "❌ [SIGNAL_COORDINATOR] Loading service has no workbench_setter attribute"
-                )
-
             # Clear start position
             self.start_position_manager.clear_start_position()
 
@@ -389,13 +377,14 @@ class SignalCoordinator(QObject):
             import traceback
 
             traceback.print_exc()
+
     def _on_beat_modified(self, *args):
         """Handle any beat modification (added, removed, updated)."""
         # For beat_added signal, we now receive (beat_data, position, updated_sequence)
         # For other signals, fall back to fetching from workbench
         if len(args) >= 3:
             # beat_added signal with updated sequence
-            beat_data, position, updated_sequence = args[0], args[1], args[2]
+            updated_sequence = args[2]
             self._handle_sequence_modified(updated_sequence)
         else:
             # Other beat modification signals - fetch from workbench

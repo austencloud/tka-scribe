@@ -5,56 +5,9 @@ These adapters are used in the UI layer to bridge between the clean architecture
 core types and the PyQt6 framework types.
 """
 
+from PyQt6.QtCore import QPointF, QRect, QSize
+
 from desktop.modern.core.types import Point, Rect, Size
-
-try:
-    from PyQt6.QtCore import QPointF, QRect, QSize
-
-    QT_AVAILABLE = True
-except ImportError:
-    QT_AVAILABLE = False
-
-    # Create stub classes for testing
-    class QSize:
-        def __init__(self, width=0, height=0):
-            self._width = width
-            self._height = height
-
-        def width(self):
-            return self._width
-
-        def height(self):
-            return self._height
-
-    class QPointF:
-        def __init__(self, x=0.0, y=0.0):
-            self._x = x
-            self._y = y
-
-        def x(self):
-            return self._x
-
-        def y(self):
-            return self._y
-
-    class QRect:
-        def __init__(self, x=0, y=0, width=0, height=0):
-            self._x = x
-            self._y = y
-            self._width = width
-            self._height = height
-
-        def x(self):
-            return self._x
-
-        def y(self):
-            return self._y
-
-        def width(self):
-            return self._width
-
-        def height(self):
-            return self._height
 
 
 class QtGeometryAdapter:
@@ -95,16 +48,13 @@ class QtGeometryAdapter:
     @staticmethod
     def widget_size_to_size(widget) -> Size:
         """Extract Size from QWidget size."""
-        if not QT_AVAILABLE:
-            return Size(800, 600)  # Default for testing
-
         qsize = widget.size()
         return Size(width=qsize.width(), height=qsize.height())
 
     @staticmethod
     def size_to_widget_size(size: Size, widget) -> None:
         """Apply Size to QWidget."""
-        if QT_AVAILABLE and hasattr(widget, "resize"):
+        if hasattr(widget, "resize"):
             widget.resize(QtGeometryAdapter.size_to_qsize(size))
 
 
@@ -114,16 +64,13 @@ class QtTypeConverter:
     @staticmethod
     def get_widget_geometry(widget) -> Rect:
         """Get widget geometry as core Rect."""
-        if not QT_AVAILABLE:
-            return Rect(0, 0, 800, 600)
-
         qrect = widget.geometry()
         return QtGeometryAdapter.qrect_to_rect(qrect)
 
     @staticmethod
     def set_widget_geometry(widget, rect: Rect) -> None:
         """Set widget geometry from core Rect."""
-        if QT_AVAILABLE and hasattr(widget, "setGeometry"):
+        if hasattr(widget, "setGeometry"):
             widget.setGeometry(QtGeometryAdapter.rect_to_qrect(rect))
 
     @staticmethod

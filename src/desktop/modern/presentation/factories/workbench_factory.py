@@ -1,20 +1,5 @@
-from typing import TYPE_CHECKING, Optional
+from PyQt6.QtWidgets import QWidget
 
-if TYPE_CHECKING:
-    from PyQt6.QtWidgets import QWidget
-
-# Conditional PyQt6 imports for testing compatibility
-try:
-    from PyQt6.QtWidgets import QWidget
-
-    QT_AVAILABLE = True
-except ImportError:
-    # Create mock QWidget for testing when Qt is not available
-    class QWidget:
-        def __init__(self, parent=None):
-            self.parent = parent
-
-    QT_AVAILABLE = False
 from desktop.modern.application.services.sequence.loader import SequenceLoader
 from desktop.modern.application.services.sequence.sequence_beat_operations import (
     SequenceBeatOperations,
@@ -55,7 +40,7 @@ from shared.application.services.workbench.workbench_state_manager import (
 
 
 def create_modern_workbench(
-    container: DIContainer, parent: Optional[QWidget] = None
+    container: DIContainer, parent: QWidget | None = None
 ) -> SequenceWorkbench:
     """Factory function to create a fully configured modern sequence workbench"""
 

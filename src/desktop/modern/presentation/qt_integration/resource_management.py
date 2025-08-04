@@ -16,26 +16,8 @@ from dataclasses import dataclass
 from threading import Lock
 from typing import Any, Generic, TypeVar
 
-# Import Qt modules with compatibility
-try:
-    from PyQt6.QtCore import QObject, Qt
-    from PyQt6.QtGui import QBrush, QColor, QFont, QPainter, QPen
-    from PyQt6.QtWidgets import QGraphicsItem
-except ImportError:
-    try:
-        from PyQt6.QtCore import QObject, Qt
-        from PyQt6.QtGui import QBrush, QColor, QFont, QPainter, QPen
-        from PyQt6.QtWidgets import QGraphicsItem
-    except ImportError:
-        # Fallback for testing without Qt
-        QPen = object
-        QBrush = object
-        QFont = object
-        QColor = object
-        QPainter = object
-        Qt = object
-        QObject = object
-        QGraphicsItem = object
+from PyQt6.QtCore import Qt
+from PyQt6.QtGui import QBrush, QColor, QFont, QPen
 
 logger = logging.getLogger(__name__)
 
@@ -52,6 +34,8 @@ class ResourcePoolMetrics:
     objects_created: int = 0
     objects_reused: int = 0
     memory_saved_bytes: int = 0
+
+
 class ResourcePool(Generic[T]):
     """
     Generic resource pool for Qt objects.
@@ -374,6 +358,8 @@ class QtResourceManager:
     def return_font(self, font: QFont) -> None:
         """Return font to pool."""
         self.font_pool.return_resource(font)
+
+
 # ============================================================================
 # CONVENIENCE DECORATORS AND FUNCTIONS - A+ Enhancement
 # ============================================================================
@@ -392,6 +378,8 @@ class PooledResource:
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.return_func(self.resource)
+
+
 # Global Qt resource manager instance
 _qt_resources: QtResourceManager | None = None
 

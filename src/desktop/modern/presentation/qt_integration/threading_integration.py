@@ -12,39 +12,13 @@ import asyncio
 import logging
 import threading
 import time
-from collections.abc import Awaitable, Callable
+from collections.abc import Callable
 from concurrent.futures import Future, ThreadPoolExecutor
 from dataclasses import dataclass
 from typing import Any, TypeVar
 
-# Import Qt modules with compatibility
-try:
-    from PyQt6.QtCore import QMutex, QMutexLocker, QObject, QThread, QTimer, pyqtSignal
-    from PyQt6.QtWidgets import QApplication, QWidget
-except ImportError:
-    try:
-        from PyQt6.QtCore import (
-            QMutex,
-            QMutexLocker,
-            QObject,
-            QThread,
-            QTimer,
-            pyqtSignal,
-        )
-        from PyQt6.QtWidgets import QApplication, QWidget
-    except ImportError:
-        # Fallback for testing without Qt
-        QObject = object
-        QThread = object
-        QTimer = object
-        QMutex = object
-        QMutexLocker = object
-        QWidget = object
-        QApplication = object
-
-        def pyqtSignal(*args, **kwargs):
-            return lambda: None
-
+from PyQt6.QtCore import QMutex, QObject, QThread, QTimer, pyqtSignal
+from PyQt6.QtWidgets import QApplication, QWidget
 
 logger = logging.getLogger(__name__)
 
@@ -89,7 +63,7 @@ class QtAsyncBridge(QObject):
         self._pending_operations: dict[str, Future] = {}
         self._operation_callbacks: dict[str, Callable] = {}
         self._metrics = ThreadingMetrics()
-        self._mutex = QMutex() if QMutex != object else threading.Lock()
+        self._mutex = QMutex()
 
         # Connect signals
         if hasattr(self, "operation_completed"):
@@ -180,7 +154,7 @@ class QtAsyncBridge(QObject):
         Returns:
             Result of the operation
         """
-        if QApplication != object:
+        if True:  # Qt is always available
             app = QApplication.instance()
             if app and threading.current_thread() != threading.main_thread():
                 # Use QTimer to execute in main thread
@@ -281,6 +255,7 @@ class AsyncQtWidget(QWidget):
             Result of the operation
         """
         return self._async_bridge.run_in_qt_thread(operation)
+
     def cleanup_async_operations(self) -> None:
         """Cleanup all async operations."""
         # Cancel pending tasks
@@ -342,10 +317,6 @@ class QtThreadManager:
         Returns:
             QThread instance
         """
-        if QThread == object:
-            logger.warning("Qt not available, cannot create worker thread")
-            return None
-
         with self._lock:
             # Create thread and worker
             thread = QThread()
@@ -414,6 +385,8 @@ class QtThreadManager:
             if thread_name in self._thread_metrics:
                 self._thread_metrics[thread_name]["status"] = "finished"
                 self._thread_metrics[thread_name]["finished_at"] = time.time()
+
+
 # Global instances
 _qt_async_bridge: QtAsyncBridge | None = None
 _qt_thread_manager: QtThreadManager | None = None

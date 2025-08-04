@@ -8,7 +8,6 @@ ARCHITECTURE: Provides smart pointer management, memory leak detection,
 and automatic cleanup for Qt objects to prevent memory leaks.
 """
 
-import gc
 import logging
 import os
 import time
@@ -18,20 +17,7 @@ from dataclasses import dataclass
 from threading import Lock
 from typing import Any, Generic, TypeVar
 
-# Import Qt modules with compatibility
-try:
-    from PyQt6.QtCore import QObject, QTimer
-    from PyQt6.QtWidgets import QApplication, QWidget
-except ImportError:
-    try:
-        from PyQt6.QtCore import QObject, QTimer
-        from PyQt6.QtWidgets import QApplication, QWidget
-    except ImportError:
-        # Fallback for testing without Qt
-        QObject = object
-        QWidget = object
-        QTimer = object
-        QApplication = object
+from PyQt6.QtCore import QObject, QTimer
 
 logger = logging.getLogger(__name__)
 
@@ -116,6 +102,7 @@ class SmartQtPointer(Generic[T]):
             self._obj_ref = lambda: None
             self._obj_id = 0
             self._is_deleted = True
+
     def _cleanup_object(self, obj: T) -> None:
         """Cleanup the managed object."""
         try:
@@ -182,6 +169,7 @@ class QtMemoryLeakDetector:
         self.snapshot_history_limit = 20
 
         logger.info("Qt memory leak detector initialized")
+
     def register_smart_pointer(self, smart_ptr: SmartQtPointer) -> None:
         """Register smart pointer for tracking."""
         with self._lock:
@@ -363,6 +351,8 @@ class QtMemoryLeakDetector:
         except Exception as e:
             logger.error(f"Error analyzing for leaks: {e}")
             return None
+
+
 # Global memory detector instance
 _memory_detector: QtMemoryLeakDetector | None = None
 

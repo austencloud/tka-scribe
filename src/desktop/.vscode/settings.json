@@ -3,12 +3,29 @@
   "python.defaultInterpreterPath": ".venv/Scripts/python.exe",
   "python.analysis.autoImportCompletions": true,
   "python.analysis.autoSearchPaths": true,
+  "python.analysis.indexing": true,
+  "python.analysis.packageIndexDepths": [
+    {
+      "name": "desktop",
+      "depth": 10
+    },
+    {
+      "name": "shared",
+      "depth": 10
+    },
+    {
+      "name": "legacy",
+      "depth": 10
+    }
+  ],
   "python.analysis.extraPaths": [
     "./modern/src",
     "./legacy",
     "../..",
     "../../src",
     "../../src/desktop/modern/src",
+    "../../src/desktop/legacy",
+    "../../src/shared",
     "../../launcher",
     "../../packages"
   ],
@@ -16,7 +33,11 @@
     "./modern/**",
     "./legacy/**",
     "./data/**",
-    "./images/**"
+    "./images/**",
+    "../../src/shared/**",
+    "../../src/desktop/**",
+    "../../launcher/**",
+    "../../packages/**"
   ],
   "python.analysis.exclude": [
     "**/__pycache__/**",
@@ -28,6 +49,81 @@
   "python.analysis.typeCheckingMode": "basic",
   "python.analysis.diagnosticMode": "workspace",
   "python.analysis.completeFunctionParens": true,
+  "python.analysis.importFormat": "absolute",
+  "python.analysis.fixAll": ["source.unusedImports"],
+  "python.analysis.stubPath": "./typings",
+  "python.analysis.userFileIndexingLimit": 5000,
+  
+  // === Pylance/Pyright Diagnostic Suppressions ===
+  "python.analysis.diagnosticSeverityOverrides": {
+    // Import and module issues
+    "reportMissingImports": "none",
+    "reportMissingModuleSource": "none", 
+    "reportUnusedImport": "information",
+    "reportUnusedClass": "information",
+    "reportUnusedFunction": "information",
+    "reportUnusedVariable": "information",
+    "reportUnusedCoroutine": "information",
+    "reportUnusedExpression": "none",
+    
+    // Type checking issues
+    "reportGeneralTypeIssues": "information",
+    "reportOptionalSubscript": "none",
+    "reportOptionalMemberAccess": "none",
+    "reportOptionalCall": "none",
+    "reportOptionalIterable": "none",
+    "reportOptionalContextManager": "none",
+    "reportOptionalOperand": "none",
+    "reportTypedDictNotRequiredAccess": "none",
+    "reportPrivateImportUsage": "none",
+    "reportUnknownParameterType": "none",
+    "reportUnknownArgumentType": "none",
+    "reportUnknownLambdaType": "none",
+    "reportUnknownVariableType": "none",
+    "reportUnknownMemberType": "none",
+    "reportMissingParameterType": "none",
+    "reportMissingTypeArgument": "none",
+    "reportInvalidTypeVarUse": "none",
+    "reportCallInDefaultInitializer": "none",
+    "reportUnnecessaryIsInstance": "information",
+    "reportUnnecessaryCast": "information",
+    "reportUnnecessaryComparison": "information",
+    "reportUnnecessaryContains": "information",
+    "reportAssertAlwaysTrue": "information",
+    "reportSelfClsParameterName": "none",
+    "reportImplicitStringConcatenation": "none",
+    
+    // Function and method issues
+    "reportFunctionMemberAccess": "none",
+    "reportIncompatibleMethodOverride": "information",
+    "reportIncompatibleVariableOverride": "information",
+    "reportOverlappingOverload": "information",
+    "reportPossiblyUnboundVariable": "information",
+    "reportConstantRedefinition": "none",
+    "reportInvalidStubStatement": "none",
+    "reportIncompleteStub": "none",
+    "reportUnsupportedDunderAll": "none",
+    "reportUnusedCallResult": "none",
+    
+    // PyQt/Qt specific suppressions
+    "reportAttributeAccessIssue": "none",
+    "reportArgumentType": "information",
+    "reportReturnType": "information",
+    "reportAssignmentType": "information",
+    "reportOperatorIssue": "information",
+    "reportIndexIssue": "information",
+    "reportInvalidStringEscapeSequence": "information",
+    
+    // Code style (handled by ruff)
+    "reportWildcardImportFromLibrary": "none",
+    "reportMissingTypeStubs": "none",
+    "reportImportCycles": "information",
+    "reportPropertyTypeMismatch": "information",
+    "reportDuplicateImport": "information",
+    "reportUninitializedInstanceVariable": "none",
+    "reportCallIssue": "information",
+    "reportRedeclaration": "information"
+  },
 
   // === Testing Configuration ===
   "python.testing.pytestEnabled": true,
@@ -49,20 +145,20 @@
   "ruff.codeAction.disableRuleComment.enable": true,
   "ruff.lint.enable": true,
   "ruff.lint.select": [
-    "E",    // pycodestyle errors
-    "W",    // pycodestyle warnings
-    "F",    // Pyflakes
-    "I",    // isort
-    "B",    // flake8-bugbear
-    "C4",   // flake8-comprehensions
-    "UP",   // pyupgrade
-    "SIM",  // flake8-simplify
-    "RUF"   // Ruff-specific rules
+    "E",  // pycodestyle errors (auto-fixable)
+    "W",  // pycodestyle warnings (auto-fixable) - includes W293
+    "F",  // pyflakes (auto-fixable)
+    "I",  // isort (import sorting - auto-fixable)
+    "UP", // pyupgrade (auto-fixable)
   ],
   "ruff.lint.ignore": [
-    "E203",   // whitespace before ':'
-    "E501",   // line too long (handled by formatter)
-    "W503"    // line break before binary operator
+    "E501", // Line too long (handled by formatter)
+    "N802", // Function name should be lowercase (Qt uses camelCase)
+    "N803", // Argument name should be lowercase (Qt uses camelCase)
+    "N806", // Variable in function should be lowercase (Qt uses camelCase)
+    "N812", // Lowercase imported as non-lowercase (PyQt6 modules)
+    "N815", // mixedCase variable in class scope (Qt widgets)
+    "N816"  // mixedCase variable in global scope
   ],
   
   // Disable old linting/formatting tools in favor of Ruff
@@ -117,7 +213,9 @@
     "**/Thumbs.db": true,
     "**/*.egg-info": true,
     "**/build": true,
-    "**/dist": true
+    "**/dist": true,
+    "**/hypothesis": true,
+    "**/.hypothesis": true
   },
 
   // === Search Configuration ===
@@ -131,7 +229,9 @@
     "**/build": true,
     "**/dist": true,
     "**/.venv": true,
-    "**/venv": true
+    "**/venv": true,
+    "**/hypothesis": true,
+    "**/.hypothesis": true
   },
 
   // === IntelliSense & Autocomplete ===
@@ -144,6 +244,28 @@
     "comments": false,
     "strings": true
   },
+  "editor.suggestOnTriggerCharacters": true,
+  "editor.wordBasedSuggestions": "matchingDocuments",
+  "editor.parameterHints.enabled": true,
+  "editor.parameterHints.cycle": true,
+  
+  // === Code Navigation ===
+  "editor.gotoLocation.multipleReferences": "peek",
+  "editor.gotoLocation.multipleDefinitions": "peek",
+  "editor.gotoLocation.multipleDeclarations": "peek",
+  "editor.gotoLocation.multipleImplementations": "peek",
+  "editor.gotoLocation.multipleTypeDefinitions": "peek",
+  
+  // === Python Specific Navigation ===
+  "python.analysis.addImport.includePackageInit": true,
+  "python.analysis.addImport.searchPaths": [
+    "./modern/src",
+    "./legacy",
+    "../..",
+    "../../src",
+    "../../src/shared",
+    "../../src/desktop"
+  ],
 
   // === Git Configuration ===
   "git.ignoreLimitWarning": true,
@@ -199,6 +321,8 @@
     "**/.git/**": true,
     "**/build/**": true,
     "**/dist/**": true,
-    "**/.venv/**": true
+    "**/.venv/**": true,
+    "**/hypothesis/**": true,
+    "**/.hypothesis/**": true
   }
 }
