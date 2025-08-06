@@ -1,8 +1,9 @@
+from __future__ import annotations
 # src/main_window/main_widget/sequence_card_tab/export/export_ui_manager.py
 import logging
 import os
 from datetime import datetime
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING,Optional
 
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import (
@@ -39,7 +40,7 @@ class ExportUIManager:
         Show a file dialog to select an export directory.
 
         Returns:
-            Optional[str]: Selected directory path or None if cancelled
+            str | None: Selected directory path or None if cancelled
         """
         self.logger.debug("Showing export directory dialog")
 

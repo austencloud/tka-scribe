@@ -1,3 +1,5 @@
+from __future__ import annotations
+from typing import Union
 from datetime import datetime, timedelta
 from functools import partial
 from typing import TYPE_CHECKING, Any

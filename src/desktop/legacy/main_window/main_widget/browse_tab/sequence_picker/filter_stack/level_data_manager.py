@@ -1,5 +1,6 @@
+from __future__ import annotations
+
 import os
-from typing import Optional
 
 from main_window.main_widget.metadata_extractor import (
     MetaDataExtractor,
@@ -11,9 +12,7 @@ from utils.path_helpers import get_data_path
 class LevelDataManager:
     def __init__(self):
         self.metadata_extractor = MetaDataExtractor()
-        self._all_sequences_with_levels: Optional[list[tuple[str, list[str], int]]] = (
-            None
-        )
+        self._all_sequences_with_levels: list[tuple[str, list[str | None, int]]] = None
 
     def get_all_sequences_with_levels(self) -> list[tuple[str, list[str], int]]:
         if self._all_sequences_with_levels is None:
@@ -54,9 +53,7 @@ class LevelDataManager:
             if seq_level == level
         ]
 
-    def get_sequence_level_from_thumbnails(
-        self, thumbnails: list[str]
-    ) -> Optional[int]:
+    def get_sequence_level_from_thumbnails(self, thumbnails: list[str]) -> int | None:
         for thumbnail in thumbnails:
             level = self.metadata_extractor.get_level(thumbnail)
             if level is not None:

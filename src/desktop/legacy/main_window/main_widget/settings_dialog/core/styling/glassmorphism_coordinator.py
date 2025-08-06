@@ -1,3 +1,4 @@
+from __future__ import annotations
 """
 Glassmorphism Coordinator - Orchestrates all styling components.
 
@@ -6,7 +7,7 @@ architecture that follows the Single Responsibility Principle.
 """
 
 import logging
-from typing import Optional
+from typing import Optional,Optional
 
 from PyQt6.QtGui import QFont
 from PyQt6.QtWidgets import QWidget
@@ -105,7 +106,7 @@ class GlassmorphismCoordinator:
 
     def create_glassmorphism_card(
         self,
-        widget: Optional[QWidget] = None,
+        widget: QWidget | None = None,
         blur_radius: int = 10,
         opacity: float = 0.1,
         border_radius: int = 12,

@@ -1,3 +1,4 @@
+from __future__ import annotations
 """
 Modern card widget with rounded corners and shadow.
 """

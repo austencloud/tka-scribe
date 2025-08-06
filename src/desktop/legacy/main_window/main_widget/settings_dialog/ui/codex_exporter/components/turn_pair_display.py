@@ -1,3 +1,4 @@
+from __future__ import annotations
 """
 Turn pair display component for the codex exporter.
 """

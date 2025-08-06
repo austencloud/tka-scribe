@@ -1,3 +1,5 @@
+from __future__ import annotations
+from typing import Union
 from typing import TYPE_CHECKING, Union
 
 from utils.word_simplifier import WordSimplifier
@@ -49,7 +51,7 @@ class BeatFrameGetter:
                 return i
         return 0
 
-    def currently_selected_beat_view(self) -> Union["LegacyBeatView", None]:
+    def currently_selected_beat_view(self) -> "LegacyBeatView" | None:
         for beat_view in self.beat_frame.beat_views:
             if beat_view.is_selected:
                 return beat_view
@@ -65,7 +67,7 @@ class BeatFrameGetter:
     def duration_of_currently_selected_beat(self) -> int:
         return int(self.currently_selected_beat_view().beat.duration)
 
-    def beat_view_by_number(self, beat_number: int) -> Union["LegacyBeatView", None]:
+    def beat_view_by_number(self, beat_number: int) -> "LegacyBeatView" | None:
         for beat_view in self.beat_frame.beat_views:
             if beat_view.number == beat_number:
                 return beat_view

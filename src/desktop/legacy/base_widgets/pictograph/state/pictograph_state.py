@@ -1,6 +1,8 @@
+from __future__ import annotations
+from typing import Union,Optional
 from copy import deepcopy
 from dataclasses import dataclass, field
-from typing import Optional
+from typing import Optional,Optional
 
 from enums.letter.letter import Letter
 from enums.letter.letter_type import LetterType
@@ -18,9 +20,9 @@ class PictographState:
     blue_reversal: bool = False
     red_reversal: bool = False
     hide_tka_glyph: bool = False
-    letter: Optional[Letter] = None
-    letter_type: Optional[LetterType] = None
-    prop_type_enum: Optional[PropType] = None
+    letter: Letter | None = None
+    letter_type: LetterType | None = None
+    prop_type_enum: PropType | None = None
     open_close_state: str = ""
     vtg_mode: str = ""
     direction: str = ""

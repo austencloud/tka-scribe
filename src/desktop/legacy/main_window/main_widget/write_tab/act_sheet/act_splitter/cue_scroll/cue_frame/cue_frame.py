@@ -1,3 +1,4 @@
+from __future__ import annotations
 # cue_frame.py
 from typing import TYPE_CHECKING
 

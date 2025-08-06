@@ -1,3 +1,4 @@
+from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from base_widgets.pictograph.elements.views.GE_pictograph_view import GE_PictographView

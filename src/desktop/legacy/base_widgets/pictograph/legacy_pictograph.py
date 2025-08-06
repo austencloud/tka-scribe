@@ -1,3 +1,4 @@
+from __future__ import annotations
 from placement_managers.arrow_placement_manager.arrow_placement_manager import (
     ArrowPlacementManager,
 )

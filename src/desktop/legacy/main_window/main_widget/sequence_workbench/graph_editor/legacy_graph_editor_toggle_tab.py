@@ -1,3 +1,4 @@
+from __future__ import annotations
 # graph_editor_toggle_tab.py
 from typing import TYPE_CHECKING
 

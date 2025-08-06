@@ -1,3 +1,4 @@
+from __future__ import annotations
 """
 Factory for creating Codex instances with proper dependency injection.
 """
@@ -5,10 +6,9 @@ Factory for creating Codex instances with proper dependency injection.
 import logging
 from typing import TYPE_CHECKING
 
+from core.application_context import ApplicationContext
 from main_window.main_widget.core.widget_manager import WidgetFactory
 from PyQt6.QtWidgets import QWidget
-
-from desktop.modern.core.application_context import ApplicationContext
 
 if TYPE_CHECKING:
     from .codex import Codex

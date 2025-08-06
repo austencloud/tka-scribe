@@ -1,3 +1,4 @@
+from __future__ import annotations
 """
 Type 2 pictograph exporter for the codex pictograph exporter.
 

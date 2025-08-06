@@ -1,7 +1,9 @@
+from __future__ import annotations
+from typing import Union,Optional
 import logging
 import os
 import re
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Optional,Optional
 
 from legacy_settings_manager.global_settings.app_context import AppContext
 from utils.path_helpers import get_data_path
@@ -147,7 +149,7 @@ class DictionaryService:
         if thumbnail_box:
             thumbnail_box.update_thumbnails(thumbnails)
 
-    def _find_thumbnail_box(self, base_word: str) -> Optional["ThumbnailBox"]:
+    def _find_thumbnail_box(self, base_word: str) -> "ThumbnailBox" | None:
         """Find the thumbnail box for a given word using the new dependency injection pattern."""
         try:
             # Get browse tab using the new dependency injection pattern

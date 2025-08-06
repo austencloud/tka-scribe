@@ -1,6 +1,7 @@
+from __future__ import annotations
 # src/main_window/main_widget/sequence_card_tab/utils/image_utils.py
 import io
-from typing import Optional
+from typing import Optional,Optional
 
 from PIL import Image, ImageEnhance
 from PyQt6.QtCore import QBuffer, QSize, Qt
@@ -60,7 +61,7 @@ class ImageProcessor:
         )
 
     @staticmethod
-    def qimage_to_pil(qimage: QImage) -> Optional[Image.Image]:
+    def qimage_to_pil(qimage: QImage) -> Image.Image | None:
         """
         Convert QImage to PIL Image.
 

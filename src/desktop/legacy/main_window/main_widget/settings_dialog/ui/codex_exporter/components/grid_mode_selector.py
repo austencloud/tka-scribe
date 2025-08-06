@@ -1,3 +1,4 @@
+from __future__ import annotations
 """
 Grid mode selector component for the codex exporter.
 """

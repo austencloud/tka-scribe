@@ -1,3 +1,4 @@
+from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from data.constants import ANTI, FLOAT, MOTION_TYPE, PREFLOAT_MOTION_TYPE, PRO

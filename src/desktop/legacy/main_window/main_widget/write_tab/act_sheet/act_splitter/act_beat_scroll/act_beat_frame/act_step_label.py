@@ -1,3 +1,4 @@
+from __future__ import annotations
 # act_step_label.py
 from typing import TYPE_CHECKING
 

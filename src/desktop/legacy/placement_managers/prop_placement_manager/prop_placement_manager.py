@@ -1,3 +1,4 @@
+from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from .handlers.beta_prop_positioner import BetaPropPositioner

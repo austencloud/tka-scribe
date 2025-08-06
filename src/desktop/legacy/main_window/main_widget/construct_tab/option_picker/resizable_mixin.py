@@ -1,3 +1,5 @@
+from __future__ import annotations
+from typing import Union
 from collections.abc import Callable
 from typing import Union
 
@@ -12,7 +14,7 @@ class ResizableMixin:
         super().__init__(*args, **kwargs)
 
     def update_size_and_style(
-        self: Union[QLabel, "ResizableMixin"],
+        self: QLabel | "ResizableMixin",
         base_font_family: str = "Monotype Corsiva",
         scale_factor: float = 0.03,
         padding: int = 20,

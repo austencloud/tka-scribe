@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import TYPE_CHECKING
 
 from main_window.main_widget.browse_tab.sequence_picker.filter_stack.sequence_picker_filter_stack import (
@@ -9,15 +11,12 @@ from main_window.main_widget.tab_name import TabName
 from PyQt6.QtWidgets import QApplication
 
 if TYPE_CHECKING:
+    from core.application_context import ApplicationContext
     from main_window.main_widget.main_widget import MainWidget
-
-    from desktop.modern.core.application_context import ApplicationContext
 
 
 class MainWidgetTabSwitcher:
-    def __init__(
-        self, main_widget: "MainWidget", app_context: "ApplicationContext" = None
-    ):
+    def __init__(self, main_widget: MainWidget, app_context: ApplicationContext = None):
         self.mw = main_widget
         self.app_context = app_context or getattr(main_widget, "app_context", None)
 
@@ -39,17 +38,8 @@ class MainWidgetTabSwitcher:
     def on_tab_changed(self, new_tab: TabName):
         index = TAB_INDEX[new_tab]
         left_new_index, right_new_index = self.get_stack_indices_for_tab(new_tab)
-        original_new_tab = new_tab
         new_tab = self.index_to_tab_name.get(index, TabName.CONSTRUCT)
-        current_tab_str = self._get_current_tab()
         self._set_current_tab(new_tab.value)
-
-        if new_tab == TabName.BROWSE:
-            width_ratio = (2, 1)
-        elif new_tab == TabName.SEQUENCE_CARD:
-            width_ratio = (0, 1)
-        else:
-            width_ratio = (1, 1)
 
         left_idx = (
             left_new_index.value if hasattr(left_new_index, "value") else left_new_index

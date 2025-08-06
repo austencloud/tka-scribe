@@ -1,3 +1,4 @@
+from __future__ import annotations
 """
 Modern button with custom styling.
 """

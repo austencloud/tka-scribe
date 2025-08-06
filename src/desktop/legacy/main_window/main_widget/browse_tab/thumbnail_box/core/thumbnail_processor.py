@@ -1,3 +1,4 @@
+from __future__ import annotations
 """
 Thumbnail Processor - Handles image processing and quality enhancement.
 

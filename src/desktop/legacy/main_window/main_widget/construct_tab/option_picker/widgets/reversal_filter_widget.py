@@ -1,3 +1,4 @@
+from __future__ import annotations
 from collections.abc import Callable
 
 from interfaces.settings_manager_interface import ISettingsManager

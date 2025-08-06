@@ -1,5 +1,6 @@
+from __future__ import annotations
 import logging
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any, Optional,Optional
 
 from main_window.main_widget.json_manager.json_act_saver import JsonActSaver
 from main_window.main_widget.json_manager.json_sequence_updater.json_sequence_updater import (
@@ -12,11 +13,11 @@ from .json_start_position_handler import JsonStartPositionHandler
 from .sequence_data_loader_saver import SequenceDataLoaderSaver
 
 if TYPE_CHECKING:
-    from desktop.modern.core.application_context import ApplicationContext
+    from core.application_context import ApplicationContext
 
 
 class JsonManager:  # IJsonManager is a Protocol, no need to inherit
-    def __init__(self, app_context: Optional["ApplicationContext"] = None) -> None:
+    def __init__(self, app_context: "ApplicationContext" | None = None) -> None:
         """
         Initialize JsonManager with optional dependency injection.
 
@@ -42,7 +43,7 @@ class JsonManager:  # IJsonManager is a Protocol, no need to inherit
         """Save the current sequence to the default location."""
         return self.loader_saver.save_sequence(sequence_data)
 
-    def load_sequence(self, file_path: Optional[str] = None) -> list[dict[str, Any]]:
+    def load_sequence(self, file_path: str | None = None) -> list[dict[str, Any]]:
         """Load a sequence from the specified file path or the default location."""
         return self.loader_saver.load_sequence(file_path)
 

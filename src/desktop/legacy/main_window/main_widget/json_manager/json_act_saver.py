@@ -1,3 +1,4 @@
+from __future__ import annotations
 # json_act_saver.py
 
 import json

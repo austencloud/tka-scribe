@@ -1,3 +1,4 @@
+from __future__ import annotations
 # strategies/dual_float.py
 from dataclasses import dataclass
 

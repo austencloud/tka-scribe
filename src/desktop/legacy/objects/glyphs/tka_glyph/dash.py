@@ -1,3 +1,4 @@
+from __future__ import annotations
 # dash.py
 
 from typing import TYPE_CHECKING

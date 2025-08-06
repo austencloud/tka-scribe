@@ -1,3 +1,4 @@
+from __future__ import annotations
 import logging
 from typing import TYPE_CHECKING
 
@@ -7,7 +8,7 @@ from main_window.main_widget.main_background_widget.main_background_widget impor
 )
 from PyQt6.QtWidgets import QWidget
 
-from desktop.modern.core.application_context import ApplicationContext
+from core.application_context import ApplicationContext
 
 if TYPE_CHECKING:
     pass

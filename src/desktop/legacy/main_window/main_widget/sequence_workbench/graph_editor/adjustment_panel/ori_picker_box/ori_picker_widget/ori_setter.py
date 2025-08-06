@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 # orientation_setter.py
 from typing import TYPE_CHECKING
 
@@ -18,7 +20,7 @@ if TYPE_CHECKING:
 
 
 class OrientationSetter:
-    def __init__(self, ori_picker_widget: "OriPickerWidget") -> None:
+    def __init__(self, ori_picker_widget: OriPickerWidget) -> None:
         self.ori_picker_widget = ori_picker_widget
         self.color = ori_picker_widget.color
         self.json_manager = ori_picker_widget.json_manager
@@ -70,6 +72,17 @@ class OrientationSetter:
 
     def _update_start_position_pictographs(self, orientation: str) -> None:
         construct_tab = self.ori_picker_box.graph_editor.sequence_workbench.main_widget.construct_tab
+
+        # Add null check for construct_tab
+        if construct_tab is None:
+            import logging
+
+            logger = logging.getLogger(__name__)
+            logger.warning(
+                "Construct tab is None, skipping start position pictograph update"
+            )
+            return
+
         start_position_pictographs = (
             construct_tab.start_pos_picker.pictograph_frame.start_positions
         )
@@ -86,11 +99,29 @@ class OrientationSetter:
 
     def _refresh_option_picker(self) -> None:
         construct_tab = self.ori_picker_box.graph_editor.sequence_workbench.main_widget.construct_tab
+
+        # Add null check for construct_tab
+        if construct_tab is None:
+            import logging
+
+            logger = logging.getLogger(__name__)
+            logger.warning("Construct tab is None, skipping option picker refresh")
+            return
+
         self.option_picker = construct_tab.option_picker
         self.option_picker.updater.refresh_options()
 
     def _update_start_options(self, orientation: str) -> None:
         construct_tab = self.ori_picker_box.graph_editor.sequence_workbench.main_widget.construct_tab
+
+        # Add null check for construct_tab
+        if construct_tab is None:
+            import logging
+
+            logger = logging.getLogger(__name__)
+            logger.warning("Construct tab is None, skipping start options update")
+            return
+
         start_pos_picker = construct_tab.start_pos_picker
         for pictograph in start_pos_picker.start_options.values():
             pictograph.managers.updater.update_pictograph(
@@ -126,7 +157,7 @@ class OrientationSetter:
         self.beat_frame.updater.update_beats_from_current_sequence_json()
 
     def set_initial_orientation(
-        self, start_pos_pictograph: "LegacyPictograph", color: str
+        self, start_pos_pictograph: LegacyPictograph, color: str
     ) -> None:
         initial_orientation = self._get_initial_orientation(start_pos_pictograph, color)
         self.current_orientation_index = self.ori_picker_widget.orientations.index(
@@ -135,7 +166,7 @@ class OrientationSetter:
         self.ori_picker_widget.clickable_ori_label.setText(initial_orientation)
 
     def _get_initial_orientation(
-        self, start_pos_pictograph: "LegacyPictograph", color: str
+        self, start_pos_pictograph: LegacyPictograph, color: str
     ) -> str:
         if color == BLUE:
             return start_pos_pictograph.state.pictograph_data[BLUE_ATTRS][START_ORI]

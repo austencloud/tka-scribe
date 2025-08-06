@@ -1,3 +1,5 @@
+from __future__ import annotations
+from typing import Union
 from typing import TYPE_CHECKING
 
 from main_window.main_widget.sequence_workbench.graph_editor.adjustment_panel.turns_adjustment_manager.turns_value import (

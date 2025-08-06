@@ -1,3 +1,4 @@
+from __future__ import annotations
 """
 Quality Enhancer - Handles high-quality image scaling with single responsibility.
 

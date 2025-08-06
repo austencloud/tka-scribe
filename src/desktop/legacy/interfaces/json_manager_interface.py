@@ -1,5 +1,6 @@
+from __future__ import annotations
 from abc import abstractmethod
-from typing import Any, Optional, Protocol, runtime_checkable
+from typing import Any, Optional, Protocol, runtime_checkable,Optional
 
 
 @runtime_checkable
@@ -24,7 +25,7 @@ class IJsonManager(Protocol):
         """Save the current sequence to the default location."""
 
     @abstractmethod
-    def load_sequence(self, file_path: Optional[str] = None) -> list[dict[str, Any]]:
+    def load_sequence(self, file_path: str | None = None) -> list[dict[str, Any]]:
         """Load a sequence from the specified file path or the default location."""
 
     @abstractmethod

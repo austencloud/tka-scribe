@@ -1,3 +1,4 @@
+from __future__ import annotations
 # Core infrastructure for modern settings dialog system
 
 from .glassmorphism_styler import GlassmorphismStyler

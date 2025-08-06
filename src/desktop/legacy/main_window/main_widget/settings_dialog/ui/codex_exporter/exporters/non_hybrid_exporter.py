@@ -1,3 +1,4 @@
+from __future__ import annotations
 """
 Non-hybrid pictograph exporter for the codex pictograph exporter.
 """

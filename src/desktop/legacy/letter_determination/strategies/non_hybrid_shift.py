@@ -1,5 +1,6 @@
+from __future__ import annotations
 # strategies/non_hybrid_shift.py
-from typing import Optional
+from typing import Optional,Optional
 
 from letter_determination.determination_result import DeterminationResult
 from letter_determination.strategies.base_strategy import LetterDeterminationStrategy
@@ -112,7 +113,7 @@ class NonHybridShiftStrategy(LetterDeterminationStrategy):
         pictograph: dict,
         float_attr: dict,
         non_float_attrs: dict,
-    ) -> Optional[str]:
+    ) -> str | None:
         """Match using prefloat-aware comparison"""
         for letter, examples in self.comparator.dataset.items():
             for example in examples:

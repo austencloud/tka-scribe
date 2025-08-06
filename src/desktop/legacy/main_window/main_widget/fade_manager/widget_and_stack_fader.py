@@ -1,4 +1,5 @@
-from typing import TYPE_CHECKING, Optional
+from __future__ import annotations
+from typing import TYPE_CHECKING, Optional,Optional
 
 from PyQt6.QtCore import QEasingCurve, QParallelAnimationGroup, QPropertyAnimation
 from PyQt6.QtWidgets import QStackedWidget, QWidget
@@ -19,7 +20,7 @@ class WidgetAndStackFader:
         stack: QStackedWidget,
         new_index: int,
         duration: int = 300,
-        callback: Optional[callable] = None,
+        callback: callable | None = None,
     ):
         """Fades out widgets and stack in parallel, switches the stack, and fades both in,
         respecting the fade settings."""

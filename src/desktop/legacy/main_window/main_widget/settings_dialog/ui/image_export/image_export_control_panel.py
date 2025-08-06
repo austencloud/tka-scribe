@@ -1,3 +1,4 @@
+from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from main_window.main_widget.settings_dialog.ui.image_export.image_export_tab_button import (

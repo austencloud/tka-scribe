@@ -1,3 +1,4 @@
+from __future__ import annotations
 from main_window.main_widget.tab_name import TabName
 
 TAB_INDEX = {

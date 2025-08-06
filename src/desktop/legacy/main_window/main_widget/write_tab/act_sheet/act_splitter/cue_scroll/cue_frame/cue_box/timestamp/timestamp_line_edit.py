@@ -1,3 +1,4 @@
+from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from main_window.main_widget.write_tab.editable_label_manager import (

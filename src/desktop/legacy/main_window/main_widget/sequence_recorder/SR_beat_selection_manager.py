@@ -1,5 +1,6 @@
+from __future__ import annotations
 import os
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Optional,Optional
 
 from base_widgets.pictograph.elements.views.beat_view import (
     LegacyBeatView,
@@ -20,7 +21,7 @@ class SR_BeatSelectionManager(QWidget):
     def __init__(self, beat_frame: "SR_BeatFrame") -> None:
         super().__init__(beat_frame)
         self.beat_frame = beat_frame
-        self.selected_beat: Optional[LegacyBeatView] = None
+        self.selected_beat: LegacyBeatView | None = None
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.move_selection)
         self.current_index = 0
@@ -88,7 +89,7 @@ class SR_BeatSelectionManager(QWidget):
         else:
             print("Selected metronome sound does not exist, retaining previous choice.")
 
-    def get_current_bpm(self) -> Optional[int]:
+    def get_current_bpm(self) -> int | None:
         if self.timer.isActive():
             return 60000 / self.timer.interval()
         else:
@@ -143,7 +144,7 @@ class SR_BeatSelectionManager(QWidget):
             self.raise_()
             self.update()
 
-    def get_selected_beat(self) -> Optional[LegacyBeatView]:
+    def get_selected_beat(self) -> LegacyBeatView | None:
         return self.selected_beat
 
     def start_selection_movement(self) -> None:

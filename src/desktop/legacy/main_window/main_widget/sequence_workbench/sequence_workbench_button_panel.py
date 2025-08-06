@@ -1,6 +1,7 @@
+from __future__ import annotations
 import json
 import os
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING,Optional
 
 from main_window.main_widget.sequence_workbench.workbench_button import WorkbenchButton
 from PyQt6.QtCore import Qt

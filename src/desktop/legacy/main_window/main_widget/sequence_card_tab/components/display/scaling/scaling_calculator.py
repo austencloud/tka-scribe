@@ -1,3 +1,4 @@
+from __future__ import annotations
 """
 Scaling Calculator - Handles scaling calculations with single responsibility.
 

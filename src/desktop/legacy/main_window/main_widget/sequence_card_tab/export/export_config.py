@@ -1,6 +1,7 @@
+from __future__ import annotations
 # src/main_window/main_widget/sequence_card_tab/export/export_config.py
 import logging
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any, Optional,Optional
 
 from PyQt6.QtCore import Qt
 
@@ -20,7 +21,7 @@ class ExportConfig:
     5. Synchronization with UI components to ensure consistency
     """
 
-    def __init__(self, sequence_card_tab: Optional["SequenceCardTab"] = None):
+    def __init__(self, sequence_card_tab: "SequenceCardTab" | None = None):
         self.logger = logging.getLogger(__name__)
         self.sequence_card_tab = sequence_card_tab
 
@@ -86,7 +87,7 @@ class ExportConfig:
         self.logger.debug(f"Set export setting {key} to {value}")
 
     def get_grid_dimensions(
-        self, sequence_length: Optional[int] = None
+        self, sequence_length: int | None = None
     ) -> tuple[int, int]:
         if sequence_length is None:
             return (

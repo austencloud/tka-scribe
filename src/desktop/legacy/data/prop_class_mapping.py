@@ -1,3 +1,4 @@
+from __future__ import annotations
 from enums.prop_type import PropType
 
 prop_class_mapping = {

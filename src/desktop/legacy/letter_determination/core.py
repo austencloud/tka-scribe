@@ -1,6 +1,7 @@
 from __future__ import annotations
+from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Optional,Optional
 
 from enums.letter.letter import Letter
 from main_window.main_widget.json_manager.json_manager import JsonManager
@@ -67,7 +68,7 @@ class LetterDeterminer:
 
     def _fallback_search(
         self, pictograph_data: dict, swap_prop_rot_dir: bool
-    ) -> Optional[Letter]:
+    ) -> Letter | None:
         import logging
 
         logger = logging.getLogger(__name__)

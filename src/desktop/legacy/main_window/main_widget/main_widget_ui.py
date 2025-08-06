@@ -1,3 +1,4 @@
+from __future__ import annotations
 from typing import TYPE_CHECKING
 
 # SettingsDialog import moved to conditional import in _create_components
@@ -87,9 +88,8 @@ class MainWidgetUI:
         json_manager = AppContextAdapter.json_manager()
 
         # Create a temporary app context for the transition period
+        from core.application_context import ApplicationContext
         from core.dependency_container import get_container
-
-        from desktop.modern.core.application_context import ApplicationContext
 
         # Get the global container that was set up in main.py
         container = get_container()

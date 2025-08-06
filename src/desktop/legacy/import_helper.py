@@ -1,3 +1,4 @@
+from __future__ import annotations
 # This file ensures VS Code and Pylance can resolve imports for the legacy codebase
 # Import this at the top of any legacy Python file if VS Code shows import errors
 

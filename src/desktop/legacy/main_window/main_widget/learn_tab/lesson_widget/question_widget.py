@@ -1,3 +1,5 @@
+from __future__ import annotations
+from typing import Union
 from typing import TYPE_CHECKING, Any
 
 from main_window.main_widget.learn_tab.pictograph_question_renderer import (

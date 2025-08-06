@@ -1,3 +1,4 @@
+from __future__ import annotations
 """
 Generate all checkbox component for the codex exporter.
 """

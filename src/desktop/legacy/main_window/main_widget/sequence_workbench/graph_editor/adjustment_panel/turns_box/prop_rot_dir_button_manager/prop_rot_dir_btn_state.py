@@ -1,3 +1,4 @@
+from __future__ import annotations
 # === prop_rot_dir_button_manager/core.py ===
 
 from PyQt6.QtCore import QObject, pyqtSignal

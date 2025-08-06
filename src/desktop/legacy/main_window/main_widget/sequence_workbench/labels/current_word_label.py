@@ -1,3 +1,4 @@
+from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from main_window.main_widget.sequence_workbench.legacy_beat_frame.current_word_line_edit import (

@@ -1,3 +1,4 @@
+from __future__ import annotations
 class PlacementDataCleaner:
     """This class iterates over all the keys in the letter data and removes any empty keys.
     It goes through each item recursively and removes any {} from keys or values."""

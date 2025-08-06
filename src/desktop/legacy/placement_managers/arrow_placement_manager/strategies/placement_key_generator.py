@@ -1,3 +1,4 @@
+from __future__ import annotations
 from enums.letter.letter import LetterCondition
 from objects.arrow.arrow import Arrow
 

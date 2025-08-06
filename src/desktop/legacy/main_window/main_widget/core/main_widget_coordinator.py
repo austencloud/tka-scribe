@@ -1,3 +1,4 @@
+from __future__ import annotations
 """
 Main widget coordinator that orchestrates the different components of the main widget.
 
@@ -5,7 +6,7 @@ This replaces the monolithic MainWidget class with a coordinator that manages
 smaller, focused components following the Single Responsibility Principle.
 """
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING,Optional
 
 from main_window.main_widget.core.image_drag_drop_handler import ImageDragDropHandler
 from main_window.main_widget.core.image_drop_processor import ImageDropProcessor
@@ -15,7 +16,7 @@ from main_window.main_widget.core.widget_manager import WidgetManager
 from PyQt6.QtCore import pyqtSignal
 from PyQt6.QtWidgets import QHBoxLayout, QStackedWidget, QVBoxLayout, QWidget
 
-from desktop.modern.core.application_context import ApplicationContext
+from core.application_context import ApplicationContext
 
 if TYPE_CHECKING:
     from main_window.main_window import MainWindow

@@ -1,4 +1,5 @@
-from typing import TYPE_CHECKING
+from __future__ import annotations
+from typing import TYPE_CHECKING,Optional
 
 from main_window.main_widget.generate_tab.circular.CAP_type import CAPType
 

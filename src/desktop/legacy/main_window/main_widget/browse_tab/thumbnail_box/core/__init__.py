@@ -1,3 +1,4 @@
+from __future__ import annotations
 """
 Core components for thumbnail processing using coordinator pattern.
 

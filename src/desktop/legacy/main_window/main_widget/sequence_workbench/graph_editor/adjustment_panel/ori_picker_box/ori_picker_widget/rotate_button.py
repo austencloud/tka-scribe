@@ -1,3 +1,4 @@
+from __future__ import annotations
 # rotate_button.py
 from typing import TYPE_CHECKING
 

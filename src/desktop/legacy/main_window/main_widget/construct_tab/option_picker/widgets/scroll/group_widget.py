@@ -1,3 +1,4 @@
+from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from main_window.main_widget.construct_tab.option_picker.widgets.scroll.section_widget import (

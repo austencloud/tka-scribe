@@ -1,3 +1,4 @@
+from __future__ import annotations
 import os
 
 from utils.path_helpers import get_data_path

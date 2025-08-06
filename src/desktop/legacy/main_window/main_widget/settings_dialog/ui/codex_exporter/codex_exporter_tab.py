@@ -1,3 +1,4 @@
+from __future__ import annotations
 """
 Tab for exporting pictographs with turns.
 Modern 2025 UI design with glass-morphism and gradient effects.

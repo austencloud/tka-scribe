@@ -1,4 +1,6 @@
-from typing import TYPE_CHECKING, Optional
+from __future__ import annotations
+from typing import Union,Optional
+from typing import TYPE_CHECKING, Optional,Optional
 
 from base_widgets.pictograph.elements.views.beat_view import LegacyBeatView
 from main_window.main_widget.sequence_workbench.legacy_beat_frame.start_pos_beat_view import (
@@ -17,7 +19,7 @@ if TYPE_CHECKING:
 class BeatSelectionOverlay(QWidget):
     def __init__(self, beat_frame: "LegacyBeatFrame"):
         super().__init__(beat_frame)
-        self.selected_beat: Optional[LegacyBeatView | StartPositionBeatView] = None
+        self.selected_beat: LegacyBeatView | StartPositionBeatView | None = None
         self.border_color = QColor(GOLD)
         self.border_width = 4
         self.beat_frame = beat_frame
@@ -106,7 +108,7 @@ class BeatSelectionOverlay(QWidget):
             self.raise_()
             self.update()
 
-    def get_selected_beat(self) -> Optional[LegacyBeatView]:
+    def get_selected_beat(self) -> LegacyBeatView | None:
         return self.selected_beat
 
     def paintEvent(self, event):

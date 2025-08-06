@@ -1,3 +1,4 @@
+from __future__ import annotations
 # src/main_window/main_widget/sequence_card_tab/components/display/image_processor.py
 """
 Image Processor - Refactored with coordinator pattern.

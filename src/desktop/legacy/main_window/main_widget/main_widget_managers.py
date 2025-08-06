@@ -1,4 +1,5 @@
-from typing import TYPE_CHECKING, Optional
+from __future__ import annotations
+from typing import TYPE_CHECKING, Optional,Optional
 
 from letter_determination.core import LetterDeterminer
 from main_window.main_widget.pictograph_collector import PictographCollector
@@ -11,7 +12,7 @@ from .sequence_properties_manager.sequence_properties_manager_factory import (
 from .thumbnail_finder import ThumbnailFinder
 
 if TYPE_CHECKING:
-    from desktop.modern.core.application_context import ApplicationContext
+    from core.application_context import ApplicationContext
 
     from .main_widget import MainWidget
 
@@ -20,7 +21,7 @@ class MainWidgetManagers:
     def __init__(
         self,
         main_widget: "MainWidget",
-        app_context: Optional["ApplicationContext"] = None,
+        app_context: "ApplicationContext" | None = None,
     ):
         """
         Initialize the MainWidgetManagers with dependency injection.

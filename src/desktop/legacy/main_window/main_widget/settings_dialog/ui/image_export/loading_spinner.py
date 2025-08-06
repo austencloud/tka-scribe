@@ -1,3 +1,4 @@
+from __future__ import annotations
 import math
 
 from PyQt6.QtCore import QRect, QSize, Qt, QTimer

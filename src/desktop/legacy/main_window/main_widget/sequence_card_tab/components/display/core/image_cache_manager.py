@@ -1,3 +1,4 @@
+from __future__ import annotations
 """
 Image Cache Manager - Coordinates between memory and disk caches.
 
@@ -5,7 +6,7 @@ Extracted from the monolithic ImageProcessor class to follow SRP.
 """
 
 import logging
-from typing import Any, Optional
+from typing import Any, Optional,Optional
 
 from PyQt6.QtCore import QSize
 from PyQt6.QtGui import QImage, QPixmap
@@ -42,7 +43,7 @@ class ImageCacheManager:
             self.logger.warning(f"Failed to initialize disk cache: {e}")
             self.disk_cache = None
 
-    def get_raw_image(self, image_path: str) -> Optional[QImage]:
+    def get_raw_image(self, image_path: str) -> QImage | None:
         """
         Get raw image from cache.
 
@@ -65,7 +66,7 @@ class ImageCacheManager:
         """
         self.raw_cache.put(image_path, image)
 
-    def get_scaled_image(self, cache_key: str) -> Optional[QPixmap]:
+    def get_scaled_image(self, cache_key: str) -> QPixmap | None:
         """
         Get scaled image from memory cache.
 
@@ -89,7 +90,7 @@ class ImageCacheManager:
 
     def get_disk_cached_image(
         self, image_path: str, cell_size: QSize, page_scale_factor: float
-    ) -> Optional[QPixmap]:
+    ) -> QPixmap | None:
         """
         Get image from disk cache.
 

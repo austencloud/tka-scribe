@@ -1,3 +1,4 @@
+from __future__ import annotations
 """
 Intelligent Import Path Resolver for TKA Legacy Application
 

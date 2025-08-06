@@ -1,3 +1,4 @@
+from __future__ import annotations
 """
 Modern UI Components for the settings dialog with glassmorphism design.
 """

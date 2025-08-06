@@ -1,3 +1,4 @@
+from __future__ import annotations
 from base_widgets.pictograph.elements.views.beat_view import (
     LegacyBeatView,
 )

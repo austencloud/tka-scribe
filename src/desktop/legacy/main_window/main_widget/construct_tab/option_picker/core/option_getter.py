@@ -1,4 +1,5 @@
-from typing import Any, Optional
+from __future__ import annotations
+from typing import Any, Optional,Optional
 
 from interfaces.json_manager_interface import IJsonManager
 
@@ -27,7 +28,7 @@ class OptionGetter:
         self.ori_validation_engine = json_manager.ori_validation_engine
 
     def get_next_options(
-        self, sequence: list[dict[str, Any]], selected_filter: Optional[str] = None
+        self, sequence: list[dict[str, Any]], selected_filter: str | None = None
     ) -> list[dict[str, Any]]:
         options = self._load_all_next_option_dicts(sequence)
         if selected_filter is not None:
@@ -85,7 +86,7 @@ class OptionGetter:
     def _check_continuity(
         self, sequence: list[dict[str, Any]], o: dict[str, Any]
     ) -> tuple[bool, bool]:
-        def get_last_rot(seq: list[dict[str, Any]], color: str) -> Optional[str]:
+        def get_last_rot(seq: list[dict[str, Any]], color: str) -> str | None:
             for item in reversed(seq):
                 rot = item.get(f"{color}_attributes", {}).get(PROP_ROT_DIR)
                 if rot and rot != NO_ROT:

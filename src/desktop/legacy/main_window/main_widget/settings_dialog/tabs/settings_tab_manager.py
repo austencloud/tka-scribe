@@ -1,3 +1,4 @@
+from __future__ import annotations
 """
 Settings tab manager for the modern settings dialog.
 
@@ -11,7 +12,7 @@ from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QLabel, QListWidget, QStackedWidget, QVBoxLayout, QWidget
 
 if TYPE_CHECKING:
-    from desktop.modern.core.application_context import ApplicationContext
+    from core.application_context import ApplicationContext
 
     from ..core.settings_state_manager import SettingsStateManager
 

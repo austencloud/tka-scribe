@@ -1,3 +1,5 @@
+from __future__ import annotations
+from typing import Union
 """
 Main class for the codex pictograph exporter.
 """
@@ -22,7 +24,7 @@ if TYPE_CHECKING:
 class CodexExporter:
     """Main class for the codex pictograph exporter."""
 
-    def __init__(self, parent: Union["ImageExportTab", "CodexExporterTab"]):
+    def __init__(self, parent: "ImageExportTab" | "CodexExporterTab"):
         """Initialize the exporter.
 
         Args:

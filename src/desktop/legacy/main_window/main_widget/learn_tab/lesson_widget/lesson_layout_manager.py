@@ -1,3 +1,4 @@
+from __future__ import annotations
 # learn_tab/base_classes/lesson_widget/lesson_layout_manager.py
 from typing import TYPE_CHECKING
 

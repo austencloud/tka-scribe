@@ -1,4 +1,6 @@
-from typing import TYPE_CHECKING, Optional
+from __future__ import annotations
+from typing import Union,Optional
+from typing import TYPE_CHECKING, Optional,Optional
 
 from base_widgets.pictograph.elements.grid.non_radial_points_group import (
     NonRadialPointsGroup,
@@ -35,7 +37,7 @@ class WidgetFader:
         widgets: list[QWidget],
         fade_in: bool,
         duration: int = 250,
-        callback: Optional[callable] = None,
+        callback: callable | None = None,
     ) -> None:
         if not widgets:
             if callback:
@@ -152,7 +154,7 @@ class WidgetFader:
         visibility_element: Glyph | NonRadialPointsGroup,
         opacity: float,
         duration: int = 300,
-        callback: Optional[callable] = None,
+        callback: callable | None = None,
     ) -> None:
         if not visibility_element:
             if callback:
@@ -203,7 +205,7 @@ class WidgetFader:
         element: Glyph | NonRadialPointsGroup,
         opacity: float,
         duration: int = 300,
-        callback: Optional[callable] = None,
+        callback: callable | None = None,
     ) -> None:
         if not widgets and not element:
             if callback:

@@ -1,3 +1,4 @@
+from __future__ import annotations
 """
 Core package for legacy TKA application.
 Provides unified access to core modules from different locations.

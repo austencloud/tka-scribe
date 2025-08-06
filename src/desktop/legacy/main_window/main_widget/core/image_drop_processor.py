@@ -1,3 +1,4 @@
+from __future__ import annotations
 """
 Image drop processor for handling dropped images.
 
@@ -24,7 +25,7 @@ from PyQt6.QtWidgets import (
 )
 
 if TYPE_CHECKING:
-    from desktop.modern.core.application_context import ApplicationContext
+    from core.application_context import ApplicationContext
 
 logger = logging.getLogger(__name__)
 

@@ -1,3 +1,4 @@
+from __future__ import annotations
 """
 Dialog layout manager for the modern settings dialog.
 
@@ -18,7 +19,7 @@ from PyQt6.QtWidgets import (
 )
 
 if TYPE_CHECKING:
-    from desktop.modern.core.application_context import ApplicationContext
+    from core.application_context import ApplicationContext
 
     from ..components.modern_action_buttons import ModernActionButtons
     from ..ui.settings_dialog_sidebar import SettingsDialogSidebar

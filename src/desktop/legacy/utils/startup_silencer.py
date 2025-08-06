@@ -1,3 +1,4 @@
+from __future__ import annotations
 """
 Utility to silence specific loggers during application startup.
 

@@ -1,6 +1,7 @@
+from __future__ import annotations
 # pictograph_data_manager.py
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING,Optional
 
 from enums.letter.letter import Letter
 

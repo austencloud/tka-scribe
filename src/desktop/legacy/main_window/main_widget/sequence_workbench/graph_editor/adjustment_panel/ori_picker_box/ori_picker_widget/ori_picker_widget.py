@@ -1,3 +1,4 @@
+from __future__ import annotations
 # ori_picker_widget.py
 from typing import TYPE_CHECKING
 

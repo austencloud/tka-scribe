@@ -1,3 +1,4 @@
+from __future__ import annotations
 """
 Codex exporter tab for the settings dialog.
 """

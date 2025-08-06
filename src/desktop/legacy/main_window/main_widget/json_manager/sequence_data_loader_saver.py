@@ -1,5 +1,6 @@
+from __future__ import annotations
 import json
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Optional,Optional
 
 from legacy_settings_manager.global_settings.app_context import AppContext
 from main_window.main_widget.sequence_level_evaluator import SequenceLevelEvaluator
@@ -25,11 +26,11 @@ from data.constants import (
 )
 
 if TYPE_CHECKING:
-    from desktop.modern.core.application_context import ApplicationContext
+    from core.application_context import ApplicationContext
 
 
 class SequenceDataLoaderSaver:
-    def __init__(self, app_context: Optional["ApplicationContext"] = None) -> None:
+    def __init__(self, app_context: "ApplicationContext" | None = None) -> None:
         """
         Initialize SequenceDataLoaderSaver with optional dependency injection.
 

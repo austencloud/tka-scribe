@@ -1,3 +1,4 @@
+from __future__ import annotations
 """
 Glassmorphism Styler for modern UI design with translucent backgrounds and blur effects.
 

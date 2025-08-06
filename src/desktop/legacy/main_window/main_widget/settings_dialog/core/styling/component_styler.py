@@ -1,3 +1,4 @@
+from __future__ import annotations
 """
 Component Styler - Handles styling for individual UI components.
 

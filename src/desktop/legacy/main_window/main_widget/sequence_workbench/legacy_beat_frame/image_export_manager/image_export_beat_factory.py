@@ -1,3 +1,5 @@
+from __future__ import annotations
+from typing import Union
 from typing import TYPE_CHECKING, Union
 
 from base_widgets.pictograph.elements.views.beat_view import LegacyBeatView
@@ -18,7 +20,7 @@ class ImageExportBeatFactory:
     def __init__(
         self,
         export_manager: "ImageExportManager",
-        beat_frame_class: Union["LegacyBeatFrame", "TempBeatFrame"],
+        beat_frame_class: "LegacyBeatFrame" | "TempBeatFrame",
     ):
         self.export_manager = export_manager
         self.beat_frame_class = beat_frame_class

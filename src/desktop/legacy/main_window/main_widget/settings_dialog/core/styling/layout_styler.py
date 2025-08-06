@@ -1,3 +1,4 @@
+from __future__ import annotations
 """
 Layout Styler - Handles complex layout and container styling.
 

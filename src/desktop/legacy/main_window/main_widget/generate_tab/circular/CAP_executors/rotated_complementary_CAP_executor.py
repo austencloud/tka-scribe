@@ -1,3 +1,4 @@
+from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from enums.letter.complementary_letter_getter import ComplementaryLetterGetter

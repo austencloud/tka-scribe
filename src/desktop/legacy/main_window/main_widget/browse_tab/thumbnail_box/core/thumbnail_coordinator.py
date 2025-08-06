@@ -1,3 +1,4 @@
+from __future__ import annotations
 """
 Thumbnail Coordinator - Orchestrates thumbnail processing components.
 
@@ -6,7 +7,7 @@ architecture that follows the Single Responsibility Principle.
 """
 
 import logging
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Optional,Optional
 
 from PyQt6.QtCore import QTimer
 from PyQt6.QtGui import QPixmap
@@ -48,8 +49,8 @@ class ThumbnailCoordinator:
         self._load_timer = QTimer()
         self._load_timer.setSingleShot(True)
         self._load_timer.timeout.connect(self._load_pending_image)
-        self._pending_path: Optional[str] = None
-        self._pending_index: Optional[int] = None
+        self._pending_path: str | None = None
+        self._pending_index: int | None = None
 
         # Quality enhancement timer
         self._quality_timer = QTimer()
@@ -153,7 +154,7 @@ class ThumbnailCoordinator:
         """Set selection state."""
         self.event_handler.set_selection_state(selected)
 
-    def get_border_color(self) -> Optional[str]:
+    def get_border_color(self) -> str | None:
         """Get current border color."""
         return self.event_handler.get_border_color()
 

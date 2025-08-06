@@ -1,3 +1,4 @@
+from __future__ import annotations
 """
 Enhanced General Tab with modern UI, thumbnail quality settings, and comprehensive configuration.
 """

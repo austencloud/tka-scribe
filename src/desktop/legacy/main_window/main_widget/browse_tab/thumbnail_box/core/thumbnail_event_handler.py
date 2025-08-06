@@ -1,3 +1,4 @@
+from __future__ import annotations
 """
 Thumbnail Event Handler - Manages user interactions and selection states.
 
@@ -5,7 +6,7 @@ Extracted from ThumbnailImageLabel to follow Single Responsibility Principle.
 """
 
 import logging
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING,Optional
 
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QCursor

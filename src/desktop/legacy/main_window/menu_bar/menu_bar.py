@@ -1,3 +1,4 @@
+from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from main_window.menu_bar.navigation_widget.menu_bar_nav_widget import MenuBarNavWidget

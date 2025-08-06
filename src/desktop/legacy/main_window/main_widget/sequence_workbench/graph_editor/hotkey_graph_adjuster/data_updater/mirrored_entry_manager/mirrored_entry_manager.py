@@ -1,3 +1,4 @@
+from __future__ import annotations
 import logging
 
 from .mirrored_entry_adapter import MirroredEntryAdapter

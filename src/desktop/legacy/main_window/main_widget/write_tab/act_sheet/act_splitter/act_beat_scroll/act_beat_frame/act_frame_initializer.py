@@ -1,3 +1,4 @@
+from __future__ import annotations
 # act_beat_frame_initializer.py
 
 from typing import TYPE_CHECKING

@@ -1,3 +1,4 @@
+from __future__ import annotations
 from typing import LiteralString
 
 from PyQt6.QtCore import Qt

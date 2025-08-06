@@ -1,7 +1,8 @@
+from __future__ import annotations
 # src/main_window/main_widget/sequence_card_tab/export/export_grid_calculator.py
 import logging
 import math
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Optional,Optional
 
 from .export_config import ExportConfig
 
@@ -23,14 +24,14 @@ class ExportGridCalculator:
     def __init__(
         self,
         export_config: ExportConfig,
-        sequence_card_tab: Optional["SequenceCardTab"] = None,
+        sequence_card_tab: "SequenceCardTab" | None = None,
     ):
         self.config = export_config
         self.sequence_card_tab = sequence_card_tab
         self.logger = logging.getLogger(__name__)
 
     def calculate_optimal_grid_dimensions(
-        self, item_count: int, sequence_length: Optional[int] = None
+        self, item_count: int, sequence_length: int | None = None
     ) -> tuple[int, int]:
         """
         Calculate the optimal grid dimensions based on the number of items and sequence length.

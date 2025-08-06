@@ -1,3 +1,4 @@
+from __future__ import annotations
 """
 Migration adapters to help transition from AppContext singleton to dependency injection.
 
@@ -5,7 +6,7 @@ These adapters provide backward compatibility while gradually migrating to the n
 """
 
 import logging
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any, Optional,Optional
 
 from .application_context import ApplicationContext
 
@@ -41,7 +42,7 @@ class AppContextAdapter:
             app_context: The new application context with dependency injection
         """
         self._app_context = app_context
-        self._selected_arrow: Optional[Arrow] = None
+        self._selected_arrow: Arrow | None = None
 
     @classmethod
     def settings_manager(cls) -> "ISettingsManager":
@@ -70,7 +71,7 @@ class AppContextAdapter:
         return cls._global_adapter._app_context.json_manager
 
     @classmethod
-    def selected_arrow(cls) -> Optional["Arrow"]:
+    def selected_arrow(cls) -> "Arrow" | None:
         """
         Get the selected arrow (legacy interface).
 
@@ -82,7 +83,7 @@ class AppContextAdapter:
         return cls._global_adapter._selected_arrow
 
     @classmethod
-    def set_selected_arrow(cls, arrow: Optional["Arrow"]) -> None:
+    def set_selected_arrow(cls, arrow: "Arrow" | None) -> None:
         """
         Set the selected arrow (legacy interface).
 
@@ -124,11 +125,11 @@ class AppContextAdapter:
         """Get the JSON manager through dependency injection."""
         return self._app_context.json_manager
 
-    def get_selected_arrow(self) -> Optional["Arrow"]:
+    def get_selected_arrow(self) -> "Arrow" | None:
         """Get the currently selected arrow."""
         return self._selected_arrow
 
-    def set_arrow(self, arrow: Optional["Arrow"]) -> None:
+    def set_arrow(self, arrow: "Arrow" | None) -> None:
         """Set the currently selected arrow."""
         self._selected_arrow = arrow
         self._app_context.selected_arrow = arrow

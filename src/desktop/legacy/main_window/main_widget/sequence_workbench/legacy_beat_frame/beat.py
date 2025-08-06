@@ -1,3 +1,5 @@
+from __future__ import annotations
+from typing import Union
 from typing import TYPE_CHECKING
 
 from base_widgets.pictograph.legacy_pictograph import LegacyPictograph

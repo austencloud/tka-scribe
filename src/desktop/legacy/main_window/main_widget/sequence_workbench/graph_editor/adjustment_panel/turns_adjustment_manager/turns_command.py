@@ -1,3 +1,4 @@
+from __future__ import annotations
 # Abstract command
 from abc import ABC, abstractmethod
 

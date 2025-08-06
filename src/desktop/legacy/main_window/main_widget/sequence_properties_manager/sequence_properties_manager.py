@@ -1,4 +1,5 @@
-from typing import TYPE_CHECKING, Optional
+from __future__ import annotations
+from typing import TYPE_CHECKING, Optional,Optional
 
 from main_window.main_widget.sequence_level_evaluator import SequenceLevelEvaluator
 from main_window.main_widget.sequence_properties_manager.strict_swapped_CAP_checker import (
@@ -13,11 +14,11 @@ from .strict_mirrored_CAP_checker import StrictMirroredCAPChecker
 from .strict_rotated_CAP_checker import StrictRotatedCAPChecker
 
 if TYPE_CHECKING:
-    from desktop.modern.core.application_context import ApplicationContext
+    from core.application_context import ApplicationContext
 
 
 class SequencePropertiesManager:
-    def __init__(self, app_context: Optional["ApplicationContext"] = None):
+    def __init__(self, app_context: "ApplicationContext" | None = None):
         """
         Initialize the SequencePropertiesManager with dependency injection.
 

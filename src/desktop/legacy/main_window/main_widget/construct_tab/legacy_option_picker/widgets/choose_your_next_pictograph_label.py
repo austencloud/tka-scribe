@@ -1,3 +1,4 @@
+from __future__ import annotations
 # main_window/main_widget/construct_tab/option_picker/choose_your_next_pictograph_label.py
 from collections.abc import Callable
 

@@ -1,5 +1,6 @@
+from __future__ import annotations
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Optional, Union
+from typing import TYPE_CHECKING
 
 from objects.prop.prop_updater import PropUpdater
 from PyQt6.QtWidgets import QGraphicsPixmapItem
@@ -17,13 +18,13 @@ if TYPE_CHECKING:
 
 @dataclass
 class PropState:
-    color: Optional[str] = None
-    prop_type: Optional[str] = None
-    loc: Optional[str] = None
-    ori: Optional[str] = None
+    color: str | None = None
+    prop_type: str | None = None
+    loc: str | None = None
+    ori: str | None = None
 
     def update_from_dict(
-        self, prop_data: dict[str, Union[str, "Arrow", "QGraphicsPixmapItem"]]
+        self, prop_data: dict[str, str | "Arrow", "QGraphicsPixmapItem"]
     ) -> None:
         for key, value in prop_data.items():
             if hasattr(self, key):

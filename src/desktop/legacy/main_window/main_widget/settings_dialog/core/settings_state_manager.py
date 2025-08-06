@@ -1,3 +1,4 @@
+from __future__ import annotations
 """
 Settings State Manager for tracking changes and managing settings state.
 """
@@ -7,7 +8,7 @@ import json
 import logging
 import time
 from collections.abc import Callable
-from typing import Any
+from typing import Any,Optional
 
 from PyQt6.QtCore import QObject, pyqtSignal
 

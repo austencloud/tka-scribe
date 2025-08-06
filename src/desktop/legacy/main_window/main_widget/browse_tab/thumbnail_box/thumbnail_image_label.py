@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from pathlib import Path
 from typing import TYPE_CHECKING, Final
 
@@ -23,7 +25,7 @@ class ThumbnailImageLabel(QLabel):
     CACHE_DIR = Path("browse_thumbnails")
     CACHE_METADATA_FILE = "cache_metadata.json"
 
-    def __init__(self, thumbnail_box: "ThumbnailBox"):
+    def __init__(self, thumbnail_box: ThumbnailBox):
         super().__init__()
         # Instance attributes
         self.thumbnail_box = thumbnail_box
@@ -47,6 +49,9 @@ class ThumbnailImageLabel(QLabel):
         # Set object name to exclude from glassmorphism styling
         self.setObjectName("thumbnail_image_label")
 
+        # Note: Image sizing is now handled when images are loaded, not during initialization
+        # This fixes the "tiny images on first load" issue by ensuring proper container sizing
+
     @property
     def border_width(self) -> int:
         return self._border_width
@@ -55,7 +60,6 @@ class ThumbnailImageLabel(QLabel):
     def is_in_sequence_viewer(self) -> bool:
         return self.thumbnail_box.in_sequence_viewer
 
-    @property
     def update_thumbnail(self, index: int) -> None:
         """Update the displayed image based on the given index (synchronous)."""
         thumbnails = self.thumbnail_box.state.thumbnails
@@ -68,6 +72,9 @@ class ThumbnailImageLabel(QLabel):
             self._original_pixmap = QPixmap(path)
             self._cached_available_size = None
 
+        # CRITICAL FIX: Size the widget based on current container size before processing
+        self._ensure_proper_sizing()
+
         # Use coordinator for processing
         processed_pixmap = self.coordinator.process_thumbnail_sync(
             path, self.is_in_sequence_viewer
@@ -75,13 +82,40 @@ class ThumbnailImageLabel(QLabel):
 
         if not processed_pixmap.isNull():
             self.setPixmap(processed_pixmap)
-            self._update_size_from_pixmap(processed_pixmap)
+
+    def _ensure_proper_sizing(self) -> None:
+        """Ensure the image label is properly sized based on current container size."""
+        try:
+            # Calculate target size using current container dimensions
+            target_size = self.coordinator.size_calculator.calculate_target_size(
+                self.is_in_sequence_viewer
+            )
+
+            # Only resize if we have a valid target size and it's different from current size
+            if (
+                target_size.width() > 0
+                and target_size.height() > 0
+                and (
+                    self.size().width() != target_size.width()
+                    or self.size().height() != target_size.height()
+                )
+            ):
+                self.setFixedSize(target_size)
+
+        except Exception as e:
+            import logging
+
+            logger = logging.getLogger(__name__)
+            logger.warning(f"Error in _ensure_proper_sizing: {e}")
 
     def update_thumbnail_async(self, index: int) -> None:
         """Update the displayed image asynchronously with ultra quality processing."""
         thumbnails = self.thumbnail_box.state.thumbnails
         if not thumbnails or not (0 <= index < len(thumbnails)):
             return
+
+        # CRITICAL FIX: Size the widget based on current container size before processing
+        self._ensure_proper_sizing()
 
         path = thumbnails[index]
         if path != self.current_path:
@@ -98,27 +132,24 @@ class ThumbnailImageLabel(QLabel):
 
             if not processed_pixmap.isNull():
                 self.setPixmap(processed_pixmap)
-                self._update_size_from_pixmap(processed_pixmap)
 
     def _update_display_from_coordinator(self) -> None:
         """Update display after coordinator processing."""
         if self.current_path:
+            # Ensure proper sizing before processing
+            self._ensure_proper_sizing()
+
             processed_pixmap = self.coordinator.process_thumbnail_sync(
                 self.current_path, self.is_in_sequence_viewer
             )
 
             if not processed_pixmap.isNull():
                 self.setPixmap(processed_pixmap)
-                self._update_size_from_pixmap(processed_pixmap)
 
     def _update_size_from_pixmap(self, pixmap: QPixmap) -> None:
-        """Update widget size based on pixmap."""
-        if not pixmap.isNull():
-            # Calculate appropriate size for the widget
-            target_size = self.coordinator.size_calculator.calculate_target_size(
-                self.is_in_sequence_viewer
-            )
-            self.setFixedSize(target_size)
+        """Legacy method - sizing is now handled by _ensure_proper_sizing."""
+        # Size is now handled by _ensure_proper_sizing() before image processing
+        pass
 
     # Legacy method - now handled by coordinator
     def _load_pending_image(self) -> None:
@@ -232,9 +263,11 @@ class ThumbnailImageLabel(QLabel):
             self._draw_border(painter)
 
     def resizeEvent(self, event) -> None:
-        """Handle resize events."""
+        """Handle resize events - clear cache but don't trigger thumbnail updates."""
         self._cached_available_size = None
         self._border_width = max(1, int(self.width() * self.BORDER_WIDTH_RATIO))
+
+        # Don't trigger thumbnail updates on resize - thumbnails should be correct size from start
         super().resizeEvent(event)
 
     # Legacy methods - functionality now handled by coordinator

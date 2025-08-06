@@ -1,3 +1,4 @@
+from __future__ import annotations
 # ui_utils.py
 def calc_font_size(parent_height: int, factor: float = 0.03, min_size: int = 10) -> int:
     return max(int(parent_height * factor), min_size)

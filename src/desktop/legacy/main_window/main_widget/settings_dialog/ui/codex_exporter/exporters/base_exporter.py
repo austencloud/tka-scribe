@@ -1,9 +1,11 @@
+from __future__ import annotations
+from typing import Union,Optional
 """
 Base exporter class for the codex pictograph exporter.
 """
 
 import os
-from typing import TYPE_CHECKING, Optional, Union
+from typing import TYPE_CHECKING, Optional, Union,Optional
 
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QFileDialog, QProgressDialog
@@ -20,7 +22,7 @@ if TYPE_CHECKING:
 class BaseExporter:
     """Base exporter class for the codex pictograph exporter."""
 
-    def __init__(self, parent: Union["ImageExportTab", "CodexExporterTab"]):
+    def __init__(self, parent: "ImageExportTab" | "CodexExporterTab"):
         """Initialize the exporter.
 
         Args:
@@ -29,7 +31,7 @@ class BaseExporter:
         self.parent = parent
         self.main_widget = parent.main_widget
 
-    def _get_export_directory(self) -> Optional[str]:
+    def _get_export_directory(self) -> str | None:
         """Ask the user for a directory to save the exported images.
 
         Returns:

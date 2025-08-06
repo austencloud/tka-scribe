@@ -1,4 +1,5 @@
-from typing import TYPE_CHECKING, Optional
+from __future__ import annotations
+from typing import TYPE_CHECKING, Optional,Optional
 
 from legacy_settings_manager.global_settings.app_context import AppContext
 from main_window.main_widget.sequence_workbench.graph_editor.hotkey_graph_adjuster.rotation_angle_override_key_generator import (
@@ -92,7 +93,7 @@ class MirroredEntryRotAngleManager:
     def _should_handle_rotation_angle(self, arrow: Arrow) -> bool:
         return arrow.motion.state.motion_type in [STATIC, DASH]
 
-    def _check_for_rotation_angle_override(self, turn_data: dict) -> Optional[int]:
+    def _check_for_rotation_angle_override(self, turn_data: dict) -> int | None:
         for key in turn_data:
             if "rot_angle_override" in key:
                 return turn_data[key]

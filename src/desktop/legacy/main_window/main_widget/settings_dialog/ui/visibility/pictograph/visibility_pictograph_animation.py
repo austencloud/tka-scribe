@@ -1,3 +1,4 @@
+from __future__ import annotations
 from enums.glyph_enum import Glyph
 from PyQt6.QtCore import QEasingCurve, QPropertyAnimation
 

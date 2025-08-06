@@ -1,3 +1,4 @@
+from __future__ import annotations
 """
 Logger for UI-related operations.
 

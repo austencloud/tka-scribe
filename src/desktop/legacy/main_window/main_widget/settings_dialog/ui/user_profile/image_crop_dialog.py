@@ -1,3 +1,5 @@
+from __future__ import annotations
+from typing import Union
 from main_window.main_widget.settings_dialog.ui.user_profile.profile_picture_manager import (
     ProfilePictureManager,
 )

@@ -1,3 +1,4 @@
+from __future__ import annotations
 from enums.letter.letter import Letter, LetterCondition
 from objects.arrow.arrow import Arrow
 from placement_managers.arrow_placement_manager.arrow_placement_context import (

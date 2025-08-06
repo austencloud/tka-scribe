@@ -1,4 +1,5 @@
-from typing import Optional
+from __future__ import annotations
+from typing import Optional,Optional
 
 from PyQt6.QtCore import QPointF
 
@@ -41,14 +42,14 @@ class GridData:
             else:
                 self.center_points[mode] = QPointF(0, 0)
 
-    def get_shift_coord(self, point_name: str) -> Optional[QPointF]:
+    def get_shift_coord(self, point_name: str) -> QPointF | None:
         point = self.all_layer2_points.get(point_name)
         if point and point.coordinates:
             return point.coordinates
         else:
             return None
 
-    def get_static_dash_coord(self, point_name: str) -> Optional[QPointF]:
+    def get_static_dash_coord(self, point_name: str) -> QPointF | None:
         point = self.all_hand_points_normal.get(point_name)
         if point and point.coordinates:
             return point.coordinates
@@ -57,7 +58,7 @@ class GridData:
 
     def get_point(
         self, layer: dict[str, GridPoint], pos: QPointF
-    ) -> Optional[GridPoint]:
+    ) -> GridPoint | None:
         min_distance = float("inf")
         closest_point = None
         for point in layer.values():

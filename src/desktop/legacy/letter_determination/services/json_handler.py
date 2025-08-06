@@ -1,3 +1,4 @@
+from __future__ import annotations
 # services/json_handler.py
 from typing import TYPE_CHECKING
 

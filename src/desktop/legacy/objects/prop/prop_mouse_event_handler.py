@@ -1,3 +1,4 @@
+from __future__ import annotations
 # prop_mouse_event_manager.py
 from typing import TYPE_CHECKING
 

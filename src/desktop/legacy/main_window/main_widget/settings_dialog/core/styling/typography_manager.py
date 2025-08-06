@@ -1,3 +1,4 @@
+from __future__ import annotations
 """
 Typography Manager - Handles font management and typography system.
 

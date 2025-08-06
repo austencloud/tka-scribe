@@ -1,3 +1,4 @@
+from __future__ import annotations
 import os
 import time  # Import time for formatting timestamps
 from typing import TYPE_CHECKING

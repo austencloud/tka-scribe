@@ -1,3 +1,4 @@
+from __future__ import annotations
 # strategies/placement_strategy.py
 from abc import ABC, abstractmethod
 

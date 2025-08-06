@@ -1,3 +1,5 @@
+from __future__ import annotations
+from typing import Union
 from typing import TYPE_CHECKING, Union
 
 from PyQt6.QtSvgWidgets import QGraphicsSvgItem

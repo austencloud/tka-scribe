@@ -1,3 +1,4 @@
+from __future__ import annotations
 """
 Aspect Ratio Manager - Handles aspect ratio calculations and management.
 

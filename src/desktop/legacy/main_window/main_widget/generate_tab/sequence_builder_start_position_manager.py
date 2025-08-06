@@ -1,3 +1,4 @@
+from __future__ import annotations
 # base_classes/start_position_manager.py
 
 import random

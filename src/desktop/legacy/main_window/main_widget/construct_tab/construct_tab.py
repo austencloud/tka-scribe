@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from collections.abc import Callable
 
 from base_widgets.pictograph.legacy_pictograph import LegacyPictograph
@@ -26,11 +28,11 @@ class ConstructTab(QFrame):
 
     def __init__(
         self,
-        beat_frame: "LegacyBeatFrame",
+        beat_frame: LegacyBeatFrame,
         pictograph_dataset: dict,
         size_provider: Callable[[], QSize],
         fade_to_stack_index: Callable[[int], None],
-        fade_manager: "FadeManager",
+        fade_manager: FadeManager,
         settings_manager: ISettingsManager,
         json_manager: IJsonManager,
     ) -> None:
@@ -75,6 +77,42 @@ class ConstructTab(QFrame):
         self.advanced_start_pos_picker = AdvancedStartPosPicker(
             self.pictograph_dataset, self.beat_frame, self.mw_size_provider
         )
+
+        # Connect signals for automatic transitions
+        self._connect_signals()
+
+    def _connect_signals(self) -> None:
+        """Connect signals for automatic transitions between pickers."""
+        # Connect start position picker signal to transition to option picker
+        self.start_pos_picker.start_position_selected.connect(
+            self._handle_start_position_selected
+        )
+
+        # Connect advanced start position picker signal if it has one
+        if hasattr(self.advanced_start_pos_picker, "start_position_selected"):
+            self.advanced_start_pos_picker.start_position_selected.connect(
+                self._handle_start_position_selected
+            )
+
+    def _handle_start_position_selected(self, pictograph: LegacyPictograph) -> None:
+        """Handle start position selection and transition to option picker."""
+        import logging
+
+        logger = logging.getLogger(__name__)
+        logger.info(f"Start position selected: {pictograph}")
+
+        # Mark that a start position has been picked
+        self.start_position_picked = True
+
+        # Emit the construct tab's signal
+        self.start_position_selected.emit(pictograph)
+
+        # Automatically transition to option picker
+        self.transition_to_option_picker()
+
+        # Prepare the option picker with the start position
+        if hasattr(self.option_picker, "prepare_from_start_position"):
+            self.option_picker.prepare_from_start_position(pictograph)
 
     def transition_to_option_picker(self):
         """Transition to the option picker view."""

@@ -1,3 +1,4 @@
+from __future__ import annotations
 """
 Thumbnail Cache Manager - Handles disk caching with metadata validation.
 
@@ -10,7 +11,7 @@ import logging
 import os
 import time  # ← add this at the top
 from pathlib import Path
-from typing import Any
+from typing import Any,Optional
 
 from PyQt6.QtCore import QSize
 from PyQt6.QtGui import QPixmap

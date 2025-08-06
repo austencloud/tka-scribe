@@ -1,3 +1,4 @@
+from __future__ import annotations
 # tka_glyph.py
 from typing import TYPE_CHECKING
 

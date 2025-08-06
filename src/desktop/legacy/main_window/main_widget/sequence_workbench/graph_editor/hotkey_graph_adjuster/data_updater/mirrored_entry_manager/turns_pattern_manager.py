@@ -1,3 +1,4 @@
+from __future__ import annotations
 """
 Manages the generation and manipulation of turns patterns.
 """

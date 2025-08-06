@@ -1,3 +1,4 @@
+from __future__ import annotations
 from enums.letter.complementary_letter_getter import ComplementaryLetterGetter
 from PyQt6.QtWidgets import QApplication
 

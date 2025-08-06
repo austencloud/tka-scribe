@@ -1,8 +1,9 @@
+from __future__ import annotations
 """
 Base class for the codex pictograph exporter.
 """
 
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any, Optional,Optional
 
 from base_widgets.pictograph.legacy_pictograph import LegacyPictograph
 from PyQt6.QtGui import QImage
@@ -56,7 +57,7 @@ class BaseCodexExporter:
         """
         raise NotImplementedError("Subclasses must implement this method")
 
-    def _get_export_directory(self) -> Optional[str]:
+    def _get_export_directory(self) -> str | None:
         """Ask the user for a directory to save the exported images.
 
         Returns:

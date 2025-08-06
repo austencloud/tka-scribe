@@ -1,3 +1,4 @@
+from __future__ import annotations
 # ==========================================
 # File: prop_rot_dir_ui_handler.py
 # ==========================================

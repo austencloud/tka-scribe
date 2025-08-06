@@ -1,3 +1,4 @@
+from __future__ import annotations
 # aurora_background_manager.py
 
 import math

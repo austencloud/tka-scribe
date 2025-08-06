@@ -1,3 +1,4 @@
+from __future__ import annotations
 # dot_handler.py
 
 from typing import TYPE_CHECKING

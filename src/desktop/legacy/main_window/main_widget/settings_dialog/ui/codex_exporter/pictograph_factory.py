@@ -1,3 +1,5 @@
+from __future__ import annotations
+from typing import Union
 """
 Creates pictographs for the codex exporter.
 """
@@ -116,7 +118,7 @@ class CustomSvgManager:
 class PictographFactory:
     """Creates pictographs for the codex exporter."""
 
-    def __init__(self, parent: Union["ImageExportTab", "CodexExporterTab"]):
+    def __init__(self, parent: "ImageExportTab" | "CodexExporterTab"):
         """Initialize the factory.
 
         Args:

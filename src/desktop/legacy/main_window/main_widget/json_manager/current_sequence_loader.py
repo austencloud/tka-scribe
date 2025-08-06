@@ -1,3 +1,4 @@
+from __future__ import annotations
 import json
 
 from utils.path_helpers import get_user_editable_resource_path

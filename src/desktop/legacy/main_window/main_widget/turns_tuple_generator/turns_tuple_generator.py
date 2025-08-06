@@ -1,4 +1,6 @@
-from typing import TYPE_CHECKING
+from __future__ import annotations
+from typing import Union,Optional
+from typing import TYPE_CHECKING,Optional
 
 from enums.letter.letter import LetterCondition
 from enums.letter.letter_type import LetterType
@@ -42,7 +44,7 @@ class TurnsTupleGenerator:
 
     Methods:
         generate_turns_tuple(pictograph: "BasePictograph") -> str: Returns turn tuple for a pictograph based on its letter.
-        generate_mirrored_tuple(arrow: "Arrow") -> Union[str, None]: Returns mirrored turn tuple for an arrow.
+        generate_mirrored_tuple(arrow: "Arrow") -> str | None: Returns mirrored turn tuple for an arrow.
 
     The class ensures accurate and efficient generation of turn tuples, prioritizing special cases like S, T, Λ, Λ-, and Γ.
     """

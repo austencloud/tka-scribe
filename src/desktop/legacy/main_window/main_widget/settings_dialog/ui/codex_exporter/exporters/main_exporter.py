@@ -1,3 +1,5 @@
+from __future__ import annotations
+from typing import Union
 """
 Main exporter class for the codex pictograph exporter.
 """
@@ -29,7 +31,7 @@ class MainExporter(BaseExporter):
 
     def __init__(
         self,
-        parent: Union["ImageExportTab", "CodexExporterTab"],
+        parent: "ImageExportTab" | "CodexExporterTab",
         data_manager: "PictographDataManager",
         factory: "PictographFactory",
         renderer: "PictographRenderer",

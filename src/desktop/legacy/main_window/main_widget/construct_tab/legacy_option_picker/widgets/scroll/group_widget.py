@@ -1,3 +1,4 @@
+from __future__ import annotations
 from main_window.main_widget.construct_tab.option_picker.widgets.scroll.option_scroll import (
     OptionScroll,
 )

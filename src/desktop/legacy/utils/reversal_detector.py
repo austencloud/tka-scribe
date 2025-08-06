@@ -1,3 +1,4 @@
+from __future__ import annotations
 class ReversalDetector:
     @staticmethod
     def detect_reversal(sequence_so_far: list, current_beat_data: dict):

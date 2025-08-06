@@ -1,3 +1,5 @@
+from __future__ import annotations
+from typing import Union
 """
 Renders pictographs for the codex exporter.
 """
@@ -20,7 +22,7 @@ if TYPE_CHECKING:
 class PictographRenderer:
     """Renders pictographs for the codex exporter."""
 
-    def __init__(self, parent: Union["ImageExportTab", "CodexExporterTab"]):
+    def __init__(self, parent: "ImageExportTab" | "CodexExporterTab"):
         """Initialize the renderer.
         Args:
             parent: The parent tab (either ImageExportTab or CodexExporterTab)

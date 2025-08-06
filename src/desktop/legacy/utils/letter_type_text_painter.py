@@ -1,3 +1,4 @@
+from __future__ import annotations
 # letter_type_text_painter.py
 class LetterTypeTextPainter:
     COLORS = {

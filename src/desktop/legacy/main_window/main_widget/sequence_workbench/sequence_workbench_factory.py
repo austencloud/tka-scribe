@@ -1,3 +1,4 @@
+from __future__ import annotations
 """
 Factory for creating SequenceWorkbench instances with proper dependency injection.
 """
@@ -8,7 +9,7 @@ from typing import TYPE_CHECKING
 from main_window.main_widget.core.widget_manager import WidgetFactory
 from PyQt6.QtWidgets import QWidget
 
-from desktop.modern.core.application_context import ApplicationContext
+from core.application_context import ApplicationContext
 
 if TYPE_CHECKING:
     from .sequence_workbench import SequenceWorkbench

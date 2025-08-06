@@ -1,3 +1,4 @@
+from __future__ import annotations
 import logging
 from typing import TYPE_CHECKING
 
@@ -8,10 +9,9 @@ from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QApplication, QMainWindow
 
 if TYPE_CHECKING:
+    from core.application_context import ApplicationContext
     from profiler import Profiler
     from splash_screen.splash_screen import SplashScreen
-
-    from desktop.modern.core.application_context import ApplicationContext
 
 logger = logging.getLogger(__name__)
 

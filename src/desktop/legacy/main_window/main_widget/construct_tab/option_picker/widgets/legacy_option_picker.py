@@ -1,3 +1,4 @@
+from __future__ import annotations
 from collections.abc import Callable
 
 from base_widgets.pictograph.legacy_pictograph import LegacyPictograph

@@ -1,3 +1,4 @@
+from __future__ import annotations
 """
 Core functionality for managing mirrored entries in special placements.
 """

@@ -1,3 +1,4 @@
+from __future__ import annotations
 # user_profile_settings.py
 from typing import TYPE_CHECKING
 

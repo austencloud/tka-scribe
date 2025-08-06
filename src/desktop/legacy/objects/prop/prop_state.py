@@ -1,4 +1,5 @@
-from typing import TYPE_CHECKING, Optional
+from __future__ import annotations
+from typing import TYPE_CHECKING, Optional,Optional
 
 from PyQt6.QtWidgets import QGraphicsPixmapItem
 
@@ -14,7 +15,7 @@ class PropState:
         ori: str,
         previous_location: str,
         arrow: "Arrow",
-        pixmap_item: Optional["QGraphicsPixmapItem"],
+        pixmap_item: "QGraphicsPixmapItem" | None,
     ):
         self.color = color
         self.loc = loc

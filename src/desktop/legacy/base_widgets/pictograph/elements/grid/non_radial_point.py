@@ -1,3 +1,4 @@
+from __future__ import annotations
 from PyQt6.QtCore import QPointF, Qt
 from PyQt6.QtGui import QBrush, QColor, QPen
 from PyQt6.QtWidgets import QGraphicsEllipseItem

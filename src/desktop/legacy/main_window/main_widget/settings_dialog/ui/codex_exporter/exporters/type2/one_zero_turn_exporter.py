@@ -1,3 +1,4 @@
+from __future__ import annotations
 """
 Exporter for Type 2 pictographs with one zero turn.
 

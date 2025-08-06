@@ -1,3 +1,5 @@
+from __future__ import annotations
+from typing import Union
 # src/main_window/main_widget/sequence_card_tab/components/display/page_renderer.py
 import logging
 from typing import TYPE_CHECKING, Any

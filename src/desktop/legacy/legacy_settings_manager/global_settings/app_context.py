@@ -1,4 +1,6 @@
-from typing import TYPE_CHECKING, Optional
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
 
 from PyQt6.QtWidgets import QApplication
 
@@ -31,7 +33,7 @@ class AppContext:
     _special_placement_handler = None
     _special_placement_loader = None
     _sequence_beat_frame = None
-    _selected_arrow: Optional["Arrow"] = None
+    _selected_arrow: Arrow | None = None
     _dict_data_manager = None
     _main_window = None  # Will be resolved dynamically
     _initialized = False  # Flag to track initialization status
@@ -68,7 +70,7 @@ class AppContext:
         )
 
     @classmethod
-    def set_main_window(cls, main_window: "MainWindow") -> None:
+    def set_main_window(cls, main_window: MainWindow) -> None:
         """Explicitly set the MainWindow reference during initialization."""
         cls._main_window = main_window
         import logging
@@ -76,7 +78,7 @@ class AppContext:
         logging.getLogger(__name__).info("MainWindow reference set in AppContext")
 
     @classmethod
-    def set_selected_arrow(cls, arrow: Optional["Arrow"]) -> None:
+    def set_selected_arrow(cls, arrow: Arrow | None) -> None:
         """Set the globally selected arrow."""
         if cls._selected_arrow:
             cls._selected_arrow.setSelected(False)  # Unselect previous arrow
@@ -92,12 +94,12 @@ class AppContext:
         cls._selected_arrow = None
 
     @classmethod
-    def get_selected_arrow(cls) -> Optional["Arrow"]:
+    def get_selected_arrow(cls) -> Arrow | None:
         """Retrieve the globally selected arrow."""
         return cls._selected_arrow
 
     @classmethod
-    def settings_manager(cls) -> "LegacySettingsManager":
+    def settings_manager(cls) -> LegacySettingsManager:
         if cls._settings_manager is None:
             import logging
 
@@ -127,7 +129,7 @@ class AppContext:
         return cls._settings_manager
 
     @classmethod
-    def json_manager(cls) -> "JsonManager":
+    def json_manager(cls) -> JsonManager:
         if cls._json_manager is None:
             import logging
 
@@ -157,7 +159,7 @@ class AppContext:
         return cls._json_manager
 
     @classmethod
-    def special_placement_saver(cls) -> "SpecialPlacementSaver":
+    def special_placement_saver(cls) -> SpecialPlacementSaver:
         if cls._special_placement_handler is None:
             import logging
 
@@ -185,7 +187,7 @@ class AppContext:
         return cls._special_placement_handler
 
     @classmethod
-    def special_placement_loader(cls) -> "SpecialPlacementLoader":
+    def special_placement_loader(cls) -> SpecialPlacementLoader:
         if cls._special_placement_loader is None:
             import logging
 
@@ -215,9 +217,10 @@ class AppContext:
     @classmethod
     def set_sequence_beat_frame(cls, sequence_beat_frame):
         """Set the sequence beat frame after initialization."""
-        cls._sequence_beat_frame = sequence_beat_frame @ classmethod
+        cls._sequence_beat_frame = sequence_beat_frame
 
-    def dictionary_data_manager(cls) -> "DictionaryDataManager":
+    @classmethod
+    def dictionary_data_manager(cls) -> DictionaryDataManager:
         if cls._dict_data_manager is None:
             from main_window.main_widget.browse_tab.sequence_picker.dictionary_data_manager import (
                 DictionaryDataManager,
@@ -227,7 +230,7 @@ class AppContext:
         return cls._dict_data_manager
 
     @classmethod
-    def main_window(cls) -> "MainWindow":
+    def main_window(cls) -> MainWindow:
         """Retrieve the MainWindow instance safely"""
         if cls._main_window:  # First check if it's already set
             return cls._main_window
@@ -254,7 +257,7 @@ class AppContext:
         )
 
     @classmethod
-    def sequence_beat_frame(cls) -> "LegacyBeatFrame":
+    def sequence_beat_frame(cls) -> LegacyBeatFrame:
         """Retrieve sequence_beat_frame only if it's set."""
         if cls._sequence_beat_frame is None:
             raise RuntimeError(
@@ -263,7 +266,7 @@ class AppContext:
         return cls._sequence_beat_frame
 
     @classmethod
-    def option_picker(cls) -> "LegacyOptionPicker":
+    def option_picker(cls) -> LegacyOptionPicker:
         return cls.main_widget().construct_tab.option_picker
 
     @classmethod

@@ -1,3 +1,4 @@
+from __future__ import annotations
 """
 Modern slider with custom styling.
 """

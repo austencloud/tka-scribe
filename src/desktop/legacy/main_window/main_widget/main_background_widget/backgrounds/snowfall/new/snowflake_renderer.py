@@ -1,3 +1,4 @@
+from __future__ import annotations
 import random
 
 from main_window.main_widget.main_background_widget.backgrounds.snowfall.new.snowflake import (

@@ -1,3 +1,5 @@
+from __future__ import annotations
+from typing import Union
 from typing import TYPE_CHECKING, Union
 
 from PyQt6.QtCore import QPropertyAnimation, Qt, QTimer, pyqtSlot
@@ -15,7 +17,7 @@ if TYPE_CHECKING:
 
 class BaseIndicatorLabel(QLabel):
     def __init__(
-        self, parent_widget: Union["LessonWidget", "SequenceWorkbench"]
+        self, parent_widget: "LessonWidget" | "SequenceWorkbench"
     ) -> None:
         super().__init__(parent_widget)
         self.parent_widget = parent_widget

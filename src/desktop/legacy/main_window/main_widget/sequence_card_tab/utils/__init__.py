@@ -1,3 +1,4 @@
+from __future__ import annotations
 from .cache_utils import ThumbnailCache
 from .image_utils import ImageProcessor
 

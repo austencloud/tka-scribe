@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import TYPE_CHECKING
 
 from PyQt6.QtCore import Qt
@@ -8,7 +10,7 @@ if TYPE_CHECKING:
 
 
 class ThumbnailBoxNavButton(StyledButton):
-    def __init__(self, text: str, parent: "ThumbnailBoxNavButtonsWidget"):
+    def __init__(self, text: str, parent: ThumbnailBoxNavButtonsWidget):
         super().__init__(text)
 
         # Connect to parent's handler

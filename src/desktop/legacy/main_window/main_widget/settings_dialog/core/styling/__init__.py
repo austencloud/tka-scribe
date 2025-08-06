@@ -1,3 +1,4 @@
+from __future__ import annotations
 """
 Styling components for glassmorphism design system using coordinator pattern.
 

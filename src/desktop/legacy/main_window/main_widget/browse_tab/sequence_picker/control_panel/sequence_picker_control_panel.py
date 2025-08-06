@@ -1,3 +1,4 @@
+from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from main_window.main_widget.browse_tab.sequence_picker.control_panel.sequence_picker_go_back_button import (

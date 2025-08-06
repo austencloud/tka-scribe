@@ -1,3 +1,4 @@
+from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from objects.motion.managers.handpath_calculator import HandpathCalculator

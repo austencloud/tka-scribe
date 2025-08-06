@@ -1,4 +1,5 @@
-from typing import TYPE_CHECKING, Optional
+from __future__ import annotations
+from typing import TYPE_CHECKING, Optional,Optional
 
 from PyQt6.QtCore import QEvent, QObject
 from PyQt6.QtWidgets import QWidget
@@ -13,7 +14,7 @@ class FadeWhenReadyHelper(QObject):
         widget: QWidget,
         fade_in: bool,
         duration: int,
-        callback: Optional[callable],
+        callback: callable | None,
         fader: "WidgetFader",
     ):
         super().__init__(widget)

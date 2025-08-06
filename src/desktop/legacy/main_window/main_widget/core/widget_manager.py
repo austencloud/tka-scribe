@@ -1,3 +1,4 @@
+from __future__ import annotations
 """
 Widget manager responsible for managing non-tab widgets.
 
@@ -5,12 +6,11 @@ This component follows SRP by focusing solely on widget lifecycle management.
 """
 
 import logging
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING,Optional
 
+from core.application_context import ApplicationContext
 from PyQt6.QtCore import QObject, pyqtSignal
 from PyQt6.QtWidgets import QWidget
-
-from desktop.modern.core.application_context import ApplicationContext
 
 if TYPE_CHECKING:
     from .main_widget_coordinator import MainWidgetCoordinator
@@ -105,7 +105,7 @@ class WidgetManager(QObject):
 
         logger.info("Initialized essential widgets")
 
-    def _create_widget(self, widget_name: str) -> Optional[QWidget]:
+    def _create_widget(self, widget_name: str) -> QWidget | None:
         """
         Create a widget instance if it doesn't exist.
 
@@ -175,7 +175,7 @@ class WidgetManager(QObject):
                         f"Failed to register sequence beat frame in AppContext: {e}"
                     )
 
-    def get_widget(self, widget_name: str) -> Optional[QWidget]:
+    def get_widget(self, widget_name: str) -> QWidget | None:
         """
         Get a widget by name, creating it if necessary.
 

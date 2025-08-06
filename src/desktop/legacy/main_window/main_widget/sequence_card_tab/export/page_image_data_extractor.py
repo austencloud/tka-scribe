@@ -1,7 +1,8 @@
+from __future__ import annotations
 # src/main_window/main_widget/sequence_card_tab/export/page_image_data_extractor.py
 import logging
 import os
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any, Optional,Optional
 
 from main_window.main_widget.metadata_extractor import MetaDataExtractor
 from PyQt6.QtWidgets import QGridLayout, QLabel, QWidget
@@ -255,7 +256,7 @@ class PageImageDataExtractor:
 
     def _extract_sequence_data_from_widget(
         self, widget: QWidget
-    ) -> Optional[dict[str, Any]]:
+    ) -> dict[str, Any | None]:
         """
         Extract sequence data from a widget.
 
@@ -263,7 +264,7 @@ class PageImageDataExtractor:
             widget: The widget to extract sequence data from
 
         Returns:
-            Optional[Dict[str, Any]]: Dictionary with sequence data or None if not found
+            Dict[str, Any | None]: Dictionary with sequence data or None if not found
         """
         sequence_data = None
 
@@ -335,7 +336,7 @@ class PageImageDataExtractor:
 
         return sequence_data
 
-    def _extract_image_path_from_widget(self, widget: QWidget) -> Optional[str]:
+    def _extract_image_path_from_widget(self, widget: QWidget) -> str | None:
         """
         Extract the image path from a widget.
 
@@ -343,7 +344,7 @@ class PageImageDataExtractor:
             widget: The widget to extract the image path from
 
         Returns:
-            Optional[str]: Image path or None if not found
+            str | None: Image path or None if not found
         """
         # Check if the widget has an image_path property
         if widget.property("image_path"):
@@ -400,7 +401,7 @@ class PageImageDataExtractor:
 
         return "unknown"
 
-    def _find_original_image(self, sequence_data: dict[str, Any]) -> Optional[str]:
+    def _find_original_image(self, sequence_data: dict[str, Any]) -> str | None:
         """
         Find the original high-resolution image for a sequence.
 
@@ -408,7 +409,7 @@ class PageImageDataExtractor:
             sequence_data: Sequence data dictionary
 
         Returns:
-            Optional[str]: Path to the original image or None if not found
+            str | None: Path to the original image or None if not found
         """
         word = sequence_data.get("word")
         if not word:

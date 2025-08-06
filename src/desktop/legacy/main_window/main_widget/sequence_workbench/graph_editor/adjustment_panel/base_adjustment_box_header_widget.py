@@ -1,3 +1,5 @@
+from __future__ import annotations
+from typing import Union
 from typing import TYPE_CHECKING, Union
 
 from PyQt6.QtCore import Qt
@@ -12,7 +14,7 @@ if TYPE_CHECKING:
 
 
 class BaseAdjustmentBoxHeaderWidget(QWidget):
-    def __init__(self, adjustment_box: Union["OriPickerBox", "TurnsBox"]) -> None:
+    def __init__(self, adjustment_box: "OriPickerBox" | "TurnsBox") -> None:
         super().__init__(adjustment_box)
         self.adjustment_box = adjustment_box
         self.graph_editor = self.adjustment_box.graph_editor

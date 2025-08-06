@@ -1,3 +1,5 @@
+from __future__ import annotations
+from typing import Union
 from typing import TYPE_CHECKING, Union
 
 from legacy_settings_manager.global_settings.app_context import AppContext
@@ -14,7 +16,7 @@ if TYPE_CHECKING:
 
 
 class VariationNumberLabel(QLabel):
-    def __init__(self, parent: Union["ThumbnailBox", "SequenceViewer"]):
+    def __init__(self, parent: "ThumbnailBox" | "SequenceViewer"):
         super().__init__(parent)
         if len(parent.state.thumbnails) > 1:
             self.setText(

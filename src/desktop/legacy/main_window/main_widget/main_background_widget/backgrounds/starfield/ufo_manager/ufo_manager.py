@@ -1,3 +1,4 @@
+from __future__ import annotations
 import random
 
 from PyQt6.QtCore import QPoint, Qt

@@ -1,3 +1,4 @@
+from __future__ import annotations
 """
 Modern radio button with custom styling.
 """

@@ -1,24 +1,32 @@
+from __future__ import annotations
+
 import logging
 import os
 import sys
+import types
 from pathlib import Path
 
-# Simple path setup - add project root and run setup_paths
+# Simple path setup - add project root and configure legacy paths
 project_root = Path(__file__).resolve().parent.parent.parent.parent
 sys.path.insert(0, str(project_root))
 
-# Set up all TKA paths for clean imports
-try:
-    from setup_paths import setup_tka_paths
+# Set up legacy import paths to make src.* imports work
+legacy_dir = Path(__file__).resolve().parent
+desktop_dir = legacy_dir.parent
 
-    paths_added = setup_tka_paths()
-    print(f"✅ TKA paths setup complete - {paths_added} paths added")
-except Exception as e:
-    print(f"⚠️ Failed to setup TKA paths: {e}")
-    # Fallback - just add the legacy src directory
-    legacy_src = Path(__file__).parent / "src"
-    if str(legacy_src) not in sys.path:
-        sys.path.insert(0, str(legacy_src))
+# Create a virtual 'src' module that maps to the legacy directory
+# This allows imports like 'from src.profiler import Profiler' to work
+
+src_module = types.ModuleType("src")
+src_module.__path__ = [str(legacy_dir)]
+sys.modules["src"] = src_module
+
+# Also add paths for modern imports (used in TYPE_CHECKING)
+sys.path.insert(0, str(desktop_dir))  # For desktop.modern.* imports
+sys.path.insert(0, str(legacy_dir))  # For legacy imports
+
+print(f"✅ Legacy paths setup complete - created src module mapping to {legacy_dir}")
+print(f"✅ Added desktop path for modern imports: {desktop_dir}")
 
 
 def configure_import_paths():
@@ -95,8 +103,8 @@ def initialize_legacy_appcontext(app_context):
     This bridges the gap between the new DI system and legacy code that still uses AppContext.
     """
     try:
-        from src.legacy_settings_manager.global_settings.app_context import AppContext
-        from src.utils.logging_config import get_logger
+        from legacy_settings_manager.global_settings.app_context import AppContext
+        from utils.logging_config import get_logger
 
         logger = get_logger(__name__)
 
@@ -134,7 +142,7 @@ def initialize_legacy_appcontext(app_context):
         )
 
     except Exception as e:
-        from src.utils.logging_config import get_logger
+        from utils.logging_config import get_logger
 
         logger = get_logger(__name__)
         logger.error(f"Failed to initialize legacy AppContext: {e}")
@@ -168,7 +176,6 @@ def create_main_window(profiler, splash_screen, app_context):
 
 def install_handlers():
     from PyQt6.QtCore import QtMsgType, qInstallMessageHandler
-
     from src.utils.paint_event_supressor import PaintEventSuppressor
 
     # Install paint event suppressor
@@ -224,7 +231,6 @@ def main():
 
     from legacy_settings_manager.legacy_settings_manager import LegacySettingsManager
     from PyQt6.QtCore import QTimer
-
     from src.profiler import Profiler
     from src.splash_screen.splash_screen import SplashScreen
     from src.utils.logging_config import get_logger

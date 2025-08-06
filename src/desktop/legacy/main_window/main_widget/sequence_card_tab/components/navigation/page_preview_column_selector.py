@@ -1,3 +1,4 @@
+from __future__ import annotations
 # src/main_window/main_widget/sequence_card_tab/components/navigation/sidebar.py
 from interfaces.settings_manager_interface import ISettingsManager
 from PyQt6.QtCore import Qt, pyqtSignal

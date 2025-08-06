@@ -1,8 +1,10 @@
+from __future__ import annotations
+from typing import Union,Optional
 """
 Manages pictograph data for the codex exporter.
 """
 
-from typing import TYPE_CHECKING, Any, Optional, Union
+from typing import TYPE_CHECKING, Any, Optional, Union,Optional
 
 from enums.letter.letter import Letter
 
@@ -18,7 +20,7 @@ if TYPE_CHECKING:
 class PictographDataManager:
     """Manages pictograph data for the codex exporter."""
 
-    def __init__(self, parent: Union["ImageExportTab", "CodexExporterTab"]):
+    def __init__(self, parent: "ImageExportTab" | "CodexExporterTab"):
         """Initialize the data manager.
 
         Args:
@@ -29,7 +31,7 @@ class PictographDataManager:
 
     def get_pictograph_data_for_letter(
         self, letter: str, start_pos: str, end_pos: str
-    ) -> Optional[dict[str, Any]]:
+    ) -> dict[str, Any | None]:
         """Get pictograph data for a letter with specific start and end positions.
 
         Args:

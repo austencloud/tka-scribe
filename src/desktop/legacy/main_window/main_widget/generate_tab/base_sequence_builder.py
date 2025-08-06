@@ -1,3 +1,4 @@
+from __future__ import annotations
 # base_classes/base_sequence_builder.py
 
 import random

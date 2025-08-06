@@ -1,3 +1,4 @@
+from __future__ import annotations
 # src/main_window/main_widget/sequence_card_tab/export/color_manager.py
 import logging
 import re

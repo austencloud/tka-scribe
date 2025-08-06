@@ -1,3 +1,4 @@
+from __future__ import annotations
 """
 Modern dependency injection container to replace the global AppContext singleton.
 
@@ -7,7 +8,7 @@ following the Dependency Inversion Principle.
 
 import logging
 from collections.abc import Callable
-from typing import Any, Protocol, TypeVar
+from typing import Any, Protocol, TypeVar,Optional
 
 T = TypeVar("T")
 
@@ -243,8 +244,12 @@ def _register_core_services(container: DependencyContainer) -> None:
     # JSON Manager
     try:
         from interfaces.json_manager_interface import IJsonManager
+        from main_window.main_widget.json_manager.json_manager import JsonManager
 
         # Create a factory function to avoid circular dependencies
+        def create_json_manager():
+            return JsonManager()
+
         container.register_factory(IJsonManager, create_json_manager)
     except ImportError as e:
         logger.warning(f"Failed to register JSON Manager: {e}")

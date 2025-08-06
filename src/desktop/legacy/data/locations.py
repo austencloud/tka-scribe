@@ -1,3 +1,4 @@
+from __future__ import annotations
 vertical_loc_mirror_map = {
     "n": "n",
     "e": "w",

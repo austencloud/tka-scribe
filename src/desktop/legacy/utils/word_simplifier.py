@@ -1,3 +1,4 @@
+from __future__ import annotations
 class WordSimplifier:
     """Simplifies long words by removing repeated patterns."""
 

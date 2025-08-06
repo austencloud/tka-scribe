@@ -1,5 +1,6 @@
+from __future__ import annotations
 # src/main_window/main_widget/sequence_workbench/graph_editor/hotkey_graph_adjuster/arrow_rot_angle_override_manager.py
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Optional,Optional
 
 from legacy_settings_manager.global_settings.app_context import AppContext
 
@@ -28,7 +29,7 @@ class RotAngleOverrideMirrorHandler:
                 hybrid_key,
             )
 
-    def update_mirrored_entries(self, key: str, value: Optional[bool]) -> None:
+    def update_mirrored_entries(self, key: str, value: bool | None) -> None:
         if value is not None:
             self.handle_addition({key: value})
         else:

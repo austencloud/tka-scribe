@@ -1,4 +1,5 @@
-from typing import TYPE_CHECKING, Optional
+from __future__ import annotations
+from typing import TYPE_CHECKING, Optional,Optional
 
 from main_window.main_widget.main_background_widget.backgrounds.aurora.aurora_background import (
     AuroraBackground,
@@ -26,7 +27,7 @@ if TYPE_CHECKING:
 class SplashBackgroundHandler:
     def __init__(self, splash_screen: "SplashScreen"):
         self.splash_screen = splash_screen
-        self.background_manager: Optional[BaseBackground] = None
+        self.background_manager: BaseBackground | None = None
         self.is_animating = False  # Flag to prevent overlapping animations
 
     def setup_background_manager(self):
@@ -53,7 +54,7 @@ class SplashBackgroundHandler:
 
     #     self.setup_background_manager()
 
-    def get_background_manager(self) -> Optional[BaseBackground]:
+    def get_background_manager(self) -> BaseBackground | None:
         """Returns an instance of the appropriate BackgroundManager based on bg_type."""
 
         self.splash_screen.font_color_updater.update_splash_font_colors(self.bg_type)

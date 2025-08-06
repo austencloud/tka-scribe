@@ -1,3 +1,4 @@
+from __future__ import annotations
 # src/main_window/main_widget/sequence_card_tab/components/display/disk_cache_manager.py
 import hashlib
 import json
@@ -5,7 +6,7 @@ import logging
 import os
 import time
 from pathlib import Path
-from typing import Any
+from typing import Any,Optional
 
 from PyQt6.QtCore import QSize
 from PyQt6.QtGui import QPixmap

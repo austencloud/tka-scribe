@@ -1,6 +1,7 @@
+from __future__ import annotations
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any, Optional,Optional
 
 
 @dataclass
@@ -11,8 +12,8 @@ class SequenceCardData:
     word: str
     length: int
     metadata: dict[str, Any]
-    thumbnail_path: Optional[Path] = None
-    high_res_path: Optional[Path] = None
+    thumbnail_path: Path | None = None
+    high_res_path: Path | None = None
 
 
 @dataclass
@@ -24,7 +25,7 @@ class ImageLoadRequest:
     sequence_file: str
     metadata: dict[str, Any]
     priority: int = 0
-    callback: Optional[callable] = None
+    callback: callable | None = None
 
 
 @dataclass

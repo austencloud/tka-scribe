@@ -1,3 +1,4 @@
+from __future__ import annotations
 class ColorUtils:
     @staticmethod
     def lighten_color(color_hex: str) -> str:

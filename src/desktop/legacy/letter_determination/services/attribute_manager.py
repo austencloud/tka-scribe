@@ -1,4 +1,5 @@
-from typing import Optional
+from __future__ import annotations
+from typing import Optional,Optional
 
 from data.constants import (
     ANTI,
@@ -62,7 +63,7 @@ class AttributeManager:
 
     def _determine_prefloat_motion_type(
         self, attrs: dict, other_attrs: dict
-    ) -> Optional[str]:
+    ) -> str | None:
         if other_attrs[MOTION_TYPE] in [PRO, ANTI]:
             return other_attrs[MOTION_TYPE]
         if other_attrs[MOTION_TYPE] in [PRO, ANTI]:

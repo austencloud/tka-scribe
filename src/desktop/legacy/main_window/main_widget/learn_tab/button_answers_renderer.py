@@ -1,3 +1,4 @@
+from __future__ import annotations
 # button_answers_renderer.py
 from collections.abc import Callable
 from typing import TYPE_CHECKING, Any

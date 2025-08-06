@@ -1,5 +1,7 @@
+from __future__ import annotations
+from typing import Union,Optional
 from dataclasses import dataclass
-from typing import Optional
+from typing import Optional,Optional
 
 from objects.motion.prefloat_state_updater import PrefloatStateUpdater
 
@@ -8,17 +10,17 @@ from data.constants import ANTI, FLOAT, PREFLOAT_MOTION_TYPE, PREFLOAT_PROP_ROT_
 
 @dataclass
 class MotionState:
-    color: Optional[str] = None
-    motion_type: Optional[str] = None
+    color: str | None = None
+    motion_type: str | None = None
     turns: int | float | str = 0
-    start_loc: Optional[str] = None
-    end_loc: Optional[str] = None
-    start_ori: Optional[str] = None
-    end_ori: Optional[str] = None
-    prop_rot_dir: Optional[str] = None
-    lead_state: Optional[str] = None
-    prefloat_motion_type: Optional[str] = None
-    prefloat_prop_rot_dir: Optional[str] = None
+    start_loc: str | None = None
+    end_loc: str | None = None
+    start_ori: str | None = None
+    end_ori: str | None = None
+    prop_rot_dir: str | None = None
+    lead_state: str | None = None
+    prefloat_motion_type: str | None = None
+    prefloat_prop_rot_dir: str | None = None
 
     def __post_init__(self):
         self.prefloat_handler = PrefloatStateUpdater(self)

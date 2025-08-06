@@ -1,3 +1,4 @@
+from __future__ import annotations
 """
 Memory Cache Manager - Handles in-memory LRU caching with single responsibility.
 
@@ -7,7 +8,7 @@ Extracted from the monolithic ImageProcessor class to follow SRP.
 import collections
 import logging
 from collections import OrderedDict as OrderedDictType
-from typing import Generic, TypeVar
+from typing import Generic, TypeVar,Optional
 
 T = TypeVar("T")
 

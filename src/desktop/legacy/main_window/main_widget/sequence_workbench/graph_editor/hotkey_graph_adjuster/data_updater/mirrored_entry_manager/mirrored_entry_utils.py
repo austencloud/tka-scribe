@@ -1,3 +1,4 @@
+from __future__ import annotations
 """
 Utility functions for working with mirrored entries.
 """

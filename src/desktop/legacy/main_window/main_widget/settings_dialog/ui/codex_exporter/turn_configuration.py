@@ -1,5 +1,6 @@
+from __future__ import annotations
 import os
-from typing import Optional
+from typing import Optional,Optional
 
 
 class TurnConfiguration:
@@ -49,7 +50,7 @@ class TurnConfiguration:
         letter: str,
         red_turns: float,
         blue_turns: float,
-        motion_type: Optional[str] = None,
+        motion_type: str | None = None,
     ) -> str:
         """Get the filename for a hybrid pictograph.
 
@@ -192,7 +193,7 @@ class TurnConfiguration:
         return letter in TurnConfiguration._TYPE3_LETTERS
 
     @staticmethod
-    def get_letter_positions(letter: str) -> Optional[tuple[str, str]]:
+    def get_letter_positions(letter: str) -> tuple[str, str | None]:
         """Returns the start and end positions for a given letter using an efficient map lookup."""
         # O(1) average time complexity lookup
         return TurnConfiguration._LETTER_POSITIONS_MAP.get(letter)

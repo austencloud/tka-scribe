@@ -1,3 +1,4 @@
+from __future__ import annotations
 # src/main_window/main_widget/sequence_card_tab/components/display/layout_calculator.py
 from typing import TYPE_CHECKING
 

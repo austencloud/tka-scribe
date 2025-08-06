@@ -1,7 +1,8 @@
+from __future__ import annotations
 # src/main_window/main_widget/sequence_card_tab/utils/cache_utils.py
 import hashlib
 import time
-from typing import Any, Optional
+from typing import Any, Optional,Optional
 
 from PyQt6.QtCore import QSize
 from PyQt6.QtGui import QPixmap
@@ -29,7 +30,7 @@ class ThumbnailCache:
         self.max_size = max_size
         self.access_times: dict[str, float] = {}
 
-    def get(self, path: str, size: QSize) -> Optional[QPixmap]:
+    def get(self, path: str, size: QSize) -> QPixmap | None:
         """
         Get a thumbnail from the cache.
 
@@ -79,7 +80,7 @@ class ThumbnailCache:
         # Set access time
         self.access_times[key] = time.time()
 
-    def remove(self, path: str, size: Optional[QSize] = None) -> None:
+    def remove(self, path: str, size: QSize | None = None) -> None:
         """
         Remove a thumbnail from the cache.
 

@@ -1,4 +1,5 @@
-from typing import TYPE_CHECKING, Optional
+from __future__ import annotations
+from typing import TYPE_CHECKING, Optional,Optional
 
 from PyQt6.QtWidgets import QStackedWidget, QWidget
 
@@ -9,10 +10,10 @@ if TYPE_CHECKING:
 class ParallelStackFader:
     """Handles parallel fading of two stacked widgets with optional resizing."""
 
-    left_old_widget: Optional[QWidget] = None
-    left_new_widget: Optional[QWidget] = None
-    right_old_widget: Optional[QWidget] = None
-    right_new_widget: Optional[QWidget] = None
+    left_old_widget: QWidget | None = None
+    left_new_widget: QWidget | None = None
+    right_old_widget: QWidget | None = None
+    right_new_widget: QWidget | None = None
 
     def __init__(self, manager: "FadeManager"):
         self.manager = manager
@@ -25,7 +26,7 @@ class ParallelStackFader:
         left_new_index: int,
         width_ratio: tuple[float, float],
         duration: int = 300,
-        callback: Optional[callable] = None,
+        callback: callable | None = None,
     ):
         """Fades out both stacks in parallel, resizes the layout, and fades in the new widgets."""
         self.right_old_widget = right_stack.currentWidget()

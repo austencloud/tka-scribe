@@ -1,3 +1,4 @@
+from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from main_window.main_widget.generate_tab.generate_tab_spacer import GenerateTabSpacer

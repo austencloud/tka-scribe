@@ -1,3 +1,4 @@
+from __future__ import annotations
 from typing import TYPE_CHECKING, Literal
 
 from legacy_settings_manager.global_settings.app_context import AppContext

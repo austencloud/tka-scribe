@@ -1,3 +1,4 @@
+from __future__ import annotations
 from objects.arrow.arrow import Arrow
 from placement_managers.arrow_placement_manager.directional_tuple_generator import (
     DirectionalTupleGenerator,

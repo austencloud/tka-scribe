@@ -1,3 +1,4 @@
+from __future__ import annotations
 # author_section.py (refactored)
 
 import os

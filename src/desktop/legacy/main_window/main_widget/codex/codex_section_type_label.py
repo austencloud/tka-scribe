@@ -1,3 +1,4 @@
+from __future__ import annotations
 # section_type_label.py
 
 from typing import TYPE_CHECKING

@@ -1,5 +1,6 @@
+from __future__ import annotations
 import logging
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Optional,Optional
 
 from enums.letter.letter import Letter
 from main_window.main_widget.special_placement_loader import SpecialPlacementLoader
@@ -135,7 +136,7 @@ class ArrowAdjustmentCalculator:
         letter: Letter,
         arrow: Arrow,
         turns_tuple: str,
-    ) -> Optional[tuple[int, int]]:
+    ) -> tuple[int, int | None]:
         letter_adjustments: dict[str, dict[str, list]] = special_placements.get(
             letter.value, {}
         ).get(turns_tuple, {})

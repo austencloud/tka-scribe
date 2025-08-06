@@ -1,3 +1,4 @@
+from __future__ import annotations
 # music_player_widget.py
 import pygame
 from PyQt6.QtCore import Qt, QTimer

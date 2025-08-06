@@ -1,3 +1,4 @@
+from __future__ import annotations
 from main_window.main_widget.browse_tab.sequence_picker.nav_sidebar.sidebar_button import (
     SidebarButton,
 )

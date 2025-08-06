@@ -1,3 +1,4 @@
+from __future__ import annotations
 from main_window.main_widget.generate_tab.circular.CAP_executors.rotated_complementary_CAP_executor import (
     RotatedComplementaryCAPExecutor,
 )

@@ -1,3 +1,4 @@
+from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from main_window.main_widget.generate_tab.widgets.level_selector.level_selector_difficulty_drawer import (

@@ -1,3 +1,4 @@
+from __future__ import annotations
 """
 Simplified style provider for turn configuration components.
 

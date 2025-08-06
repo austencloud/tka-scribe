@@ -1,3 +1,4 @@
+from __future__ import annotations
 import logging
 
 from PyQt6.QtSvgWidgets import QGraphicsSvgItem

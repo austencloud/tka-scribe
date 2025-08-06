@@ -1,3 +1,4 @@
+from __future__ import annotations
 from data.constants import BLUE_ATTRS, RED_ATTRS, SEQUENCE_START_POSITION, TURNS
 
 

@@ -1,3 +1,5 @@
+from __future__ import annotations
+from typing import Union,Optional
 """
 Typed utility functions to improve type safety throughout the application.
 
@@ -7,7 +9,7 @@ that were previously untyped or poorly typed.
 
 import logging
 from collections.abc import Callable
-from typing import (
+from typing import (,Optional
     Any,
     Generic,
     Protocol,

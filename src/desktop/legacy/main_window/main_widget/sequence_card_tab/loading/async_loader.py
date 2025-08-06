@@ -1,8 +1,9 @@
+from __future__ import annotations
 # src/main_window/main_widget/sequence_card_tab/loading/async_loader.py
 import os
 import queue
 import threading
-from typing import Optional
+from typing import Optional,Optional
 
 from PyQt6.QtCore import QObject, pyqtSignal
 from PyQt6.QtGui import QImage, QPixmap
@@ -137,7 +138,7 @@ class AsyncImageLoader(QObject):
         with self.lock:
             self.cache.clear()
 
-    def get_cached_image(self, path: str) -> Optional[QPixmap]:
+    def get_cached_image(self, path: str) -> QPixmap | None:
         """
         Get an image from the cache.
 

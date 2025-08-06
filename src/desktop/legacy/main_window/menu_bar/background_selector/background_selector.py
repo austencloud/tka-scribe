@@ -1,3 +1,4 @@
+from __future__ import annotations
 # background_selector.py
 from typing import TYPE_CHECKING
 

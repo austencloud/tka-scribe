@@ -1,3 +1,4 @@
+from __future__ import annotations
 from data.constants import *
 
 from .base_location_calculator import BaseLocationCalculator

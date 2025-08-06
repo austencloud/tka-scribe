@@ -1,3 +1,4 @@
+from __future__ import annotations
 """
 Effect Manager - Handles visual effects like blur and shadows.
 

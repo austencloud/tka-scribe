@@ -1,4 +1,5 @@
-from typing import TYPE_CHECKING
+from __future__ import annotations
+from typing import TYPE_CHECKING,Optional
 
 from base_widgets.pictograph.elements.grid.non_radial_points_group import (
     NonRadialPointsGroup,

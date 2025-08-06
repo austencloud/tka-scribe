@@ -1,3 +1,4 @@
+from __future__ import annotations
 # Example of how to use the refactored DictionaryService in SequenceWorkbench
 
 from typing import TYPE_CHECKING

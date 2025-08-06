@@ -1,3 +1,4 @@
+from __future__ import annotations
 """
 Modern action buttons for the settings dialog.
 
@@ -10,7 +11,7 @@ from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtWidgets import QHBoxLayout, QPushButton, QWidget
 
 if TYPE_CHECKING:
-    from desktop.modern.core.application_context import ApplicationContext
+    from core.application_context import ApplicationContext
 
 
 class ModernActionButtons(QWidget):

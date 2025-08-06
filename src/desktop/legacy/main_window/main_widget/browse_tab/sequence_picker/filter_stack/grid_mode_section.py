@@ -1,3 +1,4 @@
+from __future__ import annotations
 # grid_mode_section.py
 
 import os

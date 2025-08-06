@@ -1,5 +1,6 @@
+from __future__ import annotations
 from collections.abc import Callable
-from typing import Optional
+from typing import Optional,Optional
 
 from PyQt6.QtCore import (
     QEasingCurve,
@@ -26,7 +27,7 @@ class SequenceWorkbenchButton(QPushButton):
         icon_path: str,
         callback: Callable[[], None],
         tooltip: str = "",
-        parent: Optional["QPushButton"] = None,
+        parent: "QPushButton" | None = None,
     ):
         super().__init__(QIcon(icon_path), "", parent)
 

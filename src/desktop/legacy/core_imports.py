@@ -1,3 +1,4 @@
+from __future__ import annotations
 """
 Core Import Path Initialization for TKA Legacy Application
 

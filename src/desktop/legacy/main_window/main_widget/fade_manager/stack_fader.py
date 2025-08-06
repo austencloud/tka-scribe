@@ -1,4 +1,5 @@
-from typing import TYPE_CHECKING, Optional
+from __future__ import annotations
+from typing import TYPE_CHECKING, Optional,Optional
 
 from PyQt6.QtWidgets import QStackedWidget
 
@@ -15,7 +16,7 @@ class StackFader:
         stack: QStackedWidget,
         new_index: int,
         duration: int = 300,
-        callback: Optional[callable] = None,
+        callback: callable | None = None,
     ):
         current_widget = stack.currentWidget()
         next_widget = stack.widget(new_index)

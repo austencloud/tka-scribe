@@ -1,3 +1,4 @@
+from __future__ import annotations
 from .image_processor import ImageProcessor
 from .layout_calculator import LayoutCalculator
 from .page_renderer import PageRenderer

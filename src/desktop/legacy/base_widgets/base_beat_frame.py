@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import TYPE_CHECKING
 
 from base_widgets.pictograph.elements.views.beat_view import (
@@ -23,7 +25,7 @@ if TYPE_CHECKING:
 
 
 class BaseBeatFrame(QFrame):
-    def __init__(self, main_widget: "MainWidget"):
+    def __init__(self, main_widget: MainWidget):
         super().__init__()
         self.main_widget = main_widget
         self.sequence_workbench: SequenceWorkbench = None
@@ -34,7 +36,11 @@ class BaseBeatFrame(QFrame):
         self.setObjectName("beat_frame")
         self.setStyleSheet("QFrame#beat_frame { background: transparent; }")
         self.get = BeatFrameGetter(self)
-        self.json_manager = AppContext.json_manager()
+        try:
+            self.json_manager = AppContext.json_manager()
+        except RuntimeError:
+            # AppContext not initialized yet, will be set later
+            self.json_manager = None
 
     def _init_beats(self):
         self.beats = [LegacyBeatView(self, number=i + 1) for i in range(64)]

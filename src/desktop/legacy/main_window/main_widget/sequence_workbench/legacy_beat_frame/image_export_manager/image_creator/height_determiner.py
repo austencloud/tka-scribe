@@ -1,3 +1,4 @@
+from __future__ import annotations
 class HeightDeterminer:
     @staticmethod
     def determine_additional_heights(

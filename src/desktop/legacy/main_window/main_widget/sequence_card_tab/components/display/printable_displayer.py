@@ -1,10 +1,11 @@
+from __future__ import annotations
 # src/main_window/main_widget/sequence_card_tab/components/display/printable_displayer.py
 """
 Refactored PrintableDisplayer that uses the new component-based architecture.
 This class now delegates most of its functionality to the SequenceDisplayManager.
 """
 
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Optional,Optional
 
 from PyQt6.QtWidgets import QWidget
 
@@ -83,7 +84,7 @@ class PrintableDisplayer:
         """
         self.manager.set_orientation(orientation)
 
-    def display_sequences(self, selected_length: Optional[int] = None) -> None:
+    def display_sequences(self, selected_length: int | None = None) -> None:
         """
         Display sequence card images in a print-friendly layout.
 

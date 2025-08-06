@@ -1,3 +1,4 @@
+from __future__ import annotations
 """
 Custom widgets for the codex exporter dialog.
 """

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """
 Tab manager responsible for managing all application tabs.
 
@@ -5,12 +7,11 @@ This component follows SRP by focusing solely on tab-related functionality.
 """
 
 import logging
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
+from core.application_context import ApplicationContext
 from PyQt6.QtCore import QObject, pyqtSignal
 from PyQt6.QtWidgets import QWidget
-
-from desktop.modern.core.application_context import ApplicationContext
 
 if TYPE_CHECKING:
     from .main_widget_coordinator import MainWidgetCoordinator
@@ -33,14 +34,14 @@ class TabManager(QObject):
     tab_ready = pyqtSignal(str)  # tab_name
 
     def __init__(
-        self, coordinator: "MainWidgetCoordinator", app_context: ApplicationContext
+        self, coordinator: MainWidgetCoordinator, app_context: ApplicationContext
     ):
         super().__init__(coordinator)
 
         self.coordinator = coordinator
         self.app_context = app_context
         self._tabs: dict[str, QWidget] = {}
-        self._current_tab: Optional[str] = None
+        self._current_tab: str | None = None
         self._tab_factories = {}
 
         # Define which tabs use full-widget layout vs stack-based layout
@@ -190,7 +191,7 @@ class TabManager(QObject):
 
             traceback.print_exc()
 
-    def _create_tab(self, tab_name: str) -> Optional[QWidget]:
+    def _create_tab(self, tab_name: str) -> QWidget | None:
         """
         Create a tab instance if it doesn't exist.
 
@@ -376,14 +377,10 @@ class TabManager(QObject):
             if left_index >= 0:
                 self.coordinator.left_stack.setCurrentIndex(left_index)
 
-            # Show construct tab's start_pos_picker on right stack (dynamic lookup)
-            right_index = self._find_widget_index_in_stack(
-                self.coordinator.right_stack, "StartPosPicker"
-            )
-            if right_index >= 0:
-                self.coordinator.right_stack.setCurrentIndex(right_index)
+            # Intelligently determine which construct tab panel to show
+            self._switch_to_appropriate_construct_panel()
             logger.info(
-                "Switched to construct tab: sequence_workbench (left), start_pos_picker (right)"
+                "Switched to construct tab: sequence_workbench (left), intelligent panel selection (right)"
             )
         elif tab_name == "generate":
             # Show sequence_workbench for generate tab (dynamic lookup)
@@ -431,7 +428,7 @@ class TabManager(QObject):
                     f"Switched to {tab_name} tab: sequence_workbench (left), {tab_name} (right)"
                 )
 
-    def get_tab_widget(self, tab_name: str) -> Optional[QWidget]:
+    def get_tab_widget(self, tab_name: str) -> QWidget | None:
         """
         Get a tab widget by name.
 
@@ -443,7 +440,7 @@ class TabManager(QObject):
         """
         return self._tabs.get(tab_name)
 
-    def get_current_tab(self) -> Optional[str]:
+    def get_current_tab(self) -> str | None:
         """Get the name of the currently active tab."""
         return self._current_tab
 
@@ -476,3 +473,98 @@ class TabManager(QObject):
         self._tabs.clear()
         self._current_tab = None
         logger.info("Tab manager cleaned up")
+
+    def _switch_to_appropriate_construct_panel(self) -> None:
+        """
+        Intelligently switch to the appropriate construct tab panel based on sequence state.
+
+        Logic:
+        - If no sequence exists or sequence is empty: Show start position picker
+        - If sequence has start position or beats: Show option picker
+        """
+        import logging
+
+        logger = logging.getLogger(__name__)
+
+        try:
+            # Get the construct tab to check sequence state
+            construct_tab = self._tabs.get("construct")
+            if not construct_tab:
+                logger.warning(
+                    "Construct tab not found, defaulting to start position picker"
+                )
+                self._show_start_position_picker()
+                return
+
+            # Check if we have a beat frame to examine sequence state
+            beat_frame = getattr(construct_tab, "beat_frame", None)
+            if not beat_frame:
+                logger.warning(
+                    "Beat frame not found, defaulting to start position picker"
+                )
+                self._show_start_position_picker()
+                return
+
+            # Check sequence state - be very conservative
+            has_start_position = False
+            has_beats = False
+
+            try:
+                # Check if there's a start position
+                start_pos = getattr(beat_frame, "start_pos", None)
+                if start_pos is not None:
+                    has_start_position = True
+                    logger.info(f"Found start position: {start_pos}")
+
+                # Check if there are any beats in the sequence
+                beats = getattr(beat_frame, "beats", None)
+                if beats:
+                    filled_beats = [
+                        beat
+                        for beat in beats
+                        if hasattr(beat, "is_filled") and beat.is_filled
+                    ]
+                    has_beats = len(filled_beats) > 0
+                    logger.info(
+                        f"Found {len(filled_beats)} filled beats out of {len(beats)} total beats"
+                    )
+
+                logger.info(
+                    f"Sequence state check: start_position={has_start_position}, beats={has_beats}"
+                )
+
+            except Exception as e:
+                logger.warning(f"Error checking sequence state: {e}")
+                has_start_position = False
+                has_beats = False
+
+            # CONSERVATIVE: Default to start position picker unless we're certain there's content
+            if has_start_position or has_beats:
+                logger.info("Switching to option picker (sequence has content)")
+                self._show_option_picker()
+            else:
+                logger.info(
+                    "Switching to start position picker (empty sequence or uncertain state)"
+                )
+                self._show_start_position_picker()
+
+        except Exception as e:
+            logger.error(f"Error in intelligent construct panel switching: {e}")
+            # Fallback to start position picker
+            self._show_start_position_picker()
+
+    def _show_start_position_picker(self) -> None:
+        """Show the start position picker in the right stack."""
+        right_index = self._find_widget_index_in_stack(
+            self.coordinator.right_stack, "StartPosPicker"
+        )
+        if right_index >= 0:
+            self.coordinator.right_stack.setCurrentIndex(right_index)
+
+    def _show_option_picker(self) -> None:
+        """Show the option picker in the right stack."""
+        right_index = self._find_widget_index_in_stack(
+            self.coordinator.right_stack, "LegacyOptionPicker"
+        )
+        if right_index >= 0:
+            self.coordinator.right_stack.setCurrentIndex(right_index)

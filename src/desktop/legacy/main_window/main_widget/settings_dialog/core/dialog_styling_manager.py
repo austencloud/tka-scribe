@@ -1,3 +1,4 @@
+from __future__ import annotations
 """
 Dialog styling manager for the modern settings dialog.
 
@@ -10,7 +11,7 @@ from typing import TYPE_CHECKING, Any
 from PyQt6.QtWidgets import QDialog, QWidget
 
 if TYPE_CHECKING:
-    from desktop.modern.core.application_context import ApplicationContext
+    from core.application_context import ApplicationContext
 
 logger = logging.getLogger(__name__)
 

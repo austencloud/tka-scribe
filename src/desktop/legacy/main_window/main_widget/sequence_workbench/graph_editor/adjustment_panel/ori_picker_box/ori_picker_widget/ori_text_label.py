@@ -1,3 +1,4 @@
+from __future__ import annotations
 # orientation_text_label.py
 from typing import TYPE_CHECKING
 

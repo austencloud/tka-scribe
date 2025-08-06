@@ -1,3 +1,4 @@
+from __future__ import annotations
 # quiz_timer_manager.py
 
 from typing import TYPE_CHECKING

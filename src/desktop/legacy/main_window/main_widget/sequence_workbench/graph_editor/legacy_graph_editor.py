@@ -1,3 +1,4 @@
+from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from legacy_settings_manager.legacy_settings_manager import pyqtSignal

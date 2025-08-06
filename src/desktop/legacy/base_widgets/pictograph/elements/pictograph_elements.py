@@ -1,4 +1,6 @@
-from typing import TYPE_CHECKING, Union
+from __future__ import annotations
+from typing import Union,Optional
+from typing import TYPE_CHECKING, Union,Optional
 
 from base_widgets.pictograph.elements.grid.grid import Grid
 from base_widgets.pictograph.elements.views.bordered_pictograph_view import (

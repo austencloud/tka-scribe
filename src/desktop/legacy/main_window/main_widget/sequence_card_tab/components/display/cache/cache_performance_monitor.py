@@ -1,3 +1,4 @@
+from __future__ import annotations
 """
 Cache Performance Monitor - Handles performance monitoring and memory management.
 
@@ -6,7 +7,7 @@ Extracted from the monolithic ImageProcessor class to follow SRP.
 
 import gc
 import logging
-from typing import Any, Optional
+from typing import Any, Optional,Optional
 
 
 class CachePerformanceMonitor:
@@ -110,7 +111,7 @@ class CachePerformanceMonitor:
             return 0.0
 
     def get_performance_stats(
-        self, disk_cache_stats: Optional[dict] = None
+        self, disk_cache_stats: dict | None = None
     ) -> dict[str, Any]:
         """
         Get comprehensive performance statistics.

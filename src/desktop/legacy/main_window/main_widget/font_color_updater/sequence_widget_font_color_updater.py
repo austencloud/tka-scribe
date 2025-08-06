@@ -1,3 +1,4 @@
+from __future__ import annotations
 # sequence_workbench_font_color_updater.py
 from typing import TYPE_CHECKING
 

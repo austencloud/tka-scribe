@@ -1,3 +1,4 @@
+from __future__ import annotations
 from enums.letter.letter import Letter
 from enums.letter.letter_condition import LetterCondition
 

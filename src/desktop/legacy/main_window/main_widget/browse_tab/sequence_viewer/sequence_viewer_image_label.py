@@ -1,4 +1,5 @@
-from typing import TYPE_CHECKING
+from __future__ import annotations
+from typing import TYPE_CHECKING,Optional
 
 from PyQt6.QtCore import QSize, Qt
 from PyQt6.QtGui import QPixmap

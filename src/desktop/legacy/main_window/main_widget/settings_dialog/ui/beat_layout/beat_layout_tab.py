@@ -1,3 +1,4 @@
+from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from main_window.main_widget.settings_dialog.ui.beat_layout.layout_controls.layout_controls import (

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import TYPE_CHECKING
 
 from base_widgets.pictograph.legacy_pictograph import LegacyPictograph
@@ -29,7 +31,7 @@ if TYPE_CHECKING:
 
 
 class PropRotDirButtonManager:
-    def __init__(self, turns_box: "TurnsBox") -> None:
+    def __init__(self, turns_box: TurnsBox) -> None:
         self.turns_box = turns_box
         self.state = PropRotationState()
         self.logic_handler = PropRotDirLogicHandler(turns_box, self.state)
@@ -79,7 +81,7 @@ class PropRotDirButtonManager:
 
         QApplication.restoreOverrideCursor()
 
-    def update_for_motion_change(self, motion: "Motion") -> None:
+    def update_for_motion_change(self, motion: Motion) -> None:
         """Update buttons when motion changes."""
         self.logic_handler.current_motion = motion
 
@@ -88,7 +90,7 @@ class PropRotDirButtonManager:
         if motion.state.turns > 0 and motion.state.prop_rot_dir == NO_ROT:
             self.set_prop_rot_dir(self.logic_handler._get_default_prop_rot_dir())
 
-    def update_for_turns_change(self, value: "TurnsValue") -> None:
+    def update_for_turns_change(self, value: TurnsValue) -> None:
         """Update buttons when turns change."""
 
         # Ensure valid motion reference
@@ -115,15 +117,24 @@ class PropRotDirButtonManager:
         # Refresh UI to reflect changes
         self.turns_box.header.update_turns_box_header()
 
-    def set_motion(self, motion: "Motion") -> None:
+    def set_motion(self, motion: Motion) -> None:
         """Called when motion changes to update UI and logic states."""
         self.update_for_motion_change(motion)
 
-    def update_pictograph_letter(self, pictograph: "LegacyPictograph") -> None:
-        new_letter = (
-            self.turns_box.graph_editor.main_widget.letter_determiner.determine_letter(
-                pictograph.state.pictograph_data, swap_prop_rot_dir=False
+    def update_pictograph_letter(self, pictograph: LegacyPictograph) -> None:
+        # Add null check for letter_determiner
+        letter_determiner = self.turns_box.graph_editor.main_widget.letter_determiner
+        if letter_determiner is None:
+            import logging
+
+            logger = logging.getLogger(__name__)
+            logger.warning(
+                "Letter determiner is None, skipping pictograph letter update"
             )
+            return
+
+        new_letter = letter_determiner.determine_letter(
+            pictograph.state.pictograph_data, swap_prop_rot_dir=False
         )
         self.json_manager = (
             self.turns_box.graph_editor.sequence_workbench.main_widget.json_manager
@@ -144,7 +155,7 @@ class PropRotDirButtonManager:
                 json_index, new_letter.value
             )
 
-    def _update_pictograph_and_json(self, motion: "Motion") -> None:
+    def _update_pictograph_and_json(self, motion: Motion) -> None:
         """Update the pictograph and JSON with the new letter and motion attributes."""
         self.beat_frame = self.turns_box.graph_editor.sequence_workbench.beat_frame
         pictograph_index = self.beat_frame.get.index_of_currently_selected_beat()

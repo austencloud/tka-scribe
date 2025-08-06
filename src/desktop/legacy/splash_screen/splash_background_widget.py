@@ -1,3 +1,4 @@
+from __future__ import annotations
 # background_widget.py
 from typing import TYPE_CHECKING
 

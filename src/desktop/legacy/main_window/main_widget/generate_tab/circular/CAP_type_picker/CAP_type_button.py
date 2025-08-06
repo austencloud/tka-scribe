@@ -1,3 +1,4 @@
+from __future__ import annotations
 # updated file: main_window/main_widget/generate_tab/widgets/CAP_type_button.py
 from typing import TYPE_CHECKING
 

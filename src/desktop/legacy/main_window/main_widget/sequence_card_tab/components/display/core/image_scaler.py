@@ -1,3 +1,4 @@
+from __future__ import annotations
 """
 Image Scaler - Handles image scaling operations with single responsibility.
 

@@ -1,3 +1,4 @@
+from __future__ import annotations
 from objects.motion.managers.handpath_calculator import HandpathCalculator
 
 from data.constants import (

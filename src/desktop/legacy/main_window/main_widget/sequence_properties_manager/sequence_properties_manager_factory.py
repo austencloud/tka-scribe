@@ -1,3 +1,4 @@
+from __future__ import annotations
 """
 Factory for creating SequencePropertiesManager instances with proper dependency injection.
 """
@@ -5,7 +6,7 @@ Factory for creating SequencePropertiesManager instances with proper dependency 
 import logging
 from typing import TYPE_CHECKING
 
-from desktop.modern.core.application_context import ApplicationContext
+from core.application_context import ApplicationContext
 
 if TYPE_CHECKING:
     from .sequence_properties_manager import SequencePropertiesManager

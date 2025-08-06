@@ -1,4 +1,5 @@
-from typing import TYPE_CHECKING
+from __future__ import annotations
+from typing import TYPE_CHECKING,Optional
 
 from enums.letter.letter import Letter
 from enums.prop_type import PropType

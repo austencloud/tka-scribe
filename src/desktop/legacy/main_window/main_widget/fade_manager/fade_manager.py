@@ -1,3 +1,4 @@
+from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from main_window.main_widget.fade_manager.widget_and_stack_fader import (
@@ -11,7 +12,7 @@ from .stack_fader import StackFader
 from .widget_fader import WidgetFader
 
 if TYPE_CHECKING:
-    from desktop.modern.core.application_context import ApplicationContext
+    from core.application_context import ApplicationContext
 
     from ..main_widget import MainWidget
 

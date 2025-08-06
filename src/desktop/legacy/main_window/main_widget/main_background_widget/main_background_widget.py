@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import TYPE_CHECKING
 
 from interfaces.settings_manager_interface import ISettingsManager
@@ -15,14 +17,11 @@ from .backgrounds.starfield.starfield_background import StarfieldBackground
 if TYPE_CHECKING:
     from main_window.main_widget.main_widget import MainWidget
 
-from contextlib import contextmanager
 
-
-@contextmanager
 class MainBackgroundWidget(QWidget):
     background: BaseBackground | None = None
 
-    def __init__(self, main_widget: "MainWidget", settings_manager: ISettingsManager):
+    def __init__(self, main_widget: MainWidget, settings_manager: ISettingsManager):
         super().__init__(main_widget)
         self.main_widget = main_widget
         self.settings_manager = settings_manager

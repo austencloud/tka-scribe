@@ -1,3 +1,4 @@
+from __future__ import annotations
 # Core image processing components
 from .image_cache_manager import ImageCacheManager
 from .image_loader import ImageLoader

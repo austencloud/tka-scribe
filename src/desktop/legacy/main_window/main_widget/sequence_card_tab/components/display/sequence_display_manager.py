@@ -1,8 +1,9 @@
+from __future__ import annotations
 # src/main_window/main_widget/sequence_card_tab/components/display/sequence_display_manager.py
 import logging
 import os
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any,Optional
 
 from PyQt6.QtCore import Qt, QTimer
 from PyQt6.QtWidgets import QApplication, QGridLayout, QWidget

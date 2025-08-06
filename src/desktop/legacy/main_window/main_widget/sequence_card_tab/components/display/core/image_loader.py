@@ -1,3 +1,4 @@
+from __future__ import annotations
 """
 Image Loader - Handles image loading and validation with single responsibility.
 
@@ -7,7 +8,7 @@ Extracted from the monolithic ImageProcessor class to follow SRP.
 import logging
 import os
 from pathlib import Path
-from typing import Optional
+from typing import Optional,Optional
 
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QImage
@@ -33,7 +34,7 @@ class ImageLoader:
     def __init__(self):
         self.logger = logging.getLogger(__name__)
 
-    def load_image(self, image_path: str) -> Optional[QImage]:
+    def load_image(self, image_path: str) -> QImage | None:
         """
         Load image with validation and size limits.
 
@@ -94,7 +95,7 @@ class ImageLoader:
             self.logger.error(f"Error validating image file {image_path}: {e}")
             return False
 
-    def _load_with_size_limit(self, image_path: str) -> Optional[QImage]:
+    def _load_with_size_limit(self, image_path: str) -> QImage | None:
         """
         Load image with automatic downscaling if too large.
 

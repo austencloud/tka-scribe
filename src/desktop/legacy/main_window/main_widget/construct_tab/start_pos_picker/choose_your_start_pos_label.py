@@ -1,3 +1,5 @@
+from __future__ import annotations
+from typing import Union
 from typing import TYPE_CHECKING, Union
 
 from PyQt6.QtCore import Qt
@@ -15,7 +17,7 @@ if TYPE_CHECKING:
 
 class ChooseYourStartPosLabel(QLabel):
     def __init__(
-        self, start_pos_picker: Union["StartPosPicker", "AdvancedStartPosPicker"]
+        self, start_pos_picker: "StartPosPicker" | "AdvancedStartPosPicker"
     ) -> None:
         super().__init__(start_pos_picker)
         self.start_pos_picker = start_pos_picker

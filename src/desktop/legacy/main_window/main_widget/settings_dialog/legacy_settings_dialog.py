@@ -1,3 +1,4 @@
+from __future__ import annotations
 """
 Modern Settings Dialog - Refactored with coordinator pattern.
 
@@ -14,7 +15,7 @@ from PyQt6.QtWidgets import QDialog
 if TYPE_CHECKING:
     from main_window.main_widget.main_widget import MainWidget
 
-    from desktop.modern.core.application_context import ApplicationContext
+    from core.application_context import ApplicationContext
 
 logger = logging.getLogger(__name__)
 

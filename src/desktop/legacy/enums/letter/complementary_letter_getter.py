@@ -1,3 +1,4 @@
+from __future__ import annotations
 from enums.letter.letter import Letter
 
 complementary_letter_mapping = {

@@ -1,4 +1,5 @@
-from typing import TYPE_CHECKING
+from __future__ import annotations
+from typing import TYPE_CHECKING,Optional
 
 from legacy_settings_manager.global_settings.app_context import AppContext
 from main_window.main_widget.browse_tab.sequence_picker.control_panel.sort_widget.sort_button import (

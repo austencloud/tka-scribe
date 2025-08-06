@@ -1,3 +1,4 @@
+from __future__ import annotations
 """
 Image drag and drop handler for the main widget.
 
@@ -16,7 +17,7 @@ from PyQt6.QtGui import QDragEnterEvent, QDragMoveEvent, QDropEvent
 from PyQt6.QtWidgets import QMessageBox, QWidget
 
 if TYPE_CHECKING:
-    from desktop.modern.core.application_context import ApplicationContext
+    from core.application_context import ApplicationContext
 
 logger = logging.getLogger(__name__)
 

@@ -1,3 +1,4 @@
+from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from .base_font_color_updater import BaseFontColorUpdater

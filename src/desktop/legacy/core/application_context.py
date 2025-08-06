@@ -1,3 +1,4 @@
+from __future__ import annotations
 """
 Modern application context that replaces the global singleton AppContext.
 
@@ -5,7 +6,7 @@ This module provides a clean, dependency-injected way to access application serv
 without the tight coupling and testing issues of the original singleton pattern.
 """
 
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Optional,Optional
 
 from .dependency_container import DependencyContainer, get_container
 
@@ -47,12 +48,12 @@ class ApplicationContext:
         return self._container.resolve(IJsonManager)
 
     @property
-    def selected_arrow(self) -> Optional["Arrow"]:
+    def selected_arrow(self) -> "Arrow" | None:
         """Get the currently selected arrow."""
         return self._selected_arrow
 
     @selected_arrow.setter
-    def selected_arrow(self, arrow: Optional["Arrow"]) -> None:
+    def selected_arrow(self, arrow: "Arrow" | None) -> None:
         """Set the currently selected arrow."""
         self._selected_arrow = arrow
 

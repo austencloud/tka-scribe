@@ -1,3 +1,4 @@
+from __future__ import annotations
 """
 Color Manager - Handles color palette and transparency management.
 

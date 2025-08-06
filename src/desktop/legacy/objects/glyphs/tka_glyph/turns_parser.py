@@ -1,3 +1,5 @@
+from __future__ import annotations
+from typing import Union,Optional
 from data.constants import CLOCKWISE, COUNTER_CLOCKWISE, OPP, SAME
 
 

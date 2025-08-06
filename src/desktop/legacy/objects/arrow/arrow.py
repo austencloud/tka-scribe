@@ -1,3 +1,4 @@
+from __future__ import annotations
 # objects/arrow/arrow.py
 from typing import TYPE_CHECKING
 

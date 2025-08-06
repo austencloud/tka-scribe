@@ -1,3 +1,4 @@
+from __future__ import annotations
 # data_manager.py
 import json
 import os

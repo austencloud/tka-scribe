@@ -1,3 +1,4 @@
+from __future__ import annotations
 # thumbnail_border_overlay.py (example)
 
 from PyQt6.QtCore import Qt

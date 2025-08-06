@@ -1,3 +1,4 @@
+from __future__ import annotations
 from typing import TYPE_CHECKING, Literal
 
 from main_window.main_widget.sequence_workbench.graph_editor.adjustment_panel.ori_picker_box.ori_picker_widget.ori_selection_dialog import (

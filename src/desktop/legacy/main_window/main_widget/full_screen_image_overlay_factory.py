@@ -1,3 +1,4 @@
+from __future__ import annotations
 """
 Factory for creating FullScreenImageOverlay instances with proper dependency injection.
 """
@@ -8,7 +9,7 @@ from typing import TYPE_CHECKING
 from main_window.main_widget.core.widget_manager import WidgetFactory
 from PyQt6.QtWidgets import QWidget
 
-from desktop.modern.core.application_context import ApplicationContext
+from core.application_context import ApplicationContext
 
 if TYPE_CHECKING:
     from .full_screen_image_overlay import FullScreenImageOverlay

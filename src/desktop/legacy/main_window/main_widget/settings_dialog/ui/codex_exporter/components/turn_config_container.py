@@ -1,3 +1,4 @@
+from __future__ import annotations
 """
 Container component that combines all turn configuration components.
 """

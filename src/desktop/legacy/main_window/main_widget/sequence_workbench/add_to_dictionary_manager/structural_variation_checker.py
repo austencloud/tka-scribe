@@ -1,3 +1,4 @@
+from __future__ import annotations
 import os
 
 from base_widgets.pictograph.managers.pictograph_checker import (

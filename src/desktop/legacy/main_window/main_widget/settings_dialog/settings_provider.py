@@ -1,3 +1,4 @@
+from __future__ import annotations
 from PyQt6.QtCore import QSettings
 from utils.path_helpers import get_settings_path
 

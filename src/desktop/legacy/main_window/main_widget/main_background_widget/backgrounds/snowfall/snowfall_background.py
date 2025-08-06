@@ -1,4 +1,6 @@
-from typing import TYPE_CHECKING, Union
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
 
 from main_window.main_widget.main_background_widget.backgrounds.base_background import (
     BaseBackground,
@@ -13,7 +15,7 @@ if TYPE_CHECKING:
 
 
 class SnowfallBackground(BaseBackground):
-    def __init__(self, widget: Union["BrowseTab", "LearnTab", "WriteTab"]):
+    def __init__(self, widget: BrowseTab | LearnTab | WriteTab):
         super().__init__(widget)
         self.widget = widget
 

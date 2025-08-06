@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import TYPE_CHECKING
 
 from main_window.main_widget.metadata_extractor import MetaDataExtractor
@@ -13,7 +15,7 @@ if TYPE_CHECKING:
 
 
 class ThumbnailBoxDifficultyLabel(QToolButton):
-    def __init__(self, thumbnail_box: "ThumbnailBox"):
+    def __init__(self, thumbnail_box: ThumbnailBox):
         """Handles drawing difficulty level labels in the thumbnail box."""
         super().__init__(thumbnail_box)
         self.thumbnail_box = thumbnail_box

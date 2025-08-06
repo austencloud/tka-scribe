@@ -1,3 +1,4 @@
+from __future__ import annotations
 """
 Settings event coordinator for the modern settings dialog.
 
@@ -11,7 +12,7 @@ from PyQt6.QtCore import QObject, pyqtSignal
 from PyQt6.QtWidgets import QWidget
 
 if TYPE_CHECKING:
-    from desktop.modern.core.application_context import ApplicationContext
+    from core.application_context import ApplicationContext
 
     from ..core.settings_state_manager import SettingsStateManager
     from ..tabs.settings_tab_manager import SettingsTabManager

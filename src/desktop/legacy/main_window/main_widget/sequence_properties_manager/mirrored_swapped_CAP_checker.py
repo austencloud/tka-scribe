@@ -1,3 +1,4 @@
+from __future__ import annotations
 from tkinter import HORIZONTAL
 from typing import TYPE_CHECKING
 

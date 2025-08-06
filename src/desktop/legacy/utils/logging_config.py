@@ -1,3 +1,4 @@
+from __future__ import annotations
 """
 Modern, professional logging configuration for the Kinetic Constructor application.
 

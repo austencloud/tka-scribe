@@ -1,3 +1,4 @@
+from __future__ import annotations
 from main_window.main_widget.turns_tuple_generator.turns_tuple_generators.base_turns_tuple_generator import (
     BaseTurnsTupleGenerator,
 )

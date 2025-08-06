@@ -1,3 +1,5 @@
+from __future__ import annotations
+from typing import Union
 from main_window.main_widget.write_tab.editable_label_manager import (
     EditableLabelManager,
 )

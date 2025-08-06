@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """
 Thumbnail Size Calculator - Handles size calculations for different view modes.
 
@@ -24,13 +26,9 @@ class ThumbnailSizeCalculator:
     - Provide consistent sizing logic
     """
 
-    # Size constants for different modes
-    BROWSE_MODE_SIZE = QSize(200, 200)
-    SEQUENCE_VIEWER_SIZE = QSize(150, 150)
-    MINIMUM_SIZE = QSize(50, 50)
-    MAXIMUM_SIZE = QSize(400, 400)
+    # No hard-coded size constants - all sizing calculated dynamically
 
-    def __init__(self, thumbnail_box: "ThumbnailBox"):
+    def __init__(self, thumbnail_box: ThumbnailBox):
         self.thumbnail_box = thumbnail_box
         self.logger = logging.getLogger(__name__)
 
@@ -52,35 +50,111 @@ class ThumbnailSizeCalculator:
 
         except Exception as e:
             self.logger.warning(f"Error calculating target size: {e}")
-            return self.BROWSE_MODE_SIZE
+            # Emergency fallback
+            return QSize(140, 140)
 
     def _calculate_sequence_viewer_size(self) -> QSize:
         """
-        Calculate size for sequence viewer mode.
+        Calculate size for sequence viewer mode based on container space.
 
         Returns:
-            QSize optimized for sequence viewer
+            QSize optimized for sequence viewer that fills container
         """
-        # In sequence viewer, use smaller thumbnails for better overview
-        base_size = self.SEQUENCE_VIEWER_SIZE
+        try:
+            # Get the thumbnail box container size
+            container_size = self.thumbnail_box.size()
 
-        # Could be adjusted based on available space or user preferences
-        return self._clamp_size(base_size)
+            # If container is not ready, try to get parent container size
+            if container_size.width() <= 1 or container_size.height() <= 1:
+                parent = self.thumbnail_box.parent()
+                if parent:
+                    container_size = parent.size()
+                    self.logger.debug(
+                        f"Using parent container size for sequence viewer: {container_size}"
+                    )
+
+            # Use the container width and height, with minimal padding
+            padding = 10  # Small padding for sequence viewer
+            available_width = max(container_size.width() - padding, 50)
+            available_height = max(container_size.height() - padding, 50)
+
+            # Use the smaller dimension to maintain square aspect ratio
+            size = min(available_width, available_height)
+
+            # Ensure reasonable minimum size
+            size = max(size, 50)
+
+            calculated_size = QSize(size, size)
+            self.logger.debug(
+                f"Calculated sequence viewer size: {calculated_size} from container: {container_size}"
+            )
+
+            return calculated_size
+
+        except Exception as e:
+            self.logger.error(f"Error calculating sequence viewer size: {e}")
+            # Emergency fallback - use reasonable minimum
+            return QSize(100, 100)
 
     def _calculate_browse_mode_size(self) -> QSize:
         """
-        Calculate size for browse mode.
+        Calculate size for browse mode using modern responsive approach.
+        Based on modern app's 3-column grid calculation.
 
         Returns:
-            QSize optimized for browse mode
+            QSize calculated from container space using 3-column grid logic
         """
-        # In browse mode, use larger thumbnails for better detail
-        base_size = self.BROWSE_MODE_SIZE
+        try:
+            # Get the scroll widget to calculate available space (like modern app)
+            scroll_widget = self.thumbnail_box.sequence_picker.scroll_widget
+            available_width = scroll_widget.width()
 
-        # Could be adjusted based on grid layout or zoom level
-        return self._clamp_size(base_size)
+            # Use modern app's calculation approach
+            scrollbar_width = scroll_widget.calculate_scrollbar_width()
+            content_margins = 40  # Content margins
+            grid_margins = 30  # Grid margins
 
-    def calculate_display_size(self, target_size: QSize, available_size: QSize) -> QSize:
+            usable_width = (
+                available_width - scrollbar_width - content_margins - grid_margins
+            )
+            grid_spacing = 15 * 2  # 2 spaces between 3 columns
+            width_per_column = (usable_width - grid_spacing) // 3
+
+            # Use minimum of 150px as fallback (like modern app)
+            thumbnail_width = max(150, width_per_column)
+
+            # For thumbnails, use square aspect ratio
+            thumbnail_height = thumbnail_width
+
+            # Leave small padding inside the thumbnail container for the image
+            image_padding = 10
+            image_width = max(50, thumbnail_width - image_padding)
+            image_height = max(50, thumbnail_height - image_padding)
+
+            # Ensure integers for QSize
+            calculated_size = QSize(int(image_width), int(image_height))
+
+            # DETAILED DEBUG LOGGING
+            self.logger.info("🔍 MODERN BROWSE MODE SIZE CALCULATION:")
+            self.logger.info(f"  � Available width: {available_width}px")
+            self.logger.info(f"  � Scrollbar width: {scrollbar_width}px")
+            self.logger.info(f"  📐 Usable width: {usable_width}px")
+            self.logger.info(f"  📊 Width per column: {width_per_column}px")
+            self.logger.info(
+                f"  📦 Thumbnail container: {thumbnail_width}x{thumbnail_height}px"
+            )
+            self.logger.info(f"  �️ Image size: {image_width}x{image_height}px")
+
+            return calculated_size
+
+        except Exception as e:
+            self.logger.error(f"Error calculating browse mode size: {e}")
+            # Emergency fallback - use reasonable minimum
+            return QSize(140, 140)  # 150 - 10 padding
+
+    def calculate_display_size(
+        self, target_size: QSize, available_size: QSize
+    ) -> QSize:
         """
         Calculate the actual display size within available space.
 
@@ -107,7 +181,9 @@ class ThumbnailSizeCalculator:
             self.logger.warning(f"Error calculating display size: {e}")
             return target_size
 
-    def calculate_aspect_ratio_size(self, original_size: QSize, target_size: QSize) -> QSize:
+    def calculate_aspect_ratio_size(
+        self, original_size: QSize, target_size: QSize
+    ) -> QSize:
         """
         Calculate size maintaining aspect ratio within target bounds.
 
@@ -190,4 +266,3 @@ class ThumbnailSizeCalculator:
         )
 
         return QSize(width, height)
-

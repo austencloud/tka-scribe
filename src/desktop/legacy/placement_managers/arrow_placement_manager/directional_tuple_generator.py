@@ -1,3 +1,4 @@
+from __future__ import annotations
 from enums.letter.letter_type import LetterType
 from objects.motion.managers.handpath_calculator import HandpathCalculator  # RESTORED!
 from objects.motion.motion import Motion

@@ -1,3 +1,5 @@
+from __future__ import annotations
+from typing import Union
 """
 Modern Action Buttons for settings dialog with comprehensive state management.
 """

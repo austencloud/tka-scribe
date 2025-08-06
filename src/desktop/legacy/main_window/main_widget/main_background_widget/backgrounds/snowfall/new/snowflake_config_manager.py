@@ -1,3 +1,4 @@
+from __future__ import annotations
 import json
 
 from PyQt6.QtCore import QObject, pyqtSignal

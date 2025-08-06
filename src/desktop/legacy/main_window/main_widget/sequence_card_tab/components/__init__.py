@@ -1,3 +1,4 @@
+from __future__ import annotations
 from .display.printable_displayer import PrintableDisplayer
 from .display.scroll_area import SequenceCardScrollArea
 from .navigation.sidebar import SequenceCardNavSidebar

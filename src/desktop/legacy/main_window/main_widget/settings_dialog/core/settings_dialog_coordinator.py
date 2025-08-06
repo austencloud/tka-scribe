@@ -1,3 +1,4 @@
+from __future__ import annotations
 """
 Settings dialog coordinator - orchestrates all dialog components.
 
@@ -6,7 +7,7 @@ that manages smaller, focused components.
 """
 
 import logging
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any, Optional,Optional
 
 from PyQt6.QtCore import QObject, Qt, pyqtSignal
 from PyQt6.QtWidgets import QDialog
@@ -14,7 +15,7 @@ from PyQt6.QtWidgets import QDialog
 if TYPE_CHECKING:
     from main_window.main_widget.main_widget import MainWidget
 
-    from desktop.modern.core.application_context import ApplicationContext
+    from core.application_context import ApplicationContext
 
 logger = logging.getLogger(__name__)
 
@@ -38,7 +39,7 @@ class SettingsDialogCoordinator(QObject):
         self,
         dialog: QDialog,
         main_widget: "MainWidget",
-        app_context: Optional["ApplicationContext"] = None,
+        app_context: "ApplicationContext" | None = None,
     ):
         super().__init__(dialog)
         self.dialog = dialog
@@ -186,7 +187,7 @@ class SettingsDialogCoordinator(QObject):
         except Exception as e:
             logger.error(f"Error restoring last selected tab: {e}")
 
-    def _get_last_selected_tab(self) -> Optional[str]:
+    def _get_last_selected_tab(self) -> str | None:
         """Get the last selected tab from settings."""
         try:
             if (

@@ -1,3 +1,4 @@
+from __future__ import annotations
 from main_window.main_widget.sequence_workbench.legacy_beat_frame.image_export_manager.image_creator.difficult_level_gradients import (
     DifficultyLevelGradients,
 )

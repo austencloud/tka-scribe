@@ -1,3 +1,5 @@
+from __future__ import annotations
+from typing import Union
 class TurnsValue:
     def __init__(self, value: int | float | str):
         self._validate(value)

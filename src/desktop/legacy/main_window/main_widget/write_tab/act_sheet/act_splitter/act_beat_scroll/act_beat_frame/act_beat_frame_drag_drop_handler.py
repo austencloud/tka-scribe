@@ -1,3 +1,4 @@
+from __future__ import annotations
 # act_beat_frame_drag_drop_handler.py
 
 import json

@@ -1,3 +1,4 @@
+from __future__ import annotations
 from math import sqrt
 
 from enums.letter.letter_type import LetterType

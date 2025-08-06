@@ -1,3 +1,4 @@
+from __future__ import annotations
 """
 Base exporter for Type 2 pictographs.
 

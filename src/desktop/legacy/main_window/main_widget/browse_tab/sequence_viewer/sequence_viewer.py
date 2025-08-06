@@ -1,4 +1,5 @@
-from typing import TYPE_CHECKING, Optional
+from __future__ import annotations
+from typing import TYPE_CHECKING, Optional,Optional
 
 from main_window.main_widget.metadata_extractor import MetaDataExtractor
 from PyQt6.QtCore import Qt
@@ -107,7 +108,7 @@ class SequenceViewer(QWidget):
         self.thumbnail_box.header.difficulty_label.hide()
         self.state.matching_thumbnail_box = None
 
-    def get_thumbnail_at_current_index(self) -> Optional[str]:
+    def get_thumbnail_at_current_index(self) -> str | None:
         return self.thumbnail_box.state.get_current_thumbnail()
 
     def reopen_thumbnail(self, word: str, var_index: int):

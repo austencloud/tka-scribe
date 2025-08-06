@@ -1,3 +1,4 @@
+from __future__ import annotations
 # StarfieldBackgroundManager: Combines all managers and handles rendering
 from PyQt6.QtGui import QColor, QPainter
 from PyQt6.QtWidgets import QWidget

@@ -1,3 +1,4 @@
+from __future__ import annotations
 from typing import Literal
 
 from data.constants import BOX, DIAMOND, END_POS, START_POS

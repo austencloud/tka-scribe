@@ -1,3 +1,4 @@
+from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from data.constants import BLUE_ATTRS, LETTER, MOTION_TYPE, PROP_ROT_DIR, RED_ATTRS

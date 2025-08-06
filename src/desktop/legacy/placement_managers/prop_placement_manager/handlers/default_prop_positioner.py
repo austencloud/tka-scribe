@@ -1,8 +1,9 @@
+from __future__ import annotations
 # default_prop_positioner.py
 
 import logging
 from functools import lru_cache
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING,Optional
 
 from objects.prop.prop import Prop
 from PyQt6.QtCore import QPointF

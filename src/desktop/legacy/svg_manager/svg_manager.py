@@ -1,3 +1,4 @@
+from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from objects.arrow.arrow_svg_manager import ArrowSvgManager

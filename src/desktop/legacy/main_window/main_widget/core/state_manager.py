@@ -1,3 +1,4 @@
+from __future__ import annotations
 """
 State manager responsible for managing application state.
 
@@ -5,11 +6,10 @@ This component follows SRP by focusing solely on state management.
 """
 
 import logging
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any,Optional
 
+from core.application_context import ApplicationContext
 from PyQt6.QtCore import QObject, pyqtSignal
-
-from desktop.modern.core.application_context import ApplicationContext
 
 if TYPE_CHECKING:
     from .main_widget_coordinator import MainWidgetCoordinator

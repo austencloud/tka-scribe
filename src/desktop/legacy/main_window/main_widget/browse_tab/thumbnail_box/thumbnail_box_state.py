@@ -1,8 +1,9 @@
-from typing import Optional
+from __future__ import annotations
+from typing import Optional,Optional
 
 
 class ThumbnailBoxState:
-    def __init__(self, thumbnails: Optional[list[str]] = None):
+    def __init__(self, thumbnails: list[str | None] = None):
         self.thumbnails: list[str] = thumbnails if thumbnails else []
         self.current_index: int = 0
 
@@ -15,7 +16,7 @@ class ThumbnailBoxState:
         if 0 <= index < len(self.thumbnails):
             self.current_index = index
 
-    def get_current_thumbnail(self) -> Optional[str]:
+    def get_current_thumbnail(self) -> str | None:
         if self.thumbnails and 0 <= self.current_index < len(self.thumbnails):
             return self.thumbnails[self.current_index]
         return None

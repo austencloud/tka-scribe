@@ -1,3 +1,4 @@
+from __future__ import annotations
 # codex_letter_groups.py
 
 from enums.letter.letter_type import LetterType

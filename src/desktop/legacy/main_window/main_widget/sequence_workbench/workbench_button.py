@@ -1,3 +1,4 @@
+from __future__ import annotations
 from PyQt6.QtCore import QSize, Qt
 from styles.styled_button import ButtonContext, StyledButton
 

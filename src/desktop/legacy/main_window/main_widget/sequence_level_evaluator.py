@@ -1,3 +1,4 @@
+from __future__ import annotations
 from data.constants import BLUE_ATTRS, END_ORI, IN, OUT, RED_ATTRS, START_ORI, TURNS
 
 
