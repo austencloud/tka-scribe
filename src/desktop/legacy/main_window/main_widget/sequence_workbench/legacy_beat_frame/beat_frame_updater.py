@@ -1,11 +1,8 @@
 from __future__ import annotations
+
 from typing import TYPE_CHECKING
 
-from legacy_settings_manager.global_settings.app_context import AppContext
 from PyQt6.QtWidgets import QApplication
-from utils.reversal_detector import (
-    ReversalDetector,
-)
 
 from data.constants import (
     BEAT,
@@ -16,6 +13,10 @@ from data.constants import (
     SEQUENCE_START_POSITION,
     START_ORI,
     START_POS,
+)
+from legacy_settings_manager.global_settings.app_context import AppContext
+from utils.reversal_detector import (
+    ReversalDetector,
 )
 
 if TYPE_CHECKING:
@@ -113,7 +114,9 @@ class BeatFrameUpdater:
             beat_view.setScene(beat_view.blank_beat)
             beat_view.is_filled = False
 
-        self.bf.start_pos_view.setScene(self.bf.start_pos_view.blank_beat)
+        # Properly reset the start position view to use the blank beat
+        # This ensures that start_pos_view.start_pos points to the blank beat
+        self.bf.start_pos_view.set_start_pos(self.bf.start_pos_view.blank_beat)
         self.bf.start_pos_view.is_filled = False
         self.bf.selection_overlay.deselect_beat()
 

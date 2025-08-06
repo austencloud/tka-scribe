@@ -1,5 +1,8 @@
 from __future__ import annotations
+
 from typing import TYPE_CHECKING
+
+from PyQt6.QtWidgets import QVBoxLayout, QWidget
 
 from main_window.main_widget.browse_tab.thumbnail_box.thumbnail_box_favorites_manager import (
     ThumbnailBoxFavoritesManager,
@@ -10,7 +13,6 @@ from main_window.main_widget.browse_tab.thumbnail_box.thumbnail_box_nav_buttons_
 from main_window.main_widget.browse_tab.thumbnail_box.thumbnail_image_label import (
     ThumbnailImageLabel,
 )
-from PyQt6.QtWidgets import QVBoxLayout, QWidget
 
 from .thumbnail_box_header import ThumbnailBoxHeader
 from .thumbnail_box_state import ThumbnailBoxState
@@ -25,7 +27,7 @@ class ThumbnailBox(QWidget):
 
     def __init__(
         self,
-        browse_tab: "BrowseTab",
+        browse_tab: BrowseTab,
         word: str,
         thumbnails: list[str],
         in_sequence_viewer=False,
@@ -40,9 +42,22 @@ class ThumbnailBox(QWidget):
         self.state = ThumbnailBoxState(thumbnails)
         self.margin = 10  # Default margin
         self._preferred_width = 300  # Default preferred width
+        self._is_resizing = False  # Prevent resize loops
+
+        # Set up logging to track resize events
+        import logging
+
+        self.logger = logging.getLogger(__name__)
+        self.logger.setLevel(logging.DEBUG)
+        self._resize_count = 0  # Track how many times we've been resized
 
         self._setup_components()
         self._setup_layout()
+        self._setup_size_constraints()
+
+        self.logger.info(
+            f"🔧 ThumbnailBox created: {word}, in_sequence_viewer={in_sequence_viewer}"
+        )
 
     def _setup_components(self):
         self.favorites_manager = ThumbnailBoxFavoritesManager(self)
@@ -61,6 +76,62 @@ class ThumbnailBox(QWidget):
         layout.addStretch()
         layout.setContentsMargins(self.margin, self.margin, self.margin, self.margin)
 
+    def _setup_size_constraints(self):
+        """Set up proper size constraints to prevent inappropriate resizing."""
+        from PyQt6.QtWidgets import QSizePolicy
+
+        if self.in_sequence_viewer:
+            # For sequence viewer, allow more flexibility
+            self.setSizePolicy(
+                QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred
+            )
+        else:
+            # For browse tab, calculate and enforce strict size constraints
+            self._calculate_and_set_size_constraints()
+
+    def _calculate_and_set_size_constraints(self):
+        """Calculate and set size constraints based on parent layout."""
+        try:
+            # Get the sequence picker width (this should be stable)
+            sequence_picker_width = self.sequence_picker.width()
+
+            # If sequence picker width is not available yet, use a reasonable default
+            if sequence_picker_width <= 1:
+                sequence_picker_width = 800  # Default fallback
+
+            # Calculate nav sidebar width (approximately 15% of sequence picker)
+            nav_sidebar_width = int(sequence_picker_width * 0.15)
+
+            # Calculate scroll widget width (remaining space)
+            scroll_widget_width = sequence_picker_width - nav_sidebar_width
+
+            # Calculate scrollbar width
+            scrollbar_width = int(self.main_widget.width() * 0.01)
+
+            # Calculate usable width for thumbnails
+            total_margins = (3 * self.margin * 2) + 10  # 3 boxes * margins + buffer
+            usable_width = scroll_widget_width - scrollbar_width - total_margins
+
+            # Each thumbnail should be exactly 1/3 of usable width
+            target_width = max(150, int(usable_width // 3))
+
+            # Set both preferred width and maximum width to prevent expansion
+            self._preferred_width = target_width
+            self.setMinimumWidth(150)  # Reasonable minimum
+            self.setMaximumWidth(target_width + 20)  # Small tolerance for layout
+
+            self.logger.debug(
+                f"Size constraints set for '{self.word}': "
+                f"min=150, preferred={target_width}, max={target_width + 20}"
+            )
+
+        except Exception as e:
+            self.logger.warning(f"Error setting size constraints: {e}")
+            # Fallback to reasonable defaults
+            self._preferred_width = 200
+            self.setMinimumWidth(150)
+            self.setMaximumWidth(250)
+
     def sizeHint(self):
         """Provide size hint to the layout system instead of forcing fixed width."""
         from PyQt6.QtCore import QSize
@@ -68,77 +139,84 @@ class ThumbnailBox(QWidget):
         return QSize(self._preferred_width, super().sizeHint().height())
 
     def resizeEvent(self, event):
+        # Prevent resize loops
+        if self._is_resizing:
+            super().resizeEvent(event)
+            return
+
+        self._resize_count += 1
+        old_size = event.oldSize()
+        new_size = event.size()
+
+        self.logger.debug(
+            f"🚨 RESIZE EVENT #{self._resize_count} - ThumbnailBox '{self.word}':"
+        )
+        self.logger.debug(f"   📐 Old size: {old_size.width()}x{old_size.height()}")
+        self.logger.debug(f"   📐 New size: {new_size.width()}x{new_size.height()}")
+        self.logger.debug(f"   🔄 in_sequence_viewer: {self.in_sequence_viewer}")
+
         super().resizeEvent(event)
-        self.resize_thumbnail_box()
+
+        # Only resize if not in sequence viewer and size change is significant
+        if not self.in_sequence_viewer:
+            width_change = (
+                abs(old_size.width() - new_size.width()) if old_size.isValid() else 0
+            )
+            if width_change > 10:  # Only resize if significant change
+                self._update_size_constraints_if_needed()
+
+    def _update_size_constraints_if_needed(self):
+        """Update size constraints only when necessary to prevent resize loops."""
+        if self._is_resizing:
+            return
+
+        self._is_resizing = True
+        try:
+            old_preferred_width = self._preferred_width
+            self._calculate_and_set_size_constraints()
+
+            width_change = abs(old_preferred_width - self._preferred_width)
+            if width_change >= 5:
+                self.logger.debug(
+                    f"Updating geometry for '{self.word}': {old_preferred_width} → {self._preferred_width}"
+                )
+                self.updateGeometry()
+            else:
+                self.logger.debug(
+                    f"Width change too small ({width_change}px) - skipping updateGeometry()"
+                )
+        finally:
+            self._is_resizing = False
 
     def resize_thumbnail_box(self):
-        if self.in_sequence_viewer:
-            # For sequence viewer, use the right stack's allocated width (1/3 ratio)
-            available_width = self._get_sequence_viewer_available_width()
-            # Use most of the available width, leaving some margin
-            width = int(available_width * 0.95)
+        """Legacy method - now handled by _update_size_constraints_if_needed."""
+        self.logger.debug(
+            f"🔧 resize_thumbnail_box() called for '{self.word}' - delegating to size constraints"
+        )
+        if not self.in_sequence_viewer:
+            self._update_size_constraints_if_needed()
 
-            # CRITICAL FIX: Don't call updateGeometry() for sequence viewer thumbnail boxes
-            # This prevents the layout system from expanding the right stack beyond 1/3 width
-            self._preferred_width = width
-            # Instead of updateGeometry(), just update the image label directly
-            if hasattr(self, "image_label"):
-                self.image_label.update_thumbnail(self.state.current_index)
-        else:
-            nav_bar = self.sequence_picker.nav_sidebar
-            if nav_bar.width() < 20:
-                nav_bar.resize_sidebar()
-            scrollbar_width = (
-                self.sequence_picker.scroll_widget.calculate_scrollbar_width()
-            )
-
-            # RESPONSIVE LAYOUT FIX: Calculate available width more accurately
-            # Get the actual scroll widget width (which already excludes the nav sidebar)
-            scroll_widget = self.sequence_picker.scroll_widget
-            scroll_widget_width = scroll_widget.width()
-
-            # Account for scrollbar and margins
-            scrollbar_width = scroll_widget.calculate_scrollbar_width()
-
-            # HORIZONTAL OVERFLOW FIX: Account for ALL horizontal spacing elements
-            # Each thumbnail box has 10px margin on left and right (20px total per box)
-            # With 3 columns, that's 3 * 20px = 60px total for margins
-            # Plus small buffer for any layout spacing
-            total_margins = (
-                3 * self.margin * 2
-            ) + 10  # 3 boxes * 20px margins + 10px buffer
-
-            # Calculate usable width for thumbnails (subtract scrollbar and all margins)
-            usable_width = scroll_widget_width - scrollbar_width - total_margins
-
-            # Divide by 3 for 3 columns, ensuring minimum width
-            width = max(150, int(usable_width // 3))  # Minimum 150px per thumbnail
-
-            # SMART FIX: Use size hint instead of fixed width to avoid forcing parent expansion
-            self._preferred_width = width
-            self.updateGeometry()  # Notify layout system of size hint change
+    def recalculate_size_constraints(self):
+        """Public method to recalculate size constraints when layout changes."""
+        if not self.in_sequence_viewer:
+            self.logger.debug(f"Recalculating size constraints for '{self.word}'")
+            self._calculate_and_set_size_constraints()
 
     def _get_browse_tab_available_width(self) -> int:
         """Get the actual available width for the Browse Tab's left panel."""
         try:
-            # Use the actual sequence picker width instead of calculating ratios
-            # This respects the layout system's stretch factors
             sequence_picker = self.browse_tab.sequence_picker
             return sequence_picker.width()
         except (AttributeError, TypeError):
-            # Emergency fallback
-            return 800  # Reasonable default
+            return 800
 
     def _get_sequence_viewer_available_width(self) -> int:
         """Get the actual available width for the sequence viewer (right panel)."""
         try:
-            # Use the actual sequence viewer width instead of calculating ratios
-            # This respects the layout system's stretch factors
             sequence_viewer = self.browse_tab.sequence_viewer
             return sequence_viewer.width()
         except (AttributeError, TypeError):
-            # Emergency fallback
-            return 400  # Reasonable default width
+            return 400
 
     def update_thumbnails(self, thumbnails=[]):
         self.state.update_thumbnails(thumbnails)

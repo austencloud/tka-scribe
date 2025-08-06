@@ -1,4 +1,3 @@
-from __future__ import annotations
 """
 Shared type definitions for TKA applications.
 Core enums that ensure consistency between desktop and web applications.

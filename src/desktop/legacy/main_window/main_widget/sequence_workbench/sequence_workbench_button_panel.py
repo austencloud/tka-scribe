@@ -1,9 +1,9 @@
 from __future__ import annotations
+
 import json
 import os
-from typing import TYPE_CHECKING,Optional
+from typing import TYPE_CHECKING
 
-from main_window.main_widget.sequence_workbench.workbench_button import WorkbenchButton
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QIcon
 from PyQt6.QtWidgets import (
@@ -14,6 +14,8 @@ from PyQt6.QtWidgets import (
     QSpacerItem,
     QVBoxLayout,
 )
+
+from main_window.main_widget.sequence_workbench.workbench_button import WorkbenchButton
 from utils.path_helpers import get_image_path
 
 from .button_panel_placeholder import ButtonPanelPlaceholder

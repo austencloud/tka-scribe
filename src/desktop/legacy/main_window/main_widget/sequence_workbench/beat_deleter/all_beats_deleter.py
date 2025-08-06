@@ -1,4 +1,5 @@
 from __future__ import annotations
+
 from typing import TYPE_CHECKING
 
 from main_window.main_widget.tab_indices import RightStackIndex
@@ -72,13 +73,24 @@ class AllBeatsDeleter:
         beats = self.beat_frame.beat_views
         widgets = self.deleter.widget_collector.collect_shared_widgets()
         beats_filled = any(beat.is_filled for beat in beats)
-        start_pos_filled = self.beat_frame.start_pos_view.is_filled
 
-        if not beats_filled and not start_pos_filled:
+        # Use the same improved logic to check if start position has meaningful data
+        start_pos_has_meaningful_data = False
+        if hasattr(self.beat_frame, "start_pos_view") and hasattr(
+            self.beat_frame.start_pos_view, "start_pos"
+        ):
+            start_pos_beat = self.beat_frame.start_pos_view.start_pos
+            if hasattr(start_pos_beat, "state") and hasattr(
+                start_pos_beat.state, "letter"
+            ):
+                # Check if letter is set and not None/empty
+                start_pos_has_meaningful_data = start_pos_beat.state.letter is not None
+
+        if not beats_filled and not start_pos_has_meaningful_data:
             self._remove_adjustment_panel_items(widgets)
             self._fade_and_reset(widgets, show_indicator)
 
-        elif not beats_filled and start_pos_filled:
+        elif not beats_filled and start_pos_has_meaningful_data:
             self._remove_adjustment_panel_items(widgets)
             self._fade_widgets_and_stack(widgets, show_indicator)
 

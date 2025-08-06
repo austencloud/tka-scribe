@@ -1,4 +1,5 @@
 from __future__ import annotations
+
 import os
 import sys
 import winreg
@@ -11,9 +12,9 @@ def get_data_path(filename) -> str:
         if os.path.exists(full_path):
             return full_path
 
-    # Always use root data directory as single source of truth
+    # Use legacy data directory
     root_data_dir = os.path.abspath(
-        os.path.join(os.path.dirname(__file__), "..", "..", "..", "data")
+        os.path.join(os.path.dirname(__file__), "..", "data")
     )
 
     full_path = os.path.join(root_data_dir, filename)
@@ -33,9 +34,9 @@ def get_image_path(filename) -> str:
         if os.path.exists(full_path):
             return full_path
 
-    # Always use root images directory as single source of truth
+    # Use legacy images directory
     root_images_dir = os.path.abspath(
-        os.path.join(os.path.dirname(__file__), "..", "..", "..", "images")
+        os.path.join(os.path.dirname(__file__), "..", "images")
     )
 
     full_path = os.path.join(root_images_dir, filename)
@@ -86,8 +87,8 @@ def get_dev_path(filename) -> str:
     # Special case: current_sequence.json should live in legacy directory
     if filename == "current_sequence.json":
         # Get the legacy directory path from the current file location
-        legacy_root = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
-        base_path = legacy_root
+        legacy_dir = os.path.dirname(os.path.dirname(__file__))
+        base_path = legacy_dir
     else:
         base_path = os.path.abspath(".")
 

@@ -1,4 +1,5 @@
 from __future__ import annotations
+
 from typing import TYPE_CHECKING
 
 from legacy_settings_manager.global_settings.app_context import AppContext
@@ -15,7 +16,7 @@ from PyQt6.QtCore import QTimer
 class BeatFramePopulator:
     loading_text = "Loading sequence..."
 
-    def __init__(self, beat_frame: "LegacyBeatFrame"):
+    def __init__(self, beat_frame: LegacyBeatFrame):
         self.beat_frame = beat_frame
         self.main_widget = beat_frame.main_widget
         self.sequence_workbench = beat_frame.sequence_workbench
@@ -199,17 +200,31 @@ class BeatFramePopulator:
         try:
             # Get current sequence state
             beat_count = self.beat_frame.get.beat_count()
-            start_pos_is_filled = self.beat_frame.start_pos_view.is_filled
+
+            # Check if start position has meaningful data by examining the letter attribute
+            # A blank start position will not have a letter set
+            start_pos_has_meaningful_data = False
+            if hasattr(self.beat_frame, "start_pos_view") and hasattr(
+                self.beat_frame.start_pos_view, "start_pos"
+            ):
+                start_pos_beat = self.beat_frame.start_pos_view.start_pos
+                if hasattr(start_pos_beat, "state") and hasattr(
+                    start_pos_beat.state, "letter"
+                ):
+                    # Check if letter is set and not None/empty
+                    start_pos_has_meaningful_data = (
+                        start_pos_beat.state.letter is not None
+                    )
 
             import logging
 
             logger = logging.getLogger(__name__)
             logger.debug(
-                f"Determining picker: beat_count={beat_count}, start_pos_filled={start_pos_is_filled}"
+                f"Determining picker: beat_count={beat_count}, start_pos_has_data={start_pos_has_meaningful_data}"
             )
 
             # Show Start Position Picker only when sequence is completely empty
-            if beat_count == 0 and not start_pos_is_filled:
+            if beat_count == 0 and not start_pos_has_meaningful_data:
                 return "start_pos_picker"
 
             # Show Option Picker when start position is set OR beats exist

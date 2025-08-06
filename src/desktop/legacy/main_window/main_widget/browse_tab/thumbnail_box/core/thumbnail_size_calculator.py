@@ -55,38 +55,35 @@ class ThumbnailSizeCalculator:
 
     def _calculate_sequence_viewer_size(self) -> QSize:
         """
-        Calculate size for sequence viewer mode based on container space.
+        Calculate size for sequence viewer mode - use full width with height constraints.
 
         Returns:
-            QSize optimized for sequence viewer that fills container
+            QSize optimized for sequence viewer that uses full width
         """
         try:
-            # Get the thumbnail box container size
-            container_size = self.thumbnail_box.size()
+            # Get the sequence viewer's available space
+            sequence_viewer = self.thumbnail_box.browse_tab.sequence_viewer
 
-            # If container is not ready, try to get parent container size
-            if container_size.width() <= 1 or container_size.height() <= 1:
-                parent = self.thumbnail_box.parent()
-                if parent:
-                    container_size = parent.size()
-                    self.logger.debug(
-                        f"Using parent container size for sequence viewer: {container_size}"
-                    )
+            # Calculate available width (use most of sequence viewer width)
+            padding = 20  # Small padding for aesthetics
+            available_width = max(200, sequence_viewer.width() - padding)
 
-            # Use the container width and height, with minimal padding
-            padding = 10  # Small padding for sequence viewer
-            available_width = max(container_size.width() - padding, 50)
-            available_height = max(container_size.height() - padding, 50)
+            # Calculate maximum height to prevent window expansion
+            main_widget_height = self.thumbnail_box.main_widget.height()
+            max_height_ratio = 0.6  # Use up to 60% of main widget height
+            max_height = max(200, int(main_widget_height * max_height_ratio))
 
-            # Use the smaller dimension to maintain square aspect ratio
-            size = min(available_width, available_height)
+            # For sequence viewer, prioritize using full width
+            # Height is constrained to prevent window expansion
+            image_width = available_width
+            image_height = min(
+                available_width, max_height
+            )  # Maintain reasonable aspect ratio
 
-            # Ensure reasonable minimum size
-            size = max(size, 50)
-
-            calculated_size = QSize(size, size)
+            calculated_size = QSize(int(image_width), int(image_height))
             self.logger.debug(
-                f"Calculated sequence viewer size: {calculated_size} from container: {container_size}"
+                f"Calculated sequence viewer size: {calculated_size} "
+                f"(width={available_width}, max_height={max_height})"
             )
 
             return calculated_size
@@ -94,63 +91,66 @@ class ThumbnailSizeCalculator:
         except Exception as e:
             self.logger.error(f"Error calculating sequence viewer size: {e}")
             # Emergency fallback - use reasonable minimum
-            return QSize(100, 100)
+            return QSize(300, 300)
 
     def _calculate_browse_mode_size(self) -> QSize:
         """
-        Calculate size for browse mode using modern responsive approach.
-        Based on modern app's 3-column grid calculation.
+        Calculate size for browse mode using container's actual current width.
+        Image should fill the full width of its thumbnail box container.
 
         Returns:
-            QSize calculated from container space using 3-column grid logic
+            QSize that fills the thumbnail box container width
         """
         try:
-            # Get the scroll widget to calculate available space (like modern app)
-            scroll_widget = self.thumbnail_box.sequence_picker.scroll_widget
-            available_width = scroll_widget.width()
+            # CRITICAL FIX: Use the thumbnail box's actual current size
+            container_size = self.thumbnail_box.size()
 
-            # Use modern app's calculation approach
-            scrollbar_width = scroll_widget.calculate_scrollbar_width()
-            content_margins = 40  # Content margins
-            grid_margins = 30  # Grid margins
+            # If container is not ready, fall back to parent or scroll widget calculation
+            if container_size.width() <= 1 or container_size.height() <= 1:
+                # Fall back to scroll widget calculation for initial sizing
+                scroll_widget = self.thumbnail_box.sequence_picker.scroll_widget
+                available_width = scroll_widget.width()
 
-            usable_width = (
-                available_width - scrollbar_width - content_margins - grid_margins
-            )
-            grid_spacing = 15 * 2  # 2 spaces between 3 columns
-            width_per_column = (usable_width - grid_spacing) // 3
+                scrollbar_width = scroll_widget.calculate_scrollbar_width()
+                content_margins = 40
+                grid_margins = 30
+                usable_width = (
+                    available_width - scrollbar_width - content_margins - grid_margins
+                )
+                grid_spacing = 15 * 2
+                width_per_column = (usable_width - grid_spacing) // 3
+                container_width = max(150, width_per_column)
 
-            # Use minimum of 150px as fallback (like modern app)
-            thumbnail_width = max(150, width_per_column)
+                self.logger.debug(
+                    f"Using calculated container width: {container_width}"
+                )
+            else:
+                # Use the actual container width
+                container_width = container_size.width()
+                self.logger.debug(f"Using actual container width: {container_width}")
 
-            # For thumbnails, use square aspect ratio
-            thumbnail_height = thumbnail_width
+            # Image should fit within the actual available space inside the thumbnail box
+            # Account for thumbnail box margins (applied in layout) and small internal padding
+            thumbnail_box_margins = (
+                self.thumbnail_box.margin * 2
+            )  # Left + right margins
+            internal_padding = 4  # Small internal padding for the image
+            available_width = container_width - thumbnail_box_margins - internal_padding
 
-            # Leave small padding inside the thumbnail container for the image
-            image_padding = 10
-            image_width = max(50, thumbnail_width - image_padding)
-            image_height = max(50, thumbnail_height - image_padding)
+            image_width = max(50, available_width)
 
-            # Ensure integers for QSize
+            # For browse mode, use square aspect ratio
+            image_height = image_width
+
             calculated_size = QSize(int(image_width), int(image_height))
 
-            # DETAILED DEBUG LOGGING
-            self.logger.info("🔍 MODERN BROWSE MODE SIZE CALCULATION:")
-            self.logger.info(f"  � Available width: {available_width}px")
-            self.logger.info(f"  � Scrollbar width: {scrollbar_width}px")
-            self.logger.info(f"  📐 Usable width: {usable_width}px")
-            self.logger.info(f"  📊 Width per column: {width_per_column}px")
-            self.logger.info(
-                f"  📦 Thumbnail container: {thumbnail_width}x{thumbnail_height}px"
-            )
-            self.logger.info(f"  �️ Image size: {image_width}x{image_height}px")
-
+            self.logger.debug(f"Browse mode calculated size: {calculated_size}")
             return calculated_size
 
         except Exception as e:
             self.logger.error(f"Error calculating browse mode size: {e}")
             # Emergency fallback - use reasonable minimum
-            return QSize(140, 140)  # 150 - 10 padding
+            return QSize(140, 140)
 
     def calculate_display_size(
         self, target_size: QSize, available_size: QSize

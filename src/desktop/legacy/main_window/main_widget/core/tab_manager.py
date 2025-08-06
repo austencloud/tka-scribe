@@ -1,20 +1,21 @@
 from __future__ import annotations
 
+import logging
+from typing import TYPE_CHECKING
+
+from PyQt6.QtCore import QObject, pyqtSignal
+from PyQt6.QtWidgets import QWidget
+
+from core.application_context import ApplicationContext
+
+if TYPE_CHECKING:
+    from .main_widget_coordinator import MainWidgetCoordinator
+
 """
 Tab manager responsible for managing all application tabs.
 
 This component follows SRP by focusing solely on tab-related functionality.
 """
-
-import logging
-from typing import TYPE_CHECKING
-
-from core.application_context import ApplicationContext
-from PyQt6.QtCore import QObject, pyqtSignal
-from PyQt6.QtWidgets import QWidget
-
-if TYPE_CHECKING:
-    from .main_widget_coordinator import MainWidgetCoordinator
 
 logger = logging.getLogger(__name__)
 
@@ -481,6 +482,8 @@ class TabManager(QObject):
         Logic:
         - If no sequence exists or sequence is empty: Show start position picker
         - If sequence has start position or beats: Show option picker
+
+        Uses the same logic as beat_frame_populator._determine_appropriate_picker() for consistency.
         """
         import logging
 
@@ -505,46 +508,59 @@ class TabManager(QObject):
                 self._show_start_position_picker()
                 return
 
-            # Check sequence state - be very conservative
-            has_start_position = False
-            has_beats = False
-
+            # Use improved logic to properly detect if start position has meaningful data
+            # The issue is that start_pos_view.is_filled is always True even for blank beats
             try:
-                # Check if there's a start position
-                start_pos = getattr(beat_frame, "start_pos", None)
-                if start_pos is not None:
-                    has_start_position = True
-                    logger.info(f"Found start position: {start_pos}")
+                # Get current sequence state
+                beat_count = 0
+                start_pos_has_meaningful_data = False
 
-                # Check if there are any beats in the sequence
-                beats = getattr(beat_frame, "beats", None)
-                if beats:
-                    filled_beats = [
-                        beat
-                        for beat in beats
-                        if hasattr(beat, "is_filled") and beat.is_filled
-                    ]
-                    has_beats = len(filled_beats) > 0
-                    logger.info(
-                        f"Found {len(filled_beats)} filled beats out of {len(beats)} total beats"
-                    )
+                # Check beat count using the same method as populator
+                if hasattr(beat_frame, "get") and hasattr(beat_frame.get, "beat_count"):
+                    beat_count = beat_frame.get.beat_count()
 
-                logger.info(
-                    f"Sequence state check: start_position={has_start_position}, beats={has_beats}"
+                # Check if start position has meaningful data by examining the letter attribute
+                # A blank start position will not have a letter set
+                if hasattr(beat_frame, "start_pos_view") and hasattr(
+                    beat_frame.start_pos_view, "start_pos"
+                ):
+                    start_pos_beat = beat_frame.start_pos_view.start_pos
+                    if hasattr(start_pos_beat, "state") and hasattr(
+                        start_pos_beat.state, "letter"
+                    ):
+                        # Check if letter is set and not None/empty
+                        start_pos_has_meaningful_data = (
+                            start_pos_beat.state.letter is not None
+                        )
+                        # Debug logging to understand what's happening
+                        logger.debug(
+                            f"Start position letter: {start_pos_beat.state.letter}, "
+                            f"has_meaningful_data: {start_pos_has_meaningful_data}, "
+                            f"is_filled: {beat_frame.start_pos_view.is_filled}"
+                        )
+
+                logger.debug(
+                    f"Determining picker: beat_count={beat_count}, start_pos_has_data={start_pos_has_meaningful_data}"
                 )
+
+                # Show Start Position Picker only when sequence is completely empty
+                # (no beats AND no meaningful start position data)
+                if beat_count == 0 and not start_pos_has_meaningful_data:
+                    logger.info(
+                        "Switching to start position picker (empty sequence - no beats and no meaningful start position)"
+                    )
+                    self._show_start_position_picker()
+                else:
+                    logger.info(
+                        "Switching to option picker (sequence has content - meaningful start position set or beats exist)"
+                    )
+                    self._show_option_picker()
 
             except Exception as e:
                 logger.warning(f"Error checking sequence state: {e}")
-                has_start_position = False
-                has_beats = False
-
-            # CONSERVATIVE: Default to start position picker unless we're certain there's content
-            if has_start_position or has_beats:
-                logger.info("Switching to option picker (sequence has content)")
-                self._show_option_picker()
-            else:
+                # Fallback to start position picker on any error
                 logger.info(
-                    "Switching to start position picker (empty sequence or uncertain state)"
+                    "Switching to start position picker (error checking sequence state)"
                 )
                 self._show_start_position_picker()
 

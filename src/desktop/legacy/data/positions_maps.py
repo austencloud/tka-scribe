@@ -1,4 +1,3 @@
-from __future__ import annotations
 from data.constants import *
 
 quarter_position_map_cw = {

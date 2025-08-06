@@ -1,4 +1,3 @@
-from __future__ import annotations
 sequence_workbench_BEAT_FRAME_LAYOUTS = {
     0: (0, 1),
     1: (1, 1),

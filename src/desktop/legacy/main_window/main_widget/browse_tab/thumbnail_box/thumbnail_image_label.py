@@ -72,9 +72,6 @@ class ThumbnailImageLabel(QLabel):
             self._original_pixmap = QPixmap(path)
             self._cached_available_size = None
 
-        # CRITICAL FIX: Size the widget based on current container size before processing
-        self._ensure_proper_sizing()
-
         # Use coordinator for processing
         processed_pixmap = self.coordinator.process_thumbnail_sync(
             path, self.is_in_sequence_viewer
@@ -83,39 +80,11 @@ class ThumbnailImageLabel(QLabel):
         if not processed_pixmap.isNull():
             self.setPixmap(processed_pixmap)
 
-    def _ensure_proper_sizing(self) -> None:
-        """Ensure the image label is properly sized based on current container size."""
-        try:
-            # Calculate target size using current container dimensions
-            target_size = self.coordinator.size_calculator.calculate_target_size(
-                self.is_in_sequence_viewer
-            )
-
-            # Only resize if we have a valid target size and it's different from current size
-            if (
-                target_size.width() > 0
-                and target_size.height() > 0
-                and (
-                    self.size().width() != target_size.width()
-                    or self.size().height() != target_size.height()
-                )
-            ):
-                self.setFixedSize(target_size)
-
-        except Exception as e:
-            import logging
-
-            logger = logging.getLogger(__name__)
-            logger.warning(f"Error in _ensure_proper_sizing: {e}")
-
     def update_thumbnail_async(self, index: int) -> None:
         """Update the displayed image asynchronously with ultra quality processing."""
         thumbnails = self.thumbnail_box.state.thumbnails
         if not thumbnails or not (0 <= index < len(thumbnails)):
             return
-
-        # CRITICAL FIX: Size the widget based on current container size before processing
-        self._ensure_proper_sizing()
 
         path = thumbnails[index]
         if path != self.current_path:
@@ -136,9 +105,6 @@ class ThumbnailImageLabel(QLabel):
     def _update_display_from_coordinator(self) -> None:
         """Update display after coordinator processing."""
         if self.current_path:
-            # Ensure proper sizing before processing
-            self._ensure_proper_sizing()
-
             processed_pixmap = self.coordinator.process_thumbnail_sync(
                 self.current_path, self.is_in_sequence_viewer
             )

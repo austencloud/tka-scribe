@@ -1,10 +1,12 @@
 from __future__ import annotations
-from typing import TYPE_CHECKING, Optional,Optional
 
-from main_window.main_widget.metadata_extractor import MetaDataExtractor
+from typing import TYPE_CHECKING
+
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QPixmap
 from PyQt6.QtWidgets import QVBoxLayout, QWidget
+
+from main_window.main_widget.metadata_extractor import MetaDataExtractor
 
 from ..thumbnail_box.thumbnail_box import ThumbnailBox
 from .sequence_viewer_action_button_panel import SequenceViewerActionButtonPanel
@@ -15,11 +17,14 @@ if TYPE_CHECKING:
 
 
 class SequenceViewer(QWidget):
-    def __init__(self, browse_tab: "BrowseTab"):
+    def __init__(self, browse_tab: BrowseTab):
         super().__init__(browse_tab)
         self.main_widget = browse_tab.main_widget
         self.browse_tab = browse_tab
         self.state = SequenceViewerState()
+
+        # RESIZE GUARD: Prevent infinite resize loops
+        self._resize_pending = False
 
         # Set size policy to respect the layout stretch ratios and prevent expansion
         from PyQt6.QtWidgets import QSizePolicy
@@ -175,13 +180,33 @@ class SequenceViewer(QWidget):
                 return
 
     def resizeEvent(self, event):
-        # Width constraint now handled by parent container layout
-
-        # Update thumbnail if needed
-        if hasattr(self.thumbnail_box, "image_label") and hasattr(
-            self.thumbnail_box.state, "current_index"
-        ):
-            self.thumbnail_box.image_label.update_thumbnail(
-                self.thumbnail_box.state.current_index
-            )
+        """Handle resize events and update thumbnail box sizing."""
         super().resizeEvent(event)
+
+        # Recalculate thumbnail box size constraints for sequence viewer
+        if hasattr(self, "thumbnail_box") and hasattr(
+            self.thumbnail_box, "image_label"
+        ):
+            # Small delay to ensure layout is stable
+            from PyQt6.QtCore import QTimer
+
+            QTimer.singleShot(50, self._update_thumbnail_sizing)
+
+    def _update_thumbnail_sizing(self):
+        """Update thumbnail sizing after layout changes."""
+        try:
+            # Recalculate size constraints for the thumbnail box
+            if hasattr(self.thumbnail_box, "recalculate_size_constraints"):
+                self.thumbnail_box.recalculate_size_constraints()
+
+            # Recalculate image label sizing if it has the method
+            if hasattr(
+                self.thumbnail_box.image_label, "recalculate_size_for_layout_change"
+            ):
+                self.thumbnail_box.image_label.recalculate_size_for_layout_change()
+
+        except Exception as e:
+            import logging
+
+            logger = logging.getLogger(__name__)
+            logger.debug(f"Error updating thumbnail sizing: {e}")

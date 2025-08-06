@@ -1,4 +1,3 @@
-from __future__ import annotations
 ACT_BEAT_FRAME_LAYOUTS = {}
 
 for i in range(200):

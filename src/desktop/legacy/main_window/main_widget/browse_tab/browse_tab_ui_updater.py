@@ -1,8 +1,10 @@
 from __future__ import annotations
+
 from typing import TYPE_CHECKING
 
-from legacy_settings_manager.global_settings.app_context import AppContext
 from PyQt6.QtWidgets import QApplication
+
+from legacy_settings_manager.global_settings.app_context import AppContext
 
 from .sequence_picker.nav_sidebar.sidebar_button_ui_updater import (
     SidebarButtonUIUpdater,
@@ -71,6 +73,9 @@ class BrowseTabUIUpdater:
                 # because the tab state might not be properly set during initialization
 
                 thumbnail_box = scroll_widget.thumbnail_boxes[word]
+
+                # Recalculate size constraints to ensure proper 1/3 width
+                thumbnail_box.recalculate_size_constraints()
 
                 # Use asynchronous thumbnail loading to prevent UI blocking
                 self.thumbnail_updater.update_thumbnail_image_async(thumbnail_box)

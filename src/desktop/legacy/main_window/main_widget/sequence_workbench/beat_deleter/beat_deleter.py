@@ -1,4 +1,5 @@
 from __future__ import annotations
+
 from typing import TYPE_CHECKING
 
 from base_widgets.pictograph.elements.views.beat_view import (
@@ -93,7 +94,9 @@ class BeatDeleter:
         self.sequence_workbench.graph_editor.pictograph_container.GE_view.set_to_blank_grid()
         construct_tab = self.sequence_workbench.main_widget.get_tab_widget("construct")
         if construct_tab:
-            construct_tab.last_beat = self.sequence_workbench.beat_frame.start_pos
+            # Don't set last_beat to start_pos when clearing sequence - this can cause confusion
+            # in the picker logic. Instead, set it to None to indicate no meaningful last beat.
+            construct_tab.last_beat = None
             # Only auto-switch picker if we're currently in the construct tab
             if self._is_construct_tab_active():
                 self._auto_switch_construct_tab_view_after_deletion(construct_tab)
@@ -148,17 +151,31 @@ class BeatDeleter:
         try:
             # Get current sequence state
             beat_count = self.beat_frame.get.beat_count()
-            start_pos_is_filled = self.beat_frame.start_pos_view.is_filled
+
+            # Check if start position has meaningful data by examining the letter attribute
+            # A blank start position will not have a letter set
+            start_pos_has_meaningful_data = False
+            if hasattr(self.beat_frame, "start_pos_view") and hasattr(
+                self.beat_frame.start_pos_view, "start_pos"
+            ):
+                start_pos_beat = self.beat_frame.start_pos_view.start_pos
+                if hasattr(start_pos_beat, "state") and hasattr(
+                    start_pos_beat.state, "letter"
+                ):
+                    # Check if letter is set and not None/empty
+                    start_pos_has_meaningful_data = (
+                        start_pos_beat.state.letter is not None
+                    )
 
             import logging
 
             logger = logging.getLogger(__name__)
             logger.debug(
-                f"Determining picker: beat_count={beat_count}, start_pos_filled={start_pos_is_filled}"
+                f"Determining picker: beat_count={beat_count}, start_pos_has_data={start_pos_has_meaningful_data}"
             )
 
             # Show Start Position Picker only when sequence is completely empty
-            if beat_count == 0 and not start_pos_is_filled:
+            if beat_count == 0 and not start_pos_has_meaningful_data:
                 return "start_pos_picker"
 
             # Show Option Picker when start position is set OR beats exist

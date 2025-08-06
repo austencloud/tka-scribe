@@ -1,0 +1,47 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Format with Ruff + autopep8",
+            "type": "shell",
+            "command": "C:/Users/Austen/AppData/Local/Programs/Python/Python313/python.exe",
+            "args": [
+                "-m", "autopep8",
+                "--in-place",
+                "--select=E501",
+                "--max-line-length=88",
+                "${file}"
+            ],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "silent",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": false
+            },
+            "dependsOn": "Ruff Format",
+            "problemMatcher": []
+        },
+        {
+            "label": "Ruff Format",
+            "type": "shell",
+            "command": "ruff",
+            "args": [
+                "format",
+                "${file}"
+            ],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "silent",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": false
+            },
+            "problemMatcher": []
+        }
+    ]
+}

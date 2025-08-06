@@ -1,4 +1,5 @@
 from __future__ import annotations
+
 from typing import TYPE_CHECKING
 
 from legacy_settings_manager.global_settings.app_context import AppContext
@@ -18,7 +19,7 @@ if TYPE_CHECKING:
 
 
 class ThumbnailBoxHeader(QWidget):
-    def __init__(self, thumbnail_box: "ThumbnailBox"):
+    def __init__(self, thumbnail_box: ThumbnailBox):
         super().__init__(thumbnail_box)
         self.thumbnail_box = thumbnail_box
         self.setContentsMargins(0, 0, 0, 0)

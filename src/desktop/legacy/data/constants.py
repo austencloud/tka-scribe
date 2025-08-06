@@ -1,4 +1,3 @@
-from __future__ import annotations
 import os
 
 current_script_path = os.path.abspath(__file__).replace("\\", "/")
