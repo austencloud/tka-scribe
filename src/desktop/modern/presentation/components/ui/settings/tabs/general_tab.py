@@ -3,9 +3,6 @@ from __future__ import annotations
 from PyQt6.QtCore import pyqtSignal
 from PyQt6.QtGui import QFont
 from PyQt6.QtWidgets import (
-    QCheckBox,
-    QComboBox,
-    QFrame,
     QHBoxLayout,
     QLabel,
     QLineEdit,
@@ -29,80 +26,125 @@ class GeneralTab(QWidget):
         self._setup_connections()
 
     def _setup_ui(self):
+        """Setup the enhanced general tab UI with sophisticated SettingCard layout."""
+        # Main layout with tighter spacing for better content fit
         main_layout = QVBoxLayout(self)
-        main_layout.setContentsMargins(20, 20, 20, 20)  # Reduced from 30
-        main_layout.setSpacing(12)  # Reduced from 20
+        main_layout.setContentsMargins(16, 16, 16, 16)
+        main_layout.setSpacing(10)
 
-        title = QLabel("General Settings")
-        title.setObjectName("section_title")
-        title.setFont(QFont("Inter", 18, QFont.Weight.Bold))
-        main_layout.addWidget(title)
+        # Create a content widget (no scroll area needed)
+        content_widget = QWidget()
+        content_layout = QVBoxLayout(content_widget)
+        content_layout.setContentsMargins(0, 0, 0, 0)
+        content_layout.setSpacing(8)  # Even tighter spacing for better content fit
 
-        # User Profile Section
-        user_section = self._create_user_section()
-        main_layout.addWidget(user_section)
+        # Create setting sections using SettingCard approach
+        self._create_user_profile_section(content_layout)
+        self._create_application_behavior_section(content_layout)
 
-        # Application Behavior Section
-        behavior_section = self._create_behavior_section()
-        main_layout.addWidget(behavior_section)
+        # Add stretch to push content to top
+        content_layout.addStretch()
 
-        main_layout.addStretch()
+        # Add content widget directly to main layout
+        main_layout.addWidget(content_widget)
+
+        # Apply styling
         self._apply_styling()
 
-    def _create_user_section(self):
-        section = QFrame()
-        section.setObjectName("settings_section")
-        layout = QVBoxLayout(section)
-        layout.setContentsMargins(16, 12, 16, 12)  # Reduced padding
-        layout.setSpacing(10)  # Reduced spacing
+    def _create_user_profile_section(self, parent_layout):
+        """Create user profile settings section using SettingCard approach."""
+        from ..components.card import SettingCard
 
-        title = QLabel("User Profile")
-        title.setObjectName("subsection_title")
-        layout.addWidget(title)
+        card = SettingCard(
+            "User Profile",
+            "Configure your user name that appears on exported sequences and shared content.",
+        )
 
-        # Current User
-        user_layout = QHBoxLayout()
-        user_layout.setSpacing(8)  # Reduced spacing
-        user_layout.addWidget(QLabel("Current User:"))
+        # User Name Input with sophisticated styling
+        user_name_layout = QVBoxLayout()
+        user_name_label = QLabel("User Name (appears on exported sequences):")
+        user_name_label.setFont(QFont("Inter", 11, QFont.Weight.Medium))
+        user_name_label.setStyleSheet("color: rgba(255, 255, 255, 0.95);")
+        user_name_layout.addWidget(user_name_label)
+
+        # Create modern styled line edit for user name
+        user_name_input_layout = QHBoxLayout()
         self.user_input = QLineEdit()
-        self.user_input.setPlaceholderText("Enter your name")
-        user_layout.addWidget(self.user_input)
-        layout.addLayout(user_layout)
+        self.user_input.setPlaceholderText("Enter your name...")
+        self.user_input.setMaxLength(50)  # Reasonable limit
 
-        return section
+        # Apply sophisticated styling to match legacy
+        self.user_input.setStyleSheet("""
+            QLineEdit {
+                background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                    stop:0 rgba(255, 255, 255, 0.15),
+                    stop:1 rgba(255, 255, 255, 0.10));
+                border: 1px solid rgba(255, 255, 255, 0.30);
+                border-radius: 8px;
+                padding: 10px 14px;
+                color: white;
+                font-size: 14px;
+                font-family: "Inter", "Segoe UI", sans-serif;
+                font-weight: 500;
+                min-height: 32px;
+                selection-background-color: rgba(42, 130, 218, 0.3);
+            }
+            QLineEdit:focus {
+                border: 2px solid rgba(42, 130, 218, 0.8);
+                background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                    stop:0 rgba(255, 255, 255, 0.22),
+                    stop:1 rgba(255, 255, 255, 0.15));
+            }
+            QLineEdit:hover {
+                border-color: rgba(255, 255, 255, 0.45);
+            }
+        """)
 
-    def _create_behavior_section(self):
-        section = QFrame()
-        section.setObjectName("settings_section")
-        layout = QVBoxLayout(section)
-        layout.setContentsMargins(16, 12, 16, 12)  # Reduced padding
-        layout.setSpacing(10)  # Reduced spacing
+        user_name_input_layout.addWidget(self.user_input)
+        user_name_input_layout.addStretch()
+        user_name_layout.addLayout(user_name_input_layout)
 
-        title = QLabel("Application Behavior")
-        title.setObjectName("subsection_title")
-        layout.addWidget(title)
+        card.content_layout.addLayout(user_name_layout)
+        parent_layout.addWidget(card)
 
-        # Enable fades
-        self.enable_fades = QCheckBox("Enable smooth transitions")
-        self.enable_fades.setToolTip("Enable smooth fade transitions between views")
-        layout.addWidget(self.enable_fades)
+    def _create_application_behavior_section(self, parent_layout):
+        """Create application behavior settings section using SettingCard approach."""
+        from ..components.card import ComboCard, ToggleCard
 
-        # Auto-save
-        self.auto_save = QCheckBox("Auto-save changes")
-        self.auto_save.setToolTip("Automatically save changes without prompting")
-        layout.addWidget(self.auto_save)
+        # Enable fades toggle card
+        fades_card = ToggleCard(
+            "Smooth Transitions",
+            "Enable smooth fade transitions between views for a more polished experience.",
+            None,  # No setting key
+            True,  # Default value
+        )
+        fades_card.toggle.toggled.connect(self._on_fades_changed)
+        self.enable_fades = fades_card.toggle  # Store reference for loading settings
+        parent_layout.addWidget(fades_card)
 
-        # Theme selection
-        theme_layout = QHBoxLayout()
-        theme_layout.setSpacing(8)  # Reduced spacing
-        theme_layout.addWidget(QLabel("Theme:"))
-        self.theme_combo = QComboBox()
-        self.theme_combo.addItems(["Dark", "Light", "Auto"])
-        theme_layout.addWidget(self.theme_combo)
-        theme_layout.addStretch()
-        layout.addLayout(theme_layout)
+        # Auto-save toggle card
+        auto_save_card = ToggleCard(
+            "Auto-save Changes",
+            "Automatically save your work without prompting to prevent data loss.",
+            None,  # No setting key
+            True,  # Default value
+        )
+        auto_save_card.toggle.toggled.connect(self._on_auto_save_changed)
+        self.auto_save = auto_save_card.toggle  # Store reference for loading settings
+        parent_layout.addWidget(auto_save_card)
 
-        return section
+        # Theme selection card
+        theme_options = ["Dark", "Light", "Auto"]
+        theme_card = ComboCard(
+            "Theme",
+            "Choose the application theme. Auto follows your system theme preference.",
+            None,  # No setting key
+            theme_options,
+            "Dark",  # Default value
+        )
+        theme_card.combo.currentTextChanged.connect(self._on_theme_changed)
+        self.theme_combo = theme_card.combo  # Store reference for loading settings
+        parent_layout.addWidget(theme_card)
 
     def _apply_styling(self):
         self.setStyleSheet(
@@ -260,17 +302,23 @@ class GeneralTab(QWidget):
         self.theme_combo.setCurrentText("Dark")
 
     def _setup_connections(self):
+        """Connect signals to slots."""
         self.user_input.textChanged.connect(self._on_user_changed)
-        self.enable_fades.toggled.connect(
-            lambda x: self.setting_changed.emit("enable_fades", x)
-        )
-        self.auto_save.toggled.connect(
-            lambda x: self.setting_changed.emit("auto_save", x)
-        )
-        self.theme_combo.currentTextChanged.connect(
-            lambda x: self.setting_changed.emit("theme", x)
-        )
+        # Note: Card connections are set up in _create_application_behavior_section
 
     def _on_user_changed(self, text: str):
+        """Handle user name changes."""
         self.user_service.set_current_user(text.strip())
         self.setting_changed.emit("current_user", text.strip())
+
+    def _on_fades_changed(self, enabled: bool):
+        """Handle fades setting changes."""
+        self.setting_changed.emit("enable_fades", enabled)
+
+    def _on_auto_save_changed(self, enabled: bool):
+        """Handle auto-save setting changes."""
+        self.setting_changed.emit("auto_save", enabled)
+
+    def _on_theme_changed(self, theme: str):
+        """Handle theme setting changes."""
+        self.setting_changed.emit("theme", theme)

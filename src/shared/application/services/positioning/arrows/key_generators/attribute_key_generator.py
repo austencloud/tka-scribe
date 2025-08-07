@@ -27,6 +27,11 @@ class AttributeKeyGenerator(IAttributeKeyGenerator):
     ) -> str:
         """Original method for getting key from Arrow data (faithful port)."""
 
+        # Check if motion data exists for this arrow color
+        if arrow_data.color not in pictograph_data.motions:
+            # No motion data means static arrow - return color as fallback
+            return arrow_data.color
+
         motion_data = pictograph_data.motions[arrow_data.color]
         motion_type = motion_data.motion_type
         letter = pictograph_data.letter or ""

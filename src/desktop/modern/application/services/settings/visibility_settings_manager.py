@@ -35,7 +35,7 @@ class VisibilitySettingsManager(QObject):
         "letter": True,
         "elemental": True,
         "vtg": False,
-        "tka": False,
+        "tka": True,  # Enable TKA glyphs by default for codex
         "position": True,
         # Motion arrows
         "red_motion": True,

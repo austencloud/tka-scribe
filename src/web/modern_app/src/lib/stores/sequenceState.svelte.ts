@@ -157,6 +157,22 @@ export function setError(error: string | null): void {
 }
 
 /**
+ * Clear error state
+ */
+export function clearError(): void {
+	state.error = null;
+}
+
+/**
+ * Update current beat in sequence
+ */
+export function updateCurrentBeat(beatIndex: number, beatData: BeatData): void {
+	if (state.currentSequence && beatIndex >= 0 && beatIndex < state.currentSequence.beats.length) {
+		state.currentSequence.beats[beatIndex] = beatData;
+	}
+}
+
+/**
  * Select a beat
  */
 export function selectBeat(beatIndex: number | null): void {

@@ -1,8 +1,11 @@
 import { sveltekit } from '@sveltejs/kit/vite';
 import { defineConfig } from 'vite';
+/// <reference types="vitest" />
 
 export default defineConfig({
-	plugins: [sveltekit()],
+	plugins: [
+		sveltekit()
+	],
 	
 	// Optimize dependencies
 	optimizeDeps: {
@@ -26,6 +29,7 @@ export default defineConfig({
 	server: {
 		port: 5174,
 		host: 'localhost',
+		open: true, // Auto-open browser
 		fs: {
 			allow: ['..'] // Allow access to parent directories for shared modules
 		}

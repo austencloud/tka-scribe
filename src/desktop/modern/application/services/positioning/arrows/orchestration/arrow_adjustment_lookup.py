@@ -24,9 +24,6 @@ from __future__ import annotations
 
 import logging
 
-from shared.application.services.positioning.arrows.key_generators.attribute_key_generator import (
-    AttributeKeyGenerator,
-)
 from shared.application.services.positioning.arrows.key_generators.placement_key_generator import (
     PlacementKeyGenerator,
 )
@@ -45,6 +42,9 @@ from shared.application.services.positioning.arrows.placement.special_placement_
     SpecialPlacementService,
 )
 
+from desktop.modern.application.services.positioning.arrows.key_generators.attribute_key_generator import (
+    AttributeKeyGenerator,
+)
 from desktop.modern.core.types.coordinates import qpoint_to_point
 from desktop.modern.core.types.geometry import Point
 from desktop.modern.domain.models.motion_data import MotionData

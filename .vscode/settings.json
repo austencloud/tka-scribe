@@ -19,14 +19,14 @@
     "editor.defaultFormatter": "charliermarsh.ruff",
     "editor.formatOnSave": true,
     "editor.codeActionsOnSave": {
-      "source.fixAll.ruff": "explicit",
-      "source.organizeImports.ruff": "explicit"
+      "source.fixAll.ruff": "explicit"
+      // "source.organizeImports.ruff": "explicit"  // TEMPORARILY DISABLED TO PREVENT AUTO-IMPORT REMOVAL
     }
   },
 
   // === RUFF EXTENSION SETTINGS ===
   "ruff.enable": true,
-  "ruff.organizeImports": true,
+  "ruff.organizeImports": false,  // TEMPORARILY DISABLED TO PREVENT AUTO-IMPORT REMOVAL
   "ruff.fixAll": true,
 
   // === DISABLE OLD TOOLS TO AVOID CONFLICTS ===

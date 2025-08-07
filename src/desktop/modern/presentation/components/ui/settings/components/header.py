@@ -36,10 +36,11 @@ class SettingsHeader(QFrame):
 
         layout.addStretch()
 
-        # Close button
+        # Close button with enhanced accessibility
         self.close_button = QPushButton("×")
         self.close_button.setObjectName("close_button")
-        self.close_button.setFixedSize(44, 44)
+        # Increased size for better accessibility (WCAG compliant)
+        self.close_button.setFixedSize(48, 48)
         self.close_button.setCursor(Qt.CursorShape.PointingHandCursor)
         self.close_button.clicked.connect(self.close_requested.emit)
         layout.addWidget(self.close_button)

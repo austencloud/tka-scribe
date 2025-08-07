@@ -1,7 +1,7 @@
 {
   "browse_tab": {
-    "filter_type": "all_sequences",
-    "filter_values": null,
+    "filter_type": "starting_letter",
+    "filter_values": "\u0394",
     "selected_sequence": null,
     "selected_variation": null,
     "navigation_mode": "filter_selector",

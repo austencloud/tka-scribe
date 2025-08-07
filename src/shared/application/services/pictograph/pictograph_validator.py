@@ -132,6 +132,11 @@ class PictographValidator(IPictographValidator):
 
             # Check if all props are radial
             for arrow_data in valid_arrows:
+                # Check if motion data exists for this arrow color
+                if arrow_data.color not in self.pictograph_data.motions:
+                    # No motion data means static arrow - not radial
+                    return False
+
                 end_ori = self._get_arrow_end_orientation(
                     self.pictograph_data.motions[arrow_data.color]
                 )
@@ -157,6 +162,11 @@ class PictographValidator(IPictographValidator):
 
             # Check if all props are nonradial
             for arrow_data in valid_arrows:
+                # Check if motion data exists for this arrow color
+                if arrow_data.color not in self.pictograph_data.motions:
+                    # No motion data means static arrow - not nonradial
+                    return False
+
                 end_ori = self._get_arrow_end_orientation(
                     self.pictograph_data.motions[arrow_data.color]
                 )

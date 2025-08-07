@@ -17,13 +17,17 @@
     "**/.venv",
     "**/venv"
   ],
-  "pythonVersion": "3.10",
+  "pythonVersion": "3.13",
   "pythonPlatform": "Windows",
   "typeCheckingMode": "basic",
   "useLibraryCodeForTypes": true,
   "autoSearchPaths": true,
   "autoImportCompletions": true,
   "indexing": true,
+  "includeFileSpecs": [
+    "**/*.py",
+    "**/*.pyi"
+  ],
   "extraPaths": [
     "./modern/src",
     "./legacy",

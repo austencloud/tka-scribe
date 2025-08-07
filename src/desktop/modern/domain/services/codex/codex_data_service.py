@@ -392,79 +392,143 @@ class CodexDataService:
         self, letter: str, legacy_params: dict
     ) -> PictographData:
         """Create PictographData from legacy parameters."""
-        from desktop.modern.domain.models.arrow_data import ArrowData
-        from desktop.modern.domain.models.grid_data import GridData
-        from desktop.modern.domain.models.motion_data import MotionData
-
-        # Extract motion parameters
-        start_pos = legacy_params[START_POS]
-        end_pos = legacy_params[END_POS]
-        blue_motion_type = legacy_params[f"{BLUE}_{MOTION_TYPE}"]
-        red_motion_type = legacy_params[f"{RED}_{MOTION_TYPE}"]
-
-        # Create motion data for blue and red
-        motions = {}
-        arrows = {}
-
-        # Create blue motion and arrow
-        if blue_motion_type != STATIC:
-            blue_motion = MotionData(
-                motion_type=blue_motion_type,
-                start_loc=start_pos,
-                end_loc=end_pos,
-                start_ori="in",  # Default orientation
-                end_ori="out",  # Default orientation
-                turns=0,
+        try:
+            logger.debug(
+                f"Creating pictograph data for {letter} with params: {legacy_params}"
             )
-            motions["blue"] = blue_motion
 
+            from desktop.modern.domain.models.arrow_data import ArrowData
+            from desktop.modern.domain.models.enums import (
+                ArrowType,
+                GridMode,
+                GridPosition,
+                MotionType,
+                Orientation,
+                RotationDirection,
+            )
+            from desktop.modern.domain.models.grid_data import GridData
+            from desktop.modern.domain.models.motion_data import MotionData
+
+            # Extract motion parameters
+            start_pos = legacy_params[START_POS]
+            end_pos = legacy_params[END_POS]
+            blue_motion_type = legacy_params[f"{BLUE}_{MOTION_TYPE}"]
+            red_motion_type = legacy_params[f"{RED}_{MOTION_TYPE}"]
+
+            # Create motion data for blue and red
+            motions = {}
+            arrows = {}
+
+            # Create blue motion and arrow (always create both for turns tuple service)
+            if blue_motion_type != STATIC:
+                # Convert string values to enums
+                motion_type_enum = (
+                    MotionType.PRO if blue_motion_type == PRO else MotionType.ANTI
+                )
+                start_loc_enum = GridPosition(start_pos)
+                end_loc_enum = GridPosition(end_pos)
+
+                # Debug logging
+                logger.debug(
+                    f"Creating blue motion: type={motion_type_enum}, start={start_loc_enum}, end={end_loc_enum}"
+                )
+
+                blue_motion = MotionData(
+                    motion_type=motion_type_enum,
+                    prop_rot_dir=RotationDirection.CLOCKWISE,  # Default rotation
+                    start_loc=start_loc_enum,
+                    end_loc=end_loc_enum,
+                    start_ori=Orientation.IN,
+                    end_ori=Orientation.OUT,
+                    turns=0,
+                )
+            else:
+                # Create static motion for turns tuple service compatibility
+                blue_motion = MotionData(
+                    motion_type=MotionType.STATIC,
+                    prop_rot_dir=RotationDirection.NO_ROTATION,
+                    start_loc=GridPosition(start_pos),
+                    end_loc=GridPosition(start_pos),  # Same position for static
+                    start_ori=Orientation.IN,
+                    end_ori=Orientation.IN,
+                    turns=0,
+                )
+
+            motions["blue"] = blue_motion
             blue_arrow = ArrowData(
                 color="blue",
-                start_loc=start_pos,
-                end_loc=end_pos,
-                motion_type=blue_motion_type,
+                arrow_type=ArrowType.BLUE,
+                turns=0.0,
             )
             arrows["blue"] = blue_arrow
 
-        # Create red motion and arrow
-        if red_motion_type != STATIC:
-            red_motion = MotionData(
-                motion_type=red_motion_type,
-                start_loc=start_pos,
-                end_loc=end_pos,
-                start_ori="in",  # Default orientation
-                end_ori="out",  # Default orientation
-                turns=0,
-            )
-            motions["red"] = red_motion
+            # Create red motion and arrow (always create both for turns tuple service)
+            if red_motion_type != STATIC:
+                # Convert string values to enums
+                motion_type_enum = (
+                    MotionType.PRO if red_motion_type == PRO else MotionType.ANTI
+                )
+                start_loc_enum = GridPosition(start_pos)
+                end_loc_enum = GridPosition(end_pos)
 
+                red_motion = MotionData(
+                    motion_type=motion_type_enum,
+                    prop_rot_dir=RotationDirection.CLOCKWISE,  # Default rotation
+                    start_loc=start_loc_enum,
+                    end_loc=end_loc_enum,
+                    start_ori=Orientation.IN,
+                    end_ori=Orientation.OUT,
+                    turns=0,
+                )
+            else:
+                # Create static motion for turns tuple service compatibility
+                red_motion = MotionData(
+                    motion_type=MotionType.STATIC,
+                    prop_rot_dir=RotationDirection.NO_ROTATION,
+                    start_loc=GridPosition(start_pos),
+                    end_loc=GridPosition(start_pos),  # Same position for static
+                    start_ori=Orientation.IN,
+                    end_ori=Orientation.IN,
+                    turns=0,
+                )
+
+            motions["red"] = red_motion
             red_arrow = ArrowData(
                 color="red",
-                start_loc=start_pos,
-                end_loc=end_pos,
-                motion_type=red_motion_type,
+                arrow_type=ArrowType.RED,
+                turns=0.0,
             )
             arrows["red"] = red_arrow
 
-        # Create grid data
-        grid_data = GridData(grid_mode="diamond")
+            # Create grid data
 
-        # Create the pictograph data
-        return PictographData(
-            letter=letter,
-            start_position=start_pos,
-            end_position=end_pos,
-            grid_data=grid_data,
-            arrows=arrows,
-            motions=motions,
-            props={},  # No props for basic codex pictographs
-            metadata={"source": "codex_legacy_conversion"},
-        )
+            grid_data = GridData(grid_mode=GridMode.DIAMOND)
+
+            # Create the pictograph data using from_dict to handle enum conversions
+            pictograph_dict = {
+                "letter": letter,
+                "start_position": start_pos,
+                "end_position": end_pos,
+                "grid_data": grid_data.to_dict(),
+                "arrows": {k: v.to_dict() for k, v in arrows.items()},
+                "motions": {k: v.to_dict() for k, v in motions.items()},
+                "props": {},
+                "metadata": {"source": "codex_legacy_conversion"},
+            }
+
+            return PictographData.from_dict(pictograph_dict)
+
+        except Exception as e:
+            logger.error(f"Error creating pictograph data for {letter}: {e}")
+            import traceback
+
+            logger.error(f"Traceback: {traceback.format_exc()}")
+            raise
 
     def _get_pictograph_from_dataset(
         self, letter: str, legacy_params: dict
     ) -> PictographData | None:
-        """Get real pictograph data from dataset service."""
+        """Get real pictograph data using the injected dataset service."""
         if not self.pictograph_data_service:
             # Fallback to basic data creation if no dataset service
             logger.debug(
@@ -473,38 +537,30 @@ class CodexDataService:
             return self._create_pictograph_data(letter, legacy_params)
 
         try:
-            # Get the dataset from the service
-            dataset = self.pictograph_data_service.get_pictograph_dataset()
-            letter_data_list = dataset.get(letter, [])
+            # Get all data from the PictographDataManager
+            all_data = self.pictograph_data_service.get_all_data()
 
             # Find matching pictograph data
-            for pictograph_entry in letter_data_list:
-                # Check if this entry matches our legacy parameters
-                if self._matches_legacy_params(pictograph_entry, legacy_params):
-                    # Extract the PictographData from the entry
-                    if (
-                        isinstance(pictograph_entry, dict)
-                        and "data" in pictograph_entry
-                    ):
-                        return pictograph_entry["data"]
-                    elif hasattr(pictograph_entry, "pictograph_data"):
-                        return pictograph_entry.pictograph_data
-                    else:
-                        # Try to convert the entry directly
-                        return PictographData.from_dict(pictograph_entry)
+            matching_entry = self._find_matching_csv_entry(
+                all_data, letter, legacy_params
+            )
 
-            # If no exact match found, use the first available entry for this letter
-            if letter_data_list:
+            if matching_entry:
+                logger.debug(f"Found matching dataset entry for letter {letter}")
+                # Convert the CSV data to PictographData
+                return self._convert_csv_data_to_pictograph(letter, matching_entry)
+
+            # No exact match found, try to get any entry for this letter
+            letter_entries = [
+                entry for entry in all_data if entry.get("letter") == letter
+            ]
+
+            if letter_entries:
                 logger.debug(
                     f"No exact match for {letter}, using first available entry"
                 )
-                first_entry = letter_data_list[0]
-                if isinstance(first_entry, dict) and "data" in first_entry:
-                    return first_entry["data"]
-                elif hasattr(first_entry, "pictograph_data"):
-                    return first_entry.pictograph_data
-                else:
-                    return PictographData.from_dict(first_entry)
+                first_entry = letter_entries[0]
+                return self._convert_csv_data_to_pictograph(letter, first_entry)
 
             # No data found, fallback to basic creation
             logger.debug(f"No dataset entry found for letter {letter}, using fallback")
@@ -513,6 +569,161 @@ class CodexDataService:
         except Exception as e:
             logger.warning(f"Failed to get pictograph from dataset for {letter}: {e}")
             return self._create_pictograph_data(letter, legacy_params)
+
+    def _find_matching_csv_entry(
+        self, all_data: list[dict], letter: str, legacy_params: dict
+    ) -> dict | None:
+        """Find CSV entry that matches the legacy parameters."""
+        for entry in all_data:
+            if entry.get("letter") == letter and self._matches_csv_entry_params(
+                entry, legacy_params
+            ):
+                return entry
+        return None
+
+    def _matches_csv_entry_params(self, csv_entry: dict, legacy_params: dict) -> bool:
+        """Check if a CSV entry matches the legacy parameters."""
+        try:
+            # CSV format uses different field names than legacy format
+            return (
+                csv_entry.get("start_pos") == legacy_params.get(START_POS)
+                and csv_entry.get("end_pos") == legacy_params.get(END_POS)
+                and csv_entry.get("blue_motion_type")
+                == legacy_params.get(f"{BLUE}_{MOTION_TYPE}")
+                and csv_entry.get("red_motion_type")
+                == legacy_params.get(f"{RED}_{MOTION_TYPE}")
+            )
+        except Exception as e:
+            logger.debug(f"Error matching CSV entry params: {e}")
+            return False
+
+    def _convert_csv_data_to_pictograph(
+        self, letter: str, csv_entry: dict
+    ) -> PictographData | None:
+        """Convert CSV data entry to PictographData."""
+        try:
+            from desktop.modern.domain.models.arrow_data import ArrowData
+            from desktop.modern.domain.models.enums import GridPosition
+            from desktop.modern.domain.models.grid_data import GridData, GridMode
+            from desktop.modern.domain.models.motion_data import MotionData
+
+            # Extract positions
+            start_pos = GridPosition(csv_entry.get("start_pos", "alpha1"))
+            end_pos = GridPosition(csv_entry.get("end_pos", "alpha3"))
+
+            # Create motion data from CSV
+            motions = {}
+
+            # Blue motion
+            blue_motion_type_str = csv_entry.get("blue_motion_type", "pro")
+            blue_motion_type = self._convert_motion_type_string(blue_motion_type_str)
+
+            from desktop.modern.domain.models.enums import Location
+
+            blue_prop_rot_dir_str = csv_entry.get("blue_prop_rot_dir", "cw")
+            blue_prop_rot_dir = self._convert_rotation_direction_string(
+                blue_prop_rot_dir_str
+            )
+
+            blue_motion = MotionData(
+                motion_type=blue_motion_type,
+                start_loc=Location(csv_entry.get("blue_start_loc", "s")),
+                end_loc=Location(csv_entry.get("blue_end_loc", "w")),
+                prop_rot_dir=blue_prop_rot_dir,
+            )
+            motions["blue"] = blue_motion
+
+            # Red motion
+            red_motion_type_str = csv_entry.get("red_motion_type", "pro")
+            red_motion_type = self._convert_motion_type_string(red_motion_type_str)
+
+            red_prop_rot_dir_str = csv_entry.get("red_prop_rot_dir", "cw")
+            red_prop_rot_dir = self._convert_rotation_direction_string(
+                red_prop_rot_dir_str
+            )
+
+            red_motion = MotionData(
+                motion_type=red_motion_type,
+                start_loc=Location(csv_entry.get("red_start_loc", "n")),
+                end_loc=Location(csv_entry.get("red_end_loc", "e")),
+                prop_rot_dir=red_prop_rot_dir,
+            )
+            motions["red"] = red_motion
+
+            # Create arrows (simplified for now)
+            arrows = {}
+            blue_arrow = ArrowData(
+                location=blue_motion.end_loc,
+                color="blue",
+            )
+            arrows["blue"] = blue_arrow
+
+            red_arrow = ArrowData(
+                location=red_motion.end_loc,
+                color="red",
+            )
+            arrows["red"] = red_arrow
+
+            # Create grid data
+            grid_data = GridData(grid_mode=GridMode.DIAMOND)
+
+            # Determine letter type for TKA glyph rendering
+            from desktop.modern.domain.models.enums import LetterType
+            from desktop.modern.domain.models.letter_type_classifier import (
+                LetterTypeClassifier,
+            )
+
+            letter_type_str = LetterTypeClassifier.get_letter_type(letter)
+
+            # Convert string to LetterType enum (e.g., "Type1" -> LetterType.TYPE1)
+            letter_type_enum_name = letter_type_str.upper()  # "Type1" -> "TYPE1"
+            letter_type = getattr(LetterType, letter_type_enum_name, None)
+
+            # Create the pictograph data
+            pictograph_dict = {
+                "letter": letter,
+                "letter_type": letter_type,
+                "start_position": start_pos,
+                "end_position": end_pos,
+                "grid_data": grid_data.to_dict(),
+                "arrows": {k: v.to_dict() for k, v in arrows.items()},
+                "motions": {k: v.to_dict() for k, v in motions.items()},
+                "props": {},
+                "metadata": {"source": "csv_data_conversion"},
+            }
+
+            return PictographData.from_dict(pictograph_dict)
+
+        except Exception as e:
+            logger.error(f"Error converting CSV data to pictograph for {letter}: {e}")
+            import traceback
+
+            logger.error(f"Traceback: {traceback.format_exc()}")
+            return None
+
+    def _convert_motion_type_string(self, motion_type_str: str):
+        """Convert CSV motion type string to MotionType enum."""
+        from desktop.modern.domain.models.enums import MotionType
+
+        motion_type_map = {
+            "pro": MotionType.PRO,
+            "anti": MotionType.ANTI,
+            "static": MotionType.STATIC,
+            "dash": MotionType.DASH,
+            "float": MotionType.FLOAT,
+        }
+        return motion_type_map.get(motion_type_str.lower(), MotionType.STATIC)
+
+    def _convert_rotation_direction_string(self, rot_dir_str: str):
+        """Convert CSV rotation direction string to RotationDirection enum."""
+        from desktop.modern.domain.models.enums import RotationDirection
+
+        rot_dir_map = {
+            "cw": RotationDirection.CLOCKWISE,
+            "ccw": RotationDirection.COUNTER_CLOCKWISE,
+            "no_rot": RotationDirection.NO_ROTATION,
+        }
+        return rot_dir_map.get(rot_dir_str.lower(), RotationDirection.NO_ROTATION)
 
     def _matches_legacy_params(
         self, pictograph_entry: dict, legacy_params: dict

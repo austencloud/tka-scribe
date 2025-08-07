@@ -91,14 +91,24 @@ def register_learn_services(container: DIContainer) -> None:
         container.register_singleton(ILearnDataService, LearnDataService)
 
         # Codex services (singleton for state management)
+        from desktop.modern.application.services.generation.core.data_and_filtering import (
+            PictographDataManager,
+        )
         from desktop.modern.domain.services.codex import (
             CodexDataService,
             CodexOperationsService,
         )
 
-        # Register CodexDataService without pictograph data service for now
-        # It will fall back to basic data creation
-        container.register_singleton(CodexDataService, CodexDataService)
+        # Register PictographDataManager for codex data loading
+        container.register_singleton(PictographDataManager, PictographDataManager)
+
+        # Register CodexDataService with proper pictograph data service injection
+        container.register_factory(
+            CodexDataService,
+            lambda container: CodexDataService(
+                pictograph_data_service=container.resolve(PictographDataManager)
+            ),
+        )
         container.register_singleton(CodexOperationsService, CodexOperationsService)
 
         # Main learn tab (factory to inject container)

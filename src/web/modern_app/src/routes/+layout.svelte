@@ -2,30 +2,66 @@
 	import '../app.css';
 	import { onMount, setContext } from 'svelte';
 	import type { ServiceContainer } from '@tka/shared/di/core/ServiceContainer';
-	
+	import type { Snippet } from 'svelte';
+
+	console.log('🔥 Layout script is executing!');
+
+	interface Props {
+		children: Snippet;
+	}
+
+	let { children }: Props = $props();
+
 	// Application bootstrap
 	let container: ServiceContainer | null = $state(null);
 	let isInitialized = $state(false);
 	let initializationError = $state<string | null>(null);
-	
+
+	console.log('🔥 About to set context...');
+	// Set context immediately (will be null initially)
+	setContext('di-container', () => container);
+	console.log('🔥 Context set!');
+
+	console.log('🔥 About to register onMount...');
 	onMount(async () => {
+		console.log('🔥🔥🔥 ONMOUNT IS RUNNING! 🔥🔥🔥');
 		try {
+			console.log('🔥 Layout onMount started - WITH VITE-PLUGIN-TERMINAL!');
+
+			console.log('🔄 About to start DI container initialization...');
+
+		try {
+			console.log('🚀 Starting DI container initialization...');
+
 			// Import bootstrap function
+			console.log('📦 Importing bootstrap module...');
 			const { createWebApplication } = await import('$services/bootstrap');
-			
+			console.log('✅ Bootstrap module imported successfully');
+
 			// Create DI container
+			console.log('🏗️ Creating DI container...');
 			container = await createWebApplication();
-			
-			// Provide container to children
-			setContext('di-container', container);
-			
+			console.log('✅ DI container created successfully');
+
 			// Mark as initialized
 			isInitialized = true;
+			console.log('✅ DI container initialized successfully');
 		} catch (error) {
+			console.error('❌ Error during initialization:', error);
+			console.error('❌ Error type:', typeof error);
+			console.error('❌ Error constructor:', error?.constructor?.name);
+			console.error('❌ Error message:', error instanceof Error ? error.message : String(error));
+			console.error('❌ Error stack:', error instanceof Error ? error.stack : 'No stack trace');
+
 			initializationError = error instanceof Error ? error.message : 'Unknown error';
-			console.error('Failed to initialize application:', error);
+			console.error('❌ Failed to initialize application:', error);
 		}
-	});
+	} catch (outerError) {
+		console.error('🚨 CRITICAL: onMount itself failed:', outerError);
+		initializationError = 'Critical initialization failure';
+	}
+});
+console.log('🔥 onMount registered successfully!');
 </script>
 
 <svelte:head>
@@ -43,9 +79,9 @@
 		<div class="spinner"></div>
 		<p>Initializing TKA...</p>
 	</div>
-{:else if container}
-	<!-- Container is provided via context, slot renders with access -->
-	<slot />
+{:else}
+	<!-- Container is provided via context, children renders with access -->
+	{@render children()}
 {/if}
 
 <style>

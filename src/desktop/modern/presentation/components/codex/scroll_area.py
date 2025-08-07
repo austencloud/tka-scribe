@@ -57,31 +57,22 @@ class CodexScrollArea(QScrollArea):
         # Apply styling - solid background to block animated backgrounds
         self.setStyleSheet("""
             CodexScrollArea {
-                background-color: #ffffff;
                 border: none;
             }
 
             CodexScrollArea QScrollBar:vertical {
-                background-color: #f0f0f0;
                 width: 12px;
                 border-radius: 6px;
                 margin: 0px;
             }
 
             CodexScrollArea QScrollBar::handle:vertical {
-                background-color: #c0c0c0;
                 border-radius: 6px;
                 min-height: 20px;
                 margin: 2px;
             }
 
-            CodexScrollArea QScrollBar::handle:vertical:hover {
-                background-color: #a0a0a0;
-            }
 
-            CodexScrollArea QScrollBar::handle:vertical:pressed {
-                background-color: #808080;
-            }
 
             CodexScrollArea QScrollBar::add-line:vertical,
             CodexScrollArea QScrollBar::sub-line:vertical {
@@ -90,9 +81,7 @@ class CodexScrollArea(QScrollArea):
             }
 
             CodexScrollArea QScrollBar::add-page:vertical,
-            CodexScrollArea QScrollBar::sub-page:vertical {
-                background: transparent;
-            }
+
         """)
 
         # Set frame style

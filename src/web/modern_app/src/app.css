@@ -184,7 +184,11 @@ body {
 }
 
 .btn-glass {
-	@apply glass-surface;
+	background: var(--surface-color);
+	backdrop-filter: var(--glass-backdrop);
+	border: var(--glass-border);
+	border-radius: 12px;
+	box-shadow: var(--shadow-glass);
 	color: var(--foreground);
 }
 

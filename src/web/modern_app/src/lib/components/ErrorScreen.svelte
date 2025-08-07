@@ -5,11 +5,15 @@
  */
 
 <script lang="ts">
-	export let error: string;
-	export let onRetry: () => void;
+	interface Props {
+		error: string;
+		onRetry: () => void;
+	}
+
+	let { error, onRetry }: Props = $props();
 
 	// Extract error details if possible
-	$: errorDetails = $derived(() => {
+	const errorDetails = $derived(() => {
 		try {
 			// Try to parse if it's a JSON error
 			const parsed = JSON.parse(error);
@@ -20,9 +24,9 @@
 		}
 	});
 
-	$: displayMessage = $derived(() => {
-		if (typeof errorDetails === 'object' && errorDetails.message) {
-			return errorDetails.message;
+	const displayMessage = $derived(() => {
+		if (typeof errorDetails === 'object' && errorDetails && 'message' in errorDetails) {
+			return errorDetails.message as string;
 		}
 		return error;
 	});

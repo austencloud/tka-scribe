@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 import json
-from typing import Any, Optional
+from typing import Any
 import uuid
 
 from desktop.modern.domain.models.arrow_data import ArrowData
@@ -48,10 +48,10 @@ class PictographData:
 
     # Letter determination fields
     beat: int = 0
-    timing: Optional[Timing] = None  # Timing.SPLIT or Timing.TOG
-    direction: Optional[Direction] = None  # Direction.SAME or Direction.OPP
+    timing: Timing | None = None  # Timing.SPLIT or Timing.TOG
+    direction: Direction | None = None  # Direction.SAME or Direction.OPP
     duration: int | None = None
-    letter_type: Optional[LetterType] = None
+    letter_type: LetterType | None = None
 
     # Visual state
     is_blank: bool = False
@@ -156,8 +156,11 @@ class PictographData:
             "props": {k: v.to_dict() for k, v in self.props.items()},
             "motions": {k: v.to_dict() for k, v in self.motions.items()},
             "letter": self.letter,
-            "start_position": self.start_position,
-            "end_position": self.end_position,
+            "letter_type": self.letter_type.value if self.letter_type else None,
+            "start_position": self.start_position.value
+            if self.start_position
+            else None,
+            "end_position": self.end_position.value if self.end_position else None,
             "is_blank": self.is_blank,
             "is_mirrored": self.is_mirrored,
             "metadata": self.metadata,
@@ -180,6 +183,38 @@ class PictographData:
         for color, motion_data in data.get("motions", {}).items():
             motions[color] = MotionData.from_dict(motion_data)
 
+        # Convert position strings back to enum objects
+        start_position = None
+        if data.get("start_position"):
+            try:
+                start_position = GridPosition(data["start_position"])
+            except ValueError:
+                # If conversion fails, keep as None
+                pass
+
+        end_position = None
+        if data.get("end_position"):
+            try:
+                end_position = GridPosition(data["end_position"])
+            except ValueError:
+                # If conversion fails, keep as None
+                pass
+
+        # Handle letter_type conversion
+        letter_type = data.get("letter_type")
+        if letter_type and hasattr(letter_type, "value"):
+            # Already a LetterType enum
+            pass
+        elif letter_type:
+            # Try to convert string to LetterType enum
+            try:
+                from .enums import LetterType
+
+                if isinstance(letter_type, str):
+                    letter_type = getattr(LetterType, letter_type.upper(), None)
+            except (AttributeError, ImportError):
+                letter_type = None
+
         return cls(
             id=data.get("id", str(uuid.uuid4())),
             grid_data=grid_data,
@@ -187,8 +222,9 @@ class PictographData:
             props=props,
             motions=motions,
             letter=data.get("letter"),
-            start_position=data.get("start_position"),
-            end_position=data.get("end_position"),
+            letter_type=letter_type,
+            start_position=start_position,
+            end_position=end_position,
             is_blank=data.get("is_blank", False),
             is_mirrored=data.get("is_mirrored", False),
             metadata=data.get("metadata", {}),

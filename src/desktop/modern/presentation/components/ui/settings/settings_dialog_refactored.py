@@ -177,10 +177,26 @@ class SettingsDialog(QDialog):
         self.coordinator.settings_changed.connect(self.settings_changed.emit)
 
     def _setup_dialog(self):
-        """Setup basic dialog properties."""
+        """Setup basic dialog properties with responsive sizing."""
         self.setWindowTitle("Settings")
         self.setModal(True)
-        self.setFixedSize(1200, 800)
+
+        # Get screen geometry for responsive sizing
+        screen = self.screen()
+        if screen:
+            screen_geometry = screen.availableGeometry()
+            # Use 70% of screen width and 60% of screen height for better fit
+            dialog_width = int(screen_geometry.width() * 0.70)
+            dialog_height = int(screen_geometry.height() * 0.60)
+
+            # Set reasonable min/max bounds
+            dialog_width = max(900, min(dialog_width, 1600))  # Min 900px, max 1600px
+            dialog_height = max(600, min(dialog_height, 1000))  # Min 600px, max 1000px
+        else:
+            # Fallback if screen detection fails
+            dialog_width, dialog_height = 1200, 800
+
+        self.setFixedSize(dialog_width, dialog_height)
         self.setWindowFlags(Qt.WindowType.Dialog | Qt.WindowType.FramelessWindowHint)
         self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
 
@@ -195,8 +211,10 @@ class SettingsDialog(QDialog):
         main_layout.addWidget(self.container)
 
         container_layout = QVBoxLayout(self.container)
-        container_layout.setContentsMargins(25, 25, 25, 25)
-        container_layout.setSpacing(20)
+        container_layout.setContentsMargins(
+            16, 16, 16, 16
+        )  # Reduced margins for better content fit
+        container_layout.setSpacing(12)  # Tighter spacing to fit content better
 
         # Create header
         self.header = SettingsHeader("Settings")
@@ -212,7 +230,7 @@ class SettingsDialog(QDialog):
     def _create_content_area(self, parent_layout):
         """Create the content area with sidebar navigation and content."""
         content_layout = QHBoxLayout()
-        content_layout.setSpacing(20)
+        content_layout.setSpacing(16)  # Reduced spacing for better content fit
 
         # Create sidebar
         self.sidebar = SettingsSidebar(self.tab_order)

@@ -23,9 +23,10 @@ class SettingsSidebar(QListWidget):
         self._populate_items()
 
     def _setup_ui(self):
-        """Setup the sidebar UI properties."""
+        """Setup the sidebar UI properties with responsive width."""
         self.setObjectName("settings_sidebar")
-        self.setFixedWidth(240)
+        # Reduced width for better responsive fit
+        self.setFixedWidth(220)
         self.setSpacing(6)
         self.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.setIconSize(QSize(24, 24))
@@ -36,9 +37,11 @@ class SettingsSidebar(QListWidget):
         self.currentRowChanged.connect(self._on_selection_changed)
 
     def _populate_items(self):
-        """Populate the sidebar with tab items."""
+        """Populate the sidebar with tab items using accessibility-compliant sizing."""
         for tab_name in self.tab_names:
             item = QListWidgetItem(tab_name)
+            # Set 48px height for better touch targets (WCAG compliant)
+            item.setSizeHint(QSize(0, 48))
             self.addItem(item)
 
         # Select first tab by default

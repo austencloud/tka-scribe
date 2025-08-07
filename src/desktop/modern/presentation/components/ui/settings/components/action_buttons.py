@@ -23,27 +23,31 @@ class SettingsActionButtons(QFrame):
         self._setup_ui()
 
     def _setup_ui(self):
-        """Setup the action buttons UI."""
+        """Setup the action buttons UI with improved spacing."""
         layout = QHBoxLayout(self)
-        layout.setContentsMargins(15, 15, 15, 15)
+        layout.setContentsMargins(20, 18, 20, 18)  # Increased for better accessibility
+        layout.setSpacing(12)  # Better spacing between buttons
         layout.addStretch()
 
-        # Reset button
+        # Reset button with accessibility-compliant sizing
         self.reset_button = QPushButton("Reset to Defaults")
         self.reset_button.setObjectName("secondary_button")
         self.reset_button.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.reset_button.setMinimumSize(140, 44)  # WCAG compliant touch target
         self.reset_button.clicked.connect(self.reset_requested.emit)
 
-        # Apply button
+        # Apply button with accessibility-compliant sizing
         self.apply_button = QPushButton("Apply")
         self.apply_button.setObjectName("secondary_button")
         self.apply_button.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.apply_button.setMinimumSize(100, 44)  # WCAG compliant touch target
         self.apply_button.clicked.connect(self.apply_requested.emit)
 
-        # OK button (primary)
+        # OK button (primary) with accessibility-compliant sizing
         self.ok_button = QPushButton("OK")
         self.ok_button.setObjectName("primary_button")
         self.ok_button.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.ok_button.setMinimumSize(80, 44)  # WCAG compliant touch target
         self.ok_button.clicked.connect(self.ok_requested.emit)
 
         layout.addWidget(self.reset_button)

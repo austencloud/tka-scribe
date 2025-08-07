@@ -5,11 +5,15 @@
  */
 
 <script lang="ts">
-	export let progress: number = 0;
-	export let message: string = 'Loading...';
+	interface Props {
+		progress?: number;
+		message?: string;
+	}
+
+	let { progress = 0, message = 'Loading...' }: Props = $props();
 
 	// Ensure progress is within bounds
-	$: clampedProgress = Math.max(0, Math.min(100, progress));
+	const clampedProgress = $derived(Math.max(0, Math.min(100, progress)));
 </script>
 
 <div class="loading-screen">

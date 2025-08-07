@@ -5,7 +5,7 @@ Ported from legacy settings dialog with improvements and optimized spacing.
 
 from __future__ import annotations
 
-from typing import Any, Optional
+from typing import Any
 
 from PyQt6.QtCore import pyqtSignal
 from PyQt6.QtGui import QFont
@@ -20,8 +20,8 @@ class SettingCard(QFrame):
     def __init__(
         self,
         title: str,
-        description: Optional[str] = None,
-        setting_key: Optional[str] = None,
+        description: str | None = None,
+        setting_key: str | None = None,
         parent=None,
     ):
         super().__init__(parent)
@@ -33,15 +33,15 @@ class SettingCard(QFrame):
         self._apply_styling()
 
     def _setup_ui(self):
-        """Set up the card UI structure with optimized spacing."""
+        """Set up the card UI structure with improved accessibility spacing."""
         self.setObjectName("setting_card")
         layout = QVBoxLayout(self)
-        layout.setContentsMargins(16, 12, 16, 12)  # Reduced from 20, 16
-        layout.setSpacing(6)  # Reduced from 8
+        layout.setContentsMargins(20, 16, 20, 16)  # Increased for better accessibility
+        layout.setSpacing(8)  # Increased for better readability
 
         # Header with title and optional description
         header_layout = QVBoxLayout()
-        header_layout.setSpacing(3)  # Reduced from 4
+        header_layout.setSpacing(4)  # Improved spacing for readability
 
         # Title
         self.title_label = QLabel(self.title)
@@ -61,7 +61,7 @@ class SettingCard(QFrame):
 
         # Content area for controls (to be added by subclasses)
         self.content_layout = QHBoxLayout()
-        self.content_layout.setContentsMargins(0, 6, 0, 0)  # Reduced from 8
+        self.content_layout.setContentsMargins(0, 8, 0, 0)  # Improved spacing
         layout.addLayout(self.content_layout)
 
         # Add stretch to push controls to the right if needed
@@ -134,8 +134,8 @@ class ToggleCard(SettingCard):
     def __init__(
         self,
         title: str,
-        description: Optional[str] = None,
-        setting_key: Optional[str] = None,
+        description: str | None = None,
+        setting_key: str | None = None,
         initial_value: bool = False,
         parent=None,
     ):
@@ -145,9 +145,10 @@ class ToggleCard(SettingCard):
 
     def _create_toggle(self):
         """Create and add the toggle control."""
-        from .enhanced_toggle import EnhancedToggle
+        from .toggle import Toggle
 
-        self.toggle = EnhancedToggle(self.current_value)
+        self.toggle = Toggle()
+        self.toggle.setChecked(self.current_value)
         self.toggle.toggled.connect(self._on_toggle_changed)
         self.add_control(self.toggle)
 
@@ -168,9 +169,9 @@ class ComboCard(SettingCard):
     def __init__(
         self,
         title: str,
-        description: Optional[str] = None,
-        setting_key: Optional[str] = None,
-        options: Optional[list[str]] = None,
+        description: str | None = None,
+        setting_key: str | None = None,
+        options: list[str] | None = None,
         initial_value: str = "",
         parent=None,
     ):
@@ -181,10 +182,9 @@ class ComboCard(SettingCard):
 
     def _create_combo(self):
         """Create and add the combo box control."""
-        from .enhanced_combo_box import EnhancedComboBox
+        from .combo_box import ComboBox
 
-        self.combo = EnhancedComboBox()
-        self.combo.addItems(self.options)
+        self.combo = ComboBox(self.options)
         if self.current_value in self.options:
             self.combo.setCurrentText(self.current_value)
 

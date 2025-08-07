@@ -6,19 +6,23 @@
 
 <script lang="ts">
 	import type { ISettingsService, AppSettings } from '$services/interfaces';
-	import { updateSettings, settings } from '$stores/appState.svelte';
+	import { updateSettings, getSettings } from '$stores/appState.svelte';
 
-	export let settingsService: ISettingsService;
-	export let onClose: () => void;
+	interface Props {
+		settingsService: ISettingsService;
+		onClose: () => void;
+	}
+
+	let { settingsService, onClose }: Props = $props();
 
 	// Local state for form
-	let localSettings = $state<AppSettings>({ ...settings });
+	let localSettings = $state<AppSettings>({ ...getSettings() });
 	let isSaving = $state(false);
 	let saveError = $state<string | null>(null);
 
 	// Reset local settings when dialog opens
 	$effect(() => {
-		localSettings = { ...settings };
+		localSettings = { ...getSettings() };
 	});
 
 	// Handle form submission
@@ -29,7 +33,7 @@
 		try {
 			// Update each changed setting
 			const changes = Object.entries(localSettings).filter(
-				([key, value]) => settings[key as keyof AppSettings] !== value
+				([key, value]) => getSettings()[key as keyof AppSettings] !== value
 			);
 
 			for (const [key, value] of changes) {
@@ -51,7 +55,7 @@
 
 	// Handle cancel
 	function handleCancel() {
-		localSettings = { ...settings }; // Reset changes
+		localSettings = { ...getSettings() }; // Reset changes
 		onClose();
 	}
 
@@ -72,11 +76,19 @@
 
 <svelte:window on:keydown={handleKeydown} />
 
-<div class="settings-backdrop" onclick={handleBackdropClick}>
+<div
+	class="settings-backdrop"
+	onclick={handleBackdropClick}
+	onkeydown={(e) => e.key === 'Escape' && handleCancel()}
+	role="dialog"
+	aria-modal="true"
+	aria-labelledby="settings-title"
+	tabindex="-1"
+>
 	<div class="settings-dialog glass-surface">
 		<header class="dialog-header">
-			<h2>Settings</h2>
-			<button class="close-button" onclick={handleCancel}>
+			<h2 id="settings-title">Settings</h2>
+			<button class="close-button" onclick={handleCancel} aria-label="Close Settings">
 				<svg width="24" height="24" viewBox="0 0 24 24" fill="none">
 					<path d="m18 6-12 12" stroke="currentColor" stroke-width="2"/>
 					<path d="m6 6 12 12" stroke="currentColor" stroke-width="2"/>

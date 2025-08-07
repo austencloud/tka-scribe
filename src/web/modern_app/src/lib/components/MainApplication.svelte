@@ -8,10 +8,10 @@
 <script lang="ts">
 	import { onMount, getContext } from 'svelte';
 	import type { ServiceContainer } from '@tka/shared/di/core/ServiceContainer';
-	import type { 
+	import {
 		IApplicationInitializationService,
 		ISettingsService,
-		ISequenceService 
+		ISequenceService
 	} from '$services/interfaces';
 
 	// Import runes-based state
@@ -40,20 +40,21 @@
 	import SettingsDialog from './SettingsDialog.svelte';
 
 	// Get DI container from context
-	const container = getContext<ServiceContainer>('di-container');
+	const getContainer = getContext<() => ServiceContainer | null>('di-container');
 
 	// Services - resolved lazily
-	let initService: IApplicationInitializationService | null = null;
-	let settingsService: ISettingsService | null = null;
-	let sequenceService: ISequenceService | null = null;
+	let initService: IApplicationInitializationService | null = $state(null);
+	let settingsService: ISettingsService | null = $state(null);
+	let sequenceService: ISequenceService | null = $state(null);
 
 	// Resolve services when container is available
 	$effect(() => {
+		const container = getContainer?.();
 		if (container && !initService) {
 			try {
-				initService = container.resolve({ name: 'IApplicationInitializationService' } as any);
-				settingsService = container.resolve({ name: 'ISettingsService' } as any);
-				sequenceService = container.resolve({ name: 'ISequenceService' } as any);
+				initService = container.resolve(IApplicationInitializationService);
+				settingsService = container.resolve(ISettingsService);
+				sequenceService = container.resolve(ISequenceService);
 				console.log('✅ Services resolved successfully');
 			} catch (error) {
 				console.error('Failed to resolve services:', error);
@@ -64,6 +65,7 @@
 
 	// Initialize application
 	onMount(async () => {
+		const container = getContainer?.();
 		if (!container) {
 			setInitializationError('No DI container available');
 			return;
@@ -152,10 +154,10 @@
 </script>
 
 <!-- Provide DI container to children -->
-<div class="tka-app" data-theme={getActiveTab()}>
+<div class="tka-app" data-theme={getActiveTab()} data-testid="main-application">
 	{#if getInitializationError()}
 		<ErrorScreen
-			error={getInitializationError()}
+			error={getInitializationError() || 'Unknown error'}
 			onRetry={() => window.location.reload()}
 		/>
 	{:else if !getIsInitialized()}

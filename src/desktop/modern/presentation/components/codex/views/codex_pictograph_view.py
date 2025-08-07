@@ -93,7 +93,7 @@ class CodexPictographView(BasePictographView):
     def _apply_view_specific_scaling(self):
         """Apply codex-specific scaling using base class methods."""
         # Calculate target size with margin for codex display
-        margin_factor = 0.85  # Leave 15% margin
+        margin_factor = 1  # Leave 15% margin
         target_size = int(self._codex_size * margin_factor)
 
         # Use base class legacy scaling method for proper centering
@@ -112,7 +112,7 @@ class CodexPictographView(BasePictographView):
         """
         # Calculate size based on container width and grid layout
         # Leave space for margins and spacing
-        available_width = container_width - 40  # Account for margins
+        available_width = container_width  # Account for margins
         spacing = 10 * (grid_columns - 1)  # Space between items
 
         size = (available_width - spacing) // grid_columns

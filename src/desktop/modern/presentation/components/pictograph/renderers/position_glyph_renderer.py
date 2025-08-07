@@ -8,7 +8,6 @@ with an arrow between them (e.g., α → β).
 from __future__ import annotations
 
 import os
-from typing import Optional
 
 from PyQt6.QtSvg import QSvgRenderer
 from PyQt6.QtSvgWidgets import QGraphicsSvgItem
@@ -36,9 +35,9 @@ class PositionGlyphRenderer:
 
     def render_position_glyph(
         self,
-        start_position: Optional[str] = None,
-        end_position: Optional[str] = None,
-        letter: Optional[str] = None,
+        start_position: str | None = None,
+        end_position: str | None = None,
+        letter: str | None = None,
     ) -> None:
         """
         Render the start-to-end position glyph.
@@ -56,8 +55,18 @@ class PositionGlyphRenderer:
             return
 
         # Extract alphabetic parts from positions
-        start_pos = "".join(filter(str.isalpha, start_position))
-        end_pos = "".join(filter(str.isalpha, end_position))
+        # Handle both string and enum types
+        start_position_str = (
+            start_position.value
+            if hasattr(start_position, "value")
+            else str(start_position)
+        )
+        end_position_str = (
+            end_position.value if hasattr(end_position, "value") else str(end_position)
+        )
+
+        start_pos = "".join(filter(str.isalpha, start_position_str))
+        end_pos = "".join(filter(str.isalpha, end_position_str))
 
         # Create a group to hold all position components
         position_group = QGraphicsItemGroup()
@@ -85,7 +94,7 @@ class PositionGlyphRenderer:
         self._position_position_glyph(position_group)
         self.scene.addItem(position_group)
 
-    def _render_position_symbol(self, position: str) -> Optional[QGraphicsSvgItem]:
+    def _render_position_symbol(self, position: str) -> QGraphicsSvgItem | None:
         """Render a position symbol (α, β, Γ)."""
         svg_filename = self.POSITION_SVGS.get(position.lower())
         if not svg_filename:
@@ -110,7 +119,7 @@ class PositionGlyphRenderer:
         print(f"Warning: Failed to load position symbol: {svg_path}")
         return None
 
-    def _render_arrow(self) -> Optional[QGraphicsSvgItem]:
+    def _render_arrow(self) -> QGraphicsSvgItem | None:
         """Render the arrow between positions."""
         svg_path = get_image_path("arrow.svg")
 

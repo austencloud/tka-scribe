@@ -104,28 +104,34 @@ class PropTypeTab(QWidget):
         self._setup_connections()
 
     def _setup_ui(self):
+        """Setup UI with tighter spacing for better content fit."""
         main_layout = QVBoxLayout(self)
-        main_layout.setContentsMargins(30, 30, 30, 30)
-        main_layout.setSpacing(25)
+        main_layout.setContentsMargins(16, 16, 16, 16)  # Reduced for better fit
+        main_layout.setSpacing(12)  # Tighter spacing
 
-        # Title
+        # Title with enhanced styling
         title = QLabel("Prop Type")
         title.setObjectName("section_title")
-        title.setFont(QFont("Inter", 18, QFont.Weight.Bold))
+        title.setFont(QFont("Inter", 20, QFont.Weight.Bold))  # Larger title
         main_layout.addWidget(title)
 
-        # Description
-        description = QLabel("Select the prop type for your sequences")
+        # Description with better styling
+        description = QLabel(
+            "Select the prop type for your sequences. This affects the visual appearance and behavior of props in your sequences."
+        )
         description.setObjectName("description")
         description.setWordWrap(True)
+        description.setFont(QFont("Inter", 12, QFont.Weight.Normal))
         main_layout.addWidget(description)
 
-        # Props container with glassmorphism styling
+        # Props container with enhanced glassmorphism styling
         props_container = QWidget()
         props_container.setObjectName("props_container")
         container_layout = QVBoxLayout(props_container)
-        container_layout.setContentsMargins(12, 12, 12, 12)
-        container_layout.setSpacing(8)
+        container_layout.setContentsMargins(
+            12, 12, 12, 12
+        )  # Reduced padding for better fit
+        container_layout.setSpacing(8)  # Tighter spacing
 
         # Create grid layout for prop buttons
         grid_layout = QGridLayout()
@@ -149,28 +155,34 @@ class PropTypeTab(QWidget):
             "Ukulele": "images/props/ukulele.svg",
         }
 
-        # Create prop buttons in a 4-column grid for better layout
+        # Create prop buttons in a 4-column grid with cell containers like legacy
         row, col = 0, 0
         for prop, icon_path in props.items():
-            # Create prop button
+            # Create prop button with enhanced styling
             button = PropButton(prop, icon_path, self)
             button.clicked.connect(
                 lambda checked, p=prop: self._set_current_prop_type(p)
             )
             self.buttons[prop] = button
 
-            # Create label
+            # Create label with legacy-style font
             label = QLabel(prop)
             label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-            label.setFont(QFont("Inter", 10, QFont.Weight.Medium))
-            label.setStyleSheet("color: rgba(255, 255, 255, 0.8);")
+            label.setFont(QFont("Inter", 11, QFont.Weight.Medium))
+            label.setStyleSheet("color: rgba(255, 255, 255, 0.85);")
 
-            # Add to grid
-            grid_layout.addWidget(button, row * 2, col)
-            grid_layout.addWidget(label, row * 2 + 1, col)
+            # Create cell container like legacy for better organization
+            cell_widget = QWidget()
+            cell_layout = QVBoxLayout(cell_widget)
+            cell_layout.setContentsMargins(6, 6, 6, 6)  # Better padding
+            cell_layout.setSpacing(4)  # Spacing between button and label
+            cell_layout.addWidget(button, alignment=Qt.AlignmentFlag.AlignCenter)
+            cell_layout.addWidget(label, alignment=Qt.AlignmentFlag.AlignCenter)
+
+            grid_layout.addWidget(cell_widget, row, col)
 
             col += 1
-            if col >= 4:  # 4 columns
+            if col >= 4:  # 4 columns for better layout
                 col = 0
                 row += 1
 
@@ -203,11 +215,12 @@ class PropTypeTab(QWidget):
 
             QWidget#props_container {
                 background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                    stop:0 rgba(255, 255, 255, 0.08),
-                    stop:1 rgba(255, 255, 255, 0.04));
-                border: 1px solid rgba(255, 255, 255, 0.15);
-                border-radius: 16px;
-                padding: 8px;
+                    stop:0 rgba(255, 255, 255, 0.18),
+                    stop:1 rgba(255, 255, 255, 0.12));
+                border: 1px solid rgba(255, 255, 255, 0.30);
+                border-radius: 18px;
+                padding: 12px;
+                margin: 8px;
             }
         """
         )

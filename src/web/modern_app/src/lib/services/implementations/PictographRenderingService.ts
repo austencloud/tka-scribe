@@ -11,14 +11,14 @@ import type {
 	PictographData,
 	IArrowPositioningService,
 	IPropRenderingService,
-	ArrowPosition,
-	GridData
+	ArrowPosition
 } from '../interfaces';
+import { createGridData, type GridData } from '../../data/gridCoordinates.js';
 
 export class PictographRenderingService implements IPictographRenderingService {
-	private readonly SVG_SIZE = 300;
-	private readonly CENTER_X = 150;
-	private readonly CENTER_Y = 150;
+	private readonly SVG_SIZE = 950;
+	private readonly CENTER_X = 475;
+	private readonly CENTER_Y = 475;
 
 	constructor(
 		private arrowPositioning: IArrowPositioningService,
@@ -99,40 +99,10 @@ export class PictographRenderingService implements IPictographRenderingService {
 	}
 
 	/**
-	 * Create default grid data for positioning calculations
+	 * Create grid data for positioning calculations using real coordinate data
 	 */
-	private createDefaultGridData(): GridData {
-		// Create comprehensive grid coordinates that match desktop system
-		const center = { x: this.CENTER_X, y: this.CENTER_Y };
-		const size = 80;
-		
-		return {
-			mode: 'diamond',
-			allLayer2PointsNormal: {
-				// Layer 2 points (shift positions) for diamond grid
-				'n_diamond_layer2_point': { coordinates: { x: center.x, y: center.y - size } },
-				'ne_diamond_layer2_point': { coordinates: { x: center.x + size * 0.707, y: center.y - size * 0.707 } },
-				'e_diamond_layer2_point': { coordinates: { x: center.x + size, y: center.y } },
-				'se_diamond_layer2_point': { coordinates: { x: center.x + size * 0.707, y: center.y + size * 0.707 } },
-				's_diamond_layer2_point': { coordinates: { x: center.x, y: center.y + size } },
-				'sw_diamond_layer2_point': { coordinates: { x: center.x - size * 0.707, y: center.y + size * 0.707 } },
-				'w_diamond_layer2_point': { coordinates: { x: center.x - size, y: center.y } },
-				'nw_diamond_layer2_point': { coordinates: { x: center.x - size * 0.707, y: center.y - size * 0.707 } },
-				'center_diamond_layer2_point': { coordinates: { x: center.x, y: center.y } },
-			},
-			allHandPointsNormal: {
-				// Hand points (static/dash positions) for diamond grid
-				'n_diamond_hand_point': { coordinates: { x: center.x, y: center.y - size * 0.6 } },
-				'ne_diamond_hand_point': { coordinates: { x: center.x + size * 0.424, y: center.y - size * 0.424 } },
-				'e_diamond_hand_point': { coordinates: { x: center.x + size * 0.6, y: center.y } },
-				'se_diamond_hand_point': { coordinates: { x: center.x + size * 0.424, y: center.y + size * 0.424 } },
-				's_diamond_hand_point': { coordinates: { x: center.x, y: center.y + size * 0.6 } },
-				'sw_diamond_hand_point': { coordinates: { x: center.x - size * 0.424, y: center.y + size * 0.424 } },
-				'w_diamond_hand_point': { coordinates: { x: center.x - size * 0.6, y: center.y } },
-				'nw_diamond_hand_point': { coordinates: { x: center.x - size * 0.424, y: center.y - size * 0.424 } },
-				'center_diamond_hand_point': { coordinates: { x: center.x, y: center.y } },
-			}
-		};
+	private createDefaultGridData(mode: 'diamond' | 'box' = 'diamond'): GridData {
+		return createGridData(mode);
 	}
 	
 	/**

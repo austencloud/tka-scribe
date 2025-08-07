@@ -8,7 +8,6 @@ TKA clean architecture principles. Reduced from 631 lines to focused coordinatio
 from __future__ import annotations
 
 import logging
-from typing import Optional
 
 from PyQt6.QtCore import QTimer, pyqtSignal
 from PyQt6.QtGui import QFont
@@ -69,10 +68,10 @@ class VisibilityTab(QWidget):
         self.simple_visibility_service = get_visibility_service()
 
         # Component sections
-        self.motion_section: Optional[MotionControlsSection] = None
-        self.element_section: Optional[ElementVisibilitySection] = None
-        self.preview_section: Optional[VisibilityPreviewSection] = None
-        self.dependency_warning: Optional[DependencyWarning] = None
+        self.motion_section: MotionControlsSection | None = None
+        self.element_section: ElementVisibilitySection | None = None
+        self.preview_section: VisibilityPreviewSection | None = None
+        self.dependency_warning: DependencyWarning | None = None
 
         # Update timer for batching rapid changes
         self._update_timer = QTimer()
@@ -84,18 +83,24 @@ class VisibilityTab(QWidget):
         self._load_initial_settings()
 
     def _setup_ui(self):
+        """Setup the visibility tab UI with enhanced spacing and styling."""
         main_layout = QVBoxLayout(self)
-        main_layout.setContentsMargins(0, 0, 0, 0)
-        main_layout.setSpacing(0)
+        main_layout.setContentsMargins(24, 24, 24, 24)  # Match legacy spacing
+        main_layout.setSpacing(20)  # Better spacing
 
         title = QLabel("Visibility Settings")
         title.setObjectName("section_title")
-        title.setFont(QFont("Arial", 14, QFont.Weight.Bold))
+        title.setFont(QFont("Inter", 20, QFont.Weight.Bold))  # Enhanced title
         main_layout.addWidget(title)
 
-        description = QLabel("Control which elements are visible in pictographs")
+        description = QLabel(
+            "Control which elements are visible in pictographs and sequences. These settings affect the visual appearance of your exported content."
+        )
         description.setObjectName("description")
-        description.setFont(QFont("Arial", 10))
+        description.setFont(
+            QFont("Inter", 12, QFont.Weight.Normal)
+        )  # Better description
+        description.setWordWrap(True)
         main_layout.addWidget(description)
 
         # Fixed 50/50 horizontal layout

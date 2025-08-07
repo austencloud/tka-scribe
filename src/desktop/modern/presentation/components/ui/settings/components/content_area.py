@@ -14,7 +14,8 @@ class SettingsContentArea(QStackedWidget):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.setMinimumWidth(500)
+        # Reduced minimum width for better responsive fit
+        self.setMinimumWidth(400)
         self.tabs: dict[str, QWidget] = {}
         self.tab_order: list = []
 

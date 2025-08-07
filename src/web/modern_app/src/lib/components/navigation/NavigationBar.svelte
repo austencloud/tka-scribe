@@ -2,9 +2,13 @@
 <script lang="ts">
 	import { showSettingsDialog } from '$stores/appState.svelte';
 
-	export let tabs: readonly { id: string; label: string; icon: string }[];
-	export let activeTab: string;
-	export let onTabSelect: (tab: any) => void;
+	interface Props {
+		tabs: readonly { id: string; label: string; icon: string }[];
+		activeTab: string;
+		onTabSelect: (tab: any) => void;
+	}
+
+	let { tabs, activeTab, onTabSelect }: Props = $props();
 
 	// Handle tab click
 	function handleTabClick(tab: { id: string; label: string; icon: string }) {
@@ -32,7 +36,7 @@
 	</div>
 
 	<div class="nav-actions">
-		<button class="nav-action" onclick={showSettingsDialog} title="Settings (Ctrl+,)">
+		<button class="nav-action" onclick={showSettingsDialog} title="Settings (Ctrl+,)" aria-label="Open Settings">
 			<svg width="20" height="20" viewBox="0 0 24 24" fill="none">
 				<circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/>
 				<path d="m12 1 2.09.87.87 2.09-2.09.87-.87-2.09L12 1zM12 23l-2.09-.87-.87-2.09 2.09-.87.87 2.09L12 23zM1 12l.87-2.09L3.96 9l.87 2.09L5.7 12l-.87 2.09L3.96 15l-.87-2.09L1 12zM23 12l-.87 2.09L20.04 15l-.87-2.09L18.3 12l.87-2.09L20.04 9l.87 2.09L23 12z" stroke="currentColor" stroke-width="2"/>

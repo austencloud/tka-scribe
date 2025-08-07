@@ -7,8 +7,11 @@
 
 <script lang="ts">
 	// Import runes-based state
-	import { activeTab, isTabActive, switchTab } from '$stores/appState.svelte';
-	
+	import { getActiveTab, isTabActive, switchTab } from '$stores/appState.svelte';
+
+	// Reactive state for template
+	let activeTab = $derived(getActiveTab());
+
 	// Import tab components (will be created)
 	import ConstructTab from './tabs/ConstructTab.svelte';
 	import GenerateTab from './tabs/GenerateTab.svelte';

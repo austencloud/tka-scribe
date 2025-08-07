@@ -279,6 +279,43 @@ export interface IExportService {
 }
 
 // ============================================================================
+// CONSTRUCT TAB SERVICES
+// ============================================================================
+
+export interface IConstructTabCoordinationService {
+	setupComponentCoordination(components: Record<string, any>): void;
+	handleSequenceModified(sequence: SequenceData): Promise<void>;
+	handleStartPositionSet(startPosition: BeatData): Promise<void>;
+	handleBeatAdded(beatData: BeatData): Promise<void>;
+	handleGenerationRequest(config: any): Promise<void>;
+	handleUITransitionRequest(targetPanel: string): Promise<void>;
+}
+
+export interface IOptionDataService {
+	getNextOptions(currentSequence: SequenceData, filters?: OptionFilters): Promise<PictographData[]>;
+	filterOptionsByDifficulty(options: PictographData[], level: DifficultyLevel): PictographData[];
+	validateOptionCompatibility(option: PictographData, sequence: SequenceData): ValidationResult;
+	getAvailableMotionTypes(): MotionType[];
+}
+
+export interface IStartPositionService {
+	getAvailableStartPositions(propType: string, gridMode: GridMode): Promise<BeatData[]>;
+	setStartPosition(startPosition: BeatData): Promise<void>;
+	validateStartPosition(position: BeatData): ValidationResult;
+	getDefaultStartPositions(gridMode: GridMode): Promise<PictographData[]>;
+}
+
+// Additional types for the new services
+export interface OptionFilters {
+	difficulty?: DifficultyLevel;
+	motionTypes?: MotionType[];
+	minTurns?: number;
+	maxTurns?: number;
+}
+
+export type DifficultyLevel = 'beginner' | 'intermediate' | 'advanced';
+
+// ============================================================================
 // SERVICE REGISTRY
 // ============================================================================
 
@@ -307,3 +344,6 @@ export const IMotionGenerationService = defineService<IMotionGenerationService>(
 export const IApplicationInitializationService = defineService<IApplicationInitializationService>('IApplicationInitializationService');
 export const ISettingsService = defineService<ISettingsService>('ISettingsService');
 export const IExportService = defineService<IExportService>('IExportService');
+export const IConstructTabCoordinationService = defineService<IConstructTabCoordinationService>('IConstructTabCoordinationService');
+export const IOptionDataService = defineService<IOptionDataService>('IOptionDataService');
+export const IStartPositionService = defineService<IStartPositionService>('IStartPositionService');

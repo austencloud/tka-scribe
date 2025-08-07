@@ -16,25 +16,8 @@
 		"declaration": true,
 		"declarationMap": true,
 		"allowSyntheticDefaultImports": true,
-		
-		// Path mapping for clean imports
-		"paths": {
-			"$lib": ["./src/lib"],
-			"$lib/*": ["./src/lib/*"],
-			"$domain": ["./src/lib/domain"],
-			"$domain/*": ["./src/lib/domain/*"],
-			"$services": ["./src/lib/services"],
-			"$services/*": ["./src/lib/services/*"],
-			"$stores": ["./src/lib/stores"],
-			"$stores/*": ["./src/lib/stores/*"],
-			"$components": ["./src/lib/components"],
-			"$components/*": ["./src/lib/components/*"],
-			"$utils": ["./src/lib/utils"],
-			"$utils/*": ["./src/lib/utils/*"],
-			"@tka/schemas": ["../../../schemas/generated-types.ts"],
-			"@tka/shared": ["../shared"],
-			"@tka/shared/*": ["../shared/*"]
-		}
+		"experimentalDecorators": true,
+		"types": []
 	},
 	"include": [
 		"src/**/*.d.ts",

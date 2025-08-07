@@ -102,28 +102,46 @@ class CodexPictographGrid(QWidget):
 
         # Add pictographs to row
         for letter in letters:
-            pictograph_data = self.data_service.get_pictograph_data(letter)
+            try:
+                pictograph_data = self.data_service.get_pictograph_data(letter)
+                logger.debug(
+                    f"Got pictograph data for {letter}: {type(pictograph_data)}"
+                )
 
-            if pictograph_data:
-                # Create pictograph view
-                view = CodexPictographView(row_widget)
-                view.set_codex_size(self.pictograph_size)
+                if pictograph_data:
+                    # Debug the pictograph data structure
+                    logger.debug(
+                        f"Pictograph data for {letter}: start_pos={pictograph_data.start_position}, end_pos={pictograph_data.end_position}"
+                    )
+                    logger.debug(f"Motions: {list(pictograph_data.motions.keys())}")
 
-                # Update with pictograph data
-                view.update_from_pictograph_data(pictograph_data)
+                    # Create pictograph view
+                    view = CodexPictographView(row_widget)
+                    view.set_codex_size(self.pictograph_size)
 
-                # Store reference
-                self.pictograph_views[letter] = view
+                    # Update with pictograph data
+                    view.update_from_pictograph_data(pictograph_data)
 
-                # Add to row layout
-                row_layout.addWidget(view)
+                    # Store reference
+                    self.pictograph_views[letter] = view
 
-                logger.debug(f"Added pictograph for letter: {letter}")
-            else:
-                # Add placeholder for missing pictographs
+                    # Add to row layout
+                    row_layout.addWidget(view)
+
+                    logger.debug(f"Added pictograph for letter: {letter}")
+                else:
+                    # Add placeholder for missing pictographs
+                    placeholder = self._create_placeholder(letter)
+                    row_layout.addWidget(placeholder)
+                    logger.debug(f"Added placeholder for letter: {letter}")
+            except Exception as e:
+                import traceback
+
+                logger.error(f"Error creating pictograph for {letter}: {e}")
+                logger.error(f"Traceback: {traceback.format_exc()}")
+                # Add placeholder on error
                 placeholder = self._create_placeholder(letter)
                 row_layout.addWidget(placeholder)
-                logger.debug(f"Added placeholder for letter: {letter}")
 
         # Add row to main layout
         self.main_layout.addWidget(row_widget)

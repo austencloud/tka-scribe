@@ -5,10 +5,10 @@
  * This service ensures all required services are ready before the app starts.
  */
 
-import type { 
-	IApplicationInitializationService, 
+import type {
+	IApplicationInitializationService,
 	ISettingsService,
-	IPersistenceService 
+	IPersistenceService
 } from '../interfaces';
 
 export class ApplicationInitializationService implements IApplicationInitializationService {

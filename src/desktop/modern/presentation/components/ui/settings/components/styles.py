@@ -52,11 +52,13 @@ class GlassmorphismStyles:
                     stop:0 rgba(255, 255, 255, 0.18),
                     stop:1 rgba(255, 255, 255, 0.10));
                 border: 1px solid rgba(255, 255, 255, 0.30);
-                border-radius: 22px;
+                border-radius: 24px;
                 color: rgba(255, 255, 255, 0.90);
-                font-size: 18px;
+                font-size: 20px;
                 font-weight: 600;
                 font-family: "Inter", sans-serif;
+                min-width: 48px;
+                min-height: 48px;
             }
 
             #close_button:hover {
@@ -85,14 +87,15 @@ class GlassmorphismStyles:
             #settings_sidebar::item {
                 background: transparent;
                 border: none;
-                padding: 12px 16px;
-                margin: 1px 0px;
+                padding: 14px 18px;
+                margin: 2px 0px;
                 border-radius: 12px;
                 color: rgba(255, 255, 255, 0.80);
                 font-weight: 500;
                 font-size: 14px;
                 font-family: "Inter", "Segoe UI", sans-serif;
                 letter-spacing: 0.2px;
+                min-height: 48px;
             }
 
             #settings_sidebar::item:selected {
@@ -139,10 +142,12 @@ class GlassmorphismStyles:
                 border-radius: 14px;
                 color: white;
                 font-weight: 600;
-                padding: 11px 24px;
+                padding: 12px 28px;
                 font-size: 14px;
                 font-family: "Inter", "Segoe UI", sans-serif;
                 letter-spacing: 0.3px;
+                min-height: 44px;
+                min-width: 80px;
             }
 
             #primary_button:hover {
@@ -164,11 +169,13 @@ class GlassmorphismStyles:
                 border-radius: 14px;
                 color: rgba(255, 255, 255, 0.90);
                 font-weight: 500;
-                padding: 11px 20px;
+                padding: 12px 24px;
                 font-size: 14px;
                 font-family: "Inter", "Segoe UI", sans-serif;
                 letter-spacing: 0.2px;
-                margin-right: 8px;
+                margin-right: 10px;
+                min-height: 44px;
+                min-width: 100px;
             }
 
             #secondary_button:hover {
