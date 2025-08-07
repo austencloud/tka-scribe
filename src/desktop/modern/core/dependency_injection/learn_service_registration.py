@@ -90,6 +90,17 @@ def register_learn_services(container: DIContainer) -> None:
         container.register_singleton(ILearnNavigationService, LearnNavigationService)
         container.register_singleton(ILearnDataService, LearnDataService)
 
+        # Codex services (singleton for state management)
+        from desktop.modern.domain.services.codex import (
+            CodexDataService,
+            CodexOperationsService,
+        )
+
+        # Register CodexDataService without pictograph data service for now
+        # It will fall back to basic data creation
+        container.register_singleton(CodexDataService, CodexDataService)
+        container.register_singleton(CodexOperationsService, CodexOperationsService)
+
         # Main learn tab (factory to inject container)
         container.register_factory(LearnTab, lambda: LearnTab(container))
 
@@ -125,11 +136,10 @@ def validate_learn_service_registration(container: DIContainer) -> bool:
 
         # Test main component (skip in headless environments)
         try:
-            learn_tab = container.resolve(LearnTab)
+            container.resolve(LearnTab)
         except Exception as e:
             if "QApplication" in str(e):
                 logger.warning("Skipping UI component test in headless environment")
-                learn_tab = None
             else:
                 raise
 

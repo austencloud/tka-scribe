@@ -18,6 +18,9 @@ from desktop.modern.presentation.controllers.learn.learn_tab_coordinator import 
 )
 
 
+# Import codex component
+
+
 logger = logging.getLogger(__name__)
 
 
@@ -40,27 +43,51 @@ class LearnTab(QWidget):
 
         self.container = container
         self.coordinator: LearnTabCoordinator | None = None
+        self.codex_component: CodexComponent | None = None
+        self.splitter = None
+        self.codex_visible = True
 
         self._setup_ui()
 
         logger.info("Learn tab initialized")
 
     def _setup_ui(self) -> None:
-        """Setup the learn tab UI."""
+        """Setup the learn tab UI with codex on the left side."""
         try:
+            # Import here to avoid circular imports
+            from PyQt6.QtCore import Qt
+            from PyQt6.QtWidgets import QSplitter
+
+            from desktop.modern.presentation.components.codex import CodexComponent
+
             # Main layout
             layout = QVBoxLayout(self)
             layout.setContentsMargins(0, 0, 0, 0)
             layout.setSpacing(0)
 
-            # Create coordinator
+            # Create splitter for codex + coordinator layout
+            self.splitter = QSplitter(Qt.Orientation.Horizontal)
+
+            # Create codex component (left side)
+            self.codex_component = CodexComponent(self.container, self)
+            self.codex_component.setMinimumWidth(250)
+            self.splitter.addWidget(self.codex_component)
+
+            # Create coordinator (right side)
             self.coordinator = LearnTabCoordinator(self.container, self)
-            layout.addWidget(self.coordinator)
+            self.splitter.addWidget(self.coordinator)
 
-            # Connect coordinator signals
+            # Set initial splitter sizes (codex smaller than coordinator)
+            self.splitter.setSizes([300, 700])
+
+            # Add splitter to main layout
+            layout.addWidget(self.splitter)
+
+            # Connect signals
             self.coordinator.error_occurred.connect(self.error_occurred.emit)
+            self.codex_component.error_occurred.connect(self.error_occurred.emit)
 
-            logger.debug("Learn tab UI setup complete")
+            logger.debug("Learn tab UI setup complete with codex")
 
         except Exception as e:
             logger.error(f"Failed to setup learn tab UI: {e}")
@@ -104,3 +131,27 @@ class LearnTab(QWidget):
             state = self.coordinator.get_state_manager().get_state()
             return state.is_lesson_active()
         return False
+
+    def toggle_codex(self) -> None:
+        """Toggle the visibility of the codex."""
+        if self.splitter and self.codex_component:
+            if self.codex_visible:
+                # Hide codex
+                self.splitter.setSizes([0, 1000])
+                self.codex_component.hide()
+                self.codex_visible = False
+                logger.debug("Codex hidden")
+            else:
+                # Show codex
+                self.codex_component.show()
+                self.splitter.setSizes([300, 700])
+                self.codex_visible = True
+                logger.debug("Codex shown")
+
+    def is_codex_visible(self) -> bool:
+        """Check if the codex is currently visible."""
+        return self.codex_visible
+
+    def get_codex_component(self) -> CodexComponent | None:
+        """Get the codex component."""
+        return self.codex_component

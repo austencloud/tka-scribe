@@ -37,6 +37,7 @@ fixable = ["ALL"]
 # Only ignore rules that cause real problems in Qt/PyQt6 codebases
 ignore = [
     "E501", # Line too long (handled by formatter)
+    "F401", # Unused imports (let developers manage imports manually)
     "N802", # Function name should be lowercase (Qt uses camelCase)
     "N803", # Argument name should be lowercase (Qt uses camelCase)
     "N806", # Variable in function should be lowercase (Qt uses camelCase)
