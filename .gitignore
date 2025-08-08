@@ -17,7 +17,8 @@ eggs/
 lib/
 lib64/
 # But don't ignore web app source directories
-!src/web/*/src/lib/
+!src/web*/*/src/lib/
+!src/web_app/*/src/lib/
 parts/
 sdist/
 var/
