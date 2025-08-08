@@ -11,9 +11,10 @@ import type {
 	PictographData,
 	IArrowPositioningService,
 	IPropRenderingService,
-	ArrowPosition
+	ArrowPosition,
+	GridData
 } from '../interfaces';
-import { createGridData, type GridData } from '../../data/gridCoordinates.js';
+import { createGridData, type GridData as RawGridData } from '../../data/gridCoordinates.js';
 
 export class PictographRenderingService implements IPictographRenderingService {
 	private readonly SVG_SIZE = 950;
@@ -36,22 +37,25 @@ export class PictographRenderingService implements IPictographRenderingService {
 			const svg = this.createBaseSVG();
 			
 			// 1. Render grid first
-			this.renderGrid(svg, data.gridData?.mode || 'diamond');
+			await this.renderGrid(svg, data.gridData?.mode || 'diamond');
 			
 			// 2. Calculate arrow positions using sophisticated positioning service
-			const gridData = this.createDefaultGridData();
-			console.log('📊 Using grid data:', gridData);
+			const gridMode = data.gridData?.mode || 'diamond';
+			const rawGridData = createGridData(gridMode);
+			const gridDataWithMode = this.adaptGridData(rawGridData, gridMode);
+			console.log('📊 Using real grid data:', gridDataWithMode);
 			
 			const arrowPositions = await this.arrowPositioning.calculateAllArrowPositions(
 				data,
-				gridData
+				gridDataWithMode
 			);
 			console.log(`🏹 Calculated ${arrowPositions.size} arrow positions:`, Object.fromEntries(arrowPositions));
 			
 			// 3. Render arrows with sophisticated calculated positions
 			for (const [color, position] of arrowPositions.entries()) {
 				console.log(`🎯 Rendering ${color} arrow at sophisticated position:`, position);
-				this.renderArrowAtPosition(svg, color as 'blue' | 'red', position);
+				const motionData = data.motions?.[color as 'blue' | 'red'];
+				await this.renderArrowAtPosition(svg, color as 'blue' | 'red', position, motionData);
 			}
 
 			// 4. Render props
@@ -65,7 +69,8 @@ export class PictographRenderingService implements IPictographRenderingService {
 			return svg;
 		} catch (error) {
 			console.error('❌ Error rendering pictograph:', error);
-			return this.createErrorSVG(error.message);
+			const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+			return this.createErrorSVG(errorMessage);
 		}
 	}
 
@@ -99,45 +104,145 @@ export class PictographRenderingService implements IPictographRenderingService {
 	}
 
 	/**
-	 * Create grid data for positioning calculations using real coordinate data
+	 * Adapt raw grid data to match the interface requirements
 	 */
-	private createDefaultGridData(mode: 'diamond' | 'box' = 'diamond'): GridData {
-		return createGridData(mode);
+	private adaptGridData(rawGridData: RawGridData, mode: 'diamond' | 'box'): GridData {
+		// Filter out null coordinates and adapt to interface
+		const adaptPoints = (points: Record<string, { coordinates: { x: number; y: number } | null }>) => {
+			const adapted: Record<string, { coordinates: { x: number; y: number } }> = {};
+			for (const [key, point] of Object.entries(points)) {
+				if (point.coordinates) {
+					adapted[key] = { coordinates: point.coordinates };
+				}
+			}
+			return adapted;
+		};
+
+		return {
+			mode,
+			allLayer2PointsNormal: adaptPoints(rawGridData.allLayer2PointsNormal || {}),
+			allHandPointsNormal: adaptPoints(rawGridData.allHandPointsNormal || {})
+		};
 	}
 	
 	/**
-	 * Render arrow at sophisticated calculated position
+	 * Render arrow at sophisticated calculated position using real SVG assets
 	 */
-	private renderArrowAtPosition(
+	private async renderArrowAtPosition(
 		svg: SVGElement,
 		color: 'blue' | 'red',
-		position: ArrowPosition
-	): void {
+		position: ArrowPosition,
+		motionData: any
+	): Promise<void> {
 		console.log(`🎨 Rendering ${color} arrow with sophisticated positioning:`, position);
-		
-		// Create arrow group with metadata
+
+		try {
+			// Get the correct arrow SVG path
+			const arrowSvgPath = this.getArrowSvgPath(motionData);
+			console.log(`🏹 Loading arrow SVG: ${arrowSvgPath}`);
+
+			// Load the arrow SVG
+			const response = await fetch(arrowSvgPath);
+			if (!response.ok) {
+				throw new Error(`Failed to load arrow SVG: ${response.status}`);
+			}
+
+			const svgContent = await response.text();
+
+			// Create arrow group with metadata
+			const arrowGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+			arrowGroup.setAttribute('class', `arrow-${color} sophisticated-positioning`);
+			arrowGroup.setAttribute('data-color', color);
+			arrowGroup.setAttribute('data-position', `${position.x},${position.y}`);
+			arrowGroup.setAttribute('data-rotation', position.rotation.toString());
+
+			// Apply sophisticated position and rotation transform
+			const transform = `translate(${position.x}, ${position.y}) rotate(${position.rotation})`;
+			arrowGroup.setAttribute('transform', transform);
+
+			// Parse and insert the SVG content
+			const parser = new DOMParser();
+			const svgDoc = parser.parseFromString(svgContent, 'image/svg+xml');
+			const svgElement = svgDoc.documentElement as unknown as SVGElement;
+
+			// Apply color transformation
+			this.applyArrowColorTransformation(svgElement, color);
+
+			// Import the SVG content into the arrow group
+			const importedSvg = document.importNode(svgElement, true);
+			arrowGroup.appendChild(importedSvg);
+
+			svg.appendChild(arrowGroup);
+			console.log(`✅ ${color} arrow rendered with real SVG asset`);
+
+		} catch (error) {
+			console.error(`❌ Error loading arrow SVG for ${color}:`, error);
+			// Fallback to simple arrow
+			this.renderFallbackArrow(svg, color, position);
+		}
+	}
+
+	/**
+	 * Get the correct arrow SVG path based on motion data (like ArrowSvgManager)
+	 */
+	private getArrowSvgPath(motionData: any): string {
+		if (!motionData) {
+			return '/images/arrows/static/from_radial/static_0.svg'; // Default fallback
+		}
+
+		const motionType = motionData.motionType || 'static';
+		const turns = motionData.turns || 0;
+		const startOri = motionData.startOrientation || 'in';
+
+		// Handle float arrows (special case)
+		if (motionType === 'float') {
+			return '/images/arrows/float.svg';
+		}
+
+		// Determine radial path based on start orientation
+		const radialPath = startOri === 'in' ? 'from_radial' : 'from_nonradial';
+
+		// Format turns to match filename (e.g., 0 -> "0.0", 1 -> "1.0", 0.5 -> "0.5")
+		const turnsStr = turns % 1 === 0 ? `${turns}.0` : turns.toString();
+
+		// Construct path: /images/arrows/{motionType}/{radialPath}/{motionType}_{turns}.svg
+		return `/images/arrows/${motionType}/${radialPath}/${motionType}_${turnsStr}.svg`;
+	}
+
+	/**
+	 * Apply color transformation to arrow SVG
+	 */
+	private applyArrowColorTransformation(svgElement: SVGElement, color: 'blue' | 'red'): void {
+		// Find all path elements and apply color
+		const paths = svgElement.querySelectorAll('path');
+		const fillColor = color === 'blue' ? '#3b82f6' : '#ef4444';
+		const strokeColor = color === 'blue' ? '#1d4ed8' : '#dc2626';
+
+		paths.forEach(path => {
+			path.setAttribute('fill', fillColor);
+			path.setAttribute('stroke', strokeColor);
+			path.setAttribute('stroke-width', '1');
+		});
+	}
+
+	/**
+	 * Render fallback arrow if SVG loading fails
+	 */
+	private renderFallbackArrow(svg: SVGElement, color: 'blue' | 'red', position: ArrowPosition): void {
+		console.log(`🔄 Rendering fallback arrow for ${color}`);
+
+		// Create arrow group
 		const arrowGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-		arrowGroup.setAttribute('class', `arrow-${color} sophisticated-positioning`);
-		arrowGroup.setAttribute('data-color', color);
-		arrowGroup.setAttribute('data-position', `${position.x},${position.y}`);
-		arrowGroup.setAttribute('data-rotation', position.rotation.toString());
-		
-		// Apply sophisticated position and rotation transform
-		const transform = `translate(${position.x}, ${position.y}) rotate(${position.rotation})`;
-		arrowGroup.setAttribute('transform', transform);
-		
-		// Create enhanced arrow path
+		arrowGroup.setAttribute('class', `arrow-${color} fallback`);
+		arrowGroup.setAttribute('transform', `translate(${position.x}, ${position.y}) rotate(${position.rotation})`);
+
+		// Create simple arrow path
 		const arrowPath = this.createEnhancedArrowPath(color);
 		arrowGroup.appendChild(arrowPath);
-		
-		// Add position indicator for debugging
-		const positionIndicator = this.createPositionIndicator(color);
-		arrowGroup.appendChild(positionIndicator);
-		
+
 		svg.appendChild(arrowGroup);
-		console.log(`✅ ${color} arrow rendered with sophisticated positioning`);
 	}
-	
+
 	/**
 	 * Create enhanced arrow SVG path with sophisticated styling
 	 */
@@ -258,25 +363,70 @@ export class PictographRenderingService implements IPictographRenderingService {
 	}
 
 	/**
-	 * Render grid (enhanced implementation)
+	 * Render grid using real SVG assets
 	 */
-	private renderGrid(svg: SVGElement, gridMode: 'diamond' | 'box' = 'diamond'): void {
-		// Create diamond grid outline
-		const diamond = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
-		const size = 100;
-		const points = [
-			`${this.CENTER_X},${this.CENTER_Y - size}`, // top
-			`${this.CENTER_X + size},${this.CENTER_Y}`, // right
-			`${this.CENTER_X},${this.CENTER_Y + size}`, // bottom
-			`${this.CENTER_X - size},${this.CENTER_Y}`, // left
-		].join(' ');
-		
-		diamond.setAttribute('points', points);
-		diamond.setAttribute('fill', 'none');
-		diamond.setAttribute('stroke', '#e5e7eb');
-		diamond.setAttribute('stroke-width', '2');
-		
-		svg.appendChild(diamond);
+	private async renderGrid(svg: SVGElement, gridMode: 'diamond' | 'box' = 'diamond'): Promise<void> {
+		try {
+			// Load the appropriate grid SVG
+			const gridPath = `/images/grid/${gridMode}_grid.svg`;
+			console.log(`🔲 Loading grid SVG: ${gridPath}`);
+
+			// Create image element for the grid
+			const gridImage = document.createElementNS('http://www.w3.org/2000/svg', 'image');
+			gridImage.setAttribute('href', gridPath);
+			gridImage.setAttribute('x', '0');
+			gridImage.setAttribute('y', '0');
+			gridImage.setAttribute('width', this.SVG_SIZE.toString());
+			gridImage.setAttribute('height', this.SVG_SIZE.toString());
+			gridImage.setAttribute('preserveAspectRatio', 'none');
+
+			svg.appendChild(gridImage);
+			console.log(`✅ Grid rendered: ${gridMode} mode`);
+		} catch (error) {
+			console.error(`❌ Error loading grid SVG for ${gridMode} mode:`, error);
+			// Fallback: render a simple grid outline
+			this.renderFallbackGrid(svg, gridMode);
+		}
+	}
+
+	/**
+	 * Fallback grid rendering if SVG loading fails
+	 */
+	private renderFallbackGrid(svg: SVGElement, gridMode: 'diamond' | 'box'): void {
+		const gridGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+		gridGroup.setAttribute('class', `fallback-grid-${gridMode}`);
+
+		if (gridMode === 'diamond') {
+			// Create diamond outline
+			const diamond = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+			const size = 143; // Approximate size based on real coordinates
+			const points = [
+				`${this.CENTER_X},${this.CENTER_Y - size}`, // top
+				`${this.CENTER_X + size},${this.CENTER_Y}`, // right
+				`${this.CENTER_X},${this.CENTER_Y + size}`, // bottom
+				`${this.CENTER_X - size},${this.CENTER_Y}`, // left
+			].join(' ');
+
+			diamond.setAttribute('points', points);
+			diamond.setAttribute('fill', 'none');
+			diamond.setAttribute('stroke', '#e5e7eb');
+			diamond.setAttribute('stroke-width', '2');
+			gridGroup.appendChild(diamond);
+		} else {
+			// Create box outline
+			const box = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+			const size = 202; // Approximate size based on real coordinates
+			box.setAttribute('x', (this.CENTER_X - size/2).toString());
+			box.setAttribute('y', (this.CENTER_Y - size/2).toString());
+			box.setAttribute('width', size.toString());
+			box.setAttribute('height', size.toString());
+			box.setAttribute('fill', 'none');
+			box.setAttribute('stroke', '#e5e7eb');
+			box.setAttribute('stroke-width', '2');
+			gridGroup.appendChild(box);
+		}
+
+		svg.appendChild(gridGroup);
 	}
 
 

@@ -1,10 +1,11 @@
-<!-- ConstructTab.svelte - Modern implementation with service coordination -->
+<!-- ConstructTab.svelte - Modern implementation following desktop app layout -->
 <script lang="ts">
 	// Import runes-based state and components
 	import { onMount } from 'svelte';
 	import { getCurrentSequence, getSequences, getIsLoading } from '$stores/sequenceState.svelte';
 	import StartPositionPicker from '$components/construct/StartPositionPicker.svelte';
 	import OptionPicker from '$components/construct/OptionPicker.svelte';
+	import Workbench from '$components/workbench/Workbench.svelte';
 	import type { BeatData, PictographData, SequenceData } from '$services/interfaces';
 	import { IConstructTabCoordinationService, ISequenceService } from '$services/interfaces';
 	import { resolve } from '$services/bootstrap';
@@ -17,7 +18,7 @@
 	let sequenceService = $state<ISequenceService | null>(null);
 
 	// Runes-based state (replacing legacy workbenchStore)
-	let currentView = $state<'start_position' | 'option_picker' | 'workbench'>('start_position');
+	let activeRightPanel = $state<'start_position' | 'option_picker' | 'graph_editor' | 'generate'>('start_position');
 	let gridMode = $state<'diamond' | 'box'>('diamond');
 	let isTransitioning = $state(false);
 	let errorMessage = $state<string | null>(null);
@@ -52,7 +53,7 @@
 			}
 
 			// Transition to option picker
-			currentView = 'option_picker';
+			activeRightPanel = 'option_picker';
 			errorMessage = null;
 
 			console.log('✅ Transitioned to option picker');
@@ -98,13 +99,16 @@
 	function handleViewTransition(targetView: string) {
 		switch (targetView) {
 			case 'start_position_picker':
-				currentView = 'start_position';
+				activeRightPanel = 'start_position';
 				break;
 			case 'option_picker':
-				currentView = 'option_picker';
+				activeRightPanel = 'option_picker';
 				break;
-			case 'workbench':
-				currentView = 'workbench';
+			case 'graph_editor':
+				activeRightPanel = 'graph_editor';
+				break;
+			case 'generate':
+				activeRightPanel = 'generate';
 				break;
 			default:
 				console.warn('Unknown view transition:', targetView);
@@ -149,10 +153,10 @@
 		const sequence = getCurrentSequence();
 		if (sequence && sequence.beats && sequence.beats.length > 0) {
 			// Has beats, show option picker
-			currentView = 'option_picker';
+			activeRightPanel = 'option_picker';
 		} else {
 			// No beats, show start position picker
-			currentView = 'start_position';
+			activeRightPanel = 'start_position';
 		}
 	});
 </script>
@@ -185,49 +189,106 @@
 		</div>
 	{/if}
 
-	<!-- Main content area -->
+	<!-- Main content area - Two panel layout like desktop app -->
 	<div class="construct-content">
-		{#if currentView === 'start_position'}
-			<div class="view-container">
-				<div class="view-header">
-					<h2>Choose Start Position</h2>
-					<p>Select a starting position for your sequence</p>
-				</div>
-				<StartPositionPicker
-					{gridMode}
-					onStartPositionSelected={handleStartPositionSelected}
-				/>
+		<!-- Left Panel: Workbench (always visible) -->
+		<div class="left-panel">
+			<div class="panel-header">
+				<h2>Sequence Workbench</h2>
+				{#if currentSequence}
+					<div class="sequence-info">
+						<span class="sequence-name">{currentSequence.name}</span>
+						<span class="beat-count">{currentSequence.beats.length} beats</span>
+					</div>
+				{/if}
 			</div>
-		{:else if currentView === 'option_picker'}
-			<div class="view-container">
-				<div class="view-header">
-					<h2>Build Your Sequence</h2>
-					<p>Choose the next move for your sequence</p>
-					{#if currentSequence}
-						<div class="sequence-info">
-							<span class="beat-count">{currentSequence.beats.length} beats</span>
-							<span class="sequence-name">{currentSequence.name}</span>
+			<div class="workbench-container">
+				<Workbench />
+			</div>
+		</div>
+
+		<!-- Right Panel: Tabbed interface -->
+		<div class="right-panel">
+			<!-- Tab Navigation -->
+			<div class="tab-navigation">
+				<button 
+					class="tab-btn"
+					class:active={activeRightPanel === 'start_position'}
+					onclick={() => handleViewTransition('start_position_picker')}
+				>
+					Start Position
+				</button>
+				<button 
+					class="tab-btn"
+					class:active={activeRightPanel === 'option_picker'}
+					onclick={() => handleViewTransition('option_picker')}
+				>
+					Option Picker
+				</button>
+				<button 
+					class="tab-btn"
+					class:active={activeRightPanel === 'graph_editor'}
+					onclick={() => handleViewTransition('graph_editor')}
+				>
+					Graph Editor
+				</button>
+				<button 
+					class="tab-btn"
+					class:active={activeRightPanel === 'generate'}
+					onclick={() => handleViewTransition('generate')}
+				>
+					Generate
+				</button>
+			</div>
+
+			<!-- Tab Content -->
+			<div class="tab-content">
+				{#if activeRightPanel === 'start_position'}
+					<div class="panel-header">
+						<h2>Choose Start Position</h2>
+						<p>Select a starting position for your sequence</p>
+					</div>
+					<div class="panel-content">
+						<StartPositionPicker
+							{gridMode}
+							onStartPositionSelected={handleStartPositionSelected}
+						/>
+					</div>
+				{:else if activeRightPanel === 'option_picker'}
+					<div class="panel-header">
+						<h2>Build Your Sequence</h2>
+						<p>Choose the next move for your sequence</p>
+					</div>
+					<div class="panel-content">
+						<OptionPicker 
+							{currentSequence}
+							difficulty="intermediate"
+							onOptionSelected={handleOptionSelected}
+						/>
+					</div>
+				{:else if activeRightPanel === 'graph_editor'}
+					<div class="panel-header">
+						<h2>Graph Editor</h2>
+						<p>Advanced sequence editing tools</p>
+					</div>
+					<div class="panel-content">
+						<div class="placeholder-content">
+							<p>Graph Editor coming soon...</p>
 						</div>
-					{/if}
-				</div>
-				<OptionPicker 
-					{currentSequence}
-					difficulty="intermediate"
-					onOptionSelected={handleOptionSelected}
-				/>
+					</div>
+				{:else if activeRightPanel === 'generate'}
+					<div class="panel-header">
+						<h2>Generate Sequences</h2>
+						<p>AI-powered sequence generation</p>
+					</div>
+					<div class="panel-content">
+						<div class="placeholder-content">
+							<p>Generate panel coming soon...</p>
+						</div>
+					</div>
+				{/if}
 			</div>
-		{:else if currentView === 'workbench'}
-			<div class="view-container">
-				<div class="view-header">
-					<h2>Sequence Workbench</h2>
-					<p>Edit and refine your sequence</p>
-				</div>
-				<div class="workbench-placeholder">
-					<p>🚧 Sequence Workbench coming soon</p>
-					<p>This will show the full sequence editor with beat frames</p>
-				</div>
-			</div>
-		{/if}
+		</div>
 	</div>
 
 	<!-- Loading overlay -->
@@ -325,36 +386,54 @@
 		font-size: var(--font-size-xs);
 	}
 
+	/* Main two-panel layout */
 	.construct-content {
 		flex: 1;
-		overflow: hidden;
 		display: flex;
-		flex-direction: column;
+		overflow: hidden;
+		gap: 8px;
+		padding: 8px;
 	}
 
-	.view-container {
+	/* Left Panel: Workbench */
+	.left-panel {
 		flex: 1;
-		overflow: hidden;
 		display: flex;
 		flex-direction: column;
+		background: var(--background);
+		border: 1px solid var(--border);
+		border-radius: var(--border-radius);
+		overflow: hidden;
 	}
 
-	.view-header {
+	/* Right Panel: Tabbed interface */
+	.right-panel {
+		flex: 1;
+		display: flex;
+		flex-direction: column;
+		background: var(--background);
+		border: 1px solid var(--border);
+		border-radius: var(--border-radius);
+		overflow: hidden;
+	}
+
+	/* Panel headers */
+	.panel-header {
 		flex-shrink: 0;
 		padding: var(--spacing-lg);
-		background: var(--muted)/50;
+		background: var(--muted)/30;
 		border-bottom: 1px solid var(--border);
 		text-align: center;
 	}
 
-	.view-header h2 {
+	.panel-header h2 {
 		margin: 0 0 var(--spacing-sm) 0;
 		color: var(--foreground);
 		font-size: var(--font-size-xl);
 		font-weight: 500;
 	}
 
-	.view-header p {
+	.panel-header p {
 		margin: 0;
 		color: var(--muted-foreground);
 		font-size: var(--font-size-sm);
@@ -383,22 +462,69 @@
 		border-radius: var(--border-radius-sm);
 	}
 
-	.workbench-placeholder {
+	/* Workbench container */
+	.workbench-container {
+		flex: 1;
+		overflow: auto;
+		padding: var(--spacing-md);
+	}
+
+	/* Tab navigation */
+	.tab-navigation {
+		flex-shrink: 0;
+		display: flex;
+		background: var(--muted)/20;
+		border-bottom: 1px solid var(--border);
+	}
+
+	.tab-btn {
+		flex: 1;
+		padding: var(--spacing-md);
+		border: none;
+		background: transparent;
+		color: var(--muted-foreground);
+		cursor: pointer;
+		transition: all 0.2s ease;
+		font-size: var(--font-size-sm);
+		font-weight: 500;
+		border-bottom: 2px solid transparent;
+	}
+
+	.tab-btn:hover {
+		background: var(--muted)/30;
+		color: var(--foreground);
+	}
+
+	.tab-btn.active {
+		background: var(--background);
+		color: var(--primary);
+		border-bottom-color: var(--primary);
+	}
+
+	/* Tab content */
+	.tab-content {
 		flex: 1;
 		display: flex;
 		flex-direction: column;
-		align-items: center;
-		justify-content: center;
-		color: var(--muted-foreground);
-		text-align: center;
-		padding: var(--spacing-xl);
+		overflow: hidden;
 	}
 
-	.workbench-placeholder p {
-		margin: var(--spacing-md) 0;
+	.panel-content {
+		flex: 1;
+		overflow: auto;
+		padding: var(--spacing-lg);
+	}
+
+	.placeholder-content {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		height: 100%;
+		color: var(--muted-foreground);
 		font-size: var(--font-size-lg);
 	}
 
+	/* Loading overlay */
 	.loading-overlay {
 		position: absolute;
 		top: 0;
@@ -436,6 +562,19 @@
 		100% { transform: rotate(360deg); }
 	}
 
+	/* Responsive adjustments */
+	@media (max-width: 1024px) {
+		.construct-content {
+			flex-direction: column;
+		}
+		
+		.left-panel,
+		.right-panel {
+			flex: none;
+			height: 50%;
+		}
+	}
+
 	@media (max-width: 768px) {
 		.construct-header {
 			flex-direction: column;
@@ -448,8 +587,18 @@
 			justify-content: space-between;
 		}
 
-		.view-header {
+		.panel-header {
 			padding: var(--spacing-md);
+		}
+
+		.tab-navigation {
+			flex-wrap: wrap;
+		}
+
+		.tab-btn {
+			flex: 1 1 50%;
+			padding: var(--spacing-sm);
+			font-size: var(--font-size-xs);
 		}
 	}
 </style>

@@ -6,6 +6,7 @@ from PyQt6.QtWidgets import (
     QHBoxLayout,
     QLabel,
     QLineEdit,
+    QScrollArea,
     QVBoxLayout,
     QWidget,
 )
@@ -26,17 +27,26 @@ class GeneralTab(QWidget):
         self._setup_connections()
 
     def _setup_ui(self):
-        """Setup the enhanced general tab UI with sophisticated SettingCard layout."""
-        # Main layout with tighter spacing for better content fit
-        main_layout = QVBoxLayout(self)
-        main_layout.setContentsMargins(16, 16, 16, 16)
-        main_layout.setSpacing(10)
+        """Setup the enhanced general tab UI with scroll area to prevent expansion."""
+        from PyQt6.QtCore import Qt
 
-        # Create a content widget (no scroll area needed)
+        # Main layout with minimal margins
+        main_layout = QVBoxLayout(self)
+        main_layout.setContentsMargins(0, 0, 0, 0)
+        main_layout.setSpacing(0)
+
+        # Create scroll area to contain content and prevent dialog expansion
+        scroll_area = QScrollArea()
+        scroll_area.setWidgetResizable(True)
+        scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        scroll_area.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
+        scroll_area.setFrameShape(QScrollArea.Shape.NoFrame)
+
+        # Create content widget for the scroll area
         content_widget = QWidget()
         content_layout = QVBoxLayout(content_widget)
-        content_layout.setContentsMargins(0, 0, 0, 0)
-        content_layout.setSpacing(8)  # Even tighter spacing for better content fit
+        content_layout.setContentsMargins(16, 16, 16, 16)
+        content_layout.setSpacing(8)
 
         # Create setting sections using SettingCard approach
         self._create_user_profile_section(content_layout)
@@ -45,8 +55,11 @@ class GeneralTab(QWidget):
         # Add stretch to push content to top
         content_layout.addStretch()
 
-        # Add content widget directly to main layout
-        main_layout.addWidget(content_widget)
+        # Set content widget to scroll area
+        scroll_area.setWidget(content_widget)
+
+        # Add scroll area to main layout
+        main_layout.addWidget(scroll_area)
 
         # Apply styling
         self._apply_styling()

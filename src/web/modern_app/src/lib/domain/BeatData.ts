@@ -2,28 +2,11 @@
  * Beat Domain Model
  * 
  * Immutable data structure for individual beats in kinetic sequences.
- * Based on the modern desktop app's BeatData but adapted for TypeScript.
+ * Based on the modern desktop app's BeatData adapted for TypeScript.
  */
 
-export interface MotionData {
-  motion_type: string;
-  direction: string;
-  rotation: number;
-}
-
-export interface PictographData {
-  letter: string;
-  start_position: string;
-  end_position: string;
-  blue_attributes: Record<string, any>;
-  red_attributes: Record<string, any>;
-  motions: {
-    blue?: MotionData;
-    red?: MotionData;
-  };
-  grid_mode: string;
-  timing: number;
-}
+import type { PictographData } from './PictographData';
+import type { MotionData } from './MotionData';
 
 export interface BeatData {
   readonly id: string;
@@ -32,7 +15,7 @@ export interface BeatData {
   readonly blue_reversal: boolean;
   readonly red_reversal: boolean;
   readonly is_blank: boolean;
-  readonly pictograph_data?: PictographData;
+  readonly pictograph_data?: PictographData | null;
   readonly metadata: Record<string, any>;
 }
 
@@ -44,7 +27,7 @@ export function createBeatData(data: Partial<BeatData> = {}): BeatData {
     blue_reversal: data.blue_reversal ?? false,
     red_reversal: data.red_reversal ?? false,
     is_blank: data.is_blank ?? false,
-    pictograph_data: data.pictograph_data,
+    pictograph_data: data.pictograph_data ?? null,
     metadata: data.metadata ?? {},
   };
 }
@@ -66,4 +49,58 @@ export function getBeatLetter(beat: BeatData): string | undefined {
 
 export function hasPictograph(beat: BeatData): boolean {
   return beat.pictograph_data != null;
+}
+
+export function getBlueMotion(beat: BeatData): MotionData | null {
+  if (beat.pictograph_data?.motions) {
+    return beat.pictograph_data.motions.blue ?? null;
+  }
+  return null;
+}
+
+export function getRedMotion(beat: BeatData): MotionData | null {
+  if (beat.pictograph_data?.motions) {
+    return beat.pictograph_data.motions.red ?? null;
+  }
+  return null;
+}
+
+export function createBeatFromPictograph(
+  pictograph_data: PictographData, 
+  beat_number: number
+): BeatData {
+  return createBeatData({
+    beat_number,
+    pictograph_data,
+    metadata: {
+      letter: pictograph_data.letter,
+      created_from_pictograph: true,
+    },
+  });
+}
+
+export function beatDataToObject(beat: BeatData): Record<string, any> {
+  return {
+    id: beat.id,
+    beat_number: beat.beat_number,
+    duration: beat.duration,
+    blue_reversal: beat.blue_reversal,
+    red_reversal: beat.red_reversal,
+    is_blank: beat.is_blank,
+    pictograph_data: beat.pictograph_data,
+    metadata: beat.metadata,
+  };
+}
+
+export function beatDataFromObject(data: Record<string, any>): BeatData {
+  return createBeatData({
+    id: data.id,
+    beat_number: data.beat_number,
+    duration: data.duration,
+    blue_reversal: data.blue_reversal,
+    red_reversal: data.red_reversal,
+    is_blank: data.is_blank,
+    pictograph_data: data.pictograph_data,
+    metadata: data.metadata,
+  });
 }

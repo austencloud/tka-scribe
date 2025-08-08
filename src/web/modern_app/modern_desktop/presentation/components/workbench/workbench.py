@@ -1,4 +1,4 @@
-"""
+GPT5 just got released today"""
 Modern Sequence Workbench - Simplified Qt Presentation Layer
 
 Thin Qt adapter that uses framework-agnostic business services.

@@ -250,7 +250,7 @@ export class ArrowPositioningService implements IArrowPositioningService {
 				
 			default:
 				console.warn(`Unknown motion type: ${motionType}, returning center`);
-				return { x: 150, y: 150 }; // Default center position
+				return { x: 475, y: 475 }; // Default center position (950x950 scene)
 		}
 	}
 	
@@ -267,7 +267,7 @@ export class ArrowPositioningService implements IArrowPositioningService {
 		
 		if (!point?.coordinates) {
 			console.warn(`Shift coordinate for '${pointName}' not found, using default`);
-			return { x: 150, y: 150 }; // Default center
+			return { x: 475, y: 475 }; // Default center (950x950 scene)
 		}
 		
 		return point.coordinates;
@@ -281,15 +281,36 @@ export class ArrowPositioningService implements IArrowPositioningService {
 		gridMode: 'diamond' | 'box',
 		gridData: GridData
 	): { x: number; y: number } {
-		const pointName = `${location}_${gridMode}_hand_point`;
-		const point = gridData.allHandPointsNormal?.[pointName];
-		
-		if (!point?.coordinates) {
-			console.warn(`Static coordinate for '${pointName}' not found, using default`);
-			return { x: 150, y: 150 }; // Default center
+		// Check if this is a diagonal direction in diamond mode
+		const isDiagonal = ['ne', 'se', 'sw', 'nw'].includes(location);
+		const isCardinal = ['n', 'e', 's', 'w'].includes(location);
+
+		if (gridMode === 'diamond' && isDiagonal) {
+			// Use layer2 points for diagonal directions in diamond grid
+			const pointName = `${location}_${gridMode}_layer2_point`;
+			const point = gridData.allLayer2PointsNormal?.[pointName];
+
+			if (!point?.coordinates) {
+				console.warn(`Layer2 coordinate for '${pointName}' not found, using default`);
+				return { x: 475, y: 475 }; // Default center (950x950 scene)
+			}
+
+			return point.coordinates;
+		} else if (isCardinal || gridMode === 'box') {
+			// Use hand points for cardinal directions or all box grid directions
+			const pointName = `${location}_${gridMode}_hand_point`;
+			const point = gridData.allHandPointsNormal?.[pointName];
+
+			if (!point?.coordinates) {
+				console.warn(`Hand coordinate for '${pointName}' not found, using default`);
+				return { x: 475, y: 475 }; // Default center (950x950 scene)
+			}
+
+			return point.coordinates;
+		} else {
+			console.warn(`Unknown location '${location}' for ${gridMode} grid, using center`);
+			return { x: 475, y: 475 }; // Default center (950x950 scene)
 		}
-		
-		return point.coordinates;
 	}
 	
 	/**

@@ -185,18 +185,21 @@ class SettingsDialog(QDialog):
         screen = self.screen()
         if screen:
             screen_geometry = screen.availableGeometry()
-            # Use 70% of screen width and 60% of screen height for better fit
-            dialog_width = int(screen_geometry.width() * 0.70)
-            dialog_height = int(screen_geometry.height() * 0.60)
+            # Use more conservative sizing: 60% width, 50% height for better fit
+            dialog_width = int(screen_geometry.width() * 0.60)
+            dialog_height = int(screen_geometry.height() * 0.50)
 
-            # Set reasonable min/max bounds
-            dialog_width = max(900, min(dialog_width, 1600))  # Min 900px, max 1600px
-            dialog_height = max(600, min(dialog_height, 1000))  # Min 600px, max 1000px
+            # Set tighter bounds to prevent oversized dialogs
+            dialog_width = max(800, min(dialog_width, 1400))  # Min 800px, max 1400px
+            dialog_height = max(500, min(dialog_height, 800))  # Min 500px, max 800px
         else:
             # Fallback if screen detection fails
-            dialog_width, dialog_height = 1200, 800
+            dialog_width, dialog_height = 1000, 650
 
-        self.setFixedSize(dialog_width, dialog_height)
+        # Use resize instead of setFixedSize to allow content-driven sizing within limits
+        self.resize(dialog_width, dialog_height)
+        self.setMinimumSize(800, 500)
+        self.setMaximumSize(1400, 800)
         self.setWindowFlags(Qt.WindowType.Dialog | Qt.WindowType.FramelessWindowHint)
         self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
 

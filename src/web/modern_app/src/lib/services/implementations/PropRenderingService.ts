@@ -8,13 +8,14 @@
  * - Rendering props as SVG elements
  */
 
-import type { 
-	IPropRenderingService, 
-	PropPosition, 
-	MotionData, 
-	GridMode, 
-	Location 
+import type {
+	IPropRenderingService,
+	PropPosition,
+	MotionData,
+	GridMode,
+	Location
 } from '../interfaces';
+import { createGridData, type GridData } from '../../data/gridCoordinates.js';
 
 export class PropRenderingService implements IPropRenderingService {
 	private svgCache = new Map<string, string>();
@@ -61,7 +62,7 @@ export class PropRenderingService implements IPropRenderingService {
 	}
 
 	/**
-	 * Calculate prop position based on motion data
+	 * Calculate prop position based on motion data using real grid coordinates
 	 */
 	async calculatePropPosition(
 		motionData: MotionData,
@@ -71,14 +72,15 @@ export class PropRenderingService implements IPropRenderingService {
 		try {
 			// Use end location for prop positioning
 			const location = motionData.endLoc || 's';
-			const basePosition = this.getLocationCoordinates(location, gridMode);
-			
+			const gridData = createGridData(gridMode);
+			const basePosition = this.getLocationCoordinates(location, gridMode, gridData);
+
 			// Calculate rotation based on motion orientation
 			const rotation = this.calculatePropRotation(motionData);
-			
+
 			// Apply small offset for color separation
 			const offset = this.getColorOffset(color);
-			
+
 			return {
 				x: basePosition.x + offset.x,
 				y: basePosition.y + offset.y,
@@ -87,8 +89,8 @@ export class PropRenderingService implements IPropRenderingService {
 
 		} catch (error) {
 			console.error('❌ Error calculating prop position:', error);
-			// Return center position as fallback
-			return { x: 150, y: 150, rotation: 0 };
+			// Return center position as fallback (950x950 scene)
+			return { x: 475, y: 475, rotation: 0 };
 		}
 	}
 
@@ -104,7 +106,7 @@ export class PropRenderingService implements IPropRenderingService {
 
 		try {
 			// Load base SVG
-			const response = await fetch(`/static/images/props/${propType}.svg`);
+			const response = await fetch(`/images/props/${propType}.svg`);
 			if (!response.ok) {
 				throw new Error(`Failed to load ${propType}.svg: ${response.status}`);
 			}
@@ -152,25 +154,20 @@ export class PropRenderingService implements IPropRenderingService {
 	}
 
 	/**
-	 * Get coordinates for a location on the grid
+	 * Get coordinates for a location on the grid using real grid data
 	 */
-	private getLocationCoordinates(location: Location, gridMode: GridMode): { x: number; y: number } {
-		const center = { x: 150, y: 150 };
-		const size = 60; // Slightly smaller than arrows for better visual hierarchy
-		
-		const locationMap: Record<Location, { x: number; y: number }> = {
-			'n': { x: center.x, y: center.y - size },
-			'ne': { x: center.x + size * 0.707, y: center.y - size * 0.707 },
-			'e': { x: center.x + size, y: center.y },
-			'se': { x: center.x + size * 0.707, y: center.y + size * 0.707 },
-			's': { x: center.x, y: center.y + size },
-			'sw': { x: center.x - size * 0.707, y: center.y + size * 0.707 },
-			'w': { x: center.x - size, y: center.y },
-			'nw': { x: center.x - size * 0.707, y: center.y - size * 0.707 },
-			'center': { x: center.x, y: center.y }
-		};
+	private getLocationCoordinates(location: Location, gridMode: GridMode, gridData: GridData): { x: number; y: number } {
+		// Props are positioned at hand points based on their end location
+		const pointName = `${location}_${gridMode}_hand_point`;
+		const point = gridData.allHandPointsNormal?.[pointName];
 
-		return locationMap[location] || locationMap['center'];
+		if (point?.coordinates) {
+			return point.coordinates;
+		}
+
+		// Fallback to center if point not found
+		console.warn(`Hand point '${pointName}' not found, using center`);
+		return gridData.centerPoint?.coordinates || { x: 475, y: 475 };
 	}
 
 	/**
