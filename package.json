@@ -42,5 +42,8 @@
   "engines": {
     "node": ">=18.0.0",
     "python": ">=3.9.0"
+  },
+  "dependencies": {
+    "@playwright/test": "^1.54.2"
   }
 }

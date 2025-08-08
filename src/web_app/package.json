@@ -1,0 +1,68 @@
+{
+  "name": "tka-web-app-root",
+  "version": "1.0.0",
+  "description": "The Kinetic Constructor Web App - Root workspace manager",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "npm run dev:legacy",
+    "dev:legacy": "cd legacy_web && npm run dev",
+    "dev:modern": "cd modern_web && npm run dev",
+    "dev:legacy-clean": "cd legacy_web && npm run dev:reset",
+    "dev:modern-clean": "cd modern_web && npm run dev",
+
+    "build": "npm run build:legacy && npm run build:modern",
+    "build:legacy": "cd legacy_web && npm run build",
+    "build:modern": "cd modern_web && npm run build",
+
+    "preview": "npm run preview:legacy",
+    "preview:legacy": "cd legacy_web && npm run preview",
+    "preview:modern": "cd modern_web && npm run preview",
+
+    "test": "npm run test:legacy && npm run test:modern",
+    "test:legacy": "cd legacy_web && npm run test",
+    "test:modern": "cd modern_web && npm run test",
+
+    "lint": "npm run lint:legacy && npm run lint:modern",
+    "lint:legacy": "cd legacy_web && npm run lint",
+    "lint:modern": "cd modern_web && npm run lint",
+
+    "format": "npm run format:legacy && npm run format:modern",
+    "format:legacy": "cd legacy_web && npm run format",
+    "format:modern": "cd modern_web && npm run format",
+
+    "install:all": "npm run install:legacy && npm run install:modern",
+    "install:legacy": "cd legacy_web && npm install",
+    "install:modern": "cd modern_web && npm install",
+
+    "clean": "npm run clean:legacy && npm run clean:modern",
+    "clean:legacy": "cd legacy_web && npm run clean:deep",
+    "clean:modern": "cd modern_web && npm run clean",
+
+
+    "status": "echo 'TKA Web App Status:' && echo 'Legacy Web: http://localhost:5173' && echo 'Modern Web: http://localhost:5174' && echo 'Use npm run dev:legacy or npm run dev:modern to start'"
+  },
+  "workspaces": [
+    "legacy_web",
+    "modern_web"
+  ],
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "cross-env": "^7.0.3"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+
+  "keywords": [
+    "kinetic-constructor",
+    "juggling",
+    "notation",
+    "svelte",
+    "typescript",
+    "web-app"
+  ],
+  "author": "TKA Team",
+  "license": "MIT"
+}

@@ -1,0 +1,89 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "🌐 TKA Modern Web App (F5 Default)",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/modern_web",
+      "env": {
+        "NODE_ENV": "development"
+      },
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "openOnSessionStart",
+      "skipFiles": ["<node_internals>/**"],
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev"]
+    },
+    {
+      "name": "🏛️ TKA Legacy Web App",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/legacy_web",
+      "env": {
+        "NODE_ENV": "development"
+      },
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "openOnSessionStart",
+      "skipFiles": ["<node_internals>/**"],
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev"]
+    },
+    {
+      "name": "🧪 TKA Modern Web Tests",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/modern_web",
+      "env": {
+        "NODE_ENV": "test"
+      },
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "openOnSessionStart",
+      "skipFiles": ["<node_internals>/**"],
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "test"]
+    },
+    {
+      "name": "🧪 TKA Legacy Web Tests",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/legacy_web",
+      "env": {
+        "NODE_ENV": "test"
+      },
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "openOnSessionStart",
+      "skipFiles": ["<node_internals>/**"],
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "test"]
+    },
+    {
+      "name": "🧪 TKA Modern Web E2E Tests",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/modern_web",
+      "env": {
+        "NODE_ENV": "test"
+      },
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "openOnSessionStart",
+      "skipFiles": ["<node_internals>/**"],
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "test:e2e"]
+    },
+    {
+      "name": "🧪 TKA Legacy Web E2E Tests",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/legacy_web",
+      "env": {
+        "NODE_ENV": "test"
+      },
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "openOnSessionStart",
+      "skipFiles": ["<node_internals>/**"],
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "test:e2e"]
+    }
+  ]
+}

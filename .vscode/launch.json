@@ -5,17 +5,65 @@
       "name": "🚀 TKA Modern Desktop App (F5 Default)",
       "type": "debugpy",
       "request": "launch",
-      "program": "${workspaceFolder}/src/desktop/modern/main.py",
+      "program": "${workspaceFolder}/src/web_app/modern_desktop/main.py",
       "console": "integratedTerminal",
       "justMyCode": false,
       "cwd": "${workspaceFolder}",
       "env": {
         "PYTHONUNBUFFERED": "1",
-        "PYTHONPATH": "${workspaceFolder};${workspaceFolder}/src/desktop/modern/src;${workspaceFolder}/src/desktop;${workspaceFolder}/src;${workspaceFolder}/launcher;${workspaceFolder}/packages"
+        "PYTHONPATH": "${workspaceFolder};${workspaceFolder}/src/web_app/modern_desktop;${workspaceFolder}/src/web_app;${workspaceFolder}/src;${workspaceFolder}/launcher;${workspaceFolder}/packages"
       },
       "stopOnEntry": false,
       "showReturnValue": true,
       "subProcess": true
+    },
+    {
+      "name": "🏛️ TKA Legacy Desktop App",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/src/web_app/legacy_desktop/main.py",
+      "console": "integratedTerminal",
+      "justMyCode": false,
+      "cwd": "${workspaceFolder}",
+      "env": {
+        "PYTHONUNBUFFERED": "1",
+        "PYTHONPATH": "${workspaceFolder};${workspaceFolder}/src/web_app/legacy_desktop;${workspaceFolder}/src/web_app;${workspaceFolder}/src;${workspaceFolder}/launcher;${workspaceFolder}/packages"
+      },
+      "stopOnEntry": false,
+      "showReturnValue": true,
+      "subProcess": true
+    },
+    {
+      "name": "🌐 TKA Modern Web App",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/src/web_app/modern_web/node_modules/.bin/vite",
+      "args": ["dev", "--host", "localhost", "--port", "5174"],
+      "cwd": "${workspaceFolder}/src/web_app/modern_web",
+      "env": {
+        "NODE_ENV": "development"
+      },
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "openOnSessionStart",
+      "skipFiles": ["<node_internals>/**"],
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev"]
+    },
+    {
+      "name": "🏛️ TKA Legacy Web App",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/src/web_app/legacy_web/node_modules/.bin/vite",
+      "args": ["dev", "--host", "localhost"],
+      "cwd": "${workspaceFolder}/src/web_app/legacy_web",
+      "env": {
+        "NODE_ENV": "development"
+      },
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "openOnSessionStart",
+      "skipFiles": ["<node_internals>/**"],
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev"]
     },
     {
       "name": "🚀 TKA Launcher",
@@ -27,14 +75,14 @@
       "cwd": "${workspaceFolder}",
       "env": {
         "PYTHONUNBUFFERED": "1",
-        "PYTHONPATH": "${workspaceFolder};${workspaceFolder}/src/desktop/modern/src;${workspaceFolder}/src/desktop;${workspaceFolder}/src;${workspaceFolder}/launcher;${workspaceFolder}/packages"
+        "PYTHONPATH": "${workspaceFolder};${workspaceFolder}/src/web_app/modern_desktop;${workspaceFolder}/src/web_app;${workspaceFolder}/src;${workspaceFolder}/launcher;${workspaceFolder}/packages"
       },
       "stopOnEntry": false,
       "showReturnValue": true,
       "subProcess": true
     },
     {
-      "name": "🖥️ TKA Desktop App",
+      "name": "🖥️ TKA Desktop App (Root)",
       "type": "debugpy",
       "request": "launch",
       "program": "${workspaceFolder}/main.py",
@@ -43,70 +91,43 @@
       "cwd": "${workspaceFolder}",
       "env": {
         "PYTHONUNBUFFERED": "1",
-        "PYTHONPATH": "${workspaceFolder};${workspaceFolder}/src/desktop/modern/src;${workspaceFolder}/src/desktop;${workspaceFolder}/src;${workspaceFolder}/launcher;${workspaceFolder}/packages"
+        "PYTHONPATH": "${workspaceFolder};${workspaceFolder}/src/web_app/modern_desktop;${workspaceFolder}/src/web_app;${workspaceFolder}/src;${workspaceFolder}/launcher;${workspaceFolder}/packages"
       },
       "stopOnEntry": false,
       "showReturnValue": true,
       "subProcess": true
     },
     {
-      "name": "🏛️ TKA Legacy Desktop App",
-      "type": "debugpy",
-      "request": "launch",
-      "program": "${workspaceFolder}/src/desktop/legacy/main.py",
-      "console": "integratedTerminal",
-      "justMyCode": false,
-      "cwd": "${workspaceFolder}",
-      "env": {
-        "PYTHONUNBUFFERED": "1",
-        "PYTHONPATH": "${workspaceFolder};${workspaceFolder}/src/desktop/modern/src;${workspaceFolder}/src/desktop;${workspaceFolder}/src;${workspaceFolder}/launcher;${workspaceFolder}/packages"
-      },
-      "stopOnEntry": false,
-      "showReturnValue": true,
-      "subProcess": true
-    },
-
-    {
-      "name": "🌐 TKA Web App (Main)",
+      "name": "🧪 TKA Modern Web Tests",
       "type": "node",
       "request": "launch",
-      "program": "${workspaceFolder}/node_modules/.bin/vite",
-      "args": ["dev", "--host", "localhost"],
-      "cwd": "${workspaceFolder}/src/web",
+      "program": "${workspaceFolder}/src/web_app/modern_web/node_modules/.bin/vitest",
+      "args": ["run"],
+      "cwd": "${workspaceFolder}/src/web_app/modern_web",
       "env": {
-        "NODE_ENV": "development"
+        "NODE_ENV": "test"
       },
       "console": "integratedTerminal",
       "internalConsoleOptions": "openOnSessionStart",
-      "skipFiles": ["<node_internals>/**"]
+      "skipFiles": ["<node_internals>/**"],
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "test"]
     },
     {
-      "name": "🏠 TKA Landing Page",
+      "name": "🧪 TKA Legacy Web Tests",
       "type": "node",
       "request": "launch",
-      "program": "${workspaceFolder}/node_modules/.bin/vite",
-      "args": ["dev", "--host", "localhost"],
-      "cwd": "${workspaceFolder}/src/web/landing",
+      "program": "${workspaceFolder}/src/web_app/legacy_web/node_modules/.bin/vitest",
+      "args": ["run"],
+      "cwd": "${workspaceFolder}/src/web_app/legacy_web",
       "env": {
-        "NODE_ENV": "development"
+        "NODE_ENV": "test"
       },
       "console": "integratedTerminal",
       "internalConsoleOptions": "openOnSessionStart",
-      "skipFiles": ["<node_internals>/**"]
-    },
-    {
-      "name": "🎨 TKA Animator",
-      "type": "node",
-      "request": "launch",
-      "program": "${workspaceFolder}/node_modules/.bin/vite",
-      "args": ["dev", "--host", "localhost"],
-      "cwd": "${workspaceFolder}/src/web/animator",
-      "env": {
-        "NODE_ENV": "development"
-      },
-      "console": "integratedTerminal",
-      "internalConsoleOptions": "openOnSessionStart",
-      "skipFiles": ["<node_internals>/**"]
+      "skipFiles": ["<node_internals>/**"],
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "test"]
     },
     {
       "name": "🧪 TKA Test Runner - All Tests",
@@ -118,7 +139,7 @@
       "cwd": "${workspaceFolder}",
       "env": {
         "PYTHONUNBUFFERED": "1",
-        "PYTHONPATH": "${workspaceFolder};${workspaceFolder}/src/desktop/modern/src;${workspaceFolder}/src/desktop;${workspaceFolder}/src;${workspaceFolder}/launcher;${workspaceFolder}/packages"
+        "PYTHONPATH": "${workspaceFolder};${workspaceFolder}/src/web_app/modern_desktop;${workspaceFolder}/src/web_app;${workspaceFolder}/src;${workspaceFolder}/launcher;${workspaceFolder}/packages"
       },
       "stopOnEntry": false,
       "showReturnValue": true,
@@ -135,7 +156,7 @@
       "cwd": "${workspaceFolder}",
       "env": {
         "PYTHONUNBUFFERED": "1",
-        "PYTHONPATH": "${workspaceFolder};${workspaceFolder}/src/desktop/modern/src;${workspaceFolder}/src/desktop;${workspaceFolder}/src;${workspaceFolder}/launcher;${workspaceFolder}/packages"
+        "PYTHONPATH": "${workspaceFolder};${workspaceFolder}/src/web_app/modern_desktop;${workspaceFolder}/src/web_app;${workspaceFolder}/src;${workspaceFolder}/launcher;${workspaceFolder}/packages"
       },
       "stopOnEntry": false,
       "showReturnValue": true,
@@ -152,7 +173,7 @@
       "cwd": "${workspaceFolder}",
       "env": {
         "PYTHONUNBUFFERED": "1",
-        "PYTHONPATH": "${workspaceFolder};${workspaceFolder}/src/desktop/modern/src;${workspaceFolder}/src/desktop;${workspaceFolder}/src;${workspaceFolder}/launcher;${workspaceFolder}/packages"
+        "PYTHONPATH": "${workspaceFolder};${workspaceFolder}/src/web_app/modern_desktop;${workspaceFolder}/src/web_app;${workspaceFolder}/src;${workspaceFolder}/launcher;${workspaceFolder}/packages"
       },
       "stopOnEntry": false,
       "showReturnValue": true,
@@ -169,7 +190,7 @@
       "cwd": "${workspaceFolder}",
       "env": {
         "PYTHONUNBUFFERED": "1",
-        "PYTHONPATH": "${workspaceFolder};${workspaceFolder}/src/desktop/modern/src;${workspaceFolder}/src/desktop;${workspaceFolder}/src;${workspaceFolder}/launcher;${workspaceFolder}/packages"
+        "PYTHONPATH": "${workspaceFolder};${workspaceFolder}/src/web_app/modern_desktop;${workspaceFolder}/src/web_app;${workspaceFolder}/src;${workspaceFolder}/launcher;${workspaceFolder}/packages"
       },
       "stopOnEntry": false,
       "showReturnValue": true,
@@ -185,7 +206,7 @@
       "cwd": "${workspaceFolder}",
       "env": {
         "PYTHONUNBUFFERED": "1",
-        "PYTHONPATH": "${workspaceFolder};${workspaceFolder}/src/desktop/modern/src;${workspaceFolder}/src/desktop;${workspaceFolder}/src;${workspaceFolder}/launcher;${workspaceFolder}/packages"
+        "PYTHONPATH": "${workspaceFolder};${workspaceFolder}/src/web_app/modern_desktop;${workspaceFolder}/src/web_app;${workspaceFolder}/src;${workspaceFolder}/launcher;${workspaceFolder}/packages"
       },
       "stopOnEntry": false,
       "showReturnValue": true,
