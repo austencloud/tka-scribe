@@ -8,13 +8,14 @@ Arrow Component - Renders SVG arrows with proper positioning
 
 	interface Props {
 		arrowData: ArrowData;
+		motionData?: any; // MotionData from pictograph
 		gridMode?: string;
 		letter?: string;
 		onLoaded?: (componentType: string) => void;
 		onError?: (componentType: string, error: string) => void;
 	}
 
-	let { arrowData, gridMode = 'diamond', letter, onLoaded, onError }: Props = $props();
+	let { arrowData, motionData, gridMode = 'diamond', letter, onLoaded, onError }: Props = $props();
 
 	let arrowElement: SVGGElement;
 	let loaded = $state(false);
@@ -22,25 +23,25 @@ Arrow Component - Renders SVG arrows with proper positioning
 
 	// Calculate position using positioning service
 	const position = $derived(() => {
-		if (!arrowData) return { x: 475, y: 475 };
+		if (!arrowData || !motionData) return { x: 475, y: 475 };
 
 		return arrowPositioningService.calculatePosition({
 			arrow_type: arrowData.color,
-			motion_type: arrowData.motion_type,
+			motion_type: motionData.motion_type,
 			location: arrowData.location,
 			grid_mode: gridMode,
 			turns: arrowData.turns,
 			letter: letter,
-			start_orientation: arrowData.start_orientation,
-			end_orientation: arrowData.end_orientation
+			start_orientation: motionData.start_orientation,
+			end_orientation: motionData.end_orientation,
 		});
 	});
 
 	// Get arrow SVG path based on motion type and properties
 	const arrowPath = $derived(() => {
-		if (!arrowData) return '/images/arrows/static/still.svg';
+		if (!arrowData || !motionData) return '/images/arrows/static/still.svg';
 
-		const { motion_type, rotation_direction } = arrowData;
+		const { motion_type, rotation_direction } = motionData;
 		const baseDir = `/images/arrows/${motion_type}`;
 
 		// For pro/anti arrows, consider rotation direction
@@ -72,12 +73,12 @@ Arrow Component - Renders SVG arrows with proper positioning
 </script>
 
 <!-- Arrow Group -->
-<g 
+<g
 	bind:this={arrowElement}
 	class="arrow-group {arrowData?.color}-arrow"
 	class:loaded
 	data-arrow-color={arrowData?.color}
-	data-motion-type={arrowData?.motion_type}
+	data-motion-type={motionData?.motion_type}
 	data-location={arrowData?.location}
 	transform="translate({position().x}, {position().y}) rotate({arrowData?.rotation_angle || 0})"
 >
@@ -87,15 +88,15 @@ Arrow Component - Renders SVG arrows with proper positioning
 		<text x="0" y="4" text-anchor="middle" font-size="8" fill="white">!</text>
 	{:else if !loaded}
 		<!-- Loading state -->
-		<circle r="8" fill="{arrowData?.color === 'blue' ? '#2E3192' : '#ED1C24'}" opacity="0.3" />
+		<circle r="8" fill={arrowData?.color === 'blue' ? '#2E3192' : '#ED1C24'} opacity="0.3" />
 		<animate attributeName="opacity" values="0.3;0.8;0.3" dur="1s" repeatCount="indefinite" />
 	{:else}
 		<!-- Actual arrow SVG -->
-		<image 
+		<image
 			href={coloredSVG()}
-			width="40" 
-			height="40" 
-			x="-20" 
+			width="40"
+			height="40"
+			x="-20"
 			y="-20"
 			class="arrow-svg {arrowData?.color}-arrow-svg"
 			on:error={() => {

@@ -64,13 +64,27 @@ export default class SvgManager {
 
 	/**
 	 * Apply color transformation to SVG content
+	 * Uses comprehensive patterns matching legacy desktop implementation
 	 */
 	public applyColor(svgData: string, color: Color): string {
 		const hexColor = color === 'red' ? '#ED1C24' : '#2E3192';
-		return svgData.replace(
-			/\.st0{([^}]*fill:#)[0-9A-Fa-f]{6}([^}]*)}/g,
-			`.st0{$1${hexColor.slice(1)}$2}`
-		);
+
+		// Pattern for CSS class definitions: .st0 { fill: #color; } or .cls-1 { fill: #color; }
+		const classColorPattern = /(\.(st0|cls-1)\s*\{[^}]*?fill:\s*)(#[a-fA-F0-9]{6})([^}]*?\})/g;
+
+		// Pattern for direct fill attributes: fill="#color"
+		const fillPattern = /(fill=")(#[a-fA-F0-9]{6})(")/g;
+
+		// Pattern for CSS style attributes: style="fill:#color"
+		const stylePattern = /(fill:\s*)(#[a-fA-F0-9]{6})(\s*;?)/g;
+
+		// Apply transformations
+		let result = svgData;
+		result = result.replace(classColorPattern, `$1${hexColor}$4`);
+		result = result.replace(fillPattern, `$1${hexColor}$3`);
+		result = result.replace(stylePattern, `$1${hexColor}$3`);
+
+		return result;
 	}
 
 	/**

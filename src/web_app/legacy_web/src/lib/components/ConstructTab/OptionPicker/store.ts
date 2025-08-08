@@ -4,12 +4,13 @@ import type { PictographData } from '$lib/types/PictographData';
 import { selectedPictograph } from '$lib/stores/sequence/selectedPictographStore';
 import type { SortMethod, ReversalFilter } from './config';
 import {
-	getNextOptions,
 	determineReversalCategory,
 	determineGroupKey,
 	getSortedGroupKeys,
 	getSorter
 } from './services/OptionsService';
+// Use the real OptionDataService instead of placeholder service
+import optionDataService from '$lib/services/OptionDataService';
 import { get } from 'svelte/store';
 import { browser } from '$app/environment';
 // Import the sequenceActions and sequenceSelectors from the state machine
@@ -86,7 +87,31 @@ export const actions = {
 		uiState.update((state) => ({ ...state, isLoading: true, error: null }));
 
 		try {
-			const nextOptions = getNextOptions(sequence);
+			// Extract end position from sequence for the real OptionDataService
+			let nextOptions: PictographData[] = [];
+
+			if (sequence && sequence.length > 0) {
+				const lastBeat = sequence[sequence.length - 1];
+				const endPosition = lastBeat?.endPos;
+
+				if (endPosition) {
+					console.log(`🎯 Store loading options for end position: ${endPosition}`);
+					nextOptions = optionDataService.getNextOptions(endPosition, 'diamond');
+				} else {
+					console.warn('No end position found in sequence');
+				}
+			} else {
+				// For empty sequence, try to get start position from localStorage
+				const startPositionData = localStorage.getItem("start_position");
+				if (startPositionData) {
+					const startPosition = JSON.parse(startPositionData);
+					const endPosition = startPosition.endPos;
+					if (endPosition) {
+						console.log(`🎯 Store loading options for start position: ${endPosition}`);
+						nextOptions = optionDataService.getNextOptions(endPosition, 'diamond');
+					}
+				}
+			}
 
 			// If we got no options, log a warning but don't treat it as an error
 			if (!nextOptions || nextOptions.length === 0) {

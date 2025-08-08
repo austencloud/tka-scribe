@@ -13,7 +13,7 @@ import type {
 import { drawBackgroundGradient } from '../snowfall/utils/backgroundUtils'; // Assuming this is a generic gradient util
 import { getOptimizedConfig } from '../config';
 import { createShootingStarSystem } from '../systems/ShootingStarSystem';
-import { NightSkyConfig } from '../config/nightSky';
+import { NightSkyConfig } from '../config/nightSky.js';
 import SunCalc from 'suncalc'; // Import SunCalc
 
 type ParallaxLayer = { stars: Star[]; driftX: number; driftY: number };

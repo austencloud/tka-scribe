@@ -39,10 +39,12 @@ export class ArrowPlacementManager {
 		const svgCenterX = arrow.svgData?.center?.x || arrow.svgCenter?.x || 0;
 		const svgCenterY = arrow.svgData?.center?.y || arrow.svgCenter?.y || 0;
 
-		// Log values for debugging
-		if (arrow.loc == 'ne' && arrow.propRotDir == 'ccw' && arrow.motionType == 'pro') {
+		// Debug logging for arrow positioning
+		console.log(`🎯 ArrowPlacementManager: Positioning ${arrow.color} arrow at ${arrow.loc}`);
+		console.log(`   Initial position: (${initialPos.x}, ${initialPos.y})`);
+		console.log(`   Adjustment: (${adjustment.x}, ${adjustment.y})`);
+		console.log(`   SVG center: (${svgCenterX}, ${svgCenterY})`);
 
-		}
 		// Calculate final position accounting for mirroring
 		if (arrow.svgMirrored) {
 			// For mirrored arrows, apply the mirroring effect to the adjustment
@@ -58,5 +60,6 @@ export class ArrowPlacementManager {
 			};
 		}
 
+		console.log(`   Final coords: (${arrow.coords.x}, ${arrow.coords.y})`);
 	}
 }

@@ -81,13 +81,21 @@ export function getDefaultAdjustment(
 	const key = getAdjustmentKey(arrow, defaultPlacements, pictographData, checker);
 	const turnsString = String(arrow.turns || 0);
 
+	console.log(`🔍 Looking up adjustment: key="${key}", turns="${turnsString}"`);
+	console.log(`   Available placements: ${JSON.stringify(Object.keys(defaultPlacements))}`);
+
 	// Find the adjustment based on the key and turns
 	if (key in defaultPlacements && turnsString in defaultPlacements[key]) {
-		return defaultPlacements[key][turnsString];
+		const adjustment = defaultPlacements[key][turnsString];
+		console.log(`   ✅ Found adjustment for key "${key}": [${adjustment[0]}, ${adjustment[1]}]`);
+		return adjustment;
 	} else if (motionType in defaultPlacements && turnsString in defaultPlacements[motionType]) {
-		return defaultPlacements[motionType][turnsString];
+		const adjustment = defaultPlacements[motionType][turnsString];
+		console.log(`   ✅ Found adjustment for motionType "${motionType}": [${adjustment[0]}, ${adjustment[1]}]`);
+		return adjustment;
 	}
 
+	console.log(`   ❌ No adjustment found, returning [0, 0]`);
 	return [0, 0];
 }
 
@@ -103,6 +111,8 @@ function getAdjustmentKey(
 	const motionType = arrow.motionType as string;
 	const motionEndOri = arrow.endOri as string;
 
+	console.log(`🔑 getAdjustmentKey: ${arrow.color} arrow, motionType: ${motionType}, endOri: ${motionEndOri}`);
+
 	// Check for different orientation types
 	const hasBetaProps = checker.checkLetterCondition(LetterConditions.BETA_ENDING);
 	const hasAlphaProps = checker.checkLetterCondition(LetterConditions.ALPHA_ENDING);
@@ -110,6 +120,14 @@ function getAdjustmentKey(
 	const hasHybridOrientation = checker.endsWithLayer3();
 	const hasRadialProps = checker.endsWithRadialOri();
 	const hasNonRadialProps = checker.endsWithNonRadialOri();
+
+	console.log(`   Orientation checks: alpha=${hasAlphaProps}, beta=${hasBetaProps}, gamma=${hasGammaProps}`);
+	console.log(`   Layer checks: hybrid=${hasHybridOrientation}, radial=${hasRadialProps}, nonRadial=${hasNonRadialProps}`);
+	console.log(`   Checker data:`, {
+		redPropData: pictographData.redPropData,
+		bluePropData: pictographData.bluePropData,
+		letter: pictographData.letter
+	});
 
 	const keySuffix = '_to_';
 	let motionEndOriKey = '';
@@ -147,6 +165,7 @@ function getAdjustmentKey(
 	} else if (hasHybridOrientation) {
 		keyMiddle = 'layer3';
 	}
+	console.log(`   Layer part: "${keyMiddle}"`);
 
 	// Add prop type
 	if (hasAlphaProps) {
@@ -156,6 +175,7 @@ function getAdjustmentKey(
 	} else if (hasGammaProps) {
 		keyMiddle += '_gamma';
 	}
+	console.log(`   After prop type: "${keyMiddle}"`);
 
 	// Construct the final key
 	let key = motionType;
@@ -164,12 +184,22 @@ function getAdjustmentKey(
 	}
 	const keyWithLetter = key + letterSuffix;
 
+	// Debug: Show available keys and constructed keys
+	const availableKeys = Object.keys(defaultPlacements);
+	console.log(`   Available keys: ${JSON.stringify(availableKeys)}`);
+	console.log(`   Constructed key: "${key}"`);
+	console.log(`   Key with letter: "${keyWithLetter}"`);
+	console.log(`   Motion type fallback: "${motionType}"`);
+
 	// Return the most specific key available
 	if (keyWithLetter in defaultPlacements) {
+		console.log(`   ✅ Using keyWithLetter: "${keyWithLetter}"`);
 		return keyWithLetter;
 	} else if (key in defaultPlacements) {
+		console.log(`   ✅ Using key: "${key}"`);
 		return key;
 	} else {
+		console.log(`   ✅ Using motionType fallback: "${motionType}"`);
 		return motionType;
 	}
 }

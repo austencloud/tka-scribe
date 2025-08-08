@@ -204,7 +204,7 @@
     }
 
     hasErrored = true;
-    svgData = svgLoader.getFallbackSvgData();
+    svgData = svgLoader.getFallbackSvgData(effectiveArrowData?.color);
     clearTimeout(loadTimeout);
     isLoaded = true;
     dispatch("loaded", { error: true });

@@ -44,7 +44,7 @@ export class ArrowSvgLoader {
       return svgContent;
     } catch (error) {
       console.warn(`Failed to load arrow SVG for ${cacheKey}:`, error);
-      return this.getDefaultArrowSvg();
+      return this.getDefaultArrowSvg(arrowParams.color);
     }
   }
 
@@ -100,12 +100,16 @@ export class ArrowSvgLoader {
   /**
    * Get default arrow SVG when loading fails
    */
-  private getDefaultArrowSvg(): string {
+  private getDefaultArrowSvg(color?: string): string {
+    // Define colors for red and blue arrows
+    const fillColor = color === 'blue' ? '#2E3192' : color === 'red' ? '#ED1C24' : '#231F20';
+    const strokeColor = color === 'blue' ? '#1E2082' : color === 'red' ? '#DD0C14' : '#231F20';
+
     return `
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 88.9 34.8">
         <style>
-          .st0{fill:none;stroke:#231F20;stroke-width:4;stroke-miterlimit:10;}
-          .st1{fill:#231F20;}
+          .st0{fill:none;stroke:${strokeColor};stroke-width:4;stroke-miterlimit:10;}
+          .st1{fill:${fillColor};}
         </style>
         <g>
           <line class="st0" x1="0" y1="17.4" x2="63.9" y2="17.4"/>
@@ -165,15 +169,33 @@ export class ArrowSvgLoader {
       color
     };
 
-    const svgContent = await this.loadArrowSvg(arrowParams);
+    let svgContent = await this.loadArrowSvg(arrowParams);
+
+    // Apply color transformation using SvgManager
+    svgContent = this.svgManager.applyColor(svgContent, color as 'red' | 'blue');
+
     return this.parseSvgToArrowData(svgContent, arrowParams);
   }
 
   /**
    * Get fallback SVG data when loading fails
    */
-  public getFallbackSvgData(): string {
-    return this.getDefaultArrowSvg();
+  public getFallbackSvgData(color?: string): ArrowSvgData {
+    let svgContent = this.getDefaultArrowSvg(color);
+
+    // Apply color transformation using SvgManager if color is provided
+    if (color) {
+      svgContent = this.svgManager.applyColor(svgContent, color as 'red' | 'blue');
+    }
+
+    // Create a dummy ArrowLoadParams for parsing
+    const arrowParams: ArrowLoadParams = {
+      motionType: 'fallback',
+      startOrientation: 'in',
+      turns: 0,
+      color: color || 'red'
+    };
+    return this.parseSvgToArrowData(svgContent, arrowParams);
   }
 
   /**

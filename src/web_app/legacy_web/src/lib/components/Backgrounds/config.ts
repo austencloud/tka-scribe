@@ -1,5 +1,6 @@
 // src/lib/components/Backgrounds/config.ts
 import type { QualityLevel } from './types/types';
+import { NightSkyConfig } from './config/nightSky';
 
 /**
  * Snowfall configuration object
@@ -159,7 +160,8 @@ export function getOptimizedConfig(quality: QualityLevel) {
 						{ offset: 1, color: '#0f3460' }
 					]
 				}
-			}
+			},
+			nightSky: NightSkyConfig
 		},
 		qualitySettings: {
 			...qualitySettings,

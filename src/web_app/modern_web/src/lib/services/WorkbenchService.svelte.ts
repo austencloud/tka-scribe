@@ -1,6 +1,6 @@
 /**
  * Workbench Service (Runes-based)
- * 
+ *
  * Main coordinator service for the sequence workbench.
  * Manages interactions between beat frame, sequence state, and UI.
  */
@@ -24,7 +24,9 @@ class WorkbenchService {
   // Actions
   initialize(): void {
     if (this.#isInitialized) return;
-    // Do not auto-create sequences; desktop parity shows empty beat frame with START until user loads/builds a sequence
+
+    // Start with no sequence - just the START tile will be shown
+    // Desktop parity: show empty workbench until user loads/creates a sequence
     this.#isInitialized = true;
   }
 
@@ -57,7 +59,7 @@ class WorkbenchService {
     if (!sequence || index < 0 || index >= sequence.beats.length) return;
 
     const beat = sequence.beats[index];
-    
+
     // For now, just create a simple pictograph
     if (beat.is_blank) {
       const pictographData = createPictographData({
@@ -94,48 +96,9 @@ class WorkbenchService {
     sequenceStateService.createNewSequence(name, length);
   }
 
-  createDemoSequence(): void {
-    // Create a demo sequence with some sample beats
-    const demoBeats: BeatData[] = Array.from({ length: 16 }, (_, i) => {
-      const isBlank = i % 3 !== 0; // Every 3rd beat has content
-      
-      if (isBlank) {
-        return createBeatData({
-          beat_number: i + 1,
-          is_blank: true,
-        });
-      }
-
-      const pictographData = createPictographData({
-        letter: String.fromCharCode(65 + (i % 8)), // A-H
-        beat: i + 1,
-      });
-
-      return createBeatData({
-        beat_number: i + 1,
-        is_blank: false,
-        pictograph_data: pictographData,
-      });
-    });
-
-    const demoSequence = {
-      id: crypto.randomUUID(),
-      name: 'Demo Sequence',
-      word: 'DEMO',
-      beats: demoBeats,
-      thumbnails: [],
-      is_favorite: false,
-      is_circular: false,
-      tags: ['demo'],
-      metadata: { created: 'workbench_demo' },
-    };
-
-    sequenceStateService.setCurrentSequence(demoSequence);
-  }
-
   // Grid configuration
   setGridMode(mode: 'diamond' | 'box'): void {
-    beatFrameService.setConfig({ 
+    beatFrameService.setConfig({
       gridMode: mode === 'diamond' ? GridMode.DIAMOND : GridMode.BOX
     });
   }

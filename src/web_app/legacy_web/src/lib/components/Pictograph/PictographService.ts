@@ -97,10 +97,34 @@ export class PictographService {
 
 	private initializeMotions(): void {
 		if (this.data.redMotionData && !this.data.redMotion) {
+			console.log(`🔧 Initializing red motion with data:`, {
+				id: this.data.redMotionData.id,
+				motionType: this.data.redMotionData.motionType,
+				startLoc: this.data.redMotionData.startLoc,
+				endLoc: this.data.redMotionData.endLoc
+			});
 			this.data.redMotion = new Motion(this.data, this.data.redMotionData);
+			console.log(`✅ Red motion created:`, {
+				id: this.data.redMotion.id,
+				motionType: this.data.redMotion.motionType,
+				startLoc: this.data.redMotion.startLoc,
+				endLoc: this.data.redMotion.endLoc
+			});
 		}
 		if (this.data.blueMotionData && !this.data.blueMotion) {
+			console.log(`🔧 Initializing blue motion with data:`, {
+				id: this.data.blueMotionData.id,
+				motionType: this.data.blueMotionData.motionType,
+				startLoc: this.data.blueMotionData.startLoc,
+				endLoc: this.data.blueMotionData.endLoc
+			});
 			this.data.blueMotion = new Motion(this.data, this.data.blueMotionData);
+			console.log(`✅ Blue motion created:`, {
+				id: this.data.blueMotion.id,
+				motionType: this.data.blueMotion.motionType,
+				startLoc: this.data.blueMotion.startLoc,
+				endLoc: this.data.blueMotion.endLoc
+			});
 		}
 	}
 
@@ -127,6 +151,18 @@ export class PictographService {
 	}
 	createArrowData(motionData: MotionData, color: Color): ArrowData {
 		const motion = color === 'red' ? this.data.redMotion : this.data.blueMotion;
+
+		// Debug logging to see what motion data we're working with
+		console.log(`🔧 Creating ${color} arrow data:`, {
+			motionDataId: motionData.id,
+			motionType: motionData.motionType,
+			startLoc: motionData.startLoc,
+			endLoc: motionData.endLoc,
+			motionExists: !!motion,
+			motionStartLoc: motion?.startLoc,
+			motionEndLoc: motion?.endLoc,
+			motionType: motion?.motionType
+		});
 
 		// Special handling for Type 3 motions with dash
 		const letterType = this.data.letter ? LetterType.getLetterType(this.data.letter) : null;
@@ -160,6 +196,8 @@ export class PictographService {
 				? this.calculateArrowLocation(motion, motionData.endLoc)
 				: motionData.endLoc;
 		}
+
+		console.log(`🎯 ${color} arrow location calculated: ${arrowLoc} (from motion: ${motion?.startLoc} → ${motion?.endLoc}, motionData: ${motionData.startLoc} → ${motionData.endLoc})`);
 
 		const arrowData: ArrowData = {
 			id: crypto.randomUUID(),

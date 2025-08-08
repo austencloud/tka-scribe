@@ -136,12 +136,12 @@ class OptionDataService {
 		// Debug logging
 		console.log(`🔍 ${color} motion: ${startLoc} → ${endLoc} (${motionType}) = arrow at ${arrowLocation}`);
 
-		// For shift motions, the arrow should be positioned at the calculated location
-		// For static motions, the arrow stays at the start location
-		const finalStartLoc = (motionType === 'static') ? startLoc : arrowLocation;
-		const finalEndLoc = (motionType === 'static') ? startLoc : arrowLocation;
+		// For motion visualization, we need to preserve the actual start and end locations
+		// The arrow location is used for positioning, but motion data should show the actual movement
+		const finalStartLoc = startLoc;  // Always use the actual start location
+		const finalEndLoc = endLoc;      // Always use the actual end location
 
-		console.log(`🎯 ${color} final locations: startLoc=${finalStartLoc}, endLoc=${finalEndLoc}`);
+		console.log(`🎯 ${color} final locations: startLoc=${finalStartLoc}, endLoc=${finalEndLoc}, arrowAt=${arrowLocation}`);
 
 		// Calculate orientations based on motion type and turns
 		const { startOri, endOri } = this.calculateOrientations(motionType, 0); // 0 turns for now
