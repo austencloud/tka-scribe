@@ -474,40 +474,13 @@ export class PictographRenderingService implements IPictographRenderingService {
 
 	/**
 	 * Render props for both colors
+	 * DISABLED: Props are now rendered by Prop.svelte components to avoid duplicates
 	 */
 	private async renderProps(svg: SVGElement, data: PictographData): Promise<void> {
-		try {
-			const gridMode = data.gridData?.mode || 'diamond';
-
-			// Render blue prop if motion exists
-			if (data.motions.blue) {
-				console.log('🎭 Rendering blue prop');
-				const blueProp = await this.propRendering.renderProp(
-					'staff', // Default prop type for now
-					'blue',
-					data.motions.blue,
-					gridMode
-				);
-				svg.appendChild(blueProp);
-			}
-
-			// Render red prop if motion exists
-			if (data.motions.red) {
-				console.log('🎭 Rendering red prop');
-				const redProp = await this.propRendering.renderProp(
-					'staff', // Default prop type for now
-					'red',
-					data.motions.red,
-					gridMode
-				);
-				svg.appendChild(redProp);
-			}
-
-			console.log('✅ Props rendered successfully');
-		} catch (error) {
-			console.error('❌ Error rendering props:', error);
-			// Continue without props rather than failing completely
-		}
+		// Props are now handled by ModernPictograph.svelte -> Prop.svelte components
+		// This service-level rendering is disabled to prevent duplicate CIRCLE_PROP elements
+		console.log('🎭 Props rendering delegated to Prop.svelte components');
+		return;
 	}
 
 	/**

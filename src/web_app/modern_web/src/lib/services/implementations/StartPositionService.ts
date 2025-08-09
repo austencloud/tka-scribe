@@ -129,10 +129,25 @@ import {
 		else if (key.includes('gamma')) letter = 'γ';
 		else letter = key;
 
-		// Create base locations for the positions
-		const locations = [Location.NORTH, Location.SOUTH, Location.EAST, Location.WEST, Location.NORTHEAST, Location.SOUTHEAST, Location.SOUTHWEST, Location.NORTHWEST];
-		const blueLocation = locations[index % locations.length];
-		const redLocation = locations[(index + 4) % locations.length]; // Offset for variety
+		// Use correct locations based on legacy position mappings
+		// From PatternGenerator.ts and positions_map.py
+		const positionMappings: Record<string, { blue: Location; red: Location }> = {
+			'alpha1_alpha1': { blue: Location.SOUTH, red: Location.NORTH },  // Alpha1: Blue=South, Red=North
+			'beta5_beta5': { blue: Location.SOUTH, red: Location.SOUTH },    // Beta5: Blue=South, Red=South
+			'gamma11_gamma11': { blue: Location.SOUTH, red: Location.EAST }, // Gamma11: Blue=South, Red=East
+			// Box mode positions
+			'alpha2_alpha2': { blue: Location.SOUTHWEST, red: Location.NORTHEAST }, // Alpha2: Blue=Southwest, Red=Northeast
+			'beta4_beta4': { blue: Location.SOUTHEAST, red: Location.SOUTHEAST },   // Beta4: Blue=Southeast, Red=Southeast
+			'gamma12_gamma12': { blue: Location.NORTHWEST, red: Location.NORTHEAST } // Gamma12: Blue=Northwest, Red=Northeast
+		};
+
+		const mapping = positionMappings[key];
+		if (!mapping) {
+			console.warn(`⚠️ No position mapping found for ${key}, using fallback`);
+		}
+
+		const blueLocation = mapping?.blue || Location.SOUTH;
+		const redLocation = mapping?.red || Location.NORTH;
 
 		console.log(`🎯 Creating start position ${key} - Blue: ${blueLocation}, Red: ${redLocation}`);
 
@@ -183,8 +198,8 @@ import {
 			start_loc: redLocation,
 			end_loc: redLocation,
 			turns: 0,
-			start_ori: Orientation.OUT,
-			end_ori: Orientation.OUT
+			start_ori: Orientation.IN,
+			end_ori: Orientation.IN
 		});
 
 		const pictograph = createPictographData({

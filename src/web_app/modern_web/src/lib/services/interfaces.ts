@@ -341,3 +341,40 @@ export const IExportService = defineService<IExportService>('IExportService');
 export const IConstructTabCoordinationService = defineService<IConstructTabCoordinationService>('IConstructTabCoordinationService');
 export const IOptionDataService = defineService<IOptionDataService>('IOptionDataService');
 export const IStartPositionService = defineService<IStartPositionService>('IStartPositionService');
+
+// ============================================================================
+// APPLICATION SETTINGS
+// ============================================================================
+
+export interface AppSettings {
+	theme: 'light' | 'dark';
+	gridMode: 'diamond' | 'box';
+	showBeatNumbers: boolean;
+	autoSave: boolean;
+	exportQuality: 'low' | 'medium' | 'high';
+	workbenchColumns: number;
+	userName?: string;
+	propType?: string;
+	backupFrequency?: string;
+	enableFades?: boolean;
+	growSequence?: boolean;
+	numBeats?: number;
+	beatLayout?: string;
+	visibility?: {
+		TKA?: boolean;
+		Reversals?: boolean;
+		Positions?: boolean;
+		Elemental?: boolean;
+		VTG?: boolean;
+		nonRadialPoints?: boolean;
+	};
+	imageExport?: {
+		includeStartPosition?: boolean;
+		addReversalSymbols?: boolean;
+		addBeatNumbers?: boolean;
+		addDifficultyLevel?: boolean;
+		addWord?: boolean;
+		addInfo?: boolean;
+		addUserInfo?: boolean;
+	};
+}

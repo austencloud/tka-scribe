@@ -40,7 +40,7 @@
     "clean:modern": "cd modern_web && npm run clean",
 
 
-    "status": "echo 'TKA Web App Status:' && echo 'Legacy Web: http://localhost:5173' && echo 'Modern Web: http://localhost:5174' && echo 'Use npm run dev:legacy or npm run dev:modern to start'"
+    "status": "echo 'TKA Web App Status:' && echo 'Legacy Web: http://localhost:5175' && echo 'Modern Web: http://localhost:5174' && echo 'Use npm run dev:legacy or npm run dev:modern to start'"
   },
   "workspaces": [
     "legacy_web",

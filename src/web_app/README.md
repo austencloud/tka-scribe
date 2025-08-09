@@ -5,6 +5,7 @@ This is the root directory for all TKA web applications. You can run any of the 
 ## Quick Start
 
 ### Run the Legacy Web App (Default)
+
 ```bash
 npm run dev
 # or specifically
@@ -12,11 +13,13 @@ npm run dev:legacy
 ```
 
 ### Run the Modern Web App
+
 ```bash
 npm run dev:modern
 ```
 
 ### Clean Start (clears cache)
+
 ```bash
 npm run dev:legacy-clean
 ```
@@ -32,43 +35,51 @@ npm run dev:legacy-clean
 ## Available Scripts
 
 ### Development
+
 - `npm run dev` - Start legacy web app (default)
 - `npm run dev:legacy` - Start legacy web app
 - `npm run dev:modern` - Start modern web app
 - `npm run dev:legacy-clean` - Start legacy web app with clean cache
 
 ### Building
+
 - `npm run build` - Build all web apps
 - `npm run build:legacy` - Build legacy web app
 - `npm run build:modern` - Build modern web app
 
 ### Testing
+
 - `npm run test` - Run tests for all web apps
 - `npm run test:legacy` - Run legacy web app tests
 - `npm run test:modern` - Run modern web app tests
 
 ### Maintenance
+
 - `npm run install:all` - Install dependencies for all web apps
 - `npm run clean` - Clean all web apps
 - `npm run lint` - Lint all web apps
 - `npm run format` - Format all web apps
 
 ### Desktop Apps
+
 - `npm run desktop:legacy` - Run legacy desktop app (requires Python)
 - `npm run desktop:modern` - Run modern desktop app (requires Python)
 
 ### Status
+
 - `npm run status` - Show status and available URLs
 
 ## URLs
 
 When running:
-- **Legacy Web**: http://localhost:5173
+
+- **Legacy Web**: http://localhost:5175
 - **Modern Web**: http://localhost:5174
 
 ## Setup
 
 1. Install dependencies for all apps:
+
    ```bash
    npm run install:all
    ```

@@ -201,8 +201,8 @@ instead of stores. It orchestrates the rendering of Grid, Props, Arrows, and Gly
 	style:height={isResponsive() ? '100%' : `${height}px`}
 >
 	<svg
-		width={isResponsive() ? '100%' : width}
-		height={isResponsive() ? '100%' : height}
+		width={isResponsive() ? '100%' : width || 144}
+		height={isResponsive() ? '100%' : height || 144}
 		viewBox={viewBox()}
 		xmlns="http://www.w3.org/2000/svg"
 		onclick={handleSvgClick}
@@ -231,6 +231,7 @@ instead of stores. It orchestrates the rendering of Grid, Props, Arrows, and Gly
 					{propData}
 					motionData={effectivePictographData()?.motions?.[color]}
 					gridMode={effectivePictographData()?.grid_data?.grid_mode || 'diamond'}
+					allProps={propsToRender().map((p) => p.propData)}
 					onLoaded={() => handleComponentLoaded(`${color}-prop`)}
 					onError={(error) => handleComponentError(`${color}-prop`, error)}
 				/>
@@ -389,6 +390,11 @@ instead of stores. It orchestrates the rendering of Grid, Props, Arrows, and Gly
 
 	svg {
 		display: block;
+		box-sizing: border-box;
+	}
+
+	/* Only use 100% size when responsive */
+	.responsive svg {
 		width: 100%;
 		height: 100%;
 	}

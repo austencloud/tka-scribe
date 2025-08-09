@@ -1,6 +1,6 @@
 /**
  * Prop Rendering Service - Web Implementation
- * 
+ *
  * This service handles prop rendering for the web app, including:
  * - Loading and caching prop SVG assets
  * - Applying color transformations
@@ -16,11 +16,14 @@ import type {
 	Location
 } from '../interfaces';
 import { createGridData, type GridData } from '../../data/gridCoordinates.js';
+import { PropRotAngleManager } from '../PropRotAngleManager';
+import { DefaultPropPositioner } from '../DefaultPropPositioner';
+import { Orientation } from '../../domain/enums';
 
 export class PropRenderingService implements IPropRenderingService {
 	private svgCache = new Map<string, string>();
 	private readonly SUPPORTED_PROPS = ['staff', 'hand', 'fan'];
-	
+
 	// Color transformation constants (matching desktop)
 	private readonly COLOR_TRANSFORMATIONS = {
 		blue: '#2E3192',
@@ -33,6 +36,7 @@ export class PropRenderingService implements IPropRenderingService {
 
 	/**
 	 * Render a prop as an SVG element
+	 * DISABLED: Props are now rendered by Prop.svelte components to avoid duplicates
 	 */
 	async renderProp(
 		propType: string,
@@ -40,25 +44,14 @@ export class PropRenderingService implements IPropRenderingService {
 		motionData: MotionData,
 		gridMode: GridMode = 'diamond'
 	): Promise<SVGElement> {
-		try {
-			console.log(`🎭 Rendering ${color} ${propType} prop`);
+		// Props are now handled by ModernPictograph.svelte -> Prop.svelte components
+		// This service-level rendering is disabled to prevent duplicate CIRCLE_PROP elements
+		console.log('🎭 PropRenderingService.renderProp() disabled - props rendered by Prop.svelte');
 
-			// Load and color the SVG
-			const svgContent = await this.loadPropSVG(propType, color);
-			
-			// Calculate position
-			const position = await this.calculatePropPosition(motionData, color, gridMode);
-			
-			// Create SVG element
-			const propElement = this.createPropElement(svgContent, position, propType, color);
-			
-			console.log(`✅ ${color} ${propType} prop rendered at position:`, position);
-			return propElement;
-
-		} catch (error) {
-			console.error(`❌ Error rendering ${color} ${propType} prop:`, error);
-			return this.createErrorProp(propType, color);
-		}
+		// Return empty group to prevent errors
+		const group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+		group.setAttribute('class', 'prop-service-disabled');
+		return group;
 	}
 
 	/**
@@ -72,11 +65,12 @@ export class PropRenderingService implements IPropRenderingService {
 		try {
 			// Use end location for prop positioning
 			const location = (motionData?.endLoc as any) || 's';
-			const gridData = createGridData(gridMode);
-			const basePosition = this.getLocationCoordinates(location, gridMode, gridData);
 
-			// Calculate rotation based on motion orientation
-			const rotation = this.calculatePropRotation(motionData);
+			// Use DefaultPropPositioner for consistent positioning
+			const basePosition = DefaultPropPositioner.calculatePosition(location, gridMode);
+
+			// Calculate rotation using PropRotAngleManager for parity with legacy
+			const rotation = this.calculatePropRotation(motionData, location);
 
 			// Apply small offset for color separation
 			const offset = this.getColorOffset(color);
@@ -99,7 +93,7 @@ export class PropRenderingService implements IPropRenderingService {
 	 */
 	async loadPropSVG(propType: string, color: 'blue' | 'red'): Promise<string> {
 		const cacheKey = `${propType}_${color}`;
-		
+
 		if (this.svgCache.has(cacheKey)) {
 			return this.svgCache.get(cacheKey)!;
 		}
@@ -110,15 +104,15 @@ export class PropRenderingService implements IPropRenderingService {
 			if (!response.ok) {
 				throw new Error(`Failed to load ${propType}.svg: ${response.status}`);
 			}
-			
+
 			let svgContent = await response.text();
-			
+
 			// Apply color transformation
 			svgContent = this.applyColorTransformation(svgContent, color);
-			
+
 			// Cache the result
 			this.svgCache.set(cacheKey, svgContent);
-			
+
 			console.log(`📦 Loaded and cached ${propType} SVG for ${color}`);
 			return svgContent;
 
@@ -141,15 +135,15 @@ export class PropRenderingService implements IPropRenderingService {
 	 */
 	private applyColorTransformation(svgContent: string, color: 'blue' | 'red'): string {
 		const targetColor = this.COLOR_TRANSFORMATIONS[color];
-		
+
 		// Replace common fill patterns
 		svgContent = svgContent.replace(/fill="[^"]*"/g, `fill="${targetColor}"`);
 		svgContent = svgContent.replace(/fill:[^;]*/g, `fill:${targetColor}`);
-		
+
 		// Replace stroke patterns for outlines
 		svgContent = svgContent.replace(/stroke="[^"]*"/g, `stroke="${targetColor}"`);
 		svgContent = svgContent.replace(/stroke:[^;]*/g, `stroke:${targetColor}`);
-		
+
 		return svgContent;
 	}
 
@@ -171,26 +165,24 @@ export class PropRenderingService implements IPropRenderingService {
 	}
 
 	/**
-	 * Calculate prop rotation based on motion data
+	 * Calculate prop rotation based on motion data using PropRotAngleManager for parity
 	 */
-	private calculatePropRotation(motionData: MotionData): number {
-		// Basic rotation based on end orientation
-		const orientationRotations = {
-			'in': 0,
-			'out': 180,
-			'clock': 90,
-			'counter': 270
-		};
+	private calculatePropRotation(motionData: MotionData, location?: string): number {
+		// Use PropRotAngleManager for consistent rotation calculation with legacy
+		const endLocation = location || (motionData?.endLoc as any) || 's';
+		const endOrientation = motionData?.endOri || 'in';
 
-		const baseRotation = orientationRotations[motionData.endOri || 'in'];
-		
-		// Add motion type adjustments
-		let adjustment = 0;
-		if (motionData.motionType === 'anti') {
-			adjustment += 180;
+		// Convert string orientation to enum
+		let orientation: Orientation;
+		switch (endOrientation) {
+			case 'in': orientation = Orientation.IN; break;
+			case 'out': orientation = Orientation.OUT; break;
+			case 'clock': orientation = Orientation.CLOCK; break;
+			case 'counter': orientation = Orientation.COUNTER; break;
+			default: orientation = Orientation.IN;
 		}
 
-		return (baseRotation + adjustment) % 360;
+		return PropRotAngleManager.calculateRotation(endLocation, orientation);
 	}
 
 	/**
@@ -220,7 +212,7 @@ export class PropRenderingService implements IPropRenderingService {
 		group.setAttribute('class', `prop-${color} prop-${propType}`);
 		group.setAttribute('data-prop-type', propType);
 		group.setAttribute('data-color', color);
-		
+
 		// Apply transform for positioning and rotation
 		const transform = `translate(${position.x}, ${position.y}) rotate(${position.rotation}) scale(0.3)`;
 		group.setAttribute('transform', transform);
@@ -248,19 +240,16 @@ export class PropRenderingService implements IPropRenderingService {
 
 	/**
 	 * Create error prop element
+	 * DISABLED: Props are now rendered by Prop.svelte components to avoid duplicates
 	 */
 	private createErrorProp(propType: string, color: 'blue' | 'red'): SVGElement {
+		// Props are now handled by ModernPictograph.svelte -> Prop.svelte components
+		// This error prop creation is disabled to prevent duplicate CIRCLE_PROP elements
+		console.log('🎭 PropRenderingService.createErrorProp() disabled - props rendered by Prop.svelte');
+
+		// Return empty group to prevent errors
 		const group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-		group.setAttribute('class', `prop-error prop-${color}`);
-		
-		const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-		circle.setAttribute('cx', '150');
-		circle.setAttribute('cy', '150');
-		circle.setAttribute('r', '10');
-		circle.setAttribute('fill', '#dc2626');
-		circle.setAttribute('opacity', '0.7');
-		
-		group.appendChild(circle);
+		group.setAttribute('class', 'prop-error-disabled');
 		return group;
 	}
 }

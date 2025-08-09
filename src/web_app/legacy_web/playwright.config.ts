@@ -43,7 +43,7 @@ export default defineConfig({
   // Shared settings for all projects
   use: {
     // Base URL to use in actions like `await page.goto('/')`
-    baseURL: "http://localhost:5173",
+    baseURL: "http://localhost:5175",
 
     // Collect trace when retrying the failed test
     trace: "on-first-retry",
@@ -104,7 +104,7 @@ export default defineConfig({
   // Local development server setup
   webServer: {
     command: "npm run dev",
-    port: 5173,
+    port: 5175,
     reuseExistingServer: !process.env.CI,
     stdout: "pipe",
     stderr: "pipe",

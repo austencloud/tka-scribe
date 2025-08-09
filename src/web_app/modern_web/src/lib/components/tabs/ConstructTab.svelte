@@ -1,4 +1,4 @@
-<!-- ConstructTab.svelte - Modern implementation following desktop app layout -->
+<!-- ConstructTab.svelte - Reorganized to match desktop app layout -->
 <script lang="ts">
 	// Import runes-based state and components
 	import { onMount } from 'svelte';
@@ -17,11 +17,18 @@
 	let constructCoordinator = $state<IConstructTabCoordinationService | null>(null);
 	let sequenceService = $state<ISequenceService | null>(null);
 
-	// Runes-based state (replacing legacy workbenchStore)
-	let activeRightPanel = $state<'start_position' | 'option_picker' | 'graph_editor' | 'generate'>('start_position');
+	// Runes-based state following desktop app pattern
+	let activeRightPanel = $state<'build' | 'generate' | 'edit' | 'export'>('build');
 	let gridMode = $state<'diamond' | 'box'>('diamond');
 	let isTransitioning = $state(false);
 	let errorMessage = $state<string | null>(null);
+
+	// Derived state: automatically determine what to show in Build tab
+	let shouldShowStartPositionPicker = $derived(() => {
+		const sequence = getCurrentSequence();
+		// Show start position picker if no sequence or no beats
+		return !sequence || !sequence.beats || sequence.beats.length === 0;
+	});
 
 	// Reactive current sequence for template
 	let currentSequence = $derived(getCurrentSequence());
@@ -52,11 +59,11 @@
 				await constructCoordinator.handleStartPositionSet(startPosition);
 			}
 
-			// Transition to option picker
-			activeRightPanel = 'option_picker';
+			// Transition will happen automatically via shouldShowStartPositionPicker
+			// when the sequence gets updated with the start position
 			errorMessage = null;
 
-			console.log('✅ Transitioned to option picker');
+			console.log('✅ Transitioned to option picker within Build tab');
 		} catch (error) {
 			console.error('❌ Error handling start position selection:', error);
 			errorMessage = error instanceof Error ? error.message : 'Failed to set start position';
@@ -82,8 +89,7 @@
 				await constructCoordinator.handleBeatAdded(beatData);
 			}
 
-			// For now, stay on option picker to continue building sequence
-			// In the future, this could transition to workbench view
+			// Stay on option picker to continue building sequence
 			errorMessage = null;
 
 			console.log('✅ Beat added to sequence');
@@ -95,24 +101,10 @@
 		}
 	}
 
-	// Handle view transitions (triggered by coordination service)
-	function handleViewTransition(targetView: string) {
-		switch (targetView) {
-			case 'start_position_picker':
-				activeRightPanel = 'start_position';
-				break;
-			case 'option_picker':
-				activeRightPanel = 'option_picker';
-				break;
-			case 'graph_editor':
-				activeRightPanel = 'graph_editor';
-				break;
-			case 'generate':
-				activeRightPanel = 'generate';
-				break;
-			default:
-				console.warn('Unknown view transition:', targetView);
-		}
+	// Handle main tab transitions
+	function handleMainTabTransition(targetTab: 'build' | 'generate' | 'edit' | 'export') {
+		activeRightPanel = targetTab;
+		// Build tab content automatically determined by shouldShowStartPositionPicker
 	}
 
 	// Setup component coordination on mount
@@ -126,7 +118,7 @@
 					handleEvent: (eventType: string, data: any) => {
 						switch (eventType) {
 							case 'ui_transition':
-								handleViewTransition(data.targetPanel);
+								// Handle legacy transition events if needed
 								break;
 							default:
 								console.log(`ConstructTab received event: ${eventType}`, data);
@@ -135,35 +127,10 @@
 				}
 			});
 		}
-
-		// Listen for transition events
-		const handleTransitionEvent = (event: CustomEvent) => {
-			handleViewTransition(event.detail.targetPanel);
-		};
-
-		document.addEventListener('construct-tab-transition', handleTransitionEvent as EventListener);
-
-		return () => {
-			document.removeEventListener('construct-tab-transition', handleTransitionEvent as EventListener);
-		};
-	});
-
-	// Determine initial view based on sequence state
-	$effect(() => {
-		const sequence = getCurrentSequence();
-		if (sequence && sequence.beats && sequence.beats.length > 0) {
-			// Has beats, show option picker
-			activeRightPanel = 'option_picker';
-		} else {
-			// No beats, show start position picker
-			activeRightPanel = 'start_position';
-		}
 	});
 </script>
 
 <div class="construct-tab" data-testid="construct-tab">
-
-
 	<!-- Error display -->
 	{#if errorMessage}
 		<div class="error-banner">
@@ -190,66 +157,81 @@
 			</div>
 		</div>
 
-		<!-- Right Panel: Tabbed interface -->
+		<!-- Right Panel: 4-Tab interface matching desktop -->
 		<div class="right-panel">
-			<!-- Tab Navigation -->
-			<div class="tab-navigation">
+			<!-- Main Tab Navigation (matches desktop: Build/Generate/Edit/Export) -->
+			<div class="main-tab-navigation">
 				<button
-					class="tab-btn"
-					class:active={activeRightPanel === 'start_position'}
-					onclick={() => handleViewTransition('start_position_picker')}
+					class="main-tab-btn"
+					class:active={activeRightPanel === 'build'}
+					onclick={() => handleMainTabTransition('build')}
 				>
-					Start Position
+					🔨 Build
 				</button>
 				<button
-					class="tab-btn"
-					class:active={activeRightPanel === 'option_picker'}
-					onclick={() => handleViewTransition('option_picker')}
-				>
-					Option Picker
-				</button>
-				<button
-					class="tab-btn"
-					class:active={activeRightPanel === 'graph_editor'}
-					onclick={() => handleViewTransition('graph_editor')}
-				>
-					Graph Editor
-				</button>
-				<button
-					class="tab-btn"
+					class="main-tab-btn"
 					class:active={activeRightPanel === 'generate'}
-					onclick={() => handleViewTransition('generate')}
+					onclick={() => handleMainTabTransition('generate')}
 				>
-					Generate
+					🤖 Generate
+				</button>
+				<button
+					class="main-tab-btn"
+					class:active={activeRightPanel === 'edit'}
+					onclick={() => handleMainTabTransition('edit')}
+				>
+					🔧 Edit
+				</button>
+				<button
+					class="main-tab-btn"
+					class:active={activeRightPanel === 'export'}
+					onclick={() => handleMainTabTransition('export')}
+				>
+					🔤 Export
 				</button>
 			</div>
 
 			<!-- Tab Content -->
 			<div class="tab-content">
-				{#if activeRightPanel === 'start_position'}
+				{#if activeRightPanel === 'build'}
+					<!-- Build Tab: Automatically shows Start Position OR Option Picker based on sequence state -->
+					{#if shouldShowStartPositionPicker}
+						<div class="panel-header">
+							<h3>Choose Start Position</h3>
+							<p>Select a starting position for your sequence</p>
+						</div>
+						<div class="panel-content">
+							<StartPositionPicker
+								{gridMode}
+								onStartPositionSelected={handleStartPositionSelected}
+							/>
+						</div>
+					{:else}
+						<div class="panel-header">
+							<h3>Build Your Sequence</h3>
+							<p>Choose the next move for your sequence</p>
+						</div>
+						<div class="panel-content">
+							<OptionPicker
+								{currentSequence}
+								difficulty="intermediate"
+								onOptionSelected={handleOptionSelected}
+							/>
+						</div>
+					{/if}
+
+				{:else if activeRightPanel === 'generate'}
 					<div class="panel-header">
-						<h2>Choose Start Position</h2>
-						<p>Select a starting position for your sequence</p>
+						<h2>Generate Sequences</h2>
+						<p>AI-powered sequence generation</p>
 					</div>
 					<div class="panel-content">
-						<StartPositionPicker
-							{gridMode}
-							onStartPositionSelected={handleStartPositionSelected}
-						/>
+						<div class="placeholder-content">
+							<p>Generate panel coming soon...</p>
+						</div>
 					</div>
-				{:else if activeRightPanel === 'option_picker'}
-					<div class="panel-header">
-						<h2>Build Your Sequence</h2>
-						<p>Choose the next move for your sequence</p>
-					</div>
-					<div class="panel-content">
-						<OptionPicker
-							{currentSequence}
-							difficulty="intermediate"
-							onOptionSelected={handleOptionSelected}
-						/>
-					</div>
-				{:else if activeRightPanel === 'graph_editor'}
+
+				{:else if activeRightPanel === 'edit'}
 					<div class="panel-header">
 						<h2>Graph Editor</h2>
 						<p>Advanced sequence editing tools</p>
@@ -259,14 +241,15 @@
 							<p>Graph Editor coming soon...</p>
 						</div>
 					</div>
-				{:else if activeRightPanel === 'generate'}
+
+				{:else if activeRightPanel === 'export'}
 					<div class="panel-header">
-						<h2>Generate Sequences</h2>
-						<p>AI-powered sequence generation</p>
+						<h2>Export Sequences</h2>
+						<p>Export your sequences in various formats</p>
 					</div>
 					<div class="panel-content">
 						<div class="placeholder-content">
-							<p>Generate panel coming soon...</p>
+							<p>Export panel coming soon...</p>
 						</div>
 					</div>
 				{/if}
@@ -291,56 +274,6 @@
 		width: 100%;
 		overflow: hidden;
 		position: relative;
-	}
-
-	.construct-header {
-		flex-shrink: 0;
-		background: var(--background);
-		border-bottom: 1px solid var(--border);
-		padding: var(--spacing-lg);
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		gap: var(--spacing-md);
-	}
-
-	.construct-header h1 {
-		margin: 0;
-		color: var(--foreground);
-		font-size: var(--font-size-2xl);
-		font-weight: 600;
-	}
-
-	.construct-controls {
-		display: flex;
-		align-items: center;
-		gap: var(--spacing-lg);
-	}
-
-	.mode-indicator {
-		padding: var(--spacing-sm) var(--spacing-md);
-		background: var(--primary)/10;
-		color: var(--primary);
-		border-radius: var(--border-radius);
-		font-size: var(--font-size-sm);
-		font-weight: 500;
-	}
-
-	.grid-selector label {
-		display: flex;
-		align-items: center;
-		gap: var(--spacing-sm);
-		color: var(--foreground);
-		font-size: var(--font-size-sm);
-	}
-
-	.grid-selector select {
-		padding: var(--spacing-xs) var(--spacing-sm);
-		border: 1px solid var(--border);
-		border-radius: var(--border-radius);
-		background: var(--background);
-		color: var(--foreground);
-		cursor: pointer;
 	}
 
 	.error-banner {
@@ -389,7 +322,7 @@
 		overflow: hidden;
 	}
 
-	/* Right Panel: Tabbed interface */
+	/* Right Panel: 4-Tab interface */
 	.right-panel {
 		flex: 1;
 		display: flex;
@@ -413,6 +346,13 @@
 		margin: 0 0 var(--spacing-sm) 0;
 		color: var(--foreground);
 		font-size: var(--font-size-xl);
+		font-weight: 500;
+	}
+
+	.panel-header h3 {
+		margin: 0 0 var(--spacing-sm) 0;
+		color: var(--foreground);
+		font-size: var(--font-size-lg);
 		font-weight: 500;
 	}
 
@@ -452,15 +392,15 @@
 		padding: var(--spacing-md);
 	}
 
-	/* Tab navigation */
-	.tab-navigation {
+	/* Main tab navigation (4 main tabs) */
+	.main-tab-navigation {
 		flex-shrink: 0;
 		display: flex;
 		background: var(--muted)/20;
 		border-bottom: 1px solid var(--border);
 	}
 
-	.tab-btn {
+	.main-tab-btn {
 		flex: 1;
 		padding: var(--spacing-md);
 		border: none;
@@ -469,16 +409,16 @@
 		cursor: pointer;
 		transition: all 0.2s ease;
 		font-size: var(--font-size-sm);
-		font-weight: 500;
-		border-bottom: 2px solid transparent;
+		font-weight: 600;
+		border-bottom: 3px solid transparent;
 	}
 
-	.tab-btn:hover {
+	.main-tab-btn:hover {
 		background: var(--muted)/30;
 		color: var(--foreground);
 	}
 
-	.tab-btn.active {
+	.main-tab-btn.active {
 		background: var(--background);
 		color: var(--primary);
 		border-bottom-color: var(--primary);
@@ -559,26 +499,15 @@
 	}
 
 	@media (max-width: 768px) {
-		.construct-header {
-			flex-direction: column;
-			align-items: flex-start;
-			gap: var(--spacing-md);
-		}
-
-		.construct-controls {
-			width: 100%;
-			justify-content: space-between;
-		}
-
 		.panel-header {
 			padding: var(--spacing-md);
 		}
 
-		.tab-navigation {
+		.main-tab-navigation {
 			flex-wrap: wrap;
 		}
 
-		.tab-btn {
+		.main-tab-btn {
 			flex: 1 1 50%;
 			padding: var(--spacing-sm);
 			font-size: var(--font-size-xs);

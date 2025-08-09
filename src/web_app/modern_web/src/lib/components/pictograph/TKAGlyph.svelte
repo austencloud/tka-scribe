@@ -18,16 +18,80 @@ Uses pure runes instead of stores for reactivity.
 		color?: string;
 		/** Debug mode */
 		debug?: boolean;
+		/** Scale factor - match legacy behavior */
+		scale?: number;
 	}
 
 	let {
 		letter,
-		x = 63,
-		y = 766,
-		turnsTuple = "(s, 0, 0)",
+		x = 50, // Match legacy positioning exactly
+		y = 800, // Match legacy positioning exactly
+		turnsTuple = '(s, 0, 0)',
 		color = '#4b5563',
-		debug = false
+		debug = false,
+		scale = 1, // Match legacy default scale
 	}: Props = $props();
+
+	// Font size for timing indicators
+	const fontSize = 16;
+
+	// Letter dimensions state - match legacy behavior
+	let letterDimensions = $state({ width: 0, height: 0 });
+	let isLetterLoaded = $state(false);
+
+	// Cache for SVG dimensions (simple in-memory cache)
+	const dimensionsCache = new Map<string, { width: number; height: number }>();
+
+	// Load letter dimensions using SVG viewBox like legacy version
+	async function loadLetterDimensions(currentLetter: string) {
+		if (!currentLetter) return;
+
+		// Check cache first
+		const cacheKey = currentLetter;
+		if (dimensionsCache.has(cacheKey)) {
+			letterDimensions = dimensionsCache.get(cacheKey)!;
+			isLetterLoaded = true;
+			return;
+		}
+
+		try {
+			// Fetch SVG and parse viewBox like legacy version
+			const svgPath = `/images/letters_trimmed/Type1/${currentLetter}.svg`;
+			const response = await fetch(svgPath);
+			if (!response.ok) throw new Error(`Failed to fetch ${svgPath}: ${response.status}`);
+
+			const svgText = await response.text();
+			const viewBoxMatch = svgText.match(
+				/viewBox\s*=\s*"[\d\.\-]+\s+[\d\.\-]+\s+([\d\.\-]+)\s+([\d\.\-]+)"/i
+			);
+
+			if (!viewBoxMatch) {
+				console.warn(`SVG at ${svgPath} has no valid viewBox, using defaults`);
+				letterDimensions = { width: 100, height: 100 };
+			} else {
+				letterDimensions = {
+					width: parseFloat(viewBoxMatch[1]),
+					height: parseFloat(viewBoxMatch[2]),
+				};
+			}
+
+			dimensionsCache.set(cacheKey, letterDimensions);
+			isLetterLoaded = true;
+		} catch (error) {
+			console.error(`Failed to load letter dimensions for ${currentLetter}:`, error);
+			// Fallback dimensions
+			letterDimensions = { width: 50, height: 50 };
+			isLetterLoaded = true;
+		}
+	}
+
+	// Load dimensions when letter changes
+	$effect(() => {
+		if (letter) {
+			isLetterLoaded = false;
+			loadLetterDimensions(letter);
+		}
+	});
 
 	// Derived state - check if we have a valid letter
 	const hasLetter = $derived(() => {
@@ -37,12 +101,12 @@ Uses pure runes instead of stores for reactivity.
 	// Derived state - parse turns tuple
 	const parsedTurns = $derived(() => {
 		if (!turnsTuple) return { timing: 's', blue: 0, red: 0 };
-		
+
 		try {
 			// Remove parentheses and split by comma
 			const cleaned = turnsTuple.replace(/[()]/g, '').trim();
-			const parts = cleaned.split(',').map(s => s.trim());
-			
+			const parts = cleaned.split(',').map((s) => s.trim());
+
 			if (parts.length !== 3) {
 				return { timing: 's', blue: 0, red: 0 };
 			}
@@ -50,7 +114,7 @@ Uses pure runes instead of stores for reactivity.
 			return {
 				timing: parts[0],
 				blue: parseFloat(parts[1]) || 0,
-				red: parseFloat(parts[2]) || 0
+				red: parseFloat(parts[2]) || 0,
 			};
 		} catch (error) {
 			if (debug) {
@@ -61,9 +125,11 @@ Uses pure runes instead of stores for reactivity.
 	});
 
 	// Derived state - check if we should show turn indicators
+	// TEMPORARILY DISABLED: Turn indicators were creating CIRCLE_PROP duplicates in comparison tests
 	const showTurns = $derived(() => {
-		const turns = parsedTurns();
-		return turns.blue !== 0 || turns.red !== 0;
+		// const turns = parsedTurns();
+		// return turns.blue !== 0 || turns.red !== 0;
+		return false; // Disable turn indicators to prevent CIRCLE_PROP duplicates
 	});
 
 	// Derived state - format turn displays
@@ -75,7 +141,7 @@ Uses pure runes instead of stores for reactivity.
 			displays.push({
 				color: 'blue',
 				value: turns.blue,
-				displayText: formatTurnValue(turns.blue)
+				displayText: formatTurnValue(turns.blue),
 			});
 		}
 
@@ -83,7 +149,7 @@ Uses pure runes instead of stores for reactivity.
 			displays.push({
 				color: 'red',
 				value: turns.red,
-				displayText: formatTurnValue(turns.red)
+				displayText: formatTurnValue(turns.red),
 			});
 		}
 
@@ -100,9 +166,12 @@ Uses pure runes instead of stores for reactivity.
 	// Get color for turn indicators
 	function getTurnColor(color: string): string {
 		switch (color) {
-			case 'blue': return '#3b82f6';
-			case 'red': return '#ef4444';
-			default: return '#6b7280';
+			case 'blue':
+				return '#3b82f6';
+			case 'red':
+				return '#ef4444';
+			default:
+				return '#6b7280';
 		}
 	}
 
@@ -110,26 +179,32 @@ Uses pure runes instead of stores for reactivity.
 	const turnPositions = $derived(() => {
 		const displays = turnDisplays();
 		const spacing = 40;
-		const startX = x - (displays.length - 1) * spacing / 2;
-		
+		const startX = x - ((displays.length - 1) * spacing) / 2;
+
 		return displays.map((display, index) => ({
 			...display,
 			x: startX + index * spacing,
-			y: y + 30 // Below the letter
+			y: y + 30, // Below the letter
 		}));
 	});
 </script>
 
 <!-- TKA Glyph Group -->
-{#if hasLetter()}
-	<g class="tka-glyph" data-letter={letter} data-turns={turnsTuple}>
-		<!-- Main letter -->
+{#if hasLetter() && isLetterLoaded}
+	<g
+		class="tka-glyph"
+		data-letter={letter}
+		data-turns={turnsTuple}
+		transform="translate({x}, {y}) scale({scale})"
+	>
+		<!-- Main letter with exact legacy dimensions -->
 		<image
-			x={x - 30}
-			y={y - 60}
-			width="60"
-			height="80"
+			x="0"
+			y="0"
 			href="/images/letters_trimmed/Type1/{letter}.svg"
+			width={letterDimensions.width}
+			height={letterDimensions.height}
+			preserveAspectRatio="xMinYMin meet"
 			class="letter-image"
 		/>
 
@@ -147,7 +222,7 @@ Uses pure runes instead of stores for reactivity.
 						stroke-width="2"
 						opacity="0.9"
 					/>
-					
+
 					<!-- Turn value text -->
 					<text
 						x={turn.x}
@@ -168,8 +243,8 @@ Uses pure runes instead of stores for reactivity.
 		<!-- Timing indicator (if not 's' - simultaneous) -->
 		{#if parsedTurns().timing !== 's'}
 			<text
-				x={x}
-				y={y - fontSize - 10}
+				x="0"
+				y={-fontSize - 10}
 				text-anchor="middle"
 				font-family="Arial, sans-serif"
 				font-size={fontSize * 0.6}
@@ -185,31 +260,13 @@ Uses pure runes instead of stores for reactivity.
 			<!-- Debug overlay -->
 			<g class="debug-overlay">
 				<!-- Position indicator -->
-				<circle
-					{x}
-					{y}
-					r="3"
-					fill="#8b5cf6"
-					opacity="0.8"
-				/>
-				
+				<circle x="0" y="0" r="3" fill="#8b5cf6" opacity="0.8" />
+
 				<!-- Debug info -->
-				<text
-					x={x + 20}
-					y={y - 20}
-					font-size="8"
-					fill="#8b5cf6"
-					font-family="monospace"
-				>
+				<text x="20" y="-20" font-size="8" fill="#8b5cf6" font-family="monospace">
 					Letter: {letter}
 				</text>
-				<text
-					x={x + 20}
-					y={y - 10}
-					font-size="8"
-					fill="#8b5cf6"
-					font-family="monospace"
-				>
+				<text x="20" y="-10" font-size="8" fill="#8b5cf6" font-family="monospace">
 					Turns: {turnsTuple}
 				</text>
 			</g>
@@ -223,15 +280,9 @@ Uses pure runes instead of stores for reactivity.
 		z-index: 4;
 	}
 
-	.letter-text {
-		/* Smooth text rendering */
-		text-rendering: optimizeLegibility;
-		-webkit-font-smoothing: antialiased;
-		-moz-osx-font-smoothing: grayscale;
-	}
-
-	.letter-text:hover {
-		filter: brightness(1.1);
+	.letter-image {
+		/* Smooth image rendering */
+		image-rendering: optimizeQuality;
 	}
 
 	.turn-indicators circle {

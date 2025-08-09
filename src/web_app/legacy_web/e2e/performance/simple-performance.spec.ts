@@ -3,7 +3,7 @@ import { Page } from "@playwright/test";
 
 /**
  * Simple Performance Test Suite
- * 
+ *
  * This suite measures basic performance metrics of the legacy web app
  * and provides actionable insights for optimization.
  */
@@ -21,15 +21,15 @@ async function collectSimpleMetrics(page: Page): Promise<SimpleMetrics> {
   return await page.evaluate(() => {
     const resources = performance.getEntriesByType('resource');
     const paint = performance.getEntriesByType('paint');
-    
+
     // Calculate total asset size and identify slow assets
     let totalAssetSize = 0;
     const slowAssets: Array<{ name: string; time: number; size: number }> = [];
-    
+
     resources.forEach((resource: any) => {
       const size = resource.transferSize || 0;
       totalAssetSize += size;
-      
+
       if (resource.duration > 100) { // Assets taking more than 100ms
         const url = new URL(resource.name);
         const filename = url.pathname.split('/').pop() || url.pathname;
@@ -58,16 +58,16 @@ async function collectSimpleMetrics(page: Page): Promise<SimpleMetrics> {
 test.describe("Simple Performance Analysis", () => {
   test("should collect baseline performance metrics", async ({ page }) => {
     console.log("🚀 Starting performance measurement...");
-    
+
     const startTime = Date.now();
-    await page.goto('http://localhost:5173/', { waitUntil: 'networkidle' });
+    await page.goto('http://localhost:5175/', { waitUntil: 'networkidle' });
     const totalLoadTime = Date.now() - startTime;
 
     // Wait a moment for the app to fully initialize
     await page.waitForTimeout(2000);
 
     const metrics = await collectSimpleMetrics(page);
-    
+
     console.log("\n📊 PERFORMANCE METRICS:");
     console.log("========================");
     console.log(`⏱️  Total Load Time: ${totalLoadTime}ms`);
@@ -75,7 +75,7 @@ test.describe("Simple Performance Analysis", () => {
     console.log(`💾 Memory Usage: ${(metrics.memoryUsage / 1024 / 1024).toFixed(2)} MB`);
     console.log(`📦 Total Assets: ${metrics.assetCount}`);
     console.log(`📊 Total Asset Size: ${(metrics.totalAssetSize / 1024 / 1024).toFixed(2)} MB`);
-    
+
     if (metrics.slowAssets.length > 0) {
       console.log("\n🐌 SLOW LOADING ASSETS (>100ms):");
       console.log("==================================");
@@ -95,8 +95,8 @@ test.describe("Simple Performance Analysis", () => {
 
   test("should measure tab navigation performance", async ({ page, appPage }) => {
     console.log("🔄 Testing tab navigation performance...");
-    
-    await page.goto('http://localhost:5173/', { waitUntil: 'networkidle' });
+
+    await page.goto('http://localhost:5175/', { waitUntil: 'networkidle' });
     await page.waitForTimeout(1000);
 
     const tabs = ['write', 'generate', 'construct', 'browse'];
@@ -108,13 +108,13 @@ test.describe("Simple Performance Analysis", () => {
         await appPage.navigateToTab(tab as any);
         await page.waitForTimeout(500); // Wait for tab to settle
         const endTime = performance.now();
-        
+
         navigationTimes[tab] = Math.round(endTime - startTime);
         console.log(`📑 ${tab.toUpperCase()} tab: ${navigationTimes[tab]}ms`);
-        
+
         // Take screenshot of each tab
         await page.screenshot({ path: `test-results/tab-${tab}.png` });
-        
+
       } catch (error) {
         console.log(`❌ Error navigating to ${tab}:`, error);
         navigationTimes[tab] = -1;
@@ -140,13 +140,13 @@ test.describe("Simple Performance Analysis", () => {
 
   test("should analyze caching effectiveness", async ({ page }) => {
     console.log("🗄️  Testing caching effectiveness...");
-    
+
     // First load (cold cache)
     console.log("❄️  Cold cache load...");
     const firstStartTime = Date.now();
-    await page.goto('http://localhost:5173/', { waitUntil: 'networkidle' });
+    await page.goto('http://localhost:5175/', { waitUntil: 'networkidle' });
     const firstLoadTime = Date.now() - firstStartTime;
-    
+
     await page.waitForTimeout(1000);
     const firstMetrics = await collectSimpleMetrics(page);
 
@@ -155,7 +155,7 @@ test.describe("Simple Performance Analysis", () => {
     const secondStartTime = Date.now();
     await page.reload({ waitUntil: 'networkidle' });
     const secondLoadTime = Date.now() - secondStartTime;
-    
+
     await page.waitForTimeout(1000);
     const secondMetrics = await collectSimpleMetrics(page);
 
@@ -184,12 +184,12 @@ test.describe("Simple Performance Analysis", () => {
 
   test("should identify optimization opportunities", async ({ page }) => {
     console.log("🔍 Analyzing optimization opportunities...");
-    
-    await page.goto('http://localhost:5173/', { waitUntil: 'networkidle' });
+
+    await page.goto('http://localhost:5175/', { waitUntil: 'networkidle' });
     await page.waitForTimeout(2000);
 
     const metrics = await collectSimpleMetrics(page);
-    
+
     console.log("\n🔧 OPTIMIZATION RECOMMENDATIONS:");
     console.log("==================================");
 
@@ -207,7 +207,7 @@ test.describe("Simple Performance Analysis", () => {
       console.log("   - Optimize or compress large assets");
       console.log("   - Consider CDN for static assets");
       console.log("   - Implement asset preloading for critical resources");
-      
+
       const verySlowAssets = metrics.slowAssets.filter(asset => asset.time > 500);
       if (verySlowAssets.length > 0) {
         console.log("   - Priority fixes needed for:");

@@ -425,7 +425,7 @@ export class PerformanceMonitor {
 {
   "scripts": {
     "analyze": "vite build --mode analyze",
-    "perf-test": "lighthouse http://localhost:5173 --output json --output-path ./perf-report.json",
+    "perf-test": "lighthouse http://localhost:5175 --output json --output-path ./perf-report.json",
     "size-check": "bundlesize"
   },
   "bundlesize": [

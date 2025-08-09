@@ -28,8 +28,11 @@ export function getInitializationProgress() { return initState.initializationPro
 // UI STATE
 // ============================================================================
 
+// UPDATED: Tab types to match desktop app exactly
+type TabId = 'construct' | 'browse' | 'write' | 'learn' | 'sequence_card';
+
 const uiState = $state({
-	activeTab: 'construct' as 'construct' | 'generate' | 'browse' | 'learn',
+	activeTab: 'construct' as TabId,
 	isFullScreen: false,
 	showSettings: false,
 	theme: 'dark' as 'light' | 'dark'
@@ -61,7 +64,8 @@ const settingsState = $state<AppSettings>({
 	gridMode: 'diamond',
 	showBeatNumbers: true,
 	autoSave: true,
-	exportQuality: 'high'
+	exportQuality: 'high',
+	workbenchColumns: 5
 });
 
 export function getSettings() { return settingsState; }
@@ -126,9 +130,9 @@ export function clearInitializationError(): void {
 }
 
 /**
- * Switch to a different tab
+ * Switch to a different tab - UPDATED to match desktop app tabs
  */
-export function switchTab(tab: 'construct' | 'generate' | 'browse' | 'learn'): void {
+export function switchTab(tab: TabId): void {
 	uiState.activeTab = tab;
 }
 

@@ -83,7 +83,7 @@ test.describe("Comprehensive Performance Analysis", () => {
     const context = await browser.newContext();
     const page = await context.newPage();
 
-    await page.goto('http://localhost:5173/');
+    await page.goto('http://localhost:5175/');
     await page.waitForLoadState('networkidle');
 
     baselineMetrics = await collectPerformanceMetrics(page);
@@ -97,7 +97,7 @@ test.describe("Comprehensive Performance Analysis", () => {
     await page.context().clearCookies();
 
     const startTime = Date.now();
-    await page.goto('http://localhost:5173/', { waitUntil: 'networkidle' });
+    await page.goto('http://localhost:5175/', { waitUntil: 'networkidle' });
     const loadTime = Date.now() - startTime;
 
     const metrics = await collectPerformanceMetrics(page);
@@ -119,7 +119,7 @@ test.describe("Comprehensive Performance Analysis", () => {
   });
 
   test("should measure asset loading performance", async ({ page }) => {
-    await page.goto('http://localhost:5173/');
+    await page.goto('http://localhost:5175/');
     await page.waitForLoadState('networkidle');
 
     const metrics = await collectPerformanceMetrics(page);
@@ -144,7 +144,7 @@ test.describe("Comprehensive Performance Analysis", () => {
   });
 
   test("should measure tab navigation performance", async ({ page, appPage }) => {
-    await page.goto('http://localhost:5173/');
+    await page.goto('http://localhost:5175/');
     await page.waitForLoadState('networkidle');
 
     const tabs = ['write', 'generate', 'construct', 'browse', 'learn'];
@@ -182,7 +182,7 @@ test.describe("Comprehensive Performance Analysis", () => {
   });
 
   test("should measure memory usage patterns", async ({ page, appPage }) => {
-    await page.goto('http://localhost:5173/');
+    await page.goto('http://localhost:5175/');
     await page.waitForLoadState('networkidle');
 
     const memorySnapshots: { [key: string]: number } = {};
@@ -220,7 +220,7 @@ test.describe("Comprehensive Performance Analysis", () => {
 
   test("should measure caching effectiveness", async ({ page }) => {
     // First load (cold cache)
-    await page.goto('http://localhost:5173/');
+    await page.goto('http://localhost:5175/');
     await page.waitForLoadState('networkidle');
     const firstLoadMetrics = await collectPerformanceMetrics(page);
 
@@ -241,7 +241,7 @@ test.describe("Comprehensive Performance Analysis", () => {
   });
 
   test("should measure interaction responsiveness", async ({ page, appPage, generateTabPage }) => {
-    await page.goto('http://localhost:5173/');
+    await page.goto('http://localhost:5175/');
     await page.waitForLoadState('networkidle');
 
     const interactionTimes: { [key: string]: number } = {};
@@ -285,7 +285,7 @@ test.describe("Comprehensive Performance Analysis", () => {
   });
 
   test("should analyze bundle size and loading patterns", async ({ page }) => {
-    await page.goto('http://localhost:5173/');
+    await page.goto('http://localhost:5175/');
     await page.waitForLoadState('networkidle');
 
     const bundleAnalysis = await page.evaluate(() => {

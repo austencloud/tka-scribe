@@ -2,7 +2,7 @@ import { defineConfig, devices } from '@playwright/test';
 
 /**
  * Playwright Configuration for Start Position Picker Comparative Tests
- * 
+ *
  * Optimized configuration for running comparative tests between legacy and modern
  * web applications with appropriate timeouts, parallelization, and reporting.
  */
@@ -10,60 +10,60 @@ import { defineConfig, devices } from '@playwright/test';
 export default defineConfig({
   // Test directory
   testDir: '.',
-  
+
   // Test file patterns
   testMatch: ['**/*.test.ts'],
-  
+
   // Global test timeout
   timeout: 120000, // 2 minutes per test (allows for dual app navigation)
-  
+
   // Expect timeout for assertions
   expect: {
     timeout: 10000 // 10 seconds for assertions
   },
-  
+
   // Test execution settings
   fullyParallel: false, // Sequential execution to avoid resource conflicts
   forbidOnly: !!process.env.CI, // Fail if test.only is committed
   retries: process.env.CI ? 2 : 1, // Retry failed tests in CI
   workers: process.env.CI ? 1 : 2, // Limited workers to manage browser contexts
-  
+
   // Reporter configuration
   reporter: [
-    ['html', { 
+    ['html', {
       outputFolder: './test-results/html-report',
       open: process.env.CI ? 'never' : 'on-failure'
     }],
-    ['json', { 
-      outputFile: './test-results/results.json' 
+    ['json', {
+      outputFile: './test-results/results.json'
     }],
-    ['junit', { 
-      outputFile: './test-results/junit.xml' 
+    ['junit', {
+      outputFile: './test-results/junit.xml'
     }],
     ['list'], // Console output
     ...(process.env.CI ? [] : [['line']]) // Detailed line output for local development
   ],
-  
+
   // Global test setup
   globalSetup: './setup/global-setup.ts',
   globalTeardown: './setup/global-teardown.ts',
-  
+
   // Output directory for test artifacts
   outputDir: './test-results/artifacts',
-  
+
   // Use configuration
   use: {
     // Base URL (will be overridden per test)
-    baseURL: 'http://localhost:5173',
-    
+    baseURL: 'http://localhost:5175',
+
     // Browser settings
     headless: process.env.CI ? true : false,
     viewport: { width: 1280, height: 720 },
-    
+
     // Action timeouts
     actionTimeout: 15000, // 15 seconds for actions
     navigationTimeout: 30000, // 30 seconds for navigation
-    
+
     // Screenshots and videos
     screenshot: {
       mode: 'only-on-failure',
@@ -73,7 +73,7 @@ export default defineConfig({
       mode: 'retain-on-failure',
       size: { width: 1280, height: 720 }
     },
-    
+
     // Trace collection
     trace: {
       mode: 'retain-on-failure',
@@ -81,10 +81,10 @@ export default defineConfig({
       snapshots: true,
       sources: true
     },
-    
+
     // Context options
     ignoreHTTPSErrors: true,
-    
+
     // Locale and timezone
     locale: 'en-US',
     timezoneId: 'America/New_York'
@@ -94,7 +94,7 @@ export default defineConfig({
   projects: [
     {
       name: 'comparative-chromium',
-      use: { 
+      use: {
         ...devices['Desktop Chrome'],
         // Increased context timeout for dual app testing
         contextOptions: {
@@ -104,27 +104,27 @@ export default defineConfig({
       },
       testMatch: ['start-position-picker-comparison.test.ts']
     },
-    
+
     {
       name: 'comparative-firefox',
-      use: { 
+      use: {
         ...devices['Desktop Firefox']
       },
       testMatch: ['start-position-picker-comparison.test.ts']
     },
-    
+
     {
       name: 'comparative-webkit',
-      use: { 
+      use: {
         ...devices['Desktop Safari']
       },
       testMatch: ['start-position-picker-comparison.test.ts']
     },
-    
+
     // Mobile testing (optional)
     {
       name: 'comparative-mobile-chrome',
-      use: { 
+      use: {
         ...devices['Pixel 5']
       },
       testMatch: ['start-position-picker-comparison.test.ts'],
@@ -138,7 +138,7 @@ export default defineConfig({
     {
       command: 'npm run dev',
       cwd: '../../legacy_web',
-      port: 5173,
+      port: 5175,
       timeout: 60000,
       reuseExistingServer: !process.env.CI,
       stdout: 'pipe',

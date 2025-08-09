@@ -1,0 +1,65 @@
+<!-- CodexExporterTab.svelte - Codex exporter settings tab (placeholder) -->
+<script lang="ts">
+	import { createEventDispatcher } from 'svelte';
+	import SettingCard from '../SettingCard.svelte';
+
+	interface Props {
+		settings: any;
+	}
+
+	let { settings }: Props = $props();
+	const dispatch = createEventDispatcher();
+</script>
+
+<div class="tab-content">
+	<SettingCard 
+		title="Codex Exporter" 
+		description="Settings for exporting sequences to codex format."
+	>
+		<div class="placeholder-content">
+			<h4>🚧 Codex Export Settings</h4>
+			<p>Advanced codex export configuration options coming soon...</p>
+			<p class="feature-list">
+				<strong>Planned features:</strong><br>
+				• Custom codex templates<br>
+				• Export format options<br>
+				• Metadata inclusion settings<br>
+				• Batch export configurations
+			</p>
+		</div>
+	</SettingCard>
+</div>
+
+<style>
+	.tab-content {
+		max-width: 600px;
+	}
+
+	.placeholder-content {
+		text-align: center;
+		padding: var(--spacing-xl);
+		color: var(--muted-foreground);
+		background: rgba(255, 255, 255, 0.02);
+		border: 2px dashed rgba(255, 255, 255, 0.1);
+		border-radius: 12px;
+	}
+
+	.placeholder-content h4 {
+		margin: 0 0 var(--spacing-md) 0;
+		font-size: var(--font-size-lg);
+		color: var(--foreground);
+	}
+
+	.placeholder-content p {
+		margin: 0 0 var(--spacing-md) 0;
+		line-height: 1.5;
+	}
+
+	.feature-list {
+		text-align: left;
+		background: rgba(255, 255, 255, 0.03);
+		padding: var(--spacing-md);
+		border-radius: 8px;
+		font-size: var(--font-size-sm);
+	}
+</style>

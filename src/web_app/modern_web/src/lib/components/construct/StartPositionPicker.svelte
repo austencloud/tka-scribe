@@ -204,7 +204,7 @@
 					<div class="pictograph-wrapper">
 						<ModernPictograph
 							pictographData={pictograph}
-							debug={true}
+							debug={false}
 							showLoadingIndicator={false}
 						/>
 					</div>

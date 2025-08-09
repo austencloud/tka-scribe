@@ -4,16 +4,29 @@ Prop Component - Renders SVG props with proper positioning
 <script lang="ts">
 	import type { PropData, MotionData } from '$lib/domain';
 	import { onMount } from 'svelte';
+	import { DefaultPropPositioner } from '$lib/services/DefaultPropPositioner';
+	import { PropRotAngleManager } from '$lib/services/PropRotAngleManager';
+	import { BetaPropDirectionCalculator } from '$lib/services/implementations/BetaPropDirectionCalculator';
+	import { BetaOffsetCalculator } from '$lib/services/implementations/BetaOffsetCalculator';
+	import { Orientation } from '$lib/domain/enums';
 
 	interface Props {
 		propData: PropData;
 		motionData?: MotionData;
 		gridMode?: string;
+		allProps?: PropData[];
 		onLoaded?: (componentType: string) => void;
 		onError?: (componentType: string, error: string) => void;
 	}
 
-	let { propData, motionData, gridMode = 'diamond', onLoaded, onError }: Props = $props();
+	let {
+		propData,
+		motionData,
+		gridMode = 'diamond',
+		allProps = [],
+		onLoaded,
+		onError,
+	}: Props = $props();
 
 	let propElement: SVGGElement;
 	let loaded = $state(false);
@@ -24,39 +37,135 @@ Prop Component - Renders SVG props with proper positioning
 		center: { x: number; y: number };
 	} | null>(null);
 
-	// Calculate position based on motion's end location and grid mode
+	// Calculate position using DefaultPropPositioner for consistency with legacy
 	const position = $derived(() => {
 		if (!propData) return { x: 475, y: 475 };
 
-		// Props use motion's END location, not propData.location
-		// This is the critical research finding - props ALWAYS use motion end_loc
-		const location = motionData?.end_loc || propData.location;
+		// Props use their OWN location, not motion end location
+		// This is critical - PropPlacementManager sets prop.location which may differ from motion.end_loc
+		const location = propData.location || motionData?.end_loc;
 
-		// Base coordinates for diamond grid hand points
-		const diamondHandPoints: Record<string, { x: number; y: number }> = {
-			n: { x: 475, y: 175 },
-			ne: { x: 650, y: 250 },
-			e: { x: 725, y: 475 },
-			se: { x: 650, y: 700 },
-			s: { x: 475, y: 775 },
-			sw: { x: 300, y: 700 },
-			w: { x: 225, y: 475 },
-			nw: { x: 300, y: 250 },
+		// Use DefaultPropPositioner for consistent positioning
+		const basePosition = DefaultPropPositioner.calculatePosition(location as string, gridMode);
+
+		// Apply beta adjustment if needed (when props are at same location)
+		const betaOffset = calculateBetaOffset();
+
+		return {
+			x: basePosition.x + betaOffset.x,
+			y: basePosition.y + betaOffset.y,
 		};
+	});
 
-		const boxHandPoints: Record<string, { x: number; y: number }> = {
-			n: { x: 475, y: 200 },
-			ne: { x: 625, y: 275 },
-			e: { x: 700, y: 475 },
-			se: { x: 625, y: 675 },
-			s: { x: 475, y: 750 },
-			sw: { x: 325, y: 675 },
-			w: { x: 250, y: 475 },
-			nw: { x: 325, y: 275 },
-		};
+	// Calculate beta adjustment offset for prop separation using legacy direction logic
+	function calculateBetaOffset(): { x: number; y: number } {
+		if (!propData || !allProps || allProps.length < 2) {
+			return { x: 0, y: 0 };
+		}
 
-		const points = gridMode === 'box' ? boxHandPoints : diamondHandPoints;
-		return points[location || 'n'] || { x: 475, y: 475 };
+		// Check if there's another prop at the same location
+		const otherProp = allProps.find(
+			(p) => p.color !== propData.color && p.location === propData.location
+		);
+
+		if (!otherProp) {
+			return { x: 0, y: 0 };
+		}
+
+		// Use legacy direction calculator logic for proper beta positioning
+		try {
+			// Get motion data for both props - use the motionData prop passed to component
+			const redProp = allProps.find((p) => p.color === 'red');
+			const blueProp = allProps.find((p) => p.color === 'blue');
+
+			// For start positions, we need to construct motion data from prop data
+			// Since start positions are static, we can use the prop location as both start and end
+			const redMotion = {
+				motion_type: 'static' as any,
+				start_loc: redProp?.location || 's',
+				end_loc: redProp?.location || 's',
+				start_ori: Orientation.IN,
+				end_ori: Orientation.IN,
+				color: 'red',
+			};
+
+			const blueMotion = {
+				motion_type: 'static' as any,
+				start_loc: blueProp?.location || 's',
+				end_loc: blueProp?.location || 's',
+				start_ori: Orientation.IN,
+				end_ori: Orientation.IN,
+				color: 'blue',
+			};
+
+			// Create direction calculator
+			const directionCalculator = new BetaPropDirectionCalculator({
+				red: redMotion,
+				blue: blueMotion,
+			});
+
+			// Get direction for this prop
+			const direction = directionCalculator.getDirection(propData);
+
+			if (!direction) {
+				console.warn('Could not determine direction for beta positioning, using fallback');
+				return propData.color === 'blue' ? { x: -25, y: 0 } : { x: 25, y: 0 };
+			}
+
+			// Calculate offset using direction
+			const offsetCalculator = new BetaOffsetCalculator();
+			const basePosition = { x: 0, y: 0 }; // We only want the offset, not absolute position
+			const newPosition = offsetCalculator.calculateNewPositionWithOffset(basePosition, direction);
+
+			console.log(
+				`🎯 Beta direction for ${propData.color} prop: ${direction}, offset: (${newPosition.x}, ${newPosition.y})`
+			);
+
+			return { x: newPosition.x, y: newPosition.y };
+		} catch (error) {
+			console.error('Error in beta direction calculation:', error);
+			// Fallback to simple left/right separation
+			return propData.color === 'blue' ? { x: -25, y: 0 } : { x: 25, y: 0 };
+		}
+	}
+
+	// Calculate rotation using PropRotAngleManager for consistency with legacy
+	const rotation = $derived(() => {
+		if (!propData || !motionData) return 0;
+
+		const location = propData.location || motionData?.end_loc;
+		const endOrientation = motionData?.end_ori || 'in';
+
+		// Convert string orientation to enum
+		let orientation: Orientation;
+		switch (endOrientation) {
+			case 'in':
+				orientation = Orientation.IN;
+				break;
+			case 'out':
+				orientation = Orientation.OUT;
+				break;
+			case 'clock':
+				orientation = Orientation.CLOCK;
+				break;
+			case 'counter':
+				orientation = Orientation.COUNTER;
+				break;
+			default:
+				orientation = Orientation.IN;
+		}
+
+		const calculatedRotation = PropRotAngleManager.calculateRotation(
+			location as string,
+			orientation
+		);
+
+		// Debug logging for rotation verification
+		console.log(
+			`🔄 Prop rotation - Color: ${propData.color}, Location: ${location}, Orientation: ${endOrientation}, Rotation: ${calculatedRotation}°`
+		);
+
+		return calculatedRotation;
 	});
 
 	// Parse SVG to get proper dimensions and center point
@@ -110,7 +219,10 @@ Prop Component - Renders SVG props with proper positioning
 </style>`
 		);
 
-		console.log(`✅ ${color} color applied to prop SVG`);
+		// Remove the centerPoint circle entirely to prevent CIRCLE_PROP detection
+		coloredSvg = coloredSvg.replace(/<circle[^>]*id="centerPoint"[^>]*\/?>/, '');
+
+		console.log(`✅ ${color} color applied to prop SVG and centerPoint removed`);
 		return coloredSvg;
 	};
 
@@ -180,7 +292,7 @@ Prop Component - Renders SVG props with proper positioning
 			href={svgData.imageSrc}
 			transform="
 				translate({position().x}, {position().y})
-				rotate({0})
+				rotate({rotation()})
 				translate({-svgData.center.x}, {-svgData.center.y})
 			"
 			width={svgData.viewBox.width}
@@ -193,13 +305,14 @@ Prop Component - Renders SVG props with proper positioning
 			}}
 		/>
 
-		<!-- Debug info (if needed) -->
-		{#if import.meta.env.DEV}
+		<!-- Debug info disabled to prevent CIRCLE_PROP duplicates -->
+		<!-- Debug circles were creating duplicate CIRCLE_PROP elements in comparison tests -->
+		<!-- {#if import.meta.env.DEV}
 			<circle r="2" fill="green" opacity="0.5" cx={position().x} cy={position().y} />
 			<text x={position().x} y={position().y - 30} text-anchor="middle" font-size="6" fill="black">
 				{propData?.location}
 			</text>
-		{/if}
+		{/if} -->
 	{/if}
 </g>
 

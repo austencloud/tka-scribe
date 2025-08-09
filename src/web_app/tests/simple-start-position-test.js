@@ -19,7 +19,7 @@ async function runSimpleTest() {
     const legacyPage = await legacyContext.newPage();
 
     try {
-      await legacyPage.goto('http://localhost:5173', { timeout: 10000 });
+      await legacyPage.goto('http://localhost:5175', { timeout: 10000 });
       console.log('✅ Legacy app is accessible');
 
       // Look for start position picker
@@ -84,7 +84,7 @@ async function runSimpleTest() {
     const testPage = await testContext.newPage();
 
     try {
-      await testPage.goto('http://localhost:5173');
+      await testPage.goto('http://localhost:5175');
 
       // Look for any props or positioning elements
       const props = await testPage.evaluate(() => {

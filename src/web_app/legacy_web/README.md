@@ -99,7 +99,7 @@ Components are organized by feature and follow a consistent pattern:
    npm run dev
    ```
 
-4. Open your browser and navigate to [http://localhost:5173](http://localhost:5173)
+4. Open your browser and navigate to [http://localhost:5175](http://localhost:5175)
 
 ### Building for Production
 

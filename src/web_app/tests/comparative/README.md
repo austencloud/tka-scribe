@@ -5,6 +5,7 @@ This comprehensive test suite validates the start position picker functionality 
 ## Overview
 
 The test suite performs detailed comparisons of:
+
 - **Individual prop positioning coordinates** (x, y positions)
 - **Rotation values** applied to each prop
 - **Transformation matrices** and CSS transforms
@@ -24,16 +25,19 @@ The legacy web app serves as the reference baseline, ensuring the modern impleme
 ### Test Coverage
 
 #### 3-Star Position Tests
+
 - **Diamond Grid Mode**: `alpha1_alpha1`, `beta5_beta5`, `gamma11_gamma11`
 - **Box Grid Mode**: `alpha2_alpha2`, `beta4_beta4`, `gamma12_gamma12`
 
 Each position is tested for:
+
 - Coordinate accuracy (±1 pixel tolerance)
 - Rotation precision (±0.5 degree tolerance)
 - Transform equivalence
 - Cross-grid consistency
 
 #### Cross-Grid Mode Consistency
+
 - Validates consistent behavior between diamond and box grid modes
 - Ensures similar success rates across grid types
 - Identifies systematic differences in positioning logic
@@ -62,7 +66,7 @@ tolerance: {
 
 ```typescript
 urls: {
-  legacy: 'http://localhost:5173',
+  legacy: 'http://localhost:5175',
   modern: 'http://localhost:5177'
 }
 ```
@@ -72,6 +76,7 @@ urls: {
 ### Prerequisites
 
 1. Both legacy and modern web applications must be running:
+
    ```bash
    # Terminal 1 - Legacy app
    cd src/web_app/legacy_web
@@ -122,6 +127,7 @@ TEST_ENV=production npx playwright test tests/comparative/
 ### Success Criteria
 
 A test passes when:
+
 - Coordinate differences are within tolerance (≤1 pixel)
 - Rotation differences are within tolerance (≤0.5 degrees)
 - Transform methods are mathematically equivalent
@@ -132,6 +138,7 @@ A test passes when:
 When tests fail, detailed reports include:
 
 1. **Coordinate Discrepancies**:
+
    ```
    BLUE prop:
      Expected: (467, 323.9)
@@ -141,6 +148,7 @@ When tests fail, detailed reports include:
    ```
 
 2. **Rotation Discrepancies**:
+
    ```
    RED prop:
      Expected: 90.00°
@@ -167,6 +175,7 @@ Reports are saved to `./test-results/comparative/`
 ## Data Extraction Process
 
 ### Legacy Application
+
 1. Navigate to construct tab
 2. Set grid mode (diamond/box)
 3. Wait for start position picker to load
@@ -174,6 +183,7 @@ Reports are saved to `./test-results/comparative/`
 5. Parse transform matrices and coordinate values
 
 ### Modern Application
+
 1. Navigate to construct tab
 2. Set grid mode (diamond/box)
 3. Wait for start position picker to load
@@ -181,6 +191,7 @@ Reports are saved to `./test-results/comparative/`
 5. Parse CSS transforms and coordinate values
 
 ### Comparison Algorithm
+
 1. Match props by color (blue/red)
 2. Calculate coordinate differences
 3. Normalize and compare rotation values
@@ -190,11 +201,13 @@ Reports are saved to `./test-results/comparative/`
 ## Expected Coordinate Reference
 
 ### Diamond Grid Mode
+
 - **alpha1_alpha1 (A)**: Blue (467, 323.9), Red (483, 339.9)
 - **beta5_beta5 (E)**: Blue (610.1, 467), Red (626.1, 483)
 - **gamma11_gamma11 (K)**: Blue (467, 610.1), Red (483, 626.1)
 
 ### Box Grid Mode
+
 - **alpha2_alpha2 (B)**: Blue (467, 317), Red (483, 333)
 - **beta4_beta4 (D)**: Blue (617, 467), Red (633, 483)
 - **gamma12_gamma12 (L)**: Blue (467, 617), Red (483, 633)
@@ -204,11 +217,13 @@ Reports are saved to `./test-results/comparative/`
 ### Common Issues
 
 1. **Browser Context Failures**:
+
    - Ensure sufficient system resources
    - Check for port conflicts
    - Verify application availability
 
 2. **Selector Mismatches**:
+
    - Update selectors in `config/test-config.ts`
    - Verify DOM structure changes
    - Check for dynamic loading issues
@@ -221,6 +236,7 @@ Reports are saved to `./test-results/comparative/`
 ### Debug Mode
 
 Enable detailed logging:
+
 ```typescript
 reporting: {
   detailedLogging: true,
@@ -232,16 +248,19 @@ reporting: {
 ## Extending the Test Suite
 
 ### Adding New Positions
+
 1. Update `START_POSITION_KEYS` in config
 2. Add expected coordinates to test data
 3. Update letter mapping if needed
 
 ### Adding New Grid Modes
+
 1. Extend `GridMode` type
 2. Add grid-specific selectors
 3. Update coordinate reference data
 
 ### Custom Tolerance Settings
+
 1. Modify tolerance values in config
 2. Add position-specific tolerances if needed
 3. Update validation logic accordingly
@@ -263,12 +282,14 @@ The test suite is designed for automated execution:
 ## Maintenance
 
 ### Regular Updates
+
 - Review tolerance settings quarterly
 - Update expected coordinates when grid changes
 - Verify selector accuracy with UI updates
 - Monitor test execution performance
 
 ### Performance Optimization
+
 - Parallel test execution where possible
 - Efficient browser context management
 - Optimized data extraction algorithms
@@ -277,6 +298,7 @@ The test suite is designed for automated execution:
 ## Support
 
 For issues or questions:
+
 1. Check the troubleshooting section
 2. Review test output logs
 3. Examine generated screenshots

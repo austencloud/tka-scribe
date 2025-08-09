@@ -1,6 +1,6 @@
 /**
  * Test Configuration for Start Position Picker Comparison
- * 
+ *
  * Centralized configuration for comparative testing between legacy and modern
  * start position picker implementations.
  */
@@ -63,49 +63,49 @@ export const DEFAULT_TEST_CONFIG: TestConfig = {
     rotation: 0.5, // 0.5 degree tolerance for rotation differences
     transform: 0.1 // 10% tolerance for transform matrix comparisons
   },
-  
+
   urls: {
-    legacy: 'http://localhost:5173',
+    legacy: 'http://localhost:5175',
     modern: 'http://localhost:5177'
   },
-  
+
   timeouts: {
     navigation: 30000, // 30 seconds for page navigation
     componentLoad: 15000, // 15 seconds for component loading
     dataExtraction: 10000 // 10 seconds for data extraction
   },
-  
+
   gridModes: ['diamond', 'box'] as const,
-  
+
   startPositions: {
     diamond: ['alpha1_alpha1', 'beta5_beta5', 'gamma11_gamma11'] as const,
     box: ['alpha2_alpha2', 'beta4_beta4', 'gamma12_gamma12'] as const
   },
-  
+
   selectors: {
     legacy: {
       constructTab: '[data-testid="construct-tab"], .construct-tab, .tab-construct',
       gridModeSelector: '[data-testid="grid-mode-selector"], select[name="gridMode"], .grid-mode-selector',
       startPositionPicker: '.start-pos-picker, [data-component="start-position-picker"]',
-      positionContainer: (positionKey: string) => 
+      positionContainer: (positionKey: string) =>
         `[data-position-key="${positionKey}"], .pictograph-container[data-letter="${getLetterFromPositionKey(positionKey)}"]`,
       propElement: '.prop-element, [data-prop-color], .prop, svg circle[data-color], svg g[data-component="prop"]',
       letterElement: '.tka-letter, [data-letter], .position-label, svg text',
       pictographSvg: 'svg.pictograph, .pictograph svg, svg'
     },
-    
+
     modern: {
       constructTab: '[data-testid="construct-tab"], .construct-tab, .tab-construct',
       gridModeSelector: '[data-testid="grid-mode-selector"], select[name="gridMode"], .grid-mode-selector',
       startPositionPicker: '.start-pos-picker, [data-component="start-position-picker"]',
-      positionContainer: (positionKey: string) => 
+      positionContainer: (positionKey: string) =>
         `[data-position-key="${positionKey}"], .pictograph-container[data-letter="${getLetterFromPositionKey(positionKey)}"]`,
       propElement: 'svg g[data-component="prop"], svg circle[data-prop-color], svg g.prop, [data-prop-color]',
       letterElement: 'svg text, .position-label, [data-letter]',
       pictographSvg: 'svg, .modern-pictograph svg'
     }
   },
-  
+
   reporting: {
     generateScreenshots: true,
     detailedLogging: true,
@@ -120,9 +120,9 @@ export const DEFAULT_TEST_CONFIG: TestConfig = {
 export const POSITION_KEY_TO_LETTER: Record<string, string> = {
   // Diamond mode positions
   'alpha1_alpha1': 'A',
-  'beta5_beta5': 'E', 
+  'beta5_beta5': 'E',
   'gamma11_gamma11': 'K',
-  
+
   // Box mode positions
   'alpha2_alpha2': 'B',
   'beta4_beta4': 'D',
@@ -208,7 +208,7 @@ export const TEST_ENVIRONMENTS: Record<string, TestEnvironment> = {
     description: 'Local development environment with standard ports',
     config: {
       urls: {
-        legacy: 'http://localhost:5173',
+        legacy: 'http://localhost:5175',
         modern: 'http://localhost:5177'
       },
       timeouts: {
@@ -218,7 +218,7 @@ export const TEST_ENVIRONMENTS: Record<string, TestEnvironment> = {
       }
     }
   },
-  
+
   ci: {
     name: 'Continuous Integration',
     description: 'CI environment with faster timeouts and no screenshots',
@@ -236,7 +236,7 @@ export const TEST_ENVIRONMENTS: Record<string, TestEnvironment> = {
       }
     }
   },
-  
+
   production: {
     name: 'Production Validation',
     description: 'Production environment testing with strict tolerances',
@@ -263,7 +263,7 @@ export function getConfigForEnvironment(environmentName: string): TestConfig {
   if (!environment) {
     throw new Error(`Unknown test environment: ${environmentName}`);
   }
-  
+
   return {
     ...DEFAULT_TEST_CONFIG,
     ...environment.config,
@@ -291,22 +291,22 @@ export function getConfigForEnvironment(environmentName: string): TestConfig {
  */
 export function validateTestConfig(config: TestConfig): string[] {
   const errors: string[] = [];
-  
+
   if (config.tolerance.coordinates < 0) {
     errors.push('Coordinate tolerance must be non-negative');
   }
-  
+
   if (config.tolerance.rotation < 0) {
     errors.push('Rotation tolerance must be non-negative');
   }
-  
+
   if (config.timeouts.navigation <= 0) {
     errors.push('Navigation timeout must be positive');
   }
-  
+
   if (!config.urls.legacy || !config.urls.modern) {
     errors.push('Both legacy and modern URLs must be specified');
   }
-  
+
   return errors;
 }
