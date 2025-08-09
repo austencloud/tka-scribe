@@ -91,7 +91,7 @@
 <div class="background-demo" style="width: {dimensions.width}px; height: {dimensions.height}px;">
 	<BackgroundProvider>
 		<div class="canvas-container">
-			<BackgroundCanvas {dimensions} />
+			<BackgroundCanvas />
 		</div>
 
 		<BackgroundController

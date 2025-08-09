@@ -1,14 +1,16 @@
 <!-- OptionPicker.svelte - Modern implementation based on legacy component -->
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import type { PictographData } from '$lib/domain/PictographData';
+	import type { BeatData } from '$lib/domain/BeatData';
+	import type { SequenceData } from '$lib/domain/SequenceData';
+	import { createBeatData } from '$lib/domain/BeatData';
 	import type {
-		PictographData,
-		BeatData,
-		SequenceData,
 		OptionFilters,
 		DifficultyLevel,
+		IOptionDataService,
+		ISequenceService,
 	} from '$services/interfaces';
-	import { IOptionDataService, ISequenceService } from '$services/interfaces';
 	import { resolve } from '$services/bootstrap';
 	import ModernPictograph from '$components/pictograph/ModernPictograph.svelte';
 
@@ -45,8 +47,8 @@
 	let optionSize = $state(150);
 
 	// Modern services
-	const optionDataService = resolve('IOptionDataService');
-	const sequenceService = resolve('ISequenceService');
+	const optionDataService = resolve('IOptionDataService') as IOptionDataService;
+	const sequenceService = resolve('ISequenceService') as ISequenceService;
 
 	// Load available options (modernized from legacy)
 	async function loadOptions() {
@@ -96,8 +98,8 @@
 		// Filter by motion types
 		if (selectedMotionTypes.length > 0) {
 			filtered = filtered.filter((option) => {
-				const blueType = option.motions?.blue?.motionType;
-				const redType = option.motions?.red?.motionType;
+				const blueType = option.motions?.blue?.motion_type;
+				const redType = option.motions?.red?.motion_type;
 				return (
 					selectedMotionTypes.includes(blueType || '') ||
 					selectedMotionTypes.includes(redType || '')
@@ -140,10 +142,10 @@
 			selectedOption = option;
 
 			// Create beat data from option
-			const beatData: BeatData = {
-				beat: currentSequence ? currentSequence.beats.length : 1,
+			const beatData = createBeatData({
+				beat_number: currentSequence ? currentSequence.beats.length + 1 : 1,
 				pictograph_data: option,
-			};
+			});
 
 			// Call callback to notify parent component
 			onOptionSelected(option);
@@ -252,8 +254,13 @@
 		{#if showFilters}
 			<div class="filters-panel">
 				<div class="filter-group">
-					<label>Motion Types:</label>
-					<div class="motion-type-filters">
+					<label for="motion-types-group">Motion Types:</label>
+					<div
+						id="motion-types-group"
+						class="motion-type-filters"
+						role="group"
+						aria-labelledby="motion-types-label"
+					>
 						{#each ['pro', 'anti', 'float', 'dash', 'static'] as motionType}
 							<button
 								class="motion-type-filter"
@@ -267,8 +274,8 @@
 				</div>
 
 				<div class="filter-group">
-					<label>Turns Range:</label>
-					<div class="turns-range">
+					<label for="turns-range-group">Turns Range:</label>
+					<div id="turns-range-group" class="turns-range">
 						<input
 							type="range"
 							min="0"
@@ -356,10 +363,10 @@
 							<div class="option-letter">{option.letter || '?'}</div>
 							<div class="option-details">
 								{#if option.motions?.blue}
-									<span class="motion-tag blue">{option.motions.blue.motionType}</span>
+									<span class="motion-tag blue">{option.motions.blue.motion_type}</span>
 								{/if}
 								{#if option.motions?.red}
-									<span class="motion-tag red">{option.motions.red.motionType}</span>
+									<span class="motion-tag red">{option.motions.red.motion_type}</span>
 								{/if}
 							</div>
 						</div>
@@ -566,30 +573,6 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-	}
-
-	.option-svg-container {
-		width: 100%;
-		height: 100%;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-	}
-
-	.option-svg-container :global(svg) {
-		max-width: 100%;
-		max-height: 100%;
-	}
-
-	.option-loading,
-	.option-error {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: center;
-		height: 100%;
-		color: var(--muted-foreground);
-		font-size: var(--font-size-xs);
 	}
 
 	.option-info {
