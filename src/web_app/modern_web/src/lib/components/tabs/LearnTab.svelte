@@ -1,16 +1,80 @@
-<!-- Learn Tab - Educational content -->
-<div class="learn-tab">
-	<div class="tab-header glass-surface">
-		<h1>Learn</h1>
-		<p>Master kinetic movement notation</p>
-	</div>
+<!-- Learn Tab - Educational content with pixel-perfect desktop replica -->
+<script lang="ts">
+	import { LearnView, QuizMode, LessonType, type LessonResults } from '$lib/types/learn';
+	import LessonSelectorView from '$lib/components/learn/LessonSelectorView.svelte';
+	import LessonWorkspaceView from '$lib/components/learn/LessonWorkspaceView.svelte';
+	import LessonResultsView from '$lib/components/learn/LessonResultsView.svelte';
 
-	<div class="tab-content">
-		<div class="placeholder-content">
-			<h2>🎓 Learn Tab</h2>
-			<p>Interactive tutorials and learning resources will be implemented here.</p>
-			<p class="coming-soon">🚧 Coming Soon: Interactive Tutorials, Movement Theory, Practice Exercises</p>
-		</div>
+	// State management using runes
+	let currentView = $state<LearnView>(LearnView.LESSON_SELECTOR);
+	let selectedMode = $state<QuizMode>(QuizMode.FIXED_QUESTION);
+	let currentLessonType = $state<LessonType | null>(null);
+	let currentResults = $state<LessonResults | null>(null);
+	let isLoading = $state<boolean>(false);
+
+	// Available lessons (all enabled for now)
+	let availableLessons = $state<LessonType[]>(Object.values(LessonType));
+
+	// Navigation handlers
+	function handleLessonRequested(event: { lessonType: LessonType; quizMode: QuizMode }) {
+		currentLessonType = event.lessonType;
+		selectedMode = event.quizMode;
+		currentView = LearnView.LESSON_WORKSPACE;
+
+		// TODO: Start actual lesson session
+		console.log('Starting lesson:', event.lessonType, 'in mode:', event.quizMode);
+	}
+
+	function handleModeChanged(mode: QuizMode) {
+		selectedMode = mode;
+	}
+
+	function handleBackToSelector() {
+		currentView = LearnView.LESSON_SELECTOR;
+		currentLessonType = null;
+		currentResults = null;
+	}
+
+	function handleRetryLesson() {
+		if (currentLessonType) {
+			currentView = LearnView.LESSON_WORKSPACE;
+			currentResults = null;
+			// TODO: Restart lesson session
+			console.log('Retrying lesson:', currentLessonType);
+		}
+	}
+
+	// TODO: This will be used when lesson completion is implemented
+	// function handleLessonComplete(results: LessonResults) {
+	// 	currentResults = results;
+	// 	currentView = LearnView.LESSON_RESULTS;
+	// }
+</script>
+
+<div class="learn-tab">
+	<!-- Main content area with stacked views -->
+	<div class="learn-content">
+		{#if currentView === LearnView.LESSON_SELECTOR}
+			<LessonSelectorView
+				bind:selectedMode
+				{availableLessons}
+				{isLoading}
+				onLessonRequested={handleLessonRequested}
+				onModeChanged={handleModeChanged}
+			/>
+		{:else if currentView === LearnView.LESSON_WORKSPACE}
+			<LessonWorkspaceView
+				lessonType={currentLessonType}
+				quizMode={selectedMode}
+				onBackToSelector={handleBackToSelector}
+			/>
+		{:else if currentView === LearnView.LESSON_RESULTS}
+			<LessonResultsView
+				results={currentResults}
+				onBackToSelector={handleBackToSelector}
+				onRetryLesson={handleRetryLesson}
+			/>
+		{/if}
 	</div>
 </div>
 
@@ -18,55 +82,34 @@
 	.learn-tab {
 		display: flex;
 		flex-direction: column;
+		width: 100%;
 		height: 100%;
-		padding: var(--spacing-lg);
-		gap: var(--spacing-lg);
+		position: relative;
+		overflow: hidden;
+		/* Match desktop background styling */
+		background: transparent;
 	}
 
-	.tab-header {
-		padding: var(--spacing-lg);
-		text-align: center;
-	}
-
-	.tab-header h1 {
-		font-size: var(--font-size-2xl);
-		margin-bottom: var(--spacing-sm);
-		color: var(--foreground);
-	}
-
-	.tab-header p {
-		color: var(--muted-foreground);
-	}
-
-	.tab-content {
+	.learn-content {
 		flex: 1;
 		display: flex;
-		align-items: center;
-		justify-content: center;
+		flex-direction: column;
+		width: 100%;
+		height: 100%;
+		position: relative;
 	}
 
-	.placeholder-content {
-		text-align: center;
-		max-width: 600px;
+	/* Ensure proper stacking and transitions */
+	.learn-content > :global(*) {
+		width: 100%;
+		height: 100%;
 	}
 
-	.placeholder-content h2 {
-		font-size: var(--font-size-xl);
-		margin-bottom: var(--spacing-md);
-		color: var(--foreground);
-	}
-
-	.placeholder-content p {
-		color: var(--muted-foreground);
-		margin-bottom: var(--spacing-lg);
-	}
-
-	.coming-soon {
-		background: rgba(255, 193, 7, 0.1);
-		border: 1px solid rgba(255, 193, 7, 0.3);
-		color: #ffc107;
-		padding: var(--spacing-md);
-		border-radius: 8px;
-		margin-top: var(--spacing-lg);
+	/* Responsive adjustments */
+	@media (max-width: 768px) {
+		.learn-tab {
+			/* Responsive styles will be added as needed */
+			position: relative;
+		}
 	}
 </style>

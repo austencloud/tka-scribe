@@ -10,16 +10,17 @@
 	import ConstructTab from './tabs/ConstructTab.svelte';
 	import BrowseTab from './tabs/BrowseTab.svelte';
 	import LearnTab from './tabs/LearnTab.svelte';
+	import SequenceTab from './tabs/SequenceTab.svelte';
 	import NavigationBar from './navigation/NavigationBar.svelte';
 	import SettingsDialog from './SettingsDialog.svelte';
 
-	// Tab configuration - UPDATED to match desktop app exactly
+	// Tab configuration - UPDATED to include Sequence tab matching desktop app exactly
 	const tabs = [
 		{ id: 'construct', label: 'Construct', icon: '🔧' },
 		{ id: 'browse', label: 'Browse', icon: '🔍' },
+		{ id: 'sequence', label: 'Sequence', icon: '🎵' },
 		{ id: 'write', label: 'Write', icon: '✍️' },
-		{ id: 'learn', label: 'Learn', icon: '🧠' },
-		{ id: 'sequence_card', label: 'Sequence Card', icon: '📋' }
+		{ id: 'learn', label: 'Learn', icon: '🧠' }
 	] as const;
 </script>
 
@@ -31,6 +32,8 @@
 			<ConstructTab />
 		{:else if isTabActive('browse')}
 			<BrowseTab />
+		{:else if isTabActive('sequence')}
+			<SequenceTab />
 		{:else if isTabActive('write')}
 			<!-- Write tab - placeholder for now -->
 			<div class="placeholder-tab">
@@ -41,14 +44,6 @@
 			</div>
 		{:else if isTabActive('learn')}
 			<LearnTab />
-		{:else if isTabActive('sequence_card')}
-			<!-- Sequence Card tab - placeholder for now -->
-			<div class="placeholder-tab">
-				<div class="placeholder-content">
-					<h2>📋 Sequence Card Tab</h2>
-					<p>Coming soon... This will contain sequence card creation and management tools.</p>
-				</div>
-			</div>
 		{/if}
 	</main>
 </div>
