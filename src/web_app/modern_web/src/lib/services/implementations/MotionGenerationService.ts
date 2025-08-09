@@ -5,8 +5,8 @@
  * from the desktop application. For now, it provides basic motion generation.
  */
 
-import type { MotionData, BeatData } from '@tka/schemas';
-import type { IMotionGenerationService, GenerationOptions } from '../interfaces';
+import type { BeatData, MotionData } from '@tka/schemas';
+import type { GenerationOptions, IMotionGenerationService } from '../interfaces';
 
 export class MotionGenerationService implements IMotionGenerationService {
 	/**
@@ -14,8 +14,8 @@ export class MotionGenerationService implements IMotionGenerationService {
 	 */
 	async generateMotion(
 		color: 'blue' | 'red',
-		options: GenerationOptions,
-		previousBeats: BeatData[]
+		_options: GenerationOptions,
+		_previousBeats: BeatData[]
 	): Promise<MotionData> {
 		try {
 			console.log(`Generating ${color} motion`);
@@ -90,7 +90,7 @@ export class MotionGenerationService implements IMotionGenerationService {
 		color: 'blue' | 'red',
 		options: GenerationOptions,
 		previousBeats: BeatData[],
-		constraints: {
+		_constraints: {
 			allowedMotionTypes?: string[];
 			allowedStartLocations?: string[];
 			allowedEndLocations?: string[];
@@ -106,8 +106,8 @@ export class MotionGenerationService implements IMotionGenerationService {
 	 */
 	validateMotion(
 		motion: MotionData,
-		color: 'blue' | 'red',
-		previousBeats: BeatData[]
+		_color: 'blue' | 'red',
+		_previousBeats: BeatData[]
 	): { isValid: boolean; reasons: string[] } {
 		const reasons: string[] = [];
 

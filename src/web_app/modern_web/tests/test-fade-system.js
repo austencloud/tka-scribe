@@ -1,1 +1,94 @@
-/**\n * TKA Fade System Test\n * \n * Simple test script to verify the fade system is working correctly\n */\n\nconsole.log('🎭 Starting TKA Fade System Test...');\n\n// Test 1: Import fade system modules\ntry {\n\tconst fadeModule = await import('./lib/services/ui/animation/index.js');\n\tconsole.log('✅ Test 1 Passed: Fade system modules imported successfully');\n\tconsole.log('Available exports:', Object.keys(fadeModule));\n} catch (error) {\n\tconsole.error('❌ Test 1 Failed: Could not import fade system:', error);\n}\n\n// Test 2: Initialize fade system\ntry {\n\tconst { initializeFadeSystem, getFadeDebugInfo } = await import('./lib/services/ui/animation/index.js');\n\t\n\tinitializeFadeSystem({\n\t\tduration: 250,\n\t\tdelay: 0\n\t});\n\t\n\tconst debugInfo = getFadeDebugInfo();\n\tconsole.log('✅ Test 2 Passed: Fade system initialized');\n\tconsole.log('Debug info:', debugInfo);\n} catch (error) {\n\tconsole.error('❌ Test 2 Failed: Could not initialize fade system:', error);\n}\n\n// Test 3: Test main tab transitions\ntry {\n\tconst { transitionToMainTab, completeMainTabTransition } = await import('./lib/services/ui/animation/index.js');\n\t\n\tconst transitionId = await transitionToMainTab('construct', 'browse');\n\tif (transitionId) {\n\t\tsetTimeout(() => {\n\t\t\tcompleteMainTabTransition(transitionId);\n\t\t\tconsole.log('✅ Test 3 Passed: Main tab transition completed');\n\t\t}, 100);\n\t} else {\n\t\tconsole.log('⚠️  Test 3 Warning: Transition returned null (may be disabled)');\n\t}\n} catch (error) {\n\tconsole.error('❌ Test 3 Failed: Main tab transition error:', error);\n}\n\n// Test 4: Test sub-tab transitions\ntry {\n\tconst { transitionToSubTab, completeSubTabTransition } = await import('./lib/services/ui/animation/index.js');\n\t\n\tconst transitionId = await transitionToSubTab('build', 'generate');\n\tif (transitionId) {\n\t\tsetTimeout(() => {\n\t\t\tcompleteSubTabTransition(transitionId, 'build', 'generate');\n\t\t\tconsole.log('✅ Test 4 Passed: Sub-tab transition completed');\n\t\t}, 100);\n\t} else {\n\t\tconsole.log('⚠️  Test 4 Warning: Sub-tab transition returned null (may be disabled)');\n\t}\n} catch (error) {\n\tconsole.error('❌ Test 4 Failed: Sub-tab transition error:', error);\n}\n\n// Test 5: Test transition states\ntry {\n\tconst { \n\t\tisMainTabTransitioning, \n\t\tisSubTabTransitioning, \n\t\tgetMainTabTransition, \n\t\tgetSubTabTransition \n\t} = await import('./lib/services/ui/animation/index.js');\n\t\n\tconsole.log('✅ Test 5 Passed: Transition state functions available');\n\tconsole.log('Main tab transitioning:', isMainTabTransitioning());\n\tconsole.log('Sub-tab transitioning:', isSubTabTransitioning());\n\tconsole.log('Main tab state:', getMainTabTransition());\n\tconsole.log('Sub-tab state:', getSubTabTransition());\n} catch (error) {\n\tconsole.error('❌ Test 5 Failed: Transition state error:', error);\n}\n\nconsole.log('🎭 TKA Fade System Test Complete!');\n
+/**
+ * TKA Fade System Test
+ *
+ * Simple test script to verify the fade system is working correctly
+ */
+
+console.log('🎭 Starting TKA Fade System Test...');
+
+// Test 1: Import fade system modules
+try {
+	const fadeModule = await import('./lib/services/ui/animation/index.js');
+	console.log('✅ Test 1 Passed: Fade system modules imported successfully');
+	console.log('Available exports:', Object.keys(fadeModule));
+} catch (error) {
+	console.error('❌ Test 1 Failed: Could not import fade system:', error);
+}
+
+// Test 2: Initialize fade system
+try {
+	const { initializeFadeSystem, getFadeDebugInfo } = await import(
+		'./lib/services/ui/animation/index.js'
+	);
+
+	initializeFadeSystem({
+		duration: 250,
+		delay: 0,
+	});
+
+	const debugInfo = getFadeDebugInfo();
+	console.log('✅ Test 2 Passed: Fade system initialized');
+	console.log('Debug info:', debugInfo);
+} catch (error) {
+	console.error('❌ Test 2 Failed: Could not initialize fade system:', error);
+}
+
+// Test 3: Test main tab transitions
+try {
+	const { transitionToMainTab, completeMainTabTransition } = await import(
+		'./lib/services/ui/animation/index.js'
+	);
+
+	const transitionId = await transitionToMainTab('construct', 'browse');
+	if (transitionId) {
+		setTimeout(() => {
+			completeMainTabTransition(transitionId);
+			console.log('✅ Test 3 Passed: Main tab transition completed');
+		}, 100);
+	} else {
+		console.log('⚠️  Test 3 Warning: Transition returned null (may be disabled)');
+	}
+} catch (error) {
+	console.error('❌ Test 3 Failed: Main tab transition error:', error);
+}
+
+// Test 4: Test sub-tab transitions
+try {
+	const { transitionToSubTab, completeSubTabTransition } = await import(
+		'./lib/services/ui/animation/index.js'
+	);
+
+	const transitionId = await transitionToSubTab('build', 'generate');
+	if (transitionId) {
+		setTimeout(() => {
+			completeSubTabTransition(transitionId, 'build', 'generate');
+			console.log('✅ Test 4 Passed: Sub-tab transition completed');
+		}, 100);
+	} else {
+		console.log('⚠️  Test 4 Warning: Sub-tab transition returned null (may be disabled)');
+	}
+} catch (error) {
+	console.error('❌ Test 4 Failed: Sub-tab transition error:', error);
+}
+
+// Test 5: Test transition states
+try {
+	const {
+		isMainTabTransitioning,
+		isSubTabTransitioning,
+		getMainTabTransition,
+		getSubTabTransition,
+	} = await import('./lib/services/ui/animation/index.js');
+
+	console.log('✅ Test 5 Passed: Transition state functions available');
+	console.log('Main tab transitioning:', isMainTabTransitioning());
+	console.log('Sub-tab transitioning:', isSubTabTransitioning());
+	console.log('Main tab state:', getMainTabTransition());
+	console.log('Sub-tab state:', getSubTabTransition());
+} catch (error) {
+	console.error('❌ Test 5 Failed: Transition state error:', error);
+}
+
+console.log('🎭 TKA Fade System Test Complete!');
+
+export {};

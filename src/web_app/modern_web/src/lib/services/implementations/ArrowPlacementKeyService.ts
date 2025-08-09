@@ -6,7 +6,7 @@
  */
 
 import type { MotionData } from '@tka/schemas';
-import type { MotionType, Orientation, PictographData } from '../interfaces';
+import type { MotionType, PictographData } from '../interfaces';
 
 export interface IArrowPlacementKeyService {
 	generatePlacementKey(

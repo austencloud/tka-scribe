@@ -66,6 +66,7 @@ export class ResourceTracker implements ResourceTrackerInterface {
 			const extension = resource.getExtension('WEBGL_lose_context');
 			if (extension) extension.loseContext();
 		} else if (resource instanceof Path2D) {
+			// Path2D objects don't need explicit cleanup
 		} else if (resource.dispose && typeof resource.dispose === 'function') {
 			resource.dispose();
 		} else if (resource.close && typeof resource.close === 'function') {

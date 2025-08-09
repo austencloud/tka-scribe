@@ -5,9 +5,9 @@
  */
 
 import type {
+	IPictographRenderingService,
 	IPictographService,
 	PictographData,
-	IPictographRenderingService,
 } from '../interfaces';
 
 export class PictographService implements IPictographService {
@@ -29,7 +29,7 @@ export class PictographService implements IPictographService {
 	/**
 	 * Update arrow data in a pictograph
 	 */
-	async updateArrow(pictographId: string, arrowData: any): Promise<PictographData> {
+	async updateArrow(_pictographId: string, _arrowData: any): Promise<PictographData> {
 		// TODO: Implement pictograph data management
 		throw new Error('updateArrow not yet implemented');
 	}

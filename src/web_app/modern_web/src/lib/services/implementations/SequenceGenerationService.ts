@@ -5,12 +5,12 @@
  * motion generation and applying sequence-level constraints.
  */
 
-import type { SequenceData, BeatData } from '@tka/schemas';
+import type { BeatData, SequenceData } from '@tka/schemas';
 import type {
-	ISequenceGenerationService,
+	GenerationOptions,
 	IMotionGenerationService,
 	ISequenceDomainService,
-	GenerationOptions,
+	ISequenceGenerationService,
 } from '../interfaces';
 
 export class SequenceGenerationService implements ISequenceGenerationService {
@@ -22,7 +22,7 @@ export class SequenceGenerationService implements ISequenceGenerationService {
 	/**
 	 * Generate a complete sequence
 	 */
-	async generateSequence(options: GenerationOptions): Promise<SequenceData> {
+	async generateSequence(_options: GenerationOptions): Promise<SequenceData> {
 		try {
 			console.log('Generating sequence with options:', options);
 
@@ -68,7 +68,7 @@ export class SequenceGenerationService implements ISequenceGenerationService {
 	 */
 	private async generateBeat(
 		beatNumber: number,
-		options: GenerationOptions,
+		_options: GenerationOptions,
 		previousBeats: BeatData[]
 	): Promise<BeatData> {
 		try {
@@ -117,7 +117,7 @@ export class SequenceGenerationService implements ISequenceGenerationService {
 	/**
 	 * Validate generation options
 	 */
-	private validateGenerationOptions(options: GenerationOptions): void {
+	private validateGenerationOptions(_options: GenerationOptions): void {
 		if (!options.length || options.length < 1 || options.length > 64) {
 			throw new Error('Sequence length must be between 1 and 64');
 		}

@@ -5,23 +5,23 @@
  * Based on the desktop StartPositionOrchestrator but simplified for web.
  */
 
-import type { IStartPositionService, ValidationResult, GridMode, MotionType } from '../interfaces';
 import type { BeatData, PictographData } from '../../domain';
 import {
-	createPictographData,
-	createArrowData,
-	createPropData,
-	createBeatData,
-	createMotionData,
-	createGridData,
 	ArrowType,
-	PropType,
+	createArrowData,
+	createBeatData,
+	createGridData,
+	createMotionData,
+	createPictographData,
+	createPropData,
+	GridMode as DomainGridMode,
 	MotionType as DomainMotionType,
 	Location,
 	Orientation,
+	PropType,
 	RotationDirection,
-	GridMode as DomainGridMode,
 } from '../../domain';
+import type { GridMode, IStartPositionService, ValidationResult } from '../interfaces';
 export class StartPositionService implements IStartPositionService {
 	private readonly DEFAULT_START_POSITIONS = {
 		diamond: ['alpha1_alpha1', 'beta5_beta5', 'gamma11_gamma11'],
@@ -32,7 +32,7 @@ export class StartPositionService implements IStartPositionService {
 		console.log('🎯 StartPositionService initialized');
 	}
 
-	async getAvailableStartPositions(propType: string, gridMode: GridMode): Promise<BeatData[]> {
+	async getAvailableStartPositions(_propType: string, gridMode: GridMode): Promise<BeatData[]> {
 		console.log(`📍 Getting available start positions for ${propType} in ${gridMode} mode`);
 
 		try {

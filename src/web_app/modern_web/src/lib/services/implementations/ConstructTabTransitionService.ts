@@ -6,12 +6,12 @@
  * embedded in the massive ConstructTab component.
  */
 
+import { constructTabState, type ActiveRightPanel } from '../../stores/constructTabState.svelte';
 import {
-	transitionToSubTab,
 	completeSubTabTransition,
+	transitionToSubTab,
 	type ConstructSubTabId,
 } from '../ui/animation';
-import { constructTabState, type ActiveRightPanel } from '../../stores/constructTabState.svelte';
 
 export class ConstructTabTransitionService {
 	/**
@@ -59,11 +59,11 @@ export class ConstructTabTransitionService {
 	 */
 	getSubTabTransitions() {
 		return {
-			in: (node: Element) => ({
+			in: (_node: Element) => ({
 				duration: 250,
 				css: (t: number) => `opacity: ${t}`,
 			}),
-			out: (node: Element) => ({
+			out: (_node: Element) => ({
 				duration: 200,
 				css: (t: number) => `opacity: ${1 - t}`,
 			}),

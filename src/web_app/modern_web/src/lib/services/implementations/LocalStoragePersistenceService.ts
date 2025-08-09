@@ -188,7 +188,7 @@ export class LocalStoragePersistenceService implements IPersistenceService {
 				available: 5120, // Rough estimate of 5MB localStorage limit
 				sequences: sequenceCount,
 			};
-		} catch (error) {
+		} catch {
 			return { used: 0, available: 5120, sequences: 0 };
 		}
 	}

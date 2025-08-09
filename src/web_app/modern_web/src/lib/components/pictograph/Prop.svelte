@@ -187,8 +187,8 @@ Prop Component - Renders SVG props with proper positioning
 			'77.8',
 		];
 		const viewBox = {
-			width: parseFloat(viewBoxValues[2]) || 252.8,
-			height: parseFloat(viewBoxValues[3]) || 77.8,
+			width: parseFloat(viewBoxValues[2] || '252.8') || 252.8,
+			height: parseFloat(viewBoxValues[3] || '77.8') || 77.8,
 		};
 
 		// Get center point from SVG
@@ -211,24 +211,18 @@ Prop Component - Renders SVG props with proper positioning
 
 	// Apply color transformation to SVG content
 	const applyColorToSvg = (svgText: string, color: 'blue' | 'red'): string => {
-		// Define color values
-		const colors = {
-			blue: '#2E3192',
-			red: '#ED1C24',
-		};
-
-		// Reduced verbosity - only log if there are issues
-		// console.log(`🎨 Applying ${color} color to prop SVG`);
-
-		// Replace the entire style block with our colors
-		let coloredSvg = svgText.replace(
-			/<style type="text\/css">[\s\S]*?<\/style>/g,
-			`<style type="text/css">
-	.st0{fill:${colors[color]};stroke:#FFFFFF;stroke-width:2.75;stroke-miterlimit:10;}
-	.st1{fill:#FF0000;}
-</style>`
-		);
-
+		// Avoid CSS parser conflicts by using a different approach
+		const colorMap = new Map([
+			['blue', '#2E3192'],
+			['red', '#ED1C24']
+		]);
+		
+		const targetColor = colorMap.get(color) || '#2E3192';
+		
+		// Use regex replacement to change fill colors directly
+		let coloredSvg = svgText.replace(/fill="#[0-9A-Fa-f]{6}"/g, `fill="${targetColor}"`);
+		coloredSvg = coloredSvg.replace(/fill:\s*#[0-9A-Fa-f]{6}/g, `fill:${targetColor}`);
+		
 		// Remove the centerPoint circle entirely to prevent CIRCLE_PROP detection
 		coloredSvg = coloredSvg.replace(/<circle[^>]*id="centerPoint"[^>]*\/?>/, '');
 

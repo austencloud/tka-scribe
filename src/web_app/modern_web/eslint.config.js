@@ -102,6 +102,69 @@ export default [
 		},
 	},
 
+	// Node.js scripts and test files
+	{
+		files: ['scripts/**/*', 'tests/**/*', '**/*.test.*', '**/*.spec.*'],
+		languageOptions: {
+			globals: {
+				...globals.node,
+				console: 'readonly',
+				process: 'readonly',
+				Buffer: 'readonly',
+				__dirname: 'readonly',
+				__filename: 'readonly',
+				global: 'readonly',
+				NodeJS: 'readonly',
+			},
+		},
+		rules: {
+			'no-console': 'off',
+			'@typescript-eslint/no-unused-vars': 'off',
+		},
+	},
+
+	// Svelte files with runes
+	{
+		files: ['**/*.svelte.ts', '**/*.svelte.js'],
+		languageOptions: {
+			globals: {
+				...globals.browser,
+				$state: 'readonly',
+				$derived: 'readonly',
+				$effect: 'readonly',
+				$props: 'readonly',
+				$bindable: 'readonly',
+				$inspect: 'readonly',
+			},
+		},
+	},
+
+	// Browser environment files
+	{
+		files: ['**/*.svelte', 'src/**/*.ts', 'src/**/*.js'],
+		languageOptions: {
+			globals: {
+				...globals.browser,
+				console: 'readonly',
+				SVGElement: 'readonly',
+				HTMLElement: 'readonly',
+				Element: 'readonly',
+				Document: 'readonly',
+				Window: 'readonly',
+				EventListener: 'readonly',
+				AddEventListenerOptions: 'readonly',
+				EventListenerOptions: 'readonly',
+				NodeJS: 'readonly',
+				$state: 'readonly',
+				$derived: 'readonly',
+				$effect: 'readonly',
+				$props: 'readonly',
+				$bindable: 'readonly',
+				$inspect: 'readonly',
+			},
+		},
+	},
+
 	// Prettier integration (must be last)
 	prettier,
 

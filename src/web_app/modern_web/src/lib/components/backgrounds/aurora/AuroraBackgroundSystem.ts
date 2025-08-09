@@ -1,10 +1,10 @@
 // src/lib/components/backgrounds/aurora/AuroraBackgroundSystem.ts
 import type {
+	AccessibilitySettings,
 	BackgroundSystem,
 	Dimensions,
-	QualityLevel,
-	AccessibilitySettings,
 	PerformanceMetrics,
+	QualityLevel,
 } from '../types/types';
 
 interface Blob {
@@ -58,7 +58,7 @@ export class AuroraBackgroundSystem implements BackgroundSystem {
 		this.sparkles = this.createSparkles(numSparkles);
 	}
 
-	public update(dimensions: Dimensions): void {
+	public update(_dimensions: Dimensions): void {
 		if (!this.isInitialized) return;
 
 		// Update animation phases - much slower for relaxed pace

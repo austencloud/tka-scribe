@@ -1,10 +1,10 @@
 // src/lib/components/backgrounds/bubbles/BubblesBackgroundSystem.ts
 import type {
+	AccessibilitySettings,
 	BackgroundSystem,
 	Dimensions,
-	QualityLevel,
-	AccessibilitySettings,
 	PerformanceMetrics,
+	QualityLevel,
 } from '../types/types';
 
 interface Bubble {
@@ -205,7 +205,7 @@ export class BubblesBackgroundSystem implements BackgroundSystem {
 		ctx.restore();
 	}
 
-	private drawBubbles(ctx: CanvasRenderingContext2D, dimensions: Dimensions): void {
+	private drawBubbles(ctx: CanvasRenderingContext2D, _dimensions: Dimensions): void {
 		for (const bubble of this.bubbles) {
 			ctx.save();
 			ctx.globalAlpha = bubble.opacity;

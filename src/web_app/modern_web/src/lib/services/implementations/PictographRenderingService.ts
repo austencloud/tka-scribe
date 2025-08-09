@@ -6,15 +6,15 @@
  */
 
 import type { BeatData } from '@tka/schemas';
+import { createGridData, type GridData as RawGridData } from '../../data/gridCoordinates.js';
 import type {
-	IPictographRenderingService,
-	PictographData,
-	IArrowPositioningService,
-	IPropRenderingService,
 	ArrowPosition,
 	GridData,
+	IArrowPositioningService,
+	IPictographRenderingService,
+	IPropRenderingService,
+	PictographData,
 } from '../interfaces';
-import { createGridData, type GridData as RawGridData } from '../../data/gridCoordinates.js';
 
 export class PictographRenderingService implements IPictographRenderingService {
 	private readonly SVG_SIZE = 950;
@@ -503,7 +503,7 @@ export class PictographRenderingService implements IPictographRenderingService {
 	 * Render props for both colors
 	 * DISABLED: Props are now rendered by Prop.svelte components to avoid duplicates
 	 */
-	private async renderProps(svg: SVGElement, data: PictographData): Promise<void> {
+	private async renderProps(_svg: SVGElement, _data: PictographData): Promise<void> {
 		// Props are now handled by ModernPictograph.svelte -> Prop.svelte components
 		// This service-level rendering is disabled to prevent duplicate CIRCLE_PROP elements
 		console.log('🎭 Props rendering delegated to Prop.svelte components');

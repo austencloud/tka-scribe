@@ -14,7 +14,7 @@ export const handle: Handle = async ({ event, resolve }) => {
 				process.stdout.write(logLine + '\n');
 
 				return new Response('OK', { status: 200 });
-			} catch (error) {
+			} catch {
 				return new Response('Error', { status: 500 });
 			}
 		}

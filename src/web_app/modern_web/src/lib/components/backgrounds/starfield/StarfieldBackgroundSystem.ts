@@ -1,10 +1,10 @@
 // src/lib/components/backgrounds/starfield/StarfieldBackgroundSystem.ts
 import type {
+	AccessibilitySettings,
 	BackgroundSystem,
 	Dimensions,
-	QualityLevel,
-	AccessibilitySettings,
 	PerformanceMetrics,
+	QualityLevel,
 } from '../types/types';
 
 interface Star {
@@ -40,7 +40,7 @@ export class StarfieldBackgroundSystem implements BackgroundSystem {
 		{ r: 200, g: 200, b: 255 }, // Bluish
 	];
 
-	public initialize(dimensions: Dimensions, quality: QualityLevel): void {
+	public initialize(_dimensions: Dimensions, quality: QualityLevel): void {
 		this.quality = quality;
 		this.isInitialized = true;
 
@@ -138,7 +138,7 @@ export class StarfieldBackgroundSystem implements BackgroundSystem {
 		}
 	}
 
-	private createStars(count: number, dimensions: Dimensions): Star[] {
+	private createStars(count: number, _dimensions: Dimensions): Star[] {
 		const stars: Star[] = [];
 		for (let i = 0; i < count; i++) {
 			stars.push(this.createStar());

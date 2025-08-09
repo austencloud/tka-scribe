@@ -1,12 +1,12 @@
 // src/lib/components/backgrounds/systems/SnowflakeSystem.ts
-import type { Dimensions, Snowflake } from '../types/types';
 import { SnowfallConfig } from '../config';
+import type { Dimensions, Snowflake } from '../types/types';
 
 export const createSnowflakeSystem = () => {
 	const config = SnowfallConfig;
 	let windStrength = 0;
 	let windChangeTimer = 0;
-	let currentQuality = 'medium';
+	// let currentQuality = 'medium';
 
 	const generateSnowflakeShape = (size: number): Path2D => {
 		const path = new Path2D();
@@ -99,7 +99,7 @@ export const createSnowflakeSystem = () => {
 	const draw = (
 		flakes: Snowflake[],
 		ctx: CanvasRenderingContext2D,
-		{ width, height }: Dimensions
+		{ width: _width, height: _height }: Dimensions
 	): void => {
 		if (!ctx) return;
 		ctx.globalAlpha = 1.0;

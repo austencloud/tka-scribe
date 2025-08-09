@@ -8,17 +8,17 @@
  * - Rendering props as SVG elements
  */
 
-import type {
-	IPropRenderingService,
-	PropPosition,
-	MotionData,
-	GridMode,
-	Location,
-} from '../interfaces';
-import { createGridData, type GridData } from '../../data/gridCoordinates.js';
-import { PropRotAngleManager } from '../PropRotAngleManager';
-import { DefaultPropPositioner } from '../DefaultPropPositioner';
+import { type GridData } from '../../data/gridCoordinates.js';
 import { Orientation } from '../../domain/enums';
+import { DefaultPropPositioner } from '../DefaultPropPositioner';
+import type {
+	GridMode,
+	IPropRenderingService,
+	Location,
+	MotionData,
+	PropPosition,
+} from '../interfaces';
+import { PropRotAngleManager } from '../PropRotAngleManager';
 
 export class PropRenderingService implements IPropRenderingService {
 	private svgCache = new Map<string, string>();
@@ -39,10 +39,10 @@ export class PropRenderingService implements IPropRenderingService {
 	 * DISABLED: Props are now rendered by Prop.svelte components to avoid duplicates
 	 */
 	async renderProp(
-		propType: string,
-		color: 'blue' | 'red',
-		motionData: MotionData,
-		gridMode: GridMode = 'diamond'
+		_propType: string,
+		_color: 'blue' | 'red',
+		_motionData: MotionData,
+		_gridMode: GridMode = 'diamond'
 	): Promise<SVGElement> {
 		// Props are now handled by ModernPictograph.svelte -> Prop.svelte components
 		// This service-level rendering is disabled to prevent duplicate CIRCLE_PROP elements

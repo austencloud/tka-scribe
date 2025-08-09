@@ -9,15 +9,15 @@
 import type { BeatData } from '$domain/BeatData';
 import { createBeatData } from '$domain/BeatData';
 import type { PictographData } from '$domain/PictographData';
-import type { IConstructTabCoordinationService, ISequenceService } from '../interfaces';
-import { resolve } from '../bootstrap';
 import {
-	constructTabState,
-	setError,
 	clearError,
+	// constructTabState,
+	setError,
 	setTransitioning,
 } from '../../stores/constructTabState.svelte';
 import { getCurrentSequence } from '../../stores/sequenceState.svelte';
+import { resolve } from '../bootstrap';
+import type { IConstructTabCoordinationService, ISequenceService } from '../interfaces';
 
 export class ConstructTabEventService {
 	private constructCoordinator: IConstructTabCoordinationService | null = null;
@@ -31,7 +31,7 @@ export class ConstructTabEventService {
 		try {
 			this.constructCoordinator = resolve('IConstructTabCoordinationService');
 			this.sequenceService = resolve('ISequenceService');
-		} catch (error) {
+		} catch {
 			// This is expected during SSR - services will be resolved once client-side DI container is ready
 			console.warn(
 				'ConstructTabEventService: Services not yet available (expected during SSR)'

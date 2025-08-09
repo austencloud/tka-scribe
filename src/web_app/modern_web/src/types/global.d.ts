@@ -1,7 +1,3 @@
-/// <reference types="svelte" />
-/// <reference types="vite/client" />
-/// <reference types="@testing-library/jest-dom" />
-
 // Global type declarations for the application
 
 declare global {
@@ -43,6 +39,18 @@ declare global {
 			listener: (this: EventTarget, ev: CustomEventMap[K]) => void,
 			options?: boolean | EventListenerOptions
 		): void;
+	}
+
+	// DOM types
+	interface AddEventListenerOptions {
+		capture?: boolean;
+		once?: boolean;
+		passive?: boolean;
+		signal?: AbortSignal;
+	}
+
+	interface EventListenerOptions {
+		capture?: boolean;
 	}
 }
 
@@ -101,8 +109,7 @@ declare module '*.json' {
 
 // Svelte component types
 declare module '*.svelte' {
-	import type { ComponentType, SvelteComponent } from 'svelte';
-	const component: ComponentType<SvelteComponent>;
+	const component: any;
 	export default component;
 }
 

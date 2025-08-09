@@ -7,8 +7,8 @@
 
 import type {
 	IApplicationInitializationService,
-	ISettingsService,
 	IPersistenceService,
+	ISettingsService,
 } from '../interfaces';
 
 export class ApplicationInitializationService implements IApplicationInitializationService {
@@ -170,7 +170,7 @@ export class ApplicationInitializationService implements IApplicationInitializat
 
 			localStorage.setItem(testKey, testData);
 			localStorage.removeItem(testKey);
-		} catch (error) {
+		} catch {
 			throw new Error('Insufficient localStorage space');
 		}
 	}

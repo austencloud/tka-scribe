@@ -30,7 +30,7 @@ export function createPictographService(config: Partial<PictographServiceConfig>
 	let currentPictographData = $state<PictographData | null>(null);
 	let isLoading = $state(false);
 	let errorMessage = $state<string | null>(null);
-	let loadedComponents = $state(new Set<string>());
+	const loadedComponents = $state(new Set<string>());
 
 	// Derived state
 	const hasValidData = $derived(() => currentPictographData != null);

@@ -12,45 +12,45 @@ import { createServiceInterface } from '@tka/shared/di/core/types';
 
 // Import service interface types
 import {
-	type ISequenceService,
-	type ISequenceDomainService,
 	IPictographService,
-	type IPictographRenderingService,
-	type IArrowPositioningService,
+	type IApplicationInitializationService,
 	type IArrowPlacementDataService,
 	type IArrowPlacementKeyService,
-	type IPropRenderingService,
-	type IPersistenceService,
-	type ISequenceGenerationService,
-	type IMotionGenerationService,
-	type IApplicationInitializationService,
-	type ISettingsService,
-	type IExportService,
+	type IArrowPositioningService,
 	type IConstructTabCoordinationService,
+	type IExportService,
+	type IMotionGenerationService,
 	type IOptionDataService,
+	type IPersistenceService,
+	type IPictographRenderingService,
+	type IPropRenderingService,
+	type ISequenceDomainService,
+	type ISequenceGenerationService,
+	type ISequenceService,
+	type ISettingsService,
 	type IStartPositionService,
 } from './interfaces.js';
 
 // Import fade system
-import { FadeOrchestrator, initializeFadeOrchestrator } from './ui/animation';
+import { initializeFadeOrchestrator } from './ui/animation';
 
 // Import service implementations
-import { SequenceService } from './implementations/SequenceService';
-import { SequenceDomainService } from './implementations/SequenceDomainService';
-import { PictographService } from './implementations/PictographService';
-import { PictographRenderingService } from './implementations/PictographRenderingService';
-import { ArrowPositioningService } from './implementations/ArrowPositioningService';
+import { ApplicationInitializationService } from './implementations/ApplicationInitializationService';
 import { ArrowPlacementDataService } from './implementations/ArrowPlacementDataService';
 import { ArrowPlacementKeyService } from './implementations/ArrowPlacementKeyService';
-import { PropRenderingService } from './implementations/PropRenderingService';
-import { LocalStoragePersistenceService } from './implementations/LocalStoragePersistenceService';
-import { SequenceGenerationService } from './implementations/SequenceGenerationService';
-import { MotionGenerationService } from './implementations/MotionGenerationService';
-import { ApplicationInitializationService } from './implementations/ApplicationInitializationService';
-import { SettingsService } from './implementations/SettingsService';
-import { ExportService } from './implementations/ExportService';
+import { ArrowPositioningService } from './implementations/ArrowPositioningService';
 import { ConstructTabCoordinationService } from './implementations/ConstructTabCoordinationService';
+import { ExportService } from './implementations/ExportService';
+import { LocalStoragePersistenceService } from './implementations/LocalStoragePersistenceService';
+import { MotionGenerationService } from './implementations/MotionGenerationService';
 import { OptionDataService } from './implementations/OptionDataService';
+import { PictographRenderingService } from './implementations/PictographRenderingService';
+import { PictographService } from './implementations/PictographService';
+import { PropRenderingService } from './implementations/PropRenderingService';
+import { SequenceDomainService } from './implementations/SequenceDomainService';
+import { SequenceGenerationService } from './implementations/SequenceGenerationService';
+import { SequenceService } from './implementations/SequenceService';
+import { SettingsService } from './implementations/SettingsService';
 import { StartPositionService } from './implementations/StartPositionService';
 
 // Create ServiceInterface objects for DI container

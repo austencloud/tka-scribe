@@ -54,7 +54,7 @@ export interface RunesBackgroundContext {
 }
 
 // Track created context instances to prevent duplicates
-let contextInstances = new Set();
+const contextInstances = new Set();
 
 /**
  * Create a new background context using Svelte 5 runes
@@ -72,7 +72,7 @@ export function createRunesBackgroundContext(): RunesBackgroundContext {
 	}
 
 	// Debug counter to track context creation
-	let contextId = Math.floor(Math.random() * 10000);
+	const contextId = Math.floor(Math.random() * 10000);
 
 	// Ensure we don't create duplicate contexts
 	if (contextInstances.size > 0) {
@@ -93,7 +93,7 @@ export function createRunesBackgroundContext(): RunesBackgroundContext {
 	let isInitialized = $state(false);
 
 	// Derived values
-	let shouldRender = $derived(isActive && performanceMetrics.fps > 30);
+	const shouldRender = $derived(isActive && performanceMetrics.fps > 30);
 
 	// Create background system based on type and quality
 	let backgroundSystem = $state<BackgroundSystem | null>(null);

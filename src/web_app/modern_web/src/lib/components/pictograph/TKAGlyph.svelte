@@ -27,7 +27,7 @@ Uses pure runes instead of stores for reactivity.
 		x = 50, // Match legacy positioning exactly
 		y = 800, // Match legacy positioning exactly
 		turnsTuple = '(s, 0, 0)',
-		color = '#4b5563',
+		// color = '#4b5563',
 		debug = false,
 		scale = 1, // Match legacy default scale
 	}: Props = $props();
@@ -62,7 +62,7 @@ Uses pure runes instead of stores for reactivity.
 
 			const svgText = await response.text();
 			const viewBoxMatch = svgText.match(
-				/viewBox\s*=\s*"[\d\.\-]+\s+[\d\.\-]+\s+([\d\.\-]+)\s+([\d\.\-]+)"/i
+				/viewBox\s*=\s*"[\d.-]+\s+[\d.-]+\s+([\d.-]+)\s+([\d.-]+)"/i
 			);
 
 			if (!viewBoxMatch) {

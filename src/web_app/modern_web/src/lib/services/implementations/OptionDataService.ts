@@ -5,33 +5,33 @@
  * Now uses real CSV data like the legacy system.
  */
 
-import type {
-	IOptionDataService,
-	SequenceData,
-	BeatData,
-	PictographData,
-	ValidationResult,
-	OptionFilters,
-	DifficultyLevel,
-	MotionType,
-} from '../interfaces';
-import { CsvDataService, type ParsedCsvRow } from './CsvDataService';
-import { OrientationCalculationService } from './OrientationCalculationService';
-import type { MotionData } from '$domain/MotionData';
 import {
-	createPictographData,
-	createArrowData,
-	createPropData,
-	createMotionData,
-	createGridData,
 	ArrowType,
-	PropType,
+	createArrowData,
+	// createMotionData,
+	createGridData,
+	createPictographData,
+	createPropData,
+	GridMode as DomainGridMode,
 	MotionType as DomainMotionType,
 	Location,
 	Orientation,
+	PropType,
 	RotationDirection,
-	GridMode as DomainGridMode,
 } from '$domain';
+import type { MotionData } from '$domain/MotionData';
+import type {
+	BeatData,
+	DifficultyLevel,
+	IOptionDataService,
+	MotionType,
+	OptionFilters,
+	PictographData,
+	SequenceData,
+	ValidationResult,
+} from '../interfaces';
+import { CsvDataService, type ParsedCsvRow } from './CsvDataService';
+import { OrientationCalculationService } from './OrientationCalculationService';
 
 export class OptionDataService implements IOptionDataService {
 	private readonly MOTION_TYPES: MotionType[] = ['pro', 'anti', 'float', 'dash', 'static'];
@@ -390,7 +390,7 @@ export class OptionDataService implements IOptionDataService {
 	/**
 	 * Map location enum to position string
 	 */
-	private mapLocationToPositionString(location: Location): string {
+	private mapLocationToPositionString(_location: Location): string {
 		// This would need proper mapping logic based on your position system
 		// For now, returning a default
 		return 'alpha1'; // Placeholder - needs proper mapping

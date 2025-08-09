@@ -1,10 +1,10 @@
 // src/lib/components/backgrounds/auroraBorealis/AuroraBorealisBackgroundSystem.ts
 import type {
+	AccessibilitySettings,
 	BackgroundSystem,
 	Dimensions,
-	QualityLevel,
-	AccessibilitySettings,
 	PerformanceMetrics,
+	QualityLevel,
 } from '../types/types';
 
 export class AuroraBorealisBackgroundSystem implements BackgroundSystem {
@@ -41,7 +41,7 @@ export class AuroraBorealisBackgroundSystem implements BackgroundSystem {
 		}
 	}
 
-	public update(dimensions: Dimensions): void {
+	public update(_dimensions: Dimensions): void {
 		if (!this.isInitialized) return;
 
 		// Update light wave positions for smooth animation

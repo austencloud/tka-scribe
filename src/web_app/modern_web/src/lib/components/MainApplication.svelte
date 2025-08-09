@@ -1,42 +1,34 @@
 <script lang="ts">
-	import { onMount, getContext } from 'svelte';
-	import type { ServiceContainer } from '@tka/shared/di/core/ServiceContainer';
 	import {
 		IApplicationInitializationService,
-		ISettingsService,
 		ISequenceService,
+		ISettingsService,
 	} from '$services/interfaces';
-
+	import type { ServiceContainer } from '@tka/shared/di/core/ServiceContainer';
+	import { getContext, onMount } from 'svelte';
 	// Import fade system
-	import {
-		initializeFadeSystem,
-		setFadeEnabled,
-		getFadeDebugInfo,
-		isFadeEnabled,
-	} from '$services/ui/animation';
-
+	import { initializeFadeSystem, setFadeEnabled } from '$services/ui/animation';
 	// Import runes-based state
 	import {
-		getIsInitialized,
-		getIsInitializing,
+		getActiveTab,
 		getInitializationError,
 		getInitializationProgress,
-		getActiveTab,
+		getIsInitialized,
 		getShowSettings,
-		setInitializationState,
-		setInitializationProgress,
-		setInitializationError,
-		updateSettings,
-		switchTab,
-		showSettingsDialog,
 		hideSettingsDialog,
+		setInitializationError,
+		setInitializationProgress,
+		setInitializationState,
+		showSettingsDialog,
+		switchTab,
+		updateSettings,
 	} from '$stores/appState.svelte';
 
 	import { loadSequences } from '$stores/sequenceActions';
 
 	// Import components
-	import LoadingScreen from './LoadingScreen.svelte';
 	import ErrorScreen from './ErrorScreen.svelte';
+	import LoadingScreen from './LoadingScreen.svelte';
 	import MainInterface from './MainInterface.svelte';
 	import SettingsDialog from './SettingsDialog.svelte';
 
