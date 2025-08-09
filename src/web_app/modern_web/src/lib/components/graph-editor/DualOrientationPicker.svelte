@@ -118,20 +118,13 @@
 			{/each}
 		</div>
 	</div>
-
-	<!-- Selection indicator -->
-	{#if selectedArrow}
-		<div class="selection-indicator">
-			<span>Selected: {selectedArrow.replace('_', ' ').toUpperCase()}</span>
-		</div>
-	{/if}
 </div>
 
 <style>
 	.dual-orientation-picker {
 		display: flex;
-		flex-direction: column;
-		gap: var(--spacing-lg);
+		flex-direction: row;
+		gap: var(--spacing-md);
 		height: 100%;
 	}
 
@@ -240,7 +233,8 @@
 	/* Responsive adjustments */
 	@media (max-width: 768px) {
 		.dual-orientation-picker {
-			gap: var(--spacing-md);
+			flex-direction: column;
+			gap: var(--spacing-sm);
 		}
 
 		.orientation-section {
@@ -255,6 +249,18 @@
 		.orientation-btn {
 			padding: var(--spacing-sm);
 			font-size: var(--font-size-xs);
+		}
+	}
+
+	@media (max-width: 480px) {
+		.section-header {
+			flex-direction: column;
+			align-items: flex-start;
+			gap: var(--spacing-xs);
+		}
+
+		.current-value {
+			align-self: flex-end;
 		}
 	}
 </style>

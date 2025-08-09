@@ -8,14 +8,10 @@
 
 	// Props - optional external data
 	const { 
-		width = 800, 
-		height = 600,
 		onBeatModified,
 		onArrowSelected,
 		onVisibilityChanged 
 	} = $props<{
-		width?: number;
-		height?: number;
 		onBeatModified?: (beatIndex: number, beatData: BeatData) => void;
 		onArrowSelected?: (arrowData: any) => void;
 		onVisibilityChanged?: (isVisible: boolean) => void;
@@ -57,7 +53,8 @@
 
 			// Trigger pictograph update immediately
 			if (selectedBeatData && modernPictograph) {
-				modernPictograph.updatePictograph(selectedBeatData.pictograph_data);
+				// ModernPictograph is reactive - no manual update needed
+				console.log('Pictograph will update reactively');
 			}
 		} catch (error) {
 			console.error('Error handling orientation change:', error);
@@ -84,10 +81,8 @@
 	// Update components when beat data changes
 	$effect(() => {
 		if (selectedBeatIndex !== null && selectedBeatData) {
-			// Update pictograph display
-			if (modernPictograph && selectedBeatData.pictograph_data) {
-				modernPictograph.updatePictograph(selectedBeatData.pictograph_data);
-			}
+			// ModernPictograph updates reactively via props
+			// No manual update needed
 			
 			// Update adjustment panel
 			if (adjustmentPanel) {
@@ -119,7 +114,6 @@
 
 <div 
 	class="graph-editor"
-	style="width: {width}px; height: {height}px;"
 	data-testid="graph-editor"
 >
 	<!-- Error display -->
@@ -150,8 +144,8 @@
 					<ModernPictograph
 						bind:this={modernPictograph}
 						pictographData={selectedBeatData.pictograph_data}
-						size="large"
-						interactive={true}
+						beatNumber={selectedBeatIndex || 0}
+						onClick={() => console.log('Pictograph clicked')}
 					/>
 				{:else}
 					<div class="no-pictograph">
@@ -179,6 +173,8 @@
 	.graph-editor {
 		display: flex;
 		flex-direction: column;
+		width: 100%;
+		height: 100%;
 		background: rgba(255, 255, 255, 0.1);
 		border: 1px solid rgba(255, 255, 255, 0.2);
 		border-radius: 16px;
@@ -280,6 +276,8 @@
 		justify-content: center;
 		padding: var(--spacing-lg);
 		min-height: 0;
+		max-height: 100%;
+		width: 100%;
 	}
 
 	.no-pictograph {
@@ -319,11 +317,38 @@
 		}
 		
 		.pictograph-section {
-			flex: 60;
+			flex: 55;
 		}
 		
 		.adjustment-section {
-			flex: 40;
+			flex: 45;
+		}
+
+		.pictograph-header {
+			padding: var(--spacing-sm);
+			flex-direction: column;
+			gap: var(--spacing-xs);
+		}
+
+		.beat-info {
+			flex-direction: column;
+			gap: var(--spacing-xs);
+		}
+
+		.pictograph-display {
+			padding: var(--spacing-md);
+		}
+	}
+
+	@media (max-width: 480px) {
+		.graph-content {
+			flex-direction: column;
+		}
+		
+		.pictograph-section,
+		.adjustment-section {
+			flex: none;
+			height: 50%;
 		}
 	}
 </style>

@@ -5,7 +5,8 @@
   "type": "module",
   "description": "TKA V2 Modern Web Application - Clean Svelte 5 + Runes Architecture",
   "scripts": {
-    "dev": "vite dev --host localhost --port 5177",
+    "predev": "svelte-kit sync",
+    "dev": "vite dev --host localhost --port 5174",
     "dev:bash": "\"C:\\Program Files\\Git\\bin\\bash.exe\" -c \"npm run dev\"",
     "build": "vite build",
     "preview": "vite preview",

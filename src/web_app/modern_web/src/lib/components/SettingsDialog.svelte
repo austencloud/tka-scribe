@@ -7,6 +7,7 @@
 	import GeneralTab from './settings/tabs/GeneralTab.svelte';
 	import PropTypeTab from './settings/tabs/PropTypeTab.svelte';
 	import VisibilityTab from './settings/tabs/VisibilityTab.svelte';
+	import CodexExporterTab from './settings/tabs/CodexExporterTab.svelte';
 
 	const dispatch = createEventDispatcher();
 
@@ -18,7 +19,8 @@
 	const tabs = [
 		{ id: 'General', label: 'General', icon: '⚙️' },
 		{ id: 'PropType', label: 'Prop Type', icon: '🏷️' },
-		{ id: 'Visibility', label: 'Visibility', icon: '👁️' }
+		{ id: 'Visibility', label: 'Visibility', icon: '👁️' },
+		{ id: 'CodexExporter', label: 'Codex Exporter', icon: '📤' }
 	];
 
 	// Handle tab switching
@@ -32,6 +34,14 @@
 		const newSettings = { ...settings, [key]: value };
 		updateSettings(newSettings);
 		settings = newSettings;
+	}
+
+	// Handle codex export request
+	function handleCodexExport(event: CustomEvent) {
+		const config = event.detail;
+		console.log('🚀 Codex export requested with config:', config);
+		// TODO: Implement actual export service call
+		dispatch('codexExport', config);
 	}
 
 	// Handle apply/save
@@ -80,6 +90,8 @@
 					<PropTypeTab {settings} on:update={handleSettingsUpdate} />
 				{:else if activeTab === 'Visibility'}
 					<VisibilityTab {settings} on:update={handleSettingsUpdate} />
+				{:else if activeTab === 'CodexExporter'}
+					<CodexExporterTab {settings} on:update={handleSettingsUpdate} on:export={handleCodexExport} />
 				{/if}
 			</main>
 		</div>

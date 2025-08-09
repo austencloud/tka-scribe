@@ -115,6 +115,22 @@
 		</div>
 	</div>
 
+	<!-- Turn direction legend -->
+	<div class="turn-legend">
+		<div class="legend-item">
+			<span class="legend-symbol">+</span>
+			<span class="legend-text">Clockwise</span>
+		</div>
+		<div class="legend-item">
+			<span class="legend-symbol">-</span>
+			<span class="legend-text">Counter-clockwise</span>
+		</div>
+		<div class="legend-item">
+			<span class="legend-symbol">0</span>
+			<span class="legend-text">No turn</span>
+		</div>
+	</div>
+
 	<!-- Red turn controls -->
 	<div class="turn-section red-section">
 		<div class="section-header">
@@ -137,36 +153,13 @@
 			{/each}
 		</div>
 	</div>
-
-	<!-- Turn direction legend -->
-	<div class="turn-legend">
-		<div class="legend-item">
-			<span class="legend-symbol">+</span>
-			<span class="legend-text">Clockwise</span>
-		</div>
-		<div class="legend-item">
-			<span class="legend-symbol">-</span>
-			<span class="legend-text">Counter-clockwise</span>
-		</div>
-		<div class="legend-item">
-			<span class="legend-symbol">0</span>
-			<span class="legend-text">No turn</span>
-		</div>
-	</div>
-
-	<!-- Selection indicator -->
-	{#if selectedArrow}
-		<div class="selection-indicator">
-			<span>Selected: {selectedArrow.replace('_', ' ').toUpperCase()}</span>
-		</div>
-	{/if}
 </div>
 
 <style>
 	.turn-adjustment-controls {
 		display: flex;
-		flex-direction: column;
-		gap: var(--spacing-lg);
+		flex-direction: row;
+		gap: var(--spacing-md);
 		height: 100%;
 	}
 
@@ -272,12 +265,17 @@
 
 	.turn-legend {
 		display: flex;
-		gap: var(--spacing-md);
+		flex-direction: column;
+		gap: var(--spacing-xs);
 		justify-content: center;
-		padding: var(--spacing-sm);
+		padding: var(--spacing-md);
 		background: rgba(255, 255, 255, 0.05);
 		border: 1px solid rgba(255, 255, 255, 0.1);
 		border-radius: var(--border-radius);
+		min-width: 140px;
+		flex-shrink: 0;
+		align-self: center;
+		text-align: center;
 	}
 
 	.legend-item {
@@ -312,7 +310,8 @@
 	/* Responsive adjustments */
 	@media (max-width: 768px) {
 		.turn-adjustment-controls {
-			gap: var(--spacing-md);
+			flex-direction: column;
+			gap: var(--spacing-sm);
 		}
 
 		.turn-section {
@@ -327,6 +326,25 @@
 		.turn-btn {
 			padding: var(--spacing-xs);
 			font-size: var(--font-size-xs);
+		}
+
+		.turn-legend {
+			flex-direction: row;
+			gap: var(--spacing-xs);
+			min-width: unset;
+			align-self: stretch;
+		}
+	}
+
+	@media (max-width: 480px) {
+		.section-header {
+			flex-direction: column;
+			align-items: flex-start;
+			gap: var(--spacing-xs);
+		}
+
+		.current-value {
+			align-self: flex-end;
 		}
 
 		.turn-legend {

@@ -1,15 +1,79 @@
-<!-- Browse Tab - Sequence library -->
-<div class="browse-tab">
-	<div class="tab-header glass-surface">
-		<h1>Browse</h1>
-		<p>Explore and manage your sequence library</p>
-	</div>
+<script lang="ts">
+	import { onMount } from 'svelte';
+	import FilterSelectionPanel from './browse/FilterSelectionPanel.svelte';
+	import SequenceBrowserPanel from './browse/SequenceBrowserPanel.svelte';
+	import SequenceViewerPanel from './browse/SequenceViewerPanel.svelte';
 
-	<div class="tab-content">
-		<div class="placeholder-content">
-			<h2>📚 Browse Tab</h2>
-			<p>Sequence library and management will be implemented here.</p>
-			<p class="coming-soon">🚧 Coming Soon: Sequence Gallery, Search & Filter, Import/Export</p>
+	// Tab state management
+	let currentPanelIndex = 0; // 0 = filter selection, 1 = sequence browser
+	let selectedFilter: { type: string; value: any } | null = null;
+	let selectedSequence: any | null = null;
+	let isLoading = false;
+
+	// Switch to sequence browser when filter is selected
+	function handleFilterSelected(event: CustomEvent) {
+		selectedFilter = event.detail;
+		currentPanelIndex = 1;
+		// TODO: Trigger sequence loading based on filter
+	}
+
+	// Handle sequence selection from browser
+	function handleSequenceSelected(event: CustomEvent) {
+		selectedSequence = event.detail;
+		// TODO: Load sequence details for viewer panel
+	}
+
+	// Navigate back to filter selection
+	function handleBackToFilters() {
+		currentPanelIndex = 0;
+		selectedFilter = null;
+	}
+
+	// Navigate back to sequence browser
+	function handleBackToBrowser() {
+		selectedSequence = null;
+	}
+
+	// Handle sequence actions (edit, save, delete, fullscreen)
+	function handleSequenceAction(event: CustomEvent) {
+		const { action, sequence } = event.detail;
+		console.log(`Action: ${action} on sequence:`, sequence);
+		// TODO: Implement actions
+	}
+</script>
+
+<div class="browse-tab">
+	<!-- Main horizontal layout (2:1 ratio) -->
+	<div class="main-layout">
+		<!-- Left side - Stacked panels (2/3 width) -->
+		<div class="left-panel-stack">
+			{#if currentPanelIndex === 0}
+				<!-- Filter Selection Panel -->
+				<div class="panel-container" data-panel="filter-selection">
+					<FilterSelectionPanel 
+						on:filterSelected={handleFilterSelected}
+					/>
+				</div>
+			{:else if currentPanelIndex === 1}
+				<!-- Sequence Browser Panel -->
+				<div class="panel-container" data-panel="sequence-browser">
+					<SequenceBrowserPanel 
+						filter={selectedFilter}
+						{isLoading}
+						on:sequenceSelected={handleSequenceSelected}
+						on:backToFilters={handleBackToFilters}
+					/>
+				</div>
+			{/if}
+		</div>
+
+		<!-- Right side - Sequence Viewer Panel (1/3 width) -->
+		<div class="right-panel">
+			<SequenceViewerPanel 
+				sequence={selectedSequence}
+				on:backToBrowser={handleBackToBrowser}
+				on:sequenceAction={handleSequenceAction}
+			/>
 		</div>
 	</div>
 </div>
@@ -19,54 +83,78 @@
 		display: flex;
 		flex-direction: column;
 		height: 100%;
-		padding: var(--spacing-lg);
-		gap: var(--spacing-lg);
+		width: 100%;
+		overflow: hidden;
+		background: transparent;
 	}
 
-	.tab-header {
-		padding: var(--spacing-lg);
-		text-align: center;
+	.main-layout {
+		display: flex;
+		flex: 1;
+		gap: 0;
+		overflow: hidden;
 	}
 
-	.tab-header h1 {
-		font-size: var(--font-size-2xl);
-		margin-bottom: var(--spacing-sm);
-		color: var(--foreground);
+	.left-panel-stack {
+		flex: 2;
+		display: flex;
+		flex-direction: column;
+		overflow: hidden;
+		min-width: 0;
 	}
 
-	.tab-header p {
-		color: var(--muted-foreground);
-	}
-
-	.tab-content {
+	.right-panel {
 		flex: 1;
 		display: flex;
-		align-items: center;
-		justify-content: center;
+		flex-direction: column;
+		overflow: hidden;
+		min-width: 0;
+		border-left: var(--glass-border);
 	}
 
-	.placeholder-content {
-		text-align: center;
-		max-width: 600px;
+	.panel-container {
+		flex: 1;
+		display: flex;
+		flex-direction: column;
+		overflow: hidden;
 	}
 
-	.placeholder-content h2 {
-		font-size: var(--font-size-xl);
-		margin-bottom: var(--spacing-md);
-		color: var(--foreground);
+	/* Smooth panel transitions */
+	.panel-container {
+		animation: slideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 	}
 
-	.placeholder-content p {
-		color: var(--muted-foreground);
-		margin-bottom: var(--spacing-lg);
+	@keyframes slideIn {
+		from {
+			opacity: 0;
+			transform: translateX(-20px);
+		}
+		to {
+			opacity: 1;
+			transform: translateX(0);
+		}
 	}
 
-	.coming-soon {
-		background: rgba(255, 193, 7, 0.1);
-		border: 1px solid rgba(255, 193, 7, 0.3);
-		color: #ffc107;
-		padding: var(--spacing-md);
-		border-radius: 8px;
-		margin-top: var(--spacing-lg);
+	/* Responsive design */
+	@media (max-width: 1024px) {
+		.main-layout {
+			flex-direction: column;
+		}
+
+		.left-panel-stack {
+			flex: 1;
+		}
+
+		.right-panel {
+			flex: 1;
+			border-left: none;
+			border-top: var(--glass-border);
+		}
+	}
+
+	@media (max-width: 768px) {
+		.main-layout {
+			gap: 0;
+		}
 	}
 </style>

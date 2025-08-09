@@ -8,6 +8,7 @@
 	import GeneratePanel from '$components/construct/GeneratePanel.svelte';
 	import Workbench from '$components/workbench/Workbench.svelte';
 	import GraphEditor from '$components/graph-editor/GraphEditor.svelte';
+	import ExportPanel from '$components/export/ExportPanel.svelte';
 	import type { BeatData, PictographData, SequenceData } from '$services/interfaces';
 	import { IConstructTabCoordinationService, ISequenceService } from '$services/interfaces';
 	import { resolve } from '$services/bootstrap';
@@ -128,6 +129,35 @@
 	function handleGraphEditorVisibilityChanged(isVisible: boolean) {
 		console.log('ConstructTab: Graph editor visibility changed', isVisible);
 		// Handle graph editor visibility changes if needed
+	}
+
+	// Export Panel event handlers
+	function handleExportSettingChanged(event: CustomEvent) {
+		const { setting, value } = event.detail;
+		console.log('ConstructTab: Export setting changed', setting, value);
+		// Handle export setting changes - could save to settings service
+	}
+
+	function handlePreviewUpdateRequested(event: CustomEvent) {
+		const settings = event.detail;
+		console.log('ConstructTab: Preview update requested', settings);
+		// Handle preview update requests
+	}
+
+	function handleExportRequested(event: CustomEvent) {
+		const { type, config } = event.detail;
+		console.log('ConstructTab: Export requested', type, config);
+
+		// Handle export requests
+		if (type === 'current') {
+			console.log('Exporting current sequence:', config.sequence?.name);
+			// TODO: Implement actual export service call
+			alert(`Exporting sequence "${config.sequence?.name || 'Untitled'}" with ${config.sequence?.beats?.length || 0} beats`);
+		} else if (type === 'all') {
+			console.log('Exporting all sequences');
+			// TODO: Implement actual export all service call
+			alert('Exporting all sequences in library');
+		}
 	}
 
 	// Setup component coordination on mount
@@ -253,8 +283,6 @@
 					</div>
 					<div class="panel-content graph-editor-content">
 						<GraphEditor
-							width={400}
-							height={500}
 							onBeatModified={handleBeatModified}
 							onArrowSelected={handleArrowSelected}
 							onVisibilityChanged={handleGraphEditorVisibilityChanged}
@@ -262,15 +290,11 @@
 					</div>
 
 				{:else if activeRightPanel === 'export'}
-					<div class="panel-header">
-						<h2>Export Sequences</h2>
-						<p>Export your sequences in various formats</p>
-					</div>
-					<div class="panel-content">
-						<div class="placeholder-content">
-							<p>Export panel coming soon...</p>
-						</div>
-					</div>
+					<ExportPanel
+						on:settingChanged={handleExportSettingChanged}
+						on:previewUpdateRequested={handlePreviewUpdateRequested}
+						on:exportRequested={handleExportRequested}
+					/>
 				{/if}
 			</div>
 		</div>
@@ -457,20 +481,14 @@
 		padding: var(--spacing-lg);
 	}
 
-	.placeholder-content {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		height: 100%;
-		color: var(--muted-foreground);
-		font-size: var(--font-size-lg);
-	}
+
 
 	.graph-editor-content {
 		padding: 0;
-		height: 100%;
+		flex: 1;
 		display: flex;
 		flex-direction: column;
+		min-height: 0;
 	}
 
 	/* Loading overlay */
