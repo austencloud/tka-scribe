@@ -28,8 +28,8 @@ export function getInitializationProgress() { return initState.initializationPro
 // UI STATE
 // ============================================================================
 
-// UPDATED: Tab types to match desktop app exactly - including new Sequence tab
-type TabId = 'construct' | 'browse' | 'sequence' | 'write' | 'learn';
+// UPDATED: Tab types to match desktop app exactly - including sequence_card tab
+type TabId = 'construct' | 'browse' | 'sequence_card' | 'write' | 'learn';
 
 const uiState = $state({
 	activeTab: 'construct' as TabId,
@@ -130,7 +130,7 @@ export function clearInitializationError(): void {
 }
 
 /**
- * Switch to a different tab - UPDATED to include sequence tab
+ * Switch to a different tab - UPDATED to include sequence_card tab
  */
 export function switchTab(tab: TabId): void {
 	uiState.activeTab = tab;

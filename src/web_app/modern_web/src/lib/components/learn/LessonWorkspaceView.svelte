@@ -1,6 +1,23 @@
-<!-- LessonWorkspaceView.svelte - Lesson workspace placeholder -->
+<!-- LessonWorkspaceView.svelte - Enhanced lesson workspace with full functionality -->
 <script lang="ts">
-	import type { LessonType, QuizMode, LayoutMode } from '$lib/types/learn';
+	import { onMount, onDestroy } from 'svelte';
+	import type {
+		LessonType,
+		QuizMode,
+		LayoutMode,
+		QuestionData,
+		LessonProgress,
+		LessonResults,
+		QuizSession
+	} from '$lib/types/learn';
+	import { QuizMode as QuizModeEnum } from '$lib/types/learn';
+	import { LessonConfigService } from '$lib/services/learn/LessonConfigService';
+	import { QuestionGeneratorService } from '$lib/services/learn/QuestionGeneratorService';
+	import { QuizSessionService } from '$lib/services/learn/QuizSessionService';
+	import { AnswerCheckerService } from '$lib/services/learn/AnswerCheckerService';
+	import QuestionGenerator from './QuestionGenerator.svelte';
+	import QuizTimer from './QuizTimer.svelte';
+	import ProgressTracker from './ProgressTracker.svelte';
 
 	// Props
 	interface Props {
@@ -8,85 +25,242 @@
 		quizMode?: QuizMode | null;
 		layoutMode?: LayoutMode;
 		onBackToSelector?: () => void;
+		onLessonComplete?: (results: LessonResults) => void;
 	}
 
-	let { 
+	let {
 		lessonType = null,
 		quizMode = null,
 		layoutMode,
-		onBackToSelector
+		onBackToSelector,
+		onLessonComplete
 	}: Props = $props();
 
-	// Handle back navigation
+	// State
+	let sessionId: string | null = null;
+	let currentQuestion: QuestionData | null = $state(null);
+	let progress: LessonProgress | null = $state(null);
+	let isAnswered = $state(false);
+	let showFeedback = $state(false);
+	let selectedAnswerId: string | null = $state(null);
+	let timeRemaining = $state(0);
+	let isLoading = $state(false);
+	let questionStartTime = 0;
+
+	// Component references
+	let timerComponent: any;
+
+	// Derived state
+	const lessonConfig = $derived(lessonType ? LessonConfigService.getLessonConfig(lessonType) : null);
+	const isCountdownMode = $derived(quizMode === QuizModeEnum.COUNTDOWN);
+	const isFixedQuestionMode = $derived(quizMode === QuizModeEnum.FIXED_QUESTION);
+
+	// Lifecycle
+	onMount(() => {
+		if (lessonType && quizMode) {
+			startLesson();
+		}
+	});
+
+	onDestroy(() => {
+		if (sessionId) {
+			QuizSessionService.abandonSession(sessionId);
+		}
+	});
+
+	// Methods
+	function startLesson() {
+		if (!lessonType || !quizMode) return;
+
+		isLoading = true;
+
+		// Create quiz session
+		sessionId = QuizSessionService.createSession(lessonType, quizMode);
+
+		// Set up timer for countdown mode
+		if (isCountdownMode) {
+			timeRemaining = LessonConfigService.getQuizTime(quizMode);
+			if (timerComponent) {
+				timerComponent.start();
+			}
+		}
+
+		// Generate first question
+		generateNewQuestion();
+		updateProgress();
+
+		isLoading = false;
+	}
+
+	function generateNewQuestion() {
+		if (!lessonType) return;
+
+		try {
+			currentQuestion = QuestionGeneratorService.generateQuestion(lessonType);
+			questionStartTime = Date.now();
+			resetQuestionState();
+		} catch (error) {
+			console.error('Failed to generate question:', error);
+		}
+	}
+
+	function resetQuestionState() {
+		isAnswered = false;
+		showFeedback = false;
+		selectedAnswerId = null;
+	}
+
+	function handleAnswerSelected(event: CustomEvent) {
+		if (isAnswered || !currentQuestion || !sessionId) return;
+
+		const { answerId, answerContent, isCorrect } = event.detail;
+		const timeToAnswer = Date.now() - questionStartTime;
+
+		// Mark as answered
+		isAnswered = true;
+		selectedAnswerId = answerId;
+		showFeedback = true;
+
+		// Update session progress
+		QuizSessionService.updateSessionProgress(sessionId, isCorrect, timeToAnswer / 1000);
+		updateProgress();
+
+		// Auto-advance after feedback delay
+		setTimeout(() => {
+			if (shouldContinueQuiz()) {
+				handleNextQuestion();
+			} else {
+				completeLesson();
+			}
+		}, 2000);
+	}
+
+	function handleNextQuestion() {
+		if (!sessionId) return;
+
+		if (shouldContinueQuiz()) {
+			generateNewQuestion();
+		} else {
+			completeLesson();
+		}
+	}
+
+	function shouldContinueQuiz(): boolean {
+		if (!sessionId) return false;
+
+		const session = QuizSessionService.getSession(sessionId);
+		if (!session || !session.isActive) return false;
+
+		if (isFixedQuestionMode) {
+			return session.questionsAnswered < session.totalQuestions;
+		} else if (isCountdownMode) {
+			return timeRemaining > 0;
+		}
+
+		return false;
+	}
+
+	function updateProgress() {
+		if (!sessionId) return;
+		progress = QuizSessionService.getLessonProgress(sessionId);
+	}
+
+	function handleTimerTick(event: CustomEvent) {
+		timeRemaining = event.detail.timeRemaining;
+	}
+
+	function handleTimeUp() {
+		completeLesson();
+	}
+
+	function completeLesson() {
+		if (!sessionId) return;
+
+		const results = QuizSessionService.completeSession(sessionId);
+		if (results) {
+			onLessonComplete?.(results);
+		}
+	}
+
 	function handleBackClick() {
+		if (sessionId) {
+			QuizSessionService.abandonSession(sessionId);
+		}
 		onBackToSelector?.();
 	}
 
-	// Get lesson display name
-	function getLessonDisplayName(type: LessonType | null): string {
-		if (!type) return 'Unknown Lesson';
-		
-		switch (type) {
-			case 'pictograph_to_letter':
-				return 'Lesson 1: Pictograph to Letter';
-			case 'letter_to_pictograph':
-				return 'Lesson 2: Letter to Pictograph';
-			case 'valid_next_pictograph':
-				return 'Lesson 3: Valid Next Pictograph';
-			default:
-				return 'Unknown Lesson';
-		}
+	function formatLessonTitle(): string {
+		if (!lessonType) return 'Unknown Lesson';
+		return LessonConfigService.getFormattedLessonTitle(lessonType);
 	}
 
-	// Get quiz mode display name
-	function getQuizModeDisplayName(mode: QuizMode | null): string {
-		if (!mode) return 'Unknown Mode';
-		
-		switch (mode) {
-			case 'fixed_question':
-				return 'Fixed Questions';
-			case 'countdown':
-				return 'Countdown';
-			default:
-				return 'Unknown Mode';
-		}
+	function getQuizModeDisplay(): string {
+		if (!quizMode) return 'Unknown Mode';
+		return LessonConfigService.getQuizModeName(quizMode);
 	}
 </script>
 
 <div class="lesson-workspace">
-	<!-- Header with back button -->
-	<div class="workspace-header glass-surface">
-		<button class="back-button btn-glass" onclick={handleBackClick}>
-			← Back to Lessons
-		</button>
-		<div class="lesson-info">
-			<h2 class="lesson-title">{getLessonDisplayName(lessonType)}</h2>
-			<p class="quiz-mode">Mode: {getQuizModeDisplayName(quizMode)}</p>
+	{#if isLoading}
+		<div class="loading-screen">
+			<div class="loading-spinner"></div>
+			<p>Starting lesson...</p>
 		</div>
-	</div>
+	{:else}
+		<!-- Header -->
+		<div class="workspace-header">
+			<button class="back-button" onclick={handleBackClick}>
+				← Back to Lessons
+			</button>
+			<div class="lesson-info">
+				<h2 class="lesson-title">{formatLessonTitle()}</h2>
+				<p class="quiz-mode">Mode: {getQuizModeDisplay()}</p>
+			</div>
+			{#if isCountdownMode && timeRemaining > 0}
+				<div class="timer-container">
+					<QuizTimer
+						bind:this={timerComponent}
+						{timeRemaining}
+						totalTime={LessonConfigService.getQuizTime(quizMode)}
+						isRunning={true}
+						size="small"
+						on:tick={handleTimerTick}
+						on:timeUp={handleTimeUp}
+					/>
+				</div>
+			{/if}
+		</div>
 
-	<!-- Main content area -->
-	<div class="workspace-content">
-		<div class="placeholder-content glass-surface">
-			<div class="placeholder-icon">🎓</div>
-			<h3>Lesson Workspace</h3>
-			<p>Interactive lesson content will be implemented here.</p>
-			<div class="lesson-details">
-				<p><strong>Lesson:</strong> {getLessonDisplayName(lessonType)}</p>
-				<p><strong>Mode:</strong> {getQuizModeDisplayName(quizMode)}</p>
+		<!-- Progress Tracker -->
+		{#if progress}
+			<div class="progress-container">
+				<ProgressTracker
+					{progress}
+					{quizMode}
+					compact={true}
+				/>
 			</div>
-			<div class="coming-soon">
-				<p>🚧 Coming Soon:</p>
-				<ul>
-					<li>Question Display</li>
-					<li>Answer Options</li>
-					<li>Progress Tracking</li>
-					<li>Timer (for countdown mode)</li>
-					<li>Score Tracking</li>
-				</ul>
-			</div>
+		{/if}
+
+		<!-- Main Content -->
+		<div class="workspace-content">
+			{#if currentQuestion && lessonType}
+				<QuestionGenerator
+					{lessonType}
+					questionData={currentQuestion}
+					{showFeedback}
+					{selectedAnswerId}
+					{isAnswered}
+					on:answerSelected={handleAnswerSelected}
+					on:nextQuestion={handleNextQuestion}
+				/>
+			{:else}
+				<div class="no-question">
+					<p>No question available</p>
+				</div>
+			{/if}
 		</div>
-	</div>
+	{/if}
 </div>
 
 <style>
@@ -138,112 +312,105 @@
 		margin: 0;
 	}
 
+	.timer-container {
+		display: flex;
+		align-items: center;
+	}
+
+	.progress-container {
+		background: rgba(255, 255, 255, 0.05);
+		border-radius: 12px;
+		border: 1px solid rgba(255, 255, 255, 0.1);
+		backdrop-filter: blur(10px);
+	}
+
 	.workspace-content {
 		flex: 1;
 		display: flex;
 		align-items: center;
 		justify-content: center;
+		min-height: 400px;
 	}
 
-	.placeholder-content {
-		text-align: center;
-		padding: var(--spacing-2xl);
-		border-radius: 16px;
-		max-width: 600px;
-		width: 100%;
-	}
-
-	.placeholder-icon {
-		font-size: 4rem;
-		margin-bottom: var(--spacing-lg);
-	}
-
-	.placeholder-content h3 {
-		color: var(--foreground);
-		font-size: var(--font-size-2xl);
-		margin-bottom: var(--spacing-md);
-	}
-
-	.placeholder-content > p {
-		color: var(--muted-foreground);
-		font-size: var(--font-size-lg);
-		margin-bottom: var(--spacing-xl);
-	}
-
-	.lesson-details {
+	.no-question {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		padding: 2rem;
 		background: rgba(255, 255, 255, 0.05);
-		border-radius: 8px;
-		padding: var(--spacing-md);
-		margin-bottom: var(--spacing-xl);
+		border-radius: 12px;
+		border: 1px solid rgba(255, 255, 255, 0.1);
+		backdrop-filter: blur(10px);
+		color: #94a3b8;
+		font-size: 1.125rem;
 	}
 
-	.lesson-details p {
-		color: var(--foreground);
-		margin: var(--spacing-xs) 0;
-		font-size: var(--font-size-sm);
+	.loading-screen {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		height: 100%;
+		gap: 1rem;
+		color: #ffffff;
 	}
 
-	.coming-soon {
-		text-align: left;
-		background: rgba(255, 255, 255, 0.03);
-		border-radius: 8px;
-		padding: var(--spacing-md);
+	.loading-spinner {
+		width: 40px;
+		height: 40px;
+		border: 4px solid rgba(255, 255, 255, 0.1);
+		border-left: 4px solid #667eea;
+		border-radius: 50%;
+		animation: spin 1s linear infinite;
 	}
 
-	.coming-soon p {
-		color: var(--muted-foreground);
-		font-weight: 500;
-		margin-bottom: var(--spacing-sm);
-	}
-
-	.coming-soon ul {
-		color: var(--muted-foreground);
-		font-size: var(--font-size-sm);
-		margin: 0;
-		padding-left: var(--spacing-lg);
-	}
-
-	.coming-soon li {
-		margin-bottom: var(--spacing-xs);
+	@keyframes spin {
+		0% { transform: rotate(0deg); }
+		100% { transform: rotate(360deg); }
 	}
 
 	/* Responsive adjustments */
 	@media (max-width: 768px) {
 		.lesson-workspace {
-			padding: var(--spacing-md);
-			gap: var(--spacing-md);
+			padding: 1rem;
+			gap: 1rem;
 		}
 
 		.workspace-header {
 			flex-direction: column;
 			align-items: flex-start;
-			gap: var(--spacing-md);
+			gap: 1rem;
 		}
 
 		.lesson-title {
-			font-size: var(--font-size-lg);
+			font-size: 1.25rem;
 		}
 
-		.placeholder-content {
-			padding: var(--spacing-xl);
-		}
-
-		.placeholder-icon {
-			font-size: 3rem;
+		.workspace-content {
+			min-height: 300px;
 		}
 	}
 
 	@media (max-width: 480px) {
 		.lesson-workspace {
-			padding: var(--spacing-sm);
+			padding: 0.75rem;
 		}
 
-		.placeholder-content {
-			padding: var(--spacing-lg);
+		.workspace-header {
+			padding: 0.75rem 1rem;
 		}
 
-		.placeholder-icon {
-			font-size: 2.5rem;
+		.back-button {
+			padding: 0.5rem 1rem;
+			font-size: 0.75rem;
+		}
+
+		.lesson-title {
+			font-size: 1.125rem;
+		}
+
+		.workspace-content {
+			min-height: 250px;
 		}
 	}
 </style>

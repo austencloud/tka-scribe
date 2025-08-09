@@ -62,12 +62,53 @@
 	}
 
 	// Get performance grade
-	function getPerformanceGrade(accuracy: number): { grade: string; color: string } {
-		if (accuracy >= 90) return { grade: 'A', color: '#10b981' };
-		if (accuracy >= 80) return { grade: 'B', color: '#3b82f6' };
-		if (accuracy >= 70) return { grade: 'C', color: '#f59e0b' };
-		if (accuracy >= 60) return { grade: 'D', color: '#ef4444' };
-		return { grade: 'F', color: '#dc2626' };
+	function getPerformanceGrade(accuracy: number): { grade: string; color: string; message: string } {
+		if (accuracy >= 90) return { grade: 'A', color: '#10b981', message: 'Excellent!' };
+		if (accuracy >= 80) return { grade: 'B', color: '#3b82f6', message: 'Great job!' };
+		if (accuracy >= 70) return { grade: 'C', color: '#f59e0b', message: 'Good work!' };
+		if (accuracy >= 60) return { grade: 'D', color: '#ef4444', message: 'Keep practicing!' };
+		return { grade: 'F', color: '#dc2626', message: 'Try again!' };
+	}
+
+	// Get performance feedback
+	function getPerformanceFeedback(results: LessonResults): string {
+		const accuracy = results.accuracyPercentage;
+		const avgTime = results.averageTimePerQuestion || 0;
+
+		if (accuracy >= 90) {
+			if (avgTime < 3) {
+				return 'Outstanding! You\'re both accurate and fast.';
+			} else {
+				return 'Excellent accuracy! You really understand this lesson.';
+			}
+		} else if (accuracy >= 70) {
+			return 'Good progress! Keep practicing to improve your speed and accuracy.';
+		} else {
+			return 'Don\'t give up! Review the lesson materials and try again.';
+		}
+	}
+
+	// Get achievement badges
+	function getAchievements(results: LessonResults): string[] {
+		const achievements: string[] = [];
+
+		if (results.accuracyPercentage === 100) {
+			achievements.push('🎯 Perfect Score');
+		}
+		if (results.accuracyPercentage >= 90) {
+			achievements.push('⭐ High Achiever');
+		}
+		if (results.averageTimePerQuestion && results.averageTimePerQuestion < 3) {
+			achievements.push('⚡ Speed Demon');
+		}
+		if (results.streakLongestCorrect && results.streakLongestCorrect >= 5) {
+			achievements.push('🔥 Hot Streak');
+		}
+		if (results.completionTimeSeconds < 60) {
+			achievements.push('🏃 Quick Learner');
+		}
+
+		return achievements;
 	}
 </script>
 
@@ -97,8 +138,28 @@
 					<div class="accuracy-text">
 						<span class="accuracy-percentage">{results.accuracyPercentage.toFixed(1)}%</span>
 						<span class="accuracy-label">Accuracy</span>
+						<span class="performance-message">{getPerformanceGrade(results.accuracyPercentage).message}</span>
 					</div>
 				</div>
+
+				<!-- Performance Feedback -->
+				<div class="feedback-section">
+					<p class="feedback-text">{getPerformanceFeedback(results)}</p>
+				</div>
+
+				<!-- Achievements -->
+				{#if getAchievements(results).length > 0}
+					<div class="achievements-section">
+						<h4>Achievements</h4>
+						<div class="achievements-grid">
+							{#each getAchievements(results) as achievement}
+								<div class="achievement-badge">
+									{achievement}
+								</div>
+							{/each}
+						</div>
+					</div>
+				{/if}
 
 				<div class="stats-grid">
 					<div class="stat-item">
@@ -259,6 +320,68 @@
 	.accuracy-label {
 		color: var(--muted-foreground);
 		font-size: var(--font-size-sm);
+	}
+
+	.performance-message {
+		color: var(--foreground);
+		font-size: var(--font-size-sm);
+		font-weight: 600;
+		margin-top: var(--spacing-xs);
+	}
+
+	.feedback-section {
+		background: rgba(255, 255, 255, 0.05);
+		border-radius: 8px;
+		padding: var(--spacing-md);
+		margin-bottom: var(--spacing-lg);
+	}
+
+	.feedback-text {
+		color: var(--foreground);
+		font-size: var(--font-size-base);
+		margin: 0;
+		text-align: center;
+		font-style: italic;
+	}
+
+	.achievements-section {
+		margin-bottom: var(--spacing-lg);
+	}
+
+	.achievements-section h4 {
+		color: var(--foreground);
+		font-size: var(--font-size-lg);
+		margin: 0 0 var(--spacing-md) 0;
+		text-align: center;
+	}
+
+	.achievements-grid {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--spacing-sm);
+		justify-content: center;
+	}
+
+	.achievement-badge {
+		background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+		color: #000000;
+		padding: var(--spacing-xs) var(--spacing-sm);
+		border-radius: 20px;
+		font-size: var(--font-size-sm);
+		font-weight: 600;
+		box-shadow: 0 2px 8px rgba(251, 191, 36, 0.3);
+		animation: badgeAppear 0.5s ease-out;
+	}
+
+	@keyframes badgeAppear {
+		0% {
+			opacity: 0;
+			transform: scale(0.8) translateY(10px);
+		}
+		100% {
+			opacity: 1;
+			transform: scale(1) translateY(0);
+		}
 	}
 
 	.stats-grid {
