@@ -1,11 +1,11 @@
 /**
  * Option Data Service - Implementation (Updated)
- * 
+ *
  * Provides option generation and filtering for the construct workflow.
  * Now uses real CSV data like the legacy system.
  */
 
-import type { 
+import type {
 	IOptionDataService,
 	SequenceData,
 	BeatData,
@@ -16,6 +16,7 @@ import type {
 	MotionType
 } from '../interfaces';
 import { CsvDataService, type ParsedCsvRow } from './CsvDataService';
+import { OrientationCalculationService } from './OrientationCalculationService';
 import type { MotionData } from '$domain/MotionData';
 import {
 	createPictographData,
@@ -34,7 +35,7 @@ import {
 
 export class OptionDataService implements IOptionDataService {
 	private readonly MOTION_TYPES: MotionType[] = ['pro', 'anti', 'float', 'dash', 'static'];
-	
+
 	private readonly DIFFICULTY_MOTION_LIMITS = {
 		beginner: { maxTurns: 1, allowedTypes: ['pro', 'anti', 'static'] },
 		intermediate: { maxTurns: 2, allowedTypes: ['pro', 'anti', 'float', 'static'] },
@@ -42,10 +43,12 @@ export class OptionDataService implements IOptionDataService {
 	};
 
 	private csvDataService: CsvDataService;
+	private orientationCalculationService: OrientationCalculationService;
 
 	constructor() {
 		console.log('🎲 OptionDataService initialized');
 		this.csvDataService = new CsvDataService();
+		this.orientationCalculationService = new OrientationCalculationService();
 	}
 
 	/**
@@ -61,11 +64,11 @@ export class OptionDataService implements IOptionDataService {
 	 */
 	async getNextOptionsFromEndPosition(endPosition: string, gridMode: 'diamond' | 'box' = 'diamond', filters?: OptionFilters): Promise<PictographData[]> {
 		console.log(`🎲 Getting real options for end position: ${endPosition} in ${gridMode} mode`);
-		
+
 		try {
 			// Get matching options from CSV data
 			const csvOptions = this.csvDataService.getNextOptions(endPosition, gridMode);
-			
+
 			if (csvOptions.length === 0) {
 				console.warn(`⚠️ No options found for end position: ${endPosition}`);
 				return [];
@@ -78,22 +81,22 @@ export class OptionDataService implements IOptionDataService {
 
 			// Apply filters
 			let filteredOptions = pictographOptions;
-			
+
 			if (filters?.difficulty) {
 				filteredOptions = this.filterOptionsByDifficulty(filteredOptions, filters.difficulty);
 			}
-			
+
 			if (filters?.motionTypes) {
 				filteredOptions = this.filterByMotionTypes(filteredOptions, filters.motionTypes);
 			}
-			
+
 			if (filters?.minTurns !== undefined || filters?.maxTurns !== undefined) {
 				filteredOptions = this.filterByTurns(filteredOptions, filters.minTurns, filters.maxTurns);
 			}
-			
+
 			console.log(`✅ Generated ${filteredOptions.length} real options from CSV data`);
 			return filteredOptions;
-			
+
 		} catch (error) {
 			console.error('❌ Error getting options from CSV:', error);
 			return [];
@@ -102,11 +105,11 @@ export class OptionDataService implements IOptionDataService {
 
 	async getNextOptions(currentSequence: SequenceData, filters?: OptionFilters): Promise<PictographData[]> {
 		console.log('🎲 Getting next options for sequence:', currentSequence.id);
-		
+
 		try {
 			// Get the last beat to understand context
 			const lastBeat = this.getLastBeat(currentSequence);
-			
+
 			if (!lastBeat?.pictograph_data) {
 				console.warn('⚠️ No last beat found in sequence');
 				return [];
@@ -124,7 +127,7 @@ export class OptionDataService implements IOptionDataService {
 
 			// Use the real CSV data method
 			return await this.getNextOptionsFromEndPosition(endPosition, gridMode, filters);
-			
+
 		} catch (error) {
 			console.error('❌ Error generating options:', error);
 			return [];
@@ -133,9 +136,9 @@ export class OptionDataService implements IOptionDataService {
 
 	filterOptionsByDifficulty(options: PictographData[], level: DifficultyLevel): PictographData[] {
 		console.log(`🎯 Filtering ${options.length} options by ${level} difficulty`);
-		
+
 		const limits = this.DIFFICULTY_MOTION_LIMITS[level];
-		
+
 		const filtered = options.filter(option => {
 			// Check blue motion
 			if (option.motions?.blue) {
@@ -146,7 +149,7 @@ export class OptionDataService implements IOptionDataService {
 					return false;
 				}
 			}
-			
+
 			// Check red motion
 			if (option.motions?.red) {
 				if (!limits.allowedTypes.includes(option.motions.red.motionType)) {
@@ -156,22 +159,22 @@ export class OptionDataService implements IOptionDataService {
 					return false;
 				}
 			}
-			
+
 			return true;
 		});
-		
+
 		console.log(`🎯 Filtered to ${filtered.length} options for ${level} level`);
 		return filtered;
 	}
 
 	validateOptionCompatibility(option: PictographData, sequence: SequenceData): ValidationResult {
 		const errors: string[] = [];
-		
+
 		// Check if option has required motion data
 		if (!option.motions?.blue && !option.motions?.red) {
 			errors.push('Option must have at least one motion');
 		}
-		
+
 		// Check for sequence compatibility
 		const lastBeat = this.getLastBeat(sequence);
 		if (lastBeat?.pictograph_data) {
@@ -179,7 +182,7 @@ export class OptionDataService implements IOptionDataService {
 			const continuityErrors = this.validateMotionContinuity(lastBeat.pictograph_data, option);
 			errors.push(...continuityErrors);
 		}
-		
+
 		return {
 			isValid: errors.length === 0,
 			errors
@@ -232,8 +235,8 @@ export class OptionDataService implements IOptionDataService {
 			// Create the complete PictographData
 			const pictograph = createPictographData({
 				id: `option-${row.letter}-${row.startPos}-${row.endPos}`,
-				grid_data: createGridData({ 
-					grid_mode: gridMode === 'diamond' ? DomainGridMode.DIAMOND : DomainGridMode.BOX 
+				grid_data: createGridData({
+					grid_mode: gridMode === 'diamond' ? DomainGridMode.DIAMOND : DomainGridMode.BOX
 				}),
 				arrows: { blue: blueArrow, red: redArrow },
 				props: { blue: blueProp, red: redProp },
@@ -254,7 +257,7 @@ export class OptionDataService implements IOptionDataService {
 	}
 
 	/**
-	 * Create motion data from CSV row (like legacy implementation)
+	 * Create motion data from CSV row with proper orientation calculation
 	 */
 	private createMotionDataFromCsv(row: ParsedCsvRow, color: 'blue' | 'red'): MotionData {
 		const motionType = row[`${color}MotionType`] as string;
@@ -262,15 +265,18 @@ export class OptionDataService implements IOptionDataService {
 		const startLoc = row[`${color}StartLoc`] as string;
 		const endLoc = row[`${color}EndLoc`] as string;
 
-		return createMotionData({
-			motion_type: this.mapMotionType(motionType),
-			prop_rot_dir: this.mapRotationDirection(propRotDir),
-			start_loc: this.mapLocationString(startLoc),
-			end_loc: this.mapLocationString(endLoc),
-			turns: 0, // Basic for now
-			start_ori: Orientation.IN,
-			end_ori: Orientation.OUT
-		});
+		// Use orientation calculation service to create motion with proper end orientation
+		const motion = this.orientationCalculationService.createMotionWithCalculatedOrientation(
+			this.mapMotionType(motionType),
+			this.mapRotationDirection(propRotDir),
+			this.mapLocationString(startLoc),
+			this.mapLocationString(endLoc),
+			0, // Basic turns for now - could be enhanced to read from CSV
+			Orientation.IN // Standard start orientation
+		);
+
+		console.log(`🧭 Motion created: ${color} ${motionType} - start: ${motion.start_ori}, end: ${motion.end_ori}`);
+		return motion;
 	}
 
 	/**
@@ -362,38 +368,38 @@ export class OptionDataService implements IOptionDataService {
 				if (minTurns !== undefined && blueTurns < minTurns) return false;
 				if (maxTurns !== undefined && blueTurns > maxTurns) return false;
 			}
-			
+
 			// Check red motion turns
 			if (option.motions?.red) {
 				const redTurns = typeof option.motions.red.turns === 'number' ? option.motions.red.turns : 0;
 				if (minTurns !== undefined && redTurns < minTurns) return false;
 				if (maxTurns !== undefined && redTurns > maxTurns) return false;
 			}
-			
+
 			return true;
 		});
 	}
 
 	private validateMotionContinuity(lastPictograph: PictographData, nextOption: PictographData): string[] {
 		const errors: string[] = [];
-		
+
 		// Basic continuity validation - end positions should connect to start positions
 		if (lastPictograph.motions?.blue && nextOption.motions?.blue) {
 			if (lastPictograph.motions.blue.endLocation !== nextOption.motions.blue.startLocation) {
 				// Allow some flexibility in continuity for now
-				console.warn('Blue motion continuity warning:', 
+				console.warn('Blue motion continuity warning:',
 					lastPictograph.motions.blue.endLocation, '→', nextOption.motions.blue.startLocation);
 			}
 		}
-		
+
 		if (lastPictograph.motions?.red && nextOption.motions?.red) {
 			if (lastPictograph.motions.red.endLocation !== nextOption.motions.red.startLocation) {
 				// Allow some flexibility in continuity for now
-				console.warn('Red motion continuity warning:', 
+				console.warn('Red motion continuity warning:',
 					lastPictograph.motions.red.endLocation, '→', nextOption.motions.red.startLocation);
 			}
 		}
-		
+
 		return errors;
 	}
 }

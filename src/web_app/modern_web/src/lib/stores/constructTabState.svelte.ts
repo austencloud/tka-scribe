@@ -40,18 +40,12 @@ class ConstructTabState {
 		const sequence = sequenceState.currentSequence;
 		const shouldShow = !sequence || !sequence.beats || sequence.beats.length === 0;
 
-		console.log('🎯 ConstructTabState shouldShowStartPositionPicker update:', {
-			hasSequence: !!sequence,
-			sequenceId: sequence?.id,
-			hasBeats: !!sequence?.beats,
-			beatCount: sequence?.beats?.length || 0,
-			shouldShow: shouldShow,
-			currentValue: this.shouldShowStartPositionPicker,
-		});
+		// Only log if the value actually changes to reduce noise
+		if (this.shouldShowStartPositionPicker !== shouldShow) {
+			console.log(`🎯 Start position picker: ${shouldShow ? 'show' : 'hide'} (beats: ${sequence?.beats?.length || 0})`);
+		}
 
 		this.shouldShowStartPositionPicker = shouldShow;
-
-		console.log('🎯 Updated shouldShowStartPositionPicker to:', this.shouldShowStartPositionPicker);
 	}
 
 	// State management methods

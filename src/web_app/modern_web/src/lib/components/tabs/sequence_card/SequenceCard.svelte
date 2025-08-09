@@ -24,7 +24,7 @@
 	let placeholderColor = $derived(() => {
 		const colors = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4'];
 		const hash = sequenceName.split('').reduce((a, b) => {
-			a = ((a << 5) - a) + b.charCodeAt(0);
+			a = (a << 5) - a + b.charCodeAt(0);
 			return a & a;
 		}, 0);
 		return colors[Math.abs(hash) % colors.length];
@@ -33,9 +33,12 @@
 	// Simulate image loading (since we don't have actual sequence images)
 	onMount(() => {
 		// Simulate image loading delay
-		const loadTimeout = setTimeout(() => {
-			imageLoaded = true;
-		}, Math.random() * 1000 + 500);
+		const loadTimeout = setTimeout(
+			() => {
+				imageLoaded = true;
+			},
+			Math.random() * 1000 + 500
+		);
 
 		return () => clearTimeout(loadTimeout);
 	});
@@ -43,6 +46,14 @@
 	function handleCardClick() {
 		console.log('Sequence card clicked:', sequenceName);
 		// TODO: Implement card click behavior (show details, edit, etc.)
+	}
+
+	// Handle keyboard events
+	function handleKeyDown(event: KeyboardEvent) {
+		if (event.key === 'Enter' || event.key === ' ') {
+			event.preventDefault();
+			handleCardClick();
+		}
 	}
 
 	function handleExportCard() {
@@ -56,11 +67,14 @@
 	}
 </script>
 
-<div 
-	class="sequence-card" 
+<div
+	class="sequence-card"
 	bind:this={cardElement}
 	onclick={handleCardClick}
+	onkeydown={handleKeyDown}
 	title="Click to view sequence details"
+	role="button"
+	tabindex="0"
 >
 	<!-- Card Header -->
 	<div class="card-header">
@@ -70,14 +84,20 @@
 		<div class="card-actions">
 			<button
 				class="action-btn"
-				onclick={(e) => { e.stopPropagation(); handleExportCard(); }}
+				onclick={(e) => {
+					e.stopPropagation();
+					handleExportCard();
+				}}
 				title="Export this card"
 			>
 				📤
 			</button>
 			<button
 				class="action-btn"
-				onclick={(e) => { e.stopPropagation(); handleViewDetails(); }}
+				onclick={(e) => {
+					e.stopPropagation();
+					handleViewDetails();
+				}}
 				title="View details"
 			>
 				🔍
@@ -89,10 +109,7 @@
 	<div class="card-preview">
 		{#if imageLoaded && !imageError}
 			<!-- Placeholder for actual sequence image -->
-			<div 
-				class="sequence-preview"
-				style:background-color={placeholderColor()}
-			>
+			<div class="sequence-preview" style:background-color={placeholderColor()}>
 				<div class="preview-content">
 					<div class="sequence-visualization">
 						<!-- Simple visualization placeholder -->
@@ -171,7 +188,7 @@
 	/* Card Header */
 	.card-header {
 		padding: 12px 16px;
-		background: var(--muted)/10;
+		background: var(--muted) / 10;
 		border-bottom: 1px solid var(--border);
 		display: flex;
 		justify-content: space-between;
@@ -225,7 +242,7 @@
 		align-items: center;
 		justify-content: center;
 		min-height: 180px;
-		background: var(--muted)/5;
+		background: var(--muted) / 5;
 	}
 
 	.sequence-preview {
@@ -336,7 +353,7 @@
 	/* Card Footer */
 	.card-footer {
 		padding: 12px 16px;
-		background: var(--muted)/5;
+		background: var(--muted) / 5;
 		border-top: 1px solid var(--border);
 	}
 
@@ -387,13 +404,24 @@
 
 	/* Animations */
 	@keyframes spin {
-		0% { transform: rotate(0deg); }
-		100% { transform: rotate(360deg); }
+		0% {
+			transform: rotate(0deg);
+		}
+		100% {
+			transform: rotate(360deg);
+		}
 	}
 
 	@keyframes pulse {
-		0%, 100% { opacity: 0.6; transform: scale(0.8); }
-		50% { opacity: 1; transform: scale(1); }
+		0%,
+		100% {
+			opacity: 0.6;
+			transform: scale(0.8);
+		}
+		50% {
+			opacity: 1;
+			transform: scale(1);
+		}
 	}
 
 	/* Responsive Design */

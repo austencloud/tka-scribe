@@ -8,7 +8,7 @@
 		QuestionData,
 		LessonProgress,
 		LessonResults,
-		QuizSession
+		QuizSession,
 	} from '$lib/types/learn';
 	import { QuizMode as QuizModeEnum } from '$lib/types/learn';
 	import { LessonConfigService } from '$lib/services/learn/LessonConfigService';
@@ -33,7 +33,7 @@
 		quizMode = null,
 		layoutMode,
 		onBackToSelector,
-		onLessonComplete
+		onLessonComplete,
 	}: Props = $props();
 
 	// State
@@ -48,10 +48,12 @@
 	let questionStartTime = 0;
 
 	// Component references
-	let timerComponent: any;
+	let timerComponent = $state<any>();
 
 	// Derived state
-	const lessonConfig = $derived(lessonType ? LessonConfigService.getLessonConfig(lessonType) : null);
+	const lessonConfig = $derived(
+		lessonType ? LessonConfigService.getLessonConfig(lessonType) : null
+	);
 	const isCountdownMode = $derived(quizMode === QuizModeEnum.COUNTDOWN);
 	const isFixedQuestionMode = $derived(quizMode === QuizModeEnum.FIXED_QUESTION);
 
@@ -209,9 +211,7 @@
 	{:else}
 		<!-- Header -->
 		<div class="workspace-header">
-			<button class="back-button" onclick={handleBackClick}>
-				← Back to Lessons
-			</button>
+			<button class="back-button" onclick={handleBackClick}> ← Back to Lessons </button>
 			<div class="lesson-info">
 				<h2 class="lesson-title">{formatLessonTitle()}</h2>
 				<p class="quiz-mode">Mode: {getQuizModeDisplay()}</p>
@@ -234,11 +234,7 @@
 		<!-- Progress Tracker -->
 		{#if progress}
 			<div class="progress-container">
-				<ProgressTracker
-					{progress}
-					{quizMode}
-					compact={true}
-				/>
+				<ProgressTracker {progress} {quizMode} compact={true} />
 			</div>
 		{/if}
 
@@ -365,8 +361,12 @@
 	}
 
 	@keyframes spin {
-		0% { transform: rotate(0deg); }
-		100% { transform: rotate(360deg); }
+		0% {
+			transform: rotate(0deg);
+		}
+		100% {
+			transform: rotate(360deg);
+		}
 	}
 
 	/* Responsive adjustments */

@@ -1,12 +1,13 @@
 /**
  * Data Structure Bridge - Legacy to Modern Adapter
- * 
+ *
  * This module provides functions to convert between legacy pictograph data
  * structures (used by services) and modern domain structures (used by components).
  */
 
 import type { PictographData as ModernPictographData, BeatData as ModernBeatData, ArrowData as ModernArrowData, PropData as ModernPropData } from '$lib/domain';
 import type { PictographData as LegacyPictographData } from '$lib/services/interfaces';
+import { GridMode, ArrowType, PropType, Orientation, RotationDirection } from '$lib/domain/enums';
 import { calculateArrowLocation } from './utils/arrowLocationCalculator';
 
 /**
@@ -16,7 +17,11 @@ export function legacyToModernPictographData(legacy: LegacyPictographData): Mode
 	return {
 		id: legacy.id,
 		grid_data: {
-			mode: 'diamond', // Default, could be extracted from legacy if available
+			grid_mode: GridMode.DIAMOND, // Default, could be extracted from legacy if available
+			center_x: 0,
+			center_y: 0,
+			radius: 100,
+			grid_points: {}
 		},
 		arrows: {
 			blue: legacy.arrows?.blue || createEmptyModernArrowData('blue'),
@@ -50,11 +55,15 @@ export function legacyToModernPictographData(legacy: LegacyPictographData): Mode
 export function modernToLegacyPictographData(modern: ModernPictographData): LegacyPictographData {
 	return {
 		id: modern.id,
-		gridData: modern.grid_data,
+		grid_data: modern.grid_data,
 		arrows: modern.arrows,
 		props: modern.props,
 		motions: modern.motions,
 		letter: modern.letter,
+		beat: modern.beat,
+		is_blank: modern.is_blank,
+		is_mirrored: modern.is_mirrored,
+		metadata: modern.metadata,
 	};
 }
 
@@ -65,7 +74,7 @@ export function beatDataToPictographData(beat: ModernBeatData): ModernPictograph
 	if (!beat.pictograph_data) {
 		return null;
 	}
-	
+
 	return beat.pictograph_data;
 }
 
@@ -75,7 +84,7 @@ export function beatDataToPictographData(beat: ModernBeatData): ModernPictograph
 function createEmptyModernArrowData(color: 'blue' | 'red'): ModernArrowData {
 	return {
 		id: crypto.randomUUID(),
-		arrow_type: color === 'blue' ? 'blue' : 'red',
+		arrow_type: color === 'blue' ? ArrowType.BLUE : ArrowType.RED,
 		color,
 		motion_type: 'static',
 		location: 'center',
@@ -84,12 +93,15 @@ function createEmptyModernArrowData(color: 'blue' | 'red'): ModernArrowData {
 		rotation_direction: 'clockwise',
 		turns: 0,
 		is_mirrored: false,
-		coordinates: null,
+		position_x: 0,
+		position_y: 0,
 		rotation_angle: 0,
+		coordinates: null,
 		svg_center: null,
 		svg_mirrored: false,
-		metadata: {},
-	} as ModernArrowData;
+		is_visible: true,
+		is_selected: false,
+	};
 }
 
 /**
@@ -98,14 +110,19 @@ function createEmptyModernArrowData(color: 'blue' | 'red'): ModernArrowData {
 function createEmptyModernPropData(color: 'blue' | 'red'): ModernPropData {
 	return {
 		id: crypto.randomUUID(),
-		prop_type: 'staff',
+		prop_type: PropType.STAFF,
 		color,
+		orientation: Orientation.IN,
+		rotation_direction: RotationDirection.NO_ROTATION,
 		location: 'center',
-		coordinates: null,
+		position_x: 0,
+		position_y: 0,
 		rotation_angle: 0,
+		coordinates: null,
 		svg_center: null,
-		metadata: {},
-	} as ModernPropData;
+		is_visible: true,
+		is_selected: false,
+	};
 }
 
 /**
@@ -115,13 +132,13 @@ export function legacyToModernArrowData(legacy: any, color: 'blue' | 'red'): Mod
 	// Calculate the correct arrow location based on start/end positions
 	const calculatedLocation = calculateArrowLocation({
 		start_loc: legacy.startLoc || legacy.start_loc || '',
-		end_loc: legacy.endLoc || legacy.end_loc || '', 
+		end_loc: legacy.endLoc || legacy.end_loc || '',
 		motion_type: legacy.motionType || legacy.motion_type || 'static'
 	});
 
 	return {
 		id: legacy.id || crypto.randomUUID(),
-		arrow_type: color,
+		arrow_type: color === 'blue' ? ArrowType.BLUE : ArrowType.RED,
 		color,
 		motion_type: legacy.motionType || legacy.motion_type || 'static',
 		location: calculatedLocation || legacy.loc || legacy.location || 'center',
@@ -130,17 +147,15 @@ export function legacyToModernArrowData(legacy: any, color: 'blue' | 'red'): Mod
 		rotation_direction: legacy.propRotDir || legacy.rotation_direction || 'clockwise',
 		turns: legacy.turns || 0,
 		is_mirrored: legacy.svgMirrored || legacy.is_mirrored || false,
-		coordinates: legacy.coords || legacy.coordinates || null,
+		position_x: legacy.coords?.x || legacy.coordinates?.x || 0,
+		position_y: legacy.coords?.y || legacy.coordinates?.y || 0,
 		rotation_angle: legacy.rotAngle || legacy.rotation_angle || 0,
+		coordinates: legacy.coords || legacy.coordinates || null,
 		svg_center: legacy.svgCenter || legacy.svg_center || null,
 		svg_mirrored: legacy.svgMirrored || legacy.svg_mirrored || false,
-		metadata: {
-			...legacy.metadata,
-			start_loc: legacy.startLoc || legacy.start_loc,
-			end_loc: legacy.endLoc || legacy.end_loc,
-			calculated_location: calculatedLocation
-		},
-	} as ModernArrowData;
+		is_visible: legacy.is_visible !== undefined ? legacy.is_visible : true,
+		is_selected: legacy.is_selected || false,
+	};
 }
 
 /**
@@ -149,14 +164,19 @@ export function legacyToModernArrowData(legacy: any, color: 'blue' | 'red'): Mod
 export function legacyToModernPropData(legacy: any, color: 'blue' | 'red'): ModernPropData {
 	return {
 		id: legacy.id || crypto.randomUUID(),
-		prop_type: legacy.propType || legacy.prop_type || 'staff',
+		prop_type: legacy.propType || legacy.prop_type || PropType.STAFF,
 		color,
+		orientation: legacy.ori || legacy.orientation || Orientation.IN,
+		rotation_direction: legacy.rotDir || legacy.rotation_direction || RotationDirection.NO_ROTATION,
 		location: legacy.loc || legacy.location || 'center',
-		coordinates: legacy.coords || legacy.coordinates || null,
+		position_x: legacy.coords?.x || legacy.coordinates?.x || 0,
+		position_y: legacy.coords?.y || legacy.coordinates?.y || 0,
 		rotation_angle: legacy.rotAngle || legacy.rotation_angle || 0,
+		coordinates: legacy.coords || legacy.coordinates || null,
 		svg_center: legacy.svgCenter || legacy.svg_center || null,
-		metadata: legacy.metadata || {},
-	} as ModernPropData;
+		is_visible: legacy.is_visible !== undefined ? legacy.is_visible : true,
+		is_selected: legacy.is_selected || false,
+	};
 }
 
 /**
@@ -204,7 +224,11 @@ export function ensureModernPictographData(data: any): ModernPictographData | nu
 		return {
 			id: data.id || crypto.randomUUID(),
 			grid_data: {
-				mode: data.gridMode || data.grid_mode || 'diamond',
+				grid_mode: data.gridMode || data.grid_mode || 'diamond',
+				center_x: 0,
+				center_y: 0,
+				radius: 100,
+				grid_points: {}
 			},
 			arrows: {
 				blue: arrows.blue || createEmptyModernArrowData('blue'),
@@ -252,7 +276,7 @@ export function debugDataStructure(data: any, label: string = 'Data'): void {
 	console.log('Has redArrowData (legacy):', !!data?.redArrowData);
 	console.log('Has props dict (modern):', !!data?.props);
 	console.log('Has redPropData (legacy):', !!data?.redPropData);
-	
+
 	const modern = ensureModernPictographData(data);
 	console.log('Converted to modern:', modern);
 	console.groupEnd();

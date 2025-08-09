@@ -25,7 +25,7 @@
 		{ value: 'PNG', label: 'PNG' },
 		{ value: 'JPG', label: 'JPG' },
 		{ value: 'SVG', label: 'SVG' },
-		{ value: 'PDF', label: 'PDF' }
+		{ value: 'PDF', label: 'PDF' },
 	];
 
 	// Quality options matching desktop app
@@ -33,13 +33,13 @@
 		{ value: '72 DPI', label: '72 DPI (Web)' },
 		{ value: '150 DPI', label: '150 DPI (Standard)' },
 		{ value: '300 DPI', label: '300 DPI (Print)' },
-		{ value: '600 DPI', label: '600 DPI (High Quality)' }
+		{ value: '600 DPI', label: '600 DPI (High Quality)' },
 	];
 
 	// User name options (can be extended)
 	const userOptions = [
 		{ value: 'Default User', label: 'Default User' },
-		{ value: 'Custom', label: 'Custom...' }
+		{ value: 'Custom', label: 'Custom...' },
 	];
 
 	// Handle checkbox changes
@@ -66,8 +66,8 @@
 		<h4 class="section-title">Export Options</h4>
 		<div class="options-grid">
 			<label class="checkbox-option">
-				<input 
-					type="checkbox" 
+				<input
+					type="checkbox"
 					checked={exportSettings.include_start_position}
 					onchange={(e) => handleCheckboxChange('include_start_position', e.target.checked)}
 				/>
@@ -76,8 +76,8 @@
 			</label>
 
 			<label class="checkbox-option">
-				<input 
-					type="checkbox" 
+				<input
+					type="checkbox"
 					checked={exportSettings.add_beat_numbers}
 					onchange={(e) => handleCheckboxChange('add_beat_numbers', e.target.checked)}
 				/>
@@ -86,8 +86,8 @@
 			</label>
 
 			<label class="checkbox-option">
-				<input 
-					type="checkbox" 
+				<input
+					type="checkbox"
 					checked={exportSettings.add_reversal_symbols}
 					onchange={(e) => handleCheckboxChange('add_reversal_symbols', e.target.checked)}
 				/>
@@ -96,8 +96,8 @@
 			</label>
 
 			<label class="checkbox-option">
-				<input 
-					type="checkbox" 
+				<input
+					type="checkbox"
 					checked={exportSettings.add_user_info}
 					onchange={(e) => handleCheckboxChange('add_user_info', e.target.checked)}
 				/>
@@ -106,8 +106,8 @@
 			</label>
 
 			<label class="checkbox-option">
-				<input 
-					type="checkbox" 
+				<input
+					type="checkbox"
 					checked={exportSettings.add_word}
 					onchange={(e) => handleCheckboxChange('add_word', e.target.checked)}
 				/>
@@ -116,8 +116,8 @@
 			</label>
 
 			<label class="checkbox-option">
-				<input 
-					type="checkbox" 
+				<input
+					type="checkbox"
 					checked={exportSettings.use_last_save_directory}
 					onchange={(e) => handleCheckboxChange('use_last_save_directory', e.target.checked)}
 				/>
@@ -132,8 +132,9 @@
 		<h4 class="section-title">Format Settings</h4>
 		<div class="format-controls">
 			<div class="control-group">
-				<label class="control-label">Export Format</label>
-				<select 
+				<label class="control-label" for="export-format">Export Format</label>
+				<select
+					id="export-format"
 					class="modern-select"
 					value={exportSettings.export_format}
 					onchange={(e) => handleSelectChange('export_format', e.target.value)}
@@ -145,8 +146,9 @@
 			</div>
 
 			<div class="control-group">
-				<label class="control-label">Quality</label>
-				<select 
+				<label class="control-label" for="export-quality">Quality</label>
+				<select
+					id="export-quality"
 					class="modern-select"
 					value={exportSettings.export_quality}
 					onchange={(e) => handleSelectChange('export_quality', e.target.value)}
@@ -164,8 +166,9 @@
 		<h4 class="section-title">User Settings</h4>
 		<div class="user-controls">
 			<div class="control-group">
-				<label class="control-label">User Name</label>
-				<select 
+				<label class="control-label" for="user-name">User Name</label>
+				<select
+					id="user-name"
 					class="modern-select"
 					value={exportSettings.user_name}
 					onchange={(e) => handleSelectChange('user_name', e.target.value)}
@@ -177,8 +180,9 @@
 			</div>
 
 			<div class="control-group">
-				<label class="control-label">Custom Note</label>
-				<textarea 
+				<label class="control-label" for="custom-note">Custom Note</label>
+				<textarea
+					id="custom-note"
 					class="modern-textarea"
 					value={exportSettings.custom_note}
 					placeholder="Add a custom note to your export..."
@@ -243,7 +247,7 @@
 		background: rgba(255, 255, 255, 0.05);
 	}
 
-	.checkbox-option input[type="checkbox"] {
+	.checkbox-option input[type='checkbox'] {
 		display: none;
 	}
 

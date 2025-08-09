@@ -4,9 +4,7 @@
 	import type { BeatData } from '$services/interfaces';
 
 	// Props
-	const {
-		currentBeatData,
-	} = $props<{
+	const { currentBeatData } = $props<{
 		currentBeatData: BeatData | null;
 	}>();
 
@@ -30,16 +28,16 @@
 		} else {
 			redOrientation = orientation;
 		}
-		
+
 		selectedColor = color;
 		selectedArrow = `${color}_${orientation}`;
-		
+
 		// Dispatch the change event
 		dispatch('orientationChanged', {
 			color,
-			orientation
+			orientation,
 		});
-		
+
 		console.log(`DualOrientationPicker: ${color} orientation set to ${orientation}`);
 	}
 
@@ -51,9 +49,9 @@
 	// Update orientations from beat data
 	function updateFromBeatData(beatData: BeatData | null) {
 		if (!beatData?.pictograph_data) return;
-		
+
 		const pictograph = beatData.pictograph_data;
-		
+
 		// Update orientations from pictograph data
 		if (pictograph.blue_start_ori) {
 			blueOrientation = pictograph.blue_start_ori;
@@ -61,10 +59,10 @@
 		if (pictograph.red_start_ori) {
 			redOrientation = pictograph.red_start_ori;
 		}
-		
+
 		console.log('DualOrientationPicker: Updated from beat data', {
 			blue: blueOrientation,
-			red: redOrientation
+			red: redOrientation,
 		});
 	}
 
@@ -217,17 +215,6 @@
 		background: rgba(239, 68, 68, 0.3);
 		border-color: rgb(239, 68, 68);
 		box-shadow: 0 0 10px rgba(239, 68, 68, 0.3);
-	}
-
-	.selection-indicator {
-		padding: var(--spacing-sm);
-		background: rgba(255, 255, 255, 0.1);
-		border: 1px solid rgba(255, 255, 255, 0.2);
-		border-radius: var(--border-radius);
-		text-align: center;
-		font-size: var(--font-size-sm);
-		font-weight: 500;
-		color: var(--muted-foreground);
 	}
 
 	/* Responsive adjustments */

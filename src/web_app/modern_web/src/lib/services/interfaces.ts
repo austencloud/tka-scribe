@@ -10,6 +10,9 @@ import type { PictographData } from '$domain/PictographData';
 import type { MotionData } from '$domain/MotionData';
 import type { SequenceData } from '$domain/SequenceData';
 
+// Re-export domain types for convenience
+export type { BeatData, PictographData, MotionData, SequenceData };
+
 // ============================================================================
 // SEQUENCE SERVICES
 // ============================================================================

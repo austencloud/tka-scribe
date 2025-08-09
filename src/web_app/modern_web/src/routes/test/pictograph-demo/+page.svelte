@@ -5,7 +5,7 @@ Test route for E2E pictograph testing. Provides a controlled environment
 with data-testid attributes for reliable test automation.
 -->
 <script lang="ts">
-	import { PictographDemo } from '$lib/components/demo';
+	import PictographDemo from '$lib/components/demo/PictographDemo.svelte';
 </script>
 
 <svelte:head>

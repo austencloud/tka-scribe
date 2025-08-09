@@ -12,14 +12,14 @@
 	// Mock sequence data - in real app this would come from API/service
 	let sequences: any[] = [];
 	let sortBy = 'name'; // 'name', 'difficulty', 'length', 'recent'
-	let viewMode = 'grid'; // 'grid', 'list'
+	let viewMode: 'grid' | 'list' = 'grid';
 
 	// Sort options
 	const sortOptions = [
 		{ value: 'name', label: 'Name A-Z' },
 		{ value: 'difficulty', label: 'Difficulty' },
 		{ value: 'length', label: 'Length' },
-		{ value: 'recent', label: 'Recently Added' }
+		{ value: 'recent', label: 'Recently Added' },
 	];
 
 	// Generate mock sequences based on filter
@@ -41,7 +41,7 @@
 				author: 'TKA User',
 				dateAdded: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000),
 				isFavorite: Math.random() > 0.8,
-				tags: ['flow', 'beginner', 'practice'].slice(0, Math.floor(Math.random() * 3) + 1)
+				tags: ['flow', 'beginner', 'practice'].slice(0, Math.floor(Math.random() * 3) + 1),
 			});
 		}
 
@@ -102,17 +102,13 @@
 	<!-- Header with controls -->
 	<div class="browser-header">
 		<div class="header-left">
-			<button 
-				class="back-button"
-				on:click={handleBackToFilters}
-				type="button"
-			>
+			<button class="back-button" on:click={handleBackToFilters} type="button">
 				<svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-					<path 
-						d="M12.5 15L7.5 10L12.5 5" 
-						stroke="currentColor" 
-						stroke-width="2" 
-						stroke-linecap="round" 
+					<path
+						d="M12.5 15L7.5 10L12.5 5"
+						stroke="currentColor"
+						stroke-width="2"
+						stroke-linecap="round"
 						stroke-linejoin="round"
 					/>
 				</svg>
@@ -139,31 +135,33 @@
 				</label>
 
 				<div class="view-mode-toggle">
-					<button 
+					<button
 						class="view-button"
 						class:active={viewMode === 'grid'}
-						on:click={() => viewMode = 'grid'}
+						on:click={() => (viewMode = 'grid')}
 						title="Grid View"
+						aria-label="Switch to grid view"
 						type="button"
 					>
 						<svg width="16" height="16" viewBox="0 0 16 16">
-							<rect x="1" y="1" width="6" height="6" fill="currentColor"/>
-							<rect x="9" y="1" width="6" height="6" fill="currentColor"/>
-							<rect x="1" y="9" width="6" height="6" fill="currentColor"/>
-							<rect x="9" y="9" width="6" height="6" fill="currentColor"/>
+							<rect x="1" y="1" width="6" height="6" fill="currentColor" />
+							<rect x="9" y="1" width="6" height="6" fill="currentColor" />
+							<rect x="1" y="9" width="6" height="6" fill="currentColor" />
+							<rect x="9" y="9" width="6" height="6" fill="currentColor" />
 						</svg>
 					</button>
-					<button 
+					<button
 						class="view-button"
 						class:active={viewMode === 'list'}
-						on:click={() => viewMode = 'list'}
+						on:click={() => (viewMode = 'list')}
 						title="List View"
+						aria-label="Switch to list view"
 						type="button"
 					>
 						<svg width="16" height="16" viewBox="0 0 16 16">
-							<rect x="1" y="2" width="14" height="2" fill="currentColor"/>
-							<rect x="1" y="7" width="14" height="2" fill="currentColor"/>
-							<rect x="1" y="12" width="14" height="2" fill="currentColor"/>
+							<rect x="1" y="2" width="14" height="2" fill="currentColor" />
+							<rect x="1" y="7" width="14" height="2" fill="currentColor" />
+							<rect x="1" y="12" width="14" height="2" fill="currentColor" />
 						</svg>
 					</button>
 				</div>
@@ -179,17 +177,13 @@
 				<p>Loading sequences...</p>
 			</div>
 		{:else if sortedSequences.length > 0}
-			<div 
+			<div
 				class="sequences-grid"
 				class:list-view={viewMode === 'list'}
 				transition:slide={{ duration: 300 }}
 			>
 				{#each sortedSequences as sequence}
-					<SequenceThumbnail 
-						{sequence}
-						{viewMode}
-						on:select={handleSequenceSelect}
-					/>
+					<SequenceThumbnail {sequence} {viewMode} on:select={handleSequenceSelect} />
 				{/each}
 			</div>
 		{:else}
@@ -198,11 +192,7 @@
 					<div class="empty-icon">📭</div>
 					<h3>No sequences found</h3>
 					<p>Try adjusting your filter criteria or browse all sequences.</p>
-					<button 
-						class="browse-all-button"
-						on:click={handleBackToFilters}
-						type="button"
-					>
+					<button class="browse-all-button" on:click={handleBackToFilters} type="button">
 						Browse All Sequences
 					</button>
 				</div>
@@ -451,7 +441,8 @@
 			align-items: stretch;
 		}
 
-		.header-left, .header-right {
+		.header-left,
+		.header-right {
 			justify-content: center;
 		}
 

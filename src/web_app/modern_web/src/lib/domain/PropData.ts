@@ -1,6 +1,6 @@
 /**
  * Prop Domain Model
- * 
+ *
  * Immutable data for a prop in a pictograph.
  * Based on modern desktop app's prop_data.py
  */
@@ -18,6 +18,9 @@ export interface PropData {
   readonly location?: string | null;
   readonly position_x: number;
   readonly position_y: number;
+  readonly rotation_angle: number;
+  readonly coordinates?: { x: number; y: number } | null;
+  readonly svg_center?: any;
 
   // State flags
   readonly is_visible: boolean;
@@ -34,6 +37,9 @@ export function createPropData(data: Partial<PropData> = {}): PropData {
     location: data.location ?? null,
     position_x: data.position_x ?? 0.0,
     position_y: data.position_y ?? 0.0,
+    rotation_angle: data.rotation_angle ?? 0.0,
+    coordinates: data.coordinates ?? null,
+    svg_center: data.svg_center ?? null,
     is_visible: data.is_visible ?? true,
     is_selected: data.is_selected ?? false,
   };

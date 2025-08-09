@@ -1,11 +1,14 @@
 <!-- SettingCard.svelte - Improved contrast card container -->
 <script lang="ts">
+	import type { Snippet } from 'svelte';
+
 	interface Props {
 		title?: string;
 		description?: string;
+		children: Snippet;
 	}
 
-	let { title, description }: Props = $props();
+	let { title, description, children }: Props = $props();
 </script>
 
 <div class="setting-section">
@@ -15,9 +18,9 @@
 	{#if description}
 		<p class="section-description">{description}</p>
 	{/if}
-	
+
 	<div class="setting-cards">
-		<slot />
+		{@render children()}
 	</div>
 </div>
 

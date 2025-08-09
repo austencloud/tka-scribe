@@ -1,6 +1,13 @@
 <!-- Write Tab - Act creation and editing with pixel-perfect desktop replica -->
 <script lang="ts">
-	import { WriteView, type ActData, type ActThumbnailInfo, type MusicPlayerState, createEmptyAct, createDefaultMusicPlayerState } from '$lib/types/write';
+	import {
+		WriteView,
+		type ActData,
+		type ActThumbnailInfo,
+		type MusicPlayerState,
+		createEmptyAct,
+		createDefaultMusicPlayerState,
+	} from '$lib/types/write';
 	import WriteToolbar from '$lib/components/write/WriteToolbar.svelte';
 	import ActBrowser from '$lib/components/write/ActBrowser.svelte';
 	import ActSheet from '$lib/components/write/ActSheet.svelte';
@@ -29,17 +36,17 @@
 				filePath: '/acts/sample1.json',
 				sequenceCount: 3,
 				hasMusic: true,
-				lastModified: new Date(Date.now() - 86400000) // 1 day ago
+				lastModified: new Date(Date.now() - 86400000), // 1 day ago
 			},
 			{
-				id: '2', 
+				id: '2',
 				name: 'Sample Act 2',
 				description: 'Another sample act',
 				filePath: '/acts/sample2.json',
 				sequenceCount: 1,
 				hasMusic: false,
-				lastModified: new Date(Date.now() - 172800000) // 2 days ago
-			}
+				lastModified: new Date(Date.now() - 172800000), // 2 days ago
+			},
 		];
 	});
 
@@ -66,7 +73,7 @@
 	// Act browser handlers
 	function handleActSelected(filePath: string) {
 		// TODO: Load actual act from file
-		const actInfo = availableActs.find(act => act.filePath === filePath);
+		const actInfo = availableActs.find((act) => act.filePath === filePath);
 		if (actInfo) {
 			currentAct = {
 				id: actInfo.id,
@@ -75,9 +82,9 @@
 				sequences: [], // TODO: Load actual sequences
 				metadata: {
 					created: new Date(),
-					modified: actInfo.lastModified
+					modified: actInfo.lastModified,
 				},
-				filePath: actInfo.filePath
+				filePath: actInfo.filePath,
 			};
 			hasUnsavedChanges = false;
 			console.log('Loading act:', actInfo.name);
@@ -147,7 +154,7 @@
 	function handleSplitterMouseDown(event: MouseEvent) {
 		isDragging = true;
 		event.preventDefault();
-		
+
 		const handleMouseMove = (e: MouseEvent) => {
 			if (!isDragging) return;
 			const newWidth = Math.max(200, Math.min(500, e.clientX));
@@ -162,6 +169,21 @@
 
 		document.addEventListener('mousemove', handleMouseMove);
 		document.addEventListener('mouseup', handleMouseUp);
+	}
+
+	// Keyboard support for splitter
+	function handleSplitterKeyDown(event: KeyboardEvent) {
+		const step = 10;
+		switch (event.key) {
+			case 'ArrowLeft':
+				event.preventDefault();
+				browserWidth = Math.max(200, browserWidth - step);
+				break;
+			case 'ArrowRight':
+				event.preventDefault();
+				browserWidth = Math.min(500, browserWidth + step);
+				break;
+		}
 	}
 </script>
 
@@ -190,13 +212,14 @@
 		</div>
 
 		<!-- Splitter -->
-		<div 
-			class="splitter" 
+		<button
+			class="splitter"
 			class:dragging={isDragging}
 			onmousedown={handleSplitterMouseDown}
-			role="separator"
-			aria-orientation="vertical"
-		></div>
+			onkeydown={handleSplitterKeyDown}
+			aria-label="Resize panels"
+			type="button"
+		></button>
 
 		<!-- Right panel with act sheet and music player -->
 		<div class="right-panel">
@@ -324,10 +347,6 @@
 
 	/* Prevent text selection during drag */
 	.splitter.dragging {
-		user-select: none;
-	}
-
-	.write-tab.dragging {
 		user-select: none;
 	}
 </style>

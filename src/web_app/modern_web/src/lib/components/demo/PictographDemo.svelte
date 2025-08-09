@@ -1,155 +1,192 @@
 <!--
-PictographDemo.svelte - Demo component for testing modern pictograph rendering
+PictographDemo.svelte - Demo component using REAL CSV data
 
-This component demonstrates the modern pictograph system with sample data,
-allowing you to test different configurations and see the rendering in action.
+This component demonstrates the modern pictograph system using actual CSV data
+from the TKA system, showing real pictographs with proper motion calculations.
 -->
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import { ModernPictograph } from '$lib/components/pictograph';
 	import type { BeatData, PictographData } from '$lib/domain';
-	import { createBeatData, createPictographData } from '$lib/domain';
+	import { createBeatData } from '$lib/domain';
+	import { GridMode } from '$lib/domain/enums';
+	import { CsvDataService } from '$lib/services/implementations/CsvDataService';
+	import { OptionDataService } from '$lib/services/implementations/OptionDataService';
 
 	// Demo state using runes
-	let selectedDemo = $state('simple');
+	let selectedDemo = $state('sample');
 	let debugMode = $state(false);
-	let gridMode = $state<'diamond' | 'box'>('diamond');
+	let gridMode = $state<GridMode>(GridMode.DIAMOND);
 	let showControls = $state(true);
+	let isLoading = $state(true);
+	let loadingError = $state<string | null>(null);
 
-	// Sample pictograph data for different demos
-	const samplePictographs = $derived(() => {
+	// Services
+	let csvDataService: CsvDataService | null = null;
+	let optionDataService: OptionDataService | null = null;
+
+	// Real pictograph data from CSV
+	let samplePictographs = $state<{ [key: string]: PictographData }>({});
+
+	// Initialize services and load real data
+	onMount(async () => {
+		try {
+			console.log('🎨 Initializing PictographDemo with real CSV data...');
+
+			// Initialize services
+			csvDataService = new CsvDataService();
+			optionDataService = new OptionDataService();
+
+			await csvDataService.loadCsvData();
+			await optionDataService.initialize();
+
+			// Load sample pictographs from real CSV data
+			await loadSamplePictographs();
+
+			isLoading = false;
+			console.log('✅ PictographDemo initialized with real data');
+		} catch (error) {
+			console.error('❌ Failed to initialize PictographDemo:', error);
+			loadingError = error instanceof Error ? error.message : 'Unknown error';
+			isLoading = false;
+		}
+	});
+
+	// Load sample pictographs from real CSV data (simplified to avoid infinite loops)
+	async function loadSamplePictographs() {
+		if (!optionDataService || !csvDataService) return;
+
+		try {
+			console.log('🎨 Loading sample pictographs...');
+
+			// Get a few sample CSV rows directly without triggering option generation
+			const diamondData = csvDataService.getParsedData('diamond');
+
+			if (diamondData.length === 0) {
+				throw new Error('No diamond CSV data available');
+			}
+
+			// Just take the first few rows and convert them directly
+			const samples: { [key: string]: PictographData } = {};
+
+			// Take first 3 rows as samples
+			const sampleRows = diamondData.slice(0, 3);
+
+			for (let i = 0; i < sampleRows.length; i++) {
+				const row = sampleRows[i];
+				const sampleKey = i === 0 ? 'sample' : i === 1 ? 'complex' : 'advanced';
+
+				// Use the proper conversion method from OptionDataService
+				const convertedPictograph = (optionDataService as any).convertCsvRowToPictographData(
+					row,
+					gridMode === GridMode.DIAMOND ? 'diamond' : 'box'
+				);
+
+				if (convertedPictograph) {
+					// Override the ID to make it demo-specific
+					samples[sampleKey] = {
+						...convertedPictograph,
+						id: `demo-${sampleKey}`,
+						beat: 1,
+					};
+				}
+			}
+
+			samplePictographs = samples;
+			console.log(
+				`✅ Loaded ${Object.keys(samples).length} sample pictographs with real arrows and props`
+			);
+		} catch (error) {
+			console.error('❌ Error loading sample pictographs:', error);
+			throw error;
+		}
+	}
+
+	// Demo options for the selector
+	const demoOptions = $derived(() => {
+		const options = [{ value: 'sample', label: 'Sample Pictograph' }];
+
+		if (samplePictographs.complex) {
+			options.push({ value: 'complex', label: 'Complex Pictograph' });
+		}
+
+		if (samplePictographs.advanced) {
+			options.push({ value: 'advanced', label: 'Advanced Pictograph' });
+		}
+
+		return options;
+	});
+
+	// Get current demo data
+	const currentPictographData = $derived(() => {
+		return samplePictographs[selectedDemo] || null;
+	});
+
+	// Create beat data for the pictograph
+	const currentBeatData = $derived(() => {
+		const pictograph = currentPictographData();
+		if (!pictograph) return null;
+
+		return createBeatData({
+			beat_number: pictograph.beat,
+			pictograph_data: pictograph,
+		});
+	});
+
+	// Debug info
+	const debugInfo = $derived(() => {
+		const pictograph = currentPictographData();
+		if (!pictograph) return null;
+
 		return {
-			simple: createPictographData({
-				letter: 'A',
-				grid_data: { mode: gridMode },
-				arrows: {
-					blue: {
-						id: 'blue-arrow',
-						arrow_type: 'blue',
-						color: 'blue',
-						motion_type: 'pro',
-						location: 'n',
-						start_orientation: 'in',
-						end_orientation: 'out',
-						rotation_direction: 'clockwise',
-						turns: 1,
-						is_mirrored: false,
-						coordinates: null,
-						rotation_angle: 0,
-						svg_center: null,
-						svg_mirrored: false,
-						metadata: {}
-					},
-					red: {
-						id: 'red-arrow',
-						arrow_type: 'red',
-						color: 'red',
-						motion_type: 'anti',
-						location: 's',
-						start_orientation: 'in',
-						end_orientation: 'out',
-						rotation_direction: 'counter_clockwise',
-						turns: 1,
-						is_mirrored: false,
-						coordinates: null,
-						rotation_angle: 180,
-						svg_center: null,
-						svg_mirrored: false,
-						metadata: {}
-					}
-				},
-				props: {
-					blue: {
-						id: 'blue-prop',
-						prop_type: 'staff',
-						color: 'blue',
-						location: 'n',
-						coordinates: null,
-						rotation_angle: 0,
-						svg_center: null,
-						metadata: {}
-					},
-					red: {
-						id: 'red-prop',
-						prop_type: 'staff',
-						color: 'red',
-						location: 's',
-						coordinates: null,
-						rotation_angle: 180,
-						svg_center: null,
-						metadata: {}
-					}
-				}
-			}),
-
-			complex: createPictographData({
-				letter: 'Φ',
-				grid_data: { mode: gridMode },
-				arrows: {
-					blue: {
-						id: 'blue-arrow-complex',
-						arrow_type: 'blue',
-						color: 'blue',
-						motion_type: 'float',
-						location: 'ne',
-						start_orientation: 'out',
-						end_orientation: 'in',
-						rotation_direction: 'clockwise',
-						turns: 2.5,
-						is_mirrored: true,
-						coordinates: null,
-						rotation_angle: 45,
-						svg_center: null,
-						svg_mirrored: true,
-						metadata: {}
-					},
-					red: {
-						id: 'red-arrow-complex',
-						arrow_type: 'red',
-						color: 'red',
-						motion_type: 'dash',
-						location: 'sw',
-						start_orientation: 'in',
-						end_orientation: 'out',
-						rotation_direction: 'counter_clockwise',
-						turns: 0.5,
-						is_mirrored: false,
-						coordinates: null,
-						rotation_angle: 225,
-						svg_center: null,
-						svg_mirrored: false,
-						metadata: {}
-					}
-				}
-			}),
-
-			empty: createPictographData({
-				grid_data: { mode: gridMode },
-				is_blank: true
-			})
+			id: pictograph.id,
+			letter: pictograph.letter,
+			gridMode: pictograph.grid_data?.grid_mode,
+			arrowCount: Object.keys(pictograph.arrows || {}).length,
+			propCount: Object.keys(pictograph.props || {}).length,
+			motionCount: Object.keys(pictograph.motions || {}).length,
+			beat: pictograph.beat,
+			startPos: pictograph.start_position,
+			endPos: pictograph.end_position,
 		};
 	});
 
-	// Create sample beat data
-	const sampleBeats = $derived(() => {
-		return {
-			withPictograph: createBeatData({
-				beat_number: 1,
-				pictograph_data: samplePictographs()[selectedDemo],
-				is_blank: false
-			}),
-			blank: createBeatData({
-				beat_number: 2,
-				is_blank: true
-			})
-		};
-	});
+	// Load a random pictograph from CSV data
+	async function loadRandomPictograph() {
+		if (!csvDataService) return;
 
-	// Demo selection options
-	const demoOptions = [
-		{ value: 'simple', label: 'Simple (A with basic arrows)' },
-		{ value: 'complex', label: 'Complex (Φ with float/dash)' },
-		{ value: 'empty', label: 'Empty (Grid only)' }
-	];
+		try {
+			const diamondData = csvDataService.getParsedData('diamond');
+			if (diamondData.length === 0) return;
+
+			// Get a random row
+			const randomIndex = Math.floor(Math.random() * diamondData.length);
+			const randomRow = diamondData[randomIndex];
+
+			// Convert using the proper conversion method
+			const convertedPictograph = (optionDataService as any).convertCsvRowToPictographData(
+				randomRow,
+				gridMode === GridMode.DIAMOND ? 'diamond' : 'box'
+			);
+
+			if (convertedPictograph) {
+				// Update the sample pictograph
+				samplePictographs = {
+					...samplePictographs,
+					sample: {
+						...convertedPictograph,
+						id: `demo-random-${Date.now()}`,
+						beat: 1,
+					},
+				};
+				console.log(`🎲 Generated random pictograph: ${convertedPictograph.letter}`);
+			}
+		} catch (error) {
+			console.error('❌ Error loading random pictograph:', error);
+		}
+	}
+
+	// Grid mode change handling removed to prevent infinite loops
 
 	function handlePictographClick() {
 		console.log('Pictograph clicked!', selectedDemo);
@@ -158,24 +195,24 @@ allowing you to test different configurations and see the rendering in action.
 
 <div class="pictograph-demo">
 	<h2>Modern Pictograph Demo</h2>
-	
+
 	{#if showControls}
 		<!-- Demo Controls -->
 		<div class="controls" data-testid="demo-controls">
 			<div class="control-group">
-				<label>Demo Type:</label>
-				<select bind:value={selectedDemo} data-testid="demo-selector">
-					{#each demoOptions as option}
+				<label for="demo-selector">Demo Type:</label>
+				<select id="demo-selector" bind:value={selectedDemo} data-testid="demo-selector">
+					{#each demoOptions() as option}
 						<option value={option.value}>{option.label}</option>
 					{/each}
 				</select>
 			</div>
 
 			<div class="control-group">
-				<label>Grid Mode:</label>
-				<select bind:value={gridMode} data-testid="grid-mode-selector">
-					<option value="diamond">Diamond</option>
-					<option value="box">Box</option>
+				<label for="grid-mode-selector">Grid Mode:</label>
+				<select id="grid-mode-selector" bind:value={gridMode} data-testid="grid-mode-selector">
+					<option value={GridMode.DIAMOND}>Diamond</option>
+					<option value={GridMode.BOX}>Box</option>
 				</select>
 			</div>
 
@@ -197,80 +234,26 @@ allowing you to test different configurations and see the rendering in action.
 
 	<!-- Pictograph Display -->
 	<div class="demo-grid">
-		<!-- Direct Pictograph Data Demo -->
-		<div class="demo-item" data-testid="direct-pictograph-demo">
-			<h3>Direct Pictograph Data</h3>
-			<div class="pictograph-wrapper" data-testid="main-pictograph">
-				<ModernPictograph
-					pictographData={samplePictographs()[selectedDemo]}
-					width={300}
-					height={300}
-					onClick={handlePictographClick}
-					debug={debugMode}
-				/>
+		<!-- Main Pictograph Demo -->
+		<div class="demo-item" data-testid="main-pictograph-demo">
+			<h3>Real CSV Pictograph: {currentPictographData()?.letter || 'Unknown'}</h3>
+			<div class="pictograph-controls">
+				<button onclick={loadRandomPictograph} class="generate-btn">
+					🎲 Generate Random Pictograph
+				</button>
 			</div>
-		</div>
-
-		<!-- Beat Data Demo -->
-		<div class="demo-item" data-testid="beat-data-demo">
-			<h3>From Beat Data</h3>
-			<div class="pictograph-wrapper">
-				<ModernPictograph
-					beatData={sampleBeats().withPictograph}
-					width={300}
-					height={300}
-					beatNumber={1}
-					onClick={handlePictographClick}
-					debug={debugMode}
-				/>
-			</div>
-		</div>
-
-		<!-- Different Sizes Demo -->
-		<div class="demo-item">
-			<h3>Different Sizes</h3>
-			<div class="size-demo">
-				<div class="size-item" data-testid="small-pictograph">
-					<h4>Small (150px)</h4>
+			<div class="pictograph-wrapper large" data-testid="main-pictograph">
+				{#if currentPictographData()}
 					<ModernPictograph
-						pictographData={samplePictographs()[selectedDemo]}
-						width={150}
-						height={150}
-						debug={false}
+						pictographData={currentPictographData()}
+						width={500}
+						height={500}
+						onClick={handlePictographClick}
+						debug={debugMode}
 					/>
-				</div>
-				<div class="size-item" data-testid="medium-pictograph">
-					<h4>Medium (200px)</h4>
-					<ModernPictograph
-						pictographData={samplePictographs()[selectedDemo]}
-						width={200}
-						height={200}
-						debug={false}
-					/>
-				</div>
-				<div class="size-item" data-testid="large-pictograph">
-					<h4>Large (400px)</h4>
-					<ModernPictograph
-						pictographData={samplePictographs()[selectedDemo]}
-						width={400}
-						height={400}
-						debug={false}
-					/>
-				</div>
-			</div>
-		</div>
-
-		<!-- Blank Beat Demo -->
-		<div class="demo-item" data-testid="blank-beat-demo">
-			<h3>Blank Beat</h3>
-			<div class="pictograph-wrapper">
-				<ModernPictograph
-					beatData={sampleBeats().blank}
-					width={300}
-					height={300}
-					beatNumber={2}
-					debug={debugMode}
-				/>
+				{:else}
+					<p>No pictograph data available</p>
+				{/if}
 			</div>
 		</div>
 	</div>
@@ -279,7 +262,10 @@ allowing you to test different configurations and see the rendering in action.
 	<div class="info-panel">
 		<h3>Current Configuration</h3>
 		<ul>
-			<li><strong>Demo:</strong> {demoOptions.find(opt => opt.value === selectedDemo)?.label}</li>
+			<li>
+				<strong>Demo:</strong>
+				{demoOptions().find((opt) => opt.value === selectedDemo)?.label}
+			</li>
 			<li><strong>Grid Mode:</strong> {gridMode}</li>
 			<li><strong>Debug:</strong> {debugMode ? 'Enabled' : 'Disabled'}</li>
 			<li><strong>Components:</strong> ModernPictograph, Grid, Prop, Arrow, TKAGlyph</li>
@@ -288,15 +274,19 @@ allowing you to test different configurations and see the rendering in action.
 
 		<div class="data-preview">
 			<h4>Sample Data Structure</h4>
-			<pre><code>{JSON.stringify(samplePictographs()[selectedDemo], null, 2).substring(0, 500)}...</code></pre>
+			{#if currentPictographData()}
+				<div class="data-scroll">
+					<pre><code>{JSON.stringify(currentPictographData(), null, 2)}</code></pre>
+				</div>
+			{:else}
+				<p>No data available</p>
+			{/if}
 		</div>
 	</div>
 
 	<!-- Toggle Controls Button -->
 	{#if !showControls}
-		<button class="toggle-controls" onclick={() => showControls = true}>
-			Show Controls
-		</button>
+		<button class="toggle-controls" onclick={() => (showControls = true)}> Show Controls </button>
 	{/if}
 </div>
 
@@ -336,7 +326,7 @@ allowing you to test different configurations and see the rendering in action.
 	}
 
 	.control-group select,
-	.control-group input[type="checkbox"] {
+	.control-group input[type='checkbox'] {
 		padding: 0.25rem 0.5rem;
 		border: 1px solid #d1d5db;
 		border-radius: 4px;
@@ -445,5 +435,41 @@ allowing you to test different configurations and see the rendering in action.
 
 	.toggle-controls:hover {
 		background: #2563eb;
+	}
+
+	.data-scroll {
+		max-height: 400px;
+		overflow-y: auto;
+		border: 1px solid #d1d5db;
+		border-radius: 4px;
+		background: white;
+	}
+
+	.pictograph-controls {
+		margin-bottom: 1rem;
+		text-align: center;
+	}
+
+	.generate-btn {
+		background: #3b82f6;
+		color: white;
+		border: none;
+		padding: 0.75rem 1.5rem;
+		border-radius: 8px;
+		font-size: 0.875rem;
+		font-weight: 500;
+		cursor: pointer;
+		transition: background-color 0.2s;
+	}
+
+	.generate-btn:hover {
+		background: #2563eb;
+	}
+
+	.pictograph-wrapper.large {
+		min-height: 500px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
 	}
 </style>

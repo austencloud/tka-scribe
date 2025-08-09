@@ -16,8 +16,8 @@ A custom toggle switch with smooth animations.
 	let {
 		checked = false,
 		width = 50,
-		bgColor = '#00BCff',
-		activeColor = '#00BCff',
+		bgColor = 'rgba(255, 255, 255, 0.1)',
+		activeColor = 'var(--gradient-primary)',
 		circleColor = '#FFFFFF',
 		disabled = false,
 		onstateChanged,
@@ -89,13 +89,37 @@ A custom toggle switch with smooth animations.
 <style>
 	.py-toggle {
 		position: relative;
-		border: none;
+		border: 1px solid rgba(255, 255, 255, 0.2);
 		border-radius: 25px;
 		cursor: pointer;
 		padding: 0;
 		transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 		outline: none;
 		overflow: hidden;
+		backdrop-filter: blur(10px);
+		box-shadow:
+			0 4px 16px rgba(0, 0, 0, 0.1),
+			inset 0 1px 0 rgba(255, 255, 255, 0.1);
+	}
+
+	.py-toggle:hover:not(:disabled) {
+		border-color: rgba(255, 255, 255, 0.3);
+		box-shadow:
+			0 6px 20px rgba(0, 0, 0, 0.15),
+			inset 0 1px 0 rgba(255, 255, 255, 0.15);
+		transform: translateY(-1px);
+	}
+
+	.py-toggle.checked {
+		background: linear-gradient(
+			135deg,
+			var(--primary-color, #6366f1),
+			var(--accent-color, #06b6d4)
+		) !important;
+		border-color: rgba(255, 255, 255, 0.4);
+		box-shadow:
+			0 8px 25px rgba(99, 102, 241, 0.3),
+			inset 0 1px 0 rgba(255, 255, 255, 0.2);
 	}
 
 	.py-toggle:disabled {
@@ -104,7 +128,9 @@ A custom toggle switch with smooth animations.
 	}
 
 	.py-toggle:focus-visible {
-		box-shadow: 0 0 0 2px rgba(0, 188, 255, 0.5);
+		box-shadow:
+			0 0 0 2px rgba(99, 102, 241, 0.5),
+			0 4px 16px rgba(0, 0, 0, 0.1);
 	}
 
 	.toggle-circle {
@@ -114,5 +140,9 @@ A custom toggle switch with smooth animations.
 		top: 50%;
 		transform-origin: center;
 		margin-top: calc(-1 * var(--circle-size) / 2);
+		box-shadow:
+			0 2px 8px rgba(0, 0, 0, 0.2),
+			0 1px 3px rgba(0, 0, 0, 0.1);
+		border: 1px solid rgba(255, 255, 255, 0.3);
 	}
 </style>

@@ -4,15 +4,15 @@
 	import {
 		IApplicationInitializationService,
 		ISettingsService,
-		ISequenceService
+		ISequenceService,
 	} from '$services/interfaces';
 
 	// Import fade system
-	import { 
-		initializeFadeSystem, 
-		setFadeEnabled, 
+	import {
+		initializeFadeSystem,
+		setFadeEnabled,
 		getFadeDebugInfo,
-		isFadeEnabled 
+		isFadeEnabled,
 	} from '$services/ui/animation';
 
 	// Import runes-based state
@@ -29,7 +29,7 @@
 		updateSettings,
 		switchTab,
 		showSettingsDialog,
-		hideSettingsDialog
+		hideSettingsDialog,
 	} from '$stores/appState.svelte';
 
 	import { loadSequences } from '$stores/sequenceActions';
@@ -75,7 +75,7 @@
 		// Wait for services to be resolved
 		let attempts = 0;
 		while ((!initService || !settingsService || !sequenceService) && attempts < 10) {
-			await new Promise(resolve => setTimeout(resolve, 100));
+			await new Promise((resolve) => setTimeout(resolve, 100));
 			attempts++;
 		}
 
@@ -96,10 +96,9 @@
 			try {
 				initializeFadeSystem({
 					duration: 300,
-					delay: 0
+					delay: 0,
 				});
-				console.log('🎭 Fade system initialized in MainApplication');
-				console.log('🎭 Fade debug info:', getFadeDebugInfo());
+				// Reduced verbosity - fade system initialized silently
 			} catch (fadeError) {
 				console.warn('Failed to initialize fade system:', fadeError);
 				// Non-critical error, continue with initialization
@@ -136,10 +135,6 @@
 			setInitializationState(true, false, null, 100);
 
 			console.log('✅ TKA V2 Modern initialized successfully');
-			console.log('🎭 Final fade system state:', {
-				enabled: isFadeEnabled(),
-				debugInfo: getFadeDebugInfo()
-			});
 		} catch (error) {
 			console.error('❌ Application initialization failed:', error);
 			setInitializationError(
@@ -201,18 +196,12 @@
 			onRetry={() => window.location.reload()}
 		/>
 	{:else if !getIsInitialized()}
-		<LoadingScreen
-			progress={getInitializationProgress()}
-			message="Initializing TKA..."
-		/>
+		<LoadingScreen progress={getInitializationProgress()} message="Initializing TKA..." />
 	{:else}
 		<MainInterface />
 
 		{#if getShowSettings()}
-			<SettingsDialog
-				{settingsService}
-				onClose={hideSettingsDialog}
-			/>
+			<SettingsDialog {settingsService} onClose={hideSettingsDialog} />
 		{/if}
 	{/if}
 </div>
@@ -228,19 +217,19 @@
 	}
 
 	/* Theme-specific styles */
-	.tka-app[data-theme="construct"] {
+	.tka-app[data-theme='construct'] {
 		/* Construct tab specific styles */
 	}
 
-	.tka-app[data-theme="generate"] {
+	.tka-app[data-theme='generate'] {
 		/* Generate tab specific styles */
 	}
 
-	.tka-app[data-theme="browse"] {
+	.tka-app[data-theme='browse'] {
 		/* Browse tab specific styles */
 	}
 
-	.tka-app[data-theme="learn"] {
+	.tka-app[data-theme='learn'] {
 		/* Learn tab specific styles */
 	}
 </style>

@@ -115,9 +115,10 @@
 	.main-layout {
 		display: grid;
 		grid-template-columns: 1fr auto; /* left fills, right button panel auto width */
-		gap: 0;
+		gap: var(--spacing-sm); /* Add small gap between content and button panel */
 		width: 100%;
 		height: 100%;
+		padding: var(--spacing-sm); /* Add padding to prevent edge touching */
 	}
 
 	.left-vbox {

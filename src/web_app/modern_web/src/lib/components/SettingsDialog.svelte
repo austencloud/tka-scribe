@@ -64,15 +64,30 @@
 			handleClose();
 		}
 	}
+
+	// Handle keyboard events for backdrop
+	function handleBackdropKeyDown(event: KeyboardEvent) {
+		if (event.key === 'Escape') {
+			handleClose();
+		}
+	}
 </script>
 
 <!-- Settings Dialog Overlay -->
-<div class="settings-overlay" onclick={handleBackdropClick}>
+<div
+	class="settings-overlay"
+	onclick={handleBackdropClick}
+	onkeydown={handleBackdropKeyDown}
+	role="dialog"
+	aria-modal="true"
+	aria-labelledby="settings-title"
+	tabindex="-1"
+>
 	<div class="settings-dialog">
 		<!-- Dialog Header -->
 		<div class="dialog-header">
-			<h2>Settings</h2>
-			<button class="close-button" onclick={handleClose}>
+			<h2 id="settings-title">Settings</h2>
+			<button class="close-button" onclick={handleClose} aria-label="Close settings">
 				<svg width="20" height="20" viewBox="0 0 24 24" fill="none">
 					<path
 						d="M18 6L6 18M6 6l12 12"

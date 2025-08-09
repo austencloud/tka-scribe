@@ -102,26 +102,31 @@ export function createRunesBackgroundContext(): RunesBackgroundContext {
   let canvas: HTMLCanvasElement | null = null;
   let ctx: CanvasRenderingContext2D | null = null;
 
-  // Create and track a single background system during context initialization
-  if (browser && !backgroundSystem) {
-    try {
-      backgroundSystem = BackgroundFactory.createBackgroundSystem({
-        type: backgroundType,
-        initialQuality: qualityLevel
-      });
-    } catch (error) {
-      console.error('[SYSTEM] Error creating initial background system:', error);
-      // Try fallback
+  // Initialize background system
+  function initializeBackgroundSystem() {
+    if (browser && !backgroundSystem) {
       try {
         backgroundSystem = BackgroundFactory.createBackgroundSystem({
-          type: 'snowfall',
+          type: backgroundType,
           initialQuality: qualityLevel
         });
-      } catch (fallbackError) {
-        console.error('[SYSTEM] Error creating fallback background system:', fallbackError);
+      } catch (error) {
+        console.error('[SYSTEM] Error creating initial background system:', error);
+        // Try fallback
+        try {
+          backgroundSystem = BackgroundFactory.createBackgroundSystem({
+            type: 'snowfall',
+            initialQuality: qualityLevel
+          });
+        } catch (fallbackError) {
+          console.error('[SYSTEM] Error creating fallback background system:', fallbackError);
+        }
       }
     }
   }
+
+  // Initialize on first load
+  initializeBackgroundSystem();
   let animationFrameId: number | null = null;
   let reportCallback: ((metrics: PerformanceMetrics) => void) | null = null;
 
@@ -135,11 +140,14 @@ export function createRunesBackgroundContext(): RunesBackgroundContext {
         const prefs = JSON.parse(savedPrefs);
 
         // Only update if values are different to prevent triggering effects
-        if (prefs.backgroundType && prefs.backgroundType !== backgroundType) {
+        const currentBackgroundType = backgroundType;
+        const currentQualityLevel = qualityLevel;
+
+        if (prefs.backgroundType && prefs.backgroundType !== currentBackgroundType) {
           backgroundType = prefs.backgroundType;
         }
 
-        if (prefs.qualityLevel && prefs.qualityLevel !== qualityLevel) {
+        if (prefs.qualityLevel && prefs.qualityLevel !== currentQualityLevel) {
           qualityLevel = prefs.qualityLevel;
         }
       }
@@ -351,7 +359,7 @@ export function createRunesBackgroundContext(): RunesBackgroundContext {
     qualityLevel = 'low';
 
     setTimeout(() => {
-      qualityLevel = currentQuality;
+      setQuality(currentQuality);
     }, 500);
   }
 

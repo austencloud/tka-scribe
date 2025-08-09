@@ -13,10 +13,7 @@ export const load: LayoutServerLoad = async ({ fetch: eventFetch }) => {
     };
   }
 
-  // Fetch data silently without console logs (similar to legacy)
   try {
-    console.log('🔄 Loading CSV data from server...');
-    
     // Use the event.fetch provided by SvelteKit
     const diamondResponse = await eventFetch("/DiamondPictographDataframe.csv");
     const boxResponse = await eventFetch("/BoxPictographDataframe.csv");
@@ -38,9 +35,7 @@ export const load: LayoutServerLoad = async ({ fetch: eventFetch }) => {
     // Store in cache
     dataCache = { diamondData, boxData };
 
-    console.log('✅ CSV data loaded successfully on server');
-    console.log(`   Diamond CSV: ${diamondData.split('\n').length - 1} rows`);
-    console.log(`   Box CSV: ${boxData.split('\n').length - 1} rows`);
+    console.log(`✅ CSV data loaded: ${diamondData.split('\n').length - 1} diamond, ${boxData.split('\n').length - 1} box rows`);
 
     return {
       csvData: dataCache,

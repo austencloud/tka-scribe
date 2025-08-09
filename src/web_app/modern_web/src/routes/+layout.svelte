@@ -4,8 +4,6 @@
 	import type { ServiceContainer } from '@tka/shared/di/core/ServiceContainer';
 	import type { Snippet } from 'svelte';
 
-	console.log('🔥 Layout script is executing!');
-
 	interface Props {
 		children: Snippet;
 	}
@@ -17,51 +15,32 @@
 	let isInitialized = $state(false);
 	let initializationError = $state<string | null>(null);
 
-	console.log('🔥 About to set context...');
 	// Set context immediately (will be null initially)
 	setContext('di-container', () => container);
-	console.log('🔥 Context set!');
 
-	console.log('🔥 About to register onMount...');
 	onMount(async () => {
-		console.log('🔥🔥🔥 ONMOUNT IS RUNNING! 🔥🔥🔥');
 		try {
-			console.log('🔥 Layout onMount started - WITH VITE-PLUGIN-TERMINAL!');
+			console.log('🚀 Initializing TKA V2 Modern...');
 
-			console.log('🔄 About to start DI container initialization...');
+			try {
+				// Import bootstrap function
+				const { createWebApplication } = await import('$services/bootstrap');
 
-		try {
-			console.log('🚀 Starting DI container initialization...');
+				// Create DI container
+				container = await createWebApplication();
 
-			// Import bootstrap function
-			console.log('📦 Importing bootstrap module...');
-			const { createWebApplication } = await import('$services/bootstrap');
-			console.log('✅ Bootstrap module imported successfully');
-
-			// Create DI container
-			console.log('🏗️ Creating DI container...');
-			container = await createWebApplication();
-			console.log('✅ DI container created successfully');
-
-			// Mark as initialized
-			isInitialized = true;
-			console.log('✅ DI container initialized successfully');
-		} catch (error) {
-			console.error('❌ Error during initialization:', error);
-			console.error('❌ Error type:', typeof error);
-			console.error('❌ Error constructor:', error?.constructor?.name);
-			console.error('❌ Error message:', error instanceof Error ? error.message : String(error));
-			console.error('❌ Error stack:', error instanceof Error ? error.stack : 'No stack trace');
-
-			initializationError = error instanceof Error ? error.message : 'Unknown error';
-			console.error('❌ Failed to initialize application:', error);
+				// Mark as initialized
+				isInitialized = true;
+				console.log('✅ TKA V2 Modern initialized successfully');
+			} catch (error) {
+				console.error('❌ Failed to initialize application:', error);
+				initializationError = error instanceof Error ? error.message : 'Unknown error';
+			}
+		} catch (outerError) {
+			console.error('🚨 CRITICAL: Application initialization failed:', outerError);
+			initializationError = 'Critical initialization failure';
 		}
-	} catch (outerError) {
-		console.error('🚨 CRITICAL: onMount itself failed:', outerError);
-		initializationError = 'Critical initialization failure';
-	}
-});
-console.log('🔥 onMount registered successfully!');
+	});
 </script>
 
 <svelte:head>
@@ -94,7 +73,7 @@ console.log('🔥 onMount registered successfully!');
 		padding: 2rem;
 		text-align: center;
 	}
-	
+
 	.loading-screen {
 		display: flex;
 		flex-direction: column;
@@ -104,7 +83,7 @@ console.log('🔥 onMount registered successfully!');
 		padding: 2rem;
 		text-align: center;
 	}
-	
+
 	.spinner {
 		width: 40px;
 		height: 40px;
@@ -114,9 +93,13 @@ console.log('🔥 onMount registered successfully!');
 		animation: spin 1s linear infinite;
 		margin-bottom: 1rem;
 	}
-	
+
 	@keyframes spin {
-		0% { transform: rotate(0deg); }
-		100% { transform: rotate(360deg); }
+		0% {
+			transform: rotate(0deg);
+		}
+		100% {
+			transform: rotate(360deg);
+		}
 	}
 </style>

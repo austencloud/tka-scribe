@@ -11,16 +11,19 @@
 		onRemoveRequested?: (position: number) => void;
 	}
 
-	let { 
-		sequence,
-		position,
-		onSequenceClicked,
-		onRemoveRequested
-	}: Props = $props();
+	let { sequence, position, onSequenceClicked, onRemoveRequested }: Props = $props();
 
 	// Handle sequence click
 	function handleSequenceClick() {
 		onSequenceClicked?.(position);
+	}
+
+	// Handle keyboard events
+	function handleKeyDown(event: KeyboardEvent) {
+		if (event.key === 'Enter' || event.key === ' ') {
+			event.preventDefault();
+			handleSequenceClick();
+		}
 	}
 
 	// Handle remove button click
@@ -34,11 +37,17 @@
 	const beatsCount = $derived(sequence.beats.length);
 </script>
 
-<div class="sequence-thumbnail" onclick={handleSequenceClick} role="button" tabindex="0">
+<div
+	class="sequence-thumbnail"
+	onclick={handleSequenceClick}
+	onkeydown={handleKeyDown}
+	role="button"
+	tabindex="0"
+>
 	<!-- Header with position and remove button -->
 	<div class="thumbnail-header">
 		<span class="position-number">{position + 1}</span>
-		<button 
+		<button
 			class="remove-button"
 			onclick={handleRemoveClick}
 			title="Remove sequence"

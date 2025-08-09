@@ -6,9 +6,10 @@
  */
 
 import type { AppSettings } from '$services/interfaces';
-import { 
-	initializeFadeSystem, 
-	transitionToMainTab, 
+import { browser } from '$app/environment';
+import {
+	initializeFadeSystem,
+	transitionToMainTab,
 	completeMainTabTransition,
 	isFadeEnabled,
 	isMainTabTransitioning,
@@ -86,7 +87,10 @@ export function getPerformanceMetrics() { return perfState; }
 // SETTINGS STATE
 // ============================================================================
 
-const settingsState = $state<AppSettings>({
+const SETTINGS_STORAGE_KEY = 'tka-modern-web-settings';
+
+// Default settings
+const DEFAULT_SETTINGS: AppSettings = {
 	theme: 'dark',
 	gridMode: 'diamond',
 	showBeatNumbers: true,
@@ -97,7 +101,38 @@ const settingsState = $state<AppSettings>({
 	backgroundType: 'aurora',
 	backgroundQuality: 'medium',
 	backgroundEnabled: true
-});
+};
+
+// Load settings from localStorage
+function loadSettingsFromStorage(): AppSettings {
+	if (!browser) return DEFAULT_SETTINGS;
+
+	try {
+		const stored = localStorage.getItem(SETTINGS_STORAGE_KEY);
+		if (!stored) return DEFAULT_SETTINGS;
+
+		const parsed = JSON.parse(stored);
+		// Merge with defaults to handle new settings
+		return { ...DEFAULT_SETTINGS, ...parsed };
+	} catch (error) {
+		console.warn('Failed to load settings from localStorage:', error);
+		return DEFAULT_SETTINGS;
+	}
+}
+
+// Save settings to localStorage
+function saveSettingsToStorage(settings: AppSettings): void {
+	if (!browser) return;
+
+	try {
+		localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(settings));
+		console.log('✅ Settings saved to localStorage');
+	} catch (error) {
+		console.error('❌ Failed to save settings to localStorage:', error);
+	}
+}
+
+const settingsState = $state<AppSettings>(loadSettingsFromStorage());
 
 export function getSettings() { return settingsState; }
 
@@ -134,7 +169,7 @@ export function setInitializationState(
 	initState.isInitializing = initializing;
 	initState.initializationError = error;
 	initState.initializationProgress = progress;
-	
+
 	// Initialize fade system when app is fully initialized
 	if (initialized && !initializing && !error) {
 		try {
@@ -178,27 +213,27 @@ export function clearInitializationError(): void {
  */
 export async function switchTab(tab: TabId): Promise<void> {
 	const currentTab = uiState.activeTab;
-	
+
 	// Don't transition if already on the same tab
 	if (currentTab === tab) {
 		return;
 	}
-	
+
 	// Check if fade system is available and enabled
 	if (initState.isInitialized && isFadeEnabled()) {
 		try {
 			// Start the fade transition
 			const transitionId = await transitionToMainTab(currentTab as MainTabId, tab as MainTabId);
-			
+
 			if (transitionId) {
 				// Update the active tab immediately for reactive state
 				uiState.activeTab = tab;
-				
+
 				// Complete the transition after a brief delay to allow UI to update
 				setTimeout(() => {
 					completeMainTabTransition(transitionId);
 				}, 50);
-				
+
 				console.log(`🎭 Tab transition started: ${currentTab} → ${tab}`);
 			} else {
 				// Fallback to immediate switch
@@ -262,6 +297,8 @@ export function toggleSettingsDialog(): void {
 export function setTheme(newTheme: 'light' | 'dark'): void {
 	uiState.theme = newTheme;
 	settingsState.theme = newTheme;
+	// Save to localStorage
+	saveSettingsToStorage(settingsState);
 }
 
 /**
@@ -274,6 +311,9 @@ export function updateSettings(newSettings: Partial<AppSettings>): void {
 	if (newSettings.theme) {
 		uiState.theme = newSettings.theme;
 	}
+
+	// Save to localStorage
+	saveSettingsToStorage(settingsState);
 }
 
 /**

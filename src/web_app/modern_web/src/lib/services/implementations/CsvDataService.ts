@@ -1,6 +1,6 @@
 /**
  * CSV Data Service - Implementation (Updated for Global Data Access)
- * 
+ *
  * Loads and manages CSV data for the modern web app.
  * Based on the legacy system's CSV loading approach.
  */
@@ -45,16 +45,11 @@ export class CsvDataService {
 		}
 
 		try {
-			console.log('📊 Loading CSV data...');
-
 			// First try to get data from global window.csvData (set by layout)
 			if (typeof window !== 'undefined' && (window as any).csvData) {
-				console.log('✅ Using CSV data from global window.csvData (loaded by layout)');
 				this.csvData = (window as any).csvData;
 			} else {
 				// Fallback: Fetch CSV files from static directory
-				console.log('🔄 Loading CSV data from static files...');
-				
 				const [diamondResponse, boxResponse] = await Promise.all([
 					fetch('/DiamondPictographDataframe.csv'),
 					fetch('/BoxPictographDataframe.csv')
@@ -78,9 +73,7 @@ export class CsvDataService {
 
 			this.isInitialized = true;
 
-			console.log(`✅ CSV data loaded and parsed successfully:`);
-			console.log(`   Diamond: ${this.parsedData.diamond.length} entries`);
-			console.log(`   Box: ${this.parsedData.box.length} entries`);
+			console.log(`✅ CSV data loaded: ${this.parsedData.diamond.length} diamond, ${this.parsedData.box.length} box entries`);
 
 		} catch (error) {
 			console.error('❌ Error loading CSV data:', error);
@@ -123,7 +116,7 @@ export class CsvDataService {
 			const matchingOptions = dataset.filter(row => row.startPos === endPosition);
 
 			console.log(`🎯 Found ${matchingOptions.length} options for end position: ${endPosition} in ${gridMode} mode`);
-			
+
 			// Debug: Show first few matches
 			if (matchingOptions.length > 0) {
 				console.log(`🔍 Sample options:`, matchingOptions.slice(0, 3).map(opt => ({
@@ -134,7 +127,7 @@ export class CsvDataService {
 					redMotion: opt.redMotionType
 				})));
 			}
-			
+
 			return matchingOptions;
 
 		} catch (error) {

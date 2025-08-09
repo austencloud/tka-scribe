@@ -9,14 +9,19 @@
 		onActSelected?: (filePath: string) => void;
 	}
 
-	let { 
-		actInfo,
-		onActSelected
-	}: Props = $props();
+	let { actInfo, onActSelected }: Props = $props();
 
 	// Handle thumbnail click
 	function handleClick() {
 		onActSelected?.(actInfo.filePath);
+	}
+
+	// Handle keyboard events
+	function handleKeyDown(event: KeyboardEvent) {
+		if (event.key === 'Enter' || event.key === ' ') {
+			event.preventDefault();
+			handleClick();
+		}
 	}
 
 	// Format date for display
@@ -25,17 +30,26 @@
 	}
 
 	// Generate thumbnail image
-	const thumbnailSrc = $derived(actInfo.thumbnail || generateActThumbnail({
-		id: actInfo.id,
-		name: actInfo.name,
-		description: actInfo.description,
-		sequences: Array(actInfo.sequenceCount).fill(null),
-		musicFile: actInfo.hasMusic ? { name: 'music.mp3', path: '' } : undefined,
-		metadata: { created: new Date(), modified: actInfo.lastModified }
-	}));
+	const thumbnailSrc = $derived(
+		actInfo.thumbnail ||
+			generateActThumbnail({
+				id: actInfo.id,
+				name: actInfo.name,
+				description: actInfo.description,
+				sequences: Array(actInfo.sequenceCount).fill(null),
+				musicFile: actInfo.hasMusic ? { name: 'music.mp3', path: '' } : undefined,
+				metadata: { created: new Date(), modified: actInfo.lastModified },
+			})
+	);
 </script>
 
-<div class="act-thumbnail" onclick={handleClick} role="button" tabindex="0">
+<div
+	class="act-thumbnail"
+	onclick={handleClick}
+	onkeydown={handleKeyDown}
+	role="button"
+	tabindex="0"
+>
 	<!-- Thumbnail Image -->
 	<div class="thumbnail-image">
 		<img src={thumbnailSrc} alt={actInfo.name} />

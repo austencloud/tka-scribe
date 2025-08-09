@@ -131,14 +131,15 @@ Prop Component - Renders SVG props with proper positioning
 
 	// Calculate rotation using PropRotAngleManager for consistency with legacy
 	const rotation = $derived(() => {
-		if (!propData || !motionData) return 0;
+		if (!propData) return 0;
 
 		const location = propData.location || motionData?.end_loc;
-		const endOrientation = motionData?.end_ori || 'in';
+		// Use prop's own orientation instead of motion's end orientation
+		const propOrientation = propData.orientation || 'in';
 
 		// Convert string orientation to enum
 		let orientation: Orientation;
-		switch (endOrientation) {
+		switch (propOrientation) {
 			case 'in':
 				orientation = Orientation.IN;
 				break;
@@ -162,7 +163,7 @@ Prop Component - Renders SVG props with proper positioning
 
 		// Debug logging for rotation verification
 		console.log(
-			`🔄 Prop rotation - Color: ${propData.color}, Location: ${location}, Orientation: ${endOrientation}, Rotation: ${calculatedRotation}°`
+			`🔄 Prop rotation - Color: ${propData.color}, Location: ${location}, Orientation: ${propOrientation}, Rotation: ${calculatedRotation}°`
 		);
 
 		return calculatedRotation;
@@ -208,7 +209,8 @@ Prop Component - Renders SVG props with proper positioning
 			red: '#ED1C24',
 		};
 
-		console.log(`🎨 Applying ${color} color to prop SVG`);
+		// Reduced verbosity - only log if there are issues
+		// console.log(`🎨 Applying ${color} color to prop SVG`);
 
 		// Replace the entire style block with our colors
 		let coloredSvg = svgText.replace(

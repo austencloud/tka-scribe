@@ -7,9 +7,10 @@ A custom perfectly round button with hover effects and dynamic styling.
 		symbol: string;
 		disabled?: boolean;
 		onclick?: () => void;
+		'aria-label'?: string;
 	}
 
-	let { symbol, disabled = false, onclick }: Props = $props();
+	let { symbol, disabled = false, onclick, 'aria-label': ariaLabel }: Props = $props();
 
 	// Handle click event
 	function handleClick() {
@@ -28,6 +29,7 @@ A custom perfectly round button with hover effects and dynamic styling.
 	{disabled}
 	onclick={handleClick}
 	type="button"
+	aria-label={ariaLabel}
 >
 	{symbol}
 </button>

@@ -6,17 +6,13 @@
 	import type { BeatData } from '$services/interfaces';
 
 	// Props
-	const {
-		selectedBeatIndex,
-		selectedBeatData,
-		onOrientationChanged,
-		onTurnAmountChanged
-	} = $props<{
-		selectedBeatIndex: number | null;
-		selectedBeatData: BeatData | null;
-		onOrientationChanged: (color: string, orientation: string) => void;
-		onTurnAmountChanged: (color: string, turnAmount: number) => void;
-	}>();
+	const { selectedBeatIndex, selectedBeatData, onOrientationChanged, onTurnAmountChanged } =
+		$props<{
+			selectedBeatIndex: number | null;
+			selectedBeatData: BeatData | null;
+			onOrientationChanged: (color: string, orientation: string) => void;
+			onTurnAmountChanged: (color: string, turnAmount: number) => void;
+		}>();
 
 	// Component state
 	let currentBeatIndex = $state<number | null>(null);
@@ -24,14 +20,14 @@
 	let activePanel = $state<'orientation' | 'turn'>('orientation');
 
 	// Component references
-	let orientationPicker: DualOrientationPicker;
-	let turnControls: TurnAdjustmentControls;
+	let orientationPicker = $state<DualOrientationPicker>();
+	let turnControls = $state<TurnAdjustmentControls>();
 
 	// Set beat data (called from parent)
 	export function setBeatData(beatIndex: number, beatData: BeatData | null) {
 		currentBeatIndex = beatIndex;
 		currentBeatData = beatData;
-		
+
 		// Determine which panel to show
 		if (beatIndex === 0 || !beatData) {
 			// Show orientation picker for start position (beat 0) or when no data
@@ -40,8 +36,10 @@
 			// Show turn controls for regular beats
 			activePanel = 'turn';
 		}
-		
-		console.log(`MainAdjustmentPanel: Set beat data for beat ${beatIndex}, showing ${activePanel} panel`);
+
+		console.log(
+			`MainAdjustmentPanel: Set beat data for beat ${beatIndex}, showing ${activePanel} panel`
+		);
 	}
 
 	// Handle orientation changes from DualOrientationPicker

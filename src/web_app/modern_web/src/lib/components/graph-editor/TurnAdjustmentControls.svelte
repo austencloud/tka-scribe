@@ -4,9 +4,7 @@
 	import type { BeatData } from '$services/interfaces';
 
 	// Props
-	const {
-		currentBeatData,
-	} = $props<{
+	const { currentBeatData } = $props<{
 		currentBeatData: BeatData | null;
 	}>();
 
@@ -30,16 +28,16 @@
 		} else {
 			redTurnAmount = turnAmount;
 		}
-		
+
 		selectedColor = color;
 		selectedArrow = `${color}_turn_${turnAmount}`;
-		
+
 		// Dispatch the change event
 		dispatch('turnAmountChanged', {
 			color,
-			turnAmount
+			turnAmount,
 		});
-		
+
 		console.log(`TurnAdjustmentControls: ${color} turn amount set to ${turnAmount}`);
 	}
 
@@ -51,9 +49,9 @@
 	// Update turn amounts from beat data
 	function updateFromBeatData(beatData: BeatData | null) {
 		if (!beatData?.pictograph_data) return;
-		
+
 		const pictograph = beatData.pictograph_data;
-		
+
 		// Update turn amounts from pictograph data
 		if (pictograph.blue_turns !== undefined) {
 			blueTurnAmount = pictograph.blue_turns;
@@ -61,10 +59,10 @@
 		if (pictograph.red_turns !== undefined) {
 			redTurnAmount = pictograph.red_turns;
 		}
-		
+
 		console.log('TurnAdjustmentControls: Updated from beat data', {
 			blue: blueTurnAmount,
-			red: redTurnAmount
+			red: redTurnAmount,
 		});
 	}
 
@@ -293,17 +291,6 @@
 	}
 
 	.legend-text {
-		color: var(--muted-foreground);
-	}
-
-	.selection-indicator {
-		padding: var(--spacing-sm);
-		background: rgba(255, 255, 255, 0.1);
-		border: 1px solid rgba(255, 255, 255, 0.2);
-		border-radius: var(--border-radius);
-		text-align: center;
-		font-size: var(--font-size-sm);
-		font-weight: 500;
 		color: var(--muted-foreground);
 	}
 

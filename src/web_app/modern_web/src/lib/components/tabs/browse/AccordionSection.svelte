@@ -7,6 +7,7 @@
 	export let title: string;
 	export let type: string;
 	export let options: any[];
+	export let sections: any[][] = [];
 	export let isActive: boolean = false;
 	export let isExpanded: boolean = false;
 
@@ -24,11 +25,16 @@
 		const value = event.detail;
 		dispatch('filterSelected', { type, value });
 	}
+
+	// Handle letter selection (for starting letter type)
+	function handleLetterSelection(letter: string) {
+		dispatch('filterSelected', { type, value: letter });
+	}
 </script>
 
 <div class="accordion-section" class:expanded={isExpanded} class:active={isActive}>
 	<!-- Accordion Header -->
-	<button 
+	<button
 		class="accordion-header"
 		class:expanded={isExpanded}
 		on:click={toggleExpansion}
@@ -42,11 +48,11 @@
 		</div>
 		<div class="header-icon" class:rotated={isExpanded}>
 			<svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-				<path 
-					d="M5 7.5L10 12.5L15 7.5" 
-					stroke="currentColor" 
-					stroke-width="2" 
-					stroke-linecap="round" 
+				<path
+					d="M5 7.5L10 12.5L15 7.5"
+					stroke="currentColor"
+					stroke-width="2"
+					stroke-linecap="round"
 					stroke-linejoin="round"
 				/>
 			</svg>
@@ -55,31 +61,41 @@
 
 	<!-- Accordion Content -->
 	{#if isExpanded}
-		<div 
+		<div
 			class="accordion-content"
 			bind:this={contentElement}
 			transition:slide={{ duration: 300, easing: cubicInOut }}
 		>
 			<div class="content-inner">
-				{#if type === 'starting_position' || type === 'difficulty' || type === 'grid_mode'}
+				{#if type === 'starting_letter'}
+					<!-- Special letter grid layout for Starting Letter section -->
+					<div class="letter-grid-container">
+						{#each sections as row}
+							<div class="letter-row">
+								{#each row as letter}
+									<button
+										class="letter-button"
+										on:click={() => handleLetterSelection(letter)}
+										type="button"
+									>
+										{letter}
+									</button>
+								{/each}
+							</div>
+						{/each}
+					</div>
+				{:else if type === 'starting_position' || type === 'difficulty' || type === 'grid_mode'}
 					<!-- Image-based content for visual filters -->
 					<div class="options-grid visual-grid">
 						{#each options as option}
-							<CategoryButton 
-								{option}
-								visualType={type}
-								on:selected={handleFilterSelection}
-							/>
+							<CategoryButton {option} visualType={type} on:selected={handleFilterSelection} />
 						{/each}
 					</div>
 				{:else}
 					<!-- Standard button grid for other filters -->
 					<div class="options-grid standard-grid">
 						{#each options as option}
-							<CategoryButton 
-								{option}
-								on:selected={handleFilterSelection}
-							/>
+							<CategoryButton {option} on:selected={handleFilterSelection} />
 						{/each}
 					</div>
 				{/if}
@@ -191,12 +207,64 @@
 	}
 
 	.visual-grid {
-		grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+		grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+		gap: var(--spacing-xl);
+		justify-items: center;
+		max-width: 100%;
+	}
+
+	/* Letter Grid Layout for Starting Letter Section */
+	.letter-grid-container {
+		display: flex;
+		flex-direction: column;
+		gap: var(--spacing-sm);
+		width: 100%;
+		padding: var(--spacing-sm);
+	}
+
+	.letter-row {
+		display: flex;
+		gap: var(--spacing-xs);
+		justify-content: center;
+		flex-wrap: nowrap;
+		margin-bottom: var(--spacing-xs);
+	}
+
+	.letter-button {
+		min-width: 36px;
+		height: 36px;
+		border: 1px solid rgba(255, 255, 255, 0.3);
+		border-radius: 6px;
+		background: rgba(255, 255, 255, 0.1);
+		color: var(--foreground);
+		font-size: var(--font-size-md);
+		font-weight: 600;
+		cursor: pointer;
+		transition: all var(--transition-fast);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		flex-shrink: 0;
+		flex: 1;
+		max-width: 45px;
+	}
+
+	.letter-button:hover {
+		background: rgba(255, 255, 255, 0.2);
+		border-color: rgba(255, 255, 255, 0.5);
+		transform: translateY(-1px);
+		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+	}
+
+	.letter-button:active {
+		transform: translateY(0);
+		box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 	}
 
 	/* Animations */
 	@keyframes pulse {
-		0%, 100% {
+		0%,
+		100% {
 			opacity: 1;
 		}
 		50% {
@@ -219,10 +287,17 @@
 		}
 
 		.visual-grid {
-			grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+			grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+			gap: var(--spacing-lg);
 		}
 
 		.header-title {
+			font-size: var(--font-size-base);
+		}
+
+		.letter-button {
+			min-width: 35px;
+			height: 35px;
 			font-size: var(--font-size-base);
 		}
 	}

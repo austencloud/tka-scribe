@@ -10,35 +10,26 @@
 		{
 			title: '📝 Starting Letter',
 			type: 'starting_letter',
-			options: [
-				// A-Z alphabet options (fallback - would be populated from data in real app)
-				{ label: 'A', value: 'A' },
-				{ label: 'B', value: 'B' },
-				{ label: 'C', value: 'C' },
-				{ label: 'D', value: 'D' },
-				{ label: 'E', value: 'E' },
-				{ label: 'F', value: 'F' },
-				{ label: 'G', value: 'G' },
-				{ label: 'H', value: 'H' },
-				{ label: 'I', value: 'I' },
-				{ label: 'J', value: 'J' },
-				{ label: 'K', value: 'K' },
-				{ label: 'L', value: 'L' },
-				{ label: 'M', value: 'M' },
-				{ label: 'N', value: 'N' },
-				{ label: 'O', value: 'O' },
-				{ label: 'P', value: 'P' },
-				{ label: 'Q', value: 'Q' },
-				{ label: 'R', value: 'R' },
-				{ label: 'S', value: 'S' },
-				{ label: 'T', value: 'T' },
-				{ label: 'U', value: 'U' },
-				{ label: 'V', value: 'V' },
-				{ label: 'W', value: 'W' },
-				{ label: 'X', value: 'X' },
-				{ label: 'Y', value: 'Y' },
-				{ label: 'Z', value: 'Z' }
-			]
+			sections: [
+				// Type 1 (A-Z, W-, X-, Y-, Z-)
+				['A', 'B', 'C', 'D', 'E', 'F'],
+				['G', 'H', 'I', 'J', 'K', 'L'],
+				['M', 'N', 'O', 'P', 'Q', 'R'],
+				['S', 'T', 'U', 'V'],
+				['W', 'X', 'Y', 'Z'],
+				['W-', 'X-', 'Y-', 'Z-'],
+				// Type 2 (Shifted Greek)
+				['Σ', 'Δ', 'θ', 'Ω'],
+				// Type 3 (Cross-Shifted Latin/Greek)
+				['Σ-', 'Δ-', 'θ-', 'Ω-'],
+				// Type 4 (Phi, Psi, Lambda)
+				['Φ', 'Ψ', 'Λ'],
+				// Type 5 (Phi-, Psi-, Lambda-)
+				['Φ-', 'Ψ-', 'Λ-'],
+				// Type 6 (alpha, beta, Gamma)
+				['α', 'β', 'Γ'],
+			],
+			options: [], // Will be populated from sections
 		},
 		{
 			title: '📏 Length',
@@ -54,27 +45,26 @@
 				{ label: '9', value: '9' },
 				{ label: '10', value: '10' },
 				{ label: '11', value: '11' },
-				{ label: '12', value: '12' }
-			]
+				{ label: '12', value: '12' },
+			],
 		},
 		{
 			title: '📊 Difficulty',
 			type: 'difficulty',
 			options: [
-				{ label: '🟢 Beginner', value: 'beginner' },
-				{ label: '🟡 Intermediate', value: 'intermediate' },
-				{ label: '🔴 Advanced', value: 'advanced' }
-			]
+				{ label: 'Beginner', value: 'beginner' },
+				{ label: 'Intermediate', value: 'intermediate' },
+				{ label: 'Advanced', value: 'advanced' },
+			],
 		},
 		{
 			title: '🎯 Start Position',
 			type: 'starting_position',
 			options: [
-				// Common starting positions (fallback - would be populated from data in real app)
-				{ label: 'Alpha', value: 'Alpha' },
-				{ label: 'Beta', value: 'Beta' },
-				{ label: 'Gamma', value: 'Gamma' }
-			]
+				{ label: 'Alpha', value: 'alpha' },
+				{ label: 'Beta', value: 'beta' },
+				{ label: 'Gamma', value: 'gamma' },
+			],
 		},
 		{
 			title: '👤 Author',
@@ -83,18 +73,18 @@
 				// Demo authors (fallback - would be populated from data in real app)
 				{ label: 'Demo Author', value: 'Demo Author' },
 				{ label: 'Test User', value: 'Test User' },
-				{ label: 'Sample Creator', value: 'Sample Creator' }
-			]
+				{ label: 'Sample Creator', value: 'Sample Creator' },
+			],
 		},
 		{
-			title: '🎨 Grid Style',
+			title: '🎨 Grid Mode',
 			type: 'grid_mode',
 			options: [
-				{ label: '💎 Diamond', value: 'diamond' },
-				{ label: '⬜ Box', value: 'box' },
-				{ label: '🎭 Mixed', value: 'mixed' }
-			]
-		}
+				{ label: 'Diamond', value: 'diamond' },
+				{ label: 'Box', value: 'box' },
+				{ label: 'Skewed', value: 'skewed' },
+			],
+		},
 	];
 
 	// Track active filter state
@@ -156,14 +146,13 @@
 
 			<!-- Categories Section (expandable content area) -->
 			<div class="categories-section">
-				<!-- Section title -->
-				<div class="section-title">Browse by Category</div>
-
+				<!-- All Filter Sections using Accordion -->
 				{#each filterSections as section}
 					<AccordionSection
 						title={section.title}
 						type={section.type}
 						options={section.options}
+						sections={section.sections || []}
 						isActive={activeFilter?.type === section.type}
 						isExpanded={currentExpandedSection === section.type}
 						on:filterSelected={handleFilterSelection}
@@ -235,20 +224,12 @@
 		flex: 1;
 		display: flex;
 		flex-direction: column;
-		gap: 8px;
+		gap: 6px;
 		overflow-y: auto;
 		padding-right: var(--spacing-xs);
-		margin-top: 10px;
-		padding-left: 20px;
-		padding-right: 20px;
-	}
-
-	.section-title {
-		text-align: center;
-		font-size: 18px;
-		font-weight: 600;
-		color: rgba(255, 255, 255, 0.9);
-		margin-bottom: 16px;
+		margin-top: 5px;
+		padding-left: 15px;
+		padding-right: 15px;
 	}
 
 	/* Custom scrollbar */

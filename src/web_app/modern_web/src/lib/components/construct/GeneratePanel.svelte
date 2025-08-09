@@ -225,17 +225,22 @@ while maintaining the legacy layout structure with subtle glass effects.
 			initialValue={currentConfig.propContinuity}
 		/>
 
-		<!-- Mode-specific controls -->
-		{#if isFreeformMode}
-			<LetterTypeSelector
-				bind:this={letterTypeSelectorRef}
-				initialValue={currentConfig.letterTypes}
-			/>
-		{:else}
-			<SliceSizeSelector bind:this={sliceSizeSelectorRef} initialValue={currentConfig.sliceSize} />
+		<!-- Mode-specific controls with fixed height container -->
+		<div class="mode-specific-controls">
+			{#if isFreeformMode}
+				<LetterTypeSelector
+					bind:this={letterTypeSelectorRef}
+					initialValue={currentConfig.letterTypes}
+				/>
+			{:else}
+				<SliceSizeSelector
+					bind:this={sliceSizeSelectorRef}
+					initialValue={currentConfig.sliceSize}
+				/>
 
-			<CAPTypeSelector bind:this={capTypeSelectorRef} initialValue={currentConfig.capType} />
-		{/if}
+				<CAPTypeSelector bind:this={capTypeSelectorRef} initialValue={currentConfig.capType} />
+			{/if}
+		</div>
 	</div>
 
 	<!-- Action buttons - prominent and clear -->
@@ -264,7 +269,8 @@ while maintaining the legacy layout structure with subtle glass effects.
 	.generate-panel {
 		display: flex;
 		flex-direction: column;
-		height: 100%;
+		flex: 1; /* Take full available height from flex parent */
+		min-height: 0; /* Allow flex shrinking */
 		padding: 16px;
 		/* Transparent background to show beautiful background without blur */
 		background: rgba(255, 255, 255, 0.05);
@@ -298,17 +304,56 @@ while maintaining the legacy layout structure with subtle glass effects.
 	.controls-section {
 		display: flex;
 		flex-direction: column;
-		gap: 6px;
-		flex: 1;
-		overflow-y: auto;
+		gap: 12px; /* Restore gap for proper spacing */
+		flex: 1; /* Take all available space between header and buttons */
+		overflow-y: visible; /* Allow natural height */
+		padding-bottom: 8px; /* Add some bottom spacing */
+		justify-content: space-evenly; /* Distribute space evenly between controls */
+	}
+
+	/* Make each control item expand equally without breaking internal layouts */
+	.controls-section > :global(*) {
+		flex: 1; /* Each control gets equal space */
+		display: flex;
+		align-items: center; /* Center content vertically within each flex item */
+		min-height: 60px; /* Minimum height for each control */
+		padding: 12px 0; /* Add vertical padding for spacing */
+		border-bottom: 1px solid rgba(255, 255, 255, 0.05); /* Subtle separator */
+	}
+
+	/* Remove border from last item */
+	.controls-section > :global(*:last-child) {
+		border-bottom: none;
+	}
+
+	/* Fixed height container for mode-specific controls */
+	.mode-specific-controls {
+		flex: 2; /* Give this section more space since it can have multiple components */
+		display: flex;
+		flex-direction: column;
+		justify-content: flex-start;
+		align-items: stretch;
+		min-height: 120px; /* Fixed minimum height to prevent layout shifts */
+		max-height: 140px; /* Fixed maximum height to maintain consistency */
+		overflow: hidden; /* Hide overflow if content is too tall */
+		gap: 8px; /* Space between multiple components in circular mode */
+		padding: 12px 0;
+		border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+	}
+
+	/* Ensure child components fit within the fixed height */
+	.mode-specific-controls > :global(*) {
+		flex-shrink: 1; /* Allow shrinking if needed */
+		overflow: hidden; /* Prevent overflow */
 	}
 
 	.action-buttons {
 		display: flex;
 		flex-direction: column;
-		gap: 8px;
-		margin-top: 12px;
-		flex-shrink: 0;
+		gap: 12px;
+		flex-shrink: 0; /* Don't shrink */
+		padding-top: 16px; /* Add some spacing above buttons */
+		border-top: 1px solid rgba(255, 255, 255, 0.1); /* Subtle separator */
 	}
 
 	.action-button {

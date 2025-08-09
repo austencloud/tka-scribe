@@ -12,12 +12,7 @@ Simple increment/decrement control for sequence length.
 		adjustmentAmount?: number;
 	}
 
-	let { 
-		initialValue = 16, 
-		minValue = 4, 
-		maxValue = 64, 
-		adjustmentAmount = 2 
-	}: Props = $props();
+	let { initialValue = 16, minValue = 4, maxValue = 64, adjustmentAmount = 2 }: Props = $props();
 
 	// State
 	let currentValue = $state(initialValue);
@@ -25,8 +20,8 @@ Simple increment/decrement control for sequence length.
 	// Create custom event dispatcher
 	const dispatch = (value: number) => {
 		// Dispatch custom event that parent can listen to
-		const event = new CustomEvent('valueChanged', { 
-			detail: { value } 
+		const event = new CustomEvent('valueChanged', {
+			detail: { value },
 		});
 		document.dispatchEvent(event);
 	};
@@ -63,22 +58,32 @@ Simple increment/decrement control for sequence length.
 </script>
 
 <div class="length-selector">
-	<label class="selector-label">Length:</label>
-	
-	<IncrementAdjusterButton 
-		symbol="-" 
+	<label class="selector-label" for="length-value">Length:</label>
+
+	<IncrementAdjusterButton
+		symbol="-"
 		disabled={!canDecrease}
 		onclick={decreaseLength}
+		aria-label="Decrease sequence length"
 	/>
-	
-	<div class="value-display">
+
+	<div
+		class="value-display"
+		id="length-value"
+		role="spinbutton"
+		aria-valuenow={currentValue}
+		aria-valuemin={minValue}
+		aria-valuemax={maxValue}
+		aria-label="Sequence length"
+	>
 		{currentValue}
 	</div>
-	
-	<IncrementAdjusterButton 
-		symbol="+" 
+
+	<IncrementAdjusterButton
+		symbol="+"
 		disabled={!canIncrease}
 		onclick={increaseLength}
+		aria-label="Increase sequence length"
 	/>
 </div>
 
