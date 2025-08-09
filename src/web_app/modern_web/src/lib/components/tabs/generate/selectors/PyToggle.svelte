@@ -10,15 +10,17 @@ A custom toggle switch with smooth animations.
 		activeColor?: string;
 		circleColor?: string;
 		disabled?: boolean;
+		onstateChanged?: (event: CustomEvent) => void;
 	}
 
-	let { 
-		checked = false, 
-		width = 50, 
-		bgColor = "#00BCff", 
-		activeColor = "#00BCff", 
-		circleColor = "#FFFFFF",
-		disabled = false
+	let {
+		checked = false,
+		width = 50,
+		bgColor = '#00BCff',
+		activeColor = '#00BCff',
+		circleColor = '#FFFFFF',
+		disabled = false,
+		onstateChanged,
 	}: Props = $props();
 
 	// State
@@ -29,10 +31,15 @@ A custom toggle switch with smooth animations.
 		if (!disabled) {
 			isChecked = !isChecked;
 			// Dispatch custom event
-			const event = new CustomEvent('stateChanged', { 
-				detail: { checked: isChecked } 
+			const event = new CustomEvent('stateChanged', {
+				detail: { checked: isChecked },
 			});
 			document.dispatchEvent(event);
+
+			// Call the callback if provided
+			if (onstateChanged) {
+				onstateChanged(event);
+			}
 		}
 	}
 
@@ -52,25 +59,26 @@ A custom toggle switch with smooth animations.
 	let circleOffset = $derived(isChecked ? `${width * 0.5}px` : '4px');
 </script>
 
-<button 
-	class="py-toggle" 
+<button
+	class="py-toggle"
 	class:checked={isChecked}
 	class:disabled
 	{disabled}
 	onclick={handleToggle}
 	style="
-		width: {toggleWidth}; 
+		width: {toggleWidth};
 		height: {toggleHeight};
 		background-color: {isChecked ? activeColor : bgColor};
 	"
 	type="button"
 	role="switch"
 	aria-checked={isChecked}
+	aria-label="Toggle switch"
 >
-	<div 
-		class="toggle-circle" 
+	<div
+		class="toggle-circle"
 		style="
-			width: {circleSize}; 
+			width: {circleSize};
 			height: {circleSize};
 			background-color: {circleColor};
 			transform: translateX({circleOffset});

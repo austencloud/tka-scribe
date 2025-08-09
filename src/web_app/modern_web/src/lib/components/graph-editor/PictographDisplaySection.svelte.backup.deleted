@@ -1,0 +1,231 @@
+<!-- PictographDisplaySection.svelte - Left pictograph + right detailed info panel -->
+<script lang="ts">
+	import { onMount } from 'svelte';
+	import PictographRenderer from '$components/pictograph/PictographRenderer.svelte';
+	import DetailedInfoPanel from './DetailedInfoPanel.svelte';
+	import type { BeatData, SequenceData } from '$services/interfaces';
+
+	// Props
+	const {
+		currentSequence,
+		selectedBeatIndex,
+		selectedBeatData,
+		onPictographUpdated
+	} = $props<{
+		currentSequence: SequenceData | null;
+		selectedBeatIndex: number | null;
+		selectedBeatData: BeatData | null;
+		onPictographUpdated: (beatIndex: number, beatData: BeatData) => void;
+	}>();
+
+	// Component state
+	let pictographRenderer: PictographRenderer;
+	let detailedInfoPanel: DetailedInfoPanel;
+
+	// Update display when beat data changes
+	export function updateDisplay(beatIndex: number, beatData: BeatData | null) {
+		try {
+			if (pictographRenderer && beatData) {
+				pictographRenderer.updatePictograph(beatData.pictograph_data);
+			}
+			
+			if (detailedInfoPanel) {
+				detailedInfoPanel.updateInfo(beatIndex, beatData);
+			}
+			
+			console.log(`PictographDisplaySection: Updated display for beat ${beatIndex}`);
+		} catch (error) {
+			console.error('Error updating pictograph display:', error);
+		}
+	}
+
+	// Update only pictograph (for real-time changes)
+	export function updatePictographOnly(beatIndex: number, beatData: BeatData) {
+		try {
+			if (pictographRenderer && beatData.pictograph_data) {
+				pictographRenderer.updatePictograph(beatData.pictograph_data);
+			}
+			console.log(`PictographDisplaySection: Updated pictograph only for beat ${beatIndex}`);
+		} catch (error) {
+			console.error('Error updating pictograph only:', error);
+		}
+	}
+
+	// Handle pictograph interactions
+	function handlePictographClicked(event: CustomEvent) {
+		try {
+			const { position, element } = event.detail;
+			console.log('Pictograph clicked:', position, element);
+			// Additional click handling can be added here
+		} catch (error) {
+			console.error('Error handling pictograph click:', error);
+		}
+	}
+
+	// Reactive updates
+	$effect(() => {
+		if (selectedBeatIndex !== null && selectedBeatData) {
+			updateDisplay(selectedBeatIndex, selectedBeatData);
+		}
+	});
+
+	onMount(() => {
+		console.log('PictographDisplaySection mounted');
+	});
+</script>
+
+<div class="pictograph-display-section" data-testid="pictograph-display-section">
+	<!-- Left side: Large pictograph display -->
+	<div class="pictograph-container">
+		<div class="pictograph-header">
+			<h3>Pictograph</h3>
+			{#if selectedBeatIndex !== null}
+				<span class="beat-indicator">Beat {selectedBeatIndex + 1}</span>
+			{/if}
+		</div>
+		<div class="pictograph-content">
+			{#if selectedBeatData?.pictograph_data}
+				<PictographRenderer
+					bind:this={pictographRenderer}
+					pictographData={selectedBeatData.pictograph_data}
+					size="large"
+					interactive={true}
+					on:click={handlePictographClicked}
+				/>
+			{:else}
+				<div class="no-pictograph">
+					<div class="placeholder-icon">🎭</div>
+					<p>Select a beat to view its pictograph</p>
+				</div>
+			{/if}
+		</div>
+	</div>
+
+	<!-- Right side: Detailed info panel -->
+	<div class="info-container">
+		<DetailedInfoPanel
+			bind:this={detailedInfoPanel}
+			{selectedBeatIndex}
+			{selectedBeatData}
+			{currentSequence}
+		/>
+	</div>
+</div>
+
+<style>
+	.pictograph-display-section {
+		display: flex;
+		height: 100%;
+		gap: var(--spacing-md);
+		padding: var(--spacing-md);
+	}
+
+	.pictograph-container {
+		flex: 2;
+		display: flex;
+		flex-direction: column;
+		background: rgba(255, 255, 255, 0.05);
+		border: 1px solid rgba(255, 255, 255, 0.1);
+		border-radius: var(--border-radius);
+		overflow: hidden;
+	}
+
+	.pictograph-header {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		padding: var(--spacing-md);
+		background: rgba(255, 255, 255, 0.1);
+		border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+	}
+
+	.pictograph-header h3 {
+		margin: 0;
+		color: var(--foreground);
+		font-size: var(--font-size-lg);
+		font-weight: 600;
+	}
+
+	.beat-indicator {
+		padding: var(--spacing-xs) var(--spacing-sm);
+		background: var(--primary);
+		color: var(--primary-foreground);
+		border-radius: var(--border-radius-sm);
+		font-size: var(--font-size-sm);
+		font-weight: 500;
+	}
+
+	.pictograph-content {
+		flex: 1;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		padding: var(--spacing-lg);
+		min-height: 0;
+	}
+
+	.no-pictograph {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		text-align: center;
+		color: var(--muted-foreground);
+		gap: var(--spacing-md);
+	}
+
+	.placeholder-icon {
+		font-size: 3rem;
+		opacity: 0.5;
+	}
+
+	.no-pictograph p {
+		margin: 0;
+		font-size: var(--font-size-md);
+	}
+
+	.info-container {
+		flex: 1;
+		min-width: 300px;
+		background: rgba(255, 255, 255, 0.05);
+		border: 1px solid rgba(255, 255, 255, 0.1);
+		border-radius: var(--border-radius);
+		overflow: hidden;
+	}
+
+	/* Responsive adjustments */
+	@media (max-width: 1024px) {
+		.pictograph-display-section {
+			flex-direction: column;
+			gap: var(--spacing-sm);
+		}
+
+		.pictograph-container,
+		.info-container {
+			flex: none;
+		}
+
+		.pictograph-container {
+			height: 60%;
+		}
+
+		.info-container {
+			height: 40%;
+			min-width: unset;
+		}
+	}
+
+	@media (max-width: 768px) {
+		.pictograph-display-section {
+			padding: var(--spacing-sm);
+		}
+
+		.pictograph-header {
+			padding: var(--spacing-sm);
+		}
+
+		.pictograph-content {
+			padding: var(--spacing-md);
+		}
+	}
+</style>

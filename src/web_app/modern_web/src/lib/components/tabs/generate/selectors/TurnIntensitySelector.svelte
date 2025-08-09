@@ -20,29 +20,29 @@ Simple increment/decrement control for turn intensity values.
 		try {
 			const currentIndex = values.indexOf(currentValue);
 			const newIndex = currentIndex + change;
-			
+
 			if (newIndex >= 0 && newIndex < values.length) {
 				currentValue = values[newIndex];
-				
+
 				// Dispatch value change
-				const event = new CustomEvent('valueChanged', { 
-					detail: { value: currentValue } 
+				const event = new CustomEvent('valueChanged', {
+					detail: { value: currentValue },
 				});
 				document.dispatchEvent(event);
 			}
 		} catch (error) {
 			// Find closest value if current value isn't in array
-			const closest = values.reduce((prev, curr) => 
+			const closest = values.reduce((prev, curr) =>
 				Math.abs(curr - currentValue) < Math.abs(prev - currentValue) ? curr : prev
 			);
 			const closestIndex = values.indexOf(closest);
 			const newIndex = closestIndex + change;
-			
+
 			if (newIndex >= 0 && newIndex < values.length) {
 				currentValue = values[newIndex];
-				
-				const event = new CustomEvent('valueChanged', { 
-					detail: { value: currentValue } 
+
+				const event = new CustomEvent('valueChanged', {
+					detail: { value: currentValue },
 				});
 				document.dispatchEvent(event);
 			}
@@ -63,7 +63,7 @@ Simple increment/decrement control for turn intensity values.
 			currentValue = value;
 		} else {
 			// Find closest value
-			const closest = values.reduce((prev, curr) => 
+			const closest = values.reduce((prev, curr) =>
 				Math.abs(curr - value) < Math.abs(prev - value) ? curr : prev
 			);
 			currentValue = closest;
@@ -80,23 +80,15 @@ Simple increment/decrement control for turn intensity values.
 </script>
 
 <div class="turn-intensity-selector">
-	<label class="selector-label">Turn Intensity:</label>
-	
-	<IncrementAdjusterButton 
-		symbol="-" 
-		disabled={!canDecrease}
-		onclick={decreaseIntensity}
-	/>
-	
-	<div class="value-display">
+	<div class="selector-label" id="turn-intensity-label">Turn Intensity:</div>
+
+	<IncrementAdjusterButton symbol="-" disabled={!canDecrease} onclick={decreaseIntensity} />
+
+	<div class="value-display" role="status" aria-labelledby="turn-intensity-label">
 		{currentValue}
 	</div>
-	
-	<IncrementAdjusterButton 
-		symbol="+" 
-		disabled={!canIncrease}
-		onclick={increaseIntensity}
-	/>
+
+	<IncrementAdjusterButton symbol="+" disabled={!canIncrease} onclick={increaseIntensity} />
 </div>
 
 <style>

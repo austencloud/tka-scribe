@@ -3,7 +3,7 @@ CAP Type Selector - Svelte Version
 Grid of buttons for selecting circular arrangement pattern types.
 -->
 <script lang="ts">
-	type CAPType = 
+	type CAPType =
 		| 'STRICT_ROTATED'
 		| 'STRICT_MIRRORED'
 		| 'STRICT_SWAPPED'
@@ -32,27 +32,27 @@ Grid of buttons for selecting circular arrangement pattern types.
 		row: number;
 		col: number;
 	}> = [
-		{ type: 'STRICT_ROTATED', text: "Rotated", row: 0, col: 0 },
-		{ type: 'STRICT_MIRRORED', text: "Mirrored", row: 0, col: 1 },
-		{ type: 'STRICT_SWAPPED', text: "Swapped", row: 0, col: 2 },
-		{ type: 'STRICT_COMPLEMENTARY', text: "Complementary", row: 0, col: 3 },
-		{ type: 'MIRRORED_SWAPPED', text: "Mirrored / Swapped", row: 1, col: 0 },
-		{ type: 'SWAPPED_COMPLEMENTARY', text: "Swapped / Complementary", row: 1, col: 1 },
-		{ type: 'ROTATED_COMPLEMENTARY', text: "Rotated / Complementary", row: 1, col: 2 },
-		{ type: 'MIRRORED_COMPLEMENTARY', text: "Mirrored / Complementary", row: 1, col: 3 },
-		{ type: 'ROTATED_SWAPPED', text: "Rotated / Swapped", row: 2, col: 0 },
-		{ type: 'MIRRORED_ROTATED', text: "Mirrored / Rotated", row: 2, col: 1 },
-		{ type: 'MIRRORED_COMPLEMENTARY_ROTATED', text: "Mir / Comp / Rot", row: 2, col: 2 }
+		{ type: 'STRICT_ROTATED', text: 'Rotated', row: 0, col: 0 },
+		{ type: 'STRICT_MIRRORED', text: 'Mirrored', row: 0, col: 1 },
+		{ type: 'STRICT_SWAPPED', text: 'Swapped', row: 0, col: 2 },
+		{ type: 'STRICT_COMPLEMENTARY', text: 'Complementary', row: 0, col: 3 },
+		{ type: 'MIRRORED_SWAPPED', text: 'Mirrored / Swapped', row: 1, col: 0 },
+		{ type: 'SWAPPED_COMPLEMENTARY', text: 'Swapped / Complementary', row: 1, col: 1 },
+		{ type: 'ROTATED_COMPLEMENTARY', text: 'Rotated / Complementary', row: 1, col: 2 },
+		{ type: 'MIRRORED_COMPLEMENTARY', text: 'Mirrored / Complementary', row: 1, col: 3 },
+		{ type: 'ROTATED_SWAPPED', text: 'Rotated / Swapped', row: 2, col: 0 },
+		{ type: 'MIRRORED_ROTATED', text: 'Mirrored / Rotated', row: 2, col: 1 },
+		{ type: 'MIRRORED_COMPLEMENTARY_ROTATED', text: 'Mir / Comp / Rot', row: 2, col: 2 },
 	];
 
 	// Handle button click
 	function selectCapType(capType: CAPType) {
 		if (capType !== currentValue) {
 			currentValue = capType;
-			
+
 			// Dispatch value change
-			const event = new CustomEvent('valueChanged', { 
-				detail: { value: capType } 
+			const event = new CustomEvent('valueChanged', {
+				detail: { value: capType },
 			});
 			document.dispatchEvent(event);
 		}
@@ -68,10 +68,10 @@ Grid of buttons for selecting circular arrangement pattern types.
 	}
 
 	// Group cap types by row for rendering
-	type CAPTypeItem = typeof capTypes[0];
+	type CAPTypeItem = (typeof capTypes)[0];
 	const groupedTypes: CAPTypeItem[][] = (() => {
 		const groups: CAPTypeItem[][] = [[], [], []];
-		capTypes.forEach(capType => {
+		capTypes.forEach((capType) => {
 			groups[capType.row].push(capType);
 		});
 		return groups;
@@ -80,14 +80,14 @@ Grid of buttons for selecting circular arrangement pattern types.
 
 <div class="cap-type-selector">
 	<div class="header-label">CAP Type:</div>
-	
+
 	<div class="grid-container">
 		<div class="button-grid">
 			{#each groupedTypes as row, rowIndex}
 				<div class="grid-row">
 					{#each row as { type, text }}
-						<button 
-							class="cap-button" 
+						<button
+							class="cap-button"
 							class:checked={currentValue === type}
 							onclick={() => selectCapType(type)}
 							type="button"

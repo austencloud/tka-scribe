@@ -52,24 +52,26 @@ while maintaining the legacy layout structure with subtle glass effects.
 		propContinuity: 'CONTINUOUS',
 		letterTypes: new Set(['TYPE1', 'TYPE2', 'TYPE3', 'TYPE4', 'TYPE5', 'TYPE6']),
 		sliceSize: 'HALVED',
-		capType: 'STRICT_ROTATED'
+		capType: 'STRICT_ROTATED',
 	});
 
-	let currentState: GenerationState = $state({
+	let isGenerating = $state(false);
+
+	let currentState: GenerationState = $derived({
 		config: currentConfig,
-		isGenerating: false
+		isGenerating: isGenerating,
 	});
 
 	// Component references
-	let lengthSelectorRef: LengthSelector;
-	let levelSelectorRef: LevelSelector;
-	let turnIntensitySelectorRef: TurnIntensitySelector;
-	let gridModeSelectorRef: GridModeSelector;
-	let generationModeToggleRef: GenerationModeToggle;
-	let propContinuityToggleRef: PropContinuityToggle;
-	let letterTypeSelectorRef: LetterTypeSelector;
-	let sliceSizeSelectorRef: SliceSizeSelector;
-	let capTypeSelectorRef: CAPTypeSelector;
+	let lengthSelectorRef = $state<LengthSelector>();
+	let levelSelectorRef = $state<LevelSelector>();
+	let turnIntensitySelectorRef = $state<TurnIntensitySelector>();
+	let gridModeSelectorRef = $state<GridModeSelector>();
+	let generationModeToggleRef = $state<GenerationModeToggle>();
+	let propContinuityToggleRef = $state<PropContinuityToggle>();
+	let letterTypeSelectorRef = $state<LetterTypeSelector>();
+	let sliceSizeSelectorRef = $state<SliceSizeSelector>();
+	let capTypeSelectorRef = $state<CAPTypeSelector>();
 
 	// Derived state
 	let isFreeformMode = $derived(currentConfig.mode === 'FREEFORM');
@@ -78,7 +80,7 @@ while maintaining the legacy layout structure with subtle glass effects.
 	function updateConfig(updates: Partial<GenerationConfig>) {
 		currentConfig = { ...currentConfig, ...updates };
 		currentState = { ...currentState, config: currentConfig };
-		
+
 		console.log('🔍 [GENERATE_PANEL] Config updated:', updates);
 		console.log('🔍 [GENERATE_PANEL] Current config:', currentConfig);
 	}
@@ -132,28 +134,28 @@ while maintaining the legacy layout structure with subtle glass effects.
 
 	function updateComponentVisibility(mode: GenerationMode) {
 		const isFreeform = mode === 'FREEFORM';
-		
+
 		// Update visibility - these will be handled by reactive statements
 		// In Svelte, we'll use conditional rendering in the template
 	}
 
 	function onGenerateClicked() {
-		if (currentState.isGenerating) return;
+		if (isGenerating) return;
 
 		console.log('🎯 [GENERATE_PANEL] Generate clicked with config:', currentConfig);
-		
-		currentState = { ...currentState, isGenerating: true };
-		
+
+		isGenerating = true;
+
 		// Simulate generation process
 		setTimeout(() => {
-			currentState = { ...currentState, isGenerating: false };
+			isGenerating = false;
 			console.log('✅ [GENERATE_PANEL] Generation completed');
 		}, 2000);
 	}
 
 	function onAutoCompleteClicked() {
-		if (currentState.isGenerating) return;
-		
+		if (isGenerating) return;
+
 		console.log('🔄 [GENERATE_PANEL] Auto-complete clicked');
 		// TODO: Implement auto-complete logic
 	}
@@ -205,73 +207,55 @@ while maintaining the legacy layout structure with subtle glass effects.
 
 	<!-- Controls section - clean and spacious -->
 	<div class="controls-section">
-		<LevelSelector 
-			bind:this={levelSelectorRef}
-			initialValue={currentConfig.level}
-		/>
-		
-		<LengthSelector 
-			bind:this={lengthSelectorRef}
-			initialValue={currentConfig.length}
-		/>
-		
-		<TurnIntensitySelector 
+		<LevelSelector bind:this={levelSelectorRef} initialValue={currentConfig.level} />
+
+		<LengthSelector bind:this={lengthSelectorRef} initialValue={currentConfig.length} />
+
+		<TurnIntensitySelector
 			bind:this={turnIntensitySelectorRef}
 			initialValue={currentConfig.turnIntensity}
 		/>
-		
-		<GridModeSelector 
-			bind:this={gridModeSelectorRef}
-			initialMode={currentConfig.gridMode}
-		/>
-		
-		<GenerationModeToggle 
-			bind:this={generationModeToggleRef}
-			initialMode={currentConfig.mode}
-		/>
-		
-		<PropContinuityToggle 
+
+		<GridModeSelector bind:this={gridModeSelectorRef} initialMode={currentConfig.gridMode} />
+
+		<GenerationModeToggle bind:this={generationModeToggleRef} initialMode={currentConfig.mode} />
+
+		<PropContinuityToggle
 			bind:this={propContinuityToggleRef}
 			initialValue={currentConfig.propContinuity}
 		/>
-		
+
 		<!-- Mode-specific controls -->
 		{#if isFreeformMode}
-			<LetterTypeSelector 
+			<LetterTypeSelector
 				bind:this={letterTypeSelectorRef}
 				initialValue={currentConfig.letterTypes}
 			/>
 		{:else}
-			<SliceSizeSelector 
-				bind:this={sliceSizeSelectorRef}
-				initialValue={currentConfig.sliceSize}
-			/>
-			
-			<CAPTypeSelector 
-				bind:this={capTypeSelectorRef}
-				initialValue={currentConfig.capType}
-			/>
+			<SliceSizeSelector bind:this={sliceSizeSelectorRef} initialValue={currentConfig.sliceSize} />
+
+			<CAPTypeSelector bind:this={capTypeSelectorRef} initialValue={currentConfig.capType} />
 		{/if}
 	</div>
 
 	<!-- Action buttons - prominent and clear -->
 	<div class="action-buttons">
-		<button 
+		<button
 			class="action-button secondary"
 			onclick={onAutoCompleteClicked}
-			disabled={currentState.isGenerating}
+			disabled={isGenerating}
 			type="button"
 		>
 			Auto-Complete
 		</button>
-		
-		<button 
+
+		<button
 			class="action-button primary"
 			onclick={onGenerateClicked}
-			disabled={currentState.isGenerating}
+			disabled={isGenerating}
 			type="button"
 		>
-			{currentState.isGenerating ? 'Generating...' : 'Generate New'}
+			{isGenerating ? 'Generating...' : 'Generate New'}
 		</button>
 	</div>
 </div>
@@ -282,13 +266,14 @@ while maintaining the legacy layout structure with subtle glass effects.
 		flex-direction: column;
 		height: 100%;
 		padding: 16px;
-		background: linear-gradient(135deg, 
+		background: linear-gradient(
+			135deg,
 			rgba(20, 20, 30, 0.95),
-			rgba(30, 30, 45, 0.90),
+			rgba(30, 30, 45, 0.9),
 			rgba(40, 40, 60, 0.95)
 		);
 		color: rgba(255, 255, 255, 0.9);
-		font-family: "Segoe UI", sans-serif;
+		font-family: 'Segoe UI', sans-serif;
 		border-radius: 8px;
 		gap: 12px;
 		overflow-y: auto;
@@ -370,7 +355,7 @@ while maintaining the legacy layout structure with subtle glass effects.
 
 	.action-button.primary:hover:not(:disabled) {
 		background: rgba(80, 140, 255, 0.9);
-		border-color: rgba(80, 140, 255, 1.0);
+		border-color: rgba(80, 140, 255, 1);
 	}
 
 	.action-button.primary:active:not(:disabled) {

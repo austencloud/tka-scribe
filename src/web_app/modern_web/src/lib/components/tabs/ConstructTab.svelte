@@ -7,6 +7,7 @@
 	import OptionPicker from '$components/construct/OptionPicker.svelte';
 	import GeneratePanel from '$components/construct/GeneratePanel.svelte';
 	import Workbench from '$components/workbench/Workbench.svelte';
+	import GraphEditor from '$components/graph-editor/GraphEditor.svelte';
 	import type { BeatData, PictographData, SequenceData } from '$services/interfaces';
 	import { IConstructTabCoordinationService, ISequenceService } from '$services/interfaces';
 	import { resolve } from '$services/bootstrap';
@@ -106,6 +107,27 @@
 	function handleMainTabTransition(targetTab: 'build' | 'generate' | 'edit' | 'export') {
 		activeRightPanel = targetTab;
 		// Build tab content automatically determined by shouldShowStartPositionPicker
+	}
+
+	// Graph Editor event handlers
+	function handleBeatModified(beatIndex: number, beatData: BeatData) {
+		console.log('ConstructTab: Beat modified in graph editor', beatIndex, beatData);
+		// Handle beat modifications from graph editor
+		// This could update the sequence through the coordination service
+		if (constructCoordinator) {
+			constructCoordinator.handleBeatModified?.(beatIndex, beatData);
+		}
+	}
+
+	function handleArrowSelected(arrowData: any) {
+		console.log('ConstructTab: Arrow selected in graph editor', arrowData);
+		// Handle arrow selection events from graph editor
+		// This could be used for highlighting or additional UI feedback
+	}
+
+	function handleGraphEditorVisibilityChanged(isVisible: boolean) {
+		console.log('ConstructTab: Graph editor visibility changed', isVisible);
+		// Handle graph editor visibility changes if needed
 	}
 
 	// Setup component coordination on mount
@@ -229,10 +251,14 @@
 						<h2>Graph Editor</h2>
 						<p>Advanced sequence editing tools</p>
 					</div>
-					<div class="panel-content">
-						<div class="placeholder-content">
-							<p>Graph Editor coming soon...</p>
-						</div>
+					<div class="panel-content graph-editor-content">
+						<GraphEditor
+							width={400}
+							height={500}
+							onBeatModified={handleBeatModified}
+							onArrowSelected={handleArrowSelected}
+							onVisibilityChanged={handleGraphEditorVisibilityChanged}
+						/>
 					</div>
 
 				{:else if activeRightPanel === 'export'}
@@ -438,6 +464,13 @@
 		height: 100%;
 		color: var(--muted-foreground);
 		font-size: var(--font-size-lg);
+	}
+
+	.graph-editor-content {
+		padding: 0;
+		height: 100%;
+		display: flex;
+		flex-direction: column;
 	}
 
 	/* Loading overlay */

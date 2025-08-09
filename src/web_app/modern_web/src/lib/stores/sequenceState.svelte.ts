@@ -1,6 +1,6 @@
 /**
  * Sequence State - Simplified for Svelte 5 Runes
- * 
+ *
  * Minimal working version to get the app running.
  * This provides basic sequence state management with proper Svelte 5 patterns.
  */
@@ -19,15 +19,15 @@ const state = $state({
 	sequences: [] as SequenceData[],
 	isLoading: false,
 	error: null as string | null,
-	
+
 	// Selection state
 	selectedBeatIndex: null as number | null,
 	selectedSequenceId: null as string | null,
-	
+
 	// UI state
 	showBeatNumbers: true,
 	gridMode: 'diamond' as 'diamond' | 'box',
-	
+
 	// Arrow positioning state
 	arrowPositions: new Map<string, ArrowPosition>(),
 	arrowPositioningInProgress: false,
@@ -58,11 +58,18 @@ export function getCurrentBeats(): BeatData[] {
 	return state.currentSequence?.beats ?? [];
 }
 
+export function getSelectedBeatData(): BeatData | null {
+	if (state.selectedBeatIndex === null || !state.currentSequence) {
+		return null;
+	}
+	return state.currentSequence.beats[state.selectedBeatIndex] ?? null;
+}
+
 export function getSelectedBeat(): BeatData | null {
 	const beatIndex = state.selectedBeatIndex;
 	const sequence = state.currentSequence;
-	return beatIndex !== null && sequence 
-		? sequence.beats[beatIndex] ?? null 
+	return beatIndex !== null && sequence
+		? sequence.beats[beatIndex] ?? null
 		: null;
 }
 
@@ -116,7 +123,7 @@ export function updateSequence(updatedSequence: SequenceData): void {
 	if (index >= 0) {
 		state.sequences[index] = updatedSequence;
 	}
-	
+
 	// Update current sequence if it's the same one
 	if (state.currentSequence?.id === updatedSequence.id) {
 		state.currentSequence = updatedSequence;
@@ -128,7 +135,7 @@ export function updateSequence(updatedSequence: SequenceData): void {
  */
 export function removeSequence(sequenceId: string): void {
 	state.sequences = state.sequences.filter(s => s.id !== sequenceId);
-	
+
 	// Clear current sequence if it was deleted
 	if (state.currentSequence?.id === sequenceId) {
 		setCurrentSequence(null);

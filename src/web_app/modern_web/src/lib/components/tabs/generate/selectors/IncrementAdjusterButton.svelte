@@ -6,23 +6,25 @@ A custom perfectly round button with hover effects and dynamic styling.
 	interface Props {
 		symbol: string;
 		disabled?: boolean;
+		onclick?: () => void;
 	}
 
-	let { symbol, disabled = false }: Props = $props();
+	let { symbol, disabled = false, onclick }: Props = $props();
 
 	// Handle click event
 	function handleClick() {
 		if (!disabled) {
-			// Emit custom event that parent can listen to
-			const event = new CustomEvent('click');
-			return event;
+			// Call the callback if provided
+			if (onclick) {
+				onclick();
+			}
 		}
 	}
 </script>
 
-<button 
-	class="increment-adjuster-button" 
-	class:disabled 
+<button
+	class="increment-adjuster-button"
+	class:disabled
 	{disabled}
 	onclick={handleClick}
 	type="button"
