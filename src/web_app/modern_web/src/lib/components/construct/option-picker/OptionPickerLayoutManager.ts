@@ -89,8 +89,7 @@ export class OptionPickerLayoutManager {
 
 		// Extract grid columns count from the CSS grid template
 		const columnsMatch = layoutConfig.gridColumns.match(/repeat\((\d+),/);
-		const optionsPerRow =
-			columnsMatch && columnsMatch[1] ? parseInt(columnsMatch[1], 10) : 4;
+		const optionsPerRow = columnsMatch && columnsMatch[1] ? parseInt(columnsMatch[1], 10) : 4;
 
 		// Parse option size (remove 'px' suffix)
 		const optionSizeMatch = layoutConfig.optionSize.match(/(\d+)px/);

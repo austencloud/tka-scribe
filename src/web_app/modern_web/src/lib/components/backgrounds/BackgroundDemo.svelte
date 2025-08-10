@@ -11,7 +11,7 @@
 		quality: propQuality,
 		showControls,
 		width: propWidth,
-		height: propHeight
+		height: propHeight,
 	} = $props<{
 		backgroundType?: BackgroundType;
 		quality?: QualityLevel;

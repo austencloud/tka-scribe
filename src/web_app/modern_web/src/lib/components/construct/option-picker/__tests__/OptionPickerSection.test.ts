@@ -17,7 +17,7 @@ describe('OptionPickerSection', () => {
 		{
 			id: 'test-1',
 			letter: 'A',
-			end_position: 'BL',
+			end_position: 'beta1',
 			grid_data: {
 				grid_mode: 'diamond',
 				center_x: 475,
@@ -36,7 +36,7 @@ describe('OptionPickerSection', () => {
 		{
 			id: 'test-2',
 			letter: 'B',
-			end_position: 'BR',
+			end_position: 'beta2',
 			grid_data: {
 				grid_mode: 'diamond',
 				center_x: 475,

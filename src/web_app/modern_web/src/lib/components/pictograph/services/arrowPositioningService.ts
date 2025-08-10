@@ -26,7 +26,6 @@ export interface Position {
 }
 
 export class ArrowPositioningService {
-	private readonly _SCENE_SIZE = 950;
 	private readonly CENTER_X = 475;
 	private readonly CENTER_Y = 475;
 

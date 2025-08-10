@@ -69,10 +69,7 @@
 
 		<div class="detail-item">
 			<span class="detail-label">Difficulty</span>
-			<span
-				class="detail-value"
-				style="color: {getDifficultyColor(sequence.difficulty)}"
-			>
+			<span class="detail-value" style="color: {getDifficultyColor(sequence.difficulty)}">
 				{getDifficultyLabel(sequence.difficulty)}
 			</span>
 		</div>

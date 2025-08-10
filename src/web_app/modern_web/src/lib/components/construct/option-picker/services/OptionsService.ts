@@ -53,8 +53,17 @@ export function determineGroupKey(
 	switch (sortMethod) {
 		case 'type':
 			return getLetterType(option.letter || null);
-		case 'endPosition':
-			return option.end_position || option.metadata?.endPosition || 'Unknown';
+		case 'endPosition': {
+			const endPos = option.end_position;
+			if (typeof endPos === 'string') {
+				return endPos;
+			}
+			const metaEndPos = option.metadata?.endPosition;
+			if (typeof metaEndPos === 'string') {
+				return metaEndPos;
+			}
+			return 'Unknown';
+		}
 		case 'reversals':
 			return determineReversalCategory(sequence, option);
 		default:
@@ -180,8 +189,18 @@ export function getSorter(
 			};
 		case 'endPosition':
 			return (a, b) => {
-				const posA = a.end_position || a.metadata?.endPosition || '';
-				const posB = b.end_position || b.metadata?.endPosition || '';
+				const posA =
+					typeof a.end_position === 'string'
+						? a.end_position
+						: typeof a.metadata?.endPosition === 'string'
+							? a.metadata.endPosition
+							: '';
+				const posB =
+					typeof b.end_position === 'string'
+						? b.end_position
+						: typeof b.metadata?.endPosition === 'string'
+							? b.metadata.endPosition
+							: '';
 				return posA.localeCompare(posB);
 			};
 		case 'reversals':
@@ -284,7 +303,12 @@ export function getOptionsSummary(options: PictographData[]): {
 		summary.byType[type] = (summary.byType[type] || 0) + 1;
 
 		// Count by end position
-		const endPos = option.end_position || option.metadata?.endPosition || 'Unknown';
+		const endPos =
+			typeof option.end_position === 'string'
+				? option.end_position
+				: typeof option.metadata?.endPosition === 'string'
+					? option.metadata.endPosition
+					: 'Unknown';
 		summary.byEndPosition[endPos] = (summary.byEndPosition[endPos] || 0) + 1;
 	});
 

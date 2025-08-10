@@ -20,7 +20,7 @@ Toggle between freeform and circular generation modes using modern segmented con
 	// Options for the segmented control
 	const modeOptions = [
 		{ value: 'FREEFORM', label: 'Freeform', icon: '🎯' },
-		{ value: 'CIRCULAR', label: 'Circular', icon: '🔄' }
+		{ value: 'CIRCULAR', label: 'Circular', icon: '🔄' },
 	];
 
 	// Handle mode change

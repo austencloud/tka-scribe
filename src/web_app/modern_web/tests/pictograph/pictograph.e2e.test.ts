@@ -138,8 +138,6 @@ test.describe('Modern Pictograph E2E', () => {
 				state: 'visible',
 				timeout: 10000,
 			});
-
-
 		});
 	});
 

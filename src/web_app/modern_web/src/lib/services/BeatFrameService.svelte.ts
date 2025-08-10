@@ -114,11 +114,9 @@ class BeatFrameService {
 	getBeatDisplayText(beat: BeatData): string {
 		if (beat.is_blank && !beat.pictograph_data) {
 			// fallback: show beat number if available on metadata or domain type
-			// @ts-ignore optional metadata shape
-			return (beat.beat_number ?? beat.metadata?.beat_number ?? '').toString();
+			return (beat.beat_number ?? (beat.metadata as any)?.beat_number ?? '').toString();
 		}
-		// @ts-ignore optional metadata shape
-		return beat.pictograph_data?.letter ?? beat.metadata?.letter ?? '';
+		return beat.pictograph_data?.letter ?? (beat.metadata as any)?.letter ?? '';
 	}
 }
 

@@ -45,7 +45,7 @@ export function gridDataToObject(grid: GridData): Record<string, unknown> {
 export function gridDataFromObject(data: Record<string, unknown>): GridData {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const partialData: any = {};
-	
+
 	if (data.grid_mode !== undefined) {
 		partialData.grid_mode = data.grid_mode;
 	}
@@ -61,6 +61,6 @@ export function gridDataFromObject(data: Record<string, unknown>): GridData {
 	if (data.grid_points !== undefined) {
 		partialData.grid_points = data.grid_points;
 	}
-	
+
 	return createGridData(partialData);
 }

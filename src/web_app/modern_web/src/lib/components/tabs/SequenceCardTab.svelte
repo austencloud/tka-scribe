@@ -1,11 +1,11 @@
 <!-- SequenceCardTab.svelte - Clone of desktop modern sequence card tab -->
 <script lang="ts">
+	import type { SequenceData } from '$services/interfaces';
+	import { getIsLoading, getSequences } from '$stores/sequenceState.svelte';
 	import { onMount } from 'svelte';
-	import { getCurrentSequence, getSequences, getIsLoading } from '$stores/sequenceState.svelte';
+	import SequenceCardContent from './sequence_card/SequenceCardContent.svelte';
 	import SequenceCardHeader from './sequence_card/SequenceCardHeader.svelte';
 	import SequenceCardNavigation from './sequence_card/SequenceCardNavigation.svelte';
-	import SequenceCardContent from './sequence_card/SequenceCardContent.svelte';
-	import type { SequenceData } from '$services/interfaces';
 
 	// State matching desktop app functionality
 	let selectedLength = $state(16); // Default to 16 like desktop
@@ -26,9 +26,7 @@
 			// "All" selected
 			filteredSequences = allSequences;
 		} else {
-			filteredSequences = allSequences.filter(
-				(seq) => seq.beats?.length === selectedLength || seq.length === selectedLength
-			);
+			filteredSequences = allSequences.filter((seq) => seq.beats?.length === selectedLength);
 		}
 	});
 

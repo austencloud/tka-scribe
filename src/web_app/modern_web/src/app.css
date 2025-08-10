@@ -138,7 +138,7 @@ h6 {
 	/* Device Detection Service Variables */
 	--min-touch-target: 44px;
 	--element-spacing: 16px;
-	--font-scaling: 1.0;
+	--font-scaling: 1;
 	--layout-density: comfortable;
 
 	/* Colors - Dark theme by default */
@@ -277,8 +277,8 @@ body {
 
 /* Focus styles for accessibility */
 :focus-visible {
-outline: 2px solid var(--primary-color);
-outline-offset: 2px;
+	outline: 2px solid var(--primary-color);
+	outline-offset: 2px;
 }
 
 /* Device Detection Service Utilities */
@@ -296,48 +296,48 @@ outline-offset: 2px;
 }
 
 /* Device-specific overrides applied by DeviceDetectionService */
-[data-device-type="touch"] {
+[data-device-type='touch'] {
 	--min-touch-target: 48px;
 	--element-spacing: 20px;
 	--layout-density: comfortable;
 }
 
-[data-device-type="mouse"] {
+[data-device-type='mouse'] {
 	--min-touch-target: 32px;
 	--element-spacing: 12px;
 	--layout-density: compact;
 }
 
-[data-device-type="hybrid"] {
+[data-device-type='hybrid'] {
 	--min-touch-target: 52px;
 	--element-spacing: 24px;
 	--layout-density: spacious;
 }
 
 /* Layout density classes */
-[data-layout-density="compact"] {
+[data-layout-density='compact'] {
 	--spacing-multiplier: 0.75;
 }
 
-[data-layout-density="comfortable"] {
-	--spacing-multiplier: 1.0;
+[data-layout-density='comfortable'] {
+	--spacing-multiplier: 1;
 }
 
-[data-layout-density="spacious"] {
+[data-layout-density='spacious'] {
 	--spacing-multiplier: 1.5;
 }
 
 /* Screen size specific adjustments */
-[data-screen-size="mobile"] {
+[data-screen-size='mobile'] {
 	--font-scaling: 1.1;
 }
 
-[data-screen-size="tablet"] {
+[data-screen-size='tablet'] {
 	--font-scaling: 1.05;
 }
 
-[data-screen-size="desktop"] {
-	--font-scaling: 1.0;
+[data-screen-size='desktop'] {
+	--font-scaling: 1;
 }
 
 /* Container queries for truly responsive components */

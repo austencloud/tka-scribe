@@ -16,7 +16,7 @@
 		quality: propQuality,
 		appIsLoading: propAppIsLoading,
 		onReady,
-		onPerformanceReport
+		onPerformanceReport,
 	} = $props<{
 		backgroundType?: BackgroundType;
 		quality?: QualityLevel;

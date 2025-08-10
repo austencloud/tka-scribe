@@ -22,7 +22,10 @@ Simple increment/decrement control for turn intensity values.
 			const newIndex = currentIndex + change;
 
 			if (newIndex >= 0 && newIndex < values.length) {
-				currentValue = values[newIndex];
+				const newValue = values[newIndex];
+				if (newValue !== undefined) {
+					currentValue = newValue;
+				}
 
 				// Dispatch value change
 				const event = new CustomEvent('valueChanged', {
@@ -30,7 +33,7 @@ Simple increment/decrement control for turn intensity values.
 				});
 				document.dispatchEvent(event);
 			}
-		} catch (error) {
+		} catch (_error) {
 			// Find closest value if current value isn't in array
 			const closest = values.reduce((prev, curr) =>
 				Math.abs(curr - currentValue) < Math.abs(prev - currentValue) ? curr : prev
@@ -39,7 +42,10 @@ Simple increment/decrement control for turn intensity values.
 			const newIndex = closestIndex + change;
 
 			if (newIndex >= 0 && newIndex < values.length) {
-				currentValue = values[newIndex];
+				const newValue = values[newIndex];
+				if (newValue !== undefined) {
+					currentValue = newValue;
+				}
 
 				const event = new CustomEvent('valueChanged', {
 					detail: { value: currentValue },

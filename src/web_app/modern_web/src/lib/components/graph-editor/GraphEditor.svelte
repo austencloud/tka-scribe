@@ -11,7 +11,11 @@
 	import MainAdjustmentPanel from './MainAdjustmentPanel.svelte';
 
 	// Props - optional external data
-	const { onBeatModified, onArrowSelected, onVisibilityChanged } = $props<{
+	const {
+		onBeatModified: _onBeatModified,
+		onArrowSelected: _onArrowSelected,
+		onVisibilityChanged: _onVisibilityChanged,
+	} = $props<{
 		onBeatModified?: (beatIndex: number, beatData: BeatData) => void;
 		onArrowSelected?: (arrowData: any) => void;
 		onVisibilityChanged?: (isVisible: boolean) => void;
@@ -37,7 +41,7 @@
 				orientation,
 				type: 'orientation_change',
 			};
-			onArrowSelected?.(orientationData);
+			_onArrowSelected?.(orientationData);
 			console.log(`Graph Editor: ${color} orientation changed to ${orientation}`);
 
 			// Trigger pictograph update immediately
@@ -59,7 +63,7 @@
 				turn_amount: turnAmount,
 				type: 'turn_change',
 			};
-			onArrowSelected?.(turnData);
+			_onArrowSelected?.(turnData);
 			console.log(`Graph Editor: ${color} turn amount changed to ${turnAmount}`);
 		} catch (error) {
 			console.error('Error handling turn amount change:', error);
@@ -89,14 +93,15 @@
 
 			return () => clearTimeout(timeout);
 		}
+		return undefined;
 	});
 
 	onMount(() => {
 		console.log('Graph Editor mounted');
-		onVisibilityChanged?.(true);
+		_onVisibilityChanged?.(true);
 
 		return () => {
-			onVisibilityChanged?.(false);
+			_onVisibilityChanged?.(false);
 		};
 	});
 </script>

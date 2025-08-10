@@ -14,7 +14,7 @@ export function shouldAnimate(): boolean {
 		const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 		if (prefersReducedMotion) return false;
 	}
-	
+
 	// Check app settings
 	const settings = getSettings();
 	return settings.animationsEnabled !== false;
@@ -25,6 +25,6 @@ export function shouldAnimate(): boolean {
  */
 export function getAnimationSettings() {
 	return {
-		animationsEnabled: shouldAnimate()
+		animationsEnabled: shouldAnimate(),
 	};
 }

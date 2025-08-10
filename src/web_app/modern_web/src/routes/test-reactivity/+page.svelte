@@ -4,12 +4,12 @@
 
 	// Test 1: Direct state access
 	const state = createOptionPickerRunes();
-	
+
 	// Test 2: Effect with direct access
 	$effect(() => {
 		console.log('🔄 Test effect running:', {
 			optionsLength: state.optionsData.length,
-			timestamp: new Date().toLocaleTimeString()
+			timestamp: new Date().toLocaleTimeString(),
 		});
 	});
 
@@ -19,7 +19,7 @@
 		state.setOptions([
 			{ id: 1, letter: 'A', name: 'Test Option 1' },
 			{ id: 2, letter: 'B', name: 'Test Option 2' },
-			{ id: 3, letter: 'C', name: 'Test Option 3' }
+			{ id: 3, letter: 'C', name: 'Test Option 3' },
 		]);
 	}
 

@@ -205,8 +205,6 @@ Test route for E2E BeatView testing with multiple beats and interactions.
 				</button>
 			</div>
 		</div>
-
-
 	</div>
 </main>
 
@@ -308,6 +306,4 @@ Test route for E2E BeatView testing with multiple beats and interactions.
 		flex-wrap: wrap;
 		gap: 0.5rem;
 	}
-
-
 </style>

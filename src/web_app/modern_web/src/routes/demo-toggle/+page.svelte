@@ -12,17 +12,17 @@ Demo page to showcase the new iOS-style toggle component
 	// Options
 	const generationOptions = [
 		{ value: 'FREEFORM', label: 'Freeform', icon: '🎯' },
-		{ value: 'CIRCULAR', label: 'Circular', icon: '🔄' }
+		{ value: 'CIRCULAR', label: 'Circular', icon: '🔄' },
 	];
 
 	const gridOptions = [
 		{ value: 'DIAMOND', label: 'Diamond', icon: '◆' },
-		{ value: 'BOX', label: 'Box', icon: '⬜' }
+		{ value: 'BOX', label: 'Box', icon: '⬜' },
 	];
 
 	const continuityOptions = [
 		{ value: 'RANDOM', label: 'Random', icon: '🎲' },
-		{ value: 'CONTINUOUS', label: 'Continuous', icon: '🔗' }
+		{ value: 'CONTINUOUS', label: 'Continuous', icon: '🔗' },
 	];
 
 	// Handlers
@@ -64,7 +64,7 @@ Demo page to showcase the new iOS-style toggle component
 					</div>
 					<p class="issue">Issues: 3 clickable areas, unclear interaction model</p>
 				</div>
-				
+
 				<div class="after">
 					<h3>✅ New Pattern (Clear)</h3>
 					<p>Beautiful iOS-style toggle with clear labels</p>
@@ -75,7 +75,9 @@ Demo page to showcase the new iOS-style toggle component
 						onchange={handleGenerationModeChange}
 						size="medium"
 					/>
-					<p class="benefit">Benefits: Single interaction, elegant design, clear feedback</p>
+					<p class="benefit">
+						Benefits: Single interaction, elegant design, clear feedback
+					</p>
 				</div>
 			</div>
 		</div>
@@ -150,9 +152,15 @@ Demo page to showcase the new iOS-style toggle component
 		<div class="demo-section">
 			<h2>Benefits</h2>
 			<ul class="benefits-list">
-				<li>✅ <strong>Single interaction model</strong> - Only the toggle itself is clickable</li>
-				<li>✅ <strong>Beautiful iOS design</strong> - Smooth animations and elegant appearance</li>
-				<li>✅ <strong>Clear visual feedback</strong> - Labels show which option is active</li>
+				<li>
+					✅ <strong>Single interaction model</strong> - Only the toggle itself is clickable
+				</li>
+				<li>
+					✅ <strong>Beautiful iOS design</strong> - Smooth animations and elegant appearance
+				</li>
+				<li>
+					✅ <strong>Clear visual feedback</strong> - Labels show which option is active
+				</li>
 				<li>✅ <strong>Familiar pattern</strong> - Users recognize this from iOS/macOS</li>
 				<li>✅ <strong>Accessible</strong> - Proper ARIA roles and keyboard navigation</li>
 				<li>✅ <strong>Responsive</strong> - Works perfectly on touch and mouse devices</li>
@@ -200,7 +208,8 @@ Demo page to showcase the new iOS-style toggle component
 		margin-top: 1rem;
 	}
 
-	.before, .after {
+	.before,
+	.after {
 		padding: 1.5rem;
 		border-radius: 8px;
 	}
@@ -300,7 +309,7 @@ Demo page to showcase the new iOS-style toggle component
 		.comparison {
 			grid-template-columns: 1fr;
 		}
-		
+
 		.controls-grid {
 			grid-template-columns: 1fr;
 		}

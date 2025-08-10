@@ -68,7 +68,10 @@
 
 		// Wait for services to be resolved
 		let attempts = 0;
-		while ((!initService || !settingsService || !sequenceService || !deviceService) && attempts < 10) {
+		while (
+			(!initService || !settingsService || !sequenceService || !deviceService) &&
+			attempts < 10
+		) {
 			await new Promise((resolve) => setTimeout(resolve, 100));
 			attempts++;
 		}

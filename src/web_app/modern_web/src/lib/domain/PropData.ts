@@ -70,7 +70,7 @@ export function propDataToObject(prop: PropData): Record<string, unknown> {
 export function propDataFromObject(data: Record<string, unknown>): PropData {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const partialData: any = {};
-	
+
 	if (data.id !== undefined) {
 		partialData.id = data.id;
 	}
@@ -101,6 +101,6 @@ export function propDataFromObject(data: Record<string, unknown>): PropData {
 	if (data.is_selected !== undefined) {
 		partialData.is_selected = data.is_selected;
 	}
-	
+
 	return createPropData(partialData);
 }

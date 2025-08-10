@@ -25,11 +25,7 @@
 </script>
 
 <div class="action-buttons">
-	<button
-		class="action-button primary"
-		onclick={handleEditAction}
-		type="button"
-	>
+	<button class="action-button primary" onclick={handleEditAction} type="button">
 		<svg width="16" height="16" viewBox="0 0 16 16" fill="none">
 			<path
 				d="M12.1465 1.85355C12.3417 1.65829 12.6583 1.65829 12.8536 1.85355L14.1464 3.14645C14.3417 3.34171 14.3417 3.65829 14.1464 3.85355L5.35355 12.6464L2 13L2.35355 9.64645L11.1464 0.853553C11.3417 0.658291 11.6583 0.658291 11.8536 0.853553L12.1465 1.85355Z"
@@ -40,11 +36,7 @@
 		Edit
 	</button>
 
-	<button
-		class="action-button secondary"
-		onclick={handleSaveAction}
-		type="button"
-	>
+	<button class="action-button secondary" onclick={handleSaveAction} type="button">
 		<svg width="16" height="16" viewBox="0 0 16 16" fill="none">
 			<path d="M13 2.5V13.5H3V2.5H13Z" stroke="currentColor" stroke-width="1.5" />
 			<path d="M10 1V4H6V1" stroke="currentColor" stroke-width="1.5" />
@@ -52,11 +44,7 @@
 		Save
 	</button>
 
-	<button
-		class="action-button secondary"
-		onclick={handleFullscreenAction}
-		type="button"
-	>
+	<button class="action-button secondary" onclick={handleFullscreenAction} type="button">
 		<svg width="16" height="16" viewBox="0 0 16 16" fill="none">
 			<path
 				d="M2 5V2H5M14 5V2H11M14 11V14H11M2 11V14H5"
@@ -67,17 +55,9 @@
 		Fullscreen
 	</button>
 
-	<button
-		class="action-button danger"
-		onclick={handleDeleteAction}
-		type="button"
-	>
+	<button class="action-button danger" onclick={handleDeleteAction} type="button">
 		<svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-			<path
-				d="M2 4H14M6 4V2H10V4M12 4V14H4V4"
-				stroke="currentColor"
-				stroke-width="1.5"
-			/>
+			<path d="M2 4H14M6 4V2H10V4M12 4V14H4V4" stroke="currentColor" stroke-width="1.5" />
 		</svg>
 		Delete
 	</button>

@@ -227,6 +227,7 @@ export class AuroraBackgroundSystem implements BackgroundSystem {
 
 		for (let i = 0; i < colors.length; i++) {
 			const color = colors[i];
+			if (!color) continue;
 
 			// Calculate hue shift for color cycling
 			const hue = (this.colorShift + i * 120) % 360;

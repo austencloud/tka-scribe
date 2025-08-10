@@ -4,11 +4,11 @@
  * Tests for BeatView component with ModernPictograph integration
  */
 
-import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/svelte';
-import '@testing-library/jest-dom';
-import BeatView from '../BeatView.svelte';
 import { createBeatData, createPictographData } from '$lib/domain';
+import '@testing-library/jest-dom';
+import { fireEvent, render } from '@testing-library/svelte';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import BeatView from '../BeatView.svelte';
 
 // Mock the ModernPictograph component
 vi.mock('$lib/components/pictograph', () => ({

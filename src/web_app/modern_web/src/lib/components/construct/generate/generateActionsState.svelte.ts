@@ -1,6 +1,6 @@
 /**
  * Simple generation actions state for GeneratePanel
- * 
+ *
  * Just extracts the generation button logic without over-engineering
  */
 
@@ -17,9 +17,9 @@ export function createGenerationActionsState() {
 	function onGenerateClicked(config: GenerationConfig) {
 		if (isGenerating) return;
 		isGenerating = true;
-		
+
 		console.log('🎯 Generate clicked with config:', config);
-		
+
 		// Your original timeout logic
 		setTimeout(() => {
 			isGenerating = false;
@@ -34,8 +34,10 @@ export function createGenerationActionsState() {
 
 	return {
 		// State
-		get isGenerating() { return isGenerating; },
-		
+		get isGenerating() {
+			return isGenerating;
+		},
+
 		// Actions
 		onGenerateClicked,
 		onAutoCompleteClicked,

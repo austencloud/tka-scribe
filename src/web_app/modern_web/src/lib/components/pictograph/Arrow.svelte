@@ -2,13 +2,13 @@
 Arrow Component - Renders SVG arrows with proper positioning
 -->
 <script lang="ts">
-	import type { ArrowData } from '$lib/domain';
-	import { arrowPositioningService } from './services/arrowPositioningService';
+	import type { ArrowData, MotionData } from '$lib/domain';
 	import { onMount } from 'svelte';
+	import { arrowPositioningService } from './services/arrowPositioningService';
 
 	interface Props {
 		arrowData: ArrowData;
-		motionData?: any; // MotionData from pictograph
+		motionData?: MotionData; // MotionData from pictograph
 		gridMode?: string;
 		letter?: string;
 		onLoaded?: (componentType: string) => void;
@@ -24,7 +24,6 @@ Arrow Component - Renders SVG arrows with proper positioning
 		onError,
 	}: Props = $props();
 
-	let arrowElement: SVGGElement;
 	let loaded = $state(false);
 	let error = $state<string | null>(null);
 
@@ -41,8 +40,8 @@ Arrow Component - Renders SVG arrows with proper positioning
 				grid_mode: gridMode,
 				turns: arrowData.turns || 0,
 				...(letter && { letter }),
-				start_orientation: motionData?.start_orientation || 0,
-				end_orientation: motionData?.end_orientation || 0,
+				start_orientation: motionData?.start_ori || 'in',
+				end_orientation: motionData?.end_ori || 'in',
 			});
 		} catch (e) {
 			console.warn('Arrow positioning failed, using default:', e);
@@ -54,14 +53,14 @@ Arrow Component - Renders SVG arrows with proper positioning
 	const arrowPath = $derived(() => {
 		if (!arrowData || !motionData) return '/images/arrows/still.svg';
 
-		const { motion_type, rotation_direction, turns } = motionData;
+		const { motion_type, prop_rot_dir, turns } = motionData;
 		const baseDir = `/images/arrows/${motion_type}`;
 
 		// For motion types that have turn-based subdirectories (pro, anti, static)
 		if (['pro', 'anti', 'static'].includes(motion_type)) {
-			const isRadial = rotation_direction === 'clockwise';
+			const isRadial = prop_rot_dir === 'cw';
 			const subDir = isRadial ? 'from_radial' : 'from_nonradial';
-			const turnValue = (turns ?? 0).toFixed(1); // Ensure decimal format like "0.0"
+			const turnValue = typeof turns === 'number' ? turns.toFixed(1) : '0.0'; // Handle 'fl' case
 			return `${baseDir}/${subDir}/${motion_type}_${turnValue}.svg`;
 		}
 
@@ -87,7 +86,6 @@ Arrow Component - Renders SVG arrows with proper positioning
 
 <!-- Arrow Group -->
 <g
-	bind:this={arrowElement}
 	class="arrow-group {arrowData?.color}-arrow"
 	class:loaded
 	data-arrow-color={arrowData?.color}

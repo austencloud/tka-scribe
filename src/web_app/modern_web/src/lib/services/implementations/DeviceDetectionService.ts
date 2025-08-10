@@ -3,13 +3,13 @@
  * Uses modern detection methods based on research from W3C, Material Design, and iOS guidelines
  */
 
-import type { IDeviceDetectionService, DeviceCapabilities, ResponsiveSettings } from '../interfaces';
+import type { DeviceCapabilities, IDeviceDetectionService, ResponsiveSettings } from '../interfaces';
 
 export class DeviceDetectionService implements IDeviceDetectionService {
 	private capabilities: DeviceCapabilities | null = null;
 	private listeners: Array<(capabilities: DeviceCapabilities) => void> = [];
 	private resizeObserver: ResizeObserver | null = null;
-	
+
 	constructor() {
 		this.detectCapabilities();
 		this.setupListeners();
@@ -24,14 +24,14 @@ export class DeviceDetectionService implements IDeviceDetectionService {
 
 	getResponsiveSettings(): ResponsiveSettings {
 		const caps = this.getCapabilities();
-		
+
 		// Based on research: mobile needs 44-48px, desktop can be smaller
 		const minTouchTarget = caps.primaryInput === 'touch' ? 48 : 32;
 		const elementSpacing = caps.primaryInput === 'touch' ? 16 : 8;
-		
+
 		// Mobile users expect scrolling, desktop should fit when possible
 		const allowScrolling = caps.screenSize === 'mobile' || caps.screenSize === 'tablet';
-		
+
 		// Layout density based on screen real estate and input method
 		let layoutDensity: 'compact' | 'comfortable' | 'spacious' = 'comfortable';
 		if (caps.screenSize === 'mobile') {
@@ -41,9 +41,9 @@ export class DeviceDetectionService implements IDeviceDetectionService {
 		} else {
 			layoutDensity = 'spacious'; // Hybrid devices get spacious
 		}
-		
+
 		const fontScaling = caps.screenSize === 'mobile' ? 1.1 : 1.0;
-		
+
 		return {
 			minTouchTarget,
 			elementSpacing,
@@ -64,7 +64,7 @@ export class DeviceDetectionService implements IDeviceDetectionService {
 
 	getCurrentBreakpoint(): 'mobile' | 'tablet' | 'desktop' | 'large-desktop' {
 		const { width } = this.getCapabilities().viewport;
-		
+
 		// Standard breakpoints based on research
 		if (width < 768) return 'mobile';
 		if (width < 1024) return 'tablet';
@@ -74,7 +74,7 @@ export class DeviceDetectionService implements IDeviceDetectionService {
 
 	onCapabilitiesChanged(callback: (capabilities: DeviceCapabilities) => void): () => void {
 		this.listeners.push(callback);
-		
+
 		// Return cleanup function
 		return () => {
 			const index = this.listeners.indexOf(callback);
@@ -89,22 +89,22 @@ export class DeviceDetectionService implements IDeviceDetectionService {
 			width: window.innerWidth,
 			height: window.innerHeight
 		};
-		
+
 		// Touch detection using multiple methods for reliability
 		const hasTouch = this.detectTouch();
-		
+
 		// Precise pointer detection (mouse/trackpad)
 		const hasPrecisePointer = this.detectPrecisePointer();
-		
+
 		// Keyboard detection (best effort)
 		const hasKeyboard = this.detectKeyboard();
-		
+
 		// Screen size category
 		const screenSize = this.determineScreenSize(viewport.width);
-		
+
 		// Primary input method determination
 		const primaryInput = this.determinePrimaryInput(hasTouch, hasPrecisePointer, screenSize);
-		
+
 		this.capabilities = {
 			primaryInput,
 			screenSize,
@@ -124,8 +124,8 @@ export class DeviceDetectionService implements IDeviceDetectionService {
 		return (
 			'ontouchstart' in window ||
 			navigator.maxTouchPoints > 0 ||
-			// @ts-ignore - Legacy IE support
-			navigator.msMaxTouchPoints > 0
+			// Legacy IE support
+			(navigator as any).msMaxTouchPoints > 0
 		);
 	}
 
@@ -148,24 +148,24 @@ export class DeviceDetectionService implements IDeviceDetectionService {
 	}
 
 	private determinePrimaryInput(
-		hasTouch: boolean, 
-		hasPrecisePointer: boolean, 
+		hasTouch: boolean,
+		hasPrecisePointer: boolean,
 		screenSize: 'mobile' | 'tablet' | 'desktop'
 	): 'touch' | 'mouse' | 'hybrid' {
 		// Mobile devices are primarily touch
 		if (screenSize === 'mobile') return 'touch';
-		
+
 		// Desktop without touch is mouse
 		if (screenSize === 'desktop' && !hasTouch) return 'mouse';
-		
+
 		// Desktop with touch capabilities (Windows tablets, touchscreen laptops)
 		if (screenSize === 'desktop' && hasTouch && hasPrecisePointer) return 'hybrid';
-		
+
 		// Tablet logic
 		if (screenSize === 'tablet') {
 			return hasPrecisePointer ? 'hybrid' : 'touch';
 		}
-		
+
 		// Fallback
 		return hasTouch ? 'touch' : 'mouse';
 	}
@@ -174,32 +174,32 @@ export class DeviceDetectionService implements IDeviceDetectionService {
 		if (!this.capabilities) return;
 
 		const settings = this.getResponsiveSettings();
-		
+
 		// Update CSS custom properties for global use
 		document.documentElement.style.setProperty(
-			'--min-touch-target', 
+			'--min-touch-target',
 			`${settings.minTouchTarget}px`
 		);
 		document.documentElement.style.setProperty(
-			'--element-spacing', 
+			'--element-spacing',
 			`${settings.elementSpacing}px`
 		);
 		document.documentElement.style.setProperty(
-			'--font-scaling', 
+			'--font-scaling',
 			settings.fontScaling.toString()
 		);
-		
+
 		// Set data attributes for CSS targeting
 		document.documentElement.setAttribute(
-			'data-device-type', 
+			'data-device-type',
 			this.capabilities.primaryInput
 		);
 		document.documentElement.setAttribute(
-			'data-screen-size', 
+			'data-screen-size',
 			this.capabilities.screenSize
 		);
 		document.documentElement.setAttribute(
-			'data-layout-density', 
+			'data-layout-density',
 			settings.layoutDensity
 		);
 	}
@@ -209,7 +209,7 @@ export class DeviceDetectionService implements IDeviceDetectionService {
 		const handleResize = () => {
 			const oldCapabilities = this.capabilities;
 			this.detectCapabilities();
-			
+
 			// Only notify if capabilities actually changed
 			if (this.hasCapabilitiesChanged(oldCapabilities, this.capabilities)) {
 				this.notifyListeners();
@@ -224,13 +224,13 @@ export class DeviceDetectionService implements IDeviceDetectionService {
 
 		window.addEventListener('resize', handleResize);
 		window.addEventListener('orientationchange', handleOrientationChange);
-		
+
 		// Modern ResizeObserver for more responsive updates
 		if ('ResizeObserver' in window) {
 			this.resizeObserver = new ResizeObserver(handleResize);
 			this.resizeObserver.observe(document.documentElement);
 		}
-		
+
 		// Detect if user switches from touch to mouse (or vice versa)
 		let hasDetectedMouse = false;
 		const handleMouseMove = () => {
@@ -249,11 +249,11 @@ export class DeviceDetectionService implements IDeviceDetectionService {
 	}
 
 	private hasCapabilitiesChanged(
-		old: DeviceCapabilities | null, 
+		old: DeviceCapabilities | null,
 		current: DeviceCapabilities | null
 	): boolean {
 		if (!old || !current) return true;
-		
+
 		return (
 			old.primaryInput !== current.primaryInput ||
 			old.screenSize !== current.screenSize ||

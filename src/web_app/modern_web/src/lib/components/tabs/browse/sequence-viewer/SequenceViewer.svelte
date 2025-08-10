@@ -26,9 +26,7 @@
 	});
 
 	// Derived current variation
-	let currentVariation = $derived(
-		sequence?.variations?.[currentVariationIndex] || sequence
-	);
+	let currentVariation = $derived(sequence?.variations?.[currentVariationIndex] || sequence);
 
 	// Variation navigation handlers
 	function nextVariation() {
@@ -60,10 +58,7 @@
 <div class="sequence-viewer-panel">
 	{#if sequence}
 		<div class="viewer-content" transition:slide={{ duration: 300 }}>
-			<SequenceViewerHeader
-				{sequence}
-				onBackToBrowser={handleBackToBrowser}
-			/>
+			<SequenceViewerHeader {sequence} onBackToBrowser={handleBackToBrowser} />
 
 			<SequenceImageViewer
 				{sequence}

@@ -27,7 +27,7 @@ A beautiful toggle switch that follows iOS design patterns with proper interacti
 		disabled = false,
 		size = 'medium',
 		variant = 'primary',
-		onchange
+		onchange,
 	}: Props = $props();
 
 	// Ensure we have exactly 2 options
@@ -215,38 +215,38 @@ A beautiful toggle switch that follows iOS design patterns with proper interacti
 	}
 
 	/* Size variants */
-	.ios-toggle[data-size="small"] .toggle-track {
+	.ios-toggle[data-size='small'] .toggle-track {
 		width: 48px;
 		height: 26px;
 		border-radius: 13px;
 	}
 
-	.ios-toggle[data-size="small"] .toggle-thumb {
+	.ios-toggle[data-size='small'] .toggle-thumb {
 		width: 22px;
 		height: 22px;
 	}
 
-	.ios-toggle[data-size="small"].checked .toggle-thumb {
+	.ios-toggle[data-size='small'].checked .toggle-thumb {
 		transform: translateX(20px);
 	}
 
-	.ios-toggle[data-size="large"] .toggle-track {
+	.ios-toggle[data-size='large'] .toggle-track {
 		width: 72px;
 		height: 38px;
 		border-radius: 19px;
 	}
 
-	.ios-toggle[data-size="large"] .toggle-thumb {
+	.ios-toggle[data-size='large'] .toggle-thumb {
 		width: 34px;
 		height: 34px;
 	}
 
-	.ios-toggle[data-size="large"].checked .toggle-thumb {
+	.ios-toggle[data-size='large'].checked .toggle-thumb {
 		transform: translateX(32px);
 	}
 
 	/* Color variants */
-	.ios-toggle[data-variant="secondary"].checked .toggle-track {
+	.ios-toggle[data-variant='secondary'].checked .toggle-track {
 		background: rgba(156, 163, 175, 0.8);
 		border-color: rgba(156, 163, 175, 0.9);
 		box-shadow:
@@ -254,7 +254,7 @@ A beautiful toggle switch that follows iOS design patterns with proper interacti
 			0 2px 8px rgba(156, 163, 175, 0.3);
 	}
 
-	.ios-toggle[data-variant="secondary"]:focus-visible {
+	.ios-toggle[data-variant='secondary']:focus-visible {
 		outline-color: rgba(156, 163, 175, 0.6);
 	}
 

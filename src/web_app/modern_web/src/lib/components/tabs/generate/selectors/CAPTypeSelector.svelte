@@ -39,7 +39,7 @@ Simple row of 4 toggleable buttons for selecting circular arrangement pattern ty
 		{ component: 'ROTATED', label: 'Rotated', icon: '🔄', color: '#36c3ff' },
 		{ component: 'MIRRORED', label: 'Mirrored', icon: '🪞', color: '#6F2DA8' },
 		{ component: 'SWAPPED', label: 'Swapped', icon: '🔀', color: '#26e600' },
-		{ component: 'COMPLEMENTARY', label: 'Complementary', icon: '🎨', color: '#eb7d00' }
+		{ component: 'COMPLEMENTARY', label: 'Complementary', icon: '🎨', color: '#eb7d00' },
 	];
 
 	// Convert legacy CAP type to component set
@@ -67,10 +67,14 @@ Simple row of 4 toggleable buttons for selecting circular arrangement pattern ty
 		// Single components (strict)
 		if (sorted.length === 1) {
 			switch (sorted[0]) {
-				case 'ROTATED': return 'STRICT_ROTATED';
-				case 'MIRRORED': return 'STRICT_MIRRORED';
-				case 'SWAPPED': return 'STRICT_SWAPPED';
-				case 'COMPLEMENTARY': return 'STRICT_COMPLEMENTARY';
+				case 'ROTATED':
+					return 'STRICT_ROTATED';
+				case 'MIRRORED':
+					return 'STRICT_MIRRORED';
+				case 'SWAPPED':
+					return 'STRICT_SWAPPED';
+				case 'COMPLEMENTARY':
+					return 'STRICT_COMPLEMENTARY';
 			}
 		}
 
@@ -78,17 +82,28 @@ Simple row of 4 toggleable buttons for selecting circular arrangement pattern ty
 		if (sorted.length === 2) {
 			const key = sorted.join('_');
 			switch (key) {
-				case 'MIRRORED_SWAPPED': return 'MIRRORED_SWAPPED';
-				case 'COMPLEMENTARY_SWAPPED': return 'SWAPPED_COMPLEMENTARY';
-				case 'COMPLEMENTARY_ROTATED': return 'ROTATED_COMPLEMENTARY';
-				case 'COMPLEMENTARY_MIRRORED': return 'MIRRORED_COMPLEMENTARY';
-				case 'ROTATED_SWAPPED': return 'ROTATED_SWAPPED';
-				case 'MIRRORED_ROTATED': return 'MIRRORED_ROTATED';
+				case 'MIRRORED_SWAPPED':
+					return 'MIRRORED_SWAPPED';
+				case 'COMPLEMENTARY_SWAPPED':
+					return 'SWAPPED_COMPLEMENTARY';
+				case 'COMPLEMENTARY_ROTATED':
+					return 'ROTATED_COMPLEMENTARY';
+				case 'COMPLEMENTARY_MIRRORED':
+					return 'MIRRORED_COMPLEMENTARY';
+				case 'ROTATED_SWAPPED':
+					return 'ROTATED_SWAPPED';
+				case 'MIRRORED_ROTATED':
+					return 'MIRRORED_ROTATED';
 			}
 		}
 
 		// Three components
-		if (sorted.length === 3 && sorted.includes('MIRRORED') && sorted.includes('COMPLEMENTARY') && sorted.includes('ROTATED')) {
+		if (
+			sorted.length === 3 &&
+			sorted.includes('MIRRORED') &&
+			sorted.includes('COMPLEMENTARY') &&
+			sorted.includes('ROTATED')
+		) {
 			return 'MIRRORED_COMPLEMENTARY_ROTATED';
 		}
 

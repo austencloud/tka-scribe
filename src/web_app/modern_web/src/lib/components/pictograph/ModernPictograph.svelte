@@ -218,7 +218,9 @@ instead of stores. It orchestrates the rendering of Grid, Props, Arrows, and Gly
 			{#each propsToRender() as { color, propData } (color)}
 				<Prop
 					{propData}
-					{...(effectivePictographData()?.motions?.[color] && { motionData: effectivePictographData()?.motions?.[color] })}
+					{...effectivePictographData()?.motions?.[color] && {
+						motionData: effectivePictographData()?.motions?.[color],
+					}}
 					gridMode={effectivePictographData()?.grid_data?.grid_mode || 'diamond'}
 					allProps={Object.values(effectivePictographData()?.props || {})}
 					onLoaded={() => handleComponentLoaded(`${color}-prop`)}
@@ -230,9 +232,11 @@ instead of stores. It orchestrates the rendering of Grid, Props, Arrows, and Gly
 			{#each arrowsToRender() as { color, arrowData } (color)}
 				<Arrow
 					{arrowData}
-					{...(effectivePictographData()?.motions?.[color] && { motionData: effectivePictographData()?.motions?.[color] })}
+					{...effectivePictographData()?.motions?.[color] && {
+						motionData: effectivePictographData()?.motions?.[color],
+					}}
 					gridMode={effectivePictographData()?.grid_data?.grid_mode || 'diamond'}
-					{...(displayLetter() && { letter: displayLetter() })}
+					{...displayLetter() && { letter: displayLetter() }}
 					onLoaded={() => handleComponentLoaded(`${color}-arrow`)}
 					onError={(error) => handleComponentError(`${color}-arrow`, error)}
 				/>

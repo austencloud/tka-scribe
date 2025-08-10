@@ -20,7 +20,7 @@ Toggle between random and continuous prop behavior using modern segmented contro
 	// Options for the segmented control
 	const continuityOptions = [
 		{ value: 'RANDOM', label: 'Random', icon: '🎲' },
-		{ value: 'CONTINUOUS', label: 'Continuous', icon: '🔗' }
+		{ value: 'CONTINUOUS', label: 'Continuous', icon: '🔗' },
 	];
 
 	// Handle value change

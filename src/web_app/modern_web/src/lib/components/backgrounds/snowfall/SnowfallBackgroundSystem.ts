@@ -19,16 +19,10 @@ export class SnowfallBackgroundSystem implements BackgroundSystem {
 	private shootingStarState: ShootingStarState;
 
 	private quality: QualityLevel = 'medium';
-	private _isDecember: boolean = false;
-	private _accessibilitySettings: { reducedMotion: boolean; highContrast: boolean } = {
-		reducedMotion: false,
-		highContrast: false,
-	};
 	private isInitialized: boolean = false;
 
 	constructor() {
 		this.shootingStarState = this.shootingStarSystem.initialState;
-		this._isDecember = new Date().getMonth() === 11;
 		this.isInitialized = false;
 	}
 
@@ -80,8 +74,8 @@ export class SnowfallBackgroundSystem implements BackgroundSystem {
 		}
 	}
 
-	public setAccessibility(settings: { reducedMotion: boolean; highContrast: boolean }): void {
-		this._accessibilitySettings = settings;
+	public setAccessibility(_settings: { reducedMotion: boolean; highContrast: boolean }): void {
+		// Accessibility settings would be used for motion reduction, etc.
 	}
 
 	public handleResize(oldDimensions: Dimensions, newDimensions: Dimensions): void {

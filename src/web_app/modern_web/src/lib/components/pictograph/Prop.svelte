@@ -3,7 +3,7 @@ Prop Component - Renders SVG props with proper positioning
 -->
 <script lang="ts">
 	import type { MotionData, PropData } from '$lib/domain';
-	import { Orientation, RotationDirection, MotionType } from '$lib/domain/enums';
+	import { MotionType, Orientation, RotationDirection } from '$lib/domain/enums';
 	import { DefaultPropPositioner } from '$lib/services/DefaultPropPositioner';
 	import { PropRotAngleManager } from '$lib/services/PropRotAngleManager';
 	import { BetaOffsetCalculator } from '$lib/services/implementations/BetaOffsetCalculator';

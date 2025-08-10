@@ -23,9 +23,9 @@ export class ConstructTabCoordinationService implements IConstructTabCoordinatio
 	private isHandlingSequenceModification = false;
 
 	constructor(
-		private sequenceService: ISequenceService,
-		private startPositionService: IStartPositionService,
-		private optionDataService: IOptionDataService
+		private _sequenceService: ISequenceService,
+		private _startPositionService: IStartPositionService,
+		private _optionDataService: IOptionDataService
 	) {
 		console.log('🎭 ConstructTabCoordinationService initialized');
 	}
@@ -65,7 +65,7 @@ export class ConstructTabCoordinationService implements IConstructTabCoordinatio
 
 		try {
 			// Set the start position using the service
-			await this.startPositionService.setStartPosition(startPosition);
+			await this._startPositionService.setStartPosition(startPosition);
 
 			// **CRITICAL: Create a sequence with the start position stored separately**
 			console.log('🎭 Creating sequence with start position stored separately from beats');

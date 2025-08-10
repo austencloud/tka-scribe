@@ -14,26 +14,25 @@ const FOLDABLE_DEVICE_SPECS = {
 	zfold3: {
 		models: ['SM-F926'],
 		foldedDimensions: { width: { min: 350, max: 400 }, height: { min: 800, max: 900 } },
-		unfoldedDimensions: { width: { min: 700, max: 800 }, height: { min: 800, max: 900 } }
+		unfoldedDimensions: { width: { min: 700, max: 800 }, height: { min: 800, max: 900 } },
 	},
 	zfold4: {
 		models: ['SM-F936'],
 		foldedDimensions: { width: { min: 350, max: 400 }, height: { min: 800, max: 900 } },
-		unfoldedDimensions: { width: { min: 700, max: 800 }, height: { min: 800, max: 900 } }
+		unfoldedDimensions: { width: { min: 700, max: 800 }, height: { min: 800, max: 900 } },
 	},
 	zfold5: {
 		models: ['SM-F946'],
 		foldedDimensions: { width: { min: 350, max: 400 }, height: { min: 800, max: 900 } },
-		unfoldedDimensions: { width: { min: 700, max: 820 }, height: { min: 800, max: 920 } }
+		unfoldedDimensions: { width: { min: 700, max: 820 }, height: { min: 800, max: 920 } },
 	},
 	zfold6: {
 		models: ['SM-F956'], // Example model, update if needed
 		foldedDimensions: { width: { min: 350, max: 410 }, height: { min: 800, max: 950 } }, // Estimated
-		unfoldedDimensions: { width: { min: 800, max: 850 }, height: { min: 680, max: 750 } } // Based on previous user log
-	}
+		unfoldedDimensions: { width: { min: 800, max: 850 }, height: { min: 680, max: 750 } }, // Based on previous user log
+	},
 	// Add other known foldable specs here (e.g., Pixel Fold)
 };
-
 
 // --- Interfaces ---
 export interface FoldableDetectionResult {
@@ -43,7 +42,6 @@ export interface FoldableDetectionResult {
 	confidence: number; // Confidence score (0 to 1)
 	detectionMethod?: string; // How the detection was made
 }
-
 
 // --- Main Detection Function ---
 /**
@@ -66,7 +64,7 @@ export function detectFoldableDevice(): FoldableDetectionResult {
 		isUnfolded: false,
 		foldableType: 'unknown',
 		confidence: 0,
-		detectionMethod: 'none'
+		detectionMethod: 'none',
 	};
 
 	// Ensure code only runs in a browser environment
@@ -105,21 +103,23 @@ export function detectFoldableDevice(): FoldableDetectionResult {
 		window.matchMedia('(screen-spanning: single-fold-horizontal)').matches;
 	let segmentCount = 0;
 	try {
-		// @ts-ignore - Experimental API
+		// Experimental API
 		if ('getWindowSegments' in navigator && typeof navigator.getWindowSegments === 'function') {
-			// @ts-ignore
-			segmentCount = navigator.getWindowSegments().length;
+			segmentCount = (navigator as any).getWindowSegments().length;
 		}
-	} catch (e) { if (DEBUG_MODE) console.warn("Error accessing getWindowSegments", e); }
+	} catch (e) {
+		if (DEBUG_MODE) console.warn('Error accessing getWindowSegments', e);
+	}
 
 	let viewportSegments: any[] | undefined;
 	try {
-		// @ts-ignore - Experimental API
+		// Experimental API
 		if (window.visualViewport && 'segments' in window.visualViewport) {
-			// @ts-ignore
-			viewportSegments = window.visualViewport.segments as any[] | undefined;
+			viewportSegments = (window.visualViewport as any).segments as any[] | undefined;
 		}
-	} catch (e) { if (DEBUG_MODE) console.warn("Error accessing visualViewport.segments", e); }
+	} catch (e) {
+		if (DEBUG_MODE) console.warn('Error accessing visualViewport.segments', e);
+	}
 
 	const hasSegments = segmentCount > 1 || (viewportSegments && viewportSegments.length > 1);
 
@@ -127,7 +127,11 @@ export function detectFoldableDevice(): FoldableDetectionResult {
 		if (DEBUG_MODE) console.log('Foldable Detect: Detected via Spanning/Segments API');
 		finalResult.isFoldable = true;
 		finalResult.confidence = 0.8; // Fairly high confidence
-		finalResult.detectionMethod = isScreenSpanning ? 'mediaQuery' : (segmentCount > 1 ? 'getWindowSegments' : 'visualViewport');
+		finalResult.detectionMethod = isScreenSpanning
+			? 'mediaQuery'
+			: segmentCount > 1
+				? 'getWindowSegments'
+				: 'visualViewport';
 		// Heuristic for unfolded state when API detects foldability
 		finalResult.isUnfolded = aspectRatio > 0.8 && aspectRatio < 1.3; // Assume nearly square is unfolded
 		finalResult.foldableType = /galaxy z/i.test(ua) ? 'zfold' : 'other'; // UA hint for type
@@ -138,19 +142,28 @@ export function detectFoldableDevice(): FoldableDetectionResult {
 	}
 
 	// 3. User Agent Platform Check (Exclude Desktops)
-	const isLikelyDesktopUA = /Windows NT|Macintosh|Linux x86_64/i.test(ua) && !/Android|iPhone|iPad|iPod|Mobile/i.test(ua);
+	const isLikelyDesktopUA =
+		/Windows NT|Macintosh|Linux x86_64/i.test(ua) &&
+		!/Android|iPhone|iPad|iPod|Mobile/i.test(ua);
 	if (isLikelyDesktopUA) {
 		// If UA clearly indicates a standard desktop OS, it's not a foldable phone.
-		if (DEBUG_MODE) console.log('Foldable Detect: Detected standard desktop platform via UA. Not foldable.');
+		if (DEBUG_MODE)
+			console.log(
+				'Foldable Detect: Detected standard desktop platform via UA. Not foldable.'
+			);
 		return finalResult; // Return default (isFoldable: false)
 	}
 
 	// 4. Generic Dimension + Pixel Ratio Heuristic (Lower Confidence Fallback)
 	// Only attempt if not identified as desktop and APIs didn't confirm.
-	if (DEBUG_MODE) console.log('Foldable Detect: No API/Desktop match, trying generic dimension heuristic...');
+	if (DEBUG_MODE)
+		console.log('Foldable Detect: No API/Desktop match, trying generic dimension heuristic...');
 	// Check for somewhat square aspect ratio AND high pixel density
 	if (windowW > 600 && aspectRatio > 0.8 && aspectRatio < 1.3 && pixelRatio > 1.5) {
-		if (DEBUG_MODE) console.log('Foldable Detect: Generic dimension heuristic PASSED (with pixelRatio check).');
+		if (DEBUG_MODE)
+			console.log(
+				'Foldable Detect: Generic dimension heuristic PASSED (with pixelRatio check).'
+			);
 		finalResult.isFoldable = true;
 		finalResult.isUnfolded = true; // Assume unfolded if dimensions match this heuristic
 		finalResult.confidence = 0.5; // Lower confidence for heuristic
@@ -165,13 +178,12 @@ export function detectFoldableDevice(): FoldableDetectionResult {
 	if (DEBUG_MODE && finalResult.isFoldable) {
 		console.log('Foldable Detect: Result from Dimension Heuristic', finalResult);
 	} else if (DEBUG_MODE && !finalResult.isFoldable) {
-        console.log('Foldable Detect: Final Result - Not Foldable');
-    }
+		console.log('Foldable Detect: Final Result - Not Foldable');
+	}
 
 	saveDetectionResult(finalResult); // Save if confidence is high enough
 	return finalResult;
 }
-
 
 // --- Helper Functions ---
 
@@ -186,13 +198,16 @@ function checkManualOverride(): FoldableDetectionResult | null {
 		if (override) {
 			const settings = JSON.parse(override);
 			// Basic validation of stored settings
-			if (typeof settings.isFoldable === 'boolean' && typeof settings.isUnfolded === 'boolean') {
+			if (
+				typeof settings.isFoldable === 'boolean' &&
+				typeof settings.isUnfolded === 'boolean'
+			) {
 				return {
 					isFoldable: settings.isFoldable,
 					foldableType: settings.foldableType || 'unknown',
 					isUnfolded: settings.isUnfolded,
 					confidence: 1.0, // Max confidence for manual override
-					detectionMethod: 'ManualOverride'
+					detectionMethod: 'ManualOverride',
 				};
 			}
 		}
@@ -216,10 +231,10 @@ function saveDetectionResult(result: FoldableDetectionResult) {
 			...result,
 			timestamp: Date.now(),
 			width: window.innerWidth, // Save dimensions at time of detection
-			height: window.innerHeight
+			height: window.innerHeight,
 		};
 		localStorage.setItem('foldableDeviceState', JSON.stringify(dataToSave));
-		if (DEBUG_MODE) console.log("Foldable Detect: Saved state to localStorage", dataToSave);
+		if (DEBUG_MODE) console.log('Foldable Detect: Saved state to localStorage', dataToSave);
 	} catch (e) {
 		if (DEBUG_MODE) console.error('Error saving detection state:', e);
 	}
@@ -245,7 +260,8 @@ function checkAgainstDeviceSpecs(
 		const isMatchingModel = specs.models.some((model) => ua.includes(model));
 
 		if (isMatchingModel) {
-			if (DEBUG_MODE) console.log(`Foldable Detect: Spec Match - Found model match for ${deviceKey}`);
+			if (DEBUG_MODE)
+				console.log(`Foldable Detect: Spec Match - Found model match for ${deviceKey}`);
 			result.isFoldable = true;
 			result.foldableType = deviceKey.startsWith('zfold') ? 'zfold' : 'other';
 			result.confidence = 0.9; // High confidence for specific model match
@@ -256,18 +272,24 @@ function checkAgainstDeviceSpecs(
 			const { min: minHUnfolded, max: maxHUnfolded } = specs.unfoldedDimensions.height;
 
 			const isUnfoldedMatch =
-				(width >= minWUnfolded && width <= maxWUnfolded && height >= minHUnfolded && height <= maxHUnfolded) ||
-				(height >= minWUnfolded && height <= maxWUnfolded && width >= minHUnfolded && width <= maxHUnfolded);
+				(width >= minWUnfolded &&
+					width <= maxWUnfolded &&
+					height >= minHUnfolded &&
+					height <= maxHUnfolded) ||
+				(height >= minWUnfolded &&
+					height <= maxWUnfolded &&
+					width >= minHUnfolded &&
+					width <= maxHUnfolded);
 
 			result.isUnfolded = isUnfoldedMatch;
-			if (DEBUG_MODE) console.log(`Foldable Detect: Spec Match - Unfolded state: ${result.isUnfolded}`);
+			if (DEBUG_MODE)
+				console.log(`Foldable Detect: Spec Match - Unfolded state: ${result.isUnfolded}`);
 			return true; // Stop checking once a model matches
 		}
 	}
 	if (DEBUG_MODE) console.log('Foldable Detect: Spec Match - No matching model found.');
 	return false; // No spec match found
 }
-
 
 // --- Utilities Export ---
 /**
@@ -285,9 +307,9 @@ export const FoldableDeviceUtils = {
 	}) {
 		if (typeof localStorage !== 'undefined') {
 			localStorage.setItem('foldableDeviceOverride', JSON.stringify(settings));
-			if (DEBUG_MODE) console.log("Foldable Utils: Set Override", settings);
+			if (DEBUG_MODE) console.log('Foldable Utils: Set Override', settings);
 		} else {
-			console.warn("Foldable Utils: Cannot set override, localStorage not available.");
+			console.warn('Foldable Utils: Cannot set override, localStorage not available.');
 		}
 	},
 
@@ -298,9 +320,9 @@ export const FoldableDeviceUtils = {
 	clearManualOverride() {
 		if (typeof localStorage !== 'undefined') {
 			localStorage.removeItem('foldableDeviceOverride');
-			if (DEBUG_MODE) console.log("Foldable Utils: Cleared Override");
+			if (DEBUG_MODE) console.log('Foldable Utils: Cleared Override');
 		} else {
-			console.warn("Foldable Utils: Cannot clear override, localStorage not available.");
+			console.warn('Foldable Utils: Cannot clear override, localStorage not available.');
 		}
 	},
 
@@ -309,7 +331,7 @@ export const FoldableDeviceUtils = {
 	 * @returns {FoldableDetectionResult} The latest detection result.
 	 */
 	refreshDetection() {
-		if (DEBUG_MODE) console.log("Foldable Utils: Refreshing detection...");
+		if (DEBUG_MODE) console.log('Foldable Utils: Refreshing detection...');
 		return detectFoldableDevice();
 	},
 
@@ -319,23 +341,29 @@ export const FoldableDeviceUtils = {
 	 */
 	getDebugInfo: (): object => {
 		if (typeof window === 'undefined' || typeof navigator === 'undefined') {
-			return { error: "Cannot get debug info outside browser environment." };
+			return { error: 'Cannot get debug info outside browser environment.' };
 		}
 		const currentDetection = detectFoldableDevice(); // Run detection to get current state
 		const hasManualOverride = localStorage.getItem('foldableDeviceOverride') !== null;
 		let apiChecks = {};
 		try {
 			apiChecks = {
-				isScreenSpanning: window.matchMedia('(screen-spanning: single-fold-vertical)').matches || window.matchMedia('(screen-spanning: single-fold-horizontal)').matches,
-				// @ts-ignore
-				getWindowSegmentsLength: ('getWindowSegments' in navigator && typeof navigator.getWindowSegments === 'function') ? navigator.getWindowSegments().length : 'N/A',
-				// @ts-ignore
-				visualViewportSegmentsLength: (window.visualViewport && 'segments' in window.visualViewport) ? window.visualViewport.segments?.length : 'N/A',
-			}
-		} catch(e) {
-			if(DEBUG_MODE) console.error("Error getting API check info:", e);
+				isScreenSpanning:
+					window.matchMedia('(screen-spanning: single-fold-vertical)').matches ||
+					window.matchMedia('(screen-spanning: single-fold-horizontal)').matches,
+				getWindowSegmentsLength:
+					'getWindowSegments' in navigator &&
+					typeof (navigator as any).getWindowSegments === 'function'
+						? (navigator as any).getWindowSegments().length
+						: 'N/A',
+				visualViewportSegmentsLength:
+					window.visualViewport && 'segments' in (window.visualViewport as any)
+						? (window.visualViewport as any).segments?.length
+						: 'N/A',
+			};
+		} catch (e) {
+			if (DEBUG_MODE) console.error('Error getting API check info:', e);
 		}
-
 
 		return {
 			currentDetection,
@@ -344,16 +372,16 @@ export const FoldableDeviceUtils = {
 				width: window.innerWidth,
 				height: window.innerHeight,
 				pixelRatio: window.devicePixelRatio,
-                aspectRatio: (window.innerWidth / window.innerHeight).toFixed(3)
+				aspectRatio: (window.innerWidth / window.innerHeight).toFixed(3),
 			},
 			screenDimensions: {
 				width: window.screen.width,
 				height: window.screen.height,
 				availWidth: window.screen.availWidth,
-				availHeight: window.screen.availHeight
+				availHeight: window.screen.availHeight,
 			},
 			userAgent: navigator.userAgent,
-			apiChecks
+			apiChecks,
 		};
-	}
+	},
 };

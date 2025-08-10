@@ -20,7 +20,7 @@ Beautiful iOS-style toggle between halved and quartered slice sizes for circular
 	// Options for the iOS toggle
 	const sliceSizeOptions = [
 		{ value: 'HALVED', label: 'Halved', icon: '◗' },
-		{ value: 'QUARTERED', label: 'Quartered', icon: '◐' }
+		{ value: 'QUARTERED', label: 'Quartered', icon: '◐' },
 	];
 
 	// Handle value change

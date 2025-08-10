@@ -35,7 +35,7 @@ Matches the desktop version's header styling exactly:
 	}
 
 	.unified-title {
-		font-family: "Monotype Corsiva", cursive, serif;
+		font-family: 'Monotype Corsiva', cursive, serif;
 		font-size: 24px;
 		font-weight: bold;
 		text-align: center;
@@ -46,9 +46,9 @@ Matches the desktop version's header styling exactly:
 	}
 
 	/* Fallback fonts if Monotype Corsiva isn't available */
-	@supports not (font-family: "Monotype Corsiva") {
+	@supports not (font-family: 'Monotype Corsiva') {
 		.unified-title {
-			font-family: "Brush Script MT", "Lucida Handwriting", cursive, serif;
+			font-family: 'Brush Script MT', 'Lucida Handwriting', cursive, serif;
 		}
 	}
 
@@ -57,11 +57,11 @@ Matches the desktop version's header styling exactly:
 		.unified-title {
 			font-size: 20px;
 		}
-		
+
 		.title-section {
 			margin: 12px;
 		}
-		
+
 		.option-picker-header {
 			padding: 12px;
 		}
@@ -71,11 +71,11 @@ Matches the desktop version's header styling exactly:
 		.unified-title {
 			font-size: 18px;
 		}
-		
+
 		.title-section {
 			margin: 8px;
 		}
-		
+
 		.option-picker-header {
 			padding: 8px;
 		}

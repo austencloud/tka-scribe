@@ -1,6 +1,6 @@
 /**
  * Simple configuration state management for GeneratePanel
- * 
+ *
  * Just extracts the configuration logic from GeneratePanel.svelte without over-engineering
  */
 
@@ -95,12 +95,16 @@ export function createGenerationConfigState(initialConfig?: Partial<GenerationCo
 
 	return {
 		// State
-		get config() { return config; },
-		get isFreeformMode() { return isFreeformMode; },
-		
+		get config() {
+			return config;
+		},
+		get isFreeformMode() {
+			return isFreeformMode;
+		},
+
 		// Actions
 		updateConfig,
-		
+
 		// Event handlers
 		onLevelChanged,
 		onLengthChanged,

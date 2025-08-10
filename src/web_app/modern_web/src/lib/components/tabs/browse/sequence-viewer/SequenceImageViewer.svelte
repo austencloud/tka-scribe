@@ -13,7 +13,7 @@
 		currentVariation,
 		currentVariationIndex = 0,
 		onNextVariation,
-		onPrevVariation
+		onPrevVariation,
 	}: Props = $props();
 
 	// Image loading state
@@ -38,9 +38,7 @@
 	}
 
 	// Check if navigation is available
-	let hasMultipleVariations = $derived(
-		sequence?.variations && sequence.variations.length > 1
-	);
+	let hasMultipleVariations = $derived(sequence?.variations && sequence.variations.length > 1);
 
 	let canGoPrev = $derived(currentVariationIndex > 0);
 	let canGoNext = $derived(

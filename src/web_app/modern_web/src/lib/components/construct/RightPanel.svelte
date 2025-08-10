@@ -30,8 +30,14 @@
 	const IN_DELAY = OUT_DURATION; // Wait for out transition to complete
 
 	// Transition parameters using runes
-	let fadeOutParams = $derived(shouldAnimate(animationSettings) ? { duration: OUT_DURATION } : { duration: 0 });
-	let fadeInParams = $derived(shouldAnimate(animationSettings) ? { duration: IN_DURATION, delay: IN_DELAY } : { duration: 0 });
+	let fadeOutParams = $derived(
+		shouldAnimate(animationSettings) ? { duration: OUT_DURATION } : { duration: 0 }
+	);
+	let fadeInParams = $derived(
+		shouldAnimate(animationSettings)
+			? { duration: IN_DURATION, delay: IN_DELAY }
+			: { duration: 0 }
+	);
 
 	// Event handlers for child components
 	function handleBeatModified(beatIndex: number, beatData: BeatData) {

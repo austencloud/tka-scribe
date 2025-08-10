@@ -103,8 +103,13 @@ export function parseCoordinates(coordString: string): { x: number; y: number } 
 	if (!coordString || coordString === 'None') return null;
 
 	try {
-		const [x, y] = coordString.replace(/[()]/g, '').split(', ').map(parseFloat);
-		if (isNaN(x) || isNaN(y)) {
+		const parts = coordString.replace(/[()]/g, '').split(', ').map(parseFloat);
+		if (parts.length !== 2) {
+			console.error(`Invalid coordinate format: "${coordString}"`);
+			return null;
+		}
+		const [x, y] = parts;
+		if (x === undefined || y === undefined || isNaN(x) || isNaN(y)) {
 			console.error(`Invalid coordinates parsed: "${coordString}"`);
 			return null;
 		}

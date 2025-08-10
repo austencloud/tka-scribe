@@ -2,7 +2,37 @@
  * Sophisticated Option Picker State using ONLY Svelte 5 Runes
  *
  * Complete port of the legacy system with advanced features using pure runes:
- * - Persistent UI state management
+ * - 		if (sequence && sequence.length > 			// For empty sequence, try to get start position from localStorage
+			const startPositionData = localStorage.getItem('start_position');
+			if (startPositionData) {
+				const startPosition = JSON.parse(startPositionData);
+				const endPosition = typeof startPosition.endPos === 'string' ? startPosition.endPos : null;
+				if (endPosition) {
+					console.log(`🎯 Runes loading options for start position: ${endPosition}`);
+
+					const optionDataService = new OptionDataService();
+					await optionDataService.initialize();
+
+					nextOptions = await optionDataService.getNextOptionsFromEndPosition(
+						endPosition,
+						GridMode.DIAMOND,
+						{}
+					);astBeat = sequence[sequence.length - 1];
+			const endPosition = typeof lastBeat?.end_position === 'string' ? lastBeat.end_position :
+				typeof lastBeat?.metadata?.endPosition === 'string' ? lastBeat.metadata.endPosition : null;
+
+			if (endPosition && typeof endPosition === 'string') {
+				console.log(`🎯 Runes loading options for end position: ${endPosition}`);
+
+				// Create OptionDataService instance
+				const optionDataService = new OptionDataService();
+				await optionDataService.initialize();
+
+				nextOptions = await optionDataService.getNextOptionsFromEndPosition(
+					endPosition,
+					GridMode.DIAMOND,
+					{} // No filters
+				);ate management
  * - Sophisticated filtering and grouping
  * - Real option data service integration
  * - Performance optimizations
@@ -160,7 +190,7 @@ export function createOptionPickerRunes() {
 				const lastBeat = sequence[sequence.length - 1];
 				const endPosition = lastBeat?.end_position || lastBeat?.metadata?.endPosition;
 
-				if (endPosition) {
+				if (endPosition && typeof endPosition === 'string') {
 					console.log(`🎯 Runes loading options for end position: ${endPosition}`);
 
 					// Create OptionDataService instance
@@ -180,7 +210,8 @@ export function createOptionPickerRunes() {
 				const startPositionData = localStorage.getItem('start_position');
 				if (startPositionData) {
 					const startPosition = JSON.parse(startPositionData);
-					const endPosition = startPosition.endPos;
+					const endPosition =
+						typeof startPosition.endPos === 'string' ? startPosition.endPos : null;
 					if (endPosition) {
 						console.log(`🎯 Runes loading options for start position: ${endPosition}`);
 

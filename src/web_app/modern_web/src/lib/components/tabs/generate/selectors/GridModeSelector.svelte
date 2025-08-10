@@ -20,7 +20,7 @@ A compact control using segmented control for selecting between Diamond and Box 
 	// Options for the segmented control
 	const gridOptions = [
 		{ value: 'DIAMOND', label: 'Diamond', icon: '◆' },
-		{ value: 'BOX', label: 'Box', icon: '⬜' }
+		{ value: 'BOX', label: 'Box', icon: '⬜' },
 	];
 
 	// Handle mode change

@@ -162,7 +162,7 @@ export function pictographDataToObject(pictograph: PictographData): Record<strin
 export function pictographDataFromObject(data: Record<string, unknown>): PictographData {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const partialData: any = {};
-	
+
 	if (data.id !== undefined) {
 		partialData.id = data.id;
 	}
@@ -211,6 +211,6 @@ export function pictographDataFromObject(data: Record<string, unknown>): Pictogr
 	if (data.metadata !== undefined) {
 		partialData.metadata = data.metadata;
 	}
-	
+
 	return createPictographData(partialData);
 }
