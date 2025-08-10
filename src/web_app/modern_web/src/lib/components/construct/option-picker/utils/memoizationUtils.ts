@@ -5,7 +5,7 @@
  * @param keyFn Optional function to generate a custom cache key
  * @returns Memoized function with the same signature as the original
  */
-export function memoizeLRU<T extends (...args: any[]) => any>(
+export function memoizeLRU<T extends (...args: unknown[]) => unknown>(
 	fn: T,
 	maxSize: number = 100,
 	keyFn?: (...args: Parameters<T>) => string
