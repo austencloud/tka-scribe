@@ -1,4 +1,5 @@
 <script lang="ts">
+	import type { SequenceData } from '$domain/SequenceData';
 	import FilterSelectionPanel from './browse/FilterSelectionPanel.svelte';
 	import SequenceBrowserPanel from './browse/SequenceBrowserPanel.svelte';
 	import SequenceViewerPanel from './browse/SequenceViewerPanel.svelte';
@@ -66,7 +67,7 @@
 		<!-- Right side - Sequence Viewer Panel (1/3 width) -->
 		<div class="right-panel">
 			<SequenceViewerPanel
-				sequence={selectedSequence}
+				sequence={selectedSequence as (SequenceData & { variations?: unknown[] }) | null}
 				onBackToBrowser={handleBackToBrowser}
 				onSequenceAction={handleSequenceAction}
 			/>

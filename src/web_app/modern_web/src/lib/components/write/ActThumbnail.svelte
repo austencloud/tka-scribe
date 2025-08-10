@@ -37,7 +37,7 @@
 				name: actInfo.name,
 				description: actInfo.description,
 				sequences: Array(actInfo.sequenceCount).fill(null),
-				musicFile: actInfo.hasMusic ? { name: 'music.mp3', path: '' } : undefined,
+				...(actInfo.hasMusic ? { musicFile: { name: 'music.mp3', path: '' } } : {}),
 				metadata: { created: new Date(), modified: actInfo.lastModified },
 			})
 	);
@@ -144,6 +144,7 @@
 		overflow: hidden;
 		display: -webkit-box;
 		-webkit-line-clamp: 2;
+		line-clamp: 2;
 		-webkit-box-orient: vertical;
 		text-overflow: ellipsis;
 	}

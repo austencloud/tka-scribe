@@ -4,7 +4,7 @@
 	import SequenceViewer from './sequence-viewer/SequenceViewer.svelte';
 
 	interface Props {
-		sequence?: SequenceData;
+		sequence?: (SequenceData & { variations?: unknown[] }) | null;
 		onBackToBrowser?: () => void;
 		onSequenceAction?: (action: string, sequence: SequenceData) => void;
 	}

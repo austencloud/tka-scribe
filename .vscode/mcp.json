@@ -1,0 +1,53 @@
+{
+	"servers": {
+		"filesystem": {
+			"type": "stdio",
+			"command": "npx",
+			"args": [
+				"-y",
+				"@modelcontextprotocol/server-filesystem",
+				"F:\\\\CODE\\\\TKA"
+			]
+		},
+		"mcp-feedback-enhanced": {
+			"type": "stdio",
+			"command": "uvx",
+			"args": ["mcp-feedback-enhanced@latest"],
+			"env": {
+				// optional tweaks if you want the web UI, logging, etc.
+				// "MCP_DEBUG": "false",
+				"MCP_WEB_HOST": "127.0.0.1",
+				"MCP_WEB_PORT": "8765"
+			}
+		},
+		"sequential-thinking": {
+			"type": "stdio",
+			"command": "npx",
+			"args": ["-y", "@modelcontextprotocol/server-sequential-thinking"]
+		},
+		"filescope-mcp": {
+		"type": "stdio",
+		"command": "node",
+		"args": [
+			"C:\\\\New folder\\\\FileScopeMCP\\\\dist\\\\mcp-server.js",
+			"--base-dir",
+			"F:\\\\CODE\\\\TKA"
+		]
+		},
+		"gitingest": {
+			"type": "stdio",
+			"command": "npx",
+			"args": ["-y", "mcp-git-ingest"]
+		},
+		"vegalite": {
+			"type": "stdio",
+			"command": "npx",
+			"args": ["-y", "mcp-vegalite-server"]
+		},
+		"uml-mcp": {
+			"type": "stdio",
+			"command": "npx",
+			"args": ["-y", "uml-mcp-server"]
+		}
+	}
+}

@@ -1,5 +1,7 @@
 <!-- SelectInput.svelte - Improved contrast select dropdown -->
 <script lang="ts">
+	import { createEventDispatcher } from 'svelte';
+
 	interface Option {
 		value: string;
 		label: string;
@@ -14,6 +16,8 @@
 		required?: boolean;
 		onchange?: (value: string) => void;
 	}
+
+	const dispatch = createEventDispatcher<{ change: string }>();
 
 	let {
 		label,
@@ -39,6 +43,7 @@
 		const target = event.target;
 		if (target instanceof HTMLSelectElement) {
 			onchange?.(target.value);
+			dispatch('change', target.value);
 		}
 	}
 </script>

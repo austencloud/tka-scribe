@@ -7,17 +7,18 @@
 <script lang="ts">
 	import ExportPanel from '$components/export/ExportPanel.svelte';
 	import GraphEditor from '$components/graph-editor/GraphEditor.svelte';
+	import type { ArrowData } from '$lib/domain/ArrowData';
+	import { ArrowType } from '$lib/domain/enums';
 	import { constructTabEventService } from '$services/implementations/ConstructTabEventService';
 	import { constructTabState } from '$stores/constructTabState.svelte';
 	import BuildTabContent from './BuildTabContent.svelte';
 	import GeneratePanel from './generate/GeneratePanel.svelte';
 	import TabNavigation from './TabNavigation.svelte';
-
 	// Import Svelte's built-in fade transition for consistency with main tabs
-	import { fade } from 'svelte/transition';
-	import { shouldAnimate } from '$lib/utils/simpleFade';
+	import type { BeatData } from '$lib/domain';
 	import { getAnimationSettings } from '$lib/utils/animationControl';
-	import type { ArrowData, BeatData } from '$lib/domain';
+	import { shouldAnimate } from '$lib/utils/simpleFade';
+	import { fade } from 'svelte/transition';
 
 	// Reactive state from store
 	let activeRightPanel = $derived(constructTabState.activeRightPanel);
@@ -44,8 +45,34 @@
 		constructTabEventService.handleBeatModified(beatIndex, beatData);
 	}
 
-	function handleArrowSelected(arrowData: ArrowData) {
-		constructTabEventService.handleArrowSelected(arrowData);
+	function handleArrowSelected(arrowData: {
+		color: string;
+		orientation?: string;
+		turn_amount?: number;
+		type: string;
+	}) {
+		// Convert to ArrowData format for the service
+		const fullArrowData: ArrowData = {
+			id: `arrow_${Date.now()}`,
+			arrow_type: arrowData.type as ArrowType,
+			color: arrowData.color,
+			turns: arrowData.turn_amount || 0,
+			is_mirrored: false,
+			motion_type: 'static',
+			start_orientation: 'in',
+			end_orientation: 'in',
+			rotation_direction: 'clockwise',
+			location: null,
+			position_x: 0,
+			position_y: 0,
+			rotation_angle: 0,
+			coordinates: null,
+			svg_center: null,
+			svg_mirrored: false,
+			is_visible: true,
+			is_selected: false,
+		};
+		constructTabEventService.handleArrowSelected(fullArrowData);
 	}
 
 	function handleGraphEditorVisibilityChanged(isVisible: boolean) {

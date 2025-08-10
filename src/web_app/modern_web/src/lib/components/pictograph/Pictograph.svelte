@@ -222,12 +222,9 @@ instead of stores. It orchestrates the rendering of Grid, Props, Arrows, and Gly
 			<!-- Arrows (rendered after props) -->
 			{#each arrowsToRender() as { color, arrowData } (color)}
 				{@const motionData = effectivePictographData()?.motions?.[color]}
-				{@const letter = displayLetter()}
 				<Arrow
 					{arrowData}
 					{...motionData && { motionData }}
-					gridMode={effectivePictographData()?.grid_data?.grid_mode || 'diamond'}
-					{...letter && { letter }}
 					onLoaded={() => handleComponentLoaded(`${color}-arrow`)}
 					onError={(error) => handleComponentError(`${color}-arrow`, error)}
 				/>

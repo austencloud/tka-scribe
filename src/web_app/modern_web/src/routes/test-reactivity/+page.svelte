@@ -1,6 +1,6 @@
 <!-- Minimal test to isolate reactivity issue -->
-<script>
-	import { createOptionPickerRunes } from '$lib/components/construct/option-picker/optionPickerRunes.svelte.ts';
+<script lang="ts">
+	import { createOptionPickerRunes } from '$lib/components/construct/option-picker/optionPickerRunes.svelte';
 
 	// Test 1: Direct state access
 	const state = createOptionPickerRunes();
@@ -17,9 +17,9 @@
 	function loadTestOptions() {
 		console.log('🧪 Manually setting test options');
 		state.setOptions([
-			{ id: 1, letter: 'A', name: 'Test Option 1' },
-			{ id: 2, letter: 'B', name: 'Test Option 2' },
-			{ id: 3, letter: 'C', name: 'Test Option 3' },
+			{ id: '1', letter: 'A', name: 'Test Option 1' } as any,
+			{ id: '2', letter: 'B', name: 'Test Option 2' } as any,
+			{ id: '3', letter: 'C', name: 'Test Option 3' } as any,
 		]);
 	}
 
@@ -47,6 +47,6 @@
 <div>
 	<h2>Options List</h2>
 	{#each state.optionsData as option}
-		<div>{option.letter}: {option.name}</div>
+		<div>{option.letter}: {(option as any).name}</div>
 	{/each}
 </div>

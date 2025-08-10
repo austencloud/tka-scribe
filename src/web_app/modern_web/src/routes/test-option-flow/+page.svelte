@@ -58,7 +58,7 @@
 
 			if (typeof window !== 'undefined' && 'csvData' in window) {
 				const csvData = (
-					window as { csvData: { diamondData: unknown[]; boxData: unknown[] } }
+					window as unknown as { csvData: { diamondData: unknown[]; boxData: unknown[] } }
 				).csvData;
 				logResult(
 					`CSV data found: Diamond=${csvData.diamondData.length} chars, Box=${csvData.boxData.length} chars`

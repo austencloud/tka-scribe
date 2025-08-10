@@ -5,7 +5,7 @@
 	interface Props {
 		sequence?: SequenceData & {
 			difficulty?: number;
-			tags?: string[];
+			tags?: readonly string[];
 			description?: string;
 			author?: string;
 			dateCreated?: string;

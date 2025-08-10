@@ -1,10 +1,5 @@
 <script lang="ts">
-	// Global augmentation must be at top-level (before usage) to avoid TS1234 inside Svelte script.
-	declare global {
-		interface Window {
-			__runesBackgroundContext?: ReturnType<typeof setRunesBackgroundContext>;
-		}
-	}
+	// Global types are now in src/lib/types/global.d.ts
 	import { browser } from '$app/environment';
 	import { onDestroy, onMount } from 'svelte';
 	import { setRunesBackgroundContext } from './contexts/BackgroundContext.svelte';
@@ -50,7 +45,7 @@
 
 			if (typeof window !== 'undefined') {
 				// Attach for debugging / external access
-				window.__runesBackgroundContext = runesCtx;
+				(window as any).__runesBackgroundContext = runesCtx;
 			}
 		}
 	});

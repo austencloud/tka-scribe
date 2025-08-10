@@ -24,7 +24,8 @@ Uses pure runes instead of stores for reactivity.
 	let isLoaded = $state(false);
 	let hasError = $state(false);
 	let errorMessage = $state<string | null>(null);
-	let imageElement = $state<SVGImageElement | null>(null);
+	// Image element for potential future use
+	let _imageElement = $state<SVGImageElement | null>(null);
 
 	// Derived state - grid image path
 	const gridImagePath = $derived(() => {
@@ -121,7 +122,7 @@ Uses pure runes instead of stores for reactivity.
 	{#if !hasError}
 		<!-- Primary grid image -->
 		<image
-			bind:this={imageElement}
+			bind:this={_imageElement}
 			href={gridImagePath()}
 			x="0"
 			y="0"

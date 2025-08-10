@@ -106,8 +106,10 @@ export class ArrowPositioningService implements IArrowPositioningService {
 
 	/**
 	 * Get initial position based on location and grid data
+	 * @private - Reserved for future implementation
 	 */
-	private getInitialPosition(location: Location, gridData: GridData): { x: number; y: number } {
+	// @ts-expect-error - Method reserved for future implementation
+	private _getInitialPosition(location: Location, gridData: GridData): { x: number; y: number } {
 		try {
 			// Try to get position from grid data
 			const gridPoint =
@@ -129,8 +131,10 @@ export class ArrowPositioningService implements IArrowPositioningService {
 
 	/**
 	 * Apply positioning adjustments based on motion and placement data
+	 * @private - Reserved for future implementation
 	 */
-	private async applyPositionAdjustments(
+	// @ts-expect-error - Method reserved for future implementation
+	private async _applyPositionAdjustments(
 		basePosition: { x: number; y: number },
 		_arrowData: ArrowData,
 		_pictographData: PictographData

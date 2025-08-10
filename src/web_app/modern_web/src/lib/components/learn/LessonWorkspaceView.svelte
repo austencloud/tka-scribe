@@ -1,5 +1,6 @@
 <!-- LessonWorkspaceView.svelte - Enhanced lesson workspace with full functionality -->
 <script lang="ts">
+	import type { PictographData } from '$lib/domain/PictographData';
 	import { LessonConfigService } from '$lib/services/learn/LessonConfigService';
 	import { QuestionGeneratorService } from '$lib/services/learn/QuestionGeneratorService';
 	import { QuizSessionService } from '$lib/services/learn/QuizSessionService';
@@ -107,10 +108,14 @@
 		selectedAnswerId = null;
 	}
 
-	function handleAnswerSelected(event: CustomEvent) {
+	function handleAnswerSelected(data: {
+		answerId: string;
+		answerContent: PictographData;
+		isCorrect: boolean;
+	}) {
 		if (isAnswered || !currentQuestion || !sessionId) return;
 
-		const { answerId, isCorrect } = event.detail;
+		const { answerId, isCorrect } = data;
 		const timeToAnswer = Date.now() - questionStartTime;
 
 		// Mark as answered
@@ -248,8 +253,8 @@
 					{showFeedback}
 					{selectedAnswerId}
 					{isAnswered}
-					on:answerSelected={handleAnswerSelected}
-					on:nextQuestion={handleNextQuestion}
+					onAnswerSelected={handleAnswerSelected}
+					onNextQuestion={handleNextQuestion}
 				/>
 			{:else}
 				<div class="no-question">

@@ -1,6 +1,6 @@
-<script>
+<script lang="ts">
 	// Import the ACTUAL runes function to test it in isolation
-	import { createOptionPickerRunes } from '$lib/components/construct/option-picker/optionPickerRunes.svelte.ts';
+	import { createOptionPickerRunes } from '$lib/components/construct/option-picker/optionPickerRunes.svelte';
 
 	console.log('🔧 Test: Importing real createOptionPickerRunes function');
 
@@ -9,11 +9,11 @@
 	console.log('🔧 Test: Real runes created:', !!testRunes);
 
 	// Test component reactivity using EXACT OptionPicker pattern
-	let effectiveOptions = $state([]);
-	let groupedOptions = $state({});
+	let effectiveOptions = $state<any[]>([]);
+	let groupedOptions = $state<Record<string, any[]>>({});
 
 	// Helper function - same as OptionPicker
-	function getLetterType(letter) {
+	function getLetterType(letter: any) {
 		if (!letter) return 'Unknown';
 		// Simplified grouping for test
 		if (letter >= 'A' && letter <= 'F') return 'Type1';
@@ -36,7 +36,7 @@
 		effectiveOptions = [...allOptions];
 
 		// Group options using legacy pattern (same as OptionPicker)
-		const groups = {};
+		const groups: Record<string, any[]> = {};
 		allOptions.forEach((option) => {
 			const groupKey = getLetterType(option.letter);
 			if (!groups[groupKey]) groups[groupKey] = [];
@@ -45,7 +45,7 @@
 
 		// Sort keys in the same order as OptionPicker
 		const sortedKeys = ['Type1', 'Type2', 'Type3', 'Unknown'];
-		const sortedGroups = {};
+		const sortedGroups: Record<string, any[]> = {};
 		sortedKeys.forEach((key) => {
 			if (groups[key]) {
 				sortedGroups[key] = groups[key];
@@ -55,7 +55,7 @@
 		console.log('🔍 Test component grouped result:', {
 			groupKeys: Object.keys(sortedGroups),
 			groupCounts: Object.entries(sortedGroups).map(
-				([key, opts]) => `${key}: ${opts.length}`
+				([key, opts]) => `${key}: ${(opts as any[]).length}`
 			),
 		});
 

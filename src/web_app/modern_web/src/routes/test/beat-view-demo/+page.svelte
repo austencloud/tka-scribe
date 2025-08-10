@@ -15,7 +15,7 @@ Test route for E2E BeatView testing with multiple beats and interactions.
 			beat_number: 1,
 			pictograph_data: createPictographData({
 				letter: 'A',
-				grid_data: { mode: 'diamond' },
+				grid_data: { grid_mode: 'diamond' } as any,
 				arrows: {
 					blue: {
 						id: 'blue-arrow-1',
@@ -32,7 +32,10 @@ Test route for E2E BeatView testing with multiple beats and interactions.
 						rotation_angle: 0,
 						svg_center: null,
 						svg_mirrored: false,
-						metadata: {},
+						position_x: 475,
+						position_y: 475,
+						is_visible: true,
+						is_selected: false,
 					},
 					red: {
 						id: 'red-arrow-1',
@@ -49,7 +52,10 @@ Test route for E2E BeatView testing with multiple beats and interactions.
 						rotation_angle: 180,
 						svg_center: null,
 						svg_mirrored: false,
-						metadata: {},
+						position_x: 475,
+						position_y: 475,
+						is_visible: true,
+						is_selected: false,
 					},
 				},
 			}),
@@ -66,7 +72,7 @@ Test route for E2E BeatView testing with multiple beats and interactions.
 			beat_number: 3,
 			pictograph_data: createPictographData({
 				letter: 'Φ',
-				grid_data: { mode: 'box' },
+				grid_data: { grid_mode: 'box' } as any,
 				arrows: {
 					blue: {
 						id: 'blue-arrow-3',
@@ -83,7 +89,10 @@ Test route for E2E BeatView testing with multiple beats and interactions.
 						rotation_angle: 45,
 						svg_center: null,
 						svg_mirrored: true,
-						metadata: {},
+						position_x: 475,
+						position_y: 475,
+						is_visible: true,
+						is_selected: false,
 					},
 				},
 			}),

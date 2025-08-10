@@ -318,14 +318,16 @@ describe('Data Adapter', () => {
 				},
 			});
 
-			const result = ensureModernPictographData(modern);
+			const result = ensureModernPictographData(modern as unknown as Record<string, unknown>);
 
 			expect(result).toEqual(modern);
 		});
 
 		it('should return null for invalid data', () => {
 			const invalid = null;
-			const result = ensureModernPictographData(invalid);
+			const result = ensureModernPictographData(
+				invalid as unknown as Record<string, unknown>
+			);
 			expect(result).toBeNull();
 		});
 

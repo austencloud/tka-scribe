@@ -30,11 +30,19 @@
 						? 'aurora'
 						: undefined; // default fallback or undefined if no bgType
 
-		return {
-			backgroundType: supportedType,
-			backgroundQuality: settings.backgroundQuality as QualityLevel | undefined,
-			backgroundEnabled: settings.backgroundEnabled,
-		};
+		const result: {
+			backgroundType?: BackgroundType;
+			backgroundQuality?: QualityLevel;
+			backgroundEnabled?: boolean;
+		} = {};
+
+		if (supportedType) result.backgroundType = supportedType;
+		if (settings.backgroundQuality)
+			result.backgroundQuality = settings.backgroundQuality as QualityLevel;
+		if (settings.backgroundEnabled !== undefined)
+			result.backgroundEnabled = settings.backgroundEnabled;
+
+		return result;
 	});
 
 	// Simplified tab configuration

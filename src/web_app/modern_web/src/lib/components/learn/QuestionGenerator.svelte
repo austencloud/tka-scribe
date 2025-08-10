@@ -10,28 +10,42 @@
 	import { QuestionGeneratorService } from '$lib/services/learn/QuestionGeneratorService';
 	import type { AnswerOption, LessonType, QuestionData } from '$lib/types/learn';
 	import { AnswerFormat } from '$lib/types/learn';
-	import { createEventDispatcher } from 'svelte';
+	// Events are now handled via callbacks in props
 	import AnswerButton from './AnswerButton.svelte';
 	import AnswerPictograph from './AnswerPictograph.svelte';
 	import PictographRenderer from './PictographRenderer.svelte';
 
 	// Props
-	export let lessonType: LessonType;
-	export let questionData: QuestionData | null = null;
-	export let showFeedback = false;
-	export let selectedAnswerId: string | null = null;
-	export let isAnswered = false;
-
-	// Events
-	const dispatch = createEventDispatcher<{
-		answerSelected: { answerId: string; answerContent: PictographData; isCorrect: boolean };
-		nextQuestion: void;
-	}>();
-
-	// Reactive statements
-	$: if (lessonType && !questionData) {
-		generateNewQuestion();
+	interface Props {
+		lessonType: LessonType;
+		questionData?: QuestionData | null;
+		showFeedback?: boolean;
+		selectedAnswerId?: string | null;
+		isAnswered?: boolean;
+		onAnswerSelected?: (data: {
+			answerId: string;
+			answerContent: PictographData;
+			isCorrect: boolean;
+		}) => void;
+		onNextQuestion?: () => void;
 	}
+
+	let {
+		lessonType,
+		questionData = null,
+		showFeedback = false,
+		selectedAnswerId = null,
+		isAnswered = false,
+		onAnswerSelected,
+		onNextQuestion,
+	}: Props = $props();
+
+	// Reactive effect to generate question when needed
+	$effect(() => {
+		if (lessonType && !questionData) {
+			generateNewQuestion();
+		}
+	});
 
 	// Methods
 	function generateNewQuestion() {
@@ -46,9 +60,9 @@
 		if (isAnswered) return;
 
 		selectedAnswerId = option.id;
-		dispatch('answerSelected', {
+		onAnswerSelected?.({
 			answerId: option.id,
-			answerContent: option.content,
+			answerContent: option.content as PictographData,
 			isCorrect: option.isCorrect,
 		});
 	}
@@ -62,7 +76,7 @@
 		// Generate new question
 		generateNewQuestion();
 
-		dispatch('nextQuestion');
+		onNextQuestion?.();
 	}
 
 	function getAnswerClass(option: AnswerOption): string {
@@ -85,15 +99,17 @@
 		<!-- Question Section -->
 		<div class="question-section">
 			<div class="question-prompt">
-				<h3>{questionData.questionPrompt || 'Choose the correct answer:'}</h3>
+				<h3>{(questionData as any).questionPrompt || 'Choose the correct answer:'}</h3>
 			</div>
 
 			<div class="question-content">
-				{#if questionData.questionType === 'pictograph'}
-					<PictographRenderer pictographData={questionData.questionContent} />
-				{:else if questionData.questionType === 'letter'}
+				{#if (questionData as any).questionType === 'pictograph'}
+					<PictographRenderer
+						pictographData={(questionData as any).questionContent as PictographData}
+					/>
+				{:else if (questionData as any).questionType === 'letter'}
 					<div class="letter-display">
-						<span class="letter">{questionData.questionContent}</span>
+						<span class="letter">{(questionData as any).questionContent}</span>
 					</div>
 				{:else}
 					<div class="text-display">
@@ -111,18 +127,18 @@
 			>
 				{#each questionData.answerOptions as option (option.id)}
 					<div class="answer-option {getAnswerClass(option)}">
-						{#if questionData.answerType === AnswerFormat.BUTTON}
+						{#if (questionData as any).answerType === AnswerFormat.BUTTON}
 							<AnswerButton
-								content={option.content}
+								content={option.content as string}
 								isSelected={selectedAnswerId === option.id}
 								isCorrect={option.isCorrect}
 								{showFeedback}
 								disabled={isAnswered}
 								on:click={() => handleAnswerClick(option)}
 							/>
-						{:else if questionData.answerType === AnswerFormat.PICTOGRAPH}
+						{:else if (questionData as any).answerType === AnswerFormat.PICTOGRAPH}
 							<AnswerPictograph
-								pictographData={option.content}
+								pictographData={option.content as PictographData}
 								isSelected={selectedAnswerId === option.id}
 								isCorrect={option.isCorrect}
 								{showFeedback}
@@ -150,7 +166,7 @@
 					</div>
 				{/if}
 
-				<button class="next-button" on:click={handleNextQuestion}> Next Question </button>
+				<button class="next-button" onclick={handleNextQuestion}> Next Question </button>
 			</div>
 		{/if}
 	{:else}

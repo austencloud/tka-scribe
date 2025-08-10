@@ -54,7 +54,7 @@
 	] as const;
 
 	function handleTabSelect(tabId: string) {
-		switchTab(tabId);
+		switchTab(tabId as 'construct' | 'browse' | 'sequence_card' | 'write' | 'learn');
 	}
 </script>
 
@@ -63,7 +63,10 @@
 		<!-- Background Canvas -->
 		{#if settings.backgroundEnabled}
 			<BackgroundCanvas
-				backgroundType={settings.backgroundType || 'aurora'}
+				backgroundType={settings.backgroundType === 'auroraBorealis' ||
+				settings.backgroundType === 'starfield'
+					? 'aurora'
+					: settings.backgroundType || 'aurora'}
 				quality={settings.backgroundQuality || 'medium'}
 				onReady={() =>
 					console.log(

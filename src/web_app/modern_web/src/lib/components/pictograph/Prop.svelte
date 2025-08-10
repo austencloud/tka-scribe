@@ -28,7 +28,8 @@ Prop Component - Renders SVG props with proper positioning
 		onError,
 	}: Props = $props();
 
-	let propElement = $state<SVGGElement | null>(null); // Used in bind:this
+	// Prop element used in bind:this
+	let _propElement = $state<SVGGElement | null>(null);
 	let loaded = $state(false);
 	let error = $state<string | null>(null);
 	let svgData = $state<{
@@ -263,7 +264,7 @@ Prop Component - Renders SVG props with proper positioning
 
 <!-- Prop Group -->
 <g
-	bind:this={propElement}
+	bind:this={_propElement}
 	class="prop-group {propData?.color}-prop"
 	class:loaded
 	data-prop-color={propData?.color}

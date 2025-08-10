@@ -5,28 +5,12 @@
 	import ButtonPanel from './ButtonPanel.svelte';
 	import SequenceContent from './SequenceContent.svelte';
 
-	let containerElement: HTMLElement;
-	let containerHeight = $state(0);
-	let containerWidth = $state(0);
-
 	const hasSelection = $derived(sequenceStateService.selectedBeatIndex >= 0);
 
 	onMount(() => {
 		workbenchService.initialize();
 
-		// Simple resize observer
-		const observer = new ResizeObserver((entries) => {
-			for (const entry of entries) {
-				containerHeight = entry.contentRect.height;
-				containerWidth = entry.contentRect.width;
-			}
-		});
-
-		if (containerElement) {
-			observer.observe(containerElement);
-		}
-
-		return () => observer.disconnect();
+		// Container element is available for future use if needed
 	});
 
 	function handleDeleteBeat() {
@@ -75,14 +59,10 @@
 	}
 </script>
 
-<div class="workbench" bind:this={containerElement}>
+<div class="workbench">
 	<div class="main-layout">
 		<div class="left-vbox">
-			<SequenceContent
-				{containerHeight}
-				{containerWidth}
-				onBeatSelected={handleBeatSelected}
-			/>
+			<SequenceContent onBeatSelected={handleBeatSelected} />
 		</div>
 		<div class="workbench-button-panel">
 			<ButtonPanel

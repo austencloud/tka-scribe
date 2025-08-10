@@ -13,15 +13,15 @@
  * Direct TypeScript mirror of reference/modern/application/services/positioning/arrows/orchestration/arrow_adjustment_lookup.py
  */
 
-import type { MotionData, PictographData, ArrowData } from '$lib/domain';
+import type { ArrowData, MotionData, PictographData } from '$lib/domain';
 import type {
-	Point,
-	ISpecialPlacementService,
-	IDefaultPlacementService,
-	ISpecialPlacementOriKeyGenerator,
-	IPlacementKeyGenerator,
-	ITurnsTupleKeyGenerator,
 	IAttributeKeyGenerator,
+	IDefaultPlacementService,
+	IPlacementKeyGenerator,
+	ISpecialPlacementOriKeyGenerator,
+	ISpecialPlacementService,
+	ITurnsTupleKeyGenerator,
+	Point,
 } from '../../interfaces';
 
 export class ArrowAdjustmentLookup {

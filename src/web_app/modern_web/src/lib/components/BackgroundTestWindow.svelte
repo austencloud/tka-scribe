@@ -1,7 +1,7 @@
 <!-- BackgroundTestWindow.svelte - Simple test window to preview all backgrounds -->
 <script lang="ts">
-	import BackgroundProvider from './backgrounds/BackgroundProvider.svelte';
 	import BackgroundCanvas from './backgrounds/BackgroundCanvas.svelte';
+	import BackgroundProvider from './backgrounds/BackgroundProvider.svelte';
 	import type { BackgroundType, QualityLevel } from './backgrounds/types/types';
 
 	// State for testing
@@ -26,16 +26,7 @@
 			label: 'Aurora',
 			description: 'Colorful aurora with animated blobs and sparkles',
 		},
-		{
-			value: 'auroraBorealis',
-			label: 'Aurora Borealis',
-			description: 'Northern lights with flowing wave patterns',
-		},
-		{
-			value: 'starfield',
-			label: 'Starfield',
-			description: 'Deep space with twinkling stars and nebula effects',
-		},
+
 		{
 			value: 'bubbles',
 			label: 'Bubbles',
@@ -103,7 +94,9 @@
 							<option value={option.value}>{option.label}</option>
 						{/each}
 					</select>
-					<p class="description">{currentBackgroundInfo.description}</p>
+					<p class="description">
+						{currentBackgroundInfo?.description || 'No description available'}
+					</p>
 				</div>
 
 				<!-- Quality Selector -->
@@ -130,7 +123,7 @@
 					<h3>Current Settings:</h3>
 					<div class="status-item">
 						<strong>Background:</strong>
-						{currentBackgroundInfo.label}
+						{currentBackgroundInfo?.label || 'Unknown'}
 					</div>
 					<div class="status-item">
 						<strong>Quality:</strong>

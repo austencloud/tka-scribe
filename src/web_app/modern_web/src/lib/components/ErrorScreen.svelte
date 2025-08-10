@@ -20,7 +20,7 @@
 
 	const displayMessage = $derived(() => {
 		if (typeof errorDetails === 'object' && errorDetails && 'message' in errorDetails) {
-			return errorDetails.message as string;
+			return (errorDetails as { message: string }).message;
 		}
 		return error;
 	});

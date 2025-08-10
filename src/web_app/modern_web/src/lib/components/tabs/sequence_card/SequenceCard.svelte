@@ -9,6 +9,7 @@
 
 	let { sequence }: Props = $props();
 
+	// Card element used in bind:this
 	let cardElement: HTMLElement;
 	let imageLoaded = $state(false);
 	let imageError = $state(false);
