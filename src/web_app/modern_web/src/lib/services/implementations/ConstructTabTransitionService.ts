@@ -7,11 +7,7 @@
  */
 
 import { constructTabState, type ActiveRightPanel } from '../../stores/constructTabState.svelte';
-import {
-	completeSubTabTransition,
-	transitionToSubTab,
-	type ConstructSubTabId,
-} from '../ui/animation';
+// Simplified transition service without complex fade orchestrator
 
 export class ConstructTabTransitionService {
 	/**
@@ -24,34 +20,9 @@ export class ConstructTabTransitionService {
 			return; // Already on this tab
 		}
 
-		try {
-			// Start sub-tab transition
-			const transitionId = await transitionToSubTab(
-				currentTab as ConstructSubTabId,
-				targetTab as ConstructSubTabId
-			);
-
-			if (transitionId) {
-				constructTabState.setSubTabTransition(true, transitionId);
-
-				// Update active panel for reactive state
-				constructTabState.setActiveRightPanel(targetTab);
-
-				// Complete transition after brief delay
-				setTimeout(() => {
-					completeSubTabTransition(transitionId, currentTab, targetTab);
-					constructTabState.setSubTabTransition(false, null);
-				}, 50);
-
-				console.log(`🎭 Sub-tab transition: ${currentTab} → ${targetTab}`);
-			} else {
-				// Fallback to immediate switch
-				constructTabState.setActiveRightPanel(targetTab);
-			}
-		} catch (error) {
-			console.warn('Sub-tab transition failed, falling back to immediate switch:', error);
-			constructTabState.setActiveRightPanel(targetTab);
-		}
+		// Simple immediate transition without complex fade orchestrator
+		constructTabState.setActiveRightPanel(targetTab);
+		console.log(`🎭 Sub-tab transition: ${currentTab} → ${targetTab}`);
 	}
 
 	/**

@@ -29,7 +29,7 @@ export class AuroraBorealisBackgroundSystem implements BackgroundSystem {
 		{ r: 150, g: 255, b: 200, a: 0.08 }, // Light green
 	];
 
-	public initialize(dimensions: Dimensions, quality: QualityLevel): void {
+	public initialize(_dimensions: Dimensions, quality: QualityLevel): void {
 		this.quality = quality;
 		this.isInitialized = true;
 
@@ -44,15 +44,21 @@ export class AuroraBorealisBackgroundSystem implements BackgroundSystem {
 	public update(_dimensions: Dimensions): void {
 		if (!this.isInitialized) return;
 
+		// Respect accessibility settings
+		const animationSpeed = this.accessibility.reducedMotion ? 0.002 : 1.0;
+
 		// Update light wave positions for smooth animation
 		// Advance each wave at slightly different speeds for natural variation
 		for (let i = 0; i < this.lightWaves.length; i++) {
-			const waveSpeed = 0.008 + i * 0.002; // Varying speeds
-			this.lightWaves[i] += waveSpeed;
+			const currentWave = this.lightWaves[i];
+			if (currentWave !== undefined) {
+				const waveSpeed = (0.008 + i * 0.002) * animationSpeed; // Varying speeds with accessibility consideration
+				this.lightWaves[i] = currentWave + waveSpeed;
 
-			// Keep waves within reasonable bounds to prevent overflow
-			if (this.lightWaves[i] > 4 * Math.PI) {
-				this.lightWaves[i] -= 4 * Math.PI;
+				// Keep waves within reasonable bounds to prevent overflow
+				if (this.lightWaves[i]! > 4 * Math.PI) {
+					this.lightWaves[i] = this.lightWaves[i]! - 4 * Math.PI;
+				}
 			}
 		}
 	}
@@ -81,6 +87,8 @@ export class AuroraBorealisBackgroundSystem implements BackgroundSystem {
 
 	public setAccessibility(settings: AccessibilitySettings): void {
 		this.accessibility = settings;
+		// Note: Accessibility settings would be used to modify animation behavior
+		// For example, reducing motion if settings.reducedMotion is true
 	}
 
 	public cleanup(): void {
@@ -128,8 +136,10 @@ export class AuroraBorealisBackgroundSystem implements BackgroundSystem {
 
 		for (let i = 0; i < this.lightWaves.length; i++) {
 			const wave = this.lightWaves[i];
-			const position = (Math.sin(wave) + 1) / 2; // Normalize to 0-1
-			wavePositions.push([position, i]);
+			if (wave !== undefined) {
+				const position = (Math.sin(wave) + 1) / 2; // Normalize to 0-1
+				wavePositions.push([position, i]);
+			}
 		}
 
 		// Sort positions to ensure proper gradient ordering
@@ -142,11 +152,13 @@ export class AuroraBorealisBackgroundSystem implements BackgroundSystem {
 			const colorIndex = waveIndex % this.auroraColors.length;
 			const color = this.auroraColors[colorIndex];
 
-			// Add some dynamic intensity variation
-			const intensityFactor = (Math.sin(this.lightWaves[waveIndex] * 1.5) + 1) / 2;
-			const alpha = color.a * intensityFactor;
+			if (color && this.lightWaves[waveIndex] !== undefined) {
+				// Add some dynamic intensity variation
+				const intensityFactor = (Math.sin(this.lightWaves[waveIndex]! * 1.5) + 1) / 2;
+				const alpha = color.a * intensityFactor;
 
-			gradient.addColorStop(pos, `rgba(${color.r}, ${color.g}, ${color.b}, ${alpha})`);
+				gradient.addColorStop(pos, `rgba(${color.r}, ${color.g}, ${color.b}, ${alpha})`);
+			}
 		}
 
 		// Fill with the aurora gradient
@@ -165,22 +177,26 @@ export class AuroraBorealisBackgroundSystem implements BackgroundSystem {
 
 		for (let i = 0; i < this.lightWaves.length; i += 2) {
 			const wave = this.lightWaves[i];
-			const x = ((Math.sin(wave * 0.5) + 1) / 2) * dimensions.width;
-			const width = 20 + Math.sin(wave) * 10;
+			if (wave !== undefined) {
+				const x = ((Math.sin(wave * 0.5) + 1) / 2) * dimensions.width;
+				const width = 20 + Math.sin(wave) * 10;
 
-			const waveGradient = ctx.createLinearGradient(x - width / 2, 0, x + width / 2, 0);
-			const color = this.auroraColors[i % this.auroraColors.length];
-			const intensity = ((Math.sin(wave * 2) + 1) / 2) * 0.1;
+				const waveGradient = ctx.createLinearGradient(x - width / 2, 0, x + width / 2, 0);
+				const color = this.auroraColors[i % this.auroraColors.length];
+				if (color) {
+					const intensity = ((Math.sin(wave * 2) + 1) / 2) * 0.1;
 
-			waveGradient.addColorStop(0, `rgba(${color.r}, ${color.g}, ${color.b}, 0)`);
-			waveGradient.addColorStop(
-				0.5,
-				`rgba(${color.r}, ${color.g}, ${color.b}, ${intensity})`
-			);
-			waveGradient.addColorStop(1, `rgba(${color.r}, ${color.g}, ${color.b}, 0)`);
+					waveGradient.addColorStop(0, `rgba(${color.r}, ${color.g}, ${color.b}, 0)`);
+					waveGradient.addColorStop(
+						0.5,
+						`rgba(${color.r}, ${color.g}, ${color.b}, ${intensity})`
+					);
+					waveGradient.addColorStop(1, `rgba(${color.r}, ${color.g}, ${color.b}, 0)`);
 
-			ctx.fillStyle = waveGradient;
-			ctx.fillRect(x - width / 2, 0, width, dimensions.height);
+					ctx.fillStyle = waveGradient;
+					ctx.fillRect(x - width / 2, 0, width, dimensions.height);
+				}
+			}
 		}
 
 		ctx.restore();

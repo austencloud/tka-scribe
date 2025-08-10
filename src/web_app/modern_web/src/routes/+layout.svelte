@@ -1,8 +1,8 @@
 <script lang="ts">
-	import '../app.css';
-	import { onMount, setContext } from 'svelte';
-	import type { ServiceContainer } from '@tka/shared/di/core/ServiceContainer';
 	import type { Snippet } from 'svelte';
+	import { onMount, setContext } from 'svelte';
+	import '../app.css';
+	import type { ServiceContainer } from '../lib/services/di/ServiceContainer';
 
 	interface Props {
 		children: Snippet;

@@ -1,25 +1,25 @@
 <!--
 	RightPanel.svelte
-	
+
 	Right panel component extracted from ConstructTab.
 	Contains the 4-tab interface with navigation and content areas.
 -->
 <script lang="ts">
-	import TabNavigation from './TabNavigation.svelte';
-	import BuildTabContent from './BuildTabContent.svelte';
-	import GeneratePanel from './GeneratePanel.svelte';
-	import GraphEditor from '$components/graph-editor/GraphEditor.svelte';
 	import ExportPanel from '$components/export/ExportPanel.svelte';
-	import { constructTabState } from '$stores/constructTabState.svelte';
+	import GraphEditor from '$components/graph-editor/GraphEditor.svelte';
 	import { constructTabEventService } from '$services/implementations/ConstructTabEventService';
 	import { constructTabTransitionService } from '$services/implementations/ConstructTabTransitionService';
+	import { constructTabState } from '$stores/constructTabState.svelte';
+	import BuildTabContent from './BuildTabContent.svelte';
+	import GeneratePanel from './GeneratePanel.svelte';
+	import TabNavigation from './TabNavigation.svelte';
 
 	// Reactive state from store
 	let activeRightPanel = $derived(constructTabState.activeRightPanel);
 	let isSubTabTransitionActive = $derived(constructTabState.isSubTabTransitionActive);
 
 	// Get transition functions
-	const transitions = constructTabTransitionService.getSubTabTransitions();
+	const { in: fadeIn, out: fadeOut } = constructTabTransitionService.getSubTabTransitions();
 
 	// Event handlers for child components
 	function handleBeatModified(beatIndex: number, beatData: any) {
@@ -54,7 +54,7 @@
 	<!-- Tab Content with Fade Transitions -->
 	<div class="tab-content">
 		{#if activeRightPanel === 'build'}
-			<div class="sub-tab-content" data-sub-tab="build" in:transitions.in out:transitions.out>
+			<div class="sub-tab-content" data-sub-tab="build" in:fadeIn out:fadeOut>
 				<BuildTabContent />
 			</div>
 		{:else if activeRightPanel === 'generate'}
@@ -62,7 +62,7 @@
 				<GeneratePanel />
 			</div>
 		{:else if activeRightPanel === 'edit'}
-			<div class="sub-tab-content" data-sub-tab="edit" in:transitions.in out:transitions.out>
+			<div class="sub-tab-content" data-sub-tab="edit" in:fadeIn out:fadeOut>
 				<div class="panel-header">
 					<h2>Graph Editor</h2>
 					<p>Advanced sequence editing tools</p>
@@ -76,12 +76,7 @@
 				</div>
 			</div>
 		{:else if activeRightPanel === 'export'}
-			<div
-				class="sub-tab-content"
-				data-sub-tab="export"
-				in:transitions.in
-				out:transitions.out
-			>
+			<div class="sub-tab-content" data-sub-tab="export" in:fadeIn out:fadeOut>
 				<ExportPanel
 					on:settingChanged={handleExportSettingChanged}
 					on:previewUpdateRequested={handlePreviewUpdateRequested}

@@ -2,20 +2,11 @@
  * Application State - Pure Svelte 5 Runes
  *
  * Global application state using only runes - no stores anywhere!
- * Now includes fade system integration for smooth transitions
+ * Simple, clean state management without complex fade orchestration
  */
 
 import type { AppSettings } from '$services/interfaces';
 import { browser } from '$app/environment';
-import {
-	initializeFadeSystem,
-	transitionToMainTab,
-	completeMainTabTransition,
-	isFadeEnabled,
-	isMainTabTransitioning,
-	getMainTabTransition,
-	type MainTabId,
-} from '$services/ui/animation';
 
 // ============================================================================
 // INITIALIZATION STATE
@@ -70,23 +61,6 @@ export function getTheme() {
 	return uiState.theme;
 }
 
-// Fade transition state getters
-export function getIsMainTabTransitioning() {
-	try {
-		return isMainTabTransitioning();
-	} catch {
-		return false;
-	}
-}
-
-export function getMainTabTransitionState() {
-	try {
-		return getMainTabTransition();
-	} catch {
-		return { isTransitioning: false, fromTab: null, toTab: null, transitionId: null };
-	}
-}
-
 // ============================================================================
 // PERFORMANCE STATE
 // ============================================================================
@@ -119,6 +93,8 @@ const DEFAULT_SETTINGS: AppSettings = {
 	backgroundType: 'aurora',
 	backgroundQuality: 'medium',
 	backgroundEnabled: true,
+	// Animation settings
+	animationsEnabled: true,
 };
 
 // Load settings from localStorage
@@ -177,7 +153,7 @@ export function getInitializationComplete(): boolean {
 // ============================================================================
 
 /**
- * Set initialization state and initialize fade system when app is ready
+ * Set initialization state
  */
 export function setInitializationState(
 	initialized: boolean,
@@ -189,19 +165,6 @@ export function setInitializationState(
 	initState.isInitializing = initializing;
 	initState.initializationError = error;
 	initState.initializationProgress = progress;
-
-	// Initialize fade system when app is fully initialized
-	if (initialized && !initializing && !error) {
-		try {
-			initializeFadeSystem({
-				duration: 300, // Default duration for transitions
-				delay: 0,
-			});
-			console.log('🎭 Fade system initialized with app state');
-		} catch (fadeError) {
-			console.warn('Failed to initialize fade system:', fadeError);
-		}
-	}
 }
 
 /**
@@ -229,50 +192,19 @@ export function clearInitializationError(): void {
 }
 
 /**
- * Switch to a different tab with fade transition - UPDATED to include sequence_card tab
+ * Switch to a different tab - SIMPLE VERSION
  */
-export async function switchTab(tab: TabId): Promise<void> {
+export function switchTab(tab: TabId): void {
 	const currentTab = uiState.activeTab;
 
-	// Don't transition if already on the same tab
+	// Don't switch if already on the same tab
 	if (currentTab === tab) {
 		return;
 	}
 
-	// Check if fade system is available and enabled
-	if (initState.isInitialized && isFadeEnabled()) {
-		try {
-			// Start the fade transition
-			const transitionId = await transitionToMainTab(
-				currentTab as MainTabId,
-				tab as MainTabId
-			);
-
-			if (transitionId) {
-				// Update the active tab immediately for reactive state
-				uiState.activeTab = tab;
-
-				// Complete the transition after a brief delay to allow UI to update
-				setTimeout(() => {
-					completeMainTabTransition(transitionId);
-				}, 50);
-
-				console.log(`🎭 Tab transition started: ${currentTab} → ${tab}`);
-			} else {
-				// Fallback to immediate switch
-				uiState.activeTab = tab;
-			}
-		} catch (error) {
-			console.warn(
-				'Failed to start tab transition, falling back to immediate switch:',
-				error
-			);
-			uiState.activeTab = tab;
-		}
-	} else {
-		// Immediate switch if fade system not available or disabled
-		uiState.activeTab = tab;
-	}
+	// Simple immediate switch - transitions will be handled by components
+	uiState.activeTab = tab;
+	console.log(`🔄 Tab switched: ${currentTab} → ${tab}`);
 }
 
 /**

@@ -6,33 +6,30 @@
  * pattern established in the desktop application.
  */
 
-import { ServiceContainer } from '@tka/shared/di/core/ServiceContainer';
-import type { ServiceInterface } from '@tka/shared/di/core/types';
-import { createServiceInterface } from '@tka/shared/di/core/types';
+import { ServiceContainer } from './di/ServiceContainer';
+import type { ServiceInterface } from './di/types';
+import { createServiceInterface } from './di/types';
 
 // Import service interface types
-import {
+import type {
+	IApplicationInitializationService,
+	IArrowPlacementDataService,
+	IArrowPlacementKeyService,
+	IArrowPositioningService,
+	IConstructTabCoordinationService,
+	IExportService,
+	IMotionGenerationService,
+	IOptionDataService,
+	IPersistenceService,
+	IPictographRenderingService,
 	IPictographService,
-	type IApplicationInitializationService,
-	type IArrowPlacementDataService,
-	type IArrowPlacementKeyService,
-	type IArrowPositioningService,
-	type IConstructTabCoordinationService,
-	type IExportService,
-	type IMotionGenerationService,
-	type IOptionDataService,
-	type IPersistenceService,
-	type IPictographRenderingService,
-	type IPropRenderingService,
-	type ISequenceDomainService,
-	type ISequenceGenerationService,
-	type ISequenceService,
-	type ISettingsService,
-	type IStartPositionService,
+	IPropRenderingService,
+	ISequenceDomainService,
+	ISequenceGenerationService,
+	ISequenceService,
+	ISettingsService,
+	IStartPositionService,
 } from './interfaces.js';
-
-// Import fade system
-import { initializeFadeOrchestrator } from './ui/animation';
 
 // Import service implementations
 import { ApplicationInitializationService } from './implementations/ApplicationInitializationService';
@@ -133,19 +130,19 @@ export async function createWebApplication(): Promise<ServiceContainer> {
 
 	try {
 		// Register domain services (no dependencies)
-		container.registerSingleton(ISequenceDomainServiceInterface, SequenceDomainService);
+		container.registerSingletonClass(ISequenceDomainServiceInterface);
 
 		// Register infrastructure services
-		container.registerSingleton(IPersistenceServiceInterface, LocalStoragePersistenceService);
-		container.registerSingleton(ISettingsServiceInterface, SettingsService);
+		container.registerSingletonClass(IPersistenceServiceInterface);
+		container.registerSingletonClass(ISettingsServiceInterface);
 
 		// Register placement services (no dependencies)
-		container.registerSingleton(IArrowPlacementDataServiceInterface, ArrowPlacementDataService);
-		container.registerSingleton(IArrowPlacementKeyServiceInterface, ArrowPlacementKeyService);
+		container.registerSingletonClass(IArrowPlacementDataServiceInterface);
+		container.registerSingletonClass(IArrowPlacementKeyServiceInterface);
 
 		// Register construct tab services
-		container.registerSingleton(IStartPositionServiceInterface, StartPositionService);
-		container.registerSingleton(IOptionDataServiceInterface, OptionDataService);
+		container.registerSingletonClass(IStartPositionServiceInterface);
+		container.registerSingletonClass(IOptionDataServiceInterface);
 		container.registerFactory(IConstructTabCoordinationServiceInterface, () => {
 			const sequenceService = container.resolve(ISequenceServiceInterface);
 			const startPositionService = container.resolve(IStartPositionServiceInterface);
@@ -158,7 +155,7 @@ export async function createWebApplication(): Promise<ServiceContainer> {
 		});
 
 		// Register rendering services
-		container.registerSingleton(IPropRenderingServiceInterface, PropRenderingService);
+		container.registerSingletonClass(IPropRenderingServiceInterface);
 
 		// Register ArrowPositioningService with dependencies
 		container.registerFactory(IArrowPositioningServiceInterface, () => {
@@ -173,7 +170,7 @@ export async function createWebApplication(): Promise<ServiceContainer> {
 			const propRendering = container.resolve(IPropRenderingServiceInterface);
 			return new PictographRenderingService(arrowPositioning, propRendering);
 		});
-		container.registerSingleton(IPictographServiceInterface, PictographService);
+		container.registerSingletonClass(IPictographServiceInterface);
 
 		// Register application services (with dependencies)
 		container.registerFactory(ISequenceServiceInterface, () => {
@@ -181,11 +178,11 @@ export async function createWebApplication(): Promise<ServiceContainer> {
 			const persistenceService = container.resolve(IPersistenceServiceInterface);
 			return new SequenceService(sequenceDomainService, persistenceService);
 		});
-		container.registerSingleton(IExportServiceInterface, ExportService);
+		container.registerSingletonClass(IExportServiceInterface);
 
 		// Register generation services
-		container.registerSingleton(IMotionGenerationServiceInterface, MotionGenerationService);
-		container.registerSingleton(ISequenceGenerationServiceInterface, SequenceGenerationService);
+		container.registerSingletonClass(IMotionGenerationServiceInterface);
+		container.registerSingletonClass(ISequenceGenerationServiceInterface);
 
 		// Register application initialization service with factory
 		container.registerFactory(IApplicationInitializationServiceInterface, () => {
@@ -194,17 +191,6 @@ export async function createWebApplication(): Promise<ServiceContainer> {
 			return new ApplicationInitializationService(settingsService, persistenceService);
 		});
 
-		// Initialize fade system (not in DI container as it's a global singleton)
-		try {
-			const fadeOrchestrator = initializeFadeOrchestrator({
-				duration: 300,
-				delay: 0,
-			});
-			console.log('🎭 Fade orchestrator initialized in bootstrap');
-		} catch (fadeError) {
-			console.warn('Failed to initialize fade orchestrator in bootstrap:', fadeError);
-		}
-
 		// Validate all registrations can be resolved
 		await validateContainerConfiguration(container);
 
@@ -212,7 +198,6 @@ export async function createWebApplication(): Promise<ServiceContainer> {
 		setGlobalContainer(container);
 
 		console.log('✅ TKA V2 Modern application container initialized successfully');
-		console.log('🎭 Fade system integration complete');
 		return container;
 	} catch (error) {
 		console.error('❌ Failed to initialize application container:', error);
@@ -237,16 +222,16 @@ async function validateContainerConfiguration(container: ServiceContainer): Prom
 
 	for (const serviceInterface of servicesToValidate) {
 		try {
-			console.log(`🔍 Validating service: ${serviceInterface.name}`);
+			console.log(`🔍 Validating service: ${serviceInterface.token}`);
 			const service = container.resolve(serviceInterface as any);
 			if (!service) {
-				throw new Error(`Service ${serviceInterface.name} resolved to null/undefined`);
+				throw new Error(`Service ${serviceInterface.token} resolved to null/undefined`);
 			}
-			console.log(`✅ Service validated: ${serviceInterface.name}`);
+			console.log(`✅ Service validated: ${serviceInterface.token}`);
 		} catch (error) {
-			console.error(`❌ Failed to validate service: ${serviceInterface.name}`, error);
+			console.error(`❌ Failed to validate service: ${serviceInterface.token}`, error);
 			throw new Error(
-				`Failed to resolve ${serviceInterface.name}: ${error instanceof Error ? error.message : 'Unknown error'}`
+				`Failed to resolve ${serviceInterface.token}: ${error instanceof Error ? error.message : 'Unknown error'}`
 			);
 		}
 	}

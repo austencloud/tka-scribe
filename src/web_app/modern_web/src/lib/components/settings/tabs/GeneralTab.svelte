@@ -1,18 +1,12 @@
 <!-- GeneralTab.svelte - Compact general settings with fade system controls -->
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
+	import SelectInput from '../SelectInput.svelte';
 	import SettingCard from '../SettingCard.svelte';
 	import TextInput from '../TextInput.svelte';
 	import ToggleSetting from '../ToggleSetting.svelte';
-	import SelectInput from '../SelectInput.svelte';
 
-	// Import fade system for direct control
-	import {
-		isFadeEnabled,
-		setFadeEnabled,
-		getFadeDebugInfo,
-		updateFadeSettings,
-	} from '$services/ui/animation';
+	// Fade system removed - using simple animations only
 
 	interface Props {
 		settings: any;
@@ -27,16 +21,8 @@
 	let gridMode = $state(settings.gridMode || 'diamond');
 	let workbenchColumns = $state(settings.workbenchColumns || 5);
 
-	// Fade system state
-	let fadeEnabled = $state(() => {
-		try {
-			return isFadeEnabled();
-		} catch {
-			return true; // Default to enabled
-		}
-	});
-	let fadeMainTabDuration = $state(350);
-	let fadeSubTabDuration = $state(250);
+	// Animation settings (simplified)
+	let animationsEnabled = $state(settings.animationsEnabled ?? true);
 
 	// Options
 	const gridModeOptions = [
@@ -44,46 +30,11 @@
 		{ value: 'box', label: 'Box' },
 	];
 
-	// Fade system handlers
-	function handleFadeEnabledChange(event: CustomEvent) {
-		fadeEnabled = event.detail;
-		try {
-			setFadeEnabled(fadeEnabled);
-			dispatch('update', { key: 'fadeEnabled', value: fadeEnabled });
-			console.log(`🎭 Fade animations ${fadeEnabled ? 'enabled' : 'disabled'}`);
-		} catch (error) {
-			console.error('Failed to update fade enabled state:', error);
-		}
-	}
-
-	function handleFadeMainTabDurationChange(event: CustomEvent) {
-		fadeMainTabDuration = parseInt(event.detail);
-		try {
-			updateFadeSettings({ mainTabDuration: fadeMainTabDuration });
-			dispatch('update', { key: 'fadeMainTabDuration', value: fadeMainTabDuration });
-		} catch (error) {
-			console.error('Failed to update main tab duration:', error);
-		}
-	}
-
-	function handleFadeSubTabDurationChange(event: CustomEvent) {
-		fadeSubTabDuration = parseInt(event.detail);
-		try {
-			updateFadeSettings({ subTabDuration: fadeSubTabDuration });
-			dispatch('update', { key: 'fadeSubTabDuration', value: fadeSubTabDuration });
-		} catch (error) {
-			console.error('Failed to update sub-tab duration:', error);
-		}
-	}
-
-	// Debug info for developers
-	function logFadeDebugInfo() {
-		try {
-			const debugInfo = getFadeDebugInfo();
-			console.log('🎭 Fade System Debug Info:', debugInfo);
-		} catch (error) {
-			console.error('Failed to get fade debug info:', error);
-		}
+	// Animation handlers (simplified)
+	function handleAnimationsEnabledChange(event: CustomEvent) {
+		animationsEnabled = event.detail;
+		dispatch('update', { key: 'animationsEnabled', value: animationsEnabled });
+		console.log(`🎨 Animations ${animationsEnabled ? 'enabled' : 'disabled'}`);
 	}
 	function handleUserNameChange(event: CustomEvent) {
 		userName = event.detail;
@@ -120,44 +71,11 @@
 
 	<SettingCard title="Animation Settings">
 		<ToggleSetting
-			label="Enable Fade Transitions"
-			checked={fadeEnabled}
-			helpText="Smooth animations when switching between tabs"
-			on:change={handleFadeEnabledChange}
+			label="Enable Animations"
+			checked={animationsEnabled}
+			helpText="Enable smooth animations and transitions"
+			on:change={handleAnimationsEnabledChange}
 		/>
-
-		{#if fadeEnabled}
-			<TextInput
-				label="Main Tab Duration (ms)"
-				value={fadeMainTabDuration.toString()}
-				type="number"
-				min={100}
-				max={1000}
-				helpText="Animation duration for main tab transitions (Construct, Browse, etc.)"
-				on:change={handleFadeMainTabDurationChange}
-			/>
-
-			<TextInput
-				label="Sub-tab Duration (ms)"
-				value={fadeSubTabDuration.toString()}
-				type="number"
-				min={100}
-				max={1000}
-				helpText="Animation duration for sub-tab transitions (Build, Generate, etc.)"
-				on:change={handleFadeSubTabDurationChange}
-			/>
-
-			<div class="fade-debug-section">
-				<button
-					class="debug-button"
-					onclick={logFadeDebugInfo}
-					title="Print fade system debug info to console"
-				>
-					🎭 Debug Fade System
-				</button>
-				<span class="debug-help">Check browser console for details</span>
-			</div>
-		{/if}
 	</SettingCard>
 
 	<SettingCard title="Application Settings">
@@ -190,7 +108,33 @@
 
 <style>
 	.tab-content {
-		max-width: 500px;
+		width: 100%;
+		max-width: var(--max-content-width, 100%);
+		margin: 0 auto;
+		container-type: inline-size;
+	}
+
+	/* Responsive grid layout for settings cards */
+	@container (min-width: 400px) {
+		.tab-content {
+			display: grid;
+			grid-template-columns: 1fr;
+			gap: clamp(16px, 2vw, 32px);
+		}
+	}
+
+	@container (min-width: 600px) {
+		.tab-content {
+			grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+			gap: clamp(20px, 3vw, 40px);
+		}
+	}
+
+	@container (min-width: 800px) {
+		.tab-content {
+			grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+			gap: clamp(24px, 4vw, 48px);
+		}
 	}
 
 	.fade-debug-section {

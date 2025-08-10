@@ -6,7 +6,13 @@
 	import { browser } from '$app/environment';
 
 	// Props
-	const props = $props<{
+	const {
+		backgroundType: propBackgroundType,
+		quality: propQuality,
+		showControls,
+		width: propWidth,
+		height: propHeight
+	} = $props<{
 		backgroundType?: BackgroundType;
 		quality?: QualityLevel;
 		showControls?: boolean;
@@ -15,8 +21,8 @@
 	}>();
 
 	// Component state
-	let currentBackground = $state<BackgroundType>(props.backgroundType || 'snowfall');
-	let currentQuality = $state<QualityLevel>(props.quality || 'medium');
+	let currentBackground = $state<BackgroundType>(propBackgroundType || 'snowfall');
+	let currentQuality = $state<QualityLevel>(propQuality || 'medium');
 	let isVisible = $state(true);
 	let controller: BackgroundController;
 
@@ -30,14 +36,14 @@
 
 	// Get dimensions from props or default to viewport
 	let dimensions = $state({
-		width: props.width || (browser ? window.innerWidth : 1920),
-		height: props.height || (browser ? window.innerHeight : 1080),
+		width: propWidth || (browser ? window.innerWidth : 1920),
+		height: propHeight || (browser ? window.innerHeight : 1080),
 	});
 
 	// Update dimensions on window resize
 	if (browser) {
 		const handleResize = () => {
-			if (!props.width || !props.height) {
+			if (!propWidth || !propHeight) {
 				dimensions = {
 					width: window.innerWidth,
 					height: window.innerHeight,
@@ -105,7 +111,7 @@
 			onperformanceReport={handlePerformanceReport}
 		/>
 
-		{#if props.showControls}
+		{#if showControls}
 			<div class="controls">
 				<div class="control-group">
 					<label for="background-select">Background:</label>

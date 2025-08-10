@@ -4,7 +4,7 @@
  * Tests the complete pictograph rendering pipeline from data to visual output
  */
 
-import { test, expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 
 test.describe('Modern Pictograph E2E', () => {
 	test.beforeEach(async ({ page }) => {
@@ -16,10 +16,10 @@ test.describe('Modern Pictograph E2E', () => {
 	test.describe('Basic Rendering', () => {
 		test('should render simple pictograph with letter', async ({ page }) => {
 			// Select the simple demo
-			await page.selectOption('[data-testid=\"demo-selector\"]', 'simple');
+			await page.selectOption('[data-testid="demo-selector"]', 'simple');
 
 			// Wait for pictograph to load
-			await page.waitForSelector('[data-testid=\"main-pictograph\"] svg', {
+			await page.waitForSelector('[data-testid="main-pictograph"] svg', {
 				state: 'visible',
 				timeout: 10000,
 			});

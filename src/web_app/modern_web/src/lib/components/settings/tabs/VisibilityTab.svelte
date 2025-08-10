@@ -80,12 +80,34 @@
 
 <style>
 	.tab-content {
-		max-width: 500px;
+		width: 100%;
+		max-width: var(--max-content-width, 100%);
+		margin: 0 auto;
+		container-type: inline-size;
 	}
 
 	.visibility-grid {
 		display: grid;
-		grid-template-columns: 1fr;
-		gap: var(--spacing-sm);
+		grid-template-columns: repeat(var(--responsive-columns, 1), 1fr);
+		gap: clamp(12px, 1.5vw, 24px);
+	}
+
+	/* Container queries for visibility grid */
+	@container (min-width: 400px) {
+		.visibility-grid {
+			grid-template-columns: repeat(1, 1fr);
+		}
+	}
+
+	@container (min-width: 600px) {
+		.visibility-grid {
+			grid-template-columns: repeat(2, 1fr);
+		}
+	}
+
+	@container (min-width: 800px) {
+		.visibility-grid {
+			grid-template-columns: repeat(3, 1fr);
+		}
 	}
 </style>

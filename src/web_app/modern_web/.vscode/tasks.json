@@ -1,0 +1,33 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Start Dev Server",
+			"type": "shell",
+			"command": "npm",
+			"args": ["run", "dev"],
+			"group": "build",
+			"isBackground": true,
+			"problemMatcher": {
+				"owner": "vite",
+				"pattern": {
+					"regexp": "^(.*)$",
+					"file": 1
+				},
+				"background": {
+					"activeOnStart": true,
+					"beginsPattern": "^.*Local:.*$",
+					"endsPattern": "^.*ready in.*$"
+				}
+			},
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "new",
+				"showReuseMessage": false,
+				"clear": false
+			}
+		}
+	]
+}

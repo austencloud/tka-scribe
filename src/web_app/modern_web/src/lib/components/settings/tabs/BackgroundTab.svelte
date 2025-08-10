@@ -1,10 +1,10 @@
 <!-- BackgroundTab.svelte - Background settings tab for the settings dialog -->
 <script lang="ts">
-	import { createEventDispatcher } from 'svelte';
-	import SettingCard from '../SettingCard.svelte';
-	import SelectInput from '../SelectInput.svelte';
-	import ToggleSetting from '../ToggleSetting.svelte';
 	import type { BackgroundType, QualityLevel } from '$lib/components/backgrounds/types/types';
+	import { createEventDispatcher } from 'svelte';
+	import SelectInput from '../SelectInput.svelte';
+	import SettingCard from '../SettingCard.svelte';
+	import ToggleSetting from '../ToggleSetting.svelte';
 
 	interface Props {
 		settings: {
@@ -119,24 +119,43 @@
 
 <style>
 	.tab-content {
-		max-width: 500px;
+		width: 100%;
+		max-width: var(--max-content-width, 100%);
+		margin: 0 auto;
 		display: flex;
 		flex-direction: column;
-		gap: 1.5rem;
+		gap: clamp(16px, 2vw, 32px);
+		container-type: inline-size;
 	}
 
 	.preview-container {
-		margin-top: 1rem;
+		margin-top: clamp(12px, 1.5vw, 24px);
 	}
 
 	.preview-box {
 		position: relative;
-		height: 120px;
+		height: clamp(100px, 15vw, 180px);
 		border-radius: 12px;
 		overflow: hidden;
 		border: 2px solid rgba(255, 255, 255, 0.1);
 		background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
 		transition: all 0.3s ease;
+	}
+
+	/* Container queries for background tab layout */
+	@container (min-width: 400px) {
+		.tab-content {
+			gap: clamp(20px, 2.5vw, 40px);
+		}
+	}
+
+	@container (min-width: 600px) {
+		.tab-content {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			gap: clamp(24px, 3vw, 48px);
+			align-items: start;
+		}
 	}
 
 	.preview-box[data-background='snowfall'] {

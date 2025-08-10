@@ -1,16 +1,11 @@
 <!-- StartPositionPicker.svelte - Modern implementation updated for proper OptionPicker integration -->
 <script lang="ts">
-	import { onMount } from 'svelte';
-	import type { IStartPositionService, IPictographRenderingService } from '$services/interfaces';
 	import type { BeatData } from '$domain/BeatData';
 	import type { PictographData } from '$domain/PictographData';
-	import {
-		IStartPositionService as IStartPositionServiceInterface,
-		IPictographRenderingService as IPictographRenderingServiceInterface,
-	} from '$services/interfaces';
-	import { resolve } from '$services/bootstrap';
-	import ModernPictograph from '../pictograph/ModernPictograph.svelte';
 	import { getLetterBorderColor } from '$lib/utils/letterTypeUtils';
+	import { resolve } from '$services/bootstrap';
+	import { onMount } from 'svelte';
+	import ModernPictograph from '../pictograph/ModernPictograph.svelte';
 
 	// Props using runes
 	const { gridMode = 'diamond', onStartPositionSelected = () => {} } = $props<{

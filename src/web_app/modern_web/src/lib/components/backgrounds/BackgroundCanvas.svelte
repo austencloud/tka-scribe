@@ -11,7 +11,13 @@
 	import { browser } from '$app/environment';
 
 	// Define props with Svelte 5 runes
-	const props = $props<{
+	const {
+		backgroundType: propBackgroundType,
+		quality: propQuality,
+		appIsLoading: propAppIsLoading,
+		onReady,
+		onPerformanceReport
+	} = $props<{
 		backgroundType?: BackgroundType;
 		quality?: QualityLevel;
 		appIsLoading?: boolean;
@@ -21,9 +27,9 @@
 
 	// Use props directly instead of creating local state copies
 	// This avoids the need for effects or reactive statements
-	let backgroundType = $derived(props.backgroundType || 'snowfall');
-	let quality = $derived(props.quality || 'medium');
-	let appIsLoading = $derived(props.appIsLoading !== undefined ? props.appIsLoading : true);
+	let backgroundType = $derived(propBackgroundType || 'snowfall');
+	let quality = $derived(propQuality || 'medium');
+	let appIsLoading = $derived(propAppIsLoading !== undefined ? propAppIsLoading : true);
 
 	// Get the context only once - don't recreate it on each render
 	let activeContext = browser ? getRunesBackgroundContext() : null;
@@ -97,8 +103,8 @@
 				currentBackgroundSystem = activeContext.backgroundSystem;
 
 				// Call the onReady callback if provided
-				if (props.onReady) {
-					props.onReady();
+				if (onReady) {
+					onReady();
 				}
 				isInitialized = true;
 			});
@@ -117,8 +123,8 @@
 				},
 				(metrics) => {
 					// Call the onPerformanceReport callback if provided
-					if (props.onPerformanceReport) {
-						props.onPerformanceReport(metrics);
+					if (onPerformanceReport) {
+						onPerformanceReport(metrics);
 					}
 				}
 			);
@@ -128,8 +134,8 @@
 
 			manager.initializeCanvas(canvas, () => {
 				// Call the onReady callback if provided
-				if (props.onReady) {
-					props.onReady();
+				if (onReady) {
+					onReady();
 				}
 				isInitialized = true;
 			});
@@ -152,8 +158,8 @@
 				},
 				(metrics) => {
 					// Call the onPerformanceReport callback if provided
-					if (props.onPerformanceReport) {
-						props.onPerformanceReport(metrics);
+					if (onPerformanceReport) {
+						onPerformanceReport(metrics);
 					}
 				}
 			);

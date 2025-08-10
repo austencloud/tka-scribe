@@ -32,14 +32,14 @@ export class StartPositionService implements IStartPositionService {
 		console.log('🎯 StartPositionService initialized');
 	}
 
-	async getAvailableStartPositions(_propType: string, gridMode: GridMode): Promise<BeatData[]> {
+	async getAvailableStartPositions(propType: string, gridMode: GridMode): Promise<BeatData[]> {
 		console.log(`📍 Getting available start positions for ${propType} in ${gridMode} mode`);
 
 		try {
 			const startPositionKeys = this.DEFAULT_START_POSITIONS[gridMode];
 
 			const beatData: BeatData[] = startPositionKeys.map((key, index) => {
-				const [startPos, endPos] = key.split('_');
+				const [_startPos, _endPos] = key.split('_');
 
 				return createBeatData({
 					beat_number: 0,
@@ -59,9 +59,37 @@ export class StartPositionService implements IStartPositionService {
 		console.log('🎯 Setting start position:', startPosition.pictograph_data?.id);
 
 		try {
-			// Store in localStorage for persistence (similar to legacy implementation)
+			// Store in localStorage for persistence in the format OptionPicker expects
 			if (typeof window !== 'undefined') {
-				localStorage.setItem('start_position', JSON.stringify(startPosition));
+				// Check if localStorage already has the correct format (from StartPositionPicker)
+				const existingData = localStorage.getItem('start_position');
+				if (existingData) {
+					try {
+						const parsed = JSON.parse(existingData);
+						// If it already has top-level endPos, don't overwrite it
+						if (parsed.endPos) {
+							console.log(
+								'✅ Start position already in correct format, not overwriting'
+							);
+							return;
+						}
+					} catch (e) {
+						// If parsing fails, continue with saving new format
+					}
+				}
+
+				// Create the format that OptionPicker expects
+				const optionPickerFormat = {
+					endPos: startPosition.metadata?.endPos || 'alpha1', // Extract from metadata
+					pictograph_data: startPosition.pictograph_data,
+					letter: startPosition.pictograph_data?.letter,
+					gridMode: 'diamond', // Default
+					isStartPosition: true,
+					// Include the full beat data for compatibility
+					...startPosition,
+				};
+
+				localStorage.setItem('start_position', JSON.stringify(optionPickerFormat));
 			}
 
 			console.log('✅ Start position set successfully');
@@ -121,7 +149,7 @@ export class StartPositionService implements IStartPositionService {
 		index: number,
 		gridMode: GridMode
 	): PictographData {
-		const [startPos, endPos] = key.split('_');
+		const [_startPos, _endPos] = key.split('_');
 
 		// Determine letter based on position key
 		let letter: string;

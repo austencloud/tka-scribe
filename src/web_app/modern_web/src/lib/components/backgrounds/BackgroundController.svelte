@@ -5,7 +5,15 @@
 	import { browser } from '$app/environment';
 
 	// Props using Svelte 5 runes
-	const props = $props<{
+	const {
+		dimensions: propDimensions,
+		backgroundType: propBackgroundType,
+		quality: propQuality,
+		isVisible: propIsVisible,
+		onready,
+		onerror,
+		onperformanceReport
+	} = $props<{
 		dimensions?: Dimensions;
 		backgroundType?: BackgroundType;
 		quality?: QualityLevel;
@@ -19,24 +27,20 @@
 	let backgroundContext = browser ? getRunesBackgroundContext() : null;
 
 	// Component state
-	let isActive = $state(props.isVisible !== false);
-	let currentBackgroundType = $state(props.backgroundType || 'snowfall');
-	let currentQuality = $state(props.quality || 'medium');
-	let currentDimensions = $state(props.dimensions || { width: 0, height: 0 });
+	let currentBackgroundType = $state(propBackgroundType || 'snowfall');
+	let currentQuality = $state(propQuality || 'medium');
+	let currentDimensions = $state(propDimensions || { width: 0, height: 0 });
 
 	// Update reactive state when props change
 	$effect(() => {
-		if (props.isVisible !== undefined) {
-			isActive = props.isVisible;
+		if (propBackgroundType !== undefined) {
+			currentBackgroundType = propBackgroundType;
 		}
-		if (props.backgroundType !== undefined) {
-			currentBackgroundType = props.backgroundType;
+		if (propQuality !== undefined) {
+			currentQuality = propQuality;
 		}
-		if (props.quality !== undefined) {
-			currentQuality = props.quality;
-		}
-		if (props.dimensions !== undefined) {
-			currentDimensions = props.dimensions;
+		if (propDimensions !== undefined) {
+			currentDimensions = propDimensions;
 		}
 	});
 
@@ -83,7 +87,7 @@
 			if (!browser || !backgroundContext) {
 				if (browser) {
 					console.error('Background context not available');
-					props.onerror?.({ message: 'Background context not available' });
+					onerror?.({ message: 'Background context not available' });
 				}
 				return;
 			}
@@ -101,7 +105,7 @@
 			if (backgroundContext.performanceMetrics) {
 				const interval = setInterval(() => {
 					const metrics = backgroundContext.performanceMetrics;
-					props.onperformanceReport?.({ fps: metrics.fps });
+					onperformanceReport?.({ fps: metrics.fps });
 				}, 1000);
 
 				// Clean up interval on destroy
@@ -110,10 +114,10 @@
 				});
 			}
 
-			props.onready?.();
+			onready?.();
 		} catch (error) {
 			console.error('Failed to initialize background controller:', error);
-			props.onerror?.({ message: 'Failed to initialize background controller' });
+			onerror?.({ message: 'Failed to initialize background controller' });
 		}
 	});
 
@@ -130,8 +134,9 @@
 		currentQuality = quality;
 	}
 
-	export function setVisibility(visible: boolean) {
-		isActive = visible;
+	export function setVisibility(_visible: boolean) {
+		// Visibility control can be implemented if needed
+		// Currently not used but keeping for API compatibility
 	}
 </script>
 

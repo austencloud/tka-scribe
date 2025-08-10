@@ -56,29 +56,58 @@
 
 <style>
 	.tab-content {
-		max-width: 600px;
+		width: 100%;
+		max-width: var(--max-content-width, 100%);
+		margin: 0 auto;
+		container-type: inline-size;
 	}
 
 	.prop-grid {
 		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
-		gap: var(--spacing-sm);
-		margin-top: var(--spacing-md);
+		grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+		gap: clamp(12px, 1.5vw, 24px);
+		margin-top: clamp(16px, 2vw, 32px);
+	}
+
+	/* Container queries for prop grid */
+	@container (min-width: 300px) {
+		.prop-grid {
+			grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+		}
+	}
+
+	@container (min-width: 500px) {
+		.prop-grid {
+			grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+		}
+	}
+
+	@container (min-width: 700px) {
+		.prop-grid {
+			grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+		}
+	}
+
+	@container (min-width: 900px) {
+		.prop-grid {
+			grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+		}
 	}
 
 	.prop-button {
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-		gap: var(--spacing-xs);
-		padding: var(--spacing-sm);
+		gap: clamp(6px, 0.8vw, 12px);
+		padding: clamp(8px, 1vw, 16px);
 		background: rgba(255, 255, 255, 0.05);
 		border: 2px solid rgba(255, 255, 255, 0.2);
 		border-radius: 8px;
 		cursor: pointer;
 		transition: all var(--transition-fast);
 		color: rgba(255, 255, 255, 0.8);
-		min-height: 80px;
+		min-height: clamp(70px, 8vw, 100px);
+		aspect-ratio: 1;
 	}
 
 	.prop-button:hover {
@@ -96,8 +125,8 @@
 	}
 
 	.prop-image-container {
-		width: 36px;
-		height: 36px;
+		width: clamp(28px, 4vw, 48px);
+		height: clamp(28px, 4vw, 48px);
 		display: flex;
 		align-items: center;
 		justify-content: center;
@@ -120,32 +149,12 @@
 	}
 
 	.prop-label {
-		font-size: var(--font-size-xs);
+		font-size: clamp(10px, 1.2vw, 14px);
 		font-weight: 500;
 		text-align: center;
 		line-height: 1.2;
 		word-break: break-word;
 	}
 
-	/* Responsive adjustments */
-	@media (max-width: 600px) {
-		.prop-grid {
-			grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
-			gap: var(--spacing-xs);
-		}
-
-		.prop-button {
-			padding: var(--spacing-xs);
-			min-height: 70px;
-		}
-
-		.prop-image-container {
-			width: 30px;
-			height: 30px;
-		}
-
-		.prop-label {
-			font-size: var(--font-size-xs);
-		}
-	}
+	/* Remove old responsive styles - replaced with container queries */
 </style>

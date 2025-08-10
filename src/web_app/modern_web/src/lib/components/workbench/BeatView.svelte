@@ -1,7 +1,7 @@
 <script lang="ts">
+	import { ModernPictograph } from '$lib/components/pictograph';
 	import type { BeatData } from '$lib/domain';
 	import { beatFrameService } from '$lib/services/BeatFrameService.svelte';
-	import { ModernPictograph } from '$lib/components/pictograph';
 
 	interface Props {
 		beat: BeatData;
@@ -29,7 +29,7 @@
 	const displayText = $derived(
 		beat.is_blank && !beat.pictograph_data
 			? beat.beat_number.toString()
-			: (beat.pictograph_data?.letter ?? beat.metadata.letter ?? beat.beat_number.toString())
+			: (beat.pictograph_data?.letter ?? beat.metadata?.letter ?? beat.beat_number.toString())
 	);
 
 	function handleClick() {

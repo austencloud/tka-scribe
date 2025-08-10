@@ -5,13 +5,10 @@
  * following the service-oriented architecture pattern from the desktop app.
  */
 
-import type { BeatData } from '$domain/BeatData';
-import type { PictographData } from '$domain/PictographData';
-import type { MotionData } from '$domain/MotionData';
-import type { SequenceData } from '$domain/SequenceData';
+import type { BeatData, MotionData, PictographData, SequenceData } from '$lib/domain';
 
 // Re-export domain types for convenience
-export type { BeatData, PictographData, MotionData, SequenceData };
+export type { BeatData, MotionData, PictographData, SequenceData };
 
 // ============================================================================
 // SEQUENCE SERVICES
@@ -314,41 +311,7 @@ export function defineService<T>(name: string): ServiceInterface<T> {
 	return { name } as ServiceInterface<T>;
 }
 
-// Service interface definitions
-export const ISequenceService = defineService<ISequenceService>('ISequenceService');
-export const ISequenceDomainService =
-	defineService<ISequenceDomainService>('ISequenceDomainService');
-export const IPictographService = defineService<IPictographService>('IPictographService');
-export const IPictographRenderingService = defineService<IPictographRenderingService>(
-	'IPictographRenderingService'
-);
-export const IArrowPositioningService = defineService<IArrowPositioningService>(
-	'IArrowPositioningService'
-);
-export const IArrowPlacementDataService = defineService<IArrowPlacementDataService>(
-	'IArrowPlacementDataService'
-);
-export const IArrowPlacementKeyService = defineService<IArrowPlacementKeyService>(
-	'IArrowPlacementKeyService'
-);
-export const IPropRenderingService = defineService<IPropRenderingService>('IPropRenderingService');
-export const IPersistenceService = defineService<IPersistenceService>('IPersistenceService');
-export const ISequenceGenerationService = defineService<ISequenceGenerationService>(
-	'ISequenceGenerationService'
-);
-export const IMotionGenerationService = defineService<IMotionGenerationService>(
-	'IMotionGenerationService'
-);
-export const IApplicationInitializationService = defineService<IApplicationInitializationService>(
-	'IApplicationInitializationService'
-);
-export const ISettingsService = defineService<ISettingsService>('ISettingsService');
-export const IExportService = defineService<IExportService>('IExportService');
-export const IConstructTabCoordinationService = defineService<IConstructTabCoordinationService>(
-	'IConstructTabCoordinationService'
-);
-export const IOptionDataService = defineService<IOptionDataService>('IOptionDataService');
-export const IStartPositionService = defineService<IStartPositionService>('IStartPositionService');
+// Note: Service interface constants are defined in bootstrap.ts to avoid circular dependencies
 
 // ============================================================================
 // APPLICATION SETTINGS

@@ -49,6 +49,7 @@
 		"ws": "^8.18.3"
 	},
 	"devDependencies": {
+		"@fullhuman/postcss-purgecss": "^7.0.2",
 		"@playwright/test": "^1.54.2",
 		"@sveltejs/adapter-auto": "^3.2.5",
 		"@sveltejs/vite-plugin-svelte": "^5.0.3",
@@ -63,6 +64,8 @@
 		"cssnano": "^7.1.0",
 		"eslint": "^9.23.0",
 		"eslint-config-prettier": "^9.1.0",
+		"eslint-import-resolver-typescript": "^3.6.3",
+		"eslint-plugin-import": "^2.31.0",
 		"eslint-plugin-svelte": "^2.45.1",
 		"globals": "^16.3.0",
 		"jsdom": "^26.0.0",

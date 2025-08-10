@@ -1,12 +1,12 @@
 <!-- ConstructTab.svelte - Refactored into smaller, manageable components -->
 <script lang="ts">
-	import { onMount } from 'svelte';
-	import LeftPanel from '$components/construct/LeftPanel.svelte';
-	import RightPanel from '$components/construct/RightPanel.svelte';
 	import ErrorBanner from '$components/construct/ErrorBanner.svelte';
+	import LeftPanel from '$components/construct/LeftPanel.svelte';
 	import LoadingOverlay from '$components/construct/LoadingOverlay.svelte';
-	import { constructTabState } from '$stores/constructTabState.svelte';
+	import RightPanel from '$components/construct/RightPanel.svelte';
 	import { constructTabEventService } from '$services/implementations/ConstructTabEventService';
+	import { constructTabState } from '$stores/constructTabState.svelte';
+	import { onMount } from 'svelte';
 
 	// Props using runes
 	const { isGenerateMode = false } = $props<{ isGenerateMode?: boolean }>();
@@ -58,10 +58,11 @@
 		position: relative;
 	}
 
-	/* Main two-panel layout */
+	/* Main two-column layout: 50/50 split between left and right panels */
 	.construct-content {
 		flex: 1;
-		display: flex;
+		display: grid;
+		grid-template-columns: 1fr 1fr; /* 50/50 split between left panel and right panel */
 		overflow: hidden;
 		gap: 8px;
 		padding: 8px;

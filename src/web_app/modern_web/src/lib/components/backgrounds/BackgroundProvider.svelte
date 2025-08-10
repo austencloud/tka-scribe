@@ -4,27 +4,32 @@
 	import type { BackgroundType, QualityLevel } from './types/types';
 	import { browser } from '$app/environment';
 
-	const props = $props<{
+	const {
+		backgroundType: propBackgroundType,
+		initialQuality: propInitialQuality,
+		isLoading: propIsLoading,
+		children
+	} = $props<{
 		backgroundType?: BackgroundType;
 		initialQuality?: QualityLevel | undefined;
 		isLoading?: boolean;
-		children?: any;
+		children?: import('svelte').Snippet;
 	}>();
 
-	let backgroundType = $state(props.backgroundType || 'snowfall');
-	let initialQuality = $state(props.initialQuality);
-	let isLoading = $state(props.isLoading || false);
+	let backgroundType = $state(propBackgroundType || 'snowfall');
+	let initialQuality = $state(propInitialQuality);
+	let isLoading = $state(propIsLoading || false);
 	let isMounted = $state(false);
 
 	$effect(() => {
-		if (props.backgroundType !== undefined) {
-			backgroundType = props.backgroundType;
+		if (propBackgroundType !== undefined) {
+			backgroundType = propBackgroundType;
 		}
-		if (props.initialQuality !== undefined) {
-			initialQuality = props.initialQuality;
+		if (propInitialQuality !== undefined) {
+			initialQuality = propInitialQuality;
 		}
-		if (props.isLoading !== undefined) {
-			isLoading = props.isLoading;
+		if (propIsLoading !== undefined) {
+			isLoading = propIsLoading;
 		}
 	});
 
@@ -46,7 +51,7 @@
 			console.log('[BACKGROUND_PROVIDER] Background context created:', runesCtx);
 
 			if (typeof window !== 'undefined') {
-				(window as any).__runesBackgroundContext = runesCtx;
+				(window as Record<string, unknown>).__runesBackgroundContext = runesCtx;
 				console.log('[BACKGROUND_PROVIDER] Context attached to window');
 			}
 		}
@@ -168,5 +173,5 @@
 </script>
 
 {#if browser && isMounted}
-	{@render props.children?.()}
+	{@render children?.()}
 {/if}

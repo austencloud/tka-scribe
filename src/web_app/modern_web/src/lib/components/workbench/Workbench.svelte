@@ -1,9 +1,9 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
-	import SequenceContent from './SequenceContent.svelte';
-	import ButtonPanel from './ButtonPanel.svelte';
 	import { sequenceStateService } from '$lib/services/SequenceStateService.svelte';
 	import { workbenchService } from '$lib/services/WorkbenchService.svelte';
+	import { onMount } from 'svelte';
+	import ButtonPanel from './ButtonPanel.svelte';
+	import SequenceContent from './SequenceContent.svelte';
 
 	let containerElement: HTMLElement;
 	let containerHeight = $state(0);
@@ -108,12 +108,8 @@
 		display: flex;
 		flex-direction: column;
 		overflow: hidden;
-		/* Glassmorphism transparency to show beautiful background */
-		background: rgba(255, 255, 255, 0.05);
-		backdrop-filter: blur(20px);
-		border: 1px solid rgba(255, 255, 255, 0.1);
-		border-radius: 12px;
-		box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+		/* Transparent background to show beautiful app background */
+		background: transparent;
 	}
 
 	.main-layout {
@@ -122,7 +118,6 @@
 		gap: var(--spacing-sm); /* Add small gap between content and button panel */
 		width: 100%;
 		height: 100%;
-		padding: var(--spacing-sm); /* Add padding to prevent edge touching */
 	}
 
 	.left-vbox {

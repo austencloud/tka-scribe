@@ -3,6 +3,7 @@ import ts from '@typescript-eslint/eslint-plugin';
 import tsParser from '@typescript-eslint/parser';
 import prettier from 'eslint-config-prettier';
 import svelte from 'eslint-plugin-svelte';
+import importPlugin from 'eslint-plugin-import';
 import globals from 'globals';
 import svelteParser from 'svelte-eslint-parser';
 
@@ -18,6 +19,7 @@ export default [
 			parserOptions: {
 				ecmaVersion: 2022,
 				sourceType: 'module',
+				project: './tsconfig.json',
 			},
 			globals: {
 				...globals.browser,
@@ -27,6 +29,18 @@ export default [
 		},
 		plugins: {
 			'@typescript-eslint': ts,
+			import: importPlugin,
+		},
+		settings: {
+			'import/resolver': {
+				typescript: {
+					project: './tsconfig.json',
+					alwaysTryTypes: true,
+				},
+			},
+			'import/parsers': {
+				'@typescript-eslint/parser': ['.ts', '.tsx'],
+			},
 		},
 		rules: {
 			...ts.configs.recommended.rules,
@@ -34,6 +48,10 @@ export default [
 			'@typescript-eslint/no-explicit-any': 'warn',
 			'@typescript-eslint/no-non-null-assertion': 'warn',
 			'prefer-const': 'error',
+			'import/no-unresolved': ['error', { ignore: ['^\$app/', '^\$env/', '^\$service-worker'] }],
+			'import/no-absolute-path': 'error',
+			'import/named': 'error',
+			'import/default': 'error',
 		},
 	},
 
@@ -54,6 +72,19 @@ export default [
 		plugins: {
 			svelte,
 			'@typescript-eslint': ts,
+			import: importPlugin,
+		},
+		settings: {
+			'import/resolver': {
+				typescript: {
+					project: './tsconfig.json',
+					alwaysTryTypes: true,
+				},
+			},
+			'import/parsers': {
+				'@typescript-eslint/parser': ['.ts', '.tsx'],
+				svelte: ['.svelte'],
+			},
 		},
 		rules: {
 			...svelte.configs.recommended.rules,
@@ -62,6 +93,10 @@ export default [
 			'svelte/no-at-html-tags': 'warn',
 			'svelte/valid-compile': 'error',
 			'@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+			'import/no-unresolved': ['error', { ignore: ['^\$app/', '^\$env/', '^\$service-worker'] }],
+			'import/no-absolute-path': 'error',
+			'import/named': 'error',
+			'import/default': 'error',
 		},
 	},
 
@@ -162,6 +197,27 @@ export default [
 				$bindable: 'readonly',
 				$inspect: 'readonly',
 			},
+		},
+	},
+
+	// Root-level JavaScript files (test and utility scripts)
+	{
+		files: ['*.js', '*.mjs'],
+		languageOptions: {
+			globals: {
+				...globals.browser,
+				...globals.node,
+				console: 'readonly',
+				process: 'readonly',
+				SVGElement: 'readonly',
+				HTMLElement: 'readonly',
+				Element: 'readonly',
+				Document: 'readonly',
+				Window: 'readonly',
+			},
+		},
+		rules: {
+			'no-console': 'off',
 		},
 	},
 

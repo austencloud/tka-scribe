@@ -1,7 +1,6 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
-	import BeatFrame from './BeatFrame.svelte';
 	import { sequenceStateService } from '$lib/services/SequenceStateService.svelte';
+	import BeatFrame from './BeatFrame.svelte';
 
 	interface Props {
 		containerHeight?: number;
@@ -14,22 +13,17 @@
 	const currentSequence = $derived(sequenceStateService.currentSequence);
 	const selectedBeatIndex = $derived(sequenceStateService.selectedBeatIndex);
 
-	// label text from current sequence name - show placeholder when no sequence
-	const sequenceName = $derived(currentSequence?.name ?? 'No Sequence Loaded');
-
 	let beatFrameNaturalHeight = $state(0);
 	let beatFrameShouldScroll = $state(false);
-	let currentWordLabelElement: HTMLElement | null = null;
 
 	function handleBeatFrameHeightChange(event: CustomEvent<{ height: number }>) {
 		beatFrameNaturalHeight = event.detail.height;
 	}
 
 	$effect(() => {
-		if (!containerHeight || !currentWordLabelElement) return;
-		const labelHeight = currentWordLabelElement.offsetHeight || 0;
-		const available = containerHeight - labelHeight;
-		beatFrameShouldScroll = beatFrameNaturalHeight > available;
+		if (!containerHeight) return;
+		// Since we removed the label, use full container height
+		beatFrameShouldScroll = beatFrameNaturalHeight > containerHeight;
 	});
 
 	function handleBeatClick(index: number) {
@@ -44,9 +38,7 @@
 >
 	<div class="content-wrapper" class:scroll-mode-active={beatFrameShouldScroll}>
 		<div class="label-and-beatframe-unit" class:scroll-mode-active={beatFrameShouldScroll}>
-			<div bind:this={currentWordLabelElement} class="sequence-widget-labels">
-				<div class="current-word-label" title={sequenceName}>{sequenceName}</div>
-			</div>
+			<!-- Removed sequence name label as requested -->
 
 			<div class="beat-frame-wrapper" class:scroll-mode-active={beatFrameShouldScroll}>
 				<BeatFrame
@@ -104,13 +96,5 @@
 		width: 100%;
 		flex: 1 1 auto;
 		min-height: 0;
-	}
-
-	.current-word-label {
-		font-size: 14px;
-		font-weight: 600;
-		color: #333;
-		text-align: center;
-		padding: 4px 8px;
 	}
 </style>

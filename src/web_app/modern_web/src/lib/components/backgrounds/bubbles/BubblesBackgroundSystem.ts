@@ -60,6 +60,7 @@ export class BubblesBackgroundSystem implements BackgroundSystem {
 		// Update existing bubbles
 		for (let i = this.bubbles.length - 1; i >= 0; i--) {
 			const bubble = this.bubbles[i];
+			if (!bubble) continue; // Skip if bubble is undefined
 
 			// Update position
 			if (!this.accessibility.reducedMotion) {
@@ -149,13 +150,16 @@ export class BubblesBackgroundSystem implements BackgroundSystem {
 		const colorIndex = Math.floor(Math.random() * this.bubbleColors.length);
 		const size = 10 + Math.random() * 30;
 
+		// Ensure we always have a valid color
+		const selectedColor = this.bubbleColors[colorIndex] ?? { r: 100, g: 200, b: 255 };
+
 		return {
 			x: Math.random() * dimensions.width,
 			y: dimensions.height + size,
 			size: size,
 			speed: 0.5 + Math.random() * 2,
 			opacity: 0.3 + Math.random() * 0.4,
-			color: this.bubbleColors[colorIndex],
+			color: selectedColor,
 			wobble: Math.random() * Math.PI * 2,
 			wobbleSpeed: 0.02 + Math.random() * 0.03,
 			life: 0,

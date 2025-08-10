@@ -35,13 +35,14 @@
 		background: rgba(255, 255, 255, 0.06);
 		border: 1px solid rgba(255, 255, 255, 0.15);
 		border-radius: 6px;
-		padding: var(--spacing-md);
+		padding: clamp(12px, 1.5vw, 24px);
+		container-type: inline-size;
 	}
 
 	.toggle-setting {
 		display: flex;
 		align-items: center;
-		gap: var(--spacing-sm);
+		gap: clamp(8px, 1vw, 16px);
 		cursor: pointer;
 		margin: 0;
 	}
@@ -57,10 +58,10 @@
 
 	.toggle-slider {
 		position: relative;
-		width: 42px;
-		height: 22px;
+		width: clamp(38px, 5vw, 50px);
+		height: clamp(20px, 2.5vw, 26px);
 		background: rgba(255, 255, 255, 0.2);
-		border-radius: 11px;
+		border-radius: calc(clamp(20px, 2.5vw, 26px) / 2);
 		transition: background-color var(--transition-fast);
 		flex-shrink: 0;
 		border: 1px solid rgba(255, 255, 255, 0.1);
@@ -71,8 +72,8 @@
 		position: absolute;
 		top: 1px;
 		left: 1px;
-		width: 18px;
-		height: 18px;
+		width: calc(clamp(20px, 2.5vw, 26px) - 4px);
+		height: calc(clamp(20px, 2.5vw, 26px) - 4px);
 		background: #ffffff;
 		border-radius: 50%;
 		transition: transform var(--transition-fast);
@@ -85,20 +86,20 @@
 	}
 
 	.toggle-setting input:checked + .toggle-slider::before {
-		transform: translateX(20px);
+		transform: translateX(calc(clamp(38px, 5vw, 50px) - clamp(20px, 2.5vw, 26px) + 2px));
 	}
 
 	.setting-label {
 		font-weight: 500;
 		color: #ffffff;
-		font-size: var(--font-size-sm);
+		font-size: clamp(12px, 1.2vw, 16px);
 	}
 
 	.help-tooltip {
-		font-size: var(--font-size-xs);
+		font-size: clamp(10px, 1vw, 14px);
 		color: rgba(255, 255, 255, 0.6);
-		margin-top: var(--spacing-xs);
+		margin-top: clamp(6px, 0.8vw, 12px);
 		line-height: 1.3;
-		margin-left: 50px;
+		margin-left: clamp(46px, 6vw, 58px);
 	}
 </style>

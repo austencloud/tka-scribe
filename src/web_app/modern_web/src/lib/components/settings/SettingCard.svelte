@@ -26,26 +26,36 @@
 
 <style>
 	.setting-section {
-		margin-bottom: var(--spacing-lg);
+		margin-bottom: clamp(16px, 2vw, 32px);
+		container-type: inline-size;
 	}
 
 	.section-title {
-		margin: 0 0 var(--spacing-sm) 0;
-		font-size: var(--font-size-lg);
+		margin: 0 0 clamp(8px, 1vw, 16px) 0;
+		font-size: clamp(16px, 1.6vw, 20px);
 		font-weight: 600;
 		color: #ffffff;
 	}
 
 	.section-description {
-		margin: 0 0 var(--spacing-md) 0;
+		margin: 0 0 clamp(12px, 1.5vw, 24px) 0;
 		color: rgba(255, 255, 255, 0.7);
-		font-size: var(--font-size-sm);
+		font-size: clamp(12px, 1.2vw, 16px);
 		line-height: 1.4;
 	}
 
 	.setting-cards {
 		display: flex;
 		flex-direction: column;
-		gap: var(--spacing-sm);
+		gap: clamp(8px, 1vw, 16px);
+	}
+
+	/* Container queries for setting cards layout */
+	@container (min-width: 600px) {
+		.setting-cards {
+			display: grid;
+			grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+			gap: clamp(12px, 1.5vw, 24px);
+		}
 	}
 </style>

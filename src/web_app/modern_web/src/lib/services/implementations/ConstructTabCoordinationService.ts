@@ -5,17 +5,17 @@
  * Based on desktop ConstructTabCoordinationService but simplified for web with runes.
  */
 
-import type {
-	IConstructTabCoordinationService,
-	SequenceData,
-	BeatData,
-	IStartPositionService,
-	IOptionDataService,
-} from '../interfaces';
-import { ISequenceService } from '../interfaces';
-import { resolve } from '../bootstrap';
 import { createSequence } from '$stores/sequenceActions';
 import { setCurrentSequence } from '$stores/sequenceState.svelte';
+import { resolve } from '../bootstrap';
+import type {
+	BeatData,
+	IConstructTabCoordinationService,
+	IOptionDataService,
+	ISequenceService,
+	IStartPositionService,
+	SequenceData,
+} from '../interfaces';
 import { sequenceStateService } from '../SequenceStateService.svelte';
 
 export class ConstructTabCoordinationService implements IConstructTabCoordinationService {
@@ -69,7 +69,7 @@ export class ConstructTabCoordinationService implements IConstructTabCoordinatio
 
 			// **CRITICAL: Create a sequence with the start position as the first beat**
 			console.log('🎭 Creating sequence with start position as first beat');
-			const sequenceService = resolve(ISequenceService);
+			const sequenceService = resolve('ISequenceService');
 
 			// Create a new sequence using the proper action that updates global state
 			const newSequence = await createSequence(sequenceService, {

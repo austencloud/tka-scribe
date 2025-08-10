@@ -2,13 +2,13 @@
 Prop Component - Renders SVG props with proper positioning
 -->
 <script lang="ts">
-	import type { PropData, MotionData } from '$lib/domain';
-	import { onMount } from 'svelte';
+	import type { MotionData, PropData } from '$lib/domain';
+	import { Orientation } from '$lib/domain/enums';
 	import { DefaultPropPositioner } from '$lib/services/DefaultPropPositioner';
 	import { PropRotAngleManager } from '$lib/services/PropRotAngleManager';
-	import { BetaPropDirectionCalculator } from '$lib/services/implementations/BetaPropDirectionCalculator';
 	import { BetaOffsetCalculator } from '$lib/services/implementations/BetaOffsetCalculator';
-	import { Orientation } from '$lib/domain/enums';
+	import { BetaPropDirectionCalculator } from '$lib/services/implementations/BetaPropDirectionCalculator';
+	import { onMount } from 'svelte';
 
 	interface Props {
 		propData: PropData;
@@ -214,15 +214,15 @@ Prop Component - Renders SVG props with proper positioning
 		// Avoid CSS parser conflicts by using a different approach
 		const colorMap = new Map([
 			['blue', '#2E3192'],
-			['red', '#ED1C24']
+			['red', '#ED1C24'],
 		]);
-		
+
 		const targetColor = colorMap.get(color) || '#2E3192';
-		
+
 		// Use regex replacement to change fill colors directly
 		let coloredSvg = svgText.replace(/fill="#[0-9A-Fa-f]{6}"/g, `fill="${targetColor}"`);
 		coloredSvg = coloredSvg.replace(/fill:\s*#[0-9A-Fa-f]{6}/g, `fill:${targetColor}`);
-		
+
 		// Remove the centerPoint circle entirely to prevent CIRCLE_PROP detection
 		coloredSvg = coloredSvg.replace(/<circle[^>]*id="centerPoint"[^>]*\/?>/, '');
 

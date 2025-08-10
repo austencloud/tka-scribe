@@ -1,14 +1,14 @@
 <!-- SettingsDialog.svelte - Simplified main settings dialog -->
 <script lang="ts">
-	import { hideSettingsDialog, getSettings, updateSettings } from '$stores/appState.svelte';
+	import { getSettings, hideSettingsDialog, updateSettings } from '$stores/appState.svelte';
 	import { createEventDispatcher } from 'svelte';
 
 	import SettingsSidebar from './settings/SettingsSidebar.svelte';
+	import BackgroundTab from './settings/tabs/BackgroundTab.svelte';
+	import CodexExporterTab from './settings/tabs/CodexExporterTab.svelte';
 	import GeneralTab from './settings/tabs/GeneralTab.svelte';
 	import PropTypeTab from './settings/tabs/PropTypeTab.svelte';
 	import VisibilityTab from './settings/tabs/VisibilityTab.svelte';
-	import BackgroundTab from './settings/tabs/BackgroundTab.svelte';
-	import CodexExporterTab from './settings/tabs/CodexExporterTab.svelte';
 
 	const dispatch = createEventDispatcher();
 
@@ -149,8 +149,8 @@
 	}
 
 	.settings-dialog {
-		width: min(90vw, 800px);
-		height: min(85vh, 600px);
+		width: min(90vw, 1400px); /* Increased from 800px to 1400px for much larger dialog */
+		height: min(90vh, 900px); /* Increased to 90vh and 900px for much taller dialog */
 		background: rgba(40, 44, 52, 0.95);
 		border: 1px solid rgba(255, 255, 255, 0.2);
 		border-radius: 12px;
@@ -159,6 +159,16 @@
 		display: flex;
 		flex-direction: column;
 		overflow: hidden;
+		container-type: inline-size;
+
+		/* CSS Custom Properties for responsive sizing */
+		--dialog-width: min(90vw, 1400px);
+		--dialog-height: min(90vh, 900px);
+		--sidebar-width: clamp(150px, 15vw, 250px);
+		--content-width: calc(var(--dialog-width) - var(--sidebar-width));
+		--content-padding: clamp(16px, 2vw, 32px);
+		--responsive-columns: 1;
+		--max-content-width: none;
 	}
 
 	/* Dialog Header */
@@ -166,14 +176,14 @@
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
-		padding: var(--spacing-lg);
+		padding: clamp(16px, 2vw, 32px);
 		border-bottom: 1px solid rgba(255, 255, 255, 0.15);
 		background: rgba(255, 255, 255, 0.05);
 	}
 
 	.dialog-header h2 {
 		margin: 0;
-		font-size: var(--font-size-xl);
+		font-size: clamp(16px, 2vw, 24px);
 		font-weight: 600;
 		color: #ffffff;
 	}
@@ -183,9 +193,14 @@
 		border: none;
 		color: rgba(255, 255, 255, 0.7);
 		cursor: pointer;
-		padding: var(--spacing-sm);
+		padding: clamp(8px, 1vw, 12px);
 		border-radius: 6px;
 		transition: all var(--transition-fast);
+		min-width: clamp(32px, 4vw, 44px);
+		min-height: clamp(32px, 4vw, 44px);
+		display: flex;
+		align-items: center;
+		justify-content: center;
 	}
 
 	.close-button:hover {
@@ -205,28 +220,69 @@
 	.settings-content {
 		flex: 1;
 		overflow-y: auto;
-		padding: var(--spacing-lg);
+		padding: var(--content-padding);
 		background: rgba(255, 255, 255, 0.02);
+		container-type: inline-size;
+	}
+
+	/* Container Queries for Responsive Layout */
+	@container (min-width: 400px) {
+		.settings-dialog {
+			--responsive-columns: 1;
+			--max-content-width: 100%;
+		}
+	}
+
+	@container (min-width: 600px) {
+		.settings-dialog {
+			--responsive-columns: 1;
+			--max-content-width: 90%;
+		}
+	}
+
+	@container (min-width: 800px) {
+		.settings-dialog {
+			--responsive-columns: 2;
+			--max-content-width: 85%;
+		}
+	}
+
+	@container (min-width: 1000px) {
+		.settings-dialog {
+			--responsive-columns: 2;
+			--max-content-width: 80%;
+			--content-padding: clamp(24px, 3vw, 48px);
+		}
+	}
+
+	@container (min-width: 1200px) {
+		.settings-dialog {
+			--responsive-columns: 3;
+			--max-content-width: 75%;
+			--content-padding: clamp(32px, 4vw, 64px);
+		}
 	}
 
 	/* Dialog Footer */
 	.dialog-footer {
 		display: flex;
 		justify-content: flex-end;
-		gap: var(--spacing-md);
-		padding: var(--spacing-lg);
+		gap: clamp(12px, 1.5vw, 24px);
+		padding: clamp(16px, 2vw, 32px);
 		border-top: 1px solid rgba(255, 255, 255, 0.15);
 		background: rgba(255, 255, 255, 0.05);
+		flex-wrap: wrap;
 	}
 
 	.cancel-button,
 	.apply-button {
-		padding: var(--spacing-sm) var(--spacing-lg);
+		padding: clamp(8px, 1vw, 12px) clamp(16px, 2vw, 32px);
 		border-radius: 6px;
-		font-size: var(--font-size-sm);
+		font-size: clamp(12px, 1.2vw, 16px);
 		font-weight: 500;
 		cursor: pointer;
 		transition: all var(--transition-fast);
+		min-width: clamp(80px, 10vw, 120px);
 	}
 
 	.cancel-button {
@@ -251,20 +307,42 @@
 		border-color: #5855eb;
 	}
 
-	/* Responsive */
+	/* Responsive Design */
+	@media (max-width: 1024px) {
+		.settings-dialog {
+			--sidebar-width: clamp(120px, 12vw, 180px);
+		}
+	}
+
 	@media (max-width: 768px) {
 		.settings-overlay {
-			padding: var(--spacing-md);
+			padding: clamp(8px, 2vw, 16px);
 		}
 
 		.settings-dialog {
 			width: 100%;
 			height: 100%;
 			max-height: none;
+			border-radius: 0;
+			--sidebar-width: 100%;
+			--content-padding: clamp(12px, 3vw, 24px);
 		}
 
 		.dialog-content {
 			flex-direction: column;
+		}
+	}
+
+	@media (max-width: 480px) {
+		.settings-dialog {
+			--content-padding: clamp(8px, 2vw, 16px);
+		}
+	}
+
+	/* High DPI / Retina Display Support */
+	@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+		.settings-dialog {
+			border-width: 0.5px;
 		}
 	}
 </style>

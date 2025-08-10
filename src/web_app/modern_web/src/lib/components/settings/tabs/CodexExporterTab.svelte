@@ -1,9 +1,9 @@
 <!-- CodexExporterTab.svelte - Export all pictographs with turn configurations -->
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
+	import SelectInput from '../SelectInput.svelte';
 	import SettingCard from '../SettingCard.svelte';
 	import TextInput from '../TextInput.svelte';
-	import SelectInput from '../SelectInput.svelte';
 	import ToggleSetting from '../ToggleSetting.svelte';
 
 	interface Props {
@@ -169,30 +169,56 @@
 
 <style>
 	.tab-content {
-		max-width: 500px;
+		width: 100%;
+		max-width: var(--max-content-width, 100%);
+		margin: 0 auto;
+		container-type: inline-size;
 	}
 
 	.section-group {
-		margin-bottom: var(--spacing-lg);
+		margin-bottom: clamp(16px, 2vw, 32px);
 	}
 
 	.section-title {
-		margin: 0 0 var(--spacing-md) 0;
-		font-size: var(--font-size-md);
+		margin: 0 0 clamp(12px, 1.5vw, 24px) 0;
+		font-size: clamp(14px, 1.4vw, 18px);
 		font-weight: 600;
 		color: rgba(255, 255, 255, 0.9);
 		border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-		padding-bottom: var(--spacing-sm);
+		padding-bottom: clamp(8px, 1vw, 16px);
 	}
 
 	.turn-inputs {
 		display: grid;
 		grid-template-columns: 1fr 1fr;
-		gap: var(--spacing-md);
+		gap: clamp(12px, 1.5vw, 24px);
+	}
+
+	/* Container queries for codex exporter layout */
+	@container (min-width: 400px) {
+		.tab-content {
+			display: grid;
+			grid-template-columns: 1fr;
+			gap: clamp(20px, 2.5vw, 40px);
+		}
+	}
+
+	@container (min-width: 600px) {
+		.tab-content {
+			grid-template-columns: 1fr 1fr;
+			gap: clamp(24px, 3vw, 48px);
+			align-items: start;
+		}
+	}
+
+	@container (max-width: 500px) {
+		.turn-inputs {
+			grid-template-columns: 1fr;
+		}
 	}
 
 	.export-section {
-		margin-top: var(--spacing-xl);
+		margin-top: clamp(24px, 3vw, 48px);
 		display: flex;
 		justify-content: center;
 	}
@@ -202,12 +228,12 @@
 		border: 1px solid rgba(255, 255, 255, 0.2);
 		border-radius: 8px;
 		color: white;
-		font-size: var(--font-size-sm);
+		font-size: clamp(12px, 1.2vw, 16px);
 		font-weight: 600;
-		padding: var(--spacing-md) var(--spacing-xl);
+		padding: clamp(12px, 1.5vw, 20px) clamp(20px, 2.5vw, 40px);
 		cursor: pointer;
 		transition: all var(--transition-fast);
-		min-width: 200px;
+		min-width: clamp(150px, 20vw, 250px);
 		box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
 	}
 
@@ -222,10 +248,5 @@
 		box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
 	}
 
-	/* Responsive */
-	@media (max-width: 768px) {
-		.turn-inputs {
-			grid-template-columns: 1fr;
-		}
-	}
+	/* Remove old responsive styles - replaced with container queries */
 </style>

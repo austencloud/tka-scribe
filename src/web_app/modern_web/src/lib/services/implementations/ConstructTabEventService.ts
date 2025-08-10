@@ -51,9 +51,25 @@ export class ConstructTabEventService {
 			);
 			setTransitioning(true);
 
+			// Ensure coordination service is available - retry resolution if needed
+			if (!this.constructCoordinator) {
+				console.log('🎭 Coordination service not available, attempting to resolve...');
+				try {
+					this.constructCoordinator = resolve('IConstructTabCoordinationService');
+					console.log('✅ Coordination service resolved successfully');
+				} catch (resolveError) {
+					console.error('❌ Failed to resolve coordination service:', resolveError);
+					throw new Error('Coordination service not available');
+				}
+			}
+
 			// Use coordination service to handle the selection
 			if (this.constructCoordinator) {
+				console.log('🎭 Calling coordination service handleStartPositionSet...');
 				await this.constructCoordinator.handleStartPositionSet(startPosition);
+				console.log('✅ Coordination service handleStartPositionSet completed');
+			} else {
+				throw new Error('Coordination service is null after resolution attempt');
 			}
 
 			// Clear any previous errors

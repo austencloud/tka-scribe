@@ -5,21 +5,18 @@
 		isTabActive,
 		switchTab,
 		getShowSettings,
-		getIsMainTabTransitioning,
-		getMainTabTransitionState,
+		getSettings,
 	} from '$stores/appState.svelte';
 
-	// Import fade transitions
-	import { enhancedFade, fluidTransition, getTabTransitionKey } from '$services/ui/animation';
+	// Import simple fade transitions
+	import { conditionalFade } from '$lib/utils/simpleFade';
+	import { getAnimationSettings } from '$lib/utils/animationControl';
 
 	// Reactive state for template
 	let activeTab = $derived(getActiveTab());
 	let showSettings = $derived(getShowSettings());
 	let settings = $derived(getSettings());
-	let isTransitioning = $derived(getIsMainTabTransitioning());
-	let transitionState = $derived(getMainTabTransitionState());
-
-	// Simple background integration - let BackgroundCanvas handle the settings directly
+	let animationSettings = $derived(getAnimationSettings());
 
 	// Import tab components
 	import ConstructTab from './tabs/ConstructTab.svelte';
@@ -31,28 +28,16 @@
 	import SettingsDialog from './SettingsDialog.svelte';
 	import BackgroundProvider from './backgrounds/BackgroundProvider.svelte';
 	import BackgroundCanvas from './backgrounds/BackgroundCanvas.svelte';
-	import { getSettings } from '$stores/appState.svelte';
 
-	// Create transition functions for tabs
-	function createTabTransition(tabId: string) {
-		return fluidTransition(node, {
-			duration: 350,
-			effects: ['fade', 'slide'],
-			slideDirection: 'right',
-			distance: 30,
-			opacity: { start: 0, end: 1 },
-		});
-	}
-
-	// Tab-specific transition configurations - simplified to fix compilation issues
-	const tabInTransition = (node: Element) => ({
-		duration: 350,
-		css: (t: number) => `opacity: ${t}`,
+	// Simple fade configuration
+	const fadeIn = (node: Element) => conditionalFade(node, { 
+		duration: 300, 
+		settings: animationSettings 
 	});
-
-	const tabOutTransition = (node: Element) => ({
-		duration: 250,
-		css: (t: number) => `opacity: ${1 - t}`,
+	
+	const fadeOut = (node: Element) => conditionalFade(node, { 
+		duration: 250, 
+		settings: animationSettings 
 	});
 
 	// Tab configuration - UPDATED to include Sequence Card tab matching desktop app exactly
@@ -89,45 +74,22 @@
 		<NavigationBar {tabs} {activeTab} onTabSelect={switchTab} />
 
 		<main class="content-area">
-			<!-- Main tab content with fade transitions -->
-			{#if isTabActive('construct')}
-				<div
-					class="tab-content"
-					data-tab="construct"
-					in:tabInTransition
-					out:tabOutTransition
-				>
-					<ConstructTab />
+			<!-- Main tab content with simple fade transitions using {#key} block -->
+			{#key activeTab}
+				<div class="tab-content" in:fadeIn out:fadeOut>
+					{#if isTabActive('construct')}
+						<ConstructTab />
+					{:else if isTabActive('browse')}
+						<BrowseTab />
+					{:else if isTabActive('sequence_card')}
+						<SequenceCardTab />
+					{:else if isTabActive('write')}
+						<WriteTab />
+					{:else if isTabActive('learn')}
+						<LearnTab />
+					{/if}
 				</div>
-			{:else if isTabActive('browse')}
-				<div class="tab-content" data-tab="browse" in:tabInTransition out:tabOutTransition>
-					<BrowseTab />
-				</div>
-			{:else if isTabActive('sequence_card')}
-				<div
-					class="tab-content"
-					data-tab="sequence_card"
-					in:tabInTransition
-					out:tabOutTransition
-				>
-					<SequenceCardTab />
-				</div>
-			{:else if isTabActive('write')}
-				<div class="tab-content" data-tab="write" in:tabInTransition out:tabOutTransition>
-					<WriteTab />
-				</div>
-			{:else if isTabActive('learn')}
-				<div class="tab-content" data-tab="learn" in:tabInTransition out:tabOutTransition>
-					<LearnTab />
-				</div>
-			{/if}
-
-			<!-- Debug transition state (remove in production) -->
-			{#if isTransitioning}
-				<div class="transition-debug">
-					🎭 Transitioning: {transitionState.fromTab} → {transitionState.toTab}
-				</div>
-			{/if}
+			{/key}
 		</main>
 	</div>
 </BackgroundProvider>
@@ -167,32 +129,11 @@
 		width: 100%;
 	}
 
-	/* Debug transition indicator */
-	.transition-debug {
-		position: absolute;
-		top: 10px;
-		left: 50%;
-		transform: translateX(-50%);
-		background: rgba(255, 215, 0, 0.9);
-		color: #000;
-		padding: 8px 16px;
-		border-radius: 20px;
-		font-size: 14px;
-		font-weight: 600;
-		z-index: 9999;
-		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-		pointer-events: none;
-	}
-
-	/* Tab content styling */
-
 	/* Responsive design */
 	@media (max-width: 768px) {
 		.main-interface {
 			height: 100vh;
 			height: 100dvh; /* Dynamic viewport height for mobile */
 		}
-
-		/* Mobile responsive adjustments */
 	}
 </style>

@@ -36,14 +36,15 @@
 
 <style>
 	.settings-sidebar {
-		width: 200px;
+		width: var(--sidebar-width, clamp(150px, 15vw, 250px));
 		background: rgba(255, 255, 255, 0.08);
 		border-right: 1px solid rgba(255, 255, 255, 0.2);
 		overflow-y: auto;
+		container-type: inline-size;
 	}
 
 	.sidebar-nav {
-		padding: var(--spacing-md);
+		padding: clamp(12px, 2vw, 24px);
 		display: flex;
 		flex-direction: column;
 		gap: 4px;
@@ -52,8 +53,8 @@
 	.sidebar-item {
 		display: flex;
 		align-items: center;
-		gap: var(--spacing-sm);
-		padding: var(--spacing-md);
+		gap: clamp(8px, 1vw, 16px);
+		padding: clamp(12px, 1.5vw, 20px);
 		background: transparent;
 		border: none;
 		border-radius: 8px;
@@ -62,8 +63,34 @@
 		transition: all var(--transition-fast);
 		text-align: left;
 		width: 100%;
-		font-size: var(--font-size-sm);
+		font-size: clamp(12px, 1.2vw, 16px);
 		font-weight: 500;
+	}
+
+	/* Container query for sidebar responsiveness */
+	@container (max-width: 180px) {
+		.sidebar-item {
+			justify-content: center;
+			gap: 0;
+		}
+
+		.sidebar-label {
+			display: none;
+		}
+
+		.sidebar-icon {
+			font-size: 18px;
+		}
+	}
+
+	@container (min-width: 200px) {
+		.sidebar-item {
+			gap: clamp(8px, 1vw, 16px);
+		}
+
+		.sidebar-label {
+			display: block;
+		}
 	}
 
 	.sidebar-item:hover {

@@ -5,7 +5,8 @@
  * motion generation and applying sequence-level constraints.
  */
 
-import type { BeatData, SequenceData } from '@tka/schemas';
+import type { BeatData, SequenceData } from '$lib/domain';
+import { createSequenceData } from '$lib/domain';
 import type {
 	GenerationOptions,
 	IMotionGenerationService,
@@ -22,7 +23,7 @@ export class SequenceGenerationService implements ISequenceGenerationService {
 	/**
 	 * Generate a complete sequence
 	 */
-	async generateSequence(_options: GenerationOptions): Promise<SequenceData> {
+	async generateSequence(options: GenerationOptions): Promise<SequenceData> {
 		try {
 			console.log('Generating sequence with options:', options);
 
@@ -37,21 +38,23 @@ export class SequenceGenerationService implements ISequenceGenerationService {
 				beats.push(beat);
 			}
 
-			// Create sequence using domain service
-			const sequence = this.sequenceDomainService.createSequence({
+			// Create sequence using domain model
+			const generatedSequence: SequenceData = createSequenceData({
 				name: this.generateSequenceName(options),
-				length: options.length,
-				gridMode: options.gridMode,
-				propType: options.propType,
-			});
-
-			// Replace the empty beats with generated beats
-			const generatedSequence: SequenceData = {
-				...sequence,
+				word: '', // Will be calculated from beats
 				beats,
-				createdAt: new Date().toISOString(),
-				updatedAt: new Date().toISOString(),
-			};
+				grid_mode: options.gridMode,
+				prop_type: options.propType,
+				difficulty_level: options.difficulty,
+				is_favorite: false,
+				is_circular: false,
+				tags: [],
+				metadata: {
+					generated: true,
+					generatedAt: new Date().toISOString(),
+					options,
+				},
+			});
 
 			console.log('Sequence generation complete:', generatedSequence.id);
 			return generatedSequence;
@@ -68,7 +71,7 @@ export class SequenceGenerationService implements ISequenceGenerationService {
 	 */
 	private async generateBeat(
 		beatNumber: number,
-		_options: GenerationOptions,
+		options: GenerationOptions,
 		previousBeats: BeatData[]
 	): Promise<BeatData> {
 		try {
@@ -89,19 +92,20 @@ export class SequenceGenerationService implements ISequenceGenerationService {
 
 			// Create beat
 			const beat: BeatData = {
-				beatNumber,
-				letter: null, // Will be calculated later
+				id: crypto.randomUUID(),
+				beat_number: beatNumber,
 				duration: 1.0,
-				blueMotion,
-				redMotion,
-				blueReversal: false,
-				redReversal: false,
-				filled: true,
-				tags: [],
+				blue_reversal: false,
+				red_reversal: false,
+				is_blank: false,
+				pictograph_data: null, // Will be set later with motions
 				metadata: {
 					generated: true,
 					generatedAt: new Date().toISOString(),
 					difficulty: options.difficulty,
+					letter: null, // Will be calculated later
+					blueMotion,
+					redMotion,
 				},
 			};
 
@@ -117,7 +121,7 @@ export class SequenceGenerationService implements ISequenceGenerationService {
 	/**
 	 * Validate generation options
 	 */
-	private validateGenerationOptions(_options: GenerationOptions): void {
+	private validateGenerationOptions(options: GenerationOptions): void {
 		if (!options.length || options.length < 1 || options.length > 64) {
 			throw new Error('Sequence length must be between 1 and 64');
 		}
@@ -178,15 +182,21 @@ export class SequenceGenerationService implements ISequenceGenerationService {
 			// For now, generate new sequences
 			// Eventually this will modify the base sequence
 			const options: GenerationOptions = {
-				length: baseSequence.length || 8,
-				gridMode: 'diamond',
-				propType: 'fan',
-				difficulty: 'intermediate',
+				length: baseSequence.beats.length || 8,
+				gridMode: (baseSequence.grid_mode as 'diamond' | 'box') || 'diamond',
+				propType: baseSequence.prop_type || 'fan',
+				difficulty:
+					(baseSequence.difficulty_level as 'beginner' | 'intermediate' | 'advanced') ||
+					'intermediate',
 			};
 
 			const variation = await this.generateSequence(options);
-			variation.name = `${baseSequence.name} - Variation ${i + 1}`;
-			variations.push(variation);
+			// Create a new variation with the updated name using domain model
+			const namedVariation = createSequenceData({
+				...variation,
+				name: `${baseSequence.name} - Variation ${i + 1}`,
+			});
+			variations.push(namedVariation);
 		}
 
 		return variations;

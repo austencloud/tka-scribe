@@ -1,11 +1,6 @@
 <!-- Navigation Bar - Tab switching interface with fade system integration -->
 <script lang="ts">
-	import {
-		showSettingsDialog,
-		getIsMainTabTransitioning,
-		getMainTabTransitionState,
-	} from '$stores/appState.svelte';
-	import { isFadeEnabled } from '$services/ui/animation';
+	import { showSettingsDialog } from '$stores/appState.svelte';
 
 	interface Props {
 		tabs: readonly { id: string; label: string; icon: string }[];
@@ -15,47 +10,22 @@
 
 	let { tabs, activeTab, onTabSelect }: Props = $props();
 
-	// Reactive state for transition feedback
-	let isTransitioning = $derived(getIsMainTabTransitioning());
-	let transitionState = $derived(getMainTabTransitionState());
-	let fadeEnabled = $derived(() => {
-		try {
-			return isFadeEnabled();
-		} catch {
-			return false;
-		}
-	});
+	// Simplified navigation without complex fade system
 
-	// Handle tab click with transition feedback
-	async function handleTabClick(tab: { id: string; label: string; icon: string }) {
-		if (isTransitioning) {
-			console.log('🎭 Tab transition in progress, ignoring click');
-			return;
-		}
-
+	// Handle tab click
+	function handleTabClick(tab: { id: string; label: string; icon: string }) {
 		try {
-			await onTabSelect(tab.id as any);
+			onTabSelect(tab.id as any);
 		} catch (error) {
 			console.error('Failed to select tab:', error);
 		}
 	}
-
-	// Check if a specific tab is currently transitioning
-	function isTabTransitioning(tabId: string): boolean {
-		return (
-			isTransitioning &&
-			(transitionState.fromTab === tabId || transitionState.toTab === tabId)
-		);
-	}
 </script>
 
-<nav class="navigation-bar glass-surface" class:transitioning={isTransitioning}>
+<nav class="navigation-bar glass-surface">
 	<div class="nav-brand">
 		<h1>TKA</h1>
 		<span class="version">v2.0</span>
-		{#if fadeEnabled}
-			<span class="fade-indicator" title="Fade animations enabled">🎭</span>
-		{/if}
 	</div>
 
 	<div class="nav-tabs">
@@ -63,16 +33,10 @@
 			<button
 				class="nav-tab"
 				class:active={activeTab === tab.id}
-				class:transitioning={isTabTransitioning(tab.id)}
-				class:disabled={isTransitioning && !isTabTransitioning(tab.id)}
 				onclick={() => handleTabClick(tab)}
-				disabled={isTransitioning && !isTabTransitioning(tab.id)}
 			>
 				<span class="tab-icon">{tab.icon}</span>
 				<span class="tab-label">{tab.label}</span>
-				{#if isTabTransitioning(tab.id)}
-					<span class="transition-indicator">⟳</span>
-				{/if}
 			</button>
 		{/each}
 	</div>

@@ -40,7 +40,7 @@ export class StarfieldBackgroundSystem implements BackgroundSystem {
 		{ r: 200, g: 200, b: 255 }, // Bluish
 	];
 
-	public initialize(_dimensions: Dimensions, quality: QualityLevel): void {
+	public initialize(dimensions: Dimensions, quality: QualityLevel): void {
 		this.quality = quality;
 		this.isInitialized = true;
 
@@ -49,7 +49,7 @@ export class StarfieldBackgroundSystem implements BackgroundSystem {
 		this.stars = this.createStars(numStars, dimensions);
 	}
 
-	public update(dimensions: Dimensions): void {
+	public update(_dimensions: Dimensions): void {
 		if (!this.isInitialized) return;
 
 		this.animationTime += 0.016; // Approximate 60fps

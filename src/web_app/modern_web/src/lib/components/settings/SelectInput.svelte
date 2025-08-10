@@ -61,15 +61,16 @@
 		background: rgba(255, 255, 255, 0.06);
 		border: 1px solid rgba(255, 255, 255, 0.15);
 		border-radius: 6px;
-		padding: var(--spacing-md);
+		padding: clamp(12px, 1.5vw, 24px);
+		container-type: inline-size;
 	}
 
 	.setting-label {
 		display: block;
 		font-weight: 500;
 		color: #ffffff;
-		margin-bottom: var(--spacing-sm);
-		font-size: var(--font-size-sm);
+		margin-bottom: clamp(8px, 1vw, 16px);
+		font-size: clamp(12px, 1.2vw, 16px);
 	}
 
 	.required {
@@ -79,12 +80,12 @@
 
 	.modern-select {
 		width: 100%;
-		padding: var(--spacing-sm) var(--spacing-md);
+		padding: clamp(8px, 1vw, 12px) clamp(12px, 1.5vw, 20px);
 		background: rgba(255, 255, 255, 0.08);
 		border: 1px solid rgba(255, 255, 255, 0.25);
 		border-radius: 4px;
 		color: #ffffff;
-		font-size: var(--font-size-sm);
+		font-size: clamp(12px, 1.2vw, 16px);
 		transition: border-color var(--transition-fast);
 		cursor: pointer;
 	}
@@ -106,9 +107,9 @@
 	}
 
 	.help-tooltip {
-		font-size: var(--font-size-xs);
+		font-size: clamp(10px, 1vw, 14px);
 		color: rgba(255, 255, 255, 0.6);
-		margin-top: var(--spacing-xs);
+		margin-top: clamp(6px, 0.8vw, 12px);
 		line-height: 1.3;
 	}
 </style>

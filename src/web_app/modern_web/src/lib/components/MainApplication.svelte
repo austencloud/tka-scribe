@@ -1,13 +1,12 @@
 <script lang="ts">
-	import {
+	import { resolve } from '$services/bootstrap';
+	import type { ServiceContainer } from '$services/di/ServiceContainer';
+	import type {
 		IApplicationInitializationService,
 		ISequenceService,
 		ISettingsService,
 	} from '$services/interfaces';
-	import type { ServiceContainer } from '@tka/shared/di/core/ServiceContainer';
 	import { getContext, onMount } from 'svelte';
-	// Import fade system
-	import { initializeFadeSystem, setFadeEnabled } from '$services/ui/animation';
 	// Import runes-based state
 	import {
 		getActiveTab,
@@ -45,9 +44,9 @@
 		const container = getContainer?.();
 		if (container && !initService) {
 			try {
-				initService = container.resolve(IApplicationInitializationService);
-				settingsService = container.resolve(ISettingsService);
-				sequenceService = container.resolve(ISequenceService);
+				initService = resolve('IApplicationInitializationService');
+				settingsService = resolve('ISettingsService');
+				sequenceService = resolve('ISequenceService');
 				console.log('✅ Services resolved successfully');
 			} catch (error) {
 				console.error('Failed to resolve services:', error);
@@ -83,43 +82,13 @@
 			setInitializationProgress(20);
 			await initService.initialize();
 
-			// Step 2: Initialize fade system
-			setInitializationProgress(35);
-			try {
-				initializeFadeSystem({
-					duration: 300,
-					delay: 0,
-				});
-				// Reduced verbosity - fade system initialized silently
-			} catch (fadeError) {
-				console.warn('Failed to initialize fade system:', fadeError);
-				// Non-critical error, continue with initialization
-			}
-
-			// Step 3: Load settings
-			setInitializationProgress(55);
+			// Step 2: Load settings
+			setInitializationProgress(40);
 			await settingsService.loadSettings();
 			updateSettings(settingsService.currentSettings);
 
-			// Step 4: Apply fade settings from user preferences
-			setInitializationProgress(70);
-			try {
-				const currentSettings = settingsService.currentSettings;
-				if (currentSettings && typeof currentSettings.fadeEnabled === 'boolean') {
-					setFadeEnabled(currentSettings.fadeEnabled);
-					console.log(`🎭 Fade enabled from settings: ${currentSettings.fadeEnabled}`);
-				} else {
-					// Default to enabled if no setting found
-					setFadeEnabled(true);
-					console.log('🎭 Fade enabled by default');
-				}
-			} catch (settingsError) {
-				console.warn('Failed to apply fade settings:', settingsError);
-				setFadeEnabled(true); // Default to enabled
-			}
-
-			// Step 5: Load initial data
-			setInitializationProgress(75);
+			// Step 3: Load initial data
+			setInitializationProgress(60);
 			await loadSequences(sequenceService);
 
 			// Step 6: Complete initialization
