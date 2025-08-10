@@ -33,7 +33,7 @@ Simple increment/decrement control for turn intensity values.
 				});
 				document.dispatchEvent(event);
 			}
-		} catch (_error) {
+		} catch {
 			// Find closest value if current value isn't in array
 			const closest = values.reduce((prev, curr) =>
 				Math.abs(curr - currentValue) < Math.abs(prev - currentValue) ? curr : prev

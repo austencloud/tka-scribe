@@ -102,7 +102,7 @@ export function createDeviceState() {
 		get elementSpacing() {
 			return elementSpacing;
 		},
-		
+
 		// Compatibility properties
 		get isMobile() {
 			return isMobile;

@@ -2,6 +2,7 @@
 __pycache__/
 *.py[cod]
 *.class
+src/web_app/modern_web/reference/
 
 # C extensions
 *.so

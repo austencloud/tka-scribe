@@ -9,8 +9,8 @@ Refactored from the large GeneratePanel.svelte with simple extracted responsibil
 -->
 <script lang="ts">
 	import { resolve } from '$services/bootstrap';
-	import { onMount } from 'svelte';
 	import type { IDeviceDetectionService } from '$services/interfaces';
+	import { onMount } from 'svelte';
 	// Import selector components
 	import CAPTypeSelector from '../../tabs/generate/selectors/CAPTypeSelector.svelte';
 	import GenerationModeToggle from '../../tabs/generate/selectors/GenerationModeToggle.svelte';

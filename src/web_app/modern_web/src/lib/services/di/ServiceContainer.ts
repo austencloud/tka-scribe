@@ -59,7 +59,11 @@ export class ServiceContainer {
 
 		// Check if it's a factory
 		if (this.factories.has(token)) {
-			return this.factories.get(token)!() as T;
+			const factory = this.factories.get(token);
+			if (!factory) {
+				throw new Error(`Factory for ${token} is unexpectedly undefined`);
+			}
+			return factory() as T;
 		}
 
 		// Check if it's a registered service

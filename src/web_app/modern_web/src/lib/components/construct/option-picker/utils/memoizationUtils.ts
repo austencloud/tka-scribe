@@ -36,7 +36,7 @@ export function memoizeLRU<T extends (...args: never[]) => unknown>(
 		}
 
 		// Calculate result and store in cache
-		const result = fn(...args);
+		const result = fn(...args) as ReturnType<T>;
 		cache.set(key, result);
 		keyOrder.push(key);
 

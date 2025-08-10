@@ -8,9 +8,6 @@
 	import { constructTabState } from '$stores/constructTabState.svelte';
 	import { onMount } from 'svelte';
 
-	// Props using runes
-	const {} = $props<{ isGenerateMode?: boolean }>();
-
 	// Reactive state from store
 	let errorMessage = $derived(constructTabState.errorMessage);
 	let isTransitioning = $derived(constructTabState.isTransitioning);
@@ -65,7 +62,6 @@
 		grid-template-columns: 1fr 1fr; /* 50/50 split between left panel and right panel */
 		overflow: hidden;
 		gap: var(--spacing-xs); /* Add small gap between content and button panel */
-
 
 		padding: 8px;
 	}

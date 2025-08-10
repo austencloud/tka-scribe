@@ -140,6 +140,10 @@ export class QuizSessionService {
 	 * Calculate lesson results from session.
 	 */
 	private static calculateResults(session: QuizSession): LessonResults {
+		if (!session.lessonType || !session.quizMode) {
+			throw new Error('Session must have lessonType and quizMode to calculate results');
+		}
+
 		const completionTime = (new Date().getTime() - session.startTime.getTime()) / 1000;
 		const accuracyPercentage =
 			session.questionsAnswered > 0
@@ -150,8 +154,8 @@ export class QuizSessionService {
 
 		return {
 			sessionId: session.sessionId,
-			lessonType: session.lessonType!,
-			quizMode: session.quizMode!,
+			lessonType: session.lessonType,
+			quizMode: session.quizMode,
 			totalQuestions: session.totalQuestions,
 			correctAnswers: session.correctAnswers,
 			incorrectGuesses: session.incorrectGuesses,
@@ -236,10 +240,10 @@ export class QuizSessionService {
 	 */
 	static getTimerState(sessionId: string): TimerState | null {
 		const session = this.getSession(sessionId);
-		if (!session) return null;
+		if (!session || !session.quizMode) return null;
 
 		const isRunning = this.timers.has(sessionId);
-		const totalTime = LessonConfigService.getQuizTime(session.quizMode!);
+		const totalTime = LessonConfigService.getQuizTime(session.quizMode);
 
 		return {
 			timeRemaining: session.quizTime,

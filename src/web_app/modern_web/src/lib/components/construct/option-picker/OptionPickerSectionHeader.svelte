@@ -50,7 +50,6 @@ Matches the desktop version exactly:
 
 	// Generate button text like desktop
 	const buttonText = $derived(`${typeInfo.typeName}: ${typeInfo.description}`);
-	const buttonHtml = $derived(`${typeInfo.typeName}: ${typeInfo.description}`);
 </script>
 
 <div class="section-header">
@@ -67,7 +66,7 @@ Matches the desktop version exactly:
 			title={`Toggle ${buttonText} section`}
 		>
 			<span class="button-label">
-				{@html buttonHtml}
+				{buttonText}
 			</span>
 		</button>
 

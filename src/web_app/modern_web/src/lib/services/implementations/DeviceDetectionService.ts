@@ -23,7 +23,10 @@ export class DeviceDetectionService implements IDeviceDetectionService {
 		if (!this.capabilities) {
 			this.detectCapabilities();
 		}
-		return this.capabilities!;
+		if (!this.capabilities) {
+			throw new Error('Failed to detect device capabilities');
+		}
+		return this.capabilities;
 	}
 
 	getResponsiveSettings(): ResponsiveSettings {
@@ -259,7 +262,8 @@ export class DeviceDetectionService implements IDeviceDetectionService {
 
 	private notifyListeners(): void {
 		if (this.capabilities) {
-			this.listeners.forEach((callback) => callback(this.capabilities!));
+			const capabilities = this.capabilities; // Capture for closure
+			this.listeners.forEach((callback) => callback(capabilities));
 		}
 	}
 

@@ -28,7 +28,7 @@ Prop Component - Renders SVG props with proper positioning
 		onError,
 	}: Props = $props();
 
-	let propElement: SVGGElement;
+	let propElement = $state<SVGGElement | null>(null); // Used in bind:this
 	let loaded = $state(false);
 	let error = $state<string | null>(null);
 	let svgData = $state<{

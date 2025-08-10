@@ -30,8 +30,8 @@ interface LayoutRule {
 		orientation?: 'portrait' | 'landscape';
 		extraCheck?: (width: number, height: number, params: GridConfigParams) => boolean;
 	};
-	columns?: number;
-	gap?: number;
+	columns?: number | '+1';
+	gap?: number | string;
 }
 
 export function getEnhancedDeviceType(
@@ -183,14 +183,22 @@ export const getResponsiveLayout = memoizeLRU(
 	}
 );
 
-function doesRuleMatch(rule: LayoutRule, params: GridConfigParams): boolean {
+function doesRuleMatch(
+	rule: LayoutRule | { when: LayoutRule['when']; gap: string },
+	params: GridConfigParams
+): boolean {
 	if (rule.when.count !== undefined && rule.when.count !== params.count) return false;
 	if (rule.when.minCount !== undefined && params.count < rule.when.minCount) return false;
 	if (rule.when.maxCount !== undefined && params.count > rule.when.maxCount) return false;
 	if (rule.when.device === 'desktop' && params.isMobileDevice) return false;
 	if (rule.when.device === 'mobile' && !params.isMobileDevice) return false;
 	if (rule.when.aspect && rule.when.aspect !== params.containerAspect) return false;
-	if (rule.when.aspects && !rule.when.aspects.includes(params.containerAspect)) return false;
+	if (
+		rule.when.aspects &&
+		params.containerAspect &&
+		!rule.when.aspects.includes(params.containerAspect)
+	)
+		return false;
 	if (rule.when.orientation === 'portrait' && !params.isPortraitMode) return false;
 	if (rule.when.orientation === 'landscape' && params.isPortraitMode) return false;
 	if (
@@ -218,9 +226,9 @@ const calculateGridConfiguration = memoizeLRU(
 		for (const rule of LAYOUT_RULES) {
 			if (doesRuleMatch(rule, fullParams)) {
 				if (rule.columns === '+1') {
-					columns = Math.min(rule.maxColumns || 8, columns + 1);
-				} else {
-					columns = parseInt(rule.columns.toString(), 10);
+					columns = Math.min(8, columns + 1); // Default max columns to 8
+				} else if (typeof rule.columns === 'number') {
+					columns = rule.columns;
 				}
 
 				break;
