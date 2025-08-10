@@ -1,6 +1,26 @@
-<script lang="ts">
-	let message = $state('Hello Svelte 5!');
+<script>
+	import ReactivityTest from '$lib/test/ReactivityTest.svelte';
 </script>
 
-<h1>{message}</h1>
-<p>This is a test page to check if basic Svelte 5 runes work.</p>
+<svelte:head>
+	<title>Reactivity Test</title>
+</svelte:head>
+
+<main>
+	<h1>Svelte 5 Runes Reactivity Test</h1>
+	<ReactivityTest />
+</main>
+
+<style>
+	main {
+		padding: 20px;
+		background: #0a0a0a;
+		color: white;
+		min-height: 100vh;
+	}
+
+	h1 {
+		color: #fff;
+		margin-bottom: 20px;
+	}
+</style>

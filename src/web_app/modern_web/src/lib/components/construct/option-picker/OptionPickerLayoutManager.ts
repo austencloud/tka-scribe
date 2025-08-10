@@ -12,12 +12,9 @@ import {
 } from './utils/layoutUtils';
 import { 
 	getContainerAspect, 
-	getLayoutCategory,
-	getDeviceType,
 	type DeviceType, 
 	type ContainerAspect, 
-	type ResponsiveLayoutConfig,
-	BREAKPOINTS 
+	type ResponsiveLayoutConfig
 } from './config';
 import { detectFoldableDevice, type FoldableDetectionResult } from './utils/deviceDetection';
 
@@ -161,7 +158,7 @@ export class OptionPickerLayoutManager {
 	/**
 	 * Determine if the current layout should use mobile optimizations
 	 */
-	static shouldUseMobileLayout(containerWidth: number, isMobileUserAgent?: boolean): boolean {
+	static shouldUseMobileLayout(containerWidth: number, _isMobileUserAgent?: boolean): boolean {
 		const result = this.calculateLayout({
 			count: 1, // Minimal count for device detection
 			containerWidth,
@@ -174,7 +171,7 @@ export class OptionPickerLayoutManager {
 	/**
 	 * Get device information for the current container dimensions
 	 */
-	static getDeviceInfo(containerWidth: number, isMobileUserAgent?: boolean) {
+	static getDeviceInfo(containerWidth: number, _isMobileUserAgent?: boolean) {
 		const result = this.calculateLayout({
 			count: 1,
 			containerWidth,

@@ -12,14 +12,13 @@ import {
 } from './utils/layoutUtils';
 import { 
 	getContainerAspect, 
-	getLayoutCategory,
 	type DeviceType, 
 	type ContainerAspect, 
 	type ResponsiveLayoutConfig,
 	BREAKPOINTS 
 } from './config';
 import { detectFoldableDevice, type FoldableDetectionResult } from './utils/deviceDetection';
-import { createOptionPickerRunes, type OptionPickerRunes } from './optionPickerRunes.svelte';
+import { createOptionPickerRunes } from './optionPickerRunes.svelte';
 
 export interface SectionState {
 	// Loading and initialization 

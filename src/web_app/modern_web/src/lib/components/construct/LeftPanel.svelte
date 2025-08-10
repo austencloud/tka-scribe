@@ -6,10 +6,6 @@
 -->
 <script lang="ts">
 	import Workbench from '$components/workbench/Workbench.svelte';
-	import { constructTabState } from '$stores/constructTabState.svelte';
-
-	// Reactive state from store
-	let currentSequence = $derived(constructTabState.currentSequence);
 </script>
 
 <div class="left-panel" data-testid="left-panel">

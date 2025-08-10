@@ -300,7 +300,7 @@ export function createOptionPickerRunes() {
 
 	// ===== Return Reactive Interface =====
 	return {
-		// Reactive state (getters that work with runes)
+		// Direct access to reactive state
 		get sequence() {
 			return sequenceData;
 		},

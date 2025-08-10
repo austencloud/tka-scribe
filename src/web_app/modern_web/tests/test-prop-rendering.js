@@ -9,7 +9,7 @@
 // Mock DOM environment for testing
 if (typeof document === 'undefined') {
 	global.document = {
-		createElementNS: (ns, tag) => ({
+		createElementNS: () => ({
 			setAttribute: () => {},
 			appendChild: () => {},
 			firstChild: null,
@@ -17,7 +17,7 @@ if (typeof document === 'undefined') {
 	};
 
 	global.DOMParser = class {
-		parseFromString(content, type) {
+		parseFromString() {
 			return {
 				documentElement: {
 					firstChild: null,
@@ -26,7 +26,7 @@ if (typeof document === 'undefined') {
 		}
 	};
 
-	global.fetch = async (url) => ({
+	global.fetch = async () => ({
 		ok: true,
 		status: 200,
 		text: async () => `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">

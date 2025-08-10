@@ -31,7 +31,7 @@
 			if (!startPositionService) {
 				try {
 					startPositionService = resolve('IStartPositionService');
-				} catch (containerError) {
+				} catch {
 					// Container not ready yet, will retry on next effect run
 					return;
 				}
@@ -39,7 +39,7 @@
 			if (!pictographRenderingService) {
 				try {
 					pictographRenderingService = resolve('IPictographRenderingService');
-				} catch (containerError) {
+				} catch {
 					// Container not ready yet, will retry on next effect run
 					return;
 				}

@@ -1,5 +1,4 @@
 // src/lib/components/construct/option-picker/config.ts
-import type { PictographData } from '$lib/domain/PictographData';
 
 // ----- Types -----
 export type DeviceType = 'smallMobile' | 'mobile' | 'tablet' | 'desktop' | 'largeDesktop';
@@ -122,7 +121,7 @@ export function getContainerAspect(width: number, height: number): ContainerAspe
 /**
  * Determines the device type based on container width and mobile status
  */
-export function getDeviceType(width: number, isMobileUserAgent: boolean): DeviceType {
+export function getDeviceType(width: number, _isMobileUserAgent: boolean): DeviceType {
 	// Prioritize User Agent for initial mobile/non-mobile split if needed,
 	// but width is generally more reliable for layout.
 	// You might adjust this logic based on how you want to define 'mobile' vs 'tablet' strictly.

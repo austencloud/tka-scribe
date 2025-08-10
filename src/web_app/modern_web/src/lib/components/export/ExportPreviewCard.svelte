@@ -1,6 +1,5 @@
 <!-- ExportPreviewCard.svelte - Export preview matching desktop app -->
 <script lang="ts">
-	import { onMount } from 'svelte';
 	import type { SequenceData } from '$services/interfaces';
 
 	interface Props {
@@ -31,7 +30,7 @@
 		if (!currentSequence) return null;
 
 		const enabledOptions = Object.entries(exportSettings).filter(
-			([key, value]) => typeof value === 'boolean' && value
+			([_key, value]) => typeof value === 'boolean' && value
 		).length;
 
 		return {

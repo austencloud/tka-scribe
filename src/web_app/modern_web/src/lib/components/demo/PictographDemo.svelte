@@ -1,5 +1,28 @@
 <!--
-PictographDemo.svelte - Demo component using REAL CSV data
+Pi		c		console.error('❌ Failed to initialize PictographDemo:', error);ole.log('✅ PictographDemo initialized with real data');ographDemo.svelte - Demo 		optionDataSer		await csvDataService.loadCsvData();
+		await optionDataService.initialize();
+
+		// Load sample pictographs from real CSV data
+		await loadSamplePictographs();
+
+		_isLoading = false;
+		console.log('✅ PictographDemo initialized with real data');
+	} catch (error) {
+		console.error('❌ Failed to initialize PictographDemo:', error);
+		_loadingError = error instanceof Error ? error.message : 'Unknown error';
+		_isLoading = false;
+	}tionDataService();
+
+		await csvDataService.loadCsvData();
+		await optionDataService.initialize();
+
+		// Load sample pictographs from real CSV data
+		await loadSamplePictographs();
+
+		console.log('✅ PictographDemo initialized with real data');
+	} catch (error) {
+		console.error('❌ Failed to initialize PictographDemo:', error);
+	} REAL CSV data
 
 This component demonstrates the modern pictograph system using actual CSV data
 from the TKA system, showing real pictographs with proper motion calculations.
@@ -7,8 +30,7 @@ from the TKA system, showing real pictographs with proper motion calculations.
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { ModernPictograph } from '$lib/components/pictograph';
-	import type { BeatData, PictographData } from '$lib/domain';
-	import { createBeatData } from '$lib/domain';
+	import type { PictographData } from '$lib/domain';
 	import { GridMode } from '$lib/domain/enums';
 	import { CsvDataService } from '$lib/services/implementations/CsvDataService';
 	import { OptionDataService } from '$lib/services/implementations/OptionDataService';
@@ -18,8 +40,6 @@ from the TKA system, showing real pictographs with proper motion calculations.
 	let debugMode = $state(false);
 	let gridMode = $state<GridMode>(GridMode.DIAMOND);
 	let showControls = $state(true);
-	let isLoading = $state(true);
-	let loadingError = $state<string | null>(null);
 
 	// Services
 	let csvDataService: CsvDataService | null = null;
@@ -122,35 +142,6 @@ from the TKA system, showing real pictographs with proper motion calculations.
 	// Get current demo data
 	const currentPictographData = $derived(() => {
 		return samplePictographs[selectedDemo] || null;
-	});
-
-	// Create beat data for the pictograph
-	const currentBeatData = $derived(() => {
-		const pictograph = currentPictographData();
-		if (!pictograph) return null;
-
-		return createBeatData({
-			beat_number: pictograph.beat,
-			pictograph_data: pictograph,
-		});
-	});
-
-	// Debug info
-	const debugInfo = $derived(() => {
-		const pictograph = currentPictographData();
-		if (!pictograph) return null;
-
-		return {
-			id: pictograph.id,
-			letter: pictograph.letter,
-			gridMode: pictograph.grid_data?.grid_mode,
-			arrowCount: Object.keys(pictograph.arrows || {}).length,
-			propCount: Object.keys(pictograph.props || {}).length,
-			motionCount: Object.keys(pictograph.motions || {}).length,
-			beat: pictograph.beat,
-			startPos: pictograph.start_position,
-			endPos: pictograph.end_position,
-		};
 	});
 
 	// Load a random pictograph from CSV data

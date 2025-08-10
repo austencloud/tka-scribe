@@ -68,7 +68,7 @@ async function testOptionPicker() {
 		}
 
 		// Let's also check the console for any error messages
-		const logs = await page.evaluate(() => {
+		await page.evaluate(() => {
 			return window.console._logs || [];
 		});
 
