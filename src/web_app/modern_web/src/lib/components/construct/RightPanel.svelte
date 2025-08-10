@@ -8,18 +8,29 @@
 	import ExportPanel from '$components/export/ExportPanel.svelte';
 	import GraphEditor from '$components/graph-editor/GraphEditor.svelte';
 	import { constructTabEventService } from '$services/implementations/ConstructTabEventService';
-	import { constructTabTransitionService } from '$services/implementations/ConstructTabTransitionService';
 	import { constructTabState } from '$stores/constructTabState.svelte';
 	import BuildTabContent from './BuildTabContent.svelte';
 	import GeneratePanel from './GeneratePanel.svelte';
 	import TabNavigation from './TabNavigation.svelte';
 
+	// Import Svelte's built-in fade transition for consistency with main tabs
+	import { fade } from 'svelte/transition';
+	import { shouldAnimate } from '$lib/utils/simpleFade';
+	import { getAnimationSettings } from '$lib/utils/animationControl';
+
 	// Reactive state from store
 	let activeRightPanel = $derived(constructTabState.activeRightPanel);
 	let isSubTabTransitionActive = $derived(constructTabState.isSubTabTransitionActive);
+	let animationSettings = $derived(getAnimationSettings());
 
-	// Get transition functions
-	const { in: fadeIn, out: fadeOut } = constructTabTransitionService.getSubTabTransitions();
+	// Sequential fade timing - same as main tabs for consistency
+	const OUT_DURATION = 250;
+	const IN_DURATION = 250;
+	const IN_DELAY = OUT_DURATION; // Wait for out transition to complete
+
+	// Transition parameters using runes
+	let fadeOutParams = $derived(shouldAnimate(animationSettings) ? { duration: OUT_DURATION } : { duration: 0 });
+	let fadeInParams = $derived(shouldAnimate(animationSettings) ? { duration: IN_DURATION, delay: IN_DELAY } : { duration: 0 });
 
 	// Event handlers for child components
 	function handleBeatModified(beatIndex: number, beatData: any) {
@@ -51,39 +62,35 @@
 	<!-- Tab Navigation -->
 	<TabNavigation />
 
-	<!-- Tab Content with Fade Transitions -->
+	<!-- Tab Content with Sequential Fade Transitions -->
 	<div class="tab-content">
-		{#if activeRightPanel === 'build'}
-			<div class="sub-tab-content" data-sub-tab="build" in:fadeIn out:fadeOut>
-				<BuildTabContent />
-			</div>
-		{:else if activeRightPanel === 'generate'}
-			<div class="sub-tab-content" data-sub-tab="generate">
-				<GeneratePanel />
-			</div>
-		{:else if activeRightPanel === 'edit'}
-			<div class="sub-tab-content" data-sub-tab="edit" in:fadeIn out:fadeOut>
-				<div class="panel-header">
-					<h2>Graph Editor</h2>
-					<p>Advanced sequence editing tools</p>
-				</div>
-				<div class="panel-content graph-editor-content">
-					<GraphEditor
-						onBeatModified={handleBeatModified}
-						onArrowSelected={handleArrowSelected}
-						onVisibilityChanged={handleGraphEditorVisibilityChanged}
+		{#key activeRightPanel}
+			<div class="sub-tab-content" in:fade={fadeInParams} out:fade={fadeOutParams}>
+				{#if activeRightPanel === 'build'}
+					<BuildTabContent />
+				{:else if activeRightPanel === 'generate'}
+					<GeneratePanel />
+				{:else if activeRightPanel === 'edit'}
+					<div class="panel-header">
+						<h2>Graph Editor</h2>
+						<p>Advanced sequence editing tools</p>
+					</div>
+					<div class="panel-content graph-editor-content">
+						<GraphEditor
+							onBeatModified={handleBeatModified}
+							onArrowSelected={handleArrowSelected}
+							onVisibilityChanged={handleGraphEditorVisibilityChanged}
+						/>
+					</div>
+				{:else if activeRightPanel === 'export'}
+					<ExportPanel
+						on:settingChanged={handleExportSettingChanged}
+						on:previewUpdateRequested={handlePreviewUpdateRequested}
+						on:exportRequested={handleExportRequested}
 					/>
-				</div>
+				{/if}
 			</div>
-		{:else if activeRightPanel === 'export'}
-			<div class="sub-tab-content" data-sub-tab="export" in:fadeIn out:fadeOut>
-				<ExportPanel
-					on:settingChanged={handleExportSettingChanged}
-					on:previewUpdateRequested={handlePreviewUpdateRequested}
-					on:exportRequested={handleExportRequested}
-				/>
-			</div>
-		{/if}
+		{/key}
 
 		<!-- Debug sub-tab transition state -->
 		{#if isSubTabTransitionActive}
@@ -119,9 +126,16 @@
 		display: flex;
 		flex-direction: column;
 		overflow: hidden;
-		position: relative;
-		height: 100%;
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
 		width: 100%;
+		height: 100%;
+		/* Ensure smooth transitions without layout jumps */
+		will-change: opacity;
+		backface-visibility: hidden;
 	}
 
 	.panel-header {

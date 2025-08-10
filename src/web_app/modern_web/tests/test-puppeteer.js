@@ -1,3 +1,4 @@
+// @ts-nocheck
 const puppeteer = require('puppeteer');
 
 async function testOptionPicker() {

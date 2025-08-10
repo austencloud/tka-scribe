@@ -74,7 +74,7 @@
 		"skipDefaultLibCheck": true,
 
 		// Type definitions
-		"types": ["svelte", "node", "vite/client", "@testing-library/jest-dom", "vitest/globals"],
+		/* Removed explicit types list to allow automatic type resolution (fix TS2688) */
 		"typeRoots": ["./node_modules/@types", "./src/types"]
 	},
 	"include": [
@@ -82,6 +82,7 @@
 		"src/**/*.ts",
 		"src/**/*.js",
 		"src/**/*.svelte",
+		"scripts/**/*.ts",
 		"tests/**/*.ts",
 		"tests/**/*.js",
 		"playwright.config.ts",

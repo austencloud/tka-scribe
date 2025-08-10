@@ -5,8 +5,8 @@
  * This provides basic sequence state management with proper Svelte 5 patterns.
  */
 
-import type { SequenceData, BeatData } from '@tka/schemas';
-import type { SequenceCreateRequest } from '$services/interfaces';
+import type { SequenceData, BeatData } from '$lib/domain';
+// (Removed unused SequenceCreateRequest import after domain model migration)
 import type { ArrowPosition } from '$services/interfaces';
 
 // ============================================================================
@@ -84,7 +84,8 @@ export function getArrowPositioningError() {
 // ============================================================================
 
 export function getCurrentBeats(): BeatData[] {
-	return state.currentSequence?.beats ?? [];
+	// Return a mutable copy to allow UI modifications without violating readonly domain model
+	return state.currentSequence ? [...state.currentSequence.beats] : [];
 }
 
 export function getSelectedBeatData(): BeatData | null {
@@ -202,7 +203,10 @@ export function clearError(): void {
  */
 export function updateCurrentBeat(beatIndex: number, beatData: BeatData): void {
 	if (state.currentSequence && beatIndex >= 0 && beatIndex < state.currentSequence.beats.length) {
-		state.currentSequence.beats[beatIndex] = beatData;
+		// Create a new beats array (respecting immutability of domain model) and assign
+		const newBeats = [...state.currentSequence.beats];
+		newBeats[beatIndex] = beatData;
+		state.currentSequence = { ...state.currentSequence, beats: newBeats } as SequenceData;
 	}
 }
 

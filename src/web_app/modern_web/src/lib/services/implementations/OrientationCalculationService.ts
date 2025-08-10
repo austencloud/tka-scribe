@@ -5,7 +5,7 @@
  * Calculates end orientation based on motion type, turns, start orientation, and prop rotation direction.
  */
 
-import { Orientation, MotionType, RotationDirection } from '$lib/domain/enums';
+import { Orientation, MotionType, RotationDirection, Location } from '$lib/domain/enums';
 import type { MotionData } from '$lib/domain/MotionData';
 
 export class OrientationCalculationService {
@@ -19,6 +19,9 @@ export class OrientationCalculationService {
 		}
 
 		// Validate turns
+		if (motion.turns === 'fl') {
+			return motion.start_ori; // Float handled separately earlier
+		}
 		const validTurns = [0, 0.5, 1, 1.5, 2, 2.5, 3];
 		if (!validTurns.includes(motion.turns)) {
 			console.warn(`Invalid turns value: ${motion.turns}. Using start orientation.`);
@@ -152,8 +155,8 @@ export class OrientationCalculationService {
 	createMotionWithCalculatedOrientation(
 		motionType: MotionType,
 		propRotDir: RotationDirection,
-		startLoc: string,
-		endLoc: string,
+		startLoc: Location,
+		endLoc: Location,
 		turns: number = 0,
 		startOri: Orientation = Orientation.IN
 	): MotionData {
@@ -171,9 +174,7 @@ export class OrientationCalculationService {
 			prefloat_prop_rot_dir: null,
 		};
 
-		// Calculate and set the proper end orientation
-		motion.end_ori = this.calculateEndOrientation(motion);
-
-		return motion;
+		// Return new object with calculated end orientation (immutability / readonly safety)
+		return { ...motion, end_ori: this.calculateEndOrientation(motion) };
 	}
 }

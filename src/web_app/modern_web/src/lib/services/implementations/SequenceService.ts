@@ -5,11 +5,11 @@
  * This service orchestrates the business workflows for sequence management.
  */
 
-import type { SequenceData, BeatData } from '@tka/schemas';
+import type { BeatData, SequenceData } from '$lib/domain';
 import type {
-	ISequenceService,
-	ISequenceDomainService,
 	IPersistenceService,
+	ISequenceDomainService,
+	ISequenceService,
 	SequenceCreateRequest,
 } from '../interfaces';
 
@@ -28,19 +28,9 @@ export class SequenceService implements ISequenceService {
 
 			// Use domain service to create the sequence
 			const sequence = this.sequenceDomainService.createSequence(request);
-
-			// Add timestamps
-			const sequenceWithTimestamps = {
-				...sequence,
-				createdAt: new Date().toISOString(),
-				updatedAt: new Date().toISOString(),
-			};
-
-			// Persist the sequence
-			await this.persistenceService.saveSequence(sequenceWithTimestamps);
-
-			console.log('Sequence created successfully:', sequenceWithTimestamps.id);
-			return sequenceWithTimestamps;
+			await this.persistenceService.saveSequence(sequence);
+			console.log('Sequence created successfully:', sequence.id);
+			return sequence;
 		} catch (error) {
 			console.error('Failed to create sequence:', error);
 			throw new Error(
@@ -69,20 +59,39 @@ export class SequenceService implements ISequenceService {
 				beatData
 			);
 
-			// Update timestamps
-			const sequenceWithTimestamp = {
-				...updatedSequence,
-				updatedAt: new Date().toISOString(),
-			};
-
-			// Persist the updated sequence
-			await this.persistenceService.saveSequence(sequenceWithTimestamp);
+			await this.persistenceService.saveSequence(updatedSequence);
 
 			console.log('Beat updated successfully');
 		} catch (error) {
 			console.error('Failed to update beat:', error);
 			throw new Error(
 				`Failed to update beat: ${error instanceof Error ? error.message : 'Unknown error'}`
+			);
+		}
+	}
+
+	/**
+	 * Set the start position for a sequence
+	 */
+	async setSequenceStartPosition(sequenceId: string, startPosition: BeatData): Promise<void> {
+		try {
+			console.log(`Setting start position for sequence ${sequenceId}`);
+
+			// Load the current sequence
+			const currentSequence = await this.persistenceService.loadSequence(sequenceId);
+			if (!currentSequence) {
+				throw new Error(`Sequence ${sequenceId} not found`);
+			}
+
+			// Update the sequence with the start position
+			const updatedSequence = { ...currentSequence, start_position: startPosition } as SequenceData;
+			await this.persistenceService.saveSequence(updatedSequence);
+
+			console.log('Start position set successfully');
+		} catch (error) {
+			console.error('Failed to set start position:', error);
+			throw new Error(
+				`Failed to set start position: ${error instanceof Error ? error.message : 'Unknown error'}`
 			);
 		}
 	}
@@ -140,27 +149,17 @@ export class SequenceService implements ISequenceService {
 			// Create new beat with next beat number
 			const nextBeatNumber = sequence.beats.length + 1;
 			const newBeat: BeatData = {
-				beatNumber: nextBeatNumber,
-				letter: null,
+				id: crypto.randomUUID(),
+				beat_number: nextBeatNumber,
 				duration: 1.0,
-				blueMotion: null,
-				redMotion: null,
-				blueReversal: false,
-				redReversal: false,
-				filled: false,
-				tags: [],
-				metadata: null,
-				...beatData, // Override with provided data
+				blue_reversal: false,
+				red_reversal: false,
+				is_blank: true,
+				pictograph_data: null,
+				metadata: {},
+				...beatData,
 			};
-
-			// Add the beat to the sequence
-			const updatedSequence = {
-				...sequence,
-				beats: [...sequence.beats, newBeat],
-				length: sequence.beats.length + 1,
-				updatedAt: new Date().toISOString(),
-			};
-
+			const updatedSequence = { ...sequence, beats: [...sequence.beats, newBeat] } as SequenceData;
 			await this.persistenceService.saveSequence(updatedSequence);
 		} catch (error) {
 			console.error('Failed to add beat:', error);
@@ -187,15 +186,8 @@ export class SequenceService implements ISequenceService {
 			// Remove the beat and renumber remaining beats
 			const newBeats = sequence.beats
 				.filter((_, index) => index !== beatIndex)
-				.map((beat, index) => ({ ...beat, beatNumber: index + 1 }));
-
-			const updatedSequence = {
-				...sequence,
-				beats: newBeats,
-				length: newBeats.length,
-				updatedAt: new Date().toISOString(),
-			};
-
+				.map((beat, index) => ({ ...beat, beat_number: index + 1 }));
+			const updatedSequence = { ...sequence, beats: newBeats } as SequenceData;
 			await this.persistenceService.saveSequence(updatedSequence);
 		} catch (error) {
 			console.error('Failed to remove beat:', error);

@@ -103,11 +103,24 @@ function loadSettingsFromStorage(): AppSettings {
 
 	try {
 		const stored = localStorage.getItem(SETTINGS_STORAGE_KEY);
-		if (!stored) return DEFAULT_SETTINGS;
+		if (!stored) {
+			console.log('🔄 No stored settings found, using defaults:', {
+				key: SETTINGS_STORAGE_KEY,
+				defaultBackgroundType: DEFAULT_SETTINGS.backgroundType
+			});
+			return DEFAULT_SETTINGS;
+		}
 
 		const parsed = JSON.parse(stored);
 		// Merge with defaults to handle new settings
-		return { ...DEFAULT_SETTINGS, ...parsed };
+		const merged = { ...DEFAULT_SETTINGS, ...parsed };
+		console.log('📦 Settings loaded from localStorage:', {
+			key: SETTINGS_STORAGE_KEY,
+			backgroundType: merged.backgroundType,
+			backgroundEnabled: merged.backgroundEnabled,
+			fullSettings: merged
+		});
+		return merged;
 	} catch (error) {
 		console.warn('Failed to load settings from localStorage:', error);
 		return DEFAULT_SETTINGS;
@@ -120,7 +133,12 @@ function saveSettingsToStorage(settings: AppSettings): void {
 
 	try {
 		localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(settings));
-		console.log('✅ Settings saved to localStorage');
+		console.log('✅ Settings saved to localStorage:', {
+			key: SETTINGS_STORAGE_KEY,
+			backgroundType: settings.backgroundType,
+			backgroundEnabled: settings.backgroundEnabled,
+			fullSettings: settings
+		});
 	} catch (error) {
 		console.error('❌ Failed to save settings to localStorage:', error);
 	}
@@ -263,6 +281,12 @@ export function setTheme(newTheme: 'light' | 'dark'): void {
  * Update settings
  */
 export function updateSettings(newSettings: Partial<AppSettings>): void {
+	console.log('🔄 Updating settings:', {
+		newSettings,
+		backgroundType: newSettings.backgroundType,
+		previousBackgroundType: settingsState.backgroundType
+	});
+	
 	Object.assign(settingsState, newSettings);
 
 	// Apply theme if changed
@@ -272,6 +296,8 @@ export function updateSettings(newSettings: Partial<AppSettings>): void {
 
 	// Save to localStorage
 	saveSettingsToStorage(settingsState);
+	
+	console.log('💾 Settings updated and saved. Current backgroundType:', settingsState.backgroundType);
 }
 
 /**
@@ -341,4 +367,41 @@ export function resetAppState(): void {
 		lastRenderTime: 0,
 		memoryUsage: 0,
 	});
+}
+
+/**
+ * Clear settings from localStorage (for debugging)
+ */
+export function clearStoredSettings(): void {
+	if (!browser) return;
+	
+	try {
+		localStorage.removeItem(SETTINGS_STORAGE_KEY);
+		console.log('🗝 Cleared stored settings from localStorage');
+		// Reset to defaults
+		Object.assign(settingsState, DEFAULT_SETTINGS);
+		uiState.theme = DEFAULT_SETTINGS.theme;
+	} catch (error) {
+		console.error('❌ Failed to clear stored settings:', error);
+	}
+}
+
+/**
+ * Debug function to show current localStorage state
+ */
+export function debugSettings(): void {
+	if (!browser) return;
+	
+	try {
+		const stored = localStorage.getItem(SETTINGS_STORAGE_KEY);
+		console.log('🔍 Debug Settings:', {
+			storageKey: SETTINGS_STORAGE_KEY,
+			storedValue: stored,
+			parsedValue: stored ? JSON.parse(stored) : null,
+			currentState: settingsState,
+			currentBackground: settingsState.backgroundType
+		});
+	} catch (error) {
+		console.error('❌ Failed to debug settings:', error);
+	}
 }

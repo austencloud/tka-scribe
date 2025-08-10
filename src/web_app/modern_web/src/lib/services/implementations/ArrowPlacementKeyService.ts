@@ -5,7 +5,7 @@
  * Simplified version of the desktop PlacementKeyGenerator logic.
  */
 
-import type { MotionData } from '@tka/schemas';
+import type { MotionData } from '$lib/domain';
 import type { MotionType, PictographData } from '../interfaces';
 
 export interface IArrowPlacementKeyService {
@@ -28,12 +28,21 @@ export class ArrowPlacementKeyService implements IArrowPlacementKeyService {
 	/**
 	 * Generate placement key based on motion data and pictograph context
 	 */
+	private getRawMotionType(motionData: MotionData): unknown {
+		// Domain field
+		if ('motion_type' in motionData) return (motionData as MotionData).motion_type;
+		// Legacy camelCase fallback (during migration)
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		return (motionData as any).motionType;
+	}
+
 	generatePlacementKey(
 		motionData: MotionData,
 		pictographData: PictographData,
 		availableKeys: string[]
 	): string {
-		const motionType = this.normalizeMotionType(motionData.motionType);
+		const rawMotionType = this.getRawMotionType(motionData);
+		const motionType = this.normalizeMotionType(rawMotionType);
 		const letter = pictographData.letter;
 
 		console.log(`Generating placement key for ${motionType}, letter: ${letter}`);
@@ -69,7 +78,8 @@ export class ArrowPlacementKeyService implements IArrowPlacementKeyService {
 		motionData: MotionData,
 		pictographData: PictographData
 	): string[] {
-		const motionType = this.normalizeMotionType(motionData.motionType);
+		const rawMotionType = this.getRawMotionType(motionData);
+		const motionType = this.normalizeMotionType(rawMotionType);
 		const letter = pictographData.letter;
 
 		const candidates: string[] = [];
@@ -148,20 +158,14 @@ export class ArrowPlacementKeyService implements IArrowPlacementKeyService {
 	/**
 	 * Normalize motion type to standard format
 	 */
-	private normalizeMotionType(motionType: any): MotionType {
+	private normalizeMotionType(motionType: unknown): MotionType {
 		if (typeof motionType === 'string') {
 			const normalized = motionType.toLowerCase();
 			if (['pro', 'anti', 'float', 'dash', 'static'].includes(normalized)) {
 				return normalized as MotionType;
 			}
 		}
-
-		// Handle enum objects
-		if (motionType && typeof motionType === 'object' && motionType.value) {
-			return this.normalizeMotionType(motionType.value);
-		}
-
-		console.warn(`Invalid motion type: ${motionType}, defaulting to 'pro'`);
+		console.warn(`Invalid motion type: ${String(motionType)}, defaulting to 'pro'`);
 		return 'pro';
 	}
 

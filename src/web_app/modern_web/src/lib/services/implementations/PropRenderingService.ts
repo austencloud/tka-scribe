@@ -31,7 +31,7 @@ export class PropRenderingService implements IPropRenderingService {
 	};
 
 	constructor() {
-		console.log('🎭 PropRenderingService initialized');
+		// PropRenderingService initialized
 	}
 
 	/**
@@ -46,9 +46,6 @@ export class PropRenderingService implements IPropRenderingService {
 	): Promise<SVGElement> {
 		// Props are now handled by ModernPictograph.svelte -> Prop.svelte components
 		// This service-level rendering is disabled to prevent duplicate CIRCLE_PROP elements
-		console.log(
-			'🎭 PropRenderingService.renderProp() disabled - props rendered by Prop.svelte'
-		);
 
 		// Return empty group to prevent errors
 		const group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
@@ -65,8 +62,8 @@ export class PropRenderingService implements IPropRenderingService {
 		gridMode: GridMode = 'diamond'
 	): Promise<PropPosition> {
 		try {
-			// Use end location for prop positioning
-			const location = (motionData?.endLoc as any) || 's';
+			// Use end location for prop positioning (domain uses end_loc)
+			const location = (motionData?.end_loc as unknown as string) || 's';
 
 			// Use DefaultPropPositioner for consistent positioning
 			const basePosition = DefaultPropPositioner.calculatePosition(location, gridMode);
@@ -96,7 +93,8 @@ export class PropRenderingService implements IPropRenderingService {
 		const cacheKey = `${propType}_${color}`;
 
 		if (this.svgCache.has(cacheKey)) {
-			return this.svgCache.get(cacheKey)!;
+			const cached = this.svgCache.get(cacheKey);
+			if (cached) return cached;
 		}
 
 		try {
@@ -114,7 +112,6 @@ export class PropRenderingService implements IPropRenderingService {
 			// Cache the result
 			this.svgCache.set(cacheKey, svgContent);
 
-			console.log(`📦 Loaded and cached ${propType} SVG for ${color}`);
 			return svgContent;
 		} catch (error) {
 			console.error(`❌ Error loading ${propType} SVG:`, error);
@@ -164,7 +161,6 @@ export class PropRenderingService implements IPropRenderingService {
 		}
 
 		// Fallback to center if point not found
-		console.warn(`Hand point '${pointName}' not found, using center`);
 		return gridData.centerPoint?.coordinates || { x: 475, y: 475 };
 	}
 
@@ -173,8 +169,8 @@ export class PropRenderingService implements IPropRenderingService {
 	 */
 	private calculatePropRotation(motionData: MotionData, location?: string): number {
 		// Use PropRotAngleManager for consistent rotation calculation with legacy
-		const endLocation = location || (motionData?.endLoc as any) || 's';
-		const endOrientation = motionData?.endOri || 'in';
+		const endLocation = location || (motionData?.end_loc as unknown as string) || 's';
+		const endOrientation = (motionData as unknown as { end_ori?: string })?.end_ori || 'in';
 
 		// Convert string orientation to enum
 		let orientation: Orientation;
@@ -195,47 +191,13 @@ export class PropRenderingService implements IPropRenderingService {
 				orientation = Orientation.IN;
 		}
 
+		// Delegate to angle manager
 		return PropRotAngleManager.calculateRotation(endLocation, orientation);
 	}
 
-	/**
-	 * Get small offset for color separation
-	 */
 	private getColorOffset(color: 'blue' | 'red'): { x: number; y: number } {
 		// Small offset to prevent props from overlapping
 		return color === 'blue' ? { x: -8, y: -8 } : { x: 8, y: 8 };
-	}
-
-	/**
-	 * Create prop SVG element with positioning
-	 */
-	private createPropElement(
-		svgContent: string,
-		position: PropPosition,
-		propType: string,
-		color: 'blue' | 'red'
-	): SVGElement {
-		// Parse SVG content
-		const parser = new DOMParser();
-		const svgDoc = parser.parseFromString(svgContent, 'image/svg+xml');
-		const svgElement = svgDoc.documentElement;
-
-		// Create wrapper group
-		const group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-		group.setAttribute('class', `prop-${color} prop-${propType}`);
-		group.setAttribute('data-prop-type', propType);
-		group.setAttribute('data-color', color);
-
-		// Apply transform for positioning and rotation
-		const transform = `translate(${position.x}, ${position.y}) rotate(${position.rotation}) scale(0.3)`;
-		group.setAttribute('transform', transform);
-
-		// Copy SVG content to group
-		while (svgElement.firstChild) {
-			group.appendChild(svgElement.firstChild);
-		}
-
-		return group;
 	}
 
 	/**
@@ -249,22 +211,5 @@ export class PropRenderingService implements IPropRenderingService {
 				<text x="50" y="55" text-anchor="middle" font-size="12" fill="white">${propType}</text>
 			</svg>
 		`;
-	}
-
-	/**
-	 * Create error prop element
-	 * DISABLED: Props are now rendered by Prop.svelte components to avoid duplicates
-	 */
-	private createErrorProp(propType: string, color: 'blue' | 'red'): SVGElement {
-		// Props are now handled by ModernPictograph.svelte -> Prop.svelte components
-		// This error prop creation is disabled to prevent duplicate CIRCLE_PROP elements
-		console.log(
-			'🎭 PropRenderingService.createErrorProp() disabled - props rendered by Prop.svelte'
-		);
-
-		// Return empty group to prevent errors
-		const group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-		group.setAttribute('class', 'prop-error-disabled');
-		return group;
 	}
 }

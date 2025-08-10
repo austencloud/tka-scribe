@@ -67,28 +67,23 @@ export class ConstructTabCoordinationService implements IConstructTabCoordinatio
 			// Set the start position using the service
 			await this.startPositionService.setStartPosition(startPosition);
 
-			// **CRITICAL: Create a sequence with the start position as the first beat**
-			console.log('🎭 Creating sequence with start position as first beat');
+			// **CRITICAL: Create a sequence with the start position stored separately**
+			console.log('🎭 Creating sequence with start position stored separately from beats');
 			const sequenceService = resolve('ISequenceService');
 
-			// Create a new sequence using the proper action that updates global state
+			// Create a new sequence with NO beats initially (progressive creation)
 			const newSequence = await createSequence(sequenceService, {
 				name: `Sequence ${new Date().toLocaleTimeString()}`,
-				length: 16, // Default length
+				length: 0, // Start with 0 beats - beats will be added progressively
 				gridMode: 'diamond', // Default grid mode
 				propType: 'staff', // Default prop type
 			});
 
-			// Add the start position as beat 0 (start position beat)
-			const startPositionWithBeat0 = {
-				...startPosition,
-				beat_number: 0, // Mark as start position
-			};
+			// **CRITICAL: Set the start position in the sequence's start_position field, NOT as beat 0**
+			console.log('🎭 Setting start position in sequence.start_position field');
+			await sequenceService.setSequenceStartPosition(newSequence.id, startPosition);
 
-			// Add the start position beat to the sequence using updateBeat
-			await sequenceService.updateBeat(newSequence.id, 0, startPositionWithBeat0);
-
-			// **CRITICAL: Reload the sequence to get the updated beats**
+			// **CRITICAL: Reload the sequence to get the updated start position**
 			const updatedSequence = await sequenceService.getSequence(newSequence.id);
 			if (updatedSequence) {
 				// Set the updated sequence as the current sequence in BOTH state systems
@@ -98,7 +93,9 @@ export class ConstructTabCoordinationService implements IConstructTabCoordinatio
 					'🎯 Set updated sequence as current sequence:',
 					updatedSequence.id,
 					'beats:',
-					updatedSequence.beats.length
+					updatedSequence.beats.length,
+					'start_position:',
+					updatedSequence.start_position?.pictograph_data?.id
 				);
 				console.log(
 					'🎯 Updated both sequence state systems for beat frame synchronization'
@@ -107,7 +104,7 @@ export class ConstructTabCoordinationService implements IConstructTabCoordinatio
 				console.error('❌ Failed to reload updated sequence');
 			}
 
-			console.log('✅ Sequence created with start position as first beat');
+			console.log('✅ Sequence created with start position stored separately');
 
 			// Notify components
 			this.notifyComponents('start_position_set', { startPosition });
@@ -120,17 +117,42 @@ export class ConstructTabCoordinationService implements IConstructTabCoordinatio
 	}
 
 	async handleBeatAdded(beatData: BeatData): Promise<void> {
-		console.log('🎭 Handling beat added:', beatData.beat);
+		console.log('🎭 Handling beat added:', beatData.beat_number);
 
 		try {
-			// TODO: Add beat to current sequence using sequence service
-			// const currentSequence = await this.getCurrentSequence();
-			// if (currentSequence) {
-			//     await this.sequenceService.updateBeat(currentSequence.id, beatData.beat, beatData);
-			// }
+			const sequenceService = resolve('ISequenceService');
+			const sequenceStateService = resolve('SequenceStateService');
+
+			// Get current sequence from state
+			const currentSequence = sequenceStateService.currentSequence;
+			if (!currentSequence) {
+				console.error('❌ No current sequence available for beat addition');
+				return;
+			}
+
+			console.log('🎭 Adding beat to sequence:', currentSequence.id);
+
+			// Add beat to sequence using service
+			await sequenceService.addBeat(currentSequence.id, beatData);
+
+			// Reload the sequence to get the updated version
+			const updatedSequence = await sequenceService.getSequence(currentSequence.id);
+			if (updatedSequence) {
+				// Update both state systems
+				setCurrentSequence(updatedSequence); // Old sequence state system
+				sequenceStateService.setCurrentSequence(updatedSequence); // New sequence state service
+				console.log(
+					'🎯 Updated sequence with new beat:',
+					updatedSequence.id,
+					'beats:',
+					updatedSequence.beats.length
+				);
+			}
 
 			// Notify components
 			this.notifyComponents('beat_added', { beatData });
+
+			console.log('✅ Beat added successfully');
 		} catch (error) {
 			console.error('❌ Error handling beat added:', error);
 		}

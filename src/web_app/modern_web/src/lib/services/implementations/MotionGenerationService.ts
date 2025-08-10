@@ -5,7 +5,7 @@
  * from the desktop application. For now, it provides basic motion generation.
  */
 
-import type { BeatData, MotionData } from '@tka/schemas';
+import type { BeatData, MotionData } from '$lib/domain';
 import type { GenerationOptions, IMotionGenerationService } from '../interfaces';
 
 export class MotionGenerationService implements IMotionGenerationService {
@@ -38,13 +38,14 @@ export class MotionGenerationService implements IMotionGenerationService {
 			const turns = this.calculateTurns(motionType, startLoc, endLoc);
 
 			const motion: MotionData = {
-				motionType,
-				propRotDir,
-				startLoc,
-				endLoc,
+				motion_type: motionType as any,
+				prop_rot_dir: propRotDir as any,
+				start_loc: startLoc as any,
+				end_loc: endLoc as any,
 				turns,
-				startOri,
-				endOri,
+				start_ori: startOri as any,
+				end_ori: endOri as any,
+				is_visible: true,
 			};
 
 			console.log(`Generated ${color} motion:`, motion);
@@ -112,15 +113,15 @@ export class MotionGenerationService implements IMotionGenerationService {
 		const reasons: string[] = [];
 
 		// Basic validation
-		if (!motion.motionType) {
+		if (!motion.motion_type) {
 			reasons.push('Motion type is required');
 		}
 
-		if (!motion.startLoc) {
+		if (!motion.start_loc) {
 			reasons.push('Start location is required');
 		}
 
-		if (!motion.endLoc) {
+		if (!motion.end_loc) {
 			reasons.push('End location is required');
 		}
 

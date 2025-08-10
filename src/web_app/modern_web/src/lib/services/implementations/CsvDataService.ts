@@ -32,7 +32,7 @@ export class CsvDataService {
 	private isInitialized = false;
 
 	constructor() {
-		console.log('📊 CsvDataService initialized');
+		// CsvDataService initialized
 	}
 
 	/**
@@ -40,7 +40,6 @@ export class CsvDataService {
 	 */
 	async loadCsvData(): Promise<void> {
 		if (this.isInitialized) {
-			console.log('📊 CSV data already loaded');
 			return;
 		}
 
@@ -74,10 +73,6 @@ export class CsvDataService {
 			};
 
 			this.isInitialized = true;
-
-			console.log(
-				`✅ CSV data loaded: ${this.parsedData.diamond.length} diamond, ${this.parsedData.box.length} box entries`
-			);
 		} catch (error) {
 			console.error('❌ Error loading CSV data:', error);
 			throw new Error(
@@ -98,7 +93,6 @@ export class CsvDataService {
 	 */
 	getParsedData(gridMode: 'diamond' | 'box'): ParsedCsvRow[] {
 		if (!this.parsedData) {
-			console.warn('⚠️ CSV data not parsed yet');
 			return [];
 		}
 		return this.parsedData[gridMode];
@@ -109,7 +103,6 @@ export class CsvDataService {
 	 */
 	getNextOptions(endPosition: string, gridMode: 'diamond' | 'box' = 'diamond'): ParsedCsvRow[] {
 		if (!this.parsedData) {
-			console.warn('⚠️ CSV data not initialized');
 			return [];
 		}
 
@@ -119,24 +112,6 @@ export class CsvDataService {
 
 			// Filter options where startPos matches the endPosition (positional continuity)
 			const matchingOptions = dataset.filter((row) => row.startPos === endPosition);
-
-			console.log(
-				`🎯 Found ${matchingOptions.length} options for end position: ${endPosition} in ${gridMode} mode`
-			);
-
-			// Debug: Show first few matches
-			if (matchingOptions.length > 0) {
-				console.log(
-					`🔍 Sample options:`,
-					matchingOptions.slice(0, 3).map((opt) => ({
-						letter: opt.letter,
-						startPos: opt.startPos,
-						endPos: opt.endPos,
-						blueMotion: opt.blueMotionType,
-						redMotion: opt.redMotionType,
-					}))
-				);
-			}
 
 			return matchingOptions;
 		} catch (error) {
@@ -243,7 +218,6 @@ export class CsvDataService {
 	 */
 	debugPosition(position: string, gridMode: 'diamond' | 'box' = 'diamond'): void {
 		if (!this.parsedData) {
-			console.log('❌ CSV data not loaded');
 			return;
 		}
 
@@ -252,12 +226,5 @@ export class CsvDataService {
 			asStartPos: dataset.filter((row) => row.startPos === position),
 			asEndPos: dataset.filter((row) => row.endPos === position),
 		};
-
-		console.log(`🔍 Position ${position} in ${gridMode} mode:`, {
-			appearsAsStartPos: positionData.asStartPos.length,
-			appearsAsEndPos: positionData.asEndPos.length,
-			sampleAsStart: positionData.asStartPos.slice(0, 2),
-			sampleAsEnd: positionData.asEndPos.slice(0, 2),
-		});
 	}
 }

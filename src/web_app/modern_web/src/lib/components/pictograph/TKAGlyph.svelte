@@ -5,6 +5,8 @@ Renders letters, turn indicators, and other TKA notation elements.
 Uses pure runes instead of stores for reactivity.
 -->
 <script lang="ts">
+	import { getLetterImagePath } from '$lib/utils/letterTypeClassification';
+
 	interface Props {
 		/** The letter to display */
 		letter: string | null | undefined;
@@ -55,8 +57,8 @@ Uses pure runes instead of stores for reactivity.
 		}
 
 		try {
-			// Fetch SVG and parse viewBox like legacy version
-			const svgPath = `/images/letters_trimmed/Type1/${currentLetter}.svg`;
+			// Use correct path based on letter type and safe filename
+			const svgPath = getLetterImagePath(currentLetter);
 			const response = await fetch(svgPath);
 			if (!response.ok) throw new Error(`Failed to fetch ${svgPath}: ${response.status}`);
 
@@ -201,7 +203,7 @@ Uses pure runes instead of stores for reactivity.
 		<image
 			x="0"
 			y="0"
-			href="/images/letters_trimmed/Type1/{letter}.svg"
+			href={letter ? getLetterImagePath(letter) : ''}
 			width={letterDimensions.width}
 			height={letterDimensions.height}
 			preserveAspectRatio="xMinYMin meet"

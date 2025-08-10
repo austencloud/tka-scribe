@@ -224,6 +224,46 @@
 		gap: var(--spacing-sm);
 		width: 100%;
 		padding: var(--spacing-sm);
+		/* Enable scrolling when content overflows */
+		max-height: 400px; /* Reasonable max height */
+		overflow-y: auto;
+		overflow-x: hidden;
+		/* Smooth scrolling */
+		scroll-behavior: smooth;
+	}
+
+	/* Stylized scrollbar for letter grid */
+	.letter-grid-container::-webkit-scrollbar {
+		width: 8px;
+	}
+
+	.letter-grid-container::-webkit-scrollbar-track {
+		background: rgba(255, 255, 255, 0.05);
+		border-radius: 4px;
+		margin: 4px 0;
+	}
+
+	.letter-grid-container::-webkit-scrollbar-thumb {
+		background: rgba(255, 255, 255, 0.2);
+		border-radius: 4px;
+		transition: all var(--transition-fast);
+		border: 1px solid rgba(255, 255, 255, 0.1);
+	}
+
+	.letter-grid-container::-webkit-scrollbar-thumb:hover {
+		background: rgba(255, 255, 255, 0.35);
+		border-color: rgba(255, 255, 255, 0.2);
+		transform: scaleX(1.2);
+	}
+
+	.letter-grid-container::-webkit-scrollbar-thumb:active {
+		background: rgba(255, 255, 255, 0.5);
+	}
+
+	/* Firefox scrollbar styling */
+	.letter-grid-container {
+		scrollbar-width: thin;
+		scrollbar-color: rgba(255, 255, 255, 0.2) rgba(255, 255, 255, 0.05);
 	}
 
 	.letter-row {
@@ -303,6 +343,24 @@
 			min-width: 35px;
 			height: 35px;
 			font-size: var(--font-size-base);
+		}
+
+		/* Reduce max-height on mobile for better space usage */
+		.letter-grid-container {
+			max-height: 300px;
+		}
+	}
+
+	@media (max-width: 480px) {
+		/* Even smaller max-height on very small screens */
+		.letter-grid-container {
+			max-height: 250px;
+		}
+		
+		.letter-button {
+			min-width: 32px;
+			height: 32px;
+			font-size: var(--font-size-sm);
 		}
 	}
 </style>

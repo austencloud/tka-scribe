@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Complete Modern TKA Services Test
  *

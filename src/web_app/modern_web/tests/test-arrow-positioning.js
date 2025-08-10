@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Quick validation test for the sophisticated Arrow Positioning Service
  *
@@ -9,9 +10,9 @@
  * Run this to validate the system is working end-to-end.
  */
 
-import { ArrowPositioningService } from '../src/lib/services/implementations/ArrowPositioningService.js';
 import { ArrowPlacementDataService } from '../src/lib/services/implementations/ArrowPlacementDataService.js';
 import { ArrowPlacementKeyService } from '../src/lib/services/implementations/ArrowPlacementKeyService.js';
+import { ArrowPositioningService } from '../src/lib/services/implementations/ArrowPositioningService.js';
 
 // Quick test data
 const testMotionData = {

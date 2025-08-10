@@ -28,8 +28,10 @@
 	const config = $derived(beatFrameService.config);
 	const displayText = $derived(
 		beat.is_blank && !beat.pictograph_data
-			? beat.beat_number.toString()
-			: (beat.pictograph_data?.letter ?? beat.metadata?.letter ?? beat.beat_number.toString())
+			? (beat.beat_number ?? index + 1).toString()
+			: (beat.pictograph_data?.letter ??
+					beat.metadata?.letter ??
+					(beat.beat_number ?? index + 1).toString())
 	);
 
 	function handleClick() {
@@ -72,7 +74,7 @@
 	onmouseleave={handleMouseLeave}
 	role="button"
 	tabindex="0"
-	aria-label="Beat {beat.beat_number}"
+	aria-label="Beat {beat.beat_number ?? index + 1}"
 >
 	<div class="beat-content">
 		{#if beat.pictograph_data}

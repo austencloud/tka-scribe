@@ -5,7 +5,16 @@
  * Integrates with the sophisticated ArrowPositioningService for accurate positioning.
  */
 
-import type { BeatData } from '@tka/schemas';
+import type { BeatData, PictographData } from '$lib/domain';
+import {
+	ArrowType,
+	createArrowData,
+	createGridData as createDomainGridData,
+	createPictographData,
+	createPropData,
+	PropType,
+} from '$lib/domain';
+import { getLetterImagePath } from '$lib/utils/letterTypeClassification';
 import { createGridData, type GridData as RawGridData } from '../../data/gridCoordinates.js';
 import type {
 	ArrowPosition,
@@ -13,7 +22,6 @@ import type {
 	IArrowPositioningService,
 	IPictographRenderingService,
 	IPropRenderingService,
-	PictographData,
 } from '../interfaces';
 
 export class PictographRenderingService implements IPictographRenderingService {
@@ -25,9 +33,7 @@ export class PictographRenderingService implements IPictographRenderingService {
 		private arrowPositioning: IArrowPositioningService,
 		private propRendering: IPropRenderingService
 	) {
-		console.log(
-			'🎨 PictographRenderingService initialized with sophisticated positioning and prop rendering'
-		);
+		// PictographRenderingService initialized
 	}
 
 	/**
@@ -35,30 +41,23 @@ export class PictographRenderingService implements IPictographRenderingService {
 	 */
 	async renderPictograph(data: PictographData): Promise<SVGElement> {
 		try {
-			console.log('🎨 Rendering pictograph with sophisticated positioning:', data.id);
 			const svg = this.createBaseSVG();
 
 			// 1. Render grid first
-			await this.renderGrid(svg, data.gridData?.mode || 'diamond');
+			await this.renderGrid(svg, (data as any).grid_data?.grid_mode || 'diamond');
 
 			// 2. Calculate arrow positions using sophisticated positioning service
-			const gridMode = data.gridData?.mode || 'diamond';
+			const gridMode = (data as any).grid_data?.grid_mode || 'diamond';
 			const rawGridData = createGridData(gridMode);
 			const gridDataWithMode = this.adaptGridData(rawGridData, gridMode);
-			console.log('📊 Using real grid data:', gridDataWithMode);
 
 			const arrowPositions = await this.arrowPositioning.calculateAllArrowPositions(
 				data,
 				gridDataWithMode
 			);
-			console.log(
-				`🏹 Calculated ${arrowPositions.size} arrow positions:`,
-				Object.fromEntries(arrowPositions)
-			);
 
 			// 3. Render arrows with sophisticated calculated positions
 			for (const [color, position] of arrowPositions.entries()) {
-				console.log(`🎯 Rendering ${color} arrow at sophisticated position:`, position);
 				const motionData = data.motions?.[color as 'blue' | 'red'];
 				await this.renderArrowAtPosition(
 					svg,
@@ -78,7 +77,6 @@ export class PictographRenderingService implements IPictographRenderingService {
 			this.renderIdLabel(svg, data);
 			this.renderDebugInfo(svg, data, arrowPositions);
 
-			console.log('✅ Pictograph rendering complete with sophisticated positioning');
 			return svg;
 		} catch (error) {
 			console.error('❌ Error rendering pictograph:', error);
@@ -94,18 +92,13 @@ export class PictographRenderingService implements IPictographRenderingService {
 				await this.renderLetterGlyph(svg, data.letter);
 			}
 		} catch (e) {
-			console.warn('Overlay rendering skipped:', e);
+			// Overlay rendering skipped
 		}
 	}
 
 	private async renderLetterGlyph(svg: SVGElement, letter: string): Promise<void> {
-		// Map common Greek letters to Type6 assets
-		const map: Record<string, string> = {
-			α: '/images/letters_trimmed/Type6/Alpha.svg',
-			β: '/images/letters_trimmed/Type6/Beta.svg',
-			γ: '/images/letters_trimmed/Type6/Gamma.svg',
-		};
-		const path = map[letter];
+		// Use comprehensive letter mapping with correct type-based paths
+		const path = getLetterImagePath(letter);
 		if (!path) return; // only render supported letters for now
 
 		const res = await fetch(path);
@@ -172,7 +165,7 @@ export class PictographRenderingService implements IPictographRenderingService {
 				if (path) await this.renderElementalGlyph(svg, path);
 			}
 		} catch (e) {
-			console.warn('Glyph overlay rendering failed:', e);
+			// Glyph overlay rendering failed
 		}
 	}
 
@@ -298,12 +291,9 @@ export class PictographRenderingService implements IPictographRenderingService {
 		position: ArrowPosition,
 		motionData: any
 	): Promise<void> {
-		console.log(`🎨 Rendering ${color} arrow with sophisticated positioning:`, position);
-
 		try {
 			// Get the correct arrow SVG path
 			const arrowSvgPath = this.getArrowSvgPath(motionData);
-			console.log(`🏹 Loading arrow SVG: ${arrowSvgPath}`);
 
 			// Load the arrow SVG
 			const response = await fetch(arrowSvgPath);
@@ -337,7 +327,6 @@ export class PictographRenderingService implements IPictographRenderingService {
 			arrowGroup.appendChild(importedSvg);
 
 			svg.appendChild(arrowGroup);
-			console.log(`✅ ${color} arrow rendered with real SVG asset`);
 		} catch (error) {
 			console.error(`❌ Error loading arrow SVG for ${color}:`, error);
 			// Fallback to simple arrow
@@ -396,8 +385,6 @@ export class PictographRenderingService implements IPictographRenderingService {
 		color: 'blue' | 'red',
 		position: ArrowPosition
 	): void {
-		console.log(`🔄 Rendering fallback arrow for ${color}`);
-
 		// Create arrow group
 		const arrowGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
 		arrowGroup.setAttribute('class', `arrow-${color} fallback`);
@@ -506,7 +493,6 @@ export class PictographRenderingService implements IPictographRenderingService {
 	private async renderProps(_svg: SVGElement, _data: PictographData): Promise<void> {
 		// Props are now handled by ModernPictograph.svelte -> Prop.svelte components
 		// This service-level rendering is disabled to prevent duplicate CIRCLE_PROP elements
-		console.log('🎭 Props rendering delegated to Prop.svelte components');
 		return;
 	}
 
@@ -520,7 +506,6 @@ export class PictographRenderingService implements IPictographRenderingService {
 		try {
 			// Load the appropriate grid SVG
 			const gridPath = `/images/grid/${gridMode}_grid.svg`;
-			console.log(`🔲 Loading grid SVG: ${gridPath}`);
 
 			// Create image element for the grid
 			const gridImage = document.createElementNS('http://www.w3.org/2000/svg', 'image');
@@ -532,7 +517,6 @@ export class PictographRenderingService implements IPictographRenderingService {
 			gridImage.setAttribute('preserveAspectRatio', 'none');
 
 			svg.appendChild(gridImage);
-			console.log(`✅ Grid rendered: ${gridMode} mode`);
 		} catch (error) {
 			console.error(`❌ Error loading grid SVG for ${gridMode} mode:`, error);
 			// Fallback: render a simple grid outline
@@ -584,17 +568,26 @@ export class PictographRenderingService implements IPictographRenderingService {
 	 * Convert beat data to pictograph data
 	 */
 	private beatToPictographData(beat: BeatData): PictographData {
-		return {
-			id: `beat-${beat.beatNumber}`,
-			gridData: { mode: 'diamond' },
-			arrows: { blue: {}, red: {} },
-			props: { blue: {}, red: {} },
-			motions: {
-				blue: beat.blueMotion,
-				red: beat.redMotion,
+		const motions: Record<string, any> = {};
+		if (beat.pictograph_data?.motions?.blue) motions.blue = beat.pictograph_data.motions.blue;
+		if (beat.pictograph_data?.motions?.red) motions.red = beat.pictograph_data.motions.red;
+		return createPictographData({
+			id: `beat-${beat.beat_number}`,
+			grid_data: createDomainGridData(),
+			arrows: {
+				blue: createArrowData({ arrow_type: ArrowType.BLUE, color: 'blue' }),
+				red: createArrowData({ arrow_type: ArrowType.RED, color: 'red' }),
 			},
-			letter: beat.letter,
-		};
+			props: {
+				blue: createPropData({ prop_type: PropType.STAFF, color: 'blue' }),
+				red: createPropData({ prop_type: PropType.STAFF, color: 'red' }),
+			},
+			motions: motions as any,
+			letter: beat.pictograph_data?.letter || null,
+			beat: beat.beat_number,
+			is_blank: beat.is_blank,
+			is_mirrored: false,
+		});
 	}
 
 	/**

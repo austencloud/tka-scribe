@@ -8,8 +8,16 @@
 
 	// Fade system removed - using simple animations only
 
+	interface AppSettings {
+		userName?: string;
+		autoSave?: boolean;
+		gridMode?: 'diamond' | 'box';
+		workbenchColumns?: number;
+		animationsEnabled?: boolean;
+	}
+
 	interface Props {
-		settings: any;
+		settings: AppSettings;
 	}
 
 	let { settings }: Props = $props();
@@ -46,9 +54,11 @@
 		dispatch('update', { key: 'autoSave', value: autoSave });
 	}
 
-	function handleGridModeChange(event: CustomEvent) {
-		gridMode = event.detail;
-		dispatch('update', { key: 'gridMode', value: gridMode });
+	function handleGridModeChange(value: string) {
+		if (value === 'diamond' || value === 'box') {
+			gridMode = value;
+			dispatch('update', { key: 'gridMode', value: gridMode });
+		}
 	}
 
 	function handleWorkbenchColumnsChange(event: CustomEvent) {
@@ -91,7 +101,7 @@
 			value={gridMode}
 			options={gridModeOptions}
 			helpText="Pictograph grid layout style"
-			on:change={handleGridModeChange}
+			onchange={handleGridModeChange}
 		/>
 
 		<TextInput
@@ -137,37 +147,5 @@
 		}
 	}
 
-	.fade-debug-section {
-		display: flex;
-		align-items: center;
-		gap: var(--spacing-sm);
-		margin-top: var(--spacing-md);
-		padding: var(--spacing-sm);
-		background: var(--muted) / 10;
-		border-radius: var(--border-radius-sm);
-		border: 1px solid var(--border);
-	}
-
-	.debug-button {
-		padding: var(--spacing-xs) var(--spacing-sm);
-		background: var(--primary);
-		color: var(--primary-foreground);
-		border: none;
-		border-radius: var(--border-radius-sm);
-		cursor: pointer;
-		font-size: var(--font-size-xs);
-		font-weight: 500;
-		transition: all var(--transition-fast);
-	}
-
-	.debug-button:hover {
-		background: var(--primary-hover);
-		transform: translateY(-1px);
-	}
-
-	.debug-help {
-		font-size: var(--font-size-xs);
-		color: var(--muted-foreground);
-		font-style: italic;
-	}
+	/* Removed unused debug styles (.fade-debug-section, .debug-button, .debug-help) */
 </style>

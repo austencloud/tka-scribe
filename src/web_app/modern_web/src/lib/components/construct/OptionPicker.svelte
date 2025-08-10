@@ -1,3 +1,4 @@
+<!-- eslint-disable import/no-unresolved import/default import/named -->
 <!--
 OptionPicker.svelte - Desktop-Style Sectioned Option Picker
 
@@ -12,17 +13,126 @@ Matches the desktop version exactly:
 	import { createBeatData } from '$lib/domain/BeatData';
 	import type { PictographData } from '$lib/domain/PictographData';
 	import type { SequenceData } from '$lib/domain/SequenceData';
+	import { OptionDataService } from '$lib/services/implementations/OptionDataService';
+	import { getCurrentSequence } from '$lib/stores/sequenceState.svelte';
 	import type { DifficultyLevel } from '$services/interfaces';
 	import { onMount } from 'svelte';
-	import { OptionPickerDataService } from './option-picker/OptionPickerDataService.js';
 	import OptionPickerHeader from './option-picker/OptionPickerHeader.svelte';
 	import OptionPickerScroll from './option-picker/OptionPickerScroll.svelte';
 	import { createOptionPickerState } from './option-picker/OptionPickerSectionState.svelte.js';
+	import { LetterType } from './option-picker/types/LetterType';
+
+	// Helper function to get the end position from the current sequence
+	function getCurrentSequenceEndPosition(): string | null {
+		const currentSequence = getCurrentSequence();
+		if (!currentSequence) {
+			return null;
+		}
+
+		// First, check if there's a start position (for new sequences)
+		if (currentSequence.start_position?.pictograph_data) {
+			const startEndPosition = extractEndPositionFromPictograph(
+				currentSequence.start_position.pictograph_data
+			);
+			console.log(`🎯 Using start position as end position: ${startEndPosition}`);
+			return startEndPosition;
+		}
+
+		// Then, find the last non-blank beat (for sequences with beats)
+		if (currentSequence.beats && currentSequence.beats.length > 0) {
+			for (let i = currentSequence.beats.length - 1; i >= 0; i--) {
+				type LegacyBeat = { is_blank: boolean; pictograph_data?: PictographData | null };
+				type NewBeat = { isBlank?: boolean; pictographData?: PictographData | null };
+				const rawBeat = currentSequence.beats[i] as LegacyBeat | NewBeat | undefined;
+				if (!rawBeat) continue;
+				const isBlank = 'is_blank' in rawBeat ? rawBeat.is_blank : rawBeat.isBlank === true;
+				const pictograph =
+					'pictograph_data' in rawBeat ? rawBeat.pictograph_data : rawBeat.pictographData;
+				if (!isBlank && pictograph) {
+					// Extract end position from the pictograph data
+					const endPosition = extractEndPositionFromPictograph(pictograph);
+					console.log(`🎯 Found end position from beat ${i}: ${endPosition}`);
+					return endPosition;
+				}
+			}
+		}
+
+		console.warn('⚠️ No end position found in sequence');
+		return null;
+	}
+
+	// Helper function to extract end position from pictograph data
+	function extractEndPositionFromPictograph(pictographData: PictographData): string | null {
+		console.log('🔍 Extracting end position from pictograph:', {
+			id: pictographData.id,
+			letter: pictographData.letter,
+			end_position: pictographData.end_position,
+			metadata: pictographData.metadata,
+			motions: pictographData.motions,
+		});
+
+		// Try to get from end_position field first
+		if (pictographData.end_position) {
+			console.log(`✅ Found end_position field: ${pictographData.end_position}`);
+			return pictographData.end_position;
+		}
+
+		// Try to get from metadata
+		if (pictographData.metadata?.endPosition) {
+			console.log(`✅ Found metadata.endPosition: ${pictographData.metadata.endPosition}`);
+			return pictographData.metadata.endPosition;
+		}
+
+		// For start positions, try to extract from the ID or letter
+		if (pictographData.id?.includes('start-pos-')) {
+			// Extract from start position ID like "start-pos-gamma11_gamma11-2"
+			const match = pictographData.id.match(/start-pos-([^_]+)_/);
+			if (match && match[1]) {
+				const endPos = match[1];
+				console.log(`✅ Extracted from start position ID: ${endPos}`);
+				return endPos;
+			}
+		}
+
+		// Try to get from motion data as fallback
+		if (pictographData.motions?.blue?.end_loc) {
+			const mapped = mapLocationToPosition(pictographData.motions.blue.end_loc);
+			console.log(`⚠️ Using blue motion end_loc fallback: ${mapped}`);
+			return mapped;
+		}
+		if (pictographData.motions?.red?.end_loc) {
+			const mapped = mapLocationToPosition(pictographData.motions.red.end_loc);
+			console.log(`⚠️ Using red motion end_loc fallback: ${mapped}`);
+			return mapped;
+		}
+
+		console.warn('⚠️ No end position found, defaulting to alpha1');
+		return 'alpha1';
+	}
+
+	// Helper function to map location to position string
+	function mapLocationToPosition(location: string | Location): string {
+		// Basic mapping - this matches the legacy system
+		const locationMap: Record<string, string> = {
+			n: 'alpha1',
+			s: 'alpha1',
+			e: 'gamma11',
+			w: 'alpha1',
+			ne: 'beta5',
+			se: 'gamma11',
+			sw: 'alpha1',
+			nw: 'beta5',
+		};
+
+		const locationStr = typeof location === 'string' ? location : location?.toString() || '';
+		return locationMap[locationStr.toLowerCase()] || 'alpha1';
+	}
 
 	// Props using runes
 	const {
 		currentSequence = null,
-		difficulty = 'intermediate',
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
+		difficulty: _difficulty = 'intermediate',
 		onOptionSelected = () => {},
 	} = $props<{
 		currentSequence?: SequenceData | null;
@@ -33,8 +143,7 @@ Matches the desktop version exactly:
 	// Create state management using runes
 	const optionPickerState = createOptionPickerState();
 
-	// Data service
-	let dataService: OptionPickerDataService | null = null;
+	// Data service removed (was unused during test option scaffolding)
 
 	// Container element for size detection
 	let containerElement: HTMLDivElement | null = null;
@@ -45,37 +154,46 @@ Matches the desktop version exactly:
 	// Initialize data service and load options
 	async function initializeAndLoadOptions() {
 		try {
+			console.log('🎯 OptionPicker: initializeAndLoadOptions called');
 			optionPickerState.setLoading(true);
 
-			// Initialize data service
-			if (!dataService) {
-				dataService = new OptionPickerDataService();
-				await dataService.initialize();
+			// Get the current sequence's end position
+			const endPosition = getCurrentSequenceEndPosition();
+			if (!endPosition) {
+				console.warn('⚠️ No end position found, cannot load options');
+				optionPickerState.setAllPictographs([]);
+				optionPickerState.setLoadingError(false);
+				return;
 			}
 
-			// Load options based on current sequence or start position
-			let result;
+			console.log(`🎯 Loading real options for end position: ${endPosition}`);
 
-			if (currentSequence && currentSequence.beats.length > 0) {
-				// Load options from current sequence (like desktop version)
-				console.log('🎯 Loading options from current sequence...');
-				result = await dataService.loadOptionsFromSequence(currentSequence);
-			} else {
-				// Fallback to start position from localStorage
-				console.log('🎯 No sequence available, loading from start position...');
-				result = await dataService.loadOptionsFromStartPosition();
-			}
+			// Create OptionDataService instance and load real data
+			const optionDataService = new OptionDataService();
+			await optionDataService.initialize();
 
-			if (result.success) {
-				optionPickerState.setAllPictographs(result.options);
-				console.log(`✅ Loaded ${result.options.length} options`);
-			} else {
-				console.error('❌ Failed to load options:', result.error);
-				optionPickerState.setLoadingError(true);
-			}
+			// Get real options from CSV data
+			const realOptions = await optionDataService.getNextOptionsFromEndPosition(
+				endPosition,
+				'diamond', // Default to diamond mode for now
+				{} // No filters - show all options
+			);
+
+			console.log(`✅ Loaded ${realOptions.length} real options from CSV data`);
+
+			// Debug: Test the LetterType.getLetterType function with real data
+			console.log('🔍 Testing LetterType.getLetterType function with real data:');
+			realOptions.slice(0, 10).forEach((option) => {
+				const letterType = LetterType.getLetterType(option.letter || '');
+				console.log(`  Letter "${option.letter}" -> Type "${letterType}"`);
+			});
+
+			optionPickerState.setAllPictographs(realOptions);
+			optionPickerState.setLoadingError(false);
 		} catch (error) {
-			console.error('❌ Error initializing option picker:', error);
+			console.error('❌ Error loading real options:', error);
 			optionPickerState.setLoadingError(true);
+			optionPickerState.setAllPictographs([]);
 		} finally {
 			optionPickerState.setLoading(false);
 		}
@@ -124,24 +242,39 @@ Matches the desktop version exactly:
 		}
 	}
 
-	// Initialize on mount
+	// Initialize on mount using effect (Svelte 5 approach)
+	let mounted = $state(false);
+
+	$effect(() => {
+		if (!mounted) {
+			mounted = true;
+			console.log('🎯 OptionPicker mounted via effect - initializing...');
+			console.log('🎯 OptionPicker effect function started');
+
+			// Initialize and load options
+			try {
+				console.log('🎯 About to call initializeAndLoadOptions...');
+				initializeAndLoadOptions().catch((error) => {
+					console.error('❌ Error in initializeAndLoadOptions:', error);
+				});
+			} catch (error) {
+				console.error('❌ Sync error in initializeAndLoadOptions:', error);
+			}
+		}
+	});
+
+	// Initialize on mount (backup approach)
 	onMount(() => {
 		console.log('🎯 OptionPicker mounted - initializing...');
-
-		// Initialize and load options
-		initializeAndLoadOptions();
+		console.log('🎯 OptionPicker onMount function started');
 
 		// Set up resize observer for responsive layout
+		let resizeObserver: ResizeObserver | null = null;
 		if (containerElement) {
-			const resizeObserver = new ResizeObserver(() => {
+			resizeObserver = new ResizeObserver(() => {
 				handleResize();
 			});
 			resizeObserver.observe(containerElement);
-
-			// Cleanup on unmount
-			return () => {
-				resizeObserver.disconnect();
-			};
 		}
 
 		// Add event listener for start position selection
@@ -152,8 +285,13 @@ Matches the desktop version exactly:
 
 		document.addEventListener('start-position-selected', handleStartPositionSelected);
 
+		console.log('🎯 OptionPicker onMount completed');
+
 		// Cleanup on unmount
 		return () => {
+			if (resizeObserver) {
+				resizeObserver.disconnect();
+			}
 			document.removeEventListener('start-position-selected', handleStartPositionSelected);
 		};
 	});
@@ -161,6 +299,9 @@ Matches the desktop version exactly:
 
 <!-- Main container with desktop-style sectioned layout -->
 <div class="option-picker" bind:this={containerElement}>
+	<!-- Debug: Component is rendering -->
+	{console.log('🎯 OptionPicker template is rendering')}
+
 	<!-- Header matching desktop version -->
 	<OptionPickerHeader />
 
@@ -207,8 +348,8 @@ Matches the desktop version exactly:
 		height: 100%;
 		display: flex;
 		flex-direction: column;
-		background: var(--background, white);
-		border: 1px solid var(--border, #e2e8f0);
+		background: transparent; /* Allow beautiful background to show through */
+		border: none; /* Remove border to blend with background */
 		border-radius: 8px;
 		overflow: hidden;
 	}

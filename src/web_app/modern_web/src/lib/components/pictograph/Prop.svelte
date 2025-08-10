@@ -108,7 +108,6 @@ Prop Component - Renders SVG props with proper positioning
 			const direction = directionCalculator.getDirection(propData);
 
 			if (!direction) {
-				console.warn('Could not determine direction for beta positioning, using fallback');
 				return propData.color === 'blue' ? { x: -25, y: 0 } : { x: 25, y: 0 };
 			}
 
@@ -118,10 +117,6 @@ Prop Component - Renders SVG props with proper positioning
 			const newPosition = offsetCalculator.calculateNewPositionWithOffset(
 				basePosition,
 				direction
-			);
-
-			console.log(
-				`🎯 Beta direction for ${propData.color} prop: ${direction}, offset: (${newPosition.x}, ${newPosition.y})`
 			);
 
 			return { x: newPosition.x, y: newPosition.y };
@@ -164,11 +159,6 @@ Prop Component - Renders SVG props with proper positioning
 			orientation
 		);
 
-		// Debug logging for rotation verification
-		console.log(
-			`🔄 Prop rotation - Color: ${propData.color}, Location: ${location}, Orientation: ${propOrientation}, Rotation: ${calculatedRotation}°`
-		);
-
 		return calculatedRotation;
 	});
 
@@ -203,7 +193,7 @@ Prop Component - Renders SVG props with proper positioning
 				};
 			}
 		} catch (e) {
-			console.warn('SVG center calculation failed, using default center');
+			// SVG center calculation failed, using default center
 		}
 
 		return { viewBox, center };
@@ -226,7 +216,6 @@ Prop Component - Renders SVG props with proper positioning
 		// Remove the centerPoint circle entirely to prevent CIRCLE_PROP detection
 		coloredSvg = coloredSvg.replace(/<circle[^>]*id="centerPoint"[^>]*\/?>/, '');
 
-		console.log(`✅ ${color} color applied to prop SVG and centerPoint removed`);
 		return coloredSvg;
 	};
 

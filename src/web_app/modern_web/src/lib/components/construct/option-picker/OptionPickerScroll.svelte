@@ -9,9 +9,9 @@ Matches the desktop version exactly:
 -->
 <script lang="ts">
 	import type { PictographData } from '$lib/domain/PictographData';
-	import { LetterType } from './types/LetterType.js';
-	import OptionPickerSection from './OptionPickerSection.svelte';
 	import OptionPickerGroupWidget from './OptionPickerGroupWidget.svelte';
+	import OptionPickerSection from './OptionPickerSection.svelte';
+	import { LetterType } from './types/LetterType.js';
 
 	// Props
 	const {
@@ -26,23 +26,22 @@ Matches the desktop version exactly:
 		containerHeight?: number;
 	}>();
 
+	// Debug: Log pictographs received
+
 	// Organize sections like desktop: individual sections first, then grouped
 	const individualSections = [LetterType.TYPE1, LetterType.TYPE2, LetterType.TYPE3];
 	const groupedSections = [LetterType.TYPE4, LetterType.TYPE5, LetterType.TYPE6];
 
 	// Check if we have any pictographs for grouped sections
 	const hasGroupedPictographs = $derived(() => {
-		return pictographs.some(p => {
+		return pictographs.some((p) => {
 			const pictographType = LetterType.getLetterType(p.letter || '');
 			return groupedSections.includes(pictographType);
 		});
 	});
 </script>
 
-<div 
-	class="option-picker-scroll"
-	style:height="{containerHeight}px"
->
+<div class="option-picker-scroll" style:height="{containerHeight}px">
 	<div class="scroll-container">
 		<div class="content-layout">
 			<!-- Individual sections first (Types 1, 2, 3) -->
@@ -56,12 +55,8 @@ Matches the desktop version exactly:
 			{/each}
 
 			<!-- Grouped sections in horizontal layout (Types 4, 5, 6) -->
-			{#if hasGroupedPictographs}
-				<OptionPickerGroupWidget
-					{pictographs}
-					{onPictographSelected}
-					{containerWidth}
-				/>
+			{#if hasGroupedPictographs()}
+				<OptionPickerGroupWidget {pictographs} {onPictographSelected} {containerWidth} />
 			{/if}
 		</div>
 	</div>

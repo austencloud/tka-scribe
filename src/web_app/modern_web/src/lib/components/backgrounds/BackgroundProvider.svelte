@@ -1,14 +1,20 @@
 <script lang="ts">
-	import { onMount, onDestroy } from 'svelte';
+	// Global augmentation must be at top-level (before usage) to avoid TS1234 inside Svelte script.
+	declare global {
+		interface Window {
+			__runesBackgroundContext?: ReturnType<typeof setRunesBackgroundContext>;
+		}
+	}
+	import { browser } from '$app/environment';
+	import { onDestroy, onMount } from 'svelte';
 	import { setRunesBackgroundContext } from './contexts/BackgroundContext.svelte';
 	import type { BackgroundType, QualityLevel } from './types/types';
-	import { browser } from '$app/environment';
 
 	const {
 		backgroundType: propBackgroundType,
 		initialQuality: propInitialQuality,
 		isLoading: propIsLoading,
-		children
+		children,
 	} = $props<{
 		backgroundType?: BackgroundType;
 		initialQuality?: QualityLevel | undefined;
@@ -37,22 +43,14 @@
 	let contextsInitialized = $state(false);
 
 	onMount(() => {
-		console.log(
-			'[BACKGROUND_PROVIDER] onMount called, browser:',
-			browser,
-			'contextsInitialized:',
-			contextsInitialized
-		);
 		if (browser && !contextsInitialized) {
-			console.log('[BACKGROUND_PROVIDER] Creating background context...');
 			const runesCtx = setRunesBackgroundContext();
 			runesContext = runesCtx;
 			contextsInitialized = true;
-			console.log('[BACKGROUND_PROVIDER] Background context created:', runesCtx);
 
 			if (typeof window !== 'undefined') {
-				(window as Record<string, unknown>).__runesBackgroundContext = runesCtx;
-				console.log('[BACKGROUND_PROVIDER] Context attached to window');
+				// Attach for debugging / external access
+				window.__runesBackgroundContext = runesCtx;
 			}
 		}
 	});

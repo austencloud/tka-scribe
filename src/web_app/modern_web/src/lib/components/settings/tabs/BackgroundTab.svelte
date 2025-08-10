@@ -17,8 +17,8 @@
 	let { settings }: Props = $props();
 	const dispatch = createEventDispatcher();
 
-	// Local state for form values
-	let backgroundType = $state<BackgroundType>(settings.backgroundType || 'snowfall');
+	// Local state for form values - FIXED: Use app's default ('aurora') not component default
+	let backgroundType = $state<BackgroundType>(settings.backgroundType || 'aurora');
 	let backgroundQuality = $state<QualityLevel>(settings.backgroundQuality || 'medium');
 	let backgroundEnabled = $state(settings.backgroundEnabled ?? true);
 

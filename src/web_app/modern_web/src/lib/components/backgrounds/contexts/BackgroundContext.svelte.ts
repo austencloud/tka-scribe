@@ -5,18 +5,18 @@
  * with Svelte 5 runes. This file has a .svelte.ts extension to enable runes support.
  */
 
+import { browser } from '$app/environment';
 import { getContext, setContext } from 'svelte';
+import { detectAppropriateQuality } from '../config';
+import { BackgroundFactory } from '../core/BackgroundFactory';
+import { PerformanceTracker } from '../core/PerformanceTracker';
 import type {
+	BackgroundSystem,
 	BackgroundType,
 	Dimensions,
 	PerformanceMetrics,
 	QualityLevel,
-	BackgroundSystem,
 } from '../types/types';
-import { BackgroundFactory } from '../core/BackgroundFactory';
-import { PerformanceTracker } from '../core/PerformanceTracker';
-import { detectAppropriateQuality } from '../config';
-import { browser } from '$app/environment';
 
 // The context key
 const BACKGROUND_CONTEXT_KEY = 'background-context-runes';
@@ -76,10 +76,15 @@ export function createRunesBackgroundContext(): RunesBackgroundContext {
 
 	// Ensure we don't create duplicate contexts
 	if (contextInstances.size > 0) {
-		// Return the existing context from getRunesBackgroundContext
-		const existingContext = getRunesBackgroundContext();
-		if (existingContext) {
-			return existingContext;
+		// Try to get existing context, but don't throw during HMR
+		try {
+			const existingContext = getRunesBackgroundContext();
+			if (existingContext) {
+				return existingContext;
+			}
+		} catch (error) {
+			// Context not found (likely due to HMR), continue with creating new one
+			contextInstances.clear(); // Clear stale instances
 		}
 	}
 
@@ -469,7 +474,9 @@ export function getRunesBackgroundContext(): RunesBackgroundContext {
 	const context = getContext<RunesBackgroundContext>(BACKGROUND_CONTEXT_KEY);
 
 	if (!context) {
-		throw new Error('No runes background context found. Make sure to use BackgroundProvider.');
+		throw new Error(
+			'No runes background context found. Make sure to use BackgroundProvider. This can happen during HMR - try refreshing the page.'
+		);
 	}
 
 	return context;

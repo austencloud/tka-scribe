@@ -2,10 +2,16 @@
 <script lang="ts">
 	import { showSettingsDialog } from '$stores/appState.svelte';
 
+	type TabID = string;
+	interface TabDef {
+		id: TabID;
+		label: string;
+		icon: string;
+	}
 	interface Props {
-		tabs: readonly { id: string; label: string; icon: string }[];
-		activeTab: string;
-		onTabSelect: (tab: any) => void;
+		tabs: readonly TabDef[];
+		activeTab: TabID;
+		onTabSelect: (tabId: TabID) => void;
 	}
 
 	let { tabs, activeTab, onTabSelect }: Props = $props();
@@ -13,9 +19,9 @@
 	// Simplified navigation without complex fade system
 
 	// Handle tab click
-	function handleTabClick(tab: { id: string; label: string; icon: string }) {
+	function handleTabClick(tab: TabDef) {
 		try {
-			onTabSelect(tab.id as any);
+			onTabSelect(tab.id);
 		} catch (error) {
 			console.error('Failed to select tab:', error);
 		}
@@ -155,68 +161,6 @@
 	.nav-action:hover {
 		background: rgba(255, 255, 255, 0.1);
 		color: var(--foreground);
-	}
-
-	/* Fade system integration */
-	.fade-indicator {
-		font-size: 10px;
-		opacity: 0.6;
-		margin-left: 4px;
-	}
-
-	.navigation-bar.transitioning {
-		pointer-events: none;
-	}
-
-	.navigation-bar.transitioning .nav-tabs {
-		opacity: 0.8;
-	}
-
-	.nav-tab.transitioning {
-		pointer-events: auto;
-		position: relative;
-		overflow: hidden;
-	}
-
-	.nav-tab.transitioning::after {
-		content: '';
-		position: absolute;
-		top: 0;
-		left: -100%;
-		width: 100%;
-		height: 100%;
-		background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-		animation: shimmer 1s infinite;
-	}
-
-	.nav-tab.disabled {
-		opacity: 0.5;
-		cursor: not-allowed;
-		pointer-events: none;
-	}
-
-	.transition-indicator {
-		font-size: 12px;
-		animation: spin 1s linear infinite;
-		margin-left: 4px;
-	}
-
-	@keyframes shimmer {
-		0% {
-			left: -100%;
-		}
-		100% {
-			left: 100%;
-		}
-	}
-
-	@keyframes spin {
-		from {
-			transform: rotate(0deg);
-		}
-		to {
-			transform: rotate(360deg);
-		}
 	}
 	@media (max-width: 768px) {
 		.navigation-bar {

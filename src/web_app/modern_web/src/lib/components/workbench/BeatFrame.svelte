@@ -1,11 +1,12 @@
 <script lang="ts">
 	import type { BeatData } from '$lib/domain';
 	import { beatFrameService } from '$lib/services/BeatFrameService.svelte';
-	import BeatView from './BeatView.svelte';
 	import { createEventDispatcher } from 'svelte';
+	import BeatView from './BeatView.svelte';
 
 	interface Props {
 		beats: ReadonlyArray<BeatData> | BeatData[];
+		startPosition?: BeatData | null;
 		selectedBeatIndex?: number;
 		onBeatClick?: (index: number) => void;
 		onBeatDoubleClick?: (index: number) => void;
@@ -15,6 +16,7 @@
 
 	let {
 		beats,
+		startPosition = null,
 		selectedBeatIndex = -1,
 		onBeatClick,
 		onBeatDoubleClick,
@@ -27,6 +29,9 @@
 	const frameDimensions = $derived(beatFrameService.calculateFrameDimensions(beats.length));
 
 	const dispatch = createEventDispatcher<{ naturalheightchange: { height: number } }>();
+
+	// TODO: Add responsive sizing later once core functionality is stable
+	// For now, use fixed sizing to avoid infinite loops
 
 	// Emit natural height whenever calculated frame dimensions change
 	$effect(() => {
@@ -61,17 +66,36 @@
 		>
 			<!-- Start Position tile at [0,0] when enabled -->
 			{#if config.hasStartTile}
-				<button
-					type="button"
+				<div
 					class="start-tile"
+					class:has-pictograph={startPosition?.pictograph_data}
 					style:width="{config.beatSize}px"
 					style:height="{config.beatSize}px"
 					title="Start Position"
+					role="button"
+					tabindex="0"
 					onclick={() => onStartClick?.()}
+					onkeydown={(e) => {
+						if (e.key === 'Enter' || e.key === ' ') {
+							e.preventDefault();
+							onStartClick?.();
+						}
+					}}
 					aria-label="Start Position"
 				>
-					<div class="start-label">START</div>
-				</button>
+					{#if startPosition?.pictograph_data}
+						<!-- Display actual start position pictograph -->
+						<BeatView
+							beat={startPosition}
+							index={-1}
+							isSelected={false}
+							isHovered={false}
+						/>
+					{:else}
+						<!-- Default START label when no start position is set -->
+						<div class="start-label">START</div>
+					{/if}
+				</div>
 			{/if}
 
 			{#each beats as beat, index}
@@ -159,12 +183,21 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		border: 2px dashed #ced4da;
 		border-radius: 8px;
-		background: #f8f9fa;
-		color: #6c757d;
 		font-weight: 700;
 		letter-spacing: 0.5px;
+	}
+
+	/* Empty start tile styling */
+	.start-tile:not(.has-pictograph) {
+		border: 2px dashed #ced4da;
+		background: #f8f9fa;
+		color: #6c757d;
+	}
+
+	/* Start tile with pictograph - no border, no background */
+	.start-tile.has-pictograph {
+		border: none;
 	}
 
 	.start-label {

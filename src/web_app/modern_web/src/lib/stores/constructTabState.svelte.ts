@@ -38,12 +38,16 @@ class ConstructTabState {
 	// Method to update shouldShowStartPositionPicker - called from components
 	updateShouldShowStartPositionPicker() {
 		const sequence = sequenceState.currentSequence;
-		const shouldShow = !sequence || !sequence.beats || sequence.beats.length === 0;
+
+		// Show start position picker if:
+		// 1. No sequence exists, OR
+		// 2. Sequence exists but has no start position set
+		const shouldShow = !sequence || !sequence.start_position;
 
 		// Only log if the value actually changes to reduce noise
 		if (this.shouldShowStartPositionPicker !== shouldShow) {
 			console.log(
-				`🎯 Start position picker: ${shouldShow ? 'show' : 'hide'} (beats: ${sequence?.beats?.length || 0})`
+				`🎯 Start position picker: ${shouldShow ? 'show' : 'hide'} (has start_position: ${!!sequence?.start_position}, beats: ${sequence?.beats?.length || 0})`
 			);
 		}
 

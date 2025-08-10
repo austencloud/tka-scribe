@@ -2,43 +2,44 @@
 	// Import runes-based state
 	import {
 		getActiveTab,
+		getSettings,
+		getShowSettings,
 		isTabActive,
 		switchTab,
-		getShowSettings,
-		getSettings,
 	} from '$stores/appState.svelte';
-
-	// Import simple fade transitions
-	import { conditionalFade } from '$lib/utils/simpleFade';
-	import { getAnimationSettings } from '$lib/utils/animationControl';
-
-	// Reactive state for template
-	let activeTab = $derived(getActiveTab());
-	let showSettings = $derived(getShowSettings());
-	let settings = $derived(getSettings());
-	let animationSettings = $derived(getAnimationSettings());
-
+	// Import Svelte's built-in fade transition
+	import { shouldAnimate } from '$lib/utils/simpleFade';
+	import { fade } from 'svelte/transition';
 	// Import tab components
-	import ConstructTab from './tabs/ConstructTab.svelte';
-	import BrowseTab from './tabs/BrowseTab.svelte';
-	import WriteTab from './tabs/WriteTab.svelte';
-	import LearnTab from './tabs/LearnTab.svelte';
-	import SequenceCardTab from './tabs/SequenceCardTab.svelte';
+	import BackgroundCanvas from './backgrounds/BackgroundCanvas.svelte';
+	import BackgroundProvider from './backgrounds/BackgroundProvider.svelte';
 	import NavigationBar from './navigation/NavigationBar.svelte';
 	import SettingsDialog from './SettingsDialog.svelte';
-	import BackgroundProvider from './backgrounds/BackgroundProvider.svelte';
-	import BackgroundCanvas from './backgrounds/BackgroundCanvas.svelte';
+	import BrowseTab from './tabs/BrowseTab.svelte';
+	import ConstructTab from './tabs/ConstructTab.svelte';
+	import LearnTab from './tabs/LearnTab.svelte';
+	import SequenceCardTab from './tabs/SequenceCardTab.svelte';
+	import WriteTab from './tabs/WriteTab.svelte';
 
-	// Simple fade configuration
-	const fadeIn = (node: Element) => conditionalFade(node, { 
-		duration: 300, 
-		settings: animationSettings 
-	});
-	
-	const fadeOut = (node: Element) => conditionalFade(node, { 
-		duration: 250, 
-		settings: animationSettings 
-	});
+	// Sequential fade timing - this is the key to making it work!
+	const OUT_DURATION = 250;
+	const IN_DURATION = 250;
+	const IN_DELAY = OUT_DURATION; // Wait for out transition to complete
+
+	// Get reactive state
+	const activeTab = $derived(getActiveTab());
+	// Animation settings consumed by simpleFade utilities
+	const animationSettings = $derived({ animationsEnabled: !!getSettings().animationsEnabled });
+
+	// Transition parameters
+	const fadeOutParams = $derived(
+		shouldAnimate(animationSettings) ? { duration: OUT_DURATION } : { duration: 0 }
+	);
+	const fadeInParams = $derived(
+		shouldAnimate(animationSettings)
+			? { duration: IN_DURATION, delay: IN_DELAY }
+			: { duration: 0 }
+	);
 
 	// Tab configuration - UPDATED to include Sequence Card tab matching desktop app exactly
 	const tabs = [
@@ -48,18 +49,25 @@
 		{ id: 'write', label: 'Write', icon: '✍️' },
 		{ id: 'learn', label: 'Learn', icon: '🧠' },
 	] as const;
+
+	type TabId = (typeof tabs)[number]['id'];
+	function handleTabSelect(tabId: string) {
+		if ((tabs as readonly { id: TabId }[]).some((t) => t.id === tabId)) {
+			switchTab(tabId as TabId);
+		}
+	}
 </script>
 
 <BackgroundProvider>
 	<div class="main-interface">
 		<!-- Background Canvas - positioned behind everything -->
-		{#if settings.backgroundEnabled}
+		{#if getSettings().backgroundEnabled}
 			<BackgroundCanvas
-				backgroundType={settings.backgroundType || 'aurora'}
-				quality={settings.backgroundQuality || 'medium'}
+				backgroundType={getSettings().backgroundType || 'aurora'}
+				quality={getSettings().backgroundQuality || 'medium'}
 				onReady={() =>
 					console.log(
-						`🌌 Main app background ready: ${settings.backgroundType} at ${settings.backgroundQuality} quality`
+						`🌌 Main app background ready: ${getSettings().backgroundType} at ${getSettings().backgroundQuality} quality`
 					)}
 			/>
 		{:else}
@@ -71,12 +79,12 @@
 			</div>
 		{/if}
 
-		<NavigationBar {tabs} {activeTab} onTabSelect={switchTab} />
+		<NavigationBar {tabs} {activeTab} onTabSelect={handleTabSelect} />
 
 		<main class="content-area">
-			<!-- Main tab content with simple fade transitions using {#key} block -->
+			<!-- Main tab content with sequential fade transitions using {#key} block -->
 			{#key activeTab}
-				<div class="tab-content" in:fadeIn out:fadeOut>
+				<div class="tab-content" in:fade={fadeInParams} out:fade={fadeOutParams}>
 					{#if isTabActive('construct')}
 						<ConstructTab />
 					{:else if isTabActive('browse')}
@@ -95,7 +103,7 @@
 </BackgroundProvider>
 
 <!-- Settings Dialog -->
-{#if showSettings}
+{#if getShowSettings()}
 	<SettingsDialog />
 {/if}
 
@@ -124,9 +132,16 @@
 		display: flex;
 		flex-direction: column;
 		overflow: hidden;
-		position: relative;
-		height: 100%;
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
 		width: 100%;
+		height: 100%;
+		/* Ensure smooth transitions without layout jumps */
+		will-change: opacity;
+		backface-visibility: hidden;
 	}
 
 	/* Responsive design */

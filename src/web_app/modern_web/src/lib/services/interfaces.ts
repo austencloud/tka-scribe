@@ -29,6 +29,7 @@ export interface ValidationResult {
 export interface ISequenceService {
 	createSequence(request: SequenceCreateRequest): Promise<SequenceData>;
 	updateBeat(sequenceId: string, beatIndex: number, beatData: BeatData): Promise<void>;
+	setSequenceStartPosition(sequenceId: string, startPosition: BeatData): Promise<void>;
 	deleteSequence(id: string): Promise<void>;
 	getSequence(id: string): Promise<SequenceData | null>;
 	getAllSequences(): Promise<SequenceData[]>;

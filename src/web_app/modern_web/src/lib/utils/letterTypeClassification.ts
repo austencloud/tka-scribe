@@ -94,3 +94,25 @@ export function isLetterType(letter: string | null | undefined, type: LetterType
 export function getLettersOfType(type: LetterType): string[] {
 	return LETTER_CLASSIFICATIONS[type] || [];
 }
+
+/**
+ * Get the safe filename for a letter (handles Greek letters and special characters)
+ * The actual files use the literal characters, so no mapping is needed
+ */
+export function getLetterFilename(letter: string): string {
+	// Files use the actual characters (W-.svg, Λ.svg, α.svg, etc.)
+	// No mapping needed - return the letter as-is
+	return letter;
+}
+
+/**
+ * Get the full image path for a letter based on its type
+ * URL-encodes the filename to match browser fetch behavior
+ */
+export function getLetterImagePath(letter: string): string {
+	const letterType = getLetterType(letter);
+	const filename = getLetterFilename(letter);
+	// URL-encode the filename to match what the browser will actually request
+	const encodedFilename = encodeURIComponent(filename);
+	return `/images/letters_trimmed/${letterType}/${encodedFilename}.svg`;
+}

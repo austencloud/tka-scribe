@@ -5,7 +5,7 @@
  * Replaces stores with modern reactive patterns.
  */
 
-import type { SequenceData, BeatData } from '../domain';
+import type { BeatData, SequenceData } from '../domain';
 import { createSequenceData, updateSequenceData } from '../domain/SequenceData';
 
 class SequenceStateService {
@@ -92,6 +92,14 @@ class SequenceStateService {
 
 	clearError(): void {
 		this.#error = null;
+	}
+
+	setStartPosition(startPosition: BeatData): void {
+		if (!this.#currentSequence) return;
+
+		this.#currentSequence = updateSequenceData(this.#currentSequence, {
+			start_position: startPosition,
+		});
 	}
 
 	createNewSequence(name: string, length: number = 16): void {

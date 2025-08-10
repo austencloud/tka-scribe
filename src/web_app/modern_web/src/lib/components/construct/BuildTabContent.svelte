@@ -1,16 +1,25 @@
 <!--
 	BuildTabContent.svelte
-	
+
 	Build tab content component extracted from ConstructTab.
 	Handles the conditional logic for showing either StartPositionPicker or OptionPicker
 	based on the current sequence state.
 -->
 <script lang="ts">
-	import StartPositionPicker from './StartPositionPicker.svelte';
-	import OptionPicker from './OptionPicker.svelte';
-	import { constructTabState } from '$stores/constructTabState.svelte';
 	import { constructTabEventService } from '$services/implementations/ConstructTabEventService';
 	import type { BeatData, PictographData } from '$services/interfaces';
+	import { constructTabState } from '$stores/constructTabState.svelte';
+	import OptionPicker from './OptionPicker.svelte';
+	import StartPositionPicker from './StartPositionPicker.svelte';
+
+	console.log('🎯 BuildTabContent script is being processed');
+
+	// Debug the constructTabState directly
+	console.log('🎯 constructTabState:', constructTabState);
+	console.log(
+		'🎯 constructTabState.shouldShowStartPositionPicker:',
+		constructTabState.shouldShowStartPositionPicker
+	);
 
 	// Reactive state from store
 	let shouldShowStartPositionPicker = $derived(constructTabState.shouldShowStartPositionPicker);
@@ -37,10 +46,7 @@
 			<StartPositionPicker {gridMode} onStartPositionSelected={handleStartPositionSelected} />
 		</div>
 	{:else}
-		<div class="panel-header">
-			<h3>Build Your Sequence</h3>
-			<p>Choose the next move for your sequence</p>
-		</div>
+
 		<div class="panel-content">
 			<OptionPicker
 				{currentSequence}

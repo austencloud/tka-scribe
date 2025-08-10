@@ -4,7 +4,7 @@
  * Handles exporting sequences to various formats (images, JSON, etc.)
  */
 
-import type { SequenceData } from '@tka/schemas';
+import type { SequenceData, BeatData } from '$lib/domain';
 import type { IExportService, ExportOptions, IPictographService } from '../interfaces';
 
 export class ExportService implements IExportService {
@@ -28,8 +28,9 @@ export class ExportService implements IExportService {
 			// Calculate dimensions
 			const beatSize = options.beatSize;
 			const spacing = options.spacing;
-			const cols = Math.ceil(Math.sqrt(sequence.beats.length));
-			const rows = Math.ceil(sequence.beats.length / cols);
+			const totalBeats = sequence.beats.length;
+			const cols = Math.ceil(Math.sqrt(totalBeats));
+			const rows = Math.ceil(totalBeats / cols);
 
 			canvas.width = cols * beatSize + (cols - 1) * spacing;
 			canvas.height = rows * beatSize + (rows - 1) * spacing;
@@ -39,14 +40,14 @@ export class ExportService implements IExportService {
 			ctx.fillRect(0, 0, canvas.width, canvas.height);
 
 			// Render each beat (placeholder implementation)
-			for (let i = 0; i < sequence.beats.length; i++) {
+			for (let i = 0; i < totalBeats; i++) {
 				const beat = sequence.beats[i];
 				const col = i % cols;
 				const row = Math.floor(i / cols);
 				const x = col * (beatSize + spacing);
 				const y = row * (beatSize + spacing);
 
-				await this.renderBeatPlaceholder(ctx, beat, x, y, beatSize);
+				await this.renderBeatPlaceholder(ctx, beat as BeatData, x, y, beatSize);
 			}
 
 			// Add title if requested
@@ -101,7 +102,7 @@ export class ExportService implements IExportService {
 	 */
 	private async renderBeatPlaceholder(
 		ctx: CanvasRenderingContext2D,
-		beat: any,
+		beat: BeatData,
 		x: number,
 		y: number,
 		size: number
@@ -115,15 +116,17 @@ export class ExportService implements IExportService {
 		ctx.fillStyle = '#374151';
 		ctx.font = '16px monospace';
 		ctx.textAlign = 'center';
-		ctx.fillText(beat.beatNumber.toString(), x + size / 2, y + size / 2 + 6);
+		ctx.fillText(String(beat.beat_number), x + size / 2, y + size / 2 + 6);
 
 		// Draw motion indicators
-		if (beat.blueMotion) {
+		const blueMotion = beat.pictograph_data?.motions?.blue;
+		if (blueMotion) {
 			ctx.fillStyle = '#3b82f6';
 			ctx.fillRect(x + 5, y + 5, 10, 10);
 		}
 
-		if (beat.redMotion) {
+		const redMotion = beat.pictograph_data?.motions?.red;
+		if (redMotion) {
 			ctx.fillStyle = '#ef4444';
 			ctx.fillRect(x + size - 15, y + 5, 10, 10);
 		}

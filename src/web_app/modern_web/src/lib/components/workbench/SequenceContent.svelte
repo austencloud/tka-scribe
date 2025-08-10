@@ -3,28 +3,16 @@
 	import BeatFrame from './BeatFrame.svelte';
 
 	interface Props {
-		containerHeight?: number;
-		containerWidth?: number;
 		onBeatSelected?: (index: number) => void;
 	}
 
-	let { containerHeight = 0, containerWidth = 0, onBeatSelected }: Props = $props();
+	let { onBeatSelected }: Props = $props();
 
 	const currentSequence = $derived(sequenceStateService.currentSequence);
 	const selectedBeatIndex = $derived(sequenceStateService.selectedBeatIndex);
 
-	let beatFrameNaturalHeight = $state(0);
+	// TODO: Add scroll functionality back later
 	let beatFrameShouldScroll = $state(false);
-
-	function handleBeatFrameHeightChange(event: CustomEvent<{ height: number }>) {
-		beatFrameNaturalHeight = event.detail.height;
-	}
-
-	$effect(() => {
-		if (!containerHeight) return;
-		// Since we removed the label, use full container height
-		beatFrameShouldScroll = beatFrameNaturalHeight > containerHeight;
-	});
 
 	function handleBeatClick(index: number) {
 		onBeatSelected?.(index);
@@ -43,9 +31,9 @@
 			<div class="beat-frame-wrapper" class:scroll-mode-active={beatFrameShouldScroll}>
 				<BeatFrame
 					beats={currentSequence?.beats ?? []}
+					startPosition={currentSequence?.start_position ?? null}
 					{selectedBeatIndex}
 					onBeatClick={handleBeatClick}
-					on:naturalheightchange={handleBeatFrameHeightChange}
 					isScrollable={beatFrameShouldScroll}
 				/>
 			</div>

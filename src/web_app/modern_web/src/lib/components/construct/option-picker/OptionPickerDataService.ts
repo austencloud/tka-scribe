@@ -70,7 +70,10 @@ export class OptionPickerDataService {
 
 			// Get start position from localStorage (like current implementation)
 			const startPositionData = localStorage.getItem('start_position');
+			console.log('🔍 localStorage start_position data:', startPositionData);
+
 			if (!startPositionData) {
+				console.log('❌ No start position found in localStorage');
 				return {
 					success: false,
 					options: [],
@@ -118,6 +121,42 @@ export class OptionPickerDataService {
 			};
 		} catch (error) {
 			console.error('❌ Error loading options from start position:', error);
+			return {
+				success: false,
+				options: [],
+				error: error instanceof Error ? error.message : 'Unknown error',
+			};
+		}
+	}
+
+	// Load options from current sequence (like desktop version)
+	async loadOptionsFromSequence(currentSequence: any): Promise<DataLoadResult> {
+		try {
+			if (!this._isInitialized) {
+				await this.initialize();
+			}
+
+			if (!this._optionDataService) {
+				return {
+					success: false,
+					options: [],
+					error: 'Option data service not available',
+				};
+			}
+
+			console.log('🎯 Loading options from current sequence...');
+
+			// Use the OptionDataService to get next options from the sequence
+			const nextOptions = await this._optionDataService.getNextOptions(currentSequence);
+
+			console.log(`✅ Loaded ${nextOptions.length} options from sequence`);
+
+			return {
+				success: true,
+				options: nextOptions,
+			};
+		} catch (error) {
+			console.error('❌ Error loading options from sequence:', error);
 			return {
 				success: false,
 				options: [],

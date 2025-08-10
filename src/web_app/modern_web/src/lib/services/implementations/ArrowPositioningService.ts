@@ -11,16 +11,16 @@
  * - Special placement handling (future enhancement)
  */
 
-import type { MotionData } from '@tka/schemas';
+import type { MotionData } from '$lib/domain';
 import type {
-	IArrowPositioningService,
-	ArrowPosition,
 	ArrowData,
+	ArrowPosition,
 	GridData,
-	PictographData,
-	MotionType,
+	IArrowPositioningService,
 	Location,
+	MotionType,
 	Orientation,
+	PictographData,
 	PropRotDir,
 } from '../interfaces';
 
@@ -294,8 +294,15 @@ export class ArrowPositioningService implements IArrowPositioningService {
 	 * Determine if arrow should be mirrored
 	 */
 	shouldMirrorArrow(motion: MotionData): boolean {
-		const motionType = motion.motionType?.toLowerCase();
-		const propRotDir = motion.propRotDir?.toLowerCase();
+		// Support both domain snake_case and any lingering camelCase
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		const motionTypeVal: unknown = (motion as any).motion_type ?? (motion as any).motionType;
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		const propRotDirVal: unknown = (motion as any).prop_rot_dir ?? (motion as any).propRotDir;
+		const motionType =
+			typeof motionTypeVal === 'string' ? motionTypeVal.toLowerCase() : undefined;
+		const propRotDir =
+			typeof propRotDirVal === 'string' ? propRotDirVal.toLowerCase() : undefined;
 
 		// Mirror conditions from legacy implementation
 		const mirrorConditions = {
@@ -323,29 +330,28 @@ export class ArrowPositioningService implements IArrowPositioningService {
 		gridData: GridData
 	): { x: number; y: number } {
 		const { motionType, location } = arrow;
+		const gridMode = this.extractGridMode(pictographData);
 
 		switch (motionType) {
 			case 'pro':
 			case 'anti':
 			case 'float':
-				return this.getShiftCoordinates(
-					location,
-					pictographData.gridData?.mode || 'diamond',
-					gridData
-				);
+				return this.getShiftCoordinates(location, gridMode, gridData);
 
 			case 'static':
 			case 'dash':
-				return this.getStaticDashCoordinates(
-					location,
-					pictographData.gridData?.mode || 'diamond',
-					gridData
-				);
+				return this.getStaticDashCoordinates(location, gridMode, gridData);
 
 			default:
 				console.warn(`Unknown motion type: ${motionType}, returning center`);
 				return { x: 475, y: 475 }; // Default center position (950x950 scene)
 		}
+	}
+
+	private extractGridMode(pictographData: PictographData): 'diamond' | 'box' {
+		const raw = pictographData.grid_data as unknown as { grid_mode?: string };
+		const mode = typeof raw.grid_mode === 'string' ? raw.grid_mode.toLowerCase() : 'diamond';
+		return mode === 'box' ? 'box' : 'diamond';
 	}
 
 	/**
@@ -426,7 +432,9 @@ export class ArrowPositioningService implements IArrowPositioningService {
 			await this.placementDataService.loadPlacementData();
 
 			// Get available placement keys for this motion type
-			const motionType = this.normalizeMotionType(motion.motionType);
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			const rawType: unknown = (motion as any).motion_type ?? (motion as any).motionType;
+			const motionType = this.normalizeMotionType(rawType);
 			const availableKeys = await this.placementDataService.getAvailablePlacementKeys(
 				motionType,
 				'diamond' // TODO: Use actual grid mode from pictographData
@@ -463,8 +471,12 @@ export class ArrowPositioningService implements IArrowPositioningService {
 	 * Calculate base rotation angle based on motion type
 	 */
 	private calculateBaseRotationAngle(motion: MotionData, location: Location): number {
-		const motionType = this.normalizeMotionType(motion.motionType);
-		const propRotDir = this.normalizePropRotDir(motion.propRotDir);
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		const rawType: unknown = (motion as any).motion_type ?? (motion as any).motionType;
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		const rawProp: unknown = (motion as any).prop_rot_dir ?? (motion as any).propRotDir;
+		const motionType = this.normalizeMotionType(rawType);
+		const propRotDir = this.normalizePropRotDir(rawProp);
 
 		switch (motionType) {
 			case 'pro':
@@ -473,9 +485,10 @@ export class ArrowPositioningService implements IArrowPositioningService {
 			case 'anti':
 				return ANTI_REGULAR_MAP[propRotDir]?.[location] ?? 0;
 
-			case 'float':
+			case 'float': {
 				const handRotDir = 'cw_shift'; // Simplified - would need actual hand rotation direction
 				return FLOAT_DIRECTION_MAP[handRotDir]?.[location] ?? 0;
+			}
 
 			case 'dash':
 				return this.calculateDashRotation(motion, location);
@@ -495,7 +508,9 @@ export class ArrowPositioningService implements IArrowPositioningService {
 	private calculateDashRotation(motion: MotionData, location: Location): number {
 		// Simplified implementation - would expand with full dash logic from legacy
 		// For now, use basic orientation-based rotation
-		const propRotDir = this.normalizePropRotDir(motion.propRotDir);
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		const rawProp: unknown = (motion as any).prop_rot_dir ?? (motion as any).propRotDir;
+		const propRotDir = this.normalizePropRotDir(rawProp);
 		return PRO_ROTATION_MAP[propRotDir]?.[location] ?? 0;
 	}
 
@@ -505,7 +520,9 @@ export class ArrowPositioningService implements IArrowPositioningService {
 	private calculateStaticRotation(motion: MotionData, location: Location): number {
 		// Simplified implementation - would expand with full static logic from legacy
 		// For now, use basic orientation-based rotation
-		const propRotDir = this.normalizePropRotDir(motion.propRotDir);
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		const rawProp: unknown = (motion as any).prop_rot_dir ?? (motion as any).propRotDir;
+		const propRotDir = this.normalizePropRotDir(rawProp);
 		return PRO_ROTATION_MAP[propRotDir]?.[location] ?? 0;
 	}
 
@@ -525,16 +542,25 @@ export class ArrowPositioningService implements IArrowPositioningService {
 	private motionToArrowData(motion: MotionData, color: 'blue' | 'red'): ArrowData {
 		// Extract location from motion data - this is a simplified approach
 		const location = this.extractLocationFromMotion(motion);
-
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		const rawType: unknown = (motion as any).motion_type ?? (motion as any).motionType;
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		const rawStartOri: unknown = (motion as any).start_ori ?? (motion as any).startOri;
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		const rawEndOri: unknown = (motion as any).end_ori ?? (motion as any).endOri;
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		const rawProp: unknown = (motion as any).prop_rot_dir ?? (motion as any).propRotDir;
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		const rawTurns: unknown = (motion as any).turns;
 		return {
 			id: `${color}-arrow`,
 			color,
-			motionType: this.normalizeMotionType(motion.motionType),
+			motionType: this.normalizeMotionType(rawType),
 			location,
-			startOrientation: this.normalizeOrientation(motion.startOri),
-			endOrientation: this.normalizeOrientation(motion.endOri),
-			propRotDir: this.normalizePropRotDir(motion.propRotDir),
-			turns: motion.turns || 0,
+			startOrientation: this.normalizeOrientation(rawStartOri),
+			endOrientation: this.normalizeOrientation(rawEndOri),
+			propRotDir: this.normalizePropRotDir(rawProp),
+			turns: typeof rawTurns === 'number' ? rawTurns : 0,
 			isMirrored: this.shouldMirrorArrow(motion),
 		};
 	}
@@ -543,11 +569,11 @@ export class ArrowPositioningService implements IArrowPositioningService {
 	 * Extract location from motion data
 	 */
 	private extractLocationFromMotion(motion: MotionData): Location {
-		// Use start_loc if available, otherwise default to center
-		if (motion.startLoc) {
-			return this.normalizeLocation(motion.startLoc);
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		const startLoc: unknown = (motion as any).start_loc ?? (motion as any).startLoc;
+		if (typeof startLoc === 'string') {
+			return this.normalizeLocation(startLoc);
 		}
-
 		console.warn('No start location found in motion, using center');
 		return 'center';
 	}
@@ -555,7 +581,7 @@ export class ArrowPositioningService implements IArrowPositioningService {
 	/**
 	 * Normalize motion type to standard format
 	 */
-	private normalizeMotionType(motionType: any): MotionType {
+	private normalizeMotionType(motionType: unknown): MotionType {
 		if (typeof motionType === 'string') {
 			const normalized = motionType.toLowerCase();
 			if (['pro', 'anti', 'float', 'dash', 'static'].includes(normalized)) {
@@ -569,7 +595,7 @@ export class ArrowPositioningService implements IArrowPositioningService {
 	/**
 	 * Normalize prop rotation direction to standard format
 	 */
-	private normalizePropRotDir(propRotDir: any): PropRotDir {
+	private normalizePropRotDir(propRotDir: unknown): PropRotDir {
 		if (typeof propRotDir === 'string') {
 			const normalized = propRotDir.toLowerCase();
 			if (['cw', 'ccw', 'no_rot', 'clockwise', 'counter_clockwise'].includes(normalized)) {
@@ -583,7 +609,7 @@ export class ArrowPositioningService implements IArrowPositioningService {
 	/**
 	 * Normalize orientation to standard format
 	 */
-	private normalizeOrientation(orientation: any): Orientation {
+	private normalizeOrientation(orientation: unknown): Orientation {
 		if (typeof orientation === 'string') {
 			const normalized = orientation.toLowerCase();
 			if (['in', 'out', 'clock', 'counter'].includes(normalized)) {
@@ -597,7 +623,7 @@ export class ArrowPositioningService implements IArrowPositioningService {
 	/**
 	 * Normalize location to standard format
 	 */
-	private normalizeLocation(location: any): Location {
+	private normalizeLocation(location: unknown): Location {
 		if (typeof location === 'string') {
 			const normalized = location.toLowerCase();
 			if (['n', 'ne', 'e', 'se', 's', 'sw', 'w', 'nw', 'center'].includes(normalized)) {

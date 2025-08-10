@@ -5,7 +5,7 @@
  * This provides a simple persistence layer for sequences and settings.
  */
 
-import type { SequenceData } from '@tka/schemas';
+import type { BeatData, SequenceData } from '$lib/domain';
 import type { IPersistenceService } from '../interfaces';
 
 export class LocalStoragePersistenceService implements IPersistenceService {
@@ -74,9 +74,9 @@ export class LocalStoragePersistenceService implements IPersistenceService {
 			}
 
 			return sequences.sort((a, b) => {
-				// Sort by creation date, newest first
-				const aDate = new Date(a.createdAt || 0).getTime();
-				const bDate = new Date(b.createdAt || 0).getTime();
+				// Sort by stored timestamp in metadata if available
+				const aDate = new Date((a.metadata?.saved_at as string) || 0).getTime();
+				const bDate = new Date((b.metadata?.saved_at as string) || 0).getTime();
 				return bDate - aDate;
 			});
 		} catch (error) {
@@ -144,23 +144,41 @@ export class LocalStoragePersistenceService implements IPersistenceService {
 	/**
 	 * Validate sequence data structure
 	 */
-	private validateSequenceData(data: any): SequenceData {
+	private validateSequenceData(raw: unknown): SequenceData {
+		const data = (raw as Record<string, unknown>) || {};
 		// Basic validation - ensure required fields exist
-		if (!data.id || !data.name || !Array.isArray(data.beats)) {
+		if (
+			typeof data.id !== 'string' ||
+			typeof data.name !== 'string' ||
+			!Array.isArray(data.beats)
+		) {
 			throw new Error('Invalid sequence data structure');
 		}
 
 		// Ensure all required fields have defaults
+		const nowIso = new Date().toISOString();
+		const existingMeta = (data.metadata as Record<string, unknown>) || {};
+		const metadata = {
+			...existingMeta,
+			saved_at: typeof existingMeta.saved_at === 'string' ? existingMeta.saved_at : nowIso,
+			updated_at: nowIso,
+		};
+		const beatsArray = Array.isArray(data.beats) ? (data.beats as unknown[]) : [];
+		const beats: BeatData[] = beatsArray.filter((b): b is BeatData => {
+			if (b == null || typeof b !== 'object') return false;
+			const candidate = b as Record<string, unknown>;
+			return 'beat_number' in candidate;
+		});
 		return {
-			id: data.id,
-			name: data.name,
-			beats: data.beats || [],
-			createdAt: data.createdAt || new Date().toISOString(),
-			updatedAt: data.updatedAt || new Date().toISOString(),
-			version: data.version || '2.0',
-			length: data.length || data.beats.length,
-			tags: data.tags || [],
-			...data, // Preserve any additional fields
+			id: data.id as string,
+			name: data.name as string,
+			beats,
+			word: (data.word as string) || '',
+			thumbnails: (data.thumbnails as string[]) || [],
+			is_favorite: Boolean(data.is_favorite),
+			is_circular: Boolean(data.is_circular),
+			tags: (data.tags as string[]) || [],
+			metadata,
 		};
 	}
 

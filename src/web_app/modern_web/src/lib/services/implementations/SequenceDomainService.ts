@@ -5,7 +5,7 @@
  * and desktop.modern.domain.models for actual validation and business rules.
  */
 
-import type { SequenceData, BeatData, MotionData } from '@tka/schemas';
+import type { BeatData, SequenceData } from '$lib/domain';
 import type {
 	ISequenceDomainService,
 	SequenceCreateRequest,
@@ -29,8 +29,9 @@ export class SequenceDomainService implements ISequenceDomainService {
 		}
 
 		// Length validation from desktop domain models
-		if (!request.length || request.length < 1 || request.length > 64) {
-			errors.push('Sequence length must be between 1 and 64');
+		// Allow 0 length for progressive creation (start position only)
+		if (request.length !== undefined && (request.length < 0 || request.length > 64)) {
+			errors.push('Sequence length must be between 0 and 64');
 		}
 
 		// Grid mode validation from desktop enums
@@ -63,13 +64,13 @@ export class SequenceDomainService implements ISequenceDomainService {
 		const sequence: SequenceData = {
 			id: this.generateId(),
 			name: request.name.trim(),
+			word: '',
 			beats,
-			version: '2.0',
-			length: request.length,
+			thumbnails: [],
+			is_favorite: false,
+			is_circular: false,
 			tags: [],
-			// Desktop-specific metadata
-			createdAt: new Date().toISOString(),
-			updatedAt: new Date().toISOString(),
+			metadata: { length: request.length },
 		};
 
 		return sequence;
@@ -89,19 +90,18 @@ export class SequenceDomainService implements ISequenceDomainService {
 			throw new Error('Beat duration must be positive');
 		}
 
-		if (beatData.beatNumber && beatData.beatNumber < 0) {
-			throw new Error('Beat number must be non-negative');
+		// Legacy field guard (beatNumber) for migrated data
+		if (typeof (beatData as unknown as { beatNumber?: number }).beatNumber === 'number') {
+			if ((beatData as unknown as { beatNumber: number }).beatNumber < 0) {
+				throw new Error('Beat number must be non-negative');
+			}
 		}
 
 		// Create new beats array with updated beat
 		const newBeats = [...sequence.beats];
 		newBeats[beatIndex] = { ...beatData };
 
-		return {
-			...sequence,
-			beats: newBeats,
-			updatedAt: new Date().toISOString(),
-		};
+		return { ...sequence, beats: newBeats } as SequenceData;
 	}
 
 	/**
@@ -113,7 +113,9 @@ export class SequenceDomainService implements ISequenceDomainService {
 		}
 
 		// Extract letters from beats (desktop logic)
-		const word = sequence.beats.map((beat) => beat.letter || '?').join('');
+		const word = sequence.beats
+			.map((beat) => beat.pictograph_data?.letter || beat.metadata?.letter || '?')
+			.join('');
 
 		// Apply word simplification for circular sequences (desktop logic)
 		return this.simplifyRepeatedWord(word);
@@ -153,16 +155,14 @@ export class SequenceDomainService implements ISequenceDomainService {
 	 */
 	private createEmptyBeat(beatNumber: number): BeatData {
 		return {
-			beatNumber,
-			letter: null,
+			id: crypto.randomUUID(),
+			beat_number: beatNumber,
 			duration: 1.0,
-			blueMotion: null,
-			redMotion: null,
-			blueReversal: false,
-			redReversal: false,
-			filled: false,
-			tags: [],
-			metadata: null,
+			blue_reversal: false,
+			red_reversal: false,
+			is_blank: true,
+			pictograph_data: null,
+			metadata: {},
 		};
 	}
 

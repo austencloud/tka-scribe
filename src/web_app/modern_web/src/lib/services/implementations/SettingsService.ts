@@ -15,6 +15,7 @@ export class SettingsService implements ISettingsService {
 		showBeatNumbers: true,
 		autoSave: true,
 		exportQuality: 'high',
+		workbenchColumns: 3,
 	};
 
 	constructor() {
@@ -84,6 +85,7 @@ export class SettingsService implements ISettingsService {
 			showBeatNumbers: true,
 			autoSave: true,
 			exportQuality: 'high',
+			workbenchColumns: 3,
 		};
 
 		await this.persistSettings();

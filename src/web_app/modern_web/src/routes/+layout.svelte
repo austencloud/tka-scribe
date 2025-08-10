@@ -20,8 +20,6 @@
 
 	onMount(async () => {
 		try {
-			console.log('🚀 Initializing TKA V2 Modern...');
-
 			try {
 				// Import bootstrap function
 				const { createWebApplication } = await import('$services/bootstrap');
@@ -31,7 +29,6 @@
 
 				// Mark as initialized
 				isInitialized = true;
-				console.log('✅ TKA V2 Modern initialized successfully');
 			} catch (error) {
 				console.error('❌ Failed to initialize application:', error);
 				initializationError = error instanceof Error ? error.message : 'Unknown error';

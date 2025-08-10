@@ -5,23 +5,23 @@
  * Pure functions that handle the integration between services and reactive state.
  */
 
-import type { SequenceData, BeatData } from '@tka/schemas';
 import type {
+	GenerationOptions,
 	ISequenceService,
 	SequenceCreateRequest,
-	GenerationOptions,
 } from '$services/interfaces';
+import type { BeatData, SequenceData, PictographData } from '$lib/domain';
 
 import {
-	setCurrentSequence,
 	addSequence,
-	updateSequence,
+	clearError,
 	removeSequence,
+	setCurrentSequence,
+	setError,
+	setLoading,
 	setSequences,
 	updateCurrentBeat,
-	setLoading,
-	setError,
-	clearError,
+	updateSequence,
 } from './sequenceState.svelte';
 
 // ============================================================================
@@ -167,7 +167,7 @@ export async function updateBeat(
  * Add a beat to the current sequence
  */
 export async function addBeat(
-	sequenceService: ISequenceService,
+	sequenceService: ISequenceService & { addBeat?(id: string, beat?: Partial<BeatData>): Promise<void> },
 	currentSequence: SequenceData,
 	beatData?: Partial<BeatData>
 ): Promise<void> {
@@ -178,7 +178,9 @@ export async function addBeat(
 		console.log('Adding beat to sequence:', currentSequence.id);
 
 		// Use the service's addBeat method (assumes it exists)
-		await (sequenceService as any).addBeat(currentSequence.id, beatData);
+		if ('addBeat' in sequenceService && typeof sequenceService.addBeat === 'function') {
+			await sequenceService.addBeat(currentSequence.id, beatData);
+		}
 
 		// Reload the sequence to get the updated version
 		const updatedSequence = await sequenceService.getSequence(currentSequence.id);
@@ -205,7 +207,7 @@ export async function addBeat(
  * Generate a new sequence
  */
 export async function generateSequence(
-	generationService: any, // ISequenceGenerationService
+	generationService: { generateSequence(options: GenerationOptions): Promise<SequenceData> },
 	options: GenerationOptions
 ): Promise<SequenceData> {
 	setLoading(true);
@@ -233,13 +235,13 @@ export async function generateSequence(
 // ARROW POSITIONING ACTIONS
 // ============================================================================
 
-import type { IArrowPositioningService, PictographData, GridData } from '$services/interfaces';
+import type { GridData, IArrowPositioningService } from '$services/interfaces';
 
 import {
-	setArrowPositions,
-	setArrowPositioningInProgress,
-	setArrowPositioningError,
 	clearArrowPositions,
+	setArrowPositioningError,
+	setArrowPositioningInProgress,
+	setArrowPositions,
 } from './sequenceState.svelte';
 
 /**
@@ -302,17 +304,21 @@ export async function updateArrowPositionsForSequence(
  * Convert beat to pictograph data format
  */
 function beatToPictographData(beat: BeatData, sequence: SequenceData): PictographData {
+	const motions: Record<string, unknown> = {};
+	if (beat.pictograph_data?.motions?.blue) motions.blue = beat.pictograph_data.motions.blue;
+	if (beat.pictograph_data?.motions?.red) motions.red = beat.pictograph_data.motions.red;
 	return {
-		id: `beat-${beat.beatNumber}`,
-		gridData: { mode: sequence.gridMode || 'diamond' },
-		arrows: { blue: {}, red: {} },
-		props: { blue: {}, red: {} },
-		motions: {
-			blue: beat.blueMotion,
-			red: beat.redMotion,
-		},
-		letter: beat.letter,
-	};
+		id: `beat-${beat.beat_number}`,
+		grid_data: { grid_mode: (sequence.grid_mode as any) || 'diamond', center_x:0, center_y:0, radius:100, grid_points:{} },
+		arrows: {},
+		props: {},
+		motions: motions as Record<string, unknown>,
+		letter: beat.pictograph_data?.letter ?? null,
+		beat: beat.beat_number,
+		is_blank: beat.is_blank,
+		is_mirrored: false,
+		metadata: {}
+	} as PictographData;
 }
 
 /**
@@ -388,7 +394,7 @@ export async function refreshCurrentSequence(
  * Save current sequence
  */
 export async function saveCurrentSequence(
-	sequenceService: ISequenceService,
+	_sequenceService: ISequenceService,
 	currentSequence: SequenceData
 ): Promise<void> {
 	try {

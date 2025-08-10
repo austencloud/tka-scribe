@@ -8,10 +8,10 @@ Matches the desktop version exactly:
 - Responsive grid sizing
 -->
 <script lang="ts">
-	import type { PictographData } from '$lib/domain/PictographData';
-	import { LetterType } from './types/LetterType.js';
-	import OptionPickerSectionHeader from './OptionPickerSectionHeader.svelte';
 	import ModernPictograph from '$lib/components/pictograph/ModernPictograph.svelte';
+	import type { PictographData } from '$lib/domain/PictographData';
+	import OptionPickerSectionHeader from './OptionPickerSectionHeader.svelte';
+	import { LetterType } from './types/LetterType.js';
 
 	// Props
 	const {
@@ -38,24 +38,24 @@ Matches the desktop version exactly:
 		const spacing = 8; // Grid spacing
 		const minSize = 100;
 		const maxSize = 200;
-		
+
 		// Calculate how many pictographs fit per row
 		const availableWidth = containerWidth - 32; // Account for padding
 		const optionsPerRow = Math.max(1, Math.floor(availableWidth / (baseSize + spacing)));
-		
+
 		// Calculate actual pictograph size
 		const totalSpacing = (optionsPerRow - 1) * spacing;
 		const availableForPictographs = availableWidth - totalSpacing;
 		let pictographSize = availableForPictographs / optionsPerRow;
-		
+
 		// Apply size constraints
 		pictographSize = Math.min(maxSize, Math.max(minSize, pictographSize));
-		
+
 		// Prefer 144px when close (desktop compatibility)
 		if (pictographSize < 144 && pictographSize > 120) {
 			pictographSize = 144;
 		}
-		
+
 		return {
 			optionsPerRow,
 			pictographSize: Math.floor(pictographSize),
@@ -76,30 +76,28 @@ Matches the desktop version exactly:
 
 	// Filter pictographs for this section
 	const sectionPictographs = $derived(() => {
-		return pictographs.filter(p => {
+		const filtered = pictographs.filter((p: PictographData) => {
 			const pictographType = LetterType.getLetterType(p.letter || '');
 			return pictographType === letterType;
 		});
+		return filtered;
 	});
 </script>
 
 <div class="option-picker-section" class:expanded={sectionExpanded}>
 	<!-- Section Header -->
-	<OptionPickerSectionHeader 
-		{letterType}
-		onToggle={toggleSection}
-	/>
-	
+	<OptionPickerSectionHeader {letterType} onToggle={toggleSection} />
+
 	<!-- Pictograph Grid (only shown when expanded) -->
-	{#if sectionExpanded && sectionPictographs.length > 0}
+	{#if sectionExpanded && sectionPictographs().length > 0}
 		<div class="pictograph-frame">
-			<div 
+			<div
 				class="pictographs-grid"
-				style:grid-template-columns="repeat({layoutConfig.optionsPerRow}, 1fr)"
-				style:gap="{layoutConfig.spacing}px"
+				style:grid-template-columns="repeat({layoutConfig().optionsPerRow}, 1fr)"
+				style:gap="{layoutConfig().spacing}px"
 			>
-				{#each sectionPictographs as pictograph (pictograph.id)}
-					<div 
+				{#each sectionPictographs() as pictograph (pictograph.id)}
+					<div
 						class="pictograph-container"
 						class:selected={selectedPictograph?.id === pictograph.id}
 						role="button"
@@ -111,25 +109,21 @@ Matches the desktop version exactly:
 								handlePictographSelected(pictograph);
 							}
 						}}
-						style:width="{layoutConfig.pictographSize}px"
-						style:height="{layoutConfig.pictographSize}px"
+						style:width="{layoutConfig().pictographSize}px"
+						style:height="{layoutConfig().pictographSize}px"
 					>
 						<ModernPictograph
 							pictographData={pictograph}
-							width={layoutConfig.pictographSize}
-							height={layoutConfig.pictographSize}
+							width={layoutConfig().pictographSize}
+							height={layoutConfig().pictographSize}
+							showLoadingIndicator={false}
 							debug={false}
 						/>
-						
-						<!-- Letter label (like desktop) -->
-						<div class="pictograph-label">
-							{pictograph.letter || '?'}
-						</div>
 					</div>
 				{/each}
 			</div>
 		</div>
-	{:else if sectionExpanded && sectionPictographs.length === 0}
+	{:else if sectionExpanded && sectionPictographs().length === 0}
 		<div class="empty-section">
 			<p>No options available for this type</p>
 		</div>
@@ -189,20 +183,6 @@ Matches the desktop version exactly:
 		outline-offset: 2px;
 	}
 
-	.pictograph-label {
-		position: absolute;
-		bottom: 2px;
-		left: 50%;
-		transform: translateX(-50%);
-		font-size: 12px;
-		font-weight: bold;
-		color: var(--foreground, #000000);
-		background: rgba(255, 255, 255, 0.9);
-		padding: 2px 6px;
-		border-radius: 3px;
-		border: 1px solid rgba(0, 0, 0, 0.1);
-	}
-
 	.empty-section {
 		padding: 24px;
 		text-align: center;
@@ -215,14 +195,9 @@ Matches the desktop version exactly:
 		.pictographs-grid {
 			padding: 6px 12px;
 		}
-		
+
 		.pictograph-container {
 			padding: 3px;
-		}
-		
-		.pictograph-label {
-			font-size: 11px;
-			padding: 1px 4px;
 		}
 	}
 
@@ -230,14 +205,9 @@ Matches the desktop version exactly:
 		.pictographs-grid {
 			padding: 4px 8px;
 		}
-		
+
 		.pictograph-container {
 			padding: 2px;
-		}
-		
-		.pictograph-label {
-			font-size: 10px;
-			padding: 1px 3px;
 		}
 	}
 </style>

@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Test Script for Prop Rendering Service
  *

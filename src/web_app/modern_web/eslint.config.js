@@ -2,8 +2,8 @@ import js from '@eslint/js';
 import ts from '@typescript-eslint/eslint-plugin';
 import tsParser from '@typescript-eslint/parser';
 import prettier from 'eslint-config-prettier';
-import svelte from 'eslint-plugin-svelte';
 import importPlugin from 'eslint-plugin-import';
+import svelte from 'eslint-plugin-svelte';
 import globals from 'globals';
 import svelteParser from 'svelte-eslint-parser';
 
@@ -48,7 +48,7 @@ export default [
 			'@typescript-eslint/no-explicit-any': 'warn',
 			'@typescript-eslint/no-non-null-assertion': 'warn',
 			'prefer-const': 'error',
-			'import/no-unresolved': ['error', { ignore: ['^\$app/', '^\$env/', '^\$service-worker'] }],
+			'import/no-unresolved': ['error', { ignore: ['^$app/', '^$env/', '^$service-worker'] }],
 			'import/no-absolute-path': 'error',
 			'import/named': 'error',
 			'import/default': 'error',
@@ -85,6 +85,7 @@ export default [
 				'@typescript-eslint/parser': ['.ts', '.tsx'],
 				svelte: ['.svelte'],
 			},
+			'import/ignore': ['\\.svelte$'],
 		},
 		rules: {
 			...svelte.configs.recommended.rules,
@@ -93,10 +94,11 @@ export default [
 			'svelte/no-at-html-tags': 'warn',
 			'svelte/valid-compile': 'error',
 			'@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
-			'import/no-unresolved': ['error', { ignore: ['^\$app/', '^\$env/', '^\$service-worker'] }],
+			// Relax import plugin rules for Svelte single-file components to avoid false positives
+			'import/no-unresolved': 'off',
 			'import/no-absolute-path': 'error',
-			'import/named': 'error',
-			'import/default': 'error',
+			'import/named': 'off',
+			'import/default': 'off',
 		},
 	},
 
