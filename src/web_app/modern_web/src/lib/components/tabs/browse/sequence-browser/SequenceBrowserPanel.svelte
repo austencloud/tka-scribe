@@ -48,7 +48,7 @@
 			switch (sortBy) {
 				case SortMethod.ALPHABETICAL:
 					return a.word.localeCompare(b.word);
-				case SortMethod.DIFFICULTY_LEVEL:
+				case SortMethod.DIFFICULTY_LEVEL: {
 					// Fix: Use difficultyLevel instead of difficulty
 					const getDifficultyOrder = (level?: string) => {
 						switch (level) {
@@ -66,6 +66,7 @@
 						getDifficultyOrder(a.difficultyLevel) -
 						getDifficultyOrder(b.difficultyLevel)
 					);
+				}
 				case SortMethod.SEQUENCE_LENGTH:
 					// Fix: Use sequenceLength instead of length
 					return (a.sequenceLength || 0) - (b.sequenceLength || 0);

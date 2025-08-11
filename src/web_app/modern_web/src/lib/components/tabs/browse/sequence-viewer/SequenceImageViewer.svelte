@@ -26,15 +26,77 @@
 
 	// Image loading state
 	let isImageLoading = $state(false);
+	let imageElement = $state<HTMLImageElement | null>(null);
+	let containerElement = $state<HTMLDivElement | null>(null);
+
+	// Dynamic sizing state
+	let calculatedWidth = $state(0);
+	let calculatedHeight = $state(0);
 
 	// Handle image loading events
 	function handleImageLoad() {
 		isImageLoading = false;
+		calculateOptimalSize();
 	}
 
 	function handleImageError() {
 		isImageLoading = false;
 	}
+
+	// Calculate optimal size based on legacy desktop logic
+	function calculateOptimalSize() {
+		if (!imageElement || !containerElement) return;
+
+		const containerWidth = containerElement.clientWidth;
+		const containerHeight = containerElement.clientHeight;
+
+		// Legacy desktop logic: Use full width with padding, constrain height to 60% of container
+		const padding = 20;
+		const availableWidth = Math.max(200, containerWidth - padding);
+		const maxHeightRatio = 0.6;
+		const maxHeight = Math.max(200, containerHeight * maxHeightRatio);
+
+		// Get image natural dimensions
+		const imageNaturalWidth = imageElement.naturalWidth;
+		const imageNaturalHeight = imageElement.naturalHeight;
+
+		if (imageNaturalWidth > 0 && imageNaturalHeight > 0) {
+			// Calculate aspect ratio
+			const aspectRatio = imageNaturalWidth / imageNaturalHeight;
+
+			// Start with full available width
+			let targetWidth = availableWidth;
+			let targetHeight = targetWidth / aspectRatio;
+
+			// If height would exceed max, constrain width to fit height limit
+			if (targetHeight > maxHeight) {
+				targetHeight = maxHeight;
+				targetWidth = targetHeight * aspectRatio;
+			}
+
+			calculatedWidth = Math.round(targetWidth);
+			calculatedHeight = Math.round(targetHeight);
+		} else {
+			// Fallback for images without natural dimensions
+			calculatedWidth = availableWidth;
+			calculatedHeight = Math.min(availableWidth, maxHeight);
+		}
+	}
+
+	// Set up resize observer for container
+	$effect(() => {
+		if (containerElement) {
+			const resizeObserver = new ResizeObserver(() => {
+				calculateOptimalSize();
+			});
+			resizeObserver.observe(containerElement);
+
+			return () => {
+				resizeObserver.disconnect();
+			};
+		}
+		return undefined;
+	});
 
 	// Navigation handlers
 	function handleNextVariation() {
@@ -58,12 +120,14 @@
 </script>
 
 <div class="image-viewer-section">
-	<div class="image-container">
+	<div class="image-container" bind:this={containerElement}>
 		{#if currentVariation?.imageUrl}
 			<img
+				bind:this={imageElement}
 				src={currentVariation.imageUrl}
 				alt="{sequence?.word || 'Sequence'} - Variation {currentVariationIndex + 1}"
 				class:loading={isImageLoading}
+				style="width: {calculatedWidth}px; height: {calculatedHeight}px;"
 				onload={handleImageLoad}
 				onerror={handleImageError}
 			/>
@@ -126,7 +190,8 @@
 	.image-container {
 		position: relative;
 		width: 100%;
-		height: 200px;
+		min-height: 200px;
+		max-height: 60vh; /* Legacy desktop: 60% of viewport height */
 		background: linear-gradient(
 			135deg,
 			rgba(99, 102, 241, 0.1),
@@ -137,13 +202,17 @@
 		border-radius: 12px;
 		overflow: hidden;
 		margin-bottom: var(--spacing-md);
+		display: flex;
+		align-items: center;
+		justify-content: center;
 	}
 
 	.image-container img {
-		width: 100%;
-		height: 100%;
+		max-width: 100%;
+		max-height: 100%;
 		object-fit: contain;
 		transition: opacity var(--transition-fast);
+		display: block;
 	}
 
 	.image-container img.loading {
@@ -255,7 +324,8 @@
 	/* Responsive Design */
 	@media (max-width: 768px) {
 		.image-container {
-			height: 150px;
+			min-height: 150px;
+			max-height: 50vh; /* Smaller max height on mobile */
 		}
 	}
 </style>

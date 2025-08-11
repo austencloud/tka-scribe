@@ -6,18 +6,25 @@ metadata, and responsive design following the desktop app's approach.
 -->
 <script lang="ts">
 	import type { BrowseSequenceMetadata } from '$lib/domain/browse';
+	import type { IThumbnailService } from '$lib/services/interfaces';
 
 	// ✅ PURE RUNES: Props using modern Svelte 5 runes
 	const {
 		sequence,
 		thumbnailService,
 		viewMode = 'grid',
+		isFavorite = false,
 		onSelect = () => {},
+		onFavoriteToggle = () => {},
+		onAction = () => {},
 	} = $props<{
 		sequence: BrowseSequenceMetadata;
-		thumbnailService: any; // IThumbnailService
+		thumbnailService: IThumbnailService;
 		viewMode?: 'grid' | 'list';
+		isFavorite?: boolean;
 		onSelect?: (sequence: BrowseSequenceMetadata) => void;
+		onFavoriteToggle?: (sequenceId: string) => void;
+		onAction?: (action: string, sequence: BrowseSequenceMetadata) => void;
 	}>();
 
 	// ✅ PURE RUNES: State for image loading
@@ -53,6 +60,18 @@ metadata, and responsive design following the desktop app's approach.
 		onSelect(sequence);
 	}
 
+	// Handle favorite toggle
+	function handleFavoriteClick(event: MouseEvent) {
+		event.stopPropagation(); // Prevent thumbnail selection
+		onFavoriteToggle(sequence.id);
+	}
+
+	// Handle action button click
+	function handleActionClick(action: string, event: MouseEvent) {
+		event.stopPropagation(); // Prevent thumbnail selection
+		onAction(action, sequence);
+	}
+
 	// Handle image load events
 	function handleImageLoad() {
 		imageLoaded = true;
@@ -72,8 +91,8 @@ metadata, and responsive design following the desktop app's approach.
 	class:grid-view={viewMode === 'grid'}
 	role="button"
 	tabindex="0"
-	on:click={handleClick}
-	on:keydown={(e) => e.key === 'Enter' && handleClick()}
+	onclick={handleClick}
+	onkeydown={(e) => e.key === 'Enter' && handleClick()}
 >
 	<!-- Image container with aspect ratio -->
 	<div class="image-container">
@@ -85,8 +104,8 @@ metadata, and responsive design following the desktop app's approach.
 				class="thumbnail-image"
 				class:loaded={imageLoaded}
 				class:error={imageError}
-				on:load={handleImageLoad}
-				on:error={handleImageError}
+				onload={handleImageLoad}
+				onerror={handleImageError}
 			/>
 		{/if}
 
@@ -105,10 +124,35 @@ metadata, and responsive design following the desktop app's approach.
 			</div>
 		{/if}
 
-		<!-- Favorite indicator -->
-		{#if sequence.isFavorite}
-			<div class="favorite-indicator">⭐</div>
-		{/if}
+		<!-- Favorite indicator/button -->
+		<button
+			class="favorite-button"
+			class:is-favorite={isFavorite}
+			onclick={handleFavoriteClick}
+			aria-label={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
+		>
+			{isFavorite ? '⭐' : '☆'}
+		</button>
+
+		<!-- Action buttons (show on hover) -->
+		<div class="action-buttons">
+			<button
+				class="action-button delete-button"
+				onclick={(e) => handleActionClick('delete', e)}
+				aria-label="Delete sequence"
+				title="Delete sequence"
+			>
+				🗑️
+			</button>
+			<button
+				class="action-button edit-button"
+				onclick={(e) => handleActionClick('edit', e)}
+				aria-label="Edit sequence"
+				title="Edit sequence"
+			>
+				✏️
+			</button>
+		</div>
 
 		<!-- Difficulty indicator -->
 		<div class="difficulty-indicator" style="background-color: {difficultyColor}">
@@ -296,20 +340,83 @@ metadata, and responsive design following the desktop app's approach.
 		word-break: break-all;
 	}
 
-	/* Indicators */
-	.favorite-indicator {
+	/* Indicators and action buttons */
+	.favorite-button {
 		position: absolute;
 		top: 8px;
 		right: 8px;
-		font-size: 1rem;
+		font-size: 1.25rem;
 		background: rgba(255, 255, 255, 0.9);
+		border: none;
 		border-radius: 50%;
-		width: 24px;
-		height: 24px;
+		width: 32px;
+		height: 32px;
 		display: flex;
 		align-items: center;
 		justify-content: center;
 		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+		cursor: pointer;
+		transition: all 0.2s ease;
+		z-index: 10;
+	}
+
+	.favorite-button:hover {
+		background: rgba(255, 255, 255, 1);
+		transform: scale(1.1);
+		box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+	}
+
+	.favorite-button.is-favorite {
+		background: rgba(255, 193, 7, 0.9);
+		color: #fff;
+	}
+
+	.favorite-button.is-favorite:hover {
+		background: rgba(255, 193, 7, 1);
+	}
+
+	.action-buttons {
+		position: absolute;
+		top: 8px;
+		left: 8px;
+		display: flex;
+		flex-direction: column;
+		gap: 4px;
+		opacity: 0;
+		transition: opacity 0.2s ease;
+		z-index: 10;
+	}
+
+	.sequence-thumbnail:hover .action-buttons {
+		opacity: 1;
+	}
+
+	.action-button {
+		background: rgba(0, 0, 0, 0.7);
+		border: none;
+		border-radius: 50%;
+		width: 28px;
+		height: 28px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		font-size: 0.875rem;
+		cursor: pointer;
+		transition: all 0.2s ease;
+		color: white;
+	}
+
+	.action-button:hover {
+		transform: scale(1.1);
+		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+	}
+
+	.delete-button:hover {
+		background: rgba(220, 38, 38, 0.9);
+	}
+
+	.edit-button:hover {
+		background: rgba(59, 130, 246, 0.9);
 	}
 
 	.difficulty-indicator {

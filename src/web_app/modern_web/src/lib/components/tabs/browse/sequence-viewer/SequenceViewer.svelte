@@ -1,6 +1,8 @@
 <!-- SequenceViewer.svelte - Main coordinator component using pure Svelte 5 runes -->
 <script lang="ts">
 	import type { SequenceData } from '$domain/SequenceData';
+	import type { BrowseSequenceMetadata } from '$lib/domain/browse';
+	import { ThumbnailService } from '$lib/services/implementations/ThumbnailService';
 	import { slide } from 'svelte/transition';
 	import SequenceActions from './SequenceActions.svelte';
 	import SequenceDetails from './SequenceDetails.svelte';
@@ -9,12 +11,15 @@
 	import SequenceViewerHeader from './SequenceViewerHeader.svelte';
 
 	interface Props {
-		sequence?: (SequenceData & { variations?: unknown[] }) | null;
+		sequence?: (SequenceData & BrowseSequenceMetadata & { variations?: unknown[] }) | null;
 		onBackToBrowser?: () => void;
 		onSequenceAction?: (action: string, sequence: SequenceData) => void;
 	}
 
 	let { sequence = null, onBackToBrowser, onSequenceAction }: Props = $props();
+
+	// Thumbnail service for generating image URLs
+	const thumbnailService = new ThumbnailService();
 
 	// Variation state management with runes
 	let currentVariationIndex = $state(0);
@@ -26,19 +31,47 @@
 		}
 	});
 
-	// Derived current variation
-	let currentVariation = $derived(
-		(sequence?.variations?.[currentVariationIndex] as { imageUrl?: string } | undefined) ||
-			(sequence as { imageUrl?: string } | undefined)
-	);
+	// Derived current variation with proper image URL from thumbnails
+	let currentVariation = $derived.by(() => {
+		if (!sequence) return undefined;
+
+		// Check if sequence has variations with imageUrl (legacy format)
+		const legacyVariation = sequence?.variations?.[currentVariationIndex] as
+			| { imageUrl?: string }
+			| undefined;
+		if (legacyVariation?.imageUrl) {
+			return legacyVariation;
+		}
+
+		// Check if sequence has direct imageUrl (legacy format)
+		const legacySequence = sequence as { imageUrl?: string };
+		if (legacySequence.imageUrl) {
+			return { imageUrl: legacySequence.imageUrl };
+		}
+
+		// Use thumbnails array from BrowseSequenceMetadata (new format)
+		if (sequence.thumbnails && sequence.thumbnails.length > 0) {
+			const thumbnailPath =
+				sequence.thumbnails[currentVariationIndex] || sequence.thumbnails[0];
+			const imageUrl = thumbnailService.getThumbnailUrl(sequence.id, thumbnailPath);
+			return { imageUrl };
+		}
+
+		return undefined;
+	});
 
 	// Variation navigation handlers
 	function nextVariation() {
-		if (
-			sequence &&
-			sequence.variations &&
-			currentVariationIndex < sequence.variations.length - 1
-		) {
+		if (!sequence) return;
+
+		// Handle legacy variations
+		if (sequence.variations && currentVariationIndex < sequence.variations.length - 1) {
+			currentVariationIndex++;
+			return;
+		}
+
+		// Handle thumbnails array
+		if (sequence.thumbnails && currentVariationIndex < sequence.thumbnails.length - 1) {
 			currentVariationIndex++;
 		}
 	}

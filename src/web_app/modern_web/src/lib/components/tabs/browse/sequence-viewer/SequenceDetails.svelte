@@ -40,29 +40,6 @@
 		return labels[difficulty] || 'Unknown';
 	}
 
-	function formatDate(date: Date | string | undefined) {
-		if (!date) return 'Unknown';
-
-		try {
-			// Convert string to Date if needed
-			const dateObj = typeof date === 'string' ? new Date(date) : date;
-
-			// Check if it's a valid date
-			if (isNaN(dateObj.getTime())) {
-				return 'Unknown';
-			}
-
-			return dateObj.toLocaleDateString('en-US', {
-				year: 'numeric',
-				month: 'long',
-				day: 'numeric',
-			});
-		} catch (error) {
-			console.warn('Error formatting date:', date, error);
-			return 'Unknown';
-		}
-	}
-
 	// Check if sequence has tags
 	let hasTags = $derived(sequence?.tags && sequence.tags.length > 0);
 </script>
@@ -77,25 +54,8 @@
 		</div>
 
 		<div class="detail-item">
-			<span class="detail-label">Start Position</span>
-			<span class="detail-value">{sequence?.startPosition || 'Unknown'}</span>
-		</div>
-
-		<div class="detail-item">
-			<span class="detail-label">Grid Mode</span>
-			<span class="detail-value">{sequence?.gridMode || 'Diamond'}</span>
-		</div>
-
-		<div class="detail-item">
 			<span class="detail-label">Author</span>
 			<span class="detail-value">{sequence?.author || 'Unknown'}</span>
-		</div>
-
-		<div class="detail-item">
-			<span class="detail-label">Date Added</span>
-			<span class="detail-value"
-				>{sequence?.dateAdded ? formatDate(sequence.dateAdded) : 'Unknown'}</span
-			>
 		</div>
 
 		<div class="detail-item">

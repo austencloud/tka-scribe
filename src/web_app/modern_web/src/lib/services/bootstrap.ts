@@ -33,6 +33,12 @@ import type {
 	ISettingsService,
 	IStartPositionService,
 	IThumbnailService,
+	// Advanced browse services
+	IFavoritesService,
+	INavigationService,
+	ISectionService,
+	IFilterPersistenceService,
+	IDeleteService,
 } from './interfaces.js';
 
 // Import enhanced positioning service interfaces
@@ -72,6 +78,12 @@ import { SequenceService } from './implementations/SequenceService';
 import { SettingsService } from './implementations/SettingsService';
 import { StartPositionService } from './implementations/StartPositionService';
 import { ThumbnailService } from './implementations/ThumbnailService';
+// Advanced browse service implementations
+import { FavoritesService } from './implementations/FavoritesService';
+import { NavigationService } from './implementations/NavigationService';
+import { SectionService } from './implementations/SectionService';
+import { FilterPersistenceService } from './implementations/FilterPersistenceService';
+import { DeleteService } from './implementations/DeleteService';
 
 // Import enhanced positioning service implementations
 import { ArrowAdjustmentCalculator } from './positioning/arrows/calculation/ArrowAdjustmentCalculator';
@@ -206,6 +218,28 @@ const ISequenceIndexServiceInterface = createServiceInterface<ISequenceIndexServ
 	SequenceIndexService
 );
 
+// Advanced browse service interfaces
+const IFavoritesServiceInterface = createServiceInterface<IFavoritesService>(
+	'IFavoritesService',
+	FavoritesService
+);
+const INavigationServiceInterface = createServiceInterface<INavigationService>(
+	'INavigationService',
+	NavigationService
+);
+const ISectionServiceInterface = createServiceInterface<ISectionService>(
+	'ISectionService',
+	SectionService
+);
+const IFilterPersistenceServiceInterface = createServiceInterface<IFilterPersistenceService>(
+	'IFilterPersistenceService',
+	FilterPersistenceService
+);
+const IDeleteServiceInterface = createServiceInterface<IDeleteService>(
+	'IDeleteService',
+	DeleteService
+);
+
 // Enhanced positioning service interfaces
 const IArrowLocationCalculatorInterface = createServiceInterface<IArrowLocationCalculator>(
 	'IArrowLocationCalculator',
@@ -285,6 +319,13 @@ export async function createWebApplication(): Promise<ServiceContainer> {
 		container.registerSingletonClass(IBrowseServiceInterface);
 		container.registerSingletonClass(IThumbnailServiceInterface);
 		container.registerSingletonClass(ISequenceIndexServiceInterface);
+
+		// Register advanced browse services
+		container.registerSingletonClass(IFavoritesServiceInterface);
+		container.registerSingletonClass(INavigationServiceInterface);
+		container.registerSingletonClass(ISectionServiceInterface);
+		container.registerSingletonClass(IFilterPersistenceServiceInterface);
+		container.registerSingletonClass(IDeleteServiceInterface);
 
 		// Register placement services (no dependencies)
 		container.registerSingletonClass(IArrowPlacementDataServiceInterface);
@@ -461,6 +502,12 @@ const serviceInterfaceMap = new Map<string, ServiceInterface<unknown>>([
 	['IBrowseService', IBrowseServiceInterface],
 	['IThumbnailService', IThumbnailServiceInterface],
 	['ISequenceIndexService', ISequenceIndexServiceInterface],
+	// Advanced browse services
+	['IFavoritesService', IFavoritesServiceInterface],
+	['INavigationService', INavigationServiceInterface],
+	['ISectionService', ISectionServiceInterface],
+	['IFilterPersistenceService', IFilterPersistenceServiceInterface],
+	['IDeleteService', IDeleteServiceInterface],
 	// Enhanced positioning services
 	['IArrowLocationCalculator', IArrowLocationCalculatorInterface],
 	['IArrowRotationCalculator', IArrowRotationCalculatorInterface],

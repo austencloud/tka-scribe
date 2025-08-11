@@ -15,24 +15,52 @@ import type {
 	BrowseDisplayState,
 	BrowseLoadingState,
 	BrowseSequenceMetadata,
+	DeleteConfirmationData,
 	FilterType,
 	FilterValue,
 	IBrowseService,
+	IDeleteService,
+	// Advanced browse services
+	IFavoritesService,
+	IFilterPersistenceService,
+	INavigationService,
+	ISectionService,
 	ISequenceIndexService,
 	IThumbnailService,
+	NavigationSection,
+	SectionConfiguration,
+	SequenceSection,
 	SortMethod,
 } from '$lib/services/interfaces';
 
 export function createBrowseState(
 	browseService: IBrowseService,
 	thumbnailService: IThumbnailService,
-	sequenceIndexService: ISequenceIndexService
+	sequenceIndexService: ISequenceIndexService,
+	favoritesService: IFavoritesService,
+	navigationService: INavigationService,
+	_filterPersistenceService: IFilterPersistenceService,
+	sectionService: ISectionService,
+	deleteService: IDeleteService
 ) {
 	// ✅ PURE RUNES: Reactive state for UI
 	let allSequences = $state<BrowseSequenceMetadata[]>([]);
 	let filteredSequences = $state<BrowseSequenceMetadata[]>([]);
 	let displayedSequences = $state<BrowseSequenceMetadata[]>([]);
 	let selectedSequence = $state<BrowseSequenceMetadata | null>(null);
+
+	// Advanced browse state
+	let favorites = $state<Set<string>>(new Set());
+	let navigationSections = $state<NavigationSection[]>([]);
+	let sequenceSections = $state<SequenceSection[]>([]);
+	let sectionConfiguration = $state<SectionConfiguration>({
+		groupBy: 'letter',
+		sortMethod: SortMethodEnum.ALPHABETICAL,
+		showEmptySections: false,
+		expandedSections: new Set(['A', 'B', 'C']),
+	});
+	let deleteConfirmation = $state<DeleteConfirmationData | null>(null);
+	let showDeleteDialog = $state<boolean>(false);
 
 	// Navigation and filtering state
 	let currentFilter = $state<{ type: FilterType; value: FilterValue } | null>(null);
@@ -55,6 +83,19 @@ export function createBrowseState(
 		return groupSequencesBySection(displayedSequences, currentSort);
 	});
 
+	// Advanced derived values
+	const favoritesCount = $derived(favorites.size);
+	const hasNavigationSections = $derived(navigationSections.length > 0);
+	const hasSequenceSections = $derived(sequenceSections.length > 0);
+	const sectionStatistics = $derived(() => {
+		if (sequenceSections.length === 0) return null;
+		return {
+			totalSections: sequenceSections.length,
+			totalSequences: sequenceSections.reduce((sum, section) => sum + section.count, 0),
+			expandedSections: sequenceSections.filter((section) => section.isExpanded).length,
+		};
+	});
+
 	// ✅ RUNES METHODS: UI state management that delegates to services
 	async function loadAllSequences() {
 		try {
@@ -69,6 +110,11 @@ export function createBrowseState(
 			allSequences = sequences;
 			filteredSequences = sequences;
 			displayedSequences = sequences;
+
+			// Load favorites and generate navigation sections
+			await loadFavorites();
+			await generateNavigationSections();
+			await generateSequenceSections();
 
 			loadingState.isLoading = false;
 			loadingState.loadedCount = sequences.length;
@@ -190,7 +236,13 @@ export function createBrowseState(
 					}))
 				);
 
-			await thumbnailService.preloadThumbnails(thumbnailsToPreload);
+			// Preload thumbnails individually
+			for (const thumbnail of thumbnailsToPreload) {
+				await thumbnailService.preloadThumbnail(
+					thumbnail.sequenceId,
+					thumbnail.thumbnailPath
+				);
+			}
 		} catch (error) {
 			console.warn('Failed to preload thumbnails:', error);
 		}
@@ -241,15 +293,141 @@ export function createBrowseState(
 				return sequence.difficultyLevel || 'Unknown';
 			case SortMethodEnum.AUTHOR:
 				return sequence.author || 'Unknown';
-			case SortMethodEnum.SEQUENCE_LENGTH:
+			case SortMethodEnum.SEQUENCE_LENGTH: {
 				const length = sequence.sequenceLength || 0;
 				if (length <= 4) return '3-4 beats';
 				if (length <= 6) return '5-6 beats';
 				if (length <= 8) return '7-8 beats';
 				return '9+ beats';
+			}
 			default:
 				return 'All';
 		}
+	}
+
+	// Advanced browse methods
+	async function loadFavorites() {
+		try {
+			const favoriteIds = await favoritesService.getFavorites();
+			favorites = new Set(favoriteIds);
+		} catch (error) {
+			console.warn('Failed to load favorites:', error);
+		}
+	}
+
+	async function toggleFavorite(sequenceId: string) {
+		try {
+			await favoritesService.toggleFavorite(sequenceId);
+			if (favorites.has(sequenceId)) {
+				favorites.delete(sequenceId);
+			} else {
+				favorites.add(sequenceId);
+			}
+			// Update navigation sections
+			await generateNavigationSections();
+		} catch (error) {
+			console.error('Failed to toggle favorite:', error);
+		}
+	}
+
+	async function generateNavigationSections() {
+		try {
+			const sections = await navigationService.generateNavigationSections(
+				allSequences,
+				Array.from(favorites)
+			);
+			navigationSections = sections;
+		} catch (error) {
+			console.error('Failed to generate navigation sections:', error);
+		}
+	}
+
+	async function generateSequenceSections() {
+		try {
+			const sections = await sectionService.organizeSections(
+				displayedSequences,
+				sectionConfiguration
+			);
+			sequenceSections = sections;
+		} catch (error) {
+			console.error('Failed to generate sequence sections:', error);
+		}
+	}
+
+	function toggleNavigationSection(sectionId: string) {
+		navigationSections = navigationService.toggleSectionExpansion(
+			sectionId,
+			navigationSections
+		);
+	}
+
+	function setActiveNavigationItem(sectionId: string, itemId: string) {
+		navigationSections = navigationService.setActiveItem(sectionId, itemId, navigationSections);
+	}
+
+	function toggleSequenceSection(sectionId: string) {
+		sequenceSections = sectionService.toggleSectionExpansion(sectionId, sequenceSections);
+	}
+
+	async function updateSectionConfiguration(updates: Partial<SectionConfiguration>) {
+		sectionConfiguration = sectionService.updateSectionConfiguration(
+			sectionConfiguration,
+			updates
+		);
+		await generateSequenceSections();
+	}
+
+	async function prepareDeleteSequence(sequence: BrowseSequenceMetadata) {
+		try {
+			const confirmationData = await deleteService.prepareDeleteConfirmation(
+				sequence,
+				allSequences
+			);
+			deleteConfirmation = confirmationData;
+			showDeleteDialog = true;
+		} catch (error) {
+			console.error('Failed to prepare delete confirmation:', error);
+		}
+	}
+
+	async function confirmDeleteSequence() {
+		if (!deleteConfirmation) return;
+
+		try {
+			const result = await deleteService.deleteSequence(
+				deleteConfirmation.sequence.id,
+				allSequences
+			);
+
+			if (result.success && deleteConfirmation) {
+				const deletedSequenceId = deleteConfirmation.sequence.id;
+				// Remove from sequences
+				allSequences = allSequences.filter((seq) => seq.id !== deletedSequenceId);
+				filteredSequences = filteredSequences.filter((seq) => seq.id !== deletedSequenceId);
+				displayedSequences = displayedSequences.filter(
+					(seq) => seq.id !== deletedSequenceId
+				);
+
+				// Clear selection if deleted sequence was selected
+				if (selectedSequence?.id === deletedSequenceId) {
+					selectedSequence = null;
+				}
+
+				// Update navigation and sections
+				await generateNavigationSections();
+				await generateSequenceSections();
+			}
+
+			deleteConfirmation = null;
+			showDeleteDialog = false;
+		} catch (error) {
+			console.error('Failed to delete sequence:', error);
+		}
+	}
+
+	function cancelDeleteSequence() {
+		deleteConfirmation = null;
+		showDeleteDialog = false;
 	}
 
 	return {
@@ -276,6 +454,26 @@ export function createBrowseState(
 			return searchQuery;
 		},
 
+		// Advanced state getters
+		get favorites() {
+			return favorites;
+		},
+		get navigationSections() {
+			return navigationSections;
+		},
+		get sequenceSections() {
+			return sequenceSections;
+		},
+		get sectionConfiguration() {
+			return sectionConfiguration;
+		},
+		get deleteConfirmation() {
+			return deleteConfirmation;
+		},
+		get showDeleteDialog() {
+			return showDeleteDialog;
+		},
+
 		// ✅ DERIVED STATE GETTERS
 		get isLoading() {
 			return isLoading;
@@ -299,6 +497,20 @@ export function createBrowseState(
 			return displayState;
 		},
 
+		// Advanced derived getters
+		get favoritesCount() {
+			return favoritesCount;
+		},
+		get hasNavigationSections() {
+			return hasNavigationSections;
+		},
+		get hasSequenceSections() {
+			return hasSequenceSections;
+		},
+		get sectionStatistics() {
+			return sectionStatistics;
+		},
+
 		// ✅ ACTION METHODS
 		loadAllSequences,
 		applyFilter,
@@ -310,6 +522,19 @@ export function createBrowseState(
 		getThumbnailUrl,
 		updateDisplaySettings,
 		clearError,
+
+		// Advanced action methods
+		loadFavorites,
+		toggleFavorite,
+		generateNavigationSections,
+		generateSequenceSections,
+		toggleNavigationSection,
+		setActiveNavigationItem,
+		toggleSequenceSection,
+		updateSectionConfiguration,
+		prepareDeleteSequence,
+		confirmDeleteSequence,
+		cancelDeleteSequence,
 	};
 }
 

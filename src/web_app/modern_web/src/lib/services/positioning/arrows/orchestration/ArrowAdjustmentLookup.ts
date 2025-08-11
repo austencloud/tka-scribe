@@ -58,12 +58,12 @@ export class ArrowAdjustmentLookup {
 		this.attributeKeyService = attributeKeyService;
 	}
 
-	getBaseAdjustment(
+	async getBaseAdjustment(
 		pictographData: PictographData,
 		motionData: MotionData,
 		letter: string,
 		arrowColor?: string
-	): Point {
+	): Promise<Point> {
 		/**
 		 * Get base adjustment using streamlined lookup logic.
 		 *
@@ -107,7 +107,10 @@ export class ArrowAdjustmentLookup {
 			}
 
 			// STEP 2: Fall back to default calculation
-			const defaultAdjustment = this.calculateDefaultAdjustment(motionData, pictographData);
+			const defaultAdjustment = await this.calculateDefaultAdjustment(
+				motionData,
+				pictographData
+			);
 			console.debug(
 				`Using default adjustment: (${defaultAdjustment.x.toFixed(1)}, ${defaultAdjustment.y.toFixed(1)})`
 			);
@@ -192,11 +195,11 @@ export class ArrowAdjustmentLookup {
 		}
 	}
 
-	private calculateDefaultAdjustment(
+	private async calculateDefaultAdjustment(
 		motionData: MotionData,
 		pictographData: PictographData,
 		gridMode: string = 'diamond'
-	): Point {
+	): Promise<Point> {
 		/**
 		 * Calculate default adjustment using placement key and motion type.
 		 *
@@ -215,10 +218,11 @@ export class ArrowAdjustmentLookup {
 			);
 
 			// Get adjustment from default placement service
-			const adjustmentPoint = this.defaultPlacementService.getDefaultAdjustment(
-				motionData,
-				gridMode,
-				placementKey
+			const adjustmentPoint = await this.defaultPlacementService.getDefaultAdjustment(
+				placementKey,
+				motionData.turns || 0,
+				motionData.motion_type as any,
+				gridMode as any
 			);
 
 			return adjustmentPoint;

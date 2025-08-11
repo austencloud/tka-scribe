@@ -50,7 +50,7 @@ export class ArrowRenderer implements IArrowRenderer {
 
       // Get the appropriate arrow SVG asset
       const assetPath = this.getArrowAssetPath(arrowData.motionData);
-      let arrowElement = await this.assetManager.loadSVGAsset(assetPath);
+      const arrowElement = await this.assetManager.loadSVGAsset(assetPath);
 
       // Apply color transformation
       this.applyColorTransformation(arrowElement, arrowData.color);

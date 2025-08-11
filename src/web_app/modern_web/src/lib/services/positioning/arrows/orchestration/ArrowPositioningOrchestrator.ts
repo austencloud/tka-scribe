@@ -20,7 +20,6 @@ import type {
 export class ArrowPositioningOrchestrator implements IArrowPositioningOrchestrator {
 	private locationCalculator: IArrowLocationCalculator;
 	private rotationCalculator: IArrowRotationCalculator;
-	private adjustmentCalculator: IArrowAdjustmentCalculator;
 	private coordinateSystem: IArrowCoordinateSystemService;
 
 	private mirrorConditions = {
@@ -31,12 +30,11 @@ export class ArrowPositioningOrchestrator implements IArrowPositioningOrchestrat
 	constructor(
 		locationCalculator: IArrowLocationCalculator,
 		rotationCalculator: IArrowRotationCalculator,
-		adjustmentCalculator: IArrowAdjustmentCalculator,
+		_adjustmentCalculator: IArrowAdjustmentCalculator,
 		coordinateSystem: IArrowCoordinateSystemService
 	) {
 		this.locationCalculator = locationCalculator;
 		this.rotationCalculator = rotationCalculator;
-		this.adjustmentCalculator = adjustmentCalculator;
 		this.coordinateSystem = coordinateSystem;
 	}
 
@@ -53,8 +51,6 @@ export class ArrowPositioningOrchestrator implements IArrowPositioningOrchestrat
 			const center = this.coordinateSystem.getSceneCenter();
 			return [center.x, center.y, 0.0];
 		}
-
-		const letter = pictographData.letter || '';
 
 		const location = this.locationCalculator.calculateLocation(motion, pictographData);
 		let initialPosition = this.coordinateSystem.getInitialPosition(motion, location);
@@ -119,15 +115,11 @@ export class ArrowPositioningOrchestrator implements IArrowPositioningOrchestrat
 		const propRotDir = (motion.prop_rot_dir || '').toLowerCase();
 
 		if (motionType === 'anti') {
-			return (
-				this.mirrorConditions.anti[propRotDir as keyof typeof this.mirrorConditions.anti] ||
-				false
-			);
+			const antiConditions = this.mirrorConditions.anti;
+			return antiConditions[propRotDir as keyof typeof antiConditions] || false;
 		}
-		return (
-			this.mirrorConditions.other[propRotDir as keyof typeof this.mirrorConditions.other] ||
-			false
-		);
+		const otherConditions = this.mirrorConditions.other;
+		return otherConditions[propRotDir as keyof typeof otherConditions] || false;
 	}
 
 	applyMirrorTransform(arrowItem: HTMLElement | SVGElement, shouldMirror: boolean): void {

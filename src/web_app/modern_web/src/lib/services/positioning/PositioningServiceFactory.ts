@@ -5,6 +5,7 @@
  * Provides a centralized way to create the complete positioning pipeline.
  */
 
+import { GridMode, MotionType } from '$lib/domain/enums';
 import {
 	ArrowAdjustmentCalculator,
 	ArrowAdjustmentLookup,
@@ -42,11 +43,11 @@ export class PositioningServiceFactory implements IPositioningServiceFactory {
 	private static instance: PositioningServiceFactory;
 
 	// Singleton services (shared across all arrows)
-	private dashLocationCalculator?: DashLocationCalculator;
-	private coordinateSystemService?: IArrowCoordinateSystemService;
-	private specialPlacementService?: SpecialPlacementService;
-	private defaultPlacementService?: DefaultPlacementService;
-	private directionalTupleProcessor?: IDirectionalTupleProcessor;
+	private dashLocationCalculator: DashLocationCalculator | undefined;
+	private coordinateSystemService: IArrowCoordinateSystemService | undefined;
+	private specialPlacementService: SpecialPlacementService | undefined;
+	private defaultPlacementService: DefaultPlacementService | undefined;
+	private directionalTupleProcessor: IDirectionalTupleProcessor | undefined;
 
 	/**
 	 * Get the singleton instance of the positioning service factory.
@@ -211,7 +212,10 @@ export class PositioningServiceFactory implements IPositioningServiceFactory {
 		// Ensure placement data is loaded
 		if (!this.defaultPlacementService.isLoaded()) {
 			try {
-				await this.defaultPlacementService.debugAvailableKeys('pro', 'diamond');
+				await this.defaultPlacementService.debugAvailableKeys(
+					MotionType.PRO,
+					GridMode.DIAMOND
+				);
 				console.log('✅ Positioning services pre-warmed successfully');
 			} catch (error) {
 				console.warn('⚠️ Some positioning services failed to pre-warm:', error);

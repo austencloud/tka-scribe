@@ -8,14 +8,54 @@
 import type { ArrowData, BeatData, MotionData, PictographData, SequenceData } from '$lib/domain';
 import { GridMode as DomainGridMode } from '$lib/domain';
 import type {
+	BrowseDisplayState,
+	BrowseLoadingState,
 	BrowseSequenceMetadata,
 	FilterType,
 	FilterValue,
 	SortMethod,
 } from '$lib/domain/browse';
 
+// ============================================================================
+// ADVANCED BROWSE SERVICES
+// ============================================================================
+
+// Re-export types from service implementations
+export type {
+	DeleteConfirmationData,
+	DeleteResult,
+	IDeleteService,
+} from './implementations/DeleteService';
+export type { IFavoritesService } from './implementations/FavoritesService';
+export type {
+	BrowseState,
+	FilterState,
+	IFilterPersistenceService,
+} from './implementations/FilterPersistenceService';
+export type {
+	INavigationService,
+	NavigationItem,
+	NavigationSection,
+} from './implementations/NavigationService';
+export type {
+	ISectionService,
+	SectionConfiguration,
+	SequenceSection,
+} from './implementations/SectionService';
+
 // Re-export domain types for convenience
-export type { BeatData, MotionData, PictographData, SequenceData };
+export type {
+	BeatData,
+	BrowseDisplayState,
+	BrowseLoadingState,
+	BrowseSequenceMetadata,
+	FilterType,
+	FilterValue,
+	MotionData,
+	PictographData,
+	SequenceData,
+	SortMethod,
+};
 
 // ============================================================================
 // SEQUENCE SERVICES

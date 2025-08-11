@@ -10,7 +10,7 @@ const CACHE_METADATA_PATH = path.join(__dirname, '../static/browse_thumbnails/ca
 // Extract word from image path
 function extractWordFromPath(imagePath) {
 	// Extract from path like "F:\CODE\TKA\src\data\dictionary\WΩ-Z-θ\WΩ-Z-θ_ver1.png"
-	const match = imagePath.match(/dictionary[\\\/]([^\\\/]+)[\\\/]/);
+	const match = imagePath.match(/dictionary[\\/]([^\\/]+)[\\/]/);
 	return match ? match[1] : null;
 }
 

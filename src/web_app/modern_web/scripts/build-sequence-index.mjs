@@ -15,7 +15,7 @@ const AUTHORS = ['TKA Dictionary', 'Expert User', 'Advanced Practitioner', 'Mast
 
 // Extract word from image path
 function extractWordFromPath(imagePath) {
-	const match = imagePath.match(/dictionary[\\\/]([^\\\/]+)[\\\/]/);
+	const match = imagePath.match(/dictionary[\\/]([^\\/]+)[\\/]/);
 	return match ? match[1] : null;
 }
 

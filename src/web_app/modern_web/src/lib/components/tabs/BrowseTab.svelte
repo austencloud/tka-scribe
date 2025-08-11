@@ -10,7 +10,9 @@
 	import { createBrowseState } from '$lib/state/browse-state.svelte';
 	import { onMount } from 'svelte';
 	import { fade, slide } from 'svelte/transition';
+	import DeleteConfirmationDialog from './browse/DeleteConfirmationDialog.svelte';
 	import FilterSelectionPanel from './browse/FilterSelectionPanel.svelte';
+	import NavigationSidebar from './browse/NavigationSidebar.svelte';
 	import SequenceBrowserPanel from './browse/sequence-browser/SequenceBrowserPanel.svelte';
 	import { SequenceViewer } from './browse/sequence-viewer';
 
@@ -18,9 +20,24 @@
 	const browseService = resolve('IBrowseService') as IBrowseService;
 	const thumbnailService = resolve('IThumbnailService') as IThumbnailService;
 	const sequenceIndexService = resolve('ISequenceIndexService') as ISequenceIndexService;
+	// Advanced browse services
+	const favoritesService = resolve('IFavoritesService');
+	const navigationService = resolve('INavigationService');
+	const filterPersistenceService = resolve('IFilterPersistenceService');
+	const sectionService = resolve('ISectionService');
+	const deleteService = resolve('IDeleteService');
 
 	// ✅ CREATE BROWSE STATE: Runes-based reactive state
-	const browseState = createBrowseState(browseService, thumbnailService, sequenceIndexService);
+	const browseState = createBrowseState(
+		browseService,
+		thumbnailService,
+		sequenceIndexService,
+		favoritesService,
+		navigationService,
+		filterPersistenceService,
+		sectionService,
+		deleteService
+	);
 
 	// ✅ PURE RUNES: Local UI state
 	let currentPanelIndex = $state(0); // 0 = filter selection, 1 = sequence browser
@@ -32,6 +49,12 @@
 	let hasError = $derived(browseState.hasError);
 	let sequences = $derived(browseState.displayedSequences);
 	let navigationMode = $derived(browseState.navigationMode);
+
+	// Advanced derived values
+	let navigationSections = $derived(browseState.navigationSections);
+	let favorites = $derived(browseState.favorites);
+	let deleteConfirmation = $derived(browseState.deleteConfirmation);
+	let showDeleteDialog = $derived(browseState.showDeleteDialog);
 
 	// ✅ EFFECT: Sync navigation mode with panel index
 	$effect(() => {
@@ -85,12 +108,13 @@
 				console.log('Edit sequence:', sequence.id);
 				break;
 			case 'save':
-				// TODO: Save/favorite sequence
-				console.log('Save sequence:', sequence.id);
+			case 'favorite':
+				// Toggle favorite status
+				browseState.toggleFavorite(sequence.id);
 				break;
 			case 'delete':
-				// TODO: Delete sequence (with confirmation)
-				console.log('Delete sequence:', sequence.id);
+				// Prepare delete confirmation
+				browseState.prepareDeleteSequence(sequence);
 				break;
 			case 'fullscreen':
 				// TODO: Open sequence in fullscreen viewer
@@ -99,6 +123,31 @@
 			default:
 				console.warn('Unknown action:', action);
 		}
+	}
+
+	// Navigation sidebar handlers
+	function handleNavigationSectionToggle(sectionId: string) {
+		browseState.toggleNavigationSection(sectionId);
+	}
+
+	function handleNavigationItemClick(sectionId: string, itemId: string) {
+		browseState.setActiveNavigationItem(sectionId, itemId);
+		// Apply filter based on navigation selection
+		// TODO: Implement navigation-based filtering
+	}
+
+	// Section handlers (commented out - not currently used)
+	// function handleSectionToggle(sectionId: string) {
+	// 	browseState.toggleSequenceSection(sectionId);
+	// }
+
+	// Delete confirmation handlers
+	function handleConfirmDelete() {
+		browseState.confirmDeleteSequence();
+	}
+
+	function handleCancelDelete() {
+		browseState.cancelDeleteSequence();
 	}
 
 	// Handle errors
@@ -118,10 +167,19 @@
 		</div>
 	{/if}
 
-	<!-- Main horizontal layout (2:1 ratio) -->
+	<!-- Main three-column layout: Navigation | Panels | Viewer -->
 	<div class="main-layout">
-		<!-- Left side - Stacked panels (2/3 width) -->
-		<div class="left-panel-stack">
+		<!-- Navigation Sidebar (left) -->
+		<div class="navigation-sidebar-container">
+			<NavigationSidebar
+				sections={navigationSections}
+				onSectionToggle={handleNavigationSectionToggle}
+				onItemClick={handleNavigationItemClick}
+			/>
+		</div>
+
+		<!-- Center - Stacked panels (Filter/Browser) -->
+		<div class="center-panel-stack">
 			{#if currentPanelIndex === 0}
 				<!-- Filter Selection Panel -->
 				<div class="panel-container" data-panel="filter-selection">
@@ -134,14 +192,16 @@
 						filter={selectedFilter}
 						{sequences}
 						{isLoading}
+						{favorites}
 						onSequenceSelected={handleSequenceSelected}
 						onBackToFilters={handleBackToFilters}
+						onFavoriteToggle={browseState.toggleFavorite}
 					/>
 				</div>
 			{/if}
 		</div>
 
-		<!-- Right side - Sequence Viewer Panel (1/3 width) -->
+		<!-- Right side - Sequence Viewer Panel -->
 		<div class="right-panel">
 			<SequenceViewer
 				sequence={selectedSequence}
@@ -161,6 +221,14 @@
 			</div>
 		</div>
 	{/if}
+
+	<!-- Delete Confirmation Dialog -->
+	<DeleteConfirmationDialog
+		confirmationData={deleteConfirmation}
+		show={showDeleteDialog}
+		onConfirm={handleConfirmDelete}
+		onCancel={handleCancelDelete}
+	/>
 </div>
 
 <style>
@@ -220,8 +288,18 @@
 		overflow: hidden;
 	}
 
-	.left-panel-stack {
-		flex: 2;
+	/* Three-column layout */
+	.navigation-sidebar-container {
+		flex: 0 0 250px; /* Fixed width for navigation */
+		display: flex;
+		flex-direction: column;
+		overflow: hidden;
+		border-right: var(--glass-border);
+		background: rgba(255, 255, 255, 0.05);
+	}
+
+	.center-panel-stack {
+		flex: 1; /* Flexible width for main content */
 		display: flex;
 		flex-direction: column;
 		overflow: hidden;
@@ -229,7 +307,7 @@
 	}
 
 	.right-panel {
-		flex: 1;
+		flex: 0 0 350px; /* Fixed width for viewer */
 		display: flex;
 		flex-direction: column;
 		overflow: hidden;
@@ -311,17 +389,35 @@
 	}
 
 	/* Responsive design */
+	@media (max-width: 1200px) {
+		.navigation-sidebar-container {
+			flex: 0 0 200px; /* Smaller navigation on tablets */
+		}
+
+		.right-panel {
+			flex: 0 0 300px; /* Smaller viewer on tablets */
+		}
+	}
+
 	@media (max-width: 1024px) {
 		.main-layout {
 			flex-direction: column;
 		}
 
-		.left-panel-stack {
+		.navigation-sidebar-container {
+			flex: 0 0 auto;
+			max-height: 200px;
+			border-right: none;
+			border-bottom: var(--glass-border);
+		}
+
+		.center-panel-stack {
 			flex: 1;
 		}
 
 		.right-panel {
-			flex: 1;
+			flex: 0 0 auto;
+			max-height: 400px;
 			border-left: none;
 			border-top: var(--glass-border);
 		}

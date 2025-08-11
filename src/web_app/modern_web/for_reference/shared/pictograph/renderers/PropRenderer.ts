@@ -49,7 +49,7 @@ export class PropRenderer implements IPropRenderer {
 
       // Get the appropriate prop SVG asset
       const assetPath = this.getPropAssetPath(propData.propType);
-      let propElement = await this.assetManager.loadSVGAsset(assetPath);
+      const propElement = await this.assetManager.loadSVGAsset(assetPath);
 
       // Apply color transformation
       this.applyPropColor(propElement, propData.color);
