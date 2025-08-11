@@ -43,7 +43,7 @@
 
 	/* Three-column layout */
 	.navigation-sidebar-container {
-		flex: 0 0 250px; /* Fixed width for navigation */
+		flex: 0 0 300px; /* Fixed width for navigation - increased to accommodate content */
 		display: flex;
 		flex-direction: column;
 		overflow: hidden;
@@ -76,7 +76,7 @@
 	/* Responsive design */
 	@media (max-width: 1200px) {
 		.navigation-sidebar-container {
-			flex: 0 0 200px; /* Smaller navigation on tablets */
+			flex: 0 0 260px; /* Smaller navigation on tablets - still accommodates content */
 		}
 
 		.right-panel {

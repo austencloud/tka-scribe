@@ -6,7 +6,7 @@
  */
 
 import type { ArrowData, MotionData, PictographData } from '$lib/domain';
-import type { IArrowPositioningOrchestrator } from '$lib/services/positioning/interfaces';
+import type { IArrowPositioningOrchestrator } from '$lib/services/positioning';
 import {
 	createPositioningOrchestrator,
 	getPositioningServiceFactory,

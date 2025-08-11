@@ -30,7 +30,7 @@ import type {
 	IArrowRotationCalculator,
 	IDirectionalTupleProcessor,
 	IPositioningServiceFactory,
-} from '$services/positioning/interfaces';
+} from '$services/positioning';
 
 export class PositioningServiceFactory implements IPositioningServiceFactory {
 	/**

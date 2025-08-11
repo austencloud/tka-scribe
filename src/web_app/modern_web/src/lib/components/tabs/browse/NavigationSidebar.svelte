@@ -160,7 +160,7 @@ Follows Svelte 5 runes + microservices architecture.
 		display: flex;
 		flex-direction: column;
 		height: 100%;
-		width: 280px;
+		width: 100%; /* Use full container width instead of fixed 280px */
 		background: rgba(255, 255, 255, 0.02);
 		border-right: var(--glass-border);
 		backdrop-filter: blur(10px);
@@ -453,7 +453,7 @@ Follows Svelte 5 runes + microservices architecture.
 	/* Responsive Design */
 	@media (max-width: 1024px) {
 		.navigation-sidebar {
-			width: 240px;
+			width: 100%; /* Use full container width on smaller screens too */
 		}
 
 		.sidebar-header {

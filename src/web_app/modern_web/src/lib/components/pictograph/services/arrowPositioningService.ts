@@ -8,7 +8,7 @@
 import type { ArrowData, MotionData, PictographData } from '$lib/domain';
 import { ArrowType } from '$lib/domain';
 import { getPositioningServiceFactory } from '$lib/services/positioning/PositioningServiceFactory';
-import type { IArrowPositioningOrchestrator } from '$lib/services/positioning/interfaces';
+import type { IArrowPositioningOrchestrator } from '$lib/services/positioning';
 
 export interface ArrowPositionResult {
 	x: number;

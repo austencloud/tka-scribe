@@ -2,7 +2,7 @@
 	import type { BrowseSequenceMetadata } from '$lib/domain/browse';
 	import type { IThumbnailService } from '$lib/services/interfaces';
 	import { slide } from 'svelte/transition';
-	import SequenceThumbnail from '../SequenceThumbnail.svelte';
+	import SequenceThumbnail from '../sequence-thumbnail/SequenceThumbnail.svelte';
 
 	// ✅ PURE RUNES: Props using modern Svelte 5 runes
 	const {

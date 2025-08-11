@@ -54,7 +54,7 @@ import type {
 	IDirectionalTupleProcessor,
 	IPositioningServiceFactory,
 	IQuadrantIndexCalculator,
-} from './positioning/interfaces';
+} from './positioning';
 
 // Import service implementations
 import { ApplicationInitializationService } from './implementations/ApplicationInitializationService';
