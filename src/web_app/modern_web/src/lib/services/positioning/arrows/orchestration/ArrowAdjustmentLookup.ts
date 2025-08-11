@@ -94,7 +94,7 @@ export class ArrowAdjustmentLookup {
 			);
 
 			try {
-				const specialAdjustment = this.lookupSpecialPlacement(
+				const specialAdjustment = await this.lookupSpecialPlacement(
 					motionData,
 					pictographData,
 					arrowColor
@@ -161,11 +161,11 @@ export class ArrowAdjustmentLookup {
 		}
 	}
 
-	private lookupSpecialPlacement(
+	private async lookupSpecialPlacement(
 		motionData: MotionData,
 		pictographData: PictographData,
 		arrowColor?: string
-	): Point {
+	): Promise<Point> {
 		/**
 		 * Look up special placement using exact legacy logic.
 		 *
@@ -173,7 +173,7 @@ export class ArrowAdjustmentLookup {
 		 */
 		try {
 			// This should return stored adjustment values if they exist
-			const adjustment = this.specialPlacementService.getSpecialAdjustment(
+			const adjustment = await this.specialPlacementService.getSpecialAdjustment(
 				motionData,
 				pictographData,
 				arrowColor
@@ -205,8 +205,14 @@ export class ArrowAdjustmentLookup {
 		 * Returns Point adjustment.
 		 */
 		try {
-			// Get default placements for the grid mode and motion type
-			const defaultPlacements: Record<string, unknown> = {}; // Would be loaded from data
+			// Build a map of available placement keys for the motion/grid
+			const keys = await this.defaultPlacementService.getAvailablePlacementKeys(
+				motionData.motion_type as MotionType,
+				pictographData.grid_mode as GridMode
+			);
+			const defaultPlacements: Record<string, unknown> = Object.fromEntries(
+				(keys || []).map((k) => [k, true])
+			);
 
 			// Generate placement key for default lookup
 			const placementKey = this.placementKeyService.generatePlacementKey(

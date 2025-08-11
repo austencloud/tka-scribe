@@ -43,98 +43,122 @@ export class DirectionalTupleCalculator implements IDirectionalTupleCalculator {
 	 * Calculator for directional tuples used in arrow positioning.
 	 */
 
-	calculateDirectionalTuple(_motion: MotionData, location: Location): [number, number] {
+	calculateDirectionalTuple(_motion: MotionData, _location: Location): [number, number] {
 		/**
-		 * Calculate directional tuple for arrow positioning.
-		 *
-		 * Args:
-		 *     motion: Motion data containing type and rotation direction
-		 *     location: Arrow location
-		 *
-		 * Returns:
-		 *     Tuple of [x_offset, y_offset] directional adjustments
+		 * Legacy parity: Additional directional tuple is not separately added.
+		 * The selection is made directly from the generated 4-tuples.
 		 */
-		// This is a simplified implementation
-		// In the full version, this would use complex directional calculations
-		const motionType = _motion.motion_type?.toLowerCase();
-		const rotationDir = _motion.prop_rot_dir?.toLowerCase();
-
-		// Basic directional adjustments based on motion type and rotation
-		let baseX = 0;
-		let baseY = 0;
-
-		if (motionType === 'pro') {
-			if (rotationDir === 'clockwise' || rotationDir === 'cw') {
-				baseX = 1;
-				baseY = 0;
-			} else {
-				baseX = -1;
-				baseY = 0;
-			}
-		} else if (motionType === 'anti') {
-			if (rotationDir === 'clockwise' || rotationDir === 'cw') {
-				baseX = -1;
-				baseY = 0;
-			} else {
-				baseX = 1;
-				baseY = 0;
-			}
-		}
-
-		// Apply location-based adjustments
-		const locationMultiplier = this.getLocationMultiplier(location);
-		return [baseX * locationMultiplier.x, baseY * locationMultiplier.y];
+		return [0, 0];
 	}
 
 	generateDirectionalTuples(
-		_motion: MotionData,
+		motion: MotionData,
 		baseX: number,
 		baseY: number
 	): Array<[number, number]> {
 		/**
-		 * Generate directional tuples for the given motion and base adjustment.
-		 *
-		 * Args:
-		 *     motion: Motion data containing type, rotation, and location info
-		 *     baseX: Base X adjustment value
-		 *     baseY: Base Y adjustment value
-		 *
-		 * Returns:
-		 *     Array of 4 directional tuples representing rotated adjustments
+		 * Generate directional tuples using legacy mappings by motion type, rotation, and inferred grid.
+		 * Tuple order: indices 0..3 correspond to NE, SE, SW, NW quadrant mapping.
 		 */
-		const tuples: Array<[number, number]> = [];
+		const mt = String(motion.motion_type).toLowerCase();
+		const rot = String(motion.prop_rot_dir).toLowerCase();
 
-		// Generate 4 rotational variants of the base adjustment
-		// This implements the 4-tuple rotation logic from the reference
-		for (let i = 0; i < 4; i++) {
-			const angle = (i * 90 * Math.PI) / 180; // Convert to radians
-			const cos = Math.cos(angle);
-			const sin = Math.sin(angle);
+		const NE = Location.NORTHEAST;
+		const SE = Location.SOUTHEAST;
+		const SW = Location.SOUTHWEST;
+		const NW = Location.NORTHWEST;
+		const N = Location.NORTH;
+		const E = Location.EAST;
+		const S = Location.SOUTH;
+		const W = Location.WEST;
 
-			// Apply rotation matrix
-			const rotatedX = baseX * cos - baseY * sin;
-			const rotatedY = baseX * sin + baseY * cos;
+		// Infer grid mode from start/end locations (diagonals => diamond; cardinals => box)
+		const diagonalSet = new Set<Location>([NE, SE, SW, NW]);
+		const gridIsDiamond = diagonalSet.has(motion.start_loc) || diagonalSet.has(motion.end_loc);
 
-			tuples.push([Math.round(rotatedX), Math.round(rotatedY)]);
-		}
+		// Helper to normalize rotation keys
+		const isCW = rot === 'clockwise' || rot === 'cw';
+		const isCCW = rot === 'counter_clockwise' || rot === 'ccw';
+		const isNoRot = rot === 'no_rot';
 
-		return tuples;
-	}
+		// Mapping builders
+		const tuple = (a: number, b: number) => [a, b] as [number, number];
 
-	private getLocationMultiplier(location: Location): { x: number; y: number } {
-		/**Get location-based multiplier for directional adjustments.*/
-		const multipliers: Record<Location, { x: number; y: number }> = {
-			[Location.NORTH]: { x: 0, y: -1 },
-			[Location.NORTHEAST]: { x: 1, y: -1 },
-			[Location.EAST]: { x: 1, y: 0 },
-			[Location.SOUTHEAST]: { x: 1, y: 1 },
-			[Location.SOUTH]: { x: 0, y: 1 },
-			[Location.SOUTHWEST]: { x: -1, y: 1 },
-			[Location.WEST]: { x: -1, y: 0 },
-			[Location.NORTHWEST]: { x: -1, y: -1 },
+		// SHIFT (pro/anti/float)
+		const shiftDiamond = () => {
+			if (mt === 'float') {
+				// Handpath-based mapping; approximate via start/end step direction
+				const order = [NE, SE, SW, NW];
+				const idxStart = order.indexOf(motion.start_loc as Location);
+				const idxEnd = order.indexOf(motion.end_loc as Location);
+				// Determine cw vs ccw step (1 step cw => cw; else ccw)
+				const cwStep = (idxStart + 1) % 4 === idxEnd;
+				if (cwStep) {
+					return [tuple(baseX, baseY), tuple(-baseY, baseX), tuple(-baseX, -baseY), tuple(baseY, -baseX)];
+				} else {
+					return [tuple(-baseY, -baseX), tuple(baseX, -baseY), tuple(baseY, baseX), tuple(-baseX, baseY)];
+				}
+			}
+			if (mt === 'pro' && isCW) return [tuple(baseX, baseY), tuple(-baseY, baseX), tuple(-baseX, -baseY), tuple(baseY, -baseX)];
+			if (mt === 'pro' && isCCW) return [tuple(-baseY, -baseX), tuple(baseX, -baseY), tuple(baseY, baseX), tuple(-baseX, baseY)];
+			if (mt === 'anti' && isCW) return [tuple(-baseY, -baseX), tuple(baseX, -baseY), tuple(baseY, baseX), tuple(-baseX, baseY)];
+			if (mt === 'anti' && isCCW) return [tuple(baseX, baseY), tuple(-baseY, baseX), tuple(-baseX, -baseY), tuple(baseY, -baseX)];
+			return [tuple(baseX, baseY), tuple(baseX, baseY), tuple(baseX, baseY), tuple(baseX, baseY)];
 		};
 
-		return multipliers[location] || { x: 0, y: 0 };
+		const shiftBox = () => {
+			if (mt === 'float') {
+				// Use box cw/ccw from start->end around N,E,S,W order
+				const order = [N, E, S, W];
+				const idxStart = order.indexOf(motion.start_loc as Location);
+				const idxEnd = order.indexOf(motion.end_loc as Location);
+				const cwStep = (idxStart + 1) % 4 === idxEnd;
+				if (cwStep) {
+					return [tuple(baseX, baseY), tuple(-baseY, baseX), tuple(-baseX, -baseY), tuple(baseY, -baseX)];
+				} else {
+					return [tuple(-baseY, -baseX), tuple(baseX, -baseY), tuple(baseY, baseX), tuple(-baseX, baseY)];
+				}
+			}
+			if (mt === 'pro' && isCW) return [tuple(-baseX, baseY), tuple(-baseY, -baseX), tuple(baseX, -baseY), tuple(baseY, baseX)];
+			if (mt === 'pro' && isCCW) return [tuple(baseX, baseY), tuple(-baseY, baseX), tuple(-baseX, -baseY), tuple(baseY, -baseX)];
+			if (mt === 'anti' && isCW) return [tuple(-baseX, baseY), tuple(-baseY, -baseX), tuple(baseX, -baseY), tuple(baseY, baseX)];
+			if (mt === 'anti' && isCCW) return [tuple(baseX, baseY), tuple(-baseY, baseX), tuple(-baseX, -baseY), tuple(baseY, -baseX)];
+			return [tuple(baseX, baseY), tuple(baseX, baseY), tuple(baseX, baseY), tuple(baseX, baseY)];
+		};
+
+		// DASH
+		const dashDiamond = () => {
+			if (isCW) return [tuple(baseX, -baseY), tuple(baseY, baseX), tuple(-baseX, baseY), tuple(-baseY, -baseX)];
+			if (isCCW) return [tuple(-baseX, -baseY), tuple(baseY, -baseX), tuple(baseX, baseY), tuple(-baseY, baseX)];
+			if (isNoRot) return [tuple(baseX, baseY), tuple(-baseY, -baseX), tuple(baseX, -baseY), tuple(baseY, baseX)];
+			return [tuple(baseX, baseY), tuple(baseX, baseY), tuple(baseX, baseY), tuple(baseX, baseY)];
+		};
+
+		const dashBox = () => {
+			if (isCW) return [tuple(-baseY, baseX), tuple(-baseX, -baseY), tuple(baseY, -baseX), tuple(baseX, baseY)];
+			if (isCCW) return [tuple(-baseX, baseY), tuple(-baseY, -baseX), tuple(baseX, -baseY), tuple(baseY, baseX)];
+			if (isNoRot) return [tuple(baseX, baseY), tuple(-baseY, baseX), tuple(-baseX, -baseY), tuple(baseY, -baseX)];
+			return [tuple(baseX, baseY), tuple(baseX, baseY), tuple(baseX, baseY), tuple(baseX, baseY)];
+		};
+
+		// STATIC
+		const staticDiamond = () => {
+			if (isCW) return [tuple(baseX, -baseY), tuple(baseY, baseX), tuple(-baseX, baseY), tuple(-baseY, -baseX)];
+			if (isCCW) return [tuple(-baseX, -baseY), tuple(baseY, -baseX), tuple(baseX, baseY), tuple(-baseY, baseX)];
+			return [tuple(baseX, baseY), tuple(-baseX, -baseY), tuple(-baseY, baseX), tuple(baseY, -baseX)];
+		};
+
+		const staticBox = () => {
+			if (isCW) return [tuple(baseX, baseY), tuple(-baseY, baseX), tuple(-baseX, -baseY), tuple(baseY, -baseX)];
+			if (isCCW) return [tuple(-baseY, -baseX), tuple(baseX, -baseY), tuple(baseY, baseX), tuple(-baseX, baseY)];
+			return [tuple(baseX, baseY), tuple(-baseY, baseX), tuple(-baseX, -baseY), tuple(baseY, -baseX)];
+		};
+
+		// Dispatch by motion type and grid
+		if (mt === 'dash') return gridIsDiamond ? dashDiamond() : dashBox();
+		if (mt === 'static') return gridIsDiamond ? staticDiamond() : staticBox();
+		// pro/anti/float
+		return gridIsDiamond ? shiftDiamond() : shiftBox();
 	}
 }
 
@@ -206,20 +230,11 @@ export class DirectionalTupleProcessor implements IDirectionalTupleProcessor {
 			// Calculate quadrant index for tuple selection
 			const quadrantIndex = this.quadrantIndexService.calculateQuadrantIndex(location);
 
-			// Select the appropriate tuple based on quadrant
+			// Select the appropriate tuple based on quadrant (legacy parity)
 			const selectedTuple = directionalTuples[quadrantIndex] || [0, 0];
 
-			// Calculate directional tuple for additional adjustments
-			const directionalTuple = this.directionalTupleService.calculateDirectionalTuple(
-				_motion,
-				location
-			);
-
-			// Combine base adjustment, selected tuple, and directional tuple
-			const finalX = baseAdjustment.x + selectedTuple[0] + directionalTuple[0];
-			const finalY = baseAdjustment.y + selectedTuple[1] + directionalTuple[1];
-
-			return { x: finalX, y: finalY };
+			// Final adjustment = selected tuple only (baseAdjustment already used to build tuples)
+			return { x: selectedTuple[0], y: selectedTuple[1] };
 		} catch (error) {
 			console.warn('Directional tuple processing failed, using base adjustment:', error);
 			return baseAdjustment;

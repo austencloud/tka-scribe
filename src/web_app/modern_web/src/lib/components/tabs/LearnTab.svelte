@@ -7,16 +7,18 @@
 	import type { PictographData } from '$lib/domain/PictographData';
 	import { LearnView, LessonType, QuizMode, type LessonResults } from '$lib/types/learn';
 
-	// State management using runes
-	let currentView = $state<LearnView>(LearnView.LESSON_SELECTOR);
-	let selectedMode = $state<QuizMode>(QuizMode.FIXED_QUESTION);
-	let currentLessonType = $state<LessonType | null>(null);
-	let currentResults = $state<LessonResults | null>(null);
-	let isLoading = $state<boolean>(false);
-	let codexVisible = $state<boolean>(true);
+	// State management using regular Svelte reactivity for better performance
+	let currentView: LearnView = LearnView.LESSON_SELECTOR;
+	let selectedMode: QuizMode = QuizMode.FIXED_QUESTION;
+	let currentLessonType: LessonType | null = null;
+	let currentResults: LessonResults | null = null;
+	let isLoading: boolean = false;
+	let codexVisible: boolean = true;
+	let codexWidth: number = 50; // Default 50% width (1/2 of page)
+	let isResizing: boolean = false;
 
 	// Available lessons (all enabled for now)
-	let availableLessons = $state<LessonType[]>(Object.values(LessonType));
+	let availableLessons: LessonType[] = Object.values(LessonType);
 
 	// Navigation handlers
 	function handleLessonRequested(event: { lessonType: LessonType; quizMode: QuizMode }) {
@@ -66,6 +68,34 @@
 		codexVisible = !codexVisible;
 	}
 
+	// Resize functionality optimized for Svelte 5 runes performance
+	function handleResizeStart(event: MouseEvent) {
+		isResizing = true;
+		event.preventDefault();
+
+		const startX = event.clientX;
+		const startWidth = codexWidth;
+		const containerWidth = window.innerWidth;
+
+		function handleMouseMove(e: MouseEvent) {
+			if (!isResizing) return;
+
+			const deltaX = e.clientX - startX;
+			const deltaPercent = (deltaX / containerWidth) * 100;
+			const newWidth = Math.max(15, Math.min(60, startWidth + deltaPercent));
+			codexWidth = newWidth;
+		}
+
+		function handleMouseUp() {
+			isResizing = false;
+			document.removeEventListener('mousemove', handleMouseMove);
+			document.removeEventListener('mouseup', handleMouseUp);
+		}
+
+		document.addEventListener('mousemove', handleMouseMove);
+		document.addEventListener('mouseup', handleMouseUp);
+	}
+
 	function handlePictographSelected(pictograph: PictographData) {
 		// Handle pictograph selection from codex (for reference during learning)
 		console.log('Pictograph selected from codex:', pictograph);
@@ -84,11 +114,6 @@
 </script>
 
 <div class="learn-tab">
-	<!-- Codex Toggle Button -->
-	<button class="codex-toggle" onclick={handleCodexToggle}>
-		{codexVisible ? 'Hide' : 'Show'} Codex
-	</button>
-
 	<!-- Main Content with Splitter Layout -->
 	<div class="learn-content-wrapper" class:codex-visible={codexVisible}>
 		<!-- Loading Overlay -->
@@ -107,15 +132,27 @@
 			</div>
 		{/if}
 
-		<!-- Codex Sidebar -->
+		<!-- Codex Sidebar - Always present but can be collapsed -->
+		<div
+			class="codex-sidebar"
+			class:collapsed={!codexVisible}
+			style="width: {codexVisible ? codexWidth + '%' : '48px'}"
+		>
+			<CodexComponent
+				isVisible={codexVisible}
+				onPictographSelected={handlePictographSelected}
+				onToggleVisibility={handleCodexToggle}
+			/>
+		</div>
+
+		<!-- Resize handle - only show when expanded -->
 		{#if codexVisible}
-			<div class="codex-sidebar">
-				<CodexComponent
-					isVisible={codexVisible}
-					onPictographSelected={handlePictographSelected}
-					onToggleVisibility={handleCodexToggle}
-				/>
-			</div>
+			<button
+				class="resize-handle"
+				class:resizing={isResizing}
+				onmousedown={handleResizeStart}
+				aria-label="Resize codex panel"
+			></button>
 		{/if}
 
 		<!-- Main content area with stacked views -->
@@ -163,28 +200,6 @@
 		background: transparent;
 	}
 
-	.codex-toggle {
-		position: absolute;
-		top: 1rem;
-		left: 1rem;
-		z-index: 1001;
-		padding: 0.5rem 1rem;
-		background: rgba(255, 255, 255, 0.1);
-		border: 1px solid rgba(255, 255, 255, 0.2);
-		border-radius: 8px;
-		color: #ffffff;
-		font-size: 0.875rem;
-		font-weight: 500;
-		cursor: pointer;
-		transition: all 0.2s ease;
-		backdrop-filter: blur(10px);
-	}
-
-	.codex-toggle:hover {
-		background: rgba(255, 255, 255, 0.2);
-		border-color: rgba(255, 255, 255, 0.3);
-	}
-
 	/* MAIN LAYOUT: Horizontal splitter (side-by-side) */
 	.learn-content-wrapper {
 		display: flex;
@@ -194,17 +209,57 @@
 		height: 100%;
 		gap: 1rem;
 		padding: 1rem;
-		padding-top: 4rem; /* Space for toggle button */
 		min-height: 0;
 	}
 
 	.codex-sidebar {
-		width: 300px;
+		/* Width is now controlled by inline style */
 		min-width: 250px;
-		max-width: 400px;
+		max-width: 60%; /* Allow more flexibility */
 		flex-shrink: 0;
 		height: 100%;
-		transition: all 0.3s ease;
+		/* REMOVED CSS TRANSITION - THIS WAS CAUSING THE DRAG LAG! */
+		border-right: 1px solid var(--desktop-border-tertiary);
+	}
+
+	.codex-sidebar.collapsed {
+		min-width: 48px; /* Minimal collapsed width like VS Code */
+		max-width: 48px;
+	}
+
+	.resize-handle {
+		width: 4px;
+		height: 100%;
+		background: rgba(80, 80, 100, 0.4);
+		cursor: col-resize;
+		flex-shrink: 0;
+		position: relative;
+		transition: background-color 0.2s ease;
+		border: none;
+		padding: 0;
+		margin: 0;
+		outline: none;
+	}
+
+	.resize-handle:hover,
+	.resize-handle.resizing {
+		background: rgba(120, 150, 200, 0.8);
+	}
+
+	.resize-handle:focus {
+		background: rgba(120, 150, 200, 0.6);
+		outline: 2px solid rgba(120, 150, 200, 0.8);
+		outline-offset: 1px;
+	}
+
+	.resize-handle::before {
+		content: '';
+		position: absolute;
+		left: -2px;
+		right: -2px;
+		top: 0;
+		bottom: 0;
+		background: transparent;
 	}
 
 	.learn-content {
@@ -300,7 +355,7 @@
 	}
 
 	/* Responsive Design - MAINTAIN HORIZONTAL LAYOUT */
-	
+
 	/* Tablets and larger screens - keep horizontal */
 	@media (min-width: 769px) {
 		.learn-content-wrapper {
@@ -311,7 +366,6 @@
 	/* Medium tablets - reduce codex width but stay horizontal */
 	@media (max-width: 1024px) and (min-width: 769px) {
 		.codex-sidebar {
-			width: 250px;
 			min-width: 200px;
 		}
 	}
@@ -319,16 +373,15 @@
 	/* Small tablets - further reduce but stay horizontal */
 	@media (max-width: 768px) and (min-width: 641px) {
 		.codex-sidebar {
-			width: 220px;
 			min-width: 180px;
 		}
-		
+
 		.learn-content-wrapper {
 			gap: 0.75rem;
 			padding: 0.75rem;
 			padding-top: 3.5rem;
 		}
-		
+
 		.codex-toggle {
 			top: 0.75rem;
 			left: 0.75rem;

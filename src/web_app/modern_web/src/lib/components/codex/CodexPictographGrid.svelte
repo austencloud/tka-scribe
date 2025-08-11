@@ -20,7 +20,7 @@
 		pictographsByLetter,
 		letterRows,
 		pictographSize = 80,
-		onPictographClick
+		onPictographClick,
 	}: Props = $props();
 
 	// Handle pictograph click
@@ -40,13 +40,118 @@
 			arrows: {},
 			motions: {},
 			props: {},
-			metadata: { isPlaceholder: true }
+			metadata: { isPlaceholder: true },
 		} as PictographData;
+	}
+
+	// Define letter type sections with their row ranges, descriptions, and colors
+	// Based on the desktop LETTER_ROWS structure and OptionPickerSectionHeader colors
+	const letterTypeSections = [
+		{
+			name: 'Type 1',
+			description: 'Dual-Shift',
+			startRow: 0,
+			endRow: 3,
+			primaryColor: '#36c3ff',
+			secondaryColor: '#6F2DA8',
+		}, // A-V (rows 0-3)
+		{
+			name: 'Type 2',
+			description: 'Shift',
+			startRow: 4,
+			endRow: 5,
+			primaryColor: '#6F2DA8',
+			secondaryColor: '#6F2DA8',
+		}, // W,X,Y,Z,Σ,Δ,θ,Ω (rows 4-5)
+		{
+			name: 'Type 3',
+			description: 'Cross-Shift',
+			startRow: 6,
+			endRow: 7,
+			primaryColor: '#26e600',
+			secondaryColor: '#6F2DA8',
+		}, // W-,X-,Y-,Z-,Σ-,Δ-,θ-,Ω- (rows 6-7)
+		{
+			name: 'Type 4',
+			description: 'Dash',
+			startRow: 8,
+			endRow: 8,
+			primaryColor: '#26e600',
+			secondaryColor: '#26e600',
+		}, // Φ,Ψ,Λ (row 8)
+		{
+			name: 'Type 5',
+			description: 'Dual-Dash',
+			startRow: 9,
+			endRow: 9,
+			primaryColor: '#00b3ff',
+			secondaryColor: '#26e600',
+		}, // Φ-,Ψ-,Λ- (row 9)
+		{
+			name: 'Type 6',
+			description: 'Static',
+			startRow: 10,
+			endRow: 10,
+			primaryColor: '#eb7d00',
+			secondaryColor: '#eb7d00',
+		}, // α,β,Γ (row 10)
+	];
+
+	// Function to get section for a given row index
+	function getSectionForRow(rowIndex: number) {
+		return letterTypeSections.find(
+			(section) => rowIndex >= section.startRow && rowIndex <= section.endRow
+		);
+	}
+
+	// Function to check if this is the first row of a section
+	function isFirstRowOfSection(rowIndex: number) {
+		return letterTypeSections.some((section) => section.startRow === rowIndex);
+	}
+
+	// Function to generate colored HTML text like desktop LetterTypeTextPainter
+	function getColoredText(description: string): string {
+		const colors = {
+			Shift: '#6F2DA8',
+			Dual: '#00b3ff',
+			Dash: '#26e600',
+			Cross: '#26e600',
+			Static: '#eb7d00',
+			'-': '#000000',
+		};
+
+		let coloredText = description;
+
+		// Apply colors to each word
+		Object.entries(colors).forEach(([word, color]) => {
+			const regex = new RegExp(`\\b${word}\\b`, 'gi');
+			coloredText = coloredText.replace(
+				regex,
+				`<span style="color: ${color};">${word}</span>`
+			);
+		});
+
+		return coloredText;
 	}
 </script>
 
 <div class="codex-pictograph-grid">
 	{#each letterRows as row, rowIndex}
+		<!-- Add section header if this is the first row of a section -->
+		{#if isFirstRowOfSection(rowIndex)}
+			{@const section = getSectionForRow(rowIndex)}
+			{#if section}
+				<div class="section-header">
+					<div class="section-header-container">
+						<span class="section-text">
+							<span class="section-type">{section.name}:</span>
+							{@html getColoredText(section.description)}
+						</span>
+					</div>
+				</div>
+			{/if}
+		{/if}
+
 		<div class="pictograph-row" data-row={rowIndex}>
 			{#each row as letter}
 				{@const pictograph = pictographsByLetter[letter] || createPlaceholder(letter)}
@@ -61,22 +166,15 @@
 				>
 					{#if isPlaceholder}
 						<!-- Placeholder for missing pictographs -->
-						<div class="pictograph-placeholder" style="width: {pictographSize}px; height: {pictographSize}px;">
-							<span class="placeholder-letter">{letter}</span>
-						</div>
+						<span class="placeholder-letter">{letter}</span>
 					{:else}
-						<!-- Actual pictograph -->
-						<div class="pictograph-container">
-							<Pictograph
-								pictographData={pictograph}
-								width={pictographSize}
-								height={pictographSize}
-							/>
-						</div>
+						<!-- Actual pictograph - simplified container structure -->
+						<Pictograph
+							pictographData={pictograph}
+							width={pictographSize}
+							height={pictographSize}
+						/>
 					{/if}
-
-					<!-- Letter label -->
-					<span class="pictograph-label">{letter}</span>
 				</button>
 			{/each}
 		</div>
@@ -87,9 +185,49 @@
 	.codex-pictograph-grid {
 		display: flex;
 		flex-direction: column;
-		gap: var(--desktop-spacing-lg);
+		gap: var(--desktop-spacing-md); /* Slightly tighter spacing */
 		padding: var(--desktop-spacing-lg);
 		background: transparent;
+	}
+
+	.section-header {
+		display: flex;
+		justify-content: center;
+		margin: var(--desktop-spacing-lg) 0 var(--desktop-spacing-md) 0;
+	}
+
+	.section-header:first-child {
+		margin-top: 0;
+	}
+
+	.section-header-container {
+		background: rgba(255, 255, 255, 0.2);
+		border: 1px solid rgba(255, 255, 255, 0.3);
+		border-radius: var(--desktop-border-radius);
+		padding: var(--desktop-spacing-sm) var(--desktop-spacing-lg);
+		backdrop-filter: blur(10px);
+		box-shadow: var(--desktop-shadow-sm);
+		transition: all var(--desktop-transition-normal);
+	}
+
+	.section-header-container:hover {
+		background: rgba(255, 255, 255, 0.25);
+		border: 1px solid rgba(255, 255, 255, 0.4);
+		box-shadow: var(--desktop-shadow-md);
+	}
+
+	.section-text {
+		display: inline-block;
+		font-family: var(--desktop-font-family);
+		font-size: var(--desktop-font-size-base);
+		font-weight: 500;
+		line-height: 1.2;
+		white-space: nowrap;
+	}
+
+	.section-type {
+		color: #000000; /* Black for "Type 1:" part */
+		font-weight: bold;
 	}
 
 	.pictograph-row {
@@ -104,9 +242,9 @@
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-		gap: var(--desktop-spacing-sm);
-		padding: var(--desktop-spacing-sm);
-		background: var(--desktop-bg-tertiary);
+		gap: var(--desktop-spacing-xs); /* Reduced gap */
+		padding: var(--desktop-spacing-xs); /* Reduced padding */
+		background: var(--desktop-bg-tertiary); /* Back to transparent background */
 		border: 1px solid var(--desktop-border-tertiary);
 		border-radius: var(--desktop-border-radius-sm);
 		cursor: pointer;
@@ -136,58 +274,38 @@
 		border-color: var(--desktop-border-disabled);
 	}
 
-	.pictograph-container {
+	.placeholder-letter {
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		background: var(--desktop-bg-secondary);
-		border-radius: var(--desktop-border-radius-xs);
-		padding: var(--desktop-spacing-xs);
-	}
-
-	.pictograph-placeholder {
-		display: flex;
-		align-items: center;
-		justify-content: center;
+		width: 100%;
+		height: 100%;
 		background: var(--desktop-bg-quaternary);
 		border: 1px dashed var(--desktop-border-disabled);
 		border-radius: var(--desktop-border-radius-xs);
 		color: var(--desktop-text-disabled);
-	}
-
-	.placeholder-letter {
 		font-weight: bold;
 		font-size: var(--desktop-font-size-sm);
-		color: var(--desktop-text-disabled);
-	}
-
-	.pictograph-label {
-		color: var(--desktop-text-secondary);
-		font-size: var(--desktop-font-size-xs);
-		font-weight: 500;
-		text-align: center;
-		font-family: var(--desktop-font-family);
-		text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 	}
 
 	/* Row-specific styling */
-	.pictograph-row[data-row="0"] .pictograph-item:hover {
+	.pictograph-row[data-row='0'] .pictograph-item:hover {
 		border-color: var(--desktop-primary-blue-border);
 	}
 
-	.pictograph-row[data-row="1"] .pictograph-item:hover {
+	.pictograph-row[data-row='1'] .pictograph-item:hover {
 		border-color: var(--desktop-primary-green-border);
 	}
 
-	.pictograph-row[data-row="2"] .pictograph-item:hover {
+	.pictograph-row[data-row='2'] .pictograph-item:hover {
 		border-color: var(--desktop-primary-purple-border);
 	}
 
-	.pictograph-row[data-row="3"] .pictograph-item:hover {
+	.pictograph-row[data-row='3'] .pictograph-item:hover {
 		border-color: var(--desktop-primary-orange-border);
 	}
 
-	.pictograph-row[data-row="4"] .pictograph-item:hover {
+	.pictograph-row[data-row='4'] .pictograph-item:hover {
 		border-color: var(--desktop-primary-red-border);
 	}
 
@@ -220,10 +338,6 @@
 
 		.pictograph-item {
 			padding: var(--desktop-spacing-xs);
-		}
-
-		.pictograph-label {
-			font-size: var(--desktop-font-size-xs);
 		}
 	}
 

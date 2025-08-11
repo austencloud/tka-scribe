@@ -6,10 +6,12 @@ Refactored from the large OptionPickerScroll.svelte with extracted responsibilit
 - Pictograph organization moved to PictographOrganizerService
 - Layout calculations moved to scrollLayoutMetrics utility
 - Maintains all original functionality with cleaner separation of concerns
+- Now featuring beautiful glassmorphism scrollbars
 -->
 <script lang="ts">
 	import type { PictographData } from '$lib/domain/PictographData';
 	import OptionPickerSection from './OptionPickerSection.svelte';
+	import SimpleGlassScroll from '$lib/components/ui/SimpleGlassScroll.svelte';
 	import type { ResponsiveLayoutConfig } from './config';
 	import { createOptionPickerScrollState } from './optionPickerScrollState.svelte';
 	import type { FoldableDetectionResult } from './utils/deviceDetection';
@@ -87,7 +89,7 @@ Refactored from the large OptionPickerScroll.svelte with extracted responsibilit
 </script>
 
 <div
-	class="option-picker-scroll {scrollState.cssClasses().join(' ')}"
+	class="option-picker-scroll glass-scrollbar-secondary {scrollState.cssClasses().join(' ')}"
 	style:height="{containerHeight}px"
 	style:--scroll-width={scrollState.cssProperties()['--scroll-width']}
 	style:--scroll-opacity={scrollState.cssProperties()['--scroll-opacity']}
@@ -169,6 +171,16 @@ Refactored from the large OptionPickerScroll.svelte with extracted responsibilit
 		transform-origin: top left;
 		/* Smooth scrolling for supported devices */
 		scroll-behavior: smooth;
+	}
+
+	/* Apply glass scrollbar styling */
+	.option-picker-scroll {
+		/* Use secondary variant for option picker */
+	}
+	
+	/* Apply glass scrollbar using class addition in HTML */
+	:global(.option-picker-scroll.glass-scrollbar-secondary) {
+		/* Ensure glass scrollbar styles are applied */
 	}
 
 	.scroll-container {

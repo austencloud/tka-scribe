@@ -10,7 +10,7 @@ export interface ISpecialPlacementService {
 		motionData: MotionData,
 		pictographData: PictographData,
 		arrowColor?: string
-	): Point | null;
+	): Promise<Point | null>;
 }
 
 export interface IDefaultPlacementService {

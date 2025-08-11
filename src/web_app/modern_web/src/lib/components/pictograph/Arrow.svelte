@@ -40,13 +40,19 @@ Follows the same pattern as Prop component for consistent sizing behavior
 	const position = $derived(async () => {
 		if (!arrowData || !motionData) return { x: 475.0, y: 475.0, rotation: 0 };
 
+		console.log(`🏹 Arrow.svelte positioning for ${arrowData.color} arrow`);
+		console.log(`Arrow data: position_x=${arrowData.position_x}, position_y=${arrowData.position_y}, coordinates=`, arrowData.coordinates);
+
 		// First priority: use coordinates if already calculated
 		if (arrowData.coordinates) {
+			console.log(`📍 Using coordinates: (${arrowData.coordinates.x}, ${arrowData.coordinates.y})`);
 			return { ...arrowData.coordinates, rotation: arrowData.rotation_angle || 0 };
 		}
 
 		// Second priority: use position_x/position_y if available
 		if (arrowData.position_x !== 0 || arrowData.position_y !== 0) {
+			console.log(`📍 Using position_x/position_y: (${arrowData.position_x}, ${arrowData.position_y})`);
+			console.log(`⚠️  SKIPPING sophisticated positioning because position_x/position_y are non-zero`);
 			return {
 				x: arrowData.position_x,
 				y: arrowData.position_y,
@@ -56,6 +62,7 @@ Follows the same pattern as Prop component for consistent sizing behavior
 
 		// Third priority: Calculate using sophisticated positioning pipeline
 		try {
+			console.log(`🔧 Using sophisticated positioning pipeline`);
 			// Create a proper PictographData object for positioning
 			const pictographData = createPictographData({
 				letter: 'A', // Default letter
@@ -78,7 +85,7 @@ Follows the same pattern as Prop component for consistent sizing behavior
 				pictographData
 			);
 
-
+			console.log(`✅ Sophisticated positioning result: (${result.x}, ${result.y}) rotation: ${result.rotation}°`);
 			return result;
 		} catch (error) {
 			console.warn('Sophisticated positioning failed, using fallback:', error);
@@ -86,16 +93,19 @@ Follows the same pattern as Prop component for consistent sizing behavior
 			const startLocation = motionData.start_loc;
 			if (startLocation) {
 				const basePosition = calculateLocationCoordinates(startLocation);
+				console.log(`📍 Using start location fallback: (${basePosition.x}, ${basePosition.y})`);
 				return { ...basePosition, rotation: 0 };
 			}
 
 			// Fallback: try arrowData location field
 			if (arrowData.location) {
 				const basePosition = calculateLocationCoordinates(arrowData.location);
+				console.log(`📍 Using arrow location fallback: (${basePosition.x}, ${basePosition.y})`);
 				return { ...basePosition, rotation: 0 };
 			}
 
 			// Final fallback to center
+			console.log(`📍 Using center fallback: (475, 475)`);
 			return { x: 475.0, y: 475.0, rotation: 0 };
 		}
 	});
@@ -108,10 +118,13 @@ Follows the same pattern as Prop component for consistent sizing behavior
 	$effect(() => {
 		// If pre-calculated values are provided, use them directly
 		if (preCalculatedPosition) {
+			console.log(`⚡ Arrow.svelte: Using preCalculatedPosition for ${arrowData.color}:`, preCalculatedPosition);
 			calculatedPosition = preCalculatedPosition;
 			shouldMirror = preCalculatedMirroring ?? false;
 			return;
 		}
+
+		console.log(`🔍 Arrow.svelte: No preCalculatedPosition, calculating inline for ${arrowData.color}`);
 
 		// Otherwise, calculate positioning as before
 		if (arrowData && motionData) {

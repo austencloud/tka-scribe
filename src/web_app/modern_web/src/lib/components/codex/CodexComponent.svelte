@@ -3,8 +3,10 @@
 
 	Matches desktop CodexComponent functionality with control panel,
 	row-based pictograph organization, operations, and orientation selector.
+	Now featuring beautiful glass scrollbars.
 -->
 <script lang="ts">
+	import SimpleGlassScroll from '$lib/components/ui/SimpleGlassScroll.svelte';
 	import type { PictographData } from '$lib/domain/PictographData';
 	import { createCodexState } from '$lib/state/codex-state.svelte';
 	import CodexControlPanel from './CodexControlPanel.svelte';
@@ -23,19 +25,14 @@
 	const codexState = createCodexState();
 
 	// Reactive values
-	let filteredPictographsByLetter = $derived(codexState.filteredPictographsByLetter);
+	let filteredPictographsByLetter = $derived(codexState.filteredPictographsByLetter());
 	let letterRows = $derived(codexState.letterRows);
 	let isLoading = $derived(codexState.isLoading);
-	let searchTerm = $derived(codexState.searchTerm);
 	let currentOrientation = $derived(codexState.currentOrientation);
 	let error = $derived(codexState.error);
 	let isProcessingOperation = $derived(codexState.isProcessingOperation);
 
 	// Methods
-	function handleSearchChange(event: Event) {
-		const target = event.target as HTMLInputElement;
-		codexState.setSearchTerm(target.value);
-	}
 
 	function handlePictographClick(pictograph: PictographData) {
 		onPictographSelected?.(pictograph);
@@ -64,12 +61,23 @@
 </script>
 
 <div class="codex-component" class:collapsed={!isVisible}>
-	<!-- Header with toggle -->
+	<!-- Header with integrated toggle (Browse navigation style) -->
 	<div class="codex-header">
-		<button class="collapse-button" onclick={toggleCollapse}>
-			{isVisible ? '◀' : '▶'}
-		</button>
-		<h3 class="codex-title">Codex</h3>
+		<div class="header-content">
+			<div class="header-text">
+				<h3 class="codex-title">Codex</h3>
+				{#if isVisible}
+					<div class="codex-subtitle">Pictograph Reference</div>
+				{/if}
+			</div>
+			<button
+				class="collapse-toggle"
+				onclick={toggleCollapse}
+				title={isVisible ? 'Hide codex' : 'Show codex'}
+			>
+				{isVisible ? '◀' : '▶'}
+			</button>
+		</div>
 	</div>
 
 	{#if isVisible}
@@ -82,50 +90,44 @@
 			onOrientationChange={handleOrientationChange}
 		/>
 
-		<!-- Search bar -->
-		<div class="search-section">
-			<input
-				type="text"
-				class="search-input"
-				placeholder="Search pictographs..."
-				value={searchTerm}
-				oninput={handleSearchChange}
-			/>
-		</div>
-
-		<!-- Content area -->
-		<div class="codex-content">
-			{#if error}
-				<div class="error-state">
-					<div class="error-icon">⚠️</div>
-					<p class="error-message">{error}</p>
-					<button class="retry-button" onclick={() => codexState.refreshPictographs()}>
-						Retry
-					</button>
-				</div>
-			{:else if isLoading}
-				<div class="loading-state">
-					<div class="loading-spinner"></div>
-					<p>Loading pictographs...</p>
-				</div>
-			{:else if isProcessingOperation}
-				<div class="loading-state">
-					<div class="loading-spinner"></div>
-					<p>Processing operation...</p>
-				</div>
-			{:else if Object.keys(filteredPictographsByLetter()).length === 0}
-				<div class="empty-state">
-					<p>No pictographs found</p>
-				</div>
-			{:else}
-				<!-- Row-based pictograph grid -->
-				<CodexPictographGrid
-					pictographsByLetter={filteredPictographsByLetter()}
-					{letterRows}
-					pictographSize={80}
-					onPictographClick={handlePictographClick}
-				/>
-			{/if}
+		<!-- Content area with beautiful glass scrollbar -->
+		<div class="content-wrapper">
+			<SimpleGlassScroll variant="primary" height="100%">
+				{#if error}
+					<div class="error-state">
+						<div class="error-icon">⚠️</div>
+						<p class="error-message">{error}</p>
+						<button
+							class="retry-button"
+							onclick={() => codexState.refreshPictographs()}
+						>
+							Retry
+						</button>
+					</div>
+				{:else if isLoading}
+					<div class="loading-state">
+						<div class="loading-spinner"></div>
+						<p>Loading pictographs...</p>
+					</div>
+				{:else if isProcessingOperation}
+					<div class="loading-state">
+						<div class="loading-spinner"></div>
+						<p>Processing operation...</p>
+					</div>
+				{:else if Object.keys(filteredPictographsByLetter).length === 0}
+					<div class="empty-state">
+						<p>No pictographs found</p>
+					</div>
+				{:else}
+					<!-- Row-based pictograph grid -->
+					<CodexPictographGrid
+						pictographsByLetter={filteredPictographsByLetter}
+						{letterRows}
+						pictographSize={80}
+						onPictographClick={handlePictographClick}
+					/>
+				{/if}
+			</SimpleGlassScroll>
 		</div>
 	{/if}
 </div>
@@ -135,9 +137,9 @@
 		display: flex;
 		flex-direction: column;
 		height: 100%;
-		width: 300px;
+		width: 100%; /* Take full width of parent container */
 		min-width: 250px;
-		background: var(--desktop-bg-secondary);
+		background: var(--desktop-bg-secondary); /* Transparent background */
 		border-radius: var(--desktop-border-radius);
 		border: 1px solid var(--desktop-border-secondary);
 		backdrop-filter: blur(10px);
@@ -145,87 +147,100 @@
 	}
 
 	.codex-component.collapsed {
-		width: 60px;
-		min-width: 60px;
+		width: 48px;
+		min-width: 48px;
+	}
+
+	.collapsed .codex-header {
+		padding: var(--desktop-spacing-xs);
+		text-align: center;
+		border-bottom: none;
+	}
+
+	.collapsed .header-content {
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+		gap: 0;
+	}
+
+	.collapsed .header-text {
+		display: none; /* Hide text in collapsed state */
+	}
+
+	.collapsed .collapse-toggle {
+		padding: var(--desktop-spacing-sm);
+		font-size: var(--desktop-font-size-lg);
+		background: rgba(255, 255, 255, 0.1);
+		border-radius: 4px;
 	}
 
 	.codex-header {
-		display: flex;
-		align-items: center;
 		padding: var(--desktop-spacing-lg);
 		border-bottom: 1px solid var(--desktop-border-tertiary);
+		background: rgba(255, 255, 255, 0.05);
+	}
+
+	.header-content {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
 		gap: var(--desktop-spacing-md);
 	}
 
-	.collapse-button {
-		background: var(--desktop-bg-tertiary);
-		border: 1px solid var(--desktop-border-secondary);
-		border-radius: var(--desktop-border-radius-xs);
-		color: var(--desktop-text-primary);
-		width: 32px;
-		height: 32px;
+	.header-text {
 		display: flex;
-		align-items: center;
-		justify-content: center;
-		cursor: pointer;
-		font-size: var(--desktop-font-size-sm);
-		transition: all var(--desktop-transition-normal);
-	}
-
-	.collapse-button:hover {
-		background: var(--desktop-bg-secondary);
-		border-color: var(--desktop-border-primary);
+		flex-direction: column;
+		gap: var(--desktop-spacing-xs);
+		flex: 1;
 	}
 
 	.codex-title {
-		color: var(--desktop-text-primary);
+		color: white;
 		font-family: var(--desktop-font-family);
 		font-size: var(--desktop-font-size-lg);
-		font-weight: bold;
+		font-weight: 600;
 		margin: 0;
-		text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
 	}
 
 	.collapsed .codex-title {
-		display: none;
-	}
-
-	.search-section {
-		padding: var(--desktop-spacing-lg);
-		border-bottom: 1px solid var(--desktop-border-tertiary);
-	}
-
-	.collapsed .search-section {
-		display: none;
-	}
-
-	.search-input {
-		width: 100%;
-		padding: var(--desktop-spacing-sm) var(--desktop-spacing-md);
-		background: var(--desktop-bg-tertiary);
-		border: 1px solid var(--desktop-border-secondary);
-		border-radius: var(--desktop-border-radius-xs);
-		color: var(--desktop-text-primary);
 		font-size: var(--desktop-font-size-sm);
-		outline: none;
-		transition: all var(--desktop-transition-normal);
+		margin: 0;
 	}
 
-	.search-input::placeholder {
-		color: var(--desktop-text-disabled);
+	.codex-subtitle {
+		font-size: var(--desktop-font-size-sm);
+		color: rgba(255, 255, 255, 0.7);
+		margin: 0;
 	}
 
-	.search-input:focus {
-		border-color: var(--desktop-primary-blue-border);
-		background: var(--desktop-bg-secondary);
+	.collapse-toggle {
+		background: none;
+		border: none;
+		color: rgba(255, 255, 255, 0.7);
+		font-size: var(--desktop-font-size-sm);
+		cursor: pointer;
+		padding: var(--desktop-spacing-xs);
+		border-radius: 4px;
+		transition: all var(--desktop-transition-fast);
+		flex-shrink: 0;
 	}
 
-	.codex-content {
+	.collapse-toggle:hover {
+		background: rgba(255, 255, 255, 0.1);
+		color: white;
+	}
+
+	/* Content wrapper for glass scroll container */
+	.content-wrapper {
 		flex: 1;
-		overflow-y: auto;
+		min-height: 0; /* Important for flex containers */
 	}
 
-	.collapsed .codex-content {
+	.collapsed .content-wrapper {
 		display: none;
 	}
 

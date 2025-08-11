@@ -23,10 +23,19 @@ interface Point {
 }
 
 export class SpecialPlacementService implements ISpecialPlacementService {
-	private specialPlacements: Record<string, Record<string, Record<string, unknown>>> = {};
+	// Structure: [gridMode][oriKey][letter] -> Record<string, unknown>
+	private specialPlacements: Record<
+		string,
+		Record<string, Record<string, Record<string, unknown>>>
+	> = {};
+	private loadingCache: Set<string> = new Set();
 
 	constructor() {
-		this.loadSpecialPlacements();
+		// Defer loading; we'll lazily load per-letter on demand
+		this.specialPlacements = { diamond: {}, box: {} } as Record<
+			string,
+			Record<string, Record<string, Record<string, unknown>>>
+		>;
 	}
 
 	/**
@@ -37,11 +46,11 @@ export class SpecialPlacementService implements ISpecialPlacementService {
 	 * @param arrowColor Color of the arrow ('red' or 'blue') - if not provided, will try to determine from motion
 	 * @returns Point with special adjustment or null if no special placement found
 	 */
-	getSpecialAdjustment(
+	async getSpecialAdjustment(
 		motionData: MotionData,
 		pictographData: PictographData,
 		arrowColor?: string
-	): Point | null {
+	): Promise<Point | null> {
 		if (!motionData || !pictographData.letter) {
 			return null;
 		}
@@ -57,6 +66,9 @@ export class SpecialPlacementService implements ISpecialPlacementService {
 
 		// Generate turns tuple for lookup
 		const turnsTuple = this.generateTurnsTuple(pictographData);
+
+		// Ensure the letter-specific special placement data is loaded lazily
+		await this.ensureLetterPlacementsLoaded(gridMode, oriKey, letter);
 
 		// Look up special placement data
 		const letterData = this.specialPlacements[gridMode]?.[oriKey]?.[letter] as
@@ -111,40 +123,60 @@ export class SpecialPlacementService implements ISpecialPlacementService {
 	/**
 	 * Load special placement data from JSON configuration files.
 	 */
-	private async loadSpecialPlacements(): Promise<void> {
+	private async ensureLetterPlacementsLoaded(
+		gridMode: string,
+		oriKey: string,
+		letter: string
+	): Promise<void> {
 		try {
-			// Define the supported modes and subfolders matching the data structure
-			const supportedModes = ['diamond', 'box'];
-			const subfolders = [
-				'from_layer1',
-				'from_layer2',
-				'from_layer3_blue1_red2',
-				'from_layer3_blue2_red1',
-			];
+			if (!this.specialPlacements[gridMode]) {
+				this.specialPlacements[gridMode] = {} as Record<
+					string,
+					Record<string, Record<string, unknown>>
+				>;
+			}
+			if (!this.specialPlacements[gridMode][oriKey]) {
+				this.specialPlacements[gridMode][oriKey] = {} as Record<
+					string,
+					Record<string, unknown>
+				>;
+			}
+			if (this.specialPlacements[gridMode][oriKey][letter]) {
+				return; // already loaded
+			}
 
-			for (const mode of supportedModes) {
-				this.specialPlacements[mode] = {};
+			const cacheKey = `${gridMode}:${oriKey}:${letter}`;
+			if (this.loadingCache.has(cacheKey)) {
+				return; // loading in progress or already attempted
+			}
+			this.loadingCache.add(cacheKey);
 
-				for (const subfolder of subfolders) {
-					this.specialPlacements[mode][subfolder] = {};
-
-					// Build path to special placement directory
-					const basePath = `/static/data/arrow_placement/${mode}/special/${subfolder}`;
-
-					try {
-						// In a web environment, we'd need to pre-load this data or fetch it
-						// For now, initialize empty and log the expected path
-						console.debug(`Would load special placements from: ${basePath}`);
-						// TODO: Implement actual JSON loading for web environment
-						// This might require bundling the JSON files or serving them via API
-					} catch (error) {
-						console.debug(`Failed to load special placements from ${basePath}:`, error);
-					}
+			// Files are served under /data/... in the web app
+			// Example path: /data/arrow_placement/diamond/special/from_layer1/A_placements.json
+			const encodedLetter = encodeURIComponent(letter);
+			const basePath = `/data/arrow_placement/${gridMode}/special/${oriKey}/${encodedLetter}_placements.json`;
+			try {
+				const response = await fetch(basePath);
+				if (!response.ok) {
+					console.debug(
+						`No special placement file for ${gridMode}/${oriKey}/${letter}: ${response.status} ${response.statusText}`
+					);
+					// Mark as empty to avoid re-fetching repeatedly
+					this.specialPlacements[gridMode][oriKey][letter] = {};
+					return;
 				}
+				const data = (await response.json()) as Record<string, unknown>;
+				this.specialPlacements[gridMode][oriKey][letter] = data;
+				console.debug(`Loaded special placements for ${gridMode}/${oriKey}/${letter}`);
+			} catch (error) {
+				console.debug(
+					`Failed to load special placements for ${gridMode}/${oriKey}/${letter} from ${basePath}:`,
+					error
+				);
+				this.specialPlacements[gridMode][oriKey][letter] = {};
 			}
 		} catch (error) {
-			console.error('Error loading special placements:', error);
-			this.specialPlacements = {};
+			console.error('Error ensuring special placement data:', error);
 		}
 	}
 

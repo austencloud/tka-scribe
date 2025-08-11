@@ -21,6 +21,11 @@ import type { IArrowAdjustmentCalculator } from '../../core-services';
 import type { Location, Point } from '../../types';
 import { DefaultPlacementService } from '../placement/DefaultPlacementService';
 import { SpecialPlacementService } from '../placement/SpecialPlacementService';
+import { ArrowAdjustmentLookup as AdvancedLookup } from '../orchestration/ArrowAdjustmentLookup';
+import { AttributeKeyGenerator } from '../key_generators/AttributeKeyGenerator';
+import { PlacementKeyGenerator } from '../key_generators/PlacementKeyGenerator';
+import { SpecialPlacementOriKeyGenerator } from '../key_generators/SpecialPlacementOriKeyGenerator';
+import { TurnsTupleKeyGenerator } from '../key_generators/TurnsTupleKeyGenerator';
 import {
 	DirectionalTupleCalculator,
 	DirectionalTupleProcessor,
@@ -28,98 +33,7 @@ import {
 	type IDirectionalTupleProcessor,
 } from '../processors/DirectionalTupleProcessor';
 
-export interface IArrowAdjustmentLookup {
-	getBaseAdjustment(
-		pictographData: PictographData,
-		motionData: MotionData,
-		letter: string,
-		arrowColor?: string
-	): Promise<Point>;
-}
-
-export class ArrowAdjustmentLookup implements IArrowAdjustmentLookup {
-	/**
-	 * Service for looking up base adjustments from special and default placement data.
-	 */
-
-	constructor(
-		private specialPlacementService: SpecialPlacementService,
-		private defaultPlacementService: DefaultPlacementService
-	) {}
-
-	async getBaseAdjustment(
-		pictographData: PictographData,
-		motionData: MotionData,
-		letter: string,
-		arrowColor?: string
-	): Promise<Point> {
-		/**
-		 * Get base adjustment using special → default placement lookup chain.
-		 *
-		 * Args:
-		 *     pictographData: Pictograph data containing context
-		 *     motionData: Motion data for placement lookup
-		 *     letter: Letter for special placement lookup
-		 *     arrowColor: Arrow color for special placement
-		 *
-		 * Returns:
-		 *     Base adjustment point
-		 */
-		try {
-			// STEP 1: Try special placement first
-			const specialAdjustment = this.specialPlacementService.getSpecialAdjustment(
-				motionData,
-				pictographData,
-				arrowColor
-			);
-
-			if (specialAdjustment && (specialAdjustment.x !== 0 || specialAdjustment.y !== 0)) {
-				console.log(
-					`Special placement found: (${specialAdjustment.x}, ${specialAdjustment.y})`
-				);
-				return specialAdjustment;
-			}
-
-			// STEP 2: Fall back to default placement
-			const placementKey = this.generatePlacementKey(motionData, letter);
-			const turns = motionData.turns || 0;
-			const motionType = motionData.motion_type?.toLowerCase() || 'static';
-			const gridMode = pictographData.grid_mode || 'diamond';
-
-			console.log(`🔍 Looking up default placement:`, {
-				placementKey,
-				turns,
-				motionType,
-				gridMode,
-				letter,
-			});
-
-			const defaultAdjustment = await this.defaultPlacementService.getDefaultAdjustment(
-				placementKey,
-				turns,
-				motionType as MotionType,
-				gridMode as GridMode
-			);
-
-			console.log(
-				`✅ Default placement result: (${defaultAdjustment.x}, ${defaultAdjustment.y})`
-			);
-			return defaultAdjustment;
-		} catch (error) {
-			console.warn('Base adjustment lookup failed:', error);
-			return { x: 0, y: 0 };
-		}
-	}
-
-	private generatePlacementKey(motionData: MotionData, _letter: string): string {
-		/**Generate placement key for default placement lookup.*/
-		const motionType = motionData.motion_type?.toLowerCase() || 'static';
-		const startLoc = motionData.start_loc || 'north';
-
-		// Basic placement key generation - can be enhanced with more sophisticated logic
-		return `${startLoc}_${motionType}`;
-	}
-}
+export type IArrowAdjustmentLookup = AdvancedLookup;
 
 export class ArrowAdjustmentCalculator implements IArrowAdjustmentCalculator {
 	/**
@@ -234,9 +148,13 @@ export class ArrowAdjustmentCalculator implements IArrowAdjustmentCalculator {
 
 	private createDefaultLookupService(): IArrowAdjustmentLookup {
 		/**Create lookup service with default dependencies.*/
-		return new ArrowAdjustmentLookup(
+		return new AdvancedLookup(
 			new SpecialPlacementService(),
-			new DefaultPlacementService()
+			new DefaultPlacementService(),
+			new SpecialPlacementOriKeyGenerator(),
+			new PlacementKeyGenerator(),
+			new TurnsTupleKeyGenerator(),
+			new AttributeKeyGenerator()
 		);
 	}
 

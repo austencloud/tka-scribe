@@ -1,14 +1,15 @@
 {
 	"servers": {
-		"filesystem": {
-			"type": "stdio",
-			"command": "npx",
-			"args": [
-				"-y",
-				"@modelcontextprotocol/server-filesystem",
-				"F:\\\\CODE\\\\TKA"
-			]
-		},
+"filesystem": {
+  "type": "stdio",
+  "command": "npx",
+  "args": [
+    "-y",
+    "@modelcontextprotocol/server-filesystem",
+    "F:/CODE/TKA"
+  ]
+},
+
 		"mcp-feedback-enhanced": {
 			"type": "stdio",
 			"command": "uvx",

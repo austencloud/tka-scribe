@@ -165,6 +165,20 @@ instead of stores. It orchestrates the rendering of Grid, Props, Arrows, and Gly
 					const motionData = data.motions?.[color];
 					if (!motionData) return null;
 
+					console.log(`🎨 Pictograph.svelte calculating position for ${color} arrow`);
+					console.log(`Arrow data:`, {
+						motion_type: arrowData.motion_type,
+						turns: arrowData.turns,
+						position_x: arrowData.position_x,
+						position_y: arrowData.position_y,
+					});
+					console.log(`Motion data:`, {
+						motion_type: motionData.motion_type,
+						start_loc: motionData.start_loc,
+						end_loc: motionData.end_loc,
+						turns: motionData.turns,
+					});
+
 					// Create pictograph context for positioning
 					const pictographContext = createPictographData({
 						letter: data.letter || 'A',
@@ -178,25 +192,27 @@ instead of stores. It orchestrates the rendering of Grid, Props, Arrows, and Gly
 					});
 
 					// Calculate position and mirroring
+					console.log(`🔧 Calling arrowPositioningService.calculatePosition for ${color}...`);
 					const position = await arrowPositioningService.calculatePosition(
 						arrowData,
 						motionData,
 						pictographContext
 					);
+					console.log(`✅ Position calculated for ${color}:`, position);
 
 					const shouldMirror = arrowPositioningService.shouldMirror(
 						arrowData,
 						motionData,
 						pictographContext
 					);
-
-
+					console.log(`🪞 Mirroring for ${color}:`, shouldMirror);
 
 					return { color, position, shouldMirror };
 				});
 
 				// Wait for all positions to be calculated
 				const results = await Promise.all(positionPromises);
+				console.log(`🎯 All position calculations complete:`, results);
 
 				// Store calculated positions and mirroring
 				const newPositions: Record<string, { x: number; y: number; rotation: number }> = {};
@@ -211,6 +227,9 @@ instead of stores. It orchestrates the rendering of Grid, Props, Arrows, and Gly
 
 				arrowPositions = newPositions;
 				arrowMirroring = newMirroring;
+				
+				console.log(`📍 Final arrow positions stored:`, arrowPositions);
+				console.log(`🪞 Final arrow mirroring stored:`, arrowMirroring);
 
 				// Small delay to ensure all Arrow components are ready, then show all arrows at once
 				await new Promise((resolve) => setTimeout(resolve, 50));

@@ -57,10 +57,20 @@ const CODEX_LETTER_MAPPING = {
 	'θ-': { startPos: 'alpha5', endPos: 'gamma11', blueMotion: 'dash', redMotion: 'pro' },
 	'Ω-': { startPos: 'alpha5', endPos: 'gamma11', blueMotion: 'dash', redMotion: 'anti' },
 
-	// Special letters
+	// Special letters (Type 4 - Dash)
 	Φ: { startPos: 'beta7', endPos: 'alpha3', blueMotion: 'static', redMotion: 'dash' },
 	Ψ: { startPos: 'alpha1', endPos: 'beta5', blueMotion: 'static', redMotion: 'dash' },
 	Λ: { startPos: 'gamma7', endPos: 'gamma11', blueMotion: 'static', redMotion: 'dash' },
+
+	// Type 5 - Dual-Dash letters
+	'Φ-': { startPos: 'alpha3', endPos: 'alpha7', blueMotion: 'dash', redMotion: 'dash' },
+	'Ψ-': { startPos: 'beta1', endPos: 'beta5', blueMotion: 'dash', redMotion: 'dash' },
+	'Λ-': { startPos: 'gamma15', endPos: 'gamma11', blueMotion: 'dash', redMotion: 'dash' },
+
+	// Type 6 - Static letters
+	α: { startPos: 'alpha3', endPos: 'alpha3', blueMotion: 'static', redMotion: 'static' },
+	β: { startPos: 'beta5', endPos: 'beta5', blueMotion: 'static', redMotion: 'static' },
+	Γ: { startPos: 'gamma11', endPos: 'gamma11', blueMotion: 'static', redMotion: 'static' },
 } as const;
 
 export class CodexService implements ICodexService {
@@ -81,13 +91,15 @@ export class CodexService implements ICodexService {
 		['Σ-', 'Δ-', 'θ-', 'Ω-'],
 		['Φ', 'Ψ', 'Λ'],
 		['Φ-', 'Ψ-', 'Λ-'],
-		['α', 'β', 'Γ']
+		['α', 'β', 'Γ'],
 	];
 
 	constructor() {
 		this.csvDataService = new CsvDataService();
 		this.optionDataService = new OptionDataService();
-		console.log('🔧 CodexService initialized with specific letter mapping and desktop functionality');
+		console.log(
+			'🔧 CodexService initialized with specific letter mapping and desktop functionality'
+		);
 	}
 
 	/**
@@ -287,19 +299,19 @@ export class CodexService implements ICodexService {
 	async getAllPictographData(): Promise<Record<string, PictographData | null>> {
 		const allPictographs = await this.loadAllPictographs();
 		const result: Record<string, PictographData | null> = {};
-		
+
 		// Initialize all letters from LETTER_ROWS to null
-		this.LETTER_ROWS.flat().forEach(letter => {
+		this.LETTER_ROWS.flat().forEach((letter) => {
 			result[letter] = null;
 		});
-		
+
 		// Fill in the pictographs we have
-		allPictographs.forEach(pictograph => {
+		allPictographs.forEach((pictograph) => {
 			if (pictograph.letter) {
 				result[pictograph.letter] = pictograph;
 			}
 		});
-		
+
 		return result;
 	}
 }

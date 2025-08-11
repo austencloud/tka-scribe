@@ -50,14 +50,32 @@ export class ArrowPositioningService {
 		motionData: MotionData,
 		pictographData: PictographData
 	): Promise<ArrowPositionResult> {
+		console.log(`🎯 ArrowPositioningService.calculatePosition called for ${arrowData.color} arrow`);
+		console.log(`Arrow data:`, {
+			motion_type: arrowData.motion_type,
+			start_orientation: arrowData.start_orientation,
+			end_orientation: arrowData.end_orientation,
+			turns: arrowData.turns,
+			position_x: arrowData.position_x,
+			position_y: arrowData.position_y,
+		});
+		console.log(`Motion data:`, {
+			motion_type: motionData.motion_type,
+			start_loc: motionData.start_loc,
+			end_loc: motionData.end_loc,
+			turns: motionData.turns,
+		});
+
 		try {
 			// Use the sophisticated positioning pipeline
+			console.log(`🔧 Calling orchestrator.calculateArrowPosition...`);
 			const [x, y, rotation] = this.orchestrator.calculateArrowPosition(
 				arrowData,
 				pictographData,
 				motionData
 			);
 
+			console.log(`✅ Orchestrator returned: (${x}, ${y}) rotation: ${rotation}°`);
 			return { x, y, rotation };
 		} catch (error) {
 			console.error('Sophisticated positioning failed, using fallback:', error);
