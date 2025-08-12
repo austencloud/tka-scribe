@@ -52,6 +52,11 @@ def register_learn_services(container: DIContainer) -> None:
         container: DI container to register services with
     """
     try:
+        # First register IDatasetQuery dependency
+        from desktop.shared.application.services.data.dataset_query import DatasetQuery
+
+        container.register_singleton(IDatasetQuery, DatasetQuery)
+
         # External dependencies (use real data services)
         # Use the real pictograph service with actual TKA dataset
         from desktop.shared.application.services.data.pictograph_data_manager import (
@@ -63,8 +68,7 @@ def register_learn_services(container: DIContainer) -> None:
         container.register_factory(
             IPictographDataManager,
             lambda: PictographDataManager(
-                cache_manager=None,
-                dataset_query=container.resolve(IDatasetQuery)
+                cache_manager=None, dataset_query=container.resolve(IDatasetQuery)
             ),
         )
 
@@ -92,7 +96,7 @@ def register_learn_services(container: DIContainer) -> None:
 
         # Codex services (singleton for state management)
         from desktop.modern.application.services.generation.core.data_and_filtering import (
-            PictographDataManager,
+            PictographDataManager as CodexPictographDataManager,
         )
         from desktop.modern.domain.services.codex import (
             CodexDataService,
@@ -100,13 +104,15 @@ def register_learn_services(container: DIContainer) -> None:
         )
 
         # Register PictographDataManager for codex data loading
-        container.register_singleton(PictographDataManager, PictographDataManager)
+        container.register_singleton(
+            CodexPictographDataManager, CodexPictographDataManager
+        )
 
         # Register CodexDataService with proper pictograph data service injection
         container.register_factory(
             CodexDataService,
             lambda container: CodexDataService(
-                pictograph_data_service=container.resolve(PictographDataManager)
+                pictograph_data_service=container.resolve(CodexPictographDataManager)
             ),
         )
         container.register_singleton(CodexOperationsService, CodexOperationsService)

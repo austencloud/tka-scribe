@@ -13,7 +13,6 @@ from PyQt6.QtCore import QSize, Qt, pyqtSignal
 from PyQt6.QtWidgets import QFrame, QVBoxLayout
 
 from desktop.modern.domain.models.pictograph_data import PictographData
-from desktop.modern.presentation.components.pictograph.views import create_option_view
 from desktop.shared.application.services.option_picker.option_picker_size_calculator import (
     OptionPickerSizeCalculator,
 )
@@ -53,6 +52,11 @@ class OptionPictograph(QFrame):
         def get_main_window_size():
             main_window = self.window()
             return main_window.size() if main_window else QSize(1000, 800)
+
+        # Lazy import to avoid circular dependency
+        from desktop.modern.presentation.components.pictograph.views import (
+            create_option_view,
+        )
 
         self._pictograph_component = create_option_view(
             parent=self,
