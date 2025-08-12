@@ -1,6 +1,9 @@
-<!-- Navigation Bar - Tab switching interface with fade system integration -->
+<!-- Unified Navigation Bar - Switches between Landing and App modes -->
 <script lang="ts">
+	import { getAppMode, returnToLanding, getLandingBackground, setLandingBackground } from '$lib/state/appModeState.svelte';
 	import { showSettingsDialog } from '$lib/state/appState.svelte';
+	import LandingNavBar from '../landing/LandingNavBar.svelte';
+	import { foldTransition } from '$lib/utils/foldTransition';
 
 	type TabID = string;
 	interface TabDef {
@@ -9,77 +12,153 @@
 		icon: string;
 	}
 	interface Props {
-		tabs: readonly TabDef[];
-		activeTab: TabID;
-		onTabSelect: (tabId: TabID) => void;
+		tabs?: readonly TabDef[];
+		activeTab?: TabID;
+		onTabSelect?: (tabId: TabID) => void;
+		onBackgroundChange?: (background: string) => void;
 	}
 
-	let { tabs, activeTab, onTabSelect }: Props = $props();
+	let { tabs = [], activeTab = '', onTabSelect, onBackgroundChange }: Props = $props();
 
-	// Simplified navigation without complex fade system
+	// Reactive state
+	let appMode = $derived(getAppMode());
+	let landingBackground = $derived(getLandingBackground());
 
-	// Handle tab click
+	// Handle logo click in app mode - return to landing
+	async function handleLogoClick() {
+		if (appMode === 'app') {
+			console.log('🏠 Returning to landing via logo click...');
+			await returnToLanding();
+		}
+	}
+
+	// Handle tab click in app mode
 	function handleTabClick(tab: TabDef) {
 		try {
-			onTabSelect(tab.id);
+			onTabSelect?.(tab.id);
 		} catch (error) {
 			console.error('Failed to select tab:', error);
 		}
 	}
+
+	// Handle background change in landing mode
+	function handleLandingBackgroundChange(background: string) {
+		if (background === 'deepOcean' || background === 'snowfall' || background === 'nightSky') {
+			setLandingBackground(background);
+			onBackgroundChange?.(background);
+		}
+	}
 </script>
 
-<nav class="navigation-bar glass-surface">
-	<div class="nav-brand">
-		<h1>TKA</h1>
-		<span class="version">v2.0</span>
+{#if appMode === 'landing'}
+	<!-- Landing Mode Navigation -->
+	<div in:foldTransition={{ direction: 'fold-in', duration: 300 }}>
+		<LandingNavBar 
+			currentBackground={landingBackground}
+			onBackgroundChange={handleLandingBackgroundChange}
+		/>
 	</div>
-
-	<div class="nav-tabs">
-		{#each tabs as tab}
-			<button
-				class="nav-tab"
-				class:active={activeTab === tab.id}
-				onclick={() => handleTabClick(tab)}
-			>
-				<span class="tab-icon">{tab.icon}</span>
-				<span class="tab-label">{tab.label}</span>
-			</button>
-		{/each}
-	</div>
-
-	<div class="nav-actions">
-		<button
-			class="nav-action"
-			onclick={showSettingsDialog}
-			title="Settings (Ctrl+,)"
-			aria-label="Open Settings"
+{:else}
+	<!-- App Mode Navigation -->
+	<nav class="app-navigation-bar glass-surface" in:foldTransition={{ direction: 'fold-in', duration: 300 }}>
+		<!-- Clickable Logo/Brand - Returns to Landing -->
+		<div 
+			class="nav-brand clickable" 
+			onclick={handleLogoClick}
+			role="button"
+			tabindex="0"
+			onkeydown={(e) => {
+				if (e.key === 'Enter' || e.key === ' ') {
+					e.preventDefault();
+					handleLogoClick();
+				}
+			}}
+			title="Return to landing page"
+			aria-label="Return to landing page"
 		>
-			<svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-				<circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2" />
-				<path
-					d="m12 1 2.09.87.87 2.09-2.09.87-.87-2.09L12 1zM12 23l-2.09-.87-.87-2.09 2.09-.87.87 2.09L12 23zM1 12l.87-2.09L3.96 9l.87 2.09L5.7 12l-.87 2.09L3.96 15l-.87-2.09L1 12zM23 12l-.87 2.09L20.04 15l-.87-2.09L18.3 12l.87-2.09L20.04 9l.87 2.09L23 12z"
-					stroke="currentColor"
-					stroke-width="2"
-				/>
-			</svg>
-		</button>
-	</div>
-</nav>
+			<h1>TKA</h1>
+			<span class="version">v2.0</span>
+			<span class="return-hint">← Back to Landing</span>
+		</div>
+
+		<!-- App Tab Navigation -->
+		<div class="nav-tabs">
+			{#each tabs as tab}
+				<button
+					class="nav-tab"
+					class:active={activeTab === tab.id}
+					onclick={() => handleTabClick(tab)}
+					aria-pressed={activeTab === tab.id}
+				>
+					<span class="tab-icon">{tab.icon}</span>
+					<span class="tab-label">{tab.label}</span>
+				</button>
+			{/each}
+		</div>
+
+		<!-- App Actions -->
+		<div class="nav-actions">
+			<button
+				class="nav-action"
+				onclick={showSettingsDialog}
+				title="Settings (Ctrl+,)"
+				aria-label="Open Settings"
+			>
+				<svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+					<circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2" />
+					<path
+						d="m12 1 2.09.87.87 2.09-2.09.87-.87-2.09L12 1zM12 23l-2.09-.87-.87-2.09 2.09-.87.87 2.09L12 23zM1 12l.87-2.09L3.96 9l.87 2.09L5.7 12l-.87 2.09L3.96 15l-.87-2.09L1 12zM23 12l-.87 2.09L20.04 15l-.87-2.09L18.3 12l.87-2.09L20.04 9l.87 2.09L23 12z"
+						stroke="currentColor"
+						stroke-width="2"
+					/>
+				</svg>
+			</button>
+		</div>
+	</nav>
+{/if}
 
 <style>
-	.navigation-bar {
+	.app-navigation-bar {
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
 		padding: var(--spacing-md) var(--spacing-lg);
 		border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 		backdrop-filter: var(--glass-backdrop-strong);
+		background: rgba(255, 255, 255, 0.05);
+		position: relative;
+		z-index: 100;
 	}
 
 	.nav-brand {
 		display: flex;
 		align-items: center;
 		gap: var(--spacing-sm);
+		transition: all 0.3s ease;
+		padding: var(--spacing-sm);
+		border-radius: var(--border-radius);
+		position: relative;
+	}
+
+	.nav-brand.clickable {
+		cursor: pointer;
+		user-select: none;
+	}
+
+	.nav-brand.clickable:hover {
+		background: rgba(255, 255, 255, 0.1);
+		transform: translateY(-1px);
+		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+	}
+
+	.nav-brand.clickable:hover .return-hint {
+		opacity: 1;
+		transform: translateX(0);
+	}
+
+	.nav-brand.clickable:focus-visible {
+		outline: 2px solid #667eea;
+		outline-offset: 2px;
 	}
 
 	.nav-brand h1 {
@@ -98,6 +177,23 @@
 		background: rgba(255, 255, 255, 0.1);
 		padding: 2px 6px;
 		border-radius: 4px;
+	}
+
+	.return-hint {
+		position: absolute;
+		top: 100%;
+		left: 0;
+		font-size: var(--font-size-xs);
+		color: rgba(102, 126, 234, 0.8);
+		opacity: 0;
+		transform: translateX(-10px);
+		transition: all 0.2s ease;
+		white-space: nowrap;
+		margin-top: 4px;
+		background: rgba(0, 0, 0, 0.8);
+		padding: 2px 6px;
+		border-radius: 4px;
+		backdrop-filter: blur(10px);
 	}
 
 	.nav-tabs {
@@ -162,8 +258,15 @@
 		background: rgba(255, 255, 255, 0.1);
 		color: var(--foreground);
 	}
+
+	.nav-action:focus-visible {
+		outline: 2px solid #667eea;
+		outline-offset: 2px;
+	}
+
+	/* Mobile responsive */
 	@media (max-width: 768px) {
-		.navigation-bar {
+		.app-navigation-bar {
 			padding: var(--spacing-sm) var(--spacing-md);
 		}
 
@@ -186,6 +289,45 @@
 
 		.nav-brand h1 {
 			font-size: var(--font-size-lg);
+		}
+
+		.return-hint {
+			display: none;
+		}
+	}
+
+	/* Reduced motion support */
+	@media (prefers-reduced-motion: reduce) {
+		.nav-brand,
+		.nav-tab,
+		.nav-action,
+		.return-hint {
+			transition: none;
+		}
+
+		.nav-brand.clickable:hover {
+			transform: none;
+		}
+
+		.nav-brand.clickable:hover .return-hint {
+			transform: none;
+		}
+	}
+
+	/* High contrast mode */
+	@media (prefers-contrast: high) {
+		.app-navigation-bar {
+			background: rgba(0, 0, 0, 0.9);
+			border-bottom: 2px solid white;
+		}
+
+		.nav-tab {
+			border: 1px solid rgba(255, 255, 255, 0.3);
+		}
+
+		.nav-tab.active {
+			border-color: #667eea;
+			background: rgba(102, 126, 234, 0.3);
 		}
 	}
 </style>
