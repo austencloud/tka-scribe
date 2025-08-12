@@ -68,9 +68,9 @@ class TurnsNumber(QGraphicsSvgItem):
                 import os
 
                 if not os.path.exists(svg_path):
-                    # Try with src/images/ prefix
+                    # Try with src/desktop/images/ prefix
                     alt_path = os.path.join(
-                        os.path.abspath(os.path.join(os.getcwd(), "src", "images")),
+                        os.path.abspath(os.path.join(os.getcwd(), "src", "desktop", "images")),
                         os.path.basename(svg_path),
                     )
                     if os.path.exists(alt_path):

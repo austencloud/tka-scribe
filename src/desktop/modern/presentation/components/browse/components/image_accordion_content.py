@@ -182,13 +182,12 @@ class ImageAccordionContent(QFrame, StyleMixin):
             "advanced": (3, "🔴 Level 3", "Non-radial orientations."),
         }
 
-        # Image directory (same as legacy)
-        # Navigate to project root and find images/level_images
+        # Image directory (pointing to desktop/images/level_images)
         current_file = Path(__file__)
         # Go up from: src/desktop/modern/presentation/components/browse/components/
-        # To reach project root (7 levels up)
-        project_root = current_file.parent.parent.parent.parent.parent.parent.parent
-        image_dir = project_root / "images" / "level_images"
+        # To reach desktop directory (6 levels up)
+        desktop_root = current_file.parent.parent.parent.parent.parent.parent
+        image_dir = desktop_root / "images" / "level_images"
 
         print(f"🔍 [DEBUG] Looking for level images at: {image_dir}")
         print(f"🔍 [DEBUG] Directory exists: {image_dir.exists()}")
@@ -295,13 +294,12 @@ class ImageAccordionContent(QFrame, StyleMixin):
 
         # Legacy grid mode configuration (matching legacy system)
 
-        # Image directory (same as legacy)
-        # Navigate to project root and find images/grid
+        # Image directory (pointing to desktop/images/grid)
         current_file = Path(__file__)
         # Go up from: src/desktop/modern/presentation/components/browse/components/
-        # To reach project root (7 levels up)
-        project_root = current_file.parent.parent.parent.parent.parent.parent.parent
-        image_dir = project_root / "images" / "grid"
+        # To reach desktop directory (6 levels up)
+        desktop_root = current_file.parent.parent.parent.parent.parent.parent
+        image_dir = desktop_root / "images" / "grid"
 
         print(f"🔍 [DEBUG] Looking for grid images at: {image_dir}")
         print(f"🔍 [DEBUG] Directory exists: {image_dir.exists()}")

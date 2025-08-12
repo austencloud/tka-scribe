@@ -33,7 +33,7 @@ class TurnsColumn(QGraphicsItemGroup):
                 possible_paths = [
                     os.path.join(os.path.dirname(self.svg_path_prefix), "blank.svg"),
                     os.path.abspath(
-                        os.path.join(os.getcwd(), "src", "images", "blank.svg")
+                        os.path.join(os.getcwd(), "src", "desktop", "images", "blank.svg")
                     ),
                     os.path.abspath(os.path.join(os.getcwd(), "images", "blank.svg")),
                 ]

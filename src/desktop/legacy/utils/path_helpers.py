@@ -39,12 +39,12 @@ def get_image_path(filename) -> str:
         if os.path.exists(full_path):
             return full_path
 
-    # Use legacy images directory
-    root_images_dir = os.path.abspath(
-        os.path.join(os.path.dirname(__file__), "..", "images")
+    # Use desktop images directory
+    desktop_images_dir = os.path.abspath(
+        os.path.join(os.path.dirname(__file__), "..", "..", "images")
     )
 
-    full_path = os.path.join(root_images_dir, filename)
+    full_path = os.path.join(desktop_images_dir, filename)
     if os.path.exists(full_path):
         return full_path
 
