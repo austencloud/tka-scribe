@@ -31,6 +31,9 @@ from desktop.modern.core.interfaces.image_export_services import (
 
 logger = logging.getLogger(__name__)
 
+# Global flag to prevent multiple registrations
+_browse_services_registered = False
+
 
 def register_browse_services(
     container: DIContainer,
@@ -51,6 +54,15 @@ def register_browse_services(
         viewer_panel: Optional viewer panel
         parent_widget: Optional parent widget for dialogs
     """
+    global _browse_services_registered
+
+    # Prevent multiple registrations
+    if _browse_services_registered:
+        logger.info(
+            "🔄 [BROWSE_SERVICES] Browse services already registered, skipping duplicate registration"
+        )
+        return
+
     logger.info("Registering browse services...")
 
     try:
@@ -134,6 +146,7 @@ def register_browse_services(
             )
 
         logger.info("Browse services registration completed successfully")
+        _browse_services_registered = True
 
     except Exception as e:
         logger.error(f"Failed to register browse services: {e}", exc_info=True)

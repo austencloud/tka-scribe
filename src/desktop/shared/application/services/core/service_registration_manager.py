@@ -138,6 +138,7 @@ class ServiceRegistrationCoordinator:
         """Initialize coordinator with optional progress callback."""
         self.progress_callback = progress_callback
         self._registrars: list[IServiceRegistrar] = []
+        self._registration_completed = False
         self._initialize_registrars()
 
     def _initialize_registrars(self) -> None:
@@ -190,6 +191,13 @@ class ServiceRegistrationCoordinator:
 
     def register_all_services(self, container: DIContainer) -> None:
         """Register all services using specialized registrars."""
+        # Prevent multiple registrations
+        if self._registration_completed:
+            logger.info(
+                "🔄 [SERVICE_MANAGER] Services already registered, skipping duplicate registration"
+            )
+            return
+
         self._update_progress("Configuring services with new registrar architecture...")
 
         critical_failures = []
@@ -225,6 +233,7 @@ class ServiceRegistrationCoordinator:
             )
 
         self._update_progress("Services configured with new registrar architecture")
+        self._registration_completed = True
 
     def get_registration_status(self) -> dict:
         """Get comprehensive status of service registration across all registrars."""
@@ -301,6 +310,7 @@ class ServiceRegistrationManager(IServiceRegistrationManager):
     def __init__(self, progress_callback: callable | None = None):
         """Initialize with optional progress callback."""
         self.progress_callback = progress_callback
+        self._registration_completed = False
 
         # Delegate to the new coordinator
         self._coordinator = ServiceRegistrationCoordinator(progress_callback)
@@ -320,6 +330,13 @@ class ServiceRegistrationManager(IServiceRegistrationManager):
         BACKWARD COMPATIBILITY: Delegates to the new ServiceRegistrationCoordinator
         while maintaining the same interface for existing code.
         """
+        # Prevent multiple registrations
+        if self._registration_completed:
+            logger.info(
+                "🔄 [SERVICE_MANAGER] Services already registered, skipping duplicate registration"
+            )
+            return
+
         # Delegate to the new coordinator for most services
         self._coordinator.register_all_services(container)
 
@@ -327,6 +344,7 @@ class ServiceRegistrationManager(IServiceRegistrationManager):
         self._register_remaining_legacy_services(container)
 
         self._update_progress("Services configured")
+        self._registration_completed = True
 
     def _register_remaining_legacy_services(self, container: DIContainer) -> None:
         """Register services that haven't been migrated to specialized registrars yet."""

@@ -24,10 +24,11 @@
 	import NavigationBar from './navigation/NavigationBar.svelte';
 	import SettingsDialog from './SettingsDialog.svelte';
 	import BrowseTab from './tabs/BrowseTab.svelte';
-	import ConstructTab from './tabs/ConstructTab.svelte';
-	import LearnTab from './tabs/LearnTab.svelte';
-	import SequenceCardTab from './tabs/SequenceCardTab.svelte';
-	import WriteTab from './tabs/WriteTab.svelte';
+import ConstructTab from './tabs/ConstructTab.svelte';
+import LearnTab from './tabs/LearnTab.svelte';
+import SequenceCardTab from './tabs/SequenceCardTab.svelte';
+import WriteTab from './tabs/WriteTab.svelte';
+import AboutTab from './tabs/AboutTab.svelte';
 	
 	// Import components - Landing Interface
 	import Home from './landing/Home.svelte';
@@ -68,10 +69,11 @@
 		{ id: 'sequence_card', label: 'Sequence Card', icon: '🎴' },
 		{ id: 'write', label: 'Write', icon: '✍️' },
 		{ id: 'learn', label: 'Learn', icon: '🧠' },
+		{ id: 'about', label: 'About', icon: 'ℹ️' },
 	] as const;
 
 	function handleTabSelect(tabId: string) {
-		switchTab(tabId as 'construct' | 'browse' | 'sequence_card' | 'write' | 'learn');
+		switchTab(tabId as 'construct' | 'browse' | 'sequence_card' | 'write' | 'learn' | 'about');
 	}
 
 	function handleBackgroundChange(background: string) {
@@ -145,16 +147,18 @@
 				{#key activeTab}
 					<div class="tab-content" in:tabIn out:tabOut>
 						{#if isTabActive('construct')}
-							<ConstructTab />
+						<ConstructTab />
 						{:else if isTabActive('browse')}
-							<BrowseTab />
+						<BrowseTab />
 						{:else if isTabActive('sequence_card')}
-							<SequenceCardTab />
+						<SequenceCardTab />
 						{:else if isTabActive('write')}
-							<WriteTab />
+						<WriteTab />
 						{:else if isTabActive('learn')}
-							<LearnTab />
-						{/if}
+						<LearnTab />
+						{:else if isTabActive('about')}
+						<AboutTab />
+					{/if}
 					</div>
 				{/key}
 			{/if}

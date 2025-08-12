@@ -9,17 +9,17 @@
 		sequences = [],
 		viewMode = 'grid',
 		thumbnailService,
-		onSequenceSelected = () => {},
+		onAction = () => {},
 	} = $props<{
 		sequences?: BrowseSequenceMetadata[];
 		viewMode?: 'grid' | 'list';
 		thumbnailService: IThumbnailService;
-		onSequenceSelected?: (sequence: BrowseSequenceMetadata) => void;
+		onAction?: (action: string, sequence: BrowseSequenceMetadata) => void;
 	}>();
 
-	// Handle sequence selection
-	function handleSequenceSelect(sequence: BrowseSequenceMetadata) {
-		onSequenceSelected(sequence);
+	// Handle sequence actions
+	function handleSequenceAction(action: string, sequence: BrowseSequenceMetadata) {
+		onAction(action, sequence);
 	}
 </script>
 
@@ -35,7 +35,7 @@
 				{sequence}
 				{thumbnailService}
 				{viewMode}
-				onSelect={handleSequenceSelect}
+				onAction={handleSequenceAction}
 			/>
 		{/each}
 	</div>

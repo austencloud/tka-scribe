@@ -119,7 +119,6 @@ class AccordionContent(QFrame, StyleMixin):
 
                 grid_layout.addWidget(button, row, col)
 
-            main_layout.addLayout(grid_layout)
 
         main_layout.addLayout(grid_layout)
 

@@ -1,4 +1,6 @@
-<!-- Root route enters app mode directly -->
+
+
+
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { enterAppMode } from '$lib/state/appModeState.svelte';
@@ -12,5 +14,7 @@
 		switchTab('construct');
 	});
 </script>
+<h1>Welcome to TKA</h1>
+<p>The Kinetic Alphabet - Consolidated Web Application</p>enters app mode directly -->
 
 <MainApplication />

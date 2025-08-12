@@ -199,6 +199,19 @@ class SequenceBrowserUISetup:
 
         # Grid widget with fixed layout
         self.grid_widget = QWidget()
+
+        # Check if widget already has a layout to prevent "already has a parent" error
+        existing_layout = self.grid_widget.layout()
+        if existing_layout:
+            print(f"⚠️ [UI_SETUP] Grid widget already has a layout: {existing_layout}")
+            # Clear the existing layout
+            while existing_layout.count():
+                child = existing_layout.takeAt(0)
+                if child.widget():
+                    child.widget().setParent(None)
+            existing_layout.setParent(None)
+            existing_layout.deleteLater()
+
         self.grid_layout = QGridLayout(self.grid_widget)
         self.grid_layout.setSpacing(15)
 

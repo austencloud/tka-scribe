@@ -17,7 +17,6 @@ separation of concerns and maintainability. Reduced from 537 lines to ~80 lines.
 		thumbnailService,
 		viewMode = 'grid',
 		isFavorite = false,
-		onSelect = () => {},
 		onFavoriteToggle = () => {},
 		onAction = () => {},
 	} = $props<{
@@ -25,20 +24,21 @@ separation of concerns and maintainability. Reduced from 537 lines to ~80 lines.
 		thumbnailService: IThumbnailService;
 		viewMode?: 'grid' | 'list';
 		isFavorite?: boolean;
-		onSelect?: (sequence: BrowseSequenceMetadata) => void;
 		onFavoriteToggle?: (sequenceId: string) => void;
 		onAction?: (action: string, sequence: BrowseSequenceMetadata) => void;
 	}>();
 
-	// Event handlers
+	// Event handlers - Updated for new UX: click to animate
 	function handleClick() {
-		onSelect(sequence);
+		// New UX: Default click behavior is to animate the sequence
+		onAction('animate', sequence);
 	}
 
 	function handleKeydown(event: KeyboardEvent) {
 		if (event.key === 'Enter' || event.key === ' ') {
 			event.preventDefault();
-			onSelect(sequence);
+			// New UX: Default keyboard behavior is to animate the sequence
+			onAction('animate', sequence);
 		}
 	}
 </script>

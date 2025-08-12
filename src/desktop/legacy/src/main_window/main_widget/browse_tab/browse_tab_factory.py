@@ -2,9 +2,10 @@
 Factory for creating BrowseTab instances with proper dependency injection.
 """
 
-from typing import TYPE_CHECKING
-from PyQt6.QtWidgets import QWidget
 import logging
+from typing import TYPE_CHECKING
+
+from PyQt6.QtWidgets import QWidget
 
 from core.application_context import ApplicationContext
 from main_window.main_widget.core.widget_manager import WidgetFactory
@@ -54,6 +55,7 @@ class BrowseTabFactory(WidgetFactory):
             coordinator.font_color_updater = font_color_updater
 
             # Create the browse tab with dependencies
+            logger.info("🔧 [BROWSE_TAB_FACTORY] Creating LEGACY BrowseTab")
             browse_tab = BrowseTab(
                 main_widget=coordinator,  # Pass coordinator as main_widget for compatibility
                 settings_manager=settings_manager,
@@ -63,7 +65,9 @@ class BrowseTabFactory(WidgetFactory):
             # Store references for backward compatibility
             browse_tab.app_context = app_context
 
-            logger.info("Created BrowseTab with dependency injection")
+            logger.info(
+                f"✅ [BROWSE_TAB_FACTORY] LEGACY BrowseTab created: {id(browse_tab)}"
+            )
             return browse_tab
 
         except ImportError as e:

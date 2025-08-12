@@ -30,14 +30,10 @@
     showSettingsModal = false;
   }
 
-  // Navigation links for landing mode
+  // Streamlined navigation links - Constructor as flagship, About for info
   const navLinks = [
-    { href: '/', label: 'Home' },
-    { href: '/about', label: 'About' },
-    { href: '/constructor', label: 'Constructor' },
-    { href: '/animator', label: 'Animator' },
-    { href: '/links', label: 'Links' },
-    { href: '/contact', label: 'Contact' }
+    { href: '/constructor', label: 'Constructor', primary: true },
+    { href: '/about', label: 'About', primary: false }
   ];
 </script>
 
@@ -49,7 +45,11 @@
   
   <div class="nav-links">
     {#each navLinks as link}
-      <a href={link.href} class="nav-link">
+      <a 
+        href={link.href} 
+        class="nav-link"
+        class:primary={link.primary}
+      >
         {link.label}
       </a>
     {/each}
@@ -142,7 +142,7 @@
     text-decoration: none;
     font-weight: 600;
     font-size: var(--font-size-base);
-    padding: var(--spacing-sm) var(--spacing-md);
+    padding: var(--spacing-md) var(--spacing-lg);
     border-radius: var(--border-radius-lg);
     overflow: hidden;
     
@@ -159,6 +159,17 @@
     will-change: transform, background, box-shadow;
   }
 
+  /* Primary link (Constructor) - more prominent styling */
+  .nav-link.primary {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.2) 0%, rgba(118, 75, 162, 0.2) 100%);
+    border: 1px solid rgba(102, 126, 234, 0.3);
+    color: #667eea;
+    font-weight: 700;
+    box-shadow: 
+      0 6px 20px rgba(102, 126, 234, 0.15),
+      inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  }
+
   .nav-link:hover {
     color: #667eea;
     background: rgba(255, 255, 255, 0.1);
@@ -169,6 +180,16 @@
       0 4px 12px rgba(118, 75, 162, 0.2),
       inset 0 1px 0 rgba(255, 255, 255, 0.3);
     text-shadow: 0 2px 8px rgba(118, 75, 162, 0.3);
+  }
+
+  .nav-link.primary:hover {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.3) 0%, rgba(118, 75, 162, 0.3) 100%);
+    border-color: rgba(102, 126, 234, 0.5);
+    color: #667eea;
+    box-shadow: 
+      0 10px 30px rgba(102, 126, 234, 0.3),
+      0 4px 12px rgba(102, 126, 234, 0.2),
+      inset 0 1px 0 rgba(255, 255, 255, 0.4);
   }
 
   .nav-link:active {
@@ -236,13 +257,13 @@
     }
 
     .nav-links {
-      gap: var(--spacing-sm);
+      gap: var(--spacing-md);
       flex-wrap: wrap;
       justify-content: center;
     }
 
     .nav-link {
-      padding: var(--spacing-xs) var(--spacing-sm);
+      padding: var(--spacing-sm) var(--spacing-md);
       font-size: var(--font-size-sm);
     }
 

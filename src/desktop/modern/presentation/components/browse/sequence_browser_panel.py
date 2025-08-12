@@ -70,6 +70,11 @@ class SequenceBrowserPanel(QWidget):
         """Initialize the sequence browser panel with dependency injection."""
         super().__init__(parent)
 
+        # Debug: Track instance creation to identify duplicates
+        logger.info(
+            f"🔧 [SEQUENCE_BROWSER] Creating SequenceBrowserPanel instance: {id(self)}"
+        )
+
         # Core services (keep the ones with real logic)
         self.browse_service = browse_service
         self.state_service = state_service
@@ -152,16 +157,24 @@ class SequenceBrowserPanel(QWidget):
                     ThumbnailFactoryService,
                 )
 
-                # Register and resolve core services
-                self.container.register_singleton(
-                    IThumbnailFactory, ThumbnailFactoryService
-                )
-                self.container.register_singleton(
-                    ISequenceSorter, SequenceSorterService
-                )
+                # Register core services only if not already registered
+                try:
+                    self.thumbnail_factory = self.container.resolve(IThumbnailFactory)
+                except Exception:
+                    # Service not registered yet, register it
+                    self.container.register_singleton(
+                        IThumbnailFactory, ThumbnailFactoryService
+                    )
+                    self.thumbnail_factory = self.container.resolve(IThumbnailFactory)
 
-                self.thumbnail_factory = self.container.resolve(IThumbnailFactory)
-                self.sequence_sorter = self.container.resolve(ISequenceSorter)
+                try:
+                    self.sequence_sorter = self.container.resolve(ISequenceSorter)
+                except Exception:
+                    # Service not registered yet, register it
+                    self.container.register_singleton(
+                        ISequenceSorter, SequenceSorterService
+                    )
+                    self.sequence_sorter = self.container.resolve(ISequenceSorter)
             else:
                 # Fallback to direct instantiation
                 from desktop.modern.application.services.browse.sequence_sorter_service import (

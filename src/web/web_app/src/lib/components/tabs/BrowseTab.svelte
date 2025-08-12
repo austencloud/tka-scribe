@@ -62,6 +62,7 @@
 
 	// Phase 3: Animation panel state
 	let showAnimationPanel = $state(false); // Animation panel visibility
+	let isAnimationPanelCollapsed = $state(false); // Animation panel collapse state
 	let animationSequence = $state<BrowseSequenceMetadata | null>(null); // Current sequence for animation
 
 	// ✅ DERIVED RUNES: Computed UI state from browse state
@@ -127,13 +128,6 @@
 		handleToggleNavigationCollapse,
 	} = navigationEventHandlers;
 
-	// ✅ CUSTOM HANDLERS: Override default behavior for fullscreen functionality
-	function handleSequenceSelected(sequence: BrowseSequenceMetadata) {
-		console.log('📄 Opening sequence in fullscreen:', sequence.word);
-		fullscreenSequence = sequence;
-		showFullscreenViewer = true;
-	}
-
 	function handleCloseFullscreen() {
 		console.log('❌ Closing fullscreen viewer');
 		showFullscreenViewer = false;
@@ -148,6 +142,8 @@
 			console.log('🎬 Opening animation panel for sequence:', sequence.id);
 			animationSequence = sequence;
 			showAnimationPanel = true;
+			// Expand panel if it's collapsed
+			isAnimationPanelCollapsed = false;
 		} else if (action === 'edit') {
 			// Close fullscreen and handle edit
 			handleCloseFullscreen();
@@ -159,6 +155,11 @@
 			// Close fullscreen and handle delete
 			handleCloseFullscreen();
 			originalHandleSequenceAction(action, sequence);
+		} else if (action === 'fullscreen') {
+			// Handle fullscreen action
+			console.log('🔍 Opening fullscreen viewer for sequence:', sequence.id);
+			fullscreenSequence = sequence;
+			showFullscreenViewer = true;
 		} else {
 			// Pass through other actions to original handler
 			originalHandleSequenceAction(action, sequence);
@@ -171,6 +172,11 @@
 		showAnimationPanel = false;
 		animationSequence = null;
 	}
+
+	function handleToggleAnimationPanel() {
+		console.log('🔄 Toggling animation panel collapse');
+		isAnimationPanelCollapsed = !isAnimationPanelCollapsed;
+	}
 </script>
 
 <div class="browse-tab">
@@ -182,7 +188,7 @@
 	/>
 
 	<!-- Main layout using extracted component -->
-	<BrowseLayout {isNavigationCollapsed}>
+	<BrowseLayout {isNavigationCollapsed} isRightPanelCollapsed={isAnimationPanelCollapsed}>
 		{#snippet navigationSidebar()}
 			<NavigationSidebar
 				sections={navigationSections}
@@ -206,11 +212,22 @@
 						filter={selectedFilter}
 						{sequences}
 						{isLoading}
-						onSequenceSelected={handleSequenceSelected}
 						onBackToFilters={handleBackToFilters}
+						onAction={handleSequenceAction}
 					/>
 				</PanelContainer>
 			{/if}
+		{/snippet}
+
+		{#snippet rightPanel()}
+			<!-- Phase 3: Animation Panel -->
+			<AnimationPanel
+				sequence={animationSequence}
+				isVisible={showAnimationPanel}
+				isCollapsed={isAnimationPanelCollapsed}
+				onClose={handleCloseAnimationPanel}
+				onToggle={handleToggleAnimationPanel}
+			/>
 		{/snippet}
 	</BrowseLayout>
 

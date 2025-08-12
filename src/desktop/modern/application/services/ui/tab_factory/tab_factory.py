@@ -148,6 +148,7 @@ class TabFactory:
 
     def _create_browse_tab(self, container: DIContainer) -> QWidget:
         """Create the browse tab."""
+        logger.info("🔧 [TAB_FACTORY] Creating MODERN BrowseTab")
         from desktop.modern.presentation.views.browse.browse_tab import BrowseTab
 
         # Get TKA root directory
@@ -158,11 +159,13 @@ class TabFactory:
         # Ensure directories exist
         sequences_dir.mkdir(parents=True, exist_ok=True)
 
-        return BrowseTab(
+        browse_tab = BrowseTab(
             sequences_dir=sequences_dir,
             settings_file=settings_file,
             container=container,
         )
+        logger.info(f"✅ [TAB_FACTORY] MODERN BrowseTab created: {id(browse_tab)}")
+        return browse_tab
 
     def _create_write_tab(self, container: DIContainer) -> QWidget:
         """Create the write tab."""

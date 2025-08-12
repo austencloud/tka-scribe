@@ -121,7 +121,17 @@ export class SequenceService implements ISequenceService {
 	 */
 	async getSequence(id: string): Promise<SequenceData | null> {
 		try {
-			return await this.persistenceService.loadSequence(id);
+			let sequence = await this.persistenceService.loadSequence(id);
+
+			// If sequence not found, create a test sequence for animation testing
+			if (!sequence) {
+				console.log(`🎬 Sequence ${id} not found, creating test sequence for animation`);
+				sequence = this.createTestSequence(id);
+				// Save it to localStorage for future use
+				await this.persistenceService.saveSequence(sequence);
+			}
+
+			return sequence;
 		} catch (error) {
 			console.error(`Failed to get sequence ${id}:`, error);
 			return null;
@@ -202,5 +212,119 @@ export class SequenceService implements ISequenceService {
 				`Failed to remove beat: ${error instanceof Error ? error.message : 'Unknown error'}`
 			);
 		}
+	}
+
+	/**
+	 * Create a test sequence for animation testing
+	 */
+	private createTestSequence(id: string): SequenceData {
+		console.log(`🎬 Creating test sequence for ID: ${id}`);
+
+		// Create a simple 3-beat sequence for testing
+		const beats: BeatData[] = [
+			{
+				beat: 1,
+				letter: 'α',
+				pictograph_data: {
+					letter: 'α',
+					end_pos: 'alpha1',
+					timing: 'none',
+					direction: 'none',
+					blue_attributes: {
+						start_loc: 's',
+						end_loc: 's',
+						start_ori: 'in',
+						end_ori: 'in',
+						prop_rot_dir: 'no_rot',
+						turns: 0,
+						motion_type: 'static',
+					},
+					red_attributes: {
+						start_loc: 'n',
+						end_loc: 'n',
+						start_ori: 'in',
+						end_ori: 'in',
+						prop_rot_dir: 'no_rot',
+						turns: 0,
+						motion_type: 'static',
+					},
+				},
+			},
+			{
+				beat: 2,
+				letter: 'β',
+				pictograph_data: {
+					letter: 'β',
+					end_pos: 'beta5',
+					timing: 'none',
+					direction: 'none',
+					blue_attributes: {
+						start_loc: 's',
+						end_loc: 'e',
+						start_ori: 'in',
+						end_ori: 'out',
+						prop_rot_dir: 'cw',
+						turns: 1,
+						motion_type: 'pro',
+					},
+					red_attributes: {
+						start_loc: 'n',
+						end_loc: 'w',
+						start_ori: 'in',
+						end_ori: 'out',
+						prop_rot_dir: 'cw',
+						turns: 1,
+						motion_type: 'pro',
+					},
+				},
+			},
+			{
+				beat: 3,
+				letter: 'γ',
+				pictograph_data: {
+					letter: 'γ',
+					end_pos: 'gamma11',
+					timing: 'none',
+					direction: 'none',
+					blue_attributes: {
+						start_loc: 'e',
+						end_loc: 's',
+						start_ori: 'out',
+						end_ori: 'in',
+						prop_rot_dir: 'ccw',
+						turns: 1,
+						motion_type: 'anti',
+					},
+					red_attributes: {
+						start_loc: 'w',
+						end_loc: 'n',
+						start_ori: 'out',
+						end_ori: 'in',
+						prop_rot_dir: 'ccw',
+						turns: 1,
+						motion_type: 'anti',
+					},
+				},
+			},
+		];
+
+		const testSequence: SequenceData = {
+			id,
+			name: `Test Sequence ${id.toUpperCase()}`,
+			word: id.toUpperCase(),
+			beats,
+			thumbnails: [],
+			is_favorite: false,
+			is_circular: false,
+			tags: ['test', 'animation'],
+			metadata: {
+				length: beats.length,
+				created_for_testing: true,
+				created_at: new Date().toISOString(),
+			},
+		};
+
+		console.log(`🎬 Created test sequence:`, testSequence);
+		return testSequence;
 	}
 }

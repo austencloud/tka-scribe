@@ -48,7 +48,7 @@ export function getInitializationProgress() {
 // ============================================================================
 
 // UPDATED: Tab types to match desktop app exactly - including sequence_card tab
-type TabId = 'construct' | 'browse' | 'sequence_card' | 'write' | 'learn';
+type TabId = 'construct' | 'browse' | 'sequence_card' | 'write' | 'learn' | 'about';
 
 const uiState = $state({
 	activeTab: 'construct' as TabId,

@@ -5,7 +5,7 @@ Right-side panel for animating sequences in the browse tab.
 Integrates the animator module directly into the browse experience.
 -->
 <script lang="ts">
-	import { onMount, onDestroy } from 'svelte';
+	import { onDestroy } from 'svelte';
 	import type { BrowseSequenceMetadata } from '$lib/domain/browse';
 	import { resolve } from '$lib/services/bootstrap';
 	import type { ISequenceService } from '$lib/services/interfaces';
@@ -14,18 +14,21 @@ Integrates the animator module directly into the browse experience.
 	const {
 		sequence = null,
 		isVisible = false,
+		isCollapsed = false,
 		onClose = () => {},
+		onToggle = () => {},
 	} = $props<{
 		sequence?: BrowseSequenceMetadata | null;
 		isVisible?: boolean;
+		isCollapsed?: boolean;
 		onClose?: () => void;
+		onToggle?: () => void;
 	}>();
 
 	// Services
 	const sequenceService = resolve('ISequenceService') as ISequenceService;
 
 	// State
-	let animatorContainer: HTMLDivElement;
 	let sequenceData: any = $state(null);
 	let loading = $state(false);
 	let error = $state<string | null>(null);
@@ -34,12 +37,12 @@ Integrates the animator module directly into the browse experience.
 	// In Phase 4, we'll integrate the full animator
 	let currentBeat = $state(0);
 	let isPlaying = $state(false);
-	let playInterval: number | null = null;
+	let playInterval: ReturnType<typeof setInterval> | null = null;
 
 	// Load sequence data when sequence changes
-	$effect(async () => {
+	$effect(() => {
 		if (sequence && isVisible) {
-			await loadSequenceData();
+			loadSequenceData();
 		}
 	});
 
@@ -52,7 +55,7 @@ Integrates the animator module directly into the browse experience.
 		try {
 			console.log('🎬 Loading sequence for animation:', sequence.id);
 			const fullSequence = await sequenceService.getSequence(sequence.id);
-			
+
 			if (!fullSequence) {
 				throw new Error(`Sequence not found: ${sequence.id}`);
 			}
@@ -110,9 +113,14 @@ Integrates the animator module directly into the browse experience.
 <div class="animation-panel" class:visible={isVisible}>
 	<div class="panel-header">
 		<h3>🎬 Animation</h3>
-		<button class="close-button" onclick={onClose} aria-label="Close animation panel">
-			✕
-		</button>
+		<div class="panel-controls">
+			<button class="toggle-button" onclick={onToggle} aria-label="Toggle animation panel">
+				{isCollapsed ? '◀' : '▶'}
+			</button>
+			<button class="close-button" onclick={onClose} aria-label="Close animation panel">
+				✕
+			</button>
+		</div>
 	</div>
 
 	<div class="panel-content">
@@ -141,9 +149,7 @@ Integrates the animator module directly into the browse experience.
 				<button class="control-button" onclick={handlePlay}>
 					{isPlaying ? '⏸️' : '▶️'}
 				</button>
-				<button class="control-button" onclick={handleStop}>
-					⏹️
-				</button>
+				<button class="control-button" onclick={handleStop}> ⏹️ </button>
 				<div class="beat-info">
 					Beat {currentBeat + 1} of {sequenceData.beats?.length || 0}
 				</div>
@@ -152,8 +158,8 @@ Integrates the animator module directly into the browse experience.
 			{#if sequenceData.beats && sequenceData.beats.length > 0}
 				<div class="beat-selector">
 					{#each sequenceData.beats as beat, index}
-						<button 
-							class="beat-button" 
+						<button
+							class="beat-button"
 							class:active={index === currentBeat}
 							onclick={() => handleBeatChange(index)}
 						>
@@ -163,34 +169,40 @@ Integrates the animator module directly into the browse experience.
 				</div>
 
 				<div class="current-beat-display">
-					{@const currentBeatData = sequenceData.beats[currentBeat]}
-					{#if currentBeatData}
-						<h5>Beat {currentBeat + 1}: {currentBeatData.pictograph_data?.letter || ''}</h5>
-						
+					{#if sequenceData.beats[currentBeat]}
+						{@const currentBeatData = sequenceData.beats[currentBeat]}
+						<h5>
+							Beat {currentBeat + 1}: {currentBeatData.pictograph_data?.letter || ''}
+						</h5>
+
 						{#if currentBeatData.pictograph_data?.motions}
 							<div class="motions-display">
 								<div class="motion blue-motion">
 									<h6>Blue Prop</h6>
 									<div class="motion-info">
 										<span class="location">
-											{currentBeatData.pictograph_data.motions.blue?.start_loc} → 
+											{currentBeatData.pictograph_data.motions.blue
+												?.start_loc} →
 											{currentBeatData.pictograph_data.motions.blue?.end_loc}
 										</span>
 										<span class="motion-type">
-											{currentBeatData.pictograph_data.motions.blue?.motion_type}
+											{currentBeatData.pictograph_data.motions.blue
+												?.motion_type}
 										</span>
 									</div>
 								</div>
-								
+
 								<div class="motion red-motion">
 									<h6>Red Prop</h6>
 									<div class="motion-info">
 										<span class="location">
-											{currentBeatData.pictograph_data.motions.red?.start_loc} → 
+											{currentBeatData.pictograph_data.motions.red?.start_loc}
+											→
 											{currentBeatData.pictograph_data.motions.red?.end_loc}
 										</span>
 										<span class="motion-type">
-											{currentBeatData.pictograph_data.motions.red?.motion_type}
+											{currentBeatData.pictograph_data.motions.red
+												?.motion_type}
 										</span>
 									</div>
 								</div>
@@ -244,6 +256,13 @@ Integrates the animator module directly into the browse experience.
 		color: var(--color-text-primary);
 	}
 
+	.panel-controls {
+		display: flex;
+		gap: 0.5rem;
+		align-items: center;
+	}
+
+	.toggle-button,
 	.close-button {
 		background: none;
 		border: none;
@@ -253,6 +272,11 @@ Integrates the animator module directly into the browse experience.
 		padding: 0.25rem;
 		border-radius: 0.25rem;
 		transition: background-color 0.2s;
+	}
+
+	.toggle-button:hover {
+		background: var(--color-surface-hover);
+		color: var(--color-primary);
 	}
 
 	.close-button:hover {
@@ -292,8 +316,12 @@ Integrates the animator module directly into the browse experience.
 	}
 
 	@keyframes spin {
-		0% { transform: rotate(0deg); }
-		100% { transform: rotate(360deg); }
+		0% {
+			transform: rotate(0deg);
+		}
+		100% {
+			transform: rotate(360deg);
+		}
 	}
 
 	.sequence-info h4 {

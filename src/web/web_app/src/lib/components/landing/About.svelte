@@ -6,11 +6,128 @@
   onMount(() => {
     isVisible = true;
   });
+
+  // Contact form state
+  let formData = $state({
+    name: '',
+    email: '',
+    subject: '',
+    message: ''
+  });
+
+  let isSubmitting = $state(false);
+  let submitStatus = $state<'idle' | 'success' | 'error'>('idle');
+
+  // Form validation
+  let formErrors = $derived(() => {
+    const errors: Record<string, string> = {};
+    
+    if (!formData.name.trim()) {
+      errors.name = 'Name is required';
+    }
+    
+    if (!formData.email.trim()) {
+      errors.email = 'Email is required';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      errors.email = 'Please enter a valid email address';
+    }
+    
+    if (!formData.subject.trim()) {
+      errors.subject = 'Subject is required';
+    }
+    
+    if (!formData.message.trim()) {
+      errors.message = 'Message is required';
+    }
+    
+    return errors;
+  });
+
+  let isFormValid = $derived(Object.keys(formErrors).length === 0);
+
+  async function handleSubmit(event: Event) {
+    event.preventDefault();
+    
+    if (!isFormValid || isSubmitting) return;
+    
+    isSubmitting = true;
+    submitStatus = 'idle';
+    
+    try {
+      // Simulate form submission - replace with actual endpoint
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      // Reset form on success
+      formData = {
+        name: '',
+        email: '',
+        subject: '',
+        message: ''
+      };
+      
+      submitStatus = 'success';
+      console.log('📧 Contact form submitted:', formData);
+    } catch (error) {
+      console.error('Form submission error:', error);
+      submitStatus = 'error';
+    } finally {
+      isSubmitting = false;
+    }
+  }
+
+  function updateField(field: keyof typeof formData, value: string) {
+    formData[field] = value;
+  }
+
+  // Resource categories for links section
+  const resourceCategories = [
+    {
+      title: "Educational Resources",
+      icon: "📚",
+      links: [
+        {
+          title: "Level 1 PDF Book",
+          description: "Comprehensive introduction to The Kinetic Alphabet methodology",
+          url: "https://drive.google.com/file/d/1cgAWbrFiLgUSDEsCB0Mmu2d7Bu5PW45a/view?usp=drive_link",
+        },
+        {
+          title: "Vulcan Tech Gospel",
+          description: "Advanced technical concepts and methodologies",
+          url: "/links/vulcan-tech-gospel",
+        },
+        {
+          title: "Charlie Cushing's 9 Square Theory",
+          description: "Foundational movement analysis framework",
+          url: "/links/charlie-cushing-9-square-theory",
+        }
+      ]
+    },
+    {
+      title: "Community & Development",
+      icon: "🤝",
+      links: [
+        {
+          title: "GitHub Repository",
+          description: "Source code and development updates",
+          url: "https://github.com/austencloud/tka-sequence-constructor",
+        },
+        {
+          title: "Flow Arts Resources",
+          description: "External community links and tutorials",
+          url: "https://www.spinmorepoi.com/",
+        }
+      ]
+    }
+  ];
+
+  function handleLinkClick(url: string) {
+    console.log(`🔗 Link clicked: ${url}`);
+  }
 </script>
 
 <svelte:head>
   <title>About - The Kinetic Alphabet</title>
-  <meta name="description" content="Learn about The Kinetic Alphabet project, its philosophy, and the innovative approach to flow arts education and choreography." />
+  <meta name="description" content="Learn about The Kinetic Alphabet project, get in touch, and find resources for flow arts education." />
 </svelte:head>
 
 <main class="about-container">
@@ -81,84 +198,191 @@
     </div>
   </section>
 
-  <!-- Development History -->
-  <section class="development">
+  <!-- Resources & Links Section -->
+  <section class="resources-links">
     <div class="container">
-      <h2>Development Journey</h2>
-      <div class="timeline">
-        <div class="timeline-item">
-          <div class="timeline-marker"></div>
-          <div class="timeline-content">
-            <h3>Conceptual Foundation</h3>
-            <p>
-              Initial development of systematic approaches to movement analysis 
-              and the foundational principles of the notation system.
-            </p>
+      <h2>Resources & Links</h2>
+      <div class="resources-grid">
+        {#each resourceCategories as category}
+          <div class="resource-category">
+            <div class="category-header">
+              <div class="category-icon">{category.icon}</div>
+              <h3 class="category-title">{category.title}</h3>
+            </div>
+            <div class="links-list">
+              {#each category.links as link}
+                <a
+                  href={link.url}
+                  target={link.url.startsWith('http') ? '_blank' : '_self'}
+                  rel={link.url.startsWith('http') ? 'noopener noreferrer' : ''}
+                  class="resource-link"
+                  onclick={() => handleLinkClick(link.url)}
+                >
+                  <div class="link-content">
+                    <h4 class="link-title">{link.title}</h4>
+                    <p class="link-description">{link.description}</p>
+                  </div>
+                  <div class="link-arrow">→</div>
+                </a>
+              {/each}
+            </div>
           </div>
-        </div>
-
-        <div class="timeline-item">
-          <div class="timeline-marker"></div>
-          <div class="timeline-content">
-            <h3>Level 1 Documentation</h3>
-            <p>
-              Creation of comprehensive educational materials establishing 
-              core concepts and practical applications of the system.
-            </p>
-          </div>
-        </div>
-
-        <div class="timeline-item">
-          <div class="timeline-marker"></div>
-          <div class="timeline-content">
-            <h3>Digital Tool Development</h3>
-            <p>
-              Development of The Kinetic Constructor and related software 
-              tools for sequence visualization and creation.
-            </p>
-          </div>
-        </div>
-
-        <div class="timeline-item">
-          <div class="timeline-marker"></div>
-          <div class="timeline-content">
-            <h3>Community Platform</h3>
-            <p>
-              Building platforms for community engagement, collaboration, 
-              and sharing of sequences and educational resources.
-            </p>
-          </div>
-        </div>
+        {/each}
       </div>
     </div>
   </section>
 
-  <!-- Technical Innovation -->
-  <section class="innovation">
+  <!-- Contact Section -->
+  <section class="contact-section">
     <div class="container">
-      <h2>Technical Innovation</h2>
-      <div class="innovation-content">
-        <div class="innovation-text">
-          <h3>Advanced Visualization</h3>
-          <p>
-            The Kinetic Constructor represents cutting-edge web technology, 
-            providing real-time visualization of complex movement sequences 
-            through sophisticated rendering systems.
-          </p>
+      <div class="contact-grid">
+        <!-- Contact Information -->
+        <div class="contact-info">
+          <h2>Get In Touch</h2>
           
-          <h3>Cross-Platform Compatibility</h3>
-          <p>
-            Our tools work seamlessly across desktop and web platforms, 
-            ensuring accessibility for practitioners regardless of their 
-            preferred devices or operating systems.
-          </p>
+          <div class="info-card">
+            <div class="info-icon">📧</div>
+            <div class="info-content">
+              <h3>Email</h3>
+              <p>tkaflowarts@gmail.com</p>
+              <a href="mailto:tkaflowarts@gmail.com" class="contact-link">
+                Send us an email
+              </a>
+            </div>
+          </div>
+
+          <div class="info-card">
+            <div class="info-icon">🔧</div>
+            <div class="info-content">
+              <h3>Technical Support</h3>
+              <p>Need help with the Constructor or other tools?</p>
+              <a href="mailto:tkaflowarts@gmail.com?subject=Technical Support" class="contact-link">
+                Get technical help
+              </a>
+            </div>
+          </div>
+
+          <div class="info-card">
+            <div class="info-icon">🤝</div>
+            <div class="info-content">
+              <h3>Collaborations</h3>
+              <p>Interested in partnerships or contributing?</p>
+              <a href="mailto:tkaflowarts@gmail.com?subject=Collaboration" class="contact-link">
+                Discuss collaboration
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Contact Form -->
+        <div class="contact-form-section">
+          <h2>Send Us a Message</h2>
           
-          <h3>Data-Driven Approach</h3>
-          <p>
-            Sequences are stored as structured data, enabling powerful 
-            analysis, transformation, and sharing capabilities while 
-            maintaining precision and consistency.
-          </p>
+          <form class="contact-form" onsubmit={handleSubmit}>
+            <!-- Name Field -->
+            <div class="form-group">
+              <label for="name" class="form-label">Name *</label>
+              <input
+                type="text"
+                id="name"
+                class="form-input"
+                class:error={formErrors.name}
+                value={formData.name}
+                oninput={(e) => updateField('name', e.currentTarget.value)}
+                placeholder="Your name"
+                required
+              />
+              {#if formErrors.name}
+                <span class="error-message">{formErrors.name}</span>
+              {/if}
+            </div>
+
+            <!-- Email Field -->
+            <div class="form-group">
+              <label for="email" class="form-label">Email *</label>
+              <input
+                type="email"
+                id="email"
+                class="form-input"
+                class:error={formErrors.email}
+                value={formData.email}
+                oninput={(e) => updateField('email', e.currentTarget.value)}
+                placeholder="your.email@example.com"
+                required
+              />
+              {#if formErrors.email}
+                <span class="error-message">{formErrors.email}</span>
+              {/if}
+            </div>
+
+            <!-- Subject Field -->
+            <div class="form-group">
+              <label for="subject" class="form-label">Subject *</label>
+              <input
+                type="text"
+                id="subject"
+                class="form-input"
+                class:error={formErrors.subject}
+                value={formData.subject}
+                oninput={(e) => updateField('subject', e.currentTarget.value)}
+                placeholder="What's this about?"
+                required
+              />
+              {#if formErrors.subject}
+                <span class="error-message">{formErrors.subject}</span>
+              {/if}
+            </div>
+
+            <!-- Message Field -->
+            <div class="form-group">
+              <label for="message" class="form-label">Message *</label>
+              <textarea
+                id="message"
+                class="form-textarea"
+                class:error={formErrors.message}
+                value={formData.message}
+                oninput={(e) => updateField('message', e.currentTarget.value)}
+                placeholder="Tell us what's on your mind..."
+                rows="6"
+                required
+              ></textarea>
+              {#if formErrors.message}
+                <span class="error-message">{formErrors.message}</span>
+              {/if}
+            </div>
+
+            <!-- Submit Button -->
+            <button
+              type="submit"
+              class="submit-button"
+              disabled={!isFormValid || isSubmitting}
+            >
+              {#if isSubmitting}
+                <span class="button-spinner">
+                  <svg viewBox="0 0 24 24" width="16" height="16">
+                    <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none"/>
+                    <path d="M12,2 A10,10 0 0,1 22,12" stroke="currentColor" stroke-width="2" fill="none">
+                      <animateTransform attributeName="transform" attributeType="XML" type="rotate" from="0 12 12" to="360 12 12" dur="1s" repeatCount="indefinite"/>
+                    </path>
+                  </svg>
+                </span>
+                Sending...
+              {:else}
+                Send Message
+              {/if}
+            </button>
+
+            <!-- Status Messages -->
+            {#if submitStatus === 'success'}
+              <div class="status-message success">
+                ✅ Message sent successfully! We'll get back to you soon.
+              </div>
+            {:else if submitStatus === 'error'}
+              <div class="status-message error">
+                ❌ Failed to send message. Please try again or email us directly.
+              </div>
+            {/if}
+          </form>
         </div>
       </div>
     </div>
@@ -227,8 +451,8 @@
   /* Content Sections */
   .philosophy,
   .project-overview,
-  .development,
-  .innovation {
+  .resources-links,
+  .contact-section {
     padding: var(--spacing-3xl) 0;
   }
 
@@ -301,67 +525,14 @@
     line-height: 1.6;
   }
 
-  /* Timeline */
-  .timeline {
-    max-width: 800px;
-    margin: 0 auto;
-    position: relative;
+  /* Resources & Links Section */
+  .resources-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: var(--spacing-2xl);
   }
 
-  .timeline::before {
-    content: '';
-    position: absolute;
-    left: 20px;
-    top: 0;
-    bottom: 0;
-    width: 2px;
-    background: linear-gradient(to bottom, #667eea, #764ba2);
-  }
-
-  .timeline-item {
-    position: relative;
-    margin-bottom: var(--spacing-2xl);
-    padding-left: var(--spacing-3xl);
-  }
-
-  .timeline-marker {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 40px;
-    height: 40px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    border: 3px solid rgba(255, 255, 255, 0.2);
-    border-radius: 50%;
-    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
-  }
-
-  .timeline-content {
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(10px);
-    padding: var(--spacing-lg);
-    border-radius: 1rem;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-  }
-
-  .timeline-content h3 {
-    color: var(--text-color);
-    margin-bottom: var(--spacing-md);
-    font-weight: 600;
-  }
-
-  .timeline-content p {
-    color: rgba(255, 255, 255, 0.8);
-    line-height: 1.6;
-  }
-
-  /* Innovation Section */
-  .innovation-content {
-    max-width: 900px;
-    margin: 0 auto;
-  }
-
-  .innovation-text {
+  .resource-category {
     background: rgba(255, 255, 255, 0.05);
     backdrop-filter: blur(10px);
     padding: var(--spacing-xl);
@@ -369,22 +540,254 @@
     border: 1px solid rgba(255, 255, 255, 0.1);
   }
 
-  .innovation-text h3 {
+  .category-header {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
+  }
+
+  .category-icon {
+    font-size: 2rem;
+  }
+
+  .category-title {
     color: var(--text-color);
-    margin-bottom: var(--spacing-md);
-    margin-top: var(--spacing-lg);
-    font-size: 1.25rem;
+    font-size: 1.5rem;
     font-weight: 600;
+    margin: 0;
   }
 
-  .innovation-text h3:first-child {
-    margin-top: 0;
+  .links-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
   }
 
-  .innovation-text p {
+  .resource-link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--spacing-md);
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--border-radius);
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.2s ease;
+  }
+
+  .resource-link:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateX(4px);
+  }
+
+  .link-content {
+    flex: 1;
+  }
+
+  .link-title {
+    color: var(--text-color);
+    font-weight: 600;
+    margin: 0 0 4px 0;
+    font-size: 1rem;
+  }
+
+  .link-description {
+    color: rgba(255, 255, 255, 0.7);
+    margin: 0;
+    font-size: var(--font-size-sm);
+  }
+
+  .link-arrow {
+    color: #667eea;
+    font-weight: bold;
+    opacity: 0.7;
+    transition: opacity 0.2s ease;
+  }
+
+  .resource-link:hover .link-arrow {
+    opacity: 1;
+  }
+
+  /* Contact Section */
+  .contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-3xl);
+    align-items: start;
+  }
+
+  /* Contact Info */
+  .contact-info h2,
+  .contact-form-section h2 {
+    color: var(--text-color);
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: var(--spacing-xl);
+  }
+
+  .info-card {
+    display: flex;
+    gap: var(--spacing-lg);
+    padding: var(--spacing-lg);
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 1rem;
+    margin-bottom: var(--spacing-lg);
+    transition: all 0.3s ease;
+  }
+
+  .info-card:hover {
+    background: rgba(255, 255, 255, 0.08);
+    transform: translateY(-2px);
+  }
+
+  .info-icon {
+    font-size: 2rem;
+    flex-shrink: 0;
+  }
+
+  .info-content h3 {
+    color: var(--text-color);
+    font-weight: 600;
+    margin-bottom: var(--spacing-sm);
+  }
+
+  .info-content p {
     color: rgba(255, 255, 255, 0.8);
-    line-height: 1.7;
-    font-size: 1.1rem;
+    margin-bottom: var(--spacing-sm);
+    line-height: 1.5;
+  }
+
+  .contact-link {
+    color: #667eea;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s ease;
+  }
+
+  .contact-link:hover {
+    color: #764ba2;
+    text-decoration: underline;
+  }
+
+  /* Contact Form */
+  .contact-form {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 1.5rem;
+    padding: var(--spacing-xl);
+  }
+
+  .form-group {
+    margin-bottom: var(--spacing-lg);
+  }
+
+  .form-label {
+    display: block;
+    color: var(--text-color);
+    font-weight: 600;
+    margin-bottom: var(--spacing-sm);
+  }
+
+  .form-input,
+  .form-textarea {
+    width: 100%;
+    padding: var(--spacing-md);
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: var(--border-radius);
+    color: var(--text-color);
+    font-size: var(--font-size-base);
+    transition: all 0.2s ease;
+    box-sizing: border-box;
+  }
+
+  .form-input::placeholder,
+  .form-textarea::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+  }
+
+  .form-input:focus,
+  .form-textarea:focus {
+    outline: none;
+    border-color: #667eea;
+    background: rgba(255, 255, 255, 0.15);
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+  }
+
+  .form-input.error,
+  .form-textarea.error {
+    border-color: #ff6b6b;
+    box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.2);
+  }
+
+  .form-textarea {
+    resize: vertical;
+    min-height: 120px;
+  }
+
+  .error-message {
+    display: block;
+    color: #ff6b6b;
+    font-size: var(--font-size-sm);
+    margin-top: var(--spacing-xs);
+  }
+
+  .submit-button {
+    width: 100%;
+    padding: var(--spacing-md) var(--spacing-lg);
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: var(--border-radius);
+    font-size: var(--font-size-base);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-sm);
+  }
+
+  .submit-button:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+  }
+
+  .submit-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  .button-spinner {
+    display: flex;
+    align-items: center;
+  }
+
+  .status-message {
+    margin-top: var(--spacing-md);
+    padding: var(--spacing-md);
+    border-radius: var(--border-radius);
+    text-align: center;
+    font-weight: 500;
+  }
+
+  .status-message.success {
+    background: rgba(34, 197, 94, 0.2);
+    color: #22c55e;
+    border: 1px solid rgba(34, 197, 94, 0.3);
+  }
+
+  .status-message.error {
+    background: rgba(239, 68, 68, 0.2);
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.3);
   }
 
   /* Mobile responsive */
@@ -405,8 +808,8 @@
 
     .philosophy,
     .project-overview,
-    .development,
-    .innovation {
+    .resources-links,
+    .contact-section {
       padding: var(--spacing-2xl) 0;
     }
 
@@ -419,7 +822,7 @@
     }
 
     .philosophy-content,
-    .innovation-text {
+    .contact-form {
       padding: var(--spacing-lg);
     }
 
@@ -428,17 +831,22 @@
       gap: var(--spacing-lg);
     }
 
-    .timeline::before {
-      left: 15px;
+    .resources-grid {
+      grid-template-columns: 1fr;
+      gap: var(--spacing-lg);
     }
 
-    .timeline-item {
-      padding-left: var(--spacing-2xl);
+    .contact-grid {
+      grid-template-columns: 1fr;
+      gap: var(--spacing-2xl);
     }
 
-    .timeline-marker {
-      width: 30px;
-      height: 30px;
+    .info-card {
+      padding: var(--spacing-md);
+    }
+
+    .form-group {
+      margin-bottom: var(--spacing-md);
     }
   }
 
@@ -450,11 +858,17 @@
       transform: none;
     }
 
-    .overview-card {
+    .overview-card,
+    .resource-link,
+    .info-card,
+    .submit-button {
       transition: none;
     }
 
-    .overview-card:hover {
+    .overview-card:hover,
+    .resource-link:hover,
+    .info-card:hover,
+    .submit-button:hover {
       transform: none;
     }
   }

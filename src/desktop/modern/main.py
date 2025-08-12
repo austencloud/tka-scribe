@@ -119,11 +119,16 @@ def main():
             return container
 
         # UI mode: create Qt app and main window
+        # Suppress Qt layout warnings that are harmless but noisy
+        import os
+
         from PyQt6.QtWidgets import QApplication
 
         from desktop.modern.core.application.application_factory import (
             ApplicationFactory,
         )
+
+        os.environ["QT_LOGGING_RULES"] = "qt.qpa.xcb.warning=false"
 
         app = QApplication.instance() or QApplication([])
         container = ApplicationFactory.create_app(config.mode)

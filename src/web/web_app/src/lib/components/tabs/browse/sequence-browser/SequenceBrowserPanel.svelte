@@ -14,14 +14,14 @@
 	const {
 		sequences = [],
 		isLoading = false,
-		onSequenceSelected = () => {},
 		onBackToFilters = () => {},
+		onAction = () => {},
 	} = $props<{
 		filter?: { type: FilterType; value: FilterValue } | null;
 		sequences?: BrowseSequenceMetadata[];
 		isLoading?: boolean;
-		onSequenceSelected?: (sequence: BrowseSequenceMetadata) => void;
 		onBackToFilters?: () => void;
+		onAction?: (action: string, sequence: BrowseSequenceMetadata) => void;
 	}>();
 
 	// ✅ RESOLVE SERVICES: Get services from DI container
@@ -154,13 +154,6 @@
 		stateManager.saveViewState(newViewMode);
 	}
 
-	function handleSequenceSelect(sequence: BrowseSequenceMetadata) {
-		console.log('📄 Sequence selected:', sequence.word);
-		onSequenceSelected(sequence);
-		// Save selection state
-		stateManager.saveSelectionState(sequence.id, null);
-	}
-
 	function handleBackToFilters() {
 		console.log('🔙 Back to filters');
 		onBackToFilters();
@@ -197,12 +190,7 @@
 		/>
 
 		{#if hasSequences()}
-			<SequenceGrid
-				sequences={sortedSequences()}
-				{viewMode}
-				{thumbnailService}
-				onSequenceSelected={handleSequenceSelect}
-			/>
+			<SequenceGrid sequences={sortedSequences()} {viewMode} {thumbnailService} {onAction} />
 		{/if}
 	</div>
 

@@ -1,14 +1,15 @@
 # src/main_window/main_widget/sequence_card_tab/components/display/scroll_view.py
 import logging
 from typing import TYPE_CHECKING
-from PyQt6.QtWidgets import QWidget, QGridLayout, QApplication
-from PyQt6.QtCore import Qt
 
+from PyQt6.QtCore import Qt
+from PyQt6.QtWidgets import QApplication, QGridLayout, QWidget
 
 if TYPE_CHECKING:
     from main_window.main_widget.sequence_card_tab.components.display.sequence_display_manager import (
         DisplayConfig,
     )
+
     from ...tab import SequenceCardTab
 
 
@@ -40,9 +41,6 @@ class ScrollView:
             and self.sequence_card_tab.content_area.scroll_layout is not None
         ):
             self._clear_scroll_layout()
-            self.sequence_card_tab.content_area.scroll_layout.addLayout(
-                self.preview_grid
-            )
 
         else:
             logging.debug("Skipping _clear_scroll_layout - scroll_layout not ready yet")
@@ -56,7 +54,7 @@ class ScrollView:
         # MINIMAL MARGINS: Set zero content margins for the preview grid
         self.preview_grid.setContentsMargins(0, 0, 0, 0)  # No margins at all
 
-        # Add the grid layout to the scroll layout
+        # Add the grid layout to the scroll layout (only once)
         if (
             hasattr(self.sequence_card_tab.content_area, "scroll_layout")
             and self.sequence_card_tab.content_area.scroll_layout is not None

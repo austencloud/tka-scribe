@@ -17,8 +17,15 @@ class TKAMainWindow(QMainWindow):
     Simple window container that delegates all business logic to the orchestrator.
     """
 
+    _instance_count = 0
+
     def __init__(self, container=None):
         super().__init__()
+
+        TKAMainWindow._instance_count += 1
+        print(
+            f"🔧 [MAIN_WINDOW] Creating TKAMainWindow instance #{TKAMainWindow._instance_count}"
+        )
 
         self.container = container
 

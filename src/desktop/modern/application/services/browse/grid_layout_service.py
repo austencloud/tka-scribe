@@ -55,12 +55,31 @@ class GridLayoutService:
             )
 
             if self.grid_widget:
-                self.grid_layout = QGridLayout(self.grid_widget)
+                # Check if widget already has a layout and clear it first
+                existing_layout = self.grid_widget.layout()
+                if existing_layout:
+                    logger.debug(
+                        "🔧 [GRID_LAYOUT] Clearing existing layout before creating new one"
+                    )
+                    # Clear the existing layout
+                    while existing_layout.count():
+                        child = existing_layout.takeAt(0)
+                        if child.widget():
+                            child.widget().setParent(None)
+                    # Delete the old layout
+                    existing_layout.setParent(None)
+                    existing_layout.deleteLater()
+
+                # Create new layout without automatically setting it on the widget
+                self.grid_layout = QGridLayout()
                 self.grid_layout.setSpacing(15)
 
                 # Set column stretch factors for 3 equal columns
                 for col in range(3):
                     self.grid_layout.setColumnStretch(col, 1)
+
+                # Now set the layout on the widget
+                self.grid_widget.setLayout(self.grid_layout)
 
                 logger.info(
                     f"🔧 [GRID_LAYOUT] Recreated grid layout: {self.grid_layout}"

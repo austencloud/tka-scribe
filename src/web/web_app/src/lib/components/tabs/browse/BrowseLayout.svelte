@@ -4,11 +4,13 @@
 	// ✅ PURE RUNES: Props using modern Svelte 5 runes
 	const {
 		isNavigationCollapsed = false,
+		isRightPanelCollapsed = false,
 		navigationSidebar,
 		centerPanel,
 		rightPanel,
 	} = $props<{
 		isNavigationCollapsed?: boolean;
+		isRightPanelCollapsed?: boolean;
 		navigationSidebar: Snippet;
 		centerPanel: Snippet;
 		rightPanel?: Snippet;
@@ -29,7 +31,7 @@
 
 	<!-- Right side - Sequence Viewer Panel (optional) -->
 	{#if rightPanel}
-		<div class="right-panel">
+		<div class="right-panel" class:collapsed={isRightPanelCollapsed}>
 			{@render rightPanel()}
 		</div>
 	{/if}
@@ -79,6 +81,11 @@
 		overflow: hidden;
 		min-width: 0;
 		border-left: var(--glass-border);
+		transition: flex-basis var(--transition-normal);
+	}
+
+	.right-panel.collapsed {
+		flex: 0 0 60px; /* Collapsed width - same as navigation */
 	}
 
 	/* Responsive design */

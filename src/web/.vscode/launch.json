@@ -4,9 +4,10 @@
         {
             "type": "chrome",
             "request": "launch",
-            "name": "Launch TKA Web App",
+            "name": "🚀 Launch TKA Web App",
             "url": "http://localhost:5174",
-            "webRoot": "${workspaceFolder}/web_app/src"
+            "webRoot": "${workspaceFolder}/web_app/src",
+            "preLaunchTask": "npm: dev"
         }
     ]
 }
