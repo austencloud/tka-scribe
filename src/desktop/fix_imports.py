@@ -6,10 +6,8 @@ This script systematically finds and fixes relative import issues across the ent
 It converts relative imports to absolute imports using the full module path.
 """
 
-import os
 import re
 from pathlib import Path
-from typing import Dict, List, Set
 
 class ImportFixer:
     def __init__(self, base_path: str):

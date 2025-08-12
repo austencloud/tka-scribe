@@ -299,16 +299,12 @@ class ExportPanel(QWidget):
     def set_workbench_widget(self, workbench_widget):
         """Connect workbench widget."""
         self.workbench_widget = workbench_widget
-        print(
-            f"🔗 [EXPORT_PANEL] Workbench connected: {type(workbench_widget).__name__}"
-        )
 
         # Connect to sequence changes
         if hasattr(workbench_widget, "sequence_modified"):
             workbench_widget.sequence_modified.connect(
                 self._on_workbench_sequence_changed
             )
-            print("🔗 [EXPORT_PANEL] Connected to sequence changes")
 
         self._update_preview()
 

@@ -64,6 +64,7 @@ def register_learn_services(container: DIContainer) -> None:
         container.register_factory(
             IPictographDataManager,
             lambda: PictographDataManager(
+                cache_manager=None,
                 dataset_query=container.resolve(IDatasetQuery)
             ),
         )

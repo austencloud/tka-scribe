@@ -51,10 +51,7 @@ def register_letter_determination_services(container: DIContainer) -> None:
         # Register dataset provider (singleton for caching)
         container.register_factory(
             IPictographDatasetProvider,
-            lambda: PictographDatasetProvider(
-                csv_manager=container.resolve(PictographCSVManager),
-                dataset_query=container.resolve(DatasetQuery),
-            ),
+            lambda: PictographDatasetProvider(),
         )
         logger.info("Registered IPictographDatasetProvider")
 

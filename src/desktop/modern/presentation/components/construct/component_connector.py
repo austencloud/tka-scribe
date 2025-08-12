@@ -90,7 +90,6 @@ class ComponentConnector(QObject):
         self.export_panel = export_panel
         if export_panel and hasattr(export_panel, "export_requested"):
             export_panel.export_requested.connect(self._on_export_requested)
-            print("🔤 [COMPONENT_CONNECTOR] Export panel connected")
 
         # CRITICAL: Connect workbench to export panel for sequence data access
         if self.workbench and export_panel:
@@ -183,9 +182,6 @@ class ComponentConnector(QObject):
 
     def _on_export_requested(self, export_type: str, options: dict):
         """Handle export request from export panel (NEW)."""
-        print(
-            f"🔤 [COMPONENT_CONNECTOR] Export requested: {export_type} with options: {options}"
-        )
         self.export_requested.emit(export_type, options)
 
         # Trigger actual export based on type
@@ -196,7 +192,6 @@ class ComponentConnector(QObject):
 
     def _handle_current_sequence_export(self, options: dict):
         """Handle current sequence export (replaces old save image button) (NEW)."""
-        print("🔤 [COMPONENT_CONNECTOR] Export request delegated to export panel...")
         # The export panel now handles this directly with its workbench connection
         # No need to duplicate logic here
 
@@ -262,4 +257,5 @@ class ComponentConnector(QObject):
                 self.start_position_picker.set_transition_mode(False)
         elif target_mode == "export_panel" and self.export_panel:
             # Finalize export panel transition
-            print("🔤 [COMPONENT_CONNECTOR] Export panel transition finalized")
+            if hasattr(self.export_panel, "_update_preview"):
+                self.export_panel._update_preview()
