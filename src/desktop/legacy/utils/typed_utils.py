@@ -9,7 +9,8 @@ that were previously untyped or poorly typed.
 
 import logging
 from collections.abc import Callable
-from typing import (,Optional
+from typing import (
+    Optional,
     Any,
     Generic,
     Protocol,

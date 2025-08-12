@@ -43,7 +43,7 @@ class RealAssetProvider(IAssetProvider):
                 return self._svg_cache[cache_key]
 
             # Construct path to grid SVG
-            grid_path = self._assets_base_path / "images" / "grids" / f"{grid_mode}.svg"
+            grid_path = self._assets_base_path / "images" / "grid" / f"{grid_mode}_grid.svg"
 
             if not grid_path.exists():
                 logger.warning(f"Grid SVG not found: {grid_path}")
@@ -217,22 +217,26 @@ class RealAssetProvider(IAssetProvider):
             return svg_content
 
     def _get_default_assets_path(self) -> Path:
-        """Get default path to TKA assets."""
-        # This should point to your actual assets directory
-        # Adjust based on your project structure
+        """Get default path to TKA desktop assets."""
         try:
-            # Try to find assets relative to this file
+            # Find the desktop directory that contains images
             current_file = Path(__file__)
 
-            # Navigate up to find the TKA root
-            tka_root = current_file
-            while tka_root.name != "TKA" and tka_root.parent != tka_root:
-                tka_root = tka_root.parent
+            # Navigate up to find the desktop directory
+            desktop_root = current_file
+            while desktop_root.name != "desktop" and desktop_root.parent != desktop_root:
+                desktop_root = desktop_root.parent
 
-            if tka_root.name == "TKA":
-                return tka_root
+            if desktop_root.name == "desktop":
+                return desktop_root
 
-            # Fallback to current working directory
+            # Fallback: try to find desktop/images from current working directory
+            cwd = Path.cwd()
+            desktop_path = cwd / "src" / "desktop"
+            if desktop_path.exists():
+                return desktop_path
+
+            # Last fallback to current working directory
             return Path.cwd()
 
         except Exception as e:

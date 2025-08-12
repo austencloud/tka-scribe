@@ -8,10 +8,9 @@ import os
 
 
 def get_image_path(filename: str) -> str:
-    """Get the path to an image file from the root assets directory."""
+    """Get the path to an image file from the desktop assets directory."""
     assets_path = os.path.join(
         os.path.dirname(os.path.abspath(__file__)),
-        "..",
         "..",
         "..",
         "..",
@@ -23,6 +22,6 @@ def get_image_path(filename: str) -> str:
 
     if not os.path.exists(normalized_path):
         print(f"Warning: Asset not found: {normalized_path}")
-        print("Please ensure required assets are in root/images/")
+        print("Please ensure required assets are in desktop/images/")
 
     return normalized_path
