@@ -171,45 +171,49 @@
 
 <style>
 	.sequence-card {
-		background: var(--card);
-		border: 2px solid var(--border);
-		border-radius: 12px;
-		overflow: hidden;
-		cursor: pointer;
-		transition: all 0.3s ease;
-		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-		display: flex;
-		flex-direction: column;
-		min-height: 320px;
-	}
+	background: var(--surface-glass);
+	backdrop-filter: var(--glass-backdrop);
+	border: var(--glass-border);
+	border-radius: 12px;
+	overflow: hidden;
+	cursor: pointer;
+	transition: all var(--transition-normal);
+	box-shadow: var(--shadow-glass);
+	display: flex;
+	flex-direction: column;
+	min-height: 320px;
+}
 
 	.sequence-card:hover {
-		border-color: var(--primary);
-		transform: translateY(-2px);
-		box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-	}
+	background: var(--surface-hover);
+	border: var(--glass-border-hover);
+	transform: translateY(-2px);
+	box-shadow: var(--shadow-glass-hover);
+}
 
 	/* Card Header */
 	.card-header {
-		padding: 12px 16px;
-		background: var(--muted) / 10;
-		border-bottom: 1px solid var(--border);
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		gap: 8px;
-	}
+	padding: 12px 16px;
+	background: rgba(255, 255, 255, 0.03);
+	backdrop-filter: blur(10px);
+	border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	gap: 8px;
+}
 
 	.sequence-name {
-		margin: 0;
-		font-size: 16px;
-		font-weight: 600;
-		color: var(--foreground);
-		flex: 1;
-		overflow: hidden;
-		text-overflow: ellipsis;
-		white-space: nowrap;
-	}
+	margin: 0;
+	font-size: 16px;
+	font-weight: 600;
+	color: rgba(255, 255, 255, 0.95);
+	text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+	flex: 1;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
 
 	.card-actions {
 		display: flex;
@@ -218,36 +222,40 @@
 	}
 
 	.action-btn {
-		width: 28px;
-		height: 28px;
-		border: 1px solid var(--border);
-		border-radius: 6px;
-		background: var(--background);
-		cursor: pointer;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		font-size: 12px;
-		transition: all 0.2s ease;
-		opacity: 0.7;
-	}
+	width: 28px;
+	height: 28px;
+	border: 1px solid rgba(255, 255, 255, 0.2);
+	border-radius: 6px;
+	background: rgba(255, 255, 255, 0.05);
+	backdrop-filter: blur(8px);
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 12px;
+	transition: all var(--transition-fast);
+	opacity: 0.8;
+}
 
 	.action-btn:hover {
-		opacity: 1;
-		background: var(--muted);
-		border-color: var(--primary);
-		transform: scale(1.1);
-	}
+	opacity: 1;
+	background: rgba(255, 255, 255, 0.1);
+	border-color: rgba(255, 255, 255, 0.4);
+	transform: scale(1.1);
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
 
 	/* Card Preview */
 	.card-preview {
-		flex: 1;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		min-height: 180px;
-		background: var(--muted) / 5;
-	}
+	flex: 1;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	min-height: 180px;
+	background: rgba(255, 255, 255, 0.02);
+	position: relative;
+	overflow: hidden;
+}
 
 	.sequence-preview {
 		width: 100%;
@@ -356,10 +364,11 @@
 
 	/* Card Footer */
 	.card-footer {
-		padding: 12px 16px;
-		background: var(--muted) / 5;
-		border-top: 1px solid var(--border);
-	}
+	padding: 12px 16px;
+	background: rgba(255, 255, 255, 0.03);
+	backdrop-filter: blur(10px);
+	border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
 
 	.card-metadata {
 		display: flex;
@@ -375,19 +384,21 @@
 	}
 
 	.metadata-label {
-		color: var(--muted-foreground);
-		font-weight: 500;
-	}
+	color: rgba(255, 255, 255, 0.6);
+	font-weight: 500;
+	text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
 
 	.metadata-value {
-		color: var(--foreground);
-		font-weight: 600;
-		overflow: hidden;
-		text-overflow: ellipsis;
-		white-space: nowrap;
-		max-width: 120px;
-		text-align: right;
-	}
+	color: rgba(255, 255, 255, 0.9);
+	font-weight: 600;
+	text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	max-width: 120px;
+	text-align: right;
+}
 
 	/* Difficulty Colors */
 	.difficulty-beginner {

@@ -8,6 +8,7 @@
  */
 
 import type { ArrowData, MotionData, PictographData } from '$lib/domain';
+import { Location, MotionType, RotationDirection } from '$lib/domain';
 import type {
 	IArrowAdjustmentCalculator,
 	IArrowCoordinateSystemService,
@@ -143,9 +144,15 @@ export class ArrowPositioningOrchestrator implements IArrowPositioningOrchestrat
 			initialPosition = this.ensureValidPosition(initialPosition);
 			const rotation = this.rotationCalculator.calculateRotation(motion, location);
 
-			// Use simplified adjustment for synchronous operation
-			const basicAdjustment = this.getBasicAdjustment(motion, letter);
-			const [adjustmentX, adjustmentY] = this.extractAdjustmentValues(basicAdjustment);
+			// Use proper adjustment calculator for synchronous operation
+			const adjustment = this.adjustmentCalculator.calculateAdjustmentSync(
+				pictographData,
+				motion,
+				letter,
+				location,
+				arrowData.color
+			);
+			const [adjustmentX, adjustmentY] = this.extractAdjustmentValues(adjustment);
 
 			const finalX = initialPosition.x + adjustmentX;
 			const finalY = initialPosition.y + adjustmentY;
@@ -330,11 +337,201 @@ export class ArrowPositioningOrchestrator implements IArrowPositioningOrchestrat
 		return [0.0, 0.0];
 	}
 
-	private getBasicAdjustment(_motion: MotionData, _letter: string): Point {
-		/**Get basic adjustment for synchronous operations.*/
-		// Simplified adjustment logic for backward compatibility
-		// This is used when full async adjustment calculation is not available
+	private getBasicAdjustment(motion: MotionData, _letter: string): Point {
+		/**Get basic adjustment for synchronous operations with directional tuple processing.*/
+		try {
+			// Calculate the arrow location for directional processing
+			const location = this.locationCalculator.calculateLocation(motion, {
+				letter: _letter,
+			} as any);
+
+			// Get base adjustment values based on motion type and turns
+			const baseAdjustment = this.getBaseAdjustmentValues(motion);
+
+			// Apply directional tuple processing for location-specific adjustments
+			const finalAdjustment = this.processDirectionalTuples(baseAdjustment, motion, location);
+
+			console.debug(
+				`Basic adjustment for ${motion.motion_type} ${motion.turns} turns at ${location}: (${finalAdjustment.x}, ${finalAdjustment.y})`
+			);
+			return finalAdjustment;
+		} catch (error) {
+			console.warn('Basic adjustment calculation failed:', error);
+			return { x: 0, y: 0 };
+		}
+	}
+
+	private getBaseAdjustmentValues(motion: MotionData): Point {
+		/**Get base adjustment values before directional processing.*/
+		const motionType = motion.motion_type;
+		const turns = typeof motion.turns === 'number' ? motion.turns : 0;
+		const turnsStr = turns === Math.floor(turns) ? turns.toString() : turns.toString();
+
+		// Base default adjustments (before directional rotation)
+		const defaultAdjustments: Record<string, Record<string, [number, number]>> = {
+			pro: {
+				'0': [-10, -40],
+				'0.5': [30, 105],
+				'1': [30, 25],
+				'1.5': [-35, 145],
+				'2': [-10, -35],
+				'2.5': [20, 100],
+				'3': [30, 25],
+			},
+			anti: {
+				'0': [0, -40],
+				'0.5': [-15, 110],
+				'1': [0, -40],
+				'1.5': [20, 155],
+				'2': [0, -40],
+				'2.5': [0, 100],
+				'3': [0, -50],
+			},
+			static: {
+				'0': [0, 0],
+			},
+			dash: {
+				'0': [0, 0],
+			},
+			float: {
+				'0': [0, 0],
+			},
+		};
+
+		const motionAdjustments = defaultAdjustments[motionType];
+		if (motionAdjustments && motionAdjustments[turnsStr]) {
+			const [x, y] = motionAdjustments[turnsStr];
+			return { x, y };
+		}
+
 		return { x: 0, y: 0 };
+	}
+
+	private processDirectionalTuples(
+		baseAdjustment: Point,
+		motion: MotionData,
+		location: Location
+	): Point {
+		/**Process directional tuples to get location-specific adjustments.*/
+		try {
+			// Generate directional tuples from base adjustment using rotation matrices
+			const directionalTuples = this.generateDirectionalTuples(
+				motion,
+				baseAdjustment.x,
+				baseAdjustment.y
+			);
+
+			// Calculate quadrant index for tuple selection
+			const quadrantIndex = this.calculateQuadrantIndex(location);
+
+			// Select the appropriate tuple based on quadrant
+			const selectedTuple = directionalTuples[quadrantIndex] || [0, 0];
+
+			console.debug(
+				`Directional tuples: ${JSON.stringify(directionalTuples)}, quadrant: ${quadrantIndex}, selected: [${selectedTuple[0]}, ${selectedTuple[1]}]`
+			);
+
+			return { x: selectedTuple[0], y: selectedTuple[1] };
+		} catch (error) {
+			console.warn('Directional tuple processing failed, using base adjustment:', error);
+			return baseAdjustment;
+		}
+	}
+
+	private generateDirectionalTuples(
+		motion: MotionData,
+		baseX: number,
+		baseY: number
+	): Array<[number, number]> {
+		/**Generate directional tuples using rotation matrices.*/
+		const motionType = motion.motion_type;
+		const rotationDir = motion.prop_rot_dir;
+
+		// Convert rotation direction to string for mapping
+		const rotationStr =
+			rotationDir === RotationDirection.CLOCKWISE
+				? 'clockwise'
+				: rotationDir === RotationDirection.COUNTER_CLOCKWISE
+					? 'counter_clockwise'
+					: 'clockwise'; // Default
+
+		// Diamond grid mappings for PRO/ANTI motions (based on reference code)
+		const shiftMappingDiamond = {
+			[MotionType.PRO]: {
+				clockwise: (x: number, y: number) => [
+					[x, y], // NE (0)
+					[-y, x], // SE (1)
+					[-x, -y], // SW (2)
+					[y, -x], // NW (3)
+				],
+				counter_clockwise: (x: number, y: number) => [
+					[-y, -x], // NE (0)
+					[x, -y], // SE (1)
+					[y, x], // SW (2)
+					[-x, y], // NW (3)
+				],
+			},
+			[MotionType.ANTI]: {
+				clockwise: (x: number, y: number) => [
+					[-y, -x], // NE (0)
+					[x, -y], // SE (1)
+					[y, x], // SW (2)
+					[-x, y], // NW (3)
+				],
+				counter_clockwise: (x: number, y: number) => [
+					[x, y], // NE (0)
+					[-y, x], // SE (1)
+					[-x, -y], // SW (2)
+					[y, -x], // NW (3)
+				],
+			},
+		};
+
+		// For static/dash/float, use simpler mappings
+		if (
+			motionType === MotionType.STATIC ||
+			motionType === MotionType.DASH ||
+			motionType === MotionType.FLOAT
+		) {
+			return [
+				[baseX, baseY],
+				[-baseX, -baseY],
+				[-baseY, baseX],
+				[baseY, -baseX],
+			];
+		}
+
+		// Use shift mappings for pro/anti
+		const mapping = shiftMappingDiamond[motionType];
+		if (mapping && mapping[rotationStr as 'clockwise' | 'counter_clockwise']) {
+			const transformFunc = mapping[rotationStr as 'clockwise' | 'counter_clockwise'];
+			return transformFunc(baseX, baseY) as Array<[number, number]>;
+		}
+
+		// Fallback: return same adjustment for all quadrants
+		return [
+			[baseX, baseY],
+			[baseX, baseY],
+			[baseX, baseY],
+			[baseX, baseY],
+		];
+	}
+
+	private calculateQuadrantIndex(location: Location): number {
+		/**Calculate quadrant index for the given location.*/
+		const quadrantMap: Record<Location, number> = {
+			[Location.NORTHEAST]: 0,
+			[Location.SOUTHEAST]: 1,
+			[Location.SOUTHWEST]: 2,
+			[Location.NORTHWEST]: 3,
+			// Cardinal directions map to nearest quadrant
+			[Location.NORTH]: 0, // Maps to NE quadrant
+			[Location.EAST]: 1, // Maps to SE quadrant
+			[Location.SOUTH]: 2, // Maps to SW quadrant
+			[Location.WEST]: 3, // Maps to NW quadrant
+		};
+
+		return quadrantMap[location] || 0;
 	}
 
 	private updateArrowInPictograph(

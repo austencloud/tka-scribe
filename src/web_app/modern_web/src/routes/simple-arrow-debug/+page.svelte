@@ -1,8 +1,8 @@
 <!-- Simple debug page to test arrow positioning -->
 <script lang="ts">
-	import { onMount } from 'svelte';
 	import { arrowPositioningService } from '$lib/components/pictograph/services/arrowPositioningService';
 	import { getPositioningServiceFactory } from '$lib/services/positioning/PositioningServiceFactory';
+	import { onMount } from 'svelte';
 
 	let debugLog: string[] = [];
 
@@ -44,7 +44,7 @@
 				end_loc: 's' as any,
 				start_ori: 'in',
 				end_ori: 'in',
-				turns: 0
+				turns: 0,
 			};
 
 			const basicPictographData = {
@@ -57,7 +57,7 @@
 				beat: 1,
 				is_draft: false,
 				metadata: {},
-				sequence: []
+				sequence: [],
 			};
 
 			log('Test 2: Testing synchronous orchestrator positioning');
@@ -79,7 +79,6 @@
 			} else {
 				log('⚠️ WARNING: Arrow is still at center - adjustments may not be working');
 			}
-
 		} catch (error) {
 			log(`❌ Error in orchestrator test: ${error}`);
 		}
@@ -87,13 +86,14 @@
 		// Test 3: Test the ArrowPositioningService (component service)
 		try {
 			log('Test 3: Testing ArrowPositioningService');
-			
+
 			// Test the service exists and has the right methods
-			log(`ArrowPositioningService methods: ${Object.getOwnPropertyNames(Object.getPrototypeOf(arrowPositioningService))}`);
+			log(
+				`ArrowPositioningService methods: ${Object.getOwnPropertyNames(Object.getPrototypeOf(arrowPositioningService))}`
+			);
 
 			// We can't easily test this without proper type setup, but we can check if the service was created
 			log('✅ ArrowPositioningService exists and appears functional');
-
 		} catch (error) {
 			log(`❌ Error in service test: ${error}`);
 		}
@@ -112,8 +112,10 @@
 
 <div style="padding: 20px; font-family: monospace;">
 	<h1>Simple Arrow Positioning Debug</h1>
-	
-	<div style="margin-top: 20px; max-height: 500px; overflow-y: auto; border: 1px solid #ccc; padding: 10px; background: #f9f9f9;">
+
+	<div
+		style="margin-top: 20px; max-height: 500px; overflow-y: auto; border: 1px solid #ccc; padding: 10px; background: #f9f9f9;"
+	>
 		{#each debugLog as entry}
 			<div style="margin-bottom: 5px; font-size: 12px;">
 				{entry}

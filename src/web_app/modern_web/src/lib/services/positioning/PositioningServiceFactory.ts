@@ -16,11 +16,15 @@ import type {
 	IPositioningServiceFactory,
 } from '$services/positioning';
 import { ArrowAdjustmentCalculator } from '$services/positioning/arrows/calculation/ArrowAdjustmentCalculator';
-import { ArrowAdjustmentLookup as AdvancedLookup } from '$services/positioning/arrows/orchestration/ArrowAdjustmentLookup';
 import { ArrowLocationCalculator } from '$services/positioning/arrows/calculation/ArrowLocationCalculator';
 import { ArrowRotationCalculator } from '$services/positioning/arrows/calculation/ArrowRotationCalculator';
 import { DashLocationCalculator } from '$services/positioning/arrows/calculation/DashLocationCalculator';
 import { ArrowCoordinateSystemService } from '$services/positioning/arrows/coordinate_system/ArrowCoordinateSystemService';
+import { AttributeKeyGenerator } from '$services/positioning/arrows/key_generators/AttributeKeyGenerator';
+import { PlacementKeyGenerator } from '$services/positioning/arrows/key_generators/PlacementKeyGenerator';
+import { SpecialPlacementOriKeyGenerator } from '$services/positioning/arrows/key_generators/SpecialPlacementOriKeyGenerator';
+import { TurnsTupleKeyGenerator } from '$services/positioning/arrows/key_generators/TurnsTupleKeyGenerator';
+import { ArrowAdjustmentLookup as AdvancedLookup } from '$services/positioning/arrows/orchestration/ArrowAdjustmentLookup';
 import { ArrowPositioningOrchestrator } from '$services/positioning/arrows/orchestration/ArrowPositioningOrchestrator';
 import { DefaultPlacementService } from '$services/positioning/arrows/placement/DefaultPlacementService';
 import { SpecialPlacementService } from '$services/positioning/arrows/placement/SpecialPlacementService';
@@ -29,10 +33,6 @@ import {
 	DirectionalTupleProcessor,
 	QuadrantIndexCalculator,
 } from '$services/positioning/arrows/processors/DirectionalTupleProcessor';
-import { AttributeKeyGenerator } from '$services/positioning/arrows/key_generators/AttributeKeyGenerator';
-import { PlacementKeyGenerator } from '$services/positioning/arrows/key_generators/PlacementKeyGenerator';
-import { SpecialPlacementOriKeyGenerator } from '$services/positioning/arrows/key_generators/SpecialPlacementOriKeyGenerator';
-import { TurnsTupleKeyGenerator } from '$services/positioning/arrows/key_generators/TurnsTupleKeyGenerator';
 
 export class PositioningServiceFactory implements IPositioningServiceFactory {
 	/**

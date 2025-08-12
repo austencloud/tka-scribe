@@ -163,19 +163,22 @@
 
 <style>
 	.sequence-card-tab {
-		display: flex;
-		flex-direction: column;
-		height: 100%;
-		width: 100%;
-		background: var(--background);
-		overflow: hidden;
-	}
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+	width: 100%;
+	background: transparent;
+	overflow: hidden;
+}
 
 	.header-section {
-		flex-shrink: 0;
-		padding: var(--spacing-lg);
-		border-bottom: 1px solid var(--border);
-	}
+	flex-shrink: 0;
+	padding: var(--spacing-lg);
+	border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+	background: var(--surface-glass);
+	backdrop-filter: var(--glass-backdrop);
+	box-shadow: var(--shadow-glass);
+}
 
 	.main-content {
 		flex: 1;

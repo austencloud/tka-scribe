@@ -3,7 +3,7 @@
  *
  * DEPRECATED: This is the old basic orchestrator that hardcodes adjustments to (0,0).
  * It was ignoring the sophisticated ArrowAdjustmentCalculator pipeline.
- * 
+ *
  * Kept for reference only. The new ArrowPositioningOrchestrator uses the full pipeline.
  */
 

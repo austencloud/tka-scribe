@@ -35,6 +35,17 @@ export interface IArrowAdjustmentCalculator {
 		location: Location,
 		arrowColor?: string
 	): Promise<Point>;
+
+	/**
+	 * Synchronous version of calculateAdjustment for use in sync contexts.
+	 */
+	calculateAdjustmentSync(
+		pictographData: PictographData,
+		motionData: MotionData,
+		letter: string,
+		location: Location,
+		arrowColor?: string
+	): Point;
 }
 
 export interface IArrowCoordinateSystemService {

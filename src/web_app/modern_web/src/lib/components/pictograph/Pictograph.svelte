@@ -192,7 +192,9 @@ instead of stores. It orchestrates the rendering of Grid, Props, Arrows, and Gly
 					});
 
 					// Calculate position and mirroring
-					console.log(`🔧 Calling arrowPositioningService.calculatePosition for ${color}...`);
+					console.log(
+						`🔧 Calling arrowPositioningService.calculatePosition for ${color}...`
+					);
 					const position = await arrowPositioningService.calculatePosition(
 						arrowData,
 						motionData,
@@ -227,14 +229,13 @@ instead of stores. It orchestrates the rendering of Grid, Props, Arrows, and Gly
 
 				arrowPositions = newPositions;
 				arrowMirroring = newMirroring;
-				
+
 				console.log(`📍 Final arrow positions stored:`, arrowPositions);
 				console.log(`🪞 Final arrow mirroring stored:`, arrowMirroring);
 
 				// Small delay to ensure all Arrow components are ready, then show all arrows at once
 				await new Promise((resolve) => setTimeout(resolve, 50));
 				showArrows = true;
-
 			} catch (error) {
 				console.error('Failed to calculate arrow positions:', error);
 				// Fallback: show arrows without coordination

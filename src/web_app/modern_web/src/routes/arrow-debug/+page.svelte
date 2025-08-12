@@ -1,11 +1,11 @@
 <!-- Debug page for testing actual arrow positioning in the UI -->
 <script lang="ts">
-	import { onMount } from 'svelte';
 	import Arrow from '$lib/components/pictograph/Arrow.svelte';
-	import { ArrowType, GridMode, Location, MotionType, RotationDirection } from '$lib/domain';
-	import type { ArrowData, MotionData, PictographData } from '$lib/domain';
 	import { arrowPositioningService } from '$lib/components/pictograph/services/arrowPositioningService';
+	import type { ArrowData, MotionData, PictographData } from '$lib/domain';
+	import { ArrowType, GridMode, Location, MotionType, RotationDirection } from '$lib/domain';
 	import { getPositioningServiceFactory } from '$lib/services/positioning/PositioningServiceFactory';
+	import { onMount } from 'svelte';
 
 	let debugInfo: any[] = [];
 	let testResults: any[] = [];
@@ -20,7 +20,7 @@
 
 		// Test 1: Direct service test
 		addDebugInfo('Test 1: Direct ArrowPositioningService test');
-		
+
 		const testArrowData: ArrowData = {
 			id: 'test-blue',
 			color: 'blue',
@@ -44,7 +44,7 @@
 			end_loc: Location.SOUTH,
 			start_ori: 'in',
 			end_ori: 'in',
-			turns: 0
+			turns: 0,
 		};
 
 		const testPictographData: PictographData = {
@@ -56,24 +56,24 @@
 			grid_data: {
 				grid_mode: GridMode.DIAMOND,
 				hand_points: {},
-				layer2_points: {}
+				layer2_points: {},
 			},
 			props: {
 				blue: {
 					color: 'blue',
 					motion_type: MotionType.STATIC,
-					location: Location.NORTH
+					location: Location.NORTH,
 				},
 				red: {
-					color: 'red', 
+					color: 'red',
 					motion_type: MotionType.STATIC,
-					location: Location.SOUTH
-				}
+					location: Location.SOUTH,
+				},
 			},
 			beat: 1,
 			is_draft: false,
 			metadata: {},
-			sequence: []
+			sequence: [],
 		};
 
 		try {
@@ -83,7 +83,7 @@
 				testMotionData,
 				testPictographData
 			);
-			
+
 			addDebugInfo('✅ ArrowPositioningService result:', result);
 			testResults = [...testResults, { test: 'Service Test', result, success: true }];
 
@@ -93,13 +93,18 @@
 				testMotionData,
 				testPictographData
 			);
-			
-			addDebugInfo('✅ ArrowPositioningService sync result:', syncResult);
-			testResults = [...testResults, { test: 'Sync Service Test', result: syncResult, success: true }];
 
+			addDebugInfo('✅ ArrowPositioningService sync result:', syncResult);
+			testResults = [
+				...testResults,
+				{ test: 'Sync Service Test', result: syncResult, success: true },
+			];
 		} catch (error) {
 			addDebugInfo('❌ ArrowPositioningService error:', error);
-			testResults = [...testResults, { test: 'Service Test', error: error.message, success: false }];
+			testResults = [
+				...testResults,
+				{ test: 'Service Test', error: error.message, success: false },
+			];
 		}
 
 		// Test 2: Direct orchestrator test
@@ -107,19 +112,24 @@
 		try {
 			const factory = getPositioningServiceFactory();
 			const orchestrator = factory.createPositioningOrchestrator();
-			
+
 			const orchestratorResult = orchestrator.calculateArrowPosition(
 				testArrowData,
 				testPictographData,
 				testMotionData
 			);
-			
-			addDebugInfo('✅ Direct orchestrator result:', orchestratorResult);
-			testResults = [...testResults, { test: 'Orchestrator Test', result: orchestratorResult, success: true }];
 
+			addDebugInfo('✅ Direct orchestrator result:', orchestratorResult);
+			testResults = [
+				...testResults,
+				{ test: 'Orchestrator Test', result: orchestratorResult, success: true },
+			];
 		} catch (error) {
 			addDebugInfo('❌ Direct orchestrator error:', error);
-			testResults = [...testResults, { test: 'Orchestrator Test', error: error.message, success: false }];
+			testResults = [
+				...testResults,
+				{ test: 'Orchestrator Test', error: error.message, success: false },
+			];
 		}
 
 		// Test 3: Check if async method exists and works
@@ -127,24 +137,36 @@
 		try {
 			const factory = getPositioningServiceFactory();
 			const orchestrator = factory.createPositioningOrchestrator() as any;
-			
+
 			if (typeof orchestrator.calculateArrowPositionAsync === 'function') {
 				const asyncResult = await orchestrator.calculateArrowPositionAsync(
 					testArrowData,
 					testPictographData,
 					testMotionData
 				);
-				
+
 				addDebugInfo('✅ Async orchestrator result:', asyncResult);
-				testResults = [...testResults, { test: 'Async Orchestrator Test', result: asyncResult, success: true }];
+				testResults = [
+					...testResults,
+					{ test: 'Async Orchestrator Test', result: asyncResult, success: true },
+				];
 			} else {
 				addDebugInfo('⚠️ Async method not available on orchestrator');
-				testResults = [...testResults, { test: 'Async Orchestrator Test', error: 'Method not available', success: false }];
+				testResults = [
+					...testResults,
+					{
+						test: 'Async Orchestrator Test',
+						error: 'Method not available',
+						success: false,
+					},
+				];
 			}
-
 		} catch (error) {
 			addDebugInfo('❌ Async orchestrator error:', error);
-			testResults = [...testResults, { test: 'Async Orchestrator Test', error: error.message, success: false }];
+			testResults = [
+				...testResults,
+				{ test: 'Async Orchestrator Test', error: error.message, success: false },
+			];
 		}
 
 		addDebugInfo('🏁 Positioning tests completed');
@@ -178,7 +200,7 @@
 		end_loc: Location.SOUTH,
 		start_ori: 'in',
 		end_ori: 'in',
-		turns: 0
+		turns: 0,
 	};
 
 	const testArrow2: ArrowData = {
@@ -204,7 +226,7 @@
 		end_loc: Location.WEST,
 		start_ori: 'in',
 		end_ori: 'in',
-		turns: 0
+		turns: 0,
 	};
 </script>
 
@@ -214,7 +236,7 @@
 
 <div class="debug-page">
 	<h1>Arrow Positioning Debug Page</h1>
-	
+
 	<div class="test-section">
 		<h2>Test Results</h2>
 		{#each testResults as result}
@@ -234,23 +256,23 @@
 		<div class="pictograph-container">
 			<svg width="950" height="950" viewBox="0 0 950 950" class="pictograph-svg">
 				<!-- Grid background -->
-				<rect width="950" height="950" fill="#f8f9fa" stroke="#e9ecef" stroke-width="1"/>
-				
+				<rect width="950" height="950" fill="#f8f9fa" stroke="#e9ecef" stroke-width="1" />
+
 				<!-- Center point -->
-				<circle cx="475" cy="475" r="5" fill="#6c757d"/>
+				<circle cx="475" cy="475" r="5" fill="#6c757d" />
 				<text x="485" y="480" font-size="12" fill="#6c757d">Center (475, 475)</text>
-				
+
 				<!-- Location markers -->
-				<circle cx="475" cy="331.9" r="3" fill="#dc3545"/>
+				<circle cx="475" cy="331.9" r="3" fill="#dc3545" />
 				<text x="485" y="335" font-size="10" fill="#dc3545">N (475, 331.9)</text>
-				
-				<circle cx="618.1" cy="475" r="3" fill="#dc3545"/>
+
+				<circle cx="618.1" cy="475" r="3" fill="#dc3545" />
 				<text x="628" y="480" font-size="10" fill="#dc3545">E (618.1, 475)</text>
-				
-				<circle cx="475" cy="618.1" r="3" fill="#dc3545"/>
+
+				<circle cx="475" cy="618.1" r="3" fill="#dc3545" />
 				<text x="485" y="635" font-size="10" fill="#dc3545">S (475, 618.1)</text>
-				
-				<circle cx="331.9" cy="475" r="3" fill="#dc3545"/>
+
+				<circle cx="331.9" cy="475" r="3" fill="#dc3545" />
 				<text x="280" y="480" font-size="10" fill="#dc3545">W (331.9, 475)</text>
 
 				<!-- Test arrows -->
@@ -364,7 +386,9 @@
 		overflow-x: auto;
 	}
 
-	h1, h2, h3 {
+	h1,
+	h2,
+	h3 {
 		color: #495057;
 	}
 

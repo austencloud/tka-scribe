@@ -94,16 +94,55 @@ export class DirectionalTupleCalculator implements IDirectionalTupleCalculator {
 				// Determine cw vs ccw step (1 step cw => cw; else ccw)
 				const cwStep = (idxStart + 1) % 4 === idxEnd;
 				if (cwStep) {
-					return [tuple(baseX, baseY), tuple(-baseY, baseX), tuple(-baseX, -baseY), tuple(baseY, -baseX)];
+					return [
+						tuple(baseX, baseY),
+						tuple(-baseY, baseX),
+						tuple(-baseX, -baseY),
+						tuple(baseY, -baseX),
+					];
 				} else {
-					return [tuple(-baseY, -baseX), tuple(baseX, -baseY), tuple(baseY, baseX), tuple(-baseX, baseY)];
+					return [
+						tuple(-baseY, -baseX),
+						tuple(baseX, -baseY),
+						tuple(baseY, baseX),
+						tuple(-baseX, baseY),
+					];
 				}
 			}
-			if (mt === 'pro' && isCW) return [tuple(baseX, baseY), tuple(-baseY, baseX), tuple(-baseX, -baseY), tuple(baseY, -baseX)];
-			if (mt === 'pro' && isCCW) return [tuple(-baseY, -baseX), tuple(baseX, -baseY), tuple(baseY, baseX), tuple(-baseX, baseY)];
-			if (mt === 'anti' && isCW) return [tuple(-baseY, -baseX), tuple(baseX, -baseY), tuple(baseY, baseX), tuple(-baseX, baseY)];
-			if (mt === 'anti' && isCCW) return [tuple(baseX, baseY), tuple(-baseY, baseX), tuple(-baseX, -baseY), tuple(baseY, -baseX)];
-			return [tuple(baseX, baseY), tuple(baseX, baseY), tuple(baseX, baseY), tuple(baseX, baseY)];
+			if (mt === 'pro' && isCW)
+				return [
+					tuple(baseX, baseY),
+					tuple(-baseY, baseX),
+					tuple(-baseX, -baseY),
+					tuple(baseY, -baseX),
+				];
+			if (mt === 'pro' && isCCW)
+				return [
+					tuple(-baseY, -baseX),
+					tuple(baseX, -baseY),
+					tuple(baseY, baseX),
+					tuple(-baseX, baseY),
+				];
+			if (mt === 'anti' && isCW)
+				return [
+					tuple(-baseY, -baseX),
+					tuple(baseX, -baseY),
+					tuple(baseY, baseX),
+					tuple(-baseX, baseY),
+				];
+			if (mt === 'anti' && isCCW)
+				return [
+					tuple(baseX, baseY),
+					tuple(-baseY, baseX),
+					tuple(-baseX, -baseY),
+					tuple(baseY, -baseX),
+				];
+			return [
+				tuple(baseX, baseY),
+				tuple(baseX, baseY),
+				tuple(baseX, baseY),
+				tuple(baseX, baseY),
+			];
 		};
 
 		const shiftBox = () => {
@@ -114,44 +153,163 @@ export class DirectionalTupleCalculator implements IDirectionalTupleCalculator {
 				const idxEnd = order.indexOf(motion.end_loc as Location);
 				const cwStep = (idxStart + 1) % 4 === idxEnd;
 				if (cwStep) {
-					return [tuple(baseX, baseY), tuple(-baseY, baseX), tuple(-baseX, -baseY), tuple(baseY, -baseX)];
+					return [
+						tuple(baseX, baseY),
+						tuple(-baseY, baseX),
+						tuple(-baseX, -baseY),
+						tuple(baseY, -baseX),
+					];
 				} else {
-					return [tuple(-baseY, -baseX), tuple(baseX, -baseY), tuple(baseY, baseX), tuple(-baseX, baseY)];
+					return [
+						tuple(-baseY, -baseX),
+						tuple(baseX, -baseY),
+						tuple(baseY, baseX),
+						tuple(-baseX, baseY),
+					];
 				}
 			}
-			if (mt === 'pro' && isCW) return [tuple(-baseX, baseY), tuple(-baseY, -baseX), tuple(baseX, -baseY), tuple(baseY, baseX)];
-			if (mt === 'pro' && isCCW) return [tuple(baseX, baseY), tuple(-baseY, baseX), tuple(-baseX, -baseY), tuple(baseY, -baseX)];
-			if (mt === 'anti' && isCW) return [tuple(-baseX, baseY), tuple(-baseY, -baseX), tuple(baseX, -baseY), tuple(baseY, baseX)];
-			if (mt === 'anti' && isCCW) return [tuple(baseX, baseY), tuple(-baseY, baseX), tuple(-baseX, -baseY), tuple(baseY, -baseX)];
-			return [tuple(baseX, baseY), tuple(baseX, baseY), tuple(baseX, baseY), tuple(baseX, baseY)];
+			if (mt === 'pro' && isCW)
+				return [
+					tuple(-baseX, baseY),
+					tuple(-baseY, -baseX),
+					tuple(baseX, -baseY),
+					tuple(baseY, baseX),
+				];
+			if (mt === 'pro' && isCCW)
+				return [
+					tuple(baseX, baseY),
+					tuple(-baseY, baseX),
+					tuple(-baseX, -baseY),
+					tuple(baseY, -baseX),
+				];
+			if (mt === 'anti' && isCW)
+				return [
+					tuple(-baseX, baseY),
+					tuple(-baseY, -baseX),
+					tuple(baseX, -baseY),
+					tuple(baseY, baseX),
+				];
+			if (mt === 'anti' && isCCW)
+				return [
+					tuple(baseX, baseY),
+					tuple(-baseY, baseX),
+					tuple(-baseX, -baseY),
+					tuple(baseY, -baseX),
+				];
+			return [
+				tuple(baseX, baseY),
+				tuple(baseX, baseY),
+				tuple(baseX, baseY),
+				tuple(baseX, baseY),
+			];
 		};
 
 		// DASH
 		const dashDiamond = () => {
-			if (isCW) return [tuple(baseX, -baseY), tuple(baseY, baseX), tuple(-baseX, baseY), tuple(-baseY, -baseX)];
-			if (isCCW) return [tuple(-baseX, -baseY), tuple(baseY, -baseX), tuple(baseX, baseY), tuple(-baseY, baseX)];
-			if (isNoRot) return [tuple(baseX, baseY), tuple(-baseY, -baseX), tuple(baseX, -baseY), tuple(baseY, baseX)];
-			return [tuple(baseX, baseY), tuple(baseX, baseY), tuple(baseX, baseY), tuple(baseX, baseY)];
+			if (isCW)
+				return [
+					tuple(baseX, -baseY),
+					tuple(baseY, baseX),
+					tuple(-baseX, baseY),
+					tuple(-baseY, -baseX),
+				];
+			if (isCCW)
+				return [
+					tuple(-baseX, -baseY),
+					tuple(baseY, -baseX),
+					tuple(baseX, baseY),
+					tuple(-baseY, baseX),
+				];
+			if (isNoRot)
+				return [
+					tuple(baseX, baseY),
+					tuple(-baseY, -baseX),
+					tuple(baseX, -baseY),
+					tuple(baseY, baseX),
+				];
+			return [
+				tuple(baseX, baseY),
+				tuple(baseX, baseY),
+				tuple(baseX, baseY),
+				tuple(baseX, baseY),
+			];
 		};
 
 		const dashBox = () => {
-			if (isCW) return [tuple(-baseY, baseX), tuple(-baseX, -baseY), tuple(baseY, -baseX), tuple(baseX, baseY)];
-			if (isCCW) return [tuple(-baseX, baseY), tuple(-baseY, -baseX), tuple(baseX, -baseY), tuple(baseY, baseX)];
-			if (isNoRot) return [tuple(baseX, baseY), tuple(-baseY, baseX), tuple(-baseX, -baseY), tuple(baseY, -baseX)];
-			return [tuple(baseX, baseY), tuple(baseX, baseY), tuple(baseX, baseY), tuple(baseX, baseY)];
+			if (isCW)
+				return [
+					tuple(-baseY, baseX),
+					tuple(-baseX, -baseY),
+					tuple(baseY, -baseX),
+					tuple(baseX, baseY),
+				];
+			if (isCCW)
+				return [
+					tuple(-baseX, baseY),
+					tuple(-baseY, -baseX),
+					tuple(baseX, -baseY),
+					tuple(baseY, baseX),
+				];
+			if (isNoRot)
+				return [
+					tuple(baseX, baseY),
+					tuple(-baseY, baseX),
+					tuple(-baseX, -baseY),
+					tuple(baseY, -baseX),
+				];
+			return [
+				tuple(baseX, baseY),
+				tuple(baseX, baseY),
+				tuple(baseX, baseY),
+				tuple(baseX, baseY),
+			];
 		};
 
 		// STATIC
 		const staticDiamond = () => {
-			if (isCW) return [tuple(baseX, -baseY), tuple(baseY, baseX), tuple(-baseX, baseY), tuple(-baseY, -baseX)];
-			if (isCCW) return [tuple(-baseX, -baseY), tuple(baseY, -baseX), tuple(baseX, baseY), tuple(-baseY, baseX)];
-			return [tuple(baseX, baseY), tuple(-baseX, -baseY), tuple(-baseY, baseX), tuple(baseY, -baseX)];
+			if (isCW)
+				return [
+					tuple(baseX, -baseY),
+					tuple(baseY, baseX),
+					tuple(-baseX, baseY),
+					tuple(-baseY, -baseX),
+				];
+			if (isCCW)
+				return [
+					tuple(-baseX, -baseY),
+					tuple(baseY, -baseX),
+					tuple(baseX, baseY),
+					tuple(-baseY, baseX),
+				];
+			return [
+				tuple(baseX, baseY),
+				tuple(-baseX, -baseY),
+				tuple(-baseY, baseX),
+				tuple(baseY, -baseX),
+			];
 		};
 
 		const staticBox = () => {
-			if (isCW) return [tuple(baseX, baseY), tuple(-baseY, baseX), tuple(-baseX, -baseY), tuple(baseY, -baseX)];
-			if (isCCW) return [tuple(-baseY, -baseX), tuple(baseX, -baseY), tuple(baseY, baseX), tuple(-baseX, baseY)];
-			return [tuple(baseX, baseY), tuple(-baseY, baseX), tuple(-baseX, -baseY), tuple(baseY, -baseX)];
+			if (isCW)
+				return [
+					tuple(baseX, baseY),
+					tuple(-baseY, baseX),
+					tuple(-baseX, -baseY),
+					tuple(baseY, -baseX),
+				];
+			if (isCCW)
+				return [
+					tuple(-baseY, -baseX),
+					tuple(baseX, -baseY),
+					tuple(baseY, baseX),
+					tuple(-baseX, baseY),
+				];
+			return [
+				tuple(baseX, baseY),
+				tuple(-baseY, baseX),
+				tuple(-baseX, -baseY),
+				tuple(baseY, -baseX),
+			];
 		};
 
 		// Dispatch by motion type and grid

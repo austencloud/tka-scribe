@@ -116,8 +116,14 @@ Just shows a pictograph to verify arrows are visible
 				<div class="pictograph-info">
 					<p><strong>Letter:</strong> {currentPictograph()?.letter}</p>
 					<p><strong>ID:</strong> {currentPictograph()?.id}</p>
-					<p><strong>Arrows:</strong> {Object.keys(currentPictograph()?.arrows || {}).join(', ') || 'None'}</p>
-					<p><strong>Motions:</strong> {Object.keys(currentPictograph()?.motions || {}).join(', ') || 'None'}</p>
+					<p>
+						<strong>Arrows:</strong>
+						{Object.keys(currentPictograph()?.arrows || {}).join(', ') || 'None'}
+					</p>
+					<p>
+						<strong>Motions:</strong>
+						{Object.keys(currentPictograph()?.motions || {}).join(', ') || 'None'}
+					</p>
 				</div>
 				<div class="pictograph-display">
 					<Pictograph

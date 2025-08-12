@@ -257,8 +257,14 @@ Deep debugging of the actual positioning calculation pipeline
 					<p><strong>Letter:</strong> {currentPictograph()?.letter}</p>
 					<p><strong>ID:</strong> {currentPictograph()?.id}</p>
 					<p><strong>Position:</strong> {selectedPosition}</p>
-					<p><strong>Arrows:</strong> {Object.keys(currentPictograph()?.arrows || {}).join(', ')}</p>
-					<p><strong>Motions:</strong> {Object.keys(currentPictograph()?.motions || {}).join(', ')}</p>
+					<p>
+						<strong>Arrows:</strong>
+						{Object.keys(currentPictograph()?.arrows || {}).join(', ')}
+					</p>
+					<p>
+						<strong>Motions:</strong>
+						{Object.keys(currentPictograph()?.motions || {}).join(', ')}
+					</p>
 				</div>
 			{:else}
 				<p>No pictograph data available</p>
@@ -277,15 +283,33 @@ Deep debugging of the actual positioning calculation pipeline
 								<p class="error-text">Error: {data.error}</p>
 							{:else}
 								<div class="result-details">
-									<p><strong>Original Position:</strong> ({data.original_position.x}, {data.original_position.y})</p>
-									<p><strong>Calculated Position:</strong> ({data.calculated_position.x}, {data.calculated_position.y})</p>
-									<p><strong>Rotation:</strong> {data.calculated_position.rotation}°</p>
-									<p><strong>Position Changed:</strong> 
-										{data.original_position.x !== data.calculated_position.x || 
-										 data.original_position.y !== data.calculated_position.y ? 'YES' : 'NO'}
+									<p>
+										<strong>Original Position:</strong> ({data.original_position
+											.x}, {data.original_position.y})
 									</p>
-									<p><strong>Motion Type:</strong> {data.motion_data.motion_type}</p>
-									<p><strong>Path:</strong> {data.motion_data.start_loc} → {data.motion_data.end_loc}</p>
+									<p>
+										<strong>Calculated Position:</strong> ({data
+											.calculated_position.x}, {data.calculated_position.y})
+									</p>
+									<p>
+										<strong>Rotation:</strong>
+										{data.calculated_position.rotation}°
+									</p>
+									<p>
+										<strong>Position Changed:</strong>
+										{data.original_position.x !== data.calculated_position.x ||
+										data.original_position.y !== data.calculated_position.y
+											? 'YES'
+											: 'NO'}
+									</p>
+									<p>
+										<strong>Motion Type:</strong>
+										{data.motion_data.motion_type}
+									</p>
+									<p>
+										<strong>Path:</strong>
+										{data.motion_data.start_loc} → {data.motion_data.end_loc}
+									</p>
 									<p><strong>Turns:</strong> {data.motion_data.turns}</p>
 								</div>
 							{/if}

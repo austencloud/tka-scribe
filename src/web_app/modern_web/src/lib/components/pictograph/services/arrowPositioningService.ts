@@ -50,7 +50,9 @@ export class ArrowPositioningService {
 		motionData: MotionData,
 		pictographData: PictographData
 	): Promise<ArrowPositionResult> {
-		console.log(`🎯 ArrowPositioningService.calculatePosition called for ${arrowData.color} arrow`);
+		console.log(
+			`🎯 ArrowPositioningService.calculatePosition called for ${arrowData.color} arrow`
+		);
 		console.log(`Arrow data:`, {
 			motion_type: arrowData.motion_type,
 			start_orientation: arrowData.start_orientation,

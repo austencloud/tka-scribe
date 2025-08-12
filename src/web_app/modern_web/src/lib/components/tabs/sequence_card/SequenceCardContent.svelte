@@ -139,12 +139,12 @@
 
 <style>
 	.sequence-card-content {
-		height: 100%;
-		overflow-y: auto;
-		background: var(--background);
-		border-radius: 8px;
-		padding: 0;
-	}
+	height: 100%;
+	overflow-y: auto;
+	background: transparent;
+	border-radius: 8px;
+	padding: 0;
+}
 
 	/* Loading State */
 	.loading-state {
@@ -182,13 +182,15 @@
 	}
 
 	.empty-content {
-		text-align: center;
-		background: rgba(40, 40, 40, 0.3);
-		border: 2px dashed rgba(255, 255, 255, 0.3);
-		border-radius: 16px;
-		padding: 48px 32px;
-		max-width: 500px;
-	}
+	text-align: center;
+	background: var(--surface-glass);
+	backdrop-filter: var(--glass-backdrop);
+	border: 2px dashed rgba(255, 255, 255, 0.2);
+	border-radius: 16px;
+	padding: 48px 32px;
+	max-width: 500px;
+	box-shadow: var(--shadow-glass);
+}
 
 	.empty-icon {
 		font-size: 64px;
@@ -213,45 +215,52 @@
 
 	/* Cards Container */
 	.cards-container {
-		padding: 16px;
-		display: flex;
-		flex-direction: column;
-		gap: 16px;
-		min-height: 100%;
-	}
+	padding: 16px;
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+	min-height: 100%;
+	background: transparent;
+}
 
 	/* Loading Progress */
 	.loading-progress {
-		display: flex;
-		align-items: center;
-		gap: 12px;
-		background: rgba(0, 0, 0, 0.05);
-		border-radius: 8px;
-		padding: 12px 16px;
-		margin-bottom: 8px;
-	}
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	background: var(--surface-glass);
+	backdrop-filter: var(--glass-backdrop);
+	border: var(--glass-border);
+	border-radius: 12px;
+	padding: 12px 16px;
+	margin-bottom: 8px;
+	box-shadow: var(--shadow-glass);
+}
 
 	.progress-bar {
-		flex: 1;
-		height: 8px;
-		background: rgba(0, 0, 0, 0.1);
-		border-radius: 4px;
-		overflow: hidden;
-	}
+	flex: 1;
+	height: 8px;
+	background: rgba(0, 0, 0, 0.2);
+	border-radius: 4px;
+	overflow: hidden;
+	box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3);
+}
 
 	.progress-fill {
-		height: 100%;
-		background: var(--primary);
-		border-radius: 4px;
-		transition: width 0.3s ease;
-	}
+	height: 100%;
+	background: var(--gradient-primary);
+	border-radius: 4px;
+	transition: width var(--transition-normal);
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
 
 	.progress-text {
-		color: var(--muted-foreground);
-		font-size: 12px;
-		font-weight: 500;
-		min-width: 120px;
-	}
+	color: rgba(255, 255, 255, 0.8);
+	font-size: 12px;
+	font-weight: 500;
+	min-width: 120px;
+	text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
 
 	/* Cards Grid */
 	.cards-grid {
@@ -268,17 +277,19 @@
 
 	/* Card Placeholder */
 	.card-placeholder {
-		background: var(--muted) / 20;
-		border: 2px dashed var(--border);
-		border-radius: 12px;
-		padding: 40px 20px;
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		gap: 12px;
-		min-height: 200px;
-		justify-content: center;
-	}
+	background: var(--surface-glass);
+	backdrop-filter: var(--glass-backdrop);
+	border: 2px dashed rgba(255, 255, 255, 0.2);
+	border-radius: 12px;
+	padding: 40px 20px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 12px;
+	min-height: 200px;
+	justify-content: center;
+	box-shadow: var(--shadow-glass);
+}
 
 	.placeholder-spinner {
 		width: 24px;
@@ -290,25 +301,29 @@
 	}
 
 	.placeholder-text {
-		color: var(--muted-foreground);
-		font-size: 14px;
-		font-weight: 500;
-	}
+	color: rgba(255, 255, 255, 0.7);
+	font-size: 14px;
+	font-weight: 500;
+	text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
 
 	/* Footer */
 	.content-footer {
-		margin-top: auto;
-		padding: 16px 0;
-		text-align: center;
-		border-top: 1px solid var(--border);
-	}
+	margin-top: auto;
+	padding: 16px 0;
+	text-align: center;
+	border-top: 1px solid rgba(255, 255, 255, 0.1);
+	background: var(--surface-glass);
+	backdrop-filter: var(--glass-backdrop);
+}
 
 	.sequence-count {
-		margin: 0;
-		color: var(--muted-foreground);
-		font-size: 14px;
-		font-style: italic;
-	}
+	margin: 0;
+	color: rgba(255, 255, 255, 0.7);
+	font-size: 14px;
+	font-style: italic;
+	text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
 
 	/* Scrollbar Styling */
 	.sequence-card-content::-webkit-scrollbar {
