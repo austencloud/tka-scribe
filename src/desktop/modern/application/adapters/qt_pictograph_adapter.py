@@ -560,15 +560,8 @@ class QtAssetProvider(IPictographAssetProvider):
         Uses the same logic as RealAssetProvider to ensure consistent colors.
         """
         try:
-            # Import constants to ensure we use the exact same colors as legacy
-            from pathlib import Path
-            import sys
-
-            sys.path.insert(
-                0,
-                str(Path(__file__).parent.parent.parent.parent.parent.parent / "data"),
-            )
-            from constants import BLUE, HEX_BLUE, HEX_RED, RED
+            # Import constants from desktop data directory
+            from data.constants import BLUE, HEX_BLUE, HEX_RED, RED
 
             # Define color mappings using the same constants as legacy system
             COLOR_MAP = {RED: HEX_RED, BLUE: HEX_BLUE}

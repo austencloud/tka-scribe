@@ -5,208 +5,63 @@
       "name": "🚀 TKA Modern Desktop App (F5 Default)",
       "type": "debugpy",
       "request": "launch",
-      "program": "${workspaceFolder}/src/web_app/modern_desktop/main.py",
+      "program": "${workspaceFolder}/src/desktop/modern/main.py",
       "console": "integratedTerminal",
       "justMyCode": false,
       "cwd": "${workspaceFolder}",
       "env": {
-        "PYTHONUNBUFFERED": "1",
-        "PYTHONPATH": "${workspaceFolder};${workspaceFolder}/src/web_app/modern_desktop;${workspaceFolder}/src/web_app;${workspaceFolder}/src;${workspaceFolder}/launcher;${workspaceFolder}/packages"
+        "PYTHONPATH": "${workspaceFolder};${workspaceFolder}/src;${workspaceFolder}/src/desktop;${workspaceFolder}/packages;${workspaceFolder}/.venv/Lib/site-packages",
+        "VIRTUAL_ENV": "${workspaceFolder}/.venv",
+        "PYTHONUNBUFFERED": "1"
       },
       "stopOnEntry": false,
       "showReturnValue": true,
       "subProcess": true
     },
     {
-      "name": "🏛️ TKA Legacy Desktop App",
+      "name": "�️ TKA Legacy Desktop App",
       "type": "debugpy",
       "request": "launch",
-      "program": "${workspaceFolder}/src/web_app/legacy_desktop/main.py",
+      "program": "${workspaceFolder}/src/desktop/legacy/main.py",
       "console": "integratedTerminal",
       "justMyCode": false,
       "cwd": "${workspaceFolder}",
       "env": {
-        "PYTHONUNBUFFERED": "1",
-        "PYTHONPATH": "${workspaceFolder};${workspaceFolder}/src/web_app/legacy_desktop;${workspaceFolder}/src/web_app;${workspaceFolder}/src;${workspaceFolder}/launcher;${workspaceFolder}/packages"
+        "PYTHONPATH": "${workspaceFolder};${workspaceFolder}/src;${workspaceFolder}/src/desktop;${workspaceFolder}/packages;${workspaceFolder}/.venv/Lib/site-packages",
+        "VIRTUAL_ENV": "${workspaceFolder}/.venv",
+        "PYTHONUNBUFFERED": "1"
       },
       "stopOnEntry": false,
       "showReturnValue": true,
       "subProcess": true
     },
     {
-      "name": "🌐 TKA Modern Web App",
+      "name": "🌐 TKA Web App (Development)",
       "type": "node",
       "request": "launch",
-      "program": "${workspaceFolder}/src/web_app/modern_web/node_modules/.bin/vite",
-      "args": ["dev", "--host", "localhost", "--port", "5174"],
-      "cwd": "${workspaceFolder}/src/web_app/modern_web",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev"],
+      "cwd": "${workspaceFolder}/src/web",
       "env": {
         "NODE_ENV": "development"
       },
       "console": "integratedTerminal",
       "internalConsoleOptions": "openOnSessionStart",
-      "skipFiles": ["<node_internals>/**"],
-      "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev"]
+      "skipFiles": ["<node_internals>/**"]
     },
     {
-      "name": "🏛️ TKA Legacy Web App",
-      "type": "node",
-      "request": "launch",
-      "program": "${workspaceFolder}/src/web_app/legacy_web/node_modules/.bin/vite",
-      "args": ["dev", "--host", "localhost"],
-      "cwd": "${workspaceFolder}/src/web_app/legacy_web",
-      "env": {
-        "NODE_ENV": "development"
-      },
-      "console": "integratedTerminal",
-      "internalConsoleOptions": "openOnSessionStart",
-      "skipFiles": ["<node_internals>/**"],
-      "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev"]
-    },
-    {
-      "name": "🚀 TKA Launcher",
+      "name": "🧪 Run Tests",
       "type": "debugpy",
       "request": "launch",
-      "program": "${workspaceFolder}/launcher/main.py",
+      "module": "pytest",
+      "args": ["-v"],
       "console": "integratedTerminal",
       "justMyCode": false,
       "cwd": "${workspaceFolder}",
       "env": {
-        "PYTHONUNBUFFERED": "1",
-        "PYTHONPATH": "${workspaceFolder};${workspaceFolder}/src/web_app/modern_desktop;${workspaceFolder}/src/web_app;${workspaceFolder}/src;${workspaceFolder}/launcher;${workspaceFolder}/packages"
-      },
-      "stopOnEntry": false,
-      "showReturnValue": true,
-      "subProcess": true
-    },
-    {
-      "name": "🖥️ TKA Desktop App (Root)",
-      "type": "debugpy",
-      "request": "launch",
-      "program": "${workspaceFolder}/main.py",
-      "console": "integratedTerminal",
-      "justMyCode": false,
-      "cwd": "${workspaceFolder}",
-      "env": {
-        "PYTHONUNBUFFERED": "1",
-        "PYTHONPATH": "${workspaceFolder};${workspaceFolder}/src/web_app/modern_desktop;${workspaceFolder}/src/web_app;${workspaceFolder}/src;${workspaceFolder}/launcher;${workspaceFolder}/packages"
-      },
-      "stopOnEntry": false,
-      "showReturnValue": true,
-      "subProcess": true
-    },
-    {
-      "name": "🧪 TKA Modern Web Tests",
-      "type": "node",
-      "request": "launch",
-      "program": "${workspaceFolder}/src/web_app/modern_web/node_modules/.bin/vitest",
-      "args": ["run"],
-      "cwd": "${workspaceFolder}/src/web_app/modern_web",
-      "env": {
-        "NODE_ENV": "test"
-      },
-      "console": "integratedTerminal",
-      "internalConsoleOptions": "openOnSessionStart",
-      "skipFiles": ["<node_internals>/**"],
-      "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "test"]
-    },
-    {
-      "name": "🧪 TKA Legacy Web Tests",
-      "type": "node",
-      "request": "launch",
-      "program": "${workspaceFolder}/src/web_app/legacy_web/node_modules/.bin/vitest",
-      "args": ["run"],
-      "cwd": "${workspaceFolder}/src/web_app/legacy_web",
-      "env": {
-        "NODE_ENV": "test"
-      },
-      "console": "integratedTerminal",
-      "internalConsoleOptions": "openOnSessionStart",
-      "skipFiles": ["<node_internals>/**"],
-      "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "test"]
-    },
-    {
-      "name": "🧪 TKA Test Runner - All Tests",
-      "type": "debugpy",
-      "request": "launch",
-      "program": "${workspaceFolder}/scripts/tka_test_runner.py",
-      "console": "integratedTerminal",
-      "justMyCode": false,
-      "cwd": "${workspaceFolder}",
-      "env": {
-        "PYTHONUNBUFFERED": "1",
-        "PYTHONPATH": "${workspaceFolder};${workspaceFolder}/src/web_app/modern_desktop;${workspaceFolder}/src/web_app;${workspaceFolder}/src;${workspaceFolder}/launcher;${workspaceFolder}/packages"
-      },
-      "stopOnEntry": false,
-      "showReturnValue": true,
-      "subProcess": true
-    },
-    {
-      "name": "🧪 TKA Test Runner - Discover Only",
-      "type": "debugpy",
-      "request": "launch",
-      "program": "${workspaceFolder}/scripts/tka_test_runner.py",
-      "args": ["--discover"],
-      "console": "integratedTerminal",
-      "justMyCode": false,
-      "cwd": "${workspaceFolder}",
-      "env": {
-        "PYTHONUNBUFFERED": "1",
-        "PYTHONPATH": "${workspaceFolder};${workspaceFolder}/src/web_app/modern_desktop;${workspaceFolder}/src/web_app;${workspaceFolder}/src;${workspaceFolder}/launcher;${workspaceFolder}/packages"
-      },
-      "stopOnEntry": false,
-      "showReturnValue": true,
-      "subProcess": true
-    },
-    {
-      "name": "🧪 TKA Test Runner - Unit Tests Only",
-      "type": "debugpy",
-      "request": "launch",
-      "program": "${workspaceFolder}/scripts/tka_test_runner.py",
-      "args": ["--unit", "--fast"],
-      "console": "integratedTerminal",
-      "justMyCode": false,
-      "cwd": "${workspaceFolder}",
-      "env": {
-        "PYTHONUNBUFFERED": "1",
-        "PYTHONPATH": "${workspaceFolder};${workspaceFolder}/src/web_app/modern_desktop;${workspaceFolder}/src/web_app;${workspaceFolder}/src;${workspaceFolder}/launcher;${workspaceFolder}/packages"
-      },
-      "stopOnEntry": false,
-      "showReturnValue": true,
-      "subProcess": true
-    },
-    {
-      "name": "🧪 TKA Test Runner - Integration Tests",
-      "type": "debugpy",
-      "request": "launch",
-      "program": "${workspaceFolder}/scripts/tka_test_runner.py",
-      "args": ["--integration", "--continue-on-error"],
-      "console": "integratedTerminal",
-      "justMyCode": false,
-      "cwd": "${workspaceFolder}",
-      "env": {
-        "PYTHONUNBUFFERED": "1",
-        "PYTHONPATH": "${workspaceFolder};${workspaceFolder}/src/web_app/modern_desktop;${workspaceFolder}/src/web_app;${workspaceFolder}/src;${workspaceFolder}/launcher;${workspaceFolder}/packages"
-      },
-      "stopOnEntry": false,
-      "showReturnValue": true,
-      "subProcess": true
-    },
-    {
-      "name": "🧪 TKA Test Validation Suite",
-      "type": "debugpy",
-      "request": "launch",
-      "program": "${workspaceFolder}/validate_test_runner.py",
-      "console": "integratedTerminal",
-      "justMyCode": false,
-      "cwd": "${workspaceFolder}",
-      "env": {
-        "PYTHONUNBUFFERED": "1",
-        "PYTHONPATH": "${workspaceFolder};${workspaceFolder}/src/web_app/modern_desktop;${workspaceFolder}/src/web_app;${workspaceFolder}/src;${workspaceFolder}/launcher;${workspaceFolder}/packages"
+        "PYTHONPATH": "${workspaceFolder};${workspaceFolder}/src;${workspaceFolder}/src/desktop;${workspaceFolder}/packages;${workspaceFolder}/.venv/Lib/site-packages",
+        "VIRTUAL_ENV": "${workspaceFolder}/.venv",
+        "PYTHONUNBUFFERED": "1"
       },
       "stopOnEntry": false,
       "showReturnValue": true,

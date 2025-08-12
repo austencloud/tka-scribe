@@ -72,21 +72,25 @@ class PictographDataManager:
             self.all_data = []
 
     def _find_data_directory(self) -> Path | None:
-        """Find the data directory using multiple strategies."""
-        # Try common locations
-        possible_paths = [
-            Path("src/desktop/data"),
-            Path("desktop/data"),
-            Path("data"),
-            Path.cwd() / "src/desktop/data",
-            Path.cwd() / "desktop/data",
-        ]
+        """Find the data directory using centralized path resolver."""
+        try:
+            from desktop.shared.infrastructure.path_resolver import path_resolver
+            return path_resolver.data_dir
+        except Exception:
+            # Fallback to manual discovery if path resolver fails
+            possible_paths = [
+                Path("src/desktop/data"),
+                Path("desktop/data"),
+                Path("data"),
+                Path.cwd() / "src/desktop/data",
+                Path.cwd() / "desktop/data",
+            ]
 
-        for path in possible_paths:
-            if path.exists() and (path / "DiamondPictographDataframe.csv").exists():
-                return path
+            for path in possible_paths:
+                if path.exists() and (path / "DiamondPictographDataframe.csv").exists():
+                    return path
 
-        return None
+            return None
 
     def get_all_data(self) -> list[dict[str, Any]]:
         """Get all pictograph data."""

@@ -83,11 +83,24 @@ class BrowseTab(QWidget):
         self.settings_file = settings_file
         self.container = container
 
-        # Find the TKA root directory and construct the data path
-        tka_root = Path(__file__).resolve()
-        while tka_root.parent != tka_root and tka_root.name != "TKA":
-            tka_root = tka_root.parent
-        self.data_dir = tka_root / "data"
+        # Use centralized path resolver to find the correct data directory
+        try:
+            from desktop.shared.infrastructure.path_resolver import path_resolver
+            self.data_dir = path_resolver.data_dir
+        except Exception:
+            # Fallback: Find the desktop directory and use its data subfolder
+            current_path = Path(__file__).resolve()
+            while current_path.parent != current_path:
+                if current_path.name == "desktop":
+                    self.data_dir = current_path / "data"
+                    break
+                current_path = current_path.parent
+            else:
+                # Last resort: use old logic
+                tka_root = Path(__file__).resolve()
+                while tka_root.parent != tka_root and tka_root.name != "TKA":
+                    tka_root = tka_root.parent
+                self.data_dir = tka_root / "data"
 
         # Initialize state service for backward compatibility
         self.state_service = BrowseStateService(settings_file)

@@ -6,7 +6,6 @@ brittle relative path navigation. It searches upward from any location
 to find the correct project structure.
 """
 
-import os
 from pathlib import Path
 from typing import Optional
 

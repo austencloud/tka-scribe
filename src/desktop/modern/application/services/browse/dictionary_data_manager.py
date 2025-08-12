@@ -39,26 +39,30 @@ class DictionaryDataManager(QObject):
         self._loading_errors: list[str] = []
 
     def _find_data_directory(self) -> Path:
-        """Find the data directory using the same logic as legacy."""
-        # Start from current file and search upward
-        current_path = Path(__file__).resolve().parent
+        """Find the data directory using centralized path resolver."""
+        try:
+            from desktop.shared.infrastructure.path_resolver import path_resolver
+            return path_resolver.data_dir
+        except Exception:
+            # Fallback to manual discovery if path resolver fails
+            current_path = Path(__file__).resolve().parent
 
-        while current_path.parent != current_path:
-            # Check if this is the TKA root
-            if current_path.name == "TKA":
-                data_dir = current_path / "data"
-                if data_dir.exists():
-                    return data_dir
+            while current_path.parent != current_path:
+                # Check if this is the desktop directory
+                if current_path.name == "desktop":
+                    data_dir = current_path / "data"
+                    if data_dir.exists():
+                        return data_dir
 
-            # Check for data directory at current level
-            data_dir = current_path / "data"
-            if data_dir.exists() and (data_dir / "dictionary").exists():
-                return data_dir
+                # Check for desktop/data directory
+                desktop_data_dir = current_path / "src" / "desktop" / "data"
+                if desktop_data_dir.exists() and (desktop_data_dir / "dictionary").exists():
+                    return desktop_data_dir
 
-            current_path = current_path.parent
+                current_path = current_path.parent
 
-        # Fallback to current working directory
-        return Path.cwd() / "data"
+            # Fallback to desktop data directory relative to this file
+            return Path(__file__).resolve().parent.parent.parent.parent.parent / "data"
 
     def load_all_sequences(self) -> None:
         """Load all sequences from the dictionary folder."""
