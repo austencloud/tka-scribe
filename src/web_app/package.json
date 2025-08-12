@@ -1,68 +1,89 @@
 {
-  "name": "tka-web-app-root",
-  "version": "1.0.0",
-  "description": "The Kinetic Constructor Web App - Root workspace manager",
-  "private": true,
-  "type": "module",
-  "scripts": {
-    "dev": "npm run dev:legacy",
-    "dev:legacy": "cd legacy_web && npm run dev",
-    "dev:modern": "cd modern_web && npm run dev",
-    "dev:legacy-clean": "cd legacy_web && npm run dev:reset",
-    "dev:modern-clean": "cd modern_web && npm run dev",
-
-    "build": "npm run build:legacy && npm run build:modern",
-    "build:legacy": "cd legacy_web && npm run build",
-    "build:modern": "cd modern_web && npm run build",
-
-    "preview": "npm run preview:legacy",
-    "preview:legacy": "cd legacy_web && npm run preview",
-    "preview:modern": "cd modern_web && npm run preview",
-
-    "test": "npm run test:legacy && npm run test:modern",
-    "test:legacy": "cd legacy_web && npm run test",
-    "test:modern": "cd modern_web && npm run test",
-
-    "lint": "npm run lint:legacy && npm run lint:modern",
-    "lint:legacy": "cd legacy_web && npm run lint",
-    "lint:modern": "cd modern_web && npm run lint",
-
-    "format": "npm run format:legacy && npm run format:modern",
-    "format:legacy": "cd legacy_web && npm run format",
-    "format:modern": "cd modern_web && npm run format",
-
-    "install:all": "npm run install:legacy && npm run install:modern",
-    "install:legacy": "cd legacy_web && npm install",
-    "install:modern": "cd modern_web && npm install",
-
-    "clean": "npm run clean:legacy && npm run clean:modern",
-    "clean:legacy": "cd legacy_web && npm run clean:deep",
-    "clean:modern": "cd modern_web && npm run clean",
-
-
-    "status": "echo 'TKA Web App Status:' && echo 'Legacy Web: http://localhost:5175' && echo 'Modern Web: http://localhost:5174' && echo 'Use npm run dev:legacy or npm run dev:modern to start'"
-  },
-  "workspaces": [
-    "legacy_web",
-    "modern_web"
-  ],
-  "devDependencies": {
-    "concurrently": "^8.2.2",
-    "cross-env": "^7.0.3"
-  },
-  "engines": {
-    "node": ">=18.0.0",
-    "npm": ">=9.0.0"
-  },
-
-  "keywords": [
-    "kinetic-constructor",
-    "juggling",
-    "notation",
-    "svelte",
-    "typescript",
-    "web-app"
-  ],
-  "author": "TKA Team",
-  "license": "MIT"
+	"name": "@tka/v2-modern",
+	"version": "2.0.0",
+	"private": true,
+	"type": "module",
+	"description": "TKA V2 Modern Web Application - Clean Svelte 5 + Runes Architecture",
+	"scripts": {
+		"predev": "svelte-kit sync",
+		"dev": "vite dev --host localhost --port 5174",
+		"dev:bash": "\"C:\\Program Files\\Git\\bin\\bash.exe\" -c \"npm run dev\"",
+		"dev:open": "vite dev --host localhost --port 5174 --open",
+		"build": "vite build",
+		"build:analyze": "vite build --mode analyze",
+		"preview": "vite preview",
+		"preview:open": "vite preview --open",
+		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
+		"type-check": "tsc --noEmit",
+		"test": "vitest",
+		"test:watch": "vitest --watch",
+		"test:ui": "vitest --ui",
+		"test:coverage": "vitest run --coverage",
+		"test:e2e": "playwright test",
+		"test:e2e:ui": "playwright test --ui",
+		"test:e2e:debug": "playwright test --debug",
+		"test:simple": "echo 'Navigate to http://localhost:5177/simple-test to see the pictograph test'",
+		"test:integration": "vitest run src/lib/components/workbench/__tests__",
+		"test:all": "npm run test:pictograph && npm run test:integration && npm run test:e2e",
+		"test:ai-analysis": "tsx scripts/ai-analysis.ts",
+		"audit:runes": "node scripts/audit-runes-reactivity.js",
+		"prune:css": "tsx scripts/prune-unused-css.ts",
+		"lint": "eslint . --ext .js,.ts,.svelte",
+		"lint:fix": "eslint . --ext .js,.ts,.svelte --fix",
+		"lint:check": "eslint . --ext .js,.ts,.svelte --max-warnings 0",
+		"format": "prettier --write .",
+		"format:check": "prettier --check .",
+		"validate": "npm run format:check && npm run lint:check && npm run type-check && npm run test:coverage",
+		"clean": "rimraf build .svelte-kit dist coverage test-results playwright-report",
+		"clean:deps": "rimraf node_modules package-lock.json && npm install",
+		"prepare": "svelte-kit sync",
+		"postinstall": "svelte-kit sync"
+	},
+	"dependencies": {
+		"@sveltejs/kit": "^2.16.1",
+		"@tailwindcss/container-queries": "^0.1.1",
+		"@tailwindcss/forms": "^0.5.10",
+		"@tailwindcss/typography": "^0.5.16",
+		"@types/ws": "^8.18.1",
+		"svelte": "^5.0.0",
+		"typescript": "^5.8.3",
+		"ws": "^8.18.3"
+	},
+	"devDependencies": {
+		"@fullhuman/postcss-purgecss": "^7.0.2",
+		"@playwright/test": "^1.54.2",
+		"@sveltejs/adapter-auto": "^3.2.5",
+		"@sveltejs/vite-plugin-svelte": "^5.0.3",
+		"@testing-library/jest-dom": "^6.6.3",
+		"@testing-library/svelte": "^5.2.7",
+		"@testing-library/user-event": "^14.6.1",
+		"@types/node": "^22.13.14",
+		"@typescript-eslint/eslint-plugin": "^8.39.0",
+		"@typescript-eslint/parser": "^8.39.0",
+		"@vitest/ui": "^3.1.1",
+		"autoprefixer": "^10.4.20",
+		"cssnano": "^7.1.0",
+		"eslint": "^9.23.0",
+		"eslint-config-prettier": "^9.1.0",
+		"eslint-import-resolver-typescript": "^3.6.3",
+		"eslint-plugin-import": "^2.31.0",
+		"eslint-plugin-svelte": "^2.45.1",
+		"fast-glob": "^3.3.3",
+		"globals": "^16.3.0",
+		"jsdom": "^26.0.0",
+		"postcss": "^8.5.0",
+		"prettier": "^3.4.2",
+		"prettier-plugin-svelte": "^3.3.3",
+		"rimraf": "^6.0.1",
+		"svelte-check": "^4.1.7",
+		"tailwindcss": "^3.4.17",
+		"tsx": "^4.0.0",
+		"vite": "^6.0.0",
+		"vitest": "^3.1.1"
+	},
+	"engines": {
+		"node": ">=18.0.0",
+		"npm": ">=8.0.0"
+	}
 }
