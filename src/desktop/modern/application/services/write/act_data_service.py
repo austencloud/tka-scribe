@@ -37,8 +37,8 @@ class ActDataService(IActDataService):
             # Default to TKA data/acts directory
             from pathlib import Path
 
-            tka_root = Path(__file__).parent.parent.parent.parent.parent.parent
-            acts_directory = tka_root / "data" / "acts"
+            desktop_root = Path(__file__).parent.parent.parent.parent.parent
+            acts_directory = desktop_root / "data" / "acts"
 
         self.acts_directory = Path(acts_directory)
         self.acts_directory.mkdir(parents=True, exist_ok=True)
