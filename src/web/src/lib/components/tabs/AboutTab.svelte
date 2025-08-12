@@ -1,9 +1,9 @@
 <script lang="ts">
-	import About from '$lib/components/landing/About.svelte';
+	import AboutTab from '$lib/components/about/AboutTab.svelte';
 </script>
 
 <div class="about-tab">
-	<About />
+	<AboutTab />
 </div>
 
 <style>

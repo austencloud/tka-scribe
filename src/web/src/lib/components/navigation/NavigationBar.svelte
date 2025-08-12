@@ -1,8 +1,7 @@
-<!-- Unified Navigation Bar - Switches between Landing and App modes -->
+<!-- Unified Navigation Bar - App Mode Only -->
 <script lang="ts">
-	import { getAppMode, returnToLanding, getLandingBackground, setLandingBackground } from '$lib/state/appModeState.svelte';
+	import { getAppMode } from '$lib/state/appModeState.svelte';
 	import { showSettingsDialog } from '$lib/state/appState.svelte';
-	import LandingNavBar from '../landing/LandingNavBar.svelte';
 	import { foldTransition } from '$lib/utils/foldTransition';
 
 	type TabID = string;
@@ -22,13 +21,12 @@
 
 	// Reactive state
 	let appMode = $derived(getAppMode());
-	let landingBackground = $derived(getLandingBackground());
 
-	// Handle logo click in app mode - return to landing
+	// Handle logo click in app mode - go to About tab
 	async function handleLogoClick() {
 		if (appMode === 'app') {
-			console.log('🏠 Returning to landing via logo click...');
-			await returnToLanding();
+			console.log('🏠 Navigating to About tab via logo click...');
+			onTabSelect?.('about');
 		}
 	}
 
@@ -40,45 +38,28 @@
 			console.error('Failed to select tab:', error);
 		}
 	}
-
-	// Handle background change in landing mode
-	function handleLandingBackgroundChange(background: string) {
-		if (background === 'deepOcean' || background === 'snowfall' || background === 'nightSky') {
-			setLandingBackground(background);
-			onBackgroundChange?.(background);
-		}
-	}
 </script>
 
-{#if appMode === 'landing'}
-	<!-- Landing Mode Navigation -->
-	<div in:foldTransition={{ direction: 'fold-in', duration: 300 }}>
-		<LandingNavBar 
-			currentBackground={landingBackground}
-			onBackgroundChange={handleLandingBackgroundChange}
-		/>
-	</div>
-{:else}
-	<!-- App Mode Navigation -->
-	<nav class="app-navigation-bar glass-surface" in:foldTransition={{ direction: 'fold-in', duration: 300 }}>
-		<!-- Clickable Logo/Brand - Returns to Landing -->
-		<div 
-			class="nav-brand clickable" 
-			onclick={handleLogoClick}
-			role="button"
-			tabindex="0"
-			onkeydown={(e) => {
+<!-- App Mode Navigation -->
+<nav class="app-navigation-bar glass-surface" in:foldTransition={{ direction: 'fold-in', duration: 300 }}>
+	<!-- Clickable Logo/Brand - Go to About -->
+	<div 
+		class="nav-brand clickable" 
+		onclick={handleLogoClick}
+		role="button"
+		tabindex="0"
+		onkeydown={(e) => {
 				if (e.key === 'Enter' || e.key === ' ') {
 					e.preventDefault();
 					handleLogoClick();
 				}
 			}}
-			title="Return to landing page"
-			aria-label="Return to landing page"
+			title="Go to About page"
+			aria-label="Go to About page"
 		>
 			<h1>TKA</h1>
 			<span class="version">v2.0</span>
-			<span class="return-hint">← Back to Landing</span>
+			<span class="return-hint">← About</span>
 		</div>
 
 		<!-- App Tab Navigation -->
@@ -115,7 +96,6 @@
 			</button>
 		</div>
 	</nav>
-{/if}
 
 <style>
 	.app-navigation-bar {

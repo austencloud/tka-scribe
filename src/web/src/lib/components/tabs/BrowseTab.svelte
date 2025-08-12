@@ -325,10 +325,4 @@ Integrates panel management service with runes for:
 		opacity: 0;
 		transition: opacity 0.3s;
 	}
-
-	/* Show debug indicator when panels are resizing */
-	.browse-tab.resizing::after {
-		opacity: 1;
-		background: var(--color-warning);
-	}
 </style>

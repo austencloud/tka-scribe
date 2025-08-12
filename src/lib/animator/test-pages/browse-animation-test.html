@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Browse Tab Animation Test</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+        background: #f5f5f5;
+      }
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+      .test-header {
+        text-align: center;
+        margin-bottom: 30px;
+        padding-bottom: 20px;
+        border-bottom: 2px solid #eee;
+      }
+      .animation-container {
+        display: flex;
+        gap: 20px;
+        align-items: flex-start;
+      }
+      .controls {
+        flex: 0 0 300px;
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 8px;
+      }
+      .canvas-area {
+        flex: 1;
+        text-align: center;
+      }
+      .control-group {
+        margin-bottom: 20px;
+      }
+      .control-group label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+      }
+      .control-group input,
+      .control-group button {
+        width: 100%;
+        padding: 8px;
+        margin-bottom: 5px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+      }
+      .control-group button {
+        background: #007bff;
+        color: white;
+        cursor: pointer;
+        font-weight: bold;
+      }
+      .control-group button:hover {
+        background: #0056b3;
+      }
+      .control-group button:disabled {
+        background: #6c757d;
+        cursor: not-allowed;
+      }
+      .info-display {
+        background: #e9ecef;
+        padding: 15px;
+        border-radius: 4px;
+        font-family: monospace;
+        font-size: 12px;
+      }
+      .logging-area {
+        margin-top: 20px;
+        background: #f8f9fa;
+        padding: 15px;
+        border-radius: 8px;
+      }
+      .log-output {
+        height: 200px;
+        overflow-y: auto;
+        background: #fff;
+        border: 1px solid #ddd;
+        padding: 10px;
+        font-family: monospace;
+        font-size: 11px;
+        white-space: pre-wrap;
+      }
+      .error {
+        color: #dc3545;
+        background: #f8d7da;
+        padding: 10px;
+        border-radius: 4px;
+        margin: 10px 0;
+      }
+      .success {
+        color: #155724;
+        background: #d4edda;
+        padding: 10px;
+        border-radius: 4px;
+        margin: 10px 0;
+      }
+      #animationCanvas {
+        border: 2px solid #ddd;
+        border-radius: 8px;
+        background: white;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="test-header">
+        <h1>Browse Tab Animation System Test</h1>
+        <p>Minimal test environment for Browse tab animation components</p>
+      </div>
+
+      <div id="status" class="error" style="display: none"></div>
+
+      <div class="animation-container">
+        <div class="controls">
+          <div class="control-group">
+            <label>Animation Controls</label>
+            <button id="loadSequenceBtn">Load ALFBBLFA Sequence</button>
+            <button id="playPauseBtn" disabled>▶ Play</button>
+            <button id="stopBtn" disabled>⏹ Stop</button>
+          </div>
+
+          <div class="control-group">
+            <label for="speedSlider"
+              >Speed: <span id="speedValue">1.0</span>x</label
+            >
+            <input
+              type="range"
+              id="speedSlider"
+              min="0.1"
+              max="3.0"
+              step="0.1"
+              value="1.0"
+            />
+          </div>
+
+          <div class="control-group">
+            <label for="beatSlider"
+              >Beat: <span id="beatValue">0.00</span></label
+            >
+            <input
+              type="range"
+              id="beatSlider"
+              min="0"
+              max="8"
+              step="0.01"
+              value="0"
+              disabled
+            />
+          </div>
+
+          <div class="control-group">
+            <label>
+              <input type="checkbox" id="loopCheckbox" /> Loop Animation
+            </label>
+          </div>
+
+          <div class="control-group">
+            <label>
+              <input type="checkbox" id="enableLogging" checked /> Enable
+              Detailed Logging
+            </label>
+          </div>
+
+          <div class="info-display">
+            <div>
+              <strong>Sequence:</strong> <span id="sequenceWord">-</span>
+            </div>
+            <div>
+              <strong>Author:</strong> <span id="sequenceAuthor">-</span>
+            </div>
+            <div>
+              <strong>Total Beats:</strong> <span id="totalBeats">-</span>
+            </div>
+            <div>
+              <strong>Current Beat:</strong>
+              <span id="currentBeatDisplay">0.00</span>
+            </div>
+            <div>
+              <strong>Status:</strong> <span id="animationStatus">Stopped</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="canvas-area">
+          <canvas id="animationCanvas" width="400" height="400"></canvas>
+          <div class="logging-area">
+            <h4>Animation Logging Output</h4>
+            <div id="logOutput" class="log-output"></div>
+            <button id="clearLogBtn">Clear Log</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Browse Tab Animation Test Implementation -->
+    <script type="module">
+      // Import test sequence data and logging utilities
+      import { ALFBBLFA_SEQUENCE } from "../test-data/alfbblfa-sequence.js";
+      import { AnimationLogger } from "../utils/animation-logger.js";
+
+      // Browse Tab Animation Test Implementation
+      class BrowseAnimationTest {
+        constructor() {
+          this.animationEngine = null;
+          this.canvas = null;
+          this.ctx = null;
+          this.animationFrameId = null;
+          this.lastTimestamp = null;
+
+          // Animation state
+          this.isPlaying = false;
+          this.currentBeat = 0;
+          this.speed = 1.0;
+          this.totalBeats = 0;
+          this.shouldLoop = false;
+          this.enableLogging = true;
+
+          // Enhanced logging
+          this.logger = new AnimationLogger("BROWSE");
+          this.isLoggingActive = false;
+          this.frameCounter = 0;
+
+          // Prop states
+          this.bluePropState = {
+            centerPathAngle: 0,
+            staffRotationAngle: 0,
+            x: 0,
+            y: 0,
+          };
+          this.redPropState = {
+            centerPathAngle: 0,
+            staffRotationAngle: 0,
+            x: 0,
+            y: 0,
+          };
+
+          // Sequence metadata
+          this.sequenceWord = "";
+          this.sequenceAuthor = "";
+
+          // Logging
+          this.logBuffer = [];
+          this.maxLogEntries = 1000;
+        }
+
+        async initialize() {
+          try {
+            console.log("🎬 Initializing Browse Tab Animation Test...");
+
+            // Get canvas and context
+            this.canvas = document.getElementById("animationCanvas");
+            this.ctx = this.canvas.getContext("2d");
+
+            if (!this.ctx) {
+              throw new Error("Failed to get canvas context");
+            }
+
+            // Initialize animation engine (we'll create a simplified version)
+            this.initializeEngine();
+
+            // Setup event listeners
+            this.setupEventListeners();
+
+            // Show success status
+            this.showStatus(
+              "Browse Tab Animation Test initialized successfully",
+              "success"
+            );
+
+            console.log("✅ Browse Tab Animation Test ready");
+          } catch (error) {
+            console.error("❌ Failed to initialize test:", error);
+            this.showStatus(`Initialization failed: ${error.message}`, "error");
+          }
+        }
+
+        initializeEngine() {
+          // Create a simplified engine that mimics the StandalonePortedEngine behavior
+          this.animationEngine = {
+            parsedSteps: [],
+            totalBeats: 0,
+            metadata: { word: "", author: "", totalBeats: 0 },
+
+            initialize: (sequenceData) => {
+              try {
+                console.log("🔧 Engine: Initializing with data:", sequenceData);
+
+                if (!Array.isArray(sequenceData) || sequenceData.length < 3) {
+                  throw new Error("Invalid sequence data format");
+                }
+
+                // Extract metadata
+                const meta = sequenceData[0] || {};
+                this.animationEngine.metadata = {
+                  word: meta.word || "",
+                  author: meta.author || "",
+                  totalBeats: sequenceData.length - 2,
+                };
+
+                // Store steps
+                this.animationEngine.parsedSteps = sequenceData;
+                this.animationEngine.totalBeats =
+                  this.animationEngine.metadata.totalBeats;
+
+                console.log("✅ Engine: Initialized successfully");
+                return true;
+              } catch (error) {
+                console.error("❌ Engine: Failed to initialize:", error);
+                return false;
+              }
+            },
+
+            calculateState: (currentBeat) => {
+              // Use exact logic from StandalonePortedEngine for accurate comparison
+              if (
+                this.animationEngine.parsedSteps.length === 0 ||
+                this.animationEngine.totalBeats === 0
+              ) {
+                console.warn("BROWSE: No sequence data available");
+                return;
+              }
+
+              // EXACT LOGIC FROM STANDALONE - DO NOT MODIFY
+              const clampedBeat = Math.max(
+                0,
+                Math.min(currentBeat, this.animationEngine.totalBeats)
+              );
+              const currentAnimationStepIndex = Math.floor(
+                clampedBeat === this.animationEngine.totalBeats
+                  ? this.animationEngine.totalBeats - 1
+                  : clampedBeat
+              );
+              const currentStepArrayIndex = currentAnimationStepIndex + 2; // Map beat 0..N-1 to array index 2..N+1
+              const t =
+                clampedBeat === this.animationEngine.totalBeats
+                  ? 1.0
+                  : clampedBeat - currentAnimationStepIndex;
+
+              const stepDefinition =
+                this.animationEngine.parsedSteps[currentStepArrayIndex];
+
+              if (!stepDefinition) {
+                console.error(
+                  `BROWSE: No step definition for array index ${currentStepArrayIndex} (beat: ${clampedBeat})`
+                );
+                return;
+              }
+
+              const blueEndpoints = this.calculateStepEndpoints(
+                stepDefinition,
+                "blue"
+              );
+              const redEndpoints = this.calculateStepEndpoints(
+                stepDefinition,
+                "red"
+              );
+
+              if (blueEndpoints && redEndpoints) {
+                this.bluePropState.centerPathAngle = this.lerpAngle(
+                  blueEndpoints.startCenterAngle,
+                  blueEndpoints.targetCenterAngle,
+                  t
+                );
+                this.bluePropState.staffRotationAngle = this.lerpAngle(
+                  blueEndpoints.startStaffAngle,
+                  blueEndpoints.targetStaffAngle,
+                  t
+                );
+                this.redPropState.centerPathAngle = this.lerpAngle(
+                  redEndpoints.startCenterAngle,
+                  redEndpoints.targetCenterAngle,
+                  t
+                );
+                this.redPropState.staffRotationAngle = this.lerpAngle(
+                  redEndpoints.startStaffAngle,
+                  redEndpoints.targetStaffAngle,
+                  t
+                );
+
+                // Handle pro motion special case
+                if (stepDefinition.blue_attributes?.motion_type === "pro") {
+                  this.bluePropState.staffRotationAngle =
+                    this.calculateProIsolationStaffAngle(
+                      this.bluePropState.centerPathAngle,
+                      stepDefinition.blue_attributes.prop_rot_dir || "cw"
+                    );
+                }
+                if (stepDefinition.red_attributes?.motion_type === "pro") {
+                  this.redPropState.staffRotationAngle =
+                    this.calculateProIsolationStaffAngle(
+                      this.redPropState.centerPathAngle,
+                      stepDefinition.red_attributes.prop_rot_dir || "cw"
+                    );
+                }
+
+                // Update coordinates from angles
+                this.updateCoordinatesFromAngle(this.bluePropState);
+                this.updateCoordinatesFromAngle(this.redPropState);
+
+                // Log frame data if logging is active
+                if (this.isLoggingActive) {
+                  this.logger.logFrame({
+                    beat: currentBeat,
+                    blueProp: { ...this.bluePropState },
+                    redProp: { ...this.redPropState },
+                    timing: {
+                      deltaTime: this.lastDeltaTime || 0,
+                      speed: this.speed,
+                      isPlaying: this.isPlaying,
+                    },
+                    step: {
+                      stepIndex: currentAnimationStepIndex,
+                      arrayIndex: currentStepArrayIndex,
+                      t: t,
+                      motionTypes: {
+                        blue: stepDefinition.blue_attributes?.motion_type,
+                        red: stepDefinition.red_attributes?.motion_type,
+                      },
+                    },
+                  });
+                }
+              } else {
+                console.error("BROWSE: Could not calculate endpoints for step");
+              }
+            },
+
+            reset: () => {
+              this.bluePropState = {
+                centerPathAngle: 0,
+                staffRotationAngle: Math.PI,
+                x: 0,
+                y: 0,
+              };
+              this.redPropState = {
+                centerPathAngle: Math.PI,
+                staffRotationAngle: 0,
+                x: 0,
+                y: 0,
+              };
+            },
+
+            getMetadata: () => this.animationEngine.metadata,
+          };
+        }
+
+        setupEventListeners() {
+          // Load sequence button
+          document
+            .getElementById("loadSequenceBtn")
+            .addEventListener("click", () => {
+              this.loadSequence();
+            });
+
+          // Play/pause button
+          document
+            .getElementById("playPauseBtn")
+            .addEventListener("click", () => {
+              this.togglePlayPause();
+            });
+
+          // Stop button
+          document.getElementById("stopBtn").addEventListener("click", () => {
+            this.stop();
+          });
+
+          // Speed slider
+          document
+            .getElementById("speedSlider")
+            .addEventListener("input", (e) => {
+              this.speed = parseFloat(e.target.value);
+              document.getElementById("speedValue").textContent =
+                this.speed.toFixed(1);
+            });
+
+          // Beat slider
+          document
+            .getElementById("beatSlider")
+            .addEventListener("input", (e) => {
+              if (!this.isPlaying) {
+                this.currentBeat = parseFloat(e.target.value);
+                this.updateBeatDisplay();
+                this.animationEngine.calculateState(this.currentBeat);
+                this.render();
+              }
+            });
+
+          // Loop checkbox
+          document
+            .getElementById("loopCheckbox")
+            .addEventListener("change", (e) => {
+              this.shouldLoop = e.target.checked;
+            });
+
+          // Logging checkbox
+          document
+            .getElementById("enableLogging")
+            .addEventListener("change", (e) => {
+              this.enableLogging = e.target.checked;
+            });
+
+          // Clear log button
+          document
+            .getElementById("clearLogBtn")
+            .addEventListener("click", () => {
+              this.clearLog();
+            });
+        }
+
+        loadSequence() {
+          try {
+            console.log("📥 Loading ALFBBLFA sequence...");
+
+            if (this.animationEngine.initialize(ALFBBLFA_SEQUENCE)) {
+              const metadata = this.animationEngine.getMetadata();
+              this.totalBeats = metadata.totalBeats;
+              this.sequenceWord = metadata.word;
+              this.sequenceAuthor = metadata.author;
+
+              // Update UI
+              document.getElementById("sequenceWord").textContent =
+                this.sequenceWord;
+              document.getElementById("sequenceAuthor").textContent =
+                this.sequenceAuthor;
+              document.getElementById("totalBeats").textContent =
+                this.totalBeats;
+              document.getElementById("beatSlider").max = this.totalBeats;
+
+              // Enable controls
+              document.getElementById("playPauseBtn").disabled = false;
+              document.getElementById("stopBtn").disabled = false;
+              document.getElementById("beatSlider").disabled = false;
+
+              // Reset animation state
+              this.currentBeat = 0;
+              this.isPlaying = false;
+              this.animationEngine.reset();
+              this.updateBeatDisplay();
+              this.render();
+
+              this.showStatus(
+                `Sequence "${this.sequenceWord}" loaded successfully (${this.totalBeats} beats)`,
+                "success"
+              );
+              this.log(
+                `✅ BROWSE: Sequence loaded - ${this.sequenceWord} by ${this.sequenceAuthor}, ${this.totalBeats} beats`
+              );
+            } else {
+              throw new Error("Failed to initialize animation engine");
+            }
+          } catch (error) {
+            console.error("❌ Failed to load sequence:", error);
+            this.showStatus(
+              `Failed to load sequence: ${error.message}`,
+              "error"
+            );
+          }
+        }
+
+        togglePlayPause() {
+          if (this.isPlaying) {
+            this.pause();
+          } else {
+            this.play();
+          }
+        }
+
+        play() {
+          if (this.isPlaying) return;
+
+          this.isPlaying = true;
+          this.lastTimestamp = null;
+          document.getElementById("playPauseBtn").textContent = "⏸ Pause";
+          document.getElementById("animationStatus").textContent = "Playing";
+
+          this.log(
+            `▶️ BROWSE: Animation started at beat ${this.currentBeat.toFixed(
+              3
+            )}`
+          );
+          this.animationFrameId = requestAnimationFrame((timestamp) =>
+            this.animationLoop(timestamp)
+          );
+        }
+
+        pause() {
+          this.isPlaying = false;
+          if (this.animationFrameId !== null) {
+            cancelAnimationFrame(this.animationFrameId);
+            this.animationFrameId = null;
+          }
+
+          document.getElementById("playPauseBtn").textContent = "▶ Play";
+          document.getElementById("animationStatus").textContent = "Paused";
+          this.log(
+            `⏸️ BROWSE: Animation paused at beat ${this.currentBeat.toFixed(3)}`
+          );
+        }
+
+        stop() {
+          this.isPlaying = false;
+          if (this.animationFrameId !== null) {
+            cancelAnimationFrame(this.animationFrameId);
+            this.animationFrameId = null;
+          }
+
+          this.currentBeat = 0;
+          this.animationEngine.reset();
+          this.updateBeatDisplay();
+          this.render();
+
+          document.getElementById("playPauseBtn").textContent = "▶ Play";
+          document.getElementById("animationStatus").textContent = "Stopped";
+          this.log(`⏹️ BROWSE: Animation stopped and reset`);
+        }
+
+        animationLoop(timestamp) {
+          if (!this.isPlaying) return;
+
+          // Calculate deltaTime
+          if (this.lastTimestamp === null) {
+            this.lastTimestamp = timestamp;
+          }
+          const deltaTime = timestamp - this.lastTimestamp;
+          this.lastTimestamp = timestamp;
+          this.lastDeltaTime = deltaTime; // Store for logging
+
+          // Update current beat based on speed
+          const beatDelta = (deltaTime / 1000) * this.speed;
+          const newBeat = this.currentBeat + beatDelta;
+
+          // Check if we've reached the end
+          const animationEndBeat = this.totalBeats + 1;
+
+          if (newBeat > animationEndBeat) {
+            if (this.shouldLoop) {
+              // Loop back to start
+              this.currentBeat = 0;
+              this.lastTimestamp = null;
+              this.animationEngine.reset();
+              this.log(`🔁 BROWSE: Looping back to start`);
+            } else {
+              // Stop at end
+              this.currentBeat = this.totalBeats;
+              this.pause();
+              this.log(`🏁 BROWSE: Animation ended`);
+              return;
+            }
+          } else {
+            this.currentBeat = newBeat;
+          }
+
+          // Calculate state for current beat (this will handle logging internally)
+          this.animationEngine.calculateState(this.currentBeat);
+
+          // Update UI and render
+          this.updateBeatDisplay();
+          this.render();
+
+          this.frameCounter++;
+
+          // Request next frame if still playing
+          if (this.isPlaying) {
+            this.animationFrameId = requestAnimationFrame((timestamp) =>
+              this.animationLoop(timestamp)
+            );
+          }
+        }
+
+        updateBeatDisplay() {
+          document.getElementById("beatValue").textContent =
+            this.currentBeat.toFixed(2);
+          document.getElementById("currentBeatDisplay").textContent =
+            this.currentBeat.toFixed(2);
+          document.getElementById("beatSlider").value = this.currentBeat;
+        }
+
+        render() {
+          if (!this.ctx) return;
+
+          // Clear canvas
+          this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+          // Draw grid
+          this.drawGrid();
+
+          // Draw props
+          this.drawProp(this.bluePropState, "#2E3192"); // Blue
+          this.drawProp(this.redPropState, "#ED1C24"); // Red
+        }
+
+        drawGrid() {
+          const centerX = this.canvas.width / 2;
+          const centerY = this.canvas.height / 2;
+          const radius = 151.5 * (this.canvas.width / 950); // Scale to canvas size
+
+          this.ctx.strokeStyle = "#ddd";
+          this.ctx.lineWidth = 1;
+
+          // Draw center circle
+          this.ctx.beginPath();
+          this.ctx.arc(centerX, centerY, 5, 0, Math.PI * 2);
+          this.ctx.fillStyle = "#000";
+          this.ctx.fill();
+
+          // Draw halfway circle
+          this.ctx.beginPath();
+          this.ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+          this.ctx.stroke();
+
+          // Draw cardinal points
+          const points = [
+            { x: centerX, y: centerY - radius }, // North
+            { x: centerX + radius, y: centerY }, // East
+            { x: centerX, y: centerY + radius }, // South
+            { x: centerX - radius, y: centerY }, // West
+          ];
+
+          points.forEach((point) => {
+            this.ctx.beginPath();
+            this.ctx.arc(point.x, point.y, 8, 0, Math.PI * 2);
+            this.ctx.fillStyle = "#000";
+            this.ctx.fill();
+          });
+        }
+
+        drawProp(propState, color) {
+          const centerX = this.canvas.width / 2;
+          const centerY = this.canvas.height / 2;
+          const scale = this.canvas.width / 950; // Scale to canvas size
+
+          // Calculate prop position
+          const propX = centerX + propState.x * scale;
+          const propY = centerY + propState.y * scale;
+
+          // Draw prop as a simple rectangle (simplified staff representation)
+          this.ctx.save();
+          this.ctx.translate(propX, propY);
+          this.ctx.rotate(propState.staffRotationAngle);
+
+          this.ctx.fillStyle = color;
+          this.ctx.fillRect(-25, -5, 50, 10); // Simple staff representation
+
+          // Draw center point
+          this.ctx.fillStyle = "#FF0000";
+          this.ctx.beginPath();
+          this.ctx.arc(0, 0, 3, 0, Math.PI * 2);
+          this.ctx.fill();
+
+          this.ctx.restore();
+        }
+
+        showStatus(message, type) {
+          const statusEl = document.getElementById("status");
+          statusEl.textContent = message;
+          statusEl.className = type;
+          statusEl.style.display = "block";
+
+          // Auto-hide success messages after 3 seconds
+          if (type === "success") {
+            setTimeout(() => {
+              statusEl.style.display = "none";
+            }, 3000);
+          }
+        }
+
+        log(message) {
+          const timestamp = new Date().toLocaleTimeString();
+          const logEntry = `[${timestamp}] ${message}`;
+
+          this.logBuffer.push(logEntry);
+
+          // Limit log buffer size
+          if (this.logBuffer.length > this.maxLogEntries) {
+            this.logBuffer.shift();
+          }
+
+          // Update log display
+          const logOutput = document.getElementById("logOutput");
+          logOutput.textContent = this.logBuffer.join("\n");
+          logOutput.scrollTop = logOutput.scrollHeight;
+        }
+
+        clearLog() {
+          this.logBuffer = [];
+          document.getElementById("logOutput").textContent = "";
+        }
+
+        // Math utilities (exact copies from standalone for consistency)
+        mapPositionToAngle(loc) {
+          const locationAngles = {
+            n: -Math.PI / 2,
+            ne: -Math.PI / 4,
+            e: 0,
+            se: Math.PI / 4,
+            s: Math.PI / 2,
+            sw: (3 * Math.PI) / 4,
+            w: Math.PI,
+            nw: (-3 * Math.PI) / 4,
+          };
+          return locationAngles[loc?.toLowerCase()] || 0;
+        }
+
+        normalizeAnglePositive(angle) {
+          return ((angle % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI);
+        }
+
+        normalizeAngleSigned(angle) {
+          let norm = this.normalizeAnglePositive(angle);
+          return norm > Math.PI ? norm - 2 * Math.PI : norm;
+        }
+
+        lerpAngle(a, b, t) {
+          const d = this.normalizeAngleSigned(b - a);
+          return this.normalizeAnglePositive(a + d * t);
+        }
+
+        calculateStepEndpoints(stepDefinition, propType) {
+          const attributes =
+            propType === "blue"
+              ? stepDefinition.blue_attributes
+              : stepDefinition.red_attributes;
+          if (!attributes) return null;
+
+          const {
+            start_loc,
+            end_loc,
+            start_ori,
+            end_ori,
+            motion_type,
+            prop_rot_dir,
+            turns = 0,
+          } = attributes;
+
+          const startCenterAngle = this.mapPositionToAngle(start_loc);
+          const startStaffAngle = this.mapOrientationToAngle(
+            start_ori || "in",
+            startCenterAngle
+          );
+          const targetCenterAngle = this.mapPositionToAngle(end_loc);
+
+          let calculatedTargetStaffAngle;
+
+          if (motion_type === "pro") {
+            calculatedTargetStaffAngle = this.calculateProIsolationStaffAngle(
+              targetCenterAngle,
+              prop_rot_dir || "cw"
+            );
+          } else if (motion_type === "anti") {
+            calculatedTargetStaffAngle = this.mapOrientationToAngle(
+              end_ori || "in",
+              targetCenterAngle
+            );
+          } else if (motion_type === "static") {
+            calculatedTargetStaffAngle = startStaffAngle;
+          } else if (motion_type === "float") {
+            calculatedTargetStaffAngle = startStaffAngle;
+          } else {
+            calculatedTargetStaffAngle = this.mapOrientationToAngle(
+              end_ori || "in",
+              targetCenterAngle
+            );
+          }
+
+          return {
+            startCenterAngle,
+            startStaffAngle,
+            targetCenterAngle,
+            targetStaffAngle: calculatedTargetStaffAngle,
+          };
+        }
+
+        mapOrientationToAngle(ori, centerPathAngle) {
+          if (!ori) return centerPathAngle + Math.PI;
+          if (ori.toLowerCase() === "in") {
+            return this.normalizeAnglePositive(centerPathAngle + Math.PI);
+          }
+          if (ori.toLowerCase() === "out") {
+            return this.normalizeAnglePositive(centerPathAngle);
+          }
+          return this.normalizeAnglePositive(centerPathAngle + Math.PI);
+        }
+
+        calculateProIsolationStaffAngle(centerPathAngle, propRotDir) {
+          const baseAngle = centerPathAngle + Math.PI / 2;
+          return propRotDir === "ccw" ? baseAngle + Math.PI : baseAngle;
+        }
+
+        updateCoordinatesFromAngle(propState) {
+          const radius = 151.5;
+          propState.x = Math.cos(propState.centerPathAngle) * radius;
+          propState.y = Math.sin(propState.centerPathAngle) * radius;
+        }
+      }
+
+      // Initialize the test when DOM is ready
+      window.addEventListener("DOMContentLoaded", async () => {
+        window.browseAnimationTest = new BrowseAnimationTest();
+        await window.browseAnimationTest.initialize();
+      });
+    </script>
+  </body>
+</html>

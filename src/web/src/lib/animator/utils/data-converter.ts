@@ -64,9 +64,40 @@ export function convertWebAppToStandalone(
 
   // Log first beat structure for debugging
   const firstBeat = webAppData.beats[0];
-  console.log("First beat structure:", firstBeat);
-  console.log("First beat pictograph_data:", firstBeat?.pictograph_data);
-  console.log("First beat motions:", firstBeat?.pictograph_data?.motions);
+  console.log("🔍 [DATA COMPARISON] First beat structure:", firstBeat);
+  console.log(
+    "🔍 [DATA COMPARISON] First beat pictograph_data:",
+    firstBeat?.pictograph_data
+  );
+  console.log(
+    "🔍 [DATA COMPARISON] First beat motions:",
+    firstBeat?.pictograph_data?.motions
+  );
+
+  // Log motion types specifically
+  if (firstBeat?.pictograph_data?.motions) {
+    const motions = firstBeat.pictograph_data.motions;
+    if (motions.blue) {
+      console.log(
+        `🎯 [DATA COMPARISON] Blue motion motion_type:`,
+        motions.blue.motion_type
+      );
+      console.log(
+        `🎯 [DATA COMPARISON] Blue motion full data:`,
+        JSON.stringify(motions.blue, null, 2)
+      );
+    }
+    if (motions.red) {
+      console.log(
+        `🎯 [DATA COMPARISON] Red motion motion_type:`,
+        motions.red.motion_type
+      );
+      console.log(
+        `🎯 [DATA COMPARISON] Red motion full data:`,
+        JSON.stringify(motions.red, null, 2)
+      );
+    }
+  }
 
   // Create metadata object (index 0)
   const metadata = {
@@ -198,14 +229,34 @@ export function isStandaloneFormat(data: any): boolean {
  * Auto-detect format and convert if needed
  */
 export function ensureStandaloneFormat(data: any): any[] {
+  console.log(
+    "🔍 [DATA COMPARISON] ensureStandaloneFormat called with data:",
+    JSON.stringify(data, null, 2)
+  );
+
   if (isStandaloneFormat(data)) {
-    console.log("Data is already in standalone format");
+    console.log("✅ [DATA COMPARISON] Data is already in standalone format");
+    console.log(
+      "📊 [DATA COMPARISON] Standalone data structure:",
+      JSON.stringify(data, null, 2)
+    );
     return data;
   }
 
   if (isWebAppFormat(data)) {
-    console.log("Converting web app format to standalone format");
-    return convertWebAppToStandalone(data);
+    console.log(
+      "🔄 [DATA COMPARISON] Converting web app format to standalone format"
+    );
+    console.log(
+      "📥 [DATA COMPARISON] Input web app data:",
+      JSON.stringify(data, null, 2)
+    );
+    const converted = convertWebAppToStandalone(data);
+    console.log(
+      "📤 [DATA COMPARISON] Output standalone data:",
+      JSON.stringify(converted, null, 2)
+    );
+    return converted;
   }
 
   throw new Error(
@@ -276,7 +327,7 @@ function createTestSequence(webAppData: WebAppSequenceData): any[] {
         end_ori: "in",
         prop_rot_dir: "cw",
         turns: 1,
-        motion_type: "linear",
+        motion_type: "pro",
       },
       red_attributes: {
         start_loc: "n",
@@ -305,7 +356,7 @@ function createTestSequence(webAppData: WebAppSequenceData): any[] {
         end_ori: "in",
         prop_rot_dir: "cw",
         turns: 1,
-        motion_type: "linear",
+        motion_type: "pro",
       },
       red_attributes: {
         start_loc: "n",
@@ -314,7 +365,7 @@ function createTestSequence(webAppData: WebAppSequenceData): any[] {
         end_ori: "in",
         prop_rot_dir: "ccw",
         turns: 1,
-        motion_type: "linear",
+        motion_type: "anti",
       },
     },
     // Beat 3: Blue moves from n to w, Red moves from w to s
@@ -334,7 +385,7 @@ function createTestSequence(webAppData: WebAppSequenceData): any[] {
         end_ori: "in",
         prop_rot_dir: "cw",
         turns: 1,
-        motion_type: "linear",
+        motion_type: "pro",
       },
       red_attributes: {
         start_loc: "w",
@@ -343,7 +394,7 @@ function createTestSequence(webAppData: WebAppSequenceData): any[] {
         end_ori: "in",
         prop_rot_dir: "ccw",
         turns: 1,
-        motion_type: "linear",
+        motion_type: "anti",
       },
     },
     // Beat 4: Both return to start positions
@@ -363,7 +414,7 @@ function createTestSequence(webAppData: WebAppSequenceData): any[] {
         end_ori: "in",
         prop_rot_dir: "cw",
         turns: 1,
-        motion_type: "linear",
+        motion_type: "pro",
       },
       red_attributes: {
         start_loc: "s",
@@ -372,7 +423,7 @@ function createTestSequence(webAppData: WebAppSequenceData): any[] {
         end_ori: "in",
         prop_rot_dir: "ccw",
         turns: 1,
-        motion_type: "linear",
+        motion_type: "anti",
       },
     },
   ];

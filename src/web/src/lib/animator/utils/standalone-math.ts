@@ -93,17 +93,14 @@ export function calculateAntispinTargetAngle(
   startCenterAngle: number,
   targetCenterAngle: number,
   startStaffAngle: number,
+  turns: number,
   propRotDir: string
 ): number {
-  const centerAngleDelta = normalizeAngleSigned(
-    targetCenterAngle - startCenterAngle
-  );
-  if (propRotDir === "cw") {
-    return normalizeAnglePositive(startStaffAngle - centerAngleDelta);
-  } else if (propRotDir === "ccw") {
-    return normalizeAnglePositive(startStaffAngle + centerAngleDelta);
-  }
-  return startStaffAngle;
+  let delta = normalizeAngleSigned(targetCenterAngle - startCenterAngle);
+  const base = -delta;
+  const turn = PI * turns;
+  const dir = propRotDir?.toLowerCase() === "ccw" ? -1 : 1;
+  return normalizeAnglePositive(startStaffAngle + base + turn * dir);
 }
 
 /**
@@ -213,6 +210,7 @@ export function calculateStepEndpoints(
         startCenterAngle,
         targetCenterAngle,
         startStaffAngle,
+        turns || 0,
         prop_rot_dir || "cw"
       );
       break;
