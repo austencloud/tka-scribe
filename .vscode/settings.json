@@ -1,12 +1,19 @@
 {
-  "terminal.integrated.defaultProfile.windows": "Command Prompt",
+  "terminal.integrated.defaultProfile.windows": "PowerShell",
+
+  // === TERMINAL SHELL INTEGRATION ===
+  "terminal.integrated.shellIntegration.enabled": true,
+  "terminal.integrated.shellIntegration.decorationsEnabled": "both",
+  "terminal.integrated.shellIntegration.showCommandGuide": true,
+  "terminal.integrated.stickyScroll.enabled": true,
+  "terminal.integrated.suggest.enabled": true,
   "python.terminal.activateEnvironment": true,
-  "python.defaultInterpreterPath": "./.venv/Scripts/python.exe",
+  "python.defaultInterpreterPath": "python",
   "python.terminal.activateEnvInCurrentTerminal": true,
   "python.debugging.noDebugAdapterPath": false,
   "python.experiments.enabled": false,
   "python.envFile": "${workspaceFolder}/.env",
-  "python.pythonPath": "./.venv/Scripts/python.exe",
+  "python.analysis.extraPaths": ["${workspaceFolder}/src"],
   "debug.terminal.clearBeforeReusing": true,
   "files.autoSave": "onFocusChange",
   "editor.formatOnSave": true,
@@ -14,19 +21,18 @@
   "editor.formatOnType": false,
   "editor.largeFileOptimizations": true,
 
-  // === RUFF CONFIGURATION - AUTO FORMATTING ENABLED ===
+  // === PYTHON FORMATTING CONFIGURATION ===
   "[python]": {
-    "editor.defaultFormatter": "charliermarsh.ruff",
+    "editor.defaultFormatter": "ms-python.python",
     "editor.formatOnSave": true,
     "editor.codeActionsOnSave": {
-      "source.fixAll.ruff": "explicit"
-      // "source.organizeImports.ruff": "explicit"  // TEMPORARILY DISABLED TO PREVENT AUTO-IMPORT REMOVAL
+      "source.organizeImports": "explicit"
     }
   },
 
   // === RUFF EXTENSION SETTINGS ===
   "ruff.enable": true,
-  "ruff.organizeImports": false,  // TEMPORARILY DISABLED TO PREVENT AUTO-IMPORT REMOVAL
+  "ruff.organizeImports": false, // TEMPORARILY DISABLED TO PREVENT AUTO-IMPORT REMOVAL
   "ruff.fixAll": true,
 
   // === DISABLE OLD TOOLS TO AVOID CONFLICTS ===
@@ -36,14 +42,28 @@
   "python.formatting.blackEnabled": false,
   "isort.check": false,
 
-  // === PYTHON LANGUAGE SERVER - FIXED FOR CONSISTENT HIGHLIGHTING ===
+  // === PYTHON LANGUAGE SERVER - ULTRA AGGRESSIVE MEMORY OPTIMIZATION ===
   "python.languageServer": "Pylance",
-  "python.analysis.typeCheckingMode": "basic",
-  "python.analysis.autoSearchPaths": true,
+  "python.analysis.typeCheckingMode": "off", // DISABLED FOR MEMORY
+  "python.analysis.autoSearchPaths": false, // DISABLED FOR MEMORY
   "python.analysis.memory.keepLibraryAst": false,
-  "python.analysis.autoImportCompletions": true,
-  "python.analysis.indexing": true,
-  "python.analysis.diagnosticMode": "workspace",
+  "python.analysis.autoImportCompletions": false, // DISABLED FOR MEMORY
+  "python.analysis.indexing": false, // DISABLED FOR MEMORY - MAJOR MEMORY SAVER
+  "python.analysis.diagnosticMode": "openFilesOnly", // ONLY CURRENT FILE
+  "python.analysis.stubPath": "", // DISABLE STUB LOADING
+  "python.analysis.typeshedPaths": [], // DISABLE TYPESHED
+  "python.analysis.exclude": [
+    "**/node_modules/**",
+    "**/.venv/**",
+    "**/venv/**",
+    "**/env/**",
+    "**/__pycache__/**",
+    "**/build/**",
+    "**/dist/**",
+    "**/images/**",
+    "**/exports/**",
+    "**/data/**"
+  ],
 
   // === EDITOR FEATURES - ALL ENABLED FOR PROPER CODING ===
   "editor.semanticHighlighting.enabled": true,
@@ -106,7 +126,7 @@
     "editor.formatOnSave": true
   },
 
-  // === MEMORY-SAVING FILE EXCLUSIONS ===
+  // === ULTRA AGGRESSIVE MEMORY-SAVING FILE EXCLUSIONS ===
   "files.exclude": {
     "**/__pycache__": true,
     "**/*.pyc": true,
@@ -129,7 +149,25 @@
     "**/*.log": true,
     "**/*.tmp": true,
     "**/*.backup": true,
-    "**/.hypothesis/**": true
+    "**/.hypothesis/**": true,
+    // AGGRESSIVE ADDITIONS FOR MEMORY
+    "**/src/desktop/legacy/**": true, // EXCLUDE LEGACY CODE
+    "**/src/desktop/modern/data/**": true, // EXCLUDE DATA FILES
+    "**/src/desktop/modern/assets/**": true, // EXCLUDE ASSETS
+    "**/src/desktop/modern/exports/**": true, // EXCLUDE EXPORTS
+    "**/src/web/*/dist/**": true, // EXCLUDE BUILD OUTPUT
+    "**/src/web/*/build/**": true, // EXCLUDE BUILD OUTPUT
+    "**/src/web/*/.svelte-kit/**": true, // EXCLUDE SVELTE BUILD
+    "**/playwright-report/**": true, // EXCLUDE TEST REPORTS
+    "**/test-results/**": true, // EXCLUDE TEST RESULTS
+    "**/coverage/**": true, // EXCLUDE COVERAGE
+    "**/*.png": true, // EXCLUDE IMAGES
+    "**/*.jpg": true, // EXCLUDE IMAGES
+    "**/*.jpeg": true, // EXCLUDE IMAGES
+    "**/*.gif": true, // EXCLUDE IMAGES
+    "**/*.svg": true, // EXCLUDE IMAGES
+    "**/*.ico": true, // EXCLUDE IMAGES
+    "**/*.webp": true // EXCLUDE IMAGES
   },
 
   // === FILE WATCHER EXCLUSIONS ===
@@ -205,9 +243,16 @@
   "python.testing.autoTestDiscoverOnSaveEnabled": false,
   "python.testing.pytestPath": "./.venv/Scripts/pytest.exe",
 
-  // === TYPESCRIPT PERFORMANCE ===
+  // === TYPESCRIPT PERFORMANCE - ULTRA AGGRESSIVE ===
   "typescript.preferences.includePackageJsonAutoImports": "off",
-  "typescript.suggest.autoImports": true,
+  "typescript.suggest.autoImports": false, // DISABLED FOR MEMORY
+  "typescript.disableAutomaticTypeAcquisition": true,
+  "typescript.tsserver.experimental.enableProjectDiagnostics": false,
+  "typescript.tsserver.useSeparateSyntaxServer": false, // SAVE MEMORY
+  "typescript.tsserver.enableTracing": false,
+  "typescript.workspaceSymbols.scope": "currentProject", // LIMIT SCOPE
+  "typescript.preferences.includeCompletionsForModuleExports": false,
+  "typescript.preferences.includeCompletionsWithSnippetText": false,
 
   // === MINIMAL BACKGROUND OPTIMIZATIONS ===
   "extensions.autoCheckUpdates": false,
