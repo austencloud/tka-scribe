@@ -32,7 +32,7 @@ Grid layout for displaying filtered resources with responsive design and loading
   </div>
 {:else}
   <div class="resource-grid">
-    {#each resources as resource (resource.id)}
+    {#each resources as resource, index (resource.id || `resource-${index}`)}
       <ResourceCard {resource} {onOpenModal} />
     {/each}
   </div>

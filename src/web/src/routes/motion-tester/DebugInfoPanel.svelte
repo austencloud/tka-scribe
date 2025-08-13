@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { MotionTesterState } from './motion-tester-state.svelte.js';
+	import type { MotionTesterState } from './motion-tester-state.svelte.ts';
 
 	interface Props {
 		state: MotionTesterState;
@@ -31,38 +31,38 @@
 					<h4>Blue Prop</h4>
 					<div class="debug-item">
 						<span class="label">Center Angle:</span>
-						<span class="value">{formatAngle(state.currentPropStates.blue.centerPathAngle)} rad</span>
+						<span class="value">{formatAngle(state.currentPropStates.blue?.centerPathAngle)} rad</span>
 					</div>
 					<div class="debug-item">
 						<span class="label">Staff Angle:</span>
-						<span class="value">{formatAngle(state.currentPropStates.blue.staffRotationAngle)} rad</span>
+						<span class="value">{formatAngle(state.currentPropStates.blue?.staffRotationAngle)} rad</span>
 					</div>
 					<div class="debug-item">
 						<span class="label">X Position:</span>
-						<span class="value">{state.currentPropStates?.blue?.x?.toFixed(1) || '0.0'} px</span>
+						<span class="value">{state.currentPropStates.blue?.x?.toFixed(1) || '0.0'} px</span>
 					</div>
 					<div class="debug-item">
 						<span class="label">Y Position:</span>
-						<span class="value">{state.currentPropStates?.blue?.y?.toFixed(1) || '0.0'} px</span>
+						<span class="value">{state.currentPropStates.blue?.y?.toFixed(1) || '0.0'} px</span>
 					</div>
 				</div>
 				<div class="prop-info">
 					<h4>Red Prop</h4>
 					<div class="debug-item">
 						<span class="label">Center Angle:</span>
-						<span class="value">{formatAngle(state.currentPropStates.red.centerPathAngle)} rad</span>
+						<span class="value">{formatAngle(state.currentPropStates.red?.centerPathAngle)} rad</span>
 					</div>
 					<div class="debug-item">
 						<span class="label">Staff Angle:</span>
-						<span class="value">{formatAngle(state.currentPropStates.red.staffRotationAngle)} rad</span>
+						<span class="value">{formatAngle(state.currentPropStates.red?.staffRotationAngle)} rad</span>
 					</div>
 					<div class="debug-item">
 						<span class="label">X Position:</span>
-						<span class="value">{state.currentPropStates?.red?.x?.toFixed(1) || '0.0'} px</span>
+						<span class="value">{state.currentPropStates.red?.x?.toFixed(1) || '0.0'} px</span>
 					</div>
 					<div class="debug-item">
 						<span class="label">Y Position:</span>
-						<span class="value">{state.currentPropStates?.red?.y?.toFixed(1) || '0.0'} px</span>
+						<span class="value">{state.currentPropStates.red?.y?.toFixed(1) || '0.0'} px</span>
 					</div>
 				</div>
 			</div>
@@ -142,11 +142,11 @@
 				<h3>Angle Conversions (Blue Prop)</h3>
 				<div class="debug-item">
 					<span class="label">Center (degrees):</span>
-					<span class="value">{radToDeg(state.currentPropStates.blue.centerPathAngle)}°</span>
+					<span class="value">{radToDeg(state.currentPropStates?.blue?.centerPathAngle || 0)}°</span>
 				</div>
 				<div class="debug-item">
 					<span class="label">Staff (degrees):</span>
-					<span class="value">{radToDeg(state.currentPropStates.blue.staffRotationAngle)}°</span>
+					<span class="value">{radToDeg(state.currentPropStates?.blue?.staffRotationAngle || 0)}°</span>
 				</div>
 			</div>
 		{/if}
@@ -200,49 +200,60 @@
 	<div class="debug-section">
 		<h3>Quick Tests</h3>
 		<div class="quick-test-grid">
-			<button 
+			<button
 				class="quick-test-btn"
 				onclick={() => {
-					state.setStartLocation('n');
-					state.setEndLocation('e');
-					state.updateMotionParam('motionType', 'pro');
-					state.updateMotionParam('turns', 0);
+					state.setBlueStartLocation('n');
+					state.setBlueEndLocation('e');
+					state.updateBlueMotionParam('motionType', 'pro');
+					state.updateBlueMotionParam('turns', 0);
 				}}
 			>
-				N→E Pro
+				N→E Pro (Shift)
 			</button>
-			<button 
+			<button
 				class="quick-test-btn"
 				onclick={() => {
-					state.setStartLocation('n');
-					state.setEndLocation('s');
-					state.updateMotionParam('motionType', 'anti');
-					state.updateMotionParam('turns', 1);
+					state.setBlueStartLocation('n');
+					state.setBlueEndLocation('e');
+					state.updateBlueMotionParam('motionType', 'anti');
+					state.updateBlueMotionParam('turns', 1);
 				}}
 			>
-				N→S Anti 1T
+				N→E Anti 1T (Shift)
 			</button>
-			<button 
+			<button
 				class="quick-test-btn"
 				onclick={() => {
-					state.setStartLocation('e');
-					state.setEndLocation('w');
-					state.updateMotionParam('motionType', 'pro');
-					state.updateMotionParam('turns', 2);
+					state.setBlueStartLocation('n');
+					state.setBlueEndLocation('s');
+					state.updateBlueMotionParam('motionType', 'dash');
+					state.updateBlueMotionParam('turns', 0);
 				}}
 			>
-				E→W Pro 2T
+				N→S Dash (Opposite)
 			</button>
-			<button 
+			<button
 				class="quick-test-btn"
 				onclick={() => {
-					state.setStartLocation('s');
-					state.setEndLocation('n');
-					state.updateMotionParam('motionType', 'static');
-					state.updateMotionParam('turns', 0);
+					state.setBlueStartLocation('n');
+					state.setBlueEndLocation('n');
+					state.updateBlueMotionParam('motionType', 'static');
+					state.updateBlueMotionParam('turns', 1);
 				}}
 			>
-				S→N Static
+				N→N Static 1T
+			</button>
+			<button
+				class="quick-test-btn"
+				onclick={() => {
+					state.setBlueStartLocation('w');
+					state.setBlueEndLocation('n');
+					state.updateBlueMotionParam('motionType', 'float');
+					state.updateBlueMotionParam('turns', 0);
+				}}
+			>
+				W→N Float
 			</button>
 		</div>
 	</div>

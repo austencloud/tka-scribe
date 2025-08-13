@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { MotionTesterState } from './motion-tester-state.svelte.js';
+	import type { MotionTesterState } from './state/motion-tester-state.svelte';
 	import { AnimatorCanvas } from '$lib/animator';
 
 	interface Props {
@@ -15,11 +15,12 @@
 	{#if state.isEngineInitialized}
 		<div class="animator-canvas-wrapper">
 			<AnimatorCanvas
-				blueProp={state.currentPropStates.blue}
-				redProp={state.currentPropStates.red}
+				blueProp={state.currentPropStates.blue || { x: 0, y: 0, centerPathAngle: 0, staffRotationAngle: 0 }}
+				redProp={state.currentPropStates.red || { x: 0, y: 0, centerPathAngle: 0, staffRotationAngle: 0 }}
 				width={400}
 				height={400}
 				gridVisible={true}
+				gridType={state.gridType}
 			/>
 		</div>
 	{:else}
@@ -82,15 +83,15 @@
 			<div class="prop-state">
 				<h4>Blue Prop</h4>
 				<div class="state-values">
-					<div>Center: {(state.currentPropStates.blue.centerPathAngle * 180 / Math.PI).toFixed(1)}°</div>
-					<div>Staff: {(state.currentPropStates.blue.staffRotationAngle * 180 / Math.PI).toFixed(1)}°</div>
+					<div>Center: {((state.currentPropStates?.blue?.centerPathAngle || 0) * 180 / Math.PI).toFixed(1)}°</div>
+					<div>Staff: {((state.currentPropStates?.blue?.staffRotationAngle || 0) * 180 / Math.PI).toFixed(1)}°</div>
 				</div>
 			</div>
 			<div class="prop-state">
 				<h4>Red Prop</h4>
 				<div class="state-values">
-					<div>Center: {(state.currentPropStates.red.centerPathAngle * 180 / Math.PI).toFixed(1)}°</div>
-					<div>Staff: {(state.currentPropStates.red.staffRotationAngle * 180 / Math.PI).toFixed(1)}°</div>
+					<div>Center: {((state.currentPropStates?.red?.centerPathAngle || 0) * 180 / Math.PI).toFixed(1)}°</div>
+					<div>Staff: {((state.currentPropStates?.red?.staffRotationAngle || 0) * 180 / Math.PI).toFixed(1)}°</div>
 				</div>
 			</div>
 		</div>

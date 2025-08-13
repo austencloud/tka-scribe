@@ -11,7 +11,8 @@
 		canvasSize = 500,
 		width,
 		height,
-		gridVisible = true
+		gridVisible = true,
+		gridType = 'diamond'
 	}: {
 		blueProp: PropState;
 		redProp: PropState;
@@ -19,6 +20,7 @@
 		width?: number;
 		height?: number;
 		gridVisible?: boolean;
+		gridType?: 'diamond' | 'box';
 	} = $props();
 
 	// Use width/height if provided, otherwise use canvasSize
@@ -38,6 +40,7 @@
 		blueProp;
 		redProp;
 		gridVisible;
+		gridType;
 		needsRender = true;
 		startRenderLoop();
 	});
@@ -47,7 +50,7 @@
 		const loadImages = async () => {
 			try {
 				[gridImage, blueStaffImage, redStaffImage] = await Promise.all([
-					svgStringToImage(SVGGenerator.generateGridSvg(), actualSize, actualSize),
+					svgStringToImage(SVGGenerator.generateGridSvg(gridType), actualSize, actualSize),
 					svgStringToImage(SVGGenerator.generateBlueStaffSvg(), 252.8, 77.8),
 					svgStringToImage(SVGGenerator.generateRedStaffSvg(), 252.8, 77.8)
 				]);

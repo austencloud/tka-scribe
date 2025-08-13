@@ -114,16 +114,17 @@ export class PngMetadataExtractor {
       console.log(`📋 [PNG METADATA] Raw metadata for ${sequenceName}:`);
       console.log(JSON.stringify(metadata, null, 2));
 
-      // Extract motion types for each beat
+      // Extract motion types for each beat (fix beat counting)
       console.log(`🎯 [PNG METADATA] Motion types for ${sequenceName}:`);
-      metadata.forEach((step: any) => {
-        if (step.beat && step.beat > 0) {
-          const blueMotion = step.blue_attributes?.motion_type || "unknown";
-          const redMotion = step.red_attributes?.motion_type || "unknown";
-          console.log(
-            `  Beat ${step.beat} (${step.letter}): blue=${blueMotion}, red=${redMotion}`
-          );
-        }
+      const realBeats = metadata
+        .slice(1)
+        .filter((step: any) => step.letter && !step.sequence_start_position);
+      realBeats.forEach((step: any, index: number) => {
+        const blueMotion = step.blue_attributes?.motion_type || "unknown";
+        const redMotion = step.red_attributes?.motion_type || "unknown";
+        console.log(
+          `  Beat ${index + 1} (${step.letter}): blue=${blueMotion}, red=${redMotion}`
+        );
       });
     } catch (error) {
       console.error(

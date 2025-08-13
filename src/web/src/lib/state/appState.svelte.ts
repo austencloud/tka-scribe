@@ -58,7 +58,7 @@ type TabId =
   | "motion-tester";
 
 const uiState = $state({
-  activeTab: "construct" as TabId,
+  activeTab: "browse" as TabId, // Temporarily changed from construct to avoid About tab
   isFullScreen: false,
   showSettings: false,
   theme: "dark" as "light" | "dark",
@@ -504,6 +504,13 @@ export async function restoreApplicationState(): Promise<void> {
     const tabState = await browseStatePersistence.loadApplicationTabState();
 
     if (tabState && tabState.activeTab) {
+      // TEMPORARILY DISABLED: Don't restore About tab to avoid Svelte error
+      if (tabState.activeTab === "about") {
+        console.log("🚫 Skipping About tab restoration due to Svelte error");
+        uiState.activeTab = "browse"; // Use Browse instead
+        return;
+      }
+
       // Restore the last active tab
       uiState.activeTab = tabState.activeTab as TabId;
       console.log(`🔄 Restored last active tab: ${tabState.activeTab}`);

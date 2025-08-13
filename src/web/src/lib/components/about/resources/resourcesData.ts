@@ -1,5 +1,6 @@
 // resourcesData.ts - Resources data separated from component
 export interface Resource {
+  id?: string;
   name: string;
   description: string;
   url: string;

@@ -1,9 +1,9 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
+
 	import MotionTesterCanvas from './MotionTesterCanvas.svelte';
-	import MotionParameterPanel from './MotionParameterPanel.svelte';
-	import DebugInfoPanel from './DebugInfoPanel.svelte';
-	import { createMotionTesterState } from './motion-tester-state.svelte.ts';
+	import MotionParameterPanelNew from './MotionParameterPanelNew.svelte';
+	import DebugInfoPanelNew from './DebugInfoPanelNew.svelte';
+	import { createMotionTesterState } from './state/motion-tester-state.svelte';
 
 	// Initialize the motion tester state
 	const state = createMotionTesterState();
@@ -15,14 +15,14 @@
 
 <div class="motion-tester-container">
 	<header class="tester-header">
-		<h1>🎯 TKA Motion Tester</h1>
+		<h1>TKA Motion Tester</h1>
 		<p>Test individual motion sequences with visual feedback and debugging</p>
 	</header>
 
 	<main class="tester-main">
 		<!-- Left Panel: Motion Parameters -->
 		<div class="panel motion-params">
-			<MotionParameterPanel {state} />
+			<MotionParameterPanelNew {state} />
 		</div>
 
 		<!-- Center Panel: Canvas Visualization -->
@@ -32,7 +32,7 @@
 
 		<!-- Right Panel: Debug Information -->
 		<div class="panel debug-panel">
-			<DebugInfoPanel {state} />
+			<DebugInfoPanelNew {state} />
 		</div>
 	</main>
 </div>

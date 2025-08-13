@@ -95,10 +95,17 @@
 	const optionsData = $derived(() => optionPickerState.optionsData);
 	const error = $derived(() => optionPickerState.error);
 
-	// Handle container resize
+	// Handle container resize with protection against infinite loops
 	function handleResize(width: number, height: number) {
-		containerWidth = width;
-		containerHeight = height;
+		// Only update if dimensions actually changed significantly
+		const threshold = 5; // 5px threshold to prevent micro-adjustments
+		if (
+			Math.abs(width - containerWidth) > threshold ||
+			Math.abs(height - containerHeight) > threshold
+		) {
+			containerWidth = width;
+			containerHeight = height;
+		}
 	}
 
 	// Handle option selection
