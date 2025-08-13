@@ -85,7 +85,8 @@ class BrowseTab(QWidget):
 
         # Use centralized path resolver to find the correct data directory
         try:
-            from desktop.shared.infrastructure.path_resolver import path_resolver
+            from desktop.modern.infrastructure.path_resolver import path_resolver
+
             self.data_dir = path_resolver.data_dir
         except Exception:
             # Fallback: Find the desktop directory and use its data subfolder

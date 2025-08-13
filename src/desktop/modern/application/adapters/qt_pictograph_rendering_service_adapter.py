@@ -19,6 +19,7 @@ from desktop.modern.application.adapters.qt_pictograph_adapter import (
     QtRenderEngine,
     QtTypeConverter,
 )
+from desktop.modern.application.services.core.types import Point, Size
 from desktop.modern.domain.models import MotionData, PictographData
 
 # Import the framework-agnostic services
@@ -28,7 +29,6 @@ from desktop.shared.application.services.core.pictograph_orchestration_service i
 from desktop.shared.application.services.core.pictograph_rendering.real_asset_provider import (
     create_real_asset_provider,
 )
-from desktop.shared.application.services.core.types import Point, Size
 
 
 logger = logging.getLogger(__name__)
@@ -279,7 +279,9 @@ class QtPictographRenderingServiceAdapter:
             return success_count > 0
 
         except Exception as e:
-            logger.exception(f"❌ [QT_ADAPTER] Failed to render complete pictograph: {e}")
+            logger.exception(
+                f"❌ [QT_ADAPTER] Failed to render complete pictograph: {e}"
+            )
             return False
 
     def get_performance_stats(self) -> dict[str, Any]:

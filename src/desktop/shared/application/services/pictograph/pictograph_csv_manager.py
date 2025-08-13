@@ -18,7 +18,7 @@ PROVIDES:
 
 from abc import ABC, abstractmethod
 from pathlib import Path
-from typing import Optional, TypedDict
+from typing import TypedDict
 
 import pandas as pd
 
@@ -36,11 +36,11 @@ class IPictographCSVManager(ABC):
 class PictographSearchQuery(TypedDict, total=False):
     """Type definition for pictograph search queries."""
 
-    letter: Optional[str]
-    motion_type: Optional[str]
-    start_position: Optional[str]
-    max_results: Optional[int]
-    categories: Optional[list[str]]
+    letter: str | None
+    motion_type: str | None
+    start_position: str | None
+    max_results: int | None
+    categories: list[str] | None
 
 
 class PictographCSVManager(IPictographCSVManager):
@@ -60,16 +60,19 @@ class PictographCSVManager(IPictographCSVManager):
         self._dataset_index: dict[str, list[str]] = {}
 
         self._csv_data = None
-        
+
         try:
-            from desktop.shared.infrastructure.path_resolver import path_resolver
-            self._data_path = path_resolver.get_data_path("DiamondPictographDataframe.csv")
+            from desktop.modern.infrastructure.path_resolver import path_resolver
+
+            self._data_path = path_resolver.get_data_path(
+                "DiamondPictographDataframe.csv"
+            )
         except Exception as e:
             print(f"Warning: Could not use centralized path resolver: {e}")
             # Fallback to manual discovery
             current_path = Path(__file__).resolve().parent
             data_path = None
-            
+
             # First, try to find desktop/data directory
             while current_path.parent != current_path:
                 if current_path.name == "desktop":
@@ -78,7 +81,7 @@ class PictographCSVManager(IPictographCSVManager):
                         data_path = candidate
                         break
                 current_path = current_path.parent
-            
+
             # Fallback to old path method if desktop data not found
             if data_path is None:
                 data_path = (
@@ -86,7 +89,7 @@ class PictographCSVManager(IPictographCSVManager):
                     / "data"
                     / "DiamondPictographDataframe.csv"
                 )
-            
+
             self._data_path = data_path
 
     def _load_csv_data(self) -> pd.DataFrame:

@@ -9,11 +9,11 @@ by any rendering framework.
 import logging
 from abc import ABC, abstractmethod
 
+from desktop.modern.application.services.core.types import Point, RenderCommand, Size
 from desktop.modern.domain.models import MotionData, PictographData
 from desktop.shared.application.services.core.pictograph_renderer import (
     IPictographAssetProvider,
 )
-from desktop.shared.application.services.core.types import Point, RenderCommand, Size
 
 logger = logging.getLogger(__name__)
 

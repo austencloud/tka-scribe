@@ -385,7 +385,7 @@ class SignalCoordinator(QObject):
         """Clear the current sequence (public interface)"""
         try:
             # Clear persistence FIRST
-            from desktop.shared.application.services.sequence.sequence_persister import (
+            from desktop.modern.application.services.sequence.sequence_persister import (
                 SequencePersister,
             )
 

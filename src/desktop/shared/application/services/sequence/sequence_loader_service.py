@@ -9,13 +9,15 @@ import logging
 from collections.abc import Callable
 from typing import TYPE_CHECKING
 
+from desktop.modern.application.services.sequence.sequence_persister import (
+    SequencePersister,
+)
 from desktop.modern.core.interfaces.sequence_data_services import ISequenceLoader
 from desktop.modern.core.interfaces.workbench_services import IWorkbenchStateManager
 from desktop.modern.domain.models.sequence_data import SequenceData
 from desktop.shared.application.services.data.legacy_to_modern_converter import (
     LegacyToModernConverter,
 )
-from desktop.shared.application.services.sequence.sequence_persister import SequencePersister
 
 if TYPE_CHECKING:
     from desktop.modern.domain.models.pictograph_data import PictographData
@@ -165,7 +167,9 @@ class SequenceLoaderService(ISequenceLoader):
             )
             from desktop.modern.domain.models.grid_data import GridData
             from desktop.modern.domain.models.pictograph_data import PictographData
-            from desktop.shared.application.services.data.dataset_query import IDatasetQuery
+            from desktop.shared.application.services.data.dataset_query import (
+                IDatasetQuery,
+            )
 
             container = get_container()
             dataset_service = container.resolve(IDatasetQuery)

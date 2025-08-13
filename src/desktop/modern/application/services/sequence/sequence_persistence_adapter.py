@@ -9,13 +9,13 @@ from __future__ import annotations
 
 from typing import Any
 
-from desktop.modern.domain.models.sequence_data import SequenceData
-from desktop.shared.application.services.data.modern_to_legacy_converter import (
+from desktop.modern.application.services.data.modern_to_legacy_converter import (
     ModernToLegacyConverter,
 )
-from desktop.shared.application.services.sequence.sequence_persister import (
+from desktop.modern.application.services.sequence.sequence_persister import (
     SequencePersister,
 )
+from desktop.modern.domain.models.sequence_data import SequenceData
 
 
 class SequencePersistenceAdapter:

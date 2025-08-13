@@ -49,23 +49,23 @@ class SequenceServiceRegistrar(BaseServiceRegistrar):
 
         try:
             # Import sequence service interfaces and implementations
+            from desktop.modern.application.services.sequence.beat_factory import (
+                BeatFactory,
+                IBeatFactory,
+            )
+            from desktop.modern.application.services.sequence.sequence_persister import (
+                ISequencePersister,
+                SequencePersister,
+            )
             from desktop.modern.core.interfaces.sequence_data_services import (
                 ISequenceLoader,
                 ISequenceStartPositionManager,
-            )
-            from desktop.shared.application.services.sequence.beat_factory import (
-                BeatFactory,
-                IBeatFactory,
             )
             from desktop.shared.application.services.sequence.sequence_beat_operations_service import (
                 SequenceBeatOperationsService,
             )
             from desktop.shared.application.services.sequence.sequence_loader_service import (
                 SequenceLoaderService,
-            )
-            from desktop.shared.application.services.sequence.sequence_persister import (
-                ISequencePersister,
-                SequencePersister,
             )
             from desktop.shared.application.services.sequence.sequence_repository import (
                 ISequenceRepository,

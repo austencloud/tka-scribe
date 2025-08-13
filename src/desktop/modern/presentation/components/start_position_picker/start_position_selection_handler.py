@@ -9,12 +9,12 @@ from __future__ import annotations
 
 from PyQt6.QtCore import QObject, pyqtSignal
 
+from desktop.modern.application.services.sequence.beat_factory import BeatFactory
 from desktop.modern.domain.models.grid_data import GridData
 from desktop.modern.domain.models.pictograph_data import PictographData
 from desktop.shared.application.services.data.conversion_utils import (
     extract_end_position_from_position_key,
 )
-from desktop.shared.application.services.sequence.beat_factory import BeatFactory
 
 
 class StartPositionSelectionHandler(QObject):

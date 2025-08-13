@@ -10,20 +10,22 @@ import os
 
 # Import framework-agnostic core services
 import sys
-from typing import Any, Optional
+from typing import Any
 
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QBrush, QColor, QFont, QImage, QPainter, QPen
 
 sys.path.append(os.path.join(os.path.dirname(__file__), "../"))
 
-from desktop.shared.application.services.core.image_export_service import CoreImageExportService
-from desktop.shared.application.services.core.types import (
+from desktop.modern.application.services.core.types import (
     Color,
     ImageData,
     ImageFormat,
     Point,
     Size,
+)
+from desktop.shared.application.services.core.image_export_service import (
+    CoreImageExportService,
 )
 
 logger = logging.getLogger(__name__)
@@ -302,7 +304,7 @@ class QtImageExportAdapter:
     3. Provides the same interface as the original Qt service for easy migration
     """
 
-    def __init__(self, core_service: Optional[CoreImageExportService] = None):
+    def __init__(self, core_service: CoreImageExportService | None = None):
         """Initialize the adapter."""
         self.core_service = core_service or CoreImageExportService()
         self.qt_engine = QtImageExportEngine()

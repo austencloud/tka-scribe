@@ -9,12 +9,14 @@ import logging
 from collections.abc import Callable
 from typing import TYPE_CHECKING
 
+from desktop.modern.application.services.sequence.beat_factory import BeatFactory
+from desktop.modern.application.services.sequence.sequence_persister import (
+    SequencePersister,
+)
 from desktop.modern.core.interfaces.workbench_services import IWorkbenchStateManager
 from desktop.modern.domain.models.beat_data import BeatData
 from desktop.modern.domain.models.pictograph_data import PictographData
 from desktop.modern.domain.models.sequence_data import SequenceData
-from desktop.shared.application.services.sequence.beat_factory import BeatFactory
-from desktop.shared.application.services.sequence.sequence_persister import SequencePersister
 
 if TYPE_CHECKING:
     pass

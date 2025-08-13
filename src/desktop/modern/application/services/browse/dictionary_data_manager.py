@@ -41,7 +41,8 @@ class DictionaryDataManager(QObject):
     def _find_data_directory(self) -> Path:
         """Find the data directory using centralized path resolver."""
         try:
-            from desktop.shared.infrastructure.path_resolver import path_resolver
+            from desktop.modern.infrastructure.path_resolver import path_resolver
+
             return path_resolver.data_dir
         except Exception:
             # Fallback to manual discovery if path resolver fails
@@ -56,7 +57,10 @@ class DictionaryDataManager(QObject):
 
                 # Check for desktop/data directory
                 desktop_data_dir = current_path / "src" / "desktop" / "data"
-                if desktop_data_dir.exists() and (desktop_data_dir / "dictionary").exists():
+                if (
+                    desktop_data_dir.exists()
+                    and (desktop_data_dir / "dictionary").exists()
+                ):
                     return desktop_data_dir
 
                 current_path = current_path.parent

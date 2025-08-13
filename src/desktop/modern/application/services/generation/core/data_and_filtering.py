@@ -74,7 +74,8 @@ class PictographDataManager:
     def _find_data_directory(self) -> Path | None:
         """Find the data directory using centralized path resolver."""
         try:
-            from desktop.shared.infrastructure.path_resolver import path_resolver
+            from desktop.modern.infrastructure.path_resolver import path_resolver
+
             return path_resolver.data_dir
         except Exception:
             # Fallback to manual discovery if path resolver fails

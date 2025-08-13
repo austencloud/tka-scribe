@@ -19,7 +19,7 @@ from desktop.modern.core.interfaces.generation_services import (
 )
 from desktop.modern.domain.models.enums import GridMode
 from desktop.modern.domain.models.generation_models import GenerationConfig
-from desktop.shared.infrastructure.path_resolver import path_resolver
+from desktop.modern.infrastructure.path_resolver import path_resolver
 
 
 logger = logging.getLogger(__name__)
@@ -47,7 +47,7 @@ class SequenceConfigurationService(ISequenceConfigurationService):
             prop_continuity=PropContinuity.CONTINUOUS,
             letter_types={LetterType.TYPE1, LetterType.TYPE2},
             slice_size=None,
-            cap_type=None
+            cap_type=None,
         )
 
     def get_current_config(self) -> GenerationConfig:
@@ -122,13 +122,13 @@ class SequenceConfigurationService(ISequenceConfigurationService):
                     data = json.load(f)
 
                 # Load current config
-                if 'current_config' in data:
-                    config_data = data['current_config']
+                if "current_config" in data:
+                    config_data = data["current_config"]
                     self._current_config = self._dict_to_config(config_data)
 
                 # Load presets
-                if 'presets' in data:
-                    for name, preset_data in data['presets'].items():
+                if "presets" in data:
+                    for name, preset_data in data["presets"].items():
                         self._presets[name] = self._dict_to_config(preset_data)
 
                 logger.info(f"Loaded configuration from {self._config_file}")
@@ -145,14 +145,14 @@ class SequenceConfigurationService(ISequenceConfigurationService):
             self._config_file.parent.mkdir(parents=True, exist_ok=True)
 
             data = {
-                'current_config': self._config_to_dict(self._current_config),
-                'presets': {
+                "current_config": self._config_to_dict(self._current_config),
+                "presets": {
                     name: self._config_to_dict(config)
                     for name, config in self._presets.items()
-                }
+                },
             }
 
-            with open(self._config_file, 'w') as f:
+            with open(self._config_file, "w") as f:
                 json.dump(data, f, indent=2)
 
             logger.debug(f"Saved configuration to {self._config_file}")
@@ -163,27 +163,27 @@ class SequenceConfigurationService(ISequenceConfigurationService):
     def _config_to_dict(self, config: GenerationConfig) -> dict:
         """Convert GenerationConfig to dictionary for JSON serialization."""
         return {
-            'mode': config.mode.value,
-            'length': config.length,
-            'level': config.level,
-            'turn_intensity': config.turn_intensity,
-            'grid_mode': config.grid_mode.value,
-            'prop_continuity': config.prop_continuity.value,
-            'letter_types': [lt.value for lt in config.letter_types],
-            'slice_size': config.slice_size.value if config.slice_size else None,
-            'cap_type': config.cap_type.value if config.cap_type else None,
+            "mode": config.mode.value,
+            "length": config.length,
+            "level": config.level,
+            "turn_intensity": config.turn_intensity,
+            "grid_mode": config.grid_mode.value,
+            "prop_continuity": config.prop_continuity.value,
+            "letter_types": [lt.value for lt in config.letter_types],
+            "slice_size": config.slice_size.value if config.slice_size else None,
+            "cap_type": config.cap_type.value if config.cap_type else None,
         }
 
     def _dict_to_config(self, data: dict) -> GenerationConfig:
         """Convert dictionary to GenerationConfig."""
         return GenerationConfig(
-            mode=GenerationMode(data['mode']),
-            length=data['length'],
-            level=data['level'],
-            turn_intensity=data['turn_intensity'],
-            grid_mode=GridMode(data['grid_mode']),
-            prop_continuity=PropContinuity(data['prop_continuity']),
-            letter_types={LetterType(lt) for lt in data['letter_types']},
+            mode=GenerationMode(data["mode"]),
+            length=data["length"],
+            level=data["level"],
+            turn_intensity=data["turn_intensity"],
+            grid_mode=GridMode(data["grid_mode"]),
+            prop_continuity=PropContinuity(data["prop_continuity"]),
+            letter_types={LetterType(lt) for lt in data["letter_types"]},
             slice_size=None,  # TODO: Add proper enum handling
-            cap_type=None,    # TODO: Add proper enum handling
+            cap_type=None,  # TODO: Add proper enum handling
         )

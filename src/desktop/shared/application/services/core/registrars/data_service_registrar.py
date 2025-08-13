@@ -60,15 +60,17 @@ class DataServiceRegistrar(BaseServiceRegistrar, IDataServiceRegistrar):
     def _register_core_data_services(self, container: "DIContainer") -> None:
         """Register core data management services."""
         try:
+            from desktop.modern.application.services.data.data_service import (
+                DataManager,
+                IDataManager,
+            )
             from desktop.modern.core.interfaces.data_services import IDataCacheManager
-            from desktop.shared.application.services.data.cache_manager import DataCacheManager
+            from desktop.shared.application.services.data.cache_manager import (
+                DataCacheManager,
+            )
             from desktop.shared.application.services.data.csv_reader import (
                 CSVReader,
                 ICSVReader,
-            )
-            from desktop.shared.application.services.data.data_service import (
-                DataManager,
-                IDataManager,
             )
             from desktop.shared.application.services.data.dataset_query import (
                 DatasetQuery,
@@ -116,15 +118,15 @@ class DataServiceRegistrar(BaseServiceRegistrar, IDataServiceRegistrar):
     def _register_conversion_services(self, container: "DIContainer") -> None:
         """Register data conversion services."""
         try:
+            from desktop.modern.application.services.data.modern_to_legacy_converter import (
+                ModernToLegacyConverter,
+            )
             from desktop.modern.core.interfaces.data_services import (
                 ILegacyToModernConverter,
                 IModernToLegacyConverter,
             )
             from desktop.shared.application.services.data.legacy_to_modern_converter import (
                 LegacyToModernConverter,
-            )
-            from desktop.shared.application.services.data.modern_to_legacy_converter import (
-                ModernToLegacyConverter,
             )
 
             # Register microservices directly instead of facades

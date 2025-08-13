@@ -13,7 +13,6 @@ PROVIDES:
 
 from abc import ABC, abstractmethod
 from pathlib import Path
-from typing import Optional
 
 import pandas as pd
 
@@ -43,25 +42,31 @@ class ICSVReader(ABC):
 
 
 class CSVReader(ICSVReader):
-    def __init__(self, data_path: Optional[Path] = None):
+    def __init__(self, data_path: Path | None = None):
         if data_path is None:
             try:
-                from desktop.shared.infrastructure.path_resolver import path_resolver
-                data_path = path_resolver.get_data_path("DiamondPictographDataframe.csv")
+                from desktop.modern.infrastructure.path_resolver import path_resolver
+
+                data_path = path_resolver.get_data_path(
+                    "DiamondPictographDataframe.csv"
+                )
             except Exception as e:
                 print(f"Warning: Could not use centralized path resolver: {e}")
                 # Fallback to manual search
                 current = Path(__file__).resolve().parent
                 root_data = None
-                
+
                 # First, try to find desktop/data directory
                 for parent in [current] + list(current.parents):
                     if parent.name == "desktop":
                         candidate = parent / "data"
-                        if candidate.is_dir() and (candidate / "DiamondPictographDataframe.csv").exists():
+                        if (
+                            candidate.is_dir()
+                            and (candidate / "DiamondPictographDataframe.csv").exists()
+                        ):
                             root_data = candidate
                             break
-                
+
                 # If desktop data not found, search for any data directory upwards
                 if root_data is None:
                     for parent in [current] + list(current.parents):
@@ -69,17 +74,17 @@ class CSVReader(ICSVReader):
                         if candidate.is_dir():
                             root_data = candidate
                             break
-                
+
                 if root_data is None:
                     raise FileNotFoundError(
                         "Could not locate 'data' directory in parent paths."
                     )
                 data_path = root_data / "DiamondPictographDataframe.csv"
-        
-        self._data_path = data_path
-        self._csv_data: Optional[pd.DataFrame] = None
 
-    def load_csv_data(self, file_path: Optional[Path] = None) -> pd.DataFrame:
+        self._data_path = data_path
+        self._csv_data: pd.DataFrame | None = None
+
+    def load_csv_data(self, file_path: Path | None = None) -> pd.DataFrame:
         """Load CSV data from file."""
         path_to_use = file_path or self._data_path
 
@@ -153,9 +158,7 @@ class CSVReader(ICSVReader):
 
         return [self.convert_row_to_beat_data(row) for _, row in letter_data.iterrows()]
 
-    def get_specific_pictograph(
-        self, letter: str, index: int = 0
-    ) -> Optional[BeatData]:
+    def get_specific_pictograph(self, letter: str, index: int = 0) -> BeatData | None:
         """Get a specific pictograph by letter and index."""
         df = self._load_cached_data()
 
@@ -170,7 +173,7 @@ class CSVReader(ICSVReader):
 
     def get_start_position_pictograph(
         self, position_key: str, grid_mode: str = "diamond"
-    ) -> Optional[BeatData]:
+    ) -> BeatData | None:
         """Get start position pictograph by position key and grid mode."""
         # Map position keys to letters
         position_to_letter = {

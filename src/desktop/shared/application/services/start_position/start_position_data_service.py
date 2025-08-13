@@ -13,7 +13,10 @@ from desktop.modern.core.interfaces.start_position_services import (
 )
 from desktop.modern.domain.models.beat_data import BeatData
 from desktop.modern.domain.models.pictograph_data import PictographData
-from desktop.shared.application.services.data.dataset_query import DatasetQuery, IDatasetQuery
+from desktop.shared.application.services.data.dataset_query import (
+    DatasetQuery,
+    IDatasetQuery,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -40,8 +43,10 @@ class StartPositionDataService(IStartPositionDataService):
             self.dataset_service = dataset_service
         else:
             # Create DataManager and DatasetQuery
+            from desktop.modern.application.services.data.data_service import (
+                DataManager,
+            )
             from desktop.modern.core.config.data_config import create_data_config
-            from desktop.shared.application.services.data.data_service import DataManager
 
             data_manager = DataManager(create_data_config())
             self.dataset_service = DatasetQuery(data_manager)

@@ -185,7 +185,8 @@ class ImageAccordionContent(QFrame, StyleMixin):
 
         # Image directory (using centralized path resolver)
         try:
-            from desktop.shared.infrastructure.path_resolver import path_resolver
+            from desktop.modern.infrastructure.path_resolver import path_resolver
+
             image_dir = path_resolver.get_image_path("level_images")
         except Exception as e:
             print(f"Warning: Could not use centralized path resolver: {e}")
@@ -193,7 +194,6 @@ class ImageAccordionContent(QFrame, StyleMixin):
             current_file = Path(__file__)
             desktop_root = current_file.parent.parent.parent.parent.parent.parent
             image_dir = desktop_root / "images" / "level_images"
-
 
         # Create grid layout for proper spacing and centering
         grid_layout = QGridLayout()
@@ -298,7 +298,8 @@ class ImageAccordionContent(QFrame, StyleMixin):
 
         # Image directory (using centralized path resolver)
         try:
-            from desktop.shared.infrastructure.path_resolver import path_resolver
+            from desktop.modern.infrastructure.path_resolver import path_resolver
+
             image_dir = path_resolver.get_image_path("grid")
         except Exception as e:
             print(f"Warning: Could not use centralized path resolver: {e}")

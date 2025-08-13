@@ -22,6 +22,7 @@ from __future__ import annotations
 
 import logging
 
+from desktop.modern.application.services.data.data_service import DataManager
 from desktop.modern.core.config.app_config import (
     AppConfig,
     LoggingConfig,
@@ -32,7 +33,6 @@ from desktop.modern.core.config.app_config import (
 from desktop.modern.core.config.data_config import DataConfig, create_data_config
 from desktop.modern.core.dependency_injection.di_container import DIContainer
 from desktop.modern.core.interfaces.positioning_services import IPositionMapper
-from desktop.shared.application.services.data.data_service import DataManager
 
 
 # Removed Result pattern imports - using simple exceptions

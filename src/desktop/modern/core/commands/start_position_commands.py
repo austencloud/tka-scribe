@@ -185,12 +185,12 @@ class SetStartPositionCommand(ICommand[BeatData]):
     def _create_fallback_start_position_data(self) -> BeatData:
         """Create fallback start position data when dataset lookup fails"""
         try:
+            from desktop.modern.application.services.sequence.beat_factory import (
+                BeatFactory,
+            )
             from desktop.modern.domain.models.pictograph_data import PictographData
             from desktop.shared.application.services.data.conversion_utils import (
                 extract_end_position_from_position_key,
-            )
-            from desktop.shared.application.services.sequence.beat_factory import (
-                BeatFactory,
             )
 
             # Extract end position from position key

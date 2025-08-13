@@ -10,7 +10,7 @@ import logging
 from pathlib import Path
 from typing import Any
 
-from desktop.shared.application.services.core.types import Size, SvgAsset
+from desktop.modern.application.services.core.types import Size, SvgAsset
 
 from .core_pictograph_rendering_service import IAssetProvider
 
@@ -43,7 +43,9 @@ class RealAssetProvider(IAssetProvider):
                 return self._svg_cache[cache_key]
 
             # Construct path to grid SVG
-            grid_path = self._assets_base_path / "images" / "grid" / f"{grid_mode}_grid.svg"
+            grid_path = (
+                self._assets_base_path / "images" / "grid" / f"{grid_mode}_grid.svg"
+            )
 
             if not grid_path.exists():
                 logger.warning(f"Grid SVG not found: {grid_path}")
@@ -90,7 +92,7 @@ class RealAssetProvider(IAssetProvider):
             motion_type = arrow_data.get("motion_type", "pro")
             color = arrow_data.get("color", "blue")
             turns = arrow_data.get("turns", 0.0)
-            
+
             cache_key = f"arrow_{motion_type}_{color}_{turns}"
 
             if cache_key in self._svg_cache:
@@ -102,28 +104,51 @@ class RealAssetProvider(IAssetProvider):
             # Construct path based on motion type and actual directory structure
             if motion_type == "static":
                 arrow_path = (
-                    self._assets_base_path / "images" / "arrows_colored" / "static" / 
-                    color / "from_radial" / f"static_{turns_str}.svg"
+                    self._assets_base_path
+                    / "images"
+                    / "arrows_colored"
+                    / "static"
+                    / color
+                    / "from_radial"
+                    / f"static_{turns_str}.svg"
                 )
             elif motion_type == "pro":
                 arrow_path = (
-                    self._assets_base_path / "images" / "arrows_colored" / "pro" / 
-                    color / "from_radial" / f"pro_{turns_str}.svg"
+                    self._assets_base_path
+                    / "images"
+                    / "arrows_colored"
+                    / "pro"
+                    / color
+                    / "from_radial"
+                    / f"pro_{turns_str}.svg"
                 )
             elif motion_type == "anti":
                 arrow_path = (
-                    self._assets_base_path / "images" / "arrows_colored" / "anti" / 
-                    color / "from_radial" / f"anti_{turns_str}.svg"
+                    self._assets_base_path
+                    / "images"
+                    / "arrows_colored"
+                    / "anti"
+                    / color
+                    / "from_radial"
+                    / f"anti_{turns_str}.svg"
                 )
             elif motion_type == "dash":
                 arrow_path = (
-                    self._assets_base_path / "images" / "arrows_colored" / "dash" / 
-                    color / "from_radial" / f"dash_{turns_str}.svg"
+                    self._assets_base_path
+                    / "images"
+                    / "arrows_colored"
+                    / "dash"
+                    / color
+                    / "from_radial"
+                    / f"dash_{turns_str}.svg"
                 )
             elif motion_type == "float":
                 arrow_path = (
-                    self._assets_base_path / "images" / "arrows_colored" / 
-                    color / "float.svg"
+                    self._assets_base_path
+                    / "images"
+                    / "arrows_colored"
+                    / color
+                    / "float.svg"
                 )
             else:
                 # Fallback to basic arrows directory
@@ -135,8 +160,12 @@ class RealAssetProvider(IAssetProvider):
                 logger.warning(f"Arrow SVG not found: {arrow_path}")
                 # Try fallback without color transformation
                 fallback_path = (
-                    self._assets_base_path / "images" / "arrows" / f"{motion_type}" / 
-                    "from_radial" / f"{motion_type}_{turns_str}.svg"
+                    self._assets_base_path
+                    / "images"
+                    / "arrows"
+                    / f"{motion_type}"
+                    / "from_radial"
+                    / f"{motion_type}_{turns_str}.svg"
                 )
                 if fallback_path.exists():
                     arrow_path = fallback_path
@@ -256,14 +285,17 @@ class RealAssetProvider(IAssetProvider):
     def _get_default_assets_path(self) -> Path:
         """Get default path to TKA desktop assets using centralized resolver."""
         try:
-            from desktop.shared.infrastructure.path_resolver import path_resolver
+            from desktop.modern.infrastructure.path_resolver import path_resolver
+
             return path_resolver.desktop_root
         except Exception as e:
             logger.warning(f"Could not use centralized path resolver: {e}")
             # Fallback to manual discovery
             current_file = Path(__file__)
             desktop_root = current_file
-            while desktop_root.name != "desktop" and desktop_root.parent != desktop_root:
+            while (
+                desktop_root.name != "desktop" and desktop_root.parent != desktop_root
+            ):
                 desktop_root = desktop_root.parent
 
             if desktop_root.name == "desktop":

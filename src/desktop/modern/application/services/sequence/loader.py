@@ -15,13 +15,13 @@ from typing import TYPE_CHECKING
 # Removed circular import - workbench should be passed as parameter if needed
 from PyQt6.QtCore import QObject, pyqtSignal
 
+from desktop.modern.application.services.sequence.sequence_persister import (
+    SequencePersister,
+)
 from desktop.modern.core.interfaces.sequence_data_services import ISequenceLoader
 from desktop.modern.domain.models.sequence_data import SequenceData
 from desktop.shared.application.services.data.legacy_to_modern_converter import (
     LegacyToModernConverter,
-)
-from desktop.shared.application.services.sequence.sequence_persister import (
-    SequencePersister,
 )
 
 
@@ -288,9 +288,7 @@ class SequenceLoader(QObject, ISequenceLoader, metaclass=QObjectABCMeta):
             if sequence_data and len(sequence_data) > 1:
                 # Convert to modern format
                 metadata = sequence_data[0]
-                [
-                    item for item in sequence_data[1:] if item.get("beat", 0) > 0
-                ]
+                [item for item in sequence_data[1:] if item.get("beat", 0) > 0]
 
                 # Create SequenceData object - simplified version
                 # For full implementation, would need to properly convert all data

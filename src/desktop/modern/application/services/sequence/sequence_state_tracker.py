@@ -137,11 +137,11 @@ class SequenceStateTracker(QObject):
         """Refresh state from persistence (for undo/redo scenarios)"""
         try:
             # Load current state from persistence
+            from desktop.modern.application.services.sequence.sequence_persister import (
+                SequencePersister,
+            )
             from desktop.modern.application.services.sequence.sequence_start_position_manager import (
                 SequenceStartPositionManager,
-            )
-            from desktop.shared.application.services.sequence.sequence_persister import (
-                SequencePersister,
             )
 
             SequencePersister()

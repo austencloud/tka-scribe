@@ -6,7 +6,7 @@ Focused solely on object creation and data transformation logic.
 """
 
 import logging
-from typing import Any, Optional
+from typing import Any
 
 import pandas as pd
 
@@ -23,7 +23,9 @@ from desktop.modern.domain.models.enums import (
 from desktop.modern.domain.models.grid_data import GridData
 from desktop.modern.domain.models.motion_data import MotionData
 from desktop.modern.domain.models.pictograph_data import PictographData
-from desktop.shared.application.services.glyphs.glyph_data_service import GlyphDataService
+from desktop.shared.application.services.glyphs.glyph_data_service import (
+    GlyphDataService,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -184,7 +186,7 @@ class PictographFactory(IPictographFactory):
 
     def _create_motion_data_from_entry(
         self, entry: pd.Series, color: str
-    ) -> Optional[MotionData]:
+    ) -> MotionData | None:
         """
         Create MotionData from dataset entry for a specific color.
 
@@ -249,7 +251,9 @@ class PictographFactory(IPictographFactory):
             BeatData object with embedded pictograph data
         """
         # Use BeatFactory for consistent beat creation with embedded pictograph
-        from desktop.shared.application.services.sequence.beat_factory import BeatFactory
+        from desktop.modern.application.services.sequence.beat_factory import (
+            BeatFactory,
+        )
 
         return BeatFactory.create_from_pictograph(pictograph_data, beat_number)
 

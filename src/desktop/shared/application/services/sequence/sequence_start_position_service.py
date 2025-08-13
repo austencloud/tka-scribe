@@ -9,6 +9,10 @@ import logging
 from collections.abc import Callable
 from typing import TYPE_CHECKING
 
+from desktop.modern.application.services.sequence.beat_factory import BeatFactory
+from desktop.modern.application.services.sequence.sequence_persister import (
+    SequencePersister,
+)
 from desktop.modern.core.interfaces.sequence_data_services import (
     ISequenceStartPositionManager,
 )
@@ -18,8 +22,6 @@ from desktop.modern.domain.models.sequence_data import SequenceData
 from desktop.shared.application.services.data.modern_to_legacy_converter import (
     ModernToLegacyConverter,
 )
-from desktop.shared.application.services.sequence.beat_factory import BeatFactory
-from desktop.shared.application.services.sequence.sequence_persister import SequencePersister
 
 if TYPE_CHECKING:
     from desktop.modern.presentation.components.sequence_workbench.sequence_workbench import (

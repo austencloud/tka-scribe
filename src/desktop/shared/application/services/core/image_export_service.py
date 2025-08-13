@@ -10,7 +10,7 @@ import logging
 from abc import ABC, abstractmethod
 from typing import Any
 
-from desktop.shared.application.services.core.types import (
+from desktop.modern.application.services.core.types import (
     Color,
     ImageData,
     ImageFormat,

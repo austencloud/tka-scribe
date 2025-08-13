@@ -7,10 +7,10 @@ Extracted from SequenceBeatOperations God Object.
 
 from __future__ import annotations
 
+from desktop.modern.application.services.sequence.beat_factory import BeatFactory
 from desktop.modern.domain.models.beat_data import BeatData
 from desktop.modern.domain.models.pictograph_data import PictographData
 from desktop.modern.domain.models.sequence_data import SequenceData
-from desktop.shared.application.services.sequence.beat_factory import BeatFactory
 
 
 class BeatCreationService:
@@ -44,9 +44,7 @@ class BeatCreationService:
             pictograph_data=pictograph_data, beat_number=beat_number
         )
 
-    def calculate_next_beat_number(
-        self, current_sequence: SequenceData | None
-    ) -> int:
+    def calculate_next_beat_number(self, current_sequence: SequenceData | None) -> int:
         """
         Calculate the next beat number for a new beat.
 
