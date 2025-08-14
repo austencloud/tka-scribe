@@ -1,5 +1,5 @@
-import { writable, derived } from 'svelte/store';
-import { actStore } from './actStore';
+import { writable, derived } from "svelte/store";
+import { actStore } from "./actStore";
 
 // Define the selection state interface
 interface SelectionState {
@@ -10,7 +10,7 @@ interface SelectionState {
 // Create the initial state
 const initialState: SelectionState = {
   selectedRow: null,
-  selectedCol: null
+  selectedCol: null,
 };
 
 // Create the writable store
@@ -24,10 +24,10 @@ function createSelectionStore() {
      * Select a beat at the specified row and column
      */
     selectBeat: (row: number, col: number) => {
-      update(state => ({
+      update((state) => ({
         ...state,
         selectedRow: row,
-        selectedCol: col
+        selectedCol: col,
       }));
     },
 
@@ -36,7 +36,7 @@ function createSelectionStore() {
      */
     clearSelection: () => {
       set(initialState);
-    }
+    },
   };
 }
 
@@ -60,11 +60,11 @@ export const selectedBeat = derived(
         return {
           beat: sequence.beats[selectedCol],
           row: selectedRow,
-          col: selectedCol
+          col: selectedCol,
         };
       }
     }
 
     return null;
-  }
+  },
 );

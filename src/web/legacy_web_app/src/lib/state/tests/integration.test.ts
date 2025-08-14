@@ -8,12 +8,12 @@
  * Run the individual test files directly for better results.
  */
 
-import { describe, it } from 'vitest';
+import { describe, it } from "vitest";
 
-describe('Integration Tests', () => {
-	it('should run integration tests from separate files', () => {
-		// This is just a placeholder test
-		// The actual tests are in the integration directory
-		// Run them directly for better results
-	});
+describe("Integration Tests", () => {
+  it("should run integration tests from separate files", () => {
+    // This is just a placeholder test
+    // The actual tests are in the integration directory
+    // Run them directly for better results
+  });
 });

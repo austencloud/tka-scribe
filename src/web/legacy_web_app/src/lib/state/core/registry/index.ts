@@ -9,8 +9,8 @@
  * - Facilitating testing
  */
 
-import { browser } from '$app/environment';
-import { writable, get, type Writable, type Readable } from 'svelte/store';
+import { browser } from "$app/environment";
+import { writable, get, type Writable, type Readable } from "svelte/store";
 import {
   createActor,
   type AnyActorRef,
@@ -19,8 +19,8 @@ import {
   type AnyEventObject,
   type Actor,
   type SnapshotFrom,
-  type InspectionEvent
-} from 'xstate';
+  type InspectionEvent,
+} from "xstate";
 
 // Import from our modules
 import type {
@@ -29,28 +29,28 @@ import type {
   RegisterOptions,
   RegisterMachineOptions,
   RegisterStoreOptions,
-  PersistedStateCache
-} from './types';
-import { DataCorruptionError } from './errors';
-import { validateMachineSnapshot, validateStoreData } from './validation';
+  PersistedStateCache,
+} from "./types";
+import { DataCorruptionError } from "./errors";
+import { validateMachineSnapshot, validateStoreData } from "./validation";
 import {
   addDependency as addDep,
   getDependencies as getDeps,
   getDependents as getDepends,
-  topologicalSort
-} from './dependencies';
-import { loadPersistedState, performPersist } from './persistence';
-import { debugRegistry } from './debug';
+  topologicalSort,
+} from "./dependencies";
+import { loadPersistedState, performPersist } from "./persistence";
+import { debugRegistry } from "./debug";
 
 // Re-export types and errors for external use
-export * from './types';
-export * from './errors';
+export * from "./types";
+export * from "./errors";
 
 // The registry itself
 class StateRegistry {
   private containers: Map<string, StateContainer> = new Map();
-  private persistenceEnabled = browser && typeof localStorage !== 'undefined';
-  private persistenceKey = 'app_state';
+  private persistenceEnabled = browser && typeof localStorage !== "undefined";
+  private persistenceKey = "app_state";
   private persistedState: Record<string, any> = {};
   private lastPersistedState: PersistedStateCache = {}; // Cache for selective persistence
   private persistenceDebounceTimer: ReturnType<typeof setTimeout> | null = null;
@@ -59,12 +59,14 @@ class StateRegistry {
 
   constructor() {
     if (this.persistenceEnabled) {
-      const { persistedState, lastPersistedState } = loadPersistedState(this.persistenceKey);
+      const { persistedState, lastPersistedState } = loadPersistedState(
+        this.persistenceKey,
+      );
       this.persistedState = persistedState;
       this.lastPersistedState = lastPersistedState;
 
-      if (typeof window !== 'undefined') {
-        window.addEventListener('beforeunload', () => {
+      if (typeof window !== "undefined") {
+        window.addEventListener("beforeunload", () => {
           this.persistState();
         });
       }
@@ -77,10 +79,12 @@ class StateRegistry {
   register<T extends AnyActorRef | Readable<any>>(
     id: string,
     instance: T,
-    options: RegisterOptions
+    options: RegisterOptions,
   ): T {
     if (this.containers.has(id)) {
-      console.warn(`State container with ID "${id}" is already registered. Overwriting.`);
+      console.warn(
+        `State container with ID "${id}" is already registered. Overwriting.`,
+      );
       // Clean up existing subscriptions if any
       this.unregister(id);
     }
@@ -89,7 +93,7 @@ class StateRegistry {
       id,
       instance,
       subscriptions: new Set(),
-      ...options
+      ...options,
     });
 
     return instance;
@@ -103,7 +107,7 @@ class StateRegistry {
       this.dependencies,
       (id) => this.containers.has(id),
       dependentId,
-      dependencyId
+      dependencyId,
     );
   }
 
@@ -125,7 +129,10 @@ class StateRegistry {
    * Get initialization order based on dependency graph
    */
   getInitializationOrder(): string[] {
-    return topologicalSort(this.dependencies, Array.from(this.containers.keys()));
+    return topologicalSort(
+      this.dependencies,
+      Array.from(this.containers.keys()),
+    );
   }
 
   /**
@@ -134,13 +141,13 @@ class StateRegistry {
   registerMachine<T extends AnyStateMachine>(
     id: string,
     machine: T,
-    options: RegisterMachineOptions<T> = {}
+    options: RegisterMachineOptions<T> = {},
   ): Actor<T> {
     // Check for persisted state with validation
     let snapshotToRestore: SnapshotFrom<T> | undefined = undefined;
     const persistedData = this.persistedState[id];
 
-    if (persistedData?.type === 'machine') {
+    if (persistedData?.type === "machine") {
       try {
         // Validate persisted snapshot
         if (validateMachineSnapshot(persistedData.snapshot)) {
@@ -149,7 +156,10 @@ class StateRegistry {
           throw new DataCorruptionError(id);
         }
       } catch (error) {
-        console.error(`Invalid persisted snapshot for machine "${id}". Using fallback.`, error);
+        console.error(
+          `Invalid persisted snapshot for machine "${id}". Using fallback.`,
+          error,
+        );
         // Use the provided snapshot as fallback
         snapshotToRestore = options.snapshot;
       }
@@ -167,26 +177,29 @@ class StateRegistry {
     let actor: Actor<T>;
 
     if (import.meta.env.DEV) {
-      import('../logger')
+      import("../logger")
         .then(({ LogLevel, shouldLog, log }) => {
           actorOptions.inspect = (inspectionEvent: InspectionEvent) => {
             if (!actor) return;
-            if (inspectionEvent.type === '@xstate.event' && inspectionEvent.actorRef === actor) {
-              if (shouldLog(id, LogLevel.DEBUG)) {
-                log(id, LogLevel.DEBUG, 'Event:', inspectionEvent.event);
-              }
-            } else if (
-              inspectionEvent.type === '@xstate.snapshot' &&
+            if (
+              inspectionEvent.type === "@xstate.event" &&
               inspectionEvent.actorRef === actor
             ) {
               if (shouldLog(id, LogLevel.DEBUG)) {
-                log(id, LogLevel.DEBUG, 'State:', inspectionEvent.snapshot);
+                log(id, LogLevel.DEBUG, "Event:", inspectionEvent.event);
+              }
+            } else if (
+              inspectionEvent.type === "@xstate.snapshot" &&
+              inspectionEvent.actorRef === actor
+            ) {
+              if (shouldLog(id, LogLevel.DEBUG)) {
+                log(id, LogLevel.DEBUG, "State:", inspectionEvent.snapshot);
               }
             }
           };
         })
         .catch((err) => {
-          console.error('Failed to load logger:', err);
+          console.error("Failed to load logger:", err);
         });
     }
 
@@ -195,11 +208,11 @@ class StateRegistry {
 
     this.containers.set(id, {
       id,
-      type: 'machine',
+      type: "machine",
       instance: actor,
       persist: options.persist,
       description: options.description,
-      subscriptions: new Set()
+      subscriptions: new Set(),
     });
 
     return actor;
@@ -211,13 +224,13 @@ class StateRegistry {
   registerStore<T>(
     id: string,
     store: Readable<T>,
-    options: RegisterStoreOptions<T> = {}
+    options: RegisterStoreOptions<T> = {},
   ): Readable<T> {
     // Check for persisted state with validation
     const persistedData = this.persistedState[id];
 
     // If this is a writable store and we have persisted data, restore it
-    if (persistedData?.type === 'store' && 'set' in store) {
+    if (persistedData?.type === "store" && "set" in store) {
       const writableStore = store as Writable<T>;
       try {
         // Validate and sanitize persisted data
@@ -227,7 +240,10 @@ class StateRegistry {
           throw new DataCorruptionError(id);
         }
       } catch (error) {
-        console.error(`Failed to restore persisted state for store "${id}":`, error);
+        console.error(
+          `Failed to restore persisted state for store "${id}":`,
+          error,
+        );
         // No need to explicitly fall back to initial state, as it already has that value
       }
     }
@@ -235,11 +251,11 @@ class StateRegistry {
     // Create container entry with subscription tracking
     const container: StateContainer = {
       id,
-      type: 'store',
+      type: "store",
       instance: store,
       persist: options.persist,
       description: options.description,
-      subscriptions: new Set()
+      subscriptions: new Set(),
     };
 
     this.containers.set(id, container);
@@ -263,9 +279,9 @@ class StateRegistry {
     if (!container) return false;
 
     // Clean up based on container type
-    if (container.type === 'machine') {
+    if (container.type === "machine") {
       const actor = container.instance as AnyActorRef;
-      if (actor && actor.getSnapshot().status !== 'stopped') {
+      if (actor && actor.getSnapshot().status !== "stopped") {
         try {
           actor.stop();
         } catch (error) {
@@ -324,9 +340,9 @@ class StateRegistry {
    */
   clear(): void {
     // Stop all actors before clearing
-    this.getAllByType('machine').forEach((container) => {
+    this.getAllByType("machine").forEach((container) => {
       const actor = container.instance as AnyActorRef;
-      if (actor && actor.getSnapshot().status !== 'stopped') {
+      if (actor && actor.getSnapshot().status !== "stopped") {
         try {
           actor.stop();
         } catch (error) {
@@ -370,7 +386,7 @@ class StateRegistry {
       this.lastPersistedState = performPersist(
         this.containers,
         this.lastPersistedState,
-        this.persistenceKey
+        this.persistenceKey,
       );
     }, this.persistenceDebounceDelay);
   }
@@ -382,7 +398,7 @@ class StateRegistry {
     debugRegistry(
       this.getAll(),
       (id) => this.getDependencies(id),
-      (id) => this.getDependents(id)
+      (id) => this.getDependents(id),
     );
   }
 

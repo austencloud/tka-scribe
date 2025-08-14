@@ -4,23 +4,23 @@
  * Centralized store for application settings, including sequence generation settings.
  */
 
-import { createStore } from '../core/store';
+import { createStore } from "../core/store";
 
 // Types
-export type GeneratorType = 'circular' | 'freeform';
-export type PropContinuityType = 'continuous' | 'random';
+export type GeneratorType = "circular" | "freeform";
+export type PropContinuityType = "continuous" | "random";
 export type CAPType =
-  | 'mirrored'
-  | 'rotated'
-  | 'mirrored_complementary'
-  | 'rotated_complementary'
-  | 'mirrored_swapped'
-  | 'rotated_swapped'
-  | 'strict_mirrored'
-  | 'strict_rotated'
-  | 'strict_complementary'
-  | 'strict_swapped'
-  | 'swapped_complementary';
+  | "mirrored"
+  | "rotated"
+  | "mirrored_complementary"
+  | "rotated_complementary"
+  | "mirrored_swapped"
+  | "rotated_swapped"
+  | "strict_mirrored"
+  | "strict_rotated"
+  | "strict_complementary"
+  | "strict_swapped"
+  | "swapped_complementary";
 
 // Settings state interface
 export interface SettingsState {
@@ -33,7 +33,7 @@ export interface SettingsState {
   level: number; // Difficulty level 1-5
 
   // UI settings
-  theme: 'light' | 'dark' | 'system';
+  theme: "light" | "dark" | "system";
   animationsEnabled: boolean;
 
   // User preferences
@@ -43,18 +43,18 @@ export interface SettingsState {
 
 // Default settings
 const DEFAULT_SETTINGS: SettingsState = {
-  generatorType: 'circular',
+  generatorType: "circular",
   numBeats: 8,
   turnIntensity: 2,
-  propContinuity: 'continuous',
-  capType: 'mirrored',
+  propContinuity: "continuous",
+  capType: "mirrored",
   level: 1,
 
-  theme: 'system',
+  theme: "system",
   animationsEnabled: true,
 
-  lastUsedGeneratorType: 'circular',
-  favoriteCapTypes: ['mirrored', 'rotated']
+  lastUsedGeneratorType: "circular",
+  favoriteCapTypes: ["mirrored", "rotated"],
 };
 
 // Create the settings store
@@ -67,70 +67,70 @@ export const settingsStore = createStore<
     setPropContinuity: (continuity: PropContinuityType) => void;
     setCAPType: (type: CAPType) => void;
     setLevel: (level: number) => void;
-    setTheme: (theme: 'light' | 'dark' | 'system') => void;
+    setTheme: (theme: "light" | "dark" | "system") => void;
     toggleAnimations: () => void;
     addFavoriteCapType: (type: CAPType) => void;
     removeFavoriteCapType: (type: CAPType) => void;
     resetSettings: () => void;
   }
 >(
-  'settings',
+  "settings",
   DEFAULT_SETTINGS,
   (set, update) => ({
     setGeneratorType: (type: GeneratorType) => {
       update((state) => ({
         ...state,
         generatorType: type,
-        lastUsedGeneratorType: type
+        lastUsedGeneratorType: type,
       }));
     },
 
     setNumBeats: (beats: number) => {
       update((state) => ({
         ...state,
-        numBeats: Math.max(1, Math.min(32, beats)) // Clamp between 1-32
+        numBeats: Math.max(1, Math.min(32, beats)), // Clamp between 1-32
       }));
     },
 
     setTurnIntensity: (intensity: number) => {
       update((state) => ({
         ...state,
-        turnIntensity: Math.max(1, Math.min(5, intensity)) // Clamp between 1-5
+        turnIntensity: Math.max(1, Math.min(5, intensity)), // Clamp between 1-5
       }));
     },
 
     setPropContinuity: (continuity: PropContinuityType) => {
       update((state) => ({
         ...state,
-        propContinuity: continuity
+        propContinuity: continuity,
       }));
     },
 
     setCAPType: (type: CAPType) => {
       update((state) => ({
         ...state,
-        capType: type
+        capType: type,
       }));
     },
 
     setLevel: (level: number) => {
       update((state) => ({
         ...state,
-        level: Math.max(1, Math.min(5, level)) // Clamp between 1-5
+        level: Math.max(1, Math.min(5, level)), // Clamp between 1-5
       }));
     },
 
-    setTheme: (theme: 'light' | 'dark' | 'system') => {
+    setTheme: (theme: "light" | "dark" | "system") => {
       update((state) => ({
         ...state,
-        theme
+        theme,
       }));
     },
 
     toggleAnimations: () => {
       update((state) => ({
         ...state,
-        animationsEnabled: !state.animationsEnabled
+        animationsEnabled: !state.animationsEnabled,
       }));
     },
 
@@ -141,7 +141,7 @@ export const settingsStore = createStore<
         }
         return {
           ...state,
-          favoriteCapTypes: [...state.favoriteCapTypes, type]
+          favoriteCapTypes: [...state.favoriteCapTypes, type],
         };
       });
     },
@@ -149,24 +149,26 @@ export const settingsStore = createStore<
     removeFavoriteCapType: (type: CAPType) => {
       update((state) => ({
         ...state,
-        favoriteCapTypes: state.favoriteCapTypes.filter((t) => t !== type)
+        favoriteCapTypes: state.favoriteCapTypes.filter((t) => t !== type),
       }));
     },
 
     resetSettings: () => {
       set(DEFAULT_SETTINGS);
-    }
+    },
   }),
   {
     persist: true,
-    description: 'Application settings including sequence generation parameters'
-  }
+    description:
+      "Application settings including sequence generation parameters",
+  },
 );
 
 // Export individual settings as getters for convenience
 export const getGeneratorType = () => settingsStore.getSnapshot().generatorType;
 export const getNumBeats = () => settingsStore.getSnapshot().numBeats;
 export const getTurnIntensity = () => settingsStore.getSnapshot().turnIntensity;
-export const getPropContinuity = () => settingsStore.getSnapshot().propContinuity;
+export const getPropContinuity = () =>
+  settingsStore.getSnapshot().propContinuity;
 export const getCAPType = () => settingsStore.getSnapshot().capType;
 export const getLevel = () => settingsStore.getSnapshot().level;

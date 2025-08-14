@@ -12,4 +12,4 @@
  */
 
 // Re-export everything from the modular registry
-export * from './registry/index';
+export * from "./registry/index";

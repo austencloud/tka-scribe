@@ -4,7 +4,7 @@
  * This module provides helper functions for rendering the Pictograph component.
  */
 
-import type { PictographData } from '$lib/types/PictographData';
+import type { PictographData } from "$lib/types/PictographData";
 
 /**
  * Determines if the pictograph should show a beat label
@@ -13,8 +13,11 @@ import type { PictographData } from '$lib/types/PictographData';
  * @param isStartPosition Whether this is a start position
  * @returns True if a beat label should be shown
  */
-export function shouldShowBeatLabel(beatNumber: number | null, isStartPosition: boolean): boolean {
-    return beatNumber !== null || isStartPosition;
+export function shouldShowBeatLabel(
+  beatNumber: number | null,
+  isStartPosition: boolean,
+): boolean {
+  return beatNumber !== null || isStartPosition;
 }
 
 /**
@@ -24,7 +27,7 @@ export function shouldShowBeatLabel(beatNumber: number | null, isStartPosition: 
  * @returns True if motion components should be shown
  */
 export function shouldShowMotionComponents(state: string): boolean {
-    return state !== 'grid_only' && state !== 'initializing' && state !== 'error';
+  return state !== "grid_only" && state !== "initializing" && state !== "error";
 }
 
 /**
@@ -34,8 +37,13 @@ export function shouldShowMotionComponents(state: string): boolean {
  * @param showLoadingIndicator Whether loading indicators are enabled
  * @returns True if loading indicators should be shown
  */
-export function shouldShowLoadingIndicator(state: string, showLoadingIndicator: boolean): boolean {
-    return (state === 'initializing' || state === 'loading') && showLoadingIndicator;
+export function shouldShowLoadingIndicator(
+  state: string,
+  showLoadingIndicator: boolean,
+): boolean {
+  return (
+    (state === "initializing" || state === "loading") && showLoadingIndicator
+  );
 }
 
 /**
@@ -45,7 +53,7 @@ export function shouldShowLoadingIndicator(state: string, showLoadingIndicator: 
  * @returns True if debug information should be shown
  */
 export function shouldShowDebugInfo(debug: boolean): boolean {
-    return debug;
+  return debug;
 }
 
 /**
@@ -55,7 +63,7 @@ export function shouldShowDebugInfo(debug: boolean): boolean {
  * @returns The ARIA role ('button' or 'img')
  */
 export function getPictographRole(onClick: (() => void) | undefined): string {
-    return onClick ? 'button' : 'img';
+  return onClick ? "button" : "img";
 }
 
 /**
@@ -64,6 +72,8 @@ export function getPictographRole(onClick: (() => void) | undefined): string {
  * @param onClick The click handler, if any
  * @returns The HTML element name ('button' or 'div')
  */
-export function getPictographElement(onClick: (() => void) | undefined): string {
-    return onClick ? 'button' : 'div';
+export function getPictographElement(
+  onClick: (() => void) | undefined,
+): string {
+  return onClick ? "button" : "div";
 }

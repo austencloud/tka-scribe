@@ -87,7 +87,7 @@ class BeatFrameService {
     29: [8, 4],
     30: [8, 4],
     31: [8, 4],
-    32: [8, 4]
+    32: [8, 4],
   };
 
   // Derived state
@@ -101,7 +101,11 @@ class BeatFrameService {
     this.#config = { ...this.#config, ...updates };
   }
 
-  setContainerDimensions(width: number, height: number, isFullscreen = false): void {
+  setContainerDimensions(
+    width: number,
+    height: number,
+    isFullscreen = false,
+  ): void {
     // Only update if dimensions actually changed to prevent loops
     if (
       this.#containerDimensions.width === width &&
@@ -114,7 +118,7 @@ class BeatFrameService {
     this.#containerDimensions = {
       width,
       height,
-      isFullscreen
+      isFullscreen,
     };
 
     // Don't automatically recalculate here - let components trigger when needed
@@ -162,24 +166,31 @@ class BeatFrameService {
     containerHeight: number,
     totalRows: number,
     totalCols: number,
-    gap: number
+    gap: number,
   ): number {
     // Minimum cell size thresholds - pictographs won't shrink below these values
     const MIN_CELL_SIZE_FULLSCREEN = 100; // Minimum size in fullscreen mode
     const MIN_CELL_SIZE_NORMAL = 70; // Minimum size in normal mode
 
     // Ensure we have valid dimensions
-    if (containerWidth <= 0 || containerHeight <= 0 || totalRows <= 0 || totalCols <= 0) {
+    if (
+      containerWidth <= 0 ||
+      containerHeight <= 0 ||
+      totalRows <= 0 ||
+      totalCols <= 0
+    ) {
       return 80; // Default fallback size
     }
 
     // Detect if we're in fullscreen mode by checking container dimensions
-    const isLikelyFullscreen = 
-      this.#containerDimensions.isFullscreen || 
+    const isLikelyFullscreen =
+      this.#containerDimensions.isFullscreen ||
       (containerWidth > 800 && containerHeight > 600);
 
     // Set the minimum cell size based on mode
-    const minCellSize = isLikelyFullscreen ? MIN_CELL_SIZE_FULLSCREEN : MIN_CELL_SIZE_NORMAL;
+    const minCellSize = isLikelyFullscreen
+      ? MIN_CELL_SIZE_FULLSCREEN
+      : MIN_CELL_SIZE_NORMAL;
 
     // Calculate total space needed for gaps
     const totalGapWidth = gap * (totalCols - 1);
@@ -188,8 +199,14 @@ class BeatFrameService {
     // Calculate available space after accounting for gaps and padding
     const horizontalPadding = beatCount === 0 ? containerWidth * 0.05 : 10;
     const verticalPadding = 24;
-    const availableWidth = Math.max(0, containerWidth - totalGapWidth - horizontalPadding * 2);
-    const availableHeight = Math.max(0, containerHeight - totalGapHeight - verticalPadding * 2);
+    const availableWidth = Math.max(
+      0,
+      containerWidth - totalGapWidth - horizontalPadding * 2,
+    );
+    const availableHeight = Math.max(
+      0,
+      containerHeight - totalGapHeight - verticalPadding * 2,
+    );
 
     // Calculate cell size based on available space in both dimensions
     const cellWidthByContainer = Math.floor(availableWidth / totalCols);
@@ -207,14 +224,17 @@ class BeatFrameService {
 
     // Check if the calculated cell size is below the minimum threshold
     if (cellSize < minCellSize) {
-      console.debug('Cell size below minimum threshold, using minimum size instead:', {
-        calculatedSize: cellSize,
-        minCellSize,
-        totalRows,
-        totalCols,
-        containerWidth,
-        containerHeight
-      });
+      console.debug(
+        "Cell size below minimum threshold, using minimum size instead:",
+        {
+          calculatedSize: cellSize,
+          minCellSize,
+          totalRows,
+          totalCols,
+          containerWidth,
+          containerHeight,
+        },
+      );
 
       // Apply different constraints based on mode
       if (isLikelyFullscreen) {
@@ -238,27 +258,30 @@ class BeatFrameService {
    * Update beat size based on current container dimensions
    */
   private updateBeatSizeFromContainer(beatCount = 0): void {
-    if (this.#containerDimensions.width <= 0 || this.#containerDimensions.height <= 0) {
+    if (
+      this.#containerDimensions.width <= 0 ||
+      this.#containerDimensions.height <= 0
+    ) {
       return; // Wait for valid dimensions
     }
 
     const [rows, cols] = this.autoAdjustLayout(beatCount);
     const totalCols = cols + (this.#config.hasStartTile ? 1 : 0);
-    
+
     const newCellSize = this.calculateCellSize(
       beatCount,
       this.#containerDimensions.width,
       this.#containerDimensions.height,
       rows,
       totalCols,
-      this.#config.gap
+      this.#config.gap,
     );
 
     // Update configuration with new size and layout
     this.#config = {
       ...this.#config,
       beatSize: newCellSize,
-      columns: cols
+      columns: cols,
     };
   }
 
@@ -266,7 +289,10 @@ class BeatFrameService {
     return this.#config.columns + (this.#config.hasStartTile ? 1 : 0);
   }
 
-  calculateBeatPosition(index: number, beatCount?: number): { x: number; y: number } {
+  calculateBeatPosition(
+    index: number,
+    beatCount?: number,
+  ): { x: number; y: number } {
     // Use the optimal layout for this beat count
     const [, cols] = this.autoAdjustLayout(beatCount ?? index + 1);
     const columnsForBeats = Math.max(1, cols);
@@ -306,39 +332,51 @@ class BeatFrameService {
     // Get optimal layout without mutating state
     const [rows, cols] = this.autoAdjustLayout(beatCount);
     const totalCols = cols + (this.#config.hasStartTile ? 1 : 0);
-    
+
     // Calculate optimal cell size without mutating state
-    const optimalCellSize = this.calculateOptimalCellSize(beatCount, rows, totalCols);
-    
+    const optimalCellSize = this.calculateOptimalCellSize(
+      beatCount,
+      rows,
+      totalCols,
+    );
+
     const step = optimalCellSize + this.#config.gap;
     const totalWidth = totalCols * step - this.#config.gap;
     const totalHeight = rows * step - this.#config.gap;
-    
+
     // Check if content would overflow container
     const containerWidth = this.#containerDimensions.width;
     const containerHeight = this.#containerDimensions.height;
-    
-    const shouldScroll = 
+
+    const shouldScroll =
       (containerWidth > 0 && totalWidth > containerWidth) ||
       (containerHeight > 0 && totalHeight > containerHeight) ||
-      (optimalCellSize <= (this.#containerDimensions.isFullscreen ? 100 : 70) * 1.1);
-    
+      optimalCellSize <=
+        (this.#containerDimensions.isFullscreen ? 100 : 70) * 1.1;
+
     return {
       rows,
       columns: cols,
       cellSize: optimalCellSize,
       totalWidth,
       totalHeight,
-      shouldScroll
+      shouldScroll,
     };
   }
 
   /**
    * Calculate optimal cell size without mutating state (PURE)
    */
-  private calculateOptimalCellSize(beatCount: number, rows: number, totalCols: number): number {
+  private calculateOptimalCellSize(
+    beatCount: number,
+    rows: number,
+    totalCols: number,
+  ): number {
     try {
-      if (this.#containerDimensions.width <= 0 || this.#containerDimensions.height <= 0) {
+      if (
+        this.#containerDimensions.width <= 0 ||
+        this.#containerDimensions.height <= 0
+      ) {
         return this.#config.beatSize; // Return current size if no container dimensions
       }
 
@@ -348,13 +386,13 @@ class BeatFrameService {
         this.#containerDimensions.height,
         rows,
         totalCols,
-        this.#config.gap
+        this.#config.gap,
       );
-      
+
       // Ensure result is a valid number
       return isNaN(result) || result <= 0 ? this.#config.beatSize : result;
     } catch (error) {
-      console.warn('Error calculating optimal cell size:', error);
+      console.warn("Error calculating optimal cell size:", error);
       return this.#config.beatSize;
     }
   }

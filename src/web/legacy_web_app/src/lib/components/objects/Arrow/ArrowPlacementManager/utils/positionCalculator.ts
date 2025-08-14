@@ -1,14 +1,14 @@
 // src/lib/components/PlacementManagers/ArrowPlacementManager/utils/positionCalculator.ts
-import type { ArrowData } from '$lib/components/objects/Arrow/ArrowData';
-import type { ArrowPlacementConfig, Coordinates } from '../types';
-import { ANTI, DASH, FLOAT, PRO, STATIC } from '$lib/types/Constants';
+import type { ArrowData } from "$lib/components/objects/Arrow/ArrowData";
+import type { ArrowPlacementConfig, Coordinates } from "../types";
+import { ANTI, DASH, FLOAT, PRO, STATIC } from "$lib/types/Constants";
 
 /**
  * Gets the initial position for an arrow based on its type and location
  */
 export function getInitialPosition(
   arrow: ArrowData,
-  config: ArrowPlacementConfig
+  config: ArrowPlacementConfig,
 ): Coordinates {
   const { motionType } = arrow;
   const { pictographData, gridData } = config;
@@ -38,9 +38,9 @@ export function getInitialPosition(
 function getShiftCoordinates(
   arrow: ArrowData,
   pictographData: any,
-  gridData: any
+  gridData: any,
 ): Coordinates {
-  const pointName = `${arrow.loc}_${pictographData.gridMode || 'diamond'}_layer2_point`;
+  const pointName = `${arrow.loc}_${pictographData.gridMode || "diamond"}_layer2_point`;
   const point = gridData.allLayer2PointsNormal[pointName];
 
   if (!point?.coordinates) {
@@ -57,9 +57,9 @@ function getShiftCoordinates(
 function getStaticDashCoordinates(
   arrow: ArrowData,
   pictographData: any,
-  gridData: any
+  gridData: any,
 ): Coordinates {
-  const pointName = `${arrow.loc}_${pictographData.gridMode || 'diamond'}_hand_point`;
+  const pointName = `${arrow.loc}_${pictographData.gridMode || "diamond"}_hand_point`;
   const point = gridData.allHandPointsNormal[pointName];
 
   if (!point?.coordinates) {

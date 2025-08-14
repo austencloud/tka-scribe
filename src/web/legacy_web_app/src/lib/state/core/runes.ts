@@ -9,7 +9,7 @@
  */
 
 export {
-	createPersistentState,
-	createPersistentObjectState,
-	createSharedContext
-} from './runes.svelte';
+  createPersistentState,
+  createPersistentObjectState,
+  createSharedContext,
+} from "./runes.svelte";

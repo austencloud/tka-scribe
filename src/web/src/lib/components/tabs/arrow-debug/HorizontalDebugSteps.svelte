@@ -118,26 +118,44 @@
 		{#each Array(5) as _, stepIndex}
 			{@const stepData = getStepData(stepIndex)}
 			{@const status = getStepStatus(stepIndex)}
-			<div 
-				class="step-card {status}"
-				class:clickable={stepByStepMode}
-				onclick={() => stepByStepMode && onStepChange(stepIndex)}
-			>
-				<div class="step-header">
-					<div class="step-number">{stepIndex + 1}</div>
-					<h4>{stepData.title}</h4>
-					<div class="step-status-indicator {status}"></div>
+			{#if stepByStepMode}
+				<button
+					class="step-card {status} clickable"
+					onclick={() => onStepChange(stepIndex)}
+				>
+					<div class="step-header">
+						<div class="step-number">{stepIndex + 1}</div>
+						<h4>{stepData.title}</h4>
+						<div class="step-status-indicator {status}"></div>
+					</div>
+
+					<div class="step-content">
+						{#each Object.entries(stepData.data) as [key, value]}
+							<div class="data-row">
+								<span class="data-key">{key}:</span>
+								<span class="data-value">{value}</span>
+							</div>
+						{/each}
+					</div>
+				</button>
+			{:else}
+				<div class="step-card {status}">
+					<div class="step-header">
+						<div class="step-number">{stepIndex + 1}</div>
+						<h4>{stepData.title}</h4>
+						<div class="step-status-indicator {status}"></div>
+					</div>
+
+					<div class="step-content">
+						{#each Object.entries(stepData.data) as [key, value]}
+							<div class="data-row">
+								<span class="data-key">{key}:</span>
+								<span class="data-value">{value}</span>
+							</div>
+						{/each}
+					</div>
 				</div>
-				
-				<div class="step-content">
-					{#each Object.entries(stepData.data) as [key, value]}
-						<div class="data-row">
-							<span class="data-key">{key}:</span>
-							<span class="data-value">{value}</span>
-						</div>
-					{/each}
-				</div>
-			</div>
+			{/if}
 		{/each}
 	</div>
 

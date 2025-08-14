@@ -6,19 +6,19 @@
  */
 
 // Export container utilities
-export * from './container';
+export * from "./container";
 
 // Export machine utilities
-export * from './modernMachine';
+export * from "./modernMachine";
 
 // Export adapter utilities
-export * from './adapters';
+export * from "./adapters";
 
 // Export testing utilities
-export * from './modernTesting';
+export * from "./modernTesting";
 
 // Re-export types from the registry for compatibility
-export { type StateContainer, type StateContainerType } from './registry/types';
+export { type StateContainer, type StateContainerType } from "./registry/types";
 
 /**
  * Creates a simple state object with a getter
@@ -30,19 +30,19 @@ export { type StateContainer, type StateContainerType } from './registry/types';
  * @returns An object with a state getter
  */
 export function createState<T>(initialState: T): { state: T } {
-	// Check if we're running in a Svelte 5 environment with runes support
-	const hasRunes = typeof globalThis.$state !== 'undefined';
+  // Check if we're running in a Svelte 5 environment with runes support
+  const hasRunes = typeof globalThis.$state !== "undefined";
 
-	if (hasRunes) {
-		// Import the runes version dynamically to avoid loading it in non-runes environments
-		const { createStateWithRunes } = require('./modern.svelte');
-		return createStateWithRunes(initialState);
-	} else {
-		// For Svelte 4, just return the initial state
-		return {
-			state: initialState
-		};
-	}
+  if (hasRunes) {
+    // Import the runes version dynamically to avoid loading it in non-runes environments
+    const { createStateWithRunes } = require("./modern.svelte");
+    return createStateWithRunes(initialState);
+  } else {
+    // For Svelte 4, just return the initial state
+    return {
+      state: initialState,
+    };
+  }
 }
 
 /**
@@ -55,17 +55,17 @@ export function createState<T>(initialState: T): { state: T } {
  * @returns An object with a state getter
  */
 export function createDerivedState<T>(fn: () => T): { state: T } {
-	// Check if we're running in a Svelte 5 environment with runes support
-	const hasRunes = typeof globalThis.$state !== 'undefined';
+  // Check if we're running in a Svelte 5 environment with runes support
+  const hasRunes = typeof globalThis.$state !== "undefined";
 
-	if (hasRunes) {
-		// Import the runes version dynamically to avoid loading it in non-runes environments
-		const { createDerivedStateWithRunes } = require('./modern.svelte');
-		return createDerivedStateWithRunes(fn);
-	} else {
-		// For Svelte 4, just compute the value once
-		return {
-			state: fn()
-		};
-	}
+  if (hasRunes) {
+    // Import the runes version dynamically to avoid loading it in non-runes environments
+    const { createDerivedStateWithRunes } = require("./modern.svelte");
+    return createDerivedStateWithRunes(fn);
+  } else {
+    // For Svelte 4, just compute the value once
+    return {
+      state: fn(),
+    };
+  }
 }

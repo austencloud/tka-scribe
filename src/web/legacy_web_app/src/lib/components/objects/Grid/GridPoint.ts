@@ -1,6 +1,3 @@
-
 export type GridPoint = {
-
-    coordinates: { x: number; y: number } | null;
-
+  coordinates: { x: number; y: number } | null;
 };

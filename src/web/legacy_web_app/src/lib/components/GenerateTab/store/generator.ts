@@ -1,90 +1,86 @@
 // src/lib/components/GenerateTab/store/generator.ts
-import { writable, derived } from 'svelte/store';
+import { writable, derived } from "svelte/store";
 
 // Generator states
 export type GeneratorStatus =
-  | 'idle'           // Ready to generate
-  | 'generating'     // Currently generating
-  | 'complete'       // Generation complete
-  | 'error';         // Error occurred
+  | "idle" // Ready to generate
+  | "generating" // Currently generating
+  | "complete" // Generation complete
+  | "error"; // Error occurred
 
 // Generator state interface
 interface GeneratorState {
   status: GeneratorStatus;
-  progress: number;       // 0-100 progress percentage
-  message: string;        // Status message
+  progress: number; // 0-100 progress percentage
+  message: string; // Status message
   errorMessage: string | null;
   lastGeneratedAt: Date | null;
 }
 
 // Initial state
 const initialState: GeneratorState = {
-  status: 'idle',
+  status: "idle",
   progress: 0,
-  message: 'Ready to generate',
+  message: "Ready to generate",
   errorMessage: null,
-  lastGeneratedAt: null
+  lastGeneratedAt: null,
 };
 
 // Create the store
-const { subscribe, set, update } = writable<GeneratorState>({ ...initialState });
+const { subscribe, set, update } = writable<GeneratorState>({
+  ...initialState,
+});
 
 // Derived stores
 export const isGenerating = derived(
   { subscribe },
-  $state => $state.status === 'generating'
+  ($state) => $state.status === "generating",
 );
 
 export const hasError = derived(
   { subscribe },
-  $state => $state.status === 'error'
+  ($state) => $state.status === "error",
 );
 
-export const progress = derived(
-  { subscribe },
-  $state => $state.progress
-);
+export const progress = derived({ subscribe }, ($state) => $state.progress);
 
-export const statusMessage = derived(
-  { subscribe },
-  $state => $state.message
-);
+export const statusMessage = derived({ subscribe }, ($state) => $state.message);
 
 // Actions
 function startGeneration() {
-  update(state => ({
+  update((state) => ({
     ...state,
-    status: 'generating',
+    status: "generating",
     progress: 0,
-    message: 'Starting generation...',
-    errorMessage: null
+    message: "Starting generation...",
+    errorMessage: null,
   }));
 }
 
 function updateProgress(progress: number, message: string) {
-  update(state => ({
+  update((state) => ({
     ...state,
     progress: Math.min(100, Math.max(0, progress)),
-    message
+    message,
   }));
 }
 
 function completeGeneration() {
-  update(state => ({
+  update((state) => ({
     ...state,
-    status: 'complete',
+    status: "complete",
     progress: 100,
-    message: 'Generation complete',
-    lastGeneratedAt: new Date()
+    message: "Generation complete",
+    lastGeneratedAt: new Date(),
   }));
 }
 
 function setError(errorMessage: string) {
-  update(state => ({
+  update((state) => ({
     ...state,
-    status: 'error',
+    status: "error",
     errorMessage,
-    message: 'Generation failed'
+    message: "Generation failed",
   }));
 }
 
@@ -99,5 +95,5 @@ export const generatorStore = {
   updateProgress,
   completeGeneration,
   setError,
-  reset
+  reset,
 };

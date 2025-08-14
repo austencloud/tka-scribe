@@ -19,26 +19,23 @@ The container-based approach provides a more direct and ergonomic API for state 
 
 ```typescript
 // Create a state container
-const counterContainer = createContainer(
-  { count: 0 },
-  (state, update) => ({
-    increment: () => {
-      update(state => {
-        state.count += 1;
-      });
-    },
-    decrement: () => {
-      update(state => {
-        state.count -= 1;
-      });
-    },
-    reset: () => {
-      update(state => {
-        state.count = 0;
-      });
-    }
-  })
-);
+const counterContainer = createContainer({ count: 0 }, (state, update) => ({
+  increment: () => {
+    update((state) => {
+      state.count += 1;
+    });
+  },
+  decrement: () => {
+    update((state) => {
+      state.count -= 1;
+    });
+  },
+  reset: () => {
+    update((state) => {
+      state.count = 0;
+    });
+  },
+}));
 
 // Use the container
 counterContainer.increment();
@@ -50,37 +47,37 @@ console.log(counterContainer.state.count); // 1
 ```typescript
 // Create a state machine
 const counterMachine = createModernMachine({
-  id: 'counter',
-  initial: 'active',
+  id: "counter",
+  initial: "active",
   context: { count: 0 },
   states: {
     active: {
       on: {
         INCREMENT: {
           actions: assign({
-            count: ({ context }) => context.count + 1
-          })
+            count: ({ context }) => context.count + 1,
+          }),
         },
         DECREMENT: {
           actions: assign({
-            count: ({ context }) => context.count - 1
-          })
+            count: ({ context }) => context.count - 1,
+          }),
         },
         RESET: {
           actions: assign({
-            count: () => 0
-          })
-        }
-      }
-    }
-  }
+            count: () => 0,
+          }),
+        },
+      },
+    },
+  },
 });
 
 // Create a machine container
 const counterContainer = createMachineContainer(counterMachine);
 
 // Use the container
-counterContainer.send({ type: 'INCREMENT' });
+counterContainer.send({ type: "INCREMENT" });
 console.log(counterContainer.state.context.count); // 1
 ```
 

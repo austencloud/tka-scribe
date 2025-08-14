@@ -283,7 +283,6 @@ LoggerImpl.prototype.myDomain = function (
 ## Best Practices
 
 1. **Use Appropriate Log Levels**:
-
    - TRACE: Extremely detailed information for debugging complex issues
    - DEBUG: Detailed information useful during development
    - INFO: General information about application flow
@@ -292,19 +291,16 @@ LoggerImpl.prototype.myDomain = function (
    - FATAL: Severe errors that prevent normal operation
 
 2. **Include Contextual Information**:
-
    - Always provide relevant context with logs
    - Use domain-specific logging methods when appropriate
    - Include correlation IDs for related operations
 
 3. **Performance Considerations**:
-
    - Use sampling for high-volume logs in production
    - Be mindful of the performance impact of logging
    - Consider using the memory transport only in development
 
 4. **Error Logging**:
-
    - Always include the original error object when logging errors
    - Categorize errors appropriately
    - Include recovery suggestions when possible

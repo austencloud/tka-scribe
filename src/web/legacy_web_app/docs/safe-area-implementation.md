@@ -88,10 +88,8 @@ To apply safe area insets to new components, you can:
 .my-component {
   padding-top: var(--safe-inset-top, 0px);
   /* or */
-  padding: var(--safe-inset-top, 0px) var(--safe-inset-right, 0px) var(
-      --safe-inset-bottom,
-      0px
-    ) var(--safe-inset-left, 0px);
+  padding: var(--safe-inset-top, 0px) var(--safe-inset-right, 0px)
+    var(--safe-inset-bottom, 0px) var(--safe-inset-left, 0px);
 }
 ```
 

@@ -7,28 +7,35 @@
  * @returns boolean indicating if BeatFrame elements are ready
  */
 export function verifyBeatFrameElements(): boolean {
-  const beatFrameElement = document.querySelector('.beat-frame-container');
+  const beatFrameElement = document.querySelector(".beat-frame-container");
   if (!beatFrameElement) {
-    console.log('⚠️ BeatFrame element not found during verification');
+    console.log("⚠️ BeatFrame element not found during verification");
     return false;
   }
 
   // Check for SVG elements
-  const svgElements = beatFrameElement.querySelectorAll('svg');
-  console.log(`🔍 BeatFrame verification: Found ${svgElements.length} SVG elements`);
+  const svgElements = beatFrameElement.querySelectorAll("svg");
+  console.log(
+    `🔍 BeatFrame verification: Found ${svgElements.length} SVG elements`,
+  );
 
   // Check for arrows and other critical elements
-  const arrowElements = beatFrameElement.querySelectorAll('.arrow-path, .arrow-head');
-  const propElements = beatFrameElement.querySelectorAll('.pictograph-prop');
+  const arrowElements = beatFrameElement.querySelectorAll(
+    ".arrow-path, .arrow-head",
+  );
+  const propElements = beatFrameElement.querySelectorAll(".pictograph-prop");
 
   console.log(`🔍 BeatFrame verification details:`, {
     svgCount: svgElements.length,
     arrowCount: arrowElements.length,
-    propCount: propElements.length
+    propCount: propElements.length,
   });
 
   // Consider it valid if we have SVGs and either arrows or props
-  return svgElements.length > 0 && (arrowElements.length > 0 || propElements.length > 0);
+  return (
+    svgElements.length > 0 &&
+    (arrowElements.length > 0 || propElements.length > 0)
+  );
 }
 
 /**
@@ -37,13 +44,16 @@ export function verifyBeatFrameElements(): boolean {
  * @param height Height of the temporary element
  * @returns The created temporary element
  */
-export function createTemporaryRenderElement(width: number, height: number): HTMLDivElement {
-  const tempElement = document.createElement('div');
-  tempElement.style.position = 'absolute';
-  tempElement.style.left = '-9999px';
+export function createTemporaryRenderElement(
+  width: number,
+  height: number,
+): HTMLDivElement {
+  const tempElement = document.createElement("div");
+  tempElement.style.position = "absolute";
+  tempElement.style.left = "-9999px";
   tempElement.style.width = `${width}px`;
   tempElement.style.height = `${height}px`;
-  tempElement.className = 'temp-beat-frame-clone';
+  tempElement.className = "temp-beat-frame-clone";
   document.body.appendChild(tempElement);
   return tempElement;
 }
@@ -54,9 +64,9 @@ export function createTemporaryRenderElement(width: number, height: number): HTM
  * @returns boolean indicating success
  */
 export function cloneBeatFrameContent(tempElement: HTMLDivElement): boolean {
-  const beatFrameElement = document.querySelector('.beat-frame-container');
+  const beatFrameElement = document.querySelector(".beat-frame-container");
   if (!beatFrameElement) {
-    console.error('Could not find BeatFrame element in the DOM');
+    console.error("Could not find BeatFrame element in the DOM");
     return false;
   }
 
@@ -67,18 +77,18 @@ export function cloneBeatFrameContent(tempElement: HTMLDivElement): boolean {
   tempElement.getBoundingClientRect();
 
   // Ensure SVG elements are properly cloned and visible
-  const clonedSvgs = tempElement.querySelectorAll('svg');
+  const clonedSvgs = tempElement.querySelectorAll("svg");
   clonedSvgs.forEach((svg) => {
     // Ensure SVG has proper dimensions
-    if (!svg.getAttribute('width') || svg.getAttribute('width') === '0') {
-      svg.setAttribute('width', '100%');
+    if (!svg.getAttribute("width") || svg.getAttribute("width") === "0") {
+      svg.setAttribute("width", "100%");
     }
-    if (!svg.getAttribute('height') || svg.getAttribute('height') === '0') {
-      svg.setAttribute('height', '100%');
+    if (!svg.getAttribute("height") || svg.getAttribute("height") === "0") {
+      svg.setAttribute("height", "100%");
     }
     // Force visibility
-    svg.style.visibility = 'visible';
-    svg.style.display = 'block';
+    svg.style.visibility = "visible";
+    svg.style.display = "block";
   });
 
   return clonedSvgs.length > 0;
@@ -88,29 +98,34 @@ export function cloneBeatFrameContent(tempElement: HTMLDivElement): boolean {
  * Logs detailed information about the BeatFrame element
  */
 export function logBeatFrameDetails(): void {
-  const beatFrameElement = document.querySelector('.beat-frame-container');
+  const beatFrameElement = document.querySelector(".beat-frame-container");
   if (!beatFrameElement) {
-    console.error('Could not find BeatFrame element in the DOM');
+    console.error("Could not find BeatFrame element in the DOM");
     return;
   }
 
   // Verify BeatFrame has necessary elements
-  const svgElements = beatFrameElement.querySelectorAll('svg');
-  const arrowElements = beatFrameElement.querySelectorAll('.arrow-path, .arrow-head');
-  const propElements = beatFrameElement.querySelectorAll('.pictograph-prop');
+  const svgElements = beatFrameElement.querySelectorAll("svg");
+  const arrowElements = beatFrameElement.querySelectorAll(
+    ".arrow-path, .arrow-head",
+  );
+  const propElements = beatFrameElement.querySelectorAll(".pictograph-prop");
 
   // Log detailed information about what we found
-  console.log('Found BeatFrame element with details:', {
+  console.log("Found BeatFrame element with details:", {
     element: beatFrameElement,
     svgCount: svgElements.length,
     arrowCount: arrowElements.length,
     propCount: propElements.length,
-    html: beatFrameElement.innerHTML.substring(0, 200) + '...' // Log a preview of the HTML
+    html: beatFrameElement.innerHTML.substring(0, 200) + "...", // Log a preview of the HTML
   });
 
   // Warn if we're missing expected elements
-  if (svgElements.length === 0 || (arrowElements.length === 0 && propElements.length === 0)) {
-    console.warn('⚠️ BeatFrame may be missing critical elements for rendering');
+  if (
+    svgElements.length === 0 ||
+    (arrowElements.length === 0 && propElements.length === 0)
+  ) {
+    console.warn("⚠️ BeatFrame may be missing critical elements for rendering");
   }
 }
 

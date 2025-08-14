@@ -5,16 +5,16 @@
  * These factories ensure consistent patterns and automatic registration with the state registry.
  */
 
-import { createMachine, type AnyActorRef, type AnyStateMachine } from 'xstate';
-import { stateRegistry } from './registry';
+import { createMachine, type AnyActorRef, type AnyStateMachine } from "xstate";
+import { stateRegistry } from "./registry";
 import {
   type SupervisedActorOptions,
   type Supervisor,
   type SupervisionStrategy,
-  type SupervisedActor as SupervisedActorType
-} from './supervision/types';
-import { SupervisedActor } from './supervision/SupervisedActor';
-import { RootSupervisor } from './supervision/RootSupervisor';
+  type SupervisedActor as SupervisedActorType,
+} from "./supervision/types";
+import { SupervisedActor } from "./supervision/SupervisedActor";
+import { RootSupervisor } from "./supervision/RootSupervisor";
 
 /**
  * Create and register a state machine
@@ -30,11 +30,11 @@ export function createAppMachine<TMachine extends AnyStateMachine>(
   options: {
     persist?: boolean;
     description?: string;
-  } = {}
+  } = {},
 ): AnyActorRef {
   return stateRegistry.registerMachine(id, machine, {
     persist: options.persist,
-    description: options.description
+    description: options.description,
   });
 }
 
@@ -59,7 +59,7 @@ export function createSupervisedMachine<TMachine extends AnyStateMachine>(
     onError?: (error: any) => void;
     onRestart?: (actor: SupervisedActorType<TMachine>) => void;
     onStop?: (actor: SupervisedActorType<TMachine>) => void;
-  } = {}
+  } = {},
 ): SupervisedActor<TMachine> {
   // Get or create the supervisor
   const supervisor = options.supervisor || RootSupervisor.getInstance();
@@ -70,9 +70,11 @@ export function createSupervisedMachine<TMachine extends AnyStateMachine>(
     supervisor,
     persist: options.persist,
     description: options.description,
-    onError: options.onError ? (error) => options.onError!(error.error) : undefined,
+    onError: options.onError
+      ? (error) => options.onError!(error.error)
+      : undefined,
     onRestart: options.onRestart as any, // Safe to cast since we're using the correct type from types.ts
-    onStop: options.onStop as any // Safe to cast since we're using the correct type from types.ts
+    onStop: options.onStop as any, // Safe to cast since we're using the correct type from types.ts
   };
 
   // Create the supervised actor
@@ -92,9 +94,9 @@ export function createSupervisedMachine<TMachine extends AnyStateMachine>(
    * supervision/registry behaviour unchanged.
    */
   stateRegistry.register(id, actor.ref, {
-    type: 'machine',
+    type: "machine",
     persist: options.persist,
-    description: options.description
+    description: options.description,
   });
 
   return actor;
@@ -118,7 +120,7 @@ export function createAsyncMachine<TData, TError = Error, TInput = void>(
     description?: string;
     onSuccess?: (data: TData) => void;
     onError?: (error: TError) => void;
-  } = {}
+  } = {},
 ) {
   // Define the machine context type
   type AsyncContext = {
@@ -129,10 +131,10 @@ export function createAsyncMachine<TData, TError = Error, TInput = void>(
 
   // Define the machine event types
   type AsyncEvents =
-    | { type: 'FETCH'; input: TInput }
-    | { type: 'RETRY' }
-    | { type: 'SUCCESS'; data: TData }
-    | { type: 'FAILURE'; error: TError };
+    | { type: "FETCH"; input: TInput }
+    | { type: "RETRY" }
+    | { type: "SUCCESS"; data: TData }
+    | { type: "FAILURE"; error: TError };
 
   // Create the machine
   const asyncMachine = createMachine(
@@ -145,83 +147,83 @@ export function createAsyncMachine<TData, TError = Error, TInput = void>(
       context: {
         data: null,
         error: null,
-        input: null
+        input: null,
       },
-      initial: 'idle',
+      initial: "idle",
       states: {
         idle: {
           on: {
             FETCH: {
-              target: 'loading',
+              target: "loading",
               actions: {
-                type: 'assignInput'
-              }
-            }
-          }
+                type: "assignInput",
+              },
+            },
+          },
         },
         loading: {
           entry: {
-            type: 'executeAsyncFn'
+            type: "executeAsyncFn",
           },
           on: {
             SUCCESS: {
-              target: 'success',
+              target: "success",
               actions: {
-                type: 'assignData'
-              }
+                type: "assignData",
+              },
             },
             FAILURE: {
-              target: 'failure',
+              target: "failure",
               actions: {
-                type: 'assignError'
-              }
-            }
-          }
+                type: "assignError",
+              },
+            },
+          },
         },
         success: {
           entry: {
-            type: 'onSuccess'
+            type: "onSuccess",
           },
           on: {
             FETCH: {
-              target: 'loading',
+              target: "loading",
               actions: {
-                type: 'assignInput'
-              }
-            }
-          }
+                type: "assignInput",
+              },
+            },
+          },
         },
         failure: {
           entry: {
-            type: 'onError'
+            type: "onError",
           },
           on: {
-            RETRY: 'loading',
+            RETRY: "loading",
             FETCH: {
-              target: 'loading',
+              target: "loading",
               actions: {
-                type: 'assignInput'
-              }
-            }
-          }
-        }
-      }
+                type: "assignInput",
+              },
+            },
+          },
+        },
+      },
     },
     {
       actions: {
         assignInput: ({ context, event }) => {
-          if (event.type === 'FETCH') {
+          if (event.type === "FETCH") {
             context.input = event.input;
           }
         },
         assignData: ({ context, event }) => {
-          if (event.type === 'SUCCESS') {
+          if (event.type === "SUCCESS") {
             context.data = event.data;
             context.error = null;
           }
         },
         assignError: ({ context, event }) => {
-          if (event.type === 'FAILURE') {
+          if (event.type === "FAILURE") {
             context.error = event.error;
           }
         },
@@ -229,10 +231,10 @@ export function createAsyncMachine<TData, TError = Error, TInput = void>(
           if (context.input !== null) {
             asyncFn(context.input as TInput)
               .then((data) => {
-                self.send({ type: 'SUCCESS', data });
+                self.send({ type: "SUCCESS", data });
               })
               .catch((error) => {
-                self.send({ type: 'FAILURE', error });
+                self.send({ type: "FAILURE", error });
               });
           }
         },
@@ -245,14 +247,14 @@ export function createAsyncMachine<TData, TError = Error, TInput = void>(
           if (options.onError && context.error !== null) {
             options.onError(context.error);
           }
-        }
-      }
-    }
+        },
+      },
+    },
   );
 
   // Register and return the machine
   return stateRegistry.registerMachine(id, asyncMachine, {
     persist: options.persist,
-    description: options.description
+    description: options.description,
   });
 }

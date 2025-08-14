@@ -4,89 +4,89 @@
  */
 
 // Re-export types
-export type { ShareData } from './types';
-export type { SequenceRenderResult } from './ImageUtils';
-export type { ShareOptions } from './ShareHandler';
-export type { DownloadOptions } from './DownloadHandler';
-export type { SequenceRenderOptions } from './SequenceRenderer';
+export type { ShareData } from "./types";
+export type { SequenceRenderResult } from "./ImageUtils";
+export type { ShareOptions } from "./ShareHandler";
+export type { DownloadOptions } from "./DownloadHandler";
+export type { SequenceRenderOptions } from "./SequenceRenderer";
 
 // Re-export functions from specialized modules
 export {
-	// Sequence encoding/decoding
-	encodeSequenceCompact,
-	extractStartPositionData,
-	encodeStartPosition,
-	encodeOrientation,
-	encodePosition,
-	encodeMotion,
-	compressString
-} from './SequenceEncoder';
+  // Sequence encoding/decoding
+  encodeSequenceCompact,
+  extractStartPositionData,
+  encodeStartPosition,
+  encodeOrientation,
+  encodePosition,
+  encodeMotion,
+  compressString,
+} from "./SequenceEncoder";
 
 export {
-	// Sequence decoding
-	decodeSequenceCompact,
-	decodeStartPosition,
-	decodeOrientation,
-	decodePosition,
-	inferPositionFromLocations,
-	decodeMotion,
-	inferMotionType,
-	inferOrientations,
-	inferPosition,
-	inferEndPosition,
-	createStartPositionBeat,
-	createBeatFromMotions
-} from './SequenceDecoder';
+  // Sequence decoding
+  decodeSequenceCompact,
+  decodeStartPosition,
+  decodeOrientation,
+  decodePosition,
+  inferPositionFromLocations,
+  decodeMotion,
+  inferMotionType,
+  inferOrientations,
+  inferPosition,
+  inferEndPosition,
+  createStartPositionBeat,
+  createBeatFromMotions,
+} from "./SequenceDecoder";
 
 export {
-	// Web Share API utilities
-	isWebShareSupported,
-	isFileShareSupported,
-	isMobileDevice,
-	shareSequence as shareSequenceWithWebShareApi,
-	shareSequenceWithImage
-} from './WebShareApi';
+  // Web Share API utilities
+  isWebShareSupported,
+  isFileShareSupported,
+  isMobileDevice,
+  shareSequence as shareSequenceWithWebShareApi,
+  shareSequenceWithImage,
+} from "./WebShareApi";
 
 export {
-	// Clipboard operations
-	copyToClipboard,
-	copyImageToClipboard
-} from './ClipboardUtils';
+  // Clipboard operations
+  copyToClipboard,
+  copyImageToClipboard,
+} from "./ClipboardUtils";
 
 export {
-	// URL utilities
-	generateShareableUrl,
-	checkForSequenceInUrl
-} from './UrlUtils';
+  // URL utilities
+  generateShareableUrl,
+  checkForSequenceInUrl,
+} from "./UrlUtils";
 
 export {
-	// Image utilities
-	dataURLtoBlob,
-	createFileFromDataURL
-} from './ImageUtils';
+  // Image utilities
+  dataURLtoBlob,
+  createFileFromDataURL,
+} from "./ImageUtils";
 
 export {
-	// Test utilities
-	testSequenceUrlEncoding
-} from './TestUtils';
+  // Test utilities
+  testSequenceUrlEncoding,
+} from "./TestUtils";
 
 export {
-	// Element finder utilities
-	findBeatFrameElement,
-	listenForBeatFrameElement
-} from './ElementFinder';
+  // Element finder utilities
+  findBeatFrameElement,
+  listenForBeatFrameElement,
+} from "./ElementFinder";
 
 export {
-	// Sequence renderer utilities
-	renderSequence
-} from './SequenceRenderer';
+  // Sequence renderer utilities
+  renderSequence,
+} from "./SequenceRenderer";
 
 export {
-	// Share handler utilities
-	shareSequence
-} from './ShareHandler';
+  // Share handler utilities
+  shareSequence,
+} from "./ShareHandler";
 
 export {
-	// Download handler utilities
-	downloadSequenceImage
-} from './DownloadHandler';
+  // Download handler utilities
+  downloadSequenceImage,
+} from "./DownloadHandler";

@@ -8,14 +8,14 @@
  */
 
 import {
-	backgroundStore as modernBackgroundStore,
-	type BackgroundState
-} from './backgroundAdapter';
+  backgroundStore as modernBackgroundStore,
+  type BackgroundState,
+} from "./backgroundAdapter";
 import type {
-	BackgroundType,
-	QualityLevel,
-	PerformanceMetrics
-} from '$lib/components/Backgrounds/types/types';
+  BackgroundType,
+  QualityLevel,
+  PerformanceMetrics,
+} from "$lib/components/Backgrounds/types/types";
 
 // Re-export the type with the old name for backward compatibility
 export type BackgroundStoreState = BackgroundState;

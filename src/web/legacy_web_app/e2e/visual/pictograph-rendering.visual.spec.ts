@@ -137,8 +137,8 @@ test.describe("Pictograph Visual Rendering", () => {
       // Try multiple ways to find the box grid button
       const possibleButtons = [
         // By text content
-        ...Array.from(document.querySelectorAll("button")).filter(
-          (b) => b.textContent?.toLowerCase().includes("box grid"),
+        ...Array.from(document.querySelectorAll("button")).filter((b) =>
+          b.textContent?.toLowerCase().includes("box grid"),
         ),
         // By data attribute
         document.querySelector('[data-test="box-grid-button"]'),
@@ -249,8 +249,8 @@ test.describe("Pictograph Visual Rendering", () => {
       // Try multiple ways to find the add prop button
       const possibleButtons = [
         // By text content
-        ...Array.from(document.querySelectorAll("button")).filter(
-          (b) => b.textContent?.toLowerCase().includes("add prop"),
+        ...Array.from(document.querySelectorAll("button")).filter((b) =>
+          b.textContent?.toLowerCase().includes("add prop"),
         ),
         // By data attribute
         document.querySelector('[data-test="add-prop-button"]'),
@@ -355,8 +355,8 @@ test.describe("Pictograph Visual Rendering", () => {
       // Try multiple ways to find the add motion button
       const possibleButtons = [
         // By text content
-        ...Array.from(document.querySelectorAll("button")).filter(
-          (b) => b.textContent?.toLowerCase().includes("add motion"),
+        ...Array.from(document.querySelectorAll("button")).filter((b) =>
+          b.textContent?.toLowerCase().includes("add motion"),
         ),
         // By data attribute
         document.querySelector('[data-test="add-motion-button"]'),

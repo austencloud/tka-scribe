@@ -1,11 +1,11 @@
 /**
  * Type definitions for the state registry
  */
-import type { AnyActorRef, AnyStateMachine, Actor, SnapshotFrom } from 'xstate';
-import type { Readable, Writable } from 'svelte/store';
+import type { AnyActorRef, AnyStateMachine, Actor, SnapshotFrom } from "xstate";
+import type { Readable, Writable } from "svelte/store";
 
 // Types for the registry
-export type StateContainerType = 'machine' | 'store';
+export type StateContainerType = "machine" | "store";
 
 export interface StateContainer {
   id: string;

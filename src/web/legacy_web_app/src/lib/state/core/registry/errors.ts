@@ -6,15 +6,17 @@
 export class PersistenceError extends Error {
   constructor(message: string) {
     super(message);
-    this.name = 'PersistenceError';
+    this.name = "PersistenceError";
   }
 }
 
 // Error for corrupted data
 export class DataCorruptionError extends PersistenceError {
   constructor(id: string, originalError?: Error) {
-    super(`Corrupted data detected for ${id}${originalError ? `: ${originalError.message}` : ''}`);
-    this.name = 'DataCorruptionError';
+    super(
+      `Corrupted data detected for ${id}${originalError ? `: ${originalError.message}` : ""}`,
+    );
+    this.name = "DataCorruptionError";
   }
 }
 
@@ -23,9 +25,9 @@ export class StorageError extends PersistenceError {
   constructor(operation: string, originalError?: Error) {
     super(
       `Storage operation failed during ${operation}${
-        originalError ? `: ${originalError.message}` : ''
-      }`
+        originalError ? `: ${originalError.message}` : ""
+      }`,
     );
-    this.name = 'StorageError';
+    this.name = "StorageError";
   }
 }

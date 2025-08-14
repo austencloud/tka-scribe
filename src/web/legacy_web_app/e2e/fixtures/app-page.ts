@@ -164,8 +164,8 @@ export class AppPage {
           // Try to find any button or element that might be the tab button
           const possibleButtons = [
             // By text content
-            ...Array.from(document.querySelectorAll("button")).filter(
-              (b) => b.textContent?.toLowerCase().includes(tab.toLowerCase()),
+            ...Array.from(document.querySelectorAll("button")).filter((b) =>
+              b.textContent?.toLowerCase().includes(tab.toLowerCase()),
             ),
             // By class
             ...Array.from(

@@ -54,20 +54,16 @@
 For each component:
 
 1. **Identify State Dependencies**:
-
    - What state does the component read?
    - What state does the component update?
 
 2. **Replace Imports**:
-
    - Replace old store imports with new state management imports
 
 3. **Update State Access**:
-
    - Replace direct state access with store subscriptions or selectors
 
 4. **Update State Updates**:
-
    - Replace direct state updates with action creators
 
 5. **Test the Component**:

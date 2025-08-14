@@ -1,7 +1,7 @@
 /**
  * Store for managing the loading state during transitions between components
  */
-import { writable } from 'svelte/store';
+import { writable } from "svelte/store";
 
 // Create a store for the transition loading state that can be accessed globally
 export const transitionLoadingStore = writable(false);
@@ -26,8 +26,8 @@ export const transitionLoading = {
    * Toggle the loading state
    */
   toggle: () => {
-    transitionLoadingStore.update(state => !state);
-  }
+    transitionLoadingStore.update((state) => !state);
+  },
 };
 
 export default transitionLoading;

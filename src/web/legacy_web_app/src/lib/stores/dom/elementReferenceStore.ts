@@ -5,8 +5,8 @@
  * This solves the problem of sharing element references between components
  * in a way that's resilient to component lifecycle events and hot module reloads.
  */
-import { browser } from '$app/environment';
-import { writable, get } from 'svelte/store';
+import { browser } from "$app/environment";
+import { writable, get } from "svelte/store";
 
 export type ElementReferenceMap = {
   [key: string]: HTMLElement | null;
@@ -20,13 +20,16 @@ const createElementReferenceStore = () => {
   // Try to restore references from localStorage on initialization
   if (browser) {
     try {
-      const storedKeys = localStorage.getItem('element-reference-keys');
+      const storedKeys = localStorage.getItem("element-reference-keys");
       if (storedKeys) {
         const keys = JSON.parse(storedKeys) as string[];
-        console.log('ElementReferenceStore: Found stored keys:', keys);
+        console.log("ElementReferenceStore: Found stored keys:", keys);
       }
     } catch (error) {
-      console.error('ElementReferenceStore: Error restoring references:', error);
+      console.error(
+        "ElementReferenceStore: Error restoring references:",
+        error,
+      );
     }
   }
 
@@ -38,13 +41,18 @@ const createElementReferenceStore = () => {
      */
     setElement: (key: string, element: HTMLElement | null) => {
       if (!element) {
-        console.warn(`ElementReferenceStore: Attempted to set null element for key "${key}"`);
+        console.warn(
+          `ElementReferenceStore: Attempted to set null element for key "${key}"`,
+        );
         return false;
       }
 
-      console.log(`ElementReferenceStore: Setting element for key "${key}"`, element);
+      console.log(
+        `ElementReferenceStore: Setting element for key "${key}"`,
+        element,
+      );
 
-      update(refs => {
+      update((refs) => {
         // Create a new object to ensure reactivity
         const newRefs = { ...refs, [key]: element };
 
@@ -52,9 +60,15 @@ const createElementReferenceStore = () => {
         if (browser) {
           try {
             const currentKeys = Object.keys(newRefs);
-            localStorage.setItem('element-reference-keys', JSON.stringify(currentKeys));
+            localStorage.setItem(
+              "element-reference-keys",
+              JSON.stringify(currentKeys),
+            );
           } catch (error) {
-            console.error('ElementReferenceStore: Error storing reference keys:', error);
+            console.error(
+              "ElementReferenceStore: Error storing reference keys:",
+              error,
+            );
           }
         }
 
@@ -78,11 +92,15 @@ const createElementReferenceStore = () => {
 
       // If not found in store, try global fallback
       if (!element && browser) {
-        const globalFallback = (window as any)[`__element_ref_${key}`] as HTMLElement | null;
+        const globalFallback = (window as any)[
+          `__element_ref_${key}`
+        ] as HTMLElement | null;
         if (globalFallback) {
-          console.log(`ElementReferenceStore: Using global fallback for key "${key}"`);
+          console.log(
+            `ElementReferenceStore: Using global fallback for key "${key}"`,
+          );
           // Update the store with the fallback
-          update(refs => ({ ...refs, [key]: globalFallback }));
+          update((refs) => ({ ...refs, [key]: globalFallback }));
           return globalFallback;
         }
       }
@@ -94,16 +112,22 @@ const createElementReferenceStore = () => {
      * Remove an element reference by key
      */
     removeElement: (key: string) => {
-      update(refs => {
+      update((refs) => {
         const { [key]: _, ...rest } = refs;
 
         // Update localStorage
         if (browser) {
           try {
             const currentKeys = Object.keys(rest);
-            localStorage.setItem('element-reference-keys', JSON.stringify(currentKeys));
+            localStorage.setItem(
+              "element-reference-keys",
+              JSON.stringify(currentKeys),
+            );
           } catch (error) {
-            console.error('ElementReferenceStore: Error updating reference keys:', error);
+            console.error(
+              "ElementReferenceStore: Error updating reference keys:",
+              error,
+            );
           }
         }
 
@@ -125,12 +149,15 @@ const createElementReferenceStore = () => {
       // Clear localStorage
       if (browser) {
         try {
-          localStorage.removeItem('element-reference-keys');
+          localStorage.removeItem("element-reference-keys");
         } catch (error) {
-          console.error('ElementReferenceStore: Error clearing reference keys:', error);
+          console.error(
+            "ElementReferenceStore: Error clearing reference keys:",
+            error,
+          );
         }
       }
-    }
+    },
   };
 };
 
@@ -139,7 +166,7 @@ export const elementReferenceStore = createElementReferenceStore();
 
 // Constants for common element keys
 export const ELEMENT_KEYS = {
-  BEAT_FRAME: 'beatFrame',
-  SEQUENCE_WIDGET: 'sequenceWidget',
-  CURRENT_WORD_LABEL: 'currentWordLabel'
+  BEAT_FRAME: "beatFrame",
+  SEQUENCE_WIDGET: "sequenceWidget",
+  CURRENT_WORD_LABEL: "currentWordLabel",
 };

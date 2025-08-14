@@ -4,8 +4,11 @@
 	A working glassmorphism scrollable container with direct CSS approach.
 	This version is guaranteed to work properly.
 -->
-<script lang="ts">
+<script module lang="ts">
 	export type ScrollbarVariant = 'primary' | 'secondary' | 'minimal' | 'hover' | 'gradient';
+</script>
+
+<script lang="ts">
 
 	// Props
 	interface Props {

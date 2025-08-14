@@ -246,17 +246,14 @@ If issues arise during migration:
 ## Timeline and Milestones
 
 1. **Foundation (2 weeks)**
-
    - Create utilities and patterns
    - Set up testing infrastructure
 
 2. **Core State (3 weeks)**
-
    - Migrate application state
    - Migrate sequence state
 
 3. **Feature Migration (6-8 weeks)**
-
    - Migrate features one by one
    - Update components
 

@@ -1,17 +1,22 @@
 // src/lib/components/Pictograph/utils/errorHandling.ts
-import type { PictographData } from '$lib/types/PictographData';
-import { get, type Writable } from 'svelte/store';
-import { logger } from '$lib/core/logging';
-import { errorService, ErrorSeverity } from '../../../services/ErrorHandlingService';
-import type { PropData } from '../../objects/Prop/PropData';
-import type { ArrowData } from '../../objects/Arrow/ArrowData';
+import type { PictographData } from "$lib/types/PictographData";
+import { get, type Writable } from "svelte/store";
+import { logger } from "$lib/core/logging";
+import {
+  errorService,
+  ErrorSeverity,
+} from "../../../services/ErrorHandlingService";
+import type { PropData } from "../../objects/Prop/PropData";
+import type { ArrowData } from "../../objects/Arrow/ArrowData";
 
 /**
  * Interface for the error handler context
  * Contains all the necessary data and functions for error handling
  */
 export interface ErrorHandlerContext {
-  pictographDataStore: { subscribe: (callback: (value: PictographData) => void) => () => void };
+  pictographDataStore: {
+    subscribe: (callback: (value: PictographData) => void) => () => void;
+  };
   dispatch: (event: string, detail?: any) => void;
   state: Writable<string>;
   errorMessage: Writable<string | null>;
@@ -30,20 +35,20 @@ export interface ErrorHandlerContext {
 export function handleError(
   source: string,
   error: any,
-  context: ErrorHandlerContext
+  context: ErrorHandlerContext,
 ): void {
   try {
     // Create a safe error message that won't have circular references
     const errorMsg =
       error instanceof Error
         ? error.message
-        : typeof error === 'string'
+        : typeof error === "string"
           ? error
-          : 'Unknown error';
+          : "Unknown error";
 
     // Get current pictograph data for context
     let pictographData: PictographData | undefined;
-    const unsubscribe = context.pictographDataStore.subscribe(data => {
+    const unsubscribe = context.pictographDataStore.subscribe((data) => {
       pictographData = data;
     });
     unsubscribe();
@@ -61,57 +66,71 @@ export function handleError(
       renderMetrics: {
         componentsLoaded: context.componentsLoaded,
         totalComponents: context.totalComponentsToLoad,
-        renderTime: performance.now()
+        renderTime: performance.now(),
       },
       error: error instanceof Error ? error : new Error(errorMsg),
       data: {
         source,
         errorSource: source,
-        isCritical: source === 'initialization'
-      }
+        isCritical: source === "initialization",
+      },
     });
 
     // For backward compatibility, also log with the error service
     const errorObj = errorService.createError(
       `Pictograph:${source}`,
       { message: errorMsg },
-      source === 'initialization' ? ErrorSeverity.CRITICAL : ErrorSeverity.ERROR
+      source === "initialization"
+        ? ErrorSeverity.CRITICAL
+        : ErrorSeverity.ERROR,
     );
 
     errorObj.context = {
       loadedCount: context.componentsLoaded,
-      totalCount: context.totalComponentsToLoad
+      totalCount: context.totalComponentsToLoad,
     };
 
     errorService.log(errorObj);
 
     // Set local error message and state
     context.errorMessage.set(errorMsg);
-    context.state.set('error');
+    context.state.set("error");
 
     // Dispatch events
-    context.dispatch('error', { source, error: { message: errorMsg }, message: errorMsg });
-    context.dispatch('loaded', { complete: false, error: true, message: errorMsg });
+    context.dispatch("error", {
+      source,
+      error: { message: errorMsg },
+      message: errorMsg,
+    });
+    context.dispatch("loaded", {
+      complete: false,
+      error: true,
+      message: errorMsg,
+    });
   } catch (errorHandlingError) {
     // If error handling itself fails, use a simpler approach
-    logger.error('Error in Pictograph error handler', {
+    logger.error("Error in Pictograph error handler", {
       error:
         errorHandlingError instanceof Error
           ? errorHandlingError
           : new Error(String(errorHandlingError)),
-      data: { originalSource: source }
+      data: { originalSource: source },
     });
 
     // Set minimal error state
-    context.errorMessage.set('Error in Pictograph component');
-    context.state.set('error');
+    context.errorMessage.set("Error in Pictograph component");
+    context.state.set("error");
 
     // Dispatch minimal error events
-    context.dispatch('error', { source, error: null, message: 'Error in Pictograph component' });
-    context.dispatch('loaded', {
+    context.dispatch("error", {
+      source,
+      error: null,
+      message: "Error in Pictograph component",
+    });
+    context.dispatch("loaded", {
       complete: false,
       error: true,
-      message: 'Error in Pictograph component'
+      message: "Error in Pictograph component",
     });
   }
 }
@@ -140,14 +159,14 @@ export function handleComponentError(
     bluePropData: PropData | null;
     redArrowData: ArrowData | null;
     blueArrowData: ArrowData | null;
-  }
+  },
 ): void {
   logger.warn(`Component error (${component})`, {
     error: error instanceof Error ? error : new Error(String(error)),
     data: {
       component,
-      applyingFallback: true
-    }
+      applyingFallback: true,
+    },
   });
 
   // Apply fallback positioning
@@ -162,8 +181,8 @@ export function handleComponentError(
       component,
       loadedComponents: Array.from(context.loadedComponents),
       componentsLoaded: context.componentsLoaded,
-      totalComponentsToLoad: context.totalComponentsToLoad
-    }
+      totalComponentsToLoad: context.totalComponentsToLoad,
+    },
   });
 
   // Continue with loading process
@@ -184,32 +203,32 @@ export function applyFallbackPositioning(
     bluePropData: PropData | null;
     redArrowData: ArrowData | null;
     blueArrowData: ArrowData | null;
-  }
+  },
 ): void {
   const centerX = 475;
   const centerY = 475;
   const offset = 50;
 
   switch (component) {
-    case 'redProp':
+    case "redProp":
       if (data.redPropData) {
         data.redPropData.coords = { x: centerX - offset, y: centerY };
         data.redPropData.rotAngle = 0;
       }
       break;
-    case 'blueProp':
+    case "blueProp":
       if (data.bluePropData) {
         data.bluePropData.coords = { x: centerX + offset, y: centerY };
         data.bluePropData.rotAngle = 0;
       }
       break;
-    case 'redArrow':
+    case "redArrow":
       if (data.redArrowData) {
         data.redArrowData.coords = { x: centerX, y: centerY - offset };
         data.redArrowData.rotAngle = -90;
       }
       break;
-    case 'blueArrow':
+    case "blueArrow":
       if (data.blueArrowData) {
         data.blueArrowData.coords = { x: centerX, y: centerY + offset };
         data.blueArrowData.rotAngle = 90;

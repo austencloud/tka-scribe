@@ -2,8 +2,8 @@
  * Custom popIn transition for Svelte components
  * Combines scale and opacity for a smooth pop-in effect
  */
-import { cubicOut } from 'svelte/easing';
-import type { TransitionConfig } from 'svelte/transition';
+import { cubicOut } from "svelte/easing";
+import type { TransitionConfig } from "svelte/transition";
 
 interface PopInParams {
   delay?: number;
@@ -24,12 +24,12 @@ export function popIn(
     duration = 200,
     easing = cubicOut,
     start = 0.85,
-    opacity = 0.2
-  }: PopInParams = {}
+    opacity = 0.2,
+  }: PopInParams = {},
 ): TransitionConfig {
   const style = getComputedStyle(node);
   const targetOpacity = +style.opacity;
-  const transform = style.transform === 'none' ? '' : style.transform;
+  const transform = style.transform === "none" ? "" : style.transform;
 
   return {
     delay,
@@ -38,6 +38,6 @@ export function popIn(
     css: (t, u) => `
       transform: ${transform} scale(${start + (1 - start) * t});
       opacity: ${opacity + (targetOpacity - opacity) * t};
-    `
+    `,
   };
 }

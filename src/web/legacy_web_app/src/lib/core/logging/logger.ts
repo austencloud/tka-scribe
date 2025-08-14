@@ -5,7 +5,7 @@
  * and dispatching to transports.
  */
 
-import { browser } from '$app/environment';
+import { browser } from "$app/environment";
 import {
   LogLevel,
   LOG_LEVEL_NAMES,
@@ -16,14 +16,14 @@ import {
   type LoggerContext,
   type LogTransport,
   type PerformanceLogger,
-  LogDomain
-} from './types';
+  LogDomain,
+} from "./types";
 import {
   DEFAULT_LOGGER_CONFIG,
   CORRELATION_ID_PREFIX,
-  SESSION_ID
-} from './constants';
-import { parseLogConfig } from './config';
+  SESSION_ID,
+} from "./constants";
+import { parseLogConfig } from "./config";
 
 /**
  * Implementation of the PerformanceLogger interface
@@ -32,7 +32,11 @@ class PerformanceLoggerImpl implements PerformanceLogger {
   private logger: LoggerImpl;
   private operation: string;
   private startTime: number = 0;
-  private checkpoints: Array<{ name: string; time: number; data?: Record<string, unknown> }> = [];
+  private checkpoints: Array<{
+    name: string;
+    time: number;
+    data?: Record<string, unknown>;
+  }> = [];
   private active: boolean = false;
 
   constructor(logger: LoggerImpl, operation: string) {
@@ -53,7 +57,7 @@ class PerformanceLoggerImpl implements PerformanceLogger {
     this.checkpoints.push({
       name,
       time,
-      data
+      data,
     });
 
     // Log the checkpoint
@@ -62,10 +66,11 @@ class PerformanceLoggerImpl implements PerformanceLogger {
         ...data,
         operation: this.operation,
         elapsedSinceStart: time - this.startTime,
-        elapsedSincePrevious: this.checkpoints.length > 1
-          ? time - this.checkpoints[this.checkpoints.length - 2].time
-          : time - this.startTime
-      }
+        elapsedSincePrevious:
+          this.checkpoints.length > 1
+            ? time - this.checkpoints[this.checkpoints.length - 2].time
+            : time - this.startTime,
+      },
     });
   }
 
@@ -81,12 +86,12 @@ class PerformanceLoggerImpl implements PerformanceLogger {
       endTime,
       data: {
         ...data,
-        checkpoints: this.checkpoints.map(cp => ({
+        checkpoints: this.checkpoints.map((cp) => ({
           name: cp.name,
           elapsedSinceStart: cp.time - this.startTime,
-          ...cp.data
-        }))
-      }
+          ...cp.data,
+        })),
+      },
     });
 
     this.active = false;
@@ -105,7 +110,11 @@ export class LoggerImpl implements Logger {
   private context: LoggerContext;
   private transports: LogTransport[] = [];
 
-  constructor(source: string, config?: Partial<LoggerConfig>, context?: Partial<LoggerContext>) {
+  constructor(
+    source: string,
+    config?: Partial<LoggerConfig>,
+    context?: Partial<LoggerContext>,
+  ) {
     // Initialize with default config
     this.config = { ...DEFAULT_LOGGER_CONFIG };
 
@@ -117,7 +126,7 @@ export class LoggerImpl implements Logger {
     // Initialize context
     this.context = {
       source,
-      ...context
+      ...context,
     };
 
     // Apply URL configuration if in browser
@@ -137,7 +146,10 @@ export class LoggerImpl implements Logger {
       ...this.config,
       ...config,
       // Merge arrays instead of replacing
-      transports: [...(this.config.transports || []), ...(config.transports || [])]
+      transports: [
+        ...(this.config.transports || []),
+        ...(config.transports || []),
+      ],
     };
   }
 
@@ -158,34 +170,29 @@ export class LoggerImpl implements Logger {
   /**
    * Create a child logger with inherited context
    */
-  createChildLogger(source: string, context?: Partial<Omit<LoggerContext, 'source'>>): Logger {
-    return new LoggerImpl(
+  createChildLogger(
+    source: string,
+    context?: Partial<Omit<LoggerContext, "source">>,
+  ): Logger {
+    return new LoggerImpl(source, this.config, {
+      ...this.context,
       source,
-      this.config,
-      {
-        ...this.context,
-        source,
-        // If parent has a correlationId, set it as parentCorrelationId in child
-        ...(this.context.correlationId
-          ? { parentCorrelationId: this.context.correlationId }
-          : {}),
-        ...context
-      }
-    );
+      // If parent has a correlationId, set it as parentCorrelationId in child
+      ...(this.context.correlationId
+        ? { parentCorrelationId: this.context.correlationId }
+        : {}),
+      ...context,
+    });
   }
 
   /**
    * Create a new logger with additional context
    */
   withContext(context: Partial<LoggerContext>): Logger {
-    return new LoggerImpl(
-      context.source || this.context.source,
-      this.config,
-      {
-        ...this.context,
-        ...context
-      }
-    );
+    return new LoggerImpl(context.source || this.context.source, this.config, {
+      ...this.context,
+      ...context,
+    });
   }
 
   /**
@@ -200,57 +207,79 @@ export class LoggerImpl implements Logger {
   /**
    * Log a trace message
    */
-  trace(message: string, params?: Omit<LogEntryParams, 'message' | 'source'>): void {
+  trace(
+    message: string,
+    params?: Omit<LogEntryParams, "message" | "source">,
+  ): void {
     this.log(LogLevel.TRACE, message, params);
   }
 
   /**
    * Log a debug message
    */
-  debug(message: string, params?: Omit<LogEntryParams, 'message' | 'source'>): void {
+  debug(
+    message: string,
+    params?: Omit<LogEntryParams, "message" | "source">,
+  ): void {
     this.log(LogLevel.DEBUG, message, params);
   }
 
   /**
    * Log an info message
    */
-  info(message: string, params?: Omit<LogEntryParams, 'message' | 'source'>): void {
+  info(
+    message: string,
+    params?: Omit<LogEntryParams, "message" | "source">,
+  ): void {
     this.log(LogLevel.INFO, message, params);
   }
 
   /**
    * Log a warning message
    */
-  warn(message: string, params?: Omit<LogEntryParams, 'message' | 'source'>): void {
+  warn(
+    message: string,
+    params?: Omit<LogEntryParams, "message" | "source">,
+  ): void {
     this.log(LogLevel.WARN, message, params);
   }
 
   /**
    * Log an error message
    */
-  error(message: string, params?: Omit<LogEntryParams, 'message' | 'source'>): void {
+  error(
+    message: string,
+    params?: Omit<LogEntryParams, "message" | "source">,
+  ): void {
     this.log(LogLevel.ERROR, message, params);
   }
 
   /**
    * Log a fatal message
    */
-  fatal(message: string, params?: Omit<LogEntryParams, 'message' | 'source'>): void {
+  fatal(
+    message: string,
+    params?: Omit<LogEntryParams, "message" | "source">,
+  ): void {
     this.log(LogLevel.FATAL, message, params);
   }
 
   /**
    * Log a pictograph-specific message
    */
-  pictograph(message: string, params: {
-    letter?: string;
-    gridMode?: string;
-    componentState?: string;
-    renderMetrics?: LogEntry['renderMetrics'];
-    error?: Error;
-    data?: Record<string, unknown>;
-  }): void {
-    const { letter, gridMode, componentState, renderMetrics, error, data } = params;
+  pictograph(
+    message: string,
+    params: {
+      letter?: string;
+      gridMode?: string;
+      componentState?: string;
+      renderMetrics?: LogEntry["renderMetrics"];
+      error?: Error;
+      data?: Record<string, unknown>;
+    },
+  ): void {
+    const { letter, gridMode, componentState, renderMetrics, error, data } =
+      params;
 
     const level = error ? LogLevel.ERROR : LogLevel.INFO;
 
@@ -260,40 +289,47 @@ export class LoggerImpl implements Logger {
       gridMode,
       componentState,
       renderMetrics,
-      error: error ? {
-        message: error.message,
-        name: error.name,
-        stack: error.stack
-      } : undefined,
-      data
+      error: error
+        ? {
+            message: error.message,
+            name: error.name,
+            stack: error.stack,
+          }
+        : undefined,
+      data,
     });
   }
 
   /**
    * Log an SVG-specific error
    */
-  svgError(message: string, params: {
-    path?: string;
-    component?: string;
-    fallbackApplied?: boolean;
-    error?: Error;
-    data?: Record<string, unknown>;
-  }): void {
+  svgError(
+    message: string,
+    params: {
+      path?: string;
+      component?: string;
+      fallbackApplied?: boolean;
+      error?: Error;
+      data?: Record<string, unknown>;
+    },
+  ): void {
     const { path, component, fallbackApplied, error, data } = params;
 
     this.error(message, {
       domain: LogDomain.SVG,
-      error: error ? {
-        message: error.message,
-        name: error.name,
-        stack: error.stack
-      } : undefined,
+      error: error
+        ? {
+            message: error.message,
+            name: error.name,
+            stack: error.stack,
+          }
+        : undefined,
       data: {
         ...data,
         path,
         component,
-        fallbackApplied
-      }
+        fallbackApplied,
+      },
     });
   }
 
@@ -318,15 +354,19 @@ export class LoggerImpl implements Logger {
         machine,
         from,
         to,
-        event
-      }
+        event,
+      },
     });
   }
 
   /**
    * Core logging method
    */
-  log(level: LogLevel, message: string, params?: Omit<LogEntryParams, 'message' | 'source'>): void {
+  log(
+    level: LogLevel,
+    message: string,
+    params?: Omit<LogEntryParams, "message" | "source">,
+  ): void {
     // Skip if level is below minimum
     if (!this.isEnabled(level)) return;
 
@@ -346,10 +386,13 @@ export class LoggerImpl implements Logger {
   private createLogEntry(
     level: LogLevel,
     message: string,
-    params?: Omit<LogEntryParams, 'message' | 'source'>
+    params?: Omit<LogEntryParams, "message" | "source">,
   ): LogEntry {
     const timestamp = Date.now();
-    const correlationId = params?.correlationId || this.context.correlationId || this.generateCorrelationId();
+    const correlationId =
+      params?.correlationId ||
+      this.context.correlationId ||
+      this.generateCorrelationId();
 
     return {
       id: this.generateId(),
@@ -360,15 +403,16 @@ export class LoggerImpl implements Logger {
       source: this.context.source,
       domain: params?.domain || this.context.domain,
       correlationId,
-      parentCorrelationId: params?.parentCorrelationId || this.context.parentCorrelationId,
+      parentCorrelationId:
+        params?.parentCorrelationId || this.context.parentCorrelationId,
       sessionId: SESSION_ID,
       // Include all other params
       ...params,
       // Merge data objects
       data: {
         ...(this.context.data || {}),
-        ...(params?.data || {})
-      }
+        ...(params?.data || {}),
+      },
     };
   }
 
@@ -420,7 +464,7 @@ export class LoggerImpl implements Logger {
 }
 
 // Create the singleton logger instance
-const rootLogger = new LoggerImpl('app');
+const rootLogger = new LoggerImpl("app");
 
 // Export the singleton
 export const logger = rootLogger;

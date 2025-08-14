@@ -15,7 +15,9 @@ export function createStateWithRunes<T>(initialState: T): { state: T } {
   const state = $state(initialState);
 
   return {
-    get state() { return state; }
+    get state() {
+      return state;
+    },
   };
 }
 
@@ -29,6 +31,8 @@ export function createDerivedStateWithRunes<T>(fn: () => T): { state: T } {
   const state = $derived(fn());
 
   return {
-    get state() { return state; }
+    get state() {
+      return state;
+    },
   };
 }

@@ -104,6 +104,7 @@ export interface ISequenceService {
     beatIndex: number,
     beatData: BeatData,
   ): Promise<void>;
+  addBeat(sequenceId: string, beatData?: Partial<BeatData>): Promise<void>;
   setSequenceStartPosition(
     sequenceId: string,
     startPosition: BeatData,

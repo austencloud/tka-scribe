@@ -34,10 +34,12 @@ export function createEmptyAct(rows: number = 24, columns: number = 8): Act {
       sequence_start_marker: row === 0,
       cue: "",
       timestamp: "",
-      beats: Array(columns).fill(null).map(() => ({
-        step_label: "",
-        is_filled: false
-      }))
+      beats: Array(columns)
+        .fill(null)
+        .map(() => ({
+          step_label: "",
+          is_filled: false,
+        })),
     };
     sequences.push(sequence);
   }
@@ -45,6 +47,6 @@ export function createEmptyAct(rows: number = 24, columns: number = 8): Act {
   return {
     title: "Act",
     prop_type: "Staff",
-    sequences
+    sequences,
   };
 }

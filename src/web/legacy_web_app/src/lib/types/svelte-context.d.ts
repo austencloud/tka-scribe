@@ -2,7 +2,7 @@
  * Type definitions for Svelte context API
  */
 
-declare module 'svelte' {
+declare module "svelte" {
   /**
    * Gets a value from the context
    */

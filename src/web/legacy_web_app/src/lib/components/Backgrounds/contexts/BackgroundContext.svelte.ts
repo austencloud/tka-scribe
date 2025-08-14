@@ -5,22 +5,22 @@
  * with Svelte 5 runes. This file has a .svelte.ts extension to enable runes support.
  */
 
-import { getContext, setContext } from 'svelte';
+import { getContext, setContext } from "svelte";
 import type {
   BackgroundType,
   Dimensions,
   PerformanceMetrics,
   QualityLevel,
-  BackgroundSystem
-} from '../types/types';
-import { BackgroundFactory } from '../core/BackgroundFactory';
-import { PerformanceTracker } from '../core/PerformanceTracker';
-import { detectAppropriateQuality } from '../config';
-import { browser } from '$app/environment';
-import { getBackgroundContext } from './BackgroundContext';
+  BackgroundSystem,
+} from "../types/types";
+import { BackgroundFactory } from "../core/BackgroundFactory";
+import { PerformanceTracker } from "../core/PerformanceTracker";
+import { detectAppropriateQuality } from "../config";
+import { browser } from "$app/environment";
+import { getBackgroundContext } from "./BackgroundContext";
 
 // The context key
-const BACKGROUND_CONTEXT_KEY = 'background-context-runes';
+const BACKGROUND_CONTEXT_KEY = "background-context-runes";
 
 /**
  * Interface for the runes-based background context
@@ -41,7 +41,7 @@ export interface RunesBackgroundContext {
   initializeCanvas: (canvas: HTMLCanvasElement, onReady?: () => void) => void;
   startAnimation: (
     renderFn: (ctx: CanvasRenderingContext2D, dimensions: Dimensions) => void,
-    reportFn?: (metrics: PerformanceMetrics) => void
+    reportFn?: (metrics: PerformanceMetrics) => void,
   ) => void;
   stopAnimation: () => void;
   setQuality: (quality: QualityLevel) => void;
@@ -86,11 +86,14 @@ export function createRunesBackgroundContext(): RunesBackgroundContext {
 
   // Initialize state with runes - use explicit initial values to avoid undefined
   let dimensions = $state<Dimensions>({ width: 0, height: 0 });
-  let performanceMetrics = $state<PerformanceMetrics>({ fps: 60, warnings: [] });
+  let performanceMetrics = $state<PerformanceMetrics>({
+    fps: 60,
+    warnings: [],
+  });
   let isActive = $state(true);
   let qualityLevel = $state<QualityLevel>(detectAppropriateQuality());
   let isLoading = $state(false);
-  let backgroundType = $state<BackgroundType>('nightSky');
+  let backgroundType = $state<BackgroundType>("nightSky");
   let isInitialized = $state(false);
 
   // Derived values
@@ -107,18 +110,24 @@ export function createRunesBackgroundContext(): RunesBackgroundContext {
     try {
       backgroundSystem = BackgroundFactory.createBackgroundSystem({
         type: backgroundType,
-        initialQuality: qualityLevel
+        initialQuality: qualityLevel,
       });
     } catch (error) {
-      console.error('[SYSTEM] Error creating initial background system:', error);
+      console.error(
+        "[SYSTEM] Error creating initial background system:",
+        error,
+      );
       // Try fallback
       try {
         backgroundSystem = BackgroundFactory.createBackgroundSystem({
-          type: 'snowfall',
-          initialQuality: qualityLevel
+          type: "snowfall",
+          initialQuality: qualityLevel,
         });
       } catch (fallbackError) {
-        console.error('[SYSTEM] Error creating fallback background system:', fallbackError);
+        console.error(
+          "[SYSTEM] Error creating fallback background system:",
+          fallbackError,
+        );
       }
     }
   }
@@ -134,7 +143,7 @@ export function createRunesBackgroundContext(): RunesBackgroundContext {
     if (!browser) return;
 
     try {
-      const savedPrefs = localStorage.getItem('background-preferences');
+      const savedPrefs = localStorage.getItem("background-preferences");
       if (savedPrefs) {
         const prefs = JSON.parse(savedPrefs);
 
@@ -148,7 +157,7 @@ export function createRunesBackgroundContext(): RunesBackgroundContext {
         }
       }
     } catch (error) {
-      console.error('Failed to load background preferences:', error);
+      console.error("Failed to load background preferences:", error);
     }
   }
 
@@ -159,17 +168,19 @@ export function createRunesBackgroundContext(): RunesBackgroundContext {
     try {
       const prefs = {
         backgroundType,
-        qualityLevel
+        qualityLevel,
       };
-      localStorage.setItem('background-preferences', JSON.stringify(prefs));
+      localStorage.setItem("background-preferences", JSON.stringify(prefs));
     } catch (error) {
-      console.error('Failed to save background preferences:', error);
+      console.error("Failed to save background preferences:", error);
     }
   }
 
   // Function to create and initialize the background system
-  function createAndInitializeBackgroundSystem(type: BackgroundType, quality: QualityLevel): void {
-
+  function createAndInitializeBackgroundSystem(
+    type: BackgroundType,
+    quality: QualityLevel,
+  ): void {
     if (backgroundSystem) {
       backgroundSystem.cleanup();
     }
@@ -177,7 +188,7 @@ export function createRunesBackgroundContext(): RunesBackgroundContext {
     try {
       const newSystem = BackgroundFactory.createBackgroundSystem({
         type,
-        initialQuality: quality
+        initialQuality: quality,
       });
 
       // Initialize if canvas is already set up
@@ -187,16 +198,15 @@ export function createRunesBackgroundContext(): RunesBackgroundContext {
 
       // Set the background system
       backgroundSystem = newSystem;
-
     } catch (error) {
-      console.error('[SYSTEM] Error creating background system:', error);
+      console.error("[SYSTEM] Error creating background system:", error);
 
       // Fallback to snowfall if there's an error with the requested background
-      if (type !== 'snowfall') {
+      if (type !== "snowfall") {
         try {
           const fallbackSystem = BackgroundFactory.createBackgroundSystem({
-            type: 'snowfall',
-            initialQuality: quality
+            type: "snowfall",
+            initialQuality: quality,
           });
 
           if (isInitialized && canvas && ctx) {
@@ -205,14 +215,20 @@ export function createRunesBackgroundContext(): RunesBackgroundContext {
 
           backgroundSystem = fallbackSystem;
         } catch (fallbackError) {
-          console.error('[SYSTEM] Error creating fallback background system:', fallbackError);
+          console.error(
+            "[SYSTEM] Error creating fallback background system:",
+            fallbackError,
+          );
         }
       }
     }
   }
 
   // Initialize canvas
-  function initializeCanvas(canvasElement: HTMLCanvasElement, onReady?: () => void): void {
+  function initializeCanvas(
+    canvasElement: HTMLCanvasElement,
+    onReady?: () => void,
+  ): void {
     // Skip if already initialized with this canvas
     if (canvas === canvasElement && ctx) {
       if (onReady) onReady();
@@ -220,10 +236,10 @@ export function createRunesBackgroundContext(): RunesBackgroundContext {
     }
 
     canvas = canvasElement;
-    ctx = canvas.getContext('2d');
+    ctx = canvas.getContext("2d");
 
     if (!ctx) {
-      console.error('Failed to get canvas context');
+      console.error("Failed to get canvas context");
       return;
     }
 
@@ -249,7 +265,7 @@ export function createRunesBackgroundContext(): RunesBackgroundContext {
 
       // Temporarily reduce quality during resize for better performance
       const currentQuality = qualityLevel;
-      qualityLevel = 'low';
+      qualityLevel = "low";
 
       setTimeout(() => {
         qualityLevel = currentQuality;
@@ -257,18 +273,21 @@ export function createRunesBackgroundContext(): RunesBackgroundContext {
     };
 
     const handleVisibilityChange = () => {
-      isActive = document.visibilityState === 'visible';
+      isActive = document.visibilityState === "visible";
     };
 
-    window.addEventListener('resize', handleResize);
-    document.addEventListener('visibilitychange', handleVisibilityChange);
+    window.addEventListener("resize", handleResize);
+    document.addEventListener("visibilitychange", handleVisibilityChange);
 
     // Set up cleanup when component is destroyed
     $effect(() => {
       // Return cleanup function
       return () => {
-        window.removeEventListener('resize', handleResize);
-        document.removeEventListener('visibilitychange', handleVisibilityChange);
+        window.removeEventListener("resize", handleResize);
+        document.removeEventListener(
+          "visibilitychange",
+          handleVisibilityChange,
+        );
         stopAnimation();
       };
     });
@@ -291,10 +310,10 @@ export function createRunesBackgroundContext(): RunesBackgroundContext {
   // Start animation
   function startAnimation(
     renderFn: (ctx: CanvasRenderingContext2D, dimensions: Dimensions) => void,
-    reportFn?: (metrics: PerformanceMetrics) => void
+    reportFn?: (metrics: PerformanceMetrics) => void,
   ): void {
     if (!ctx || !canvas) {
-      console.error('Canvas not initialized');
+      console.error("Canvas not initialized");
       return;
     }
 
@@ -317,7 +336,7 @@ export function createRunesBackgroundContext(): RunesBackgroundContext {
       const perfStatus = performanceTracker.getPerformanceStatus();
       performanceMetrics = {
         fps: perfStatus.fps,
-        warnings: perfStatus.warnings
+        warnings: perfStatus.warnings,
       };
 
       if (reportCallback) {
@@ -376,7 +395,6 @@ export function createRunesBackgroundContext(): RunesBackgroundContext {
       return;
     }
 
-
     isSettingState = true;
     try {
       qualityLevel = quality;
@@ -405,7 +423,6 @@ export function createRunesBackgroundContext(): RunesBackgroundContext {
       return;
     }
 
-
     isSettingState = true;
     try {
       isLoading = loading;
@@ -426,7 +443,6 @@ export function createRunesBackgroundContext(): RunesBackgroundContext {
     if (type === backgroundType) {
       return;
     }
-
 
     isSettingState = true;
     try {
@@ -449,15 +465,33 @@ export function createRunesBackgroundContext(): RunesBackgroundContext {
 
   const context = {
     // State
-    get dimensions() { return dimensions; },
-    get performanceMetrics() { return performanceMetrics; },
-    get isActive() { return isActive; },
-    get qualityLevel() { return qualityLevel; },
-    get isLoading() { return isLoading; },
-    get backgroundType() { return backgroundType; },
-    get isInitialized() { return isInitialized; },
-    get shouldRender() { return shouldRender; },
-    get backgroundSystem() { return backgroundSystem; },
+    get dimensions() {
+      return dimensions;
+    },
+    get performanceMetrics() {
+      return performanceMetrics;
+    },
+    get isActive() {
+      return isActive;
+    },
+    get qualityLevel() {
+      return qualityLevel;
+    },
+    get isLoading() {
+      return isLoading;
+    },
+    get backgroundType() {
+      return backgroundType;
+    },
+    get isInitialized() {
+      return isInitialized;
+    },
+    get shouldRender() {
+      return shouldRender;
+    },
+    get backgroundSystem() {
+      return backgroundSystem;
+    },
 
     // Methods
     initializeCanvas,
@@ -470,7 +504,7 @@ export function createRunesBackgroundContext(): RunesBackgroundContext {
 
     // State persistence
     savePreferences,
-    loadPreferences
+    loadPreferences,
   };
 
   // Add to context instances
@@ -488,11 +522,14 @@ export function createRunesBackgroundContext(): RunesBackgroundContext {
 function createMockRunesBackgroundContext(): RunesBackgroundContext {
   // Default values for SSR
   const dimensions = $state<Dimensions>({ width: 0, height: 0 });
-  const performanceMetrics = $state<PerformanceMetrics>({ fps: 60, warnings: [] });
+  const performanceMetrics = $state<PerformanceMetrics>({
+    fps: 60,
+    warnings: [],
+  });
   const isActive = $state(true);
-  const qualityLevel = $state<QualityLevel>('medium');
+  const qualityLevel = $state<QualityLevel>("medium");
   const isLoading = $state(false);
-  const backgroundType = $state<BackgroundType>('snowfall');
+  const backgroundType = $state<BackgroundType>("snowfall");
   const isInitialized = $state(false);
   const shouldRender = $derived(isActive && performanceMetrics.fps > 30);
 
@@ -502,21 +539,39 @@ function createMockRunesBackgroundContext(): RunesBackgroundContext {
     update: () => {},
     draw: () => {},
     setQuality: () => {},
-    cleanup: () => {}
+    cleanup: () => {},
   } as BackgroundSystem;
 
   // Return a mock context with no-op functions
   return {
     // State
-    get dimensions() { return dimensions; },
-    get performanceMetrics() { return performanceMetrics; },
-    get isActive() { return isActive; },
-    get qualityLevel() { return qualityLevel; },
-    get isLoading() { return isLoading; },
-    get backgroundType() { return backgroundType; },
-    get isInitialized() { return isInitialized; },
-    get shouldRender() { return shouldRender; },
-    get backgroundSystem() { return mockSystem; },
+    get dimensions() {
+      return dimensions;
+    },
+    get performanceMetrics() {
+      return performanceMetrics;
+    },
+    get isActive() {
+      return isActive;
+    },
+    get qualityLevel() {
+      return qualityLevel;
+    },
+    get isLoading() {
+      return isLoading;
+    },
+    get backgroundType() {
+      return backgroundType;
+    },
+    get isInitialized() {
+      return isInitialized;
+    },
+    get shouldRender() {
+      return shouldRender;
+    },
+    get backgroundSystem() {
+      return mockSystem;
+    },
 
     // No-op methods for SSR
     initializeCanvas: () => {},
@@ -527,7 +582,7 @@ function createMockRunesBackgroundContext(): RunesBackgroundContext {
     setBackgroundType: () => {},
     cleanup: () => {},
     savePreferences: () => {},
-    loadPreferences: () => {}
+    loadPreferences: () => {},
   };
 }
 
@@ -556,7 +611,9 @@ export function setRunesBackgroundContext(): RunesBackgroundContext {
  *
  * @returns The runes-based background context
  */
-export function getRunesBackgroundContext(): RunesBackgroundContext | undefined {
+export function getRunesBackgroundContext():
+  | RunesBackgroundContext
+  | undefined {
   // Return singleton if it exists
   if (singletonContext) {
     return singletonContext;
@@ -592,11 +649,14 @@ export function useBackgroundContext() {
   if (!browser) {
     // Default values for SSR
     const dimensions = $state<Dimensions>({ width: 0, height: 0 });
-    const performanceMetrics = $state<PerformanceMetrics>({ fps: 60, warnings: [] });
+    const performanceMetrics = $state<PerformanceMetrics>({
+      fps: 60,
+      warnings: [],
+    });
     const isActive = $state(true);
-    const qualityLevel = $state<QualityLevel>('medium');
+    const qualityLevel = $state<QualityLevel>("medium");
     const isLoading = $state(false);
-    const backgroundType = $state<BackgroundType>('snowfall');
+    const backgroundType = $state<BackgroundType>("snowfall");
     const isInitialized = $state(false);
     const shouldRender = $derived(isActive && performanceMetrics.fps > 30);
 
@@ -618,7 +678,7 @@ export function useBackgroundContext() {
       initializeCanvas: () => {},
       startAnimation: () => {},
       stopAnimation: () => {},
-      cleanup: () => {}
+      cleanup: () => {},
     };
   }
 

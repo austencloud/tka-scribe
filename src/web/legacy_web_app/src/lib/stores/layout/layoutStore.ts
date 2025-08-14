@@ -1,5 +1,5 @@
 // src/lib/stores/layout/layoutStore.ts
-import { writable } from 'svelte/store';
+import { writable } from "svelte/store";
 
 // Interface for layout information
 export interface LayoutInfo {
@@ -15,7 +15,7 @@ const createLayoutStore = () => {
     rows: 1,
     cols: 1,
     beatCount: 0,
-    lastChanged: Date.now()
+    lastChanged: Date.now(),
   };
 
   const { subscribe, set, update } = writable<LayoutInfo>(initialLayout);
@@ -25,20 +25,20 @@ const createLayoutStore = () => {
 
     // Update the layout information
     updateLayout: (rows: number, cols: number, beatCount: number) => {
-      update(layout => {
+      update((layout) => {
         // Only update lastChanged if the layout actually changed
         const layoutChanged = layout.rows !== rows || layout.cols !== cols;
         return {
           rows,
           cols,
           beatCount,
-          lastChanged: layoutChanged ? Date.now() : layout.lastChanged
+          lastChanged: layoutChanged ? Date.now() : layout.lastChanged,
         };
       });
     },
 
     // Reset the layout to initial values
-    reset: () => set(initialLayout)
+    reset: () => set(initialLayout),
   };
 };
 

@@ -12,34 +12,37 @@
  */
 
 // Import legacy dependencies for backward compatibility
-import { stateRegistry } from '../../core/registry';
-import { initializePersistence } from './persistence';
-import { generateSequenceActor } from './actors';
+import { stateRegistry } from "../../core/registry";
+import { initializePersistence } from "./persistence";
+import { generateSequenceActor } from "./actors";
 
 // Re-export types from the legacy implementation for backward compatibility
-export * from './types';
+export * from "./types";
 
 // Import from the modern implementation
 import {
-	modernSequenceMachine,
-	modernSequenceContainer,
-	sequenceSelectors as modernSequenceSelectors,
-	sequenceActions as modernSequenceActions
-} from './SequenceMachine';
+  modernSequenceMachine,
+  modernSequenceContainer,
+  sequenceSelectors as modernSequenceSelectors,
+  sequenceActions as modernSequenceActions,
+} from "./SequenceMachine";
 
 // Re-export the modern machine as the legacy machine
 export const sequenceMachine = modernSequenceMachine;
 
 // Register the modern machine with the registry for backward compatibility
-export const sequenceActor = stateRegistry.registerMachine('sequence', modernSequenceMachine, {
-	persist: true,
-	description: 'Manages sequence generation and related operations'
-});
-
+export const sequenceActor = stateRegistry.registerMachine(
+  "sequence",
+  modernSequenceMachine,
+  {
+    persist: true,
+    description: "Manages sequence generation and related operations",
+  },
+);
 
 // Initialize persistence
-if (typeof window !== 'undefined') {
-	initializePersistence(sequenceActor);
+if (typeof window !== "undefined") {
+  initializePersistence(sequenceActor);
 }
 
 // Re-export the modern selectors and actions

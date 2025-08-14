@@ -5,13 +5,13 @@
  * background state in the application.
  */
 
-import { createContainer } from '$lib/state/core/container';
+import { createContainer } from "$lib/state/core/container";
 import type {
   BackgroundType,
   QualityLevel,
-  PerformanceMetrics
-} from '$lib/components/Backgrounds/types/types';
-import { browser } from '$app/environment';
+  PerformanceMetrics,
+} from "$lib/components/Backgrounds/types/types";
+import { browser } from "$app/environment";
 
 // Define the container state interface
 export interface BackgroundState {
@@ -26,13 +26,13 @@ export interface BackgroundState {
 
 // Initial state
 const initialState: BackgroundState = {
-  currentBackground: 'snowfall',
+  currentBackground: "snowfall",
   isReady: false,
   isVisible: true,
-  quality: 'medium',
+  quality: "medium",
   performanceMetrics: null,
-  availableBackgrounds: ['snowfall', 'nightSky'],
-  error: null
+  availableBackgrounds: ["snowfall", "nightSky"],
+  error: null,
 };
 
 // Load persisted state from localStorage if available
@@ -40,12 +40,12 @@ function loadPersistedState(): Partial<BackgroundState> {
   if (!browser) return {};
 
   try {
-    const persisted = localStorage.getItem('background_state');
+    const persisted = localStorage.getItem("background_state");
     if (persisted) {
       return JSON.parse(persisted);
     }
   } catch (error) {
-    console.error('Failed to load persisted background state:', error);
+    console.error("Failed to load persisted background state:", error);
   }
 
   return {};
@@ -54,7 +54,7 @@ function loadPersistedState(): Partial<BackgroundState> {
 // Merge initial state with persisted state
 const mergedInitialState: BackgroundState = {
   ...initialState,
-  ...loadPersistedState()
+  ...loadPersistedState(),
 };
 
 /**
@@ -68,15 +68,15 @@ export const backgroundContainer = createContainer(
       const saveState = () => {
         try {
           localStorage.setItem(
-            'background_state',
+            "background_state",
             JSON.stringify({
               currentBackground: state.currentBackground,
               isVisible: state.isVisible,
-              quality: state.quality
-            })
+              quality: state.quality,
+            }),
           );
         } catch (error) {
-          console.error('Failed to save background state:', error);
+          console.error("Failed to save background state:", error);
         }
       };
 
@@ -86,8 +86,8 @@ export const backgroundContainer = createContainer(
       });
 
       // Clean up subscription when the container is destroyed
-      if (typeof window !== 'undefined') {
-        window.addEventListener('beforeunload', unsubscribe);
+      if (typeof window !== "undefined") {
+        window.addEventListener("beforeunload", unsubscribe);
       }
     }
 
@@ -96,14 +96,16 @@ export const backgroundContainer = createContainer(
         update((state) => {
           // Validate background type
           if (!state.availableBackgrounds.includes(background)) {
-            console.warn(`Invalid background type: ${background}. Using default.`);
+            console.warn(
+              `Invalid background type: ${background}. Using default.`,
+            );
             return state;
           }
 
           return {
             ...state,
             currentBackground: background,
-            isReady: false // Reset ready state when changing background
+            isReady: false, // Reset ready state when changing background
           };
         });
       },
@@ -111,35 +113,35 @@ export const backgroundContainer = createContainer(
       setReady: (isReady: boolean) => {
         update((state) => ({
           ...state,
-          isReady
+          isReady,
         }));
       },
 
       setVisible: (isVisible: boolean) => {
         update((state) => ({
           ...state,
-          isVisible
+          isVisible,
         }));
       },
 
       setQuality: (quality: QualityLevel) => {
         update((state) => ({
           ...state,
-          quality
+          quality,
         }));
       },
 
       updatePerformanceMetrics: (metrics: PerformanceMetrics) => {
         update((state) => ({
           ...state,
-          performanceMetrics: metrics
+          performanceMetrics: metrics,
         }));
       },
 
       setError: (error: Error | null) => {
         update((state) => ({
           ...state,
-          error
+          error,
         }));
       },
 
@@ -151,7 +153,7 @@ export const backgroundContainer = createContainer(
 
           return {
             ...state,
-            availableBackgrounds: [...state.availableBackgrounds, background]
+            availableBackgrounds: [...state.availableBackgrounds, background],
           };
         });
       },
@@ -164,12 +166,14 @@ export const backgroundContainer = createContainer(
 
           return {
             ...state,
-            availableBackgrounds: state.availableBackgrounds.filter(bg => bg !== background)
+            availableBackgrounds: state.availableBackgrounds.filter(
+              (bg) => bg !== background,
+            ),
           };
         });
-      }
+      },
     };
-  }
+  },
 );
 
 // Export types

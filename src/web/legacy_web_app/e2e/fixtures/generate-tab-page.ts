@@ -58,8 +58,8 @@ export class GenerateTabPage {
         // Try to find the Generate tab button using multiple selectors
         const possibleButtons = [
           // By text content
-          ...Array.from(document.querySelectorAll("button")).filter(
-            (b) => b.textContent?.toLowerCase().includes("generate"),
+          ...Array.from(document.querySelectorAll("button")).filter((b) =>
+            b.textContent?.toLowerCase().includes("generate"),
           ),
           // By class
           ...Array.from(

@@ -4,16 +4,18 @@
  * This module provides actions for the pictograph state machine.
  */
 
-import type { PictographMachineContext } from './pictographMachine';
-import type { PictographData } from '$lib/types/PictographData';
-import type { ArrowData } from '$lib/components/objects/Arrow/ArrowData';
-import type { GridData } from '$lib/components/objects/Grid/GridData';
-import type { PropData } from '$lib/components/objects/Prop/PropData';
+import type { PictographMachineContext } from "./pictographMachine";
+import type { PictographData } from "$lib/types/PictographData";
+import type { ArrowData } from "$lib/components/objects/Arrow/ArrowData";
+import type { GridData } from "$lib/components/objects/Grid/GridData";
+import type { PropData } from "$lib/components/objects/Prop/PropData";
 
 /**
  * Helper function to calculate progress
  */
-function calculateProgress(components: PictographMachineContext['components']): number {
+function calculateProgress(
+  components: PictographMachineContext["components"],
+): number {
   const total = Object.keys(components).length;
   const loaded = Object.values(components).filter(Boolean).length;
   return Math.floor((loaded / Math.max(total, 1)) * 100);
@@ -24,10 +26,15 @@ function calculateProgress(components: PictographMachineContext['components']): 
  */
 export function setData(
   context: PictographMachineContext,
-  event: { type: 'SET_DATA'; data: PictographData }
+  event: { type: "SET_DATA"; data: PictographData },
 ) {
   context.data = event.data;
-  addStateTransition(context, 'initializing', 'grid_loading', 'Starting to load pictograph');
+  addStateTransition(
+    context,
+    "initializing",
+    "grid_loading",
+    "Starting to load pictograph",
+  );
 }
 
 /**
@@ -35,7 +42,10 @@ export function setData(
  */
 export function updateComponentLoaded(
   context: PictographMachineContext,
-  event: { type: 'UPDATE_COMPONENT_LOADED'; component: keyof PictographMachineContext['components'] }
+  event: {
+    type: "UPDATE_COMPONENT_LOADED";
+    component: keyof PictographMachineContext["components"];
+  },
 ) {
   context.components[event.component] = true;
   context.loadProgress = calculateProgress(context.components);
@@ -46,15 +56,15 @@ export function updateComponentLoaded(
  */
 export function setError(
   context: PictographMachineContext,
-  event: { type: 'SET_ERROR'; message: string; component?: string }
+  event: { type: "SET_ERROR"; message: string; component?: string },
 ) {
   context.error = {
     message: event.message,
     component: event.component,
-    timestamp: Date.now()
+    timestamp: Date.now(),
   };
   context.loadProgress = 0;
-  addStateTransition(context, context.status, 'error', event.message);
+  addStateTransition(context, context.status, "error", event.message);
 }
 
 /**
@@ -62,13 +72,18 @@ export function setError(
  */
 export function updateGridData(
   context: PictographMachineContext,
-  event: { type: 'UPDATE_GRID_DATA'; gridData: GridData }
+  event: { type: "UPDATE_GRID_DATA"; gridData: GridData },
 ) {
   if (!context.data) return;
 
   context.data = { ...context.data, gridData: event.gridData };
   context.components.grid = true;
-  addStateTransition(context, context.status, 'props_loading', 'Grid data loaded');
+  addStateTransition(
+    context,
+    context.status,
+    "props_loading",
+    "Grid data loaded",
+  );
 }
 
 /**
@@ -76,16 +91,25 @@ export function updateGridData(
  */
 export function updatePropData(
   context: PictographMachineContext,
-  event: { type: 'UPDATE_PROP_DATA'; color: 'red' | 'blue'; propData: PropData }
+  event: {
+    type: "UPDATE_PROP_DATA";
+    color: "red" | "blue";
+    propData: PropData;
+  },
 ) {
   if (!context.data) return;
 
-  const key = event.color === 'red' ? 'redPropData' : 'bluePropData';
-  const componentKey = event.color === 'red' ? 'redProp' : 'blueProp';
+  const key = event.color === "red" ? "redPropData" : "bluePropData";
+  const componentKey = event.color === "red" ? "redProp" : "blueProp";
 
   context.data = { ...context.data, [key]: event.propData };
   context.components[componentKey] = true;
-  addStateTransition(context, context.status, 'arrows_loading', `${event.color} prop loaded`);
+  addStateTransition(
+    context,
+    context.status,
+    "arrows_loading",
+    `${event.color} prop loaded`,
+  );
 }
 
 /**
@@ -93,12 +117,16 @@ export function updatePropData(
  */
 export function updateArrowData(
   context: PictographMachineContext,
-  event: { type: 'UPDATE_ARROW_DATA'; color: 'red' | 'blue'; arrowData: ArrowData }
+  event: {
+    type: "UPDATE_ARROW_DATA";
+    color: "red" | "blue";
+    arrowData: ArrowData;
+  },
 ) {
   if (!context.data) return;
 
-  const key = event.color === 'red' ? 'redArrowData' : 'blueArrowData';
-  const componentKey = event.color === 'red' ? 'redArrow' : 'blueArrow';
+  const key = event.color === "red" ? "redArrowData" : "blueArrowData";
+  const componentKey = event.color === "red" ? "redArrow" : "blueArrow";
 
   context.data = { ...context.data, [key]: event.arrowData };
   context.components[componentKey] = true;
@@ -108,7 +136,7 @@ export function updateArrowData(
  * Resets the pictograph state
  */
 export function reset(context: PictographMachineContext) {
-  context.status = 'idle';
+  context.status = "idle";
   context.data = null;
   context.error = null;
   context.loadProgress = 0;
@@ -117,7 +145,7 @@ export function reset(context: PictographMachineContext) {
     redProp: false,
     blueProp: false,
     redArrow: false,
-    blueArrow: false
+    blueArrow: false,
   };
   context.stateHistory = [];
 }
@@ -127,9 +155,9 @@ export function reset(context: PictographMachineContext) {
  */
 export function addStateTransition(
   context: PictographMachineContext,
-  from: PictographMachineContext['status'],
-  to: PictographMachineContext['status'],
-  reason?: string
+  from: PictographMachineContext["status"],
+  to: PictographMachineContext["status"],
+  reason?: string,
 ) {
   context.status = to;
   context.stateHistory = [
@@ -138,8 +166,8 @@ export function addStateTransition(
       from,
       to,
       reason,
-      timestamp: Date.now()
-    }
+      timestamp: Date.now(),
+    },
   ].slice(-10); // Keep only the last 10 transitions
 }
 
@@ -148,7 +176,12 @@ export function addStateTransition(
  */
 export function checkAllComponentsLoaded(context: PictographMachineContext) {
   const allLoaded = Object.values(context.components).every(Boolean);
-  if (allLoaded && context.status !== 'complete') {
-    addStateTransition(context, context.status, 'complete', 'All components loaded');
+  if (allLoaded && context.status !== "complete") {
+    addStateTransition(
+      context,
+      context.status,
+      "complete",
+      "All components loaded",
+    );
   }
 }

@@ -4,14 +4,14 @@
  * Provides utilities for managing and enriching log context.
  */
 
-import { browser } from '$app/environment';
-import { LogDomain, type LoggerContext } from './types';
+import { browser } from "$app/environment";
+import { LogDomain, type LoggerContext } from "./types";
 
 /**
  * Global context that applies to all loggers
  */
 let globalContext: Partial<LoggerContext> = {
-  data: {}
+  data: {},
 };
 
 /**
@@ -24,8 +24,8 @@ export function setGlobalContext(context: Partial<LoggerContext>): void {
     // Merge data objects
     data: {
       ...(globalContext.data || {}),
-      ...(context.data || {})
-    }
+      ...(context.data || {}),
+    },
   };
 }
 
@@ -44,8 +44,8 @@ export function addGlobalContextData(data: Record<string, unknown>): void {
     ...globalContext,
     data: {
       ...(globalContext.data || {}),
-      ...data
-    }
+      ...data,
+    },
   };
 }
 
@@ -59,13 +59,16 @@ export function clearGlobalContext(): void {
 /**
  * Create a context object for a specific domain
  */
-export function createDomainContext(domain: LogDomain, data?: Record<string, unknown>): Partial<LoggerContext> {
+export function createDomainContext(
+  domain: LogDomain,
+  data?: Record<string, unknown>,
+): Partial<LoggerContext> {
   return {
     domain,
     data: {
       ...(globalContext.data || {}),
-      ...(data || {})
-    }
+      ...(data || {}),
+    },
   };
 }
 
@@ -128,24 +131,24 @@ export function gatherAutomaticContext(): Partial<LoggerContext> {
   if (!browser) {
     return {
       data: {
-        environment: 'server'
-      }
+        environment: "server",
+      },
     };
   }
 
   return {
     data: {
-      environment: 'browser',
+      environment: "browser",
       userAgent: navigator.userAgent,
       viewport: {
         width: window.innerWidth,
-        height: window.innerHeight
+        height: window.innerHeight,
       },
       devicePixelRatio: window.devicePixelRatio,
       url: window.location.href,
       referrer: document.referrer,
-      language: navigator.language
-    }
+      language: navigator.language,
+    },
   };
 }
 

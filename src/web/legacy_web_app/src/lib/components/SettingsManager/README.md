@@ -72,9 +72,9 @@ const copy = structuredClone(reactiveObject);
 
 // Do this:
 const copy = {
-	property1: reactiveObject.property1,
-	property2: reactiveObject.property2
-	// ...and so on
+  property1: reactiveObject.property1,
+  property2: reactiveObject.property2,
+  // ...and so on
 };
 ```
 

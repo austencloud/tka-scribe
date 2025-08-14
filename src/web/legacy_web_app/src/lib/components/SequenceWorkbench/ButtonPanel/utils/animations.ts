@@ -4,10 +4,10 @@ import type { LayoutOrientation } from "../types";
  * Animation timing constants
  */
 export const ANIMATION_DURATIONS = {
-  TOGGLE_OUT: 400,     // Time for panel hide animation (match CSS)
-  TOGGLE_IN: 500,      // Time for panel show animation (match CSS)
-  BUTTON_STAGGER: 50,  // Time between each button animation in ms (match CSS calc)
-  PULSE_STOP_DELAY: 3000 // Duration before initial pulse animation stops
+  TOGGLE_OUT: 400, // Time for panel hide animation (match CSS)
+  TOGGLE_IN: 500, // Time for panel show animation (match CSS)
+  BUTTON_STAGGER: 50, // Time between each button animation in ms (match CSS calc)
+  PULSE_STOP_DELAY: 3000, // Duration before initial pulse animation stops
 };
 
 /**
@@ -17,12 +17,12 @@ export const ANIMATION_DURATIONS = {
  */
 export function getAnimationName(
   layout: LayoutOrientation,
-  isEntering: boolean
+  isEntering: boolean,
 ): string {
-  if (layout === 'vertical') {
-    return isEntering ? 'flyInVertical' : 'flyOutVertical';
+  if (layout === "vertical") {
+    return isEntering ? "flyInVertical" : "flyOutVertical";
   } else {
-    return isEntering ? 'flyInHorizontal' : 'flyOutHorizontal';
+    return isEntering ? "flyInHorizontal" : "flyOutHorizontal";
   }
 }
 
@@ -31,7 +31,7 @@ export function getAnimationName(
  * Uses grip icons for a handle-like appearance.
  */
 export function getToggleHandleIcon(layout: LayoutOrientation): string {
-  return layout === 'vertical' ? 'fa-grip-lines' : 'fa-grip-lines-vertical';
+  return layout === "vertical" ? "fa-grip-lines" : "fa-grip-lines-vertical";
 }
 
 /**
@@ -39,12 +39,12 @@ export function getToggleHandleIcon(layout: LayoutOrientation): string {
  */
 export function getToggleIndicatorIcon(
   layout: LayoutOrientation,
-  isVisible: boolean
+  isVisible: boolean,
 ): string {
-  if (layout === 'vertical') {
-    return isVisible ? 'fa-chevron-up' : 'fa-chevron-down';
+  if (layout === "vertical") {
+    return isVisible ? "fa-chevron-up" : "fa-chevron-down";
   } else {
-    return isVisible ? 'fa-chevron-left' : 'fa-chevron-right';
+    return isVisible ? "fa-chevron-left" : "fa-chevron-right";
   }
 }
 
@@ -54,12 +54,12 @@ export function getToggleIndicatorIcon(
  */
 export function calculateToggleHandleDimensions(
   layout: LayoutOrientation,
-  buttonSize: number
+  buttonSize: number,
 ): { width: number; height: number } {
   // Make handle slightly larger than button for vertical layout width
   // and slightly taller for horizontal layout height for better grab area.
   // Keep the other dimension smaller for a pill/handle shape.
-  return layout === 'vertical'
+  return layout === "vertical"
     ? { width: buttonSize * 1.2, height: buttonSize * 0.6 }
     : { width: buttonSize * 0.6, height: buttonSize * 1.2 };
 }
@@ -69,6 +69,6 @@ export function calculateToggleHandleDimensions(
  * Matches the calculation used in ActionButton.svelte CSS.
  */
 export function getButtonAnimationDelayValue(index: number): string {
- const delayFactor = 0.05; // Corresponds to 50ms stagger
- return `calc(${delayFactor}s * ${index})`;
+  const delayFactor = 0.05; // Corresponds to 50ms stagger
+  return `calc(${delayFactor}s * ${index})`;
 }

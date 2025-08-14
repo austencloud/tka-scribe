@@ -4,7 +4,7 @@
  * This module provides functionality to render reversal indicators on the canvas.
  */
 
-import type { Beat } from '$lib/types/Beat';
+import type { Beat } from "$lib/types/Beat";
 
 /**
  * Draws reversal indicators for a beat
@@ -20,13 +20,13 @@ export function drawReversalIndicators(
   beat: Beat,
   x: number,
   y: number,
-  beatSize: number
+  beatSize: number,
 ): void {
   // Check if the beat has reversal indicators
   if (beat && (beat.metadata?.blueReversal || beat.metadata?.redReversal)) {
     console.log(`EnhancedExporter: Beat has reversal indicators`, {
       blueReversal: beat.metadata?.blueReversal,
-      redReversal: beat.metadata?.redReversal
+      redReversal: beat.metadata?.redReversal,
     });
 
     // Draw reversal indicators
@@ -45,7 +45,7 @@ export function drawReversalIndicators(
 
     // Draw blue reversal indicator
     if (beat.metadata?.blueReversal) {
-      ctx.fillStyle = 'blue';
+      ctx.fillStyle = "blue";
       ctx.beginPath();
       ctx.arc(currentX, indicatorY, indicatorSize / 2, 0, Math.PI * 2);
       ctx.fill();
@@ -58,7 +58,7 @@ export function drawReversalIndicators(
 
     // Draw red reversal indicator
     if (beat.metadata?.redReversal) {
-      ctx.fillStyle = 'red';
+      ctx.fillStyle = "red";
       ctx.beginPath();
       ctx.arc(currentX, indicatorY, indicatorSize / 2, 0, Math.PI * 2);
       ctx.fill();

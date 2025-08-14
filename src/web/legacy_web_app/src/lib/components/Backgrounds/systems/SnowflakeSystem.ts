@@ -1,12 +1,12 @@
 // src/lib/components/Backgrounds/systems/SnowflakeSystem.ts
-import type { Dimensions, Snowflake } from '../types/types';
-import { SnowfallConfig } from '../config';
+import type { Dimensions, Snowflake } from "../types/types";
+import { SnowfallConfig } from "../config";
 
 export const createSnowflakeSystem = () => {
   const config = SnowfallConfig;
   let windStrength = 0;
   let windChangeTimer = 0;
-  let currentQuality = 'medium';
+  let currentQuality = "medium";
 
   const generateSnowflakeShape = (size: number): Path2D => {
     const path = new Path2D();
@@ -27,24 +27,34 @@ export const createSnowflakeSystem = () => {
   };
 
   const randomSnowflakeColor = (): string => {
-    return config.snowflake.colors[Math.floor(Math.random() * config.snowflake.colors.length)];
+    return config.snowflake.colors[
+      Math.floor(Math.random() * config.snowflake.colors.length)
+    ];
   };
 
   const createSnowflake = (width: number, height: number): Snowflake => {
-    const size = Math.random() * (config.snowflake.maxSize - config.snowflake.minSize) + config.snowflake.minSize;
+    const size =
+      Math.random() * (config.snowflake.maxSize - config.snowflake.minSize) +
+      config.snowflake.minSize;
     return {
       x: Math.random() * width,
       y: Math.random() * height,
-      speed: Math.random() * (config.snowflake.maxSpeed - config.snowflake.minSpeed) + config.snowflake.minSpeed,
+      speed:
+        Math.random() *
+          (config.snowflake.maxSpeed - config.snowflake.minSpeed) +
+        config.snowflake.minSpeed,
       size,
       sway: Math.random() * 1 - 0.5,
       opacity: Math.random() * 0.8 + 0.2,
       shape: generateSnowflakeShape(size),
-      color: randomSnowflakeColor()
+      color: randomSnowflakeColor(),
     };
   };
 
-  const initialize = ({ width, height }: Dimensions, quality: string): Snowflake[] => {
+  const initialize = (
+    { width, height }: Dimensions,
+    quality: string,
+  ): Snowflake[] => {
     currentQuality = quality;
     let adjustedDensity = config.snowflake.density;
 
@@ -52,9 +62,9 @@ export const createSnowflakeSystem = () => {
     adjustedDensity *= screenSizeFactor;
 
     // Apply quality density adjustments
-    if (quality === 'low') {
+    if (quality === "low") {
       adjustedDensity *= 0.5;
-    } else if (quality === 'medium') {
+    } else if (quality === "medium") {
       adjustedDensity *= 0.75;
     }
 
@@ -62,7 +72,10 @@ export const createSnowflakeSystem = () => {
     return Array.from({ length: count }, () => createSnowflake(width, height));
   };
 
-  const update = (flakes: Snowflake[], { width, height }: Dimensions): Snowflake[] => {
+  const update = (
+    flakes: Snowflake[],
+    { width, height }: Dimensions,
+  ): Snowflake[] => {
     windChangeTimer++;
     if (windChangeTimer >= config.snowflake.windChangeInterval) {
       windChangeTimer = 0;
@@ -77,14 +90,14 @@ export const createSnowflakeSystem = () => {
         return {
           ...flake,
           y: Math.random() * -20,
-          x: Math.random() * width
+          x: Math.random() * width,
         };
       }
 
       if (newX > width || newX < 0) {
         return {
           ...flake,
-          x: Math.random() * width
+          x: Math.random() * width,
         };
       }
 
@@ -95,7 +108,7 @@ export const createSnowflakeSystem = () => {
   const draw = (
     flakes: Snowflake[],
     ctx: CanvasRenderingContext2D,
-    { width, height }: Dimensions
+    { width, height }: Dimensions,
   ): void => {
     if (!ctx) return;
     ctx.globalAlpha = 1.0;
@@ -126,13 +139,13 @@ export const createSnowflakeSystem = () => {
     flakes: Snowflake[],
     oldDimensions: Dimensions,
     newDimensions: Dimensions,
-    quality: string
+    quality: string,
   ): Snowflake[] => {
     const targetCount = Math.floor(
       newDimensions.width *
         newDimensions.height *
         config.snowflake.density *
-        (quality === 'low' ? 0.5 : quality === 'medium' ? 0.75 : 1)
+        (quality === "low" ? 0.5 : quality === "medium" ? 0.75 : 1),
     );
 
     const currentCount = flakes.length;
@@ -141,8 +154,8 @@ export const createSnowflakeSystem = () => {
       return [
         ...flakes,
         ...Array.from({ length: targetCount - currentCount }, () =>
-          createSnowflake(newDimensions.width, newDimensions.height)
-        )
+          createSnowflake(newDimensions.width, newDimensions.height),
+        ),
       ];
     } else if (targetCount < currentCount) {
       return flakes.slice(0, targetCount);
@@ -160,6 +173,6 @@ export const createSnowflakeSystem = () => {
     update,
     draw,
     adjustToResize,
-    setQuality
+    setQuality,
   };
 };

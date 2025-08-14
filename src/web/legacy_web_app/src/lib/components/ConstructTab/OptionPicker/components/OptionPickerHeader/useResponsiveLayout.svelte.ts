@@ -1,5 +1,5 @@
 // src/lib/components/ConstructTab/OptionPicker/components/OptionPickerHeader/useResponsiveLayout.svelte.ts
-import type { LayoutContext } from '../../layoutContext';
+import type { LayoutContext } from "../../layoutContext";
 
 /**
  * Hook to manage responsive layout state
@@ -21,7 +21,11 @@ export function useResponsiveLayout(layoutContext: LayoutContext | null) {
     const contextValue = layoutContext;
 
     // Check if the context exists and has the isMobile property
-    if (contextValue && typeof contextValue === 'object' && 'isMobile' in contextValue) {
+    if (
+      contextValue &&
+      typeof contextValue === "object" &&
+      "isMobile" in contextValue
+    ) {
       // Use type assertion to ensure TypeScript knows this is a boolean
       isMobileDevice = Boolean(contextValue.isMobile);
 
@@ -44,7 +48,11 @@ export function useResponsiveLayout(layoutContext: LayoutContext | null) {
       if (isMobile) {
         isMobileDevice = true;
         compactMode = true;
-      } else if (contextValue && typeof contextValue === 'object' && 'isMobile' in contextValue) {
+      } else if (
+        contextValue &&
+        typeof contextValue === "object" &&
+        "isMobile" in contextValue
+      ) {
         isMobileDevice = Boolean(contextValue.isMobile);
       } else {
         isMobileDevice = false;
@@ -56,10 +64,10 @@ export function useResponsiveLayout(layoutContext: LayoutContext | null) {
       }
     };
 
-    window.addEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
 
     return () => {
-      window.removeEventListener('resize', handleResize);
+      window.removeEventListener("resize", handleResize);
     };
   });
 
@@ -138,6 +146,6 @@ export function useResponsiveLayout(layoutContext: LayoutContext | null) {
     compactMode,
     showScrollIndicator,
     handleScroll,
-    checkTabsOverflow
+    checkTabsOverflow,
   };
 }

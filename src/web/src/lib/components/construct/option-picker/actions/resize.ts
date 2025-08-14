@@ -71,11 +71,14 @@ export const resize: Action<
 
   if (typeof ResizeObserver !== "undefined") {
     // Create debounced callback to prevent ResizeObserver loops
-    debouncedCallback = debounce((width: number, height: number) => {
-      if (typeof callback === "function") {
-        callback(width, height);
-      }
-    }, 16); // 16ms = ~60fps, prevents excessive calls
+    debouncedCallback = debounce(
+      ((width: number, height: number) => {
+        if (typeof callback === "function") {
+          callback(width, height);
+        }
+      }) as (...args: unknown[]) => unknown,
+      16,
+    ) as ((width: number, height: number) => void) & { cancel: () => void }; // 16ms = ~60fps, prevents excessive calls
 
     resizeObserver = new ResizeObserver((entries) => {
       if (!entries.length) return;

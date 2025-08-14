@@ -4,20 +4,12 @@
  * Handles parsing and applying logging configuration from various sources.
  */
 
-import { browser } from '$app/environment';
-import {
-  LogLevel,
-  LOG_LEVEL_MAP,
-  type LoggerConfig,
-  LogDomain
-} from './types';
-import {
-  DEFAULT_LOGGER_CONFIG,
-  LOG_URL_PARAM
-} from './constants';
-import { ConsoleTransport } from './transports/console';
-import { MemoryTransport } from './transports/memory';
-import { LocalStorageTransport } from './transports/localStorage';
+import { browser } from "$app/environment";
+import { LogLevel, LOG_LEVEL_MAP, type LoggerConfig, LogDomain } from "./types";
+import { DEFAULT_LOGGER_CONFIG, LOG_URL_PARAM } from "./constants";
+import { ConsoleTransport } from "./transports/console";
+import { MemoryTransport } from "./transports/memory";
+import { LocalStorageTransport } from "./transports/localStorage";
 
 /**
  * Parse log configuration from URL parameters
@@ -37,7 +29,7 @@ export function parseLogConfig(): Partial<LoggerConfig> | null {
   if (!logParam) return null;
 
   const config: Partial<LoggerConfig> = {
-    transports: []
+    transports: [],
   };
 
   // Check if it's a simple global level like "debug"
@@ -51,17 +43,17 @@ export function parseLogConfig(): Partial<LoggerConfig> | null {
   const enabledDomains: LogDomain[] = [];
   const disabledDomains: LogDomain[] = [];
 
-  logParam.split(',').forEach(part => {
+  logParam.split(",").forEach((part) => {
     // Check for domain=level:transports format
-    if (part.includes('=')) {
-      const [domain, levelAndTransports] = part.split('=');
+    if (part.includes("=")) {
+      const [domain, levelAndTransports] = part.split("=");
 
       // Parse level and transports
       let level: string;
       let transports: string[] = [];
 
-      if (levelAndTransports.includes(':')) {
-        [level, ...transports] = levelAndTransports.split(':');
+      if (levelAndTransports.includes(":")) {
+        [level, ...transports] = levelAndTransports.split(":");
       } else {
         level = levelAndTransports;
       }
@@ -69,7 +61,7 @@ export function parseLogConfig(): Partial<LoggerConfig> | null {
       // Handle domain-specific configuration
       if (domain && level) {
         // Check if it's a negation (e.g., !app=debug)
-        const isDomainDisabled = domain.startsWith('!');
+        const isDomainDisabled = domain.startsWith("!");
         const domainName = isDomainDisabled ? domain.substring(1) : domain;
 
         // Check if it's a valid domain
@@ -82,14 +74,14 @@ export function parseLogConfig(): Partial<LoggerConfig> | null {
         }
 
         // Set global level if domain is 'all'
-        if (domainName === 'all' && level in LOG_LEVEL_MAP) {
+        if (domainName === "all" && level in LOG_LEVEL_MAP) {
           config.minLevel = LOG_LEVEL_MAP[level as keyof typeof LOG_LEVEL_MAP];
         }
       }
     }
     // Check for level:transports format
-    else if (part.includes(':')) {
-      const [level, ...transports] = part.split(':');
+    else if (part.includes(":")) {
+      const [level, ...transports] = part.split(":");
 
       if (level in LOG_LEVEL_MAP) {
         config.minLevel = LOG_LEVEL_MAP[level as keyof typeof LOG_LEVEL_MAP];
@@ -128,8 +120,8 @@ export function createDefaultTransports(): ConsoleTransport[] {
       includeTimestamps: true,
       includeSource: true,
       includeDomain: true,
-      includeCorrelationId: true
-    })
+      includeCorrelationId: true,
+    }),
   ];
 }
 
@@ -143,39 +135,44 @@ export function createDevTransports(): (ConsoleTransport | MemoryTransport)[] {
       includeTimestamps: true,
       includeSource: true,
       includeDomain: true,
-      includeCorrelationId: true
+      includeCorrelationId: true,
     }),
     new MemoryTransport({
       maxEntries: 1000,
-      circular: true
-    })
+      circular: true,
+    }),
   ];
 }
 
 /**
  * Create production transports (console + localStorage)
  */
-export function createProdTransports(): (ConsoleTransport | LocalStorageTransport)[] {
+export function createProdTransports(): (
+  | ConsoleTransport
+  | LocalStorageTransport
+)[] {
   return [
     new ConsoleTransport({
       prettyPrint: false,
       includeTimestamps: true,
       includeSource: true,
       includeDomain: false,
-      includeCorrelationId: false
+      includeCorrelationId: false,
     }),
     new LocalStorageTransport({
       maxEntries: 500,
       minLevel: LogLevel.ERROR,
-      throttleMs: 5000
-    })
+      throttleMs: 5000,
+    }),
   ];
 }
 
 /**
  * Create a full configuration object with appropriate defaults
  */
-export function createLoggerConfig(config: Partial<LoggerConfig> = {}): LoggerConfig {
+export function createLoggerConfig(
+  config: Partial<LoggerConfig> = {},
+): LoggerConfig {
   const baseConfig = { ...DEFAULT_LOGGER_CONFIG };
 
   // Set environment-appropriate transports if none provided
@@ -189,6 +186,9 @@ export function createLoggerConfig(config: Partial<LoggerConfig> = {}): LoggerCo
     ...baseConfig,
     ...config,
     // Merge arrays instead of replacing
-    transports: [...(baseConfig.transports || []), ...(config.transports || [])]
+    transports: [
+      ...(baseConfig.transports || []),
+      ...(config.transports || []),
+    ],
   };
 }

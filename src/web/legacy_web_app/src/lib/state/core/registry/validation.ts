@@ -9,12 +9,12 @@ export function validateMachineSnapshot(snapshot: any): boolean {
   // Basic structure validation for XState machine snapshots
   return (
     snapshot &&
-    typeof snapshot === 'object' &&
-    'status' in snapshot &&
-    typeof snapshot.status === 'string' &&
-    ['active', 'done', 'error', 'stopped'].includes(snapshot.status) &&
-    'context' in snapshot &&
-    typeof snapshot.context === 'object'
+    typeof snapshot === "object" &&
+    "status" in snapshot &&
+    typeof snapshot.status === "string" &&
+    ["active", "done", "error", "stopped"].includes(snapshot.status) &&
+    "context" in snapshot &&
+    typeof snapshot.context === "object"
   );
 }
 
@@ -31,5 +31,5 @@ export function validateStoreData<T>(data: any): data is T {
  * Validate the overall structure of persisted data
  */
 export function validatePersistedDataStructure(data: any): boolean {
-  return typeof data === 'object' && data !== null;
+  return typeof data === "object" && data !== null;
 }

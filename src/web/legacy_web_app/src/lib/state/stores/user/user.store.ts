@@ -6,19 +6,19 @@
  * to the new container-based approach.
  */
 
-import { derived, type Readable } from 'svelte/store';
-import { userContainer, type UserState } from './UserContainer';
+import { derived, type Readable } from "svelte/store";
+import { userContainer, type UserState } from "./UserContainer";
 
 // Create a derived store for the current user
 export const currentUserStore: Readable<string> = derived(
   userContainer,
-  ($userContainer) => $userContainer.currentUser
+  ($userContainer) => $userContainer.currentUser,
 );
 
 // Create a derived store for the setup completion status
 export const hasCompletedSetupStore: Readable<boolean> = derived(
   userContainer,
-  ($userContainer) => $userContainer.hasCompletedSetup
+  ($userContainer) => $userContainer.hasCompletedSetup,
 );
 
 // Export the userStore with a compatible API
@@ -33,7 +33,7 @@ export const userStore = {
   isFirstVisit: userContainer.isFirstVisit,
 
   // Subscribe method for Svelte store compatibility
-  subscribe: userContainer.subscribe
+  subscribe: userContainer.subscribe,
 };
 
 // Export the container for modern usage

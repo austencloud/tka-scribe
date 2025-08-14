@@ -24,13 +24,17 @@
 }
 
 .panel-header::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: -1px;
   left: 1rem;
   width: 2rem;
   height: 2px;
-  background: linear-gradient(to right, var(--color-accent, #3a7bd5), transparent);
+  background: linear-gradient(
+    to right,
+    var(--color-accent, #3a7bd5),
+    transparent
+  );
   border-radius: 2px;
 }
 
@@ -58,7 +62,7 @@
 }
 
 .control-card::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;

@@ -6,13 +6,13 @@
  */
 
 // Export the registry
-export * from './registry';
+export * from "./registry";
 
 // Export store factories
-export * from './store';
+export * from "./store";
 
 // Export machine factories
-export * from './machine';
+export * from "./machine";
 
 // Export testing utilities
-export * from './testing';
+export * from "./testing";

@@ -4,9 +4,9 @@
  * Persists logs to localStorage for later retrieval.
  */
 
-import { type LogEntry, type LogTransport, LogLevel } from '../types';
-import { MAX_STORAGE_LOGS, STORAGE_KEY } from '../constants';
-import { browser } from '$app/environment';
+import { type LogEntry, type LogTransport, LogLevel } from "../types";
+import { MAX_STORAGE_LOGS, STORAGE_KEY } from "../constants";
+import { browser } from "$app/environment";
 
 export interface LocalStorageTransportOptions {
   maxEntries?: number;
@@ -16,7 +16,7 @@ export interface LocalStorageTransportOptions {
 }
 
 export class LocalStorageTransport implements LogTransport {
-  name = 'localStorage';
+  name = "localStorage";
   private options: LocalStorageTransportOptions;
   private buffer: LogEntry[] = [];
   private throttleTimeout: ReturnType<typeof setTimeout> | null = null;
@@ -27,7 +27,7 @@ export class LocalStorageTransport implements LogTransport {
       storageKey: STORAGE_KEY,
       minLevel: LogLevel.INFO, // Default to only storing INFO and above
       throttleMs: 1000, // Throttle writes to once per second
-      ...options
+      ...options,
     };
 
     // Load existing entries when created
@@ -78,7 +78,7 @@ export class LocalStorageTransport implements LogTransport {
       try {
         localStorage.removeItem(this.options.storageKey!);
       } catch (error) {
-        console.error('Error clearing localStorage logs:', error);
+        console.error("Error clearing localStorage logs:", error);
       }
     }
   }
@@ -105,7 +105,7 @@ export class LocalStorageTransport implements LogTransport {
 
       return JSON.parse(storedData) as LogEntry[];
     } catch (error) {
-      console.error('Error loading logs from localStorage:', error);
+      console.error("Error loading logs from localStorage:", error);
       return [];
     }
   }
@@ -129,26 +129,34 @@ export class LocalStorageTransport implements LogTransport {
       // Save to localStorage
       localStorage.setItem(
         this.options.storageKey!,
-        JSON.stringify(trimmedEntries)
+        JSON.stringify(trimmedEntries),
       );
 
       // Clear buffer
       this.buffer = [];
     } catch (error) {
-      console.error('Error writing logs to localStorage:', error);
+      console.error("Error writing logs to localStorage:", error);
 
       // If it's a quota error, try to reduce the number of entries
-      if (error instanceof DOMException && error.name === 'QuotaExceededError') {
+      if (
+        error instanceof DOMException &&
+        error.name === "QuotaExceededError"
+      ) {
         try {
           // Try to save half as many entries
           const existingEntries = this.loadFromStorage();
-          const reducedEntries = existingEntries.slice(-Math.floor(this.options.maxEntries! / 2));
+          const reducedEntries = existingEntries.slice(
+            -Math.floor(this.options.maxEntries! / 2),
+          );
           localStorage.setItem(
             this.options.storageKey!,
-            JSON.stringify(reducedEntries)
+            JSON.stringify(reducedEntries),
           );
         } catch (retryError) {
-          console.error('Failed to reduce localStorage logs after quota error:', retryError);
+          console.error(
+            "Failed to reduce localStorage logs after quota error:",
+            retryError,
+          );
         }
       }
     }

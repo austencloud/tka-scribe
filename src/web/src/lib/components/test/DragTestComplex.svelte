@@ -12,6 +12,7 @@
 		ISettingsService,
 	} from '$services/interfaces';
 	import { getContext } from 'svelte';
+	import { resolve } from '$lib/services/bootstrap';
 
 	// Get DI container from context (like real app)
 	const getContainer = getContext<() => ServiceContainer | null>('di-container');
@@ -29,13 +30,13 @@
 	// Learn tab state matching real implementation
 	let currentView = $state(LearnView.LESSON_SELECTOR);
 	let selectedMode = $state(QuizMode.FIXED_QUESTION);
-	let currentLessonType = $state(null);
-	let currentResults = $state(null);
+	let currentLessonType = $state<LessonType | null>(null);
+	let currentResults = $state<LessonResults | null>(null);
 	let isLoading = $state(false);
 	let availableLessons = $state(Object.values(LessonType));
 	let performanceData = $state({
-		lagEvents: [],
-		moveEvents: [],
+		lagEvents: [] as Array<{ duration: number; timestamp: number }>,
+		moveEvents: [] as Array<{ duration: number; timestamp: number }>,
 		lagThreshold: 5,
 	});
 
@@ -59,10 +60,10 @@
 		const container = getContainer?.();
 		if (container && !initService) {
 			try {
-				initService = container.resolve('IApplicationInitializationService');
-				settingsService = container.resolve('ISettingsService');
-				sequenceService = container.resolve('ISequenceService');
-				deviceService = container.resolve('IDeviceDetectionService');
+				initService = resolve<IApplicationInitializationService>('IApplicationInitializationService');
+				settingsService = resolve<ISettingsService>('ISettingsService');
+				sequenceService = resolve<ISequenceService>('ISequenceService');
+				deviceService = resolve<IDeviceDetectionService>('IDeviceDetectionService');
 				console.log('✅ Test page: Services resolved successfully');
 			} catch (error) {
 				console.error('Test page: Failed to resolve services:', error);
@@ -125,7 +126,7 @@
 	}
 
 	// Handlers for CodexComponent
-	function handlePictographSelected(pictograph) {
+	function handlePictographSelected(pictograph: any) {
 		console.log('Pictograph selected:', pictograph);
 	}
 
@@ -135,7 +136,7 @@
 
 	// Handlers for LessonSelectorView are defined above with real implementation
 
-	function handleResizeStart(event) {
+	function handleResizeStart(event: any) {
 		isResizing = true;
 		event.preventDefault();
 
@@ -147,7 +148,7 @@
 		performanceData.lagEvents = [];
 		performanceData.moveEvents = [];
 
-		function handleMouseMove(e) {
+		function handleMouseMove(e: MouseEvent) {
 			if (!isResizing) return;
 
 			const moveStartTime = performance.now();

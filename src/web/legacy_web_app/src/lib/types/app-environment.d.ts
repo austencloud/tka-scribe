@@ -2,7 +2,7 @@
  * Type definitions for $app/environment
  */
 
-declare module '$app/environment' {
+declare module "$app/environment" {
   /**
    * Whether the app is running in a browser
    */

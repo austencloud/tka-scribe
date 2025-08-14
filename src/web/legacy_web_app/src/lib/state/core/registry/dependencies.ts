@@ -9,17 +9,21 @@ export function addDependency(
   dependencies: Map<string, Set<string>>,
   containerExists: (id: string) => boolean,
   dependentId: string,
-  dependencyId: string
+  dependencyId: string,
 ): boolean {
   // Check if both IDs exist in the registry
   if (!containerExists(dependentId)) {
     // Use debug level instead of warn to reduce console noise during initialization
     // This is expected during initialization when actors are being registered
-    console.debug(`Cannot add dependency: dependent ID "${dependentId}" is not registered`);
+    console.debug(
+      `Cannot add dependency: dependent ID "${dependentId}" is not registered`,
+    );
     return false;
   }
   if (!containerExists(dependencyId)) {
-    console.debug(`Cannot add dependency: dependency ID "${dependencyId}" is not registered`);
+    console.debug(
+      `Cannot add dependency: dependency ID "${dependencyId}" is not registered`,
+    );
     return false;
   }
 
@@ -36,14 +40,20 @@ export function addDependency(
 /**
  * Get all dependencies for a state container
  */
-export function getDependencies(dependencies: Map<string, Set<string>>, id: string): string[] {
+export function getDependencies(
+  dependencies: Map<string, Set<string>>,
+  id: string,
+): string[] {
   return Array.from(dependencies.get(id) || []);
 }
 
 /**
  * Get all dependents of a state container
  */
-export function getDependents(dependencies: Map<string, Set<string>>, id: string): string[] {
+export function getDependents(
+  dependencies: Map<string, Set<string>>,
+  id: string,
+): string[] {
   const dependents: string[] = [];
   dependencies.forEach((deps, depId) => {
     if (deps.has(id)) {
@@ -59,7 +69,7 @@ export function getDependents(dependencies: Map<string, Set<string>>, id: string
  */
 export function topologicalSort(
   dependencies: Map<string, Set<string>>,
-  containerIds: string[]
+  containerIds: string[],
 ): string[] {
   const result: string[] = [];
   const visited = new Set<string>();

@@ -377,10 +377,12 @@ Follows the same pattern as Prop component for consistent sizing behavior
 				console.log(
 					`  calculatedPosition: (${calculatedPosition.x}, ${calculatedPosition.y})`
 				);
-				console.log(`  svgData.center: (${svgData.center.x}, ${svgData.center.y})`);
-				console.log(
-					`  final transform: translate(${calculatedPosition.x}, ${calculatedPosition.y}) rotate(${calculatedPosition.rotation || arrowData?.rotation_angle || 0}) scale(${shouldMirror ? -1 : 1}, 1) translate(${-svgData.center.x}, ${-svgData.center.y})`
-				);
+				if (svgData?.center) {
+					console.log(`  svgData.center: (${svgData.center.x}, ${svgData.center.y})`);
+					console.log(
+						`  final transform: translate(${calculatedPosition.x}, ${calculatedPosition.y}) rotate(${calculatedPosition.rotation || arrowData?.rotation_angle || 0}) scale(${shouldMirror ? -1 : 1}, 1) translate(${-svgData.center.x}, ${-svgData.center.y})`
+					);
+				}
 			}}
 		/>
 	{:else}

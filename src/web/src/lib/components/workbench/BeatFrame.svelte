@@ -44,7 +44,7 @@
 	onMount(() => {
 		if (containerRef) {
 			// Set up resize observer with debouncing
-			let timeoutId: number;
+			let timeoutId: ReturnType<typeof setTimeout>;
 			const resizeObserver = new ResizeObserver((entries) => {
 				clearTimeout(timeoutId);
 				timeoutId = setTimeout(() => {
@@ -69,7 +69,7 @@
 	});
 
 	// Update fullscreen mode when it changes (debounced)
-	let fullscreenUpdateTimeout: number;
+	let fullscreenUpdateTimeout: ReturnType<typeof setTimeout>;
 	$effect(() => {
 		clearTimeout(fullscreenUpdateTimeout);
 		fullscreenUpdateTimeout = setTimeout(() => {

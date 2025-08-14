@@ -2,7 +2,7 @@
  * Type definitions for Svelte internal modules
  */
 
-declare module 'svelte/internal' {
+declare module "svelte/internal" {
   /**
    * Lifecycle function that runs when a component is mounted to the DOM
    */
@@ -44,7 +44,7 @@ declare module 'svelte/internal' {
    */
   export function derived<T, U>(
     store: { subscribe: (run: (value: T) => void) => () => void },
-    fn: (value: T) => U
+    fn: (value: T) => U,
   ): {
     subscribe: (run: (value: U) => void) => () => void;
   };

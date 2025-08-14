@@ -256,13 +256,11 @@ We've adjusted the migration sequence to prioritize core functionality:
 ### Phase 6: Svelte 5 Runes Migration
 
 - **Core State Containers**
-
   - Update `createContainer` to use Svelte 5 runes
   - Refactor derived state to use `$derived` rune
   - Implement side effects with `$effect` rune
 
 - **Component State**
-
   - Migrate component-local state to use `$state` rune
   - Replace store subscriptions with direct state access
   - Update reactive declarations to use runes syntax
@@ -275,13 +273,11 @@ We've adjusted the migration sequence to prioritize core functionality:
 ### Phase 7: XState 5 Integration
 
 - **Core State Machines**
-
   - Migrate app state machine to XState 5
   - Update sequence state machine to use improved typing
   - Implement actor model for complex state interactions
 
 - **Machine Factories**
-
   - Create standardized machine factory functions
   - Implement improved type safety with XState 5
   - Add debugging and inspection capabilities

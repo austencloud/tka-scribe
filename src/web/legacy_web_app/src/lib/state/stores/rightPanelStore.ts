@@ -5,15 +5,15 @@
  * including which tab is active and which picker to show.
  */
 
-import { writable, derived } from 'svelte/store';
-import { browser } from '$app/environment';
-import { isSequenceEmpty } from '$lib/state/machines/sequenceMachine/persistence';
+import { writable, derived } from "svelte/store";
+import { browser } from "$app/environment";
+import { isSequenceEmpty } from "$lib/state/machines/sequenceMachine/persistence";
 
 // Define the tab types
-export type RightPanelTab = 'construct' | 'generate';
+export type RightPanelTab = "construct" | "generate";
 
 // Define the picker types for the construct tab
-export type ConstructPickerType = 'startPosition' | 'options';
+export type ConstructPickerType = "startPosition" | "options";
 
 // Interface for the store state
 interface RightPanelState {
@@ -25,8 +25,8 @@ interface RightPanelState {
 function createRightPanelStore() {
   // Initialize with default values
   const initialState: RightPanelState = {
-    activeTab: 'construct',
-    constructPicker: 'startPosition'
+    activeTab: "construct",
+    constructPicker: "startPosition",
   };
 
   // Create the writable store
@@ -38,18 +38,18 @@ function createRightPanelStore() {
 
     // Set the active tab
     setActiveTab: (tab: RightPanelTab) => {
-      update(state => ({ ...state, activeTab: tab }));
+      update((state) => ({ ...state, activeTab: tab }));
     },
 
     // Set the construct picker type
     setConstructPicker: (picker: ConstructPickerType) => {
-      update(state => ({ ...state, constructPicker: picker }));
+      update((state) => ({ ...state, constructPicker: picker }));
     },
 
     // Reset to default state
     reset: () => {
       set(initialState);
-    }
+    },
   };
 }
 
@@ -61,22 +61,22 @@ export const activePicker = derived(
   [rightPanelStore, isSequenceEmpty],
   ([$rightPanelStore, $isEmpty]) => {
     // If we're in the generate tab, return null (no picker)
-    if ($rightPanelStore.activeTab === 'generate') {
+    if ($rightPanelStore.activeTab === "generate") {
       return null;
     }
 
     // If the sequence is empty, show the start position picker
     if ($isEmpty) {
-      return 'startPosition';
+      return "startPosition";
     }
 
     // Otherwise, use the stored picker type
     return $rightPanelStore.constructPicker;
-  }
+  },
 );
 
 // Derived store for the active tab
 export const activeTab = derived(
   rightPanelStore,
-  ($rightPanelStore) => $rightPanelStore.activeTab
+  ($rightPanelStore) => $rightPanelStore.activeTab,
 );

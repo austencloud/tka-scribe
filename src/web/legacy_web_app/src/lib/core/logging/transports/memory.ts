@@ -4,8 +4,8 @@
  * Stores logs in memory for later retrieval, useful for debug panels.
  */
 
-import { type LogEntry, type LogTransport } from '../types';
-import { MAX_MEMORY_LOGS } from '../constants';
+import { type LogEntry, type LogTransport } from "../types";
+import { MAX_MEMORY_LOGS } from "../constants";
 
 export interface MemoryTransportOptions {
   maxEntries?: number;
@@ -13,7 +13,7 @@ export interface MemoryTransportOptions {
 }
 
 export class MemoryTransport implements LogTransport {
-  name = 'memory';
+  name = "memory";
   private entries: LogEntry[] = [];
   private maxEntries: number;
   private circular: boolean;
@@ -64,11 +64,11 @@ export class MemoryTransport implements LogTransport {
    */
   private notifyListeners(): void {
     const entries = this.getEntries();
-    this.listeners.forEach(listener => {
+    this.listeners.forEach((listener) => {
       try {
         listener(entries);
       } catch (error) {
-        console.error('Error in memory transport listener:', error);
+        console.error("Error in memory transport listener:", error);
       }
     });
   }

@@ -1,2 +1,2 @@
-export { default } from './ViewControl.svelte';
-export * from './types';
+export { default } from "./ViewControl.svelte";
+export * from "./types";

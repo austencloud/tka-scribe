@@ -4,7 +4,7 @@
  * This module provides shared types and interfaces for the enhanced image export functionality.
  */
 
-import type { Beat } from '$lib/types/Beat';
+import type { Beat } from "$lib/types/Beat";
 
 /**
  * Options for enhanced image export
@@ -23,7 +23,7 @@ export interface EnhancedExportOptions {
   backgroundColor?: string;
   scale?: number;
   quality?: number;
-  format?: 'png' | 'jpeg';
+  format?: "png" | "jpeg";
 
   // Content flags
   addWord?: boolean;
@@ -67,7 +67,9 @@ export interface CanvasDimensions {
 /**
  * Required options with defaults applied
  */
-export type RequiredExportOptions = Required<Omit<EnhancedExportOptions, 'beats' | 'startPosition'>> & {
+export type RequiredExportOptions = Required<
+  Omit<EnhancedExportOptions, "beats" | "startPosition">
+> & {
   beats: Beat[];
   startPosition: Beat | null;
 };

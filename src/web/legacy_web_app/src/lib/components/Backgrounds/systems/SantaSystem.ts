@@ -1,6 +1,6 @@
 // src/lib/components/Backgrounds/systems/SantaSystem.ts
-import type { Dimensions, SantaState } from '../types/types';
-import { SantaConfig, SeasonalConfig } from '../config';
+import type { Dimensions, SantaState } from "../types/types";
+import { SantaConfig, SeasonalConfig } from "../config";
 
 export const createSantaSystem = () => {
   const config = SantaConfig;
@@ -10,7 +10,7 @@ export const createSantaSystem = () => {
 
   const preloadImages = (): Promise<void> => {
     return new Promise((resolve) => {
-      if (typeof window === 'undefined') {
+      if (typeof window === "undefined") {
         resolve();
         return;
       }
@@ -38,12 +38,16 @@ export const createSantaSystem = () => {
 
   const getRandomInterval = (): number => {
     return (
-      Math.floor(Math.random() * (config.maxInterval - config.minInterval + 1)) + config.minInterval
+      Math.floor(
+        Math.random() * (config.maxInterval - config.minInterval + 1),
+      ) + config.minInterval
     );
   };
 
   const getRandomSpeed = (): number => {
-    return Math.random() * (config.maxSpeed - config.minSpeed) + config.minSpeed;
+    return (
+      Math.random() * (config.maxSpeed - config.minSpeed) + config.minSpeed
+    );
   };
 
   const calculateSize = (width: number): number => {
@@ -57,13 +61,13 @@ export const createSantaSystem = () => {
     speed: 0,
     active: false,
     direction: 1,
-    opacity: config.opacity
+    opacity: config.opacity,
   };
 
   const update = (
     state: SantaState,
     { width, height }: Dimensions,
-    isDecember: boolean
+    isDecember: boolean,
   ): SantaState => {
     const isSeasonalEnabled =
       SeasonalConfig.enabled && (isDecember || SeasonalConfig.isChristmas());
@@ -71,11 +75,10 @@ export const createSantaSystem = () => {
     if (!state.active && isSeasonalEnabled) {
       if (Math.random() < 0.01) {
         const direction = Math.random() > 0.5 ? 1 : -1;
-        const startX = direction > 0 ? -calculateSize(width) : width + calculateSize(width);
+        const startX =
+          direction > 0 ? -calculateSize(width) : width + calculateSize(width);
         const randomY =
-          height *
-          (Math.random() * (config.maxY - config.minY) +
-            config.minY);
+          height * (Math.random() * (config.maxY - config.minY) + config.minY);
 
         return {
           x: startX,
@@ -83,7 +86,7 @@ export const createSantaSystem = () => {
           speed: getRandomSpeed(),
           active: true,
           direction: direction,
-          opacity: config.opacity
+          opacity: config.opacity,
         };
       }
       return state;
@@ -95,20 +98,24 @@ export const createSantaSystem = () => {
         (state.direction < 0 && newX < -calculateSize(width))
       ) {
         return {
-          ...initialState
+          ...initialState,
         };
       }
 
       return {
         ...state,
-        x: newX
+        x: newX,
       };
     }
 
     return state;
   };
 
-  const draw = (state: SantaState, ctx: CanvasRenderingContext2D, { width }: Dimensions): void => {
+  const draw = (
+    state: SantaState,
+    ctx: CanvasRenderingContext2D,
+    { width }: Dimensions,
+  ): void => {
     if (!state.active || !ctx || !imageLoaded) return;
 
     const santaSize = calculateSize(width);
@@ -124,7 +131,7 @@ export const createSantaSystem = () => {
       state.x - santaSize / 2,
       state.y - santaSize / 2,
       santaSize,
-      santaSize
+      santaSize,
     );
 
     ctx.restore();
@@ -134,6 +141,6 @@ export const createSantaSystem = () => {
     preloadImages,
     initialState,
     update,
-    draw
+    draw,
   };
 };

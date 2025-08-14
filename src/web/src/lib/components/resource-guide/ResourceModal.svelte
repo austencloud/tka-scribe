@@ -20,8 +20,8 @@
   let currentSection = $state('');
   
   // Derived data from modal manager
-  const data = $derived(modalManager.data);
-  const loading = $derived(modalManager.isLoading);
+  const data = $derived(modalManager.modalData);
+  const loading = $derived(false); // modalStore.svelte.ts doesn't have isLoading, so default to false
   
   // Handle body scroll lock
   function lockBodyScroll() {

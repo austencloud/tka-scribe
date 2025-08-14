@@ -4,14 +4,14 @@
  * Configurable logging for state machines to control verbosity
  */
 
-import { browser } from '$app/environment';
+import { browser } from "$app/environment";
 
 export enum LogLevel {
   NONE = 0,
   ERROR = 1,
   WARN = 2,
   INFO = 3,
-  DEBUG = 4
+  DEBUG = 4,
 }
 
 // Default log level based on environment
@@ -77,22 +77,22 @@ export function log(machineId: string, level: LogLevel, ...args: any[]): void {
 // Initialize from URL parameters if in browser
 if (browser) {
   const url = new URL(window.location.href);
-  const logParam = url.searchParams.get('log');
+  const logParam = url.searchParams.get("log");
 
   if (logParam) {
     // Parse log level from URL
     const levelMap: Record<string, LogLevel> = {
-      'none': LogLevel.NONE,
-      'error': LogLevel.ERROR,
-      'warn': LogLevel.WARN,
-      'info': LogLevel.INFO,
-      'debug': LogLevel.DEBUG
+      none: LogLevel.NONE,
+      error: LogLevel.ERROR,
+      warn: LogLevel.WARN,
+      info: LogLevel.INFO,
+      debug: LogLevel.DEBUG,
     };
 
     // Check for machine-specific settings like "app=debug,sequence=error"
-    if (logParam.includes('=')) {
-      logParam.split(',').forEach(part => {
-        const [machineId, levelName] = part.split('=');
+    if (logParam.includes("=")) {
+      logParam.split(",").forEach((part) => {
+        const [machineId, levelName] = part.split("=");
         if (machineId && levelName && levelName in levelMap) {
           setMachineLogLevel(machineId, levelMap[levelName]);
         }

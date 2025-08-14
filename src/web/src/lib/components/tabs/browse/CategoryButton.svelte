@@ -1,4 +1,4 @@
-<script lang="ts">
+<script module lang="ts">
 	// ✅ PURE RUNES: Type definitions
 	export interface CategoryButtonProps {
 		value?: string;
@@ -8,6 +8,9 @@
 		type?: string;
 		difficulty?: string;
 	}
+</script>
+
+<script lang="ts">
 
 	// ✅ PURE RUNES: Props using modern Svelte 5 runes
 	const {

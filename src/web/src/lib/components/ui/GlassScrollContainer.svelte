@@ -4,15 +4,18 @@
 	A beautiful glassmorphism scrollable container that provides consistent,
 	elegant scrollbars across all components. Properly implemented for Svelte 5.
 -->
-<script lang="ts">
-	export type ScrollbarVariant = 
+<script module lang="ts">
+	export type ScrollbarVariant =
 		| 'primary'
-		| 'secondary' 
+		| 'secondary'
 		| 'minimal'
 		| 'hover'
 		| 'gradient';
 
 	export type ScrollDirection = 'vertical' | 'horizontal' | 'both' | 'auto';
+</script>
+
+<script lang="ts">
 
 	// Props with proper Svelte 5 syntax
 	interface Props {
@@ -74,7 +77,7 @@
 	}
 
 	// Handle scroll events
-	let scrollTimeout: number;
+	let scrollTimeout: ReturnType<typeof setTimeout>;
 	function handleScroll(event: Event) {
 		onScroll?.(event);
 		
@@ -88,12 +91,12 @@
 	}
 </script>
 
-<div 
+<div
 	class={combinedClasses}
 	style={inlineStyles}
 	onscroll={handleScroll}
 	role="region"
-	tabindex="0"
+	tabindex="-1"
 >
 	{#if children}
 		{@render children()}

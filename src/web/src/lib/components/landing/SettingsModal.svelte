@@ -33,13 +33,14 @@
 
 {#if isOpen}
   <!-- Modal backdrop -->
-  <div 
-    class="modal-backdrop" 
+  <div
+    class="modal-backdrop"
     onclick={handleBackdropClick}
     onkeydown={handleKeydown}
     role="dialog"
     aria-modal="true"
     aria-labelledby="settings-title"
+    tabindex="0"
   >
     <div class="modal-content">
       <!-- Header -->

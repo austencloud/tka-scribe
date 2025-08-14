@@ -1,5 +1,5 @@
 // src/stores/layoutStore.ts
-import { writable } from 'svelte/store';
+import { writable } from "svelte/store";
 
 // Define a store for the number of beats
 export const numBeatsStore = writable(16);

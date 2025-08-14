@@ -5,8 +5,8 @@
  * with proper error handling and performance optimizations.
  */
 
-import { browser } from '$app/environment';
-import { logger } from '$lib/core/logging';
+import { browser } from "$app/environment";
+import { logger } from "$lib/core/logging";
 
 // Type definition for LZString
 interface LZStringInterface {
@@ -48,13 +48,13 @@ export async function initLZString(): Promise<void> {
 
   try {
     // Import the module
-    const module = await import('lz-string');
+    const module = await import("lz-string");
     lzStringModule = module.default;
-    logger.debug('LZString module loaded successfully');
+    logger.debug("LZString module loaded successfully");
   } catch (error) {
     if (!hasLoggedError) {
-      logger.error('Failed to load LZString module', {
-        error: error instanceof Error ? error : new Error(String(error))
+      logger.error("Failed to load LZString module", {
+        error: error instanceof Error ? error : new Error(String(error)),
       });
       hasLoggedError = true;
     }
@@ -96,8 +96,8 @@ export async function compressString(input: string): Promise<string> {
       return compressed;
     }
   } catch (error) {
-    logger.warn('LZString compression failed, using uncompressed format', {
-      error: error instanceof Error ? error : new Error(String(error))
+    logger.warn("LZString compression failed, using uncompressed format", {
+      error: error instanceof Error ? error : new Error(String(error)),
     });
   }
 
@@ -123,8 +123,8 @@ export async function decompressString(input: string): Promise<string> {
       return decompressed;
     }
   } catch (error) {
-    logger.warn('LZString decompression failed, using original format', {
-      error: error instanceof Error ? error : new Error(String(error))
+    logger.warn("LZString decompression failed, using original format", {
+      error: error instanceof Error ? error : new Error(String(error)),
     });
   }
 

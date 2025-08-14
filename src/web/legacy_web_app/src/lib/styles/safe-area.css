@@ -19,15 +19,14 @@
   /* Combined variables that integrate with existing spacing system */
   --content-padding-top: calc(var(--base-spacing) + var(--safe-inset-top));
   --content-padding-right: calc(var(--base-spacing) + var(--safe-inset-right));
-  --content-padding-bottom: calc(var(--base-spacing) + var(--safe-inset-bottom));
+  --content-padding-bottom: calc(
+    var(--base-spacing) + var(--safe-inset-bottom)
+  );
   --content-padding-left: calc(var(--base-spacing) + var(--safe-inset-left));
 
   /* Shorthand for all sides */
-  --safe-area-padding:
-    var(--content-padding-top)
-    var(--content-padding-right)
-    var(--content-padding-bottom)
-    var(--content-padding-left);
+  --safe-area-padding: var(--content-padding-top) var(--content-padding-right)
+    var(--content-padding-bottom) var(--content-padding-left);
 
   /* Variables for fixed position elements */
   --safe-position-top: var(--safe-inset-top);
@@ -76,11 +75,8 @@
 
 /* Fullscreen overlay specific classes */
 .safe-area-fullscreen {
-  padding:
-    var(--safe-inset-top, 0px)
-    var(--safe-inset-right, 0px)
-    var(--safe-inset-bottom, 0px)
-    var(--safe-inset-left, 0px);
+  padding: var(--safe-inset-top, 0px) var(--safe-inset-right, 0px)
+    var(--safe-inset-bottom, 0px) var(--safe-inset-left, 0px);
 }
 
 /* Media query for devices that support safe area insets */
@@ -88,10 +84,8 @@
   /* Additional device-specific adjustments can be added here if needed */
   .safe-area-fullscreen {
     /* Ensure content doesn't get cut off by notches or rounded corners */
-    padding:
-      max(env(safe-area-inset-top), 8px)
-      max(env(safe-area-inset-right), 8px)
-      max(env(safe-area-inset-bottom), 8px)
+    padding: max(env(safe-area-inset-top), 8px)
+      max(env(safe-area-inset-right), 8px) max(env(safe-area-inset-bottom), 8px)
       max(env(safe-area-inset-left), 8px);
   }
 }

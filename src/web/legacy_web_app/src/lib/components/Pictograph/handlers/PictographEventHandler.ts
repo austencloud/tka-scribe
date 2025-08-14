@@ -4,9 +4,9 @@
  * This module provides event handling functionality for the Pictograph component.
  */
 
-import type { EventDispatcher } from 'svelte';
-import { browser } from '$app/environment';
-import hapticFeedbackService from '$lib/services/HapticFeedbackService';
+import type { EventDispatcher } from "svelte";
+import { browser } from "$app/environment";
+import hapticFeedbackService from "$lib/services/HapticFeedbackService";
 
 /**
  * Dispatches an error event
@@ -18,18 +18,18 @@ import hapticFeedbackService from '$lib/services/HapticFeedbackService';
  * @param totalComponentsToLoad The total number of components to load
  */
 export function dispatchErrorEvent(
-	dispatch: EventDispatcher<any>,
-	source: string,
-	message: string,
-	componentsLoaded: number,
-	totalComponentsToLoad: number
+  dispatch: EventDispatcher<any>,
+  source: string,
+  message: string,
+  componentsLoaded: number,
+  totalComponentsToLoad: number,
 ): void {
-	dispatch('error', {
-		source,
-		message,
-		componentsLoaded,
-		totalComponentsToLoad
-	});
+  dispatch("error", {
+    source,
+    message,
+    componentsLoaded,
+    totalComponentsToLoad,
+  });
 }
 
 /**
@@ -40,14 +40,14 @@ export function dispatchErrorEvent(
  * @param message The error message
  */
 export function dispatchComponentErrorEvent(
-	dispatch: EventDispatcher<any>,
-	component: string,
-	message: string
+  dispatch: EventDispatcher<any>,
+  component: string,
+  message: string,
 ): void {
-	dispatch('componentError', {
-		component,
-		message
-	});
+  dispatch("componentError", {
+    component,
+    message,
+  });
 }
 
 /**
@@ -56,8 +56,11 @@ export function dispatchComponentErrorEvent(
  * @param dispatch The event dispatcher
  * @param progress The loading progress (0-100)
  */
-export function dispatchLoadProgressEvent(dispatch: EventDispatcher<any>, progress: number): void {
-	dispatch('loadProgress', { progress });
+export function dispatchLoadProgressEvent(
+  dispatch: EventDispatcher<any>,
+  progress: number,
+): void {
+  dispatch("loadProgress", { progress });
 }
 
 /**
@@ -66,7 +69,7 @@ export function dispatchLoadProgressEvent(dispatch: EventDispatcher<any>, progre
  * @param dispatch The event dispatcher
  */
 export function dispatchCompleteEvent(dispatch: EventDispatcher<any>): void {
-	dispatch('complete');
+  dispatch("complete");
 }
 
 /**
@@ -75,8 +78,11 @@ export function dispatchCompleteEvent(dispatch: EventDispatcher<any>): void {
  * @param dispatch The event dispatcher
  * @param type The type of update
  */
-export function dispatchDataUpdatedEvent(dispatch: EventDispatcher<any>, type: string): void {
-	dispatch('dataUpdated', { type });
+export function dispatchDataUpdatedEvent(
+  dispatch: EventDispatcher<any>,
+  type: string,
+): void {
+  dispatch("dataUpdated", { type });
 }
 
 /**
@@ -85,15 +91,17 @@ export function dispatchDataUpdatedEvent(dispatch: EventDispatcher<any>, type: s
  * @param onClick The click handler function
  * @returns A function to handle the click event
  */
-export function handleClick(onClick: (() => void) | undefined): (() => void) | undefined {
-	if (!onClick) return undefined;
-	return () => {
-		// Provide haptic feedback when clicking on a pictograph
-		if (browser) {
-			hapticFeedbackService.trigger('selection');
-		}
+export function handleClick(
+  onClick: (() => void) | undefined,
+): (() => void) | undefined {
+  if (!onClick) return undefined;
+  return () => {
+    // Provide haptic feedback when clicking on a pictograph
+    if (browser) {
+      hapticFeedbackService.trigger("selection");
+    }
 
-		// Call the original click handler
-		onClick();
-	};
+    // Call the original click handler
+    onClick();
+  };
 }

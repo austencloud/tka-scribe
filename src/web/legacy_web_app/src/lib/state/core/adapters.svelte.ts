@@ -17,11 +17,11 @@
  */
 export function deriveContainerWithRunes<T extends object, U extends object>(
   container: { state: T },
-  deriveFn: (state: T) => U
+  deriveFn: (state: T) => U,
 ): { state: U } {
   return {
     get state() {
       return $derived(deriveFn(container.state));
-    }
+    },
   };
 }

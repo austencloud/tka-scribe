@@ -9,28 +9,28 @@
  * @returns A debounced version of the original function
  */
 export function debounce<T extends (...args: any[]) => any>(
-    func: T,
-    wait: number
+  func: T,
+  wait: number,
 ): T & { cancel: () => void } {
-    let timeoutId: ReturnType<typeof setTimeout> | null = null;
+  let timeoutId: ReturnType<typeof setTimeout> | null = null;
 
-    // Create the debounced function with cancel property
-    const debounced = function(this: any, ...args: Parameters<T>) {
-        if (timeoutId !== null) {
-            clearTimeout(timeoutId);
-        }
-        timeoutId = setTimeout(() => {
-            func.apply(this, args);
-            timeoutId = null;
-        }, wait);
-    } as T & { cancel: () => void };
+  // Create the debounced function with cancel property
+  const debounced = function (this: any, ...args: Parameters<T>) {
+    if (timeoutId !== null) {
+      clearTimeout(timeoutId);
+    }
+    timeoutId = setTimeout(() => {
+      func.apply(this, args);
+      timeoutId = null;
+    }, wait);
+  } as T & { cancel: () => void };
 
-    debounced.cancel = () => {
-        if (timeoutId !== null) {
-            clearTimeout(timeoutId);
-            timeoutId = null;
-        }
-    };
+  debounced.cancel = () => {
+    if (timeoutId !== null) {
+      clearTimeout(timeoutId);
+      timeoutId = null;
+    }
+  };
 
-    return debounced;
+  return debounced;
 }

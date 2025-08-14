@@ -1,9 +1,9 @@
 /**
  * Selectors for the sequence state machine
  */
-import type { BeatData as StoreBeatData } from '../../stores/sequenceStore';
-import { sequenceStore } from '../../stores/sequenceStore';
-import type { Actor } from 'xstate';
+import type { BeatData as StoreBeatData } from "../../stores/sequenceStore";
+import { sequenceStore } from "../../stores/sequenceStore";
+import type { Actor } from "xstate";
 
 /**
  * Helper functions to get current state from the sequence machine
@@ -12,11 +12,11 @@ export function createSequenceSelectors(sequenceActor: Actor<any>) {
   return {
     // Generation selectors
     isGenerating: () => {
-      return sequenceActor.getSnapshot().matches('generating');
+      return sequenceActor.getSnapshot().matches("generating");
     },
 
     hasError: () => {
-      return sequenceActor.getSnapshot().matches('error');
+      return sequenceActor.getSnapshot().matches("error");
     },
 
     error: () => {
@@ -55,7 +55,9 @@ export function createSequenceSelectors(sequenceActor: Actor<any>) {
     selectedBeats: () => {
       let selected: StoreBeatData[] = [];
       sequenceStore.subscribe((state) => {
-        selected = state.beats.filter((beat) => state.selectedBeatIds.includes(beat.id));
+        selected = state.beats.filter((beat) =>
+          state.selectedBeatIds.includes(beat.id),
+        );
       })();
       return selected;
     },
@@ -82,6 +84,6 @@ export function createSequenceSelectors(sequenceActor: Actor<any>) {
         count = state.beats.length;
       })();
       return count;
-    }
+    },
   };
 }

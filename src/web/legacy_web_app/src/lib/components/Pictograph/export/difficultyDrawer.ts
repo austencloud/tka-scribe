@@ -16,7 +16,7 @@ export function drawDifficultyLabel(
   ctx: CanvasRenderingContext2D,
   difficultyLevel: number,
   x: number = 20,
-  y: number = 20
+  y: number = 20,
 ): void {
   // Validate difficulty level
   const level = Math.max(1, Math.min(5, Math.round(difficultyLevel || 1)));
@@ -48,47 +48,47 @@ export function drawDifficultyLabel(
   // Set gradient colors based on difficulty
   switch (level) {
     case 1:
-      gradient.addColorStop(0, 'rgba(0, 150, 0, 0.8)');
-      gradient.addColorStop(1, 'rgba(0, 200, 0, 0.8)');
+      gradient.addColorStop(0, "rgba(0, 150, 0, 0.8)");
+      gradient.addColorStop(1, "rgba(0, 200, 0, 0.8)");
       break;
     case 2:
-      gradient.addColorStop(0, 'rgba(100, 150, 0, 0.8)');
-      gradient.addColorStop(1, 'rgba(150, 200, 0, 0.8)');
+      gradient.addColorStop(0, "rgba(100, 150, 0, 0.8)");
+      gradient.addColorStop(1, "rgba(150, 200, 0, 0.8)");
       break;
     case 3:
-      gradient.addColorStop(0, 'rgba(200, 150, 0, 0.8)');
-      gradient.addColorStop(1, 'rgba(250, 200, 0, 0.8)');
+      gradient.addColorStop(0, "rgba(200, 150, 0, 0.8)");
+      gradient.addColorStop(1, "rgba(250, 200, 0, 0.8)");
       break;
     case 4:
-      gradient.addColorStop(0, 'rgba(200, 100, 0, 0.8)');
-      gradient.addColorStop(1, 'rgba(250, 150, 0, 0.8)');
+      gradient.addColorStop(0, "rgba(200, 100, 0, 0.8)");
+      gradient.addColorStop(1, "rgba(250, 150, 0, 0.8)");
       break;
     case 5:
-      gradient.addColorStop(0, 'rgba(200, 0, 0, 0.8)');
-      gradient.addColorStop(1, 'rgba(250, 50, 0, 0.8)');
+      gradient.addColorStop(0, "rgba(200, 0, 0, 0.8)");
+      gradient.addColorStop(1, "rgba(250, 50, 0, 0.8)");
       break;
     default:
-      gradient.addColorStop(0, 'rgba(100, 100, 100, 0.8)');
-      gradient.addColorStop(1, 'rgba(150, 150, 150, 0.8)');
+      gradient.addColorStop(0, "rgba(100, 100, 100, 0.8)");
+      gradient.addColorStop(1, "rgba(150, 150, 150, 0.8)");
   }
 
   ctx.fillStyle = gradient;
   ctx.fill();
 
   // Add subtle border
-  ctx.strokeStyle = 'rgba(0, 0, 0, 0.3)';
+  ctx.strokeStyle = "rgba(0, 0, 0, 0.3)";
   ctx.lineWidth = 1;
   ctx.stroke();
 
   // Draw text
-  ctx.fillStyle = '#FFFFFF';
-  ctx.font = 'bold 14px Arial';
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
+  ctx.fillStyle = "#FFFFFF";
+  ctx.font = "bold 14px Arial";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
   ctx.fillText(`Level ${level}`, x + width / 2, y + height / 2);
 
   // Add shadow for better readability
-  ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
+  ctx.shadowColor = "rgba(0, 0, 0, 0.5)";
   ctx.shadowBlur = 2;
   ctx.shadowOffsetX = 1;
   ctx.shadowOffsetY = 1;

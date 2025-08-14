@@ -48,8 +48,8 @@ export class WriteTabPage {
         // Try to find the Write tab button using multiple selectors
         const possibleButtons = [
           // By text content
-          ...Array.from(document.querySelectorAll("button")).filter(
-            (b) => b.textContent?.toLowerCase().includes("write"),
+          ...Array.from(document.querySelectorAll("button")).filter((b) =>
+            b.textContent?.toLowerCase().includes("write"),
           ),
           // By class
           ...Array.from(

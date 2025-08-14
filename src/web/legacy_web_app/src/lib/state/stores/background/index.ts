@@ -6,7 +6,7 @@
  */
 
 // Export the store
-export * from './background.store';
+export * from "./background.store";
 
 // Export selectors
-export * from './background.selectors';
+export * from "./background.selectors";

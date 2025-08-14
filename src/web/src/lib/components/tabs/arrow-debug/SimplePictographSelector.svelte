@@ -62,23 +62,25 @@
 		<div class="pictographs-scroll">
 			<div class="pictographs-grid">
 				{#each allPictographs() as pictograph}
-					<button
-						class="pictograph-button"
-						class:selected={isSelected(pictograph)}
-						onclick={() => handlePictographClick(pictograph)}
-						title="Letter: {pictograph.letter}"
-					>
-						<div class="pictograph-container">
-							<Pictograph
-								pictographData={pictograph}
-								debug={false}
-								showLoadingIndicator={false}
-							/>
-						</div>
-						<div class="pictograph-label">
-							{pictograph.letter}
-						</div>
-					</button>
+					{#if pictograph}
+						<button
+							class="pictograph-button"
+							class:selected={isSelected(pictograph)}
+							onclick={() => handlePictographClick(pictograph)}
+							title="Letter: {pictograph.letter}"
+						>
+							<div class="pictograph-container">
+								<Pictograph
+									pictographData={pictograph}
+									debug={false}
+									showLoadingIndicator={false}
+								/>
+							</div>
+							<div class="pictograph-label">
+								{pictograph.letter}
+							</div>
+						</button>
+					{/if}
 				{/each}
 			</div>
 		</div>

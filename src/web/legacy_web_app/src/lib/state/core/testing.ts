@@ -4,9 +4,9 @@
  * Provides utilities for testing state management components.
  */
 
-import { get, type Readable } from 'svelte/store';
-import { stateRegistry } from './registry';
-import type { AnyActorRef } from 'xstate';
+import { get, type Readable } from "svelte/store";
+import { stateRegistry } from "./registry";
+import type { AnyActorRef } from "xstate";
 
 /**
  * Reset all state containers in the registry
@@ -14,8 +14,8 @@ import type { AnyActorRef } from 'xstate';
  * This is useful for resetting the application state between tests.
  */
 export function resetAllState(): void {
-	// Clear the registry
-	stateRegistry.clear();
+  // Clear the registry
+  stateRegistry.clear();
 }
 
 /**
@@ -25,7 +25,7 @@ export function resetAllState(): void {
  * @returns The current value of the store
  */
 export function getStoreValue<T>(store: Readable<T>): T {
-	return get(store);
+  return get(store);
 }
 
 /**
@@ -37,37 +37,41 @@ export function getStoreValue<T>(store: Readable<T>): T {
  * @returns A promise that resolves when the predicate returns true
  */
 export function waitForStore<T>(
-	store: Readable<T>,
-	predicate: (value: T) => boolean,
-	timeout = 5000
+  store: Readable<T>,
+  predicate: (value: T) => boolean,
+  timeout = 5000,
 ): Promise<T> {
-	return new Promise((resolve, reject) => {
-		// Check if the store already matches the predicate
-		const initialValue = get(store);
-		if (predicate(initialValue)) {
-			resolve(initialValue);
-			return;
-		}
+  return new Promise((resolve, reject) => {
+    // Check if the store already matches the predicate
+    const initialValue = get(store);
+    if (predicate(initialValue)) {
+      resolve(initialValue);
+      return;
+    }
 
-		let unsubscribe: () => void;
+    let unsubscribe: () => void;
 
-		// Set up a timeout
-		const timeoutId = setTimeout(() => {
-			if (unsubscribe) {
-				unsubscribe();
-			}
-			reject(new Error(`Timed out waiting for store to match predicate after ${timeout}ms`));
-		}, timeout);
+    // Set up a timeout
+    const timeoutId = setTimeout(() => {
+      if (unsubscribe) {
+        unsubscribe();
+      }
+      reject(
+        new Error(
+          `Timed out waiting for store to match predicate after ${timeout}ms`,
+        ),
+      );
+    }, timeout);
 
-		// Subscribe to the store
-		unsubscribe = store.subscribe((value) => {
-			if (predicate(value)) {
-				clearTimeout(timeoutId);
-				unsubscribe();
-				resolve(value);
-			}
-		});
-	});
+    // Subscribe to the store
+    unsubscribe = store.subscribe((value) => {
+      if (predicate(value)) {
+        clearTimeout(timeoutId);
+        unsubscribe();
+        resolve(value);
+      }
+    });
+  });
 }
 
 /**
@@ -78,38 +82,44 @@ export function waitForStore<T>(
  * @param timeout Maximum time to wait in milliseconds
  * @returns A promise that resolves when the machine reaches the specified state
  */
-export function waitForState(actor: AnyActorRef, stateValue: string, timeout = 5000): Promise<any> {
-	return new Promise((resolve, reject) => {
-		// Check if the machine is already in the desired state
-		const snapshot = actor.getSnapshot();
-		if (snapshot.matches(stateValue)) {
-			resolve(snapshot);
-			return;
-		}
+export function waitForState(
+  actor: AnyActorRef,
+  stateValue: string,
+  timeout = 5000,
+): Promise<any> {
+  return new Promise((resolve, reject) => {
+    // Check if the machine is already in the desired state
+    const snapshot = actor.getSnapshot();
+    if (snapshot.matches(stateValue)) {
+      resolve(snapshot);
+      return;
+    }
 
-		let subscription: any = null;
+    let subscription: any = null;
 
-		// Set up a timeout
-		const timeoutId = setTimeout(() => {
-			if (subscription) {
-				subscription.unsubscribe();
-			}
-			reject(
-				new Error(`Timed out waiting for machine to reach state "${stateValue}" after ${timeout}ms`)
-			);
-		}, timeout);
+    // Set up a timeout
+    const timeoutId = setTimeout(() => {
+      if (subscription) {
+        subscription.unsubscribe();
+      }
+      reject(
+        new Error(
+          `Timed out waiting for machine to reach state "${stateValue}" after ${timeout}ms`,
+        ),
+      );
+    }, timeout);
 
-		// Subscribe to the machine
-		subscription = actor.subscribe((snapshot) => {
-			if (snapshot.matches(stateValue)) {
-				clearTimeout(timeoutId);
-				if (subscription) {
-					subscription.unsubscribe();
-				}
-				resolve(snapshot);
-			}
-		});
-	});
+    // Subscribe to the machine
+    subscription = actor.subscribe((snapshot) => {
+      if (snapshot.matches(stateValue)) {
+        clearTimeout(timeoutId);
+        if (subscription) {
+          subscription.unsubscribe();
+        }
+        resolve(snapshot);
+      }
+    });
+  });
 }
 
 /**
@@ -119,36 +129,36 @@ export function waitForState(actor: AnyActorRef, stateValue: string, timeout = 5
  * @returns A mock store with additional testing utilities
  */
 export function createMockStore<T>(initialValue: T) {
-	let value = initialValue;
-	const subscribers: Array<(value: T) => void> = [];
+  let value = initialValue;
+  const subscribers: Array<(value: T) => void> = [];
 
-	// Create the store
-	const store = {
-		subscribe: (run: (value: T) => void) => {
-			subscribers.push(run);
-			run(value);
+  // Create the store
+  const store = {
+    subscribe: (run: (value: T) => void) => {
+      subscribers.push(run);
+      run(value);
 
-			return () => {
-				const index = subscribers.indexOf(run);
-				if (index !== -1) {
-					subscribers.splice(index, 1);
-				}
-			};
-		},
+      return () => {
+        const index = subscribers.indexOf(run);
+        if (index !== -1) {
+          subscribers.splice(index, 1);
+        }
+      };
+    },
 
-		// Testing utilities
-		set: (newValue: T) => {
-			value = newValue;
-			subscribers.forEach((run) => run(value));
-		},
+    // Testing utilities
+    set: (newValue: T) => {
+      value = newValue;
+      subscribers.forEach((run) => run(value));
+    },
 
-		update: (updater: (value: T) => T) => {
-			value = updater(value);
-			subscribers.forEach((run) => run(value));
-		},
+    update: (updater: (value: T) => T) => {
+      value = updater(value);
+      subscribers.forEach((run) => run(value));
+    },
 
-		getValue: () => value
-	};
+    getValue: () => value,
+  };
 
-	return store;
+  return store;
 }

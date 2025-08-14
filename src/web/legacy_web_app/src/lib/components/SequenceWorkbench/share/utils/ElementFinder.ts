@@ -5,8 +5,8 @@
  * It uses multiple strategies to ensure the element can be found reliably.
  */
 
-import type { ElementContext } from '../../context/ElementContext';
-import { logger } from '$lib/core/logging';
+import type { ElementContext } from "../../context/ElementContext";
+import { logger } from "$lib/core/logging";
 
 /**
  * Find the BeatFrame element in the DOM using multiple strategies
@@ -15,56 +15,61 @@ import { logger } from '$lib/core/logging';
  * @returns The found element or null if not found
  */
 export function findBeatFrameElement(
-  beatFrameContext?: ElementContext | null
+  beatFrameContext?: ElementContext | null,
 ): HTMLElement | null {
-  logger.debug('ElementFinder: Actively searching for BeatFrame element in DOM');
+  logger.debug(
+    "ElementFinder: Actively searching for BeatFrame element in DOM",
+  );
 
   // First try from context (most reliable)
   if (beatFrameContext) {
     const contextElement = beatFrameContext.getElement();
     if (contextElement) {
-      logger.debug('ElementFinder: Found element from context');
+      logger.debug("ElementFinder: Found element from context");
       return contextElement;
     }
   }
 
   // Try to find the element by class or ID
-  const byClass = document.querySelector('.beat-frame') as HTMLElement | null;
+  const byClass = document.querySelector(".beat-frame") as HTMLElement | null;
   if (byClass) {
-    logger.debug('ElementFinder: Found element by class .beat-frame');
+    logger.debug("ElementFinder: Found element by class .beat-frame");
     return byClass;
   }
 
   // Try by specific container selectors
   const byContainer = document.querySelector(
-    '.sequence-container .beat-frame-container'
+    ".sequence-container .beat-frame-container",
   ) as HTMLElement | null;
   if (byContainer) {
-    logger.debug('ElementFinder: Found element by container selector');
+    logger.debug("ElementFinder: Found element by container selector");
     return byContainer;
   }
 
   // Try to find element with SVGs inside (more generic approach)
-  const svgContainers = Array.from(document.querySelectorAll('.sequence-widget svg')).map((svg) =>
-    svg.closest('.sequence-widget > div')
-  );
+  const svgContainers = Array.from(
+    document.querySelectorAll(".sequence-widget svg"),
+  ).map((svg) => svg.closest(".sequence-widget > div"));
   if (svgContainers.length > 0 && svgContainers[0] instanceof HTMLElement) {
-    logger.debug('ElementFinder: Found container with SVGs');
+    logger.debug("ElementFinder: Found container with SVGs");
     return svgContainers[0] as HTMLElement;
   }
 
   // Try more aggressive selectors as a last resort
   const alternativeElement =
-    document.querySelector('.sequence-widget') ||
-    document.querySelector('.sequence-container') ||
-    document.querySelector('.sequence');
+    document.querySelector(".sequence-widget") ||
+    document.querySelector(".sequence-container") ||
+    document.querySelector(".sequence");
 
   if (alternativeElement instanceof HTMLElement) {
-    logger.debug('ElementFinder: Found alternative element:', alternativeElement);
+    logger.debug(
+      "ElementFinder: Found alternative element:",
+      alternativeElement,
+    );
     return alternativeElement;
   }
 
-  logger.debug('ElementFinder: Could not find BeatFrame element in DOM');
+  logger.debug("ElementFinder: Could not find BeatFrame element in DOM");
   return null;
 }
 
@@ -75,24 +80,24 @@ export function findBeatFrameElement(
  * @returns Cleanup function to remove the event listener
  */
 export function listenForBeatFrameElement(
-  callback: (element: HTMLElement) => void
+  callback: (element: HTMLElement) => void,
 ): () => void {
   const handleElementAvailable = (event: CustomEvent) => {
     if (event.detail?.element) {
-      logger.debug('ElementFinder: Got element from event');
+      logger.debug("ElementFinder: Got element from event");
       callback(event.detail.element);
     }
   };
 
   document.addEventListener(
-    'beatframe-element-available',
-    handleElementAvailable as EventListener
+    "beatframe-element-available",
+    handleElementAvailable as EventListener,
   );
 
   return () => {
     document.removeEventListener(
-      'beatframe-element-available',
-      handleElementAvailable as EventListener
+      "beatframe-element-available",
+      handleElementAvailable as EventListener,
     );
   };
 }

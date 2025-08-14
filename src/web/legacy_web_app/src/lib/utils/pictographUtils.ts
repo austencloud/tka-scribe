@@ -1,7 +1,7 @@
 /**
  * Utility functions for handling pictograph data
  */
-import type { PictographData } from '$lib/types/PictographData';
+import type { PictographData } from "$lib/types/PictographData";
 
 /**
  * Creates a safe copy of pictograph data that can be serialized to JSON
@@ -10,7 +10,9 @@ import type { PictographData } from '$lib/types/PictographData';
  * @param data The pictograph data to copy
  * @returns A safe copy of the pictograph data
  */
-export function createSafePictographCopy(data: PictographData | null): PictographData | null {
+export function createSafePictographCopy(
+  data: PictographData | null,
+): PictographData | null {
   if (!data) return null;
 
   try {
@@ -28,7 +30,7 @@ export function createSafePictographCopy(data: PictographData | null): Pictograp
       const originalSvgData = safeCopy.redArrowData.svgData;
       safeCopy.redArrowData = {
         ...safeCopy.redArrowData,
-        svgData: { ...originalSvgData }
+        svgData: { ...originalSvgData },
       };
 
       // Remove DOM elements and non-serializable properties
@@ -45,7 +47,7 @@ export function createSafePictographCopy(data: PictographData | null): Pictograp
       const originalSvgData = safeCopy.blueArrowData.svgData;
       safeCopy.blueArrowData = {
         ...safeCopy.blueArrowData,
-        svgData: { ...originalSvgData }
+        svgData: { ...originalSvgData },
       };
 
       // Remove DOM elements and non-serializable properties
@@ -85,7 +87,7 @@ export function createSafePictographCopy(data: PictographData | null): Pictograp
 
     return safeCopy;
   } catch (error) {
-    console.error('Error creating safe pictograph copy:', error);
+    console.error("Error creating safe pictograph copy:", error);
     return null;
   }
 }
@@ -105,12 +107,14 @@ export function createSafeBeatCopy(beat: any): any {
 
     // Handle pictograph data
     if (safeCopy.pictographData) {
-      safeCopy.pictographData = createSafePictographCopy(safeCopy.pictographData);
+      safeCopy.pictographData = createSafePictographCopy(
+        safeCopy.pictographData,
+      );
     }
 
     return safeCopy;
   } catch (error) {
-    console.error('Error creating safe beat copy:', error);
+    console.error("Error creating safe beat copy:", error);
     return null;
   }
 }

@@ -9,7 +9,13 @@
  */
 
 import type { ArrowData, MotionData, PictographData } from "$lib/domain";
-import { ArrowType, GridMode, Location, MotionType } from "$lib/domain";
+import {
+  ArrowType,
+  GridMode,
+  Location,
+  MotionType,
+  RotationDirection,
+} from "$lib/domain";
 import { describe, expect, it } from "vitest";
 import { ArrowAdjustmentCalculator } from "../calculation/ArrowAdjustmentCalculator";
 import { ArrowLocationCalculator } from "../calculation/ArrowLocationCalculator";

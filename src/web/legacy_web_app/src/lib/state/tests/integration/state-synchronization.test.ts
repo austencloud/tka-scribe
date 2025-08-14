@@ -1,31 +1,30 @@
 /**
  * Tests for state synchronization between different state containers
  */
-import { describe, it, expect } from 'vitest';
-import { get } from 'svelte/store';
-import { createMachine, assign } from 'xstate';
-import { stateRegistry } from '../../core/registry';
-import { createStore } from '../../core/store';
-import { setupIntegrationTests } from './setup';
+import { describe, it, expect } from "vitest";
+import { get } from "svelte/store";
+import { createMachine, assign } from "xstate";
+import { stateRegistry } from "../../core/registry";
+import { createStore } from "../../core/store";
+import { setupIntegrationTests } from "./setup";
 
-describe('State Synchronization', () => {
+describe("State Synchronization", () => {
   setupIntegrationTests();
 
-  it('synchronizes related stores through derived selectors', () => {
+  it("synchronizes related stores through derived selectors", () => {
     // Create two related stores
-    const sourceStore = createStore<{ count: number }, { increment: () => void }>(
-      'sourceStore',
-      { count: 0 },
-      (set, update) => ({
-        increment: () => update((state) => ({ count: state.count + 1 }))
-      })
-    );
+    const sourceStore = createStore<
+      { count: number },
+      { increment: () => void }
+    >("sourceStore", { count: 0 }, (set, update) => ({
+      increment: () => update((state) => ({ count: state.count + 1 })),
+    }));
 
     const derivedStore = createStore<
       { doubledCount: number },
       { setDoubledCount: (value: number) => void }
-    >('derivedStore', { doubledCount: 0 }, (set) => ({
-      setDoubledCount: (value: number) => set({ doubledCount: value })
+    >("derivedStore", { doubledCount: 0 }, (set) => ({
+      setDoubledCount: (value: number) => set({ doubledCount: value }),
     }));
 
     // Set up synchronization
@@ -49,7 +48,7 @@ describe('State Synchronization', () => {
     unsubscribe();
   });
 
-  it('synchronizes machine state with multiple dependent stores', async () => {
+  it("synchronizes machine state with multiple dependent stores", async () => {
     interface AppContext {
       data: Record<string, any> | null;
       error: string | null;
@@ -57,17 +56,17 @@ describe('State Synchronization', () => {
     }
 
     interface LoadedEvent {
-      type: 'LOADED';
+      type: "LOADED";
       data: Record<string, any>;
     }
 
     interface ErrorEvent {
-      type: 'ERROR';
+      type: "ERROR";
       message: string;
     }
 
     interface UpdateEvent {
-      type: 'UPDATE';
+      type: "UPDATE";
       updates: Record<string, any>;
     }
 
@@ -75,17 +74,17 @@ describe('State Synchronization', () => {
       | LoadedEvent
       | ErrorEvent
       | UpdateEvent
-      | { type: 'RELOAD' }
-      | { type: 'RETRY' };
+      | { type: "RELOAD" }
+      | { type: "RETRY" };
 
     // Create a machine that tracks application state
     const appStateMachine = createMachine({
-      id: 'appState',
-      initial: 'loading',
+      id: "appState",
+      initial: "loading",
       context: {
         data: null,
         error: null,
-        isLoading: true
+        isLoading: true,
       },
       types: {} as {
         context: AppContext;
@@ -95,71 +94,74 @@ describe('State Synchronization', () => {
         loading: {
           on: {
             LOADED: {
-              target: 'ready',
+              target: "ready",
               actions: assign({
                 data: ({ event }) => event.data,
-                isLoading: false
-              })
+                isLoading: false,
+              }),
             },
             ERROR: {
-              target: 'error',
+              target: "error",
               actions: assign({
                 error: ({ event }) => event.message,
-                isLoading: false
-              })
-            }
-          }
+                isLoading: false,
+              }),
+            },
+          },
         },
         ready: {
           on: {
             UPDATE: {
               actions: assign({
-                data: ({ event, context }) => ({ ...context.data, ...event.updates })
-              })
+                data: ({ event, context }) => ({
+                  ...context.data,
+                  ...event.updates,
+                }),
+              }),
             },
             RELOAD: {
-              target: 'loading',
-              actions: assign({ isLoading: true })
-            }
-          }
+              target: "loading",
+              actions: assign({ isLoading: true }),
+            },
+          },
         },
         error: {
           on: {
             RETRY: {
-              target: 'loading',
+              target: "loading",
               actions: assign({
                 error: null,
-                isLoading: true
-              })
-            }
-          }
-        }
-      }
+                isLoading: true,
+              }),
+            },
+          },
+        },
+      },
     });
 
     // Register the machine
-    const appActor = stateRegistry.registerMachine('appState', appStateMachine);
+    const appActor = stateRegistry.registerMachine("appState", appStateMachine);
 
     // Create dependent stores
     const loadingStore = createStore<
       { isLoading: boolean },
       { setLoading: (isLoading: boolean) => void }
-    >('loadingStore', { isLoading: true }, (set) => ({
-      setLoading: (isLoading: boolean) => set({ isLoading })
+    >("loadingStore", { isLoading: true }, (set) => ({
+      setLoading: (isLoading: boolean) => set({ isLoading }),
     }));
 
     const dataStore = createStore<
       { currentData: Record<string, any> | null },
       { setData: (data: Record<string, any>) => void }
-    >('dataStore', { currentData: null }, (set) => ({
-      setData: (data: Record<string, any>) => set({ currentData: data })
+    >("dataStore", { currentData: null }, (set) => ({
+      setData: (data: Record<string, any>) => set({ currentData: data }),
     }));
 
     const errorStore = createStore<
       { currentError: string | null },
       { setError: (error: string | null) => void }
-    >('errorStore', { currentError: null }, (set) => ({
-      setError: (error: string | null) => set({ currentError: error })
+    >("errorStore", { currentError: null }, (set) => ({
+      setError: (error: string | null) => set({ currentError: error }),
     }));
 
     // Set up synchronization
@@ -179,28 +181,28 @@ describe('State Synchronization', () => {
 
     // Simulate loading completion
     appActor.send({
-      type: 'LOADED',
-      data: { id: 123, name: 'Test Item' }
+      type: "LOADED",
+      data: { id: 123, name: "Test Item" },
     });
 
     // Check store synchronization
     expect(get(loadingStore).isLoading).toBe(false);
-    expect(get(dataStore).currentData).toEqual({ id: 123, name: 'Test Item' });
+    expect(get(dataStore).currentData).toEqual({ id: 123, name: "Test Item" });
     expect(get(errorStore).currentError).toBeNull();
 
     // Simulate an error
     appActor.send({
-      type: 'RELOAD'
+      type: "RELOAD",
     });
 
     appActor.send({
-      type: 'ERROR',
-      message: 'Failed to load data'
+      type: "ERROR",
+      message: "Failed to load data",
     });
 
     // Check error state synchronization
     expect(get(loadingStore).isLoading).toBe(false);
-    expect(get(errorStore).currentError).toBe('Failed to load data');
+    expect(get(errorStore).currentError).toBe("Failed to load data");
 
     // Clean up
     subscription.unsubscribe();

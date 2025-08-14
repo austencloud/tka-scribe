@@ -6,11 +6,11 @@
  */
 
 export {
-	optionPickerContainer,
-	filteredOptions,
-	groupedOptions,
-	optionsToDisplay,
-	categoryKeys
-} from './optionPickerContainer.svelte';
+  optionPickerContainer,
+  filteredOptions,
+  groupedOptions,
+  optionsToDisplay,
+  categoryKeys,
+} from "./optionPickerContainer.svelte";
 
-export type { OptionPickerState, LastSelectedTabState } from './types';
+export type { OptionPickerState, LastSelectedTabState } from "./types";

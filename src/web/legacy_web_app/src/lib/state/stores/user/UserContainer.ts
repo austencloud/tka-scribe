@@ -5,12 +5,12 @@
  * using the modern container-based approach with Svelte 5 runes.
  */
 
-import { createContainer } from '$lib/state/core/container';
-import { browser } from '$app/environment';
+import { createContainer } from "$lib/state/core/container";
+import { browser } from "$app/environment";
 
 // Storage keys
-const USER_STORAGE_KEY = 'user_data';
-const FIRST_VISIT_KEY = 'first_visit_completed';
+const USER_STORAGE_KEY = "user_data";
+const FIRST_VISIT_KEY = "first_visit_completed";
 
 // Define the user state interface
 export interface UserState {
@@ -21,9 +21,9 @@ export interface UserState {
 
 // Initial state
 const initialState: UserState = {
-  currentUser: 'User', // Default username
+  currentUser: "User", // Default username
   hasCompletedSetup: false,
-  lastUpdated: Date.now()
+  lastUpdated: Date.now(),
 };
 
 /**
@@ -41,17 +41,17 @@ function createUserContainer() {
         savedState = {
           ...initialState,
           ...parsed,
-          lastUpdated: Date.now()
+          lastUpdated: Date.now(),
         };
       }
 
       // Check if first visit setup has been completed
       const setupCompleted = localStorage.getItem(FIRST_VISIT_KEY);
-      if (setupCompleted === 'true') {
+      if (setupCompleted === "true") {
         savedState.hasCompletedSetup = true;
       }
     } catch (error) {
-      console.error('Failed to load user data from localStorage:', error);
+      console.error("Failed to load user data from localStorage:", error);
     }
   }
 
@@ -61,17 +61,17 @@ function createUserContainer() {
      * Set the current username
      */
     setUsername: (username: string) => {
-      if (!username || typeof username !== 'string') {
-        console.warn('Invalid username provided, using default');
-        username = 'User';
+      if (!username || typeof username !== "string") {
+        console.warn("Invalid username provided, using default");
+        username = "User";
       }
 
       // Trim and limit length
       username = username.trim().substring(0, 50);
 
       // Use default if empty after trimming
-      if (username === '') {
-        username = 'User';
+      if (username === "") {
+        username = "User";
       }
 
       update((state) => {
@@ -82,12 +82,15 @@ function createUserContainer() {
       // Save to localStorage
       if (browser) {
         try {
-          localStorage.setItem(USER_STORAGE_KEY, JSON.stringify({
-            currentUser: username,
-            hasCompletedSetup: state.hasCompletedSetup
-          }));
+          localStorage.setItem(
+            USER_STORAGE_KEY,
+            JSON.stringify({
+              currentUser: username,
+              hasCompletedSetup: state.hasCompletedSetup,
+            }),
+          );
         } catch (error) {
-          console.error('Failed to save username to localStorage:', error);
+          console.error("Failed to save username to localStorage:", error);
         }
       }
     },
@@ -109,13 +112,19 @@ function createUserContainer() {
       // Save to localStorage
       if (browser) {
         try {
-          localStorage.setItem(FIRST_VISIT_KEY, 'true');
-          localStorage.setItem(USER_STORAGE_KEY, JSON.stringify({
-            currentUser: state.currentUser,
-            hasCompletedSetup: true
-          }));
+          localStorage.setItem(FIRST_VISIT_KEY, "true");
+          localStorage.setItem(
+            USER_STORAGE_KEY,
+            JSON.stringify({
+              currentUser: state.currentUser,
+              hasCompletedSetup: true,
+            }),
+          );
         } catch (error) {
-          console.error('Failed to save setup completion to localStorage:', error);
+          console.error(
+            "Failed to save setup completion to localStorage:",
+            error,
+          );
         }
       }
     },
@@ -132,12 +141,15 @@ function createUserContainer() {
       // Save to localStorage
       if (browser) {
         try {
-          localStorage.setItem(USER_STORAGE_KEY, JSON.stringify({
-            currentUser: initialState.currentUser,
-            hasCompletedSetup: state.hasCompletedSetup
-          }));
+          localStorage.setItem(
+            USER_STORAGE_KEY,
+            JSON.stringify({
+              currentUser: initialState.currentUser,
+              hasCompletedSetup: state.hasCompletedSetup,
+            }),
+          );
         } catch (error) {
-          console.error('Failed to reset user data in localStorage:', error);
+          console.error("Failed to reset user data in localStorage:", error);
         }
       }
     },
@@ -147,7 +159,7 @@ function createUserContainer() {
      */
     isFirstVisit: (): boolean => {
       return !state.hasCompletedSetup;
-    }
+    },
   }));
 }
 

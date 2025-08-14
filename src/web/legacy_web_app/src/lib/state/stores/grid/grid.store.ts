@@ -4,13 +4,18 @@
  * This store manages the state of the grid in the application.
  */
 
-import { createStore } from '$lib/state/core';
-import type { GridData, GridMode, GridPoint, Coordinate } from '$lib/components/objects/Grid/types';
-import { parseGridCoordinates } from '$lib/components/objects/Grid/gridUtils';
+import { createStore } from "$lib/state/core";
+import type {
+  GridData,
+  GridMode,
+  GridPoint,
+  Coordinate,
+} from "$lib/components/objects/Grid/types";
+import { parseGridCoordinates } from "$lib/components/objects/Grid/gridUtils";
 
 // Define the store state interface
 export interface GridStoreState {
-  status: 'idle' | 'loading' | 'loaded' | 'error';
+  status: "idle" | "loading" | "loaded" | "error";
   mode: GridMode;
   data: GridData | null;
   error: Error | null;
@@ -19,33 +24,36 @@ export interface GridStoreState {
 
 // Initial state
 const initialState: GridStoreState = {
-  status: 'idle',
-  mode: 'diamond',
+  status: "idle",
+  mode: "diamond",
   data: null,
   error: null,
-  debugMode: false
+  debugMode: false,
 };
 
 // Create the store
-export const gridStore = createStore<GridStoreState, {
-  setMode: (mode: GridMode) => void;
-  loadData: (mode?: GridMode) => Promise<void>;
-  setDebugMode: (enabled: boolean) => void;
-  findClosestPoint: (
-    coords: Coordinate,
-    pointType?: 'hand' | 'layer2' | 'outer' | 'all',
-    variant?: 'normal' | 'strict'
-  ) => GridPoint | null;
-  getPointByKey: (key: string) => GridPoint | null;
-}>(
-  'grid',
+export const gridStore = createStore<
+  GridStoreState,
+  {
+    setMode: (mode: GridMode) => void;
+    loadData: (mode?: GridMode) => Promise<void>;
+    setDebugMode: (enabled: boolean) => void;
+    findClosestPoint: (
+      coords: Coordinate,
+      pointType?: "hand" | "layer2" | "outer" | "all",
+      variant?: "normal" | "strict",
+    ) => GridPoint | null;
+    getPointByKey: (key: string) => GridPoint | null;
+  }
+>(
+  "grid",
   initialState,
   (set, update, get) => {
     return {
       setMode: (mode: GridMode) => {
-        update(state => ({
+        update((state) => ({
           ...state,
-          mode
+          mode,
         }));
       },
 
@@ -55,17 +63,17 @@ export const gridStore = createStore<GridStoreState, {
 
         // Update mode if provided
         if (mode) {
-          update(state => ({
+          update((state) => ({
             ...state,
-            mode: gridMode
+            mode: gridMode,
           }));
         }
 
         // Set loading state
-        update(state => ({
+        update((state) => ({
           ...state,
-          status: 'loading',
-          error: null
+          status: "loading",
+          error: null,
         }));
 
         try {
@@ -73,54 +81,60 @@ export const gridStore = createStore<GridStoreState, {
           const parsedData = parseGridCoordinates(gridMode);
 
           // Artificial delay for demo purposes (remove in production)
-          await new Promise(resolve => setTimeout(resolve, 100));
+          await new Promise((resolve) => setTimeout(resolve, 100));
 
           // Set loaded state with data
-          update(state => ({
+          update((state) => ({
             ...state,
-            status: 'loaded',
+            status: "loaded",
             data: parsedData,
-            error: null
+            error: null,
           }));
         } catch (error) {
-          console.error(`Failed to load grid data for mode ${gridMode}:`, error);
+          console.error(
+            `Failed to load grid data for mode ${gridMode}:`,
+            error,
+          );
 
-          update(state => ({
+          update((state) => ({
             ...state,
-            status: 'error',
-            error: error instanceof Error ? error : new Error('Unknown error loading grid data')
+            status: "error",
+            error:
+              error instanceof Error
+                ? error
+                : new Error("Unknown error loading grid data"),
           }));
         }
       },
 
       setDebugMode: (enabled: boolean) => {
-        update(state => ({
+        update((state) => ({
           ...state,
-          debugMode: enabled
+          debugMode: enabled,
         }));
       },
 
       findClosestPoint: (
         coords: Coordinate,
-        pointType: 'hand' | 'layer2' | 'outer' | 'all' = 'hand',
-        variant: 'normal' | 'strict' = 'normal'
+        pointType: "hand" | "layer2" | "outer" | "all" = "hand",
+        variant: "normal" | "strict" = "normal",
       ): GridPoint | null => {
         const state = get();
-        if (state.status !== 'loaded' || !state.data) return null;
+        if (state.status !== "loaded" || !state.data) return null;
 
         const data = state.data;
         let points: GridPoint[] = [];
 
         // Collect points based on type
-        if (pointType === 'hand' || pointType === 'all') {
+        if (pointType === "hand" || pointType === "all") {
           points = [...points, ...Object.values(data.handPoints[variant])];
         }
 
-        if (pointType === 'layer2' || pointType === 'all') {
+        if (pointType === "layer2" || pointType === "all") {
           points = [...points, ...Object.values(data.layer2Points[variant])];
         }
 
-        if (pointType === 'outer' || pointType === 'all') {
+        if (pointType === "outer" || pointType === "all") {
           points = [...points, ...Object.values(data.outerPoints)];
         }
 
@@ -143,12 +157,12 @@ export const gridStore = createStore<GridStoreState, {
 
       getPointByKey: (key: string): GridPoint | null => {
         const state = get();
-        if (state.status !== 'loaded' || !state.data) return null;
+        if (state.status !== "loaded" || !state.data) return null;
 
         const data = state.data;
 
         // Search through all point collections
-        for (const variant of ['normal', 'strict'] as const) {
+        for (const variant of ["normal", "strict"] as const) {
           // Check hand points
           if (data.handPoints[variant][key]) {
             return data.handPoints[variant][key];
@@ -166,18 +180,18 @@ export const gridStore = createStore<GridStoreState, {
         }
 
         // Check if it's the center point
-        if (key === 'center') {
+        if (key === "center") {
           return data.centerPoint;
         }
 
         return null;
-      }
+      },
     };
   },
   {
     persist: false,
-    description: 'Manages the state of the grid in the application'
-  }
+    description: "Manages the state of the grid in the application",
+  },
 );
 
 // Helper function to calculate distance between two points

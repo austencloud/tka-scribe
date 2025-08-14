@@ -1,6 +1,6 @@
 // src/lib/components/MainWidget/utils/transitions.ts
-import { fly, fade, type TransitionConfig } from 'svelte/transition';
-import { cubicInOut } from 'svelte/easing';
+import { fly, fade, type TransitionConfig } from "svelte/transition";
+import { cubicInOut } from "svelte/easing";
 
 /**
  * Transition configuration options
@@ -13,14 +13,14 @@ export interface TransitionOptions {
 /**
  * Direction for transitions
  */
-export type TransitionDirection = 'left' | 'right' | 'up' | 'down';
+export type TransitionDirection = "left" | "right" | "up" | "down";
 
 /**
  * Creates a consistent fly transition based on direction
  */
 export function createTabTransition(
   direction: TransitionDirection,
-  options: TransitionOptions = {}
+  options: TransitionOptions = {},
 ): (node: Element) => TransitionConfig {
   const { duration = 300, delay = 0 } = options;
 
@@ -29,13 +29,13 @@ export function createTabTransition(
   return (node: Element) => {
     const getCoordinates = () => {
       switch (direction) {
-        case 'left':
+        case "left":
           return { x: -distance, y: 0 };
-        case 'right':
+        case "right":
           return { x: distance, y: 0 };
-        case 'up':
+        case "up":
           return { x: 0, y: -distance };
-        case 'down':
+        case "down":
           return { x: 0, y: distance };
       }
     };
@@ -48,7 +48,7 @@ export function createTabTransition(
       delay,
       easing: cubicInOut,
       x,
-      y
+      y,
     });
   };
 }
@@ -58,16 +58,16 @@ export function createTabTransition(
  */
 export function getTabTransitionDirection(
   currentIndex: number,
-  previousIndex: number
+  previousIndex: number,
 ): TransitionDirection {
-  return currentIndex > previousIndex ? 'right' : 'left';
+  return currentIndex > previousIndex ? "right" : "left";
 }
 
 /**
  * Creates a consistent crossfade transition for content swapping
  */
 export function createContentFade(
-  options: TransitionOptions = {}
+  options: TransitionOptions = {},
 ): (node: Element) => TransitionConfig {
   const { duration = 200, delay = 0 } = options;
 
@@ -75,7 +75,7 @@ export function createContentFade(
     return fade(node, {
       duration,
       delay,
-      easing: cubicInOut
+      easing: cubicInOut,
     });
   };
 }
