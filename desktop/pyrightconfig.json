@@ -13,7 +13,7 @@
   ],
   "pythonVersion": "3.13",
   "pythonPlatform": "Windows",
-  "typeCheckingMode": "basic",
+  "typeCheckingMode": "strict",
   "useLibraryCodeForTypes": true,
   "autoSearchPaths": true,
   "autoImportCompletions": true,
@@ -27,18 +27,27 @@
     "../../src/desktop/modern/src",
     "../../src/desktop/legacy",
     "../../launcher",
-    "../../packages"
+    "../../packages",
+    ".",
+    "./modern",
+    "./legacy",
+    "./data",
+    "../",
+    "./modern/src/application",
+    "./modern/src/domain",
+    "./modern/src/presentation",
+    "./modern/src/infrastructure"
   ],
 
-  // Comprehensive diagnostic suppressions
-  "reportMissingImports": "none",
-  "reportMissingModuleSource": "none",
-  "reportUnusedImport": "information",
+  // Comprehensive diagnostic settings for cleanup
+  "reportMissingImports": "error",
+  "reportMissingModuleSource": "warning",
+  "reportUnusedImport": "warning",
   "reportUnusedClass": "information",
   "reportUnusedFunction": "information",
   "reportUnusedVariable": "information",
   "reportUnusedCoroutine": "information",
-  "reportUnusedExpression": "none",
+  "reportUnusedExpression": "warning",
 
   // Type checking suppressions
   "reportGeneralTypeIssues": "information",

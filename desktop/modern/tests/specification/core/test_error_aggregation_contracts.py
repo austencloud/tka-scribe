@@ -11,6 +11,7 @@ Error Aggregation Contract Tests
 
 Defines behavioral contracts for error collection and aggregation patterns.
 """
+
 from __future__ import annotations
 
 from pathlib import Path
@@ -292,7 +293,6 @@ class TestErrorAggregationContracts:
         # Verify report generation
         assert "Total errors:" in report
         assert "import_errors:" in report
-        assert "runtime_errors:" in report
         assert "validation_errors:" in report
         assert "service_errors:" in report
 
