@@ -1,9 +1,7 @@
 from __future__ import annotations
+
 from typing import TYPE_CHECKING
 
-from main_window.main_widget.browse_tab.sequence_picker.nav_sidebar.sidebar_button import (
-    SidebarButton,
-)
 from PyQt6.QtWidgets import (
     QHBoxLayout,
     QLabel,
@@ -11,6 +9,10 @@ from PyQt6.QtWidgets import (
     QSizePolicy,
     QSpacerItem,
     QWidget,
+)
+
+from main_window.main_widget.browse_tab.sequence_picker.nav_sidebar.sidebar_button import (
+    SidebarButton,
 )
 
 if TYPE_CHECKING:

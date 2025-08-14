@@ -5,13 +5,12 @@ import json
 from typing import Any
 import uuid
 
-from desktop.modern.domain.models.arrow_data import ArrowData
-from desktop.modern.domain.models.enums import ArrowType
-from desktop.modern.domain.models.glyph_models import GlyphData
-from desktop.modern.domain.models.grid_data import GridData
-from desktop.modern.domain.models.prop_data import PropData
-
+from .arrow_data import ArrowData
+from .enums import ArrowType
+from .glyph_models import GlyphData
+from .grid_data import GridData
 from .motion_models import MotionData
+from .prop_data import PropData
 
 
 @dataclass(frozen=True)
