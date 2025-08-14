@@ -61,27 +61,27 @@ export function createPanelState(
   let currentResize = $state<ResizeOperation | null>(null);
 
   // ✅ DERIVED RUNES: Computed values from state
-  let isAnyPanelResizing = $derived(
+  const isAnyPanelResizing = $derived(
     navigationPanel.isResizing ||
       animationPanel.isResizing ||
       currentResize !== null,
   );
 
-  let navigationWidth = $derived(
+  const navigationWidth = $derived(
     navigationPanel.isCollapsed
       ? navigationPanel.collapsedWidth
       : navigationPanel.width,
   );
 
-  let animationWidth = $derived(
+  const animationWidth = $derived(
     animationPanel.isCollapsed
       ? animationPanel.collapsedWidth
       : animationPanel.width,
   );
 
-  let isNavigationCollapsed = $derived(navigationPanel.isCollapsed);
-  let isAnimationCollapsed = $derived(animationPanel.isCollapsed);
-  let isAnimationVisible = $derived(animationPanel.isVisible);
+  const isNavigationCollapsed = $derived(navigationPanel.isCollapsed);
+  const isAnimationCollapsed = $derived(animationPanel.isCollapsed);
+  const isAnimationVisible = $derived(animationPanel.isVisible);
 
   // ✅ SERVICE INTEGRATION: Listen to service state changes
   const handleStateChange = (panelId: string, newState: PanelState) => {

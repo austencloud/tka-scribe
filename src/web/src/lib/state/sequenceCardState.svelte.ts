@@ -86,7 +86,7 @@ const exportSettingsState = $state({
 // ============================================================================
 
 // Filtered sequences based on selected length
-let filteredSequences = $derived(() => {
+const filteredSequences = $derived(() => {
   const allSequences = getAllSequences(); // From existing sequenceState
 
   if (sequenceCardState.selectedLength === 0) {
@@ -99,7 +99,7 @@ let filteredSequences = $derived(() => {
 });
 
 // Current page sequences for pagination
-let currentPageSequences = $derived(() => {
+const currentPageSequences = $derived(() => {
   const startIndex =
     (sequenceCardState.currentPage - 1) * sequenceCardState.itemsPerPage;
   const endIndex = startIndex + sequenceCardState.itemsPerPage;
@@ -107,12 +107,12 @@ let currentPageSequences = $derived(() => {
 });
 
 // Total pages calculation
-let totalPages = $derived(() => {
+const totalPages = $derived(() => {
   return Math.ceil(filteredSequences().length / sequenceCardState.itemsPerPage);
 });
 
 // Layout configuration based on current settings
-let currentLayout = $derived(() => {
+const currentLayout = $derived(() => {
   const { containerWidth, containerHeight, columnCount } = sequenceCardState;
 
   return calculateOptimalLayout(
@@ -124,7 +124,7 @@ let currentLayout = $derived(() => {
 });
 
 // Progress message with dynamic content
-let progressMessage = $derived(() => {
+const progressMessage = $derived(() => {
   const { isExporting, isRegenerating, exportProgress, selectedLength } =
     sequenceCardState;
   const sequenceCount = filteredSequences.length;
@@ -148,7 +148,7 @@ let progressMessage = $derived(() => {
 });
 
 // Export readiness check
-let canExport = $derived(() => {
+const canExport = $derived(() => {
   return (
     !sequenceCardState.isExporting &&
     !sequenceCardState.isRegenerating &&
@@ -157,7 +157,7 @@ let canExport = $derived(() => {
 });
 
 // Cache status information
-let cacheStatus = $derived(() => {
+const cacheStatus = $derived(() => {
   return {
     enabled: sequenceCardState.cacheEnabled,
     sizeLimit: sequenceCardState.cacheSizeLimit,

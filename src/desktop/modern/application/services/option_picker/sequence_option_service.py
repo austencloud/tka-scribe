@@ -5,8 +5,11 @@ Handles sequence state analysis and option generation without Qt dependencies.
 Extracted from option_picker_scroll.py to maintain clean architecture.
 """
 
+from __future__ import annotations
+
 import logging
 from typing import Any
+
 
 logger = logging.getLogger(__name__)
 
@@ -18,6 +21,9 @@ from desktop.modern.application.services.positioning.arrows.calculation.orientat
 )
 from desktop.modern.application.services.positioning.arrows.utilities.pictograph_position_matcher import (
     PictographPositionMatcher,
+)
+from desktop.modern.application.services.sequence.sequence_continuity_monitor import (
+    SequenceContinuityMonitor,
 )
 from desktop.modern.application.services.sequence.sequence_orientation_validator import (
     SequenceOrientationValidator,
@@ -53,6 +59,7 @@ class SequenceOptionService(ISequenceOptionService):
         self._orientation_updater = OptionOrientationUpdater()
         self._orientation_calculator = OrientationCalculator()
         self._sequence_orientation_validator = SequenceOrientationValidator()
+        self._continuity_monitor = SequenceContinuityMonitor()
 
     def get_options_for_sequence(
         self, sequence_data: SequenceData | list[dict]
@@ -106,6 +113,16 @@ class SequenceOptionService(ISequenceOptionService):
                     f"Using modern SequenceData with {len(sequence_data.beats)} beats"
                 )
 
+                # Validate sequence continuity before processing options
+                is_valid, issues, fixed_sequence = (
+                    self._continuity_monitor.validate_sequence_continuity(sequence_data)
+                )
+                if not is_valid:
+                    logger.warning(f"Sequence continuity issues detected: {issues}")
+                    if fixed_sequence:
+                        logger.info("Using auto-fixed sequence for option calculation")
+                        sequence_data = fixed_sequence
+
                 # Use modern sequence orientation validator for accurate orientation continuity
                 updated_options = self._sequence_orientation_validator.calculate_option_start_orientations(
                     sequence_data, all_options
@@ -113,6 +130,20 @@ class SequenceOptionService(ISequenceOptionService):
                 logger.debug(
                     f"Orientation validator returned {len(updated_options)} options"
                 )
+
+                # Validate that each option maintains continuity
+                for i, option in enumerate(
+                    updated_options[:3]
+                ):  # Check first few options for performance
+                    compatible, option_issues = (
+                        self._continuity_monitor.ensure_option_continuity(
+                            sequence_data, option
+                        )
+                    )
+                    if not compatible:
+                        logger.debug(
+                            f"Option {i} ({getattr(option, 'letter', 'Unknown')}) continuity issues: {option_issues}"
+                        )
 
             else:
                 # Fallback for legacy format - use old method
@@ -124,7 +155,7 @@ class SequenceOptionService(ISequenceOptionService):
 
             # Group by letter type
             grouped_options = self._group_options_by_type(updated_options)
-            total_grouped = sum(len(options) for options in grouped_options.values())
+            sum(len(options) for options in grouped_options.values())
 
             # DEBUG: Check if orientations are preserved after grouping
             if grouped_options:

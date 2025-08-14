@@ -13,8 +13,13 @@ This orchestrator:
 Follows TKA's dependency injection patterns and clean architecture.
 """
 
+from __future__ import annotations
+
 import logging
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any, Callable
+
+from PyQt6.QtCore import QObject, pyqtSignal
+from PyQt6.QtWidgets import QWidget
 
 from core.dependency_injection.di_container import DIContainer
 from core.interfaces.option_picker_interfaces import (
@@ -27,8 +32,7 @@ from domain.models.sequence_data import SequenceData
 from presentation.components.option_picker.components.sections.section_widget import (
     OptionPickerSection,
 )
-from PyQt6.QtCore import QObject, pyqtSignal
-from PyQt6.QtWidgets import QWidget
+
 
 logger = logging.getLogger(__name__)
 
@@ -54,10 +58,10 @@ class OptionPickerOrchestrator(QObject):
     def __init__(
         self,
         container: DIContainer,
-        initialization_service: Optional[IOptionPickerInitializer] = None,
-        display_service: Optional[IOptionPickerDisplayService] = None,
-        event_service: Optional[IOptionPickerEventService] = None,
-        progress_callback: Optional[Callable[[str, float], None]] = None,
+        initialization_service: IOptionPickerInitializer | None = None,
+        display_service: IOptionPickerDisplayService | None = None,
+        event_service: IOptionPickerEventService | None = None,
+        progress_callback: Callable[[str, float], None] | None = None,
     ):
         """
         Initialize the orchestrator with injected dependencies.
@@ -105,21 +109,21 @@ class OptionPickerOrchestrator(QObject):
         self.option_service = None
 
         # Component references
-        self.option_picker_widget: Optional[QWidget] = None
-        self.sections_container: Optional[QWidget] = None
+        self.option_picker_widget: QWidget | None = None
+        self.sections_container: QWidget | None = None
         self.sections_layout = None
-        self.filter_widget: Optional[QWidget] = None
+        self.filter_widget: QWidget | None = None
         self.pool_manager = None
         self.dimension_analyzer = None
 
         # Section management (following legacy pattern)
-        self.sections: Dict[str, "OptionPickerSection"] = {}
+        self.sections: dict[str, OptionPickerSection] = {}
 
         # Initialization state
         self._initialized = False
 
     def initialize(
-        self, progress_callback: Optional[Callable[[str, float], None]] = None
+        self, progress_callback: Callable[[str, float], None] | None = None
     ) -> None:
         """
         Initialize the option picker with all components.
@@ -259,7 +263,7 @@ class OptionPickerOrchestrator(QObject):
             )
         return self.option_picker_widget
 
-    def load_motion_combinations(self, sequence_data: List[Dict[str, Any]]) -> None:
+    def load_motion_combinations(self, sequence_data: list[dict[str, Any]]) -> None:
         """
         Load motion combinations from sequence data.
 
@@ -306,7 +310,7 @@ class OptionPickerOrchestrator(QObject):
                 return
 
             # Get the pictograph assignments from the strategy
-            pictograph_assignments = display_strategy.get("pictograph_assignments", {})
+            display_strategy.get("pictograph_assignments", {})
             organized_pictographs = display_strategy.get("organized_pictographs", {})
 
             logger.debug(
@@ -391,16 +395,17 @@ class OptionPickerOrchestrator(QObject):
                 return
 
             section_specs = section_specs_result["section_specifications"]
-            bottom_row_config = section_specs_result["bottom_row_configuration"]
+            section_specs_result["bottom_row_configuration"]
 
             # Import section widget class
+            from PyQt6.QtWidgets import QHBoxLayout
+
             from presentation.components.option_picker.components.sections.section_widget import (
                 OptionPickerSection,
             )
             from presentation.components.option_picker.types.letter_types import (
                 LetterType,
             )
-            from PyQt6.QtWidgets import QHBoxLayout
 
             # Create individual sections (Types 1-3)
             individual_sections = []
@@ -548,24 +553,14 @@ class OptionPickerOrchestrator(QObject):
                 logger.warning("Orchestrator not initialized")
                 return
 
-            # Load pictograph options based on position matching
-            pictograph_options = self.option_service.load_options_from_modern_sequence(
-                sequence
-            )
-
-            # Apply orientation updates to match sequence context
-            from application.services.option_picker.option_orientation_updater import (
-                OptionOrientationUpdater,
-            )
-
-            orientation_updater = OptionOrientationUpdater()
-            updated_options = orientation_updater.update_option_orientations(
-                sequence, pictograph_options
-            )
+            # FIXED: Use the main get_options_for_sequence method that includes orientation validation
+            # This method already handles orientation continuity internally
+            options_by_type = self.option_service.get_options_for_sequence(sequence)
 
             # Update display with orientation-corrected options
+            # Pass the options by type format that the display service expects
             display_result = self.display_service.update_pictograph_display(
-                updated_options
+                options_by_type
             )
 
             # Apply the display strategy to actually show the options
@@ -579,7 +574,7 @@ class OptionPickerOrchestrator(QObject):
         except Exception as e:
             logger.error(f"Error refreshing from modern sequence: {e}")
 
-    def get_pictograph_for_option(self, option_id: str) -> Optional[PictographData]:
+    def get_pictograph_for_option(self, option_id: str) -> PictographData | None:
         """
         Get pictograph data for a specific option ID.
 

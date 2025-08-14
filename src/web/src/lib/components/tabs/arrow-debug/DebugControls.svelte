@@ -18,6 +18,7 @@
 		showLayer2Points: boolean;
 		showAdjustmentVectors: boolean;
 		autoUpdate: boolean;
+		gridMode: 'diamond' | 'box';
 		onPictographSelect: (pictograph: PictographData) => void;
 		onArrowColorSelect: (color: 'red' | 'blue') => void;
 		onStepByStepToggle: (enabled: boolean) => void;
@@ -25,6 +26,7 @@
 		onVisualizationToggle: (setting: string, enabled: boolean) => void;
 		onAutoUpdateToggle: (enabled: boolean) => void;
 		onCalculatePositioning: () => void;
+		onGridModeChange: (mode: 'diamond' | 'box') => void;
 	}
 
 	let {
@@ -39,13 +41,15 @@
 		showLayer2Points,
 		showAdjustmentVectors,
 		autoUpdate,
+		gridMode,
 		onPictographSelect,
 		onArrowColorSelect,
 		onStepByStepToggle,
 		onStepChange,
 		onVisualizationToggle,
 		onAutoUpdateToggle,
-		onCalculatePositioning
+		onCalculatePositioning,
+		onGridModeChange
 	}: Props = $props();
 
 	function handlePictographChange(event: Event) {
@@ -91,6 +95,24 @@
 				<option value="blue">Blue Arrow</option>
 				<option value="red">Red Arrow</option>
 			</select>
+		</div>
+	</div>
+
+	<div class="section">
+		<h3>🔲 Grid Options</h3>
+		<div class="grid-toggle">
+			<button
+				class="grid-btn {gridMode === 'diamond' ? 'active' : ''}"
+				onclick={() => onGridModeChange('diamond')}
+			>
+				◆ Diamond
+			</button>
+			<button
+				class="grid-btn {gridMode === 'box' ? 'active' : ''}"
+				onclick={() => onGridModeChange('box')}
+			>
+				⬜ Box
+			</button>
 		</div>
 	</div>
 
@@ -295,5 +317,36 @@
 
 	.calculate-btn:active {
 		transform: translateY(0);
+	}
+
+	/* Grid toggle styles */
+	.grid-toggle {
+		display: flex;
+		gap: 8px;
+		margin-top: 8px;
+	}
+
+	.grid-btn {
+		flex: 1;
+		padding: 8px 12px;
+		border: 1px solid rgba(255, 255, 255, 0.2);
+		border-radius: 4px;
+		background: rgba(0, 0, 0, 0.3);
+		color: rgba(255, 255, 255, 0.7);
+		font-size: 0.9rem;
+		cursor: pointer;
+		transition: all 0.2s ease;
+	}
+
+	.grid-btn:hover {
+		background: rgba(255, 255, 255, 0.1);
+		color: white;
+	}
+
+	.grid-btn.active {
+		background: linear-gradient(135deg, #fbbf24, #f59e0b);
+		color: black;
+		border-color: #fbbf24;
+		font-weight: 600;
 	}
 </style>

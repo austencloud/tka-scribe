@@ -5,14 +5,15 @@ Manages option picker initialization, population, and option selection for the c
 Responsible for coordinating between the option picker component and sequence management.
 """
 
-import time
-from typing import Optional
+from __future__ import annotations
 
-from application.services.data.data_converter import DataConverter
+import time
+
+from PyQt6.QtCore import QObject, pyqtSignal
+
 from domain.models.pictograph_data import PictographData
 from domain.models.sequence_data import SequenceData
 from presentation.components.option_picker.core.option_picker import OptionPicker
-from PyQt6.QtCore import QObject, pyqtSignal
 
 
 class OptionPickerManager(QObject):
@@ -33,7 +34,7 @@ class OptionPickerManager(QObject):
 
     def __init__(
         self,
-        option_picker: Optional[OptionPicker],
+        option_picker: OptionPicker | None,
     ):
         super().__init__()
         self.option_picker = option_picker
@@ -54,30 +55,38 @@ class OptionPickerManager(QObject):
             return
 
         try:
+            # FIXED: Create modern SequenceData instead of legacy format to ensure orientation validation
+            from desktop.modern.domain.models.beat_data import BeatData
+            from desktop.modern.domain.models.sequence_data import SequenceData
 
-            # Convert PictographData to legacy format for compatibility
-            start_position_dict = {
-                "letter": start_position_data.letter,
-                "start_pos": start_position_data.start_position,
-                "end_pos": start_position_data.end_position,
-                # Add other necessary fields from pictograph data
-            }
+            # Create a single beat with the start position data
+            start_beat = BeatData(
+                beat_number=1, pictograph_data=start_position_data, is_blank=False
+            )
 
-            # Ensure we have a valid end position for option filtering
-            if not start_position_dict.get("end_pos"):
-                extracted_end_pos = (
-                    self.data_conversion_service.extract_end_position_from_position_key(
-                        position_key
-                    )
+            # Create modern SequenceData with the start position beat
+            modern_sequence_data = SequenceData(beats=[start_beat], length=1)
+
+            # DEBUG: Check what orientations are in the sequence data being passed
+            if start_position_data.motions:
+                blue_motion = start_position_data.motions.get("blue")
+                red_motion = start_position_data.motions.get("red")
+                blue_end = (
+                    blue_motion.end_ori.value
+                    if blue_motion and blue_motion.end_ori
+                    else "None"
                 )
-                start_position_dict["end_pos"] = extracted_end_pos
+                red_end = (
+                    red_motion.end_ori.value
+                    if red_motion and red_motion.end_ori
+                    else "None"
+                )
+                print(
+                    f"🔍 [OPTION_PICKER_MANAGER] Sequence data end orientations: blue={blue_end}, red={red_end}"
+                )
 
-            sequence_data = [
-                {"metadata": "sequence_info"},
-                start_position_dict,
-            ]
-
-            self.option_picker.load_motion_combinations(sequence_data)
+            # Use the modern refresh method that properly handles orientation validation
+            self.option_picker.refresh_from_sequence(modern_sequence_data)
 
         except Exception as e:
             print(
@@ -104,8 +113,8 @@ class OptionPickerManager(QObject):
 
         try:
             self.option_picker.refresh_options_from_modern_sequence(sequence)
-            total_time = (time.perf_counter() - start_time) * 1000
-        except Exception as e:
+            (time.perf_counter() - start_time) * 1000
+        except Exception:
             import traceback
 
             traceback.print_exc()

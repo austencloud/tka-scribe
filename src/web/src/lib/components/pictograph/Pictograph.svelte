@@ -1,5 +1,5 @@
 <!--
-ModernPictograph.svelte - Modern Rune-Based Pictograph Component
+Pictograph.svelte - Modern Rune-Based Pictograph Component
 
 This is the modern equivalent of the legacy Pictograph.svelte, but using pure Svelte 5 runes
 instead of stores. It orchestrates the rendering of Grid, Props, Arrows, and Glyphs.

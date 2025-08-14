@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { BeatData } from '$lib/domain';
 	import { beatFrameService } from '$lib/services/BeatFrameService.svelte';
-	import { createEventDispatcher } from 'svelte';
+	import { createEventDispatcher, onMount } from 'svelte';
 	import BeatView from './BeatView.svelte';
 
 	interface Props {
@@ -12,6 +12,7 @@
 		onBeatDoubleClick?: (index: number) => void;
 		onStartClick?: () => void;
 		isScrollable?: boolean;
+		fullScreenMode?: boolean;
 	}
 
 	let {
@@ -22,21 +23,96 @@
 		onBeatDoubleClick,
 		onStartClick,
 		isScrollable = false,
+		fullScreenMode = false,
 	}: Props = $props();
 
 	const config = $derived(beatFrameService.config);
 	const hoveredBeatIndex = $derived(beatFrameService.hoveredBeatIndex);
-	const frameDimensions = $derived(beatFrameService.calculateFrameDimensions(beats.length));
+	
+	// Use layout info instead of just dimensions for better responsiveness
+	const layoutInfo = $derived(beatFrameService.calculateLayoutInfo(beats.length));
+	const frameDimensions = $derived({
+		width: layoutInfo.totalWidth,
+		height: layoutInfo.totalHeight
+	});
+
+	let containerRef: HTMLElement;
 
 	const dispatch = createEventDispatcher<{ naturalheightchange: { height: number } }>();
 
-	// TODO: Add responsive sizing later once core functionality is stable
-	// For now, use fixed sizing to avoid infinite loops
+	// Track container dimensions and update beat frame service
+	onMount(() => {
+		if (containerRef) {
+			// Set up resize observer with debouncing
+			let timeoutId: number;
+			const resizeObserver = new ResizeObserver((entries) => {
+				clearTimeout(timeoutId);
+				timeoutId = setTimeout(() => {
+					for (const entry of entries) {
+						const { width, height } = entry.contentRect;
+						beatFrameService.setContainerDimensions(width, height, fullScreenMode);
+					}
+				}, 100); // Debounce by 100ms
+			});
+
+			resizeObserver.observe(containerRef);
+
+			// Initial dimension setting
+			const rect = containerRef.getBoundingClientRect();
+			beatFrameService.setContainerDimensions(rect.width, rect.height, fullScreenMode);
+
+			return () => {
+				clearTimeout(timeoutId);
+				resizeObserver.disconnect();
+			};
+		}
+	});
+
+	// Update fullscreen mode when it changes (debounced)
+	let fullscreenUpdateTimeout: number;
+	$effect(() => {
+		clearTimeout(fullscreenUpdateTimeout);
+		fullscreenUpdateTimeout = setTimeout(() => {
+			if (containerRef) {
+				const rect = containerRef.getBoundingClientRect();
+				beatFrameService.setContainerDimensions(rect.width, rect.height, fullScreenMode);
+			}
+		}, 50);
+	});
 
 	// Emit natural height whenever calculated frame dimensions change
 	$effect(() => {
 		if (frameDimensions?.height != null) {
 			dispatch('naturalheightchange', { height: frameDimensions.height });
+		}
+	});
+
+	// Determine if scrolling is needed based on layout info
+	const shouldScroll = $derived(layoutInfo.shouldScroll);
+	
+	// Use shouldScroll for internal logic, but still respect the isScrollable prop from parent
+	const effectiveScrollable = $derived(isScrollable || shouldScroll);
+
+	// Update service configuration when layout info changes (outside derived) - with safeguards
+	let lastCellSize = 0;
+	let lastColumns = 0;
+	$effect(() => {
+		// Only update if values actually changed and are valid
+		if (
+			layoutInfo.cellSize > 0 && 
+			layoutInfo.cellSize !== lastCellSize && 
+			layoutInfo.columns !== lastColumns
+		) {
+			lastCellSize = layoutInfo.cellSize;
+			lastColumns = layoutInfo.columns;
+			
+			// Only update if significantly different to prevent micro-adjustments
+			if (Math.abs(layoutInfo.cellSize - beatFrameService.config.beatSize) > 1) {
+				beatFrameService.setConfig({
+					beatSize: layoutInfo.cellSize,
+					columns: layoutInfo.columns
+				});
+			}
 		}
 	});
 
@@ -57,7 +133,7 @@
 	}
 </script>
 
-<div class="beat-frame-container" class:scrollable-active={isScrollable}>
+<div class="beat-frame-container" class:scrollable-active={effectiveScrollable} bind:this={containerRef}>
 	<div class="beat-frame-scroll">
 		<div
 			class="beat-frame"
@@ -99,7 +175,7 @@
 			{/if}
 
 			{#each beats as beat, index}
-				{@const position = beatFrameService.calculateBeatPosition(index)}
+			{@const position = beatFrameService.calculateBeatPosition(index, beats.length)}
 				<div
 					class="beat-container"
 					style:left="{position.x}px"

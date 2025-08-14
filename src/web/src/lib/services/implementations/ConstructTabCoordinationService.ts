@@ -154,13 +154,8 @@ export class ConstructTabCoordinationService
 
       console.log("🎭 Adding beat to sequence:", currentSequence.id);
 
-      // Add beat to sequence using service (use updateBeat with next beat index)
-      const nextBeatIndex = currentSequence.beats.length;
-      await this.sequenceService.updateBeat(
-        currentSequence.id,
-        nextBeatIndex,
-        beatData,
-      );
+      // Add beat to sequence using addBeat method (not updateBeat)
+      await this.sequenceService.addBeat(currentSequence.id, beatData);
 
       // Reload the sequence to get the updated version
       const updatedSequence = await this.sequenceService.getSequence(

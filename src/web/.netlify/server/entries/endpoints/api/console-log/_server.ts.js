@@ -20,4 +20,6 @@ const POST = async ({ request }) => {
     return json({ success: false }, { status: 500 });
   }
 };
-export { POST };
+export {
+  POST
+};

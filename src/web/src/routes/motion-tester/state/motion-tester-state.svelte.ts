@@ -58,12 +58,12 @@ export function createMotionTesterState(): MotionTesterState {
   });
 
   // Props are always visible - no user controls needed
-  let propVisibility = $state<PropVisibility>({
+  const propVisibility = $state<PropVisibility>({
     blue: true,
     red: true,
   });
 
-  let animationState = $state<AnimationState>({
+  const animationState = $state<AnimationState>({
     isPlaying: false,
     progress: 0,
     currentBeat: 0,

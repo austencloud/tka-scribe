@@ -90,7 +90,7 @@ export interface MetadataTesterState {
 }
 
 export function createMetadataTesterState() {
-  let state = $state<MetadataTesterState>({
+  const state = $state<MetadataTesterState>({
     thumbnails: [],
     selectedThumbnail: null,
     extractedMetadata: null,

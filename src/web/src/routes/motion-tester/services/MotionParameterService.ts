@@ -70,8 +70,8 @@ export class MotionParameterService {
     }
 
     // Calculate the direction of movement
-    let clockwiseDistance = (endIndex - startIndex + 4) % 4;
-    let counterClockwiseDistance = (startIndex - endIndex + 4) % 4;
+    const clockwiseDistance = (endIndex - startIndex + 4) % 4;
+    const counterClockwiseDistance = (startIndex - endIndex + 4) % 4;
 
     // For static motions, no rotation
     if (motionType === "static") {

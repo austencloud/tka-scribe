@@ -150,7 +150,7 @@ export function createArrowDebugState(): ArrowDebugState {
 
   let stepByStepMode = $state(true);
   let currentStep = $state(0);
-  let maxSteps = $state(5);
+  const maxSteps = $state(5);
 
   let showCoordinateGrid = $state(true);
   let showHandPoints = $state(true);
@@ -175,11 +175,11 @@ export function createArrowDebugState(): ArrowDebugState {
   let adjustmentCalculator: IArrowAdjustmentCalculator | null = null;
 
   // Computed values
-  let currentMotionData = $derived(
+  const currentMotionData = $derived(
     selectedPictograph?.motions?.[selectedArrowColor] || null,
   );
 
-  let currentArrowData = $derived(
+  const currentArrowData = $derived(
     selectedPictograph?.arrows?.[selectedArrowColor] || null,
   );
 

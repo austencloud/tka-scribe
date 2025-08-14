@@ -27,7 +27,7 @@ const locationAngles = {
  * Normalize angle to positive range [0, 2π)
  */
 export function normalizeAnglePositive(angle: number): number {
-  let norm = angle % TWO_PI;
+  const norm = angle % TWO_PI;
   return norm < 0 ? norm + TWO_PI : norm;
 }
 
@@ -35,7 +35,7 @@ export function normalizeAnglePositive(angle: number): number {
  * Normalize angle to signed range (-π, π]
  */
 export function normalizeAngleSigned(angle: number): number {
-  let norm = normalizeAnglePositive(angle);
+  const norm = normalizeAnglePositive(angle);
   return norm > PI ? norm - TWO_PI : norm;
 }
 
@@ -138,7 +138,7 @@ export function calculateProTargetAngle(
   console.log("🔧 [PRO DEBUG]   propRotDir:", propRotDir);
 
   // For pro motions with turns, use similar calculation to anti but with positive delta
-  let delta = normalizeAngleSigned(targetCenterAngle - startCenterAngle);
+  const delta = normalizeAngleSigned(targetCenterAngle - startCenterAngle);
   const base = delta; // Pro motions use positive delta (opposite of anti)
   const turn = PI * turns;
   const dir = propRotDir?.toLowerCase() === "ccw" ? -1 : 1;
@@ -218,7 +218,7 @@ export function calculateAntispinTargetAngle(
   console.log("🔧 [ANTI DEBUG]   turns:", turns);
   console.log("🔧 [ANTI DEBUG]   propRotDir:", propRotDir);
 
-  let delta = normalizeAngleSigned(targetCenterAngle - startCenterAngle);
+  const delta = normalizeAngleSigned(targetCenterAngle - startCenterAngle);
   const base = -delta;
   const turn = PI * turns;
   const dir = propRotDir?.toLowerCase() === "ccw" ? -1 : 1;

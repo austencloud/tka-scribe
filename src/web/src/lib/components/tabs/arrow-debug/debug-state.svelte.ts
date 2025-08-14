@@ -5,17 +5,19 @@
 
 import type { PictographData, MotionData, ArrowData } from "$lib/domain";
 import { createPictographData } from "$lib/domain/PictographData";
-import { createArrowData } from "$lib/domain/ArrowData";
-import { createMotionData } from "$lib/domain/MotionData";
 import { createGridData } from "$lib/domain/GridData";
-import {
-  GridMode,
-  ArrowType,
-  MotionType,
-  Orientation,
-  RotationDirection,
-} from "$lib/domain/enums";
+import { GridMode } from "$lib/domain/enums";
 import type { DebugStepData } from "./types";
+
+// Import real data services
+import { CodexService } from "$lib/services/codex/CodexService";
+
+// Import real arrow positioning services
+import { ArrowPositioningOrchestrator } from "$lib/services/positioning/arrows/orchestration/ArrowPositioningOrchestrator";
+import { ArrowLocationCalculator } from "$lib/services/positioning/arrows/calculation/ArrowLocationCalculator";
+import { ArrowCoordinateSystemService } from "$lib/services/positioning/arrows/coordinate_system/ArrowCoordinateSystemService";
+import { ArrowRotationCalculator } from "$lib/services/positioning/arrows/calculation/ArrowRotationCalculator";
+import { ArrowAdjustmentCalculator } from "$lib/services/positioning/arrows/calculation/ArrowAdjustmentCalculator";
 
 // Simple reactive state for the debug components
 export function createDebugState() {
@@ -25,7 +27,7 @@ export function createDebugState() {
 
   let stepByStepMode = $state(true);
   let currentStep = $state(0);
-  let maxSteps = $state(5);
+  const maxSteps = $state(4); // 0: Input, 1: Location, 2: Coordinate System, 3: Rotation, 4: Adjustments
 
   let showCoordinateGrid = $state(true);
   let showHandPoints = $state(true);
@@ -35,12 +37,32 @@ export function createDebugState() {
   let isCalculating = $state(false);
   let autoUpdate = $state(true);
 
+  // Grid mode state (diamond/box toggle)
+  let gridMode = $state<"diamond" | "box">("diamond");
+
   let expandedSections = $state(
     new Set(["input_data", "location_calculation"]),
   );
 
+  // Initialize real data services
+  const codexService = new CodexService();
+
+  // Initialize real arrow positioning services
+  const locationCalculator = new ArrowLocationCalculator();
+  const rotationCalculator = new ArrowRotationCalculator();
+  const adjustmentCalculator = new ArrowAdjustmentCalculator();
+  const coordinateSystemService = new ArrowCoordinateSystemService();
+
+  // Create the orchestrator with real services
+  const arrowPositioningOrchestrator = new ArrowPositioningOrchestrator(
+    locationCalculator,
+    rotationCalculator,
+    adjustmentCalculator,
+    coordinateSystemService,
+  );
+
   // Create debug data with proper structure
-  let currentDebugData = $state<DebugStepData>({
+  const currentDebugData = $state<DebugStepData>({
     pictographData: null,
     motionData: null,
     arrowData: null,
@@ -61,77 +83,51 @@ export function createDebugState() {
   });
 
   // Computed values
-  let currentMotionData = $derived.by(() => {
+  const currentMotionData = $derived.by(() => {
     if (!selectedPictograph?.motions) return null;
     return selectedPictograph.motions[selectedArrowColor] || null;
   });
 
-  let currentArrowData = $derived.by(() => {
+  const currentArrowData = $derived.by(() => {
     if (!selectedPictograph?.arrows) return null;
     return selectedPictograph.arrows[selectedArrowColor] || null;
   });
 
-  // Create sample pictographs for testing
-  function createSamplePictographs(): PictographData[] {
+  // Load real pictographs from codex service
+  async function loadRealPictographs(): Promise<PictographData[]> {
     try {
-      const blueMotion = createMotionData({
-        motion_type: MotionType.PRO,
-        start_ori: Orientation.IN,
-        end_ori: Orientation.OUT,
-        prop_rot_dir: RotationDirection.CLOCKWISE,
-        turns: 1,
-      });
+      console.log("🔧 Loading real pictographs from CodexService...");
 
-      const redMotion = createMotionData({
-        motion_type: MotionType.ANTI,
-        start_ori: Orientation.OUT,
-        end_ori: Orientation.IN,
-        prop_rot_dir: RotationDirection.COUNTER_CLOCKWISE,
-        turns: 1,
-      });
+      // Load all pictographs from the codex service
+      const allPictographs = await codexService.loadAllPictographs();
 
-      const blueArrow = createArrowData({
-        id: "blue_arrow",
-        color: "blue",
-        arrow_type: ArrowType.BLUE,
-      });
-
-      const redArrow = createArrowData({
-        id: "red_arrow",
-        color: "red",
-        arrow_type: ArrowType.RED,
-      });
-
-      const sampleData = createPictographData({
-        letter: "A",
-        grid_data: createGridData({ grid_mode: GridMode.DIAMOND }),
-        motions: {
-          blue: blueMotion,
-          red: redMotion,
-        },
-        arrows: {
-          blue: blueArrow,
-          red: redArrow,
-        },
-      });
-
-      return [sampleData];
+      console.log(
+        `✅ Loaded ${allPictographs.length} real pictographs from CSV data`,
+      );
+      return allPictographs;
     } catch (error) {
-      console.error("Failed to create sample pictographs:", error);
+      console.error("❌ Failed to load real pictographs:", error);
       return [];
     }
   }
 
-  // Initialize with sample data
-  function initializeSampleData() {
+  // Initialize with real data
+  async function initializeRealData() {
     try {
-      const samples = createSamplePictographs();
-      availablePictographs = samples;
-      if (samples.length > 0) {
-        selectedPictograph = samples[0];
+      console.log("🚀 Initializing Arrow Debug with real pictograph data...");
+
+      // Load real pictographs from CSV data
+      const realPictographs = await loadRealPictographs();
+      availablePictographs = realPictographs;
+
+      if (realPictographs.length > 0) {
+        selectedPictograph = realPictographs[0];
+        console.log(
+          `✅ Selected first pictograph: ${selectedPictograph.letter || selectedPictograph.id}`,
+        );
       }
     } catch (error) {
-      console.error("Failed to initialize sample data:", error);
+      console.error("❌ Failed to initialize real data:", error);
     }
   }
 
@@ -146,7 +142,65 @@ export function createDebugState() {
     expandedSections = new Set(expandedSections);
   }
 
-  // Placeholder for positioning calculation
+  // Set grid mode and update pictograph data
+  function setGridMode(mode: "diamond" | "box") {
+    gridMode = mode;
+
+    // Update the selected pictograph's grid data if it exists
+    if (selectedPictograph) {
+      const newGridMode = mode === "diamond" ? GridMode.DIAMOND : GridMode.BOX;
+      selectedPictograph = createPictographData({
+        ...selectedPictograph,
+        grid_data: createGridData({ grid_mode: newGridMode }),
+      });
+
+      // Trigger recalculation if auto-update is enabled
+      if (autoUpdate) {
+        calculatePositioning();
+      }
+    }
+  }
+
+  // Get step-by-step data for current step
+  function getCurrentStepData() {
+    if (!stepByStepMode) {
+      return currentDebugData;
+    }
+
+    // Create a copy of debug data showing only up to current step
+    const stepData = {
+      ...currentDebugData,
+      // Reset future steps based on current step
+      calculatedLocation:
+        currentStep >= 1 ? currentDebugData.calculatedLocation : null,
+      locationDebugInfo:
+        currentStep >= 1 ? currentDebugData.locationDebugInfo : null,
+      initialPosition:
+        currentStep >= 2 ? currentDebugData.initialPosition : null,
+      coordinateSystemDebugInfo:
+        currentStep >= 2 ? currentDebugData.coordinateSystemDebugInfo : null,
+      finalRotation: currentStep >= 3 ? currentDebugData.finalRotation : 0,
+      defaultAdjustment:
+        currentStep >= 4 ? currentDebugData.defaultAdjustment : null,
+      finalPosition: currentStep >= 4 ? currentDebugData.finalPosition : null,
+    };
+
+    return stepData;
+  }
+
+  // Get step name for current step
+  function getCurrentStepName(): string {
+    const stepNames = [
+      "Input Data",
+      "Location Calculation",
+      "Coordinate System",
+      "Rotation Calculation",
+      "Adjustment Calculation",
+    ];
+    return stepNames[currentStep] || "Unknown Step";
+  }
+
+  // Real positioning calculation using arrow positioning services
   async function calculatePositioning() {
     if (!selectedPictograph || !currentMotionData || !currentArrowData) {
       return;
@@ -154,35 +208,146 @@ export function createDebugState() {
 
     isCalculating = true;
     const startTime = performance.now();
+    const stepTimes: Record<string, number> = {};
 
     try {
+      // Clear previous errors
+      currentDebugData.errors = [];
+
       // Update debug data with current inputs
       currentDebugData.pictographData = selectedPictograph;
       currentDebugData.motionData = currentMotionData;
       currentDebugData.arrowData = currentArrowData;
 
-      // For now, create mock debug data
-      // This will be replaced with actual service calls once DI is fixed
-      currentDebugData.calculatedLocation = "center";
-      currentDebugData.locationDebugInfo = {
-        motionType: currentMotionData.motion_type || "",
-        startOri: currentMotionData.start_ori || "",
-        endOri: currentMotionData.end_ori || "",
-        calculationMethod: "mock_calculator",
-      };
+      // STEP 1: Calculate arrow location
+      const locationStart = performance.now();
+      try {
+        const calculatedLocation = locationCalculator.calculateLocation(
+          currentMotionData,
+          selectedPictograph,
+        );
+        currentDebugData.calculatedLocation = calculatedLocation;
+        currentDebugData.locationDebugInfo = {
+          motionType: currentMotionData.motion_type || "",
+          startOri: currentMotionData.start_ori || "",
+          endOri: currentMotionData.end_ori || "",
+          calculationMethod: "ArrowLocationCalculator",
+        };
+        stepTimes.location_calculation = performance.now() - locationStart;
+      } catch (error) {
+        currentDebugData.errors.push({
+          step: "location_calculation",
+          error: error instanceof Error ? error.message : String(error),
+          timestamp: Date.now(),
+        });
+      }
 
-      currentDebugData.initialPosition = { x: 0, y: 0 };
-      currentDebugData.finalPosition = { x: 10, y: -5 };
-      currentDebugData.finalRotation = 45;
+      // STEP 2: Get initial position from coordinate system
+      const coordinateStart = performance.now();
+      try {
+        if (currentDebugData.calculatedLocation) {
+          const initialPosition = coordinateSystemService.getInitialPosition(
+            currentMotionData,
+            currentDebugData.calculatedLocation as any,
+          );
+          currentDebugData.initialPosition = initialPosition;
 
+          const sceneCenter = coordinateSystemService.getSceneCenter();
+          const sceneDimensions = coordinateSystemService.getSceneDimensions();
+          const handPoints = coordinateSystemService.getAllHandPoints();
+          const layer2Points = coordinateSystemService.getAllLayer2Points();
+
+          currentDebugData.coordinateSystemDebugInfo = {
+            sceneCenter,
+            sceneDimensions,
+            handPoints,
+            layer2Points,
+            usedCoordinateSet:
+              currentMotionData.motion_type === "static" ||
+              currentMotionData.motion_type === "dash"
+                ? "hand_points"
+                : "layer2_points",
+            coordinateSystemType: "TKA_950x950",
+          };
+        }
+        stepTimes.coordinate_system = performance.now() - coordinateStart;
+      } catch (error) {
+        currentDebugData.errors.push({
+          step: "coordinate_system",
+          error: error instanceof Error ? error.message : String(error),
+          timestamp: Date.now(),
+        });
+      }
+
+      // STEP 3: Calculate rotation
+      const rotationStart = performance.now();
+      try {
+        if (currentDebugData.calculatedLocation) {
+          const rotation = rotationCalculator.calculateRotation(
+            currentMotionData,
+            currentDebugData.calculatedLocation as any,
+          );
+          currentDebugData.finalRotation = rotation;
+        }
+        stepTimes.rotation_calculation = performance.now() - rotationStart;
+      } catch (error) {
+        currentDebugData.errors.push({
+          step: "rotation_calculation",
+          error: error instanceof Error ? error.message : String(error),
+          timestamp: Date.now(),
+        });
+      }
+
+      // STEP 4: Calculate adjustments
+      const adjustmentStart = performance.now();
+      try {
+        if (currentDebugData.calculatedLocation) {
+          const adjustment = await adjustmentCalculator.calculateAdjustment(
+            selectedPictograph,
+            currentMotionData,
+            selectedPictograph.letter || "A",
+            currentDebugData.calculatedLocation as any,
+          );
+          currentDebugData.defaultAdjustment = adjustment;
+
+          // For now, use the adjustment as final position
+          // In a more sophisticated implementation, we'd apply it to the initial position
+          if (currentDebugData.initialPosition && adjustment) {
+            currentDebugData.finalPosition = {
+              x: currentDebugData.initialPosition.x + adjustment.x,
+              y: currentDebugData.initialPosition.y + adjustment.y,
+            };
+          } else {
+            currentDebugData.finalPosition = currentDebugData.initialPosition;
+          }
+        }
+        stepTimes.adjustment_calculation = performance.now() - adjustmentStart;
+      } catch (error) {
+        currentDebugData.errors.push({
+          step: "adjustment_calculation",
+          error: error instanceof Error ? error.message : String(error),
+          timestamp: Date.now(),
+        });
+      }
+
+      // Calculate total timing
       const endTime = performance.now();
       currentDebugData.timing = {
         totalDuration: endTime - startTime,
-        stepDurations: { mock: endTime - startTime },
+        stepDurations: stepTimes,
       };
+
+      console.log("🎯 Arrow positioning calculation completed:", {
+        location: currentDebugData.calculatedLocation,
+        initialPosition: currentDebugData.initialPosition,
+        finalPosition: currentDebugData.finalPosition,
+        rotation: currentDebugData.finalRotation,
+        errors: currentDebugData.errors,
+        timing: currentDebugData.timing,
+      });
     } catch (error) {
       currentDebugData.errors.push({
-        step: "mock_calculation",
+        step: "overall_calculation",
         error: error instanceof Error ? error.message : String(error),
         timestamp: Date.now(),
       });
@@ -289,6 +454,14 @@ export function createDebugState() {
       return currentDebugData;
     },
 
+    // Grid mode properties
+    get gridMode() {
+      return gridMode;
+    },
+    set gridMode(value: "diamond" | "box") {
+      setGridMode(value);
+    },
+
     // Computed
     get currentMotionData() {
       return currentMotionData;
@@ -296,10 +469,19 @@ export function createDebugState() {
     get currentArrowData() {
       return currentArrowData;
     },
+    get currentStepData() {
+      return getCurrentStepData();
+    },
+    get currentStepName() {
+      return getCurrentStepName();
+    },
 
     // Actions
     toggleSection,
+    setGridMode,
     calculatePositioning,
-    initializeSampleData,
+    initializeRealData,
+    getCurrentStepData,
+    getCurrentStepName,
   };
 }

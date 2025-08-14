@@ -112,8 +112,8 @@ function calculateRotationDirection(
   }
 
   // Calculate the direction of movement
-  let clockwiseDistance = (endIndex - startIndex + 4) % 4;
-  let counterClockwiseDistance = (startIndex - endIndex + 4) % 4;
+  const clockwiseDistance = (endIndex - startIndex + 4) % 4;
+  const counterClockwiseDistance = (startIndex - endIndex + 4) % 4;
 
   // For static motions, no rotation
   if (motionType === "static") {
@@ -233,7 +233,7 @@ export function createMotionTesterState() {
   const orientationService = new OrientationCalculationService();
 
   // Separate motion parameters for blue and red props
-  let blueMotionParams = $state<MotionTestParams>({
+  const blueMotionParams = $state<MotionTestParams>({
     startLoc: "n",
     endLoc: "e",
     motionType: "pro",
@@ -243,7 +243,7 @@ export function createMotionTesterState() {
     endOri: "in",
   });
 
-  let redMotionParams = $state<MotionTestParams>({
+  const redMotionParams = $state<MotionTestParams>({
     startLoc: "s",
     endLoc: "w",
     motionType: "pro",
@@ -254,13 +254,13 @@ export function createMotionTesterState() {
   });
 
   // Prop visibility controls
-  let propVisibility = $state<PropVisibility>({
+  const propVisibility = $state<PropVisibility>({
     blue: true,
     red: false, // Start with just blue visible for single prop testing
   });
 
   // Animation state
-  let animationState = $state<AnimationTestState>({
+  const animationState = $state<AnimationTestState>({
     progress: 0,
     isPlaying: false,
     speed: 0.01,
@@ -270,7 +270,7 @@ export function createMotionTesterState() {
   let gridType = $state<"diamond" | "box">("diamond");
 
   // Animation engine instance
-  let animationEngine = new StandalonePortedEngine();
+  const animationEngine = new StandalonePortedEngine();
   let totalBeats = $state(1);
   let isEngineInitialized = $state(false);
 
@@ -414,7 +414,7 @@ export function createMotionTesterState() {
   });
 
   // Calculate current prop states from engine
-  let currentPropStates = $derived(() => {
+  const currentPropStates = $derived(() => {
     if (!isEngineInitialized) {
       return {
         blue: { centerPathAngle: 0, staffRotationAngle: 0, x: 0, y: 0 },
@@ -433,11 +433,11 @@ export function createMotionTesterState() {
   });
 
   // Motion descriptions (derived)
-  let blueMotionDescription = $derived(() => {
+  const blueMotionDescription = $derived(() => {
     return `Blue: ${blueMotionParams.startLoc.toUpperCase()} → ${blueMotionParams.endLoc.toUpperCase()} (${blueMotionParams.motionType}, ${blueMotionParams.turns} turns, ${blueMotionParams.propRotDir.toUpperCase()})`;
   });
 
-  let redMotionDescription = $derived(() => {
+  const redMotionDescription = $derived(() => {
     return `Red: ${redMotionParams.startLoc.toUpperCase()} → ${redMotionParams.endLoc.toUpperCase()} (${redMotionParams.motionType}, ${redMotionParams.turns} turns, ${redMotionParams.propRotDir.toUpperCase()})`;
   });
 
@@ -551,7 +551,7 @@ export function createMotionTesterState() {
   }
 
   // Debug calculations (derived) - Updated for dual prop approach
-  let debugInfo = $derived(() => {
+  const debugInfo = $derived(() => {
     if (!isEngineInitialized) return null;
 
     // Calculate endpoints for both props

@@ -9,13 +9,15 @@ This ensures that options display with correct orientations that flow from the s
 rather than using default "in,in" orientations.
 """
 
-import logging
+from __future__ import annotations
+
 from dataclasses import replace
-from typing import List, Optional
+import logging
 
 from domain.models.beat_data import BeatData
 from domain.models.pictograph_data import PictographData
 from domain.models.sequence_data import SequenceData
+
 
 logger = logging.getLogger(__name__)
 
@@ -35,8 +37,8 @@ class OptionOrientationUpdater:
         pass
 
     def update_option_orientations(
-        self, sequence: SequenceData, options: List[PictographData]
-    ) -> List[PictographData]:
+        self, sequence: SequenceData, options: list[PictographData]
+    ) -> list[PictographData]:
         """
         Update orientations for pictograph options based on sequence context.
 
@@ -85,7 +87,7 @@ class OptionOrientationUpdater:
         )
         return updated_options
 
-    def _get_last_valid_beat(self, sequence: SequenceData) -> Optional[BeatData]:
+    def _get_last_valid_beat(self, sequence: SequenceData) -> BeatData | None:
         """
         Get the last valid beat from sequence, excluding blank beats.
 
@@ -109,28 +111,46 @@ class OptionOrientationUpdater:
 
     def _extract_end_orientations(
         self, beat: BeatData
-    ) -> tuple[Optional[str], Optional[str]]:
+    ) -> tuple[str | None, str | None]:
         """
         Extract end orientations from a beat's pictograph data.
 
         Returns:
-            Tuple of (blue_end_ori, red_end_ori) as strings
+            Tuple of (blue_end_ori, red_end_ori) as strings for compatibility
         """
+
         blue_end_ori = None
         red_end_ori = None
 
-        # NEW: Get motion data from pictograph_data motions dictionary
+        # Get motion data from pictograph_data motions dictionary
         if beat.pictograph_data and beat.pictograph_data.motions:
             if "blue" in beat.pictograph_data.motions:
                 blue_motion = beat.pictograph_data.motions["blue"]
                 if blue_motion and hasattr(blue_motion, "end_ori"):
-                    blue_end_ori = blue_motion.end_ori
+                    # Convert Orientation enum to string for compatibility
+                    if hasattr(blue_motion.end_ori, "value"):
+                        blue_end_ori = blue_motion.end_ori.value
+                    else:
+                        blue_end_ori = str(blue_motion.end_ori).lower()
 
             if "red" in beat.pictograph_data.motions:
                 red_motion = beat.pictograph_data.motions["red"]
                 if red_motion and hasattr(red_motion, "end_ori"):
-                    red_end_ori = red_motion.end_ori
+                    # Convert Orientation enum to string for compatibility
+                    if hasattr(red_motion.end_ori, "value"):
+                        red_end_ori = red_motion.end_ori.value
+                    else:
+                        red_end_ori = str(red_motion.end_ori).lower()
 
+        # Fallback to default orientations if not found
+        if blue_end_ori is None:
+            blue_end_ori = "in"
+        if red_end_ori is None:
+            red_end_ori = "out"
+
+        logger.debug(
+            f"Extracted end orientations: blue={blue_end_ori}, red={red_end_ori}"
+        )
         return blue_end_ori, red_end_ori
 
     def _update_single_pictograph_orientation(
@@ -139,22 +159,59 @@ class OptionOrientationUpdater:
         """
         Update orientations for a single pictograph option.
 
-        Modern implementation that:
-        1. Sets start orientations from sequence context
-        2. Updates prop orientations to match sequence continuity
+        FIXED: Modern implementation that:
+        1. Sets motion start orientations from sequence context
+        2. Calculates correct motion end orientations
+        3. Updates prop orientations to match motion END orientations (legacy pattern)
         """
+        updated_motions = pictograph.motions.copy()
         updated_props = pictograph.props.copy()
 
-        # Update blue prop orientation
-        if "blue" in updated_props:
-            blue_prop = updated_props["blue"]
-            updated_blue_prop = replace(blue_prop, orientation=blue_start_ori)
-            updated_props["blue"] = updated_blue_prop
+        # Import orientation calculator for end orientation calculation
+        from desktop.modern.application.services.positioning.arrows.calculation.orientation_calculator import (
+            OrientationCalculator,
+        )
+        from desktop.modern.domain.models.enums import Orientation
 
-        # Update red prop orientation
-        if "red" in updated_props:
-            red_prop = updated_props["red"]
-            updated_red_prop = replace(red_prop, orientation=red_start_ori)
-            updated_props["red"] = updated_red_prop
+        orientation_calculator = OrientationCalculator()
 
-        return replace(pictograph, props=updated_props)
+        # Update motion orientations for each color
+        for color, start_ori_str in [("blue", blue_start_ori), ("red", red_start_ori)]:
+            if color in updated_motions:
+                original_motion = updated_motions[color]
+                if original_motion:
+                    # Convert string to Orientation enum
+                    if isinstance(start_ori_str, str):
+                        start_ori = Orientation(start_ori_str.lower())
+                    else:
+                        start_ori = start_ori_str
+
+                    # Update motion with correct start orientation
+                    motion_with_start = original_motion.update(start_ori=start_ori)
+
+                    # Calculate correct end orientation based on motion type and turns
+                    calculated_end_ori = (
+                        orientation_calculator.calculate_end_orientation(
+                            motion_with_start, start_ori
+                        )
+                    )
+
+                    # Update motion with both correct start and calculated end orientations
+                    updated_motion = motion_with_start.update(
+                        end_ori=calculated_end_ori
+                    )
+                    updated_motions[color] = updated_motion
+
+                    # FIXED: Update prop orientation to match motion END orientation (legacy pattern)
+                    if color in updated_props:
+                        original_prop = updated_props[color]
+                        updated_prop = replace(
+                            original_prop, orientation=calculated_end_ori
+                        )
+                        updated_props[color] = updated_prop
+
+                        logger.debug(
+                            f"Updated {color} motion: {start_ori.value} → {calculated_end_ori.value}, prop: {calculated_end_ori.value}"
+                        )
+
+        return replace(pictograph, motions=updated_motions, props=updated_props)

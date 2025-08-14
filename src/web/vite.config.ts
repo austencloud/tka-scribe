@@ -11,4 +11,11 @@ export default defineConfig({
       allow: [".", "../animator"],
     },
   },
+  test: {
+    environment: "jsdom",
+    globals: true,
+    setupFiles: ["./src/lib/test/setup.ts"],
+    include: ["src/**/*.{test,spec}.{js,ts}"],
+    exclude: ["legacy_app/**/*", "node_modules/**/*"],
+  },
 });

@@ -10,12 +10,15 @@ start from "in" orientation instead of dynamically determining starting orientat
 from the actual sequence context.
 """
 
+from __future__ import annotations
+
 import logging
 
 from desktop.modern.domain.models.beat_data import BeatData
 from desktop.modern.domain.models.enums import Orientation
 from desktop.modern.domain.models.pictograph_data import PictographData
 from desktop.modern.domain.models.sequence_data import SequenceData
+
 
 logger = logging.getLogger(__name__)
 
@@ -144,6 +147,9 @@ class SequenceOrientationValidator:
 
         # Get the actual end orientations from the sequence
         sequence_end_orientations = self.get_sequence_end_orientations(sequence)
+        print(
+            f"🔍 [ORIENTATION_VALIDATOR] Sequence end orientations: Blue={sequence_end_orientations['blue'].value}, Red={sequence_end_orientations['red'].value}"
+        )
         logger.debug(
             f"Sequence end orientations: Blue={sequence_end_orientations['blue']}, Red={sequence_end_orientations['red']}"
         )
