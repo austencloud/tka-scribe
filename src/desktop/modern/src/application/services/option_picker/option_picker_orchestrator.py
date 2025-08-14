@@ -557,10 +557,15 @@ class OptionPickerOrchestrator(QObject):
             # This method already handles orientation continuity internally
             options_by_type = self.option_service.get_options_for_sequence(sequence)
 
-            # Update display with orientation-corrected options
-            # Pass the options by type format that the display service expects
+            # FIXED: Convert options_by_type dict to flat list for display service
+            # The display service expects a flat list of PictographData, not a dict by type
+            updated_options = []
+            for letter_type, options_list in options_by_type.items():
+                updated_options.extend(options_list)
+
+            # Update display with orientation-corrected options (flat list)
             display_result = self.display_service.update_pictograph_display(
-                options_by_type
+                updated_options
             )
 
             # Apply the display strategy to actually show the options

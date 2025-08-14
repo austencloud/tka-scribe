@@ -11,17 +11,20 @@ This service is responsible for determining when and how to separate props
 to avoid overlaps, particularly for beta-ending letters.
 """
 
-import json
-import uuid
+from __future__ import annotations
+
 from abc import ABC, abstractmethod
 from datetime import datetime
 from enum import Enum
+import json
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple
+from typing import TYPE_CHECKING, Any
+import uuid
 
 from core.types import Point
 from domain.models import BeatData, Location, MotionData, MotionType, Orientation
 from domain.models.pictograph_data import PictographData
+
 
 # Event-driven architecture imports
 if TYPE_CHECKING:
@@ -66,7 +69,7 @@ class IPropManagementService(ABC):
         """Apply beta prop positioning if conditions are met."""
 
     @abstractmethod
-    def calculate_separation_offsets(self, beat_data: BeatData) -> Tuple[Point, Point]:
+    def calculate_separation_offsets(self, beat_data: BeatData) -> tuple[Point, Point]:
         """Calculate separation offsets for blue and red props."""
 
     @abstractmethod
@@ -85,12 +88,12 @@ class PropManagementService(IPropManagementService):
     - Prop overlap detection and resolution
     """
 
-    def __init__(self, event_bus: Optional[IEventBus] = None):
+    def __init__(self, event_bus: IEventBus | None = None):
         # Event system integration
         self.event_bus = event_bus or (
             get_event_bus() if EVENT_SYSTEM_AVAILABLE else None
         )
-        self._subscription_ids: List[str] = []
+        self._subscription_ids: list[str] = []
 
         # Beta prop positioning constants
         self._large_offset_divisor = 60
@@ -110,7 +113,7 @@ class PropManagementService(IPropManagementService):
         self.UPRIGHT = "upright"
         self.DOWNLEFT = "downleft"
         self.DOWNRIGHT = "downright"  # Load special placements for beta prop swaps
-        self._special_placements: Optional[Dict[str, Any]] = None
+        self._special_placements: dict[str, Any] | None = None
         self._load_special_placements()
 
     def _init_prop_offset_map(self) -> None:
@@ -271,7 +274,7 @@ class PropManagementService(IPropManagementService):
 
     def calculate_separation_offsets(
         self, pictograph_data: PictographData
-    ) -> Tuple[Point, Point]:
+    ) -> tuple[Point, Point]:
         """
         Calculate separation offsets for blue and red props.
 
@@ -509,7 +512,7 @@ class PropManagementService(IPropManagementService):
         Loads specific positioning data for this configuration.
         """
         override_key = self._generate_override_key(beat_data)
-        override_data = self._special_placements.get(override_key, {})
+        self._special_placements.get(override_key, {})
 
         # Apply override adjustments
         # TODO: Implement specific override application logic
@@ -548,13 +551,13 @@ class PropManagementService(IPropManagementService):
             # Look for special placements file in data directory
             placements_file = Path("data/special_placements.json")
             if placements_file.exists():
-                with open(placements_file, "r") as f:
+                with open(placements_file) as f:
                     self._special_placements = json.load(f)
             else:
                 # Try alternative path as fallback
                 alt_placements_file = Path("v1/src/resources/special_placements.json")
                 if alt_placements_file.exists():
-                    with open(alt_placements_file, "r") as f:
+                    with open(alt_placements_file) as f:
                         self._special_placements = json.load(f)
                 else:
                     self._special_placements = {}
@@ -562,7 +565,7 @@ class PropManagementService(IPropManagementService):
             print(f"Warning: Could not load special placements: {e}")
             self._special_placements = {}
 
-    def classify_props_by_size(self, beat_data: BeatData) -> Dict[str, list]:
+    def classify_props_by_size(self, beat_data: BeatData) -> dict[str, list]:
         """
         Classify props by size categories (big, small, hands).
 
@@ -580,14 +583,13 @@ class PropManagementService(IPropManagementService):
         return classification
 
     def get_repositioning_strategy(
-        self, beat_data: BeatData, prop_classification: Dict[str, list]
+        self, beat_data: BeatData, prop_classification: dict[str, list]
     ) -> str:
         """
         Determine repositioning strategy based on prop classification and letter.
 
         Returns strategy name that determines how props should be separated.
         """
-        letter = beat_data.letter or ""
 
         # Check prop categories
         has_big_props = bool(prop_classification["big_props"])
@@ -625,10 +627,15 @@ class PropManagementService(IPropManagementService):
             },
         }
 
-        # Calculate end orientation for this motion
-        end_orientation = self._calculate_end_orientation(
-            motion_data, start_orientation
-        )
+        # FIXED: Use the already calculated end orientation from motion data if available
+        # This respects orientation continuity updates instead of recalculating from scratch
+        if hasattr(motion_data, "end_ori") and motion_data.end_ori is not None:
+            end_orientation = motion_data.end_ori
+        else:
+            # Fallback to calculation only if end_ori is not set
+            end_orientation = self._calculate_end_orientation(
+                motion_data, start_orientation
+            )
 
         # Get rotation angle from mapping
         orientation_map = angle_map.get(end_orientation, angle_map[Orientation.IN])

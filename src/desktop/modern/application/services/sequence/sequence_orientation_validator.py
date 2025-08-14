@@ -147,9 +147,6 @@ class SequenceOrientationValidator:
 
         # Get the actual end orientations from the sequence
         sequence_end_orientations = self.get_sequence_end_orientations(sequence)
-        print(
-            f"🔍 [ORIENTATION_VALIDATOR] Sequence end orientations: Blue={sequence_end_orientations['blue'].value}, Red={sequence_end_orientations['red'].value}"
-        )
         logger.debug(
             f"Sequence end orientations: Blue={sequence_end_orientations['blue']}, Red={sequence_end_orientations['red']}"
         )
@@ -172,6 +169,8 @@ class SequenceOrientationValidator:
                 )
 
         logger.debug(f"Updated start orientations for {len(updated_options)} options")
+        # print the options
+        
         return updated_options
 
     def _get_last_valid_beat(self, sequence: SequenceData) -> BeatData | None:
