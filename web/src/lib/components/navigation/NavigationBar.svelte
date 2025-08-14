@@ -20,12 +20,14 @@
 
 	// Handle logo click - go to About tab
 	async function handleLogoClick() {
+		// Always use SPA navigation when user is already in the app
 		onTabSelect?.('about');
 	}
 
-	// Handle tab click
+	// Handle tab click - always use SPA navigation
 	function handleTabClick(tab: TabDef) {
 		try {
+			// Normal SPA behavior: just switch tabs
 			onTabSelect?.(tab.id);
 		} catch (error) {
 			console.error('Failed to select tab:', error);

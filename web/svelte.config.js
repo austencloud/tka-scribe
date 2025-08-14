@@ -21,6 +21,19 @@ const config = {
     // See https://svelte.dev/docs/kit/adapters for more information about adapters.
     adapter: adapter(),
 
+    // Prerender SEO pages for better search engine crawling
+    prerender: {
+      entries: [
+        "*",
+        "/about",
+        "/features",
+        "/getting-started",
+        "/browse",
+        "/learn",
+        "/practice",
+      ],
+    },
+
     // Move the path aliases from tsconfig.json to here
     alias: {
       $lib: "./src/lib",

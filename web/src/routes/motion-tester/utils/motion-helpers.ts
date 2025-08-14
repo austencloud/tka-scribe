@@ -29,7 +29,7 @@ export function getMotionType(startLoc: string, endLoc: string): string {
 // Helper function to get available motion types for a start/end pair
 export function getAvailableMotionTypes(
   startLoc: string,
-  endLoc: string,
+  endLoc: string
 ): string[] {
   const motionType = getMotionType(startLoc, endLoc);
 
@@ -48,7 +48,7 @@ export function getMotionDescription(
   startLoc: string,
   endLoc: string,
   motionType: string,
-  turns: number,
+  turns: number
 ): string {
   const direction =
     startLoc === endLoc
@@ -63,7 +63,7 @@ export function getRotationDirection(
   startLoc: string,
   endLoc: string,
   motionType: string,
-  turns: number,
+  turns: number
 ): string {
   if (startLoc === endLoc) return "NO_ROT";
   if (motionType === "dash") return "NO_ROT";
@@ -77,7 +77,7 @@ export function getRotationDirection(
     ["w", "n"],
   ];
   const isClockwise = clockwisePairs.some(
-    ([start, end]) => start === startLoc && end === endLoc,
+    ([start, end]) => start === startLoc && end === endLoc
   );
 
   if (motionType === "pro") {
@@ -89,7 +89,7 @@ export function getRotationDirection(
 
 // Constants for motion parameters
 export const LOCATIONS = ["n", "e", "s", "w"] as const;
-export const MOTION_TYPES = ["pro", "anti", "float", "dash"] as const;
+export const MOTION_TYPES = ["pro", "anti", "float", "dash", "static"] as const;
 export const ORIENTATIONS = ["in", "out", "clock", "counter"] as const;
 
 // Visual position mapping for location display in the path grid

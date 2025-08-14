@@ -9,7 +9,7 @@ export interface MotionTestParams {
   startLoc: string;
   endLoc: string;
   motionType: string;
-  turns: number;
+  turns: number | "fl"; // Support both numeric turns and float
   propRotDir: string;
   startOri: string;
   endOri: string;
@@ -58,7 +58,7 @@ export class MotionParameterService {
   calculateRotationDirection(
     motionType: string,
     startLoc: string,
-    endLoc: string,
+    endLoc: string
   ): string {
     // Location order for clockwise movement: n -> e -> s -> w -> n
     const locationOrder = ["n", "e", "s", "w"];
@@ -202,7 +202,7 @@ export class MotionParameterService {
     const newMotionType = this.getMotionType(params.startLoc, params.endLoc);
     const availableTypes = this.getAvailableMotionTypes(
       params.startLoc,
-      params.endLoc,
+      params.endLoc
     );
 
     // If current motion type is not available, switch to the first available

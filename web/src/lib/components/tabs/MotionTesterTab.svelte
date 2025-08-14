@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { createMotionTesterState } from '../../../routes/motion-tester/state/motion-tester-state.svelte';
-	import MotionParameterPanel from '../../../routes/motion-tester/MotionParameterPanel.svelte';
 	import PictographVisualizationPanel from '../../../routes/motion-tester/PictographVisualizationPanel.svelte';
 
 	// Initialize the motion tester state
@@ -16,15 +15,7 @@
 	</header>
 
 	<main class="tester-main">
-		<!-- Left Panel: Motion Parameters -->
-		<div class="panel motion-params">
-			<MotionParameterPanel {state} />
-		</div>
-
-		<!-- Right Panel: Pictograph Visualization -->
-		<div class="panel visualization-panel">
-			<PictographVisualizationPanel {state} />
-		</div>
+		<PictographVisualizationPanel {state} />
 	</main>
 </div>
 
@@ -64,50 +55,18 @@
 	}
 
 	.tester-main {
-		display: grid;
-		grid-template-columns: 400px 1fr;
-		gap: 20px;
+		display: flex;
+		flex-direction: column;
 		flex: 1;
 		min-height: 0;
 	}
 
-	.panel {
-		background: rgba(255, 255, 255, 0.1);
-		backdrop-filter: blur(20px);
-		border: 1px solid rgba(255, 255, 255, 0.2);
-		border-radius: 12px;
-		padding: 16px;
-		overflow-y: auto;
-	}
 
-	.visualization-panel {
-		display: flex;
-		flex-direction: column;
-		background: rgba(255, 255, 255, 0.05);
-	}
 
 	/* Responsive design */
-	@media (max-width: 1200px) {
-		.tester-main {
-			grid-template-columns: 350px 1fr;
-			gap: 15px;
-		}
-	}
-
 	@media (max-width: 1000px) {
 		.motion-tester-tab {
 			padding: 15px;
-		}
-
-		.tester-main {
-			grid-template-columns: 1fr;
-			grid-template-rows: auto 1fr;
-			gap: 15px;
-		}
-
-		.panel {
-			min-height: auto;
-			padding: 12px;
 		}
 
 		.tester-header h1 {
@@ -132,29 +91,6 @@
 		.tester-header p {
 			font-size: 0.9rem;
 		}
-
-		.panel {
-			padding: 10px;
-		}
-	}
-
-	/* Scrollbar styling for webkit browsers */
-	.panel::-webkit-scrollbar {
-		width: 6px;
-	}
-
-	.panel::-webkit-scrollbar-track {
-		background: rgba(255, 255, 255, 0.1);
-		border-radius: 3px;
-	}
-
-	.panel::-webkit-scrollbar-thumb {
-		background: rgba(99, 102, 241, 0.5);
-		border-radius: 3px;
-	}
-
-	.panel::-webkit-scrollbar-thumb:hover {
-		background: rgba(99, 102, 241, 0.7);
 	}
 
 	/* Reduced motion support */
@@ -166,11 +102,6 @@
 
 	/* High contrast mode */
 	@media (prefers-contrast: high) {
-		.panel {
-			border: 2px solid white;
-			background: rgba(0, 0, 0, 0.8);
-		}
-
 		.tester-header {
 			border-bottom-color: white;
 		}
