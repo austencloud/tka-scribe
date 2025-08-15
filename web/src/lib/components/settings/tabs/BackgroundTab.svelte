@@ -70,6 +70,7 @@
 </script>
 
 <div class="tab-content">
+  
   <SettingCard
     title="Background Selection"
     description="Choose your preferred animated background"
@@ -130,56 +131,6 @@
     </div>
   </SettingCard>
 
-  <!-- Current Selection Info -->
-  <SettingCard title="Selected Background">
-    <div class="current-selection">
-      <div
-        class="selection-preview"
-        style="--bg-gradient: {backgrounds.find(
-          (bg) => bg.type === selectedBackground
-        )?.gradient}"
-      >
-        <div
-          class="preview-background {backgrounds.find(
-            (bg) => bg.type === selectedBackground
-          )?.animation}"
-        ></div>
-        <div class="preview-overlay">
-          <div class="preview-icon">
-            {backgrounds.find((bg) => bg.type === selectedBackground)?.icon}
-          </div>
-        </div>
-      </div>
-      <div class="selection-info">
-        <h3>
-          {backgrounds.find((bg) => bg.type === selectedBackground)?.name}
-        </h3>
-        <p>
-          {backgrounds.find((bg) => bg.type === selectedBackground)
-            ?.description}
-        </p>
-        <div class="selection-note">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-            <circle
-              cx="12"
-              cy="12"
-              r="10"
-              stroke="currentColor"
-              stroke-width="2"
-            />
-            <path
-              d="M12 6v6l4 2"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-            />
-          </svg>
-          <span>Background quality automatically optimizes for performance</span
-          >
-        </div>
-      </div>
-    </div>
-  </SettingCard>
 </div>
 
 <style>
@@ -539,12 +490,6 @@
     min-width: 0;
   }
 
-  .selection-info h3 {
-    margin: 0 0 8px 0;
-    font-size: 18px;
-    font-weight: 600;
-    color: white;
-  }
 
   .selection-info p {
     margin: 0 0 12px 0;

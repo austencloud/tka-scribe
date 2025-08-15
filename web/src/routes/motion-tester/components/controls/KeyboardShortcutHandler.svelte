@@ -27,32 +27,10 @@ No visual controls, no animation logic - just keyboard event handling.
   }
 </script>
 
-<!-- Invisible keyboard handler -->
-<button
-  class="keyboard-handler"
-  tabindex="-1"
-  onkeydown={handleKeyDown}
-  aria-label="Animation keyboard shortcuts"
->
-  <!-- Keyboard shortcuts hint -->
-  {#if showHints}
-    <div class="keyboard-hint">
-      <span>Space: Play/Pause</span>
-      <span>R: Reset</span>
-    </div>
-  {/if}
-</button>
+
 
 <style>
-  .keyboard-handler {
-    outline: none;
-  }
 
-  .keyboard-handler:focus-within {
-    outline: 2px solid rgba(139, 92, 246, 0.3);
-    outline-offset: 2px;
-    border-radius: 4px;
-  }
 
   .keyboard-hint {
     display: flex;

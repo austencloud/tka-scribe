@@ -10,11 +10,11 @@ This is the left 2/3 section of the new layout.
   import Pictograph from "$lib/components/pictograph/Pictograph.svelte";
   import PropPanel from "./PropPanel.svelte";
   import SimpleGridToggle from "./SimpleGridToggle.svelte";
-  import { createPictographData, createGridData } from "$lib/domain";
+  import { resolve } from "$lib/services/bootstrap";
+  import { IAnimatedPictographDataServiceInterface } from "$lib/services/di/interfaces/motion-tester-interfaces";
+  import type { PictographData } from "$lib/domain";
   import {
-    GridMode,
     MotionType,
-    Location,
     Orientation,
     RotationDirection,
   } from "$lib/domain/enums";
@@ -28,64 +28,39 @@ This is the left 2/3 section of the new layout.
   // Fixed size for consistent layout
   const PICTOGRAPH_SIZE = 320;
 
-  // Create pictograph data for static display (always at progress = 0)
-  function createStaticPictographData() {
+  // Resolve CSV lookup service
+  const pictographDataService = resolve(
+    IAnimatedPictographDataServiceInterface
+  );
+
+  // Use CSV lookup service to get real pictograph data
+  let pictographData = $state<PictographData | null>(null);
+
+  // Effect to update pictograph data when motion parameters change
+  $effect(() => {
+    // Access motion parameters to establish reactive dependencies
+    const blueParams = motionState.blueMotionParams;
+    const redParams = motionState.redMotionParams;
+    const gridType = motionState.gridType;
+
+    // Immediately update pictograph data using CSV lookup
+    updatePictographData();
+  });
+
+  async function updatePictographData() {
     try {
-      const gridMode =
-        motionState.gridType === "diamond" ? GridMode.DIAMOND : GridMode.BOX;
-
-      const gridData = createGridData({
-        grid_mode: gridMode,
-      });
-
-      const pictographData = createPictographData({
-        id: "motion-tester-static-pictograph",
-        grid_data: gridData,
-        arrows: {},
-        props: {},
-        motions: {
-          blue: {
-            motion_type: motionState.blueMotionParams.motionType as MotionType,
-            start_loc: motionState.blueMotionParams.startLoc as Location,
-            end_loc: motionState.blueMotionParams.endLoc as Location,
-            start_ori: motionState.blueMotionParams.startOri as Orientation,
-            end_ori: motionState.blueMotionParams.endOri as Orientation,
-            prop_rot_dir: motionState.blueMotionParams
-              .propRotDir as RotationDirection,
-            turns: motionState.blueMotionParams.turns,
-            is_visible: true,
-          },
-          red: {
-            motion_type: motionState.redMotionParams.motionType as MotionType,
-            start_loc: motionState.redMotionParams.startLoc as Location,
-            end_loc: motionState.redMotionParams.endLoc as Location,
-            start_ori: motionState.redMotionParams.startOri as Orientation,
-            end_ori: motionState.redMotionParams.endOri as Orientation,
-            prop_rot_dir: motionState.redMotionParams
-              .propRotDir as RotationDirection,
-            turns: motionState.redMotionParams.turns,
-            is_visible: true,
-          },
-        },
-        letter: "T", // T for "Tester"
-        beat: 1,
-        is_blank: false,
-        is_mirrored: false,
-        metadata: {
-          source: "motion_tester_static",
-          grid_type: motionState.gridType,
-          progress: 0, // Always show initial state
-        },
-      });
-
-      return pictographData;
+      console.log(
+        "🔍 StaticSection: Updating pictograph data via CSV lookup..."
+      );
+      const data =
+        await pictographDataService.createAnimatedPictographData(motionState);
+      pictographData = data;
+      console.log("✅ StaticSection: Pictograph data updated successfully");
     } catch (error) {
-      console.error("Error creating static pictograph data:", error);
-      return null;
+      console.error("❌ StaticSection: Error updating pictograph data:", error);
+      pictographData = null;
     }
   }
-
-  let pictographData = $derived(createStaticPictographData());
 </script>
 
 <div class="static-section-with-controls">
@@ -127,9 +102,9 @@ This is the left 2/3 section of the new layout.
         turns={motionState.blueMotionParams.turns}
         motionType={motionState.blueMotionParams.motionType as MotionType}
         onStartLocationChange={(location) =>
-          motionState.updateBlueMotionParam("startLoc", location)}
+          motionState.setBlueStartLocation(location)}
         onEndLocationChange={(location) =>
-          motionState.updateBlueMotionParam("endLoc", location)}
+          motionState.setBlueEndLocation(location)}
         onStartOrientationChange={(orientation) =>
           motionState.updateBlueMotionParam("startOri", orientation)}
         onEndOrientationChange={(orientation) =>
@@ -153,9 +128,9 @@ This is the left 2/3 section of the new layout.
         turns={motionState.redMotionParams.turns}
         motionType={motionState.redMotionParams.motionType as MotionType}
         onStartLocationChange={(location) =>
-          motionState.updateRedMotionParam("startLoc", location)}
+          motionState.setRedStartLocation(location)}
         onEndLocationChange={(location) =>
-          motionState.updateRedMotionParam("endLoc", location)}
+          motionState.setRedEndLocation(location)}
         onStartOrientationChange={(orientation) =>
           motionState.updateRedMotionParam("startOri", orientation)}
         onEndOrientationChange={(orientation) =>

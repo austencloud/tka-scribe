@@ -12,12 +12,8 @@ This is the right 1/3 section of the motion tester layout.
 -->
 <script lang="ts">
   import type { MotionTesterState } from "../state/motion-tester-state.svelte";
-  import { resolve } from "$lib/services/bootstrap";
-  import { IAnimatedPictographDataServiceInterface } from "$lib/services/di/interfaces/motion-tester-interfaces";
-  import type { PictographData } from "$lib/domain";
 
   // Import focused components
-  import AnimatedPictographDisplay from "./display/AnimatedPictographDisplay.svelte";
   import AnimationStatusIndicator from "./animation/AnimationStatusIndicator.svelte";
   import AnimationPlaybackControls from "./controls/AnimationPlaybackControls.svelte";
   import AnimationProgressSlider from "./controls/AnimationProgressSlider.svelte";
@@ -29,51 +25,7 @@ This is the right 1/3 section of the motion tester layout.
 
   let { motionState }: Props = $props();
 
-  // Fixed size for consistent layout
-  const PICTOGRAPH_SIZE = 280;
-
-  // Resolve service from DI container
-  const pictographDataService = resolve(
-    IAnimatedPictographDataServiceInterface
-  );
-
-  // Create pictograph data using service (async)
-  let pictographData = $state<PictographData | null>(null);
-  let isLoadingPictograph = $state(false);
-
-  // Effect to load pictograph data when motion state changes
-  $effect(() => {
-    // Explicitly access nested motion state properties to establish dependency tracking
-    // These variables are intentionally "unused" - they establish reactive dependencies
-    const blueStartLoc = motionState.blueMotionParams.startLoc;
-    const blueEndLoc = motionState.blueMotionParams.endLoc;
-    const blueMotionType = motionState.blueMotionParams.motionType;
-    const blueTurns = motionState.blueMotionParams.turns;
-
-    const redStartLoc = motionState.redMotionParams.startLoc;
-    const redEndLoc = motionState.redMotionParams.endLoc;
-    const redMotionType = motionState.redMotionParams.motionType;
-    const redTurns = motionState.redMotionParams.turns;
-
-    const gridType = motionState.gridType;
-
-    // Trigger async load when motion state changes
-    loadPictographData();
-  });
-
-  async function loadPictographData() {
-    isLoadingPictograph = true;
-    try {
-      const data =
-        await pictographDataService.createAnimatedPictographData(motionState);
-      pictographData = data;
-    } catch (error) {
-      console.error("❌ Error loading pictograph data:", error);
-      pictographData = null;
-    } finally {
-      isLoadingPictograph = false;
-    }
-  }
+  // Animation section simplified - no pictograph data loading needed
 
   // Event handlers - delegate to motion state
   function handlePlayToggle() {
@@ -100,9 +52,12 @@ This is the right 1/3 section of the motion tester layout.
     onReset={handleReset}
   />
 
-  <!-- Animated Pictograph Display -->
+  <!-- Animation Placeholder - Pictograph removed for debugging -->
   <div class="pictograph-container">
-    <AnimatedPictographDisplay {pictographData} size={PICTOGRAPH_SIZE} />
+    <div style="color: rgba(255,255,255,0.5); text-align: center;">
+      <p>🎬 Animation Section</p>
+      <p>(Pictograph removed for debugging)</p>
+    </div>
   </div>
 
   <!-- Animation Controls -->

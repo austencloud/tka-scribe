@@ -228,9 +228,16 @@ Follows the same pattern as Prop component for consistent sizing behavior
 
     const coords = diamondCoordinates[location.toLowerCase()];
     return coords || { x: 475.0, y: 475.0 };
-  } // Get arrow SVG path based on motion type and properties
+  }
+
+  // Get arrow SVG path based on motion type and properties
   const arrowPath = $derived(() => {
-    if (!arrowData || !motionData) return "/images/arrows/still.svg";
+    if (!arrowData || !motionData) {
+      console.warn(
+        "🚫 Arrow.svelte: Missing arrowData or motionData, cannot determine arrow path"
+      );
+      return null;
+    }
 
     const { motion_type, turns } = motionData;
     const baseDir = `/images/arrows/${motion_type}`;
@@ -251,11 +258,21 @@ Follows the same pattern as Prop component for consistent sizing behavior
 
       const subDir = isNonRadial ? "from_nonradial" : "from_radial";
       const turnValue = typeof turns === "number" ? turns.toFixed(1) : "0.0";
-      return `${baseDir}/${subDir}/${motion_type}_${turnValue}.svg`;
+      const path = `${baseDir}/${subDir}/${motion_type}_${turnValue}.svg`;
+
+      console.log(`🏹 Arrow SVG path for ${arrowData.color}: ${path}`);
+      console.log(
+        `   motion_type: ${motion_type}, turns: ${turns}, startOri: ${startOri}, endOri: ${endOri}`
+      );
+
+      return path;
     }
 
     // For simple motion types (dash, float) - use base directory
-    return `${baseDir}.svg`;
+    const path = `${baseDir}.svg`;
+    console.log(`🏹 Arrow SVG path for ${arrowData.color}: ${path}`);
+    console.log(`   motion_type: ${motion_type} (simple type)`);
+    return path;
   });
 
   // Parse SVG to get proper dimensions and center point (same as Prop component)
@@ -331,7 +348,11 @@ Follows the same pattern as Prop component for consistent sizing behavior
     try {
       if (!arrowData) throw new Error("No arrow data available");
 
-      const response = await fetch(arrowPath());
+      const path = arrowPath();
+      if (!path)
+        throw new Error("No arrow path available - missing motion data");
+
+      const response = await fetch(path);
       if (!response.ok) throw new Error("Failed to fetch SVG");
 
       const originalSvgText = await response.text();
@@ -362,6 +383,14 @@ Follows the same pattern as Prop component for consistent sizing behavior
   onMount(() => {
     loadSvg();
   });
+
+  // Reload SVG when arrow path changes
+  $effect(() => {
+    const path = arrowPath();
+    if (path) {
+      loadSvg();
+    }
+  });
 </script>
 
 <!-- Arrow Group -->
@@ -376,6 +405,18 @@ Follows the same pattern as Prop component for consistent sizing behavior
     <!-- Error state -->
     <circle r="10" fill="red" opacity="0.5" />
     <text x="0" y="4" text-anchor="middle" font-size="8" fill="white">!</text>
+  {:else if !arrowPath()}
+    <!-- No arrow path available (missing motion data) -->
+    <text
+      x="0"
+      y="4"
+      text-anchor="middle"
+      font-size="10"
+      fill="gray"
+      opacity="0.5"
+    >
+      No motion data
+    </text>
   {:else if !loaded || !svgData}
     <!-- Loading state -->
     <circle

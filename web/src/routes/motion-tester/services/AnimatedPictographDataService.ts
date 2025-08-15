@@ -39,15 +39,34 @@ export interface IAnimatedPictographDataService {
 export class AnimatedPictographDataService
   implements IAnimatedPictographDataService
 {
+  private cache = new Map<string, PictographData>();
+
   constructor(private csvLookupService?: IMotionTesterCsvLookupService) {}
   /**
    * Creates complete pictograph data for animated display using current motion parameters.
    * Uses CSV lookup service to find the correct letter and pictograph data.
+   * Includes caching to prevent redundant calculations.
    */
   async createAnimatedPictographData(
     motionState: MotionTesterState
   ): Promise<PictographData | null> {
     try {
+      // Create cache key from motion parameters (excluding animation progress)
+      const cacheKey = this.createCacheKey(motionState);
+
+      // Check cache first
+      if (this.cache.has(cacheKey)) {
+        const cached = this.cache.get(cacheKey)!;
+        // Update progress in metadata for cached result
+        return {
+          ...cached,
+          metadata: {
+            ...cached.metadata,
+            progress: motionState.animationState.progress,
+          },
+        };
+      }
+
       const gridMode = this.getGridMode(motionState.gridType);
 
       // Try to use CSV lookup service first for accurate letter detection
@@ -73,6 +92,16 @@ export class AnimatedPictographDataService
             grid_type: motionState.gridType,
             progress: motionState.animationState.progress,
           };
+
+          // Cache the result (without progress for reusability)
+          const cacheableResult = {
+            ...csvPictograph,
+            metadata: {
+              ...csvPictograph.metadata,
+              progress: 0, // Don't cache progress
+            },
+          };
+          this.cache.set(cacheKey, cacheableResult);
 
           return csvPictograph;
         } else {
@@ -143,6 +172,16 @@ export class AnimatedPictographDataService
         },
       });
 
+      // Cache the fallback result (without progress for reusability)
+      const cacheableResult = {
+        ...pictographData,
+        metadata: {
+          ...pictographData.metadata,
+          progress: 0, // Don't cache progress
+        },
+      };
+      this.cache.set(cacheKey, cacheableResult);
+
       return pictographData;
     } catch (error) {
       console.error("Error creating animated pictograph data:", error);
@@ -180,8 +219,8 @@ export class AnimatedPictographDataService
     return createPropData({
       prop_type: PropType.STAFF, // Default to staff for motion tester
       color: color,
-      location: this.mapLocation(motionParams.startLoc),
-      orientation: this.mapOrientation(motionParams.startOri),
+      location: this.mapLocation(motionParams.endLoc), // Use END location for prop positioning
+      orientation: this.mapOrientation(motionParams.endOri), // Use END orientation
       rotation_direction: this.mapRotationDirection(motionParams.propRotDir),
       is_visible: true,
     });
@@ -281,5 +320,31 @@ export class AnimatedPictographDataService
       default:
         return RotationDirection.NO_ROTATION;
     }
+  }
+
+  /**
+   * Creates a cache key from motion state parameters (excluding animation progress)
+   */
+  private createCacheKey(motionState: MotionTesterState): string {
+    const blue = motionState.blueMotionParams;
+    const red = motionState.redMotionParams;
+
+    return [
+      motionState.gridType,
+      blue.startLoc,
+      blue.endLoc,
+      blue.motionType,
+      blue.turns,
+      blue.propRotDir,
+      blue.startOri,
+      blue.endOri,
+      red.startLoc,
+      red.endLoc,
+      red.motionType,
+      red.turns,
+      red.propRotDir,
+      red.startOri,
+      red.endOri,
+    ].join("|");
   }
 }

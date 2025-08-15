@@ -89,6 +89,10 @@ export function createMotionTesterState(): MotionTesterState {
     motionType: "dash",
   });
 
+  // Debug initial state
+  console.log("🔴 Initial red motion params:", redMotionParams);
+  console.log("🔵 Initial blue motion params:", blueMotionParams);
+
   // Props are always visible - no user controls needed
   const propVisibility = $state<PropVisibility>({
     blue: true,
@@ -129,12 +133,21 @@ export function createMotionTesterState(): MotionTesterState {
 
   // Auto-calculate rotation direction for red prop
   $effect(() => {
+    console.log(
+      `🔴 Red rotation effect triggered: ${redMotionParams.startLoc}→${redMotionParams.endLoc} (${redMotionParams.motionType})`
+    );
     const newRotDir = motionService.calculateRotationDirection(
       redMotionParams.motionType,
       redMotionParams.startLoc,
       redMotionParams.endLoc
     );
+    console.log(
+      `🔴 Red rotation calculated: ${newRotDir}, current: ${redMotionParams.propRotDir}`
+    );
     if (newRotDir !== redMotionParams.propRotDir) {
+      console.log(
+        `🔴 Red rotation updating from ${redMotionParams.propRotDir} to ${newRotDir}`
+      );
       redMotionParams.propRotDir = newRotDir;
     }
   });
@@ -196,14 +209,16 @@ export function createMotionTesterState(): MotionTesterState {
     // Blue prop methods
     setBlueStartLocation: (location: string) => {
       blueMotionParams.startLoc = location;
-      blueMotionParams =
+      const updatedParams =
         motionService.updateMotionTypeForLocations(blueMotionParams);
+      blueMotionParams = updatedParams;
     },
 
     setBlueEndLocation: (location: string) => {
       blueMotionParams.endLoc = location;
-      blueMotionParams =
+      const updatedParams =
         motionService.updateMotionTypeForLocations(blueMotionParams);
+      blueMotionParams = updatedParams;
     },
 
     updateBlueMotionParam: (param: keyof MotionTestParams, value: any) => {
@@ -213,14 +228,16 @@ export function createMotionTesterState(): MotionTesterState {
     // Red prop methods
     setRedStartLocation: (location: string) => {
       redMotionParams.startLoc = location;
-      redMotionParams =
+      const updatedParams =
         motionService.updateMotionTypeForLocations(redMotionParams);
+      redMotionParams = updatedParams;
     },
 
     setRedEndLocation: (location: string) => {
       redMotionParams.endLoc = location;
-      redMotionParams =
+      const updatedParams =
         motionService.updateMotionTypeForLocations(redMotionParams);
+      redMotionParams = updatedParams;
     },
 
     updateRedMotionParam: (param: keyof MotionTestParams, value: any) => {

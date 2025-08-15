@@ -4,7 +4,11 @@
 
 // Helper function to determine motion type based on start/end locations
 export function getMotionType(startLoc: string, endLoc: string): string {
-  if (startLoc === endLoc) {
+  // Normalize to lowercase for case-insensitive comparison
+  const start = startLoc.toLowerCase();
+  const end = endLoc.toLowerCase();
+
+  if (start === end) {
     return "static"; // Same location = static
   }
 
@@ -16,8 +20,8 @@ export function getMotionType(startLoc: string, endLoc: string): string {
     ["w", "e"],
   ];
 
-  for (const [start, end] of opposites) {
-    if (startLoc === start && endLoc === end) {
+  for (const [startOpp, endOpp] of opposites) {
+    if (start === startOpp && end === endOpp) {
       return "dash";
     }
   }

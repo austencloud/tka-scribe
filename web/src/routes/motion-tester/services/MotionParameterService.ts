@@ -18,7 +18,11 @@ export interface MotionTestParams {
 export class MotionParameterService {
   // Helper function to determine motion type based on start/end locations
   getMotionType(startLoc: string, endLoc: string): string {
-    if (startLoc === endLoc) {
+    // Normalize to lowercase for case-insensitive comparison
+    const start = startLoc.toLowerCase();
+    const end = endLoc.toLowerCase();
+
+    if (start === end) {
       return "static"; // Same location = static
     }
 
@@ -30,14 +34,14 @@ export class MotionParameterService {
       ["w", "e"],
     ];
 
-    for (const [start, end] of opposites) {
-      if (startLoc === start && endLoc === end) {
+    for (const [startOpp, endOpp] of opposites) {
+      if (start === startOpp && end === endOpp) {
         return "dash";
       }
     }
 
     // Adjacent locations = shift motion (pro/anti/float)
-    return "pro"; // Default to pro for shift motions
+    return "pro"; // TODO - fix this so it actually receives the real info required to get the motion type, pro as default is bad
   }
 
   // Helper function to get available motion types for a start/end pair
@@ -62,16 +66,12 @@ export class MotionParameterService {
   ): string {
     // Location order for clockwise movement: n -> e -> s -> w -> n
     const locationOrder = ["n", "e", "s", "w"];
-    const startIndex = locationOrder.indexOf(startLoc);
-    const endIndex = locationOrder.indexOf(endLoc);
+    const startIndex = locationOrder.indexOf(startLoc.toLowerCase());
+    const endIndex = locationOrder.indexOf(endLoc.toLowerCase());
 
     if (startIndex === -1 || endIndex === -1) {
       return "cw"; // Default to clockwise for unknown locations
     }
-
-    // Calculate the direction of movement
-    const clockwiseDistance = (endIndex - startIndex + 4) % 4;
-    const counterClockwiseDistance = (startIndex - endIndex + 4) % 4;
 
     // For static motions, no rotation
     if (motionType === "static") {
@@ -83,13 +83,32 @@ export class MotionParameterService {
       return "no_rot";
     }
 
-    // For pro motions: follow natural circular progression
-    // For anti motions: go opposite to natural progression
-    if (clockwiseDistance <= counterClockwiseDistance) {
-      return motionType === "pro" ? "cw" : "ccw";
+    // Calculate the hand path direction (clockwise or counterclockwise)
+    const clockwiseDistance = (endIndex - startIndex + 4) % 4;
+    const counterClockwiseDistance = (startIndex - endIndex + 4) % 4;
+
+    // Determine hand path direction (shorter distance wins)
+    const handPathIsClockwise = clockwiseDistance < counterClockwiseDistance;
+
+    // For PRO: prop rotation matches hand path direction
+    // For ANTI: prop rotation opposes hand path direction
+    let result;
+    if (motionType === "pro") {
+      result = handPathIsClockwise ? "cw" : "ccw";
+    } else if (motionType === "anti") {
+      result = handPathIsClockwise ? "ccw" : "cw";
     } else {
-      return motionType === "pro" ? "ccw" : "cw";
+      result = "cw"; // Default for other motion types
     }
+
+    console.log(
+      `🔄 Rotation direction for ${startLoc}→${endLoc} (${motionType}): ${result}`
+    );
+    console.log(
+      `   handPathIsClockwise: ${handPathIsClockwise}, clockwiseDistance: ${clockwiseDistance}, counterClockwiseDistance: ${counterClockwiseDistance}`
+    );
+
+    return result;
   }
 
   // Helper function to map string values to enum values
