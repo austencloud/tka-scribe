@@ -15,12 +15,6 @@
   # Node.js version
   NODE_VERSION = "18"
 
-# SvelteKit routing - handle client-side routing
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
-
 # Cache static assets
 [[headers]]
   for = "/assets/*"

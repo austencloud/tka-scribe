@@ -1,5 +1,5 @@
 import "clsx";
-import { p as pop, a as push } from "../../../chunks/index.js";
+import { p as pop, a as push } from "../../../chunks/index2.js";
 import { M as MainApplication } from "../../../chunks/MainApplication.js";
 function _page($$payload, $$props) {
   push();

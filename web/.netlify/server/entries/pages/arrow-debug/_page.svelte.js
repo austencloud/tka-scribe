@@ -1,4 +1,4 @@
-import { h as head, p as pop, a as push } from "../../../chunks/index.js";
+import { h as head, p as pop, a as push } from "../../../chunks/index2.js";
 import "../../../chunks/png-metadata-extractor.js";
 function _page($$payload, $$props) {
   push();

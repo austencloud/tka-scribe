@@ -4,6 +4,7 @@ UI Coordinator - Orchestrates UI State Management
 Coordinates all UI state management components and provides a unified interface.
 Replaces the monolithic UIStateManager with a composition of focused managers.
 """
+
 from __future__ import annotations
 
 import json
@@ -376,3 +377,69 @@ class UICoordinator(IUIStateManager):
         except Exception as e:
             logger.exception(f"Failed to restore session on startup: {e}")
             return False
+
+    def get_state(self, key: str) -> Any:
+        """Get a specific state value."""
+        # Route to appropriate manager based on key prefix or content
+        if key.startswith("setting."):
+            setting_key = key[8:]  # Remove "setting." prefix
+            return self.settings.get_setting(setting_key)
+        elif key.startswith("window."):
+            window_key = key[7:]  # Remove "window." prefix
+            return self.window_state.get_window_state(window_key)
+        elif key.startswith("tab."):
+            tab_key = key[4:]  # Remove "tab." prefix
+            return self.tab_state.get_tab_state(tab_key)
+        elif key.startswith("component."):
+            component_key = key[10:]  # Remove "component." prefix
+            return self.component_visibility.get_component_visibility(component_key)
+        elif key.startswith("graph_editor."):
+            graph_key = key[13:]  # Remove "graph_editor." prefix
+            if graph_key == "visible":
+                return self.graph_editor_state.get_graph_editor_visible()
+            elif graph_key == "height":
+                return self.graph_editor_state.get_graph_editor_height()
+        elif key.startswith("option_picker."):
+            picker_key = key[14:]  # Remove "option_picker." prefix
+            if picker_key == "selection":
+                return self.option_picker_state.get_option_picker_selection()
+            elif picker_key == "filters":
+                return self.option_picker_state.get_option_picker_filters()
+
+        # Fallback: try to get from settings
+        return self.settings.get_setting(key)
+
+    def set_state(self, key: str, value: Any) -> None:
+        """Set a specific state value."""
+        # Route to appropriate manager based on key prefix or content
+        if key.startswith("setting."):
+            setting_key = key[8:]  # Remove "setting." prefix
+            self.settings.set_setting(setting_key, value)
+        elif key.startswith("window."):
+            window_key = key[7:]  # Remove "window." prefix
+            self.window_state.set_window_state(window_key, value)
+        elif key.startswith("tab."):
+            tab_key = key[4:]  # Remove "tab." prefix
+            self.tab_state.update_tab_state(tab_key, value)
+        elif key.startswith("component."):
+            component_key = key[10:]  # Remove "component." prefix
+            self.component_visibility.set_component_visibility(component_key, value)
+        elif key.startswith("graph_editor."):
+            graph_key = key[13:]  # Remove "graph_editor." prefix
+            if graph_key == "visible":
+                self.graph_editor_state.set_graph_editor_visible(value)
+            elif graph_key == "height":
+                self.graph_editor_state.set_graph_editor_height(value)
+        elif key.startswith("option_picker."):
+            picker_key = key[14:]  # Remove "option_picker." prefix
+            if picker_key == "selection":
+                self.option_picker_state.set_option_picker_selection(value)
+            elif picker_key == "filters":
+                self.option_picker_state.update_option_picker_filters(value)
+        else:
+            # Fallback: set as setting
+            self.settings.set_setting(key, value)
+
+        # Trigger session auto-save for state changes
+        if self._session_service:
+            self._session_service.mark_interaction()

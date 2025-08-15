@@ -126,6 +126,11 @@ class IOptionProvider(ABC):
         """Get list of available letters in current options."""
         pass
 
+    @abstractmethod
+    def set_signal_emitter(self, signal_emitter: IOptionServiceSignals) -> None:
+        """Set the signal emitter for this service."""
+        pass
+
 
 class IOptionServiceSignals(ABC):
     """Interface for option service signal emission."""
@@ -138,11 +143,6 @@ class IOptionServiceSignals(ABC):
     @abstractmethod
     def emit_options_cleared(self) -> None:
         """Emit signal when options are cleared."""
-        pass
-
-    @abstractmethod
-    def set_signal_emitter(self, signal_emitter: IOptionServiceSignals) -> None:
-        """Set the signal emitter for this service."""
         pass
 
 
@@ -187,4 +187,131 @@ class IOptionPickerDisplayService(ABC):
     @abstractmethod
     def get_display_count(self) -> int:
         """Get the number of currently displayed options."""
+        pass
+
+
+class IOptionPickerEventService(ABC):
+    """Interface for option picker event handling."""
+
+    @abstractmethod
+    def handle_option_selected(self, option: PictographData) -> None:
+        """Handle option selection event."""
+        pass
+
+    @abstractmethod
+    def handle_option_double_clicked(self, option: PictographData) -> None:
+        """Handle option double-click event."""
+        pass
+
+    @abstractmethod
+    def handle_filter_changed(self, filter_text: str) -> None:
+        """Handle filter change event."""
+        pass
+
+    @abstractmethod
+    def handle_clear_selection(self) -> None:
+        """Handle clear selection event."""
+        pass
+
+    @abstractmethod
+    def handle_refresh_requested(self) -> None:
+        """Handle refresh request event."""
+        pass
+
+    @abstractmethod
+    def register_event_handler(self, event_type: str, handler: callable) -> None:
+        """Register an event handler for a specific event type."""
+        pass
+
+    @abstractmethod
+    def unregister_event_handler(self, event_type: str, handler: callable) -> None:
+        """Unregister an event handler."""
+        pass
+
+
+class IOptionPickerInitializer(ABC):
+    """Interface for option picker initialization."""
+
+    @abstractmethod
+    def initialize_option_picker(self, picker_id: str, config: dict[str, Any]) -> None:
+        """Initialize an option picker with the given configuration."""
+        pass
+
+    @abstractmethod
+    def setup_default_options(self, picker_id: str) -> None:
+        """Set up default options for an option picker."""
+        pass
+
+    @abstractmethod
+    def configure_picker_layout(
+        self, picker_id: str, layout_config: dict[str, Any]
+    ) -> None:
+        """Configure the layout of an option picker."""
+        pass
+
+    @abstractmethod
+    def register_picker_callbacks(
+        self, picker_id: str, callbacks: dict[str, callable]
+    ) -> None:
+        """Register callbacks for picker events."""
+        pass
+
+    @abstractmethod
+    def validate_picker_configuration(self, config: dict[str, Any]) -> bool:
+        """Validate picker configuration."""
+        pass
+
+    @abstractmethod
+    def get_picker_status(self, picker_id: str) -> dict[str, Any]:
+        """Get the current status of a picker."""
+        pass
+
+    @abstractmethod
+    def cleanup_picker(self, picker_id: str) -> None:
+        """Clean up resources for a picker."""
+        pass
+
+
+class IOptionPickerOrchestrator(ABC):
+    """Interface for option picker orchestration."""
+
+    @abstractmethod
+    def orchestrate_option_loading(self, source: Any, picker_id: str) -> None:
+        """Orchestrate the loading of options from a source."""
+        pass
+
+    @abstractmethod
+    def orchestrate_option_selection(
+        self, option: PictographData, picker_id: str
+    ) -> None:
+        """Orchestrate option selection across all related components."""
+        pass
+
+    @abstractmethod
+    def orchestrate_filter_application(
+        self, filter_criteria: dict[str, Any], picker_id: str
+    ) -> None:
+        """Orchestrate the application of filters."""
+        pass
+
+    @abstractmethod
+    def orchestrate_picker_refresh(self, picker_id: str) -> None:
+        """Orchestrate a complete refresh of the picker."""
+        pass
+
+    @abstractmethod
+    def coordinate_multi_picker_sync(self, picker_ids: list[str]) -> None:
+        """Coordinate synchronization between multiple pickers."""
+        pass
+
+    @abstractmethod
+    def handle_picker_state_change(
+        self, picker_id: str, new_state: dict[str, Any]
+    ) -> None:
+        """Handle state changes in a picker."""
+        pass
+
+    @abstractmethod
+    def get_orchestration_status(self) -> dict[str, Any]:
+        """Get the current orchestration status."""
         pass

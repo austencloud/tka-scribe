@@ -1,4 +1,4 @@
-import { s as setContext, h as head, p as pop, a as push } from "../../chunks/index.js";
+import { s as setContext, h as head, p as pop, a as push } from "../../chunks/index2.js";
 function _layout($$payload, $$props) {
   push();
   let { children } = $$props;

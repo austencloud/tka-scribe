@@ -33,15 +33,9 @@ This is the right 1/3 section of the motion tester layout.
 
 	// Resolve service from DI container
 	const pictographDataService = resolve(IAnimatedPictographDataServiceInterface);
-	console.log('🎯 AnimatedSection: Service resolved:', pictographDataService);
 
 	// Create pictograph data using service
 	let pictographData = $derived(pictographDataService.createAnimatedPictographData(motionState));
-
-	// Debug effect to log pictograph data changes
-	$effect(() => {
-		console.log('🎯 AnimatedSection: Pictograph data created:', pictographData);
-	});
 
 	// Event handlers - delegate to motion state
 	function handlePlayToggle() {

@@ -29,8 +29,6 @@ const config = {
         "/features",
         "/getting-started",
         "/browse",
-        "/learn",
-        "/practice",
       ],
     },
 

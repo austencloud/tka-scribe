@@ -1,5 +1,5 @@
 import * as devalue from "devalue";
-import { b as base64_encode, t as text_decoder, a as base64_decode } from "./utils.js";
+import { b as base64_encode, t as text_decoder, a as base64_decode } from "./utils2.js";
 let request_event = null;
 let als;
 import("node:async_hooks").then((hooks) => als = new hooks.AsyncLocalStorage()).catch(() => {

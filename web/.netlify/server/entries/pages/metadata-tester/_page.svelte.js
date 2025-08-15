@@ -1,4 +1,4 @@
-import { c as attr, e as escape_html, d as ensure_array_like, f as attr_class, i as stringify, p as pop, a as push, h as head } from "../../../chunks/index.js";
+import { b as attr, e as escape_html, c as ensure_array_like, d as attr_class, f as stringify, p as pop, a as push, h as head } from "../../../chunks/index2.js";
 import "clsx";
 import { P as PngMetadataExtractor } from "../../../chunks/png-metadata-extractor.js";
 function ThumbnailBrowser($$payload, $$props) {

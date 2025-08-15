@@ -1,4 +1,15 @@
+import { s as shouldRedirectToPrimary, a as getRedirectURL } from "./domains.js";
 const handle = async ({ event, resolve }) => {
+  if (shouldRedirectToPrimary(event.url.origin)) {
+    const redirectURL = getRedirectURL(event.url.href);
+    return new Response(null, {
+      status: 301,
+      // Permanent redirect for SEO
+      headers: {
+        Location: redirectURL
+      }
+    });
+  }
   if (event.url.pathname === "/api/console-forward") {
     if (event.request.method === "POST") {
       try {
