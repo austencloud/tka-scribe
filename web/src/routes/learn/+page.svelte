@@ -1,4 +1,4 @@
-<!-- SEO-Optimized CONSTRUCTOR Page with Enhanced Meta Data -->
+<!-- SEO-Optimized LEARN Page with Enhanced Meta Data -->
 <script lang="ts">
   import { onMount } from "svelte";
   import { browser } from "$app/environment";
@@ -15,7 +15,7 @@
   // Enhanced SEO redirect with analytics potential
   onMount(() => {
     if (browser) {
-      handleSEORedirect("construct");
+      handleSEORedirect("learn");
     }
   });
 
@@ -23,9 +23,9 @@
   const structuredData = {
     "@context": "https://schema.org",
     "@type": "WebPage",
-    "name": "Flow Arts Constructor - Sequence Builder",
-    "description": "Visual sequence builder for creating custom flow arts choreography. Design poi, fans, staff movements with ease.",
-    "url": "https://thekineticalphabet.com/constructor",
+    "name": "Learn Flow Arts - TKA Tutorials",
+    "description": "Comprehensive flow arts education with progressive tutorials for poi, fans, staff, and advanced kinetic patterns.",
+    "url": "https://thekineticalphabet.com/learn",
     "isPartOf": {
       "@type": "WebSite",
       "name": "TKA - The Kinetic Constructor",

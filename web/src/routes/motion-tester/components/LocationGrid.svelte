@@ -47,7 +47,7 @@ Much more intuitive than dropdown for spatial location selection.
         class="grid-cell"
         class:selected={isSelected(location.id)}
         class:disabled={location.disabled}
-        class:available={!location.disabled && location.id !== "center"}
+        class:available={!location.disabled}
         disabled={location.disabled}
         onclick={() => handleLocationClick(location.id)}
         aria-label={location.disabled

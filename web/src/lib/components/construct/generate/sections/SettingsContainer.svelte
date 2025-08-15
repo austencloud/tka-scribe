@@ -1,11 +1,18 @@
 <!--
-SettingsContainer.svelte - Container for all settings sections
+SettingsContainer.svelte - Container for all settings controls
 Handles the responsive layout and scrolling behavior
+All individual controls are evenly spaced throughout the container
 -->
 <script lang="ts">
-  import SequenceSettingsSection from "./SequenceSettingsSection.svelte";
-  import ModeLayoutSection from "./ModeLayoutSection.svelte";
-  import ModeSpecificSection from "./ModeSpecificSection.svelte";
+  import LevelSelector from "../../../tabs/generate/selectors/LevelSelector.svelte";
+  import LengthSelector from "../../../tabs/generate/selectors/LengthSelector.svelte";
+  import TurnIntensitySelector from "../../../tabs/generate/selectors/TurnIntensitySelector.svelte";
+  import GridModeSelector from "../../../tabs/generate/selectors/GridModeSelector.svelte";
+  import GenerationModeToggle from "../../../tabs/generate/selectors/GenerationModeToggle.svelte";
+  import PropContinuityToggle from "../../../tabs/generate/selectors/PropContinuityToggle.svelte";
+  import LetterTypeSelector from "../../../tabs/generate/selectors/LetterTypeSelector.svelte";
+  import SliceSizeSelector from "../../../tabs/generate/selectors/SliceSizeSelector.svelte";
+  import CAPTypeSelector from "../../../tabs/generate/selectors/CAPTypeSelector.svelte";
   import type { GenerationConfig } from "../generateConfigState.svelte";
 
   interface Props {
@@ -17,30 +24,90 @@ Handles the responsive layout and scrolling behavior
 </script>
 
 <div class="settings-container">
-  <SequenceSettingsSection {config} />
-  <ModeLayoutSection {config} />
-  <ModeSpecificSection {config} {isFreeformMode} />
+  <!-- Core Sequence Settings -->
+  <div class="setting-item">
+    <LevelSelector initialValue={config.level} />
+  </div>
+
+  <div class="setting-item">
+    <LengthSelector initialValue={config.length} />
+  </div>
+
+  <div class="setting-item">
+    <TurnIntensitySelector initialValue={config.turnIntensity} />
+  </div>
+
+  <!-- Mode & Layout Settings -->
+  <div class="setting-item">
+    <GridModeSelector initialMode={config.gridMode} />
+  </div>
+
+  <div class="setting-item">
+    <GenerationModeToggle initialMode={config.mode} />
+  </div>
+
+  <div class="setting-item">
+    <PropContinuityToggle initialValue={config.propContinuity} />
+  </div>
+
+  <!-- Mode-Specific Settings -->
+  {#if isFreeformMode}
+    <div class="setting-item">
+      <LetterTypeSelector initialValue={config.letterTypes} />
+    </div>
+  {:else}
+    <div class="setting-item">
+      <SliceSizeSelector initialValue={config.sliceSize} />
+    </div>
+
+    <div class="setting-item">
+      <CAPTypeSelector initialValue={config.capType} />
+    </div>
+  {/if}
 </div>
 
 <style>
   .settings-container {
     flex: 1;
     overflow-y: auto;
-    display: grid;
-    grid-template-rows: auto auto auto;
-    gap: calc(var(--element-spacing) * 1.25);
-    margin-bottom: var(--element-spacing);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
     min-height: 0; /* Allow proper overflow handling */
-    align-content: start; /* Align to top instead of distributing */
+    padding: calc(var(--element-spacing) * 1.5);
+    
+    /* Single glassmorphism card for the entire container */
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.05),
+      rgba(255, 255, 255, 0.02)
+    );
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  .setting-item {
+    /* Simple centered row - no individual cards */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: var(--min-touch-target, 44px);
+    transition: opacity 0.2s ease;
+  }
+
+  .setting-item:hover {
+    opacity: 0.8;
   }
 
   /* Responsive layouts */
   :global(.generate-panel[data-layout="spacious"]) .settings-container {
-    gap: calc(var(--element-spacing) * 1.5);
+    padding: calc(var(--element-spacing) * 2);
   }
 
   :global(.generate-panel[data-layout="compact"]) .settings-container {
-    gap: calc(var(--element-spacing) * 0.75);
+    padding: var(--element-spacing);
   }
 
   /* Ensure no scrolling is forced when not appropriate */
@@ -48,7 +115,7 @@ Handles the responsive layout and scrolling behavior
     overflow: hidden;
     flex: 1;
     min-height: 0;
-    /* Ensure grid doesn't expand beyond container */
+    /* Ensure flex doesn't expand beyond container */
     max-height: 100%;
   }
 </style>

@@ -13,10 +13,10 @@ import type {
   IArrowPlacementDataService,
   IArrowPlacementKeyService,
   IArrowPositioningService,
-  Location,
   MotionData,
   PictographData,
 } from "../interfaces";
+import { Location } from "$lib/domain/enums"; // ✅ Import from centralized enums
 
 export class ArrowPositioningService implements IArrowPositioningService {
   private readonly CENTER_X = 475;

@@ -174,15 +174,7 @@ Refactored from the large OptionPickerScroll.svelte with extracted responsibilit
     scroll-behavior: smooth;
   }
 
-  /* Apply glass scrollbar styling */
-  .option-picker-scroll {
-    /* Use secondary variant for option picker */
-  }
-
-  /* Apply glass scrollbar using class addition in HTML */
-  :global(.option-picker-scroll.glass-scrollbar-secondary) {
-    /* Ensure glass scrollbar styles are applied */
-  }
+  /* Glass scrollbar styling applied via JavaScript class addition */
 
   .scroll-container {
     width: 100%;

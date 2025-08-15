@@ -93,7 +93,7 @@ export class ArrowCoordinateSystemService
       return this.getHandPointCoords(location);
     } else {
       // Default fallback
-      console.warn(`Unknown motion type: ${motionType}, using center`);
+      console.warn(`Unknown motion type: ${motionType}, using scene center`);
       return this.getSceneCenter();
     }
   }

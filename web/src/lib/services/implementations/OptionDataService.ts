@@ -24,23 +24,23 @@ import type {
   BeatData,
   DifficultyLevel,
   IOptionDataService,
-  MotionType,
   OptionFilters,
   PictographData,
   SequenceData,
   ValidationResult,
 } from "../interfaces";
+import { MotionType } from "$lib/domain/enums"; // ✅ Import from centralized enums
 import type { ValidationError } from "$lib/domain/sequenceCard";
 import { CsvDataService, type ParsedCsvRow } from "./CsvDataService";
 import { OrientationCalculationService } from "./OrientationCalculationService";
 
 export class OptionDataService implements IOptionDataService {
   private readonly MOTION_TYPES: MotionType[] = [
-    "pro",
-    "anti",
-    "float",
-    "dash",
-    "static",
+    MotionType.PRO, // ✅ Use enum instead of string literal
+    MotionType.ANTI, // ✅ Use enum instead of string literal
+    MotionType.FLOAT, // ✅ Use enum instead of string literal
+    MotionType.DASH, // ✅ Use enum instead of string literal
+    MotionType.STATIC, // ✅ Use enum instead of string literal
   ];
 
   private readonly DIFFICULTY_MOTION_LIMITS = {

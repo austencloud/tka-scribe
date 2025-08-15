@@ -1,4 +1,4 @@
-<!-- SEO-Optimized CONSTRUCTOR Page with Enhanced Meta Data -->
+<!-- SEO-Optimized SEQUENCE-CARD Page with Enhanced Meta Data -->
 <script lang="ts">
   import { onMount } from "svelte";
   import { browser } from "$app/environment";
@@ -15,7 +15,7 @@
   // Enhanced SEO redirect with analytics potential
   onMount(() => {
     if (browser) {
-      handleSEORedirect("construct");
+      handleSEORedirect("sequence_card");
     }
   });
 
@@ -23,9 +23,9 @@
   const structuredData = {
     "@context": "https://schema.org",
     "@type": "WebPage",
-    "name": "Flow Arts Constructor - Sequence Builder",
-    "description": "Visual sequence builder for creating custom flow arts choreography. Design poi, fans, staff movements with ease.",
-    "url": "https://thekineticalphabet.com/constructor",
+    "name": "Sequence Cards - Movement Notation",
+    "description": "Professional movement notation system for documenting and sharing flow arts choreography with visual sequence cards.",
+    "url": "https://thekineticalphabet.com/sequence-card",
     "isPartOf": {
       "@type": "WebSite",
       "name": "TKA - The Kinetic Constructor",

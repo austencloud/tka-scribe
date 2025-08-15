@@ -1,17 +1,16 @@
 <!--
-KeyboardShortcutHandler.svelte - Keyboard shortcut handling and display
+KeyboardShortcutHandler.svelte - Keyboard shortcut handling
 
-Single responsibility: Handle keyboard shortcuts for animation controls and show hints.
-No visual controls, no animation logic - just keyboard event handling.
+Single responsibility: Handle keyboard shortcuts for animation controls.
+This is a headless component that only handles events - no UI rendering.
 -->
 <script lang="ts">
   interface Props {
     onPlayToggle: () => void;
     onReset: () => void;
-    showHints?: boolean;
   }
 
-  let { onPlayToggle, onReset, showHints = true }: Props = $props();
+  let { onPlayToggle, onReset }: Props = $props();
 
   function handleKeyDown(event: KeyboardEvent) {
     // Space bar for play/pause
@@ -27,19 +26,6 @@ No visual controls, no animation logic - just keyboard event handling.
   }
 </script>
 
-<style>
-  .keyboard-hint {
-    display: flex;
-    justify-content: center;
-    gap: 12px;
-    font-size: 10px;
-    color: #a5b4fc;
-  }
+<!-- Headless component - no template needed -->
 
-  /* Hide hints on mobile */
-  @media (max-width: 768px) {
-    .keyboard-hint {
-      display: none;
-    }
-  }
-</style>
+<!-- No styles needed for headless component -->

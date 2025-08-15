@@ -13,9 +13,9 @@
  */
 
 import type { MotionData, PictographData } from "$lib/domain";
-import { Location } from "$lib/domain";
+import { Location, MotionType } from "$lib/domain";
 import type { IArrowLocationCalculator } from "../../core-services";
-import type { BeatData, MotionType } from "../../types";
+import type { BeatData } from "../../types";
 import { DashLocationCalculator } from "./DashLocationCalculator";
 
 export class ArrowLocationCalculator implements IArrowLocationCalculator {
@@ -185,7 +185,13 @@ export class ArrowLocationCalculator implements IArrowLocationCalculator {
      * Returns:
      *     List of supported MotionType enum values
      */
-    return ["static", "pro", "anti", "float", "dash"] as MotionType[];
+    return [
+      MotionType.STATIC,
+      MotionType.PRO,
+      MotionType.ANTI,
+      MotionType.FLOAT,
+      MotionType.DASH,
+    ];
   }
 
   validateMotionData(motion: MotionData): boolean {

@@ -14,7 +14,7 @@ export class StaticLocationCalculator {
 
     if (!location) {
       console.warn("Missing start_loc for static motion");
-      return "center";
+      return "n"; // Default to north instead of center
     }
 
     // Map standard directions
@@ -27,14 +27,13 @@ export class StaticLocationCalculator {
       sw: "sw",
       w: "w",
       nw: "nw",
-      center: "center",
     };
 
     const mappedLocation = locationMap[location];
 
     if (!mappedLocation) {
       console.warn(`Unknown static location: ${location}`);
-      return "center";
+      return "n"; // Default to north instead of center
     }
 
     return mappedLocation;

@@ -43,14 +43,6 @@ export enum RotationDirection {
   NO_ROTATION = "no_rot",
 }
 
-// DEPRECATED: Use RotationDirection instead
-// Keeping for backward compatibility during transition
-export enum PropRotationDirection {
-  CLOCKWISE = "clockwise",
-  COUNTER_CLOCKWISE = "counter_clockwise",
-  NO_ROT = "no_rot",
-}
-
 export enum Orientation {
   IN = "in",
   OUT = "out",
@@ -67,7 +59,6 @@ export enum Location {
   SOUTHEAST = "se",
   SOUTHWEST = "sw",
   NORTHWEST = "nw",
-  CENTER = "center", // Added for arrow positioning service
 }
 
 export enum GridPosition {

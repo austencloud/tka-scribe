@@ -24,23 +24,18 @@ import type {
   SequenceData as DomainSequenceData,
 } from "$lib/domain";
 
-// Type aliases for backward compatibility - use centralized enums
-export type MotionType = MotionTypeEnum | "fl" | "none"; // Extended with legacy values
-export type PropRotDir = RotationDirection | undefined;
-export type Orientation = OrientationEnum | undefined;
-
 export interface PropAttributes {
-  start_loc: string;
-  end_loc: string;
-  start_ori?: Orientation;
-  end_ori?: Orientation;
-  prop_rot_dir?: PropRotDir;
+  start_loc: Location; // ✅ Use centralized enum
+  end_loc: Location; // ✅ Use centralized enum
+  start_ori?: OrientationEnum;
+  end_ori?: OrientationEnum;
+  prop_rot_dir?: RotationDirection;
   turns?: number;
-  motion_type: MotionType;
+  motion_type: MotionTypeEnum; // ✅ Use centralized enum (removed legacy "fl" support)
   // Manual rotation override fields (in radians)
   manual_start_rotation?: number;
   manual_end_rotation?: number;
-  manual_rotation_direction?: "cw" | "ccw" | "shortest";
+  manual_rotation_direction?: RotationDirection; // ✅ Use enum instead of string literals
 }
 
 export interface SequenceStep {
@@ -176,13 +171,13 @@ export function convertMotionDataToPropAttributes(
   motionData: MotionData
 ): PropAttributes {
   return {
-    start_loc: String(motionData.start_loc),
-    end_loc: String(motionData.end_loc),
-    start_ori: String(motionData.start_ori) as Orientation,
-    end_ori: String(motionData.end_ori) as Orientation,
-    prop_rot_dir: String(motionData.prop_rot_dir) as PropRotDir,
+    start_loc: motionData.start_loc, // ✅ Direct enum assignment
+    end_loc: motionData.end_loc, // ✅ Direct enum assignment
+    start_ori: motionData.start_ori,
+    end_ori: motionData.end_ori,
+    prop_rot_dir: motionData.prop_rot_dir,
     turns: typeof motionData.turns === "number" ? motionData.turns : 0,
-    motion_type: String(motionData.motion_type) as MotionType,
+    motion_type: motionData.motion_type,
   };
 }
 
@@ -191,13 +186,13 @@ export function convertMotionDataToPropAttributes(
  */
 export function createDefaultPropAttributes(): PropAttributes {
   return {
-    start_loc: "center",
-    end_loc: "center",
+    start_loc: Location.NORTH, 
+    end_loc: Location.EAST, 
     start_ori: OrientationEnum.IN,
     end_ori: OrientationEnum.IN,
-    prop_rot_dir: RotationDirection.NO_ROTATION,
+    prop_rot_dir: RotationDirection.CLOCKWISE,
     turns: 0,
-    motion_type: MotionTypeEnum.STATIC,
+    motion_type: MotionTypeEnum.PRO,
   };
 }
 
@@ -350,78 +345,17 @@ export function convertDomainToUnified(
 export function convertPropAttributesToMotionData(
   propAttrs: PropAttributes
 ): MotionData {
-  // Convert string values to proper enum types
-  const motionType =
-    propAttrs.motion_type === "fl"
-      ? MotionTypeEnum.FLOAT
-      : propAttrs.motion_type === "pro"
-        ? MotionTypeEnum.PRO
-        : propAttrs.motion_type === "anti"
-          ? MotionTypeEnum.ANTI
-          : propAttrs.motion_type === "dash"
-            ? MotionTypeEnum.DASH
-            : propAttrs.motion_type === "static"
-              ? MotionTypeEnum.STATIC
-              : MotionTypeEnum.STATIC;
+  // ✅ Direct enum usage - no conversion needed
+  const motionType = propAttrs.motion_type;
 
-  const propRotDir =
-    propAttrs.prop_rot_dir === "cw"
-      ? RotationDirection.CLOCKWISE
-      : propAttrs.prop_rot_dir === "ccw"
-        ? RotationDirection.COUNTER_CLOCKWISE
-        : RotationDirection.NO_ROTATION;
+  const propRotDir = propAttrs.prop_rot_dir || RotationDirection.NO_ROTATION;
 
-  const startLoc =
-    propAttrs.start_loc === "n"
-      ? Location.NORTH
-      : propAttrs.start_loc === "e"
-        ? Location.EAST
-        : propAttrs.start_loc === "s"
-          ? Location.SOUTH
-          : propAttrs.start_loc === "w"
-            ? Location.WEST
-            : propAttrs.start_loc === "ne"
-              ? Location.NORTHEAST
-              : propAttrs.start_loc === "se"
-                ? Location.SOUTHEAST
-                : propAttrs.start_loc === "sw"
-                  ? Location.SOUTHWEST
-                  : propAttrs.start_loc === "nw"
-                    ? Location.NORTHWEST
-                    : Location.NORTH;
+  // ✅ Direct enum usage - no conversion needed since PropAttributes now uses Location enum
+  const startLoc = propAttrs.start_loc;
+  const endLoc = propAttrs.end_loc;
 
-  const endLoc =
-    propAttrs.end_loc === "n"
-      ? Location.NORTH
-      : propAttrs.end_loc === "e"
-        ? Location.EAST
-        : propAttrs.end_loc === "s"
-          ? Location.SOUTH
-          : propAttrs.end_loc === "w"
-            ? Location.WEST
-            : propAttrs.end_loc === "ne"
-              ? Location.NORTHEAST
-              : propAttrs.end_loc === "se"
-                ? Location.SOUTHEAST
-                : propAttrs.end_loc === "sw"
-                  ? Location.SOUTHWEST
-                  : propAttrs.end_loc === "nw"
-                    ? Location.NORTHWEST
-                    : Location.NORTH;
-
-  const startOri =
-    propAttrs.start_ori === "in"
-      ? OrientationEnum.IN
-      : propAttrs.start_ori === "out"
-        ? OrientationEnum.OUT
-        : OrientationEnum.IN;
-
-  const endOri =
-    propAttrs.end_ori === "in"
-      ? OrientationEnum.IN
-      : propAttrs.end_ori === "out"
-        ? OrientationEnum.OUT
-        : OrientationEnum.IN;
+  const startOri = propAttrs.start_ori || OrientationEnum.IN;
+  const endOri = propAttrs.end_ori || OrientationEnum.IN;
 
   return {
     motion_type: motionType,

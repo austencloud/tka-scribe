@@ -57,7 +57,7 @@ export class EnumConversionService implements IEnumConversionService {
       se: Location.SOUTHEAST,
       sw: Location.SOUTHWEST,
       nw: Location.NORTHWEST,
-      center: Location.CENTER,
+
       // Full names for completeness
       north: Location.NORTH,
       east: Location.EAST,
@@ -140,8 +140,7 @@ export class EnumConversionService implements IEnumConversionService {
         return "sw";
       case Location.NORTHWEST:
         return "nw";
-      case Location.CENTER:
-        return "center";
+
       default:
         return "n";
     }

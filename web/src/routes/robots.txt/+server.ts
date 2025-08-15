@@ -1,4 +1,4 @@
-import type { RequestHandler } from "./$types";
+import type { RequestHandler } from "./";
 import { PRIMARY_DOMAIN } from "$lib/config/domains";
 
 export const GET: RequestHandler = async () => {
@@ -8,19 +8,36 @@ Allow: /
 # Sitemap
 Sitemap: ${PRIMARY_DOMAIN}/sitemap.xml
 
-# Block development/testing pages from indexing
-Disallow: /arrow-debug
-Disallow: /metadata-tester  
-Disallow: /motion-tester
-Disallow: /test-comparison
-
-# Allow important pages
+# Main application pages - high priority for indexing
 Allow: /
 Allow: /about
+Allow: /constructor
+Allow: /browse
+Allow: /learn
 Allow: /features
 Allow: /getting-started
-Allow: /browse
-Allow: /constructor`;
+
+# Secondary pages
+Allow: /sequence-card
+Allow: /write
+
+# Development tools - lower priority but still allowed
+Allow: /arrow-debug
+Allow: /metadata-tester
+Allow: /motion-tester
+
+# Block irrelevant paths
+Disallow: /api/
+Disallow: /_app/
+Disallow: /static/
+Disallow: /.svelte-kit/
+Disallow: /node_modules/
+
+# Crawl delay for respectful crawling
+Crawl-delay: 1
+
+# Cache instruction
+Cache-control: max-age=86400`;
 
   return new Response(robots, {
     headers: {

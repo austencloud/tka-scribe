@@ -14,7 +14,7 @@ export class ShiftLocationCalculator {
 
     if (!startLoc || !endLoc) {
       console.warn("Missing start_loc or end_loc for shift motion");
-      return "center";
+      return "ne";
     }
 
     // Direction pairs mapping from the legacy Python code
@@ -34,12 +34,6 @@ export class ShiftLocationCalculator {
       // West-North combinations
       "w-n": "nw",
       "n-w": "nw",
-
-      // Additional cardinal-to-cardinal mappings
-      "n-s": "center", // North to South - typically center
-      "s-n": "center", // South to North - typically center
-      "e-w": "center", // East to West - typically center
-      "w-e": "center", // West to East - typically center
     };
 
     const pairKey = `${startLoc}-${endLoc}`;
@@ -47,7 +41,7 @@ export class ShiftLocationCalculator {
 
     if (!location) {
       console.warn(`Unknown direction pair: ${startLoc} -> ${endLoc}`);
-      return "center";
+      return "n"; // Default to north instead of center
     }
 
     return location;

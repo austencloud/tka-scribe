@@ -10,7 +10,6 @@ import {
 } from "../services/AnimationControlService";
 import { OrientationCalculationService } from "$lib/services/implementations/OrientationCalculationService";
 import { EnumConversionService } from "../services/EnumConversionService";
-import type { MotionData } from "$lib/domain/MotionData";
 
 export interface MotionTesterState {
   // Reactive state getters
@@ -68,10 +67,6 @@ export function createMotionTesterState(): MotionTesterState {
     motionType: "dash",
   });
 
-  // Debug initial state
-  console.log("🔴 Initial red motion params:", redMotionParams);
-  console.log("🔵 Initial blue motion params:", blueMotionParams);
-
   // Props are always visible - no user controls needed
   const propVisibility = $state<PropVisibility>({
     blue: true,
@@ -89,12 +84,14 @@ export function createMotionTesterState(): MotionTesterState {
 
   // Auto-calculate rotation direction for blue prop
   $effect(() => {
+    // Properly access reactive state
+    const { motionType, startLoc, endLoc, propRotDir } = blueMotionParams;
     const newRotDir = motionService.calculateRotationDirection(
-      blueMotionParams.motionType,
-      blueMotionParams.startLoc,
-      blueMotionParams.endLoc
+      motionType,
+      startLoc,
+      endLoc
     );
-    if (newRotDir !== blueMotionParams.propRotDir) {
+    if (newRotDir !== propRotDir) {
       blueMotionParams.propRotDir = newRotDir;
     }
   });
@@ -111,20 +108,22 @@ export function createMotionTesterState(): MotionTesterState {
 
   // Auto-calculate rotation direction for red prop
   $effect(() => {
+    // Properly access reactive state
+    const { motionType, startLoc, endLoc, propRotDir } = redMotionParams;
     console.log(
-      `🔴 Red rotation effect triggered: ${redMotionParams.startLoc}→${redMotionParams.endLoc} (${redMotionParams.motionType})`
+      `🔴 Red rotation effect triggered: ${startLoc}→${endLoc} (${motionType})`
     );
     const newRotDir = motionService.calculateRotationDirection(
-      redMotionParams.motionType,
-      redMotionParams.startLoc,
-      redMotionParams.endLoc
+      motionType,
+      startLoc,
+      endLoc
     );
     console.log(
-      `🔴 Red rotation calculated: ${newRotDir}, current: ${redMotionParams.propRotDir}`
+      `🔴 Red rotation calculated: ${newRotDir}, current: ${propRotDir}`
     );
-    if (newRotDir !== redMotionParams.propRotDir) {
+    if (newRotDir !== propRotDir) {
       console.log(
-        `🔴 Red rotation updating from ${redMotionParams.propRotDir} to ${newRotDir}`
+        `🔴 Red rotation updating from ${propRotDir} to ${newRotDir}`
       );
       redMotionParams.propRotDir = newRotDir;
     }
@@ -143,9 +142,12 @@ export function createMotionTesterState(): MotionTesterState {
   // Initialize engine when motion parameters change
   $effect(() => {
     const initEngine = async () => {
+      // Create copies to properly capture reactive state
+      const blueParams = { ...blueMotionParams };
+      const redParams = { ...redMotionParams };
       const success = await animationService.initializeEngine(
-        blueMotionParams,
-        redMotionParams
+        blueParams,
+        redParams
       );
       isEngineInitialized = success;
     };

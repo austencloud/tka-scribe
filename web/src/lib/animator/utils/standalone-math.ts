@@ -2,10 +2,16 @@
  * Standalone Math Functions - Ported from working standalone HTML
  *
  * These functions are exact ports from the proven working standalone animator.
- * DO NOT MODIFY - these are tested and working.
+ * Updated to use centralized enums for type safety.
  */
 
 import type { PropAttributes } from "../types/core.js";
+import {
+  MotionType,
+  Location,
+  Orientation,
+  RotationDirection,
+} from "$lib/domain/enums";
 
 // Re-export PropAttributes for other modules
 export type { PropAttributes };
@@ -15,12 +21,16 @@ const PI = Math.PI;
 const TWO_PI = 2 * PI;
 const HALF_PI = PI / 2;
 
-// Location angles mapping from standalone
+// Location angles mapping using centralized enums
 const locationAngles = {
-  e: 0,
-  s: HALF_PI,
-  w: PI,
-  n: -HALF_PI,
+  [Location.EAST]: 0,
+  [Location.SOUTH]: HALF_PI,
+  [Location.WEST]: PI,
+  [Location.NORTH]: -HALF_PI,
+  [Location.NORTHEAST]: -HALF_PI / 2,
+  [Location.SOUTHEAST]: HALF_PI / 2,
+  [Location.SOUTHWEST]: PI + HALF_PI / 2,
+  [Location.NORTHWEST]: PI - HALF_PI / 2,
 };
 
 /**
@@ -40,34 +50,36 @@ export function normalizeAngleSigned(angle: number): number {
 }
 
 /**
- * Map grid position to angle (exact port from standalone)
+ * Map grid position to angle using centralized enums
  */
-export function mapPositionToAngle(loc: string): number {
-  const l = loc?.toLowerCase();
-  return locationAngles[l as keyof typeof locationAngles] ?? 0;
+export function mapPositionToAngle(loc: Location): number {
+  return locationAngles[loc] ?? 0;
 }
 
 /**
- * Map orientation to staff angle (exact port from standalone)
+ * Map orientation to staff angle using centralized enums
  */
 export function mapOrientationToAngle(
-  ori: string,
+  ori: Orientation,
   centerPathAngle: number
 ): number {
   if (!ori) return centerPathAngle + PI;
-  const l = ori.toLowerCase();
 
-  // Check for cardinal directions first
-  if (locationAngles.hasOwnProperty(l)) {
-    return locationAngles[l as keyof typeof locationAngles];
-  }
-
-  if (l === "in") {
+  // Handle standard orientations
+  if (ori === Orientation.IN) {
     return normalizeAnglePositive(centerPathAngle + PI);
   }
 
-  if (l === "out") {
+  if (ori === Orientation.OUT) {
     return normalizeAnglePositive(centerPathAngle);
+  }
+
+  if (ori === Orientation.CLOCK) {
+    return normalizeAnglePositive(centerPathAngle + HALF_PI);
+  }
+
+  if (ori === Orientation.COUNTER) {
+    return normalizeAnglePositive(centerPathAngle - HALF_PI);
   }
 
   return normalizeAnglePositive(centerPathAngle + PI);
@@ -89,11 +101,11 @@ export function lerpAngle(a: number, b: number, t: number): number {
 }
 
 /**
- * Calculate Pro Isolation staff angle (exact port from standalone)
+ * Calculate Pro Isolation staff angle using centralized enums
  */
 export function calculateProIsolationStaffAngle(
   centerPathAngle: number,
-  _propRotDir: string // propRotDir can be ignored for pro motion
+  _propRotDir: RotationDirection // propRotDir can be ignored for pro motion
 ): number {
   // For pro motion, staff always points toward center (angle + 180°)
   return normalizeAnglePositive(centerPathAngle + PI);
@@ -107,7 +119,7 @@ export function calculateProTargetAngle(
   targetCenterAngle: number,
   startStaffAngle: number,
   turns: number,
-  propRotDir: string
+  propRotDir: RotationDirection
 ): number {
   console.log(
     "🔧 [PRO DEBUG] ===== CALCULATING PRO TARGET ANGLE WITH TURNS ====="
@@ -141,7 +153,7 @@ export function calculateProTargetAngle(
   const delta = normalizeAngleSigned(targetCenterAngle - startCenterAngle);
   const base = delta; // Pro motions use positive delta (opposite of anti)
   const turn = PI * turns;
-  const dir = propRotDir?.toLowerCase() === "ccw" ? -1 : 1;
+  const dir = propRotDir === RotationDirection.COUNTER_CLOCKWISE ? -1 : 1;
   const result = normalizeAnglePositive(startStaffAngle + base + turn * dir);
 
   console.log("🔧 [PRO DEBUG] Calculation steps:");
@@ -183,14 +195,14 @@ export function calculateProTargetAngle(
 }
 
 /**
- * Calculate Antispin target angle (exact port from standalone)
+ * Calculate Antispin target angle using centralized enums
  */
 export function calculateAntispinTargetAngle(
   startCenterAngle: number,
   targetCenterAngle: number,
   startStaffAngle: number,
   turns: number,
-  propRotDir: string
+  propRotDir: RotationDirection
 ): number {
   console.log("🔧 [ANTI DEBUG] ===== CALCULATING ANTI-SPIN TARGET ANGLE =====");
   console.log("🔧 [ANTI DEBUG] Input parameters:");
@@ -221,7 +233,7 @@ export function calculateAntispinTargetAngle(
   const delta = normalizeAngleSigned(targetCenterAngle - startCenterAngle);
   const base = -delta;
   const turn = PI * turns;
-  const dir = propRotDir?.toLowerCase() === "ccw" ? -1 : 1;
+  const dir = propRotDir === RotationDirection.COUNTER_CLOCKWISE ? -1 : 1;
   const result = normalizeAnglePositive(startStaffAngle + base + turn * dir);
 
   console.log("🔧 [ANTI DEBUG] Calculation steps:");
@@ -279,16 +291,16 @@ export function calculateStaticStaffAngle(
 }
 
 /**
- * Calculate dash target angle (exact port from standalone)
+ * Calculate dash target angle using centralized enums
  */
 export function calculateDashTargetAngle(
   startStaffAngle: number,
-  endOri: string,
+  endOri: Orientation,
   targetCenterAngle: number
 ): number {
-  if (endOri?.toLowerCase() === "in") {
+  if (endOri === Orientation.IN) {
     return normalizeAnglePositive(targetCenterAngle + PI);
-  } else if (endOri?.toLowerCase() === "out") {
+  } else if (endOri === Orientation.OUT) {
     return targetCenterAngle;
   }
   return startStaffAngle;
@@ -345,7 +357,7 @@ export function calculateStepEndpoints(
 
   const startCenterAngle = mapPositionToAngle(start_loc);
   const startStaffAngle = mapOrientationToAngle(
-    start_ori || "in",
+    start_ori || Orientation.IN, // ✅ Use enum instead of string literal
     startCenterAngle
   );
   const targetCenterAngle = mapPositionToAngle(end_loc);
@@ -367,7 +379,7 @@ export function calculateStepEndpoints(
   // });
 
   switch (motion_type) {
-    case "pro":
+    case MotionType.PRO: // ✅ Use enum instead of string literal
       // console.log("🔧 [ENDPOINT DEBUG] Processing PRO motion");
       if (turns > 0) {
         // console.log("🔧 [ENDPOINT DEBUG] PRO motion with turns:", turns);
@@ -376,30 +388,31 @@ export function calculateStepEndpoints(
           targetCenterAngle,
           startStaffAngle,
           turns,
-          prop_rot_dir || "cw"
+          prop_rot_dir || RotationDirection.CLOCKWISE
         );
       } else {
         // console.log("🔧 [ENDPOINT DEBUG] PRO motion isolation (zero turns)");
         calculatedTargetStaffAngle = calculateProIsolationStaffAngle(
           targetCenterAngle,
-          prop_rot_dir || "cw"
+          prop_rot_dir || RotationDirection.CLOCKWISE
         );
       }
       break;
-    case "anti":
+    case MotionType.ANTI: // ✅ Use enum instead of string literal
       // console.log("🔧 [ENDPOINT DEBUG] Processing ANTI motion");
       calculatedTargetStaffAngle = calculateAntispinTargetAngle(
         startCenterAngle,
         targetCenterAngle,
         startStaffAngle,
         turns || 0,
-        prop_rot_dir || "cw"
+        prop_rot_dir || RotationDirection.CLOCKWISE
       );
       break;
-    case "static":
+    case MotionType.STATIC: {
+      // ✅ Use enum instead of string literal
       // console.log("🔧 [ENDPOINT DEBUG] Processing STATIC motion");
       const endOriAngleStatic = mapOrientationToAngle(
-        end_ori || "in",
+        end_ori || Orientation.IN,
         targetCenterAngle
       );
       const angleDiffStatic = normalizeAngleSigned(
@@ -408,11 +421,12 @@ export function calculateStepEndpoints(
       calculatedTargetStaffAngle =
         Math.abs(angleDiffStatic) > 0.1 ? endOriAngleStatic : startStaffAngle;
       break;
-    case "dash":
+    }
+    case MotionType.DASH: // ✅ Use enum instead of string literal
       // console.log("🔧 [ENDPOINT DEBUG] Processing DASH motion");
       calculatedTargetStaffAngle = calculateDashTargetAngle(
         startStaffAngle,
-        end_ori || "in",
+        end_ori || Orientation.IN,
         targetCenterAngle
       );
       break;
@@ -431,14 +445,15 @@ export function calculateStepEndpoints(
   // );
 
   // Handle explicit end orientation override (except for pro)
-  if (motion_type !== "pro") {
+  if (motion_type !== MotionType.PRO) {
+    // ✅ Use enum instead of string literal
     const endOriAngleOverride = mapOrientationToAngle(
-      end_ori || "in",
+      end_ori || Orientation.IN,
       targetCenterAngle
     );
-    const explicitEndOri = ["n", "e", "s", "w", "in", "out"].includes(
-      (end_ori || "").toLowerCase()
-    );
+    // ✅ Check against enum values instead of string array
+    const explicitEndOri =
+      end_ori && Object.values(Orientation).includes(end_ori);
     if (explicitEndOri) {
       calculatedTargetStaffAngle = endOriAngleOverride;
     }

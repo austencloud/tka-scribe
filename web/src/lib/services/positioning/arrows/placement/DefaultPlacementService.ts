@@ -6,7 +6,8 @@
  */
 
 import { ArrowPlacementDataService } from "../../../implementations/ArrowPlacementDataService";
-import type { GridMode, MotionType } from "../../../interfaces";
+import type { GridMode } from "../../../interfaces";
+import { MotionType } from "$lib/domain/enums"; // ✅ Import from centralized enums
 
 /**
  * Interface for Default Placement Service that mirrors Python implementation

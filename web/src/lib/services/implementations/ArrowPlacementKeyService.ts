@@ -6,7 +6,8 @@
  */
 
 import type { MotionData } from "$lib/domain";
-import type { MotionType, PictographData } from "../interfaces";
+import { MotionType } from "$lib/domain/enums";
+import type { PictographData } from "../interfaces";
 
 export interface IArrowPlacementKeyService {
   generatePlacementKey(
@@ -167,14 +168,23 @@ export class ArrowPlacementKeyService implements IArrowPlacementKeyService {
   private normalizeMotionType(motionType: unknown): MotionType {
     if (typeof motionType === "string") {
       const normalized = motionType.toLowerCase();
-      if (["pro", "anti", "float", "dash", "static"].includes(normalized)) {
-        return normalized as MotionType;
+      switch (normalized) {
+        case "pro":
+          return MotionType.PRO;
+        case "anti":
+          return MotionType.ANTI;
+        case "float":
+          return MotionType.FLOAT;
+        case "dash":
+          return MotionType.DASH;
+        case "static":
+          return MotionType.STATIC;
       }
     }
     console.warn(
       `Invalid motion type: ${String(motionType)}, defaulting to 'pro'`
     );
-    return "pro";
+    return MotionType.PRO;
   }
 
   /**

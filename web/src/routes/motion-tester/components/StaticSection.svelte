@@ -221,7 +221,8 @@ This is the left 2/3 section of the new layout.
   .prop-section {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    height: 100%;
+    min-height: 0;
   }
 
   /* Container-based responsive layout */

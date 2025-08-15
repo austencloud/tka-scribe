@@ -1,18 +1,4 @@
-/**
- * Arrow Rotation Calculator Service
- *
- * Pure algorithmic service for calculating arrow rotation angles based on motion data and location.
- * Direct TypeScript port of the Python ArrowRotationCalculatorService.
- *
- * This service handles:
- * - Static motion rotation (arrows point inward)
- * - PRO motion rotation (based on rotation direction and location)
- * - ANTI motion rotation (based on rotation direction and location)
- * - DASH motion rotation (handles NO_ROTATION and directional cases)
- * - FLOAT motion rotation (similar to PRO)
- *
- * No UI dependencies, completely testable in isolation.
- */
+
 
 import type { MotionData } from "$lib/domain";
 import { Location, MotionType } from "$lib/domain";
@@ -216,7 +202,13 @@ export class ArrowRotationCalculator implements IArrowRotationCalculator {
 
   getSupportedMotionTypes(): MotionType[] {
     /**Get list of motion types supported by this calculator.*/
-    return ["static", "pro", "anti", "dash", "float"] as MotionType[];
+    return [
+      MotionType.STATIC,
+      MotionType.PRO,
+      MotionType.ANTI,
+      MotionType.DASH,
+      MotionType.FLOAT,
+    ];
   }
 
   validateMotionData(motion: MotionData): boolean {

@@ -5,12 +5,17 @@
  */
 
 import type { PropAttributes } from "./standalone-math.js";
-import type { Orientation, PropRotDir, MotionType } from "../types/core.js";
 import type {
   SequenceData as DomainSequenceData,
   BeatData,
   MotionData,
 } from "$lib/domain";
+import {
+  MotionType as MotionTypeEnum,
+  Orientation as OrientationEnum,
+  RotationDirection,
+  Location, // ✅ Add missing Location import
+} from "$lib/domain/enums";
 
 /**
  * Convert domain sequence data to standalone format
@@ -94,22 +99,26 @@ export function convertWebAppToStandalone(
     timing: "none",
     direction: "none",
     blue_attributes: {
-      start_loc: firstBeat?.pictograph_data?.motions?.blue?.start_loc || "s",
-      end_loc: firstBeat?.pictograph_data?.motions?.blue?.start_loc || "s",
-      start_ori: "in",
-      end_ori: "in",
-      prop_rot_dir: "no_rot",
+      start_loc:
+        firstBeat?.pictograph_data?.motions?.blue?.start_loc || Location.SOUTH,
+      end_loc:
+        firstBeat?.pictograph_data?.motions?.blue?.start_loc || Location.SOUTH,
+      start_ori: OrientationEnum.IN,
+      end_ori: OrientationEnum.IN,
+      prop_rot_dir: RotationDirection.NO_ROTATION,
       turns: 0,
-      motion_type: "static",
+      motion_type: MotionTypeEnum.STATIC,
     },
     red_attributes: {
-      start_loc: firstBeat?.pictograph_data?.motions?.red?.start_loc || "n",
-      end_loc: firstBeat?.pictograph_data?.motions?.red?.start_loc || "n",
-      start_ori: "in",
-      end_ori: "in",
-      prop_rot_dir: "no_rot",
+      start_loc:
+        firstBeat?.pictograph_data?.motions?.red?.start_loc || Location.NORTH,
+      end_loc:
+        firstBeat?.pictograph_data?.motions?.red?.start_loc || Location.NORTH,
+      start_ori: OrientationEnum.IN,
+      end_ori: OrientationEnum.IN,
+      prop_rot_dir: RotationDirection.NO_ROTATION,
       turns: 0,
-      motion_type: "static",
+      motion_type: MotionTypeEnum.STATIC,
     },
   };
 
@@ -147,24 +156,24 @@ function convertMotionToPropAttributes(motion?: MotionData): PropAttributes {
   if (!motion) {
     // Default static motion
     return {
-      start_loc: "s",
-      end_loc: "s",
-      start_ori: "in",
-      end_ori: "in",
-      prop_rot_dir: "no_rot",
+      start_loc: Location.SOUTH, // ✅ Use enum instead of string literal
+      end_loc: Location.SOUTH, // ✅ Use enum instead of string literal
+      start_ori: OrientationEnum.IN,
+      end_ori: OrientationEnum.IN,
+      prop_rot_dir: RotationDirection.NO_ROTATION,
       turns: 0,
-      motion_type: "static",
+      motion_type: MotionTypeEnum.STATIC,
     };
   }
 
   return {
     start_loc: motion.start_loc,
     end_loc: motion.end_loc,
-    start_ori: (motion.start_ori || "in") as Orientation,
-    end_ori: (motion.end_ori || "in") as Orientation,
-    prop_rot_dir: (motion.prop_rot_dir || "no_rot") as PropRotDir,
-    turns: motion.turns || 0,
-    motion_type: motion.motion_type as MotionType,
+    start_ori: motion.start_ori || OrientationEnum.IN,
+    end_ori: motion.end_ori || OrientationEnum.IN,
+    prop_rot_dir: motion.prop_rot_dir || RotationDirection.NO_ROTATION,
+    turns: typeof motion.turns === "number" ? motion.turns : 0, // ✅ Handle "fl" case
+    motion_type: motion.motion_type,
   };
 }
 
@@ -241,8 +250,8 @@ function createTestSequence(domainData: DomainSequenceData): any[] {
   // Create metadata (index 0)
   const metadata = {
     word: word,
-    author: webAppData.metadata?.author || "Demo",
-    level: webAppData.metadata?.level || 1,
+    author: domainData.metadata?.author || "Demo",
+    level: domainData.metadata?.level || 1,
     description: "Test sequence created for animation demonstration",
   };
 
@@ -257,22 +266,22 @@ function createTestSequence(domainData: DomainSequenceData): any[] {
     timing: "split",
     direction: "same",
     blue_attributes: {
-      start_loc: "s",
-      end_loc: "s",
-      start_ori: "in",
-      end_ori: "in",
-      prop_rot_dir: "no_rot",
+      start_loc: Location.SOUTH,
+      end_loc: Location.SOUTH,
+      start_ori: OrientationEnum.IN,
+      end_ori: OrientationEnum.IN,
+      prop_rot_dir: RotationDirection.NO_ROTATION,
       turns: 0,
-      motion_type: "static",
+      motion_type: MotionTypeEnum.STATIC,
     },
     red_attributes: {
-      start_loc: "n",
-      end_loc: "n",
-      start_ori: "in",
-      end_ori: "in",
-      prop_rot_dir: "no_rot",
+      start_loc: Location.NORTH,
+      end_loc: Location.NORTH,
+      start_ori: OrientationEnum.IN,
+      end_ori: OrientationEnum.IN,
+      prop_rot_dir: RotationDirection.NO_ROTATION,
       turns: 0,
-      motion_type: "static",
+      motion_type: MotionTypeEnum.STATIC,
     },
   };
 
@@ -289,22 +298,22 @@ function createTestSequence(domainData: DomainSequenceData): any[] {
       timing: "split",
       direction: "same",
       blue_attributes: {
-        start_loc: "s",
-        end_loc: "e",
-        start_ori: "in",
-        end_ori: "in",
-        prop_rot_dir: "cw",
+        start_loc: Location.SOUTH,
+        end_loc: Location.EAST,
+        start_ori: OrientationEnum.IN,
+        end_ori: OrientationEnum.IN,
+        prop_rot_dir: RotationDirection.CLOCKWISE,
         turns: 1,
-        motion_type: "pro",
+        motion_type: MotionTypeEnum.PRO,
       },
       red_attributes: {
-        start_loc: "n",
-        end_loc: "n",
-        start_ori: "in",
-        end_ori: "in",
-        prop_rot_dir: "no_rot",
+        start_loc: Location.NORTH,
+        end_loc: Location.NORTH,
+        start_ori: OrientationEnum.IN,
+        end_ori: OrientationEnum.IN,
+        prop_rot_dir: RotationDirection.NO_ROTATION,
         turns: 0,
-        motion_type: "static",
+        motion_type: MotionTypeEnum.STATIC,
       },
     },
     // Beat 2: Blue moves from e to n, Red moves from n to w
@@ -318,22 +327,22 @@ function createTestSequence(domainData: DomainSequenceData): any[] {
       timing: "split",
       direction: "same",
       blue_attributes: {
-        start_loc: "e",
-        end_loc: "n",
-        start_ori: "in",
-        end_ori: "in",
-        prop_rot_dir: "cw",
+        start_loc: Location.EAST,
+        end_loc: Location.NORTH,
+        start_ori: OrientationEnum.IN,
+        end_ori: OrientationEnum.IN,
+        prop_rot_dir: RotationDirection.CLOCKWISE,
         turns: 1,
-        motion_type: "pro",
+        motion_type: MotionTypeEnum.PRO,
       },
       red_attributes: {
-        start_loc: "n",
-        end_loc: "w",
-        start_ori: "in",
-        end_ori: "in",
-        prop_rot_dir: "ccw",
+        start_loc: Location.NORTH,
+        end_loc: Location.WEST,
+        start_ori: OrientationEnum.IN,
+        end_ori: OrientationEnum.IN,
+        prop_rot_dir: RotationDirection.COUNTER_CLOCKWISE,
         turns: 1,
-        motion_type: "anti",
+        motion_type: MotionTypeEnum.ANTI,
       },
     },
     // Beat 3: Blue moves from n to w, Red moves from w to s
@@ -347,22 +356,22 @@ function createTestSequence(domainData: DomainSequenceData): any[] {
       timing: "split",
       direction: "same",
       blue_attributes: {
-        start_loc: "n",
-        end_loc: "w",
-        start_ori: "in",
-        end_ori: "in",
-        prop_rot_dir: "cw",
+        start_loc: Location.NORTH,
+        end_loc: Location.WEST,
+        start_ori: OrientationEnum.IN,
+        end_ori: OrientationEnum.IN,
+        prop_rot_dir: RotationDirection.CLOCKWISE,
         turns: 1,
-        motion_type: "pro",
+        motion_type: MotionTypeEnum.PRO,
       },
       red_attributes: {
-        start_loc: "w",
-        end_loc: "s",
-        start_ori: "in",
-        end_ori: "in",
-        prop_rot_dir: "ccw",
+        start_loc: Location.WEST,
+        end_loc: Location.SOUTH,
+        start_ori: OrientationEnum.IN,
+        end_ori: OrientationEnum.IN,
+        prop_rot_dir: RotationDirection.COUNTER_CLOCKWISE,
         turns: 1,
-        motion_type: "anti",
+        motion_type: MotionTypeEnum.ANTI,
       },
     },
     // Beat 4: Both return to start positions
@@ -376,22 +385,22 @@ function createTestSequence(domainData: DomainSequenceData): any[] {
       timing: "split",
       direction: "same",
       blue_attributes: {
-        start_loc: "w",
-        end_loc: "s",
-        start_ori: "in",
-        end_ori: "in",
-        prop_rot_dir: "cw",
+        start_loc: Location.WEST,
+        end_loc: Location.SOUTH,
+        start_ori: OrientationEnum.IN,
+        end_ori: OrientationEnum.IN,
+        prop_rot_dir: RotationDirection.CLOCKWISE,
         turns: 1,
-        motion_type: "pro",
+        motion_type: MotionTypeEnum.PRO,
       },
       red_attributes: {
-        start_loc: "s",
-        end_loc: "n",
-        start_ori: "in",
-        end_ori: "in",
-        prop_rot_dir: "ccw",
+        start_loc: Location.SOUTH,
+        end_loc: Location.NORTH,
+        start_ori: OrientationEnum.IN,
+        end_ori: OrientationEnum.IN,
+        prop_rot_dir: RotationDirection.COUNTER_CLOCKWISE,
         turns: 1,
-        motion_type: "anti",
+        motion_type: MotionTypeEnum.ANTI,
       },
     },
   ];

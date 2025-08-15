@@ -206,17 +206,4 @@
     border-color: #fbbf24;
     box-shadow: 0 0 0 2px rgba(251, 191, 36, 0.3);
   }
-
-  .pictograph-label {
-    color: #c7d2fe;
-    font-size: 0.9rem;
-    font-weight: 500;
-    text-align: center;
-    min-height: 1.2em;
-  }
-
-  .pictograph-button.selected .pictograph-label {
-    color: #fbbf24;
-    font-weight: 600;
-  }
 </style>

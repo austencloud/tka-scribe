@@ -72,7 +72,7 @@ export class ArrowPositioningOrchestrator
 
       if (!motion) {
         console.warn(
-          `No motion data for ${arrowData.color}, returning center position`
+          `No motion data for ${arrowData.color}, returning scene center position`
         );
         const center = this.coordinateSystem.getSceneCenter();
         return [center.x, center.y, 0.0];

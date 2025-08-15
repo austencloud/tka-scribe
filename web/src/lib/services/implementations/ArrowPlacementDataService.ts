@@ -6,7 +6,8 @@
  */
 
 import { GridMode as DomainGridMode } from "$lib/domain";
-import type { GridMode, MotionType } from "../interfaces";
+import type { GridMode } from "../interfaces";
+import { MotionType } from "$lib/domain/enums"; // ✅ Import from centralized enums
 
 // Placement data structure from JSON files
 export interface PlacementData {

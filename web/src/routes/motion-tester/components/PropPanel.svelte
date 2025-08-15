@@ -169,9 +169,10 @@ Beautiful, intuitive visual controls replacing boring dropdowns:
   .prop-controls {
     display: flex;
     flex-direction: column;
-    gap: 1.5cqw;
+    justify-content: space-evenly;
     flex: 1;
     min-height: 0;
+    padding: 1cqw 0;
   }
 
   .control-row {
@@ -216,7 +217,7 @@ Beautiful, intuitive visual controls replacing boring dropdowns:
     }
 
     .prop-controls {
-      gap: 1cqw;
+      padding: 0.5cqw 0;
     }
 
     .arrow-connector {
@@ -231,7 +232,7 @@ Beautiful, intuitive visual controls replacing boring dropdowns:
     }
 
     .prop-controls {
-      gap: 0.8cqw;
+      padding: 0.3cqw 0;
     }
 
     .control-row {
@@ -255,7 +256,7 @@ Beautiful, intuitive visual controls replacing boring dropdowns:
     }
 
     .prop-controls {
-      gap: 1.5vw;
+      padding: 1vw 0;
     }
 
     .arrow-connector {

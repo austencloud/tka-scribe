@@ -1,64 +1,58 @@
-<!-- SEO-Optimized Browse Page with User Redirect -->
+<!-- SEO-Optimized BROWSE Page with Enhanced Meta Data -->
 <script lang="ts">
   import { onMount } from "svelte";
   import { browser } from "$app/environment";
-  import { switchTab } from "$lib/state/appState.svelte";
-  import { getCanonicalURL } from "$lib/config/domains";
+  import { handleSEORedirect } from "$lib/utils/seoUtils";
   import MainApplication from "$components/MainApplication.svelte";
+  import type { PageData } from "./";
 
-  onMount(async () => {
+  interface Props {
+    data: PageData;
+  }
+
+  let { data }: Props = $props();
+
+  // Enhanced SEO redirect with analytics potential
+  onMount(() => {
     if (browser) {
-      // Check if this is a user visit and redirect to main app
-      setTimeout(() => {
-        const referrer = document.referrer;
-        const isFromSearchEngine =
-          referrer.includes("google.") ||
-          referrer.includes("bing.") ||
-          referrer.includes("duckduckgo.") ||
-          referrer === "";
-
-        if (isFromSearchEngine) {
-          // Redirect to main app with browse tab open
-          window.location.href = "/?tab=browse";
-        } else {
-          // Direct navigation - show browse tab
-          switchTab("browse");
-        }
-      }, 100);
+      handleSEORedirect("browse");
     }
   });
 
-  const canonicalURL = getCanonicalURL("browse");
+  // Structured data for enhanced SEO
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "Browse Flow Arts Gallery - TKA",
+    "description": "Comprehensive flow arts sequence gallery with poi, fans, staff movements. Filter by difficulty, style, and technique.",
+    "url": "https://thekineticalphabet.com/browse",
+    "isPartOf": {
+      "@type": "WebSite",
+      "name": "TKA - The Kinetic Constructor",
+      "url": "https://thekineticalphabet.com"
+    },
+    "creator": {
+      "@type": "SoftwareApplication",
+      "name": "TKA - The Kinetic Constructor"
+    }
+  };
 </script>
 
 <svelte:head>
-  <title>Browse Animations - TKA Gallery | Kinetic Typography Examples</title>
-  <meta
-    name="description"
-    content="Explore hundreds of kinetic typography animations in the TKA gallery. Browse by difficulty, length, style, and more. Find inspiration for your projects."
-  />
-  <meta property="og:title" content="Browse Animations - TKA Gallery" />
-  <meta
-    property="og:description"
-    content="Explore hundreds of kinetic typography animations. Browse by difficulty, length, style and find inspiration."
-  />
-  <meta property="og:type" content="website" />
-  <meta property="og:url" content={canonicalURL} />
-  <link rel="canonical" href={canonicalURL} />
-
-  <!-- Structured Data for Gallery -->
-  <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "CollectionPage",
-      "name": "TKA Animation Gallery",
-      "description": "Collection of kinetic typography animations created with TKA",
-      "isPartOf": {
-        "@type": "WebSite",
-        "name": "TKA - The Kinetic Constructor"
-      }
-    }
-  </script>
+  <title>{data.meta.title}</title>
+  <meta name="description" content={data.meta.description} />
+  <meta property="og:title" content={data.meta.ogTitle} />
+  <meta property="og:description" content={data.meta.ogDescription} />
+  <meta property="og:type" content={data.meta.ogType} />
+  <meta property="og:url" content={data.meta.ogUrl} />
+  <meta property="og:site_name" content="TKA - The Kinetic Constructor" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content={data.meta.ogTitle} />
+  <meta name="twitter:description" content={data.meta.ogDescription} />
+  <link rel="canonical" href={data.meta.canonical} />
+  
+  <!-- Enhanced Structured Data -->
+  {@html `<script type="application/ld+json">${JSON.stringify(structuredData)}</script>`}
 </svelte:head>
 
 <MainApplication />
