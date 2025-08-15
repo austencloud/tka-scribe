@@ -9,6 +9,7 @@ import {
   type PropStates,
 } from "../services/AnimationControlService";
 import { OrientationCalculationService } from "$lib/services/implementations/OrientationCalculationService";
+import { EnumConversionService } from "../services/EnumConversionService";
 import type { MotionData } from "$lib/domain/MotionData";
 
 export interface MotionTesterState {
@@ -24,12 +25,18 @@ export interface MotionTesterState {
   // Blue prop methods
   setBlueStartLocation: (location: string) => void;
   setBlueEndLocation: (location: string) => void;
-  updateBlueMotionParam: (param: keyof MotionTestParams, value: any) => void;
+  updateBlueMotionParam: <K extends keyof MotionTestParams>(
+    param: K,
+    value: MotionTestParams[K]
+  ) => void;
 
   // Red prop methods
   setRedStartLocation: (location: string) => void;
   setRedEndLocation: (location: string) => void;
-  updateRedMotionParam: (param: keyof MotionTestParams, value: any) => void;
+  updateRedMotionParam: <K extends keyof MotionTestParams>(
+    param: K,
+    value: MotionTestParams[K]
+  ) => void;
 
   // Animation control methods
   setProgress: (progress: number) => void;
@@ -47,36 +54,8 @@ export function createMotionTesterState(): MotionTesterState {
   const animationService = new AnimationControlService();
   const orientationService = new OrientationCalculationService();
 
-  // Conversion utility using existing MotionParameterService methods
-  const convertToMotionData = (params: MotionTestParams): MotionData => ({
-    motion_type: motionService.mapMotionTypeToEnum(params.motionType),
-    prop_rot_dir: motionService.mapRotationDirectionToEnum(params.propRotDir),
-    start_loc: motionService.mapLocationToEnum(params.startLoc),
-    end_loc: motionService.mapLocationToEnum(params.endLoc),
-    turns: params.turns,
-    start_ori: motionService.mapOrientationToEnum(params.startOri),
-    end_ori: motionService.mapOrientationToEnum(params.endOri),
-    is_visible: true,
-    prefloat_motion_type: null,
-    prefloat_prop_rot_dir: null,
-  });
-
-  const mapOrientationFromEnum = (
-    orientation: import("$lib/domain/enums").Orientation
-  ): string => {
-    switch (orientation) {
-      case "in":
-        return "in";
-      case "out":
-        return "out";
-      case "clock":
-        return "clock";
-      case "counter":
-        return "counter";
-      default:
-        return "in";
-    }
-  };
+  // Create enum conversion service for cleaner conversions
+  const enumService = new EnumConversionService();
 
   // Reactive state
   let blueMotionParams = $state<MotionTestParams>(
@@ -122,10 +101,9 @@ export function createMotionTesterState(): MotionTesterState {
 
   // Auto-calculate end orientation for blue prop
   $effect(() => {
-    const motionData = convertToMotionData(blueMotionParams);
-    const newEndOri = mapOrientationFromEnum(
-      orientationService.calculateEndOrientation(motionData)
-    );
+    const motionData = motionService.convertToMotionData(blueMotionParams);
+    const endOriEnum = orientationService.calculateEndOrientation(motionData);
+    const newEndOri = enumService.orientationToString(endOriEnum);
     if (newEndOri !== blueMotionParams.endOri) {
       blueMotionParams.endOri = newEndOri;
     }
@@ -154,10 +132,9 @@ export function createMotionTesterState(): MotionTesterState {
 
   // Auto-calculate end orientation for red prop
   $effect(() => {
-    const motionData = convertToMotionData(redMotionParams);
-    const newEndOri = mapOrientationFromEnum(
-      orientationService.calculateEndOrientation(motionData)
-    );
+    const motionData = motionService.convertToMotionData(redMotionParams);
+    const endOriEnum = orientationService.calculateEndOrientation(motionData);
+    const newEndOri = enumService.orientationToString(endOriEnum);
     if (newEndOri !== redMotionParams.endOri) {
       redMotionParams.endOri = newEndOri;
     }
@@ -221,8 +198,11 @@ export function createMotionTesterState(): MotionTesterState {
       blueMotionParams = updatedParams;
     },
 
-    updateBlueMotionParam: (param: keyof MotionTestParams, value: any) => {
-      (blueMotionParams as any)[param] = value;
+    updateBlueMotionParam: <K extends keyof MotionTestParams>(
+      param: K,
+      value: MotionTestParams[K]
+    ) => {
+      blueMotionParams[param] = value;
     },
 
     // Red prop methods
@@ -240,8 +220,11 @@ export function createMotionTesterState(): MotionTesterState {
       redMotionParams = updatedParams;
     },
 
-    updateRedMotionParam: (param: keyof MotionTestParams, value: any) => {
-      (redMotionParams as any)[param] = value;
+    updateRedMotionParam: <K extends keyof MotionTestParams>(
+      param: K,
+      value: MotionTestParams[K]
+    ) => {
+      redMotionParams[param] = value;
     },
 
     // Animation control methods

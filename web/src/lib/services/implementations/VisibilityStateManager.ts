@@ -1,1 +1,330 @@
-/**\n * Visibility State Manager - Modern Web Implementation\n * \n * Replicates the sophisticated visibility system from the legacy desktop app.\n * Manages complex dependencies between motion visibility and dependent glyphs.\n */\n\nimport type { AppSettings } from \"../interfaces\";\n\ntype VisibilityObserver = () => void;\n\ntype VisibilityCategory = \"glyph\" | \"motion\" | \"non_radial\" | \"all\" | \"buttons\";\n\ninterface VisibilitySettings {\n  // Motion visibility (independent)\n  red_motion: boolean;\n  blue_motion: boolean;\n  \n  // Independent glyphs\n  Reversals: boolean;\n  \n  // Dependent glyphs (only available when both motions are visible)\n  TKA: boolean;\n  VTG: boolean;\n  Elemental: boolean;\n  Positions: boolean;\n  \n  // Grid elements\n  nonRadialPoints: boolean;\n}\n\nexport class VisibilityStateManager {\n  private settings: VisibilitySettings;\n  private observers: Map<VisibilityCategory, Set<VisibilityObserver>> = new Map();\n  \n  // Dependent glyphs that require both motions to be visible\n  private readonly DEPENDENT_GLYPHS = [\"TKA\", \"VTG\", \"Elemental\", \"Positions\"];\n  \n  constructor(initialSettings?: Partial<AppSettings>) {\n    // Initialize with defaults matching desktop app\n    this.settings = {\n      // Motion defaults - both visible\n      red_motion: true,\n      blue_motion: true,\n      \n      // Independent glyph defaults\n      Reversals: true,\n      \n      // Dependent glyph defaults  \n      TKA: true,\n      VTG: false,\n      Elemental: false,\n      Positions: false,\n      \n      // Grid defaults\n      nonRadialPoints: false,\n      \n      // Override with any provided settings\n      ...this.convertAppSettingsToVisibility(initialSettings)\n    };\n    \n    // Initialize observer categories\n    this.observers.set(\"glyph\", new Set());\n    this.observers.set(\"motion\", new Set());\n    this.observers.set(\"non_radial\", new Set());\n    this.observers.set(\"all\", new Set());\n    this.observers.set(\"buttons\", new Set());\n  }\n  \n  /**\n   * Convert AppSettings visibility format to internal format\n   */\n  private convertAppSettingsToVisibility(appSettings?: Partial<AppSettings>): Partial<VisibilitySettings> {\n    if (!appSettings?.visibility) return {};\n    \n    return {\n      TKA: appSettings.visibility.TKA,\n      Reversals: appSettings.visibility.Reversals,\n      VTG: appSettings.visibility.VTG,\n      Elemental: appSettings.visibility.Elemental,\n      Positions: appSettings.visibility.Positions,\n      nonRadialPoints: appSettings.visibility.nonRadialPoints,\n    };\n  }\n  \n  /**\n   * Convert internal visibility format to AppSettings format\n   */\n  public toAppSettings(): AppSettings['visibility'] {\n    return {\n      TKA: this.settings.TKA,\n      Reversals: this.settings.Reversals,\n      VTG: this.settings.VTG,\n      Elemental: this.settings.Elemental,\n      Positions: this.settings.Positions,\n      nonRadialPoints: this.settings.nonRadialPoints,\n    };\n  }\n  \n  /**\n   * Register an observer for visibility changes\n   */\n  registerObserver(callback: VisibilityObserver, categories: VisibilityCategory[] = [\"all\"]): void {\n    categories.forEach(category => {\n      if (!this.observers.has(category)) {\n        this.observers.set(category, new Set());\n      }\n      this.observers.get(category)!.add(callback);\n    });\n  }\n  \n  /**\n   * Unregister an observer\n   */\n  unregisterObserver(callback: VisibilityObserver): void {\n    this.observers.forEach(observerSet => {\n      observerSet.delete(callback);\n    });\n  }\n  \n  /**\n   * Notify observers of changes\n   */\n  private notifyObservers(categories: VisibilityCategory[]): void {\n    const callbacksToNotify = new Set<VisibilityObserver>();\n    \n    // Collect callbacks from specific categories\n    categories.forEach(category => {\n      const observers = this.observers.get(category);\n      if (observers) {\n        observers.forEach(callback => callbacksToNotify.add(callback));\n      }\n    });\n    \n    // Always notify \"all\" observers\n    const allObservers = this.observers.get(\"all\");\n    if (allObservers) {\n      allObservers.forEach(callback => callbacksToNotify.add(callback));\n    }\n    \n    // Execute callbacks\n    callbacksToNotify.forEach(callback => {\n      try {\n        callback();\n      } catch (error) {\n        console.error(\"Error in visibility observer:\", error);\n      }\n    });\n  }\n  \n  // ============================================================================\n  // MOTION VISIBILITY\n  // ============================================================================\n  \n  /**\n   * Get motion visibility for a specific color\n   */\n  getMotionVisibility(color: \"red\" | \"blue\"): boolean {\n    return this.settings[`${color}_motion`];\n  }\n  \n  /**\n   * Set motion visibility with constraint enforcement\n   */\n  setMotionVisibility(color: \"red\" | \"blue\", visible: boolean): void {\n    const otherColor = color === \"red\" ? \"blue\" : \"red\";\n    \n    // Enforce constraint: at least one motion must remain visible\n    if (!visible && !this.settings[`${otherColor}_motion`]) {\n      // If trying to turn off the last visible motion, turn on the other one\n      this.settings[`${color}_motion`] = false;\n      this.settings[`${otherColor}_motion`] = true;\n      this.notifyObservers([\"motion\", \"glyph\", \"buttons\"]);\n      return;\n    }\n    \n    // Normal case\n    this.settings[`${color}_motion`] = visible;\n    this.notifyObservers([\"motion\", \"glyph\", \"buttons\"]);\n  }\n  \n  /**\n   * Check if all motions are visible\n   */\n  areAllMotionsVisible(): boolean {\n    return this.settings.red_motion && this.settings.blue_motion;\n  }\n  \n  /**\n   * Check if any motion is visible\n   */\n  isAnyMotionVisible(): boolean {\n    return this.settings.red_motion || this.settings.blue_motion;\n  }\n  \n  // ============================================================================\n  // GLYPH VISIBILITY\n  // ============================================================================\n  \n  /**\n   * Get glyph visibility considering dependencies\n   */\n  getGlyphVisibility(glyphType: string): boolean {\n    const baseVisibility = this.settings[glyphType as keyof VisibilitySettings] as boolean ?? false;\n    \n    // For dependent glyphs, also check if both motions are visible\n    if (this.DEPENDENT_GLYPHS.includes(glyphType)) {\n      return baseVisibility && this.areAllMotionsVisible();\n    }\n    \n    // For independent glyphs, return direct visibility\n    return baseVisibility;\n  }\n  \n  /**\n   * Set glyph visibility\n   */\n  setGlyphVisibility(glyphType: string, visible: boolean): void {\n    if (glyphType in this.settings) {\n      (this.settings as any)[glyphType] = visible;\n      this.notifyObservers([\"glyph\"]);\n    }\n  }\n  \n  /**\n   * Get raw glyph visibility (user preference, ignoring dependencies)\n   */\n  getRawGlyphVisibility(glyphType: string): boolean {\n    return this.settings[glyphType as keyof VisibilitySettings] as boolean ?? false;\n  }\n  \n  /**\n   * Check if glyph is dependent on motion visibility\n   */\n  isGlyphDependent(glyphType: string): boolean {\n    return this.DEPENDENT_GLYPHS.includes(glyphType);\n  }\n  \n  // ============================================================================\n  // NON-RADIAL POINTS\n  // ============================================================================\n  \n  /**\n   * Get non-radial points visibility\n   */\n  getNonRadialVisibility(): boolean {\n    return this.settings.nonRadialPoints;\n  }\n  \n  /**\n   * Set non-radial points visibility\n   */\n  setNonRadialVisibility(visible: boolean): void {\n    this.settings.nonRadialPoints = visible;\n    this.notifyObservers([\"non_radial\"]);\n  }\n  \n  // ============================================================================\n  // UTILITY METHODS\n  // ============================================================================\n  \n  /**\n   * Get all visible glyph types\n   */\n  getVisibleGlyphs(): string[] {\n    return [\"TKA\", \"Reversals\", \"VTG\", \"Elemental\", \"Positions\"]\n      .filter(glyph => this.getGlyphVisibility(glyph));\n  }\n  \n  /**\n   * Get all enabled dependent glyphs (considering motion constraints)\n   */\n  getAvailableDependentGlyphs(): string[] {\n    if (!this.areAllMotionsVisible()) {\n      return [];\n    }\n    return this.DEPENDENT_GLYPHS.filter(glyph => this.getRawGlyphVisibility(glyph));\n  }\n  \n  /**\n   * Update from external AppSettings\n   */\n  updateFromAppSettings(appSettings: AppSettings): void {\n    const visibilityUpdate = this.convertAppSettingsToVisibility(appSettings);\n    Object.assign(this.settings, visibilityUpdate);\n    this.notifyObservers([\"all\"]);\n  }\n  \n  /**\n   * Get complete visibility state for debugging\n   */\n  getState(): VisibilitySettings {\n    return { ...this.settings };\n  }\n}\n\n// Global instance for the application\nlet globalVisibilityStateManager: VisibilityStateManager | null = null;\n\n/**\n * Get or create the global visibility state manager\n */\nexport function getVisibilityStateManager(initialSettings?: Partial<AppSettings>): VisibilityStateManager {\n  if (!globalVisibilityStateManager) {\n    globalVisibilityStateManager = new VisibilityStateManager(initialSettings);\n  }\n  return globalVisibilityStateManager;\n}\n\n/**\n * Reset the global visibility state manager (useful for testing)\n */\nexport function resetVisibilityStateManager(): void {\n  globalVisibilityStateManager = null;\n}
+/**
+ * Visibility State Manager - Modern Web Implementation
+ *
+ * Replicates the sophisticated visibility system from the legacy desktop app.
+ * Manages complex dependencies between motion visibility and dependent glyphs.
+ */
+
+import type { AppSettings } from "../interfaces";
+
+type VisibilityObserver = () => void;
+
+type VisibilityCategory = "glyph" | "motion" | "non_radial" | "all" | "buttons";
+
+interface VisibilitySettings {
+  // Motion visibility (independent)
+  red_motion: boolean;
+  blue_motion: boolean;
+
+  // Independent glyphs
+  Reversals: boolean;
+
+  // Dependent glyphs (only available when both motions are visible)
+  TKA: boolean;
+  VTG: boolean;
+  Elemental: boolean;
+  Positions: boolean;
+
+  // Grid elements
+  nonRadialPoints: boolean;
+}
+
+export class VisibilityStateManager {
+  private settings: VisibilitySettings;
+  private observers: Map<VisibilityCategory, Set<VisibilityObserver>> =
+    new Map();
+
+  // Dependent glyphs that require both motions to be visible
+  private readonly DEPENDENT_GLYPHS = ["TKA", "VTG", "Elemental", "Positions"];
+
+  constructor(initialSettings?: Partial<AppSettings>) {
+    // Initialize with defaults matching desktop app
+    this.settings = {
+      // Motion defaults - both visible
+      red_motion: true,
+      blue_motion: true,
+
+      // Independent glyph defaults
+      Reversals: true,
+
+      // Dependent glyph defaults
+      TKA: true,
+      VTG: false,
+      Elemental: false,
+      Positions: false,
+
+      // Grid defaults
+      nonRadialPoints: false,
+
+      // Override with any provided settings
+      ...this.convertAppSettingsToVisibility(initialSettings),
+    };
+
+    // Initialize observer categories
+    this.observers.set("glyph", new Set());
+    this.observers.set("motion", new Set());
+    this.observers.set("non_radial", new Set());
+    this.observers.set("all", new Set());
+    this.observers.set("buttons", new Set());
+  }
+
+  /**
+   * Convert AppSettings visibility format to internal format
+   */
+  private convertAppSettingsToVisibility(
+    appSettings?: Partial<AppSettings>
+  ): Partial<VisibilitySettings> {
+    if (!appSettings?.visibility) return {};
+
+    return {
+      TKA: appSettings.visibility.TKA,
+      Reversals: appSettings.visibility.Reversals,
+      VTG: appSettings.visibility.VTG,
+      Elemental: appSettings.visibility.Elemental,
+      Positions: appSettings.visibility.Positions,
+      nonRadialPoints: appSettings.visibility.nonRadialPoints,
+    };
+  }
+
+  /**
+   * Convert internal visibility format to AppSettings format
+   */
+  public toAppSettings(): AppSettings["visibility"] {
+    return {
+      TKA: this.settings.TKA,
+      Reversals: this.settings.Reversals,
+      VTG: this.settings.VTG,
+      Elemental: this.settings.Elemental,
+      Positions: this.settings.Positions,
+      nonRadialPoints: this.settings.nonRadialPoints,
+    };
+  }
+
+  /**
+   * Register an observer for visibility changes
+   */
+  registerObserver(
+    callback: VisibilityObserver,
+    categories: VisibilityCategory[] = ["all"]
+  ): void {
+    categories.forEach((category) => {
+      if (!this.observers.has(category)) {
+        this.observers.set(category, new Set());
+      }
+      this.observers.get(category)!.add(callback);
+    });
+  }
+
+  /**
+   * Unregister an observer
+   */
+  unregisterObserver(callback: VisibilityObserver): void {
+    this.observers.forEach((observerSet) => {
+      observerSet.delete(callback);
+    });
+  }
+
+  /**
+   * Notify observers of changes
+   */
+  private notifyObservers(categories: VisibilityCategory[]): void {
+    const callbacksToNotify = new Set<VisibilityObserver>();
+
+    // Collect callbacks from specific categories
+    categories.forEach((category) => {
+      const observers = this.observers.get(category);
+      if (observers) {
+        observers.forEach((callback) => callbacksToNotify.add(callback));
+      }
+    });
+
+    // Always notify "all" observers
+    const allObservers = this.observers.get("all");
+    if (allObservers) {
+      allObservers.forEach((callback) => callbacksToNotify.add(callback));
+    }
+
+    // Execute callbacks
+    callbacksToNotify.forEach((callback) => {
+      try {
+        callback();
+      } catch (error) {
+        console.error("Error in visibility observer:", error);
+      }
+    });
+  }
+
+  // ============================================================================
+  // MOTION VISIBILITY
+  // ============================================================================
+
+  /**
+   * Get motion visibility for a specific color
+   */
+  getMotionVisibility(color: "red" | "blue"): boolean {
+    return this.settings[`${color}_motion`];
+  }
+
+  /**
+   * Set motion visibility with constraint enforcement
+   */
+  setMotionVisibility(color: "red" | "blue", visible: boolean): void {
+    const otherColor = color === "red" ? "blue" : "red";
+
+    // Enforce constraint: at least one motion must remain visible
+    if (!visible && !this.settings[`${otherColor}_motion`]) {
+      // If trying to turn off the last visible motion, turn on the other one
+      this.settings[`${color}_motion`] = false;
+      this.settings[`${otherColor}_motion`] = true;
+      this.notifyObservers(["motion", "glyph", "buttons"]);
+      return;
+    }
+
+    // Normal case
+    this.settings[`${color}_motion`] = visible;
+    this.notifyObservers(["motion", "glyph", "buttons"]);
+  }
+
+  /**
+   * Check if all motions are visible
+   */
+  areAllMotionsVisible(): boolean {
+    return this.settings.red_motion && this.settings.blue_motion;
+  }
+
+  /**
+   * Check if any motion is visible
+   */
+  isAnyMotionVisible(): boolean {
+    return this.settings.red_motion || this.settings.blue_motion;
+  }
+
+  // ============================================================================
+  // GLYPH VISIBILITY
+  // ============================================================================
+
+  /**
+   * Get glyph visibility considering dependencies
+   */
+  getGlyphVisibility(glyphType: string): boolean {
+    const baseVisibility =
+      (this.settings[glyphType as keyof VisibilitySettings] as boolean) ??
+      false;
+
+    // For dependent glyphs, also check if both motions are visible
+    if (this.DEPENDENT_GLYPHS.includes(glyphType)) {
+      return baseVisibility && this.areAllMotionsVisible();
+    }
+
+    // For independent glyphs, return direct visibility
+    return baseVisibility;
+  }
+
+  /**
+   * Set glyph visibility
+   */
+  setGlyphVisibility(glyphType: string, visible: boolean): void {
+    if (glyphType in this.settings) {
+      (this.settings as any)[glyphType] = visible;
+      this.notifyObservers(["glyph"]);
+    }
+  }
+
+  /**
+   * Get raw glyph visibility (user preference, ignoring dependencies)
+   */
+  getRawGlyphVisibility(glyphType: string): boolean {
+    return (
+      (this.settings[glyphType as keyof VisibilitySettings] as boolean) ?? false
+    );
+  }
+
+  /**
+   * Check if glyph is dependent on motion visibility
+   */
+  isGlyphDependent(glyphType: string): boolean {
+    return this.DEPENDENT_GLYPHS.includes(glyphType);
+  }
+
+  // ============================================================================
+  // NON-RADIAL POINTS
+  // ============================================================================
+
+  /**
+   * Get non-radial points visibility
+   */
+  getNonRadialVisibility(): boolean {
+    return this.settings.nonRadialPoints;
+  }
+
+  /**
+   * Set non-radial points visibility
+   */
+  setNonRadialVisibility(visible: boolean): void {
+    this.settings.nonRadialPoints = visible;
+    this.notifyObservers(["non_radial"]);
+  }
+
+  // ============================================================================
+  // UTILITY METHODS
+  // ============================================================================
+
+  /**
+   * Get all visible glyph types
+   */
+  getVisibleGlyphs(): string[] {
+    return ["TKA", "Reversals", "VTG", "Elemental", "Positions"].filter(
+      (glyph) => this.getGlyphVisibility(glyph)
+    );
+  }
+
+  /**
+   * Get all enabled dependent glyphs (considering motion constraints)
+   */
+  getAvailableDependentGlyphs(): string[] {
+    if (!this.areAllMotionsVisible()) {
+      return [];
+    }
+    return this.DEPENDENT_GLYPHS.filter((glyph) =>
+      this.getRawGlyphVisibility(glyph)
+    );
+  }
+
+  /**
+   * Update from external AppSettings
+   */
+  updateFromAppSettings(appSettings: AppSettings): void {
+    const visibilityUpdate = this.convertAppSettingsToVisibility(appSettings);
+    Object.assign(this.settings, visibilityUpdate);
+    this.notifyObservers(["all"]);
+  }
+
+  /**
+   * Get complete visibility state for debugging
+   */
+  getState(): VisibilitySettings {
+    return { ...this.settings };
+  }
+}
+
+// Global instance for the application
+let globalVisibilityStateManager: VisibilityStateManager | null = null;
+
+/**
+ * Get or create the global visibility state manager
+ */
+export function getVisibilityStateManager(
+  initialSettings?: Partial<AppSettings>
+): VisibilityStateManager {
+  if (!globalVisibilityStateManager) {
+    globalVisibilityStateManager = new VisibilityStateManager(initialSettings);
+  }
+  return globalVisibilityStateManager;
+}
+
+/**
+ * Reset the global visibility state manager (useful for testing)
+ */
+export function resetVisibilityStateManager(): void {
+  globalVisibilityStateManager = null;
+}

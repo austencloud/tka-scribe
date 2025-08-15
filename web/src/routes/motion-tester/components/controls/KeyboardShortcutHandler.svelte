@@ -27,11 +27,7 @@ No visual controls, no animation logic - just keyboard event handling.
   }
 </script>
 
-
-
 <style>
-
-
   .keyboard-hint {
     display: flex;
     justify-content: center;

@@ -13,6 +13,13 @@ import type {
   SequenceData,
 } from "$lib/domain";
 import { GridMode as DomainGridMode } from "$lib/domain";
+// Import centralized enums to avoid duplication
+import type {
+  MotionType,
+  Location,
+  Orientation,
+  RotationDirection,
+} from "$lib/domain/enums";
 import type {
   BrowseDisplayState,
   BrowseLoadingState,
@@ -33,7 +40,6 @@ import type {
   ValidationResult,
   ExportResult,
 } from "$lib/domain/sequenceCard";
-import type { Point } from "../services/positioning/types";
 
 // ============================================================================
 // ADVANCED BROWSE SERVICES
@@ -223,25 +229,8 @@ export interface ArrowPlacementConfig {
   checker?: unknown;
 }
 
-// Arrow positioning enums
-export type MotionType = "pro" | "anti" | "float" | "dash" | "static";
-export type Location =
-  | "n"
-  | "ne"
-  | "e"
-  | "se"
-  | "s"
-  | "sw"
-  | "w"
-  | "nw"
-  | "center";
-export type Orientation = "in" | "out" | "clock" | "counter";
-export type PropRotDir =
-  | "cw"
-  | "ccw"
-  | "no_rot"
-  | "clockwise"
-  | "counter_clockwise";
+// Use centralized enum types - no duplicates!
+export type PropRotDir = RotationDirection;
 export type HandRotDir = "cw_shift" | "ccw_shift";
 export type GridMode = DomainGridMode;
 
@@ -549,18 +538,11 @@ export interface AppSettings {
   backupFrequency?: string;
   enableFades?: boolean;
   animationsEnabled?: boolean; // Simple animation control
-  developerMode?: boolean; // Show developer tools and experimental features
   growSequence?: boolean;
   numBeats?: number;
   beatLayout?: string;
   // Background settings
-  backgroundType?:
-    | "snowfall"
-    | "nightSky"
-    | "aurora"
-    | "auroraBorealis"
-    | "starfield"
-    | "bubbles";
+  backgroundType?: "snowfall" | "nightSky" | "aurora" | "bubbles" | "deepOcean";
   backgroundQuality?: "high" | "medium" | "low" | "minimal";
   backgroundEnabled?: boolean;
   visibility?: {

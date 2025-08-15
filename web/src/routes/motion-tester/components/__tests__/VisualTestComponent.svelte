@@ -115,32 +115,37 @@
     error?: string;
   }> = [];
 
-  function runTests() {
-    testResults = testConfigs.map((config) => {
-      try {
-        const mockState = {
-          gridType: config.gridType,
-          blueMotionParams: config.blueMotionParams,
-          redMotionParams: config.redMotionParams,
-          animationState: { progress: 0.5 },
-        };
+  async function runTests() {
+    const results = await Promise.all(
+      testConfigs.map(async (config) => {
+        try {
+          const mockState = {
+            gridType: config.gridType,
+            blueMotionParams: config.blueMotionParams,
+            redMotionParams: config.redMotionParams,
+            animationState: { progress: 0.5 },
+          };
 
-        const pictographData =
-          pictographDataService.createAnimatedPictographData(mockState as any);
+          const pictographData =
+            await pictographDataService.createAnimatedPictographData(
+              mockState as any
+            );
 
-        return {
-          config,
-          pictographData,
-          error: pictographData ? undefined : "Service returned null",
-        };
-      } catch (error) {
-        return {
-          config,
-          pictographData: null,
-          error: error instanceof Error ? error.message : "Unknown error",
-        };
-      }
-    });
+          return {
+            config,
+            pictographData,
+            error: pictographData ? undefined : "Service returned null",
+          };
+        } catch (error) {
+          return {
+            config,
+            pictographData: null,
+            error: error instanceof Error ? error.message : "Unknown error",
+          };
+        }
+      })
+    );
+    testResults = results;
   }
 
   // Run tests on component mount

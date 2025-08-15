@@ -4,6 +4,9 @@ import {
   RotationDirection,
   Location,
 } from "$lib/domain/enums";
+import type { MotionData } from "$lib/domain/MotionData";
+import type { PropRotDir } from "$lib/services/interfaces";
+import type { IMotionParameterService } from "./interfaces";
 
 export interface MotionTestParams {
   startLoc: string;
@@ -15,7 +18,7 @@ export interface MotionTestParams {
   endOri: string;
 }
 
-export class MotionParameterService {
+export class MotionParameterService implements IMotionParameterService {
   // Helper function to determine motion type based on start/end locations
   getMotionType(startLoc: string, endLoc: string): string {
     // Normalize to lowercase for case-insensitive comparison
@@ -195,9 +198,9 @@ export class MotionParameterService {
     return {
       start_loc: params.startLoc,
       end_loc: params.endLoc,
-      motion_type: params.motionType as any,
+      motion_type: params.motionType as MotionType,
       turns: params.turns,
-      prop_rot_dir: params.propRotDir as any,
+      prop_rot_dir: params.propRotDir as PropRotDir,
       start_ori: params.startOri as any,
       end_ori: params.endOri as any,
     };
@@ -218,7 +221,6 @@ export class MotionParameterService {
 
   // Update motion type when locations change
   updateMotionTypeForLocations(params: MotionTestParams): MotionTestParams {
-    const newMotionType = this.getMotionType(params.startLoc, params.endLoc);
     const availableTypes = this.getAvailableMotionTypes(
       params.startLoc,
       params.endLoc
@@ -233,5 +235,21 @@ export class MotionParameterService {
     }
 
     return params;
+  }
+
+  // Convert MotionTestParams to MotionData (moved from state layer)
+  convertToMotionData(params: MotionTestParams): MotionData {
+    return {
+      motion_type: this.mapMotionTypeToEnum(params.motionType),
+      prop_rot_dir: this.mapRotationDirectionToEnum(params.propRotDir),
+      start_loc: this.mapLocationToEnum(params.startLoc),
+      end_loc: this.mapLocationToEnum(params.endLoc),
+      turns: params.turns,
+      start_ori: this.mapOrientationToEnum(params.startOri),
+      end_ori: this.mapOrientationToEnum(params.endOri),
+      is_visible: true,
+      prefloat_motion_type: null,
+      prefloat_prop_rot_dir: null,
+    };
   }
 }

@@ -1,1 +1,360 @@
-<!--\nVisibilityPreviewPictograph.svelte - Live Preview for Visibility Settings\n\nReplicates the desktop app's visibility pictograph that shows example data\nwith real-time opacity changes based on visibility settings.\n-->\n<script lang=\"ts\">\n  import type { PictographData } from \"$lib/domain\";\n  import { createPictographData, createArrowData, createPropData, GridMode } from \"$lib/domain\";\n  import { getVisibilityStateManager } from \"$lib/services/implementations/VisibilityStateManager\";\n  import { onMount } from \"svelte\";\n  import PictographWithVisibility from \"./PictographWithVisibility.svelte\";\n\n  interface Props {\n    /** Width of the preview */\n    width?: number;\n    /** Height of the preview */\n    height?: number;\n    /** Debug mode */\n    debug?: boolean;\n  }\n\n  let {\n    width = 300,\n    height = 300,\n    debug = false,\n  }: Props = $props();\n\n  // Visibility state manager\n  let visibilityManager = getVisibilityStateManager();\n  let visibilityUpdateCount = $state(0);\n\n  // Force re-render when visibility changes\n  function handleVisibilityChange() {\n    visibilityUpdateCount++;\n  }\n\n  onMount(() => {\n    visibilityManager.registerObserver(handleVisibilityChange);\n    \n    return () => {\n      visibilityManager.unregisterObserver(handleVisibilityChange);\n    };\n  });\n\n  // Example pictograph data (matching desktop app's example)\n  const exampleData: PictographData = createPictographData({\n    letter: \"A\",\n    grid_data: {\n      grid_mode: GridMode.DIAMOND,\n      // Grid coordinates would go here\n    },\n    arrows: {\n      blue: createArrowData({\n        color: \"blue\",\n        motion_type: \"pro\",\n        turns: 1.0,\n        arrow_type: \"blue\",\n      }),\n      red: createArrowData({\n        color: \"red\", \n        motion_type: \"pro\",\n        turns: 1.0,\n        arrow_type: \"red\",\n      }),\n    },\n    props: {\n      blue: createPropData({ color: \"blue\" }),\n      red: createPropData({ color: \"red\" }),\n    },\n    motions: {\n      blue: {\n        color: \"blue\",\n        motion_type: \"pro\",\n        start_loc: \"alpha1\",\n        end_loc: \"alpha3\", \n        start_ori: \"in\",\n        end_ori: \"in\",\n        turns: 1.0,\n      },\n      red: {\n        color: \"red\",\n        motion_type: \"pro\", \n        start_loc: \"alpha1\",\n        end_loc: \"alpha3\",\n        start_ori: \"in\",\n        end_ori: \"in\",\n        turns: 1.0,\n      },\n    },\n    is_blank: false,\n    is_mirrored: false,\n  });\n\n  // Derived state - create preview data with opacity effects\n  const previewData = $derived(() => {\n    // Force reactivity\n    visibilityUpdateCount;\n    \n    // Start with base example data\n    let data = { ...exampleData };\n    \n    // For the preview, we always show all elements but use opacity\n    // This is handled via CSS opacity manipulation\n    return data;\n  });\n</script>\n\n<!-- Visibility Preview Container -->\n<div \n  class=\"visibility-preview\"\n  class:debug-mode={debug}\n  style:width=\"{width}px\"\n  style:height=\"{height}px\"\n>\n  <!-- Preview Pictograph -->\n  <div class=\"preview-pictograph\">\n    <PictographWithVisibility\n      pictographData={previewData()}\n      forceShowAll={true}\n      enableVisibility={false}\n      {width}\n      {height}\n      {debug}\n    />\n    \n    <!-- Visibility Overlay Effects -->\n    <div class=\"visibility-overlays\">\n      <!-- Red Motion Overlay -->\n      <div \n        class=\"motion-overlay red-motion\"\n        class:hidden={!visibilityManager.getMotionVisibility(\"red\")}\n      ></div>\n      \n      <!-- Blue Motion Overlay -->\n      <div \n        class=\"motion-overlay blue-motion\"\n        class:hidden={!visibilityManager.getMotionVisibility(\"blue\")}\n      ></div>\n      \n      <!-- TKA Letter Overlay -->\n      <div \n        class=\"glyph-overlay letter-overlay\"\n        class:hidden={!visibilityManager.getGlyphVisibility(\"TKA\")}\n      ></div>\n      \n      <!-- Reversals Overlay -->\n      <div \n        class=\"glyph-overlay reversals-overlay\"\n        class:hidden={!visibilityManager.getGlyphVisibility(\"Reversals\")}\n      ></div>\n      \n      <!-- Positions Overlay -->\n      <div \n        class=\"glyph-overlay positions-overlay\"\n        class:hidden={!visibilityManager.getGlyphVisibility(\"Positions\")}\n      ></div>\n      \n      <!-- VTG Overlay -->\n      <div \n        class=\"glyph-overlay vtg-overlay\"\n        class:hidden={!visibilityManager.getGlyphVisibility(\"VTG\")}\n      ></div>\n      \n      <!-- Elemental Overlay -->\n      <div \n        class=\"glyph-overlay elemental-overlay\"\n        class:hidden={!visibilityManager.getGlyphVisibility(\"Elemental\")}\n      ></div>\n    </div>\n  </div>\n  \n  <!-- Preview Label -->\n  <div class=\"preview-label\">\n    <div class=\"label-text\">Live Preview</div>\n    <div class=\"label-subtitle\">Changes reflect in real-time</div>\n  </div>\n  \n  <!-- Debug Information -->\n  {#if debug}\n    <div class=\"debug-panel\">\n      <div class=\"debug-title\">Preview Debug</div>\n      <div class=\"debug-section\">\n        <div>All Motions: {visibilityManager.areAllMotionsVisible() ? \"YES\" : \"NO\"}</div>\n        <div>Dependent Available: {visibilityManager.areAllMotionsVisible() ? \"YES\" : \"NO\"}</div>\n        <div>Update Count: {visibilityUpdateCount}</div>\n      </div>\n    </div>\n  {/if}\n</div>\n\n<style>\n  .visibility-preview {\n    position: relative;\n    border: 2px solid rgba(255, 255, 255, 0.2);\n    border-radius: 12px;\n    background: linear-gradient(\n      135deg,\n      rgba(31, 41, 59, 0.05),\n      rgba(55, 65, 81, 0.03)\n    );\n    overflow: hidden;\n    backdrop-filter: blur(10px);\n  }\n  \n  .preview-pictograph {\n    position: relative;\n    width: 100%;\n    height: calc(100% - 60px); /* Reserve space for label */\n    padding: 16px;\n  }\n  \n  .visibility-overlays {\n    position: absolute;\n    top: 0;\n    left: 0;\n    right: 0;\n    bottom: 0;\n    pointer-events: none;\n    z-index: 10;\n  }\n  \n  .motion-overlay,\n  .glyph-overlay {\n    position: absolute;\n    top: 0;\n    left: 0;\n    right: 0;\n    bottom: 0;\n    background: rgba(0, 0, 0, 0.85);\n    transition: opacity 0.3s ease;\n    opacity: 0;\n  }\n  \n  .motion-overlay.hidden,\n  .glyph-overlay.hidden {\n    opacity: 1;\n  }\n  \n  /* Specific overlay targeting */\n  .red-motion {\n    /* Target red elements via CSS filters */\n    background: rgba(239, 68, 68, 0.2);\n    mix-blend-mode: multiply;\n  }\n  \n  .blue-motion {\n    /* Target blue elements via CSS filters */\n    background: rgba(59, 130, 246, 0.2);\n    mix-blend-mode: multiply;\n  }\n  \n  .letter-overlay {\n    /* Target letter elements */\n    background: rgba(75, 85, 99, 0.85);\n  }\n  \n  .preview-label {\n    position: absolute;\n    bottom: 0;\n    left: 0;\n    right: 0;\n    height: 60px;\n    background: rgba(255, 255, 255, 0.05);\n    border-top: 1px solid rgba(255, 255, 255, 0.1);\n    display: flex;\n    flex-direction: column;\n    align-items: center;\n    justify-content: center;\n    backdrop-filter: blur(5px);\n  }\n  \n  .label-text {\n    font-size: 14px;\n    font-weight: 600;\n    color: white;\n    margin-bottom: 2px;\n  }\n  \n  .label-subtitle {\n    font-size: 11px;\n    color: rgba(255, 255, 255, 0.7);\n    font-style: italic;\n  }\n  \n  .debug-panel {\n    position: absolute;\n    top: 10px;\n    left: 10px;\n    background: rgba(0, 0, 0, 0.8);\n    color: white;\n    padding: 8px;\n    border-radius: 4px;\n    font-family: monospace;\n    font-size: 10px;\n    z-index: 100;\n  }\n  \n  .debug-title {\n    font-weight: bold;\n    margin-bottom: 4px;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.3);\n    padding-bottom: 2px;\n  }\n  \n  .debug-section div {\n    margin-bottom: 2px;\n  }\n  \n  /* Enhanced effects for motion visibility */\n  .preview-pictograph :global(.motion-element) {\n    transition: opacity 0.3s ease, filter 0.3s ease;\n  }\n  \n  .preview-pictograph :global(.motion-element.red.hidden) {\n    opacity: 0.1;\n    filter: grayscale(100%);\n  }\n  \n  .preview-pictograph :global(.motion-element.blue.hidden) {\n    opacity: 0.1;\n    filter: grayscale(100%);\n  }\n  \n  /* Responsive design */\n  @media (max-width: 768px) {\n    .preview-label {\n      height: 50px;\n    }\n    \n    .label-text {\n      font-size: 12px;\n    }\n    \n    .label-subtitle {\n      font-size: 10px;\n    }\n  }\n</style>"
+<!--
+VisibilityPreviewPictograph.svelte - Live Preview for Visibility Settings
+
+Replicates the desktop app's visibility pictograph that shows example data
+with real-time opacity changes based on visibility settings.
+-->
+<script lang="ts">
+  import type { PictographData } from "$lib/domain";
+  import {
+    createPictographData,
+    createArrowData,
+    createPropData,
+    createMotionData,
+    GridMode,
+    ArrowType,
+    MotionType,
+    Location,
+    Orientation,
+    RotationDirection,
+    GlyphType,
+  } from "$lib/domain";
+  import { getVisibilityStateManager } from "$lib/services/implementations/VisibilityStateManager";
+  import { onMount } from "svelte";
+  import PictographWithVisibility from "./PictographWithVisibility.svelte";
+
+  interface Props {
+    /** Width of the preview */
+    width?: number;
+    /** Height of the preview */
+    height?: number;
+    /** Debug mode */
+    debug?: boolean;
+  }
+
+  let { width = 300, height = 300, debug = false }: Props = $props();
+
+  // Visibility state manager
+  let visibilityManager = getVisibilityStateManager();
+  let visibilityUpdateCount = $state(0);
+
+  // Force re-render when visibility changes
+  function handleVisibilityChange() {
+    visibilityUpdateCount++;
+  }
+
+  onMount(() => {
+    visibilityManager.registerObserver(handleVisibilityChange);
+
+    return () => {
+      visibilityManager.unregisterObserver(handleVisibilityChange);
+    };
+  });
+
+  // Example pictograph data (matching desktop app's example)
+  const exampleData: PictographData = createPictographData({
+    letter: "A",
+    grid_data: {
+      grid_mode: GridMode.DIAMOND,
+      center_x: 400,
+      center_y: 400,
+      radius: 200,
+      grid_points: {},
+    },
+    arrows: {
+      blue: createArrowData({
+        color: ArrowType.BLUE,
+        motion_type: MotionType.PRO,
+        turns: 1.0,
+        arrow_type: ArrowType.BLUE,
+      }),
+      red: createArrowData({
+        color: ArrowType.RED,
+        motion_type: MotionType.PRO,
+        turns: 1.0,
+        arrow_type: ArrowType.RED,
+      }),
+    },
+    props: {
+      blue: createPropData({ color: ArrowType.BLUE }),
+      red: createPropData({ color: ArrowType.RED }),
+    },
+    motions: {
+      blue: createMotionData({
+        motion_type: MotionType.PRO,
+        start_loc: Location.SOUTH,
+        end_loc: Location.WEST,
+        start_ori: Orientation.IN,
+        end_ori: Orientation.IN,
+        prop_rot_dir: RotationDirection.CLOCKWISE,
+        turns: 1.0,
+        is_visible: true,
+      }),
+      red: createMotionData({
+        motion_type: MotionType.PRO,
+        start_loc: Location.NORTH,
+        end_loc: Location.EAST,
+        start_ori: Orientation.IN,
+        end_ori: Orientation.IN,
+        prop_rot_dir: RotationDirection.CLOCKWISE,
+        turns: 1.0,
+        is_visible: true,
+      }),
+    },
+    is_blank: false,
+    is_mirrored: false,
+  });
+
+  // Derived state - create preview data with opacity effects
+  const previewData = $derived(() => {
+    // Force reactivity
+    visibilityUpdateCount;
+
+    // Start with base example data
+    let data = { ...exampleData };
+
+    // For the preview, we always show all elements but use opacity
+    // This is handled via CSS opacity manipulation
+    return data;
+  });
+</script>
+
+<!-- Visibility Preview Container -->
+<div
+  class="visibility-preview"
+  class:debug-mode={debug}
+  style:width="{width}px"
+  style:height="{height}px"
+>
+  <!-- Preview Pictograph -->
+  <div class="preview-pictograph">
+    <PictographWithVisibility
+      pictographData={previewData()}
+      forceShowAll={true}
+      enableVisibility={false}
+      {width}
+      {height}
+      {debug}
+    />
+
+    <!-- Visibility Overlay Effects -->
+    <div class="visibility-overlays">
+      <!-- Red Motion Overlay -->
+      <div
+        class="motion-overlay red-motion"
+        class:hidden={!visibilityManager.getMotionVisibility("red")}
+      ></div>
+
+      <!-- Blue Motion Overlay -->
+      <div
+        class="motion-overlay blue-motion"
+        class:hidden={!visibilityManager.getMotionVisibility("blue")}
+      ></div>
+
+      <!-- TKA Letter Overlay -->
+      <div
+        class="glyph-overlay letter-overlay"
+        class:hidden={!visibilityManager.getGlyphVisibility("TKA")}
+      ></div>
+
+      <!-- Reversals Overlay -->
+      <div
+        class="glyph-overlay reversals-overlay"
+        class:hidden={!visibilityManager.getGlyphVisibility("Reversals")}
+      ></div>
+
+      <!-- Positions Overlay -->
+      <div
+        class="glyph-overlay positions-overlay"
+        class:hidden={!visibilityManager.getGlyphVisibility("Positions")}
+      ></div>
+
+      <!-- VTG Overlay -->
+      <div
+        class="glyph-overlay vtg-overlay"
+        class:hidden={!visibilityManager.getGlyphVisibility("VTG")}
+      ></div>
+
+      <!-- Elemental Overlay -->
+      <div
+        class="glyph-overlay elemental-overlay"
+        class:hidden={!visibilityManager.getGlyphVisibility("Elemental")}
+      ></div>
+    </div>
+  </div>
+
+  <!-- Preview Label -->
+  <div class="preview-label">
+    <div class="label-text">Live Preview</div>
+    <div class="label-subtitle">Changes reflect in real-time</div>
+  </div>
+
+  <!-- Debug Information -->
+  {#if debug}
+    <div class="debug-panel">
+      <div class="debug-title">Preview Debug</div>
+      <div class="debug-section">
+        <div>
+          All Motions: {visibilityManager.areAllMotionsVisible() ? "YES" : "NO"}
+        </div>
+        <div>
+          Dependent Available: {visibilityManager.areAllMotionsVisible()
+            ? "YES"
+            : "NO"}
+        </div>
+        <div>Update Count: {visibilityUpdateCount}</div>
+      </div>
+    </div>
+  {/if}
+</div>
+
+<style>
+  .visibility-preview {
+    position: relative;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    background: linear-gradient(
+      135deg,
+      rgba(31, 41, 59, 0.05),
+      rgba(55, 65, 81, 0.03)
+    );
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+  }
+
+  .preview-pictograph {
+    position: relative;
+    width: 100%;
+    height: calc(100% - 60px); /* Reserve space for label */
+    padding: 16px;
+  }
+
+  .visibility-overlays {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  .motion-overlay,
+  .glyph-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.85);
+    transition: opacity 0.3s ease;
+    opacity: 0;
+  }
+
+  .motion-overlay.hidden,
+  .glyph-overlay.hidden {
+    opacity: 1;
+  }
+
+  /* Specific overlay targeting */
+  .red-motion {
+    /* Target red elements via CSS filters */
+    background: rgba(239, 68, 68, 0.2);
+    mix-blend-mode: multiply;
+  }
+
+  .blue-motion {
+    /* Target blue elements via CSS filters */
+    background: rgba(59, 130, 246, 0.2);
+    mix-blend-mode: multiply;
+  }
+
+  .letter-overlay {
+    /* Target letter elements */
+    background: rgba(75, 85, 99, 0.85);
+  }
+
+  .preview-label {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 60px;
+    background: rgba(255, 255, 255, 0.05);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(5px);
+  }
+
+  .label-text {
+    font-size: 14px;
+    font-weight: 600;
+    color: white;
+    margin-bottom: 2px;
+  }
+
+  .label-subtitle {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.7);
+    font-style: italic;
+  }
+
+  .debug-panel {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 8px;
+    border-radius: 4px;
+    font-family: monospace;
+    font-size: 10px;
+    z-index: 100;
+  }
+
+  .debug-title {
+    font-weight: bold;
+    margin-bottom: 4px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+    padding-bottom: 2px;
+  }
+
+  .debug-section div {
+    margin-bottom: 2px;
+  }
+
+  /* Enhanced effects for motion visibility */
+  .preview-pictograph :global(.motion-element) {
+    transition:
+      opacity 0.3s ease,
+      filter 0.3s ease;
+  }
+
+  .preview-pictograph :global(.motion-element.red.hidden) {
+    opacity: 0.1;
+    filter: grayscale(100%);
+  }
+
+  .preview-pictograph :global(.motion-element.blue.hidden) {
+    opacity: 0.1;
+    filter: grayscale(100%);
+  }
+
+  /* Responsive design */
+  @media (max-width: 768px) {
+    .preview-label {
+      height: 50px;
+    }
+
+    .label-text {
+      font-size: 12px;
+    }
+
+    .label-subtitle {
+      font-size: 10px;
+    }
+  }
+</style>

@@ -1,5 +1,6 @@
 import { StandalonePortedEngine, type PropState } from "$lib/animator";
 import type { MotionTestParams } from "./MotionParameterService";
+import type { IAnimationControlService } from "./interfaces";
 
 export interface AnimationState {
   isPlaying: boolean;
@@ -17,7 +18,7 @@ export interface PropStates {
   red?: PropState;
 }
 
-export class AnimationControlService {
+export class AnimationControlService implements IAnimationControlService {
   private animationEngine: StandalonePortedEngine;
   private animationFrameId: number | null = null;
   private currentProgress: number = 0;

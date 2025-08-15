@@ -51,27 +51,29 @@ describe("ErrorBanner", () => {
   });
 
   describe("Dismiss Functionality", () => {
-    it("should call clearError when dismiss button is clicked", async () => {
-      const { clearError } = await import("$stores/constructTabState.svelte");
+    it("should call onDismiss when dismiss button is clicked", async () => {
+      const mockOnDismiss = vi.fn();
 
       render(ErrorBanner, {
         props: {
           message: "Dismissible error",
+          onDismiss: mockOnDismiss,
         },
       });
 
       const dismissButton = screen.getByText("Dismiss");
       await fireEvent.click(dismissButton);
 
-      expect(clearError).toHaveBeenCalledTimes(1);
+      expect(mockOnDismiss).toHaveBeenCalledTimes(1);
     });
 
     it("should be keyboard accessible", async () => {
-      const { clearError } = await import("$stores/constructTabState.svelte");
+      const mockOnDismiss = vi.fn();
 
       render(ErrorBanner, {
         props: {
           message: "Keyboard accessible error",
+          onDismiss: mockOnDismiss,
         },
       });
 
@@ -80,7 +82,7 @@ describe("ErrorBanner", () => {
 
       // Use click event instead of keyDown since button onclick handles both
       await fireEvent.click(dismissButton);
-      expect(clearError).toHaveBeenCalledTimes(1);
+      expect(mockOnDismiss).toHaveBeenCalledTimes(1);
     });
   });
 

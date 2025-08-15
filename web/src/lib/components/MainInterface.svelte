@@ -140,10 +140,7 @@
     <!-- Background Canvas -->
     {#if settings.backgroundEnabled}
       <BackgroundCanvas
-        backgroundType={settings.backgroundType === "auroraBorealis" ||
-        settings.backgroundType === "starfield"
-          ? "aurora"
-          : settings.backgroundType || "aurora"}
+        backgroundType={settings.backgroundType || "aurora"}
         quality={settings.backgroundQuality || "medium"}
       />
     {/if}

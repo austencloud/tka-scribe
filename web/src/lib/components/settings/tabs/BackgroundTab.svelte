@@ -9,7 +9,14 @@
     };
   }
 
-  let { settings, ...events } = $props();
+  interface Props {
+    settings: {
+      backgroundType?: BackgroundType;
+    };
+    onupdate?: (update: { key: string; value: any }) => void;
+  }
+
+  let { settings, onupdate }: Props = $props();
 
   // Current selection state
   let selectedBackground = $state<BackgroundType>(
@@ -61,8 +68,8 @@
     selectedBackground = backgroundType;
 
     // Update settings - backgrounds are always enabled, quality is auto-managed
-    if (events.onupdate) {
-      events.onupdate({ key: "backgroundType", value: backgroundType });
+    if (onupdate) {
+      onupdate({ key: "backgroundType", value: backgroundType });
     }
 
     console.log(`🌌 Background changed to: ${backgroundType}`);
@@ -70,7 +77,6 @@
 </script>
 
 <div class="tab-content">
-  
   <SettingCard
     title="Background Selection"
     description="Choose your preferred animated background"
@@ -130,7 +136,6 @@
       {/each}
     </div>
   </SettingCard>
-
 </div>
 
 <style>
@@ -489,7 +494,6 @@
     flex: 1;
     min-width: 0;
   }
-
 
   .selection-info p {
     margin: 0 0 12px 0;

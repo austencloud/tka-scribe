@@ -43,6 +43,8 @@ export enum RotationDirection {
   NO_ROTATION = "no_rot",
 }
 
+// DEPRECATED: Use RotationDirection instead
+// Keeping for backward compatibility during transition
 export enum PropRotationDirection {
   CLOCKWISE = "clockwise",
   COUNTER_CLOCKWISE = "counter_clockwise",
@@ -65,6 +67,7 @@ export enum Location {
   SOUTHEAST = "se",
   SOUTHWEST = "sw",
   NORTHWEST = "nw",
+  CENTER = "center", // Added for arrow positioning service
 }
 
 export enum GridPosition {
@@ -152,4 +155,12 @@ export enum LetterType {
   TYPE4 = "Type4",
   TYPE5 = "Type5",
   TYPE6 = "Type6",
+}
+
+export enum GlyphType {
+  TKA = "TKA",
+  REVERSALS = "Reversals",
+  VTG = "VTG",
+  ELEMENTAL = "Elemental",
+  POSITIONS = "Positions",
 }

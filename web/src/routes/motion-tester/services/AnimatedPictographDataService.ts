@@ -85,12 +85,15 @@ export class AnimatedPictographDataService
             `✅ CSV lookup successful! Found letter: ${csvPictograph.letter}`
           );
 
-          // Update metadata to include animation progress
-          csvPictograph.metadata = {
-            ...csvPictograph.metadata,
-            source: "motion_tester_csv_lookup",
-            grid_type: motionState.gridType,
-            progress: motionState.animationState.progress,
+          // Create new pictograph with updated metadata
+          const updatedPictograph = {
+            ...csvPictograph,
+            metadata: {
+              ...csvPictograph.metadata,
+              source: "motion_tester_csv_lookup",
+              grid_type: motionState.gridType,
+              progress: motionState.animationState.progress,
+            },
           };
 
           // Cache the result (without progress for reusability)
@@ -103,7 +106,7 @@ export class AnimatedPictographDataService
           };
           this.cache.set(cacheKey, cacheableResult);
 
-          return csvPictograph;
+          return updatedPictograph;
         } else {
           console.warn(
             "⚠️ CSV lookup failed, falling back to manual generation..."

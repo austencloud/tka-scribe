@@ -150,8 +150,8 @@ class BeatFrameService {
 
   // Layout calculations with legacy logic
   private autoAdjustLayout(beatCount: number): [number, number] {
-    // For empty sequence or only start position, use single column layout
-    if (beatCount <= 0) return [1, 1];
+    // For empty sequence (no beats), use zero columns for beats since start tile is added separately
+    if (beatCount <= 0) return [1, 0];
     if (beatCount === 1) return [1, 1]; // Single beat + start position
 
     // Use predefined layouts for common beat counts
@@ -311,26 +311,82 @@ class BeatFrameService {
     return { x: col * step, y: row * step };
   }
 
+  calculateStartPosition(beatCount: number): { x: number; y: number } {
+    console.log(
+      "🚀 [START_POS] calculateStartPosition called with beatCount:",
+      beatCount
+    );
+
+    // When there are no beats, center the start position within the frame
+    if (beatCount <= 0) {
+      const layoutInfo = this.calculateLayoutInfo(beatCount);
+      const frameWidth = layoutInfo.totalWidth;
+      const frameHeight = layoutInfo.totalHeight;
+      const beatSize = this.#config.beatSize;
+
+      const x = (frameWidth - beatSize) / 2;
+      const y = (frameHeight - beatSize) / 2;
+
+      console.log("🔍 [START_POS_CENTER_DEBUG] Centering start position:", {
+        beatCount,
+        frameWidth,
+        frameHeight,
+        beatSize,
+        calculatedPosition: { x, y },
+      });
+
+      return { x, y };
+    }
+
+    // For non-empty sequences, start position is at grid position (0,0)
+    return { x: 0, y: 0 };
+  }
+
   calculateFrameDimensions(beatCount: number): {
     width: number;
     height: number;
   } {
     const step = this.#config.beatSize + this.#config.gap;
 
+    console.log("🔍 [FRAME_DIM_DEBUG] calculateFrameDimensions called:", {
+      beatCount,
+      step,
+      beatSize: this.#config.beatSize,
+      gap: this.#config.gap,
+      hasStartTile: this.#config.hasStartTile,
+    });
+
     // If no beats, size to just the Start tile (desktop shows START only)
     if (beatCount <= 0) {
       const width = this.#config.hasStartTile ? this.#config.beatSize : 0;
       const height = this.#config.beatSize;
-      return { width, height };
+      const result = { width, height };
+
+      console.log(
+        "🔍 [FRAME_DIM_DEBUG] No beats - sizing to start tile only:",
+        result
+      );
+      return result;
     }
 
     const [rows, cols] = this.autoAdjustLayout(beatCount);
     const totalCols = cols + (this.#config.hasStartTile ? 1 : 0);
 
-    return {
+    const result = {
       width: totalCols * step - this.#config.gap,
       height: rows * step - this.#config.gap,
     };
+
+    console.log(
+      "🔍 [FRAME_DIM_DEBUG] Has beats - calculating grid dimensions:",
+      {
+        autoAdjustResult: [rows, cols],
+        totalCols,
+        result,
+      }
+    );
+
+    return result;
   }
 
   /**

@@ -38,7 +38,9 @@ export interface IMotionTesterCsvLookupService {
 export const IAnimatedPictographDataServiceInterface =
   createServiceInterface<IAnimatedPictographDataService>(
     "IAnimatedPictographDataService",
-    AnimatedPictographDataService
+    AnimatedPictographDataService as new (
+      ...args: unknown[]
+    ) => IAnimatedPictographDataService
   );
 
 export const IMotionTesterCsvLookupServiceInterface =

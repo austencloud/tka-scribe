@@ -1,91 +1,33 @@
 /**
  * Core type definitions for the Pictograph Animator
  *
- * PHASE 1 REFACTORING: Native Compatibility with Web App Data Structures
- * This file now supports both legacy array format and modern web app object format
+ * UNIFIED TYPE SYSTEM: Uses domain types from $lib/domain for consistency
+ * This file now supports both legacy array format and modern domain object format
+ *
+ * ENUMS: All enum types imported from centralized /lib/domain/enums.ts
+ * No duplicate enum definitions - single source of truth maintained
  */
 
-// ============================================================================
-// PHASE 1: WEB APP COMPATIBLE TYPE DEFINITIONS
-// These types match the web app's domain models for native compatibility
-// ============================================================================
+// Import all enums from centralized location
+import {
+  MotionType as MotionTypeEnum,
+  Orientation as OrientationEnum,
+  RotationDirection,
+  Location,
+} from "$lib/domain/enums";
 
-/**
- * Web app compatible MotionData interface
- * Matches src/web/web_app/src/lib/domain/MotionData.ts
- */
-export interface WebAppMotionData {
-  readonly motion_type: string;
-  readonly prop_rot_dir: string;
-  readonly start_loc: string;
-  readonly end_loc: string;
-  readonly turns: number | "fl";
-  readonly start_ori: string;
-  readonly end_ori: string;
-  readonly is_visible: boolean;
-  readonly metadata: Record<string, unknown>;
-}
+// Import domain types for unified type system
+import type {
+  MotionData,
+  PictographData,
+  BeatData,
+  SequenceData as DomainSequenceData,
+} from "$lib/domain";
 
-/**
- * Web app compatible PictographData interface
- * Matches src/web/web_app/src/lib/domain/PictographData.ts
- */
-export interface WebAppPictographData {
-  readonly id: string;
-  readonly grid_data: any;
-  readonly arrows: readonly any[];
-  readonly props: readonly any[];
-  readonly motions: {
-    readonly blue: WebAppMotionData;
-    readonly red: WebAppMotionData;
-  };
-  readonly letter: string;
-  readonly metadata: Record<string, unknown>;
-}
-
-/**
- * Web app compatible BeatData interface
- * Matches src/web/web_app/src/lib/domain/BeatData.ts
- */
-export interface WebAppBeatData {
-  readonly id: string;
-  readonly beat_number: number;
-  readonly duration: number;
-  readonly blue_reversal: boolean;
-  readonly red_reversal: boolean;
-  readonly is_blank: boolean;
-  readonly pictograph_data?: WebAppPictographData;
-  readonly metadata: Record<string, unknown>;
-}
-
-/**
- * Web app compatible SequenceData interface
- * Matches src/web/web_app/src/lib/domain/SequenceData.ts
- */
-export interface WebAppSequenceData {
-  readonly id: string;
-  readonly name: string;
-  readonly word: string;
-  readonly beats: readonly WebAppBeatData[];
-  readonly start_position?: WebAppBeatData;
-  readonly thumbnails?: readonly string[];
-  readonly sequence_length?: number;
-  readonly author?: string;
-  readonly level?: number;
-  readonly date_added?: Date;
-  readonly grid_mode?: string;
-  readonly prop_type?: string;
-  readonly is_favorite?: boolean;
-  readonly is_circular?: boolean;
-  readonly starting_position?: string;
-  readonly difficulty_level?: string;
-  readonly tags?: readonly string[];
-  readonly metadata: Record<string, unknown>;
-}
-
-export type MotionType = "pro" | "anti" | "static" | "dash" | "fl" | "none";
-export type PropRotDir = "cw" | "ccw" | "no_rot" | undefined;
-export type Orientation = "in" | "out" | "clock" | "counter" | undefined;
+// Type aliases for backward compatibility - use centralized enums
+export type MotionType = MotionTypeEnum | "fl" | "none"; // Extended with legacy values
+export type PropRotDir = RotationDirection | undefined;
+export type Orientation = OrientationEnum | undefined;
 
 export interface PropAttributes {
   start_loc: string;
@@ -128,15 +70,15 @@ export type SequenceData = [SequenceMeta, ...SequenceStep[]];
 
 /**
  * Unified sequence data interface that supports both legacy array format
- * and modern web app object format for seamless integration
+ * and modern domain object format for seamless integration
  */
 export interface UnifiedSequenceData {
-  // Web app format (primary) - object-based structure
+  // Domain format (primary) - object-based structure
   id: string;
   name: string;
   word: string;
-  beats: readonly WebAppBeatData[];
-  start_position?: WebAppBeatData;
+  beats: readonly BeatData[];
+  start_position?: BeatData;
   thumbnails?: readonly string[];
   sequence_length?: number;
   author?: string;
@@ -161,7 +103,7 @@ export interface UnifiedSequenceData {
 export type AnySequenceData =
   | UnifiedSequenceData
   | SequenceData
-  | WebAppSequenceData;
+  | DomainSequenceData;
 
 /**
  * Motion data extraction result from web app beat data
@@ -202,10 +144,10 @@ export interface DictionaryIndex {
 // ============================================================================
 
 /**
- * Extract motion data from web app beat structure
+ * Extract motion data from domain beat structure
  * Converts nested PictographData.motions to PropAttributes format
  */
-export function extractMotionData(beat: WebAppBeatData): ExtractedMotionData {
+export function extractMotionData(beat: BeatData): ExtractedMotionData {
   // Check if beat has pictograph data with motions
   if (beat.pictograph_data?.motions) {
     const motions = beat.pictograph_data.motions;
@@ -228,10 +170,10 @@ export function extractMotionData(beat: WebAppBeatData): ExtractedMotionData {
 }
 
 /**
- * Convert web app MotionData to animator PropAttributes
+ * Convert domain MotionData to animator PropAttributes
  */
 export function convertMotionDataToPropAttributes(
-  motionData: WebAppMotionData
+  motionData: MotionData
 ): PropAttributes {
   return {
     start_loc: String(motionData.start_loc),
@@ -251,11 +193,11 @@ export function createDefaultPropAttributes(): PropAttributes {
   return {
     start_loc: "center",
     end_loc: "center",
-    start_ori: "in",
-    end_ori: "in",
-    prop_rot_dir: "no_rot",
+    start_ori: OrientationEnum.IN,
+    end_ori: OrientationEnum.IN,
+    prop_rot_dir: RotationDirection.NO_ROTATION,
     turns: 0,
-    motion_type: "static",
+    motion_type: MotionTypeEnum.STATIC,
   };
 }
 
@@ -278,9 +220,9 @@ export function adaptSequenceData(data: AnySequenceData): UnifiedSequenceData {
     return convertLegacyToUnified(data);
   }
 
-  // Check if it's web app format
-  if (isWebAppSequenceData(data)) {
-    return convertWebAppToUnified(data);
+  // Check if it's domain format
+  if (isDomainSequenceData(data)) {
+    return convertDomainToUnified(data);
   }
 
   throw new Error("Unknown sequence data format");
@@ -304,11 +246,11 @@ export function isUnifiedSequenceData(
 }
 
 /**
- * Type guard for web app sequence data
+ * Type guard for domain sequence data
  */
-export function isWebAppSequenceData(
+export function isDomainSequenceData(
   data: unknown
-): data is WebAppSequenceData {
+): data is DomainSequenceData {
   return (
     data !== null &&
     data !== undefined &&
@@ -335,8 +277,8 @@ export function convertLegacyToUnified(
 ): UnifiedSequenceData {
   const [meta, ...steps] = legacyData;
 
-  // Convert legacy steps to web app beat format
-  const beats: WebAppBeatData[] = steps.map((step, index) => ({
+  // Convert legacy steps to domain beat format
+  const beats: BeatData[] = steps.map((step, index) => ({
     id: `beat-${index + 1}`,
     beat_number: step.beat || index + 1,
     duration: 1, // Default duration
@@ -345,14 +287,29 @@ export function convertLegacyToUnified(
     is_blank: false,
     pictograph_data: {
       id: `pictograph-${index + 1}`,
-      grid_data: null,
-      arrows: [],
-      props: [],
+      grid_data: {
+        grid_mode: "diamond" as any,
+        center_x: 0,
+        center_y: 0,
+        radius: 100,
+        grid_points: {},
+      },
+      arrows: {
+        blue: {} as any,
+        red: {} as any,
+      },
+      props: {
+        blue: {} as any,
+        red: {} as any,
+      },
       motions: {
         blue: convertPropAttributesToMotionData(step.blue_attributes),
         red: convertPropAttributesToMotionData(step.red_attributes),
       },
       letter: step.letter || "",
+      beat: step.beat || index + 1,
+      is_blank: false,
+      is_mirrored: false,
       metadata: {},
     },
     metadata: {},
@@ -374,35 +331,107 @@ export function convertLegacyToUnified(
 }
 
 /**
- * Convert web app format to unified format
+ * Convert domain format to unified format
  */
-export function convertWebAppToUnified(
-  webAppData: WebAppSequenceData
+export function convertDomainToUnified(
+  domainData: DomainSequenceData
 ): UnifiedSequenceData {
   return {
-    ...webAppData,
+    ...domainData,
     // Ensure all required fields are present
-    metadata: webAppData.metadata || {},
+    metadata: domainData.metadata || {},
   };
 }
 
 /**
- * Convert animator PropAttributes to web app MotionData format
- * Used when converting legacy data to web app format
+ * Convert animator PropAttributes to domain MotionData format
+ * Used when converting legacy data to domain format
  */
 export function convertPropAttributesToMotionData(
   propAttrs: PropAttributes
-): WebAppMotionData {
+): MotionData {
+  // Convert string values to proper enum types
+  const motionType =
+    propAttrs.motion_type === "fl"
+      ? MotionTypeEnum.FLOAT
+      : propAttrs.motion_type === "pro"
+        ? MotionTypeEnum.PRO
+        : propAttrs.motion_type === "anti"
+          ? MotionTypeEnum.ANTI
+          : propAttrs.motion_type === "dash"
+            ? MotionTypeEnum.DASH
+            : propAttrs.motion_type === "static"
+              ? MotionTypeEnum.STATIC
+              : MotionTypeEnum.STATIC;
+
+  const propRotDir =
+    propAttrs.prop_rot_dir === "cw"
+      ? RotationDirection.CLOCKWISE
+      : propAttrs.prop_rot_dir === "ccw"
+        ? RotationDirection.COUNTER_CLOCKWISE
+        : RotationDirection.NO_ROTATION;
+
+  const startLoc =
+    propAttrs.start_loc === "n"
+      ? Location.NORTH
+      : propAttrs.start_loc === "e"
+        ? Location.EAST
+        : propAttrs.start_loc === "s"
+          ? Location.SOUTH
+          : propAttrs.start_loc === "w"
+            ? Location.WEST
+            : propAttrs.start_loc === "ne"
+              ? Location.NORTHEAST
+              : propAttrs.start_loc === "se"
+                ? Location.SOUTHEAST
+                : propAttrs.start_loc === "sw"
+                  ? Location.SOUTHWEST
+                  : propAttrs.start_loc === "nw"
+                    ? Location.NORTHWEST
+                    : Location.NORTH;
+
+  const endLoc =
+    propAttrs.end_loc === "n"
+      ? Location.NORTH
+      : propAttrs.end_loc === "e"
+        ? Location.EAST
+        : propAttrs.end_loc === "s"
+          ? Location.SOUTH
+          : propAttrs.end_loc === "w"
+            ? Location.WEST
+            : propAttrs.end_loc === "ne"
+              ? Location.NORTHEAST
+              : propAttrs.end_loc === "se"
+                ? Location.SOUTHEAST
+                : propAttrs.end_loc === "sw"
+                  ? Location.SOUTHWEST
+                  : propAttrs.end_loc === "nw"
+                    ? Location.NORTHWEST
+                    : Location.NORTH;
+
+  const startOri =
+    propAttrs.start_ori === "in"
+      ? OrientationEnum.IN
+      : propAttrs.start_ori === "out"
+        ? OrientationEnum.OUT
+        : OrientationEnum.IN;
+
+  const endOri =
+    propAttrs.end_ori === "in"
+      ? OrientationEnum.IN
+      : propAttrs.end_ori === "out"
+        ? OrientationEnum.OUT
+        : OrientationEnum.IN;
+
   return {
-    motion_type: propAttrs.motion_type,
-    prop_rot_dir: propAttrs.prop_rot_dir || "no_rot",
-    start_loc: propAttrs.start_loc,
-    end_loc: propAttrs.end_loc,
+    motion_type: motionType,
+    prop_rot_dir: propRotDir,
+    start_loc: startLoc,
+    end_loc: endLoc,
     turns: propAttrs.turns || 0,
-    start_ori: propAttrs.start_ori || "in",
-    end_ori: propAttrs.end_ori || "in",
+    start_ori: startOri,
+    end_ori: endOri,
     is_visible: true,
-    metadata: {},
   };
 }
 

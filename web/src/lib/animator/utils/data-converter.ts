@@ -6,65 +6,34 @@
 
 import type { PropAttributes } from "./standalone-math.js";
 import type { Orientation, PropRotDir, MotionType } from "../types/core.js";
-
-// Web app data types
-export interface WebAppSequenceData {
-  id: string;
-  name: string;
-  word?: string;
-  beats: WebAppBeatData[];
-  metadata?: {
-    author?: string;
-    level?: number;
-    [key: string]: any;
-  };
-  [key: string]: any;
-}
-
-export interface WebAppBeatData {
-  pictograph_data?: {
-    letter?: string;
-    motions?: {
-      blue?: WebAppMotionData;
-      red?: WebAppMotionData;
-    };
-  };
-  [key: string]: any;
-}
-
-export interface WebAppMotionData {
-  motion_type: string;
-  start_loc: string;
-  end_loc: string;
-  start_ori?: string;
-  end_ori?: string;
-  prop_rot_dir?: string;
-  turns?: number;
-  [key: string]: any;
-}
+import type {
+  SequenceData as DomainSequenceData,
+  BeatData,
+  MotionData,
+} from "$lib/domain";
 
 /**
- * Convert web app sequence data to standalone format
+ * Convert domain sequence data to standalone format
  */
 export function convertWebAppToStandalone(
-  webAppData: WebAppSequenceData
+  domainData: DomainSequenceData
 ): any[] {
-  console.log("Converting web app data to standalone format:", webAppData);
-  console.log("Number of beats:", webAppData.beats?.length || 0);
-  console.log("Beats data structure:", webAppData.beats);
+  console.log("Converting domain data to standalone format:", domainData);
+  console.log("Number of beats:", domainData.beats?.length || 0);
+  console.log("Beats data structure:", domainData.beats);
 
   // Check if we have beats
-  if (!webAppData.beats || webAppData.beats.length === 0) {
+  if (!domainData.beats || domainData.beats.length === 0) {
     console.error("No beats found in sequence data");
-    console.error("Full sequence data:", JSON.stringify(webAppData, null, 2));
+    console.error("Full sequence data:", JSON.stringify(domainData, null, 2));
 
     // Create a simple test sequence for demonstration
     console.log("Creating test sequence with 4 beats for demonstration...");
-    return createTestSequence(webAppData);
+    return createTestSequence(domainData);
   }
 
   // Log first beat structure for debugging
-  const firstBeat = webAppData.beats[0];
+  const firstBeat = domainData.beats[0];
   console.log("🔍 [DATA COMPARISON] First beat structure:", firstBeat);
   console.log(
     "🔍 [DATA COMPARISON] First beat pictograph_data:",
@@ -102,9 +71,9 @@ export function convertWebAppToStandalone(
 
   // Create metadata object (index 0)
   const metadata = {
-    word: webAppData.word || webAppData.name || "",
-    author: webAppData.metadata?.author || "",
-    level: webAppData.metadata?.level || 0,
+    word: domainData.word || domainData.name || "",
+    author: domainData.metadata?.author || "",
+    level: domainData.metadata?.level || 0,
     prop_type: "staff",
     grid_mode: "diamond",
     is_circular: false,
@@ -145,7 +114,7 @@ export function convertWebAppToStandalone(
   };
 
   // Convert beats to steps (index 2 onwards)
-  const steps = webAppData.beats.map((beat, index) => {
+  const steps = domainData.beats.map((beat, index) => {
     const motions = beat.pictograph_data?.motions;
     console.log(`Beat ${index + 1} motions:`, motions);
 
@@ -172,11 +141,9 @@ export function convertWebAppToStandalone(
 }
 
 /**
- * Convert web app motion data to prop attributes
+ * Convert domain motion data to prop attributes
  */
-function convertMotionToPropAttributes(
-  motion?: WebAppMotionData
-): PropAttributes {
+function convertMotionToPropAttributes(motion?: MotionData): PropAttributes {
   if (!motion) {
     // Default static motion
     return {
@@ -202,9 +169,9 @@ function convertMotionToPropAttributes(
 }
 
 /**
- * Type guard to check if data is web app format
+ * Type guard to check if data is domain format
  */
-export function isWebAppFormat(data: any): data is WebAppSequenceData {
+export function isWebAppFormat(data: any): data is DomainSequenceData {
   return (
     data &&
     typeof data === "object" &&
@@ -268,8 +235,8 @@ export function ensureStandaloneFormat(data: any): any[] {
 /**
  * Create a test sequence for demonstration when no beats are found
  */
-function createTestSequence(webAppData: WebAppSequenceData): any[] {
-  const word = webAppData.word || webAppData.name || "TEST";
+function createTestSequence(domainData: DomainSequenceData): any[] {
+  const word = domainData.word || domainData.name || "TEST";
 
   // Create metadata (index 0)
   const metadata = {

@@ -124,7 +124,7 @@ export class MotionTesterCsvLookupService
       console.log("🔍 Red params:", redParams);
 
       // Find exact match based on motion parameters
-      const matchingRow = csvRows.find((row) => {
+      const matchingRow = csvRows.find((row: any) => {
         const blueMatch = this.matchesMotionParams(row, "blue", blueParams);
         const redMatch = this.matchesMotionParams(row, "red", redParams);
 

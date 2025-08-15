@@ -41,6 +41,64 @@
   });
 
   let containerRef: HTMLElement;
+  let beatFrameScrollRef: HTMLElement = $state()!;
+  let beatFrameRef: HTMLElement = $state()!;
+  let startTileRef: HTMLElement = $state()!;
+
+  // Debug function to log positioning
+  function logElementPositions() {
+    if (containerRef && beatFrameScrollRef && beatFrameRef) {
+      const workbenchContainer =
+        containerRef.closest(".workbench") ||
+        containerRef.closest(".beat-frame-wrapper");
+
+      const containerRect = containerRef.getBoundingClientRect();
+      const scrollRect = beatFrameScrollRef.getBoundingClientRect();
+      const frameRect = beatFrameRef.getBoundingClientRect();
+      const workbenchRect = workbenchContainer?.getBoundingClientRect();
+      const startTileRect = startTileRef?.getBoundingClientRect();
+
+      console.log("🔍 [POSITIONING DEBUG] Element positions:", {
+        workbench: {
+          left: workbenchRect?.left,
+          right: workbenchRect?.right,
+          width: workbenchRect?.width,
+          centerX: workbenchRect
+            ? workbenchRect.left + workbenchRect.width / 2
+            : "N/A",
+        },
+        container: {
+          left: containerRect.left,
+          right: containerRect.right,
+          width: containerRect.width,
+          centerX: containerRect.left + containerRect.width / 2,
+        },
+        beatFrameScroll: {
+          left: scrollRect.left,
+          right: scrollRect.right,
+          width: scrollRect.width,
+          centerX: scrollRect.left + scrollRect.width / 2,
+        },
+        beatFrame: {
+          left: frameRect.left,
+          right: frameRect.right,
+          width: frameRect.width,
+          centerX: frameRect.left + frameRect.width / 2,
+        },
+        startTile: startTileRect
+          ? {
+              left: startTileRect.left,
+              right: startTileRect.right,
+              width: startTileRect.width,
+              centerX: startTileRect.left + startTileRect.width / 2,
+            }
+          : "N/A",
+        beatCount: beats.length,
+        frameDimensions,
+        startPosition: beatFrameService.calculateStartPosition(beats.length),
+      });
+    }
+  }
 
   // Track container dimensions and update beat frame service
   onMount(() => {
@@ -98,6 +156,14 @@
   $effect(() => {
     if (frameDimensions?.height != null) {
       onnaturalheightchange?.({ height: frameDimensions.height });
+    }
+  });
+
+  // Call debug logging when layout changes
+  $effect(() => {
+    if (containerRef && beatFrameScrollRef && beatFrameRef) {
+      // Use setTimeout to ensure DOM is updated
+      setTimeout(logElementPositions, 100);
     }
   });
 
@@ -164,17 +230,24 @@
   class:scrollable-active={effectiveScrollable}
   bind:this={containerRef}
 >
-  <div class="beat-frame-scroll">
+  <div class="beat-frame-scroll" bind:this={beatFrameScrollRef}>
     <div
       class="beat-frame"
+      bind:this={beatFrameRef}
       style:width="{frameDimensions.width}px"
       style:height="{frameDimensions.height}px"
     >
       <!-- Start Position tile at [0,0] when enabled -->
       {#if config.hasStartTile}
+        {@const startPos = beatFrameService.calculateStartPosition(
+          beats.length
+        )}
         <div
           class="start-tile"
+          bind:this={startTileRef}
           class:has-pictograph={startPosition?.pictograph_data}
+          style:left="{startPos.x}px"
+          style:top="{startPos.y}px"
           style:width="{config.beatSize}px"
           style:height="{config.beatSize}px"
           title="Start Position"
@@ -248,9 +321,10 @@
 
   .beat-frame-scroll {
     overflow: auto;
-    background: rgba(255, 255, 255, 0.02);
     display: flex;
     justify-content: center; /* center like Qt AlignCenter */
+    align-items: center; /* center vertically as well */
+    height: 100%; /* fill available height to center content properly */
   }
 
   /* Scroll mode parity with legacy */

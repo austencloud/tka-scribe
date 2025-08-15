@@ -1,11 +1,8 @@
 <script lang="ts">
   import PropPanel from "./components/PropPanel.svelte";
   import { getMotionDescription } from "./utils/motion-helpers.js";
+  import { EnumConversionService } from "./services/EnumConversionService";
   import type { MotionTesterState } from "./state/motion-tester-state.svelte";
-  import type {
-    Orientation as OrientationLocal,
-    MotionType as MotionTypeLocal,
-  } from "./utils/motion-helpers.js";
   import { Orientation, MotionType } from "$lib/domain/enums";
 
   interface Props {
@@ -14,42 +11,12 @@
 
   let { state }: Props = $props();
 
+  // Create enum conversion service instance
+  const enumService = new EnumConversionService();
+
   // Helper function to convert turns for display
   function getTurnsForDisplay(turns: number | "fl"): number {
     return typeof turns === "number" ? turns : 0; // Convert "fl" to 0 for display
-  }
-
-  // Helper functions to convert string values to enum types
-  function convertStringToOrientation(orientationStr: string): Orientation {
-    switch (orientationStr.toLowerCase()) {
-      case "in":
-        return Orientation.IN;
-      case "out":
-        return Orientation.OUT;
-      case "clock":
-        return Orientation.CLOCK;
-      case "counter":
-        return Orientation.COUNTER;
-      default:
-        return Orientation.IN;
-    }
-  }
-
-  function convertStringToMotionType(motionTypeStr: string): MotionType {
-    switch (motionTypeStr.toLowerCase()) {
-      case "pro":
-        return MotionType.PRO;
-      case "anti":
-        return MotionType.ANTI;
-      case "static":
-        return MotionType.STATIC;
-      case "dash":
-        return MotionType.DASH;
-      case "float":
-        return MotionType.FLOAT;
-      default:
-        return MotionType.STATIC;
-    }
   }
 
   // Quick test functions
@@ -103,14 +70,14 @@
         propColor="#60a5fa"
         startLocation={state.blueMotionParams.startLoc}
         endLocation={state.blueMotionParams.endLoc}
-        startOrientation={convertStringToOrientation(
+        startOrientation={enumService.stringToOrientation(
           state.blueMotionParams.startOri
         )}
-        endOrientation={convertStringToOrientation(
+        endOrientation={enumService.stringToOrientation(
           state.blueMotionParams.endOri
         )}
         turns={state.blueMotionParams.turns}
-        motionType={convertStringToMotionType(
+        motionType={enumService.stringToMotionType(
           state.blueMotionParams.motionType
         )}
         onStartLocationChange={(location) =>
@@ -143,14 +110,16 @@
         propColor="#f87171"
         startLocation={state.redMotionParams.startLoc}
         endLocation={state.redMotionParams.endLoc}
-        startOrientation={convertStringToOrientation(
+        startOrientation={enumService.stringToOrientation(
           state.redMotionParams.startOri
         )}
-        endOrientation={convertStringToOrientation(
+        endOrientation={enumService.stringToOrientation(
           state.redMotionParams.endOri
         )}
         turns={state.redMotionParams.turns}
-        motionType={convertStringToMotionType(state.redMotionParams.motionType)}
+        motionType={enumService.stringToMotionType(
+          state.redMotionParams.motionType
+        )}
         onStartLocationChange={(location) =>
           state.updateRedMotionParam("startLoc", location)}
         onEndLocationChange={(location) =>

@@ -8,8 +8,8 @@
  */
 export function svgStringToImage(
   svgString: string,
-  width: number,
-  height: number
+  _width: number,
+  _height: number
 ): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {
     const img = new Image();

@@ -142,27 +142,6 @@ and accessibility features. Shows motion types, locations, and parameters.
   function toggleCompactView() {
     compactView = !compactView;
   }
-
-  // Keyboard shortcuts
-  function handleKeyDown(event: KeyboardEvent) {
-    switch (event.key) {
-      case "f":
-      case "F":
-        event.preventDefault();
-        toggleFullDetails();
-        break;
-      case "t":
-      case "T":
-        event.preventDefault();
-        toggleMotionTypes();
-        break;
-      case "c":
-      case "C":
-        event.preventDefault();
-        toggleCompactView();
-        break;
-    }
-  }
 </script>
 
 <div
@@ -170,8 +149,6 @@ and accessibility features. Shows motion types, locations, and parameters.
   class:compact={compactView}
   role="region"
   aria-label="Motion summary"
-  tabindex="-1"
-  onkeydown={handleKeyDown}
 >
   <div class="summary-header">
     <h3>📝 Motion Summary</h3>

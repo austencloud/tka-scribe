@@ -1,1 +1,254 @@
-<!--\nPictographWithVisibility.svelte - Enhanced Pictograph with Visibility Controls\n\nExtends the basic Pictograph component with sophisticated visibility controls\nmatching the legacy desktop app's behavior.\n-->\n<script lang=\"ts\">\n  import type { BeatData, PictographData } from \"$lib/domain\";\n  import { getVisibilityStateManager } from \"$lib/services/implementations/VisibilityStateManager\";\n  import { onMount } from \"svelte\";\n  import Pictograph from \"./Pictograph.svelte\";\n\n  interface Props {\n    /** Pictograph data to render */\n    pictographData?: PictographData | null;\n    /** Beat data (alternative to pictographData) */\n    beatData?: BeatData | null;\n    /** Click handler */\n    onClick?: () => void;\n    /** Debug mode */\n    debug?: boolean;\n    /** Animation duration for transitions */\n    animationDuration?: number;\n    /** Show loading indicator */\n    showLoadingIndicator?: boolean;\n    /** Beat number for display */\n    beatNumber?: number | null;\n    /** Is this a start position? */\n    isStartPosition?: boolean;\n    /** SVG dimensions */\n    width?: number;\n    height?: number;\n    /** Enable visibility controls (default: true) */\n    enableVisibility?: boolean;\n    /** Force show all elements (for visibility preview) */\n    forceShowAll?: boolean;\n  }\n\n  let {\n    pictographData = null,\n    beatData = null,\n    onClick,\n    debug = false,\n    beatNumber = null,\n    isStartPosition = false,\n    width = undefined,\n    height = undefined,\n    enableVisibility = true,\n    forceShowAll = false,\n  }: Props = $props();\n\n  // Visibility state manager\n  let visibilityManager = getVisibilityStateManager();\n  let visibilityUpdateCount = $state(0);\n\n  // Force re-render when visibility changes\n  function handleVisibilityChange() {\n    visibilityUpdateCount++;\n  }\n\n  onMount(() => {\n    if (enableVisibility) {\n      visibilityManager.registerObserver(handleVisibilityChange);\n      \n      return () => {\n        visibilityManager.unregisterObserver(handleVisibilityChange);\n      };\n    }\n  });\n\n  // Derived state - get effective pictograph data with visibility applied\n  const effectivePictographData = $derived(() => {\n    // Force reactivity by accessing visibilityUpdateCount\n    visibilityUpdateCount;\n    \n    const originalData = pictographData || beatData?.pictograph_data;\n    if (!originalData || !enableVisibility || forceShowAll) {\n      return originalData;\n    }\n\n    // Apply visibility filters\n    const filteredData = { ...originalData };\n\n    // Filter arrows based on motion visibility\n    if (filteredData.arrows) {\n      const newArrows: Record<string, any> = {};\n      \n      Object.entries(filteredData.arrows).forEach(([color, arrowData]) => {\n        if (arrowData && visibilityManager.getMotionVisibility(color as \"red\" | \"blue\")) {\n          newArrows[color] = arrowData;\n        }\n      });\n      \n      filteredData.arrows = newArrows;\n    }\n\n    // Filter props based on motion visibility\n    if (filteredData.props) {\n      const newProps: Record<string, any> = {};\n      \n      Object.entries(filteredData.props).forEach(([color, propData]) => {\n        if (propData && visibilityManager.getMotionVisibility(color as \"red\" | \"blue\")) {\n          newProps[color] = propData;\n        }\n      });\n      \n      filteredData.props = newProps;\n    }\n\n    // Filter letter based on TKA visibility\n    if (!visibilityManager.getGlyphVisibility(\"TKA\")) {\n      filteredData.letter = null;\n    }\n\n    return filteredData;\n  });\n\n  // Derived state - should show reversal indicators\n  const showReversals = $derived(() => {\n    if (!enableVisibility || forceShowAll) return true;\n    return visibilityManager.getGlyphVisibility(\"Reversals\");\n  });\n\n  // Derived state - should show positions\n  const showPositions = $derived(() => {\n    if (!enableVisibility || forceShowAll) return true;\n    return visibilityManager.getGlyphVisibility(\"Positions\");\n  });\n\n  // Derived state - should show VTG notation\n  const showVTG = $derived(() => {\n    if (!enableVisibility || forceShowAll) return true;\n    return visibilityManager.getGlyphVisibility(\"VTG\");\n  });\n\n  // Derived state - should show elemental notation\n  const showElemental = $derived(() => {\n    if (!enableVisibility || forceShowAll) return true;\n    return visibilityManager.getGlyphVisibility(\"Elemental\");\n  });\n\n  // Derived state - should show non-radial points\n  const showNonRadialPoints = $derived(() => {\n    if (!enableVisibility || forceShowAll) return true;\n    return visibilityManager.getNonRadialVisibility();\n  });\n</script>\n\n<!-- Enhanced Pictograph with Visibility Controls -->\n<div \n  class=\"pictograph-with-visibility\"\n  class:debug-mode={debug}\n  class:visibility-enabled={enableVisibility}\n  class:force-show-all={forceShowAll}\n>\n  <!-- Base Pictograph Component -->\n  <Pictograph\n    pictographData={effectivePictographData()}\n    {beatData}\n    {onClick}\n    {debug}\n    {beatNumber}\n    {isStartPosition}\n    {width}\n    {height}\n  />\n  \n  <!-- Visibility Indicators Overlay (for debugging) -->\n  {#if debug && enableVisibility}\n    <div class=\"visibility-debug-overlay\">\n      <div class=\"debug-info\">\n        <div class=\"debug-title\">Visibility State</div>\n        \n        <div class=\"debug-section\">\n          <div class=\"debug-label\">Motions:</div>\n          <div class=\"debug-value\">\n            Red: {visibilityManager.getMotionVisibility(\"red\") ? \"✓\" : \"✗\"}\n            Blue: {visibilityManager.getMotionVisibility(\"blue\") ? \"✓\" : \"✗\"}\n          </div>\n        </div>\n        \n        <div class=\"debug-section\">\n          <div class=\"debug-label\">Glyphs:</div>\n          <div class=\"debug-value\">\n            TKA: {visibilityManager.getGlyphVisibility(\"TKA\") ? \"✓\" : \"✗\"}\n            Rev: {visibilityManager.getGlyphVisibility(\"Reversals\") ? \"✓\" : \"✗\"}\n          </div>\n        </div>\n        \n        <div class=\"debug-section\">\n          <div class=\"debug-label\">Dependent:</div>\n          <div class=\"debug-value\">\n            Available: {visibilityManager.areAllMotionsVisible() ? \"YES\" : \"NO\"}\n          </div>\n        </div>\n      </div>\n    </div>\n  {/if}\n</div>\n\n<style>\n  .pictograph-with-visibility {\n    position: relative;\n    width: 100%;\n    height: 100%;\n  }\n  \n  .visibility-debug-overlay {\n    position: absolute;\n    top: 10px;\n    right: 10px;\n    background: rgba(0, 0, 0, 0.8);\n    color: white;\n    padding: 8px;\n    border-radius: 4px;\n    font-family: monospace;\n    font-size: 10px;\n    min-width: 150px;\n    z-index: 1000;\n  }\n  \n  .debug-title {\n    font-weight: bold;\n    margin-bottom: 6px;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.3);\n    padding-bottom: 2px;\n  }\n  \n  .debug-section {\n    margin-bottom: 4px;\n  }\n  \n  .debug-label {\n    font-size: 9px;\n    opacity: 0.8;\n    margin-bottom: 1px;\n  }\n  \n  .debug-value {\n    font-size: 10px;\n    margin-left: 8px;\n  }\n  \n  /* Only show debug overlay in debug mode */\n  .pictograph-with-visibility:not(.debug-mode) .visibility-debug-overlay {\n    display: none;\n  }\n</style>"
+<!--
+PictographWithVisibility.svelte - Enhanced Pictograph with Visibility Controls
+
+Extends the basic Pictograph component with sophisticated visibility controls
+matching the legacy desktop app's behavior.
+-->
+<script lang="ts">
+  import type { BeatData, PictographData } from "$lib/domain";
+  import { getVisibilityStateManager } from "$lib/services/implementations/VisibilityStateManager";
+  import { onMount } from "svelte";
+  import Pictograph from "./Pictograph.svelte";
+
+  interface Props {
+    /** Pictograph data to render */
+    pictographData?: PictographData | null;
+    /** Beat data (alternative to pictographData) */
+    beatData?: BeatData | null;
+    /** Click handler */
+    onClick?: () => void;
+    /** Debug mode */
+    debug?: boolean;
+    /** Animation duration for transitions */
+    animationDuration?: number;
+    /** Show loading indicator */
+    showLoadingIndicator?: boolean;
+    /** Beat number for display */
+    beatNumber?: number | null;
+    /** Is this a start position? */
+    isStartPosition?: boolean;
+    /** SVG dimensions */
+    width?: number;
+    height?: number;
+    /** Enable visibility controls (default: true) */
+    enableVisibility?: boolean;
+    /** Force show all elements (for visibility preview) */
+    forceShowAll?: boolean;
+  }
+
+  let {
+    pictographData = null,
+    beatData = null,
+    onClick,
+    debug = false,
+    beatNumber = null,
+    isStartPosition = false,
+    width = undefined,
+    height = undefined,
+    enableVisibility = true,
+    forceShowAll = false,
+  }: Props = $props();
+
+  // Visibility state manager
+  let visibilityManager = getVisibilityStateManager();
+  let visibilityUpdateCount = $state(0);
+
+  // Force re-render when visibility changes
+  function handleVisibilityChange() {
+    visibilityUpdateCount++;
+  }
+
+  onMount(() => {
+    if (enableVisibility) {
+      visibilityManager.registerObserver(handleVisibilityChange);
+
+      return () => {
+        visibilityManager.unregisterObserver(handleVisibilityChange);
+      };
+    }
+  });
+
+  // Derived state - get effective pictograph data with visibility applied
+  const effectivePictographData = $derived(() => {
+    // Force reactivity by accessing visibilityUpdateCount
+    visibilityUpdateCount;
+
+    const originalData = pictographData || beatData?.pictograph_data;
+    if (!originalData || !enableVisibility || forceShowAll) {
+      return originalData;
+    }
+
+    // Apply visibility filters
+    const filteredData = { ...originalData };
+
+    // Filter arrows based on motion visibility
+    if (filteredData.arrows) {
+      const newArrows: Record<string, any> = {};
+
+      Object.entries(filteredData.arrows).forEach(([color, arrowData]) => {
+        if (
+          arrowData &&
+          visibilityManager.getMotionVisibility(color as "red" | "blue")
+        ) {
+          newArrows[color] = arrowData;
+        }
+      });
+
+      filteredData.arrows = newArrows;
+    }
+
+    // Filter props based on motion visibility
+    if (filteredData.props) {
+      const newProps: Record<string, any> = {};
+
+      Object.entries(filteredData.props).forEach(([color, propData]) => {
+        if (
+          propData &&
+          visibilityManager.getMotionVisibility(color as "red" | "blue")
+        ) {
+          newProps[color] = propData;
+        }
+      });
+
+      filteredData.props = newProps;
+    }
+
+    // Filter letter based on TKA visibility
+    if (!visibilityManager.getGlyphVisibility("TKA")) {
+      filteredData.letter = null;
+    }
+
+    return filteredData;
+  });
+
+  // Derived state - should show reversal indicators
+  const showReversals = $derived(() => {
+    if (!enableVisibility || forceShowAll) return true;
+    return visibilityManager.getGlyphVisibility("Reversals");
+  });
+
+  // Derived state - should show positions
+  const showPositions = $derived(() => {
+    if (!enableVisibility || forceShowAll) return true;
+    return visibilityManager.getGlyphVisibility("Positions");
+  });
+
+  // Derived state - should show VTG notation
+  const showVTG = $derived(() => {
+    if (!enableVisibility || forceShowAll) return true;
+    return visibilityManager.getGlyphVisibility("VTG");
+  });
+
+  // Derived state - should show elemental notation
+  const showElemental = $derived(() => {
+    if (!enableVisibility || forceShowAll) return true;
+    return visibilityManager.getGlyphVisibility("Elemental");
+  });
+
+  // Derived state - should show non-radial points
+  const showNonRadialPoints = $derived(() => {
+    if (!enableVisibility || forceShowAll) return true;
+    return visibilityManager.getNonRadialVisibility();
+  });
+</script>
+
+<!-- Enhanced Pictograph with Visibility Controls -->
+<div
+  class="pictograph-with-visibility"
+  class:debug-mode={debug}
+  class:visibility-enabled={enableVisibility}
+  class:force-show-all={forceShowAll}
+>
+  <!-- Base Pictograph Component -->
+  <Pictograph
+    pictographData={effectivePictographData()}
+    {beatData}
+    {onClick}
+    {debug}
+    {beatNumber}
+    {isStartPosition}
+    {width}
+    {height}
+  />
+
+  <!-- Visibility Indicators Overlay (for debugging) -->
+  {#if debug && enableVisibility}
+    <div class="visibility-debug-overlay">
+      <div class="debug-info">
+        <div class="debug-title">Visibility State</div>
+
+        <div class="debug-section">
+          <div class="debug-label">Motions:</div>
+          <div class="debug-value">
+            Red: {visibilityManager.getMotionVisibility("red") ? "✓" : "✗"}
+            Blue: {visibilityManager.getMotionVisibility("blue") ? "✓" : "✗"}
+          </div>
+        </div>
+
+        <div class="debug-section">
+          <div class="debug-label">Glyphs:</div>
+          <div class="debug-value">
+            TKA: {visibilityManager.getGlyphVisibility("TKA") ? "✓" : "✗"}
+            Rev: {visibilityManager.getGlyphVisibility("Reversals") ? "✓" : "✗"}
+          </div>
+        </div>
+
+        <div class="debug-section">
+          <div class="debug-label">Dependent:</div>
+          <div class="debug-value">
+            Available: {visibilityManager.areAllMotionsVisible() ? "YES" : "NO"}
+          </div>
+        </div>
+      </div>
+    </div>
+  {/if}
+</div>
+
+<style>
+  .pictograph-with-visibility {
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
+
+  .visibility-debug-overlay {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 8px;
+    border-radius: 4px;
+    font-family: monospace;
+    font-size: 10px;
+    min-width: 150px;
+    z-index: 1000;
+  }
+
+  .debug-title {
+    font-weight: bold;
+    margin-bottom: 6px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+    padding-bottom: 2px;
+  }
+
+  .debug-section {
+    margin-bottom: 4px;
+  }
+
+  .debug-label {
+    font-size: 9px;
+    opacity: 0.8;
+    margin-bottom: 1px;
+  }
+
+  .debug-value {
+    font-size: 10px;
+    margin-left: 8px;
+  }
+
+  /* Only show debug overlay in debug mode */
+  .pictograph-with-visibility:not(.debug-mode) .visibility-debug-overlay {
+    display: none;
+  }
+</style>

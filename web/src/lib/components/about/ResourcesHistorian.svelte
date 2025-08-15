@@ -140,9 +140,7 @@
     }
   }
 
-  function getRelatedResourcesForResource(
-    resourceName: string
-  ): Array<{
+  function getRelatedResourcesForResource(resourceName: string): Array<{
     name: string;
     url: string;
     description: string;

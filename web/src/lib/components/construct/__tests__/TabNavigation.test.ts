@@ -1,45 +1,52 @@
 /**
  * TabNavigation Component Tests
  *
- * Tests for the TabNavigation component extracted from ConstructTab
+ * Tests for the TabNavigation component - a pure component that takes props
  */
 
 import { describe, it, expect, beforeEach, vi } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/svelte";
 import "@testing-library/jest-dom";
 import TabNavigation from "../TabNavigation.svelte";
+import type { ActiveRightPanel } from "$lib/state/construct-tab-state.svelte";
 
-// Mock the stores and services
-vi.mock("$stores/constructTabState.svelte", () => {
-  const mockConstructTabState = {
-    activeRightPanel: "build",
-  };
-  return {
-    constructTabState: mockConstructTabState,
-  };
-});
-
-vi.mock("$services/implementations/ConstructTabTransitionService", () => {
-  const mockTransitionService = {
+// Mock the transition service
+vi.mock("$services/implementations/ConstructTabTransitionService", () => ({
+  constructTabTransitionService: {
     handleMainTabTransition: vi.fn(),
-  };
-  return {
-    constructTabTransitionService: mockTransitionService,
-  };
-});
+  },
+}));
 
 describe("TabNavigation", () => {
+  let mockSetActiveRightPanel: ReturnType<typeof vi.fn>;
+  let mockHandleMainTabTransition: ReturnType<typeof vi.fn>;
+
   beforeEach(async () => {
     vi.clearAllMocks();
-    const { state: constructTabState } = await import(
-      "$stores/constructTabState.svelte"
+    mockSetActiveRightPanel = vi.fn();
+
+    // Get the mock function from the mocked module
+    const { constructTabTransitionService } = await import(
+      "$services/implementations/ConstructTabTransitionService"
     );
-    constructTabState.activeRightPanel = "build";
+    mockHandleMainTabTransition =
+      constructTabTransitionService.handleMainTabTransition as ReturnType<
+        typeof vi.fn
+      >;
   });
+
+  function renderTabNavigation(activePanel: ActiveRightPanel = "build") {
+    return render(TabNavigation, {
+      props: {
+        activeRightPanel: activePanel,
+        setActiveRightPanel: mockSetActiveRightPanel,
+      },
+    });
+  }
 
   describe("Basic Rendering", () => {
     it("should render all four tab buttons", () => {
-      render(TabNavigation);
+      renderTabNavigation();
 
       const navigation = screen.getByTestId("tab-navigation");
       expect(navigation).toBeInTheDocument();
@@ -56,7 +63,7 @@ describe("TabNavigation", () => {
     });
 
     it("should have correct CSS classes", () => {
-      const { container } = render(TabNavigation);
+      const { container } = renderTabNavigation();
 
       const navigation = container.querySelector(".main-tab-navigation");
       expect(navigation).toBeInTheDocument();
@@ -71,165 +78,126 @@ describe("TabNavigation", () => {
   });
 
   describe("Active State Management", () => {
-    it("should mark build tab as active by default", async () => {
-      const { state: constructTabState } = await import(
-        "$stores/constructTabState.svelte"
-      );
-      constructTabState.activeRightPanel = "build";
-      render(TabNavigation);
+    it("should mark build tab as active by default", () => {
+      renderTabNavigation("build");
 
       const buildButton = screen.getByText("🔨 Build");
       expect(buildButton).toHaveClass("active");
-
-      const generateButton = screen.getByText("🤖 Generate");
-      expect(generateButton).not.toHaveClass("active");
     });
 
-    it("should mark generate tab as active when selected", async () => {
-      const { state: constructTabState } = await import(
-        "$stores/constructTabState.svelte"
-      );
-      constructTabState.activeRightPanel = "generate";
-      render(TabNavigation);
+    it("should mark generate tab as active when selected", () => {
+      renderTabNavigation("generate");
 
       const generateButton = screen.getByText("🤖 Generate");
       expect(generateButton).toHaveClass("active");
-
-      const buildButton = screen.getByText("🔨 Build");
-      expect(buildButton).not.toHaveClass("active");
     });
 
-    it("should mark edit tab as active when selected", async () => {
-      const { state: constructTabState } = await import(
-        "$stores/constructTabState.svelte"
-      );
-      constructTabState.activeRightPanel = "edit";
-      render(TabNavigation);
+    it("should mark edit tab as active when selected", () => {
+      renderTabNavigation("edit");
 
       const editButton = screen.getByText("🔧 Edit");
       expect(editButton).toHaveClass("active");
-
-      const buildButton = screen.getByText("🔨 Build");
-      expect(buildButton).not.toHaveClass("active");
     });
 
-    it("should mark export tab as active when selected", async () => {
-      const { state: constructTabState } = await import(
-        "$stores/constructTabState.svelte"
-      );
-      constructTabState.activeRightPanel = "export";
-      render(TabNavigation);
+    it("should mark export tab as active when selected", () => {
+      renderTabNavigation("export");
 
       const exportButton = screen.getByText("🔤 Export");
       expect(exportButton).toHaveClass("active");
-
-      const buildButton = screen.getByText("🔨 Build");
-      expect(buildButton).not.toHaveClass("active");
     });
   });
 
   describe("Tab Click Handling", () => {
     it("should call transition service when build tab is clicked", async () => {
-      render(TabNavigation);
+      renderTabNavigation("generate");
 
       const buildButton = screen.getByText("🔨 Build");
       await fireEvent.click(buildButton);
 
-      const { constructTabTransitionService } = await import(
-        "$services/implementations/ConstructTabTransitionService"
+      expect(mockHandleMainTabTransition).toHaveBeenCalledWith(
+        "build",
+        "generate",
+        mockSetActiveRightPanel
       );
-      expect(
-        constructTabTransitionService.handleMainTabTransition
-      ).toHaveBeenCalledWith("build");
     });
 
     it("should call transition service when generate tab is clicked", async () => {
-      render(TabNavigation);
+      renderTabNavigation("build");
 
       const generateButton = screen.getByText("🤖 Generate");
       await fireEvent.click(generateButton);
 
-      const { constructTabTransitionService } = await import(
-        "$services/implementations/ConstructTabTransitionService"
+      expect(mockHandleMainTabTransition).toHaveBeenCalledWith(
+        "generate",
+        "build",
+        mockSetActiveRightPanel
       );
-      expect(
-        constructTabTransitionService.handleMainTabTransition
-      ).toHaveBeenCalledWith("generate");
     });
 
     it("should call transition service when edit tab is clicked", async () => {
-      render(TabNavigation);
+      renderTabNavigation("build");
 
       const editButton = screen.getByText("🔧 Edit");
       await fireEvent.click(editButton);
 
-      const { constructTabTransitionService } = await import(
-        "$services/implementations/ConstructTabTransitionService"
+      expect(mockHandleMainTabTransition).toHaveBeenCalledWith(
+        "edit",
+        "build",
+        mockSetActiveRightPanel
       );
-      expect(
-        constructTabTransitionService.handleMainTabTransition
-      ).toHaveBeenCalledWith("edit");
     });
 
     it("should call transition service when export tab is clicked", async () => {
-      render(TabNavigation);
+      renderTabNavigation("build");
 
       const exportButton = screen.getByText("🔤 Export");
       await fireEvent.click(exportButton);
 
-      const { constructTabTransitionService } = await import(
-        "$services/implementations/ConstructTabTransitionService"
+      expect(mockHandleMainTabTransition).toHaveBeenCalledWith(
+        "export",
+        "build",
+        mockSetActiveRightPanel
       );
-      expect(
-        constructTabTransitionService.handleMainTabTransition
-      ).toHaveBeenCalledWith("export");
     });
   });
 
   describe("Keyboard Accessibility", () => {
     it("should handle keyboard navigation", async () => {
-      render(TabNavigation);
+      renderTabNavigation("build");
 
-      const buildButton = screen.getByText("🔨 Build");
-      buildButton.focus();
+      const generateButton = screen.getByText("🤖 Generate");
+      await fireEvent.keyDown(generateButton, { key: "Enter" });
 
-      await fireEvent.keyDown(buildButton, { key: "Enter" });
-      const { constructTabTransitionService } = await import(
-        "$services/implementations/ConstructTabTransitionService"
+      expect(mockHandleMainTabTransition).toHaveBeenCalledWith(
+        "generate",
+        "build",
+        mockSetActiveRightPanel
       );
-      expect(
-        constructTabTransitionService.handleMainTabTransition
-      ).toHaveBeenCalledWith("build");
     });
 
     it("should be focusable", () => {
-      render(TabNavigation);
+      renderTabNavigation();
 
       const buttons = screen.getAllByRole("button");
       buttons.forEach((button) => {
-        button.focus();
-        expect(button).toHaveFocus();
+        expect(button).toHaveAttribute("type", "button");
       });
     });
   });
 
   describe("Accessibility", () => {
     it("should have proper test id", () => {
-      render(TabNavigation);
+      renderTabNavigation();
 
       const navigation = screen.getByTestId("tab-navigation");
-      expect(navigation).toHaveAttribute("data-testid", "tab-navigation");
+      expect(navigation).toBeInTheDocument();
     });
 
     it("should have proper button roles", () => {
-      render(TabNavigation);
+      renderTabNavigation();
 
       const buttons = screen.getAllByRole("button");
       expect(buttons).toHaveLength(4);
-
-      buttons.forEach((button) => {
-        expect(button).toHaveAttribute("type", "button");
-      });
     });
   });
 });

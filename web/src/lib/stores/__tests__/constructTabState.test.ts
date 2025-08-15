@@ -1,65 +1,41 @@
 /**
  * ConstructTabState Tests
  *
- * Tests for the centralized state management using Svelte 5 runes
+ * Tests for the factory-based state management using Svelte 5 runes
  */
 
-import { beforeEach, describe, expect, it, vi } from "vitest";
-import {
-  state,
-  setActiveRightPanel,
-  setError,
-  setGridMode,
-  updateShouldShowStartPositionPicker,
-  getCurrentSequence,
-  getHasError,
-  getIsInBuildMode,
-  clearError,
-} from "../constructTabState.svelte";
-
-// Mock the sequence state
-vi.mock("../../state/sequenceState.svelte", () => {
-  const mockState = {
-    currentSequence: null,
-  };
-  return {
-    state: mockState,
-    __mockState: mockState, // Export for test manipulation
-  };
-});
+import { beforeEach, describe, expect, it } from "vitest";
+import { createConstructTabState } from "../../state/construct-tab-state.svelte";
+import type { SequenceData } from "$lib/domain";
 
 describe("ConstructTabState", () => {
-  let mockSequenceState: any;
+  let mockSequenceState: { currentSequence: SequenceData | null };
+  let constructTabState: ReturnType<typeof createConstructTabState>;
 
-  beforeEach(async () => {
-    // Get the mock state for manipulation
-    const sequenceStateMock = await import("../../state/sequenceState.svelte");
-    mockSequenceState = (sequenceStateMock as any).__mockState;
+  beforeEach(() => {
+    // Create a fresh mock sequence state for each test
+    mockSequenceState = {
+      currentSequence: null,
+    };
 
-    // Reset state to defaults
-    state.activeRightPanel = "build";
-    state.gridMode = "diamond";
-    state.isTransitioning = false;
-    state.isSubTabTransitionActive = false;
-    state.currentSubTabTransition = null;
-    state.errorMessage = null;
-    mockSequenceState.currentSequence = null;
+    // Create a fresh construct tab state instance
+    constructTabState = createConstructTabState(mockSequenceState);
   });
 
   describe("Initial State", () => {
     it("should have correct default values", () => {
-      expect(state.activeRightPanel).toBe("build");
-      expect(state.gridMode).toBe("diamond");
-      expect(state.isTransitioning).toBe(false);
-      expect(state.isSubTabTransitionActive).toBe(false);
-      expect(state.currentSubTabTransition).toBe(null);
-      expect(state.errorMessage).toBe(null);
+      expect(constructTabState.activeRightPanel).toBe("build");
+      expect(constructTabState.gridMode).toBe("diamond");
+      expect(constructTabState.isTransitioning).toBe(false);
+      expect(constructTabState.isSubTabTransitionActive).toBe(false);
+      expect(constructTabState.currentSubTabTransition).toBe(null);
+      expect(constructTabState.errorMessage).toBe(null);
     });
 
     it("should show start position picker when no sequence", () => {
       mockSequenceState.currentSequence = null;
-      updateShouldShowStartPositionPicker();
-      expect(state.shouldShowStartPositionPicker).toBe(true);
+      constructTabState.updateShouldShowStartPositionPicker();
+      expect(constructTabState.shouldShowStartPositionPicker).toBe(true);
     });
 
     it("should show start position picker when sequence has no start position", () => {
@@ -74,8 +50,8 @@ describe("ConstructTabState", () => {
         tags: [],
         metadata: {},
       } as any;
-      updateShouldShowStartPositionPicker();
-      expect(state.shouldShowStartPositionPicker).toBe(true);
+      constructTabState.updateShouldShowStartPositionPicker();
+      expect(constructTabState.shouldShowStartPositionPicker).toBe(true);
     });
 
     it("should not show start position picker when sequence has start position", () => {
@@ -91,39 +67,39 @@ describe("ConstructTabState", () => {
         tags: [],
         metadata: {},
       } as any;
-      updateShouldShowStartPositionPicker();
-      expect(state.shouldShowStartPositionPicker).toBe(false);
+      constructTabState.updateShouldShowStartPositionPicker();
+      expect(constructTabState.shouldShowStartPositionPicker).toBe(false);
     });
   });
 
   describe("State Management Functions", () => {
     it("should update active right panel", () => {
-      setActiveRightPanel("generate");
-      expect(state.activeRightPanel).toBe("generate");
+      constructTabState.setActiveRightPanel("generate");
+      expect(constructTabState.activeRightPanel).toBe("generate");
 
-      setActiveRightPanel("edit");
-      expect(state.activeRightPanel).toBe("edit");
+      constructTabState.setActiveRightPanel("edit");
+      expect(constructTabState.activeRightPanel).toBe("edit");
 
-      setActiveRightPanel("export");
-      expect(state.activeRightPanel).toBe("export");
+      constructTabState.setActiveRightPanel("export");
+      expect(constructTabState.activeRightPanel).toBe("export");
     });
 
     it("should update grid mode", () => {
-      setGridMode("box");
-      expect(state.gridMode).toBe("box");
+      constructTabState.setGridMode("box");
+      expect(constructTabState.gridMode).toBe("box");
 
-      setGridMode("diamond");
-      expect(state.gridMode).toBe("diamond");
+      constructTabState.setGridMode("diamond");
+      expect(constructTabState.gridMode).toBe("diamond");
     });
 
     it("should update error message", () => {
-      setError("Test error");
-      expect(state.errorMessage).toBe("Test error");
-      expect(getHasError()).toBe(true);
+      constructTabState.setError("Test error");
+      expect(constructTabState.errorMessage).toBe("Test error");
+      expect(constructTabState.getHasError()).toBe(true);
 
-      clearError();
-      expect(state.errorMessage).toBe(null);
-      expect(getHasError()).toBe(false);
+      constructTabState.clearError();
+      expect(constructTabState.errorMessage).toBe(null);
+      expect(constructTabState.getHasError()).toBe(false);
     });
   });
 
@@ -141,27 +117,27 @@ describe("ConstructTabState", () => {
         metadata: {},
       } as any;
       mockSequenceState.currentSequence = testSequence;
-      expect(getCurrentSequence()).toBe(testSequence);
+      expect(constructTabState.getCurrentSequence()).toBe(testSequence);
     });
 
     it("should return hasError correctly", () => {
-      expect(getHasError()).toBe(false);
+      expect(constructTabState.getHasError()).toBe(false);
 
-      setError("Some error");
-      expect(getHasError()).toBe(true);
+      constructTabState.setError("Some error");
+      expect(constructTabState.getHasError()).toBe(true);
 
-      clearError();
-      expect(getHasError()).toBe(false);
+      constructTabState.clearError();
+      expect(constructTabState.getHasError()).toBe(false);
     });
 
     it("should return mode checks correctly", () => {
-      expect(getIsInBuildMode()).toBe(true);
+      expect(constructTabState.getIsInBuildMode()).toBe(true);
 
-      setActiveRightPanel("generate");
-      expect(getIsInBuildMode()).toBe(false);
+      constructTabState.setActiveRightPanel("generate");
+      expect(constructTabState.getIsInBuildMode()).toBe(false);
 
-      setActiveRightPanel("build");
-      expect(getIsInBuildMode()).toBe(true);
+      constructTabState.setActiveRightPanel("build");
+      expect(constructTabState.getIsInBuildMode()).toBe(true);
     });
   });
 });
