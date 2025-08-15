@@ -3,8 +3,9 @@ Sequence Workbench Components
 
 Modern sequence workbench with modern architecture.
 """
+from __future__ import annotations
 
-from presentation.components.workbench.sequence_beat_frame import (
+from desktop.modern.src.presentation.components.workbench.sequence_beat_frame import (
     BeatSelector,
     BeatView,
     SequenceBeatFrame,
@@ -14,28 +15,32 @@ from presentation.components.workbench.sequence_beat_frame import (
 from .beat_frame_section import WorkbenchBeatFrameSection
 
 # Legacy compatibility
-from .button_interface import ButtonOperationResult, IWorkbenchButtonInterface
-from .button_interface import WorkbenchButtonInterfaceAdapter
-from .button_interface import WorkbenchButtonInterfaceAdapter as ButtonInterface
-from .button_interface import WorkbenchButtonSignals
+from .button_interface import (
+    ButtonOperationResult,
+    IWorkbenchButtonInterface,
+    WorkbenchButtonInterfaceAdapter,
+    WorkbenchButtonInterfaceAdapter as ButtonInterface,
+    WorkbenchButtonSignals,
+)
 from .event_controller import WorkbenchEventController
 from .indicator_section import WorkbenchIndicatorSection
 from .workbench import SequenceWorkbench
 
+
 __all__ = [
-    "SequenceWorkbench",
-    "SequenceBeatFrame",
-    "BeatView",
-    "StartPositionView",
     "BeatSelector",
-    # Core components
-    "WorkbenchIndicatorSection",
+    "BeatView",
+    "ButtonInterface",  # Legacy alias
+    "ButtonOperationResult",
+    "IWorkbenchButtonInterface",
+    "SequenceBeatFrame",
+    "SequenceWorkbench",
+    "StartPositionView",
     "WorkbenchBeatFrameSection",
-    "WorkbenchEventController",
     # Interface adapters
     "WorkbenchButtonInterfaceAdapter",
-    "IWorkbenchButtonInterface",
     "WorkbenchButtonSignals",
-    "ButtonOperationResult",
-    "ButtonInterface",  # Legacy alias
+    "WorkbenchEventController",
+    # Core components
+    "WorkbenchIndicatorSection",
 ]

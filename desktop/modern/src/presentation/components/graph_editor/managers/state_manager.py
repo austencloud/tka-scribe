@@ -4,16 +4,19 @@ Graph Editor State Manager - Qt Presentation Adapter
 Thin adapter that delegates business logic to GraphEditorStateService
 while handling Qt-specific concerns (signals, UI state).
 """
+from __future__ import annotations
 
 import logging
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
-from application.services.graph_editor.graph_editor_state_manager import (
+from PyQt6.QtCore import QObject, pyqtSignal
+
+from desktop.modern.src.application.services.graph_editor.graph_editor_state_manager import (
     GraphEditorStateManager as GraphEditorStateService,
 )
-from domain.models.beat_data import BeatData
-from domain.models.sequence_data import SequenceData
-from PyQt6.QtCore import QObject, pyqtSignal
+from desktop.modern.src.domain.models.beat_data import BeatData
+from desktop.modern.src.domain.models.sequence_data import SequenceData
+
 
 if TYPE_CHECKING:
     from ..graph_editor import GraphEditor
@@ -37,9 +40,9 @@ class GraphEditorStateManager(QObject):
 
     def __init__(
         self,
-        graph_editor: "GraphEditor",
-        state_service: Optional[GraphEditorStateService] = None,
-        parent: Optional[QObject] = None,
+        graph_editor: GraphEditor,
+        state_service: GraphEditorStateService | None = None,
+        parent: QObject | None = None,
     ):
         super().__init__(parent)
         self._graph_editor = graph_editor
@@ -67,7 +70,7 @@ class GraphEditorStateManager(QObject):
 
     # Sequence management (delegate to service)
     def set_sequence(
-        self, sequence: Optional[SequenceData], emit_signal: bool = True
+        self, sequence: SequenceData | None, emit_signal: bool = True
     ) -> None:
         """Set current sequence with optional signal emission."""
         if self._state_service.set_sequence(sequence):
@@ -75,15 +78,15 @@ class GraphEditorStateManager(QObject):
                 self.sequence_changed.emit(sequence)
             logger.debug(f"Sequence set: {sequence.name if sequence else 'None'}")
 
-    def get_sequence(self) -> Optional[SequenceData]:
+    def get_sequence(self) -> SequenceData | None:
         """Get current sequence."""
         return self._state_service.get_sequence()
 
     # Beat selection management (delegate to service)
     def set_selected_beat(
         self,
-        beat: Optional[BeatData],
-        beat_index: Optional[int] = None,
+        beat: BeatData | None,
+        beat_index: int | None = None,
         emit_signal: bool = True,
     ) -> None:
         """Set selected beat data with optional signal emission."""
@@ -94,17 +97,17 @@ class GraphEditorStateManager(QObject):
                 f"Selected beat set: index={beat_index}, beat={beat.letter if beat else 'None'}"
             )
 
-    def get_selected_beat(self) -> Optional[BeatData]:
+    def get_selected_beat(self) -> BeatData | None:
         """Get currently selected beat."""
         return self._state_service.get_selected_beat()
 
-    def get_selected_beat_index(self) -> Optional[int]:
+    def get_selected_beat_index(self) -> int | None:
         """Get currently selected beat index."""
         return self._state_service.get_selected_beat_index()
 
     # Arrow selection management (delegate to service)
     def set_selected_arrow(
-        self, arrow_id: Optional[str], emit_signal: bool = True
+        self, arrow_id: str | None, emit_signal: bool = True
     ) -> None:
         """Set selected arrow ID with optional signal emission."""
         if self._state_service.set_selected_arrow(arrow_id):
@@ -112,7 +115,7 @@ class GraphEditorStateManager(QObject):
                 self.selected_arrow_changed.emit(arrow_id)
             logger.debug(f"Selected arrow set: {arrow_id}")
 
-    def get_selected_arrow(self) -> Optional[str]:
+    def get_selected_arrow(self) -> str | None:
         """Get currently selected arrow ID."""
         return self._state_service.get_selected_arrow()
 

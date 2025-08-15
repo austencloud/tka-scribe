@@ -4,16 +4,22 @@ SequenceStartPositionManager
 Handles start position operations and management.
 Responsible for setting, updating, and managing start positions in sequences.
 """
+from __future__ import annotations
 
-from typing import Callable, Optional
+from typing import Callable
 
-from application.services.data.sequence_data_converter import SequenceDataConverter
-from application.services.sequence.beat_factory import BeatFactory
-from application.services.sequence.sequence_persister import SequencePersister
-from domain.models.beat_data import BeatData
-from domain.models.pictograph_data import PictographData
-from domain.models.sequence_data import SequenceData
 from PyQt6.QtCore import QObject, pyqtSignal
+
+from desktop.modern.src.application.services.data.sequence_data_converter import (
+    SequenceDataConverter,
+)
+from desktop.modern.src.application.services.sequence.beat_factory import BeatFactory
+from desktop.modern.src.application.services.sequence.sequence_persister import (
+    SequencePersister,
+)
+from desktop.modern.src.domain.models.beat_data import BeatData
+from desktop.modern.src.domain.models.pictograph_data import PictographData
+from desktop.modern.src.domain.models.sequence_data import SequenceData
 
 
 class SequenceStartPositionManager(QObject):
@@ -32,8 +38,8 @@ class SequenceStartPositionManager(QObject):
 
     def __init__(
         self,
-        workbench_getter: Optional[Callable[[], object]] = None,
-        workbench_setter: Optional[Callable[[SequenceData], None]] = None,
+        workbench_getter: Callable[[], object] | None = None,
+        workbench_setter: Callable[[SequenceData], None] | None = None,
     ):
         super().__init__()
         self.workbench_getter = workbench_getter
@@ -139,7 +145,7 @@ class SequenceStartPositionManager(QObject):
 
             traceback.print_exc()
 
-    def get_current_start_position(self) -> Optional[BeatData]:
+    def get_current_start_position(self) -> BeatData | None:
         """Get the current start position from workbench"""
         try:
             workbench = self.workbench_getter()
@@ -208,7 +214,7 @@ class SequenceStartPositionManager(QObject):
 
             traceback.print_exc()
 
-    def load_start_position_from_persistence(self) -> Optional[BeatData]:
+    def load_start_position_from_persistence(self) -> BeatData | None:
         """Load start position from persistence if it exists"""
         try:
             sequence_data = self.persistence_service.load_current_sequence()

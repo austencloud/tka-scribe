@@ -4,11 +4,12 @@ Window State Manager - Window Geometry and State Management
 Handles window-specific state including geometry, maximized state, and positioning.
 Extracted from UIStateManager to follow single responsibility principle.
 """
+from __future__ import annotations
 
 import logging
-from typing import Dict
 
-from core.events.event_bus import UIEvent, get_event_bus
+from desktop.modern.src.core.events.event_bus import UIEvent, get_event_bus
+
 
 logger = logging.getLogger(__name__)
 
@@ -29,14 +30,14 @@ class WindowStateManager:
         self._event_bus = get_event_bus()
 
         # Window state
-        self._window_geometry: Dict[str, int] = {}
+        self._window_geometry: dict[str, int] = {}
         self._window_maximized: bool = False
 
-    def get_window_geometry(self) -> Dict[str, int]:
+    def get_window_geometry(self) -> dict[str, int]:
         """Get window geometry."""
         return self._window_geometry.copy()
 
-    def set_window_geometry(self, geometry: Dict[str, int]) -> None:
+    def set_window_geometry(self, geometry: dict[str, int]) -> None:
         """Set window geometry."""
         self._window_geometry = geometry.copy()
 
@@ -66,14 +67,14 @@ class WindowStateManager:
         )
         self._event_bus.publish(event)
 
-    def get_window_state(self) -> Dict[str, any]:
+    def get_window_state(self) -> dict[str, any]:
         """Get complete window state."""
         return {
             "geometry": self.get_window_geometry(),
             "maximized": self.is_window_maximized(),
         }
 
-    def set_window_state(self, state: Dict[str, any]) -> None:
+    def set_window_state(self, state: dict[str, any]) -> None:
         """Set complete window state."""
         if "geometry" in state:
             self.set_window_geometry(state["geometry"])
@@ -94,14 +95,14 @@ class WindowStateManager:
         )
         self._event_bus.publish(event)
 
-    def get_state_for_persistence(self) -> Dict[str, any]:
+    def get_state_for_persistence(self) -> dict[str, any]:
         """Get state data for persistence."""
         return {
             "window_geometry": self._window_geometry,
             "window_maximized": self._window_maximized,
         }
 
-    def load_state_from_persistence(self, state: Dict[str, any]) -> None:
+    def load_state_from_persistence(self, state: dict[str, any]) -> None:
         """Load state from persistence data."""
         if "window_geometry" in state:
             self._window_geometry = state["window_geometry"]

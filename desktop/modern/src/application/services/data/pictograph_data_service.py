@@ -10,16 +10,17 @@ Handles all core pictograph data operations including:
 This service provides a clean, focused interface for pictograph data operations
 while maintaining the proven data management algorithms.
 """
+from __future__ import annotations
 
-import uuid
 from abc import ABC, abstractmethod
-from typing import Any, Dict, List, Optional
+from typing import Any
+import uuid
 
-from domain.models.arrow_data import ArrowData
-from domain.models.beat_data import BeatData
-from domain.models.enums import GridMode
-from domain.models.grid_data import GridData
-from domain.models.pictograph_data import PictographData
+from desktop.modern.src.domain.models.arrow_data import ArrowData
+from desktop.modern.src.domain.models.beat_data import BeatData
+from desktop.modern.src.domain.models.enums import GridMode
+from desktop.modern.src.domain.models.grid_data import GridData
+from desktop.modern.src.domain.models.pictograph_data import PictographData
 
 
 class IPictographDataService(ABC):
@@ -37,18 +38,18 @@ class IPictographDataService(ABC):
 
     @abstractmethod
     def update_pictograph_arrows(
-        self, pictograph: PictographData, arrows: Dict[str, ArrowData]
+        self, pictograph: PictographData, arrows: dict[str, ArrowData]
     ) -> PictographData:
         """Update arrows in pictograph."""
 
     @abstractmethod
-    def search_dataset(self, query: Dict[str, Any]) -> List[PictographData]:
+    def search_dataset(self, query: dict[str, Any]) -> list[PictographData]:
         """Search pictograph dataset with query."""
 
     @abstractmethod
     def get_start_position_pictograph(
         self, position_key: str, prop_type: str
-    ) -> Optional[BeatData]:
+    ) -> BeatData | None:
         """Get start position pictograph as BeatData."""
 
     @abstractmethod
@@ -71,8 +72,8 @@ class PictographDataService(IPictographDataService):
 
     def __init__(self):
         # Dataset management
-        self._pictograph_cache: Dict[str, PictographData] = {}
-        self._dataset_index: Dict[str, List[str]] = {}
+        self._pictograph_cache: dict[str, PictographData] = {}
+        self._dataset_index: dict[str, list[str]] = {}
 
     def create_pictograph(
         self, grid_mode: GridMode = GridMode.DIAMOND
@@ -93,7 +94,7 @@ class PictographDataService(IPictographDataService):
             metadata={"created_by": "pictograph_data_service"},
         )
 
-    def create_from_beat(self, beat_data: BeatData) -> Optional[PictographData]:
+    def create_from_beat(self, beat_data: BeatData) -> PictographData | None:
         """Get pictograph data from beat (returns embedded pictograph if available)."""
         if beat_data.has_pictograph:
             # Return the embedded pictograph data directly
@@ -109,7 +110,7 @@ class PictographDataService(IPictographDataService):
         )
 
     def update_pictograph_arrows(
-        self, pictograph: PictographData, arrows: Dict[str, ArrowData]
+        self, pictograph: PictographData, arrows: dict[str, ArrowData]
     ) -> PictographData:
         """Update arrows in pictograph."""
         return pictograph.update(
@@ -117,7 +118,7 @@ class PictographDataService(IPictographDataService):
             is_blank=len(arrows) == 0,
         )
 
-    def search_dataset(self, query: Dict[str, Any]) -> List[PictographData]:
+    def search_dataset(self, query: dict[str, Any]) -> list[PictographData]:
         """Search pictograph dataset with query."""
         results = []
 
@@ -125,7 +126,7 @@ class PictographDataService(IPictographDataService):
         max_results = query.get("max_results", 50)
 
         # Search through cached pictographs
-        for pictograph_id, pictograph in self._pictograph_cache.items():
+        for _pictograph_id, pictograph in self._pictograph_cache.items():
             if self._matches_query(pictograph, query):
                 results.append(pictograph)
 
@@ -150,11 +151,11 @@ class PictographDataService(IPictographDataService):
 
         return pictograph_id
 
-    def get_dataset_categories(self) -> List[str]:
+    def get_dataset_categories(self) -> list[str]:
         """Get all available dataset categories."""
         return list(self._dataset_index.keys())
 
-    def get_pictographs_by_category(self, category: str) -> List[PictographData]:
+    def get_pictographs_by_category(self, category: str) -> list[PictographData]:
         """Get all pictographs in a category."""
         pictograph_ids = self._dataset_index.get(category, [])
         return [
@@ -163,7 +164,7 @@ class PictographDataService(IPictographDataService):
             if pid in self._pictograph_cache
         ]
 
-    def get_pictograph_by_id(self, pictograph_id: str) -> Optional[PictographData]:
+    def get_pictograph_by_id(self, pictograph_id: str) -> PictographData | None:
         """Get pictograph by ID."""
         return self._pictograph_cache.get(pictograph_id)
 
@@ -176,13 +177,13 @@ class PictographDataService(IPictographDataService):
         del self._pictograph_cache[pictograph_id]
 
         # Remove from all categories
-        for category, ids in self._dataset_index.items():
+        for _category, ids in self._dataset_index.items():
             if pictograph_id in ids:
                 ids.remove(pictograph_id)
 
         return True
 
-    def get_dataset_stats(self) -> Dict[str, Any]:
+    def get_dataset_stats(self) -> dict[str, Any]:
         """Get dataset statistics."""
         return {
             "total_pictographs": len(self._pictograph_cache),
@@ -199,7 +200,7 @@ class PictographDataService(IPictographDataService):
 
     def get_start_position_pictograph(
         self, position_key: str, prop_type: str
-    ) -> Optional[BeatData]:
+    ) -> BeatData | None:
         """Get start position pictograph as BeatData."""
         try:
             # Create a basic start position beat data
@@ -228,7 +229,7 @@ class PictographDataService(IPictographDataService):
 
     # Private helper methods
 
-    def _matches_query(self, pictograph: PictographData, query: Dict[str, Any]) -> bool:
+    def _matches_query(self, pictograph: PictographData, query: dict[str, Any]) -> bool:
         """Check if pictograph matches search query."""
         # Letter matching
         if "letter" in query:

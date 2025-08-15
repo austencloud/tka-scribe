@@ -4,14 +4,16 @@ Session State Service Implementation
 Provides robust auto-save/restore functionality for TKA applications.
 Automatically saves user state after interactions and restores exactly where they left off.
 """
+from __future__ import annotations
 
-import json
-import logging
-import uuid
 from dataclasses import asdict
 from datetime import datetime, timedelta
+import json
+import logging
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any
+import uuid
+
 
 # Conditional PyQt6 imports for testing compatibility
 try:
@@ -36,14 +38,15 @@ except ImportError:
 
     QT_AVAILABLE = False
 
-from core.events.event_bus import get_event_bus
-from core.interfaces.core_services import IUIStateManager
-from core.interfaces.organization_services import IFileSystemService
-from core.interfaces.session_services import (
+from desktop.modern.src.core.events.event_bus import get_event_bus
+from desktop.modern.src.core.interfaces.core_services import IUIStateManager
+from desktop.modern.src.core.interfaces.organization_services import IFileSystemService
+from desktop.modern.src.core.interfaces.session_services import (
     ISessionStateTracker,
     SessionRestoreResult,
     SessionState,
 )
+
 
 logger = logging.getLogger(__name__)
 
@@ -63,7 +66,7 @@ class SessionStateTracker(ISessionStateTracker):
         self,
         ui_state_service: IUIStateManager,
         file_system_service: IFileSystemService,
-        event_bus: Optional[Any] = None,
+        event_bus: Any | None = None,
     ):
         """
         Initialize session state service.
@@ -141,7 +144,7 @@ class SessionStateTracker(ISessionStateTracker):
             return True
 
         except Exception as e:
-            logger.error(f"Failed to save session state: {e}")
+            logger.exception(f"Failed to save session state: {e}")
             return False
 
     def load_session_state(self) -> SessionRestoreResult:
@@ -184,7 +187,7 @@ class SessionStateTracker(ISessionStateTracker):
             )
 
         except json.JSONDecodeError as e:
-            logger.error(f"Session file is corrupted: {e}")
+            logger.exception(f"Session file is corrupted: {e}")
             return SessionRestoreResult(
                 success=True,
                 session_restored=False,
@@ -192,7 +195,7 @@ class SessionStateTracker(ISessionStateTracker):
                 error_message="Session file was corrupted",
             )
         except Exception as e:
-            logger.error(f"Failed to load session state: {e}")
+            logger.exception(f"Failed to load session state: {e}")
             return SessionRestoreResult(
                 success=False,
                 session_restored=False,
@@ -227,13 +230,13 @@ class SessionStateTracker(ISessionStateTracker):
             logger.debug(f"Updated current sequence: {sequence_id}")
 
         except Exception as e:
-            logger.error(f"Failed to update current sequence: {e}")
+            logger.exception(f"Failed to update current sequence: {e}")
 
     def update_workbench_state(
         self,
-        beat_index: Optional[int],
-        beat_data: Optional[Any],
-        start_position: Optional[Any],
+        beat_index: int | None,
+        beat_data: Any | None,
+        start_position: Any | None,
     ) -> None:
         """Update workbench selection state."""
         try:
@@ -275,14 +278,14 @@ class SessionStateTracker(ISessionStateTracker):
             logger.debug(f"Updated workbench state: beat_index={beat_index}")
 
         except Exception as e:
-            logger.error(f"Failed to update workbench state: {e}")
+            logger.exception(f"Failed to update workbench state: {e}")
 
     def update_graph_editor_state(
         self,
         visible: bool,
-        beat_index: Optional[int],
-        selected_arrow: Optional[str],
-        height: Optional[int] = None,
+        beat_index: int | None,
+        selected_arrow: str | None,
+        height: int | None = None,
     ) -> None:
         """Update graph editor state."""
         try:
@@ -301,13 +304,13 @@ class SessionStateTracker(ISessionStateTracker):
             )
 
         except Exception as e:
-            logger.error(f"Failed to update graph editor state: {e}")
+            logger.exception(f"Failed to update graph editor state: {e}")
 
     def update_ui_state(
         self,
         active_tab: str,
-        beat_layout: Optional[Dict[str, Any]] = None,
-        component_visibility: Optional[Dict[str, bool]] = None,
+        beat_layout: dict[str, Any] | None = None,
+        component_visibility: dict[str, bool] | None = None,
     ) -> None:
         """Update UI state information."""
         try:
@@ -325,7 +328,7 @@ class SessionStateTracker(ISessionStateTracker):
             logger.debug(f"Updated UI state: active_tab={active_tab}")
 
         except Exception as e:
-            logger.error(f"Failed to update UI state: {e}")
+            logger.exception(f"Failed to update UI state: {e}")
 
     def should_restore_session(self) -> bool:
         """Determine if session should be restored (not too stale)."""
@@ -346,7 +349,7 @@ class SessionStateTracker(ISessionStateTracker):
             return self._is_session_fresh(last_interaction)
 
         except Exception as e:
-            logger.error(f"Failed to check session staleness: {e}")
+            logger.exception(f"Failed to check session staleness: {e}")
             return False
 
     def mark_interaction(self) -> None:
@@ -364,7 +367,7 @@ class SessionStateTracker(ISessionStateTracker):
                 self._auto_save_timer.start(self.auto_save_delay_ms)
 
         except Exception as e:
-            logger.error(f"Failed to mark interaction: {e}")
+            logger.exception(f"Failed to mark interaction: {e}")
 
     def clear_session(self) -> bool:
         """Clear current session state and remove session file."""
@@ -380,10 +383,10 @@ class SessionStateTracker(ISessionStateTracker):
             return True
 
         except Exception as e:
-            logger.error(f"Failed to clear session: {e}")
+            logger.exception(f"Failed to clear session: {e}")
             return False
 
-    def get_current_session_state(self) -> Optional[SessionState]:
+    def get_current_session_state(self) -> SessionState | None:
         """Get current session state without loading from file."""
         return self._current_session
 
@@ -410,7 +413,7 @@ class SessionStateTracker(ISessionStateTracker):
                 logger.warning("Auto-save failed")
 
         except Exception as e:
-            logger.error(f"Auto-save error: {e}")
+            logger.exception(f"Auto-save error: {e}")
 
     def _is_session_fresh(self, last_interaction: datetime) -> bool:
         """Check if session is fresh enough to restore."""
@@ -419,7 +422,7 @@ class SessionStateTracker(ISessionStateTracker):
         )
         return last_interaction > staleness_threshold
 
-    def _parse_session_data(self, session_data: Dict[str, Any]) -> SessionState:
+    def _parse_session_data(self, session_data: dict[str, Any]) -> SessionState:
         """Parse session data from JSON into SessionState object."""
         try:
             # Parse metadata
@@ -470,6 +473,6 @@ class SessionStateTracker(ISessionStateTracker):
             )
 
         except Exception as e:
-            logger.error(f"Failed to parse session data: {e}")
+            logger.exception(f"Failed to parse session data: {e}")
             # Return default session state on parse error
             return SessionState()

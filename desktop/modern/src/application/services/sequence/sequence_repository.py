@@ -5,12 +5,13 @@ Handles all sequence data access operations and repository patterns.
 Extracted from the monolithic sequence management service to focus
 solely on data access and storage operations.
 """
+from __future__ import annotations
 
-import logging
 from abc import ABC, abstractmethod
-from typing import List, Optional
+import logging
 
-from domain.models.sequence_data import SequenceData
+from desktop.modern.src.domain.models.sequence_data import SequenceData
+
 
 logger = logging.getLogger(__name__)
 
@@ -30,12 +31,12 @@ class ISequenceRepository(ABC):
         pass
 
     @abstractmethod
-    def get_by_id(self, sequence_id: str) -> Optional[SequenceData]:
+    def get_by_id(self, sequence_id: str) -> SequenceData | None:
         """Retrieve a sequence by its ID."""
         pass
 
     @abstractmethod
-    def get_all(self) -> List[SequenceData]:
+    def get_all(self) -> list[SequenceData]:
         """Retrieve all sequences."""
         pass
 
@@ -50,7 +51,7 @@ class ISequenceRepository(ABC):
         pass
 
     @abstractmethod
-    def get_current_sequence(self) -> Optional[SequenceData]:
+    def get_current_sequence(self) -> SequenceData | None:
         """Get the current active sequence."""
         pass
 
@@ -119,10 +120,10 @@ class SequenceRepository(ISequenceRepository):
             return sequence
 
         except Exception as e:
-            logger.error(f"Failed to save sequence {sequence.name}: {e}")
+            logger.exception(f"Failed to save sequence {sequence.name}: {e}")
             raise RepositoryError(f"Failed to save sequence: {e}") from e
 
-    def get_by_id(self, sequence_id: str) -> Optional[SequenceData]:
+    def get_by_id(self, sequence_id: str) -> SequenceData | None:
         """
         Retrieve a sequence by its ID.
 
@@ -152,7 +153,7 @@ class SequenceRepository(ISequenceRepository):
                     logger.debug(f"Sequence {sequence_id} loaded from storage")
                     return sequence
             except Exception as e:
-                logger.error(f"Failed to load sequence {sequence_id} from storage: {e}")
+                logger.exception(f"Failed to load sequence {sequence_id} from storage: {e}")
 
         logger.debug(f"Sequence {sequence_id} not found")
         return None
@@ -190,7 +191,7 @@ class SequenceRepository(ISequenceRepository):
             return sequence
 
         except Exception as e:
-            logger.error(f"Failed to update sequence {sequence.name}: {e}")
+            logger.exception(f"Failed to update sequence {sequence.name}: {e}")
             raise RepositoryError(f"Failed to update sequence: {e}") from e
 
     def delete(self, sequence_id: str) -> bool:
@@ -232,7 +233,7 @@ class SequenceRepository(ISequenceRepository):
             return True
 
         except Exception as e:
-            logger.error(f"Failed to delete sequence {sequence_id}: {e}")
+            logger.exception(f"Failed to delete sequence {sequence_id}: {e}")
             raise RepositoryError(f"Failed to delete sequence: {e}") from e
 
     def exists(self, sequence_id: str) -> bool:
@@ -257,11 +258,11 @@ class SequenceRepository(ISequenceRepository):
             try:
                 return self._storage_adapter.sequence_exists(sequence_id)
             except Exception as e:
-                logger.error(f"Error checking sequence existence {sequence_id}: {e}")
+                logger.exception(f"Error checking sequence existence {sequence_id}: {e}")
 
         return False
 
-    def get_all(self) -> List[SequenceData]:
+    def get_all(self) -> list[SequenceData]:
         """
         Get all sequences.
 
@@ -285,12 +286,12 @@ class SequenceRepository(ISequenceRepository):
                         # Cache it for future use
                         self._sequences_cache[seq.id] = seq
             except Exception as e:
-                logger.error(f"Failed to retrieve sequences from storage: {e}")
+                logger.exception(f"Failed to retrieve sequences from storage: {e}")
 
         logger.info(f"Retrieved {len(sequences)} sequences")
         return sequences
 
-    def find_by_name(self, name: str) -> List[SequenceData]:
+    def find_by_name(self, name: str) -> list[SequenceData]:
         """
         Find sequences by name (partial match).
 
@@ -313,7 +314,7 @@ class SequenceRepository(ISequenceRepository):
         logger.debug(f"Found {len(matching_sequences)} sequences matching '{name}'")
         return matching_sequences
 
-    def get_current_sequence(self) -> Optional[SequenceData]:
+    def get_current_sequence(self) -> SequenceData | None:
         """
         Get the current active sequence.
 
@@ -354,7 +355,7 @@ class SequenceRepository(ISequenceRepository):
         logger.info(f"Current sequence set to: {sequence_id}")
         return True
 
-    def get_sequences_by_length(self, length: int) -> List[SequenceData]:
+    def get_sequences_by_length(self, length: int) -> list[SequenceData]:
         """
         Get sequences by their length.
 

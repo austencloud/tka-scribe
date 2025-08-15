@@ -1,7 +1,9 @@
-from typing import Dict
+from __future__ import annotations
 
-from core.interfaces.core_services import IUIStateManager
-from core.interfaces.tab_settings_interfaces import IVisibilitySettingsManager
+from desktop.modern.src.core.interfaces.core_services import IUIStateManager
+from desktop.modern.src.core.interfaces.tab_settings_interfaces import (
+    IVisibilitySettingsManager,
+)
 
 
 class VisibilitySettingsManager(IVisibilitySettingsManager):
@@ -58,7 +60,7 @@ class VisibilitySettingsManager(IVisibilitySettingsManager):
         """Set visibility state for non-radial points"""
         self.ui_state_service.set_setting("visibility_non_radial", visible)
 
-    def get_all_visibility_settings(self) -> Dict[str, bool]:
+    def get_all_visibility_settings(self) -> dict[str, bool]:
         """Get all visibility settings as a dictionary"""
         settings = {}
 

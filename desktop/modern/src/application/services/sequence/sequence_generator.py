@@ -5,13 +5,14 @@ Handles all sequence generation algorithms extracted from the monolithic
 sequence management service. Focuses solely on creating new sequences
 using various algorithms.
 """
+from __future__ import annotations
 
-import logging
 from enum import Enum
-from typing import Dict, Any
+import logging
 
-from domain.models.beat_data import BeatData
-from domain.models.sequence_data import SequenceData
+from desktop.modern.src.domain.models.beat_data import BeatData
+from desktop.modern.src.domain.models.sequence_data import SequenceData
+
 
 logger = logging.getLogger(__name__)
 
@@ -48,16 +49,15 @@ class SequenceGenerator:
         """Generate a sequence using the specified algorithm."""
         if sequence_type == SequenceType.FREEFORM:
             return self._generate_freeform_sequence(name, length, **kwargs)
-        elif sequence_type == SequenceType.CIRCULAR:
+        if sequence_type == SequenceType.CIRCULAR:
             return self._generate_circular_sequence(name, length, **kwargs)
-        elif sequence_type == SequenceType.AUTO_COMPLETE:
+        if sequence_type == SequenceType.AUTO_COMPLETE:
             return self._generate_auto_complete_sequence(name, length, **kwargs)
-        elif sequence_type == SequenceType.MIRROR:
+        if sequence_type == SequenceType.MIRROR:
             return self._generate_mirror_sequence(name, length, **kwargs)
-        elif sequence_type == SequenceType.CONTINUOUS:
+        if sequence_type == SequenceType.CONTINUOUS:
             return self._generate_continuous_sequence(name, length, **kwargs)
-        else:
-            raise ValueError(f"Unknown sequence type: {sequence_type}")
+        raise ValueError(f"Unknown sequence type: {sequence_type}")
 
     def _generate_freeform_sequence(
         self, name: str, length: int, **kwargs

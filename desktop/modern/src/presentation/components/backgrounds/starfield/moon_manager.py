@@ -1,6 +1,9 @@
-from PyQt6.QtGui import QPainter, QPixmap, QColor, QRadialGradient
-from PyQt6.QtWidgets import QWidget
+from __future__ import annotations
+
 from PyQt6.QtCore import Qt
+from PyQt6.QtGui import QColor, QPainter, QPixmap, QRadialGradient
+from PyQt6.QtWidgets import QWidget
+
 from ..asset_utils import get_image_path
 
 

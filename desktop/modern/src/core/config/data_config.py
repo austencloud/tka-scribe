@@ -5,7 +5,7 @@ Provides clean, dependency-injectable data configuration to replace the singleto
 Uses Result types for proper error handling.
 
 USAGE:
-    from desktop.modern.core.config.data_config import create_data_config, DataConfig
+    from desktop.modern.src.core.config.data_config import create_data_config, DataConfig
 
     # Create configuration
     config_result = create_data_config()

@@ -5,24 +5,32 @@ This is now a thin UI adapter that delegates business logic to the
 ObjectPoolService. It maintains backward compatibility while using
 the extracted business service and handles Qt-specific concerns.
 """
+from __future__ import annotations
 
+import contextlib
 import logging
-from typing import TYPE_CHECKING, Callable, List, Optional
+from typing import TYPE_CHECKING, Callable
 
-from core.interfaces.core_services import IObjectPoolManager
-from domain.models.beat_data import BeatData
-from domain.models.enums import GridMode, Location, MotionType, RotationDirection
-from domain.models.grid_data import GridData
-from domain.models.motion_models import MotionData
-from domain.models.pictograph_data import PictographData
-from presentation.components.option_picker.components.frames.clickable_pictograph_frame import (
-    ClickablePictographFrame,
-)
 from PyQt6.QtCore import QObject
 from PyQt6.QtWidgets import QWidget
 
+from desktop.modern.src.core.interfaces.core_services import IObjectPoolManager
+from desktop.modern.src.domain.models.enums import (
+    GridMode,
+    Location,
+    MotionType,
+    RotationDirection,
+)
+from desktop.modern.src.domain.models.grid_data import GridData
+from desktop.modern.src.domain.models.motion_models import MotionData
+from desktop.modern.src.domain.models.pictograph_data import PictographData
+from desktop.modern.src.presentation.components.option_picker.components.frames.clickable_pictograph_frame import (
+    ClickablePictographFrame,
+)
+
+
 if TYPE_CHECKING:
-    from application.services.data.dataset_query import DatasetQuery
+    pass
 
 logger = logging.getLogger(__name__)
 
@@ -39,7 +47,7 @@ class PictographPoolManager(QObject):
     MAX_PICTOGRAPHS = 36  # Same as Legacy's OptionFactory.MAX_PICTOGRAPHS
 
     def __init__(
-        self, parent_widget: QWidget, pool_service: Optional[IObjectPoolManager] = None
+        self, parent_widget: QWidget, pool_service: IObjectPoolManager | None = None
     ):
         """
         Initialize pictograph pool manager with injected business service.
@@ -50,23 +58,23 @@ class PictographPoolManager(QObject):
         """
         super().__init__()
         self.parent_widget = parent_widget
-        self._pictograph_pool: List[ClickablePictographFrame] = []
+        self._pictograph_pool: list[ClickablePictographFrame] = []
         self._pool_initialized = False
-        self._click_handler: Optional[Callable] = None
-        self._pictograph_click_handler: Optional[Callable] = None
+        self._click_handler: Callable | None = None
+        self._pictograph_click_handler: Callable | None = None
         self._pool_service = pool_service
 
         # Fallback for legacy compatibility - will be removed in future versions
         if not self._pool_service:
             try:
-                from application.services.core.object_pool_manager import (
+                from desktop.modern.src.application.services.core.object_pool_manager import (
                     ObjectPoolManager,
                 )
 
                 self._pool_service = ObjectPoolManager()
 
             except ImportError:
-                logger.error("Object pool service not available")
+                logger.exception("Object pool service not available")
                 self._pool_service = None
 
     def set_click_handler(self, handler: Callable[[str], None]) -> None:
@@ -77,7 +85,7 @@ class PictographPoolManager(QObject):
         """Set the pictograph click handler for all pool objects"""
         self._pictograph_click_handler = pictograph_handler
 
-    def initialize_pool(self, progress_callback: Optional[Callable] = None) -> None:
+    def initialize_pool(self, progress_callback: Callable | None = None) -> None:
         """
         Initialize pictograph object pool with progress updates.
 
@@ -94,7 +102,7 @@ class PictographPoolManager(QObject):
 
         try:
             # Create factory function for pictograph frames
-            def pictograph_frame_factory() -> Optional[ClickablePictographFrame]:
+            def pictograph_frame_factory() -> ClickablePictographFrame | None:
                 return self._create_pictograph_frame()
 
             # Use business service to initialize pool
@@ -114,9 +122,9 @@ class PictographPoolManager(QObject):
             self._pool_initialized = True
 
         except Exception as e:
-            logger.error(f"Error initializing pool via service: {e}")
+            logger.exception(f"Error initializing pool via service: {e}")
 
-    def _create_pictograph_frame(self) -> Optional[ClickablePictographFrame]:
+    def _create_pictograph_frame(self) -> ClickablePictographFrame | None:
         """
         Create a single pictograph frame with real data.
 
@@ -124,8 +132,12 @@ class PictographPoolManager(QObject):
             ClickablePictographFrame if successful, None otherwise
         """
         try:
-            from application.services.data.dataset_query import DatasetQuery
-            from application.services.data.position_resolver import PositionResolver
+            from desktop.modern.src.application.services.data.dataset_query import (
+                DatasetQuery,
+            )
+            from desktop.modern.src.application.services.data.position_resolver import (
+                PositionResolver,
+            )
 
             dataset_service = DatasetQuery()
             position_resolver = PositionResolver()
@@ -170,12 +182,12 @@ class PictographPoolManager(QObject):
             return frame
 
         except Exception as e:
-            logger.error(f"Error creating pictograph frame: {e}")
+            logger.exception(f"Error creating pictograph frame: {e}")
             return None
 
     def get_pictograph_from_pool(
         self, index: int
-    ) -> Optional[ClickablePictographFrame]:
+    ) -> ClickablePictographFrame | None:
         """Get frame from pool at specified index"""
         if 0 <= index < len(self._pictograph_pool):
             return self._pictograph_pool[index]
@@ -189,16 +201,12 @@ class PictographPoolManager(QObject):
         """Resize all frames using Legacy's algorithm"""
         for frame in self._pictograph_pool:
             if frame and hasattr(frame, "resize_frame"):
-                try:
+                with contextlib.suppress(RuntimeError):
                     frame.resize_frame()
-                except RuntimeError:
-                    pass
 
     def _create_minimal_pictograph_data(self):
         """Create minimal pictograph data as fallback."""
-        from domain.models.arrow_data import ArrowData
-        from domain.models.enums import Location, MotionType, RotationDirection
-        from domain.models.motion_models import MotionData
+        from desktop.modern.src.domain.models.arrow_data import ArrowData
 
         # Create motion data
         blue_motion = MotionData(

@@ -18,7 +18,7 @@ current_dir = Path(__file__).parent
 src_dir = current_dir.parent.parent  # Go up to the src directory
 sys.path.insert(0, str(src_dir))
 
-from desktop.modern.core.testing import (
+from desktop.modern.src.core.testing import (
     full_ui_test,
     quick_ui_test,
     test_buttons_only,

@@ -8,8 +8,11 @@ from __future__ import annotations
 
 from typing import Any
 
-from desktop.modern.core.interfaces.core_services import ILayoutService, IUIStateManager
-from desktop.modern.core.types import Size
+from desktop.modern.src.core.interfaces.core_services import (
+    ILayoutService,
+    IUIStateManager,
+)
+from desktop.modern.src.core.types import Size
 
 
 class HeadlessLayoutService(ILayoutService):

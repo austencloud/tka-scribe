@@ -23,6 +23,8 @@ This package provides focused, single-responsibility services for sequence opera
 """
 
 # Core microservices - CLEAN MICROSERVICES ARCHITECTURE
+from __future__ import annotations
+
 from .beat_factory import BeatFactory
 from .loader import SequenceLoader
 from .sequence_beat_operations import SequenceBeatOperations
@@ -39,6 +41,7 @@ from .sequence_state_tracker import SequenceStateTracker
 from .sequence_transformer import SequenceTransformer, WorkbenchOperation
 from .sequence_validator import SequenceValidator, ValidationError
 
+
 # Legacy orchestration (DEPRECATED - use SequenceCoordinator instead)
 # from .sequence_orchestrator import ISequenceOrchestratorSignals, SequenceOrchestrator
 
@@ -47,25 +50,25 @@ from .sequence_validator import SequenceValidator, ValidationError
 
 
 __all__ = [
+    # Beat operations
+    "BeatFactory",
+    "RepositoryError",
     # CLEAN MICROSERVICES ARCHITECTURE
     # Core microservices - inject these directly into components that need them
     "SequenceBeatOperations",
-    "SequenceStartPositionManager",
-    "SequenceLoader",
     "SequenceDictionaryService",
-    # Beat operations
-    "BeatFactory",
-    # Focused services
-    "SequenceTransformer",
-    "WorkbenchOperation",
-    "SequenceValidator",
-    "ValidationError",
-    "SequenceRepository",
-    "RepositoryError",
+    "SequenceGenerator",
+    "SequenceLoader",
     # "IStorageAdapter",  # Removed - doesn't exist
     # Infrastructure
     "SequencePersister",
+    "SequenceRepository",
+    "SequenceStartPositionManager",
     "SequenceStateTracker",
-    "SequenceGenerator",
+    # Focused services
+    "SequenceTransformer",
     "SequenceType",
+    "SequenceValidator",
+    "ValidationError",
+    "WorkbenchOperation",
 ]

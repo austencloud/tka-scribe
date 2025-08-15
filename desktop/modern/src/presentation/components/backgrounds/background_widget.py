@@ -1,25 +1,26 @@
-from typing import Optional
-from PyQt6.QtWidgets import QWidget
-from PyQt6.QtGui import QPainter
-from PyQt6.QtCore import Qt, QTimer
+from __future__ import annotations
 
-from presentation.components.backgrounds.starfield_background import (
-    StarfieldBackground,
-)
-from presentation.components.backgrounds.aurora_background import (
+from PyQt6.QtCore import Qt, QTimer
+from PyQt6.QtGui import QPainter
+from PyQt6.QtWidgets import QWidget
+
+from desktop.modern.src.presentation.components.backgrounds.aurora_background import (
     AuroraBackground,
 )
-from presentation.components.backgrounds.aurora_borealis_background import (
+from desktop.modern.src.presentation.components.backgrounds.aurora_borealis_background import (
     AuroraBorealisBackground,
 )
-from presentation.components.backgrounds.snowfall_background import (
-    SnowfallBackground,
+from desktop.modern.src.presentation.components.backgrounds.base_background import (
+    BaseBackground,
 )
-from presentation.components.backgrounds.bubbles_background import (
+from desktop.modern.src.presentation.components.backgrounds.bubbles_background import (
     BubblesBackground,
 )
-from presentation.components.backgrounds.base_background import (
-    BaseBackground,
+from desktop.modern.src.presentation.components.backgrounds.snowfall_background import (
+    SnowfallBackground,
+)
+from desktop.modern.src.presentation.components.backgrounds.starfield_background import (
+    StarfieldBackground,
 )
 
 
@@ -28,7 +29,7 @@ class MainBackgroundWidget(QWidget):
         super().__init__(main_widget)
         self.main_widget = main_widget
         self.background_type = background_type
-        self.background: Optional[BaseBackground] = None
+        self.background: BaseBackground | None = None
 
         self.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents)
         self.setAttribute(Qt.WidgetAttribute.WA_NoSystemBackground)
@@ -65,7 +66,7 @@ class MainBackgroundWidget(QWidget):
         if self.background:
             self.background.animate_background()
 
-    def _get_background(self, bg_type: str) -> Optional[BaseBackground]:
+    def _get_background(self, bg_type: str) -> BaseBackground | None:
         background_map = {
             "Starfield": StarfieldBackground,
             "Aurora": AuroraBackground,

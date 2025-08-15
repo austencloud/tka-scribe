@@ -4,12 +4,13 @@ Beat Factory Service
 Handles creation of BeatData objects with proper pictograph embedding.
 Replaces conversion methods with direct construction.
 """
+from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import Any, Dict, Optional
+from typing import Any
 
-from domain.models.beat_data import BeatData
-from domain.models.pictograph_data import PictographData
+from desktop.modern.src.domain.models.beat_data import BeatData
+from desktop.modern.src.domain.models.pictograph_data import PictographData
 
 
 class IBeatFactory(ABC):
@@ -21,7 +22,7 @@ class IBeatFactory(ABC):
         pictograph_data: PictographData,
         beat_number: int,
         duration: float = 1.0,
-        metadata: Optional[Dict[str, Any]] = None,
+        metadata: dict[str, Any] | None = None,
     ) -> BeatData:
         """Create BeatData with embedded pictograph."""
         pass
@@ -47,7 +48,7 @@ class BeatFactory(IBeatFactory):
         pictograph_data: PictographData,
         beat_number: int,
         duration: float = 1.0,
-        metadata: Optional[Dict[str, Any]] = None,
+        metadata: dict[str, Any] | None = None,
     ) -> BeatData:
         """
         Create BeatData with embedded pictograph.

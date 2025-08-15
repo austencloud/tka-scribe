@@ -4,21 +4,22 @@ Start Position View Component
 Displays the start position in the sequence workbench beat frame,
 integrating with Modern's start position picker and pictograph system.
 """
+from __future__ import annotations
 
-from typing import Optional
+import contextlib
 
-from domain.models import BeatData
-from domain.models.pictograph_data import PictographData
 from PyQt6.QtCore import QSize, Qt, pyqtSignal
-from PyQt6.QtGui import QMouseEvent
-from PyQt6.QtWidgets import QFrame, QVBoxLayout, QWidget
+from PyQt6.QtWidgets import QFrame, QVBoxLayout
 
+from desktop.modern.src.domain.models.pictograph_data import PictographData
+from domain.models import BeatData
+
+from .selection_overlay import SelectionOverlay
+from .start_text_overlay import StartTextOverlay, add_start_text_to_view
 from ...pictograph.pictograph_component import (
     PictographComponent,
     create_pictograph_component,
 )
-from .selection_overlay import SelectionOverlay
-from .start_text_overlay import StartTextOverlay, add_start_text_to_view
 
 
 class StartPositionView(QFrame):
@@ -37,20 +38,20 @@ class StartPositionView(QFrame):
         super().__init__(parent)
 
         # Common state (previously from PictographViewBase)
-        self._beat_data: Optional[BeatData] = None
-        self._pictograph_data: Optional[PictographData] = (
+        self._beat_data: BeatData | None = None
+        self._pictograph_data: PictographData | None = (
             None  # NEW: Separate pictograph data
         )
         self._is_selected = False
         self._is_highlighted = False
 
         # UI components
-        self._pictograph_component: Optional[PictographComponent] = None
-        self._selection_overlay: Optional[SelectionOverlay] = None
+        self._pictograph_component: PictographComponent | None = None
+        self._selection_overlay: SelectionOverlay | None = None
 
         # Additional state specific to start position
-        self._position_key: Optional[str] = None
-        self._start_text_overlay: Optional[StartTextOverlay] = None
+        self._position_key: str | None = None
+        self._start_text_overlay: StartTextOverlay | None = None
 
         # Initialize UI
         self._setup_ui()
@@ -106,7 +107,9 @@ class StartPositionView(QFrame):
     def _configure_pictograph_component(self):
         """Configure the pictograph component for start position context"""
         if hasattr(self._pictograph_component, "set_scaling_context"):
-            from application.services.pictograph.scaling_service import ScalingContext
+            from desktop.modern.src.application.services.pictograph.scaling_service import (
+                ScalingContext,
+            )
 
             self._pictograph_component.set_scaling_context(
                 ScalingContext.START_POS_PICKER
@@ -141,23 +144,23 @@ class StartPositionView(QFrame):
         self._add_start_text_overlay()
 
     # State management
-    def set_beat_data(self, beat_data: Optional[BeatData]):
+    def set_beat_data(self, beat_data: BeatData | None):
         """Set beat data and update display"""
         if self._beat_data != beat_data:
             self._beat_data = beat_data
             self._update_display()
 
-    def get_beat_data(self) -> Optional[BeatData]:
+    def get_beat_data(self) -> BeatData | None:
         """Get current beat data"""
         return self._beat_data
 
-    def set_pictograph_data(self, pictograph_data: Optional["PictographData"]):
+    def set_pictograph_data(self, pictograph_data: PictographData | None):
         """Set pictograph data for direct rendering (separate approach)"""
         if self._pictograph_data != pictograph_data:
             self._pictograph_data = pictograph_data
             self._update_display()
 
-    def get_pictograph_data(self) -> Optional["PictographData"]:
+    def get_pictograph_data(self) -> PictographData | None:
         """Get current pictograph data"""
         return getattr(self, "_pictograph_data", None)
 
@@ -178,7 +181,7 @@ class StartPositionView(QFrame):
         return self._is_selected
 
     def set_position_data(
-        self, beat_data: BeatData, pictograph_data: Optional["PictographData"] = None
+        self, beat_data: BeatData, pictograph_data: PictographData | None = None
     ):
         """
         Set the start position data and update display.
@@ -276,10 +279,8 @@ class StartPositionView(QFrame):
         """Cleanup resources when the view is being destroyed"""
         # Clean up selection overlay
         if self._selection_overlay:
-            try:
+            with contextlib.suppress(RuntimeError, AttributeError):
                 self._selection_overlay.deleteLater()
-            except (RuntimeError, AttributeError):
-                pass
             self._selection_overlay = None
 
         # Cleanup pictograph component
@@ -288,11 +289,11 @@ class StartPositionView(QFrame):
             self._pictograph_component = None
         self._update_display()
 
-    def get_position_data(self) -> Optional[BeatData]:
+    def get_position_data(self) -> BeatData | None:
         """Get the current position data"""
         return self._beat_data
 
-    def get_position_key(self) -> Optional[str]:
+    def get_position_key(self) -> str | None:
         """Get the current position key"""
         return self._position_key
 
@@ -307,7 +308,7 @@ class StartPositionView(QFrame):
         self.setVisible(True)
 
         parent = self.parent()
-        parent_visible = parent.isVisible() if parent else "No parent"
+        parent.isVisible() if parent else "No parent"
 
     def _update_display(self):
         """Update the visual display based on position data"""
@@ -442,11 +443,8 @@ class StartPositionView(QFrame):
 
     def __del__(self):
         """Destructor to ensure cleanup"""
-        try:
+        with contextlib.suppress(Exception):
             self.cleanup()
-        except Exception:
-
-            pass
 
     def pulse_animation(self):
         """Pulse animation to draw attention to start position"""

@@ -1,4 +1,48 @@
-from data.constants import *
+from __future__ import annotations
+
+from data.constants import (
+    ALPHA1,
+    ALPHA2,
+    ALPHA3,
+    ALPHA4,
+    ALPHA5,
+    ALPHA6,
+    ALPHA7,
+    ALPHA8,
+    BETA1,
+    BETA2,
+    BETA3,
+    BETA4,
+    BETA5,
+    BETA6,
+    BETA7,
+    BETA8,
+    EAST,
+    GAMMA1,
+    GAMMA2,
+    GAMMA3,
+    GAMMA4,
+    GAMMA5,
+    GAMMA6,
+    GAMMA7,
+    GAMMA8,
+    GAMMA9,
+    GAMMA10,
+    GAMMA11,
+    GAMMA12,
+    GAMMA13,
+    GAMMA14,
+    GAMMA15,
+    GAMMA16,
+    NORTH,
+    NORTHEAST,
+    NORTHWEST,
+    SOUTH,
+    SOUTHEAST,
+    SOUTHWEST,
+    WEST,
+)
+
 
 quarter_position_map_cw = {
     ALPHA1: ALPHA3,
@@ -215,6 +259,7 @@ positions_map: dict[tuple[str], str] = {
     (NORTHEAST, NORTHWEST): GAMMA16,
 }
 from data.constants import *
+
 
 rotated_and_swapped_positions = {
     ALPHA1: ALPHA1,

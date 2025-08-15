@@ -7,13 +7,16 @@ This is different from placement key generation - it creates keys like "from_lay
 
 Faithful port of the orientation key generation logic from legacy special placement system.
 """
+from __future__ import annotations
 
 import logging
-from typing import Optional
 
-from application.services.pictograph.pictograph_validator import PictographValidator
+from desktop.modern.src.application.services.pictograph.pictograph_validator import (
+    PictographValidator,
+)
+from desktop.modern.src.domain.models.pictograph_data import PictographData
 from domain.models import MotionData, Orientation
-from domain.models.pictograph_data import PictographData
+
 
 logger = logging.getLogger(__name__)
 
@@ -53,7 +56,7 @@ class SpecialPlacementOriKeyGenerator:
         has_nonradial_props = checker.ends_with_nonradial_ori()
         has_hybrid_orientation = checker.ends_with_layer3()
 
-        logger.debug(f"Orientation analysis:")
+        logger.debug("Orientation analysis:")
         logger.debug(f"  Has radial props: {has_radial_props}")
         logger.debug(f"  Has non-radial props: {has_nonradial_props}")
         logger.debug(f"  Has hybrid orientation: {has_hybrid_orientation}")
@@ -100,13 +103,12 @@ class SpecialPlacementOriKeyGenerator:
 
         if blue_layer == 1 and red_layer == 2:
             return "from_layer3_blue1_red2"
-        elif blue_layer == 2 and red_layer == 1:
+        if blue_layer == 2 and red_layer == 1:
             return "from_layer3_blue2_red1"
-        else:
-            # Default layer 3 key
-            return "from_layer3"
+        # Default layer 3 key
+        return "from_layer3"
 
-    def _get_arrow_layer(self, motion_data: Optional[MotionData]) -> int:
+    def _get_arrow_layer(self, motion_data: MotionData | None) -> int:
         """
         Determine which layer an arrow belongs to based on its orientations.
 
@@ -124,10 +126,9 @@ class SpecialPlacementOriKeyGenerator:
 
         if end_ori in [Orientation.IN, Orientation.OUT]:
             return 1  # Layer 1 (radial)
-        elif end_ori in [Orientation.CLOCK, Orientation.COUNTER]:
+        if end_ori in [Orientation.CLOCK, Orientation.COUNTER]:
             return 2  # Layer 2 (non-radial)
-        else:
-            return 1  # Default to layer 1
+        return 1  # Default to layer 1
 
     def _analyze_motion_orientations(self, motion_data: MotionData) -> str:
         """
@@ -147,7 +148,6 @@ class SpecialPlacementOriKeyGenerator:
 
         if end_ori in [Orientation.IN, Orientation.OUT]:
             return "from_layer1"
-        elif end_ori in [Orientation.CLOCK, Orientation.COUNTER]:
+        if end_ori in [Orientation.CLOCK, Orientation.COUNTER]:
             return "from_layer2"
-        else:
-            return "from_layer1"  # Default fallback
+        return "from_layer1"  # Default fallback

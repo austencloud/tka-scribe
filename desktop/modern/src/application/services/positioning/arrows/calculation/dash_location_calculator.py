@@ -4,10 +4,13 @@ Dash Location Service
 This service implements comprehensive dash location calculation logic,
 providing all the complex dash location maps and calculations with high precision.
 """
+from __future__ import annotations
 
-from typing import Optional
-
-from application.services.pictograph.analyzer import PictographAnalyzer
+from desktop.modern.src.application.services.pictograph.analyzer import (
+    PictographAnalyzer,
+)
+from desktop.modern.src.domain.models.enums import GridMode
+from desktop.modern.src.domain.models.pictograph_data import PictographData
 from domain.models import (
     ArrowColor,
     LetterType,
@@ -16,8 +19,6 @@ from domain.models import (
     MotionType,
     RotationDirection,
 )
-from domain.models.enums import GridMode
-from domain.models.pictograph_data import PictographData
 
 
 class DashLocationCalculator:
@@ -273,11 +274,11 @@ class DashLocationCalculator:
     def calculate_dash_location(
         self,
         motion: MotionData,
-        other_motion: Optional[MotionData] = None,
-        letter_type: Optional[LetterType] = None,
-        arrow_color: Optional[ArrowColor] = None,
-        grid_mode: Optional[GridMode] = None,
-        shift_location: Optional[Location] = None,
+        other_motion: MotionData | None = None,
+        letter_type: LetterType | None = None,
+        arrow_color: ArrowColor | None = None,
+        grid_mode: GridMode | None = None,
+        shift_location: Location | None = None,
         is_phi_dash: bool = False,
         is_psi_dash: bool = False,
         is_lambda: bool = False,
@@ -331,8 +332,8 @@ class DashLocationCalculator:
     def _get_phi_dash_psi_dash_location(
         self,
         motion: MotionData,
-        other_motion: Optional[MotionData],
-        arrow_color: Optional[ArrowColor],
+        other_motion: MotionData | None,
+        arrow_color: ArrowColor | None,
     ) -> Location:
         """Handle Φ_DASH and Ψ_DASH location calculation."""
         if not other_motion or not arrow_color:
@@ -345,13 +346,12 @@ class DashLocationCalculator:
             return self.PHI_DASH_PSI_DASH_LOCATION_MAP.get(key, motion.start_loc)
 
         # Current motion has zero turns, other doesn't
-        elif motion.turns == 0:
+        if motion.turns == 0:
             opposite_location = self._dash_location_non_zero_turns(other_motion)
             return self._get_opposite_location(opposite_location)
 
         # Current motion has non-zero turns
-        else:
-            return self._dash_location_non_zero_turns(motion)
+        return self._dash_location_non_zero_turns(motion)
 
     def _get_lambda_zero_turns_location(
         self, motion: MotionData, other_motion: MotionData
@@ -363,9 +363,9 @@ class DashLocationCalculator:
     def _default_zero_turns_dash_location(
         self,
         motion: MotionData,
-        letter_type: Optional[LetterType] = None,
-        grid_mode: Optional[GridMode] = None,
-        shift_location: Optional[Location] = None,
+        letter_type: LetterType | None = None,
+        grid_mode: GridMode | None = None,
+        shift_location: Location | None = None,
     ) -> Location:
         """Calculate default zero turns dash location."""
         # Type 3 scenario detection and handling
@@ -398,7 +398,7 @@ class DashLocationCalculator:
             return self.DIAMOND_DASH_LOCATION_MAP.get(
                 (start_loc, shift_location), start_loc
             )
-        elif grid_mode == GridMode.BOX:
+        if grid_mode == GridMode.BOX:
             return self.BOX_DASH_LOCATION_MAP.get(
                 (start_loc, shift_location), start_loc
             )

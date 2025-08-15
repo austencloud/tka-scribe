@@ -6,12 +6,14 @@ Handles the complex logic for different letter types and motion combinations.
 
 Faithful port of the turns tuple generation logic from legacy special placement system.
 """
+from __future__ import annotations
 
 import logging
 
-from domain.models.letter_type_classifier import LetterTypeClassifier
-from domain.models.motion_models import MotionData
-from domain.models.pictograph_data import PictographData
+from desktop.modern.src.domain.models.letter_type_classifier import LetterTypeClassifier
+from desktop.modern.src.domain.models.motion_models import MotionData
+from desktop.modern.src.domain.models.pictograph_data import PictographData
+
 
 logger = logging.getLogger(__name__)
 
@@ -71,22 +73,19 @@ class TurnsTupleGenerationService:
             return self._generate_type1_hybrid_tuple(
                 blue_motion, red_motion, generator_key
             )
-        else:
-            return self._generate_lead_state_tuple(
-                blue_motion, red_motion, generator_key
-            )
+        return self._generate_lead_state_tuple(
+            blue_motion, red_motion, generator_key
+        )
 
     def _normalize_turns(self, turns) -> str:
         """Normalize turns value to string format."""
         if turns == "fl":
             return "fl"
-        elif isinstance(turns, (int, float)):
+        if isinstance(turns, (int, float)):
             if turns == int(turns):
                 return str(int(turns))
-            else:
-                return str(turns)
-        else:
             return str(turns)
+        return str(turns)
 
     def _get_generator_key(
         self, letter: str, blue_motion: MotionData, red_motion: MotionData

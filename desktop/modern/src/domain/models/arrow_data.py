@@ -17,6 +17,7 @@ PROVIDES:
 - Clean separation between data and rendering
 - Easy testing and serialization
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass, field
@@ -24,7 +25,7 @@ import json
 from typing import Any
 import uuid
 
-from desktop.modern.domain.models.enums import ArrowType
+from desktop.modern.src.domain.models.enums import ArrowType
 
 
 @dataclass(frozen=True)

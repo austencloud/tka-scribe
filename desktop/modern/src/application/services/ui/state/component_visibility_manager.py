@@ -4,11 +4,12 @@ Component Visibility Manager - UI Component Visibility State
 Handles visibility state for various UI components throughout the application.
 Extracted from UIStateManager to follow single responsibility principle.
 """
+from __future__ import annotations
 
 import logging
-from typing import Dict
 
-from core.events.event_bus import UIEvent, get_event_bus
+from desktop.modern.src.core.events.event_bus import UIEvent, get_event_bus
+
 
 logger = logging.getLogger(__name__)
 
@@ -16,7 +17,7 @@ logger = logging.getLogger(__name__)
 class ComponentVisibilityManager:
     """
     Component visibility management.
-    
+
     Handles:
     - Component visibility state tracking
     - Visibility state changes
@@ -30,7 +31,7 @@ class ComponentVisibilityManager:
         self._event_bus = get_event_bus()
 
         # Component visibility state
-        self._component_visibility: Dict[str, bool] = {}
+        self._component_visibility: dict[str, bool] = {}
 
     def is_component_visible(self, component: str) -> bool:
         """Check if component is visible."""
@@ -71,11 +72,11 @@ class ComponentVisibilityManager:
         self.set_component_visibility(component, new_state)
         return new_state
 
-    def get_all_component_visibility(self) -> Dict[str, bool]:
+    def get_all_component_visibility(self) -> dict[str, bool]:
         """Get visibility state for all components."""
         return self._component_visibility.copy()
 
-    def set_multiple_component_visibility(self, visibility_states: Dict[str, bool]) -> None:
+    def set_multiple_component_visibility(self, visibility_states: dict[str, bool]) -> None:
         """Set visibility for multiple components at once."""
         for component, visible in visibility_states.items():
             self.set_component_visibility(component, visible)
@@ -93,11 +94,11 @@ class ComponentVisibilityManager:
         )
         self._event_bus.publish(event)
 
-    def get_state_for_persistence(self) -> Dict[str, bool]:
+    def get_state_for_persistence(self) -> dict[str, bool]:
         """Get state data for persistence."""
         return self._component_visibility.copy()
 
-    def load_state_from_persistence(self, state: Dict[str, bool]) -> None:
+    def load_state_from_persistence(self, state: dict[str, bool]) -> None:
         """Load state from persistence data."""
         if isinstance(state, dict):
             self._component_visibility = state.copy()

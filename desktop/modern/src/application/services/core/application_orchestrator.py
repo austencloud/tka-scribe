@@ -10,21 +10,22 @@ PROVIDES:
 - Clean separation of concerns
 - Progress tracking and error handling
 """
+from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import Callable, Optional
+from typing import Callable
 
-from application.services.core.application_lifecycle_manager import (
+from PyQt6.QtWidgets import QMainWindow, QTabWidget
+
+from desktop.modern.src.application.services.core.application_lifecycle_manager import (
     ApplicationLifecycleManager,
     IApplicationLifecycleManager,
 )
-from application.services.core.service_registration_manager import (
+from desktop.modern.src.application.services.core.service_registration_manager import (
     IServiceRegistrationManager,
     ServiceRegistrationManager,
 )
-from core.dependency_injection.di_container import DIContainer
-from PyQt6.QtCore import QTimer
-from PyQt6.QtWidgets import QMainWindow, QTabWidget
+from desktop.modern.src.core.dependency_injection.di_container import DIContainer
 
 from ..ui.background_manager import BackgroundManager, IBackgroundManager
 from ..ui.ui_setup_manager import IUISetupManager, UISetupManager
@@ -64,11 +65,11 @@ class ApplicationOrchestrator(IApplicationOrchestrator):
 
     def __init__(
         self,
-        service_manager: Optional[IServiceRegistrationManager] = None,
-        ui_manager: Optional[IUISetupManager] = None,
-        background_manager: Optional[IBackgroundManager] = None,
-        lifecycle_manager: Optional[IApplicationLifecycleManager] = None,
-        container: Optional[DIContainer] = None,
+        service_manager: IServiceRegistrationManager | None = None,
+        ui_manager: IUISetupManager | None = None,
+        background_manager: IBackgroundManager | None = None,
+        lifecycle_manager: IApplicationLifecycleManager | None = None,
+        container: DIContainer | None = None,
     ):
         """Initialize with dependency injection."""
         self.service_manager = service_manager or ServiceRegistrationManager()
@@ -80,7 +81,9 @@ class ApplicationOrchestrator(IApplicationOrchestrator):
             session_service = None
             if container:
                 try:
-                    from core.interfaces.session_services import ISessionStateTracker
+                    from desktop.modern.src.core.interfaces.session_services import (
+                        ISessionStateTracker,
+                    )
 
                     session_service = container.resolve(ISessionStateTracker)
 
@@ -118,7 +121,9 @@ class ApplicationOrchestrator(IApplicationOrchestrator):
         )
 
         # Step 2: Configure services
-        from core.dependency_injection.di_container import get_container
+        from desktop.modern.src.core.dependency_injection.di_container import (
+            get_container,
+        )
 
         if progress_callback:
             progress_callback(45, "Configuring dependency injection...")
@@ -227,7 +232,7 @@ class ApplicationOrchestrator(IApplicationOrchestrator):
             "application_info": self.lifecycle_manager.get_application_info(),
         }
 
-    def _create_progress_callback(self, splash_screen) -> Optional[Callable]:
+    def _create_progress_callback(self, splash_screen) -> Callable | None:
         """Create progress callback for splash screen updates."""
         if splash_screen:
 

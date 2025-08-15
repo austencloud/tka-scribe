@@ -1,8 +1,12 @@
-import random
+from __future__ import annotations
+
 import math
-from PyQt6.QtGui import QPainter, QPixmap, QCursor, QColor, QRadialGradient
+import random
+
+from PyQt6.QtCore import QPoint, Qt
+from PyQt6.QtGui import QColor, QCursor, QPainter, QPixmap, QRadialGradient
 from PyQt6.QtWidgets import QWidget
-from PyQt6.QtCore import Qt, QPoint
+
 from ..asset_utils import get_image_path
 
 

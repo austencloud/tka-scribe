@@ -10,15 +10,17 @@ PROVIDES:
 - Clean separation of concerns
 - Event-driven prop positioning
 """
+from __future__ import annotations
 
-import uuid
 from abc import ABC, abstractmethod
 from datetime import datetime
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple
+from typing import TYPE_CHECKING, Any
+import uuid
 
-from domain.models import BeatData
-from domain.models.enums import PropType
 from PyQt6.QtCore import QPointF
+
+from desktop.modern.src.domain.models.enums import PropType
+from domain.models import BeatData
 
 from ...props.calculation.direction_calculation_service import (
     DirectionCalculationService,
@@ -37,12 +39,17 @@ from ...props.configuration.json_configuration_service import (
     JSONConfigurationService,
 )
 
+
 # Event-driven architecture imports
 if TYPE_CHECKING:
-    from core.events import IEventBus
+    from desktop.modern.src.core.events import IEventBus
 
 try:
-    from core.events import EventPriority, PropPositionedEvent, get_event_bus
+    from desktop.modern.src.core.events import (
+        EventPriority,
+        PropPositionedEvent,
+        get_event_bus,
+    )
 
     EVENT_SYSTEM_AVAILABLE = True
 except ImportError:
@@ -66,7 +73,7 @@ class IPropOrchestrator(ABC):
     @abstractmethod
     def calculate_separation_offsets(
         self, beat_data: BeatData
-    ) -> Tuple[QPointF, QPointF]:
+    ) -> tuple[QPointF, QPointF]:
         """Calculate separation offsets for blue and red props."""
 
     @abstractmethod
@@ -84,11 +91,11 @@ class PropOrchestrator(IPropOrchestrator):
 
     def __init__(
         self,
-        direction_service: Optional[IDirectionCalculationService] = None,
-        offset_service: Optional[IOffsetCalculationService] = None,
-        config_service: Optional[IJSONConfigurationService] = None,
-        classification_service: Optional[IPropClassificationService] = None,
-        event_bus: Optional["IEventBus"] = None,
+        direction_service: IDirectionCalculationService | None = None,
+        offset_service: IOffsetCalculationService | None = None,
+        config_service: IJSONConfigurationService | None = None,
+        classification_service: IPropClassificationService | None = None,
+        event_bus: IEventBus | None = None,
     ):
         """Initialize with dependency injection."""
         self.direction_service = direction_service or DirectionCalculationService()
@@ -102,7 +109,7 @@ class PropOrchestrator(IPropOrchestrator):
         self.event_bus = event_bus or (
             get_event_bus() if EVENT_SYSTEM_AVAILABLE else None
         )
-        self._subscription_ids: List[str] = []
+        self._subscription_ids: list[str] = []
 
     def should_apply_beta_positioning(self, beat_data: BeatData) -> bool:
         """
@@ -157,7 +164,7 @@ class PropOrchestrator(IPropOrchestrator):
 
     def calculate_separation_offsets(
         self, beat_data: BeatData
-    ) -> Tuple[QPointF, QPointF]:
+    ) -> tuple[QPointF, QPointF]:
         """
         Calculate separation offsets for blue and red props.
 
@@ -222,12 +229,12 @@ class PropOrchestrator(IPropOrchestrator):
 
         return overlap_detected
 
-    def classify_props_by_size(self, beat_data: BeatData) -> Dict[str, list]:
+    def classify_props_by_size(self, beat_data: BeatData) -> dict[str, list]:
         """Classify props by size categories using classification service."""
         return self.classification_service.classify_props_by_size(beat_data)
 
     def get_repositioning_strategy(
-        self, beat_data: BeatData, prop_classification: Dict[str, list]
+        self, beat_data: BeatData, prop_classification: dict[str, list]
     ) -> str:
         """Get repositioning strategy using classification service."""
         return self.classification_service.get_repositioning_strategy(
@@ -249,7 +256,7 @@ class PropOrchestrator(IPropOrchestrator):
 
     def _apply_swap_override(self, beat_data: BeatData) -> BeatData:
         """Apply manual swap override from special placements."""
-        override_data = self.config_service.get_swap_override_data(beat_data)
+        self.config_service.get_swap_override_data(beat_data)
 
         # TODO: Implement specific override application logic
         # This would modify the beat_data with specific positioning overrides
@@ -275,7 +282,7 @@ class PropOrchestrator(IPropOrchestrator):
         return PropType.HAND  # Default to smallest offset
 
     def _publish_positioning_event(
-        self, positioning_type: str, position_data: Dict[str, Any]
+        self, positioning_type: str, position_data: dict[str, Any]
     ) -> None:
         """Publish positioning event if event system is available."""
         if self.event_bus and PropPositionedEvent:

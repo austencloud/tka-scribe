@@ -21,19 +21,22 @@ USAGE:
     except Exception as e:
         logger.error(f"Processing failed: {e}")
 """
+from __future__ import annotations
 
 import logging
-from typing import List, Tuple
-from core.types.coordinates import point_to_qpoint
-from core.types.geometry import Point
-from domain.models.enums import Location
-from domain.models.motion_models import MotionData
+
+from desktop.modern.src.core.types.coordinates import point_to_qpoint
+from desktop.modern.src.core.types.geometry import Point
+from desktop.modern.src.domain.models.enums import Location
+from desktop.modern.src.domain.models.motion_models import MotionData
+
+from ..calculation.quadrant_index_calculator import QuadrantIndexCalculator
 
 # Import required services
 from ...arrows.calculation.directional_tuple_calculator import (
     DirectionalTupleCalculator,
 )
-from ..calculation.quadrant_index_calculator import QuadrantIndexCalculator
+
 
 logger = logging.getLogger(__name__)
 
@@ -90,12 +93,12 @@ class DirectionalTupleProcessor:
             return final_adjustment
 
         except Exception as e:
-            logger.error(f"Error processing directional tuples: {e}")
+            logger.exception(f"Error processing directional tuples: {e}")
             raise RuntimeError(f"Directional tuple processing failed: {e}") from e
 
     def _generate_directional_tuples(
         self, motion: MotionData, base_adjustment: Point
-    ) -> List[Tuple[int, int]]:
+    ) -> list[tuple[int, int]]:
         """
         Generate directional tuples using rotation matrices.
 
@@ -117,7 +120,7 @@ class DirectionalTupleProcessor:
             return directional_tuples
 
         except Exception as e:
-            logger.error(f"Error generating directional tuples: {e}")
+            logger.exception(f"Error generating directional tuples: {e}")
             raise RuntimeError(f"Directional tuple generation failed: {e}") from e
 
     def _get_quadrant_index(self, motion_data: MotionData, location: Location) -> int:
@@ -137,11 +140,11 @@ class DirectionalTupleProcessor:
             return quadrant_index
 
         except Exception as e:
-            logger.error(f"Error calculating quadrant index: {e}")
+            logger.exception(f"Error calculating quadrant index: {e}")
             raise RuntimeError(f"Quadrant index calculation failed: {e}") from e
 
     def _select_from_tuples(
-        self, directional_tuples: List[Tuple[int, int]], quadrant_index: int
+        self, directional_tuples: list[tuple[int, int]], quadrant_index: int
     ) -> Point:
         """
         Select final adjustment from directional tuples using quadrant index.
@@ -161,5 +164,5 @@ class DirectionalTupleProcessor:
             return final_point
 
         except Exception as e:
-            logger.error(f"Error selecting from directional tuples: {e}")
+            logger.exception(f"Error selecting from directional tuples: {e}")
             raise RuntimeError(f"Tuple selection failed: {e}") from e

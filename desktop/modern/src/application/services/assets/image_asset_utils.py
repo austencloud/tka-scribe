@@ -3,6 +3,7 @@ Image asset utilities for pictograph rendering.
 
 Handles path management and asset loading for SVG files.
 """
+from __future__ import annotations
 
 import os
 

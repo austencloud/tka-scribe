@@ -7,16 +7,17 @@ quadrant-based directional adjustments using rotation matrices.
 This service provides the core directional tuple generation that was
 missing from the modern arrow positioning system.
 """
+from __future__ import annotations
 
 import logging
-from typing import List, Tuple
 
 from domain.models import (
+    Location,
     MotionData,
     MotionType,
-    Location,
     RotationDirection,
 )
+
 
 # Conditional PyQt6 imports for testing compatibility
 try:
@@ -198,7 +199,7 @@ class DirectionalTupleCalculator:
 
     def generate_directional_tuples(
         self, motion: MotionData, base_x: float, base_y: float
-    ) -> List[Tuple[float, float]]:
+    ) -> list[tuple[float, float]]:
         """
         Generate directional tuples for the given motion and base adjustment.
 
@@ -226,15 +227,14 @@ class DirectionalTupleCalculator:
             return self._handle_shift_tuples(
                 motion_type, prop_rot_dir, grid_mode, base_x, base_y
             )
-        elif motion_type == MotionType.DASH:
+        if motion_type == MotionType.DASH:
             return self._handle_dash_tuples(prop_rot_dir, grid_mode, base_x, base_y)
-        elif motion_type == MotionType.STATIC:
+        if motion_type == MotionType.STATIC:
             return self._handle_static_tuples(prop_rot_dir, grid_mode, base_x, base_y)
-        elif motion_type == MotionType.FLOAT:
+        if motion_type == MotionType.FLOAT:
             return self._handle_float_tuples(motion, base_x, base_y)
-        else:
-            logger.warning(f"Unknown motion type: {motion_type}, using default")
-            return [(base_x, base_y)] * 4
+        logger.warning(f"Unknown motion type: {motion_type}, using default")
+        return [(base_x, base_y)] * 4
 
     def _determine_grid_mode(self, motion: MotionData) -> str:
         """
@@ -256,8 +256,7 @@ class DirectionalTupleCalculator:
             Location.NORTHWEST,
         ]:
             return "box"
-        else:
-            return "diamond"
+        return "diamond"
 
     def _handle_shift_tuples(
         self,
@@ -266,7 +265,7 @@ class DirectionalTupleCalculator:
         grid_mode: str,
         x: float,
         y: float,
-    ) -> List[Tuple[float, float]]:
+    ) -> list[tuple[float, float]]:
         """Handle PRO and ANTI motion directional tuples."""
         if grid_mode == "diamond":
             mapping = self._shift_mapping_diamond.get(motion_type, {})
@@ -283,7 +282,7 @@ class DirectionalTupleCalculator:
 
     def _handle_dash_tuples(
         self, prop_rot_dir: RotationDirection, grid_mode: str, x: float, y: float
-    ) -> List[Tuple[float, float]]:
+    ) -> list[tuple[float, float]]:
         """Handle DASH motion directional tuples."""
         mapping = self._dash_mapping.get(grid_mode, {})
         transform_func = mapping.get(prop_rot_dir, lambda x, y: [(x, y)] * 4)
@@ -294,7 +293,7 @@ class DirectionalTupleCalculator:
 
     def _handle_static_tuples(
         self, prop_rot_dir: RotationDirection, grid_mode: str, x: float, y: float
-    ) -> List[Tuple[float, float]]:
+    ) -> list[tuple[float, float]]:
         """Handle STATIC motion directional tuples."""
         if prop_rot_dir == RotationDirection.NO_ROTATION:
             result = [(x, y), (-x, -y), (-y, x), (y, -x)]
@@ -308,7 +307,7 @@ class DirectionalTupleCalculator:
 
     def _handle_float_tuples(
         self, motion: MotionData, x: float, y: float
-    ) -> List[Tuple[float, float]]:
+    ) -> list[tuple[float, float]]:
         """Handle FLOAT motion directional tuples."""
         # For FLOAT motions, we need to determine handpath direction
         # This is a simplified version - in full implementation would use HandpathCalculator

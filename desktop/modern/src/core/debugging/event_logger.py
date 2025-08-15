@@ -8,12 +8,12 @@ from __future__ import annotations
 import logging
 from typing import Any
 
-from desktop.modern.core.events.domain_events import (
+from desktop.modern.src.core.events.domain_events import (
     CommandExecutedEvent,
     CommandRedoneEvent,
     CommandUndoneEvent,
 )
-from desktop.modern.core.events.event_bus import BaseEvent
+from desktop.modern.src.core.events.event_bus import BaseEvent
 
 
 logger = logging.getLogger(__name__)
@@ -173,7 +173,7 @@ def log_debug_info():
     logger.info("🔍 DEBUG INFO - Current System State:")
 
     try:
-        from desktop.modern.core.service_locator import (
+        from desktop.modern.src.core.service_locator import (
             get_command_processor,
             get_sequence_state_manager,
         )

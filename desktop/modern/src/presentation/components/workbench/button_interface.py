@@ -8,13 +8,14 @@ needs to interact with the sequence workbench without requiring full refactoring
 
 Phase 0 - Days 2-3: Strategic partial refactoring for Sprint 2 preparation.
 """
+from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import Optional
 
-from domain.models.beat_data import BeatData
-from domain.models.sequence_data import SequenceData
 from PyQt6.QtCore import QObject, pyqtSignal
+
+from desktop.modern.src.domain.models.beat_data import BeatData
+from desktop.modern.src.domain.models.sequence_data import SequenceData
 
 
 class IWorkbenchButtonInterface(ABC):
@@ -35,15 +36,15 @@ class IWorkbenchButtonInterface(ABC):
         """Delete the currently selected beat from the sequence."""
 
     @abstractmethod
-    def get_current_sequence(self) -> Optional[SequenceData]:
+    def get_current_sequence(self) -> SequenceData | None:
         """Get the current sequence being edited."""
 
     @abstractmethod
-    def get_selected_beat_index(self) -> Optional[int]:
+    def get_selected_beat_index(self) -> int | None:
         """Get the index of the currently selected beat."""
 
     @abstractmethod
-    def get_start_position(self) -> Optional[BeatData]:
+    def get_start_position(self) -> BeatData | None:
         """Get the current start position data."""
 
     @abstractmethod
@@ -117,18 +118,18 @@ class ButtonOperationResult:
     of button operations, including error messages and data.
     """
 
-    def __init__(self, success: bool, message: str = "", data: any = None):
+    def __init__(self, success: bool, message: str = "", data: any | None = None):
         self.success = success
         self.message = message
         self.data = data
 
     @classmethod
-    def success(cls, message: str = "Operation completed", data: any = None):
+    def success(cls, message: str = "Operation completed", data: any | None = None):
         """Create a successful result."""
         return cls(True, message, data)
 
     @classmethod
-    def failure(cls, message: str = "Operation failed", data: any = None):
+    def failure(cls, message: str = "Operation failed", data: any | None = None):
         """Create a failed result."""
         return cls(False, message, data)
 

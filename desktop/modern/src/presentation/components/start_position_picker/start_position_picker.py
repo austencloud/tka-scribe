@@ -1,28 +1,26 @@
+# Import for command-based architecture
+from __future__ import annotations
+
+import logging
+
+from PyQt6.QtCore import QSize, Qt, pyqtSignal
+from PyQt6.QtGui import QFont
 from PyQt6.QtWidgets import (
-    QWidget,
-    QVBoxLayout,
     QGridLayout,
     QLabel,
     QScrollArea,
-    QPushButton,
+    QVBoxLayout,
+    QWidget,
 )
-from PyQt6.QtCore import pyqtSignal, Qt, QSize
-from PyQt6.QtGui import QFont
 
 # Remove unused import that was causing the module error
-# from application.services.data.pictograph_dataset_service import (
+# from desktop.modern.src.application.services.data.pictograph_dataset_service import (
 #     PictographDatasetService,
 # )
-from presentation.components.pictograph.pictograph_component import PictographComponent
-from presentation.components.start_position_picker.start_position_option import (
+from desktop.modern.src.presentation.components.start_position_picker.start_position_option import (
     StartPositionOption,
 )
-from presentation.components.workbench.sequence_beat_frame.selection_overlay import (
-    SelectionOverlay,
-)
 
-# Import for command-based architecture
-import logging
 
 logger = logging.getLogger(__name__)
 
@@ -122,8 +120,13 @@ class StartPositionPicker(QWidget):
         """Handle position selection via command pattern."""
         try:
             # Import command and services
-            from core.commands.start_position_commands import SetStartPositionCommand
-            from core.service_locator import get_command_processor, get_event_bus
+            from desktop.modern.src.core.commands.start_position_commands import (
+                SetStartPositionCommand,
+            )
+            from desktop.modern.src.core.service_locator import (
+                get_command_processor,
+                get_event_bus,
+            )
 
             # Get services
             command_processor = get_command_processor()

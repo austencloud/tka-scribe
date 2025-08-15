@@ -9,7 +9,7 @@ from __future__ import annotations
 from typing import Any
 
 # Import service interfaces
-from desktop.modern.core.interfaces.core_services import (
+from desktop.modern.src.core.interfaces.core_services import (
     IArrowManagementService,
     ILayoutService,
     IPictographManager,
@@ -21,7 +21,7 @@ from desktop.modern.core.interfaces.core_services import (
 )
 
 # Import types
-from desktop.modern.core.types import Size
+from desktop.modern.src.core.types import Size
 
 
 class InMemorySequenceDataService(ISequenceDataService):

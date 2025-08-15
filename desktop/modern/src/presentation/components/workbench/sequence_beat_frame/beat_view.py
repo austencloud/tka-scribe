@@ -4,21 +4,23 @@ Modern Beat View Component
 Individual beat widget for the Modern sequence workbench, replacing Legacy's BeatView
 with modern architecture patterns and Modern pictograph integration.
 """
+from __future__ import annotations
 
-from typing import Optional
+import contextlib
+
+from PyQt6.QtCore import QSize, Qt, pyqtSignal
+from PyQt6.QtGui import QColor, QPainter, QPen
+from PyQt6.QtWidgets import QFrame, QVBoxLayout
 
 from domain.models import BeatData
-from PyQt6.QtCore import QSize, Qt, pyqtSignal
-from PyQt6.QtGui import QColor, QMouseEvent, QPainter, QPen
-from PyQt6.QtWidgets import QFrame, QVBoxLayout, QWidget
 
+from .beat_number_overlay import BeatNumberOverlay, add_beat_number_to_view
+from .selection_overlay import SelectionOverlay
+from .start_text_overlay import StartTextOverlay
 from ...pictograph.pictograph_component import (
     PictographComponent,
     create_pictograph_component,
 )
-from .beat_number_overlay import BeatNumberOverlay, add_beat_number_to_view
-from .selection_overlay import SelectionOverlay
-from .start_text_overlay import StartTextOverlay
 
 
 class BeatView(QFrame):
@@ -44,20 +46,20 @@ class BeatView(QFrame):
         self._beat_number = beat_number
 
         # Common state (previously from PictographViewBase)
-        self._beat_data: Optional[BeatData] = None
+        self._beat_data: BeatData | None = None
         self._is_selected = False
         self._is_highlighted = False
 
         # UI components
-        self._pictograph_component: Optional[PictographComponent] = None
-        self._selection_overlay: Optional[SelectionOverlay] = None
+        self._pictograph_component: PictographComponent | None = None
+        self._selection_overlay: SelectionOverlay | None = None
 
         # START text overlay for preserved start position beat
-        self._start_text_overlay: Optional[StartTextOverlay] = None
+        self._start_text_overlay: StartTextOverlay | None = None
         self._show_start_text = False
 
         # Beat number overlay for sequence beats
-        self._beat_number_overlay: Optional[BeatNumberOverlay] = None
+        self._beat_number_overlay: BeatNumberOverlay | None = None
         self._show_beat_number = False
 
         # Initialize UI
@@ -117,7 +119,9 @@ class BeatView(QFrame):
     def _configure_pictograph_component(self):
         """Configure the pictograph component for beat view context"""
         # CRITICAL FIX: Set proper scaling context for beat frame
-        from application.services.pictograph.scaling_service import ScalingContext
+        from desktop.modern.src.application.services.pictograph.scaling_service import (
+            ScalingContext,
+        )
 
         self._pictograph_component.set_scaling_context(ScalingContext.BEAT_VIEW)
 
@@ -126,13 +130,13 @@ class BeatView(QFrame):
         self._pictograph_component.disable_borders()
 
     # State management
-    def set_beat_data(self, beat_data: Optional[BeatData]):
+    def set_beat_data(self, beat_data: BeatData | None):
         """Set beat data and update display."""
         if self._beat_data != beat_data:
             self._beat_data = beat_data
             self._update_display()
 
-    def get_beat_data(self) -> Optional[BeatData]:
+    def get_beat_data(self) -> BeatData | None:
         """Get the current beat data"""
         return self._beat_data
 
@@ -334,10 +338,8 @@ class BeatView(QFrame):
         """Cleanup resources when the view is being destroyed"""
         # Clean up selection overlay
         if self._selection_overlay:
-            try:
+            with contextlib.suppress(RuntimeError, AttributeError):
                 self._selection_overlay.deleteLater()
-            except (RuntimeError, AttributeError):
-                pass
             self._selection_overlay = None
 
         # Cleanup pictograph component
@@ -402,7 +404,5 @@ class BeatView(QFrame):
 
     def __del__(self):
         """Destructor to ensure cleanup"""
-        try:
+        with contextlib.suppress(Exception):
             self.cleanup()
-        except Exception:
-            pass

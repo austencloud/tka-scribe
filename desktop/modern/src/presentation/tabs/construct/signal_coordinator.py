@@ -4,18 +4,19 @@ SignalCoordinator
 Manages signal connections, emissions, and coordination between construct tab components.
 Responsible for connecting signals between components and handling signal routing.
 """
+from __future__ import annotations
 
-from domain.models import SequenceData
 from PyQt6.QtCore import QObject, pyqtSignal
 
 # Import services from application layer (moved from presentation)
-from application.services.sequence.loader import SequenceLoader
-from application.services.sequence.sequence_beat_operations import (
+from desktop.modern.src.application.services.sequence.loader import SequenceLoader
+from desktop.modern.src.application.services.sequence.sequence_beat_operations import (
     SequenceBeatOperations,
 )
-from application.services.sequence.sequence_start_position_manager import (
+from desktop.modern.src.application.services.sequence.sequence_start_position_manager import (
     SequenceStartPositionManager,
 )
+from domain.models import SequenceData
 
 from .layout_manager import ConstructTabLayoutManager
 from .option_picker_manager import OptionPickerManager
@@ -220,7 +221,7 @@ class SignalCoordinator(QObject):
             else:
                 # Completely empty (no start position AND no beats) → show start position picker
                 print(
-                    f"🎯 [SIGNAL_COORDINATOR] Showing start position picker (completely empty)"
+                    "🎯 [SIGNAL_COORDINATOR] Showing start position picker (completely empty)"
                 )
                 self.layout_manager.transition_to_start_position_picker()
 
@@ -229,7 +230,7 @@ class SignalCoordinator(QObject):
         try:
 
             # Clear persistence FIRST
-            from application.services.sequence.sequence_persister import (
+            from desktop.modern.src.application.services.sequence.sequence_persister import (
                 SequencePersister,
             )
 

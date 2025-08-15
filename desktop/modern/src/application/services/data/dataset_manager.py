@@ -10,13 +10,16 @@ PROVIDES:
 - Search and filtering operations
 - Dataset indexing
 """
+from __future__ import annotations
 
-import uuid
 from abc import ABC, abstractmethod
-from typing import Any, Dict, List, Optional, TypedDict
+from typing import Any
+import uuid
 
-from application.services.pictograph.pictograph_manager import PictographSearchQuery
-from domain.models.pictograph_data import PictographData
+from desktop.modern.src.application.services.pictograph.pictograph_manager import (
+    PictographSearchQuery,
+)
+from desktop.modern.src.domain.models.pictograph_data import PictographData
 
 
 class IDatasetManager(ABC):
@@ -29,15 +32,15 @@ class IDatasetManager(ABC):
         """Add pictograph to dataset."""
 
     @abstractmethod
-    def search_dataset(self, query: PictographSearchQuery) -> List[PictographData]:
+    def search_dataset(self, query: PictographSearchQuery) -> list[PictographData]:
         """Search pictograph dataset with query."""
 
     @abstractmethod
-    def get_dataset_categories(self) -> List[str]:
+    def get_dataset_categories(self) -> list[str]:
         """Get all available dataset categories."""
 
     @abstractmethod
-    def get_pictographs_by_category(self, category: str) -> List[PictographData]:
+    def get_pictographs_by_category(self, category: str) -> list[PictographData]:
         """Get all pictographs in a category."""
 
 
@@ -52,8 +55,8 @@ class DatasetManager(IDatasetManager):
     def __init__(self):
         """Initialize dataset management service."""
         # Dataset management
-        self._pictograph_cache: Dict[str, PictographData] = {}
-        self._dataset_index: Dict[str, List[str]] = {}
+        self._pictograph_cache: dict[str, PictographData] = {}
+        self._dataset_index: dict[str, list[str]] = {}
 
     def add_to_dataset(
         self, pictograph: PictographData, category: str = "user_created"
@@ -71,7 +74,7 @@ class DatasetManager(IDatasetManager):
 
         return pictograph_id
 
-    def search_dataset(self, query: PictographSearchQuery) -> List[PictographData]:
+    def search_dataset(self, query: PictographSearchQuery) -> list[PictographData]:
         """Search pictograph dataset with query."""
         results = []
 
@@ -81,7 +84,7 @@ class DatasetManager(IDatasetManager):
             max_results = 50
 
         # Search through cached pictographs
-        for pictograph_id, pictograph in self._pictograph_cache.items():
+        for _pictograph_id, pictograph in self._pictograph_cache.items():
             if self._matches_query(pictograph, query):
                 results.append(pictograph)
 
@@ -90,11 +93,11 @@ class DatasetManager(IDatasetManager):
 
         return results
 
-    def get_dataset_categories(self) -> List[str]:
+    def get_dataset_categories(self) -> list[str]:
         """Get all available dataset categories."""
         return list(self._dataset_index.keys())
 
-    def get_pictographs_by_category(self, category: str) -> List[PictographData]:
+    def get_pictographs_by_category(self, category: str) -> list[PictographData]:
         """Get all pictographs in a category."""
         pictograph_ids = self._dataset_index.get(category, [])
         return [
@@ -103,7 +106,7 @@ class DatasetManager(IDatasetManager):
             if pid in self._pictograph_cache
         ]
 
-    def get_pictograph_by_id(self, pictograph_id: str) -> Optional[PictographData]:
+    def get_pictograph_by_id(self, pictograph_id: str) -> PictographData | None:
         """Get pictograph by ID."""
         return self._pictograph_cache.get(pictograph_id)
 
@@ -116,7 +119,7 @@ class DatasetManager(IDatasetManager):
         del self._pictograph_cache[pictograph_id]
 
         # Remove from all category indices
-        for category, ids in self._dataset_index.items():
+        for _category, ids in self._dataset_index.items():
             if pictograph_id in ids:
                 ids.remove(pictograph_id)
 
@@ -137,7 +140,7 @@ class DatasetManager(IDatasetManager):
         self._pictograph_cache.clear()
         self._dataset_index.clear()
 
-    def get_dataset_stats(self) -> Dict[str, Any]:
+    def get_dataset_stats(self) -> dict[str, Any]:
         """Get dataset statistics."""
         total_pictographs = len(self._pictograph_cache)
         categories = self.get_dataset_categories()
@@ -158,14 +161,14 @@ class DatasetManager(IDatasetManager):
     ) -> bool:
         """Check if pictograph matches search query."""
         # Letter matching
-        if "letter" in query and query["letter"]:
+        if query.get("letter"):
             letter = pictograph.metadata.get("letter", "").lower()
             query_letter = query["letter"].lower()
             if query_letter not in letter:
                 return False
 
         # Motion type matching
-        if "motion_type" in query and query["motion_type"]:
+        if query.get("motion_type"):
             query_motion_type = query["motion_type"]
             has_matching_motion = False
 
@@ -181,13 +184,13 @@ class DatasetManager(IDatasetManager):
                 return False
 
         # Start position matching
-        if "start_position" in query and query["start_position"]:
+        if query.get("start_position"):
             start_position = pictograph.start_position
             if not start_position or query["start_position"] not in start_position:
                 return False
 
         # Category matching
-        if "categories" in query and query["categories"]:
+        if query.get("categories"):
             pictograph_categories = pictograph.metadata.get("categories", [])
             if not any(cat in pictograph_categories for cat in query["categories"]):
                 return False

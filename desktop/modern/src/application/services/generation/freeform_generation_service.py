@@ -4,19 +4,24 @@ Freeform Generation Service - Modern Implementation
 Direct port of freeform sequence generation algorithm from legacy.
 Implements IGenerationService interface for freeform mode.
 """
+from __future__ import annotations
 
-import random
 from copy import deepcopy
-from typing import List, Dict, Any, Set
+import random
+from typing import Any
 
-from core.interfaces.generation_services import (
-    IGenerationService,
-    PropContinuity,
-    LetterType,
-)
-from domain.models.generation_models import GenerationConfig, GenerationResult
-from data.constants import CLOCKWISE, COUNTER_CLOCKWISE, LETTER
 from tka_types import RotationDirection
+
+from data.constants import CLOCKWISE, COUNTER_CLOCKWISE, LETTER
+from desktop.modern.src.core.interfaces.generation_services import (
+    IGenerationService,
+    LetterType,
+    PropContinuity,
+)
+from desktop.modern.src.domain.models.generation_models import (
+    GenerationConfig,
+    GenerationResult,
+)
 
 
 class FreeformGenerationService(IGenerationService):
@@ -119,20 +124,20 @@ class FreeformGenerationService(IGenerationService):
 
         except Exception as e:
             return GenerationResult(
-                success=False, error_message=f"Freeform generation failed: {str(e)}"
+                success=False, error_message=f"Freeform generation failed: {e!s}"
             )
 
     def _generate_next_pictograph(
         self,
-        sequence: List[Dict],
+        sequence: list[dict],
         level: int,
         turn_blue: float,
         turn_red: float,
         prop_continuity: PropContinuity,
         blue_rot_dir: str,
         red_rot_dir: str,
-        letter_types: Set[LetterType],
-    ) -> Dict:
+        letter_types: set[LetterType],
+    ) -> dict:
         """
         Generate next pictograph using exact legacy algorithm.
 
@@ -158,7 +163,7 @@ class FreeformGenerationService(IGenerationService):
         next_beat = random.choice(option_dicts)
 
         # Set turns if level 2 or 3 (equivalent to self.set_turns())
-        if level == 2 or level == 3:
+        if level in {2, 3}:
             next_beat = self._set_turns(next_beat, turn_blue, turn_red)
 
         # Update orientations (from base_sequence_builder)
@@ -172,8 +177,8 @@ class FreeformGenerationService(IGenerationService):
         return next_beat
 
     def _filter_options_by_letter_type(
-        self, options: List[Dict], letter_types: Set[LetterType]
-    ) -> List[Dict]:
+        self, options: list[dict], letter_types: set[LetterType]
+    ) -> list[dict]:
         """Filter options based on selected letter types."""
         # Convert LetterType enums to actual letters
         selected_letters = []
@@ -228,10 +233,10 @@ class FreeformGenerationService(IGenerationService):
         return filtered_options if filtered_options else options
 
     def _filter_options_by_rotation(
-        self, options: List[Dict], blue_rot_dir: str, red_rot_dir: str
-    ) -> List[Dict]:
+        self, options: list[dict], blue_rot_dir: str, red_rot_dir: str
+    ) -> list[dict]:
         """Filter options to match rotation directions (from base_sequence_builder)."""
-        from data.constants import PROP_ROT_DIR, BLUE_ATTRS, RED_ATTRS, NO_ROT
+        from data.constants import BLUE_ATTRS, NO_ROT, PROP_ROT_DIR, RED_ATTRS
 
         filtered = [
             opt
@@ -244,18 +249,18 @@ class FreeformGenerationService(IGenerationService):
 
         return filtered if filtered else options
 
-    def _set_turns(self, beat: Dict, turn_blue: float, turn_red: float) -> Dict:
+    def _set_turns(self, beat: dict, turn_blue: float, turn_red: float) -> dict:
         """Set turns for both colors (from base_sequence_builder)."""
         from data.constants import (
             BLUE_ATTRS,
-            RED_ATTRS,
-            TURNS,
-            MOTION_TYPE,
             FLOAT,
+            MOTION_TYPE,
             NO_ROT,
-            PROP_ROT_DIR,
             PREFLOAT_MOTION_TYPE,
             PREFLOAT_PROP_ROT_DIR,
+            PROP_ROT_DIR,
+            RED_ATTRS,
+            TURNS,
         )
 
         # Handle blue turns
@@ -286,15 +291,15 @@ class FreeformGenerationService(IGenerationService):
 
         return beat
 
-    def _update_start_orientations(self, next_beat: Dict, last_beat: Dict) -> Dict:
+    def _update_start_orientations(self, next_beat: dict, last_beat: dict) -> dict:
         """Update start orientations from end of last beat."""
-        from data.constants import BLUE_ATTRS, RED_ATTRS, START_ORI, END_ORI
+        from data.constants import BLUE_ATTRS, END_ORI, RED_ATTRS, START_ORI
 
         next_beat[BLUE_ATTRS][START_ORI] = last_beat[BLUE_ATTRS][END_ORI]
         next_beat[RED_ATTRS][START_ORI] = last_beat[RED_ATTRS][END_ORI]
         return next_beat
 
-    def _update_end_orientations(self, beat: Dict) -> Dict:
+    def _update_end_orientations(self, beat: dict) -> dict:
         """Calculate end orientations using orientation calculator."""
         from data.constants import BLUE, RED
 
@@ -307,21 +312,21 @@ class FreeformGenerationService(IGenerationService):
 
     def _update_dash_static_prop_rot_dirs(
         self,
-        beat: Dict,
+        beat: dict,
         prop_continuity: PropContinuity,
         blue_rot_dir: str,
         red_rot_dir: str,
-    ) -> Dict:
+    ) -> dict:
         """Update prop rotation directions for dash/static motions."""
         from data.constants import (
             BLUE_ATTRS,
-            RED_ATTRS,
-            MOTION_TYPE,
             DASH,
+            MOTION_TYPE,
+            NO_ROT,
+            PROP_ROT_DIR,
+            RED_ATTRS,
             STATIC,
             TURNS,
-            PROP_ROT_DIR,
-            NO_ROT,
         )
 
         # Update blue
@@ -329,30 +334,28 @@ class FreeformGenerationService(IGenerationService):
             turns = beat[BLUE_ATTRS].get(TURNS, 0)
             if prop_continuity == PropContinuity.CONTINUOUS:
                 beat[BLUE_ATTRS][PROP_ROT_DIR] = blue_rot_dir if turns > 0 else NO_ROT
+            elif turns > 0:
+                beat[BLUE_ATTRS][PROP_ROT_DIR] = random.choice(
+                    [CLOCKWISE, COUNTER_CLOCKWISE]
+                )
             else:
-                if turns > 0:
-                    beat[BLUE_ATTRS][PROP_ROT_DIR] = random.choice(
-                        [CLOCKWISE, COUNTER_CLOCKWISE]
-                    )
-                else:
-                    beat[BLUE_ATTRS][PROP_ROT_DIR] = NO_ROT
+                beat[BLUE_ATTRS][PROP_ROT_DIR] = NO_ROT
 
         # Update red
         if beat[RED_ATTRS].get(MOTION_TYPE) in [DASH, STATIC]:
             turns = beat[RED_ATTRS].get(TURNS, 0)
             if prop_continuity == PropContinuity.CONTINUOUS:
                 beat[RED_ATTRS][PROP_ROT_DIR] = red_rot_dir if turns > 0 else NO_ROT
+            elif turns > 0:
+                beat[RED_ATTRS][PROP_ROT_DIR] = random.choice(
+                    [CLOCKWISE, COUNTER_CLOCKWISE]
+                )
             else:
-                if turns > 0:
-                    beat[RED_ATTRS][PROP_ROT_DIR] = random.choice(
-                        [CLOCKWISE, COUNTER_CLOCKWISE]
-                    )
-                else:
-                    beat[RED_ATTRS][PROP_ROT_DIR] = NO_ROT
+                beat[RED_ATTRS][PROP_ROT_DIR] = NO_ROT
 
         return beat
 
-    def _update_beat_number(self, beat: Dict, sequence: List[Dict]) -> Dict:
+    def _update_beat_number(self, beat: dict, sequence: list[dict]) -> dict:
         """Set beat number based on sequence length."""
         from data.constants import BEAT
 

@@ -1,10 +1,14 @@
-from typing import Optional, TYPE_CHECKING
-from PyQt6.QtWidgets import QPushButton, QLabel, QHBoxLayout
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
+from PyQt6.QtCore import QSize, Qt, pyqtSignal
 from PyQt6.QtGui import QFont, QMouseEvent
-from PyQt6.QtCore import Qt, QSize, pyqtSignal
+from PyQt6.QtWidgets import QHBoxLayout, QLabel, QPushButton
+
 
 if TYPE_CHECKING:
-    from presentation.components.option_picker.components.sections.section_widget import (
+    from desktop.modern.src.presentation.components.option_picker.components.sections.section_widget import (
         OptionPickerSection,
     )
 
@@ -42,7 +46,7 @@ class OptionPickerSectionButton(QPushButton):
 
     clicked = pyqtSignal()
 
-    def __init__(self, section_widget: "OptionPickerSection"):
+    def __init__(self, section_widget: OptionPickerSection):
         super().__init__(section_widget)
         self.section_widget = section_widget
         self.is_expanded = True  # Sections start expanded
@@ -123,7 +127,7 @@ class OptionPickerSectionButton(QPushButton):
         # Apply initial style
         self._update_style()
 
-    def _update_style(self, background_color: Optional[str] = None) -> None:
+    def _update_style(self, background_color: str | None = None) -> None:
         """
         Button styling: oval shape, transparent background, no borders.
         """

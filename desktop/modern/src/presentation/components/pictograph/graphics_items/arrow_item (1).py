@@ -6,11 +6,11 @@ Dead simple approach like the legacy version:
 - Graph editor explicitly enables selection when needed
 - No complex context detection
 """
+from __future__ import annotations
 
-from typing import Optional
-from PyQt6.QtSvgWidgets import QGraphicsSvgItem
 from PyQt6.QtCore import Qt
-from PyQt6.QtGui import QPen, QColor
+from PyQt6.QtGui import QColor, QPen
+from PyQt6.QtSvgWidgets import QGraphicsSvgItem
 
 
 class ArrowItem(QGraphicsSvgItem):
@@ -20,7 +20,7 @@ class ArrowItem(QGraphicsSvgItem):
         super().__init__(parent)
 
         # Arrow properties
-        self.arrow_color: Optional[str] = None
+        self.arrow_color: str | None = None
         self.is_highlighted = False
         self.highlight_color = QColor("#FFD700")  # Gold
         self.highlight_pen_width = 3
@@ -52,10 +52,9 @@ class ArrowItem(QGraphicsSvgItem):
                     self.scene().arrow_selected.emit(self.arrow_color)
                 event.accept()
                 return
-            else:
-                # Arrow not selectable - pass through
-                event.ignore()
-                return
+            # Arrow not selectable - pass through
+            event.ignore()
+            return
 
         # For non-left clicks, use default behavior if selectable
         if self.flags() & self.GraphicsItemFlag.ItemIsSelectable:

@@ -4,17 +4,18 @@ Visibility Preview Section for Visibility Settings.
 Focused component handling interactive pictograph preview management.
 Extracted from the monolithic visibility tab following TKA clean architecture principles.
 """
+from __future__ import annotations
 
 import logging
-from typing import Optional
 
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtGui import QFont
-from PyQt6.QtWidgets import QWidget, QVBoxLayout, QLabel
+from PyQt6.QtWidgets import QLabel, QVBoxLayout, QWidget
 
-from presentation.components.ui.settings.visibility.visibility_pictograph_preview import (
+from desktop.modern.src.presentation.components.ui.settings.visibility.visibility_pictograph_preview import (
     VisibilityPictographPreview,
 )
+
 
 logger = logging.getLogger(__name__)
 
@@ -22,7 +23,7 @@ logger = logging.getLogger(__name__)
 class VisibilityPreviewSection(QWidget):
     """
     Interactive pictograph preview section.
-    
+
     Handles preview widget creation, update coordination, and real-time visibility changes.
     Follows TKA single-responsibility principle and clean component organization.
     """
@@ -32,15 +33,15 @@ class VisibilityPreviewSection(QWidget):
     def __init__(self, parent=None):
         """
         Initialize visibility preview section.
-        
+
         Args:
             parent: Parent widget
         """
         super().__init__(parent)
-        
+
         # UI components
-        self.preview: Optional[VisibilityPictographPreview] = None
-        
+        self.preview: VisibilityPictographPreview | None = None
+
         self._setup_ui()
         self._setup_connections()
 
@@ -74,7 +75,7 @@ class VisibilityPreviewSection(QWidget):
     def update_visibility(self, element_name: str, visible: bool):
         """
         Update preview with visibility changes.
-        
+
         Args:
             element_name: Name of the element to update
             visible: Whether the element should be visible
@@ -84,7 +85,7 @@ class VisibilityPreviewSection(QWidget):
                 self.preview.update_visibility(element_name, visible)
                 logger.debug(f"Preview updated for {element_name}: {visible}")
             except Exception as e:
-                logger.error(f"Error updating preview visibility: {e}")
+                logger.exception(f"Error updating preview visibility: {e}")
 
     def refresh_preview(self):
         """Force refresh the preview display."""
@@ -93,7 +94,7 @@ class VisibilityPreviewSection(QWidget):
                 self.preview.refresh_preview()
                 logger.debug("Preview refreshed")
             except Exception as e:
-                logger.error(f"Error refreshing preview: {e}")
+                logger.exception(f"Error refreshing preview: {e}")
 
     def cleanup(self):
         """Clean up preview resources."""
@@ -102,12 +103,12 @@ class VisibilityPreviewSection(QWidget):
                 self.preview.cleanup()
                 logger.debug("Preview section cleaned up")
             except Exception as e:
-                logger.error(f"Error during preview cleanup: {e}")
+                logger.exception(f"Error during preview cleanup: {e}")
 
-    def get_preview_widget(self) -> Optional[VisibilityPictographPreview]:
+    def get_preview_widget(self) -> VisibilityPictographPreview | None:
         """
         Get the preview widget for direct access if needed.
-        
+
         Returns:
             The VisibilityPictographPreview widget or None
         """

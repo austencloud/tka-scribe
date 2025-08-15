@@ -8,8 +8,8 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 
-from desktop.modern.domain.models.arrow_data import ArrowData
-from desktop.modern.domain.models.pictograph_data import PictographData
+from desktop.modern.src.domain.models.arrow_data import ArrowData
+from desktop.modern.src.domain.models.pictograph_data import PictographData
 from domain.models import MotionData
 
 

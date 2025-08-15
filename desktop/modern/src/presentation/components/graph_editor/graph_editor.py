@@ -12,16 +12,18 @@ This version uses clean component-based architecture with:
 - Backward compatible public API
 - Maintainable and readable code structure
 """
+from __future__ import annotations
 
 import logging
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
-from core.interfaces.session_services import ISessionStateTracker
-from core.interfaces.workbench_services import IGraphEditorService
-from domain.models.beat_data import BeatData
-from domain.models.sequence_data import SequenceData
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtWidgets import QFrame, QLabel, QVBoxLayout
+
+from desktop.modern.src.core.interfaces.session_services import ISessionStateTracker
+from desktop.modern.src.core.interfaces.workbench_services import IGraphEditorService
+from desktop.modern.src.domain.models.beat_data import BeatData
+from desktop.modern.src.domain.models.sequence_data import SequenceData
 
 from .components.main_adjustment_panel import MainAdjustmentPanel
 
@@ -35,8 +37,11 @@ from .utils.validation import (
     validate_sequence_data,
 )
 
+
 if TYPE_CHECKING:
-    from presentation.components.workbench.workbench import SequenceWorkbench
+    from desktop.modern.src.presentation.components.workbench.workbench import (
+        SequenceWorkbench,
+    )
 
 logger = logging.getLogger(__name__)
 
@@ -70,11 +75,11 @@ class GraphEditor(QFrame):
 
     def __init__(
         self,
-        graph_service: Optional[IGraphEditorService] = None,
-        parent: Optional["SequenceWorkbench"] = None,
+        graph_service: IGraphEditorService | None = None,
+        parent: SequenceWorkbench | None = None,
         workbench_width: int = 800,
         workbench_height: int = 600,
-        session_service: Optional[ISessionStateTracker] = None,
+        session_service: ISessionStateTracker | None = None,
     ):
         super().__init__(parent)
         self._graph_service = graph_service
@@ -82,13 +87,13 @@ class GraphEditor(QFrame):
         self._session_service = session_service
 
         # Core state
-        self._current_sequence: Optional[SequenceData] = None
-        self._selected_beat_index: Optional[int] = None
-        self._selected_beat_data: Optional[BeatData] = None
+        self._current_sequence: SequenceData | None = None
+        self._selected_beat_index: int | None = None
+        self._selected_beat_data: BeatData | None = None
 
         # Component references
-        self._pictograph_display: Optional[PictographDisplaySection] = None
-        self._adjustment_panel: Optional[MainAdjustmentPanel] = None
+        self._pictograph_display: PictographDisplaySection | None = None
+        self._adjustment_panel: MainAdjustmentPanel | None = None
 
         # Initialize with simple error handling
         try:
@@ -97,7 +102,7 @@ class GraphEditor(QFrame):
             self._apply_styling()
             self.resize(workbench_width, 300)
         except Exception as e:
-            logger.error(f"Graph editor initialization failed: {e}")
+            logger.exception(f"Graph editor initialization failed: {e}")
             self._create_minimal_error_ui(str(e))
 
     def _setup_ui(self) -> None:
@@ -253,7 +258,7 @@ class GraphEditor(QFrame):
             logger.warning(f"Error handling turn amount change: {e}")
 
     # Public API Methods - Clean and Simple
-    def set_sequence(self, sequence: Optional[SequenceData]) -> bool:
+    def set_sequence(self, sequence: SequenceData | None) -> bool:
         """Set the sequence data with clean error handling."""
         try:
             # Basic input validation (keep simple)
@@ -270,15 +275,15 @@ class GraphEditor(QFrame):
             return True
 
         except Exception as e:
-            logger.error(f"Error setting sequence: {e}")
+            logger.exception(f"Error setting sequence: {e}")
             return False
 
-    def update_current_sequence(self, sequence: Optional[SequenceData]) -> bool:
+    def update_current_sequence(self, sequence: SequenceData | None) -> bool:
         """Update the current sequence when it's modified externally."""
         return self.set_sequence(sequence)
 
     def set_selected_beat_data(
-        self, beat_index: int, beat_data: Optional[BeatData]
+        self, beat_index: int, beat_data: BeatData | None
     ) -> bool:
         """Set the selected beat data with clean error handling."""
         try:
@@ -310,7 +315,7 @@ class GraphEditor(QFrame):
             return True
 
         except Exception as e:
-            logger.error(f"Error setting beat data: {e}")
+            logger.exception(f"Error setting beat data: {e}")
             return False
 
     def set_selected_start_position(self, start_position_data) -> bool:
@@ -335,7 +340,7 @@ class GraphEditor(QFrame):
             return True
 
         except Exception as e:
-            logger.error(f"Error setting start position data: {e}")
+            logger.exception(f"Error setting start position data: {e}")
             return False
 
     def set_visibility(self, is_visible: bool) -> bool:
@@ -356,18 +361,18 @@ class GraphEditor(QFrame):
             logger.debug(f"Visibility set to: {is_visible}")
             return True
         except Exception as e:
-            logger.error(f"Error setting visibility: {e}")
+            logger.exception(f"Error setting visibility: {e}")
             return False
 
-    def get_current_sequence(self) -> Optional[SequenceData]:
+    def get_current_sequence(self) -> SequenceData | None:
         """Get the current sequence data."""
         return self._current_sequence
 
-    def get_selected_beat_data(self) -> Optional[BeatData]:
+    def get_selected_beat_data(self) -> BeatData | None:
         """Get the currently selected beat data."""
         return self._selected_beat_data
 
-    def get_selected_beat_index(self) -> Optional[int]:
+    def get_selected_beat_index(self) -> int | None:
         """Get the currently selected beat index."""
         return self._selected_beat_index
 
@@ -401,12 +406,12 @@ class GraphEditor(QFrame):
                     )
 
         except Exception as e:
-            result.add_error(f"Validation error: {str(e)}", "validation", None)
-            logger.error(f"Error during state validation: {e}")
+            result.add_error(f"Validation error: {e!s}", "validation", None)
+            logger.exception(f"Error during state validation: {e}")
 
         return result
 
-    def _get_current_selected_arrow(self) -> Optional[str]:
+    def _get_current_selected_arrow(self) -> str | None:
         """Get the currently selected arrow identifier."""
         # Try to get selected arrow from adjustment panel
         if self._adjustment_panel and hasattr(

@@ -10,24 +10,24 @@ PROVIDES:
 - Prop rotation angle calculations
 - Overlap detection logic
 """
+from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import Dict, List
 
+from desktop.modern.src.domain.models.enums import PropType
 from domain.models import BeatData, Location, MotionData, Orientation
-from domain.models.enums import PropType
 
 
 class IPropClassificationService(ABC):
     """Interface for prop classification operations."""
 
     @abstractmethod
-    def classify_props_by_size(self, beat_data: BeatData) -> Dict[str, List]:
+    def classify_props_by_size(self, beat_data: BeatData) -> dict[str, list]:
         """Classify props by size categories (big, small, hands)."""
 
     @abstractmethod
     def get_repositioning_strategy(
-        self, beat_data: BeatData, prop_classification: Dict[str, List]
+        self, beat_data: BeatData, prop_classification: dict[str, list]
     ) -> str:
         """Determine repositioning strategy based on prop classification and letter."""
 
@@ -88,7 +88,7 @@ class PropClassificationService(IPropClassificationService):
             PropType.HAND,
         }
 
-    def classify_props_by_size(self, beat_data: BeatData) -> Dict[str, List]:
+    def classify_props_by_size(self, beat_data: BeatData) -> dict[str, list]:
         """
         Classify props by size categories (big, small, hands).
 
@@ -124,14 +124,13 @@ class PropClassificationService(IPropClassificationService):
         return classification
 
     def get_repositioning_strategy(
-        self, beat_data: BeatData, prop_classification: Dict[str, List]
+        self, beat_data: BeatData, prop_classification: dict[str, list]
     ) -> str:
         """
         Determine repositioning strategy based on prop classification and letter.
 
         Returns strategy name that determines how props should be separated.
         """
-        letter = beat_data.letter or ""
 
         # Check prop categories
         has_big_props = bool(prop_classification["big_props"])
@@ -141,14 +140,13 @@ class PropClassificationService(IPropClassificationService):
 
         if has_big_props and len(prop_classification["big_props"]) == 2:
             return "big_prop_repositioning"
-        elif has_medium_props and len(prop_classification["medium_props"]) == 2:
+        if has_medium_props and len(prop_classification["medium_props"]) == 2:
             return "medium_prop_repositioning"
-        elif has_small_props and len(prop_classification["small_props"]) == 2:
+        if has_small_props and len(prop_classification["small_props"]) == 2:
             return "small_prop_repositioning"
-        elif has_hands:
+        if has_hands:
             return "hand_repositioning"
-        else:
-            return "default_repositioning"
+        return "default_repositioning"
 
     def detect_prop_overlap(self, beat_data: BeatData) -> bool:
         """
@@ -210,14 +208,13 @@ class PropClassificationService(IPropClassificationService):
         """Get size category for prop type."""
         if prop_type in self._big_props:
             return "big"
-        elif prop_type in self._medium_props:
+        if prop_type in self._medium_props:
             return "medium"
-        elif prop_type in self._small_props:
+        if prop_type in self._small_props:
             return "small"
-        elif prop_type in self._hand_props:
+        if prop_type in self._hand_props:
             return "hand"
-        else:
-            return "unknown"
+        return "unknown"
 
     def is_beta_ending_letter(self, letter: str) -> bool:
         """Check if letter ends at beta positions."""
@@ -252,7 +249,7 @@ class PropClassificationService(IPropClassificationService):
                     if int(turns) % 2 == 0
                     else self._switch_orientation(start_orientation)
                 )
-            elif motion_type.value in ["anti", "dash"]:
+            if motion_type.value in ["anti", "dash"]:
                 return (
                     self._switch_orientation(start_orientation)
                     if int(turns) % 2 == 0

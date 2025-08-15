@@ -5,13 +5,15 @@ Handles all workbench transformation operations on sequences.
 Extracted from the monolithic sequence management service to focus
 solely on sequence transformations and spatial operations.
 """
+from __future__ import annotations
 
-import logging
 from enum import Enum
-from typing import Any, Dict
+import logging
+from typing import Any
 
-from domain.models.beat_data import BeatData
-from domain.models.sequence_data import SequenceData
+from desktop.modern.src.domain.models.beat_data import BeatData
+from desktop.modern.src.domain.models.sequence_data import SequenceData
+
 
 logger = logging.getLogger(__name__)
 
@@ -60,20 +62,19 @@ class SequenceTransformer:
 
         if operation_enum == WorkbenchOperation.COLOR_SWAP:
             return self._apply_color_swap(sequence)
-        elif operation_enum == WorkbenchOperation.HORIZONTAL_REFLECTION:
+        if operation_enum == WorkbenchOperation.HORIZONTAL_REFLECTION:
             return self._apply_horizontal_reflection(sequence)
-        elif operation_enum == WorkbenchOperation.VERTICAL_REFLECTION:
+        if operation_enum == WorkbenchOperation.VERTICAL_REFLECTION:
             return self._apply_vertical_reflection(sequence)
-        elif operation_enum == WorkbenchOperation.ROTATION_90:
+        if operation_enum == WorkbenchOperation.ROTATION_90:
             return self._apply_rotation(sequence, 90)
-        elif operation_enum == WorkbenchOperation.ROTATION_180:
+        if operation_enum == WorkbenchOperation.ROTATION_180:
             return self._apply_rotation(sequence, 180)
-        elif operation_enum == WorkbenchOperation.ROTATION_270:
+        if operation_enum == WorkbenchOperation.ROTATION_270:
             return self._apply_rotation(sequence, 270)
-        elif operation_enum == WorkbenchOperation.REVERSE_SEQUENCE:
+        if operation_enum == WorkbenchOperation.REVERSE_SEQUENCE:
             return self._apply_reverse_sequence(sequence)
-        else:
-            raise ValueError(f"Unhandled workbench operation: {operation}")
+        raise ValueError(f"Unhandled workbench operation: {operation}")
 
     def _apply_color_swap(self, sequence: SequenceData) -> SequenceData:
         """Swap blue and red motions in all beats."""
@@ -88,7 +89,7 @@ class SequenceTransformer:
             new_beats.append(new_beat)
 
         transformed_sequence = sequence.update(beats=new_beats)
-        logger.info(f"Color swap applied successfully")
+        logger.info("Color swap applied successfully")
         return transformed_sequence
 
     def _apply_horizontal_reflection(self, sequence: SequenceData) -> SequenceData:
@@ -103,7 +104,7 @@ class SequenceTransformer:
             new_beats.append(new_beat)
 
         transformed_sequence = sequence.update(beats=new_beats)
-        logger.info(f"Horizontal reflection applied successfully")
+        logger.info("Horizontal reflection applied successfully")
         return transformed_sequence
 
     def _apply_vertical_reflection(self, sequence: SequenceData) -> SequenceData:
@@ -118,7 +119,7 @@ class SequenceTransformer:
             new_beats.append(new_beat)
 
         transformed_sequence = sequence.update(beats=new_beats)
-        logger.info(f"Vertical reflection applied successfully")
+        logger.info("Vertical reflection applied successfully")
         return transformed_sequence
 
     def _apply_rotation(self, sequence: SequenceData, degrees: int) -> SequenceData:
@@ -152,7 +153,7 @@ class SequenceTransformer:
             new_beats[i] = beat.update(beat_number=i + 1)
 
         reversed_sequence = sequence.update(beats=new_beats)
-        logger.info(f"Sequence reversal applied successfully")
+        logger.info("Sequence reversal applied successfully")
         return reversed_sequence
 
     def _apply_transformation_to_beat(
@@ -171,7 +172,7 @@ class SequenceTransformer:
         logger.debug(f"Applying transformation matrix to beat {beat.beat_number}")
         return beat
 
-    def _load_transformation_matrices(self) -> Dict[str, Any]:
+    def _load_transformation_matrices(self) -> dict[str, Any]:
         """Load transformation matrices for workbench operations."""
         return {
             "rotation_90": [[0, -1], [1, 0]],

@@ -1,15 +1,7 @@
-from typing import Any, Dict
+from __future__ import annotations
 
-from application.services.ui.ui_settings_manager import UISettingsManager
-from core.interfaces.core_services import IUIStateManager
-from presentation.components.ui.settings.coordinator import SettingsCoordinator
-from presentation.components.ui.settings.tabs.background_tab import BackgroundTab
-from presentation.components.ui.settings.tabs.beat_layout_tab import BeatLayoutTab
-from presentation.components.ui.settings.tabs.codex_exporter_tab import CodexExporterTab
-from presentation.components.ui.settings.tabs.general_tab import GeneralTab
-from presentation.components.ui.settings.tabs.image_export_tab import ImageExportTab
-from presentation.components.ui.settings.tabs.prop_type_tab import PropTypeTab
-from presentation.components.ui.settings.visibility.visibility_tab import VisibilityTab
+from typing import Any
+
 from PyQt6.QtCore import QRectF, Qt, pyqtSignal
 from PyQt6.QtGui import QBrush, QColor, QLinearGradient, QPainter, QPainterPath, QRegion
 from PyQt6.QtWidgets import (
@@ -21,6 +13,32 @@ from PyQt6.QtWidgets import (
     QPushButton,
     QVBoxLayout,
     QWidget,
+)
+
+from desktop.modern.src.application.services.ui.ui_settings_manager import (
+    UISettingsManager,
+)
+from desktop.modern.src.core.interfaces.core_services import IUIStateManager
+from desktop.modern.src.presentation.components.ui.settings.tabs.background_tab import (
+    BackgroundTab,
+)
+from desktop.modern.src.presentation.components.ui.settings.tabs.beat_layout_tab import (
+    BeatLayoutTab,
+)
+from desktop.modern.src.presentation.components.ui.settings.tabs.codex_exporter_tab import (
+    CodexExporterTab,
+)
+from desktop.modern.src.presentation.components.ui.settings.tabs.general_tab import (
+    GeneralTab,
+)
+from desktop.modern.src.presentation.components.ui.settings.tabs.image_export_tab import (
+    ImageExportTab,
+)
+from desktop.modern.src.presentation.components.ui.settings.tabs.prop_type_tab import (
+    PropTypeTab,
+)
+from desktop.modern.src.presentation.components.ui.settings.visibility.visibility_tab import (
+    VisibilityTab,
 )
 
 from .components import (
@@ -133,7 +151,7 @@ class SettingsDialog(QDialog):
 
     def _setup_coordinator(self):
         """Setup the settings coordinator for managing state."""
-        from application.services.settings.settings_coordinator import (
+        from desktop.modern.src.application.services.settings.settings_coordinator import (
             SettingsCoordinator,
         )
 
@@ -209,7 +227,7 @@ class SettingsDialog(QDialog):
         # Visibility Tab
         global_visibility_service = None
         if self.container:
-            from application.services.pictograph.global_visibility_service import (
+            from desktop.modern.src.application.services.pictograph.global_visibility_service import (
                 PictographVisibilityManager,
             )
 
@@ -226,7 +244,7 @@ class SettingsDialog(QDialog):
             )
         else:
             # Fallback - create instance directly for backward compatibility
-            from application.services.pictograph.global_visibility_service import (
+            from desktop.modern.src.application.services.pictograph.global_visibility_service import (
                 PictographVisibilityManager,
             )
 
@@ -269,7 +287,7 @@ class SettingsDialog(QDialog):
         self.action_buttons.apply_requested.connect(self._apply_settings)
         self.action_buttons.ok_requested.connect(self.accept)
 
-    def _handle_codex_export(self, config: Dict[str, Any]):
+    def _handle_codex_export(self, config: dict[str, Any]):
         """Handle codex export request."""
         # For now, just save the configuration
         # In a full implementation, this would trigger the actual export process

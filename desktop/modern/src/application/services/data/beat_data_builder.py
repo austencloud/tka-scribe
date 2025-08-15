@@ -4,16 +4,18 @@ Beat Data Builder - Builder pattern for creating BeatData objects
 Provides a clean, testable way to construct complex BeatData objects
 with optional fields and proper validation.
 """
+from __future__ import annotations
 
 import logging
-from typing import Any, Dict, Optional
+from typing import Any
 
-from domain.models.beat_data import BeatData
-from domain.models.enums import GridMode
-from domain.models.glyph_models import GlyphData
-from domain.models.grid_data import GridData
-from domain.models.motion_models import MotionData
-from domain.models.pictograph_data import PictographData
+from desktop.modern.src.domain.models.beat_data import BeatData
+from desktop.modern.src.domain.models.enums import GridMode
+from desktop.modern.src.domain.models.glyph_models import GlyphData
+from desktop.modern.src.domain.models.grid_data import GridData
+from desktop.modern.src.domain.models.motion_models import MotionData
+from desktop.modern.src.domain.models.pictograph_data import PictographData
+
 
 logger = logging.getLogger(__name__)
 
@@ -27,64 +29,64 @@ class BeatDataBuilder:
         self._letter: str = ""
         self._duration: float = 1.0
         self._is_blank: bool = True
-        self._metadata: Dict[str, Any] = {}
-        self._glyph_data: Optional[GlyphData] = None
-        self._pictograph_data: Optional[PictographData] = None
-        self._blue_motion: Optional[MotionData] = None
-        self._red_motion: Optional[MotionData] = None
+        self._metadata: dict[str, Any] = {}
+        self._glyph_data: GlyphData | None = None
+        self._pictograph_data: PictographData | None = None
+        self._blue_motion: MotionData | None = None
+        self._red_motion: MotionData | None = None
         self._start_position: str = ""
         self._end_position: str = ""
 
-    def with_beat_number(self, beat_number: int) -> "BeatDataBuilder":
+    def with_beat_number(self, beat_number: int) -> BeatDataBuilder:
         """Set the beat number."""
         self._beat_number = beat_number
         return self
 
-    def with_letter(self, letter: str) -> "BeatDataBuilder":
+    def with_letter(self, letter: str) -> BeatDataBuilder:
         """Set the beat letter."""
         self._letter = letter
         return self
 
-    def with_duration(self, duration: float) -> "BeatDataBuilder":
+    def with_duration(self, duration: float) -> BeatDataBuilder:
         """Set the beat duration."""
         self._duration = duration
         return self
 
     def with_motion_data(
-        self, blue: Optional[MotionData], red: Optional[MotionData]
-    ) -> "BeatDataBuilder":
+        self, blue: MotionData | None, red: MotionData | None
+    ) -> BeatDataBuilder:
         """Set blue and red motion data."""
         self._blue_motion = blue
         self._red_motion = red
         self._is_blank = not (blue or red)
         return self
 
-    def with_positions(self, start_pos: str, end_pos: str) -> "BeatDataBuilder":
+    def with_positions(self, start_pos: str, end_pos: str) -> BeatDataBuilder:
         """Set start and end positions."""
         self._start_position = start_pos
         self._end_position = end_pos
         return self
 
-    def with_glyph_data(self, start_pos: str, end_pos: str) -> "BeatDataBuilder":
+    def with_glyph_data(self, start_pos: str, end_pos: str) -> BeatDataBuilder:
         """Set glyph data with positions."""
         self._glyph_data = GlyphData(start_position=start_pos, end_position=end_pos)
         self._start_position = start_pos
         self._end_position = end_pos
         return self
 
-    def with_metadata(self, metadata: Dict[str, Any]) -> "BeatDataBuilder":
+    def with_metadata(self, metadata: dict[str, Any]) -> BeatDataBuilder:
         """Set metadata dictionary."""
         self._metadata = metadata.copy()
         return self
 
-    def add_metadata(self, key: str, value: Any) -> "BeatDataBuilder":
+    def add_metadata(self, key: str, value: Any) -> BeatDataBuilder:
         """Add a single metadata entry."""
         self._metadata[key] = value
         return self
 
     def as_start_position(
         self, sequence_start_position: str = "alpha1"
-    ) -> "BeatDataBuilder":
+    ) -> BeatDataBuilder:
         """Configure as start position beat."""
         self._beat_number = 0
         self._duration = 0.0
@@ -146,10 +148,10 @@ class BeatDataBuilder:
 
         except Exception as e:
             error_msg = f"Failed to build BeatData: {e}"
-            logger.error(error_msg)
+            logger.exception(error_msg)
             raise ValueError(error_msg) from e
 
-    def reset(self) -> "BeatDataBuilder":
+    def reset(self) -> BeatDataBuilder:
         """Reset builder to default state for reuse."""
         self.__init__()
         return self

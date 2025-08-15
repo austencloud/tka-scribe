@@ -10,12 +10,13 @@ Handles all motion orientation calculations including:
 This service provides a clean, focused interface for motion orientation
 while maintaining the proven orientation calculation algorithms.
 """
+from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import Any, Dict
+from typing import Any
 
-from domain.models.enums import Location, MotionType, Orientation
-from domain.models.motion_models import MotionData
+from desktop.modern.src.domain.models.enums import Location, MotionType, Orientation
+from desktop.modern.src.domain.models.motion_models import MotionData
 
 
 class IOrientationCalculator(ABC):
@@ -119,20 +120,19 @@ class OrientationCalculator(IOrientationCalculator):
                 if turns % 2 == 0
                 else self.flip_orientation(start_orientation)
             )
-        elif motion_type in [MotionType.ANTI, MotionType.DASH]:
+        if motion_type in [MotionType.ANTI, MotionType.DASH]:
             # ANTI and DASH: even turns = flipped orientation, odd turns = same
             return (
                 self.flip_orientation(start_orientation)
                 if turns % 2 == 0
                 else start_orientation
             )
-        else:
-            # FLOAT and others: use PRO logic as default
-            return (
-                start_orientation
-                if turns % 2 == 0
-                else self.flip_orientation(start_orientation)
-            )
+        # FLOAT and others: use PRO logic as default
+        return (
+            start_orientation
+            if turns % 2 == 0
+            else self.flip_orientation(start_orientation)
+        )
 
     def _calculate_half_turns_orientation(
         self, motion_type: MotionType, turns: float, start_orientation: Orientation
@@ -143,7 +143,7 @@ class OrientationCalculator(IOrientationCalculator):
 
     # Private data loading methods
 
-    def _load_orientation_flip_rules(self) -> Dict[str, Any]:
+    def _load_orientation_flip_rules(self) -> dict[str, Any]:
         """Load orientation flip rules for complex calculations."""
         # In production, this would load from JSON/database
         return {

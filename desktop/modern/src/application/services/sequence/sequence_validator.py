@@ -5,13 +5,15 @@ Handles all sequence validation operations and business rules.
 Extracted from the monolithic sequence management service to focus
 solely on validation logic and sequence integrity checks.
 """
+from __future__ import annotations
 
-import logging
 from abc import ABC, abstractmethod
-from typing import Any, Dict, List, Optional
+import logging
+from typing import Any
 
-from domain.models.beat_data import BeatData
-from domain.models.sequence_data import SequenceData
+from desktop.modern.src.domain.models.beat_data import BeatData
+from desktop.modern.src.domain.models.sequence_data import SequenceData
+
 
 logger = logging.getLogger(__name__)
 
@@ -31,12 +33,12 @@ class ISequenceValidator(ABC):
         pass
 
     @abstractmethod
-    def validate_beat(self, beat: BeatData, position: Optional[int] = None) -> bool:
+    def validate_beat(self, beat: BeatData, position: int | None = None) -> bool:
         """Validate a single beat against validation rules."""
         pass
 
     @abstractmethod
-    def check_sequence_integrity(self, sequence: SequenceData) -> List[str]:
+    def check_sequence_integrity(self, sequence: SequenceData) -> list[str]:
         """Check sequence integrity and return list of issues."""
         pass
 
@@ -100,7 +102,7 @@ class SequenceValidator(ISequenceValidator):
         logger.info(f"Sequence '{sequence.name}' passed all validations")
         return True
 
-    def validate_beat(self, beat: BeatData, position: Optional[int] = None) -> bool:
+    def validate_beat(self, beat: BeatData, position: int | None = None) -> bool:
         """
         Validate a single beat against validation rules.
 
@@ -206,7 +208,7 @@ class SequenceValidator(ISequenceValidator):
         if not sequence.id or not isinstance(sequence.id, str):
             raise ValidationError("Sequence must have a valid ID")
 
-    def _validate_beats(self, beats: List[BeatData]) -> None:
+    def _validate_beats(self, beats: list[BeatData]) -> None:
         """Validate all beats in a sequence."""
         if not isinstance(beats, list):
             raise ValidationError("Beats must be a list")
@@ -286,7 +288,7 @@ class SequenceValidator(ISequenceValidator):
                     f"Beat numbers are not sequential: {actual_numbers}"
                 )
 
-    def _load_validation_rules(self) -> Dict[str, Any]:
+    def _load_validation_rules(self) -> dict[str, Any]:
         """Load sequence validation rules."""
         return {
             "max_length": 64,
@@ -299,11 +301,11 @@ class SequenceValidator(ISequenceValidator):
             "max_turns_per_beat": 16,
         }
 
-    def get_validation_rules(self) -> Dict[str, Any]:
+    def get_validation_rules(self) -> dict[str, Any]:
         """Get current validation rules."""
         return self._sequence_validation_rules.copy()
 
-    def update_validation_rules(self, new_rules: Dict[str, Any]) -> None:
+    def update_validation_rules(self, new_rules: dict[str, Any]) -> None:
         """Update validation rules (for testing or configuration)."""
         self._sequence_validation_rules.update(new_rules)
         logger.info("Validation rules updated")
@@ -334,7 +336,7 @@ class SequenceValidator(ISequenceValidator):
         except ValidationError:
             return False
 
-    def get_validation_errors(self, sequence: SequenceData) -> List[str]:
+    def get_validation_errors(self, sequence: SequenceData) -> list[str]:
         """
         Get list of validation errors for a sequence.
 
@@ -350,7 +352,7 @@ class SequenceValidator(ISequenceValidator):
 
         return errors
 
-    def check_sequence_integrity(self, sequence: SequenceData) -> List[str]:
+    def check_sequence_integrity(self, sequence: SequenceData) -> list[str]:
         """
         Check sequence integrity and return list of issues.
 

@@ -1,12 +1,15 @@
+from __future__ import annotations
+
 import logging
-from typing import Optional, TYPE_CHECKING
-from PyQt6.QtWidgets import QHBoxLayout, QFrame, QSizePolicy
+from typing import TYPE_CHECKING
+
 from PyQt6.QtCore import QObject, Qt
+from PyQt6.QtWidgets import QFrame, QHBoxLayout, QSizePolicy
 
-from ..components.pictograph_container import GraphEditorPictographContainer
 from ..components.adjustment_panel import AdjustmentPanel
-
+from ..components.pictograph_container import GraphEditorPictographContainer
 from ..config import LayoutConfig
+
 
 logger = logging.getLogger(__name__)
 
@@ -26,17 +29,17 @@ class GraphEditorLayoutManager(QObject):
     - Layout management
     """
 
-    def __init__(self, graph_editor: "GraphEditor", parent: Optional[QObject] = None):
+    def __init__(self, graph_editor: GraphEditor, parent: QObject | None = None):
         super().__init__(parent)
         self._graph_editor = graph_editor
 
         # UI components (will be created during setup)
-        self._pictograph_container: Optional[GraphEditorPictographContainer] = None
-        self._left_adjustment_panel: Optional[AdjustmentPanel] = None
-        self._right_adjustment_panel: Optional[AdjustmentPanel] = None
+        self._pictograph_container: GraphEditorPictographContainer | None = None
+        self._left_adjustment_panel: AdjustmentPanel | None = None
+        self._right_adjustment_panel: AdjustmentPanel | None = None
 
         # Layout
-        self._main_layout: Optional[QHBoxLayout] = None
+        self._main_layout: QHBoxLayout | None = None
 
     def setup_ui(self) -> None:
         """Setup enhanced UI combining best practices from legacy, modern, and web versions"""
@@ -144,16 +147,16 @@ class GraphEditorLayoutManager(QObject):
 
     # Property accessors for components
     @property
-    def pictograph_container(self) -> Optional[GraphEditorPictographContainer]:
+    def pictograph_container(self) -> GraphEditorPictographContainer | None:
         """Get the pictograph container"""
         return self._pictograph_container
 
     @property
-    def left_adjustment_panel(self) -> Optional[AdjustmentPanel]:
+    def left_adjustment_panel(self) -> AdjustmentPanel | None:
         """Get the left adjustment panel"""
         return self._left_adjustment_panel
 
     @property
-    def right_adjustment_panel(self) -> Optional[AdjustmentPanel]:
+    def right_adjustment_panel(self) -> AdjustmentPanel | None:
         """Get the right adjustment panel"""
         return self._right_adjustment_panel

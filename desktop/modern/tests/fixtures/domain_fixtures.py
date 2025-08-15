@@ -6,11 +6,12 @@ Domain Model Test Fixtures
 Provides reusable domain model fixtures for testing.
 """
 
+from __future__ import annotations
+
 from pathlib import Path
 
 import pytest
-from domain.models import BeatData, SequenceData
-from domain.models.pictograph_data import PictographData
+
 
 # Add modern source to path
 modern_src = Path(__file__).parent.parent.parent / "src"
@@ -98,9 +99,6 @@ def sample_pictograph_data():
             MotionType,
             PictographData,
             RotationDirection,
-            domain.models.pictograph_models,
-            from,
-            import,
         )
 
         # Create motion data

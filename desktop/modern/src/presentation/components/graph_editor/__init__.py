@@ -23,25 +23,28 @@ Usage:
 """
 
 # Main public API
-from .graph_editor import GraphEditor
+from __future__ import annotations
 
-# Individual components (for advanced usage and testing)
-from .managers.signal_coordinator import GraphEditorSignalCoordinator
-from .managers.layout_manager import GraphEditorLayoutManager
-from .managers.state_manager import GraphEditorStateManager
+from .components.adjustment_panel import AdjustmentPanel
 
 # UI components (for compatibility)
 from .components.pictograph_container import GraphEditorPictographContainer
-from .components.adjustment_panel import AdjustmentPanel
+from .graph_editor import GraphEditor
+from .managers.layout_manager import GraphEditorLayoutManager
+
+# Individual components (for advanced usage and testing)
+from .managers.signal_coordinator import GraphEditorSignalCoordinator
+from .managers.state_manager import GraphEditorStateManager
+
 
 __all__ = [
+    "AdjustmentPanel",
     # Main public API
     "GraphEditor",
-    # Component managers
-    "GraphEditorSignalCoordinator",
     "GraphEditorLayoutManager",
-    "GraphEditorStateManager",
     # UI components
     "GraphEditorPictographContainer",
-    "AdjustmentPanel",
+    # Component managers
+    "GraphEditorSignalCoordinator",
+    "GraphEditorStateManager",
 ]

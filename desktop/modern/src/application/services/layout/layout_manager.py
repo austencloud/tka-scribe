@@ -6,12 +6,13 @@ specialized layout classes while maintaining the same external interface.
 It preserves all existing functionality by using composition and delegation
 to the specialized calculators.
 """
+from __future__ import annotations
 
 import logging
-from typing import Any, Dict, Optional, Tuple
+from typing import Any
 
-from core.interfaces.core_services import ILayoutService
-from core.types import Size
+from desktop.modern.src.core.interfaces.core_services import ILayoutService
+from desktop.modern.src.core.types import Size
 from domain.models import SequenceData
 
 from .beat_layout_calculator import BeatLayoutCalculator
@@ -21,9 +22,10 @@ from .layout_types import LayoutConfig, LayoutMode, ScalingMode
 from .responsive_scaling_calculator import ResponsiveScalingCalculator
 from .ui_layout_provider import UILayoutProvider
 
+
 # Event-driven architecture imports
 try:
-    from core.events import get_event_bus
+    from desktop.modern.src.core.events import get_event_bus
 
     EVENT_SYSTEM_AVAILABLE = True
 except ImportError:
@@ -42,7 +44,7 @@ class LayoutManager(ILayoutService):
     composition and delegation to the specialized calculators.
     """
 
-    def __init__(self, event_bus: Optional[Any] = None):
+    def __init__(self, event_bus: Any | None = None):
         # Basic UI layout configuration (ILayoutService)
         main_window_size = Size(1400, 900)
         layout_ratio = (10, 10)  # 50/50 split between workbench and picker
@@ -74,15 +76,15 @@ class LayoutManager(ILayoutService):
             self._event_handler.setup_event_subscriptions(self.event_bus)
 
     def calculate_beat_frame_layout(
-        self, sequence: SequenceData, container_size: Tuple[int, int]
-    ) -> Dict[str, Any]:
+        self, sequence: SequenceData, container_size: tuple[int, int]
+    ) -> dict[str, Any]:
         """Delegate to beat layout calculator."""
         return self._beat_layout_calculator.calculate_beat_frame_layout(
             sequence, container_size
         )
 
     def calculate_responsive_scaling(
-        self, content_size: Tuple[int, int], container_size: Tuple[int, int]
+        self, content_size: tuple[int, int], container_size: tuple[int, int]
     ) -> float:
         """Delegate to scaling calculator."""
         return self._scaling_calculator.calculate_responsive_scaling(
@@ -90,34 +92,34 @@ class LayoutManager(ILayoutService):
         )
 
     def get_optimal_grid_layout(
-        self, item_count: int, container_size: Tuple[int, int]
-    ) -> Tuple[int, int]:
+        self, item_count: int, container_size: tuple[int, int]
+    ) -> tuple[int, int]:
         """Delegate to beat layout calculator."""
         return self._beat_layout_calculator.get_optimal_grid_layout(
             item_count, container_size
         )
 
     def calculate_component_positions(
-        self, layout_config: Dict[str, Any]
-    ) -> Dict[str, Tuple[int, int]]:
+        self, layout_config: dict[str, Any]
+    ) -> dict[str, tuple[int, int]]:
         """Delegate to component position calculator."""
         return self._component_calculator.calculate_component_positions(layout_config)
 
     def calculate_context_aware_scaling(
-        self, context: str, base_size: Tuple[int, int], container_size: Tuple[int, int]
+        self, context: str, base_size: tuple[int, int], container_size: tuple[int, int]
     ) -> float:
         """Delegate to scaling calculator."""
         return self._scaling_calculator.calculate_context_aware_scaling(
             context, base_size, container_size
         )
 
-    def get_layout_for_screen_size(self, screen_size: Tuple[int, int]) -> LayoutConfig:
+    def get_layout_for_screen_size(self, screen_size: tuple[int, int]) -> LayoutConfig:
         """Delegate to scaling calculator."""
         return self._scaling_calculator.get_layout_for_screen_size(screen_size)
 
     # Configuration loading methods
 
-    def _load_layout_presets(self) -> Dict[str, LayoutConfig]:
+    def _load_layout_presets(self) -> dict[str, LayoutConfig]:
         """Load layout presets for different contexts."""
         return {
             "sequence_editor": LayoutConfig(
@@ -141,7 +143,7 @@ class LayoutManager(ILayoutService):
             ),
         }
 
-    def _load_default_configs(self) -> Dict[str, Any]:
+    def _load_default_configs(self) -> dict[str, Any]:
         """Load default configuration values."""
         return {
             "min_beat_size": (80, 80),
@@ -163,11 +165,11 @@ class LayoutManager(ILayoutService):
         """Delegate to UI layout provider."""
         return self._ui_layout_provider.get_picker_size()
 
-    def get_layout_ratio(self) -> Tuple[int, int]:
+    def get_layout_ratio(self) -> tuple[int, int]:
         """Delegate to UI layout provider."""
         return self._ui_layout_provider.get_layout_ratio()
 
-    def set_layout_ratio(self, ratio: Tuple[int, int]) -> None:
+    def set_layout_ratio(self, ratio: tuple[int, int]) -> None:
         """Delegate to UI layout provider."""
         self._ui_layout_provider.set_layout_ratio(ratio)
 

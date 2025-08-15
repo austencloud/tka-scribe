@@ -5,7 +5,7 @@ Initializes workbench and graph editor with real data.
 """
 from __future__ import annotations
 
-from desktop.modern.domain.models.sequence_data import SequenceData
+from desktop.modern.src.domain.models.sequence_data import SequenceData
 
 
 class ComponentInitializer:
@@ -18,8 +18,8 @@ class ComponentInitializer:
 
         try:
             # Get services from container
-            from desktop.modern.core.interfaces.core_services import ILayoutService
-            from desktop.modern.core.interfaces.workbench_services import (
+            from desktop.modern.src.core.interfaces.core_services import ILayoutService
+            from desktop.modern.src.core.interfaces.workbench_services import (
                 IBeatDeletionService,
                 IDictionaryService,
                 IFullScreenViewer,
@@ -35,7 +35,7 @@ class ComponentInitializer:
             dictionary_service = container.resolve(IDictionaryService)
 
             # Create workbench
-            from desktop.modern.presentation.components.workbench.workbench import (
+            from desktop.modern.src.presentation.components.workbench.workbench import (
                 SequenceWorkbench,
             )
 
@@ -49,7 +49,7 @@ class ComponentInitializer:
             )
 
             # Create graph editor
-            from desktop.modern.presentation.components.graph_editor.graph_editor import (
+            from desktop.modern.src.presentation.components.graph_editor.graph_editor import (
                 GraphEditor,
             )
 

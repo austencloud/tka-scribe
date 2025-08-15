@@ -4,19 +4,25 @@ SequenceBeatOperations
 Handles beat-level operations on sequences.
 Responsible for adding, removing, and modifying beats within sequences.
 """
+from __future__ import annotations
 
-from typing import Callable, Optional
+from typing import Callable
 
-from application.services.data.sequence_data_converter import SequenceDataConverter
-from application.services.option_picker.option_orientation_updater import (
+from PyQt6.QtCore import QObject, pyqtSignal
+
+from desktop.modern.src.application.services.data.sequence_data_converter import (
+    SequenceDataConverter,
+)
+from desktop.modern.src.application.services.option_picker.option_orientation_updater import (
     OptionOrientationUpdater,
 )
-from application.services.sequence.beat_factory import BeatFactory
-from application.services.sequence.sequence_persister import SequencePersister
-from domain.models.beat_data import BeatData
-from domain.models.pictograph_data import PictographData
-from domain.models.sequence_data import SequenceData
-from PyQt6.QtCore import QObject, pyqtSignal
+from desktop.modern.src.application.services.sequence.beat_factory import BeatFactory
+from desktop.modern.src.application.services.sequence.sequence_persister import (
+    SequencePersister,
+)
+from desktop.modern.src.domain.models.beat_data import BeatData
+from desktop.modern.src.domain.models.pictograph_data import PictographData
+from desktop.modern.src.domain.models.sequence_data import SequenceData
 
 
 class SequenceBeatOperations(QObject):
@@ -36,9 +42,9 @@ class SequenceBeatOperations(QObject):
 
     def __init__(
         self,
-        workbench_getter: Optional[Callable[[], object]] = None,
-        workbench_setter: Optional[Callable[[SequenceData], None]] = None,
-        data_converter: Optional[object] = None,
+        workbench_getter: Callable[[], object] | None = None,
+        workbench_setter: Callable[[SequenceData], None] | None = None,
+        data_converter: object | None = None,
     ):
         super().__init__()
         self.workbench_getter: Callable[[], object] = workbench_getter
@@ -69,7 +75,7 @@ class SequenceBeatOperations(QObject):
             traceback.print_exc()
 
     def _calculate_next_beat_number(
-        self, current_sequence: Optional[SequenceData]
+        self, current_sequence: SequenceData | None
     ) -> int:
         """Calculate the next beat number for a new beat."""
         if current_sequence and current_sequence.beats:
@@ -102,8 +108,10 @@ class SequenceBeatOperations(QObject):
 
             # Otherwise, try command system for undo/redo support
             # Import command system
-            from core.commands.sequence_commands import AddBeatCommand
-            from core.service_locator import (
+            from desktop.modern.src.core.commands.sequence_commands import (
+                AddBeatCommand,
+            )
+            from desktop.modern.src.core.service_locator import (
                 get_command_processor,
                 get_event_bus,
                 get_sequence_state_manager,
@@ -165,7 +173,7 @@ class SequenceBeatOperations(QObject):
             # Update workbench
             if self.workbench_setter:
                 self.workbench_setter(new_sequence)
-                print(f"✅ [BEAT_OPERATIONS] Updated workbench (direct)")
+                print("✅ [BEAT_OPERATIONS] Updated workbench (direct)")
 
             # Save to persistence
             self._save_sequence_to_persistence(new_sequence)
@@ -335,7 +343,7 @@ class SequenceBeatOperations(QObject):
 
             traceback.print_exc()
 
-    def _get_current_sequence(self) -> Optional[SequenceData]:
+    def _get_current_sequence(self) -> SequenceData | None:
         """Get the current sequence from workbench"""
         if self.workbench_getter:
             try:

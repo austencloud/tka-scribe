@@ -11,14 +11,19 @@ PROVIDES:
 - Screen detection and multi-monitor support
 - API server startup coordination
 """
+from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import Callable, Optional, Tuple
+from typing import Callable
 
-# Import session service interface
-from core.interfaces.session_services import ISessionStateTracker, SessionState
 from PyQt6.QtGui import QGuiApplication
 from PyQt6.QtWidgets import QMainWindow
+
+# Import session service interface
+from desktop.modern.src.core.interfaces.session_services import (
+    ISessionStateTracker,
+    SessionState,
+)
 
 
 class IApplicationLifecycleManager(ABC):
@@ -31,7 +36,7 @@ class IApplicationLifecycleManager(ABC):
         target_screen=None,
         parallel_mode=False,
         parallel_geometry=None,
-        progress_callback: Optional[Callable] = None,
+        progress_callback: Callable | None = None,
     ) -> None:
         """Initialize application with proper lifecycle management."""
 
@@ -54,7 +59,7 @@ class ApplicationLifecycleManager(IApplicationLifecycleManager):
     without business logic dependencies. Uses clean separation of concerns.
     """
 
-    def __init__(self, session_service: Optional[ISessionStateTracker] = None):
+    def __init__(self, session_service: ISessionStateTracker | None = None):
         """Initialize application lifecycle manager."""
         self.api_enabled = True
         self._session_service = session_service
@@ -66,7 +71,7 @@ class ApplicationLifecycleManager(IApplicationLifecycleManager):
         target_screen=None,
         parallel_mode=False,
         parallel_geometry=None,
-        progress_callback: Optional[Callable] = None,
+        progress_callback: Callable | None = None,
     ) -> None:
         """Initialize application with proper lifecycle management."""
         if progress_callback:
@@ -93,10 +98,9 @@ class ApplicationLifecycleManager(IApplicationLifecycleManager):
 
                 if restore_result.success and restore_result.session_restored:
                     self._pending_session_data = restore_result.session_data
-                else:
-                    if restore_result.warnings:
-                        for warning in restore_result.warnings:
-                            print(f"⚠️ Session warning: {warning}")
+                elif restore_result.warnings:
+                    for warning in restore_result.warnings:
+                        print(f"⚠️ Session warning: {warning}")
             except Exception as e:
                 print(f"⚠️ Failed to restore session: {e}")
                 # Continue without session restoration
@@ -116,7 +120,11 @@ class ApplicationLifecycleManager(IApplicationLifecycleManager):
     def _apply_restored_session_to_ui(self, session_data: SessionState):
         """Apply restored session data to UI components."""
         try:
-            from core.events.event_bus import EventPriority, UIEvent, get_event_bus
+            from desktop.modern.src.core.events.event_bus import (
+                EventPriority,
+                UIEvent,
+                get_event_bus,
+            )
 
             # Get event bus for publishing restoration events
             event_bus = get_event_bus()
@@ -126,8 +134,10 @@ class ApplicationLifecycleManager(IApplicationLifecycleManager):
                 # Convert sequence data back to SequenceData object if needed
                 sequence_data = session_data.current_sequence_data
                 if isinstance(sequence_data, dict):
-                    from domain.models.beat_data import BeatData
-                    from domain.models.sequence_data import SequenceData
+                    from desktop.modern.src.domain.models.beat_data import BeatData
+                    from desktop.modern.src.domain.models.sequence_data import (
+                        SequenceData,
+                    )
 
                     beats_data = sequence_data.get("beats", [])
 
@@ -153,13 +163,12 @@ class ApplicationLifecycleManager(IApplicationLifecycleManager):
                             beat_objects
                         )
                         sequence_data = sequence_data.update(name=calculated_word)
-                else:
-                    # CRITICAL FIX: Also recalculate name for existing SequenceData objects
-                    if sequence_data.beats:
-                        calculated_word = self._calculate_sequence_word_from_beats(
-                            sequence_data.beats
-                        )
-                        sequence_data = sequence_data.update(name=calculated_word)
+                # CRITICAL FIX: Also recalculate name for existing SequenceData objects
+                elif sequence_data.beats:
+                    calculated_word = self._calculate_sequence_word_from_beats(
+                        sequence_data.beats
+                    )
+                    sequence_data = sequence_data.update(name=calculated_word)
 
                 # Publish sequence restoration event
                 event = UIEvent(
@@ -247,12 +256,12 @@ class ApplicationLifecycleManager(IApplicationLifecycleManager):
                 if secondary_screen.geometry().x() > primary_screen.geometry().x():
                     target_screen = secondary_screen
                     print(
-                        f"🔄 Modern forced to RIGHT monitor (secondary) for parallel testing"
+                        "🔄 Modern forced to RIGHT monitor (secondary) for parallel testing"
                     )
                 else:
                     target_screen = primary_screen
                     print(
-                        f"🔄 Modern forced to RIGHT monitor (primary) for parallel testing"
+                        "🔄 Modern forced to RIGHT monitor (primary) for parallel testing"
                     )
 
             elif monitor in ["primary", "left"]:
@@ -264,12 +273,12 @@ class ApplicationLifecycleManager(IApplicationLifecycleManager):
                 if secondary_screen.geometry().x() < primary_screen.geometry().x():
                     target_screen = secondary_screen
                     print(
-                        f"🔄 Modern forced to LEFT monitor (secondary) for parallel testing"
+                        "🔄 Modern forced to LEFT monitor (secondary) for parallel testing"
                     )
                 else:
                     target_screen = primary_screen
                     print(
-                        f"🔄 Modern forced to LEFT monitor (primary) for parallel testing"
+                        "🔄 Modern forced to LEFT monitor (primary) for parallel testing"
                     )
             else:
                 target_screen = screens[1]  # Default to secondary

@@ -5,27 +5,29 @@ Modern Orientation Picker Component for TKA Graph Editor
 Modern 2025 design with large, easily pressable orientation buttons.
 Features glassmorphism styling and direct orientation selection.
 """
+from __future__ import annotations
 
 import logging
 
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtWidgets import (
-    QWidget,
-    QVBoxLayout,
+    QGridLayout,
     QGroupBox,
     QLabel,
     QPushButton,
-    QGridLayout,
+    QVBoxLayout,
+    QWidget,
 )
 
-from domain.models import Orientation
-from presentation.components.graph_editor.components.turn_adjustment_controls.styling_helpers import (
-    apply_modern_panel_styling,
-    apply_unified_button_styling,
-    UNIFIED_BUTTON_WIDTH,
+from desktop.modern.src.presentation.components.graph_editor.components.turn_adjustment_controls.styling_helpers import (
     UNIFIED_BUTTON_HEIGHT,
     UNIFIED_BUTTON_SPACING,
+    UNIFIED_BUTTON_WIDTH,
+    apply_modern_panel_styling,
+    apply_unified_button_styling,
 )
+from domain.models import Orientation
+
 
 logger = logging.getLogger(__name__)
 

@@ -1,19 +1,27 @@
 """
 Direct pictograph view for Kinetic Constructor - matches legacy container hierarchy.
 """
+from __future__ import annotations
 
-from typing import Any, Optional
+from typing import Any
 
-from application.services.pictograph.scaling_service import ScalingContext
-from core.dependency_injection import get_container
-from core.interfaces.core_services import IPictographBorderManager
-from domain.models import BeatData
-from domain.models.pictograph_data import PictographData
-from presentation.components.pictograph.border_manager import BorderedPictographMixin
-from presentation.components.pictograph.pictograph_scene import PictographScene
-from PyQt6.QtCore import QEvent, Qt, QTimer, pyqtSignal
+from PyQt6.QtCore import QEvent, Qt, QTimer
 from PyQt6.QtGui import QEnterEvent, QKeyEvent, QPainter, QResizeEvent
 from PyQt6.QtWidgets import QGraphicsView
+
+from desktop.modern.src.application.services.pictograph.scaling_service import (
+    ScalingContext,
+)
+from desktop.modern.src.core.dependency_injection import get_container
+from desktop.modern.src.core.interfaces.core_services import IPictographBorderManager
+from desktop.modern.src.domain.models.pictograph_data import PictographData
+from desktop.modern.src.presentation.components.pictograph.border_manager import (
+    BorderedPictographMixin,
+)
+from desktop.modern.src.presentation.components.pictograph.pictograph_scene import (
+    PictographScene,
+)
+from domain.models import BeatData
 
 
 class PictographComponent(BorderedPictographMixin, QGraphicsView):
@@ -21,7 +29,7 @@ class PictographComponent(BorderedPictographMixin, QGraphicsView):
     def __init__(
         self,
         border_service: IPictographBorderManager,
-        parent: Optional[QGraphicsView] = None,
+        parent: QGraphicsView | None = None,
     ):
         if parent is not None:
             try:
@@ -34,7 +42,7 @@ class PictographComponent(BorderedPictographMixin, QGraphicsView):
         QGraphicsView.__init__(self, parent)
 
         # Removed current_beat storage - component is now stateless
-        self.scene: Optional[PictographScene] = None  # Dimension debugging
+        self.scene: PictographScene | None = None  # Dimension debugging
         self.debug_enabled = False
         self.debug_timer = QTimer()
         self.debug_timer.timeout.connect(self._print_debug_dimensions)
@@ -87,7 +95,7 @@ class PictographComponent(BorderedPictographMixin, QGraphicsView):
         if not self.isVisible():
             self.show()
 
-    def update_from_pictograph_data(self, pictograph_data: "PictographData") -> None:
+    def update_from_pictograph_data(self, pictograph_data: PictographData) -> None:
         """
         Update component from PictographData (for pickers and non-sequence contexts).
 
@@ -106,7 +114,7 @@ class PictographComponent(BorderedPictographMixin, QGraphicsView):
 
         # Emit the actual data we're working with - no unnecessary conversion!
 
-    def get_current_beat(self) -> Optional[BeatData]:
+    def get_current_beat(self) -> BeatData | None:
         """Get current beat - component is now stateless, returns None."""
         return None  # Component no longer stores beat data
 
@@ -303,7 +311,7 @@ class PictographComponent(BorderedPictographMixin, QGraphicsView):
 
 
 def create_pictograph_component(
-    parent: Optional[QGraphicsView] = None,
+    parent: QGraphicsView | None = None,
     container=None,
 ) -> PictographComponent:
     """
@@ -327,7 +335,7 @@ def create_pictograph_component(
     except Exception as e:
         # Fallback: create service directly if DI fails
         print(f"⚠️ DI resolution failed, creating border service directly: {e}")
-        from application.services.pictograph.border_manager import (
+        from desktop.modern.src.application.services.pictograph.border_manager import (
             PictographBorderManager,
         )
 

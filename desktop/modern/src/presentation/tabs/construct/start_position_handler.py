@@ -4,16 +4,15 @@ StartPositionHandler
 Manages start position selection, data creation, and related operations for the construct tab.
 Responsible for handling start position picker interactions and creating start position data.
 """
+from __future__ import annotations
 
-from typing import Callable, Optional
+from typing import Callable
 
-from application.services.data.data_converter import DataConverter
-from domain.models.beat_data import BeatData
-from domain.models.grid_data import GridData
-from domain.models.pictograph_data import PictographData
 from PyQt6.QtCore import QObject, pyqtSignal
 
-from application.services.sequence.beat_factory import BeatFactory
+from desktop.modern.src.application.services.sequence.beat_factory import BeatFactory
+from desktop.modern.src.domain.models.grid_data import GridData
+from desktop.modern.src.domain.models.pictograph_data import PictographData
 
 
 class StartPositionHandler(QObject):
@@ -36,7 +35,7 @@ class StartPositionHandler(QObject):
 
     def __init__(
         self,
-        workbench_setter: Optional[Callable[[PictographData], None]] = None,
+        workbench_setter: Callable[[PictographData], None] | None = None,
     ):
         super().__init__()
         self.workbench_setter = workbench_setter
@@ -58,7 +57,7 @@ class StartPositionHandler(QObject):
 
             self.workbench_setter(beat_data, start_position_data)  # Pass both!
         else:
-            print(f"⚠️ [START_POS_HANDLER] No workbench setter available")
+            print("⚠️ [START_POS_HANDLER] No workbench setter available")
 
         # Emit signal with the created data
         # Removed repetitive debug logs
@@ -82,7 +81,9 @@ class StartPositionHandler(QObject):
     def _create_start_position_data(self, position_key: str) -> PictographData:
         """Create start position data from position key using real dataset (separate from sequence beats)"""
         try:
-            from application.services.data.dataset_query import DatasetQuery
+            from desktop.modern.src.application.services.data.dataset_query import (
+                DatasetQuery,
+            )
 
             dataset_service = DatasetQuery()
             # Get real start position data from dataset as PictographData
@@ -106,18 +107,17 @@ class StartPositionHandler(QObject):
                 )
 
                 return pictograph_data
-            else:
-                print(
-                    f"⚠️ No real data found for position {position_key}, using fallback"
-                )
-                # Fallback start position as PictographData
-                specific_end_pos = self.extract_end_position_from_position_key(
-                    position_key
-                )
+            print(
+                f"⚠️ No real data found for position {position_key}, using fallback"
+            )
+            # Fallback start position as PictographData
+            specific_end_pos = self.extract_end_position_from_position_key(
+                position_key
+            )
 
-                return self._create_fallback_pictograph_data(
-                    position_key, specific_end_pos
-                )
+            return self._create_fallback_pictograph_data(
+                position_key, specific_end_pos
+            )
 
         except Exception as e:
             print(f"❌ Error loading real start position data: {e}")

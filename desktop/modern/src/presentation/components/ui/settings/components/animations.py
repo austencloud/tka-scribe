@@ -3,6 +3,7 @@ Settings dialog animations component.
 
 Handles fade and other animations for the settings dialog.
 """
+from __future__ import annotations
 
 from PyQt6.QtCore import QEasingCurve, QPropertyAnimation
 from PyQt6.QtWidgets import QWidget

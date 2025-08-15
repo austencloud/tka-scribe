@@ -4,13 +4,16 @@ TKA Data Service
 Clean, dependency-injectable data service to replace the singleton DataPathHandler.
 Uses simple exceptions for error handling and configuration injection.
 """
+from __future__ import annotations
 
-import logging
 from abc import ABC, abstractmethod
-from typing import Any, Dict
+import logging
+from typing import Any
 
 import pandas as pd
-from core.config.data_config import DataConfig
+
+from desktop.modern.src.core.config.data_config import DataConfig
+
 
 logger = logging.getLogger(__name__)
 
@@ -34,7 +37,7 @@ class IDataService(ABC):
         pass
 
     @abstractmethod
-    def validate_data_files(self) -> Dict[str, Any]:
+    def validate_data_files(self) -> dict[str, Any]:
         """Validate data files and return status information."""
         pass
 
@@ -153,7 +156,7 @@ class DataService(IDataService):
         except Exception as e:
             raise ValueError(f"Failed to load combined dataset: {e}") from e
 
-    def validate_data_files(self) -> Dict[str, Any]:
+    def validate_data_files(self) -> dict[str, Any]:
         """Validate data files and return status information."""
         try:
             status = {

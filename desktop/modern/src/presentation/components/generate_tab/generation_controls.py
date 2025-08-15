@@ -4,29 +4,29 @@ Modern generation control components for Modern Generate Tab.
 These components provide clean, modern UI controls for sequence generation
 parameters, following Modern's architecture patterns.
 """
+from __future__ import annotations
 
+from PyQt6.QtCore import Qt, pyqtSignal
+from PyQt6.QtGui import QFont
 from PyQt6.QtWidgets import (
-    QWidget,
-    QVBoxLayout,
+    QButtonGroup,
+    QCheckBox,
+    QComboBox,
     QHBoxLayout,
     QLabel,
     QPushButton,
     QSlider,
     QSpinBox,
-    QButtonGroup,
-    QCheckBox,
-    QComboBox,
+    QVBoxLayout,
+    QWidget,
 )
-from PyQt6.QtCore import pyqtSignal, Qt
-from PyQt6.QtGui import QFont
-from typing import Set, Optional
 
 from ....core.interfaces.generation_services import (
-    GenerationMode,
-    PropContinuity,
-    LetterType,
-    SliceSize,
     CAPType,
+    GenerationMode,
+    LetterType,
+    PropContinuity,
+    SliceSize,
 )
 
 
@@ -34,7 +34,7 @@ class ModernControlBase(QWidget):
     """Base class for modern generation controls"""
 
     def __init__(
-        self, title: str, description: str = "", parent: Optional[QWidget] = None
+        self, title: str, description: str = "", parent: QWidget | None = None
     ):
         super().__init__(parent)
         self._title = title
@@ -93,7 +93,7 @@ class ModernGenerationModeToggle(ModernControlBase):
 
     mode_changed = pyqtSignal(GenerationMode)
 
-    def __init__(self, parent: Optional[QWidget] = None):
+    def __init__(self, parent: QWidget | None = None):
         super().__init__(
             "Generation Mode",
             "Choose between freeform or circular sequence generation",
@@ -185,7 +185,7 @@ class ModernLengthSelector(ModernControlBase):
 
     value_changed = pyqtSignal(int)
 
-    def __init__(self, parent: Optional[QWidget] = None):
+    def __init__(self, parent: QWidget | None = None):
         super().__init__(
             "Sequence Length",
             "Number of beats in the generated sequence (4-32)",
@@ -247,7 +247,7 @@ class ModernLevelSelector(ModernControlBase):
 
     value_changed = pyqtSignal(int)
 
-    def __init__(self, parent: Optional[QWidget] = None):
+    def __init__(self, parent: QWidget | None = None):
         super().__init__(
             "Difficulty Level", "Complexity of the generated sequence (1-6)", parent
         )
@@ -328,7 +328,7 @@ class ModernTurnIntensitySelector(ModernControlBase):
 
     value_changed = pyqtSignal(float)
 
-    def __init__(self, parent: Optional[QWidget] = None):
+    def __init__(self, parent: QWidget | None = None):
         super().__init__(
             "Turn Intensity", "How complex the turns should be (0.5-3.0)", parent
         )
@@ -425,7 +425,7 @@ class ModernPropContinuityToggle(ModernControlBase):
 
     value_changed = pyqtSignal(PropContinuity)
 
-    def __init__(self, parent: Optional[QWidget] = None):
+    def __init__(self, parent: QWidget | None = None):
         super().__init__(
             "Prop Continuity", "How props should behave throughout the sequence", parent
         )
@@ -511,7 +511,7 @@ class ModernLetterTypeSelector(ModernControlBase):
 
     value_changed = pyqtSignal(set)
 
-    def __init__(self, parent: Optional[QWidget] = None):
+    def __init__(self, parent: QWidget | None = None):
         super().__init__(
             "Letter Types", "Select which letter types to include in generation", parent
         )
@@ -562,7 +562,7 @@ class ModernLetterTypeSelector(ModernControlBase):
             self._current_value = new_value
             self.value_changed.emit(new_value)
 
-    def set_value(self, value: Set[LetterType]):
+    def set_value(self, value: set[LetterType]):
         """Set the current value"""
         self._current_value = value
         for letter_type, checkbox in self._checkboxes.items():
@@ -576,7 +576,7 @@ class ModernSliceSizeSelector(ModernControlBase):
 
     value_changed = pyqtSignal(SliceSize)
 
-    def __init__(self, parent: Optional[QWidget] = None):
+    def __init__(self, parent: QWidget | None = None):
         super().__init__(
             "Slice Size",
             "Size of circular sequence slices (quartered or halved)",
@@ -664,7 +664,7 @@ class ModernCAPTypeSelector(ModernControlBase):
 
     value_changed = pyqtSignal(CAPType)
 
-    def __init__(self, parent: Optional[QWidget] = None):
+    def __init__(self, parent: QWidget | None = None):
         super().__init__("CAP Type", "Circular arrangement pattern type", parent)
         self._current_value = CAPType.STRICT_ROTATED
         self._setup_controls()

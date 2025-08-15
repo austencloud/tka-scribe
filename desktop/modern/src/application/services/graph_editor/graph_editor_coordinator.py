@@ -4,32 +4,31 @@ Graph Editor Service Implementation
 Provides graph editor functionality for the modern TKA desktop application.
 Manages graph editor state, beat selection, and UI interactions.
 """
+from __future__ import annotations
 
-from typing import List, Optional
-
-from core.interfaces.core_services import IUIStateManager
-from core.interfaces.workbench_services import IGraphEditorService
-from domain.models.beat_data import BeatData
-from domain.models.enums import MotionType
-from domain.models.sequence_data import SequenceData
+from desktop.modern.src.core.interfaces.core_services import IUIStateManager
+from desktop.modern.src.core.interfaces.workbench_services import IGraphEditorService
+from desktop.modern.src.domain.models.beat_data import BeatData
+from desktop.modern.src.domain.models.enums import MotionType
+from desktop.modern.src.domain.models.sequence_data import SequenceData
 
 
 class GraphEditorCoordinator(IGraphEditorService):
     """Modern graph editor coordinator implementation"""
 
-    def __init__(self, ui_state_service: Optional[IUIStateManager] = None):
+    def __init__(self, ui_state_service: IUIStateManager | None = None):
         self.ui_state_service = ui_state_service
-        self._current_sequence: Optional[SequenceData] = None
-        self._selected_beat: Optional[BeatData] = None
-        self._selected_beat_index: Optional[int] = None
-        self._selected_arrow_id: Optional[str] = None
+        self._current_sequence: SequenceData | None = None
+        self._selected_beat: BeatData | None = None
+        self._selected_beat_index: int | None = None
+        self._selected_arrow_id: str | None = None
         self._is_visible: bool = False
 
         # Graph editor settings with proven ratios
         self._graph_height_ratio = 3.5  # parent_height // 3.5
         self._max_width_ratio = 4  # parent_width // 4
 
-    def update_graph_display(self, sequence: Optional[SequenceData]) -> None:
+    def update_graph_display(self, sequence: SequenceData | None) -> None:
         """Update the graph editor display with sequence data"""
         self._current_sequence = sequence
 
@@ -60,7 +59,7 @@ class GraphEditorCoordinator(IGraphEditorService):
         return self._is_visible
 
     def set_selected_beat(
-        self, beat_data: Optional[BeatData], beat_index: Optional[int] = None
+        self, beat_data: BeatData | None, beat_index: int | None = None
     ) -> None:
         """Set the currently selected beat for editing"""
         self._selected_beat = beat_data
@@ -75,11 +74,11 @@ class GraphEditorCoordinator(IGraphEditorService):
                 "graph_editor_selected_beat_index", beat_index
             )
 
-    def get_selected_beat(self) -> Optional[BeatData]:
+    def get_selected_beat(self) -> BeatData | None:
         """Get the currently selected beat"""
         return self._selected_beat
 
-    def get_selected_beat_index(self) -> Optional[int]:
+    def get_selected_beat_index(self) -> int | None:
         """Get the currently selected beat index"""
         return self._selected_beat_index
 
@@ -87,7 +86,7 @@ class GraphEditorCoordinator(IGraphEditorService):
         """Check if graph editor is currently visible"""
         return self._is_visible
 
-    def get_current_sequence(self) -> Optional[SequenceData]:
+    def get_current_sequence(self) -> SequenceData | None:
         """Get the current sequence being displayed"""
         return self._current_sequence
 
@@ -97,7 +96,7 @@ class GraphEditorCoordinator(IGraphEditorService):
         # from the adjustment panel to the beat data
         return beat_data
 
-    def set_arrow_selection(self, arrow_id: Optional[str]) -> None:
+    def set_arrow_selection(self, arrow_id: str | None) -> None:
         """Set selected arrow for detailed editing"""
         self._selected_arrow_id = arrow_id
 
@@ -105,12 +104,12 @@ class GraphEditorCoordinator(IGraphEditorService):
         if self.ui_state_service:
             self.ui_state_service.set_setting("graph_editor_selected_arrow", arrow_id)
 
-    def get_available_turns(self, arrow_color: str) -> List[float]:
+    def get_available_turns(self, arrow_color: str) -> list[float]:
         """Get available turn values for specified arrow color"""
         # Standard turn values - these are common turn increments
         return [0.0, 0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0, 2.25, 2.5, 2.75, 3.0]
 
-    def get_available_orientations(self, arrow_color: str) -> List[str]:
+    def get_available_orientations(self, arrow_color: str) -> list[str]:
         """Get available orientation values for specified arrow color"""
         # Standard orientations based on motion types
         return ["pro", "anti", "float", "dash", "static"]

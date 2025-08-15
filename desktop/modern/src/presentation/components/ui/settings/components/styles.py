@@ -5,6 +5,7 @@ This module contains all the CSS styling for the modern settings dialog,
 implementing a beautiful glassmorphism design with translucent backgrounds,
 proper borders, and smooth hover effects.
 """
+from __future__ import annotations
 
 
 class GlassmorphismStyles:
@@ -44,7 +45,7 @@ class GlassmorphismStyles:
                 font-weight: 700;
                 letter-spacing: -0.5px;
             }
-            
+
             #close_button {
                 background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
                     stop:0 rgba(255, 255, 255, 0.18),
@@ -68,7 +69,7 @@ class GlassmorphismStyles:
             #close_button:pressed {
                 background: rgba(255, 60, 60, 0.5);
             }
-            
+
             #settings_sidebar {
                 background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
                     stop:0 rgba(255, 255, 255, 0.15),
@@ -127,7 +128,7 @@ class GlassmorphismStyles:
                 margin-top: 8px;
                 padding: 6px;
             }
-            
+
             #primary_button {
                 background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
                     stop:0 rgba(42, 130, 218, 0.9),
@@ -153,7 +154,7 @@ class GlassmorphismStyles:
             #primary_button:pressed {
                 background: rgba(42, 130, 218, 0.95);
             }
-            
+
             #secondary_button {
                 background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
                     stop:0 rgba(255, 255, 255, 0.18),

@@ -10,7 +10,7 @@ import time
 from PyQt6.QtCore import Qt
 from PyQt6.QtTest import QTest
 
-from desktop.modern.core.testing.ai_agent_helpers import AITestResult
+from desktop.modern.src.core.testing.ai_agent_helpers import AITestResult
 
 
 class GraphEditorTester:

@@ -4,26 +4,33 @@ Arrow renderer for pictograph components.
 Handles Qt-specific arrow rendering while delegating business logic
 to ArrowRenderingService.
 """
+from __future__ import annotations
 
 import logging
-from typing import TYPE_CHECKING, Dict, Optional
+from typing import TYPE_CHECKING
 
-from application.services.pictograph.arrow_rendering_service import (
+from PyQt6.QtSvg import QSvgRenderer
+
+from desktop.modern.src.application.services.pictograph.arrow_rendering_service import (
     ArrowRenderingService,
 )
-from core.dependency_injection.di_container import get_container
-from core.interfaces.positioning_services import (
+from desktop.modern.src.core.dependency_injection.di_container import get_container
+from desktop.modern.src.core.interfaces.positioning_services import (
     IArrowCoordinateSystemService,
     IArrowPositioningOrchestrator,
 )
+from desktop.modern.src.domain.models.arrow_data import ArrowData
+from desktop.modern.src.domain.models.pictograph_data import PictographData
+from desktop.modern.src.presentation.components.pictograph.graphics_items.arrow_item import (
+    ArrowItem,
+)
 from domain.models import MotionData
-from domain.models.arrow_data import ArrowData
-from domain.models.pictograph_data import PictographData
-from presentation.components.pictograph.graphics_items.arrow_item import ArrowItem
-from PyQt6.QtSvg import QSvgRenderer
+
 
 if TYPE_CHECKING:
-    from presentation.components.pictograph.pictograph_scene import PictographScene
+    from desktop.modern.src.presentation.components.pictograph.pictograph_scene import (
+        PictographScene,
+    )
 
 # Module-level logger for performance monitoring
 logger = logging.getLogger(__name__)
@@ -37,7 +44,7 @@ class ArrowRenderer:
     while delegating business logic to ArrowRenderingService.
     """
 
-    def __init__(self, scene: "PictographScene"):
+    def __init__(self, scene: PictographScene):
         self.scene = scene
         self.CENTER_X = 475
         self.CENTER_Y = 475
@@ -53,7 +60,7 @@ class ArrowRenderer:
             )
             self.coordinate_system = container.resolve(IArrowCoordinateSystemService)
         except Exception as e:
-            logger.error(f"Failed to resolve positioning services: {e}")
+            logger.exception(f"Failed to resolve positioning services: {e}")
             self.positioning_orchestrator = None
             self.coordinate_system = None
 
@@ -61,7 +68,7 @@ class ArrowRenderer:
         self,
         color: str,
         motion_data: MotionData,
-        full_pictograph_data: Optional[PictographData] = None,
+        full_pictograph_data: PictographData | None = None,
     ) -> None:
         """Render an arrow using SVG files with service delegation."""
         # Validate motion visibility using service
@@ -199,7 +206,7 @@ class ArrowRenderer:
 
     # Cache Management (delegate to service)
     @classmethod
-    def get_cache_stats(cls) -> Dict[str, int]:
+    def get_cache_stats(cls) -> dict[str, int]:
         """Get current cache statistics for monitoring."""
         return ArrowRenderingService.get_cache_statistics()
 

@@ -11,9 +11,11 @@ import time
 
 from PyQt6.QtCore import QObject, pyqtSignal
 
-from domain.models.pictograph_data import PictographData
-from domain.models.sequence_data import SequenceData
-from presentation.components.option_picker.core.option_picker import OptionPicker
+from desktop.modern.src.domain.models.pictograph_data import PictographData
+from desktop.modern.src.domain.models.sequence_data import SequenceData
+from desktop.modern.src.presentation.components.option_picker.core.option_picker import (
+    OptionPicker,
+)
 
 
 class OptionPickerManager(QObject):
@@ -56,8 +58,8 @@ class OptionPickerManager(QObject):
 
         try:
             # FIXED: Create modern SequenceData instead of legacy format to ensure orientation validation
-            from desktop.modern.domain.models.beat_data import BeatData
-            from desktop.modern.domain.models.sequence_data import SequenceData
+            from desktop.modern.src.domain.models.beat_data import BeatData
+            from desktop.modern.src.domain.models.sequence_data import SequenceData
 
             # Create a single beat with the start position data
             start_beat = BeatData(

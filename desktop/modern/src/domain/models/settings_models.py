@@ -9,7 +9,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field, replace
 from typing import Any
 
-from desktop.modern.domain.models.enums import BackgroundType, GridMode, PropType
+from desktop.modern.src.domain.models.enums import BackgroundType, GridMode, PropType
 
 
 @dataclass(frozen=True)

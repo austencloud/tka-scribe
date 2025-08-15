@@ -13,9 +13,10 @@ with intuitive icons and better visual feedback.
 		onTurnsChange?: (turns: number | "fl") => void; // For setting turns to "fl" when float is selected
 		color: string;
 		availableMotionTypes?: string[]; // Optional prop for filtering
+		currentTurns?: number | "fl"; // To know if we're currently in float
 	}
 
-	let { selectedMotionType, onMotionTypeChange, onTurnsChange, color, availableMotionTypes }: Props = $props();
+	let { selectedMotionType, onMotionTypeChange, onTurnsChange, color, availableMotionTypes, currentTurns }: Props = $props();
 
 	const allMotionTypes = [
 		{ id: 'pro', label: 'Pro', description: 'Pronation - Natural circular motion' },
@@ -33,6 +34,12 @@ with intuitive icons and better visual feedback.
 		return allMotionTypes.filter(type => availableMotionTypes.includes(type.id));
 	});
 
+	// Calculate grid columns based on number of buttons
+	let gridColumns = $derived(`repeat(${motionTypes.length}, 1fr)`);
+
+	// Determine if buttons are interactive (more than one option available)
+	let isInteractive = $derived(motionTypes.length > 1);
+
 	function handleMotionTypeClick(motionTypeId: string) {
 		const motionType = motionTypeId as MotionType;
 		onMotionTypeChange(motionType);
@@ -40,6 +47,11 @@ with intuitive icons and better visual feedback.
 		// If user selects float, automatically set turns to "fl"
 		if (motionType === 'float' && onTurnsChange) {
 			onTurnsChange("fl");
+		}
+
+		// If user selects pro or anti while currently in float, set turns to 0
+		if ((motionType === 'pro' || motionType === 'anti') && currentTurns === "fl" && onTurnsChange) {
+			onTurnsChange(0);
 		}
 	}
 
@@ -50,13 +62,16 @@ with intuitive icons and better visual feedback.
 
 <div class="motion-type-container">
 	<div class="motion-label">Motion Type</div>
-	<div class="motion-type-buttons" style="--accent-color: {color}">
+	<div class="motion-type-buttons" style="--accent-color: {color}; grid-template-columns: {gridColumns}">
 		{#each motionTypes as motionType}
 			<button
 				class="motion-btn"
 				class:selected={isSelected(motionType.id)}
-				onclick={() => handleMotionTypeClick(motionType.id)}
-				aria-label={`Select ${motionType.label} motion type`}
+				class:interactive={isInteractive}
+				class:display-only={!isInteractive}
+				onclick={() => isInteractive ? handleMotionTypeClick(motionType.id) : null}
+				disabled={!isInteractive}
+				aria-label={isInteractive ? `Select ${motionType.label} motion type` : `Current motion type: ${motionType.label}`}
 				title={motionType.description}
 			>
 				<span class="motion-label-text">{motionType.label}</span>
@@ -83,7 +98,7 @@ with intuitive icons and better visual feedback.
 
 	.motion-type-buttons {
 		display: grid;
-		grid-template-columns: repeat(4, 1fr);
+		/* grid-template-columns set dynamically via style attribute */
 		gap: 6px;
 		padding: 8px;
 		background: rgba(0, 0, 0, 0.2);
@@ -108,12 +123,28 @@ with intuitive icons and better visual feedback.
 		flex: 1;
 	}
 
-	.motion-btn:hover {
+	.motion-btn.interactive:hover {
 		background: rgba(var(--accent-color), 0.2);
 		border-color: rgba(var(--accent-color), 0.4);
 		color: white;
 		transform: translateY(-1px);
 		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+	}
+
+	.motion-btn.display-only {
+		background: rgba(var(--accent-color), 0.15);
+		border-color: rgba(var(--accent-color), 0.3);
+		color: rgba(255, 255, 255, 0.9);
+		cursor: default;
+		transform: none;
+		opacity: 0.8;
+	}
+
+	.motion-btn.display-only:hover {
+		transform: none;
+		background: rgba(var(--accent-color), 0.15);
+		border-color: rgba(var(--accent-color), 0.3);
+		box-shadow: none;
 	}
 
 	.motion-btn.selected {
@@ -140,10 +171,7 @@ with intuitive icons and better visual feedback.
 
 	/* Responsive adjustments */
 	@media (max-width: 768px) {
-		.motion-type-buttons {
-			grid-template-columns: repeat(2, 1fr);
-			grid-template-rows: repeat(2, 1fr);
-		}
+		/* Grid columns are set dynamically, no override needed */
 
 		.motion-btn {
 			padding: 10px 6px;

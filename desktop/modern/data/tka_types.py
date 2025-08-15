@@ -2,6 +2,7 @@
 Shared type definitions for TKA applications.
 Core enums that ensure consistency between desktop and web applications.
 """
+from __future__ import annotations
 
 from enum import Enum
 
@@ -57,4 +58,4 @@ class Color(Enum):
     RED = "red"
 
 
-__all__ = ["MotionType", "RotationDirection", "Location", "PropType", "Color"]
+__all__ = ["Color", "Location", "MotionType", "PropType", "RotationDirection"]

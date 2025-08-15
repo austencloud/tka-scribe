@@ -3,12 +3,14 @@ Grid renderer for pictograph components.
 
 Handles rendering of grid elements using SVG assets.
 """
+from __future__ import annotations
 
 import os
-from PyQt6.QtSvgWidgets import QGraphicsSvgItem
-from PyQt6.QtSvg import QSvgRenderer
 
-from application.services.assets.image_asset_utils import (
+from PyQt6.QtSvg import QSvgRenderer
+from PyQt6.QtSvgWidgets import QGraphicsSvgItem
+
+from desktop.modern.src.application.services.assets.image_asset_utils import (
     get_image_path,
 )
 

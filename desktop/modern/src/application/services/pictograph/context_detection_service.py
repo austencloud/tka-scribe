@@ -4,12 +4,16 @@ Pictograph Context Detection Service.
 Provides robust, explicit context detection for pictograph rendering components.
 Replaces brittle string matching with explicit context declaration and service-based resolution.
 """
+from __future__ import annotations
 
 import logging
-from typing import Any, Dict, Optional, Protocol, runtime_checkable
+from typing import Any, Protocol, runtime_checkable
 
-from application.services.pictograph.scaling_service import RenderingContext
-from core.interfaces.core_services import IPictographContextDetector
+from desktop.modern.src.application.services.pictograph.scaling_service import (
+    RenderingContext,
+)
+from desktop.modern.src.core.interfaces.core_services import IPictographContextDetector
+
 
 logger = logging.getLogger(__name__)
 
@@ -32,8 +36,8 @@ class PictographContextDetector(IPictographContextDetector):
 
     def __init__(self):
         """Initialize the context service."""
-        self._component_contexts: Dict[str, RenderingContext] = {}
-        self._context_providers: Dict[str, IPictographContextProvider] = {}
+        self._component_contexts: dict[str, RenderingContext] = {}
+        self._context_providers: dict[str, IPictographContextProvider] = {}
 
     def register_context_provider(self, component_id: str, context: Any) -> None:
         """
@@ -96,13 +100,12 @@ class PictographContextDetector(IPictographContextDetector):
                     f"Context provider returned: {context.value if hasattr(context, 'value') else context}"
                 )
                 return context
-            else:
-                logger.warning(
-                    "Provider does not implement get_rendering_context method"
-                )
-                return RenderingContext.UNKNOWN
+            logger.warning(
+                "Provider does not implement get_rendering_context method"
+            )
+            return RenderingContext.UNKNOWN
         except Exception as e:
-            logger.error(f"Failed to get context from provider: {e}")
+            logger.exception(f"Failed to get context from provider: {e}")
             return RenderingContext.UNKNOWN
 
     def determine_context_from_scene(self, scene: Any) -> Any:
@@ -124,7 +127,7 @@ class PictographContextDetector(IPictographContextDetector):
 
         # Check if scene has explicit context
         if hasattr(scene, "rendering_context"):
-            context = getattr(scene, "rendering_context")
+            context = scene.rendering_context
             if isinstance(context, RenderingContext):
                 logger.debug(f"Scene has explicit context: {context.value}")
                 return context
@@ -163,15 +166,14 @@ class PictographContextDetector(IPictographContextDetector):
             if class_name == "grapheditorwidget":
                 logger.debug("Detected graph editor context via safe fallback")
                 return RenderingContext.GRAPH_EDITOR
-            elif class_name == "beatframewidget":
+            if class_name == "beatframewidget":
                 logger.debug("Detected beat frame context via safe fallback")
                 return RenderingContext.BEAT_FRAME
-            else:
-                logger.debug(f"Unknown parent class {class_name}, returning UNKNOWN")
-                return RenderingContext.UNKNOWN
+            logger.debug(f"Unknown parent class {class_name}, returning UNKNOWN")
+            return RenderingContext.UNKNOWN
 
         except Exception as e:
-            logger.error(f"Fallback detection failed: {e}")
+            logger.exception(f"Fallback detection failed: {e}")
             return RenderingContext.UNKNOWN
 
 
@@ -183,7 +185,7 @@ class ContextAwareComponent:
     """
 
     def __init__(
-        self, rendering_context: RenderingContext, component_id: Optional[str] = None
+        self, rendering_context: RenderingContext, component_id: str | None = None
     ):
         """
         Initialize context-aware component.

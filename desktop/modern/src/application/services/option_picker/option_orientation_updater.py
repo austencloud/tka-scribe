@@ -14,9 +14,9 @@ from __future__ import annotations
 from dataclasses import replace
 import logging
 
-from domain.models.beat_data import BeatData
-from domain.models.pictograph_data import PictographData
-from domain.models.sequence_data import SequenceData
+from desktop.modern.src.domain.models.beat_data import BeatData
+from desktop.modern.src.domain.models.pictograph_data import PictographData
+from desktop.modern.src.domain.models.sequence_data import SequenceData
 
 
 logger = logging.getLogger(__name__)
@@ -168,10 +168,10 @@ class OptionOrientationUpdater:
         updated_props = pictograph.props.copy()
 
         # Import orientation calculator for end orientation calculation
-        from desktop.modern.application.services.positioning.arrows.calculation.orientation_calculator import (
+        from desktop.modern.src.application.services.positioning.arrows.calculation.orientation_calculator import (
             OrientationCalculator,
         )
-        from desktop.modern.domain.models.enums import Orientation
+        from desktop.modern.src.domain.models.enums import Orientation
 
         orientation_calculator = OrientationCalculator()
 

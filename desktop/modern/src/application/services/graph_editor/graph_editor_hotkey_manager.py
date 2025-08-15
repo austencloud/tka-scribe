@@ -6,8 +6,10 @@ Shift/Ctrl modifiers, and X/Z/C special commands.
 
 This is a pure service implementation that follows TKA testing patterns.
 """
+from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
+
 
 # Conditional Qt imports for testing compatibility
 try:
@@ -46,7 +48,9 @@ except ImportError:
     QT_AVAILABLE = False
 
 if TYPE_CHECKING:
-    from core.interfaces.workbench_services import IGraphEditorService
+    from desktop.modern.src.core.interfaces.workbench_services import (
+        IGraphEditorService,
+    )
 
 
 class GraphEditorHotkeyManager:
@@ -57,7 +61,7 @@ class GraphEditorHotkeyManager:
     making it easier to test and more service-layer appropriate.
     """
 
-    def __init__(self, graph_service: "IGraphEditorService"):
+    def __init__(self, graph_service: IGraphEditorService):
         self.graph_service = graph_service
 
         # Movement increment settings
@@ -86,22 +90,22 @@ class GraphEditorHotkeyManager:
             return self._handle_arrow_movement(key, modifiers, selected_arrow)
 
         # Special commands
-        elif key == Qt.Key.Key_X:
+        if key == Qt.Key.Key_X:
             if self.on_rotation_override:
                 self.on_rotation_override(selected_arrow)
             return True
-        elif key == Qt.Key.Key_Z:
+        if key == Qt.Key.Key_Z:
             if self.on_special_placement_removal:
                 self.on_special_placement_removal(selected_arrow)
             return True
-        elif key == Qt.Key.Key_C:
+        if key == Qt.Key.Key_C:
             if self.on_prop_placement_override:
                 self.on_prop_placement_override(selected_arrow)
             return True
 
         return False
 
-    def _get_selected_arrow(self) -> Optional[str]:
+    def _get_selected_arrow(self) -> str | None:
         """Get the currently selected arrow from the graph service"""
         # TODO: Add method to graph service interface to get selected arrow
         # For now, assume we have a selected arrow if we have a selected beat

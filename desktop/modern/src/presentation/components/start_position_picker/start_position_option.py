@@ -1,19 +1,18 @@
-from application.services.data.dataset_query import DatasetQuery
-from presentation.components.pictograph.pictograph_component import (
-    create_pictograph_component,
-)
-from presentation.components.workbench.sequence_beat_frame.selection_overlay import (
-    SelectionOverlay,
-)
+from __future__ import annotations
+
 from PyQt6.QtCore import Qt, pyqtSignal
-from PyQt6.QtGui import QFont, QMouseEvent
+from PyQt6.QtGui import QMouseEvent
 from PyQt6.QtWidgets import (
-    QGridLayout,
-    QLabel,
-    QPushButton,
-    QScrollArea,
     QVBoxLayout,
     QWidget,
+)
+
+from desktop.modern.src.application.services.data.dataset_query import DatasetQuery
+from desktop.modern.src.presentation.components.pictograph.pictograph_component import (
+    create_pictograph_component,
+)
+from desktop.modern.src.presentation.components.workbench.sequence_beat_frame.selection_overlay import (
+    SelectionOverlay,
 )
 
 
@@ -63,7 +62,7 @@ class StartPositionOption(QWidget):
         self.setFixedSize(220, 220)
         self.setCursor(Qt.CursorShape.PointingHandCursor)
 
-    def mousePressEvent(self, event: "QMouseEvent"):
+    def mousePressEvent(self, event: QMouseEvent):
         if event.button() == Qt.MouseButton.LeftButton:
             self.position_selected.emit(self.position_key)
         super().mousePressEvent(event)

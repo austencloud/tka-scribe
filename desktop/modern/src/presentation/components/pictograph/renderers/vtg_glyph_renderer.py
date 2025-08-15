@@ -4,16 +4,17 @@ VTG glyph renderer for pictograph components.
 Handles rendering of VTG (Vertical/Timing/Grid) glyphs that show the
 classification of pictographs (SS, SO, TS, TO, QS, QO).
 """
+from __future__ import annotations
 
 import os
-from typing import Optional
-from PyQt6.QtSvgWidgets import QGraphicsSvgItem
-from PyQt6.QtSvg import QSvgRenderer
 
-from domain.models import VTGMode
-from application.services.assets.image_asset_utils import (
+from PyQt6.QtSvg import QSvgRenderer
+from PyQt6.QtSvgWidgets import QGraphicsSvgItem
+
+from desktop.modern.src.application.services.assets.image_asset_utils import (
     get_image_path,
 )
+from domain.models import VTGMode
 
 
 class VTGGlyphRenderer:
@@ -26,7 +27,7 @@ class VTGGlyphRenderer:
         self.CENTER_Y = 475
 
     def render_vtg_glyph(
-        self, vtg_mode: Optional[VTGMode], letter_type: Optional[str] = None
+        self, vtg_mode: VTGMode | None, letter_type: str | None = None
     ) -> None:
         """
         Render the VTG glyph based on VTG mode.

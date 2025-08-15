@@ -4,17 +4,20 @@ Graph Editor Data Flow Service
 Handles the complete beat selection → modification → propagation flow for the graph editor.
 This service bridges graph editor changes to beat repository and UI components with real-time propagation.
 """
+from __future__ import annotations
 
 from dataclasses import replace
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
-from domain.models.beat_data import BeatData
-from domain.models.enums import MotionType
-from domain.models.sequence_data import SequenceData
 from PyQt6.QtCore import QObject, pyqtSignal
 
+from desktop.modern.src.domain.models.beat_data import BeatData
+from desktop.modern.src.domain.models.enums import MotionType
+from desktop.modern.src.domain.models.sequence_data import SequenceData
+
+
 if TYPE_CHECKING:
-    from core.interfaces.core_services import ISequenceManager
+    from desktop.modern.src.core.interfaces.core_services import ISequenceManager
 
 
 class GraphEditorDataFlowManager(QObject):
@@ -28,16 +31,16 @@ class GraphEditorDataFlowManager(QObject):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self._current_sequence: Optional[SequenceData] = None
-        self._current_beat_index: Optional[int] = None
-        self._sequence_service: Optional["ISequenceManager"] = None
+        self._current_sequence: SequenceData | None = None
+        self._current_beat_index: int | None = None
+        self._sequence_service: ISequenceManager | None = None
 
     def set_context(self, sequence: SequenceData, beat_index: int):
         """Set current sequence and beat context"""
         self._current_sequence = sequence
         self._current_beat_index = beat_index
 
-    def set_sequence_service(self, sequence_service: "ISequenceManager"):
+    def set_sequence_service(self, sequence_service: ISequenceManager):
         """Set the sequence management service for persistence"""
         self._sequence_service = sequence_service
 
@@ -115,7 +118,7 @@ class GraphEditorDataFlowManager(QObject):
 
         return updated_beat
 
-    def determine_panel_mode(self, beat_data: Optional[BeatData]) -> str:
+    def determine_panel_mode(self, beat_data: BeatData | None) -> str:
         """Determine whether to show orientation picker or turns controls"""
         if not beat_data:
             return "orientation"
@@ -132,10 +135,10 @@ class GraphEditorDataFlowManager(QObject):
 
         return "orientation" if is_start else "turns"
 
-    def get_current_sequence(self) -> Optional[SequenceData]:
+    def get_current_sequence(self) -> SequenceData | None:
         """Get the current sequence"""
         return self._current_sequence
 
-    def get_current_beat_index(self) -> Optional[int]:
+    def get_current_beat_index(self) -> int | None:
         """Get the current beat index"""
         return self._current_beat_index

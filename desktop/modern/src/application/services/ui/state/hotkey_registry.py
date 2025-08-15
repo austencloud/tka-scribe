@@ -4,11 +4,13 @@ Hotkey Registry - Hotkey Binding and Handling
 Manages hotkey bindings and handles hotkey events throughout the application.
 Extracted from UIStateManager to follow single responsibility principle.
 """
+from __future__ import annotations
 
 import logging
-from typing import Callable, Dict
+from typing import Callable
 
-from core.events.event_bus import UIEvent, get_event_bus
+from desktop.modern.src.core.events.event_bus import UIEvent, get_event_bus
+
 
 logger = logging.getLogger(__name__)
 
@@ -16,7 +18,7 @@ logger = logging.getLogger(__name__)
 class HotkeyRegistry:
     """
     Hotkey binding and handling registry.
-    
+
     Handles:
     - Hotkey binding registration
     - Hotkey event handling
@@ -30,12 +32,12 @@ class HotkeyRegistry:
         self._event_bus = get_event_bus()
 
         # Hotkey bindings storage
-        self._hotkey_bindings: Dict[str, Callable] = {}
+        self._hotkey_bindings: dict[str, Callable] = {}
 
     def register_hotkey(self, key_combination: str, callback: Callable) -> None:
         """Register a hotkey binding."""
         self._hotkey_bindings[key_combination] = callback
-        
+
         logger.debug(f"Registered hotkey: {key_combination}")
 
         # Publish hotkey registered event
@@ -51,7 +53,7 @@ class HotkeyRegistry:
         """Unregister a hotkey binding."""
         if key_combination in self._hotkey_bindings:
             del self._hotkey_bindings[key_combination]
-            
+
             logger.debug(f"Unregistered hotkey: {key_combination}")
 
             # Publish hotkey unregistered event
@@ -62,7 +64,7 @@ class HotkeyRegistry:
                 source="hotkey_registry",
             )
             self._event_bus.publish(event)
-            
+
             return True
         return False
 
@@ -72,7 +74,7 @@ class HotkeyRegistry:
             try:
                 callback = self._hotkey_bindings[key_combination]
                 callback()
-                
+
                 logger.debug(f"Executed hotkey: {key_combination}")
 
                 # Publish hotkey executed event
@@ -83,11 +85,11 @@ class HotkeyRegistry:
                     source="hotkey_registry",
                 )
                 self._event_bus.publish(event)
-                
+
                 return True
             except Exception as e:
-                logger.error(f"Error executing hotkey {key_combination}: {e}")
-                
+                logger.exception(f"Error executing hotkey {key_combination}: {e}")
+
                 # Publish hotkey error event
                 event = UIEvent(
                     component="hotkey",
@@ -96,7 +98,7 @@ class HotkeyRegistry:
                     source="hotkey_registry",
                 )
                 self._event_bus.publish(event)
-                
+
                 return False
         return False
 
@@ -104,7 +106,7 @@ class HotkeyRegistry:
         """Check if a hotkey is registered."""
         return key_combination in self._hotkey_bindings
 
-    def get_all_hotkeys(self) -> Dict[str, str]:
+    def get_all_hotkeys(self) -> dict[str, str]:
         """Get all registered hotkeys (returns key combinations and callback names)."""
         return {
             key: callback.__name__ if hasattr(callback, '__name__') else str(callback)
@@ -128,12 +130,12 @@ class HotkeyRegistry:
         """Get the number of registered hotkeys."""
         return len(self._hotkey_bindings)
 
-    def register_multiple_hotkeys(self, hotkey_bindings: Dict[str, Callable]) -> None:
+    def register_multiple_hotkeys(self, hotkey_bindings: dict[str, Callable]) -> None:
         """Register multiple hotkeys at once."""
         for key_combination, callback in hotkey_bindings.items():
             self.register_hotkey(key_combination, callback)
 
-    def get_state_for_persistence(self) -> Dict[str, str]:
+    def get_state_for_persistence(self) -> dict[str, str]:
         """Get state data for persistence (only key combinations, not callbacks)."""
         # Note: We can't persist callbacks, only the key combinations
         return {
@@ -141,7 +143,7 @@ class HotkeyRegistry:
             for key, callback in self._hotkey_bindings.items()
         }
 
-    def load_state_from_persistence(self, state: Dict[str, str]) -> None:
+    def load_state_from_persistence(self, state: dict[str, str]) -> None:
         """Load state from persistence data."""
         # Note: This method is mainly for documentation purposes
         # Hotkey callbacks need to be re-registered by the application

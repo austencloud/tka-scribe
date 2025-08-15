@@ -10,15 +10,18 @@ This service handles:
 
 No UI dependencies, completely testable in isolation.
 """
+from __future__ import annotations
 
 import logging
-from typing import Optional
 
-from core.interfaces.positioning_services import IArrowLocationCalculator
+from desktop.modern.src.core.interfaces.positioning_services import (
+    IArrowLocationCalculator,
+)
+from desktop.modern.src.domain.models.pictograph_data import PictographData
 from domain.models import BeatData, Location, MotionData, MotionType
-from domain.models.pictograph_data import PictographData
 
 from .dash_location_calculator import DashLocationCalculator
+
 
 logger = logging.getLogger(__name__)
 
@@ -31,7 +34,7 @@ class ArrowLocationCalculatorService(IArrowLocationCalculator):
     Each motion type has its own calculation strategy.
     """
 
-    def __init__(self, dash_location_service: Optional[DashLocationCalculator] = None):
+    def __init__(self, dash_location_service: DashLocationCalculator | None = None):
         """
         Initialize the location calculator.
 
@@ -54,7 +57,7 @@ class ArrowLocationCalculatorService(IArrowLocationCalculator):
         }
 
     def calculate_location(
-        self, motion_data: MotionData, pictograph_data: Optional[PictographData] = None
+        self, motion_data: MotionData, pictograph_data: PictographData | None = None
     ) -> Location:
         """
         Calculate arrow location based on motion type and data.
@@ -71,19 +74,18 @@ class ArrowLocationCalculatorService(IArrowLocationCalculator):
         """
         if motion_data.motion_type == MotionType.STATIC:
             return self._calculate_static_location(motion_data)
-        elif motion_data.motion_type in [
+        if motion_data.motion_type in [
             MotionType.PRO,
             MotionType.ANTI,
             MotionType.FLOAT,
         ]:
             return self._calculate_shift_location(motion_data)
-        elif motion_data.motion_type == MotionType.DASH:
+        if motion_data.motion_type == MotionType.DASH:
             return self._calculate_dash_location(motion_data, pictograph_data)
-        else:
-            logger.warning(
-                f"Unknown motion type: {motion_data.motion_type}, using start location"
-            )
-            return motion_data.start_loc
+        logger.warning(
+            f"Unknown motion type: {motion_data.motion_type}, using start location"
+        )
+        return motion_data.start_loc
 
     def _calculate_static_location(self, motion: MotionData) -> Location:
         """
@@ -124,7 +126,7 @@ class ArrowLocationCalculatorService(IArrowLocationCalculator):
         return calculated_location
 
     def _calculate_dash_location(
-        self, motion: MotionData, pictograph_data: Optional[PictographData]
+        self, motion: MotionData, pictograph_data: PictographData | None
     ) -> Location:
         """
         Calculate location for dash arrows.
@@ -197,7 +199,7 @@ class ArrowLocationCalculatorService(IArrowLocationCalculator):
 
     def extract_beat_data_from_pictograph(
         self, pictograph: PictographData
-    ) -> Optional[BeatData]:
+    ) -> BeatData | None:
         """Extract beat data from pictograph for dash location calculation."""
         if not pictograph.arrows:
             return None

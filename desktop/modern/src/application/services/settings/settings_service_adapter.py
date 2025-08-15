@@ -1,10 +1,14 @@
 """
 Settings service implementation that adapts UIStateManagementService.
 """
+from __future__ import annotations
 
-from typing import Any, Dict
+from typing import Any
 
-from core.interfaces.core_services import ISettingsCoordinator, IUIStateManager
+from desktop.modern.src.core.interfaces.core_services import (
+    ISettingsCoordinator,
+    IUIStateManager,
+)
 
 
 class SettingsServiceAdapter(ISettingsCoordinator):
@@ -21,7 +25,7 @@ class SettingsServiceAdapter(ISettingsCoordinator):
         """Set a setting value."""
         self.ui_state_service.set_setting(key, value)
 
-    def get_all_settings(self) -> Dict[str, Any]:
+    def get_all_settings(self) -> dict[str, Any]:
         """Get all settings."""
         # Return a basic set of common settings
         return {

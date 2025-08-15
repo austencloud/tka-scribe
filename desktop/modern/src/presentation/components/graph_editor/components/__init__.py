@@ -20,26 +20,28 @@ Architecture:
 """
 
 # Refactored component imports
-from .pictograph_display_section import PictographDisplaySection
-from .main_adjustment_panel import MainAdjustmentPanel
+# Legacy component imports (for backward compatibility)
+from __future__ import annotations
+
+from .adjustment_panel import AdjustmentPanel
 from .detailed_info_panel import DetailedInfoPanel
 from .dual_orientation_picker import DualOrientationPicker
+from .main_adjustment_panel import MainAdjustmentPanel
+from .orientation_picker import OrientationPickerWidget
+from .pictograph_container import GraphEditorPictographContainer
+from .pictograph_display_section import PictographDisplaySection
 from .turn_adjustment_controls.turn_adjustment_controls import TurnAdjustmentControls
 
-# Legacy component imports (for backward compatibility)
-from .adjustment_panel import AdjustmentPanel
-from .pictograph_container import GraphEditorPictographContainer
-from .orientation_picker import OrientationPickerWidget
 
 __all__ = [
-    # Refactored components (primary)
-    "PictographDisplaySection",
-    "MainAdjustmentPanel",
-    "DetailedInfoPanel",
-    "DualOrientationPicker",
-    "TurnAdjustmentControls",
     # Legacy components (backward compatibility)
     "AdjustmentPanel",
+    "DetailedInfoPanel",
+    "DualOrientationPicker",
     "GraphEditorPictographContainer",
+    "MainAdjustmentPanel",
     "OrientationPickerWidget",
+    # Refactored components (primary)
+    "PictographDisplaySection",
+    "TurnAdjustmentControls",
 ]

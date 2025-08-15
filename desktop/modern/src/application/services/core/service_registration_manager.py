@@ -12,18 +12,20 @@ PROVIDES:
 - Pictograph service registration
 - Event system registration
 """
+from __future__ import annotations
 
-import logging
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING, Optional
+import logging
+from typing import TYPE_CHECKING
+
 
 if TYPE_CHECKING:
-    from core.dependency_injection.di_container import DIContainer
+    from desktop.modern.src.core.dependency_injection.di_container import DIContainer
 
 logger = logging.getLogger(__name__)
 
 try:
-    from core.events import IEventBus
+    from desktop.modern.src.core.events import IEventBus
 except ImportError:
     IEventBus = None
 
@@ -32,19 +34,19 @@ class IServiceRegistrationManager(ABC):
     """Interface for service registration operations."""
 
     @abstractmethod
-    def register_all_services(self, container: "DIContainer") -> None:
+    def register_all_services(self, container: DIContainer) -> None:
         """Register all application services in the DI container."""
 
     @abstractmethod
-    def register_event_system(self, container: "DIContainer") -> None:
+    def register_event_system(self, container: DIContainer) -> None:
         """Register event system and command infrastructure."""
 
     @abstractmethod
-    def register_core_services(self, container: "DIContainer") -> None:
+    def register_core_services(self, container: DIContainer) -> None:
         """Register core services using pure dependency injection."""
 
     @abstractmethod
-    def register_motion_services(self, container: "DIContainer") -> None:
+    def register_motion_services(self, container: DIContainer) -> None:
         """Register motion services using pure dependency injection."""
 
 
@@ -56,11 +58,11 @@ class ServiceRegistrationManager(IServiceRegistrationManager):
     Uses clean dependency injection patterns following TKA architecture.
     """
 
-    def __init__(self, progress_callback: Optional[callable] = None):
+    def __init__(self, progress_callback: callable | None = None):
         """Initialize with optional progress callback."""
         self.progress_callback = progress_callback
 
-    def register_all_services(self, container: "DIContainer") -> None:
+    def register_all_services(self, container: DIContainer) -> None:
         """Register all application services in the DI container."""
         self._update_progress("Configuring services...")
 
@@ -81,11 +83,11 @@ class ServiceRegistrationManager(IServiceRegistrationManager):
 
         self._update_progress("Services configured")
 
-    def register_event_system(self, container: "DIContainer") -> None:
+    def register_event_system(self, container: DIContainer) -> None:
         """Register event system and command infrastructure."""
         try:
-            from core.commands import CommandProcessor
-            from core.events import IEventBus, get_event_bus
+            from desktop.modern.src.core.commands import CommandProcessor
+            from desktop.modern.src.core.events import IEventBus, get_event_bus
 
             # Get or create event bus
             event_bus = get_event_bus()
@@ -101,18 +103,27 @@ class ServiceRegistrationManager(IServiceRegistrationManager):
             print(f"⚠️ Event system not available: {e}")
             # Continue without event system for backward compatibility
 
-    def register_core_services(self, container: "DIContainer") -> None:
+    def register_core_services(self, container: DIContainer) -> None:
         """Register core services using pure dependency injection."""
-        from application.services.data.legacy_data_converter import LegacyDataConverter
-        from application.services.layout.layout_manager import LayoutManager
-        from application.services.ui.coordination.ui_coordinator import UICoordinator
-        from core.interfaces.core_services import ILayoutService, IUIStateManager
+        from desktop.modern.src.application.services.data.legacy_data_converter import (
+            LegacyDataConverter,
+        )
+        from desktop.modern.src.application.services.layout.layout_manager import (
+            LayoutManager,
+        )
+        from desktop.modern.src.application.services.ui.coordination.ui_coordinator import (
+            UICoordinator,
+        )
+        from desktop.modern.src.core.interfaces.core_services import (
+            ILayoutService,
+            IUIStateManager,
+        )
 
         # Register service types with factory functions for proper DI
         def create_layout_service():
             event_bus = None
             try:
-                from core.events import IEventBus
+                from desktop.modern.src.core.events import IEventBus
 
                 event_bus = container.resolve(IEventBus)
             except Exception:
@@ -128,26 +139,31 @@ class ServiceRegistrationManager(IServiceRegistrationManager):
 
         container.register_singleton(LegacyDataConverter, LegacyDataConverter)
 
-    def register_sequence_services(self, container: "DIContainer") -> None:
+    def register_sequence_services(self, container: DIContainer) -> None:
         """Register sequence services with interface bindings."""
         # Import sequence service interfaces and implementations
-        from application.services.sequence.beat_factory import BeatFactory, IBeatFactory
-        from application.services.sequence.loader import SequenceLoader
-        from application.services.sequence.sequence_beat_operations import (
+        from desktop.modern.src.application.services.sequence.beat_factory import (
+            BeatFactory,
+            IBeatFactory,
+        )
+        from desktop.modern.src.application.services.sequence.loader import (
+            SequenceLoader,
+        )
+        from desktop.modern.src.application.services.sequence.sequence_beat_operations import (
             SequenceBeatOperations,
         )
-        from application.services.sequence.sequence_persister import (
+        from desktop.modern.src.application.services.sequence.sequence_persister import (
             ISequencePersister,
             SequencePersister,
         )
-        from application.services.sequence.sequence_repository import (
+        from desktop.modern.src.application.services.sequence.sequence_repository import (
             ISequenceRepository,
             SequenceRepository,
         )
-        from application.services.sequence.sequence_start_position_manager import (
+        from desktop.modern.src.application.services.sequence.sequence_start_position_manager import (
             SequenceStartPositionManager,
         )
-        from application.services.sequence.sequence_validator import (
+        from desktop.modern.src.application.services.sequence.sequence_validator import (
             ISequenceValidator,
             SequenceValidator,
         )
@@ -165,18 +181,18 @@ class ServiceRegistrationManager(IServiceRegistrationManager):
             SequenceStartPositionManager, SequenceStartPositionManager
         )
 
-    def register_motion_services(self, container: "DIContainer") -> None:
+    def register_motion_services(self, container: DIContainer) -> None:
         """Register motion services using pure dependency injection."""
-        from application.services.motion.orientation_calculator import (
+        from desktop.modern.src.application.services.motion.orientation_calculator import (
             IOrientationCalculator,
             OrientationCalculator,
         )
 
         container.register_singleton(IOrientationCalculator, OrientationCalculator)
 
-    def register_layout_services(self, container: "DIContainer") -> None:
+    def register_layout_services(self, container: DIContainer) -> None:
         """Register layout services."""
-        from application.services.option_picker.section_layout_manager import (
+        from desktop.modern.src.application.services.option_picker.section_layout_manager import (
             SectionLayoutManager,
         )
 
@@ -188,23 +204,25 @@ class ServiceRegistrationManager(IServiceRegistrationManager):
         # The old separate services (BeatLayoutService, ResponsiveLayoutService,
         # ComponentLayoutService) have been consolidated for better maintainability
 
-    def register_pictograph_services(self, container: "DIContainer") -> None:
+    def register_pictograph_services(self, container: DIContainer) -> None:
         """Register pictograph services using pure dependency injection."""
-        from application.services.data.pictograph_data_service import (
+        from desktop.modern.src.application.services.data.pictograph_data_service import (
             IPictographDataService,
             PictographDataService,
         )
-        from application.services.pictograph.border_manager import (
+        from desktop.modern.src.application.services.pictograph.border_manager import (
             PictographBorderManager,
         )
-        from application.services.pictograph.context_detection_service import (
+        from desktop.modern.src.application.services.pictograph.context_detection_service import (
             PictographContextDetector,
         )
-        from application.services.pictograph.global_visibility_service import (
+        from desktop.modern.src.application.services.pictograph.global_visibility_service import (
             PictographVisibilityManager,
         )
-        from application.services.pictograph.pictograph_manager import PictographManager
-        from core.interfaces.core_services import (
+        from desktop.modern.src.application.services.pictograph.pictograph_manager import (
+            PictographManager,
+        )
+        from desktop.modern.src.core.interfaces.core_services import (
             IPictographBorderManager,
             IPictographContextDetector,
         )
@@ -220,9 +238,9 @@ class ServiceRegistrationManager(IServiceRegistrationManager):
             PictographVisibilityManager, PictographVisibilityManager
         )
 
-    def register_workbench_services(self, container: "DIContainer") -> None:
+    def register_workbench_services(self, container: DIContainer) -> None:
         """Register workbench services."""
-        from application.services.workbench.beat_selection_service import (
+        from desktop.modern.src.application.services.workbench.beat_selection_service import (
             BeatSelectionService,
         )
         from presentation.factories.workbench_factory import (
@@ -235,26 +253,26 @@ class ServiceRegistrationManager(IServiceRegistrationManager):
         # Register presentation services
         configure_workbench_services(container)
 
-    def register_positioning_services(self, container: "DIContainer") -> None:
+    def register_positioning_services(self, container: DIContainer) -> None:
         """Register microservices-based positioning services."""
         try:
             # Import the individual calculator services with correct class names
-            from application.services.positioning.arrows.calculation.arrow_location_calculator import (
+            from desktop.modern.src.application.services.positioning.arrows.calculation.arrow_location_calculator import (
                 ArrowLocationCalculatorService,
             )
-            from application.services.positioning.arrows.calculation.arrow_rotation_calculator import (
+            from desktop.modern.src.application.services.positioning.arrows.calculation.arrow_rotation_calculator import (
                 ArrowRotationCalculatorService,
             )
-            from application.services.positioning.arrows.coordinate_system.arrow_coordinate_system_service import (
+            from desktop.modern.src.application.services.positioning.arrows.coordinate_system.arrow_coordinate_system_service import (
                 ArrowCoordinateSystemService,
             )
-            from application.services.positioning.arrows.orchestration.arrow_adjustment_calculator_service import (
+            from desktop.modern.src.application.services.positioning.arrows.orchestration.arrow_adjustment_calculator_service import (
                 ArrowAdjustmentCalculatorService,
             )
-            from application.services.positioning.arrows.orchestration.arrow_positioning_orchestrator import (
+            from desktop.modern.src.application.services.positioning.arrows.orchestration.arrow_positioning_orchestrator import (
                 ArrowPositioningOrchestrator,
             )
-            from core.interfaces.positioning_services import (
+            from desktop.modern.src.core.interfaces.positioning_services import (
                 IArrowAdjustmentCalculator,
                 IArrowCoordinateSystemService,
                 IArrowLocationCalculator,
@@ -296,11 +314,11 @@ class ServiceRegistrationManager(IServiceRegistrationManager):
         except ImportError as e:
             # Some positioning services not available - continue
             print(f"⚠️ Failed to import positioning services: {e}")
-            print(f"   This means IArrowPositioningOrchestrator will not be available")
+            print("   This means IArrowPositioningOrchestrator will not be available")
 
         try:
             # Register prop management services
-            from application.services.positioning.props.orchestration.prop_management_service import (
+            from desktop.modern.src.application.services.positioning.props.orchestration.prop_management_service import (
                 IPropManagementService,
                 PropManagementService,
             )
@@ -312,11 +330,11 @@ class ServiceRegistrationManager(IServiceRegistrationManager):
 
         try:
             # Import existing prop orchestrator (keep if still needed)
-            from application.services.pictograph.pictograph_orchestrator import (
+            from desktop.modern.src.application.services.pictograph.pictograph_orchestrator import (
                 IPictographOrchestrator,
                 PictographOrchestrator,
             )
-            from application.services.positioning.props.orchestration.prop_orchestrator import (  # Register remaining orchestrators
+            from desktop.modern.src.application.services.positioning.props.orchestration.prop_orchestrator import (  # Register remaining orchestrators
                 IPropOrchestrator,
                 PropOrchestrator,
             )
@@ -329,23 +347,23 @@ class ServiceRegistrationManager(IServiceRegistrationManager):
             # Orchestrators not available - continue
             pass
 
-    def register_option_picker_services(self, container: "DIContainer") -> None:
+    def register_option_picker_services(self, container: DIContainer) -> None:
         """Register the refactored option picker services."""
         # Import the refactored option picker services
 
-        from application.services.option_picker.option_picker_display_manager import (
+        from desktop.modern.src.application.services.option_picker.option_picker_display_manager import (
             OptionPickerDisplayManager,
         )
-        from application.services.option_picker.option_picker_event_service import (
+        from desktop.modern.src.application.services.option_picker.option_picker_event_service import (
             OptionPickerEventService,
         )
-        from application.services.option_picker.option_picker_initializer import (
+        from desktop.modern.src.application.services.option_picker.option_picker_initializer import (
             OptionPickerInitializer,
         )
-        from application.services.option_picker.option_picker_orchestrator import (
+        from desktop.modern.src.application.services.option_picker.option_picker_orchestrator import (
             OptionPickerOrchestrator,
         )
-        from core.interfaces.option_picker_interfaces import (
+        from desktop.modern.src.core.interfaces.option_picker_interfaces import (
             IOptionPickerDisplayService,
             IOptionPickerEventService,
             IOptionPickerInitializer,
@@ -364,37 +382,46 @@ class ServiceRegistrationManager(IServiceRegistrationManager):
             IOptionPickerOrchestrator, OptionPickerOrchestrator
         )
 
-    def register_data_services(self, container: "DIContainer") -> None:
+    def register_data_services(self, container: DIContainer) -> None:
         """Register the new refactored data services."""
         # Import the new data services
-        from application.services.data.csv_reader import CSVReader, ICSVReader
+        from desktop.modern.src.application.services.data.csv_reader import (
+            CSVReader,
+            ICSVReader,
+        )
 
         # Import the Phase 2 conversion services
-        from application.services.data.data_converter import (
+        from desktop.modern.src.application.services.data.data_converter import (
             DataConverter,
             IDataConverter,
         )
 
         # Import the Phase 1 foundation data services
-        from application.services.data.data_service import DataService, IDataService
-        from application.services.data.dataset_loader import (
+        from desktop.modern.src.application.services.data.data_service import (
+            DataService,
+            IDataService,
+        )
+        from desktop.modern.src.application.services.data.dataset_loader import (
             DatasetLoader,
             IDatasetLoader,
         )
-        from application.services.data.dataset_query import DatasetQuery, IDatasetQuery
-        from application.services.data.legacy_data_converter import (
+        from desktop.modern.src.application.services.data.dataset_query import (
+            DatasetQuery,
+            IDatasetQuery,
+        )
+        from desktop.modern.src.application.services.data.legacy_data_converter import (
             ILegacyDataConverter,
             LegacyDataConverter,
         )
-        from application.services.data.pictograph_data_service import (
+        from desktop.modern.src.application.services.data.pictograph_data_service import (
             IPictographDataService,
             PictographDataService,
         )
-        from application.services.data.sequence_data_converter import (
+        from desktop.modern.src.application.services.data.sequence_data_converter import (
             ISequenceDataConverter,
             SequenceDataConverter,
         )
-        from application.services.positioning.props.configuration.json_configuration_service import (
+        from desktop.modern.src.application.services.positioning.props.configuration.json_configuration_service import (
             IJSONConfigurationService,
             JSONConfigurationService,
         )
@@ -416,9 +443,9 @@ class ServiceRegistrationManager(IServiceRegistrationManager):
         container.register_singleton(IDataConverter, DataConverter)
         container.register_singleton(ILegacyDataConverter, LegacyDataConverter)
 
-    def register_graph_editor_services(self, container: "DIContainer") -> None:
+    def register_graph_editor_services(self, container: DIContainer) -> None:
         """Register graph editor services using pure dependency injection."""
-        from application.services.graph_editor.graph_editor_state_manager import (
+        from desktop.modern.src.application.services.graph_editor.graph_editor_state_manager import (
             GraphEditorStateManager,
         )
 

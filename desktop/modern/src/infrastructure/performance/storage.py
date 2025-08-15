@@ -16,11 +16,11 @@ import threading
 from typing import Any
 
 # Result pattern removed - using simple exceptions
-from desktop.modern.core.performance.config import (
+from desktop.modern.src.core.performance.config import (
     PerformanceConfig,
     get_performance_config,
 )
-from desktop.modern.core.performance.profiler import ProfilerSession
+from desktop.modern.src.core.performance.profiler import ProfilerSession
 
 
 logger = logging.getLogger(__name__)

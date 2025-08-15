@@ -6,7 +6,7 @@ from __future__ import annotations
 
 import logging
 
-from desktop.modern.domain.models.sequence_data import SequenceData
+from desktop.modern.src.domain.models.sequence_data import SequenceData
 
 
 logger = logging.getLogger(__name__)

@@ -12,16 +12,21 @@ Consolidates all UI state-related services into a single cohesive service:
 This service provides a clean, unified interface for all UI state operations
 while maintaining the proven algorithms from the individual services.
 """
+from __future__ import annotations
 
-import json
 from dataclasses import dataclass, field
 from enum import Enum
+import json
 from pathlib import Path
-from typing import Any, Callable, Dict, Optional
+from typing import Any, Callable
 
-from core.events.event_bus import EventPriority, UIEvent, get_event_bus
-from core.interfaces.core_services import IUIStateManager
-from core.interfaces.session_services import ISessionStateTracker
+from desktop.modern.src.core.events.event_bus import (
+    EventPriority,
+    UIEvent,
+    get_event_bus,
+)
+from desktop.modern.src.core.interfaces.core_services import IUIStateManager
+from desktop.modern.src.core.interfaces.session_services import ISessionStateTracker
 
 
 class UIComponent(Enum):
@@ -51,26 +56,26 @@ class UIState:
     """Complete UI state representation."""
 
     # Window state
-    window_geometry: Dict[str, int] = field(default_factory=dict)
+    window_geometry: dict[str, int] = field(default_factory=dict)
     window_maximized: bool = False
 
     # Component visibility
-    component_visibility: Dict[str, bool] = field(default_factory=dict)
+    component_visibility: dict[str, bool] = field(default_factory=dict)
 
     # Tab states
     active_tab: str = "sequence_builder"
-    tab_states: Dict[str, Dict[str, Any]] = field(default_factory=dict)
+    tab_states: dict[str, dict[str, Any]] = field(default_factory=dict)
 
     # Graph editor state
     graph_editor_visible: bool = False
     graph_editor_height: int = 300
 
     # Option picker state
-    option_picker_selection: Optional[str] = None
-    option_picker_filters: Dict[str, Any] = field(default_factory=dict)
+    option_picker_selection: str | None = None
+    option_picker_filters: dict[str, Any] = field(default_factory=dict)
 
     # Settings
-    user_settings: Dict[str, Any] = field(default_factory=dict)
+    user_settings: dict[str, Any] = field(default_factory=dict)
 
 
 class UIStateManager(IUIStateManager):
@@ -86,7 +91,7 @@ class UIStateManager(IUIStateManager):
     - Event-driven state synchronization
     """
 
-    def __init__(self, session_service: Optional[ISessionStateTracker] = None):
+    def __init__(self, session_service: ISessionStateTracker | None = None):
         # Core state
         self._ui_state = UIState()
 
@@ -105,7 +110,7 @@ class UIStateManager(IUIStateManager):
         self._default_settings = self._load_default_settings()
 
         # Hotkey bindings
-        self._hotkey_bindings: Dict[str, Callable] = {}
+        self._hotkey_bindings: dict[str, Callable] = {}
 
         # Load saved state
         self._load_state()
@@ -137,11 +142,11 @@ class UIStateManager(IUIStateManager):
         )
         self._event_bus.publish(event)
 
-    def get_tab_state(self, tab_name: str) -> Dict[str, Any]:
+    def get_tab_state(self, tab_name: str) -> dict[str, Any]:
         """Get state for a specific tab."""
         return self._ui_state.tab_states.get(tab_name, {})
 
-    def update_tab_state(self, tab_name: str, state: Dict[str, Any]) -> None:
+    def update_tab_state(self, tab_name: str, state: dict[str, Any]) -> None:
         """Update state for a specific tab."""
         if tab_name not in self._ui_state.tab_states:
             self._ui_state.tab_states[tab_name] = {}
@@ -186,7 +191,7 @@ class UIStateManager(IUIStateManager):
         """Get the active tab."""
         return self._ui_state.active_tab
 
-    def get_graph_editor_state(self) -> Dict[str, Any]:
+    def get_graph_editor_state(self) -> dict[str, Any]:
         """Get graph editor state."""
         return {
             "visible": self._ui_state.graph_editor_visible,
@@ -219,7 +224,7 @@ class UIStateManager(IUIStateManager):
 
         return self._ui_state.graph_editor_visible
 
-    def get_all_settings(self) -> Dict[str, Any]:
+    def get_all_settings(self) -> dict[str, Any]:
         """Get all settings."""
         return self._ui_state.user_settings.copy()
 
@@ -252,14 +257,14 @@ class UIStateManager(IUIStateManager):
         )
         self._event_bus.publish(event)
 
-    def get_option_picker_state(self) -> Dict[str, Any]:
+    def get_option_picker_state(self) -> dict[str, Any]:
         """Get option picker state."""
         return {
             "selection": self._ui_state.option_picker_selection,
             "filters": self._ui_state.option_picker_filters,
         }
 
-    def set_option_picker_selection(self, selection: Optional[str]) -> None:
+    def set_option_picker_selection(self, selection: str | None) -> None:
         """Set option picker selection."""
         self._ui_state.option_picker_selection = selection
 
@@ -272,7 +277,7 @@ class UIStateManager(IUIStateManager):
         )
         self._event_bus.publish(event)
 
-    def update_option_picker_filters(self, filters: Dict[str, Any]) -> None:
+    def update_option_picker_filters(self, filters: dict[str, Any]) -> None:
         """Update option picker filters."""
         self._ui_state.option_picker_filters.update(filters)
 
@@ -317,11 +322,11 @@ class UIStateManager(IUIStateManager):
                 print(f"Error handling hotkey {key_combination}: {e}")
         return False
 
-    def get_window_geometry(self) -> Dict[str, int]:
+    def get_window_geometry(self) -> dict[str, int]:
         """Get window geometry."""
         return self._ui_state.window_geometry.copy()
 
-    def set_window_geometry(self, geometry: Dict[str, int]) -> None:
+    def set_window_geometry(self, geometry: dict[str, int]) -> None:
         """Set window geometry."""
         self._ui_state.window_geometry.update(geometry)
         self._save_state()
@@ -363,7 +368,7 @@ class UIStateManager(IUIStateManager):
     def import_settings(self, file_path: Path) -> bool:
         """Import settings from file."""
         try:
-            with open(file_path, "r") as f:
+            with open(file_path) as f:
                 imported_settings = json.load(f)
 
             self._ui_state.user_settings.update(imported_settings)
@@ -388,7 +393,7 @@ class UIStateManager(IUIStateManager):
         """Load state from file."""
         if self._settings_file.exists():
             try:
-                with open(self._settings_file, "r") as f:
+                with open(self._settings_file) as f:
                     data = json.load(f)
 
                 # Update UI state from loaded data
@@ -434,7 +439,7 @@ class UIStateManager(IUIStateManager):
         except Exception as e:
             print(f"Error saving UI state: {e}")
 
-    def _load_default_settings(self) -> Dict[str, Any]:
+    def _load_default_settings(self) -> dict[str, Any]:
         """Load default settings."""
         return {
             "theme": "dark",
@@ -488,7 +493,7 @@ class UIStateManager(IUIStateManager):
             self._session_service.update_current_sequence(sequence_data, sequence_id)
 
     def update_workbench_selection_with_session(
-        self, beat_index: Optional[int], beat_data: Any, start_position: Any
+        self, beat_index: int | None, beat_data: Any, start_position: Any
     ) -> None:
         """Update workbench selection and save to session."""
         # Update UI state
@@ -504,9 +509,9 @@ class UIStateManager(IUIStateManager):
     def update_graph_editor_with_session(
         self,
         visible: bool,
-        beat_index: Optional[int] = None,
-        selected_arrow: Optional[str] = None,
-        height: Optional[int] = None,
+        beat_index: int | None = None,
+        selected_arrow: str | None = None,
+        height: int | None = None,
     ) -> None:
         """Update graph editor state and save to session."""
         # Update UI state
@@ -523,9 +528,9 @@ class UIStateManager(IUIStateManager):
 
     def update_ui_state_with_session(
         self,
-        active_tab: Optional[str] = None,
-        beat_layout: Optional[Dict[str, Any]] = None,
-        component_visibility: Optional[Dict[str, bool]] = None,
+        active_tab: str | None = None,
+        beat_layout: dict[str, Any] | None = None,
+        component_visibility: dict[str, bool] | None = None,
     ) -> None:
         """Update UI state and save to session."""
         # Update UI state

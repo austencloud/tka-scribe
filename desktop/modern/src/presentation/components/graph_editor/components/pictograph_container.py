@@ -1,15 +1,22 @@
-import logging
-from typing import Optional
+from __future__ import annotations
 
-from application.services.pictograph.pictograph_manager import PictographManager
-from domain.models.beat_data import BeatData
-from domain.models.pictograph_data import PictographData
-from presentation.components.pictograph.pictograph_scene import PictographScene
+import logging
+
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtGui import QMouseEvent, QPainter
 from PyQt6.QtWidgets import QGraphicsView, QVBoxLayout, QWidget
 
+from desktop.modern.src.application.services.pictograph.pictograph_manager import (
+    PictographManager,
+)
+from desktop.modern.src.domain.models.beat_data import BeatData
+from desktop.modern.src.domain.models.pictograph_data import PictographData
+from desktop.modern.src.presentation.components.pictograph.pictograph_scene import (
+    PictographScene,
+)
+
 from ..config import ColorConfig, LayoutConfig, SizeConfig, StateConfig, UIConfig
+
 
 logger = logging.getLogger(__name__)
 
@@ -21,8 +28,8 @@ class GraphEditorPictographContainer(QWidget):
     def __init__(self, parent):
         super().__init__(parent)
         self._graph_editor = parent
-        self._current_beat: Optional[BeatData] = None
-        self._selected_arrow_id: Optional[str] = None
+        self._current_beat: BeatData | None = None
+        self._selected_arrow_id: str | None = None
         self._selected_arrow_items = {}  # Track selected arrow visual items
         self._selection_highlight_color = ColorConfig.SELECTION_HIGHLIGHT_COLOR
 
@@ -33,7 +40,7 @@ class GraphEditorPictographContainer(QWidget):
         else:
             self._pictograph_service = None
 
-        self._current_pictograph: Optional[PictographData] = None
+        self._current_pictograph: PictographData | None = None
 
         self._setup_ui()
 
@@ -74,7 +81,7 @@ class GraphEditorPictographContainer(QWidget):
         """
         )
 
-    def set_beat(self, beat_data: Optional[BeatData]):
+    def set_beat(self, beat_data: BeatData | None):
         self._current_beat = beat_data
         self._pictograph_view.set_beat(beat_data)
 
@@ -241,7 +248,7 @@ class ModernPictographView(QGraphicsView):
     def __init__(self, parent):
         super().__init__(parent)
         self._container = parent
-        self._current_beat: Optional[BeatData] = None
+        self._current_beat: BeatData | None = None
 
         self._setup_view()
 
@@ -281,7 +288,7 @@ class ModernPictographView(QGraphicsView):
             QGraphicsView.OptimizationFlag.DontAdjustForAntialiasing
         )
 
-    def set_beat(self, beat_data: Optional[BeatData]):
+    def set_beat(self, beat_data: BeatData | None):
         self._current_beat = beat_data
         self._render_beat()
 
@@ -373,7 +380,7 @@ class ModernPictographView(QGraphicsView):
         """Handle arrow click from Modern pictograph scene."""
         self.arrow_clicked.emit(arrow_color)
 
-    def get_selected_arrow_data(self) -> Optional[dict]:
+    def get_selected_arrow_data(self) -> dict | None:
         """Get data for the currently selected arrow."""
         if not self._selected_arrow_id or not self._current_beat:
             return None
@@ -388,7 +395,7 @@ class ModernPictographView(QGraphicsView):
                 ),
                 "turns": getattr(self._current_beat.blue_motion, "turns", 0.0),
             }
-        elif self._selected_arrow_id == "red" and self._current_beat.red_motion:
+        if self._selected_arrow_id == "red" and self._current_beat.red_motion:
             return {
                 "color": "red",
                 "motion": self._current_beat.red_motion,

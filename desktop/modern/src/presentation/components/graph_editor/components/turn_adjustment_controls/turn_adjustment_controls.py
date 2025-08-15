@@ -5,22 +5,24 @@ Modern Turn Adjustment Controls Component for TKA Graph Editor
 Modern 2025 design with large, easily pressable turn value buttons.
 Features glassmorphism styling and direct turn value selection.
 """
+from __future__ import annotations
 
 import logging
-from typing import Optional
-from domain.models import BeatData, MotionData
-from PyQt6.QtCore import pyqtSignal
-from PyQt6.QtWidgets import QWidget, QHBoxLayout, QVBoxLayout, QGroupBox
 
-from presentation.components.graph_editor.components.turn_adjustment_controls.current_turn_display import (
+from PyQt6.QtCore import pyqtSignal
+from PyQt6.QtWidgets import QGroupBox, QHBoxLayout, QVBoxLayout, QWidget
+
+from desktop.modern.src.presentation.components.graph_editor.components.turn_adjustment_controls.current_turn_display import (
     CurrentTurnDisplay,
 )
-from presentation.components.graph_editor.components.turn_adjustment_controls.turn_value_button_grid import (
-    TurnValueButtonGrid,
-)
-from presentation.components.graph_editor.components.turn_adjustment_controls.styling_helpers import (
+from desktop.modern.src.presentation.components.graph_editor.components.turn_adjustment_controls.styling_helpers import (
     apply_modern_panel_styling,
 )
+from desktop.modern.src.presentation.components.graph_editor.components.turn_adjustment_controls.turn_value_button_grid import (
+    TurnValueButtonGrid,
+)
+from domain.models import BeatData, MotionData
+
 
 logger = logging.getLogger(__name__)
 
@@ -46,7 +48,7 @@ class TurnAdjustmentControls(QWidget):
     def __init__(self, parent=None):
         """Initialize the modern turn adjustment controls."""
         super().__init__(parent)
-        self._current_beat_data: Optional[BeatData] = None
+        self._current_beat_data: BeatData | None = None
 
         # Available turn values (fl = float = 0.25)
         self._turn_values = ["fl", "0", "0.5", "1", "1.5", "2", "2.5", "3"]
@@ -66,10 +68,10 @@ class TurnAdjustmentControls(QWidget):
         self._red_turn_amount = 0.0
 
         # UI component references
-        self._blue_current_display: Optional[CurrentTurnDisplay] = None
-        self._red_current_display: Optional[CurrentTurnDisplay] = None
-        self._blue_turn_grid: Optional[TurnValueButtonGrid] = None
-        self._red_turn_grid: Optional[TurnValueButtonGrid] = None
+        self._blue_current_display: CurrentTurnDisplay | None = None
+        self._red_current_display: CurrentTurnDisplay | None = None
+        self._blue_turn_grid: TurnValueButtonGrid | None = None
+        self._red_turn_grid: TurnValueButtonGrid | None = None
 
         self._setup_ui()
         logger.debug("Modern TurnAdjustmentControls initialized")
@@ -82,7 +84,7 @@ class TurnAdjustmentControls(QWidget):
 
         blue_panel = self._create_modern_turn_panel("blue")
         red_panel = self._create_modern_turn_panel("red")
-        
+
         layout.addWidget(blue_panel, 1)
         layout.addWidget(red_panel, 1)
 
@@ -190,9 +192,9 @@ class TurnAdjustmentControls(QWidget):
             logger.debug("Beat data updated with turn changes")
 
         except Exception as e:
-            logger.error(f"Error updating beat with turn changes: {e}")
+            logger.exception(f"Error updating beat with turn changes: {e}")
 
-    def set_beat_data(self, beat_data: Optional[BeatData]):
+    def set_beat_data(self, beat_data: BeatData | None):
         """Set the current beat data and update the UI."""
         self._current_beat_data = beat_data
 

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from data.constants import (
     CLOCKWISE,
     COUNTER_CLOCKWISE,
@@ -12,6 +14,7 @@ from data.constants import (
     STATIC,
     WEST,
 )
+
 
 loc_map_cw = {
     SOUTH: WEST,

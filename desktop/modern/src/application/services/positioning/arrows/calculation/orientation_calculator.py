@@ -11,10 +11,12 @@ This service provides:
 
 Ported from legacy MotionOriCalculator for accuracy.
 """
+from __future__ import annotations
 
 import logging
 
 from domain.models import Location, MotionData, MotionType, Orientation
+
 
 logger = logging.getLogger(__name__)
 
@@ -84,7 +86,7 @@ class OrientationCalculator:
             )
 
         # Half turn calculations
-        elif turns in {0.5, 1.5, 2.5}:
+        if turns in {0.5, 1.5, 2.5}:
             return self._calculate_half_turn_orientation(
                 motion_type, turns, start_ori, motion_data
             )

@@ -16,11 +16,13 @@ USAGE:
     service.initialize_pool("pictographs", 36, factory_func, progress_callback)
     obj = service.get_pooled_object("pictographs", 5)
 """
+from __future__ import annotations
 
 import logging
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any, Callable
 
-from core.interfaces.core_services import IObjectPoolManager
+from desktop.modern.src.core.interfaces.core_services import IObjectPoolManager
+
 
 logger = logging.getLogger(__name__)
 
@@ -36,8 +38,8 @@ class ObjectPoolManager(IObjectPoolManager):
 
     def __init__(self):
         """Initialize the object pool service."""
-        self._pools: Dict[str, List[Any]] = {}
-        self._pool_states: Dict[str, Dict[str, Any]] = {}
+        self._pools: dict[str, list[Any]] = {}
+        self._pool_states: dict[str, dict[str, Any]] = {}
         logger.debug("Object pool service initialized")
 
     def initialize_pool(
@@ -45,7 +47,7 @@ class ObjectPoolManager(IObjectPoolManager):
         pool_name: str,
         max_objects: int,
         object_factory: Callable[[], Any],
-        progress_callback: Optional[Callable] = None,
+        progress_callback: Callable | None = None,
     ) -> None:
         """
         Initialize object pool with progress tracking.
@@ -101,7 +103,7 @@ class ObjectPoolManager(IObjectPoolManager):
                         )
 
                 except Exception as e:
-                    logger.error(
+                    logger.exception(
                         f"Failed to create object {i} in pool '{pool_name}': {e}"
                     )
                     # Continue creating other objects even if one fails
@@ -115,7 +117,7 @@ class ObjectPoolManager(IObjectPoolManager):
                 progress_callback(f"{pool_name} pool initialization complete", 1.0)
 
         except Exception as e:
-            logger.error(f"Error initializing pool '{pool_name}': {e}")
+            logger.exception(f"Error initializing pool '{pool_name}': {e}")
             # Ensure pool exists even if initialization failed
             if pool_name not in self._pools:
                 self._pools[pool_name] = []
@@ -126,7 +128,7 @@ class ObjectPoolManager(IObjectPoolManager):
                     "created_objects": 0,
                 }
 
-    def get_pooled_object(self, pool_name: str, index: int) -> Optional[Any]:
+    def get_pooled_object(self, pool_name: str, index: int) -> Any | None:
         """
         Get object from pool by index.
 
@@ -155,7 +157,7 @@ class ObjectPoolManager(IObjectPoolManager):
             return obj
 
         except Exception as e:
-            logger.error(
+            logger.exception(
                 f"Error getting object from pool '{pool_name}' at index {index}: {e}"
             )
             return None
@@ -182,9 +184,9 @@ class ObjectPoolManager(IObjectPoolManager):
             logger.info(f"Successfully reset pool '{pool_name}'")
 
         except Exception as e:
-            logger.error(f"Error resetting pool '{pool_name}': {e}")
+            logger.exception(f"Error resetting pool '{pool_name}': {e}")
 
-    def get_pool_info(self, pool_name: str) -> Dict[str, Any]:
+    def get_pool_info(self, pool_name: str) -> dict[str, Any]:
         """
         Get information about a pool.
 
@@ -216,7 +218,7 @@ class ObjectPoolManager(IObjectPoolManager):
             }
 
         except Exception as e:
-            logger.error(f"Error getting pool info for '{pool_name}': {e}")
+            logger.exception(f"Error getting pool info for '{pool_name}': {e}")
             return {
                 "exists": False,
                 "initialized": False,
@@ -226,7 +228,7 @@ class ObjectPoolManager(IObjectPoolManager):
                 "error": str(e),
             }
 
-    def list_pools(self) -> List[str]:
+    def list_pools(self) -> list[str]:
         """
         List all available pools.
 
@@ -239,7 +241,7 @@ class ObjectPoolManager(IObjectPoolManager):
             return pool_names
 
         except Exception as e:
-            logger.error(f"Error listing pools: {e}")
+            logger.exception(f"Error listing pools: {e}")
             return []
 
     def cleanup_all_pools(self) -> None:
@@ -254,9 +256,9 @@ class ObjectPoolManager(IObjectPoolManager):
             logger.info("Successfully cleaned up all pools")
 
         except Exception as e:
-            logger.error(f"Error cleaning up pools: {e}")
+            logger.exception(f"Error cleaning up pools: {e}")
 
-    def get_pool_statistics(self) -> Dict[str, Any]:
+    def get_pool_statistics(self) -> dict[str, Any]:
         """
         Get statistics about all pools.
 
@@ -271,7 +273,7 @@ class ObjectPoolManager(IObjectPoolManager):
                 "pools": {},
             }
 
-            for pool_name, pool in self._pools.items():
+            for pool_name, _pool in self._pools.items():
                 pool_info = self.get_pool_info(pool_name)
                 stats["pools"][pool_name] = pool_info
 
@@ -284,7 +286,7 @@ class ObjectPoolManager(IObjectPoolManager):
             return stats
 
         except Exception as e:
-            logger.error(f"Error getting pool statistics: {e}")
+            logger.exception(f"Error getting pool statistics: {e}")
             return {
                 "total_pools": 0,
                 "initialized_pools": 0,

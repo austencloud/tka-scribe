@@ -13,16 +13,18 @@ ARCHITECTURE:
 - Converts legacy JSON format back to modern data structures for loading
 - Maintains compatibility with existing sequence files
 """
+from __future__ import annotations
 
-import logging
 from abc import ABC, abstractmethod
-from typing import Any, Dict
+import logging
+from typing import Any
 
 from domain.models.beat_data import BeatData
 
 from .beat_data_builder import BeatDataBuilder
-from .legacy_format_validator import LegacyFormatValidator, ValidationResult
+from .legacy_format_validator import LegacyFormatValidator
 from .motion_data_converter import MotionDataConverter
+
 
 logger = logging.getLogger(__name__)
 
@@ -33,14 +35,14 @@ class ILegacyDataConverter(ABC):
     @abstractmethod
     def convert_beat_to_legacy_format(
         self, beat: BeatData, beat_number: int
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Convert modern BeatData to legacy JSON format exactly like legacy pictograph_data."""
         pass
 
     @abstractmethod
     def convert_start_position_to_legacy_format(
         self, start_position_data: BeatData
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Convert start position BeatData to legacy format exactly like JsonStartPositionHandler."""
         pass
 
@@ -88,7 +90,7 @@ class LegacyDataConverter:
 
     def convert_beat_to_legacy_format(
         self, beat: BeatData, beat_number: int
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """
         Convert modern BeatData to legacy JSON format.
 
@@ -150,7 +152,7 @@ class LegacyDataConverter:
 
     def convert_start_position_to_legacy_format(
         self, start_position_data: BeatData
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """
         Convert start position BeatData to legacy format.
 

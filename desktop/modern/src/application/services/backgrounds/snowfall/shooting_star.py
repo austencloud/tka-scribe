@@ -1,5 +1,6 @@
+from __future__ import annotations
+
 import random
-from typing import Optional
 
 from ..shared.animation_types import Position2D, ShootingStarState, Velocity2D
 
@@ -8,7 +9,7 @@ class ShootingStar:
     """Pure business logic for shooting star - extracted from ShootingStarManager"""
 
     def __init__(self):
-        self.shooting_star: Optional[ShootingStarState] = None
+        self.shooting_star: ShootingStarState | None = None
         self._timer = 0
         self._spawn_interval = random.randint(100, 300)
 
@@ -87,7 +88,7 @@ class ShootingStar:
         if len(star.tail) > star.tail_length:
             star.tail.pop(0)
 
-    def get_shooting_star_state(self) -> Optional[ShootingStarState]:
+    def get_shooting_star_state(self) -> ShootingStarState | None:
         """Get current shooting star state for rendering"""
         return self.shooting_star
 

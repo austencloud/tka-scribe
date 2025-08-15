@@ -4,13 +4,15 @@ Sequence Format Adapter
 Handles sequence-level format adaptation between modern and legacy formats.
 Focused solely on sequence structure and metadata handling.
 """
+from __future__ import annotations
 
 import logging
-from typing import List
 
-from domain.models.beat_data import BeatData
-from domain.models.sequence_data import SequenceData
+from desktop.modern.src.domain.models.beat_data import BeatData
+from desktop.modern.src.domain.models.sequence_data import SequenceData
+
 from .modern_to_legacy_converter import ModernToLegacyConverter
+
 
 logger = logging.getLogger(__name__)
 
@@ -69,7 +71,7 @@ class SequenceFormatAdapter:
             return legacy_data
 
         except Exception as e:
-            logger.error(f"Failed to convert sequence to legacy format: {e}")
+            logger.exception(f"Failed to convert sequence to legacy format: {e}")
             return self._create_fallback_legacy_sequence(sequence)
 
     def _separate_start_position_and_beats(self, sequence: SequenceData) -> tuple:
@@ -107,13 +109,10 @@ class SequenceFormatAdapter:
         if beat.beat_number == 0:
             return True
 
-        if beat.metadata and beat.metadata.get("is_start_position", False):
-            return True
-
-        return False
+        return bool(beat.metadata and beat.metadata.get("is_start_position", False))
 
     def _create_sequence_metadata(
-        self, sequence: SequenceData, regular_beats: List[BeatData]
+        self, sequence: SequenceData, regular_beats: list[BeatData]
     ) -> dict:
         """
         Create sequence metadata for legacy format.
@@ -157,12 +156,11 @@ class SequenceFormatAdapter:
 
         if position_string.startswith("alpha"):
             return "alpha"
-        elif position_string.startswith("beta"):
+        if position_string.startswith("beta"):
             return "beta"
-        elif position_string.startswith("gamma"):
+        if position_string.startswith("gamma"):
             return "gamma"
-        else:
-            return "alpha"
+        return "alpha"
 
     def _create_fallback_legacy_sequence(self, sequence: SequenceData) -> list:
         """
@@ -301,5 +299,5 @@ class SequenceFormatAdapter:
             }
 
         except Exception as e:
-            logger.error(f"Error extracting sequence info from legacy data: {e}")
+            logger.exception(f"Error extracting sequence info from legacy data: {e}")
             return {"error": f"Failed to extract sequence info: {e}"}

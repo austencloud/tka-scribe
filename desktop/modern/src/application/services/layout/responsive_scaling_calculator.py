@@ -6,14 +6,14 @@ This class preserves all original scaling logic including density scaling,
 context-aware scaling with specific configurations for different contexts,
 and screen size-based layout selection.
 """
-
-from typing import Tuple
+from __future__ import annotations
 
 from .layout_types import LayoutConfig, LayoutMode, ScalingMode
 
+
 try:
-    from core.decorators import handle_service_errors
-    from core.monitoring import monitor_performance
+    from desktop.modern.src.core.decorators import handle_service_errors
+    from desktop.modern.src.core.monitoring import monitor_performance
 except ImportError:
 
     def handle_service_errors(*args, **kwargs):
@@ -49,7 +49,7 @@ class ResponsiveScalingCalculator:
         }
 
     def calculate_responsive_scaling(
-        self, content_size: Tuple[int, int], container_size: Tuple[int, int]
+        self, content_size: tuple[int, int], container_size: tuple[int, int]
     ) -> float:
         """Calculate responsive scaling factor."""
         content_width, content_height = content_size
@@ -71,7 +71,7 @@ class ResponsiveScalingCalculator:
     @handle_service_errors("calculate_context_aware_scaling")
     @monitor_performance("context_aware_scaling")
     def calculate_context_aware_scaling(
-        self, context: str, base_size: Tuple[int, int], container_size: Tuple[int, int]
+        self, context: str, base_size: tuple[int, int], container_size: tuple[int, int]
     ) -> float:
         """Calculate scaling based on context."""
         context_configs = {
@@ -114,7 +114,7 @@ class ResponsiveScalingCalculator:
         # Clamp to context bounds
         return max(min_scale, min(max_scale, scale))
 
-    def get_layout_for_screen_size(self, screen_size: Tuple[int, int]) -> LayoutConfig:
+    def get_layout_for_screen_size(self, screen_size: tuple[int, int]) -> LayoutConfig:
         """Get appropriate layout configuration for screen size."""
         width, _ = screen_size
 
@@ -129,7 +129,7 @@ class ResponsiveScalingCalculator:
                 min_item_size=(80, 80),
                 max_item_size=(200, 200),
             )
-        elif width < 1200:
+        if width < 1200:
             # Medium screen (laptop)
             return LayoutConfig(
                 mode=LayoutMode.GRID,
@@ -139,13 +139,12 @@ class ResponsiveScalingCalculator:
                 min_item_size=(100, 100),
                 max_item_size=(250, 250),
             )
-        else:
-            # Large screen (desktop)
-            return LayoutConfig(
-                mode=LayoutMode.HORIZONTAL_SCROLL,
-                scaling_mode=ScalingMode.MAINTAIN_ASPECT,
-                padding=10,
-                spacing=5,
-                min_item_size=(120, 120),
-                max_item_size=(300, 300),
-            )
+        # Large screen (desktop)
+        return LayoutConfig(
+            mode=LayoutMode.HORIZONTAL_SCROLL,
+            scaling_mode=ScalingMode.MAINTAIN_ASPECT,
+            padding=10,
+            spacing=5,
+            min_item_size=(120, 120),
+            max_item_size=(300, 300),
+        )

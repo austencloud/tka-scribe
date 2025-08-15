@@ -1,16 +1,17 @@
-from typing import Dict
-from PyQt6.QtWidgets import (
-    QWidget,
-    QVBoxLayout,
-    QLabel,
-    QSpinBox,
-    QFrame,
-    QGridLayout,
-)
+from __future__ import annotations
+
 from PyQt6.QtCore import pyqtSignal
 from PyQt6.QtGui import QFont
+from PyQt6.QtWidgets import (
+    QFrame,
+    QGridLayout,
+    QLabel,
+    QSpinBox,
+    QVBoxLayout,
+    QWidget,
+)
 
-from core.interfaces.tab_settings_interfaces import (
+from desktop.modern.src.core.interfaces.tab_settings_interfaces import (
     IBeatLayoutService,
 )
 
@@ -21,7 +22,7 @@ class BeatLayoutTab(QWidget):
     def __init__(self, layout_service: IBeatLayoutService, parent=None):
         super().__init__(parent)
         self.layout_service = layout_service
-        self.layout_controls: Dict[int, tuple[QSpinBox, QSpinBox]] = {}
+        self.layout_controls: dict[int, tuple[QSpinBox, QSpinBox]] = {}
         self._setup_ui()
         self._load_settings()
         self._setup_connections()
@@ -108,34 +109,34 @@ class BeatLayoutTab(QWidget):
                 background: transparent;
                 color: white;
             }
-            
+
             QLabel#section_title {
                 color: white;
                 font-size: 18px;
                 font-weight: bold;
                 margin-bottom: 10px;
             }
-            
+
             QLabel#description {
                 color: rgba(255, 255, 255, 0.8);
                 font-size: 14px;
                 margin-bottom: 20px;
             }
-            
+
             QLabel#subsection_title {
                 color: rgba(255, 255, 255, 0.9);
                 font-size: 16px;
                 font-weight: bold;
                 margin-bottom: 15px;
             }
-            
+
             QLabel#length_label {
                 color: rgba(255, 255, 255, 0.9);
                 font-size: 14px;
                 font-weight: 500;
                 padding: 8px;
             }
-            
+
             QLabel#note {
                 color: rgba(255, 255, 255, 0.7);
                 font-size: 12px;
@@ -146,7 +147,7 @@ class BeatLayoutTab(QWidget):
                 border-radius: 6px;
                 border-left: 3px solid rgba(59, 130, 246, 0.8);
             }
-            
+
             QFrame#settings_section {
                 background: rgba(255, 255, 255, 0.1);
                 border: 2px solid rgba(255, 255, 255, 0.2);
@@ -154,7 +155,7 @@ class BeatLayoutTab(QWidget):
                 padding: 20px;
                 margin: 5px 0;
             }
-            
+
             QSpinBox#layout_spinbox {
                 background: rgba(255, 255, 255, 0.1);
                 border: 2px solid rgba(255, 255, 255, 0.3);
@@ -164,17 +165,17 @@ class BeatLayoutTab(QWidget):
                 font-size: 14px;
                 min-width: 60px;
             }
-            
+
             QSpinBox#layout_spinbox:focus {
                 border-color: rgba(59, 130, 246, 0.8);
             }
-            
+
             QSpinBox#layout_spinbox::up-button, QSpinBox#layout_spinbox::down-button {
                 background: rgba(255, 255, 255, 0.2);
                 border: none;
                 width: 20px;
             }
-            
+
             QSpinBox#layout_spinbox::up-button:hover, QSpinBox#layout_spinbox::down-button:hover {
                 background: rgba(255, 255, 255, 0.3);
             }

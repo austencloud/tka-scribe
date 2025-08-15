@@ -1,23 +1,26 @@
+from __future__ import annotations
+
+from PyQt6.QtCore import QEasingCurve, QPropertyAnimation, Qt, QTimer, pyqtSignal
+from PyQt6.QtGui import (
+    QBrush,
+    QColor,
+    QFont,
+    QGuiApplication,
+    QLinearGradient,
+    QPainter,
+    QPen,
+)
 from PyQt6.QtWidgets import (
-    QWidget,
-    QVBoxLayout,
+    QGraphicsDropShadowEffect,
     QLabel,
     QProgressBar,
-    QGraphicsDropShadowEffect,
-    QSpacerItem,
     QSizePolicy,
+    QSpacerItem,
+    QVBoxLayout,
+    QWidget,
 )
-from PyQt6.QtCore import Qt, QTimer, pyqtSignal, QPropertyAnimation, QEasingCurve
-from PyQt6.QtGui import (
-    QFont,
-    QPainter,
-    QLinearGradient,
-    QColor,
-    QPen,
-    QBrush,
-    QGuiApplication,
-)
-from presentation.components.backgrounds.background_widget import (
+
+from desktop.modern.src.presentation.components.backgrounds.background_widget import (
     MainBackgroundWidget,
 )
 

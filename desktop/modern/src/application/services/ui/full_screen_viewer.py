@@ -5,14 +5,16 @@ Modern implementation of full screen sequence viewing functionality.
 Replaces the stub methods in SequenceManager with a dedicated service
 following clean architecture principles.
 """
+from __future__ import annotations
 
 import logging
-import tempfile
 from pathlib import Path
-from typing import Optional, Protocol
+import tempfile
+from typing import Protocol
 
-from core.interfaces.workbench_services import IFullScreenViewer
-from domain.models.sequence_data import SequenceData
+from desktop.modern.src.core.interfaces.workbench_services import IFullScreenViewer
+from desktop.modern.src.domain.models.sequence_data import SequenceData
+
 
 logger = logging.getLogger(__name__)
 
@@ -25,7 +27,7 @@ class IThumbnailGenerator(Protocol):
         sequence: SequenceData,
         output_path: Path,
         fullscreen_preview: bool = False,
-    ) -> Optional[Path]:
+    ) -> Path | None:
         """Generate thumbnail image for sequence"""
         pass
 
@@ -33,7 +35,7 @@ class IThumbnailGenerator(Protocol):
 class ISequenceStateReader(Protocol):
     """Interface for reading current sequence state from UI"""
 
-    def get_current_sequence(self) -> Optional[SequenceData]:
+    def get_current_sequence(self) -> SequenceData | None:
         """Get the current sequence from workbench UI state"""
         pass
 
@@ -41,7 +43,7 @@ class ISequenceStateReader(Protocol):
 class IFullScreenOverlayFactory(Protocol):
     """Interface for creating full screen overlay widgets"""
 
-    def create_overlay(self, parent_widget) -> "IFullScreenOverlay":
+    def create_overlay(self, parent_widget) -> IFullScreenOverlay:
         """Create a full screen overlay widget"""
         pass
 
@@ -71,7 +73,7 @@ class FullScreenViewer(IFullScreenViewer):
         thumbnail_generator: IThumbnailGenerator,
         sequence_state_reader: ISequenceStateReader,
         overlay_factory: IFullScreenOverlayFactory,
-        temp_directory: Optional[Path] = None,
+        temp_directory: Path | None = None,
     ):
         """
         Initialize the full screen service.
@@ -88,7 +90,7 @@ class FullScreenViewer(IFullScreenViewer):
         self._temp_directory = temp_directory or Path(tempfile.gettempdir())
 
         # Current overlay instance (for cleanup)
-        self._current_overlay: Optional[IFullScreenOverlay] = None
+        self._current_overlay: IFullScreenOverlay | None = None
 
     def create_sequence_thumbnail(self, sequence: SequenceData) -> bytes:
         """
@@ -136,7 +138,7 @@ class FullScreenViewer(IFullScreenViewer):
             return thumbnail_data
 
         except Exception as e:
-            logger.error(f"Failed to create sequence thumbnail: {e}")
+            logger.exception(f"Failed to create sequence thumbnail: {e}")
             return b""
 
     def show_full_screen_view(self, sequence: SequenceData) -> None:
@@ -186,7 +188,7 @@ class FullScreenViewer(IFullScreenViewer):
             logger.info(f"🖥️ Full screen view displayed for sequence: {sequence.name}")
 
         except Exception as e:
-            logger.error(f"Failed to show full screen view: {e}")
+            logger.exception(f"Failed to show full screen view: {e}")
             self._show_error_message(f"Full screen view failed: {e}")
 
     def _show_error_message(self, message: str) -> None:

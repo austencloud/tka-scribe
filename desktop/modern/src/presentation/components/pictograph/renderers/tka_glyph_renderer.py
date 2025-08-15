@@ -4,17 +4,18 @@ TKA glyph renderer for pictograph components.
 Handles rendering of TKA (The Kinetic Alphabet) glyphs that show the
 letter, dash, dots, and turn numbers for pictographs.
 """
+from __future__ import annotations
 
 import os
-from typing import Optional
-from PyQt6.QtWidgets import QGraphicsItemGroup
-from PyQt6.QtSvgWidgets import QGraphicsSvgItem
-from PyQt6.QtSvg import QSvgRenderer
 
-from domain.models import LetterType
-from application.services.assets.image_asset_utils import (
+from PyQt6.QtSvg import QSvgRenderer
+from PyQt6.QtSvgWidgets import QGraphicsSvgItem
+from PyQt6.QtWidgets import QGraphicsItemGroup
+
+from desktop.modern.src.application.services.assets.image_asset_utils import (
     get_image_path,
 )
+from domain.models import LetterType
 
 
 class TKAGlyphRenderer:
@@ -28,10 +29,10 @@ class TKAGlyphRenderer:
 
     def render_tka_glyph(
         self,
-        letter: Optional[str] = None,
-        letter_type: Optional[LetterType] = None,
+        letter: str | None = None,
+        letter_type: LetterType | None = None,
         has_dash: bool = False,
-        turns_data: Optional[str] = None,
+        turns_data: str | None = None,
     ) -> None:
         """
         Render the TKA glyph with letter, dash, and turns information.
@@ -74,7 +75,7 @@ class TKAGlyphRenderer:
 
     def _render_letter(
         self, letter: str, letter_type: LetterType
-    ) -> Optional[QGraphicsSvgItem]:
+    ) -> QGraphicsSvgItem | None:
         """Render the letter SVG."""
 
         # Determine the SVG path based on letter type
@@ -91,7 +92,7 @@ class TKAGlyphRenderer:
             return letter_item
         return None
 
-    def _render_dash(self) -> Optional[QGraphicsSvgItem]:
+    def _render_dash(self) -> QGraphicsSvgItem | None:
         """Render the dash SVG."""
         svg_path = get_image_path("dash.svg")
 
@@ -104,8 +105,7 @@ class TKAGlyphRenderer:
         if renderer.isValid():
             dash_item.setSharedRenderer(renderer)
             return dash_item
-        else:
-            return None
+        return None
 
     def _position_dash(
         self, dash_item: QGraphicsSvgItem, letter_item: QGraphicsSvgItem

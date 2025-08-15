@@ -1,19 +1,20 @@
-from typing import Dict, Optional, Tuple, TYPE_CHECKING
-from enum import Enum
-from dataclasses import dataclass
-import logging
+from __future__ import annotations
 
+from dataclasses import dataclass
+from enum import Enum
+import logging
+from typing import TYPE_CHECKING
 
 
 # Event-driven architecture imports
 if TYPE_CHECKING:
-    from core.events import IEventBus
+    from desktop.modern.src.core.events import IEventBus
 
 try:
-    from core.events import (
+    from desktop.modern.src.core.events import (
+        EventPriority,
         IEventBus,
         get_event_bus,
-        EventPriority,
     )
 
     EVENT_SYSTEM_AVAILABLE = True
@@ -25,9 +26,12 @@ except ImportError:
     EVENT_SYSTEM_AVAILABLE = False
 
 try:
-    from core.decorators import handle_service_errors
-    from core.monitoring import monitor_performance
-    from core.exceptions import ServiceOperationError, ValidationError
+    from desktop.modern.src.core.decorators import handle_service_errors
+    from desktop.modern.src.core.exceptions import (
+        ServiceOperationError,
+        ValidationError,
+    )
+    from desktop.modern.src.core.monitoring import monitor_performance
 except ImportError:
     # For tests, create dummy decorators if imports fail
     def handle_service_errors(*args, **kwargs):
@@ -85,9 +89,9 @@ class LayoutConfig:
     scaling_mode: ScalingMode = ScalingMode.MAINTAIN_ASPECT
     padding: int = 10
     spacing: int = 5
-    min_item_size: Tuple[int, int] = (100, 100)
-    max_item_size: Tuple[int, int] = (300, 300)
-    items_per_row: Optional[int] = None
+    min_item_size: tuple[int, int] = (100, 100)
+    max_item_size: tuple[int, int] = (300, 300)
+    items_per_row: int | None = None
     maintain_aspect_ratio: bool = True
 
 
@@ -95,8 +99,8 @@ class LayoutConfig:
 class LayoutResult:
     """Result of layout calculations."""
 
-    item_positions: Dict[str, Tuple[int, int]]
-    item_sizes: Dict[str, Tuple[int, int]]
-    total_size: Tuple[int, int]
+    item_positions: dict[str, tuple[int, int]]
+    item_sizes: dict[str, tuple[int, int]]
+    total_size: tuple[int, int]
     scaling_factor: float
     overflow: bool = False

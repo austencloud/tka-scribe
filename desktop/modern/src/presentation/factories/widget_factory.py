@@ -12,7 +12,7 @@ from PyQt6.QtWidgets import QGraphicsView, QWidget
 
 
 if TYPE_CHECKING:
-    from desktop.modern.core.dependency_injection.di_container import DIContainer
+    from desktop.modern.src.core.dependency_injection.di_container import DIContainer
 
 
 class OptionPickerWidgetFactory:
@@ -24,7 +24,7 @@ class OptionPickerWidgetFactory:
 
     def create_option_picker(self, parent: QWidget | None = None) -> QWidget:
         """Create an option picker widget."""
-        from desktop.modern.presentation.components.option_picker.core.option_picker_widget import (
+        from desktop.modern.src.presentation.components.option_picker.core.option_picker_widget import (
             OptionPickerWidget,
         )
 
@@ -32,7 +32,7 @@ class OptionPickerWidgetFactory:
 
     def create_filter_widget(self, parent: QWidget | None = None) -> QWidget:
         """Create a filter widget for the option picker."""
-        from desktop.modern.presentation.components.option_picker.components.filters.option_filter import (
+        from desktop.modern.src.presentation.components.option_picker.components.filters.option_filter import (
             OptionPickerFilter,
         )
 
@@ -57,10 +57,10 @@ class WidgetFactory:
 
     def create_pictograph_component(self, parent: QGraphicsView | None = None):
         """Create a pictograph component with injected dependencies."""
-        from desktop.modern.core.interfaces.core_services import (
+        from desktop.modern.src.core.interfaces.core_services import (
             IPictographBorderManager,
         )
-        from desktop.modern.presentation.components.pictograph.pictograph_component import (
+        from desktop.modern.src.presentation.components.pictograph.pictograph_component import (
             PictographComponent,
         )
 

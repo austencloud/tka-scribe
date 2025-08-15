@@ -12,18 +12,20 @@ This service handles:
 
 No UI dependencies, completely testable in isolation.
 """
+from __future__ import annotations
 
 import logging
 
-from core.interfaces.positioning_services import (
+from desktop.modern.src.core.interfaces.positioning_services import (
     IArrowRotationCalculator,
 )
 from domain.models import (
+    Location,
     MotionData,
     MotionType,
-    Location,
     RotationDirection,
 )
+
 
 logger = logging.getLogger(__name__)
 
@@ -145,17 +147,16 @@ class ArrowRotationCalculatorService(IArrowRotationCalculator):
         """
         if motion.motion_type == MotionType.STATIC:
             return self._calculate_static_rotation(location)
-        elif motion.motion_type == MotionType.PRO:
+        if motion.motion_type == MotionType.PRO:
             return self._calculate_pro_rotation(motion, location)
-        elif motion.motion_type == MotionType.ANTI:
+        if motion.motion_type == MotionType.ANTI:
             return self._calculate_anti_rotation(motion, location)
-        elif motion.motion_type == MotionType.DASH:
+        if motion.motion_type == MotionType.DASH:
             return self._calculate_dash_rotation(motion, location)
-        elif motion.motion_type == MotionType.FLOAT:
+        if motion.motion_type == MotionType.FLOAT:
             return self._calculate_float_rotation(motion, location)
-        else:
-            logger.warning(f"Unknown motion type: {motion.motion_type}, returning 0.0")
-            return 0.0
+        logger.warning(f"Unknown motion type: {motion.motion_type}, returning 0.0")
+        return 0.0
 
     def _calculate_static_rotation(self, location: Location) -> float:
         """Calculate rotation for static arrows (point inward)."""
@@ -165,15 +166,15 @@ class ArrowRotationCalculatorService(IArrowRotationCalculator):
         """Calculate rotation for PRO arrows based on rotation direction."""
         if motion.prop_rot_dir == RotationDirection.CLOCKWISE:
             return self._pro_clockwise_map.get(location, 0.0)
-        else:  # COUNTER_CLOCKWISE
-            return self._pro_counter_clockwise_map.get(location, 0.0)
+        # COUNTER_CLOCKWISE
+        return self._pro_counter_clockwise_map.get(location, 0.0)
 
     def _calculate_anti_rotation(self, motion: MotionData, location: Location) -> float:
         """Calculate rotation for ANTI arrows based on rotation direction."""
         if motion.prop_rot_dir == RotationDirection.CLOCKWISE:
             return self._anti_clockwise_map.get(location, 0.0)
-        else:  # COUNTER_CLOCKWISE
-            return self._anti_counter_clockwise_map.get(location, 0.0)
+        # COUNTER_CLOCKWISE
+        return self._anti_counter_clockwise_map.get(location, 0.0)
 
     def _calculate_dash_rotation(self, motion: MotionData, location: Location) -> float:
         """Calculate rotation for DASH arrows with special NO_ROTATION handling."""
@@ -186,8 +187,8 @@ class ArrowRotationCalculatorService(IArrowRotationCalculator):
         # Handle rotation-based dash arrows
         if motion.prop_rot_dir == RotationDirection.CLOCKWISE:
             return self._dash_clockwise_map.get(location, 0.0)
-        else:  # COUNTER_CLOCKWISE
-            return self._dash_counter_clockwise_map.get(location, 0.0)
+        # COUNTER_CLOCKWISE
+        return self._dash_counter_clockwise_map.get(location, 0.0)
 
     def _calculate_float_rotation(
         self, motion: MotionData, location: Location
@@ -214,7 +215,4 @@ class ArrowRotationCalculatorService(IArrowRotationCalculator):
             return False
 
         # Validate rotation direction is provided
-        if motion.prop_rot_dir is None:
-            return False
-
-        return True
+        return motion.prop_rot_dir is not None

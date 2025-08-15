@@ -4,13 +4,15 @@ Attribute Key Generation Service - Faithful Legacy Port
 Faithful port of legacy AttrKeyGenerator for special placement lookups.
 Legacy source: src/desktop/legacy/src/placement_managers/attr_key_generator.py
 """
+from __future__ import annotations
 
 import logging
 
-from domain.models.arrow_data import ArrowData
-from domain.models.enums import Orientation
-from domain.models.letter_type_classifier import LetterTypeClassifier
-from domain.models.pictograph_data import PictographData
+from desktop.modern.src.domain.models.arrow_data import ArrowData
+from desktop.modern.src.domain.models.enums import Orientation
+from desktop.modern.src.domain.models.letter_type_classifier import LetterTypeClassifier
+from desktop.modern.src.domain.models.pictograph_data import PictographData
+
 
 logger = logging.getLogger(__name__)
 
@@ -67,7 +69,7 @@ class AttributeKeyGenerationService:
         if starts_from_mixed_orientation:
             if letter in ["S", "T"]:
                 return f"{lead_state}"
-            elif has_hybrid_motions:
+            if has_hybrid_motions:
                 # Convert string orientation to enum for comparison
                 from domain.models import Orientation
 
@@ -83,22 +85,19 @@ class AttributeKeyGenerationService:
 
                 if ori_enum in [Orientation.IN, Orientation.OUT]:
                     return f"{motion_type}_from_layer1"
-                elif ori_enum in [Orientation.CLOCK, Orientation.COUNTER]:
+                if ori_enum in [Orientation.CLOCK, Orientation.COUNTER]:
                     return f"{motion_type}_from_layer2"
-                else:
-                    return color
-            elif self._is_non_hybrid_letter(letter):
                 return color
-            else:
-                return motion_type
+            if self._is_non_hybrid_letter(letter):
+                return color
+            return motion_type
 
-        elif starts_from_standard_orientation:
+        if starts_from_standard_orientation:
             if letter in ["S", "T"]:
                 return f"{color}_{lead_state}"
-            elif has_hybrid_motions:
+            if has_hybrid_motions:
                 return motion_type
-            else:
-                return color
+            return color
 
         return motion_type
 
@@ -176,18 +175,15 @@ class AttributeKeyGenerationService:
             if blue_end == red_start:
                 if arrow_data.color == "red":
                     return "leading"
-                else:
-                    return "trailing"
+                return "trailing"
 
             # Check if red ends where blue starts
             if red_end == blue_start:
                 if arrow_data.color == "blue":
                     return "leading"
-                else:
-                    return "trailing"
+                return "trailing"
 
         # Default fallback: blue is leading, red is trailing
         if arrow_data.color == "blue":
             return "leading"
-        else:
-            return "trailing"
+        return "trailing"

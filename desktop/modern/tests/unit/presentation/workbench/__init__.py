@@ -18,5 +18,7 @@ Usage:
     python -m pytest tests/parity/            # Run only parity tests
     python -m pytest -m "not slow"            # Skip slow tests
 """
+from __future__ import annotations
+
 
 __version__ = "2.0.0"

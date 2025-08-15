@@ -4,18 +4,16 @@ Section Layout Presenter - Qt Presentation Layer
 Handles Qt-specific layout operations while delegating calculations
 to SectionLayoutManager service.
 """
+from __future__ import annotations
 
-from typing import Optional
-
-from application.services.option_picker.section_layout_manager import (
+from desktop.modern.src.application.services.option_picker.section_layout_manager import (
     LayoutDimensions,
     SectionLayoutManager,
     SizingConstraints,
 )
-from presentation.components.option_picker.components.sections.section_widget import (
+from desktop.modern.src.presentation.components.option_picker.components.sections.section_widget import (
     OptionPickerSection,
 )
-from presentation.components.option_picker.types.letter_types import LetterType
 
 
 class SectionLayoutPresenter:
@@ -28,7 +26,7 @@ class SectionLayoutPresenter:
 
     def __init__(
         self,
-        section_widget: "OptionPickerSection",
+        section_widget: OptionPickerSection,
         layout_service: SectionLayoutManager,
     ):
         self.section = section_widget
@@ -38,7 +36,7 @@ class SectionLayoutPresenter:
         self._debug_logged = False
         self._option_picker_width = 0
         self._sizing_deferred = False
-        self._current_dimensions: Optional[LayoutDimensions] = None
+        self._current_dimensions: LayoutDimensions | None = None
 
     def defer_sizing_updates(self):
         """Defer sizing updates for batch operations."""
@@ -234,10 +232,7 @@ class SectionLayoutPresenter:
                 if (
                     hasattr(widget, "__class__")
                     and "ModernOptionPickerWidget" in widget.__class__.__name__
-                ):
-                    widget.updateGeometry()
-                    break
-                elif (
+                ) or (
                     hasattr(widget, "layout")
                     and widget.layout()
                     and widget.layout().__class__.__name__ == "QVBoxLayout"
@@ -248,7 +243,7 @@ class SectionLayoutPresenter:
                 widget = widget.parent()
 
     # State Access
-    def get_current_dimensions(self) -> Optional[LayoutDimensions]:
+    def get_current_dimensions(self) -> LayoutDimensions | None:
         """Get current layout dimensions."""
         return self._current_dimensions
 

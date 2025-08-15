@@ -4,14 +4,21 @@ Motion Data Converter - Handles motion data conversion between formats
 Eliminates code duplication by centralizing all blue/red motion handling
 in one place with symmetric extract/create methods.
 """
+from __future__ import annotations
 
-import logging
 from dataclasses import dataclass
-from typing import Any, Dict, Optional
+import logging
+from typing import Any
 
-from domain.models.enums import Location, MotionType, Orientation, RotationDirection
-from domain.models.motion_models import MotionData
-from domain.models.pictograph_data import PictographData
+from desktop.modern.src.domain.models.enums import (
+    Location,
+    MotionType,
+    Orientation,
+    RotationDirection,
+)
+from desktop.modern.src.domain.models.motion_models import MotionData
+from desktop.modern.src.domain.models.pictograph_data import PictographData
+
 
 logger = logging.getLogger(__name__)
 
@@ -21,8 +28,8 @@ class MotionConversionResult:
     """Result of motion data conversion with validation info."""
 
     success: bool
-    motion_data: Optional[MotionData] = None
-    error: Optional[str] = None
+    motion_data: MotionData | None = None
+    error: str | None = None
     warnings: list[str] = None
 
     def __post_init__(self):
@@ -36,7 +43,7 @@ class MotionDataConverter:
     @staticmethod
     def extract_motion_from_pictograph(
         color: str, pictograph: PictographData
-    ) -> Optional[MotionData]:
+    ) -> MotionData | None:
         """
         Extract motion data for specific color from pictograph.
 
@@ -53,7 +60,7 @@ class MotionDataConverter:
         return pictograph.motions.get(color.lower())
 
     @staticmethod
-    def create_legacy_motion_attributes(motion: Optional[MotionData]) -> Dict[str, Any]:
+    def create_legacy_motion_attributes(motion: MotionData | None) -> dict[str, Any]:
         """
         Create legacy motion attributes dictionary from MotionData.
 
@@ -94,7 +101,7 @@ class MotionDataConverter:
 
     @staticmethod
     def create_motion_from_legacy_attributes(
-        attrs: Dict[str, Any],
+        attrs: dict[str, Any],
     ) -> MotionConversionResult:
         """
         Create MotionData from legacy attributes dictionary.
@@ -145,7 +152,7 @@ class MotionDataConverter:
 
     @staticmethod
     def determine_timing_and_direction(
-        blue_motion: Optional[MotionData], red_motion: Optional[MotionData]
+        blue_motion: MotionData | None, red_motion: MotionData | None
     ) -> tuple[str, str]:
         """
         Determine timing and direction from blue and red motion data.

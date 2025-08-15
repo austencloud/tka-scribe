@@ -2,12 +2,14 @@
 Sequence persistence service - exactly like the legacy version.
 Updates current_sequence.json whenever sequence changes occur.
 """
+from __future__ import annotations
 
+from abc import ABC, abstractmethod
 import json
 import logging
-from abc import ABC, abstractmethod
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any
+
 
 logger = logging.getLogger(__name__)
 
@@ -16,12 +18,12 @@ class ISequencePersister(ABC):
     """Interface for sequence persistence operations."""
 
     @abstractmethod
-    def load_current_sequence(self) -> List[Dict[str, Any]]:
+    def load_current_sequence(self) -> list[dict[str, Any]]:
         """Load current sequence from JSON file."""
         pass
 
     @abstractmethod
-    def save_current_sequence(self, sequence: List[Dict[str, Any]]) -> None:
+    def save_current_sequence(self, sequence: list[dict[str, Any]]) -> None:
         """Save current sequence to JSON file."""
         pass
 
@@ -31,7 +33,7 @@ class ISequencePersister(ABC):
         pass
 
     @abstractmethod
-    def get_default_sequence(self) -> List[Dict[str, Any]]:
+    def get_default_sequence(self) -> list[dict[str, Any]]:
         """Return default sequence metadata."""
         pass
 
@@ -44,13 +46,13 @@ class SequencePersister(ISequencePersister):
         modern_dir = Path(__file__).parent.parent.parent.parent.parent
         self.current_sequence_json = modern_dir / "current_sequence.json"
 
-    def load_current_sequence(self) -> List[Dict[str, Any]]:
+    def load_current_sequence(self) -> list[dict[str, Any]]:
         """Load current sequence from JSON file - exactly like legacy."""
         try:
             if not self.current_sequence_json.exists():
                 return self.get_default_sequence()
 
-            with open(self.current_sequence_json, "r", encoding="utf-8") as file:
+            with open(self.current_sequence_json, encoding="utf-8") as file:
                 content = file.read().strip()
                 if not content:
                     return self.get_default_sequence()
@@ -68,7 +70,7 @@ class SequencePersister(ISequencePersister):
             self.save_current_sequence(default_sequence)
             return default_sequence
 
-    def save_current_sequence(self, sequence: List[Dict[str, Any]]) -> None:
+    def save_current_sequence(self, sequence: list[dict[str, Any]]) -> None:
         """Save current sequence to JSON file - exactly like legacy."""
         # Removed repetitive debug log
 
@@ -89,7 +91,7 @@ class SequencePersister(ISequencePersister):
 
         except Exception as e:
             print(f"❌ [PERSISTENCE] Failed to save current sequence: {e}")
-            logger.error(f"Failed to save current sequence: {e}")
+            logger.exception(f"Failed to save current sequence: {e}")
             import traceback
 
             traceback.print_exc()
@@ -99,7 +101,7 @@ class SequencePersister(ISequencePersister):
         """Clear the current sequence - exactly like legacy."""
         self.save_current_sequence([])
 
-    def get_default_sequence(self) -> List[Dict[str, Any]]:
+    def get_default_sequence(self) -> list[dict[str, Any]]:
         """Return default sequence metadata - exactly like legacy."""
         return [
             {
@@ -118,7 +120,7 @@ class SequencePersister(ISequencePersister):
             }
         ]
 
-    def update_current_sequence_with_beat(self, beat_data: Dict[str, Any]) -> None:
+    def update_current_sequence_with_beat(self, beat_data: dict[str, Any]) -> None:
         """Add a beat to the current sequence - exactly like legacy."""
         sequence = self.load_current_sequence()
 
@@ -140,16 +142,16 @@ class SequencePersister(ISequencePersister):
         sequence_beats.sort(key=lambda entry: entry.get("beat", float("inf")))
 
         # Rebuild sequence
-        sequence = [sequence_metadata] + sequence_beats
+        sequence = [sequence_metadata, *sequence_beats]
         self.save_current_sequence(sequence)
 
-    def get_next_beat_number(self, sequence_beats: List[Dict[str, Any]]) -> int:
+    def get_next_beat_number(self, sequence_beats: list[dict[str, Any]]) -> int:
         """Get the next beat number - exactly like legacy."""
         if not sequence_beats:
             return 1
         return max(beat.get("beat", 0) for beat in sequence_beats) + 1
 
-    def update_sequence_metadata(self, metadata: Dict[str, Any]) -> None:
+    def update_sequence_metadata(self, metadata: dict[str, Any]) -> None:
         """Update sequence metadata - exactly like legacy."""
         sequence = self.load_current_sequence()
 

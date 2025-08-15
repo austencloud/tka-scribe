@@ -10,14 +10,15 @@ PROVIDES:
 - Grid mode detection (diamond vs box)
 - Complex direction logic replication from BetaPropDirectionCalculator
 """
+from __future__ import annotations
 
 from abc import ABC, abstractmethod
 from enum import Enum
 
 from domain.models import (
-    MotionData,
     BeatData,
     Location,
+    MotionData,
     Orientation,
 )
 
@@ -119,31 +120,30 @@ class DirectionCalculationService(IDirectionCalculationService):
                     (Location.WEST, "red"): SeparationDirection.RIGHT,
                     (Location.EAST, "blue"): SeparationDirection.LEFT,
                 }
-        else:  # box grid
-            if is_radial:
-                # Box layer reposition map for RADIAL
-                direction_map = {
-                    (Location.NORTHEAST, "red"): SeparationDirection.DOWNRIGHT,
-                    (Location.NORTHEAST, "blue"): SeparationDirection.UPLEFT,
-                    (Location.SOUTHEAST, "red"): SeparationDirection.UPRIGHT,
-                    (Location.SOUTHEAST, "blue"): SeparationDirection.DOWNLEFT,
-                    (Location.SOUTHWEST, "red"): SeparationDirection.DOWNRIGHT,
-                    (Location.SOUTHWEST, "blue"): SeparationDirection.UPLEFT,
-                    (Location.NORTHWEST, "red"): SeparationDirection.UPRIGHT,
-                    (Location.NORTHWEST, "blue"): SeparationDirection.DOWNLEFT,
-                }
-            else:
-                # Box layer reposition map for NONRADIAL
-                direction_map = {
-                    (Location.NORTHEAST, "red"): SeparationDirection.UPRIGHT,
-                    (Location.NORTHEAST, "blue"): SeparationDirection.DOWNLEFT,
-                    (Location.SOUTHEAST, "red"): SeparationDirection.DOWNRIGHT,
-                    (Location.SOUTHEAST, "blue"): SeparationDirection.UPLEFT,
-                    (Location.SOUTHWEST, "red"): SeparationDirection.UPRIGHT,
-                    (Location.SOUTHWEST, "blue"): SeparationDirection.DOWNLEFT,
-                    (Location.NORTHWEST, "red"): SeparationDirection.DOWNRIGHT,
-                    (Location.NORTHWEST, "blue"): SeparationDirection.UPLEFT,
-                }
+        elif is_radial:
+            # Box layer reposition map for RADIAL
+            direction_map = {
+                (Location.NORTHEAST, "red"): SeparationDirection.DOWNRIGHT,
+                (Location.NORTHEAST, "blue"): SeparationDirection.UPLEFT,
+                (Location.SOUTHEAST, "red"): SeparationDirection.UPRIGHT,
+                (Location.SOUTHEAST, "blue"): SeparationDirection.DOWNLEFT,
+                (Location.SOUTHWEST, "red"): SeparationDirection.DOWNRIGHT,
+                (Location.SOUTHWEST, "blue"): SeparationDirection.UPLEFT,
+                (Location.NORTHWEST, "red"): SeparationDirection.UPRIGHT,
+                (Location.NORTHWEST, "blue"): SeparationDirection.DOWNLEFT,
+            }
+        else:
+            # Box layer reposition map for NONRADIAL
+            direction_map = {
+                (Location.NORTHEAST, "red"): SeparationDirection.UPRIGHT,
+                (Location.NORTHEAST, "blue"): SeparationDirection.DOWNLEFT,
+                (Location.SOUTHEAST, "red"): SeparationDirection.DOWNRIGHT,
+                (Location.SOUTHEAST, "blue"): SeparationDirection.UPLEFT,
+                (Location.SOUTHWEST, "red"): SeparationDirection.UPRIGHT,
+                (Location.SOUTHWEST, "blue"): SeparationDirection.DOWNLEFT,
+                (Location.NORTHWEST, "red"): SeparationDirection.DOWNRIGHT,
+                (Location.NORTHWEST, "blue"): SeparationDirection.UPLEFT,
+            }
 
         return direction_map.get((location, color), SeparationDirection.RIGHT)
 
@@ -161,7 +161,7 @@ class DirectionCalculationService(IDirectionCalculationService):
                     if int(turns) % 2 == 0
                     else self._switch_orientation(start_orientation)
                 )
-            elif motion_type.value in ["anti", "dash"]:
+            if motion_type.value in ["anti", "dash"]:
                 return (
                     self._switch_orientation(start_orientation)
                     if int(turns) % 2 == 0
@@ -174,17 +174,15 @@ class DirectionCalculationService(IDirectionCalculationService):
         """Detect grid mode (diamond or box) based on location."""
         if location.value in ["n", "s", "e", "w"]:
             return "diamond"
-        else:
-            return "box"
+        return "box"
 
     def is_radial_orientation(self, orientation) -> bool:
         """Check if orientation is radial (in/out) vs nonradial (clock/counter)."""
         if isinstance(orientation, Orientation):
             return orientation in [Orientation.IN, Orientation.OUT]
-        elif isinstance(orientation, str):
+        if isinstance(orientation, str):
             return orientation.lower() in ["in", "out"]
-        else:
-            return False
+        return False
 
     def get_opposite_direction(
         self, direction: SeparationDirection

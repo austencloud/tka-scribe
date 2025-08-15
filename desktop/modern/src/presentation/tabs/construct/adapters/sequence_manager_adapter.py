@@ -4,20 +4,22 @@ Direct Microservices Access - Clean Dependency Injection
 Components that need sequence operations should directly inject and use
 the specific microservices they need instead of going through adapters.
 """
+from __future__ import annotations
 
 import logging
-from typing import Optional
 
-from application.services.sequence.loader import SequenceLoader
-from application.services.sequence.sequence_beat_operations import (
+from PyQt6.QtCore import QObject, pyqtSignal
+
+from desktop.modern.src.application.services.sequence.loader import SequenceLoader
+from desktop.modern.src.application.services.sequence.sequence_beat_operations import (
     SequenceBeatOperations,
 )
-from application.services.sequence.sequence_start_position_manager import (
+from desktop.modern.src.application.services.sequence.sequence_start_position_manager import (
     SequenceStartPositionManager,
 )
-from domain.models.beat_data import BeatData
-from domain.models.pictograph_data import PictographData
-from PyQt6.QtCore import QObject, pyqtSignal
+from desktop.modern.src.domain.models.beat_data import BeatData
+from desktop.modern.src.domain.models.pictograph_data import PictographData
+
 
 logger = logging.getLogger(__name__)
 
@@ -57,9 +59,9 @@ class ExampleSequenceComponent:
     def __init__(
         self,
         beat_operations: SequenceBeatOperations,
-        start_position_manager: Optional[SequenceStartPositionManager] = None,
-        sequence_loader: Optional[SequenceLoader] = None,
-        signal_emitter: Optional[SequenceSignalEmitter] = None,
+        start_position_manager: SequenceStartPositionManager | None = None,
+        sequence_loader: SequenceLoader | None = None,
+        signal_emitter: SequenceSignalEmitter | None = None,
     ):
         """
         Initialize with only the microservices this component actually needs.

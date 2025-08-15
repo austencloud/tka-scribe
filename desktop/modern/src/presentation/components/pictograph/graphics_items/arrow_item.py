@@ -4,15 +4,19 @@ Selectable Arrow Graphics Item
 Custom QGraphicsSvgItem that supports selection highlighting for the graph editor.
 Context-aware behavior: only clickable in graph editor, transparent elsewhere.
 """
+from __future__ import annotations
 
 import logging
-from typing import Optional
 
-from application.services.pictograph.scaling_service import RenderingContext
-from core.interfaces.core_services import IPictographContextDetector
-from PyQt6.QtCore import QObject, Qt, pyqtSignal
+from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QColor, QPainter, QPen
 from PyQt6.QtSvgWidgets import QGraphicsSvgItem
+
+from desktop.modern.src.application.services.pictograph.scaling_service import (
+    RenderingContext,
+)
+from desktop.modern.src.core.interfaces.core_services import IPictographContextDetector
+
 
 logger = logging.getLogger(__name__)
 
@@ -24,7 +28,7 @@ class ArrowItem(QGraphicsSvgItem):
         super().__init__(parent)
 
         # Arrow properties
-        self.arrow_color: Optional[str] = None
+        self.arrow_color: str | None = None
         self.is_highlighted = False
         self.highlight_color = QColor("#FFD700")  # Gold
         self.highlight_pen_width = 3
@@ -44,7 +48,9 @@ class ArrowItem(QGraphicsSvgItem):
         try:
             # Try to get context service from DI container
             if not self._context_service:
-                from core.application.application_factory import get_container
+                from desktop.modern.src.core.application.application_factory import (
+                    get_container,
+                )
 
                 container = get_container()
                 if container:
@@ -86,7 +92,7 @@ class ArrowItem(QGraphicsSvgItem):
 
             # Check if scene has explicit context
             if hasattr(scene, "rendering_context"):
-                context = getattr(scene, "rendering_context")
+                context = scene.rendering_context
                 if isinstance(context, RenderingContext):
                     logger.debug(f"Scene has explicit context: {context.value}")
                     return context
@@ -100,7 +106,7 @@ class ArrowItem(QGraphicsSvgItem):
                 if class_name == "GraphEditorWidget":
                     logger.debug("Detected graph editor via safe fallback")
                     return RenderingContext.GRAPH_EDITOR
-                elif class_name == "BeatFrameWidget":
+                if class_name == "BeatFrameWidget":
                     logger.debug("Detected beat frame via safe fallback")
                     return RenderingContext.BEAT_FRAME
 
@@ -108,7 +114,7 @@ class ArrowItem(QGraphicsSvgItem):
             return RenderingContext.UNKNOWN
 
         except Exception as e:
-            logger.error(f"Fallback context detection failed: {e}")
+            logger.exception(f"Fallback context detection failed: {e}")
             return RenderingContext.UNKNOWN
 
     def _update_behavior_for_context(self):
@@ -208,10 +214,9 @@ class ArrowItem(QGraphicsSvgItem):
                     self.scene().arrow_selected.emit(self.arrow_color)
                 event.accept()
                 return
-            else:
-                # All other contexts - ignore event so it passes through to parent
-                event.ignore()
-                return
+            # All other contexts - ignore event so it passes through to parent
+            event.ignore()
+            return
 
         # For non-left clicks, use default behavior
         if self._context_type == RenderingContext.GRAPH_EDITOR:

@@ -4,28 +4,30 @@ Profiler Control Dialog
 Dialog for configuring and controlling the performance profiler.
 Provides user-friendly interface for profiler settings and session management.
 """
+from __future__ import annotations
 
 import logging
 
+
 try:
+    from PyQt6.QtCore import pyqtSignal
     from PyQt6.QtWidgets import (
+        QCheckBox,
         QDialog,
-        QVBoxLayout,
+        QDoubleSpinBox,
+        QFormLayout,
+        QGroupBox,
         QHBoxLayout,
         QLabel,
         QLineEdit,
-        QCheckBox,
-        QSpinBox,
-        QDoubleSpinBox,
-        QPushButton,
-        QGroupBox,
-        QFormLayout,
-        QTextEdit,
-        QTabWidget,
-        QWidget,
         QMessageBox,
+        QPushButton,
+        QSpinBox,
+        QTabWidget,
+        QTextEdit,
+        QVBoxLayout,
+        QWidget,
     )
-    from PyQt6.QtCore import pyqtSignal
 
     QT_AVAILABLE = True
 except ImportError:
@@ -35,8 +37,9 @@ except ImportError:
     def pyqtSignal(*_args, **_kwargs):
         return None
 
-from core.performance import get_profiler, get_performance_config
-from core.performance.config import PerformanceConfig
+from desktop.modern.src.core.performance import get_performance_config, get_profiler
+from desktop.modern.src.core.performance.config import PerformanceConfig
+
 
 logger = logging.getLogger(__name__)
 
@@ -277,7 +280,7 @@ class ProfilerControlDialog(QDialog if QT_AVAILABLE else object):
             self.refresh_status()
 
         except Exception as e:
-            logger.error(f"Failed to load configuration: {e}")
+            logger.exception(f"Failed to load configuration: {e}")
 
     def apply_configuration(self):
         """Apply configuration changes."""
@@ -297,7 +300,7 @@ class ProfilerControlDialog(QDialog if QT_AVAILABLE else object):
             self.configuration_changed.emit()
 
         except Exception as e:
-            logger.error(f"Failed to apply configuration: {e}")
+            logger.exception(f"Failed to apply configuration: {e}")
             QMessageBox.critical(
                 self, "Configuration Error", f"Failed to apply configuration: {e}"
             )
@@ -333,7 +336,7 @@ class ProfilerControlDialog(QDialog if QT_AVAILABLE else object):
             self.memory_tracking.setChecked(default_config.monitoring.memory_tracking)
 
         except Exception as e:
-            logger.error(f"Failed to reset configuration: {e}")
+            logger.exception(f"Failed to reset configuration: {e}")
 
     def start_session(self):
         """Start a new profiling session."""
@@ -361,7 +364,7 @@ class ProfilerControlDialog(QDialog if QT_AVAILABLE else object):
                 )
 
         except Exception as e:
-            logger.error(f"Failed to start session: {e}")
+            logger.exception(f"Failed to start session: {e}")
             QMessageBox.critical(self, "Session Error", f"Failed to start session: {e}")
 
     def stop_session(self):
@@ -387,7 +390,7 @@ class ProfilerControlDialog(QDialog if QT_AVAILABLE else object):
                 )
 
         except Exception as e:
-            logger.error(f"Failed to stop session: {e}")
+            logger.exception(f"Failed to stop session: {e}")
             QMessageBox.critical(self, "Session Error", f"Failed to stop session: {e}")
 
     def update_session_status(self):
@@ -428,7 +431,7 @@ class ProfilerControlDialog(QDialog if QT_AVAILABLE else object):
                 )
 
             # Configuration status
-            status_info.append(f"\nConfiguration:")
+            status_info.append("\nConfiguration:")
             status_info.append(f"  Profiling Enabled: {self.config.profiling.enabled}")
             status_info.append(
                 f"  Monitoring Enabled: {self.config.monitoring.enabled}"
@@ -441,7 +444,7 @@ class ProfilerControlDialog(QDialog if QT_AVAILABLE else object):
             self.status_text.setPlainText("\n".join(status_info))
 
         except Exception as e:
-            logger.error(f"Failed to refresh status: {e}")
+            logger.exception(f"Failed to refresh status: {e}")
             self.status_text.setPlainText(f"Error refreshing status: {e}")
 
     def showEvent(self, event):

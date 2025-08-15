@@ -1,14 +1,15 @@
-from typing import Optional
+from __future__ import annotations
 
-from core.interfaces.workbench_services import (
+from PyQt6.QtCore import QObject, pyqtSignal
+from PyQt6.QtWidgets import QApplication
+
+from desktop.modern.src.core.interfaces.workbench_services import (
     IBeatDeletionService,
     IDictionaryService,
     IFullScreenViewer,
     ISequenceWorkbenchService,
 )
 from domain.models import SequenceData
-from PyQt6.QtCore import QObject, pyqtSignal
-from PyQt6.QtWidgets import QApplication
 
 
 class WorkbenchEventController(QObject):
@@ -32,9 +33,9 @@ class WorkbenchEventController(QObject):
         self._deletion_service = deletion_service
         self._dictionary_service = dictionary_service
 
-        self._current_sequence: Optional[SequenceData] = None
+        self._current_sequence: SequenceData | None = None
 
-    def set_sequence(self, sequence: Optional[SequenceData]):
+    def set_sequence(self, sequence: SequenceData | None):
         """Set current sequence for operations"""
         self._current_sequence = sequence
 
@@ -49,8 +50,7 @@ class WorkbenchEventController(QObject):
             )
             if result:
                 return True, "Added to dictionary!"
-            else:
-                return False, "Sequence already in dictionary"
+            return False, "Sequence already in dictionary"
         except Exception as e:
             return False, f"Failed to add to dictionary: {e}"
 
@@ -68,8 +68,8 @@ class WorkbenchEventController(QObject):
             return False, f"Export failed: {e}"
 
     def handle_delete_beat(
-        self, selected_index: Optional[int]
-    ) -> tuple[bool, str, Optional[SequenceData]]:
+        self, selected_index: int | None
+    ) -> tuple[bool, str, SequenceData | None]:
         """Handle delete beat operation"""
         if not self._current_sequence or self._current_sequence.length == 0:
             return False, "No beats to delete", None
@@ -86,7 +86,7 @@ class WorkbenchEventController(QObject):
         except Exception as e:
             return False, f"Delete failed: {e}", None
 
-    def handle_color_swap(self) -> tuple[bool, str, Optional[SequenceData]]:
+    def handle_color_swap(self) -> tuple[bool, str, SequenceData | None]:
         """Handle color swap operation"""
         if not self._current_sequence:
             return False, "No sequence to swap colors", None
@@ -100,7 +100,7 @@ class WorkbenchEventController(QObject):
         except Exception as e:
             return False, f"Color swap failed: {e}", None
 
-    def handle_reflection(self) -> tuple[bool, str, Optional[SequenceData]]:
+    def handle_reflection(self) -> tuple[bool, str, SequenceData | None]:
         """Handle reflection operation"""
         if not self._current_sequence:
             return False, "No sequence to reflect", None
@@ -114,7 +114,7 @@ class WorkbenchEventController(QObject):
         except Exception as e:
             return False, f"Reflection failed: {e}", None
 
-    def handle_rotation(self) -> tuple[bool, str, Optional[SequenceData]]:
+    def handle_rotation(self) -> tuple[bool, str, SequenceData | None]:
         """Handle rotation operation"""
         if not self._current_sequence:
             return False, "No sequence to rotate", None
@@ -128,10 +128,10 @@ class WorkbenchEventController(QObject):
         except Exception as e:
             return False, f"Rotation failed: {e}", None
 
-    def handle_clear(self) -> tuple[bool, str, Optional[SequenceData]]:
+    def handle_clear(self) -> tuple[bool, str, SequenceData | None]:
         try:
             # Clear persistence FIRST - this ensures current_sequence.json is cleared
-            from application.services.sequence.sequence_persister import (
+            from desktop.modern.src.application.services.sequence.sequence_persister import (
                 SequencePersister,
             )
 

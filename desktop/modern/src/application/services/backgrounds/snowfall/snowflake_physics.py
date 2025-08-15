@@ -1,5 +1,6 @@
+from __future__ import annotations
+
 import random
-from typing import List
 
 from ..shared.animation_types import SnowflakeState
 
@@ -14,7 +15,7 @@ class SnowflakePhysics:
         self.width = width
         self.height = height
         self.image_count = image_count
-        self.snowflakes: List[SnowflakeState] = []
+        self.snowflakes: list[SnowflakeState] = []
         self._initialize_snowflakes()
 
     def _initialize_snowflakes(self) -> None:
@@ -41,7 +42,7 @@ class SnowflakePhysics:
                 snowflake.speed = random.uniform(0.5, 2.0)
                 snowflake.image_index = random.randint(0, self.image_count - 1)
 
-    def get_snowflake_states(self) -> List[SnowflakeState]:
+    def get_snowflake_states(self) -> list[SnowflakeState]:
         """Get current snowflake states for rendering"""
         return self.snowflakes.copy()
 

@@ -1,21 +1,27 @@
-from typing import TYPE_CHECKING, Optional
+from __future__ import annotations
 
-# Import services from application layer (moved from presentation)
-from application.services.data.sequence_data_converter import SequenceDataConverter
-from application.services.ui.coordination.ui_coordinator import UICoordinator
-from core.dependency_injection.di_container import DIContainer
-from domain.models.beat_data import BeatData
-from domain.models.sequence_data import SequenceData
+from typing import TYPE_CHECKING
+
 from PyQt6.QtCore import pyqtSignal
 from PyQt6.QtWidgets import QWidget
 
-from application.services.sequence.loader import SequenceLoader
-from application.services.sequence.sequence_beat_operations import (
+# Import services from application layer (moved from presentation)
+from desktop.modern.src.application.services.data.sequence_data_converter import (
+    SequenceDataConverter,
+)
+from desktop.modern.src.application.services.sequence.loader import SequenceLoader
+from desktop.modern.src.application.services.sequence.sequence_beat_operations import (
     SequenceBeatOperations,
 )
-from application.services.sequence.sequence_start_position_manager import (
+from desktop.modern.src.application.services.sequence.sequence_start_position_manager import (
     SequenceStartPositionManager,
 )
+from desktop.modern.src.application.services.ui.coordination.ui_coordinator import (
+    UICoordinator,
+)
+from desktop.modern.src.core.dependency_injection.di_container import DIContainer
+from desktop.modern.src.domain.models.beat_data import BeatData
+from desktop.modern.src.domain.models.sequence_data import SequenceData
 
 # Import refactored components
 from .layout_manager import ConstructTabLayoutManager
@@ -23,11 +29,14 @@ from .option_picker_manager import OptionPickerManager
 from .signal_coordinator import SignalCoordinator
 from .start_position_handler import StartPositionHandler
 
+
 # DataConversionService moved to application layer and imported above
 
 
 if TYPE_CHECKING:
-    from presentation.components.workbench.workbench import SequenceWorkbench
+    from desktop.modern.src.presentation.components.workbench.workbench import (
+        SequenceWorkbench,
+    )
 
 
 class ConstructTabWidget(QWidget):
@@ -57,7 +66,7 @@ class ConstructTabWidget(QWidget):
     def __init__(
         self,
         container: DIContainer,
-        parent: Optional[QWidget] = None,
+        parent: QWidget | None = None,
         progress_callback=None,
     ):
         super().__init__(parent)
@@ -203,8 +212,8 @@ class ConstructTabWidget(QWidget):
         self.setVisible(False)
 
         # Check construct tab visibility
-        tab_visible = self.isVisible()
-        parent_visible = self.parent().isVisible() if self.parent() else "No parent"
+        self.isVisible()
+        self.parent().isVisible() if self.parent() else "No parent"
 
         # Initialize option picker manager after layout is created
         self.option_picker_manager = OptionPickerManager(
@@ -253,7 +262,7 @@ class ConstructTabWidget(QWidget):
         """Get a function that can set data on the workbench"""
 
         def set_workbench_data(data, pictograph_data=None):
-            workbench: Optional[SequenceWorkbench] = getattr(
+            workbench: SequenceWorkbench | None = getattr(
                 self.layout_manager, "workbench", None
             )
             if workbench:
@@ -271,7 +280,7 @@ class ConstructTabWidget(QWidget):
         try:
 
             # Clear persistence FIRST
-            from application.services.sequence.sequence_persister import (
+            from desktop.modern.src.application.services.sequence.sequence_persister import (
                 SequencePersister,
             )
 
@@ -316,7 +325,7 @@ class ConstructTabWidget(QWidget):
         """Set start position directly via start position manager."""
         self.start_position_manager.set_start_position(start_position_data)
 
-    def get_current_sequence(self) -> Optional[SequenceData]:
+    def get_current_sequence(self) -> SequenceData | None:
         """Get current sequence directly via loading service."""
         return self.loading_service.get_current_sequence_from_workbench()
 

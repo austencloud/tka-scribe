@@ -12,16 +12,19 @@ This service handles:
 
 No UI dependencies, completely testable in isolation.
 """
+from __future__ import annotations
 
 import logging
-from typing import Any, Callable, Optional
+from typing import Any, Callable
 
-from core.interfaces.option_picker_interfaces import (
+from PyQt6.QtWidgets import QWidget
+
+from desktop.modern.src.core.interfaces.option_picker_interfaces import (
     IOptionPickerDisplayService,
     IOptionPickerEventService,
 )
-from domain.models.pictograph_data import PictographData
-from PyQt6.QtWidgets import QWidget
+from desktop.modern.src.domain.models.pictograph_data import PictographData
+
 
 logger = logging.getLogger(__name__)
 
@@ -36,11 +39,11 @@ class OptionPickerEventService(IOptionPickerEventService):
 
     def __init__(self):
         """Initialize the event service."""
-        self.pool_manager: Optional[Any] = None
-        self.filter_widget: Optional[QWidget] = None
-        self.option_click_handler: Optional[Callable[[str], None]] = None
-        self.pictograph_click_handler: Optional[Callable[[PictographData], None]] = None
-        self.filter_change_handler: Optional[Callable[[str], None]] = None
+        self.pool_manager: Any | None = None
+        self.filter_widget: QWidget | None = None
+        self.option_click_handler: Callable[[str], None] | None = None
+        self.pictograph_click_handler: Callable[[PictographData], None] | None = None
+        self.filter_change_handler: Callable[[str], None] | None = None
 
     def setup_event_handlers(
         self,
@@ -81,7 +84,7 @@ class OptionPickerEventService(IOptionPickerEventService):
             logger.debug("Event handlers setup successfully")
 
         except Exception as e:
-            logger.error(f"Error setting up event handlers: {e}")
+            logger.exception(f"Error setting up event handlers: {e}")
             raise
 
     def handle_widget_resize(
@@ -106,7 +109,7 @@ class OptionPickerEventService(IOptionPickerEventService):
             logger.debug("Handled widget resize")
 
         except Exception as e:
-            logger.error(f"Error handling widget resize: {e}")
+            logger.exception(f"Error handling widget resize: {e}")
 
     def handle_filter_change(
         self,
@@ -139,7 +142,7 @@ class OptionPickerEventService(IOptionPickerEventService):
                 logger.warning("No option click handler configured")
 
         except Exception as e:
-            logger.error(f"Error handling option click: {e}")
+            logger.exception(f"Error handling option click: {e}")
 
     def handle_pictograph_click(self, pictograph_data: PictographData) -> None:
         """
@@ -156,7 +159,7 @@ class OptionPickerEventService(IOptionPickerEventService):
                 logger.warning("No pictograph click handler configured")
 
         except Exception as e:
-            logger.error(f"Error handling pictograph click: {e}")
+            logger.exception(f"Error handling pictograph click: {e}")
 
     def emit_option_selected(self, option_id: str, signal_emitter: Any) -> None:
         """
@@ -174,7 +177,7 @@ class OptionPickerEventService(IOptionPickerEventService):
                 logger.warning("No signal emitter available for option selected")
 
         except Exception as e:
-            logger.error(f"Error emitting option selected: {e}")
+            logger.exception(f"Error emitting option selected: {e}")
 
     def emit_pictograph_selected(
         self, pictograph_data: PictographData, signal_emitter: Any
@@ -194,7 +197,7 @@ class OptionPickerEventService(IOptionPickerEventService):
                 logger.warning("No signal emitter available for pictograph selected")
 
         except Exception as e:
-            logger.error(f"Error emitting pictograph selected: {e}")
+            logger.exception(f"Error emitting pictograph selected: {e}")
 
     def disconnect_all_handlers(self) -> None:
         """Disconnect all event handlers."""
@@ -216,7 +219,7 @@ class OptionPickerEventService(IOptionPickerEventService):
             logger.debug("Disconnected all event handlers")
 
         except Exception as e:
-            logger.error(f"Error disconnecting handlers: {e}")
+            logger.exception(f"Error disconnecting handlers: {e}")
 
     def validate_event_setup(self) -> bool:
         """
@@ -249,7 +252,7 @@ class OptionPickerEventService(IOptionPickerEventService):
             return True
 
         except Exception as e:
-            logger.error(f"Error validating event setup: {e}")
+            logger.exception(f"Error validating event setup: {e}")
             return False
 
     def get_event_info(self) -> dict:
@@ -273,7 +276,7 @@ class OptionPickerEventService(IOptionPickerEventService):
             }
 
         except Exception as e:
-            logger.error(f"Error getting event info: {e}")
+            logger.exception(f"Error getting event info: {e}")
             return {
                 "pool_manager_available": False,
                 "filter_widget_available": False,
@@ -291,4 +294,4 @@ class OptionPickerEventService(IOptionPickerEventService):
             logger.debug("Event service cleaned up")
 
         except Exception as e:
-            logger.error(f"Error during event cleanup: {e}")
+            logger.exception(f"Error during event cleanup: {e}")

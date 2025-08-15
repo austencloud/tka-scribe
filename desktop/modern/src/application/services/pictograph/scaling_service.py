@@ -4,11 +4,11 @@ Context-Aware Scaling Service for Modern Pictographs.
 This service replicates context-specific scaling logic to ensure Modern pictographs
 achieve the same visual prominence as proven pictographs in different usage contexts.
 """
+from __future__ import annotations
 
-from typing import Optional, Tuple
 from enum import Enum
+
 from PyQt6.QtCore import QSize
-from PyQt6.QtWidgets import QWidget
 
 
 class ScalingContext(Enum):
@@ -56,7 +56,7 @@ class PictographScaler:
         container_size: QSize,
         scene_size: QSize,
         **context_params,
-    ) -> Tuple[float, float]:
+    ) -> tuple[float, float]:
         """
         Calculate scale factors for a pictograph in a specific context.
 
@@ -73,32 +73,31 @@ class PictographScaler:
             return self._calculate_option_view_scale(
                 container_size, scene_size, **context_params
             )
-        elif context == ScalingContext.START_POS_PICKER:
+        if context == ScalingContext.START_POS_PICKER:
             return self._calculate_start_pos_picker_scale(
                 container_size, scene_size, **context_params
             )
-        elif context == ScalingContext.ADVANCED_START_POS:
+        if context == ScalingContext.ADVANCED_START_POS:
             return self._calculate_advanced_start_pos_scale(
                 container_size, scene_size, **context_params
             )
-        elif context == ScalingContext.CODEX_VIEW:
+        if context == ScalingContext.CODEX_VIEW:
             return self._calculate_codex_view_scale(
                 container_size, scene_size, **context_params
             )
-        elif context == ScalingContext.BEAT_VIEW:
+        if context == ScalingContext.BEAT_VIEW:
             return self._calculate_beat_view_scale(
                 container_size, scene_size, **context_params
             )
-        elif context == ScalingContext.GRAPH_EDITOR_VIEW:
+        if context == ScalingContext.GRAPH_EDITOR_VIEW:
             return self._calculate_graph_editor_scale(
                 container_size, scene_size, **context_params
             )
-        else:
-            return self._calculate_default_scale(container_size, scene_size)
+        return self._calculate_default_scale(container_size, scene_size)
 
     def _calculate_option_view_scale(
         self, container_size: QSize, scene_size: QSize, **context_params
-    ) -> Tuple[float, float]:
+    ) -> tuple[float, float]:
         """Calculate scaling for option view context."""
         # Get required parameters
         main_window_width = context_params.get("main_window_width", 1200)
@@ -124,7 +123,7 @@ class PictographScaler:
 
     def _calculate_start_pos_picker_scale(
         self, container_size: QSize, scene_size: QSize, **context_params
-    ) -> Tuple[float, float]:
+    ) -> tuple[float, float]:
         """Calculate scaling for start position picker context."""
         # Use container width divided by 10 (proven formula)
         target_size = container_size.width() // 10
@@ -138,7 +137,7 @@ class PictographScaler:
 
     def _calculate_advanced_start_pos_scale(
         self, container_size: QSize, scene_size: QSize, **context_params
-    ) -> Tuple[float, float]:
+    ) -> tuple[float, float]:
         """Calculate scaling for advanced start position context."""
         # Use container width divided by 12 (proven formula)
         target_size = container_size.width() // 12
@@ -152,7 +151,7 @@ class PictographScaler:
 
     def _calculate_codex_view_scale(
         self, container_size: QSize, scene_size: QSize, **context_params
-    ) -> Tuple[float, float]:
+    ) -> tuple[float, float]:
         """Calculate scaling for codex view context."""
         # Use container width divided by 16 (proven formula)
         target_size = container_size.width() // 16
@@ -166,7 +165,7 @@ class PictographScaler:
 
     def _calculate_beat_view_scale(
         self, container_size: QSize, scene_size: QSize, **context_params
-    ) -> Tuple[float, float]:
+    ) -> tuple[float, float]:
         """Calculate scaling for beat view context."""
         # Calculate scale factor maintaining aspect ratio
         view_width = container_size.width()
@@ -186,7 +185,7 @@ class PictographScaler:
 
     def _calculate_graph_editor_scale(
         self, container_size: QSize, scene_size: QSize, **context_params
-    ) -> Tuple[float, float]:
+    ) -> tuple[float, float]:
         """Calculate scaling for graph editor view context."""
         # Calculate scale factor maintaining aspect ratio
         view_width = container_size.width()
@@ -206,7 +205,7 @@ class PictographScaler:
 
     def _calculate_default_scale(
         self, container_size: QSize, scene_size: QSize
-    ) -> Tuple[float, float]:
+    ) -> tuple[float, float]:
         """Calculate default scaling when no specific context is provided."""
         # Enhanced default scaling for optimal visual presentation
         scale_x = container_size.width() / scene_size.width()

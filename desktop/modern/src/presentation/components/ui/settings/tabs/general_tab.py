@@ -1,17 +1,19 @@
+from __future__ import annotations
+
+from PyQt6.QtCore import pyqtSignal
+from PyQt6.QtGui import QFont
 from PyQt6.QtWidgets import (
-    QWidget,
-    QVBoxLayout,
-    QHBoxLayout,
-    QLabel,
-    QLineEdit,
     QCheckBox,
     QComboBox,
     QFrame,
+    QHBoxLayout,
+    QLabel,
+    QLineEdit,
+    QVBoxLayout,
+    QWidget,
 )
-from PyQt6.QtCore import pyqtSignal
-from PyQt6.QtGui import QFont
 
-from core.interfaces.tab_settings_interfaces import (
+from desktop.modern.src.core.interfaces.tab_settings_interfaces import (
     IUserProfileService,
 )
 
@@ -109,7 +111,7 @@ class GeneralTab(QWidget):
                 background: transparent;
                 color: white;
             }
-            
+
             QLabel#section_title {
                 color: rgba(255, 255, 255, 0.98);
                 font-size: 18px;
@@ -118,7 +120,7 @@ class GeneralTab(QWidget):
                 letter-spacing: -0.3px;
                 margin-bottom: 10px;
             }
-            
+
             QLabel#subsection_title {
                 color: rgba(255, 255, 255, 0.92);
                 font-size: 14px;
@@ -127,7 +129,7 @@ class GeneralTab(QWidget):
                 letter-spacing: 0.2px;
                 margin-bottom: 8px;
             }
-            
+
             QFrame#settings_section {
                 background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
                     stop:0 rgba(255, 255, 255, 0.15),
@@ -137,14 +139,14 @@ class GeneralTab(QWidget):
                 padding: 12px;
                 margin: 3px 0;
             }
-            
+
             QFrame#settings_section:hover {
                 background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
                     stop:0 rgba(255, 255, 255, 0.20),
                     stop:1 rgba(255, 255, 255, 0.14));
                 border-color: rgba(255, 255, 255, 0.35);
             }
-            
+
             QLineEdit {
                 background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
                     stop:0 rgba(255, 255, 255, 0.15),
@@ -157,14 +159,14 @@ class GeneralTab(QWidget):
                 font-family: "Inter", "Segoe UI", sans-serif;
                 font-weight: 500;
             }
-            
+
             QLineEdit:focus {
                 border-color: rgba(42, 130, 218, 0.8);
                 background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
                     stop:0 rgba(255, 255, 255, 0.20),
                     stop:1 rgba(255, 255, 255, 0.14));
             }
-            
+
             QCheckBox {
                 color: rgba(255, 255, 255, 0.90);
                 font-size: 13px;
@@ -173,7 +175,7 @@ class GeneralTab(QWidget):
                 spacing: 10px;
                 padding: 4px 0;
             }
-            
+
             QCheckBox::indicator {
                 width: 20px;
                 height: 20px;
@@ -183,21 +185,21 @@ class GeneralTab(QWidget):
                     stop:0 rgba(255, 255, 255, 0.15),
                     stop:1 rgba(255, 255, 255, 0.08));
             }
-            
+
             QCheckBox::indicator:checked {
                 background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
                     stop:0 rgba(34, 197, 94, 0.9),
                     stop:1 rgba(34, 197, 94, 0.7));
                 border-color: rgba(34, 197, 94, 1.0);
             }
-            
+
             QCheckBox::indicator:hover {
                 border-color: rgba(255, 255, 255, 0.6);
                 background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
                     stop:0 rgba(255, 255, 255, 0.22),
                     stop:1 rgba(255, 255, 255, 0.12));
             }
-            
+
             QComboBox {
                 background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
                     stop:0 rgba(255, 255, 255, 0.15),
@@ -211,20 +213,20 @@ class GeneralTab(QWidget):
                 font-family: "Inter", "Segoe UI", sans-serif;
                 font-weight: 500;
             }
-            
+
             QComboBox:focus {
                 border-color: rgba(42, 130, 218, 0.8);
                 background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
                     stop:0 rgba(255, 255, 255, 0.20),
                     stop:1 rgba(255, 255, 255, 0.14));
             }
-            
+
             QComboBox::drop-down {
                 border: none;
                 width: 25px;
                 background: transparent;
             }
-            
+
             QComboBox::down-arrow {
                 image: none;
                 border-left: 5px solid transparent;
@@ -232,14 +234,14 @@ class GeneralTab(QWidget):
                 border-top: 8px solid rgba(255, 255, 255, 0.8);
                 margin-right: 8px;
             }
-            
+
             QComboBox:hover {
                 background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
                     stop:0 rgba(255, 255, 255, 0.20),
                     stop:1 rgba(255, 255, 255, 0.14));
                 border-color: rgba(255, 255, 255, 0.45);
             }
-            
+
             QLabel {
                 color: rgba(255, 255, 255, 0.88);
                 font-family: "Inter", "Segoe UI", sans-serif;

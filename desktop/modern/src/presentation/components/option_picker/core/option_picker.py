@@ -1,11 +1,17 @@
-from typing import Any, Callable, Dict, List, Optional
+from __future__ import annotations
 
-from core.dependency_injection.di_container import DIContainer
-from domain.models import SequenceData
-from domain.models.pictograph_data import PictographData
-from presentation.components.component_base import ViewableComponentBase
+from typing import Any, Callable
+
 from PyQt6.QtCore import pyqtSignal
 from PyQt6.QtWidgets import QWidget
+
+from desktop.modern.src.core.dependency_injection.di_container import DIContainer
+from desktop.modern.src.domain.models.pictograph_data import PictographData
+from desktop.modern.src.presentation.components.component_base import (
+    ViewableComponentBase,
+)
+from domain.models import SequenceData
+
 
 # Import the new base class
 
@@ -30,7 +36,7 @@ class OptionPicker(ViewableComponentBase):
     def __init__(
         self,
         container: DIContainer,
-        progress_callback: Optional[Callable[[str, float], None]] = None,
+        progress_callback: Callable[[str, float], None] | None = None,
         parent=None,
     ):
         """
@@ -47,7 +53,7 @@ class OptionPicker(ViewableComponentBase):
         self.progress_callback = progress_callback
 
         # Initialize orchestrator with dependency injection
-        from application.services.option_picker.option_picker_orchestrator import (
+        from desktop.modern.src.application.services.option_picker.option_picker_orchestrator import (
             OptionPickerOrchestrator,
         )
 
@@ -97,12 +103,12 @@ class OptionPicker(ViewableComponentBase):
         except Exception as e:
             self.emit_error(f"Error during cleanup: {e}", e)
 
-    def load_motion_combinations(self, sequence_data: List[Dict[str, Any]]) -> None:
+    def load_motion_combinations(self, sequence_data: list[dict[str, Any]]) -> None:
         """Load motion combinations using orchestrator."""
         if self.orchestrator:
             self.orchestrator.load_motion_combinations(sequence_data)
 
-    def get_pictograph_for_option(self, option_id: str) -> Optional["PictographData"]:
+    def get_pictograph_for_option(self, option_id: str) -> PictographData | None:
         """Get PictographData for a specific option ID using orchestrator."""
         if self.orchestrator:
             return self.orchestrator.get_pictograph_for_option(option_id)
@@ -114,7 +120,7 @@ class OptionPicker(ViewableComponentBase):
             self.orchestrator.refresh_options()
 
     def refresh_options_from_sequence(
-        self, sequence_data: List[Dict[str, Any]]
+        self, sequence_data: list[dict[str, Any]]
     ) -> None:
         """Refresh options based on sequence state (DEPRECATED - compatibility)."""
         # Delegate to load_motion_combinations for compatibility

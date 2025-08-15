@@ -1,11 +1,21 @@
+from __future__ import annotations
+
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QColor, QPainter
 from PyQt6.QtWidgets import QWidget
 
-from application.services.backgrounds.starfield.comet_trajectory import CometTrajectory
-from application.services.backgrounds.starfield.moon_positioning import MoonPositioning
-from application.services.backgrounds.starfield.star_twinkling import StarTwinkling
-from application.services.backgrounds.starfield.ufo_behavior import UFOBehavior
+from desktop.modern.src.application.services.backgrounds.starfield.comet_trajectory import (
+    CometTrajectory,
+)
+from desktop.modern.src.application.services.backgrounds.starfield.moon_positioning import (
+    MoonPositioning,
+)
+from desktop.modern.src.application.services.backgrounds.starfield.star_twinkling import (
+    StarTwinkling,
+)
+from desktop.modern.src.application.services.backgrounds.starfield.ufo_behavior import (
+    UFOBehavior,
+)
 
 from .base_background import BaseBackground
 

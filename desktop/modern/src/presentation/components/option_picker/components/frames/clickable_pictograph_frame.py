@@ -1,17 +1,21 @@
-from typing import Optional
+from __future__ import annotations
 
-from application.services.layout.component_sizer import ComponentSizer, SizeConstraints
-from domain.models.pictograph_data import PictographData
-from presentation.components.pictograph.pictograph_component import (
-    PictographComponent,
-    create_pictograph_component,
-)
-from presentation.components.workbench.sequence_beat_frame.selection_overlay import (
-    SelectionOverlay,
-)
 from PyQt6.QtCore import QEvent, Qt, pyqtSignal
 from PyQt6.QtGui import QCloseEvent, QEnterEvent, QMouseEvent
 from PyQt6.QtWidgets import QFrame, QLabel, QSizePolicy, QVBoxLayout, QWidget
+
+from desktop.modern.src.application.services.layout.component_sizer import (
+    ComponentSizer,
+    SizeConstraints,
+)
+from desktop.modern.src.domain.models.pictograph_data import PictographData
+from desktop.modern.src.presentation.components.pictograph.pictograph_component import (
+    PictographComponent,
+    create_pictograph_component,
+)
+from desktop.modern.src.presentation.components.workbench.sequence_beat_frame.selection_overlay import (
+    SelectionOverlay,
+)
 
 
 class ClickablePictographFrame(QFrame):
@@ -19,7 +23,7 @@ class ClickablePictographFrame(QFrame):
     pictograph_clicked = pyqtSignal(object)
 
     def __init__(
-        self, pictograph_data: PictographData, parent: Optional[QWidget] = None
+        self, pictograph_data: PictographData, parent: QWidget | None = None
     ) -> None:
         if parent is not None:
             try:
@@ -32,15 +36,15 @@ class ClickablePictographFrame(QFrame):
         self.setFrameStyle(QFrame.Shape.NoFrame)
         self.setLineWidth(0)
 
-        self.container_widget: Optional[QWidget] = None
+        self.container_widget: QWidget | None = None
         self._option_picker_width: int = 0
 
         # Initialize component sizer service
         self.component_sizer = ComponentSizer()
 
         # Initialize selection overlay
-        self._selection_overlay: Optional[SelectionOverlay] = None
-        self._pictograph_component: Optional[PictographComponent] = None
+        self._selection_overlay: SelectionOverlay | None = None
+        self._pictograph_component: PictographComponent | None = None
 
         square_size: int = 160
         self.setFixedSize(square_size, square_size)
@@ -96,7 +100,9 @@ class ClickablePictographFrame(QFrame):
             return
 
         try:
-            from application.services.pictograph.scaling_service import ScalingContext
+            from desktop.modern.src.application.services.pictograph.scaling_service import (
+                ScalingContext,
+            )
 
             self.pictograph_component.set_scaling_context(ScalingContext.OPTION_VIEW)
 
@@ -106,7 +112,9 @@ class ClickablePictographFrame(QFrame):
                     pictograph_data.glyph_data.letter_type
                 )
         except Exception:
-            from application.services.pictograph.scaling_service import ScalingContext
+            from desktop.modern.src.application.services.pictograph.scaling_service import (
+                ScalingContext,
+            )
 
             self.pictograph_component.set_scaling_context(ScalingContext.OPTION_VIEW)
             if pictograph_data.glyph_data and pictograph_data.glyph_data.letter_type:
@@ -167,13 +175,13 @@ class ClickablePictographFrame(QFrame):
                 f"✅ Frame {id(self)} updating pictograph data with valid component"
             )
 
-            logger.debug(f"   🔧 Calling _configure_option_picker_context...")
+            logger.debug("   🔧 Calling _configure_option_picker_context...")
             self._configure_option_picker_context(pictograph_data)
             logger.debug(
                 f"   📊 After configure: pictograph_component = {self.pictograph_component}"
             )
 
-            logger.debug(f"   🔧 Calling update_from_pictograph_data...")
+            logger.debug("   🔧 Calling update_from_pictograph_data...")
             self.pictograph_component.update_from_pictograph_data(pictograph_data)
             logger.debug(
                 f"   📊 After update: pictograph_component = {self.pictograph_component}"

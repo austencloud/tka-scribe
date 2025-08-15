@@ -16,12 +16,14 @@ USAGE:
     end_pos = service.extract_end_position(beat_data)
     position = service.get_position_from_locations("s", "n")
 """
+from __future__ import annotations
 
 import logging
-from typing import Any, Dict, Optional
+from typing import Any
 
-from core.interfaces.positioning_services import IPositionMapper
-from domain.models.beat_data import BeatData
+from desktop.modern.src.core.interfaces.positioning_services import IPositionMapper
+from desktop.modern.src.domain.models.beat_data import BeatData
+
 
 logger = logging.getLogger(__name__)
 
@@ -76,7 +78,7 @@ class PositionMapper(IPositionMapper):
         self._location_to_position_map = self.POSITIONS_MAP.copy()
         logger.debug("Position matching service initialized")
 
-    def extract_end_position(self, last_beat: Dict[str, Any]) -> Optional[str]:
+    def extract_end_position(self, last_beat: dict[str, Any]) -> str | None:
         """
         Extract end position from beat data using Legacy-compatible logic.
 
@@ -113,12 +115,12 @@ class PositionMapper(IPositionMapper):
             return "alpha1"  # Default fallback position
 
         except Exception as e:
-            logger.error(f"Error extracting end position: {e}")
+            logger.exception(f"Error extracting end position: {e}")
             return None
 
     def calculate_end_position_from_motions(
-        self, beat_data: Dict[str, Any]
-    ) -> Optional[str]:
+        self, beat_data: dict[str, Any]
+    ) -> str | None:
         """
         Calculate end position from motion attributes.
 
@@ -144,19 +146,18 @@ class PositionMapper(IPositionMapper):
                         f"Calculated position {end_position} from locations {position_key}"
                     )
                     return end_position
-                else:
-                    logger.warning(
-                        f"No position mapping found for locations {position_key}"
-                    )
+                logger.warning(
+                    f"No position mapping found for locations {position_key}"
+                )
 
         except Exception as e:
-            logger.error(f"Error calculating end position from motions: {e}")
+            logger.exception(f"Error calculating end position from motions: {e}")
 
         return None
 
     def get_position_from_locations(
         self, start_loc: str, end_loc: str
-    ) -> Optional[str]:
+    ) -> str | None:
         """
         Get position key from start and end locations.
 
@@ -179,10 +180,10 @@ class PositionMapper(IPositionMapper):
             return position
 
         except Exception as e:
-            logger.error(f"Error getting position from locations: {e}")
+            logger.exception(f"Error getting position from locations: {e}")
             return None
 
-    def has_motion_attributes(self, beat_data: Dict[str, Any]) -> bool:
+    def has_motion_attributes(self, beat_data: dict[str, Any]) -> bool:
         """
         Check if beat data has motion attributes for end position calculation.
 
@@ -200,10 +201,10 @@ class PositionMapper(IPositionMapper):
                 and "end_loc" in beat_data["red_attributes"]
             )
         except Exception as e:
-            logger.error(f"Error checking motion attributes: {e}")
+            logger.exception(f"Error checking motion attributes: {e}")
             return False
 
-    def extract_modern_end_position(self, beat_data: BeatData) -> Optional[str]:
+    def extract_modern_end_position(self, beat_data: BeatData) -> str | None:
         """
         Extract end position directly from Modern BeatData.
 
@@ -247,5 +248,5 @@ class PositionMapper(IPositionMapper):
             return "beta5"
 
         except Exception as e:
-            logger.error(f"Error extracting modern end position: {e}")
+            logger.exception(f"Error extracting modern end position: {e}")
             return "beta5"  # Safe fallback

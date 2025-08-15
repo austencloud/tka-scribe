@@ -11,7 +11,7 @@ from PyQt6.QtCore import QPoint, Qt
 from PyQt6.QtTest import QTest
 from PyQt6.QtWidgets import QPushButton
 
-from desktop.modern.core.testing.ai_agent_helpers import AITestResult
+from desktop.modern.src.core.testing.ai_agent_helpers import AITestResult
 
 
 class ButtonTester:

@@ -1,4 +1,40 @@
-from data.constants import *
+from __future__ import annotations
+
+from data.constants import (
+    ALPHA1,
+    ALPHA2,
+    ALPHA3,
+    ALPHA4,
+    ALPHA5,
+    ALPHA6,
+    ALPHA7,
+    ALPHA8,
+    BETA1,
+    BETA2,
+    BETA3,
+    BETA4,
+    BETA5,
+    BETA6,
+    BETA7,
+    BETA8,
+    GAMMA1,
+    GAMMA2,
+    GAMMA3,
+    GAMMA4,
+    GAMMA5,
+    GAMMA6,
+    GAMMA7,
+    GAMMA8,
+    GAMMA9,
+    GAMMA10,
+    GAMMA11,
+    GAMMA12,
+    GAMMA13,
+    GAMMA14,
+    GAMMA15,
+    GAMMA16,
+)
+
 
 halved_CAPs = {
     (ALPHA1, ALPHA5),

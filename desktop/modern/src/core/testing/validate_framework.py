@@ -21,7 +21,7 @@ def validate_imports():
     print("🔍 Validating imports...")
 
     try:
-        from desktop.modern.core.testing import (
+        from desktop.modern.src.core.testing import (
             AITestResult,
             ButtonTester,
             ComponentInitializer,
@@ -47,14 +47,14 @@ def validate_basic_functionality():
     print("🔍 Validating basic functionality...")
 
     try:
-        from desktop.modern.core.testing import TKAAITestHelper
+        from desktop.modern.src.core.testing import TKAAITestHelper
 
         # Test AI helper initialization
         TKAAITestHelper(use_test_mode=True)
         print("✅ AI helper initialization successful")
 
         # Test basic result creation
-        from desktop.modern.core.testing import AITestResult
+        from desktop.modern.src.core.testing import AITestResult
 
         AITestResult(success=True, metadata={"test": "validation"})
         print("✅ AITestResult creation successful")
@@ -70,7 +70,7 @@ def validate_ui_tester_creation():
     print("🔍 Validating UI tester creation...")
 
     try:
-        from desktop.modern.core.testing import SimpleUITester
+        from desktop.modern.src.core.testing import SimpleUITester
 
         # Create tester (this might fail if dependencies aren't available)
         tester = SimpleUITester(headless=True)
@@ -103,7 +103,7 @@ def validate_cli_interface():
     print("🔍 Validating CLI interface...")
 
     try:
-        from desktop.modern.core.testing import ui_test_cli
+        from desktop.modern.src.core.testing import ui_test_cli
 
         print("✅ CLI interface import successful")
 
@@ -122,7 +122,7 @@ def validate_runner_interface():
     print("🔍 Validating runner interface...")
 
     try:
-        from desktop.modern.core.testing import UITestRunner
+        from desktop.modern.src.core.testing import UITestRunner
 
         # Create runner
         runner = UITestRunner(headless=True, verbose=False)

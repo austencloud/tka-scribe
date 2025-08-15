@@ -1,7 +1,9 @@
-from typing import List
+from __future__ import annotations
 
-from core.interfaces.core_services import IUIStateManager
-from core.interfaces.tab_settings_interfaces import IUserProfileService
+from desktop.modern.src.core.interfaces.core_services import IUIStateManager
+from desktop.modern.src.core.interfaces.tab_settings_interfaces import (
+    IUserProfileService,
+)
 
 
 class UserProfileSettingsManager(IUserProfileService):
@@ -18,7 +20,7 @@ class UserProfileSettingsManager(IUserProfileService):
         """Set the current active user"""
         self.ui_state_service.set_setting("current_user", username)
 
-    def get_all_users(self) -> List[str]:
+    def get_all_users(self) -> list[str]:
         """Get all available user profiles"""
         users = self.ui_state_service.get_setting("user_profiles", ["Default User"])
         return users if isinstance(users, list) else ["Default User"]

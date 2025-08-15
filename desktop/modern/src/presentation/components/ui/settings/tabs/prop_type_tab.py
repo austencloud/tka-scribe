@@ -1,9 +1,13 @@
-from typing import Dict
+from __future__ import annotations
 
-from core.interfaces.tab_settings_interfaces import IPropTypeSettingsManager, PropType
 from PyQt6.QtCore import QSize, Qt, pyqtSignal
 from PyQt6.QtGui import QCursor, QFont, QIcon
 from PyQt6.QtWidgets import QGridLayout, QLabel, QPushButton, QVBoxLayout, QWidget
+
+from desktop.modern.src.core.interfaces.tab_settings_interfaces import (
+    IPropTypeSettingsManager,
+    PropType,
+)
 
 
 class PropButton(QPushButton):
@@ -94,7 +98,7 @@ class PropTypeTab(QWidget):
     def __init__(self, prop_service: IPropTypeSettingsManager, parent=None):
         super().__init__(parent)
         self.prop_service = prop_service
-        self.buttons: Dict[str, PropButton] = {}
+        self.buttons: dict[str, PropButton] = {}
         self._setup_ui()
         self._load_current_prop()
         self._setup_connections()

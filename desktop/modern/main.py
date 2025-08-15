@@ -12,12 +12,13 @@ from __future__ import annotations
 from pathlib import Path
 import sys
 
+
 # Fix VS Code debugger Unicode encoding issue
 try:
-    if sys.stdout.encoding != 'utf-8':
-        sys.stdout.reconfigure(encoding='utf-8')
-    if sys.stderr.encoding != 'utf-8':
-        sys.stderr.reconfigure(encoding='utf-8')
+    if sys.stdout.encoding != "utf-8":
+        sys.stdout.reconfigure(encoding="utf-8")
+    if sys.stderr.encoding != "utf-8":
+        sys.stderr.reconfigure(encoding="utf-8")
 except (AttributeError, OSError):
     # Fallback for older Python versions or restricted environments
     pass
@@ -26,16 +27,15 @@ except (AttributeError, OSError):
 # Check if tka_paths has already been imported (e.g., from root main.py)
 if "tka_paths" not in sys.modules:
     # Only do manual path setup if tka_paths hasn't been imported
-    # Get the TKA project root (3 levels up from this file)
+    # Get the TKA project root (2 levels up from this file)
     current_file = Path(__file__).resolve()
-    project_root = current_file.parents[3]  # main.py -> modern -> desktop -> src -> TKA
+    project_root = current_file.parents[2]  # main.py -> modern -> desktop -> TKA
 
     # Define the correct paths for the TKA project
     src_paths = [
-        project_root / "src",  # Main src directory (highest priority)
-        project_root / "src" / "desktop",  # Desktop directory
-        project_root / "launcher",
-        project_root / "packages",
+        project_root,  # TKA root directory (highest priority)
+        project_root / "desktop",  # Desktop directory
+        project_root / "desktop" / "modern" / "src",  # Modern src directory
     ]
 
     # Add paths in reverse order since insert(0) puts them at the beginning
@@ -46,11 +46,8 @@ if "tka_paths" not in sys.modules:
 # Now safe to import everything else
 import logging
 
-# Import the focused startup components
-from desktop.modern.core.startup import ConfigurationManager
-
 # Import the extracted main window class
-from desktop.modern.presentation.main_window import TKAMainWindow
+from desktop.modern.src.presentation.main_window import TKAMainWindow
 
 
 def _position_window_on_secondary_monitor(window):
@@ -94,7 +91,9 @@ def create_application():
     """
     from PyQt6.QtWidgets import QApplication
 
-    from desktop.modern.core.application.application_factory import ApplicationFactory
+    from desktop.modern.src.core.application.application_factory import (
+        ApplicationFactory,
+    )
 
     # Create Qt application
     app = QApplication.instance() or QApplication([])
@@ -115,33 +114,20 @@ def main():
     logger = logging.getLogger(__name__)
 
     try:
-        # Load configuration
-        config_manager = ConfigurationManager()
-        config = config_manager.load_configuration()
-
-        if config.mode == "test":
-            # Test mode: just create container and return it
-            from desktop.modern.core.application.application_factory import (
-                ApplicationFactory,
-            )
-
-            container = ApplicationFactory.create_app(config.mode)
-            return container
-
         # UI mode: create Qt app and main window
         # Suppress Qt layout warnings that are harmless but noisy
         import os
 
         from PyQt6.QtWidgets import QApplication
 
-        from desktop.modern.core.application.application_factory import (
+        from desktop.modern.src.core.application.application_factory import (
             ApplicationFactory,
         )
 
         os.environ["QT_LOGGING_RULES"] = "qt.qpa.xcb.warning=false"
 
         app = QApplication.instance() or QApplication([])
-        container = ApplicationFactory.create_app(config.mode)
+        container = ApplicationFactory.create_app("production")
 
         # Create main window
         window = TKAMainWindow(container)

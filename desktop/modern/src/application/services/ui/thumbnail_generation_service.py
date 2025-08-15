@@ -4,13 +4,14 @@ Thumbnail Generation Service
 Modern service for generating sequence thumbnails.
 Wraps existing thumbnail generation infrastructure with clean interfaces.
 """
+from __future__ import annotations
 
 import logging
-import tempfile
 from pathlib import Path
-from typing import Optional
+import tempfile
 
-from domain.models.sequence_data import SequenceData
+from desktop.modern.src.domain.models.sequence_data import SequenceData
+
 
 logger = logging.getLogger(__name__)
 
@@ -23,7 +24,7 @@ class ThumbnailGenerationService:
     with a clean, modern interface.
     """
 
-    def __init__(self, temp_directory: Optional[Path] = None):
+    def __init__(self, temp_directory: Path | None = None):
         """
         Initialize the thumbnail generation service.
 
@@ -41,7 +42,7 @@ class ThumbnailGenerationService:
         sequence: SequenceData,
         output_path: Path,
         fullscreen_preview: bool = False,
-    ) -> Optional[Path]:
+    ) -> Path | None:
         """
         Generate a thumbnail image for the given sequence.
 
@@ -80,15 +81,14 @@ class ThumbnailGenerationService:
             if thumbnail_path and Path(thumbnail_path).exists():
                 logger.info(f"Generated thumbnail: {thumbnail_path}")
                 return Path(thumbnail_path)
-            else:
-                logger.error("Legacy thumbnail generation failed")
-                return None
-
-        except Exception as e:
-            logger.error(f"Failed to generate sequence thumbnail: {e}")
+            logger.error("Legacy thumbnail generation failed")
             return None
 
-    def _convert_to_legacy_format(self, sequence: SequenceData) -> Optional[list]:
+        except Exception as e:
+            logger.exception(f"Failed to generate sequence thumbnail: {e}")
+            return None
+
+    def _convert_to_legacy_format(self, sequence: SequenceData) -> list | None:
         """
         Convert modern SequenceData to legacy format.
 
@@ -118,12 +118,12 @@ class ThumbnailGenerationService:
             return legacy_sequence
 
         except Exception as e:
-            logger.error(f"Failed to convert sequence to legacy format: {e}")
+            logger.exception(f"Failed to convert sequence to legacy format: {e}")
             return None
 
     def _generate_with_legacy_system(
         self, legacy_sequence: list, output_path: Path, fullscreen_preview: bool
-    ) -> Optional[str]:
+    ) -> str | None:
         """
         Generate thumbnail using the legacy thumbnail generation system.
 
@@ -176,14 +176,14 @@ class ThumbnailGenerationService:
             return None
 
         except Exception as e:
-            logger.error(f"Legacy thumbnail generation failed: {e}")
+            logger.exception(f"Legacy thumbnail generation failed: {e}")
             return None
 
     def _get_legacy_data_converter(self):
         """Get the legacy data converter instance"""
         try:
             # Try to import and create the legacy data converter
-            from application.services.data.modern_to_legacy_converter import (
+            from desktop.modern.src.application.services.data.modern_to_legacy_converter import (
                 ModernToLegacyConverter,
             )
 
@@ -192,7 +192,7 @@ class ThumbnailGenerationService:
             logger.warning(f"Could not import legacy data converter: {e}")
             return None
         except Exception as e:
-            logger.error(f"Failed to create legacy data converter: {e}")
+            logger.exception(f"Failed to create legacy data converter: {e}")
             return None
 
     def _get_legacy_thumbnail_generator(self):
@@ -205,11 +205,11 @@ class ThumbnailGenerationService:
             # For now, return None and log that we need legacy integration
             logger.warning("Legacy thumbnail generator integration not yet implemented")
             logger.info("TODO: Integrate with legacy thumbnail generation system")
-            return None
+            return
 
         except Exception as e:
-            logger.error(f"Failed to get legacy thumbnail generator: {e}")
-            return None
+            logger.exception(f"Failed to get legacy thumbnail generator: {e}")
+            return
 
 
 class MockThumbnailGenerationService(ThumbnailGenerationService):
@@ -224,7 +224,7 @@ class MockThumbnailGenerationService(ThumbnailGenerationService):
         sequence: SequenceData,
         output_path: Path,
         fullscreen_preview: bool = False,
-    ) -> Optional[Path]:
+    ) -> Path | None:
         """Generate a mock thumbnail for testing"""
         try:
             # Validate inputs
@@ -235,8 +235,8 @@ class MockThumbnailGenerationService(ThumbnailGenerationService):
                 return None
 
             # Create a simple placeholder image
-            from PyQt6.QtGui import QPixmap, QPainter, QColor, QFont
             from PyQt6.QtCore import Qt
+            from PyQt6.QtGui import QColor, QFont, QPainter, QPixmap
 
             # Create a placeholder image
             pixmap = QPixmap(800, 600)
@@ -261,10 +261,9 @@ class MockThumbnailGenerationService(ThumbnailGenerationService):
             if pixmap.save(str(output_path), "PNG"):
                 logger.info(f"Generated mock thumbnail: {output_path}")
                 return output_path
-            else:
-                logger.error("Failed to save mock thumbnail")
-                return None
+            logger.error("Failed to save mock thumbnail")
+            return None
 
         except Exception as e:
-            logger.error(f"Failed to generate mock thumbnail: {e}")
+            logger.exception(f"Failed to generate mock thumbnail: {e}")
             return None

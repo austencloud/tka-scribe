@@ -5,10 +5,8 @@ This tab provides comprehensive image export configuration with real-time pictog
 that updates as options are toggled, following the legacy functionality but with modern
 clean architecture and glassmorphism design.
 """
+from __future__ import annotations
 
-from typing import Dict, Union
-
-from core.interfaces.tab_settings_interfaces import IImageExporter
 from PyQt6.QtCore import Qt, QTimer, pyqtSignal
 from PyQt6.QtGui import QCursor, QFont, QPainter, QPixmap
 from PyQt6.QtWidgets import (
@@ -23,6 +21,8 @@ from PyQt6.QtWidgets import (
     QVBoxLayout,
     QWidget,
 )
+
+from desktop.modern.src.core.interfaces.tab_settings_interfaces import IImageExporter
 
 
 class ImageExportPreviewPanel(QFrame):
@@ -79,7 +79,7 @@ class ImageExportPreviewPanel(QFrame):
 class ExportToggle(QCheckBox):
     """Enhanced export toggle with modern styling."""
 
-    def __init__(self, label: str, tooltip: Union[str, None] = None, parent=None):
+    def __init__(self, label: str, tooltip: str | None = None, parent=None):
         super().__init__(label, parent)
         if tooltip:
             self.setToolTip(tooltip)
@@ -143,7 +143,7 @@ class ImageExportTab(QWidget):
     def __init__(self, export_service: IImageExporter, parent=None):
         super().__init__(parent)
         self.export_service = export_service
-        self.option_toggles: Dict[str, ExportToggle] = {}
+        self.option_toggles: dict[str, ExportToggle] = {}
 
         # Create preview panel
         self.preview_panel = ImageExportPreviewPanel(self)
@@ -352,27 +352,27 @@ class ImageExportTab(QWidget):
                 background: transparent;
                 color: white;
             }
-            
+
             QLabel#section_title {
                 color: white;
                 font-size: 18px;
                 font-weight: bold;
                 margin-bottom: 10px;
             }
-            
+
             QLabel#description {
                 color: rgba(255, 255, 255, 0.8);
                 font-size: 14px;
                 margin-bottom: 20px;
             }
-            
+
             QLabel#subsection_title {
                 color: rgba(255, 255, 255, 0.9);
                 font-size: 16px;
                 font-weight: bold;
                 margin-bottom: 15px;
             }
-            
+
             QLabel#input_label {
                 color: rgba(255, 255, 255, 0.9);
                 font-size: 14px;
@@ -380,7 +380,7 @@ class ImageExportTab(QWidget):
                 margin-bottom: 5px;
                 margin-top: 10px;
             }
-            
+
             QFrame#settings_section {
                 background: rgba(255, 255, 255, 0.1);
                 border: 2px solid rgba(255, 255, 255, 0.2);
@@ -389,7 +389,7 @@ class ImageExportTab(QWidget):
                 margin: 5px;
                 min-width: 300px;
             }
-            
+
             QLineEdit#export_input {
                 background: rgba(255, 255, 255, 0.1);
                 border: 2px solid rgba(255, 255, 255, 0.3);
@@ -399,11 +399,11 @@ class ImageExportTab(QWidget):
                 font-size: 14px;
                 margin-bottom: 10px;
             }
-            
+
             QLineEdit#export_input:focus {
                 border-color: rgba(59, 130, 246, 0.8);
             }
-            
+
             QPushButton#action_button {
                 background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
                     stop:0 rgba(59, 130, 246, 0.8),
@@ -416,14 +416,14 @@ class ImageExportTab(QWidget):
                 padding: 12px;
                 margin: 5px 0;
             }
-            
+
             QPushButton#action_button:hover {
                 background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
                     stop:0 rgba(59, 130, 246, 1.0),
                     stop:1 rgba(59, 130, 246, 0.8));
                 border-color: rgba(59, 130, 246, 0.8);
             }
-            
+
             QPushButton#action_button:pressed {
                 background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
                     stop:0 rgba(59, 130, 246, 0.6),
@@ -499,7 +499,7 @@ class ImageExportTab(QWidget):
         except Exception as e:
             print(f"Error updating preview: {e}")
 
-    def _get_current_export_options(self) -> Dict[str, Union[bool, str]]:
+    def _get_current_export_options(self) -> dict[str, bool | str]:
         """Get current export options as a dictionary."""
         options = {}
         for option_key, toggle in self.option_toggles.items():
@@ -512,7 +512,7 @@ class ImageExportTab(QWidget):
         return options
 
     def _create_placeholder_preview(
-        self, options: Dict[str, Union[bool, str]]
+        self, options: dict[str, bool | str]
     ) -> QPixmap:
         """Create a placeholder preview image."""
         pixmap = QPixmap(400, 300)

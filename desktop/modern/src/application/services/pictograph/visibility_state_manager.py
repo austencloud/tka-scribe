@@ -4,12 +4,16 @@ Modern Visibility State Manager for TKA.
 Provides sophisticated state management with observer pattern, dependency logic,
 validation, and integration with existing IVisibilityService.
 """
+from __future__ import annotations
 
 import logging
 from threading import Lock
-from typing import Any, Callable, Dict, List
+from typing import Any, Callable
 
-from core.interfaces.tab_settings_interfaces import IVisibilitySettingsManager
+from desktop.modern.src.core.interfaces.tab_settings_interfaces import (
+    IVisibilitySettingsManager,
+)
+
 
 logger = logging.getLogger(__name__)
 
@@ -30,7 +34,7 @@ class VisibilityStateManager:
         self._global_service = self._get_global_service()
 
         # Observer pattern for UI updates
-        self._observers: Dict[str, List[Callable]] = {
+        self._observers: dict[str, list[Callable]] = {
             "glyph": [],
             "motion": [],
             "non_radial": [],
@@ -51,12 +55,14 @@ class VisibilityStateManager:
         """Get or create global visibility service."""
         try:
             # Try to get from DI container first
-            from application.services.pictograph.global_visibility_service import (
+            from desktop.modern.src.application.services.pictograph.global_visibility_service import (
                 PictographVisibilityManager,
             )
 
             try:
-                from core.dependency_injection.di_container import get_container
+                from desktop.modern.src.core.dependency_injection.di_container import (
+                    get_container,
+                )
 
                 container = get_container()
                 if container:
@@ -72,7 +78,7 @@ class VisibilityStateManager:
             return None
 
     def register_observer(
-        self, callback: Callable, categories: List[str] = None
+        self, callback: Callable, categories: list[str] | None = None
     ) -> None:
         """Register a component to be notified when specific visibility states change."""
         if categories is None:
@@ -85,7 +91,7 @@ class VisibilityStateManager:
                     logger.debug(f"Registered observer for category: {category}")
 
     def unregister_observer(
-        self, callback: Callable, categories: List[str] = None
+        self, callback: Callable, categories: list[str] | None = None
     ) -> None:
         """Unregister an observer from specific categories."""
         if categories is None:
@@ -100,7 +106,7 @@ class VisibilityStateManager:
                     self._observers[category].remove(callback)
                     logger.debug(f"Unregistered observer from category: {category}")
 
-    def _notify_observers(self, categories: List[str]) -> None:
+    def _notify_observers(self, categories: list[str]) -> None:
         """Notify all observers in the specified categories."""
         with self._lock:
             notified_callbacks = set()
@@ -113,7 +119,7 @@ class VisibilityStateManager:
                                 callback()
                                 notified_callbacks.add(callback)
                             except Exception as e:
-                                logger.error(f"Error notifying observer: {e}")
+                                logger.exception(f"Error notifying observer: {e}")
 
     def get_glyph_visibility(
         self, glyph_type: str, check_dependencies: bool = True
@@ -226,7 +232,7 @@ class VisibilityStateManager:
         self._notify_observers(["non_radial", "all"])
         logger.debug(f"Set non-radial visibility to {visible}")
 
-    def get_all_visibility_states(self) -> Dict[str, Any]:
+    def get_all_visibility_states(self) -> dict[str, Any]:
         """Get comprehensive visibility state information."""
         return {
             "glyphs": {
@@ -246,7 +252,7 @@ class VisibilityStateManager:
             "all_motions_visible": self.are_all_motions_visible(),
         }
 
-    def validate_state(self) -> Dict[str, Any]:
+    def validate_state(self) -> dict[str, Any]:
         """Validate current visibility state and return validation results."""
         issues = []
         warnings = []

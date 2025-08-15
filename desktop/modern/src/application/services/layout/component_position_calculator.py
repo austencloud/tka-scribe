@@ -5,15 +5,17 @@ Handles component positioning and grid layout calculations.
 This class preserves all original component positioning logic including
 flow layout, grid layout, and fixed positioning calculations.
 """
+from __future__ import annotations
 
-from typing import Dict, Any, Tuple
+from typing import Any
 
 from .beat_layout_calculator import BeatLayoutCalculator
 from .layout_types import LayoutMode
 
+
 try:
-    from core.decorators import handle_service_errors
-    from core.monitoring import monitor_performance
+    from desktop.modern.src.core.decorators import handle_service_errors
+    from desktop.modern.src.core.monitoring import monitor_performance
 except ImportError:
 
     def handle_service_errors(*args, **kwargs):
@@ -44,8 +46,8 @@ class ComponentPositionCalculator:
     @handle_service_errors("calculate_component_positions")
     @monitor_performance("component_positioning")
     def calculate_component_positions(
-        self, layout_config: Dict[str, Any]
-    ) -> Dict[str, Tuple[int, int]]:
+        self, layout_config: dict[str, Any]
+    ) -> dict[str, tuple[int, int]]:
         """Calculate positions for UI components."""
         components = layout_config.get("components", {})
         container_size = layout_config.get("container_size", (800, 600))
@@ -75,8 +77,8 @@ class ComponentPositionCalculator:
         return positions
 
     def _calculate_flow_layout(
-        self, components: Dict[str, Any], container_size: Tuple[int, int]
-    ) -> Dict[str, Tuple[int, int]]:
+        self, components: dict[str, Any], container_size: tuple[int, int]
+    ) -> dict[str, tuple[int, int]]:
         """Calculate flow layout for components."""
         positions = {}
         current_x = 10
@@ -102,8 +104,8 @@ class ComponentPositionCalculator:
         return positions
 
     def _calculate_grid_layout(
-        self, components: Dict[str, Any], container_size: Tuple[int, int]
-    ) -> Dict[str, Tuple[int, int]]:
+        self, components: dict[str, Any], container_size: tuple[int, int]
+    ) -> dict[str, tuple[int, int]]:
         """Calculate grid layout for components."""
         component_count = len(components)
         if component_count == 0:

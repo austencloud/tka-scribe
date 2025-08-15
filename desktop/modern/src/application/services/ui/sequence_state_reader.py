@@ -4,11 +4,13 @@ Sequence State Reader Service
 Service for reading the current sequence state from the workbench UI.
 Provides clean abstraction over workbench state access.
 """
+from __future__ import annotations
 
 import logging
-from typing import Callable, Optional
+from typing import Callable
 
-from domain.models.sequence_data import SequenceData
+from desktop.modern.src.domain.models.sequence_data import SequenceData
+
 
 logger = logging.getLogger(__name__)
 
@@ -22,7 +24,7 @@ class SequenceStateReader:
     of how the workbench stores and manages state.
     """
 
-    def __init__(self, workbench_getter: Optional[Callable] = None):
+    def __init__(self, workbench_getter: Callable | None = None):
         """
         Initialize the sequence state reader.
 
@@ -31,7 +33,7 @@ class SequenceStateReader:
         """
         self._workbench_getter = workbench_getter
 
-    def get_current_sequence(self) -> Optional[SequenceData]:
+    def get_current_sequence(self) -> SequenceData | None:
         """
         Get the current sequence from the workbench UI state.
 
@@ -51,15 +53,13 @@ class SequenceStateReader:
                 if sequence:
                     logger.debug(f"Retrieved sequence from workbench: {sequence.name}")
                     return sequence
-                else:
-                    logger.debug("Workbench has no current sequence")
-                    return None
-            else:
-                logger.warning("Workbench does not have get_sequence method")
+                logger.debug("Workbench has no current sequence")
                 return None
+            logger.warning("Workbench does not have get_sequence method")
+            return None
 
         except Exception as e:
-            logger.error(f"Failed to get current sequence: {e}")
+            logger.exception(f"Failed to get current sequence: {e}")
             return None
 
     def _get_workbench(self):
@@ -77,7 +77,7 @@ class SequenceStateReader:
             workbench = self._workbench_getter()
             return workbench
         except Exception as e:
-            logger.error(f"Failed to get workbench: {e}")
+            logger.exception(f"Failed to get workbench: {e}")
             return None
 
     def set_workbench_getter(self, workbench_getter: Callable):
@@ -103,14 +103,14 @@ class MockSequenceStateReader(SequenceStateReader):
         super().__init__(workbench_getter=None)
         self._mock_sequence = self._create_mock_sequence()
 
-    def get_current_sequence(self) -> Optional[SequenceData]:
+    def get_current_sequence(self) -> SequenceData | None:
         """Return a mock sequence for testing"""
         logger.info("Returning mock sequence for testing")
         return self._mock_sequence
 
     def _create_mock_sequence(self) -> SequenceData:
         """Create a mock sequence for testing"""
-        from domain.models.beat_data import BeatData
+        from desktop.modern.src.domain.models.beat_data import BeatData
 
         # Create some mock beats
         beats = [

@@ -1,6 +1,11 @@
-from typing import Any, Dict
+from __future__ import annotations
 
-from core.interfaces.core_services import ISettingsCoordinator, IUIStateManager
+from typing import Any
+
+from desktop.modern.src.core.interfaces.core_services import (
+    ISettingsCoordinator,
+    IUIStateManager,
+)
 
 
 class SettingsCoordinator(ISettingsCoordinator):
@@ -17,7 +22,7 @@ class SettingsCoordinator(ISettingsCoordinator):
         """Set a setting value"""
         self.ui_state_service.set_setting(key, value)
 
-    def get_all_settings(self) -> Dict[str, Any]:
+    def get_all_settings(self) -> dict[str, Any]:
         """Get all settings"""
         return self.ui_state_service.get_all_settings()
 

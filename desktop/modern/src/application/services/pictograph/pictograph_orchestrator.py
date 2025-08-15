@@ -10,23 +10,31 @@ PROVIDES:
 - Clean separation of concerns
 - Context-aware pictograph configuration
 """
+from __future__ import annotations
 
 from abc import ABC, abstractmethod
 from enum import Enum
-from typing import Dict, List, Optional, Union
 
-from application.services.data.csv_reader import CSVReader, ICSVReader
-from application.services.data.dataset_manager import DatasetManager, IDatasetManager
-from application.services.glyphs.glyph_generation_service import (
+from desktop.modern.src.application.services.data.csv_reader import (
+    CSVReader,
+    ICSVReader,
+)
+from desktop.modern.src.application.services.data.dataset_manager import (
+    DatasetManager,
+    IDatasetManager,
+)
+from desktop.modern.src.application.services.glyphs.glyph_generation_service import (
     GlyphGenerationService,
     IGlyphGenerationService,
 )
-from application.services.pictograph.pictograph_manager import PictographSearchQuery
+from desktop.modern.src.application.services.pictograph.pictograph_manager import (
+    PictographSearchQuery,
+)
+from desktop.modern.src.domain.models.arrow_data import ArrowData
+from desktop.modern.src.domain.models.enums import GridMode
+from desktop.modern.src.domain.models.grid_data import GridData
+from desktop.modern.src.domain.models.pictograph_data import PictographData
 from domain.models import BeatData
-from domain.models.arrow_data import ArrowData
-from domain.models.enums import GridMode
-from domain.models.grid_data import GridData
-from domain.models.pictograph_data import PictographData
 
 
 class PictographContext(Enum):
@@ -53,12 +61,12 @@ class IPictographOrchestrator(ABC):
 
     @abstractmethod
     def update_pictograph_arrows(
-        self, pictograph: PictographData, arrows: Dict[str, ArrowData]
+        self, pictograph: PictographData, arrows: dict[str, ArrowData]
     ) -> PictographData:
         """Update arrows in pictograph."""
 
     @abstractmethod
-    def search_dataset(self, query: PictographSearchQuery) -> List[PictographData]:
+    def search_dataset(self, query: PictographSearchQuery) -> list[PictographData]:
         """Search pictograph dataset with query."""
 
 
@@ -72,9 +80,9 @@ class PictographOrchestrator(IPictographOrchestrator):
 
     def __init__(
         self,
-        csv_service: Optional[ICSVReader] = None,
-        glyph_service: Optional[IGlyphGenerationService] = None,
-        dataset_service: Optional[IDatasetManager] = None,
+        csv_service: ICSVReader | None = None,
+        glyph_service: IGlyphGenerationService | None = None,
+        dataset_service: IDatasetManager | None = None,
     ):
         """Initialize with dependency injection."""
         self.csv_service = csv_service or CSVReader()
@@ -133,7 +141,7 @@ class PictographOrchestrator(IPictographOrchestrator):
         )
 
     def update_pictograph_arrows(
-        self, pictograph: PictographData, arrows: Dict[str, ArrowData]
+        self, pictograph: PictographData, arrows: dict[str, ArrowData]
     ) -> PictographData:
         """Update arrows in pictograph."""
         return pictograph.update(
@@ -141,7 +149,7 @@ class PictographOrchestrator(IPictographOrchestrator):
             is_blank=len(arrows) == 0,
         )
 
-    def search_dataset(self, query: PictographSearchQuery) -> List[PictographData]:
+    def search_dataset(self, query: PictographSearchQuery) -> list[PictographData]:
         """Search pictograph dataset using dataset service."""
         return self.dataset_service.search_dataset(query)
 
@@ -162,7 +170,7 @@ class PictographOrchestrator(IPictographOrchestrator):
 
         return pictograph.update(metadata=metadata)
 
-    def get_glyph_for_pictograph(self, pictograph: PictographData) -> Optional[str]:
+    def get_glyph_for_pictograph(self, pictograph: PictographData) -> str | None:
         """Get glyph representation for pictograph using glyph service."""
         # Extract beat data from pictograph for glyph generation
         beat_data = self._extract_beat_data_from_pictograph(pictograph)
@@ -178,33 +186,33 @@ class PictographOrchestrator(IPictographOrchestrator):
         """Add pictograph to dataset using dataset service."""
         return self.dataset_service.add_to_dataset(pictograph, category)
 
-    def get_dataset_categories(self) -> List[str]:
+    def get_dataset_categories(self) -> list[str]:
         """Get all available dataset categories."""
         return self.dataset_service.get_dataset_categories()
 
-    def get_pictographs_by_category(self, category: str) -> List[PictographData]:
+    def get_pictographs_by_category(self, category: str) -> list[PictographData]:
         """Get all pictographs in a category."""
         return self.dataset_service.get_pictographs_by_category(category)
 
-    def get_pictographs_by_letter(self, letter: str) -> List[BeatData]:
+    def get_pictographs_by_letter(self, letter: str) -> list[BeatData]:
         """Get all pictographs for a specific letter using CSV service."""
         return self.csv_service.get_pictographs_by_letter(letter)
 
     def get_specific_pictograph(
         self, letter: str, index: int = 0
-    ) -> Optional[BeatData]:
+    ) -> BeatData | None:
         """Get a specific pictograph by letter and index using CSV service."""
         return self.csv_service.get_specific_pictograph(letter, index)
 
     def get_start_position_pictograph(
         self, position_key: str, grid_mode: str = "diamond"
-    ) -> Optional[BeatData]:
+    ) -> BeatData | None:
         """Get start position pictograph using CSV service."""
         return self.csv_service.get_start_position_pictograph(position_key, grid_mode)
 
     def _extract_beat_data_from_pictograph(
         self, pictograph: PictographData
-    ) -> Optional[BeatData]:
+    ) -> BeatData | None:
         """Extract beat data from pictograph for glyph generation."""
         if not pictograph.arrows:
             return None
@@ -237,7 +245,7 @@ class PictographOrchestrator(IPictographOrchestrator):
 
     def _load_context_configs(
         self,
-    ) -> Dict[PictographContext, Dict[str, Union[str, int, bool]]]:
+    ) -> dict[PictographContext, dict[str, str | int | bool]]:
         """Load context-specific configurations."""
         return {
             PictographContext.SEQUENCE_EDITOR: {

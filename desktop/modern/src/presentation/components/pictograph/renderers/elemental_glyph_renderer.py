@@ -4,16 +4,17 @@ Elemental glyph renderer for pictograph components.
 Handles rendering of elemental glyphs (fire, water, earth, air, sun, moon)
 based on VTG mode classification.
 """
+from __future__ import annotations
 
 import os
-from typing import Optional
-from PyQt6.QtSvgWidgets import QGraphicsSvgItem
-from PyQt6.QtSvg import QSvgRenderer
 
-from domain.models import VTGMode, ElementalType
-from application.services.assets.image_asset_utils import (
+from PyQt6.QtSvg import QSvgRenderer
+from PyQt6.QtSvgWidgets import QGraphicsSvgItem
+
+from desktop.modern.src.application.services.assets.image_asset_utils import (
     get_image_path,
 )
+from domain.models import ElementalType, VTGMode
 
 
 class ElementalGlyphRenderer:
@@ -36,7 +37,7 @@ class ElementalGlyphRenderer:
         self.CENTER_Y = 475
 
     def render_elemental_glyph(
-        self, vtg_mode: Optional[VTGMode], letter_type: Optional[str] = None
+        self, vtg_mode: VTGMode | None, letter_type: str | None = None
     ) -> None:
         """
         Render the elemental glyph based on VTG mode.

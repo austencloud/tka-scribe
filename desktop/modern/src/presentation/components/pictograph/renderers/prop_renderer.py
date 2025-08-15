@@ -1,30 +1,33 @@
+from __future__ import annotations
+
+from functools import lru_cache
 import os
 import re
-from functools import lru_cache
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
+
 from PyQt6.QtCore import QPointF
-from PyQt6.QtSvgWidgets import QGraphicsSvgItem
 from PyQt6.QtSvg import QSvgRenderer
+from PyQt6.QtSvgWidgets import QGraphicsSvgItem
 
-from domain.models import MotionData, Location
-
-from application.services.assets.image_asset_utils import (
+from desktop.modern.src.application.services.assets.image_asset_utils import (
     get_image_path,
 )
-
-from domain.models import Orientation
-from application.services.positioning.props.orchestration.prop_management_service import (
+from desktop.modern.src.application.services.positioning.props.orchestration.prop_management_service import (
     PropManagementService,
 )
-from domain.models.pictograph_data import PictographData
+from desktop.modern.src.domain.models.pictograph_data import PictographData
+from domain.models import Location, MotionData, Orientation
 from ui.adapters.qt_geometry_adapter import QtGeometryAdapter
 
+
 if TYPE_CHECKING:
-    from presentation.components.pictograph.pictograph_scene import PictographScene
+    from desktop.modern.src.presentation.components.pictograph.pictograph_scene import (
+        PictographScene,
+    )
 
 
 class PropRenderer:
-    def __init__(self, scene: "PictographScene"):
+    def __init__(self, scene: PictographScene):
         self.scene = scene
         self.CENTER_X = 475
         self.CENTER_Y = 475
@@ -140,17 +143,16 @@ class PropRenderer:
             # Handle both string and Orientation enum cases
             if isinstance(motion_data.start_ori, Orientation):
                 return motion_data.start_ori
-            else:
-                # Convert string orientation to Orientation enum
-                ori_str = motion_data.start_ori.lower()
-                if ori_str == "in":
-                    return Orientation.IN
-                elif ori_str == "out":
-                    return Orientation.OUT
-                elif ori_str == "clock":
-                    return Orientation.CLOCK
-                elif ori_str == "counter":
-                    return Orientation.COUNTER
+            # Convert string orientation to Orientation enum
+            ori_str = motion_data.start_ori.lower()
+            if ori_str == "in":
+                return Orientation.IN
+            if ori_str == "out":
+                return Orientation.OUT
+            if ori_str == "clock":
+                return Orientation.CLOCK
+            if ori_str == "counter":
+                return Orientation.COUNTER
 
         # Fallback to IN if no valid orientation found
         return Orientation.IN
@@ -161,7 +163,7 @@ class PropRenderer:
     @lru_cache(maxsize=64)
     def _load_svg_file_cached(self, file_path: str) -> str:
         try:
-            with open(file_path, "r", encoding="utf-8") as file:
+            with open(file_path, encoding="utf-8") as file:
                 content = file.read()
                 return content
         except Exception:

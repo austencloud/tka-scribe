@@ -1,13 +1,16 @@
-from PyQt6.QtWidgets import QWidget
+from __future__ import annotations
+
+from typing import Callable
+
 from PyQt6.QtGui import QResizeEvent
-from typing import Callable, List
+from PyQt6.QtWidgets import QWidget
 
 
 class OptionPickerWidget(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
         self._resize_callback = None
-        self._sizing_callbacks: List[Callable[[int], None]] = []
+        self._sizing_callbacks: list[Callable[[int], None]] = []
 
     def set_resize_callback(self, callback):
         self._resize_callback = callback
@@ -23,7 +26,7 @@ class OptionPickerWidget(QWidget):
 
     def get_usable_width(self) -> int:
         """Get the usable width for pictograph sizing (excluding margins/padding)"""
-        return max(0, self.width() - 10)  
+        return max(0, self.width() - 10)
     def resizeEvent(self, event: QResizeEvent):
         super().resizeEvent(event)
 

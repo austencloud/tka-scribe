@@ -4,11 +4,17 @@ Tab State Manager - Tab Navigation and State Management
 Handles tab-specific state including active tab, tab switching, and tab-specific data.
 Extracted from UIStateManager to follow single responsibility principle.
 """
+from __future__ import annotations
 
 import logging
-from typing import Any, Dict
+from typing import Any
 
-from core.events.event_bus import EventPriority, UIEvent, get_event_bus
+from desktop.modern.src.core.events.event_bus import (
+    EventPriority,
+    UIEvent,
+    get_event_bus,
+)
+
 
 logger = logging.getLogger(__name__)
 
@@ -16,7 +22,7 @@ logger = logging.getLogger(__name__)
 class TabStateManager:
     """
     Tab state management.
-    
+
     Handles:
     - Active tab tracking
     - Tab switching logic
@@ -31,7 +37,7 @@ class TabStateManager:
 
         # Tab state
         self._active_tab: str = "sequence_builder"
-        self._tab_states: Dict[str, Dict[str, Any]] = {}
+        self._tab_states: dict[str, dict[str, Any]] = {}
 
     def get_active_tab(self) -> str:
         """Get the active tab."""
@@ -52,11 +58,11 @@ class TabStateManager:
         )
         self._event_bus.publish(event)
 
-    def get_tab_state(self, tab_name: str) -> Dict[str, Any]:
+    def get_tab_state(self, tab_name: str) -> dict[str, Any]:
         """Get state for a specific tab."""
         return self._tab_states.get(tab_name, {})
 
-    def update_tab_state(self, tab_name: str, state: Dict[str, Any]) -> None:
+    def update_tab_state(self, tab_name: str, state: dict[str, Any]) -> None:
         """Update state for a specific tab."""
         if tab_name not in self._tab_states:
             self._tab_states[tab_name] = {}
@@ -86,7 +92,7 @@ class TabStateManager:
         )
         self._event_bus.publish(event)
 
-    def get_all_tab_states(self) -> Dict[str, Dict[str, Any]]:
+    def get_all_tab_states(self) -> dict[str, dict[str, Any]]:
         """Get all tab states."""
         return self._tab_states.copy()
 
@@ -104,14 +110,14 @@ class TabStateManager:
         )
         self._event_bus.publish(event)
 
-    def get_state_for_persistence(self) -> Dict[str, Any]:
+    def get_state_for_persistence(self) -> dict[str, Any]:
         """Get state data for persistence."""
         return {
             "active_tab": self._active_tab,
             "tab_states": self._tab_states,
         }
 
-    def load_state_from_persistence(self, state: Dict[str, Any]) -> None:
+    def load_state_from_persistence(self, state: dict[str, Any]) -> None:
         """Load state from persistence data."""
         if "active_tab" in state:
             self._active_tab = state["active_tab"]

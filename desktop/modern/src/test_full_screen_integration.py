@@ -20,16 +20,16 @@ def test_full_screen_service_creation():
     print("🧪 Testing FullScreenService creation...")
 
     try:
-        from desktop.modern.application.services.ui.full_screen_viewer import (
+        from desktop.modern.src.application.services.ui.full_screen_viewer import (
             FullScreenViewer,
         )
-        from desktop.modern.application.services.ui.sequence_state_reader import (
+        from desktop.modern.src.application.services.ui.sequence_state_reader import (
             MockSequenceStateReader,
         )
-        from desktop.modern.application.services.ui.thumbnail_generation_service import (
+        from desktop.modern.src.application.services.ui.thumbnail_generation_service import (
             MockThumbnailGenerationService,
         )
-        from desktop.modern.presentation.components.ui.full_screen import (
+        from desktop.modern.src.presentation.components.ui.full_screen import (
             FullScreenOverlayFactory,
         )
 
@@ -67,8 +67,8 @@ def test_thumbnail_generation():
         if app is None:
             app = QApplication(sys.argv)
 
-        from desktop.modern.domain.models.beat_data import BeatData
-        from desktop.modern.domain.models.sequence_data import SequenceData
+        from desktop.modern.src.domain.models.beat_data import BeatData
+        from desktop.modern.src.domain.models.sequence_data import SequenceData
 
         # Create a test sequence
         beats = [
@@ -103,8 +103,12 @@ def test_di_container_integration():
     print("\n🧪 Testing DI container integration...")
 
     try:
-        from desktop.modern.core.dependency_injection.di_container import DIContainer
-        from desktop.modern.core.interfaces.workbench_services import IFullScreenViewer
+        from desktop.modern.src.core.dependency_injection.di_container import (
+            DIContainer,
+        )
+        from desktop.modern.src.core.interfaces.workbench_services import (
+            IFullScreenViewer,
+        )
         from presentation.factories.workbench_factory import (
             configure_workbench_services,
         )
@@ -136,14 +140,16 @@ def test_workbench_factory():
     print("\n🧪 Testing workbench factory integration...")
 
     try:
-        from desktop.modern.core.dependency_injection.di_container import DIContainer
+        from desktop.modern.src.core.dependency_injection.di_container import (
+            DIContainer,
+        )
         from presentation.factories.workbench_factory import create_modern_workbench
 
         # Create container
         container = DIContainer()
 
         # Register basic services that workbench needs
-        from desktop.modern.application.services.core.service_registration_manager import (
+        from desktop.modern.src.application.services.core.service_registration_manager import (
             ServiceRegistrationManager,
         )
 

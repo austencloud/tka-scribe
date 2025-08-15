@@ -12,14 +12,19 @@ This service handles:
 
 Uses dependency injection and follows TKA's clean architecture.
 """
+from __future__ import annotations
 
 import logging
-from typing import Any, Callable, Dict, Optional, Tuple
+from typing import Any, Callable
 
-from core.dependency_injection.di_container import DIContainer
-from core.interfaces.core_services import ILayoutService
-from core.interfaces.option_picker_interfaces import IOptionPickerInitializer
 from PyQt6.QtWidgets import QVBoxLayout, QWidget
+
+from desktop.modern.src.core.dependency_injection.di_container import DIContainer
+from desktop.modern.src.core.interfaces.core_services import ILayoutService
+from desktop.modern.src.core.interfaces.option_picker_interfaces import (
+    IOptionPickerInitializer,
+)
+
 
 logger = logging.getLogger(__name__)
 
@@ -38,8 +43,8 @@ class OptionPickerInitializer(IOptionPickerInitializer):
     def initialize_components(
         self,
         container: DIContainer,
-        progress_callback: Optional[Callable[[str, float], None]] = None,
-    ) -> Dict[str, Any]:
+        progress_callback: Callable[[str, float], None] | None = None,
+    ) -> dict[str, Any]:
         """
         Initialize all option picker components.
 
@@ -64,7 +69,7 @@ class OptionPickerInitializer(IOptionPickerInitializer):
                 progress_callback("Creating widget factory", 0.15)
 
             # Create widget factory
-            from application.services.option_picker.option_picker_widget_factory import (
+            from desktop.modern.src.application.services.option_picker.option_picker_widget_factory import (
                 OptionPickerWidgetFactory,
             )
 
@@ -81,7 +86,7 @@ class OptionPickerInitializer(IOptionPickerInitializer):
                 progress_callback("Initializing option service", 0.35)
 
             # Create option service
-            from application.services.option_picker.option_provider import (
+            from desktop.modern.src.application.services.option_picker.option_provider import (
                 OptionProvider,
             )
 
@@ -94,12 +99,12 @@ class OptionPickerInitializer(IOptionPickerInitializer):
             return components
 
         except Exception as e:
-            logger.error(f"Error initializing components: {e}")
+            logger.exception(f"Error initializing components: {e}")
             raise
 
     def create_widget_hierarchy(
         self, container: DIContainer, resize_callback: Callable[[], None]
-    ) -> Tuple[QWidget, QWidget, QVBoxLayout, QWidget]:
+    ) -> tuple[QWidget, QWidget, QVBoxLayout, QWidget]:
         """
         Create the widget hierarchy for option picker.
 
@@ -111,7 +116,7 @@ class OptionPickerInitializer(IOptionPickerInitializer):
             Tuple of (main_widget, sections_container, sections_layout, filter_widget)
         """
         try:
-            from application.services.option_picker.option_picker_widget_factory import (
+            from desktop.modern.src.application.services.option_picker.option_picker_widget_factory import (
                 OptionPickerWidgetFactory,
             )
 
@@ -120,7 +125,7 @@ class OptionPickerInitializer(IOptionPickerInitializer):
             return widget_factory.create_widget(resize_callback)
 
         except Exception as e:
-            logger.error(f"Error creating widget hierarchy: {e}")
+            logger.exception(f"Error creating widget hierarchy: {e}")
             raise
 
     def create_pool_manager(
@@ -141,7 +146,7 @@ class OptionPickerInitializer(IOptionPickerInitializer):
             Configured pool manager
         """
         try:
-            from application.services.option_picker.data.pool_manager import (
+            from desktop.modern.src.application.services.option_picker.data.pool_manager import (
                 PictographPoolManager,
             )
 
@@ -152,7 +157,7 @@ class OptionPickerInitializer(IOptionPickerInitializer):
             return pool_manager
 
         except Exception as e:
-            logger.error(f"Error creating pool manager: {e}")
+            logger.exception(f"Error creating pool manager: {e}")
             raise
 
     def create_dimension_calculator(
@@ -175,7 +180,7 @@ class OptionPickerInitializer(IOptionPickerInitializer):
             Configured dimension calculator
         """
         try:
-            from application.services.layout.dimension_calculator import (
+            from desktop.modern.src.application.services.layout.dimension_calculator import (
                 DimensionCalculator,
             )
 
@@ -184,13 +189,13 @@ class OptionPickerInitializer(IOptionPickerInitializer):
             return dimension_calculator
 
         except Exception as e:
-            logger.error(f"Error creating dimension calculator: {e}")
+            logger.exception(f"Error creating dimension calculator: {e}")
             raise
 
     def initialize_pool(
         self,
         pool_manager: Any,
-        progress_callback: Optional[Callable[[str, float], None]] = None,
+        progress_callback: Callable[[str, float], None] | None = None,
     ) -> None:
         """
         Initialize the pictograph pool.
@@ -206,14 +211,14 @@ class OptionPickerInitializer(IOptionPickerInitializer):
             pool_manager.initialize_pool(progress_callback)
 
         except Exception as e:
-            logger.error(f"Error initializing pool: {e}")
+            logger.exception(f"Error initializing pool: {e}")
             raise
 
     def setup_filter_connections(
         self,
         filter_widget: QWidget,
         filter_change_handler: Callable[[str], None],
-        progress_callback: Optional[Callable[[str, float], None]] = None,
+        progress_callback: Callable[[str, float], None] | None = None,
     ) -> None:
         """
         Setup filter widget connections.
@@ -230,10 +235,10 @@ class OptionPickerInitializer(IOptionPickerInitializer):
             filter_widget.filter_changed.connect(filter_change_handler)
 
         except Exception as e:
-            logger.error(f"Error setting up filter connections: {e}")
+            logger.exception(f"Error setting up filter connections: {e}")
             raise
 
-    def validate_initialization(self, components: Dict[str, Any]) -> bool:
+    def validate_initialization(self, components: dict[str, Any]) -> bool:
         """
         Validate that all required components were initialized.
 
@@ -252,7 +257,7 @@ class OptionPickerInitializer(IOptionPickerInitializer):
 
         return True
 
-    def get_initialization_info(self, components: Dict[str, Any]) -> Dict[str, Any]:
+    def get_initialization_info(self, components: dict[str, Any]) -> dict[str, Any]:
         """
         Get information about the initialization process.
 

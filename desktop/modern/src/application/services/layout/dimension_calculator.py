@@ -2,8 +2,7 @@
 Dimension Calculator - Pure Calculation Functions
 Merged from responsive_sizing_manager.py and dimension_analyzer.py
 """
-
-from typing import Dict, Tuple
+from __future__ import annotations
 
 from PyQt6.QtCore import QSize
 from PyQt6.QtWidgets import QApplication, QWidget
@@ -60,7 +59,7 @@ class DimensionCalculator:
         container_height: int,
         section_count: int,
         filter_height: int,
-    ) -> Dict:
+    ) -> dict:
         """Calculate sizing for all components."""
         total_margins = self.section_margins * 2 * section_count
         header_space_needed = self.header_margins * section_count
@@ -143,7 +142,7 @@ class DimensionCalculator:
 
     def calculate_container_dimensions(
         self, pictograph_count: int, pictograph_size: int, column_count: int = 8
-    ) -> Tuple[int, int]:
+    ) -> tuple[int, int]:
         """Calculate container dimensions for given pictograph count and size."""
         rows_needed = (pictograph_count - 1) // column_count + 1
 

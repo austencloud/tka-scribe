@@ -4,13 +4,15 @@ Pictograph Checker Service - Legacy Compatible
 Faithful port of legacy PictographChecker for orientation, layer, and letter condition checks.
 Updated to work with the modern domain models and letter type classification system.
 """
+from __future__ import annotations
 
 import logging
 
-from domain.models.enums import Orientation
-from domain.models.letter_condition import LetterCondition
-from domain.models.motion_models import MotionData
-from domain.models.pictograph_data import PictographData
+from desktop.modern.src.domain.models.enums import Orientation
+from desktop.modern.src.domain.models.letter_condition import LetterCondition
+from desktop.modern.src.domain.models.motion_models import MotionData
+from desktop.modern.src.domain.models.pictograph_data import PictographData
+
 
 logger = logging.getLogger(__name__)
 
@@ -281,7 +283,7 @@ class PictographValidator:
             return Orientation.IN  # Default
 
         # Use the orientation calculator to get end orientation
-        from application.services.positioning.arrows.calculation.orientation_calculator import (
+        from desktop.modern.src.application.services.positioning.arrows.calculation.orientation_calculator import (
             OrientationCalculator,
         )
 

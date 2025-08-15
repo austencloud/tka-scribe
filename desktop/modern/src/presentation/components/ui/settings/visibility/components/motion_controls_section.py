@@ -4,18 +4,24 @@ Motion Controls Section for Visibility Settings.
 Focused component handling motion visibility controls with validation and glassmorphism styling.
 Extracted from the monolithic visibility tab following TKA clean architecture principles.
 """
+from __future__ import annotations
 
 import logging
-from typing import Dict
 
-from application.services.pictograph.visibility_state_manager import (
-    VisibilityStateManager,
-)
-from core.interfaces.tab_settings_interfaces import IVisibilitySettingsManager
-from presentation.components.ui.settings.components.motion_toggle import MotionToggle
 from PyQt6.QtCore import pyqtSignal
 from PyQt6.QtGui import QFont
 from PyQt6.QtWidgets import QFrame, QHBoxLayout, QLabel, QVBoxLayout
+
+from desktop.modern.src.application.services.pictograph.visibility_state_manager import (
+    VisibilityStateManager,
+)
+from desktop.modern.src.core.interfaces.tab_settings_interfaces import (
+    IVisibilitySettingsManager,
+)
+from desktop.modern.src.presentation.components.ui.settings.components.motion_toggle import (
+    MotionToggle,
+)
+
 
 logger = logging.getLogger(__name__)
 
@@ -51,7 +57,7 @@ class MotionControlsSection(QFrame):
         self.state_manager = state_manager
 
         # UI components
-        self.motion_toggles: Dict[str, MotionToggle] = {}
+        self.motion_toggles: dict[str, MotionToggle] = {}
 
         self._setup_ui()
         self._setup_connections()
@@ -120,7 +126,7 @@ class MotionControlsSection(QFrame):
             logger.debug(f"Motion visibility changed: {color} = {visible}")
 
         except Exception as e:
-            logger.error(f"Error changing motion visibility: {e}")
+            logger.exception(f"Error changing motion visibility: {e}")
             # Revert toggle state on error
             toggle = self.motion_toggles.get(color)
             if toggle:
@@ -133,7 +139,7 @@ class MotionControlsSection(QFrame):
             if toggle.get_is_active() != visible:
                 toggle.set_active(visible)
 
-    def get_motion_states(self) -> Dict[str, bool]:
+    def get_motion_states(self) -> dict[str, bool]:
         """
         Get current motion visibility states.
 

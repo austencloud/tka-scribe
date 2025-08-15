@@ -11,19 +11,19 @@ Quick Start:
 -----------
 
 # For immediate relief from verbose arrow positioning logs:
-from desktop.modern.core.logging import setup_arrow_positioning_logging_only
+from desktop.modern.src.core.logging import setup_arrow_positioning_logging_only
 setup_arrow_positioning_logging_only(quiet=True)
 
 # For full smart logging setup:
-from desktop.modern.core.logging import setup_smart_logging
+from desktop.modern.src.core.logging import setup_smart_logging
 setup_smart_logging('development')
 
 # For custom loggers:
-from desktop.modern.core.logging import get_smart_logger, LoggingConfig
+from desktop.modern.src.core.logging import get_smart_logger, LoggingConfig
 logger = get_smart_logger('my_service', LoggingConfig(performance_threshold_ms=100))
 
 # For arrow positioning specific logging:
-from desktop.modern.core.logging import get_arrow_positioning_logger
+from desktop.modern.src.core.logging import get_arrow_positioning_logger
 arrow_logger = get_arrow_positioning_logger()
 """
 

@@ -4,22 +4,25 @@ Arrow Rendering Service - Pure Business Logic
 Handles SVG caching, asset management, color transforms, and positioning
 calculations without any Qt dependencies.
 """
+from __future__ import annotations
 
+from functools import lru_cache
 import logging
 import os
-import re
-from functools import lru_cache
-from typing import TYPE_CHECKING, Dict, Optional, Set, Tuple
+from typing import TYPE_CHECKING
 
-from application.services.assets.asset_manager import AssetManager
-from core.interfaces.arrow_rendering_services import IArrowRenderingService
+from desktop.modern.src.application.services.assets.asset_manager import AssetManager
+from desktop.modern.src.core.interfaces.arrow_rendering_services import (
+    IArrowRenderingService,
+)
+from desktop.modern.src.domain.models.arrow_data import ArrowData
+from desktop.modern.src.domain.models.pictograph_data import PictographData
 from domain.models import Location, MotionData
-from domain.models.arrow_data import ArrowData
-from domain.models.pictograph_data import PictographData
+
 
 logger = logging.getLogger(__name__)
 if TYPE_CHECKING:
-    from application.services.positioning.arrows.orchestration.arrow_positioning_orchestrator import (
+    from desktop.modern.src.application.services.positioning.arrows.orchestration.arrow_positioning_orchestrator import (
         ArrowPositioningOrchestrator,
     )
 
@@ -33,10 +36,10 @@ class ArrowRenderingService(IArrowRenderingService):
     """
 
     # Class-level cache statistics for monitoring
-    _cache_stats: Dict[str, int] = {"hits": 0, "misses": 0, "total_files_cached": 0}
+    _cache_stats: dict[str, int] = {"hits": 0, "misses": 0, "total_files_cached": 0}
 
     # Track cached files for cache management
-    _cached_files: Set[str] = set()
+    _cached_files: set[str] = set()
 
     def __init__(self):
         """Initialize the arrow rendering service."""
@@ -109,7 +112,7 @@ class ArrowRenderingService(IArrowRenderingService):
 
     # Caching Operations
     @lru_cache(maxsize=128)
-    def load_cached_svg_data(self, svg_path: str) -> Optional[str]:
+    def load_cached_svg_data(self, svg_path: str) -> str | None:
         """
         Load and cache SVG data from file.
 
@@ -127,7 +130,7 @@ class ArrowRenderingService(IArrowRenderingService):
             logger.debug(f"Cached SVG data for: {svg_path}")
             return svg_data
         except Exception as e:
-            logger.error(f"Failed to load SVG data from {svg_path}: {e}")
+            logger.exception(f"Failed to load SVG data from {svg_path}: {e}")
             return None
 
     def apply_color_transformation(self, svg_data: str, color: str) -> str:
@@ -147,10 +150,10 @@ class ArrowRenderingService(IArrowRenderingService):
     def calculate_arrow_position(
         self,
         arrow_data: ArrowData,
-        pictograph_data: Optional[PictographData] = None,
-        positioning_orchestrator: "ArrowPositioningOrchestrator" = None,
+        pictograph_data: PictographData | None = None,
+        positioning_orchestrator: ArrowPositioningOrchestrator = None,
         coordinate_system=None,
-    ) -> Tuple[float, float, float]:
+    ) -> tuple[float, float, float]:
         """
         Calculate arrow position using available positioning services.
 
@@ -179,7 +182,7 @@ class ArrowRenderingService(IArrowRenderingService):
 
                 return result
             except Exception as e:
-                logger.error(
+                logger.exception(
                     f"❌ [ARROW_RENDERING_SERVICE] Positioning orchestrator failed: {e}"
                 )
                 import traceback
@@ -188,13 +191,13 @@ class ArrowRenderingService(IArrowRenderingService):
 
         # Fallback to basic positioning
         logger.warning(
-            f"⚠️ [ARROW_RENDERING_SERVICE] Using fallback arrow positioning (center)"
+            "⚠️ [ARROW_RENDERING_SERVICE] Using fallback arrow positioning (center)"
         )
         return (475.0, 475.0, 0.0)  # Center of scene
 
     # Cache Management
     @classmethod
-    def get_cache_statistics(cls) -> Dict[str, int]:
+    def get_cache_statistics(cls) -> dict[str, int]:
         """
         Get current cache statistics for monitoring.
 
@@ -256,12 +259,9 @@ class ArrowRenderingService(IArrowRenderingService):
         """
         # Note: Static motions with 0 turns should still show arrows in TKA
         # Only filter out if explicitly marked as invisible
-        if hasattr(motion_data, "is_visible") and not motion_data.is_visible:
-            return False
+        return not (hasattr(motion_data, "is_visible") and not motion_data.is_visible)
 
-        return True
-
-    def get_service_summary(self) -> Dict[str, any]:
+    def get_service_summary(self) -> dict[str, any]:
         """
         Get a summary of the service state.
 

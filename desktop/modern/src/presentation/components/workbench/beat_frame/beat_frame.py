@@ -4,21 +4,23 @@ Modern Beat Frame Component for Modern Sequence Workbench
 This component provides the core beat grid system with dynamic layout,
 replacing Legacy's SequenceBeatFrame with modern architecture patterns.
 """
+from __future__ import annotations
 
-from typing import Dict, List, Optional
-
-from application.services.layout.beat_resizer import BeatResizer
-from application.services.layout.layout_manager import LayoutManager
-from domain.models import BeatData, SequenceData
-from presentation.components.workbench.sequence_beat_frame.beat_selector import (
-    BeatSelector,
-)
-from presentation.components.workbench.sequence_beat_frame.beat_view import BeatView
-from presentation.components.workbench.sequence_beat_frame.start_position_view import (
-    StartPositionView,
-)
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtWidgets import QFrame, QGridLayout, QScrollArea, QWidget
+
+from desktop.modern.src.application.services.layout.beat_resizer import BeatResizer
+from desktop.modern.src.application.services.layout.layout_manager import LayoutManager
+from desktop.modern.src.presentation.components.workbench.sequence_beat_frame.beat_selector import (
+    BeatSelector,
+)
+from desktop.modern.src.presentation.components.workbench.sequence_beat_frame.beat_view import (
+    BeatView,
+)
+from desktop.modern.src.presentation.components.workbench.sequence_beat_frame.start_position_view import (
+    StartPositionView,
+)
+from domain.models import BeatData, SequenceData
 
 
 class BeatFrame(QScrollArea):
@@ -38,15 +40,15 @@ class BeatFrame(QScrollArea):
     sequence_modified = pyqtSignal(object)  # SequenceData object
     layout_changed = pyqtSignal(int, int)  # rows, columns
 
-    def __init__(self, layout_service: LayoutManager, parent: Optional[QWidget] = None):
+    def __init__(self, layout_service: LayoutManager, parent: QWidget | None = None):
         super().__init__(parent)  # Injected dependencies
         self._layout_service = layout_service
         self._resizer_service = BeatResizer()
 
         # Current state
-        self._current_sequence: Optional[SequenceData] = None
-        self._beat_views: List[BeatView] = []
-        self._current_layout: Dict[str, int] = {"rows": 1, "columns": 8}
+        self._current_sequence: SequenceData | None = None
+        self._beat_views: list[BeatView] = []
+        self._current_layout: dict[str, int] = {"rows": 1, "columns": 8}
 
         # UI components (will be initialized in _setup_ui)
         self._container_widget: QWidget
@@ -125,13 +127,13 @@ class BeatFrame(QScrollArea):
         self._grid_layout.addWidget(self._start_position_view, 0, 0, 1, 1)
 
     # Public API methods
-    def set_sequence(self, sequence: Optional[SequenceData]):
+    def set_sequence(self, sequence: SequenceData | None):
         """Set the current sequence and update display"""
         self._current_sequence = sequence
         self._update_layout()
         self._update_display()
 
-    def get_sequence(self) -> Optional[SequenceData]:
+    def get_sequence(self) -> SequenceData | None:
         """Get the current sequence"""
         return self._current_sequence
 
@@ -140,7 +142,7 @@ class BeatFrame(QScrollArea):
         if self._start_position_view:
             self._start_position_view.set_position_data(start_position_data)
 
-    def get_selected_beat_index(self) -> Optional[int]:
+    def get_selected_beat_index(self) -> int | None:
         """Get the currently selected beat index"""
         return (
             self._selection_manager.get_selected_index()
@@ -254,7 +256,7 @@ class BeatFrame(QScrollArea):
         self.beat_modified.emit(beat_index, beat_data)
         self.sequence_modified.emit(new_sequence)
 
-    def _on_selection_changed(self, beat_index: Optional[int]):
+    def _on_selection_changed(self, beat_index: int | None):
         """Handle selection change events"""
         if beat_index is not None:
             self.beat_selected.emit(beat_index)

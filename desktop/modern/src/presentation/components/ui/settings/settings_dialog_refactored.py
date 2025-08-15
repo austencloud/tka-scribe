@@ -31,11 +31,10 @@ enhanced user experience with modern visual design.
 Note: Import errors in IDE are expected due to relative imports - all services
 and tabs exist and will resolve correctly at runtime.
 """
+from __future__ import annotations
 
-from typing import Any, Dict
+from typing import Any
 
-from application.services.ui.settings import UISettingsManager
-from core.interfaces.core_services import IUIStateManager
 from PyQt6.QtCore import QRectF, Qt, pyqtSignal
 from PyQt6.QtGui import QBrush, QColor, QLinearGradient, QPainter, QPainterPath, QRegion
 from PyQt6.QtWidgets import (
@@ -49,6 +48,9 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
+from desktop.modern.src.application.services.ui.settings import UISettingsManager
+from desktop.modern.src.core.interfaces.core_services import IUIStateManager
+
 from .components import (
     GlassmorphismStyles,
     SettingsActionButtons,
@@ -57,7 +59,6 @@ from .components import (
     SettingsHeader,
     SettingsSidebar,
 )
-from .coordinator import SettingsCoordinator
 from .tabs.background_tab import BackgroundTab
 from .tabs.beat_layout_tab import BeatLayoutTab
 from .tabs.codex_exporter_tab import CodexExporterTab
@@ -166,7 +167,7 @@ class SettingsDialog(QDialog):
 
     def _setup_coordinator(self):
         """Setup the settings coordinator for managing state."""
-        from application.services.settings.settings_coordinator import (
+        from desktop.modern.src.application.services.settings.settings_coordinator import (
             SettingsCoordinator,
         )
 
@@ -276,7 +277,7 @@ class SettingsDialog(QDialog):
         self.action_buttons.apply_requested.connect(self._apply_settings)
         self.action_buttons.ok_requested.connect(self.accept)
 
-    def _handle_codex_export(self, config: Dict[str, Any]):
+    def _handle_codex_export(self, config: dict[str, Any]):
         """Handle codex export request."""
         # For now, just save the configuration
         # In a full implementation, this would trigger the actual export process

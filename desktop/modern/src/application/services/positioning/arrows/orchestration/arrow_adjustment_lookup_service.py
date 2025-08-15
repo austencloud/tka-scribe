@@ -19,14 +19,15 @@ USAGE:
 
     adjustment = lookup_service.get_base_adjustment(pictograph_data, motion_data, letter)
 """
+from __future__ import annotations
 
 import logging
 
-from core.types.coordinates import qpoint_to_point
-from core.types.geometry import Point
-from domain.models.arrow_data import ArrowData
-from domain.models.motion_models import MotionData
-from domain.models.pictograph_data import PictographData
+from desktop.modern.src.core.types.coordinates import qpoint_to_point
+from desktop.modern.src.core.types.geometry import Point
+from desktop.modern.src.domain.models.motion_models import MotionData
+from desktop.modern.src.domain.models.pictograph_data import PictographData
+
 
 # Conditional PyQt6 imports for testing compatibility
 try:
@@ -48,6 +49,9 @@ except ImportError:
 
     QT_AVAILABLE = False
 
+from ..placement.special_placement_ori_key_generator import (
+    SpecialPlacementOriKeyGenerator,
+)
 from ...arrows.keys.attribute_key_generation_service import (
     AttributeKeyGenerationService,
 )
@@ -57,9 +61,7 @@ from ...arrows.keys.turns_tuple_generation_service import TurnsTupleGenerationSe
 # Import required services
 from ...arrows.placement.default_placement_service import DefaultPlacementService
 from ...arrows.placement.special_placement_service import SpecialPlacementService
-from ..placement.special_placement_ori_key_generator import (
-    SpecialPlacementOriKeyGenerator,
-)
+
 
 logger = logging.getLogger(__name__)
 
@@ -139,7 +141,7 @@ class ArrowAdjustmentLookupService:
             return default_adjustment
 
         except Exception as e:
-            logger.error(f"Error in base adjustment lookup: {e}")
+            logger.exception(f"Error in base adjustment lookup: {e}")
             raise RuntimeError(f"Arrow adjustment lookup failed: {e}") from e
 
     def _generate_lookup_keys(
@@ -156,7 +158,7 @@ class ArrowAdjustmentLookupService:
             turns_tuple = self.turns_tuple_service.generate_turns_tuple(pictograph_data)
 
             color = "blue"
-            from domain.models.arrow_data import ArrowData
+            from desktop.modern.src.domain.models.arrow_data import ArrowData
 
             temp_arrow = ArrowData(color=color)
             attr_key = self.attribute_key_service.get_key_from_arrow(
@@ -166,7 +168,7 @@ class ArrowAdjustmentLookupService:
             return (ori_key, turns_tuple, attr_key)
 
         except Exception as e:
-            logger.error(f"Failed to generate lookup keys: {e}")
+            logger.exception(f"Failed to generate lookup keys: {e}")
             raise RuntimeError(f"Key generation failed: {e}") from e
 
     def _lookup_special_placement(
@@ -198,7 +200,7 @@ class ArrowAdjustmentLookupService:
         except Exception as e:
             if isinstance(e, ValueError):
                 raise  # Re-raise ValueError as-is
-            logger.error(f"Error in special placement lookup: {e}")
+            logger.exception(f"Error in special placement lookup: {e}")
             raise RuntimeError(f"Special placement lookup failed: {e}") from e
 
     def _calculate_default_adjustment(
@@ -234,5 +236,5 @@ class ArrowAdjustmentLookupService:
             return adjustment_point
 
         except Exception as e:
-            logger.error(f"Error calculating default adjustment: {e}")
+            logger.exception(f"Error calculating default adjustment: {e}")
             raise RuntimeError(f"Default adjustment calculation failed: {e}") from e

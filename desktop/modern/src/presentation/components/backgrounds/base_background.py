@@ -1,6 +1,10 @@
-from PyQt6.QtCore import QObject, pyqtSignal
+from __future__ import annotations
+
 from abc import abstractmethod
 from typing import TYPE_CHECKING
+
+from PyQt6.QtCore import QObject, pyqtSignal
+
 
 if TYPE_CHECKING:
     from PyQt6.QtGui import QPainter
@@ -21,5 +25,5 @@ class BaseBackground(QObject):
         self.update_required.emit()
 
     @abstractmethod
-    def paint_background(self, widget: "QWidget", painter: "QPainter"):
+    def paint_background(self, widget: QWidget, painter: QPainter):
         """Override this method to implement background painting logic"""

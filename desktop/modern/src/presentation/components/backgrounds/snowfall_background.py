@@ -1,15 +1,24 @@
+from __future__ import annotations
+
 from typing import TYPE_CHECKING
 
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QColor, QLinearGradient, QPainter, QPixmap
 from PyQt6.QtWidgets import QWidget
 
-from application.services.backgrounds.snowfall.santa_movement import SantaMovement
-from application.services.backgrounds.snowfall.shooting_star import ShootingStar
-from application.services.backgrounds.snowfall.snowflake_physics import SnowflakePhysics
+from desktop.modern.src.application.services.backgrounds.snowfall.santa_movement import (
+    SantaMovement,
+)
+from desktop.modern.src.application.services.backgrounds.snowfall.shooting_star import (
+    ShootingStar,
+)
+from desktop.modern.src.application.services.backgrounds.snowfall.snowflake_physics import (
+    SnowflakePhysics,
+)
 
 from .asset_utils import get_image_path
 from .base_background import BaseBackground
+
 
 if TYPE_CHECKING:
     pass

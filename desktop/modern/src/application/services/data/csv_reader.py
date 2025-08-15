@@ -10,12 +10,13 @@ PROVIDES:
 - Pandas DataFrame operations
 - File I/O error handling
 """
+from __future__ import annotations
 
 from abc import ABC, abstractmethod
 from pathlib import Path
-from typing import List, Optional
 
 import pandas as pd
+
 from domain.models import BeatData, Location, MotionData, MotionType, RotationDirection
 
 
@@ -31,17 +32,17 @@ class ICSVReader(ABC):
         """Convert CSV row to BeatData."""
 
     @abstractmethod
-    def get_pictographs_by_letter(self, letter: str) -> List[BeatData]:
+    def get_pictographs_by_letter(self, letter: str) -> list[BeatData]:
         """Get all pictographs for a specific letter."""
 
 
 class CSVReader(ICSVReader):
-    def __init__(self, data_path: Optional[Path] = None):
+    def __init__(self, data_path: Path | None = None):
         if data_path is None:
             # Find project root by searching for a 'data' folder upwards from this file
             current = Path(__file__).resolve().parent
             root_data = None
-            for parent in [current] + list(current.parents):
+            for parent in [current, *list(current.parents)]:
                 candidate = parent / "data"
                 if candidate.is_dir():
                     root_data = candidate
@@ -52,9 +53,9 @@ class CSVReader(ICSVReader):
                 )
             data_path = root_data / "DiamondPictographDataframe.csv"
         self._data_path = data_path
-        self._csv_data: Optional[pd.DataFrame] = None
+        self._csv_data: pd.DataFrame | None = None
 
-    def load_csv_data(self, file_path: Optional[Path] = None) -> pd.DataFrame:
+    def load_csv_data(self, file_path: Path | None = None) -> pd.DataFrame:
         """Load CSV data from file."""
         path_to_use = file_path or self._data_path
 
@@ -121,7 +122,7 @@ class CSVReader(ICSVReader):
             red_motion=red_motion,
         )
 
-    def get_pictographs_by_letter(self, letter: str) -> List[BeatData]:
+    def get_pictographs_by_letter(self, letter: str) -> list[BeatData]:
         """Get all pictographs for a specific letter."""
         df = self._load_cached_data()
         letter_data = df[df["letter"] == letter]
@@ -130,7 +131,7 @@ class CSVReader(ICSVReader):
 
     def get_specific_pictograph(
         self, letter: str, index: int = 0
-    ) -> Optional[BeatData]:
+    ) -> BeatData | None:
         """Get a specific pictograph by letter and index."""
         df = self._load_cached_data()
 
@@ -145,7 +146,7 @@ class CSVReader(ICSVReader):
 
     def get_start_position_pictograph(
         self, position_key: str, grid_mode: str = "diamond"
-    ) -> Optional[BeatData]:
+    ) -> BeatData | None:
         """Get start position pictograph by position key and grid mode."""
         # Map position keys to letters
         position_to_letter = {
@@ -165,9 +166,8 @@ class CSVReader(ICSVReader):
         pictographs = self.get_pictographs_by_letter(letter)
         if pictographs:
             return pictographs[0]
-        else:
-            print(f"⚠️ No pictographs found for letter: {letter}")
-            return None
+        print(f"⚠️ No pictographs found for letter: {letter}")
+        return None
 
     def _load_cached_data(self) -> pd.DataFrame:
         """Load CSV data with caching."""

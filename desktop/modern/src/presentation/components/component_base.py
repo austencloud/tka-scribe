@@ -22,7 +22,7 @@ from PyQt6.QtCore import QObject, pyqtSignal
 from PyQt6.QtWidgets import QWidget
 
 # Type imports
-from desktop.modern.core.dependency_injection.di_container import DIContainer
+from desktop.modern.src.core.dependency_injection.di_container import DIContainer
 
 
 # A+ Enhancement: Import Qt integration - Temporarily disabled due to import issues
@@ -39,7 +39,7 @@ AutoManagedWidget = QWidget
 
 # Event system imports with fallback
 try:
-    from desktop.modern.core.events import BaseEvent, IEventBus
+    from desktop.modern.src.core.events import BaseEvent, IEventBus
 
     EVENT_SYSTEM_AVAILABLE = True
 except ImportError:

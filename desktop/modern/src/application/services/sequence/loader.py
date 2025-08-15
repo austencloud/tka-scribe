@@ -4,19 +4,25 @@ SequenceLoadingService
 Handles sequence loading from persistence and startup restoration.
 Responsible for loading sequences from current_sequence.json and managing startup workflows.
 """
+from __future__ import annotations
 
 import logging
-from typing import TYPE_CHECKING, Callable, Optional
-
-from application.services.data.sequence_data_converter import SequenceDataConverter
-from application.services.sequence.sequence_persister import SequencePersister
-from domain.models.sequence_data import SequenceData
+from typing import TYPE_CHECKING, Callable
 
 # Removed circular import - workbench should be passed as parameter if needed
 from PyQt6.QtCore import QObject, pyqtSignal
 
+from desktop.modern.src.application.services.data.sequence_data_converter import (
+    SequenceDataConverter,
+)
+from desktop.modern.src.application.services.sequence.sequence_persister import (
+    SequencePersister,
+)
+from desktop.modern.src.domain.models.sequence_data import SequenceData
+
+
 if TYPE_CHECKING:
-    from domain.models.pictograph_data import PictographData
+    from desktop.modern.src.domain.models.pictograph_data import PictographData
 
 logger = logging.getLogger(__name__)
 
@@ -37,9 +43,9 @@ class SequenceLoader(QObject):
 
     def __init__(
         self,
-        workbench_getter: Optional[Callable[[], object]] = None,
-        workbench_setter: Optional[Callable[[SequenceData], None]] = None,
-        data_converter: Optional[object] = None,
+        workbench_getter: Callable[[], object] | None = None,
+        workbench_setter: Callable[[SequenceData], None] | None = None,
+        data_converter: object | None = None,
     ):
         super().__init__()
         self.workbench_getter = workbench_getter
@@ -106,7 +112,7 @@ class SequenceLoader(QObject):
                                 start_position_data
                             )
                         except Exception as e:
-                            logger.error(f"Failed to convert start position: {e}")
+                            logger.exception(f"Failed to convert start position: {e}")
                             return  # Skip start position loading if conversion fails
 
                         # Create PictographData for option picker using dataset service
@@ -127,7 +133,7 @@ class SequenceLoader(QObject):
                             )
                         else:
                             print(
-                                f"⚠️ [SEQUENCE_LOADING] Workbench doesn't have set_start_position method"
+                                "⚠️ [SEQUENCE_LOADING] Workbench doesn't have set_start_position method"
                             )
 
                 except Exception as e:
@@ -156,12 +162,14 @@ class SequenceLoader(QObject):
 
     def _create_start_position_pictograph_data(
         self, position_key: str, end_pos: str
-    ) -> "PictographData":
+    ) -> PictographData:
         """Create PictographData for start position using dataset service."""
         try:
-            from application.services.data.dataset_query import DatasetQuery
-            from domain.models.grid_data import GridData
-            from domain.models.pictograph_data import PictographData
+            from desktop.modern.src.application.services.data.dataset_query import (
+                DatasetQuery,
+            )
+            from desktop.modern.src.domain.models.grid_data import GridData
+            from desktop.modern.src.domain.models.pictograph_data import PictographData
 
             dataset_service = DatasetQuery()
             # Get real start position data from dataset as PictographData
@@ -180,27 +188,26 @@ class SequenceLoader(QObject):
                 )
 
                 return pictograph_data
-            else:
-                print(
-                    f"⚠️ [SEQUENCE_LOADING] No real data found for position {position_key}, using fallback"
-                )
-                # Fallback PictographData
-                return PictographData(
-                    letter=position_key,
-                    start_position=position_key,
-                    end_position=end_pos,
-                    grid_data=GridData(),
-                    arrows={},
-                    props={},
-                    is_blank=False,
-                    metadata={"source": "fallback_sequence_loading"},
-                )
+            print(
+                f"⚠️ [SEQUENCE_LOADING] No real data found for position {position_key}, using fallback"
+            )
+            # Fallback PictographData
+            return PictographData(
+                letter=position_key,
+                start_position=position_key,
+                end_position=end_pos,
+                grid_data=GridData(),
+                arrows={},
+                props={},
+                is_blank=False,
+                metadata={"source": "fallback_sequence_loading"},
+            )
 
         except Exception as e:
             print(f"❌ [SEQUENCE_LOADING] Error creating PictographData: {e}")
             # Last resort fallback
-            from domain.models.grid_data import GridData
-            from domain.models.pictograph_data import PictographData
+            from desktop.modern.src.domain.models.grid_data import GridData
+            from desktop.modern.src.domain.models.pictograph_data import PictographData
 
             return PictographData(
                 letter=position_key,
@@ -248,7 +255,7 @@ class SequenceLoader(QObject):
 
             traceback.print_exc()
 
-    def get_current_sequence_from_workbench(self) -> Optional[SequenceData]:
+    def get_current_sequence_from_workbench(self) -> SequenceData | None:
         """Get the current sequence from workbench"""
         if self.workbench_getter:
             try:

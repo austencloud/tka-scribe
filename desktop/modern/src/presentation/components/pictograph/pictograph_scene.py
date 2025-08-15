@@ -3,36 +3,46 @@ Simplified pictograph scene using modular renderers.
 
 This scene coordinates multiple specialized renderers to create the complete pictograph.
 """
+from __future__ import annotations
 
 import logging
 import uuid
-from typing import Optional
 
-from domain.models import BeatData
-from domain.models.arrow_data import ArrowData
-from domain.models.enums import LetterType
-from domain.models.letter_type_classifier import LetterTypeClassifier
-from domain.models.pictograph_data import PictographData
 from PyQt6.QtCore import pyqtSignal
 from PyQt6.QtGui import QBrush, QColor
 from PyQt6.QtWidgets import QGraphicsScene
 
+from desktop.modern.src.domain.models.arrow_data import ArrowData
+from desktop.modern.src.domain.models.enums import LetterType
+from desktop.modern.src.domain.models.letter_type_classifier import LetterTypeClassifier
+from desktop.modern.src.domain.models.pictograph_data import PictographData
+from domain.models import BeatData
+
+
 logger = logging.getLogger(__name__)
 
-from presentation.components.pictograph.renderers.arrow_renderer import ArrowRenderer
-from presentation.components.pictograph.renderers.elemental_glyph_renderer import (
+from desktop.modern.src.presentation.components.pictograph.renderers.arrow_renderer import (
+    ArrowRenderer,
+)
+from desktop.modern.src.presentation.components.pictograph.renderers.elemental_glyph_renderer import (
     ElementalGlyphRenderer,
 )
-from presentation.components.pictograph.renderers.grid_renderer import GridRenderer
-from presentation.components.pictograph.renderers.letter_renderer import LetterRenderer
-from presentation.components.pictograph.renderers.position_glyph_renderer import (
+from desktop.modern.src.presentation.components.pictograph.renderers.grid_renderer import (
+    GridRenderer,
+)
+from desktop.modern.src.presentation.components.pictograph.renderers.letter_renderer import (
+    LetterRenderer,
+)
+from desktop.modern.src.presentation.components.pictograph.renderers.position_glyph_renderer import (
     PositionGlyphRenderer,
 )
-from presentation.components.pictograph.renderers.prop_renderer import PropRenderer
-from presentation.components.pictograph.renderers.tka_glyph_renderer import (
+from desktop.modern.src.presentation.components.pictograph.renderers.prop_renderer import (
+    PropRenderer,
+)
+from desktop.modern.src.presentation.components.pictograph.renderers.tka_glyph_renderer import (
     TKAGlyphRenderer,
 )
-from presentation.components.pictograph.renderers.vtg_glyph_renderer import (
+from desktop.modern.src.presentation.components.pictograph.renderers.vtg_glyph_renderer import (
     VTGGlyphRenderer,
 )
 
@@ -86,13 +96,15 @@ class PictographScene(QGraphicsScene):
         """Register this scene with the global visibility service."""
         try:
             # Try to get the global visibility service from the DI container
-            from application.services.pictograph.global_visibility_service import (
+            from desktop.modern.src.application.services.pictograph.global_visibility_service import (
                 PictographVisibilityManager,
             )
 
             # Get or create global service instance
             try:
-                from core.dependency_injection.di_container import get_container
+                from desktop.modern.src.core.dependency_injection.di_container import (
+                    get_container,
+                )
 
                 container = get_container()
                 if container:
@@ -143,9 +155,15 @@ class PictographScene(QGraphicsScene):
         """
         try:
             # Try to get context service from DI container
-            from application.services.pictograph.scaling_service import RenderingContext
-            from core.application.application_factory import ApplicationFactory
-            from core.interfaces.core_services import IPictographContextDetector
+            from desktop.modern.src.application.services.pictograph.scaling_service import (
+                RenderingContext,
+            )
+            from desktop.modern.src.core.application.application_factory import (
+                ApplicationFactory,
+            )
+            from desktop.modern.src.core.interfaces.core_services import (
+                IPictographContextDetector,
+            )
 
             # Use proper application factory method
             container = ApplicationFactory.create_app_from_args()
@@ -184,19 +202,19 @@ class PictographScene(QGraphicsScene):
             print(f"🔍 [SCENE_CONTEXT] Checking parent: {class_name}")
 
             if "grapheditor" in class_name:
-                print(f"✅ [SCENE_CONTEXT] Found graph_editor context!")
+                print("✅ [SCENE_CONTEXT] Found graph_editor context!")
                 return "graph_editor"
-            elif "beat" in class_name:
-                print(f"✅ [SCENE_CONTEXT] Found beat_frame context!")
+            if "beat" in class_name:
+                print("✅ [SCENE_CONTEXT] Found beat_frame context!")
                 return "beat_frame"
-            elif "option" in class_name or "clickable" in class_name:
-                print(f"✅ [SCENE_CONTEXT] Found option_picker context!")
+            if "option" in class_name or "clickable" in class_name:
+                print("✅ [SCENE_CONTEXT] Found option_picker context!")
                 return "option_picker"
-            elif "preview" in class_name:
-                print(f"✅ [SCENE_CONTEXT] Found preview context!")
+            if "preview" in class_name:
+                print("✅ [SCENE_CONTEXT] Found preview context!")
                 return "preview"
-            elif "sequence" in class_name:
-                print(f"✅ [SCENE_CONTEXT] Found sequence_viewer context!")
+            if "sequence" in class_name:
+                print("✅ [SCENE_CONTEXT] Found sequence_viewer context!")
                 return "sequence_viewer"
             parent = parent.parent() if hasattr(parent, "parent") else None
 
@@ -239,7 +257,7 @@ class PictographScene(QGraphicsScene):
             # Parent component should call update_beat() to re-render with new visibility
 
         except Exception as e:
-            logger.error(
+            logger.exception(
                 f"Error updating visibility in PictographScene {self.scene_id}: {e}"
             )
 
@@ -267,7 +285,7 @@ class PictographScene(QGraphicsScene):
                 visible or self._renderer_visibility.get("red_motion", True)
             )
 
-    def render_pictograph(self, pictograph_data: "PictographData") -> None:
+    def render_pictograph(self, pictograph_data: PictographData) -> None:
         """Render a complete pictograph from pictograph data."""
         self.clear()
         self.prop_renderer.clear_rendered_props()

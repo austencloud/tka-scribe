@@ -1,13 +1,17 @@
+from __future__ import annotations
+
 from typing import TYPE_CHECKING
 
-from presentation.components.option_picker.components.frames.clickable_pictograph_frame import (
-    ClickablePictographFrame,
-)
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QFrame, QGridLayout
 
+from desktop.modern.src.presentation.components.option_picker.components.frames.clickable_pictograph_frame import (
+    ClickablePictographFrame,
+)
+
+
 if TYPE_CHECKING:
-    from presentation.components.option_picker.components.sections.section_widget import (
+    from desktop.modern.src.presentation.components.option_picker.components.sections.section_widget import (
         OptionPickerSection,
     )
 
@@ -18,7 +22,7 @@ class OptionPickerSectionPictographContainer(QFrame):
     Handles pictograph-specific layout and sizing.
     """
 
-    def __init__(self, section: "OptionPickerSection"):
+    def __init__(self, section: OptionPickerSection):
         super().__init__()
         self.section = section
         self.pictographs: list[QFrame] = []
@@ -89,7 +93,7 @@ class OptionPickerSectionPictographContainer(QFrame):
                     pass
         self.pictographs.clear()
 
-    def add_pictograph(self, pictograph_frame: "ClickablePictographFrame"):
+    def add_pictograph(self, pictograph_frame: ClickablePictographFrame):
         """Add pictograph from pool."""
         import logging
 

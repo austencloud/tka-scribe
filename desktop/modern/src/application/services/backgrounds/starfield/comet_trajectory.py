@@ -1,5 +1,6 @@
+from __future__ import annotations
+
 import random
-from typing import Optional
 
 from ..shared.animation_types import CometState, Position2D, Velocity2D
 
@@ -8,7 +9,7 @@ class CometTrajectory:
     """Pure business logic for comet movement - extracted from CometManager"""
 
     def __init__(self):
-        self.comet: Optional[CometState] = None
+        self.comet: CometState | None = None
         self._timer = random.randint(300, 600)
         self._max_tail_length = 35
 
@@ -107,7 +108,7 @@ class CometTrajectory:
             self.comet.off_screen = True
             self.comet.fading = True
 
-    def get_comet_state(self) -> Optional[CometState]:
+    def get_comet_state(self) -> CometState | None:
         """Get current comet state for rendering"""
         return self.comet if self.comet and self.comet.active else None
 

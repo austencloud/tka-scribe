@@ -119,6 +119,7 @@ Beautiful, intuitive visual controls replacing boring dropdowns:
 				onTurnsChange={onTurnsChange}
 				color={rgbColor}
 				{availableMotionTypes}
+				currentTurns={turns}
 			/>
 			<StyledTurnsControl
 				{turns}

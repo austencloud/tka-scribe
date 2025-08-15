@@ -4,12 +4,14 @@ Global Visibility Service for TKA.
 Provides efficient global pictograph visibility management using modern
 dependency injection and event-driven updates to replace legacy PictographCollector.
 """
+from __future__ import annotations
 
-import logging
-import weakref
 from dataclasses import dataclass
+import logging
 from threading import Lock
-from typing import Any, Callable, Dict, List, Optional, Set
+from typing import Any, Callable
+import weakref
+
 
 logger = logging.getLogger(__name__)
 
@@ -22,7 +24,7 @@ class PictographRegistration:
     instance_ref: weakref.ref  # Weak reference to avoid memory leaks
     component_type: str  # Type of component (graph_editor, sequence_viewer, etc.)
     update_method: str  # Method name to call for updates
-    metadata: Dict[str, Any]
+    metadata: dict[str, Any]
 
 
 class PictographVisibilityManager:
@@ -35,9 +37,9 @@ class PictographVisibilityManager:
 
     def __init__(self):
         self._lock = Lock()
-        self._registrations: Dict[str, PictographRegistration] = {}
-        self._component_types: Set[str] = set()
-        self._update_callbacks: List[Callable] = []
+        self._registrations: dict[str, PictographRegistration] = {}
+        self._component_types: set[str] = set()
+        self._update_callbacks: list[Callable] = []
 
         # Statistics for monitoring
         self._stats = {
@@ -53,7 +55,7 @@ class PictographVisibilityManager:
         pictograph_instance: Any,
         component_type: str = "unknown",
         update_method: str = "update_visibility",
-        metadata: Optional[Dict[str, Any]] = None,
+        metadata: dict[str, Any] | None = None,
     ) -> bool:
         """
         Register a pictograph instance for global visibility updates.
@@ -105,7 +107,7 @@ class PictographVisibilityManager:
                 return True
 
         except Exception as e:
-            logger.error(f"Error registering pictograph {pictograph_id}: {e}")
+            logger.exception(f"Error registering pictograph {pictograph_id}: {e}")
             return False
 
     def unregister_pictograph(self, pictograph_id: str) -> bool:
@@ -125,14 +127,13 @@ class PictographVisibilityManager:
                     self._stats["active_registrations"] = len(self._registrations)
                     logger.debug(f"Unregistered pictograph {pictograph_id}")
                     return True
-                else:
-                    logger.warning(
-                        f"Pictograph {pictograph_id} not found for unregistration"
-                    )
-                    return False
+                logger.warning(
+                    f"Pictograph {pictograph_id} not found for unregistration"
+                )
+                return False
 
         except Exception as e:
-            logger.error(f"Error unregistering pictograph {pictograph_id}: {e}")
+            logger.exception(f"Error unregistering pictograph {pictograph_id}: {e}")
             return False
 
     def _cleanup_registration(self, pictograph_id: str) -> None:
@@ -144,15 +145,15 @@ class PictographVisibilityManager:
                     self._stats["active_registrations"] = len(self._registrations)
                     logger.debug(f"Auto-cleaned up registration for {pictograph_id}")
         except Exception as e:
-            logger.error(f"Error during auto-cleanup of {pictograph_id}: {e}")
+            logger.exception(f"Error during auto-cleanup of {pictograph_id}: {e}")
 
     def apply_visibility_change(
         self,
         element_type: str,
         element_name: str,
         visible: bool,
-        component_types: Optional[List[str]] = None,
-    ) -> Dict[str, Any]:
+        component_types: list[str] | None = None,
+    ) -> dict[str, Any]:
         """
         Apply visibility change to all registered pictographs.
 
@@ -204,7 +205,7 @@ class PictographVisibilityManager:
                     results["updated_instances"].append(pictograph_id)
 
                 except Exception as e:
-                    logger.error(f"Error updating {pictograph_id}: {e}")
+                    logger.exception(f"Error updating {pictograph_id}: {e}")
                     results["failure_count"] += 1
                     results["failed_instances"].append(
                         {"id": pictograph_id, "error": str(e)}
@@ -220,12 +221,12 @@ class PictographVisibilityManager:
             )
 
         except Exception as e:
-            logger.error(f"Error in apply_visibility_change: {e}")
+            logger.exception(f"Error in apply_visibility_change: {e}")
             results["failure_count"] += 1
 
         return results
 
-    def get_all_registered_pictographs(self) -> List[Dict[str, Any]]:
+    def get_all_registered_pictographs(self) -> list[dict[str, Any]]:
         """
         Get information about all registered pictographs.
 
@@ -248,16 +249,16 @@ class PictographVisibilityManager:
                         }
                     )
         except Exception as e:
-            logger.error(f"Error getting registered pictographs: {e}")
+            logger.exception(f"Error getting registered pictographs: {e}")
 
         return pictographs
 
-    def get_component_types(self) -> List[str]:
+    def get_component_types(self) -> list[str]:
         """Get list of all registered component types."""
         with self._lock:
             return list(self._component_types)
 
-    def get_statistics(self) -> Dict[str, Any]:
+    def get_statistics(self) -> dict[str, Any]:
         """Get service statistics."""
         with self._lock:
             return {
@@ -286,7 +287,7 @@ class PictographVisibilityManager:
             try:
                 callback(element_type, element_name, visible)
             except Exception as e:
-                logger.error(f"Error in update callback: {e}")
+                logger.exception(f"Error in update callback: {e}")
 
     def cleanup_dead_references(self) -> int:
         """
@@ -314,7 +315,7 @@ class PictographVisibilityManager:
                 logger.debug(f"Cleaned up {cleaned_count} dead references")
 
         except Exception as e:
-            logger.error(f"Error cleaning up dead references: {e}")
+            logger.exception(f"Error cleaning up dead references: {e}")
 
         return cleaned_count
 

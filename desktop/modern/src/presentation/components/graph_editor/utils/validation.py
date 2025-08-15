@@ -6,19 +6,22 @@ Graph Editor Validation Utilities
 Provides comprehensive input validation for graph editor components
 following TKA architectural patterns and error handling best practices.
 """
+from __future__ import annotations
 
-import logging
-from typing import Optional, Any, List, Dict
 from dataclasses import dataclass
+import logging
+from pathlib import Path
 
 # Import domain models for validation
 import sys
-from pathlib import Path
+from typing import Any
+
 
 modern_src = Path(__file__).parent.parent.parent.parent.parent
 sys.path.insert(0, str(modern_src))
 
-from domain.models import BeatData, SequenceData, Orientation
+from domain.models import BeatData, Orientation, SequenceData
+
 
 logger = logging.getLogger(__name__)
 
@@ -29,9 +32,9 @@ class ValidationError(Exception):
     def __init__(
         self,
         message: str,
-        field: str = None,
+        field: str | None = None,
         value: Any = None,
-        context: Dict[str, Any] = None,
+        context: dict[str, Any] | None = None,
     ):
         self.message = message
         self.field = field
@@ -56,8 +59,8 @@ class ValidationResult:
     """Result of a validation operation."""
 
     is_valid: bool
-    errors: List[ValidationError]
-    warnings: List[str]
+    errors: list[ValidationError]
+    warnings: list[str]
 
     @property
     def has_errors(self) -> bool:
@@ -70,9 +73,9 @@ class ValidationResult:
     def add_error(
         self,
         message: str,
-        field: str = None,
+        field: str | None = None,
         value: Any = None,
-        context: Dict[str, Any] = None,
+        context: dict[str, Any] | None = None,
     ):
         """Add a validation error."""
         error = ValidationError(message, field, value, context)
@@ -94,9 +97,9 @@ class GraphEditorValidator:
 
     @staticmethod
     def validate_beat_data(
-        beat_data: Optional[BeatData],
+        beat_data: BeatData | None,
         allow_none: bool = True,
-        context: Dict[str, Any] = None,
+        context: dict[str, Any] | None = None,
     ) -> ValidationResult:
         """
         Validate beat data with comprehensive checks.
@@ -201,7 +204,7 @@ class GraphEditorValidator:
 
         except Exception as e:
             result.add_error(
-                f"Unexpected error validating beat data: {str(e)}",
+                f"Unexpected error validating beat data: {e!s}",
                 "beat_data",
                 beat_data,
                 ctx,
@@ -211,7 +214,7 @@ class GraphEditorValidator:
 
     @staticmethod
     def _validate_motion_data(
-        motion_data: Any, field_name: str, context: Dict[str, Any]
+        motion_data: Any, field_name: str, context: dict[str, Any]
     ) -> ValidationResult:
         """Validate motion data structure."""
         result = ValidationResult(is_valid=True, errors=[], warnings=[])
@@ -220,7 +223,7 @@ class GraphEditorValidator:
             # Check required motion attributes
             if not hasattr(motion_data, "motion_type"):
                 result.add_error(
-                    f"Motion data missing motion_type",
+                    "Motion data missing motion_type",
                     f"{field_name}.motion_type",
                     None,
                     context,
@@ -228,18 +231,18 @@ class GraphEditorValidator:
 
             if not hasattr(motion_data, "turns"):
                 result.add_error(
-                    f"Motion data missing turns", f"{field_name}.turns", None, context
+                    "Motion data missing turns", f"{field_name}.turns", None, context
                 )
             elif not isinstance(motion_data.turns, (int, float)):
                 result.add_error(
-                    f"Motion turns must be a number",
+                    "Motion turns must be a number",
                     f"{field_name}.turns",
                     motion_data.turns,
                     context,
                 )
             elif motion_data.turns < 0:
                 result.add_error(
-                    f"Motion turns cannot be negative",
+                    "Motion turns cannot be negative",
                     f"{field_name}.turns",
                     motion_data.turns,
                     context,
@@ -247,7 +250,7 @@ class GraphEditorValidator:
 
         except Exception as e:
             result.add_error(
-                f"Error validating motion data: {str(e)}",
+                f"Error validating motion data: {e!s}",
                 field_name,
                 motion_data,
                 context,
@@ -257,9 +260,9 @@ class GraphEditorValidator:
 
     @staticmethod
     def validate_sequence_data(
-        sequence_data: Optional[SequenceData],
+        sequence_data: SequenceData | None,
         allow_none: bool = True,
-        context: Dict[str, Any] = None,
+        context: dict[str, Any] | None = None,
     ) -> ValidationResult:
         """
         Validate sequence data with comprehensive checks.
@@ -336,7 +339,7 @@ class GraphEditorValidator:
 
         except Exception as e:
             result.add_error(
-                f"Unexpected error validating sequence data: {str(e)}",
+                f"Unexpected error validating sequence data: {e!s}",
                 "sequence_data",
                 sequence_data,
                 ctx,
@@ -347,9 +350,9 @@ class GraphEditorValidator:
     @staticmethod
     def validate_beat_index(
         beat_index: int,
-        sequence_length: int = None,
+        sequence_length: int | None = None,
         allow_negative: bool = True,
-        context: Dict[str, Any] = None,
+        context: dict[str, Any] | None = None,
     ) -> ValidationResult:
         """
         Validate beat index with bounds checking.
@@ -386,7 +389,7 @@ class GraphEditorValidator:
 
             # Check bounds if sequence length provided
             if sequence_length is not None:
-                if beat_index >= sequence_length and sequence_length > 0:
+                if beat_index >= sequence_length > 0:
                     result.add_error(
                         f"Beat index {beat_index} exceeds sequence length {sequence_length}",
                         "beat_index",
@@ -403,14 +406,14 @@ class GraphEditorValidator:
 
         except Exception as e:
             result.add_error(
-                f"Error validating beat index: {str(e)}", "beat_index", beat_index, ctx
+                f"Error validating beat index: {e!s}", "beat_index", beat_index, ctx
             )
 
         return result
 
     @staticmethod
     def validate_arrow_id(
-        arrow_id: Optional[str], allow_none: bool = True, context: Dict[str, Any] = None
+        arrow_id: str | None, allow_none: bool = True, context: dict[str, Any] | None = None
     ) -> ValidationResult:
         """
         Validate arrow ID.
@@ -450,14 +453,14 @@ class GraphEditorValidator:
 
         except Exception as e:
             result.add_error(
-                f"Error validating arrow ID: {str(e)}", "arrow_id", arrow_id, ctx
+                f"Error validating arrow ID: {e!s}", "arrow_id", arrow_id, ctx
             )
 
         return result
 
     @staticmethod
     def validate_orientation(
-        orientation: Any, allow_none: bool = True, context: Dict[str, Any] = None
+        orientation: Any, allow_none: bool = True, context: dict[str, Any] | None = None
     ) -> ValidationResult:
         """
         Validate orientation value (enum or string).
@@ -520,7 +523,7 @@ class GraphEditorValidator:
 
         except Exception as e:
             result.add_error(
-                f"Error validating orientation: {str(e)}",
+                f"Error validating orientation: {e!s}",
                 "orientation",
                 orientation,
                 ctx,
@@ -531,18 +534,18 @@ class GraphEditorValidator:
 
 # Convenience functions for quick validation
 def validate_beat_data(
-    beat_data: Optional[BeatData],
+    beat_data: BeatData | None,
     allow_none: bool = True,
-    context: Dict[str, Any] = None,
+    context: dict[str, Any] | None = None,
 ) -> ValidationResult:
     """Quick validation function for beat data."""
     return GraphEditorValidator.validate_beat_data(beat_data, allow_none, context)
 
 
 def validate_sequence_data(
-    sequence_data: Optional[SequenceData],
+    sequence_data: SequenceData | None,
     allow_none: bool = True,
-    context: Dict[str, Any] = None,
+    context: dict[str, Any] | None = None,
 ) -> ValidationResult:
     """Quick validation function for sequence data."""
     return GraphEditorValidator.validate_sequence_data(
@@ -552,9 +555,9 @@ def validate_sequence_data(
 
 def validate_beat_index(
     beat_index: int,
-    sequence_length: int = None,
+    sequence_length: int | None = None,
     allow_negative: bool = True,
-    context: Dict[str, Any] = None,
+    context: dict[str, Any] | None = None,
 ) -> ValidationResult:
     """Quick validation function for beat index."""
     return GraphEditorValidator.validate_beat_index(
@@ -563,14 +566,14 @@ def validate_beat_index(
 
 
 def validate_arrow_id(
-    arrow_id: Optional[str], allow_none: bool = True, context: Dict[str, Any] = None
+    arrow_id: str | None, allow_none: bool = True, context: dict[str, Any] | None = None
 ) -> ValidationResult:
     """Quick validation function for arrow ID."""
     return GraphEditorValidator.validate_arrow_id(arrow_id, allow_none, context)
 
 
 def validate_orientation(
-    orientation: Any, allow_none: bool = True, context: Dict[str, Any] = None
+    orientation: Any, allow_none: bool = True, context: dict[str, Any] | None = None
 ) -> ValidationResult:
     """Quick validation function for orientation."""
     return GraphEditorValidator.validate_orientation(orientation, allow_none, context)

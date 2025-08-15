@@ -5,16 +5,18 @@ Facade service that delegates to focused conversion services.
 Maintains backward compatibility while using the new focused architecture.
 Includes performance optimizations through caching.
 """
+from __future__ import annotations
 
-import logging
 from abc import ABC, abstractmethod
-from typing import Any, Dict, List
+import logging
+from typing import Any
+
 
 # Result pattern removed - using simple exceptions
 
 logger = logging.getLogger(__name__)
-from domain.models.beat_data import BeatData
-from domain.models.sequence_data import SequenceData
+from desktop.modern.src.domain.models.beat_data import BeatData
+from desktop.modern.src.domain.models.sequence_data import SequenceData
 
 from .legacy_to_modern_converter import LegacyToModernConverter
 from .modern_to_legacy_converter import ModernToLegacyConverter
@@ -55,7 +57,7 @@ class ISequenceDataConverter(ABC):
     @abstractmethod
     def convert_sequence_to_legacy_format(
         self, sequence: SequenceData
-    ) -> List[Dict[str, Any]]:
+    ) -> list[dict[str, Any]]:
         """Convert modern SequenceData back to legacy JSON format with caching."""
         pass
 
@@ -97,7 +99,7 @@ class SequenceDataConverter(ISequenceDataConverter):
                 beat_dict, beat_number
             )
         except Exception as e:
-            logger.error(f"Failed to convert legacy beat data: {e}")
+            logger.exception(f"Failed to convert legacy beat data: {e}")
             raise
 
     def convert_legacy_start_position_to_beat_data(
@@ -109,7 +111,7 @@ class SequenceDataConverter(ISequenceDataConverter):
                 start_pos_dict
             )
         except Exception as e:
-            logger.error(f"Failed to convert legacy start position data: {e}")
+            logger.exception(f"Failed to convert legacy start position data: {e}")
             raise
 
     def convert_beat_data_to_legacy_format(
@@ -122,7 +124,7 @@ class SequenceDataConverter(ISequenceDataConverter):
             )
             return legacy_dict
         except Exception as e:
-            logger.error(f"Failed to convert beat data to legacy format: {e}")
+            logger.exception(f"Failed to convert beat data to legacy format: {e}")
             raise
 
     def convert_start_position_to_legacy_format(
@@ -135,12 +137,12 @@ class SequenceDataConverter(ISequenceDataConverter):
             )
             return legacy_dict
         except Exception as e:
-            logger.error(f"Failed to convert start position to legacy format: {e}")
+            logger.exception(f"Failed to convert start position to legacy format: {e}")
             raise
 
     def convert_sequence_to_legacy_format(
         self, sequence: SequenceData
-    ) -> List[Dict[str, Any]]:
+    ) -> list[dict[str, Any]]:
         """Convert modern SequenceData back to legacy JSON format with caching"""
         try:
             # Create cache key from sequence hash
@@ -174,7 +176,7 @@ class SequenceDataConverter(ISequenceDataConverter):
             return processed_sequence
 
         except Exception as e:
-            logger.error(f"Failed to convert sequence to legacy format: {e}")
+            logger.exception(f"Failed to convert sequence to legacy format: {e}")
             raise
 
     def _convert_beat_to_legacy_dict(self, beat: BeatData) -> dict:
@@ -208,14 +210,13 @@ class SequenceDataConverter(ISequenceDataConverter):
             # the end position is just that location (e.g., "alpha1_alpha1" -> "alpha1")
             if blue_end == red_end:
                 return blue_end  # Same position - just return the position itself
-            else:
-                # For different positions, use a mapping or algorithm
-                # This is placeholder logic that can be enhanced
-                result = f"beta{min(5, max(1, ord(blue_end[0]) - ord('a') + 1))}"
-                return result
+            # For different positions, use a mapping or algorithm
+            # This is placeholder logic that can be enhanced
+            result = f"beta{min(5, max(1, ord(blue_end[0]) - ord('a') + 1))}"
+            return result
 
         except Exception as e:
-            logger.error(f"Failed to extract end position from position key: {e}")
+            logger.exception(f"Failed to extract end position from position key: {e}")
             raise
 
     def get_cached_end_position(self, beat: BeatData) -> str:
@@ -256,12 +257,12 @@ class SequenceDataConverter(ISequenceDataConverter):
             return end_position
 
         except Exception as e:
-            logger.error(f"Failed to get cached end position: {e}")
+            logger.exception(f"Failed to get cached end position: {e}")
             raise
 
     def _apply_construct_tab_processing(
-        self, legacy_sequence: List[Dict[str, Any]], sequence: SequenceData
-    ) -> List[Dict[str, Any]]:
+        self, legacy_sequence: list[dict[str, Any]], sequence: SequenceData
+    ) -> list[dict[str, Any]]:
         """
         Apply additional processing for construct tab compatibility.
 

@@ -5,16 +5,19 @@ Graph Editor Signal Coordinator - Simplified
 Manages signal connections and coordination between graph editor components.
 Simplified to remove over-engineered manager dependencies and complex routing.
 """
+from __future__ import annotations
 
 import logging
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
-from domain.models.beat_data import BeatData
-from domain.models.sequence_data import SequenceData
 from PyQt6.QtCore import QObject, pyqtSignal
 
+from desktop.modern.src.domain.models.beat_data import BeatData
+from desktop.modern.src.domain.models.sequence_data import SequenceData
+
+
 if TYPE_CHECKING:
-    from application.services.graph_editor_data_flow_service import (
+    from desktop.modern.src.application.services.graph_editor_data_flow_service import (
         GraphEditorDataFlowService,
     )
 
@@ -42,7 +45,7 @@ class GraphEditorSignalCoordinator(QObject):
     arrow_selected = pyqtSignal(str)  # arrow_id
     visibility_changed = pyqtSignal(bool)  # is_visible
 
-    def __init__(self, graph_editor: "GraphEditor", parent: Optional[QObject] = None):
+    def __init__(self, graph_editor: GraphEditor, parent: QObject | None = None):
         super().__init__(parent)
         self._graph_editor = graph_editor
 
@@ -56,7 +59,7 @@ class GraphEditorSignalCoordinator(QObject):
 
     def set_dependencies(
         self,
-        data_flow_service: "GraphEditorDataFlowService",
+        data_flow_service: GraphEditorDataFlowService,
         hotkey_service,
         layout_manager,
         state_manager,

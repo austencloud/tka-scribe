@@ -18,39 +18,44 @@ except ImportError:
             self.parent = parent
 
     QT_AVAILABLE = False
-from desktop.modern.application.services.graph_editor.graph_editor_coordinator import (
+from desktop.modern.src.application.services.graph_editor.graph_editor_coordinator import (
     GraphEditorCoordinator,
 )
-from desktop.modern.application.services.sequence.loader import SequenceLoader
-from desktop.modern.application.services.sequence.sequence_beat_operations import (
+from desktop.modern.src.application.services.sequence.loader import SequenceLoader
+from desktop.modern.src.application.services.sequence.sequence_beat_operations import (
     SequenceBeatOperations,
 )
-from desktop.modern.application.services.sequence.sequence_dictionary_service import (
+from desktop.modern.src.application.services.sequence.sequence_dictionary_service import (
     SequenceDictionaryService,
 )
-from desktop.modern.application.services.sequence.sequence_start_position_manager import (
+from desktop.modern.src.application.services.sequence.sequence_start_position_manager import (
     SequenceStartPositionManager,
 )
-from desktop.modern.application.services.ui.full_screen_viewer import FullScreenViewer
-from desktop.modern.application.services.ui.sequence_state_reader import (
+from desktop.modern.src.application.services.ui.full_screen_viewer import (
+    FullScreenViewer,
+)
+from desktop.modern.src.application.services.ui.sequence_state_reader import (
     MockSequenceStateReader,
 )
-from desktop.modern.application.services.ui.thumbnail_generation_service import (
+from desktop.modern.src.application.services.ui.thumbnail_generation_service import (
     MockThumbnailGenerationService,
 )
-from desktop.modern.application.services.workbench.beat_selection_service import (
+from desktop.modern.src.application.services.workbench.beat_selection_service import (
     BeatSelectionService,
 )
-from desktop.modern.core.dependency_injection.di_container import DIContainer
-from desktop.modern.core.interfaces.core_services import ILayoutService, IUIStateManager
-from desktop.modern.core.interfaces.workbench_services import (
+from desktop.modern.src.core.dependency_injection.di_container import DIContainer
+from desktop.modern.src.core.interfaces.core_services import (
+    ILayoutService,
+    IUIStateManager,
+)
+from desktop.modern.src.core.interfaces.workbench_services import (
     IFullScreenViewer,
     IGraphEditorService,
 )
-from desktop.modern.presentation.components.ui.full_screen import (
+from desktop.modern.src.presentation.components.ui.full_screen import (
     FullScreenOverlayFactory,
 )
-from desktop.modern.presentation.components.workbench import SequenceWorkbench
+from desktop.modern.src.presentation.components.workbench import SequenceWorkbench
 
 
 def create_modern_workbench(

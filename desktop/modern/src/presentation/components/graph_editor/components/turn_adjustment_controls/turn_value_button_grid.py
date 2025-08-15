@@ -1,11 +1,14 @@
-from PyQt6.QtWidgets import QWidget, QGridLayout, QPushButton
+from __future__ import annotations
+
 from typing import Callable
 
-from presentation.components.graph_editor.components.turn_adjustment_controls.styling_helpers import (
-    apply_turn_button_styling,
-    UNIFIED_BUTTON_WIDTH,
+from PyQt6.QtWidgets import QGridLayout, QPushButton, QWidget
+
+from desktop.modern.src.presentation.components.graph_editor.components.turn_adjustment_controls.styling_helpers import (
     UNIFIED_BUTTON_HEIGHT,
     UNIFIED_BUTTON_SPACING,
+    UNIFIED_BUTTON_WIDTH,
+    apply_turn_button_styling,
 )
 
 

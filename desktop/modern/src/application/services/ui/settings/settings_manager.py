@@ -4,13 +4,15 @@ Settings Manager - Core Settings Management
 Handles core settings operations including get, set, save, load, import, export.
 Extracted from UIStateManager to follow single responsibility principle.
 """
+from __future__ import annotations
 
 import json
 import logging
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any
 
-from core.events.event_bus import UIEvent, get_event_bus
+from desktop.modern.src.core.events.event_bus import UIEvent, get_event_bus
+
 
 logger = logging.getLogger(__name__)
 
@@ -26,7 +28,7 @@ class SettingsManager:
     - Settings import/export
     """
 
-    def __init__(self, settings_file_path: Optional[Path] = None):
+    def __init__(self, settings_file_path: Path | None = None):
         """Initialize settings service."""
         # Settings file path - use modern directory if not provided
         if settings_file_path is None:
@@ -39,7 +41,7 @@ class SettingsManager:
         self._event_bus = get_event_bus()
 
         # Settings storage
-        self._user_settings: Dict[str, Any] = {}
+        self._user_settings: dict[str, Any] = {}
         self._default_settings = self._load_default_settings()
 
         # Load saved settings
@@ -63,7 +65,7 @@ class SettingsManager:
         )
         self._event_bus.publish(event)
 
-    def get_all_settings(self) -> Dict[str, Any]:
+    def get_all_settings(self) -> dict[str, Any]:
         """Get all settings."""
         # Merge defaults with user settings, user settings take precedence
         all_settings = self._default_settings.copy()
@@ -96,7 +98,7 @@ class SettingsManager:
             logger.info(f"Settings exported to {file_path}")
             return True
         except Exception as e:
-            logger.error(f"Failed to export settings: {e}")
+            logger.exception(f"Failed to export settings: {e}")
             return False
 
     def import_settings(self, file_path: Path) -> bool:
@@ -106,7 +108,7 @@ class SettingsManager:
                 logger.warning(f"Settings file not found: {file_path}")
                 return False
 
-            with open(file_path, "r", encoding="utf-8") as f:
+            with open(file_path, encoding="utf-8") as f:
                 imported_settings = json.load(f)
 
             # Validate imported settings
@@ -130,14 +132,14 @@ class SettingsManager:
             logger.info(f"Settings imported from {file_path}")
             return True
         except Exception as e:
-            logger.error(f"Failed to import settings: {e}")
+            logger.exception(f"Failed to import settings: {e}")
             return False
 
     def _load_settings(self) -> None:
         """Load settings from file."""
         try:
             if self._settings_file.exists():
-                with open(self._settings_file, "r", encoding="utf-8") as f:
+                with open(self._settings_file, encoding="utf-8") as f:
                     data = json.load(f)
                     # Extract user_settings if it exists, otherwise use the whole data
                     if isinstance(data, dict) and "user_settings" in data:
@@ -151,7 +153,7 @@ class SettingsManager:
                 logger.info("No settings file found, using defaults")
                 self._user_settings = {}
         except Exception as e:
-            logger.error(f"Failed to load settings: {e}")
+            logger.exception(f"Failed to load settings: {e}")
             self._user_settings = {}
 
     def _save_settings(self) -> None:
@@ -164,9 +166,9 @@ class SettingsManager:
             with open(self._settings_file, "w", encoding="utf-8") as f:
                 json.dump(self._user_settings, f, indent=2)
         except Exception as e:
-            logger.error(f"Failed to save settings: {e}")
+            logger.exception(f"Failed to save settings: {e}")
 
-    def _load_default_settings(self) -> Dict[str, Any]:
+    def _load_default_settings(self) -> dict[str, Any]:
         """Load default settings."""
         return {
             "background_type": "Aurora",

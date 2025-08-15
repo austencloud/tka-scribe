@@ -15,17 +15,19 @@ PROVIDES:
 - Context-aware pictograph configuration
 - CSV data loading and pictograph creation
 """
+from __future__ import annotations
 
-import uuid
 from abc import ABC, abstractmethod
 from enum import Enum
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple, TypedDict, Union
+from typing import TypedDict
+import uuid
 
 import pandas as pd
-from domain.models.arrow_data import ArrowData
-from domain.models.beat_data import BeatData
-from domain.models.enums import (
+
+from desktop.modern.src.domain.models.arrow_data import ArrowData
+from desktop.modern.src.domain.models.beat_data import BeatData
+from desktop.modern.src.domain.models.enums import (
     ElementalType,
     GridMode,
     LetterType,
@@ -34,20 +36,20 @@ from domain.models.enums import (
     RotationDirection,
     VTGMode,
 )
-from domain.models.glyph_models import GlyphData
-from domain.models.grid_data import GridData
-from domain.models.motion_models import MotionData
-from domain.models.pictograph_data import PictographData
+from desktop.modern.src.domain.models.glyph_models import GlyphData
+from desktop.modern.src.domain.models.grid_data import GridData
+from desktop.modern.src.domain.models.motion_models import MotionData
+from desktop.modern.src.domain.models.pictograph_data import PictographData
 
 
 class PictographSearchQuery(TypedDict, total=False):
     """Type definition for pictograph search queries."""
 
-    letter: Optional[str]
-    motion_type: Optional[str]
-    start_position: Optional[str]
-    max_results: Optional[int]
-    categories: Optional[List[str]]
+    letter: str | None
+    motion_type: str | None
+    start_position: str | None
+    max_results: int | None
+    categories: list[str] | None
 
 
 class IPictographManager(ABC):
@@ -65,12 +67,12 @@ class IPictographManager(ABC):
 
     @abstractmethod
     def update_pictograph_arrows(
-        self, pictograph: PictographData, arrows: Dict[str, ArrowData]
+        self, pictograph: PictographData, arrows: dict[str, ArrowData]
     ) -> PictographData:
         """Update arrows in pictograph."""
 
     @abstractmethod
-    def search_dataset(self, query: PictographSearchQuery) -> List[PictographData]:
+    def search_dataset(self, query: PictographSearchQuery) -> list[PictographData]:
         """Search pictograph dataset with query."""
 
 
@@ -97,8 +99,8 @@ class PictographManager(IPictographManager):
 
     def __init__(self):
         # Dataset management
-        self._pictograph_cache: Dict[str, PictographData] = {}
-        self._dataset_index: Dict[str, List[str]] = {}
+        self._pictograph_cache: dict[str, PictographData] = {}
+        self._dataset_index: dict[str, list[str]] = {}
 
         # CSV data loading
         self._csv_data = None
@@ -174,7 +176,7 @@ class PictographManager(IPictographManager):
         )
 
     def update_pictograph_arrows(
-        self, pictograph: PictographData, arrows: Dict[str, ArrowData]
+        self, pictograph: PictographData, arrows: dict[str, ArrowData]
     ) -> PictographData:
         """Update arrows in pictograph."""
         return pictograph.update(
@@ -182,7 +184,7 @@ class PictographManager(IPictographManager):
             is_blank=len(arrows) == 0,
         )
 
-    def search_dataset(self, query: PictographSearchQuery) -> List[PictographData]:
+    def search_dataset(self, query: PictographSearchQuery) -> list[PictographData]:
         """Search pictograph dataset with query."""
         results = []
 
@@ -192,7 +194,7 @@ class PictographManager(IPictographManager):
             max_results = 50
 
         # Search through cached pictographs
-        for pictograph_id, pictograph in self._pictograph_cache.items():
+        for _pictograph_id, pictograph in self._pictograph_cache.items():
             if self._matches_query(pictograph, query):
                 results.append(pictograph)
 
@@ -218,7 +220,7 @@ class PictographManager(IPictographManager):
 
         return pictograph.update(metadata=metadata)
 
-    def get_glyph_for_pictograph(self, pictograph: PictographData) -> Optional[str]:
+    def get_glyph_for_pictograph(self, pictograph: PictographData) -> str | None:
         """Get glyph representation for pictograph."""
         # Generate glyph key based on pictograph content
         glyph_key = self._generate_glyph_key(pictograph)
@@ -240,11 +242,11 @@ class PictographManager(IPictographManager):
 
         return pictograph_id
 
-    def get_dataset_categories(self) -> List[str]:
+    def get_dataset_categories(self) -> list[str]:
         """Get all available dataset categories."""
         return list(self._dataset_index.keys())
 
-    def get_pictographs_by_category(self, category: str) -> List[PictographData]:
+    def get_pictographs_by_category(self, category: str) -> list[PictographData]:
         """Get all pictographs in a category."""
         pictograph_ids = self._dataset_index.get(category, [])
         return [
@@ -255,7 +257,7 @@ class PictographManager(IPictographManager):
 
     def load_csv_data(
         self, file_path: Path, category: str = "user_created"
-    ) -> List[PictographData]:
+    ) -> list[PictographData]:
         """Load pictograph data from a CSV file and add to dataset."""
         pictographs = []
 
@@ -267,7 +269,7 @@ class PictographManager(IPictographManager):
                 # Convert each row to pictograph
                 pictograph = self._convert_row_to_pictograph(row)
                 if pictograph:
-                    pictograph_id = self.add_to_dataset(pictograph, category)
+                    self.add_to_dataset(pictograph, category)
                     pictographs.append(pictograph)
 
         except Exception as e:
@@ -283,7 +285,7 @@ class PictographManager(IPictographManager):
 
     def get_specific_pictograph(
         self, letter: str, index: int = 0
-    ) -> Optional[BeatData]:
+    ) -> BeatData | None:
         """Get a specific pictograph by letter and index from CSV data."""
         df = self._load_csv_data()
 
@@ -296,7 +298,7 @@ class PictographManager(IPictographManager):
         row = letter_data.iloc[index]
         return self._create_beat_data_from_csv_row(row)
 
-    def get_pictographs_by_letter(self, letter: str) -> List[BeatData]:
+    def get_pictographs_by_letter(self, letter: str) -> list[BeatData]:
         """Get all pictographs for a specific letter."""
         df = self._load_csv_data()
         letter_data = df[df["letter"] == letter]
@@ -308,7 +310,7 @@ class PictographManager(IPictographManager):
 
     def get_start_position_pictograph(
         self, position_key: str, grid_mode: str = "diamond"
-    ) -> Optional[BeatData]:
+    ) -> BeatData | None:
         """Get start position pictograph by position key and grid mode."""
         # Map position keys to letters
         position_to_letter = {
@@ -329,9 +331,8 @@ class PictographManager(IPictographManager):
         pictographs = self.get_pictographs_by_letter(letter)
         if pictographs:
             return pictographs[0]
-        else:
-            print(f"⚠️ No pictographs found for letter: {letter}")
-            return None
+        print(f"⚠️ No pictographs found for letter: {letter}")
+        return None
 
     def _create_beat_data_from_csv_row(self, row) -> BeatData:
         """Convert a CSV row to BeatData object."""
@@ -391,7 +392,7 @@ class PictographManager(IPictographManager):
         )
 
         # Convert to pictograph data for glyph generation
-        from domain.models.arrow_data import ArrowData, GridData
+        from desktop.modern.src.domain.models.arrow_data import ArrowData, GridData
 
         arrows = {}
         if blue_motion:
@@ -413,10 +414,10 @@ class PictographManager(IPictographManager):
 
     # Private helper methods
 
-    def _generate_glyph_data(self, data) -> Optional[GlyphData]:
+    def _generate_glyph_data(self, data) -> GlyphData | None:
         """Generate glyph data for pictograph or beat data."""
         # Handle both BeatData and PictographData for backward compatibility
-        from domain.models.beat_data import BeatData
+        from desktop.modern.src.domain.models.beat_data import BeatData
 
         from ..data import GlyphDataService
 
@@ -425,7 +426,7 @@ class PictographManager(IPictographManager):
             if not data.letter:
                 return None
             # Create a minimal pictograph data for glyph service
-            from domain.models.pictograph_data import PictographData
+            from desktop.modern.src.domain.models.pictograph_data import PictographData
 
             pictograph_data = PictographData(letter=data.letter)
         else:
@@ -479,7 +480,7 @@ class PictographManager(IPictographManager):
 
         return "_".join(key_parts) if key_parts else "blank"
 
-    def _determine_letter_type(self, letter: str) -> Optional[LetterType]:
+    def _determine_letter_type(self, letter: str) -> LetterType | None:
         """Determine the letter type from the letter string."""
         # Use the same letter type mapping as LetterTypeClassifier to ensure consistency
         letter_type_map = {
@@ -539,7 +540,7 @@ class PictographManager(IPictographManager):
         }
         return letter_type_map.get(letter)
 
-    def _determine_vtg_mode(self, beat_data: BeatData) -> Optional[VTGMode]:
+    def _determine_vtg_mode(self, beat_data: BeatData) -> VTGMode | None:
         """Determine VTG mode from beat data."""
         blue_motion = beat_data.blue_motion
         red_motion = beat_data.red_motion
@@ -553,9 +554,9 @@ class PictographManager(IPictographManager):
 
         if motion_pattern == "split":
             return VTGMode.SPLIT_SAME if same_direction else VTGMode.SPLIT_OPP
-        elif motion_pattern == "together":
+        if motion_pattern == "together":
             return VTGMode.TOG_SAME if same_direction else VTGMode.TOG_OPP
-        elif motion_pattern == "quarter":
+        if motion_pattern == "quarter":
             return VTGMode.QUARTER_SAME if same_direction else VTGMode.QUARTER_OPP
 
         return VTGMode.SPLIT_SAME  # Default
@@ -594,7 +595,7 @@ class PictographManager(IPictographManager):
 
     def _determine_positions(
         self, beat_data: BeatData
-    ) -> Tuple[Optional[str], Optional[str]]:
+    ) -> tuple[str | None, str | None]:
         """Determine start and end positions from beat data."""
         # Extract from metadata if available
         start_pos = beat_data.metadata.get("start_pos")
@@ -611,7 +612,7 @@ class PictographManager(IPictographManager):
 
         return None, None
 
-    def _vtg_to_elemental(self, vtg_mode: Optional[VTGMode]) -> Optional[ElementalType]:
+    def _vtg_to_elemental(self, vtg_mode: VTGMode | None) -> ElementalType | None:
         """Convert VTG mode to elemental type."""
         if not vtg_mode:
             return None
@@ -629,7 +630,7 @@ class PictographManager(IPictographManager):
 
     def _load_context_configs(
         self,
-    ) -> Dict[PictographContext, Dict[str, Union[str, int, bool]]]:
+    ) -> dict[PictographContext, dict[str, str | int | bool]]:
         """Load context-specific configurations."""
         return {
             PictographContext.SEQUENCE_EDITOR: {
@@ -650,7 +651,7 @@ class PictographManager(IPictographManager):
             },
         }
 
-    def _load_glyph_mappings(self) -> Dict[str, str]:
+    def _load_glyph_mappings(self) -> dict[str, str]:
         """Load glyph mappings for pictographs."""
         return {
             "blue_pro_red_anti": "⚡",
@@ -659,7 +660,7 @@ class PictographManager(IPictographManager):
             "blank": "○",
         }
 
-    def _convert_row_to_pictograph(self, row: pd.Series) -> Optional[PictographData]:
+    def _convert_row_to_pictograph(self, row: pd.Series) -> PictographData | None:
         """Convert a CSV row to PictographData."""
         try:
             # Extract arrow data

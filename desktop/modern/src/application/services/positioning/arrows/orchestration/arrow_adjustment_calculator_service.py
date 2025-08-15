@@ -16,16 +16,26 @@ USAGE:
     except Exception as e:
         logger.error(f"Calculation failed: {e}")
 """
+from __future__ import annotations
 
 import logging
 
-from core.interfaces.positioning_services import IArrowAdjustmentCalculator
-from core.types.coordinates import get_default_point
-from core.types.geometry import Point
-from domain.models.enums import Location
-from domain.models.motion_models import MotionData
-from domain.models.pictograph_data import PictographData
+from desktop.modern.src.core.interfaces.positioning_services import (
+    IArrowAdjustmentCalculator,
+)
+from desktop.modern.src.core.types.coordinates import get_default_point
+from desktop.modern.src.core.types.geometry import Point
+from desktop.modern.src.domain.models.enums import Location
+from desktop.modern.src.domain.models.motion_models import MotionData
+from desktop.modern.src.domain.models.pictograph_data import PictographData
 
+# Import the focused services
+from .arrow_adjustment_lookup_service import ArrowAdjustmentLookupService
+from .directional_tuple_processor import DirectionalTupleProcessor
+from ..calculation.quadrant_index_calculator import QuadrantIndexCalculator
+from ..placement.special_placement_ori_key_generator import (
+    SpecialPlacementOriKeyGenerator,
+)
 from ...arrows.calculation.directional_tuple_calculator import (
     DirectionalTupleCalculator,
 )
@@ -38,14 +48,7 @@ from ...arrows.keys.turns_tuple_generation_service import TurnsTupleGenerationSe
 # Legacy service imports for backward compatibility
 from ...arrows.placement.default_placement_service import DefaultPlacementService
 from ...arrows.placement.special_placement_service import SpecialPlacementService
-from ..calculation.quadrant_index_calculator import QuadrantIndexCalculator
-from ..placement.special_placement_ori_key_generator import (
-    SpecialPlacementOriKeyGenerator,
-)
 
-# Import the focused services
-from .arrow_adjustment_lookup_service import ArrowAdjustmentLookupService
-from .directional_tuple_processor import DirectionalTupleProcessor
 
 logger = logging.getLogger(__name__)
 
@@ -124,7 +127,7 @@ class ArrowAdjustmentCalculatorService(IArrowAdjustmentCalculator):
             )
         except Exception as e:
             # Log error and return default for backward compatibility
-            logger.error(f"Adjustment calculation failed: {e}")
+            logger.exception(f"Adjustment calculation failed: {e}")
             return get_default_point()
 
     def calculate_adjustment_result(
@@ -163,5 +166,5 @@ class ArrowAdjustmentCalculatorService(IArrowAdjustmentCalculator):
             return final_adjustment
 
         except Exception as e:
-            logger.error(f"Adjustment calculation failed for letter {letter}: {e}")
+            logger.exception(f"Adjustment calculation failed for letter {letter}: {e}")
             raise RuntimeError(f"Arrow adjustment calculation failed: {e}") from e

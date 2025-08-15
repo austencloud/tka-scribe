@@ -4,20 +4,23 @@ Legacy to Modern Converter
 Handles conversion from legacy JSON format to modern domain models.
 Focused solely on legacy-to-modern data transformation.
 """
+from __future__ import annotations
 
 import logging
 
 # Forward reference for PictographData
-from typing import TYPE_CHECKING, Any, Dict
+from typing import TYPE_CHECKING, Any
 
 from domain.models.beat_data import BeatData
 from domain.models.glyph_models import GlyphData
 from domain.models.motion_models import MotionData
 
+
 if TYPE_CHECKING:
     from domain.models.pictograph_data import PictographData
 
 from .position_attribute_mapper import PositionAttributeMapper
+
 
 logger = logging.getLogger(__name__)
 
@@ -87,7 +90,7 @@ class LegacyToModernConverter:
             return beat_data
 
         except Exception as e:
-            logger.error(f"Error converting legacy beat data: {e}")
+            logger.exception(f"Error converting legacy beat data: {e}")
             # Return minimal valid beat data as fallback
             return self._create_fallback_beat_data(beat_number)
 
@@ -105,7 +108,7 @@ class LegacyToModernConverter:
         """
         try:
             # Extract basic start position info
-            letter = start_pos_dict.get("letter", "A")
+            start_pos_dict.get("letter", "A")
             end_pos = start_pos_dict.get("end_pos", "alpha1")
             sequence_start_position = start_pos_dict.get(
                 "sequence_start_position", "alpha"
@@ -153,9 +156,9 @@ class LegacyToModernConverter:
             return start_position_beat
 
         except Exception as e:
-            logger.error(f"Error converting legacy start position data: {e}")
+            logger.exception(f"Error converting legacy start position data: {e}")
 
-    def _create_motion_data_from_attributes(self, attrs: Dict[str, Any]) -> MotionData:
+    def _create_motion_data_from_attributes(self, attrs: dict[str, Any]) -> MotionData:
         """
         Create MotionData from legacy motion attributes.
 
@@ -184,7 +187,7 @@ class LegacyToModernConverter:
         blue_motion: MotionData,
         red_motion: MotionData,
         glyph_data: GlyphData,
-    ) -> "PictographData":
+    ) -> PictographData:
         """Create PictographData from legacy beat data with motion data."""
         from domain.models.arrow_data import ArrowData
         from domain.models.enums import GridMode
@@ -222,7 +225,7 @@ class LegacyToModernConverter:
         )
 
     def _create_start_position_motion_data(
-        self, attrs: Dict[str, Any], sequence_start_position: str
+        self, attrs: dict[str, Any], sequence_start_position: str
     ) -> MotionData:
         """
         Create MotionData for start position with special handling.

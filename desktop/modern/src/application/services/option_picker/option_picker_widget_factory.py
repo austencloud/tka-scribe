@@ -1,13 +1,14 @@
-from typing import Optional
-from PyQt6.QtWidgets import QWidget, QVBoxLayout, QScrollArea, QSizePolicy
-from PyQt6.QtCore import Qt
+from __future__ import annotations
 
-from core.dependency_injection.di_container import DIContainer
-from core.interfaces.core_services import ILayoutService
-from presentation.components.option_picker.components.filters.option_filter import (
+from PyQt6.QtCore import Qt
+from PyQt6.QtWidgets import QScrollArea, QSizePolicy, QVBoxLayout, QWidget
+
+from desktop.modern.src.core.dependency_injection.di_container import DIContainer
+from desktop.modern.src.core.interfaces.core_services import ILayoutService
+from desktop.modern.src.presentation.components.option_picker.components.filters.option_filter import (
     OptionPickerFilter,
 )
-from presentation.components.option_picker.core.option_picker_widget import (
+from desktop.modern.src.presentation.components.option_picker.core.option_picker_widget import (
     OptionPickerWidget,
 )
 
@@ -17,7 +18,7 @@ class OptionPickerWidgetFactory:
 
     def __init__(self, container: DIContainer):
         self.container = container
-        self._layout_service: Optional[ILayoutService] = None
+        self._layout_service: ILayoutService | None = None
 
     def create_widget(
         self, resize_callback=None

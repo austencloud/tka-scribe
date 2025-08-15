@@ -11,9 +11,9 @@ PROVIDES:
 - Elemental type mapping
 - Position determination
 """
+from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import Dict, Optional, Tuple
 
 from domain.models import (
     BeatData,
@@ -30,11 +30,11 @@ class IGlyphGenerationService(ABC):
     """Interface for glyph generation operations."""
 
     @abstractmethod
-    def generate_glyph_data(self, beat_data: BeatData) -> Optional[GlyphData]:
+    def generate_glyph_data(self, beat_data: BeatData) -> GlyphData | None:
         """Generate glyph data for beat data."""
 
     @abstractmethod
-    def determine_letter_type(self, letter: str) -> Optional[LetterType]:
+    def determine_letter_type(self, letter: str) -> LetterType | None:
         """Determine letter type from letter string."""
 
     @abstractmethod
@@ -55,7 +55,7 @@ class GlyphGenerationService(IGlyphGenerationService):
         self._letter_type_map = self._build_letter_type_map()
         self._glyph_mappings = self._build_glyph_mappings()
 
-    def generate_glyph_data(self, beat_data: BeatData) -> Optional[GlyphData]:
+    def generate_glyph_data(self, beat_data: BeatData) -> GlyphData | None:
         """Generate glyph data for beat data."""
         if beat_data.is_blank or not beat_data.letter:
             return None
@@ -86,7 +86,7 @@ class GlyphGenerationService(IGlyphGenerationService):
             show_positions=letter_type != LetterType.TYPE6 if letter_type else True,
         )
 
-    def determine_letter_type(self, letter: str) -> Optional[LetterType]:
+    def determine_letter_type(self, letter: str) -> LetterType | None:
         """Determine the letter type from the letter string."""
         return self._letter_type_map.get(letter)
 
@@ -102,11 +102,11 @@ class GlyphGenerationService(IGlyphGenerationService):
 
         return "_".join(key_parts) if key_parts else "blank"
 
-    def get_glyph_symbol(self, glyph_key: str) -> Optional[str]:
+    def get_glyph_symbol(self, glyph_key: str) -> str | None:
         """Get glyph symbol for glyph key."""
         return self._glyph_mappings.get(glyph_key)
 
-    def _determine_vtg_mode(self, beat_data: BeatData) -> Optional[VTGMode]:
+    def _determine_vtg_mode(self, beat_data: BeatData) -> VTGMode | None:
         """Determine VTG mode from beat data."""
         blue_motion = beat_data.blue_motion
         red_motion = beat_data.red_motion
@@ -120,9 +120,9 @@ class GlyphGenerationService(IGlyphGenerationService):
 
         if motion_pattern == "split":
             return VTGMode.SPLIT_SAME if same_direction else VTGMode.SPLIT_OPP
-        elif motion_pattern == "together":
+        if motion_pattern == "together":
             return VTGMode.TOG_SAME if same_direction else VTGMode.TOG_OPP
-        elif motion_pattern == "quarter":
+        if motion_pattern == "quarter":
             return VTGMode.QUARTER_SAME if same_direction else VTGMode.QUARTER_OPP
 
         return VTGMode.SPLIT_SAME  # Default
@@ -160,7 +160,7 @@ class GlyphGenerationService(IGlyphGenerationService):
 
     def _determine_positions(
         self, beat_data: BeatData
-    ) -> Tuple[Optional[str], Optional[str]]:
+    ) -> tuple[str | None, str | None]:
         """Determine start and end positions from beat data."""
         # Extract from metadata if available
         start_pos = beat_data.metadata.get("start_pos")
@@ -177,7 +177,7 @@ class GlyphGenerationService(IGlyphGenerationService):
 
         return None, None
 
-    def _vtg_to_elemental(self, vtg_mode: Optional[VTGMode]) -> Optional[ElementalType]:
+    def _vtg_to_elemental(self, vtg_mode: VTGMode | None) -> ElementalType | None:
         """Convert VTG mode to elemental type."""
         if not vtg_mode:
             return None
@@ -193,7 +193,7 @@ class GlyphGenerationService(IGlyphGenerationService):
 
         return vtg_to_elemental_map.get(vtg_mode)
 
-    def _build_letter_type_map(self) -> Dict[str, LetterType]:
+    def _build_letter_type_map(self) -> dict[str, LetterType]:
         """Build letter type mapping."""
         return {
             # Type 1 letters (show elemental and VTG glyphs)
@@ -251,7 +251,7 @@ class GlyphGenerationService(IGlyphGenerationService):
             "Γ": LetterType.TYPE6,
         }
 
-    def _build_glyph_mappings(self) -> Dict[str, str]:
+    def _build_glyph_mappings(self) -> dict[str, str]:
         """Build glyph symbol mappings."""
         return {
             "blue_pro_red_anti": "⚡",

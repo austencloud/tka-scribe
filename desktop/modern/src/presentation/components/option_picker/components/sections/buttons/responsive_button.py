@@ -1,7 +1,11 @@
-from typing import Optional, TYPE_CHECKING, Dict
-from PyQt6.QtWidgets import QPushButton, QLabel, QHBoxLayout
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
+from PyQt6.QtCore import QSize, Qt, pyqtSignal
 from PyQt6.QtGui import QFont, QMouseEvent
-from PyQt6.QtCore import Qt, QSize, pyqtSignal
+from PyQt6.QtWidgets import QHBoxLayout, QLabel, QPushButton
+
 
 if TYPE_CHECKING:
     from .option_picker_section import OptionPickerSection
@@ -15,7 +19,7 @@ class ResponsiveSectionButton(QPushButton):
 
     clicked = pyqtSignal()
 
-    def __init__(self, section_widget: "OptionPickerSection"):
+    def __init__(self, section_widget: OptionPickerSection):
         super().__init__(section_widget)
         self.section_widget = section_widget
         self.is_expanded = True
@@ -23,7 +27,7 @@ class ResponsiveSectionButton(QPushButton):
         self.setCursor(Qt.CursorShape.PointingHandCursor)
 
         # Dynamic sizing properties
-        self._responsive_sizing: Optional[Dict] = None
+        self._responsive_sizing: dict | None = None
         self._min_font_size = 8
         self._max_font_size = 16
         self._font_scale_factor = 0.7  # Proportion of header height for font
@@ -43,7 +47,7 @@ class ResponsiveSectionButton(QPushButton):
         self._paint_text(section_widget.letter_type)
         self._set_initial_styles()
 
-    def set_responsive_sizing(self, sizing_config: Dict):
+    def set_responsive_sizing(self, sizing_config: dict):
         """Update button sizing based on responsive sizing configuration"""
         self._responsive_sizing = sizing_config
         self._apply_responsive_sizing()
@@ -129,7 +133,7 @@ class ResponsiveSectionButton(QPushButton):
         self.label.setFont(font)
         self._update_style()
 
-    def _update_style(self, background_color: Optional[str] = None) -> None:
+    def _update_style(self, background_color: str | None = None) -> None:
         """Update button styling with responsive dimensions"""
         background_color = background_color or "rgba(255, 255, 255, 0.3)"
 

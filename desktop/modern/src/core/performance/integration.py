@@ -5,9 +5,11 @@ Integration points for the TKA performance framework with existing codebase comp
 Provides seamless integration with DI container, Qt components, and monitoring systems.
 """
 
-import logging
+from __future__ import annotations
+
 from functools import wraps
-from typing import Any, Callable, Dict, Optional
+import logging
+from typing import Any, Callable
 
 from .config import get_performance_config
 from .memory_tracker import get_memory_tracker
@@ -15,6 +17,7 @@ from .memory_tracker import get_memory_tracker
 # Result pattern removed - using simple exceptions
 from .profiler import get_profiler, profile
 from .qt_profiler import get_qt_profiler
+
 
 logger = logging.getLogger(__name__)
 
@@ -43,7 +46,7 @@ class PerformanceIntegration:
 
         Returns:
             True if successful
-            
+
         Raises:
             RuntimeError: If initialization fails
         """
@@ -75,8 +78,10 @@ class PerformanceIntegration:
             return True
 
         except Exception as e:
-            logger.error(f"Failed to initialize performance integration: {e}")
-            raise RuntimeError(f"Failed to initialize performance integration: {e}") from e
+            logger.exception(f"Failed to initialize performance integration: {e}")
+            raise RuntimeError(
+                f"Failed to initialize performance integration: {e}"
+            ) from e
 
     def shutdown(self) -> bool:
         """
@@ -84,7 +89,7 @@ class PerformanceIntegration:
 
         Returns:
             True if successful
-            
+
         Raises:
             RuntimeError: If shutdown fails
         """
@@ -109,13 +114,17 @@ class PerformanceIntegration:
             return True
 
         except Exception as e:
-            logger.error(f"Failed to shutdown performance integration: {e}")
-            raise RuntimeError(f"Failed to shutdown performance integration: {e}") from e
+            logger.exception(f"Failed to shutdown performance integration: {e}")
+            raise RuntimeError(
+                f"Failed to shutdown performance integration: {e}"
+            ) from e
 
     def _integrate_with_di_container(self):
         """Integrate with DI container for service resolution monitoring."""
         try:
-            from desktop.modern.core.dependency_injection.di_container import DIContainer
+            from desktop.modern.src.core.dependency_injection.di_container import (
+                DIContainer,
+            )
 
             # Monkey patch the resolve method to add profiling
             original_resolve = DIContainer.resolve
@@ -214,7 +223,7 @@ class PerformanceIntegration:
             Decorator function
         """
 
-        de(func: Callable) -> Callable:
+        def decorator(func: Callable) -> Callable:
             @wraps(func)
             def wrapper(*args, **kwargs):
                 if not self._integration_active:
@@ -241,7 +250,7 @@ class PerformanceIntegration:
 
         return decorator
 
-    def get_performance_status(self) -> Dict[str, Any]:
+    def get_performance_status(self) -> dict[str, Any]:
         """
         Get current performance monitoring status.
 
@@ -277,7 +286,7 @@ class PerformanceIntegration:
         }
 
     def start_performance_session(
-        self, session_name: Optional[str] = None
+        self, session_name: str | None = None
     ) -> Result[str, AppError]:
         """
         Start a comprehensive performance monitoring session.
@@ -323,7 +332,7 @@ class PerformanceIntegration:
         logger.info(f"Started comprehensive performance session: {session_id}")
         return success(session_id)
 
-    def stop_performance_session(self) -> Result[Optional[Dict[str, Any]], AppError]:
+    def stop_performance_session(self) -> Result[dict[str, Any] | None, AppError]:
         """
         Stop the current performance monitoring session.
 
@@ -395,7 +404,7 @@ class PerformanceIntegration:
                             "type": "performance",
                             "priority": "high" if metrics.avg_time > 0.5 else "medium",
                             "function": func_name,
-                            "issue": f"High execution time ({metrics.avg_time*1000:.1f}ms average)",
+                            "issue": f"High execution time ({metrics.avg_time * 1000:.1f}ms average)",
                             "recommendation": "Consider optimization, caching, or background processing",
                         }
                     )
@@ -418,7 +427,7 @@ class PerformanceIntegration:
 
 
 # Global integration instance
-_global_integration: Optional[PerformanceIntegration] = None
+_global_integration: PerformanceIntegration | None = None
 
 
 def get_performance_integration() -> PerformanceIntegration:

@@ -6,10 +6,9 @@ This class preserves all original UI layout logic including
 main window sizing, workbench/picker ratio calculations,
 and component size calculations.
 """
+from __future__ import annotations
 
-from typing import Tuple
-
-from core.types import Size
+from desktop.modern.src.core.types import Size
 
 
 class UILayoutProvider:
@@ -21,7 +20,7 @@ class UILayoutProvider:
     and component size calculations.
     """
 
-    def __init__(self, main_window_size: Size, layout_ratio: Tuple[int, int]):
+    def __init__(self, main_window_size: Size, layout_ratio: tuple[int, int]):
         """Initialize with window size and layout ratio."""
         self._main_window_size = main_window_size
         self._layout_ratio = layout_ratio
@@ -62,11 +61,11 @@ class UILayoutProvider:
 
         return Size(picker_width, usable_height)
 
-    def get_layout_ratio(self) -> Tuple[int, int]:
+    def get_layout_ratio(self) -> tuple[int, int]:
         """Get the layout ratio (workbench:picker)."""
         return self._layout_ratio
 
-    def set_layout_ratio(self, ratio: Tuple[int, int]) -> None:
+    def set_layout_ratio(self, ratio: tuple[int, int]) -> None:
         """Set the layout ratio."""
         self._layout_ratio = ratio
 
@@ -79,25 +78,24 @@ class UILayoutProvider:
             # Beat frame takes most of the workbench area
             return Size(int(parent_width * 0.85), int(parent_height * 0.9))
 
-        elif component_type == "button_panel":
+        if component_type == "button_panel":
             # Button panel is narrow vertical strip
             return Size(int(parent_width * 0.15), int(parent_height * 0.9))
 
-        elif component_type == "option_picker":
+        if component_type == "option_picker":
             # Option picker takes full picker area
             return Size(parent_width, parent_height)
 
-        elif component_type == "start_position_picker":
+        if component_type == "start_position_picker":
             # Start position picker takes full picker area
             return Size(parent_width, parent_height)
 
-        elif component_type == "pictograph":
+        if component_type == "pictograph":
             # Individual pictograph size
             return Size(120, 120)
 
-        else:
-            # Default size for unknown components
-            return Size(int(parent_width * 0.8), int(parent_height * 0.8))
+        # Default size for unknown components
+        return Size(int(parent_width * 0.8), int(parent_height * 0.8))
 
     def set_main_window_size(self, size: Size) -> None:
         """Set the main window size (for dynamic updates)."""

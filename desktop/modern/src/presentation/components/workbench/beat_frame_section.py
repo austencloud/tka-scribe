@@ -1,17 +1,21 @@
-from typing import TYPE_CHECKING, Optional
+from __future__ import annotations
 
-from core.interfaces.core_services import ILayoutService
-from domain.models.beat_data import BeatData
-from domain.models.pictograph_data import PictographData
-from domain.models.sequence_data import SequenceData
+from typing import TYPE_CHECKING
+
 from PyQt6.QtCore import pyqtSignal
 from PyQt6.QtWidgets import QHBoxLayout, QWidget
+
+from desktop.modern.src.core.interfaces.core_services import ILayoutService
+from desktop.modern.src.domain.models.beat_data import BeatData
+from desktop.modern.src.domain.models.pictograph_data import PictographData
+from desktop.modern.src.domain.models.sequence_data import SequenceData
 
 from .button_panel import SequenceWorkbenchButtonPanel
 from .sequence_beat_frame.sequence_beat_frame import SequenceBeatFrame
 
+
 if TYPE_CHECKING:
-    from application.services.workbench.beat_selection_service import (
+    from desktop.modern.src.application.services.workbench.beat_selection_service import (
         BeatSelectionService,
     )
 
@@ -40,18 +44,18 @@ class WorkbenchBeatFrameSection(QWidget):
     def __init__(
         self,
         layout_service: ILayoutService,
-        beat_selection_service: "BeatSelectionService",
-        parent: Optional[QWidget] = None,
+        beat_selection_service: BeatSelectionService,
+        parent: QWidget | None = None,
     ):
         super().__init__(parent)
         self._layout_service = layout_service
         self._beat_selection_service = beat_selection_service
-        self._current_sequence: Optional[SequenceData] = None
-        self._start_position_data: Optional[BeatData] = None
+        self._current_sequence: SequenceData | None = None
+        self._start_position_data: BeatData | None = None
 
         # Components
-        self._beat_frame: Optional[SequenceBeatFrame] = None
-        self._button_panel: Optional[SequenceWorkbenchButtonPanel] = None
+        self._beat_frame: SequenceBeatFrame | None = None
+        self._button_panel: SequenceWorkbenchButtonPanel | None = None
 
         self._setup_ui()
         self._connect_signals()
@@ -133,7 +137,7 @@ class WorkbenchBeatFrameSection(QWidget):
 
         self.clear_sequence_requested.emit()
 
-    def set_sequence(self, sequence: Optional[SequenceData]):
+    def set_sequence(self, sequence: SequenceData | None):
         """Set the current sequence"""
         # Removed repetitive debug logs
 
@@ -150,7 +154,7 @@ class WorkbenchBeatFrameSection(QWidget):
     def set_start_position(
         self,
         start_position_data: BeatData,
-        pictograph_data: Optional["PictographData"] = None,
+        pictograph_data: PictographData | None = None,
     ):
         """
         Set the start position with optional separate pictograph data.
@@ -175,7 +179,7 @@ class WorkbenchBeatFrameSection(QWidget):
         else:
             print("❌ [BEAT_FRAME_SECTION] No beat frame available!")
 
-    def get_selected_beat_index(self) -> Optional[int]:
+    def get_selected_beat_index(self) -> int | None:
         """Get selected beat index from beat frame"""
         return self._beat_frame.get_selected_beat_index() if self._beat_frame else None
 

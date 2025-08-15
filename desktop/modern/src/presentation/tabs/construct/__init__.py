@@ -18,11 +18,13 @@ Business Logic Services (moved to application layer):
 """
 
 # Services moved to application layer
-from application.services.sequence.loader import SequenceLoader
-from application.services.sequence.sequence_beat_operations import (
+from __future__ import annotations
+
+from desktop.modern.src.application.services.sequence.loader import SequenceLoader
+from desktop.modern.src.application.services.sequence.sequence_beat_operations import (
     SequenceBeatOperations,
 )
-from application.services.sequence.sequence_start_position_manager import (
+from desktop.modern.src.application.services.sequence.sequence_start_position_manager import (
     SequenceStartPositionManager,
 )
 
@@ -31,14 +33,15 @@ from .option_picker_manager import OptionPickerManager
 from .signal_coordinator import SignalCoordinator
 from .start_position_handler import StartPositionHandler
 
+
 __all__ = [
     # Presentation components (local)
     "ConstructTabLayoutManager",
-    "StartPositionHandler",
     "OptionPickerManager",
-    "SignalCoordinator",
+    "SequenceBeatOperations",
     # Business services (re-exported from application layer)
     "SequenceLoader",
-    "SequenceBeatOperations",
     "SequenceStartPositionManager",
+    "SignalCoordinator",
+    "StartPositionHandler",
 ]

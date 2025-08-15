@@ -4,28 +4,29 @@ Performance Monitor Widget
 Qt widget for real-time performance monitoring and visualization.
 Provides live updates of performance metrics, memory usage, and system status.
 """
+from __future__ import annotations
 
-import logging
-from typing import Optional
 from datetime import datetime
+import logging
+
 
 try:
+    from PyQt6.QtCore import QTimer, pyqtSignal
     from PyQt6.QtWidgets import (
-        QWidget,
-        QVBoxLayout,
+        QFrame,
+        QGridLayout,
+        QGroupBox,
         QHBoxLayout,
         QLabel,
         QProgressBar,
+        QPushButton,
         QTableWidget,
         QTableWidgetItem,
         QTabWidget,
-        QPushButton,
         QTextEdit,
-        QGroupBox,
-        QGridLayout,
-        QFrame,
+        QVBoxLayout,
+        QWidget,
     )
-    from PyQt6.QtCore import QTimer, pyqtSignal
 
     QT_AVAILABLE = True
 except ImportError:
@@ -35,8 +36,13 @@ except ImportError:
     def pyqtSignal(*_args, **_kwargs):
         return None
 0
-from core.performance import get_profiler, get_qt_profiler, get_memory_tracker
-from core.performance.config import get_performance_config
+from desktop.modern.src.core.performance import (
+    get_memory_tracker,
+    get_profiler,
+    get_qt_profiler,
+)
+from desktop.modern.src.core.performance.config import get_performance_config
+
 
 logger = logging.getLogger(__name__)
 
@@ -73,7 +79,7 @@ class PerformanceMonitorWidget(QWidget if QT_AVAILABLE else object):
         self.config = get_performance_config()
 
         # UI state
-        self.current_session_id: Optional[str] = None
+        self.current_session_id: str | None = None
         self.update_timer = QTimer()
         self.update_timer.timeout.connect(self.update_metrics)
 
@@ -300,7 +306,7 @@ class PerformanceMonitorWidget(QWidget if QT_AVAILABLE else object):
 
         except Exception as e:
             self.status_label.setText(f"Error: {e}")
-            logger.error(f"Error starting session: {e}")
+            logger.exception(f"Error starting session: {e}")
 
     def stop_session(self):
         """Stop the current profiling session."""
@@ -334,7 +340,7 @@ class PerformanceMonitorWidget(QWidget if QT_AVAILABLE else object):
 
         except Exception as e:
             self.status_label.setText(f"Error: {e}")
-            logger.error(f"Error stopping session: {e}")
+            logger.exception(f"Error stopping session: {e}")
 
     def clear_data(self):
         """Clear all performance data."""
@@ -357,7 +363,7 @@ class PerformanceMonitorWidget(QWidget if QT_AVAILABLE else object):
             logger.info("Performance data cleared")
 
         except Exception as e:
-            logger.error(f"Error clearing data: {e}")
+            logger.exception(f"Error clearing data: {e}")
 
     def start_monitoring(self):
         """Start real-time monitoring updates."""
@@ -399,7 +405,7 @@ class PerformanceMonitorWidget(QWidget if QT_AVAILABLE else object):
             )
 
         except Exception as e:
-            logger.error(f"Error updating metrics: {e}")
+            logger.exception(f"Error updating metrics: {e}")
 
     def update_memory_display(self):
         """Update memory usage display."""

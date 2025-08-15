@@ -12,7 +12,7 @@ from typing import TYPE_CHECKING
 
 # Use TYPE_CHECKING to avoid circular imports
 if TYPE_CHECKING:
-    from desktop.modern.core.interfaces.generation_services import (
+    from desktop.modern.src.core.interfaces.generation_services import (
         CAPType,
         GenerationMetadata,
         GenerationMode,

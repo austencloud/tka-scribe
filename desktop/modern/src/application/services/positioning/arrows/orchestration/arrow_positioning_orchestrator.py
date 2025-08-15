@@ -4,21 +4,24 @@ Arrow Positioning Orchestrator
 Coordinates microservices to provide the same interface as the monolith.
 Uses dependency injection to compose positioning pipeline.
 """
+from __future__ import annotations
 
 import logging
-from typing import Tuple
 
-from core.interfaces.positioning_services import (
+from desktop.modern.src.core.interfaces.positioning_services import (
     IArrowAdjustmentCalculator,
     IArrowCoordinateSystemService,
     IArrowLocationCalculator,
     IArrowPositioningOrchestrator,
     IArrowRotationCalculator,
 )
-from domain.models.arrow_data import ArrowData
-from domain.models.motion_models import MotionData
-from domain.models.pictograph_data import PictographData
-from presentation.components.pictograph.graphics_items.arrow_item import ArrowItem
+from desktop.modern.src.domain.models.arrow_data import ArrowData
+from desktop.modern.src.domain.models.motion_models import MotionData
+from desktop.modern.src.domain.models.pictograph_data import PictographData
+from desktop.modern.src.presentation.components.pictograph.graphics_items.arrow_item import (
+    ArrowItem,
+)
+
 
 logger = logging.getLogger(__name__)
 
@@ -48,7 +51,7 @@ class ArrowPositioningOrchestrator(IArrowPositioningOrchestrator):
         arrow_data: ArrowData,
         pictograph_data: PictographData,
         motion_data: MotionData = None,
-    ) -> Tuple[float, float, float]:
+    ) -> tuple[float, float, float]:
         """Calculate arrow position using streamlined microservices pipeline."""
         motion = motion_data or self._get_motion_from_pictograph(
             arrow_data, pictograph_data
@@ -105,7 +108,7 @@ class ArrowPositioningOrchestrator(IArrowPositioningOrchestrator):
         return updated_pictograph
 
     def should_mirror_arrow(
-        self, arrow_data: ArrowData, pictograph_data: "PictographData" = None
+        self, arrow_data: ArrowData, pictograph_data: PictographData = None
     ) -> bool:
         """Determine if arrow should be mirrored."""
         motion = None
@@ -120,8 +123,7 @@ class ArrowPositioningOrchestrator(IArrowPositioningOrchestrator):
 
         if motion_type == "anti":
             return self.mirror_conditions["anti"].get(prop_rot_dir, False)
-        else:
-            return self.mirror_conditions["other"].get(prop_rot_dir, False)
+        return self.mirror_conditions["other"].get(prop_rot_dir, False)
 
     def apply_mirror_transform(
         self, arrow_item: ArrowItem, should_mirror: bool
@@ -159,11 +161,11 @@ class ArrowPositioningOrchestrator(IArrowPositioningOrchestrator):
         if hasattr(initial_position, "x") and hasattr(initial_position, "y"):
             return initial_position
 
-        from core.types.geometry import Point
+        from desktop.modern.src.core.types.geometry import Point
 
         return Point(475.0, 475.0)
 
-    def _extract_adjustment_values(self, adjustment) -> Tuple[float, float]:
+    def _extract_adjustment_values(self, adjustment) -> tuple[float, float]:
         """Extract x and y values from adjustment object."""
         if isinstance(adjustment, (int, float)):
             return adjustment, adjustment

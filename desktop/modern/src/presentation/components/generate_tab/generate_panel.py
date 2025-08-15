@@ -4,15 +4,8 @@ Modern Generate Panel for Modern Generate Tab.
 This panel contains all the generation controls and orchestrates the generation workflow
 following Modern's modern UI patterns and clean architecture.
 """
+from __future__ import annotations
 
-from typing import Optional
-
-from core.interfaces.generation_services import GenerationMode
-from domain.models.generation_models import (
-    GenerationConfig,
-    GenerationResult,
-    GenerationState,
-)
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtGui import QFont
 from PyQt6.QtWidgets import (
@@ -25,6 +18,13 @@ from PyQt6.QtWidgets import (
     QTextEdit,
     QVBoxLayout,
     QWidget,
+)
+
+from desktop.modern.src.core.interfaces.generation_services import GenerationMode
+from desktop.modern.src.domain.models.generation_models import (
+    GenerationConfig,
+    GenerationResult,
+    GenerationState,
 )
 
 from .generation_controls import (
@@ -44,7 +44,7 @@ class GeneratePanel(QWidget):
     auto_complete_requested = pyqtSignal()
     config_changed = pyqtSignal(GenerationConfig)
 
-    def __init__(self, parent: Optional[QWidget] = None):
+    def __init__(self, parent: QWidget | None = None):
         super().__init__(parent)
         self._current_config = GenerationConfig()
         self._current_state = GenerationState(config=self._current_config)

@@ -4,11 +4,13 @@ Graph Editor State Manager - Graph Editor Specific State
 Handles graph editor visibility, height, and other graph editor specific state.
 Extracted from UIStateManager to follow single responsibility principle.
 """
+from __future__ import annotations
 
 import logging
-from typing import Any, Dict
+from typing import Any
 
-from core.events.event_bus import UIEvent, get_event_bus
+from desktop.modern.src.core.events.event_bus import UIEvent, get_event_bus
+
 
 logger = logging.getLogger(__name__)
 
@@ -16,7 +18,7 @@ logger = logging.getLogger(__name__)
 class GraphEditorStateManager:
     """
     Graph editor state management.
-    
+
     Handles:
     - Graph editor visibility
     - Graph editor height
@@ -87,14 +89,14 @@ class GraphEditorStateManager:
             )
             self._event_bus.publish(event)
 
-    def get_graph_editor_state(self) -> Dict[str, Any]:
+    def get_graph_editor_state(self) -> dict[str, Any]:
         """Get complete graph editor state."""
         return {
             "visible": self._graph_editor_visible,
             "height": self._graph_editor_height,
         }
 
-    def set_graph_editor_state(self, state: Dict[str, Any]) -> None:
+    def set_graph_editor_state(self, state: dict[str, Any]) -> None:
         """Set complete graph editor state."""
         if "visible" in state:
             self.set_graph_editor_visible(state["visible"])
@@ -115,14 +117,14 @@ class GraphEditorStateManager:
         )
         self._event_bus.publish(event)
 
-    def get_state_for_persistence(self) -> Dict[str, Any]:
+    def get_state_for_persistence(self) -> dict[str, Any]:
         """Get state data for persistence."""
         return {
             "graph_editor_visible": self._graph_editor_visible,
             "graph_editor_height": self._graph_editor_height,
         }
 
-    def load_state_from_persistence(self, state: Dict[str, Any]) -> None:
+    def load_state_from_persistence(self, state: dict[str, Any]) -> None:
         """Load state from persistence data."""
         if "graph_editor_visible" in state:
             self._graph_editor_visible = state["graph_editor_visible"]

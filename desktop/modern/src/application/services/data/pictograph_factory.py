@@ -4,24 +4,28 @@ Pictograph Factory
 Handles creation and conversion of PictographData and BeatData objects.
 Focused solely on object creation and data transformation logic.
 """
+from __future__ import annotations
 
 import logging
-from typing import Optional
 
 import pandas as pd
-from application.services.glyphs.glyph_data_service import GlyphDataService
-from domain.models.arrow_data import ArrowData
-from domain.models.beat_data import BeatData
-from domain.models.enums import (
+
+from desktop.modern.src.application.services.glyphs.glyph_data_service import (
+    GlyphDataService,
+)
+from desktop.modern.src.domain.models.arrow_data import ArrowData
+from desktop.modern.src.domain.models.beat_data import BeatData
+from desktop.modern.src.domain.models.enums import (
     GridMode,
     Location,
     MotionType,
     Orientation,
     RotationDirection,
 )
-from domain.models.grid_data import GridData
-from domain.models.motion_models import MotionData
-from domain.models.pictograph_data import PictographData
+from desktop.modern.src.domain.models.grid_data import GridData
+from desktop.modern.src.domain.models.motion_models import MotionData
+from desktop.modern.src.domain.models.pictograph_data import PictographData
+
 
 logger = logging.getLogger(__name__)
 
@@ -123,13 +127,13 @@ class PictographFactory:
             return pictograph_data.update(glyph_data=glyph_data)
 
         except Exception as e:
-            logger.error(f"Error creating pictograph data from entry: {e}")
+            logger.exception(f"Error creating pictograph data from entry: {e}")
             # Return minimal valid pictograph data as fallback
             return self._create_fallback_pictograph_data(entry, grid_mode)
 
     def _create_motion_data_from_entry(
         self, entry: pd.Series, color: str
-    ) -> Optional[MotionData]:
+    ) -> MotionData | None:
         """
         Create MotionData from dataset entry for a specific color.
 
@@ -194,7 +198,9 @@ class PictographFactory:
             BeatData object with embedded pictograph data
         """
         # Use BeatFactory for consistent beat creation with embedded pictograph
-        from application.services.sequence.beat_factory import BeatFactory
+        from desktop.modern.src.application.services.sequence.beat_factory import (
+            BeatFactory,
+        )
 
         return BeatFactory.create_from_pictograph(pictograph_data, beat_number)
 

@@ -12,15 +12,18 @@ This service provides the exact same logic as the legacy system:
 
 Ported from legacy placement logic for exact parity.
 """
+from __future__ import annotations
 
 import logging
-from typing import Optional
 
-from application.services.pictograph.pictograph_validator import PictographValidator
-from domain.models.enums import Orientation
-from domain.models.letter_type_classifier import LetterTypeClassifier
-from domain.models.motion_models import MotionData
-from domain.models.arrow_data import ArrowData, PictographData
+from desktop.modern.src.application.services.pictograph.pictograph_validator import (
+    PictographValidator,
+)
+from desktop.modern.src.domain.models.arrow_data import ArrowData, PictographData
+from desktop.modern.src.domain.models.enums import Orientation
+from desktop.modern.src.domain.models.letter_type_classifier import LetterTypeClassifier
+from desktop.modern.src.domain.models.motion_models import MotionData
+
 
 logger = logging.getLogger(__name__)
 
@@ -47,12 +50,11 @@ class PlacementKeyGenerationService:
         """
         if has_hybrid_orientation and motion_end_ori in ["IN", "OUT"]:
             return "radial_"
-        elif has_hybrid_orientation and motion_end_ori in ["CLOCK", "COUNTER"]:
+        if has_hybrid_orientation and motion_end_ori in ["CLOCK", "COUNTER"]:
             return "nonradial_"
-        else:
-            return ""
+        return ""
 
-    def _get_letter_suffix(self, letter: Optional[str]) -> str:
+    def _get_letter_suffix(self, letter: str | None) -> str:
         """
         Generate letter suffix component.
 
@@ -70,8 +72,7 @@ class PlacementKeyGenerationService:
         if letter_type in ["Type3", "Type5"]:
             # Remove the dash and add "_dash" suffix
             return f"_{letter[:-1]}_dash"
-        else:
-            return f"_{letter}"
+        return f"_{letter}"
 
     def _get_key_middle(
         self,
@@ -188,10 +189,9 @@ class PlacementKeyGenerationService:
         """
         if key_with_letter in default_placements:
             return key_with_letter
-        elif key in default_placements:
+        if key in default_placements:
             return key
-        else:
-            return motion_type
+        return motion_type
 
     def _get_motion_end_orientation(self, motion_data: MotionData) -> str:
         """Extract motion end orientation as string."""

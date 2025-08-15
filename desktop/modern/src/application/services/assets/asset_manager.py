@@ -4,15 +4,18 @@ Asset Manager Service
 Manages SVG assets, file paths, and color transformations for pictograph rendering.
 Framework-agnostic service that handles asset loading, caching, and color transformations.
 """
+from __future__ import annotations
 
+from functools import lru_cache
 import logging
 import os
 import re
-from functools import lru_cache
-from typing import Dict, Optional, Set
 
+from desktop.modern.src.application.services.assets.image_asset_utils import (
+    get_image_path,
+)
 from domain.models import MotionData, MotionType
-from application.services.assets.image_asset_utils import get_image_path
+
 
 logger = logging.getLogger(__name__)
 
@@ -26,10 +29,10 @@ class AssetManager:
     """
 
     # Class-level cache statistics for monitoring
-    _cache_stats: Dict[str, int] = {"hits": 0, "misses": 0, "total_files_cached": 0}
+    _cache_stats: dict[str, int] = {"hits": 0, "misses": 0, "total_files_cached": 0}
 
     # Track cached files for cache management
-    _cached_files: Set[str] = set()
+    _cached_files: set[str] = set()
 
     # Color mapping for SVG transformations
     COLOR_MAP = {
@@ -58,28 +61,27 @@ class AssetManager:
             return get_image_path(
                 f"arrows_colored/static/{color}/from_radial/static_{turns_str}.svg"
             )
-        elif motion_data.motion_type == MotionType.PRO:
+        if motion_data.motion_type == MotionType.PRO:
             return get_image_path(
                 f"arrows_colored/pro/{color}/from_radial/pro_{turns_str}.svg"
             )
-        elif motion_data.motion_type == MotionType.ANTI:
+        if motion_data.motion_type == MotionType.ANTI:
             return get_image_path(
                 f"arrows_colored/anti/{color}/from_radial/anti_{turns_str}.svg"
             )
-        elif motion_data.motion_type == MotionType.DASH:
+        if motion_data.motion_type == MotionType.DASH:
             return get_image_path(
                 f"arrows_colored/dash/{color}/from_radial/dash_{turns_str}.svg"
             )
-        elif motion_data.motion_type == MotionType.FLOAT:
+        if motion_data.motion_type == MotionType.FLOAT:
             return get_image_path(f"arrows_colored/{color}/float.svg")
-        else:
-            # Fallback to static for unknown motion types
-            logger.warning(
-                f"Unknown motion type: {motion_data.motion_type}, using static fallback"
-            )
-            return get_image_path(
-                f"arrows_colored/static/{color}/from_radial/static_{turns_str}.svg"
-            )
+        # Fallback to static for unknown motion types
+        logger.warning(
+            f"Unknown motion type: {motion_data.motion_type}, using static fallback"
+        )
+        return get_image_path(
+            f"arrows_colored/static/{color}/from_radial/static_{turns_str}.svg"
+        )
 
     def get_fallback_arrow_asset_path(self, motion_data: MotionData) -> str:
         """
@@ -95,22 +97,21 @@ class AssetManager:
 
         if motion_data.motion_type == MotionType.STATIC:
             return get_image_path(f"arrows/static/from_radial/static_{turns_str}.svg")
-        elif motion_data.motion_type == MotionType.PRO:
+        if motion_data.motion_type == MotionType.PRO:
             return get_image_path(f"arrows/pro/from_radial/pro_{turns_str}.svg")
-        elif motion_data.motion_type == MotionType.ANTI:
+        if motion_data.motion_type == MotionType.ANTI:
             return get_image_path(f"arrows/anti/from_radial/anti_{turns_str}.svg")
-        elif motion_data.motion_type == MotionType.DASH:
+        if motion_data.motion_type == MotionType.DASH:
             return get_image_path(f"arrows/dash/from_radial/dash_{turns_str}.svg")
-        elif motion_data.motion_type == MotionType.FLOAT:
+        if motion_data.motion_type == MotionType.FLOAT:
             return get_image_path("arrows/float.svg")
-        else:
-            # Fallback to static for unknown motion types
-            logger.warning(
-                f"Unknown motion type: {motion_data.motion_type}, using static fallback"
-            )
-            return get_image_path(f"arrows/static/from_radial/static_{turns_str}.svg")
+        # Fallback to static for unknown motion types
+        logger.warning(
+            f"Unknown motion type: {motion_data.motion_type}, using static fallback"
+        )
+        return get_image_path(f"arrows/static/from_radial/static_{turns_str}.svg")
 
-    def get_prop_asset_path(self, prop_type: str, color: Optional[str] = None) -> str:
+    def get_prop_asset_path(self, prop_type: str, color: str | None = None) -> str:
         """
         Generate prop asset file path.
 
@@ -124,9 +125,8 @@ class AssetManager:
         # For now, only staff props are supported
         if prop_type == "staff":
             return get_image_path("props/staff.svg")
-        else:
-            logger.warning(f"Unknown prop type: {prop_type}, using staff fallback")
-            return get_image_path("props/staff.svg")
+        logger.warning(f"Unknown prop type: {prop_type}, using staff fallback")
+        return get_image_path("props/staff.svg")
 
     def apply_color_transformation(self, svg_data: str, color: str) -> str:
         """
@@ -188,7 +188,7 @@ class AssetManager:
     def _load_svg_file_cached(self, file_path: str) -> str:
         """Cached SVG file loader with LRU eviction."""
         try:
-            with open(file_path, "r", encoding="utf-8") as file:
+            with open(file_path, encoding="utf-8") as file:
                 content = file.read()
 
                 # Track this file as cached
@@ -245,7 +245,7 @@ class AssetManager:
             logger.warning(f"Failed to pre-load common SVG files: {e}")
 
     @classmethod
-    def get_cache_stats(cls) -> Dict[str, int]:
+    def get_cache_stats(cls) -> dict[str, int]:
         """Get current cache statistics for monitoring."""
         return cls._cache_stats.copy()
 
@@ -284,7 +284,6 @@ class AssetManager:
                     f"cache size: {cache_info.currsize}/{cache_info.maxsize}, "
                     f"hit rate: {hit_rate:.1f}%, files tracked: {len(cls._cached_files)}"
                 )
-            else:
-                return f"Cache info: files tracked: {len(cls._cached_files)}"
+            return f"Cache info: files tracked: {len(cls._cached_files)}"
         except Exception as e:
             return f"Cache info unavailable: {e}"

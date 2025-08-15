@@ -5,10 +5,10 @@ Add this single import to your main.py for instant relief from verbose arrow pos
 
 USAGE:
     # Add ONE line to the top of your main.py or application startup:
-    from desktop.modern.core.logging.instant_fix import apply_instant_fix; apply_instant_fix()
+    from desktop.modern.src.core.logging.instant_fix import apply_instant_fix; apply_instant_fix()
 
     # OR use the function approach:
-    from desktop.modern.core.logging.instant_fix import apply_instant_fix
+    from desktop.modern.src.core.logging.instant_fix import apply_instant_fix
     apply_instant_fix(mode='quiet')  # 'quiet', 'normal', or 'debug'
 
 WHAT IT DOES:
@@ -131,5 +131,5 @@ if __name__ == "__main__":
 
     print("\n✅ Instant fix ready for use!")
     print("\n💡 Usage in your code:")
-    print("   from desktop.modern.core.logging.instant_fix import apply_instant_fix")
+    print("   from desktop.modern.src.core.logging.instant_fix import apply_instant_fix")
     print("   apply_instant_fix('quiet')  # Add to main.py")

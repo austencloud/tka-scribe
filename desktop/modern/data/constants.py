@@ -1,13 +1,14 @@
-import os
+from __future__ import annotations
 
-current_script_path = os.path.abspath(__file__).replace("\\", "/")
-current_script_path = current_script_path[0].upper() + current_script_path[1:]
+from pathlib import Path
 
-current_dir = os.path.dirname(current_script_path)
-tka_sequence_constructor_dir = os.path.dirname(current_dir)
-tka_app_dir = os.path.dirname(tka_sequence_constructor_dir)
 
-special_placements_parent_directory = os.path.join("")
+current_script_path = Path(__file__).resolve()
+current_dir = current_script_path.parent
+tka_sequence_constructor_dir = current_dir.parent
+tka_app_dir = tka_sequence_constructor_dir.parent
+
+special_placements_parent_directory = Path()
 
 INTEGER_TURNS = [0.0, 1.0, 2.0, 3.0]
 

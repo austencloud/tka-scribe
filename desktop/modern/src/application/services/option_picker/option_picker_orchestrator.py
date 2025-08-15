@@ -21,15 +21,15 @@ from typing import Any, Callable
 from PyQt6.QtCore import QObject, pyqtSignal
 from PyQt6.QtWidgets import QWidget
 
-from core.dependency_injection.di_container import DIContainer
-from core.interfaces.option_picker_interfaces import (
+from desktop.modern.src.core.dependency_injection.di_container import DIContainer
+from desktop.modern.src.core.interfaces.option_picker_interfaces import (
     IOptionPickerDisplayService,
     IOptionPickerEventService,
     IOptionPickerInitializer,
 )
-from domain.models.pictograph_data import PictographData
-from domain.models.sequence_data import SequenceData
-from presentation.components.option_picker.components.sections.section_widget import (
+from desktop.modern.src.domain.models.pictograph_data import PictographData
+from desktop.modern.src.domain.models.sequence_data import SequenceData
+from desktop.modern.src.presentation.components.option_picker.components.sections.section_widget import (
     OptionPickerSection,
 )
 
@@ -81,21 +81,21 @@ class OptionPickerOrchestrator(QObject):
 
         # Initialize services with dependency injection
         if initialization_service is None:
-            from application.services.option_picker.option_picker_initializer import (
+            from desktop.modern.src.application.services.option_picker.option_picker_initializer import (
                 OptionPickerInitializer,
             )
 
             initialization_service = OptionPickerInitializer()
 
         if display_service is None:
-            from application.services.option_picker.option_picker_display_manager import (
+            from desktop.modern.src.application.services.option_picker.option_picker_display_manager import (
                 OptionPickerDisplayManager,
             )
 
             display_service = OptionPickerDisplayManager()
 
         if event_service is None:
-            from application.services.option_picker.option_picker_event_service import (
+            from desktop.modern.src.application.services.option_picker.option_picker_event_service import (
                 OptionPickerEventService,
             )
 
@@ -247,7 +247,7 @@ class OptionPickerOrchestrator(QObject):
             self._initialized = True
 
         except Exception as e:
-            logger.error(f"Failed to initialize option picker orchestrator: {e}")
+            logger.exception(f"Failed to initialize option picker orchestrator: {e}")
             raise
 
     def get_widget(self) -> QWidget:
@@ -293,7 +293,7 @@ class OptionPickerOrchestrator(QObject):
             )
 
         except Exception as e:
-            logger.error(f"Error loading motion combinations: {e}")
+            logger.exception(f"Error loading motion combinations: {e}")
 
     def _apply_display_strategy(self, display_strategy: dict) -> None:
         """
@@ -370,7 +370,7 @@ class OptionPickerOrchestrator(QObject):
             logger.debug("Display strategy applied successfully")
 
         except Exception as e:
-            logger.error(f"Error applying display strategy: {e}")
+            logger.exception(f"Error applying display strategy: {e}")
             import traceback
 
             traceback.print_exc()
@@ -400,10 +400,10 @@ class OptionPickerOrchestrator(QObject):
             # Import section widget class
             from PyQt6.QtWidgets import QHBoxLayout
 
-            from presentation.components.option_picker.components.sections.section_widget import (
+            from desktop.modern.src.presentation.components.option_picker.components.sections.section_widget import (
                 OptionPickerSection,
             )
-            from presentation.components.option_picker.types.letter_types import (
+            from desktop.modern.src.presentation.components.option_picker.types.letter_types import (
                 LetterType,
             )
 
@@ -453,7 +453,7 @@ class OptionPickerOrchestrator(QObject):
             logger.debug(f"Successfully created {len(self.sections)} section widgets")
 
         except Exception as e:
-            logger.error(f"Error creating sections: {e}")
+            logger.exception(f"Error creating sections: {e}")
             import traceback
 
             traceback.print_exc()
@@ -496,7 +496,7 @@ class OptionPickerOrchestrator(QObject):
             logger.debug(f"Successfully made {len(self.sections)} sections visible")
 
         except Exception as e:
-            logger.error(f"Error making widgets visible: {e}")
+            logger.exception(f"Error making widgets visible: {e}")
             import traceback
 
             traceback.print_exc()
@@ -514,11 +514,10 @@ class OptionPickerOrchestrator(QObject):
                 f"✅ Found existing section for {letter_type}: {type(section)}"
             )
             return section
-        else:
-            logger.warning(
-                f"❌ No section found for {letter_type} - sections available: {list(self.sections.keys())}"
-            )
-            return None
+        logger.warning(
+            f"❌ No section found for {letter_type} - sections available: {list(self.sections.keys())}"
+        )
+        return None
 
     def refresh_options(self) -> None:
         """Refresh the option picker with latest pictograph options."""
@@ -539,7 +538,7 @@ class OptionPickerOrchestrator(QObject):
             logger.debug(f"Refreshed options: {len(pictograph_options)} options")
 
         except Exception as e:
-            logger.error(f"Error refreshing options: {e}")
+            logger.exception(f"Error refreshing options: {e}")
 
     def refresh_from_sequence(self, sequence: SequenceData) -> None:
         """
@@ -560,7 +559,7 @@ class OptionPickerOrchestrator(QObject):
             # FIXED: Convert options_by_type dict to flat list for display service
             # The display service expects a flat list of PictographData, not a dict by type
             updated_options = []
-            for letter_type, options_list in options_by_type.items():
+            for _letter_type, options_list in options_by_type.items():
                 updated_options.extend(options_list)
 
             # Update display with orientation-corrected options (flat list)
@@ -577,7 +576,7 @@ class OptionPickerOrchestrator(QObject):
             )
 
         except Exception as e:
-            logger.error(f"Error refreshing from modern sequence: {e}")
+            logger.exception(f"Error refreshing from modern sequence: {e}")
 
     def get_pictograph_for_option(self, option_id: str) -> PictographData | None:
         """
@@ -605,7 +604,7 @@ class OptionPickerOrchestrator(QObject):
             return None
 
         except Exception as e:
-            logger.error(f"Error getting pictograph for option: {e}")
+            logger.exception(f"Error getting pictograph for option: {e}")
             return None
 
     def cleanup(self) -> None:
@@ -632,7 +631,7 @@ class OptionPickerOrchestrator(QObject):
             logger.debug("Option picker orchestrator cleaned up")
 
         except Exception as e:
-            logger.error(f"Error during cleanup: {e}")
+            logger.exception(f"Error during cleanup: {e}")
 
     def _create_size_provider(self) -> Callable:
         """Create size provider function for display manager."""
@@ -644,8 +643,7 @@ class OptionPickerOrchestrator(QObject):
                 actual_width = self.option_picker_widget.width()
                 actual_height = self.option_picker_widget.height()
                 return QSize(actual_width, actual_height)
-            else:
-                return QSize(1200, 800)
+            return QSize(1200, 800)
 
         return size_provider
 

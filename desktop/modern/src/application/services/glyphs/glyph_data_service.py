@@ -4,8 +4,7 @@ Glyph Data Service for Kinetic Constructor
 This service determines glyph information (VTG mode, elemental type, letter type, etc.)
 from pictograph data and motion information, following validated glyph classification logic.
 """
-
-from typing import Optional
+from __future__ import annotations
 
 from domain.models import (
     BeatData,
@@ -81,7 +80,7 @@ class GlyphDataService:
 
     def determine_glyph_data(
         self, pictograph_data: PictographData
-    ) -> Optional[GlyphData]:
+    ) -> GlyphData | None:
         """
         Determine glyph data from pictograph information.
 
@@ -122,7 +121,7 @@ class GlyphDataService:
 
     def determine_glyph_data_from_beat(
         self, beat_data: BeatData
-    ) -> Optional[GlyphData]:
+    ) -> GlyphData | None:
         """
         Backward compatibility method to determine glyph data from beat data.
 
@@ -138,7 +137,7 @@ class GlyphDataService:
 
     def _beat_data_to_pictograph_data(self, beat_data: BeatData) -> PictographData:
         """Convert BeatData to PictographData for glyph processing."""
-        from domain.models.arrow_data import ArrowData, GridData
+        from desktop.modern.src.domain.models.arrow_data import ArrowData, GridData
 
         # Create arrows from motion data
         arrows = {}
@@ -156,12 +155,12 @@ class GlyphDataService:
             is_blank=beat_data.is_blank,
         )
 
-    def _determine_letter_type(self, letter: str) -> Optional[LetterType]:
+    def _determine_letter_type(self, letter: str) -> LetterType | None:
         """Determine the letter type from the letter string."""
         # Use the full letter string (not just first character) for compound letters like "W-"
         return self.LETTER_TYPE_MAP.get(letter)
 
-    def _determine_vtg_mode(self, pictograph_data: PictographData) -> Optional[VTGMode]:
+    def _determine_vtg_mode(self, pictograph_data: PictographData) -> VTGMode | None:
         """
         Determine VTG mode from motion data.
 
@@ -199,9 +198,9 @@ class GlyphDataService:
 
         if timing == "split":
             return VTGMode.SPLIT_SAME if is_same_direction else VTGMode.SPLIT_OPP
-        elif timing == "together":
+        if timing == "together":
             return VTGMode.TOG_SAME if is_same_direction else VTGMode.TOG_OPP
-        elif timing == "quarter":
+        if timing == "quarter":
             return VTGMode.QUARTER_SAME if is_same_direction else VTGMode.QUARTER_OPP
 
         return VTGMode.SPLIT_SAME  # Default fallback
@@ -229,12 +228,11 @@ class GlyphDataService:
 
         if red_start == opposite_locations.get(blue_start):
             return "split"
-        elif blue_start == red_start:
+        if blue_start == red_start:
             return "together"
-        else:
-            return "quarter"
+        return "quarter"
 
-    def _vtg_to_elemental(self, vtg_mode: Optional[VTGMode]) -> Optional[ElementalType]:
+    def _vtg_to_elemental(self, vtg_mode: VTGMode | None) -> ElementalType | None:
         """Convert VTG mode to elemental type."""
         if not vtg_mode:
             return None
@@ -251,7 +249,7 @@ class GlyphDataService:
 
     def _determine_positions(
         self, pictograph_data: PictographData
-    ) -> tuple[Optional[str], Optional[str]]:
+    ) -> tuple[str | None, str | None]:
         """Determine start and end positions from pictograph data."""
         # First try to use the explicit start/end positions from pictograph data
         if pictograph_data.start_position and pictograph_data.end_position:

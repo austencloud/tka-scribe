@@ -6,13 +6,15 @@ Focused solely on data access and file I/O operations.
 
 CORRECTION: Keep existing method signatures, add interface for future flexibility.
 """
+from __future__ import annotations
 
-import logging
 from abc import ABC, abstractmethod
-from typing import Optional
+import logging
 
 import pandas as pd
-from infrastructure.data_path_handler import DataPathHandler
+
+from desktop.modern.src.infrastructure.data_path_handler import DataPathHandler
+
 
 logger = logging.getLogger(__name__)
 
@@ -31,22 +33,22 @@ class IDatasetLoader(ABC):
         pass
 
     @abstractmethod
-    def get_diamond_dataset(self) -> Optional[pd.DataFrame]:
+    def get_diamond_dataset(self) -> pd.DataFrame | None:
         """Get the diamond dataset."""
         pass
 
     @abstractmethod
-    def get_box_dataset(self) -> Optional[pd.DataFrame]:
+    def get_box_dataset(self) -> pd.DataFrame | None:
         """Get the box dataset."""
         pass
 
     @abstractmethod
-    def get_combined_dataset(self) -> Optional[pd.DataFrame]:
+    def get_combined_dataset(self) -> pd.DataFrame | None:
         """Get the combined dataset."""
         pass
 
     @abstractmethod
-    def get_dataset_by_mode(self, grid_mode: str) -> Optional[pd.DataFrame]:
+    def get_dataset_by_mode(self, grid_mode: str) -> pd.DataFrame | None:
         """Get dataset by grid mode ('diamond' or 'box')."""
         pass
 
@@ -82,9 +84,9 @@ class DatasetLoader(IDatasetLoader):
     def __init__(self):
         """Initialize the dataset loader."""
         self._data_handler = DataPathHandler()
-        self._diamond_dataset: Optional[pd.DataFrame] = None
-        self._box_dataset: Optional[pd.DataFrame] = None
-        self._combined_dataset: Optional[pd.DataFrame] = None
+        self._diamond_dataset: pd.DataFrame | None = None
+        self._box_dataset: pd.DataFrame | None = None
+        self._combined_dataset: pd.DataFrame | None = None
         self._datasets_loaded = False
 
     def load_datasets(self) -> bool:
@@ -107,7 +109,7 @@ class DatasetLoader(IDatasetLoader):
             return True
 
         except Exception as e:
-            logger.error(f"Error loading datasets: {e}")
+            logger.exception(f"Error loading datasets: {e}")
             self._create_empty_datasets()
             self._datasets_loaded = (
                 True  # Mark as loaded even if failed to prevent retries
@@ -145,37 +147,37 @@ class DatasetLoader(IDatasetLoader):
         self._box_dataset = pd.DataFrame()
         self._combined_dataset = pd.DataFrame()
 
-    def get_diamond_dataset(self) -> Optional[pd.DataFrame]:
+    def get_diamond_dataset(self) -> pd.DataFrame | None:
         """Get the diamond dataset."""
         try:
             if not self._datasets_loaded:
                 self.load_datasets()
             return self._diamond_dataset
         except Exception as e:
-            logger.error(f"Failed to get diamond dataset: {e}")
+            logger.exception(f"Failed to get diamond dataset: {e}")
             return None
 
-    def get_box_dataset(self) -> Optional[pd.DataFrame]:
+    def get_box_dataset(self) -> pd.DataFrame | None:
         """Get the box dataset."""
         try:
             if not self._datasets_loaded:
                 self.load_datasets()
             return self._box_dataset
         except Exception as e:
-            logger.error(f"Failed to get box dataset: {e}")
+            logger.exception(f"Failed to get box dataset: {e}")
             return None
 
-    def get_combined_dataset(self) -> Optional[pd.DataFrame]:
+    def get_combined_dataset(self) -> pd.DataFrame | None:
         """Get the combined dataset."""
         try:
             if not self._datasets_loaded:
                 self.load_datasets()
             return self._combined_dataset
         except Exception as e:
-            logger.error(f"Failed to get combined dataset: {e}")
+            logger.exception(f"Failed to get combined dataset: {e}")
             return None
 
-    def get_dataset_by_mode(self, grid_mode: str) -> Optional[pd.DataFrame]:
+    def get_dataset_by_mode(self, grid_mode: str) -> pd.DataFrame | None:
         """Get dataset by grid mode."""
         try:
             if not self._datasets_loaded:
@@ -183,13 +185,12 @@ class DatasetLoader(IDatasetLoader):
 
             if grid_mode == "diamond":
                 return self._diamond_dataset
-            elif grid_mode == "box":
+            if grid_mode == "box":
                 return self._box_dataset
-            else:
-                logger.warning(f"Unknown grid mode: {grid_mode}")
-                return None
+            logger.warning(f"Unknown grid mode: {grid_mode}")
+            return None
         except Exception as e:
-            logger.error(f"Failed to get dataset by mode: {e}")
+            logger.exception(f"Failed to get dataset by mode: {e}")
             return None
 
     def is_dataset_available(self, grid_mode: str) -> bool:
@@ -198,7 +199,7 @@ class DatasetLoader(IDatasetLoader):
             dataset = self.get_dataset_by_mode(grid_mode)
             return dataset is not None and not dataset.empty
         except Exception as e:
-            logger.error(f"Failed to check dataset availability: {e}")
+            logger.exception(f"Failed to check dataset availability: {e}")
             return False
 
     def get_dataset_info(self) -> dict:
@@ -228,7 +229,7 @@ class DatasetLoader(IDatasetLoader):
                 "datasets_loaded": self._datasets_loaded,
             }
         except Exception as e:
-            logger.error(f"Failed to get dataset info: {e}")
+            logger.exception(f"Failed to get dataset info: {e}")
             return {}
 
     def reload_datasets(self) -> bool:
@@ -240,7 +241,7 @@ class DatasetLoader(IDatasetLoader):
             self._combined_dataset = None
             return self.load_datasets()
         except Exception as e:
-            logger.error(f"Failed to reload datasets: {e}")
+            logger.exception(f"Failed to reload datasets: {e}")
             return False
 
     def clear_cache(self) -> bool:
@@ -253,5 +254,5 @@ class DatasetLoader(IDatasetLoader):
             logger.info("Dataset cache cleared")
             return True
         except Exception as e:
-            logger.error(f"Failed to clear cache: {e}")
+            logger.exception(f"Failed to clear cache: {e}")
             return False

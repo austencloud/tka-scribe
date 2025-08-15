@@ -2,21 +2,26 @@
 Option Picker Section Widget - Main UI Component
 Split from option_picker_section.py - contains core section widget logic
 """
+from __future__ import annotations
 
 from typing import TYPE_CHECKING, Callable
 
-from presentation.components.option_picker.components.sections.section_container import (
-    OptionPickerSectionPictographContainer,
-)
-from presentation.components.option_picker.components.sections.section_header import (
-    OptionPickerSectionHeader,
-)
-from presentation.components.option_picker.types.letter_types import LetterType
 from PyQt6.QtCore import QSize, Qt
 from PyQt6.QtWidgets import QGroupBox, QVBoxLayout
 
+from desktop.modern.src.presentation.components.option_picker.components.sections.section_container import (
+    OptionPickerSectionPictographContainer,
+)
+from desktop.modern.src.presentation.components.option_picker.components.sections.section_header import (
+    OptionPickerSectionHeader,
+)
+from desktop.modern.src.presentation.components.option_picker.types.letter_types import (
+    LetterType,
+)
+
+
 if TYPE_CHECKING:
-    from application.services.option_picker.section_layout_manager import (
+    from desktop.modern.src.application.services.option_picker.section_layout_manager import (
         SectionLayoutManager,
     )
 
@@ -30,9 +35,9 @@ class OptionPickerSection(QGroupBox):
     def __init__(
         self,
         letter_type: str,
-        layout_service: "SectionLayoutManager" = None,
+        layout_service: SectionLayoutManager = None,
         parent=None,
-        option_picker_size_provider: Callable[[], QSize] = None,
+        option_picker_size_provider: Callable[[], QSize] | None = None,
     ):
         super().__init__(parent)
         self.letter_type = letter_type
@@ -44,10 +49,10 @@ class OptionPickerSection(QGroupBox):
         ]
 
         # Initialize layout manager with service
-        from application.services.option_picker.section_layout_manager import (
+        from desktop.modern.src.application.services.option_picker.section_layout_manager import (
             SectionLayoutManager as BusinessLayoutService,
         )
-        from presentation.components.option_picker.components.sections.section_layout_manager import (
+        from desktop.modern.src.presentation.components.option_picker.components.sections.section_layout_manager import (
             SectionLayoutPresenter as UILayoutPresenter,
         )
 
@@ -121,7 +126,7 @@ class OptionPickerSection(QGroupBox):
             for i, frame in enumerate(pictograph_frames):
                 logger.debug(f"   📦 Processing frame {i}: {id(frame)}")
                 # Add without triggering size updates
-                logger.debug(f"   🔧 Calling add_pictograph on container...")
+                logger.debug("   🔧 Calling add_pictograph on container...")
                 self.section_pictograph_container.add_pictograph(frame)
                 logger.debug(f"   ✅ add_pictograph completed for frame {i}")
 

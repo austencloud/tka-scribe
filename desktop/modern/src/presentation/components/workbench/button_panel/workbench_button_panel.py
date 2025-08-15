@@ -1,7 +1,8 @@
-from typing import Optional, Dict
-from PyQt6.QtWidgets import QWidget, QVBoxLayout, QPushButton, QSpacerItem, QSizePolicy
-from PyQt6.QtCore import pyqtSignal, Qt
+from __future__ import annotations
+
+from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtGui import QFont
+from PyQt6.QtWidgets import QPushButton, QSizePolicy, QSpacerItem, QVBoxLayout, QWidget
 
 
 class SequenceWorkbenchButtonPanel(QWidget):
@@ -19,9 +20,9 @@ class SequenceWorkbenchButtonPanel(QWidget):
     clear_sequence_requested = pyqtSignal()
     edit_construct_toggle_requested = pyqtSignal(bool)
 
-    def __init__(self, parent: Optional[QWidget] = None):
+    def __init__(self, parent: QWidget | None = None):
         super().__init__(parent)
-        self._buttons: Dict[str, QPushButton] = {}
+        self._buttons: dict[str, QPushButton] = {}
         self._edit_mode = False  # Track current mode: False = Construct, True = Edit
         self._setup_ui()
         self._apply_styling()

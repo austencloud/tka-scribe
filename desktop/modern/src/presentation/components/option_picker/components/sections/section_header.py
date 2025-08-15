@@ -1,8 +1,12 @@
+from __future__ import annotations
+
 from typing import TYPE_CHECKING
-from PyQt6.QtWidgets import QWidget, QHBoxLayout
+
+from PyQt6.QtWidgets import QHBoxLayout, QWidget
+
 
 if TYPE_CHECKING:
-    from presentation.components.option_picker.components.sections.section_widget import (
+    from desktop.modern.src.presentation.components.option_picker.components.sections.section_widget import (
         OptionPickerSection,
     )
 
@@ -13,7 +17,7 @@ class OptionPickerSectionHeader(QWidget):
     Contains the type button and handles header-specific layout.
     """
 
-    def __init__(self, section: "OptionPickerSection"):
+    def __init__(self, section: OptionPickerSection):
         super().__init__()
         self.section = section
         self._setup_ui()
@@ -29,7 +33,7 @@ class OptionPickerSectionHeader(QWidget):
 
         # Import and create the button
 
-        from presentation.components.option_picker.components.sections.buttons.section_button import (
+        from desktop.modern.src.presentation.components.option_picker.components.sections.buttons.section_button import (
             OptionPickerSectionButton,
         )
 

@@ -4,17 +4,22 @@ ConstructTabLayoutManager
 Handles UI layout setup, panel creation, and widget management for the construct tab.
 Responsible for creating the main layout structure and organizing UI components.
 """
+from __future__ import annotations
 
-from typing import TYPE_CHECKING, Callable, Optional
+from typing import TYPE_CHECKING, Callable
 
-from core.dependency_injection.di_container import DIContainer
-from presentation.components.option_picker.core.option_picker import OptionPicker
-from presentation.factories.workbench_factory import create_modern_workbench
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QHBoxLayout, QLabel, QStackedWidget, QVBoxLayout, QWidget
 
+from desktop.modern.src.core.dependency_injection.di_container import DIContainer
+from desktop.modern.src.presentation.components.option_picker.core.option_picker import (
+    OptionPicker,
+)
+from presentation.factories.workbench_factory import create_modern_workbench
+
+
 if TYPE_CHECKING:
-    from presentation.components.workbench.sequence_beat_frame.sequence_beat_frame import (
+    from desktop.modern.src.presentation.components.workbench.sequence_beat_frame.sequence_beat_frame import (
         SequenceBeatFrame,
     )
 
@@ -33,7 +38,7 @@ class ConstructTabLayoutManager:
     def __init__(
         self,
         container: DIContainer,
-        progress_callback: Optional[Callable[[str, float], None]] = None,
+        progress_callback: Callable[[str, float], None] | None = None,
     ):
         self.container = container
         self.progress_callback = progress_callback
@@ -156,7 +161,9 @@ class ConstructTabLayoutManager:
         layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(0)
         try:
-            from presentation.components.graph_editor.graph_editor import GraphEditor
+            from desktop.modern.src.presentation.components.graph_editor.graph_editor import (
+                GraphEditor,
+            )
 
             self.graph_editor = GraphEditor(
                 graph_service=None,
@@ -197,7 +204,7 @@ class ConstructTabLayoutManager:
         beat_frame_section = getattr(self.workbench, "_beat_frame_section", None)
         if not beat_frame_section:
             return
-        beat_frame: "SequenceBeatFrame" = getattr(
+        beat_frame: SequenceBeatFrame = getattr(
             beat_frame_section, "_beat_frame", None
         )
         if not beat_frame:
@@ -213,16 +220,16 @@ class ConstructTabLayoutManager:
             return
         current_sequence = self.workbench.get_sequence()
         if not current_sequence:
-            print(f"⚠️ No current sequence available")
+            print("⚠️ No current sequence available")
             return
         # Removed repetitive debug log
         if beat_index == -1:
             start_position_data = getattr(self.workbench, "_start_position_data", None)
             if start_position_data:
                 self.graph_editor.set_selected_beat_data(-1, start_position_data)
-                print(f"✅ Graph editor updated with start position")
+                print("✅ Graph editor updated with start position")
             else:
-                print(f"⚠️ No start position data available")
+                print("⚠️ No start position data available")
             return
         if 0 <= beat_index < len(current_sequence.beats):
             beat_data = current_sequence.beats[beat_index]

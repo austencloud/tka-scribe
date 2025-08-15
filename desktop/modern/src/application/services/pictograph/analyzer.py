@@ -5,12 +5,11 @@ This service analyzes pictograph data to extract information needed for
 arrow positioning, dash location calculations, and other pictograph operations.
 It provides comprehensive pictograph analysis functionality.
 """
+from __future__ import annotations
 
-from typing import Optional
-
-from domain.models import ArrowColor, BeatData, LetterType, Location
-from domain.models.enums import GridMode
-from domain.models.pictograph_data import PictographData
+from desktop.modern.src.domain.models.enums import GridMode
+from desktop.modern.src.domain.models.pictograph_data import PictographData
+from domain.models import ArrowColor, LetterType, Location
 
 
 class PictographAnalyzer:
@@ -116,7 +115,7 @@ class PictographAnalyzer:
 
     def _get_shift_location(
         self, pictograph_data: PictographData
-    ) -> Optional[Location]:
+    ) -> Location | None:
         """
         Extract shift arrow location for Type 3 calculations using proven algorithms.
 

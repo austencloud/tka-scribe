@@ -4,11 +4,13 @@ Option Picker State Manager - Option Picker Specific State
 Handles option picker selection, filters, and other option picker specific state.
 Extracted from UIStateManager to follow single responsibility principle.
 """
+from __future__ import annotations
 
 import logging
-from typing import Any, Dict, Optional
+from typing import Any
 
-from core.events.event_bus import UIEvent, get_event_bus
+from desktop.modern.src.core.events.event_bus import UIEvent, get_event_bus
+
 
 logger = logging.getLogger(__name__)
 
@@ -16,7 +18,7 @@ logger = logging.getLogger(__name__)
 class OptionPickerStateManager:
     """
     Option picker state management.
-    
+
     Handles:
     - Option picker selection
     - Option picker filters
@@ -30,14 +32,14 @@ class OptionPickerStateManager:
         self._event_bus = get_event_bus()
 
         # Option picker state
-        self._option_picker_selection: Optional[str] = None
-        self._option_picker_filters: Dict[str, Any] = {}
+        self._option_picker_selection: str | None = None
+        self._option_picker_filters: dict[str, Any] = {}
 
-    def get_option_picker_selection(self) -> Optional[str]:
+    def get_option_picker_selection(self) -> str | None:
         """Get option picker selection."""
         return self._option_picker_selection
 
-    def set_option_picker_selection(self, selection: Optional[str]) -> None:
+    def set_option_picker_selection(self, selection: str | None) -> None:
         """Set option picker selection."""
         previous_selection = self._option_picker_selection
         self._option_picker_selection = selection
@@ -58,11 +60,11 @@ class OptionPickerStateManager:
         """Clear option picker selection."""
         self.set_option_picker_selection(None)
 
-    def get_option_picker_filters(self) -> Dict[str, Any]:
+    def get_option_picker_filters(self) -> dict[str, Any]:
         """Get option picker filters."""
         return self._option_picker_filters.copy()
 
-    def update_option_picker_filters(self, filters: Dict[str, Any]) -> None:
+    def update_option_picker_filters(self, filters: dict[str, Any]) -> None:
         """Update option picker filters."""
         previous_filters = self._option_picker_filters.copy()
         self._option_picker_filters.update(filters)
@@ -120,14 +122,14 @@ class OptionPickerStateManager:
         )
         self._event_bus.publish(event)
 
-    def get_option_picker_state(self) -> Dict[str, Any]:
+    def get_option_picker_state(self) -> dict[str, Any]:
         """Get complete option picker state."""
         return {
             "selection": self._option_picker_selection,
             "filters": self._option_picker_filters.copy(),
         }
 
-    def set_option_picker_state(self, state: Dict[str, Any]) -> None:
+    def set_option_picker_state(self, state: dict[str, Any]) -> None:
         """Set complete option picker state."""
         if "selection" in state:
             self.set_option_picker_selection(state["selection"])
@@ -148,14 +150,14 @@ class OptionPickerStateManager:
         )
         self._event_bus.publish(event)
 
-    def get_state_for_persistence(self) -> Dict[str, Any]:
+    def get_state_for_persistence(self) -> dict[str, Any]:
         """Get state data for persistence."""
         return {
             "option_picker_selection": self._option_picker_selection,
             "option_picker_filters": self._option_picker_filters.copy(),
         }
 
-    def load_state_from_persistence(self, state: Dict[str, Any]) -> None:
+    def load_state_from_persistence(self, state: dict[str, Any]) -> None:
         """Load state from persistence data."""
         if "option_picker_selection" in state:
             self._option_picker_selection = state["option_picker_selection"]

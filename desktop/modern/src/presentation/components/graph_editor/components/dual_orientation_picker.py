@@ -19,27 +19,28 @@ Architecture:
 - Maintains clean separation between UI and business logic
 - Supports dependency injection for service integration
 """
+from __future__ import annotations
 
 import logging
-from typing import Optional
 
-from domain.models import BeatData, Orientation
-from presentation.components.graph_editor.components.turn_adjustment_controls.styling_helpers import (
-    apply_modern_panel_styling,
-    apply_turn_button_styling,
-    UNIFIED_BUTTON_WIDTH,
-    UNIFIED_BUTTON_HEIGHT,
-    UNIFIED_BUTTON_SPACING,
-)
-from PyQt6.QtCore import pyqtSignal, Qt
+from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtWidgets import (
-    QWidget,
-    QHBoxLayout,
-    QVBoxLayout,
     QGroupBox,
+    QHBoxLayout,
     QLabel,
     QPushButton,
+    QVBoxLayout,
+    QWidget,
 )
+
+from desktop.modern.src.presentation.components.graph_editor.components.turn_adjustment_controls.styling_helpers import (
+    UNIFIED_BUTTON_HEIGHT,
+    UNIFIED_BUTTON_WIDTH,
+    apply_modern_panel_styling,
+    apply_turn_button_styling,
+)
+from domain.models import BeatData, Orientation
+
 
 logger = logging.getLogger(__name__)
 
@@ -73,15 +74,15 @@ class DualOrientationPicker(QWidget):
             parent: Parent widget (typically the graph editor)
         """
         super().__init__(parent)
-        self._current_beat_data: Optional[BeatData] = None
+        self._current_beat_data: BeatData | None = None
 
         # State tracking for orientations
         self._blue_orientation = Orientation.IN
         self._red_orientation = Orientation.IN
 
         # UI component references
-        self._blue_orientation_label: Optional[QLabel] = None
-        self._red_orientation_label: Optional[QLabel] = None
+        self._blue_orientation_label: QLabel | None = None
+        self._red_orientation_label: QLabel | None = None
 
         self._setup_ui()
         logger.debug("DualOrientationPicker initialized")
@@ -220,7 +221,7 @@ class DualOrientationPicker(QWidget):
         self.orientation_changed.emit(color, orientation)
         logger.debug(f"{color.title()} orientation set to: {orientation.value}")
 
-    def set_beat_data(self, beat_data: Optional[BeatData]):
+    def set_beat_data(self, beat_data: BeatData | None):
         """
         Set the current beat data and update the UI.
 
@@ -300,6 +301,6 @@ class DualOrientationPicker(QWidget):
         self._set_orientation("blue", Orientation.IN)
         self._set_orientation("red", Orientation.IN)
 
-    def get_current_beat_data(self) -> Optional[BeatData]:
+    def get_current_beat_data(self) -> BeatData | None:
         """Get the currently set beat data."""
         return self._current_beat_data

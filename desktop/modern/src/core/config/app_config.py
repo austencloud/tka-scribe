@@ -5,7 +5,7 @@ Centralized configuration system to replace scattered config patterns.
 Provides immutable configuration objects with dependency injection support.
 
 USAGE:
-    from desktop.modern.core.config.app_config import create_app_config, AppConfig
+    from desktop.modern.src.core.config.app_config import create_app_config, AppConfig
 
     # Create configuration
     try:
@@ -23,7 +23,7 @@ from dataclasses import dataclass
 import os
 
 # Result pattern removed - using simple exceptions
-from desktop.modern.core.config.data_config import DataConfig, create_data_config
+from desktop.modern.src.core.config.data_config import DataConfig, create_data_config
 
 
 @dataclass(frozen=True)

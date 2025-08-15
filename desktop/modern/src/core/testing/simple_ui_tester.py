@@ -13,11 +13,14 @@ import time
 
 from PyQt6.QtWidgets import QApplication
 
-from desktop.modern.core.application.application_factory import ApplicationFactory
-from desktop.modern.core.testing.ai_agent_helpers import AITestResult, TKAAITestHelper
-from desktop.modern.core.testing.button_tester import ButtonTester
-from desktop.modern.core.testing.component_initializer import ComponentInitializer
-from desktop.modern.core.testing.graph_editor_tester import GraphEditorTester
+from desktop.modern.src.core.application.application_factory import ApplicationFactory
+from desktop.modern.src.core.testing.ai_agent_helpers import (
+    AITestResult,
+    TKAAITestHelper,
+)
+from desktop.modern.src.core.testing.button_tester import ButtonTester
+from desktop.modern.src.core.testing.component_initializer import ComponentInitializer
+from desktop.modern.src.core.testing.graph_editor_tester import GraphEditorTester
 
 
 logger = logging.getLogger(__name__)

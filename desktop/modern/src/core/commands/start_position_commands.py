@@ -11,8 +11,8 @@ import logging
 from typing import Any
 import uuid
 
-from desktop.modern.core.commands.command_system import ICommand
-from desktop.modern.domain.models.beat_data import BeatData
+from desktop.modern.src.core.commands.command_system import ICommand
+from desktop.modern.src.domain.models.beat_data import BeatData
 
 
 logger = logging.getLogger(__name__)
@@ -52,7 +52,9 @@ class SetStartPositionCommand(ICommand[BeatData]):
         """Execute: Set start position and save to persistence"""
         try:
             # Get current state manager to store previous position
-            from desktop.modern.core.service_locator import get_sequence_state_manager
+            from desktop.modern.src.core.service_locator import (
+                get_sequence_state_manager,
+            )
 
             state_manager = get_sequence_state_manager()
             if state_manager:
@@ -110,7 +112,9 @@ class SetStartPositionCommand(ICommand[BeatData]):
         """Create start position data using existing business logic"""
         try:
             # Use existing StartPositionHandler logic
-            from desktop.modern.core.service_locator import get_data_conversion_service
+            from desktop.modern.src.core.service_locator import (
+                get_data_conversion_service,
+            )
 
             data_converter = get_data_conversion_service()
 
@@ -118,10 +122,10 @@ class SetStartPositionCommand(ICommand[BeatData]):
                 raise ValueError("Data conversion service not available")
 
             # Get the dataset query service
-            from desktop.modern.application.services.data.dataset_query import (
+            from desktop.modern.src.application.services.data.dataset_query import (
                 DatasetQuery,
             )
-            from desktop.modern.domain.models.glyph_models import GlyphData
+            from desktop.modern.src.domain.models.glyph_models import GlyphData
 
             dataset_service = DatasetQuery()
 
@@ -161,7 +165,7 @@ class SetStartPositionCommand(ICommand[BeatData]):
     def _save_to_persistence(self, beat_data: BeatData):
         """Save start position to persistence"""
         try:
-            from desktop.modern.application.services.sequence.sequence_start_position_manager import (
+            from desktop.modern.src.application.services.sequence.sequence_start_position_manager import (
                 SequenceStartPositionManager,
             )
 
@@ -178,7 +182,7 @@ class SetStartPositionCommand(ICommand[BeatData]):
     def _clear_from_persistence(self):
         """Clear start position from persistence"""
         try:
-            from desktop.modern.application.services.sequence.sequence_start_position_manager import (
+            from desktop.modern.src.application.services.sequence.sequence_start_position_manager import (
                 SequenceStartPositionManager,
             )
 
@@ -222,14 +226,16 @@ class ClearStartPositionCommand(ICommand[None]):
         """Execute: Clear start position"""
         try:
             # Store previous position for undo
-            from desktop.modern.core.service_locator import get_sequence_state_manager
+            from desktop.modern.src.core.service_locator import (
+                get_sequence_state_manager,
+            )
 
             state_manager = get_sequence_state_manager()
             if state_manager:
                 self._previous_position = state_manager.get_start_position()
 
             # Clear from persistence
-            from desktop.modern.application.services.sequence.sequence_start_position_manager import (
+            from desktop.modern.src.application.services.sequence.sequence_start_position_manager import (
                 SequenceStartPositionManager,
             )
 
@@ -247,7 +253,7 @@ class ClearStartPositionCommand(ICommand[None]):
         try:
             if self._previous_position:
                 # Restore previous position
-                from desktop.modern.application.services.sequence.sequence_start_position_manager import (
+                from desktop.modern.src.application.services.sequence.sequence_start_position_manager import (
                     SequenceStartPositionManager,
                 )
 

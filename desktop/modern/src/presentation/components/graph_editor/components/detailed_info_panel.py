@@ -18,13 +18,15 @@ Architecture:
 - Maintains clean separation from business logic
 - Supports dependency injection for future extensibility
 """
+from __future__ import annotations
 
 import logging
-from typing import Optional
 
-from domain.models import BeatData
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QLabel, QVBoxLayout, QWidget
+
+from domain.models import BeatData
+
 
 logger = logging.getLogger(__name__)
 
@@ -137,7 +139,7 @@ class DetailedInfoPanel(QWidget):
         """
         )
 
-    def update_beat_info(self, beat_index: int, beat_data: Optional[BeatData]):
+    def update_beat_info(self, beat_index: int, beat_data: BeatData | None):
         """
         Update the panel with beat information.
 

@@ -5,7 +5,7 @@ import json
 from typing import Any
 import uuid
 
-from desktop.modern.domain.models.enums import PropType
+from desktop.modern.src.domain.models.enums import PropType
 
 from .motion_models import MotionData
 

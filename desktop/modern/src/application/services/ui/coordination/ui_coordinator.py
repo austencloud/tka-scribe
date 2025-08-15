@@ -4,28 +4,38 @@ UI Coordinator - Orchestrates UI State Management
 Coordinates all UI state management components and provides a unified interface.
 Replaces the monolithic UIStateManager with a composition of focused managers.
 """
+from __future__ import annotations
 
 import json
 import logging
 from pathlib import Path
-from typing import Any, Callable, Dict, Optional
+from typing import Any, Callable
 
-from application.services.ui.settings.settings_manager import SettingsManager
-from application.services.ui.state.component_visibility_manager import (
+from desktop.modern.src.application.services.ui.settings.settings_manager import (
+    SettingsManager,
+)
+from desktop.modern.src.application.services.ui.state.component_visibility_manager import (
     ComponentVisibilityManager,
 )
-from application.services.ui.state.graph_editor_state_manager import (
+from desktop.modern.src.application.services.ui.state.graph_editor_state_manager import (
     GraphEditorStateManager,
 )
-from application.services.ui.state.hotkey_registry import HotkeyRegistry
-from application.services.ui.state.option_picker_state_manager import (
+from desktop.modern.src.application.services.ui.state.hotkey_registry import (
+    HotkeyRegistry,
+)
+from desktop.modern.src.application.services.ui.state.option_picker_state_manager import (
     OptionPickerStateManager,
 )
-from application.services.ui.state.tab_state_manager import TabStateManager
-from application.services.ui.state.window_state_manager import WindowStateManager
-from core.events.event_bus import get_event_bus
-from core.interfaces.core_services import IUIStateManager
-from core.interfaces.session_services import ISessionStateTracker
+from desktop.modern.src.application.services.ui.state.tab_state_manager import (
+    TabStateManager,
+)
+from desktop.modern.src.application.services.ui.state.window_state_manager import (
+    WindowStateManager,
+)
+from desktop.modern.src.core.events.event_bus import get_event_bus
+from desktop.modern.src.core.interfaces.core_services import IUIStateManager
+from desktop.modern.src.core.interfaces.session_services import ISessionStateTracker
+
 
 logger = logging.getLogger(__name__)
 
@@ -45,7 +55,7 @@ class UICoordinator(IUIStateManager):
     better separation of concerns and focused responsibilities.
     """
 
-    def __init__(self, session_service: Optional[ISessionStateTracker] = None):
+    def __init__(self, session_service: ISessionStateTracker | None = None):
         """Initialize UI coordinator with focused managers."""
         # Initialize focused managers
         self.settings = SettingsManager()
@@ -85,7 +95,7 @@ class UICoordinator(IUIStateManager):
         if self._session_service:
             self._session_service.mark_interaction()
 
-    def get_all_settings(self) -> Dict[str, Any]:
+    def get_all_settings(self) -> dict[str, Any]:
         """Get all settings."""
         return self.settings.get_all_settings()
 
@@ -110,20 +120,20 @@ class UICoordinator(IUIStateManager):
                 component_visibility=self.component_visibility.get_all_component_visibility(),
             )
 
-    def get_tab_state(self, tab_name: str) -> Dict[str, Any]:
+    def get_tab_state(self, tab_name: str) -> dict[str, Any]:
         """Get state for a specific tab."""
         return self.tab_state.get_tab_state(tab_name)
 
-    def update_tab_state(self, tab_name: str, state: Dict[str, Any]) -> None:
+    def update_tab_state(self, tab_name: str, state: dict[str, Any]) -> None:
         """Update state for a specific tab."""
         self.tab_state.update_tab_state(tab_name, state)
 
     # Window state delegation
-    def get_window_geometry(self) -> Dict[str, int]:
+    def get_window_geometry(self) -> dict[str, int]:
         """Get window geometry."""
         return self.window_state.get_window_geometry()
 
-    def set_window_geometry(self, geometry: Dict[str, int]) -> None:
+    def set_window_geometry(self, geometry: dict[str, int]) -> None:
         """Set window geometry."""
         self.window_state.set_window_geometry(geometry)
 
@@ -154,7 +164,7 @@ class UICoordinator(IUIStateManager):
         return self.hotkey_registry.handle_hotkey(key_combination)
 
     # Graph editor state delegation
-    def get_graph_editor_state(self) -> Dict[str, Any]:
+    def get_graph_editor_state(self) -> dict[str, Any]:
         """Get graph editor state."""
         return self.graph_editor_state.get_graph_editor_state()
 
@@ -167,15 +177,15 @@ class UICoordinator(IUIStateManager):
         self.graph_editor_state.set_graph_editor_height(height)
 
     # Option picker state delegation
-    def get_option_picker_state(self) -> Dict[str, Any]:
+    def get_option_picker_state(self) -> dict[str, Any]:
         """Get option picker state."""
         return self.option_picker_state.get_option_picker_state()
 
-    def set_option_picker_selection(self, selection: Optional[str]) -> None:
+    def set_option_picker_selection(self, selection: str | None) -> None:
         """Set option picker selection."""
         self.option_picker_state.set_option_picker_selection(selection)
 
-    def update_option_picker_filters(self, filters: Dict[str, Any]) -> None:
+    def update_option_picker_filters(self, filters: dict[str, Any]) -> None:
         """Update option picker filters."""
         self.option_picker_state.update_option_picker_filters(filters)
 
@@ -210,7 +220,7 @@ class UICoordinator(IUIStateManager):
         """Load state from file."""
         try:
             if self._state_file.exists():
-                with open(self._state_file, "r", encoding="utf-8") as f:
+                with open(self._state_file, encoding="utf-8") as f:
                     data = json.load(f)
 
                 # Load state into each manager
@@ -236,7 +246,7 @@ class UICoordinator(IUIStateManager):
                     )
 
         except Exception as e:
-            logger.error(f"Failed to load UI state: {e}")
+            logger.exception(f"Failed to load UI state: {e}")
 
     def _save_state(self) -> None:
         """Save state to file."""
@@ -258,7 +268,7 @@ class UICoordinator(IUIStateManager):
                 json.dump(state_data, f, indent=2)
 
         except Exception as e:
-            logger.error(f"Failed to save UI state: {e}")
+            logger.exception(f"Failed to save UI state: {e}")
 
     def _setup_event_subscriptions(self) -> None:
         """Setup event subscriptions for coordination."""
@@ -279,7 +289,7 @@ class UICoordinator(IUIStateManager):
             self._session_service.update_current_sequence(sequence_data, sequence_id)
 
     def update_workbench_selection_with_session(
-        self, beat_index: Optional[int], beat_data: Any, start_position: Any
+        self, beat_index: int | None, beat_data: Any, start_position: Any
     ) -> None:
         """Update workbench selection and save to session."""
         if self._session_service:
@@ -290,7 +300,7 @@ class UICoordinator(IUIStateManager):
     def update_graph_editor_with_session(
         self,
         visible: bool,
-        beat_index: Optional[int] = None,
+        beat_index: int | None = None,
         beat_data: Any = None,
         start_position: Any = None,
     ) -> None:
@@ -306,13 +316,13 @@ class UICoordinator(IUIStateManager):
 
     def update_ui_state_with_session(
         self,
-        active_tab: Optional[str] = None,
-        beat_layout: Optional[Dict[str, Any]] = None,
-        component_visibility: Optional[Dict[str, bool]] = None,
-        graph_editor_visible: Optional[bool] = None,
-        graph_editor_height: Optional[int] = None,
-        option_picker_selection: Optional[str] = None,
-        option_picker_filters: Optional[Dict[str, Any]] = None,
+        active_tab: str | None = None,
+        beat_layout: dict[str, Any] | None = None,
+        component_visibility: dict[str, bool] | None = None,
+        graph_editor_visible: bool | None = None,
+        graph_editor_height: int | None = None,
+        option_picker_selection: str | None = None,
+        option_picker_filters: dict[str, Any] | None = None,
     ) -> None:
         """Update UI state and save to session."""
         # Update local state
@@ -364,5 +374,5 @@ class UICoordinator(IUIStateManager):
 
             return True
         except Exception as e:
-            logger.error(f"Failed to restore session on startup: {e}")
+            logger.exception(f"Failed to restore session on startup: {e}")
             return False

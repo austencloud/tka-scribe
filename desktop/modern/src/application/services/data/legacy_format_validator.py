@@ -4,10 +4,12 @@ Legacy Format Validator - Validates legacy format data before conversion
 Provides comprehensive validation of legacy JSON data to fail fast
 on invalid data and provide clear error messages.
 """
+from __future__ import annotations
 
-import logging
 from dataclasses import dataclass
-from typing import Any, Dict, List, Optional
+import logging
+from typing import Any
+
 
 logger = logging.getLogger(__name__)
 
@@ -17,8 +19,8 @@ class ValidationResult:
     """Result of data validation with detailed error information."""
 
     is_valid: bool
-    errors: List[str]
-    warnings: List[str]
+    errors: list[str]
+    warnings: list[str]
 
     def __post_init__(self):
         if self.errors is None:
@@ -166,7 +168,7 @@ class LegacyFormatValidator:
     @classmethod
     def _validate_motion_attributes(
         cls, attrs: Any, color: str
-    ) -> tuple[List[str], List[str]]:
+    ) -> tuple[list[str], list[str]]:
         """
         Validate motion attributes for a specific color.
 

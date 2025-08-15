@@ -1,4 +1,4 @@
-import random
+from __future__ import annotations
 
 from PyQt6.QtCore import QPointF, Qt
 from PyQt6.QtGui import (
@@ -11,9 +11,15 @@ from PyQt6.QtGui import (
 )
 from PyQt6.QtWidgets import QWidget
 
-from application.services.backgrounds.bubbles.bubble_physics import BubblePhysics
-from application.services.backgrounds.bubbles.fish_movement import FishMovement
-from application.services.backgrounds.bubbles.fish_spawning import FishSpawning
+from desktop.modern.src.application.services.backgrounds.bubbles.bubble_physics import (
+    BubblePhysics,
+)
+from desktop.modern.src.application.services.backgrounds.bubbles.fish_movement import (
+    FishMovement,
+)
+from desktop.modern.src.application.services.backgrounds.bubbles.fish_spawning import (
+    FishSpawning,
+)
 
 from .asset_utils import get_image_path
 from .base_background import BaseBackground

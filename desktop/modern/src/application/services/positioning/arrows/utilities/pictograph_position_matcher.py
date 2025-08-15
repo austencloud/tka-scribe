@@ -7,11 +7,15 @@ The algorithm is simple: find all pictographs where start_pos matches the target
 REFACTORED: Now works with PictographData directly instead of BeatData, following
 the principle that pictographs should be standalone without beat-specific fields.
 """
+from __future__ import annotations
 
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 import pandas as pd
-from application.services.pictograph.pictograph_manager import PictographManager
+
+from desktop.modern.src.application.services.pictograph.pictograph_manager import (
+    PictographManager,
+)
 from domain.models import (
     ArrowData,
     GlyphData,
@@ -39,7 +43,7 @@ class PictographPositionMatcher:
         """Initialize position matching service with Modern's native dataset."""
         self.pictograph_management_service = PictographManager()
 
-        self.pictograph_dataset: Optional[Dict[str, List[Dict[str, Any]]]] = None
+        self.pictograph_dataset: dict[str, list[dict[str, Any]]] | None = None
         self._load_dataset()
 
     def _load_dataset(self):
@@ -59,7 +63,7 @@ class PictographPositionMatcher:
             )
 
             # Log statistics
-            total_pictographs = sum(
+            sum(
                 len(group) for group in self.pictograph_dataset.values()
             )
 
@@ -69,7 +73,7 @@ class PictographPositionMatcher:
 
     def _convert_dataframe_to_grouped_dict(
         self, df: pd.DataFrame
-    ) -> Dict[str, List[Dict[str, Any]]]:
+    ) -> dict[str, list[dict[str, Any]]]:
         """
         Convert pandas DataFrame to grouped dictionary format for position matching.
 
@@ -114,7 +118,7 @@ class PictographPositionMatcher:
 
         return grouped_dict
 
-    def get_next_options(self, last_beat_end_pos: str) -> List[PictographData]:
+    def get_next_options(self, last_beat_end_pos: str) -> list[PictographData]:
         """
         Validated algorithm: find all pictographs where start_pos matches.
 
@@ -143,13 +147,13 @@ class PictographPositionMatcher:
         matches_found = 0
 
         # Validated algorithm implementation
-        for group_key, group in self.pictograph_dataset.items():
+        for _group_key, group in self.pictograph_dataset.items():
             dataset_groups_checked += 1
             for item in group:
                 total_items_checked += 1
                 if item.get("start_pos") == last_beat_end_pos:  # ← THE ENTIRE ALGORITHM
-                    letter = item.get("letter", "Unknown")
-                    end_pos = item.get("end_pos", "N/A")
+                    item.get("letter", "Unknown")
+                    item.get("end_pos", "N/A")
                     matches_found += 1
 
                     try:
@@ -161,7 +165,7 @@ class PictographPositionMatcher:
 
         return next_opts
 
-    def _convert_dict_to_pictograph_data(self, item: Dict[str, Any]) -> PictographData:
+    def _convert_dict_to_pictograph_data(self, item: dict[str, Any]) -> PictographData:
         """Convert dictionary item to PictographData using actual motion data from the dictionary."""
         letter = item.get("letter", "")
 
@@ -249,14 +253,16 @@ class PictographPositionMatcher:
 
     def _generate_glyph_data(
         self, pictograph_data: PictographData
-    ) -> Optional[GlyphData]:
+    ) -> GlyphData | None:
         """Generate glyph data for pictograph data using the glyph data service."""
-        from application.services.glyphs.glyph_data_service import GlyphDataService
+        from desktop.modern.src.application.services.glyphs.glyph_data_service import (
+            GlyphDataService,
+        )
 
         glyph_service = GlyphDataService()
         return glyph_service.determine_glyph_data(pictograph_data)
 
-    def _parse_motion_type(self, motion_type_str: str) -> "MotionType":
+    def _parse_motion_type(self, motion_type_str: str) -> MotionType:
         """Parse motion type string to MotionType enum."""
         from domain.models import MotionType
 
@@ -269,7 +275,7 @@ class PictographPositionMatcher:
         }
         return motion_type_map.get(motion_type_str.lower(), MotionType.STATIC)
 
-    def _parse_rotation_direction(self, rot_dir_str: str) -> "RotationDirection":
+    def _parse_rotation_direction(self, rot_dir_str: str) -> RotationDirection:
         """Parse rotation direction string to RotationDirection enum."""
         from domain.models import RotationDirection
 
@@ -280,7 +286,7 @@ class PictographPositionMatcher:
         }
         return rot_dir_map.get(rot_dir_str.lower(), RotationDirection.NO_ROTATION)
 
-    def _parse_location(self, location_str: str) -> "Location":
+    def _parse_location(self, location_str: str) -> Location:
         """Parse location string to Location enum."""
         from domain.models import Location
 
@@ -296,7 +302,7 @@ class PictographPositionMatcher:
         }
         return location_map.get(location_str.lower(), Location.SOUTH)
 
-    def get_alpha1_options(self) -> List[PictographData]:
+    def get_alpha1_options(self) -> list[PictographData]:
         """
         Convenience method to get Alpha 1 options (the canonical test case).
 
@@ -305,7 +311,7 @@ class PictographPositionMatcher:
         """
         return self.get_next_options("alpha1")
 
-    def get_available_start_positions(self) -> List[str]:
+    def get_available_start_positions(self) -> list[str]:
         """
         Get all available start positions in the dataset.
 
@@ -322,9 +328,9 @@ class PictographPositionMatcher:
                 if start_pos:
                     start_positions.add(start_pos)
 
-        return sorted(list(start_positions))
+        return sorted(start_positions)
 
-    def get_position_statistics(self, position: str) -> Dict[str, Any]:
+    def get_position_statistics(self, position: str) -> dict[str, Any]:
         """
         Get statistics for a specific position.
 
@@ -345,7 +351,9 @@ class PictographPositionMatcher:
             }
 
         # Import here to avoid circular imports
-        from domain.models.letter_type_classifier import LetterTypeClassifier
+        from desktop.modern.src.domain.models.letter_type_classifier import (
+            LetterTypeClassifier,
+        )
 
         letters = [opt.letter or "Unknown" for opt in options]
         letter_types = {}
@@ -362,7 +370,7 @@ class PictographPositionMatcher:
             "unique_letters": len(set(letters)),
         }
 
-    def validate_dataset_integrity(self) -> Dict[str, Any]:
+    def validate_dataset_integrity(self) -> dict[str, Any]:
         """
         Validate the integrity of the loaded dataset.
 

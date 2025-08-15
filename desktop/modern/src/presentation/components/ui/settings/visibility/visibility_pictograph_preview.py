@@ -4,10 +4,17 @@ Real Pictograph Preview Component for Visibility Settings.
 Uses modern PictographScene with modular renderers to show actual pictograph
 that updates in real-time as visibility settings change.
 """
+from __future__ import annotations
 
 import logging
-from typing import Dict, Optional
 
+from PyQt6.QtCore import QPropertyAnimation, Qt, QTimer, pyqtSignal
+from PyQt6.QtGui import QFont
+from PyQt6.QtWidgets import QGraphicsView, QLabel, QSizePolicy, QVBoxLayout, QWidget
+
+from desktop.modern.src.presentation.components.pictograph.pictograph_scene import (
+    PictographScene,
+)
 from domain.models import (
     BeatData,
     ElementalType,
@@ -19,10 +26,7 @@ from domain.models import (
     RotationDirection,
     VTGMode,
 )
-from presentation.components.pictograph.pictograph_scene import PictographScene
-from PyQt6.QtCore import QPropertyAnimation, Qt, QTimer, pyqtSignal
-from PyQt6.QtGui import QFont
-from PyQt6.QtWidgets import QGraphicsView, QLabel, QSizePolicy, QVBoxLayout, QWidget
+
 
 logger = logging.getLogger(__name__)
 
@@ -37,12 +41,12 @@ class VisibilityPictographPreview(QWidget):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.scene: Optional[PictographScene] = None
-        self.view: Optional[QGraphicsView] = None
-        self.sample_beat_data: Optional[BeatData] = None
+        self.scene: PictographScene | None = None
+        self.view: QGraphicsView | None = None
+        self.sample_beat_data: BeatData | None = None
 
         # Animation properties
-        self._fade_animations: Dict[str, QPropertyAnimation] = {}
+        self._fade_animations: dict[str, QPropertyAnimation] = {}
         self._update_timer = QTimer()
         self._update_timer.setSingleShot(True)
         self._update_timer.timeout.connect(self._perform_delayed_update)
@@ -90,7 +94,7 @@ class VisibilityPictographPreview(QWidget):
                 background: rgba(255, 255, 255, 0.1);
                 color: white;
             }
-            
+
             QLabel#preview_title {
                 background: transparent;
                 border: none;
@@ -98,7 +102,7 @@ class VisibilityPictographPreview(QWidget):
                 font-weight: bold;
                 margin-bottom: 5px;
             }
-            
+
             QLabel#preview_info {
                 background: transparent;
                 border: none;
@@ -107,7 +111,7 @@ class VisibilityPictographPreview(QWidget):
                 font-style: italic;
                 margin-top: 5px;
             }
-            
+
             QGraphicsView {
                 background: rgba(0, 0, 0, 0.3);
                 border-radius: 8px;
@@ -177,7 +181,7 @@ class VisibilityPictographPreview(QWidget):
             )
 
         except Exception as e:
-            logger.error(f"Error creating sample data: {e}")
+            logger.exception(f"Error creating sample data: {e}")
             # Create minimal fallback data
             self.sample_beat_data = BeatData(beat_number=1, letter="A", is_blank=True)
 
@@ -197,7 +201,7 @@ class VisibilityPictographPreview(QWidget):
             logger.debug("Initialized pictograph scene for preview")
 
         except Exception as e:
-            logger.error(f"Error initializing scene: {e}")
+            logger.exception(f"Error initializing scene: {e}")
 
     def _fit_view(self):
         """Fit the view to show the entire pictograph optimally."""
@@ -265,30 +269,29 @@ class VisibilityPictographPreview(QWidget):
                         self.sample_beat_data = self.sample_beat_data.update(
                             blue_motion=None
                         )
-                else:
-                    # Restore motion data (recreate if needed)
-                    if color == "red" and not self.sample_beat_data.red_motion:
-                        red_motion = MotionData(
-                            motion_type=MotionType.PRO,
-                            prop_rot_dir=RotationDirection.CLOCKWISE,
-                            start_loc=Location.NORTH,
-                            end_loc=Location.EAST,
-                            turns=0.0,
-                        )
-                        self.sample_beat_data = self.sample_beat_data.update(
-                            red_motion=red_motion
-                        )
-                    elif color == "blue" and not self.sample_beat_data.blue_motion:
-                        blue_motion = MotionData(
-                            motion_type=MotionType.PRO,
-                            prop_rot_dir=RotationDirection.CLOCKWISE,
-                            start_loc=Location.SOUTH,
-                            end_loc=Location.WEST,
-                            turns=0.0,
-                        )
-                        self.sample_beat_data = self.sample_beat_data.update(
-                            blue_motion=blue_motion
-                        )
+                # Restore motion data (recreate if needed)
+                elif color == "red" and not self.sample_beat_data.red_motion:
+                    red_motion = MotionData(
+                        motion_type=MotionType.PRO,
+                        prop_rot_dir=RotationDirection.CLOCKWISE,
+                        start_loc=Location.NORTH,
+                        end_loc=Location.EAST,
+                        turns=0.0,
+                    )
+                    self.sample_beat_data = self.sample_beat_data.update(
+                        red_motion=red_motion
+                    )
+                elif color == "blue" and not self.sample_beat_data.blue_motion:
+                    blue_motion = MotionData(
+                        motion_type=MotionType.PRO,
+                        prop_rot_dir=RotationDirection.CLOCKWISE,
+                        start_loc=Location.SOUTH,
+                        end_loc=Location.WEST,
+                        turns=0.0,
+                    )
+                    self.sample_beat_data = self.sample_beat_data.update(
+                        blue_motion=blue_motion
+                    )
 
             # Schedule delayed update to avoid rapid successive updates
             if animate:
@@ -299,7 +302,7 @@ class VisibilityPictographPreview(QWidget):
             logger.debug(f"Updated {element_type} visibility to {visible}")
 
         except Exception as e:
-            logger.error(f"Error updating visibility for {element_type}: {e}")
+            logger.exception(f"Error updating visibility for {element_type}: {e}")
 
     def _schedule_delayed_update(self):
         """Schedule a delayed update to batch rapid changes."""
@@ -317,7 +320,7 @@ class VisibilityPictographPreview(QWidget):
                 self.scene.update_beat(self.sample_beat_data)
                 self.preview_updated.emit()
             except Exception as e:
-                logger.error(f"Error updating scene: {e}")
+                logger.exception(f"Error updating scene: {e}")
 
     def refresh_preview(self):
         """Force refresh the entire preview."""
@@ -339,4 +342,4 @@ class VisibilityPictographPreview(QWidget):
                 self.scene = None
 
         except Exception as e:
-            logger.error(f"Error during cleanup: {e}")
+            logger.exception(f"Error during cleanup: {e}")

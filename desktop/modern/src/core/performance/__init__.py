@@ -17,7 +17,7 @@ INTEGRATION:
 - Provides foundation for advanced performance analysis
 
 USAGE:
-    from desktop.modern.core.performance import profile, profile_block, get_profiler
+    from desktop.modern.src.core.performance import profile, profile_block, get_profiler
 
     # Decorator usage
     @profile

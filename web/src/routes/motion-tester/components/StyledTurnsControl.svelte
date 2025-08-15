@@ -3,9 +3,11 @@ StyledTurnsControl.svelte - Enhanced turns control
 
 Improved styling for the +/- turns control to match the new visual design.
 Supports float motion with "fl" value and automatic motion type switching.
+Shows Pro/Anti selection modal when leaving float.
 -->
 <script lang="ts">
 	import { MotionType } from '$lib/domain/enums';
+	import ProAntiSelectionModal from './ProAntiSelectionModal.svelte';
 
 	interface Props {
 		turns: number | "fl";
@@ -17,6 +19,11 @@ Supports float motion with "fl" value and automatic motion type switching.
 
 	let { turns, onTurnsChange, onMotionTypeChange, color, currentMotionType }: Props = $props();
 
+	// Modal state for Pro/Anti selection
+	let showProAntiModal = $state(false);
+	let pendingTurnsValue = $state<number>(0);
+	let incrementButtonElement = $state<HTMLButtonElement>();
+
 	// Helper functions for display and logic
 	let displayValue = $derived(turns === "fl" ? "FL" : turns.toString());
 	let numericValue = $derived(turns === "fl" ? -0.5 : turns);
@@ -26,14 +33,16 @@ Supports float motion with "fl" value and automatic motion type switching.
 	function increment() {
 		const currentTurns = turns === "fl" ? -0.5 : turns;
 		if (currentTurns < 10) { // Reasonable max limit
-			const newTurns = currentTurns + 1;
-			onTurnsChange(newTurns);
+			// When incrementing from float (-0.5), go to 0, not 0.5
+			const newTurns = turns === "fl" ? 0 : currentTurns + 1;
 
-			// If we're moving away from float, we might need to trigger motion type selection
-			if (turns === "fl" && onMotionTypeChange) {
-				// User is leaving float - they need to choose pro/anti
-				// For now, default to pro (we'll add modal later)
-				onMotionTypeChange(MotionType.PRO);
+			// If we're moving away from float, show Pro/Anti selection modal
+			if (turns === "fl") {
+				pendingTurnsValue = newTurns;
+				showProAntiModal = true;
+			} else {
+				// Normal increment
+				onTurnsChange(newTurns);
 			}
 		}
 	}
@@ -63,6 +72,20 @@ Supports float motion with "fl" value and automatic motion type switching.
 			event.preventDefault();
 			decrement();
 		}
+	}
+
+	function handleProAntiSelection(motionType: MotionType) {
+		// Apply the pending turns value and motion type
+		onTurnsChange(pendingTurnsValue);
+		if (onMotionTypeChange) {
+			onMotionTypeChange(motionType);
+		}
+		showProAntiModal = false;
+	}
+
+	function closeModal() {
+		showProAntiModal = false;
+		// Don't apply the pending changes - user cancelled
 	}
 </script>
 
@@ -94,6 +117,7 @@ Supports float motion with "fl" value and automatic motion type switching.
 		</div>
 
 		<button
+			bind:this={incrementButtonElement}
 			class="turns-btn increment"
 			onclick={increment}
 			disabled={!canIncrement}
@@ -104,6 +128,15 @@ Supports float motion with "fl" value and automatic motion type switching.
 		</button>
 	</div>
 </div>
+
+{#if showProAntiModal}
+	<ProAntiSelectionModal
+		onMotionTypeSelect={handleProAntiSelection}
+		onClose={closeModal}
+		{color}
+		triggerElement={incrementButtonElement}
+	/>
+{/if}
 
 <style>
 	.turns-control-container {

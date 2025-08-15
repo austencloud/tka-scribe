@@ -2,8 +2,9 @@
 Enhanced Setting Card component with glassmorphism styling.
 Ported from legacy settings dialog with improvements and optimized spacing.
 """
+from __future__ import annotations
 
-from typing import Any, Optional
+from typing import Any
 
 from PyQt6.QtCore import pyqtSignal
 from PyQt6.QtGui import QFont
@@ -18,8 +19,8 @@ class SettingCard(QFrame):
     def __init__(
         self,
         title: str,
-        description: Optional[str] = None,
-        setting_key: Optional[str] = None,
+        description: str | None = None,
+        setting_key: str | None = None,
         parent=None,
     ):
         super().__init__(parent)
@@ -91,14 +92,14 @@ class SettingCard(QFrame):
                 border-radius: 12px;
                 margin: 2px 0;
             }
-            
+
             QFrame#setting_card:hover {
                 background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
                     stop:0 rgba(255, 255, 255, 0.22),
                     stop:1 rgba(255, 255, 255, 0.16));
                 border-color: rgba(255, 255, 255, 0.35);
             }
-            
+
             QLabel#setting_title {
                 color: rgba(255, 255, 255, 0.95);
                 background: transparent;
@@ -107,7 +108,7 @@ class SettingCard(QFrame):
                 font-weight: 600;
                 letter-spacing: 0.2px;
             }
-            
+
             QLabel#setting_description {
                 color: rgba(255, 255, 255, 0.75);
                 background: transparent;
@@ -132,8 +133,8 @@ class ToggleCard(SettingCard):
     def __init__(
         self,
         title: str,
-        description: Optional[str] = None,
-        setting_key: Optional[str] = None,
+        description: str | None = None,
+        setting_key: str | None = None,
         initial_value: bool = False,
         parent=None,
     ):
@@ -170,9 +171,9 @@ class ComboCard(SettingCard):
     def __init__(
         self,
         title: str,
-        description: Optional[str] = None,
-        setting_key: Optional[str] = None,
-        options: Optional[list[str]] = None,
+        description: str | None = None,
+        setting_key: str | None = None,
+        options: list[str] | None = None,
         initial_value: str = "",
         parent=None,
     ):

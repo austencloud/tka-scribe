@@ -4,14 +4,15 @@ Start-to-end position glyph renderer for pictograph components.
 Handles rendering of position glyphs that show the start and end positions
 with an arrow between them (e.g., α → β).
 """
+from __future__ import annotations
 
 import os
-from typing import Optional
-from PyQt6.QtWidgets import QGraphicsItemGroup
-from PyQt6.QtSvgWidgets import QGraphicsSvgItem
-from PyQt6.QtSvg import QSvgRenderer
 
-from application.services.assets.image_asset_utils import (
+from PyQt6.QtSvg import QSvgRenderer
+from PyQt6.QtSvgWidgets import QGraphicsSvgItem
+from PyQt6.QtWidgets import QGraphicsItemGroup
+
+from desktop.modern.src.application.services.assets.image_asset_utils import (
     get_image_path,
 )
 
@@ -34,9 +35,9 @@ class PositionGlyphRenderer:
 
     def render_position_glyph(
         self,
-        start_position: Optional[str] = None,
-        end_position: Optional[str] = None,
-        letter: Optional[str] = None,
+        start_position: str | None = None,
+        end_position: str | None = None,
+        letter: str | None = None,
     ) -> None:
         """
         Render the start-to-end position glyph.
@@ -83,7 +84,7 @@ class PositionGlyphRenderer:
         self._position_position_glyph(position_group)
         self.scene.addItem(position_group)
 
-    def _render_position_symbol(self, position: str) -> Optional[QGraphicsSvgItem]:
+    def _render_position_symbol(self, position: str) -> QGraphicsSvgItem | None:
         """Render a position symbol (α, β, Γ)."""
         svg_filename = self.POSITION_SVGS.get(position.lower())
         if not svg_filename:
@@ -105,11 +106,10 @@ class PositionGlyphRenderer:
             scale_factor = 0.75
             symbol_item.setScale(scale_factor)
             return symbol_item
-        else:
-            print(f"Warning: Failed to load position symbol: {svg_path}")
-            return None
+        print(f"Warning: Failed to load position symbol: {svg_path}")
+        return None
 
-    def _render_arrow(self) -> Optional[QGraphicsSvgItem]:
+    def _render_arrow(self) -> QGraphicsSvgItem | None:
         """Render the arrow between positions."""
         svg_path = get_image_path("arrow.svg")
 
@@ -126,9 +126,8 @@ class PositionGlyphRenderer:
             scale_factor = 0.75
             arrow_item.setScale(scale_factor)
             return arrow_item
-        else:
-            print(f"Warning: Failed to load arrow: {svg_path}")
-            return None
+        print(f"Warning: Failed to load arrow: {svg_path}")
+        return None
 
     def _position_elements(
         self,

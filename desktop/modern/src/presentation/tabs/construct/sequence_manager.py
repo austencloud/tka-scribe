@@ -3,18 +3,18 @@ SequenceOrchestrator - Qt Presentation Layer
 
 Thin Qt wrapper for sequence operations - business logic delegated to SequenceOrchestrator service.
 """
+from __future__ import annotations
 
-from typing import Callable, Optional
+from typing import Callable
 
-from application.services.sequence.sequence_coordinator import (
+from PyQt6.QtCore import QObject, pyqtSignal
+
+from desktop.modern.src.application.services.sequence.sequence_coordinator import (
     ISequenceCoordinatorSignals,
-)
-from application.services.sequence.sequence_coordinator import (
     SequenceCoordinator as SequenceCoordinatorService,
 )
-from domain.models.beat_data import BeatData
-from domain.models.sequence_data import SequenceData
-from PyQt6.QtCore import QObject, pyqtSignal
+from desktop.modern.src.domain.models.beat_data import BeatData
+from desktop.modern.src.domain.models.sequence_data import SequenceData
 
 
 class SequenceCoordinatorSignalEmitter(ISequenceCoordinatorSignals):
@@ -74,9 +74,9 @@ class SequenceCoordinator(QObject):
 
     def __init__(
         self,
-        workbench_getter: Optional[Callable[[], object]] = None,
-        workbench_setter: Optional[Callable[[SequenceData], None]] = None,
-        start_position_handler: Optional[object] = None,
+        workbench_getter: Callable[[], object] | None = None,
+        workbench_setter: Callable[[SequenceData], None] | None = None,
+        start_position_handler: object | None = None,
     ):
         super().__init__()
 

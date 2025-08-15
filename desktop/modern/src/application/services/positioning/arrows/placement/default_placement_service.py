@@ -4,15 +4,15 @@ Default Placement Service
 This service loads and uses default placement JSON files for accurate
 arrow positioning with comprehensive adjustment data.
 """
+from __future__ import annotations
 
-import json
 import codecs
+import json
 from pathlib import Path
-from typing import Dict, Any, Optional
+from typing import Any
 
 # Use framework-agnostic types from core.types
-from core.types import Point
-
+from desktop.modern.src.core.types import Point
 from domain.models import MotionData, MotionType
 
 
@@ -21,7 +21,7 @@ class DefaultPlacementService:
 
     def __init__(self):
         self.root_path = self._find_project_root()
-        self.all_defaults: Dict[str, Dict[str, Dict[str, Any]]] = {
+        self.all_defaults: dict[str, dict[str, dict[str, Any]]] = {
             "diamond": {},
             "box": {},
         }
@@ -48,7 +48,7 @@ class DefaultPlacementService:
     def _find_project_root(self) -> Path:
         """Automatically find the project root by looking for pyproject.toml or .git."""
         current = Path(__file__).resolve()
-        for parent in [current] + list(current.parents):
+        for parent in [current, *list(current.parents)]:
             if (parent / "pyproject.toml").exists() or (parent / ".git").exists():
                 return parent
         return current.parent  # fallback
@@ -64,7 +64,7 @@ class DefaultPlacementService:
                     str(filepath)
                 )
 
-    def _load_json(self, path: str) -> Dict[str, Any]:
+    def _load_json(self, path: str) -> dict[str, Any]:
         """Load JSON file with error handling."""
         try:
             with codecs.open(path, "r", encoding="utf-8") as file:
@@ -77,7 +77,7 @@ class DefaultPlacementService:
         self,
         motion_data: MotionData,
         grid_mode: str = "diamond",
-        placement_key: Optional[str] = None,
+        placement_key: str | None = None,
     ) -> Point:
         """
         Get default adjustment using validated placement system.
@@ -138,7 +138,7 @@ class DefaultPlacementService:
 
     def get_placement_data(
         self, motion_type: MotionType, placement_key: str, grid_mode: str = "diamond"
-    ) -> Dict[str, tuple[int, int]]:
+    ) -> dict[str, tuple[int, int]]:
         """Get complete placement data for a specific key."""
         motion_type_str = motion_type.value
         default_placements = self.all_defaults.get(grid_mode, {}).get(

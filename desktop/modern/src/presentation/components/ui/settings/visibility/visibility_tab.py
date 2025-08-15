@@ -4,26 +4,31 @@ Modern Visibility Tab - Refactored Component Coordinator.
 Streamlined coordinator that manages decomposed visibility components following
 TKA clean architecture principles. Reduced from 631 lines to focused coordination.
 """
+from __future__ import annotations
 
 import logging
-from typing import Any, Dict, Optional
+from typing import Any
 
-from application.services.pictograph.global_visibility_service import (
+from PyQt6.QtCore import QTimer, pyqtSignal
+from PyQt6.QtGui import QFont
+from PyQt6.QtWidgets import QHBoxLayout, QLabel, QVBoxLayout, QWidget
+
+from desktop.modern.src.application.services.pictograph.global_visibility_service import (
     PictographVisibilityManager,
 )
-from application.services.pictograph.visibility_state_manager import (
+from desktop.modern.src.application.services.pictograph.visibility_state_manager import (
     VisibilityStateManager,
 )
-from core.interfaces.tab_settings_interfaces import IVisibilitySettingsManager
-from presentation.components.ui.settings.visibility.components import (
+from desktop.modern.src.core.interfaces.tab_settings_interfaces import (
+    IVisibilitySettingsManager,
+)
+from desktop.modern.src.presentation.components.ui.settings.visibility.components import (
     DependencyWarning,
     ElementVisibilitySection,
     MotionControlsSection,
     VisibilityPreviewSection,
 )
-from PyQt6.QtCore import QTimer, pyqtSignal
-from PyQt6.QtGui import QFont
-from PyQt6.QtWidgets import QHBoxLayout, QLabel, QVBoxLayout, QWidget
+
 
 logger = logging.getLogger(__name__)
 
@@ -67,10 +72,10 @@ class VisibilityTab(QWidget):
         self.global_visibility_service = global_visibility_service
 
         # Component sections
-        self.motion_section: Optional[MotionControlsSection] = None
-        self.element_section: Optional[ElementVisibilitySection] = None
-        self.preview_section: Optional[VisibilityPreviewSection] = None
-        self.dependency_warning: Optional[DependencyWarning] = None
+        self.motion_section: MotionControlsSection | None = None
+        self.element_section: ElementVisibilitySection | None = None
+        self.preview_section: VisibilityPreviewSection | None = None
+        self.dependency_warning: DependencyWarning | None = None
 
         # Update timer for batching rapid changes
         self._update_timer = QTimer()
@@ -242,7 +247,7 @@ class VisibilityTab(QWidget):
             logger.debug(f"Motion visibility changed: {color} = {visible}")
 
         except Exception as e:
-            logger.error(f"Error handling motion visibility change: {e}")
+            logger.exception(f"Error handling motion visibility change: {e}")
 
     def _on_element_visibility_changed(self, name: str, visible: bool):
         """
@@ -266,7 +271,7 @@ class VisibilityTab(QWidget):
             logger.debug(f"Element visibility changed: {name} = {visible}")
 
         except Exception as e:
-            logger.error(f"Error handling element visibility change: {e}")
+            logger.exception(f"Error handling element visibility change: {e}")
 
     def _on_state_changed(self):
         """Handle state manager notifications."""
@@ -335,13 +340,13 @@ class VisibilityTab(QWidget):
             logger.info("Successfully applied global visibility updates")
 
         except Exception as e:
-            logger.error(f"Error applying global updates: {e}")
+            logger.exception(f"Error applying global updates: {e}")
 
     def _on_preview_updated(self):
         """Handle preview update notifications."""
         logger.debug("Preview updated")
 
-    def get_state_summary(self) -> Dict[str, Any]:
+    def get_state_summary(self) -> dict[str, Any]:
         """Get comprehensive state summary for debugging."""
         motion_states = {}
         element_states = {}
@@ -382,7 +387,7 @@ class VisibilityTab(QWidget):
             logger.debug("Visibility tab cleaned up")
 
         except Exception as e:
-            logger.error(f"Error during visibility tab cleanup: {e}")
+            logger.exception(f"Error during visibility tab cleanup: {e}")
 
     def _apply_styling(self):
         """Apply modern glassmorphism styling to the entire tab."""

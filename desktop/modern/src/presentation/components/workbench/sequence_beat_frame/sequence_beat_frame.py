@@ -4,30 +4,33 @@ Modern Beat Frame Component for Modern Sequence Workbench
 This component provides the core beat grid system with dynamic layout,
 replacing Legacy's SequenceBeatFrame with modern architecture patterns.
 """
+from __future__ import annotations
 
-from typing import TYPE_CHECKING, Dict, List, Optional
+from typing import TYPE_CHECKING
 
-from application.services.layout.beat_resizer import BeatResizer
-from core.interfaces.core_services import ILayoutService
-from domain.models.beat_data import BeatData
-from domain.models.pictograph_data import PictographData
-from domain.models.sequence_data import SequenceData
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtWidgets import QFrame, QGridLayout, QScrollArea, QWidget
+
+from desktop.modern.src.application.services.layout.beat_resizer import BeatResizer
+from desktop.modern.src.core.interfaces.core_services import ILayoutService
+from desktop.modern.src.domain.models.beat_data import BeatData
+from desktop.modern.src.domain.models.pictograph_data import PictographData
+from desktop.modern.src.domain.models.sequence_data import SequenceData
 
 from .beat_selector import BeatSelector
 from .beat_view import BeatView
 from .start_position_view import StartPositionView
 
+
 # Event-driven architecture imports
 if TYPE_CHECKING:
-    from application.services.workbench.beat_selection_service import (
+    from desktop.modern.src.application.services.workbench.beat_selection_service import (
         BeatSelectionService,
     )
-    from core.events import IEventBus
+    from desktop.modern.src.core.events import IEventBus
 
 try:
-    from core.events import (
+    from desktop.modern.src.core.events import (
         BeatAddedEvent,
         BeatRemovedEvent,
         BeatUpdatedEvent,
@@ -80,9 +83,9 @@ class SequenceBeatFrame(QScrollArea):
     def __init__(
         self,
         layout_service: ILayoutService,
-        beat_selection_service: "BeatSelectionService",
-        event_bus: Optional["IEventBus"] = None,
-        parent: Optional[QWidget] = None,
+        beat_selection_service: BeatSelectionService,
+        event_bus: IEventBus | None = None,
+        parent: QWidget | None = None,
     ):
         super().__init__(parent)  # Injected dependencies
         self._layout_service = layout_service
@@ -93,12 +96,12 @@ class SequenceBeatFrame(QScrollArea):
         self.event_bus = event_bus or (
             get_event_bus() if EVENT_SYSTEM_AVAILABLE else None
         )
-        self._subscription_ids: List[str] = []
+        self._subscription_ids: list[str] = []
 
         # Current state
-        self._current_sequence: Optional[SequenceData] = None
-        self._beat_views: List[BeatView] = []
-        self._current_layout: Dict[str, int] = {"rows": 1, "columns": 8}
+        self._current_sequence: SequenceData | None = None
+        self._beat_views: list[BeatView] = []
+        self._current_layout: dict[str, int] = {"rows": 1, "columns": 8}
 
         # UI components (will be initialized in _setup_ui)
         self._container_widget: QWidget
@@ -145,14 +148,14 @@ class SequenceBeatFrame(QScrollArea):
 
         self._setup_start_position()
 
-    def _on_state_sequence_updated(self, sequence: Optional[SequenceData]):
+    def _on_state_sequence_updated(self, sequence: SequenceData | None):
         """Handle sequence updates from state manager"""
         print(
             f"📊 SequenceBeatFrame: Sequence updated from state manager: {sequence.length if sequence else 0} beats"
         )
         self.set_sequence(sequence)
 
-    def _on_state_start_position_updated(self, start_position: Optional[BeatData]):
+    def _on_state_start_position_updated(self, start_position: BeatData | None):
         """Handle start position updates from state manager"""
         print(
             f"🎯 SequenceBeatFrame: Start position updated from state manager: {start_position.letter if start_position else 'None'}"
@@ -204,7 +207,9 @@ class SequenceBeatFrame(QScrollArea):
         """Setup event subscriptions for reactive UI updates."""
         # Subscribe to state manager for state updates (primary)
         try:
-            from core.service_locator import get_sequence_state_manager
+            from desktop.modern.src.core.service_locator import (
+                get_sequence_state_manager,
+            )
 
             state_manager = get_sequence_state_manager()
 
@@ -265,7 +270,7 @@ class SequenceBeatFrame(QScrollArea):
             self._subscription_ids.clear()
 
     # Public API methods
-    def set_sequence(self, sequence: Optional[SequenceData]):
+    def set_sequence(self, sequence: SequenceData | None):
         """Set the current sequence and update display"""
         if sequence:
             # Removed repetitive debug logs
@@ -280,14 +285,14 @@ class SequenceBeatFrame(QScrollArea):
         # Removed repetitive debug logs
         self._update_display()
 
-    def get_sequence(self) -> Optional[SequenceData]:
+    def get_sequence(self) -> SequenceData | None:
         """Get the current sequence"""
         return self._current_sequence
 
     def set_start_position(
         self,
         start_position_data: BeatData,
-        pictograph_data: Optional["PictographData"] = None,
+        pictograph_data: PictographData | None = None,
     ):
         """
         Set the start position data (separate from sequence beats like legacy).
@@ -318,7 +323,7 @@ class SequenceBeatFrame(QScrollArea):
         else:
             print("❌ [SEQUENCE_BEAT_FRAME] No start position view to initialize!")
 
-    def get_selected_beat_index(self) -> Optional[int]:
+    def get_selected_beat_index(self) -> int | None:
         """Get the currently selected beat index"""
         return (
             self._selection_manager.get_selected_index()
@@ -443,7 +448,7 @@ class SequenceBeatFrame(QScrollArea):
         self.beat_modified.emit(beat_index, beat_data)
         self.sequence_modified.emit(new_sequence)
 
-    def _on_selection_changed(self, beat_index: Optional[int]):
+    def _on_selection_changed(self, beat_index: int | None):
         """Handle selection change events"""
         if beat_index is not None:
             self.beat_selected.emit(beat_index)

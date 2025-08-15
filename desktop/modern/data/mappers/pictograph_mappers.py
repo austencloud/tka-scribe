@@ -1,5 +1,7 @@
-import os
+from __future__ import annotations
+
 from collections.abc import Hashable
+import os
 from typing import Any
 
 import pandas as pd

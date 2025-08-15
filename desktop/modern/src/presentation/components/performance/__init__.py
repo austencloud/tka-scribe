@@ -16,9 +16,11 @@ INTEGRATION:
 - Integrates with existing UI components
 - Provides non-intrusive performance monitoring
 """
+from __future__ import annotations
 
 from .monitor_widget import PerformanceMonitorWidget
 from .profiler_dialog import ProfilerControlDialog
+
 
 __all__ = [
     "PerformanceMonitorWidget",

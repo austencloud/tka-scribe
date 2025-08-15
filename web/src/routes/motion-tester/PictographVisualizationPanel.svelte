@@ -9,7 +9,7 @@ No headers or labels, clean minimal design as requested.
 
 	// Import the new restructured components
 	import StaticSectionWithControls from './components/StaticSectionWithControls.svelte';
-	import AnimatedSectionSimplified from './components/AnimatedSectionSimplified.svelte';
+	import AnimatedSection from './components/AnimatedSection.svelte';
 
 	interface Props {
 		state: MotionTesterState;
@@ -26,7 +26,7 @@ No headers or labels, clean minimal design as requested.
 
 	<!-- Animated Section (1fr) -->
 	<div class="animated-section">
-		<AnimatedSectionSimplified motionState={motionState} />
+		<AnimatedSection motionState={motionState} />
 	</div>
 </div>
 <style>

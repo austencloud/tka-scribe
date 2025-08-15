@@ -1,25 +1,32 @@
-from typing import TYPE_CHECKING, List, Optional
+from __future__ import annotations
 
-from application.services.sequence.loader import SequenceLoader
-from application.services.sequence.sequence_beat_operations import (
-    SequenceBeatOperations,
-)
-from application.services.sequence.sequence_dictionary_service import (
-    SequenceDictionaryService,
-)
-from application.services.sequence.sequence_start_position_manager import (
-    SequenceStartPositionManager,
-)
-from core.interfaces.core_services import ILayoutService
-from core.interfaces.workbench_services import IFullScreenViewer, IGraphEditorService
-from domain.models import BeatData, SequenceData
-from domain.models.pictograph_data import PictographData
+from typing import TYPE_CHECKING
+
 from PyQt6.QtCore import pyqtSignal
 from PyQt6.QtWidgets import QVBoxLayout, QWidget
 
+from desktop.modern.src.application.services.sequence.loader import SequenceLoader
+from desktop.modern.src.application.services.sequence.sequence_beat_operations import (
+    SequenceBeatOperations,
+)
+from desktop.modern.src.application.services.sequence.sequence_dictionary_service import (
+    SequenceDictionaryService,
+)
+from desktop.modern.src.application.services.sequence.sequence_start_position_manager import (
+    SequenceStartPositionManager,
+)
+from desktop.modern.src.core.interfaces.core_services import ILayoutService
+from desktop.modern.src.core.interfaces.workbench_services import (
+    IFullScreenViewer,
+    IGraphEditorService,
+)
+from desktop.modern.src.domain.models.pictograph_data import PictographData
+from domain.models import BeatData, SequenceData
+
+
 # Import event system for session restoration
 try:
-    from core.events.event_bus import EventPriority, get_event_bus
+    from desktop.modern.src.core.events.event_bus import EventPriority, get_event_bus
 
     EVENT_SYSTEM_AVAILABLE = True
 except ImportError:
@@ -30,8 +37,9 @@ from .button_interface import WorkbenchButtonInterfaceAdapter
 from .event_controller import WorkbenchEventController
 from .indicator_section import WorkbenchIndicatorSection
 
+
 if TYPE_CHECKING:
-    from application.services.workbench.beat_selection_service import (
+    from desktop.modern.src.application.services.workbench.beat_selection_service import (
         BeatSelectionService,
     )
 
@@ -47,14 +55,14 @@ class SequenceWorkbench(QWidget):
     def __init__(
         self,
         layout_service: ILayoutService,
-        beat_selection_service: "BeatSelectionService",
+        beat_selection_service: BeatSelectionService,
         beat_operations: SequenceBeatOperations,
         start_position_manager: SequenceStartPositionManager,
         sequence_loader: SequenceLoader,
         dictionary_service: SequenceDictionaryService,
         fullscreen_service: IFullScreenViewer,
         graph_service: IGraphEditorService,
-        parent: Optional[QWidget] = None,
+        parent: QWidget | None = None,
     ):
         super().__init__(parent)
         self._layout_service = layout_service
@@ -64,16 +72,16 @@ class SequenceWorkbench(QWidget):
         self._sequence_loader = sequence_loader
         self._dictionary_service = dictionary_service
         self._graph_service = graph_service
-        self._current_sequence: Optional[SequenceData] = None
-        self._start_position_data: Optional[BeatData] = None
-        self._indicator_section: Optional[WorkbenchIndicatorSection] = None
-        self._beat_frame_section: Optional[WorkbenchBeatFrameSection] = None
-        self._event_controller: Optional[WorkbenchEventController] = None
-        self._button_interface: Optional[WorkbenchButtonInterfaceAdapter] = None
+        self._current_sequence: SequenceData | None = None
+        self._start_position_data: BeatData | None = None
+        self._indicator_section: WorkbenchIndicatorSection | None = None
+        self._beat_frame_section: WorkbenchBeatFrameSection | None = None
+        self._event_controller: WorkbenchEventController | None = None
+        self._button_interface: WorkbenchButtonInterfaceAdapter | None = None
 
         # Event bus integration for session restoration
         self.event_bus = get_event_bus() if EVENT_SYSTEM_AVAILABLE else None
-        self._subscription_ids: List[str] = []
+        self._subscription_ids: list[str] = []
 
         # Event handling is now done directly through microservices
         # No need for a centralized event controller
@@ -167,14 +175,14 @@ class SequenceWorkbench(QWidget):
             complete_sequence = self._get_complete_sequence_with_start_position()
             self.sequence_modified.emit(complete_sequence)
 
-    def get_sequence(self) -> Optional[SequenceData]:
+    def get_sequence(self) -> SequenceData | None:
         """Get the current sequence"""
         return self._current_sequence
 
     def set_start_position(
         self,
         start_position_data: BeatData,
-        pictograph_data: Optional["PictographData"] = None,
+        pictograph_data: PictographData | None = None,
     ):
         """
         Set the start position with optional separate pictograph data.
@@ -205,7 +213,7 @@ class SequenceWorkbench(QWidget):
             if hasattr(beat_frame, "_start_position_view"):
                 beat_frame._start_position_view.clear_position_data()
 
-    def get_start_position(self) -> Optional[BeatData]:
+    def get_start_position(self) -> BeatData | None:
         """Get the current start position"""
         return self._start_position_data
 
@@ -222,7 +230,7 @@ class SequenceWorkbench(QWidget):
 
         return self._current_sequence
 
-    def get_button_interface(self) -> Optional[WorkbenchButtonInterfaceAdapter]:
+    def get_button_interface(self) -> WorkbenchButtonInterfaceAdapter | None:
         """Get the button interface adapter for Sprint 2 integration"""
         return self._button_interface
 

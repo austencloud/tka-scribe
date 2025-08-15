@@ -1,0 +1,217 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "🚀 Run Modern TKA",
+      "type": "shell",
+      "command": "python",
+      "args": ["modern/main.py"],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "new",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "options": {
+        "cwd": "${workspaceFolder}/../..",
+        "env": {
+          "PYTHONPATH": "${workspaceFolder}/../..;${workspaceFolder}/../../src;${workspaceFolder}/../../src/desktop/modern/src;${workspaceFolder}/../../launcher;${workspaceFolder}/../../packages"
+        }
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "🏛️ Run Legacy TKA",
+      "type": "shell",
+      "command": "python",
+      "args": ["legacy/main.py"],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "new",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "options": {
+        "cwd": "${workspaceFolder}/../..",
+        "env": {
+          "PYTHONPATH": "${workspaceFolder}/../..;${workspaceFolder}/../../src;${workspaceFolder}/../../src/desktop/modern/src;${workspaceFolder}/../../launcher;${workspaceFolder}/../../packages"
+        }
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "🧪 Run All Tests",
+      "type": "shell",
+      "command": "python",
+      "args": ["-m", "pytest", "tests/", "-v", "--tb=short"],
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": true
+      },
+      "options": {
+        "cwd": "${workspaceFolder}/../..",
+        "env": {
+          "PYTHONPATH": "${workspaceFolder}/../..;${workspaceFolder}/../../src;${workspaceFolder}/../../src/desktop/modern/src;${workspaceFolder}/../../launcher;${workspaceFolder}/../../packages"
+        }
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "🧪 Run Tests (Current File)",
+      "type": "shell",
+      "command": "python",
+      "args": ["-m", "pytest", "${file}", "-v", "--tb=short"],
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": true
+      },
+      "options": {
+        "cwd": "${workspaceFolder}/../..",
+        "env": {
+          "PYTHONPATH": "${workspaceFolder}/../..;${workspaceFolder}/../../src;${workspaceFolder}/../../src/desktop/modern/src;${workspaceFolder}/../../launcher;${workspaceFolder}/../../packages"
+        }
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "🔍 Ruff Lint & Fix",
+      "type": "shell",
+      "command": "ruff",
+      "args": ["check", "--fix", "modern/", "legacy/"],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": true
+      },
+      "options": {
+        "cwd": "${workspaceFolder}/../.."
+      },
+      "problemMatcher": {
+        "owner": "ruff",
+        "fileLocation": ["relative", "${workspaceFolder}/../.."],
+        "pattern": {
+          "regexp": "^(.*):(\\d+):(\\d+):\\s+(\\w+)\\s+(\\w+)\\s+(.*)$",
+          "file": 1,
+          "line": 2,
+          "column": 3,
+          "severity": 4,
+          "code": 5,
+          "message": 6
+        }
+      }
+    },
+    {
+      "label": "🎨 Ruff Format",
+      "type": "shell",
+      "command": "ruff",
+      "args": ["format", "modern/", "legacy/"],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": true
+      },
+      "options": {
+        "cwd": "${workspaceFolder}/../.."
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "🚀 Ruff Check & Format (All)",
+      "type": "shell",
+      "command": "ruff",
+      "args": ["check", "--fix", "&&", "ruff", "format"],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": true
+      },
+      "options": {
+        "cwd": "${workspaceFolder}/../.."
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "📦 Install Dependencies",
+      "type": "shell",
+      "command": "pip",
+      "args": ["install", "-r", "requirements.txt"],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": true
+      },
+      "options": {
+        "cwd": "${workspaceFolder}/../.."
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "🧹 Clean Python Cache",
+      "type": "shell",
+      "command": "find",
+      "args": [".", "-type", "d", "-name", "__pycache__", "-exec", "rm", "-rf", "{}", "+"],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": true
+      },
+      "options": {
+        "cwd": "${workspaceFolder}/../.."
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "🔄 Restart Python Environment",
+      "type": "shell",
+      "command": "echo",
+      "args": ["Restarting Python environment..."],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": true
+      },
+      "dependsOn": ["🧹 Clean Python Cache"],
+      "problemMatcher": []
+    }
+  ]
+}

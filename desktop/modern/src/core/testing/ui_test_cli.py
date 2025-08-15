@@ -16,8 +16,8 @@ current_dir = Path(__file__).parent
 src_dir = current_dir.parent.parent  # Go up to the src directory
 sys.path.insert(0, str(src_dir))
 
-from desktop.modern.core.testing.ai_agent_helpers import TKAAITestHelper
-from desktop.modern.core.testing.simple_ui_tester import SimpleUITester
+from desktop.modern.src.core.testing.ai_agent_helpers import TKAAITestHelper
+from desktop.modern.src.core.testing.simple_ui_tester import SimpleUITester
 
 
 def setup_logging(verbose: bool = False):

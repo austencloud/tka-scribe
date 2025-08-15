@@ -21,17 +21,22 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Any
 import uuid
 
-from core.types import Point
+from desktop.modern.src.core.types import Point
+from desktop.modern.src.domain.models.pictograph_data import PictographData
 from domain.models import BeatData, Location, MotionData, MotionType, Orientation
-from domain.models.pictograph_data import PictographData
 
 
 # Event-driven architecture imports
 if TYPE_CHECKING:
-    from core.events import IEventBus
+    from desktop.modern.src.core.events import IEventBus
 
 try:
-    from core.events import EventPriority, IEventBus, PropPositionedEvent, get_event_bus
+    from desktop.modern.src.core.events import (
+        EventPriority,
+        IEventBus,
+        PropPositionedEvent,
+        get_event_bus,
+    )
 
     EVENT_SYSTEM_AVAILABLE = True
 except ImportError:
@@ -41,7 +46,7 @@ except ImportError:
     PropPositionedEvent = None
     EventPriority = None
     EVENT_SYSTEM_AVAILABLE = False
-from domain.models.enums import PropType
+from desktop.modern.src.domain.models.enums import PropType
 
 
 class SeparationDirection(Enum):
@@ -341,7 +346,7 @@ class PropManagementService(IPropManagementService):
                     if int_turns % 2 == 0
                     else self._switch_orientation(start_orientation)
                 )
-            elif motion_type in [MotionType.ANTI, MotionType.DASH]:
+            if motion_type in [MotionType.ANTI, MotionType.DASH]:
                 return (
                     self._switch_orientation(start_orientation)
                     if int_turns % 2 == 0
@@ -404,31 +409,30 @@ class PropManagementService(IPropManagementService):
                     (Location.WEST, "red"): SeparationDirection.RIGHT,
                     (Location.EAST, "blue"): SeparationDirection.LEFT,
                 }
-        else:  # box grid
-            if is_radial:
-                # Box layer reposition map for RADIAL
-                direction_map = {
-                    (Location.NORTHEAST, "red"): SeparationDirection.DOWNRIGHT,
-                    (Location.NORTHEAST, "blue"): SeparationDirection.UPLEFT,
-                    (Location.SOUTHEAST, "red"): SeparationDirection.UPRIGHT,
-                    (Location.SOUTHEAST, "blue"): SeparationDirection.DOWNLEFT,
-                    (Location.SOUTHWEST, "red"): SeparationDirection.DOWNRIGHT,
-                    (Location.SOUTHWEST, "blue"): SeparationDirection.UPLEFT,
-                    (Location.NORTHWEST, "red"): SeparationDirection.UPRIGHT,
-                    (Location.NORTHWEST, "blue"): SeparationDirection.DOWNLEFT,
-                }
-            else:
-                # Box layer reposition map for NONRADIAL
-                direction_map = {
-                    (Location.NORTHEAST, "red"): SeparationDirection.UPRIGHT,
-                    (Location.NORTHEAST, "blue"): SeparationDirection.DOWNLEFT,
-                    (Location.SOUTHEAST, "red"): SeparationDirection.DOWNRIGHT,
-                    (Location.SOUTHEAST, "blue"): SeparationDirection.UPLEFT,
-                    (Location.SOUTHWEST, "red"): SeparationDirection.UPRIGHT,
-                    (Location.SOUTHWEST, "blue"): SeparationDirection.DOWNLEFT,
-                    (Location.NORTHWEST, "red"): SeparationDirection.DOWNRIGHT,
-                    (Location.NORTHWEST, "blue"): SeparationDirection.UPLEFT,
-                }
+        elif is_radial:
+            # Box layer reposition map for RADIAL
+            direction_map = {
+                (Location.NORTHEAST, "red"): SeparationDirection.DOWNRIGHT,
+                (Location.NORTHEAST, "blue"): SeparationDirection.UPLEFT,
+                (Location.SOUTHEAST, "red"): SeparationDirection.UPRIGHT,
+                (Location.SOUTHEAST, "blue"): SeparationDirection.DOWNLEFT,
+                (Location.SOUTHWEST, "red"): SeparationDirection.DOWNRIGHT,
+                (Location.SOUTHWEST, "blue"): SeparationDirection.UPLEFT,
+                (Location.NORTHWEST, "red"): SeparationDirection.UPRIGHT,
+                (Location.NORTHWEST, "blue"): SeparationDirection.DOWNLEFT,
+            }
+        else:
+            # Box layer reposition map for NONRADIAL
+            direction_map = {
+                (Location.NORTHEAST, "red"): SeparationDirection.UPRIGHT,
+                (Location.NORTHEAST, "blue"): SeparationDirection.DOWNLEFT,
+                (Location.SOUTHEAST, "red"): SeparationDirection.DOWNRIGHT,
+                (Location.SOUTHEAST, "blue"): SeparationDirection.UPLEFT,
+                (Location.SOUTHWEST, "red"): SeparationDirection.UPRIGHT,
+                (Location.SOUTHWEST, "blue"): SeparationDirection.DOWNLEFT,
+                (Location.NORTHWEST, "red"): SeparationDirection.DOWNRIGHT,
+                (Location.NORTHWEST, "blue"): SeparationDirection.UPLEFT,
+            }
 
         return direction_map.get((location, color), SeparationDirection.RIGHT)
 
@@ -598,12 +602,11 @@ class PropManagementService(IPropManagementService):
 
         if has_big_props and len(prop_classification["big_props"]) == 2:
             return "big_prop_repositioning"
-        elif has_small_props and len(prop_classification["small_props"]) == 2:
+        if has_small_props and len(prop_classification["small_props"]) == 2:
             return "small_prop_repositioning"
-        elif has_hands:
+        if has_hands:
             return "hand_repositioning"
-        else:
-            return "default_repositioning"
+        return "default_repositioning"
 
     def calculate_prop_rotation_angle(
         self, motion_data: MotionData, start_orientation: Orientation = Orientation.IN

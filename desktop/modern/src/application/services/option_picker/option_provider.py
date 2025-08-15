@@ -9,22 +9,23 @@ ARCHITECTURE:
 Application Layer → OptionService → PositionMatchingService
 Presentation Layer → OptionServiceQtAdapter → OptionService
 """
+from __future__ import annotations
 
 import logging
-from typing import TYPE_CHECKING, Any, Dict, List, Optional
+from typing import TYPE_CHECKING, Any
 
-from core.interfaces.option_picker_interfaces import (
+from desktop.modern.src.core.interfaces.option_picker_interfaces import (
     IOptionProvider,
     IOptionServiceSignals,
 )
-from domain.models.pictograph_data import PictographData
+from desktop.modern.src.domain.models.pictograph_data import PictographData
+
 
 if TYPE_CHECKING:
-    from domain.models.beat_data import BeatData
-    from domain.models.sequence_data import SequenceData
+    from desktop.modern.src.domain.models.sequence_data import SequenceData
 
 if TYPE_CHECKING:
-    from domain.models.sequence_data import SequenceData
+    from desktop.modern.src.domain.models.sequence_data import SequenceData
 
 logger = logging.getLogger(__name__)
 
@@ -38,14 +39,14 @@ class OptionProvider(IOptionProvider):
     abstracted through the IOptionServiceSignals interface.
     """
 
-    def __init__(self, signal_emitter: Optional[IOptionServiceSignals] = None):
+    def __init__(self, signal_emitter: IOptionServiceSignals | None = None):
         """
         Initialize the option service.
 
         Args:
             signal_emitter: Optional signal emitter for notifications
         """
-        self._pictograph_options: List[PictographData] = []
+        self._pictograph_options: list[PictographData] = []
         self._position_service = None
         self._signal_emitter = signal_emitter
         self._initialize_position_service()
@@ -53,7 +54,7 @@ class OptionProvider(IOptionProvider):
     def _initialize_position_service(self):
         """Initialize the position matching service."""
         try:
-            from application.services.positioning.arrows.utilities.pictograph_position_matcher import (
+            from desktop.modern.src.application.services.positioning.arrows.utilities.pictograph_position_matcher import (
                 PictographPositionMatcher,
             )
 
@@ -61,12 +62,12 @@ class OptionProvider(IOptionProvider):
             logger.debug("Position matching service initialized")
 
         except Exception as e:
-            logger.error(f"Failed to initialize position service: {e}")
+            logger.exception(f"Failed to initialize position service: {e}")
             self._position_service = None
 
     def load_options_from_sequence(
-        self, sequence_data: List[Dict[str, Any]]
-    ) -> List[PictographData]:
+        self, sequence_data: list[dict[str, Any]]
+    ) -> list[PictographData]:
         """
         Load pictograph options based on legacy sequence data.
 
@@ -107,12 +108,12 @@ class OptionProvider(IOptionProvider):
             return options
 
         except Exception as e:
-            logger.error(f"Error loading options from sequence: {e}")
+            logger.exception(f"Error loading options from sequence: {e}")
             return self._clear_and_return_empty()
 
     def load_options_from_modern_sequence(
-        self, sequence: "SequenceData"
-    ) -> List[PictographData]:
+        self, sequence: SequenceData
+    ) -> list[PictographData]:
         """
         Load pictograph options based on modern sequence data.
 
@@ -167,10 +168,10 @@ class OptionProvider(IOptionProvider):
             return options
 
         except Exception as e:
-            logger.error(f"Error loading options from modern sequence: {e}")
+            logger.exception(f"Error loading options from modern sequence: {e}")
             return self._clear_and_return_empty()
 
-    def get_current_options(self) -> List[PictographData]:
+    def get_current_options(self) -> list[PictographData]:
         """Get the currently loaded pictograph options."""
         return self._pictograph_options.copy()
 
@@ -185,22 +186,22 @@ class OptionProvider(IOptionProvider):
         """Get the number of currently loaded options."""
         return len(self._pictograph_options)
 
-    def get_option_by_index(self, index: int) -> Optional[PictographData]:
+    def get_option_by_index(self, index: int) -> PictographData | None:
         """Get option by index."""
         if 0 <= index < len(self._pictograph_options):
             return self._pictograph_options[index]
         return None
 
-    def filter_options_by_letter(self, letter: str) -> List[PictographData]:
+    def filter_options_by_letter(self, letter: str) -> list[PictographData]:
         """Filter current options by letter."""
         return [opt for opt in self._pictograph_options if opt.letter == letter]
 
-    def get_available_letters(self) -> List[str]:
+    def get_available_letters(self) -> list[str]:
         """Get list of available letters in current options."""
         letters = {opt.letter for opt in self._pictograph_options if opt.letter}
-        return sorted(list(letters))
+        return sorted(letters)
 
-    def _clear_and_return_empty(self) -> List[PictographData]:
+    def _clear_and_return_empty(self) -> list[PictographData]:
         """Clear options and return empty list."""
         self._pictograph_options = []
         if self._signal_emitter:

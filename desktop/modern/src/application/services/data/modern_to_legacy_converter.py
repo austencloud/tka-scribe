@@ -4,13 +4,14 @@ Modern to Legacy Converter
 Handles conversion from modern domain models to legacy JSON format.
 Focused solely on modern-to-legacy data transformation.
 """
+from __future__ import annotations
 
 import logging
-from typing import Any, Dict
 
 from domain.models.beat_data import BeatData
 
 from .position_attribute_mapper import PositionAttributeMapper
+
 
 logger = logging.getLogger(__name__)
 
@@ -87,7 +88,7 @@ class ModernToLegacyConverter:
             }
 
         except Exception as e:
-            logger.error(f"Error converting beat data to legacy format: {e}")
+            logger.exception(f"Error converting beat data to legacy format: {e}")
             return self._create_fallback_legacy_beat(beat_number)
 
     def convert_start_position_to_legacy_format(
@@ -151,7 +152,7 @@ class ModernToLegacyConverter:
             }
 
         except Exception as e:
-            logger.error(f"Error converting start position to legacy format: {e}")
+            logger.exception(f"Error converting start position to legacy format: {e}")
             return self._create_fallback_legacy_start_position()
 
     def convert_beat_to_legacy_dict(self, beat: BeatData) -> dict:
@@ -194,7 +195,7 @@ class ModernToLegacyConverter:
             }
 
         except Exception as e:
-            logger.error(f"Error converting beat to legacy dict: {e}")
+            logger.exception(f"Error converting beat to legacy dict: {e}")
             return self._create_fallback_legacy_beat(beat.beat_number)
 
     def _convert_start_position_motion_to_legacy(
@@ -257,10 +258,9 @@ class ModernToLegacyConverter:
         try:
             if hasattr(orientation, "value"):
                 return str(orientation.value)
-            elif orientation is not None:
+            if orientation is not None:
                 return str(orientation)
-            else:
-                return fallback
+            return fallback
         except Exception:
             return fallback
 
@@ -314,10 +314,7 @@ class ModernToLegacyConverter:
             return False
 
         # Check for required fields
-        if not hasattr(beat, "letter") or not hasattr(beat, "beat_number"):
-            return False
-
-        return True
+        return not (not hasattr(beat, "letter") or not hasattr(beat, "beat_number"))
 
     def get_legacy_format_fields(self) -> list:
         """Get list of fields in legacy format."""

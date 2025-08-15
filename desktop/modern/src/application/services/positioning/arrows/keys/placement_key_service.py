@@ -11,14 +11,17 @@ It provides the exact same logic as the legacy system:
 
 This achieves 100% functional parity with the legacy PlacementKeyGenerator.
 """
+from __future__ import annotations
 
 import logging
-from typing import Optional
 
-from application.services.pictograph.pictograph_validator import PictographValidator
+from desktop.modern.src.application.services.pictograph.pictograph_validator import (
+    PictographValidator,
+)
+from desktop.modern.src.domain.models.letter_type_classifier import LetterTypeClassifier
+from desktop.modern.src.domain.models.pictograph_data import PictographData
 from domain.models import MotionData, Orientation
-from domain.models.letter_type_classifier import LetterTypeClassifier
-from domain.models.pictograph_data import PictographData
+
 
 logger = logging.getLogger(__name__)
 
@@ -115,7 +118,7 @@ class PlacementKeyService:
             return "nonradial_"
         return ""
 
-    def _get_letter_suffix(self, letter: Optional[str]) -> str:
+    def _get_letter_suffix(self, letter: str | None) -> str:
         """
         Generate letter suffix component.
 
@@ -199,7 +202,7 @@ class PlacementKeyService:
             return "IN"  # Default
 
         # Calculate end orientation similar to legacy
-        from application.services.positioning.arrows.calculation.orientation_calculator import (
+        from desktop.modern.src.application.services.positioning.arrows.calculation.orientation_calculator import (
             OrientationCalculator,
         )
 

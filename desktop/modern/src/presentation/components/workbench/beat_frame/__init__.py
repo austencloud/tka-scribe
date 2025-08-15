@@ -6,6 +6,9 @@ This package contains beat frame components for the modern workbench.
 """
 
 # Ensure project paths are set up for imports
+from __future__ import annotations
+
+
 try:
     from project_root import ensure_project_setup
 

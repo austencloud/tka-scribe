@@ -4,11 +4,15 @@ Section Layout Service - Pure Business Logic
 Handles all section layout calculations including pictograph sizing,
 dimension calculations, and layout optimization without Qt dependencies.
 """
+from __future__ import annotations
 
 import logging
-from typing import NamedTuple, Optional
+from typing import NamedTuple
 
-from presentation.components.option_picker.types.letter_types import LetterType
+from desktop.modern.src.presentation.components.option_picker.types.letter_types import (
+    LetterType,
+)
+
 
 logger = logging.getLogger(__name__)
 
@@ -65,8 +69,8 @@ class SectionLayoutManager:
 
     def __init__(self):
         """Initialize the section layout service."""
-        self._current_constraints: Optional[SizingConstraints] = None
-        self._cached_dimensions: Optional[LayoutDimensions] = None
+        self._current_constraints: SizingConstraints | None = None
+        self._cached_dimensions: LayoutDimensions | None = None
 
         logger.debug("Section layout service initialized")
 
@@ -149,9 +153,8 @@ class SectionLayoutManager:
         if letter_type in self.BOTTOM_ROW_TYPES:
             # Bottom row sections split width into thirds
             return total_width // 3
-        else:
-            # Top sections use full width
-            return total_width
+        # Top sections use full width
+        return total_width
 
     def calculate_section_height(
         self, constraints: SizingConstraints, header_height: int
@@ -241,7 +244,7 @@ class SectionLayoutManager:
     # Resize Handling
     def calculate_resize_dimensions(
         self, old_width: int, new_width: int, current_dimensions: LayoutDimensions
-    ) -> Optional[LayoutDimensions]:
+    ) -> LayoutDimensions | None:
         """
         Calculate new dimensions after a resize event.
 
@@ -303,10 +306,7 @@ class SectionLayoutManager:
             return False
 
         # Check that content height is reasonable
-        if dimensions.content_height < 0:
-            return False
-
-        return True
+        return not dimensions.content_height < 0
 
     def calculate_minimum_required_space(
         self, letter_type: str, pictograph_count: int
@@ -367,7 +367,7 @@ class SectionLayoutManager:
 
     def get_cached_dimensions(
         self, constraints: SizingConstraints
-    ) -> Optional[LayoutDimensions]:
+    ) -> LayoutDimensions | None:
         """
         Get cached dimensions if constraints match.
 

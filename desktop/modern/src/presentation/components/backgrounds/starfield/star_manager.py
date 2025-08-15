@@ -2,12 +2,18 @@
 
 Qt rendering for stars - business logic delegated to StarTwinkling service.
 """
+from __future__ import annotations
 
 import math
+
+from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QColor, QPainter, QPainterPath
 from PyQt6.QtWidgets import QWidget
-from PyQt6.QtCore import Qt
-from application.services.backgrounds.starfield.star_twinkling import StarTwinkling
+
+from desktop.modern.src.application.services.backgrounds.starfield.star_twinkling import (
+    StarTwinkling,
+)
+
 
 # A+ Enhancement: Import Qt resource pooling - Temporarily disabled
 # try:
@@ -39,7 +45,7 @@ class StarManager:
         """Draw all stars using Qt - get state from service."""
         star_states = self._twinkling_service.get_star_states()
         twinkle_states = self._twinkling_service.get_twinkle_states()
-        
+
         for i, star in enumerate(star_states):
             x = int(star.position.x * widget.width())
             y = int(star.position.y * widget.height())

@@ -5,14 +5,16 @@ This is now a thin UI adapter that delegates business logic to the
 PositionMatchingService. It maintains backward compatibility while
 using the extracted business service.
 """
+from __future__ import annotations
 
 import logging
-from typing import TYPE_CHECKING, Any, Dict, Optional
+from typing import TYPE_CHECKING, Any
 
-from core.interfaces.positioning_services import IPositionMapper
+from desktop.modern.src.core.interfaces.positioning_services import IPositionMapper
+
 
 if TYPE_CHECKING:
-    from application.services.positioning.arrows.utilities.pictograph_position_matcher import (
+    from desktop.modern.src.application.services.positioning.arrows.utilities.pictograph_position_matcher import (
         PictographPositionMatcher,
     )
     from domain.models import BeatData
@@ -28,7 +30,7 @@ class PositionMatcher:
     while maintaining the same public interface for backward compatibility.
     """
 
-    def __init__(self, position_service: Optional[IPositionMapper] = None):
+    def __init__(self, position_service: IPositionMapper | None = None):
         """
         Initialize position matcher with injected business service.
 
@@ -40,7 +42,7 @@ class PositionMatcher:
         # Fallback for legacy compatibility - will be removed in future versions
         if not self._position_service:
             try:
-                from application.services.positioning.position_mapper import (
+                from desktop.modern.src.application.services.positioning.position_mapper import (
                     PositionMapper,
                 )
 
@@ -49,12 +51,12 @@ class PositionMatcher:
                     "Using fallback position service - consider using DI container"
                 )
             except ImportError:
-                logger.error("Position matching service not available")
+                logger.exception("Position matching service not available")
                 self._position_service = None
 
     def extract_end_position(
-        self, last_beat: Dict[str, Any], position_service: "PictographPositionMatcher"
-    ) -> Optional[str]:
+        self, last_beat: dict[str, Any], position_service: PictographPositionMatcher
+    ) -> str | None:
         """
         Extract end position from last beat data using Legacy-compatible logic.
 
@@ -72,7 +74,7 @@ class PositionMatcher:
         # Delegate to business service
         return self._position_service.extract_end_position(last_beat)
 
-    def extract_modern_end_position(self, beat_data: "BeatData") -> Optional[str]:
+    def extract_modern_end_position(self, beat_data: BeatData) -> str | None:
         """
         Extract end position directly from Modern BeatData.
 
@@ -89,7 +91,7 @@ class PositionMatcher:
         # Delegate to business service
         return self._position_service.extract_modern_end_position(beat_data)
 
-    def has_motion_attributes(self, beat_data: Dict[str, Any]) -> bool:
+    def has_motion_attributes(self, beat_data: dict[str, Any]) -> bool:
         """
         Check if beat data has motion attributes for end position calculation.
 
@@ -108,7 +110,7 @@ class PositionMatcher:
 
     def get_position_from_locations(
         self, start_loc: str, end_loc: str
-    ) -> Optional[str]:
+    ) -> str | None:
         """
         Get position key from start and end locations.
 

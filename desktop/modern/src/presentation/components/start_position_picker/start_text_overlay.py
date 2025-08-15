@@ -5,15 +5,15 @@ This component replicates legacy's BeatStartTextItem functionality by adding
 "START" text directly to the pictograph scene, matching legacy's exact styling
 and positioning.
 """
+from __future__ import annotations
 
-from typing import Optional
-from PyQt6.QtWidgets import QGraphicsTextItem, QGraphicsScene
-from PyQt6.QtGui import QFont
 from PyQt6.QtCore import QPointF
+from PyQt6.QtGui import QFont
+from PyQt6.QtWidgets import QGraphicsScene, QGraphicsTextItem
 
 
 class StartTextOverlay(QGraphicsTextItem):
-    def __init__(self, parent_scene: Optional[QGraphicsScene] = None):
+    def __init__(self, parent_scene: QGraphicsScene | None = None):
         super().__init__("START")
         self.parent_scene = parent_scene
         self._is_valid = True
@@ -92,7 +92,7 @@ class StartTextOverlay(QGraphicsTextItem):
         self._is_valid = False
 
 
-def add_start_text_to_pictograph(pictograph_component) -> Optional[StartTextOverlay]:
+def add_start_text_to_pictograph(pictograph_component) -> StartTextOverlay | None:
     """
     Add START text overlay to a pictograph component.
 

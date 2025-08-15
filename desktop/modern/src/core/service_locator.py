@@ -47,7 +47,7 @@ def initialize_services():
         _command_processor = CommandProcessor(_event_bus)
 
         # Initialize sequence state manager (import here to avoid circular imports)
-        from desktop.modern.application.services.sequence.sequence_state_tracker import (
+        from desktop.modern.src.application.services.sequence.sequence_state_tracker import (
             SequenceStateTracker,
         )
 
@@ -55,7 +55,9 @@ def initialize_services():
 
         # Initialize event logger for debugging
         try:
-            from desktop.modern.core.debugging.event_logger import setup_event_logger
+            from desktop.modern.src.core.debugging.event_logger import (
+                setup_event_logger,
+            )
 
             setup_event_logger(_event_bus)
 
@@ -104,7 +106,7 @@ def get_data_conversion_service():
     if _data_conversion_service is None:
         # Lazy initialize data conversion service
         try:
-            from desktop.modern.application.services.data.data_converter import (
+            from desktop.modern.src.application.services.data.data_converter import (
                 DataConverter,
             )
 

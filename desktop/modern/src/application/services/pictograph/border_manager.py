@@ -4,12 +4,13 @@ Pictograph Border Service - Pure Business Logic
 Handles all border calculations, color determination, and sizing logic
 without any Qt dependencies.
 """
+from __future__ import annotations
 
 import logging
-from typing import Dict, Optional, Tuple
 
-from core.interfaces.core_services import IPictographBorderManager
+from desktop.modern.src.core.interfaces.core_services import IPictographBorderManager
 from domain.models import LetterType
+
 
 logger = logging.getLogger(__name__)
 
@@ -123,7 +124,7 @@ class PictographBorderManager(IPictographBorderManager):
     # Color Management
     def determine_colors_for_letter_type(
         self, letter_type: LetterType
-    ) -> Tuple[str, str]:
+    ) -> tuple[str, str]:
         """
         Determine border colors based on letter type.
 
@@ -273,7 +274,7 @@ class PictographBorderManager(IPictographBorderManager):
         """
         return self._config.enabled
 
-    def get_current_colors(self) -> Tuple[str, str]:
+    def get_current_colors(self) -> tuple[str, str]:
         """
         Get the current border colors.
 
@@ -282,7 +283,7 @@ class PictographBorderManager(IPictographBorderManager):
         """
         return (self._config.primary_color, self._config.secondary_color)
 
-    def get_original_colors(self) -> Tuple[str, str]:
+    def get_original_colors(self) -> tuple[str, str]:
         """
         Get the original border colors.
 
@@ -311,7 +312,7 @@ class PictographBorderManager(IPictographBorderManager):
 
         return True
 
-    def get_service_summary(self) -> Dict[str, any]:
+    def get_service_summary(self) -> dict[str, any]:
         """
         Get a summary of the service state.
 

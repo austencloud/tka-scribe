@@ -10,12 +10,13 @@ PROVIDES:
 - Diagonal offset calculations
 - Scene-relative offset scaling
 """
+from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import Dict, Tuple
 
-from domain.models.enums import PropType
 from PyQt6.QtCore import QPointF
+
+from desktop.modern.src.domain.models.enums import PropType
 
 from ...props.calculation.direction_calculation_service import SeparationDirection
 
@@ -35,7 +36,7 @@ class IOffsetCalculationService(ABC):
         blue_direction: SeparationDirection,
         red_direction: SeparationDirection,
         prop_type: PropType,
-    ) -> Tuple[QPointF, QPointF]:
+    ) -> tuple[QPointF, QPointF]:
         """Calculate separation offsets for blue and red props."""
 
     @abstractmethod
@@ -100,7 +101,7 @@ class OffsetCalculationService(IOffsetCalculationService):
         blue_direction: SeparationDirection,
         red_direction: SeparationDirection,
         prop_type: PropType,
-    ) -> Tuple[QPointF, QPointF]:
+    ) -> tuple[QPointF, QPointF]:
         """Calculate separation offsets for blue and red props."""
         blue_offset = self.calculate_directional_offset(blue_direction, prop_type)
         red_offset = self.calculate_directional_offset(red_direction, prop_type)
@@ -137,7 +138,7 @@ class OffsetCalculationService(IOffsetCalculationService):
         }
         return category_map.get(size_category, self._small_offset_divisor)
 
-    def _build_prop_offset_map(self) -> Dict[PropType, int]:
+    def _build_prop_offset_map(self) -> dict[PropType, int]:
         """Build prop offset mapping based on modern PropType enum."""
         return {
             PropType.CLUB: self._large_offset_divisor,

@@ -11,12 +11,16 @@ This service handles:
 
 No UI dependencies, completely testable in isolation.
 """
+from __future__ import annotations
 
 import logging
 
-from core.interfaces.positioning_services import IArrowCoordinateSystemService
-from core.types.geometry import Point
-from domain.models import MotionData, MotionType, Location
+from desktop.modern.src.core.interfaces.positioning_services import (
+    IArrowCoordinateSystemService,
+)
+from desktop.modern.src.core.types.geometry import Point
+from domain.models import Location, MotionData, MotionType
+
 
 logger = logging.getLogger(__name__)
 
@@ -79,13 +83,12 @@ class ArrowCoordinateSystemService(IArrowCoordinateSystemService):
         if motion.motion_type in [MotionType.PRO, MotionType.ANTI, MotionType.FLOAT]:
             # Shift arrows use layer2 points
             return self._get_layer2_coords(location)
-        elif motion.motion_type in [MotionType.STATIC, MotionType.DASH]:
+        if motion.motion_type in [MotionType.STATIC, MotionType.DASH]:
             # Static/dash arrows use hand points
             return self._get_hand_point_coords(location)
-        else:
-            # Default fallback
-            logger.warning(f"Unknown motion type: {motion.motion_type}, using center")
-            return self.get_scene_center()
+        # Default fallback
+        logger.warning(f"Unknown motion type: {motion.motion_type}, using center")
+        return self.get_scene_center()
 
     def get_scene_center(self) -> Point:
         """Get the center point of the scene coordinate system."""

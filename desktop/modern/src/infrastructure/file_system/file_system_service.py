@@ -16,7 +16,7 @@ from __future__ import annotations
 import logging
 from pathlib import Path
 
-from desktop.modern.core.interfaces.organization_services import IFileSystemService
+from desktop.modern.src.core.interfaces.organization_services import IFileSystemService
 
 
 logger = logging.getLogger(__name__)

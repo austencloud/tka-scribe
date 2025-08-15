@@ -7,11 +7,13 @@ which directional tuple to use based on arrow location and motion type.
 This service provides the quadrant index calculation that was
 missing from the modern arrow positioning system.
 """
+from __future__ import annotations
 
 import logging
 from typing import Literal
 
 from domain.models import Location, MotionData, MotionType
+
 
 logger = logging.getLogger(__name__)
 
@@ -83,8 +85,7 @@ class QuadrantIndexCalculator:
             Location.NORTHWEST,
         ]:
             return "box"
-        else:
-            return "diamond"
+        return "diamond"
 
     def _diamond_shift_quadrant_index(self, location: Location) -> Literal[0, 1, 2, 3]:
         """

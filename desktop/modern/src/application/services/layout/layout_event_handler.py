@@ -6,19 +6,21 @@ This class preserves all original event handling logic including
 beat added/removed events, sequence creation events, and component
 resize events with automatic layout recalculation.
 """
+from __future__ import annotations
 
-import logging
-import uuid
 from datetime import datetime
-from typing import Any, Dict, List, Tuple
+import logging
+from typing import Any
+import uuid
 
-from core.types import Size
+from desktop.modern.src.core.types import Size
 
 from .beat_layout_calculator import BeatLayoutCalculator
 
+
 # Event-driven architecture imports
 try:
-    from core.events import (
+    from desktop.modern.src.core.events import (
         BeatAddedEvent,
         BeatRemovedEvent,
         ComponentResizedEvent,
@@ -67,7 +69,7 @@ class LayoutEventHandler:
         """Initialize with references to calculator and window size."""
         self._beat_layout_calculator = beat_layout_calculator
         self._main_window_size = main_window_size
-        self._subscription_ids: List[str] = []
+        self._subscription_ids: list[str] = []
 
     def setup_event_subscriptions(self, event_bus):
         """Subscribe to events that require layout recalculation."""
@@ -135,7 +137,7 @@ class LayoutEventHandler:
             )
 
         except Exception as e:
-            logger.error(f"Failed to recalculate layout after beat added: {e}")
+            logger.exception(f"Failed to recalculate layout after beat added: {e}")
 
     def _on_beat_removed(self, event: BeatRemovedEvent):
         """Handle beat removed event by recalculating layout."""
@@ -170,7 +172,7 @@ class LayoutEventHandler:
             )
 
         except Exception as e:
-            logger.error(f"Failed to recalculate layout after beat removed: {e}")
+            logger.exception(f"Failed to recalculate layout after beat removed: {e}")
 
     def _on_sequence_created(self, event: SequenceCreatedEvent):
         """Handle sequence created event by setting up initial layout."""
@@ -205,7 +207,7 @@ class LayoutEventHandler:
             )
 
         except Exception as e:
-            logger.error(f"Failed to setup layout for new sequence: {e}")
+            logger.exception(f"Failed to setup layout for new sequence: {e}")
 
     def _on_component_resized(self, event: ComponentResizedEvent):
         """Handle component resize event by recalculating responsive layout."""
@@ -220,8 +222,8 @@ class LayoutEventHandler:
         # This ensures responsive design works automatically
 
     def _recalculate_beat_frame_layout(
-        self, beat_count: int, container_size: Tuple[int, int], trigger_reason: str
-    ) -> Dict[str, Any]:
+        self, beat_count: int, container_size: tuple[int, int], trigger_reason: str
+    ) -> dict[str, Any]:
         """Recalculate beat frame layout and return result."""
         if beat_count == 0:
             return {"positions": {}, "sizes": {}, "total_size": (0, 0)}
@@ -235,10 +237,10 @@ class LayoutEventHandler:
             return self._beat_layout_calculator._calculate_horizontal_beat_layout(
                 beat_count, container_size, base_size, padding, spacing
             )
-        else:  # Use grid layout
-            return self._beat_layout_calculator._calculate_grid_beat_layout(
-                beat_count, container_size, base_size, padding, spacing
-            )
+        # Use grid layout
+        return self._beat_layout_calculator._calculate_grid_beat_layout(
+            beat_count, container_size, base_size, padding, spacing
+        )
 
     def cleanup(self, event_bus):
         """Clean up event subscriptions when service is destroyed."""

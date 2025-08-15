@@ -14,13 +14,20 @@ This service handles:
 
 No UI dependencies - completely testable in isolation.
 """
+from __future__ import annotations
 
 import logging
-from typing import Any, Callable, Dict, List, Tuple
+from typing import Any, Callable
 
-from core.interfaces.option_picker_interfaces import IOptionPickerDisplayService
-from domain.models.letter_type_classifier import LetterType, LetterTypeClassifier
-from domain.models.pictograph_data import PictographData
+from desktop.modern.src.core.interfaces.option_picker_interfaces import (
+    IOptionPickerDisplayService,
+)
+from desktop.modern.src.domain.models.letter_type_classifier import (
+    LetterType,
+    LetterTypeClassifier,
+)
+from desktop.modern.src.domain.models.pictograph_data import PictographData
+
 
 logger = logging.getLogger(__name__)
 
@@ -36,15 +43,15 @@ class OptionPickerDisplayManager(IOptionPickerDisplayService):
     def __init__(self):
         """Initialize the display service with business configuration."""
         self._section_strategy = self._get_default_section_strategy()
-        self._current_pictographs: List[PictographData] = []
-        self._current_display_strategy: Dict = {}
+        self._current_pictographs: list[PictographData] = []
+        self._current_display_strategy: dict = {}
         self._display_state = {
             "initialized": False,
             "sections_created": False,
             "pictographs_assigned": False,
         }
 
-    def _get_default_section_strategy(self) -> Dict[str, any]:
+    def _get_default_section_strategy(self) -> dict[str, any]:
         """
         Get the default section creation strategy.
 
@@ -71,8 +78,8 @@ class OptionPickerDisplayManager(IOptionPickerDisplayService):
         }
 
     def initialize_display_strategy(
-        self, configuration: Dict[str, any] = None
-    ) -> Dict[str, any]:
+        self, configuration: dict[str, any] | None = None
+    ) -> dict[str, any]:
         """
         Initialize the display service with configuration.
 
@@ -97,10 +104,10 @@ class OptionPickerDisplayManager(IOptionPickerDisplayService):
             }
 
         except Exception as e:
-            logger.error(f"Error initializing display service: {e}")
+            logger.exception(f"Error initializing display service: {e}")
             return {"success": False, "error": str(e)}
 
-    def create_sections(self) -> Dict[str, any]:
+    def create_sections(self) -> dict[str, any]:
         """
         Calculate section creation requirements.
 
@@ -150,12 +157,12 @@ class OptionPickerDisplayManager(IOptionPickerDisplayService):
             }
 
         except Exception as e:
-            logger.error(f"Error creating sections: {e}")
+            logger.exception(f"Error creating sections: {e}")
             return {"success": False, "error": str(e)}
 
     def update_pictograph_display(
-        self, pictograph_options: List[PictographData]
-    ) -> Dict[str, any]:
+        self, pictograph_options: list[PictographData]
+    ) -> dict[str, any]:
         """
         Calculate display update requirements for new pictograph options.
 
@@ -215,12 +222,12 @@ class OptionPickerDisplayManager(IOptionPickerDisplayService):
             }
 
         except Exception as e:
-            logger.error(f"Error updating beat display: {e}")
+            logger.exception(f"Error updating beat display: {e}")
             return {"success": False, "error": str(e)}
 
     def _organize_pictographs_by_letter_type(
-        self, pictographs: List[PictographData]
-    ) -> Dict[str, List[Tuple[int, PictographData]]]:
+        self, pictographs: list[PictographData]
+    ) -> dict[str, list[tuple[int, PictographData]]]:
         """
         Organize pictographs by their letter types with pool indices.
 
@@ -246,8 +253,8 @@ class OptionPickerDisplayManager(IOptionPickerDisplayService):
         return organized_pictographs
 
     def _calculate_section_requirements(
-        self, organized_options: Dict[str, List]
-    ) -> Dict[str, dict]:
+        self, organized_options: dict[str, list]
+    ) -> dict[str, dict]:
         """
         Calculate requirements for each section based on organized beats.
 
@@ -283,8 +290,8 @@ class OptionPickerDisplayManager(IOptionPickerDisplayService):
         return section_requirements
 
     def _calculate_pictograph_assignments(
-        self, organized_beats: Dict[str, List]
-    ) -> Dict[str, List[Dict]]:
+        self, organized_beats: dict[str, list]
+    ) -> dict[str, list[dict]]:
         """
         Calculate pictograph frame assignments for each section.
 
@@ -317,7 +324,7 @@ class OptionPickerDisplayManager(IOptionPickerDisplayService):
 
         return assignments
 
-    def _generate_update_requirements(self, display_strategy: Dict) -> Dict[str, any]:
+    def _generate_update_requirements(self, display_strategy: dict) -> dict[str, any]:
         """
         Generate specific update requirements for UI implementation.
 
@@ -344,7 +351,7 @@ class OptionPickerDisplayManager(IOptionPickerDisplayService):
             },
         }
 
-    def get_section_creation_order(self) -> List[str]:
+    def get_section_creation_order(self) -> list[str]:
         """
         Get the order in which sections should be created.
 
@@ -356,7 +363,7 @@ class OptionPickerDisplayManager(IOptionPickerDisplayService):
 
     def calculate_layout_dimensions(
         self, container_width: int, container_height: int
-    ) -> Dict[str, Dict]:
+    ) -> dict[str, dict]:
         """
         Calculate layout dimensions for all sections.
 
@@ -394,7 +401,7 @@ class OptionPickerDisplayManager(IOptionPickerDisplayService):
 
         return dimensions
 
-    def get_current_display_state(self) -> Dict[str, any]:
+    def get_current_display_state(self) -> dict[str, any]:
         """Get the current display state and strategy."""
         return {
             "display_state": self._display_state.copy(),
@@ -403,7 +410,7 @@ class OptionPickerDisplayManager(IOptionPickerDisplayService):
             "configuration": self._section_strategy.copy(),
         }
 
-    def reset_display(self) -> Dict[str, any]:
+    def reset_display(self) -> dict[str, any]:
         """Reset the display service to initial state."""
         self._current_beats.clear()
         self._current_display_strategy.clear()
@@ -445,7 +452,7 @@ class OptionPickerDisplayManager(IOptionPickerDisplayService):
         # This is a UI concern - log for now, implement if needed
         logger.debug("resize_sections called - UI implementation needed")
 
-    def get_sections(self) -> Dict[str, Any]:
+    def get_sections(self) -> dict[str, Any]:
         """Get current display sections (interface compliance)."""
         # Return section information from current strategy
         if not self._current_display_strategy:

@@ -7,8 +7,7 @@ natural scene integration without visual styling artifacts.
 
 Based on successful testing and unified with StartTextOverlay approach.
 """
-
-from typing import Optional
+from __future__ import annotations
 
 from PyQt6.QtWidgets import QWidget
 
@@ -27,7 +26,7 @@ class BeatNumberOverlay(TextOverlayBase):
     and natural integration with the beat frame appearance.
     """
 
-    def __init__(self, beat_number: int, parent_widget: Optional[QWidget] = None):
+    def __init__(self, beat_number: int, parent_widget: QWidget | None = None):
         # Set beat number specific base size
         self.beat_number = beat_number
 
@@ -61,7 +60,7 @@ class BeatNumberOverlay(TextOverlayBase):
 
 def add_beat_number_to_view(
     beat_view: QWidget, beat_number: int
-) -> Optional[BeatNumberOverlay]:
+) -> BeatNumberOverlay | None:
     """
     Add beat number overlay to a beat view widget.
 

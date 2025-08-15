@@ -4,7 +4,7 @@ from dataclasses import dataclass, field
 import json
 from typing import Any
 
-from desktop.modern.domain.models.enums import GridMode
+from desktop.modern.src.domain.models.enums import GridMode
 
 
 @dataclass(frozen=True)

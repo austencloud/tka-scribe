@@ -4,18 +4,18 @@ Dataset Query Service
 Handles querying and searching operations on pictograph datasets.
 Focused solely on data retrieval and filtering logic.
 """
+from __future__ import annotations
 
-import logging
 from abc import ABC, abstractmethod
-from typing import List, Optional, Tuple
+import logging
 
-import pandas as pd
-from domain.models.beat_data import BeatData
-from domain.models.pictograph_data import PictographData
+from desktop.modern.src.domain.models.beat_data import BeatData
+from desktop.modern.src.domain.models.pictograph_data import PictographData
 
 from .dataset_loader import DatasetLoader
 from .pictograph_factory import PictographFactory
 from .position_resolver import PositionResolver
+
 
 logger = logging.getLogger(__name__)
 
@@ -26,40 +26,40 @@ class IDatasetQuery(ABC):
     @abstractmethod
     def get_start_position_pictograph(
         self, position_key: str, grid_mode: str = "diamond"
-    ) -> Optional[BeatData]:
+    ) -> BeatData | None:
         """Get the actual pictograph data for a start position as BeatData with embedded pictograph."""
         pass
 
     @abstractmethod
     def get_start_position_pictograph_data(
         self, position_key: str, grid_mode: str = "diamond"
-    ) -> Optional[PictographData]:
+    ) -> PictographData | None:
         """Get pictograph data for a start position (proper domain model)."""
         pass
 
     @abstractmethod
     def find_pictograph_by_criteria(
         self, letter: str, start_pos: str, end_pos: str, grid_mode: str = "diamond"
-    ) -> Optional[BeatData]:
+    ) -> BeatData | None:
         """Find a pictograph by specific criteria."""
         pass
 
     @abstractmethod
     def find_pictographs_by_letter(
         self, letter: str, grid_mode: str = "diamond"
-    ) -> List[BeatData]:
+    ) -> list[BeatData]:
         """Find all pictographs with a specific letter."""
         pass
 
     @abstractmethod
     def find_pictographs_by_position_range(
-        self, start_positions: List[str], grid_mode: str = "diamond"
-    ) -> List[BeatData]:
+        self, start_positions: list[str], grid_mode: str = "diamond"
+    ) -> list[BeatData]:
         """Find pictographs within a range of start positions."""
         pass
 
     @abstractmethod
-    def get_available_letters(self, grid_mode: str = "diamond") -> List[str]:
+    def get_available_letters(self, grid_mode: str = "diamond") -> list[str]:
         """Get all available letters in the dataset."""
         pass
 
@@ -88,7 +88,7 @@ class DatasetQuery(IDatasetQuery):
 
     def get_start_position_pictograph(
         self, position_key: str, grid_mode: str = "diamond"
-    ) -> Optional[BeatData]:
+    ) -> BeatData | None:
         """
         Get the actual pictograph data for a start position as BeatData with embedded pictograph.
 
@@ -127,7 +127,9 @@ class DatasetQuery(IDatasetQuery):
             )
 
             # Use BeatFactory to create start position beat with embedded pictograph
-            from application.services.sequence.beat_factory import BeatFactory
+            from desktop.modern.src.application.services.sequence.beat_factory import (
+                BeatFactory,
+            )
 
             beat_data = BeatFactory.create_start_position_beat(pictograph_data)
             return beat_data
@@ -135,12 +137,12 @@ class DatasetQuery(IDatasetQuery):
         except Exception as e:
             # Only log actual unexpected errors, not validation failures
             if "split" not in str(e) and "NoneType" not in str(e):
-                logger.error(f"Error getting start position {position_key}: {e}")
+                logger.exception(f"Error getting start position {position_key}: {e}")
             return None
 
     def get_start_position_pictograph_data(
         self, position_key: str, grid_mode: str = "diamond"
-    ) -> Optional[PictographData]:
+    ) -> PictographData | None:
         """
         Get pictograph data for a start position (proper domain model).
 
@@ -179,12 +181,12 @@ class DatasetQuery(IDatasetQuery):
             )
 
         except Exception as e:
-            logger.error(f"Error getting pictograph data for {position_key}: {e}")
+            logger.exception(f"Error getting pictograph data for {position_key}: {e}")
             return None
 
     def find_pictograph_by_criteria(
         self, letter: str, start_pos: str, end_pos: str, grid_mode: str = "diamond"
-    ) -> Optional[BeatData]:
+    ) -> BeatData | None:
         """
         Find a pictograph by specific criteria.
 
@@ -223,12 +225,12 @@ class DatasetQuery(IDatasetQuery):
             )
 
         except Exception as e:
-            logger.error(f"Error finding pictograph by criteria: {e}")
+            logger.exception(f"Error finding pictograph by criteria: {e}")
             return None
 
     def find_pictographs_by_letter(
         self, letter: str, grid_mode: str = "diamond"
-    ) -> List[BeatData]:
+    ) -> list[BeatData]:
         """
         Find all pictographs with a specific letter.
 
@@ -271,12 +273,12 @@ class DatasetQuery(IDatasetQuery):
             return results
 
         except Exception as e:
-            logger.error(f"Error finding pictographs by letter {letter}: {e}")
+            logger.exception(f"Error finding pictographs by letter {letter}: {e}")
             return []
 
     def find_pictographs_by_position_range(
-        self, start_positions: List[str], grid_mode: str = "diamond"
-    ) -> List[BeatData]:
+        self, start_positions: list[str], grid_mode: str = "diamond"
+    ) -> list[BeatData]:
         """
         Find pictographs within a range of start positions.
 
@@ -319,10 +321,10 @@ class DatasetQuery(IDatasetQuery):
             return results
 
         except Exception as e:
-            logger.error(f"Error finding pictographs by position range: {e}")
+            logger.exception(f"Error finding pictographs by position range: {e}")
             return []
 
-    def get_available_letters(self, grid_mode: str = "diamond") -> List[str]:
+    def get_available_letters(self, grid_mode: str = "diamond") -> list[str]:
         """
         Get all available letters in the dataset.
 
@@ -345,7 +347,7 @@ class DatasetQuery(IDatasetQuery):
             )
 
         except Exception as e:
-            logger.error(f"Error getting available letters: {e}")
+            logger.exception(f"Error getting available letters: {e}")
             return []
 
     def get_available_positions(self, grid_mode: str = "diamond") -> dict:
@@ -380,5 +382,5 @@ class DatasetQuery(IDatasetQuery):
             }
 
         except Exception as e:
-            logger.error(f"Error getting available positions: {e}")
+            logger.exception(f"Error getting available positions: {e}")
             return {"start_positions": [], "end_positions": []}

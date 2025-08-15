@@ -4,10 +4,12 @@ Beat Selection Service - Pure Business Logic
 Handles all beat selection logic including multi-selection, keyboard navigation,
 and validation without any Qt dependencies.
 """
+from __future__ import annotations
 
-import logging
 from enum import Enum
-from typing import List, NamedTuple, Optional
+import logging
+from typing import NamedTuple
+
 
 logger = logging.getLogger(__name__)
 
@@ -25,9 +27,9 @@ class SelectionChangeResult(NamedTuple):
 
     changed: bool
     selection_type: SelectionType
-    selected_index: Optional[int]
-    previous_indices: List[int]
-    current_indices: List[int]
+    selected_index: int | None
+    previous_indices: list[int]
+    current_indices: list[int]
 
     @classmethod
     def no_change(cls):
@@ -35,12 +37,12 @@ class SelectionChangeResult(NamedTuple):
         return cls(False, SelectionType.NONE, None, [], [])
 
     @classmethod
-    def beat_selected(cls, index: int, previous: List[int], current: List[int]):
+    def beat_selected(cls, index: int, previous: list[int], current: list[int]):
         """Create a beat selection result."""
         return cls(True, SelectionType.BEAT, index, previous, current)
 
     @classmethod
-    def start_position_selected(cls, previous: List[int]):
+    def start_position_selected(cls, previous: list[int]):
         """Create a start position selection result."""
         return cls(True, SelectionType.START_POSITION, -1, previous, [])
 
@@ -57,8 +59,8 @@ class BeatSelectionService:
 
     def __init__(self):
         """Initialize the selection service with default values."""
-        self._selected_index: Optional[int] = None
-        self._selected_indices: List[int] = []
+        self._selected_index: int | None = None
+        self._selected_indices: list[int] = []
         self._multi_selection_enabled = False
         self._start_position_selected = False
         self._keyboard_navigation_enabled = True
@@ -103,8 +105,7 @@ class BeatSelectionService:
         if not enabled and len(self._selected_indices) > 1:
             if self._selected_indices:
                 return self.select_beat(self._selected_indices[0])
-            else:
-                return self.clear_selection()
+            return self.clear_selection()
 
         logger.debug(f"Multi-selection enabled: {enabled}")
         return SelectionChangeResult.no_change()
@@ -294,11 +295,11 @@ class BeatSelectionService:
         return SelectionChangeResult.no_change()
 
     # Query Methods
-    def get_selected_index(self) -> Optional[int]:
+    def get_selected_index(self) -> int | None:
         """Get the primary selected beat index."""
         return self._selected_index
 
-    def get_selected_indices(self) -> List[int]:
+    def get_selected_indices(self) -> list[int]:
         """Get all selected beat indices."""
         return self._selected_indices.copy()
 
@@ -344,22 +345,14 @@ class BeatSelectionService:
                 return False
 
         # Check that primary selection is in the list
-        if self._selected_index is not None:
-            if (
-                self._selected_index != self.START_POSITION_INDEX
-                and self._selected_index not in self._selected_indices
-            ):
-                return False
+        if self._selected_index is not None and (
+            self._selected_index != self.START_POSITION_INDEX
+            and self._selected_index not in self._selected_indices
+        ):
+            return False
 
         # Check that start position selection is consistent
-        if self._start_position_selected:
-            if (
-                self._selected_index != self.START_POSITION_INDEX
-                or self._selected_indices
-            ):
-                return False
-
-        return True
+        return not (self._start_position_selected and (self._selected_index != self.START_POSITION_INDEX or self._selected_indices))
 
     # Utility Methods
     def _clear_all_internal_selections(self) -> None:

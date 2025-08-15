@@ -3,9 +3,9 @@ Settings dialog sidebar component.
 
 Provides navigation between different settings tabs.
 """
+from __future__ import annotations
 
-from typing import List
-from PyQt6.QtCore import Qt, QSize, pyqtSignal
+from PyQt6.QtCore import QSize, Qt, pyqtSignal
 from PyQt6.QtGui import QCursor
 from PyQt6.QtWidgets import QListWidget, QListWidgetItem
 
@@ -15,7 +15,7 @@ class SettingsSidebar(QListWidget):
 
     tab_selected = pyqtSignal(int, str)  # index, tab_name
 
-    def __init__(self, tab_names: List[str], parent=None):
+    def __init__(self, tab_names: list[str], parent=None):
         super().__init__(parent)
         self.tab_names = tab_names
         self._setup_ui()

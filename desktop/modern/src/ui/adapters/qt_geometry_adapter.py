@@ -6,7 +6,7 @@ core types and the PyQt6 framework types.
 """
 from __future__ import annotations
 
-from desktop.modern.core.types import Point, Rect, Size
+from desktop.modern.src.core.types import Point, Rect, Size
 
 
 try:

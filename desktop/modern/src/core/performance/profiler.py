@@ -77,7 +77,7 @@ class AdvancedProfiler:
     def _integrate_with_existing_monitoring(self):
         """Integrate with existing core.monitoring system."""
         try:
-            from desktop.modern.core.monitoring import performance_monitor
+            from desktop.modern.src.core.monitoring import performance_monitor
 
             # Enable profiling in existing monitor if available
             if hasattr(performance_monitor, "_profiling_enabled"):

@@ -4,8 +4,8 @@ Modern Codex Exporter Tab for settings dialog.
 This tab provides functionality to export pictographs with turn configurations,
 following TKA's modern clean architecture and glassmorphism design.
 """
+from __future__ import annotations
 
-from core.interfaces.core_services import IUIStateManager
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtGui import QCursor, QFont
 from PyQt6.QtWidgets import (
@@ -21,6 +21,8 @@ from PyQt6.QtWidgets import (
     QVBoxLayout,
     QWidget,
 )
+
+from desktop.modern.src.core.interfaces.core_services import IUIStateManager
 
 
 class CodexExporterTab(QWidget):

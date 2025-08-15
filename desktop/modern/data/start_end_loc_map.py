@@ -1,4 +1,7 @@
+from __future__ import annotations
+
 from data.constants import *
+
 
 start_end_loc_map = {
     NORTHEAST: {

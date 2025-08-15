@@ -4,10 +4,12 @@ Component Sizing Service
 Calculates optimal component sizes based on container constraints.
 Framework-agnostic service for responsive component sizing.
 """
+from __future__ import annotations
 
-import logging
 from enum import Enum
-from typing import NamedTuple, Optional
+import logging
+from typing import NamedTuple
+
 
 logger = logging.getLogger(__name__)
 
@@ -56,7 +58,7 @@ class ComponentSizer:
         pass
 
     def calculate_pictograph_frame_size(
-        self, container_width: int, constraints: Optional[SizeConstraints] = None
+        self, container_width: int, constraints: SizeConstraints | None = None
     ) -> int:
         """
         Calculate optimal frame size for pictograph components.
@@ -118,21 +120,20 @@ class ComponentSizer:
             size = self.calculate_pictograph_frame_size(parent_size.width)
             return Dimensions(width=size, height=size)
 
-        elif component_type == ComponentType.BEAT_FRAME:
+        if component_type == ComponentType.BEAT_FRAME:
             # Beat frames use different proportions
             width = min(parent_size.width // 6, 150)
             height = min(parent_size.height // 8, 120)
             return Dimensions(width=width, height=height)
 
-        elif component_type == ComponentType.OPTION_FRAME:
+        if component_type == ComponentType.OPTION_FRAME:
             # Option frames are typically smaller
             size = min(parent_size.width // 10, 100)
             return Dimensions(width=size, height=size)
 
-        else:
-            # Default fallback
-            logger.warning(f"Unknown component type: {component_type}")
-            return Dimensions(width=100, height=100)
+        # Default fallback
+        logger.warning(f"Unknown component type: {component_type}")
+        return Dimensions(width=100, height=100)
 
     def apply_size_constraints(
         self, proposed_size: int, min_size: int, max_size: int

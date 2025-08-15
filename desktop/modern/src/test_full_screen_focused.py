@@ -28,8 +28,8 @@ def test_full_screen_end_to_end():
             app = QApplication(sys.argv)
 
         # Create test sequence
-        from desktop.modern.domain.models.beat_data import BeatData
-        from desktop.modern.domain.models.sequence_data import SequenceData
+        from desktop.modern.src.domain.models.beat_data import BeatData
+        from desktop.modern.src.domain.models.sequence_data import SequenceData
 
         beats = [
             BeatData(beat_number=0, letter="A", metadata={"is_start_position": True}),
@@ -47,16 +47,16 @@ def test_full_screen_end_to_end():
         )
 
         # Create full screen service
-        from desktop.modern.application.services.ui.full_screen_viewer import (
+        from desktop.modern.src.application.services.ui.full_screen_viewer import (
             FullScreenViewer,
         )
-        from desktop.modern.application.services.ui.sequence_state_reader import (
+        from desktop.modern.src.application.services.ui.sequence_state_reader import (
             MockSequenceStateReader,
         )
-        from desktop.modern.application.services.ui.thumbnail_generation_service import (
+        from desktop.modern.src.application.services.ui.thumbnail_generation_service import (
             MockThumbnailGenerationService,
         )
-        from desktop.modern.presentation.components.ui.full_screen import (
+        from desktop.modern.src.presentation.components.ui.full_screen import (
             FullScreenOverlayFactory,
         )
 
@@ -127,7 +127,7 @@ def test_overlay_widget():
         if app is None:
             app = QApplication(sys.argv)
 
-        from desktop.modern.presentation.components.ui.full_screen import (
+        from desktop.modern.src.presentation.components.ui.full_screen import (
             FullScreenOverlay,
         )
 
@@ -162,8 +162,12 @@ def test_di_integration_focused():
     print("\n🧪 Testing DI Integration (Focused)...")
 
     try:
-        from desktop.modern.core.dependency_injection.di_container import DIContainer
-        from desktop.modern.core.interfaces.workbench_services import IFullScreenViewer
+        from desktop.modern.src.core.dependency_injection.di_container import (
+            DIContainer,
+        )
+        from desktop.modern.src.core.interfaces.workbench_services import (
+            IFullScreenViewer,
+        )
         from presentation.factories.workbench_factory import _create_fullscreen_service
 
         # Create container

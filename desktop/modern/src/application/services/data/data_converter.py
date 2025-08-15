@@ -12,13 +12,14 @@ This service handles:
 
 No UI dependencies - completely testable in isolation.
 """
+from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import Any, Dict, List
+from typing import Any
 
-from domain.models.beat_data import BeatData
-from domain.models.enums import GridPosition, Location
-from domain.models.sequence_data import SequenceData
+from desktop.modern.src.domain.models.beat_data import BeatData
+from desktop.modern.src.domain.models.enums import GridPosition, Location
+from desktop.modern.src.domain.models.sequence_data import SequenceData
 
 
 class IDataConverter(ABC):
@@ -37,7 +38,7 @@ class IDataConverter(ABC):
     @abstractmethod
     def convert_sequence_to_legacy_format(
         self, sequence: SequenceData
-    ) -> List[Dict[str, Any]]:
+    ) -> list[dict[str, Any]]:
         """Convert Modern SequenceData to Legacy-compatible format for option picker with caching."""
         pass
 
@@ -47,7 +48,7 @@ class IDataConverter(ABC):
         pass
 
     @abstractmethod
-    def get_cache_stats(self) -> Dict[str, int]:
+    def get_cache_stats(self) -> dict[str, int]:
         """Get statistics about cache usage."""
         pass
 
@@ -152,7 +153,7 @@ class DataConverter(IDataConverter):
 
     def convert_sequence_to_legacy_format(
         self, sequence: SequenceData
-    ) -> List[Dict[str, Any]]:
+    ) -> list[dict[str, Any]]:
         """Convert Modern SequenceData to Legacy-compatible format for option picker with caching"""
         # Create cache key from sequence hash
         sequence_hash = hash(
@@ -226,7 +227,7 @@ class DataConverter(IDataConverter):
         self._sequence_conversion_cache.clear()
         print("🧹 Data conversion caches cleared")
 
-    def get_cache_stats(self) -> Dict[str, int]:
+    def get_cache_stats(self) -> dict[str, int]:
         """Get statistics about cache usage"""
         return {
             "position_cache_size": len(self._position_cache),

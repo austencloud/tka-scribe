@@ -4,10 +4,10 @@ Graph Editor State Service - Pure Business Logic
 Extracted from presentation layer to handle all graph editor state management
 without any Qt dependencies.
 """
+from __future__ import annotations
 
-from typing import Optional
-from domain.models.beat_data import BeatData
-from domain.models.sequence_data import SequenceData
+from desktop.modern.src.domain.models.beat_data import BeatData
+from desktop.modern.src.domain.models.sequence_data import SequenceData
 
 
 class GraphEditorStateManager:
@@ -20,12 +20,12 @@ class GraphEditorStateManager:
 
     def __init__(self):
         """Initialize empty state."""
-        self._current_sequence: Optional[SequenceData] = None
-        self._selected_beat: Optional[BeatData] = None
-        self._selected_beat_index: Optional[int] = None
-        self._selected_arrow_id: Optional[str] = None
+        self._current_sequence: SequenceData | None = None
+        self._selected_beat: BeatData | None = None
+        self._selected_beat_index: int | None = None
+        self._selected_arrow_id: str | None = None
 
-    def set_sequence(self, sequence: Optional[SequenceData]) -> bool:
+    def set_sequence(self, sequence: SequenceData | None) -> bool:
         """
         Set current sequence.
 
@@ -41,12 +41,12 @@ class GraphEditorStateManager:
             return True
         return False
 
-    def get_sequence(self) -> Optional[SequenceData]:
+    def get_sequence(self) -> SequenceData | None:
         """Get current sequence."""
         return self._current_sequence
 
     def set_selected_beat(
-        self, beat: Optional[BeatData], beat_index: Optional[int] = None
+        self, beat: BeatData | None, beat_index: int | None = None
     ) -> bool:
         """
         Set selected beat with validation.
@@ -68,15 +68,15 @@ class GraphEditorStateManager:
             return True
         return False
 
-    def get_selected_beat(self) -> Optional[BeatData]:
+    def get_selected_beat(self) -> BeatData | None:
         """Get currently selected beat."""
         return self._selected_beat
 
-    def get_selected_beat_index(self) -> Optional[int]:
+    def get_selected_beat_index(self) -> int | None:
         """Get currently selected beat index."""
         return self._selected_beat_index
 
-    def set_selected_arrow(self, arrow_id: Optional[str]) -> bool:
+    def set_selected_arrow(self, arrow_id: str | None) -> bool:
         """
         Set selected arrow.
 
@@ -88,7 +88,7 @@ class GraphEditorStateManager:
             return True
         return False
 
-    def get_selected_arrow(self) -> Optional[str]:
+    def get_selected_arrow(self) -> str | None:
         """Get currently selected arrow ID."""
         return self._selected_arrow_id
 

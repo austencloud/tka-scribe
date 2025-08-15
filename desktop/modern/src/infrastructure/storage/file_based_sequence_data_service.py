@@ -11,7 +11,7 @@ import logging
 from pathlib import Path
 from typing import Any
 
-from desktop.modern.core.interfaces.core_services import ISequenceDataService
+from desktop.modern.src.core.interfaces.core_services import ISequenceDataService
 
 
 logger = logging.getLogger(__name__)

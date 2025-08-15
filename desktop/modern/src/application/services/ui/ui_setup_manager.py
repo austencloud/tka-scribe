@@ -11,26 +11,28 @@ PROVIDES:
 - Construct tab loading with progress tracking
 - Component styling and layout management
 """
+from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING, Callable, Optional
+from typing import TYPE_CHECKING, Callable
 
-from core.interfaces.session_services import ISessionStateTracker
-from presentation.tabs.construct.construct_tab_widget import ConstructTabWidget
-from PyQt6.QtCore import Qt, QTimer
+from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QFont
 from PyQt6.QtWidgets import (
     QHBoxLayout,
     QLabel,
     QMainWindow,
-    QPushButton,
     QTabWidget,
     QVBoxLayout,
     QWidget,
 )
 
+from desktop.modern.src.core.interfaces.session_services import ISessionStateTracker
+from presentation.tabs.construct.construct_tab_widget import ConstructTabWidget
+
+
 if TYPE_CHECKING:
-    from core.dependency_injection.di_container import DIContainer
+    from desktop.modern.src.core.dependency_injection.di_container import DIContainer
 
 
 class IUISetupManager(ABC):
@@ -40,8 +42,8 @@ class IUISetupManager(ABC):
     def setup_main_ui(
         self,
         main_window: QMainWindow,
-        container: "DIContainer",
-        progress_callback: Optional[Callable] = None,
+        container: DIContainer,
+        progress_callback: Callable | None = None,
     ) -> QTabWidget:
         """Setup the main UI components and return the tab widget."""
 
@@ -64,14 +66,14 @@ class UISetupManager(IUISetupManager):
 
     def __init__(self):
         """Initialize UI setup manager."""
-        self.tab_widget: Optional[QTabWidget] = None
+        self.tab_widget: QTabWidget | None = None
         self.settings_button = None
 
     def setup_main_ui(
         self,
         main_window: QMainWindow,
-        container: "DIContainer",
-        progress_callback: Optional[Callable] = None,
+        container: DIContainer,
+        progress_callback: Callable | None = None,
         session_service=None,
     ) -> QTabWidget:
         """Setup the main UI components and return the tab widget."""
@@ -174,8 +176,8 @@ class UISetupManager(IUISetupManager):
 
     def _load_construct_tab(
         self,
-        container: "DIContainer",
-        progress_callback: Optional[Callable] = None,
+        container: DIContainer,
+        progress_callback: Callable | None = None,
         session_service=None,
     ) -> None:
         """Load construct tab with granular progress updates."""
@@ -247,7 +249,7 @@ class UISetupManager(IUISetupManager):
             import traceback
 
             print(f"⚠️ Error loading construct tab: {e}")
-            print(f"🔍 Full traceback:")
+            print("🔍 Full traceback:")
             traceback.print_exc()
             if progress_callback:
                 progress_callback(85, "Construct tab load failed, using fallback...")
@@ -291,16 +293,20 @@ class UISetupManager(IUISetupManager):
 
     def _create_settings_button(self):
         """Create settings button using dependency injection."""
-        from presentation.components.ui.settings.settings_button import SettingsButton
+        from desktop.modern.src.presentation.components.ui.settings.settings_button import (
+            SettingsButton,
+        )
 
         return SettingsButton()
 
     def _show_settings(self, main_window: QMainWindow) -> None:
         """Open the settings dialog using dependency injection."""
         try:
-            from core.dependency_injection.di_container import get_container
-            from core.interfaces.core_services import IUIStateManager
-            from presentation.components.ui.settings.settings_dialog import (
+            from desktop.modern.src.core.dependency_injection.di_container import (
+                get_container,
+            )
+            from desktop.modern.src.core.interfaces.core_services import IUIStateManager
+            from desktop.modern.src.presentation.components.ui.settings.settings_dialog import (
                 SettingsDialog,
             )
 
@@ -333,7 +339,9 @@ class UISetupManager(IUISetupManager):
         # Handle background changes
         if key == "background_type":
             # Delegate to background manager
-            from application.services.ui.background_manager import BackgroundManager
+            from desktop.modern.src.application.services.ui.background_manager import (
+                BackgroundManager,
+            )
 
             background_manager = BackgroundManager()
             background_manager.apply_background_change(main_window, value)

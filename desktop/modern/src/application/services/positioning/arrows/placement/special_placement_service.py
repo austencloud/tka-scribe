@@ -16,17 +16,16 @@ PROVIDES:
 - Orientation key generation matching validated logic
 - Special adjustment calculation with fallback to default
 """
+from __future__ import annotations
 
 import json
-import logging
-import time
 from pathlib import Path
-from typing import Any, Dict, Optional, Tuple
+from typing import Any
 
-from domain.models import MotionData, Orientation
-from domain.models.arrow_data import ArrowData
-from domain.models.pictograph_data import PictographData
 from PyQt6.QtCore import QPointF
+
+from desktop.modern.src.domain.models.pictograph_data import PictographData
+from domain.models import MotionData, Orientation
 
 
 class SpecialPlacementService:
@@ -41,12 +40,12 @@ class SpecialPlacementService:
     """
 
     def __init__(self):
-        self.special_placements: Dict[str, Dict[str, Dict[str, Any]]] = {}
+        self.special_placements: dict[str, dict[str, dict[str, Any]]] = {}
         self._load_special_placements()
 
     def get_special_adjustment(
         self, motion_data: MotionData, pictograph_data: PictographData
-    ) -> Optional[QPointF]:
+    ) -> QPointF | None:
         """
         Get special adjustment for arrow based on special placement logic.
 
@@ -73,7 +72,7 @@ class SpecialPlacementService:
         turns_tuple = self._generate_turns_tuple(pictograph_data)
 
         # Look up special placement data
-        letter_data: Dict[str, Dict[Tuple[int], Dict[str, float]]] = (
+        letter_data: dict[str, dict[tuple[int], dict[str, float]]] = (
             self.special_placements.get(grid_mode, {}).get(ori_key, {}).get(letter, {})
         )
 
@@ -88,10 +87,7 @@ class SpecialPlacementService:
 
         # First, try direct color-based coordinate lookup (most common case)
         color_key = ""
-        if pictograph_data.motions["blue"] == motion:
-            color_key = "blue"
-        else:
-            color_key = "red"
+        color_key = "blue" if pictograph_data.motions["blue"] == motion else "red"
 
         if color_key in turn_data:
             adjustment_values = turn_data[color_key]
@@ -151,7 +147,7 @@ class SpecialPlacementService:
                     # Load all placement JSON files in this directory
                     for file_path in directory.glob("*_placements.json"):
                         try:
-                            with open(file_path, "r", encoding="utf-8") as f:
+                            with open(file_path, encoding="utf-8") as f:
                                 data = json.load(f)
                                 self.special_placements[mode][subfolder].update(data)
                         except Exception:
@@ -189,14 +185,13 @@ class SpecialPlacementService:
 
                 if blue_layer == 1 and red_layer == 1:
                     return "from_layer1"
-                elif blue_layer == 2 and red_layer == 2:
+                if blue_layer == 2 and red_layer == 2:
                     return "from_layer2"
-                elif blue_layer == 1 and red_layer == 2:
+                if blue_layer == 1 and red_layer == 2:
                     return "from_layer3_blue1_red2"
-                elif blue_layer == 2 and red_layer == 1:
+                if blue_layer == 2 and red_layer == 1:
                     return "from_layer3_blue2_red1"
-                else:
-                    return "from_layer1"
+                return "from_layer1"
 
         except Exception:
             pass
@@ -211,8 +206,8 @@ class SpecialPlacementService:
         Format: "(blue_turns, red_turns)" e.g., "(0, 1.5)", "(1, 0.5)"
         """
         try:
-            blue_arrow = pictograph_data.arrows.get("blue")
-            red_arrow = pictograph_data.arrows.get("red")
+            pictograph_data.arrows.get("blue")
+            pictograph_data.arrows.get("red")
 
             blue_motion = pictograph_data.motions.get("blue")
             red_motion = pictograph_data.motions.get("red")

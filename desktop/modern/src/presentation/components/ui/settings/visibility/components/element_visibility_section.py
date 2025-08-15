@@ -4,18 +4,24 @@ Element Visibility Section for Visibility Settings.
 Focused component handling element visibility controls with dependency management.
 Extracted from the monolithic visibility tab following TKA clean architecture principles.
 """
+from __future__ import annotations
 
 import logging
-from typing import Dict
 
-from application.services.pictograph.visibility_state_manager import (
-    VisibilityStateManager,
-)
-from core.interfaces.tab_settings_interfaces import IVisibilitySettingsManager
-from presentation.components.ui.settings.components.element_toggle import ElementToggle
 from PyQt6.QtCore import pyqtSignal
 from PyQt6.QtGui import QFont
 from PyQt6.QtWidgets import QFrame, QGridLayout, QLabel, QVBoxLayout
+
+from desktop.modern.src.application.services.pictograph.visibility_state_manager import (
+    VisibilityStateManager,
+)
+from desktop.modern.src.core.interfaces.tab_settings_interfaces import (
+    IVisibilitySettingsManager,
+)
+from desktop.modern.src.presentation.components.ui.settings.components.element_toggle import (
+    ElementToggle,
+)
+
 
 logger = logging.getLogger(__name__)
 
@@ -51,7 +57,7 @@ class ElementVisibilitySection(QFrame):
         self.state_manager = state_manager
 
         # UI components
-        self.element_toggles: Dict[str, ElementToggle] = {}
+        self.element_toggles: dict[str, ElementToggle] = {}
 
         self._setup_ui()
         self._setup_connections()
@@ -124,7 +130,7 @@ class ElementVisibilitySection(QFrame):
             logger.debug(f"Element visibility changed: {name} = {visible}")
 
         except Exception as e:
-            logger.error(f"Error changing element visibility: {e}")
+            logger.exception(f"Error changing element visibility: {e}")
             # Revert toggle state on error
             toggle = self.element_toggles.get(name)
             if toggle:
@@ -141,7 +147,7 @@ class ElementVisibilitySection(QFrame):
             if toggle.get_is_dependent():
                 toggle.set_motions_visible(all_motions_visible)
 
-    def get_element_states(self) -> Dict[str, bool]:
+    def get_element_states(self) -> dict[str, bool]:
         """
         Get current element visibility states.
 
@@ -152,7 +158,7 @@ class ElementVisibilitySection(QFrame):
             name: toggle.isChecked() for name, toggle in self.element_toggles.items()
         }
 
-    def get_dependent_elements(self) -> Dict[str, bool]:
+    def get_dependent_elements(self) -> dict[str, bool]:
         """
         Get elements that depend on motion visibility.
 

@@ -10,22 +10,23 @@ PROVIDES:
 - JSON parsing and error handling
 - Override key generation
 """
+from __future__ import annotations
 
-from typing import Dict, Any, Optional
 from abc import ABC, abstractmethod
 import json
-import time
 import logging
 from pathlib import Path
+import time
+from typing import Any
 
-from domain.models.beat_data import BeatData
+from desktop.modern.src.domain.models.beat_data import BeatData
 
 
 class IJSONConfigurationService(ABC):
     """Interface for JSON configuration operations."""
 
     @abstractmethod
-    def load_special_placements(self) -> Dict[str, Any]:
+    def load_special_placements(self) -> dict[str, Any]:
         """Load special placement data from JSON configuration files."""
 
     @abstractmethod
@@ -37,7 +38,7 @@ class IJSONConfigurationService(ABC):
         """Check if beat has manual swap override in special placements."""
 
     @abstractmethod
-    def get_swap_override_data(self, beat_data: BeatData) -> Dict[str, Any]:
+    def get_swap_override_data(self, beat_data: BeatData) -> dict[str, Any]:
         """Get swap override data for beat."""
 
 
@@ -49,13 +50,13 @@ class JSONConfigurationService(IJSONConfigurationService):
     Uses immutable data patterns following TKA architecture.
     """
 
-    def __init__(self, config_paths: Optional[list] = None):
+    def __init__(self, config_paths: list | None = None):
         """Initialize with optional custom configuration paths and eager loading."""
         start_time = time.time()
         logger = logging.getLogger(__name__)
 
         self._config_paths = config_paths or self._get_default_config_paths()
-        self._special_placements: Optional[Dict[str, Any]] = None
+        self._special_placements: dict[str, Any] | None = None
 
         # Eager load special placements during initialization
         self._load_special_placements()
@@ -66,7 +67,7 @@ class JSONConfigurationService(IJSONConfigurationService):
             f"JSON Configuration Service initialized: {placement_count} placements loaded in {load_time:.1f}ms"
         )
 
-    def load_special_placements(self) -> Dict[str, Any]:
+    def load_special_placements(self) -> dict[str, Any]:
         """Load special placement data from JSON configuration files."""
         if self._special_placements is not None:
             return self._special_placements
@@ -99,7 +100,7 @@ class JSONConfigurationService(IJSONConfigurationService):
         override_key = self.generate_override_key(beat_data)
         return override_key in placements
 
-    def get_swap_override_data(self, beat_data: BeatData) -> Dict[str, Any]:
+    def get_swap_override_data(self, beat_data: BeatData) -> dict[str, Any]:
         """Get swap override data for beat."""
         placements = self.load_special_placements()
         override_key = self.generate_override_key(beat_data)
@@ -114,7 +115,7 @@ class JSONConfigurationService(IJSONConfigurationService):
         except Exception:
             return False
 
-    def get_configuration_status(self) -> Dict[str, Any]:
+    def get_configuration_status(self) -> dict[str, Any]:
         """Get status of configuration loading."""
         return {
             "special_placements_loaded": self._special_placements is not None,
@@ -122,7 +123,7 @@ class JSONConfigurationService(IJSONConfigurationService):
             "config_paths": self._config_paths,
         }
 
-    def validate_configuration(self) -> Dict[str, Any]:
+    def validate_configuration(self) -> dict[str, Any]:
         """Validate loaded configuration data."""
         validation_result = {
             "valid": True,
@@ -155,7 +156,7 @@ class JSONConfigurationService(IJSONConfigurationService):
         for config_path in self._config_paths:
             try:
                 if config_path.exists():
-                    with open(config_path, "r") as f:
+                    with open(config_path) as f:
                         self._special_placements = json.load(f)
                     print(f"Loaded special placements from: {config_path}")
                     return
