@@ -96,13 +96,13 @@ export class OrientationCalculationService {
     motionType: MotionType,
     turns: number,
     startOri: Orientation,
-    propRotDir: RotationDirection
+    rotationDirection: RotationDirection
   ): Orientation {
     // Convert prop rotation direction to string for mapping
     const rotDir =
-      propRotDir === RotationDirection.CLOCKWISE
+      rotationDirection === RotationDirection.CLOCKWISE
         ? "cw"
-        : propRotDir === RotationDirection.COUNTER_CLOCKWISE
+        : rotationDirection === RotationDirection.COUNTER_CLOCKWISE
           ? "ccw"
           : "cw";
 
@@ -173,7 +173,7 @@ export class OrientationCalculationService {
    */
   createMotionWithCalculatedOrientation(
     motionType: MotionType,
-    propRotDir: RotationDirection,
+    rotationDirection: RotationDirection,
     startLoc: Location,
     endLoc: Location,
     turns: number = 0,
@@ -182,7 +182,7 @@ export class OrientationCalculationService {
     // Create initial motion data
     const motion: MotionData = {
       motion_type: motionType,
-      prop_rot_dir: propRotDir,
+      prop_rot_dir: rotationDirection,
       start_loc: startLoc,
       end_loc: endLoc,
       turns,

@@ -136,15 +136,21 @@ export interface IAngleCalculationService {
 export interface IMotionCalculationService {
   calculateProIsolationStaffAngle(
     centerPathAngle: number,
-    propRotDir: string
+    rotationDirection: string
   ): number;
   calculateAntiIsolationStaffAngle(
     centerPathAngle: number,
-    propRotDir: string
+    rotationDirection: string
   ): number;
   calculateStaticStaffAngle(centerPathAngle: number): number;
-  calculateDashStaffAngle(centerPathAngle: number, propRotDir: string): number;
-  calculateFloatStaffAngle(centerPathAngle: number, propRotDir: string): number;
+  calculateDashStaffAngle(
+    centerPathAngle: number,
+    rotationDirection: string
+  ): number;
+  calculateFloatStaffAngle(
+    centerPathAngle: number,
+    rotationDirection: string
+  ): number;
 }
 
 /**

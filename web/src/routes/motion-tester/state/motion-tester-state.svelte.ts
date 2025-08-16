@@ -90,14 +90,15 @@ export function createMotionTesterState(): MotionTesterState {
   // Auto-calculate rotation direction for blue prop
   $effect(() => {
     // Properly access reactive state
-    const { motionType, startLoc, endLoc, propRotDir } = blueMotionParams;
+    const { motionType, startLoc, endLoc, rotationDirection } =
+      blueMotionParams;
     const newRotDir = motionService.calculateRotationDirection(
       motionType,
       startLoc,
       endLoc
     );
-    if (newRotDir !== propRotDir) {
-      blueMotionParams.propRotDir = newRotDir;
+    if (newRotDir !== rotationDirection) {
+      blueMotionParams.rotationDirection = newRotDir;
     }
   });
 
@@ -114,7 +115,7 @@ export function createMotionTesterState(): MotionTesterState {
   // Auto-calculate rotation direction for red prop
   $effect(() => {
     // Properly access reactive state
-    const { motionType, startLoc, endLoc, propRotDir } = redMotionParams;
+    const { motionType, startLoc, endLoc, rotationDirection } = redMotionParams;
     console.log(
       `🔴 Red rotation effect triggered: ${startLoc}→${endLoc} (${motionType})`
     );
@@ -124,13 +125,13 @@ export function createMotionTesterState(): MotionTesterState {
       endLoc
     );
     console.log(
-      `🔴 Red rotation calculated: ${newRotDir}, current: ${propRotDir}`
+      `🔴 Red rotation calculated: ${newRotDir}, current: ${rotationDirection}`
     );
-    if (newRotDir !== propRotDir) {
+    if (newRotDir !== rotationDirection) {
       console.log(
-        `🔴 Red rotation updating from ${propRotDir} to ${newRotDir}`
+        `🔴 Red rotation updating from ${rotationDirection} to ${newRotDir}`
       );
-      redMotionParams.propRotDir = newRotDir;
+      redMotionParams.rotationDirection = newRotDir;
     }
   });
 

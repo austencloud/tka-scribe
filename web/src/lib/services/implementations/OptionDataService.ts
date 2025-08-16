@@ -338,7 +338,7 @@ export class OptionDataService implements IOptionDataService {
     color: "blue" | "red"
   ): MotionData {
     const motionType = row[`${color}MotionType`] as string;
-    const propRotDir = row[`${color}PropRotDir`] as string;
+    const rotationDirection = row[`${color}RotationDirection`] as string;
     const startLoc = row[`${color}StartLoc`] as string;
     const endLoc = row[`${color}EndLoc`] as string;
 
@@ -346,7 +346,7 @@ export class OptionDataService implements IOptionDataService {
     const motion =
       this.orientationCalculationService.createMotionWithCalculatedOrientation(
         this.mapMotionType(motionType),
-        this.mapRotationDirection(propRotDir),
+        this.mapRotationDirection(rotationDirection),
         this.mapLocationString(startLoc),
         this.mapLocationString(endLoc),
         0, // Basic turns for now - could be enhanced to read from CSV
@@ -378,7 +378,13 @@ export class OptionDataService implements IOptionDataService {
   /**
    * Map string rotation direction to domain enum
    */
-  private mapRotationDirection(rotDir: string): RotationDirection {
+  private mapRotationDirection(
+    rotDir: string | null | undefined
+  ): RotationDirection {
+    if (!rotDir || rotDir === "none") {
+      return RotationDirection.NO_ROTATION;
+    }
+
     switch (rotDir.toLowerCase()) {
       case "cw":
         return RotationDirection.CLOCKWISE;

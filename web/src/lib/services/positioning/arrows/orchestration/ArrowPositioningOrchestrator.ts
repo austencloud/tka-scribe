@@ -269,13 +269,17 @@ export class ArrowPositioningOrchestrator
       }
 
       const motionType = (motion.motion_type || "").toLowerCase();
-      const propRotDir = (motion.prop_rot_dir || "").toLowerCase();
+      const rotationDirection = (motion.prop_rot_dir || "").toLowerCase();
 
       // Enhanced mirroring logic based on motion type and rotation direction
       if (motionType === "anti") {
-        return this.mirrorConditions.anti[propRotDir as "cw" | "ccw"] || false;
+        return (
+          this.mirrorConditions.anti[rotationDirection as "cw" | "ccw"] || false
+        );
       }
-      return this.mirrorConditions.other[propRotDir as "cw" | "ccw"] || false;
+      return (
+        this.mirrorConditions.other[rotationDirection as "cw" | "ccw"] || false
+      );
     } catch (error) {
       console.warn("Mirror calculation failed, using default:", error);
       return false;

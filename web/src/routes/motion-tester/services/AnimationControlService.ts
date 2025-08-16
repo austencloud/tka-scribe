@@ -96,7 +96,7 @@ export class AnimationControlService implements IAnimationControlService {
       start_ori: params.startOri as Orientation,
       end_ori: params.endOri as Orientation,
       motion_type: params.motionType as MotionType,
-      prop_rot_dir: params.propRotDir as RotationDirection,
+      prop_rot_dir: params.rotationDirection as RotationDirection,
       turns: params.turns,
       is_visible: true, // ✅ Add required field for MotionData
     };

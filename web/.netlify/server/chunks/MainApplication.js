@@ -1155,11 +1155,11 @@ class MotionGenerationService {
       const endLoc = this.randomChoice(locations);
       const startOri = this.randomChoice(orientations);
       const endOri = this.randomChoice(orientations);
-      const propRotDir = this.randomChoice(rotationDirections);
+      const rotationDirection = this.randomChoice(rotationDirections);
       const turns = this.calculateTurns(motionType, startLoc, endLoc);
       const motion = {
         motion_type: motionType,
-        prop_rot_dir: propRotDir,
+        prop_rot_dir: rotationDirection,
         start_loc: startLoc,
         end_loc: endLoc,
         turns,
@@ -1586,8 +1586,8 @@ class OrientationCalculationService {
   /**
    * Calculate orientation for half turns (0.5, 1.5, 2.5)
    */
-  calculateHalfTurnOrientation(motionType, turns, startOri, propRotDir) {
-    const rotDir = propRotDir === RotationDirection.CLOCKWISE ? "cw" : propRotDir === RotationDirection.COUNTER_CLOCKWISE ? "ccw" : "cw";
+  calculateHalfTurnOrientation(motionType, turns, startOri, rotationDirection) {
+    const rotDir = rotationDirection === RotationDirection.CLOCKWISE ? "cw" : rotationDirection === RotationDirection.COUNTER_CLOCKWISE ? "ccw" : "cw";
     let orientationMap;
     if (motionType === MotionType.ANTI || motionType === MotionType.DASH) {
       orientationMap = {
@@ -1628,10 +1628,10 @@ class OrientationCalculationService {
   /**
    * Create motion data with properly calculated end orientation
    */
-  createMotionWithCalculatedOrientation(motionType, propRotDir, startLoc, endLoc, turns = 0, startOri = Orientation.IN) {
+  createMotionWithCalculatedOrientation(motionType, rotationDirection, startLoc, endLoc, turns = 0, startOri = Orientation.IN) {
     const motion = {
       motion_type: motionType,
-      prop_rot_dir: propRotDir,
+      prop_rot_dir: rotationDirection,
       start_loc: startLoc,
       end_loc: endLoc,
       turns,
@@ -1864,12 +1864,12 @@ class OptionDataService {
    */
   createMotionDataFromCsv(row, color) {
     const motionType = row[`${color}MotionType`];
-    const propRotDir = row[`${color}PropRotDir`];
+    const rotationDirection = row[`${color}RotationDirection`];
     const startLoc = row[`${color}StartLoc`];
     const endLoc = row[`${color}EndLoc`];
     const motion = this.orientationCalculationService.createMotionWithCalculatedOrientation(
       this.mapMotionType(motionType),
-      this.mapRotationDirection(propRotDir),
+      this.mapRotationDirection(rotationDirection),
       this.mapLocationString(startLoc),
       this.mapLocationString(endLoc),
       0,
@@ -6406,11 +6406,11 @@ class ArrowPositioningOrchestrator {
         return false;
       }
       const motionType = (motion.motion_type || "").toLowerCase();
-      const propRotDir = (motion.prop_rot_dir || "").toLowerCase();
+      const rotationDirection = (motion.prop_rot_dir || "").toLowerCase();
       if (motionType === "anti") {
-        return this.mirrorConditions.anti[propRotDir] || false;
+        return this.mirrorConditions.anti[rotationDirection] || false;
       }
-      return this.mirrorConditions.other[propRotDir] || false;
+      return this.mirrorConditions.other[rotationDirection] || false;
     } catch (error) {
       console.warn("Mirror calculation failed, using default:", error);
       return false;
@@ -8739,7 +8739,7 @@ class AnimatedPictographDataService {
       end_loc: this.mapLocation(motionParams.endLoc),
       start_ori: this.mapOrientation(motionParams.startOri),
       end_ori: this.mapOrientation(motionParams.endOri),
-      prop_rot_dir: this.mapRotationDirection(motionParams.propRotDir),
+      prop_rot_dir: this.mapRotationDirection(motionParams.rotationDirection),
       turns: motionParams.turns,
       is_visible: true
     });
@@ -8756,7 +8756,7 @@ class AnimatedPictographDataService {
       // Use END location for prop positioning
       orientation: this.mapOrientation(motionParams.endOri),
       // Use END orientation
-      rotation_direction: this.mapRotationDirection(motionParams.propRotDir),
+      rotation_direction: this.mapRotationDirection(motionParams.rotationDirection),
       is_visible: true
     });
   }
@@ -8770,7 +8770,7 @@ class AnimatedPictographDataService {
       motion_type: motionParams.motionType,
       start_orientation: motionParams.startOri,
       end_orientation: motionParams.endOri,
-      rotation_direction: motionParams.propRotDir,
+      rotation_direction: motionParams.rotationDirection,
       turns: motionParams.turns,
       location: this.mapLocation(motionParams.startLoc),
       is_visible: true
@@ -8860,14 +8860,14 @@ class AnimatedPictographDataService {
       blue.endLoc,
       blue.motionType,
       blue.turns,
-      blue.propRotDir,
+      blue.rotationDirection,
       blue.startOri,
       blue.endOri,
       red.startLoc,
       red.endLoc,
       red.motionType,
       red.turns,
-      red.propRotDir,
+      red.rotationDirection,
       red.startOri,
       red.endOri
     ].join("|");
@@ -8981,21 +8981,21 @@ function lerpAngle(a, b, t) {
 function calculateProIsolationStaffAngle(centerPathAngle, _propRotDir) {
   return normalizeAnglePositive(centerPathAngle + PI);
 }
-function calculateProTargetAngle(startCenterAngle, targetCenterAngle, startStaffAngle, turns, propRotDir) {
+function calculateProTargetAngle(startCenterAngle, targetCenterAngle, startStaffAngle, turns, rotationDirection) {
   const centerMovement = normalizeAngleSigned(
     targetCenterAngle - startCenterAngle
   );
-  const dir = propRotDir === RotationDirection.COUNTER_CLOCKWISE ? -1 : 1;
+  const dir = rotationDirection === RotationDirection.COUNTER_CLOCKWISE ? -1 : 1;
   const propRotation = dir * turns * TWO_PI;
   const staffMovement = -centerMovement;
   const targetStaffAngle = startStaffAngle + staffMovement + propRotation;
   return normalizeAnglePositive(targetStaffAngle);
 }
-function calculateAntispinTargetAngle(startCenterAngle, targetCenterAngle, startStaffAngle, turns, propRotDir) {
+function calculateAntispinTargetAngle(startCenterAngle, targetCenterAngle, startStaffAngle, turns, rotationDirection) {
   const centerMovement = normalizeAngleSigned(
     targetCenterAngle - startCenterAngle
   );
-  const dir = propRotDir === RotationDirection.COUNTER_CLOCKWISE ? -1 : 1;
+  const dir = rotationDirection === RotationDirection.COUNTER_CLOCKWISE ? -1 : 1;
   const propRotation = dir * turns * TWO_PI;
   const staffMovement = centerMovement;
   const targetStaffAngle = startStaffAngle + staffMovement + propRotation;

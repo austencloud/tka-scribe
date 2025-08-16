@@ -196,10 +196,10 @@ instead of stores. It orchestrates the rendering of Grid, Props, Arrows, and Gly
               turns: motionData.turns,
             });
 
-            // Create pictograph context for positioning
+            // Create pictograph context for positioning using actual CSV data
             const pictographContext = createPictographData({
               letter: data.letter || "A",
-              grid_data: createGridData(),
+              grid_data: data.grid_data || createGridData(),
               arrows: { [color]: arrowData },
               props: {
                 blue: createPropData({ color: "blue" }),

@@ -6,10 +6,7 @@
  */
 
 import type { ServiceContainer } from "../ServiceContainer";
-import {
-  IAnimatedPictographDataServiceInterface,
-  IMotionTesterCsvLookupServiceInterface,
-} from "../interfaces/motion-tester-interfaces";
+import { IAnimatedPictographDataServiceInterface } from "../interfaces/motion-tester-interfaces";
 import { IOptionDataServiceInterface } from "../interfaces/core-interfaces";
 import { CsvDataService } from "../../implementations/CsvDataService";
 
@@ -19,23 +16,14 @@ import { CsvDataService } from "../../implementations/CsvDataService";
 export async function registerMotionTesterServices(
   container: ServiceContainer
 ): Promise<void> {
-  // Register CSV Lookup Service with dependencies first
-  container.registerFactory(IMotionTesterCsvLookupServiceInterface, () => {
-    const csvDataService = new CsvDataService(); // Create instance directly
+  // Register AnimatedPictographDataService with existing CSV and Option services
+  // Note: CSV initialization is handled lazily within the service
+  container.registerFactory(IAnimatedPictographDataServiceInterface, () => {
+    const csvDataService = new CsvDataService();
     const optionDataService = container.resolve(IOptionDataServiceInterface);
-    return new IMotionTesterCsvLookupServiceInterface.implementation(
+    return new IAnimatedPictographDataServiceInterface.implementation(
       csvDataService,
       optionDataService
-    );
-  });
-
-  // Register AnimatedPictographDataService with CSV lookup dependency
-  container.registerFactory(IAnimatedPictographDataServiceInterface, () => {
-    const csvLookupService = container.resolve(
-      IMotionTesterCsvLookupServiceInterface
-    );
-    return new IAnimatedPictographDataServiceInterface.implementation(
-      csvLookupService
     );
   });
 

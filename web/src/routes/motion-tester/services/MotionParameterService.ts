@@ -5,7 +5,7 @@ import {
   Location,
 } from "$lib/domain/enums";
 import type { MotionData } from "$lib/domain/MotionData";
-import type { PropRotDir } from "$lib/services/interfaces";
+import type { RotationDirection } from "$lib/services/interfaces";
 import type { IMotionParameterService } from "./interfaces";
 
 export interface MotionTestParams {
@@ -13,7 +13,7 @@ export interface MotionTestParams {
   endLoc: string;
   motionType: string;
   turns: number | "fl"; // Support both numeric turns and float
-  propRotDir: string;
+  rotationDirection: string;
   startOri: string;
   endOri: string;
 }
@@ -200,7 +200,7 @@ export class MotionParameterService implements IMotionParameterService {
       end_loc: params.endLoc,
       motion_type: params.motionType as MotionType,
       turns: params.turns,
-      prop_rot_dir: params.propRotDir as PropRotDir,
+      prop_rot_dir: params.rotationDirection as RotationDirection,
       start_ori: params.startOri as Orientation,
       end_ori: params.endOri as Orientation,
     };
@@ -213,7 +213,7 @@ export class MotionParameterService implements IMotionParameterService {
       endLoc: "e",
       motionType: "pro",
       turns: 0,
-      propRotDir: "cw",
+      rotationDirection: "cw",
       startOri: "in",
       endOri: "in",
     };
@@ -241,7 +241,7 @@ export class MotionParameterService implements IMotionParameterService {
   convertToMotionData(params: MotionTestParams): MotionData {
     return {
       motion_type: this.mapMotionTypeToEnum(params.motionType),
-      prop_rot_dir: this.mapRotationDirectionToEnum(params.propRotDir),
+      prop_rot_dir: this.mapRotationDirectionToEnum(params.rotationDirection),
       start_loc: this.mapLocationToEnum(params.startLoc),
       end_loc: this.mapLocationToEnum(params.endLoc),
       turns: params.turns,

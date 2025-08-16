@@ -1,0 +1,116 @@
+/**
+ * Core Types and Shared Interfaces
+ *
+ * Fundamental types used across multiple service domains.
+ * This file contains shared data structures, coordinates, and utility types.
+ */
+
+import type { MotionType, Location, Orientation } from "$lib/domain/enums";
+import { GridMode as DomainGridMode } from "$lib/domain";
+import type { PictographData } from "$lib/domain";
+
+// ============================================================================
+// BASIC COORDINATE TYPES
+// ============================================================================
+
+export interface Coordinates {
+  x: number;
+  y: number;
+}
+
+export interface GridPoint {
+  coordinates: Coordinates;
+}
+
+export interface GridData {
+  mode: DomainGridMode;
+  allLayer2PointsNormal: Record<string, GridPoint>;
+  allHandPointsNormal: Record<string, GridPoint>;
+}
+
+// ============================================================================
+// ARROW POSITIONING TYPES
+// ============================================================================
+
+export interface ArrowPosition {
+  x: number;
+  y: number;
+  rotation: number;
+}
+
+export interface LegacyArrowData {
+  id: string;
+  color: "blue" | "red";
+  motionType: MotionType;
+  location: Location;
+  startOrientation: Orientation;
+  endOrientation: Orientation;
+  rotationDirection: string;
+  turns: number;
+  isMirrored: boolean;
+  coords?: Coordinates;
+  rotAngle?: number;
+  svgCenter?: Coordinates;
+  svgMirrored?: boolean;
+}
+
+export interface ArrowPlacementConfig {
+  pictographData: PictographData;
+  gridData: GridData;
+  checker?: unknown;
+}
+
+// ============================================================================
+// PROP TYPES
+// ============================================================================
+
+export interface PropData {
+  id: string;
+  propType: string;
+  color: "blue" | "red";
+  location: Location;
+  position: Coordinates;
+  rotation: number;
+}
+
+export interface PropPosition {
+  x: number;
+  y: number;
+  rotation: number;
+}
+
+// ============================================================================
+// TYPE ALIASES
+// ============================================================================
+
+// Use centralized enum types - no duplicates!
+export type HandRotDir = "cw_shift" | "ccw_shift";
+export type GridMode = DomainGridMode;
+export type DifficultyLevel = "beginner" | "intermediate" | "advanced";
+
+// ============================================================================
+// OPTION FILTER TYPES
+// ============================================================================
+
+export interface OptionFilters {
+  difficulty?: DifficultyLevel;
+  motionTypes?: MotionType[];
+  minTurns?: number;
+  maxTurns?: number;
+}
+
+// ============================================================================
+// SERVICE REGISTRY TYPES
+// ============================================================================
+
+export type ServiceInterface<T> = {
+  readonly name: string;
+  readonly _type?: T;
+};
+
+/**
+ * Helper function to define service interfaces for the DI container
+ */
+export function defineService<T>(name: string): ServiceInterface<T> {
+  return { name } as ServiceInterface<T>;
+}

@@ -45,8 +45,8 @@ and accessibility features. Shows motion types, locations, and parameters.
     return orientation.toUpperCase();
   }
 
-  function formatPropRotDir(propRotDir: string): string {
-    switch (propRotDir) {
+  function formatPropRotDir(rotationDirection: string): string {
+    switch (rotationDirection) {
       case "no_rot":
         return "No Rotation";
       case "cw":
@@ -54,7 +54,7 @@ and accessibility features. Shows motion types, locations, and parameters.
       case "ccw":
         return "Counter-CW";
       default:
-        return propRotDir;
+        return rotationDirection;
     }
   }
 
@@ -73,7 +73,7 @@ and accessibility features. Shows motion types, locations, and parameters.
       endLoc,
       startOri,
       endOri,
-      propRotDir,
+      rotationDirection,
       turns,
     } = params;
 
@@ -93,8 +93,8 @@ and accessibility features. Shows motion types, locations, and parameters.
       }
     }
 
-    if (propRotDir !== "no_rot" || showFullDetails) {
-      description += `, ${formatPropRotDir(propRotDir)}`;
+    if (rotationDirection !== "no_rot" || showFullDetails) {
+      description += `, ${formatPropRotDir(rotationDirection)}`;
     }
 
     if (turns > 0 || showFullDetails) {
@@ -106,7 +106,7 @@ and accessibility features. Shows motion types, locations, and parameters.
 
   // Generate motion complexity indicator
   function getMotionComplexity(params: any): "simple" | "moderate" | "complex" {
-    const { motionType, startLoc, endLoc, propRotDir, turns } = params;
+    const { motionType, startLoc, endLoc, rotationDirection, turns } = params;
 
     let complexity = 0;
 
@@ -120,7 +120,7 @@ and accessibility features. Shows motion types, locations, and parameters.
     if (startLoc !== endLoc) complexity += 1;
 
     // Prop rotation adds complexity
-    if (propRotDir !== "no_rot") complexity += 1;
+    if (rotationDirection !== "no_rot") complexity += 1;
 
     // Turns add complexity
     complexity += Math.min(turns, 3);
@@ -232,7 +232,7 @@ and accessibility features. Shows motion types, locations, and parameters.
                   <span class="detail-label">Rotation:</span>
                   <span class="detail-value"
                     >{formatPropRotDir(
-                      motionState.blueMotionParams.propRotDir
+                      motionState.blueMotionParams.rotationDirection
                     )}</span
                   >
                 </div>
@@ -312,7 +312,7 @@ and accessibility features. Shows motion types, locations, and parameters.
                   <span class="detail-label">Rotation:</span>
                   <span class="detail-value"
                     >{formatPropRotDir(
-                      motionState.redMotionParams.propRotDir
+                      motionState.redMotionParams.rotationDirection
                     )}</span
                   >
                 </div>

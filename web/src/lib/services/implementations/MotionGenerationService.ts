@@ -65,14 +65,14 @@ export class MotionGenerationService implements IMotionGenerationService {
       const endLoc = this.randomChoice(locations);
       const startOri = this.randomChoice(orientations);
       const endOri = this.randomChoice(orientations);
-      const propRotDir = this.randomChoice(rotationDirections);
+      const rotationDirection = this.randomChoice(rotationDirections);
 
       // Calculate turns based on motion type and locations
       const turns = this.calculateTurns(motionType, startLoc, endLoc);
 
       const motion: MotionData = {
         motion_type: motionType,
-        prop_rot_dir: propRotDir,
+        prop_rot_dir: rotationDirection,
         start_loc: startLoc,
         end_loc: endLoc,
         turns,

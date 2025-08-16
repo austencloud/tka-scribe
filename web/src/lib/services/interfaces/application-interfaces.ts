@@ -1,0 +1,149 @@
+/**
+ * Application Service Interfaces
+ *
+ * Interfaces for application-level services including settings, initialization,
+ * and configuration management.
+ */
+
+import type {
+  BeatData,
+  SequenceData,
+  PictographData,
+  ValidationResult,
+} from "./domain-types";
+import type { GridMode, DifficultyLevel, OptionFilters } from "./core-types";
+import type { MotionType } from "./domain-types";
+
+// ============================================================================
+// APPLICATION SETTINGS
+// ============================================================================
+
+export interface AppSettings {
+  theme: "light" | "dark";
+  gridMode: GridMode;
+  showBeatNumbers: boolean;
+  autoSave: boolean;
+  exportQuality: "low" | "medium" | "high";
+  workbenchColumns: number;
+  userName?: string;
+  propType?: string;
+  backupFrequency?: string;
+  enableFades?: boolean;
+  animationsEnabled?: boolean; // Simple animation control
+  growSequence?: boolean;
+  numBeats?: number;
+  beatLayout?: string;
+  // Background settings
+  backgroundType?: "snowfall" | "nightSky" | "aurora" | "bubbles" | "deepOcean";
+  backgroundQuality?: "high" | "medium" | "low" | "minimal";
+  backgroundEnabled?: boolean;
+  visibility?: {
+    TKA?: boolean;
+    Reversals?: boolean;
+    Positions?: boolean;
+    Elemental?: boolean;
+    VTG?: boolean;
+    nonRadialPoints?: boolean;
+  };
+  imageExport?: {
+    includeStartPosition?: boolean;
+    addReversalSymbols?: boolean;
+    addBeatNumbers?: boolean;
+    addDifficultyLevel?: boolean;
+    addWord?: boolean;
+    addInfo?: boolean;
+    addUserInfo?: boolean;
+  };
+  // Sequence Card Settings
+  sequenceCard?: {
+    defaultColumnCount?: number;
+    defaultLayoutMode?: "grid" | "list" | "printable";
+    enableTransparency?: boolean;
+    cacheEnabled?: boolean;
+    cacheSizeLimit?: number;
+    exportQuality?: "low" | "medium" | "high";
+    exportFormat?: "PNG" | "JPG" | "WebP";
+    defaultPaperSize?: "A4" | "Letter" | "Legal" | "Tabloid";
+  };
+  // Developer Settings
+  developerMode?: boolean;
+}
+
+// ============================================================================
+// APPLICATION SERVICE INTERFACES
+// ============================================================================
+
+/**
+ * Application initialization and startup service
+ */
+export interface IApplicationInitializationService {
+  initialize(): Promise<void>;
+}
+
+/**
+ * Settings management service
+ */
+export interface ISettingsService {
+  currentSettings: AppSettings;
+  updateSetting<K extends keyof AppSettings>(
+    key: K,
+    value: AppSettings[K]
+  ): Promise<void>;
+  loadSettings(): Promise<void>;
+}
+
+// ============================================================================
+// CONSTRUCT TAB COORDINATION SERVICE
+// ============================================================================
+
+/**
+ * Service for coordinating construct tab operations
+ */
+export interface IConstructTabCoordinationService {
+  setupComponentCoordination(components: Record<string, unknown>): void;
+  handleSequenceModified(sequence: SequenceData): Promise<void>;
+  handleStartPositionSet(startPosition: BeatData): Promise<void>;
+  handleBeatAdded(beatData: BeatData): Promise<void>;
+  handleGenerationRequest(config: Record<string, unknown>): Promise<void>;
+  handleUITransitionRequest(targetPanel: string): Promise<void>;
+}
+
+// ============================================================================
+// OPTION DATA SERVICE
+// ============================================================================
+
+/**
+ * Service for managing motion options and compatibility
+ */
+export interface IOptionDataService {
+  getNextOptions(
+    currentSequence: SequenceData,
+    filters?: OptionFilters
+  ): Promise<PictographData[]>;
+  filterOptionsByDifficulty(
+    options: PictographData[],
+    level: DifficultyLevel
+  ): PictographData[];
+  validateOptionCompatibility(
+    option: PictographData,
+    sequence: SequenceData
+  ): ValidationResult;
+  getAvailableMotionTypes(): MotionType[];
+}
+
+// ============================================================================
+// START POSITION SERVICE
+// ============================================================================
+
+/**
+ * Service for managing sequence start positions
+ */
+export interface IStartPositionService {
+  getAvailableStartPositions(
+    propType: string,
+    gridMode: GridMode
+  ): Promise<BeatData[]>;
+  setStartPosition(startPosition: BeatData): Promise<void>;
+  validateStartPosition(position: BeatData): ValidationResult;
+  getDefaultStartPositions(gridMode: GridMode): Promise<PictographData[]>;
+}

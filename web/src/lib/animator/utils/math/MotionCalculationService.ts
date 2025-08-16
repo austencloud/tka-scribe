@@ -18,7 +18,7 @@ import {
  */
 export function calculateProIsolationStaffAngle(
   centerPathAngle: number,
-  _propRotDir: RotationDirection // propRotDir can be ignored for pro motion
+  _propRotDir: RotationDirection // rotationDirection can be ignored for pro motion
 ): number {
   // For pro motion, staff always points toward center (angle + 180°)
   return normalizeAnglePositive(centerPathAngle + PI);
@@ -32,7 +32,7 @@ export function calculateProTargetAngle(
   targetCenterAngle: number,
   startStaffAngle: number,
   turns: number,
-  propRotDir: RotationDirection
+  rotationDirection: RotationDirection
 ): number {
   // Calculate center path movement
   const centerMovement = normalizeAngleSigned(
@@ -40,7 +40,8 @@ export function calculateProTargetAngle(
   );
 
   // Calculate prop rotation direction multiplier
-  const dir = propRotDir === RotationDirection.COUNTER_CLOCKWISE ? -1 : 1;
+  const dir =
+    rotationDirection === RotationDirection.COUNTER_CLOCKWISE ? -1 : 1;
 
   // Calculate total staff rotation
   const propRotation = dir * turns * TWO_PI;
@@ -62,7 +63,7 @@ export function calculateAntispinTargetAngle(
   targetCenterAngle: number,
   startStaffAngle: number,
   turns: number,
-  propRotDir: RotationDirection
+  rotationDirection: RotationDirection
 ): number {
   // Calculate center path movement
   const centerMovement = normalizeAngleSigned(
@@ -70,7 +71,8 @@ export function calculateAntispinTargetAngle(
   );
 
   // Calculate prop rotation direction multiplier
-  const dir = propRotDir === RotationDirection.COUNTER_CLOCKWISE ? -1 : 1;
+  const dir =
+    rotationDirection === RotationDirection.COUNTER_CLOCKWISE ? -1 : 1;
 
   // Calculate total prop rotation
   const propRotation = dir * turns * TWO_PI;

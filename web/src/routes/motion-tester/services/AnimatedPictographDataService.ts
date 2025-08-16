@@ -28,7 +28,13 @@ import {
   PropType,
 } from "$lib/domain/enums";
 import type { MotionTesterState } from "../state/motion-tester-state.svelte";
-import type { IMotionTesterCsvLookupService } from "$lib/services/di/interfaces/motion-tester-interfaces";
+import type { IOptionDataService } from "$lib/services/interfaces";
+import type {
+  CsvDataService,
+  ParsedCsvRow,
+} from "$lib/services/implementations/CsvDataService";
+import type { IArrowPositioningOrchestratorInterface } from "$lib/services/interfaces/positioning-interfaces";
+import type { MotionTestParams } from "./MotionParameterService";
 
 // Interface for motion parameters
 interface MotionParams {
@@ -37,7 +43,7 @@ interface MotionParams {
   endLoc: string;
   startOri: string;
   endOri: string;
-  propRotDir: string;
+  rotationDirection: string;
   turns: number;
 }
 
@@ -52,7 +58,11 @@ export class AnimatedPictographDataService
 {
   private cache = new Map<string, PictographData>();
 
-  constructor(private csvLookupService?: IMotionTesterCsvLookupService) {}
+  constructor(
+    private csvDataService: CsvDataService,
+    private optionDataService: IOptionDataService,
+    private arrowPositioningOrchestrator: IArrowPositioningOrchestratorInterface
+  ) {}
   /**
    * Creates complete pictograph data for animated display using current motion parameters.
    * Uses CSV lookup service to find the correct letter and pictograph data.
@@ -85,52 +95,45 @@ export class AnimatedPictographDataService
 
       const gridMode = this.getGridMode(motionState.gridType);
 
-      // Try to use CSV lookup service first for accurate letter detection
-      if (this.csvLookupService) {
-        console.log("🔍 Using CSV lookup service for pictograph generation...");
+      // Try to use CSV lookup for accurate letter detection
+      console.log("🔍 Using CSV lookup service for pictograph generation...");
 
-        const csvPictograph =
-          await this.csvLookupService.findMatchingPictograph(
-            motionState.blueMotionParams,
-            motionState.redMotionParams,
-            gridMode
-          );
+      const csvPictograph = await this.findMatchingPictographFromCsv(
+        motionState.blueMotionParams,
+        motionState.redMotionParams,
+        gridMode
+      );
 
-        if (csvPictograph) {
-          console.log(
-            `✅ CSV lookup successful! Found letter: ${csvPictograph.letter}`
-          );
+      if (csvPictograph) {
+        console.log(
+          `✅ CSV lookup successful! Found letter: ${csvPictograph.letter}`
+        );
 
-          // Create new pictograph with updated metadata
-          const updatedPictograph = {
-            ...csvPictograph,
-            metadata: {
-              ...csvPictograph.metadata,
-              source: "motion_tester_csv_lookup",
-              grid_type: motionState.gridType,
-              progress: motionState.animationState.progress,
-            },
-          };
+        // Create new pictograph with updated metadata
+        const updatedPictograph = {
+          ...csvPictograph,
+          metadata: {
+            ...csvPictograph.metadata,
+            source: "motion_tester_csv_lookup",
+            grid_type: motionState.gridType,
+            progress: motionState.animationState.progress,
+          },
+        };
 
-          // Cache the result (without progress for reusability)
-          const cacheableResult = {
-            ...csvPictograph,
-            metadata: {
-              ...csvPictograph.metadata,
-              progress: 0, // Don't cache progress
-            },
-          };
-          this.cache.set(cacheKey, cacheableResult);
+        // Cache the result (without progress for reusability)
+        const cacheableResult = {
+          ...csvPictograph,
+          metadata: {
+            ...csvPictograph.metadata,
+            progress: 0, // Don't cache progress
+          },
+        };
+        this.cache.set(cacheKey, cacheableResult);
 
-          return updatedPictograph;
-        } else {
-          console.warn(
-            "⚠️ CSV lookup failed, falling back to manual generation..."
-          );
-        }
+        return updatedPictograph;
       } else {
         console.warn(
-          "⚠️ CSV lookup service not available, using manual generation..."
+          "⚠️ CSV lookup failed, falling back to manual generation..."
         );
       }
 
@@ -235,7 +238,7 @@ export class AnimatedPictographDataService
       end_loc: this.mapLocation(motionParams.endLoc),
       start_ori: this.mapOrientation(motionParams.startOri),
       end_ori: this.mapOrientation(motionParams.endOri),
-      prop_rot_dir: this.mapRotationDirection(motionParams.propRotDir),
+      prop_rot_dir: this.mapRotationDirection(motionParams.rotationDirection),
       turns: motionParams.turns,
       is_visible: true,
     });
@@ -253,7 +256,9 @@ export class AnimatedPictographDataService
       color: color,
       location: this.mapLocation(motionParams.endLoc), // Use END location for prop positioning
       orientation: this.mapOrientation(motionParams.endOri), // Use END orientation
-      rotation_direction: this.mapRotationDirection(motionParams.propRotDir),
+      rotation_direction: this.mapRotationDirection(
+        motionParams.rotationDirection
+      ),
       is_visible: true,
     });
   }
@@ -271,7 +276,7 @@ export class AnimatedPictographDataService
       motion_type: motionParams.motionType,
       start_orientation: motionParams.startOri,
       end_orientation: motionParams.endOri,
-      rotation_direction: motionParams.propRotDir,
+      rotation_direction: motionParams.rotationDirection,
       turns: motionParams.turns,
       location: this.mapLocation(motionParams.startLoc),
       is_visible: true,
@@ -367,16 +372,153 @@ export class AnimatedPictographDataService
       blue.endLoc,
       blue.motionType,
       blue.turns,
-      blue.propRotDir,
+      blue.rotationDirection,
       blue.startOri,
       blue.endOri,
       red.startLoc,
       red.endLoc,
       red.motionType,
       red.turns,
-      red.propRotDir,
+      red.rotationDirection,
       red.startOri,
       red.endOri,
     ].join("|");
+  }
+
+  /**
+   * Find matching pictograph from CSV data using existing services
+   */
+  private async findMatchingPictographFromCsv(
+    blueParams: MotionTestParams,
+    redParams: MotionTestParams,
+    gridMode: GridMode
+  ): Promise<PictographData | null> {
+    try {
+      // Ensure CSV data is loaded
+      await this.csvDataService.loadCsvData();
+
+      if (!this.csvDataService.isReady()) {
+        console.error("❌ CSV data service not ready");
+        return null;
+      }
+
+      // Get parsed CSV data for the grid mode
+      const csvRows = this.csvDataService.getParsedData(gridMode);
+
+      if (!csvRows || csvRows.length === 0) {
+        console.error(`❌ No CSV data available for grid mode: ${gridMode}`);
+        return null;
+      }
+
+      console.log(
+        `🔍 Searching ${csvRows.length} CSV rows for matching motion parameters...`
+      );
+      console.log("🔍 Blue params:", {
+        motionType: blueParams.motionType,
+        startLoc: blueParams.startLoc,
+        endLoc: blueParams.endLoc,
+        rotationDirection: blueParams.rotationDirection,
+        turns: blueParams.turns,
+      });
+      console.log("🔍 Red params:", {
+        motionType: redParams.motionType,
+        startLoc: redParams.startLoc,
+        endLoc: redParams.endLoc,
+        rotationDirection: redParams.rotationDirection,
+        turns: redParams.turns,
+      });
+
+      // Find exact match based on motion parameters (excluding rotationDirection)
+      const matchingRow = csvRows.find((row: ParsedCsvRow) => {
+        const blueMatch = this.matchesMotionParams(row, "blue", blueParams);
+        const redMatch = this.matchesMotionParams(row, "red", redParams);
+        return blueMatch && redMatch;
+      });
+
+      if (matchingRow) {
+        console.log(
+          `✅ Found exact match for letter "${matchingRow.letter}":`,
+          matchingRow
+        );
+
+        // Convert CSV row to PictographData using existing proven pipeline
+        const pictographData =
+          this.optionDataService.convertCsvRowToPictographData(
+            matchingRow,
+            gridMode,
+            0 // index
+          );
+
+        if (pictographData) {
+          console.log(
+            `🎯 Successfully created pictograph for letter "${matchingRow.letter}":`,
+            pictographData
+          );
+
+          // Update arrow data to match motion data using positioning pipeline
+          const updatedPictographData =
+            this.arrowPositioningOrchestrator.calculateAllArrowPositions(
+              pictographData
+            );
+
+          console.log(
+            "✅ CSV lookup successful! Found letter:",
+            matchingRow.letter
+          );
+          console.log("🎯 Arrow data updated to match motion data");
+          return updatedPictographData;
+        } else {
+          console.error("❌ Failed to convert CSV row to pictograph data");
+          return null;
+        }
+      }
+
+      console.warn("⚠️ No exact match found in CSV data");
+      return null;
+    } catch (error) {
+      console.error("❌ Error finding matching CSV row:", error);
+      return null;
+    }
+  }
+
+  /**
+   * Check if a CSV row matches motion parameters for a specific color
+   */
+  private matchesMotionParams(
+    row: ParsedCsvRow,
+    color: "blue" | "red",
+    params: MotionTestParams
+  ): boolean {
+    const csvMotionType = row[`${color}MotionType`];
+    const csvStartLoc = row[`${color}StartLoc`];
+    const csvEndLoc = row[`${color}EndLoc`];
+
+    // Normalize values for comparison
+    const motionTypeMatch =
+      this.normalizeMotionType(csvMotionType) ===
+      this.normalizeMotionType(params.motionType);
+    const startLocMatch =
+      this.normalizeLocation(csvStartLoc) ===
+      this.normalizeLocation(params.startLoc);
+    const endLocMatch =
+      this.normalizeLocation(csvEndLoc) ===
+      this.normalizeLocation(params.endLoc);
+
+    // Note: rotationDirection is calculated after CSV lookup, not used for matching
+    return motionTypeMatch && startLocMatch && endLocMatch;
+  }
+
+  /**
+   * Normalize motion type for comparison
+   */
+  private normalizeMotionType(motionType: string): string {
+    return motionType.toLowerCase().trim();
+  }
+
+  /**
+   * Normalize location for comparison
+   */
+  private normalizeLocation(location: string): string {
+    return location.toLowerCase().trim();
   }
 }
