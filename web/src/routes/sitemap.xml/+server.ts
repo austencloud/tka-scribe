@@ -1,24 +1,84 @@
-import type { RequestHandler } from "./";
+import type { RequestHandler } from "./$types";
 import { PRIMARY_DOMAIN } from "$lib/config/domains";
 
 const pages = [
   // Main Application Pages (High Priority)
-  { url: "", priority: "1.0", changefreq: "weekly", description: "TKA - The Kinetic Constructor | Home" },
-  { url: "about", priority: "0.9", changefreq: "monthly", description: "About TKA - Revolutionary Flow Arts Tool" },
-  { url: "constructor", priority: "0.9", changefreq: "weekly", description: "Flow Arts Constructor - Sequence Builder" },
-  { url: "browse", priority: "0.8", changefreq: "weekly", description: "Browse Flow Arts Gallery - Sequence Library" },
-  { url: "learn", priority: "0.8", changefreq: "weekly", description: "Learn Flow Arts - Comprehensive Tutorials" },
-  
+  {
+    url: "",
+    priority: "1.0",
+    changefreq: "weekly",
+    description: "TKA - The Kinetic Constructor | Home",
+  },
+  {
+    url: "about",
+    priority: "0.9",
+    changefreq: "monthly",
+    description: "About TKA - Revolutionary Flow Arts Tool",
+  },
+  {
+    url: "constructor",
+    priority: "0.9",
+    changefreq: "weekly",
+    description: "Flow Arts Constructor - Sequence Builder",
+  },
+  {
+    url: "browse",
+    priority: "0.8",
+    changefreq: "weekly",
+    description: "Browse Flow Arts Gallery - Sequence Library",
+  },
+  {
+    url: "learn",
+    priority: "0.8",
+    changefreq: "weekly",
+    description: "Learn Flow Arts - Comprehensive Tutorials",
+  },
+
   // Secondary Pages (Medium Priority)
-  { url: "features", priority: "0.7", changefreq: "monthly", description: "TKA Features - Advanced Animation Tools" },
-  { url: "getting-started", priority: "0.7", changefreq: "monthly", description: "Getting Started with TKA - Tutorial" },
-  { url: "sequence-card", priority: "0.6", changefreq: "monthly", description: "Sequence Cards - Movement Notation" },
-  { url: "write", priority: "0.6", changefreq: "monthly", description: "Flow Arts Composer - Advanced Editor" },
-  
+  {
+    url: "features",
+    priority: "0.7",
+    changefreq: "monthly",
+    description: "TKA Features - Advanced Animation Tools",
+  },
+  {
+    url: "getting-started",
+    priority: "0.7",
+    changefreq: "monthly",
+    description: "Getting Started with TKA - Tutorial",
+  },
+  {
+    url: "sequence-card",
+    priority: "0.6",
+    changefreq: "monthly",
+    description: "Sequence Cards - Movement Notation",
+  },
+  {
+    url: "write",
+    priority: "0.6",
+    changefreq: "monthly",
+    description: "Flow Arts Composer - Advanced Editor",
+  },
+
   // Development Tools (Lower Priority - but still indexed)
-  { url: "motion-tester", priority: "0.3", changefreq: "monthly", description: "Motion Tester - Development Tool" },
-  { url: "arrow-debug", priority: "0.3", changefreq: "monthly", description: "Arrow Debug - Development Tool" },
-  { url: "metadata-tester", priority: "0.3", changefreq: "monthly", description: "Metadata Tester - Development Tool" },
+  {
+    url: "motion-tester",
+    priority: "0.3",
+    changefreq: "monthly",
+    description: "Motion Tester - Development Tool",
+  },
+  {
+    url: "arrow-debug",
+    priority: "0.3",
+    changefreq: "monthly",
+    description: "Arrow Debug - Development Tool",
+  },
+  {
+    url: "metadata-tester",
+    priority: "0.3",
+    changefreq: "monthly",
+    description: "Metadata Tester - Development Tool",
+  },
 ];
 
 export const GET: RequestHandler = async () => {

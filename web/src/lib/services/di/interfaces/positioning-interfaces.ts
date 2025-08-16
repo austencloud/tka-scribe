@@ -13,7 +13,6 @@ import { createServiceInterface } from "../types";
 // Import enhanced positioning service interfaces
 import type {
   IArrowAdjustmentCalculator,
-  IArrowAdjustmentLookup,
   IArrowCoordinateSystemService,
   IArrowLocationCalculator,
   IArrowPositioningOrchestrator,
@@ -32,6 +31,7 @@ import { ArrowPositioningService } from "../../implementations/ArrowPositioningS
 
 // Import enhanced positioning service implementations
 import { ArrowAdjustmentCalculator } from "../../positioning/arrows/calculation/ArrowAdjustmentCalculator";
+import { ArrowAdjustmentLookup } from "../../positioning/arrows/orchestration/ArrowAdjustmentLookup";
 import { ArrowLocationCalculator } from "../../positioning/arrows/calculation/ArrowLocationCalculator";
 import { ArrowRotationCalculator } from "../../positioning/arrows/calculation/ArrowRotationCalculator";
 import { DashLocationCalculator } from "../../positioning/arrows/calculation/DashLocationCalculator";
@@ -89,7 +89,7 @@ export const IArrowAdjustmentCalculatorInterface =
     class extends ArrowAdjustmentCalculator {
       constructor(...args: unknown[]) {
         super(
-          args[0] as any,
+          args[0] as ArrowAdjustmentLookup | undefined,
           args[1] as IDirectionalTupleProcessor | undefined
         );
       }

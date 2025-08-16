@@ -20,6 +20,43 @@ import type {
 export class BrowseService implements IBrowseService {
   private cachedSequences: BrowseSequenceMetadata[] | null = null;
 
+  /**
+   * ✅ PERMANENT: Validate sequence metadata to prevent malformed data
+   */
+  private isValidSequenceMetadata(sequence: BrowseSequenceMetadata): boolean {
+    const word = sequence.word || sequence.name || sequence.id || "";
+
+    // ✅ CIRCUIT BREAKER: Block specific malformed sequences that cause infinite loops
+    const malformedSequences = [
+      "KD__KD__JE__JE__",
+      "KI_X_",
+      "KDC__",
+      "KDΨΦKDΨΦJEΨΦJEΨΦ",
+      "KIθX-",
+      "KDCΦ-",
+    ];
+
+    if (
+      malformedSequences.includes(word) ||
+      malformedSequences.includes(sequence.id)
+    ) {
+      console.warn(`🚫 CIRCUIT BREAKER: Blocking malformed sequence "${word}"`);
+      return false;
+    }
+
+    return (
+      word.length > 0 &&
+      word.length <= 100 && // Reasonable name length limit
+      !word.includes("__") && // No double underscores
+      !word.includes("αααααα") && // No repeated Greek letters
+      !word.includes("ββββ") && // No repeated Greek letters
+      !word.includes("HHHH") && // No repeated letters
+      !word.includes("GGGG") && // No repeated letters
+      word !== "A_A" && // Exclude test sequences
+      !word.includes("test") // No test sequences
+    );
+  }
+
   async loadSequenceMetadata(): Promise<BrowseSequenceMetadata[]> {
     console.log("🔍 BrowseService.loadSequenceMetadata() called");
 
@@ -45,8 +82,24 @@ export class BrowseService implements IBrowseService {
         "📋 Sequence IDs:",
         sequences.map((s) => s.id)
       );
-      this.cachedSequences = sequences;
-      return sequences;
+
+      // ✅ PERMANENT: Filter out invalid sequences
+      const validSequences = sequences.filter((seq) => {
+        const isValid = this.isValidSequenceMetadata(seq);
+        if (!isValid) {
+          console.warn(
+            `Filtered out invalid sequence: ${seq.word || seq.name || seq.id}`
+          );
+        }
+        return isValid;
+      });
+
+      console.log(
+        `🔍 Filtered ${sequences.length - validSequences.length} invalid sequences`
+      );
+
+      this.cachedSequences = validSequences;
+      return validSequences;
     } catch (error) {
       console.warn(
         "❌ Failed to load sequence index, generating from dictionary:",
@@ -229,7 +282,44 @@ export class BrowseService implements IBrowseService {
     console.log("📄 Total sequences in index:", data.totalSequences);
     console.log("📄 Sequences array length:", data.sequences?.length || 0);
 
-    const sequences = data.sequences || [];
+    const rawSequences = data.sequences || [];
+
+    // ✅ FIXED: Filter out sequences with malformed IDs and fix ID mapping
+    const sequences = rawSequences
+      .filter((seq: any) => {
+        const word = seq.word || seq.name || seq.id;
+        const id = seq.id;
+
+        // Skip sequences where ID has underscores but word doesn't (malformed ID generation)
+        if (id.includes("__") && !word.includes("__")) {
+          console.warn(
+            `🚫 Filtering malformed sequence: ID="${id}", Word="${word}"`
+          );
+          return false;
+        }
+
+        // Skip sequences where ID doesn't match word pattern
+        if (
+          id.includes("_") &&
+          id !== word.toLowerCase() &&
+          !word.includes("_")
+        ) {
+          console.warn(
+            `🚫 Filtering mismatched sequence: ID="${id}", Word="${word}"`
+          );
+          return false;
+        }
+
+        return true;
+      })
+      .map((seq: any) => ({
+        ...seq,
+        id: seq.word || seq.name || seq.id, // ✅ FIXED: Use actual word as ID instead of malformed ID
+      }));
+
+    console.log(
+      `🔍 Filtered ${rawSequences.length - sequences.length} malformed sequences`
+    );
     console.log("📦 Returning sequences:", sequences.length, "items");
     return sequences;
   }
@@ -272,7 +362,7 @@ export class BrowseService implements IBrowseService {
       const difficultyValue = difficulties[index % difficulties.length];
 
       const result: BrowseSequenceMetadata = {
-        id: word.toLowerCase(),
+        id: word, // ✅ FIXED: Keep uppercase to match PNG file names
         name: `${word} Sequence`,
         word,
         thumbnails: [`${word}_ver1.png`],

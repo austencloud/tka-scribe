@@ -1,6 +1,19 @@
-import { StandalonePortedEngine, type PropState } from "$lib/animator";
+import type { PropState } from "$lib/animator";
 import type { MotionTestParams } from "./MotionParameterService";
 import type { IAnimationControlService } from "./interfaces";
+import {
+  createBeatData,
+  createPictographData,
+  createSequenceData,
+} from "$lib/domain";
+import type { SequenceData, MotionData } from "$lib/domain";
+import {
+  MotionType,
+  Location,
+  Orientation,
+  RotationDirection,
+} from "$lib/domain/enums";
+import type { ISequenceAnimationEngine } from "$lib/services/di/interfaces/animator-interfaces";
 
 export interface AnimationState {
   isPlaying: boolean;
@@ -19,15 +32,12 @@ export interface PropStates {
 }
 
 export class AnimationControlService implements IAnimationControlService {
-  private animationEngine: StandalonePortedEngine;
   private animationFrameId: number | null = null;
   private currentProgress: number = 0;
   private isInitialized: boolean = false;
   private propVisibility: PropVisibility = { blue: true, red: true };
 
-  constructor() {
-    this.animationEngine = new StandalonePortedEngine();
-  }
+  constructor(private readonly animationEngine: ISequenceAnimationEngine) {}
 
   // Initialize the animation engine with motion data
   async initializeEngine(
@@ -36,7 +46,8 @@ export class AnimationControlService implements IAnimationControlService {
   ): Promise<boolean> {
     try {
       const sequence = this.createDualPropTestSequence(blueParams, redParams);
-      this.isInitialized = this.animationEngine.initialize(sequence);
+      this.isInitialized =
+        this.animationEngine.initializeWithDomainData(sequence);
       return this.isInitialized;
     } catch (error) {
       console.error("Failed to initialize animation engine:", error);
@@ -45,54 +56,58 @@ export class AnimationControlService implements IAnimationControlService {
     }
   }
 
-  // Create a test sequence with dual prop motion in standalone array format
+  // Create a test sequence with dual prop motion in domain format
   private createDualPropTestSequence(
     blueParams: MotionTestParams,
     redParams: MotionTestParams
-  ) {
-    return [
-      // Index 0: Metadata
-      {
-        word: "TEST",
-        author: "Motion Tester",
-        totalBeats: 1,
-      },
-      // Index 1: Start position
-      {
-        beat: 0,
-        letter: "START",
-        letter_type: "start",
-        blue_attributes: this.convertToAttributes(blueParams),
-        red_attributes: this.convertToAttributes(redParams),
-      },
-      // Index 2: Motion step
-      {
-        beat: 1,
+  ): SequenceData {
+    // Create a single beat with the test motion
+    const testBeat = createBeatData({
+      id: "test-beat-1",
+      beat_number: 1,
+      duration: 1,
+      pictograph_data: createPictographData({
+        id: "test-pictograph-1",
         letter: "TEST",
-        letter_type: "motion",
-        blue_attributes: this.convertToAttributes(blueParams),
-        red_attributes: this.convertToAttributes(redParams),
+        motions: {
+          blue: this.convertToMotionData(blueParams),
+          red: this.convertToMotionData(redParams),
+        },
+      }),
+    });
+
+    // Create the sequence
+    return createSequenceData({
+      id: "motion-test-sequence",
+      name: "Motion Test",
+      word: "TEST",
+      beats: [testBeat],
+      metadata: {
+        author: "Motion Tester",
+        level: 1,
       },
-    ];
+    });
   }
 
-  private convertToAttributes(params: MotionTestParams) {
+  private convertToMotionData(params: MotionTestParams): MotionData {
     return {
-      start_loc: params.startLoc,
-      end_loc: params.endLoc,
-      start_ori: params.startOri,
-      end_ori: params.endOri,
-      motion_type: params.motionType,
-      prop_rot_dir: params.propRotDir,
+      start_loc: params.startLoc as Location,
+      end_loc: params.endLoc as Location,
+      start_ori: params.startOri as Orientation,
+      end_ori: params.endOri as Orientation,
+      motion_type: params.motionType as MotionType,
+      prop_rot_dir: params.propRotDir as RotationDirection,
       turns: params.turns,
+      is_visible: true, // ✅ Add required field for MotionData
     };
   }
 
   // Get current prop states
   getCurrentPropStates(): PropStates {
+    const states = this.animationEngine.getCurrentPropStates();
     return {
-      blue: this.animationEngine.getBluePropState(),
-      red: this.animationEngine.getRedPropState(),
+      blue: states.blue,
+      red: states.red,
     };
   }
 

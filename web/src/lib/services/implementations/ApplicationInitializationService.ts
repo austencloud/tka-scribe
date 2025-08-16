@@ -78,6 +78,14 @@ export class ApplicationInitializationService
       localStorage.setItem(testKey, "test");
       localStorage.removeItem(testKey);
 
+      // ✅ IMMEDIATE: Clear legacy cache on startup to fix infinite loop
+      if (
+        this.persistenceService &&
+        "clearLegacyCache" in this.persistenceService
+      ) {
+        await (this.persistenceService as any).clearLegacyCache();
+      }
+
       console.log("✅ Persistence layer initialized");
     } catch (error) {
       console.error("❌ Persistence initialization failed:", error);

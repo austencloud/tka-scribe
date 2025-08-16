@@ -11,7 +11,9 @@
 </script>
 
 <svelte:head>
-  <title>Motion Tester - TKA Development Tool | Flow Arts Animation Testing</title>
+  <title
+    >Motion Tester - TKA Development Tool | Flow Arts Animation Testing</title
+  >
   <meta
     name="description"
     content="Development tool for testing motion parameters and animation sequences in TKA. Debug flow arts movements and kinetic patterns."

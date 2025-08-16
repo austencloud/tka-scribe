@@ -75,7 +75,7 @@ All individual controls are evenly spaced throughout the container
     justify-content: space-evenly;
     min-height: 0; /* Allow proper overflow handling */
     padding: calc(var(--element-spacing) * 1.5);
-    
+
     /* Single glassmorphism card for the entire container */
     background: linear-gradient(
       135deg,

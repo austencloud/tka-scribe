@@ -4,7 +4,7 @@
   import { browser } from "$app/environment";
   import { handleSEORedirect } from "$lib/utils/seoUtils";
   import MainApplication from "$components/MainApplication.svelte";
-  import type { PageData } from "./";
+  import type { PageData } from "./$types";
 
   interface Props {
     data: PageData;
@@ -23,18 +23,19 @@
   const structuredData = {
     "@context": "https://schema.org",
     "@type": "WebPage",
-    "name": "Sequence Cards - Movement Notation",
-    "description": "Professional movement notation system for documenting and sharing flow arts choreography with visual sequence cards.",
-    "url": "https://thekineticalphabet.com/sequence-card",
-    "isPartOf": {
+    name: "Sequence Cards - Movement Notation",
+    description:
+      "Professional movement notation system for documenting and sharing flow arts choreography with visual sequence cards.",
+    url: "https://thekineticalphabet.com/sequence-card",
+    isPartOf: {
       "@type": "WebSite",
-      "name": "TKA - The Kinetic Constructor",
-      "url": "https://thekineticalphabet.com"
+      name: "TKA - The Kinetic Constructor",
+      url: "https://thekineticalphabet.com",
     },
-    "creator": {
+    creator: {
       "@type": "SoftwareApplication",
-      "name": "TKA - The Kinetic Constructor"
-    }
+      name: "TKA - The Kinetic Constructor",
+    },
   };
 </script>
 
@@ -50,7 +51,7 @@
   <meta name="twitter:title" content={data.meta.ogTitle} />
   <meta name="twitter:description" content={data.meta.ogDescription} />
   <link rel="canonical" href={data.meta.canonical} />
-  
+
   <!-- Enhanced Structured Data -->
   {@html `<script type="application/ld+json">${JSON.stringify(structuredData)}</script>`}
 </svelte:head>

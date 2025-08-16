@@ -9,12 +9,9 @@ Handles data loading, animation engine, and state management.
   import type { BrowseSequenceMetadata } from "$lib/domain/browse";
   import { resolve } from "$lib/services/bootstrap";
   import type { ISequenceService } from "$lib/services/interfaces";
-  import {
-    StandalonePortedEngine,
-    AnimatorCanvas,
-    ensureStandaloneFormat,
-  } from "$lib/animator";
+  import { AnimatorCanvas } from "$lib/animator";
   import type { PropState } from "$lib/animator";
+  import type { ISequenceAnimationEngine } from "$lib/services/di/interfaces/animator-interfaces";
   import type { PanelStateManager } from "$lib/state/panel-state.svelte";
 
   // Sub-components
@@ -49,7 +46,9 @@ Handles data loading, animation engine, and state management.
   let error = $state<string | null>(null);
 
   // Animation engine and state
-  let animationEngine = new StandalonePortedEngine();
+  let animationEngine = resolve(
+    "ISequenceAnimationEngine"
+  ) as ISequenceAnimationEngine;
   let currentBeat = $state(0);
   let isPlaying = $state(false);
   let speed = $state(1.0);
@@ -106,10 +105,8 @@ Handles data loading, animation engine, and state management.
         throw new Error(`Sequence not found: ${sequence.id}`);
       }
 
-      // Convert web app data to standalone format and initialize engine
-      const standaloneData = ensureStandaloneFormat(fullSequence);
-
-      if (animationEngine.initialize(standaloneData)) {
+      // Initialize engine directly with domain data (no conversion needed!)
+      if (animationEngine.initializeWithDomainData(fullSequence)) {
         sequenceData = fullSequence;
         const metadata = animationEngine.getMetadata();
         totalBeats = metadata.totalBeats;
@@ -172,8 +169,9 @@ Handles data loading, animation engine, and state management.
 
   // Update prop states from engine
   function updatePropStates(): void {
-    bluePropState = animationEngine.getBluePropState();
-    redPropState = animationEngine.getRedPropState();
+    const states = animationEngine.getCurrentPropStates();
+    bluePropState = states.blue;
+    redPropState = states.red;
   }
 
   // Animation loop using StandalonePortedEngine
@@ -199,7 +197,10 @@ Handles data loading, animation engine, and state management.
         // Loop back to start
         currentBeat = 0;
         lastTimestamp = null;
-        animationEngine.reset();
+        // Reset by re-initializing if needed
+        if (sequenceData) {
+          animationEngine.initializeWithDomainData(sequenceData);
+        }
       } else {
         // Stop at end
         currentBeat = totalBeats;
@@ -244,7 +245,10 @@ Handles data loading, animation engine, and state management.
       animationFrameId = null;
     }
 
-    animationEngine.reset();
+    // Reset by re-initializing if needed
+    if (sequenceData) {
+      animationEngine.initializeWithDomainData(sequenceData);
+    }
     updatePropStates();
   }
 

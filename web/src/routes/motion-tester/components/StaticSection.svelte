@@ -63,7 +63,7 @@ This is the left 2/3 section of the new layout.
   }
 </script>
 
-<div class="static-section-with-controls">
+<div class="static-section">
   <!-- Static Pictograph with Grid Toggle Overlay -->
   <div class="pictograph-area">
     <div class="grid-toggle-overlay">
@@ -145,7 +145,7 @@ This is the left 2/3 section of the new layout.
 </div>
 
 <style>
-  .static-section-with-controls {
+  .static-section {
     display: flex;
     flex-direction: column;
     height: 100%;

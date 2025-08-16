@@ -3,7 +3,7 @@
  * Based on the exact implementation from standalone_animator.html
  */
 
-import type { PropState } from "../../types/core.js";
+import type { PropState } from "../../types/PropState.js";
 
 // Constants from standalone_animator.html
 const GRID_HALFWAY_POINT_OFFSET = 151.5;

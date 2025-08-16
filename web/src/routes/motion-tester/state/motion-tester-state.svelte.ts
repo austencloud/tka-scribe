@@ -8,6 +8,8 @@ import {
   type PropVisibility,
   type PropStates,
 } from "../services/AnimationControlService";
+import { resolve } from "$lib/services/bootstrap";
+import type { ISequenceAnimationEngine } from "$lib/services/di/interfaces/animator-interfaces";
 import { OrientationCalculationService } from "$lib/services/implementations/OrientationCalculationService";
 import { EnumConversionService } from "../services/EnumConversionService";
 
@@ -50,7 +52,10 @@ export interface MotionTesterState {
 export function createMotionTesterState(): MotionTesterState {
   // Services
   const motionService = new MotionParameterService();
-  const animationService = new AnimationControlService();
+  const animationEngine = resolve(
+    "ISequenceAnimationEngine"
+  ) as ISequenceAnimationEngine;
+  const animationService = new AnimationControlService(animationEngine);
   const orientationService = new OrientationCalculationService();
 
   // Create enum conversion service for cleaner conversions

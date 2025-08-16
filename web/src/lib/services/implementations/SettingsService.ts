@@ -8,7 +8,8 @@ import { GridMode as DomainGridMode } from "$lib/domain/enums";
 import type { AppSettings, ISettingsService } from "../interfaces";
 
 export class SettingsService implements ISettingsService {
-  private readonly SETTINGS_KEY = "tka-v2-settings";
+  private readonly CACHE_VERSION = "v2.1"; // ✅ ROBUST: Cache versioning
+  private readonly SETTINGS_KEY = `tka-${this.CACHE_VERSION}-settings`;
 
   private _settings: AppSettings = {
     theme: "dark",

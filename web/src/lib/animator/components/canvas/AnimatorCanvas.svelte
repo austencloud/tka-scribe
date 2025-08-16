@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { PropState } from "../../types/core.js";
+  import type { PropState } from "../../types/PropState.js";
   import { svgStringToImage } from "../../svgStringToImage.js";
   import { SVGGenerator } from "../../utils/canvas/SVGGenerator.js";
   import { CanvasRenderer } from "../../utils/canvas/CanvasRenderer.js";

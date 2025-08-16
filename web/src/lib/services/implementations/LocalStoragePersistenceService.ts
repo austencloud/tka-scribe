@@ -9,14 +9,38 @@ import type { BeatData, SequenceData } from "$lib/domain";
 import type { IPersistenceService } from "../interfaces";
 
 export class LocalStoragePersistenceService implements IPersistenceService {
-  private readonly SEQUENCES_KEY = "tka-v2-sequences";
-  private readonly SEQUENCE_PREFIX = "tka-v2-sequence-";
+  private readonly CACHE_VERSION = "v2.1"; // ✅ ROBUST: Cache versioning
+  private readonly SEQUENCES_KEY = `tka-${this.CACHE_VERSION}-sequences`;
+  private readonly SEQUENCE_PREFIX = `tka-${this.CACHE_VERSION}-sequence-`;
+
+  /**
+   * Validate sequence data before storage operations
+   */
+  private isValidSequence(sequence: SequenceData): boolean {
+    // ✅ PERMANENT: Validate sequence names to prevent malformed data
+    const name = sequence.name || sequence.word || sequence.id || "";
+
+    return (
+      name.length > 0 &&
+      name.length <= 100 && // Reasonable name length limit
+      !name.includes("__") && // No double underscores
+      !name.includes("test") // No test sequences
+    );
+  }
 
   /**
    * Save a sequence to localStorage
    */
   async saveSequence(sequence: SequenceData): Promise<void> {
     try {
+      // ✅ PERMANENT: Validate before saving
+      if (!this.isValidSequence(sequence)) {
+        console.warn(
+          `Skipping invalid sequence: ${sequence.name || sequence.id}`
+        );
+        return;
+      }
+
       // Save individual sequence
       const sequenceKey = `${this.SEQUENCE_PREFIX}${sequence.id}`;
       localStorage.setItem(sequenceKey, JSON.stringify(sequence));
@@ -68,8 +92,11 @@ export class LocalStoragePersistenceService implements IPersistenceService {
 
       for (const id of sequenceIds) {
         const sequence = await this.loadSequence(id);
-        if (sequence) {
+        if (sequence && this.isValidSequence(sequence)) {
+          // ✅ PERMANENT: Filter out invalid sequences during load
           sequences.push(sequence);
+        } else if (sequence) {
+          console.warn(`Filtered out invalid sequence: ${sequence.name || id}`);
         }
       }
 
@@ -202,7 +229,8 @@ export class LocalStoragePersistenceService implements IPersistenceService {
       let used = 0;
       for (let i = 0; i < localStorage.length; i++) {
         const key = localStorage.key(i);
-        if (key?.startsWith("tka-v2-")) {
+        if (key?.startsWith(`tka-${this.CACHE_VERSION}-`)) {
+          // ✅ ROBUST: Only count current version storage
           const value = localStorage.getItem(key);
           used += (key.length + (value?.length || 0)) * 2; // UTF-16 encoding
         }
@@ -219,6 +247,53 @@ export class LocalStoragePersistenceService implements IPersistenceService {
       };
     } catch {
       return { used: 0, available: 5120, sequences: 0 };
+    }
+  }
+
+  /**
+   * ✅ IMMEDIATE: Clear old cached data and malformed sequences
+   */
+  async clearLegacyCache(): Promise<void> {
+    try {
+      console.log("🧹 Clearing legacy cache and malformed sequences...");
+
+      // Clear all old TKA storage keys
+      const keysToRemove: string[] = [];
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (
+          key?.startsWith("tka-") &&
+          !key.startsWith(`tka-${this.CACHE_VERSION}-`)
+        ) {
+          keysToRemove.push(key);
+        }
+      }
+
+      // Remove old keys
+      keysToRemove.forEach((key) => {
+        localStorage.removeItem(key);
+        console.log(`Removed legacy key: ${key}`);
+      });
+
+      // Clear session storage as well
+      const sessionKeysToRemove: string[] = [];
+      for (let i = 0; i < sessionStorage.length; i++) {
+        const key = sessionStorage.key(i);
+        if (key?.startsWith("tka-")) {
+          sessionKeysToRemove.push(key);
+        }
+      }
+
+      sessionKeysToRemove.forEach((key) => {
+        sessionStorage.removeItem(key);
+        console.log(`Removed session key: ${key}`);
+      });
+
+      console.log(
+        `✅ Cleared ${keysToRemove.length} localStorage keys and ${sessionKeysToRemove.length} sessionStorage keys`
+      );
+    } catch (error) {
+      console.error("Failed to clear legacy cache:", error);
     }
   }
 }

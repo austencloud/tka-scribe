@@ -26,7 +26,8 @@ export interface IFavoritesService {
 }
 
 export class FavoritesService implements IFavoritesService {
-  private readonly STORAGE_KEY = "tka-favorites";
+  private readonly CACHE_VERSION = "v2.1"; // ✅ ROBUST: Cache versioning
+  private readonly STORAGE_KEY = `tka-${this.CACHE_VERSION}-favorites`;
   private favoritesCache: Set<string> | null = null;
 
   constructor() {

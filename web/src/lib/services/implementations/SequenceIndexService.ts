@@ -374,7 +374,7 @@ export class SequenceIndexService implements ISequenceIndexService {
       const difficulty = difficulties[i % difficulties.length];
 
       const result: BrowseSequenceMetadata = {
-        id: word.toLowerCase().replace(/[^a-z0-9]/g, "_"),
+        id: word, // ✅ FIXED: Keep uppercase to match PNG file names
         name: `${word} Sequence`,
         word,
         thumbnails: [`${word}_ver1.png`],

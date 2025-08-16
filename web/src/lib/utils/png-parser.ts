@@ -3,11 +3,11 @@
  * Copied from animator module to avoid path issues
  */
 
-import type { SequenceData } from "../animator/types/core.js";
+import type { SequenceData } from "$lib/domain";
 
 export interface PNGParseResult {
   success: boolean;
-  data?: SequenceData;
+  data?: unknown[]; // Legacy array format from PNG files
   error?: string;
 }
 
@@ -131,7 +131,7 @@ function parsePNGMetadata(data: Uint8Array): PNGMetadata | null {
 /**
  * Transform raw sequence data from PNG to ensure it has the expected format
  */
-function transformSequenceData(rawData: unknown): SequenceData {
+function transformSequenceData(rawData: unknown): unknown[] {
   if (!Array.isArray(rawData)) {
     throw new Error("Sequence data must be an array");
   }
@@ -144,22 +144,25 @@ function transformSequenceData(rawData: unknown): SequenceData {
   const metadata = rawData[0];
 
   // Transform remaining elements to ensure they have beat numbers
-  const transformedSteps = rawData.slice(1).map((step: any, index: number) => {
-    // If step already has a beat property, use it
-    if (typeof step.beat === "number") {
-      return step;
-    }
+  const transformedSteps = rawData
+    .slice(1)
+    .map((step: Record<string, unknown>, index: number) => {
+      // If step already has a beat property, use it
+      if (typeof step.beat === "number") {
+        return step;
+      }
 
-    // If step doesn't have a beat property, assign one based on position
-    // Skip the first step if it's a start position (has sequence_start_position)
-    const isStartPosition = step.sequence_start_position !== undefined;
-    const beatNumber = isStartPosition ? 0 : index;
+      // If step doesn't have a beat property, assign one based on position
+      // Skip the first step if it's a start position (has sequence_start_position)
+      const isStartPosition = step.sequence_start_position !== undefined;
+      const beatNumber = isStartPosition ? 0 : index;
 
-    return {
-      ...step,
-      beat: beatNumber,
-    };
-  });
+      return {
+        ...step,
+        beat: beatNumber,
+      };
+    });
 
-  return [metadata, ...transformedSteps] as SequenceData;
+  // ✅ FIXED: Return array format for legacy compatibility
+  return [metadata, ...transformedSteps] as unknown[];
 }

@@ -3,8 +3,8 @@
  * Main entry point for the animation system
  */
 
-// Core types and utilities
-export * from "./types/core.js";
+// Core types (refactored into focused modules)
+export * from "./types/index.js";
 
 // Constants
 export * from "./constants/index.js";
@@ -12,16 +12,8 @@ export * from "./constants/index.js";
 // Animation engine
 export { SequenceAnimationEngine as StandalonePortedEngine } from "./core/engine/sequence-animation-engine.js";
 
-// Data conversion utilities
-export {
-  convertWebAppToStandalone,
-  ensureStandaloneFormat,
-  isWebAppFormat,
-  isStandaloneFormat,
-} from "./utils/data-converter.js";
-
-// Math utilities
-export * from "./utils/standalone-math.js";
+// Math services (replaces standalone-math.js)
+export * from "./utils/math/index.js";
 
 // TODO: File utilities (PNG parser path issues)
 // export { extractSequenceFromPNG } from "../../../animator/src/lib/animator/utils/file/png-parser.js";

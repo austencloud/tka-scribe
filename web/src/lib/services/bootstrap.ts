@@ -16,6 +16,7 @@ import { registerBrowseServices } from "./di/registration/browse-services";
 import { registerCoreServices } from "./di/registration/core-services";
 import { registerPositioningServices } from "./di/registration/positioning-services";
 import { registerMotionTesterServices } from "./di/registration/motion-tester-services";
+import { registerAnimatorServices } from "./di/registration/animator-services";
 
 /**
  * Create and configure the web application DI container
@@ -27,6 +28,7 @@ export async function createWebApplication(): Promise<ServiceContainer> {
     // Register services in the correct dependency order
     await registerCoreServices(container);
     await registerPositioningServices(container);
+    await registerAnimatorServices(container);
     await registerBrowseServices(container);
     await registerMotionTesterServices(container);
 

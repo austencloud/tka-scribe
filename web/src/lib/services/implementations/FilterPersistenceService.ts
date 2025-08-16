@@ -45,8 +45,9 @@ export interface IFilterPersistenceService {
 }
 
 export class FilterPersistenceService implements IFilterPersistenceService {
-  private readonly BROWSE_STATE_KEY = "tka-browse-state";
-  private readonly FILTER_HISTORY_KEY = "tka-filter-history";
+  private readonly CACHE_VERSION = "v2.1"; // ✅ ROBUST: Cache versioning
+  private readonly BROWSE_STATE_KEY = `tka-${this.CACHE_VERSION}-browse-state`;
+  private readonly FILTER_HISTORY_KEY = `tka-${this.CACHE_VERSION}-filter-history`;
   private readonly MAX_HISTORY_SIZE = 50;
 
   async saveBrowseState(state: BrowseState): Promise<void> {

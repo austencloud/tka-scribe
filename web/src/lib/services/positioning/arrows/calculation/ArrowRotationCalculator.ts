@@ -1,5 +1,3 @@
-
-
 import type { MotionData } from "$lib/domain";
 import { Location, MotionType } from "$lib/domain";
 

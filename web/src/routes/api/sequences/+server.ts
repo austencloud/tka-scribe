@@ -68,7 +68,17 @@ export async function GET() {
           const word = file.replace(/(_ver\d+)?\.png$/, "");
 
           // Skip test sequences and invalid entries
-          if (word === "A_A" || word.length < 2 || word.includes("test")) {
+          if (
+            word === "A_A" ||
+            word.length < 2 ||
+            word.length > 20 || // ✅ FIXED: Skip extremely long names
+            word.includes("test") ||
+            word.includes("__") || // ✅ FIXED: Skip double underscores
+            word.includes("αααααα") || // ✅ FIXED: Skip repeated Greek letters
+            word.includes("ββββ") || // ✅ FIXED: Skip repeated Greek letters
+            word.includes("HHHH") || // ✅ FIXED: Skip repeated letters
+            word.includes("GGGG") // ✅ FIXED: Skip repeated letters
+          ) {
             continue;
           }
 

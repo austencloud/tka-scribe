@@ -50,6 +50,13 @@ import {
   IThumbnailServiceInterface,
 } from "./interfaces/browse-interfaces";
 import { IAnimatedPictographDataServiceInterface } from "./interfaces/motion-tester-interfaces";
+import {
+  IBeatCalculationServiceInterface,
+  IPropInterpolationServiceInterface,
+  IAnimationStateServiceInterface,
+  ISequenceAnimationOrchestratorInterface,
+  ISequenceAnimationEngineInterface,
+} from "./interfaces/animator-interfaces";
 
 /**
  * Service interface mapping for string-based resolution
@@ -105,4 +112,11 @@ export const serviceInterfaceMap = new Map<string, ServiceInterface<unknown>>([
 
   // Motion Tester services
   ["IAnimatedPictographDataService", IAnimatedPictographDataServiceInterface],
+
+  // Animator services
+  ["IBeatCalculationService", IBeatCalculationServiceInterface],
+  ["IPropInterpolationService", IPropInterpolationServiceInterface],
+  ["IAnimationStateService", IAnimationStateServiceInterface],
+  ["ISequenceAnimationOrchestrator", ISequenceAnimationOrchestratorInterface],
+  ["ISequenceAnimationEngine", ISequenceAnimationEngineInterface],
 ]);
