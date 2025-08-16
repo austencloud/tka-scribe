@@ -2,7 +2,13 @@
   interface DebugItem {
     label: string;
     value: string | number | boolean;
-    type?: 'text' | 'number' | 'boolean' | 'angle' | 'coordinate' | 'percentage';
+    type?:
+      | "text"
+      | "number"
+      | "boolean"
+      | "angle"
+      | "coordinate"
+      | "percentage";
     className?: string;
   }
 
@@ -15,39 +21,43 @@
 
   function formatValue(item: DebugItem): string {
     const { value, type } = item;
-    
+
     if (value === undefined || value === null) return "N/A";
-    
+
     switch (type) {
-      case 'boolean':
+      case "boolean":
         return value ? "✅ Yes" : "❌ No";
-      case 'angle':
-        return typeof value === 'number' ? `${value.toFixed(2)}°` : String(value);
-      case 'coordinate':
-        return typeof value === 'number' ? value.toFixed(2) : String(value);
-      case 'percentage':
-        return typeof value === 'number' ? `${(value * 100).toFixed(1)}%` : String(value);
-      case 'number':
-        return typeof value === 'number' ? value.toFixed(2) : String(value);
+      case "angle":
+        return typeof value === "number"
+          ? `${value.toFixed(2)}°`
+          : String(value);
+      case "coordinate":
+        return typeof value === "number" ? value.toFixed(2) : String(value);
+      case "percentage":
+        return typeof value === "number"
+          ? `${(value * 100).toFixed(1)}%`
+          : String(value);
+      case "number":
+        return typeof value === "number" ? value.toFixed(2) : String(value);
       default:
         return String(value);
     }
   }
 
   function getValueClass(item: DebugItem): string {
-    const baseClass = 'value';
+    const baseClass = "value";
     if (item.className) return `${baseClass} ${item.className}`;
-    
+
     switch (item.type) {
-      case 'boolean':
+      case "boolean":
         return `${baseClass} value-boolean`;
-      case 'angle':
+      case "angle":
         return `${baseClass} value-angle`;
-      case 'coordinate':
+      case "coordinate":
         return `${baseClass} value-coordinate`;
-      case 'percentage':
+      case "percentage":
         return `${baseClass} value-percentage`;
-      case 'number':
+      case "number":
         return `${baseClass} value-number`;
       default:
         return baseClass;

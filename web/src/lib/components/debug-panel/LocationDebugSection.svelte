@@ -1,8 +1,8 @@
 <script lang="ts">
-  import DebugSection from './DebugSection.svelte';
-  import DebugDataGrid from './DebugDataGrid.svelte';
-  import { getStepStatus, isStepVisible } from './stepManager';
-  import type { ArrowDebugState } from '../../../routes/arrow-debug/state/arrow-debug-state.svelte';
+  import DebugSection from "./DebugSection.svelte";
+  import DebugDataGrid from "./DebugDataGrid.svelte";
+  import { getStepStatus, isStepVisible } from "./stepManager";
+  import type { ArrowDebugState } from "../../../routes/arrow-debug/state/arrow-debug-state.svelte";
 
   interface Props {
     state: ArrowDebugState;
@@ -13,24 +13,36 @@
   // Computed properties for this specific section
   const stepNumber = 1;
   const sectionKey = "location_calc";
-  
+
   const stepStatus = $derived(getStepStatus(stepNumber, state.currentStep));
-  const visible = $derived(isStepVisible(stepNumber, state.currentStep, state.stepByStepMode));
+  const visible = $derived(
+    isStepVisible(stepNumber, state.currentStep, state.stepByStepMode)
+  );
   const expanded = $derived(state.expandedSections.has(sectionKey));
   const debugInfo = $derived(state.currentDebugData.locationDebugInfo);
-  const calculatedLocation = $derived(state.currentDebugData.calculatedLocation);
+  const calculatedLocation = $derived(
+    state.currentDebugData.calculatedLocation
+  );
 
   // Debug data items for the grid
   const debugItems = $derived(() => {
     const info = debugInfo;
     if (!info) return [];
-    
+
     return [
-      { label: "Motion Type", value: info.motionType, type: 'text' as const },
-      { label: "Start Orientation", value: info.startOri, type: 'text' as const },
-      { label: "End Orientation", value: info.endOri, type: 'text' as const },
-      { label: "Calculation Method", value: info.calculationMethod, type: 'text' as const },
-    ].filter(item => item.value !== undefined && item.value !== null);
+      { label: "Motion Type", value: info.motionType, type: "text" as const },
+      {
+        label: "Start Orientation",
+        value: info.startOri,
+        type: "text" as const,
+      },
+      { label: "End Orientation", value: info.endOri, type: "text" as const },
+      {
+        label: "Calculation Method",
+        value: info.calculationMethod,
+        type: "text" as const,
+      },
+    ].filter((item) => item.value !== undefined && item.value !== null);
   });
 
   function handleToggle() {
@@ -49,7 +61,7 @@
 >
   {#if debugInfo}
     <DebugDataGrid items={debugItems()} />
-    
+
     <!-- Calculated location result -->
     <div class="result-section">
       <div class="result-box">
@@ -88,7 +100,11 @@
     justify-content: space-between;
     align-items: center;
     padding: 12px 16px;
-    background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(34, 197, 94, 0.05));
+    background: linear-gradient(
+      135deg,
+      rgba(34, 197, 94, 0.1),
+      rgba(34, 197, 94, 0.05)
+    );
     border: 1px solid rgba(34, 197, 94, 0.3);
     border-radius: 8px;
     margin-bottom: 12px;

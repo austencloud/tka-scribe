@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { StepStatus } from './stepManager';
+  import type { StepStatus } from "./stepManager";
 
   interface Props {
     title: string;
@@ -20,7 +20,7 @@
     isExpanded = false,
     isVisible = true,
     onToggle = () => {},
-    children
+    children,
   }: Props = $props();
 
   function handleKeydown(event: KeyboardEvent) {
@@ -37,8 +37,10 @@
 </script>
 
 {#if isVisible}
-  <section class="debug-section {stepNumber !== undefined ? 'step-section' : ''}" 
-           data-status={status}>
+  <section
+    class="debug-section {stepNumber !== undefined ? 'step-section' : ''}"
+    data-status={status}
+  >
     <div
       class="section-header {getStatusClass(status)}"
       onclick={onToggle}
@@ -48,17 +50,17 @@
       aria-expanded={isExpanded}
     >
       <h3>
-        {icon} 
+        {icon}
         {#if stepNumber !== undefined}
-          Step {stepNumber}: 
+          Step {stepNumber}:
         {/if}
         {title}
       </h3>
-      
+
       {#if status}
         <span class="step-status {getStatusClass(status)}">{status}</span>
       {/if}
-      
+
       <span class="toggle-icon {isExpanded ? 'expanded' : ''}">▼</span>
     </div>
 
