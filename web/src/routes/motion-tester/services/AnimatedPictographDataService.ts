@@ -30,6 +30,17 @@ import {
 import type { MotionTesterState } from "../state/motion-tester-state.svelte";
 import type { IMotionTesterCsvLookupService } from "$lib/services/di/interfaces/motion-tester-interfaces";
 
+// Interface for motion parameters
+interface MotionParams {
+  motionType: string;
+  startLoc: string;
+  endLoc: string;
+  startOri: string;
+  endOri: string;
+  propRotDir: string;
+  turns: number;
+}
+
 export interface IAnimatedPictographDataService {
   createAnimatedPictographData(
     motionState: MotionTesterState
@@ -56,7 +67,12 @@ export class AnimatedPictographDataService
 
       // Check cache first
       if (this.cache.has(cacheKey)) {
-        const cached = this.cache.get(cacheKey)!;
+        const cached = this.cache.get(cacheKey);
+        if (!cached) {
+          throw new Error(
+            "Cache inconsistency: key exists but value is undefined"
+          );
+        }
         // Update progress in metadata for cached result
         return {
           ...cached,
@@ -164,7 +180,20 @@ export class AnimatedPictographDataService
           blue: blueMotionData,
           red: redMotionData,
         },
-        letter: "?", // Unknown letter when CSV lookup fails
+        letter: (() => {
+          throw new Error(
+            `CSV lookup failed for motion parameters: ${JSON.stringify({
+              blueMotion: blueMotionData.motion_type,
+              blueStartLoc: blueMotionData.start_loc,
+              blueEndLoc: blueMotionData.end_loc,
+              blueTurns: blueMotionData.turns,
+              redMotion: redMotionData.motion_type,
+              redStartLoc: redMotionData.start_loc,
+              redEndLoc: redMotionData.end_loc,
+              redTurns: redMotionData.turns,
+            })}. All combinations should exist in CSV data.`
+          );
+        })(),
         beat: 1,
         is_blank: false,
         is_mirrored: false,
@@ -199,7 +228,7 @@ export class AnimatedPictographDataService
   /**
    * Creates complete motion data using the domain factory function
    */
-  private createCompleteMotionData(motionParams: any): MotionData {
+  private createCompleteMotionData(motionParams: MotionParams): MotionData {
     return createMotionData({
       motion_type: this.mapMotionType(motionParams.motionType),
       start_loc: this.mapLocation(motionParams.startLoc),
@@ -216,7 +245,7 @@ export class AnimatedPictographDataService
    * Creates prop data based on motion parameters
    */
   private createPropDataFromMotion(
-    motionParams: any,
+    motionParams: MotionParams,
     color: "blue" | "red"
   ): PropData {
     return createPropData({
@@ -233,7 +262,7 @@ export class AnimatedPictographDataService
    * Creates arrow data based on motion parameters
    */
   private createArrowDataFromMotion(
-    motionParams: any,
+    motionParams: MotionParams,
     color: "blue" | "red"
   ): ArrowData {
     return createArrowData({

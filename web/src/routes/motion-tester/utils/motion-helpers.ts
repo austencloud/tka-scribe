@@ -97,7 +97,7 @@ export const MOTION_TYPES = ["pro", "anti", "float", "dash", "static"] as const;
 export const ORIENTATIONS = ["in", "out", "clock", "counter"] as const;
 
 // Visual position mapping for location display in the path grid
-export const LOCATION_POSITIONS: Record<string, any> = {
+export const LOCATION_POSITIONS: Record<string, Record<string, string>> = {
   n: { top: "15%", left: "50%", transform: "translateX(-50%)" },
   e: { top: "50%", right: "15%", transform: "translateY(-50%)" },
   s: { bottom: "15%", left: "50%", transform: "translateX(-50%)" },

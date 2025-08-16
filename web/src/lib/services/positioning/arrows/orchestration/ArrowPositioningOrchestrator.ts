@@ -401,9 +401,7 @@ export class ArrowPositioningOrchestrator
     /**Get basic adjustment for synchronous operations with directional tuple processing.*/
     try {
       // Calculate the arrow location for directional processing
-      const location = this.locationCalculator.calculateLocation(motion, {
-        letter: _letter,
-      } as any);
+      const location = this.locationCalculator.calculateLocation(motion);
 
       // Get base adjustment values based on motion type and turns
       const baseAdjustment = this.getBaseAdjustmentValues(motion);

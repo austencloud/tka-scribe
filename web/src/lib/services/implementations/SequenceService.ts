@@ -6,6 +6,13 @@
  */
 
 import type { BeatData, SequenceData } from "$lib/domain";
+import {
+  GridMode,
+  MotionType,
+  RotationDirection,
+  Location,
+  Orientation,
+} from "$lib/domain/enums";
 
 import { PngMetadataExtractor } from "$lib/utils/png-metadata-extractor";
 import type {
@@ -257,20 +264,20 @@ export class SequenceService implements ISequenceService {
    */
   private async convertPngMetadataToSequence(
     id: string,
-    pngMetadata: any[]
+    pngMetadata: unknown[]
   ): Promise<SequenceData> {
     console.log(`🔄 Converting standalone data to web app format for ${id}`);
 
     // Extract metadata from first element
-    const meta = pngMetadata[0];
-    const steps = pngMetadata.slice(1); // Skip metadata, get actual steps
+    const meta = pngMetadata[0] as Record<string, unknown>;
+    const steps = pngMetadata.slice(1) as Record<string, unknown>[]; // Skip metadata, get actual steps
 
     // Convert steps to beats
     const beats: BeatData[] = steps
-      .filter((step) => step.beat && step.beat > 0) // Only actual beats, not start state
+      .filter((step) => typeof step.beat === "number" && step.beat > 0) // Only actual beats, not start state
       .map((step) => ({
         id: `${step.beat}-${step.letter}`,
-        beat_number: step.beat,
+        beat_number: step.beat as number,
         duration: 1,
         blue_reversal: false,
         red_reversal: false,
@@ -278,7 +285,7 @@ export class SequenceService implements ISequenceService {
         pictograph_data: {
           id: `pictograph-${step.beat}`,
           grid_data: {
-            grid_mode: meta.grid_mode || "diamond",
+            grid_mode: (meta.grid_mode as GridMode) || GridMode.DIAMOND,
             center_x: 0,
             center_y: 0,
             radius: 100,
@@ -288,28 +295,56 @@ export class SequenceService implements ISequenceService {
           props: {},
           motions: {
             blue: {
-              motion_type: step.blue_attributes?.motion_type || "static",
-              start_loc: step.blue_attributes?.start_loc || "s",
-              end_loc: step.blue_attributes?.end_loc || "s",
-              start_ori: step.blue_attributes?.start_ori || "in",
-              end_ori: step.blue_attributes?.end_ori, // Don't set default - let it be undefined
-              prop_rot_dir: step.blue_attributes?.prop_rot_dir || "no_rot",
-              turns: step.blue_attributes?.turns || 0,
+              motion_type:
+                ((step.blue_attributes as Record<string, unknown>)
+                  ?.motion_type as MotionType) || MotionType.STATIC,
+              start_loc:
+                ((step.blue_attributes as Record<string, unknown>)
+                  ?.start_loc as Location) || Location.SOUTH,
+              end_loc:
+                ((step.blue_attributes as Record<string, unknown>)
+                  ?.end_loc as Location) || Location.SOUTH,
+              start_ori:
+                ((step.blue_attributes as Record<string, unknown>)
+                  ?.start_ori as Orientation) || Orientation.IN,
+              end_ori: (step.blue_attributes as Record<string, unknown>)
+                ?.end_ori as Orientation, // Don't set default - let it be undefined
+              prop_rot_dir:
+                ((step.blue_attributes as Record<string, unknown>)
+                  ?.prop_rot_dir as RotationDirection) ||
+                RotationDirection.NO_ROTATION,
+              turns:
+                ((step.blue_attributes as Record<string, unknown>)
+                  ?.turns as number) || 0,
               is_visible: true,
             },
             red: {
-              motion_type: step.red_attributes?.motion_type || "static",
-              start_loc: step.red_attributes?.start_loc || "s",
-              end_loc: step.red_attributes?.end_loc || "s",
-              start_ori: step.red_attributes?.start_ori || "in",
-              end_ori: step.red_attributes?.end_ori, // Don't set default - let it be undefined
-              prop_rot_dir: step.red_attributes?.prop_rot_dir || "no_rot",
-              turns: step.red_attributes?.turns || 0,
+              motion_type:
+                ((step.red_attributes as Record<string, unknown>)
+                  ?.motion_type as MotionType) || MotionType.STATIC,
+              start_loc:
+                ((step.red_attributes as Record<string, unknown>)
+                  ?.start_loc as Location) || Location.SOUTH,
+              end_loc:
+                ((step.red_attributes as Record<string, unknown>)
+                  ?.end_loc as Location) || Location.SOUTH,
+              start_ori:
+                ((step.red_attributes as Record<string, unknown>)
+                  ?.start_ori as Orientation) || Orientation.IN,
+              end_ori: (step.red_attributes as Record<string, unknown>)
+                ?.end_ori as Orientation, // Don't set default - let it be undefined
+              prop_rot_dir:
+                ((step.red_attributes as Record<string, unknown>)
+                  ?.prop_rot_dir as RotationDirection) ||
+                RotationDirection.NO_ROTATION,
+              turns:
+                ((step.red_attributes as Record<string, unknown>)
+                  ?.turns as number) || 0,
               is_visible: true,
             },
           },
-          letter: step.letter || "",
-          beat: step.beat,
+          letter: (step.letter as string) || "",
+          beat: step.beat as number,
           is_blank: false,
           is_mirrored: false,
           metadata: {},
@@ -321,20 +356,20 @@ export class SequenceService implements ISequenceService {
 
     return {
       id,
-      name: meta.word || id.toUpperCase(),
-      word: meta.word || id.toUpperCase(),
+      name: (meta.word as string) || id.toUpperCase(),
+      word: (meta.word as string) || id.toUpperCase(),
       beats,
       thumbnails: [`${id.toUpperCase()}_ver1.png`],
       sequence_length: beats.length,
-      author: meta.author || "Unknown",
-      level: meta.level || 1,
-      date_added: new Date(meta.date_added || Date.now()),
-      grid_mode: meta.grid_mode || "diamond",
-      prop_type: meta.prop_type || "unknown",
-      is_favorite: meta.is_favorite || false,
-      is_circular: meta.is_circular || false,
-      starting_position: meta.sequence_start_position || "beta",
-      difficulty_level: this.mapLevelToDifficulty(meta.level || 1),
+      author: (meta.author as string) || "Unknown",
+      level: (meta.level as number) || 1,
+      date_added: new Date((meta.date_added as string | number) || Date.now()),
+      grid_mode: (meta.grid_mode as string) || "diamond",
+      prop_type: (meta.prop_type as string) || "unknown",
+      is_favorite: (meta.is_favorite as boolean) || false,
+      is_circular: (meta.is_circular as boolean) || false,
+      starting_position: (meta.sequence_start_position as string) || "beta",
+      difficulty_level: this.mapLevelToDifficulty((meta.level as number) || 1),
       tags: ["flow", "practice"],
       metadata: {
         source: "png_metadata",

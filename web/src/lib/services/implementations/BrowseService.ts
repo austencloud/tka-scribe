@@ -286,7 +286,7 @@ export class BrowseService implements IBrowseService {
 
     // ✅ FIXED: Filter out sequences with malformed IDs and fix ID mapping
     const sequences = rawSequences
-      .filter((seq: any) => {
+      .filter((seq: BrowseSequenceMetadata) => {
         const word = seq.word || seq.name || seq.id;
         const id = seq.id;
 
@@ -312,7 +312,7 @@ export class BrowseService implements IBrowseService {
 
         return true;
       })
-      .map((seq: any) => ({
+      .map((seq: BrowseSequenceMetadata) => ({
         ...seq,
         id: seq.word || seq.name || seq.id, // ✅ FIXED: Use actual word as ID instead of malformed ID
       }));

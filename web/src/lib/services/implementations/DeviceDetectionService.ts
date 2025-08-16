@@ -313,7 +313,7 @@ export class DeviceDetectionService implements IDeviceDetectionService {
   private estimateMemory(): number | undefined {
     // Use navigator.deviceMemory if available (Chrome)
     if ("deviceMemory" in navigator) {
-      return (navigator as any).deviceMemory * 1024; // Convert GB to MB
+      return (navigator as { deviceMemory: number }).deviceMemory * 1024; // Convert GB to MB
     }
 
     // Fallback estimation based on other factors
@@ -326,7 +326,9 @@ export class DeviceDetectionService implements IDeviceDetectionService {
   private detectConnectionSpeed(): "slow" | "medium" | "fast" | undefined {
     // Use navigator.connection if available
     if ("connection" in navigator) {
-      const connection = (navigator as any).connection;
+      const connection = (
+        navigator as { connection: { effectiveType?: string } }
+      ).connection;
       if (connection.effectiveType) {
         switch (connection.effectiveType) {
           case "slow-2g":

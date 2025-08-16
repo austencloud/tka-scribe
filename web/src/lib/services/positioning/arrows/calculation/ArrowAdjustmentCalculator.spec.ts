@@ -1,4 +1,15 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import {
+  createMotionData,
+  createPictographData,
+  createGridData,
+} from "$lib/domain";
+import {
+  MotionType,
+  Location,
+  RotationDirection,
+  GridMode,
+} from "$lib/domain/enums";
 import { ArrowAdjustmentCalculator } from "./ArrowAdjustmentCalculator";
 
 describe("ArrowAdjustmentCalculator (end-to-end positioning)", () => {
@@ -15,7 +26,7 @@ describe("ArrowAdjustmentCalculator (end-to-end positioning)", () => {
 
   it("calculates full arrow adjustment (base + directional) for diamond grid", async () => {
     // Mock special placement data
-    global.fetch = vi.fn(async (url: any) => {
+    global.fetch = vi.fn(async (url: string | URL) => {
       const u = String(url);
       if (u.includes("arrow_placement")) {
         const data = u.includes("special") ? {} : { pro: { "0": [50, 25] } };
@@ -26,25 +37,25 @@ describe("ArrowAdjustmentCalculator (end-to-end positioning)", () => {
 
     const calc = new ArrowAdjustmentCalculator();
 
-    const motion = {
-      motion_type: "pro",
-      start_location: "NE",
-      end_location: "SW",
-      prop_rot_dir: "cw",
+    const motion = createMotionData({
+      motion_type: MotionType.PRO,
+      start_loc: Location.NORTHEAST,
+      end_loc: Location.SOUTHWEST,
+      prop_rot_dir: RotationDirection.CLOCKWISE,
       turns: 0,
-    } as any;
+    });
 
-    const pictograph = {
+    const pictograph = createPictographData({
       letter: "A",
-      grid_mode: "diamond",
+      grid_data: createGridData({ grid_mode: GridMode.DIAMOND }),
       motions: { blue: motion, red: motion },
-    } as any;
+    });
 
     const result = await calc.calculateAdjustment(
       pictograph,
       motion,
       "A",
-      "NE" as any,
+      Location.NORTHEAST,
       "blue"
     );
 

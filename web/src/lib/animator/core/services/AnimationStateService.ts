@@ -13,9 +13,6 @@ import type {
   InterpolationResult,
 } from "$lib/services/di/interfaces/animator-interfaces";
 
-// Grid constants
-const GRID_VIEWBOX_SIZE = 950;
-
 export class AnimationStateService implements IAnimationStateService {
   private bluePropState: PropState = {
     centerPathAngle: 0,

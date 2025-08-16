@@ -22,11 +22,6 @@ export class EnumConversionService implements IEnumConversionService {
       out: Orientation.OUT,
       clock: Orientation.CLOCK,
       counter: Orientation.COUNTER,
-      // Cardinal direction mappings for backward compatibility
-      n: Orientation.IN,
-      e: Orientation.IN,
-      s: Orientation.IN,
-      w: Orientation.IN,
     };
 
     const normalized = str.toLowerCase().trim();

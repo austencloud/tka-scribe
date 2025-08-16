@@ -38,14 +38,14 @@ export function createSequenceState(sequenceService: ISequenceService) {
   // DERIVED STATE (Pure reactive calculations)
   // ============================================================================
 
-  let selectedBeat = $derived(() => {
+  const selectedBeat = $derived(() => {
     if (!currentSequence || selectedBeatIndex === null) return null;
     return currentSequence.beats[selectedBeatIndex] ?? null;
   });
 
-  let hasSequence = $derived(() => currentSequence !== null);
-  let beatCount = $derived(() => currentSequence?.beats.length ?? 0);
-  let hasError = $derived(() => error !== null);
+  const hasSequence = $derived(() => currentSequence !== null);
+  const beatCount = $derived(() => currentSequence?.beats.length ?? 0);
+  const hasError = $derived(() => error !== null);
 
   // ============================================================================
   // ACTIONS (Pure reactive wrappers around service calls)

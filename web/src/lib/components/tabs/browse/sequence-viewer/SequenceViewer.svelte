@@ -37,21 +37,7 @@
   let currentVariation = $derived.by(() => {
     if (!sequence) return undefined;
 
-    // Check if sequence has variations with imageUrl (legacy format)
-    const legacyVariation = sequence?.variations?.[currentVariationIndex] as
-      | { imageUrl?: string }
-      | undefined;
-    if (legacyVariation?.imageUrl) {
-      return legacyVariation;
-    }
-
-    // Check if sequence has direct imageUrl (legacy format)
-    const legacySequence = sequence as { imageUrl?: string };
-    if (legacySequence.imageUrl) {
-      return { imageUrl: legacySequence.imageUrl };
-    }
-
-    // Use thumbnails array from BrowseSequenceMetadata (new format)
+    // Use thumbnails array from BrowseSequenceMetadata (modern format)
     if (sequence.thumbnails && sequence.thumbnails.length > 0) {
       const thumbnailPath =
         sequence.thumbnails[currentVariationIndex] || sequence.thumbnails[0];

@@ -604,8 +604,11 @@ export class SequenceCardImageService implements ISequenceCardImageService {
    */
   private async performMemoryCleanup(): Promise<void> {
     // Force garbage collection if available (Chrome DevTools)
-    if ("gc" in window && typeof (window as any).gc === "function") {
-      (window as any).gc();
+    if (
+      "gc" in window &&
+      typeof (window as { gc?: () => void }).gc === "function"
+    ) {
+      (window as { gc: () => void }).gc();
     }
 
     // Small delay to allow cleanup

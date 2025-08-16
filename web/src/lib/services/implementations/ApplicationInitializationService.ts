@@ -81,9 +81,14 @@ export class ApplicationInitializationService
       // ✅ IMMEDIATE: Clear legacy cache on startup to fix infinite loop
       if (
         this.persistenceService &&
-        "clearLegacyCache" in this.persistenceService
+        "clearLegacyCache" in this.persistenceService &&
+        typeof (
+          this.persistenceService as { clearLegacyCache?: () => Promise<void> }
+        ).clearLegacyCache === "function"
       ) {
-        await (this.persistenceService as any).clearLegacyCache();
+        await (
+          this.persistenceService as { clearLegacyCache: () => Promise<void> }
+        ).clearLegacyCache();
       }
 
       console.log("✅ Persistence layer initialized");

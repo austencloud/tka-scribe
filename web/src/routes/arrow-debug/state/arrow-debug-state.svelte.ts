@@ -19,7 +19,8 @@ import {
   GridPosition,
 } from "$lib/domain";
 import { createGridData } from "$lib/domain/GridData";
-import { resolve, createWebApplication } from "$lib/services/bootstrap";
+import { resolve } from "$lib/services/bootstrap";
+// import { createWebApplication } from "$lib/services/bootstrap";
 import type { Point } from "$lib/services/positioning/types";
 import type {
   IArrowCoordinateSystemService,
@@ -62,7 +63,7 @@ export interface ArrowPositioningDebugData {
     motionType: string;
     gridMode: string;
     adjustmentSource: "default_placement" | "calculated" | "fallback";
-    rawPlacementData: any;
+    rawPlacementData: Record<string, unknown>;
   } | null;
 
   // Step 4: Special adjustment calculation
@@ -73,7 +74,7 @@ export interface ArrowPositioningDebugData {
     turnsTuple: string;
     arrowColor: string;
     specialPlacementFound: boolean;
-    specialPlacementData: any;
+    specialPlacementData: Record<string, unknown>;
     adjustmentSource: "special_placement" | "none";
   } | null;
 

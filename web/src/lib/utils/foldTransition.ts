@@ -237,7 +237,7 @@ export class ModeTransitionOrchestrator {
   }
 
   private async executeFoldTransition(
-    direction: "fold-in" | "fold-out"
+    _direction: "fold-in" | "fold-out"
   ): Promise<void> {
     return new Promise((resolve) => setTimeout(resolve, 600));
   }

@@ -141,7 +141,10 @@ export class SectionService implements ISectionService {
       if (!groups.has(key)) {
         groups.set(key, []);
       }
-      groups.get(key)!.push(sequence);
+      const group = groups.get(key);
+      if (group) {
+        group.push(sequence);
+      }
     });
 
     return groups;

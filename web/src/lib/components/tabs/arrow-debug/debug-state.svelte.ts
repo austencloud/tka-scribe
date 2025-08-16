@@ -3,17 +3,17 @@
  * Provides a simpler interface to the existing arrow debug state
  */
 
-import type { PictographData, MotionData, ArrowData } from "$lib/domain";
+import type { PictographData } from "$lib/domain";
 import { createPictographData } from "$lib/domain/PictographData";
 import { createGridData } from "$lib/domain/GridData";
-import { GridMode } from "$lib/domain/enums";
+import { GridMode, Location } from "$lib/domain/enums";
 import type { DebugStepData } from "./types";
 
 // Import real data services
 import { CodexService } from "$lib/services/codex/CodexService";
 
 // Import real arrow positioning services
-import { ArrowPositioningOrchestrator } from "$lib/services/positioning/arrows/orchestration/ArrowPositioningOrchestrator";
+// import { ArrowPositioningOrchestrator } from "$lib/services/positioning/arrows/orchestration/ArrowPositioningOrchestrator";
 import { ArrowLocationCalculator } from "$lib/services/positioning/arrows/calculation/ArrowLocationCalculator";
 import { ArrowCoordinateSystemService } from "$lib/services/positioning/arrows/coordinate_system/ArrowCoordinateSystemService";
 import { ArrowRotationCalculator } from "$lib/services/positioning/arrows/calculation/ArrowRotationCalculator";
@@ -54,12 +54,13 @@ export function createDebugState() {
   const coordinateSystemService = new ArrowCoordinateSystemService();
 
   // Create the orchestrator with real services
-  const arrowPositioningOrchestrator = new ArrowPositioningOrchestrator(
-    locationCalculator,
-    rotationCalculator,
-    adjustmentCalculator,
-    coordinateSystemService
-  );
+  // Note: Currently unused but kept for future debugging features
+  // const _arrowPositioningOrchestrator = new ArrowPositioningOrchestrator(
+  //   locationCalculator,
+  //   rotationCalculator,
+  //   adjustmentCalculator,
+  //   coordinateSystemService
+  // );
 
   // Create debug data with proper structure
   const currentDebugData = $state<DebugStepData>({
@@ -248,7 +249,7 @@ export function createDebugState() {
         if (currentDebugData.calculatedLocation) {
           const initialPosition = coordinateSystemService.getInitialPosition(
             currentMotionData,
-            currentDebugData.calculatedLocation as any
+            currentDebugData.calculatedLocation as Location
           );
           currentDebugData.initialPosition = initialPosition;
 
@@ -285,7 +286,7 @@ export function createDebugState() {
         if (currentDebugData.calculatedLocation) {
           const rotation = rotationCalculator.calculateRotation(
             currentMotionData,
-            currentDebugData.calculatedLocation as any
+            currentDebugData.calculatedLocation as Location
           );
           currentDebugData.finalRotation = rotation;
         }
@@ -306,7 +307,7 @@ export function createDebugState() {
             selectedPictograph,
             currentMotionData,
             selectedPictograph.letter || "A",
-            currentDebugData.calculatedLocation as any
+            currentDebugData.calculatedLocation as Location
           );
           currentDebugData.defaultAdjustment = adjustment;
 

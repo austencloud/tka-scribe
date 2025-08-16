@@ -11,7 +11,7 @@
 import { execSync } from "child_process";
 
 const BASE_URL = "http://localhost:5173";
-const PRODUCTION_URL = "https://thekineticalphabet.com";
+// const PRODUCTION_URL = "https://thekineticalphabet.com";
 const COLORS = {
   green: "\x1b[32m",
   red: "\x1b[31m",

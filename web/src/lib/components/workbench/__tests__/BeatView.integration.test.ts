@@ -210,7 +210,9 @@ describe("BeatView Integration", () => {
       const beatView = container.querySelector(".beat-view");
       expect(beatView).toBeInTheDocument();
 
-      await fireEvent.click(beatView!);
+      if (beatView) {
+        await fireEvent.click(beatView);
+      }
       expect(handleClick).toHaveBeenCalledWith(7);
     });
 
@@ -232,7 +234,9 @@ describe("BeatView Integration", () => {
       const beatView = container.querySelector(".beat-view");
       expect(beatView).toBeInTheDocument();
 
-      await fireEvent.dblClick(beatView!);
+      if (beatView) {
+        await fireEvent.dblClick(beatView);
+      }
       expect(handleDoubleClick).toHaveBeenCalledWith(8);
     });
 
@@ -281,7 +285,9 @@ describe("BeatView Integration", () => {
       });
 
       const beatView = container.querySelector(".beat-view");
-      await fireEvent.mouseEnter(beatView!);
+      if (beatView) {
+        await fireEvent.mouseEnter(beatView);
+      }
       expect(handleHover).toHaveBeenCalledWith(10);
     });
 
@@ -301,7 +307,9 @@ describe("BeatView Integration", () => {
       });
 
       const beatView = container.querySelector(".beat-view");
-      await fireEvent.mouseLeave(beatView!);
+      if (beatView) {
+        await fireEvent.mouseLeave(beatView);
+      }
       expect(handleLeave).toHaveBeenCalled();
     });
   });
@@ -323,7 +331,9 @@ describe("BeatView Integration", () => {
       });
 
       const beatView = container.querySelector(".beat-view");
-      await fireEvent.keyPress(beatView!, { key: "Enter" });
+      if (beatView) {
+        await fireEvent.keyPress(beatView, { key: "Enter" });
+      }
       expect(handleClick).toHaveBeenCalledWith(12);
     });
 
@@ -343,7 +353,9 @@ describe("BeatView Integration", () => {
       });
 
       const beatView = container.querySelector(".beat-view");
-      await fireEvent.keyPress(beatView!, { key: " " });
+      if (beatView) {
+        await fireEvent.keyPress(beatView, { key: " " });
+      }
       expect(handleClick).toHaveBeenCalledWith(13);
     });
   });

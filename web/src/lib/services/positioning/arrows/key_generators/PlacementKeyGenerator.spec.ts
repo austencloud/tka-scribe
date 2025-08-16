@@ -1,4 +1,6 @@
 import { describe, expect, it } from "vitest";
+import { createMotionData, createPictographData } from "$lib/domain";
+import { MotionType } from "$lib/domain/enums";
 import { PlacementKeyGenerator } from "./PlacementKeyGenerator";
 
 describe("PlacementKeyGenerator", () => {
@@ -9,8 +11,8 @@ describe("PlacementKeyGenerator", () => {
       pro_to_layer2_beta: true,
     } as Record<string, unknown>;
 
-    const motion = { motion_type: "pro" } as any;
-    const pictograph = { letter: "A" } as any;
+    const motion = createMotionData({ motion_type: MotionType.PRO });
+    const pictograph = createPictographData({ letter: "A" });
 
     const key = gen.generatePlacementKey(
       motion,
@@ -23,8 +25,8 @@ describe("PlacementKeyGenerator", () => {
 
   it("falls back to motion type when none available", () => {
     const gen = new PlacementKeyGenerator();
-    const motion = { motion_type: "float" } as any;
-    const pictograph = { letter: "Z-" } as any;
+    const motion = createMotionData({ motion_type: MotionType.FLOAT });
+    const pictograph = createPictographData({ letter: "Z-" });
 
     const key = gen.generatePlacementKey(motion, pictograph, {}, "box");
     // Generator picks first candidate since no explicit fallback to basic is implemented

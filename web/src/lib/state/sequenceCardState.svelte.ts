@@ -13,8 +13,8 @@
 import type { SequenceData } from "$lib/domain";
 import type {
   LayoutConfig,
-  ExportOptions,
-  SequenceCardExportSettings,
+  // ExportOptions,
+  // SequenceCardExportSettings,
   DeviceCapabilities,
 } from "$lib/domain/sequenceCard";
 
@@ -347,7 +347,8 @@ export function updateExportSetting<K extends keyof typeof exportSettingsState>(
   key: K,
   value: (typeof exportSettingsState)[K]
 ) {
-  (exportSettingsState as any)[key] = value;
+  // Type assertion is safe here since we're updating a mutable state object
+  (exportSettingsState as Record<string, unknown>)[key] = value;
 }
 
 export function resetExportSettings() {

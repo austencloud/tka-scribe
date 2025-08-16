@@ -37,6 +37,7 @@ export async function createWebApplication(): Promise<ServiceContainer> {
 
     // Set as global container so resolve() function works
     setGlobalContainer(container);
+    console.log("🌍 Global container set successfully");
 
     console.log(
       "✅ TKA V2 Modern application container initialized successfully"
@@ -59,6 +60,10 @@ let globalContainer: ServiceContainer | null = null;
  * Get the global container instance
  */
 export function getContainer(): ServiceContainer {
+  console.log(
+    `🌍 getContainer called, globalContainer exists:`,
+    globalContainer !== null
+  );
   if (!globalContainer) {
     throw new Error(
       "Application container not initialized. Call createWebApplication() first."
@@ -78,18 +83,29 @@ export function setGlobalContainer(container: ServiceContainer): void {
  * Helper function to resolve services from the global container
  */
 export function resolve<T>(serviceInterface: ServiceInterface<T> | string): T {
+  console.log(`🌐 Bootstrap resolve called with:`, serviceInterface);
   const container = getContainer();
 
   if (typeof serviceInterface === "string") {
+    console.log(`🔑 String-based resolution for: ${serviceInterface}`);
     // Legacy string-based resolution for backward compatibility
     const mappedInterface = serviceInterfaceMap.get(serviceInterface);
     if (!mappedInterface) {
+      console.error(
+        `❌ Service interface not found for key: ${serviceInterface}`
+      );
+      console.error(
+        `❌ Available service keys:`,
+        Array.from(serviceInterfaceMap.keys())
+      );
       throw new Error(
         `Service interface not found for key: ${serviceInterface}`
       );
     }
+    console.log(`✅ Found mapped interface for: ${serviceInterface}`);
     return container.resolve(mappedInterface) as T;
   }
 
+  console.log(`🔧 Direct interface resolution for: ${serviceInterface.token}`);
   return container.resolve(serviceInterface);
 }

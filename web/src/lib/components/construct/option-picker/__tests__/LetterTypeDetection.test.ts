@@ -107,7 +107,7 @@ describe("Letter Type Detection", () => {
     });
 
     it("should handle null/undefined", () => {
-      expect(detectLetterType(null as any)).toBe("Type1");
+      expect(detectLetterType(null as unknown as string)).toBe("Type1");
     });
 
     it("should handle unknown letters", () => {

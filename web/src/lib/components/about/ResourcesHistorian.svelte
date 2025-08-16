@@ -1,8 +1,6 @@
 <script lang="ts">
-  import {
-    modalManager,
-    type ResourceModalData,
-  } from "$lib/stores/modalStore.svelte";
+  import type { ResourceModalData } from "$lib/stores/modalStore";
+  import { createModalState } from "$lib/state/modal-state.svelte";
   import ResourceModal from "$lib/components/resource-guide/ResourceModal.svelte";
   import VTGContent from "$lib/components/resource-guide/content/VTGContent.svelte";
 
@@ -21,6 +19,9 @@
   let searchTerm = $state("");
   let selectedCategory = $state("all");
   let selectedLevel = $state("all");
+
+  // Modal state
+  const modalState = createModalState();
 
   // Computed filtered resources
   let filteredResources = $derived.by(() => {
@@ -52,13 +53,13 @@
   }
 
   function openResourceModal(resourceName: string, resource: Resource) {
-    modalManager.openModal(resourceName);
+    modalState.openModal(resourceName);
 
     const modalData: ResourceModalData = getModalDataForResource(
       resourceName,
       resource
     );
-    modalManager.setModalData(modalData);
+    modalState.setModalData(modalData);
   }
 
   function getModalDataForResource(
@@ -216,12 +217,13 @@
 
 <!-- Resource Modal -->
 <ResourceModal
-  isOpen={modalManager.isOpen}
-  onClose={() => modalManager.closeModal()}
+  isOpen={modalState.isOpen}
+  modalData={modalState.modalData}
+  onClose={() => modalState.closeModal()}
 >
-  {#if modalManager.resourceName === "vulcan-tech-gospel"}
+  {#if modalState.resourceName === "vulcan-tech-gospel"}
     <VTGContent />
-  {:else if modalManager.resourceName === "charlie-cushing-9-square-theory"}
+  {:else if modalState.resourceName === "charlie-cushing-9-square-theory"}
     <div class="placeholder-content">
       <p>9 Square Theory content coming soon...</p>
     </div>

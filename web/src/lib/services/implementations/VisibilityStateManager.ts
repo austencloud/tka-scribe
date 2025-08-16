@@ -111,7 +111,10 @@ export class VisibilityStateManager {
       if (!this.observers.has(category)) {
         this.observers.set(category, new Set());
       }
-      this.observers.get(category)!.add(callback);
+      const categoryObservers = this.observers.get(category);
+      if (categoryObservers) {
+        categoryObservers.add(callback);
+      }
     });
   }
 
@@ -225,7 +228,8 @@ export class VisibilityStateManager {
    */
   setGlyphVisibility(glyphType: string, visible: boolean): void {
     if (glyphType in this.settings) {
-      (this.settings as any)[glyphType] = visible;
+      (this.settings as unknown as Record<string, boolean>)[glyphType] =
+        visible;
       this.notifyObservers(["glyph"]);
     }
   }

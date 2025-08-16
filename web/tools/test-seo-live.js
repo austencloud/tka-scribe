@@ -5,7 +5,7 @@
  * Tests the actual running dev server to demonstrate SEO functionality
  */
 
-import { get } from "http";
+// import { get } from "http";
 
 const baseUrl = "http://localhost:5175";
 

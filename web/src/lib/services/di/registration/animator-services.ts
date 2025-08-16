@@ -24,11 +24,17 @@ export async function registerAnimatorServices(
 
   try {
     // Register core math and calculation services (no dependencies)
+    console.log("🎬 Registering IBeatCalculationServiceInterface...");
     container.registerSingletonClass(IBeatCalculationServiceInterface);
+
+    console.log("🎬 Registering IPropInterpolationServiceInterface...");
     container.registerSingletonClass(IPropInterpolationServiceInterface);
+
+    console.log("🎬 Registering IAnimationStateServiceInterface...");
     container.registerSingletonClass(IAnimationStateServiceInterface);
 
     // Register orchestrator with dependencies
+    console.log("🎬 Registering ISequenceAnimationOrchestratorInterface...");
     container.register(
       ISequenceAnimationOrchestratorInterface,
       IAnimationStateServiceInterface,
@@ -37,6 +43,7 @@ export async function registerAnimatorServices(
     );
 
     // Register animation engine wrapper (depends on orchestrator)
+    console.log("🎬 Registering ISequenceAnimationEngineInterface...");
     container.register(
       ISequenceAnimationEngineInterface,
       ISequenceAnimationOrchestratorInterface

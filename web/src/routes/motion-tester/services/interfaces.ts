@@ -13,8 +13,8 @@ import type {
 } from "$lib/domain/enums";
 import type { MotionTestParams } from "./MotionParameterService";
 import type {
-  AnimationState,
-  PropVisibility,
+  // AnimationState,
+  // PropVisibility,
   PropStates,
 } from "./AnimationControlService";
 
@@ -43,7 +43,9 @@ export interface IMotionParameterService {
 
   // Data conversion
   convertToMotionData(params: MotionTestParams): MotionData;
-  convertMotionTestParamsToPropAttributes(params: MotionTestParams): any;
+  convertMotionTestParamsToPropAttributes(
+    params: MotionTestParams
+  ): Record<string, unknown>;
 }
 
 /**

@@ -153,7 +153,7 @@ export class ArrowAdjustmentCalculator implements IArrowAdjustmentCalculator {
     motionData: MotionData,
     letter: string,
     location: Location,
-    arrowColor?: string
+    _arrowColor?: string
   ): Point {
     /**
      * Synchronous version of calculateAdjustment for use in sync contexts.

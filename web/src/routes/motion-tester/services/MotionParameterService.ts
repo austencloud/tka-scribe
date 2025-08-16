@@ -201,8 +201,8 @@ export class MotionParameterService implements IMotionParameterService {
       motion_type: params.motionType as MotionType,
       turns: params.turns,
       prop_rot_dir: params.propRotDir as PropRotDir,
-      start_ori: params.startOri as any,
-      end_ori: params.endOri as any,
+      start_ori: params.startOri as Orientation,
+      end_ori: params.endOri as Orientation,
     };
   }
 

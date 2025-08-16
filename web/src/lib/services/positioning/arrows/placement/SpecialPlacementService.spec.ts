@@ -1,9 +1,12 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { SpecialPlacementService } from "./SpecialPlacementService";
+import {
+  createMotionData,
+  createPictographData,
+  createGridData,
+} from "$lib/domain";
 
-// Minimal shapes for domain types used by the service
-type MotionData = any;
-type PictographData = any;
+import { MotionType, Orientation, GridMode } from "$lib/domain/enums";
+import { SpecialPlacementService } from "./SpecialPlacementService";
 
 describe("SpecialPlacementService", () => {
   const originalFetch = global.fetch;
@@ -31,7 +34,7 @@ describe("SpecialPlacementService", () => {
       },
     };
 
-    global.fetch = vi.fn(async (url: any) => {
+    global.fetch = vi.fn(async (url: string | URL) => {
       const u = String(url);
       if (
         u.endsWith(
@@ -44,17 +47,17 @@ describe("SpecialPlacementService", () => {
     }) as unknown as typeof fetch;
 
     // force layer2 by using non in/out end orientations
-    const pictograph: PictographData = {
+    const pictograph = createPictographData({
       letter: "C",
-      grid_mode: "diamond",
+      grid_data: createGridData({ grid_mode: GridMode.DIAMOND }),
       motions: {
-        blue: { end_ori: "alpha", turns: 0 },
-        red: { end_ori: "alpha", turns: 0 },
+        blue: createMotionData({ end_ori: Orientation.CLOCK, turns: 0 }),
+        red: createMotionData({ end_ori: Orientation.CLOCK, turns: 0 }),
       },
-    };
+    });
 
-    // motionData can be any; use anti so motion-type key is used
-    const motion: MotionData = { motion_type: "anti", turns: 0 };
+    // motionData for anti motion type
+    const motion = createMotionData({ motion_type: MotionType.ANTI, turns: 0 });
 
     const point = await svc.getSpecialAdjustment(motion, pictograph);
     expect(point).not.toBeNull();
@@ -71,7 +74,7 @@ describe("SpecialPlacementService", () => {
       },
     };
 
-    global.fetch = vi.fn(async (url: any) => {
+    global.fetch = vi.fn(async (url: string | URL) => {
       const u = String(url);
       if (
         u.endsWith(
@@ -83,16 +86,19 @@ describe("SpecialPlacementService", () => {
       return new Response("Not Found", { status: 404 });
     }) as unknown as typeof fetch;
 
-    const pictograph: PictographData = {
+    const pictograph = createPictographData({
       letter: "A",
-      grid_mode: "box",
+      grid_data: createGridData({ grid_mode: GridMode.BOX }),
       motions: {
-        blue: { end_ori: "in", turns: 0.5 },
-        red: { end_ori: "in", turns: 0.5 },
+        blue: createMotionData({ end_ori: Orientation.IN, turns: 0.5 }),
+        red: createMotionData({ end_ori: Orientation.IN, turns: 0.5 }),
       },
-    };
+    });
 
-    const motion: MotionData = { motion_type: "pro", turns: 0.5 };
+    const motion = createMotionData({
+      motion_type: MotionType.PRO,
+      turns: 0.5,
+    });
 
     // Force color lookup by passing explicit arrowColor
     const point = await svc.getSpecialAdjustment(motion, pictograph, "blue");

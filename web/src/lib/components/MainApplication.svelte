@@ -12,7 +12,6 @@
 
   // Import app state management
   import {
-    getActiveTab,
     getInitializationError,
     getInitializationProgress,
     getIsInitialized,
@@ -53,10 +52,17 @@
     const container = getContainer?.();
     if (container && !initService) {
       try {
+        console.log(
+          "🚀 MainApplication container ready, resolving services..."
+        );
+
+        // Use resolve which will use the global container once it's ready
         initService = resolve("IApplicationInitializationService");
         settingsService = resolve("ISettingsService");
         sequenceService = resolve("ISequenceService");
         deviceService = resolve("IDeviceDetectionService");
+
+        console.log("✅ MainApplication services resolved successfully");
       } catch (error) {
         console.error("Failed to resolve services:", error);
         setInitializationError(`Service resolution failed: ${error}`);

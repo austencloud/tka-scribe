@@ -1,30 +1,49 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import {
+  createMotionData,
+  createPictographData,
+  createGridData,
+} from "$lib/domain";
+import { MotionType, GridMode } from "$lib/domain/enums";
+import type {
+  ISpecialPlacementService,
+  IDefaultPlacementService,
+} from "../../placement-services";
+import type {
+  ISpecialPlacementOriKeyGenerator,
+  IPlacementKeyGenerator,
+  ITurnsTupleKeyGenerator,
+  IAttributeKeyGenerator,
+} from "../../data-services";
 import { ArrowAdjustmentLookup } from "./ArrowAdjustmentLookup";
 
 // Mock services: simulate the special/default services and key generators
 const createMockServices = () => {
   const mockSpecial = {
-    getSpecialAdjustment: vi.fn(),
-  };
+    getSpecialAdjustment: vi.fn().mockResolvedValue(null),
+  } as ISpecialPlacementService;
 
-  const mockDefault = {
+  const mockDefault: IDefaultPlacementService = {
     getAvailablePlacementKeys: vi.fn().mockResolvedValue(["pro"]),
     getDefaultAdjustment: vi.fn().mockResolvedValue({ x: 100, y: 50 }),
+    isLoaded: vi.fn().mockReturnValue(true),
+    getPlacementData: vi.fn().mockResolvedValue({}),
+    debugAvailableKeys: vi.fn().mockResolvedValue(undefined),
   };
 
-  const mockOriKeyGen = {
+  const mockOriKeyGen: ISpecialPlacementOriKeyGenerator = {
     generateOrientationKey: vi.fn().mockReturnValue("from_layer1"),
   };
 
-  const mockPlacementKeyGen = {
+  const mockPlacementKeyGen: IPlacementKeyGenerator = {
     generatePlacementKey: vi.fn().mockReturnValue("pro"),
   };
 
-  const mockTurnsGen = {
+  const mockTurnsGen: ITurnsTupleKeyGenerator = {
     generateTurnsTuple: vi.fn().mockReturnValue([0, 0]),
   };
 
-  const mockAttrGen = {
+  const mockAttrGen: IAttributeKeyGenerator = {
     getKeyFromArrow: vi.fn().mockReturnValue("basic"),
   };
 
@@ -49,19 +68,28 @@ describe("ArrowAdjustmentLookup (advanced orchestration)", () => {
 
   it("returns special adjustment when available", async () => {
     const mocks = createMockServices();
-    mocks.mockSpecial.getSpecialAdjustment.mockResolvedValue({ x: 20, y: -30 });
+    vi.mocked(mocks.mockSpecial.getSpecialAdjustment).mockResolvedValue({
+      x: 20,
+      y: -30,
+    });
 
     const lookup = new ArrowAdjustmentLookup(
-      mocks.mockSpecial as any,
-      mocks.mockDefault as any,
-      mocks.mockOriKeyGen as any,
-      mocks.mockPlacementKeyGen as any,
-      mocks.mockTurnsGen as any,
-      mocks.mockAttrGen as any
+      mocks.mockSpecial,
+      mocks.mockDefault,
+      mocks.mockOriKeyGen,
+      mocks.mockPlacementKeyGen,
+      mocks.mockTurnsGen,
+      mocks.mockAttrGen
     );
 
-    const pictograph = { letter: "C", grid_mode: "diamond" } as any;
-    const motion = { motion_type: "anti", turns: 0 } as any;
+    const pictograph = createPictographData({
+      letter: "C",
+      grid_data: createGridData({ grid_mode: GridMode.DIAMOND }),
+    });
+    const motion = createMotionData({
+      motion_type: MotionType.ANTI,
+      turns: 0,
+    });
 
     const result = await lookup.getBaseAdjustment(pictograph, motion, "C");
     expect(result).toEqual({ x: 20, y: -30 });
@@ -74,19 +102,25 @@ describe("ArrowAdjustmentLookup (advanced orchestration)", () => {
 
   it("falls back to default when special not available", async () => {
     const mocks = createMockServices();
-    mocks.mockSpecial.getSpecialAdjustment.mockResolvedValue(null);
+    vi.mocked(mocks.mockSpecial.getSpecialAdjustment).mockResolvedValue(null);
 
     const lookup = new ArrowAdjustmentLookup(
-      mocks.mockSpecial as any,
-      mocks.mockDefault as any,
-      mocks.mockOriKeyGen as any,
-      mocks.mockPlacementKeyGen as any,
-      mocks.mockTurnsGen as any,
-      mocks.mockAttrGen as any
+      mocks.mockSpecial,
+      mocks.mockDefault,
+      mocks.mockOriKeyGen,
+      mocks.mockPlacementKeyGen,
+      mocks.mockTurnsGen,
+      mocks.mockAttrGen
     );
 
-    const pictograph = { letter: "A", grid_mode: "diamond" } as any;
-    const motion = { motion_type: "pro", turns: 0 } as any;
+    const pictograph = createPictographData({
+      letter: "A",
+      grid_data: createGridData({ grid_mode: GridMode.DIAMOND }),
+    });
+    const motion = createMotionData({
+      motion_type: MotionType.PRO,
+      turns: 0,
+    });
 
     const result = await lookup.getBaseAdjustment(pictograph, motion, "A");
     expect(result).toEqual({ x: 100, y: 50 });
@@ -100,19 +134,29 @@ describe("ArrowAdjustmentLookup (advanced orchestration)", () => {
 
   it("generates lookup keys from key services", async () => {
     const mocks = createMockServices();
-    mocks.mockSpecial.getSpecialAdjustment.mockResolvedValue({ x: 5, y: 10 });
+    vi.mocked(mocks.mockSpecial.getSpecialAdjustment).mockResolvedValue({
+      x: 5,
+      y: 10,
+    });
 
     const lookup = new ArrowAdjustmentLookup(
-      mocks.mockSpecial as any,
-      mocks.mockDefault as any,
-      mocks.mockOriKeyGen as any,
-      mocks.mockPlacementKeyGen as any,
-      mocks.mockTurnsGen as any,
-      mocks.mockAttrGen as any
+      mocks.mockSpecial,
+      mocks.mockDefault,
+      mocks.mockOriKeyGen,
+      mocks.mockPlacementKeyGen,
+      mocks.mockTurnsGen,
+      mocks.mockAttrGen
     );
 
-    const pictograph = { motions: { blue: {}, red: {} } } as any;
-    const motion = { motion_type: "float" } as any;
+    const pictograph = createPictographData({
+      motions: {
+        blue: createMotionData(),
+        red: createMotionData(),
+      },
+    });
+    const motion = createMotionData({
+      motion_type: MotionType.FLOAT,
+    });
 
     await lookup.getBaseAdjustment(pictograph, motion, "T");
 

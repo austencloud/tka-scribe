@@ -25,101 +25,86 @@ export interface ResourceModalData {
 }
 
 // ============================================================================
-// FACTORY FUNCTION
+// MODAL STATE INTERFACE
 // ============================================================================
 
-export function createModalManager() {
-  const state = $state({
-    isOpen: false,
-    resourceName: null as string | null,
-    modalData: null as ResourceModalData | null,
-  });
+export interface ModalState {
+  isOpen: boolean;
+  resourceName: string | null;
+  modalData: ResourceModalData | null;
+}
 
-  function openModal(resourceName: string) {
-    state.resourceName = resourceName;
-    state.isOpen = true;
+// ============================================================================
+// FACTORY FUNCTION (for use in .svelte files)
+// ============================================================================
 
-    if (browser) {
-      // Prevent body scroll when modal is open
-      document.body.style.overflow = "hidden";
+export function createModalManager(initialState?: Partial<ModalState>) {
+  // This will be called from within .svelte files where $state is available
+  // The actual state creation happens in the component context
 
-      // Add to browser history for back button support
-      const currentUrl = new URL(window.location.href);
-      currentUrl.searchParams.set("modal", resourceName);
-      window.history.pushState(
-        { modal: resourceName },
-        "",
-        currentUrl.toString()
-      );
-    }
-  }
-
-  function closeModal() {
-    state.isOpen = false;
-    state.resourceName = null;
-    state.modalData = null;
-
-    if (browser) {
-      // Restore body scroll
-      document.body.style.overflow = "";
-
-      // Handle browser history
-      const currentUrl = new URL(window.location.href);
-      if (currentUrl.searchParams.has("modal")) {
-        currentUrl.searchParams.delete("modal");
-        window.history.replaceState({}, "", currentUrl.toString());
-      }
-    }
-  }
-
-  function setModalData(data: ResourceModalData) {
-    state.modalData = data;
-  }
-
-  // Initialize browser event listeners
-  function initialize() {
-    if (browser) {
-      // Handle browser back button
-      window.addEventListener("popstate", (event) => {
-        if (state.isOpen && !event.state?.modal) {
-          closeModal();
-        }
-      });
-
-      // Handle escape key
-      document.addEventListener("keydown", (event) => {
-        if (event.key === "Escape" && state.isOpen) {
-          closeModal();
-        }
-      });
-    }
-  }
-
-  return {
-    // State access (reactive)
-    get isOpen() {
-      return state.isOpen;
-    },
-    get resourceName() {
-      return state.resourceName;
-    },
-    get modalData() {
-      return state.modalData;
-    },
-
-    // Actions
-    openModal,
-    closeModal,
-    setModalData,
-    initialize,
+  return function createModalManagerWithState() {
+    // This function should be called from within a .svelte file
+    throw new Error(
+      "createModalManager must be used within a .svelte file context. Use createModalState instead."
+    );
   };
 }
 
-// Export singleton for backward compatibility
-// TODO: Replace with factory function usage in components
-export const modalManager = createModalManager();
+// ============================================================================
+// MODAL ACTIONS (Pure functions)
+// ============================================================================
 
-// Initialize browser features
-if (browser) {
-  modalManager.initialize();
+export function openModal(resourceName: string) {
+  if (browser) {
+    // Prevent body scroll when modal is open
+    document.body.style.overflow = "hidden";
+
+    // Add to browser history for back button support
+    const currentUrl = new URL(window.location.href);
+    currentUrl.searchParams.set("modal", resourceName);
+    window.history.pushState(
+      { modal: resourceName },
+      "",
+      currentUrl.toString()
+    );
+  }
+}
+
+export function closeModal() {
+  if (browser) {
+    // Restore body scroll
+    document.body.style.overflow = "";
+
+    // Handle browser history
+    const currentUrl = new URL(window.location.href);
+    if (currentUrl.searchParams.has("modal")) {
+      currentUrl.searchParams.delete("modal");
+      window.history.replaceState({}, "", currentUrl.toString());
+    }
+  }
+}
+
+// ============================================================================
+// BROWSER EVENT HANDLERS
+// ============================================================================
+
+export function initializeModalEventHandlers(
+  isOpen: () => boolean,
+  onClose: () => void
+) {
+  if (browser) {
+    // Handle browser back button
+    window.addEventListener("popstate", (event) => {
+      if (isOpen() && !event.state?.modal) {
+        onClose();
+      }
+    });
+
+    // Handle escape key
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && isOpen()) {
+        onClose();
+      }
+    });
+  }
 }

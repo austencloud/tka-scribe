@@ -1,9 +1,39 @@
 <script lang="ts">
   import { createMotionTesterState } from "../../../routes/motion-tester/state/motion-tester-state.svelte";
   import PictographVisualizationPanel from "../../../routes/motion-tester/PictographVisualizationPanel.svelte";
+  import { getContext } from "svelte";
+  import type { ServiceContainer } from "$lib/services/di/ServiceContainer";
+  import type { MotionTesterState } from "../../../routes/motion-tester/state/motion-tester-state.svelte";
 
-  // Initialize the motion tester state
-  const state = createMotionTesterState();
+  // Get DI container from context
+  const getContainer =
+    getContext<() => ServiceContainer | null>("di-container");
+
+  // State - resolved lazily when container is available
+  let state: MotionTesterState | null = $state(null);
+  let initializationError: string | null = $state(null);
+
+  // Initialize state when container becomes available
+  $effect(() => {
+    const container = getContainer?.();
+    console.log(
+      "🎯 MotionTesterTab $effect - container:",
+      container ? "available" : "null"
+    );
+    if (container && !state) {
+      try {
+        console.log("🎯 MotionTesterTab attempting to create state...");
+        state = createMotionTesterState();
+        console.log("🎯 MotionTesterTab state initialized successfully!");
+      } catch (error) {
+        console.error("🎯 MotionTesterTab failed to initialize state:", error);
+        initializationError =
+          error instanceof Error ? error.message : "Unknown error";
+      }
+    } else if (!container) {
+      console.log("🎯 MotionTesterTab waiting for container...");
+    }
+  });
 
   console.log("🎯 MotionTesterTab rendered!");
 </script>
@@ -15,7 +45,19 @@
   </header>
 
   <main class="tester-main">
-    <PictographVisualizationPanel {state} />
+    {#if initializationError}
+      <div class="error-state">
+        <h2>⚠️ Initialization Error</h2>
+        <p>Failed to initialize motion tester: {initializationError}</p>
+      </div>
+    {:else if !state}
+      <div class="loading-state">
+        <h2>🔄 Loading...</h2>
+        <p>Initializing motion tester services...</p>
+      </div>
+    {:else}
+      <PictographVisualizationPanel {state} />
+    {/if}
   </main>
 </div>
 
@@ -59,6 +101,41 @@
     flex-direction: column;
     flex: 1;
     min-height: 0;
+  }
+
+  .loading-state,
+  .error-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    text-align: center;
+    padding: 40px 20px;
+  }
+
+  .loading-state h2 {
+    color: #a5b4fc;
+    margin-bottom: 10px;
+    font-size: 1.5rem;
+  }
+
+  .loading-state p {
+    color: #c7d2fe;
+    font-size: 1rem;
+  }
+
+  .error-state h2 {
+    color: #f87171;
+    margin-bottom: 10px;
+    font-size: 1.5rem;
+  }
+
+  .error-state p {
+    color: #fca5a5;
+    font-size: 1rem;
+    max-width: 600px;
+    word-wrap: break-word;
   }
 
   /* Responsive design */

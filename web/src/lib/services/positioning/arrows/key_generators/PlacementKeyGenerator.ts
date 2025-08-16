@@ -1,4 +1,5 @@
 import type { MotionData, PictographData } from "$lib/domain";
+import { MotionType } from "$lib/domain/enums";
 import { ArrowPlacementKeyService } from "../../../implementations/ArrowPlacementKeyService";
 import type { IPlacementKeyGenerator } from "../../data-services";
 
@@ -8,6 +9,23 @@ import type { IPlacementKeyGenerator } from "../../data-services";
  */
 export class PlacementKeyGenerator implements IPlacementKeyGenerator {
   private service = new ArrowPlacementKeyService();
+
+  private stringToMotionType(motionTypeStr: string): MotionType {
+    switch (motionTypeStr.toLowerCase()) {
+      case "pro":
+        return MotionType.PRO;
+      case "anti":
+        return MotionType.ANTI;
+      case "float":
+        return MotionType.FLOAT;
+      case "dash":
+        return MotionType.DASH;
+      case "static":
+        return MotionType.STATIC;
+      default:
+        return MotionType.PRO;
+    }
+  }
 
   generatePlacementKey(
     motionData: MotionData,
@@ -26,8 +44,9 @@ export class PlacementKeyGenerator implements IPlacementKeyGenerator {
       return (
         candidates[0] ??
         this.service.generateBasicKey(
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          (motionData as any).motion_type || "pro"
+          this.stringToMotionType(
+            (motionData as { motion_type?: string }).motion_type || "pro"
+          )
         )
       );
     }
@@ -40,9 +59,10 @@ export class PlacementKeyGenerator implements IPlacementKeyGenerator {
       if (availableKeys.includes(key)) return key;
     }
     // Fallback to basic
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return this.service.generateBasicKey(
-      (motionData as any).motion_type || "pro"
+      this.stringToMotionType(
+        (motionData as { motion_type?: string }).motion_type || "pro"
+      )
     );
   }
 }

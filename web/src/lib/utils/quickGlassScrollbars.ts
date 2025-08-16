@@ -49,7 +49,15 @@ export function initQuickGlassScrollbars(): void {
   const elements = document.querySelectorAll("[data-glass]");
 
   elements.forEach((element) => {
-    const variant = (element.getAttribute("data-glass") as any) || "primary";
+    const variantAttr = element.getAttribute("data-glass");
+    const variant =
+      variantAttr === "primary" ||
+      variantAttr === "secondary" ||
+      variantAttr === "minimal" ||
+      variantAttr === "hover" ||
+      variantAttr === "gradient"
+        ? variantAttr
+        : "primary";
     applyQuickGlassScrollbar(element as HTMLElement, variant);
   });
 

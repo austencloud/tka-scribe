@@ -38,10 +38,14 @@ export class FavoritesService implements IFavoritesService {
   async toggleFavorite(sequenceId: string): Promise<void> {
     await this.ensureCacheLoaded();
 
-    if (this.favoritesCache!.has(sequenceId)) {
-      this.favoritesCache!.delete(sequenceId);
+    if (!this.favoritesCache) {
+      throw new Error("Favorites cache not initialized");
+    }
+
+    if (this.favoritesCache.has(sequenceId)) {
+      this.favoritesCache.delete(sequenceId);
     } else {
-      this.favoritesCache!.add(sequenceId);
+      this.favoritesCache.add(sequenceId);
     }
 
     await this.saveFavoritesToStorage();
@@ -49,21 +53,31 @@ export class FavoritesService implements IFavoritesService {
 
   async isFavorite(sequenceId: string): Promise<boolean> {
     await this.ensureCacheLoaded();
-    return this.favoritesCache!.has(sequenceId);
+    if (!this.favoritesCache) {
+      throw new Error("Favorites cache not initialized");
+    }
+    return this.favoritesCache.has(sequenceId);
   }
 
   async getFavorites(): Promise<string[]> {
     await this.ensureCacheLoaded();
-    return Array.from(this.favoritesCache!);
+    if (!this.favoritesCache) {
+      throw new Error("Favorites cache not initialized");
+    }
+    return Array.from(this.favoritesCache);
   }
 
   async setFavorite(sequenceId: string, isFavorite: boolean): Promise<void> {
     await this.ensureCacheLoaded();
 
+    if (!this.favoritesCache) {
+      throw new Error("Favorites cache not initialized");
+    }
+
     if (isFavorite) {
-      this.favoritesCache!.add(sequenceId);
+      this.favoritesCache.add(sequenceId);
     } else {
-      this.favoritesCache!.delete(sequenceId);
+      this.favoritesCache.delete(sequenceId);
     }
 
     await this.saveFavoritesToStorage();
@@ -76,7 +90,10 @@ export class FavoritesService implements IFavoritesService {
 
   async getFavoritesCount(): Promise<number> {
     await this.ensureCacheLoaded();
-    return this.favoritesCache!.size;
+    if (!this.favoritesCache) {
+      throw new Error("Favorites cache not initialized");
+    }
+    return this.favoritesCache.size;
   }
 
   // Private methods
@@ -100,7 +117,10 @@ export class FavoritesService implements IFavoritesService {
 
   private async saveFavoritesToStorage(): Promise<void> {
     try {
-      const favorites = Array.from(this.favoritesCache!);
+      if (!this.favoritesCache) {
+        throw new Error("Favorites cache not initialized");
+      }
+      const favorites = Array.from(this.favoritesCache);
       sessionStorage.setItem(this.STORAGE_KEY, JSON.stringify(favorites));
     } catch (error) {
       console.error("Failed to save favorites to storage:", error);

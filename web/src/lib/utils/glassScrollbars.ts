@@ -165,7 +165,7 @@ export function getRecommendedVariant(context: string): ScrollbarVariant {
  */
 export function createScrollListener(
   callback: (event: Event) => void,
-  throttleMs: number = 16
+  _throttleMs: number = 16
 ): (event: Event) => void {
   let ticking = false;
 

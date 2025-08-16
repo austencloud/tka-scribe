@@ -15,9 +15,11 @@ export class PngMetadataExtractor {
   /**
    * Extract complete JSON metadata from a PNG file
    * @param filePath - Path to the PNG file (relative to static directory)
-   * @returns Promise<any> - The complete sequence metadata as JSON array
+   * @returns Promise<Record<string, unknown>[]> - The complete sequence metadata as JSON array
    */
-  static async extractMetadata(filePath: string): Promise<any> {
+  static async extractMetadata(
+    filePath: string
+  ): Promise<Record<string, unknown>[]> {
     try {
       // Fetch the PNG file
       const response = await fetch(filePath);
@@ -106,9 +108,11 @@ export class PngMetadataExtractor {
   /**
    * Extract metadata for a specific sequence by name
    * @param sequenceName - Name of the sequence (e.g., "DKIIEJII")
-   * @returns Promise<any> - The extracted metadata JSON
+   * @returns Promise<Record<string, unknown>[]> - The extracted metadata
    */
-  static async extractSequenceMetadata(sequenceName: string): Promise<any> {
+  static async extractSequenceMetadata(
+    sequenceName: string
+  ): Promise<Record<string, unknown>[]> {
     const filePath = `/dictionary/${sequenceName}/${sequenceName}_ver1.png`;
     return this.extractMetadata(filePath);
   }
@@ -138,7 +142,7 @@ export class PngMetadataExtractor {
       // Show author and start position from the unified structure
       const firstEntry = metadata[0] || {};
       const startPositionEntries = metadata.filter(
-        (step: any) => step.sequence_start_position
+        (step: Record<string, unknown>) => step.sequence_start_position
       );
 
       console.log(
@@ -155,10 +159,19 @@ export class PngMetadataExtractor {
       console.log(`🎯 [UNIFIED METADATA] Motion types for ${sequenceName}:`);
       const realBeats = metadata
         .slice(1)
-        .filter((step: any) => step.letter && !step.sequence_start_position);
-      realBeats.forEach((step: any, index: number) => {
-        const blueMotion = step.blue_attributes?.motion_type || "unknown";
-        const redMotion = step.red_attributes?.motion_type || "unknown";
+        .filter(
+          (step: Record<string, unknown>) =>
+            step.letter && !step.sequence_start_position
+        );
+      realBeats.forEach((step: Record<string, unknown>, index: number) => {
+        const blueAttrs = step.blue_attributes as
+          | Record<string, unknown>
+          | undefined;
+        const redAttrs = step.red_attributes as
+          | Record<string, unknown>
+          | undefined;
+        const blueMotion = blueAttrs?.motion_type || "unknown";
+        const redMotion = redAttrs?.motion_type || "unknown";
         console.log(
           `  Beat ${index + 1} (${step.letter}): blue=${blueMotion}, red=${redMotion}`
         );
@@ -172,8 +185,14 @@ export class PngMetadataExtractor {
   }
 }
 
+// Extend Window interface for debug function
+declare global {
+  interface Window {
+    extractPngMetadata?: typeof PngMetadataExtractor.debugSequenceMetadata;
+  }
+}
+
 // Global utility function for easy debugging of unified metadata (browser only)
 if (typeof window !== "undefined") {
-  (window as any).extractPngMetadata =
-    PngMetadataExtractor.debugSequenceMetadata;
+  window.extractPngMetadata = PngMetadataExtractor.debugSequenceMetadata;
 }

@@ -124,28 +124,4 @@ export class LetterType {
 
     return coloredText;
   }
-
-  /**
-   * Get legacy double border colors for each type (for buttons)
-   */
-  static getLegacyColorPairs(letterType: string): {
-    primary: string;
-    secondary: string;
-  } {
-    const colorPairs = {
-      [LetterType.TYPE1]: { primary: "#36c3ff", secondary: "#6F2DA8" }, // Light blue + Purple
-      [LetterType.TYPE2]: { primary: "#6F2DA8", secondary: "#6F2DA8" }, // Purple + Purple
-      [LetterType.TYPE3]: { primary: "#26e600", secondary: "#6F2DA8" }, // Green + Purple
-      [LetterType.TYPE4]: { primary: "#26e600", secondary: "#26e600" }, // Green + Green
-      [LetterType.TYPE5]: { primary: "#00b3ff", secondary: "#26e600" }, // Blue + Green
-      [LetterType.TYPE6]: { primary: "#eb7d00", secondary: "#eb7d00" }, // Orange + Orange
-    };
-
-    return (
-      colorPairs[letterType as keyof typeof colorPairs] || {
-        primary: "#666666",
-        secondary: "#666666",
-      }
-    );
-  }
 }

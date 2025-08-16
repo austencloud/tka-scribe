@@ -1,17 +1,20 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import {
-    modalManager,
-    type ResourceModalData,
-  } from "$lib/stores/modalStore.svelte";
+  import type { ResourceModalData } from "$lib/stores/modalStore";
 
   interface Props {
     isOpen?: boolean;
     onClose?: () => void;
+    modalData?: ResourceModalData | null;
     children?: any;
   }
 
-  let { isOpen = false, onClose = () => {}, children }: Props = $props();
+  let {
+    isOpen = false,
+    onClose = () => {},
+    modalData = null,
+    children,
+  }: Props = $props();
 
   // DOM element references - used in reactive contexts so need $state
   let modalContainer: HTMLElement | undefined = $state();
@@ -22,9 +25,9 @@
   let previouslyFocusedElement: HTMLElement | null = null;
   let currentSection = $state("");
 
-  // Derived data from modal manager
-  const data = $derived(modalManager.modalData);
-  const loading = $derived(false); // modalStore.svelte.ts doesn't have isLoading, so default to false
+  // Derived data from props
+  const data = $derived(modalData);
+  const loading = $derived(false); // No loading state needed for now
 
   // Handle body scroll lock
   function lockBodyScroll() {
@@ -49,7 +52,6 @@
   // Handle close
   function handleClose() {
     onClose();
-    modalManager.closeModal();
   }
 
   // Handle backdrop click

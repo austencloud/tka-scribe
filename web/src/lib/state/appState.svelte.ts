@@ -6,7 +6,7 @@
  */
 
 import { browser } from "$app/environment";
-import { GridMode as DomainGridMode } from "$lib/domain/enums";
+// import { GridMode as DomainGridMode } from "$lib/domain/enums";
 import type { AppSettings } from "$services/interfaces";
 import { BrowseStatePersistenceService } from "../services/implementations/BrowseStatePersistenceService";
 
@@ -188,11 +188,20 @@ function saveSettingsToStorage(settings: AppSettings): void {
 
 const settingsState = $state<AppSettings>(loadSettingsFromStorage());
 
+// Extend Window interface for debug functions
+declare global {
+  interface Window {
+    enableDeveloperMode?: typeof enableDeveloperMode;
+    resetSettingsToDefaults?: typeof resetSettingsToDefaults;
+    debugSettings?: typeof debugSettings;
+  }
+}
+
 // Make debug functions available globally in development
 if (browser && typeof window !== "undefined") {
-  (window as any).enableDeveloperMode = enableDeveloperMode;
-  (window as any).resetSettingsToDefaults = resetSettingsToDefaults;
-  (window as any).debugSettings = debugSettings;
+  window.enableDeveloperMode = enableDeveloperMode;
+  window.resetSettingsToDefaults = resetSettingsToDefaults;
+  window.debugSettings = debugSettings;
 }
 
 export function getSettings() {

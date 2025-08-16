@@ -8,7 +8,11 @@
 
 import type { PictographData } from "$lib/domain";
 import { GridMode } from "$lib/domain";
-import type { ParsedCsvRow } from "$lib/services/implementations/CsvDataService";
+import type {
+  ParsedCsvRow,
+  CsvDataService,
+} from "$lib/services/implementations/CsvDataService";
+import type { IOptionDataService } from "$lib/services/interfaces";
 import type { MotionTestParams } from "./MotionParameterService";
 
 export interface IMotionTesterCsvLookupService {
@@ -29,8 +33,8 @@ export class MotionTesterCsvLookupService
   implements IMotionTesterCsvLookupService
 {
   constructor(
-    private csvDataService: any, // ICsvDataService
-    private optionDataService: any // IOptionDataService
+    private csvDataService: CsvDataService,
+    private optionDataService: IOptionDataService
   ) {}
 
   /**
@@ -120,11 +124,23 @@ export class MotionTesterCsvLookupService
       console.log(
         `🔍 Searching ${csvRows.length} CSV rows for matching motion parameters...`
       );
-      console.log("🔍 Blue params:", blueParams);
-      console.log("🔍 Red params:", redParams);
+      console.log("🔍 Blue params:", {
+        motionType: blueParams.motionType,
+        startLoc: blueParams.startLoc,
+        endLoc: blueParams.endLoc,
+        propRotDir: blueParams.propRotDir,
+        turns: blueParams.turns,
+      });
+      console.log("🔍 Red params:", {
+        motionType: redParams.motionType,
+        startLoc: redParams.startLoc,
+        endLoc: redParams.endLoc,
+        propRotDir: redParams.propRotDir,
+        turns: redParams.turns,
+      });
 
       // Find exact match based on motion parameters
-      const matchingRow = csvRows.find((row: any) => {
+      const matchingRow = csvRows.find((row: ParsedCsvRow) => {
         const blueMatch = this.matchesMotionParams(row, "blue", blueParams);
         const redMatch = this.matchesMotionParams(row, "red", redParams);
 
