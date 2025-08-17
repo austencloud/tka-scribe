@@ -6,16 +6,12 @@ instead of stores. It orchestrates the rendering of Grid, Props, Arrows, and Gly
 -->
 <script lang="ts">
   import type { BeatData, PictographData } from "$lib/domain";
-  import {
-    createGridData,
-    createPictographData,
-    createPropData,
-  } from "$lib/domain";
+  import type { IArrowPositioningOrchestrator } from "$lib/services/positioning/core-services";
   import Arrow from "./Arrow.svelte";
   import Grid from "./Grid.svelte";
   import Prop from "./Prop.svelte";
-  import { arrowPositioningService } from "./services/arrowPositioningService";
   import TKAGlyph from "./TKAGlyph.svelte";
+  import { resolve } from "$lib/services/bootstrap";
 
   interface Props {
     /** Pictograph data to render */
@@ -54,6 +50,11 @@ instead of stores. It orchestrates the rendering of Grid, Props, Arrows, and Gly
   const isResponsive = $derived(
     () => width === undefined && height === undefined
   );
+
+  // Get the orchestrator - SINGLE SOURCE OF TRUTH for arrow positioning
+  const orchestrator = resolve(
+    "IArrowPositioningOrchestrator"
+  ) as IArrowPositioningOrchestrator;
 
   // State using runes
   let isLoaded = $state(false);
@@ -155,7 +156,7 @@ instead of stores. It orchestrates the rendering of Grid, Props, Arrows, and Gly
     }
   });
 
-  // Arrow positioning coordination - calculate all positions upfront
+  // SINGLE SOURCE OF TRUTH: Use ArrowPositioningOrchestrator.calculateAllArrowPositions() ONLY
   $effect(() => {
     const data = effectivePictographData();
     if (!data?.arrows) {
@@ -163,106 +164,44 @@ instead of stores. It orchestrates the rendering of Grid, Props, Arrows, and Gly
       return;
     }
 
-    // Calculate positions for all arrows asynchronously
-    (async () => {
-      try {
-        const arrowEntries = Object.entries(data.arrows).filter(
-          ([_, arrowData]) => arrowData != null
-        );
+    try {
+      // Use the orchestrator's calculateAllArrowPositions() method - the ONLY positioning authority
+      const updatedPictographData =
+        orchestrator.calculateAllArrowPositions(data);
 
-        if (arrowEntries.length === 0) {
-          showArrows = true;
-          return;
-        }
+      // Extract calculated positions and mirroring from the updated pictograph data
+      const newPositions: Record<
+        string,
+        { x: number; y: number; rotation: number }
+      > = {};
+      const newMirroring: Record<string, boolean> = {};
 
-        const positionPromises = arrowEntries.map(
-          async ([color, arrowData]) => {
-            const motionData = data.motions?.[color];
-            if (!motionData) return null;
-
-            console.log(
-              `🎨 Pictograph.svelte calculating position for ${color} arrow`
-            );
-            console.log(`Arrow data:`, {
-              motion_type: arrowData.motion_type,
-              turns: arrowData.turns,
-              position_x: arrowData.position_x,
-              position_y: arrowData.position_y,
-            });
-            console.log(`Motion data:`, {
-              motion_type: motionData.motion_type,
-              start_loc: motionData.start_loc,
-              end_loc: motionData.end_loc,
-              turns: motionData.turns,
-            });
-
-            // Create pictograph context for positioning using actual CSV data
-            const pictographContext = createPictographData({
-              letter: data.letter || "A",
-              grid_data: data.grid_data || createGridData(),
-              arrows: { [color]: arrowData },
-              props: {
-                blue: createPropData({ color: "blue" }),
-                red: createPropData({ color: "red" }),
-              },
-              motions: { [color]: motionData },
-            });
-
-            // Calculate position and mirroring
-            console.log(
-              `🔧 Calling arrowPositioningService.calculatePosition for ${color}...`
-            );
-            const position = await arrowPositioningService.calculatePosition(
-              arrowData,
-              motionData,
-              pictographContext
-            );
-            console.log(`✅ Position calculated for ${color}:`, position);
-
-            const shouldMirror = arrowPositioningService.shouldMirror(
-              arrowData,
-              motionData,
-              pictographContext
-            );
-            console.log(`🪞 Mirroring for ${color}:`, shouldMirror);
-
-            return { color, position, shouldMirror };
+      if (updatedPictographData.arrows) {
+        Object.entries(updatedPictographData.arrows).forEach(
+          ([color, arrowData]) => {
+            if (arrowData) {
+              // Type assertion since we know this is ArrowData from the orchestrator
+              const arrow = arrowData as any;
+              newPositions[color] = {
+                x: arrow.position_x || 475,
+                y: arrow.position_y || 475,
+                rotation: arrow.rotation_angle || 0,
+              };
+              newMirroring[color] = arrow.is_mirrored || false;
+            }
           }
         );
-
-        // Wait for all positions to be calculated
-        const results = await Promise.all(positionPromises);
-        console.log(`🎯 All position calculations complete:`, results);
-
-        // Store calculated positions and mirroring
-        const newPositions: Record<
-          string,
-          { x: number; y: number; rotation: number }
-        > = {};
-        const newMirroring: Record<string, boolean> = {};
-
-        results.forEach((result) => {
-          if (result) {
-            newPositions[result.color] = result.position;
-            newMirroring[result.color] = result.shouldMirror;
-          }
-        });
-
-        arrowPositions = newPositions;
-        arrowMirroring = newMirroring;
-
-        console.log(`📍 Final arrow positions stored:`, arrowPositions);
-        console.log(`🪞 Final arrow mirroring stored:`, arrowMirroring);
-
-        // Small delay to ensure all Arrow components are ready, then show all arrows at once
-        await new Promise((resolve) => setTimeout(resolve, 50));
-        showArrows = true;
-      } catch (error) {
-        console.error("Failed to calculate arrow positions:", error);
-        // Fallback: show arrows without coordination
-        showArrows = true;
       }
-    })();
+
+      arrowPositions = newPositions;
+      arrowMirroring = newMirroring;
+
+      showArrows = true;
+    } catch (error) {
+      console.error("Orchestrator positioning failed:", error);
+      // Fallback: show arrows without coordination
+      showArrows = true;
+    }
   });
 
   // Component event handlers

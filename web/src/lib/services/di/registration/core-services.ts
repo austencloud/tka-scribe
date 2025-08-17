@@ -6,11 +6,15 @@
 import type { ServiceContainer } from "../ServiceContainer";
 import {
   IApplicationInitializationServiceInterface,
+  IArrowRenderingServiceInterface,
   IConstructTabCoordinationServiceInterface,
+  IDataTransformationServiceInterface,
   IDeviceDetectionServiceInterface,
   IExportServiceInterface,
+  IGridRenderingServiceInterface,
   IMotionGenerationServiceInterface,
   IOptionDataServiceInterface,
+  IOverlayRenderingServiceInterface,
   IPanelManagementServiceInterface,
   IPersistenceServiceInterface,
   IPictographRenderingServiceInterface,
@@ -21,6 +25,8 @@ import {
   ISequenceServiceInterface,
   ISettingsServiceInterface,
   IStartPositionServiceInterface,
+  ISvgConfigurationInterface,
+  ISvgUtilityServiceInterface,
 } from "../interfaces/core-interfaces";
 
 import { ApplicationInitializationService } from "../../implementations/ApplicationInitializationService";
@@ -49,7 +55,15 @@ export async function registerCoreServices(
   container.registerSingletonClass(IStartPositionServiceInterface);
   container.registerSingletonClass(IOptionDataServiceInterface);
 
-  // Register rendering services
+  // Register rendering microservices (in dependency order)
+  container.registerSingletonClass(ISvgConfigurationInterface);
+  container.registerSingletonClass(ISvgUtilityServiceInterface);
+  container.registerSingletonClass(IDataTransformationServiceInterface);
+  container.registerSingletonClass(IGridRenderingServiceInterface);
+  container.registerSingletonClass(IArrowRenderingServiceInterface);
+  container.registerSingletonClass(IOverlayRenderingServiceInterface);
+
+  // Register main rendering services
   container.registerSingletonClass(IPropRenderingServiceInterface);
 
   // Register services with dependencies using factories
@@ -72,13 +86,30 @@ export async function registerCoreServices(
     );
   });
 
-  // Register pictograph rendering service (depends on positioning services)
+  // Register pictograph rendering service (depends on positioning and microservices)
   container.registerFactory(IPictographRenderingServiceInterface, () => {
     const arrowPositioning = container.resolve(
       IArrowPositioningServiceInterface
     );
     const propRendering = container.resolve(IPropRenderingServiceInterface);
-    return new PictographRenderingService(arrowPositioning, propRendering);
+    const svgUtility = container.resolve(ISvgUtilityServiceInterface);
+    const gridRendering = container.resolve(IGridRenderingServiceInterface);
+    const arrowRendering = container.resolve(IArrowRenderingServiceInterface);
+    const overlayRendering = container.resolve(
+      IOverlayRenderingServiceInterface
+    );
+    const dataTransformation = container.resolve(
+      IDataTransformationServiceInterface
+    );
+    return new PictographRenderingService(
+      arrowPositioning,
+      propRendering,
+      svgUtility,
+      gridRendering,
+      arrowRendering,
+      overlayRendering,
+      dataTransformation
+    );
   });
 
   // Register pictograph service (no dependencies after rendering is registered)

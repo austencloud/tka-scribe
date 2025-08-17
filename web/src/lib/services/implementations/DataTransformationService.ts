@@ -15,11 +15,18 @@ import {
   GridMode,
   PropType,
 } from "$lib/domain";
-import {
-  createGridData,
-  type GridData as RawGridData,
-} from "../../data/gridCoordinates.js";
-import type { GridData } from "../interfaces";
+import { type GridData as RawGridData } from "../../data/gridCoordinates.js";
+export interface GridData {
+  mode: GridMode;
+  allLayer2PointsNormal: Record<
+    string,
+    { coordinates: { x: number; y: number } }
+  >;
+  allHandPointsNormal: Record<
+    string,
+    { coordinates: { x: number; y: number } }
+  >;
+}
 
 export interface IDataTransformationService {
   beatToPictographData(beat: BeatData): PictographData;

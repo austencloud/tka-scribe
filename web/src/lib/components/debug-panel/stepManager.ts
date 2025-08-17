@@ -1,6 +1,6 @@
 /**
  * Debug Step Management
- * 
+ *
  * Manages step-by-step debugging functionality and step status tracking.
  * Extracted from ArrowDebugInfoPanel.svelte.
  */
@@ -17,7 +17,10 @@ export interface StepInfo {
 /**
  * Get the status of a debug step based on current progress
  */
-export function getStepStatus(stepIndex: number, currentStep: number): StepStatus {
+export function getStepStatus(
+  stepIndex: number,
+  currentStep: number
+): StepStatus {
   if (stepIndex < currentStep) return "completed";
   if (stepIndex === currentStep) return "current";
   return "pending";
@@ -26,7 +29,11 @@ export function getStepStatus(stepIndex: number, currentStep: number): StepStatu
 /**
  * Check if a step should be visible based on step-by-step mode
  */
-export function isStepVisible(stepIndex: number, currentStep: number, stepByStepMode: boolean): boolean {
+export function isStepVisible(
+  stepIndex: number,
+  currentStep: number,
+  stepByStepMode: boolean
+): boolean {
   if (!stepByStepMode) return true;
   return stepIndex <= currentStep;
 }
@@ -36,10 +43,14 @@ export function isStepVisible(stepIndex: number, currentStep: number, stepByStep
  */
 export function getStepIcon(status: StepStatus): string {
   switch (status) {
-    case "completed": return "✅";
-    case "current": return "🔄";
-    case "pending": return "⏸️";
-    default: return "❓";
+    case "completed":
+      return "✅";
+    case "current":
+      return "🔄";
+    case "pending":
+      return "⏸️";
+    default:
+      return "❓";
   }
 }
 
@@ -51,24 +62,24 @@ export const DEBUG_STEPS: StepInfo[] = [
     id: 0,
     name: "Calculation Status",
     description: "Overall calculation status and metadata",
-    icon: "📊"
+    icon: "📊",
   },
   {
     id: 1,
-    name: "Location Calculation", 
+    name: "Location Calculation",
     description: "Arrow location and positioning calculations",
-    icon: "📍"
+    icon: "📍",
   },
   {
     id: 2,
     name: "Rotation Calculation",
-    description: "Arrow rotation and orientation calculations", 
-    icon: "🔄"
+    description: "Arrow rotation and orientation calculations",
+    icon: "🔄",
   },
   {
     id: 3,
     name: "Final Results",
     description: "Final computed arrow properties",
-    icon: "🎯"
-  }
+    icon: "🎯",
+  },
 ];

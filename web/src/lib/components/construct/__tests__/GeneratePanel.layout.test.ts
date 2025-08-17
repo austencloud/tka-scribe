@@ -71,16 +71,14 @@ describe("GeneratePanel Layout Tests", () => {
     const panel = screen
       .getByText("Customize Your Sequence")
       .closest(".generate-panel");
-    const sections = panel?.querySelectorAll(".settings-section");
 
-    // Should have 3 sections: Sequence Settings, Mode & Layout, and Mode-specific
-    expect(sections).toHaveLength(3);
+    // Check for the new structure: settings-container with setting-items
+    const settingsContainer = panel?.querySelector(".settings-container");
+    expect(settingsContainer).toBeInTheDocument();
 
-    // Each section should have a title and settings-grid
-    sections?.forEach((section) => {
-      expect(section.querySelector(".section-title")).toBeInTheDocument();
-      expect(section.querySelector(".settings-grid")).toBeInTheDocument();
-    });
+    const settingItems = settingsContainer?.querySelectorAll(".setting-item");
+    // Should have multiple setting items (at least 5 for the core settings)
+    expect(settingItems?.length).toBeGreaterThan(4);
   });
 
   it("should apply correct CSS classes for layout stability", () => {
@@ -94,13 +92,9 @@ describe("GeneratePanel Layout Tests", () => {
     // Check that the container has proper CSS classes
     expect(settingsContainer).toHaveClass("settings-container");
 
-    // Check that mode-specific section has the special class
-    const modeSpecificSection = panel?.querySelector(".mode-specific-section");
-    expect(modeSpecificSection).toBeInTheDocument();
-    expect(modeSpecificSection).toHaveClass(
-      "settings-section",
-      "mode-specific-section"
-    );
+    // Check that setting items exist (mode-specific settings are just setting-items)
+    const settingItems = settingsContainer?.querySelectorAll(".setting-item");
+    expect(settingItems?.length).toBeGreaterThan(4);
   });
 
   // Note: Responsive attributes test removed as it was testing implementation details

@@ -1,9 +1,25 @@
 import "@testing-library/jest-dom";
-import { vi, beforeEach } from "vitest";
+import { vi, beforeEach, afterEach } from "vitest";
+import {
+  createWebApplication,
+  setGlobalContainer,
+} from "../services/bootstrap";
 
 // Global test setup
-beforeEach(() => {
-  // Reset any global state before each test
+beforeEach(async () => {
+  // Initialize the DI container for each test
+  try {
+    await createWebApplication();
+  } catch (error) {
+    console.warn("Failed to initialize container in test setup:", error);
+    // Continue with test execution even if container fails to initialize
+    // Some tests might not need the full container
+  }
+});
+
+afterEach(() => {
+  // Clean up the global container after each test
+  setGlobalContainer(null);
 });
 
 // Mock browser APIs if needed

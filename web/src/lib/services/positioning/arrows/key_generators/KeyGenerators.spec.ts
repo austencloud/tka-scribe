@@ -21,8 +21,8 @@ describe("Key Generators", () => {
     const motion = createMotionData({ motion_type: MotionType.PRO });
     const pictograph = createPictographData({
       motions: {
-        blue: createMotionData({ end_ori: Orientation.IN }),
-        red: createMotionData({ end_ori: Orientation.OUT }),
+        blue: createMotionData({ end_ori: Orientation.CLOCK }),
+        red: createMotionData({ end_ori: Orientation.COUNTER }),
       },
     });
 

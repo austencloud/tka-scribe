@@ -6,11 +6,15 @@
 import type {
   IApplicationInitializationService,
   IArrowPositioningService,
+  IArrowRenderingService,
   IConstructTabCoordinationService,
+  IDataTransformationService,
   IDeviceDetectionService,
   IExportService,
+  IGridRenderingService,
   IMotionGenerationService,
   IOptionDataService,
+  IOverlayRenderingService,
   IPanelManagementService,
   IPersistenceService,
   IPictographRenderingService,
@@ -21,17 +25,23 @@ import type {
   ISequenceService,
   ISettingsService,
   IStartPositionService,
+  ISvgConfiguration,
+  ISvgUtilityService,
 } from "../../interfaces";
 import { createServiceInterface } from "../types";
 
 // Import service implementations
 import { ApplicationInitializationService } from "../../implementations/ApplicationInitializationService";
+import { ArrowRenderingService } from "../../implementations/ArrowRenderingService";
 import { ConstructTabCoordinationService } from "../../implementations/ConstructTabCoordinationService";
+import { DataTransformationService } from "../../implementations/DataTransformationService";
 import { DeviceDetectionService } from "../../implementations/DeviceDetectionService";
 import { ExportService } from "../../implementations/ExportService";
+import { GridRenderingService } from "../../implementations/GridRenderingService";
 import { LocalStoragePersistenceService } from "../../implementations/LocalStoragePersistenceService";
 import { MotionGenerationService } from "../../implementations/MotionGenerationService";
 import { OptionDataService } from "../../implementations/OptionDataService";
+import { OverlayRenderingService } from "../../implementations/OverlayRenderingService";
 import { PanelManagementService } from "../../implementations/PanelManagementService";
 import { PictographRenderingService } from "../../implementations/PictographRenderingService";
 import { PictographService } from "../../implementations/PictographService";
@@ -41,6 +51,8 @@ import { SequenceGenerationService } from "../../implementations/SequenceGenerat
 import { SequenceService } from "../../implementations/SequenceService";
 import { SettingsService } from "../../implementations/SettingsService";
 import { StartPositionService } from "../../implementations/StartPositionService";
+import { SvgConfiguration } from "../../implementations/SvgConfiguration";
+import { SvgUtilityService } from "../../implementations/SvgUtilityService";
 
 // Core domain services
 export const ISequenceServiceInterface =
@@ -89,6 +101,59 @@ export const IPropRenderingServiceInterface =
   createServiceInterface<IPropRenderingService>(
     "IPropRenderingService",
     PropRenderingService
+  );
+
+// Rendering microservices
+export const ISvgConfigurationInterface =
+  createServiceInterface<ISvgConfiguration>(
+    "ISvgConfiguration",
+    SvgConfiguration
+  );
+
+export const ISvgUtilityServiceInterface =
+  createServiceInterface<ISvgUtilityService>(
+    "ISvgUtilityService",
+    class extends SvgUtilityService {
+      constructor(...args: unknown[]) {
+        super(args[0] as ISvgConfiguration);
+      }
+    }
+  );
+
+export const IDataTransformationServiceInterface =
+  createServiceInterface<IDataTransformationService>(
+    "IDataTransformationService",
+    DataTransformationService
+  );
+
+export const IGridRenderingServiceInterface =
+  createServiceInterface<IGridRenderingService>(
+    "IGridRenderingService",
+    class extends GridRenderingService {
+      constructor(...args: unknown[]) {
+        super(args[0] as ISvgConfiguration);
+      }
+    }
+  );
+
+export const IArrowRenderingServiceInterface =
+  createServiceInterface<IArrowRenderingService>(
+    "IArrowRenderingService",
+    class extends ArrowRenderingService {
+      constructor(...args: unknown[]) {
+        super(args[0] as ISvgConfiguration);
+      }
+    }
+  );
+
+export const IOverlayRenderingServiceInterface =
+  createServiceInterface<IOverlayRenderingService>(
+    "IOverlayRenderingService",
+    class extends OverlayRenderingService {
+      constructor(...args: unknown[]) {
+        super(args[0] as ISvgConfiguration);
+      }
+    }
   );
 
 // Infrastructure services

@@ -38,7 +38,7 @@ export interface ModalState {
 // FACTORY FUNCTION (for use in .svelte files)
 // ============================================================================
 
-export function createModalManager(initialState?: Partial<ModalState>) {
+export function createModalManager(_initialState?: Partial<ModalState>) {
   // This will be called from within .svelte files where $state is available
   // The actual state creation happens in the component context
 

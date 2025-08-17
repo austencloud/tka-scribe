@@ -1,9 +1,12 @@
 // Modal State using Svelte 5 Runes
 // Proper runes-based state management for modal functionality
 
-import { browser } from "$app/environment";
 import type { ResourceModalData } from "$lib/stores/modalStore";
-import { openModal, closeModal, initializeModalEventHandlers } from "$lib/stores/modalStore";
+import {
+  openModal,
+  closeModal,
+  initializeModalEventHandlers,
+} from "$lib/stores/modalStore";
 
 // ============================================================================
 // MODAL STATE FACTORY
@@ -35,10 +38,7 @@ export function createModalState() {
 
   // Initialize event handlers
   function initialize() {
-    initializeModalEventHandlers(
-      () => isOpen,
-      closeModalAndCleanup
-    );
+    initializeModalEventHandlers(() => isOpen, closeModalAndCleanup);
   }
 
   return {

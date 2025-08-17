@@ -1,6 +1,6 @@
 /**
  * Debug Panel Formatting Utilities
- * 
+ *
  * Pure utility functions for formatting debug data.
  * Extracted from ArrowDebugInfoPanel.svelte to promote reusability.
  */
@@ -23,12 +23,12 @@ export function formatCoordinate(value: number | undefined): string {
  */
 export function formatPoint(point: Point | null | undefined): string {
   if (!point) return "N/A";
-  
+
   // Handle function-based coordinates
   if (typeof point.x === "function" && typeof point.y === "function") {
     return `(${formatCoordinate(point.x())}, ${formatCoordinate(point.y())})`;
   }
-  
+
   // Handle direct property access
   return `(${formatCoordinate(point.x as number)}, ${formatCoordinate(point.y as number)})`;
 }

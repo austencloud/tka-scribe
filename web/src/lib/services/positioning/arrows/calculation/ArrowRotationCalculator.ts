@@ -28,26 +28,28 @@ export class ArrowRotationCalculator implements IArrowRotationCalculator {
   };
 
   // PRO rotation angles by rotation direction
+  // FIXED: Corrected +90° clockwise offset by subtracting 90° from all values
   private readonly proClockwiseMap: Record<Location, number> = {
-    [Location.NORTH]: 315,
-    [Location.EAST]: 45,
-    [Location.SOUTH]: 135,
-    [Location.WEST]: 225,
-    [Location.NORTHEAST]: 0,
-    [Location.SOUTHEAST]: 90,
-    [Location.SOUTHWEST]: 180,
-    [Location.NORTHWEST]: 270,
+    [Location.NORTH]: 225, // was 315, now 315-90=225
+    [Location.EAST]: 315, // was 45, now 45-90=-45 → 315 (normalized)
+    [Location.SOUTH]: 45, // was 135, now 135-90=45
+    [Location.WEST]: 135, // was 225, now 225-90=135
+    [Location.NORTHEAST]: 270, // was 0, now 0-90=-90 → 270 (normalized)
+    [Location.SOUTHEAST]: 0, // was 90, now 90-90=0
+    [Location.SOUTHWEST]: 90, // was 180, now 180-90=90
+    [Location.NORTHWEST]: 180, // was 270, now 270-90=180
   };
 
+  // FIXED: Corrected +90° clockwise offset by subtracting 90° from all values
   private readonly proCounterClockwiseMap: Record<Location, number> = {
-    [Location.NORTH]: 315,
-    [Location.EAST]: 225,
-    [Location.SOUTH]: 135,
-    [Location.WEST]: 45,
-    [Location.NORTHEAST]: 90,
-    [Location.SOUTHEAST]: 180,
-    [Location.SOUTHWEST]: 270,
-    [Location.NORTHWEST]: 0,
+    [Location.NORTH]: 225, // was 315, now 315-90=225
+    [Location.EAST]: 135, // was 225, now 225-90=135
+    [Location.SOUTH]: 45, // was 135, now 135-90=45
+    [Location.WEST]: 315, // was 45, now 45-90=-45 → 315 (normalized)
+    [Location.NORTHEAST]: 0, // was 90, now 90-90=0
+    [Location.SOUTHEAST]: 90, // was 180, now 180-90=90
+    [Location.SOUTHWEST]: 180, // was 270, now 270-90=180
+    [Location.NORTHWEST]: 270, // was 0, now 0-90=-90 → 270 (normalized)
   };
 
   // ANTI rotation angles by rotation direction

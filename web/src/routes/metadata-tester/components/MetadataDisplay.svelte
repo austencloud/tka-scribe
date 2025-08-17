@@ -54,10 +54,12 @@
     {:else if state.state.metadataStats}
       {#if state.state.metadataStats.isBatchSummary && state.state.metadataStats.batchSummary}
         <!-- Batch Analysis Results -->
-        <BatchSummaryDisplay batchSummary={state.state.metadataStats.batchSummary} />
+        <BatchSummaryDisplay
+          batchSummary={state.state.metadataStats.batchSummary}
+        />
       {:else}
         <!-- Individual Sequence Analysis -->
-        <IndividualSequenceDisplay 
+        <IndividualSequenceDisplay
           stats={state.state.metadataStats}
           selectedThumbnail={state.state.selectedThumbnail}
           extractedMetadata={state.state.extractedMetadata}

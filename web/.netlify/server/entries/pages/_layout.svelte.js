@@ -3,7 +3,10 @@ function _layout($$payload, $$props) {
   push();
   let { children } = $$props;
   let container = null;
-  setContext("di-container", () => container);
+  setContext("di-container", () => {
+    console.log("🔧 Layout: Context getter called, container:", false);
+    return container;
+  });
   head($$payload, ($$payload2) => {
     $$payload2.title = `<title>TKA - The Kinetic Constructor</title>`;
   });

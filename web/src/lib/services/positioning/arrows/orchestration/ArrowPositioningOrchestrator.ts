@@ -85,9 +85,6 @@ export class ArrowPositioningOrchestrator
         motion,
         pictographData
       );
-      console.debug(
-        `Calculated location: ${location} for ${arrowData.color} ${motion.motion_type}`
-      );
 
       // STEP 2: Get initial position from precise coordinate system
       let initialPosition = this.coordinateSystem.getInitialPosition(
@@ -95,17 +92,10 @@ export class ArrowPositioningOrchestrator
         location
       );
       initialPosition = this.ensureValidPosition(initialPosition);
-      console.debug(
-        `Initial position: (${initialPosition.x}, ${initialPosition.y})`
-      );
-
       // STEP 3: Calculate rotation using comprehensive rotation calculator
       const rotation = this.rotationCalculator.calculateRotation(
         motion,
         location
-      );
-      console.debug(
-        `Calculated rotation: ${rotation}° for ${motion.motion_type} ${motion.prop_rot_dir}`
       );
 
       // STEP 4: Calculate adjustment using sophisticated adjustment calculator
@@ -115,9 +105,6 @@ export class ArrowPositioningOrchestrator
         letter,
         location,
         arrowData.color
-      );
-      console.debug(
-        `Calculated adjustment: (${adjustment.x}, ${adjustment.y})`
       );
 
       const [adjustmentX, adjustmentY] =
@@ -237,10 +224,6 @@ export class ArrowPositioningOrchestrator
               rotation_angle: rotation,
               is_mirrored: shouldMirror,
             }
-          );
-
-          console.log(
-            `Updated ${color} arrow: position=(${x}, ${y}), rotation=${rotation}°, mirrored=${shouldMirror}`
           );
         }
       }
@@ -417,9 +400,6 @@ export class ArrowPositioningOrchestrator
         location
       );
 
-      console.debug(
-        `Basic adjustment for ${motion.motion_type} ${motion.turns} turns at ${location}: (${finalAdjustment.x}, ${finalAdjustment.y})`
-      );
       return finalAdjustment;
     } catch (error) {
       console.warn("Basic adjustment calculation failed:", error);
@@ -496,10 +476,6 @@ export class ArrowPositioningOrchestrator
 
       // Select the appropriate tuple based on quadrant
       const selectedTuple = directionalTuples[quadrantIndex] || [0, 0];
-
-      console.debug(
-        `Directional tuples: ${JSON.stringify(directionalTuples)}, quadrant: ${quadrantIndex}, selected: [${selectedTuple[0]}, ${selectedTuple[1]}]`
-      );
 
       return { x: selectedTuple[0], y: selectedTuple[1] };
     } catch (error) {

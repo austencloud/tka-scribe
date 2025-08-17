@@ -22,7 +22,10 @@ export class SvgUtilityService implements ISvgUtilityService {
     const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
     svg.setAttribute("width", this.config.SVG_SIZE.toString());
     svg.setAttribute("height", this.config.SVG_SIZE.toString());
-    svg.setAttribute("viewBox", `0 0 ${this.config.SVG_SIZE} ${this.config.SVG_SIZE}`);
+    svg.setAttribute(
+      "viewBox",
+      `0 0 ${this.config.SVG_SIZE} ${this.config.SVG_SIZE}`
+    );
     svg.setAttribute("xmlns", "http://www.w3.org/2000/svg");
 
     // Add background

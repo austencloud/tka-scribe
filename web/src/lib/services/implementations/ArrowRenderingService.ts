@@ -6,7 +6,13 @@
  */
 
 import type { MotionData } from "$lib/domain";
-import type { ArrowPosition, ISvgConfiguration } from "../interfaces";
+import type { ISvgConfiguration } from "./SvgConfiguration";
+
+export interface ArrowPosition {
+  x: number;
+  y: number;
+  rotation: number;
+}
 
 export interface IArrowRenderingService {
   renderArrowAtPosition(

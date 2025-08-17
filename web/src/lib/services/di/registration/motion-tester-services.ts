@@ -8,6 +8,7 @@
 import type { ServiceContainer } from "../ServiceContainer";
 import { IAnimatedPictographDataServiceInterface } from "../interfaces/motion-tester-interfaces";
 import { IOptionDataServiceInterface } from "../interfaces/core-interfaces";
+import { IArrowPositioningOrchestratorInterface } from "../interfaces/positioning-interfaces";
 import { CsvDataService } from "../../implementations/CsvDataService";
 
 /**
@@ -16,14 +17,18 @@ import { CsvDataService } from "../../implementations/CsvDataService";
 export async function registerMotionTesterServices(
   container: ServiceContainer
 ): Promise<void> {
-  // Register AnimatedPictographDataService with existing CSV and Option services
+  // Register AnimatedPictographDataService with existing CSV, Option, and Positioning services
   // Note: CSV initialization is handled lazily within the service
   container.registerFactory(IAnimatedPictographDataServiceInterface, () => {
     const csvDataService = new CsvDataService();
     const optionDataService = container.resolve(IOptionDataServiceInterface);
+    const arrowPositioningOrchestrator = container.resolve(
+      IArrowPositioningOrchestratorInterface
+    );
     return new IAnimatedPictographDataServiceInterface.implementation(
       csvDataService,
-      optionDataService
+      optionDataService,
+      arrowPositioningOrchestrator
     );
   });
 

@@ -62,7 +62,10 @@ export class SpecialPlacementService implements ISpecialPlacementService {
     const oriKey = this.generateOrientationKey(motion, pictographData);
 
     // Get grid mode (default to diamond)
-    const gridMode = pictographData.grid_mode || "diamond";
+    const gridMode =
+      pictographData.grid_data?.grid_mode ||
+      pictographData.grid_mode ||
+      "diamond";
 
     // Generate turns tuple for lookup
     const turnsTuple = this.generateTurnsTuple(pictographData);

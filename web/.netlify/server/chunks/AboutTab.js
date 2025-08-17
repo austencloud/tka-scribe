@@ -39,32 +39,51 @@ function GettingStarted($$payload) {
           sequences.</p></div> <div class="step svelte-1rn3fmz"><div class="step-number svelte-1rn3fmz">4</div> <h3 class="svelte-1rn3fmz">Join the Community</h3> <p class="svelte-1rn3fmz">Connect with flow artists and share creations through our growing
           community platform.</p></div></div></div></section>`);
 }
-class ModalManager {
-  isOpen = false;
-  resourceName = null;
-  modalData = null;
-  openModal(resourceName) {
-    this.resourceName = resourceName;
-    this.isOpen = true;
+function createModalState() {
+  let isOpen = false;
+  let resourceName = null;
+  let modalData = null;
+  function openModalWithResource(name) {
+    resourceName = name;
+    isOpen = true;
   }
-  closeModal() {
-    this.isOpen = false;
-    this.resourceName = null;
-    this.modalData = null;
+  function closeModalAndCleanup() {
+    isOpen = false;
+    resourceName = null;
+    modalData = null;
   }
-  setModalData(data) {
-    this.modalData = data;
+  function setModalData(data) {
+    modalData = data;
   }
-  // Initialize browser event listeners
-  initialize() {
+  function initialize() {
   }
+  return {
+    // Reactive getters
+    get isOpen() {
+      return isOpen;
+    },
+    get resourceName() {
+      return resourceName;
+    },
+    get modalData() {
+      return modalData;
+    },
+    // Actions
+    openModal: openModalWithResource,
+    closeModal: closeModalAndCleanup,
+    setModalData,
+    initialize
+  };
 }
-const modalManager = new ModalManager();
 function ResourceModal($$payload, $$props) {
   push();
-  let { isOpen = false, children } = $$props;
+  let {
+    isOpen = false,
+    modalData = null,
+    children
+  } = $$props;
   let currentSection = "";
-  const data = modalManager.modalData;
+  const data = modalData;
   if (isOpen) {
     $$payload.out.push("<!--[-->");
     $$payload.out.push(`<div class="modal-overlay svelte-ueu0vt" role="dialog" aria-modal="true" aria-labelledby="modal-title" aria-describedby="modal-description" tabindex="-1"><div class="modal-container svelte-ueu0vt"><button class="modal-close svelte-ueu0vt" aria-label="Close modal" type="button"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg></button> `);
@@ -491,6 +510,7 @@ function ResourcesHistorian($$payload, $$props) {
   let searchTerm = "";
   let selectedCategory = "all";
   let selectedLevel = "all";
+  const modalState = createModalState();
   let filteredResources = (() => {
     return resources.filter((resource) => {
       const matchesSearch = searchTerm === "" || resource.name.toLowerCase().includes(searchTerm.toLowerCase()) || resource.description.toLowerCase().includes(searchTerm.toLowerCase()) || resource.specialties && resource.specialties.some((s) => s.toLowerCase().includes(searchTerm.toLowerCase()));
@@ -532,14 +552,15 @@ function ResourcesHistorian($$payload, $$props) {
     ResourceGrid($$payload2, { resources: filteredResources });
     $$payload2.out.push(`<!----></div></section> `);
     ResourceModal($$payload2, {
-      isOpen: modalManager.isOpen,
+      isOpen: modalState.isOpen,
+      modalData: modalState.modalData,
       children: ($$payload3) => {
-        if (modalManager.resourceName === "vulcan-tech-gospel") {
+        if (modalState.resourceName === "vulcan-tech-gospel") {
           $$payload3.out.push("<!--[-->");
           VTGContent($$payload3);
         } else {
           $$payload3.out.push("<!--[!-->");
-          if (modalManager.resourceName === "charlie-cushing-9-square-theory") {
+          if (modalState.resourceName === "charlie-cushing-9-square-theory") {
             $$payload3.out.push("<!--[-->");
             $$payload3.out.push(`<div class="placeholder-content svelte-hrg8ry"><p>9 Square Theory content coming soon...</p></div>`);
           } else {

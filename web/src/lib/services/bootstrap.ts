@@ -75,7 +75,7 @@ export function getContainer(): ServiceContainer {
 /**
  * Set the global container instance (used by bootstrap)
  */
-export function setGlobalContainer(container: ServiceContainer): void {
+export function setGlobalContainer(container: ServiceContainer | null): void {
   globalContainer = container;
 }
 

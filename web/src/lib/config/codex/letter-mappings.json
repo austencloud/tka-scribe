@@ -1,0 +1,343 @@
+{
+  "letters": {
+    "A": {
+      "startPos": "alpha1",
+      "endPos": "alpha3",
+      "blueMotion": "pro",
+      "redMotion": "pro"
+    },
+    "B": {
+      "startPos": "alpha1",
+      "endPos": "alpha3",
+      "blueMotion": "anti",
+      "redMotion": "anti"
+    },
+    "C": {
+      "startPos": "alpha1",
+      "endPos": "alpha3",
+      "blueMotion": "anti",
+      "redMotion": "pro"
+    },
+    "D": {
+      "startPos": "beta1",
+      "endPos": "alpha3",
+      "blueMotion": "pro",
+      "redMotion": "pro"
+    },
+    "E": {
+      "startPos": "beta1",
+      "endPos": "alpha3",
+      "blueMotion": "anti",
+      "redMotion": "anti"
+    },
+    "F": {
+      "startPos": "beta1",
+      "endPos": "alpha3",
+      "blueMotion": "anti",
+      "redMotion": "pro"
+    },
+    "G": {
+      "startPos": "beta3",
+      "endPos": "beta5",
+      "blueMotion": "pro",
+      "redMotion": "pro"
+    },
+    "H": {
+      "startPos": "beta3",
+      "endPos": "beta5",
+      "blueMotion": "anti",
+      "redMotion": "anti"
+    },
+    "I": {
+      "startPos": "beta3",
+      "endPos": "beta5",
+      "blueMotion": "anti",
+      "redMotion": "pro"
+    },
+    "J": {
+      "startPos": "alpha3",
+      "endPos": "beta5",
+      "blueMotion": "pro",
+      "redMotion": "pro"
+    },
+    "K": {
+      "startPos": "alpha3",
+      "endPos": "beta5",
+      "blueMotion": "anti",
+      "redMotion": "anti"
+    },
+    "L": {
+      "startPos": "alpha3",
+      "endPos": "beta5",
+      "blueMotion": "anti",
+      "redMotion": "pro"
+    },
+    "M": {
+      "startPos": "gamma11",
+      "endPos": "gamma1",
+      "blueMotion": "pro",
+      "redMotion": "pro"
+    },
+    "N": {
+      "startPos": "gamma11",
+      "endPos": "gamma1",
+      "blueMotion": "anti",
+      "redMotion": "anti"
+    },
+    "O": {
+      "startPos": "gamma11",
+      "endPos": "gamma1",
+      "blueMotion": "anti",
+      "redMotion": "pro"
+    },
+    "P": {
+      "startPos": "gamma1",
+      "endPos": "gamma15",
+      "blueMotion": "pro",
+      "redMotion": "pro"
+    },
+    "Q": {
+      "startPos": "gamma1",
+      "endPos": "gamma15",
+      "blueMotion": "anti",
+      "redMotion": "anti"
+    },
+    "R": {
+      "startPos": "gamma1",
+      "endPos": "gamma15",
+      "blueMotion": "anti",
+      "redMotion": "pro"
+    },
+    "S": {
+      "startPos": "gamma13",
+      "endPos": "gamma11",
+      "blueMotion": "pro",
+      "redMotion": "pro"
+    },
+    "T": {
+      "startPos": "gamma13",
+      "endPos": "gamma11",
+      "blueMotion": "anti",
+      "redMotion": "anti"
+    },
+    "U": {
+      "startPos": "gamma13",
+      "endPos": "gamma11",
+      "blueMotion": "anti",
+      "redMotion": "pro"
+    },
+    "V": {
+      "startPos": "gamma13",
+      "endPos": "gamma11",
+      "blueMotion": "pro",
+      "redMotion": "anti"
+    },
+    "W": {
+      "startPos": "gamma13",
+      "endPos": "alpha3",
+      "blueMotion": "static",
+      "redMotion": "pro"
+    },
+    "X": {
+      "startPos": "gamma13",
+      "endPos": "alpha3",
+      "blueMotion": "static",
+      "redMotion": "anti"
+    },
+    "Y": {
+      "startPos": "gamma11",
+      "endPos": "beta5",
+      "blueMotion": "static",
+      "redMotion": "pro"
+    },
+    "Z": {
+      "startPos": "gamma11",
+      "endPos": "beta5",
+      "blueMotion": "static",
+      "redMotion": "anti"
+    },
+    "Σ": {
+      "startPos": "alpha3",
+      "endPos": "gamma13",
+      "blueMotion": "static",
+      "redMotion": "pro"
+    },
+    "Δ": {
+      "startPos": "alpha3",
+      "endPos": "gamma13",
+      "blueMotion": "static",
+      "redMotion": "anti"
+    },
+    "θ": {
+      "startPos": "beta5",
+      "endPos": "gamma11",
+      "blueMotion": "static",
+      "redMotion": "pro"
+    },
+    "Ω": {
+      "startPos": "beta5",
+      "endPos": "gamma11",
+      "blueMotion": "static",
+      "redMotion": "anti"
+    },
+    "W-": {
+      "startPos": "gamma5",
+      "endPos": "alpha3",
+      "blueMotion": "dash",
+      "redMotion": "pro"
+    },
+    "X-": {
+      "startPos": "gamma5",
+      "endPos": "alpha3",
+      "blueMotion": "dash",
+      "redMotion": "anti"
+    },
+    "Y-": {
+      "startPos": "gamma3",
+      "endPos": "beta5",
+      "blueMotion": "dash",
+      "redMotion": "pro"
+    },
+    "Z-": {
+      "startPos": "gamma3",
+      "endPos": "beta5",
+      "blueMotion": "dash",
+      "redMotion": "anti"
+    },
+    "Σ-": {
+      "startPos": "beta3",
+      "endPos": "gamma13",
+      "blueMotion": "dash",
+      "redMotion": "pro"
+    },
+    "Δ-": {
+      "startPos": "beta3",
+      "endPos": "gamma13",
+      "blueMotion": "dash",
+      "redMotion": "anti"
+    },
+    "θ-": {
+      "startPos": "alpha5",
+      "endPos": "gamma11",
+      "blueMotion": "dash",
+      "redMotion": "pro"
+    },
+    "Ω-": {
+      "startPos": "alpha5",
+      "endPos": "gamma11",
+      "blueMotion": "dash",
+      "redMotion": "anti"
+    },
+    "Φ": {
+      "startPos": "beta7",
+      "endPos": "alpha3",
+      "blueMotion": "static",
+      "redMotion": "dash"
+    },
+    "Ψ": {
+      "startPos": "alpha1",
+      "endPos": "beta5",
+      "blueMotion": "static",
+      "redMotion": "dash"
+    },
+    "Λ": {
+      "startPos": "gamma7",
+      "endPos": "gamma11",
+      "blueMotion": "static",
+      "redMotion": "dash"
+    },
+    "Φ-": {
+      "startPos": "alpha3",
+      "endPos": "alpha7",
+      "blueMotion": "dash",
+      "redMotion": "dash"
+    },
+    "Ψ-": {
+      "startPos": "beta1",
+      "endPos": "beta5",
+      "blueMotion": "dash",
+      "redMotion": "dash"
+    },
+    "Λ-": {
+      "startPos": "gamma15",
+      "endPos": "gamma11",
+      "blueMotion": "dash",
+      "redMotion": "dash"
+    },
+    "α": {
+      "startPos": "alpha3",
+      "endPos": "alpha3",
+      "blueMotion": "static",
+      "redMotion": "static"
+    },
+    "β": {
+      "startPos": "beta5",
+      "endPos": "beta5",
+      "blueMotion": "static",
+      "redMotion": "static"
+    },
+    "Γ": {
+      "startPos": "gamma11",
+      "endPos": "gamma11",
+      "blueMotion": "static",
+      "redMotion": "static"
+    }
+  },
+  "rows": [
+    {
+      "index": 0,
+      "category": "basic",
+      "letters": ["A", "B", "C", "D", "E", "F"]
+    },
+    {
+      "index": 1,
+      "category": "basic",
+      "letters": ["G", "H", "I", "J", "K", "L"]
+    },
+    {
+      "index": 2,
+      "category": "basic",
+      "letters": ["M", "N", "O", "P", "Q", "R"]
+    },
+    { "index": 3, "category": "basic", "letters": ["S", "T", "U", "V"] },
+    { "index": 4, "category": "extended", "letters": ["W", "X", "Y", "Z"] },
+    { "index": 5, "category": "greek", "letters": ["Σ", "Δ", "θ", "Ω"] },
+    { "index": 6, "category": "dash", "letters": ["W-", "X-", "Y-", "Z-"] },
+    { "index": 7, "category": "dash", "letters": ["Σ-", "Δ-", "θ-", "Ω-"] },
+    { "index": 8, "category": "special", "letters": ["Φ", "Ψ", "Λ"] },
+    { "index": 9, "category": "dual_dash", "letters": ["Φ-", "Ψ-", "Λ-"] },
+    { "index": 10, "category": "static", "letters": ["α", "β", "Γ"] }
+  ],
+  "categories": {
+    "basic": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F",
+      "G",
+      "H",
+      "I",
+      "J",
+      "K",
+      "L",
+      "M",
+      "N",
+      "O",
+      "P",
+      "Q",
+      "R",
+      "S",
+      "T",
+      "U",
+      "V"
+    ],
+    "extended": ["W", "X", "Y", "Z"],
+    "greek": ["Σ", "Δ", "θ", "Ω"],
+    "dash": ["W-", "X-", "Y-", "Z-", "Σ-", "Δ-", "θ-", "Ω-"],
+    "special": ["Φ", "Ψ", "Λ"],
+    "dual_dash": ["Φ-", "Ψ-", "Λ-"],
+    "static": ["α", "β", "Γ"]
+  }
+}
