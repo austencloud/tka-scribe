@@ -63,7 +63,8 @@
       <div class="result-box">
         <span class="result-label">After Default Adjustment:</span>
         <span class="result-value">
-          {formatPoint(state.currentDebugData.position) || "Not calculated"}
+          {formatPoint(state.currentDebugData.defaultAdjustment) ||
+            "Not calculated"}
         </span>
       </div>
 

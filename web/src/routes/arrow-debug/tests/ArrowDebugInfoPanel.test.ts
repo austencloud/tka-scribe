@@ -64,7 +64,7 @@ describe("Arrow Debug Components Refactoring", () => {
   });
 
   it("should have the clean main component", async () => {
-    const cleanComponent = await import("../ArrowDebugInfoPanel-clean.svelte");
+    const cleanComponent = await import("../ArrowDebugInfoPanel.svelte");
 
     expect(cleanComponent.default).toBeDefined();
   });

@@ -1,6 +1,6 @@
 /**
  * Arrow Adjustment Processor
- * 
+ *
  * Handles adjustment calculations and directional tuple processing.
  * Responsible for computing base adjustments and applying directional transformations.
  */
@@ -19,8 +19,8 @@ export class ArrowAdjustmentProcessor {
   }
 
   getBasicAdjustment(
-    motion: MotionData, 
-    letter: string, 
+    motion: MotionData,
+    letter: string,
     locationCalculator: IArrowLocationCalculator
   ): Point {
     /**
@@ -53,7 +53,8 @@ export class ArrowAdjustmentProcessor {
      */
     const motionType = motion.motion_type;
     const turns = typeof motion.turns === "number" ? motion.turns : 0;
-    const turnsStr = turns === Math.floor(turns) ? turns.toString() : turns.toString();
+    const turnsStr =
+      turns === Math.floor(turns) ? turns.toString() : turns.toString();
 
     // Base adjustment mappings for different motion types
     const adjustmentMappings: Record<string, Record<string, Point>> = {
@@ -110,7 +111,10 @@ export class ArrowAdjustmentProcessor {
       );
 
       // Calculate quadrant index for the arrow location
-      const quadrantIndex = this.quadrantCalculator.calculateQuadrantIndex(motion, location);
+      const quadrantIndex = this.quadrantCalculator.calculateQuadrantIndex(
+        motion,
+        location
+      );
 
       // Apply the appropriate directional tuple
       if (quadrantIndex >= 0 && quadrantIndex < directionalTuples.length) {
@@ -152,10 +156,10 @@ export class ArrowAdjustmentProcessor {
     if (motionType === MotionType.DASH) {
       // Dash arrows use simple directional mapping
       return [
-        [baseX, baseY],      // North/Northeast
-        [baseY, -baseX],     // East/Southeast  
-        [-baseX, -baseY],    // South/Southwest
-        [-baseY, baseX],     // West/Northwest
+        [baseX, baseY], // North/Northeast
+        [baseY, -baseX], // East/Southeast
+        [-baseX, -baseY], // South/Southwest
+        [-baseY, baseX], // West/Northwest
       ];
     }
 

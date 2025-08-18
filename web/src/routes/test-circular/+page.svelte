@@ -1,5 +1,5 @@
 <script>
-  import TestCircularDependency from '../../test-circular-dependency.svelte';
+  import TestCircularDependency from "../../test-circular-dependency.svelte";
 </script>
 
 <svelte:head>

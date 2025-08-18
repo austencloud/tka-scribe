@@ -47,15 +47,23 @@
       // Calculate page width based on column count
       const calculatedPageWidth = Math.max(300, availableWidth / columnCount);
 
-      // Maintain letter size aspect ratio (8.5:11)
-      const aspectRatio = 1056 / 816; // height / width
-      const calculatedPageHeight = calculatedPageWidth * aspectRatio;
+      // Calculate page height based on content needs rather than fixed aspect ratio
+      // Account for: padding + (3 rows of sequences) + gaps between rows
+      const pagePadding = 48 + 24; // top + bottom padding
+      const estimatedSequenceHeight = calculatedPageWidth * 0.4; // Estimate sequence height
+      const gridGap = 10; // Gap between grid items
+      const rowsNeeded = 3; // 2 columns × 3 rows = 6 sequences
+      const contentHeight =
+        estimatedSequenceHeight * rowsNeeded + gridGap * (rowsNeeded - 1);
+      const calculatedPageHeight = contentHeight + pagePadding;
 
       // Ensure pages don't exceed container height (with some margin)
       const maxHeight = containerHeight - 40; // Leave some margin
       if (calculatedPageHeight > maxHeight) {
+        // If content doesn't fit, scale down proportionally
+        const scaleFactor = maxHeight / calculatedPageHeight;
         pageHeight = maxHeight;
-        pageWidth = pageHeight / aspectRatio;
+        pageWidth = calculatedPageWidth * scaleFactor;
       } else {
         pageWidth = calculatedPageWidth;
         pageHeight = calculatedPageHeight;

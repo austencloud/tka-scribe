@@ -5,8 +5,8 @@
  * Each service handles a specific aspect of arrow positioning.
  */
 
-export { ArrowPositionCalculator } from './ArrowPositionCalculator';
-export { ArrowAdjustmentProcessor } from './ArrowAdjustmentProcessor';
-export { ArrowQuadrantCalculator } from './ArrowQuadrantCalculator';
-export { ArrowCoordinateTransformer } from './ArrowCoordinateTransformer';
-export { ArrowDataProcessor } from './ArrowDataProcessor';
+export { ArrowPositionCalculator } from "./ArrowPositionCalculator";
+export { ArrowAdjustmentProcessor } from "./ArrowAdjustmentProcessor";
+export { ArrowQuadrantCalculator } from "./ArrowQuadrantCalculator";
+export { ArrowCoordinateTransformer } from "./ArrowCoordinateTransformer";
+export { ArrowDataProcessor } from "./ArrowDataProcessor";

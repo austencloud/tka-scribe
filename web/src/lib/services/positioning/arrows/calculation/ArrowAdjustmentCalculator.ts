@@ -265,8 +265,10 @@ export class ArrowAdjustmentCalculator implements IArrowAdjustmentCalculator {
         return adjustment;
       }
 
+      // Return null instead of throwing when no special placement found
       throw new Error("No special placement found");
     } catch (error) {
+      // Re-throw the "No special placement found" error for proper fallback handling
       if (
         error instanceof Error &&
         error.message === "No special placement found"

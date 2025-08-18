@@ -3,13 +3,11 @@
  *
  * Handles calculations for printable page layouts including paper sizes,
  * margins, grid configurations, and measurement conversions.
- * 
+ *
  * Based on desktop application's printable_layout.py functionality.
  */
 
-import type {
-  IPrintablePageLayoutService,
-} from "../interfaces/sequence-interfaces";
+import type { IPrintablePageLayoutService } from "../interfaces/sequence-interfaces";
 import type {
   PageDimensions,
   Margins,
@@ -34,10 +32,10 @@ export class PrintablePageLayoutService implements IPrintablePageLayoutService {
   };
 
   private readonly defaultMargins: Margins = {
-    top: 36,    // 0.5 inch
-    right: 18,  // 0.25 inch  
+    top: 36, // 0.5 inch
+    right: 18, // 0.25 inch
     bottom: 36, // 0.5 inch
-    left: 18,   // 0.25 inch
+    left: 18, // 0.25 inch
   };
 
   private readonly dpiConfig: DPIConfiguration = {
@@ -46,23 +44,26 @@ export class PrintablePageLayoutService implements IPrintablePageLayoutService {
     scaleFactor: 96 / 72,
   };
 
-  calculatePageDimensions(paperSize: PaperSize, orientation: Orientation): PageDimensions {
+  calculatePageDimensions(
+    paperSize: PaperSize,
+    orientation: Orientation
+  ): PageDimensions {
     const dimensions = this.paperSizes[paperSize];
-    
-    if (orientation === 'Landscape') {
+
+    if (orientation === "Landscape") {
       return {
         width: dimensions.height,
         height: dimensions.width,
       };
     }
-    
+
     return {
       width: dimensions.width,
       height: dimensions.height,
     };
   }
 
-  calculateMargins(paperSize: PaperSize): Margins {
+  calculateMargins(_paperSize: PaperSize): Margins {
     // For now, use default margins for all paper sizes
     // Could be extended to have paper-specific margins
     return { ...this.defaultMargins };
@@ -95,21 +96,25 @@ export class PrintablePageLayoutService implements IPrintablePageLayoutService {
     let bestScore = 0;
 
     // Try different grid configurations
-    for (let totalCards = opts.minCardsPerPage; totalCards <= opts.maxCardsPerPage; totalCards++) {
+    for (
+      let totalCards = opts.minCardsPerPage;
+      totalCards <= opts.maxCardsPerPage;
+      totalCards++
+    ) {
       for (let rows = 1; rows <= Math.ceil(Math.sqrt(totalCards)); rows++) {
         const cols = Math.ceil(totalCards / rows);
-        
+
         if (rows * cols < totalCards && !opts.allowPartialLastPage) {
           continue;
         }
 
         const cellWidth = contentArea.width / cols;
         const cellHeight = contentArea.height / rows;
-        
+
         // Calculate card dimensions maintaining aspect ratio
         let cardWidth = cellWidth * 0.9; // Leave some spacing
         let cardHeight = cardWidth / cardAspectRatio;
-        
+
         if (cardHeight > cellHeight * 0.9) {
           cardHeight = cellHeight * 0.9;
           cardWidth = cardHeight * cardAspectRatio;
@@ -120,20 +125,28 @@ export class PrintablePageLayoutService implements IPrintablePageLayoutService {
         const totalUsedArea = totalCards * cardArea;
         const totalAvailableArea = contentArea.width * contentArea.height;
         const utilization = totalUsedArea / totalAvailableArea;
-        
+
         // Prefer layouts that maximize card size if prioritizeCardSize is true
-        const cardSizeScore = opts.prioritizeCardSize ? cardArea / (contentArea.width * contentArea.height) : 0.5;
+        const cardSizeScore = opts.prioritizeCardSize
+          ? cardArea / (contentArea.width * contentArea.height)
+          : 0.5;
         const utilizationScore = Math.min(utilization, 1.0);
-        const layoutScore = opts.preferSquareLayout ? 1 - Math.abs(rows - cols) / Math.max(rows, cols) : 0.5;
-        
-        const score = (cardSizeScore * 0.4) + (utilizationScore * 0.4) + (layoutScore * 0.2);
-        
+        const layoutScore = opts.preferSquareLayout
+          ? 1 - Math.abs(rows - cols) / Math.max(rows, cols)
+          : 0.5;
+
+        const score =
+          cardSizeScore * 0.4 + utilizationScore * 0.4 + layoutScore * 0.2;
+
         if (score > bestScore) {
           bestScore = score;
           bestGrid = {
             rows,
             columns: cols,
-            spacing: Math.min((cellWidth - cardWidth) / 2, (cellHeight - cardHeight) / 2),
+            spacing: Math.min(
+              (cellWidth - cardWidth) / 2,
+              (cellHeight - cardHeight) / 2
+            ),
             cardWidth,
             cardHeight,
           };
@@ -147,11 +160,14 @@ export class PrintablePageLayoutService implements IPrintablePageLayoutService {
       const cellHeight = contentArea.height / 2;
       const cardWidth = cellWidth * 0.9;
       const cardHeight = cardWidth / cardAspectRatio;
-      
+
       bestGrid = {
         rows: 2,
         columns: 2,
-        spacing: Math.min((cellWidth - cardWidth) / 2, (cellHeight - cardHeight) / 2),
+        spacing: Math.min(
+          (cellWidth - cardWidth) / 2,
+          (cellHeight - cardHeight) / 2
+        ),
         cardWidth,
         cardHeight,
       };
@@ -165,9 +181,12 @@ export class PrintablePageLayoutService implements IPrintablePageLayoutService {
     orientation: Orientation,
     dpi: number = this.dpiConfig.screenDPI
   ): PageDimensions {
-    const pointDimensions = this.calculatePageDimensions(paperSize, orientation);
+    const pointDimensions = this.calculatePageDimensions(
+      paperSize,
+      orientation
+    );
     const scaleFactor = dpi / 72; // Convert from points to pixels
-    
+
     return {
       width: Math.round(pointDimensions.width * scaleFactor),
       height: Math.round(pointDimensions.height * scaleFactor),
@@ -175,10 +194,13 @@ export class PrintablePageLayoutService implements IPrintablePageLayoutService {
   }
 
   calculateLayout(request: LayoutCalculationRequest): LayoutCalculationResult {
-    const pageDimensions = this.calculatePageDimensions(request.paperSize, request.orientation);
+    const pageDimensions = this.calculatePageDimensions(
+      request.paperSize,
+      request.orientation
+    );
     const margins = request.margins || this.calculateMargins(request.paperSize);
     const contentArea = this.calculateContentArea(pageDimensions, margins);
-    
+
     const gridOptions: GridCalculationOptions = {
       minCardsPerPage: 2,
       maxCardsPerPage: request.preferredCardsPerPage || 12,
@@ -186,27 +208,32 @@ export class PrintablePageLayoutService implements IPrintablePageLayoutService {
       prioritizeCardSize: true,
       allowPartialLastPage: true,
     };
-    
+
     const gridConfig = this.calculateOptimalGrid(
       request.cardAspectRatio,
       contentArea,
       gridOptions
     );
-    
+
     const cardsPerPage = gridConfig.rows * gridConfig.columns;
     const pagesNeeded = Math.ceil(request.sequenceCount / cardsPerPage);
-    const cardDimensions = { width: gridConfig.cardWidth, height: gridConfig.cardHeight };
-    
+    const cardDimensions = {
+      width: gridConfig.cardWidth,
+      height: gridConfig.cardHeight,
+    };
+
     // Calculate utilization
     const cardArea = gridConfig.cardWidth * gridConfig.cardHeight;
     const totalCardArea = cardsPerPage * cardArea;
     const contentAreaSize = contentArea.width * contentArea.height;
     const utilization = Math.min(totalCardArea / contentAreaSize, 1.0);
-    
+
     // Consider layout optimal if utilization > 0.6 and card size is reasonable
     const minCardSize = Math.min(contentArea.width, contentArea.height) * 0.2;
-    const isOptimal = utilization > 0.6 && Math.min(gridConfig.cardWidth, gridConfig.cardHeight) > minCardSize;
-    
+    const isOptimal =
+      utilization > 0.6 &&
+      Math.min(gridConfig.cardWidth, gridConfig.cardHeight) > minCardSize;
+
     return {
       gridConfig,
       pagesNeeded,
@@ -221,46 +248,53 @@ export class PrintablePageLayoutService implements IPrintablePageLayoutService {
     const errors: any[] = [];
     const warnings: any[] = [];
     const suggestions: any[] = [];
-    
+
     // Validate paper size
     if (!this.paperSizes[config.printConfiguration.paperSize]) {
       errors.push({
-        code: 'INVALID_PAPER_SIZE',
+        code: "INVALID_PAPER_SIZE",
         message: `Invalid paper size: ${config.printConfiguration.paperSize}`,
-        field: 'paperSize',
-        severity: 'error' as const,
+        field: "paperSize",
+        severity: "error" as const,
       });
     }
-    
+
     // Validate margins
     const margins = config.printConfiguration.margins;
-    if (margins.top < 0 || margins.right < 0 || margins.bottom < 0 || margins.left < 0) {
+    if (
+      margins.top < 0 ||
+      margins.right < 0 ||
+      margins.bottom < 0 ||
+      margins.left < 0
+    ) {
       errors.push({
-        code: 'NEGATIVE_MARGINS',
-        message: 'Margins cannot be negative',
-        field: 'margins',
-        severity: 'error' as const,
+        code: "NEGATIVE_MARGINS",
+        message: "Margins cannot be negative",
+        field: "margins",
+        severity: "error" as const,
       });
     }
-    
+
     // Validate sequences per page
     if (config.sequencesPerPage < 1) {
       errors.push({
-        code: 'INVALID_SEQUENCES_PER_PAGE',
-        message: 'Sequences per page must be at least 1',
-        field: 'sequencesPerPage',
-        severity: 'error' as const,
+        code: "INVALID_SEQUENCES_PER_PAGE",
+        message: "Sequences per page must be at least 1",
+        field: "sequencesPerPage",
+        severity: "error" as const,
       });
     }
-    
+
     if (config.sequencesPerPage > 20) {
       warnings.push({
-        code: 'HIGH_SEQUENCES_PER_PAGE',
-        message: 'High number of sequences per page may result in very small cards',
-        suggestion: 'Consider reducing sequences per page for better readability',
+        code: "HIGH_SEQUENCES_PER_PAGE",
+        message:
+          "High number of sequences per page may result in very small cards",
+        suggestion:
+          "Consider reducing sequences per page for better readability",
       });
     }
-    
+
     // Check if margins are too large
     const pageDimensions = this.calculatePageDimensions(
       config.printConfiguration.paperSize,
@@ -268,23 +302,23 @@ export class PrintablePageLayoutService implements IPrintablePageLayoutService {
     );
     const totalMarginWidth = margins.left + margins.right;
     const totalMarginHeight = margins.top + margins.bottom;
-    
+
     if (totalMarginWidth > pageDimensions.width * 0.5) {
       warnings.push({
-        code: 'LARGE_HORIZONTAL_MARGINS',
-        message: 'Horizontal margins are very large',
-        suggestion: 'Consider reducing left and right margins',
+        code: "LARGE_HORIZONTAL_MARGINS",
+        message: "Horizontal margins are very large",
+        suggestion: "Consider reducing left and right margins",
       });
     }
-    
+
     if (totalMarginHeight > pageDimensions.height * 0.5) {
       warnings.push({
-        code: 'LARGE_VERTICAL_MARGINS',
-        message: 'Vertical margins are very large',
-        suggestion: 'Consider reducing top and bottom margins',
+        code: "LARGE_VERTICAL_MARGINS",
+        message: "Vertical margins are very large",
+        suggestion: "Consider reducing top and bottom margins",
       });
     }
-    
+
     return {
       isValid: errors.length === 0,
       errors,
@@ -304,14 +338,16 @@ export class PrintablePageLayoutService implements IPrintablePageLayoutService {
       millimeters: 72 / 25.4,
       centimeters: 72 / 2.54,
     } as const;
-    
+
     const fromPoints = units[fromUnit as keyof typeof units];
     const toPoints = units[toUnit as keyof typeof units];
-    
+
     if (!fromPoints || !toPoints) {
-      throw new Error(`Invalid measurement unit. Supported: ${Object.keys(units).join(', ')}`);
+      throw new Error(
+        `Invalid measurement unit. Supported: ${Object.keys(units).join(", ")}`
+      );
     }
-    
+
     // Convert to points, then to target unit
     const valueInPoints = value * fromPoints;
     return valueInPoints / toPoints;

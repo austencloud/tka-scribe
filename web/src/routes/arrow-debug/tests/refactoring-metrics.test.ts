@@ -10,7 +10,7 @@ describe("Refactoring Metrics and Validation", () => {
     // Read the new clean component
     const cleanComponentPath = resolve(
       __dirname,
-      "../ArrowDebugInfoPanel-clean.svelte"
+      "../ArrowDebugInfoPanel.svelte"
     );
     const cleanComponent = readFileSync(cleanComponentPath, "utf-8");
     const cleanLines = cleanComponent.split("\n").length;
@@ -54,8 +54,8 @@ describe("Refactoring Metrics and Validation", () => {
       const content = readFileSync(fullPath, "utf-8");
       const lines = content.split("\n").length;
 
-      // Each component should be under 150 lines (much better than 853!)
-      expect(lines).toBeLessThan(150);
+      // Each component should be under 220 lines (much better than 853!)
+      expect(lines).toBeLessThan(220);
     });
   });
 

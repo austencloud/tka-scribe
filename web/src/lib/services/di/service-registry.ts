@@ -92,7 +92,10 @@ export const serviceInterfaceMap = new Map<string, ServiceInterface<unknown>>([
   ["IPrintablePageLayoutService", IPrintablePageLayoutServiceInterface],
   ["IPageFactoryService", IPageFactoryServiceInterface],
   ["IPageImageExportService", IPageImageExportServiceInterface],
-  ["ISequenceCardExportIntegrationService", ISequenceCardExportIntegrationServiceInterface],
+  [
+    "ISequenceCardExportIntegrationService",
+    ISequenceCardExportIntegrationServiceInterface,
+  ],
 
   // Positioning services
   ["IArrowPositioningOrchestrator", IArrowPositioningOrchestratorInterface],

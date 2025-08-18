@@ -9,20 +9,6 @@
   import type { IStartPositionService } from "$services/interfaces/application-interfaces";
   import { onMount } from "svelte";
   import ModernPictograph from "../pictograph/Pictograph.svelte";
-  
-  // Extracted utilities (keeping original functionality intact)
-  import { 
-    extractEndPosition, 
-    createStartPositionData, 
-    storeStartPositionData, 
-    storePreloadedOptions 
-  } from "./start-position/utils/StartPositionUtils";
-  
-  // UI Components
-  import LoadingState from "./start-position/ui/LoadingState.svelte";
-  import ErrorState from "./start-position/ui/ErrorState.svelte";
-  import PictographGrid from "./start-position/ui/PictographGrid.svelte";
-  import TransitionOverlay from "./start-position/ui/TransitionOverlay.svelte";
 
   // Props using runes
   const { gridMode = "diamond", onStartPositionSelected = () => {} } = $props<{
@@ -137,7 +123,39 @@
       );
 
       // Create start position data in the format the OptionPicker expects (like legacy)
-      const startPositionData = createStartPositionData(startPosPictograph, endPosition);
+      const startPositionData = {
+        // CRITICAL: Include endPos field for OptionPicker
+        endPos: endPosition,
+        // Include the full pictograph data
+        pictograph_data: {
+          ...startPosPictograph,
+          // Ensure static motion types for start positions
+          motions: {
+            blue: startPosPictograph.motions?.blue
+              ? {
+                  ...startPosPictograph.motions.blue,
+                  motion_type: MotionType.STATIC,
+                  end_loc: startPosPictograph.motions.blue.start_loc,
+                  end_ori: startPosPictograph.motions.blue.start_ori,
+                  turns: 0,
+                }
+              : null,
+            red: startPosPictograph.motions?.red
+              ? {
+                  ...startPosPictograph.motions.red,
+                  motion_type: MotionType.STATIC,
+                  end_loc: startPosPictograph.motions.red.start_loc,
+                  end_ori: startPosPictograph.motions.red.start_ori,
+                  turns: 0,
+                }
+              : null,
+          },
+        },
+        // Additional legacy-compatible fields
+        letter: startPosPictograph.letter,
+        gridMode: gridMode,
+        isStartPosition: true,
+      };
 
       // Create start position beat data for internal use
       const startPositionBeat: BeatData = {
@@ -157,7 +175,17 @@
       selectedStartPos = startPosPictograph;
 
       // **CRITICAL: Save to localStorage in the format OptionPicker expects**
-      storeStartPositionData(startPositionData);
+      try {
+        localStorage.setItem(
+          "start_position",
+          JSON.stringify(startPositionData)
+        );
+        console.log(
+          "🚀 StartPositionPicker: Saved start position to localStorage"
+        );
+      } catch (error) {
+        console.error("Failed to save start position to localStorage:", error);
+      }
 
       // **NEW: Preload options BEFORE triggering the transition**
       // This ensures options are ready when the option picker fades in
@@ -196,7 +224,13 @@
         );
 
         // Store the preloaded options so OptionPicker can use them immediately
-        storePreloadedOptions(preloadedOptions || []);
+        localStorage.setItem(
+          "preloaded_options",
+          JSON.stringify(preloadedOptions || [])
+        );
+        console.log(
+          "🚀 StartPositionPicker: Preloaded options stored in localStorage"
+        );
       } catch (preloadError) {
         console.warn(
           "🚨 StartPositionPicker: Failed to preload options, will load normally:",
@@ -264,6 +298,56 @@
         `Failed to select start position: ${error instanceof Error ? error.message : "Unknown error"}`
       );
     }
+  }
+
+  /**
+   * Extract end position from pictograph data
+   * This determines where the start position ends, which becomes the starting point for next options
+   */
+  function extractEndPosition(pictographData: PictographData): string {
+    // For start positions, the end position is typically the same as start position
+    // since they're static motions, but we need to map to position keys that exist in CSV
+
+    // Default mappings based on legacy desktop patterns
+    const defaultEndPositions: Record<string, string> = {
+      α: "alpha1", // Alpha start position ends at alpha1
+      β: "beta5", // Beta start position ends at beta5
+      Γ: "gamma11", // Gamma start position ends at gamma11
+    };
+
+    // Try to get from letter first
+    if (pictographData.letter && defaultEndPositions[pictographData.letter]) {
+      return defaultEndPositions[pictographData.letter]!;
+    }
+
+    // Try to extract from motion data
+    if (pictographData.motions?.blue?.end_loc) {
+      return mapLocationToPosition(pictographData.motions.blue.end_loc);
+    }
+    if (pictographData.motions?.red?.end_loc) {
+      return mapLocationToPosition(pictographData.motions.red.end_loc);
+    }
+
+    // Default fallback
+    return "alpha1";
+  }
+
+  /**
+   * Map location enum to position string for CSV lookup
+   */
+  function mapLocationToPosition(location: Location): string {
+    // Basic mapping - this would need to be enhanced based on actual position system
+    const locationMap: Record<string, string> = {
+      SOUTH: "alpha1",
+      NORTH: "alpha1",
+      EAST: "gamma11",
+      WEST: "alpha1",
+      // Add more mappings as needed
+    };
+
+    const locationStr =
+      typeof location === "string" ? location : String(location || "");
+    return locationMap[locationStr.toUpperCase()] || "alpha1";
   }
 
   // Initialize on mount

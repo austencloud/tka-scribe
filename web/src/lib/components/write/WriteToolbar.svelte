@@ -71,8 +71,6 @@
 
   <!-- Spacer -->
   <div class="toolbar-spacer"></div>
-
-
 </div>
 
 <style>
@@ -181,20 +179,6 @@
     }
   }
 
-  .status-text {
-    font-size: var(--font-size-sm);
-    font-weight: 500;
-    font-family: "Segoe UI", sans-serif;
-  }
-
-  .status-text.saved {
-    color: rgba(100, 200, 100, 0.9);
-  }
-
-  .status-text.unsaved {
-    color: rgba(255, 200, 100, 0.9);
-  }
-
   /* Responsive adjustments */
   @media (max-width: 768px) {
     .write-toolbar {
@@ -209,10 +193,6 @@
 
     .toolbar-button {
       padding: var(--spacing-xs) var(--spacing-sm);
-      font-size: var(--font-size-xs);
-    }
-
-    .status-text {
       font-size: var(--font-size-xs);
     }
 
@@ -240,7 +220,6 @@
     .file-operations {
       order: 1;
     }
-
 
     .toolbar-button {
       flex: 1;

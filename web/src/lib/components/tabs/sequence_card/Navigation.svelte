@@ -67,7 +67,9 @@
             class="length-button"
             class:selected={selectedLength === option.value}
             onclick={() => handleLengthClick(option.value)}
-            title="Show sequences with {option.value === 0 ? 'any length' : `${option.value} beats`}"
+            title="Show sequences with {option.value === 0
+              ? 'any length'
+              : `${option.value} beats`}"
           >
             {option.label}
           </button>
@@ -82,7 +84,7 @@
   <!-- Column Count Selection -->
   <div class="column-section">
     <h3 class="section-title">Page Layout</h3>
-    <select 
+    <select
       class="column-select"
       value={columnCount}
       onchange={handleColumnChange}

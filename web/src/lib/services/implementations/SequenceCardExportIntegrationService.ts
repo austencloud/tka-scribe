@@ -9,7 +9,6 @@ import type { ISequenceCardExportIntegrationService } from "../interfaces/sequen
 import type {
   IPageImageExportService,
   ImageExportOptions,
-  ExportProgress,
 } from "../interfaces/export-interfaces";
 import {
   downloadBlobBatch,
@@ -69,7 +68,6 @@ export class SequenceCardExportIntegrationService
 
       // Progress tracking
       const totalCount = pageElements.length;
-
 
       // Export pages to blobs
       onProgress?.(0, totalCount, "Starting page export...");

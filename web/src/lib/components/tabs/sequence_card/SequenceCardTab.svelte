@@ -134,7 +134,7 @@
       ];
     }
 
-    // Legacy desktop default: 3 rows × 2 columns = 6 sequences per page
+    // Legacy desktop default: 2 columns × 3 rows = 6 sequences per page
     // This matches the printable_factory.py default grid configuration
     const sequencesPerPage = 6;
     const pages = [];
