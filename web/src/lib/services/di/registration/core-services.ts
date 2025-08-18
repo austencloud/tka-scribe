@@ -27,6 +27,10 @@ import {
   IStartPositionServiceInterface,
   ISvgConfigurationInterface,
   ISvgUtilityServiceInterface,
+  IPrintablePageLayoutServiceInterface,
+  IPageFactoryServiceInterface,
+  IPageImageExportServiceInterface,
+  ISequenceCardExportIntegrationServiceInterface,
 } from "../interfaces/core-interfaces";
 
 import { ApplicationInitializationService } from "../../implementations/ApplicationInitializationService";
@@ -122,6 +126,31 @@ export async function registerCoreServices(
   // Register generation services
   container.registerSingletonClass(IMotionGenerationServiceInterface);
   container.registerSingletonClass(ISequenceGenerationServiceInterface);
+
+  // Register page layout and export services
+  container.registerSingletonClass(IPrintablePageLayoutServiceInterface);
+  container.registerSingletonClass(IPageImageExportServiceInterface);
+
+  // Register page factory service with dependency
+  container.registerFactory(IPageFactoryServiceInterface, () => {
+    const layoutService = container.resolve(
+      IPrintablePageLayoutServiceInterface
+    );
+    return new IPageFactoryServiceInterface.implementation(layoutService);
+  });
+
+  // Register export integration service with dependency
+  container.registerFactory(
+    ISequenceCardExportIntegrationServiceInterface,
+    () => {
+      const pageImageExportService = container.resolve(
+        IPageImageExportServiceInterface
+      );
+      return new ISequenceCardExportIntegrationServiceInterface.implementation(
+        pageImageExportService
+      );
+    }
+  );
 
   // Register application initialization service with factory
   container.registerFactory(IApplicationInitializationServiceInterface, () => {

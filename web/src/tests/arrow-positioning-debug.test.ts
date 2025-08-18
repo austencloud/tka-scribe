@@ -110,7 +110,7 @@ describe("Arrow Positioning Debug Tests", () => {
       "\n🎯 Test 1: ArrowPositioningOrchestrator.calculateAllArrowPositions"
     );
     const orchestratorResult =
-      orchestrator.calculateAllArrowPositions(pictographData);
+      await orchestrator.calculateAllArrowPositions(pictographData);
     const orchestratorBlueArrow = orchestratorResult.arrows?.blue;
 
     console.log("  Orchestrator Result:");
@@ -122,7 +122,7 @@ describe("Arrow Positioning Debug Tests", () => {
 
     // Test 2: Direct orchestrator.calculateArrowPosition call
     console.log("\n🎯 Test 3: Direct orchestrator.calculateArrowPosition");
-    const [x, y, rotation] = orchestrator.calculateArrowPosition(
+    const [x, y, rotation] = await orchestrator.calculateArrowPosition(
       blueArrowData,
       pictographData,
       blueMotionData
@@ -218,7 +218,7 @@ describe("Arrow Positioning Debug Tests", () => {
         motions: { blue: motionData },
       });
 
-      const [, , rotation] = orchestrator.calculateArrowPosition(
+      const [, , rotation] = await orchestrator.calculateArrowPosition(
         arrowData,
         pictographData,
         motionData

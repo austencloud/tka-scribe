@@ -43,7 +43,7 @@ export class ArrowPositionCalculator implements IArrowPositioningOrchestrator {
     this.dataProcessor = new ArrowDataProcessor(coordinateSystem);
   }
 
-  async calculateArrowPositionAsync(
+  async calculateArrowPosition(
     arrowData: ArrowData,
     pictographData: PictographData,
     motionData?: MotionData
@@ -107,69 +107,6 @@ export class ArrowPositionCalculator implements IArrowPositioningOrchestrator {
     }
   }
 
-  calculateArrowPosition(
-    arrowData: ArrowData,
-    pictographData: PictographData,
-    motionData?: MotionData
-  ): [number, number, number] {
-    /**
-     * Calculate arrow position synchronously with basic adjustment processing.
-     */
-    try {
-      // STEP 1: Extract or use provided motion data
-      const motion =
-        motionData ||
-        this.dataProcessor.getMotionFromPictograph(arrowData, pictographData);
-      if (!motion) {
-        console.warn("No motion data available for arrow positioning");
-        const center = this.coordinateSystem.getSceneCenter();
-        return [center.x, center.y, 0];
-      }
-
-      // STEP 2: Calculate location and initial position synchronously
-      const location = this.locationCalculator.calculateLocation(motion);
-      const initialPosition = this.coordinateSystem.getInitialPosition(
-        motion,
-        location
-      );
-      const validPosition =
-        this.dataProcessor.ensureValidPosition(initialPosition);
-
-      // STEP 3: Calculate rotation
-      const rotation = this.rotationCalculator.calculateRotation(
-        motion,
-        location
-      );
-
-      // STEP 4: Get basic adjustment with directional processing
-      const adjustment = this.adjustmentProcessor.getBasicAdjustment(
-        motion,
-        arrowData.color,
-        this.locationCalculator
-      );
-      const [adjustmentX, adjustmentY] =
-        this.dataProcessor.extractAdjustmentValues(adjustment);
-
-      // STEP 5: Apply rotation transformation to adjustment coordinates
-      const [transformedAdjustmentX, transformedAdjustmentY] =
-        this.coordinateTransformer.transformAdjustmentByRotation(
-          adjustmentX,
-          adjustmentY,
-          rotation
-        );
-
-      // STEP 6: Combine positioning calculations
-      const finalX = validPosition.x + transformedAdjustmentX;
-      const finalY = validPosition.y + transformedAdjustmentY;
-
-      return [finalX, finalY, rotation];
-    } catch (error) {
-      console.error("Synchronous arrow positioning failed:", error);
-      const center = this.coordinateSystem.getSceneCenter();
-      return [center.x, center.y, 0];
-    }
-  }
-
   async updateArrowPosition(
     pictographData: PictographData,
     color: string,
@@ -185,7 +122,7 @@ export class ArrowPositionCalculator implements IArrowPositioningOrchestrator {
         return pictographData;
       }
 
-      const [x, y, rotation] = await this.calculateArrowPositionAsync(
+      const [x, y, rotation] = await this.calculateArrowPosition(
         arrowData,
         pictographData,
         motionData
@@ -207,7 +144,9 @@ export class ArrowPositionCalculator implements IArrowPositioningOrchestrator {
     }
   }
 
-  calculateAllArrowPositions(pictographData: PictographData): PictographData {
+  async calculateAllArrowPositions(
+    pictographData: PictographData
+  ): Promise<PictographData> {
     /**
      * Calculate positions for all arrows in the pictograph.
      */
@@ -221,7 +160,7 @@ export class ArrowPositionCalculator implements IArrowPositioningOrchestrator {
       for (const color of Object.keys(pictographData.arrows)) {
         const arrowData = pictographData.arrows[color];
         if (arrowData) {
-          const [x, y, rotation] = this.calculateArrowPosition(
+          const [x, y, rotation] = await this.calculateArrowPosition(
             arrowData,
             updatedPictograph
           );
@@ -249,7 +188,7 @@ export class ArrowPositionCalculator implements IArrowPositioningOrchestrator {
 
   shouldMirrorArrow(
     arrowData: ArrowData,
-    pictographData?: PictographData
+    _pictographData?: PictographData
   ): boolean {
     /**
      * Determine if arrow should be mirrored based on motion type.

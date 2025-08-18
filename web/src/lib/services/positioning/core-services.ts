@@ -47,17 +47,6 @@ export interface IArrowAdjustmentCalculator {
     location: Location,
     arrowColor?: string
   ): Promise<Point>;
-
-  /**
-   * Synchronous version of calculateAdjustment for use in sync contexts.
-   */
-  calculateAdjustmentSync(
-    pictographData: PictographData,
-    motionData: MotionData,
-    letter: string,
-    location: Location,
-    arrowColor?: string
-  ): Point;
 }
 
 export interface IArrowCoordinateSystemService {
@@ -104,12 +93,14 @@ export interface IArrowPositioningOrchestrator {
     arrowData: ArrowData,
     pictographData: PictographData,
     motionData?: MotionData
-  ): [number, number, number];
+  ): Promise<[number, number, number]>;
 
   /**
    * Calculate positions for all arrows in the pictograph.
    */
-  calculateAllArrowPositions(pictographData: PictographData): PictographData;
+  calculateAllArrowPositions(
+    pictographData: PictographData
+  ): Promise<PictographData>;
 
   /**
    * Determine if arrow should be mirrored based on motion type.

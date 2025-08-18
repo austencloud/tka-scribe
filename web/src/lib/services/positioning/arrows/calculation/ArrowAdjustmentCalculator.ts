@@ -12,11 +12,10 @@
  */
 
 import type { MotionData, PictographData, GridMode } from "$lib/domain";
-import { MotionType, ArrowType } from "$lib/domain";
+import { ArrowType } from "$lib/domain";
 import type { IArrowAdjustmentCalculator } from "../../core-services";
 import type {
   IAttributeKeyGenerator,
-  IPlacementKeyGenerator,
   ISpecialPlacementOriKeyGenerator,
   ITurnsTupleKeyGenerator,
 } from "../../data-services";
@@ -24,13 +23,17 @@ import type {
   IDefaultPlacementService,
   ISpecialPlacementService,
 } from "../../placement-services";
-import type { Location, MotionType as MotionTypeType, Point } from "../../types";
+import type {
+  Location,
+  MotionType as MotionTypeType,
+  Point,
+} from "../../types";
 import { AttributeKeyGenerator } from "../key_generators/AttributeKeyGenerator";
-import { PlacementKeyGenerator } from "../key_generators/PlacementKeyGenerator";
 import { SpecialPlacementOriKeyGenerator } from "../key_generators/SpecialPlacementOriKeyGenerator";
 import { TurnsTupleKeyGenerator } from "../key_generators/TurnsTupleKeyGenerator";
 import { DefaultPlacementService } from "../placement/DefaultPlacementService";
 import { SpecialPlacementService } from "../placement/SpecialPlacementService";
+import { ArrowPlacementKeyService } from "../../../implementations/ArrowPlacementKeyService";
 import {
   DirectionalTupleCalculator,
   DirectionalTupleProcessor,
@@ -48,7 +51,7 @@ export class ArrowAdjustmentCalculator implements IArrowAdjustmentCalculator {
   private specialPlacementService: ISpecialPlacementService;
   private defaultPlacementService: IDefaultPlacementService;
   private orientationKeyService: ISpecialPlacementOriKeyGenerator;
-  private placementKeyService: IPlacementKeyGenerator;
+  private placementKeyService: ArrowPlacementKeyService;
   private turnsTupleService: ITurnsTupleKeyGenerator;
   private attributeKeyService: IAttributeKeyGenerator;
 
@@ -59,19 +62,26 @@ export class ArrowAdjustmentCalculator implements IArrowAdjustmentCalculator {
     specialPlacementService?: ISpecialPlacementService;
     defaultPlacementService?: IDefaultPlacementService;
     orientationKeyService?: ISpecialPlacementOriKeyGenerator;
-    placementKeyService?: IPlacementKeyGenerator;
+    placementKeyService?: ArrowPlacementKeyService;
     turnsTupleService?: ITurnsTupleKeyGenerator;
     attributeKeyService?: IAttributeKeyGenerator;
     tupleProcessor?: IDirectionalTupleProcessor;
   }) {
     // Initialize services with defaults if not provided
-    this.specialPlacementService = options?.specialPlacementService || new SpecialPlacementService();
-    this.defaultPlacementService = options?.defaultPlacementService || new DefaultPlacementService();
-    this.orientationKeyService = options?.orientationKeyService || new SpecialPlacementOriKeyGenerator();
-    this.placementKeyService = options?.placementKeyService || new PlacementKeyGenerator();
-    this.turnsTupleService = options?.turnsTupleService || new TurnsTupleKeyGenerator();
-    this.attributeKeyService = options?.attributeKeyService || new AttributeKeyGenerator();
-    this.tupleProcessor = options?.tupleProcessor || this.createDefaultTupleProcessor();
+    this.specialPlacementService =
+      options?.specialPlacementService || new SpecialPlacementService();
+    this.defaultPlacementService =
+      options?.defaultPlacementService || new DefaultPlacementService();
+    this.orientationKeyService =
+      options?.orientationKeyService || new SpecialPlacementOriKeyGenerator();
+    this.placementKeyService =
+      options?.placementKeyService || new ArrowPlacementKeyService();
+    this.turnsTupleService =
+      options?.turnsTupleService || new TurnsTupleKeyGenerator();
+    this.attributeKeyService =
+      options?.attributeKeyService || new AttributeKeyGenerator();
+    this.tupleProcessor =
+      options?.tupleProcessor || this.createDefaultTupleProcessor();
   }
 
   async calculateAdjustment(
@@ -132,39 +142,6 @@ export class ArrowAdjustmentCalculator implements IArrowAdjustmentCalculator {
         `Adjustment calculation failed for letter ${letter}: ${error}`
       );
       throw new Error(`Arrow adjustment calculation failed: ${error}`);
-    }
-  }
-
-  calculateAdjustmentSync(
-    pictographData: PictographData,
-    motionData: MotionData,
-    letter: string,
-    location: Location,
-    _arrowColor?: string
-  ): Point {
-    /**
-     * Synchronous version - IDENTICAL logic to original.
-     * Uses simplified approach that bypasses async lookup services.
-     */
-    try {
-      // Use the directional tuple processor directly with basic adjustments
-      const baseAdjustment = this.getBasicAdjustmentSync(motionData);
-      const finalAdjustment = this.tupleProcessor.processDirectionalTuples(
-        baseAdjustment,
-        motionData,
-        location
-      );
-
-      console.debug(
-        `Sync adjustment for ${motionData.motion_type} ${motionData.turns} turns at ${location}: (${finalAdjustment.x}, ${finalAdjustment.y})`
-      );
-
-      return finalAdjustment;
-    } catch (error) {
-      console.warn(
-        `Sync adjustment calculation failed for letter ${letter}: ${error}`
-      );
-      return { x: 0, y: 0 };
     }
   }
 
@@ -318,11 +295,12 @@ export class ArrowAdjustmentCalculator implements IArrowAdjustmentCalculator {
         (keys || []).map((k) => [k, true])
       );
 
+      const availableKeys = Object.keys(defaultPlacements || []);
+
       const placementKey = this.placementKeyService.generatePlacementKey(
         motionData,
         pictographData,
-        defaultPlacements,
-        gridMode
+        availableKeys
       );
 
       const adjustmentPoint =
@@ -338,59 +316,6 @@ export class ArrowAdjustmentCalculator implements IArrowAdjustmentCalculator {
       console.error("Error calculating default adjustment:", error);
       throw new Error(`Default adjustment calculation failed: ${error}`);
     }
-  }
-
-  private getBasicAdjustmentSync(motionData: MotionData): Point {
-    /**Get basic adjustment values for synchronous operation - IDENTICAL to original.*/
-    const motionType = motionData.motion_type;
-    const turns = typeof motionData.turns === "number" ? motionData.turns : 0;
-    const turnsStr =
-      turns === Math.floor(turns) ? turns.toString() : turns.toString();
-
-    // Use actual placement data structure (simplified for sync operation)
-    const placementData: Record<string, Record<string, [number, number]>> = {
-      [MotionType.PRO]: {
-        "0": [-10, -40],
-        "0.5": [30, 105],
-        "1": [30, 25],
-        "1.5": [-35, 145],
-        "2": [-10, -35],
-        "2.5": [20, 100],
-        "3": [30, 25],
-      },
-      [MotionType.ANTI]: {
-        "0": [0, -40],
-        "0.5": [-15, 110],
-        "1": [0, -40],
-        "1.5": [20, 155],
-        "2": [0, -40],
-        "2.5": [0, 100],
-        "3": [0, -50],
-      },
-      [MotionType.STATIC]: {
-        "0": [0, 0],
-        "0.5": [0, -140],
-        "1": [50, 50],
-        "1.5": [0, 0],
-        "2": [0, 0],
-        "2.5": [0, 0],
-        "3": [0, 0],
-      },
-      [MotionType.DASH]: {
-        "0": [0, 0],
-      },
-      [MotionType.FLOAT]: {
-        fl: [30, -30],
-      },
-    };
-
-    const motionAdjustments = placementData[motionType];
-    if (motionAdjustments && motionAdjustments[turnsStr]) {
-      const [x, y] = motionAdjustments[turnsStr];
-      return { x, y };
-    }
-
-    return { x: 0, y: 0 };
   }
 
   private createDefaultTupleProcessor(): IDirectionalTupleProcessor {

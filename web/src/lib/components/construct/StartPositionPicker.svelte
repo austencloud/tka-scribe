@@ -312,7 +312,7 @@
     const defaultEndPositions: Record<string, string> = {
       α: "alpha1", // Alpha start position ends at alpha1
       β: "beta5", // Beta start position ends at beta5
-      γ: "gamma11", // Gamma start position ends at gamma11
+      Γ: "gamma11", // Gamma start position ends at gamma11
     };
 
     // Try to get from letter first

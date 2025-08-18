@@ -46,7 +46,7 @@ export class PictographRenderingService implements IPictographRenderingService {
 
       // 3. Calculate arrow positions using sophisticated positioning orchestrator
       const updatedPictographData =
-        this.arrowPositioning.calculateAllArrowPositions(data);
+        await this.arrowPositioning.calculateAllArrowPositions(data);
 
       // 4. Render arrows with sophisticated calculated positions
       for (const [color, arrowData] of Object.entries(

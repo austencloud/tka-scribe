@@ -150,7 +150,7 @@ instead of stores. It orchestrates the rendering of Grid, Props, Arrows, and Gly
   });
 
   // MANUAL ARROW POSITIONING: Calculate positions when needed without reactive loops
-  function calculateArrowPositions() {
+  async function calculateArrowPositions() {
     const data = effectivePictographData();
     if (!data?.arrows) {
       showArrows = true; // No arrows to position
@@ -160,7 +160,7 @@ instead of stores. It orchestrates the rendering of Grid, Props, Arrows, and Gly
     try {
       // Use the orchestrator's calculateAllArrowPositions() method - the ONLY positioning authority
       const updatedPictographData =
-        orchestrator.calculateAllArrowPositions(data);
+        await orchestrator.calculateAllArrowPositions(data);
 
       // Extract calculated positions and mirroring from the updated pictograph data
       const newPositions: Record<

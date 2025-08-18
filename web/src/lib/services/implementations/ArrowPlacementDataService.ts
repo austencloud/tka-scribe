@@ -8,6 +8,7 @@
 import { GridMode as DomainGridMode } from "$lib/domain";
 import type { GridMode } from "../interfaces/core-types";
 import { MotionType } from "$lib/domain/enums"; // ✅ Import from centralized enums
+import { jsonCache } from "../positioning/cache/SimpleJsonCache";
 
 // Placement data structure from JSON files
 export interface PlacementData {
@@ -122,15 +123,12 @@ export class ArrowPlacementDataService implements IArrowPlacementDataService {
   }
 
   /**
-   * Load JSON file with error handling
+   * Load JSON file with caching
    */
   private async loadJsonFile(path: string): Promise<PlacementData> {
     try {
-      const response = await fetch(path);
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-      }
-      return await response.json();
+      const data = await jsonCache.get(path);
+      return data as PlacementData;
     } catch (error) {
       console.warn(`Failed to load placement data from ${path}:`, error);
       return {};

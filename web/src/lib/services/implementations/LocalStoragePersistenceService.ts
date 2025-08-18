@@ -257,13 +257,26 @@ export class LocalStoragePersistenceService implements IPersistenceService {
     try {
       console.log("🧹 Clearing legacy cache and malformed sequences...");
 
-      // Clear all old TKA storage keys
+      // Keys to preserve (don't remove these important state keys)
+      const preserveKeys = [
+        "tka-app-tab-state-v2",
+        "tka-modern-web-settings",
+        "tka-browse-state-v2",
+        "tka-browse-filter-v2",
+        "tka-browse-sort-v2",
+        "tka-browse-view-v2",
+        "tka-browse-scroll-v2",
+        "tka-browse-selection-v2",
+      ];
+
+      // Clear all old TKA storage keys except preserved ones
       const keysToRemove: string[] = [];
       for (let i = 0; i < localStorage.length; i++) {
         const key = localStorage.key(i);
         if (
           key?.startsWith("tka-") &&
-          !key.startsWith(`tka-${this.CACHE_VERSION}-`)
+          !key.startsWith(`tka-${this.CACHE_VERSION}-`) &&
+          !preserveKeys.includes(key)
         ) {
           keysToRemove.push(key);
         }

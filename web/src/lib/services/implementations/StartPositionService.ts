@@ -199,7 +199,7 @@ export class StartPositionService implements IStartPositionService {
     let letter: string;
     if (key.includes("alpha")) letter = "α";
     else if (key.includes("beta")) letter = "β";
-    else if (key.includes("gamma")) letter = "γ";
+    else if (key.includes("gamma")) letter = "Γ";
     else letter = key;
 
     // Use correct locations based on legacy position mappings

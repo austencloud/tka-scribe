@@ -19,7 +19,7 @@
   import BrowseTab from "./tabs/BrowseTab.svelte";
   import ConstructTab from "./tabs/ConstructTab.svelte";
   import LearnTab from "./tabs/LearnTab.svelte";
-  import SequenceCardTab from "./tabs/SequenceCardTab.svelte";
+  import SequenceCardTab from "./tabs/sequence_card/SequenceCardTab.svelte";
   import WriteTab from "./tabs/WriteTab.svelte";
   import AboutTab from "./tabs/AboutTab.svelte";
   import MotionTesterTab from "./tabs/MotionTesterTab.svelte";

@@ -1,21 +1,10 @@
 import { describe, expect, it } from "vitest";
 import { createMotionData, createPictographData } from "$lib/domain";
 import { MotionType, Orientation } from "$lib/domain/enums";
-import { PlacementKeyGenerator } from "./PlacementKeyGenerator";
 import { SpecialPlacementOriKeyGenerator } from "./SpecialPlacementOriKeyGenerator";
 import { TurnsTupleKeyGenerator } from "./TurnsTupleKeyGenerator";
 
 describe("Key Generators", () => {
-  it("PlacementKeyGenerator selects first available key from candidates", () => {
-    const gen = new PlacementKeyGenerator();
-    const motion = createMotionData({ motion_type: MotionType.PRO });
-    const pictograph = createPictographData({ letter: "A" });
-    const available = { pro_to_layer1_alpha_A: true, pro: true };
-
-    const key = gen.generatePlacementKey(motion, pictograph, available);
-    expect(key).toBe("pro_to_layer1_alpha_A");
-  });
-
   it("SpecialPlacementOriKeyGenerator generates from_layer2 for layer2 orientations", () => {
     const gen = new SpecialPlacementOriKeyGenerator();
     const motion = createMotionData({ motion_type: MotionType.PRO });

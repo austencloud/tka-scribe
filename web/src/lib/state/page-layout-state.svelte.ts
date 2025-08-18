@@ -193,6 +193,10 @@ export function createPageLayoutState(
     if (paperSize !== size) {
       paperSize = size;
       layoutResult = null; // Reset layout calculation
+      // Manually regenerate pages if we have cached sequences
+      if (cachedSequences.length > 0) {
+        regeneratePages();
+      }
     }
   }
 
@@ -200,6 +204,10 @@ export function createPageLayoutState(
     if (orientation !== newOrientation) {
       orientation = newOrientation;
       layoutResult = null; // Reset layout calculation
+      // Manually regenerate pages if we have cached sequences
+      if (cachedSequences.length > 0) {
+        regeneratePages();
+      }
     }
   }
 
@@ -278,21 +286,9 @@ export function createPageLayoutState(
     error = null;
   }
 
-  // Auto-regenerate pages when layout configuration changes
-  $effect(() => {
-    // Watch for changes to layout configuration
-    const config = layoutConfig;
-
-    // Only regenerate if we have cached sequences and pages exist
-    if (cachedSequences.length > 0 && pages.length > 0) {
-      // Use a timeout to debounce rapid changes
-      const timeoutId = setTimeout(() => {
-        regeneratePages();
-      }, 300);
-
-      return () => clearTimeout(timeoutId);
-    }
-  });
+  // Note: Auto-regeneration disabled to prevent circular dependencies
+  // Layout changes should be handled manually by calling regeneratePages()
+  // when needed (e.g., when user changes paper size, orientation, etc.)
 
   // Initialize with sequences if provided
   if (initialSequences.length > 0) {

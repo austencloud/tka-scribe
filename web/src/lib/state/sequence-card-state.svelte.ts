@@ -11,6 +11,7 @@
  * Uses pure runes ($state, $derived, $effect) for all reactivity
  */
 
+import { untrack } from "svelte";
 import type { SequenceData } from "$lib/domain";
 import type {
   LayoutConfig,
@@ -466,21 +467,28 @@ export function createEnhancedSequenceCardState(
   const enhancedCurrentPageSequences = $derived(() => {
     if (sequenceCardState.layoutMode === "printable") {
       // In printable mode, return sequences from current printable page
-      const currentPage = pageLayoutState.pages[pageLayoutState.currentPage];
-      return currentPage?.sequences || [];
+      // Use untrack to prevent circular dependencies during page creation
+      return untrack(() => {
+        const currentPage = pageLayoutState.pages[pageLayoutState.currentPage];
+        return currentPage?.sequences || [];
+      });
     }
 
     // Original pagination logic for grid/list modes
     const startIndex =
       (sequenceCardState.currentPage - 1) * sequenceCardState.itemsPerPage;
     const endIndex = startIndex + sequenceCardState.itemsPerPage;
-    return enhancedFilteredSequences().slice(startIndex, endIndex);
+    return untrack(() => enhancedFilteredSequences()).slice(
+      startIndex,
+      endIndex
+    );
   });
 
   // Enhanced total pages calculation
   const enhancedTotalPages = $derived(() => {
     if (sequenceCardState.layoutMode === "printable") {
-      return pageLayoutState.totalPages;
+      // Use untrack to prevent circular dependencies during page creation
+      return untrack(() => pageLayoutState.totalPages);
     }
 
     return Math.ceil(
@@ -497,42 +505,62 @@ export function createEnhancedSequenceCardState(
       selectedLength,
       layoutMode,
     } = sequenceCardState;
-    const sequenceCount = enhancedFilteredSequences().length;
 
-    if (pageLayoutState.isLoading) {
-      return "Creating printable pages...";
-    }
+    // Use untrack to prevent circular dependencies during page operations
+    return untrack(() => {
+      const sequenceCount = enhancedFilteredSequences().length;
+      if (pageLayoutState.isLoading) {
+        return "Creating printable pages...";
+      }
 
-    if (pageLayoutState.error) {
-      return `Error: ${pageLayoutState.error}`;
-    }
+      if (pageLayoutState.error) {
+        return `Error: ${pageLayoutState.error}`;
+      }
 
-    if (isExporting) {
-      return `Exporting sequence cards... ${Math.round(exportProgress)}%`;
-    }
+      if (isExporting) {
+        return `Exporting sequence cards... ${Math.round(exportProgress)}%`;
+      }
 
-    if (isRegenerating) {
-      return `Regenerating images... ${Math.round(exportProgress)}%`;
-    }
+      if (isRegenerating) {
+        return `Regenerating images... ${Math.round(exportProgress)}%`;
+      }
 
-    if (sequenceCount === 0) {
-      return selectedLength === 0
-        ? "No sequences available"
-        : `No sequences found with ${selectedLength} beats`;
-    }
+      if (sequenceCount === 0) {
+        return selectedLength === 0
+          ? "No sequences available"
+          : `No sequences found with ${selectedLength} beats`;
+      }
 
-    if (layoutMode === "printable" && pageLayoutState.totalPages > 0) {
-      return `${pageLayoutState.totalPages} printable page${pageLayoutState.totalPages === 1 ? "" : "s"} created`;
-    }
+      if (layoutMode === "printable" && pageLayoutState.totalPages > 0) {
+        return `${pageLayoutState.totalPages} printable page${pageLayoutState.totalPages === 1 ? "" : "s"} created`;
+      }
 
-    const lengthText = selectedLength === 0 ? "all" : `${selectedLength}-beat`;
-    return `Displaying ${sequenceCount} ${lengthText} sequence${sequenceCount === 1 ? "" : "s"}`;
+      const lengthText =
+        selectedLength === 0 ? "all" : `${selectedLength}-beat`;
+      return `Displaying ${sequenceCount} ${lengthText} sequence${sequenceCount === 1 ? "" : "s"}`;
+    });
   });
 
   // Enhanced actions
+  let isSwitchingToPageView = false;
+
   async function switchToPageView(): Promise<void> {
-    sequenceCardState.layoutMode = "printable";
-    await pageLayoutState.createPages(enhancedFilteredSequences());
+    // Prevent recursive calls during page view switching
+    if (isSwitchingToPageView) {
+      console.log(
+        "🚫 switchToPageView: Already switching, skipping to prevent infinite loop"
+      );
+      return;
+    }
+
+    isSwitchingToPageView = true;
+
+    try {
+      sequenceCardState.layoutMode = "printable";
+      await pageLayoutState.createPages(enhancedFilteredSequences());
+    } finally {
+      isSwitchingToPageView = false;
+    }
   }
 
   function switchToGridView(): void {
@@ -545,28 +573,34 @@ export function createEnhancedSequenceCardState(
     }
   }
 
-  async function updateSequences(sequences: SequenceData[]): Promise<void> {
-    currentSequences = [...sequences];
+  // Guard to prevent recursive updates
+  let isUpdatingSequences = false;
 
-    if (sequenceCardState.layoutMode === "printable") {
-      await pageLayoutState.createPages(enhancedFilteredSequences());
+  async function updateSequences(sequences: SequenceData[]): Promise<void> {
+    // Prevent recursive calls that cause infinite loops
+    if (isUpdatingSequences) {
+      console.log(
+        "🚫 updateSequences: Already updating, skipping to prevent infinite loop"
+      );
+      return;
+    }
+
+    isUpdatingSequences = true;
+
+    try {
+      currentSequences = [...sequences];
+
+      // Only create pages if we're in printable mode and not already creating pages
+      if (
+        sequenceCardState.layoutMode === "printable" &&
+        !pageLayoutState.isLoading
+      ) {
+        await pageLayoutState.createPages(enhancedFilteredSequences());
+      }
+    } finally {
+      isUpdatingSequences = false;
     }
   }
-
-  // Auto-update pages when filter changes in printable mode
-  $effect(() => {
-    const filtered = enhancedFilteredSequences();
-    const layoutMode = sequenceCardState.layoutMode;
-
-    if (layoutMode === "printable" && pageLayoutState.pages.length > 0) {
-      // Debounce the page recreation
-      const timeoutId = setTimeout(() => {
-        pageLayoutState.createPages(filtered);
-      }, 300);
-
-      return () => clearTimeout(timeoutId);
-    }
-  });
 
   return {
     sequenceCardState,

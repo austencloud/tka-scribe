@@ -16,6 +16,7 @@
 import type { MotionData, PictographData } from "$lib/domain";
 import type { ISpecialPlacementService } from "../../placement-services";
 import { SpecialPlacementOriKeyGenerator } from "../key_generators/SpecialPlacementOriKeyGenerator";
+import { jsonCache } from "../../cache/SimpleJsonCache";
 
 // Define Point interface locally since it might not be in domain
 interface Point {
@@ -173,16 +174,7 @@ export class SpecialPlacementService implements ISpecialPlacementService {
       const encodedLetter = encodeURIComponent(letter);
       const basePath = `/data/arrow_placement/${gridMode}/special/${oriKey}/${encodedLetter}_placements.json`;
       try {
-        const response = await fetch(basePath);
-        if (!response.ok) {
-          console.debug(
-            `No special placement file for ${gridMode}/${oriKey}/${letter}: ${response.status} ${response.statusText}`
-          );
-          // Mark as empty to avoid re-fetching repeatedly
-          this.specialPlacements[gridMode][oriKey][letter] = {};
-          return;
-        }
-        const data = (await response.json()) as Record<string, unknown>;
+        const data = (await jsonCache.get(basePath)) as Record<string, unknown>;
         this.specialPlacements[gridMode][oriKey][letter] = data;
         console.debug(
           `Loaded special placements for ${gridMode}/${oriKey}/${letter}`

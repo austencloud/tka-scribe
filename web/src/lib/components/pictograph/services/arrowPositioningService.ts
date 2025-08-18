@@ -72,7 +72,7 @@ export class ArrowPositioningService {
     try {
       // Use the sophisticated positioning pipeline
       console.log(`🔧 Calling orchestrator.calculateArrowPosition...`);
-      const [x, y, rotation] = this.orchestrator.calculateArrowPosition(
+      const [x, y, rotation] = await this.orchestrator.calculateArrowPosition(
         arrowData,
         pictographData,
         motionData
@@ -84,39 +84,6 @@ export class ArrowPositioningService {
       return { x, y, rotation };
     } catch (error) {
       console.error("🚨 CRITICAL: Orchestrator positioning failed:", error);
-      console.error("This should never happen in production!");
-      throw error; // Don't hide orchestrator failures
-    }
-  }
-
-  /**
-   * Synchronous position calculation (may not include full adjustments)
-   */
-  calculatePositionSync(
-    arrowData: ArrowData,
-    motionData: MotionData,
-    pictographData: PictographData
-  ): ArrowPositionResult {
-    try {
-      console.log(`🎯 Calculating sync position for ${arrowData.color} arrow`);
-      console.log(
-        `Motion: ${motionData.motion_type}, Start: ${motionData.start_loc}, End: ${motionData.end_loc}`
-      );
-
-      // Use the synchronous positioning method
-      const [x, y, rotation] = this.orchestrator.calculateArrowPosition(
-        arrowData,
-        pictographData,
-        motionData
-      );
-
-      console.log(
-        `✅ Calculated sync position: (${x}, ${y}) rotation: ${rotation}°`
-      );
-
-      return { x, y, rotation };
-    } catch (error) {
-      console.error("🚨 CRITICAL: Sync positioning failed:", error);
       console.error("This should never happen in production!");
       throw error; // Don't hide orchestrator failures
     }

@@ -72,14 +72,7 @@
   <!-- Spacer -->
   <div class="toolbar-spacer"></div>
 
-  <!-- Status section -->
-  <div class="toolbar-section status-section">
-    {#if hasUnsavedChanges}
-      <span class="status-text unsaved"> ● Unsaved changes </span>
-    {:else}
-      <span class="status-text saved"> ✓ Saved </span>
-    {/if}
-  </div>
+
 </div>
 
 <style>
@@ -113,10 +106,6 @@
 
   .toolbar-spacer {
     flex: 1;
-  }
-
-  .status-section {
-    flex-shrink: 0;
   }
 
   .toolbar-button {
@@ -252,9 +241,6 @@
       order: 1;
     }
 
-    .status-section {
-      order: 0;
-    }
 
     .toolbar-button {
       flex: 1;
