@@ -35,7 +35,10 @@ import type {
   ISequenceGenerationService,
 } from "../../interfaces/generation-interfaces";
 import type { IDeviceDetectionService } from "../../interfaces/device-interfaces";
-import type { IExportService, IPageImageExportService } from "../../interfaces/export-interfaces";
+import type {
+  IExportService,
+  IPageImageExportService,
+} from "../../interfaces/export-interfaces";
 import type { IPanelManagementService } from "../../interfaces/panel-interfaces";
 import { createServiceInterface } from "../types";
 

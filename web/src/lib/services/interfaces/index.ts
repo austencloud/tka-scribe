@@ -166,6 +166,51 @@ export type {
 } from "./export-interfaces";
 
 // ============================================================================
+// TKA IMAGE EXPORT INTERFACES
+// ============================================================================
+
+export type {
+  TKAImageExportOptions,
+  BeatRenderOptions,
+  TextRenderOptions,
+  CompositionOptions,
+  UserInfo,
+  LayoutData,
+  ITKAImageExportService,
+  ILayoutCalculationService,
+  IBeatRenderingService,
+  ITextRenderingService,
+  IImageCompositionService,
+  IFileExportService,
+  IDimensionCalculationService,
+  IGridOverlayService,
+  IReversalDetectionService,
+  IFontManagementService,
+  ICanvasManagementService,
+  IExportSettingsService,
+  ExportProgress,
+  ExportError,
+  ExportResult,
+  RenderQualitySettings,
+  LayoutConstraints,
+} from "./image-export-interfaces";
+
+export {
+  ITKAImageExportServiceInterface,
+  ILayoutCalculationServiceInterface,
+  IBeatRenderingServiceInterface,
+  ITextRenderingServiceInterface,
+  IImageCompositionServiceInterface,
+  IFileExportServiceInterface,
+  IDimensionCalculationServiceInterface,
+  IGridOverlayServiceInterface,
+  IReversalDetectionServiceInterface,
+  IFontManagementServiceInterface,
+  ICanvasManagementServiceInterface,
+  IExportSettingsServiceInterface,
+} from "./image-export-interfaces";
+
+// ============================================================================
 // PANEL INTERFACES
 // ============================================================================
 

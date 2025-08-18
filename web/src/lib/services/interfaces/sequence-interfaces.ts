@@ -3,7 +3,7 @@
  *
  * Interfaces for sequence management, creation, updates, and domain logic.
  * This includes both service contracts and related data structures.
- * 
+ *
  * Also includes page layout services for printable sequence card creation.
  */
 
@@ -102,7 +102,10 @@ export interface IPrintablePageLayoutService {
   /**
    * Calculate page dimensions for a given paper size and orientation
    */
-  calculatePageDimensions(paperSize: PaperSize, orientation: Orientation): PageDimensions;
+  calculatePageDimensions(
+    paperSize: PaperSize,
+    orientation: Orientation
+  ): PageDimensions;
 
   /**
    * Calculate margins for a given paper size
@@ -150,11 +153,7 @@ export interface IPrintablePageLayoutService {
   /**
    * Convert measurements between different units
    */
-  convertMeasurement(
-    value: number,
-    fromUnit: string,
-    toUnit: string
-  ): number;
+  convertMeasurement(value: number, fromUnit: string, toUnit: string): number;
 }
 
 /**
@@ -164,10 +163,7 @@ export interface IPageFactoryService {
   /**
    * Create pages from sequences using the given layout configuration
    */
-  createPages(
-    sequences: SequenceData[],
-    options: PageCreationOptions
-  ): Page[];
+  createPages(sequences: SequenceData[], options: PageCreationOptions): Page[];
 
   /**
    * Create a single empty page with optional message
@@ -181,10 +177,7 @@ export interface IPageFactoryService {
   /**
    * Calculate how many pages are needed for given sequences and layout
    */
-  calculatePagesNeeded(
-    sequenceCount: number,
-    sequencesPerPage: number
-  ): number;
+  calculatePagesNeeded(sequenceCount: number, sequencesPerPage: number): number;
 
   /**
    * Distribute sequences across pages optimally
@@ -197,10 +190,7 @@ export interface IPageFactoryService {
   /**
    * Generate page numbering for a set of pages
    */
-  generatePageNumbers(
-    pageCount: number,
-    startNumber?: number
-  ): number[];
+  generatePageNumbers(pageCount: number, startNumber?: number): number[];
 
   /**
    * Validate page creation options
@@ -231,7 +221,7 @@ export interface ISequenceCardExportIntegrationService {
    */
   exportPrintablePagesAsImages(
     options?: {
-      format?: 'PNG' | 'JPEG' | 'WebP';
+      format?: "PNG" | "JPEG" | "WebP";
       quality?: number;
       scale?: number;
       filenamePrefix?: string;
@@ -245,7 +235,7 @@ export interface ISequenceCardExportIntegrationService {
   exportSelectedPages(
     pageIndices: number[],
     options?: {
-      format?: 'PNG' | 'JPEG' | 'WebP';
+      format?: "PNG" | "JPEG" | "WebP";
       quality?: number;
       scale?: number;
       filenamePrefix?: string;
@@ -276,7 +266,7 @@ export interface ISequenceCardExportIntegrationService {
    * Get default export options
    */
   getDefaultExportOptions(): {
-    format: 'PNG' | 'JPEG' | 'WebP';
+    format: "PNG" | "JPEG" | "WebP";
     quality: number;
     scale: number;
     filenamePrefix: string;
