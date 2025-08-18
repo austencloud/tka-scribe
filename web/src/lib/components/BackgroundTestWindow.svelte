@@ -2,10 +2,11 @@
 <script lang="ts">
   import BackgroundCanvas from "./backgrounds/BackgroundCanvas.svelte";
   import BackgroundProvider from "./backgrounds/BackgroundProvider.svelte";
-  import type { BackgroundType, QualityLevel } from "./backgrounds/types/types";
+  import { BackgroundType } from "./backgrounds/types/types";
+  import type { QualityLevel } from "./backgrounds/types/types";
 
   // State for testing
-  let currentBackground = $state<BackgroundType>("aurora");
+  let currentBackground = $state<BackgroundType>(BackgroundType.AURORA);
   let currentQuality = $state<QualityLevel>("medium");
   let isVisible = $state(true);
 
@@ -16,23 +17,23 @@
     description: string;
   }[] = [
     {
-      value: "snowfall",
+      value: BackgroundType.SNOWFALL,
       label: "Snowfall",
       description: "Gentle falling snowflakes with shooting stars",
     },
     {
-      value: "nightSky",
+      value: BackgroundType.NIGHT_SKY,
       label: "Night Sky",
       description: "Starry night with celestial bodies and shooting stars",
     },
     {
-      value: "aurora",
+      value: BackgroundType.AURORA,
       label: "Aurora",
       description: "Colorful aurora with animated blobs and sparkles",
     },
 
     {
-      value: "bubbles",
+      value: BackgroundType.BUBBLES,
       label: "Bubbles",
       description: "Underwater scene with floating bubbles and light rays",
     },

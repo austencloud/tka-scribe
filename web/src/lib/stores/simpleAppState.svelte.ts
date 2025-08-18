@@ -4,12 +4,21 @@
  */
 
 import type { AppSettings } from "$services/interfaces/application-interfaces";
+import { BackgroundType } from "$lib/components/backgrounds/types/types";
 
 // ============================================================================
 // SIMPLE STATE - No over-engineering!
 // ============================================================================
 
-type TabId = "construct" | "browse" | "sequence_card" | "write" | "learn";
+type TabId =
+  | "construct"
+  | "browse"
+  | "sequence_card"
+  | "write"
+  | "learn"
+  | "about"
+  | "motion-tester"
+  | "arrow-debug";
 
 const appState = $state({
   // Core UI state
@@ -29,7 +38,7 @@ const appState = $state({
   settings: {
     theme: "dark",
     backgroundEnabled: true,
-    backgroundType: "aurora",
+    backgroundType: BackgroundType.NIGHT_SKY,
     backgroundQuality: "medium",
     animationsEnabled: true,
     gridMode: "diamond",

@@ -19,10 +19,10 @@ export interface ArrowPositionResult {
 }
 
 export interface ArrowPositioningInput {
-  arrow_type: MotionColor;
-  motion_type: string;
+  arrowType: MotionColor;
+  motionType: string;
   location: string;
-  grid_mode: string;
+  gridMode: string;
   turns: number;
   letter?: string;
   start_orientation?: string;
@@ -56,7 +56,7 @@ export class ArrowPositioningService {
       `🎯 ArrowPositioningService.calculatePosition called for ${arrowData.color} arrow`
     );
     console.log(`Arrow data:`, {
-      motion_type: arrowData.motion_type,
+      motionType: arrowData.motionType,
       start_orientation: arrowData.start_orientation,
       end_orientation: arrowData.end_orientation,
       turns: arrowData.turns,
@@ -64,7 +64,7 @@ export class ArrowPositioningService {
       position_y: arrowData.position_y,
     });
     console.log(`Motion data:`, {
-      motion_type: motionData.motion_type,
+      motionType: motionData.motionType,
       start_loc: motionData.start_loc,
       end_loc: motionData.end_loc,
       turns: motionData.turns,
@@ -113,26 +113,26 @@ export class ArrowPositioningService {
     input: ArrowPositioningInput
   ): Promise<Position> {
     const arrowData: ArrowData = {
-      color: input.arrow_type,
-      arrow_type: input.arrow_type === "blue" ? ArrowType.BLUE : ArrowType.RED,
+      color: input.arrowType,
+      arrowType: input.arrowType === "blue" ? ArrowType.BLUE : ArrowType.RED,
       location: input.location,
-      motion_type: input.motion_type,
+      motionType: input.motionType,
     } as ArrowData;
 
     const motionData: MotionData = {
-      motion_type: input.motion_type,
+      motionType: input.motionType,
       start_loc: input.location,
-      start_ori: input.start_orientation || "in",
-      end_ori: input.end_orientation || "in",
-      prop_rot_dir: "cw",
+      startOrientation: input.start_orientation || "in",
+      endOrientation: input.end_orientation || "in",
+      rotationDirection: "cw",
       turns: input.turns,
     } as MotionData;
 
     const pictographData: PictographData = {
       letter: input.letter || "A",
-      grid_mode: input.grid_mode,
+      gridMode: input.gridMode,
       motions: {
-        [input.arrow_type]: motionData,
+        [input.arrowType]: motionData,
       },
     } as PictographData;
 

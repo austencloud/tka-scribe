@@ -144,9 +144,9 @@ export class MetadataAnalysisService implements IMetadataAnalysisService {
       const beatNumber = index + 1;
 
       // Check blue motion
-      if (beat.blue_attributes) {
-        const blueMotion = (beat.blue_attributes as { motion_type?: string })
-          ?.motion_type;
+      if (beat.blueAttributes) {
+        const blueMotion = (beat.blueAttributes as { motionType?: string })
+          ?.motionType;
         if (blueMotion && !this.config.validMotionTypes.includes(blueMotion)) {
           invalidTypes.push({
             beat: beatNumber,
@@ -157,9 +157,9 @@ export class MetadataAnalysisService implements IMetadataAnalysisService {
       }
 
       // Check red motion
-      if (beat.red_attributes) {
-        const redMotion = (beat.red_attributes as { motion_type?: string })
-          ?.motion_type;
+      if (beat.redAttributes) {
+        const redMotion = (beat.redAttributes as { motionType?: string })
+          ?.motionType;
         if (redMotion && !this.config.validMotionTypes.includes(redMotion)) {
           invalidTypes.push({
             beat: beatNumber,
@@ -357,7 +357,7 @@ export class MetadataAnalysisService implements IMetadataAnalysisService {
       }
 
       // Check motion data
-      if (!beat.blue_attributes && !beat.red_attributes) {
+      if (!beat.blueAttributes && !beat.redAttributes) {
         missingMotionData.push(beatNumber);
       }
     });

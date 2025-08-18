@@ -1,13 +1,12 @@
 <!-- SettingsDialog.svelte - Simplified main settings dialog -->
 <script lang="ts">
-  import type { BackgroundType } from "$lib/components/backgrounds/types/types";
+  import { BackgroundType } from "$lib/components/backgrounds/types/types";
   import {
     getSettings,
     getShowSettings,
     hideSettingsDialog,
     updateSettings,
-  } from "$lib/state/app-state.svelte";
-
+  } from "$lib/state/appState.svelte";
   import SettingsSidebar from "./settings/SettingsSidebar.svelte";
   import BackgroundTab from "./settings/tabs/BackgroundTab.svelte";
   import CodexExporterTab from "./settings/tabs/CodexExporterTab.svelte";
@@ -21,7 +20,7 @@
 
   // Simplified background settings for new BackgroundTab
   const backgroundSettings = $derived(() => ({
-    backgroundType: settings.backgroundType || "aurora",
+    backgroundType: settings.backgroundType || BackgroundType.NIGHT_SKY,
   }));
 
   // Simplified tab configuration

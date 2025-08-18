@@ -9,10 +9,10 @@ import type { MotionData } from "$lib/domain";
 
 export class ShiftLocationCalculator {
   calculateLocation(motion: MotionData): string {
-    const startLoc = motion.start_loc?.toLowerCase();
+    const startLocation = motion.start_loc?.toLowerCase();
     const endLoc = motion.end_loc?.toLowerCase();
 
-    if (!startLoc || !endLoc) {
+    if (!startLocation || !endLoc) {
       console.warn("Missing start_loc or end_loc for shift motion");
       return "ne";
     }
@@ -36,11 +36,11 @@ export class ShiftLocationCalculator {
       "n-w": "nw",
     };
 
-    const pairKey = `${startLoc}-${endLoc}`;
+    const pairKey = `${startLocation}-${endLoc}`;
     const location = directionPairs[pairKey];
 
     if (!location) {
-      console.warn(`Unknown direction pair: ${startLoc} -> ${endLoc}`);
+      console.warn(`Unknown direction pair: ${startLocation} -> ${endLoc}`);
       return "n"; // Default to north instead of center
     }
 

@@ -31,9 +31,11 @@ export function determineReversalCategory(
 
   // Check if rotation directions continue or reverse
   const redContinuous =
-    lastBeat.motions.red.prop_rot_dir === option.motions.red.prop_rot_dir;
+    lastBeat.motions.red.rotationDirection ===
+    option.motions.red.rotationDirection;
   const blueContinuous =
-    lastBeat.motions.blue.prop_rot_dir === option.motions.blue.prop_rot_dir;
+    lastBeat.motions.blue.rotationDirection ===
+    option.motions.blue.rotationDirection;
 
   if (redContinuous && blueContinuous) {
     return "continuous";
@@ -56,9 +58,9 @@ export function determineGroupKey(
     case "type":
       return getLetterType(option.letter || null);
     case "endPosition": {
-      const endPos = option.end_position;
-      if (typeof endPos === "string") {
-        return endPos;
+      const endPosition = option.endPosition;
+      if (typeof endPosition === "string") {
+        return endPosition;
       }
       const metaEndPos = option.metadata?.endPosition;
       if (typeof metaEndPos === "string") {
@@ -203,14 +205,14 @@ export function getSorter(
     case "endPosition":
       return (a, b) => {
         const posA =
-          typeof a.end_position === "string"
-            ? a.end_position
+          typeof a.endPosition === "string"
+            ? a.endPosition
             : typeof a.metadata?.endPosition === "string"
               ? a.metadata.endPosition
               : "";
         const posB =
-          typeof b.end_position === "string"
-            ? b.end_position
+          typeof b.endPosition === "string"
+            ? b.endPosition
             : typeof b.metadata?.endPosition === "string"
               ? b.metadata.endPosition
               : "";
@@ -319,13 +321,14 @@ export function getOptionsSummary(options: PictographData[]): {
     summary.byType[type] = (summary.byType[type] || 0) + 1;
 
     // Count by end position
-    const endPos =
-      typeof option.end_position === "string"
-        ? option.end_position
+    const endPosition =
+      typeof option.endPosition === "string"
+        ? option.endPosition
         : typeof option.metadata?.endPosition === "string"
           ? option.metadata.endPosition
           : "Unknown";
-    summary.byEndPosition[endPos] = (summary.byEndPosition[endPos] || 0) + 1;
+    summary.byEndPosition[endPosition] =
+      (summary.byEndPosition[endPosition] || 0) + 1;
   });
 
   return summary;

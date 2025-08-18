@@ -20,18 +20,18 @@ export interface CsvDataSet {
 
 export interface ParsedCsvRow {
   letter: string;
-  startPos: string;
-  endPos: string;
+  startPosition: string;
+  endPosition: string;
   timing: string;
   direction: string;
   blueMotionType: string;
-  bluePropRotDir: string;
-  blueStartLoc: string;
-  blueEndLoc: string;
+  blueRotationDirection: string;
+  blueStartLocation: string;
+  blueEndLocation: string;
   redMotionType: string;
-  redPropRotDir: string;
-  redStartLoc: string;
-  redEndLoc: string;
+  redRotationDirection: string;
+  redStartLocation: string;
+  redEndLocation: string;
   // Add index signature to make it compatible with Record<string, string>
   [key: string]: string;
 }
@@ -125,9 +125,9 @@ export class CsvDataService {
       // Get the appropriate dataset based on grid mode
       const dataset = this.parsedData[gridMode];
 
-      // Filter options where startPos matches the endPosition (positional continuity)
+      // Filter options where startPosition matches the endPosition (positional continuity)
       const matchingOptions = dataset.filter(
-        (row) => row.startPos === endPosition
+        (row) => row.startPosition === endPosition
       );
 
       return matchingOptions;
@@ -163,18 +163,18 @@ export class CsvDataService {
       // Type-safe conversion to ParsedCsvRow
       data.push({
         letter: row.letter || "",
-        startPos: row.startPos || "",
-        endPos: row.endPos || "",
+        startPosition: row.startPosition || "",
+        endPosition: row.endPosition || "",
         timing: row.timing || "",
         direction: row.direction || "",
         blueMotionType: row.blueMotionType || "",
-        bluePropRotDir: row.bluePropRotDir || "",
-        blueStartLoc: row.blueStartLoc || "",
-        blueEndLoc: row.blueEndLoc || "",
+        blueRotationDirection: row.blueRotationDirection || "",
+        blueStartLocation: row.blueStartLocation || "",
+        blueEndLocation: row.blueEndLocation || "",
         redMotionType: row.redMotionType || "",
-        redPropRotDir: row.redPropRotDir || "",
-        redStartLoc: row.redStartLoc || "",
-        redEndLoc: row.redEndLoc || "",
+        redRotationDirection: row.redRotationDirection || "",
+        redStartLocation: row.redStartLocation || "",
+        redEndLocation: row.redEndLocation || "",
       });
     }
 
@@ -188,7 +188,9 @@ export class CsvDataService {
     if (!this.parsedData) return [];
 
     const dataset = this.parsedData[gridMode];
-    const startPositions = [...new Set(dataset.map((row) => row.startPos))];
+    const startPositions = [
+      ...new Set(dataset.map((row) => row.startPosition)),
+    ];
     return startPositions.sort();
   }
 
@@ -199,7 +201,7 @@ export class CsvDataService {
     if (!this.parsedData) return [];
 
     const dataset = this.parsedData[gridMode];
-    const endPositions = [...new Set(dataset.map((row) => row.endPos))];
+    const endPositions = [...new Set(dataset.map((row) => row.endPosition))];
     return endPositions.sort();
   }
 

@@ -17,9 +17,9 @@ describe("OptionPickerSection", () => {
     {
       id: "test-1",
       letter: "A",
-      end_position: "beta1",
+      endPosition: "beta1",
       grid_data: {
-        grid_mode: "diamond",
+        gridMode: "diamond",
         center_x: 475,
         center_y: 475,
         radius: 400,
@@ -29,16 +29,16 @@ describe("OptionPickerSection", () => {
       props: {},
       motions: {},
       beat: 1,
-      is_blank: false,
-      is_mirrored: false,
+      isBlank: false,
+      isMirrored: false,
       metadata: {},
     } as PictographData,
     {
       id: "test-2",
       letter: "B",
-      end_position: "beta2",
+      endPosition: "beta2",
       grid_data: {
-        grid_mode: "diamond",
+        gridMode: "diamond",
         center_x: 475,
         center_y: 475,
         radius: 400,
@@ -48,8 +48,8 @@ describe("OptionPickerSection", () => {
       props: {},
       motions: {},
       beat: 1,
-      is_blank: false,
-      is_mirrored: false,
+      isBlank: false,
+      isMirrored: false,
       metadata: {},
     } as PictographData,
   ];

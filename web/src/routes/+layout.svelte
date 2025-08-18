@@ -47,7 +47,9 @@
 </script>
 
 <svelte:head>
-  <title>TKA - The Kinetic Constructor</title>
+  <!-- Default title only if page doesn't set one -->
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width" />
 </svelte:head>
 
 {#if initializationError}

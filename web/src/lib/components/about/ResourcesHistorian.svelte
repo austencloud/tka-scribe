@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { ResourceModalData } from "$lib/stores/modalStore";
+  import type { ResourceModalData } from "$lib/components/resource-guide/types";
   import { createModalState } from "$lib/state/modal-state.svelte";
   import ResourceModal from "$lib/components/resource-guide/ResourceModal.svelte";
   import VTGContent from "$lib/components/resource-guide/content/VTGContent.svelte";

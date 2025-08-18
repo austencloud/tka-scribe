@@ -18,7 +18,7 @@
   import StartPositionPicker from "./StartPositionPicker.svelte";
   // Import fade transition for smooth switching
   import { GridMode } from "$domain/enums";
-  import { getSettings } from "$lib/state/app-state.svelte";
+  import { getSettings } from "$lib/state/appState.svelte";
   import { fade } from "svelte/transition";
 
   // Create component-scoped state using factory functions - lazily
@@ -60,12 +60,12 @@
       sequenceState.setCurrentSequence(singletonSequence);
     }
 
-    // IMPORTANT: Also sync when start_position changes
+    // IMPORTANT: Also sync when startPosition changes
     if (
       singletonSequence &&
       componentSequence &&
       singletonSequence.id === componentSequence.id &&
-      singletonSequence.start_position !== componentSequence.start_position
+      singletonSequence.startPosition !== componentSequence.startPosition
     ) {
       sequenceState.setCurrentSequence(singletonSequence);
     }
@@ -87,7 +87,7 @@
   let shouldShowStartPositionPicker = $derived.by(() => {
     // CRITICAL FIX: Use singleton state directly for immediate reactivity
     const singletonSequence = sequenceStateService.currentSequence;
-    const shouldShow = !singletonSequence || !singletonSequence.start_position;
+    const shouldShow = !singletonSequence || !singletonSequence.startPosition;
 
     return shouldShow;
   });
@@ -103,12 +103,14 @@
       const redMotion = pictograph.motions?.red;
 
       if (blueMotion && redMotion) {
-        const blueEndLoc = blueMotion.end_loc || blueMotion.start_loc;
-        const blueEndOri = blueMotion.end_ori || blueMotion.start_ori;
-        const redEndLoc = redMotion.end_loc || redMotion.start_loc;
-        const redEndOri = redMotion.end_ori || redMotion.start_ori;
+        const blueEndLocation = blueMotion.end_loc || blueMotion.start_loc;
+        const blueEndOri =
+          blueMotion.endOrientation || blueMotion.startOrientation;
+        const redEndLocation = redMotion.end_loc || redMotion.start_loc;
+        const redEndOri =
+          redMotion.endOrientation || redMotion.startOrientation;
 
-        return `${blueEndLoc}_${blueEndOri}-${redEndLoc}_${redEndOri}`;
+        return `${blueEndLocation}_${blueEndOri}-${redEndLocation}_${redEndOri}`;
       }
 
       // Fallback to ID-based extraction

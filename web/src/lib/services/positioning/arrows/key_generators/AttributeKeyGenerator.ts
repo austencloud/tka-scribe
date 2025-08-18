@@ -45,9 +45,9 @@ export class AttributeKeyGenerator implements IAttributeKeyGenerator {
       }
 
       // Extract required attributes
-      const motionType = motionData.motion_type || "";
+      const motionType = motionData.motionType || "";
       const letter = pictographData.letter || "";
-      const startOri = motionData.start_ori || "";
+      const startOri = motionData.startOrientation || "";
       const color = arrowData.color;
 
       // For modern data, we don't have lead_state, so use undefined
@@ -159,8 +159,8 @@ export class AttributeKeyGenerator implements IAttributeKeyGenerator {
       }
 
       // Different motion types indicate hybrid
-      const blueType = blueMotion.motion_type || "";
-      const redType = redMotion.motion_type || "";
+      const blueType = blueMotion.motionType || "";
+      const redType = redMotion.motionType || "";
 
       return blueType !== redType;
     } catch {
@@ -189,8 +189,8 @@ export class AttributeKeyGenerator implements IAttributeKeyGenerator {
         return false;
       }
 
-      const blueStart = blueMotion.start_ori || "";
-      const redStart = redMotion.start_ori || "";
+      const blueStart = blueMotion.startOrientation || "";
+      const redStart = redMotion.startOrientation || "";
 
       // Mixed if one is layer1 (IN/OUT) and other is layer2 (CLOCK/COUNTER)
       const blueLayer1 = [IN, OUT].includes(blueStart);

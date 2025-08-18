@@ -95,7 +95,7 @@ export class SequenceService implements ISequenceService {
       // Update the sequence with the start position
       const updatedSequence = {
         ...currentSequence,
-        start_position: startPosition,
+        startPosition: startPosition,
       } as SequenceData;
 
       await this.persistenceService.saveSequence(updatedSequence);
@@ -185,7 +185,7 @@ export class SequenceService implements ISequenceService {
         duration: 1.0,
         blue_reversal: false,
         red_reversal: false,
-        is_blank: true,
+        isBlank: true,
         pictograph_data: null,
         metadata: {},
         ...beatData,
@@ -281,11 +281,11 @@ export class SequenceService implements ISequenceService {
         duration: 1,
         blue_reversal: false,
         red_reversal: false,
-        is_blank: false,
+        isBlank: false,
         pictograph_data: {
           id: `pictograph-${step.beat}`,
           grid_data: {
-            grid_mode: (meta.grid_mode as GridMode) || GridMode.DIAMOND,
+            gridMode: (meta.gridMode as GridMode) || GridMode.DIAMOND,
             center_x: 0,
             center_y: 0,
             radius: 100,
@@ -295,58 +295,58 @@ export class SequenceService implements ISequenceService {
           props: {},
           motions: {
             blue: {
-              motion_type:
-                ((step.blue_attributes as Record<string, unknown>)
-                  ?.motion_type as MotionType) || MotionType.STATIC,
+              motionType:
+                ((step.blueAttributes as Record<string, unknown>)
+                  ?.motionType as MotionType) || MotionType.STATIC,
               start_loc:
-                ((step.blue_attributes as Record<string, unknown>)
+                ((step.blueAttributes as Record<string, unknown>)
                   ?.start_loc as Location) || Location.SOUTH,
               end_loc:
-                ((step.blue_attributes as Record<string, unknown>)
+                ((step.blueAttributes as Record<string, unknown>)
                   ?.end_loc as Location) || Location.SOUTH,
-              start_ori:
-                ((step.blue_attributes as Record<string, unknown>)
-                  ?.start_ori as Orientation) || Orientation.IN,
-              end_ori: (step.blue_attributes as Record<string, unknown>)
-                ?.end_ori as Orientation, // Don't set default - let it be undefined
-              prop_rot_dir:
-                ((step.blue_attributes as Record<string, unknown>)
-                  ?.prop_rot_dir as RotationDirection) ||
+              startOrientation:
+                ((step.blueAttributes as Record<string, unknown>)
+                  ?.startOrientation as Orientation) || Orientation.IN,
+              endOrientation: (step.blueAttributes as Record<string, unknown>)
+                ?.endOrientation as Orientation, // Don't set default - let it be undefined
+              rotationDirection:
+                ((step.blueAttributes as Record<string, unknown>)
+                  ?.rotationDirection as RotationDirection) ||
                 RotationDirection.NO_ROTATION,
               turns:
-                ((step.blue_attributes as Record<string, unknown>)
+                ((step.blueAttributes as Record<string, unknown>)
                   ?.turns as number) || 0,
               is_visible: true,
             },
             red: {
-              motion_type:
-                ((step.red_attributes as Record<string, unknown>)
-                  ?.motion_type as MotionType) || MotionType.STATIC,
+              motionType:
+                ((step.redAttributes as Record<string, unknown>)
+                  ?.motionType as MotionType) || MotionType.STATIC,
               start_loc:
-                ((step.red_attributes as Record<string, unknown>)
+                ((step.redAttributes as Record<string, unknown>)
                   ?.start_loc as Location) || Location.SOUTH,
               end_loc:
-                ((step.red_attributes as Record<string, unknown>)
+                ((step.redAttributes as Record<string, unknown>)
                   ?.end_loc as Location) || Location.SOUTH,
-              start_ori:
-                ((step.red_attributes as Record<string, unknown>)
-                  ?.start_ori as Orientation) || Orientation.IN,
-              end_ori: (step.red_attributes as Record<string, unknown>)
-                ?.end_ori as Orientation, // Don't set default - let it be undefined
-              prop_rot_dir:
-                ((step.red_attributes as Record<string, unknown>)
-                  ?.prop_rot_dir as RotationDirection) ||
+              startOrientation:
+                ((step.redAttributes as Record<string, unknown>)
+                  ?.startOrientation as Orientation) || Orientation.IN,
+              endOrientation: (step.redAttributes as Record<string, unknown>)
+                ?.endOrientation as Orientation, // Don't set default - let it be undefined
+              rotationDirection:
+                ((step.redAttributes as Record<string, unknown>)
+                  ?.rotationDirection as RotationDirection) ||
                 RotationDirection.NO_ROTATION,
               turns:
-                ((step.red_attributes as Record<string, unknown>)
+                ((step.redAttributes as Record<string, unknown>)
                   ?.turns as number) || 0,
               is_visible: true,
             },
           },
           letter: (step.letter as string) || "",
           beat: step.beat as number,
-          is_blank: false,
-          is_mirrored: false,
+          isBlank: false,
+          isMirrored: false,
           metadata: {},
         },
         metadata: {},
@@ -364,7 +364,7 @@ export class SequenceService implements ISequenceService {
       author: (meta.author as string) || "Unknown",
       level: (meta.level as number) || 1,
       date_added: new Date((meta.date_added as string | number) || Date.now()),
-      grid_mode: (meta.grid_mode as string) || "diamond",
+      gridMode: (meta.gridMode as string) || "diamond",
       prop_type: (meta.prop_type as string) || "unknown",
       is_favorite: (meta.is_favorite as boolean) || false,
       is_circular: (meta.is_circular as boolean) || false,

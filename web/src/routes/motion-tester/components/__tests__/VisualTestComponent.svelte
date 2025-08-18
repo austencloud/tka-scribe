@@ -23,7 +23,7 @@
       gridType: "diamond",
       blueMotionParams: {
         motionType: "pro",
-        startLoc: "n",
+        startLocation: "n",
         endLoc: "s",
         startOri: "in",
         endOri: "out",
@@ -32,7 +32,7 @@
       },
       redMotionParams: {
         motionType: "anti",
-        startLoc: "e",
+        startLocation: "e",
         endLoc: "w",
         startOri: "out",
         endOri: "in",
@@ -45,7 +45,7 @@
       gridType: "box",
       blueMotionParams: {
         motionType: "float",
-        startLoc: "ne",
+        startLocation: "ne",
         endLoc: "sw",
         startOri: "clock",
         endOri: "counter",
@@ -54,7 +54,7 @@
       },
       redMotionParams: {
         motionType: "float",
-        startLoc: "nw",
+        startLocation: "nw",
         endLoc: "se",
         startOri: "counter",
         endOri: "clock",
@@ -67,7 +67,7 @@
       gridType: "diamond",
       blueMotionParams: {
         motionType: "dash",
-        startLoc: "n",
+        startLocation: "n",
         endLoc: "n",
         startOri: "in",
         endOri: "in",
@@ -76,7 +76,7 @@
       },
       redMotionParams: {
         motionType: "dash",
-        startLoc: "s",
+        startLocation: "s",
         endLoc: "s",
         startOri: "out",
         endOri: "out",
@@ -89,7 +89,7 @@
       gridType: "box",
       blueMotionParams: {
         motionType: "static",
-        startLoc: "w",
+        startLocation: "w",
         endLoc: "w",
         startOri: "in",
         endOri: "in",
@@ -98,7 +98,7 @@
       },
       redMotionParams: {
         motionType: "static",
-        startLoc: "e",
+        startLocation: "e",
         endLoc: "e",
         startOri: "out",
         endOri: "out",
@@ -176,13 +176,13 @@
               <li>
                 <strong>Blue Motion:</strong>
                 {result.config.blueMotionParams.motionType}
-                ({result.config.blueMotionParams.startLoc} → {result.config
+                ({result.config.blueMotionParams.startLocation} → {result.config
                   .blueMotionParams.endLoc})
               </li>
               <li>
                 <strong>Red Motion:</strong>
                 {result.config.redMotionParams.motionType}
-                ({result.config.redMotionParams.startLoc} → {result.config
+                ({result.config.redMotionParams.startLocation} → {result.config
                   .redMotionParams.endLoc})
               </li>
             </ul>

@@ -3,8 +3,8 @@
   interface BeatData {
     letter?: string;
     sequence_start_position?: string;
-    blue_attributes?: { motion_type?: string };
-    red_attributes?: { motion_type?: string };
+    blueAttributes?: { motionType?: string };
+    redAttributes?: { motionType?: string };
     [key: string]: any;
   }
 
@@ -51,13 +51,13 @@
               <div class="motion-item blue">
                 <span class="prop-label">🔵 Blue:</span>
                 <span class="motion-type">
-                  {beat.blue_attributes?.motion_type || "Unknown"}
+                  {beat.blueAttributes?.motionType || "Unknown"}
                 </span>
               </div>
               <div class="motion-item red">
                 <span class="prop-label">🔴 Red:</span>
                 <span class="motion-type">
-                  {beat.red_attributes?.motion_type || "Unknown"}
+                  {beat.redAttributes?.motionType || "Unknown"}
                 </span>
               </div>
             </div>

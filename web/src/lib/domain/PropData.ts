@@ -5,12 +5,12 @@
  * Based on modern desktop app's prop_data.py
  */
 
-import { Orientation, PropType, RotationDirection } from "./enums";
+import { MotionColor, Orientation, PropType, RotationDirection } from "./enums";
 
 export interface PropData {
   readonly id: string;
   readonly prop_type: PropType;
-  readonly color: string;
+  readonly color: MotionColor;
   readonly orientation: Orientation;
   readonly rotation_direction: RotationDirection;
 
@@ -31,7 +31,7 @@ export function createPropData(data: Partial<PropData> = {}): PropData {
   return {
     id: data.id ?? crypto.randomUUID(),
     prop_type: data.prop_type ?? PropType.STAFF,
-    color: data.color ?? "blue",
+    color: data.color ?? MotionColor.BLUE,
     orientation: data.orientation ?? Orientation.IN,
     rotation_direction:
       data.rotation_direction ?? RotationDirection.NO_ROTATION,

@@ -2,10 +2,10 @@
 <script lang="ts">
   import ThumbnailBrowser from "./components/ThumbnailBrowser.svelte";
   import MetadataDisplay from "./components/MetadataDisplay.svelte";
-  import { createMetadataTesterState } from "./state/metadata-tester-state.svelte";
+  import { createMetadataTestingStateManager } from "$lib/services/metadata-testing";
 
-  // Initialize the metadata tester state
-  const state = createMetadataTesterState();
+  // Initialize the clean, modular metadata testing state
+  const state = createMetadataTestingStateManager();
 </script>
 
 <div class="metadata-tester-container">

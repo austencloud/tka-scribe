@@ -72,7 +72,7 @@
       name: word,
       beatCount,
       isEmpty: beatCount === 0,
-      hasStartPosition: !!currentSequence.start_position,
+      hasStartPosition: !!currentSequence.startPosition,
     };
   });
 

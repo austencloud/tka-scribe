@@ -154,7 +154,7 @@ export class AnswerCheckerService {
     } as AnswerResult;
     if (!isCorrect) {
       (base as AnswerResult).explanation =
-        `The correct pictograph must start where the previous one ends (${(initialPictograph as Record<string, unknown>)?.end_pos}).`;
+        `The correct pictograph must start where the previous one ends (${(initialPictograph as Record<string, unknown>)?.endPosition}).`;
     }
     return base;
   }
@@ -170,9 +170,9 @@ export class AnswerCheckerService {
 
     return (
       pictograph1.letter === pictograph2.letter &&
-      pictograph1.start_pos === pictograph2.start_pos &&
-      pictograph1.end_pos === pictograph2.end_pos &&
-      pictograph1.grid_mode === pictograph2.grid_mode
+      pictograph1.startPosition === pictograph2.startPosition &&
+      pictograph1.endPosition === pictograph2.endPosition &&
+      pictograph1.gridMode === pictograph2.gridMode
     );
   }
 
@@ -186,7 +186,7 @@ export class AnswerCheckerService {
     if (!firstPictograph || !secondPictograph) return false;
 
     // The second pictograph's start position must match the first's end position
-    return firstPictograph.end_pos === secondPictograph.start_pos;
+    return firstPictograph.endPosition === secondPictograph.startPosition;
   }
 
   /**
@@ -221,8 +221,8 @@ export class AnswerCheckerService {
         return Boolean(
           answer &&
             typeof answer === "object" &&
-            "start_pos" in answer &&
-            "end_pos" in answer
+            "startPosition" in answer &&
+            "endPosition" in answer
         );
       default:
         return false;

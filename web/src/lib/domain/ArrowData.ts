@@ -5,17 +5,23 @@
  * Based on modern desktop app's arrow_data.py
  */
 
-import { ArrowType, MotionType, Orientation, RotationDirection } from "./enums";
+import {
+  ArrowType,
+  MotionColor,
+  MotionType,
+  Orientation,
+  RotationDirection,
+} from "./enums";
 
 export interface ArrowData {
   readonly id: string;
-  readonly arrow_type: ArrowType;
-  readonly color: string;
+  readonly arrowType: ArrowType;
+  readonly color: MotionColor;
   readonly turns: number;
-  readonly is_mirrored: boolean;
+  readonly isMirrored: boolean;
 
   // Motion properties
-  readonly motion_type: string;
+  readonly motionType: string;
   readonly start_orientation: string;
   readonly end_orientation: string;
   readonly rotation_direction: string;
@@ -37,11 +43,11 @@ export interface ArrowData {
 export function createArrowData(data: Partial<ArrowData> = {}): ArrowData {
   return {
     id: data.id ?? crypto.randomUUID(),
-    arrow_type: data.arrow_type ?? ArrowType.BLUE,
-    color: data.color ?? "blue",
+    arrowType: data.arrowType ?? ArrowType.BLUE,
+    color: data.color ?? MotionColor.BLUE,
     turns: data.turns ?? 0.0,
-    is_mirrored: data.is_mirrored ?? false,
-    motion_type: data.motion_type ?? MotionType.STATIC,
+    isMirrored: data.isMirrored ?? false,
+    motionType: data.motionType ?? MotionType.STATIC,
     start_orientation: data.start_orientation ?? Orientation.IN,
     end_orientation: data.end_orientation ?? Orientation.IN,
     rotation_direction: data.rotation_direction ?? RotationDirection.CLOCKWISE,
@@ -70,10 +76,10 @@ export function updateArrowData(
 export function arrowDataToObject(arrow: ArrowData): Record<string, unknown> {
   return {
     id: arrow.id,
-    arrow_type: arrow.arrow_type,
+    arrowType: arrow.arrowType,
     color: arrow.color,
     turns: arrow.turns,
-    is_mirrored: arrow.is_mirrored,
+    isMirrored: arrow.isMirrored,
     location: arrow.location,
     position_x: arrow.position_x,
     position_y: arrow.position_y,
@@ -87,11 +93,11 @@ export function arrowDataFromObject(data: Record<string, unknown>): ArrowData {
   const partialData: Record<string, unknown> = {};
 
   if (typeof data.id === "string") partialData.id = data.id;
-  if (data.arrow_type) partialData.arrow_type = data.arrow_type as ArrowType;
+  if (data.arrowType) partialData.arrowType = data.arrowType as ArrowType;
   if (typeof data.color === "string") partialData.color = data.color;
   if (typeof data.turns === "number") partialData.turns = data.turns;
-  if (typeof data.is_mirrored === "boolean")
-    partialData.is_mirrored = data.is_mirrored;
+  if (typeof data.isMirrored === "boolean")
+    partialData.isMirrored = data.isMirrored;
   if (typeof data.location === "string") partialData.location = data.location;
   if (typeof data.position_x === "number")
     partialData.position_x = data.position_x;

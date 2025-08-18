@@ -135,8 +135,8 @@ Handles data loading, animation engine, and state management.
           console.log(`🔍 [RAW DATA DEBUG] Beat ${index + 1}:`, {
             beat_number: beat.beat_number,
             letter: beat.pictograph_data?.letter,
-            blue_motion_type: beat.pictograph_data?.motions?.blue?.motion_type,
-            red_motion_type: beat.pictograph_data?.motions?.red?.motion_type,
+            blue_motion_type: beat.pictograph_data?.motions?.blue?.motionType,
+            red_motion_type: beat.pictograph_data?.motions?.red?.motionType,
             blue_motion_full: beat.pictograph_data?.motions?.blue,
             red_motion_full: beat.pictograph_data?.motions?.red,
           });
@@ -149,8 +149,8 @@ Handles data loading, animation engine, and state management.
             console.log(
               `🚨 [CRITICAL] ${beat.pictograph_data.letter} letter motion types:`,
               {
-                blue: beat.pictograph_data?.motions?.blue?.motion_type,
-                red: beat.pictograph_data?.motions?.red?.motion_type,
+                blue: beat.pictograph_data?.motions?.blue?.motionType,
+                red: beat.pictograph_data?.motions?.red?.motionType,
                 expected: "Should have anti-motions!",
               }
             );

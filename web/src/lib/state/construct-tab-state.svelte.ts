@@ -49,15 +49,15 @@ export function createConstructTabState(sequenceState: SequenceStateType) {
     // Show start position picker if:
     // 1. No sequence exists, OR
     // 2. Sequence exists but has no start position set
-    const shouldShow = !sequence || !sequence.start_position;
+    const shouldShow = !sequence || !sequence.startPosition;
 
     console.log(
       `🎯 [CONSTRUCT-TAB-STATE] Start position picker: ${shouldShow ? "SHOW" : "HIDE"}`,
       {
         sequenceExists: !!sequence,
         sequenceId: sequence?.id,
-        hasStartPosition: !!sequence?.start_position,
-        startPositionId: sequence?.start_position?.pictograph_data?.id,
+        hasStartPosition: !!sequence?.startPosition,
+        startPositionId: sequence?.startPosition?.pictograph_data?.id,
         beatCount: sequence?.beats?.length || 0,
         shouldShow,
       }

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { ArrowDebugState } from "./state/arrow-debug-state.svelte";
+  import type { ArrowDebugState } from "./types/ArrowDebugTypes";
 
   interface Props {
     state: ArrowDebugState;
@@ -142,8 +142,9 @@
     ctx.lineWidth = 2;
 
     Object.entries(handPoints).forEach(([location, point]) => {
-      const canvasX = point.x * SCALE;
-      const canvasY = point.y * SCALE;
+      const pointData = point as { x: number; y: number };
+      const canvasX = pointData.x * SCALE;
+      const canvasY = pointData.y * SCALE;
 
       // Draw point
       ctx.beginPath();
@@ -170,8 +171,9 @@
     ctx.lineWidth = 2;
 
     Object.entries(layer2Points).forEach(([location, point]) => {
-      const canvasX = point.x * SCALE;
-      const canvasY = point.y * SCALE;
+      const pointData = point as { x: number; y: number };
+      const canvasX = pointData.x * SCALE;
+      const canvasY = pointData.y * SCALE;
 
       // Draw point as diamond
       ctx.beginPath();
@@ -528,7 +530,9 @@
       <div class="legend-item">
         <div
           class="legend-color"
-          style="background: {COLORS.arrow[state.selectedArrowColor]}"
+          style="background: {COLORS.arrow[
+            state.selectedArrowColor.toLowerCase() as keyof typeof COLORS.arrow
+          ]}"
         ></div>
         <span>{state.selectedArrowColor} Arrow</span>
       </div>

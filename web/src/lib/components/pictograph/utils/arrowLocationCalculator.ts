@@ -8,11 +8,11 @@
 export interface ArrowLocationInput {
   start_loc: string;
   end_loc: string;
-  motion_type: string;
+  motionType: string;
 }
 
 export function calculateArrowLocation(input: ArrowLocationInput): string {
-  const { start_loc, end_loc, motion_type } = input;
+  const { start_loc, end_loc, motionType } = input;
 
   // Return empty string if motion state is not initialized
   if (!start_loc || !end_loc) {
@@ -20,7 +20,7 @@ export function calculateArrowLocation(input: ArrowLocationInput): string {
   }
 
   // For PRO, ANTI, FLOAT - use shift location calculation
-  if (["pro", "anti", "float"].includes(motion_type)) {
+  if (["pro", "anti", "float"].includes(motionType)) {
     return calculateShiftLocation(start_loc, end_loc);
   }
 

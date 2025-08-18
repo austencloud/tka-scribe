@@ -41,8 +41,8 @@
     if (!data) return { start: null, end: null };
 
     return {
-      start: parsePosition(data.start_pos || ""),
-      end: parsePosition(data.end_pos || ""),
+      start: parsePosition(data.startPosition || ""),
+      end: parsePosition(data.endPosition || ""),
     };
   }
 
@@ -104,7 +104,7 @@
 >
   <!-- Grid Background -->
   <div class="grid-background">
-    {#if pictographData?.grid_mode === "diamond"}
+    {#if pictographData?.gridMode === "diamond"}
       <svg width={gridSize} height={gridSize} class="grid-svg">
         <!-- Diamond grid lines -->
         <path
@@ -209,15 +209,15 @@
       </div>
       <div class="detail-item">
         <span class="label">Start:</span>
-        <span class="value">{pictographData.start_pos}</span>
+        <span class="value">{pictographData.startPosition}</span>
       </div>
       <div class="detail-item">
         <span class="label">End:</span>
-        <span class="value">{pictographData.end_pos}</span>
+        <span class="value">{pictographData.endPosition}</span>
       </div>
       <div class="detail-item">
         <span class="label">Grid:</span>
-        <span class="value">{pictographData.grid_mode}</span>
+        <span class="value">{pictographData.gridMode}</span>
       </div>
     </div>
   {/if}

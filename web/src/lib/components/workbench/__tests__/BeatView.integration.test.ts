@@ -43,7 +43,7 @@ describe("BeatView Integration", () => {
       const beat = createBeatData({
         beat_number: 1,
         pictograph_data: pictographData,
-        is_blank: false,
+        isBlank: false,
       });
 
       const { container } = render(BeatView, {
@@ -67,7 +67,7 @@ describe("BeatView Integration", () => {
     it("should render beat number for beat without pictograph data", () => {
       const beat = createBeatData({
         beat_number: 2,
-        is_blank: true,
+        isBlank: true,
       });
 
       const { container } = render(BeatView, {
@@ -118,7 +118,7 @@ describe("BeatView Integration", () => {
     it("should handle selected state", () => {
       const beat = createBeatData({
         beat_number: 4,
-        is_blank: true,
+        isBlank: true,
       });
 
       const { container } = render(BeatView, {
@@ -136,7 +136,7 @@ describe("BeatView Integration", () => {
     it("should handle hovered state", () => {
       const beat = createBeatData({
         beat_number: 5,
-        is_blank: true,
+        isBlank: true,
       });
 
       const { container } = render(BeatView, {
@@ -154,7 +154,7 @@ describe("BeatView Integration", () => {
     it("should handle blank beat state", () => {
       const beat = createBeatData({
         beat_number: 6,
-        is_blank: true,
+        isBlank: true,
       });
 
       const { container } = render(BeatView, {
@@ -176,7 +176,7 @@ describe("BeatView Integration", () => {
       const beat = createBeatData({
         beat_number: 7,
         pictograph_data: pictographData,
-        is_blank: false,
+        isBlank: false,
       });
 
       const { container } = render(BeatView, {
@@ -196,7 +196,7 @@ describe("BeatView Integration", () => {
       const handleClick = vi.fn();
       const beat = createBeatData({
         beat_number: 8,
-        is_blank: true,
+        isBlank: true,
       });
 
       const { container } = render(BeatView, {
@@ -220,7 +220,7 @@ describe("BeatView Integration", () => {
       const handleDoubleClick = vi.fn();
       const beat = createBeatData({
         beat_number: 9,
-        is_blank: true,
+        isBlank: true,
       });
 
       const { container } = render(BeatView, {
@@ -273,7 +273,7 @@ describe("BeatView Integration", () => {
       const handleHover = vi.fn();
       const beat = createBeatData({
         beat_number: 11,
-        is_blank: true,
+        isBlank: true,
       });
 
       const { container } = render(BeatView, {
@@ -295,7 +295,7 @@ describe("BeatView Integration", () => {
       const handleLeave = vi.fn();
       const beat = createBeatData({
         beat_number: 12,
-        is_blank: true,
+        isBlank: true,
       });
 
       const { container } = render(BeatView, {
@@ -319,7 +319,7 @@ describe("BeatView Integration", () => {
       const handleClick = vi.fn();
       const beat = createBeatData({
         beat_number: 13,
-        is_blank: true,
+        isBlank: true,
       });
 
       const { container } = render(BeatView, {
@@ -341,7 +341,7 @@ describe("BeatView Integration", () => {
       const handleClick = vi.fn();
       const beat = createBeatData({
         beat_number: 14,
-        is_blank: true,
+        isBlank: true,
       });
 
       const { container } = render(BeatView, {
@@ -366,7 +366,7 @@ describe("BeatView Integration", () => {
         beat_number: 15,
         blue_reversal: true,
         red_reversal: false,
-        is_blank: true,
+        isBlank: true,
       });
 
       const { container } = render(BeatView, {
@@ -388,7 +388,7 @@ describe("BeatView Integration", () => {
         beat_number: 16,
         blue_reversal: false,
         red_reversal: true,
-        is_blank: true,
+        isBlank: true,
       });
 
       const { container } = render(BeatView, {
@@ -410,7 +410,7 @@ describe("BeatView Integration", () => {
         beat_number: 17,
         blue_reversal: true,
         red_reversal: true,
-        is_blank: true,
+        isBlank: true,
       });
 
       const { container } = render(BeatView, {
@@ -432,7 +432,7 @@ describe("BeatView Integration", () => {
     it("should have proper ARIA attributes", () => {
       const beat = createBeatData({
         beat_number: 18,
-        is_blank: true,
+        isBlank: true,
       });
 
       const { container } = render(BeatView, {
@@ -451,7 +451,7 @@ describe("BeatView Integration", () => {
     it("should be keyboard focusable", () => {
       const beat = createBeatData({
         beat_number: 19,
-        is_blank: true,
+        isBlank: true,
       });
 
       const { container } = render(BeatView, {
@@ -495,7 +495,7 @@ describe("BeatView Integration", () => {
     it("should maintain responsive styling", () => {
       const beat = createBeatData({
         beat_number: 21,
-        is_blank: true,
+        isBlank: true,
       });
 
       const { container } = render(BeatView, {

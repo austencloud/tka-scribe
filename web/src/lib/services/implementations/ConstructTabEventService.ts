@@ -28,14 +28,7 @@ export class ConstructTabEventService {
     try {
       this.constructCoordinator = resolve("IConstructTabCoordinationService");
       this.initialized = true;
-      console.log(
-        "✅ ConstructTabEventService: IConstructTabCoordinationService resolved successfully"
-      );
     } catch (error) {
-      console.log(
-        "⚠️ ConstructTabEventService: Error during service initialization:",
-        error
-      );
       // This is expected during SSR - services will be resolved once client-side DI container is ready
       // Services will remain null and methods will handle gracefully
     }
@@ -51,14 +44,7 @@ export class ConstructTabEventService {
    * Handle start position selection in the Build tab
    */
   async handleStartPositionSelected(startPosition: BeatData): Promise<void> {
-    console.log(
-      "🎭 ConstructTabEventService.handleStartPositionSelected ENTRY"
-    );
     try {
-      console.log(
-        "🎭 Start position selected in ConstructTabEventService:",
-        startPosition.pictograph_data?.id
-      );
       // DON'T set transitioning immediately - let the fade transitions handle the UI
       // setTransitioning(true); // ← REMOVED to prevent flash
 
@@ -67,11 +53,7 @@ export class ConstructTabEventService {
 
       // Use coordination service to handle the selection
       if (this.constructCoordinator) {
-        console.log(
-          "🎭 Calling coordination service handleStartPositionSet..."
-        );
         await this.constructCoordinator.handleStartPositionSet(startPosition);
-        console.log("✅ Coordination service handleStartPositionSet completed");
       } else {
         throw new Error(
           "Coordination service not available after initialization"
@@ -80,8 +62,6 @@ export class ConstructTabEventService {
 
       // Clear any previous errors
       // State management removed - components should handle their own state
-
-      console.log("✅ Transitioned to option picker");
     } catch (error) {
       console.error("❌ Error handling start position selection:", error);
       // State management removed - throw error for component to handle
@@ -94,8 +74,6 @@ export class ConstructTabEventService {
    */
   async handleOptionSelected(option: PictographData): Promise<void> {
     try {
-      console.log("🎭 Option selected in ConstructTabEventService:", option.id);
-
       // State management removed - components should handle transitions
 
       // Create beat data from option
@@ -112,8 +90,6 @@ export class ConstructTabEventService {
 
       // Clear any previous errors
       // State management removed - components should handle their own state
-
-      console.log("✅ Beat added to sequence");
     } catch (error) {
       console.error("❌ Error handling option selection:", error);
       // State management removed - throw error for component to handle
@@ -124,27 +100,16 @@ export class ConstructTabEventService {
   /**
    * Handle beat modification from the Graph Editor
    */
-  handleBeatModified(beatIndex: number, beatData: BeatData): void {
-    console.log(
-      "ConstructTabEventService: Beat modified in graph editor",
-      beatIndex,
-      beatData
-    );
-
+  handleBeatModified(_beatIndex: number, _beatData: BeatData): void {
     // Handle beat modifications from graph editor
     // Note: The coordination service doesn't have handleBeatModified,
     // so we'll handle this locally or extend the interface if needed
-    console.log("Beat modification handled locally for beat index:", beatIndex);
   }
 
   /**
    * Handle arrow selection from the Graph Editor
    */
-  handleArrowSelected(arrowData: unknown): void {
-    console.log(
-      "ConstructTabEventService: Arrow selected in graph editor",
-      arrowData
-    );
+  handleArrowSelected(_arrowData: unknown): void {
     // Handle arrow selection events from graph editor
     // This could be used for highlighting or additional UI feedback
   }
@@ -152,33 +117,21 @@ export class ConstructTabEventService {
   /**
    * Handle graph editor visibility changes
    */
-  handleGraphEditorVisibilityChanged(isVisible: boolean): void {
-    console.log(
-      "ConstructTabEventService: Graph editor visibility changed",
-      isVisible
-    );
+  handleGraphEditorVisibilityChanged(_isVisible: boolean): void {
     // Handle graph editor visibility changes if needed
   }
 
   /**
    * Handle export setting changes from the Export Panel
    */
-  handleExportSettingChanged(event: CustomEvent): void {
-    const { setting, value } = event.detail;
-    console.log(
-      "ConstructTabEventService: Export setting changed",
-      setting,
-      value
-    );
+  handleExportSettingChanged(_event: CustomEvent): void {
     // Handle export setting changes - could save to settings service
   }
 
   /**
    * Handle preview update requests from the Export Panel
    */
-  handlePreviewUpdateRequested(event: CustomEvent): void {
-    const settings = event.detail;
-    console.log("ConstructTabEventService: Preview update requested", settings);
+  handlePreviewUpdateRequested(_event: CustomEvent): void {
     // Handle preview update requests
   }
 
@@ -187,17 +140,14 @@ export class ConstructTabEventService {
    */
   handleExportRequested(event: CustomEvent): void {
     const { type, config } = event.detail;
-    console.log("ConstructTabEventService: Export requested", type, config);
 
     // Handle export requests
     if (type === "current") {
-      console.log("Exporting current sequence:", config.sequence?.name);
       // TODO: Implement actual export service call
       alert(
         `Exporting sequence "${config.sequence?.name || "Untitled"}" with ${config.sequence?.beats?.length || 0} beats`
       );
     } else if (type === "all") {
-      console.log("Exporting all sequences");
       // TODO: Implement actual export all service call
       alert("Exporting all sequences in library");
     }
@@ -207,8 +157,6 @@ export class ConstructTabEventService {
    * Setup component coordination
    */
   setupComponentCoordination(): void {
-    console.log("🎭 ConstructTabEventService setting up coordination");
-
     // Ensure services are initialized
     this.ensureInitialized();
 
@@ -216,16 +164,14 @@ export class ConstructTabEventService {
     if (this.constructCoordinator) {
       this.constructCoordinator.setupComponentCoordination({
         constructTab: {
-          handleEvent: (eventType: string, data: unknown) => {
+          handleEvent: (eventType: string, _data: unknown) => {
             switch (eventType) {
               case "ui_transition":
                 // Handle legacy transition events if needed
                 break;
               default:
-                console.log(
-                  `ConstructTabEventService received event: ${eventType}`,
-                  data
-                );
+                // Handle other events if needed
+                break;
             }
           },
         },

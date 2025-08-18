@@ -4,6 +4,7 @@
     BeatData,
     SequenceData,
   } from "$services/interfaces/domain-types";
+  import { MotionColor } from "$lib/domain/enums";
   import { onMount } from "svelte";
 
   // Props
@@ -43,19 +44,19 @@
     const pictograph = beatData.pictograph_data;
 
     // Extract motion information from pictograph
-    if (pictograph.motions?.blue?.motion_type) {
+    if (pictograph.motions?.blue?.motionType) {
       motions.push({
-        color: "Blue",
-        type: pictograph.motions.blue.motion_type,
-        direction: pictograph.motions.blue.prop_rot_dir || "Unknown",
+        color: MotionColor.BLUE,
+        type: pictograph.motions.blue.motionType,
+        direction: pictograph.motions.blue.rotationDirection || "Unknown",
       });
     }
 
-    if (pictograph.motions?.red?.motion_type) {
+    if (pictograph.motions?.red?.motionType) {
       motions.push({
-        color: "Red",
-        type: pictograph.motions.red.motion_type,
-        direction: pictograph.motions.red.prop_rot_dir || "Unknown",
+        color: MotionColor.RED,
+        type: pictograph.motions.red.motionType,
+        direction: pictograph.motions.red.rotationDirection || "Unknown",
       });
     }
 
@@ -67,7 +68,7 @@
     if (!beatData?.pictograph_data) return null;
 
     return {
-      gridMode: beatData.pictograph_data.grid_mode || "diamond",
+      gridMode: beatData.pictograph_data.gridMode || "diamond",
       blueStart: beatData.pictograph_data.motions?.blue?.start_loc || "Unknown",
       redStart: beatData.pictograph_data.motions?.red?.start_loc || "Unknown",
     };
@@ -130,8 +131,8 @@
               <div class="motion-header">
                 <span
                   class="motion-color"
-                  class:blue={motion.color === "Blue"}
-                  class:red={motion.color === "Red"}
+                  class:blue={motion.color === MotionColor.BLUE}
+                  class:red={motion.color === MotionColor.RED}
                 >
                   {motion.color}
                 </span>

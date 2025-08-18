@@ -38,16 +38,16 @@ describe("ArrowAdjustmentCalculator (end-to-end positioning)", () => {
     const calc = new ArrowAdjustmentCalculator();
 
     const motion = createMotionData({
-      motion_type: MotionType.PRO,
+      motionType: MotionType.PRO,
       start_loc: Location.NORTHEAST,
       end_loc: Location.SOUTHWEST,
-      prop_rot_dir: RotationDirection.CLOCKWISE,
+      rotationDirection: RotationDirection.CLOCKWISE,
       turns: 0,
     });
 
     const pictograph = createPictographData({
       letter: "A",
-      grid_data: createGridData({ grid_mode: GridMode.DIAMOND }),
+      grid_data: createGridData({ gridMode: GridMode.DIAMOND }),
       motions: { blue: motion, red: motion },
     });
 

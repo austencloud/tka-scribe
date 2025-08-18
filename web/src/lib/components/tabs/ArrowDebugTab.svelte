@@ -7,6 +7,7 @@
    */
 
   import { onMount } from "svelte";
+  import { MotionColor } from "$lib/domain/enums";
   import DebugHeader from "./arrow-debug/DebugHeader.svelte";
   import DebugControls from "./arrow-debug/DebugControls.svelte";
   import Pictograph from "$lib/components/pictograph/Pictograph.svelte";
@@ -46,7 +47,7 @@
   }
 
   // Handle arrow color selection
-  function handleArrowColorSelect(color: "red" | "blue") {
+  function handleArrowColorSelect(color: MotionColor) {
     debugState.selectedArrowColor = color;
   }
 

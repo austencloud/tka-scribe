@@ -5,10 +5,11 @@
    */
 
   import type { PictographData } from "$lib/domain";
+  import { MotionColor } from "$lib/domain/enums";
 
   interface Props {
     selectedPictograph: PictographData | null;
-    selectedArrowColor: "red" | "blue";
+    selectedArrowColor: MotionColor;
     availablePictographs: PictographData[];
     stepByStepMode: boolean;
     currentStep: number;
@@ -20,7 +21,7 @@
     autoUpdate: boolean;
     gridMode: "diamond" | "box";
     onPictographSelect: (pictograph: PictographData) => void;
-    onArrowColorSelect: (color: "red" | "blue") => void;
+    onArrowColorSelect: (color: MotionColor) => void;
     onStepByStepToggle: (enabled: boolean) => void;
     onStepChange: (step: number) => void;
     onVisualizationToggle: (setting: string, enabled: boolean) => void;
@@ -62,7 +63,7 @@
 
   function handleArrowColorChange(event: Event) {
     const target = event.target as HTMLSelectElement;
-    onArrowColorSelect(target.value as "red" | "blue");
+    onArrowColorSelect(target.value as MotionColor);
   }
 </script>
 

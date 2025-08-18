@@ -196,7 +196,7 @@ export class SequenceDomainService implements ISequenceDomainService {
       duration: 1.0,
       blue_reversal: false,
       red_reversal: false,
-      is_blank: true,
+      isBlank: true,
       pictograph_data: null,
       metadata: {},
     };

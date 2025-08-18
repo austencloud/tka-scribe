@@ -16,9 +16,9 @@ import {
 // Mock pictograph data structure (this would come from the actual pictograph service)
 interface PictographData {
   letter: string;
-  start_pos: string;
-  end_pos: string;
-  grid_mode: string;
+  startPosition: string;
+  endPosition: string;
+  gridMode: string;
   // ... other pictograph properties
 }
 
@@ -70,9 +70,9 @@ export class QuestionGeneratorService {
     // Mock pictograph data for the correct letter
     const correctPictograph = {
       letter: correctLetter,
-      start_pos: "s",
-      end_pos: "n",
-      grid_mode: "diamond",
+      startPosition: "s",
+      endPosition: "n",
+      gridMode: "diamond",
     };
 
     // Generate wrong letter options
@@ -116,9 +116,9 @@ export class QuestionGeneratorService {
     // Mock correct pictograph
     const correctPictograph = {
       letter: correctLetter,
-      start_pos: "s",
-      end_pos: "n",
-      grid_mode: "diamond",
+      startPosition: "s",
+      endPosition: "n",
+      gridMode: "diamond",
     };
 
     // Generate wrong pictographs
@@ -159,24 +159,39 @@ export class QuestionGeneratorService {
     // Mock initial pictograph
     const initialPictograph = {
       letter: "A",
-      start_pos: "s",
-      end_pos: "e",
-      grid_mode: "diamond",
+      startPosition: "s",
+      endPosition: "e",
+      gridMode: "diamond",
     };
 
-    // Mock correct next pictograph (start_pos matches end_pos of initial)
+    // Mock correct next pictograph (startPosition matches endPosition of initial)
     const correctNextPictograph = {
       letter: "B",
-      start_pos: "e",
-      end_pos: "n",
-      grid_mode: "diamond",
+      startPosition: "e",
+      endPosition: "n",
+      gridMode: "diamond",
     };
 
     // Generate wrong next pictographs
     const wrongNextPictographs = [
-      { letter: "C", start_pos: "n", end_pos: "w", grid_mode: "diamond" },
-      { letter: "D", start_pos: "w", end_pos: "s", grid_mode: "diamond" },
-      { letter: "E", start_pos: "s", end_pos: "n", grid_mode: "diamond" },
+      {
+        letter: "C",
+        startPosition: "n",
+        endPosition: "w",
+        gridMode: "diamond",
+      },
+      {
+        letter: "D",
+        startPosition: "w",
+        endPosition: "s",
+        gridMode: "diamond",
+      },
+      {
+        letter: "E",
+        startPosition: "s",
+        endPosition: "n",
+        gridMode: "diamond",
+      },
     ];
 
     const allOptions = [correctNextPictograph, ...wrongNextPictographs];
@@ -186,7 +201,7 @@ export class QuestionGeneratorService {
     const answerOptions: AnswerOption[] = allOptions.map((pictograph) => ({
       id: this.generateOptionId(),
       content: pictograph,
-      isCorrect: pictograph.start_pos === initialPictograph.end_pos,
+      isCorrect: pictograph.startPosition === initialPictograph.endPosition,
     }));
 
     return {
@@ -230,9 +245,9 @@ export class QuestionGeneratorService {
     );
     return wrongLetters.map((letter) => ({
       letter,
-      start_pos: this.getRandomPosition(),
-      end_pos: this.getRandomPosition(),
-      grid_mode: "diamond",
+      startPosition: this.getRandomPosition(),
+      endPosition: this.getRandomPosition(),
+      gridMode: "diamond",
     }));
   }
 

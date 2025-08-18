@@ -141,8 +141,8 @@ export class PictographQueryService implements IPictographQueryService {
       csvRows.find(
         (row) =>
           row.letter === letter &&
-          row.startPos === mapping.startPos &&
-          row.endPos === mapping.endPos &&
+          row.startPosition === mapping.startPosition &&
+          row.endPosition === mapping.endPosition &&
           row.blueMotionType === mapping.blueMotion &&
           row.redMotionType === mapping.redMotion
       ) || null

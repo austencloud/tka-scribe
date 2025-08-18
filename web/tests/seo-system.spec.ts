@@ -21,9 +21,9 @@ test.describe("SEO Hybrid System", () => {
       // Should not redirect
       expect(page.url()).toContain("/about");
 
-      // Should have proper meta tags
+      // Should have proper meta tags (using actual title from +page.server.ts)
       const title = await page.locator("title").textContent();
-      expect(title).toContain("About TKA");
+      expect(title).toContain("About TKA - The Kinetic Constructor");
 
       const description = await page
         .locator('meta[name="description"]')
@@ -48,7 +48,7 @@ test.describe("SEO Hybrid System", () => {
       expect(page.url()).toContain("/features");
 
       const title = await page.locator("title").textContent();
-      expect(title).toContain("Features");
+      expect(title).toContain("TKA Features");
     });
 
     test("Facebook crawler sees static browse page", async ({ page }) => {
@@ -64,7 +64,7 @@ test.describe("SEO Hybrid System", () => {
       const ogTitle = await page
         .locator('meta[property="og:title"]')
         .getAttribute("content");
-      expect(ogTitle).toContain("Browse");
+      expect(ogTitle).toContain("Browse Flow Arts Gallery");
     });
   });
 
@@ -100,15 +100,15 @@ test.describe("SEO Hybrid System", () => {
     test("Tab navigation stays in SPA", async ({ page }) => {
       await page.goto("/");
 
-      // Click about tab
-      await page.click('[data-testid="nav-tab-about"]');
+      // Click about tab (using actual selectors)
+      await page.click('.nav-tab:has-text("About")');
 
       // URL should not change
       expect(page.url()).toBe(new URL("/", page.url()).href);
 
       // Should not trigger page reload
       const navigationPromise = page.waitForLoadState("networkidle");
-      await page.click('[data-testid="nav-tab-browse"]');
+      await page.click('.nav-tab:has-text("Browse")');
 
       // Should resolve quickly (no full page load)
       await expect(navigationPromise).resolves.toBe(undefined);
@@ -117,8 +117,8 @@ test.describe("SEO Hybrid System", () => {
     test("Logo click switches to about tab", async ({ page }) => {
       await page.goto("/");
 
-      // Start on a different tab
-      await page.click('[data-testid="nav-tab-construct"]');
+      // Start on a different tab  
+      await page.click('.nav-tab:has-text("Construct")');
 
       // Click logo
       await page.click(".nav-brand");
@@ -126,8 +126,8 @@ test.describe("SEO Hybrid System", () => {
       // Should switch to about tab without URL change
       expect(page.url()).toBe(new URL("/", page.url()).href);
 
-      // About tab should be active
-      const aboutTab = page.locator('[data-testid="nav-tab-about"]');
+      // About tab should be active (check for active class)
+      const aboutTab = page.locator('.nav-tab:has-text("About")');
       await expect(aboutTab).toHaveClass(/active/);
     });
   });
@@ -136,8 +136,8 @@ test.describe("SEO Hybrid System", () => {
     test("Main page handles tab parameter", async ({ page }) => {
       await page.goto("/?tab=about");
 
-      // Should activate about tab
-      const aboutTab = page.locator('[data-testid="nav-tab-about"]');
+      // Should activate about tab (check for active class)
+      const aboutTab = page.locator('.nav-tab:has-text("About")');
       await expect(aboutTab).toHaveClass(/active/);
 
       // URL should be cleaned up
@@ -223,10 +223,10 @@ test.describe("Performance Impact", () => {
 
     const startTime = Date.now();
 
-    // Click between tabs multiple times
-    await page.click('[data-testid="nav-tab-about"]');
-    await page.click('[data-testid="nav-tab-browse"]');
-    await page.click('[data-testid="nav-tab-construct"]');
+    // Click between tabs multiple times (using actual selectors)
+    await page.click('.nav-tab:has-text("About")');
+    await page.click('.nav-tab:has-text("Browse")');
+    await page.click('.nav-tab:has-text("Construct")');
 
     const endTime = Date.now();
     const duration = endTime - startTime;

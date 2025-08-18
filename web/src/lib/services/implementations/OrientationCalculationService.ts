@@ -41,18 +41,18 @@ export class OrientationCalculationService
     motion: MotionData,
     _color: MotionColor
   ): Orientation {
-    const motionType = motion.motion_type;
+    const motionType = motion.motionType;
     const turns = motion.turns;
-    const startOri = motion.start_ori;
-    const propRotDir = motion.prop_rot_dir;
-    const startLoc = motion.start_loc;
+    const startOri = motion.startOrientation;
+    const propRotDir = motion.rotationDirection;
+    const startLocation = motion.start_loc;
     const endLoc = motion.end_loc;
 
     let endOri: Orientation;
 
     if (motionType === MotionType.FLOAT) {
       const handpathDirection = this.handpathCalculator.getHandRotDir(
-        startLoc,
+        startLocation,
         endLoc
       ) as HandPath;
       endOri = this.calculateFloatOrientation(startOri, handpathDirection);
@@ -62,7 +62,7 @@ export class OrientationCalculationService
         turns,
         startOri,
         propRotDir,
-        startLoc,
+        startLocation,
         endLoc
       );
     }
@@ -85,7 +85,7 @@ export class OrientationCalculationService
     turns: number | "fl",
     startOri: Orientation,
     propRotDir: RotationDirection,
-    startLoc: Location,
+    startLocation: Location,
     endLoc: Location
   ): Orientation {
     if (turns === 0 || turns === 1 || turns === 2 || turns === 3) {
@@ -97,7 +97,7 @@ export class OrientationCalculationService
       );
     } else if (turns === "fl") {
       const handpathDirection = this.handpathCalculator.getHandRotDir(
-        startLoc,
+        startLocation,
         endLoc
       ) as HandPath;
       return this.calculateFloatOrientation(startOri, handpathDirection);
@@ -245,7 +245,7 @@ export class OrientationCalculationService
     const lastBlueMotion = lastBeat.pictograph_data.motions?.["blue"];
     const lastRedMotion = lastBeat.pictograph_data.motions?.["red"];
 
-    if (!lastBlueMotion?.end_ori || !lastRedMotion?.end_ori) {
+    if (!lastBlueMotion?.endOrientation || !lastRedMotion?.endOrientation) {
       throw new Error(
         "End orientations cannot be None. Ensure the previous beat has valid orientations."
       );
@@ -257,14 +257,14 @@ export class OrientationCalculationService
     if (updatedMotions.blue) {
       updatedMotions.blue = {
         ...updatedMotions.blue,
-        start_ori: lastBlueMotion.end_ori,
+        startOrientation: lastBlueMotion.endOrientation,
       };
     }
 
     if (updatedMotions.red) {
       updatedMotions.red = {
         ...updatedMotions.red,
-        start_ori: lastRedMotion.end_ori,
+        startOrientation: lastRedMotion.endOrientation,
       };
     }
 
@@ -292,13 +292,14 @@ export class OrientationCalculationService
     const blueMotion = beat.pictograph_data.motions?.["blue"];
     if (blueMotion) {
       const blueMotionData: MotionData = {
-        motion_type: blueMotion.motion_type || MotionType.STATIC,
-        prop_rot_dir: blueMotion.prop_rot_dir || RotationDirection.NO_ROTATION,
+        motionType: blueMotion.motionType || MotionType.STATIC,
+        rotationDirection:
+          blueMotion.rotationDirection || RotationDirection.NO_ROTATION,
         start_loc: blueMotion.start_loc || Location.NORTH,
         end_loc: blueMotion.end_loc || Location.NORTH,
         turns: blueMotion.turns || 0,
-        start_ori: blueMotion.start_ori || Orientation.IN,
-        end_ori: blueMotion.end_ori || Orientation.IN,
+        startOrientation: blueMotion.startOrientation || Orientation.IN,
+        endOrientation: blueMotion.endOrientation || Orientation.IN,
         is_visible: blueMotion.is_visible ?? true,
       };
 
@@ -309,7 +310,7 @@ export class OrientationCalculationService
 
       updatedMotions.blue = {
         ...blueMotion,
-        end_ori: calculatedEndOri,
+        endOrientation: calculatedEndOri,
       };
     }
 
@@ -317,13 +318,14 @@ export class OrientationCalculationService
     const redMotion = beat.pictograph_data.motions?.["red"];
     if (redMotion) {
       const redMotionData: MotionData = {
-        motion_type: redMotion.motion_type || MotionType.STATIC,
-        prop_rot_dir: redMotion.prop_rot_dir || RotationDirection.NO_ROTATION,
+        motionType: redMotion.motionType || MotionType.STATIC,
+        rotationDirection:
+          redMotion.rotationDirection || RotationDirection.NO_ROTATION,
         start_loc: redMotion.start_loc || Location.NORTH,
         end_loc: redMotion.end_loc || Location.NORTH,
         turns: redMotion.turns || 0,
-        start_ori: redMotion.start_ori || Orientation.IN,
-        end_ori: redMotion.end_ori || Orientation.IN,
+        startOrientation: redMotion.startOrientation || Orientation.IN,
+        endOrientation: redMotion.endOrientation || Orientation.IN,
         is_visible: redMotion.is_visible ?? true,
       };
 
@@ -334,7 +336,7 @@ export class OrientationCalculationService
 
       updatedMotions.red = {
         ...redMotion,
-        end_ori: calculatedEndOri,
+        endOrientation: calculatedEndOri,
       };
     }
 
@@ -436,8 +438,8 @@ class HandpathCalculator {
   /**
    * Get hand rotation direction - exact port from legacy
    */
-  getHandRotDir(startLoc: string, endLoc: string): string {
-    const key = `${startLoc}_${endLoc}`;
+  getHandRotDir(startLocation: string, endLoc: string): string {
+    const key = `${startLocation}_${endLoc}`;
     return this.handRotDirMap.get(key) || "NO HAND ROTATION FOUND";
   }
 }

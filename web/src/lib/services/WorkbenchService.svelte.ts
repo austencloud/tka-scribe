@@ -60,7 +60,7 @@ class WorkbenchService {
     const beat = sequence.beats[index];
 
     // For now, just create a simple pictograph
-    if (beat?.is_blank) {
+    if (beat?.isBlank) {
       const pictographData = createPictographData({
         letter: "A", // Default letter
         beat: index + 1,
@@ -68,7 +68,7 @@ class WorkbenchService {
 
       const updatedBeat = createBeatData({
         ...beat,
-        is_blank: false,
+        isBlank: false,
         pictograph_data: pictographData,
       });
 
@@ -83,7 +83,7 @@ class WorkbenchService {
     const beat = sequence.beats[index];
     const clearedBeat = createBeatData({
       ...beat,
-      is_blank: true,
+      isBlank: true,
       pictograph_data: null,
     });
 

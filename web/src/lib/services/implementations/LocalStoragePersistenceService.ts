@@ -202,9 +202,9 @@ export class LocalStoragePersistenceService implements IPersistenceService {
       is_circular: Boolean(data.is_circular),
       tags: (data.tags as string[]) || [],
       metadata,
-      // **CRITICAL: Include start_position field if it exists**
-      ...(data.start_position
-        ? { start_position: data.start_position as BeatData }
+      // **CRITICAL: Include startPosition field if it exists**
+      ...(data.startPosition
+        ? { startPosition: data.startPosition as BeatData }
         : {}),
     };
 

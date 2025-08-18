@@ -89,7 +89,7 @@ instead of stores. It orchestrates the rendering of Grid, Props, Arrows, and Gly
   const displayLetter = $derived(() => {
     const data = effectivePictographData();
     if (data?.letter) return data.letter;
-    if (beatData && !beatData.is_blank) return beatData.beat_number.toString();
+    if (beatData && !beatData.isBlank) return beatData.beat_number.toString();
     return null;
   });
 
@@ -185,7 +185,7 @@ instead of stores. It orchestrates the rendering of Grid, Props, Arrows, and Gly
                 y: arrow.position_y || 475,
                 rotation: arrow.rotation_angle || 0,
               };
-              newMirroring[color] = arrow.is_mirrored || false;
+              newMirroring[color] = arrow.isMirrored || false;
             }
           }
         );
@@ -278,7 +278,7 @@ instead of stores. It orchestrates the rendering of Grid, Props, Arrows, and Gly
     {#if hasValidData()}
       <!-- Grid (always rendered first) -->
       <Grid
-        gridMode={effectivePictographData()?.grid_data?.grid_mode || "diamond"}
+        gridMode={effectivePictographData()?.grid_data?.gridMode || "diamond"}
         onLoaded={() => handleComponentLoaded("grid")}
         onError={(error) => handleComponentError("grid", error)}
         {debug}
@@ -290,8 +290,7 @@ instead of stores. It orchestrates the rendering of Grid, Props, Arrows, and Gly
         <Prop
           {propData}
           {...motionData && { motionData }}
-          gridMode={effectivePictographData()?.grid_data?.grid_mode ||
-            "diamond"}
+          gridMode={effectivePictographData()?.grid_data?.gridMode || "diamond"}
           allProps={Object.values(effectivePictographData()?.props || {})}
           onLoaded={() => handleComponentLoaded(`${color}-prop`)}
           onError={(error) => handleComponentError(`${color}-prop`, error)}

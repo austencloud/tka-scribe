@@ -1,6 +1,7 @@
 <script lang="ts">
-  import type { ArrowDebugState } from "./state/arrow-debug-state.svelte";
+  import type { ArrowDebugState } from "./types/ArrowDebugTypes";
   import QuickTestActions from "./components/QuickTestActions.svelte";
+  import { MotionColor } from "$lib/domain";
 
   interface Props {
     state: ArrowDebugState;
@@ -19,7 +20,7 @@
     }
   }
 
-  function handleArrowColorChange(color: "red" | "blue") {
+  function handleArrowColorChange(color: MotionColor) {
     debugState.selectedArrowColor = color;
   }
 
@@ -93,7 +94,7 @@
             value={index}
             selected={debugState.selectedPictograph === pictograph}
           >
-            Letter {pictograph.letter} ({pictograph.grid_mode})
+            Letter {pictograph.letter} ({pictograph.gridMode})
           </option>
         {/each}
       </select>
@@ -107,19 +108,21 @@
         aria-label="Arrow color selection"
       >
         <button
-          class="color-btn blue {debugState.selectedArrowColor === 'blue'
+          class="color-btn blue {debugState.selectedArrowColor ===
+          MotionColor.BLUE
             ? 'active'
             : ''}"
-          onclick={() => handleArrowColorChange("blue")}
+          onclick={() => handleArrowColorChange(MotionColor.BLUE)}
           disabled={debugState.isCalculating}
         >
           🔵 Blue
         </button>
         <button
-          class="color-btn red {debugState.selectedArrowColor === 'red'
+          class="color-btn red {debugState.selectedArrowColor ===
+          MotionColor.RED
             ? 'active'
             : ''}"
-          onclick={() => handleArrowColorChange("red")}
+          onclick={() => handleArrowColorChange(MotionColor.RED)}
           disabled={debugState.isCalculating}
         >
           🔴 Red
@@ -301,17 +304,17 @@
         </div>
         <div class="summary-item">
           <span class="label">Grid Mode:</span>
-          <span class="value">{debugState.selectedPictograph.grid_mode}</span>
+          <span class="value">{debugState.selectedPictograph.gridMode}</span>
         </div>
         <div class="summary-item">
           <span class="label">Motion Type:</span>
-          <span class="value">{debugState.currentMotionData.motion_type}</span>
+          <span class="value">{debugState.currentMotionData.motionType}</span>
         </div>
         <div class="summary-item">
           <span class="label">Start→End:</span>
           <span class="value"
-            >{debugState.currentMotionData.start_ori}→{debugState
-              .currentMotionData.end_ori}</span
+            >{debugState.currentMotionData.startOrientation}→{debugState
+              .currentMotionData.endOrientation}</span
           >
         </div>
         <div class="summary-item">
@@ -320,7 +323,9 @@
         </div>
         <div class="summary-item">
           <span class="label">Rotation:</span>
-          <span class="value">{debugState.currentMotionData.prop_rot_dir}</span>
+          <span class="value"
+            >{debugState.currentMotionData.rotationDirection}</span
+          >
         </div>
       </div>
     </section>

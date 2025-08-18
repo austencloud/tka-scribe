@@ -49,15 +49,15 @@ describe("SpecialPlacementService", () => {
     // force layer2 by using non in/out end orientations
     const pictograph = createPictographData({
       letter: "C",
-      grid_data: createGridData({ grid_mode: GridMode.DIAMOND }),
+      grid_data: createGridData({ gridMode: GridMode.DIAMOND }),
       motions: {
-        blue: createMotionData({ end_ori: Orientation.CLOCK, turns: 0 }),
-        red: createMotionData({ end_ori: Orientation.CLOCK, turns: 0 }),
+        blue: createMotionData({ endOrientation: Orientation.CLOCK, turns: 0 }),
+        red: createMotionData({ endOrientation: Orientation.CLOCK, turns: 0 }),
       },
     });
 
     // motionData for anti motion type
-    const motion = createMotionData({ motion_type: MotionType.ANTI, turns: 0 });
+    const motion = createMotionData({ motionType: MotionType.ANTI, turns: 0 });
 
     const point = await svc.getSpecialAdjustment(motion, pictograph);
     expect(point).not.toBeNull();
@@ -88,15 +88,15 @@ describe("SpecialPlacementService", () => {
 
     const pictograph = createPictographData({
       letter: "A",
-      grid_data: createGridData({ grid_mode: GridMode.BOX }),
+      grid_data: createGridData({ gridMode: GridMode.BOX }),
       motions: {
-        blue: createMotionData({ end_ori: Orientation.IN, turns: 0.5 }),
-        red: createMotionData({ end_ori: Orientation.IN, turns: 0.5 }),
+        blue: createMotionData({ endOrientation: Orientation.IN, turns: 0.5 }),
+        red: createMotionData({ endOrientation: Orientation.IN, turns: 0.5 }),
       },
     });
 
     const motion = createMotionData({
-      motion_type: MotionType.PRO,
+      motionType: MotionType.PRO,
       turns: 0.5,
     });
 

@@ -83,7 +83,7 @@ export class ArrowCoordinateSystemService
      * Returns:
      *     Point representing the initial position coordinates
      */
-    const motionType = motion.motion_type?.toLowerCase();
+    const motionType = motion.motionType?.toLowerCase();
 
     if (["pro", "anti", "float"].includes(motionType || "")) {
       // Shift arrows use layer2 points

@@ -37,16 +37,16 @@ export function calculateMotionEndpoints(
   const {
     start_loc,
     end_loc,
-    start_ori,
-    end_ori,
-    motion_type,
-    prop_rot_dir,
+    startOrientation,
+    endOrientation,
+    motionType,
+    rotationDirection,
     turns = 0,
   } = motionData;
 
   const startCenterAngle = mapPositionToAngle(start_loc);
   const startStaffAngle = mapOrientationToAngle(
-    start_ori || Orientation.IN,
+    startOrientation || Orientation.IN,
     startCenterAngle
   );
   const targetCenterAngle = mapPositionToAngle(end_loc);
@@ -54,7 +54,7 @@ export function calculateMotionEndpoints(
   let calculatedTargetStaffAngle: number;
 
   // Calculate target staff angle based on motion type
-  switch (motion_type) {
+  switch (motionType) {
     case MotionType.PRO: {
       const numericTurns = typeof turns === "number" ? turns : 0;
       if (numericTurns > 0) {
@@ -63,12 +63,12 @@ export function calculateMotionEndpoints(
           targetCenterAngle,
           startStaffAngle,
           numericTurns,
-          prop_rot_dir || RotationDirection.CLOCKWISE
+          rotationDirection || RotationDirection.CLOCKWISE
         );
       } else {
         calculatedTargetStaffAngle = calculateProIsolationStaffAngle(
           targetCenterAngle,
-          prop_rot_dir || RotationDirection.CLOCKWISE
+          rotationDirection || RotationDirection.CLOCKWISE
         );
       }
       break;
@@ -80,14 +80,14 @@ export function calculateMotionEndpoints(
         targetCenterAngle,
         startStaffAngle,
         numericTurns,
-        prop_rot_dir || RotationDirection.CLOCKWISE
+        rotationDirection || RotationDirection.CLOCKWISE
       );
       break;
     }
     case MotionType.STATIC: {
       calculatedTargetStaffAngle = calculateStaticStaffAngle(
         startStaffAngle,
-        end_ori || Orientation.IN,
+        endOrientation || Orientation.IN,
         targetCenterAngle
       );
       break;
@@ -95,7 +95,7 @@ export function calculateMotionEndpoints(
     case MotionType.DASH: {
       calculatedTargetStaffAngle = calculateDashTargetAngle(
         startStaffAngle,
-        end_ori || Orientation.IN,
+        endOrientation || Orientation.IN,
         targetCenterAngle
       );
       break;
@@ -105,20 +105,20 @@ export function calculateMotionEndpoints(
       break;
     }
     default:
-      console.warn(`Unknown motion type '${motion_type}'. Treating as static.`);
+      console.warn(`Unknown motion type '${motionType}'. Treating as static.`);
       calculatedTargetStaffAngle = startStaffAngle;
       break;
   }
 
   // Handle explicit end orientation override (except for pro)
-  if (motion_type !== MotionType.PRO) {
+  if (motionType !== MotionType.PRO) {
     const endOriAngleOverride = mapOrientationToAngle(
-      end_ori || Orientation.IN,
+      endOrientation || Orientation.IN,
       targetCenterAngle
     );
     // Check against enum values instead of string array
     const explicitEndOri =
-      end_ori && Object.values(Orientation).includes(end_ori);
+      endOrientation && Object.values(Orientation).includes(endOrientation);
     if (explicitEndOri) {
       calculatedTargetStaffAngle = endOriAngleOverride;
     }

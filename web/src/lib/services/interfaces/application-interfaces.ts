@@ -13,6 +13,7 @@ import type {
 } from "./domain-types";
 import type { GridMode, DifficultyLevel, OptionFilters } from "./core-types";
 import type { MotionType } from "./domain-types";
+import { BackgroundType } from "$lib/components/backgrounds/types/types";
 
 // ============================================================================
 // APPLICATION SETTINGS
@@ -34,7 +35,7 @@ export interface AppSettings {
   numBeats?: number;
   beatLayout?: string;
   // Background settings
-  backgroundType?: "snowfall" | "nightSky" | "aurora" | "bubbles" | "deepOcean";
+  backgroundType?: BackgroundType;
   backgroundQuality?: "high" | "medium" | "low" | "minimal";
   backgroundEnabled?: boolean;
   visibility?: {

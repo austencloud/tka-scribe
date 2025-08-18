@@ -3,10 +3,8 @@
   import BackgroundCanvas from "$lib/components/backgrounds/BackgroundCanvas.svelte";
   import BackgroundController from "$lib/components/backgrounds/BackgroundController.svelte";
   import BackgroundProvider from "$lib/components/backgrounds/BackgroundProvider.svelte";
-  import type {
-    BackgroundType,
-    QualityLevel,
-  } from "$lib/components/backgrounds/types/types";
+  import type { QualityLevel } from "$lib/components/backgrounds/types/types";
+  import { BackgroundType } from "$lib/components/backgrounds/types/types";
 
   // Props
   const {
@@ -32,7 +30,10 @@
   let controller: BackgroundController;
 
   // Available options
-  const backgroundTypes: BackgroundType[] = ["snowfall", "nightSky"];
+  const backgroundTypes: BackgroundType[] = [
+    BackgroundType.SNOWFALL,
+    BackgroundType.NIGHT_SKY,
+  ];
   const qualityLevels: QualityLevel[] = ["low", "medium", "high"];
 
   // Performance metrics

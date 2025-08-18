@@ -12,7 +12,7 @@ export enum FilterType {
   DIFFICULTY = "difficulty",
   STARTING_POSITION = "starting_position",
   AUTHOR = "author",
-  GRID_MODE = "grid_mode",
+  GRID_MODE = "gridMode",
   ALL_SEQUENCES = "all_sequences",
   FAVORITES = "favorites",
   RECENT = "recent",

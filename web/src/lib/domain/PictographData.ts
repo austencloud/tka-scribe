@@ -17,6 +17,7 @@ import {
   Direction,
   GridPosition,
   LetterType,
+  MotionColor,
   Timing,
 } from "./enums";
 
@@ -25,7 +26,7 @@ export interface PictographData {
   readonly id: string;
 
   // Grid configuration
-  readonly grid_data: GridData;
+  readonly gridData: GridData;
 
   // Arrows, props, and motions (consistent dictionary approach)
   readonly arrows: Record<string, ArrowData>; // "blue", "red"
@@ -34,24 +35,22 @@ export interface PictographData {
 
   // Letter and position data
   readonly letter?: string | null;
-  readonly start_position?: GridPosition | null;
-  readonly end_position?: GridPosition | null;
+  readonly startPosition?: GridPosition | null;
+  readonly endPosition?: GridPosition | null;
 
   // Legacy compatibility properties
-  readonly start_pos?: string | null;
-  readonly end_pos?: string | null;
-  readonly grid_mode?: string | null;
+  readonly gridMode?: string | null;
 
   // Letter determination fields
   readonly beat: number;
   readonly timing?: Timing | null;
   readonly direction?: Direction | null;
   readonly duration?: number | null;
-  readonly letter_type?: LetterType | null;
+  readonly letterType?: LetterType | null;
 
   // Visual state
-  readonly is_blank: boolean;
-  readonly is_mirrored: boolean;
+  readonly isBlank: boolean;
+  readonly isMirrored: boolean;
 
   // Metadata
   readonly metadata: Record<string, unknown>;
@@ -62,34 +61,37 @@ export function createPictographData(
 ): PictographData {
   // Ensure we have blue and red arrows
   const arrows = {
-    blue: createArrowData({ arrow_type: ArrowType.BLUE, color: "blue" }),
-    red: createArrowData({ arrow_type: ArrowType.RED, color: "red" }),
+    blue: createArrowData({
+      arrowType: ArrowType.BLUE,
+      color: MotionColor.BLUE,
+    }),
+    red: createArrowData({ arrowType: ArrowType.RED, color: MotionColor.RED }),
     ...data.arrows,
   };
 
   // Ensure we have blue and red props
   const props = {
-    blue: createPropData({ color: "blue" }),
-    red: createPropData({ color: "red" }),
+    blue: createPropData({ color: MotionColor.BLUE }),
+    red: createPropData({ color: MotionColor.RED }),
     ...data.props,
   };
 
   return {
     id: data.id ?? crypto.randomUUID(),
-    grid_data: data.grid_data ?? createGridData(),
+    gridData: data.gridData ?? createGridData(),
     arrows,
     props,
     motions: data.motions ?? {},
     letter: data.letter ?? null,
-    start_position: data.start_position ?? null,
-    end_position: data.end_position ?? null,
+    startPosition: data.startPosition ?? null,
+    endPosition: data.endPosition ?? null,
     beat: data.beat ?? 0,
     timing: data.timing ?? null,
     direction: data.direction ?? null,
     duration: data.duration ?? null,
-    letter_type: data.letter_type ?? null,
-    is_blank: data.is_blank ?? false,
-    is_mirrored: data.is_mirrored ?? false,
+    letterType: data.letterType ?? null,
+    isBlank: data.isBlank ?? false,
+    isMirrored: data.isMirrored ?? false,
     metadata: data.metadata ?? {},
   };
 }
@@ -144,23 +146,23 @@ export function updateProp(
 export function getBlueArrow(pictograph: PictographData): ArrowData {
   return (
     pictograph.arrows.blue ??
-    createArrowData({ arrow_type: ArrowType.BLUE, color: "blue" })
+    createArrowData({ arrowType: ArrowType.BLUE, color: MotionColor.BLUE })
   );
 }
 
 export function getRedArrow(pictograph: PictographData): ArrowData {
   return (
     pictograph.arrows.red ??
-    createArrowData({ arrow_type: ArrowType.RED, color: "red" })
+    createArrowData({ arrowType: ArrowType.RED, color: MotionColor.RED })
   );
 }
 
 export function getBlueProp(pictograph: PictographData): PropData {
-  return pictograph.props.blue ?? createPropData({ color: "blue" });
+  return pictograph.props.blue ?? createPropData({ color: MotionColor.BLUE });
 }
 
 export function getRedProp(pictograph: PictographData): PropData {
-  return pictograph.props.red ?? createPropData({ color: "red" });
+  return pictograph.props.red ?? createPropData({ color: MotionColor.RED });
 }
 
 export function pictographDataToObject(
@@ -168,20 +170,20 @@ export function pictographDataToObject(
 ): Record<string, unknown> {
   return {
     id: pictograph.id,
-    grid_data: pictograph.grid_data,
+    gridData: pictograph.gridData,
     arrows: pictograph.arrows,
     props: pictograph.props,
     motions: pictograph.motions,
     letter: pictograph.letter,
-    start_position: pictograph.start_position,
-    end_position: pictograph.end_position,
+    startPosition: pictograph.startPosition,
+    endPosition: pictograph.endPosition,
     beat: pictograph.beat,
     timing: pictograph.timing,
     direction: pictograph.direction,
     duration: pictograph.duration,
-    letter_type: pictograph.letter_type,
-    is_blank: pictograph.is_blank,
-    is_mirrored: pictograph.is_mirrored,
+    letterType: pictograph.letterType,
+    isBlank: pictograph.isBlank,
+    isMirrored: pictograph.isMirrored,
     metadata: pictograph.metadata,
   };
 }
@@ -194,8 +196,8 @@ export function pictographDataFromObject(
   if (data.id !== undefined) {
     pictographData.id = data.id;
   }
-  if (data.grid_data !== undefined) {
-    pictographData.grid_data = data.grid_data;
+  if (data.gridData !== undefined) {
+    pictographData.gridData = data.gridData;
   }
   if (data.arrows !== undefined) {
     pictographData.arrows = data.arrows;
@@ -209,11 +211,11 @@ export function pictographDataFromObject(
   if (data.letter !== undefined) {
     pictographData.letter = data.letter;
   }
-  if (data.start_position !== undefined) {
-    pictographData.start_position = data.start_position;
+  if (data.startPosition !== undefined) {
+    pictographData.startPosition = data.startPosition;
   }
-  if (data.end_position !== undefined) {
-    pictographData.end_position = data.end_position;
+  if (data.endPosition !== undefined) {
+    pictographData.endPosition = data.endPosition;
   }
   if (data.beat !== undefined) {
     pictographData.beat = data.beat;
@@ -227,14 +229,14 @@ export function pictographDataFromObject(
   if (data.duration !== undefined) {
     pictographData.duration = data.duration;
   }
-  if (data.letter_type !== undefined) {
-    pictographData.letter_type = data.letter_type;
+  if (data.letterType !== undefined) {
+    pictographData.letterType = data.letterType;
   }
-  if (data.is_blank !== undefined) {
-    pictographData.is_blank = data.is_blank;
+  if (data.isBlank !== undefined) {
+    pictographData.isBlank = data.isBlank;
   }
-  if (data.is_mirrored !== undefined) {
-    pictographData.is_mirrored = data.is_mirrored;
+  if (data.isMirrored !== undefined) {
+    pictographData.isMirrored = data.isMirrored;
   }
   if (data.metadata !== undefined) {
     pictographData.metadata = data.metadata;

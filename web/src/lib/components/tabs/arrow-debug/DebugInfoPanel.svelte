@@ -62,15 +62,15 @@
           {#if debugData.motionData}
             <div class="data-item">
               <strong>Motion Type:</strong>
-              {debugData.motionData.motion_type}
+              {debugData.motionData.motionType}
             </div>
             <div class="data-item">
               <strong>Start Orientation:</strong>
-              {debugData.motionData.start_ori}
+              {debugData.motionData.startOrientation}
             </div>
             <div class="data-item">
               <strong>End Orientation:</strong>
-              {debugData.motionData.end_ori}
+              {debugData.motionData.endOrientation}
             </div>
           {/if}
           {#if debugData.arrowData}

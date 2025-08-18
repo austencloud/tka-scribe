@@ -6,6 +6,7 @@
  */
 
 import type { AppSettings } from "../interfaces/application-interfaces";
+import { MotionColor } from "$lib/domain/enums";
 
 type VisibilityObserver = () => void;
 
@@ -164,27 +165,34 @@ export class VisibilityStateManager {
   /**
    * Get motion visibility for a specific color
    */
-  getMotionVisibility(color: "red" | "blue"): boolean {
-    return this.settings[`${color}_motion`];
+  getMotionVisibility(color: MotionColor): boolean {
+    return this.settings[
+      `${color}_motion` as keyof VisibilitySettings
+    ] as boolean;
   }
 
   /**
    * Set motion visibility with constraint enforcement
    */
-  setMotionVisibility(color: "red" | "blue", visible: boolean): void {
-    const otherColor = color === "red" ? "blue" : "red";
+  setMotionVisibility(color: MotionColor, visible: boolean): void {
+    const otherColor =
+      color === MotionColor.RED ? MotionColor.BLUE : MotionColor.RED;
+
+    const colorMotionKey = `${color}_motion` as keyof VisibilitySettings;
+    const otherColorMotionKey =
+      `${otherColor}_motion` as keyof VisibilitySettings;
 
     // Enforce constraint: at least one motion must remain visible
-    if (!visible && !this.settings[`${otherColor}_motion`]) {
+    if (!visible && !this.settings[otherColorMotionKey]) {
       // If trying to turn off the last visible motion, turn on the other one
-      this.settings[`${color}_motion`] = false;
-      this.settings[`${otherColor}_motion`] = true;
+      this.settings[colorMotionKey] = false;
+      this.settings[otherColorMotionKey] = true;
       this.notifyObservers(["motion", "glyph", "buttons"]);
       return;
     }
 
     // Normal case
-    this.settings[`${color}_motion`] = visible;
+    this.settings[colorMotionKey] = visible;
     this.notifyObservers(["motion", "glyph", "buttons"]);
   }
 

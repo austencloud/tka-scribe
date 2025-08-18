@@ -50,7 +50,7 @@
   // Get image path for visual types
   function getImagePath(visualType: string, value: string) {
     switch (visualType) {
-      case "grid_mode":
+      case "gridMode":
         return `/images/grid/${value.toLowerCase()}_grid.svg`;
       case "starting_position":
         return `/images/position_images/${value.toLowerCase()}.png`;
@@ -70,9 +70,7 @@
 
   // Check if this visual type should display images
   function shouldShowImage(visualType: string) {
-    return ["grid_mode", "starting_position", "difficulty"].includes(
-      visualType
-    );
+    return ["gridMode", "starting_position", "difficulty"].includes(visualType);
   }
 </script>
 
@@ -175,7 +173,7 @@
     min-height: 140px;
   }
 
-  /* Image-based buttons - unified consistent styling for grid_mode, starting_position, and difficulty */
+  /* Image-based buttons - unified consistent styling for gridMode, starting_position, and difficulty */
   .category-button.has-image {
     min-height: 280px;
     max-height: 320px;
@@ -185,7 +183,7 @@
   }
 
   /* Grid mode buttons - square shape to match the images */
-  .category-button.has-image[data-visual-type="grid_mode"] {
+  .category-button.has-image[data-visual-type="gridMode"] {
     min-height: 240px;
     max-height: 240px;
     width: 240px;
@@ -208,7 +206,7 @@
   }
 
   /* Grid mode images - same size as other images, not square */
-  .category-button[data-visual-type="grid_mode"] .filter-image {
+  .category-button[data-visual-type="gridMode"] .filter-image {
     width: 90%;
     height: 75%;
     min-height: 200px;
@@ -292,7 +290,7 @@
       padding: var(--spacing-sm);
     }
 
-    .category-button.has-image[data-visual-type="grid_mode"] {
+    .category-button.has-image[data-visual-type="gridMode"] {
       min-height: 180px;
       max-height: 180px;
       width: 180px;
@@ -304,7 +302,7 @@
       height: 70%;
     }
 
-    .category-button[data-visual-type="grid_mode"] .filter-image {
+    .category-button[data-visual-type="gridMode"] .filter-image {
       min-height: 160px;
       max-height: 180px;
       /* Same size as other images on mobile */
@@ -333,7 +331,7 @@
       max-height: 240px;
     }
 
-    .category-button.has-image[data-visual-type="grid_mode"] {
+    .category-button.has-image[data-visual-type="gridMode"] {
       min-height: 160px;
       max-height: 160px;
       width: 160px;
@@ -345,7 +343,7 @@
       height: 65%;
     }
 
-    .category-button[data-visual-type="grid_mode"] .filter-image {
+    .category-button[data-visual-type="gridMode"] .filter-image {
       min-height: 140px;
       max-height: 160px;
       /* Same size as other images on small mobile */

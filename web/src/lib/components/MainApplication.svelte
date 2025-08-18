@@ -15,6 +15,8 @@
     getInitializationError,
     getInitializationProgress,
     getIsInitialized,
+    getIsInitializing,
+    getSettings,
     getShowSettings,
     hideSettingsDialog,
     restoreApplicationState,
@@ -24,7 +26,7 @@
     showSettingsDialog,
     switchTab,
     updateSettings,
-  } from "$lib/state/app-state.svelte";
+  } from "$lib/state/appState.svelte";
 
   // Import components
   import ErrorScreen from "$components/ErrorScreen.svelte";

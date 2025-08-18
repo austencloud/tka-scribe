@@ -65,8 +65,8 @@ export function createStartPositionData(
   endPosition: string
 ) {
   return {
-    // CRITICAL: Include endPos field for OptionPicker
-    endPos: endPosition,
+    // CRITICAL: Include endPosition field for OptionPicker
+    endPosition: endPosition,
     // Include the full pictograph data
     pictograph_data: {
       ...pictographData,
@@ -75,18 +75,18 @@ export function createStartPositionData(
         blue: pictographData.motions?.blue
           ? {
               ...pictographData.motions.blue,
-              motion_type: MotionType.STATIC,
+              motionType: MotionType.STATIC,
               end_loc: pictographData.motions.blue.start_loc,
-              end_ori: pictographData.motions.blue.start_ori,
+              endOrientation: pictographData.motions.blue.startOrientation,
               turns: 0,
             }
           : null,
         red: pictographData.motions?.red
           ? {
               ...pictographData.motions.red,
-              motion_type: MotionType.STATIC,
+              motionType: MotionType.STATIC,
               end_loc: pictographData.motions.red.start_loc,
-              end_ori: pictographData.motions.red.start_ori,
+              endOrientation: pictographData.motions.red.startOrientation,
               turns: 0,
             }
           : null,
@@ -106,7 +106,7 @@ export function createStartPositionBeat(
     beat_number: 1,
     // Store end position in metadata for compatibility
     metadata: {
-      end_position: extractEndPosition(pictographData),
+      endPosition: extractEndPosition(pictographData),
       is_start_position: true,
     },
   });
@@ -117,7 +117,7 @@ export function createStartPositionBeat(
  */
 export function storeStartPositionData(data: Record<string, unknown>): void {
   try {
-    localStorage.setItem("start_position", JSON.stringify(data));
+    localStorage.setItem("startPosition", JSON.stringify(data));
     console.log("🚀 StartPositionPicker: Saved start position to localStorage");
   } catch (error) {
     console.error("Failed to store start position data:", error);

@@ -7,11 +7,11 @@ import { TurnsTupleKeyGenerator } from "./TurnsTupleKeyGenerator";
 describe("Key Generators", () => {
   it("SpecialPlacementOriKeyGenerator generates from_layer2 for layer2 orientations", () => {
     const gen = new SpecialPlacementOriKeyGenerator();
-    const motion = createMotionData({ motion_type: MotionType.PRO });
+    const motion = createMotionData({ motionType: MotionType.PRO });
     const pictograph = createPictographData({
       motions: {
-        blue: createMotionData({ end_ori: Orientation.CLOCK }),
-        red: createMotionData({ end_ori: Orientation.COUNTER }),
+        blue: createMotionData({ endOrientation: Orientation.CLOCK }),
+        red: createMotionData({ endOrientation: Orientation.COUNTER }),
       },
     });
 

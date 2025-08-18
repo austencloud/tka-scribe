@@ -120,7 +120,7 @@
 
       // **CRITICAL: Create the data format that OptionPicker expects**
       // Based on legacy analysis, OptionPicker looks for:
-      // 1. localStorage 'start_position' with endPos field
+      // 1. localStorage 'startPosition' with endPosition field
       // 2. Proper pictograph data structure
 
       // Extract end position from the pictograph data
@@ -147,10 +147,10 @@
         duration: 1.0,
         blue_reversal: false,
         red_reversal: false,
-        is_blank: false,
+        isBlank: false,
         pictograph_data: startPosPictograph,
         metadata: {
-          endPos: endPosition,
+          endPosition: endPosition,
         },
       };
 
@@ -288,8 +288,8 @@
   $effect(() => {
     const currentSequence = sequenceStateService.currentSequence;
 
-    // If a sequence with start_position exists and we're transitioning, clear the transition
-    if (currentSequence && currentSequence.start_position && isTransitioning) {
+    // If a sequence with startPosition exists and we're transitioning, clear the transition
+    if (currentSequence && currentSequence.startPosition && isTransitioning) {
       console.log(
         "🚀 StartPositionPicker: Sequence with start position detected, clearing transition state"
       );

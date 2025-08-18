@@ -8,8 +8,8 @@ describe("SpecialPlacementOriKeyGenerator", () => {
     const gen = new SpecialPlacementOriKeyGenerator();
     const pictograph = createPictographData({
       motions: {
-        blue: createMotionData({ end_ori: Orientation.IN }),
-        red: createMotionData({ end_ori: Orientation.OUT }),
+        blue: createMotionData({ endOrientation: Orientation.IN }),
+        red: createMotionData({ endOrientation: Orientation.OUT }),
       },
     });
 
@@ -21,8 +21,8 @@ describe("SpecialPlacementOriKeyGenerator", () => {
     const gen = new SpecialPlacementOriKeyGenerator();
     const pictograph = createPictographData({
       motions: {
-        blue: createMotionData({ end_ori: Orientation.IN }),
-        red: createMotionData({ end_ori: Orientation.CLOCK }),
+        blue: createMotionData({ endOrientation: Orientation.IN }),
+        red: createMotionData({ endOrientation: Orientation.CLOCK }),
       },
     });
 
@@ -34,8 +34,8 @@ describe("SpecialPlacementOriKeyGenerator", () => {
     const gen = new SpecialPlacementOriKeyGenerator();
     const pictograph = createPictographData({
       motions: {
-        blue: createMotionData({ end_ori: Orientation.CLOCK }),
-        red: createMotionData({ end_ori: Orientation.COUNTER }),
+        blue: createMotionData({ endOrientation: Orientation.CLOCK }),
+        red: createMotionData({ endOrientation: Orientation.COUNTER }),
       },
     });
 

@@ -76,7 +76,7 @@ export class ExampleSequenceService implements IExampleSequenceService {
       duration: 1.0,
       blue_reversal: false,
       red_reversal: false,
-      is_blank: true,
+      isBlank: true,
       metadata: {},
     }));
 
@@ -91,7 +91,7 @@ export class ExampleSequenceService implements IExampleSequenceService {
       author: "Unknown",
       level: 1,
       date_added: new Date(),
-      grid_mode: "diamond",
+      gridMode: "diamond",
       prop_type: "poi",
       is_favorite: false,
       is_circular: false,
@@ -162,7 +162,7 @@ export class ExampleSequenceService implements IExampleSequenceService {
     // Calculate complexity based on non-blank beats and motion types
     let complexity = 0;
     for (const beat of sequence.beats) {
-      if (!beat.is_blank) {
+      if (!beat.isBlank) {
         complexity += 1;
 
         // Add complexity for motion types
@@ -171,7 +171,7 @@ export class ExampleSequenceService implements IExampleSequenceService {
           complexity +=
             motions.filter(
               (motion) =>
-                typeof motion === "object" && motion?.motion_type !== "static"
+                typeof motion === "object" && motion?.motionType !== "static"
             ).length * 0.5;
         }
       }

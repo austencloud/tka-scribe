@@ -3,7 +3,7 @@
   import { browser } from "$app/environment";
   import { onDestroy, onMount } from "svelte";
   import { setRunesBackgroundContext } from "./contexts/BackgroundContext.svelte";
-  import type { BackgroundType, QualityLevel } from "./types/types";
+  import { BackgroundType, type QualityLevel } from "./types/types";
 
   const {
     backgroundType: propBackgroundType,
@@ -17,7 +17,7 @@
     children?: import("svelte").Snippet;
   }>();
 
-  let backgroundType = $state(propBackgroundType || "snowfall");
+  let backgroundType = $state(propBackgroundType || BackgroundType.NIGHT_SKY);
   let initialQuality = $state(propInitialQuality);
   let isLoading = $state(propIsLoading || false);
   let isMounted = $state(false);

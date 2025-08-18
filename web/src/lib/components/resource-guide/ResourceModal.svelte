@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import type { ResourceModalData } from "$lib/stores/modalStore";
+  import type { ResourceModalData } from "./types";
 
   interface Props {
     isOpen?: boolean;

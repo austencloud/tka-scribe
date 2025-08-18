@@ -2,7 +2,7 @@
   import DebugSection from "./DebugSection.svelte";
   import DebugDataGrid from "./DebugDataGrid.svelte";
   import LocationDebugSection from "./LocationDebugSection.svelte";
-  import type { ArrowDebugState } from "../../../routes/arrow-debug/state/arrow-debug-state.svelte";
+  import type { ArrowDebugState } from "../../../routes/arrow-debug/types/ArrowDebugTypes";
   interface Props {
     state: ArrowDebugState;
   }

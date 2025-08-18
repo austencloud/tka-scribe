@@ -92,12 +92,12 @@ export class AnimationControlService implements IAnimationControlService {
 
   private convertToMotionData(params: MotionTestParams): MotionData {
     return {
-      start_loc: params.startLoc as Location,
+      start_loc: params.startLocation as Location,
       end_loc: params.endLoc as Location,
-      start_ori: params.startOri as Orientation,
-      end_ori: params.endOri as Orientation,
-      motion_type: params.motionType as MotionType,
-      prop_rot_dir: params.rotationDirection as RotationDirection,
+      startOrientation: params.startOri as Orientation,
+      endOrientation: params.endOri as Orientation,
+      motionType: params.motionType as MotionType,
+      rotationDirection: params.rotationDirection as RotationDirection,
       turns: params.turns,
       is_visible: true, // ✅ Add required field for MotionData
     };

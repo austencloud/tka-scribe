@@ -53,7 +53,7 @@ export class BeatRenderingService implements IBeatRenderingService {
       ctx.fillRect(0, 0, size, size);
 
       // If beat is blank, return canvas with just background
-      if (beatData.is_blank || !beatData.pictograph_data) {
+      if (beatData.isBlank || !beatData.pictograph_data) {
         await this.renderEmptyBeat(ctx, beatData, size, options);
         return canvas;
       }
@@ -97,10 +97,10 @@ export class BeatRenderingService implements IBeatRenderingService {
       ctx.fillRect(0, 0, size, size);
 
       // Check if sequence has explicit start position data
-      if (sequence.start_position) {
+      if (sequence.startPosition) {
         await this.renderPictographToCanvas(
           ctx,
-          { ...sequence.start_position, beat_number: 0 } as BeatData,
+          { ...sequence.startPosition, beat_number: 0 } as BeatData,
           size,
           options
         );
@@ -248,7 +248,7 @@ export class BeatRenderingService implements IBeatRenderingService {
         svgElement.setAttribute("width", size.toString());
         svgElement.setAttribute("height", size.toString());
         svgElement.setAttribute("viewBox", `0 0 ${size} ${size}`);
-        
+
         return svgElement;
       }
 
@@ -329,7 +329,7 @@ export class BeatRenderingService implements IBeatRenderingService {
     }
 
     // Draw grid background
-    this.drawGrid(ctx, pictograph.grid_data?.grid_mode || "diamond", size);
+    this.drawGrid(ctx, pictograph.grid_data?.gridMode || "diamond", size);
 
     // Draw props if visible
     if (pictograph.props) {

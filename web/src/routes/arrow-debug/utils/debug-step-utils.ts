@@ -4,7 +4,7 @@
  * Utilities for managing debug step states and visibility
  */
 
-import type { ArrowDebugState } from "../state/arrow-debug-state.svelte";
+import type { ArrowDebugState } from "../types/ArrowDebugTypes";
 
 /**
  * Get the status of a debug step

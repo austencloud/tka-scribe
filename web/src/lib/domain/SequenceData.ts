@@ -12,13 +12,13 @@ export interface SequenceData {
   readonly name: string;
   readonly word: string;
   readonly beats: readonly BeatData[];
-  readonly start_position?: BeatData;
+  readonly startPosition?: BeatData;
   readonly thumbnails: readonly string[];
   readonly sequence_length?: number;
   readonly author?: string;
   readonly level?: number;
   readonly date_added?: Date;
-  readonly grid_mode?: string;
+  readonly gridMode?: string;
   readonly prop_type?: string;
   readonly is_favorite: boolean;
   readonly is_circular: boolean;
@@ -48,7 +48,7 @@ export function createSequenceData(
     ...(data.author !== undefined && { author: data.author }),
     ...(data.level !== undefined && { level: data.level }),
     ...(data.date_added !== undefined && { date_added: data.date_added }),
-    ...(data.grid_mode !== undefined && { grid_mode: data.grid_mode }),
+    ...(data.gridMode !== undefined && { gridMode: data.gridMode }),
     ...(data.prop_type !== undefined && { prop_type: data.prop_type }),
     ...(data.starting_position !== undefined && {
       starting_position: data.starting_position,
@@ -56,8 +56,8 @@ export function createSequenceData(
     ...(data.difficulty_level !== undefined && {
       difficulty_level: data.difficulty_level,
     }),
-    ...(data.start_position !== undefined && {
-      start_position: data.start_position,
+    ...(data.startPosition !== undefined && {
+      startPosition: data.startPosition,
     }),
   };
   return result;
@@ -122,5 +122,5 @@ export function isEmptySequence(sequence: SequenceData): boolean {
 }
 
 export function hasStartPosition(sequence: SequenceData): boolean {
-  return sequence.start_position != null;
+  return sequence.startPosition != null;
 }

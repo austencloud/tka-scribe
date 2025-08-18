@@ -114,7 +114,7 @@ export class ArrowRotationCalculator implements IArrowRotationCalculator {
      * Returns:
      *     Rotation angle in degrees (0-360)
      */
-    const motionType = motion.motion_type?.toLowerCase();
+    const motionType = motion.motionType?.toLowerCase();
 
     switch (motionType) {
       case "static":
@@ -140,7 +140,7 @@ export class ArrowRotationCalculator implements IArrowRotationCalculator {
 
   private calculateProRotation(motion: MotionData, location: Location): number {
     /**Calculate rotation for PRO arrows based on rotation direction.*/
-    const rotDir = motion.prop_rot_dir?.toLowerCase();
+    const rotDir = motion.rotationDirection?.toLowerCase();
     if (rotDir === "clockwise" || rotDir === "cw") {
       return this.proClockwiseMap[location] || 0.0;
     } else {
@@ -153,7 +153,7 @@ export class ArrowRotationCalculator implements IArrowRotationCalculator {
     location: Location
   ): number {
     /**Calculate rotation for ANTI arrows based on rotation direction.*/
-    const rotDir = motion.prop_rot_dir?.toLowerCase();
+    const rotDir = motion.rotationDirection?.toLowerCase();
     if (rotDir === "clockwise" || rotDir === "cw") {
       return this.antiClockwiseMap[location] || 0.0;
     } else {
@@ -166,7 +166,7 @@ export class ArrowRotationCalculator implements IArrowRotationCalculator {
     location: Location
   ): number {
     /**Calculate rotation for DASH arrows with special NO_ROTATION handling.*/
-    const rotDir = motion.prop_rot_dir?.toLowerCase();
+    const rotDir = motion.rotationDirection?.toLowerCase();
 
     if (rotDir === "no_rotation" || rotDir === "none") {
       const key = `${motion.start_loc},${motion.end_loc}`;
@@ -205,12 +205,12 @@ export class ArrowRotationCalculator implements IArrowRotationCalculator {
       return false;
     }
 
-    const motionType = motion.motion_type?.toLowerCase();
+    const motionType = motion.motionType?.toLowerCase();
     if (!this.getSupportedMotionTypes().includes(motionType as MotionType)) {
       return false;
     }
 
-    if (!motion.prop_rot_dir) {
+    if (!motion.rotationDirection) {
       return false;
     }
 

@@ -150,7 +150,7 @@ export class BetaPropDirectionCalculator {
     // Handle shift motions (pro, anti, float)
     if (
       [MotionType.PRO, MotionType.ANTI, MotionType.FLOAT].includes(
-        motionData.motion_type
+        motionData.motionType
       )
     ) {
       return this.handleShiftMotion(prop, motionData);
@@ -168,7 +168,7 @@ export class BetaPropDirectionCalculator {
     motionData: MotionData
   ): Direction | null {
     const isRadial = this.endsWithRadialOrientation();
-    const startLoc =
+    const startLocation =
       (motionData as unknown as { start_loc?: string; start_location?: string })
         .start_loc ??
       (motionData as unknown as { start_location?: string }).start_location ??
@@ -178,7 +178,7 @@ export class BetaPropDirectionCalculator {
         .end_loc ??
       (motionData as unknown as { end_location?: string }).end_location ??
       "";
-    return this.getShiftDirection(isRadial, startLoc, endLoc);
+    return this.getShiftDirection(isRadial, startLocation, endLoc);
   }
 
   /**
@@ -186,13 +186,13 @@ export class BetaPropDirectionCalculator {
    */
   private getShiftDirection(
     isRadial: boolean,
-    startLoc: string,
+    startLocation: string,
     endLoc: string
   ): Direction | null {
     const map = isRadial
       ? this.directionMapRadialShift
       : this.directionMapNonRadialShift;
-    return map[startLoc as Loc]?.[endLoc as Loc] ?? null;
+    return map[startLocation as Loc]?.[endLoc as Loc] ?? null;
   }
 
   /**
@@ -244,18 +244,20 @@ export class BetaPropDirectionCalculator {
       (
         this.motionData.red as unknown as {
           end_orientation?: string;
-          end_ori?: string;
+          endOrientation?: string;
         }
       ).end_orientation ??
-      (this.motionData.red as unknown as { end_ori?: string }).end_ori;
+      (this.motionData.red as unknown as { endOrientation?: string })
+        .endOrientation;
     const blueEndOri =
       (
         this.motionData.blue as unknown as {
           end_orientation?: string;
-          end_ori?: string;
+          endOrientation?: string;
         }
       ).end_orientation ??
-      (this.motionData.blue as unknown as { end_ori?: string }).end_ori;
+      (this.motionData.blue as unknown as { endOrientation?: string })
+        .endOrientation;
     if (redEndOri === "in" && blueEndOri === "in") return true;
     if (redEndOri === "out" && blueEndOri === "out") return false;
     return true;

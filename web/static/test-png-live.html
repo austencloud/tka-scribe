@@ -165,7 +165,7 @@
           log(`✅ ${sequenceName} Real Metadata:`, "success");
           log(`   Author: "${firstStep.author}"`, "success");
           log(`   Level: ${firstStep.level}`, "success");
-          log(`   Grid Mode: ${firstStep.grid_mode}`, "success");
+          log(`   Grid Mode: ${firstStep.gridMode}`, "success");
           log(`   Is Circular: ${firstStep.is_circular}`, "success");
           log(`   Prop Type: ${firstStep.prop_type}`, "success");
           log(`   Real Beat Count: ${realBeats.length}`, "success");
@@ -174,8 +174,8 @@
           // Show first few beats
           log(`   Beat Structure:`, "success");
           realBeats.slice(0, 3).forEach((step) => {
-            const blueMotion = step.blue_attributes?.motion_type || "unknown";
-            const redMotion = step.red_attributes?.motion_type || "unknown";
+            const blueMotion = step.blueAttributes?.motionType || "unknown";
+            const redMotion = step.redAttributes?.motionType || "unknown";
             log(
               `     Beat ${step.beat} (${step.letter}): blue=${blueMotion}, red=${redMotion}`,
               "success"

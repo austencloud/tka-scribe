@@ -16,8 +16,8 @@ export class SpecialPlacementOriKeyGenerator
       const blueMotion = pictographData.motions?.blue;
       const redMotion = pictographData.motions?.red;
       if (blueMotion && redMotion) {
-        const blueEndOri = blueMotion.end_ori || "in";
-        const redEndOri = redMotion.end_ori || "in";
+        const blueEndOri = blueMotion.endOrientation || "in";
+        const redEndOri = redMotion.endOrientation || "in";
         const blueLayer = ["in", "out"].includes(blueEndOri) ? 1 : 2;
         const redLayer = ["in", "out"].includes(redEndOri) ? 1 : 2;
         if (blueLayer === 1 && redLayer === 1) return "from_layer1";

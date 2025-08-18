@@ -152,7 +152,7 @@ export function createDebugState() {
       const newGridMode = mode === "diamond" ? GridMode.DIAMOND : GridMode.BOX;
       selectedPictograph = createPictographData({
         ...selectedPictograph,
-        grid_data: createGridData({ grid_mode: newGridMode }),
+        grid_data: createGridData({ gridMode: newGridMode }),
       });
 
       // Trigger recalculation if auto-update is enabled
@@ -229,9 +229,9 @@ export function createDebugState() {
         );
         currentDebugData.calculatedLocation = calculatedLocation;
         currentDebugData.locationDebugInfo = {
-          motionType: currentMotionData.motion_type || "",
-          startOri: currentMotionData.start_ori || "",
-          endOri: currentMotionData.end_ori || "",
+          motionType: currentMotionData.motionType || "",
+          startOri: currentMotionData.startOrientation || "",
+          endOri: currentMotionData.endOrientation || "",
           calculationMethod: "ArrowLocationCalculator",
         };
         stepTimes.location_calculation = performance.now() - locationStart;
@@ -264,8 +264,8 @@ export function createDebugState() {
             handPoints,
             layer2Points,
             usedCoordinateSet:
-              currentMotionData.motion_type === "static" ||
-              currentMotionData.motion_type === "dash"
+              currentMotionData.motionType === "static" ||
+              currentMotionData.motionType === "dash"
                 ? "hand_points"
                 : "layer2_points",
             coordinateSystemType: "TKA_950x950",

@@ -12,7 +12,7 @@
  */
 
 import type { MotionData, PictographData, GridMode } from "$lib/domain";
-import { ArrowType } from "$lib/domain";
+import { ArrowType, MotionColor } from "$lib/domain";
 import type { IArrowAdjustmentCalculator } from "../../core-services";
 import type {
   IAttributeKeyGenerator,
@@ -213,18 +213,18 @@ export class ArrowAdjustmentCalculator implements IArrowAdjustmentCalculator {
         this.turnsTupleService.generateTurnsTuple(pictographData);
 
       // Create minimal arrow data for attribute key generation
-      const color = "blue";
+      const color = MotionColor.BLUE;
       const tempArrow = {
         id: "temp",
-        arrow_type: ArrowType.BLUE,
+        arrowType: ArrowType.BLUE,
         color,
-        motion_type: motionData.motion_type || "",
+        motionType: motionData.motionType || "",
         location: "center",
-        start_orientation: motionData.start_ori || "",
-        end_orientation: motionData.end_ori || "",
-        rotation_direction: motionData.prop_rot_dir || "",
+        start_orientation: motionData.startOrientation || "",
+        end_orientation: motionData.endOrientation || "",
+        rotation_direction: motionData.rotationDirection || "",
         turns: typeof motionData.turns === "number" ? motionData.turns : 0,
-        is_mirrored: false,
+        isMirrored: false,
         position_x: 0,
         position_y: 0,
         rotation_angle: 0,
@@ -290,8 +290,8 @@ export class ArrowAdjustmentCalculator implements IArrowAdjustmentCalculator {
      */
     try {
       const keys = await this.defaultPlacementService.getAvailablePlacementKeys(
-        motionData.motion_type as MotionTypeType,
-        pictographData.grid_mode as GridMode
+        motionData.motionType as MotionTypeType,
+        pictographData.gridMode as GridMode
       );
       const defaultPlacements: Record<string, unknown> = Object.fromEntries(
         (keys || []).map((k) => [k, true])
@@ -309,7 +309,7 @@ export class ArrowAdjustmentCalculator implements IArrowAdjustmentCalculator {
         await this.defaultPlacementService.getDefaultAdjustment(
           placementKey,
           motionData.turns || 0,
-          motionData.motion_type as MotionTypeType,
+          motionData.motionType as MotionTypeType,
           gridMode as GridMode
         );
 

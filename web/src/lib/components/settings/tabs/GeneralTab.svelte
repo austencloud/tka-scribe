@@ -61,7 +61,7 @@
     developerMode = checked;
 
     // Update global state directly
-    import("$lib/state/app-state.svelte").then(
+    import("$lib/state/appState.svelte").then(
       ({ updateSettings, getSettings }) => {
         const currentSettings = getSettings();
         const newSettings = { ...currentSettings, developerMode: checked };

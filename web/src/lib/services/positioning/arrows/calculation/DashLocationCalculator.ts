@@ -14,7 +14,7 @@
 		shiftLocation?: Location;
 	} {
 		const result: { gridMode: GridMode; shiftLocation?: Location } = {
-			gridMode: (pictographData.grid_mode as GridMode) || 'diamond',
+			gridMode: (pictographData.gridMode as GridMode) || 'diamond',
 		};
 
 		// Only add shiftLocation if we can detect it properly
@@ -236,7 +236,7 @@ export class DashLocationCalculator implements IDashLocationCalculator {
       ? pictographData.motions?.red
       : pictographData.motions?.blue;
 
-    if (!motion || motion.motion_type?.toLowerCase() !== "dash") {
+    if (!motion || motion.motionType?.toLowerCase() !== "dash") {
       // If not a dash motion, return start location as fallback
       return motion?.start_loc || Location.NORTH;
     }
@@ -375,7 +375,7 @@ export class DashLocationCalculator implements IDashLocationCalculator {
 
   private dashLocationNonZeroTurns(motion: MotionData): Location {
     /**Calculate dash location for non-zero turns.*/
-    const rotDir = motion.prop_rot_dir?.toLowerCase();
+    const rotDir = motion.rotationDirection?.toLowerCase();
     if (rotDir === "no_rotation" || rotDir === "none") {
       // Fallback for no rotation
       return motion.start_loc;
@@ -393,14 +393,14 @@ export class DashLocationCalculator implements IDashLocationCalculator {
     shiftLocation: Location
   ): Location {
     /**Calculate Type 3 dash location based on shift arrow location.*/
-    const startLoc = motion.start_loc;
+    const startLocation = motion.start_loc;
 
     if (gridMode === "diamond") {
-      const key = `${startLoc},${shiftLocation}`;
-      return this.DIAMOND_DASH_LOCATION_MAP[key] || startLoc;
+      const key = `${startLocation},${shiftLocation}`;
+      return this.DIAMOND_DASH_LOCATION_MAP[key] || startLocation;
     } else if (gridMode === "box") {
-      const key = `${startLoc},${shiftLocation}`;
-      return this.BOX_DASH_LOCATION_MAP[key] || startLoc;
+      const key = `${startLocation},${shiftLocation}`;
+      return this.BOX_DASH_LOCATION_MAP[key] || startLocation;
     }
 
     // Fallback to default if grid mode not recognized
@@ -445,7 +445,7 @@ export class DashLocationCalculator implements IDashLocationCalculator {
     shiftLocation?: Location;
   } {
     const result: { gridMode: GridMode; shiftLocation?: Location } = {
-      gridMode: (pictographData.grid_mode as GridMode) || "diamond",
+      gridMode: (pictographData.gridMode as GridMode) || "diamond",
     };
 
     // Only add shiftLocation if we can detect it properly

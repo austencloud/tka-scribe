@@ -1,18 +1,12 @@
 <!-- Thumbnail Browser Component -->
 <script lang="ts">
   import type {
-    MetadataTesterState,
+    MetadataTestingStateManager,
     ThumbnailFile,
-  } from "../state/metadata-tester-state.svelte";
+  } from "$lib/services/metadata-testing";
 
   interface Props {
-    state: {
-      state: MetadataTesterState;
-      extractMetadata: (thumbnail: ThumbnailFile) => Promise<void>;
-      loadThumbnails: () => Promise<void>;
-      clearSelection: () => void;
-      handleBatchAnalyze: () => Promise<void>;
-    };
+    state: MetadataTestingStateManager;
   }
 
   let { state }: Props = $props();
@@ -40,11 +34,11 @@
       <button
         class="batch-analyze-btn"
         onclick={handleBatchAnalyze}
-        disabled={state.state.isLoadingThumbnails ||
-          state.state.isBatchAnalyzing ||
+        disabled={state.isLoadingThumbnails ||
+          state.isBatchAnalyzing ||
           state.state.thumbnails.length === 0}
       >
-        {#if state.state.isBatchAnalyzing}
+        {#if state.isBatchAnalyzing}
           ⏳ Analyzing...
         {:else}
           🔍 Batch Analyze
@@ -53,18 +47,17 @@
       <button
         class="refresh-btn"
         onclick={handleRefresh}
-        disabled={state.state.isLoadingThumbnails}
+        disabled={state.isLoadingThumbnails}
       >
-        {state.state.isLoadingThumbnails ? "🔄" : "↻"} Refresh
+        {state.isLoadingThumbnails ? "🔄" : "↻"} Refresh
       </button>
     </div>
   </div>
 
   <div class="thumbnail-grid-container">
-    {#if state.state.isLoadingThumbnails}
+    {#if state.isLoadingThumbnails}
       <div class="loading-state">
-        <div class="spinner"></div>
-        <p>Loading thumbnails...</p>
+        <p>🔄 Loading sequences...</p>
       </div>
     {:else if state.state.error}
       <div class="error-state">
@@ -73,42 +66,38 @@
       </div>
     {:else if state.state.thumbnails.length === 0}
       <div class="empty-state">
-        <p>📭 No thumbnails found</p>
-        <p class="help-text">
-          Make sure PNG files are available in the static directories
-        </p>
+        <p>📂 No sequences found</p>
+        <p class="help-text">Try refreshing or check your data directory</p>
       </div>
     {:else}
       <div class="thumbnail-grid">
-        {#each state.state.thumbnails as thumbnail (thumbnail.path)}
+        {#each state.state.thumbnails as thumbnail (thumbnail.name)}
           <button
             class="thumbnail-card"
-            class:selected={state.state.selectedThumbnail?.path ===
-              thumbnail.path}
+            class:selected={state.selectedThumbnail?.name === thumbnail.name}
             onclick={() => handleThumbnailClick(thumbnail)}
-            aria-label="Select {thumbnail.word} sequence for metadata extraction"
           >
             <div class="thumbnail-image">
-              <img src={thumbnail.path} alt={thumbnail.name} loading="lazy" />
+              <img src={`/thumbnails/${thumbnail.name}`} alt={thumbnail.word} />
             </div>
             <div class="thumbnail-info">
-              <h3 class="sequence-name">{thumbnail.word}</h3>
-              <p class="file-name">{thumbnail.name}</p>
+              <h3>{thumbnail.word}</h3>
+              <p>{thumbnail.name}</p>
             </div>
           </button>
         {/each}
       </div>
     {/if}
-  </div>
 
-  {#if state.state.selectedThumbnail}
-    <div class="selection-info">
-      <p>📌 Selected: <strong>{state.state.selectedThumbnail.word}</strong></p>
-      <button class="clear-btn" onclick={state.clearSelection}
-        >Clear Selection</button
-      >
-    </div>
-  {/if}
+    {#if state.selectedThumbnail}
+      <div class="selection-info">
+        <p>📌 Selected: <strong>{state.selectedThumbnail.word}</strong></p>
+        <button class="clear-btn" onclick={state.clearSelection}
+          >Clear Selection</button
+        >
+      </div>
+    {/if}
+  </div>
 </div>
 
 <style>
@@ -268,25 +257,6 @@
     justify-content: center;
     height: 300px;
     text-align: center;
-  }
-
-  .spinner {
-    width: 40px;
-    height: 40px;
-    border: 3px solid rgba(255, 255, 255, 0.1);
-    border-top: 3px solid #60a5fa;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-    margin-bottom: 15px;
-  }
-
-  @keyframes spin {
-    0% {
-      transform: rotate(0deg);
-    }
-    100% {
-      transform: rotate(360deg);
-    }
   }
 
   .retry-btn,

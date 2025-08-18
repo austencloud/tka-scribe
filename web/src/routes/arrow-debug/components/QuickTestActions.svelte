@@ -1,10 +1,12 @@
 <!-- Quick action buttons for common debugging scenarios -->
 <script lang="ts">
-  import type { ArrowDebugState } from "../state/arrow-debug-state.svelte";
+  import type { ArrowDebugState } from "../types/ArrowDebugTypes";
   import { createGridData } from "$lib/domain/GridData";
+  import type { PictographData } from "$lib/domain";
   import {
     GridMode,
     ArrowType,
+    MotionColor,
     MotionType,
     RotationDirection,
     Location,
@@ -73,25 +75,25 @@
     return {
       id: `test_${letter.toLowerCase()}`,
       letter,
-      grid_mode: "diamond",
-      start_position: GridPosition.ALPHA1,
-      end_position: GridPosition.ALPHA3,
+      gridMode: "diamond",
+      startPosition: GridPosition.ALPHA1,
+      endPosition: GridPosition.ALPHA3,
       beat: 1,
-      is_blank: false,
-      is_mirrored: false,
-      grid_data: createGridData({ grid_mode: GridMode.DIAMOND }),
+      isBlank: false,
+      isMirrored: false,
+      grid_data: createGridData({ gridMode: GridMode.DIAMOND }),
       props: {},
       metadata: {},
       motions: {
         blue: {
-          motion_type: mapMotionType(blueMotion),
-          start_ori:
+          motionType: mapMotionType(blueMotion),
+          startOrientation:
             blueMotion === "pro"
               ? Orientation.IN
               : blueMotion === "anti"
                 ? Orientation.OUT
                 : Orientation.IN,
-          end_ori:
+          endOrientation:
             blueMotion === "pro"
               ? Orientation.OUT
               : blueMotion === "anti"
@@ -99,7 +101,7 @@
                 : Orientation.OUT,
           start_loc: Location.NORTH,
           end_loc: Location.SOUTH,
-          prop_rot_dir: RotationDirection.CLOCKWISE,
+          rotationDirection: RotationDirection.CLOCKWISE,
           turns:
             typeof blueTurns === "string" && blueTurns.toLowerCase() === "fl"
               ? ("fl" as const)
@@ -107,14 +109,14 @@
           is_visible: true,
         },
         red: {
-          motion_type: mapMotionType(redMotion),
-          start_ori:
+          motionType: mapMotionType(redMotion),
+          startOrientation:
             redMotion === "pro"
               ? Orientation.IN
               : redMotion === "anti"
                 ? Orientation.OUT
                 : Orientation.IN,
-          end_ori:
+          endOrientation:
             redMotion === "pro"
               ? Orientation.OUT
               : redMotion === "anti"
@@ -122,7 +124,7 @@
                 : Orientation.OUT,
           start_loc: Location.NORTH,
           end_loc: Location.SOUTH,
-          prop_rot_dir: RotationDirection.COUNTER_CLOCKWISE,
+          rotationDirection: RotationDirection.COUNTER_CLOCKWISE,
           turns:
             typeof redTurns === "string" && redTurns.toLowerCase() === "fl"
               ? ("fl" as const)
@@ -133,15 +135,15 @@
       arrows: {
         blue: {
           id: "blue_arrow",
-          color: "blue",
-          arrow_type: ArrowType.BLUE,
+          color: MotionColor.BLUE,
+          arrowType: ArrowType.BLUE,
           is_visible: true,
           is_selected: false,
           position_x: 0,
           position_y: 0,
           rotation_angle: 0,
-          is_mirrored: false,
-          motion_type: blueMotion,
+          isMirrored: false,
+          motionType: blueMotion,
           location: "center",
           start_orientation: blueMotion === "pro" ? "in" : "out",
           end_orientation: blueMotion === "pro" ? "out" : "in",
@@ -150,15 +152,15 @@
         },
         red: {
           id: "red_arrow",
-          color: "red",
-          arrow_type: ArrowType.RED,
+          color: MotionColor.RED,
+          arrowType: ArrowType.RED,
           is_visible: true,
           is_selected: false,
           position_x: 0,
           position_y: 0,
           rotation_angle: 0,
-          is_mirrored: false,
-          motion_type: redMotion,
+          isMirrored: false,
+          motionType: redMotion,
           location: "center",
           start_orientation: redMotion === "pro" ? "in" : "out",
           end_orientation: redMotion === "pro" ? "out" : "in",
@@ -175,7 +177,7 @@
 
       // Add to available pictographs if not already there
       const existing = state.availablePictographs.find(
-        (p) => p.letter === testPictograph.letter
+        (p: PictographData) => p.letter === testPictograph.letter
       );
       if (!existing) {
         state.availablePictographs = [

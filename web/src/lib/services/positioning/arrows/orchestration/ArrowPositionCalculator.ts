@@ -135,7 +135,7 @@ export class ArrowPositionCalculator implements IArrowPositioningOrchestrator {
         position_x: x,
         position_y: y,
         rotation_angle: rotation,
-        is_mirrored: shouldMirror,
+        isMirrored: shouldMirror,
       };
       return this.dataProcessor.updateArrowInPictograph(
         pictographData,
@@ -179,7 +179,7 @@ export class ArrowPositionCalculator implements IArrowPositioningOrchestrator {
             position_x: x,
             position_y: y,
             rotation_angle: rotation,
-            is_mirrored: shouldMirror,
+            isMirrored: shouldMirror,
           };
 
           updatedPictograph = this.dataProcessor.updateArrowInPictograph(
@@ -228,12 +228,12 @@ export class ArrowPositionCalculator implements IArrowPositioningOrchestrator {
       return false;
     }
 
-    const motionType = motion.motion_type?.toLowerCase();
-    const propRotDir = motion.prop_rot_dir?.toLowerCase();
+    const motionType = motion.motionType?.toLowerCase();
+    const propRotDir = motion.rotationDirection?.toLowerCase();
 
     if (!motionType || !propRotDir) {
       console.warn(
-        `🚫 shouldMirrorArrow: Missing motion_type (${motionType}) or prop_rot_dir (${propRotDir}), defaulting to no mirror`
+        `🚫 shouldMirrorArrow: Missing motionType (${motionType}) or rotationDirection (${propRotDir}), defaulting to no mirror`
       );
       return false;
     }
@@ -252,7 +252,7 @@ export class ArrowPositionCalculator implements IArrowPositioningOrchestrator {
       ] ?? false;
 
     console.log(
-      `🪞 shouldMirrorArrow: ${arrowData.color} arrow - motion: ${motionType}, prop_rot_dir: ${propRotDir} → mirror: ${shouldMirror}`
+      `🪞 shouldMirrorArrow: ${arrowData.color} arrow - motion: ${motionType}, rotationDirection: ${propRotDir} → mirror: ${shouldMirror}`
     );
 
     return shouldMirror;

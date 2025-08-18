@@ -2,23 +2,13 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { browser } from "$app/environment";
+  import { handleSEORedirect } from "$lib/utils/seo-utils";
   import AboutTab from "$lib/components/about/AboutTab.svelte";
 
+  // Redirect users to main app while preserving SEO benefits
   onMount(() => {
     if (browser) {
-      setTimeout(() => {
-        const referrer = document.referrer;
-        const isFromSearchEngine =
-          referrer.includes("google.") ||
-          referrer.includes("bing.") ||
-          referrer.includes("duckduckgo.") ||
-          referrer === "";
-
-        if (isFromSearchEngine) {
-          // Redirect to main app with about tab open, scrolled to features
-          window.location.href = "/?tab=about&section=features";
-        }
-      }, 100);
+      handleSEORedirect("about", "features");
     }
   });
 </script>

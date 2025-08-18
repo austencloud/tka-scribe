@@ -16,7 +16,7 @@
 
 - ✅ **Added singleton state updates** - When coordination service creates sequence, it now updates the singleton `sequenceStateService`
 - ✅ **Added loading states** - Proper loading indicators during sequence creation
-- ✅ **Fixed start position detection** - Now checks `sequence.start_position` field directly
+- ✅ **Fixed start position detection** - Now checks `sequence.startPosition` field directly
 - ✅ **Added error handling** - Better error reporting if sequence creation fails
 
 **Key Fix**:
@@ -33,7 +33,7 @@ sequenceStateService.setCurrentSequence(updatedSequence);
 
 **Changes**:
 
-- ✅ **Simplified start position detection** - Direct check of `sequence.start_position`
+- ✅ **Simplified start position detection** - Direct check of `sequence.startPosition`
 - ✅ **Added better debugging** - More detailed logging of state changes
 
 ### **3. Added State Synchronization in BuildTabContent**
@@ -86,7 +86,7 @@ $effect(() => {
 
 3. **✅ UI automatically transitions**
    - Console shows: `🔄 Syncing component sequence state with singleton state`
-   - Console shows: `🎯 Start position picker: hide (sequence exists: true, has start_position: true)`
+   - Console shows: `🎯 Start position picker: hide (sequence exists: true, has startPosition: true)`
    - **StartPositionPicker fades out**
    - **OptionPicker fades in**
 
@@ -106,7 +106,7 @@ With the enhanced logging, you can now track the entire flow:
 🎭 Creating sequence with start position stored separately from beats
 🔄 Updating singleton sequence state with new sequence
 🔄 Syncing component sequence state with singleton state
-🎯 Start position picker: hide (sequence exists: true, has start_position: true)
+🎯 Start position picker: hide (sequence exists: true, has startPosition: true)
 ✅ UI state should now automatically show option picker
 ```
 

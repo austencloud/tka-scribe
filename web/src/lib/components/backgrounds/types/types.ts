@@ -1,6 +1,15 @@
 // src/lib/components/backgrounds/types/types.ts
 // Background types - includes all landing page backgrounds
-export type BackgroundType =
+export enum BackgroundType {
+  SNOWFALL = "snowfall",
+  NIGHT_SKY = "nightSky",
+  AURORA = "aurora",
+  BUBBLES = "bubbles",
+  DEEP_OCEAN = "deepOcean",
+}
+
+// Keep the string union for backwards compatibility during transition
+export type BackgroundTypeString =
   | "snowfall"
   | "nightSky"
   | "aurora"

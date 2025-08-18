@@ -36,7 +36,7 @@ import type {
   ISequenceIndexService,
   IThumbnailService,
 } from "$lib/services/interfaces/browse-interfaces";
-import { getBrowseStatePersistence } from "./app-state.svelte";
+import { getBrowseStatePersistence } from "./appState.svelte";
 import { getBrowseTabStateManager } from "./browse-tab-state-manager.svelte";
 
 export function createBrowseState(

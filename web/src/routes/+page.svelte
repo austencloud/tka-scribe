@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import { switchTab } from "$lib/state/app-state.svelte";
+  import { switchTab } from "$lib/state/appState.svelte";
   import MainApplication from "$components/MainApplication.svelte";
 
   onMount(async () => {
@@ -47,5 +47,9 @@
     }
   });
 </script>
+
+<svelte:head>
+  <title>TKA - The Kinetic Constructor</title>
+</svelte:head>
 
 <MainApplication />

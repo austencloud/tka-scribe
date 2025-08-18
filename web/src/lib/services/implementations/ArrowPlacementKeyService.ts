@@ -30,7 +30,7 @@ export class ArrowPlacementKeyService implements IArrowPlacementKeyService {
    * Generate placement key based on motion data and pictograph context
    */
   private getRawMotionType(motionData: MotionData): MotionType {
-    return motionData.motion_type;
+    return motionData.motionType;
   }
 
   generatePlacementKey(

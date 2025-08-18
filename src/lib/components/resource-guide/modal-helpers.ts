@@ -1,54 +1,7 @@
-// Modal Store Factory using Svelte 5 Runes
-// Converts singleton class pattern to factory function for component-scoped state
+// Resource Modal Helper Functions
+// Browser interaction helpers for resource modals
 
 import { browser } from "$app/environment";
-
-export interface ResourceModalData {
-  title: string;
-  subtitle: string;
-  creator: string;
-  category: string;
-  level: string;
-  description: string;
-  keywords: string;
-  url: string;
-  resourceName: string;
-  tableOfContents: Array<{ id: string; label: string }>;
-  relatedResources: Array<{
-    name: string;
-    url: string;
-    description: string;
-    type: "internal" | "external";
-  }>;
-  heroGradient: string;
-  creatorColor: string;
-}
-
-// ============================================================================
-// MODAL STATE INTERFACE
-// ============================================================================
-
-export interface ModalState {
-  isOpen: boolean;
-  resourceName: string | null;
-  modalData: ResourceModalData | null;
-}
-
-// ============================================================================
-// FACTORY FUNCTION (for use in .svelte files)
-// ============================================================================
-
-export function createModalManager(_initialState?: Partial<ModalState>) {
-  // This will be called from within .svelte files where $state is available
-  // The actual state creation happens in the component context
-
-  return function createModalManagerWithState() {
-    // This function should be called from within a .svelte file
-    throw new Error(
-      "createModalManager must be used within a .svelte file context. Use createModalState instead."
-    );
-  };
-}
 
 // ============================================================================
 // MODAL ACTIONS (Pure functions)

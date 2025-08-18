@@ -74,16 +74,17 @@ Follows the same pattern as Prop component for consistent sizing behavior
       return null;
     }
 
-    const { motion_type, turns } = motionData;
-    const baseDir = `/images/arrows/${motion_type}`;
+    const { motionType, turns } = motionData;
+    const baseDir = `/images/arrows/${motionType}`;
 
     // For motion types that have turn-based subdirectories (pro, anti, static)
-    if (["pro", "anti", "static"].includes(motion_type)) {
+    if (["pro", "anti", "static"].includes(motionType)) {
       // Determine if we should use radial vs non-radial arrows
       // Use non-radial only for clock/counter orientations, radial for everything else
       const startOri =
-        arrowData.start_orientation || motionData.start_ori || "in";
-      const endOri = arrowData.end_orientation || motionData.end_ori || "in";
+        arrowData.start_orientation || motionData.startOrientation || "in";
+      const endOri =
+        arrowData.end_orientation || motionData.endOrientation || "in";
 
       const isNonRadial =
         startOri === "clock" ||
@@ -93,7 +94,7 @@ Follows the same pattern as Prop component for consistent sizing behavior
 
       const subDir = isNonRadial ? "from_nonradial" : "from_radial";
       const turnValue = typeof turns === "number" ? turns.toFixed(1) : "0.0";
-      const path = `${baseDir}/${subDir}/${motion_type}_${turnValue}.svg`;
+      const path = `${baseDir}/${subDir}/${motionType}_${turnValue}.svg`;
 
       return path;
     }
@@ -187,10 +188,7 @@ Follows the same pattern as Prop component for consistent sizing behavior
       const { viewBox, center } = parseArrowSvg(originalSvgText);
 
       // Apply color transformation to the SVG
-      const coloredSvgText = applyColorToSvg(
-        originalSvgText,
-        arrowData.color as MotionColor
-      );
+      const coloredSvgText = applyColorToSvg(originalSvgText, arrowData.color);
 
       svgData = {
         imageSrc: `data:image/svg+xml;base64,${btoa(coloredSvgText)}`,
@@ -221,7 +219,7 @@ Follows the same pattern as Prop component for consistent sizing behavior
   class="arrow-group {arrowData?.color}-arrow"
   class:loaded
   data-arrow-color={arrowData?.color}
-  data-motion-type={motionData?.motion_type}
+  data-motion-type={motionData?.motionType}
   data-location={arrowData?.location}
 >
   {#if error}

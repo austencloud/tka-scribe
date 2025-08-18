@@ -70,8 +70,8 @@ export class SpecialPlacementService implements ISpecialPlacementService {
 
     // Get grid mode (default to diamond)
     const gridMode =
-      pictographData.grid_data?.grid_mode ||
-      pictographData.grid_mode ||
+      pictographData.grid_data?.gridMode ||
+      pictographData.gridMode ||
       "diamond";
 
     // Generate turns tuple for lookup
@@ -126,7 +126,7 @@ export class SpecialPlacementService implements ISpecialPlacementService {
     }
 
     // Second, try motion-type-specific adjustment (for letters like I)
-    const motionTypeKey = motionData.motion_type?.toLowerCase() || "";
+    const motionTypeKey = motionData.motionType?.toLowerCase() || "";
 
     if (motionTypeKey in turnData) {
       const adjustmentValues = turnData[motionTypeKey];
@@ -176,14 +176,7 @@ export class SpecialPlacementService implements ISpecialPlacementService {
       try {
         const data = (await jsonCache.get(basePath)) as Record<string, unknown>;
         this.specialPlacements[gridMode][oriKey][letter] = data;
-        console.debug(
-          `Loaded special placements for ${gridMode}/${oriKey}/${letter}`
-        );
       } catch (error) {
-        console.debug(
-          `Failed to load special placements for ${gridMode}/${oriKey}/${letter} from ${basePath}:`,
-          error
-        );
         this.specialPlacements[gridMode][oriKey][letter] = {};
       }
     } catch (error) {
@@ -222,7 +215,6 @@ export class SpecialPlacementService implements ISpecialPlacementService {
 
       return "(0, 0)";
     } catch (error) {
-      console.debug("Error generating turns tuple:", error);
       return "(0, 0)";
     }
   }

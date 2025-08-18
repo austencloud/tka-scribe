@@ -10,6 +10,7 @@ import type {
   MetadataAnalysisResult,
   BatchAnalysisResult,
   BatchAnalysisConfig,
+  MetadataStats,
 } from "$lib/domain/metadata-testing/types";
 import { SequenceDiscoveryService } from "./SequenceDiscoveryService";
 import { MetadataExtractionService } from "./MetadataExtractionService";
@@ -41,6 +42,7 @@ interface MetadataTestingState {
   isAnalyzing: boolean;
   analysisProgress: number;
   currentAnalysisFile: string;
+  error: string | null; // Legacy compatibility property
 
   // Config
   batchConfig: BatchAnalysisConfig;
@@ -70,6 +72,7 @@ export class MetadataTestingStateManager {
     isAnalyzing: false,
     analysisProgress: 0,
     currentAnalysisFile: "",
+    error: null,
     batchConfig: {
       batchSize: 10,
       delayMs: 100,
@@ -108,7 +111,11 @@ export class MetadataTestingStateManager {
 
   // Discovery Methods
   async discoverSequences(): Promise<void> {
-    this.updateState((state) => ({ ...state, isDiscovering: true }));
+    this.updateState((state) => ({
+      ...state,
+      isDiscovering: true,
+      error: null,
+    }));
 
     try {
       const thumbnails = await this.discoveryService.discoverSequences();
@@ -120,10 +127,18 @@ export class MetadataTestingStateManager {
           state.searchQuery
         ),
         isDiscovering: false,
+        error: null,
       }));
     } catch (error) {
       console.error("Failed to discover sequences:", error);
-      this.updateState((state) => ({ ...state, isDiscovering: false }));
+      this.updateState((state) => ({
+        ...state,
+        isDiscovering: false,
+        error:
+          error instanceof Error
+            ? error.message
+            : "Failed to discover sequences",
+      }));
       throw error;
     }
   }
@@ -263,6 +278,81 @@ export class MetadataTestingStateManager {
       healthScoreFilter: { min, max },
     }));
   }
+
+  // ============================================================================
+  // LEGACY COMPATIBILITY METHODS (for easy migration from old monolith)
+  // ============================================================================
+
+  /**
+   * Legacy-compatible method: loadThumbnails -> discoverSequences
+   */
+  async loadThumbnails(): Promise<void> {
+    return this.discoverSequences();
+  }
+
+  /**
+   * Legacy-compatible method: extractMetadata -> analyzeSingle
+   */
+  async extractMetadata(thumbnail: ThumbnailFile): Promise<void> {
+    // Select the thumbnail first (for single-selection compatibility)
+    this.updateState((state) => ({
+      ...state,
+      selectedThumbnails: [thumbnail],
+    }));
+
+    return this.analyzeSingle(thumbnail);
+  }
+
+  /**
+   * Legacy-compatible method: handleBatchAnalyze -> analyzeBatch
+   */
+  async handleBatchAnalyze(): Promise<void> {
+    return this.analyzeBatch();
+  }
+
+  /**
+   * Legacy-compatible getter: selectedThumbnail (first selected thumbnail)
+   */
+  get selectedThumbnail(): ThumbnailFile | null {
+    return this.state.selectedThumbnails[0] || null;
+  }
+
+  /**
+   * Legacy-compatible state properties
+   */
+  get isLoadingThumbnails(): boolean {
+    return this.state.isDiscovering;
+  }
+
+  get isBatchAnalyzing(): boolean {
+    return this.state.isAnalyzing;
+  }
+
+  get isExtractingMetadata(): boolean {
+    return this.state.isAnalyzing;
+  }
+
+  /**
+   * Legacy-compatible data getters
+   */
+  get rawMetadata(): string | null {
+    if (!this.state.currentAnalysis) return null;
+    // Return a simplified representation for legacy compatibility
+    return JSON.stringify(this.state.currentAnalysis.stats, null, 2);
+  }
+
+  get extractedMetadata(): Record<string, unknown>[] | null {
+    // For legacy compatibility, return empty array since we don't store raw metadata anymore
+    return this.state.currentAnalysis ? [] : null;
+  }
+
+  get metadataStats(): MetadataStats | null {
+    return this.state.currentAnalysis?.stats || null;
+  }
+
+  // ============================================================================
+  // END LEGACY COMPATIBILITY METHODS
+  // ============================================================================
 
   // Export Methods
   exportResults(format: "json" | "csv" = "json"): string {

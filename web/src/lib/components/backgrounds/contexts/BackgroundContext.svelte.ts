@@ -10,12 +10,12 @@ import { getContext, setContext } from "svelte";
 import { detectAppropriateQuality } from "../config";
 import { BackgroundFactory } from "../core/BackgroundFactory";
 import { PerformanceTracker } from "../core/PerformanceTracker";
-import type {
-  BackgroundSystem,
+import {
   BackgroundType,
-  Dimensions,
-  PerformanceMetrics,
-  QualityLevel,
+  type BackgroundSystem,
+  type Dimensions,
+  type PerformanceMetrics,
+  type QualityLevel,
 } from "../types/types";
 
 // The context key
@@ -97,7 +97,7 @@ export function createRunesBackgroundContext(): RunesBackgroundContext {
   let isActive = $state(true);
   let qualityLevel = $state<QualityLevel>(detectAppropriateQuality());
   let isLoading = $state(false);
-  let backgroundType = $state<BackgroundType>("snowfall");
+  let backgroundType = $state<BackgroundType>(BackgroundType.NIGHT_SKY);
   let isInitialized = $state(false);
 
   // Derived values
@@ -126,7 +126,7 @@ export function createRunesBackgroundContext(): RunesBackgroundContext {
         // Try fallback
         try {
           backgroundSystem = BackgroundFactory.createBackgroundSystem({
-            type: "snowfall",
+            type: BackgroundType.NIGHT_SKY,
             initialQuality: qualityLevel,
           });
         } catch (fallbackError) {
@@ -213,11 +213,11 @@ export function createRunesBackgroundContext(): RunesBackgroundContext {
     } catch (error) {
       console.error("[SYSTEM] Error creating background system:", error);
 
-      // Fallback to snowfall if there's an error with the requested background
-      if (type !== "snowfall") {
+      // Fallback to nightSky if there's an error with the requested background
+      if (type !== BackgroundType.NIGHT_SKY) {
         try {
           const fallbackSystem = BackgroundFactory.createBackgroundSystem({
-            type: "snowfall",
+            type: BackgroundType.NIGHT_SKY,
             initialQuality: quality,
           });
 
@@ -454,7 +454,7 @@ function createMockRunesBackgroundContext(): RunesBackgroundContext {
     isActive: true,
     qualityLevel: "medium",
     isLoading: false,
-    backgroundType: "snowfall",
+    backgroundType: BackgroundType.NIGHT_SKY,
     isInitialized: false,
     shouldRender: true,
     backgroundSystem: null,

@@ -7,8 +7,8 @@
 export type MotionType = "pro" | "anti" | "static" | "dash";
 
 export interface LetterMapping {
-  startPos: string;
-  endPos: string;
+  startPosition: string;
+  endPosition: string;
   blueMotion: MotionType;
   redMotion: MotionType;
 }

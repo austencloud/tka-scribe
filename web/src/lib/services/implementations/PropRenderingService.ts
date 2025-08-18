@@ -25,8 +25,8 @@ export class PropRenderingService implements IPropRenderingService {
 
   // Color transformation constants (matching desktop)
   private readonly COLOR_TRANSFORMATIONS = {
-    blue: "#2E3192",
-    red: "#ED1C24",
+    [MotionColor.BLUE]: "#2E3192",
+    [MotionColor.RED]: "#ED1C24",
   };
 
   constructor() {
@@ -168,7 +168,8 @@ export class PropRenderingService implements IPropRenderingService {
     const endLocation =
       location || (motionData?.end_loc as unknown as string) || "s";
     const endOrientation =
-      (motionData as unknown as { end_ori?: string })?.end_ori || "in";
+      (motionData as unknown as { endOrientation?: string })?.endOrientation ||
+      "in";
 
     // Convert string orientation to enum
     let orientation: Orientation;

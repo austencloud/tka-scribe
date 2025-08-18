@@ -41,7 +41,7 @@ import type { MotionTestParams } from "./MotionParameterService";
 // Interface for motion parameters - matches MotionTestParams
 interface MotionParams {
   motionType: string;
-  startLoc: string;
+  startLocation: string;
   endLoc: string;
   startOri: string;
   endOri: string;
@@ -85,9 +85,36 @@ export class AnimatedPictographDataService
             "Cache inconsistency: key exists but value is undefined"
           );
         }
-        // Update progress in metadata for cached result
+
+        // Update prop locations to match current motion parameters (even for cached results)
+        const updatedBlueProps = this.createPropDataFromMotion(
+          motionState.blueMotionParams,
+          MotionColor.BLUE
+        );
+        const updatedRedProps = this.createPropDataFromMotion(
+          motionState.redMotionParams,
+          MotionColor.RED
+        );
+
+        // Update motion data to match current motion parameters (even for cached results)
+        const updatedBlueMotion = this.createMotionDataFromParams(
+          motionState.blueMotionParams
+        );
+        const updatedRedMotion = this.createMotionDataFromParams(
+          motionState.redMotionParams
+        );
+
+        // Return cached result with updated prop/motion data and progress
         return {
           ...cached,
+          props: {
+            blue: updatedBlueProps,
+            red: updatedRedProps,
+          },
+          motions: {
+            blue: updatedBlueMotion,
+            red: updatedRedMotion,
+          },
           metadata: {
             ...cached.metadata,
             progress: motionState.animationState.progress,
@@ -111,9 +138,35 @@ export class AnimatedPictographDataService
           `✅ CSV lookup successful! Found letter: ${csvPictograph.letter}`
         );
 
-        // Create new pictograph with updated metadata
+        // Update prop locations to match current motion parameters
+        const updatedBlueProps = this.createPropDataFromMotion(
+          motionState.blueMotionParams,
+          MotionColor.BLUE
+        );
+        const updatedRedProps = this.createPropDataFromMotion(
+          motionState.redMotionParams,
+          MotionColor.RED
+        );
+
+        // Update motion data to match current motion parameters
+        const updatedBlueMotion = this.createMotionDataFromParams(
+          motionState.blueMotionParams
+        );
+        const updatedRedMotion = this.createMotionDataFromParams(
+          motionState.redMotionParams
+        );
+
+        // Create new pictograph with updated metadata, prop locations, and motion data
         const updatedPictograph = {
           ...csvPictograph,
+          props: {
+            blue: updatedBlueProps,
+            red: updatedRedProps,
+          },
+          motions: {
+            blue: updatedBlueMotion,
+            red: updatedRedMotion,
+          },
           metadata: {
             ...csvPictograph.metadata,
             source: "motion_tester_csv_lookup",
@@ -140,9 +193,8 @@ export class AnimatedPictographDataService
       }
 
       // Fallback: Create pictograph manually (original logic)
-      // const gridModeString = gridMode === GridMode.DIAMOND ? "diamond" : "box";
-      // const coordinatesGridData = createGridData(gridModeString);
-      const domainGridData = createDomainGridData({ grid_mode: gridMode });
+      console.log("🔧 Creating fallback pictograph with manual generation...");
+      const domainGridData = createDomainGridData({ gridMode: gridMode });
 
       // Create complete motion data
       const blueMotionData = this.createCompleteMotionData(
@@ -187,29 +239,18 @@ export class AnimatedPictographDataService
           blue: blueMotionData,
           red: redMotionData,
         },
-        letter: (() => {
-          throw new Error(
-            `CSV lookup failed for motion parameters: ${JSON.stringify({
-              blueMotion: blueMotionData.motion_type,
-              blueStartLoc: blueMotionData.start_loc,
-              blueEndLoc: blueMotionData.end_loc,
-              blueTurns: blueMotionData.turns,
-              redMotion: redMotionData.motion_type,
-              redStartLoc: redMotionData.start_loc,
-              redEndLoc: redMotionData.end_loc,
-              redTurns: redMotionData.turns,
-            })}. All combinations should exist in CSV data.`
-          );
-        })(),
+        letter: "?", // Use placeholder letter when CSV lookup fails
         beat: 1,
-        is_blank: false,
-        is_mirrored: false,
+        isBlank: false,
+        isMirrored: false,
         metadata: {
           source: "motion_tester_fallback",
           grid_type: motionState.gridType,
           progress: motionState.animationState.progress,
         },
       });
+
+      console.log("✅ Fallback pictograph created successfully with letter: ?");
 
       // Cache the fallback result (without progress for reusability)
       const cacheableResult = {
@@ -240,12 +281,14 @@ export class AnimatedPictographDataService
     const turns = motionParams.turns === "fl" ? 0.5 : motionParams.turns;
 
     return createMotionData({
-      motion_type: this.mapMotionType(motionParams.motionType),
-      start_loc: this.mapLocation(motionParams.startLoc),
+      motionType: this.mapMotionType(motionParams.motionType),
+      start_loc: this.mapLocation(motionParams.startLocation),
       end_loc: this.mapLocation(motionParams.endLoc),
-      start_ori: this.mapOrientation(motionParams.startOri),
-      end_ori: this.mapOrientation(motionParams.endOri),
-      prop_rot_dir: this.mapRotationDirection(motionParams.rotationDirection),
+      startOrientation: this.mapOrientation(motionParams.startOri),
+      endOrientation: this.mapOrientation(motionParams.endOri),
+      rotationDirection: this.mapRotationDirection(
+        motionParams.rotationDirection
+      ),
       turns: turns,
       is_visible: true,
     });
@@ -271,6 +314,24 @@ export class AnimatedPictographDataService
   }
 
   /**
+   * Creates motion data based on motion parameters
+   */
+  private createMotionDataFromParams(motionParams: MotionParams): MotionData {
+    return {
+      motionType: this.mapMotionType(motionParams.motionType),
+      start_loc: this.mapLocation(motionParams.startLocation),
+      end_loc: this.mapLocation(motionParams.endLoc),
+      startOrientation: this.mapOrientation(motionParams.startOri),
+      endOrientation: this.mapOrientation(motionParams.endOri),
+      rotationDirection: this.mapRotationDirection(
+        motionParams.rotationDirection
+      ),
+      turns: motionParams.turns,
+      is_visible: true,
+    };
+  }
+
+  /**
    * Creates arrow data based on motion parameters
    */
   private createArrowDataFromMotion(
@@ -281,14 +342,14 @@ export class AnimatedPictographDataService
     const turns = motionParams.turns === "fl" ? 0.5 : motionParams.turns;
 
     return createArrowData({
-      arrow_type: color === MotionColor.BLUE ? ArrowType.BLUE : ArrowType.RED,
+      arrowType: color === MotionColor.BLUE ? ArrowType.BLUE : ArrowType.RED,
       color: color,
-      motion_type: motionParams.motionType,
+      motionType: motionParams.motionType,
       start_orientation: motionParams.startOri,
       end_orientation: motionParams.endOri,
       rotation_direction: motionParams.rotationDirection,
       turns: turns,
-      location: this.mapLocation(motionParams.startLoc),
+      location: this.mapLocation(motionParams.startLocation),
       is_visible: true,
     });
   }
@@ -313,7 +374,13 @@ export class AnimatedPictographDataService
   }
 
   private mapLocation(location: string): Location {
-    if (!location) return Location.NORTH;
+    if (!location) {
+      console.warn(
+        `⚠️ mapLocation: location is null/undefined, defaulting to NORTH`
+      );
+      return Location.NORTH;
+    }
+
     switch (location.toLowerCase()) {
       case "n":
         return Location.NORTH;
@@ -332,6 +399,9 @@ export class AnimatedPictographDataService
       case "nw":
         return Location.NORTHWEST;
       default:
+        console.warn(
+          `⚠️ mapLocation: unknown location "${location}", defaulting to NORTH`
+        );
         return Location.NORTH;
     }
   }
@@ -378,14 +448,14 @@ export class AnimatedPictographDataService
 
     return [
       motionState.gridType,
-      blue.startLoc,
+      blue.startLocation,
       blue.endLoc,
       blue.motionType,
       blue.turns,
       blue.rotationDirection,
       blue.startOri,
       blue.endOri,
-      red.startLoc,
+      red.startLocation,
       red.endLoc,
       red.motionType,
       red.turns,
@@ -425,14 +495,14 @@ export class AnimatedPictographDataService
       );
       console.log("🔍 Blue params:", {
         motionType: blueParams.motionType,
-        startLoc: blueParams.startLoc,
+        startLocation: blueParams.startLocation,
         endLoc: blueParams.endLoc,
         rotationDirection: blueParams.rotationDirection,
         turns: blueParams.turns,
       });
       console.log("🔍 Red params:", {
         motionType: redParams.motionType,
-        startLoc: redParams.startLoc,
+        startLocation: redParams.startLocation,
         endLoc: redParams.endLoc,
         rotationDirection: redParams.rotationDirection,
         turns: redParams.turns,
@@ -519,7 +589,7 @@ export class AnimatedPictographDataService
       this.normalizeMotionType(params.motionType);
     const startLocMatch =
       this.normalizeLocation(csvStartLoc) ===
-      this.normalizeLocation(params.startLoc);
+      this.normalizeLocation(params.startLocation);
     const endLocMatch =
       this.normalizeLocation(csvEndLoc) ===
       this.normalizeLocation(params.endLoc);

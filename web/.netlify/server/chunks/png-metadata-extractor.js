@@ -110,10 +110,10 @@ class PngMetadataExtractor {
         (step) => step.letter && !step.sequence_start_position
       );
       realBeats.forEach((step, index) => {
-        const blueAttrs = step.blue_attributes;
-        const redAttrs = step.red_attributes;
-        const blueMotion = blueAttrs?.motion_type || "unknown";
-        const redMotion = redAttrs?.motion_type || "unknown";
+        const blueAttrs = step.blueAttributes;
+        const redAttrs = step.redAttributes;
+        const blueMotion = blueAttrs?.motionType || "unknown";
+        const redMotion = redAttrs?.motionType || "unknown";
         console.log(
           `  Beat ${index + 1} (${step.letter}): blue=${blueMotion}, red=${redMotion}`
         );

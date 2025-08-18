@@ -91,24 +91,24 @@ Prop Component - Renders SVG props with proper positioning
       // For start positions, we need to construct motion data from prop data
       // Since start positions are static, we can use the prop location as both start and end
       const redMotion: MotionData = {
-        motion_type: MotionType.STATIC,
-        prop_rot_dir: RotationDirection.CLOCKWISE,
+        motionType: MotionType.STATIC,
+        rotationDirection: RotationDirection.CLOCKWISE,
         start_loc: (redProp?.location as Location) || Location.SOUTH,
         end_loc: (redProp?.location as Location) || Location.SOUTH,
         turns: 0,
-        start_ori: Orientation.IN,
-        end_ori: Orientation.IN,
+        startOrientation: Orientation.IN,
+        endOrientation: Orientation.IN,
         is_visible: true,
       };
 
       const blueMotion: MotionData = {
-        motion_type: MotionType.STATIC,
-        prop_rot_dir: RotationDirection.CLOCKWISE,
+        motionType: MotionType.STATIC,
+        rotationDirection: RotationDirection.CLOCKWISE,
         start_loc: (blueProp?.location as Location) || Location.SOUTH,
         end_loc: (blueProp?.location as Location) || Location.SOUTH,
         turns: 0,
-        start_ori: Orientation.IN,
-        end_ori: Orientation.IN,
+        startOrientation: Orientation.IN,
+        endOrientation: Orientation.IN,
         is_visible: true,
       };
 
@@ -257,10 +257,7 @@ Prop Component - Renders SVG props with proper positioning
       const { viewBox, center } = parsePropSvg(originalSvgText);
 
       // Apply color transformation to the SVG
-      const coloredSvgText = applyColorToSvg(
-        originalSvgText,
-        propData.color as MotionColor
-      );
+      const coloredSvgText = applyColorToSvg(originalSvgText, propData.color);
 
       svgData = {
         imageSrc: `data:image/svg+xml;base64,${btoa(coloredSvgText)}`,

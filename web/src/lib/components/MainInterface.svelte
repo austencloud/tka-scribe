@@ -6,7 +6,10 @@
     getShowSettings,
     isTabActive,
     switchTab,
-  } from "$lib/state/app-state.svelte";
+  } from "$lib/state/appState.svelte";
+
+  // Import background types
+  import { BackgroundType } from "./backgrounds/types/types";
 
   // Import transition utilities
   import { fade } from "$lib/utils/simple-fade";
@@ -118,7 +121,7 @@
     <!-- Background Canvas -->
     {#if settings.backgroundEnabled}
       <BackgroundCanvas
-        backgroundType={settings.backgroundType || "aurora"}
+        backgroundType={settings.backgroundType || BackgroundType.NIGHT_SKY}
         quality={settings.backgroundQuality || "medium"}
       />
     {/if}

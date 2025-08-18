@@ -39,7 +39,7 @@ describe("ModernPictograph", () => {
         letter: "A",
         // Provide full grid_data shape matching domain (tests previously used legacy 'mode')
         grid_data: {
-          grid_mode: GridMode.DIAMOND,
+          gridMode: GridMode.DIAMOND,
           center_x: 0,
           center_y: 0,
           radius: 100,
@@ -65,7 +65,7 @@ describe("ModernPictograph", () => {
       const pictographData = createPictographData({
         letter: "B",
         grid_data: {
-          grid_mode: GridMode.BOX,
+          gridMode: GridMode.BOX,
           center_x: 0,
           center_y: 0,
           radius: 100,
@@ -214,7 +214,7 @@ describe("ModernPictograph", () => {
         id: "debug-test-id",
         letter: "H",
         grid_data: {
-          grid_mode: GridMode.DIAMOND,
+          gridMode: GridMode.DIAMOND,
           center_x: 0,
           center_y: 0,
           radius: 100,
@@ -279,7 +279,7 @@ describe("ModernPictograph", () => {
     it("should show beat number for beat without letter", () => {
       const beatData = createBeatData({
         beat_number: 7,
-        is_blank: false,
+        isBlank: false,
       });
 
       render(Pictograph, {

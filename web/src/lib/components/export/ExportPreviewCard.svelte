@@ -47,7 +47,7 @@
       format: exportSettings.export_format,
       quality: exportSettings.export_quality,
       enabledOptions,
-      hasStartPosition: !!currentSequence.start_position,
+      hasStartPosition: !!currentSequence.startPosition,
       isEmpty: (currentSequence.beats?.length || 0) === 0,
     };
   });

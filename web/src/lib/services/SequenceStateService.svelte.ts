@@ -110,7 +110,7 @@ class SequenceStateService {
     if (!this.#currentSequence) return;
 
     this.#currentSequence = updateSequenceData(this.#currentSequence, {
-      start_position: startPosition,
+      startPosition: startPosition,
     });
   }
 
@@ -123,7 +123,7 @@ class SequenceStateService {
         duration: 1.0,
         blue_reversal: false,
         red_reversal: false,
-        is_blank: true,
+        isBlank: true,
         metadata: {},
       })),
     });

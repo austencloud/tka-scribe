@@ -10,6 +10,7 @@ import {
 } from "./src/lib/domain/index.js";
 import {
   MotionType,
+  MotionColor,
   Location,
   GridMode,
 } from "./src/lib/domain/enums/index.js";
@@ -20,7 +21,7 @@ async function testPositioning() {
   try {
     // Create test data
     const motionData = createMotionData({
-      motion_type: MotionType.PRO,
+      motionType: MotionType.PRO,
       start_loc: Location.NORTHEAST,
       end_loc: Location.SOUTHWEST,
       turns: 0,
@@ -28,12 +29,12 @@ async function testPositioning() {
 
     const pictographData = createPictographData({
       letter: "A",
-      grid_mode: GridMode.DIAMOND,
+      gridMode: GridMode.DIAMOND,
     });
 
     const arrowData = createArrowData({
-      color: "blue",
-      motion_type: MotionType.PRO,
+      color: MotionColor.BLUE,
+      motionType: MotionType.PRO,
     });
 
     // Test the async positioning service

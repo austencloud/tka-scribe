@@ -1,6 +1,6 @@
 <!-- Modern Metadata Display Component - Clean Orchestrator -->
 <script lang="ts">
-  import type { MetadataTesterState } from "../state/metadata-tester-state.svelte";
+  import type { MetadataTestingStateManager } from "$lib/services/metadata-testing";
   import LoadingStates from "./display/shared/LoadingStates.svelte";
   import EmptyState from "./display/shared/EmptyState.svelte";
   import ErrorState from "./display/shared/ErrorState.svelte";
@@ -8,19 +8,54 @@
   import IndividualSequenceDisplay from "./display/IndividualSequenceDisplay.svelte";
 
   interface Props {
-    state: {
-      state: MetadataTesterState;
-    };
+    state: MetadataTestingStateManager;
   }
 
   let { state }: Props = $props();
 
+  // Transform BatchAnalysisResult to BatchSummary format
+  const transformedBatchSummary = $derived(() => {
+    if (!state.state.batchResults) return null;
+
+    const batchResults = state.state.batchResults;
+    return {
+      sequencesAnalyzed: batchResults.totalSequences,
+      healthySequences: batchResults.successfulAnalyses,
+      unhealthySequences: batchResults.failedAnalyses,
+      averageHealthScore: batchResults.summary.averageHealthScore,
+      totalErrors: batchResults.summary.totalErrors,
+      totalWarnings: batchResults.summary.totalWarnings,
+      commonErrors: batchResults.summary.commonIssues
+        .filter((issue) => issue.issue.includes("error"))
+        .map((issue) => [issue.issue, issue.count] as [string, number]),
+      commonWarnings: batchResults.summary.commonIssues
+        .filter((issue) => issue.issue.includes("warning"))
+        .map((issue) => [issue.issue, issue.count] as [string, number]),
+      worstSequences: batchResults.results
+        .sort((a, b) => a.stats.healthScore - b.stats.healthScore)
+        .slice(0, 5)
+        .map((result) => ({
+          sequence: result.sequenceName,
+          healthScore: result.stats.healthScore,
+        })),
+      bestSequences: batchResults.results
+        .sort((a, b) => b.stats.healthScore - a.stats.healthScore)
+        .slice(0, 5)
+        .map((result) => ({
+          sequence: result.sequenceName,
+          healthScore: result.stats.healthScore,
+        })),
+    };
+  });
+
   // Copy metadata to clipboard
   async function copyToClipboard() {
-    if (!state.state.rawMetadata) return;
+    if (!state.state.currentAnalysis?.stats) return;
 
     try {
-      await navigator.clipboard.writeText(state.state.rawMetadata);
+      await navigator.clipboard.writeText(
+        JSON.stringify(state.state.currentAnalysis.stats, null, 2)
+      );
       // Could emit an event here for toast notification
     } catch (error) {
       console.error("Failed to copy to clipboard:", error);
@@ -31,7 +66,7 @@
 <div class="metadata-display">
   <div class="display-header">
     <h2>📊 Metadata Analysis</h2>
-    {#if state.state.rawMetadata}
+    {#if state.state.currentAnalysis?.stats}
       <button
         class="copy-btn"
         onclick={copyToClipboard}
@@ -43,29 +78,27 @@
   </div>
 
   <div class="display-content">
-    {#if state.state.isBatchAnalyzing}
+    {#if state.state.isAnalyzing}
       <LoadingStates type="batch" />
-    {:else if state.state.isExtractingMetadata}
+    {:else if state.state.isAnalyzing}
       <LoadingStates type="extraction" />
     {:else if state.state.error}
       <ErrorState error={state.state.error} />
-    {:else if !state.state.selectedThumbnail && !state.state.metadataStats}
+    {:else if state.state.selectedThumbnails.length === 0 && !state.state.batchResults}
       <EmptyState />
-    {:else if state.state.metadataStats}
-      {#if state.state.metadataStats.isBatchSummary && state.state.metadataStats.batchSummary}
-        <!-- Batch Analysis Results -->
-        <BatchSummaryDisplay
-          batchSummary={state.state.metadataStats.batchSummary}
-        />
-      {:else}
-        <!-- Individual Sequence Analysis -->
-        <IndividualSequenceDisplay
-          stats={state.state.metadataStats}
-          selectedThumbnail={state.state.selectedThumbnail}
-          extractedMetadata={state.state.extractedMetadata}
-          rawMetadata={state.state.rawMetadata}
-        />
-      {/if}
+    {:else if state.state.batchResults && transformedBatchSummary()}
+      <!-- Batch Analysis Results -->
+      <BatchSummaryDisplay batchSummary={transformedBatchSummary()!} />
+    {:else if state.state.currentAnalysis?.stats}
+      <!-- Individual Sequence Analysis -->
+      <IndividualSequenceDisplay
+        stats={state.state.currentAnalysis.stats}
+        selectedThumbnail={state.selectedThumbnail}
+        extractedMetadata={null}
+        rawMetadata={state.state.currentAnalysis
+          ? JSON.stringify(state.state.currentAnalysis.stats, null, 2)
+          : ""}
+      />
     {/if}
   </div>
 </div>

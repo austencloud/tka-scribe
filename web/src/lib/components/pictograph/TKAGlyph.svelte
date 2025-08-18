@@ -6,6 +6,7 @@ Uses pure runes instead of stores for reactivity.
 -->
 <script lang="ts">
   import { getLetterImagePath } from "$lib/utils/letter-type-classification";
+  import { MotionColor } from "$lib/domain/enums";
 
   interface Props {
     /** The letter to display */
@@ -145,7 +146,7 @@ Uses pure runes instead of stores for reactivity.
 
     if (turns.blue !== 0) {
       displays.push({
-        color: "blue",
+        color: MotionColor.BLUE,
         value: turns.blue,
         displayText: formatTurnValue(turns.blue),
       });
@@ -153,7 +154,7 @@ Uses pure runes instead of stores for reactivity.
 
     if (turns.red !== 0) {
       displays.push({
-        color: "red",
+        color: MotionColor.RED,
         value: turns.red,
         displayText: formatTurnValue(turns.red),
       });

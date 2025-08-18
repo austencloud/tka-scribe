@@ -51,7 +51,7 @@ export class ArrowAdjustmentProcessor {
     /**
      * Get base adjustment values before directional processing.
      */
-    const motionType = motion.motion_type;
+    const motionType = motion.motionType;
     const turns = typeof motion.turns === "number" ? motion.turns : 0;
     const turnsStr =
       turns === Math.floor(turns) ? turns.toString() : turns.toString();
@@ -140,7 +140,7 @@ export class ArrowAdjustmentProcessor {
     /**
      * Generate directional tuples using rotation matrices.
      */
-    const motionType = motion.motion_type;
+    const motionType = motion.motionType;
 
     // Different rotation strategies based on motion type
     if (motionType === MotionType.STATIC) {

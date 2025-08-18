@@ -13,6 +13,7 @@ with real-time opacity changes based on visibility settings.
     createMotionData,
     GridMode,
     ArrowType,
+    MotionColor,
     MotionType,
     Location,
     Orientation,
@@ -55,7 +56,7 @@ with real-time opacity changes based on visibility settings.
   const exampleData: PictographData = createPictographData({
     letter: "A",
     grid_data: {
-      grid_mode: GridMode.DIAMOND,
+      gridMode: GridMode.DIAMOND,
       center_x: 400,
       center_y: 400,
       radius: 200,
@@ -63,46 +64,46 @@ with real-time opacity changes based on visibility settings.
     },
     arrows: {
       blue: createArrowData({
-        color: ArrowType.BLUE,
-        motion_type: MotionType.PRO,
+        color: MotionColor.BLUE,
+        motionType: MotionType.PRO,
         turns: 1.0,
-        arrow_type: ArrowType.BLUE,
+        arrowType: ArrowType.BLUE,
       }),
       red: createArrowData({
-        color: ArrowType.RED,
-        motion_type: MotionType.PRO,
+        color: MotionColor.RED,
+        motionType: MotionType.PRO,
         turns: 1.0,
-        arrow_type: ArrowType.RED,
+        arrowType: ArrowType.RED,
       }),
     },
     props: {
-      blue: createPropData({ color: ArrowType.BLUE }),
-      red: createPropData({ color: ArrowType.RED }),
+      blue: createPropData({ color: MotionColor.BLUE }),
+      red: createPropData({ color: MotionColor.RED }),
     },
     motions: {
       blue: createMotionData({
-        motion_type: MotionType.PRO,
+        motionType: MotionType.PRO,
         start_loc: Location.SOUTH,
         end_loc: Location.WEST,
-        start_ori: Orientation.IN,
-        end_ori: Orientation.IN,
-        prop_rot_dir: RotationDirection.CLOCKWISE,
+        startOrientation: Orientation.IN,
+        endOrientation: Orientation.IN,
+        rotationDirection: RotationDirection.CLOCKWISE,
         turns: 1.0,
         is_visible: true,
       }),
       red: createMotionData({
-        motion_type: MotionType.PRO,
+        motionType: MotionType.PRO,
         start_loc: Location.NORTH,
         end_loc: Location.EAST,
-        start_ori: Orientation.IN,
-        end_ori: Orientation.IN,
-        prop_rot_dir: RotationDirection.CLOCKWISE,
+        startOrientation: Orientation.IN,
+        endOrientation: Orientation.IN,
+        rotationDirection: RotationDirection.CLOCKWISE,
         turns: 1.0,
         is_visible: true,
       }),
     },
-    is_blank: false,
-    is_mirrored: false,
+    isBlank: false,
+    isMirrored: false,
   });
 
   // Derived state - create preview data with opacity effects
@@ -142,13 +143,13 @@ with real-time opacity changes based on visibility settings.
       <!-- Red Motion Overlay -->
       <div
         class="motion-overlay red-motion"
-        class:hidden={!visibilityManager.getMotionVisibility("red")}
+        class:hidden={!visibilityManager.getMotionVisibility(MotionColor.RED)}
       ></div>
 
       <!-- Blue Motion Overlay -->
       <div
         class="motion-overlay blue-motion"
-        class:hidden={!visibilityManager.getMotionVisibility("blue")}
+        class:hidden={!visibilityManager.getMotionVisibility(MotionColor.BLUE)}
       ></div>
 
       <!-- TKA Letter Overlay -->

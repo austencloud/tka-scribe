@@ -63,8 +63,8 @@ export class DirectionalTupleCalculator implements IDirectionalTupleCalculator {
      * Generate directional tuples using legacy mappings by motion type, rotation, and inferred grid.
      * Tuple order: indices 0..3 correspond to NE, SE, SW, NW quadrant mapping.
      */
-    const mt = String(motion.motion_type).toLowerCase();
-    const rot = String(motion.prop_rot_dir).toLowerCase();
+    const mt = String(motion.motionType).toLowerCase();
+    const rot = String(motion.rotationDirection).toLowerCase();
 
     const NE = Location.NORTHEAST;
     const SE = Location.SOUTHEAST;

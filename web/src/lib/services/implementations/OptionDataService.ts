@@ -14,6 +14,7 @@ import {
   Location,
   Orientation,
   RotationDirection,
+  GridPosition,
 } from "$lib/domain/enums";
 import { createMotionData } from "$lib/domain/MotionData";
 
@@ -39,6 +40,7 @@ export interface OptionDataServiceInterface {
 export class OptionDataService implements OptionDataServiceInterface {
   private pictographCache: PictographData[] | null = null;
   private loadingPromise: Promise<PictographData[]> | null = null;
+  private csvDebugLogged = false;
 
   /**
    * Initialize the service - loads CSV data
@@ -59,7 +61,7 @@ export class OptionDataService implements OptionDataServiceInterface {
   }
 
   /**
-   * Get next options from end position - compatibility method
+   * Get next options from end position - compatibility method with proper filtering
    */
   async getNextOptionsFromEndPosition(
     endPosition: string,
@@ -68,29 +70,42 @@ export class OptionDataService implements OptionDataServiceInterface {
   ): Promise<PictographData[]> {
     try {
       // Ensure service is initialized
+      const wasLoadedFromCache = !!this.pictographCache;
       if (!this.pictographCache) {
         await this.initialize();
       }
 
-      // For now, return all available options
-      // TODO: Filter by end position and grid mode
       console.log(
-        `🔍 Getting options for end position: ${endPosition}, grid: ${gridMode}`
+        `🔍 Getting options for end position: ${endPosition}, grid: ${gridMode} (${wasLoadedFromCache ? "from cache" : "loaded fresh"})`
       );
-      return this.pictographCache || [];
+
+      // Filter by start position (end position becomes the next start position)
+      const filteredOptions = this.filterByStartPosition(
+        this.pictographCache || [],
+        endPosition
+      );
+
+      // TODO: Also filter by grid mode if needed
+      console.log(
+        `📊 Filtered to ${filteredOptions.length} options for position: ${endPosition}`
+      );
+
+      return filteredOptions;
     } catch (error) {
       console.error("❌ Failed to get options from end position:", error);
-      return this.createFallbackPictographs();
+      this.handleCSVLoadingError(error);
     }
   }
 
   /**
-   * Get next options - loads real pictograph data from CSV files
+   * Get next options - loads real pictograph data from CSV files and filters by position
    */
   async getNextOptions(sequence: BeatData[]): Promise<PictographData[]> {
     try {
       // Load pictographs from CSV if not already cached
+      let wasLoadedFromCache = true;
       if (!this.pictographCache) {
+        wasLoadedFromCache = false;
         if (!this.loadingPromise) {
           this.loadingPromise = this.loadPictographsFromCSV();
         }
@@ -98,22 +113,36 @@ export class OptionDataService implements OptionDataServiceInterface {
       }
 
       console.log(
-        `📊 Loaded ${this.pictographCache.length} pictographs from CSV`
+        `📊 ${wasLoadedFromCache ? "Using cached" : "Loaded"} ${this.pictographCache.length} pictographs ${wasLoadedFromCache ? "from cache" : "from CSV"}`
       );
 
-      // TODO: In full implementation, filter by position based on last beat
-      // For now, return all available pictographs
+      // Filter by position based on last beat
       if (sequence.length > 0) {
-        // Could filter by end position of last beat here
-        console.log(
-          `🔍 Sequence has ${sequence.length} beats - position filtering not yet implemented`
-        );
+        const lastBeat = sequence[sequence.length - 1];
+        const endPosition = this.extractEndPosition(lastBeat);
+
+        if (endPosition) {
+          const filteredOptions = this.filterByStartPosition(
+            this.pictographCache,
+            endPosition
+          );
+          console.log(
+            `🔍 Filtered from ${this.pictographCache.length} to ${filteredOptions.length} options for position: ${endPosition}`
+          );
+          return filteredOptions;
+        } else {
+          console.warn(
+            "⚠️ No end position found in last beat, returning all options"
+          );
+        }
+      } else {
+        console.log("📝 Empty sequence - returning all start position options");
       }
 
       return this.pictographCache;
     } catch (error) {
       console.error("❌ Failed to load pictographs:", error);
-      return this.createFallbackPictographs();
+      this.handleCSVLoadingError(error);
     }
   }
 
@@ -201,6 +230,21 @@ export class OptionDataService implements OptionDataServiceInterface {
     gridMode: string
   ): PictographData | null {
     try {
+      // Debug: Log the first row to see the actual CSV structure
+      if (!this.csvDebugLogged) {
+        this.csvDebugLogged = true;
+        console.log("🔍 CSV FIRST ROW DEBUG:");
+        console.log("  letter:", row.letter);
+        console.log("  startPosition:", row.startPosition);
+        console.log("  endPosition:", row.endPosition);
+        console.log("  allKeys:", Object.keys(row));
+        console.log(
+          "  keyValues:",
+          Object.keys(row).map((key) => `${key}: ${row[key]}`)
+        );
+        console.log("  fullRow:", row);
+      }
+
       // Extract letter (most important field)
       const letter = row.letter || row.Letter || null;
       if (!letter) {
@@ -209,43 +253,61 @@ export class OptionDataService implements OptionDataServiceInterface {
 
       // Create basic motion data from CSV fields with enum conversion
       const blueMotion = createMotionData({
-        motion_type: this.mapMotionType(
-          row.blue_motion_type || row.BlueMotionType || "static"
+        motionType: this.mapMotionType(
+          row.blueMotionType ||
+            row.BlueMotionType ||
+            row.blue_motion_type ||
+            "static"
         ),
-        prop_rot_dir: this.mapRotationDirection(
-          row.blue_prop_rot_dir || row.BluePropRotDir || "no_rot"
+        rotationDirection: this.mapRotationDirection(
+          row.blueRotationDirection ||
+            row.BluePropRotDir ||
+            row.blue_prop_rot_dir ||
+            "no_rot"
         ),
         start_loc: this.mapLocation(
-          row.blue_start_loc || row.BlueStartLoc || "n"
+          row.blueStartLocation || row.BlueStartLoc || row.blue_start_loc || "n"
         ),
-        end_loc: this.mapLocation(row.blue_end_loc || row.BlueEndLoc || "n"),
+        end_loc: this.mapLocation(
+          row.blueEndLocation || row.BlueEndLoc || row.blue_end_loc || "n"
+        ),
         turns:
           (this.parseNumber(row.blue_turns || row.BlueTurns) as number) || 0,
-        start_ori: this.mapOrientation(
+        startOrientation: this.mapOrientation(
           row.blue_start_ori || row.BlueStartOri || "in"
         ),
-        end_ori: this.mapOrientation(
+        endOrientation: this.mapOrientation(
           row.blue_end_ori || row.BlueEndOri || "in"
         ),
         is_visible: true,
       });
 
       const redMotion = createMotionData({
-        motion_type: this.mapMotionType(
-          row.red_motion_type || row.RedMotionType || "static"
+        motionType: this.mapMotionType(
+          row.redMotionType ||
+            row.RedMotionType ||
+            row.red_motion_type ||
+            "static"
         ),
-        prop_rot_dir: this.mapRotationDirection(
-          row.red_prop_rot_dir || row.RedPropRotDir || "no_rot"
+        rotationDirection: this.mapRotationDirection(
+          row.redRotationDirection ||
+            row.RedPropRotDir ||
+            row.red_prop_rot_dir ||
+            "no_rot"
         ),
         start_loc: this.mapLocation(
-          row.red_start_loc || row.RedStartLoc || "n"
+          row.redStartLoc || row.RedStartLoc || row.red_start_loc || "n"
         ),
-        end_loc: this.mapLocation(row.red_end_loc || row.RedEndLoc || "n"),
+        end_loc: this.mapLocation(
+          row.redEndLoc || row.RedEndLoc || row.red_end_loc || "n"
+        ),
         turns: (this.parseNumber(row.red_turns || row.RedTurns) as number) || 0,
-        start_ori: this.mapOrientation(
+        startOrientation: this.mapOrientation(
           row.red_start_ori || row.RedStartOri || "in"
         ),
-        end_ori: this.mapOrientation(row.red_end_ori || row.RedEndOri || "in"),
+        endOrientation: this.mapOrientation(
+          row.red_end_ori || row.RedEndOri || "in"
+        ),
         is_visible: true,
       });
 
@@ -256,10 +318,14 @@ export class OptionDataService implements OptionDataServiceInterface {
           blue: blueMotion,
           red: redMotion,
         },
-        start_pos: row.start_pos || row.StartPos || null,
-        end_pos: row.end_pos || row.EndPos || null,
-        grid_mode: gridMode,
-        is_blank: false,
+        startPosition: this.convertToGridPosition(
+          row.startPosition || row.StartPosition
+        ),
+        endPosition: this.convertToGridPosition(
+          row.endPosition || row.EndPosition
+        ),
+        gridMode: gridMode,
+        isBlank: false,
         metadata: {
           source: "csv",
           gridMode,
@@ -283,41 +349,94 @@ export class OptionDataService implements OptionDataServiceInterface {
   }
 
   /**
-   * Create fallback pictographs when CSV loading fails
+   * Extract end position from beat data
    */
-  private createFallbackPictographs(): PictographData[] {
-    console.log("🔄 Creating fallback pictographs");
+  private extractEndPosition(beat: BeatData): string | null {
+    // Try multiple sources for end position
+    if (
+      beat.metadata?.endPosition &&
+      typeof beat.metadata.endPosition === "string"
+    ) {
+      return beat.metadata.endPosition;
+    }
 
-    // Create basic pictographs for common letters
-    const letters = ["A", "B", "C", "D", "E", "F"];
-    return letters.map((letter) =>
-      createPictographData({
-        letter,
-        motions: {
-          blue: {
-            motion_type: MotionType.STATIC,
-            prop_rot_dir: RotationDirection.NO_ROTATION,
-            start_loc: Location.NORTH,
-            end_loc: Location.NORTH,
-            turns: 0,
-            start_ori: Orientation.IN,
-            end_ori: Orientation.IN,
-            is_visible: true,
-          },
-          red: {
-            motion_type: MotionType.STATIC,
-            prop_rot_dir: RotationDirection.NO_ROTATION,
-            start_loc: Location.NORTH,
-            end_loc: Location.NORTH,
-            turns: 0,
-            start_ori: Orientation.IN,
-            end_ori: Orientation.IN,
-            is_visible: true,
-          },
-        },
-        metadata: { source: "fallback" },
-      })
+    if (
+      beat.pictograph_data?.metadata?.endPosition &&
+      typeof beat.pictograph_data.metadata.endPosition === "string"
+    ) {
+      return beat.pictograph_data.metadata.endPosition;
+    }
+
+    return null;
+  }
+
+  /**
+   * Filter pictographs by start position - implements the core TKA algorithm:
+   * if item.get("startPosition") == target_position: next_opts.append(item)
+   */
+  private filterByStartPosition(
+    pictographs: PictographData[],
+    targetPosition: string
+  ): PictographData[] {
+    // Debug: Log first few pictographs to see their structure
+    if (pictographs.length > 0) {
+      console.log(
+        `🔍 DEBUG: Checking ${pictographs.length} pictographs for start position "${targetPosition}"`
+      );
+      console.log(`🔍 DEBUG: First pictograph structure:`, {
+        startPosition: pictographs[0].startPosition,
+        endPosition: pictographs[0].endPosition,
+        letter: pictographs[0].letter,
+        metadata: pictographs[0].metadata,
+      });
+
+      // Check a few more to see the pattern
+      const sampleSize = Math.min(5, pictographs.length);
+      for (let i = 0; i < sampleSize; i++) {
+        const p = pictographs[i];
+        const startPosition =
+          p.startPosition ||
+          p.startPosition ||
+          p.metadata?.startPosition ||
+          p.metadata?.start_pos;
+        console.log(
+          `🔍 DEBUG: Pictograph ${i}: letter="${p.letter}", startPosition="${startPosition}"`
+        );
+      }
+    }
+
+    const filtered = pictographs.filter((pictograph) => {
+      // Check multiple sources for start position
+      const startPosition =
+        pictograph.startPosition ||
+        pictograph.startPosition ||
+        pictograph.metadata?.startPosition ||
+        pictograph.metadata?.start_pos;
+
+      return startPosition === targetPosition;
+    });
+
+    console.log(
+      `🎯 Position filter: ${filtered.length} pictographs match start position "${targetPosition}"`
     );
+    return filtered;
+  }
+
+  /**
+   * Handle CSV loading errors by throwing descriptive errors instead of creating fallbacks
+   */
+  private handleCSVLoadingError(error: unknown): never {
+    console.error("❌ CSV loading failed:", error);
+
+    if (error instanceof Error) {
+      throw new Error(
+        `Failed to load pictograph data: ${error.message}. Please check that CSV files are available and properly formatted.`
+      );
+    } else {
+      throw new Error(
+        "Failed to load pictograph data: Unknown error occurred. Please check that CSV files are available and properly formatted."
+      );
+    }
   }
 
   /**
@@ -403,8 +522,8 @@ export class OptionDataService implements OptionDataServiceInterface {
 
     const filtered = options.filter((option) => {
       // Check motions structure (new domain model)
-      const blueRot = option.motions?.blue?.prop_rot_dir || "no_rot";
-      const redRot = option.motions?.red?.prop_rot_dir || "no_rot";
+      const blueRot = option.motions?.blue?.rotationDirection || "no_rot";
+      const redRot = option.motions?.red?.rotationDirection || "no_rot";
 
       // Legacy constants: CLOCKWISE = "cw", COUNTER_CLOCKWISE = "ccw", NO_ROT = "no_rot"
       const blueMatches = blueRot === blueRotDir || blueRot === "no_rot";
@@ -440,8 +559,8 @@ export class OptionDataService implements OptionDataServiceInterface {
         (summary.byLetterType[letterType] || 0) + 1;
 
       // Count by motion type
-      const blueMotion = option.motions?.blue?.motion_type || "unknown";
-      const redMotion = option.motions?.red?.motion_type || "unknown";
+      const blueMotion = option.motions?.blue?.motionType || "unknown";
+      const redMotion = option.motions?.red?.motionType || "unknown";
       summary.byMotionType[blueMotion] =
         (summary.byMotionType[blueMotion] || 0) + 1;
       summary.byMotionType[redMotion] =
@@ -567,6 +686,28 @@ export class OptionDataService implements OptionDataServiceInterface {
       default:
         return Location.NORTH;
     }
+  }
+
+  /**
+   * Convert string position to GridPosition enum
+   */
+  private convertToGridPosition(
+    positionString: string | null | undefined
+  ): GridPosition | null {
+    if (!positionString) return null;
+
+    // Convert string to GridPosition enum
+    const lowerPosition = positionString.toLowerCase();
+    const gridPositionValues = Object.values(GridPosition);
+
+    // Find matching enum value
+    for (const position of gridPositionValues) {
+      if (position.toLowerCase() === lowerPosition) {
+        return position as GridPosition;
+      }
+    }
+
+    return null;
   }
 
   /**

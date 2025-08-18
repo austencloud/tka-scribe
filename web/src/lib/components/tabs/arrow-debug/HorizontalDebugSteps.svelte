@@ -49,9 +49,9 @@
           title: "Input Data",
           data: {
             pictograph: debugData.pictographData?.letter || "None",
-            motionType: debugData.motionData?.motion_type || "None",
-            startOri: debugData.motionData?.start_ori || "None",
-            endOri: debugData.motionData?.end_ori || "None",
+            motionType: debugData.motionData?.motionType || "None",
+            startOri: debugData.motionData?.startOrientation || "None",
+            endOri: debugData.motionData?.endOrientation || "None",
             arrowColor: debugData.arrowData?.color || "None",
           },
         };
@@ -62,7 +62,7 @@
             location: debugData.calculatedLocation || "Not calculated",
             method:
               debugData.locationDebugInfo?.calculationMethod || "Standard",
-            motionType: debugData.motionData?.motion_type || "Unknown",
+            motionType: debugData.motionData?.motionType || "Unknown",
           },
         };
       case 2: // Coordinate System

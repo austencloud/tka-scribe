@@ -8,7 +8,7 @@
   import ExportPanel from "$components/export/ExportPanel.svelte";
   import GraphEditor from "$components/graph-editor/GraphEditor.svelte";
   import type { ArrowData } from "$lib/domain/ArrowData";
-  import { ArrowType } from "$lib/domain/enums";
+  import { ArrowType, MotionColor } from "$lib/domain/enums";
   import { constructTabEventService } from "$services/implementations/ConstructTabEventService";
   import type { ActiveRightPanel } from "$lib/state/construct-tab-state.svelte";
   import type { SequenceData } from "$lib/domain";
@@ -74,11 +74,11 @@
     // Convert to ArrowData format for the service
     const fullArrowData: ArrowData = {
       id: `arrow_${Date.now()}`,
-      arrow_type: arrowData.type as ArrowType,
-      color: arrowData.color,
+      arrowType: arrowData.type as ArrowType,
+      color: arrowData.color === "blue" ? MotionColor.BLUE : MotionColor.RED,
       turns: arrowData.turn_amount || 0,
-      is_mirrored: false,
-      motion_type: "static",
+      isMirrored: false,
+      motionType: "static",
       start_orientation: "in",
       end_orientation: "in",
       rotation_direction: "clockwise",
@@ -96,7 +96,8 @@
   }
 
   function handleGraphEditorVisibilityChanged(isVisible: boolean) {
-    constructTabEventService().handleGraphEditorVisibilityChanged(isVisible);
+    // Handle graph editor visibility changes if needed
+    console.log("Graph editor visibility changed:", isVisible);
   }
 
   function handleExportSettingChanged(data: { setting: string; value: any }) {

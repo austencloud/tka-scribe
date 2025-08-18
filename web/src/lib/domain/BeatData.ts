@@ -14,7 +14,7 @@ export interface BeatData {
   readonly duration: number;
   readonly blue_reversal: boolean;
   readonly red_reversal: boolean;
-  readonly is_blank: boolean;
+  readonly isBlank: boolean;
   readonly pictograph_data?: PictographData | null;
   readonly metadata: Record<string, unknown>;
 }
@@ -26,7 +26,7 @@ export function createBeatData(data: Partial<BeatData> = {}): BeatData {
     duration: data.duration ?? 1.0,
     blue_reversal: data.blue_reversal ?? false,
     red_reversal: data.red_reversal ?? false,
-    is_blank: data.is_blank ?? false,
+    isBlank: data.isBlank ?? false,
     pictograph_data: data.pictograph_data ?? null,
     metadata: data.metadata ?? {},
   };
@@ -94,7 +94,7 @@ export function beatDataToObject(beat: BeatData): Record<string, unknown> {
     duration: beat.duration,
     blue_reversal: beat.blue_reversal,
     red_reversal: beat.red_reversal,
-    is_blank: beat.is_blank,
+    isBlank: beat.isBlank,
     pictograph_data: beat.pictograph_data,
     metadata: beat.metadata,
   };
@@ -111,7 +111,7 @@ export function beatDataFromObject(data: Record<string, unknown>): BeatData {
     partialData.blue_reversal = data.blue_reversal;
   if (typeof data.red_reversal === "boolean")
     partialData.red_reversal = data.red_reversal;
-  if (typeof data.is_blank === "boolean") partialData.is_blank = data.is_blank;
+  if (typeof data.isBlank === "boolean") partialData.isBlank = data.isBlank;
   if (data.pictograph_data)
     partialData.pictograph_data = data.pictograph_data as PictographData;
   if (typeof data.metadata === "object" && data.metadata !== null)

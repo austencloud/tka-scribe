@@ -62,23 +62,23 @@ export class MotionGenerationService implements IMotionGenerationService {
 
       // Simple random selection (will be replaced with proper algorithms)
       const motionType = this.randomChoice(motionTypes);
-      const startLoc = this.randomChoice(locations);
+      const startLocation = this.randomChoice(locations);
       const endLoc = this.randomChoice(locations);
       const startOri = this.randomChoice(orientations);
       const endOri = this.randomChoice(orientations);
       const rotationDirection = this.randomChoice(rotationDirections);
 
       // Calculate turns based on motion type and locations
-      const turns = this.calculateTurns(motionType, startLoc, endLoc);
+      const turns = this.calculateTurns(motionType, startLocation, endLoc);
 
       const motion: MotionData = {
-        motion_type: motionType,
-        prop_rot_dir: rotationDirection,
-        start_loc: startLoc,
+        motionType: motionType,
+        rotationDirection: rotationDirection,
+        start_loc: startLocation,
         end_loc: endLoc,
         turns,
-        start_ori: startOri,
-        end_ori: endOri,
+        startOrientation: startOri,
+        endOrientation: endOri,
         is_visible: true,
       };
 
@@ -97,7 +97,7 @@ export class MotionGenerationService implements IMotionGenerationService {
    */
   private calculateTurns(
     motionType: string,
-    startLoc: string,
+    startLocation: string,
     endLoc: string
   ): number {
     // Simple turn calculation (placeholder)
@@ -106,7 +106,7 @@ export class MotionGenerationService implements IMotionGenerationService {
 
     // For pro/anti/float, calculate based on location change
     const locationOrder = ["n", "ne", "e", "se", "s", "sw", "w", "nw"];
-    const startIndex = locationOrder.indexOf(startLoc);
+    const startIndex = locationOrder.indexOf(startLocation);
     const endIndex = locationOrder.indexOf(endLoc);
 
     if (startIndex === -1 || endIndex === -1) return 1;
@@ -155,7 +155,7 @@ export class MotionGenerationService implements IMotionGenerationService {
     const reasons: string[] = [];
 
     // Basic validation
-    if (!motion.motion_type) {
+    if (!motion.motionType) {
       reasons.push("Motion type is required");
     }
 

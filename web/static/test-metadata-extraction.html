@@ -160,15 +160,14 @@
             resultsDiv.textContent += `\n\n📊 Key Information:\n`;
             resultsDiv.textContent += `- Sequence Length: ${metadata.length - 1} beats\n`;
             resultsDiv.textContent += `- Starting Position: ${firstStep.sequence_start_position || "Unknown"}\n`;
-            resultsDiv.textContent += `- Grid Mode: ${firstStep.grid_mode || "Unknown"}\n`;
+            resultsDiv.textContent += `- Grid Mode: ${firstStep.gridMode || "Unknown"}\n`;
 
             // Extract motion types for each beat
             resultsDiv.textContent += `\n🎯 Motion Types by Beat:\n`;
             metadata.forEach((step, index) => {
               if (step.beat && step.beat > 0) {
-                const blueMotion =
-                  step.blue_attributes?.motion_type || "unknown";
-                const redMotion = step.red_attributes?.motion_type || "unknown";
+                const blueMotion = step.blueAttributes?.motionType || "unknown";
+                const redMotion = step.redAttributes?.motionType || "unknown";
                 resultsDiv.textContent += `  Beat ${step.beat} (${step.letter}): blue=${blueMotion}, red=${redMotion}\n`;
               }
             });

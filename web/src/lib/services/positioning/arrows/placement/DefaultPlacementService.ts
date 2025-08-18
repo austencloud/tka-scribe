@@ -61,7 +61,7 @@ export class DefaultPlacementService implements IDefaultPlacementServiceJson {
   ): Promise<{ x: number; y: number }> {
     console.log(
       `DefaultPlacementService.getDefaultAdjustment() called with:`,
-      `placement_key=${placementKey}, turns=${turns}, motion_type=${motionType}, grid_mode=${gridMode}`
+      `placement_key=${placementKey}, turns=${turns}, motionType=${motionType}, gridMode=${gridMode}`
     );
 
     try {
@@ -124,7 +124,7 @@ export class DefaultPlacementService implements IDefaultPlacementServiceJson {
    * This mirrors the Python _load_all_default_placements() method.
    *
    * The Python version loads from:
-   * - /data/arrow_placement/{grid_mode}/default/{motion_type}_placements.json
+   * - /data/arrow_placement/{gridMode}/default/{motionType}_placements.json
    *
    * Our TypeScript version uses the same file structure and loading pattern.
    */

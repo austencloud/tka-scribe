@@ -27,7 +27,7 @@
 
   const config = $derived(beatFrameService.config);
   const displayText = $derived(
-    beat.is_blank && !beat.pictograph_data
+    beat.isBlank && !beat.pictograph_data
       ? (beat.beat_number ?? index + 1).toString()
       : (beat.pictograph_data?.letter ??
           beat.metadata?.letter ??
@@ -62,7 +62,7 @@
   class="beat-view"
   class:selected={isSelected}
   class:hovered={isHovered}
-  class:blank={beat.is_blank}
+  class:blank={beat.isBlank}
   class:has-pictograph={beat.pictograph_data != null}
   style:width="{config.beatSize}px"
   style:height="{config.beatSize}px"

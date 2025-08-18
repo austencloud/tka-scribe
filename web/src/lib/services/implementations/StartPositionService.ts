@@ -15,8 +15,9 @@ import {
   createPictographData,
   createPropData,
   GridMode as DomainGridMode,
-  MotionType as DomainMotionType,
   Location,
+  MotionColor,
+  MotionType as DomainMotionType,
   Orientation,
   PropType,
   RotationDirection,
@@ -54,7 +55,7 @@ export class StartPositionService implements IStartPositionService {
         const beatData: BeatData[] = fallbackKeys.map((key, index) => {
           return createBeatData({
             beat_number: 0,
-            is_blank: false,
+            isBlank: false,
             pictograph_data: this.createStartPositionPictograph(
               key,
               index,
@@ -72,7 +73,7 @@ export class StartPositionService implements IStartPositionService {
       const beatData: BeatData[] = startPositionKeys.map((key, index) => {
         return createBeatData({
           beat_number: 0,
-          is_blank: false,
+          isBlank: false,
           pictograph_data: this.createStartPositionPictograph(
             key,
             index,
@@ -94,12 +95,12 @@ export class StartPositionService implements IStartPositionService {
       // Store in localStorage for persistence in the format OptionPicker expects
       if (typeof window !== "undefined") {
         // Check if localStorage already has the correct format (from StartPositionPicker)
-        const existingData = localStorage.getItem("start_position");
+        const existingData = localStorage.getItem("startPosition");
         if (existingData) {
           try {
             const parsed = JSON.parse(existingData);
-            // If it already has top-level endPos, don't overwrite it
-            if (parsed.endPos) {
+            // If it already has top-level endPosition, don't overwrite it
+            if (parsed.endPosition) {
               return;
             }
           } catch {
@@ -109,7 +110,7 @@ export class StartPositionService implements IStartPositionService {
 
         // Create the format that OptionPicker expects
         const optionPickerFormat = {
-          endPos: startPosition.metadata?.endPos || "alpha1", // Extract from metadata
+          endPosition: startPosition.metadata?.endPosition || "alpha1", // Extract from metadata
           pictograph_data: startPosition.pictograph_data,
           letter: startPosition.pictograph_data?.letter,
           gridMode: "diamond", // Default
@@ -119,7 +120,7 @@ export class StartPositionService implements IStartPositionService {
         };
 
         localStorage.setItem(
-          "start_position",
+          "startPosition",
           JSON.stringify(optionPickerFormat)
         );
       }
@@ -155,7 +156,7 @@ export class StartPositionService implements IStartPositionService {
 
     // Validate motion types are static for start positions
     if (
-      position.pictograph_data?.motions?.blue?.motion_type !==
+      position.pictograph_data?.motions?.blue?.motionType !==
       DomainMotionType.STATIC
     ) {
       errors.push({
@@ -166,7 +167,7 @@ export class StartPositionService implements IStartPositionService {
     }
 
     if (
-      position.pictograph_data?.motions?.red?.motion_type !==
+      position.pictograph_data?.motions?.red?.motionType !==
       DomainMotionType.STATIC
     ) {
       errors.push({
@@ -254,15 +255,15 @@ export class StartPositionService implements IStartPositionService {
 
     // Create proper arrow data with location
     const blueArrow = createArrowData({
-      arrow_type: ArrowType.BLUE,
-      color: "blue",
+      arrowType: ArrowType.BLUE,
+      color: MotionColor.BLUE,
       turns: 0,
       location: blueLocation,
     });
 
     const redArrow = createArrowData({
-      arrow_type: ArrowType.RED,
-      color: "red",
+      arrowType: ArrowType.RED,
+      color: MotionColor.RED,
       turns: 0,
       location: redLocation,
     });
@@ -270,41 +271,41 @@ export class StartPositionService implements IStartPositionService {
     // Create proper prop data with location
     const blueProp = createPropData({
       prop_type: PropType.STAFF,
-      color: "blue",
+      color: MotionColor.BLUE,
       location: blueLocation,
     });
 
     const redProp = createPropData({
       prop_type: PropType.STAFF,
-      color: "red",
+      color: MotionColor.RED,
       location: redLocation,
     });
 
     // Create proper motion data
     const blueMotion = createMotionData({
-      motion_type: DomainMotionType.STATIC,
-      prop_rot_dir: RotationDirection.NO_ROTATION,
+      motionType: DomainMotionType.STATIC,
+      rotationDirection: RotationDirection.NO_ROTATION,
       start_loc: blueLocation,
       end_loc: blueLocation,
       turns: 0,
-      start_ori: Orientation.IN,
-      end_ori: Orientation.IN,
+      startOrientation: Orientation.IN,
+      endOrientation: Orientation.IN,
     });
 
     const redMotion = createMotionData({
-      motion_type: DomainMotionType.STATIC,
-      prop_rot_dir: RotationDirection.NO_ROTATION,
+      motionType: DomainMotionType.STATIC,
+      rotationDirection: RotationDirection.NO_ROTATION,
       start_loc: redLocation,
       end_loc: redLocation,
       turns: 0,
-      start_ori: Orientation.IN,
-      end_ori: Orientation.IN,
+      startOrientation: Orientation.IN,
+      endOrientation: Orientation.IN,
     });
 
     const pictograph = createPictographData({
       id: `start-pos-${key}-${index}`,
       grid_data: createGridData({
-        grid_mode:
+        gridMode:
           gridMode === "diamond" ? DomainGridMode.DIAMOND : DomainGridMode.BOX,
       }),
       arrows: { blue: blueArrow, red: redArrow },
@@ -312,8 +313,8 @@ export class StartPositionService implements IStartPositionService {
       motions: { blue: blueMotion, red: redMotion },
       letter,
       beat: index,
-      is_blank: false,
-      is_mirrored: false,
+      isBlank: false,
+      isMirrored: false,
     });
 
     return pictograph;

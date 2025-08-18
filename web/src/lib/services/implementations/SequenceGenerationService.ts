@@ -152,7 +152,7 @@ export class SequenceGenerationService implements ISequenceGenerationService {
         name: this.generateSequenceName(options),
         word: "", // Will be calculated from beats
         beats: generatedBeats,
-        grid_mode: options.gridMode,
+        gridMode: options.gridMode,
         prop_type: options.propType,
         difficulty_level: options.difficulty,
         is_favorite: false,
@@ -257,7 +257,7 @@ export class SequenceGenerationService implements ISequenceGenerationService {
         );
       }
 
-      this.updateDashStaticPropRotDirs(
+      this.updateDashStaticRotationDirections(
         nextBeat,
         propContinuity,
         blueRotDir,
@@ -287,24 +287,24 @@ export class SequenceGenerationService implements ISequenceGenerationService {
       blue:
         pictograph.motions.blue ||
         createMotionData({
-          motion_type: MotionType.STATIC,
-          prop_rot_dir: RotationDirection.NO_ROTATION,
+          motionType: MotionType.STATIC,
+          rotationDirection: RotationDirection.NO_ROTATION,
           start_loc: Location.NORTH,
           end_loc: Location.NORTH,
           turns: 0,
-          start_ori: Orientation.IN,
-          end_ori: Orientation.IN,
+          startOrientation: Orientation.IN,
+          endOrientation: Orientation.IN,
         }),
       red:
         pictograph.motions.red ||
         createMotionData({
-          motion_type: MotionType.STATIC,
-          prop_rot_dir: RotationDirection.NO_ROTATION,
+          motionType: MotionType.STATIC,
+          rotationDirection: RotationDirection.NO_ROTATION,
           start_loc: Location.NORTH,
           end_loc: Location.NORTH,
           turns: 0,
-          start_ori: Orientation.IN,
-          end_ori: Orientation.IN,
+          startOrientation: Orientation.IN,
+          endOrientation: Orientation.IN,
         }),
       ...pictograph.motions,
     };
@@ -315,7 +315,7 @@ export class SequenceGenerationService implements ISequenceGenerationService {
       duration: 1.0,
       blue_reversal: false,
       red_reversal: false,
-      is_blank: false,
+      isBlank: false,
       pictograph_data: {
         ...pictograph,
         motions,
@@ -341,19 +341,19 @@ export class SequenceGenerationService implements ISequenceGenerationService {
     // Handle blue turns - exact legacy logic
     if (turnBlue === "fl") {
       if (
-        beat.pictograph_data.motions.blue?.motion_type === MotionType.PRO ||
-        beat.pictograph_data.motions.blue?.motion_type === MotionType.ANTI
+        beat.pictograph_data.motions.blue?.motionType === MotionType.PRO ||
+        beat.pictograph_data.motions.blue?.motionType === MotionType.ANTI
       ) {
         if (beat.pictograph_data.motions.blue) {
           // Create updated motion with float properties
           beat.pictograph_data.motions.blue = {
             ...beat.pictograph_data.motions.blue,
             turns: "fl",
-            prefloat_motion_type: beat.pictograph_data.motions.blue.motion_type,
+            prefloat_motion_type: beat.pictograph_data.motions.blue.motionType,
             prefloat_prop_rot_dir:
-              beat.pictograph_data.motions.blue.prop_rot_dir,
-            motion_type: MotionType.FLOAT,
-            prop_rot_dir: RotationDirection.NO_ROTATION,
+              beat.pictograph_data.motions.blue.rotationDirection,
+            motionType: MotionType.FLOAT,
+            rotationDirection: RotationDirection.NO_ROTATION,
           };
         }
       } else {
@@ -376,19 +376,19 @@ export class SequenceGenerationService implements ISequenceGenerationService {
     // Handle red turns - exact legacy logic
     if (turnRed === "fl") {
       if (
-        beat.pictograph_data.motions.red?.motion_type === MotionType.PRO ||
-        beat.pictograph_data.motions.red?.motion_type === MotionType.ANTI
+        beat.pictograph_data.motions.red?.motionType === MotionType.PRO ||
+        beat.pictograph_data.motions.red?.motionType === MotionType.ANTI
       ) {
         if (beat.pictograph_data.motions.red) {
           // Create updated motion with float properties
           beat.pictograph_data.motions.red = {
             ...beat.pictograph_data.motions.red,
             turns: "fl",
-            prefloat_motion_type: beat.pictograph_data.motions.red.motion_type,
+            prefloat_motion_type: beat.pictograph_data.motions.red.motionType,
             prefloat_prop_rot_dir:
-              beat.pictograph_data.motions.red.prop_rot_dir,
-            motion_type: MotionType.FLOAT,
-            prop_rot_dir: RotationDirection.NO_ROTATION,
+              beat.pictograph_data.motions.red.rotationDirection,
+            motionType: MotionType.FLOAT,
+            rotationDirection: RotationDirection.NO_ROTATION,
           };
         }
       } else {
@@ -412,7 +412,7 @@ export class SequenceGenerationService implements ISequenceGenerationService {
   /**
    * Update dash/static prop rotation directions - exact port from legacy
    */
-  private updateDashStaticPropRotDirs(
+  private updateDashStaticRotationDirections(
     beat: BeatData,
     propContinuity: string,
     blueRotDir: string,
@@ -422,64 +422,64 @@ export class SequenceGenerationService implements ISequenceGenerationService {
 
     // Update blue - exact legacy logic
     if (
-      beat.pictograph_data.motions.blue?.motion_type === MOTION_TYPES.DASH ||
-      beat.pictograph_data.motions.blue?.motion_type === MOTION_TYPES.STATIC
+      beat.pictograph_data.motions.blue?.motionType === MOTION_TYPES.DASH ||
+      beat.pictograph_data.motions.blue?.motionType === MOTION_TYPES.STATIC
     ) {
       const turns = beat.pictograph_data.motions.blue.turns || 0;
       if (propContinuity === PropContinuity.CONTINUOUS) {
-        const newPropRotDir =
+        const newRotationDirection =
           typeof turns === "number" && turns > 0
             ? blueRotDir
             : ROTATION_DIRS.NO_ROT;
         beat.pictograph_data.motions.blue = {
           ...beat.pictograph_data.motions.blue,
-          prop_rot_dir: newPropRotDir as RotationDirection,
+          rotationDirection: newRotationDirection as RotationDirection,
         };
       } else if (typeof turns === "number" && turns > 0) {
-        const newPropRotDir = this.randomChoice([
+        const newRotationDirection = this.randomChoice([
           ROTATION_DIRS.CLOCKWISE,
           ROTATION_DIRS.COUNTER_CLOCKWISE,
         ]);
         beat.pictograph_data.motions.blue = {
           ...beat.pictograph_data.motions.blue,
-          prop_rot_dir: newPropRotDir,
+          rotationDirection: newRotationDirection,
         };
       } else {
         beat.pictograph_data.motions.blue = {
           ...beat.pictograph_data.motions.blue,
-          prop_rot_dir: ROTATION_DIRS.NO_ROT,
+          rotationDirection: ROTATION_DIRS.NO_ROT,
         };
       }
     }
 
     // Update red - exact legacy logic
     if (
-      beat.pictograph_data.motions.red?.motion_type === MOTION_TYPES.DASH ||
-      beat.pictograph_data.motions.red?.motion_type === MOTION_TYPES.STATIC
+      beat.pictograph_data.motions.red?.motionType === MOTION_TYPES.DASH ||
+      beat.pictograph_data.motions.red?.motionType === MOTION_TYPES.STATIC
     ) {
       const turns = beat.pictograph_data.motions.red.turns || 0;
       if (propContinuity === PropContinuity.CONTINUOUS) {
-        const newPropRotDir =
+        const newRotationDirection =
           typeof turns === "number" && turns > 0
             ? redRotDir
             : ROTATION_DIRS.NO_ROT;
         beat.pictograph_data.motions.red = {
           ...beat.pictograph_data.motions.red,
-          prop_rot_dir: newPropRotDir as RotationDirection,
+          rotationDirection: newRotationDirection as RotationDirection,
         };
       } else if (typeof turns === "number" && turns > 0) {
-        const newPropRotDir = this.randomChoice([
+        const newRotationDirection = this.randomChoice([
           ROTATION_DIRS.CLOCKWISE,
           ROTATION_DIRS.COUNTER_CLOCKWISE,
         ]);
         beat.pictograph_data.motions.red = {
           ...beat.pictograph_data.motions.red,
-          prop_rot_dir: newPropRotDir,
+          rotationDirection: newRotationDirection,
         };
       } else {
         beat.pictograph_data.motions.red = {
           ...beat.pictograph_data.motions.red,
-          prop_rot_dir: ROTATION_DIRS.NO_ROT,
+          rotationDirection: ROTATION_DIRS.NO_ROT,
         };
       }
     }

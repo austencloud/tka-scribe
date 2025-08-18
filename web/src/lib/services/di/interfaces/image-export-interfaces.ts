@@ -29,6 +29,7 @@ import { TextRenderingService } from "../../implementations/image-export/TextRen
 import { ImageCompositionService } from "../../implementations/image-export/ImageCompositionService";
 import { GridOverlayService } from "../../implementations/image-export/GridOverlayService";
 import { CanvasManagementService } from "../../implementations/image-export/CanvasManagementService";
+import type { IPictographService } from "../../interfaces/pictograph-interfaces";
 
 // Foundation services (no dependencies)
 export const ILayoutCalculationServiceInterface =
@@ -64,7 +65,11 @@ export const IGridOverlayServiceInterface =
 export const IBeatRenderingServiceInterface =
   createServiceInterface<IBeatRenderingService>(
     "IBeatRenderingService",
-    BeatRenderingService
+    class extends BeatRenderingService {
+      constructor(...args: unknown[]) {
+        super(args[0] as IPictographService);
+      }
+    }
   );
 
 export const ITextRenderingServiceInterface =

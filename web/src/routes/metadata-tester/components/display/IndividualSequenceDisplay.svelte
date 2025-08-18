@@ -42,8 +42,8 @@
   interface BeatData {
     letter?: string;
     sequence_start_position?: string;
-    blue_attributes?: { motion_type?: string };
-    red_attributes?: { motion_type?: string };
+    blueAttributes?: { motionType?: string };
+    redAttributes?: { motionType?: string };
     [key: string]: any;
   }
 

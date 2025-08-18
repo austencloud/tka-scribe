@@ -146,12 +146,14 @@
 
         // Determine the current end position we need options for
         let targetEndPosition: string | null = null;
-        const startPositionData = localStorage.getItem("start_position");
+        const startPositionData = localStorage.getItem("startPosition");
         if (startPositionData) {
           const startPosition = JSON.parse(startPositionData);
-          // Look for endPos in metadata (StartPositionPicker format)
+          // Look for endPosition in metadata (StartPositionPicker format)
           targetEndPosition =
-            startPosition.metadata?.endPos || startPosition.endPos || null;
+            startPosition.metadata?.endPosition ||
+            startPosition.endPosition ||
+            null;
           console.log("🎯 Looking for end position:", targetEndPosition);
           console.log(
             "📋 Start position data structure:",
@@ -208,11 +210,11 @@
 
     // Add debug logging for localStorage contents
     if (typeof window !== "undefined") {
-      const startPosData = localStorage.getItem("start_position");
+      const startPosData = localStorage.getItem("startPosition");
       const allPreloadedData = localStorage.getItem("all_preloaded_options");
       console.log("🔍 localStorage DEBUG:");
       console.log(
-        "  - start_position:",
+        "  - startPosition:",
         startPosData ? JSON.parse(startPosData) : null
       );
       console.log(

@@ -8,7 +8,7 @@ import type { MotionData } from "$lib/domain/MotionData";
 import type { IMotionParameterService } from "./interfaces";
 
 export interface MotionTestParams {
-  startLoc: string;
+  startLocation: string;
   endLoc: string;
   motionType: string;
   turns: number | "fl"; // Support both numeric turns and float
@@ -19,9 +19,9 @@ export interface MotionTestParams {
 
 export class MotionParameterService implements IMotionParameterService {
   // Helper function to determine motion type based on start/end locations
-  getMotionType(startLoc: string, endLoc: string): string {
+  getMotionType(startLocation: string, endLoc: string): string {
     // Normalize to lowercase for case-insensitive comparison
-    const start = startLoc.toLowerCase();
+    const start = startLocation.toLowerCase();
     const end = endLoc.toLowerCase();
 
     if (start === end) {
@@ -47,8 +47,8 @@ export class MotionParameterService implements IMotionParameterService {
   }
 
   // Helper function to get available motion types for a start/end pair
-  getAvailableMotionTypes(startLoc: string, endLoc: string): string[] {
-    const motionType = this.getMotionType(startLoc, endLoc);
+  getAvailableMotionTypes(startLocation: string, endLoc: string): string[] {
+    const motionType = this.getMotionType(startLocation, endLoc);
 
     if (motionType === "static") {
       return ["static"];
@@ -63,12 +63,12 @@ export class MotionParameterService implements IMotionParameterService {
   // Helper function to calculate rotation direction based on motion type and locations
   calculateRotationDirection(
     motionType: string,
-    startLoc: string,
+    startLocation: string,
     endLoc: string
   ): string {
     // Location order for clockwise movement: n -> e -> s -> w -> n
     const locationOrder = ["n", "e", "s", "w"];
-    const startIndex = locationOrder.indexOf(startLoc.toLowerCase());
+    const startIndex = locationOrder.indexOf(startLocation.toLowerCase());
     const endIndex = locationOrder.indexOf(endLoc.toLowerCase());
 
     if (startIndex === -1 || endIndex === -1) {
@@ -104,7 +104,7 @@ export class MotionParameterService implements IMotionParameterService {
     }
 
     console.log(
-      `🔄 Rotation direction for ${startLoc}→${endLoc} (${motionType}): ${result}`
+      `🔄 Rotation direction for ${startLocation}→${endLoc} (${motionType}): ${result}`
     );
     console.log(
       `   handPathIsClockwise: ${handPathIsClockwise}, clockwiseDistance: ${clockwiseDistance}, counterClockwiseDistance: ${counterClockwiseDistance}`
@@ -195,20 +195,20 @@ export class MotionParameterService implements IMotionParameterService {
   // Helper function to convert MotionTestParams to PropAttributes
   convertMotionTestParamsToPropAttributes(params: MotionTestParams) {
     return {
-      start_loc: params.startLoc,
+      start_loc: params.startLocation,
       end_loc: params.endLoc,
-      motion_type: params.motionType as MotionType,
+      motionType: params.motionType as MotionType,
       turns: params.turns,
-      prop_rot_dir: params.rotationDirection as RotationDirection,
-      start_ori: params.startOri as Orientation,
-      end_ori: params.endOri as Orientation,
+      rotationDirection: params.rotationDirection as RotationDirection,
+      startOrientation: params.startOri as Orientation,
+      endOrientation: params.endOri as Orientation,
     };
   }
 
   // Create default motion parameters
   createDefaultParams(): MotionTestParams {
     return {
-      startLoc: "n",
+      startLocation: "n",
       endLoc: "e",
       motionType: "pro",
       turns: 0,
@@ -221,7 +221,7 @@ export class MotionParameterService implements IMotionParameterService {
   // Update motion type when locations change
   updateMotionTypeForLocations(params: MotionTestParams): MotionTestParams {
     const availableTypes = this.getAvailableMotionTypes(
-      params.startLoc,
+      params.startLocation,
       params.endLoc
     );
 
@@ -239,13 +239,15 @@ export class MotionParameterService implements IMotionParameterService {
   // Convert MotionTestParams to MotionData (moved from state layer)
   convertToMotionData(params: MotionTestParams): MotionData {
     return {
-      motion_type: this.mapMotionTypeToEnum(params.motionType),
-      prop_rot_dir: this.mapRotationDirectionToEnum(params.rotationDirection),
-      start_loc: this.mapLocationToEnum(params.startLoc),
+      motionType: this.mapMotionTypeToEnum(params.motionType),
+      rotationDirection: this.mapRotationDirectionToEnum(
+        params.rotationDirection
+      ),
+      start_loc: this.mapLocationToEnum(params.startLocation),
       end_loc: this.mapLocationToEnum(params.endLoc),
       turns: params.turns,
-      start_ori: this.mapOrientationToEnum(params.startOri),
-      end_ori: this.mapOrientationToEnum(params.endOri),
+      startOrientation: this.mapOrientationToEnum(params.startOri),
+      endOrientation: this.mapOrientationToEnum(params.endOri),
       is_visible: true,
       prefloat_motion_type: null,
       prefloat_prop_rot_dir: null,

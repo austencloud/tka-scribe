@@ -35,7 +35,7 @@ Shows current beat information including letter and motion details.
               {currentBeatData.pictograph_data.motions.blue?.end_loc}
             </span>
             <span class="motion-type">
-              {currentBeatData.pictograph_data.motions.blue?.motion_type}
+              {currentBeatData.pictograph_data.motions.blue?.motionType}
             </span>
           </div>
         </div>
@@ -48,7 +48,7 @@ Shows current beat information including letter and motion details.
               {currentBeatData.pictograph_data.motions.red?.end_loc}
             </span>
             <span class="motion-type">
-              {currentBeatData.pictograph_data.motions.red?.motion_type}
+              {currentBeatData.pictograph_data.motions.red?.motionType}
             </span>
           </div>
         </div>

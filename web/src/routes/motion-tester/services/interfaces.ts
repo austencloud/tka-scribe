@@ -28,11 +28,11 @@ export interface IMotionParameterService {
   updateMotionTypeForLocations(params: MotionTestParams): MotionTestParams;
 
   // Motion type calculations
-  getMotionType(startLoc: string, endLoc: string): string;
-  getAvailableMotionTypes(startLoc: string, endLoc: string): string[];
+  getMotionType(startLocation: string, endLoc: string): string;
+  getAvailableMotionTypes(startLocation: string, endLoc: string): string[];
   calculateRotationDirection(
     motionType: string,
-    startLoc: string,
+    startLocation: string,
     endLoc: string
   ): string;
 

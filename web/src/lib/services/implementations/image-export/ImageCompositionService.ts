@@ -463,7 +463,7 @@ export class ImageCompositionService implements IImageCompositionService {
           duration: 1,
           blue_reversal: false,
           red_reversal: false,
-          is_blank: true,
+          isBlank: true,
           metadata: {},
         },
       ],

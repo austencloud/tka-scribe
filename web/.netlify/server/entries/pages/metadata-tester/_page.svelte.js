@@ -291,7 +291,7 @@ function BeatAnalysisGrid($$payload, $$props) {
         $$payload.out.push(`<div class="beat-header start-pos svelte-ec6uhj"><span class="beat-type svelte-ec6uhj">Start Position</span> <span class="position-value svelte-ec6uhj">${escape_html(beat.sequence_start_position)}</span></div>`);
       } else {
         $$payload.out.push("<!--[!-->");
-        $$payload.out.push(`<div class="beat-header svelte-ec6uhj"><span class="beat-number svelte-ec6uhj">Beat ${escape_html(getRealBeats(beats).indexOf(beat) + 1)}</span> <span class="beat-letter svelte-ec6uhj">${escape_html(beat.letter)}</span></div> <div class="motion-info svelte-ec6uhj"><div class="motion-item blue svelte-ec6uhj"><span class="prop-label svelte-ec6uhj">🔵 Blue:</span> <span class="motion-type svelte-ec6uhj">${escape_html(beat.blue_attributes?.motion_type || "Unknown")}</span></div> <div class="motion-item red svelte-ec6uhj"><span class="prop-label svelte-ec6uhj">🔴 Red:</span> <span class="motion-type svelte-ec6uhj">${escape_html(beat.red_attributes?.motion_type || "Unknown")}</span></div></div>`);
+        $$payload.out.push(`<div class="beat-header svelte-ec6uhj"><span class="beat-number svelte-ec6uhj">Beat ${escape_html(getRealBeats(beats).indexOf(beat) + 1)}</span> <span class="beat-letter svelte-ec6uhj">${escape_html(beat.letter)}</span></div> <div class="motion-info svelte-ec6uhj"><div class="motion-item blue svelte-ec6uhj"><span class="prop-label svelte-ec6uhj">🔵 Blue:</span> <span class="motion-type svelte-ec6uhj">${escape_html(beat.blueAttributes?.motionType || "Unknown")}</span></div> <div class="motion-item red svelte-ec6uhj"><span class="prop-label svelte-ec6uhj">🔴 Red:</span> <span class="motion-type svelte-ec6uhj">${escape_html(beat.redAttributes?.motionType || "Unknown")}</span></div></div>`);
       }
       $$payload.out.push(`<!--]--></div>`);
     }
@@ -595,27 +595,27 @@ function createMetadataTesterState() {
         }
         seenBeatNumbers.add(beat.beat_number);
       }
-      if (!beat.blue_attributes && !beat.red_attributes) {
+      if (!beat.blueAttributes && !beat.redAttributes) {
         missingMotionData.push(beatNumber);
       } else {
-        if (beat.blue_attributes) {
-          const blueMotion = beat.blue_attributes.motion_type;
+        if (beat.blueAttributes) {
+          const blueMotion = beat.blueAttributes.motionType;
           if (!blueMotion) {
-            missingRequiredFields.push({ beat: beatNumber, field: "blue_attributes.motion_type" });
+            missingRequiredFields.push({ beat: beatNumber, field: "blueAttributes.motionType" });
           } else if (!validMotionTypes.includes(blueMotion)) {
             invalidMotionTypes.push({ beat: beatNumber, prop: "blue", type: blueMotion });
           }
         }
-        if (beat.red_attributes) {
-          const redMotion = beat.red_attributes.motion_type;
+        if (beat.redAttributes) {
+          const redMotion = beat.redAttributes.motionType;
           if (!redMotion) {
-            missingRequiredFields.push({ beat: beatNumber, field: "red_attributes.motion_type" });
+            missingRequiredFields.push({ beat: beatNumber, field: "redAttributes.motionType" });
           } else if (!validMotionTypes.includes(redMotion)) {
             invalidMotionTypes.push({ beat: beatNumber, prop: "red", type: redMotion });
           }
         }
       }
-      if (!beat.letter && !beat.blue_attributes && !beat.red_attributes) {
+      if (!beat.letter && !beat.blueAttributes && !beat.redAttributes) {
         invalidBeatStructure.push(beatNumber);
       }
     });

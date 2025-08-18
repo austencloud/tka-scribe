@@ -34,15 +34,15 @@ export const createShootingStarSystem = () => {
       { x: -0.1 * width, y: randomFloat(0.2, 0.8) * height },
       { x: 1.1 * width, y: randomFloat(0.2, 0.8) * height },
     ];
-    const startPos = (startOptions[
+    const startPosition = (startOptions[
       Math.floor(Math.random() * startOptions.length)
     ] || startOptions[0]) as { x: number; y: number };
 
-    let dx = randomFloat(0.3, 0.5) * (startPos.x > 0 ? -1 : 1);
+    let dx = randomFloat(0.3, 0.5) * (startPosition.x > 0 ? -1 : 1);
     let dy =
       Math.random() < 0.5 ? -randomFloat(0.05, 0.2) : randomFloat(0.05, 0.2);
 
-    if (startPos.y > middleY) dy -= randomFloat(0.02, 0.05);
+    if (startPosition.y > middleY) dy -= randomFloat(0.02, 0.05);
     else dy += randomFloat(0.02, 0.05);
 
     const norm = Math.sqrt(dx * dx + dy * dy);
@@ -50,15 +50,15 @@ export const createShootingStarSystem = () => {
     dy /= norm;
 
     return {
-      x: startPos.x,
-      y: startPos.y,
+      x: startPosition.x,
+      y: startPosition.y,
       dx,
       dy,
       size: randomFloat(config.minSize, config.maxSize),
       speed: randomFloat(config.minSpeed, config.maxSpeed),
       tail: [],
-      prevX: startPos.x,
-      prevY: startPos.y,
+      prevX: startPosition.x,
+      prevY: startPosition.y,
       tailLength: Math.floor(
         randomFloat(config.tailLength.min, config.tailLength.max)
       ),

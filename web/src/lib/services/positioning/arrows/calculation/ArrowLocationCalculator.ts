@@ -79,7 +79,7 @@ export class ArrowLocationCalculator implements IArrowLocationCalculator {
      * Throws:
      *     Error: If dash motion requires pictograph data but none provided
      */
-    const motionType = motion.motion_type?.toLowerCase();
+    const motionType = motion.motionType?.toLowerCase();
 
     switch (motionType) {
       case "static":
@@ -208,7 +208,7 @@ export class ArrowLocationCalculator implements IArrowLocationCalculator {
       return false;
     }
 
-    const motionType = motion.motion_type?.toLowerCase();
+    const motionType = motion.motionType?.toLowerCase();
     if (!this.getSupportedMotionTypes().includes(motionType as MotionType)) {
       return false;
     }

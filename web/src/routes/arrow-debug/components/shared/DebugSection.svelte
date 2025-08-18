@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { ArrowDebugState } from "../../state/arrow-debug-state.svelte";
+  import type { ArrowDebugState } from "../../types/ArrowDebugTypes";
 
   interface Props {
     sectionId: string;

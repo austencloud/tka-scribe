@@ -13,6 +13,7 @@ import {
   createPictographData,
   createPropData,
   GridMode,
+  MotionColor,
   PropType,
 } from "$lib/domain";
 import { type GridData as RawGridData } from "../../data/gridCoordinates.js";
@@ -47,18 +48,30 @@ export class DataTransformationService implements IDataTransformationService {
       id: `beat-${beat.beat_number}`,
       grid_data: createDomainGridData(),
       arrows: {
-        blue: createArrowData({ arrow_type: ArrowType.BLUE, color: "blue" }),
-        red: createArrowData({ arrow_type: ArrowType.RED, color: "red" }),
+        blue: createArrowData({
+          arrowType: ArrowType.BLUE,
+          color: MotionColor.BLUE,
+        }),
+        red: createArrowData({
+          arrowType: ArrowType.RED,
+          color: MotionColor.RED,
+        }),
       },
       props: {
-        blue: createPropData({ prop_type: PropType.STAFF, color: "blue" }),
-        red: createPropData({ prop_type: PropType.STAFF, color: "red" }),
+        blue: createPropData({
+          prop_type: PropType.STAFF,
+          color: MotionColor.BLUE,
+        }),
+        red: createPropData({
+          prop_type: PropType.STAFF,
+          color: MotionColor.RED,
+        }),
       },
       motions,
       letter: beat.pictograph_data?.letter || null,
       beat: beat.beat_number,
-      is_blank: beat.is_blank,
-      is_mirrored: false,
+      isBlank: beat.isBlank,
+      isMirrored: false,
     });
   }
 

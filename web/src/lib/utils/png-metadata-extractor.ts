@@ -164,14 +164,14 @@ export class PngMetadataExtractor {
             step.letter && !step.sequence_start_position
         );
       realBeats.forEach((step: Record<string, unknown>, index: number) => {
-        const blueAttrs = step.blue_attributes as
+        const blueAttrs = step.blueAttributes as
           | Record<string, unknown>
           | undefined;
-        const redAttrs = step.red_attributes as
+        const redAttrs = step.redAttributes as
           | Record<string, unknown>
           | undefined;
-        const blueMotion = blueAttrs?.motion_type || "unknown";
-        const redMotion = redAttrs?.motion_type || "unknown";
+        const blueMotion = blueAttrs?.motionType || "unknown";
+        const redMotion = redAttrs?.motionType || "unknown";
         console.log(
           `  Beat ${index + 1} (${step.letter}): blue=${blueMotion}, red=${redMotion}`
         );

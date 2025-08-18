@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { ArrowDebugState } from "./state/arrow-debug-state.svelte";
+  import type { ArrowDebugState } from "./types/ArrowDebugTypes";
 
   // Import all extracted components
   import CalculationStatusSection from "./components/sections/CalculationStatusSection.svelte";

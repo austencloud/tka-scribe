@@ -83,7 +83,7 @@
             let result = `✅ <strong>${sequenceName} Real PNG Metadata:</strong><br>`;
             result += `&nbsp;&nbsp;Author: "${firstStep.author}"<br>`;
             result += `&nbsp;&nbsp;Level: ${firstStep.level}<br>`;
-            result += `&nbsp;&nbsp;Grid Mode: ${firstStep.grid_mode}<br>`;
+            result += `&nbsp;&nbsp;Grid Mode: ${firstStep.gridMode}<br>`;
             result += `&nbsp;&nbsp;Is Circular: ${firstStep.is_circular}<br>`;
             result += `&nbsp;&nbsp;Prop Type: ${firstStep.prop_type}<br>`;
             result += `&nbsp;&nbsp;Real Beat Count: ${realBeats.length}<br>`;
@@ -92,8 +92,8 @@
             // Show first few beats
             result += `&nbsp;&nbsp;Beat Structure:<br>`;
             realBeats.slice(0, 3).forEach((step, index) => {
-              const blueMotion = step.blue_attributes?.motion_type || "unknown";
-              const redMotion = step.red_attributes?.motion_type || "unknown";
+              const blueMotion = step.blueAttributes?.motionType || "unknown";
+              const redMotion = step.redAttributes?.motionType || "unknown";
               const beatNumber = step.beat || index + 1;
               result += `&nbsp;&nbsp;&nbsp;&nbsp;Beat ${beatNumber} (${step.letter}): blue=${blueMotion}, red=${redMotion}<br>`;
             });
@@ -104,7 +104,7 @@
               sequence: sequenceName,
               author: firstStep.author,
               level: firstStep.level,
-              gridMode: firstStep.grid_mode,
+              gridMode: firstStep.gridMode,
               isCircular: firstStep.is_circular,
               propType: firstStep.prop_type,
               realBeatCount: realBeats.length,

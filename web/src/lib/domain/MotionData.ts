@@ -9,13 +9,13 @@
 import { Location, MotionType, Orientation, RotationDirection } from "./enums";
 
 export interface MotionData {
-  readonly motion_type: MotionType;
-  readonly prop_rot_dir: RotationDirection;
+  readonly motionType: MotionType;
+  readonly rotationDirection: RotationDirection;
   readonly start_loc: Location;
   readonly end_loc: Location;
   readonly turns: number | "fl"; // Can be 'fl' for float motions
-  readonly start_ori: Orientation;
-  readonly end_ori: Orientation;
+  readonly startOrientation: Orientation;
+  readonly endOrientation: Orientation;
   readonly is_visible: boolean;
 
   // Prefloat attributes for letter determination
@@ -25,13 +25,13 @@ export interface MotionData {
 
 export function createMotionData(data: Partial<MotionData> = {}): MotionData {
   return {
-    motion_type: data.motion_type ?? MotionType.STATIC,
-    prop_rot_dir: data.prop_rot_dir ?? RotationDirection.NO_ROTATION,
+    motionType: data.motionType ?? MotionType.STATIC,
+    rotationDirection: data.rotationDirection ?? RotationDirection.NO_ROTATION,
     start_loc: data.start_loc ?? Location.NORTH,
     end_loc: data.end_loc ?? Location.NORTH,
     turns: data.turns ?? 0.0,
-    start_ori: data.start_ori ?? Orientation.IN,
-    end_ori: data.end_ori ?? Orientation.IN,
+    startOrientation: data.startOrientation ?? Orientation.IN,
+    endOrientation: data.endOrientation ?? Orientation.IN,
     is_visible: data.is_visible ?? true,
     prefloat_motion_type: data.prefloat_motion_type ?? null,
     prefloat_prop_rot_dir: data.prefloat_prop_rot_dir ?? null,
@@ -61,7 +61,7 @@ export function isValidMotion(motion: MotionData): boolean {
 }
 
 export function isFloatMotion(motion: MotionData): boolean {
-  return motion.motion_type === MotionType.FLOAT;
+  return motion.motionType === MotionType.FLOAT;
 }
 
 export function hasPrefloatData(motion: MotionData): boolean {
@@ -74,13 +74,13 @@ export function motionDataToObject(
   motion: MotionData
 ): Record<string, unknown> {
   return {
-    motion_type: motion.motion_type,
-    prop_rot_dir: motion.prop_rot_dir,
+    motionType: motion.motionType,
+    rotationDirection: motion.rotationDirection,
     start_loc: motion.start_loc,
     end_loc: motion.end_loc,
     turns: motion.turns,
-    start_ori: motion.start_ori,
-    end_ori: motion.end_ori,
+    startOrientation: motion.startOrientation,
+    endOrientation: motion.endOrientation,
     is_visible: motion.is_visible,
     prefloat_motion_type: motion.prefloat_motion_type,
     prefloat_prop_rot_dir: motion.prefloat_prop_rot_dir,
@@ -92,11 +92,11 @@ export function motionDataFromObject(
 ): MotionData {
   const partialData: Record<string, unknown> = {};
 
-  if (data.motion_type !== undefined) {
-    partialData.motion_type = data.motion_type;
+  if (data.motionType !== undefined) {
+    partialData.motionType = data.motionType;
   }
-  if (data.prop_rot_dir !== undefined) {
-    partialData.prop_rot_dir = data.prop_rot_dir;
+  if (data.rotationDirection !== undefined) {
+    partialData.rotationDirection = data.rotationDirection;
   }
   if (data.start_loc !== undefined) {
     partialData.start_loc = data.start_loc;
@@ -107,11 +107,11 @@ export function motionDataFromObject(
   if (data.turns !== undefined) {
     partialData.turns = data.turns;
   }
-  if (data.start_ori !== undefined) {
-    partialData.start_ori = data.start_ori;
+  if (data.startOrientation !== undefined) {
+    partialData.startOrientation = data.startOrientation;
   }
-  if (data.end_ori !== undefined) {
-    partialData.end_ori = data.end_ori;
+  if (data.endOrientation !== undefined) {
+    partialData.endOrientation = data.endOrientation;
   }
   if (data.is_visible !== undefined) {
     partialData.is_visible = data.is_visible;

@@ -15,7 +15,7 @@ export class ArrowQuadrantCalculator {
      * Uses motion-type-specific and grid-mode-specific mappings.
      */
     const gridMode = this.determineGridMode(motion);
-    const motionType = motion.motion_type;
+    const motionType = motion.motionType;
 
     // Apply sophisticated quadrant mapping based on grid mode and motion type
     if (gridMode === "diamond") {

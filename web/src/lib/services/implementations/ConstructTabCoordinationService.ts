@@ -27,12 +27,26 @@ export class ConstructTabCoordinationService
 {
   private components: Record<string, ComponentWithEventHandler> = {};
   private isHandlingSequenceModification = false;
+  private eventListenersSetup = false;
+  private boundEventHandlers: {
+    startPositionSelected: (event: CustomEvent) => void;
+    optionSelected: (event: CustomEvent) => void;
+    sequenceModified: (event: CustomEvent) => void;
+  } | null = null;
 
   constructor(
     private sequenceService: ISequenceService,
     private startPositionService: IStartPositionService
   ) {
     console.log("🎭 ConstructTabCoordinationService initialized");
+  }
+
+  /**
+   * Clean up resources when service is destroyed
+   */
+  destroy(): void {
+    this.disconnectComponentSignals();
+    this.components = {};
   }
 
   setupComponentCoordination(
@@ -44,8 +58,11 @@ export class ConstructTabCoordinationService
     );
     this.components = components;
 
-    // Set up any cross-component communication here
-    this.connectComponentSignals();
+    // Set up any cross-component communication here (only once)
+    if (!this.eventListenersSetup) {
+      this.connectComponentSignals();
+      this.eventListenersSetup = true;
+    }
   }
 
   async handleSequenceModified(sequence: SequenceData): Promise<void> {
@@ -100,8 +117,8 @@ export class ConstructTabCoordinationService
         propType: "staff", // Default prop type
       });
 
-      // **CRITICAL: Set the start position in the sequence's start_position field, NOT as beat 0**
-      console.log("🎭 Setting start position in sequence.start_position field");
+      // **CRITICAL: Set the start position in the sequence's startPosition field, NOT as beat 0**
+      console.log("🎭 Setting start position in sequence.startPosition field");
       await this.sequenceService.setSequenceStartPosition(
         newSequence.id,
         startPosition
@@ -131,8 +148,8 @@ export class ConstructTabCoordinationService
           updatedSequence.id,
           "beats:",
           updatedSequence.beats.length,
-          "start_position:",
-          updatedSequence.start_position?.pictograph_data?.id
+          "startPosition:",
+          updatedSequence.startPosition?.pictograph_data?.id
         );
         console.log(
           "✅ Updated sequence state - UI should now transition to option picker"
@@ -153,7 +170,7 @@ export class ConstructTabCoordinationService
 
       // **CRITICAL: Notify components to update UI state**
       // The shouldShowStartPositionPicker logic should now automatically return false
-      // because we've set a current sequence with a start_position
+      // because we've set a current sequence with a startPosition
       this.notifyComponents("ui_state_update_requested", {
         action: "hide_start_position_picker",
       });
@@ -262,22 +279,56 @@ export class ConstructTabCoordinationService
   private connectComponentSignals(): void {
     // Set up event listeners for component coordination
     if (typeof window !== "undefined") {
-      // Listen for start position selection
-      document.addEventListener("start-position-selected", ((
-        event: CustomEvent
-      ) => {
-        this.handleStartPositionSet(event.detail.startPosition);
-      }) as EventListener);
+      // Create bound event handlers to allow proper cleanup
+      this.boundEventHandlers = {
+        startPositionSelected: ((event: CustomEvent) => {
+          this.handleStartPositionSet(event.detail.startPosition);
+        }) as (event: CustomEvent) => void,
 
-      // Listen for option selection
-      document.addEventListener("option-selected", ((event: CustomEvent) => {
-        this.handleBeatAdded(event.detail.beatData);
-      }) as EventListener);
+        optionSelected: ((event: CustomEvent) => {
+          this.handleBeatAdded(event.detail.beatData);
+        }) as (event: CustomEvent) => void,
 
-      // Listen for sequence modifications
-      document.addEventListener("sequence-modified", ((event: CustomEvent) => {
-        this.handleSequenceModified(event.detail.sequence);
-      }) as EventListener);
+        sequenceModified: ((event: CustomEvent) => {
+          this.handleSequenceModified(event.detail.sequence);
+        }) as (event: CustomEvent) => void,
+      };
+
+      // Add event listeners
+      document.addEventListener(
+        "start-position-selected",
+        this.boundEventHandlers.startPositionSelected as EventListener
+      );
+      document.addEventListener(
+        "option-selected",
+        this.boundEventHandlers.optionSelected as EventListener
+      );
+      document.addEventListener(
+        "sequence-modified",
+        this.boundEventHandlers.sequenceModified as EventListener
+      );
+    }
+  }
+
+  /**
+   * Clean up event listeners to prevent memory leaks and duplicate handlers
+   */
+  private disconnectComponentSignals(): void {
+    if (typeof window !== "undefined" && this.boundEventHandlers) {
+      document.removeEventListener(
+        "start-position-selected",
+        this.boundEventHandlers.startPositionSelected as EventListener
+      );
+      document.removeEventListener(
+        "option-selected",
+        this.boundEventHandlers.optionSelected as EventListener
+      );
+      document.removeEventListener(
+        "sequence-modified",
+        this.boundEventHandlers.sequenceModified as EventListener
+      );
+      this.boundEventHandlers = null;
+      this.eventListenersSetup = false;
     }
   }
 
@@ -286,7 +337,7 @@ export class ConstructTabCoordinationService
 
     try {
       // Determine which panel to show based on sequence state
-      const hasStartPosition = sequence?.start_position != null;
+      const hasStartPosition = sequence?.startPosition != null;
       const hasBeats = sequence && sequence.beats && sequence.beats.length > 0;
 
       let targetPanel: string;
@@ -311,9 +362,9 @@ export class ConstructTabCoordinationService
   }
 
   private hasStartPosition(sequence: SequenceData): boolean {
-    // **FIXED: Check the start_position field instead of checking beats[0]**
+    // **FIXED: Check the startPosition field instead of checking beats[0]**
     // This aligns with the modern architecture where start position is separate
-    return sequence?.start_position != null;
+    return sequence?.startPosition != null;
   }
 
   private notifyComponents(eventType: string, data: unknown): void {

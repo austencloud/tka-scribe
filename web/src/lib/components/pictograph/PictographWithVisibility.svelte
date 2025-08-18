@@ -6,6 +6,7 @@ matching the legacy desktop app's behavior.
 -->
 <script lang="ts">
   import type { BeatData, PictographData } from "$lib/domain";
+  import { MotionColor } from "$lib/domain/enums";
   import { getVisibilityStateManager } from "$lib/services/implementations/VisibilityStateManager";
   import { onMount } from "svelte";
   import Pictograph from "./Pictograph.svelte";
@@ -88,7 +89,7 @@ matching the legacy desktop app's behavior.
       Object.entries(filteredData.arrows).forEach(([color, arrowData]) => {
         if (
           arrowData &&
-          visibilityManager.getMotionVisibility(color as "red" | "blue")
+          visibilityManager.getMotionVisibility(color as MotionColor)
         ) {
           newArrows[color] = arrowData;
         }
@@ -104,7 +105,7 @@ matching the legacy desktop app's behavior.
       Object.entries(filteredData.props).forEach(([color, propData]) => {
         if (
           propData &&
-          visibilityManager.getMotionVisibility(color as "red" | "blue")
+          visibilityManager.getMotionVisibility(color as MotionColor)
         ) {
           newProps[color] = propData;
         }
@@ -180,8 +181,12 @@ matching the legacy desktop app's behavior.
         <div class="debug-section">
           <div class="debug-label">Motions:</div>
           <div class="debug-value">
-            Red: {visibilityManager.getMotionVisibility("red") ? "✓" : "✗"}
-            Blue: {visibilityManager.getMotionVisibility("blue") ? "✓" : "✗"}
+            Red: {visibilityManager.getMotionVisibility(MotionColor.RED)
+              ? "✓"
+              : "✗"}
+            Blue: {visibilityManager.getMotionVisibility(MotionColor.BLUE)
+              ? "✓"
+              : "✗"}
           </div>
         </div>
 

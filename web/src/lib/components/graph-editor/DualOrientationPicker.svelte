@@ -58,11 +58,11 @@
     const pictograph = beatData.pictograph_data;
 
     // Update orientations from pictograph data
-    if (pictograph.motions?.blue?.start_ori) {
-      blueOrientation = pictograph.motions.blue.start_ori;
+    if (pictograph.motions?.blue?.startOrientation) {
+      blueOrientation = pictograph.motions.blue.startOrientation;
     }
-    if (pictograph.motions?.red?.start_ori) {
-      redOrientation = pictograph.motions.red.start_ori;
+    if (pictograph.motions?.red?.startOrientation) {
+      redOrientation = pictograph.motions.red.startOrientation;
     }
 
     console.log("DualOrientationPicker: Updated from beat data", {

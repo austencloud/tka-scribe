@@ -1,6 +1,6 @@
 <!-- BackgroundTab.svelte - Redesigned with CSS-animated thumbnail selection -->
 <script lang="ts">
-  import type { BackgroundType } from "$lib/components/backgrounds/types/types";
+  import { BackgroundType } from "$lib/components/backgrounds/types/types";
   import SettingCard from "../SettingCard.svelte";
 
   interface Props {
@@ -14,7 +14,7 @@
 
   // Current selection state
   let selectedBackground = $state<BackgroundType>(
-    settings.backgroundType || "aurora"
+    settings.backgroundType || BackgroundType.NIGHT_SKY
   );
 
   // Available backgrounds with metadata

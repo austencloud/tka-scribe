@@ -17,6 +17,7 @@ import {
 } from "$lib/domain";
 import {
   GridMode,
+  MotionColor,
   MotionType,
   Location,
   Orientation,
@@ -26,7 +27,7 @@ import {
 // Helper function to convert domain GridData to service GridData
 // function convertGridData(domainGridData: unknown): ServiceGridData {
 //   return {
-//     mode: (domainGridData as { grid_mode: string }).grid_mode,
+//     mode: (domainGridData as { gridMode: string }).gridMode,
 //     allLayer2PointsNormal: {},
 //     allHandPointsNormal: {},
 //   };
@@ -45,9 +46,9 @@ describe("Arrow Positioning Debug Tests", () => {
 
     // Create test data for pro motion: N → E
     const blueArrowData = createArrowData({
-      color: "blue",
-      arrow_type: ArrowType.BLUE,
-      motion_type: MotionType.PRO,
+      color: MotionColor.BLUE,
+      arrowType: ArrowType.BLUE,
+      motionType: MotionType.PRO,
       start_orientation: Orientation.IN,
       end_orientation: Orientation.IN,
       turns: 0,
@@ -56,16 +57,16 @@ describe("Arrow Positioning Debug Tests", () => {
     });
 
     const blueMotionData = createMotionData({
-      motion_type: MotionType.PRO,
+      motionType: MotionType.PRO,
       start_loc: Location.NORTH,
       end_loc: Location.EAST,
       turns: 0,
     });
 
     const redArrowData = createArrowData({
-      color: "red",
-      arrow_type: ArrowType.RED,
-      motion_type: MotionType.STATIC,
+      color: MotionColor.RED,
+      arrowType: ArrowType.RED,
+      motionType: MotionType.STATIC,
       start_orientation: Orientation.IN,
       end_orientation: Orientation.IN,
       turns: 0,
@@ -74,7 +75,7 @@ describe("Arrow Positioning Debug Tests", () => {
     });
 
     const redMotionData = createMotionData({
-      motion_type: MotionType.STATIC,
+      motionType: MotionType.STATIC,
       start_loc: Location.SOUTH,
       end_loc: Location.SOUTH,
       turns: 0,
@@ -82,14 +83,14 @@ describe("Arrow Positioning Debug Tests", () => {
 
     const pictographData = createPictographData({
       letter: "TEST",
-      grid_data: createGridData({ grid_mode: GridMode.DIAMOND }),
+      grid_data: createGridData({ gridMode: GridMode.DIAMOND }),
       arrows: {
         blue: blueArrowData,
         red: redArrowData,
       },
       props: {
-        blue: createPropData({ color: "blue" }),
-        red: createPropData({ color: "red" }),
+        blue: createPropData({ color: MotionColor.BLUE }),
+        red: createPropData({ color: MotionColor.RED }),
       },
       motions: {
         blue: blueMotionData,
@@ -99,7 +100,7 @@ describe("Arrow Positioning Debug Tests", () => {
 
     console.log("📊 Input Data:");
     console.log("  Blue Motion:", {
-      motion_type: blueMotionData.motion_type,
+      motionType: blueMotionData.motionType,
       start_loc: blueMotionData.start_loc,
       end_loc: blueMotionData.end_loc,
       turns: blueMotionData.turns,
@@ -196,16 +197,16 @@ describe("Arrow Positioning Debug Tests", () => {
       console.log(`\n📐 Testing ${testCase.name}:`);
 
       const motionData = createMotionData({
-        motion_type: MotionType.PRO,
+        motionType: MotionType.PRO,
         start_loc: testCase.start,
         end_loc: testCase.end,
         turns: 0,
       });
 
       const arrowData = createArrowData({
-        color: "blue",
-        arrow_type: ArrowType.BLUE,
-        motion_type: MotionType.PRO,
+        color: MotionColor.BLUE,
+        arrowType: ArrowType.BLUE,
+        motionType: MotionType.PRO,
         start_orientation: Orientation.IN,
         end_orientation: Orientation.IN,
         turns: 0,
@@ -213,7 +214,7 @@ describe("Arrow Positioning Debug Tests", () => {
 
       const pictographData = createPictographData({
         letter: "TEST",
-        grid_data: createGridData({ grid_mode: GridMode.DIAMOND }),
+        grid_data: createGridData({ gridMode: GridMode.DIAMOND }),
         arrows: { blue: arrowData },
         motions: { blue: motionData },
       });

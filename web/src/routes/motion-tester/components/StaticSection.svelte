@@ -95,7 +95,7 @@ This is the left 2/3 section of the new layout.
       <PropPanel
         propName="Blue"
         propColor="#60a5fa"
-        startLocation={motionState.blueMotionParams.startLoc}
+        startLocation={motionState.blueMotionParams.startLocation}
         endLocation={motionState.blueMotionParams.endLoc}
         startOrientation={motionState.blueMotionParams.startOri as Orientation}
         endOrientation={motionState.blueMotionParams.endOri as Orientation}
@@ -121,7 +121,7 @@ This is the left 2/3 section of the new layout.
       <PropPanel
         propName="Red"
         propColor="#f87171"
-        startLocation={motionState.redMotionParams.startLoc}
+        startLocation={motionState.redMotionParams.startLocation}
         endLocation={motionState.redMotionParams.endLoc}
         startOrientation={motionState.redMotionParams.startOri as Orientation}
         endOrientation={motionState.redMotionParams.endOri as Orientation}

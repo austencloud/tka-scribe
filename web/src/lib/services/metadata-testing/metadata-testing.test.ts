@@ -34,14 +34,14 @@ const mockMetadata = [
     author: "Test Author",
     level: 3,
     sequence_start_position: "front",
-    blue_attributes: { motion_type: "contact" },
-    red_attributes: { motion_type: "roll" },
+    blueAttributes: { motionType: "contact" },
+    redAttributes: { motionType: "roll" },
   },
   {
     beat_number: 2,
     letter: "B",
-    blue_attributes: { motion_type: "isolation" },
-    red_attributes: { motion_type: "plane_bend" },
+    blueAttributes: { motionType: "isolation" },
+    redAttributes: { motionType: "plane_bend" },
   },
 ];
 
@@ -55,14 +55,14 @@ vi.mock("$lib/utils/png-metadata-extractor", () => ({
         author: "Test Author",
         level: 3,
         sequence_start_position: "front",
-        blue_attributes: { motion_type: "contact" },
-        red_attributes: { motion_type: "roll" },
+        blueAttributes: { motionType: "contact" },
+        redAttributes: { motionType: "roll" },
       },
       {
         beat_number: 2,
         letter: "B",
-        blue_attributes: { motion_type: "isolation" },
-        red_attributes: { motion_type: "plane_bend" },
+        blueAttributes: { motionType: "isolation" },
+        redAttributes: { motionType: "plane_bend" },
       },
     ]),
   },
@@ -150,7 +150,7 @@ describe("MetadataAnalysisService", () => {
     const invalidTypes = analysisService.validateMotionTypes([
       {
         beat_number: 1,
-        blue_attributes: { motion_type: "invalid_motion" },
+        blueAttributes: { motionType: "invalid_motion" },
       },
     ]);
 

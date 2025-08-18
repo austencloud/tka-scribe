@@ -29,8 +29,8 @@ describe("Codex Service Refactoring", () => {
 
       expect(Object.keys(allMappings).length).toBeGreaterThan(0);
       expect(allMappings.A).toBeDefined();
-      expect(allMappings.A.startPos).toBe("alpha1");
-      expect(allMappings.A.endPos).toBe("alpha3");
+      expect(allMappings.A.startPosition).toBe("alpha1");
+      expect(allMappings.A.endPosition).toBe("alpha3");
       expect(allMappings.A.blueMotion).toBe("pro");
       expect(allMappings.A.redMotion).toBe("pro");
     });

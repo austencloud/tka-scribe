@@ -3,10 +3,10 @@
  *
  * Complete port of the legacy system with advanced features using pure runes:
  * - 		if (sequence && sequence.length > 			// For empty sequence, try to get start position from localStorage
-			const startPositionData = localStorage.getItem('start_position');
+			const startPositionData = localStorage.getItem('startPosition');
 			if (startPositionData) {
 				const startPosition = JSON.parse(startPositionData);
-				const endPosition = typeof startPosition.endPos === 'string' ? startPosition.endPos : null;
+				const endPosition = typeof startPosition.endPosition === 'string' ? startPosition.endPosition : null;
 				if (endPosition) {
 					console.log(`🎯 Runes loading options for start position: ${endPosition}`);
 
@@ -18,7 +18,7 @@
 						GridMode.DIAMOND,
 						{}
 					);astBeat = sequence[sequence.length - 1];
-			const endPosition = typeof lastBeat?.end_position === 'string' ? lastBeat.end_position :
+			const endPosition = typeof lastBeat?.endPosition === 'string' ? lastBeat.endPosition :
 				typeof lastBeat?.metadata?.endPosition === 'string' ? lastBeat.metadata.endPosition : null;
 
 			if (endPosition && typeof endPosition === 'string') {
@@ -232,15 +232,16 @@ export function createOptionPickerRunes() {
 
         if (sequence && sequence.length > 0) {
           const lastBeat = sequence[sequence.length - 1];
-          const endPos =
-            lastBeat?.end_position || lastBeat?.metadata?.endPosition;
-          targetEndPosition = typeof endPos === "string" ? endPos : null;
+          const endPosition =
+            lastBeat?.endPosition || lastBeat?.metadata?.endPosition;
+          targetEndPosition =
+            typeof endPosition === "string" ? endPosition : null;
         } else {
           // For empty sequence, get from start position
-          const startPositionData = localStorage.getItem("start_position");
+          const startPositionData = localStorage.getItem("startPosition");
           if (startPositionData) {
             const startPosition = JSON.parse(startPositionData);
-            targetEndPosition = startPosition.endPos || null;
+            targetEndPosition = startPosition.endPosition || null;
           }
         }
 
@@ -288,7 +289,7 @@ export function createOptionPickerRunes() {
       if (sequence && sequence.length > 0) {
         const lastBeat = sequence[sequence.length - 1];
         const endPosition =
-          lastBeat?.end_position || lastBeat?.metadata?.endPosition;
+          lastBeat?.endPosition || lastBeat?.metadata?.endPosition;
 
         if (endPosition && typeof endPosition === "string") {
           console.log(
@@ -314,12 +315,12 @@ export function createOptionPickerRunes() {
         }
       } else {
         // For empty sequence, try to get start position from localStorage
-        const startPositionData = localStorage.getItem("start_position");
+        const startPositionData = localStorage.getItem("startPosition");
         if (startPositionData) {
           const startPosition = JSON.parse(startPositionData);
           const endPosition =
-            typeof startPosition.endPos === "string"
-              ? startPosition.endPos
+            typeof startPosition.endPosition === "string"
+              ? startPosition.endPosition
               : null;
           if (endPosition) {
             console.log(
