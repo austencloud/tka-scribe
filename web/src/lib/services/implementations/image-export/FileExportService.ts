@@ -302,7 +302,13 @@ export class FileExportService implements IFileExportService {
       canvas.width = 100;
       canvas.height = 100;
 
-      const ctx = canvas.getContext("2d")!;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) {
+        return {
+          success: false,
+          error: "Failed to get 2D context from test canvas",
+        };
+      }
       ctx.fillStyle = "red";
       ctx.fillRect(10, 10, 80, 80);
 

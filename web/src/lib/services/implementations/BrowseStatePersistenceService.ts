@@ -122,7 +122,6 @@ export class BrowseStatePersistenceService
       };
 
       localStorage.setItem(this.BROWSE_STATE_KEY, JSON.stringify(stateToSave));
-      console.log("✅ Browse state saved successfully");
     } catch (error) {
       console.error("❌ Failed to save browse state:", error);
     }
@@ -158,7 +157,6 @@ export class BrowseStatePersistenceService
         return null;
       }
 
-      console.log("✅ Browse state loaded successfully");
       return parsed as CompleteBrowseState;
     } catch (error) {
       console.warn("⚠️ Failed to load browse state:", error);
@@ -297,7 +295,6 @@ export class BrowseStatePersistenceService
       };
 
       localStorage.setItem(this.APP_TAB_STATE_KEY, JSON.stringify(stateToSave));
-      console.log("✅ Application tab state saved successfully");
     } catch (error) {
       console.error("❌ Failed to save application tab state:", error);
     }
@@ -313,7 +310,6 @@ export class BrowseStatePersistenceService
         parsed.lastUpdated = new Date(parsed.lastUpdated);
       }
 
-      console.log("✅ Application tab state loaded successfully");
       return parsed as ApplicationTabState;
     } catch (error) {
       console.warn("⚠️ Failed to load application tab state:", error);
@@ -333,7 +329,6 @@ export class BrowseStatePersistenceService
       localStorage.removeItem(this.VIEW_STATE_KEY);
       localStorage.removeItem(this.SCROLL_STATE_KEY);
       localStorage.removeItem(this.SELECTION_STATE_KEY);
-      console.log("✅ Browse state cleared successfully");
     } catch (error) {
       console.error("❌ Failed to clear browse state:", error);
     }
@@ -343,7 +338,6 @@ export class BrowseStatePersistenceService
     try {
       await this.clearBrowseState();
       localStorage.removeItem(this.APP_TAB_STATE_KEY);
-      console.log("✅ All state cleared successfully");
     } catch (error) {
       console.error("❌ Failed to clear all state:", error);
     }

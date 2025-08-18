@@ -44,10 +44,8 @@ export class ServiceContainer {
   }
 
   registerSingletonClass<T>(serviceInterface: ServiceInterface<T>): void {
-    console.log(`🔧 Registering singleton class: ${serviceInterface.token}`);
     const instance = new serviceInterface.implementation();
     this.singletons.set(serviceInterface.token, instance);
-    console.log(`✅ Singleton registered: ${serviceInterface.token}`);
   }
 
   /**
@@ -67,17 +65,14 @@ export class ServiceContainer {
 
   resolve<T>(serviceInterface: ServiceInterface<T>): T {
     const token = serviceInterface.token;
-    console.log(`🔍 Resolving: ${token}`);
 
     // Check if it's a singleton
     if (this.singletons.has(token)) {
-      console.log(`✅ Found singleton: ${token}`);
       return this.singletons.get(token) as T;
     }
 
     // Check if it's a factory
     if (this.factories.has(token)) {
-      console.log(`🏭 Creating from factory: ${token}`);
       const factory = this.factories.get(token);
       if (!factory) {
         throw new Error(`Factory for ${token} is unexpectedly undefined`);
@@ -88,22 +83,16 @@ export class ServiceContainer {
     // Check if it's a registered service
     const serviceConfig = this.services.get(token);
     if (serviceConfig) {
-      console.log(`🔨 Creating service: ${token}`);
       const { implementation, dependencies } = serviceConfig;
-      console.log(`📦 Dependencies for ${token}:`, dependencies);
 
       const resolvedDependencies = dependencies.map((depToken: string) => {
-        console.log(`🔗 Resolving dependency: ${depToken} for ${token}`);
-
         // Check singletons first
         if (this.singletons.has(depToken)) {
-          console.log(`✅ Found singleton dependency: ${depToken}`);
           return this.singletons.get(depToken);
         }
 
         // Check factories
         if (this.factories.has(depToken)) {
-          console.log(`🏭 Creating from factory dependency: ${depToken}`);
           const factory = this.factories.get(depToken);
           if (!factory) {
             throw new Error(
@@ -116,7 +105,6 @@ export class ServiceContainer {
         // Check services
         const depServiceConfig = this.services.get(depToken);
         if (depServiceConfig) {
-          console.log(`🔨 Creating service dependency: ${depToken}`);
           return this.resolve({
             token: depToken,
             implementation: depServiceConfig.implementation,

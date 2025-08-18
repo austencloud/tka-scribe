@@ -13,11 +13,15 @@ import type {
   BeatRenderOptions,
 } from "../../interfaces/image-export-interfaces";
 import type { BeatData, SequenceData } from "../../interfaces/domain-types";
+import type { PropData, ArrowData } from "$lib/domain";
+import type { IPictographService } from "../../interfaces/pictograph-interfaces";
 
 export class BeatRenderingService implements IBeatRenderingService {
   // Canvas pool for memory efficiency
   private canvasPool: HTMLCanvasElement[] = [];
   private readonly MAX_POOL_SIZE = 10;
+
+  constructor(private pictographService: IPictographService) {}
 
   /**
    * Render a single beat to canvas
@@ -39,7 +43,10 @@ export class BeatRenderingService implements IBeatRenderingService {
     try {
       // Create canvas for this beat
       const canvas = this.getCanvasFromPool(size, size);
-      const ctx = canvas.getContext("2d")!;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) {
+        throw new Error("Failed to get 2D context from canvas");
+      }
 
       // Clear canvas with white background (match desktop)
       ctx.fillStyle = "white";
@@ -80,7 +87,10 @@ export class BeatRenderingService implements IBeatRenderingService {
 
     try {
       const canvas = this.getCanvasFromPool(size, size);
-      const ctx = canvas.getContext("2d")!;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) {
+        throw new Error("Failed to get 2D context from canvas");
+      }
 
       // Clear canvas with white background
       ctx.fillStyle = "white";
@@ -163,7 +173,10 @@ export class BeatRenderingService implements IBeatRenderingService {
 
     // Create a new canvas for filtered result
     const filteredCanvas = this.getCanvasFromPool(canvas.width, canvas.height);
-    const filteredCtx = filteredCanvas.getContext("2d")!;
+    const filteredCtx = filteredCanvas.getContext("2d");
+    if (!filteredCtx) {
+      throw new Error("Failed to get 2D context from filtered canvas");
+    }
 
     // Draw original canvas
     filteredCtx.drawImage(canvas, 0, 0);
@@ -213,61 +226,35 @@ export class BeatRenderingService implements IBeatRenderingService {
 
   /**
    * Create SVG element from pictograph data
-   * Attempts to use the existing Pictograph component
+   * Uses the injected pictograph service instead of creating components directly
    */
   private async createSVGFromPictographData(
     beatData: BeatData,
     size: number,
-    options: BeatRenderOptions
+    _options: BeatRenderOptions
   ): Promise<SVGElement | null> {
     try {
-      // Create temporary container
-      const container = document.createElement("div");
-      container.style.position = "absolute";
-      container.style.left = "-9999px";
-      container.style.width = `${size}px`;
-      container.style.height = `${size}px`;
-      document.body.appendChild(container);
-
-      try {
-        // Dynamically import and create Pictograph component
-        const { default: Pictograph } = await import(
-          "$lib/components/pictograph/Pictograph.svelte"
-        );
-
-        const component = new Pictograph({
-          target: container,
-          props: {
-            beatData,
-            width: size,
-            height: size,
-            beatNumber: options.addBeatNumbers ? beatData.beat_number : null,
-            debug: false,
-          },
-        });
-
-        // Wait for component to render
-        await new Promise((resolve) => setTimeout(resolve, 100));
-
-        // Extract SVG
-        const svgElement = container.querySelector("svg");
-
-        if (svgElement) {
-          // Clone the SVG to avoid issues when removing from DOM
-          const clonedSVG = svgElement.cloneNode(true) as SVGElement;
-
-          // Clean up
-          component.$destroy();
-          return clonedSVG;
-        }
-
-        component.$destroy();
+      if (!beatData.pictograph_data) {
         return null;
-      } finally {
-        document.body.removeChild(container);
       }
+
+      // Use the injected pictograph service to render the pictograph to SVG
+      const svgElement = await this.pictographService.renderPictograph(
+        beatData.pictograph_data
+      );
+
+      if (svgElement) {
+        // Set appropriate size attributes on the SVG
+        svgElement.setAttribute("width", size.toString());
+        svgElement.setAttribute("height", size.toString());
+        svgElement.setAttribute("viewBox", `0 0 ${size} ${size}`);
+        
+        return svgElement;
+      }
+
+      return null;
     } catch (error) {
-      console.warn("Failed to create SVG from Pictograph component:", error);
+      console.warn("Failed to create SVG from pictograph service:", error);
       return null;
     }
   }
@@ -336,7 +323,10 @@ export class BeatRenderingService implements IBeatRenderingService {
     size: number,
     options: BeatRenderOptions
   ): Promise<void> {
-    const pictograph = beatData.pictograph_data!;
+    const pictograph = beatData.pictograph_data;
+    if (!pictograph) {
+      throw new Error("Pictograph data is required for rendering");
+    }
 
     // Draw grid background
     this.drawGrid(ctx, pictograph.grid_data?.grid_mode || "diamond", size);
@@ -471,10 +461,12 @@ export class BeatRenderingService implements IBeatRenderingService {
    */
   private drawProp(
     ctx: CanvasRenderingContext2D,
-    propData: any,
+    propData: PropData | null,
     color: string,
     size: number
   ): void {
+    if (!propData) return;
+
     const centerX = size / 2;
     const centerY = size / 2;
     const radius = size * 0.05;
@@ -490,10 +482,12 @@ export class BeatRenderingService implements IBeatRenderingService {
    */
   private drawArrow(
     ctx: CanvasRenderingContext2D,
-    arrowData: any,
+    arrowData: ArrowData | null,
     color: string,
     size: number
   ): void {
+    if (!arrowData) return;
+
     const centerX = size / 2;
     const centerY = size / 2;
     const length = size * 0.2;
@@ -640,7 +634,10 @@ export class BeatRenderingService implements IBeatRenderingService {
     canvas.height = height;
 
     // Clear the canvas
-    const ctx = canvas.getContext("2d")!;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) {
+      throw new Error("Failed to get 2D context from canvas");
+    }
     ctx.clearRect(0, 0, width, height);
 
     return canvas;

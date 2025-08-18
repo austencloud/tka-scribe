@@ -6,81 +6,46 @@
  */
 
 import type { PictographData } from "$lib/domain/PictographData";
-import { CodexService as OldCodexService } from "./CodexService";
-import { CodexService as NewCodexService } from "./CodexService.clean";
+import { CodexService } from "./CodexService";
 
 export class CodexServiceMigrationHelper {
-  private oldService: OldCodexService;
-  private newService: NewCodexService;
+  private service: CodexService;
 
   constructor() {
-    this.oldService = new OldCodexService();
-    this.newService = new NewCodexService();
+    this.service = new CodexService();
   }
 
   /**
-   * Compare results between old and new services to ensure compatibility
+   * Validate the current CodexService functionality
    */
-  async validateMigration(): Promise<{
+  async validateService(): Promise<{
     success: boolean;
     issues: string[];
     summary: {
-      oldPictographCount: number;
-      newPictographCount: number;
-      matchingPictographs: number;
-      missingInNew: string[];
-      extraInNew: string[];
+      pictographCount: number;
+      validPictographs: number;
+      invalidPictographs: string[];
     };
   }> {
-    console.log("🔍 Starting migration validation...");
+    console.log("🔍 Starting service validation...");
 
     const issues: string[] = [];
 
     try {
-      // Load pictographs from both services
-      const [oldPictographs, newPictographs] = await Promise.all([
-        this.oldService.loadAllPictographs(),
-        this.newService.loadAllPictographs(),
-      ]);
+      // Load pictographs from the service
+      const pictographs = await this.service.loadAllPictographs();
 
-      // Create maps for easy comparison
-      const oldMap = new Map<string, PictographData>();
-      const newMap = new Map<string, PictographData>();
+      // Validate pictographs
+      const validPictographs: PictographData[] = [];
+      const invalidPictographs: string[] = [];
 
-      oldPictographs.forEach((p) => {
-        if (p.letter) oldMap.set(p.letter, p);
-      });
-
-      newPictographs.forEach((p) => {
-        if (p.letter) newMap.set(p.letter, p);
-      });
-
-      // Find differences
-      const missingInNew: string[] = [];
-      const extraInNew: string[] = [];
-      let matchingPictographs = 0;
-
-      // Check what's in old but not in new
-      for (const letter of oldMap.keys()) {
-        if (newMap.has(letter)) {
-          matchingPictographs++;
+      pictographs.forEach((p: PictographData) => {
+        if (p.letter && p.letter.trim() !== "") {
+          validPictographs.push(p);
         } else {
-          missingInNew.push(letter);
-          issues.push(
-            `Letter '${letter}' found in old service but missing in new service`
-          );
+          invalidPictographs.push(p.letter || "unknown");
         }
-      }
-
-      // Check what's in new but not in old
-      for (const letter of newMap.keys()) {
-        if (!oldMap.has(letter)) {
-          extraInNew.push(letter);
-          issues.push(
-            `Letter '${letter}' found in new service but missing in old service`
-          );
-        }
-      }
+      });
 
       // Test specific methods
       await this.validateSpecificMethods(issues);
@@ -89,19 +54,17 @@ export class CodexServiceMigrationHelper {
 
       console.log(
         success
-          ? "✅ Migration validation passed!"
-          : "❌ Migration validation found issues"
+          ? "✅ Service validation passed!"
+          : "❌ Service validation found issues"
       );
 
       return {
         success,
         issues,
         summary: {
-          oldPictographCount: oldPictographs.length,
-          newPictographCount: newPictographs.length,
-          matchingPictographs,
-          missingInNew,
-          extraInNew,
+          pictographCount: pictographs.length,
+          validPictographs: validPictographs.length,
+          invalidPictographs,
         },
       };
     } catch (error) {
@@ -111,53 +74,35 @@ export class CodexServiceMigrationHelper {
         success: false,
         issues: [errorMessage],
         summary: {
-          oldPictographCount: 0,
-          newPictographCount: 0,
-          matchingPictographs: 0,
-          missingInNew: [],
-          extraInNew: [],
+          pictographCount: 0,
+          validPictographs: 0,
+          invalidPictographs: [],
         },
       };
     }
   }
 
   /**
-   * Test specific methods between old and new services
+   * Test specific methods of the service
    */
   private async validateSpecificMethods(issues: string[]): Promise<void> {
     try {
       // Test getLettersByRow
-      const oldRows = this.oldService.getLettersByRow();
-      const newRows = this.newService.getLettersByRow();
-
-      if (JSON.stringify(oldRows) !== JSON.stringify(newRows)) {
-        issues.push(
-          "getLettersByRow() results differ between old and new services"
-        );
+      const rows = this.service.getLettersByRow();
+      if (!rows || rows.length === 0) {
+        issues.push("getLettersByRow() returned empty or null result");
       }
 
       // Test searchPictographs with a common letter
-      const [oldSearch, newSearch] = await Promise.all([
-        this.oldService.searchPictographs("A"),
-        this.newService.searchPictographs("A"),
-      ]);
-
-      if (oldSearch.length !== newSearch.length) {
-        issues.push(
-          `searchPictographs('A') returned different counts: old=${oldSearch.length}, new=${newSearch.length}`
-        );
+      const searchResults = await this.service.searchPictographs("A");
+      if (!searchResults || searchResults.length === 0) {
+        issues.push('searchPictographs("A") returned no results');
       }
 
       // Test getPictographByLetter
-      const [oldA, newA] = await Promise.all([
-        this.oldService.getPictographByLetter("A"),
-        this.newService.getPictographByLetter("A"),
-      ]);
-
-      if (!!oldA !== !!newA) {
-        issues.push(
-          "getPictographByLetter('A') availability differs between services"
-        );
+      const pictographA = await this.service.getPictographByLetter("A");
+      if (!pictographA || pictographA.letter !== "A") {
+        issues.push('getPictographByLetter("A") did not return letter A');
       }
     } catch (error) {
       issues.push(`Error during specific method validation: ${error}`);
@@ -165,10 +110,10 @@ export class CodexServiceMigrationHelper {
   }
 
   /**
-   * Generate a migration report
+   * Generate a service validation report
    */
-  async generateMigrationReport(): Promise<string> {
-    const validation = await this.validateMigration();
+  async generateValidationReport(): Promise<string> {
+    const validation = await this.validateService();
 
     let report = "# Codex Service Migration Report\n\n";
 
@@ -181,23 +126,19 @@ export class CodexServiceMigrationHelper {
       report +=
         "The following issues need to be addressed before migration:\n\n";
 
-      validation.issues.forEach((issue, index) => {
+      validation.issues.forEach((issue: string, index: number) => {
         report += `${index + 1}. ${issue}\n`;
       });
       report += "\n";
     }
 
     report += "## Summary\n\n";
-    report += `- Old service pictographs: ${validation.summary.oldPictographCount}\n`;
-    report += `- New service pictographs: ${validation.summary.newPictographCount}\n`;
-    report += `- Matching pictographs: ${validation.summary.matchingPictographs}\n`;
+    report += `- Total pictographs: ${validation.summary.pictographCount}\n`;
+    report += `- Valid pictographs: ${validation.summary.validPictographs}\n`;
+    report += `- Invalid pictographs: ${validation.summary.invalidPictographs.length}\n`;
 
-    if (validation.summary.missingInNew.length > 0) {
-      report += `- Missing in new service: ${validation.summary.missingInNew.join(", ")}\n`;
-    }
-
-    if (validation.summary.extraInNew.length > 0) {
-      report += `- Extra in new service: ${validation.summary.extraInNew.join(", ")}\n`;
+    if (validation.summary.invalidPictographs.length > 0) {
+      report += `- Invalid pictograph letters: ${validation.summary.invalidPictographs.join(", ")}\n`;
     }
 
     report += "\n## Architecture Changes\n\n";

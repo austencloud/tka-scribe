@@ -95,7 +95,10 @@ export class ImageCompositionService implements IImageCompositionService {
   ): Promise<HTMLCanvasElement> {
     // Create main canvas if not provided
     const mainCanvas = this.createMainCanvas(layoutData, options);
-    const ctx = mainCanvas.getContext("2d")!;
+    const ctx = mainCanvas.getContext("2d");
+    if (!ctx) {
+      throw new Error("Failed to get 2D context from main canvas");
+    }
 
     // Step 1: Fill background
     this.fillBackground(ctx, mainCanvas.width, mainCanvas.height);
@@ -128,7 +131,10 @@ export class ImageCompositionService implements IImageCompositionService {
     canvas: HTMLCanvasElement,
     backgroundColor: string = "white"
   ): HTMLCanvasElement {
-    const ctx = canvas.getContext("2d")!;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) {
+      throw new Error("Failed to get 2D context from canvas");
+    }
     this.fillBackground(ctx, canvas.width, canvas.height, backgroundColor);
     return canvas;
   }

@@ -50,6 +50,7 @@ export type {
   CacheConfig,
   ProgressInfo,
   ValidationResult,
+  ExportResult,
   MotionType,
   Location,
   Orientation,
@@ -189,7 +190,6 @@ export type {
   IExportSettingsService,
   ExportProgress,
   ExportError,
-  ExportResult,
   RenderQualitySettings,
   LayoutConstraints,
 } from "./image-export-interfaces";

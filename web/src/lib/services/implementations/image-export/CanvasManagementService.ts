@@ -81,7 +81,10 @@ export class CanvasManagementService implements ICanvasManagementService {
     }
 
     const clone = this.createCanvas(source.width, source.height);
-    const ctx = clone.getContext("2d")!;
+    const ctx = clone.getContext("2d");
+    if (!ctx) {
+      throw new Error("Failed to get 2D context from cloned canvas");
+    }
 
     // Copy source canvas to clone
     ctx.drawImage(source, 0, 0);
@@ -145,7 +148,10 @@ export class CanvasManagementService implements ICanvasManagementService {
     canvas.height = height;
 
     // Clear canvas
-    const ctx = canvas.getContext("2d")!;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) {
+      throw new Error("Failed to get 2D context from canvas");
+    }
     ctx.clearRect(0, 0, width, height);
 
     // Set default rendering properties for high quality
@@ -352,7 +358,10 @@ export class CanvasManagementService implements ICanvasManagementService {
     canvas: HTMLCanvasElement,
     purpose: "export" | "preview" | "thumbnail"
   ): HTMLCanvasElement {
-    const ctx = canvas.getContext("2d")!;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) {
+      throw new Error("Failed to get 2D context from canvas");
+    }
 
     switch (purpose) {
       case "export":

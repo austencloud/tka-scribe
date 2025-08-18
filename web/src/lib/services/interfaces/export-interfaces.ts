@@ -6,6 +6,7 @@
  */
 
 import type { Page } from "../../domain/pageLayout";
+import type { SequenceData, ExportOptions, ExportResult } from "./domain-types";
 
 // ============================================================================
 // EXPORT CONFIGURATION TYPES
@@ -45,11 +46,11 @@ export interface BatchExportOptions {
 // EXPORT RESULT TYPES
 // ============================================================================
 
-export interface ExportResult {
-  success: boolean;
-  blob?: Blob;
+// ExportResult is imported from domain layer via domain-types.ts
+// Service layer extends it with additional service-specific properties
+
+export interface ServiceExportResult extends ExportResult {
   filename: string;
-  error?: Error;
   metadata: {
     format: string;
     size: number; // bytes
@@ -63,7 +64,7 @@ export interface BatchExportResult {
   totalPages: number;
   successCount: number;
   failureCount: number;
-  results: ExportResult[];
+  results: ServiceExportResult[];
   totalProcessingTime: number;
   errors: Error[];
 }
@@ -156,7 +157,7 @@ export interface ISequenceCardPageService {
    * Create printable page from sequence cards
    */
   createPage(
-    sequences: any[],
+    sequences: SequenceData[],
     layout: GridLayout,
     pageNumber: number
   ): Promise<Page>;
@@ -164,7 +165,7 @@ export interface ISequenceCardPageService {
   /**
    * Generate multiple pages
    */
-  generatePages(sequences: any[], layout: GridLayout): Promise<Page[]>;
+  generatePages(sequences: SequenceData[], layout: GridLayout): Promise<Page[]>;
 }
 
 /**
@@ -175,9 +176,9 @@ export interface ISequenceCardBatchService {
    * Process batch of sequence cards
    */
   processBatch(
-    sequences: any[],
+    sequences: SequenceData[],
     batchSize: number,
-    processor: (batch: any[]) => Promise<void>
+    processor: (batch: SequenceData[]) => Promise<void>
   ): Promise<void>;
 
   /**
@@ -198,22 +199,29 @@ export interface ISequenceCardCacheService {
   /**
    * Cache sequence card data
    */
-  cacheSequenceCard(sequenceId: string, data: any): Promise<void>;
+  cacheSequenceCard(sequenceId: string, data: SequenceData): Promise<void>;
 
   /**
    * Get cached sequence card
    */
-  getCachedSequenceCard(sequenceId: string): Promise<any | null>;
+  getCachedSequenceCard(sequenceId: string): Promise<SequenceData | null>;
 
   /**
    * Store image in cache
    */
-  storeImage(sequenceId: string, imageBlob: Blob, options?: any): Promise<void>;
+  storeImage(
+    sequenceId: string,
+    imageBlob: Blob,
+    options?: ExportOptions
+  ): Promise<void>;
 
   /**
    * Retrieve image from cache
    */
-  retrieveImage(sequenceId: string, options?: any): Promise<Blob | null>;
+  retrieveImage(
+    sequenceId: string,
+    options?: ExportOptions
+  ): Promise<Blob | null>;
 
   /**
    * Clear cache
@@ -239,7 +247,7 @@ export interface IEnhancedExportService extends IExportService {
    */
   exportWithPreview(
     pages: Page[],
-    options: any
+    options: ExportOptions
   ): Promise<ExportResult & { preview: Blob }>;
 
   /**
@@ -262,7 +270,7 @@ export interface IPageImageExportService {
   exportPageAsImage(
     pageElement: HTMLElement,
     options: ImageExportOptions
-  ): Promise<ExportResult>;
+  ): Promise<ServiceExportResult>;
 
   /**
    * Export multiple page elements as individual images

@@ -133,10 +133,6 @@ function loadSettingsFromStorage(): AppSettings {
   try {
     const stored = localStorage.getItem(SETTINGS_STORAGE_KEY);
     if (!stored) {
-      console.log("🔄 No stored settings found, using defaults:", {
-        key: SETTINGS_STORAGE_KEY,
-        defaultBackgroundType: DEFAULT_SETTINGS.backgroundType,
-      });
       return DEFAULT_SETTINGS;
     }
 
@@ -149,19 +145,10 @@ function loadSettingsFromStorage(): AppSettings {
     // This ensures all tabs are visible after the update
     if (merged.developerMode === false || merged.developerMode === undefined) {
       merged.developerMode = true;
-      console.log(
-        "🔧 Upgrading user settings: enabling developer mode to show all tabs"
-      );
       // Save the updated settings back to localStorage
       localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(merged));
     }
 
-    console.log("📦 Settings loaded from localStorage:", {
-      key: SETTINGS_STORAGE_KEY,
-      backgroundType: merged.backgroundType,
-      backgroundEnabled: merged.backgroundEnabled,
-      fullSettings: merged,
-    });
     return merged;
   } catch (error) {
     console.warn("Failed to load settings from localStorage:", error);
@@ -175,12 +162,6 @@ function saveSettingsToStorage(settings: AppSettings): void {
 
   try {
     localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(settings));
-    console.log("✅ Settings saved to localStorage:", {
-      key: SETTINGS_STORAGE_KEY,
-      backgroundType: settings.backgroundType,
-      backgroundEnabled: settings.backgroundEnabled,
-      fullSettings: settings,
-    });
   } catch (error) {
     console.error("❌ Failed to save settings to localStorage:", error);
   }
@@ -282,8 +263,6 @@ export function switchTab(tab: TabId): void {
     return;
   }
 
-  console.log(`🔄 Tab switch initiated: ${currentTab} → ${tab}`);
-
   // Save current tab state before switching
   saveCurrentTabState(currentTab);
 
@@ -292,7 +271,6 @@ export function switchTab(tab: TabId): void {
 
   // Switch tab immediately (transitions handled by components)
   uiState.activeTab = tab;
-  console.log(`✅ Tab switched successfully: ${currentTab} → ${tab}`);
 
   // Save application tab state
   saveApplicationTabState(tab, currentTab);
@@ -359,14 +337,6 @@ export function setTheme(newTheme: "light" | "dark"): void {
  * Update settings
  */
 export function updateSettings(newSettings: Partial<AppSettings>): void {
-  console.log("🔄 Updating settings:", {
-    newSettings,
-    currentDeveloperMode: settingsState.developerMode,
-    newDeveloperMode: newSettings.developerMode,
-    backgroundType: newSettings.backgroundType,
-    previousBackgroundType: settingsState.backgroundType,
-  });
-
   // Auto-configure background settings when backgroundType changes
   if (newSettings.backgroundType) {
     newSettings.backgroundEnabled = true; // Always enable backgrounds
@@ -382,13 +352,6 @@ export function updateSettings(newSettings: Partial<AppSettings>): void {
 
   // Save to localStorage
   saveSettingsToStorage(settingsState);
-
-  console.log(
-    "💾 Settings updated and saved. Current backgroundType:",
-    settingsState.backgroundType,
-    "Current developerMode:",
-    settingsState.developerMode
-  );
 }
 
 /**
@@ -474,7 +437,6 @@ export function clearStoredSettings(): void {
 
   try {
     localStorage.removeItem(SETTINGS_STORAGE_KEY);
-    console.log("🗝 Cleared stored settings from localStorage");
     // Reset to defaults
     Object.assign(settingsState, DEFAULT_SETTINGS);
     uiState.theme = DEFAULT_SETTINGS.theme;
@@ -507,10 +469,8 @@ export function debugSettings(): void {
 export function enableDeveloperMode(): void {
   if (!browser) return;
 
-  console.log("🔧 Force enabling developer mode...");
   settingsState.developerMode = true;
   saveSettingsToStorage(settingsState);
-  console.log("✅ Developer mode enabled and saved");
 }
 
 /**
@@ -523,7 +483,6 @@ export function resetSettingsToDefaults(): void {
     localStorage.removeItem(SETTINGS_STORAGE_KEY);
     Object.assign(settingsState, DEFAULT_SETTINGS);
     uiState.theme = DEFAULT_SETTINGS.theme;
-    console.log("🔄 Settings reset to defaults:", DEFAULT_SETTINGS);
   } catch (error) {
     console.error("❌ Error resetting settings:", error);
   }
@@ -543,47 +502,40 @@ async function saveCurrentTabState(currentTab: TabId): Promise<void> {
     // Save tab-specific state based on the current tab
     switch (currentTab) {
       case "browse":
-        console.log("💾 Saving Browse tab state...");
         // Browse tab state is handled by BrowseTabStateManager
         break;
 
       case "construct":
-        console.log("💾 Saving Construct tab state...");
         // TODO: Save construct tab state (active panels, current sequence, etc.)
         break;
 
       case "motion-tester":
-        console.log("💾 Saving Motion Tester tab state...");
         // TODO: Save motion tester state (current settings, animation state, etc.)
         break;
 
       case "arrow-debug":
-        console.log("💾 Saving Arrow Debug tab state...");
         // TODO: Save arrow debug state
         break;
 
       case "sequence_card":
-        console.log("💾 Saving Sequence Card tab state...");
         // TODO: Save sequence card state
         break;
 
       case "write":
-        console.log("💾 Saving Write tab state...");
         // TODO: Save write tab state (current act, unsaved changes, etc.)
         break;
 
       case "learn":
-        console.log("💾 Saving Learn tab state...");
         // TODO: Save learn tab state
         break;
 
       case "about":
-        console.log("💾 Saving About tab state...");
         // About tab probably doesn't need state persistence
         break;
 
       default:
-        console.log(`💾 No specific state saving for tab: ${currentTab}`);
+        // No specific state saving for unhandled tabs
+        break;
     }
   } catch (error) {
     console.error(`❌ Failed to save state for tab ${currentTab}:`, error);
@@ -608,7 +560,6 @@ async function saveApplicationTabState(
     };
 
     await browseStatePersistence.saveApplicationTabState(tabState);
-    console.log(`💾 Tab state saved: ${newTab} (previous: ${previousTab})`);
   } catch (error) {
     console.error("❌ Failed to save application tab state:", error);
   }
@@ -621,14 +572,11 @@ export async function restoreApplicationState(): Promise<void> {
   if (!browser) return;
 
   try {
-    console.log("🔄 Starting application state restoration...");
     const tabState = await browseStatePersistence.loadApplicationTabState();
-    console.log("📖 Loaded tab state:", tabState);
 
     if (tabState && tabState.activeTab) {
       // TEMPORARILY DISABLED: Don't restore About tab to avoid Svelte error
       if (tabState.activeTab === "about") {
-        console.log("🚫 Skipping About tab restoration due to Svelte error");
         uiState.activeTab = "browse"; // Use Browse instead
         return;
       }
@@ -641,29 +589,15 @@ export async function restoreApplicationState(): Promise<void> {
         "arrow-debug",
       ];
       const isDevTab = developerTabs.includes(tabState.activeTab);
-      console.log(
-        `🔍 Tab analysis: ${tabState.activeTab}, isDev: ${isDevTab}, devMode: ${settingsState.developerMode}`
-      );
 
       // If it's a developer tab but developer mode is disabled, use a main tab instead
       if (isDevTab && !settingsState.developerMode) {
-        console.log(
-          `🚫 Skipping ${tabState.activeTab} restoration - developer mode disabled`
-        );
         uiState.activeTab = "browse"; // Use Browse as default instead
         return;
       }
 
       // Restore the last active tab
       uiState.activeTab = tabState.activeTab as TabId;
-      console.log(`✅ Successfully restored tab: ${tabState.activeTab}`);
-
-      // If the restored tab is Browse, we'll restore its state when the component loads
-      if (tabState.activeTab === "browse") {
-        console.log("📖 Browse tab will restore its state when loaded");
-      }
-    } else {
-      console.log("ℹ️ No saved tab state found, using default");
     }
   } catch (error) {
     console.error("❌ Failed to restore application state:", error);

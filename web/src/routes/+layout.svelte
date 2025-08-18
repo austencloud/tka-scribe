@@ -17,25 +17,20 @@
 
   // Set context immediately (will be null initially)
   setContext("di-container", () => {
-    console.log("🔧 Layout: Context getter called, container:", !!container);
     return container;
   });
 
   onMount(async () => {
     try {
       try {
-        console.log("🏗️ Layout: Starting DI container initialization...");
         // Import bootstrap function
         const { createWebApplication } = await import("$services/bootstrap");
 
         // Create DI container
-        console.log("🏗️ Layout: Creating web application container...");
         container = await createWebApplication();
-        console.log("🏗️ Layout: Container created successfully:", !!container);
 
         // Mark as initialized
         isInitialized = true;
-        console.log("🏗️ Layout: Application marked as initialized");
       } catch (error) {
         console.error("❌ Failed to initialize application:", error);
         initializationError =

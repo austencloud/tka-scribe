@@ -60,33 +60,14 @@
 
   // Filter tabs based on developer mode
   const appTabs = $derived(() => {
-    console.log(
-      "🔄 AppTabs derived function called, developerMode:",
-      settings.developerMode
-    );
-    console.log(
-      "🔄 All available tabs:",
-      allTabs.map((t) => ({ id: t.id, label: t.label, isMain: t.isMain }))
-    );
-
     if (settings.developerMode) {
       // In developer mode, show main tabs first, then developer tabs
       const mainTabs = allTabs.filter((tab) => tab.isMain);
       const devTabs = allTabs.filter((tab) => !tab.isMain);
-      const result = [...mainTabs, ...devTabs];
-      console.log(
-        "🔧 Developer mode ON - showing tabs:",
-        result.map((t) => t.label)
-      );
-      return result;
+      return [...mainTabs, ...devTabs];
     } else {
       // In consumer mode, only show main tabs
-      const result = allTabs.filter((tab) => tab.isMain);
-      console.log(
-        "👤 Consumer mode ON - showing tabs:",
-        result.map((t) => t.label)
-      );
-      return result;
+      return allTabs.filter((tab) => tab.isMain);
     }
   });
 
@@ -108,9 +89,6 @@
       if (currentTabIsMain === false) {
         // User is on a developer tab but developer mode is disabled
         // Switch to the default main tab (construct)
-        console.log(
-          `🔄 Developer mode disabled, switching from ${activeTab} to construct`
-        );
         switchTab("construct");
       }
     }

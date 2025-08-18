@@ -37,7 +37,7 @@ export {
 } from "./PictographOperationsService";
 
 // Main service
-export { CodexService } from "./CodexService.clean";
+export { CodexService } from "./CodexService";
 export type { ICodexService } from "./ICodexService";
 
 // Migration helper

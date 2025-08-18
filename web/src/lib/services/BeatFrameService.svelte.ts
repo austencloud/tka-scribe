@@ -121,14 +121,6 @@ class BeatFrameService {
       isFullscreen,
     };
 
-    // DEBUG: Log container dimension updates
-    console.log("[MODERN] BeatFrameService container dimensions updated:", {
-      width,
-      height,
-      isFullscreen,
-      currentConfig: this.#config,
-    });
-
     // Don't automatically recalculate here - let components trigger when needed
   }
 
@@ -232,18 +224,6 @@ class BeatFrameService {
 
     // Check if the calculated cell size is below the minimum threshold
     if (cellSize < minCellSize) {
-      console.debug(
-        "Cell size below minimum threshold, using minimum size instead:",
-        {
-          calculatedSize: cellSize,
-          minCellSize,
-          totalRows,
-          totalCols,
-          containerWidth,
-          containerHeight,
-        }
-      );
-
       // Apply different constraints based on mode
       if (isLikelyFullscreen) {
         return Math.min(Math.max(minCellSize, MIN_CELL_SIZE_FULLSCREEN), 300); // Increased max from 200px to 300px
@@ -312,11 +292,6 @@ class BeatFrameService {
   }
 
   calculateStartPosition(beatCount: number): { x: number; y: number } {
-    console.log(
-      "🚀 [START_POS] calculateStartPosition called with beatCount:",
-      beatCount
-    );
-
     // When there are no beats, center the start position within the frame
     if (beatCount <= 0) {
       const layoutInfo = this.calculateLayoutInfo(beatCount);
@@ -326,14 +301,6 @@ class BeatFrameService {
 
       const x = (frameWidth - beatSize) / 2;
       const y = (frameHeight - beatSize) / 2;
-
-      console.log("🔍 [START_POS_CENTER_DEBUG] Centering start position:", {
-        beatCount,
-        frameWidth,
-        frameHeight,
-        beatSize,
-        calculatedPosition: { x, y },
-      });
 
       return { x, y };
     }
@@ -348,45 +315,20 @@ class BeatFrameService {
   } {
     const step = this.#config.beatSize + this.#config.gap;
 
-    console.log("🔍 [FRAME_DIM_DEBUG] calculateFrameDimensions called:", {
-      beatCount,
-      step,
-      beatSize: this.#config.beatSize,
-      gap: this.#config.gap,
-      hasStartTile: this.#config.hasStartTile,
-    });
-
     // If no beats, size to just the Start tile (desktop shows START only)
     if (beatCount <= 0) {
       const width = this.#config.hasStartTile ? this.#config.beatSize : 0;
       const height = this.#config.beatSize;
-      const result = { width, height };
-
-      console.log(
-        "🔍 [FRAME_DIM_DEBUG] No beats - sizing to start tile only:",
-        result
-      );
-      return result;
+      return { width, height };
     }
 
     const [rows, cols] = this.autoAdjustLayout(beatCount);
     const totalCols = cols + (this.#config.hasStartTile ? 1 : 0);
 
-    const result = {
+    return {
       width: totalCols * step - this.#config.gap,
       height: rows * step - this.#config.gap,
     };
-
-    console.log(
-      "🔍 [FRAME_DIM_DEBUG] Has beats - calculating grid dimensions:",
-      {
-        autoAdjustResult: [rows, cols],
-        totalCols,
-        result,
-      }
-    );
-
-    return result;
   }
 
   /**

@@ -35,9 +35,6 @@ export class LocalStoragePersistenceService implements IPersistenceService {
     try {
       // ✅ PERMANENT: Validate before saving
       if (!this.isValidSequence(sequence)) {
-        console.warn(
-          `Skipping invalid sequence: ${sequence.name || sequence.id}`
-        );
         return;
       }
 
@@ -47,8 +44,6 @@ export class LocalStoragePersistenceService implements IPersistenceService {
 
       // Update sequence index
       await this.updateSequenceIndex(sequence);
-
-      console.log(`Sequence "${sequence.name}" saved successfully`);
     } catch (error) {
       console.error("Failed to save sequence:", error);
       throw new Error(
@@ -95,8 +90,6 @@ export class LocalStoragePersistenceService implements IPersistenceService {
         if (sequence && this.isValidSequence(sequence)) {
           // ✅ PERMANENT: Filter out invalid sequences during load
           sequences.push(sequence);
-        } else if (sequence) {
-          console.warn(`Filtered out invalid sequence: ${sequence.name || id}`);
         }
       }
 
@@ -123,8 +116,6 @@ export class LocalStoragePersistenceService implements IPersistenceService {
 
       // Update sequence index
       await this.removeFromSequenceIndex(id);
-
-      console.log(`Sequence ${id} deleted successfully`);
     } catch (error) {
       console.error(`Failed to delete sequence ${id}:`, error);
       throw new Error(
@@ -251,12 +242,10 @@ export class LocalStoragePersistenceService implements IPersistenceService {
   }
 
   /**
-   * ✅ IMMEDIATE: Clear old cached data and malformed sequences
+   * Clear old cached data and malformed sequences
    */
   async clearLegacyCache(): Promise<void> {
     try {
-      console.log("🧹 Clearing legacy cache and malformed sequences...");
-
       // Keys to preserve (don't remove these important state keys)
       const preserveKeys = [
         "tka-app-tab-state-v2",
@@ -285,7 +274,6 @@ export class LocalStoragePersistenceService implements IPersistenceService {
       // Remove old keys
       keysToRemove.forEach((key) => {
         localStorage.removeItem(key);
-        console.log(`Removed legacy key: ${key}`);
       });
 
       // Clear session storage as well
@@ -299,12 +287,7 @@ export class LocalStoragePersistenceService implements IPersistenceService {
 
       sessionKeysToRemove.forEach((key) => {
         sessionStorage.removeItem(key);
-        console.log(`Removed session key: ${key}`);
       });
-
-      console.log(
-        `✅ Cleared ${keysToRemove.length} localStorage keys and ${sessionKeysToRemove.length} sessionStorage keys`
-      );
     } catch (error) {
       console.error("Failed to clear legacy cache:", error);
     }

@@ -31,6 +31,4 @@ export async function registerMotionTesterServices(
       arrowPositioningOrchestrator
     );
   });
-
-  console.log("✅ Motion tester services registered successfully");
 }

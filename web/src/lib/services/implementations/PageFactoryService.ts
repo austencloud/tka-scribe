@@ -18,6 +18,9 @@ import type {
   PageLayoutConfig,
   PageCreationOptions,
   LayoutValidationResult,
+  LayoutValidationError,
+  LayoutValidationWarning,
+  LayoutSuggestion,
   GridCalculationOptions,
 } from "../../domain/pageLayout";
 import type { SequenceData } from "../interfaces/domain-types";
@@ -171,9 +174,9 @@ export class PageFactoryService implements IPageFactoryService {
   }
 
   validatePageOptions(options: PageCreationOptions): LayoutValidationResult {
-    const errors: any[] = [];
-    const warnings: any[] = [];
-    const suggestions: any[] = [];
+    const errors: LayoutValidationError[] = [];
+    const warnings: LayoutValidationWarning[] = [];
+    const suggestions: LayoutSuggestion[] = [];
 
     // Validate sequences per page
     if (options.layout.sequencesPerPage < 1) {

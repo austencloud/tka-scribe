@@ -11,9 +11,9 @@ import type {
   ImageExportOptions,
   PDFExportOptions,
   BatchExportOptions,
-  ExportResult,
   BatchExportResult,
 } from "../interfaces/export-interfaces";
+import type { ExportResult } from "../interfaces/domain-types";
 import type { IPictographService } from "../interfaces/pictograph-interfaces";
 import type { Page } from "$lib/domain/pageLayout";
 

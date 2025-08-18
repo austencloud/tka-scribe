@@ -34,7 +34,6 @@ export async function validateContainerConfiguration(
 
   for (const serviceInterface of servicesToValidate) {
     try {
-      console.log(`🔍 Validating service: ${serviceInterface.token}`);
       const service = container.resolve(
         serviceInterface as ServiceInterface<unknown>
       );
@@ -43,7 +42,6 @@ export async function validateContainerConfiguration(
           `Service ${serviceInterface.token} resolved to null/undefined`
         );
       }
-      console.log(`✅ Service validated: ${serviceInterface.token}`);
     } catch (error) {
       console.error(
         `❌ Failed to validate service: ${serviceInterface.token}`,

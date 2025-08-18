@@ -1,13 +1,13 @@
 /**
- * TabNavigation Component Tests
+ * ConstructTabNavigation Component Tests
  *
- * Tests for the TabNavigation component - a pure component that takes props
+ * Tests for the ConstructTabNavigation component - a pure component that takes props
  */
 
 import { describe, it, expect, beforeEach, vi } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/svelte";
 import "@testing-library/jest-dom";
-import TabNavigation from "../TabNavigation.svelte";
+import ConstructTabNavigation from "../ConstructTabNavigation.svelte";
 import type { ActiveRightPanel } from "$lib/state/construct-tab-state.svelte";
 
 // Mock the transition service
@@ -17,7 +17,7 @@ vi.mock("$services/implementations/ConstructTabTransitionService", () => ({
   },
 }));
 
-describe("TabNavigation", () => {
+describe("ConstructTabNavigation", () => {
   let mockSetActiveRightPanel: ReturnType<typeof vi.fn>;
   let mockHandleMainTabTransition: ReturnType<typeof vi.fn>;
 
@@ -36,7 +36,7 @@ describe("TabNavigation", () => {
   });
 
   function renderTabNavigation(activePanel: ActiveRightPanel = "build") {
-    return render(TabNavigation, {
+    return render(ConstructTabNavigation, {
       props: {
         activeRightPanel: activePanel,
         setActiveRightPanel: mockSetActiveRightPanel,
@@ -52,7 +52,7 @@ describe("TabNavigation", () => {
       expect(navigation).toBeInTheDocument();
 
       const buildButton = screen.getByText("🔨 Build");
-      const generateButton = screen.getByText("🤖 Generate");
+      const generateButton = screen.getByText("⚡ Generate");
       const editButton = screen.getByText("🔧 Edit");
       const exportButton = screen.getByText("🔤 Export");
 
@@ -88,7 +88,7 @@ describe("TabNavigation", () => {
     it("should mark generate tab as active when selected", () => {
       renderTabNavigation("generate");
 
-      const generateButton = screen.getByText("🤖 Generate");
+      const generateButton = screen.getByText("⚡ Generate");
       expect(generateButton).toHaveClass("active");
     });
 
@@ -124,7 +124,7 @@ describe("TabNavigation", () => {
     it("should call transition service when generate tab is clicked", async () => {
       renderTabNavigation("build");
 
-      const generateButton = screen.getByText("🤖 Generate");
+      const generateButton = screen.getByText("⚡ Generate");
       await fireEvent.click(generateButton);
 
       expect(mockHandleMainTabTransition).toHaveBeenCalledWith(
@@ -165,7 +165,7 @@ describe("TabNavigation", () => {
     it("should handle keyboard navigation", async () => {
       renderTabNavigation("build");
 
-      const generateButton = screen.getByText("🤖 Generate");
+      const generateButton = screen.getByText("⚡ Generate");
       await fireEvent.keyDown(generateButton, { key: "Enter" });
 
       expect(mockHandleMainTabTransition).toHaveBeenCalledWith(

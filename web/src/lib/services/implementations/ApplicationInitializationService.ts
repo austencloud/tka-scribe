@@ -24,8 +24,6 @@ export class ApplicationInitializationService
    */
   async initialize(): Promise<void> {
     try {
-      console.log("🚀 Starting TKA V2 Modern initialization...");
-
       // Step 1: Load settings
       await this.initializeSettings();
 
@@ -37,8 +35,6 @@ export class ApplicationInitializationService
 
       // Step 4: Load initial data
       await this.loadInitialData();
-
-      console.log("✅ TKA V2 Modern initialization complete");
     } catch (error) {
       console.error("❌ Application initialization failed:", error);
       throw new Error(
@@ -52,9 +48,7 @@ export class ApplicationInitializationService
    */
   private async initializeSettings(): Promise<void> {
     try {
-      console.log("⚙️ Loading application settings...");
       await this.settingsService.loadSettings();
-      console.log("✅ Settings loaded successfully");
     } catch (error) {
       console.warn("⚠️ Failed to load settings, using defaults:", error);
       // Continue with default settings
@@ -66,8 +60,6 @@ export class ApplicationInitializationService
    */
   private async initializePersistence(): Promise<void> {
     try {
-      console.log("💾 Initializing persistence layer...");
-
       // Check localStorage availability
       if (typeof Storage === "undefined") {
         throw new Error("LocalStorage is not available");
@@ -90,8 +82,6 @@ export class ApplicationInitializationService
           this.persistenceService as { clearLegacyCache: () => Promise<void> }
         ).clearLegacyCache();
       }
-
-      console.log("✅ Persistence layer initialized");
     } catch (error) {
       console.error("❌ Persistence initialization failed:", error);
       throw new Error(
@@ -104,8 +94,6 @@ export class ApplicationInitializationService
    * Perform startup checks
    */
   private async performStartupChecks(): Promise<void> {
-    console.log("🔍 Performing startup checks...");
-
     // Check browser compatibility
     const checks = [
       this.checkSVGSupport(),
@@ -120,8 +108,6 @@ export class ApplicationInitializationService
       console.warn("⚠️ Some startup checks failed:", failures);
       // Continue anyway - these are warnings, not fatal errors
     }
-
-    console.log("✅ Startup checks complete");
   }
 
   /**
@@ -129,13 +115,8 @@ export class ApplicationInitializationService
    */
   private async loadInitialData(): Promise<void> {
     try {
-      console.log("📂 Loading initial data...");
-
       // Load sequences count for info
-      const sequences = await this.persistenceService.loadAllSequences();
-      console.log(`📊 Found ${sequences.length} existing sequences`);
-
-      console.log("✅ Initial data loaded");
+      await this.persistenceService.loadAllSequences();
     } catch (error) {
       console.warn("⚠️ Failed to load initial data:", error);
       // Continue - this is not fatal

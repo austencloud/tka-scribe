@@ -1,5 +1,5 @@
 <!--
-	TabNavigation.svelte
+	ConstructTabNavigation.svelte
 
 	Tab navigation component extracted from ConstructTab.
 	Handles the 4-tab navigation (Build/Generate/Edit/Export) with active state management.
@@ -49,7 +49,7 @@
     onclick={() => handleTabClick("generate")}
     onkeydown={(e) => handleKeyDown(e, "generate")}
   >
-    🤖 Generate
+    ⚡ Generate
   </button>
   <button
     type="button"

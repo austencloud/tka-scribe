@@ -5,10 +5,33 @@
  * Supports PNG, JPEG, and WebP formats with quality and scaling options.
  */
 
+// Html2Canvas interface for type safety
+interface Html2CanvasFunction {
+  (
+    element: HTMLElement,
+    options?: Html2CanvasOptions
+  ): Promise<HTMLCanvasElement>;
+}
+
+interface Html2CanvasOptions {
+  scale?: number;
+  backgroundColor?: string;
+  useCORS?: boolean;
+  allowTaint?: boolean;
+  width?: number;
+  height?: number;
+  removeContainer?: boolean;
+  [key: string]: unknown; // Allow additional html2canvas options
+}
+
+interface WindowWithHtml2Canvas extends Window {
+  html2canvas?: Html2CanvasFunction;
+}
+
 import type {
   IPageImageExportService,
   ImageExportOptions,
-  ExportResult,
+  ServiceExportResult,
   BatchExportResult,
   ExportProgress,
 } from "../interfaces/export-interfaces";
@@ -20,7 +43,7 @@ export class PageImageExportService implements IPageImageExportService {
   async exportPageAsImage(
     pageElement: HTMLElement,
     options: ImageExportOptions
-  ): Promise<ExportResult> {
+  ): Promise<ServiceExportResult> {
     const startTime = performance.now();
 
     try {
@@ -65,9 +88,15 @@ export class PageImageExportService implements IPageImageExportService {
       const processingTime = performance.now() - startTime;
 
       return {
+        sequenceId: "page-export",
         success: true,
         blob,
         filename: this.generateFilename(options.format),
+        metrics: {
+          processingTime,
+          fileSize: blob.size,
+          resolution: { width: canvas.width, height: canvas.height },
+        },
         metadata: {
           format: options.format,
           size: blob.size,
@@ -82,9 +111,15 @@ export class PageImageExportService implements IPageImageExportService {
       const processingTime = performance.now() - startTime;
 
       return {
+        sequenceId: "page-export",
         success: false,
         filename: this.generateFilename(options.format),
         error: error as Error,
+        metrics: {
+          processingTime,
+          fileSize: 0,
+          resolution: { width: 0, height: 0 },
+        },
         metadata: {
           format: options.format,
           size: 0,
@@ -100,7 +135,7 @@ export class PageImageExportService implements IPageImageExportService {
     onProgress?: (progress: ExportProgress) => void
   ): Promise<BatchExportResult> {
     const startTime = performance.now();
-    const results: ExportResult[] = [];
+    const results: ServiceExportResult[] = [];
     const errors: Error[] = [];
     let successCount = 0;
     let failureCount = 0;
@@ -159,9 +194,15 @@ export class PageImageExportService implements IPageImageExportService {
           errors.push(err);
 
           results.push({
+            sequenceId: `page-${i + 1}`,
             success: false,
             filename: this.generateFilename(options.format, i + 1),
             error: err,
+            metrics: {
+              processingTime: 0,
+              fileSize: 0,
+              resolution: { width: 0, height: 0 },
+            },
             metadata: {
               format: options.format,
               size: 0,
@@ -290,10 +331,13 @@ export class PageImageExportService implements IPageImageExportService {
 
   // Private helper methods
 
-  private async loadHtml2Canvas(): Promise<any> {
+  private async loadHtml2Canvas(): Promise<Html2CanvasFunction> {
     try {
       // Try to load from CDN
-      if (typeof window !== "undefined" && !(window as any).html2canvas) {
+      if (
+        typeof window !== "undefined" &&
+        !(window as WindowWithHtml2Canvas).html2canvas
+      ) {
         // Dynamically load html2canvas from CDN
         const script = document.createElement("script");
         script.src =
@@ -306,7 +350,7 @@ export class PageImageExportService implements IPageImageExportService {
         });
       }
 
-      const html2canvas = (window as any).html2canvas;
+      const html2canvas = (window as WindowWithHtml2Canvas).html2canvas;
       if (!html2canvas) {
         throw new Error("html2canvas failed to load");
       }
@@ -409,10 +453,10 @@ export class PageImageExportService implements IPageImageExportService {
 
   private async exportSinglePageWithCanvas(
     pageElement: HTMLElement,
-    html2canvas: any,
+    html2canvas: Html2CanvasFunction,
     options: ImageExportOptions,
     pageNumber: number
-  ): Promise<ExportResult> {
+  ): Promise<ServiceExportResult> {
     const startTime = performance.now();
 
     try {
@@ -441,9 +485,15 @@ export class PageImageExportService implements IPageImageExportService {
       const processingTime = performance.now() - startTime;
 
       return {
+        sequenceId: `page-${pageNumber}`,
         success: true,
         blob,
         filename: this.generateFilename(options.format, pageNumber),
+        metrics: {
+          processingTime,
+          fileSize: blob.size,
+          resolution: { width: canvas.width, height: canvas.height },
+        },
         metadata: {
           format: options.format,
           size: blob.size,
@@ -458,9 +508,15 @@ export class PageImageExportService implements IPageImageExportService {
       const processingTime = performance.now() - startTime;
 
       return {
+        sequenceId: `page-${pageNumber}`,
         success: false,
         filename: this.generateFilename(options.format, pageNumber),
         error: error as Error,
+        metrics: {
+          processingTime,
+          fileSize: 0,
+          resolution: { width: 0, height: 0 },
+        },
         metadata: {
           format: options.format,
           size: 0,

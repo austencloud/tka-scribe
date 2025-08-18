@@ -53,10 +53,6 @@
     const container = getContainer?.();
     if (container && !servicesResolved) {
       try {
-        console.log(
-          "🚀 MainApplication container ready, resolving services..."
-        );
-
         // Use resolve which will use the global container once it's ready
         initService = resolve("IApplicationInitializationService");
         settingsService = resolve("ISettingsService");
@@ -64,7 +60,6 @@
         deviceService = resolve("IDeviceDetectionService");
 
         servicesResolved = true;
-        console.log("✅ MainApplication services resolved successfully");
       } catch (error) {
         console.error("Failed to resolve services:", error);
         setInitializationError(`Service resolution failed: ${error}`);

@@ -18,6 +18,9 @@ import type {
   LayoutCalculationRequest,
   LayoutCalculationResult,
   LayoutValidationResult,
+  LayoutValidationError,
+  LayoutValidationWarning,
+  LayoutSuggestion,
   GridCalculationOptions,
   DPIConfiguration,
   PageLayoutConfig,
@@ -245,9 +248,9 @@ export class PrintablePageLayoutService implements IPrintablePageLayoutService {
   }
 
   validateLayout(config: PageLayoutConfig): LayoutValidationResult {
-    const errors: any[] = [];
-    const warnings: any[] = [];
-    const suggestions: any[] = [];
+    const errors: LayoutValidationError[] = [];
+    const warnings: LayoutValidationWarning[] = [];
+    const suggestions: LayoutSuggestion[] = [];
 
     // Validate paper size
     if (!this.paperSizes[config.printConfiguration.paperSize]) {

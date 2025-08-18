@@ -42,7 +42,7 @@ export class TextRenderingService implements ITextRenderingService {
       return; // No word to render
     }
 
-    const ctx = canvas.getContext("2d")!;
+    const ctx = canvas.getContext("2d");
     if (!ctx) {
       throw new Error("Canvas context not available");
     }
@@ -110,7 +110,7 @@ export class TextRenderingService implements ITextRenderingService {
     userInfo: UserInfo,
     options: TextRenderOptions
   ): void {
-    const ctx = canvas.getContext("2d")!;
+    const ctx = canvas.getContext("2d");
     if (!ctx) {
       throw new Error("Canvas context not available");
     }
@@ -168,7 +168,7 @@ export class TextRenderingService implements ITextRenderingService {
     position: [number, number],
     size: number
   ): void {
-    const ctx = canvas.getContext("2d")!;
+    const ctx = canvas.getContext("2d");
     if (!ctx) {
       throw new Error("Canvas context not available");
     }
@@ -222,7 +222,10 @@ export class TextRenderingService implements ITextRenderingService {
   ): { width: number; height: number } {
     // Create temporary canvas for measurement
     const canvas = document.createElement("canvas");
-    const ctx = canvas.getContext("2d")!;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) {
+      throw new Error("Failed to get 2D context for text measurement");
+    }
 
     ctx.font = this.createFont(fontFamily, fontSize, fontWeight);
     const metrics = ctx.measureText(text);
@@ -427,7 +430,10 @@ export class TextRenderingService implements ITextRenderingService {
   private isFontAvailable(fontFamily: string): boolean {
     // Create a temporary canvas to test font availability
     const canvas = document.createElement("canvas");
-    const ctx = canvas.getContext("2d")!;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) {
+      return false; // If we can't get context, assume font is not available
+    }
 
     // Test with fallback font
     ctx.font = `12px ${fontFamily}, monospace`;
@@ -502,7 +508,10 @@ export class TextRenderingService implements ITextRenderingService {
     canvas: HTMLCanvasElement,
     testText: string = "Test"
   ): void {
-    const ctx = canvas.getContext("2d")!;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) {
+      throw new Error("Failed to get 2D context for font testing");
+    }
 
     // Clear canvas
     ctx.fillStyle = "white";

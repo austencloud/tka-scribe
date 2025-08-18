@@ -20,7 +20,7 @@ import {
 } from "$lib/domain/enums";
 
 export interface OrientationCalculationServiceInterface {
-  calculateEndOrientation(motion: MotionData, color: MotionColor): string;
+  calculateEndOrientation(motion: MotionData, color: MotionColor): Orientation;
   updateStartOrientations(nextBeat: BeatData, lastBeat: BeatData): BeatData;
   updateEndOrientations(beat: BeatData): BeatData;
 }
@@ -37,7 +37,10 @@ export class OrientationCalculationService
   /**
    * Calculate end orientation - exact port from legacy calculate_end_ori()
    */
-  calculateEndOrientation(motion: MotionData, _color: MotionColor): string {
+  calculateEndOrientation(
+    motion: MotionData,
+    _color: MotionColor
+  ): Orientation {
     const motionType = motion.motion_type;
     const turns = motion.turns;
     const startOri = motion.start_ori;
@@ -45,13 +48,13 @@ export class OrientationCalculationService
     const startLoc = motion.start_loc;
     const endLoc = motion.end_loc;
 
-    let endOri: string;
+    let endOri: Orientation;
 
     if (motionType === MotionType.FLOAT) {
       const handpathDirection = this.handpathCalculator.getHandRotDir(
         startLoc,
         endLoc
-      );
+      ) as HandPath;
       endOri = this.calculateFloatOrientation(startOri, handpathDirection);
     } else {
       endOri = this.calculateTurnOrientation(
@@ -78,13 +81,13 @@ export class OrientationCalculationService
    * Calculate turn orientation - exact port from legacy
    */
   private calculateTurnOrientation(
-    motionType: string,
+    motionType: MotionType,
     turns: number | "fl",
-    startOri: string,
-    propRotDir: string,
-    startLoc: string,
-    endLoc: string
-  ): string {
+    startOri: Orientation,
+    propRotDir: RotationDirection,
+    startLoc: Location,
+    endLoc: Location
+  ): Orientation {
     if (turns === 0 || turns === 1 || turns === 2 || turns === 3) {
       return this.calculateWholeTurnOrientation(
         motionType,
@@ -96,7 +99,7 @@ export class OrientationCalculationService
       const handpathDirection = this.handpathCalculator.getHandRotDir(
         startLoc,
         endLoc
-      );
+      ) as HandPath;
       return this.calculateFloatOrientation(startOri, handpathDirection);
     } else {
       return this.calculateHalfTurnOrientation(
@@ -112,11 +115,11 @@ export class OrientationCalculationService
    * Calculate whole turn orientation - exact port from legacy
    */
   private calculateWholeTurnOrientation(
-    motionType: string,
+    motionType: MotionType,
     turns: number,
-    startOri: string,
-    _propRotDir: string
-  ): string {
+    startOri: Orientation,
+    _propRotDir: RotationDirection
+  ): Orientation {
     if (motionType === MotionType.PRO || motionType === MotionType.STATIC) {
       if (turns % 2 === 0) {
         return startOri;
@@ -140,12 +143,12 @@ export class OrientationCalculationService
    * Calculate half turn orientation - exact port from legacy
    */
   private calculateHalfTurnOrientation(
-    motionType: string,
+    motionType: MotionType,
     turns: number,
-    startOri: string,
-    propRotDir: string
-  ): string {
-    let orientationMap: Record<string, string>;
+    startOri: Orientation,
+    propRotDir: RotationDirection
+  ): Orientation {
+    let orientationMap: Record<string, Orientation>;
 
     if (motionType === MotionType.ANTI || motionType === MotionType.DASH) {
       orientationMap = {
@@ -200,10 +203,10 @@ export class OrientationCalculationService
    * Calculate float orientation - exact port from legacy
    */
   private calculateFloatOrientation(
-    startOri: string,
-    handpathDirection: string
-  ): string {
-    const orientationMap: Record<string, string> = {
+    startOri: Orientation,
+    handpathDirection: HandPath
+  ): Orientation {
+    const orientationMap: Record<string, Orientation> = {
       [`${Orientation.IN}_${HandPath.CLOCKWISE}`]: Orientation.CLOCK,
       [`${Orientation.IN}_${HandPath.COUNTER_CLOCKWISE}`]: Orientation.COUNTER,
       [`${Orientation.OUT}_${HandPath.CLOCKWISE}`]: Orientation.COUNTER,
@@ -221,8 +224,8 @@ export class OrientationCalculationService
   /**
    * Switch orientation - exact port from legacy
    */
-  private switchOrientation(ori: string): string {
-    const switchMap: Record<string, string> = {
+  private switchOrientation(ori: Orientation): Orientation {
+    const switchMap: Record<string, Orientation> = {
       [Orientation.IN]: Orientation.OUT,
       [Orientation.OUT]: Orientation.IN,
       [Orientation.CLOCK]: Orientation.COUNTER,
@@ -306,7 +309,7 @@ export class OrientationCalculationService
 
       updatedMotions.blue = {
         ...blueMotion,
-        end_ori: calculatedEndOri as any, // Cast to match the motion's orientation type
+        end_ori: calculatedEndOri,
       };
     }
 
@@ -331,7 +334,7 @@ export class OrientationCalculationService
 
       updatedMotions.red = {
         ...redMotion,
-        end_ori: calculatedEndOri as any, // Cast to match the motion's orientation type
+        end_ori: calculatedEndOri,
       };
     }
 

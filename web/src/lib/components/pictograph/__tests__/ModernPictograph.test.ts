@@ -1,5 +1,5 @@
 /**
- * ModernPictograph Component Tests
+ * Pictograph Component Tests
  *
  * Tests for the main pictograph orchestrator component
  */
@@ -9,7 +9,7 @@ import { GridMode } from "$lib/domain/enums";
 import "@testing-library/jest-dom";
 import { render, screen } from "@testing-library/svelte";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import ModernPictograph from "../Pictograph.svelte";
+import Pictograph from "../Pictograph.svelte";
 
 // Mock the child components
 vi.mock("../Grid.svelte", () => ({
@@ -47,7 +47,7 @@ describe("ModernPictograph", () => {
         },
       });
 
-      render(ModernPictograph, {
+      render(Pictograph, {
         props: {
           pictographData,
           width: 300,
@@ -78,7 +78,7 @@ describe("ModernPictograph", () => {
         pictograph_data: pictographData,
       });
 
-      render(ModernPictograph, {
+      render(Pictograph, {
         props: {
           beatData,
           width: 200,
@@ -92,7 +92,7 @@ describe("ModernPictograph", () => {
     });
 
     it("should render empty state when no data provided", () => {
-      render(ModernPictograph, {
+      render(Pictograph, {
         props: {
           width: 300,
           height: 300,
@@ -115,7 +115,7 @@ describe("ModernPictograph", () => {
         letter: "C",
       });
 
-      render(ModernPictograph, {
+      render(Pictograph, {
         props: {
           pictographData,
           onClick: handleClick,
@@ -134,7 +134,7 @@ describe("ModernPictograph", () => {
         letter: "D",
       });
 
-      render(ModernPictograph, {
+      render(Pictograph, {
         props: {
           pictographData,
           width: 300,
@@ -154,7 +154,7 @@ describe("ModernPictograph", () => {
         letter: "E",
       });
 
-      render(ModernPictograph, {
+      render(Pictograph, {
         props: {
           pictographData,
           beatNumber: 5,
@@ -172,7 +172,7 @@ describe("ModernPictograph", () => {
         letter: "F",
       });
 
-      render(ModernPictograph, {
+      render(Pictograph, {
         props: {
           pictographData,
           isStartPosition: true,
@@ -190,7 +190,7 @@ describe("ModernPictograph", () => {
         letter: "G",
       });
 
-      render(ModernPictograph, {
+      render(Pictograph, {
         props: {
           pictographData,
           beatNumber: 1,
@@ -222,7 +222,7 @@ describe("ModernPictograph", () => {
         },
       });
 
-      render(ModernPictograph, {
+      render(Pictograph, {
         props: {
           pictographData,
           debug: true,
@@ -242,7 +242,7 @@ describe("ModernPictograph", () => {
         letter: "I",
       });
 
-      render(ModernPictograph, {
+      render(Pictograph, {
         props: {
           pictographData,
           debug: false,
@@ -262,7 +262,7 @@ describe("ModernPictograph", () => {
         letter: "J",
       });
 
-      render(ModernPictograph, {
+      render(Pictograph, {
         props: {
           pictographData,
           width: 300,
@@ -282,7 +282,7 @@ describe("ModernPictograph", () => {
         is_blank: false,
       });
 
-      render(ModernPictograph, {
+      render(Pictograph, {
         props: {
           beatData,
           width: 300,
@@ -301,7 +301,7 @@ describe("ModernPictograph", () => {
         letter: "K",
       });
 
-      const { container } = render(ModernPictograph, {
+      const { container } = render(Pictograph, {
         props: {
           pictographData,
           width: 300,
@@ -319,7 +319,7 @@ describe("ModernPictograph", () => {
         letter: "L",
       });
 
-      const { container } = render(ModernPictograph, {
+      const { container } = render(Pictograph, {
         props: {
           pictographData,
           onClick: handleClick,
@@ -337,7 +337,7 @@ describe("ModernPictograph", () => {
         letter: "M",
       });
 
-      const { container } = render(ModernPictograph, {
+      const { container } = render(Pictograph, {
         props: {
           pictographData,
           debug: true,
@@ -357,7 +357,7 @@ describe("ModernPictograph", () => {
         letter: "N",
       });
 
-      render(ModernPictograph, {
+      render(Pictograph, {
         props: {
           pictographData,
           beatNumber: 3,
@@ -375,7 +375,7 @@ describe("ModernPictograph", () => {
         letter: "O",
       });
 
-      render(ModernPictograph, {
+      render(Pictograph, {
         props: {
           pictographData,
           isStartPosition: true,
@@ -395,7 +395,7 @@ describe("ModernPictograph", () => {
         letter: "P",
       });
 
-      render(ModernPictograph, {
+      render(Pictograph, {
         props: {
           pictographData,
         },
@@ -407,7 +407,7 @@ describe("ModernPictograph", () => {
     });
 
     it("should handle both pictographData and beatData being null", () => {
-      render(ModernPictograph, {
+      render(Pictograph, {
         props: {
           pictographData: null,
           beatData: null,

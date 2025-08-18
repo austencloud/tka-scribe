@@ -14,7 +14,7 @@
   import type { SequenceData } from "$lib/domain";
   import BuildTabContent from "./BuildTabContent.svelte";
   import GeneratePanel from "./generate/GeneratePanel.svelte";
-  import TabNavigation from "./TabNavigation.svelte";
+  import ConstructTabNavigation from "./ConstructTabNavigation.svelte";
   // Import Svelte's built-in fade transition for consistency with main tabs
   import type { BeatData } from "$lib/domain";
   import { getAnimationSettings } from "$lib/utils/animation-control";
@@ -119,7 +119,7 @@
 
 <div class="right-panel" data-testid="right-panel">
   <!-- Tab Navigation -->
-  <TabNavigation
+  <ConstructTabNavigation
     {activeRightPanel}
     setActiveRightPanel={constructTabState.setActiveRightPanel}
   />

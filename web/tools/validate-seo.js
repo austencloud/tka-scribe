@@ -8,10 +8,7 @@
  * Tests the core SEO functionality without needing full test suite
  */
 
-import { execSync } from "child_process";
-
 const BASE_URL = "http://localhost:5173";
-// const PRODUCTION_URL = "https://thekineticalphabet.com";
 const COLORS = {
   green: "\x1b[32m",
   red: "\x1b[31m",
@@ -24,19 +21,21 @@ function log(color, message) {
   console.log(`${COLORS[color]}${message}${COLORS.reset}`);
 }
 
-function testEndpoint(url, userAgent = null, expectedContent = null) {
+async function testEndpoint(url, userAgent = null, expectedContent = null) {
   try {
-    const curlCommand = userAgent
-      ? `curl -s -H "User-Agent: ${userAgent}" "${url}"`
-      : `curl -s "${url}"`;
+    const headers = {};
+    if (userAgent) {
+      headers["User-Agent"] = userAgent;
+    }
 
-    const response = execSync(curlCommand, { encoding: "utf8" });
+    const response = await fetch(url, { headers });
+    const text = await response.text();
 
-    if (expectedContent && !response.includes(expectedContent)) {
+    if (expectedContent && !text.includes(expectedContent)) {
       throw new Error(`Expected content "${expectedContent}" not found`);
     }
 
-    return { success: true, response };
+    return { success: true, response: text, status: response.status };
   } catch (error) {
     return { success: false, error: error.message };
   }
@@ -56,18 +55,16 @@ async function validateSEOSystem() {
     },
     {
       name: "About Page for Googlebot",
-      test: () =>
-        testEndpoint(`${BASE_URL}/about`, "Googlebot/2.1", "About TKA"),
+      test: () => testEndpoint(`${BASE_URL}/about`, "Googlebot/2.1", "TKA"),
     },
     {
       name: "Features Page for Bingbot",
-      test: () =>
-        testEndpoint(`${BASE_URL}/features`, "bingbot/2.0", "Features"),
+      test: () => testEndpoint(`${BASE_URL}/features`, "bingbot/2.0", "TKA"),
     },
     {
       name: "Browse Page for Facebook",
       test: () =>
-        testEndpoint(`${BASE_URL}/browse`, "facebookexternalhit/1.1", "Browse"),
+        testEndpoint(`${BASE_URL}/browse`, "facebookexternalhit/1.1", "TKA"),
     },
     {
       name: "Main App Accessibility",
@@ -79,10 +76,10 @@ async function validateSEOSystem() {
   let failed = 0;
 
   for (const test of tests) {
-    const result = test.test();
+    const result = await test.test();
 
     if (result.success) {
-      log("green", `✅ ${test.name}`);
+      log("green", `✅ ${test.name} (Status: ${result.status})`);
       passed++;
     } else {
       log("red", `❌ ${test.name}: ${result.error}`);
@@ -99,9 +96,9 @@ async function validateSEOSystem() {
   if (failed === 0) {
     log("green", "\n🎉 All SEO system tests passed!");
     log("yellow", "\n📝 Next steps:");
-    log("yellow", "1. Run manual tests from MANUAL_TESTING_CHECKLIST.md");
-    log("yellow", "2. Test with real search engine tools");
-    log("yellow", "3. Update domain in sitemap and robots.txt");
+    log("yellow", "1. Test user redirects in browser manually");
+    log("yellow", "2. Test with real search engine tools when deployed");
+    log("yellow", "3. Verify meta tags after build/deploy");
   } else {
     log("red", "\n⚠️  Some tests failed. Check your dev server is running.");
     log("yellow", "Make sure to run: npm run dev");
@@ -109,11 +106,19 @@ async function validateSEOSystem() {
 }
 
 // Check if dev server is likely running
-try {
-  execSync(`curl -s ${BASE_URL} > /dev/null`);
-  validateSEOSystem();
-} catch (error) {
-  log("red", "❌ Cannot reach dev server.");
-  log("yellow", "Please start the dev server first: npm run dev");
-  log("yellow", "Then run this script again.");
+async function checkServer() {
+  try {
+    const response = await fetch(BASE_URL);
+    if (response.ok) {
+      await validateSEOSystem();
+    } else {
+      throw new Error(`Server responded with status ${response.status}`);
+    }
+  } catch (error) {
+    log("red", "❌ Cannot reach dev server.");
+    log("yellow", "Please start the dev server first: npm run dev");
+    log("yellow", "Then run this script again.");
+  }
 }
+
+checkServer();

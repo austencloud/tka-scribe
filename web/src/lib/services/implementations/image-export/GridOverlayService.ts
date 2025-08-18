@@ -33,7 +33,10 @@ export class GridOverlayService implements IGridOverlayService {
     combinedCanvas.width = canvas.width;
     combinedCanvas.height = canvas.height;
 
-    const ctx = combinedCanvas.getContext("2d")!;
+    const ctx = combinedCanvas.getContext("2d");
+    if (!ctx) {
+      throw new Error("Failed to get 2D context from combined canvas");
+    }
 
     // Step 1: Draw original canvas
     ctx.drawImage(canvas, 0, 0);
@@ -218,7 +221,10 @@ export class GridOverlayService implements IGridOverlayService {
     canvas.width = size;
     canvas.height = size;
 
-    const ctx = canvas.getContext("2d")!;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) {
+      throw new Error("Failed to get 2D context from grid canvas");
+    }
 
     // Fill with transparent background
     ctx.clearRect(0, 0, size, size);
@@ -241,7 +247,10 @@ export class GridOverlayService implements IGridOverlayService {
     result.width = canvas.width;
     result.height = canvas.height;
 
-    const ctx = result.getContext("2d")!;
+    const ctx = result.getContext("2d");
+    if (!ctx) {
+      throw new Error("Failed to get 2D context from result canvas");
+    }
 
     // Draw original canvas
     ctx.drawImage(canvas, 0, 0);
@@ -264,7 +273,10 @@ export class GridOverlayService implements IGridOverlayService {
     canvas.width = size;
     canvas.height = size;
 
-    const ctx = canvas.getContext("2d")!;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) {
+      throw new Error("Failed to get 2D context from canvas");
+    }
 
     // Clear background
     ctx.clearRect(0, 0, size, size);

@@ -29,13 +29,8 @@ export class ArrowPlacementKeyService implements IArrowPlacementKeyService {
   /**
    * Generate placement key based on motion data and pictograph context
    */
-  private getRawMotionType(motionData: MotionData): unknown {
-    // Domain field
-    if ("motion_type" in motionData)
-      return (motionData as MotionData).motion_type;
-    // Legacy camelCase fallback (during migration)
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return (motionData as any).motionType;
+  private getRawMotionType(motionData: MotionData): MotionType {
+    return motionData.motion_type;
   }
 
   generatePlacementKey(

@@ -5,7 +5,12 @@ This is the modern equivalent of the legacy Pictograph.svelte, but using pure Sv
 instead of stores. It orchestrates the rendering of Grid, Props, Arrows, and Glyphs.
 -->
 <script lang="ts">
-  import type { BeatData, MotionColor, PictographData } from "$lib/domain";
+  import type {
+    ArrowData,
+    BeatData,
+    MotionColor,
+    PictographData,
+  } from "$lib/domain";
   import type { IArrowPositioningOrchestrator } from "$lib/services/positioning/core-services";
   import { onMount } from "svelte";
   import Arrow from "./Arrow.svelte";
@@ -173,8 +178,8 @@ instead of stores. It orchestrates the rendering of Grid, Props, Arrows, and Gly
         Object.entries(updatedPictographData.arrows).forEach(
           ([color, arrowData]) => {
             if (arrowData) {
-              // Type assertion since we know this is ArrowData from the orchestrator
-              const arrow = arrowData as any;
+              // Type assertion to ArrowData from the orchestrator
+              const arrow = arrowData as ArrowData;
               newPositions[color] = {
                 x: arrow.position_x || 475,
                 y: arrow.position_y || 475,

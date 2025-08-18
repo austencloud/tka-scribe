@@ -25,15 +25,12 @@ import type { ValidationResult } from "../interfaces/domain-types";
 import type { GridMode } from "../interfaces/core-types";
 import type { IStartPositionService } from "../interfaces/application-interfaces";
 import type { ValidationError } from "$lib/domain/sequenceCard";
+
 export class StartPositionService implements IStartPositionService {
   private readonly DEFAULT_START_POSITIONS = {
     diamond: ["alpha1_alpha1", "beta5_beta5", "gamma11_gamma11"],
     box: ["alpha2_alpha2", "beta4_beta4", "gamma12_gamma12"],
   };
-
-  constructor() {
-    console.log("🎯 StartPositionService initialized");
-  }
 
   async getAvailableStartPositions(
     propType: string,
@@ -46,6 +43,32 @@ export class StartPositionService implements IStartPositionService {
     try {
       const startPositionKeys = this.DEFAULT_START_POSITIONS[gridMode];
 
+      if (!startPositionKeys) {
+        console.error(
+          `❌ Unsupported grid mode: ${gridMode}. Supported modes: ${Object.keys(this.DEFAULT_START_POSITIONS).join(", ")}`
+        );
+        // Fallback to diamond mode
+        const fallbackKeys = this.DEFAULT_START_POSITIONS.diamond;
+        console.log(`🔄 Falling back to diamond mode`);
+
+        const beatData: BeatData[] = fallbackKeys.map((key, index) => {
+          return createBeatData({
+            beat_number: 0,
+            is_blank: false,
+            pictograph_data: this.createStartPositionPictograph(
+              key,
+              index,
+              DomainGridMode.DIAMOND
+            ),
+          });
+        });
+
+        console.log(
+          `✅ Generated ${beatData.length} available start positions (fallback)`
+        );
+        return beatData;
+      }
+
       const beatData: BeatData[] = startPositionKeys.map((key, index) => {
         return createBeatData({
           beat_number: 0,
@@ -57,20 +80,16 @@ export class StartPositionService implements IStartPositionService {
           ),
         });
       });
-      console.log(`✅ Generated ${beatData.length} start positions`);
+
+      console.log(`✅ Generated ${beatData.length} available start positions`);
       return beatData;
     } catch (error) {
-      console.error("❌ Error getting start positions:", error);
+      console.error("❌ Error getting available start positions:", error);
       return [];
     }
   }
 
   async setStartPosition(startPosition: BeatData): Promise<void> {
-    console.log(
-      "🎯 Setting start position:",
-      startPosition.pictograph_data?.id
-    );
-
     try {
       // Store in localStorage for persistence in the format OptionPicker expects
       if (typeof window !== "undefined") {
@@ -81,9 +100,6 @@ export class StartPositionService implements IStartPositionService {
             const parsed = JSON.parse(existingData);
             // If it already has top-level endPos, don't overwrite it
             if (parsed.endPos) {
-              console.log(
-                "✅ Start position already in correct format, not overwriting"
-              );
               return;
             }
           } catch {
@@ -107,10 +123,8 @@ export class StartPositionService implements IStartPositionService {
           JSON.stringify(optionPickerFormat)
         );
       }
-
-      console.log("✅ Start position set successfully");
     } catch (error) {
-      console.error("❌ Error setting start position:", error);
+      console.error("Error setting start position:", error);
       throw new Error(
         `Failed to set start position: ${error instanceof Error ? error.message : "Unknown error"}`
       );
@@ -168,24 +182,39 @@ export class StartPositionService implements IStartPositionService {
       warnings: [],
     };
   }
+
   async getDefaultStartPositions(
     gridMode: GridMode
   ): Promise<PictographData[]> {
-    console.log(`📍 Getting default start positions for ${gridMode} mode`);
-
     try {
       const startPositionKeys = this.DEFAULT_START_POSITIONS[gridMode];
+
+      if (!startPositionKeys) {
+        console.error(
+          `Unsupported grid mode: ${gridMode}. Supported modes: ${Object.keys(this.DEFAULT_START_POSITIONS).join(", ")}`
+        );
+        // Fallback to diamond mode
+        const fallbackKeys = this.DEFAULT_START_POSITIONS.diamond;
+
+        const pictographData: PictographData[] = fallbackKeys.map(
+          (key, index) =>
+            this.createStartPositionPictograph(
+              key,
+              index,
+              DomainGridMode.DIAMOND
+            )
+        );
+
+        return pictographData;
+      }
 
       const pictographData: PictographData[] = startPositionKeys.map(
         (key, index) => this.createStartPositionPictograph(key, index, gridMode)
       );
 
-      console.log(
-        `✅ Generated ${pictographData.length} default start positions`
-      );
       return pictographData;
     } catch (error) {
-      console.error("❌ Error getting default start positions:", error);
+      console.error("Error getting default start positions:", error);
       return [];
     }
   }
@@ -217,15 +246,11 @@ export class StartPositionService implements IStartPositionService {
 
     const mapping = positionMappings[key];
     if (!mapping) {
-      console.warn(`⚠️ No position mapping found for ${key}, using fallback`);
+      console.warn(`No position mapping found for ${key}, using fallback`);
     }
 
     const blueLocation = mapping?.blue || Location.SOUTH;
     const redLocation = mapping?.red || Location.NORTH;
-
-    console.log(
-      `🎯 Creating start position ${key} - Blue: ${blueLocation}, Red: ${redLocation}`
-    );
 
     // Create proper arrow data with location
     const blueArrow = createArrowData({

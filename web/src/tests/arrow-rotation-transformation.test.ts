@@ -2,6 +2,17 @@ import { describe, it, expect, beforeEach, vi } from "vitest";
 import { ArrowPositionCalculator } from "../lib/services/positioning/arrows/orchestration/ArrowPositionCalculator";
 import { Location } from "../lib/domain";
 
+// Type for accessing private methods in tests
+interface ArrowPositionCalculatorTestAccess {
+  coordinateTransformer: {
+    transformAdjustmentByRotation: (
+      adjustmentX: number,
+      adjustmentY: number,
+      rotationAngle: number
+    ) => [number, number];
+  };
+}
+
 describe("Arrow Rotation Transformation", () => {
   let orchestrator: ArrowPositionCalculator;
 
@@ -22,18 +33,19 @@ describe("Arrow Rotation Transformation", () => {
     };
 
     orchestrator = new ArrowPositionCalculator(
-      mockLocationCalculator as any,
-      mockRotationCalculator as any,
-      mockAdjustmentCalculator as any,
-      mockCoordinateSystem as any
+      mockLocationCalculator as never,
+      mockRotationCalculator as never,
+      mockAdjustmentCalculator as never,
+      mockCoordinateSystem as never
     );
   });
 
   describe("transformAdjustmentByRotation", () => {
     it("should not transform adjustments for 0° rotation", () => {
       // Access the coordinate transformer method for testing
-      const transform = (orchestrator as any).coordinateTransformer
-        .transformAdjustmentByRotation;
+      const transform = (
+        orchestrator as unknown as ArrowPositionCalculatorTestAccess
+      ).coordinateTransformer.transformAdjustmentByRotation;
 
       const [transformedX, transformedY] = transform(40, 25, 0);
 
@@ -42,8 +54,9 @@ describe("Arrow Rotation Transformation", () => {
     });
 
     it("should correctly transform adjustments for 90° rotation", () => {
-      const transform = (orchestrator as any).coordinateTransformer
-        .transformAdjustmentByRotation;
+      const transform = (
+        orchestrator as unknown as ArrowPositionCalculatorTestAccess
+      ).coordinateTransformer.transformAdjustmentByRotation;
 
       // For 90° rotation, (x,y) should become (y,-x) in inverse rotation
       const [transformedX, transformedY] = transform(40, 25, 90);
@@ -53,8 +66,9 @@ describe("Arrow Rotation Transformation", () => {
     });
 
     it("should correctly transform adjustments for 180° rotation", () => {
-      const transform = (orchestrator as any).coordinateTransformer
-        .transformAdjustmentByRotation;
+      const transform = (
+        orchestrator as unknown as ArrowPositionCalculatorTestAccess
+      ).coordinateTransformer.transformAdjustmentByRotation;
 
       // For 180° rotation, (x,y) should become (-x,-y) in inverse rotation
       const [transformedX, transformedY] = transform(40, 25, 180);
@@ -64,8 +78,9 @@ describe("Arrow Rotation Transformation", () => {
     });
 
     it("should correctly transform adjustments for 270° rotation", () => {
-      const transform = (orchestrator as any).coordinateTransformer
-        .transformAdjustmentByRotation;
+      const transform = (
+        orchestrator as unknown as ArrowPositionCalculatorTestAccess
+      ).coordinateTransformer.transformAdjustmentByRotation;
 
       // For 270° rotation, (x,y) should become (-y,x) in inverse rotation
       const [transformedX, transformedY] = transform(40, 25, 270);
@@ -75,8 +90,9 @@ describe("Arrow Rotation Transformation", () => {
     });
 
     it("should handle negative adjustment values correctly", () => {
-      const transform = (orchestrator as any).coordinateTransformer
-        .transformAdjustmentByRotation;
+      const transform = (
+        orchestrator as unknown as ArrowPositionCalculatorTestAccess
+      ).coordinateTransformer.transformAdjustmentByRotation;
 
       const [transformedX, transformedY] = transform(-40, -25, 90);
 
@@ -88,8 +104,9 @@ describe("Arrow Rotation Transformation", () => {
   describe("Real-world arrow positioning scenarios", () => {
     it("should apply rotation transformation in positioning pipeline", () => {
       // Test the transformation method directly with real-world values
-      const transform = (orchestrator as any).coordinateTransformer
-        .transformAdjustmentByRotation;
+      const transform = (
+        orchestrator as unknown as ArrowPositionCalculatorTestAccess
+      ).coordinateTransformer.transformAdjustmentByRotation;
 
       // Your observed case: Northwest arrow with 225° rotation and (40, 25) adjustment
       const adjustmentX = 40;
@@ -120,8 +137,9 @@ describe("Arrow Rotation Transformation", () => {
     });
 
     it("should demonstrate the difference between old and new positioning", () => {
-      const transform = (orchestrator as any).coordinateTransformer
-        .transformAdjustmentByRotation;
+      const transform = (
+        orchestrator as unknown as ArrowPositionCalculatorTestAccess
+      ).coordinateTransformer.transformAdjustmentByRotation;
 
       // Your observed case: Northwest arrow with 225° rotation and (40, 25) adjustment
       const adjustmentX = 40;

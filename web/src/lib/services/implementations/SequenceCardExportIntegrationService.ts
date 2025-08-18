@@ -91,7 +91,7 @@ export class SequenceCardExportIntegrationService
             options.filenamePrefix || "sequence-cards",
             pageNumber,
             exportOptions.format,
-            result.metadata?.dimensions
+            result.metrics?.resolution
           );
 
           downloadData.push({

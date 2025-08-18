@@ -22,6 +22,8 @@ import {
   ICanvasManagementServiceInterface,
 } from "../interfaces/image-export-interfaces";
 
+import { IPictographServiceInterface } from "../interfaces/core-interfaces";
+
 // Import service implementations
 import { TKAImageExportService } from "../../implementations/image-export/TKAImageExportService";
 import { LayoutCalculationService } from "../../implementations/image-export/LayoutCalculationService";
@@ -40,11 +42,8 @@ import { CanvasManagementService } from "../../implementations/image-export/Canv
 export async function registerImageExportServices(
   container: ServiceContainer
 ): Promise<void> {
-  console.log("🖼️ Registering TKA image export services...");
-
   try {
     // Register foundation services (no dependencies)
-    console.log("📐 Registering layout and dimension services...");
     container.registerFactory(ILayoutCalculationServiceInterface, () => {
       return new LayoutCalculationService();
     });
@@ -57,7 +56,6 @@ export async function registerImageExportServices(
       return new FileExportService();
     });
 
-    console.log("🎨 Registering rendering services...");
     container.registerFactory(ICanvasManagementServiceInterface, () => {
       return new CanvasManagementService();
     });
@@ -67,7 +65,8 @@ export async function registerImageExportServices(
     });
 
     container.registerFactory(IBeatRenderingServiceInterface, () => {
-      return new BeatRenderingService();
+      const pictographService = container.resolve(IPictographServiceInterface);
+      return new BeatRenderingService(pictographService);
     });
 
     container.registerFactory(ITextRenderingServiceInterface, () => {
@@ -75,7 +74,6 @@ export async function registerImageExportServices(
     });
 
     // Register composition service (depends on layout, dimension, beat rendering, and text rendering)
-    console.log("🏗️ Registering composition service...");
     container.registerFactory(IImageCompositionServiceInterface, () => {
       const layoutService = container.resolve(
         ILayoutCalculationServiceInterface
@@ -95,7 +93,6 @@ export async function registerImageExportServices(
     });
 
     // Register main TKA image export service (depends on composition and file services)
-    console.log("📸 Registering main TKA image export service...");
     container.registerFactory(ITKAImageExportServiceInterface, () => {
       const compositionService = container.resolve(
         IImageCompositionServiceInterface
@@ -116,8 +113,6 @@ export async function registerImageExportServices(
       );
     });
 
-    console.log("✅ TKA image export services registered successfully");
-
     // Validate registrations
     await validateImageExportServices(container);
   } catch (error) {
@@ -134,8 +129,6 @@ export async function registerImageExportServices(
 async function validateImageExportServices(
   container: ServiceContainer
 ): Promise<void> {
-  console.log("🔍 Validating TKA image export service registrations...");
-
   const servicesToValidate = [
     {
       interface: ILayoutCalculationServiceInterface,
@@ -172,8 +165,6 @@ async function validateImageExportServices(
       );
       if (!service) {
         validationErrors.push(`${name} resolved to null/undefined`);
-      } else {
-        console.log(`✓ ${name} resolved successfully`);
       }
     } catch (error) {
       const errorMessage =
@@ -189,8 +180,6 @@ async function validateImageExportServices(
       `Service validation failed: ${validationErrors.join(", ")}`
     );
   }
-
-  console.log("✅ All TKA image export services validated successfully");
 }
 
 /**
@@ -200,8 +189,6 @@ async function validateImageExportServices(
 export async function testImageExportPipeline(
   container: ServiceContainer
 ): Promise<boolean> {
-  console.log("🧪 Testing TKA image export pipeline...");
-
   try {
     // Test layout calculation
     const layoutService = container.resolve(ILayoutCalculationServiceInterface);
@@ -209,7 +196,6 @@ export async function testImageExportPipeline(
     if (!layout || layout.length !== 2) {
       throw new Error("Layout calculation test failed");
     }
-    console.log("✓ Layout calculation test passed");
 
     // Test dimension calculation
     const dimensionService = container.resolve(
@@ -242,7 +228,6 @@ export async function testImageExportPipeline(
     if (!dimensions || dimensions.length !== 2) {
       throw new Error("Dimension calculation test failed");
     }
-    console.log("✓ Dimension calculation test passed");
 
     // Test file export service
     const fileService = container.resolve(IFileExportServiceInterface);
@@ -250,23 +235,19 @@ export async function testImageExportPipeline(
     if (!formats.includes("PNG") || !formats.includes("JPEG")) {
       throw new Error("File export service test failed");
     }
-    console.log("✓ File export service test passed");
 
     // Test text rendering service
     const textService = container.resolve(ITextRenderingServiceInterface);
     if (!textService) {
       throw new Error("Text rendering service test failed");
     }
-    console.log("✓ Text rendering service test passed");
 
     // Test main export service
     const exportService = container.resolve(ITKAImageExportServiceInterface);
     if (!exportService) {
       throw new Error("Main export service test failed");
     }
-    console.log("✓ Main export service test passed");
 
-    console.log("✅ TKA image export pipeline test completed successfully");
     return true;
   } catch (error) {
     console.error("❌ Image export pipeline test failed:", error);
@@ -292,49 +273,6 @@ export function getImageExportServiceMetrics(_container: ServiceContainer): {
     memoryUsage: undefined,
     cacheStats: undefined,
   };
-
-  /*
-  const servicesToCount = [
-    ILayoutCalculationServiceInterface,
-    IDimensionCalculationServiceInterface,
-    IFileExportServiceInterface,
-    IBeatRenderingServiceInterface,
-    ITextRenderingServiceInterface,
-    IImageCompositionServiceInterface,
-    IGridOverlayServiceInterface,
-    ICanvasManagementServiceInterface,
-    ITKAImageExportServiceInterface,
-  ];
-
-  let registeredCount = 0;
-  let memoryUsage: number | undefined;
-  let cacheStats: unknown;
-
-  for (const serviceInterface of servicesToCount) {
-    try {
-      const service = container.resolve(
-        serviceInterface as ServiceInterface<unknown>
-      );
-      if (service) {
-        registeredCount++;
-
-        // Note: Memory usage tracking would be implemented here if needed
-        if (serviceInterface === ICanvasManagementServiceInterface) {
-          memoryUsage = service.getMemoryUsage();
-          cacheStats = service.getCacheStats();
-        }
-      }
-    } catch (error) {
-      console.warn(`Failed to resolve service interface:`, error);
-    }
-  }
-
-  return {
-    servicesRegistered: registeredCount,
-    memoryUsage,
-    cacheStats,
-  };
-  */
 }
 
 /**
@@ -342,11 +280,8 @@ export function getImageExportServiceMetrics(_container: ServiceContainer): {
  * Should be called when shutting down the application
  */
 export function cleanupImageExportServices(_container: ServiceContainer): void {
-  console.log("🧹 Cleaning up TKA image export services...");
-
   try {
     // Note: Service cleanup would be implemented here if needed
-    console.log("✅ TKA image export services cleaned up successfully");
   } catch (error) {
     console.warn("⚠️ Some cleanup operations failed:", error);
   }
