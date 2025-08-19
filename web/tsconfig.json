@@ -11,7 +11,10 @@
     "target": "ES2022",
     "moduleResolution": "bundler",
     "allowSyntheticDefaultImports": true,
-    "noEmit": true
+    "noEmit": true,
+    "sourceMap": true,
+    "inlineSourceMap": false,
+    "inlineSources": false
   },
   "include": ["global.d.ts", "src/**/*.ts", "src/**/*.svelte"],
   "exclude": [

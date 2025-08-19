@@ -1,8 +1,9 @@
 {
   "recommendations": [
     "esbenp.prettier-vscode",
-    "svelte.svelte-vscode",
+    "svelte.svelte-vscode", 
     "ms-vscode.vscode-typescript-next",
-    "bradlc.vscode-tailwindcss"
+    "bradlc.vscode-tailwindcss",
+    "ms-vscode.js-debug"
   ]
 }

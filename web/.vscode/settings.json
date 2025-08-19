@@ -30,5 +30,17 @@
   },
   "prettier.requireConfig": false,
   "prettier.useEditorConfig": false,
-  "svelte.enable-ts-plugin": true
+  "svelte.enable-ts-plugin": true,
+  "debug.javascript.usePreview": true,
+  "debug.javascript.breakOnConditionalError": true,
+  "debug.javascript.codelens.npmScripts": "all",
+  "debug.javascript.suggestPrettyPrinting": false,
+  "debug.javascript.unmapMissingSources": true,
+  "debug.javascript.resolveSourceMapLocations": [
+    "${workspaceFolder}/**",
+    "!**/node_modules/**"
+  ],
+  "typescript.preferences.includePackageJsonAutoImports": "auto",
+  "typescript.suggest.autoImports": true,
+  "typescript.updateImportsOnFileMove.enabled": "always"
 }

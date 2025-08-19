@@ -7,10 +7,15 @@ const config = {
   // for more information about preprocessors
   preprocess: vitePreprocess({
     script: true,
+    style: true,
+    sourceMap: true, // Enable source maps for Svelte files
     typescript: {
       tsconfigFile: "./tsconfig.json",
       compilerOptions: {
         module: "esnext",
+        sourceMap: true, // Enable TypeScript source maps
+        inlineSourceMap: false,
+        inlineSources: false,
       },
     },
   }),

@@ -2,13 +2,80 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "name": "🚀 Debug TKA App",
       "type": "chrome",
       "request": "launch",
-      "name": "🚀 Launch TKA Web App",
       "url": "http://localhost:5173",
-      "webRoot": "${workspaceFolder}/web_app/src",
+      "webRoot": "${workspaceFolder}",
       "preLaunchTask": "Start Dev Server",
-      "runtimeArgs": ["--auto-open-devtools-for-tabs"]
+      "sourceMaps": true,
+      "smartStep": false,
+      "userDataDir": "${workspaceFolder}/.vscode/chrome-debug-profile",
+      "runtimeArgs": [
+        "--auto-open-devtools-for-tabs",
+        "--disable-web-security",
+        "--disable-features=VizDisplayCompositor",
+        "--remote-debugging-port=9222"
+      ],
+      "skipFiles": [
+        "<node_internals>/**",
+        "node_modules/**",
+        "${workspaceFolder}/node_modules/**",
+        "${workspaceFolder}/.svelte-kit/**",
+        "${workspaceFolder}/build/**"
+      ],
+      "sourceMapPathOverrides": {
+        "webpack:///./*": "${webRoot}/*",
+        "webpack:///src/*": "${webRoot}/src/*",
+        "webpack:///*": "*",
+        "/./*": "${webRoot}/*",
+        "/src/*": "${webRoot}/src/*",
+        "/*": "*",
+        "vite:///*": "${webRoot}/*",
+        "/@fs/*": "*",
+        "file:///*": "*"
+      },
+      "trace": true,
+      "timeout": 30000,
+      "urlFilter": "http://localhost:*/*"
+    },
+    {
+      "name": "🔄 Debug TKA App (Alternative Port)",
+      "type": "chrome", 
+      "request": "launch",
+      "url": "http://localhost:5174",
+      "webRoot": "${workspaceFolder}",
+      "preLaunchTask": "Start Dev Server",
+      "sourceMaps": true,
+      "smartStep": false,
+      "userDataDir": "${workspaceFolder}/.vscode/chrome-debug-profile",
+      "runtimeArgs": [
+        "--auto-open-devtools-for-tabs",
+        "--disable-web-security",
+        "--disable-features=VizDisplayCompositor",
+        "--remote-debugging-port=9223"
+      ],
+      "skipFiles": [
+        "<node_internals>/**",
+        "node_modules/**",
+        "${workspaceFolder}/node_modules/**",
+        "${workspaceFolder}/.svelte-kit/**",
+        "${workspaceFolder}/build/**"
+      ],
+      "sourceMapPathOverrides": {
+        "webpack:///./*": "${webRoot}/*",
+        "webpack:///src/*": "${webRoot}/src/*",
+        "webpack:///*": "*",
+        "/./*": "${webRoot}/*",
+        "/src/*": "${webRoot}/src/*",
+        "/*": "*",
+        "vite:///*": "${webRoot}/*",
+        "/@fs/*": "*",
+        "file:///*": "*"
+      },
+      "trace": true,
+      "timeout": 30000,
+      "urlFilter": "http://localhost:*/*"
     }
   ]
 }

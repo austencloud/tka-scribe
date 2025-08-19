@@ -6,21 +6,47 @@
       "type": "shell",
       "command": "npm",
       "args": ["run", "dev"],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
       "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": false
+      },
       "isBackground": true,
       "problemMatcher": {
         "owner": "vite",
         "pattern": {
-          "regexp": "^.*$",
+          "regexp": "^([^\\s].*):(\\d+):(\\d+):\\s+(warning|error):\\s+(.*)$",
           "file": 1,
-          "location": 2,
-          "message": 3
+          "line": 2,
+          "column": 3,
+          "severity": 4,
+          "message": 5
         },
         "background": {
           "activeOnStart": true,
           "beginsPattern": "Local:",
           "endsPattern": "ready in"
         }
+      }
+    },
+    {
+      "label": "Kill Dev Server",
+      "type": "shell",
+      "command": "taskkill",
+      "args": ["/F", "/IM", "node.exe"],
+      "group": "build",
+      "presentation": {
+        "echo": false,
+        "reveal": "silent",
+        "focus": false,
+        "panel": "shared"
       }
     }
   ]
