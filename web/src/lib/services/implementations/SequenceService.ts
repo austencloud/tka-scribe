@@ -181,12 +181,12 @@ export class SequenceService implements ISequenceService {
       const nextBeatNumber = sequence.beats.length + 1;
       const newBeat: BeatData = {
         id: crypto.randomUUID(),
-        beat_number: nextBeatNumber,
+        beatNumber: nextBeatNumber,
         duration: 1.0,
-        blue_reversal: false,
-        red_reversal: false,
+        blueReversal: false,
+        redReversal: false,
         isBlank: true,
-        pictograph_data: null,
+        pictographData: null,
         metadata: {},
         ...beatData,
       };
@@ -220,7 +220,7 @@ export class SequenceService implements ISequenceService {
       // Remove the beat and renumber remaining beats
       const newBeats = sequence.beats
         .filter((_, index) => index !== beatIndex)
-        .map((beat, index) => ({ ...beat, beat_number: index + 1 }));
+        .map((beat, index) => ({ ...beat, beatNumber: index + 1 }));
       const updatedSequence = { ...sequence, beats: newBeats } as SequenceData;
       await this.persistenceService.saveSequence(updatedSequence);
     } catch (error) {
@@ -277,12 +277,12 @@ export class SequenceService implements ISequenceService {
       .filter((step) => typeof step.beat === "number" && step.beat > 0) // Only actual beats, not start state
       .map((step) => ({
         id: `${step.beat}-${step.letter}`,
-        beat_number: step.beat as number,
+        beatNumber: step.beat as number,
         duration: 1,
-        blue_reversal: false,
-        red_reversal: false,
+        blueReversal: false,
+        redReversal: false,
         isBlank: false,
-        pictograph_data: {
+        pictographData: {
           id: `pictograph-${step.beat}`,
           gridData: {
             gridMode: (meta.gridMode as GridMode) || GridMode.DIAMOND,

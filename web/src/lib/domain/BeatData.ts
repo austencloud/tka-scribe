@@ -10,24 +10,24 @@ import type { PictographData } from "./PictographData";
 
 export interface BeatData {
   readonly id: string;
-  readonly beat_number: number;
+  readonly beatNumber: number;
   readonly duration: number;
-  readonly blue_reversal: boolean;
-  readonly red_reversal: boolean;
+  readonly blueReversal: boolean;
+  readonly redReversal: boolean;
   readonly isBlank: boolean;
-  readonly pictograph_data?: PictographData | null;
+  readonly pictographData?: PictographData | null;
   readonly metadata: Record<string, unknown>;
 }
 
 export function createBeatData(data: Partial<BeatData> = {}): BeatData {
   return {
     id: data.id ?? crypto.randomUUID(),
-    beat_number: data.beat_number ?? 1,
+    beatNumber: data.beatNumber ?? 1,
     duration: data.duration ?? 1.0,
-    blue_reversal: data.blue_reversal ?? false,
-    red_reversal: data.red_reversal ?? false,
+    blueReversal: data.blueReversal ?? false,
+    redReversal: data.redReversal ?? false,
     isBlank: data.isBlank ?? false,
-    pictograph_data: data.pictograph_data ?? null,
+    pictographData: data.pictographData ?? null,
     metadata: data.metadata ?? {},
   };
 }
@@ -43,12 +43,12 @@ export function updateBeatData(
 }
 
 export function isValidBeat(beat: BeatData): boolean {
-  return beat.duration >= 0 && beat.beat_number >= 0;
+  return beat.duration >= 0 && beat.beatNumber >= 0;
 }
 
 export function getBeatLetter(beat: BeatData): string | undefined {
   return (
-    beat.pictograph_data?.letter ??
+    beat.pictographData?.letter ??
     (typeof beat.metadata.letter === "string"
       ? beat.metadata.letter
       : undefined)
@@ -56,32 +56,32 @@ export function getBeatLetter(beat: BeatData): string | undefined {
 }
 
 export function hasPictograph(beat: BeatData): boolean {
-  return beat.pictograph_data != null;
+  return beat.pictographData != null;
 }
 
 export function getBlueMotion(beat: BeatData): MotionData | null {
-  if (beat.pictograph_data?.motions) {
-    return beat.pictograph_data.motions.blue ?? null;
+  if (beat.pictographData?.motions) {
+    return beat.pictographData.motions.blue ?? null;
   }
   return null;
 }
 
 export function getRedMotion(beat: BeatData): MotionData | null {
-  if (beat.pictograph_data?.motions) {
-    return beat.pictograph_data.motions.red ?? null;
+  if (beat.pictographData?.motions) {
+    return beat.pictographData.motions.red ?? null;
   }
   return null;
 }
 
 export function createBeatFromPictograph(
-  pictograph_data: PictographData,
-  beat_number: number
+  pictographData: PictographData,
+  beatNumber: number
 ): BeatData {
   return createBeatData({
-    beat_number,
-    pictograph_data,
+    beatNumber,
+    pictographData,
     metadata: {
-      letter: pictograph_data.letter,
+      letter: pictographData.letter,
       created_from_pictograph: true,
     },
   });
@@ -90,12 +90,12 @@ export function createBeatFromPictograph(
 export function beatDataToObject(beat: BeatData): Record<string, unknown> {
   return {
     id: beat.id,
-    beat_number: beat.beat_number,
+    beatNumber: beat.beatNumber,
     duration: beat.duration,
-    blue_reversal: beat.blue_reversal,
-    red_reversal: beat.red_reversal,
+    blueReversal: beat.blueReversal,
+    redReversal: beat.redReversal,
     isBlank: beat.isBlank,
-    pictograph_data: beat.pictograph_data,
+    pictographData: beat.pictographData,
     metadata: beat.metadata,
   };
 }
@@ -104,16 +104,16 @@ export function beatDataFromObject(data: Record<string, unknown>): BeatData {
   const partialData: Record<string, unknown> = {};
 
   if (typeof data.id === "string") partialData.id = data.id;
-  if (typeof data.beat_number === "number")
-    partialData.beat_number = data.beat_number;
+  if (typeof data.beatNumber === "number")
+    partialData.beatNumber = data.beatNumber;
   if (typeof data.duration === "number") partialData.duration = data.duration;
-  if (typeof data.blue_reversal === "boolean")
-    partialData.blue_reversal = data.blue_reversal;
-  if (typeof data.red_reversal === "boolean")
-    partialData.red_reversal = data.red_reversal;
+  if (typeof data.blueReversal === "boolean")
+    partialData.blueReversal = data.blueReversal;
+  if (typeof data.redReversal === "boolean")
+    partialData.redReversal = data.redReversal;
   if (typeof data.isBlank === "boolean") partialData.isBlank = data.isBlank;
-  if (data.pictograph_data)
-    partialData.pictograph_data = data.pictograph_data as PictographData;
+  if (data.pictographData)
+    partialData.pictographData = data.pictographData as PictographData;
   if (typeof data.metadata === "object" && data.metadata !== null)
     partialData.metadata = data.metadata as Record<string, unknown>;
 

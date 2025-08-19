@@ -1,12 +1,12 @@
 <!--
-	OptionPickerContainer.svelte
+  OptionPickerContainer.svelte
 
-	Main orchestrator component that leverages existing sophisticated systems:
-	- Uses optionPickerRunes.svelte.ts for state management
-	- Uses OptionPickerLayoutManager.ts for layout calculations
-	- Delegates rendering to existing well-designed sub-components
+  Main orchestrator component that leverages existing sophisticated systems:
+  - Uses optionPickerRunes.svelte.ts for state management
+  - Uses OptionPickerLayoutManager.ts for layout calculations
+  - Delegates rendering to existing well-designed sub-components
 
-	This replaces the 562-line monolithic OptionPicker.svelte
+  This replaces the 562-line monolithic OptionPicker.svelte
 -->
 <script lang="ts">
   import type { PictographData } from "$lib/domain/PictographData";
@@ -126,9 +126,6 @@
       if (preloadedData) {
         const options = JSON.parse(preloadedData);
         if (Array.isArray(options) && options.length > 0) {
-          console.log(
-            "✨ Loading individually preloaded options directly into state"
-          );
           optionPickerState.setOptions(options);
           localStorage.removeItem("preloaded_options"); // Clear after use
           return true;
@@ -139,10 +136,6 @@
       const allPreloadedData = localStorage.getItem("all_preloaded_options");
       if (allPreloadedData) {
         const allOptions = JSON.parse(allPreloadedData);
-        console.log(
-          "🔍 Available bulk preloaded keys:",
-          Object.keys(allOptions)
-        );
 
         // Determine the current end position we need options for
         let targetEndPosition: string | null = null;
@@ -154,29 +147,14 @@
             startPosition.metadata?.endPosition ||
             startPosition.endPosition ||
             null;
-          console.log("🎯 Looking for end position:", targetEndPosition);
-          console.log(
-            "📋 Start position data structure:",
-            JSON.stringify(startPosition, null, 2)
-          );
         }
 
         // If we have preloaded options for this end position, use them
         if (targetEndPosition && allOptions[targetEndPosition]) {
           const optionsForPosition = allOptions[targetEndPosition];
-          console.log(
-            `✨ Loading bulk preloaded options for ${targetEndPosition} directly into state`
-          );
           optionPickerState.setOptions(optionsForPosition);
           return true;
-        } else {
-          console.log(
-            `❌ No bulk preloaded options found for end position: ${targetEndPosition}`
-          );
-          console.log("📦 All available bulk keys:", Object.keys(allOptions));
         }
-      } else {
-        console.log("❌ No bulk preloaded data found in localStorage");
       }
     } catch (error) {
       console.warn("Failed to load preloaded data:", error);
@@ -188,44 +166,17 @@
   // Handle start position selection events
   function handleStartPositionSelected(event: Event) {
     const customEvent = event as CustomEvent;
-    console.log(
-      "🎯 OptionPickerContainer received start-position-selected:",
-      customEvent.detail
-    );
 
     // Try to load preloaded data first
     if (!loadPreloadedData()) {
-      console.log(
-        "🎯 No preloaded data for start position change, loading options normally"
-      );
       optionPickerState.loadOptions([]); // Empty array loads from start position
     }
   }
 
   // Initialize on mount
   onMount(() => {
-    console.log(
-      "🎯 OptionPickerContainer mounted - using sophisticated systems"
-    );
-
-    // Add debug logging for localStorage contents
-    if (typeof window !== "undefined") {
-      const startPosData = localStorage.getItem("startPosition");
-      const allPreloadedData = localStorage.getItem("all_preloaded_options");
-      console.log("🔍 localStorage DEBUG:");
-      console.log(
-        "  - startPosition:",
-        startPosData ? JSON.parse(startPosData) : null
-      );
-      console.log(
-        "  - all_preloaded_options keys:",
-        allPreloadedData ? Object.keys(JSON.parse(allPreloadedData)) : null
-      );
-    }
-
     // Try to load preloaded data first, fallback to normal loading
     if (!loadPreloadedData()) {
-      console.log("🎯 No preloaded data found, loading options normally");
       optionPickerState.loadOptions([]); // Empty array loads from start position
     }
 
@@ -247,14 +198,8 @@
   // Reactive loading when sequence changes
   $effect(() => {
     if (currentSequence) {
-      console.log(
-        "🔄 OptionPickerContainer sequence changed, reloading options"
-      );
       // Try to load preloaded data first, fallback to normal loading
       if (!loadPreloadedData()) {
-        console.log(
-          "🎯 No preloaded data for sequence change, loading options normally"
-        );
         optionPickerState.loadOptions([]);
       }
     }

@@ -129,9 +129,9 @@ export function createGenerationActionsState() {
       console.log("📊 Generated sequence data:", {
         name: sequence.name,
         beats: sequence.beats.length,
-        firstBeat: sequence.beats[0]?.pictograph_data?.letter,
+        firstBeat: sequence.beats[0]?.pictographData?.letter,
         lastBeat:
-          sequence.beats[sequence.beats.length - 1]?.pictograph_data?.letter,
+          sequence.beats[sequence.beats.length - 1]?.pictographData?.letter,
       });
 
       // TODO: Call workbench service to update the beat frame

@@ -29,7 +29,7 @@ const mockThumbnailFile: ThumbnailFile = {
 
 const mockMetadata = [
   {
-    beat_number: 1,
+    beatNumber: 1,
     letter: "A",
     author: "Test Author",
     level: 3,
@@ -38,7 +38,7 @@ const mockMetadata = [
     redAttributes: { motionType: "roll" },
   },
   {
-    beat_number: 2,
+    beatNumber: 2,
     letter: "B",
     blueAttributes: { motionType: "isolation" },
     redAttributes: { motionType: "plane_bend" },
@@ -50,7 +50,7 @@ vi.mock("$lib/utils/png-metadata-extractor", () => ({
   PngMetadataExtractor: {
     extractMetadata: vi.fn().mockResolvedValue([
       {
-        beat_number: 1,
+        beatNumber: 1,
         letter: "A",
         author: "Test Author",
         level: 3,
@@ -59,7 +59,7 @@ vi.mock("$lib/utils/png-metadata-extractor", () => ({
         redAttributes: { motionType: "roll" },
       },
       {
-        beat_number: 2,
+        beatNumber: 2,
         letter: "B",
         blueAttributes: { motionType: "isolation" },
         redAttributes: { motionType: "plane_bend" },
@@ -149,7 +149,7 @@ describe("MetadataAnalysisService", () => {
   it("should validate motion types correctly", () => {
     const invalidTypes = analysisService.validateMotionTypes([
       {
-        beat_number: 1,
+        beatNumber: 1,
         blueAttributes: { motionType: "invalid_motion" },
       },
     ]);
@@ -377,9 +377,7 @@ describe("Configuration", () => {
       true
     );
     expect(defaultMetadataTestingConfig.requiredFields).toContain("letter");
-    expect(defaultMetadataTestingConfig.requiredFields).toContain(
-      "beat_number"
-    );
+    expect(defaultMetadataTestingConfig.requiredFields).toContain("beatNumber");
 
     const weights = defaultMetadataTestingConfig.healthScoreWeights;
     const totalWeight =

@@ -72,10 +72,10 @@ export class ExampleSequenceService implements IExampleSequenceService {
     // Business logic - create beats
     const beats: BeatData[] = Array.from({ length }, (_, i) => ({
       id: crypto.randomUUID(),
-      beat_number: i + 1,
+      beatNumber: i + 1,
       duration: 1.0,
-      blue_reversal: false,
-      red_reversal: false,
+      blueReversal: false,
+      redReversal: false,
       isBlank: true,
       metadata: {},
     }));
@@ -166,8 +166,8 @@ export class ExampleSequenceService implements IExampleSequenceService {
         complexity += 1;
 
         // Add complexity for motion types
-        if (beat.pictograph_data?.motions) {
-          const motions = Object.values(beat.pictograph_data.motions);
+        if (beat.pictographData?.motions) {
+          const motions = Object.values(beat.pictographData.motions);
           complexity +=
             motions.filter(
               (motion) =>

@@ -40,12 +40,12 @@ export class DataTransformationService implements IDataTransformationService {
    */
   beatToPictographData(beat: BeatData): PictographData {
     const motions: Record<string, MotionData> = {};
-    if (beat.pictograph_data?.motions?.blue)
-      motions.blue = beat.pictograph_data.motions.blue;
-    if (beat.pictograph_data?.motions?.red)
-      motions.red = beat.pictograph_data.motions.red;
+    if (beat.pictographData?.motions?.blue)
+      motions.blue = beat.pictographData.motions.blue;
+    if (beat.pictographData?.motions?.red)
+      motions.red = beat.pictographData.motions.red;
     return createPictographData({
-      id: `beat-${beat.beat_number}`,
+      id: `beat-${beat.beatNumber}`,
       gridData: createDomainGridData(),
       arrows: {
         blue: createArrowData({
@@ -68,8 +68,8 @@ export class DataTransformationService implements IDataTransformationService {
         }),
       },
       motions,
-      letter: beat.pictograph_data?.letter || null,
-      beat: beat.beat_number,
+      letter: beat.pictographData?.letter || null,
+      beat: beat.beatNumber,
       isBlank: beat.isBlank,
       isMirrored: false,
     });

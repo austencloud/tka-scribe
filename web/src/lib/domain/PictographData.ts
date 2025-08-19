@@ -2,7 +2,7 @@
  * Pictograph Domain Model
  *
  * Immutable data for a complete pictograph.
- * Based on modern desktop app's pictograph_data.py
+ * Based on modern desktop app's pictographData.py
  */
 
 import type { ArrowData } from "./ArrowData";

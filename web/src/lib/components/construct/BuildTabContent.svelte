@@ -86,7 +86,7 @@
 
     return shouldShow;
   });
-  let gridMode = $derived(constructTabState?.gridMode || "radial");
+  let gridMode = $derived(constructTabState?.gridMode || "diamond");
   let settings = $derived(getSettings());
 
   // Transition functions that respect animation settings - same as main interface

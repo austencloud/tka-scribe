@@ -459,10 +459,10 @@ export class ImageCompositionService implements IImageCompositionService {
       beats: [
         {
           id: "beat1",
-          beat_number: 1,
+          beatNumber: 1,
           duration: 1,
-          blue_reversal: false,
-          red_reversal: false,
+          blueReversal: false,
+          redReversal: false,
           isBlank: true,
           metadata: {},
         },

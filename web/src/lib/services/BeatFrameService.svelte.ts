@@ -419,21 +419,21 @@ class BeatFrameService {
   }
 
   isBeatVisible(beat: BeatData): boolean {
-    return !beat.isBlank || beat.pictograph_data != null;
+    return !beat.isBlank || beat.pictographData != null;
   }
 
   getBeatDisplayText(beat: BeatData): string {
-    if (beat.isBlank && !beat.pictograph_data) {
+    if (beat.isBlank && !beat.pictographData) {
       // fallback: show beat number if available on metadata or domain type
       return (
-        beat.beat_number ??
-        (beat.metadata as Record<string, unknown>)?.beat_number ??
+        beat.beatNumber ??
+        (beat.metadata as Record<string, unknown>)?.beatNumber ??
         ""
       ).toString();
     }
     const metadataLetter = (beat.metadata as Record<string, unknown>)?.letter;
     return (
-      beat.pictograph_data?.letter ??
+      beat.pictographData?.letter ??
       (typeof metadataLetter === "string" ? metadataLetter : "") ??
       ""
     );

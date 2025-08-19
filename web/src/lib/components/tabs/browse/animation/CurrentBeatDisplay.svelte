@@ -21,21 +21,21 @@ Shows current beat information including letter and motion details.
 {#if currentBeatData}
   <div class="current-beat-display">
     <h5>
-      Beat {Math.floor(currentBeat) + 1}: {currentBeatData.pictograph_data
+      Beat {Math.floor(currentBeat) + 1}: {currentBeatData.pictographData
         ?.letter || ""}
     </h5>
 
-    {#if currentBeatData.pictograph_data?.motions}
+    {#if currentBeatData.pictographData?.motions}
       <div class="motions-display">
         <div class="motion blue-motion">
           <h6>Blue Prop</h6>
           <div class="motion-info">
             <span class="location">
-              {currentBeatData.pictograph_data.motions.blue?.start_loc} →
-              {currentBeatData.pictograph_data.motions.blue?.end_loc}
+              {currentBeatData.pictographData.motions.blue?.start_loc} →
+              {currentBeatData.pictographData.motions.blue?.end_loc}
             </span>
             <span class="motion-type">
-              {currentBeatData.pictograph_data.motions.blue?.motionType}
+              {currentBeatData.pictographData.motions.blue?.motionType}
             </span>
           </div>
         </div>
@@ -44,11 +44,11 @@ Shows current beat information including letter and motion details.
           <h6>Red Prop</h6>
           <div class="motion-info">
             <span class="location">
-              {currentBeatData.pictograph_data.motions.red?.start_loc} →
-              {currentBeatData.pictograph_data.motions.red?.end_loc}
+              {currentBeatData.pictographData.motions.red?.start_loc} →
+              {currentBeatData.pictographData.motions.red?.end_loc}
             </span>
             <span class="motion-type">
-              {currentBeatData.pictograph_data.motions.red?.motionType}
+              {currentBeatData.pictographData.motions.red?.motionType}
             </span>
           </div>
         </div>

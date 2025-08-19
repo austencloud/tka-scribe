@@ -130,16 +130,16 @@ export class ExportService implements IExportService {
     ctx.fillStyle = "#374151";
     ctx.font = "16px monospace";
     ctx.textAlign = "center";
-    ctx.fillText(String(beat.beat_number), x + size / 2, y + size / 2 + 6);
+    ctx.fillText(String(beat.beatNumber), x + size / 2, y + size / 2 + 6);
 
     // Draw motion indicators
-    const blueMotion = beat.pictograph_data?.motions?.blue;
+    const blueMotion = beat.pictographData?.motions?.blue;
     if (blueMotion) {
       ctx.fillStyle = "#3b82f6";
       ctx.fillRect(x + 5, y + 5, 10, 10);
     }
 
-    const redMotion = beat.pictograph_data?.motions?.red;
+    const redMotion = beat.pictographData?.motions?.red;
     if (redMotion) {
       ctx.fillStyle = "#ef4444";
       ctx.fillRect(x + size - 15, y + 5, 10, 10);

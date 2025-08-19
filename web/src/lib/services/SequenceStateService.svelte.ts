@@ -119,10 +119,10 @@ class SequenceStateService {
       name,
       beats: Array.from({ length }, (_, i) => ({
         id: crypto.randomUUID(),
-        beat_number: i + 1,
+        beatNumber: i + 1,
         duration: 1.0,
-        blue_reversal: false,
-        red_reversal: false,
+        blueReversal: false,
+        redReversal: false,
         isBlank: true,
         metadata: {},
       })),

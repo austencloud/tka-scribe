@@ -589,11 +589,11 @@ function createMetadataTesterState() {
       if (!beat.letter) {
         missingLetters.push(beatNumber);
       }
-      if (beat.beat_number !== void 0) {
-        if (seenBeatNumbers.has(beat.beat_number)) {
+      if (beat.beatNumber !== void 0) {
+        if (seenBeatNumbers.has(beat.beatNumber)) {
           duplicateBeats.push(beatNumber);
         }
-        seenBeatNumbers.add(beat.beat_number);
+        seenBeatNumbers.add(beat.beatNumber);
       }
       if (!beat.blueAttributes && !beat.redAttributes) {
         missingMotionData.push(beatNumber);

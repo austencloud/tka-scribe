@@ -40,11 +40,6 @@ export class ArrowPlacementKeyService implements IArrowPlacementKeyService {
   ): string {
     const rawMotionType = this.getRawMotionType(motionData);
     const motionType = this.normalizeMotionType(rawMotionType);
-    const letter = pictographData.letter;
-
-    console.log(
-      `Generating placement key for ${motionType}, letter: ${letter}`
-    );
 
     // Generate candidate keys in order of preference
     const candidateKeys = this.generateCandidateKeys(
@@ -55,15 +50,12 @@ export class ArrowPlacementKeyService implements IArrowPlacementKeyService {
     // Select the first available key from candidates
     for (const key of candidateKeys) {
       if (availableKeys.includes(key)) {
-        console.log(`Selected placement key: ${key}`);
         return key;
       }
     }
 
     // Fallback to motion type
-    const fallback = motionType;
-    console.log(`No specific key found, using fallback: ${fallback}`);
-    return fallback;
+    return motionType;
   }
 
   /**
@@ -180,17 +172,5 @@ export class ArrowPlacementKeyService implements IArrowPlacementKeyService {
       `Invalid motion type: ${String(motionType)}, defaulting to 'pro'`
     );
     return MotionType.PRO;
-  }
-
-  /**
-   * Debug method to show all candidate keys
-   */
-  debugCandidateKeys(
-    motionData: MotionData,
-    pictographData: PictographData
-  ): string[] {
-    const candidates = this.generateCandidateKeys(motionData, pictographData);
-    console.log("Candidate placement keys:", candidates);
-    return candidates;
   }
 }

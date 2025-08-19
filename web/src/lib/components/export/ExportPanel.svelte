@@ -74,7 +74,7 @@
     if (!exportState) {
       return {
         include_start_position: true,
-        add_beat_numbers: true,
+        add_beatNumbers: true,
         add_reversal_symbols: true,
         add_user_info: true,
         add_word: true,
@@ -89,7 +89,7 @@
     const options = exportState.exportOptions;
     return {
       include_start_position: options.includeStartPosition,
-      add_beat_numbers: options.addBeatNumbers,
+      add_beatNumbers: options.addBeatNumbers,
       add_reversal_symbols: options.addReversalSymbols,
       add_user_info: options.addUserInfo,
       add_word: options.addWord,
@@ -111,7 +111,7 @@
     // Convert legacy setting names to TKA option names
     const settingMap: Record<string, string> = {
       include_start_position: "includeStartPosition",
-      add_beat_numbers: "addBeatNumbers",
+      add_beatNumbers: "addBeatNumbers",
       add_reversal_symbols: "addReversalSymbols",
       add_user_info: "addUserInfo",
       add_word: "addWord",

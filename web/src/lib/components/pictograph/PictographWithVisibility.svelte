@@ -74,7 +74,7 @@ matching the legacy desktop app's behavior.
     // Force reactivity by accessing visibilityUpdateCount
     visibilityUpdateCount;
 
-    const originalData = pictographData || beatData?.pictograph_data;
+    const originalData = pictographData || beatData?.pictographData;
     if (!originalData || !enableVisibility || forceShowAll) {
       return originalData;
     }

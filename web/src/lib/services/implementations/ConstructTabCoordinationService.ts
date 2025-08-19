@@ -37,9 +37,7 @@ export class ConstructTabCoordinationService
   constructor(
     private sequenceService: ISequenceService,
     private startPositionService: IStartPositionService
-  ) {
-    console.log("🎭 ConstructTabCoordinationService initialized");
-  }
+  ) {}
 
   /**
    * Clean up resources when service is destroyed
@@ -52,10 +50,6 @@ export class ConstructTabCoordinationService
   setupComponentCoordination(
     components: Record<string, ComponentWithEventHandler>
   ): void {
-    console.log(
-      "🎭 Setting up component coordination:",
-      Object.keys(components)
-    );
     this.components = components;
 
     // Set up any cross-component communication here (only once)
@@ -69,8 +63,6 @@ export class ConstructTabCoordinationService
     if (this.isHandlingSequenceModification) {
       return;
     }
-
-    console.log("🎭 Handling sequence modification:", sequence.id);
 
     try {
       this.isHandlingSequenceModification = true;
@@ -91,11 +83,6 @@ export class ConstructTabCoordinationService
   }
 
   async handleStartPositionSet(startPosition: BeatData): Promise<void> {
-    console.log(
-      "🎭 Handling start position set:",
-      startPosition.pictograph_data?.id
-    );
-
     try {
       // Set loading state to show user something is happening
       sequenceStateService.setLoading(true);
@@ -105,10 +92,6 @@ export class ConstructTabCoordinationService
       await this.startPositionService.setStartPosition(startPosition);
 
       // **CRITICAL: Create a sequence with the start position stored separately**
-      console.log(
-        "🎭 Creating sequence with start position stored separately from beats"
-      );
-
       // Create a new sequence with NO beats initially (progressive creation)
       const newSequence = await this.sequenceService.createSequence({
         name: `Sequence ${new Date().toLocaleTimeString()}`,
@@ -118,7 +101,6 @@ export class ConstructTabCoordinationService
       });
 
       // **CRITICAL: Set the start position in the sequence's startPosition field, NOT as beat 0**
-      console.log("🎭 Setting start position in sequence.startPosition field");
       await this.sequenceService.setSequenceStartPosition(
         newSequence.id,
         startPosition
@@ -131,7 +113,6 @@ export class ConstructTabCoordinationService
 
       if (updatedSequence) {
         // **CRITICAL FIX: Update the singleton state that UI components watch**
-        console.log("🔄 Updating singleton sequence state with new sequence");
         sequenceStateService.setCurrentSequence(updatedSequence);
 
         // Also clear loading state
@@ -142,18 +123,6 @@ export class ConstructTabCoordinationService
           sequence: updatedSequence,
           startPosition: startPosition,
         });
-
-        console.log(
-          "🎯 Set updated sequence as current sequence:",
-          updatedSequence.id,
-          "beats:",
-          updatedSequence.beats.length,
-          "startPosition:",
-          updatedSequence.startPosition?.pictograph_data?.id
-        );
-        console.log(
-          "✅ Updated sequence state - UI should now transition to option picker"
-        );
       } else {
         console.error("❌ Failed to reload updated sequence");
         sequenceStateService.setLoading(false);
@@ -162,8 +131,6 @@ export class ConstructTabCoordinationService
         );
         return;
       }
-
-      console.log("✅ Sequence created with start position stored separately");
 
       // Notify components
       this.notifyComponents("start_position_set", { startPosition });
@@ -174,7 +141,6 @@ export class ConstructTabCoordinationService
       this.notifyComponents("ui_state_update_requested", {
         action: "hide_start_position_picker",
       });
-      console.log("🎭 UI state should now automatically show option picker");
 
       // Transition to option picker
       await this.handleUITransitionRequest("option_picker");
@@ -188,8 +154,6 @@ export class ConstructTabCoordinationService
   }
 
   async handleBeatAdded(beatData: BeatData): Promise<void> {
-    console.log("🎭 Handling beat added:", beatData.beat_number);
-
     try {
       // Get current sequence from singleton state
       const currentSequence = sequenceStateService.currentSequence;
@@ -198,8 +162,6 @@ export class ConstructTabCoordinationService
         console.error("❌ No current sequence available for adding beat");
         return;
       }
-
-      console.log(`🎭 Adding beat to sequence: ${currentSequence.id}`);
 
       // **CRITICAL: Use the service to add the beat**
       if (
@@ -215,12 +177,10 @@ export class ConstructTabCoordinationService
         if (updatedSequence) {
           // **CRITICAL: Update singleton state**
           sequenceStateService.setCurrentSequence(updatedSequence);
-          console.log("✅ Beat added and sequence state updated");
         }
       } else {
         // Fallback: add beat directly to state
         sequenceStateService.addBeat(beatData);
-        console.log("✅ Beat added directly to state");
       }
 
       // Notify components
@@ -236,8 +196,6 @@ export class ConstructTabCoordinationService
   async handleGenerationRequest(
     config: Record<string, unknown>
   ): Promise<void> {
-    console.log("🎭 Handling generation request:", config);
-
     try {
       // TODO: Implement sequence generation
       // For now, just notify components
@@ -256,8 +214,6 @@ export class ConstructTabCoordinationService
   }
 
   async handleUITransitionRequest(targetPanel: string): Promise<void> {
-    console.log("🎭 Handling UI transition request to:", targetPanel);
-
     try {
       // Emit custom events for UI transitions (similar to legacy implementation)
       const transitionEvent = new CustomEvent("construct-tab-transition", {
@@ -333,8 +289,6 @@ export class ConstructTabCoordinationService
   }
 
   private async updateUIBasedOnSequence(sequence: SequenceData): Promise<void> {
-    console.log("🎭 Updating UI based on sequence state");
-
     try {
       // Determine which panel to show based on sequence state
       const hasStartPosition = sequence?.startPosition != null;
@@ -344,14 +298,8 @@ export class ConstructTabCoordinationService
 
       if (hasStartPosition || hasBeats) {
         targetPanel = "option_picker";
-        console.log(
-          "🎯 UI should show option picker (has start position or beats)"
-        );
       } else {
         targetPanel = "start_position_picker";
-        console.log(
-          "🎯 UI should show start position picker (no start position or beats)"
-        );
       }
 
       // Transition to appropriate panel
@@ -368,8 +316,6 @@ export class ConstructTabCoordinationService
   }
 
   private notifyComponents(eventType: string, data: unknown): void {
-    console.log(`🎭 Notifying components of ${eventType}:`, data);
-
     // Notify individual components if they have handlers
     Object.entries(this.components).forEach(([name, component]) => {
       if (component && typeof component.handleEvent === "function") {

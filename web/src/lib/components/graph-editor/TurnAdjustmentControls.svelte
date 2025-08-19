@@ -53,9 +53,9 @@
 
   // Update turn amounts from beat data
   function updateFromBeatData(beatData: BeatData | null) {
-    if (!beatData?.pictograph_data) return;
+    if (!beatData?.pictographData) return;
 
-    const pictograph = beatData.pictograph_data;
+    const pictograph = beatData.pictographData;
 
     // Update turn amounts from pictograph data
     if (pictograph.motions?.blue?.turns !== undefined) {

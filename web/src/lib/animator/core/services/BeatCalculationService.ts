@@ -68,7 +68,7 @@ export class BeatCalculationService implements IBeatCalculationService {
     return (
       beats &&
       beats.length > 0 &&
-      beats.every((beat) => beat && beat.beat_number >= 0)
+      beats.every((beat) => beat && beat.beatNumber >= 0)
     );
   }
 
@@ -99,6 +99,6 @@ export class BeatCalculationService implements IBeatCalculationService {
     beats: readonly BeatData[],
     beatNumber: number
   ): BeatData | null {
-    return beats.find((beat) => beat.beat_number === beatNumber) || null;
+    return beats.find((beat) => beat.beatNumber === beatNumber) || null;
   }
 }

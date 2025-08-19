@@ -6,7 +6,7 @@
     currentSequence: SequenceData | null;
     exportSettings: {
       include_start_position: boolean;
-      add_beat_numbers: boolean;
+      add_beatNumbers: boolean;
       add_reversal_symbols: boolean;
       add_user_info: boolean;
       add_word: boolean;

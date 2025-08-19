@@ -69,7 +69,7 @@ class WorkbenchService {
       const updatedBeat = createBeatData({
         ...beat,
         isBlank: false,
-        pictograph_data: pictographData,
+        pictographData: pictographData,
       });
 
       sequenceStateService.updateBeat(index, updatedBeat);
@@ -84,7 +84,7 @@ class WorkbenchService {
     const clearedBeat = createBeatData({
       ...beat,
       isBlank: true,
-      pictograph_data: null,
+      pictographData: null,
     });
 
     sequenceStateService.updateBeat(index, clearedBeat);

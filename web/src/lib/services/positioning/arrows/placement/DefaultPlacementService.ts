@@ -59,11 +59,6 @@ export class DefaultPlacementService implements IDefaultPlacementServiceJson {
     motionType: MotionType,
     gridMode: GridMode
   ): Promise<{ x: number; y: number }> {
-    console.log(
-      `DefaultPlacementService.getDefaultAdjustment() called with:`,
-      `placement_key=${placementKey}, turns=${turns}, motionType=${motionType}, gridMode=${gridMode}`
-    );
-
     try {
       // Ensure placement data is loaded
       await this._loadAllDefaultPlacements();
@@ -74,10 +69,6 @@ export class DefaultPlacementService implements IDefaultPlacementServiceJson {
         placementKey,
         turns,
         gridMode
-      );
-
-      console.log(
-        `Found default adjustment for ${placementKey} at ${turns} turns: [${adjustment.x}, ${adjustment.y}]`
       );
 
       return adjustment;
@@ -133,13 +124,8 @@ export class DefaultPlacementService implements IDefaultPlacementServiceJson {
       return;
     }
 
-    console.log("DefaultPlacementService: Loading all default placements...");
-
     try {
       await this.placementDataService.loadPlacementData();
-      console.log(
-        "✅ DefaultPlacementService: All placement data loaded successfully"
-      );
     } catch (error) {
       console.error(
         "❌ DefaultPlacementService: Failed to load placement data:",

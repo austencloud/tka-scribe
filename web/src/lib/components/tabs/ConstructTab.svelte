@@ -37,7 +37,6 @@
 
   // Setup component coordination and reactive state updates on mount
   onMount(() => {
-    console.log("🎭 ConstructTab mounted, setting up coordination");
     constructTabEventService().setupComponentCoordination();
 
     // Initialize start position picker state once on mount

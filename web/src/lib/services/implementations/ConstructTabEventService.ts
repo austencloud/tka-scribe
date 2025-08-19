@@ -79,8 +79,8 @@ export class ConstructTabEventService {
       // Create beat data from option
       // TODO: Service shouldn't access global state - pass beat number as parameter
       const beatData = createBeatData({
-        beat_number: 1, // Default for now - should be passed as parameter
-        pictograph_data: option,
+        beatNumber: 1, // Default for now - should be passed as parameter
+        pictographData: option,
       });
 
       // Use coordination service to handle beat addition

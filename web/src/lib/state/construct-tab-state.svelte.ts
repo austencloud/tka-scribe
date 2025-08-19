@@ -57,7 +57,7 @@ export function createConstructTabState(sequenceState: SequenceStateType) {
         sequenceExists: !!sequence,
         sequenceId: sequence?.id,
         hasStartPosition: !!sequence?.startPosition,
-        startPositionId: sequence?.startPosition?.pictograph_data?.id,
+        startPositionId: sequence?.startPosition?.pictographData?.id,
         beatCount: sequence?.beats?.length || 0,
         shouldShow,
       }

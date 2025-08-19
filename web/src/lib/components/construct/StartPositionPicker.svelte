@@ -90,32 +90,9 @@
 
   // Handle start position selection (modernized from legacy with proper data format)
   async function handleSelect(startPosPictograph: PictographData) {
-    console.log(
-      "🚀 StartPositionPicker: handleSelect called with parameter:",
-      startPosPictograph
-    );
-    console.log(
-      "🚀 StartPositionPicker: Parameter type:",
-      typeof startPosPictograph
-    );
-    console.log(
-      "🚀 StartPositionPicker: Parameter is null/undefined?",
-      startPosPictograph == null
-    );
-
     try {
-      console.log(
-        "🚀 StartPositionPicker: User clicked start position:",
-        startPosPictograph?.id
-      );
-      console.log(
-        "🚀 StartPositionPicker: Full pictograph data:",
-        startPosPictograph
-      );
-
       // Show transition state
       isTransitioning = true;
-      console.log("🚀 StartPositionPicker: Setting isTransitioning = true");
 
       // **CRITICAL: Create the data format that OptionPicker expects**
       // Based on legacy analysis, OptionPicker looks for:
@@ -123,15 +100,7 @@
       // 2. Proper pictograph data structure
 
       // Extract end position from the pictograph data
-      console.log(
-        "🚀 StartPositionPicker: About to extract end position from:",
-        startPosPictograph
-      );
       const endPosition = extractEndPosition(startPosPictograph);
-      console.log(
-        "🚀 StartPositionPicker: Extracted end position:",
-        endPosition
-      );
 
       // Create start position data in the format the OptionPicker expects (like legacy)
       const startPositionData = createStartPositionData(
@@ -142,12 +111,12 @@
       // Create start position beat data for internal use
       const startPositionBeat: BeatData = {
         id: crypto.randomUUID(),
-        beat_number: 0,
+        beatNumber: 0,
         duration: 1.0,
-        blue_reversal: false,
-        red_reversal: false,
+        blueReversal: false,
+        redReversal: false,
         isBlank: false,
-        pictograph_data: startPosPictograph,
+        pictographData: startPosPictograph,
         metadata: {
           endPosition: endPosition,
         },
@@ -162,28 +131,13 @@
       // **NEW: Preload options BEFORE triggering the transition**
       // This ensures options are ready when the option picker fades in
       try {
-        console.log(
-          "🚀 StartPositionPicker: Starting preload options for seamless transition..."
-        );
-
         // Import and use the OptionDataService to preload options
-        console.log("🚀 StartPositionPicker: Importing OptionDataService...");
         const { OptionDataService } = await import(
           "$services/implementations/OptionDataService"
         );
-        console.log(
-          "🚀 StartPositionPicker: Creating OptionDataService instance..."
-        );
         const optionDataService = new OptionDataService();
-        console.log(
-          "🚀 StartPositionPicker: Initializing OptionDataService..."
-        );
         await optionDataService.initialize();
 
-        console.log(
-          "🚀 StartPositionPicker: Getting next options from end position:",
-          endPosition
-        );
         const preloadedOptions =
           await optionDataService.getNextOptionsFromEndPosition(
             endPosition,
@@ -191,15 +145,11 @@
             {}
           );
 
-        console.log(
-          `✅ StartPositionPicker: Preloaded ${preloadedOptions?.length || 0} options for seamless transition`
-        );
-
         // Store the preloaded options so OptionPicker can use them immediately
         storePreloadedOptions(preloadedOptions || []);
       } catch (preloadError) {
         console.warn(
-          "🚨 StartPositionPicker: Failed to preload options, will load normally:",
+          "StartPositionPicker: Failed to preload options, will load normally:",
           preloadError
         );
         // Continue with normal flow even if preload fails
@@ -207,20 +157,11 @@
 
       // Use modern service to set start position
       if (startPositionService) {
-        console.log(
-          "🚀 StartPositionPicker: Calling startPositionService.setStartPosition"
-        );
         await startPositionService.setStartPosition(startPositionBeat);
-        console.log(
-          "🚀 StartPositionPicker: startPositionService.setStartPosition completed"
-        );
       }
 
       // **CRITICAL: Emit event that coordination service is listening for**
       // NOTE: We only use event dispatching, not callback, to avoid duplicate handling
-      console.log(
-        "🚀 StartPositionPicker: Dispatching start-position-selected event"
-      );
       const event = new CustomEvent("start-position-selected", {
         detail: {
           startPosition: startPositionData,
@@ -231,23 +172,19 @@
         bubbles: true,
       });
       document.dispatchEvent(event);
-      console.log(
-        "🚀 StartPositionPicker: Event dispatched - coordination service should handle the rest"
-      );
 
       // Clear transition state after a short delay to allow UI to update
       setTimeout(() => {
         isTransitioning = false;
-        console.log("🚀 StartPositionPicker: Cleared isTransitioning state");
       }, 500);
     } catch (error) {
       console.error(
-        "🚨 StartPositionPicker: Error selecting start position:",
+        "StartPositionPicker: Error selecting start position:",
         error
       );
       if (error instanceof Error) {
-        console.error("🚨 StartPositionPicker: Error stack:", error.stack);
-        console.error("🚨 StartPositionPicker: Error details:", {
+        console.error("StartPositionPicker: Error stack:", error.stack);
+        console.error("StartPositionPicker: Error details:", {
           message: error.message,
           name: error.name,
           startPosPictograph: startPosPictograph,
@@ -281,9 +218,6 @@
 
     // If a sequence with startPosition exists and we're transitioning, clear the transition
     if (currentSequence && currentSequence.startPosition && isTransitioning) {
-      console.log(
-        "🚀 StartPositionPicker: Sequence with start position detected, clearing transition state"
-      );
       isTransitioning = false;
     }
   });

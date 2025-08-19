@@ -38,10 +38,10 @@
 
   // Get motion info from pictograph data
   function getMotionInfo(beatData: BeatData | null) {
-    if (!beatData?.pictograph_data) return null;
+    if (!beatData?.pictographData) return null;
 
     const motions = [];
-    const pictograph = beatData.pictograph_data;
+    const pictograph = beatData.pictographData;
 
     // Extract motion information from pictograph
     if (pictograph.motions?.blue?.motionType) {
@@ -65,12 +65,12 @@
 
   // Get position info
   function getPositionInfo(beatData: BeatData | null) {
-    if (!beatData?.pictograph_data) return null;
+    if (!beatData?.pictographData) return null;
 
     return {
-      gridMode: beatData.pictograph_data.gridMode || "diamond",
-      blueStart: beatData.pictograph_data.motions?.blue?.start_loc || "Unknown",
-      redStart: beatData.pictograph_data.motions?.red?.start_loc || "Unknown",
+      gridMode: beatData.pictographData.gridMode || "diamond",
+      blueStart: beatData.pictographData.motions?.blue?.start_loc || "Unknown",
+      redStart: beatData.pictographData.motions?.red?.start_loc || "Unknown",
     };
   }
 

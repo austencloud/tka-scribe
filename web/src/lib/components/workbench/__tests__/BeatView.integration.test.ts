@@ -41,8 +41,8 @@ describe("BeatView Integration", () => {
       });
 
       const beat = createBeatData({
-        beat_number: 1,
-        pictograph_data: pictographData,
+        beatNumber: 1,
+        pictographData: pictographData,
         isBlank: false,
       });
 
@@ -66,7 +66,7 @@ describe("BeatView Integration", () => {
 
     it("should render beat number for beat without pictograph data", () => {
       const beat = createBeatData({
-        beat_number: 2,
+        beatNumber: 2,
         isBlank: true,
       });
 
@@ -95,8 +95,8 @@ describe("BeatView Integration", () => {
       });
 
       const beat = createBeatData({
-        beat_number: 3,
-        pictograph_data: pictographData,
+        beatNumber: 3,
+        pictographData: pictographData,
       });
 
       render(BeatView, {
@@ -117,7 +117,7 @@ describe("BeatView Integration", () => {
   describe("Beat States", () => {
     it("should handle selected state", () => {
       const beat = createBeatData({
-        beat_number: 4,
+        beatNumber: 4,
         isBlank: true,
       });
 
@@ -135,7 +135,7 @@ describe("BeatView Integration", () => {
 
     it("should handle hovered state", () => {
       const beat = createBeatData({
-        beat_number: 5,
+        beatNumber: 5,
         isBlank: true,
       });
 
@@ -153,7 +153,7 @@ describe("BeatView Integration", () => {
 
     it("should handle blank beat state", () => {
       const beat = createBeatData({
-        beat_number: 6,
+        beatNumber: 6,
         isBlank: true,
       });
 
@@ -174,8 +174,8 @@ describe("BeatView Integration", () => {
       });
 
       const beat = createBeatData({
-        beat_number: 7,
-        pictograph_data: pictographData,
+        beatNumber: 7,
+        pictographData: pictographData,
         isBlank: false,
       });
 
@@ -195,7 +195,7 @@ describe("BeatView Integration", () => {
     it("should call onClick when beat is clicked", async () => {
       const handleClick = vi.fn();
       const beat = createBeatData({
-        beat_number: 8,
+        beatNumber: 8,
         isBlank: true,
       });
 
@@ -219,7 +219,7 @@ describe("BeatView Integration", () => {
     it("should call onDoubleClick when beat is double-clicked", async () => {
       const handleDoubleClick = vi.fn();
       const beat = createBeatData({
-        beat_number: 9,
+        beatNumber: 9,
         isBlank: true,
       });
 
@@ -247,8 +247,8 @@ describe("BeatView Integration", () => {
       });
 
       const beat = createBeatData({
-        beat_number: 10,
-        pictograph_data: pictographData,
+        beatNumber: 10,
+        pictographData: pictographData,
       });
 
       render(BeatView, {
@@ -272,7 +272,7 @@ describe("BeatView Integration", () => {
     it("should call onHover when mouse enters", async () => {
       const handleHover = vi.fn();
       const beat = createBeatData({
-        beat_number: 11,
+        beatNumber: 11,
         isBlank: true,
       });
 
@@ -294,7 +294,7 @@ describe("BeatView Integration", () => {
     it("should call onLeave when mouse leaves", async () => {
       const handleLeave = vi.fn();
       const beat = createBeatData({
-        beat_number: 12,
+        beatNumber: 12,
         isBlank: true,
       });
 
@@ -318,7 +318,7 @@ describe("BeatView Integration", () => {
     it("should handle Enter key press", async () => {
       const handleClick = vi.fn();
       const beat = createBeatData({
-        beat_number: 13,
+        beatNumber: 13,
         isBlank: true,
       });
 
@@ -340,7 +340,7 @@ describe("BeatView Integration", () => {
     it("should handle Space key press", async () => {
       const handleClick = vi.fn();
       const beat = createBeatData({
-        beat_number: 14,
+        beatNumber: 14,
         isBlank: true,
       });
 
@@ -363,9 +363,9 @@ describe("BeatView Integration", () => {
   describe("Reversal Indicators", () => {
     it("should show blue reversal indicator", () => {
       const beat = createBeatData({
-        beat_number: 15,
-        blue_reversal: true,
-        red_reversal: false,
+        beatNumber: 15,
+        blueReversal: true,
+        redReversal: false,
         isBlank: true,
       });
 
@@ -385,9 +385,9 @@ describe("BeatView Integration", () => {
 
     it("should show red reversal indicator", () => {
       const beat = createBeatData({
-        beat_number: 16,
-        blue_reversal: false,
-        red_reversal: true,
+        beatNumber: 16,
+        blueReversal: false,
+        redReversal: true,
         isBlank: true,
       });
 
@@ -407,9 +407,9 @@ describe("BeatView Integration", () => {
 
     it("should show both reversal indicators", () => {
       const beat = createBeatData({
-        beat_number: 17,
-        blue_reversal: true,
-        red_reversal: true,
+        beatNumber: 17,
+        blueReversal: true,
+        redReversal: true,
         isBlank: true,
       });
 
@@ -431,7 +431,7 @@ describe("BeatView Integration", () => {
   describe("Accessibility", () => {
     it("should have proper ARIA attributes", () => {
       const beat = createBeatData({
-        beat_number: 18,
+        beatNumber: 18,
         isBlank: true,
       });
 
@@ -450,7 +450,7 @@ describe("BeatView Integration", () => {
 
     it("should be keyboard focusable", () => {
       const beat = createBeatData({
-        beat_number: 19,
+        beatNumber: 19,
         isBlank: true,
       });
 
@@ -473,8 +473,8 @@ describe("BeatView Integration", () => {
       });
 
       const beat = createBeatData({
-        beat_number: 20,
-        pictograph_data: pictographData,
+        beatNumber: 20,
+        pictographData: pictographData,
       });
 
       render(BeatView, {
@@ -494,7 +494,7 @@ describe("BeatView Integration", () => {
 
     it("should maintain responsive styling", () => {
       const beat = createBeatData({
-        beat_number: 21,
+        beatNumber: 21,
         isBlank: true,
       });
 

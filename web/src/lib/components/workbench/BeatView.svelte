@@ -27,11 +27,11 @@
 
   const config = $derived(beatFrameService.config);
   const displayText = $derived(
-    beat.isBlank && !beat.pictograph_data
-      ? (beat.beat_number ?? index + 1).toString()
-      : (beat.pictograph_data?.letter ??
+    beat.isBlank && !beat.pictographData
+      ? (beat.beatNumber ?? index + 1).toString()
+      : (beat.pictographData?.letter ??
           beat.metadata?.letter ??
-          (beat.beat_number ?? index + 1).toString())
+          (beat.beatNumber ?? index + 1).toString())
   );
 
   function handleClick() {
@@ -63,7 +63,7 @@
   class:selected={isSelected}
   class:hovered={isHovered}
   class:blank={beat.isBlank}
-  class:has-pictograph={beat.pictograph_data != null}
+  class:has-pictograph={beat.pictographData != null}
   style:width="{config.beatSize}px"
   style:height="{config.beatSize}px"
   style="position: relative; display: flex; align-items: center; justify-content: center;"
@@ -74,10 +74,10 @@
   onmouseleave={handleMouseLeave}
   role="button"
   tabindex="0"
-  aria-label="Beat {beat.beat_number ?? index + 1}"
+  aria-label="Beat {beat.beatNumber ?? index + 1}"
 >
   <div class="beat-content">
-    {#if beat.pictograph_data}
+    {#if beat.pictographData}
       <!-- Render actual pictograph using ModernPictograph component -->
       <div class="pictograph-container">
         <ModernPictograph
@@ -95,12 +95,12 @@
     {/if}
   </div>
 
-  {#if beat.blue_reversal || beat.red_reversal}
+  {#if beat.blueReversal || beat.redReversal}
     <div class="reversal-indicators">
-      {#if beat.blue_reversal}
+      {#if beat.blueReversal}
         <div class="reversal blue"></div>
       {/if}
-      {#if beat.red_reversal}
+      {#if beat.redReversal}
         <div class="reversal red"></div>
       {/if}
     </div>

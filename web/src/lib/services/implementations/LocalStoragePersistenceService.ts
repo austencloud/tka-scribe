@@ -190,7 +190,7 @@ export class LocalStoragePersistenceService implements IPersistenceService {
     const beats: BeatData[] = beatsArray.filter((b): b is BeatData => {
       if (b == null || typeof b !== "object") return false;
       const candidate = b as Record<string, unknown>;
-      return "beat_number" in candidate;
+      return "beatNumber" in candidate;
     });
     const result: SequenceData = {
       id: data.id as string,

@@ -2,37 +2,7 @@
  * Sophisticated Option Picker State using ONLY Svelte 5 Runes
  *
  * Complete port of the legacy system with advanced features using pure runes:
- * - 		if (sequence && sequence.length > 			// For empty sequence, try to get start position from localStorage
-			const startPositionData = localStorage.getItem('startPosition');
-			if (startPositionData) {
-				const startPosition = JSON.parse(startPositionData);
-				const endPosition = typeof startPosition.endPosition === 'string' ? startPosition.endPosition : null;
-				if (endPosition) {
-					console.log(`🎯 Runes loading options for start position: ${endPosition}`);
-
-					const optionDataService = new OptionDataService();
-					// Note: OptionDataService doesn't need initialization
-
-					nextOptions = await optionDataService.getNextOptionsFromEndPosition(
-						endPosition,
-						GridMode.DIAMOND,
-						{}
-					);astBeat = sequence[sequence.length - 1];
-			const endPosition = typeof lastBeat?.endPosition === 'string' ? lastBeat.endPosition :
-				typeof lastBeat?.metadata?.endPosition === 'string' ? lastBeat.metadata.endPosition : null;
-
-			if (endPosition && typeof endPosition === 'string') {
-				console.log(`🎯 Runes loading options for end position: ${endPosition}`);
-
-				// Create OptionDataService instance
-				const optionDataService = new OptionDataService();
-				// Note: OptionDataService doesn't need initialization
-
-				nextOptions = await optionDataService.getNextOptionsFromEndPosition(
-					endPosition,
-					GridMode.DIAMOND,
-					{} // No filters
-				);ate management
+ * - Advanced state management
  * - Sophisticated filtering and grouping
  * - Real option data service integration
  * - Performance optimizations
@@ -178,31 +148,14 @@ export function createOptionPickerRunes() {
 
   // ===== Actions =====
   async function loadOptions(sequence: PictographData[]) {
-    console.log("🚀 Runes loadOptions called with sequence:", {
-      sequenceLength: sequence?.length || 0,
-      isEmpty: !sequence || sequence.length === 0,
-    });
-
-    // For empty sequence, load from start position
-    if (!sequence || sequence.length === 0) {
-      console.log("🎯 Empty sequence - loading from start position...");
-      // Don't return early - continue to load from start position
-    }
-
     sequenceData = sequence;
 
-    // **NEW: Check for preloaded options first to avoid loading state**
+    // **Check for preloaded options first to avoid loading state**
     try {
       // First check for specific preloaded options (from individual clicks)
       const preloadedData = localStorage.getItem("preloaded_options");
       if (preloadedData) {
-        console.log(
-          "✨ Using individually preloaded options for seamless transition"
-        );
         const preloadedOptions = JSON.parse(preloadedData);
-        console.log(
-          `🔧 Runes setting optionsData with ${preloadedOptions?.length || 0} preloaded options`
-        );
         optionsData = preloadedOptions || [];
         uiState.isLoading = false;
         uiState.error = null;
@@ -215,7 +168,6 @@ export function createOptionPickerRunes() {
           !uiState.lastSelectedTab[uiState.sortMethod] ||
           uiState.lastSelectedTab[uiState.sortMethod] === null
         ) {
-          console.log('No tab selected yet, defaulting to "all"');
           setLastSelectedTabForSort(uiState.sortMethod, "all");
         }
 
@@ -247,13 +199,7 @@ export function createOptionPickerRunes() {
 
         // If we have preloaded options for this end position, use them
         if (targetEndPosition && allPreloadedOptions[targetEndPosition]) {
-          console.log(
-            `✨ Using bulk preloaded options for end position: ${targetEndPosition}`
-          );
           const optionsForPosition = allPreloadedOptions[targetEndPosition];
-          console.log(
-            `🔧 Runes setting optionsData with ${optionsForPosition?.length || 0} bulk preloaded options`
-          );
           optionsData = optionsForPosition || [];
           uiState.isLoading = false;
           uiState.error = null;
@@ -263,7 +209,6 @@ export function createOptionPickerRunes() {
             !uiState.lastSelectedTab[uiState.sortMethod] ||
             uiState.lastSelectedTab[uiState.sortMethod] === null
           ) {
-            console.log('No tab selected yet, defaulting to "all"');
             setLastSelectedTabForSort(uiState.sortMethod, "all");
           }
 
@@ -278,7 +223,6 @@ export function createOptionPickerRunes() {
     }
 
     // Normal loading process (only if no preloaded options)
-    // Note: Set loading state here to avoid brief flash when preloaded data exists
     uiState.isLoading = true;
     uiState.error = null;
 
@@ -292,10 +236,6 @@ export function createOptionPickerRunes() {
           lastBeat?.endPosition || lastBeat?.metadata?.endPosition;
 
         if (endPosition && typeof endPosition === "string") {
-          console.log(
-            `🎯 Runes loading options for end position: ${endPosition}`
-          );
-
           // Get the option data service through DI
           const optionDataService = resolve("IOptionDataService") as {
             getNextOptions(sequence: unknown[]): Promise<PictographData[]>;
@@ -304,7 +244,7 @@ export function createOptionPickerRunes() {
           // Create a minimal sequence with a beat that has the end position
           const minimalSequence = [
             createBeatData({
-              beat_number: 1,
+              beatNumber: 1,
               metadata: { endPosition: endPosition },
             }),
           ];
@@ -323,10 +263,6 @@ export function createOptionPickerRunes() {
               ? startPosition.endPosition
               : null;
           if (endPosition) {
-            console.log(
-              `🎯 Runes loading options for start position: ${endPosition}`
-            );
-
             // Get the option data service through DI
             const optionDataService = resolve("IOptionDataService") as {
               getNextOptions(sequence: unknown[]): Promise<PictographData[]>;
@@ -335,7 +271,7 @@ export function createOptionPickerRunes() {
             // Create a minimal sequence with a beat that has the end position
             const minimalSequence = [
               createBeatData({
-                beat_number: 1,
+                beatNumber: 1,
                 metadata: { endPosition: endPosition },
               }),
             ];
@@ -351,13 +287,7 @@ export function createOptionPickerRunes() {
         console.warn("No options available for the current sequence");
       }
 
-      console.log(
-        `🔧 Runes setting optionsData with ${nextOptions?.length || 0} options`
-      );
       optionsData = nextOptions || [];
-      console.log(
-        `🔧 Runes optionsData set, current length: ${optionsData.length}`
-      );
       uiState.isLoading = false;
 
       // Only set default tab if we don't have a selected tab yet
@@ -365,7 +295,6 @@ export function createOptionPickerRunes() {
         !uiState.lastSelectedTab[uiState.sortMethod] ||
         uiState.lastSelectedTab[uiState.sortMethod] === null
       ) {
-        console.log('No tab selected yet, defaulting to "all"');
         setLastSelectedTabForSort(uiState.sortMethod, "all");
 
         if (typeof document !== "undefined") {
@@ -391,9 +320,8 @@ export function createOptionPickerRunes() {
     uiState.sortMethod = method;
   }
 
-  function setReversalFilter(filter: ReversalFilter) {
+  function setReversalFilter(_filter: ReversalFilter) {
     // Note: ReversalFilter would need to be added to UIState if needed
-    console.log("Setting reversal filter:", filter);
   }
 
   function setLastSelectedTabForSort(
@@ -514,16 +442,7 @@ export function createOptionPickerRunes() {
       sequenceData = seq;
     },
     setOptions: (opts: PictographData[]) => {
-      console.log("🔧 setOptions called with:", {
-        optionsCount: opts?.length,
-        firstOption: opts?.[0]?.letter,
-        currentOptionsDataLength: optionsData?.length,
-      });
       optionsData = opts;
-      console.log(
-        "🔧 setOptions completed, new optionsData length:",
-        optionsData?.length
-      );
     },
     setSelectedPictograph: (opt: PictographData | null) => {
       selectedPictograph = opt;

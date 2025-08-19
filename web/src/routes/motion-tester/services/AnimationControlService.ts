@@ -65,9 +65,9 @@ export class AnimationControlService implements IAnimationControlService {
     // Create a single beat with the test motion
     const testBeat = createBeatData({
       id: "test-beat-1",
-      beat_number: 1,
+      beatNumber: 1,
       duration: 1,
-      pictograph_data: createPictographData({
+      pictographData: createPictographData({
         id: "test-pictograph-1",
         letter: "TEST",
         motions: {

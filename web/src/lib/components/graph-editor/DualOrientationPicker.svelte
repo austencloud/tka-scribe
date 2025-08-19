@@ -53,9 +53,9 @@
 
   // Update orientations from beat data
   function updateFromBeatData(beatData: BeatData | null) {
-    if (!beatData?.pictograph_data) return;
+    if (!beatData?.pictographData) return;
 
-    const pictograph = beatData.pictograph_data;
+    const pictograph = beatData.pictographData;
 
     // Update orientations from pictograph data
     if (pictograph.motions?.blue?.startOrientation) {

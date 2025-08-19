@@ -238,12 +238,12 @@ export class OrientationCalculationService
    * Update start orientations - returns updated beat data
    */
   updateStartOrientations(nextBeat: BeatData, lastBeat: BeatData): BeatData {
-    if (!nextBeat.pictograph_data || !lastBeat.pictograph_data) {
-      throw new Error("Both beats must have pictograph_data");
+    if (!nextBeat.pictographData || !lastBeat.pictographData) {
+      throw new Error("Both beats must have pictographData");
     }
 
-    const lastBlueMotion = lastBeat.pictograph_data.motions?.["blue"];
-    const lastRedMotion = lastBeat.pictograph_data.motions?.["red"];
+    const lastBlueMotion = lastBeat.pictographData.motions?.["blue"];
+    const lastRedMotion = lastBeat.pictographData.motions?.["red"];
 
     if (!lastBlueMotion?.endOrientation || !lastRedMotion?.endOrientation) {
       throw new Error(
@@ -252,7 +252,7 @@ export class OrientationCalculationService
     }
 
     // Create updated motions with new start orientations
-    const updatedMotions = { ...nextBeat.pictograph_data.motions };
+    const updatedMotions = { ...nextBeat.pictographData.motions };
 
     if (updatedMotions.blue) {
       updatedMotions.blue = {
@@ -271,8 +271,8 @@ export class OrientationCalculationService
     // Return updated beat data
     return {
       ...nextBeat,
-      pictograph_data: {
-        ...nextBeat.pictograph_data,
+      pictographData: {
+        ...nextBeat.pictographData,
         motions: updatedMotions,
       },
     };
@@ -282,14 +282,14 @@ export class OrientationCalculationService
    * Update end orientations - returns updated beat data
    */
   updateEndOrientations(beat: BeatData): BeatData {
-    if (!beat.pictograph_data) {
-      throw new Error("Beat must have pictograph_data");
+    if (!beat.pictographData) {
+      throw new Error("Beat must have pictographData");
     }
 
-    const updatedMotions = { ...beat.pictograph_data.motions };
+    const updatedMotions = { ...beat.pictographData.motions };
 
     // Calculate blue end orientation
-    const blueMotion = beat.pictograph_data.motions?.["blue"];
+    const blueMotion = beat.pictographData.motions?.["blue"];
     if (blueMotion) {
       const blueMotionData: MotionData = {
         motionType: blueMotion.motionType || MotionType.STATIC,
@@ -315,7 +315,7 @@ export class OrientationCalculationService
     }
 
     // Calculate red end orientation
-    const redMotion = beat.pictograph_data.motions?.["red"];
+    const redMotion = beat.pictographData.motions?.["red"];
     if (redMotion) {
       const redMotionData: MotionData = {
         motionType: redMotion.motionType || MotionType.STATIC,
@@ -343,8 +343,8 @@ export class OrientationCalculationService
     // Return updated beat data
     return {
       ...beat,
-      pictograph_data: {
-        ...beat.pictograph_data,
+      pictographData: {
+        ...beat.pictographData,
         motions: updatedMotions,
       },
     };

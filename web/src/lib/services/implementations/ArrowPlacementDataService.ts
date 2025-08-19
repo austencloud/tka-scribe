@@ -82,8 +82,6 @@ export class ArrowPlacementDataService implements IArrowPlacementDataService {
       return;
     }
 
-    console.log("Loading arrow placement data...");
-
     try {
       // Load diamond placements
       await this.loadGridPlacements(DomainGridMode.DIAMOND);
@@ -92,7 +90,6 @@ export class ArrowPlacementDataService implements IArrowPlacementDataService {
       await this.loadGridPlacements(DomainGridMode.BOX);
 
       this.isDataLoaded = true;
-      console.log("✅ Arrow placement data loaded successfully");
     } catch (error) {
       console.error("❌ Failed to load arrow placement data:", error);
       throw new Error(
@@ -112,7 +109,6 @@ export class ArrowPlacementDataService implements IArrowPlacementDataService {
       try {
         const placementData = await this.loadJsonFile(filePath);
         this.allPlacements[gridMode][motionType] = placementData;
-        console.log(`Loaded ${motionType} placements for ${gridMode} grid`);
       } catch (error) {
         console.warn(
           `Could not load ${motionType} placements for ${gridMode}: ${error}`
@@ -176,10 +172,6 @@ export class ArrowPlacementDataService implements IArrowPlacementDataService {
     }
 
     const [x, y] = adjustment;
-    console.log(
-      `Found adjustment for ${motionType} ${placementKey} ${turnsStr}: [${x}, ${y}]`
-    );
-
     return { x, y };
   }
 

@@ -178,10 +178,18 @@ export class ArrowAdjustmentCalculator implements IArrowAdjustmentCalculator {
           pictographData,
           arrowColor
         );
-        return specialAdjustment;
-      } catch {
+
+        if (specialAdjustment) {
+          return specialAdjustment;
+        }
+
         // No special placement found - fall back to default
         console.debug("No special placement found, falling back to default");
+      } catch {
+        // Error in special placement lookup - fall back to default
+        console.debug(
+          "Error in special placement lookup, falling back to default"
+        );
       }
 
       // STEP 2: Fall back to default calculation
@@ -248,7 +256,7 @@ export class ArrowAdjustmentCalculator implements IArrowAdjustmentCalculator {
     motionData: MotionData,
     pictographData: PictographData,
     arrowColor?: string
-  ): Promise<Point> {
+  ): Promise<Point | null> {
     /**
      * Look up special placement using exact legacy logic.
      * IDENTICAL to ArrowAdjustmentLookup.lookupSpecialPlacement()
@@ -266,17 +274,11 @@ export class ArrowAdjustmentCalculator implements IArrowAdjustmentCalculator {
       }
 
       // Return null instead of throwing when no special placement found
-      throw new Error("No special placement found");
+      return null;
     } catch (error) {
-      // Re-throw the "No special placement found" error for proper fallback handling
-      if (
-        error instanceof Error &&
-        error.message === "No special placement found"
-      ) {
-        throw error;
-      }
       console.error("Error in special placement lookup:", error);
-      throw new Error(`Special placement lookup failed: ${error}`);
+      // Return null on error to allow fallback to default adjustment
+      return null;
     }
   }
 

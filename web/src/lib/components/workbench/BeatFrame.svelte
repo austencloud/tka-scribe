@@ -45,61 +45,6 @@
   let beatFrameRef: HTMLElement = $state()!;
   let startTileRef: HTMLElement = $state()!;
 
-  // Debug function to log positioning
-  function logElementPositions() {
-    if (containerRef && beatFrameScrollRef && beatFrameRef) {
-      const workbenchContainer =
-        containerRef.closest(".workbench") ||
-        containerRef.closest(".beat-frame-wrapper");
-
-      const containerRect = containerRef.getBoundingClientRect();
-      const scrollRect = beatFrameScrollRef.getBoundingClientRect();
-      const frameRect = beatFrameRef.getBoundingClientRect();
-      const workbenchRect = workbenchContainer?.getBoundingClientRect();
-      const startTileRect = startTileRef?.getBoundingClientRect();
-
-      console.log("🔍 [POSITIONING DEBUG] Element positions:", {
-        workbench: {
-          left: workbenchRect?.left,
-          right: workbenchRect?.right,
-          width: workbenchRect?.width,
-          centerX: workbenchRect
-            ? workbenchRect.left + workbenchRect.width / 2
-            : "N/A",
-        },
-        container: {
-          left: containerRect.left,
-          right: containerRect.right,
-          width: containerRect.width,
-          centerX: containerRect.left + containerRect.width / 2,
-        },
-        beatFrameScroll: {
-          left: scrollRect.left,
-          right: scrollRect.right,
-          width: scrollRect.width,
-          centerX: scrollRect.left + scrollRect.width / 2,
-        },
-        beatFrame: {
-          left: frameRect.left,
-          right: frameRect.right,
-          width: frameRect.width,
-          centerX: frameRect.left + frameRect.width / 2,
-        },
-        startTile: startTileRect
-          ? {
-              left: startTileRect.left,
-              right: startTileRect.right,
-              width: startTileRect.width,
-              centerX: startTileRect.left + startTileRect.width / 2,
-            }
-          : "N/A",
-        beatCount: beats.length,
-        frameDimensions,
-        startPosition: beatFrameService.calculateStartPosition(beats.length),
-      });
-    }
-  }
-
   // Track container dimensions and update beat frame service
   onMount(() => {
     if (containerRef) {
@@ -156,14 +101,6 @@
   $effect(() => {
     if (frameDimensions?.height != null) {
       onnaturalheightchange?.({ height: frameDimensions.height });
-    }
-  });
-
-  // Call debug logging when layout changes
-  $effect(() => {
-    if (containerRef && beatFrameScrollRef && beatFrameRef) {
-      // Use setTimeout to ensure DOM is updated
-      setTimeout(logElementPositions, 100);
     }
   });
 
@@ -245,7 +182,7 @@
         <div
           class="start-tile"
           bind:this={startTileRef}
-          class:has-pictograph={startPosition?.pictograph_data}
+          class:has-pictograph={startPosition?.pictographData}
           style:left="{startPositionCoords.x}px"
           style:top="{startPositionCoords.y}px"
           style:width="{config.beatSize}px"
@@ -262,7 +199,7 @@
           }}
           aria-label="Start Position"
         >
-          {#if startPosition?.pictograph_data}
+          {#if startPosition?.pictographData}
             <!-- Display actual start position pictograph -->
             <BeatView
               beat={startPosition}

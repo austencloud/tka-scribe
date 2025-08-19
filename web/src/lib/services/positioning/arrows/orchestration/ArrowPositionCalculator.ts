@@ -251,10 +251,6 @@ export class ArrowPositionCalculator implements IArrowPositioningOrchestrator {
         propRotDir as keyof typeof mirrorConditions.anti
       ] ?? false;
 
-    console.log(
-      `🪞 shouldMirrorArrow: ${arrowData.color} arrow - motion: ${motionType}, rotationDirection: ${propRotDir} → mirror: ${shouldMirror}`
-    );
-
     return shouldMirror;
   }
 

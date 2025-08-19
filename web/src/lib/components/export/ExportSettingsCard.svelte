@@ -3,7 +3,7 @@
   interface Props {
     exportSettings: {
       include_start_position: boolean;
-      add_beat_numbers: boolean;
+      add_beatNumbers: boolean;
       add_reversal_symbols: boolean;
       add_user_info: boolean;
       add_word: boolean;
@@ -81,11 +81,11 @@
       <label class="checkbox-option">
         <input
           type="checkbox"
-          checked={exportSettings.add_beat_numbers}
+          checked={exportSettings.add_beatNumbers}
           onchange={(e) => {
             const target = e.target;
             if (target instanceof HTMLInputElement) {
-              handleCheckboxChange("add_beat_numbers", target.checked);
+              handleCheckboxChange("add_beatNumbers", target.checked);
             }
           }}
         />

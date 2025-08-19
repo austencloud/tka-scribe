@@ -56,7 +56,7 @@ export const defaultMetadataTestingConfig: MetadataTestingConfig = {
     "diamond",
     "figure8",
   ],
-  requiredFields: ["letter", "beat_number"],
+  requiredFields: ["letter", "beatNumber"],
   healthScoreWeights: {
     authorWeight: 0.15,
     levelWeight: 0.15,

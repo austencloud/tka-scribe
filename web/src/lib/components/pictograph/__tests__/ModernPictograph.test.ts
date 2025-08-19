@@ -74,8 +74,8 @@ describe("ModernPictograph", () => {
       });
 
       const beatData = createBeatData({
-        beat_number: 1,
-        pictograph_data: pictographData,
+        beatNumber: 1,
+        pictographData: pictographData,
       });
 
       render(Pictograph, {
@@ -278,7 +278,7 @@ describe("ModernPictograph", () => {
 
     it("should show beat number for beat without letter", () => {
       const beatData = createBeatData({
-        beat_number: 7,
+        beatNumber: 7,
         isBlank: false,
       });
 

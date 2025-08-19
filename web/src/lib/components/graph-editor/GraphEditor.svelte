@@ -138,10 +138,10 @@
         {/if}
       </div>
       <div class="pictograph-display">
-        {#if selectedBeatData?.pictograph_data}
+        {#if selectedBeatData?.pictographData}
           <ModernPictograph
             bind:this={modernPictograph}
-            pictographData={selectedBeatData.pictograph_data}
+            pictographData={selectedBeatData.pictographData}
             beatNumber={selectedBeatIndex || 0}
             onClick={() => console.log("Pictograph clicked")}
           />

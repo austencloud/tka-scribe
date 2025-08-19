@@ -76,7 +76,7 @@ instead of stores. It orchestrates the rendering of Grid, Props, Arrows, and Gly
   // Derived state - get effective pictograph data
   const effectivePictographData = $derived(() => {
     if (pictographData) return pictographData;
-    if (beatData?.pictograph_data) return beatData.pictograph_data;
+    if (beatData?.pictographData) return beatData.pictographData;
     return null;
   });
 
@@ -89,7 +89,7 @@ instead of stores. It orchestrates the rendering of Grid, Props, Arrows, and Gly
   const displayLetter = $derived(() => {
     const data = effectivePictographData();
     if (data?.letter) return data.letter;
-    if (beatData && !beatData.isBlank) return beatData.beat_number.toString();
+    if (beatData && !beatData.isBlank) return beatData.beatNumber.toString();
     return null;
   });
 
@@ -243,7 +243,7 @@ instead of stores. It orchestrates the rendering of Grid, Props, Arrows, and Gly
 
   // Compute beat number from explicit prop or fallback to beatData
   const computedBeatNumber = $derived(() => {
-    return beatNumber ?? beatData?.beat_number ?? null;
+    return beatNumber ?? beatData?.beatNumber ?? null;
   });
 </script>
 

@@ -68,7 +68,7 @@ export function createStartPositionData(
     // CRITICAL: Include endPosition field for OptionPicker
     endPosition: endPosition,
     // Include the full pictograph data
-    pictograph_data: {
+    pictographData: {
       ...pictographData,
       // Ensure static motion types for start positions
       motions: {
@@ -102,8 +102,8 @@ export function createStartPositionBeat(
   pictographData: PictographData
 ): BeatData {
   return createBeatData({
-    pictograph_data: pictographData,
-    beat_number: 1,
+    pictographData: pictographData,
+    beatNumber: 1,
     // Store end position in metadata for compatibility
     metadata: {
       endPosition: extractEndPosition(pictographData),
@@ -118,7 +118,6 @@ export function createStartPositionBeat(
 export function storeStartPositionData(data: Record<string, unknown>): void {
   try {
     localStorage.setItem("startPosition", JSON.stringify(data));
-    console.log("🚀 StartPositionPicker: Saved start position to localStorage");
   } catch (error) {
     console.error("Failed to store start position data:", error);
   }
@@ -130,9 +129,6 @@ export function storeStartPositionData(data: Record<string, unknown>): void {
 export function storePreloadedOptions(options: unknown[]): void {
   try {
     localStorage.setItem("preloaded_options", JSON.stringify(options || []));
-    console.log(
-      "🚀 StartPositionPicker: Preloaded options stored in localStorage"
-    );
   } catch (error) {
     console.error("Failed to store preloaded options:", error);
   }

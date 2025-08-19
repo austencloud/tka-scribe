@@ -9,11 +9,14 @@
 export enum Timing {
   TOG = "tog",
   SPLIT = "split",
+  QUARTER = "quarter",
+  NONE = "none",
 }
 
 export enum Direction {
   SAME = "same",
   OPP = "opp",
+  NONE = "none",
 }
 
 export enum MotionType {

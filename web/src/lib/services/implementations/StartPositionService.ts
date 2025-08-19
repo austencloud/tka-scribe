@@ -54,9 +54,9 @@ export class StartPositionService implements IStartPositionService {
 
         const beatData: BeatData[] = fallbackKeys.map((key, index) => {
           return createBeatData({
-            beat_number: 0,
+            beatNumber: 0,
             isBlank: false,
-            pictograph_data: this.createStartPositionPictograph(
+            pictographData: this.createStartPositionPictograph(
               key,
               index,
               DomainGridMode.DIAMOND
@@ -72,9 +72,9 @@ export class StartPositionService implements IStartPositionService {
 
       const beatData: BeatData[] = startPositionKeys.map((key, index) => {
         return createBeatData({
-          beat_number: 0,
+          beatNumber: 0,
           isBlank: false,
-          pictograph_data: this.createStartPositionPictograph(
+          pictographData: this.createStartPositionPictograph(
             key,
             index,
             gridMode
@@ -111,8 +111,8 @@ export class StartPositionService implements IStartPositionService {
         // Create the format that OptionPicker expects
         const optionPickerFormat = {
           endPosition: startPosition.metadata?.endPosition || "alpha1", // Extract from metadata
-          pictograph_data: startPosition.pictograph_data,
-          letter: startPosition.pictograph_data?.letter,
+          pictographData: startPosition.pictographData,
+          letter: startPosition.pictographData?.letter,
           gridMode: "diamond", // Default
           isStartPosition: true,
           // Include the full beat data for compatibility
@@ -135,17 +135,17 @@ export class StartPositionService implements IStartPositionService {
   validateStartPosition(position: BeatData): ValidationResult {
     const errors: ValidationError[] = [];
 
-    if (!position.pictograph_data) {
+    if (!position.pictographData) {
       errors.push({
-        code: "MISSING_PICTOGRAPH_DATA",
+        code: "MISSING_pictographData",
         message: "Start position must have pictograph data",
         severity: "error",
       });
     }
 
     if (
-      !position.pictograph_data?.motions?.blue &&
-      !position.pictograph_data?.motions?.red
+      !position.pictographData?.motions?.blue &&
+      !position.pictographData?.motions?.red
     ) {
       errors.push({
         code: "MISSING_MOTIONS",
@@ -156,7 +156,7 @@ export class StartPositionService implements IStartPositionService {
 
     // Validate motion types are static for start positions
     if (
-      position.pictograph_data?.motions?.blue?.motionType !==
+      position.pictographData?.motions?.blue?.motionType !==
       DomainMotionType.STATIC
     ) {
       errors.push({
@@ -167,7 +167,7 @@ export class StartPositionService implements IStartPositionService {
     }
 
     if (
-      position.pictograph_data?.motions?.red?.motionType !==
+      position.pictographData?.motions?.red?.motionType !==
       DomainMotionType.STATIC
     ) {
       errors.push({

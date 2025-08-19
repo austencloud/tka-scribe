@@ -348,8 +348,8 @@ export class MetadataAnalysisService implements IMetadataAnalysisService {
       }
 
       // Check for duplicate beat numbers
-      if (beat.beat_number !== undefined) {
-        const beatNum = beat.beat_number as number;
+      if (beat.beatNumber !== undefined) {
+        const beatNum = beat.beatNumber as number;
         if (seenBeatNumbers.has(beatNum)) {
           duplicateBeats.push(beatNumber);
         }

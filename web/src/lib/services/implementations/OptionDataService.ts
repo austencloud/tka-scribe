@@ -40,7 +40,6 @@ export interface OptionDataServiceInterface {
 export class OptionDataService implements OptionDataServiceInterface {
   private pictographCache: PictographData[] | null = null;
   private loadingPromise: Promise<PictographData[]> | null = null;
-  private csvDebugLogged = false;
 
   /**
    * Initialize the service - loads CSV data
@@ -51,9 +50,6 @@ export class OptionDataService implements OptionDataServiceInterface {
         this.loadingPromise = this.loadPictographsFromCSV();
       }
       this.pictographCache = await this.loadingPromise;
-      console.log(
-        `✅ OptionDataService initialized with ${this.pictographCache.length} pictographs`
-      );
     } catch (error) {
       console.error("❌ Failed to initialize OptionDataService:", error);
       throw error;
@@ -65,29 +61,17 @@ export class OptionDataService implements OptionDataServiceInterface {
    */
   async getNextOptionsFromEndPosition(
     endPosition: string,
-    gridMode: GridMode,
+    _gridMode: GridMode,
     _options: Record<string, unknown>
   ): Promise<PictographData[]> {
     try {
-      // Ensure service is initialized
-      const wasLoadedFromCache = !!this.pictographCache;
       if (!this.pictographCache) {
         await this.initialize();
       }
 
-      console.log(
-        `🔍 Getting options for end position: ${endPosition}, grid: ${gridMode} (${wasLoadedFromCache ? "from cache" : "loaded fresh"})`
-      );
-
-      // Filter by start position (end position becomes the next start position)
       const filteredOptions = this.filterByStartPosition(
         this.pictographCache || [],
         endPosition
-      );
-
-      // TODO: Also filter by grid mode if needed
-      console.log(
-        `📊 Filtered to ${filteredOptions.length} options for position: ${endPosition}`
       );
 
       return filteredOptions;
@@ -102,21 +86,13 @@ export class OptionDataService implements OptionDataServiceInterface {
    */
   async getNextOptions(sequence: BeatData[]): Promise<PictographData[]> {
     try {
-      // Load pictographs from CSV if not already cached
-      let wasLoadedFromCache = true;
       if (!this.pictographCache) {
-        wasLoadedFromCache = false;
         if (!this.loadingPromise) {
           this.loadingPromise = this.loadPictographsFromCSV();
         }
         this.pictographCache = await this.loadingPromise;
       }
 
-      console.log(
-        `📊 ${wasLoadedFromCache ? "Using cached" : "Loaded"} ${this.pictographCache.length} pictographs ${wasLoadedFromCache ? "from cache" : "from CSV"}`
-      );
-
-      // Filter by position based on last beat
       if (sequence.length > 0) {
         const lastBeat = sequence[sequence.length - 1];
         const endPosition = this.extractEndPosition(lastBeat);
@@ -126,17 +102,8 @@ export class OptionDataService implements OptionDataServiceInterface {
             this.pictographCache,
             endPosition
           );
-          console.log(
-            `🔍 Filtered from ${this.pictographCache.length} to ${filteredOptions.length} options for position: ${endPosition}`
-          );
           return filteredOptions;
-        } else {
-          console.warn(
-            "⚠️ No end position found in last beat, returning all options"
-          );
         }
-      } else {
-        console.log("📝 Empty sequence - returning all start position options");
       }
 
       return this.pictographCache;
@@ -151,9 +118,6 @@ export class OptionDataService implements OptionDataServiceInterface {
    */
   private async loadPictographsFromCSV(): Promise<PictographData[]> {
     try {
-      console.log("📁 Loading pictograph data from CSV files");
-
-      // Load both diamond and box data
       const [diamondResponse, boxResponse] = await Promise.all([
         fetch("/DiamondPictographDataframe.csv"),
         fetch("/BoxPictographDataframe.csv"),
@@ -168,7 +132,6 @@ export class OptionDataService implements OptionDataServiceInterface {
         boxResponse.text(),
       ]);
 
-      // Parse CSV data
       const diamondPictographs = this.parseCSVToPictographs(
         diamondCSV,
         "diamond"
@@ -176,9 +139,6 @@ export class OptionDataService implements OptionDataServiceInterface {
       const boxPictographs = this.parseCSVToPictographs(boxCSV, "box");
 
       const allPictographs = [...diamondPictographs, ...boxPictographs];
-      console.log(
-        `✅ Loaded ${allPictographs.length} pictographs (${diamondPictographs.length} diamond, ${boxPictographs.length} box)`
-      );
 
       return allPictographs;
     } catch (error) {
@@ -195,7 +155,7 @@ export class OptionDataService implements OptionDataServiceInterface {
     gridMode: string
   ): PictographData[] {
     const lines = csvText.trim().split("\n");
-    if (lines.length < 2) return []; // Need header + data
+    if (lines.length < 2) return [];
 
     const headers = lines[0].split(",").map((h) => h.trim());
     const pictographs: PictographData[] = [];
@@ -209,7 +169,6 @@ export class OptionDataService implements OptionDataServiceInterface {
           row[header] = values[index] || "";
         });
 
-        // Create pictograph from CSV row
         const pictograph = this.createPictographFromCSVRow(row, gridMode);
         if (pictograph) {
           pictographs.push(pictograph);
@@ -230,28 +189,11 @@ export class OptionDataService implements OptionDataServiceInterface {
     gridMode: string
   ): PictographData | null {
     try {
-      // Debug: Log the first row to see the actual CSV structure
-      if (!this.csvDebugLogged) {
-        this.csvDebugLogged = true;
-        console.log("🔍 CSV FIRST ROW DEBUG:");
-        console.log("  letter:", row.letter);
-        console.log("  startPosition:", row.startPosition);
-        console.log("  endPosition:", row.endPosition);
-        console.log("  allKeys:", Object.keys(row));
-        console.log(
-          "  keyValues:",
-          Object.keys(row).map((key) => `${key}: ${row[key]}`)
-        );
-        console.log("  fullRow:", row);
-      }
-
-      // Extract letter (most important field)
       const letter = row.letter || row.Letter || null;
       if (!letter) {
-        return null; // Skip rows without letters
+        return null;
       }
 
-      // Create basic motion data from CSV fields with enum conversion
       const blueMotion = createMotionData({
         motionType: this.mapMotionType(
           row.blueMotionType ||
@@ -311,7 +253,6 @@ export class OptionDataService implements OptionDataServiceInterface {
         is_visible: true,
       });
 
-      // Create pictograph with proper domain structure
       return createPictographData({
         letter,
         motions: {
@@ -352,7 +293,6 @@ export class OptionDataService implements OptionDataServiceInterface {
    * Extract end position from beat data
    */
   private extractEndPosition(beat: BeatData): string | null {
-    // Try multiple sources for end position
     if (
       beat.metadata?.endPosition &&
       typeof beat.metadata.endPosition === "string"
@@ -361,10 +301,10 @@ export class OptionDataService implements OptionDataServiceInterface {
     }
 
     if (
-      beat.pictograph_data?.metadata?.endPosition &&
-      typeof beat.pictograph_data.metadata.endPosition === "string"
+      beat.pictographData?.metadata?.endPosition &&
+      typeof beat.pictographData.metadata.endPosition === "string"
     ) {
-      return beat.pictograph_data.metadata.endPosition;
+      return beat.pictographData.metadata.endPosition;
     }
 
     return null;
@@ -378,35 +318,7 @@ export class OptionDataService implements OptionDataServiceInterface {
     pictographs: PictographData[],
     targetPosition: string
   ): PictographData[] {
-    // Debug: Log first few pictographs to see their structure
-    if (pictographs.length > 0) {
-      console.log(
-        `🔍 DEBUG: Checking ${pictographs.length} pictographs for start position "${targetPosition}"`
-      );
-      console.log(`🔍 DEBUG: First pictograph structure:`, {
-        startPosition: pictographs[0].startPosition,
-        endPosition: pictographs[0].endPosition,
-        letter: pictographs[0].letter,
-        metadata: pictographs[0].metadata,
-      });
-
-      // Check a few more to see the pattern
-      const sampleSize = Math.min(5, pictographs.length);
-      for (let i = 0; i < sampleSize; i++) {
-        const p = pictographs[i];
-        const startPosition =
-          p.startPosition ||
-          p.startPosition ||
-          p.metadata?.startPosition ||
-          p.metadata?.start_pos;
-        console.log(
-          `🔍 DEBUG: Pictograph ${i}: letter="${p.letter}", startPosition="${startPosition}"`
-        );
-      }
-    }
-
     const filtered = pictographs.filter((pictograph) => {
-      // Check multiple sources for start position
       const startPosition =
         pictograph.startPosition ||
         pictograph.startPosition ||
@@ -416,9 +328,6 @@ export class OptionDataService implements OptionDataServiceInterface {
       return startPosition === targetPosition;
     });
 
-    console.log(
-      `🎯 Position filter: ${filtered.length} pictographs match start position "${targetPosition}"`
-    );
     return filtered;
   }
 
@@ -450,7 +359,6 @@ export class OptionDataService implements OptionDataServiceInterface {
       return options;
     }
 
-    // Exact legacy letter type mapping from LetterType enum
     const letterTypeMap: { [key: string]: string[] } = {
       "Dual-Shift": [
         "A",
@@ -483,7 +391,6 @@ export class OptionDataService implements OptionDataServiceInterface {
       Static: ["α", "β", "Γ"],
     };
 
-    // Get all selected letters - exact logic from legacy
     const selectedLetters: string[] = [];
     for (const letterType of letterTypes) {
       const letters = letterTypeMap[letterType];
@@ -492,19 +399,10 @@ export class OptionDataService implements OptionDataServiceInterface {
       }
     }
 
-    console.log(`🔍 Filtering by letter types: ${letterTypes.join(", ")}`);
-    console.log(`📝 Selected letters: ${selectedLetters.join(", ")}`);
-
-    // Filter options - exact logic from legacy
     const filteredOptions = options.filter((option) =>
       selectedLetters.includes(option.letter || "")
     );
 
-    console.log(
-      `✅ After letter type filter: ${filteredOptions.length} options`
-    );
-
-    // Return filtered options, or all if none match (legacy behavior)
     return filteredOptions.length > 0 ? filteredOptions : options;
   }
 
@@ -516,25 +414,16 @@ export class OptionDataService implements OptionDataServiceInterface {
     blueRotDir: string,
     redRotDir: string
   ): PictographData[] {
-    console.log(
-      `🔄 Filtering by rotation: blue=${blueRotDir}, red=${redRotDir}`
-    );
-
     const filtered = options.filter((option) => {
-      // Check motions structure (new domain model)
       const blueRot = option.motions?.blue?.rotationDirection || "no_rot";
       const redRot = option.motions?.red?.rotationDirection || "no_rot";
 
-      // Legacy constants: CLOCKWISE = "cw", COUNTER_CLOCKWISE = "ccw", NO_ROT = "no_rot"
       const blueMatches = blueRot === blueRotDir || blueRot === "no_rot";
       const redMatches = redRot === redRotDir || redRot === "no_rot";
 
       return blueMatches && redMatches;
     });
 
-    console.log(`✅ After rotation filter: ${filtered.length} options`);
-
-    // Return filtered options, or all if none match (legacy behavior)
     return filtered.length > 0 ? filtered : options;
   }
 
@@ -553,12 +442,10 @@ export class OptionDataService implements OptionDataServiceInterface {
     };
 
     options.forEach((option) => {
-      // Count by letter type
       const letterType = this.getLetterType(option.letter || "");
       summary.byLetterType[letterType] =
         (summary.byLetterType[letterType] || 0) + 1;
 
-      // Count by motion type
       const blueMotion = option.motions?.blue?.motionType || "unknown";
       const redMotion = option.motions?.red?.motionType || "unknown";
       summary.byMotionType[blueMotion] =
@@ -696,11 +583,9 @@ export class OptionDataService implements OptionDataServiceInterface {
   ): GridPosition | null {
     if (!positionString) return null;
 
-    // Convert string to GridPosition enum
     const lowerPosition = positionString.toLowerCase();
     const gridPositionValues = Object.values(GridPosition);
 
-    // Find matching enum value
     for (const position of gridPositionValues) {
       if (position.toLowerCase() === lowerPosition) {
         return position as GridPosition;
@@ -735,7 +620,6 @@ export class OptionDataService implements OptionDataServiceInterface {
     row: Record<string, string>,
     _index: number
   ): PictographData | null {
-    // Use the existing createPictographFromCSVRow method
     return this.createPictographFromCSVRow(row, "diamond");
   }
 }

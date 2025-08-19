@@ -30,9 +30,9 @@ export function createTestSequence(
     // Beat 1: Blue moves from s to e, Red stays at n
     createBeatData({
       id: "test-beat-1",
-      beat_number: 1,
+      beatNumber: 1,
       duration: 1,
-      pictograph_data: createPictographData({
+      pictographData: createPictographData({
         id: "test-pictograph-1",
         letter: word[0] || "T",
         motions: {
@@ -63,9 +63,9 @@ export function createTestSequence(
     // Beat 2: Blue moves from e to n, Red moves from n to w
     createBeatData({
       id: "test-beat-2",
-      beat_number: 2,
+      beatNumber: 2,
       duration: 1,
-      pictograph_data: createPictographData({
+      pictographData: createPictographData({
         id: "test-pictograph-2",
         letter: word[1] || "E",
         motions: {
@@ -96,9 +96,9 @@ export function createTestSequence(
     // Beat 3: Blue moves from n to w, Red moves from w to s
     createBeatData({
       id: "test-beat-3",
-      beat_number: 3,
+      beatNumber: 3,
       duration: 1,
-      pictograph_data: createPictographData({
+      pictographData: createPictographData({
         id: "test-pictograph-3",
         letter: word[2] || "S",
         motions: {
@@ -129,9 +129,9 @@ export function createTestSequence(
     // Beat 4: Both return to start positions
     createBeatData({
       id: "test-beat-4",
-      beat_number: 4,
+      beatNumber: 4,
       duration: 1,
-      pictograph_data: createPictographData({
+      pictographData: createPictographData({
         id: "test-pictograph-4",
         letter: word[3] || "T",
         motions: {
@@ -182,9 +182,9 @@ export function createSingleBeatTestSequence(
 ): SequenceData {
   const testBeat = createBeatData({
     id: "single-test-beat",
-    beat_number: 1,
+    beatNumber: 1,
     duration: 1,
-    pictograph_data: createPictographData({
+    pictographData: createPictographData({
       id: "single-test-pictograph",
       letter: "T",
       motions: {

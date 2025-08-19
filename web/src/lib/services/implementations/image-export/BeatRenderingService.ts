@@ -53,7 +53,7 @@ export class BeatRenderingService implements IBeatRenderingService {
       ctx.fillRect(0, 0, size, size);
 
       // If beat is blank, return canvas with just background
-      if (beatData.isBlank || !beatData.pictograph_data) {
+      if (beatData.isBlank || !beatData.pictographData) {
         await this.renderEmptyBeat(ctx, beatData, size, options);
         return canvas;
       }
@@ -100,7 +100,7 @@ export class BeatRenderingService implements IBeatRenderingService {
       if (sequence.startPosition) {
         await this.renderPictographToCanvas(
           ctx,
-          { ...sequence.startPosition, beat_number: 0 } as BeatData,
+          { ...sequence.startPosition, beatNumber: 0 } as BeatData,
           size,
           options
         );
@@ -200,7 +200,7 @@ export class BeatRenderingService implements IBeatRenderingService {
     size: number,
     options: BeatRenderOptions
   ): Promise<void> {
-    if (!beatData.pictograph_data) {
+    if (!beatData.pictographData) {
       return;
     }
 
@@ -234,13 +234,13 @@ export class BeatRenderingService implements IBeatRenderingService {
     _options: BeatRenderOptions
   ): Promise<SVGElement | null> {
     try {
-      if (!beatData.pictograph_data) {
+      if (!beatData.pictographData) {
         return null;
       }
 
       // Use the injected pictograph service to render the pictograph to SVG
       const svgElement = await this.pictographService.renderPictograph(
-        beatData.pictograph_data
+        beatData.pictographData
       );
 
       if (svgElement) {
@@ -323,7 +323,7 @@ export class BeatRenderingService implements IBeatRenderingService {
     size: number,
     options: BeatRenderOptions
   ): Promise<void> {
-    const pictograph = beatData.pictograph_data;
+    const pictograph = beatData.pictographData;
     if (!pictograph) {
       throw new Error("Pictograph data is required for rendering");
     }
@@ -370,8 +370,8 @@ export class BeatRenderingService implements IBeatRenderingService {
     this.drawGrid(ctx, "diamond", size);
 
     // Draw beat number if enabled
-    if (options.addBeatNumbers && beatData.beat_number > 0) {
-      this.drawBeatNumber(ctx, beatData.beat_number, size);
+    if (options.addBeatNumbers && beatData.beatNumber > 0) {
+      this.drawBeatNumber(ctx, beatData.beatNumber, size);
     }
   }
 
@@ -399,7 +399,7 @@ export class BeatRenderingService implements IBeatRenderingService {
 
     // Draw beat number
     if (options.addBeatNumbers) {
-      this.drawBeatNumber(ctx, beatData.beat_number, size);
+      this.drawBeatNumber(ctx, beatData.beatNumber, size);
     }
   }
 
@@ -564,7 +564,7 @@ export class BeatRenderingService implements IBeatRenderingService {
     }
 
     // Apply reversal symbols if needed
-    if (beatData.blue_reversal || beatData.red_reversal) {
+    if (beatData.blueReversal || beatData.redReversal) {
       this.drawReversalSymbols(ctx, beatData, size);
     }
   }
@@ -593,12 +593,12 @@ export class BeatRenderingService implements IBeatRenderingService {
   ): void {
     const symbolSize = size * 0.08;
 
-    if (beatData.blue_reversal) {
+    if (beatData.blueReversal) {
       ctx.fillStyle = "#3b82f6";
       ctx.fillRect(size - symbolSize - 5, 5, symbolSize, symbolSize);
     }
 
-    if (beatData.red_reversal) {
+    if (beatData.redReversal) {
       ctx.fillStyle = "#ef4444";
       ctx.fillRect(
         size - symbolSize - 5,

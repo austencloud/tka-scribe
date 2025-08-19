@@ -113,3 +113,134 @@ export interface IOrientationCalculationService {
   updateStartOrientations(nextBeat: BeatData, lastBeat: BeatData): BeatData;
   updateEndOrientations(beat: BeatData): BeatData;
 }
+
+// ============================================================================
+// MOVEMENT PATTERN GENERATION INTERFACES
+// ============================================================================
+
+import type {
+  MovementData,
+  MovementPattern,
+  MovementSet,
+} from "$lib/domain/MovementData";
+import type { GridPosition } from "$lib/domain/enums";
+
+/**
+ * Service for generating TKA movement patterns from templates
+ */
+export interface IMovementGeneratorService {
+  generateMovementSet(pattern: MovementPattern): MovementSet;
+
+  // Standard letter generators
+  generateA(): MovementSet;
+  generateB(): MovementSet;
+  generateC(): MovementSet;
+  generateD(): MovementSet;
+  generateE(): MovementSet;
+  generateF(): MovementSet;
+  generateG(): MovementSet;
+  generateH(): MovementSet;
+  generateI(): MovementSet;
+  generateJ(): MovementSet;
+  generateK(): MovementSet;
+  generateL(): MovementSet;
+  generateM(): MovementSet;
+  generateN(): MovementSet;
+  generateO(): MovementSet;
+  generateP(): MovementSet;
+  generateQ(): MovementSet;
+  generateR(): MovementSet;
+  generateS(): MovementSet;
+  generateT(): MovementSet;
+  generateU(): MovementSet;
+  generateV(): MovementSet;
+  generateW(): MovementSet;
+  generateX(): MovementSet;
+  generateY(): MovementSet;
+  generateZ(): MovementSet;
+
+  // Greek letter generators
+  generateSigma(): MovementSet;
+  generateDelta(): MovementSet;
+  generateTheta(): MovementSet;
+  generateOmega(): MovementSet;
+  generatePhi(): MovementSet;
+  generatePsi(): MovementSet;
+  generateLambda(): MovementSet;
+  generateAlpha(): MovementSet;
+  generateBeta(): MovementSet;
+  generateGamma(): MovementSet;
+
+  // Dash variant generators
+  generateWDash(): MovementSet;
+  generateXDash(): MovementSet;
+  generateYDash(): MovementSet;
+  generateZDash(): MovementSet;
+  generateSigmaDash(): MovementSet;
+  generateDeltaDash(): MovementSet;
+  generateThetaDash(): MovementSet;
+  generateOmegaDash(): MovementSet;
+  generatePhiDash(): MovementSet;
+  generatePsiDash(): MovementSet;
+  generateLambdaDash(): MovementSet;
+
+  // Utility methods
+  getAllMovementSets(): MovementSet[];
+  getMovementSetByLetter(letter: string): MovementSet | undefined;
+}
+
+/**
+ * Service for managing movement patterns and position sequences
+ */
+export interface IMovementPatternService {
+  createPattern(
+    letter: string,
+    config: Partial<MovementPattern>
+  ): MovementPattern;
+
+  getAlphaSequence(): GridPosition[];
+  getBetaSequence(): GridPosition[];
+  getGammaSequence(): GridPosition[];
+  getCustomSequence(positions: GridPosition[]): GridPosition[];
+
+  createVariations(
+    basePattern: MovementPattern,
+    variations: Array<{
+      motionCombination: [string, string];
+      rotationCombination: [string, string];
+    }>
+  ): MovementPattern[];
+}
+
+/**
+ * Service for calculating position sequences and transformations
+ */
+export interface IPositionCalculatorService {
+  getPositionSequence(
+    system: "alpha" | "beta" | "gamma",
+    count: number
+  ): GridPosition[];
+  getNextPosition(current: GridPosition, forward: boolean): GridPosition;
+  getCardinalDirections(
+    startPos: GridPosition,
+    endPos: GridPosition,
+    motionType: string
+  ): [
+    import("$lib/domain/enums").Location,
+    import("$lib/domain/enums").Location,
+  ];
+
+  calculatePositionPairs(
+    sequence: GridPosition[]
+  ): Array<[GridPosition, GridPosition]>;
+}
+
+/**
+ * Service for validating generated movements
+ */
+export interface IMovementValidatorService {
+  validateMovement(movement: MovementData): boolean;
+  validateMovementSet(movementSet: MovementSet): boolean;
+  getValidationErrors(movement: MovementData): string[];
+  validatePositionSequence(positions: GridPosition[]): boolean;
+}

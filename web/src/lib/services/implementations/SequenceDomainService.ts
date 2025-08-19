@@ -149,7 +149,7 @@ export class SequenceDomainService implements ISequenceDomainService {
     // Extract letters from beats (desktop logic)
     const word = sequence.beats
       .map(
-        (beat) => beat.pictograph_data?.letter || beat.metadata?.letter || "?"
+        (beat) => beat.pictographData?.letter || beat.metadata?.letter || "?"
       )
       .join("");
 
@@ -192,12 +192,12 @@ export class SequenceDomainService implements ISequenceDomainService {
   private createEmptyBeat(beatNumber: number): BeatData {
     return {
       id: crypto.randomUUID(),
-      beat_number: beatNumber,
+      beatNumber: beatNumber,
       duration: 1.0,
-      blue_reversal: false,
-      red_reversal: false,
+      blueReversal: false,
+      redReversal: false,
       isBlank: true,
-      pictograph_data: null,
+      pictographData: null,
       metadata: {},
     };
   }

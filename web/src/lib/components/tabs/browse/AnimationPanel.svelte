@@ -133,24 +133,24 @@ Handles data loading, animation engine, and state management.
 
         fullSequence.beats.forEach((beat, index) => {
           console.log(`🔍 [RAW DATA DEBUG] Beat ${index + 1}:`, {
-            beat_number: beat.beat_number,
-            letter: beat.pictograph_data?.letter,
-            blue_motion_type: beat.pictograph_data?.motions?.blue?.motionType,
-            red_motion_type: beat.pictograph_data?.motions?.red?.motionType,
-            blue_motion_full: beat.pictograph_data?.motions?.blue,
-            red_motion_full: beat.pictograph_data?.motions?.red,
+            beatNumber: beat.beatNumber,
+            letter: beat.pictographData?.letter,
+            blue_motion_type: beat.pictographData?.motions?.blue?.motionType,
+            red_motion_type: beat.pictographData?.motions?.red?.motionType,
+            blue_motion_full: beat.pictographData?.motions?.blue,
+            red_motion_full: beat.pictographData?.motions?.red,
           });
 
           // Special focus on L and F letters
           if (
-            beat.pictograph_data?.letter === "L" ||
-            beat.pictograph_data?.letter === "F"
+            beat.pictographData?.letter === "L" ||
+            beat.pictographData?.letter === "F"
           ) {
             console.log(
-              `🚨 [CRITICAL] ${beat.pictograph_data.letter} letter motion types:`,
+              `🚨 [CRITICAL] ${beat.pictographData.letter} letter motion types:`,
               {
-                blue: beat.pictograph_data?.motions?.blue?.motionType,
-                red: beat.pictograph_data?.motions?.red?.motionType,
+                blue: beat.pictographData?.motions?.blue?.motionType,
+                red: beat.pictographData?.motions?.red?.motionType,
                 expected: "Should have anti-motions!",
               }
             );
