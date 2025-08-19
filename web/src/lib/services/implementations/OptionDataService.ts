@@ -207,10 +207,10 @@ export class OptionDataService implements OptionDataServiceInterface {
             row.blue_prop_rot_dir ||
             "no_rot"
         ),
-        start_loc: this.mapLocation(
+        startLocation: this.mapLocation(
           row.blueStartLocation || row.BlueStartLoc || row.blue_start_loc || "n"
         ),
-        end_loc: this.mapLocation(
+        endLocation: this.mapLocation(
           row.blueEndLocation || row.BlueEndLoc || row.blue_end_loc || "n"
         ),
         turns:
@@ -221,7 +221,7 @@ export class OptionDataService implements OptionDataServiceInterface {
         endOrientation: this.mapOrientation(
           row.blue_end_ori || row.BlueEndOri || "in"
         ),
-        is_visible: true,
+        isVisible: true,
       });
 
       const redMotion = createMotionData({
@@ -237,10 +237,10 @@ export class OptionDataService implements OptionDataServiceInterface {
             row.red_prop_rot_dir ||
             "no_rot"
         ),
-        start_loc: this.mapLocation(
+        startLocation: this.mapLocation(
           row.redStartLoc || row.RedStartLoc || row.red_start_loc || "n"
         ),
-        end_loc: this.mapLocation(
+        endLocation: this.mapLocation(
           row.redEndLoc || row.RedEndLoc || row.red_end_loc || "n"
         ),
         turns: (this.parseNumber(row.red_turns || row.RedTurns) as number) || 0,
@@ -250,7 +250,7 @@ export class OptionDataService implements OptionDataServiceInterface {
         endOrientation: this.mapOrientation(
           row.red_end_ori || row.RedEndOri || "in"
         ),
-        is_visible: true,
+        isVisible: true,
       });
 
       return createPictographData({

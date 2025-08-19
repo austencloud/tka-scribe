@@ -51,7 +51,7 @@
             pictograph: debugData.pictographData?.letter || "None",
             motionType: debugData.motionData?.motionType || "None",
             startOri: debugData.motionData?.startOrientation || "None",
-            endOri: debugData.motionData?.endOrientation || "None",
+            endOrientation: debugData.motionData?.endOrientation || "None",
             arrowColor: debugData.arrowData?.color || "None",
           },
         };

@@ -169,7 +169,7 @@ export class ArrowRotationCalculator implements IArrowRotationCalculator {
     const rotDir = motion.rotationDirection?.toLowerCase();
 
     if (rotDir === "no_rotation" || rotDir === "none") {
-      const key = `${motion.start_loc},${motion.end_loc}`;
+      const key = `${motion.startLocation},${motion.endLocation}`;
       return this.dashNoRotationMap[key] || 0.0;
     }
 

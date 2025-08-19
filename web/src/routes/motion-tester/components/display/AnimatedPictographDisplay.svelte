@@ -19,13 +19,7 @@ No animation controls, no data creation - just pure display logic.
 
 <div class="pictograph-display">
   {#if pictographData}
-    <Pictograph
-      {pictographData}
-      width={size}
-      height={size}
-      {debug}
-      beatNumber={null}
-    />
+    <Pictograph {pictographData} width={size} height={size} {debug} />
   {:else}
     <div class="error-state">
       <span class="error-icon" aria-hidden="true">⚠️</span>

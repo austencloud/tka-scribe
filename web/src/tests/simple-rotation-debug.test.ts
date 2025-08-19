@@ -20,16 +20,16 @@ describe("Simple Arrow Rotation Debug", () => {
     // Create test data
     const motionData = createMotionData({
       motionType: MotionType.PRO,
-      start_loc: Location.NORTH,
-      end_loc: Location.EAST,
+      startLocation: Location.NORTH,
+      endLocation: Location.EAST,
       turns: 0,
     });
 
     console.log("📊 Input Data:");
     console.log("  Motion:", {
       motionType: motionData.motionType,
-      start_loc: motionData.start_loc,
-      end_loc: motionData.end_loc,
+      startLocation: motionData.startLocation,
+      endLocation: motionData.endLocation,
       turns: motionData.turns,
     });
 
@@ -90,7 +90,7 @@ describe("Simple Arrow Rotation Debug", () => {
       // Analysis
       console.log("\n📋 Rotation Analysis:");
       console.log(
-        `  Motion: ${motionData.start_loc} → ${motionData.end_loc} (${motionData.motionType})`
+        `  Motion: ${motionData.startLocation} → ${motionData.endLocation} (${motionData.motionType})`
       );
       console.log(`  Expected: 0° (arrow at northeast for N→E pro motion)`);
       console.log(`  Actual: ${rotation}°`);
@@ -154,8 +154,8 @@ describe("Simple Arrow Rotation Debug", () => {
       try {
         const testMotion = createMotionData({
           motionType: MotionType.PRO,
-          start_loc: testCase.start,
-          end_loc: testCase.end,
+          startLocation: testCase.start,
+          endLocation: testCase.end,
           turns: 0,
         });
 

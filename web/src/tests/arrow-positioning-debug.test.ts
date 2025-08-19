@@ -58,8 +58,8 @@ describe("Arrow Positioning Debug Tests", () => {
 
     const blueMotionData = createMotionData({
       motionType: MotionType.PRO,
-      start_loc: Location.NORTH,
-      end_loc: Location.EAST,
+      startLocation: Location.NORTH,
+      endLocation: Location.EAST,
       turns: 0,
     });
 
@@ -76,8 +76,8 @@ describe("Arrow Positioning Debug Tests", () => {
 
     const redMotionData = createMotionData({
       motionType: MotionType.STATIC,
-      start_loc: Location.SOUTH,
-      end_loc: Location.SOUTH,
+      startLocation: Location.SOUTH,
+      endLocation: Location.SOUTH,
       turns: 0,
     });
 
@@ -101,8 +101,8 @@ describe("Arrow Positioning Debug Tests", () => {
     console.log("📊 Input Data:");
     console.log("  Blue Motion:", {
       motionType: blueMotionData.motionType,
-      start_loc: blueMotionData.start_loc,
-      end_loc: blueMotionData.end_loc,
+      startLocation: blueMotionData.startLocation,
+      endLocation: blueMotionData.endLocation,
       turns: blueMotionData.turns,
     });
 
@@ -198,8 +198,8 @@ describe("Arrow Positioning Debug Tests", () => {
 
       const motionData = createMotionData({
         motionType: MotionType.PRO,
-        start_loc: testCase.start,
-        end_loc: testCase.end,
+        startLocation: testCase.start,
+        endLocation: testCase.end,
         turns: 0,
       });
 

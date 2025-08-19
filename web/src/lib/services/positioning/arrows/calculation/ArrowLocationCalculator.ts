@@ -94,7 +94,7 @@ export class ArrowLocationCalculator implements IArrowLocationCalculator {
         console.warn(
           `Unknown motion type: ${motionType}, using start location`
         );
-        return motion.start_loc || Location.NORTH;
+        return motion.startLocation || Location.NORTH;
     }
   }
 
@@ -110,7 +110,7 @@ export class ArrowLocationCalculator implements IArrowLocationCalculator {
      * Returns:
      *     The start location of the motion
      */
-    return motion.start_loc || Location.NORTH;
+    return motion.startLocation || Location.NORTH;
   }
 
   private calculateShiftLocation(motion: MotionData): Location {
@@ -126,19 +126,19 @@ export class ArrowLocationCalculator implements IArrowLocationCalculator {
      * Returns:
      *     Calculated location based on start/end pair mapping
      */
-    if (!motion.start_loc || !motion.end_loc) {
+    if (!motion.startLocation || !motion.endLocation) {
       console.warn(
-        "Shift motion missing start_loc or end_loc, using start_loc"
+        "Shift motion missing startLocation or endLocation, using startLocation"
       );
-      return motion.start_loc || Location.NORTH;
+      return motion.startLocation || Location.NORTH;
     }
 
     const locationPairKey = this.createLocationPairKey([
-      motion.start_loc,
-      motion.end_loc,
+      motion.startLocation,
+      motion.endLocation,
     ]);
     const calculatedLocation =
-      this.shiftDirectionPairs[locationPairKey] || motion.start_loc;
+      this.shiftDirectionPairs[locationPairKey] || motion.startLocation;
 
     return calculatedLocation;
   }
@@ -167,7 +167,7 @@ export class ArrowLocationCalculator implements IArrowLocationCalculator {
       console.warn(
         "No pictograph data provided for dash location calculation, using start location"
       );
-      return motion.start_loc || Location.NORTH;
+      return motion.startLocation || Location.NORTH;
     }
 
     const isBlueArrow = this.isBlueArrowMotion(motion, pictographData);
@@ -216,11 +216,11 @@ export class ArrowLocationCalculator implements IArrowLocationCalculator {
     // Validate required fields based on motion type
     if (["pro", "anti", "float"].includes(motionType || "")) {
       // Shift motions require both start and end locations
-      return motion.start_loc != null && motion.end_loc != null;
+      return motion.startLocation != null && motion.endLocation != null;
     }
     if (["static", "dash"].includes(motionType || "")) {
       // Static and dash motions require at least start location
-      return motion.start_loc != null;
+      return motion.startLocation != null;
     }
 
     return true;

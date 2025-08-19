@@ -3,8 +3,8 @@ import { fireEvent, render, screen } from "@testing-library/svelte";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import OptionPickerSection from "../OptionPickerSection.svelte";
 
-// Mock ModernPictograph component
-vi.mock("$lib/components/pictograph/ModernPictograph.svelte", () => ({
+// Mock Pictograph component
+vi.mock("$lib/components/pictograph/Pictograph.svelte", () => ({
   default: vi.fn(() => ({
     $$: { fragment: null },
     $set: vi.fn(),
@@ -23,7 +23,7 @@ describe("OptionPickerSection", () => {
         center_x: 475,
         center_y: 475,
         radius: 400,
-        grid_points: {},
+        gridPoints: {},
       },
       arrows: {},
       props: {},
@@ -42,7 +42,7 @@ describe("OptionPickerSection", () => {
         center_x: 475,
         center_y: 475,
         radius: 400,
-        grid_points: {},
+        gridPoints: {},
       },
       arrows: {},
       props: {},

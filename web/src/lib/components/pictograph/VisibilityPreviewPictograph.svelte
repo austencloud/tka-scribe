@@ -60,7 +60,7 @@ with real-time opacity changes based on visibility settings.
       center_x: 400,
       center_y: 400,
       radius: 200,
-      grid_points: {},
+      gridPoints: {},
     },
     arrows: {
       blue: createArrowData({
@@ -83,23 +83,23 @@ with real-time opacity changes based on visibility settings.
     motions: {
       blue: createMotionData({
         motionType: MotionType.PRO,
-        start_loc: Location.SOUTH,
-        end_loc: Location.WEST,
+        startLocation: Location.SOUTH,
+        endLocation: Location.WEST,
         startOrientation: Orientation.IN,
         endOrientation: Orientation.IN,
         rotationDirection: RotationDirection.CLOCKWISE,
         turns: 1.0,
-        is_visible: true,
+        isVisible: true,
       }),
       red: createMotionData({
         motionType: MotionType.PRO,
-        start_loc: Location.NORTH,
-        end_loc: Location.EAST,
+        startLocation: Location.NORTH,
+        endLocation: Location.EAST,
         startOrientation: Orientation.IN,
         endOrientation: Orientation.IN,
         rotationDirection: RotationDirection.CLOCKWISE,
         turns: 1.0,
-        is_visible: true,
+        isVisible: true,
       }),
     },
     isBlank: false,

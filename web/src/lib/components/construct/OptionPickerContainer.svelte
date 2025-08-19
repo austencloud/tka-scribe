@@ -37,41 +37,12 @@
   // Use sophisticated state management system
   const optionPickerState = createOptionPickerRunes();
 
-  // Helper to check if preloaded data exists
-  const hasPreloadedData = $derived(() => {
-    if (typeof window === "undefined") return false;
-
-    // Check for individual preloaded data
-    const preloadedData = localStorage.getItem("preloaded_options");
-    if (preloadedData) {
-      try {
-        const options = JSON.parse(preloadedData);
-        return Array.isArray(options) && options.length > 0;
-      } catch {
-        return false;
-      }
-    }
-
-    // Check for bulk preloaded data
-    const allPreloadedData = localStorage.getItem("all_preloaded_options");
-    if (allPreloadedData) {
-      try {
-        const allOptions = JSON.parse(allPreloadedData);
-        return Object.keys(allOptions).length > 0;
-      } catch {
-        return false;
-      }
-    }
-
-    return false;
-  });
-
-  // Only show loading if we're actually loading AND don't have preloaded data
+  // Simplified loading check - no preloaded data complexity
   const shouldShowLoading = $derived(() => {
     return (
       optionPickerState.isLoading &&
-      !hasPreloadedData() &&
-      optionPickerState.optionsData.length === 0
+      optionPickerState.optionsData.length === 0 &&
+      !isCurrentlyLoading // Don't show loading if we're preventing duplicates
     );
   });
 
@@ -116,69 +87,61 @@
     onOptionSelected?.(option);
   }
 
-  // Helper function to load preloaded data directly into state
-  function loadPreloadedData() {
-    if (typeof window === "undefined") return false;
+  // Enhanced debouncing to prevent cascades
+  let isCurrentlyLoading = $state(false);
+  let lastLoadTrigger = $state<string | null>(null);
+  let loadTimeout: ReturnType<typeof setTimeout> | null = null;
 
-    try {
-      // Check for individual preloaded data first
-      const preloadedData = localStorage.getItem("preloaded_options");
-      if (preloadedData) {
-        const options = JSON.parse(preloadedData);
-        if (Array.isArray(options) && options.length > 0) {
-          optionPickerState.setOptions(options);
-          localStorage.removeItem("preloaded_options"); // Clear after use
-          return true;
-        }
-      }
-
-      // Check for bulk preloaded data
-      const allPreloadedData = localStorage.getItem("all_preloaded_options");
-      if (allPreloadedData) {
-        const allOptions = JSON.parse(allPreloadedData);
-
-        // Determine the current end position we need options for
-        let targetEndPosition: string | null = null;
-        const startPositionData = localStorage.getItem("startPosition");
-        if (startPositionData) {
-          const startPosition = JSON.parse(startPositionData);
-          // Look for endPosition in metadata (StartPositionPicker format)
-          targetEndPosition =
-            startPosition.metadata?.endPosition ||
-            startPosition.endPosition ||
-            null;
-        }
-
-        // If we have preloaded options for this end position, use them
-        if (targetEndPosition && allOptions[targetEndPosition]) {
-          const optionsForPosition = allOptions[targetEndPosition];
-          optionPickerState.setOptions(optionsForPosition);
-          return true;
-        }
-      }
-    } catch (error) {
-      console.warn("Failed to load preloaded data:", error);
+  // Unified loading function with proper debouncing
+  async function loadOptionsOnce(trigger: string) {
+    // Clear any pending loads
+    if (loadTimeout) {
+      clearTimeout(loadTimeout);
+      loadTimeout = null;
     }
 
-    return false;
+    // Prevent duplicate loading from the same trigger
+    if (isCurrentlyLoading && lastLoadTrigger === trigger) {
+      console.log(
+        `⏭️ OptionPickerContainer: Skipping duplicate load from ${trigger}`
+      );
+      return;
+    }
+
+    // Debounce rapid calls
+    loadTimeout = setTimeout(async () => {
+      isCurrentlyLoading = true;
+      lastLoadTrigger = trigger;
+
+      try {
+        console.log(
+          `🔄 OptionPickerContainer: Loading options from ${trigger}`
+        );
+        await optionPickerState.loadOptions([]);
+      } catch (error) {
+        console.error(
+          `❌ OptionPickerContainer: Failed to load options from ${trigger}:`,
+          error
+        );
+      } finally {
+        // Reset loading state
+        setTimeout(() => {
+          isCurrentlyLoading = false;
+          lastLoadTrigger = null;
+        }, 200);
+      }
+    }, 100); // 100ms debounce
   }
 
   // Handle start position selection events
-  function handleStartPositionSelected(event: Event) {
-    const customEvent = event as CustomEvent;
-
-    // Try to load preloaded data first
-    if (!loadPreloadedData()) {
-      optionPickerState.loadOptions([]); // Empty array loads from start position
-    }
+  function handleStartPositionSelected() {
+    loadOptionsOnce("start-position-event");
   }
 
   // Initialize on mount
   onMount(() => {
-    // Try to load preloaded data first, fallback to normal loading
-    if (!loadPreloadedData()) {
-      optionPickerState.loadOptions([]); // Empty array loads from start position
-    }
+    // Don't auto-load on mount to prevent cascade
+    // loadOptionsOnce("mount");
 
     // Listen for start position selection events
     document.addEventListener(
@@ -195,15 +158,12 @@
     };
   });
 
-  // Reactive loading when sequence changes
-  $effect(() => {
-    if (currentSequence) {
-      // Try to load preloaded data first, fallback to normal loading
-      if (!loadPreloadedData()) {
-        optionPickerState.loadOptions([]);
-      }
-    }
-  });
+  // Remove reactive effect to prevent cascade - only load on explicit events
+  // $effect(() => {
+  //   if (currentSequence) {
+  //     loadOptionsOnce("sequence-change");
+  //   }
+  // });
 </script>
 
 <!-- Container with resize detection -->

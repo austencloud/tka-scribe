@@ -92,7 +92,7 @@ export class ExampleSequenceService implements IExampleSequenceService {
       level: 1,
       date_added: new Date(),
       gridMode: "diamond",
-      prop_type: "poi",
+      propType: "poi",
       is_favorite: false,
       is_circular: false,
       starting_position: "beta",

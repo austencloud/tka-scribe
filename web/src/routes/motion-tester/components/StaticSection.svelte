@@ -77,7 +77,6 @@ This is the left 2/3 section of the new layout.
           width={PICTOGRAPH_SIZE}
           height={PICTOGRAPH_SIZE}
           debug={false}
-          beatNumber={null}
         />
       {:else}
         <div class="error-state">
@@ -96,9 +95,10 @@ This is the left 2/3 section of the new layout.
         propName="Blue"
         propColor="#60a5fa"
         startLocation={motionState.blueMotionParams.startLocation}
-        endLocation={motionState.blueMotionParams.endLoc}
+        endLocation={motionState.blueMotionParams.endLocation}
         startOrientation={motionState.blueMotionParams.startOri as Orientation}
-        endOrientation={motionState.blueMotionParams.endOri as Orientation}
+        endOrientation={motionState.blueMotionParams
+          .endOrientation as Orientation}
         turns={motionState.blueMotionParams.turns}
         motionType={motionState.blueMotionParams.motionType as MotionType}
         onStartLocationChange={(location) =>
@@ -108,7 +108,7 @@ This is the left 2/3 section of the new layout.
         onStartOrientationChange={(orientation) =>
           motionState.updateBlueMotionParam("startOri", orientation)}
         onEndOrientationChange={(orientation) =>
-          motionState.updateBlueMotionParam("endOri", orientation)}
+          motionState.updateBlueMotionParam("endOrientation", orientation)}
         onTurnsChange={(turns) =>
           motionState.updateBlueMotionParam("turns", turns)}
         onMotionTypeChange={(motionType) =>
@@ -122,9 +122,10 @@ This is the left 2/3 section of the new layout.
         propName="Red"
         propColor="#f87171"
         startLocation={motionState.redMotionParams.startLocation}
-        endLocation={motionState.redMotionParams.endLoc}
+        endLocation={motionState.redMotionParams.endLocation}
         startOrientation={motionState.redMotionParams.startOri as Orientation}
-        endOrientation={motionState.redMotionParams.endOri as Orientation}
+        endOrientation={motionState.redMotionParams
+          .endOrientation as Orientation}
         turns={motionState.redMotionParams.turns}
         motionType={motionState.redMotionParams.motionType as MotionType}
         onStartLocationChange={(location) =>
@@ -134,7 +135,7 @@ This is the left 2/3 section of the new layout.
         onStartOrientationChange={(orientation) =>
           motionState.updateRedMotionParam("startOri", orientation)}
         onEndOrientationChange={(orientation) =>
-          motionState.updateRedMotionParam("endOri", orientation)}
+          motionState.updateRedMotionParam("endOrientation", orientation)}
         onTurnsChange={(turns) =>
           motionState.updateRedMotionParam("turns", turns)}
         onMotionTypeChange={(motionType) =>

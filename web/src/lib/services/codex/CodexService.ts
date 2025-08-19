@@ -26,24 +26,20 @@ import {
 } from "./PictographOperationsService";
 import type { ICodexService } from "./ICodexService";
 
+// Re-export the interface for convenience
+export type { ICodexService } from "./ICodexService";
+
 export class CodexService implements ICodexService {
-  private letterMappingRepository: ILetterMappingRepository;
-  private lessonRepository: ILessonRepository;
-  private pictographQueryService: IPictographQueryService;
-  private operationsService: IPictographOperationsService;
   private initialized = false;
 
-  constructor() {
-    // Clean dependency injection
-    this.letterMappingRepository = new LetterMappingRepository();
-    this.lessonRepository = new LessonRepository(this.letterMappingRepository);
-    this.pictographQueryService = new PictographQueryService(
-      this.letterMappingRepository
-    );
-    this.operationsService = new PictographOperationsService();
-
+  constructor(
+    private letterMappingRepository: ILetterMappingRepository,
+    private lessonRepository: ILessonRepository,
+    private pictographQueryService: IPictographQueryService,
+    private operationsService: IPictographOperationsService
+  ) {
     console.log(
-      "🔧 Clean CodexService initialized with proper separation of concerns"
+      "🔧 Clean CodexService initialized with proper dependency injection"
     );
   }
 

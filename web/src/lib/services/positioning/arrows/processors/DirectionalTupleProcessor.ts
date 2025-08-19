@@ -80,7 +80,8 @@ export class DirectionalTupleCalculator implements IDirectionalTupleCalculator {
     // Box mode: motion uses diagonals (NE, SE, SW, NW) → arrows placed at cardinals
     const cardinalSet = new Set<Location>([N, E, S, W]);
     const gridIsDiamond =
-      cardinalSet.has(motion.start_loc) || cardinalSet.has(motion.end_loc);
+      cardinalSet.has(motion.startLocation) ||
+      cardinalSet.has(motion.endLocation);
 
     // Helper to normalize rotation keys
     const isCW = rot === "clockwise" || rot === "cw";
@@ -95,8 +96,8 @@ export class DirectionalTupleCalculator implements IDirectionalTupleCalculator {
       if (mt === "float") {
         // Handpath-based mapping; approximate via start/end step direction
         const order = [NE, SE, SW, NW];
-        const idxStart = order.indexOf(motion.start_loc as Location);
-        const idxEnd = order.indexOf(motion.end_loc as Location);
+        const idxStart = order.indexOf(motion.startLocation as Location);
+        const idxEnd = order.indexOf(motion.endLocation as Location);
         // Determine cw vs ccw step (1 step cw => cw; else ccw)
         const cwStep = (idxStart + 1) % 4 === idxEnd;
         if (cwStep) {
@@ -155,8 +156,8 @@ export class DirectionalTupleCalculator implements IDirectionalTupleCalculator {
       if (mt === "float") {
         // Use box cw/ccw from start->end around N,E,S,W order
         const order = [N, E, S, W];
-        const idxStart = order.indexOf(motion.start_loc as Location);
-        const idxEnd = order.indexOf(motion.end_loc as Location);
+        const idxStart = order.indexOf(motion.startLocation as Location);
+        const idxEnd = order.indexOf(motion.endLocation as Location);
         const cwStep = (idxStart + 1) % 4 === idxEnd;
         if (cwStep) {
           return [

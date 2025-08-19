@@ -110,8 +110,10 @@ export function createOptionPickerRunes() {
     return options;
   });
 
-  // Grouped options based on sort method
-  const groupedOptions = $derived(() => {
+  // Simplified grouped options - compute only when explicitly needed
+  let cachedGroupedOptions = $state<Record<string, PictographData[]>>({});
+
+  function computeGroupedOptions(): Record<string, PictographData[]> {
     const groups: Record<string, PictographData[]> = {};
     const options = filteredOptions();
     options.forEach((option) => {
@@ -134,17 +136,20 @@ export function createOptionPickerRunes() {
         sortedGroups[key] = groups[key];
       }
     });
+    cachedGroupedOptions = sortedGroups;
     return sortedGroups;
-  });
+  }
 
-  // Category keys available
-  const categoryKeys = $derived(() => Object.keys(groupedOptions));
+  // Category keys available - simplified
+  const categoryKeys = $derived(() => Object.keys(cachedGroupedOptions));
 
   // ===== State Persistence Effect =====
-  $effect(() => {
-    // Save state changes to localStorage
-    saveStateToLocalStorage(uiState);
-  });
+  // Disable automatic state persistence to prevent reactive cascades
+  // Only save state on explicit user actions
+  // $effect(() => {
+  //   // Save state changes to localStorage
+  //   saveStateToLocalStorage(uiState);
+  // });
 
   // ===== Actions =====
   async function loadOptions(sequence: PictographData[]) {
@@ -401,7 +406,7 @@ export function createOptionPickerRunes() {
       return filteredOptions();
     },
     get groupedOptions() {
-      return groupedOptions();
+      return computeGroupedOptions();
     },
     get categoryKeys() {
       return categoryKeys();

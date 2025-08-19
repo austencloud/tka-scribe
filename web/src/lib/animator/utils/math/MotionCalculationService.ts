@@ -91,14 +91,14 @@ export function calculateAntispinTargetAngle(
  */
 export function calculateStaticStaffAngle(
   startStaffAngle: number,
-  endOri: Orientation,
+  endOrientation: Orientation,
   targetCenterAngle: number
 ): number {
-  if (!endOri) {
+  if (!endOrientation) {
     return startStaffAngle;
   }
 
-  const endOriAngle = mapOrientationToAngle(endOri, targetCenterAngle);
+  const endOriAngle = mapOrientationToAngle(endOrientation, targetCenterAngle);
   const angleDiff = normalizeAngleSigned(endOriAngle - startStaffAngle);
 
   // Only change if the difference is significant
@@ -110,12 +110,12 @@ export function calculateStaticStaffAngle(
  */
 export function calculateDashTargetAngle(
   startStaffAngle: number,
-  endOri: Orientation,
+  endOrientation: Orientation,
   targetCenterAngle: number
 ): number {
-  if (endOri === Orientation.IN) {
+  if (endOrientation === Orientation.IN) {
     return normalizeAnglePositive(targetCenterAngle + PI);
-  } else if (endOri === Orientation.OUT) {
+  } else if (endOrientation === Orientation.OUT) {
     return targetCenterAngle;
   }
   return startStaffAngle;

@@ -59,11 +59,11 @@ export class DataTransformationService implements IDataTransformationService {
       },
       props: {
         blue: createPropData({
-          prop_type: PropType.STAFF,
+          propType: PropType.STAFF,
           color: MotionColor.BLUE,
         }),
         red: createPropData({
-          prop_type: PropType.STAFF,
+          propType: PropType.STAFF,
           color: MotionColor.RED,
         }),
       },

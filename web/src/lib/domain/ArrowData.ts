@@ -24,7 +24,7 @@ export interface ArrowData {
   readonly motionType: string;
   readonly start_orientation: string;
   readonly end_orientation: string;
-  readonly rotation_direction: string;
+  readonly rotationDirection: string;
 
   // Position data (calculated by positioning system)
   readonly location?: string | null;
@@ -36,7 +36,7 @@ export interface ArrowData {
   readonly svg_mirrored?: boolean;
 
   // State flags
-  readonly is_visible: boolean;
+  readonly isVisible: boolean;
   readonly is_selected: boolean;
 }
 
@@ -50,7 +50,7 @@ export function createArrowData(data: Partial<ArrowData> = {}): ArrowData {
     motionType: data.motionType ?? MotionType.STATIC,
     start_orientation: data.start_orientation ?? Orientation.IN,
     end_orientation: data.end_orientation ?? Orientation.IN,
-    rotation_direction: data.rotation_direction ?? RotationDirection.CLOCKWISE,
+    rotationDirection: data.rotationDirection ?? RotationDirection.CLOCKWISE,
     location: data.location ?? null,
     position_x: data.position_x ?? 0.0,
     position_y: data.position_y ?? 0.0,
@@ -58,7 +58,7 @@ export function createArrowData(data: Partial<ArrowData> = {}): ArrowData {
     coordinates: data.coordinates ?? null,
     svg_center: data.svg_center ?? null,
     svg_mirrored: data.svg_mirrored ?? false,
-    is_visible: data.is_visible ?? true,
+    isVisible: data.isVisible ?? true,
     is_selected: data.is_selected ?? false,
   };
 }
@@ -84,7 +84,7 @@ export function arrowDataToObject(arrow: ArrowData): Record<string, unknown> {
     position_x: arrow.position_x,
     position_y: arrow.position_y,
     rotation_angle: arrow.rotation_angle,
-    is_visible: arrow.is_visible,
+    isVisible: arrow.isVisible,
     is_selected: arrow.is_selected,
   };
 }
@@ -105,8 +105,8 @@ export function arrowDataFromObject(data: Record<string, unknown>): ArrowData {
     partialData.position_y = data.position_y;
   if (typeof data.rotation_angle === "number")
     partialData.rotation_angle = data.rotation_angle;
-  if (typeof data.is_visible === "boolean")
-    partialData.is_visible = data.is_visible;
+  if (typeof data.isVisible === "boolean")
+    partialData.isVisible = data.isVisible;
   if (typeof data.is_selected === "boolean")
     partialData.is_selected = data.is_selected;
 

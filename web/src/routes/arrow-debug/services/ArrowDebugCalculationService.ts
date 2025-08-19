@@ -109,7 +109,7 @@ export class ArrowDebugCalculationService {
         debugData.locationDebugInfo = {
           motionType: motionData.motionType || "",
           startOri: motionData.startOrientation || "",
-          endOri: motionData.endOrientation || "",
+          endOrientation: motionData.endOrientation || "",
           calculationMethod: this.getLocationCalculationMethod(motionData),
         };
       }

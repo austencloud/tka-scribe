@@ -99,14 +99,14 @@
               : blueMotion === "anti"
                 ? Orientation.IN
                 : Orientation.OUT,
-          start_loc: Location.NORTH,
-          end_loc: Location.SOUTH,
+          startLocation: Location.NORTH,
+          endLocation: Location.SOUTH,
           rotationDirection: RotationDirection.CLOCKWISE,
           turns:
             typeof blueTurns === "string" && blueTurns.toLowerCase() === "fl"
               ? ("fl" as const)
               : Number(blueTurns),
-          is_visible: true,
+          isVisible: true,
         },
         red: {
           motionType: mapMotionType(redMotion),
@@ -122,14 +122,14 @@
               : redMotion === "anti"
                 ? Orientation.IN
                 : Orientation.OUT,
-          start_loc: Location.NORTH,
-          end_loc: Location.SOUTH,
+          startLocation: Location.NORTH,
+          endLocation: Location.SOUTH,
           rotationDirection: RotationDirection.COUNTER_CLOCKWISE,
           turns:
             typeof redTurns === "string" && redTurns.toLowerCase() === "fl"
               ? ("fl" as const)
               : Number(redTurns),
-          is_visible: true,
+          isVisible: true,
         },
       },
       arrows: {
@@ -137,7 +137,7 @@
           id: "blue_arrow",
           color: MotionColor.BLUE,
           arrowType: ArrowType.BLUE,
-          is_visible: true,
+          isVisible: true,
           is_selected: false,
           position_x: 0,
           position_y: 0,
@@ -147,14 +147,14 @@
           location: "center",
           start_orientation: blueMotion === "pro" ? "in" : "out",
           end_orientation: blueMotion === "pro" ? "out" : "in",
-          rotation_direction: "cw",
+          rotationDirection: "cw",
           turns: typeof blueTurns === "number" ? blueTurns : 0,
         },
         red: {
           id: "red_arrow",
           color: MotionColor.RED,
           arrowType: ArrowType.RED,
-          is_visible: true,
+          isVisible: true,
           is_selected: false,
           position_x: 0,
           position_y: 0,
@@ -164,7 +164,7 @@
           location: "center",
           start_orientation: redMotion === "pro" ? "in" : "out",
           end_orientation: redMotion === "pro" ? "out" : "in",
-          rotation_direction: "ccw",
+          rotationDirection: "ccw",
           turns: typeof redTurns === "number" ? redTurns : 0,
         },
       },

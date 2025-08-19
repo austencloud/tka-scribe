@@ -70,11 +70,7 @@
               title="Letter: {pictograph.letter}"
             >
               <div class="pictograph-container">
-                <Pictograph
-                  pictographData={pictograph}
-                  debug={false}
-                  showLoadingIndicator={false}
-                />
+                <Pictograph pictographData={pictograph} debug={false} />
               </div>
             </button>
           {/if}

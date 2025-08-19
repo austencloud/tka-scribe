@@ -1,7 +1,7 @@
 /**
  * BeatView Integration Tests
  *
- * Tests for BeatView component with ModernPictograph integration
+ * Tests for BeatView component with Pictograph integration
  */
 
 import { createBeatData, createPictographData } from "$lib/domain";
@@ -10,9 +10,9 @@ import { fireEvent, render } from "@testing-library/svelte";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import BeatView from "../BeatView.svelte";
 
-// Mock the ModernPictograph component
+// Mock the Pictograph component
 vi.mock("$lib/components/pictograph", () => ({
-  ModernPictograph: vi.fn(() => ({
+  Pictograph: vi.fn(() => ({
     $$: { on_mount: [], on_destroy: [], props: {} },
   })),
 }));
@@ -35,7 +35,7 @@ describe("BeatView Integration", () => {
   });
 
   describe("Pictograph Rendering", () => {
-    it("should render ModernPictograph for beat with pictograph data", () => {
+    it("should render Pictograph for beat with pictograph data", () => {
       const pictographData = createPictographData({
         letter: "A",
       });
@@ -89,7 +89,7 @@ describe("BeatView Integration", () => {
       expect(beatNumberDisplay).toHaveTextContent("2");
     });
 
-    it("should pass correct props to ModernPictograph", () => {
+    it("should pass correct props to Pictograph", () => {
       const pictographData = createPictographData({
         letter: "B",
       });
@@ -106,7 +106,7 @@ describe("BeatView Integration", () => {
         },
       });
 
-      // Verify ModernPictograph would receive correct props
+      // Verify Pictograph would receive correct props
       const pictographContainer = document.querySelector(
         ".pictograph-container"
       );
@@ -240,7 +240,7 @@ describe("BeatView Integration", () => {
       expect(handleDoubleClick).toHaveBeenCalledWith(8);
     });
 
-    it("should pass click through to ModernPictograph for pictograph beats", () => {
+    it("should pass click through to Pictograph for pictograph beats", () => {
       const handleClick = vi.fn();
       const pictographData = createPictographData({
         letter: "D",
@@ -259,7 +259,7 @@ describe("BeatView Integration", () => {
         },
       });
 
-      // ModernPictograph should receive the click handler
+      // Pictograph should receive the click handler
       // This is verified by the presence of the pictograph container
       const pictographContainer = document.querySelector(
         ".pictograph-container"
@@ -485,7 +485,7 @@ describe("BeatView Integration", () => {
       });
 
       // The pictograph should be sized based on beatSize - 8
-      // This would be verified by the ModernPictograph props
+      // This would be verified by the Pictograph props
       const pictographContainer = document.querySelector(
         ".pictograph-container"
       );

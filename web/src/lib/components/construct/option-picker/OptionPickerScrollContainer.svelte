@@ -69,16 +69,26 @@ Refactored from the large OptionPickerScroll.svelte with extracted responsibilit
   });
 
   // ===== Reactive Updates =====
-  // Update state when props change
+  // Debounced prop updates to prevent cascades
+  let updateTimeout: ReturnType<typeof setTimeout> | null = null;
+
   $effect(() => {
-    scrollState.updateProps({
-      pictographs,
-      containerWidth,
-      containerHeight,
-      layoutConfig,
-      deviceInfo,
-      foldableInfo,
-    });
+    // Clear previous timeout
+    if (updateTimeout) {
+      clearTimeout(updateTimeout);
+    }
+
+    // Debounce prop updates
+    updateTimeout = setTimeout(() => {
+      scrollState.updateProps({
+        pictographs,
+        containerWidth,
+        containerHeight,
+        layoutConfig,
+        deviceInfo,
+        foldableInfo,
+      });
+    }, 50); // 50ms debounce
   });
 
   // ===== Derived Values =====

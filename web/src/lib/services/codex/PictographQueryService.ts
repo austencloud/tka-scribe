@@ -33,13 +33,14 @@ export interface IPictographQueryService {
 }
 
 export class PictographQueryService implements IPictographQueryService {
-  private csvDataService: CsvDataService;
-  private optionDataService: OptionDataService;
   private initialized = false;
 
-  constructor(private letterMappingRepository: ILetterMappingRepository) {
-    this.csvDataService = new CsvDataService();
-    this.optionDataService = new OptionDataService();
+  constructor(
+    private letterMappingRepository: ILetterMappingRepository,
+    private csvDataService: CsvDataService,
+    private optionDataService: OptionDataService
+  ) {
+    // Dependencies injected via constructor
   }
 
   async initialize(): Promise<void> {

@@ -1,6 +1,6 @@
 <!-- GraphEditor.svelte - Professional Graph Editor ported from desktop -->
 <script lang="ts">
-  import ModernPictograph from "$lib/components/pictograph/Pictograph.svelte";
+  import Pictograph from "$lib/components/pictograph/Pictograph.svelte";
   import type {
     BeatData,
     SequenceData,
@@ -30,7 +30,7 @@
   }>();
 
   // Component references
-  let modernPictograph = $state<ModernPictograph>();
+  let pictographComponent = $state<Pictograph>();
   let adjustmentPanel = $state<MainAdjustmentPanel>();
 
   // Internal state
@@ -50,8 +50,8 @@
       );
 
       // Trigger pictograph update immediately
-      if (selectedBeatData && modernPictograph) {
-        // ModernPictograph is reactive - no manual update needed
+      if (selectedBeatData && pictographComponent) {
+        // Pictograph is reactive - no manual update needed
         console.log("Pictograph will update reactively");
       }
     } catch (error) {
@@ -81,7 +81,7 @@
   // Update components when beat data changes
   $effect(() => {
     if (selectedBeatIndex !== null && selectedBeatData) {
-      // ModernPictograph updates reactively via props
+      // Pictograph updates reactively via props
       // No manual update needed
 
       // Update adjustment panel
@@ -139,10 +139,9 @@
       </div>
       <div class="pictograph-display">
         {#if selectedBeatData?.pictographData}
-          <ModernPictograph
-            bind:this={modernPictograph}
+          <Pictograph
+            bind:this={pictographComponent}
             pictographData={selectedBeatData.pictographData}
-            beatNumber={selectedBeatIndex || 0}
             onClick={() => console.log("Pictograph clicked")}
           />
         {:else}

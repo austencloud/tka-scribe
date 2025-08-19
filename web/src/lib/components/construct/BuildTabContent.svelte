@@ -121,14 +121,17 @@
     </div>
   {/if}
 
-  <!-- Option Picker -->
-  {#if !shouldShowStartPositionPicker}
-    <div class="content-container" in:contentIn out:contentOut>
-      <div class="panel-content transparent-scroll">
-        <OptionPickerContainer onOptionSelected={handleOptionSelected} />
-      </div>
+  <!-- Option Picker - Always mounted to receive events, but hidden when start position picker is shown -->
+  <div
+    class="content-container"
+    class:hidden={shouldShowStartPositionPicker}
+    in:contentIn
+    out:contentOut
+  >
+    <div class="panel-content transparent-scroll">
+      <OptionPickerContainer onOptionSelected={handleOptionSelected} />
     </div>
-  {/if}
+  </div>
 </div>
 
 <style>
@@ -153,6 +156,10 @@
     overflow: hidden;
     height: 100%;
     width: 100%;
+  }
+
+  .content-container.hidden {
+    display: none;
   }
 
   .panel-content {

@@ -163,11 +163,8 @@ matching the legacy desktop app's behavior.
   <!-- Base Pictograph Component -->
   <Pictograph
     pictographData={effectivePictographData()}
-    {beatData}
     {onClick}
     {debug}
-    {beatNumber}
-    {isStartPosition}
     {width}
     {height}
   />

@@ -10,8 +10,22 @@ import type { PictographData } from "$lib/domain/PictographData";
 import { CodexService } from "$lib/services/codex/CodexService";
 
 export function createCodexState() {
-  // Initialize service
-  const codexService = new CodexService();
+  // TODO: Use DI container to resolve CodexService instead of direct instantiation
+  // const codexService = new CodexService();
+
+  // Temporary placeholder until DI integration is complete
+  const codexService = {
+    getLettersByRow: () => [
+      ["A", "B", "C"],
+      ["D", "E", "F"],
+    ], // Placeholder
+    loadAllPictographs: async () => [],
+    getAllPictographData: async () => ({}),
+    rotateAllPictographs: async (pictographs: any[]) => pictographs,
+    mirrorAllPictographs: async (pictographs: any[]) => pictographs,
+    colorSwapAllPictographs: async (pictographs: any[]) => pictographs,
+    getPictographByLetter: async (letter: string) => null,
+  };
 
   // Core reactive state using Svelte 5 runes
   let searchTerm = $state<string>("");

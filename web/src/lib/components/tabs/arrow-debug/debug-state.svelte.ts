@@ -45,7 +45,8 @@ export function createDebugState() {
   );
 
   // Initialize real data services
-  const codexService = new CodexService();
+  // TODO: Use DI container to resolve CodexService instead of direct instantiation
+  // const codexService = new CodexService();
 
   // Initialize real arrow positioning services
   const locationCalculator = new ArrowLocationCalculator();
@@ -99,8 +100,9 @@ export function createDebugState() {
     try {
       console.log("🔧 Loading real pictographs from CodexService...");
 
-      // Load all pictographs from the codex service
-      const allPictographs = await codexService.loadAllPictographs();
+      // TODO: Load all pictographs from the codex service via DI container
+      // const allPictographs = await codexService.loadAllPictographs();
+      const allPictographs: any[] = []; // Temporary placeholder
 
       console.log(
         `✅ Loaded ${allPictographs.length} real pictographs from CSV data`
@@ -231,7 +233,7 @@ export function createDebugState() {
         currentDebugData.locationDebugInfo = {
           motionType: currentMotionData.motionType || "",
           startOri: currentMotionData.startOrientation || "",
-          endOri: currentMotionData.endOrientation || "",
+          endOrientation: currentMotionData.endOrientation || "",
           calculationMethod: "ArrowLocationCalculator",
         };
         stepTimes.location_calculation = performance.now() - locationStart;

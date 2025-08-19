@@ -12,7 +12,7 @@ export interface GridData {
   readonly center_x: number;
   readonly center_y: number;
   readonly radius: number;
-  readonly grid_points: Record<string, [number, number]>; // [x, y] coordinates
+  readonly gridPoints: Record<string, [number, number]>; // [x, y] coordinates
 }
 
 export function createGridData(data: Partial<GridData> = {}): GridData {
@@ -21,7 +21,7 @@ export function createGridData(data: Partial<GridData> = {}): GridData {
     center_x: data.center_x ?? 0.0,
     center_y: data.center_y ?? 0.0,
     radius: data.radius ?? 100.0,
-    grid_points: data.grid_points ?? {},
+    gridPoints: data.gridPoints ?? {},
   };
 }
 
@@ -41,7 +41,7 @@ export function gridDataToObject(grid: GridData): Record<string, unknown> {
     center_x: grid.center_x,
     center_y: grid.center_y,
     radius: grid.radius,
-    grid_points: grid.grid_points,
+    gridPoints: grid.gridPoints,
   };
 }
 
@@ -60,8 +60,8 @@ export function gridDataFromObject(data: Record<string, unknown>): GridData {
   if (data.radius !== undefined) {
     gridData.radius = data.radius;
   }
-  if (data.grid_points !== undefined) {
-    gridData.grid_points = data.grid_points;
+  if (data.gridPoints !== undefined) {
+    gridData.gridPoints = data.gridPoints;
   }
 
   return createGridData(gridData as Partial<GridData>);

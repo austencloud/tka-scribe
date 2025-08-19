@@ -270,13 +270,13 @@ export class StartPositionService implements IStartPositionService {
 
     // Create proper prop data with location
     const blueProp = createPropData({
-      prop_type: PropType.STAFF,
+      propType: PropType.STAFF,
       color: MotionColor.BLUE,
       location: blueLocation,
     });
 
     const redProp = createPropData({
-      prop_type: PropType.STAFF,
+      propType: PropType.STAFF,
       color: MotionColor.RED,
       location: redLocation,
     });
@@ -285,8 +285,8 @@ export class StartPositionService implements IStartPositionService {
     const blueMotion = createMotionData({
       motionType: DomainMotionType.STATIC,
       rotationDirection: RotationDirection.NO_ROTATION,
-      start_loc: blueLocation,
-      end_loc: blueLocation,
+      startLocation: blueLocation,
+      endLocation: blueLocation,
       turns: 0,
       startOrientation: Orientation.IN,
       endOrientation: Orientation.IN,
@@ -295,8 +295,8 @@ export class StartPositionService implements IStartPositionService {
     const redMotion = createMotionData({
       motionType: DomainMotionType.STATIC,
       rotationDirection: RotationDirection.NO_ROTATION,
-      start_loc: redLocation,
-      end_loc: redLocation,
+      startLocation: redLocation,
+      endLocation: redLocation,
       turns: 0,
       startOrientation: Orientation.IN,
       endOrientation: Orientation.IN,

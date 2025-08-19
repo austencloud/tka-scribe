@@ -35,8 +35,8 @@ export function calculateMotionEndpoints(
   motionData: MotionData
 ): MotionEndpoints {
   const {
-    start_loc,
-    end_loc,
+    startLocation,
+    endLocation,
     startOrientation,
     endOrientation,
     motionType,
@@ -44,12 +44,12 @@ export function calculateMotionEndpoints(
     turns = 0,
   } = motionData;
 
-  const startCenterAngle = mapPositionToAngle(start_loc);
+  const startCenterAngle = mapPositionToAngle(startLocation);
   const startStaffAngle = mapOrientationToAngle(
     startOrientation || Orientation.IN,
     startCenterAngle
   );
-  const targetCenterAngle = mapPositionToAngle(end_loc);
+  const targetCenterAngle = mapPositionToAngle(endLocation);
 
   let calculatedTargetStaffAngle: number;
 

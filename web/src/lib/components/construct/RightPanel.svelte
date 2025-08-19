@@ -81,7 +81,7 @@
       motionType: "static",
       start_orientation: "in",
       end_orientation: "in",
-      rotation_direction: "clockwise",
+      rotationDirection: "clockwise",
       location: null,
       position_x: 0,
       position_y: 0,
@@ -89,7 +89,7 @@
       coordinates: null,
       svg_center: null,
       svg_mirrored: false,
-      is_visible: true,
+      isVisible: true,
       is_selected: false,
     };
     constructTabEventService().handleArrowSelected(fullArrowData);

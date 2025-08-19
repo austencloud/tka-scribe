@@ -28,12 +28,12 @@ export interface IMotionParameterService {
   updateMotionTypeForLocations(params: MotionTestParams): MotionTestParams;
 
   // Motion type calculations
-  getMotionType(startLocation: string, endLoc: string): string;
-  getAvailableMotionTypes(startLocation: string, endLoc: string): string[];
+  getMotionType(startLocation: string, endLocation: string): string;
+  getAvailableMotionTypes(startLocation: string, endLocation: string): string[];
   calculateRotationDirection(
     motionType: string,
     startLocation: string,
-    endLoc: string
+    endLocation: string
   ): string;
 
   // Enum mapping

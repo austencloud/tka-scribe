@@ -4,8 +4,9 @@
  * Central export point for all modern rune-based pictograph components.
  */
 
-// Main pictograph component
-export { default as ModernPictograph } from "./Pictograph.svelte";
+// Main pictograph components
+export { default as Pictograph } from "./Pictograph.svelte";
+export { default as Beat } from "./Beat.svelte";
 
 // Individual rendering components
 export { default as Grid } from "./Grid.svelte";

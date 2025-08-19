@@ -22,4 +22,4 @@ export * from "./CoordinateUpdateService.js";
 
 // ✅ ELIMINATED: PropAttributes - using native MotionData instead!
 // Re-export types for backward compatibility
-export type { PropState } from "../../types/PropState.js";
+export type { PropState } from "../../../components/animator/types/PropState.js";

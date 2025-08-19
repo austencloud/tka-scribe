@@ -43,7 +43,7 @@
           <div class="debug-item">
             <span class="label">End Orientation:</span>
             <span class="value">
-              {state.currentDebugData.locationDebugInfo.endOri}
+              {state.currentDebugData.locationDebugInfo.endOrientation}
             </span>
           </div>
           <div class="debug-item">

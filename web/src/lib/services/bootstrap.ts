@@ -17,6 +17,7 @@ import { registerCoreServices } from "./di/registration/core-services";
 import { registerPositioningServices } from "./di/registration/positioning-services";
 import { registerMotionTesterServices } from "./di/registration/motion-tester-services";
 import { registerAnimatorServices } from "./di/registration/animator-services";
+import { registerCodexServices } from "./di/registration/codex-services";
 // TODO: Uncomment when image export services are implemented
 // import { registerImageExportServices } from "./di/registration/image-export-services";
 
@@ -29,6 +30,7 @@ export async function createWebApplication(): Promise<ServiceContainer> {
   try {
     // Register services in the correct dependency order
     await registerCoreServices(container);
+    await registerCodexServices(container);
     await registerPositioningServices(container);
     await registerAnimatorServices(container);
     await registerBrowseServices(container);

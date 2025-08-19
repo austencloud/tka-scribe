@@ -7,7 +7,6 @@
  */
 
 import type { ArrowData, MotionData, PictographData } from "$lib/domain";
-import { ArrowType } from "$lib/domain";
 import { MotionColor } from "$lib/domain/enums";
 import type { IArrowPositioningOrchestrator } from "$lib/services/positioning";
 import { getPositioningServiceFactory } from "$lib/services/positioning/PositioningServiceFactory";
@@ -65,8 +64,8 @@ export class ArrowPositioningService {
     });
     console.log(`Motion data:`, {
       motionType: motionData.motionType,
-      start_loc: motionData.start_loc,
-      end_loc: motionData.end_loc,
+      startLocation: motionData.startLocation,
+      endLocation: motionData.endLocation,
       turns: motionData.turns,
     });
 
@@ -109,57 +108,6 @@ export class ArrowPositioningService {
   /**
    * Legacy interface for backward compatibility
    */
-  async calculatePosition_legacy(
-    input: ArrowPositioningInput
-  ): Promise<Position> {
-    const arrowData: ArrowData = {
-      color: input.arrowType,
-      arrowType: input.arrowType === "blue" ? ArrowType.BLUE : ArrowType.RED,
-      location: input.location,
-      motionType: input.motionType,
-    } as ArrowData;
-
-    const motionData: MotionData = {
-      motionType: input.motionType,
-      start_loc: input.location,
-      startOrientation: input.start_orientation || "in",
-      endOrientation: input.end_orientation || "in",
-      rotationDirection: "cw",
-      turns: input.turns,
-    } as MotionData;
-
-    const pictographData: PictographData = {
-      letter: input.letter || "A",
-      gridMode: input.gridMode,
-      motions: {
-        [input.arrowType]: motionData,
-      },
-    } as PictographData;
-
-    const result = await this.calculatePosition(
-      arrowData,
-      motionData,
-      pictographData
-    );
-    return { x: result.x, y: result.y };
-  }
-
-  /**
-   * Emergency fallback - should never be used in normal operation
-   */
-  private getFallbackPosition(motionData: MotionData): ArrowPositionResult {
-    console.error(
-      "🚨 CRITICAL: Using emergency fallback positioning! This indicates orchestrator failure!"
-    );
-    console.error("Motion data:", motionData);
-
-    // Use center position as emergency fallback
-    return {
-      x: 475.0,
-      y: 475.0,
-      rotation: 0,
-    };
-  }
 }
 
 // Create singleton instance

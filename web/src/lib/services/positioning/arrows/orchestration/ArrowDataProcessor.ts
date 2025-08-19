@@ -110,8 +110,8 @@ export class ArrowDataProcessor {
 
     // Check required properties
     const hasMotionType = typeof motionData.motionType === "string";
-    const hasStartLocation = motionData.start_loc !== undefined;
-    const hasEndLocation = motionData.end_loc !== undefined;
+    const hasStartLocation = motionData.startLocation !== undefined;
+    const hasEndLocation = motionData.endLocation !== undefined;
 
     return hasMotionType && hasStartLocation && hasEndLocation;
   }

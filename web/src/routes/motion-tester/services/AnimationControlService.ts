@@ -1,4 +1,4 @@
-import type { PropState } from "$lib/animator";
+import type { PropState } from "$lib/components/animator";
 import type { MotionTestParams } from "./MotionParameterService";
 import type { IAnimationControlService } from "./interfaces";
 import {
@@ -92,14 +92,14 @@ export class AnimationControlService implements IAnimationControlService {
 
   private convertToMotionData(params: MotionTestParams): MotionData {
     return {
-      start_loc: params.startLocation as Location,
-      end_loc: params.endLoc as Location,
+      startLocation: params.startLocation as Location,
+      endLocation: params.endLocation as Location,
       startOrientation: params.startOri as Orientation,
-      endOrientation: params.endOri as Orientation,
+      endOrientation: params.endOrientation as Orientation,
       motionType: params.motionType as MotionType,
       rotationDirection: params.rotationDirection as RotationDirection,
       turns: params.turns,
-      is_visible: true, // ✅ Add required field for MotionData
+      isVisible: true, // ✅ Add required field for MotionData
     };
   }
 

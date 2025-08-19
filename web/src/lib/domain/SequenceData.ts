@@ -19,7 +19,7 @@ export interface SequenceData {
   readonly level?: number;
   readonly date_added?: Date;
   readonly gridMode?: string;
-  readonly prop_type?: string;
+  readonly propType?: string;
   readonly is_favorite: boolean;
   readonly is_circular: boolean;
   readonly starting_position?: string;
@@ -49,7 +49,7 @@ export function createSequenceData(
     ...(data.level !== undefined && { level: data.level }),
     ...(data.date_added !== undefined && { date_added: data.date_added }),
     ...(data.gridMode !== undefined && { gridMode: data.gridMode }),
-    ...(data.prop_type !== undefined && { prop_type: data.prop_type }),
+    ...(data.propType !== undefined && { propType: data.propType }),
     ...(data.starting_position !== undefined && {
       starting_position: data.starting_position,
     }),

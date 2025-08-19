@@ -173,10 +173,10 @@
       });
       document.dispatchEvent(event);
 
-      // Clear transition state after a short delay to allow UI to update
+      // Clear transition state after a shorter delay to reduce flash duration
       setTimeout(() => {
         isTransitioning = false;
-      }, 500);
+      }, 200); // Reduced from 500ms to 200ms
     } catch (error) {
       console.error(
         "StartPositionPicker: Error selecting start position:",

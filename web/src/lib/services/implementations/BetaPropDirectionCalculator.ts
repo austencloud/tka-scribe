@@ -169,16 +169,20 @@ export class BetaPropDirectionCalculator {
   ): Direction | null {
     const isRadial = this.endsWithRadialOrientation();
     const startLocation =
-      (motionData as unknown as { start_loc?: string; start_location?: string })
-        .start_loc ??
+      (
+        motionData as unknown as {
+          startLocation?: string;
+          start_location?: string;
+        }
+      ).startLocation ??
       (motionData as unknown as { start_location?: string }).start_location ??
       "";
-    const endLoc =
-      (motionData as unknown as { end_loc?: string; end_location?: string })
-        .end_loc ??
+    const endLocation =
+      (motionData as unknown as { endLocation?: string; end_location?: string })
+        .endLocation ??
       (motionData as unknown as { end_location?: string }).end_location ??
       "";
-    return this.getShiftDirection(isRadial, startLocation, endLoc);
+    return this.getShiftDirection(isRadial, startLocation, endLocation);
   }
 
   /**
@@ -187,12 +191,12 @@ export class BetaPropDirectionCalculator {
   private getShiftDirection(
     isRadial: boolean,
     startLocation: string,
-    endLoc: string
+    endLocation: string
   ): Direction | null {
     const map = isRadial
       ? this.directionMapRadialShift
       : this.directionMapNonRadialShift;
-    return map[startLocation as Loc]?.[endLoc as Loc] ?? null;
+    return map[startLocation as Loc]?.[endLocation as Loc] ?? null;
   }
 
   /**

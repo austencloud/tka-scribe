@@ -45,36 +45,39 @@ export class OrientationCalculationService
     const turns = motion.turns;
     const startOri = motion.startOrientation;
     const propRotDir = motion.rotationDirection;
-    const startLocation = motion.start_loc;
-    const endLoc = motion.end_loc;
+    const startLocation = motion.startLocation;
+    const endLocation = motion.endLocation;
 
-    let endOri: Orientation;
+    let endOrientation: Orientation;
 
     if (motionType === MotionType.FLOAT) {
       const handpathDirection = this.handpathCalculator.getHandRotDir(
         startLocation,
-        endLoc
+        endLocation
       ) as HandPath;
-      endOri = this.calculateFloatOrientation(startOri, handpathDirection);
+      endOrientation = this.calculateFloatOrientation(
+        startOri,
+        handpathDirection
+      );
     } else {
-      endOri = this.calculateTurnOrientation(
+      endOrientation = this.calculateTurnOrientation(
         motionType,
         turns,
         startOri,
         propRotDir,
         startLocation,
-        endLoc
+        endLocation
       );
     }
 
-    if (endOri === null || endOri === undefined) {
+    if (endOrientation === null || endOrientation === undefined) {
       throw new Error(
         "Calculated end orientation cannot be None. " +
           "Please check the input data and orientation calculator."
       );
     }
 
-    return endOri;
+    return endOrientation;
   }
 
   /**
@@ -86,7 +89,7 @@ export class OrientationCalculationService
     startOri: Orientation,
     propRotDir: RotationDirection,
     startLocation: Location,
-    endLoc: Location
+    endLocation: Location
   ): Orientation {
     if (turns === 0 || turns === 1 || turns === 2 || turns === 3) {
       return this.calculateWholeTurnOrientation(
@@ -98,7 +101,7 @@ export class OrientationCalculationService
     } else if (turns === "fl") {
       const handpathDirection = this.handpathCalculator.getHandRotDir(
         startLocation,
-        endLoc
+        endLocation
       ) as HandPath;
       return this.calculateFloatOrientation(startOri, handpathDirection);
     } else {
@@ -295,12 +298,12 @@ export class OrientationCalculationService
         motionType: blueMotion.motionType || MotionType.STATIC,
         rotationDirection:
           blueMotion.rotationDirection || RotationDirection.NO_ROTATION,
-        start_loc: blueMotion.start_loc || Location.NORTH,
-        end_loc: blueMotion.end_loc || Location.NORTH,
+        startLocation: blueMotion.startLocation || Location.NORTH,
+        endLocation: blueMotion.endLocation || Location.NORTH,
         turns: blueMotion.turns || 0,
         startOrientation: blueMotion.startOrientation || Orientation.IN,
         endOrientation: blueMotion.endOrientation || Orientation.IN,
-        is_visible: blueMotion.is_visible ?? true,
+        isVisible: blueMotion.isVisible ?? true,
       };
 
       const calculatedEndOri = this.calculateEndOrientation(
@@ -321,12 +324,12 @@ export class OrientationCalculationService
         motionType: redMotion.motionType || MotionType.STATIC,
         rotationDirection:
           redMotion.rotationDirection || RotationDirection.NO_ROTATION,
-        start_loc: redMotion.start_loc || Location.NORTH,
-        end_loc: redMotion.end_loc || Location.NORTH,
+        startLocation: redMotion.startLocation || Location.NORTH,
+        endLocation: redMotion.endLocation || Location.NORTH,
         turns: redMotion.turns || 0,
         startOrientation: redMotion.startOrientation || Orientation.IN,
         endOrientation: redMotion.endOrientation || Orientation.IN,
-        is_visible: redMotion.is_visible ?? true,
+        isVisible: redMotion.isVisible ?? true,
       };
 
       const calculatedEndOri = this.calculateEndOrientation(
@@ -438,8 +441,8 @@ class HandpathCalculator {
   /**
    * Get hand rotation direction - exact port from legacy
    */
-  getHandRotDir(startLocation: string, endLoc: string): string {
-    const key = `${startLocation}_${endLoc}`;
+  getHandRotDir(startLocation: string, endLocation: string): string {
+    const key = `${startLocation}_${endLocation}`;
     return this.handRotDirMap.get(key) || "NO HAND ROTATION FOUND";
   }
 }

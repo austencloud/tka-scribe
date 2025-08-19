@@ -83,14 +83,14 @@ Follows the same pattern as Prop component for consistent sizing behavior
       // Use non-radial only for clock/counter orientations, radial for everything else
       const startOri =
         arrowData.start_orientation || motionData.startOrientation || "in";
-      const endOri =
+      const endOrientation =
         arrowData.end_orientation || motionData.endOrientation || "in";
 
       const isNonRadial =
         startOri === "clock" ||
         startOri === "counter" ||
-        endOri === "clock" ||
-        endOri === "counter";
+        endOrientation === "clock" ||
+        endOrientation === "counter";
 
       const subDir = isNonRadial ? "from_nonradial" : "from_radial";
       const turnValue = typeof turns === "number" ? turns.toFixed(1) : "0.0";

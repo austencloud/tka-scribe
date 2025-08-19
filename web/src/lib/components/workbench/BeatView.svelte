@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { ModernPictograph } from "$lib/components/pictograph";
+  import { Beat } from "$lib/components/pictograph";
   import type { BeatData } from "$lib/domain";
   import { beatFrameService } from "$lib/services/BeatFrameService.svelte";
 
@@ -26,13 +26,6 @@
   }: Props = $props();
 
   const config = $derived(beatFrameService.config);
-  const displayText = $derived(
-    beat.isBlank && !beat.pictographData
-      ? (beat.beatNumber ?? index + 1).toString()
-      : (beat.pictographData?.letter ??
-          beat.metadata?.letter ??
-          (beat.beatNumber ?? index + 1).toString())
-  );
 
   function handleClick() {
     onClick?.(index);
@@ -77,34 +70,18 @@
   aria-label="Beat {beat.beatNumber ?? index + 1}"
 >
   <div class="beat-content">
-    {#if beat.pictographData}
-      <!-- Render actual pictograph using ModernPictograph component -->
-      <div class="pictograph-container">
-        <ModernPictograph
-          beatData={beat}
-          width={config.beatSize - 2}
-          height={config.beatSize - 2}
-          onClick={handleClick}
-          debug={false}
-        />
-      </div>
-    {:else}
-      <div class="beat-number">
-        {displayText}
-      </div>
-    {/if}
+    <!-- Use Beat component which handles all beat-specific logic -->
+    <Beat
+      {beat}
+      {index}
+      {isSelected}
+      {isHovered}
+      onClick={handleClick}
+      width={config.beatSize - 2}
+      height={config.beatSize - 2}
+      debug={false}
+    />
   </div>
-
-  {#if beat.blueReversal || beat.redReversal}
-    <div class="reversal-indicators">
-      {#if beat.blueReversal}
-        <div class="reversal blue"></div>
-      {/if}
-      {#if beat.redReversal}
-        <div class="reversal red"></div>
-      {/if}
-    </div>
-  {/if}
 </div>
 
 <style>
@@ -143,48 +120,6 @@
   .beat-content {
     text-align: center;
     font-weight: 600;
-  }
-
-  .beat-number {
-    font-size: 16px;
-    color: #6c757d;
-  }
-
-  .pictograph-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    height: 100%;
-    border-radius: 4px;
-    overflow: hidden;
-  }
-
-  .pictograph-container :global(.modern-pictograph) {
-    border: none;
-    border-radius: 4px;
-  }
-
-  .reversal-indicators {
-    position: absolute;
-    top: 4px;
-    right: 4px;
-    display: flex;
-    gap: 2px;
-  }
-
-  .reversal {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-  }
-
-  .reversal.blue {
-    background: #007bff;
-  }
-
-  .reversal.red {
-    background: #dc3545;
   }
 
   /* Focus styles for accessibility */

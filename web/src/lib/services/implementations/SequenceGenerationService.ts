@@ -153,7 +153,7 @@ export class SequenceGenerationService implements ISequenceGenerationService {
         word: "", // Will be calculated from beats
         beats: generatedBeats,
         gridMode: options.gridMode,
-        prop_type: options.propType,
+        propType: options.propType,
         difficulty_level: options.difficulty,
         is_favorite: false,
         is_circular: false,
@@ -289,8 +289,8 @@ export class SequenceGenerationService implements ISequenceGenerationService {
         createMotionData({
           motionType: MotionType.STATIC,
           rotationDirection: RotationDirection.NO_ROTATION,
-          start_loc: Location.NORTH,
-          end_loc: Location.NORTH,
+          startLocation: Location.NORTH,
+          endLocation: Location.NORTH,
           turns: 0,
           startOrientation: Orientation.IN,
           endOrientation: Orientation.IN,
@@ -300,8 +300,8 @@ export class SequenceGenerationService implements ISequenceGenerationService {
         createMotionData({
           motionType: MotionType.STATIC,
           rotationDirection: RotationDirection.NO_ROTATION,
-          start_loc: Location.NORTH,
-          end_loc: Location.NORTH,
+          startLocation: Location.NORTH,
+          endLocation: Location.NORTH,
           turns: 0,
           startOrientation: Orientation.IN,
           endOrientation: Orientation.IN,

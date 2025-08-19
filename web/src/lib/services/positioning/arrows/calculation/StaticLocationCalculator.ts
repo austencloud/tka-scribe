@@ -10,10 +10,10 @@ import type { MotionData } from "$lib/domain";
 export class StaticLocationCalculator {
   calculateLocation(motion: MotionData): string {
     // Static motions typically stay at their original location
-    const location = motion.start_loc?.toLowerCase();
+    const location = motion.startLocation?.toLowerCase();
 
     if (!location) {
-      console.warn("Missing start_loc for static motion");
+      console.warn("Missing startLocation for static motion");
       return "n"; // Default to north instead of center
     }
 

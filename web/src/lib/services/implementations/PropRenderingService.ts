@@ -43,7 +43,7 @@ export class PropRenderingService implements IPropRenderingService {
     _motionData: MotionData,
     _gridMode: GridMode = DomainGridMode.DIAMOND
   ): Promise<SVGElement> {
-    // Props are now handled by ModernPictograph.svelte -> Prop.svelte components
+    // Props are now handled by Pictograph.svelte -> Prop.svelte components
     // This service-level rendering is disabled to prevent duplicate CIRCLE_PROP elements
 
     // Return empty group to prevent errors
@@ -61,8 +61,8 @@ export class PropRenderingService implements IPropRenderingService {
     gridMode: GridMode = DomainGridMode.DIAMOND
   ): Promise<PropPosition> {
     try {
-      // Use end location for prop positioning (domain uses end_loc)
-      const location = (motionData?.end_loc as unknown as string) || "s";
+      // Use end location for prop positioning (domain uses endLocation)
+      const location = (motionData?.endLocation as unknown as string) || "s";
 
       // Use DefaultPropPositioner for consistent positioning
       const basePosition = DefaultPropPositioner.calculatePosition(
@@ -166,7 +166,7 @@ export class PropRenderingService implements IPropRenderingService {
   ): number {
     // Use PropRotAngleManager for consistent rotation calculation with legacy
     const endLocation =
-      location || (motionData?.end_loc as unknown as string) || "s";
+      location || (motionData?.endLocation as unknown as string) || "s";
     const endOrientation =
       (motionData as unknown as { endOrientation?: string })?.endOrientation ||
       "in";

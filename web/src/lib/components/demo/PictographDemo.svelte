@@ -28,7 +28,7 @@ This component demonstrates the modern pictograph system using actual CSV data
 from the TKA system, showing real pictographs with proper motion calculations.
 -->
 <script lang="ts">
-  import { ModernPictograph } from "$lib/components/pictograph";
+  import { Pictograph } from "$lib/components/pictograph";
   import type { PictographData } from "$lib/domain";
   import { GridMode as DomainGridMode } from "$lib/domain";
   import { GridMode } from "$lib/domain/enums";
@@ -248,7 +248,7 @@ from the TKA system, showing real pictographs with proper motion calculations.
       </div>
       <div class="pictograph-wrapper large" data-testid="main-pictograph">
         {#if currentPictographData()}
-          <ModernPictograph
+          <Pictograph
             pictographData={currentPictographData()}
             width={500}
             height={500}
@@ -273,7 +273,7 @@ from the TKA system, showing real pictographs with proper motion calculations.
       <li><strong>Grid Mode:</strong> {gridMode}</li>
       <li><strong>Debug:</strong> {debugMode ? "Enabled" : "Disabled"}</li>
       <li>
-        <strong>Components:</strong> ModernPictograph, Grid, Prop, Arrow, TKAGlyph
+        <strong>Components:</strong> Pictograph, Grid, Prop, Arrow, TKAGlyph
       </li>
       <li><strong>Reactivity:</strong> Pure Svelte 5 Runes</li>
     </ul>

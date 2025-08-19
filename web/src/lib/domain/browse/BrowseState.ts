@@ -96,7 +96,7 @@ export function createBrowseSequenceMetadata(
       dateAdded: sequence.date_added,
     }),
     ...(sequence.gridMode !== undefined && { gridMode: sequence.gridMode }),
-    ...(sequence.prop_type !== undefined && { propType: sequence.prop_type }),
+    ...(sequence.propType !== undefined && { propType: sequence.propType }),
     isFavorite: sequence.is_favorite,
     isCircular: sequence.is_circular,
     ...(sequence.starting_position !== undefined && {

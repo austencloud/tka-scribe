@@ -24,18 +24,18 @@
       blueMotionParams: {
         motionType: "pro",
         startLocation: "n",
-        endLoc: "s",
+        endLocation: "s",
         startOri: "in",
-        endOri: "out",
+        endOrientation: "out",
         rotationDirection: "cw",
         turns: 1,
       },
       redMotionParams: {
         motionType: "anti",
         startLocation: "e",
-        endLoc: "w",
+        endLocation: "w",
         startOri: "out",
-        endOri: "in",
+        endOrientation: "in",
         rotationDirection: "ccw",
         turns: 1,
       },
@@ -46,18 +46,18 @@
       blueMotionParams: {
         motionType: "float",
         startLocation: "ne",
-        endLoc: "sw",
+        endLocation: "sw",
         startOri: "clock",
-        endOri: "counter",
+        endOrientation: "counter",
         rotationDirection: "no_rot",
         turns: 0,
       },
       redMotionParams: {
         motionType: "float",
         startLocation: "nw",
-        endLoc: "se",
+        endLocation: "se",
         startOri: "counter",
-        endOri: "clock",
+        endOrientation: "clock",
         rotationDirection: "no_rot",
         turns: 0,
       },
@@ -68,18 +68,18 @@
       blueMotionParams: {
         motionType: "dash",
         startLocation: "n",
-        endLoc: "n",
+        endLocation: "n",
         startOri: "in",
-        endOri: "in",
+        endOrientation: "in",
         rotationDirection: "no_rot",
         turns: 0,
       },
       redMotionParams: {
         motionType: "dash",
         startLocation: "s",
-        endLoc: "s",
+        endLocation: "s",
         startOri: "out",
-        endOri: "out",
+        endOrientation: "out",
         rotationDirection: "no_rot",
         turns: 0,
       },
@@ -90,18 +90,18 @@
       blueMotionParams: {
         motionType: "static",
         startLocation: "w",
-        endLoc: "w",
+        endLocation: "w",
         startOri: "in",
-        endOri: "in",
+        endOrientation: "in",
         rotationDirection: "no_rot",
         turns: 0,
       },
       redMotionParams: {
         motionType: "static",
         startLocation: "e",
-        endLoc: "e",
+        endLocation: "e",
         startOri: "out",
-        endOri: "out",
+        endOrientation: "out",
         rotationDirection: "no_rot",
         turns: 0,
       },
@@ -177,13 +177,13 @@
                 <strong>Blue Motion:</strong>
                 {result.config.blueMotionParams.motionType}
                 ({result.config.blueMotionParams.startLocation} → {result.config
-                  .blueMotionParams.endLoc})
+                  .blueMotionParams.endLocation})
               </li>
               <li>
                 <strong>Red Motion:</strong>
                 {result.config.redMotionParams.motionType}
                 ({result.config.redMotionParams.startLocation} → {result.config
-                  .redMotionParams.endLoc})
+                  .redMotionParams.endLocation})
               </li>
             </ul>
           </div>

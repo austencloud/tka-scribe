@@ -63,23 +63,23 @@ export class MotionGenerationService implements IMotionGenerationService {
       // Simple random selection (will be replaced with proper algorithms)
       const motionType = this.randomChoice(motionTypes);
       const startLocation = this.randomChoice(locations);
-      const endLoc = this.randomChoice(locations);
+      const endLocation = this.randomChoice(locations);
       const startOri = this.randomChoice(orientations);
-      const endOri = this.randomChoice(orientations);
+      const endOrientation = this.randomChoice(orientations);
       const rotationDirection = this.randomChoice(rotationDirections);
 
       // Calculate turns based on motion type and locations
-      const turns = this.calculateTurns(motionType, startLocation, endLoc);
+      const turns = this.calculateTurns(motionType, startLocation, endLocation);
 
       const motion: MotionData = {
         motionType: motionType,
         rotationDirection: rotationDirection,
-        start_loc: startLocation,
-        end_loc: endLoc,
+        startLocation: startLocation,
+        endLocation: endLocation,
         turns,
         startOrientation: startOri,
-        endOrientation: endOri,
-        is_visible: true,
+        endOrientation: endOrientation,
+        isVisible: true,
       };
 
       console.log(`Generated ${color} motion:`, motion);
@@ -98,7 +98,7 @@ export class MotionGenerationService implements IMotionGenerationService {
   private calculateTurns(
     motionType: string,
     startLocation: string,
-    endLoc: string
+    endLocation: string
   ): number {
     // Simple turn calculation (placeholder)
     if (motionType === "static") return 0;
@@ -107,7 +107,7 @@ export class MotionGenerationService implements IMotionGenerationService {
     // For pro/anti/float, calculate based on location change
     const locationOrder = ["n", "ne", "e", "se", "s", "sw", "w", "nw"];
     const startIndex = locationOrder.indexOf(startLocation);
-    const endIndex = locationOrder.indexOf(endLoc);
+    const endIndex = locationOrder.indexOf(endLocation);
 
     if (startIndex === -1 || endIndex === -1) return 1;
 
@@ -159,11 +159,11 @@ export class MotionGenerationService implements IMotionGenerationService {
       reasons.push("Motion type is required");
     }
 
-    if (!motion.start_loc) {
+    if (!motion.startLocation) {
       reasons.push("Start location is required");
     }
 
-    if (!motion.end_loc) {
+    if (!motion.endLocation) {
       reasons.push("End location is required");
     }
 

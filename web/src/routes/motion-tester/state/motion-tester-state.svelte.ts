@@ -66,7 +66,7 @@ export function createMotionTesterState(): MotionTesterState {
   let redMotionParams = $state<MotionTestParams>({
     ...motionService.createDefaultParams(),
     startLocation: "e",
-    endLoc: "w",
+    endLocation: "w",
     motionType: MotionType.DASH,
   });
 
@@ -88,12 +88,12 @@ export function createMotionTesterState(): MotionTesterState {
   // Auto-calculate rotation direction for blue prop
   $effect(() => {
     // Properly access reactive state
-    const { motionType, startLocation, endLoc, rotationDirection } =
+    const { motionType, startLocation, endLocation, rotationDirection } =
       blueMotionParams;
     const newRotDir = motionService.calculateRotationDirection(
       motionType,
       startLocation,
-      endLoc
+      endLocation
     );
     if (newRotDir !== rotationDirection) {
       blueMotionParams.rotationDirection = newRotDir;
@@ -107,23 +107,23 @@ export function createMotionTesterState(): MotionTesterState {
       motionData,
       MotionColor.BLUE
     );
-    if (newEndOri !== blueMotionParams.endOri) {
-      blueMotionParams.endOri = newEndOri;
+    if (newEndOri !== blueMotionParams.endOrientation) {
+      blueMotionParams.endOrientation = newEndOri;
     }
   });
 
   // Auto-calculate rotation direction for red prop
   $effect(() => {
     // Properly access reactive state
-    const { motionType, startLocation, endLoc, rotationDirection } =
+    const { motionType, startLocation, endLocation, rotationDirection } =
       redMotionParams;
     console.log(
-      `🔴 Red rotation effect triggered: ${startLocation}→${endLoc} (${motionType})`
+      `🔴 Red rotation effect triggered: ${startLocation}→${endLocation} (${motionType})`
     );
     const newRotDir = motionService.calculateRotationDirection(
       motionType,
       startLocation,
-      endLoc
+      endLocation
     );
     console.log(
       `🔴 Red rotation calculated: ${newRotDir}, current: ${rotationDirection}`
@@ -143,8 +143,8 @@ export function createMotionTesterState(): MotionTesterState {
       motionData,
       MotionColor.RED
     );
-    if (newEndOri !== redMotionParams.endOri) {
-      redMotionParams.endOri = newEndOri;
+    if (newEndOri !== redMotionParams.endOrientation) {
+      redMotionParams.endOrientation = newEndOri;
     }
   });
 
@@ -203,7 +203,7 @@ export function createMotionTesterState(): MotionTesterState {
     },
 
     setBlueEndLocation: (location: string) => {
-      blueMotionParams.endLoc = location;
+      blueMotionParams.endLocation = location;
       const updatedParams =
         motionService.updateMotionTypeForLocations(blueMotionParams);
       blueMotionParams = updatedParams;
@@ -225,7 +225,7 @@ export function createMotionTesterState(): MotionTesterState {
     },
 
     setRedEndLocation: (location: string) => {
-      redMotionParams.endLoc = location;
+      redMotionParams.endLocation = location;
       const updatedParams =
         motionService.updateMotionTypeForLocations(redMotionParams);
       redMotionParams = updatedParams;

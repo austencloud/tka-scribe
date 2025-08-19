@@ -69,8 +69,10 @@
 
     return {
       gridMode: beatData.pictographData.gridMode || "diamond",
-      blueStart: beatData.pictographData.motions?.blue?.start_loc || "Unknown",
-      redStart: beatData.pictographData.motions?.red?.start_loc || "Unknown",
+      blueStart:
+        beatData.pictographData.motions?.blue?.startLocation || "Unknown",
+      redStart:
+        beatData.pictographData.motions?.red?.startLocation || "Unknown",
     };
   }
 

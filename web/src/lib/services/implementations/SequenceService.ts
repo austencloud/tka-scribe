@@ -289,7 +289,7 @@ export class SequenceService implements ISequenceService {
             center_x: 0,
             center_y: 0,
             radius: 100,
-            grid_points: {},
+            gridPoints: {},
           },
           arrows: {},
           props: {},
@@ -298,12 +298,12 @@ export class SequenceService implements ISequenceService {
               motionType:
                 ((step.blueAttributes as Record<string, unknown>)
                   ?.motionType as MotionType) || MotionType.STATIC,
-              start_loc:
+              startLocation:
                 ((step.blueAttributes as Record<string, unknown>)
-                  ?.start_loc as Location) || Location.SOUTH,
-              end_loc:
+                  ?.startLocation as Location) || Location.SOUTH,
+              endLocation:
                 ((step.blueAttributes as Record<string, unknown>)
-                  ?.end_loc as Location) || Location.SOUTH,
+                  ?.endLocation as Location) || Location.SOUTH,
               startOrientation:
                 ((step.blueAttributes as Record<string, unknown>)
                   ?.startOrientation as Orientation) || Orientation.IN,
@@ -316,18 +316,18 @@ export class SequenceService implements ISequenceService {
               turns:
                 ((step.blueAttributes as Record<string, unknown>)
                   ?.turns as number) || 0,
-              is_visible: true,
+              isVisible: true,
             },
             red: {
               motionType:
                 ((step.redAttributes as Record<string, unknown>)
                   ?.motionType as MotionType) || MotionType.STATIC,
-              start_loc:
+              startLocation:
                 ((step.redAttributes as Record<string, unknown>)
-                  ?.start_loc as Location) || Location.SOUTH,
-              end_loc:
+                  ?.startLocation as Location) || Location.SOUTH,
+              endLocation:
                 ((step.redAttributes as Record<string, unknown>)
-                  ?.end_loc as Location) || Location.SOUTH,
+                  ?.endLocation as Location) || Location.SOUTH,
               startOrientation:
                 ((step.redAttributes as Record<string, unknown>)
                   ?.startOrientation as Orientation) || Orientation.IN,
@@ -340,7 +340,7 @@ export class SequenceService implements ISequenceService {
               turns:
                 ((step.redAttributes as Record<string, unknown>)
                   ?.turns as number) || 0,
-              is_visible: true,
+              isVisible: true,
             },
           },
           letter: (step.letter as string) || "",
@@ -365,7 +365,7 @@ export class SequenceService implements ISequenceService {
       level: (meta.level as number) || 1,
       date_added: new Date((meta.date_added as string | number) || Date.now()),
       gridMode: (meta.gridMode as string) || "diamond",
-      prop_type: (meta.prop_type as string) || "unknown",
+      propType: (meta.propType as string) || "unknown",
       is_favorite: (meta.is_favorite as boolean) || false,
       is_circular: (meta.is_circular as boolean) || false,
       starting_position: (meta.sequence_start_position as string) || "beta",

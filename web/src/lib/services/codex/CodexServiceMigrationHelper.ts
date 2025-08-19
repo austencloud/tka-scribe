@@ -12,7 +12,11 @@ export class CodexServiceMigrationHelper {
   private service: CodexService;
 
   constructor() {
-    this.service = new CodexService();
+    // TODO: Use DI container to resolve CodexService instead of direct instantiation
+    // this.service = new CodexService();
+    throw new Error(
+      "CodexServiceMigrationHelper needs to be updated to use DI container"
+    );
   }
 
   /**

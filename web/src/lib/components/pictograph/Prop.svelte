@@ -49,8 +49,8 @@ Prop Component - Renders SVG props with proper positioning
     if (!propData) return { x: 475, y: 475 };
 
     // Props use their OWN location, not motion end location
-    // This is critical - PropPlacementManager sets prop.location which may differ from motion.end_loc
-    const location = propData.location || motionData?.end_loc;
+    // This is critical - PropPlacementManager sets prop.location which may differ from motion.endLocation
+    const location = propData.location || motionData?.endLocation;
 
     // Use DefaultPropPositioner for consistent positioning
     const basePosition = DefaultPropPositioner.calculatePosition(
@@ -93,23 +93,23 @@ Prop Component - Renders SVG props with proper positioning
       const redMotion: MotionData = {
         motionType: MotionType.STATIC,
         rotationDirection: RotationDirection.CLOCKWISE,
-        start_loc: (redProp?.location as Location) || Location.SOUTH,
-        end_loc: (redProp?.location as Location) || Location.SOUTH,
+        startLocation: (redProp?.location as Location) || Location.SOUTH,
+        endLocation: (redProp?.location as Location) || Location.SOUTH,
         turns: 0,
         startOrientation: Orientation.IN,
         endOrientation: Orientation.IN,
-        is_visible: true,
+        isVisible: true,
       };
 
       const blueMotion: MotionData = {
         motionType: MotionType.STATIC,
         rotationDirection: RotationDirection.CLOCKWISE,
-        start_loc: (blueProp?.location as Location) || Location.SOUTH,
-        end_loc: (blueProp?.location as Location) || Location.SOUTH,
+        startLocation: (blueProp?.location as Location) || Location.SOUTH,
+        endLocation: (blueProp?.location as Location) || Location.SOUTH,
         turns: 0,
         startOrientation: Orientation.IN,
         endOrientation: Orientation.IN,
-        is_visible: true,
+        isVisible: true,
       };
 
       // Create direction calculator
@@ -145,7 +145,7 @@ Prop Component - Renders SVG props with proper positioning
   const rotation = $derived(() => {
     if (!propData) return 0;
 
-    const location = propData.location || motionData?.end_loc;
+    const location = propData.location || motionData?.endLocation;
     // Use prop's own orientation instead of motion's end orientation
     const propOrientation = propData.orientation || "in";
 
@@ -250,7 +250,7 @@ Prop Component - Renders SVG props with proper positioning
     try {
       if (!propData) throw new Error("No prop data available");
 
-      const response = await fetch(`/images/props/${propData.prop_type}.svg`);
+      const response = await fetch(`/images/props/${propData.propType}.svg`);
       if (!response.ok) throw new Error("Failed to fetch SVG");
 
       const originalSvgText = await response.text();
@@ -286,7 +286,7 @@ Prop Component - Renders SVG props with proper positioning
   class="prop-group {propData?.color}-prop"
   class:loaded
   data-prop-color={propData?.color}
-  data-prop-type={propData?.prop_type}
+  data-prop-type={propData?.propType}
   data-location={propData?.location}
 >
   {#if error}

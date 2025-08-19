@@ -19,7 +19,7 @@ export interface ArrowPositioningDebugData {
   locationDebugInfo: {
     motionType: string;
     startOri: string;
-    endOri: string;
+    endOrientation: string;
     calculationMethod: string;
   } | null;
 

@@ -48,8 +48,8 @@ export class ArrowQuadrantCalculator {
     ];
 
     // Check both start and end locations for diagonal positions
-    const startIsDiagonal = diagonalLocations.includes(motion.start_loc);
-    const endIsDiagonal = diagonalLocations.includes(motion.end_loc);
+    const startIsDiagonal = diagonalLocations.includes(motion.startLocation);
+    const endIsDiagonal = diagonalLocations.includes(motion.endLocation);
 
     // If either start or end is diagonal, it's diamond mode
     if (startIsDiagonal || endIsDiagonal) {

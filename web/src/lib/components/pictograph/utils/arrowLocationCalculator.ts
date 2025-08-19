@@ -6,29 +6,32 @@
  */
 
 export interface ArrowLocationInput {
-  start_loc: string;
-  end_loc: string;
+  startLocation: string;
+  endLocation: string;
   motionType: string;
 }
 
 export function calculateArrowLocation(input: ArrowLocationInput): string {
-  const { start_loc, end_loc, motionType } = input;
+  const { startLocation, endLocation, motionType } = input;
 
   // Return empty string if motion state is not initialized
-  if (!start_loc || !end_loc) {
+  if (!startLocation || !endLocation) {
     return "";
   }
 
   // For PRO, ANTI, FLOAT - use shift location calculation
   if (["pro", "anti", "float"].includes(motionType)) {
-    return calculateShiftLocation(start_loc, end_loc);
+    return calculateShiftLocation(startLocation, endLocation);
   }
 
   // For other types (DASH, STATIC), return start location
-  return start_loc;
+  return startLocation;
 }
 
-function calculateShiftLocation(start_loc: string, end_loc: string): string {
+function calculateShiftLocation(
+  startLocation: string,
+  endLocation: string
+): string {
   const directionPairs: Record<string, string> = {
     // Diagonal combinations
     "n,e": "ne",
@@ -51,8 +54,8 @@ function calculateShiftLocation(start_loc: string, end_loc: string): string {
     "sw,nw": "w",
   };
 
-  const key1 = `${start_loc},${end_loc}`;
-  const key2 = `${end_loc},${start_loc}`;
+  const key1 = `${startLocation},${endLocation}`;
+  const key2 = `${endLocation},${startLocation}`;
 
   return directionPairs[key1] || directionPairs[key2] || "";
 }

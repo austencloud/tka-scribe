@@ -36,7 +36,11 @@
         value: info.startOri,
         type: "text" as const,
       },
-      { label: "End Orientation", value: info.endOri, type: "text" as const },
+      {
+        label: "End Orientation",
+        value: info.endOrientation,
+        type: "text" as const,
+      },
       {
         label: "Calculation Method",
         value: info.calculationMethod,

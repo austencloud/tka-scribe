@@ -28,11 +28,11 @@ export function extractEndPosition(pictographData: PictographData): string {
   }
 
   // Try to extract from motion data
-  if (pictographData.motions?.blue?.end_loc) {
-    return mapLocationToPosition(pictographData.motions.blue.end_loc);
+  if (pictographData.motions?.blue?.endLocation) {
+    return mapLocationToPosition(pictographData.motions.blue.endLocation);
   }
-  if (pictographData.motions?.red?.end_loc) {
-    return mapLocationToPosition(pictographData.motions.red.end_loc);
+  if (pictographData.motions?.red?.endLocation) {
+    return mapLocationToPosition(pictographData.motions.red.endLocation);
   }
 
   // Default fallback
@@ -76,7 +76,7 @@ export function createStartPositionData(
           ? {
               ...pictographData.motions.blue,
               motionType: MotionType.STATIC,
-              end_loc: pictographData.motions.blue.start_loc,
+              endLocation: pictographData.motions.blue.startLocation,
               endOrientation: pictographData.motions.blue.startOrientation,
               turns: 0,
             }
@@ -85,7 +85,7 @@ export function createStartPositionData(
           ? {
               ...pictographData.motions.red,
               motionType: MotionType.STATIC,
-              end_loc: pictographData.motions.red.start_loc,
+              endLocation: pictographData.motions.red.startLocation,
               endOrientation: pictographData.motions.red.startOrientation,
               turns: 0,
             }

@@ -5,7 +5,7 @@
  * The 304-line monolith has been decomposed into focused services.
  */
 
-import type { PropState } from "../../types/PropState.js";
+import type { PropState } from "../../../components/animator/types/PropState.js";
 import type { SequenceData } from "$lib/domain";
 import type {
   ISequenceAnimationEngine,

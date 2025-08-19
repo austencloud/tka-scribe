@@ -31,8 +31,8 @@ Shows current beat information including letter and motion details.
           <h6>Blue Prop</h6>
           <div class="motion-info">
             <span class="location">
-              {currentBeatData.pictographData.motions.blue?.start_loc} →
-              {currentBeatData.pictographData.motions.blue?.end_loc}
+              {currentBeatData.pictographData.motions.blue?.startLocation} →
+              {currentBeatData.pictographData.motions.blue?.endLocation}
             </span>
             <span class="motion-type">
               {currentBeatData.pictographData.motions.blue?.motionType}
@@ -44,8 +44,8 @@ Shows current beat information including letter and motion details.
           <h6>Red Prop</h6>
           <div class="motion-info">
             <span class="location">
-              {currentBeatData.pictographData.motions.red?.start_loc} →
-              {currentBeatData.pictographData.motions.red?.end_loc}
+              {currentBeatData.pictographData.motions.red?.startLocation} →
+              {currentBeatData.pictographData.motions.red?.endLocation}
             </span>
             <span class="motion-type">
               {currentBeatData.pictographData.motions.red?.motionType}

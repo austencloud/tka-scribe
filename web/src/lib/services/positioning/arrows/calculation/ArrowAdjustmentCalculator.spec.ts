@@ -39,8 +39,8 @@ describe("ArrowAdjustmentCalculator (end-to-end positioning)", () => {
 
     const motion = createMotionData({
       motionType: MotionType.PRO,
-      start_loc: Location.NORTHEAST,
-      end_loc: Location.SOUTHWEST,
+      startLocation: Location.NORTHEAST,
+      endLocation: Location.SOUTHWEST,
       rotationDirection: RotationDirection.CLOCKWISE,
       turns: 0,
     });

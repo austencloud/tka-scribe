@@ -4,9 +4,9 @@
  * Handles core application lifecycle state
  */
 
-import type { IApplicationStateService } from "../interfaces/IApplicationStateService";
+import type { IInitializationService } from "../interfaces/state-service-interfaces";
 
-export class ApplicationStateService implements IApplicationStateService {
+export class ApplicationStateService implements IInitializationService {
   // Core application state
   private state = $state({
     isInitialized: false,
@@ -17,7 +17,32 @@ export class ApplicationStateService implements IApplicationStateService {
     isTransitioning: false,
   });
 
-  // Getters
+  // Interface implementation - readonly getters
+  get isInitialized(): boolean {
+    return this.state.isInitialized;
+  }
+
+  get isInitializing(): boolean {
+    return this.state.isInitializing;
+  }
+
+  get initializationError(): string | null {
+    return this.state.initializationError;
+  }
+
+  get initializationProgress(): number {
+    return this.state.initializationProgress;
+  }
+
+  get initializationComplete(): boolean {
+    return (
+      this.state.isInitialized &&
+      !this.state.isInitializing &&
+      !this.state.initializationError
+    );
+  }
+
+  // Legacy getters (for backward compatibility)
   getIsInitialized(): boolean {
     return this.state.isInitialized;
   }
@@ -80,6 +105,13 @@ export class ApplicationStateService implements IApplicationStateService {
 
   setInitializationProgress(progress: number): void {
     this.state.initializationProgress = progress;
+  }
+
+  resetInitializationState(): void {
+    this.state.isInitialized = false;
+    this.state.isInitializing = false;
+    this.state.initializationError = null;
+    this.state.initializationProgress = 0;
   }
 
   setFullScreen(fullScreen: boolean): void {

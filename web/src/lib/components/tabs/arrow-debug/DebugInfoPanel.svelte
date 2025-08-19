@@ -119,7 +119,7 @@
             </div>
             <div class="data-item">
               <strong>End Orientation:</strong>
-              {debugData.locationDebugInfo.endOri}
+              {debugData.locationDebugInfo.endOrientation}
             </div>
           {/if}
         </div>

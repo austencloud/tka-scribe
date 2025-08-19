@@ -238,7 +238,7 @@ export class DashLocationCalculator implements IDashLocationCalculator {
 
     if (!motion || motion.motionType?.toLowerCase() !== "dash") {
       // If not a dash motion, return start location as fallback
-      return motion?.start_loc || Location.NORTH;
+      return motion?.startLocation || Location.NORTH;
     }
 
     // Use analysis service to extract all the parameters
@@ -312,8 +312,10 @@ export class DashLocationCalculator implements IDashLocationCalculator {
     otherMotion: MotionData
   ): Location {
     /**Handle Λ_DASH (Lambda Dash) zero turns special case.*/
-    const key = `${motion.start_loc},${motion.end_loc},${otherMotion.end_loc}`;
-    return this.LAMBDA_DASH_ZERO_TURNS_LOCATION_MAP[key] || motion.start_loc;
+    const key = `${motion.startLocation},${motion.endLocation},${otherMotion.endLocation}`;
+    return (
+      this.LAMBDA_DASH_ZERO_TURNS_LOCATION_MAP[key] || motion.startLocation
+    );
   }
 
   private getPhiDashPsiDashLocation(
@@ -329,8 +331,8 @@ export class DashLocationCalculator implements IDashLocationCalculator {
 
     // Both motions have zero turns
     if (motion.turns === 0 && otherMotion.turns === 0) {
-      const key = `${arrowColor},${motion.start_loc},${motion.end_loc}`;
-      return this.PHI_DASH_PSI_DASH_LOCATION_MAP[key] || motion.start_loc;
+      const key = `${arrowColor},${motion.startLocation},${motion.endLocation}`;
+      return this.PHI_DASH_PSI_DASH_LOCATION_MAP[key] || motion.startLocation;
     }
 
     // Current motion has zero turns, other doesn't
@@ -348,8 +350,8 @@ export class DashLocationCalculator implements IDashLocationCalculator {
     otherMotion: MotionData
   ): Location {
     /**Handle Λ (Lambda) zero turns special case.*/
-    const key = `${motion.start_loc},${motion.end_loc},${otherMotion.end_loc}`;
-    return this.LAMBDA_ZERO_TURNS_LOCATION_MAP[key] || motion.start_loc;
+    const key = `${motion.startLocation},${motion.endLocation},${otherMotion.endLocation}`;
+    return this.LAMBDA_ZERO_TURNS_LOCATION_MAP[key] || motion.startLocation;
   }
 
   private defaultZeroTurnsDashLocation(
@@ -369,8 +371,10 @@ export class DashLocationCalculator implements IDashLocationCalculator {
     }
 
     // Default zero turns mapping
-    const key = `${motion.start_loc},${motion.end_loc}`;
-    return this.DEFAULT_ZERO_TURNS_DASH_LOCATION_MAP[key] || motion.start_loc;
+    const key = `${motion.startLocation},${motion.endLocation}`;
+    return (
+      this.DEFAULT_ZERO_TURNS_DASH_LOCATION_MAP[key] || motion.startLocation
+    );
   }
 
   private dashLocationNonZeroTurns(motion: MotionData): Location {
@@ -378,13 +382,13 @@ export class DashLocationCalculator implements IDashLocationCalculator {
     const rotDir = motion.rotationDirection?.toLowerCase();
     if (rotDir === "no_rotation" || rotDir === "none") {
       // Fallback for no rotation
-      return motion.start_loc;
+      return motion.startLocation;
     }
 
     const directionMap =
       this.NON_ZERO_TURNS_DASH_LOCATION_MAP[rotDir] ||
       this.NON_ZERO_TURNS_DASH_LOCATION_MAP["clockwise"];
-    return directionMap?.[motion.start_loc] || motion.start_loc;
+    return directionMap?.[motion.startLocation] || motion.startLocation;
   }
 
   private calculateDashLocationBasedOnShift(
@@ -393,7 +397,7 @@ export class DashLocationCalculator implements IDashLocationCalculator {
     shiftLocation: Location
   ): Location {
     /**Calculate Type 3 dash location based on shift arrow location.*/
-    const startLocation = motion.start_loc;
+    const startLocation = motion.startLocation;
 
     if (gridMode === "diamond") {
       const key = `${startLocation},${shiftLocation}`;

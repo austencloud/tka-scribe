@@ -230,13 +230,13 @@ export class ArrowAdjustmentCalculator implements IArrowAdjustmentCalculator {
         location: "center",
         start_orientation: motionData.startOrientation || "",
         end_orientation: motionData.endOrientation || "",
-        rotation_direction: motionData.rotationDirection || "",
+        rotationDirection: motionData.rotationDirection || "",
         turns: typeof motionData.turns === "number" ? motionData.turns : 0,
         isMirrored: false,
         position_x: 0,
         position_y: 0,
         rotation_angle: 0,
-        is_visible: true,
+        isVisible: true,
         is_selected: false,
       };
 

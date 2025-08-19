@@ -8,7 +8,7 @@ Matches the desktop version exactly:
 - Responsive grid sizing
 -->
 <script lang="ts">
-  import ModernPictograph from "$lib/components/pictograph/Pictograph.svelte";
+  import Pictograph from "$lib/components/pictograph/Pictograph.svelte";
   import type { PictographData } from "$lib/domain/PictographData";
   import OptionPickerSectionHeader from "./OptionPickerSectionHeader.svelte";
 
@@ -116,11 +116,10 @@ Matches the desktop version exactly:
             style:width="{layoutConfig().pictographSize}px"
             style:height="{layoutConfig().pictographSize}px"
           >
-            <ModernPictograph
+            <Pictograph
               pictographData={pictograph}
               width={layoutConfig().pictographSize}
               height={layoutConfig().pictographSize}
-              showLoadingIndicator={false}
               debug={false}
             />
           </div>

@@ -22,8 +22,8 @@ async function testPositioning() {
     // Create test data
     const motionData = createMotionData({
       motionType: MotionType.PRO,
-      start_loc: Location.NORTHEAST,
-      end_loc: Location.SOUTHWEST,
+      startLocation: Location.NORTHEAST,
+      endLocation: Location.SOUTHWEST,
       turns: 0,
     });
 

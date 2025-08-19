@@ -5,10 +5,13 @@
 import { MotionType, Location, Orientation } from "$lib/domain/enums";
 
 // Helper function to determine motion type based on start/end locations
-export function getMotionType(startLocation: string, endLoc: string): string {
+export function getMotionType(
+  startLocation: string,
+  endLocation: string
+): string {
   // Normalize to lowercase for case-insensitive comparison
   const start = startLocation.toLowerCase();
-  const end = endLoc.toLowerCase();
+  const end = endLocation.toLowerCase();
 
   if (start === end) {
     return MotionType.STATIC; // Same location = static
@@ -35,9 +38,9 @@ export function getMotionType(startLocation: string, endLoc: string): string {
 // Helper function to get available motion types for a start/end pair
 export function getAvailableMotionTypes(
   startLocation: string,
-  endLoc: string
+  endLocation: string
 ): string[] {
-  const motionType = getMotionType(startLocation, endLoc);
+  const motionType = getMotionType(startLocation, endLocation);
 
   if (motionType === MotionType.STATIC) {
     return [MotionType.STATIC];
@@ -52,17 +55,17 @@ export function getAvailableMotionTypes(
 // Get motion description for display
 export function getMotionDescription(
   startLocation: string,
-  endLoc: string,
+  endLocation: string,
   motionType: string,
   turns: number
 ): string {
   const direction =
-    startLocation === endLoc
+    startLocation === endLocation
       ? "STATIC"
-      : `${startLocation.toUpperCase()}→${endLoc.toUpperCase()}`;
+      : `${startLocation.toUpperCase()}→${endLocation.toUpperCase()}`;
   const rotation = getRotationDirection(
     startLocation,
-    endLoc,
+    endLocation,
     motionType,
     turns
   );
@@ -72,11 +75,11 @@ export function getMotionDescription(
 // Get rotation direction for display
 export function getRotationDirection(
   startLocation: string,
-  endLoc: string,
+  endLocation: string,
   motionType: string,
   turns: number
 ): string {
-  if (startLocation === endLoc) return "NO_ROT";
+  if (startLocation === endLocation) return "NO_ROT";
   if (motionType === MotionType.DASH) return "NO_ROT";
   if (turns === 0) return "NO_ROT";
 
@@ -88,7 +91,7 @@ export function getRotationDirection(
     ["w", "n"],
   ];
   const isClockwise = clockwisePairs.some(
-    ([start, end]) => start === startLocation && end === endLoc
+    ([start, end]) => start === startLocation && end === endLocation
   );
 
   if (motionType === MotionType.PRO) {

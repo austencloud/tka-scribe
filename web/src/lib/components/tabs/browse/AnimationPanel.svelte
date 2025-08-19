@@ -9,8 +9,8 @@ Handles data loading, animation engine, and state management.
   import type { BrowseSequenceMetadata } from "$lib/domain/browse";
   import { resolve } from "$lib/services/bootstrap";
   import type { ISequenceService } from "$lib/services/interfaces/sequence-interfaces";
-  import { AnimatorCanvas } from "$lib/animator";
-  import type { PropState } from "$lib/animator";
+  import { AnimatorCanvas } from "$lib/components/animator";
+  import type { PropState } from "$lib/components/animator";
   import type { ISequenceAnimationEngine } from "$lib/services/di/interfaces/animator-interfaces";
   import type { PanelStateManager } from "$lib/state/panel-state.svelte";
 

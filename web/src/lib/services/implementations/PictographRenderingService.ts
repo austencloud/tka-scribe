@@ -52,7 +52,7 @@ export class PictographRenderingService implements IPictographRenderingService {
       for (const [color, arrowData] of Object.entries(
         updatedPictographData.arrows
       )) {
-        if (arrowData.is_visible) {
+        if (arrowData.isVisible) {
           const position = {
             x: arrowData.position_x,
             y: arrowData.position_y,
@@ -84,7 +84,7 @@ export class PictographRenderingService implements IPictographRenderingService {
       for (const [color, arrowData] of Object.entries(
         updatedPictographData.arrows
       )) {
-        if (arrowData.is_visible) {
+        if (arrowData.isVisible) {
           arrowPositions.set(color, {
             x: arrowData.position_x,
             y: arrowData.position_y,
@@ -120,7 +120,7 @@ export class PictographRenderingService implements IPictographRenderingService {
     _svg: SVGElement,
     _data: PictographData
   ): Promise<void> {
-    // Props are now handled by ModernPictograph.svelte -> Prop.svelte components
+    // Props are now handled by Pictograph.svelte -> Prop.svelte components
     // This service-level rendering is disabled to prevent duplicate CIRCLE_PROP elements
     return;
   }

@@ -42,9 +42,9 @@ import type { MotionTestParams } from "./MotionParameterService";
 interface MotionParams {
   motionType: string;
   startLocation: string;
-  endLoc: string;
+  endLocation: string;
   startOri: string;
-  endOri: string;
+  endOrientation: string;
   rotationDirection: string;
   turns: number | "fl"; // Support both numeric turns and float like MotionTestParams
 }
@@ -282,15 +282,15 @@ export class AnimatedPictographDataService
 
     return createMotionData({
       motionType: this.mapMotionType(motionParams.motionType),
-      start_loc: this.mapLocation(motionParams.startLocation),
-      end_loc: this.mapLocation(motionParams.endLoc),
+      startLocation: this.mapLocation(motionParams.startLocation),
+      endLocation: this.mapLocation(motionParams.endLocation),
       startOrientation: this.mapOrientation(motionParams.startOri),
-      endOrientation: this.mapOrientation(motionParams.endOri),
+      endOrientation: this.mapOrientation(motionParams.endOrientation),
       rotationDirection: this.mapRotationDirection(
         motionParams.rotationDirection
       ),
       turns: turns,
-      is_visible: true,
+      isVisible: true,
     });
   }
 
@@ -302,14 +302,14 @@ export class AnimatedPictographDataService
     color: MotionColor
   ): PropData {
     return createPropData({
-      prop_type: PropType.STAFF, // Default to staff for motion tester
+      propType: PropType.STAFF, // Default to staff for motion tester
       color: color,
-      location: this.mapLocation(motionParams.endLoc), // Use END location for prop positioning
-      orientation: this.mapOrientation(motionParams.endOri), // Use END orientation
-      rotation_direction: this.mapRotationDirection(
+      location: this.mapLocation(motionParams.endLocation), // Use END location for prop positioning
+      orientation: this.mapOrientation(motionParams.endOrientation), // Use END orientation
+      rotationDirection: this.mapRotationDirection(
         motionParams.rotationDirection
       ),
-      is_visible: true,
+      isVisible: true,
     });
   }
 
@@ -319,15 +319,15 @@ export class AnimatedPictographDataService
   private createMotionDataFromParams(motionParams: MotionParams): MotionData {
     return {
       motionType: this.mapMotionType(motionParams.motionType),
-      start_loc: this.mapLocation(motionParams.startLocation),
-      end_loc: this.mapLocation(motionParams.endLoc),
+      startLocation: this.mapLocation(motionParams.startLocation),
+      endLocation: this.mapLocation(motionParams.endLocation),
       startOrientation: this.mapOrientation(motionParams.startOri),
-      endOrientation: this.mapOrientation(motionParams.endOri),
+      endOrientation: this.mapOrientation(motionParams.endOrientation),
       rotationDirection: this.mapRotationDirection(
         motionParams.rotationDirection
       ),
       turns: motionParams.turns,
-      is_visible: true,
+      isVisible: true,
     };
   }
 
@@ -346,11 +346,11 @@ export class AnimatedPictographDataService
       color: color,
       motionType: motionParams.motionType,
       start_orientation: motionParams.startOri,
-      end_orientation: motionParams.endOri,
-      rotation_direction: motionParams.rotationDirection,
+      end_orientation: motionParams.endOrientation,
+      rotationDirection: motionParams.rotationDirection,
       turns: turns,
       location: this.mapLocation(motionParams.startLocation),
-      is_visible: true,
+      isVisible: true,
     });
   }
 
@@ -449,19 +449,19 @@ export class AnimatedPictographDataService
     return [
       motionState.gridType,
       blue.startLocation,
-      blue.endLoc,
+      blue.endLocation,
       blue.motionType,
       blue.turns,
       blue.rotationDirection,
       blue.startOri,
-      blue.endOri,
+      blue.endOrientation,
       red.startLocation,
-      red.endLoc,
+      red.endLocation,
       red.motionType,
       red.turns,
       red.rotationDirection,
       red.startOri,
-      red.endOri,
+      red.endOrientation,
     ].join("|");
   }
 
@@ -496,14 +496,14 @@ export class AnimatedPictographDataService
       console.log("🔍 Blue params:", {
         motionType: blueParams.motionType,
         startLocation: blueParams.startLocation,
-        endLoc: blueParams.endLoc,
+        endLocation: blueParams.endLocation,
         rotationDirection: blueParams.rotationDirection,
         turns: blueParams.turns,
       });
       console.log("🔍 Red params:", {
         motionType: redParams.motionType,
         startLocation: redParams.startLocation,
-        endLoc: redParams.endLoc,
+        endLocation: redParams.endLocation,
         rotationDirection: redParams.rotationDirection,
         turns: redParams.turns,
       });
@@ -581,7 +581,7 @@ export class AnimatedPictographDataService
   ): boolean {
     const csvMotionType = row[`${color}MotionType`];
     const csvStartLoc = row[`${color}StartLoc`];
-    const csvEndLoc = row[`${color}EndLoc`];
+    const csvEndLoc = row[`${color}endLocation`];
 
     // Normalize values for comparison
     const motionTypeMatch =
@@ -592,7 +592,7 @@ export class AnimatedPictographDataService
       this.normalizeLocation(params.startLocation);
     const endLocMatch =
       this.normalizeLocation(csvEndLoc) ===
-      this.normalizeLocation(params.endLoc);
+      this.normalizeLocation(params.endLocation);
 
     // Note: rotationDirection is calculated after CSV lookup, not used for matching
     return motionTypeMatch && startLocMatch && endLocMatch;

@@ -16,7 +16,7 @@
  */
 
 import { readdir, readFile, stat } from "fs/promises";
-import { join, extname, relative } from "path";
+import { join, extname, relative, sep } from "path";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
 
@@ -63,8 +63,9 @@ const validationRules = [
     severity: "warning",
   },
   {
-    name: "No Runes in Services",
-    description: "Ensure service classes don't use Svelte runes",
+    name: "No Runes in Pure Services",
+    description:
+      "Ensure pure service classes (.ts) don't use Svelte runes (.svelte.ts files are allowed)",
     check: checkNoRunesInServices,
     severity: "error",
   },
@@ -143,12 +144,27 @@ async function checkNoSvelteStores() {
       });
     }
 
-    // Check for store creation functions
+    // Check for actual store creation functions (not runes)
+    // Only flag these if they're NOT preceded by $ (which would be runes)
     const storePatterns = [
-      /\b(writable|readable|derived|get)\s*\(/g,
-      /\$\w+\.set\(/g,
-      /\$\w+\.update\(/g,
+      /(?<!\$)\b(writable|readable)\s*\(/g, // writable() and readable() but not $writable
+      /\$\w+\.set\(/g, // store.set() calls
+      /\$\w+\.update\(/g, // store.update() calls
     ];
+
+    // Special handling for derived() and get() - only flag if imported from svelte/store
+    const hasStoreImport =
+      content.includes("from 'svelte/store'") ||
+      content.includes('from "svelte/store"');
+
+    if (hasStoreImport) {
+      // If svelte/store is imported, then derived() and get() are store usage
+      const legacyStorePatterns = [
+        /(?<!\$)\bderived\s*\(/g, // derived() but not $derived
+        /(?<!\$)\bget\s*\(/g, // get() but not $get (though $get doesn't exist)
+      ];
+      storePatterns.push(...legacyStorePatterns);
+    }
 
     for (const pattern of storePatterns) {
       const matches = content.matchAll(pattern);
@@ -262,6 +278,20 @@ async function checkDIContainerUsage() {
 
     const relativePath = relative(projectRoot, file);
 
+    // Skip files that SHOULD instantiate services directly
+    const shouldSkip =
+      file.includes(".test.") || // Test files
+      file.includes(".spec.") || // Spec files
+      file.includes("Factory.ts") || // Factory pattern files
+      file.includes("ServiceContainer.ts") || // DI container itself
+      file.includes(sep + "di" + sep + "registration" + sep) || // DI registration files
+      file.includes("service-registry.ts") || // Service registry
+      file.includes("bootstrap.ts"); // Bootstrap files
+
+    if (shouldSkip) {
+      continue;
+    }
+
     // Check for direct service instantiation instead of DI
     if (content.includes("new ") && content.includes("Service")) {
       const lines = content.split("\n");
@@ -295,6 +325,11 @@ async function checkNoRunesInServices() {
   for (const file of serviceFiles) {
     if (!file.endsWith(".ts") && !file.endsWith(".js")) continue;
 
+    // Skip .svelte.ts files - these are state management files that SHOULD use runes
+    if (file.endsWith(".svelte.ts")) {
+      continue;
+    }
+
     const content = await readFileContent(file);
     if (!content) continue;
 
@@ -315,7 +350,7 @@ async function checkNoRunesInServices() {
         issues.push({
           file: relativePath,
           line: lineNumber,
-          message: `Rune usage detected in service: ${match[0]} - services should be pure TypeScript`,
+          message: `Rune usage detected in pure service: ${match[0]} - pure services should be TypeScript only`,
         });
       }
     }

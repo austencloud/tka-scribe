@@ -74,6 +74,15 @@ import {
 //   ICanvasManagementServiceInterface,
 // } from "./interfaces/image-export-interfaces";
 
+import {
+  ICodexServiceInterface,
+  ILetterMappingRepositoryInterface,
+  ILessonRepositoryInterface,
+  IPictographQueryServiceInterface,
+  IPictographOperationsServiceInterface,
+  ICsvDataServiceInterface,
+} from "./interfaces/codex-interfaces";
+
 /**
  * Service interface mapping for string-based resolution
  * Maintains backward compatibility for existing code using string tokens
@@ -142,6 +151,14 @@ export const serviceInterfaceMap = new Map<string, ServiceInterface<unknown>>([
   ["IAnimationStateService", IAnimationStateServiceInterface],
   ["ISequenceAnimationOrchestrator", ISequenceAnimationOrchestratorInterface],
   ["ISequenceAnimationEngine", ISequenceAnimationEngineInterface],
+
+  // Codex services
+  ["ICodexService", ICodexServiceInterface],
+  ["ILetterMappingRepository", ILetterMappingRepositoryInterface],
+  ["ILessonRepository", ILessonRepositoryInterface],
+  ["IPictographQueryService", IPictographQueryServiceInterface],
+  ["IPictographOperationsService", IPictographOperationsServiceInterface],
+  ["ICsvDataService", ICsvDataServiceInterface],
 
   // TODO: Uncomment when TKA Image Export services are implemented
   // ["ITKAImageExportService", ITKAImageExportServiceInterface],

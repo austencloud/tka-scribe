@@ -2,7 +2,7 @@
 <script lang="ts">
   import type { PictographData } from "$domain/PictographData";
   import { getLetterBorderColor } from "$lib/utils/letter-type-utils";
-  import ModernPictograph from "../../../pictograph/Pictograph.svelte";
+  import Pictograph from "../../../pictograph/Pictograph.svelte";
 
   // Props
   const {
@@ -73,11 +73,7 @@
       >
         <!-- Position pictograph -->
         <div class="pictograph-container">
-          <ModernPictograph
-            pictographData={position}
-            width={120}
-            height={120}
-          />
+          <Pictograph pictographData={position} width={120} height={120} />
         </div>
 
         <!-- Position label -->
