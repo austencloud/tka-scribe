@@ -13,7 +13,7 @@ export interface MotionTestParams {
   motionType: string;
   turns: number | "fl"; // Support both numeric turns and float
   rotationDirection: string;
-  startOri: string;
+  startOrientation: string;
   endOrientation: string;
 }
 
@@ -203,7 +203,7 @@ export class MotionParameterService implements IMotionParameterService {
       motionType: params.motionType as MotionType,
       turns: params.turns,
       rotationDirection: params.rotationDirection as RotationDirection,
-      startOrientation: params.startOri as Orientation,
+      startOrientation: params.startOrientation as Orientation,
       endOrientation: params.endOrientation as Orientation,
     };
   }
@@ -216,7 +216,7 @@ export class MotionParameterService implements IMotionParameterService {
       motionType: "pro",
       turns: 0,
       rotationDirection: "cw",
-      startOri: "in",
+      startOrientation: "in",
       endOrientation: "in",
     };
   }
@@ -249,7 +249,7 @@ export class MotionParameterService implements IMotionParameterService {
       startLocation: this.mapLocationToEnum(params.startLocation),
       endLocation: this.mapLocationToEnum(params.endLocation),
       turns: params.turns,
-      startOrientation: this.mapOrientationToEnum(params.startOri),
+      startOrientation: this.mapOrientationToEnum(params.startOrientation),
       endOrientation: this.mapOrientationToEnum(params.endOrientation),
       isVisible: true,
       prefloat_motion_type: null,

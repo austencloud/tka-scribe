@@ -7,7 +7,7 @@ matching the legacy desktop app's behavior.
 <script lang="ts">
   import type { BeatData, PictographData } from "$lib/domain";
   import { MotionColor } from "$lib/domain/enums";
-  import { getVisibilityStateManager } from "$lib/services/implementations/VisibilityStateManager";
+  import { getVisibilityStateManager } from "$lib/services/implementations/ui/VisibilityStateManager";
   import { onMount } from "svelte";
   import Pictograph from "./Pictograph.svelte";
 

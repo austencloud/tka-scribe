@@ -20,7 +20,7 @@ with real-time opacity changes based on visibility settings.
     RotationDirection,
     GlyphType,
   } from "$lib/domain";
-  import { getVisibilityStateManager } from "$lib/services/implementations/VisibilityStateManager";
+  import { getVisibilityStateManager } from "$lib/services/implementations/ui/VisibilityStateManager";
   import { onMount } from "svelte";
   import PictographWithVisibility from "./PictographWithVisibility.svelte";
 

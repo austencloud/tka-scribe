@@ -47,7 +47,7 @@ export class AttributeKeyGenerator implements IAttributeKeyGenerator {
       // Extract required attributes
       const motionType = motionData.motionType || "";
       const letter = pictographData.letter || "";
-      const startOri = motionData.startOrientation || "";
+      const startOrientation = motionData.startOrientation || "";
       const color = arrowData.color;
 
       // For modern data, we don't have lead_state, so use undefined
@@ -62,7 +62,7 @@ export class AttributeKeyGenerator implements IAttributeKeyGenerator {
       return this.generateKey(
         motionType,
         letter,
-        startOri,
+        startOrientation,
         color,
         leadState,
         hasHybridMotions,
@@ -82,7 +82,7 @@ export class AttributeKeyGenerator implements IAttributeKeyGenerator {
   generateKey(
     motionType: string,
     letter: string,
-    startOri: string,
+    startOrientation: string,
     color: string,
     leadState?: string,
     hasHybridMotions?: boolean,
@@ -95,7 +95,7 @@ export class AttributeKeyGenerator implements IAttributeKeyGenerator {
      * Args:
      *     motionType: Motion type string
      *     letter: Letter string
-     *     startOri: Start orientation string
+     *     startOrientation: Start orientation string
      *     color: Arrow color
      *     leadState: Lead state (may be undefined for modern data)
      *     hasHybridMotions: Whether there are hybrid motions
@@ -116,9 +116,9 @@ export class AttributeKeyGenerator implements IAttributeKeyGenerator {
         if (["S", "T"].includes(letter)) {
           return leadState || color;
         } else if (hasHybridMotions) {
-          if ([IN, OUT].includes(startOri)) {
+          if ([IN, OUT].includes(startOrientation)) {
             return `${motionType}_from_layer1`;
-          } else if ([CLOCK, COUNTER].includes(startOri)) {
+          } else if ([CLOCK, COUNTER].includes(startOrientation)) {
             return `${motionType}_from_layer2`;
           } else {
             return color;

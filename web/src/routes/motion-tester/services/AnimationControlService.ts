@@ -94,7 +94,7 @@ export class AnimationControlService implements IAnimationControlService {
     return {
       startLocation: params.startLocation as Location,
       endLocation: params.endLocation as Location,
-      startOrientation: params.startOri as Orientation,
+      startOrientation: params.startOrientation as Orientation,
       endOrientation: params.endOrientation as Orientation,
       motionType: params.motionType as MotionType,
       rotationDirection: params.rotationDirection as RotationDirection,

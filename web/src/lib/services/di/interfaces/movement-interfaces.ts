@@ -10,12 +10,13 @@ import type {
   IMovementValidatorService,
 } from "../../interfaces/generation-interfaces";
 import { createServiceInterface } from "../types";
+import { Location, GridPosition } from "$lib/domain/enums";
 
 // Import service implementations
-import { MovementGeneratorService } from "../../implementations/MovementGeneratorService";
-import { MovementPatternService } from "../../implementations/MovementPatternService";
-import { PositionCalculatorService } from "../../implementations/PositionCalculatorService";
-import { MovementValidatorService } from "../../implementations/MovementValidatorService";
+import { MovementGeneratorService } from "../../implementations/generation/MovementGeneratorService";
+import { MovementPatternService } from "../../implementations/domain/MovementPatternService";
+// import { PositionCalculatorService } from "../../implementations/positioning/PositionCalculatorService";
+import { MovementValidatorService } from "../../implementations/domain/MovementValidatorService";
 
 // Movement Pattern Services
 export const IMovementPatternServiceInterface =
@@ -27,7 +28,31 @@ export const IMovementPatternServiceInterface =
 export const IPositionCalculatorServiceInterface =
   createServiceInterface<IPositionCalculatorService>(
     "IPositionCalculatorService",
-    PositionCalculatorService
+    class {
+      getPositionSequence(
+        system: "alpha" | "beta" | "gamma",
+        count: number
+      ): GridPosition[] {
+        // Placeholder implementation
+        return [];
+      }
+      getNextPosition(current: GridPosition, forward: boolean): GridPosition {
+        return current;
+      }
+      getCardinalDirections(
+        startPosition: GridPosition,
+        endPosition: GridPosition,
+        motionType: string
+      ): [Location, Location] {
+        // Placeholder implementation
+        return [Location.NORTH, Location.SOUTH];
+      }
+      calculatePositionPairs(
+        sequence: GridPosition[]
+      ): Array<[GridPosition, GridPosition]> {
+        return [];
+      }
+    }
   );
 
 export const IMovementValidatorServiceInterface =

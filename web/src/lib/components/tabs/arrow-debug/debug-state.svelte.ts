@@ -9,9 +9,6 @@ import { createGridData } from "$lib/domain/GridData";
 import { GridMode, Location } from "$lib/domain/enums";
 import type { DebugStepData } from "./types";
 
-// Import real data services
-import { CodexService } from "$lib/services/codex/CodexService";
-
 // Import real arrow positioning services
 // import { ArrowPositioningOrchestrator } from "$lib/services/positioning/arrows/orchestration/ArrowPositioningOrchestrator";
 import { ArrowLocationCalculator } from "$lib/services/positioning/arrows/calculation/ArrowLocationCalculator";
@@ -102,7 +99,7 @@ export function createDebugState() {
 
       // TODO: Load all pictographs from the codex service via DI container
       // const allPictographs = await codexService.loadAllPictographs();
-      const allPictographs: any[] = []; // Temporary placeholder
+      const allPictographs: PictographData[] = []; // Temporary placeholder
 
       console.log(
         `✅ Loaded ${allPictographs.length} real pictographs from CSV data`
@@ -232,7 +229,7 @@ export function createDebugState() {
         currentDebugData.calculatedLocation = calculatedLocation;
         currentDebugData.locationDebugInfo = {
           motionType: currentMotionData.motionType || "",
-          startOri: currentMotionData.startOrientation || "",
+          startOrientation: currentMotionData.startOrientation || "",
           endOrientation: currentMotionData.endOrientation || "",
           calculationMethod: "ArrowLocationCalculator",
         };

@@ -94,9 +94,10 @@ export class ArrowRenderingService implements IArrowRenderingService {
     }
     const motionType = motionData.motionType;
     const turnsVal = motionData.turns;
-    const startOri = motionData.startOrientation;
+    const startOrientation = motionData.startOrientation;
     if (motionType === "float") return "/images/arrows/float.svg";
-    const radialPath = startOri === "in" ? "from_radial" : "from_nonradial";
+    const radialPath =
+      startOrientation === "in" ? "from_radial" : "from_nonradial";
     let turnsStr: string;
     if (turnsVal === "fl") {
       turnsStr = "fl";

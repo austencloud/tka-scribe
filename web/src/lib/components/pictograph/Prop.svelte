@@ -12,8 +12,8 @@ Prop Component - Renders SVG props with proper positioning
   } from "$lib/domain/enums";
   import { DefaultPropPositioner } from "$lib/services/DefaultPropPositioner";
   import { PropRotAngleManager } from "$lib/services/PropRotAngleManager";
-  import { BetaOffsetCalculator } from "$lib/services/implementations/BetaOffsetCalculator";
-  import { BetaPropDirectionCalculator } from "$lib/services/implementations/BetaPropDirectionCalculator";
+  import { BetaOffsetCalculator } from "$lib/services/implementations/positioning/BetaOffsetCalculator";
+  import { BetaPropDirectionCalculator } from "$lib/services/implementations/positioning/BetaPropDirectionCalculator";
   import { onMount } from "svelte";
 
   interface Props {
@@ -21,6 +21,7 @@ Prop Component - Renders SVG props with proper positioning
     motionData?: MotionData;
     gridMode?: string;
     allProps?: PropData[];
+    endsWithBeta?: boolean; // NEW: Indicates if this pictograph actually ends with beta
     onLoaded?: (componentType: string) => void;
     onError?: (componentType: string, error: string) => void;
   }
@@ -30,6 +31,7 @@ Prop Component - Renders SVG props with proper positioning
     motionData,
     gridMode = "diamond",
     allProps = [],
+    endsWithBeta = false, // NEW: Default to false
     onLoaded,
     onError,
   }: Props = $props();
@@ -69,6 +71,11 @@ Prop Component - Renders SVG props with proper positioning
 
   // Calculate beta adjustment offset for prop separation using legacy direction logic
   function calculateBetaOffset(): { x: number; y: number } {
+    // CRITICAL FIX: Only apply beta offset if the pictograph actually ends with beta
+    if (!endsWithBeta) {
+      return { x: 0, y: 0 };
+    }
+
     if (!propData || !allProps || allProps.length < 2) {
       return { x: 0, y: 0 };
     }
@@ -80,6 +87,38 @@ Prop Component - Renders SVG props with proper positioning
 
     if (!otherProp) {
       return { x: 0, y: 0 };
+    }
+
+    console.log(
+      `🔧 Applying beta offset for ${propData.color} prop at ${propData.location} (endsWithBeta: ${endsWithBeta})`
+    );
+
+    // DEBUG: Log for G pictograph case with both props at West
+    if (propData.location === "w" || propData.location === "west") {
+      console.log(
+        `🔧 [G DEBUG] Beta offset calculation for ${propData.color} prop:`,
+        {
+          location: propData.location,
+          orientation: propData.orientation,
+          rotationDirection: propData.rotationDirection,
+          motionData: motionData
+            ? {
+                startLocation: motionData.startLocation,
+                endLocation: motionData.endLocation,
+                endOrientation: motionData.endOrientation,
+                rotationDirection: motionData.rotationDirection,
+              }
+            : "NO_MOTION_DATA",
+          allProps: allProps.map((p) => ({
+            color: p.color,
+            location: p.location,
+            orientation: p.orientation,
+          })),
+          endsWithBeta,
+          expectedDirection:
+            "Should be UP/DOWN for West location with IN orientation",
+        }
+      );
     }
 
     // Use legacy direction calculator logic for proper beta positioning
@@ -121,7 +160,29 @@ Prop Component - Renders SVG props with proper positioning
       // Get direction for this prop
       const direction = directionCalculator.getDirection(propData);
 
+      // DEBUG: Log direction calculation for West props
+      if (propData.location === "w" || propData.location === "west") {
+        console.log(`🔧 [G DEBUG] Direction calculation result:`, {
+          propColor: propData.color,
+          calculatedDirection: direction,
+          expectedDirection: "UP or DOWN",
+          redMotion: {
+            startLocation: redMotion.startLocation,
+            endLocation: redMotion.endLocation,
+            endOrientation: redMotion.endOrientation,
+          },
+          blueMotion: {
+            startLocation: blueMotion.startLocation,
+            endLocation: blueMotion.endLocation,
+            endOrientation: blueMotion.endOrientation,
+          },
+        });
+      }
+
       if (!direction) {
+        console.log(
+          `⚠️ No direction calculated, using fallback for ${propData.color}`
+        );
         return propData.color === "blue" ? { x: -25, y: 0 } : { x: 25, y: 0 };
       }
 
@@ -132,6 +193,20 @@ Prop Component - Renders SVG props with proper positioning
         basePosition,
         direction
       );
+
+      // DEBUG: Log final offset calculation for West props
+      if (propData.location === "w" || propData.location === "west") {
+        console.log(`🔧 [G DEBUG] Final offset calculation:`, {
+          propColor: propData.color,
+          direction,
+          calculatedOffset: { x: newPosition.x, y: newPosition.y },
+          expectedOffset: direction?.includes("UP")
+            ? "negative Y"
+            : direction?.includes("DOWN")
+              ? "positive Y"
+              : "unknown",
+        });
+      }
 
       return { x: newPosition.x, y: newPosition.y };
     } catch (error) {

@@ -16,14 +16,14 @@ import type {
 import { createServiceInterface } from "../types";
 
 // Import service implementations
-import { BrowseService } from "../../implementations/BrowseService";
-import { DeleteService } from "../../implementations/DeleteService";
-import { FavoritesService } from "../../implementations/FavoritesService";
-import { FilterPersistenceService } from "../../implementations/FilterPersistenceService";
-import { NavigationService } from "../../implementations/NavigationService";
-import { SectionService } from "../../implementations/SectionService";
-import { SequenceIndexService } from "../../implementations/SequenceIndexService";
-import { ThumbnailService } from "../../implementations/ThumbnailService";
+import { BrowseService } from "../../implementations/browse/BrowseService";
+import { DeleteService } from "../../implementations/sequence/DeleteService";
+import { FavoritesService } from "../../implementations/browse/FavoritesService";
+import { FilterPersistenceService } from "../../implementations/persistence/FilterPersistenceService";
+import { NavigationService } from "../../implementations/navigation/NavigationService";
+import { SectionService } from "../../implementations/navigation/SectionService";
+import { SequenceIndexService } from "../../implementations/sequence/SequenceIndexService";
+import { ThumbnailService } from "../../implementations/export/ThumbnailService";
 
 // Core browse services
 export const IBrowseServiceInterface = createServiceInterface<IBrowseService>(

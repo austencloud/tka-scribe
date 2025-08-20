@@ -7,83 +7,109 @@
 import type { ServiceContainer } from "../ServiceContainer";
 import { LetterMappingRepository } from "$lib/repositories/LetterMappingRepository";
 import { LessonRepository } from "$lib/repositories/LessonRepository";
-import { PictographQueryService } from "$lib/services/codex/PictographQueryService";
 import { PictographOperationsService } from "$lib/services/codex/PictographOperationsService";
 import { CodexService } from "$lib/services/codex/CodexService";
 import {
   ICodexServiceInterface,
   ILetterMappingRepositoryInterface,
   ILessonRepositoryInterface,
-  IPictographQueryServiceInterface,
   IPictographOperationsServiceInterface,
-  ICsvDataServiceInterface,
+  ICsvLoaderServiceInterface,
+  ILetterQueryServiceInterface,
+  IMotionQueryServiceInterface,
 } from "../interfaces/codex-interfaces";
-import { CsvDataService } from "../../implementations/CsvDataService";
-import { IOptionDataServiceInterface } from "../interfaces/core-interfaces";
-import { OptionDataService } from "../../implementations/OptionDataService";
+import { CsvLoaderService } from "../../implementations/data/CsvLoaderService";
+import { LetterQueryService } from "../../implementations/data/LetterQueryService";
+import { MotionQueryService } from "../../implementations/data/MotionQueryService";
+import {
+  ICSVParserServiceInterface,
+  IPictographTransformationServiceInterface,
+} from "./shared-services";
 
 /**
- * Register all codex services with their dependencies
+ * Register all codex services with their dependencies as singletons
  */
 export async function registerCodexServices(
   container: ServiceContainer
 ): Promise<void> {
-  // Register repositories and data services (no dependencies)
-  container.registerFactory(ILetterMappingRepositoryInterface, () => {
-    return new LetterMappingRepository();
-  });
+  // Register repositories and data services as singletons (no dependencies)
+  container.registerSingleton(
+    ILetterMappingRepositoryInterface,
+    new LetterMappingRepository()
+  );
 
-  container.registerFactory(ICsvDataServiceInterface, () => {
-    return new CsvDataService();
-  });
+  // 1. Register CsvLoaderService (no dependencies)
+  container.registerSingleton(
+    ICsvLoaderServiceInterface,
+    new CsvLoaderService()
+  );
 
-  // Register lesson repository (depends on letter mapping repository)
-  container.registerFactory(ILessonRepositoryInterface, () => {
+  // 2. Register LetterQueryService with dependencies
+  container.registerFactory(ILetterQueryServiceInterface, () => {
     const letterMappingRepo = container.resolve(
       ILetterMappingRepositoryInterface
     );
-    return new LessonRepository(letterMappingRepo);
-  });
-
-  // Register pictograph query service (depends on letter mapping repository, csv data service, and option data service)
-  container.registerFactory(IPictographQueryServiceInterface, () => {
-    const letterMappingRepo = container.resolve(
-      ILetterMappingRepositoryInterface
+    const csvLoaderService = container.resolve(ICsvLoaderServiceInterface);
+    const csvParserService = container.resolve(ICSVParserServiceInterface);
+    const pictographTransformationService = container.resolve(
+      IPictographTransformationServiceInterface
     );
-    const csvDataService = container.resolve(ICsvDataServiceInterface);
-    const optionDataService = container.resolve(IOptionDataServiceInterface);
-    return new PictographQueryService(
+
+    return new LetterQueryService(
       letterMappingRepo,
-      csvDataService,
-      optionDataService as OptionDataService // Type assertion to handle interface/implementation mismatch
+      csvLoaderService,
+      csvParserService,
+      pictographTransformationService
     );
   });
 
-  // Register pictograph operations service (no dependencies)
-  container.registerFactory(IPictographOperationsServiceInterface, () => {
-    return new PictographOperationsService();
+  // 3. Register MotionQueryService with dependencies
+  container.registerFactory(IMotionQueryServiceInterface, () => {
+    const csvLoaderService = container.resolve(ICsvLoaderServiceInterface);
+    const csvParserService = container.resolve(ICSVParserServiceInterface);
+    const pictographTransformationService = container.resolve(
+      IPictographTransformationServiceInterface
+    );
+
+    return new MotionQueryService(
+      csvLoaderService,
+      csvParserService,
+      pictographTransformationService
+    );
   });
 
-  // Register main codex service (depends on all the above)
-  container.registerFactory(ICodexServiceInterface, () => {
-    const letterMappingRepo = container.resolve(
-      ILetterMappingRepositoryInterface
-    );
-    const lessonRepo = container.resolve(ILessonRepositoryInterface);
-    const pictographQueryService = container.resolve(
-      IPictographQueryServiceInterface
-    );
-    const operationsService = container.resolve(
-      IPictographOperationsServiceInterface
-    );
+  // Register lesson repository as singleton (depends on letter mapping repository)
+  const letterMappingRepo = container.resolve(
+    ILetterMappingRepositoryInterface
+  );
+  container.registerSingleton(
+    ILessonRepositoryInterface,
+    new LessonRepository(letterMappingRepo)
+  );
 
-    return new CodexService(
+  // Register pictograph operations service as singleton (no dependencies)
+  container.registerSingleton(
+    IPictographOperationsServiceInterface,
+    new PictographOperationsService()
+  );
+
+  // Register main codex service as singleton (depends on all the above)
+  const lessonRepo = container.resolve(ILessonRepositoryInterface);
+
+  const operationsService = container.resolve(
+    IPictographOperationsServiceInterface
+  );
+  const letterQueryService = container.resolve(ILetterQueryServiceInterface);
+
+  container.registerSingleton(
+    ICodexServiceInterface,
+    new CodexService(
       letterMappingRepo,
       lessonRepo,
-      pictographQueryService,
-      operationsService
-    );
-  });
+      operationsService,
+      letterQueryService
+    )
+  );
 
   console.log("✅ Codex services registered with DI container");
 }

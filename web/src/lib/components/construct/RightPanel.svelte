@@ -9,7 +9,7 @@
   import GraphEditor from "$components/graph-editor/GraphEditor.svelte";
   import type { ArrowData } from "$lib/domain/ArrowData";
   import { ArrowType, MotionColor } from "$lib/domain/enums";
-  import { constructTabEventService } from "$services/implementations/ConstructTabEventService";
+  import { constructTabEventService } from "$services/implementations/construct/ConstructTabEventService";
   import type { ActiveRightPanel } from "$lib/state/construct-tab-state.svelte";
   import type { SequenceData } from "$lib/domain";
   import BuildTabContent from "./BuildTabContent.svelte";

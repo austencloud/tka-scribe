@@ -33,7 +33,7 @@
       { label: "Motion Type", value: info.motionType, type: "text" as const },
       {
         label: "Start Orientation",
-        value: info.startOri,
+        value: info.startOrientation,
         type: "text" as const,
       },
       {

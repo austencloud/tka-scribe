@@ -9,8 +9,8 @@ export type MotionType = "pro" | "anti" | "static" | "dash";
 export interface LetterMapping {
   startPosition: string;
   endPosition: string;
-  blueMotion: MotionType;
-  redMotion: MotionType;
+  blueMotionType: MotionType;
+  redMotionType: MotionType;
 }
 
 export interface CodexLetter {

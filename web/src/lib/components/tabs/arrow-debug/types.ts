@@ -18,7 +18,7 @@ export interface DebugTiming {
 
 export interface LocationDebugInfo {
   motionType: string;
-  startOri: string;
+  startOrientation: string;
   endOrientation: string;
   calculationMethod: string;
 }

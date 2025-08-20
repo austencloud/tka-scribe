@@ -203,6 +203,11 @@ export interface IMovementPatternService {
   getGammaSequence(): GridPosition[];
   getCustomSequence(positions: GridPosition[]): GridPosition[];
 
+  generatePositionSequence(
+    pattern: MovementPattern,
+    length?: number
+  ): GridPosition[];
+
   createVariations(
     basePattern: MovementPattern,
     variations: Array<{
@@ -222,8 +227,8 @@ export interface IPositionCalculatorService {
   ): GridPosition[];
   getNextPosition(current: GridPosition, forward: boolean): GridPosition;
   getCardinalDirections(
-    startPos: GridPosition,
-    endPos: GridPosition,
+    startPosition: GridPosition,
+    endPosition: GridPosition,
     motionType: string
   ): [
     import("$lib/domain/enums").Location,

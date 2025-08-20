@@ -64,7 +64,7 @@ export class MotionGenerationService implements IMotionGenerationService {
       const motionType = this.randomChoice(motionTypes);
       const startLocation = this.randomChoice(locations);
       const endLocation = this.randomChoice(locations);
-      const startOri = this.randomChoice(orientations);
+      const startOrientation = this.randomChoice(orientations);
       const endOrientation = this.randomChoice(orientations);
       const rotationDirection = this.randomChoice(rotationDirections);
 
@@ -77,7 +77,7 @@ export class MotionGenerationService implements IMotionGenerationService {
         startLocation: startLocation,
         endLocation: endLocation,
         turns,
-        startOrientation: startOri,
+        startOrientation: startOrientation,
         endOrientation: endOrientation,
         isVisible: true,
       };

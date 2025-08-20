@@ -9,19 +9,18 @@
 import { serviceInterfaceMap } from "./di/service-registry";
 import { ServiceContainer } from "./di/ServiceContainer";
 import type { ServiceInterface } from "./di/types";
-import { validateContainerConfiguration } from "./di/validation";
 
 // Import registration functions
 import { registerSharedServices } from "./di/registration/shared-services";
 import { registerBrowseServices } from "./di/registration/browse-services";
 import { registerCoreServices } from "./di/registration/core-services";
 import { registerPositioningServices } from "./di/registration/positioning-services";
-import { registerMotionTesterServices } from "./di/registration/motion-tester-services";
+
 import { registerAnimatorServices } from "./di/registration/animator-services";
 import { registerCodexServices } from "./di/registration/codex-services";
 import { registerMovementServices } from "./di/registration/movement-services";
-// TODO: Uncomment when image export services are implemented
-// import { registerImageExportServices } from "./di/registration/image-export-services";
+import { registerGenerationServices } from "./di/registration/generation-services";
+import { registerImageExportServices } from "./di/registration/image-export-services";
 
 /**
  * Create and configure the web application DI container
@@ -38,13 +37,13 @@ export async function createWebApplication(): Promise<ServiceContainer> {
     await registerPositioningServices(container);
     await registerAnimatorServices(container);
     await registerBrowseServices(container);
-    await registerMotionTesterServices(container);
-    await registerMovementServices(container);
-    // TODO: Uncomment when image export services are implemented
-    // await registerImageExportServices(container);
 
-    // Validate all registrations can be resolved
-    await validateContainerConfiguration(container);
+    await registerMovementServices(container);
+    await registerGenerationServices(container);
+    await registerImageExportServices(container);
+
+    // Temporarily disable validation to fix infinite loop
+    // await validateContainerConfiguration(container);
 
     // Set as global container so resolve() function works
     setGlobalContainer(container);

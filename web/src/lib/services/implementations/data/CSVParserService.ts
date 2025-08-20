@@ -1,6 +1,6 @@
 /**
  * CSVParserService - Centralized CSV parsing utilities
- * 
+ *
  * Provides consistent CSV parsing functionality used across all data services.
  * Handles line splitting, header extraction, and row parsing with error handling.
  */
@@ -48,31 +48,31 @@ export class CSVParserService implements ICSVParserService {
       rows: [],
       totalRows: 0,
       successfulRows: 0,
-      errors: []
+      errors: [],
     };
 
     try {
       const lines = csvText.trim().split("\n");
-      
+
       if (lines.length < 2) {
         result.errors.push({
           rowIndex: 0,
           error: "CSV must have at least header and one data row",
-          rawRow: csvText
+          rawRow: csvText,
         });
         return result;
       }
 
       // Parse headers
-      result.headers = lines[0].split(",").map(h => h.trim());
+      result.headers = lines[0].split(",").map((h) => h.trim());
       result.totalRows = lines.length - 1; // Exclude header
 
       // Parse data rows
       for (let i = 1; i < lines.length; i++) {
         try {
-          const values = lines[i].split(",").map(v => v.trim());
+          const values = lines[i].split(",").map((v) => v.trim());
           const row = this.createRowFromValues(result.headers, values);
-          
+
           if (this.isValidRow(row)) {
             result.rows.push(row);
             result.successfulRows++;
@@ -80,14 +80,15 @@ export class CSVParserService implements ICSVParserService {
             result.errors.push({
               rowIndex: i,
               error: "Row validation failed - missing required fields",
-              rawRow: lines[i]
+              rawRow: lines[i],
             });
           }
         } catch (error) {
           result.errors.push({
             rowIndex: i,
-            error: error instanceof Error ? error.message : "Unknown parsing error",
-            rawRow: lines[i]
+            error:
+              error instanceof Error ? error.message : "Unknown parsing error",
+            rawRow: lines[i],
           });
         }
       }
@@ -97,7 +98,7 @@ export class CSVParserService implements ICSVParserService {
       result.errors.push({
         rowIndex: 0,
         error: `CSV parsing failed: ${error instanceof Error ? error.message : "Unknown error"}`,
-        rawRow: csvText.substring(0, 100) + "..."
+        rawRow: csvText.substring(0, 100) + "...",
       });
       return result;
     }
@@ -108,10 +109,12 @@ export class CSVParserService implements ICSVParserService {
    */
   parseCSVToRows(csvText: string): ParsedCsvRow[] {
     const result = this.parseCSV(csvText);
-    
+
     if (result.errors.length > 0) {
-      console.warn(`⚠️ CSV parsing had ${result.errors.length} errors out of ${result.totalRows} rows`);
-      result.errors.forEach(error => {
+      console.warn(
+        `⚠️ CSV parsing had ${result.errors.length} errors out of ${result.totalRows} rows`
+      );
+      result.errors.forEach((error) => {
         console.warn(`⚠️ Row ${error.rowIndex}: ${error.error}`);
       });
     }
@@ -122,7 +125,10 @@ export class CSVParserService implements ICSVParserService {
   /**
    * Validate CSV structure before parsing
    */
-  validateCSVStructure(csvText: string): { isValid: boolean; errors: string[] } {
+  validateCSVStructure(csvText: string): {
+    isValid: boolean;
+    errors: string[];
+  } {
     const errors: string[] = [];
 
     if (!csvText || csvText.trim().length === 0) {
@@ -131,16 +137,16 @@ export class CSVParserService implements ICSVParserService {
     }
 
     const lines = csvText.trim().split("\n");
-    
+
     if (lines.length < 2) {
       errors.push("CSV must have at least a header row and one data row");
       return { isValid: false, errors };
     }
 
     // Check header structure
-    const headers = lines[0].split(",").map(h => h.trim());
+    const headers = lines[0].split(",").map((h) => h.trim());
     const requiredHeaders = ["letter", "startPosition", "endPosition"];
-    
+
     for (const required of requiredHeaders) {
       if (!headers.includes(required)) {
         errors.push(`Missing required header: ${required}`);
@@ -149,10 +155,13 @@ export class CSVParserService implements ICSVParserService {
 
     // Check for consistent column count
     const headerCount = headers.length;
-    for (let i = 1; i < Math.min(lines.length, 10); i++) { // Check first 10 rows
+    for (let i = 1; i < Math.min(lines.length, 10); i++) {
+      // Check first 10 rows
       const columnCount = lines[i].split(",").length;
       if (columnCount !== headerCount) {
-        errors.push(`Row ${i} has ${columnCount} columns, expected ${headerCount}`);
+        errors.push(
+          `Row ${i} has ${columnCount} columns, expected ${headerCount}`
+        );
       }
     }
 
@@ -184,7 +193,7 @@ export class CSVParserService implements ICSVParserService {
       redRotationDirection: row.redRotationDirection || "",
       redStartLocation: row.redStartLocation || row.redStartLoc || "", // Handle variations
       redEndLocation: row.redEndLocation || row.redendLocation || "", // Handle variations
-      ...row // Include all other fields
+      ...row, // Include all other fields
     } as ParsedCsvRow;
   }
 
@@ -200,13 +209,25 @@ export class CSVParserService implements ICSVParserService {
    */
   getColumnMapping(headers: string[]): Record<string, string> {
     const mapping: Record<string, string> = {};
-    
+
     // Handle common variations in column names
     const variations: Record<string, string[]> = {
-      blueStartLocation: ["blueStartLocation", "blueStartLoc", "blue_start_location"],
-      blueEndLocation: ["blueEndLocation", "blueendLocation", "blue_end_location"],
-      redStartLocation: ["redStartLocation", "redStartLoc", "red_start_location"],
-      redEndLocation: ["redEndLocation", "redendLocation", "red_end_location"]
+      blueStartLocation: [
+        "blueStartLocation",
+        "blueStartLoc",
+        "blue_start_location",
+      ],
+      blueEndLocation: [
+        "blueEndLocation",
+        "blueendLocation",
+        "blue_end_location",
+      ],
+      redStartLocation: [
+        "redStartLocation",
+        "redStartLoc",
+        "red_start_location",
+      ],
+      redEndLocation: ["redEndLocation", "redendLocation", "red_end_location"],
     };
 
     for (const [standardName, variants] of Object.entries(variations)) {

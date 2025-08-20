@@ -12,7 +12,6 @@ import {
   IDeviceDetectionServiceInterface,
   IExportServiceInterface,
   IMotionGenerationServiceInterface,
-  IOptionDataServiceInterface,
   IPanelManagementServiceInterface,
   IPersistenceServiceInterface,
   IPictographRenderingServiceInterface,
@@ -52,7 +51,7 @@ import {
   ISequenceIndexServiceInterface,
   IThumbnailServiceInterface,
 } from "./interfaces/browse-interfaces";
-import { IAnimatedPictographDataServiceInterface } from "./interfaces/motion-tester-interfaces";
+
 import {
   IBeatCalculationServiceInterface,
   IPropInterpolationServiceInterface,
@@ -78,9 +77,7 @@ import {
   ICodexServiceInterface,
   ILetterMappingRepositoryInterface,
   ILessonRepositoryInterface,
-  IPictographQueryServiceInterface,
   IPictographOperationsServiceInterface,
-  ICsvDataServiceInterface,
 } from "./interfaces/codex-interfaces";
 
 /**
@@ -108,7 +105,7 @@ export const serviceInterfaceMap = new Map<string, ServiceInterface<unknown>>([
     "IConstructTabCoordinationService",
     IConstructTabCoordinationServiceInterface,
   ],
-  ["IOptionDataService", IOptionDataServiceInterface],
+
   ["IStartPositionService", IStartPositionServiceInterface],
   ["IPanelManagementService", IPanelManagementServiceInterface],
   ["IPrintablePageLayoutService", IPrintablePageLayoutServiceInterface],
@@ -142,9 +139,6 @@ export const serviceInterfaceMap = new Map<string, ServiceInterface<unknown>>([
   ["IFilterPersistenceService", IFilterPersistenceServiceInterface],
   ["IDeleteService", IDeleteServiceInterface],
 
-  // Motion Tester services
-  ["IAnimatedPictographDataService", IAnimatedPictographDataServiceInterface],
-
   // Animator services
   ["IBeatCalculationService", IBeatCalculationServiceInterface],
   ["IPropInterpolationService", IPropInterpolationServiceInterface],
@@ -156,9 +150,8 @@ export const serviceInterfaceMap = new Map<string, ServiceInterface<unknown>>([
   ["ICodexService", ICodexServiceInterface],
   ["ILetterMappingRepository", ILetterMappingRepositoryInterface],
   ["ILessonRepository", ILessonRepositoryInterface],
-  ["IPictographQueryService", IPictographQueryServiceInterface],
+
   ["IPictographOperationsService", IPictographOperationsServiceInterface],
-  ["ICsvDataService", ICsvDataServiceInterface],
 
   // TODO: Uncomment when TKA Image Export services are implemented
   // ["ITKAImageExportService", ITKAImageExportServiceInterface],

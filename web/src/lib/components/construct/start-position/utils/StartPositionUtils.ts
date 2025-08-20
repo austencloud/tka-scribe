@@ -4,7 +4,7 @@
 
 import type { PictographData } from "$domain/PictographData";
 import type { BeatData } from "$domain/BeatData";
-import { MotionType, Location } from "$domain/enums";
+import { MotionType } from "$domain/enums";
 import { createBeatData } from "$domain/BeatData";
 
 /**
@@ -27,34 +27,8 @@ export function extractEndPosition(pictographData: PictographData): string {
     return defaultEndPositions[pictographData.letter] || "alpha1";
   }
 
-  // Try to extract from motion data
-  if (pictographData.motions?.blue?.endLocation) {
-    return mapLocationToPosition(pictographData.motions.blue.endLocation);
-  }
-  if (pictographData.motions?.red?.endLocation) {
-    return mapLocationToPosition(pictographData.motions.red.endLocation);
-  }
-
   // Default fallback
   return "alpha1";
-}
-
-/**
- * Map location enum to position string for CSV lookup
- */
-export function mapLocationToPosition(location: Location): string {
-  // Basic mapping - this would need to be enhanced based on actual position system
-  const locationMap: Record<string, string> = {
-    SOUTH: "alpha1",
-    NORTH: "alpha1",
-    EAST: "gamma11",
-    WEST: "alpha1",
-    // Add more mappings as needed
-  };
-
-  const locationStr =
-    typeof location === "string" ? location : String(location || "");
-  return locationMap[locationStr.toUpperCase()] || "alpha1";
 }
 
 /**
@@ -124,12 +98,31 @@ export function storeStartPositionData(data: Record<string, unknown>): void {
 }
 
 /**
- * Store preloaded options for seamless transition
+ * Store preloaded options data to localStorage
  */
-export function storePreloadedOptions(options: unknown[]): void {
+export function storePreloadedOptions(options: Record<string, unknown>): void {
   try {
-    localStorage.setItem("preloaded_options", JSON.stringify(options || []));
+    localStorage.setItem("preloadedOptions", JSON.stringify(options));
   } catch (error) {
     console.error("Failed to store preloaded options:", error);
   }
+}
+
+/**
+ * Map location to position for compatibility
+ */
+export function mapLocationToPosition(location: string): string {
+  // Simple mapping for now - can be enhanced based on requirements
+  const locationToPositionMap: Record<string, string> = {
+    N: "alpha1",
+    NE: "alpha2",
+    E: "alpha3",
+    SE: "alpha4",
+    S: "alpha5",
+    SW: "alpha6",
+    W: "alpha7",
+    NW: "alpha8",
+  };
+
+  return locationToPositionMap[location] || location;
 }

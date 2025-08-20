@@ -50,7 +50,7 @@
           data: {
             pictograph: debugData.pictographData?.letter || "None",
             motionType: debugData.motionData?.motionType || "None",
-            startOri: debugData.motionData?.startOrientation || "None",
+            startOrientation: debugData.motionData?.startOrientation || "None",
             endOrientation: debugData.motionData?.endOrientation || "None",
             arrowColor: debugData.arrowData?.color || "None",
           },

@@ -63,7 +63,10 @@ export class ArrowPositionCalculator implements IArrowPositioningOrchestrator {
       }
 
       // STEP 2: Calculate location and initial position
-      const location = this.locationCalculator.calculateLocation(motion);
+      const location = this.locationCalculator.calculateLocation(
+        motion,
+        pictographData
+      );
       const initialPosition = this.coordinateSystem.getInitialPosition(
         motion,
         location

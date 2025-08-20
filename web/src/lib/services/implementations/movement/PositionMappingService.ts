@@ -5,7 +5,14 @@
  * A position represents the combination of (blue_hand_location, red_hand_location).
  */
 
-import { Location, GridPosition } from '$lib/domain/enums';
+import {
+  Location,
+  GridPosition,
+  MotionType,
+  RotationDirection,
+  Timing,
+  Direction,
+} from "$lib/domain/enums";
 
 export class PositionMappingService {
   // Position mapping from (blue_end_loc, red_end_loc) to position key
@@ -19,7 +26,7 @@ export class PositionMappingService {
     "ne,sw": GridPosition.ALPHA6,
     "e,w": GridPosition.ALPHA7,
     "se,nw": GridPosition.ALPHA8,
-    
+
     // Beta positions - both hands same direction
     "n,n": GridPosition.BETA1,
     "ne,ne": GridPosition.BETA2,
@@ -29,7 +36,7 @@ export class PositionMappingService {
     "sw,sw": GridPosition.BETA6,
     "w,w": GridPosition.BETA7,
     "nw,nw": GridPosition.BETA8,
-    
+
     // Gamma positions - mixed/varied combinations
     "w,n": GridPosition.GAMMA1,
     "nw,ne": GridPosition.GAMMA2,
@@ -50,14 +57,17 @@ export class PositionMappingService {
   };
 
   // Reverse mapping from position to hand locations
-  private readonly LOCATION_PAIRS_MAP: Record<GridPosition, [Location, Location]>;
+  private readonly LOCATION_PAIRS_MAP: Record<
+    GridPosition,
+    [Location, Location]
+  >;
 
   constructor() {
     // Build reverse mapping
     this.LOCATION_PAIRS_MAP = {} as Record<GridPosition, [Location, Location]>;
-    
+
     Object.entries(this.POSITIONS_MAP).forEach(([locPair, position]) => {
-      const [blueStr, redStr] = locPair.split(',');
+      const [blueStr, redStr] = locPair.split(",");
       const blueLocation = this.stringToLocation(blueStr);
       const redLocation = this.stringToLocation(redStr);
       this.LOCATION_PAIRS_MAP[position] = [blueLocation, redLocation];
@@ -78,11 +88,16 @@ export class PositionMappingService {
   /**
    * Get the position for a given hand location pair
    */
-  getPositionFromLocations(blueLocation: Location, redLocation: Location): GridPosition {
+  getPositionFromLocations(
+    blueLocation: Location,
+    redLocation: Location
+  ): GridPosition {
     const key = `${this.locationToString(blueLocation)},${this.locationToString(redLocation)}`;
     const position = this.POSITIONS_MAP[key];
     if (!position) {
-      throw new Error(`No position found for locations: ${blueLocation}, ${redLocation}`);
+      throw new Error(
+        `No position found for locations: ${blueLocation}, ${redLocation}`
+      );
     }
     return position;
   }
@@ -92,14 +107,22 @@ export class PositionMappingService {
    */
   private locationToString(location: Location): string {
     switch (location) {
-      case Location.NORTH: return 'n';
-      case Location.NORTHEAST: return 'ne';
-      case Location.EAST: return 'e';
-      case Location.SOUTHEAST: return 'se';
-      case Location.SOUTH: return 's';
-      case Location.SOUTHWEST: return 'sw';
-      case Location.WEST: return 'w';
-      case Location.NORTHWEST: return 'nw';
+      case Location.NORTH:
+        return "n";
+      case Location.NORTHEAST:
+        return "ne";
+      case Location.EAST:
+        return "e";
+      case Location.SOUTHEAST:
+        return "se";
+      case Location.SOUTH:
+        return "s";
+      case Location.SOUTHWEST:
+        return "sw";
+      case Location.WEST:
+        return "w";
+      case Location.NORTHWEST:
+        return "nw";
       default:
         throw new Error(`Unknown location: ${location}`);
     }
@@ -110,14 +133,22 @@ export class PositionMappingService {
    */
   stringToLocation(str: string): Location {
     switch (str) {
-      case 'n': return Location.NORTH;
-      case 'ne': return Location.NORTHEAST;
-      case 'e': return Location.EAST;
-      case 'se': return Location.SOUTHEAST;
-      case 's': return Location.SOUTH;
-      case 'sw': return Location.SOUTHWEST;
-      case 'w': return Location.WEST;
-      case 'nw': return Location.NORTHWEST;
+      case "n":
+        return Location.NORTH;
+      case "ne":
+        return Location.NORTHEAST;
+      case "e":
+        return Location.EAST;
+      case "se":
+        return Location.SOUTHEAST;
+      case "s":
+        return Location.SOUTH;
+      case "sw":
+        return Location.SOUTHWEST;
+      case "w":
+        return Location.WEST;
+      case "nw":
+        return Location.NORTHWEST;
       default:
         throw new Error(`Unknown location string: ${str}`);
     }
@@ -126,13 +157,18 @@ export class PositionMappingService {
   /**
    * Convert CSV string format to motion type enum
    */
-  stringToMotionType(str: string): import('$lib/domain/enums').MotionType {
+  stringToMotionType(str: string): MotionType {
     switch (str) {
-      case 'pro': return import('$lib/domain/enums').MotionType.PRO;
-      case 'anti': return import('$lib/domain/enums').MotionType.ANTI;
-      case 'static': return import('$lib/domain/enums').MotionType.STATIC;
-      case 'dash': return import('$lib/domain/enums').MotionType.DASH;
-      case 'float': return import('$lib/domain/enums').MotionType.FLOAT;
+      case "pro":
+        return MotionType.PRO;
+      case "anti":
+        return MotionType.ANTI;
+      case "static":
+        return MotionType.STATIC;
+      case "dash":
+        return MotionType.DASH;
+      case "float":
+        return MotionType.FLOAT;
       default:
         throw new Error(`Unknown motion type: ${str}`);
     }
@@ -141,11 +177,14 @@ export class PositionMappingService {
   /**
    * Convert CSV string format to rotation direction enum
    */
-  stringToRotationDirection(str: string): import('$lib/domain/enums').RotationDirection {
+  stringToRotationDirection(str: string): RotationDirection {
     switch (str) {
-      case 'cw': return import('$lib/domain/enums').RotationDirection.CLOCKWISE;
-      case 'ccw': return import('$lib/domain/enums').RotationDirection.COUNTER_CLOCKWISE;
-      case 'none': return import('$lib/domain/enums').RotationDirection.NO_ROTATION;
+      case "cw":
+        return RotationDirection.CLOCKWISE;
+      case "ccw":
+        return RotationDirection.COUNTER_CLOCKWISE;
+      case "none":
+        return RotationDirection.NO_ROTATION;
       default:
         throw new Error(`Unknown rotation direction: ${str}`);
     }
@@ -154,11 +193,14 @@ export class PositionMappingService {
   /**
    * Convert CSV string format to timing enum
    */
-  stringToTiming(str: string): import('$lib/domain/enums').Timing {
+  stringToTiming(str: string): Timing {
     switch (str) {
-      case 'split': return import('$lib/domain/enums').Timing.SPLIT;
-      case 'tog': return import('$lib/domain/enums').Timing.TOG;
-      case 'quarter': return import('$lib/domain/enums').Timing.QUARTER;
+      case "split":
+        return Timing.SPLIT;
+      case "tog":
+        return Timing.TOG;
+      case "quarter":
+        return Timing.QUARTER;
       default:
         throw new Error(`Unknown timing: ${str}`);
     }
@@ -167,10 +209,12 @@ export class PositionMappingService {
   /**
    * Convert CSV string format to direction enum
    */
-  stringToDirection(str: string): import('$lib/domain/enums').Direction {
+  stringToDirection(str: string): Direction {
     switch (str) {
-      case 'same': return import('$lib/domain/enums').Direction.SAME;
-      case 'opp': return import('$lib/domain/enums').Direction.OPP;
+      case "same":
+        return Direction.SAME;
+      case "opp":
+        return Direction.OPP;
       default:
         throw new Error(`Unknown direction: ${str}`);
     }

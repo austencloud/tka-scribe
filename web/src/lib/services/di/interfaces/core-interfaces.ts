@@ -33,7 +33,6 @@ import type {
   IMotionGenerationService,
   ISequenceGenerationService,
   IOrientationCalculationService,
-  IOptionDataService as IGenerationOptionDataService,
 } from "../../interfaces/generation-interfaces";
 import type { IDeviceDetectionService } from "../../interfaces/device-interfaces";
 import type {
@@ -41,36 +40,37 @@ import type {
   IPageImageExportService,
 } from "../../interfaces/export-interfaces";
 import type { IPanelManagementService } from "../../interfaces/panel-interfaces";
+import type { ILetterQueryService } from "../../implementations/data/LetterQueryService";
 import { createServiceInterface } from "../types";
 
 // Import service implementations
-import { ApplicationInitializationService } from "../../implementations/ApplicationInitializationService";
-import { ArrowRenderingService } from "../../implementations/ArrowRenderingService";
-import { ConstructTabCoordinationService } from "../../implementations/ConstructTabCoordinationService";
-import { DataTransformationService } from "../../implementations/DataTransformationService";
-import { DeviceDetectionService } from "../../implementations/DeviceDetectionService";
-import { ExportService } from "../../implementations/ExportService";
-import { GridRenderingService } from "../../implementations/GridRenderingService";
-import { LocalStoragePersistenceService } from "../../implementations/LocalStoragePersistenceService";
-import { MotionGenerationService } from "../../implementations/MotionGenerationService";
-import { OptionDataService } from "../../implementations/OptionDataService";
-import { OverlayRenderingService } from "../../implementations/OverlayRenderingService";
-import { PanelManagementService } from "../../implementations/PanelManagementService";
-import { PictographRenderingService } from "../../implementations/PictographRenderingService";
-import { PictographService } from "../../implementations/PictographService";
-import { PropRenderingService } from "../../implementations/PropRenderingService";
-import { SequenceDomainService } from "../../implementations/SequenceDomainService";
-import { SequenceGenerationService } from "../../implementations/SequenceGenerationService";
-import { SequenceService } from "../../implementations/SequenceService";
-import { SettingsService } from "../../implementations/SettingsService";
-import { StartPositionService } from "../../implementations/StartPositionService";
-import { SvgConfiguration } from "../../implementations/SvgConfiguration";
-import { SvgUtilityService } from "../../implementations/SvgUtilityService";
-import { PrintablePageLayoutService } from "../../implementations/PrintablePageLayoutService";
-import { PageFactoryService } from "../../implementations/PageFactoryService";
-import { PageImageExportService } from "../../implementations/PageImageExportService";
-import { SequenceCardExportIntegrationService } from "../../implementations/SequenceCardExportIntegrationService";
-import { OrientationCalculationService } from "../../implementations/OrientationCalculationService";
+import { ApplicationInitializationService } from "../../implementations/application/ApplicationInitializationService";
+import { ArrowRenderingService } from "../../implementations/rendering/ArrowRenderingService";
+import { ConstructTabCoordinationService } from "../../implementations/construct/ConstructTabCoordinationService";
+import { DataTransformationService } from "../../implementations/data/DataTransformationService";
+import { DeviceDetectionService } from "../../implementations/application/DeviceDetectionService";
+import { ExportService } from "../../implementations/export/ExportService";
+import { GridRenderingService } from "../../implementations/rendering/GridRenderingService";
+import { LocalStoragePersistenceService } from "../../implementations/persistence/LocalStoragePersistenceService";
+import { MotionGenerationService } from "../../implementations/generation/MotionGenerationService";
+
+import { OverlayRenderingService } from "../../implementations/rendering/OverlayRenderingService";
+import { PanelManagementService } from "../../implementations/navigation/PanelManagementService";
+import { PictographRenderingService } from "../../implementations/rendering/PictographRenderingService";
+import { PictographService } from "../../implementations/domain/PictographService";
+import { PropRenderingService } from "../../implementations/rendering/PropRenderingService";
+import { SequenceDomainService } from "../../implementations/domain/SequenceDomainService";
+import { SequenceGenerationService } from "../../implementations/generation/SequenceGenerationService";
+import { SequenceService } from "../../implementations/sequence/SequenceService";
+import { SettingsService } from "../../implementations/persistence/SettingsService";
+import { StartPositionService } from "../../implementations/domain/StartPositionService";
+import { SvgConfiguration } from "../../implementations/rendering/SvgConfiguration";
+import { SvgUtilityService } from "../../implementations/rendering/SvgUtilityService";
+import { PrintablePageLayoutService } from "../../implementations/sequence/PrintablePageLayoutService";
+import { PageFactoryService } from "../../implementations/generation/PageFactoryService";
+import { PageImageExportService } from "../../implementations/export/PageImageExportService";
+import { SequenceCardExportIntegrationService } from "../../implementations/export/SequenceCardExportIntegrationService";
+import { OrientationCalculationService } from "../../implementations/positioning/OrientationCalculationService";
 
 // Core domain services
 export const ISequenceServiceInterface =
@@ -234,7 +234,7 @@ export const ISequenceGenerationServiceInterface =
     class extends SequenceGenerationService {
       constructor(...args: unknown[]) {
         super(
-          args[0] as IGenerationOptionDataService,
+          args[0] as ILetterQueryService,
           args[1] as IOrientationCalculationService
         );
       }
@@ -250,12 +250,6 @@ export const IConstructTabCoordinationServiceInterface =
         super(args[0] as ISequenceService, args[1] as IStartPositionService);
       }
     }
-  );
-
-export const IOptionDataServiceInterface =
-  createServiceInterface<IGenerationOptionDataService>(
-    "IOptionDataService",
-    OptionDataService
   );
 
 export const IStartPositionServiceInterface =

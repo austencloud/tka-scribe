@@ -115,7 +115,7 @@
             </div>
             <div class="data-item">
               <strong>Start Orientation:</strong>
-              {debugData.locationDebugInfo.startOri}
+              {debugData.locationDebugInfo.startOrientation}
             </div>
             <div class="data-item">
               <strong>End Orientation:</strong>

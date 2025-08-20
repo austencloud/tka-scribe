@@ -5,6 +5,7 @@
   import { createImageExportState } from "$lib/state/image-export-state.svelte";
   import type { SequenceData } from "$lib/domain";
   import type { ITKAImageExportService } from "$services/interfaces/image-export-interfaces";
+  import { ITKAImageExportServiceInterface } from "$services/di/interfaces/image-export-interfaces";
   import ExportActionsCard from "./ExportActionsCard.svelte";
   import ExportPreviewCard from "./ExportPreviewCard.svelte";
   import ExportSettingsCard from "./ExportSettingsCard.svelte";
@@ -27,7 +28,9 @@
 
   // Get the real TKA image export service
   const imageExportService = browser
-    ? (resolve("ITKAImageExportService") as ITKAImageExportService | null)
+    ? (resolve(
+        ITKAImageExportServiceInterface
+      ) as ITKAImageExportService | null)
     : null;
 
   // Create image export state with real service
@@ -246,7 +249,6 @@
     </div>
   </div>
 </div>
-"
 
 <style>
   .export-panel {

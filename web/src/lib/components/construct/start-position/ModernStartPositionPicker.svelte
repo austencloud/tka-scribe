@@ -161,8 +161,8 @@
       console.log("🔄 ModernStartPositionPicker: Preloading next options");
 
       // This would integrate with OptionPicker service if available
-      // For now, just store empty array to prevent errors
-      storePreloadedOptions([]);
+      // For now, just store empty object to prevent errors
+      storePreloadedOptions({});
 
       console.log("✅ ModernStartPositionPicker: Next options preloaded");
     } catch (error) {

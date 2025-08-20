@@ -76,7 +76,7 @@ export class EnumConversionService implements IEnumConversionService {
       counter_clockwise: RotationDirection.COUNTER_CLOCKWISE,
       counterclockwise: RotationDirection.COUNTER_CLOCKWISE,
       noRotation: RotationDirection.NO_ROTATION,
-      noRotation: RotationDirection.NO_ROTATION,
+      no_rotation: RotationDirection.NO_ROTATION,
     };
 
     const normalized = str.toLowerCase().trim();

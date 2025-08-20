@@ -18,6 +18,7 @@ import {
   getSortedGroupKeys,
   getSorter,
 } from "./services/OptionsService";
+import { GridMode } from "$lib/domain";
 
 // ===== Types =====
 export type LastSelectedTabState = Partial<Record<SortMethod, string | null>>;
@@ -68,8 +69,6 @@ function getStoredState(): UIState {
     };
   }
 }
-
-
 
 /**
  * Create sophisticated option picker state using ONLY Svelte 5 runes
@@ -256,21 +255,16 @@ export function createOptionPickerRunes() {
               ? startPosition.endPosition
               : null;
           if (endPosition) {
-            // Get the option data service through DI
-            const optionDataService = resolve("IOptionDataService") as {
-              getNextOptions(sequence: unknown[]): Promise<PictographData[]>;
-            };
+            // Get the LetterQueryService through DI
+            const { ILetterQueryServiceInterface } = await import(
+              "$lib/services/di/interfaces/codex-interfaces"
+            );
+            const letterQueryService = resolve(ILetterQueryServiceInterface);
 
-            // Create a minimal sequence with a beat that has the end position
-            const minimalSequence = [
-              createBeatData({
-                beatNumber: 1,
-                metadata: { endPosition: endPosition },
-              }),
-            ];
-
-            nextOptions =
-              await optionDataService.getNextOptions(minimalSequence);
+            // For now, get all pictographs - option filtering logic would need to be implemented
+            nextOptions = await letterQueryService.getAllCodexPictographs(
+              GridMode.DIAMOND
+            );
           }
         }
       }

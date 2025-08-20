@@ -6,7 +6,7 @@
 -->
 <script lang="ts">
   import type { ActiveRightPanel } from "$lib/state/construct-tab-state.svelte";
-  import { constructTabTransitionService } from "$services/implementations/ConstructTabTransitionService";
+  import { constructTabTransitionService } from "$services/implementations/construct/ConstructTabTransitionService";
 
   // Props from parent
   interface Props {

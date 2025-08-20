@@ -28,9 +28,9 @@ export default defineConfig({
     __VITE_IS_MODERN__: true,
   },
   // Add development-specific source map configuration
-  ...(process.env.NODE_ENV !== 'production' && {
+  ...(process.env.NODE_ENV !== "production" && {
     build: {
-      sourcemap: 'inline',
+      sourcemap: "inline",
       minify: false,
     },
   }),

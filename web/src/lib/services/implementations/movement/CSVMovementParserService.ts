@@ -5,9 +5,12 @@
  * Uses the correct position mapping based on hand location combinations.
  */
 
-import type { MovementData, HandMovement } from '$lib/domain/MovementData';
-import { createMovementData, createHandMovement } from '$lib/domain/MovementData';
-import { PositionMappingService } from './PositionMappingService';
+import type { MovementData } from "$lib/domain/MovementData";
+import {
+  createMovementData,
+  createHandMovement,
+} from "$lib/domain/MovementData";
+import { PositionMappingService } from "./PositionMappingService";
 
 interface CSVRow {
   letter: string;
@@ -37,25 +40,35 @@ export class CSVMovementParserService {
    */
   parseCSVRowToMovement(row: CSVRow): MovementData {
     // Parse positions
-    const startPosition = this.positionMapper.stringToGridPosition(row.startPosition);
-    const endPosition = this.positionMapper.stringToGridPosition(row.endPosition);
-    
+    const startPosition = this.positionMapper.stringToGridPosition(
+      row.startPosition
+    );
+    const endPosition = this.positionMapper.stringToGridPosition(
+      row.endPosition
+    );
+
     // Parse timing and direction
     const timing = this.positionMapper.stringToTiming(row.timing);
     const direction = this.positionMapper.stringToDirection(row.direction);
-    
+
     // Parse blue hand movement
     const blueHand = createHandMovement({
       motionType: this.positionMapper.stringToMotionType(row.blueMotionType),
-      rotationDirection: this.positionMapper.stringToRotationDirection(row.blueRotationDirection),
-      startLocation: this.positionMapper.stringToLocation(row.blueStartLocation),
+      rotationDirection: this.positionMapper.stringToRotationDirection(
+        row.blueRotationDirection
+      ),
+      startLocation: this.positionMapper.stringToLocation(
+        row.blueStartLocation
+      ),
       endLocation: this.positionMapper.stringToLocation(row.blueEndLocation),
     });
-    
+
     // Parse red hand movement
     const redHand = createHandMovement({
       motionType: this.positionMapper.stringToMotionType(row.redMotionType),
-      rotationDirection: this.positionMapper.stringToRotationDirection(row.redRotationDirection),
+      rotationDirection: this.positionMapper.stringToRotationDirection(
+        row.redRotationDirection
+      ),
       startLocation: this.positionMapper.stringToLocation(row.redStartLocation),
       endLocation: this.positionMapper.stringToLocation(row.redEndLocation),
     });
@@ -75,19 +88,35 @@ export class CSVMovementParserService {
    * Parse multiple CSV rows for a letter
    */
   parseLetterMovements(letterRows: CSVRow[]): MovementData[] {
-    return letterRows.map(row => this.parseCSVRowToMovement(row));
+    return letterRows.map((row) => this.parseCSVRowToMovement(row));
   }
 
   /**
    * Validate that a CSV row has the expected structure
    */
-  validateCSVRow(row: any): row is CSVRow {
+  validateCSVRow(row: unknown): row is CSVRow {
     const requiredFields = [
-      'letter', 'startPosition', 'endPosition', 'timing', 'direction',
-      'blueMotionType', 'blueRotationDirection', 'blueStartLocation', 'blueEndLocation',
-      'redMotionType', 'redRotationDirection', 'redStartLocation', 'redEndLocation'
+      "letter",
+      "startPosition",
+      "endPosition",
+      "timing",
+      "direction",
+      "blueMotionType",
+      "blueRotationDirection",
+      "blueStartLocation",
+      "blueEndLocation",
+      "redMotionType",
+      "redRotationDirection",
+      "redStartLocation",
+      "redEndLocation",
     ];
-    
-    return requiredFields.every(field => row && row[field] !== undefined);
+
+    return requiredFields.every(
+      (field) =>
+        row &&
+        typeof row === "object" &&
+        field in row &&
+        (row as Record<string, unknown>)[field] !== undefined
+    );
   }
 }

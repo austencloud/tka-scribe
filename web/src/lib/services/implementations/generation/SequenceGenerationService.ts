@@ -7,12 +7,13 @@
 
 import type { BeatData, SequenceData } from "$lib/domain";
 import { createSequenceData } from "$lib/domain";
+import { GridMode } from "$lib/domain";
 import type {
   GenerationOptions,
   ISequenceGenerationService,
-  IOptionDataService,
   IOrientationCalculationService,
 } from "../../interfaces/generation-interfaces";
+import type { ILetterQueryService } from "../data/LetterQueryService";
 
 import type { PictographData } from "$lib/domain/PictographData";
 import { createMotionData } from "$lib/domain/MotionData";
@@ -43,7 +44,7 @@ const MOTION_TYPES = {
 
 export class SequenceGenerationService implements ISequenceGenerationService {
   constructor(
-    private optionDataService: IOptionDataService,
+    private letterQueryService: ILetterQueryService,
     private orientationCalculationService: IOrientationCalculationService
   ) {}
 
@@ -197,37 +198,24 @@ export class SequenceGenerationService implements ISequenceGenerationService {
     propContinuity: PropContinuity,
     blueRotationDirection: string,
     redRotationDirection: string,
-    letterTypes: string[]
+    _letterTypes: string[]
   ): Promise<BeatData> {
     try {
       // Step 1: Get option dicts (legacy: self._get_option_dicts())
-      let optionDicts = await this.optionDataService.getNextOptions(sequence);
+      // LetterQueryService initializes automatically when first used
+      const optionDicts = await this.letterQueryService.getAllCodexPictographs(
+        GridMode.DIAMOND
+      );
       console.log(`📋 Loaded ${optionDicts.length} option dicts`);
 
       if (optionDicts.length === 0) {
         throw new Error("No pictographs available from option service");
       }
 
-      // Step 2: Filter options by letter type (legacy: self._filter_options_by_letter_type())
-      optionDicts = this.optionDataService.filterOptionsByLetterTypes(
-        optionDicts,
-        letterTypes
+      console.log(
+        `🔍 Using all ${optionDicts.length} options (filtering not yet implemented)`
       );
-      console.log(`🔍 After letter type filter: ${optionDicts.length} options`);
-
-      // Step 3: Filter by rotation if continuous prop continuity
-      if (
-        propContinuity === PropContinuity.CONTINUOUS &&
-        blueRotationDirection &&
-        redRotationDirection
-      ) {
-        optionDicts = this.optionDataService.filterOptionsByRotation(
-          optionDicts,
-          blueRotationDirection,
-          redRotationDirection
-        );
-        console.log(`🔄 After rotation filter: ${optionDicts.length} options`);
-      }
+      console.log(`🔄 Rotation filtering not yet implemented`);
 
       if (optionDicts.length === 0) {
         throw new Error("No valid options available after filtering");

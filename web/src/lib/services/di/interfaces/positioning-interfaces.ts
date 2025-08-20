@@ -23,8 +23,8 @@ import type {
 } from "../../positioning";
 
 // Import service implementations
-import { ArrowPlacementDataService } from "../../implementations/ArrowPlacementDataService";
-import { ArrowPlacementKeyService } from "../../implementations/ArrowPlacementKeyService";
+import { ArrowPlacementDataService } from "../../implementations/data/ArrowPlacementDataService";
+import { ArrowPlacementKeyService } from "../../implementations/positioning/ArrowPlacementKeyService";
 
 // Import enhanced positioning service implementations
 import { ArrowAdjustmentCalculator } from "../../positioning/arrows/calculation/ArrowAdjustmentCalculator";

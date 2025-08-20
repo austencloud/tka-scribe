@@ -6,9 +6,11 @@ import type { ServiceInterface } from "../types";
 import type { ICodexService } from "../../codex/ICodexService";
 import type { ILetterMappingRepository } from "$lib/repositories/LetterMappingRepository";
 import type { ILessonRepository } from "$lib/repositories/LessonRepository";
-import type { IPictographQueryService } from "../../codex/PictographQueryService";
+
 import type { IPictographOperationsService } from "../../codex/PictographOperationsService";
-import type { CsvDataService } from "../../implementations/CsvDataService";
+import type { ICsvLoaderService } from "../../implementations/data/CsvLoaderService";
+import type { ILetterQueryService } from "../../implementations/data/LetterQueryService";
+import type { IMotionQueryService } from "../../implementations/data/MotionQueryService";
 
 // Service interface definitions for DI container
 export const ICodexServiceInterface: ServiceInterface<ICodexService> = {
@@ -31,14 +33,6 @@ export const ILessonRepositoryInterface: ServiceInterface<ILessonRepository> = {
   ) => ILessonRepository,
 };
 
-export const IPictographQueryServiceInterface: ServiceInterface<IPictographQueryService> =
-  {
-    token: "IPictographQueryService",
-    implementation: null as unknown as new (
-      ...args: unknown[]
-    ) => IPictographQueryService,
-  };
-
 export const IPictographOperationsServiceInterface: ServiceInterface<IPictographOperationsService> =
   {
     token: "IPictographOperationsService",
@@ -47,7 +41,26 @@ export const IPictographOperationsServiceInterface: ServiceInterface<IPictograph
     ) => IPictographOperationsService,
   };
 
-export const ICsvDataServiceInterface: ServiceInterface<CsvDataService> = {
-  token: "ICsvDataService",
-  implementation: null as unknown as new (...args: unknown[]) => CsvDataService,
+// New focused microservices interfaces
+export const ICsvLoaderServiceInterface: ServiceInterface<ICsvLoaderService> = {
+  token: "ICsvLoaderService",
+  implementation: null as unknown as new (
+    ...args: unknown[]
+  ) => ICsvLoaderService,
 };
+
+export const ILetterQueryServiceInterface: ServiceInterface<ILetterQueryService> =
+  {
+    token: "ILetterQueryService",
+    implementation: null as unknown as new (
+      ...args: unknown[]
+    ) => ILetterQueryService,
+  };
+
+export const IMotionQueryServiceInterface: ServiceInterface<IMotionQueryService> =
+  {
+    token: "IMotionQueryService",
+    implementation: null as unknown as new (
+      ...args: unknown[]
+    ) => IMotionQueryService,
+  };

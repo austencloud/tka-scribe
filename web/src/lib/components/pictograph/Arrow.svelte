@@ -81,14 +81,14 @@ Follows the same pattern as Prop component for consistent sizing behavior
     if (["pro", "anti", "static"].includes(motionType)) {
       // Determine if we should use radial vs non-radial arrows
       // Use non-radial only for clock/counter orientations, radial for everything else
-      const startOri =
+      const startOrientation =
         arrowData.start_orientation || motionData.startOrientation || "in";
       const endOrientation =
         arrowData.end_orientation || motionData.endOrientation || "in";
 
       const isNonRadial =
-        startOri === "clock" ||
-        startOri === "counter" ||
+        startOrientation === "clock" ||
+        startOrientation === "counter" ||
         endOrientation === "clock" ||
         endOrientation === "counter";
 

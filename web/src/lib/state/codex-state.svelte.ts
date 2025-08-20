@@ -13,16 +13,24 @@ import { ICodexServiceInterface } from "$lib/services/di/interfaces/codex-interf
 import type { ICodexService } from "$lib/services/codex/ICodexService";
 
 export function createCodexState() {
+  console.log("🔧 createCodexState() called - creating new state instance");
+
   // Get the DI container from context (provided by layout)
-  const getContainer = getContext<() => ServiceContainer | null>("di-container");
-  
+  const getContainer =
+    getContext<() => ServiceContainer | null>("di-container");
+
   function getCodexService(): ICodexService {
+    console.log("🔧 getCodexService() called");
     const container = getContainer?.();
     if (!container) {
-      throw new Error("DI container not yet available - this should not happen after layout initialization");
+      throw new Error(
+        "DI container not yet available - this should not happen after layout initialization"
+      );
     }
-    
-    return container.resolve(ICodexServiceInterface);
+
+    const service = container.resolve(ICodexServiceInterface);
+    console.log("🔧 Container resolved service:", !!service);
+    return service;
   }
 
   // Core reactive state using Svelte 5 runes
@@ -73,26 +81,37 @@ export function createCodexState() {
 
   // Load all pictographs and organize by letter
   async function loadAllPictographs() {
-    if (isLoading) return; // Prevent multiple simultaneous loads
-    
+    console.log(
+      "🔄 loadAllPictographs() called, isLoading:",
+      isLoading,
+      "isInitialized:",
+      isInitialized
+    );
+
+    if (isLoading) {
+      console.log("⚠️ loadAllPictographs: Already loading, skipping");
+      return; // Prevent multiple simultaneous loads
+    }
+
     isLoading = true;
     error = null;
 
     try {
       const codexService = getCodexService();
-      
+      console.log("🔍 Loading all codex pictographs...");
+
       // Load pictographs from service
       const allPictographs = await codexService.loadAllPictographs();
       pictographs = allPictographs;
 
       // Also load organized by letter
       pictographsByLetter = await codexService.getAllPictographData();
-      
+
       // Load letter rows if not already loaded
       if (letterRows.length === 0) {
         letterRows = codexService.getLettersByRow();
       }
-      
+
       isInitialized = true;
       console.log("✅ Codex data loaded successfully");
     } catch (err) {

@@ -26,10 +26,11 @@ export {
 } from "$lib/repositories/LessonRepository";
 
 // Services
-export {
-  PictographQueryService,
-  type IPictographQueryService,
-} from "./PictographQueryService";
+// TODO: Re-enable when PictographQueryService is implemented
+// export {
+//   PictographQueryService,
+//   type IPictographQueryService,
+// } from "./PictographQueryService";
 export {
   PictographOperationsService,
   type IPictographOperationsService,

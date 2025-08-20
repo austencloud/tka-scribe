@@ -6,7 +6,7 @@
  */
 
 import { browser } from "$app/environment";
-import { BrowseStatePersistenceService } from "../../services/implementations/BrowseStatePersistenceService";
+import { BrowseStatePersistenceService } from "../../services/implementations/browse/BrowseStatePersistenceService";
 import type { ITabStateService, TabId } from "./state-service-interfaces";
 
 class TabStateService implements ITabStateService {

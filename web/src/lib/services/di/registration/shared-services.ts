@@ -4,24 +4,53 @@
  */
 
 import type { ServiceContainer } from "../ServiceContainer";
-import type {
-  IEnumMappingService,
-  ICSVParserService,
-  ICSVLoaderService,
-} from "../../interfaces/application-interfaces";
+import type { IEnumMappingService } from "../../interfaces/application-interfaces";
 
-import { EnumMappingService } from "../../implementations/shared/EnumMappingService";
-import { CSVParserService } from "../../implementations/shared/CSVParserService";
-import { CSVLoaderService } from "../../implementations/shared/CSVLoaderService";
-import { PictographTransformationService } from "../../implementations/shared/PictographTransformationService";
-import { OptionFilteringService } from "../../implementations/shared/OptionFilteringService";
+import { EnumMappingService } from "../../implementations/data/EnumMappingService";
+import {
+  CSVParserService,
+  type ICSVParserService,
+} from "../../implementations/data/CSVParserService";
 
-// Define service interface symbols for shared services
-export const IEnumMappingServiceInterface = Symbol("IEnumMappingService");
-export const ICSVParserServiceInterface = Symbol("ICSVParserService");
-export const ICSVLoaderServiceInterface = Symbol("ICSVLoaderService");
-export const IPictographTransformationServiceInterface = Symbol("IPictographTransformationService");
-export const IOptionFilteringServiceInterface = Symbol("IOptionFilteringService");
+import { PictographTransformationService } from "../../implementations/data/PictographTransformationService";
+import { OptionFilteringService } from "../../implementations/data/OptionFilteringService";
+import type { IPictographTransformationService } from "../../implementations/data/PictographTransformationService";
+import type { IOptionFilteringService } from "../../implementations/data/OptionFilteringService";
+
+// Import ServiceInterface type
+import type { ServiceInterface } from "../types";
+
+// Define service interface objects for shared services
+export const IEnumMappingServiceInterface: ServiceInterface<IEnumMappingService> =
+  {
+    token: "IEnumMappingService",
+    implementation: null as unknown as new (
+      ...args: unknown[]
+    ) => IEnumMappingService,
+  };
+
+export const ICSVParserServiceInterface: ServiceInterface<ICSVParserService> = {
+  token: "ICSVParserService",
+  implementation: null as unknown as new (
+    ...args: unknown[]
+  ) => ICSVParserService,
+};
+
+export const IPictographTransformationServiceInterface: ServiceInterface<IPictographTransformationService> =
+  {
+    token: "IPictographTransformationService",
+    implementation: null as unknown as new (
+      ...args: unknown[]
+    ) => IPictographTransformationService,
+  };
+
+export const IOptionFilteringServiceInterface: ServiceInterface<IOptionFilteringService> =
+  {
+    token: "IOptionFilteringService",
+    implementation: null as unknown as new (
+      ...args: unknown[]
+    ) => IOptionFilteringService,
+  };
 
 /**
  * Register all shared utility services
@@ -39,19 +68,19 @@ export async function registerSharedServices(
     return new CSVParserService();
   });
 
-  container.registerFactory(ICSVLoaderServiceInterface, () => {
-    return new CSVLoaderService();
-  });
-
   // Register transformation services (depend on enum mapping)
   container.registerFactory(IPictographTransformationServiceInterface, () => {
-    const enumMappingService = container.resolve(IEnumMappingServiceInterface) as IEnumMappingService;
+    const enumMappingService = container.resolve(
+      IEnumMappingServiceInterface
+    ) as IEnumMappingService;
     return new PictographTransformationService(enumMappingService);
   });
 
   // Register filtering services (depend on enum mapping)
   container.registerFactory(IOptionFilteringServiceInterface, () => {
-    const enumMappingService = container.resolve(IEnumMappingServiceInterface) as IEnumMappingService;
+    const enumMappingService = container.resolve(
+      IEnumMappingServiceInterface
+    ) as IEnumMappingService;
     return new OptionFilteringService(enumMappingService);
   });
 }
@@ -61,10 +90,16 @@ export async function registerSharedServices(
  */
 export function resolveSharedServices(container: ServiceContainer) {
   return {
-    enumMappingService: container.resolve(IEnumMappingServiceInterface) as IEnumMappingService,
-    csvParserService: container.resolve(ICSVParserServiceInterface) as ICSVParserService,
-    csvLoaderService: container.resolve(ICSVLoaderServiceInterface) as ICSVLoaderService,
-    pictographTransformationService: container.resolve(IPictographTransformationServiceInterface),
+    enumMappingService: container.resolve(
+      IEnumMappingServiceInterface
+    ) as IEnumMappingService,
+    csvParserService: container.resolve(
+      ICSVParserServiceInterface
+    ) as ICSVParserService,
+
+    pictographTransformationService: container.resolve(
+      IPictographTransformationServiceInterface
+    ),
     optionFilteringService: container.resolve(IOptionFilteringServiceInterface),
   };
 }

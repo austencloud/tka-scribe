@@ -6,7 +6,7 @@
   based on the current sequence state.
 -->
 <script lang="ts">
-  import { constructTabEventService } from "$services/implementations/ConstructTabEventService";
+  import { constructTabEventService } from "$services/implementations/construct/ConstructTabEventService";
   import type { PictographData } from "$services/interfaces/domain-types";
   import { resolve } from "$services/bootstrap";
   import { createSequenceState } from "$lib/state/sequence-state.svelte";

@@ -19,6 +19,11 @@ declare global {
   interface Window {
     // Add any global window properties here
     __SVELTE_KIT_DEV__?: boolean;
+    // CSV data loaded by layout
+    csvData?: {
+      diamondData: string;
+      boxData: string;
+    };
   }
 
   // Custom events

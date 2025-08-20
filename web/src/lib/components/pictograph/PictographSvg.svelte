@@ -12,6 +12,7 @@ and leaves state management to the parent component.
     PropData,
     MotionColor,
   } from "$lib/domain";
+  import { endsWithBeta } from "$lib/utils/betaDetection";
   import Arrow from "./Arrow.svelte";
   import Grid from "./Grid.svelte";
   import Prop from "./Prop.svelte";
@@ -95,11 +96,15 @@ and leaves state management to the parent component.
     <!-- Props (rendered first so arrows appear on top) -->
     {#each propsToRender as { color, propData } (color)}
       {@const motionData = pictographData?.motions?.[color]}
+      {@const pictographEndsWithBeta = pictographData
+        ? endsWithBeta(pictographData)
+        : false}
       <Prop
         {propData}
         {...motionData && { motionData }}
         gridMode={pictographData?.gridData?.gridMode || "diamond"}
         allProps={Object.values(pictographData?.props || {})}
+        endsWithBeta={pictographEndsWithBeta}
         onLoaded={() => onComponentLoaded(`${color}-prop`)}
         onError={(error) => onComponentError(`${color}-prop`, error)}
       />

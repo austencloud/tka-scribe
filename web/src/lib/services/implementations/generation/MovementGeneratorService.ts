@@ -23,23 +23,25 @@ import {
   Direction,
   MotionType,
   RotationDirection,
-  Location,
 } from "$lib/domain/enums";
 
 export class MovementGeneratorService implements IMovementGeneratorService {
   private readonly movementCache = new Map<string, MovementSet>();
 
   constructor(
-    private readonly patternService: import("../interfaces/generation-interfaces").IMovementPatternService,
-    private readonly positionCalculator: import("../interfaces/generation-interfaces").IPositionCalculatorService,
-    private readonly validator: import("../interfaces/generation-interfaces").IMovementValidatorService
+    private readonly patternService: import("../../interfaces/generation-interfaces").IMovementPatternService,
+    private readonly positionCalculator: import("../../interfaces/generation-interfaces").IPositionCalculatorService,
+    private readonly validator: import("../../interfaces/generation-interfaces").IMovementValidatorService
   ) {}
 
   generateMovementSet(pattern: MovementPattern): MovementSet {
     const cacheKey = this.createCacheKey(pattern);
 
     if (this.movementCache.has(cacheKey)) {
-      return this.movementCache.get(cacheKey)!;
+      const cached = this.movementCache.get(cacheKey);
+      if (cached) {
+        return cached;
+      }
     }
 
     const movements = this.generateMovementsFromPattern(pattern);
@@ -508,13 +510,13 @@ export class MovementGeneratorService implements IMovementGeneratorService {
     const movements: MovementData[] = [];
 
     for (let i = 0; i < positions.length - 1; i++) {
-      const startPos = positions[i];
-      const endPos = positions[i + 1];
+      const startPosition = positions[i];
+      const endPosition = positions[i + 1];
 
       const movement = this.createMovementFromPositions(
         pattern,
-        startPos,
-        endPos,
+        startPosition,
+        endPosition,
         pattern.baseBlueMotion,
         pattern.baseRedMotion,
         pattern.baseBlueRotation,
@@ -529,21 +531,21 @@ export class MovementGeneratorService implements IMovementGeneratorService {
 
   private createMovementFromPositions(
     pattern: MovementPattern,
-    startPos: GridPosition,
-    endPos: GridPosition,
+    startPosition: GridPosition,
+    endPosition: GridPosition,
     blueMotion: MotionType,
     redMotion: MotionType,
     blueRotation: RotationDirection,
     redRotation: RotationDirection
   ): MovementData {
     const [blueStart, blueEnd] = this.positionCalculator.getCardinalDirections(
-      startPos,
-      endPos,
+      startPosition,
+      endPosition,
       blueMotion
     );
     const [redStart, redEnd] = this.positionCalculator.getCardinalDirections(
-      startPos,
-      endPos,
+      startPosition,
+      endPosition,
       redMotion
     );
 
@@ -563,8 +565,8 @@ export class MovementGeneratorService implements IMovementGeneratorService {
 
     return createMovementData({
       letter: pattern.letter,
-      startPosition: startPos,
-      endPosition: endPos,
+      startPosition: startPosition,
+      endPosition: endPosition,
       timing: pattern.timing,
       direction: pattern.direction,
       blueHand,

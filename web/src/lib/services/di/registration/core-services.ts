@@ -8,12 +8,10 @@ import {
   IApplicationInitializationServiceInterface,
   IArrowRenderingServiceInterface,
   IConstructTabCoordinationServiceInterface,
-  IDataTransformationServiceInterface,
   IDeviceDetectionServiceInterface,
   IExportServiceInterface,
   IGridRenderingServiceInterface,
   IMotionGenerationServiceInterface,
-  IOptionDataServiceInterface,
   IOrientationCalculationServiceInterface,
   IOverlayRenderingServiceInterface,
   IPanelManagementServiceInterface,
@@ -32,13 +30,15 @@ import {
   IPageFactoryServiceInterface,
   IPageImageExportServiceInterface,
   ISequenceCardExportIntegrationServiceInterface,
+  IDataTransformationServiceInterface,
 } from "../interfaces/core-interfaces";
+import { ILetterQueryServiceInterface } from "../interfaces/codex-interfaces";
 
-import { ApplicationInitializationService } from "../../implementations/ApplicationInitializationService";
-import { ConstructTabCoordinationService } from "../../implementations/ConstructTabCoordinationService";
-import { PictographRenderingService } from "../../implementations/PictographRenderingService";
-import { SequenceService } from "../../implementations/SequenceService";
-import { SequenceGenerationService } from "../../implementations/SequenceGenerationService";
+import { ApplicationInitializationService } from "../../implementations/application/ApplicationInitializationService";
+import { ConstructTabCoordinationService } from "../../implementations/construct/ConstructTabCoordinationService";
+import { PictographRenderingService } from "../../implementations/rendering/PictographRenderingService";
+import { SequenceService } from "../../implementations/sequence/SequenceService";
+import { SequenceGenerationService } from "../../implementations/generation/SequenceGenerationService";
 
 import { IArrowPositioningOrchestratorInterface } from "../interfaces/positioning-interfaces";
 import type { IArrowPositioningOrchestrator } from "../../positioning/core-services";
@@ -60,7 +60,6 @@ export async function registerCoreServices(
 
   // Register construct tab services
   container.registerSingletonClass(IStartPositionServiceInterface);
-  container.registerSingletonClass(IOptionDataServiceInterface);
 
   // Register rendering microservices (in dependency order)
   container.registerSingletonClass(ISvgConfigurationInterface);
@@ -131,12 +130,12 @@ export async function registerCoreServices(
 
   // Register sequence generation service with dependencies
   container.registerFactory(ISequenceGenerationServiceInterface, () => {
-    const optionDataService = container.resolve(IOptionDataServiceInterface);
+    const letterQueryService = container.resolve(ILetterQueryServiceInterface);
     const orientationCalculationService = container.resolve(
       IOrientationCalculationServiceInterface
     );
     return new SequenceGenerationService(
-      optionDataService,
+      letterQueryService,
       orientationCalculationService
     );
   });

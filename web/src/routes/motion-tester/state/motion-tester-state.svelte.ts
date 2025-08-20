@@ -10,7 +10,7 @@ import {
 } from "../services/AnimationControlService";
 import { resolve } from "$lib/services/bootstrap";
 import type { ISequenceAnimationEngine } from "$lib/services/di/interfaces/animator-interfaces";
-import { OrientationCalculationService } from "$lib/services/implementations/OrientationCalculationService";
+import { OrientationCalculationService } from "$lib/services/implementations/positioning/OrientationCalculationService";
 
 import { MotionType, MotionColor } from "$lib/domain/enums";
 

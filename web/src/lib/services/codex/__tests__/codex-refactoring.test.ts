@@ -31,8 +31,8 @@ describe("Codex Service Refactoring", () => {
       expect(allMappings.A).toBeDefined();
       expect(allMappings.A.startPosition).toBe("alpha1");
       expect(allMappings.A.endPosition).toBe("alpha3");
-      expect(allMappings.A.blueMotion).toBe("pro");
-      expect(allMappings.A.redMotion).toBe("pro");
+      expect(allMappings.A.blueMotionType).toBe("pro");
+      expect(allMappings.A.redMotionType).toBe("pro");
     });
 
     it("should organize letters by rows correctly", () => {

@@ -1,13 +1,13 @@
 /**
  * OptionFilteringService - Centralized option filtering utilities
- * 
+ *
  * Handles filtering of pictograph options by various criteria including
  * position, letter types, rotation, and other motion parameters.
  */
 
 import type { PictographData } from "$lib/domain/PictographData";
 import type { BeatData } from "$lib/domain/BeatData";
-import type { IEnumMappingService } from "../../../interfaces/application-interfaces";
+import type { IEnumMappingService } from "./EnumMappingService";
 
 export interface FilterCriteria {
   startPosition?: string;
@@ -28,15 +28,27 @@ export interface FilterResult {
 }
 
 export interface IOptionFilteringService {
-  filterByStartPosition(options: PictographData[], startPosition: string): PictographData[];
-  filterByEndPosition(options: PictographData[], endPosition: string): PictographData[];
-  filterByLetterTypes(options: PictographData[], letterTypes: string[]): PictographData[];
+  filterByStartPosition(
+    options: PictographData[],
+    startPosition: string
+  ): PictographData[];
+  filterByEndPosition(
+    options: PictographData[],
+    endPosition: string
+  ): PictographData[];
+  filterByLetterTypes(
+    options: PictographData[],
+    letterTypes: string[]
+  ): PictographData[];
   filterByRotation(
     options: PictographData[],
     blueRotationDirection: string,
     redRotationDirection: string
   ): PictographData[];
-  filterByCriteria(options: PictographData[], criteria: FilterCriteria): FilterResult;
+  filterByCriteria(
+    options: PictographData[],
+    criteria: FilterCriteria
+  ): FilterResult;
   extractEndPosition(lastBeat: BeatData): string | null;
 }
 
@@ -46,10 +58,13 @@ export class OptionFilteringService implements IOptionFilteringService {
   /**
    * Filter options by start position
    */
-  filterByStartPosition(options: PictographData[], startPosition: string): PictographData[] {
+  filterByStartPosition(
+    options: PictographData[],
+    startPosition: string
+  ): PictographData[] {
     if (!startPosition) return options;
 
-    return options.filter(option => {
+    return options.filter((option) => {
       const optionStartPos = option.startPosition?.toString().toLowerCase();
       const targetStartPos = startPosition.toLowerCase();
       return optionStartPos === targetStartPos;
@@ -59,10 +74,13 @@ export class OptionFilteringService implements IOptionFilteringService {
   /**
    * Filter options by end position
    */
-  filterByEndPosition(options: PictographData[], endPosition: string): PictographData[] {
+  filterByEndPosition(
+    options: PictographData[],
+    endPosition: string
+  ): PictographData[] {
     if (!endPosition) return options;
 
-    return options.filter(option => {
+    return options.filter((option) => {
       const optionEndPos = option.endPosition?.toString().toLowerCase();
       const targetEndPos = endPosition.toLowerCase();
       return optionEndPos === targetEndPos;
@@ -72,12 +90,15 @@ export class OptionFilteringService implements IOptionFilteringService {
   /**
    * Filter options by letter types
    */
-  filterByLetterTypes(options: PictographData[], letterTypes: string[]): PictographData[] {
+  filterByLetterTypes(
+    options: PictographData[],
+    letterTypes: string[]
+  ): PictographData[] {
     if (!letterTypes || letterTypes.length === 0) return options;
 
-    return options.filter(option => {
+    return options.filter((option) => {
       if (!option.letter) return false;
-      
+
       const letterType = this.enumMappingService.getLetterType(option.letter);
       return letterTypes.includes(letterType);
     });
@@ -91,21 +112,25 @@ export class OptionFilteringService implements IOptionFilteringService {
     blueRotationDirection: string,
     redRotationDirection: string
   ): PictographData[] {
-    return options.filter(option => {
+    return options.filter((option) => {
       let matches = true;
 
       // Check blue rotation if specified
       if (blueRotationDirection && blueRotationDirection !== "any") {
-        const blueRotation = option.motions?.blue?.rotationDirection?.toString().toLowerCase();
+        const blueRotation = option.motions?.blue?.rotationDirection
+          ?.toString()
+          .toLowerCase();
         const targetBlueRotation = blueRotationDirection.toLowerCase();
-        matches = matches && (blueRotation === targetBlueRotation);
+        matches = matches && blueRotation === targetBlueRotation;
       }
 
       // Check red rotation if specified
       if (redRotationDirection && redRotationDirection !== "any") {
-        const redRotation = option.motions?.red?.rotationDirection?.toString().toLowerCase();
+        const redRotation = option.motions?.red?.rotationDirection
+          ?.toString()
+          .toLowerCase();
         const targetRedRotation = redRotationDirection.toLowerCase();
-        matches = matches && (redRotation === targetRedRotation);
+        matches = matches && redRotation === targetRedRotation;
       }
 
       return matches;
@@ -115,7 +140,10 @@ export class OptionFilteringService implements IOptionFilteringService {
   /**
    * Filter options by multiple criteria with detailed result
    */
-  filterByCriteria(options: PictographData[], criteria: FilterCriteria): FilterResult {
+  filterByCriteria(
+    options: PictographData[],
+    criteria: FilterCriteria
+  ): FilterResult {
     let filtered = [...options];
     const appliedFilters: string[] = [];
     const totalOriginal = options.length;
@@ -135,7 +163,7 @@ export class OptionFilteringService implements IOptionFilteringService {
     // Apply letter types filter
     if (criteria.letterTypes && criteria.letterTypes.length > 0) {
       filtered = this.filterByLetterTypes(filtered, criteria.letterTypes);
-      appliedFilters.push(`letterTypes: ${criteria.letterTypes.join(', ')}`);
+      appliedFilters.push(`letterTypes: ${criteria.letterTypes.join(", ")}`);
     }
 
     // Apply rotation filter
@@ -146,27 +174,29 @@ export class OptionFilteringService implements IOptionFilteringService {
         criteria.redRotationDirection || ""
       );
       appliedFilters.push(
-        `rotation: blue=${criteria.blueRotationDirection || 'any'}, red=${criteria.redRotationDirection || 'any'}`
+        `rotation: blue=${criteria.blueRotationDirection || "any"}, red=${criteria.redRotationDirection || "any"}`
       );
     }
 
     // Apply motion types filter
     if (criteria.motionTypes && criteria.motionTypes.length > 0) {
       filtered = this.filterByMotionTypes(filtered, criteria.motionTypes);
-      appliedFilters.push(`motionTypes: ${criteria.motionTypes.join(', ')}`);
+      appliedFilters.push(`motionTypes: ${criteria.motionTypes.join(", ")}`);
     }
 
     // Apply exclude letters filter
     if (criteria.excludeLetters && criteria.excludeLetters.length > 0) {
       filtered = this.filterExcludeLetters(filtered, criteria.excludeLetters);
-      appliedFilters.push(`excludeLetters: ${criteria.excludeLetters.join(', ')}`);
+      appliedFilters.push(
+        `excludeLetters: ${criteria.excludeLetters.join(", ")}`
+      );
     }
 
     return {
       filtered,
       totalOriginal,
       totalFiltered: filtered.length,
-      appliedFilters
+      appliedFilters,
     };
   }
 
@@ -190,24 +220,36 @@ export class OptionFilteringService implements IOptionFilteringService {
   /**
    * Filter by motion types
    */
-  private filterByMotionTypes(options: PictographData[], motionTypes: string[]): PictographData[] {
-    return options.filter(option => {
-      const blueMotionType = option.motions?.blue?.motionType?.toString().toLowerCase();
-      const redMotionType = option.motions?.red?.motionType?.toString().toLowerCase();
-      
-      const normalizedMotionTypes = motionTypes.map(mt => mt.toLowerCase());
-      
-      return normalizedMotionTypes.includes(blueMotionType || '') ||
-             normalizedMotionTypes.includes(redMotionType || '');
+  private filterByMotionTypes(
+    options: PictographData[],
+    motionTypes: string[]
+  ): PictographData[] {
+    return options.filter((option) => {
+      const blueMotionType = option.motions?.blue?.motionType
+        ?.toString()
+        .toLowerCase();
+      const redMotionType = option.motions?.red?.motionType
+        ?.toString()
+        .toLowerCase();
+
+      const normalizedMotionTypes = motionTypes.map((mt) => mt.toLowerCase());
+
+      return (
+        normalizedMotionTypes.includes(blueMotionType || "") ||
+        normalizedMotionTypes.includes(redMotionType || "")
+      );
     });
   }
 
   /**
    * Filter to exclude specific letters
    */
-  private filterExcludeLetters(options: PictographData[], excludeLetters: string[]): PictographData[] {
-    return options.filter(option => {
-      return !excludeLetters.includes(option.letter || '');
+  private filterExcludeLetters(
+    options: PictographData[],
+    excludeLetters: string[]
+  ): PictographData[] {
+    return options.filter((option) => {
+      return !excludeLetters.includes(option.letter || "");
     });
   }
 
@@ -219,44 +261,52 @@ export class OptionFilteringService implements IOptionFilteringService {
     criteria: FilterCriteria
   ): {
     originalCount: number;
-    afterEachFilter: Array<{ filterName: string; count: number; criteria: string }>;
+    afterEachFilter: Array<{
+      filterName: string;
+      count: number;
+      criteria: string;
+    }>;
     finalCount: number;
   } {
     let current = [...originalOptions];
-    const afterEachFilter: Array<{ filterName: string; count: number; criteria: string }> = [];
+    const afterEachFilter: Array<{
+      filterName: string;
+      count: number;
+      criteria: string;
+    }> = [];
 
     // Track each filter step
     if (criteria.startPosition) {
       current = this.filterByStartPosition(current, criteria.startPosition);
       afterEachFilter.push({
-        filterName: 'startPosition',
+        filterName: "startPosition",
         count: current.length,
-        criteria: criteria.startPosition
+        criteria: criteria.startPosition,
       });
     }
 
     if (criteria.endPosition) {
       current = this.filterByEndPosition(current, criteria.endPosition);
       afterEachFilter.push({
-        filterName: 'endPosition',
+        filterName: "endPosition",
         count: current.length,
-        criteria: criteria.endPosition
+        criteria: criteria.endPosition,
       });
     }
 
     if (criteria.letterTypes && criteria.letterTypes.length > 0) {
       current = this.filterByLetterTypes(current, criteria.letterTypes);
       afterEachFilter.push({
-        filterName: 'letterTypes',
+        filterName: "letterTypes",
         count: current.length,
-        criteria: criteria.letterTypes.join(', ')
+        criteria: criteria.letterTypes.join(", "),
       });
     }
 
     return {
       originalCount: originalOptions.length,
       afterEachFilter,
-      finalCount: current.length
+      finalCount: current.length,
     };
   }
 }

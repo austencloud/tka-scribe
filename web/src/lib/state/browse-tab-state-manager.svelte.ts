@@ -22,7 +22,7 @@ import type {
   BrowseSortState,
   BrowseViewState,
   CompleteBrowseState,
-} from "../services/implementations/BrowseStatePersistenceService";
+} from "../services/implementations/browse/BrowseStatePersistenceService";
 
 // ============================================================================
 // BROWSE TAB STATE MANAGER

@@ -2,7 +2,7 @@
 <script lang="ts">
   import type { SequenceData } from "$domain/SequenceData";
   import type { BrowseSequenceMetadata } from "$lib/domain/browse";
-  import { ThumbnailService } from "$lib/services/implementations/ThumbnailService";
+  import { ThumbnailService } from "$lib/services/implementations/export/ThumbnailService";
   import { slide } from "svelte/transition";
   import SequenceActions from "./SequenceActions.svelte";
   import SequenceDetails from "./SequenceDetails.svelte";

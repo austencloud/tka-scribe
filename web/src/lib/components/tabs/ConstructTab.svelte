@@ -4,7 +4,7 @@
   import LeftPanel from "$components/construct/LeftPanel.svelte";
   import LoadingOverlay from "$components/construct/LoadingOverlay.svelte";
   import RightPanel from "$components/construct/RightPanel.svelte";
-  import { constructTabEventService } from "$services/implementations/ConstructTabEventService";
+  import { constructTabEventService } from "$services/implementations/construct/ConstructTabEventService";
   import { resolve } from "$services/bootstrap";
   import { createSequenceState } from "$lib/state/sequence-state.svelte";
   import { createConstructTabState } from "$lib/state/construct-tab-state.svelte";

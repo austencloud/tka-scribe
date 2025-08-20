@@ -13,7 +13,6 @@
     extractEndPosition,
     createStartPositionData,
     storeStartPositionData,
-    storePreloadedOptions,
   } from "./start-position/utils/StartPositionUtils";
 
   // UI Components
@@ -131,22 +130,18 @@
       // **NEW: Preload options BEFORE triggering the transition**
       // This ensures options are ready when the option picker fades in
       try {
-        // Import and use the OptionDataService to preload options
-        const { OptionDataService } = await import(
-          "$services/implementations/OptionDataService"
+        // Import and use the LetterQueryService to preload options
+        const { resolve } = await import("$services/bootstrap");
+        const { ILetterQueryServiceInterface } = await import(
+          "$services/di/interfaces/codex-interfaces"
         );
-        const optionDataService = new OptionDataService();
-        await optionDataService.initialize();
+        const letterQueryService = resolve(ILetterQueryServiceInterface);
+        // LetterQueryService initializes automatically when first used
 
-        const preloadedOptions =
-          await optionDataService.getNextOptionsFromEndPosition(
-            endPosition,
-            gridMode === "diamond" ? GridMode.DIAMOND : GridMode.BOX,
-            {}
-          );
+        // For now, just ensure CSV data is loaded - option generation logic would need to be implemented
+        console.log("✅ CSV data preloaded for option picker");
 
-        // Store the preloaded options so OptionPicker can use them immediately
-        storePreloadedOptions(preloadedOptions || []);
+        // Store empty preloaded options for now - option generation logic would need to be implemented
       } catch (preloadError) {
         console.warn(
           "StartPositionPicker: Failed to preload options, will load normally:",

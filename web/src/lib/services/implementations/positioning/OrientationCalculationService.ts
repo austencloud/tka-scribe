@@ -43,7 +43,7 @@ export class OrientationCalculationService
   ): Orientation {
     const motionType = motion.motionType;
     const turns = motion.turns;
-    const startOri = motion.startOrientation;
+    const startOrientation = motion.startOrientation;
     const propRotDir = motion.rotationDirection;
     const startLocation = motion.startLocation;
     const endLocation = motion.endLocation;
@@ -56,14 +56,14 @@ export class OrientationCalculationService
         endLocation
       ) as HandPath;
       endOrientation = this.calculateFloatOrientation(
-        startOri,
+        startOrientation,
         handpathDirection
       );
     } else {
       endOrientation = this.calculateTurnOrientation(
         motionType,
         turns,
-        startOri,
+        startOrientation,
         propRotDir,
         startLocation,
         endLocation
@@ -86,7 +86,7 @@ export class OrientationCalculationService
   private calculateTurnOrientation(
     motionType: MotionType,
     turns: number | "fl",
-    startOri: Orientation,
+    startOrientation: Orientation,
     propRotDir: RotationDirection,
     startLocation: Location,
     endLocation: Location
@@ -95,7 +95,7 @@ export class OrientationCalculationService
       return this.calculateWholeTurnOrientation(
         motionType,
         turns as number,
-        startOri,
+        startOrientation,
         propRotDir
       );
     } else if (turns === "fl") {
@@ -103,12 +103,15 @@ export class OrientationCalculationService
         startLocation,
         endLocation
       ) as HandPath;
-      return this.calculateFloatOrientation(startOri, handpathDirection);
+      return this.calculateFloatOrientation(
+        startOrientation,
+        handpathDirection
+      );
     } else {
       return this.calculateHalfTurnOrientation(
         motionType,
         turns as number,
-        startOri,
+        startOrientation,
         propRotDir
       );
     }
@@ -120,26 +123,26 @@ export class OrientationCalculationService
   private calculateWholeTurnOrientation(
     motionType: MotionType,
     turns: number,
-    startOri: Orientation,
+    startOrientation: Orientation,
     _propRotDir: RotationDirection
   ): Orientation {
     if (motionType === MotionType.PRO || motionType === MotionType.STATIC) {
       if (turns % 2 === 0) {
-        return startOri;
+        return startOrientation;
       } else {
-        return this.switchOrientation(startOri);
+        return this.switchOrientation(startOrientation);
       }
     } else if (
       motionType === MotionType.ANTI ||
       motionType === MotionType.DASH
     ) {
       if (turns % 2 === 0) {
-        return this.switchOrientation(startOri);
+        return this.switchOrientation(startOrientation);
       } else {
-        return startOri;
+        return startOrientation;
       }
     }
-    return startOri;
+    return startOrientation;
   }
 
   /**
@@ -148,7 +151,7 @@ export class OrientationCalculationService
   private calculateHalfTurnOrientation(
     motionType: MotionType,
     turns: number,
-    startOri: Orientation,
+    startOrientation: Orientation,
     propRotDir: RotationDirection
   ): Orientation {
     let orientationMap: Record<string, Orientation>;
@@ -195,18 +198,18 @@ export class OrientationCalculationService
           turns % 2 === 0.5 ? Orientation.IN : Orientation.OUT,
       };
     } else {
-      return startOri;
+      return startOrientation;
     }
 
-    const key = `${startOri}_${propRotDir}`;
-    return orientationMap[key] || startOri;
+    const key = `${startOrientation}_${propRotDir}`;
+    return orientationMap[key] || startOrientation;
   }
 
   /**
    * Calculate float orientation - exact port from legacy
    */
   private calculateFloatOrientation(
-    startOri: Orientation,
+    startOrientation: Orientation,
     handpathDirection: HandPath
   ): Orientation {
     const orientationMap: Record<string, Orientation> = {
@@ -220,8 +223,8 @@ export class OrientationCalculationService
       [`${Orientation.COUNTER}_${HandPath.COUNTER_CLOCKWISE}`]: Orientation.OUT,
     };
 
-    const key = `${startOri}_${handpathDirection}`;
-    return orientationMap[key] || startOri;
+    const key = `${startOrientation}_${handpathDirection}`;
+    return orientationMap[key] || startOrientation;
   }
 
   /**

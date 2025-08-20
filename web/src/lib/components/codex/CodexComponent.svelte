@@ -27,10 +27,21 @@
 
   // Create codex state using runes
   const codexState = createCodexState();
+  console.log("🔧 CodexComponent: Created codex state instance");
 
-  // Initialize pictographs when component mounts
+  // Initialize pictographs when component mounts - only once
   $effect(() => {
-    if (isVisible) {
+    console.log(
+      "🔧 CodexComponent $effect triggered, isVisible:",
+      isVisible,
+      "isInitialized:",
+      codexState.isInitialized,
+      "isLoading:",
+      codexState.isLoading
+    );
+    // Only initialize if visible and not already initialized or loading
+    if (isVisible && !codexState.isInitialized && !codexState.isLoading) {
+      console.log("🚀 CodexComponent: Initializing codex state...");
       codexState.refreshPictographs();
     }
   });

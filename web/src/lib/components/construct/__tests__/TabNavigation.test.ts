@@ -27,7 +27,7 @@ describe("ConstructTabNavigation", () => {
 
     // Get the mock function from the mocked module
     const { constructTabTransitionService } = await import(
-      "$services/implementations/ConstructTabTransitionService"
+      "$services/implementations/construct/ConstructTabTransitionService"
     );
     mockHandleMainTabTransition =
       constructTabTransitionService.handleMainTabTransition as ReturnType<

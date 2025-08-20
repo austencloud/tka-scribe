@@ -11,12 +11,14 @@ This is the left 2/3 section of the new layout.
   import PropPanel from "./PropPanel.svelte";
   import SimpleGridToggle from "./SimpleGridToggle.svelte";
   import { resolve } from "$lib/services/bootstrap";
-  import { IAnimatedPictographDataServiceInterface } from "$lib/services/di/interfaces/motion-tester-interfaces";
+  import { IMotionQueryServiceInterface } from "$lib/services/di/interfaces/codex-interfaces";
+  import { IArrowPositioningOrchestratorInterface } from "$lib/services/di/interfaces/positioning-interfaces";
   import type { PictographData } from "$lib/domain";
   import {
     MotionType,
     Orientation,
     RotationDirection,
+    GridMode,
   } from "$lib/domain/enums";
 
   interface Props {
@@ -28,9 +30,10 @@ This is the left 2/3 section of the new layout.
   // Fixed size for consistent layout
   const PICTOGRAPH_SIZE = 320;
 
-  // Resolve CSV lookup service
-  const pictographDataService = resolve(
-    IAnimatedPictographDataServiceInterface
+  // Resolve services - Use focused microservice for motion queries
+  const motionQueryService = resolve(IMotionQueryServiceInterface);
+  const arrowPositioningService = resolve(
+    IArrowPositioningOrchestratorInterface
   );
 
   // Use CSV lookup service to get real pictograph data
@@ -49,13 +52,36 @@ This is the left 2/3 section of the new layout.
 
   async function updatePictographData() {
     try {
-      console.log(
-        "🔍 StaticSection: Updating pictograph data via CSV lookup..."
-      );
-      const data =
-        await pictographDataService.createAnimatedPictographData(motionState);
-      pictographData = data;
-      console.log("✅ StaticSection: Pictograph data updated successfully");
+      console.log("🔍 StaticSection: Using MotionQueryService...");
+
+      // Get the grid mode
+      const gridMode =
+        motionState.gridType === "diamond" ? GridMode.DIAMOND : GridMode.BOX;
+
+      // Use the focused MotionQueryService to find pictograph by motion parameters
+      // For now, use blue motion parameters (could be enhanced to handle both blue and red)
+      const staticPictograph =
+        await motionQueryService.findPictographByMotionParams(
+          {
+            motionType: motionState.blueMotionParams.motionType,
+            startLocation: motionState.blueMotionParams.startLocation,
+            endLocation: motionState.blueMotionParams.endLocation,
+          },
+          gridMode
+        );
+
+      if (staticPictograph) {
+        // Apply arrow positioning to get final positioned pictograph
+        const positionedPictograph =
+          await arrowPositioningService.calculateAllArrowPositions(
+            staticPictograph
+          );
+        pictographData = positionedPictograph;
+        console.log("✅ StaticSection: Unified CSV service worked perfectly!");
+      } else {
+        console.warn("⚠️ No matching pictograph found for motion parameters");
+        pictographData = null;
+      }
     } catch (error) {
       console.error("❌ StaticSection: Error updating pictograph data:", error);
       pictographData = null;
@@ -96,7 +122,8 @@ This is the left 2/3 section of the new layout.
         propColor="#60a5fa"
         startLocation={motionState.blueMotionParams.startLocation}
         endLocation={motionState.blueMotionParams.endLocation}
-        startOrientation={motionState.blueMotionParams.startOri as Orientation}
+        startOrientation={motionState.blueMotionParams
+          .startOrientation as Orientation}
         endOrientation={motionState.blueMotionParams
           .endOrientation as Orientation}
         turns={motionState.blueMotionParams.turns}
@@ -106,7 +133,7 @@ This is the left 2/3 section of the new layout.
         onEndLocationChange={(location) =>
           motionState.setBlueEndLocation(location)}
         onStartOrientationChange={(orientation) =>
-          motionState.updateBlueMotionParam("startOri", orientation)}
+          motionState.updateBlueMotionParam("startOrientation", orientation)}
         onEndOrientationChange={(orientation) =>
           motionState.updateBlueMotionParam("endOrientation", orientation)}
         onTurnsChange={(turns) =>
@@ -123,7 +150,8 @@ This is the left 2/3 section of the new layout.
         propColor="#f87171"
         startLocation={motionState.redMotionParams.startLocation}
         endLocation={motionState.redMotionParams.endLocation}
-        startOrientation={motionState.redMotionParams.startOri as Orientation}
+        startOrientation={motionState.redMotionParams
+          .startOrientation as Orientation}
         endOrientation={motionState.redMotionParams
           .endOrientation as Orientation}
         turns={motionState.redMotionParams.turns}
@@ -133,7 +161,7 @@ This is the left 2/3 section of the new layout.
         onEndLocationChange={(location) =>
           motionState.setRedEndLocation(location)}
         onStartOrientationChange={(orientation) =>
-          motionState.updateRedMotionParam("startOri", orientation)}
+          motionState.updateRedMotionParam("startOrientation", orientation)}
         onEndOrientationChange={(orientation) =>
           motionState.updateRedMotionParam("endOrientation", orientation)}
         onTurnsChange={(turns) =>
