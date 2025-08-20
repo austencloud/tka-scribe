@@ -2,10 +2,16 @@
  * Arrow Rendering Service
  *
  * Handles arrow rendering with SVG assets, color transformation, and fallbacks.
- * Extracted from PictographRenderingService.
+ * Extracted from PictographRenderingService and Arrow.svelte.
+ * 
+ * Business logic extracted from Arrow.svelte:
+ * - arrowPath calculation logic
+ * - parseArrowSvg function
+ * - applyColorToSvg function
+ * - SVG loading logic
  */
 
-import type { MotionData } from "$lib/domain";
+import type { MotionData, ArrowData } from "$lib/domain";
 import { MotionColor } from "$lib/domain/enums";
 import type { ISvgConfiguration } from "./SvgConfiguration";
 
@@ -15,6 +21,12 @@ export interface ArrowPosition {
   rotation: number;
 }
 
+export interface ArrowSvgData {
+  imageSrc: string;
+  viewBox: { width: number; height: number };
+  center: { x: number; y: number };
+}
+
 export interface IArrowRenderingService {
   renderArrowAtPosition(
     svg: SVGElement,
@@ -22,10 +34,156 @@ export interface IArrowRenderingService {
     position: ArrowPosition,
     motionData: MotionData | undefined
   ): Promise<void>;
+  
+  // New methods extracted from Arrow.svelte
+  getArrowPath(arrowData: ArrowData, motionData: MotionData): string | null;
+  loadArrowSvgData(arrowData: ArrowData, motionData: MotionData): Promise<ArrowSvgData>;
+  parseArrowSvg(svgText: string): { viewBox: { width: number; height: number }; center: { x: number; y: number } };
+  applyColorToSvg(svgText: string, color: MotionColor): string;
 }
 
 export class ArrowRenderingService implements IArrowRenderingService {
   constructor(private config: ISvgConfiguration) {}
+
+  /**
+   * Get arrow SVG path based on motion type and properties (extracted from Arrow.svelte)
+   */
+  getArrowPath(arrowData: ArrowData, motionData: MotionData): string | null {
+    if (!arrowData || !motionData) {
+      console.warn(
+        "🚫 ArrowRenderingService: Missing arrowData or motionData, cannot determine arrow path"
+      );
+      return null;
+    }
+
+    const { motionType, turns } = motionData;
+    const baseDir = `/images/arrows/${motionType}`;
+
+    // For motion types that have turn-based subdirectories (pro, anti, static)
+    if (["pro", "anti", "static"].includes(motionType)) {
+      // Determine if we should use radial vs non-radial arrows
+      // Use non-radial only for clock/counter orientations, radial for everything else
+      const startOrientation =
+        arrowData.start_orientation || motionData.startOrientation || "in";
+      const endOrientation =
+        arrowData.end_orientation || motionData.endOrientation || "in";
+
+      const isNonRadial =
+        startOrientation === "clock" ||
+        startOrientation === "counter" ||
+        endOrientation === "clock" ||
+        endOrientation === "counter";
+
+      const subDir = isNonRadial ? "from_nonradial" : "from_radial";
+      const turnValue = typeof turns === "number" ? turns.toFixed(1) : "0.0";
+      const path = `${baseDir}/${subDir}/${motionType}_${turnValue}.svg`;
+
+      return path;
+    }
+
+    // For simple motion types (dash, float) - use base directory
+    const path = `${baseDir}.svg`;
+    return path;
+  }
+
+  /**
+   * Parse SVG to get proper dimensions and center point (extracted from Arrow.svelte)
+   */
+  parseArrowSvg(
+    svgText: string
+  ): {
+    viewBox: { width: number; height: number };
+    center: { x: number; y: number };
+  } {
+    const doc = new DOMParser().parseFromString(svgText, "image/svg+xml");
+    const svg = doc.documentElement;
+
+    // Get viewBox dimensions
+    const viewBoxValues = svg.getAttribute("viewBox")?.split(/\s+/) || [
+      "0",
+      "0",
+      "100",
+      "100",
+    ];
+    const viewBox = {
+      width: parseFloat(viewBoxValues[2] || "100") || 100,
+      height: parseFloat(viewBoxValues[3] || "100") || 100,
+    };
+
+    // Get center point from SVG
+    let center = { x: viewBox.width / 2, y: viewBox.height / 2 };
+
+    try {
+      const centerElement = doc.getElementById("centerPoint");
+      if (centerElement) {
+        center = {
+          x: parseFloat(centerElement.getAttribute("cx") || "0") || center.x,
+          y: parseFloat(centerElement.getAttribute("cy") || "0") || center.y,
+        };
+      }
+    } catch {
+      // SVG center calculation failed, using default center
+    }
+
+    return { viewBox, center };
+  }
+
+  /**
+   * Apply color transformation to SVG content (extracted from Arrow.svelte)
+   */
+  applyColorToSvg(svgText: string, color: MotionColor): string {
+    const colorMap = new Map([
+      [MotionColor.BLUE, "#2E3192"],
+      [MotionColor.RED, "#ED1C24"],
+    ]);
+
+    const targetColor = colorMap.get(color) || "#2E3192";
+
+    // Use regex replacement to change fill colors directly
+    let coloredSvg = svgText.replace(
+      /fill="#[0-9A-Fa-f]{6}"/g,
+      `fill="${targetColor}"`
+    );
+    coloredSvg = coloredSvg.replace(
+      /fill:\s*#[0-9A-Fa-f]{6}/g,
+      `fill:${targetColor}`
+    );
+
+    // Remove the centerPoint circle entirely to prevent unwanted visual elements
+    coloredSvg = coloredSvg.replace(
+      /<circle[^>]*id="centerPoint"[^>]*\/?>/,
+      ""
+    );
+
+    return coloredSvg;
+  }
+
+  /**
+   * Load arrow SVG data with color transformation (extracted from Arrow.svelte)
+   */
+  async loadArrowSvgData(arrowData: ArrowData, motionData: MotionData): Promise<ArrowSvgData> {
+    const path = this.getArrowPath(arrowData, motionData);
+    if (!path) {
+      throw new Error("No arrow path available - missing motion data");
+    }
+
+    const response = await fetch(path);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch SVG: ${response.status}`);
+    }
+
+    const originalSvgText = await response.text();
+    const { viewBox, center } = this.parseArrowSvg(originalSvgText);
+
+    // Apply color transformation to the SVG
+    const coloredSvgText = this.applyColorToSvg(originalSvgText, arrowData.color);
+
+    return {
+      imageSrc: `data:image/svg+xml;base64,${btoa(coloredSvgText)}`,
+      viewBox,
+      center,
+    };
+  }
 
   /**
    * Render arrow at sophisticated calculated position using real SVG assets

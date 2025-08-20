@@ -2,7 +2,7 @@
  * useArrowPositioning.ts - Arrow Positioning Coordination Hook
  *
  * Provides a factory function for arrow positioning coordination.
- * The actual reactive state is managed within the Svelte component.
+ * REFACTORED: Updated to use DI container and proper reactive patterns.
  */
 
 import type { ArrowData, PictographData } from "$lib/domain";
@@ -14,12 +14,21 @@ export interface ArrowPositioningProps {
   pictographData: PictographData | null;
 }
 
+export interface ArrowPositioningState {
+  /** Calculate arrow positions for all arrows */
+  calculateArrowPositions(data: PictographData | null): Promise<{
+    positions: Record<string, { x: number; y: number; rotation: number }>;
+    mirroring: Record<string, boolean>;
+    showArrows: boolean;
+  }>;
+}
+
 /**
  * Factory function for arrow positioning coordination.
- * Returns the orchestrator and calculation function.
+ * Returns the orchestrator and calculation function using DI container.
  */
-export function useArrowPositioning(_props: ArrowPositioningProps) {
-  // Get the orchestrator - SINGLE SOURCE OF TRUTH for arrow positioning
+export function useArrowPositioning(_props: ArrowPositioningProps): ArrowPositioningState {
+  // Get the orchestrator from DI container - SINGLE SOURCE OF TRUTH for arrow positioning
   const orchestrator = resolve(
     "IArrowPositioningOrchestrator"
   ) as IArrowPositioningOrchestrator;
@@ -82,7 +91,6 @@ export function useArrowPositioning(_props: ArrowPositioningProps) {
   }
 
   return {
-    orchestrator,
     calculateArrowPositions,
   };
 }

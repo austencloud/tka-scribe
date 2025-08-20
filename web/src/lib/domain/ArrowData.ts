@@ -6,7 +6,6 @@
  */
 
 import {
-  ArrowType,
   MotionColor,
   MotionType,
   Orientation,
@@ -15,7 +14,6 @@ import {
 
 export interface ArrowData {
   readonly id: string;
-  readonly arrowType: ArrowType;
   readonly color: MotionColor;
   readonly turns: number;
   readonly isMirrored: boolean;
@@ -43,7 +41,6 @@ export interface ArrowData {
 export function createArrowData(data: Partial<ArrowData> = {}): ArrowData {
   return {
     id: data.id ?? crypto.randomUUID(),
-    arrowType: data.arrowType ?? ArrowType.BLUE,
     color: data.color ?? MotionColor.BLUE,
     turns: data.turns ?? 0.0,
     isMirrored: data.isMirrored ?? false,
@@ -76,7 +73,6 @@ export function updateArrowData(
 export function arrowDataToObject(arrow: ArrowData): Record<string, unknown> {
   return {
     id: arrow.id,
-    arrowType: arrow.arrowType,
     color: arrow.color,
     turns: arrow.turns,
     isMirrored: arrow.isMirrored,
@@ -93,7 +89,6 @@ export function arrowDataFromObject(data: Record<string, unknown>): ArrowData {
   const partialData: Record<string, unknown> = {};
 
   if (typeof data.id === "string") partialData.id = data.id;
-  if (data.arrowType) partialData.arrowType = data.arrowType as ArrowType;
   if (typeof data.color === "string") partialData.color = data.color;
   if (typeof data.turns === "number") partialData.turns = data.turns;
   if (typeof data.isMirrored === "boolean")

@@ -8,7 +8,7 @@
   import ExportPanel from "$components/export/ExportPanel.svelte";
   import GraphEditor from "$components/graph-editor/GraphEditor.svelte";
   import type { ArrowData } from "$lib/domain/ArrowData";
-  import { ArrowType, MotionColor } from "$lib/domain/enums";
+  import { MotionColor } from "$lib/domain/enums";
   import { constructTabEventService } from "$services/implementations/construct/ConstructTabEventService";
   import type { ActiveRightPanel } from "$lib/state/construct-tab-state.svelte";
   import type { SequenceData } from "$lib/domain";
@@ -71,10 +71,10 @@
     turn_amount?: number;
     type: string;
   }) {
+    // TODO: use enums for this data instead
     // Convert to ArrowData format for the service
     const fullArrowData: ArrowData = {
       id: `arrow_${Date.now()}`,
-      arrowType: arrowData.type as ArrowType,
       color: arrowData.color === "blue" ? MotionColor.BLUE : MotionColor.RED,
       turns: arrowData.turn_amount || 0,
       isMirrored: false,

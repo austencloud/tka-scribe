@@ -11,6 +11,8 @@ import {
   IArrowPlacementDataServiceInterface,
   IArrowPlacementKeyServiceInterface,
   IArrowPositioningOrchestratorInterface,
+  IArrowPositioningServiceInterface,
+  IArrowLocationServiceInterface,
   IArrowRotationCalculatorInterface,
   IDashLocationCalculatorInterface,
   IDirectionalTupleProcessorInterface,
@@ -57,6 +59,11 @@ export async function registerPositioningServices(
     return factory.createPositioningOrchestrator();
   });
 
-  // Note: ArrowPositioningService removed - use ArrowPositioningOrchestrator directly
-  // for all arrow positioning needs through the factory pattern
+  // Register ArrowPositioningService as a thin wrapper around orchestrator
+  container.registerSingletonClass(IArrowPositioningServiceInterface);
+
+  // Register ArrowLocationService
+  container.registerSingletonClass(IArrowLocationServiceInterface);
+
+  // Note: ArrowPositioningService is now properly registered in DI container
 }

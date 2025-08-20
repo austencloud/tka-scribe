@@ -1,10 +1,13 @@
 <!--
 Arrow Component - Renders SVG arrows with proper positioning and natural sizing
 Follows the same pattern as Prop component for consistent sizing behavior
+REFACTORED: Now purely presentational, uses ArrowRenderingService for business logic
 -->
 <script lang="ts">
   import { MotionColor, type ArrowData, type MotionData } from "$lib/domain";
   import { onMount } from "svelte";
+  import type { IArrowRenderingService } from "$lib/services/interfaces/pictograph-interfaces";
+  import { resolve } from "$lib/services/bootstrap";
 
   interface Props {
     arrowData: ArrowData;
@@ -27,6 +30,11 @@ Follows the same pattern as Prop component for consistent sizing behavior
     onLoaded,
     onError,
   }: Props = $props();
+
+  // Get arrow rendering service from DI container
+  const arrowRenderingService = resolve(
+    "IArrowRenderingService"
+  ) as IArrowRenderingService;
 
   let loaded = $state(false);
   let error = $state<string | null>(null);
@@ -65,137 +73,19 @@ Follows the same pattern as Prop component for consistent sizing behavior
   const calculatedPosition = $derived(() => position());
   const shouldMirror = $derived(() => preCalculatedMirroring ?? false);
 
-  // Get arrow SVG path based on motion type and properties
-  const arrowPath = $derived(() => {
-    if (!arrowData || !motionData) {
-      console.warn(
-        "🚫 Arrow.svelte: Missing arrowData or motionData, cannot determine arrow path"
-      );
-      return null;
-    }
-
-    const { motionType, turns } = motionData;
-    const baseDir = `/images/arrows/${motionType}`;
-
-    // For motion types that have turn-based subdirectories (pro, anti, static)
-    if (["pro", "anti", "static"].includes(motionType)) {
-      // Determine if we should use radial vs non-radial arrows
-      // Use non-radial only for clock/counter orientations, radial for everything else
-      const startOrientation =
-        arrowData.start_orientation || motionData.startOrientation || "in";
-      const endOrientation =
-        arrowData.end_orientation || motionData.endOrientation || "in";
-
-      const isNonRadial =
-        startOrientation === "clock" ||
-        startOrientation === "counter" ||
-        endOrientation === "clock" ||
-        endOrientation === "counter";
-
-      const subDir = isNonRadial ? "from_nonradial" : "from_radial";
-      const turnValue = typeof turns === "number" ? turns.toFixed(1) : "0.0";
-      const path = `${baseDir}/${subDir}/${motionType}_${turnValue}.svg`;
-
-      return path;
-    }
-
-    // For simple motion types (dash, float) - use base directory
-    const path = `${baseDir}.svg`;
-    return path;
-  });
-
-  // Parse SVG to get proper dimensions and center point (same as Prop component)
-  const parseArrowSvg = (
-    svgText: string
-  ): {
-    viewBox: { width: number; height: number };
-    center: { x: number; y: number };
-  } => {
-    const doc = new DOMParser().parseFromString(svgText, "image/svg+xml");
-    const svg = doc.documentElement;
-
-    // Get viewBox dimensions
-    const viewBoxValues = svg.getAttribute("viewBox")?.split(/\s+/) || [
-      "0",
-      "0",
-      "100",
-      "100",
-    ];
-    const viewBox = {
-      width: parseFloat(viewBoxValues[2] || "100") || 100,
-      height: parseFloat(viewBoxValues[3] || "100") || 100,
-    };
-
-    // Get center point from SVG
-    let center = { x: viewBox.width / 2, y: viewBox.height / 2 };
-
-    try {
-      const centerElement = doc.getElementById("centerPoint");
-      if (centerElement) {
-        center = {
-          x: parseFloat(centerElement.getAttribute("cx") || "0") || center.x,
-          y: parseFloat(centerElement.getAttribute("cy") || "0") || center.y,
-        };
-      }
-    } catch {
-      // SVG center calculation failed, using default center
-    }
-
-    return { viewBox, center };
-  };
-
-  // Apply color transformation to SVG content (same as Prop component)
-  const applyColorToSvg = (svgText: string, color: MotionColor): string => {
-    const colorMap = new Map([
-      [MotionColor.BLUE, "#2E3192"],
-      [MotionColor.RED, "#ED1C24"],
-    ]);
-
-    const targetColor = colorMap.get(color) || "#2E3192";
-
-    // Use regex replacement to change fill colors directly
-    let coloredSvg = svgText.replace(
-      /fill="#[0-9A-Fa-f]{6}"/g,
-      `fill="${targetColor}"`
-    );
-    coloredSvg = coloredSvg.replace(
-      /fill:\s*#[0-9A-Fa-f]{6}/g,
-      `fill:${targetColor}`
-    );
-
-    // Remove the centerPoint circle entirely to prevent unwanted visual elements
-    coloredSvg = coloredSvg.replace(
-      /<circle[^>]*id="centerPoint"[^>]*\/?>/,
-      ""
-    );
-
-    return coloredSvg;
-  };
-
-  // Load SVG data (same pattern as Prop component)
+  // Load SVG data using ArrowRenderingService (business logic now in service)
   const loadSvg = async () => {
     try {
       if (!arrowData) throw new Error("No arrow data available");
+      if (!motionData) throw new Error("No motion data available");
 
-      const path = arrowPath();
-      if (!path)
-        throw new Error("No arrow path available - missing motion data");
+      // Use ArrowRenderingService for all business logic
+      const svgDataResult = await arrowRenderingService.loadArrowSvgData(
+        arrowData,
+        motionData
+      );
 
-      const response = await fetch(path);
-      if (!response.ok) throw new Error("Failed to fetch SVG");
-
-      const originalSvgText = await response.text();
-      const { viewBox, center } = parseArrowSvg(originalSvgText);
-
-      // Apply color transformation to the SVG
-      const coloredSvgText = applyColorToSvg(originalSvgText, arrowData.color);
-
-      svgData = {
-        imageSrc: `data:image/svg+xml;base64,${btoa(coloredSvgText)}`,
-        viewBox,
-        center,
-      };
-
+      svgData = svgDataResult;
       loaded = true;
       onLoaded?.(`${arrowData?.color}-arrow`);
     } catch (e) {
@@ -226,8 +116,8 @@ Follows the same pattern as Prop component for consistent sizing behavior
     <!-- Error state -->
     <circle r="10" fill="red" opacity="0.5" />
     <text x="0" y="4" text-anchor="middle" font-size="8" fill="white">!</text>
-  {:else if !arrowPath()}
-    <!-- No arrow path available (missing motion data) -->
+  {:else if !motionData}
+    <!-- No motion data available -->
     <text
       x="0"
       y="4"

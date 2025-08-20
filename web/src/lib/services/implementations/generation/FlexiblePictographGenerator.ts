@@ -17,7 +17,7 @@ import {
   RotationDirection,
   Location,
   MotionColor,
-  ArrowType,
+  MotionColor,
   GridMode,
   LetterType,
 } from "$lib/domain/enums";
@@ -538,14 +538,12 @@ export class FlexiblePictographGenerator {
       gridData: createGridData({ gridMode: GridMode.DIAMOND }),
       arrows: {
         blue: createArrowData({
-          arrowType: ArrowType.BLUE,
           color: MotionColor.BLUE,
           motionType: params.blueMotion,
           rotationDirection: params.blueRotation,
           isVisible: true,
         }),
         red: createArrowData({
-          arrowType: ArrowType.RED,
           color: MotionColor.RED,
           motionType: params.redMotion,
           rotationDirection: params.redRotation,

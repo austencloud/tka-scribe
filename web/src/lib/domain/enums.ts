@@ -127,10 +127,7 @@ export enum GenerationMode {
   CIRCULAR = "circular",
 }
 
-export enum ArrowType {
-  BLUE = "blue",
-  RED = "red",
-}
+
 
 export enum PropType {
   STAFF = "staff",

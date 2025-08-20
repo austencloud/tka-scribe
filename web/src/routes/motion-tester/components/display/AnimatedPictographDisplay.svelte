@@ -14,12 +14,12 @@ No animation controls, no data creation - just pure display logic.
     debug?: boolean;
   }
 
-  let { pictographData, size = 280, debug = false }: Props = $props();
+  let { pictographData }: Props = $props();
 </script>
 
 <div class="pictograph-display">
   {#if pictographData}
-    <Pictograph {pictographData} width={size} height={size} {debug} />
+    <Pictograph {pictographData} />
   {:else}
     <div class="error-state">
       <span class="error-icon" aria-hidden="true">⚠️</span>

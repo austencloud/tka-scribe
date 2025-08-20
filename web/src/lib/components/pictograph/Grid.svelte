@@ -14,16 +14,9 @@ Uses pure runes instead of stores for reactivity.
     onLoaded?: () => void;
     /** Called when grid loading fails */
     onError?: (error: string) => void;
-    /** Debug mode */
-    debug?: boolean;
   }
 
-  let {
-    gridMode = "diamond",
-    onLoaded,
-    onError,
-    debug = false,
-  }: Props = $props();
+  let { gridMode = "diamond", onLoaded, onError }: Props = $props();
 
   // State using runes
   let isLoaded = $state(false);
@@ -47,10 +40,6 @@ Uses pure runes instead of stores for reactivity.
     isLoaded = false;
     hasError = false;
     errorMessage = null;
-
-    if (debug) {
-      console.log(`Grid: Loading ${gridMode} grid from ${gridImagePath()}`);
-    }
   });
 
   // Event handlers
@@ -59,20 +48,12 @@ Uses pure runes instead of stores for reactivity.
     hasError = false;
     errorMessage = null;
 
-    if (debug) {
-      console.log(`Grid: Successfully loaded ${gridMode} grid`);
-    }
-
     onLoaded?.();
   }
 
   function handleImageError() {
     hasError = true;
     errorMessage = `Failed to load ${gridMode} grid image`;
-
-    if (debug) {
-      console.error(`Grid: ${errorMessage}`);
-    }
 
     onError?.(errorMessage);
 
@@ -155,52 +136,6 @@ Uses pure runes instead of stores for reactivity.
 
       <!-- Center point -->
       <circle cx="475" cy="475" r="3" fill="#9ca3af" />
-
-      {#if debug}
-        <!-- Debug points -->
-        {#each Object.entries(gridData().allHandPointsNormal) as [key, point]}
-          {#if point.coordinates}
-            <circle
-              cx={point.coordinates.x}
-              cy={point.coordinates.y}
-              r="2"
-              fill="#ef4444"
-            />
-            <text
-              x={point.coordinates.x + 5}
-              y={point.coordinates.y - 5}
-              font-size="8"
-              fill="#ef4444"
-              font-family="monospace"
-            >
-              {key.replace("_hand_point", "").replace(`_${gridMode}`, "")}
-            </text>
-          {/if}
-        {/each}
-      {/if}
-    </g>
-  {/if}
-
-  {#if debug}
-    <!-- Debug overlay showing grid state -->
-    <g class="debug-overlay">
-      <rect
-        x="10"
-        y="10"
-        width="200"
-        height="60"
-        fill="rgba(0, 0, 0, 0.8)"
-        rx="4"
-      />
-      <text x="20" y="30" font-size="12" fill="white" font-family="monospace">
-        Grid: {gridMode}
-      </text>
-      <text x="20" y="45" font-size="10" fill="white" font-family="monospace">
-        Loaded: {isLoaded ? "YES" : "NO"}
-      </text>
-      <text x="20" y="60" font-size="10" fill="white" font-family="monospace">
-        Error: {hasError ? "YES" : "NO"}
-      </text>
     </g>
   {/if}
 </g>
@@ -228,9 +163,5 @@ Uses pure runes instead of stores for reactivity.
     to {
       stroke-dashoffset: -10;
     }
-  }
-
-  .debug-overlay {
-    pointer-events: none;
   }
 </style>

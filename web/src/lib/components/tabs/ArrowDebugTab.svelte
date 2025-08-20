@@ -153,12 +153,7 @@
         {#if debugState.selectedPictograph}
           <div class="pictograph-container">
             <h3>🎯 Pictograph Visualization</h3>
-            <Pictograph
-              pictographData={debugState.selectedPictograph}
-              width={400}
-              height={400}
-              debug={true}
-            />
+            <Pictograph pictographData={debugState.selectedPictograph} />
 
             <!-- Visualization Controls -->
             <div class="visualization-controls">

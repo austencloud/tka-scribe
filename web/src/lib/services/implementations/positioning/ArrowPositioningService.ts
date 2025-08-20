@@ -4,6 +4,8 @@
  * SINGLE SOURCE OF TRUTH: Thin wrapper around ArrowPositioningOrchestrator.
  * All positioning logic handled by the sophisticated positioning pipeline.
  * NO duplicate positioning logic allowed!
+ *
+ * REFACTORED: Removed singleton pattern, now uses DI container.
  */
 
 import type { ArrowData, MotionData, PictographData } from "$lib/domain";
@@ -18,7 +20,7 @@ export interface ArrowPositionResult {
 }
 
 export interface ArrowPositioningInput {
-  arrowType: MotionColor;
+  color: MotionColor;
   motionType: string;
   location: string;
   gridMode: string;
@@ -33,7 +35,20 @@ export interface Position {
   y: number;
 }
 
-export class ArrowPositioningService {
+export interface IArrowPositioningService {
+  calculatePosition(
+    arrowData: ArrowData,
+    motionData: MotionData,
+    pictographData: PictographData
+  ): Promise<ArrowPositionResult>;
+  shouldMirror(
+    arrowData: ArrowData,
+    motionData: MotionData,
+    pictographData: PictographData
+  ): boolean;
+}
+
+export class ArrowPositioningService implements IArrowPositioningService {
   private orchestrator: IArrowPositioningOrchestrator;
 
   constructor() {
@@ -109,6 +124,3 @@ export class ArrowPositioningService {
    * Legacy interface for backward compatibility
    */
 }
-
-// Create singleton instance
-export const arrowPositioningService = new ArrowPositioningService();

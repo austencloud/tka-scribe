@@ -79,7 +79,6 @@
       onClick={handleClick}
       width={config.beatSize - 2}
       height={config.beatSize - 2}
-      debug={false}
     />
   </div>
 </div>

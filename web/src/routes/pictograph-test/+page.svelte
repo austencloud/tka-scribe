@@ -155,12 +155,7 @@ to validate that the generation functions work correctly.
         {#each generatedPictographs as pictograph, index}
           <div class="pictograph-item">
             <div class="pictograph-wrapper">
-              <Pictograph
-                pictographData={pictograph}
-                width={200}
-                height={200}
-                debug={false}
-              />
+              <Pictograph pictographData={pictograph} />
             </div>
             <div class="pictograph-info">
               <div class="index">#{index + 1}</div>
@@ -208,8 +203,6 @@ to validate that the generation functions work correctly.
     color: #6b7280;
     font-size: 1.1rem;
   }
-
-
 
   /* Controls Section */
   .controls-section {

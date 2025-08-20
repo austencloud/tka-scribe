@@ -29,17 +29,9 @@ ARCHITECTURE:
     pictographData?: PictographData | null;
     /** Click handler */
     onClick?: () => void;
-    /** SVG dimensions */
-    width?: number;
-    height?: number;
   }
 
-  let {
-    pictographData = null,
-    onClick,
-    width = undefined,
-    height = undefined,
-  }: Props = $props();
+  let { pictographData = null, onClick }: Props = $props();
 
   // =============================================================================
   // HOOK-BASED STATE MANAGEMENT
@@ -77,9 +69,7 @@ ARCHITECTURE:
 
   // Derived states
   const requiredComponents = $derived(() => {
-    return loadingFactory.getRequiredComponents(
-      dataState.effectivePictographData
-    );
+    return loadingFactory.requiredComponents;
   });
 
   const allComponentsLoaded = $derived(() => {
@@ -143,9 +133,6 @@ ARCHITECTURE:
   // UI STATE
   // =============================================================================
 
-  // Determine if we should use responsive sizing
-  const isResponsive = $derived(width === undefined && height === undefined);
-
   // SVG viewBox calculation
   const viewBox = $derived(`0 0 950 950`);
 </script>
@@ -159,9 +146,6 @@ ARCHITECTURE:
   class:loaded={isLoaded}
   class:has-error={errorMessage}
   class:clickable={onClick}
-  class:responsive={isResponsive}
-  style:width={isResponsive ? "100%" : `${width}px`}
-  style:height={isResponsive ? "100%" : `${height}px`}
 >
   <PictographSvg
     pictographData={dataState.effectivePictographData}
@@ -169,8 +153,8 @@ ARCHITECTURE:
     displayLetter={dataState.displayLetter}
     arrowsToRender={dataState.arrowsToRender}
     propsToRender={dataState.propsToRender}
-    width={isResponsive ? "100%" : width || 144}
-    height={isResponsive ? "100%" : height || 144}
+    width="100%"
+    height="100%"
     {viewBox}
     {arrowPositions}
     {arrowMirroring}
@@ -194,11 +178,8 @@ ARCHITECTURE:
     transition: all 0.2s ease;
     background: white;
     border: 1px solid #e5e7eb;
-  }
-
-  .pictograph.responsive {
-    width: 100% !important;
-    height: 100% !important;
+    width: 100%;
+    height: 100%;
     display: block;
   }
 

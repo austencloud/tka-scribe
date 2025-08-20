@@ -7,13 +7,12 @@
 
 import type { BeatData, MotionData, PictographData } from "$lib/domain";
 import {
-  ArrowType,
+  MotionColor,
   createArrowData,
   createGridData as createDomainGridData,
   createPictographData,
   createPropData,
   GridMode,
-  MotionColor,
   PropType,
 } from "$lib/domain";
 import { type GridData as RawGridData } from "../../../data/gridCoordinates.js";
@@ -49,11 +48,9 @@ export class DataTransformationService implements IDataTransformationService {
       gridData: createDomainGridData(),
       arrows: {
         blue: createArrowData({
-          arrowType: ArrowType.BLUE,
           color: MotionColor.BLUE,
         }),
         red: createArrowData({
-          arrowType: ArrowType.RED,
           color: MotionColor.RED,
         }),
       },

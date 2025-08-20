@@ -21,7 +21,7 @@ import {
   MotionType,
   Location,
   Orientation,
-  ArrowType,
+  MotionColor,
 } from "$lib/domain/enums";
 
 // Helper function to convert domain GridData to service GridData
@@ -47,7 +47,6 @@ describe("Arrow Positioning Debug Tests", () => {
     // Create test data for pro motion: N → E
     const blueArrowData = createArrowData({
       color: MotionColor.BLUE,
-      arrowType: ArrowType.BLUE,
       motionType: MotionType.PRO,
       start_orientation: Orientation.IN,
       end_orientation: Orientation.IN,
@@ -65,7 +64,6 @@ describe("Arrow Positioning Debug Tests", () => {
 
     const redArrowData = createArrowData({
       color: MotionColor.RED,
-      arrowType: ArrowType.RED,
       motionType: MotionType.STATIC,
       start_orientation: Orientation.IN,
       end_orientation: Orientation.IN,
@@ -205,7 +203,6 @@ describe("Arrow Positioning Debug Tests", () => {
 
       const arrowData = createArrowData({
         color: MotionColor.BLUE,
-        arrowType: ArrowType.BLUE,
         motionType: MotionType.PRO,
         start_orientation: Orientation.IN,
         end_orientation: Orientation.IN,

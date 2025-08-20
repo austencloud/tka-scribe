@@ -5,7 +5,6 @@
   import type { PictographData } from "$lib/domain";
   import {
     GridMode,
-    ArrowType,
     MotionColor,
     MotionType,
     RotationDirection,
@@ -136,7 +135,6 @@
         blue: {
           id: "blue_arrow",
           color: MotionColor.BLUE,
-          arrowType: ArrowType.BLUE,
           isVisible: true,
           is_selected: false,
           position_x: 0,
@@ -153,7 +151,6 @@
         red: {
           id: "red_arrow",
           color: MotionColor.RED,
-          arrowType: ArrowType.RED,
           isVisible: true,
           is_selected: false,
           position_x: 0,

@@ -7,7 +7,7 @@
 
 import type { BeatData, PictographData } from "../../../domain";
 import {
-  ArrowType,
+  MotionColor,
   createArrowData,
   createBeatData,
   createGridData,
@@ -255,14 +255,12 @@ export class StartPositionService implements IStartPositionService {
 
     // Create proper arrow data with location
     const blueArrow = createArrowData({
-      arrowType: ArrowType.BLUE,
       color: MotionColor.BLUE,
       turns: 0,
       location: blueLocation,
     });
 
     const redArrow = createArrowData({
-      arrowType: ArrowType.RED,
       color: MotionColor.RED,
       turns: 0,
       location: redLocation,

@@ -6,6 +6,8 @@
 import type {
   IArrowPlacementDataService,
   IArrowPlacementKeyService,
+  IArrowPositioningService,
+  IArrowLocationService,
 } from "../../interfaces/positioning-interfaces";
 import { createServiceInterface } from "../types";
 
@@ -25,6 +27,8 @@ import type {
 // Import service implementations
 import { ArrowPlacementDataService } from "../../implementations/data/ArrowPlacementDataService";
 import { ArrowPlacementKeyService } from "../../implementations/positioning/ArrowPlacementKeyService";
+import { ArrowPositioningService } from "../../implementations/positioning/ArrowPositioningService";
+import { ArrowLocationService } from "../../implementations/positioning/ArrowLocationService";
 
 // Import enhanced positioning service implementations
 import { ArrowAdjustmentCalculator } from "../../positioning/arrows/calculation/ArrowAdjustmentCalculator";
@@ -52,7 +56,19 @@ export const IArrowPlacementKeyServiceInterface =
     ArrowPlacementKeyService
   );
 
-// IArrowPositioningService removed - use IArrowPositioningOrchestrator directly
+// Arrow positioning service (thin wrapper around orchestrator)
+export const IArrowPositioningServiceInterface =
+  createServiceInterface<IArrowPositioningService>(
+    "IArrowPositioningService",
+    ArrowPositioningService
+  );
+
+// Arrow location service
+export const IArrowLocationServiceInterface =
+  createServiceInterface<IArrowLocationService>(
+    "IArrowLocationService",
+    ArrowLocationService
+  );
 
 // Enhanced positioning service interfaces
 export const IArrowLocationCalculatorInterface =

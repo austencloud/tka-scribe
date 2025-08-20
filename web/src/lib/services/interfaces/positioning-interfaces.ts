@@ -5,7 +5,7 @@
  * This handles all spatial calculations and arrow placement logic.
  */
 
-import type { MotionData, PictographData } from "./domain-types";
+import type { ArrowData, MotionData, PictographData } from "./domain-types";
 import type { GridMode } from "./core-types";
 import type { MotionType } from "./domain-types";
 import { MotionColor } from "../../domain/enums";
@@ -17,8 +17,34 @@ export type { IArrowPositioningOrchestrator } from "../positioning/core-services
 // ARROW POSITIONING SERVICE
 // ============================================================================
 
-// Note: IArrowPositioningService removed - use IArrowPositioningOrchestrator directly
-// The orchestrator provides the complete positioning pipeline
+/**
+ * Service interface for arrow positioning (thin wrapper around orchestrator)
+ */
+export interface IArrowPositioningService {
+  calculatePosition(
+    arrowData: ArrowData,
+    motionData: MotionData,
+    pictographData: PictographData
+  ): Promise<{ x: number; y: number; rotation: number }>;
+  shouldMirror(
+    arrowData: ArrowData,
+    motionData: MotionData,
+    pictographData: PictographData
+  ): boolean;
+}
+
+/**
+ * Service interface for arrow location calculation
+ */
+export interface IArrowLocationService {
+  calculateArrowLocation(input: {
+    startLocation: string;
+    endLocation: string;
+    motionType: string;
+  }): string;
+}
+
+// Note: IArrowPositioningOrchestrator provides the complete positioning pipeline
 
 // ============================================================================
 // ARROW PLACEMENT DATA SERVICE

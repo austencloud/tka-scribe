@@ -35,7 +35,7 @@
     >
       <!-- Render pictograph using Pictograph component -->
       <div class="pictograph-wrapper">
-        <Pictograph pictographData={pictograph} debug={false} />
+        <Pictograph pictographData={pictograph} />
       </div>
 
       <!-- Position label -->

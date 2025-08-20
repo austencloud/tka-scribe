@@ -18,7 +18,6 @@ Arrow Mirroring Test Route - Simple test for arrow positioning
     Location,
     Orientation,
     RotationDirection,
-    ArrowType,
     GridPosition,
   } from "$lib/domain/enums";
 
@@ -41,14 +40,12 @@ Arrow Mirroring Test Route - Simple test for arrow positioning
         arrows: {
           blue: createArrowData({
             color: MotionColor.BLUE,
-            arrowType: ArrowType.BLUE,
             motionType: MotionType.PRO,
             rotationDirection: RotationDirection.COUNTER_CLOCKWISE,
             isVisible: true,
           }),
           red: createArrowData({
             color: MotionColor.RED,
-            arrowType: ArrowType.RED,
             motionType: MotionType.PRO,
             rotationDirection: RotationDirection.COUNTER_CLOCKWISE,
             isVisible: true,
@@ -85,14 +82,12 @@ Arrow Mirroring Test Route - Simple test for arrow positioning
         arrows: {
           blue: createArrowData({
             color: MotionColor.BLUE,
-            arrowType: ArrowType.BLUE,
             motionType: MotionType.PRO,
             rotationDirection: RotationDirection.CLOCKWISE,
             isVisible: true,
           }),
           red: createArrowData({
             color: MotionColor.RED,
-            arrowType: ArrowType.RED,
             motionType: MotionType.PRO,
             rotationDirection: RotationDirection.CLOCKWISE,
             isVisible: true,
@@ -241,11 +236,7 @@ Arrow Mirroring Test Route - Simple test for arrow positioning
 
         {#if ccwPictograph}
           <div class="pictograph-wrapper" data-test="ccw">
-            <Pictograph
-              pictographData={ccwPictograph}
-              width={300}
-              height={300}
-            />
+            <Pictograph pictographData={ccwPictograph} />
           </div>
         {/if}
 
@@ -291,11 +282,7 @@ Arrow Mirroring Test Route - Simple test for arrow positioning
 
         {#if cwPictograph}
           <div class="pictograph-wrapper" data-test="cw">
-            <Pictograph
-              pictographData={cwPictograph}
-              width={300}
-              height={300}
-            />
+            <Pictograph pictographData={cwPictograph} />
           </div>
         {/if}
 

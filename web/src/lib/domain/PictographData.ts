@@ -13,11 +13,10 @@ import type { MotionData } from "./MotionData";
 import type { PropData } from "./PropData";
 import { createPropData } from "./PropData";
 import {
-  ArrowType,
+  MotionColor,
   Direction,
   GridPosition,
   LetterType,
-  MotionColor,
   Timing,
 } from "./enums";
 
@@ -62,10 +61,11 @@ export function createPictographData(
   // Ensure we have blue and red arrows
   const arrows = {
     blue: createArrowData({
-      arrowType: ArrowType.BLUE,
       color: MotionColor.BLUE,
     }),
-    red: createArrowData({ arrowType: ArrowType.RED, color: MotionColor.RED }),
+    red: createArrowData({
+      color: MotionColor.RED,
+    }),
     ...data.arrows,
   };
 
@@ -144,17 +144,11 @@ export function updateProp(
 
 // Convenience getters
 export function getBlueArrow(pictograph: PictographData): ArrowData {
-  return (
-    pictograph.arrows.blue ??
-    createArrowData({ arrowType: ArrowType.BLUE, color: MotionColor.BLUE })
-  );
+  return pictograph.arrows.blue ?? createArrowData({ color: MotionColor.BLUE });
 }
 
 export function getRedArrow(pictograph: PictographData): ArrowData {
-  return (
-    pictograph.arrows.red ??
-    createArrowData({ arrowType: ArrowType.RED, color: MotionColor.RED })
-  );
+  return pictograph.arrows.red ?? createArrowData({ color: MotionColor.RED });
 }
 
 export function getBlueProp(pictograph: PictographData): PropData {

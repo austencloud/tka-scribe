@@ -12,7 +12,7 @@
  */
 
 import type { MotionData, PictographData, GridMode } from "$lib/domain";
-import { ArrowType, MotionColor } from "$lib/domain";
+import { MotionColor, MotionColor } from "$lib/domain";
 import type { IArrowAdjustmentCalculator } from "../../core-services";
 import type {
   IAttributeKeyGenerator,
@@ -224,7 +224,6 @@ export class ArrowAdjustmentCalculator implements IArrowAdjustmentCalculator {
       const color = MotionColor.BLUE;
       const tempArrow = {
         id: "temp",
-        arrowType: ArrowType.BLUE,
         color,
         motionType: motionData.motionType || "",
         location: "center",

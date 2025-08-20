@@ -12,7 +12,6 @@ with real-time opacity changes based on visibility settings.
     createPropData,
     createMotionData,
     GridMode,
-    ArrowType,
     MotionColor,
     MotionType,
     Location,
@@ -67,13 +66,11 @@ with real-time opacity changes based on visibility settings.
         color: MotionColor.BLUE,
         motionType: MotionType.PRO,
         turns: 1.0,
-        arrowType: ArrowType.BLUE,
       }),
       red: createArrowData({
         color: MotionColor.RED,
         motionType: MotionType.PRO,
         turns: 1.0,
-        arrowType: ArrowType.RED,
       }),
     },
     props: {
@@ -133,9 +130,6 @@ with real-time opacity changes based on visibility settings.
       pictographData={previewData()}
       forceShowAll={true}
       enableVisibility={false}
-      {width}
-      {height}
-      {debug}
     />
 
     <!-- Visibility Overlay Effects -->

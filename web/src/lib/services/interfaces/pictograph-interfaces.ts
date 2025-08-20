@@ -78,6 +78,19 @@ export interface IArrowRenderingService {
     position: ArrowPosition,
     motionData: MotionData | undefined
   ): Promise<void>;
+  
+  // Methods extracted from Arrow.svelte business logic
+  getArrowPath(arrowData: ArrowData, motionData: MotionData): string | null;
+  loadArrowSvgData(arrowData: ArrowData, motionData: MotionData): Promise<{
+    imageSrc: string;
+    viewBox: { width: number; height: number };
+    center: { x: number; y: number };
+  }>;
+  parseArrowSvg(svgText: string): {
+    viewBox: { width: number; height: number };
+    center: { x: number; y: number };
+  };
+  applyColorToSvg(svgText: string, color: MotionColor): string;
 }
 
 /**

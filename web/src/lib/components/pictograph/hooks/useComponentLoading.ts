@@ -4,7 +4,7 @@
  * Handles loading state tracking and coordination for all sub-components
  * (Grid, Arrows, Props) within the Pictograph component.
  *
- * Note: This provides a factory function that returns reactive state for the Svelte component.
+ * REFACTORED: Updated to use Svelte 5 runes ($state, $derived) with proper reactivity.
  */
 
 import type { PictographData } from "$lib/domain";
@@ -16,45 +16,94 @@ export interface ComponentLoadingProps {
 
 export interface ComponentLoadingState {
   /** Set of loaded components */
-  loadedComponents: Set<string>;
+  get loadedComponents(): Set<string>;
   /** Whether all required components are loaded */
-  allComponentsLoaded: boolean;
+  get allComponentsLoaded(): boolean;
   /** Whether components are currently loading */
-  isLoading: boolean;
+  get isLoading(): boolean;
   /** Whether all components have finished loading */
-  isLoaded: boolean;
+  get isLoaded(): boolean;
   /** List of required components for current data */
-  requiredComponents: string[];
+  get requiredComponents(): string[];
+  /** Current error message, if any */
+  get errorMessage(): string | null;
   /** Handle component successfully loaded */
   handleComponentLoaded: (componentName: string) => void;
   /** Handle component loading error */
   handleComponentError: (componentName: string, error: string) => void;
-  /** Current error message, if any */
-  errorMessage: string | null;
   /** Clear all loading state */
   clearLoadingState: () => void;
 }
 
 /**
  * Factory function for component loading management.
- * Returns the state factory that can be used within Svelte components.
+ * Returns reactive state using Svelte 5 runes.
  */
-export function useComponentLoading(props: ComponentLoadingProps) {
-  // Calculate required components
-  const getRequiredComponents = (pictographData: PictographData | null) => {
+export function useComponentLoading(props: ComponentLoadingProps): ComponentLoadingState {
+  const { pictographData } = props;
+  
+  // State using Svelte 5 $state
+  let loadedComponentsSet = $state(new Set<string>());
+  let errorState = $state<string | null>(null);
+
+  // Calculate required components based on data
+  const getRequiredComponents = (data: PictographData | null): string[] => {
     const components = ["grid"];
 
-    if (!pictographData) return components;
+    if (!data) return components;
 
-    if (pictographData.arrows?.blue) components.push("blue-arrow");
-    if (pictographData.arrows?.red) components.push("red-arrow");
-    if (pictographData.props?.blue) components.push("blue-prop");
-    if (pictographData.props?.red) components.push("red-prop");
+    if (data.arrows?.blue) components.push("blue-arrow");
+    if (data.arrows?.red) components.push("red-arrow");
+    if (data.props?.blue) components.push("blue-prop");
+    if (data.props?.red) components.push("red-prop");
 
     return components;
   };
 
   return {
-    getRequiredComponents,
+    // Reactive getters using $derived pattern
+    get loadedComponents() {
+      return loadedComponentsSet;
+    },
+
+    get requiredComponents() {
+      return getRequiredComponents(pictographData);
+    },
+
+    get allComponentsLoaded() {
+      const required = this.requiredComponents;
+      return required.every(component => loadedComponentsSet.has(component));
+    },
+
+    get isLoading() {
+      return !this.allComponentsLoaded && this.requiredComponents.length > 0;
+    },
+
+    get isLoaded() {
+      return this.allComponentsLoaded;
+    },
+
+    get errorMessage() {
+      return errorState;
+    },
+
+    // Action handlers
+    handleComponentLoaded: (componentName: string) => {
+      loadedComponentsSet.add(componentName);
+      // Trigger reactivity by reassigning
+      loadedComponentsSet = new Set(loadedComponentsSet);
+    },
+
+    handleComponentError: (componentName: string, error: string) => {
+      errorState = `Component ${componentName} failed to load: ${error}`;
+      // Still mark as loaded to prevent blocking
+      loadedComponentsSet.add(componentName);
+      loadedComponentsSet = new Set(loadedComponentsSet);
+    },
+
+    clearLoadingState: () => {
+      loadedComponentsSet = new Set();
+      errorState = null;
+    },
   };
 }
