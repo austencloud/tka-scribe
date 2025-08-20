@@ -19,8 +19,6 @@ Uses pure runes instead of stores for reactivity.
     turnsTuple?: string;
     /** Text color */
     color?: string;
-    /** Debug mode */
-    debug?: boolean;
     /** Scale factor - match legacy behavior */
     scale?: number;
   }
@@ -31,7 +29,6 @@ Uses pure runes instead of stores for reactivity.
     y = 800, // Match legacy positioning exactly
     turnsTuple = "(s, 0, 0)",
     // color = '#4b5563',
-    debug = false,
     scale = 1, // Match legacy default scale
   }: Props = $props();
 
@@ -124,9 +121,6 @@ Uses pure runes instead of stores for reactivity.
         red: parseFloat(parts[2] || "0") || 0,
       };
     } catch (error) {
-      if (debug) {
-        console.warn("Failed to parse turns tuple:", turnsTuple, error);
-      }
       return { timing: "s", blue: 0, red: 0 };
     }
   });
@@ -262,34 +256,6 @@ Uses pure runes instead of stores for reactivity.
         {parsedTurns()?.timing?.toUpperCase() || ""}
       </text>
     {/if}
-
-    {#if debug}
-      <!-- Debug overlay -->
-      <g class="debug-overlay">
-        <!-- Position indicator -->
-        <circle x="0" y="0" r="3" fill="#8b5cf6" opacity="0.8" />
-
-        <!-- Debug info -->
-        <text
-          x="20"
-          y="-20"
-          font-size="8"
-          fill="#8b5cf6"
-          font-family="monospace"
-        >
-          Letter: {letter}
-        </text>
-        <text
-          x="20"
-          y="-10"
-          font-size="8"
-          fill="#8b5cf6"
-          font-family="monospace"
-        >
-          Turns: {turnsTuple}
-        </text>
-      </g>
-    {/if}
   </g>
 {/if}
 
@@ -311,9 +277,5 @@ Uses pure runes instead of stores for reactivity.
   .turn-indicators circle:hover {
     transform: scale(1.1);
     transform-origin: center;
-  }
-
-  .debug-overlay {
-    pointer-events: none;
   }
 </style>

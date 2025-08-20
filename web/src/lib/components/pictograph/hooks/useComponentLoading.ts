@@ -12,8 +12,6 @@ import type { PictographData } from "$lib/domain";
 export interface ComponentLoadingProps {
   /** Current pictograph data to determine required components */
   pictographData: PictographData | null;
-  /** Debug mode for logging */
-  debug?: boolean;
 }
 
 export interface ComponentLoadingState {
@@ -42,8 +40,6 @@ export interface ComponentLoadingState {
  * Returns the state factory that can be used within Svelte components.
  */
 export function useComponentLoading(props: ComponentLoadingProps) {
-  const { debug = false } = props;
-
   // Calculate required components
   const getRequiredComponents = (pictographData: PictographData | null) => {
     const components = ["grid"];
@@ -60,6 +56,5 @@ export function useComponentLoading(props: ComponentLoadingProps) {
 
   return {
     getRequiredComponents,
-    debug,
   };
 }

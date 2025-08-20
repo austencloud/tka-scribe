@@ -25,8 +25,6 @@ The wrapped Pictograph component focuses purely on rendering pictograph data.
     isHovered?: boolean;
     /** Click handler */
     onClick?: () => void;
-    /** Debug mode */
-    debug?: boolean;
     /** SVG dimensions */
     width?: number;
     height?: number;
@@ -38,7 +36,6 @@ The wrapped Pictograph component focuses purely on rendering pictograph data.
     isSelected = false,
     isHovered = false,
     onClick,
-    debug = false,
     width = 200,
     height = 200,
   }: Props = $props();
@@ -110,7 +107,6 @@ The wrapped Pictograph component focuses purely on rendering pictograph data.
       {width}
       {height}
       onClick={handleClick}
-      {debug}
     />
   {:else}
     <!-- Empty beat state -->

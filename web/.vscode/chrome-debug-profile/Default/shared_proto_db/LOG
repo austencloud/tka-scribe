@@ -1,2 +1,3 @@
-2025/08/19-14:20:46.564 12ad0 Creating DB F:\CODE\TKA\web\.vscode\chrome-debug-profile\Default\shared_proto_db since it was missing.
-2025/08/19-14:20:46.569 12ad0 Reusing MANIFEST F:\CODE\TKA\web\.vscode\chrome-debug-profile\Default\shared_proto_db/MANIFEST-000001
+2025/08/20-12:11:53.665 f2b8 Reusing MANIFEST F:\CODE\TKA\web\.vscode\chrome-debug-profile\Default\shared_proto_db/MANIFEST-000001
+2025/08/20-12:11:53.666 f2b8 Recovering log #3
+2025/08/20-12:11:53.666 f2b8 Reusing old log F:\CODE\TKA\web\.vscode\chrome-debug-profile\Default\shared_proto_db/000003.log 

@@ -12,24 +12,49 @@ Much more intuitive than dropdown for spatial location selection.
     onLocationChange: (location: Location) => void;
     label: string;
     color: string;
+    gridMode?: "diamond" | "box";
   }
 
-  let { selectedLocation, onLocationChange, label, color }: Props = $props();
+  let {
+    selectedLocation,
+    onLocationChange,
+    label,
+    color,
+    gridMode = "diamond",
+  }: Props = $props();
 
-  const locations = [
-    { id: "nw", label: "", disabled: true },
+  // Enable beta positions (NW, NE, SW, SE) in box mode
+  const locations = $derived([
+    {
+      id: "nw",
+      label: gridMode === "box" ? "NW" : "",
+      disabled: gridMode !== "box",
+    },
     { id: "n", label: "N", disabled: false },
-    { id: "ne", label: "", disabled: true },
+    {
+      id: "ne",
+      label: gridMode === "box" ? "NE" : "",
+      disabled: gridMode !== "box",
+    },
     { id: "w", label: "W", disabled: false },
     { id: "center", label: "●", disabled: true },
     { id: "e", label: "E", disabled: false },
-    { id: "sw", label: "", disabled: true },
+    {
+      id: "sw",
+      label: gridMode === "box" ? "SW" : "",
+      disabled: gridMode !== "box",
+    },
     { id: "s", label: "S", disabled: false },
-    { id: "se", label: "", disabled: true },
-  ];
+    {
+      id: "se",
+      label: gridMode === "box" ? "SE" : "",
+      disabled: gridMode !== "box",
+    },
+  ]);
 
   function handleLocationClick(locationId: string) {
-    if (locationId !== "center" && locationId.length === 1) {
+    if (locationId !== "center") {
+      // Handle both single character (N, E, S, W) and beta positions (NW, NE, SW, SE)
       onLocationChange(locationId.toUpperCase() as Location);
     }
   }

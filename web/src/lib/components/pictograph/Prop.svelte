@@ -48,25 +48,45 @@ Prop Component - Renders SVG props with proper positioning
 
   // Calculate position using DefaultPropPositioner for consistency with legacy
   const position = $derived(() => {
-    if (!propData) return { x: 475, y: 475 };
+    if (!propData) {
+      console.log(`🔧 [PROP DEBUG] unknown prop: No propData, using center`);
+      return { x: 475, y: 475 };
+    }
 
     // Props use their OWN location, not motion end location
     // This is critical - PropPlacementManager sets prop.location which may differ from motion.endLocation
     const location = propData.location || motionData?.endLocation;
+    console.log(
+      `🔧 [PROP DEBUG] ${propData.color} prop: location=${location}, gridMode=${gridMode}`
+    );
 
     // Use DefaultPropPositioner for consistent positioning
     const basePosition = DefaultPropPositioner.calculatePosition(
       location as string,
       gridMode
     );
+    console.log(
+      `🔧 [PROP DEBUG] ${propData.color} prop: basePosition=`,
+      basePosition
+    );
 
     // Apply beta adjustment if needed (when props are at same location)
     const betaOffset = calculateBetaOffset();
+    console.log(
+      `🔧 [PROP DEBUG] ${propData.color} prop: betaOffset=`,
+      betaOffset
+    );
 
-    return {
+    const finalPosition = {
       x: basePosition.x + betaOffset.x,
       y: basePosition.y + betaOffset.y,
     };
+    console.log(
+      `🔧 [PROP DEBUG] ${propData.color} prop: finalPosition=`,
+      finalPosition
+    );
+
+    return finalPosition;
   });
 
   // Calculate beta adjustment offset for prop separation using legacy direction logic
@@ -246,6 +266,11 @@ Prop Component - Renders SVG props with proper positioning
     const calculatedRotation = PropRotAngleManager.calculateRotation(
       location as string,
       orientation
+    );
+
+    // Debug logging for prop orientation and rotation
+    console.log(
+      `🔧 [PROP ROTATION] ${propData.color} prop: location=${location}, orientation=${propOrientation}, rotation=${calculatedRotation}°`
     );
 
     return calculatedRotation;

@@ -29,8 +29,6 @@ and leaves state management to the parent component.
     arrowsToRender: Array<{ color: MotionColor; arrowData: ArrowData }>;
     /** Props to render */
     propsToRender: Array<{ color: MotionColor; propData: PropData }>;
-    /** Debug mode */
-    debug: boolean;
     /** SVG dimensions */
     width: number | string;
     height: number | string;
@@ -56,7 +54,6 @@ and leaves state management to the parent component.
     displayLetter,
     arrowsToRender,
     propsToRender,
-    debug,
     width,
     height,
     viewBox,
@@ -90,7 +87,6 @@ and leaves state management to the parent component.
       gridMode={pictographData?.gridData?.gridMode || "diamond"}
       onLoaded={() => onComponentLoaded("grid")}
       onError={(error) => onComponentError("grid", error)}
-      {debug}
     />
 
     <!-- Props (rendered first so arrows appear on top) -->

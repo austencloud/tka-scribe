@@ -24,6 +24,7 @@ Beautiful, intuitive visual controls replacing boring dropdowns:
     endOrientation: Orientation;
     turns: number | "fl";
     motionType: MotionType;
+    gridMode?: "diamond" | "box";
     onStartLocationChange: (location: Location) => void;
     onEndLocationChange: (location: Location) => void;
     onStartOrientationChange: (orientation: Orientation) => void;
@@ -41,6 +42,7 @@ Beautiful, intuitive visual controls replacing boring dropdowns:
     endOrientation,
     turns,
     motionType,
+    gridMode = "diamond",
     onStartLocationChange,
     onEndLocationChange,
     onStartOrientationChange,
@@ -85,6 +87,7 @@ Beautiful, intuitive visual controls replacing boring dropdowns:
         onLocationChange={onStartLocationChange}
         label="Start"
         color={rgbColor}
+        {gridMode}
       />
       <div class="arrow-connector">→</div>
       <LocationGrid
@@ -92,6 +95,7 @@ Beautiful, intuitive visual controls replacing boring dropdowns:
         onLocationChange={onEndLocationChange}
         label="End"
         color={rgbColor}
+        {gridMode}
       />
     </div>
 

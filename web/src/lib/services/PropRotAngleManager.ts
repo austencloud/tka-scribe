@@ -18,7 +18,9 @@ export class PropRotAngleManager {
    * Uses diamond vs box grid mode detection and appropriate angle maps
    */
   getRotationAngle(): number {
-    const isDiamondLocation = ["n", "e", "s", "w"].includes(this.loc);
+    // Normalize location to lowercase to match angle map keys
+    const normalizedLoc = this.loc.toLowerCase();
+    const isDiamondLocation = ["n", "e", "s", "w"].includes(normalizedLoc);
 
     const diamondAngleMap: Partial<
       Record<Orientation, Partial<Record<string, number>>>
@@ -41,7 +43,7 @@ export class PropRotAngleManager {
     const angleMap = isDiamondLocation ? diamondAngleMap : boxAngleMap;
     const orientationAngles = angleMap[this.ori as Orientation];
 
-    return orientationAngles?.[this.loc] ?? 0;
+    return orientationAngles?.[normalizedLoc] ?? 0;
   }
 
   /**

@@ -11,6 +11,10 @@ import {
 import { resolve } from "$lib/services/bootstrap";
 import type { ISequenceAnimationEngine } from "$lib/services/di/interfaces/animator-interfaces";
 import { OrientationCalculationService } from "$lib/services/implementations/positioning/OrientationCalculationService";
+import {
+  MotionLetterIdentificationService,
+  type LetterIdentificationResult,
+} from "../services/MotionLetterIdentificationService";
 
 import { MotionType, MotionColor } from "$lib/domain/enums";
 
@@ -23,6 +27,7 @@ export interface MotionTesterState {
   get currentPropStates(): PropStates;
   get isEngineInitialized(): boolean;
   get gridType(): "diamond" | "box";
+  get identifiedLetter(): LetterIdentificationResult;
 
   // Blue prop methods
   setBlueStartLocation: (location: string) => void;
@@ -58,6 +63,7 @@ export function createMotionTesterState(): MotionTesterState {
   ) as ISequenceAnimationEngine;
   const animationService = new AnimationControlService(animationEngine);
   const orientationService = new OrientationCalculationService();
+  const letterIdentificationService = new MotionLetterIdentificationService();
 
   // Reactive state
   let blueMotionParams = $state<MotionTestParams>(
@@ -84,6 +90,15 @@ export function createMotionTesterState(): MotionTesterState {
 
   let isEngineInitialized = $state(false);
   let gridType = $state<"diamond" | "box">("diamond");
+
+  // Letter identification - reactive to motion parameter changes
+  const identifiedLetter = $derived(() => {
+    return letterIdentificationService.identifyLetter(
+      blueMotionParams,
+      redMotionParams,
+      gridType
+    );
+  });
 
   // Auto-calculate rotation direction for blue prop
   $effect(() => {
@@ -193,6 +208,9 @@ export function createMotionTesterState(): MotionTesterState {
     get gridType() {
       return gridType;
     },
+    get identifiedLetter() {
+      return identifiedLetter;
+    },
 
     // Blue prop methods
     setBlueStartLocation: (location: string) => {
@@ -203,10 +221,14 @@ export function createMotionTesterState(): MotionTesterState {
     },
 
     setBlueEndLocation: (location: string) => {
+      console.log(
+        `🔵 Blue end location changing from ${blueMotionParams.endLocation} to ${location}`
+      );
       blueMotionParams.endLocation = location;
       const updatedParams =
         motionService.updateMotionTypeForLocations(blueMotionParams);
       blueMotionParams = updatedParams;
+      console.log(`🔵 Blue motion params updated:`, blueMotionParams);
     },
 
     updateBlueMotionParam: <K extends keyof MotionTestParams>(
@@ -225,10 +247,14 @@ export function createMotionTesterState(): MotionTesterState {
     },
 
     setRedEndLocation: (location: string) => {
+      console.log(
+        `🔴 Red end location changing from ${redMotionParams.endLocation} to ${location}`
+      );
       redMotionParams.endLocation = location;
       const updatedParams =
         motionService.updateMotionTypeForLocations(redMotionParams);
       redMotionParams = updatedParams;
+      console.log(`🔴 Red motion params updated:`, redMotionParams);
     },
 
     updateRedMotionParam: <K extends keyof MotionTestParams>(

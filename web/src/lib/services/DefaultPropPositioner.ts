@@ -39,7 +39,9 @@ export class DefaultPropPositioner {
    * Calculate coordinates for a prop based on its location
    */
   public calculateCoordinates(location: string): { x: number; y: number } {
-    const pointName = `${location}_${this.gridMode}_hand_point`;
+    // Normalize location to lowercase to match grid coordinate keys
+    const normalizedLocation = location.toLowerCase();
+    const pointName = `${normalizedLocation}_${this.gridMode}_hand_point`;
     const gridPoint = this.getGridPoint(pointName);
 
     if (gridPoint && gridPoint.coordinates) {
@@ -51,7 +53,7 @@ export class DefaultPropPositioner {
       }
       return gridPoint.coordinates;
     } else {
-      const fallback = this.getFallbackCoordinates(location);
+      const fallback = this.getFallbackCoordinates(normalizedLocation);
       if (this.debugMode) {
         console.warn(
           `⚠️ Grid point "${pointName}" not found, using fallback: (${fallback.x}, ${fallback.y})`
@@ -116,9 +118,14 @@ export class DefaultPropPositioner {
     gridMode: string = "diamond"
   ): { x: number; y: number } {
     try {
+      console.log(
+        `🔧 [POSITIONER DEBUG] Calculating position for location="${location}", gridMode="${gridMode}"`
+      );
       const gridData = createGridData(gridMode as "diamond" | "box");
       const positioner = new DefaultPropPositioner(gridData, gridMode);
-      return positioner.calculateCoordinates(location);
+      const result = positioner.calculateCoordinates(location);
+      console.log(`🔧 [POSITIONER DEBUG] Result for ${location}:`, result);
+      return result;
     } catch (error) {
       console.error("Error calculating position:", error);
       // Return center as ultimate fallback

@@ -10,15 +10,23 @@ This is the left 2/3 section of the new layout.
   import Pictograph from "$lib/components/pictograph/Pictograph.svelte";
   import PropPanel from "./PropPanel.svelte";
   import SimpleGridToggle from "./SimpleGridToggle.svelte";
+  import LetterIdentificationDisplay from "./LetterIdentificationDisplay.svelte";
   import { resolve } from "$lib/services/bootstrap";
-  import { IMotionQueryServiceInterface } from "$lib/services/di/interfaces/codex-interfaces";
   import { IArrowPositioningOrchestratorInterface } from "$lib/services/di/interfaces/positioning-interfaces";
   import type { PictographData } from "$lib/domain";
   import {
+    createPictographData,
+    createMotionData,
+    createPropData,
+    createGridData,
+  } from "$lib/domain";
+  import {
     MotionType,
     Orientation,
-    RotationDirection,
     GridMode,
+    MotionColor,
+    Location,
+    RotationDirection,
   } from "$lib/domain/enums";
 
   interface Props {
@@ -30,8 +38,7 @@ This is the left 2/3 section of the new layout.
   // Fixed size for consistent layout
   const PICTOGRAPH_SIZE = 320;
 
-  // Resolve services - Use focused microservice for motion queries
-  const motionQueryService = resolve(IMotionQueryServiceInterface);
+  // Resolve services
   const arrowPositioningService = resolve(
     IArrowPositioningOrchestratorInterface
   );
@@ -41,9 +48,21 @@ This is the left 2/3 section of the new layout.
 
   // Effect to update pictograph data when motion parameters change
   $effect(() => {
-    // Access motion parameters to establish reactive dependencies
-    const blueParams = motionState.blueMotionParams;
-    const redParams = motionState.redMotionParams;
+    // Access specific properties to establish reactive dependencies
+    // These variables are intentionally unused - they exist only to track changes
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const blueStartLocation = motionState.blueMotionParams.startLocation;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const blueEndLocation = motionState.blueMotionParams.endLocation;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const blueMotionType = motionState.blueMotionParams.motionType;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const redStartLocation = motionState.redMotionParams.startLocation;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const redEndLocation = motionState.redMotionParams.endLocation;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const redMotionType = motionState.redMotionParams.motionType;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const gridType = motionState.gridType;
 
     // Immediately update pictograph data using CSV lookup
@@ -52,38 +71,119 @@ This is the left 2/3 section of the new layout.
 
   async function updatePictographData() {
     try {
-      console.log("🔍 StaticSection: Using MotionQueryService...");
+      console.log(
+        "🔍 StaticSection: Creating dynamic pictograph from motion parameters..."
+      );
+      console.log("🔍 StaticSection: Current motion state values:", {
+        blueEndLocation: motionState.blueMotionParams.endLocation,
+        redEndLocation: motionState.redMotionParams.endLocation,
+        blueStartLocation: motionState.blueMotionParams.startLocation,
+        redStartLocation: motionState.redMotionParams.startLocation,
+      });
 
       // Get the grid mode
       const gridMode =
         motionState.gridType === "diamond" ? GridMode.DIAMOND : GridMode.BOX;
 
-      // Use the focused MotionQueryService to find pictograph by motion parameters
-      // For now, use blue motion parameters (could be enhanced to handle both blue and red)
-      const staticPictograph =
-        await motionQueryService.findPictographByMotionParams(
-          {
-            motionType: motionState.blueMotionParams.motionType,
-            startLocation: motionState.blueMotionParams.startLocation,
-            endLocation: motionState.blueMotionParams.endLocation,
-          },
-          gridMode
+      // Create motion data from current motion parameters
+      const blueMotion = createMotionData({
+        startLocation: motionState.blueMotionParams.startLocation as Location,
+        endLocation: motionState.blueMotionParams.endLocation as Location,
+        startOrientation: motionState.blueMotionParams
+          .startOrientation as Orientation,
+        endOrientation: motionState.blueMotionParams
+          .endOrientation as Orientation,
+        motionType: motionState.blueMotionParams.motionType as MotionType,
+        rotationDirection: motionState.blueMotionParams
+          .rotationDirection as RotationDirection,
+        turns: motionState.blueMotionParams.turns,
+        isVisible: true,
+      });
+
+      const redMotion = createMotionData({
+        startLocation: motionState.redMotionParams.startLocation as Location,
+        endLocation: motionState.redMotionParams.endLocation as Location,
+        startOrientation: motionState.redMotionParams
+          .startOrientation as Orientation,
+        endOrientation: motionState.redMotionParams
+          .endOrientation as Orientation,
+        motionType: motionState.redMotionParams.motionType as MotionType,
+        rotationDirection: motionState.redMotionParams
+          .rotationDirection as RotationDirection,
+        turns: motionState.redMotionParams.turns,
+        isVisible: true,
+      });
+
+      // Create props based on motion end locations
+      const blueProps = createPropData({
+        color: MotionColor.BLUE,
+        location: motionState.blueMotionParams.endLocation as Location,
+        orientation: motionState.blueMotionParams.endOrientation as Orientation,
+        rotationDirection: motionState.blueMotionParams
+          .rotationDirection as RotationDirection,
+        isVisible: true,
+      });
+
+      const redProps = createPropData({
+        color: MotionColor.RED,
+        location: motionState.redMotionParams.endLocation as Location,
+        orientation: motionState.redMotionParams.endOrientation as Orientation,
+        rotationDirection: motionState.redMotionParams
+          .rotationDirection as RotationDirection,
+        isVisible: true,
+      });
+
+      // Create the pictograph data
+      const dynamicPictograph = createPictographData({
+        id: `motion-tester-${Date.now()}`,
+        gridData: createGridData({
+          gridMode: gridMode,
+          center_x: 0,
+          center_y: 0,
+          radius: 100,
+        }),
+        motions: {
+          blue: blueMotion,
+          red: redMotion,
+        },
+        props: {
+          blue: blueProps,
+          red: redProps,
+        },
+        letter: "",
+        isBlank: false,
+        isMirrored: false,
+        metadata: {
+          source: "motion_tester_dynamic",
+          created: Date.now(),
+        },
+      });
+
+      // Apply arrow positioning to get final positioned pictograph
+      const positionedPictograph =
+        await arrowPositioningService.calculateAllArrowPositions(
+          dynamicPictograph
         );
 
-      if (staticPictograph) {
-        // Apply arrow positioning to get final positioned pictograph
-        const positionedPictograph =
-          await arrowPositioningService.calculateAllArrowPositions(
-            staticPictograph
-          );
-        pictographData = positionedPictograph;
-        console.log("✅ StaticSection: Unified CSV service worked perfectly!");
-      } else {
-        console.warn("⚠️ No matching pictograph found for motion parameters");
-        pictographData = null;
-      }
+      pictographData = positionedPictograph;
+      console.log("✅ StaticSection: Dynamic pictograph created successfully!");
+      console.log(
+        "🔧 [DEBUG] pictographData is:",
+        pictographData ? "NOT NULL" : "NULL"
+      );
+      console.log("🔧 [DEBUG] Pictograph data:", {
+        id: pictographData?.id,
+        letter: pictographData?.letter,
+        blueProps: pictographData?.props?.blue,
+        redProps: pictographData?.props?.red,
+        blueMotions: pictographData?.motions?.blue,
+        redMotions: pictographData?.motions?.red,
+      });
     } catch (error) {
-      console.error("❌ StaticSection: Error updating pictograph data:", error);
+      console.error(
+        "❌ StaticSection: Error creating dynamic pictograph:",
+        error
+      );
       pictographData = null;
     }
   }
@@ -98,12 +198,14 @@ This is the left 2/3 section of the new layout.
 
     <div class="pictograph-container">
       {#if pictographData}
-        <Pictograph
-          {pictographData}
-          width={PICTOGRAPH_SIZE}
-          height={PICTOGRAPH_SIZE}
-          debug={false}
-        />
+        {#key pictographData.id}
+          <Pictograph
+            {pictographData}
+            width={PICTOGRAPH_SIZE}
+            height={PICTOGRAPH_SIZE}
+            debug={false}
+          />
+        {/key}
       {:else}
         <div class="error-state">
           <span class="error-icon">⚠️</span>
@@ -112,6 +214,11 @@ This is the left 2/3 section of the new layout.
       {/if}
     </div>
   </div>
+
+  <!-- Letter Identification Display -->
+  <LetterIdentificationDisplay
+    identificationResult={motionState.identifiedLetter}
+  />
 
   <!-- Motion Designer Controls -->
   <div class="motion-controls">
@@ -128,6 +235,7 @@ This is the left 2/3 section of the new layout.
           .endOrientation as Orientation}
         turns={motionState.blueMotionParams.turns}
         motionType={motionState.blueMotionParams.motionType as MotionType}
+        gridMode={motionState.gridType}
         onStartLocationChange={(location) =>
           motionState.setBlueStartLocation(location)}
         onEndLocationChange={(location) =>
@@ -156,6 +264,7 @@ This is the left 2/3 section of the new layout.
           .endOrientation as Orientation}
         turns={motionState.redMotionParams.turns}
         motionType={motionState.redMotionParams.motionType as MotionType}
+        gridMode={motionState.gridType}
         onStartLocationChange={(location) =>
           motionState.setRedStartLocation(location)}
         onEndLocationChange={(location) =>

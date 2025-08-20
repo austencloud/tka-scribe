@@ -29,8 +29,6 @@ ARCHITECTURE:
     pictographData?: PictographData | null;
     /** Click handler */
     onClick?: () => void;
-    /** Debug mode */
-    debug?: boolean;
     /** SVG dimensions */
     width?: number;
     height?: number;
@@ -39,7 +37,6 @@ ARCHITECTURE:
   let {
     pictographData = null,
     onClick,
-    debug = false,
     width = undefined,
     height = undefined,
   }: Props = $props();
@@ -56,7 +53,6 @@ ARCHITECTURE:
   // Component loading management factory
   const loadingFactory = useComponentLoading({
     pictographData: dataState.effectivePictographData,
-    debug,
   });
 
   // Arrow positioning factory
@@ -101,19 +97,10 @@ ARCHITECTURE:
 
   function handleComponentLoaded(componentName: string) {
     loadedComponents.add(componentName);
-    if (debug) {
-      console.log(`Component loaded: ${componentName}`, {
-        loaded: loadedComponents.size,
-        required: requiredComponents().length,
-      });
-    }
   }
 
   function handleComponentError(componentName: string, error: string) {
     errorMessage = `${componentName}: ${error}`;
-    if (debug) {
-      console.error(`Component error: ${componentName}`, error);
-    }
     // Still mark as loaded to prevent blocking
     handleComponentLoaded(componentName);
   }
@@ -172,7 +159,6 @@ ARCHITECTURE:
   class:loaded={isLoaded}
   class:has-error={errorMessage}
   class:clickable={onClick}
-  class:debug-mode={debug}
   class:responsive={isResponsive}
   style:width={isResponsive ? "100%" : `${width}px`}
   style:height={isResponsive ? "100%" : `${height}px`}
@@ -183,7 +169,6 @@ ARCHITECTURE:
     displayLetter={dataState.displayLetter}
     arrowsToRender={dataState.arrowsToRender}
     propsToRender={dataState.propsToRender}
-    {debug}
     width={isResponsive ? "100%" : width || 144}
     height={isResponsive ? "100%" : height || 144}
     {viewBox}
@@ -233,11 +218,6 @@ ARCHITECTURE:
 
   .pictograph.has-error {
     border-color: #ef4444;
-  }
-
-  .pictograph.debug-mode {
-    border-color: #8b5cf6;
-    border-width: 2px;
   }
 
   .pictograph:focus-within {
