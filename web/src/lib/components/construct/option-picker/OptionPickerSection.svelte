@@ -116,12 +116,7 @@ Matches the desktop version exactly:
             style:width="{layoutConfig().pictographSize}px"
             style:height="{layoutConfig().pictographSize}px"
           >
-            <Pictograph
-              pictographData={pictograph}
-              width={layoutConfig().pictographSize}
-              height={layoutConfig().pictographSize}
-              debug={false}
-            />
+            <Pictograph pictographData={pictograph} />
           </div>
         {/each}
       </div>

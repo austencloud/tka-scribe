@@ -1,57 +1,115 @@
-import { Orientation } from "$lib/domain/enums";
+import { Orientation, Location, GridMode } from "$lib/domain/enums";
 
 /**
- * PropRotAngleManager - Calculates prop rotation angles based on location and orientation
- * Ported from legacy web app to ensure rotation parity
+ * Calculates prop rotation angles based on location, orientation, and grid mode.
+ * Uses static lookup tables for optimal performance.
  */
 export class PropRotAngleManager {
-  private loc: string;
-  private ori: Orientation | null;
+  private readonly location: Location;
+  private readonly orientation: Orientation;
+  private readonly gridMode: GridMode;
 
-  constructor({ loc, ori }: { loc: string; ori: Orientation | null }) {
-    this.loc = loc;
-    this.ori = ori;
+  /** Diamond grid angle mappings */
+  private static readonly DIAMOND_ANGLE_MAP: Record<
+    Orientation,
+    Record<Location, number>
+  > = {
+    [Orientation.IN]: {
+      [Location.NORTH]: 90,
+      [Location.SOUTH]: 270,
+      [Location.WEST]: 0,
+      [Location.EAST]: 180,
+    } as Record<Location, number>,
+    [Orientation.OUT]: {
+      [Location.NORTH]: 270,
+      [Location.SOUTH]: 90,
+      [Location.WEST]: 180,
+      [Location.EAST]: 0,
+    } as Record<Location, number>,
+    [Orientation.CLOCK]: {
+      [Location.NORTH]: 0,
+      [Location.SOUTH]: 180,
+      [Location.WEST]: 270,
+      [Location.EAST]: 90,
+    } as Record<Location, number>,
+    [Orientation.COUNTER]: {
+      [Location.NORTH]: 180,
+      [Location.SOUTH]: 0,
+      [Location.WEST]: 90,
+      [Location.EAST]: 270,
+    } as Record<Location, number>,
+  };
+
+  /** Box grid angle mappings */
+  private static readonly BOX_ANGLE_MAP: Record<
+    Orientation,
+    Record<Location, number>
+  > = {
+    [Orientation.IN]: {
+      [Location.NORTHEAST]: 135,
+      [Location.NORTHWEST]: 45,
+      [Location.SOUTHWEST]: 315,
+      [Location.SOUTHEAST]: 225,
+    } as Record<Location, number>,
+    [Orientation.OUT]: {
+      [Location.NORTHEAST]: 315,
+      [Location.NORTHWEST]: 225,
+      [Location.SOUTHWEST]: 135,
+      [Location.SOUTHEAST]: 45,
+    } as Record<Location, number>,
+    [Orientation.CLOCK]: {
+      [Location.NORTHEAST]: 45,
+      [Location.NORTHWEST]: 315,
+      [Location.SOUTHWEST]: 225,
+      [Location.SOUTHEAST]: 135,
+    } as Record<Location, number>,
+    [Orientation.COUNTER]: {
+      [Location.NORTHEAST]: 225,
+      [Location.NORTHWEST]: 135,
+      [Location.SOUTHWEST]: 45,
+      [Location.SOUTHEAST]: 315,
+    } as Record<Location, number>,
+  };
+
+  /** Creates a new PropRotAngleManager instance */
+  constructor({
+    location,
+    orientation,
+    gridMode,
+  }: {
+    location: Location;
+    orientation: Orientation;
+    gridMode: GridMode;
+  }) {
+    this.location = location;
+    this.orientation = orientation;
+    this.gridMode = gridMode;
   }
 
-  /**
-   * Get rotation angle based on location and orientation
-   * Uses diamond vs box grid mode detection and appropriate angle maps
-   */
+  /** Calculates the rotation angle in degrees */
   getRotationAngle(): number {
-    // Normalize location to lowercase to match angle map keys
-    const normalizedLoc = this.loc.toLowerCase();
-    const isDiamondLocation = ["n", "e", "s", "w"].includes(normalizedLoc);
+    const angleMap =
+      this.gridMode === GridMode.DIAMOND
+        ? PropRotAngleManager.DIAMOND_ANGLE_MAP
+        : PropRotAngleManager.BOX_ANGLE_MAP;
 
-    const diamondAngleMap: Partial<
-      Record<Orientation, Partial<Record<string, number>>>
-    > = {
-      [Orientation.IN]: { n: 90, s: 270, w: 0, e: 180 },
-      [Orientation.OUT]: { n: 270, s: 90, w: 180, e: 0 },
-      [Orientation.CLOCK]: { n: 0, s: 180, w: 270, e: 90 },
-      [Orientation.COUNTER]: { n: 180, s: 0, w: 90, e: 270 },
-    };
-
-    const boxAngleMap: Partial<
-      Record<Orientation, Partial<Record<string, number>>>
-    > = {
-      [Orientation.IN]: { ne: 135, nw: 45, sw: 315, se: 225 },
-      [Orientation.OUT]: { ne: 315, nw: 225, sw: 135, se: 45 },
-      [Orientation.CLOCK]: { ne: 45, nw: 315, sw: 225, se: 135 },
-      [Orientation.COUNTER]: { ne: 225, nw: 135, sw: 45, se: 315 },
-    };
-
-    const angleMap = isDiamondLocation ? diamondAngleMap : boxAngleMap;
-    const orientationAngles = angleMap[this.ori as Orientation];
-
-    return orientationAngles?.[normalizedLoc] ?? 0;
+    const orientationAngles = angleMap[this.orientation];
+    return orientationAngles?.[this.location] ?? 0;
   }
 
-  /**
-   * Static helper method for quick rotation calculation
-   */
-  static calculateRotation(loc: string, ori: Orientation | null): number {
-    const manager = new PropRotAngleManager({ loc, ori });
-    return manager.getRotationAngle();
+  /** Static method for rotation angle calculation (recommended) */
+  static calculateRotation(
+    location: Location,
+    orientation: Orientation,
+    gridMode: GridMode
+  ): number {
+    const angleMap =
+      gridMode === GridMode.DIAMOND
+        ? PropRotAngleManager.DIAMOND_ANGLE_MAP
+        : PropRotAngleManager.BOX_ANGLE_MAP;
+
+    const orientationAngles = angleMap[orientation];
+    return orientationAngles?.[location] ?? 0;
   }
 }
 

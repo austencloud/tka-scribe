@@ -5,7 +5,7 @@ Replaces dropdown with styled button group showing motion types
 with intuitive icons and better visual feedback.
 -->
 <script lang="ts">
-  import type { MotionType } from "$lib/domain/enums";
+  import { MotionType } from "$lib/domain/enums";
 
   interface Props {
     selectedMotionType: MotionType;
@@ -27,27 +27,27 @@ with intuitive icons and better visual feedback.
 
   const allMotionTypes = [
     {
-      id: "pro",
+      id: MotionType.PRO,
       label: "Pro",
       description: "Pronation - Natural circular motion",
     },
     {
-      id: "anti",
+      id: MotionType.ANTI,
       label: "Anti",
       description: "Anti-pronation - Reverse circular motion",
     },
     {
-      id: "float",
+      id: MotionType.FLOAT,
       label: "Float",
       description: "Float motion - Negative turns",
     },
     {
-      id: "dash",
+      id: MotionType.DASH,
       label: "Dash",
       description: "Dash motion - Opposite locations",
     },
     {
-      id: "static",
+      id: MotionType.STATIC,
       label: "Static",
       description: "Static motion - Same location",
     },
@@ -74,13 +74,13 @@ with intuitive icons and better visual feedback.
     onMotionTypeChange(motionType);
 
     // If user selects float, automatically set turns to "fl"
-    if (motionType === "float" && onTurnsChange) {
+    if (motionType === MotionType.FLOAT && onTurnsChange) {
       onTurnsChange("fl");
     }
 
     // If user selects pro or anti while currently in float, set turns to 0
     if (
-      (motionType === "pro" || motionType === "anti") &&
+      (motionType === MotionType.PRO || motionType === MotionType.ANTI) &&
       currentTurns === "fl" &&
       onTurnsChange
     ) {

@@ -13,7 +13,7 @@
   import Pictograph from "$lib/components/pictograph/Pictograph.svelte";
   import DebugInfoPanel from "./arrow-debug/DebugInfoPanel.svelte";
   import HorizontalDebugSteps from "./arrow-debug/HorizontalDebugSteps.svelte";
-  import SimplePictographSelector from "./arrow-debug/SimplePictographSelector.svelte";
+  import PictographSelector from "./arrow-debug/PictographSelector.svelte";
   import DebugErrorDisplay from "./arrow-debug/DebugErrorDisplay.svelte";
   import DebugLoadingState from "./arrow-debug/DebugLoadingState.svelte";
   import { createDebugState } from "./arrow-debug/debug-state.svelte";
@@ -142,7 +142,7 @@
     <main class="debug-main">
       <!-- Left Panel: Simplified Pictograph Selector -->
       <div class="panel codex-main-panel">
-        <SimplePictographSelector
+        <PictographSelector
           onPictographSelected={handleCodexPictographSelected}
           selectedPictograph={debugState.selectedPictograph}
         />

@@ -12,7 +12,7 @@
  */
 
 import type { MotionData, PictographData, GridMode } from "$lib/domain";
-import { MotionColor, MotionColor } from "$lib/domain";
+import { MotionColor } from "$lib/domain";
 import type { IArrowAdjustmentCalculator } from "../../core-services";
 import type {
   IAttributeKeyGenerator,
@@ -236,7 +236,7 @@ export class ArrowAdjustmentCalculator implements IArrowAdjustmentCalculator {
         position_y: 0,
         rotation_angle: 0,
         isVisible: true,
-        is_selected: false,
+        isSelected: false,
       };
 
       const attrKey = this.attributeKeyService.getKeyFromArrow(

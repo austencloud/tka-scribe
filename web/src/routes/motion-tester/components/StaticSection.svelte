@@ -199,12 +199,7 @@ This is the left 2/3 section of the new layout.
     <div class="pictograph-container">
       {#if pictographData}
         {#key pictographData.id}
-          <Pictograph
-            {pictographData}
-            width={PICTOGRAPH_SIZE}
-            height={PICTOGRAPH_SIZE}
-            debug={false}
-          />
+          <Pictograph {pictographData} />
         {/key}
       {:else}
         <div class="error-state">

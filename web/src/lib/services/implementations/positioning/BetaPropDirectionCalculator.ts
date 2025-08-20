@@ -134,16 +134,36 @@ export class BetaPropDirectionCalculator {
     },
   };
 
-  constructor(private motionData: { red: MotionData; blue: MotionData }) {}
+  constructor(private motionDataSet: { red: MotionData; blue: MotionData }) {}
 
   /**
-   * Get direction for a prop based on its motion data and color
+   * Get motion data for a prop by matching its context
+   * Since we removed prop.color, we need to determine which motion to use
+   * This is a transitional approach - ideally services should be passed the specific motion directly
+   */
+  private getMotionDataForProp(_prop: PropData): MotionData | null {
+    // For now, we'll need to determine this based on how the service is called
+    // This is not ideal but maintains functionality during the transition
+    // In the future, services should be passed the specific motion data directly
+
+    // Try to match based on prop properties with motion properties
+    // This is a heuristic approach during the transition
+    const blueMotion = this.motionDataSet.blue;
+    const redMotion = this.motionDataSet.red;
+
+    // For now, assume blue if we can't determine otherwise
+    // This will need to be fixed by passing proper context to the service
+    return blueMotion || redMotion;
+  }
+
+  /**
+   * Get direction for a prop based on its motion data
    */
   getDirection(prop: PropData): Direction | null {
-    const motionData =
-      prop.color === "red" ? this.motionData.red : this.motionData.blue;
+    // Get the appropriate motion data for this prop
+    const motionData = this.getMotionDataForProp(prop);
     if (!motionData) {
-      console.error(`No motion data found for ${prop.color} prop`);
+      console.error(`No motion data found for prop`);
       return null;
     }
 
@@ -157,7 +177,7 @@ export class BetaPropDirectionCalculator {
     }
 
     // Handle static/dash motions
-    return this.handleStaticDashMotion(prop);
+    return this.handleStaticDashMotion(prop, motionData);
   }
 
   /**
@@ -202,8 +222,11 @@ export class BetaPropDirectionCalculator {
   /**
    * Handle static/dash motion direction calculation
    */
-  private handleStaticDashMotion(prop: PropData): Direction | null {
-    const location = (prop.location || "") as Loc;
+  private handleStaticDashMotion(
+    prop: PropData,
+    motionData: MotionData
+  ): Direction | null {
+    const location = motionData.endLocation as Loc;
     const cardinalValues = [
       Location.NORTH,
       Location.SOUTH,
@@ -215,11 +238,11 @@ export class BetaPropDirectionCalculator {
 
     if (gridMode === DIAMOND) {
       const map = isRadial ? this.diamondMapRadial : this.diamondMapNonRadial;
-      return map[location as DiamondLoc]?.[prop.color as Color] ?? null;
+      return map[location as DiamondLoc]?.[motionData.color as Color] ?? null;
     }
 
     const map = isRadial ? this.boxMapRadial : this.boxMapNonRadial;
-    return map[location as BoxLoc]?.[prop.color as Color] ?? null;
+    return map[location as BoxLoc]?.[motionData.color as Color] ?? null;
   }
 
   /**
@@ -246,21 +269,21 @@ export class BetaPropDirectionCalculator {
   private endsWithRadialOrientation(): boolean {
     const redEndOri =
       (
-        this.motionData.red as unknown as {
+        this.motionDataSet.red as unknown as {
           end_orientation?: string;
           endOrientation?: string;
         }
       ).end_orientation ??
-      (this.motionData.red as unknown as { endOrientation?: string })
+      (this.motionDataSet.red as unknown as { endOrientation?: string })
         .endOrientation;
     const blueEndOri =
       (
-        this.motionData.blue as unknown as {
+        this.motionDataSet.blue as unknown as {
           end_orientation?: string;
           endOrientation?: string;
         }
       ).end_orientation ??
-      (this.motionData.blue as unknown as { endOrientation?: string })
+      (this.motionDataSet.blue as unknown as { endOrientation?: string })
         .endOrientation;
     if (redEndOri === "in" && blueEndOri === "in") return true;
     if (redEndOri === "out" && blueEndOri === "out") return false;

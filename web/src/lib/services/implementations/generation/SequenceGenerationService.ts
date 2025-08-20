@@ -337,8 +337,8 @@ export class SequenceGenerationService implements ISequenceGenerationService {
           beat.pictographData.motions.blue = {
             ...beat.pictographData.motions.blue,
             turns: "fl",
-            prefloat_motion_type: beat.pictographData.motions.blue.motionType,
-            prefloat_prop_rot_dir:
+            prefloatMotionType: beat.pictographData.motions.blue.motionType,
+            prefloatRotationDirection:
               beat.pictographData.motions.blue.rotationDirection,
             motionType: MotionType.FLOAT,
             rotationDirection: RotationDirection.NO_ROTATION,
@@ -372,8 +372,8 @@ export class SequenceGenerationService implements ISequenceGenerationService {
           beat.pictographData.motions.red = {
             ...beat.pictographData.motions.red,
             turns: "fl",
-            prefloat_motion_type: beat.pictographData.motions.red.motionType,
-            prefloat_prop_rot_dir:
+            prefloatMotionType: beat.pictographData.motions.red.motionType,
+            prefloatRotationDirection:
               beat.pictographData.motions.red.rotationDirection,
             motionType: MotionType.FLOAT,
             rotationDirection: RotationDirection.NO_ROTATION,

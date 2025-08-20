@@ -9,6 +9,7 @@ import type { PictographData } from "$lib/domain/PictographData";
 import { createPictographData } from "$lib/domain/PictographData";
 import { createMotionData } from "$lib/domain/MotionData";
 import { createPropData } from "$lib/domain/PropData";
+import { createPropPlacementData } from "$lib/domain/PropPlacementData";
 import type { IEnumMappingService } from "../../interfaces/application-interfaces";
 import { pictographDataDebugger } from "../../debug/PictographDataDebugger";
 import { MotionColor } from "$lib/domain/enums";
@@ -205,16 +206,15 @@ export class PictographTransformationService
     });
 
     const propData = createPropData({
-      color,
-      location: motion.endLocation,
       orientation: motion.endOrientation,
       rotationDirection: motion.rotationDirection,
+      placementData: createPropPlacementData(),
       isVisible: motion.isVisible,
     });
 
     console.log(`🔧 [DEBUG] Created prop result:`, {
-      color: propData.color,
-      location: propData.location,
+      color: motion.color, // Get color from motion (source of truth)
+      location: motion.endLocation, // Get location from motion.endLocation
       orientation: propData.orientation,
       rotationDirection: propData.rotationDirection,
     });

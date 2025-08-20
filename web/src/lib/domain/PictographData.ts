@@ -12,13 +12,8 @@ import { createGridData } from "./GridData";
 import type { MotionData } from "./MotionData";
 import type { PropData } from "./PropData";
 import { createPropData } from "./PropData";
-import {
-  MotionColor,
-  Direction,
-  GridPosition,
-  LetterType,
-  Timing,
-} from "./enums";
+import { getLetterType as getTypeFromLetter } from "./Letter";
+import { Direction, GridPosition, LetterType, Timing } from "./enums";
 
 export interface PictographData {
   // Core identity
@@ -32,7 +27,7 @@ export interface PictographData {
   readonly props: Record<string, PropData>; // "blue", "red"
   readonly motions: Record<string, MotionData>; // "blue", "red"
 
-  // Letter and position data
+  // Letter data - simple string letter system
   readonly letter?: string | null;
   readonly startPosition?: GridPosition | null;
   readonly endPosition?: GridPosition | null;
@@ -40,12 +35,10 @@ export interface PictographData {
   // Legacy compatibility properties
   readonly gridMode?: string | null;
 
-  // Letter determination fields
-  readonly beat: number;
+  // Letter determination fields (legacy - now derived from letter.type)
   readonly timing?: Timing | null;
   readonly direction?: Direction | null;
-  readonly duration?: number | null;
-  readonly letterType?: LetterType | null;
+  readonly letterType?: LetterType | null; // Deprecated: use letter.type instead
 
   // Visual state
   readonly isBlank: boolean;
@@ -60,19 +53,15 @@ export function createPictographData(
 ): PictographData {
   // Ensure we have blue and red arrows
   const arrows = {
-    blue: createArrowData({
-      color: MotionColor.BLUE,
-    }),
-    red: createArrowData({
-      color: MotionColor.RED,
-    }),
+    blue: createArrowData(),
+    red: createArrowData(),
     ...data.arrows,
   };
 
   // Ensure we have blue and red props
   const props = {
-    blue: createPropData({ color: MotionColor.BLUE }),
-    red: createPropData({ color: MotionColor.RED }),
+    blue: createPropData(),
+    red: createPropData(),
     ...data.props,
   };
 
@@ -85,10 +74,8 @@ export function createPictographData(
     letter: data.letter ?? null,
     startPosition: data.startPosition ?? null,
     endPosition: data.endPosition ?? null,
-    beat: data.beat ?? 0,
     timing: data.timing ?? null,
     direction: data.direction ?? null,
-    duration: data.duration ?? null,
     letterType: data.letterType ?? null,
     isBlank: data.isBlank ?? false,
     isMirrored: data.isMirrored ?? false,
@@ -144,19 +131,46 @@ export function updateProp(
 
 // Convenience getters
 export function getBlueArrow(pictograph: PictographData): ArrowData {
-  return pictograph.arrows.blue ?? createArrowData({ color: MotionColor.BLUE });
+  return pictograph.arrows.blue ?? createArrowData();
 }
 
 export function getRedArrow(pictograph: PictographData): ArrowData {
-  return pictograph.arrows.red ?? createArrowData({ color: MotionColor.RED });
+  return pictograph.arrows.red ?? createArrowData();
 }
 
 export function getBlueProp(pictograph: PictographData): PropData {
-  return pictograph.props.blue ?? createPropData({ color: MotionColor.BLUE });
+  return pictograph.props.blue ?? createPropData();
 }
 
 export function getRedProp(pictograph: PictographData): PropData {
-  return pictograph.props.red ?? createPropData({ color: MotionColor.RED });
+  return pictograph.props.red ?? createPropData();
+}
+
+// Letter convenience functions
+export function getLetterValue(pictograph: PictographData): string | null {
+  return pictograph.letter ?? null;
+}
+
+export function getLetterType(pictograph: PictographData): LetterType | null {
+  // Get type from letter string or fall back to legacy letterType
+  if (pictograph.letter) {
+    return (
+      getTypeFromLetter(pictograph.letter) ?? pictograph.letterType ?? null
+    );
+  }
+  return pictograph.letterType ?? null;
+}
+
+export function setLetter(
+  pictograph: PictographData,
+  letter: string | null
+): PictographData {
+  return {
+    ...pictograph,
+    letter,
+    // Update legacy letterType for backward compatibility
+    letterType: letter ? getTypeFromLetter(letter) : null,
+  };
 }
 
 export function pictographDataToObject(
@@ -171,10 +185,8 @@ export function pictographDataToObject(
     letter: pictograph.letter,
     startPosition: pictograph.startPosition,
     endPosition: pictograph.endPosition,
-    beat: pictograph.beat,
     timing: pictograph.timing,
     direction: pictograph.direction,
-    duration: pictograph.duration,
     letterType: pictograph.letterType,
     isBlank: pictograph.isBlank,
     isMirrored: pictograph.isMirrored,
@@ -185,56 +197,42 @@ export function pictographDataToObject(
 export function pictographDataFromObject(
   data: Record<string, unknown>
 ): PictographData {
-  const pictographData: Record<string, unknown> = {};
+  const pictographData: Partial<PictographData> = {
+    ...(data.id !== undefined && { id: data.id as string }),
+    ...(data.gridData !== undefined && { gridData: data.gridData as GridData }),
+    ...(data.arrows !== undefined && {
+      arrows: data.arrows as Record<string, ArrowData>,
+    }),
+    ...(data.props !== undefined && {
+      props: data.props as Record<string, PropData>,
+    }),
+    ...(data.motions !== undefined && {
+      motions: data.motions as Record<string, MotionData>,
+    }),
+    ...(data.letter !== undefined && {
+      letter: data.letter as string | null,
+    }),
+    ...(data.startPosition !== undefined && {
+      startPosition: data.startPosition as GridPosition | null,
+    }),
+    ...(data.endPosition !== undefined && {
+      endPosition: data.endPosition as GridPosition | null,
+    }),
+    ...(data.timing !== undefined && { timing: data.timing as Timing | null }),
+    ...(data.direction !== undefined && {
+      direction: data.direction as Direction | null,
+    }),
+    ...(data.letterType !== undefined && {
+      letterType: data.letterType as LetterType | null,
+    }),
+    ...(data.isBlank !== undefined && { isBlank: data.isBlank as boolean }),
+    ...(data.isMirrored !== undefined && {
+      isMirrored: data.isMirrored as boolean,
+    }),
+    ...(data.metadata !== undefined && {
+      metadata: data.metadata as Record<string, unknown>,
+    }),
+  };
 
-  if (data.id !== undefined) {
-    pictographData.id = data.id;
-  }
-  if (data.gridData !== undefined) {
-    pictographData.gridData = data.gridData;
-  }
-  if (data.arrows !== undefined) {
-    pictographData.arrows = data.arrows;
-  }
-  if (data.props !== undefined) {
-    pictographData.props = data.props;
-  }
-  if (data.motions !== undefined) {
-    pictographData.motions = data.motions;
-  }
-  if (data.letter !== undefined) {
-    pictographData.letter = data.letter;
-  }
-  if (data.startPosition !== undefined) {
-    pictographData.startPosition = data.startPosition;
-  }
-  if (data.endPosition !== undefined) {
-    pictographData.endPosition = data.endPosition;
-  }
-  if (data.beat !== undefined) {
-    pictographData.beat = data.beat;
-  }
-  if (data.timing !== undefined) {
-    pictographData.timing = data.timing;
-  }
-  if (data.direction !== undefined) {
-    pictographData.direction = data.direction;
-  }
-  if (data.duration !== undefined) {
-    pictographData.duration = data.duration;
-  }
-  if (data.letterType !== undefined) {
-    pictographData.letterType = data.letterType;
-  }
-  if (data.isBlank !== undefined) {
-    pictographData.isBlank = data.isBlank;
-  }
-  if (data.isMirrored !== undefined) {
-    pictographData.isMirrored = data.isMirrored;
-  }
-  if (data.metadata !== undefined) {
-    pictographData.metadata = data.metadata;
-  }
-
-  return createPictographData(pictographData as Partial<PictographData>);
+  return createPictographData(pictographData);
 }

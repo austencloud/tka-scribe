@@ -120,7 +120,7 @@ matching the legacy desktop app's behavior.
   class:force-show-all={forceShowAll}
 >
   <!-- Base Pictograph Component -->
-  <Pictograph pictographData={effectivePictographData()} {onClick} />
+  <Pictograph pictographData={effectivePictographData()} />
 </div>
 
 <style>

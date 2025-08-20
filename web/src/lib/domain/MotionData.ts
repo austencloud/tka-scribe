@@ -6,7 +6,13 @@
  * Based on modern desktop app's motion_data.py
  */
 
-import { Location, MotionType, Orientation, RotationDirection } from "./enums";
+import {
+  Location,
+  MotionType,
+  Orientation,
+  RotationDirection,
+  MotionColor,
+} from "./enums";
 
 export interface MotionData {
   readonly motionType: MotionType;
@@ -18,9 +24,12 @@ export interface MotionData {
   readonly endOrientation: Orientation;
   readonly isVisible: boolean;
 
+  // CONSOLIDATION: Color is now the single source of truth
+  readonly color: MotionColor;
+
   // Prefloat attributes for letter determination
-  readonly prefloat_motion_type?: MotionType | null;
-  readonly prefloat_prop_rot_dir?: RotationDirection | null;
+  readonly prefloatMotionType?: MotionType | null;
+  readonly prefloatRotationDirection?: RotationDirection | null;
 }
 
 export function createMotionData(data: Partial<MotionData> = {}): MotionData {
@@ -33,8 +42,9 @@ export function createMotionData(data: Partial<MotionData> = {}): MotionData {
     startOrientation: data.startOrientation ?? Orientation.IN,
     endOrientation: data.endOrientation ?? Orientation.IN,
     isVisible: data.isVisible ?? true,
-    prefloat_motion_type: data.prefloat_motion_type ?? null,
-    prefloat_prop_rot_dir: data.prefloat_prop_rot_dir ?? null,
+    color: data.color ?? MotionColor.BLUE, // Single source of truth for color
+    prefloatMotionType: data.prefloatMotionType ?? null,
+    prefloatRotationDirection: data.prefloatRotationDirection ?? null,
   };
 }
 
@@ -49,15 +59,12 @@ export function updateMotionData(
 }
 
 export function isValidMotion(motion: MotionData): boolean {
-  // Handle 'fl' turns for float motions
-  if (
-    motion.turns !== "fl" &&
-    typeof motion.turns === "number" &&
-    motion.turns < 0
-  ) {
-    return false;
-  }
-  return true;
+  return !!(
+    motion.motionType &&
+    motion.startLocation &&
+    motion.endLocation &&
+    motion.color
+  );
 }
 
 export function isFloatMotion(motion: MotionData): boolean {
@@ -66,7 +73,8 @@ export function isFloatMotion(motion: MotionData): boolean {
 
 export function hasPrefloatData(motion: MotionData): boolean {
   return (
-    motion.prefloat_motion_type != null || motion.prefloat_prop_rot_dir != null
+    motion.prefloatMotionType != null ||
+    motion.prefloatRotationDirection != null
   );
 }
 
@@ -82,8 +90,9 @@ export function motionDataToObject(
     startOrientation: motion.startOrientation,
     endOrientation: motion.endOrientation,
     isVisible: motion.isVisible,
-    prefloat_motion_type: motion.prefloat_motion_type,
-    prefloat_prop_rot_dir: motion.prefloat_prop_rot_dir,
+    color: motion.color,
+    prefloatMotionType: motion.prefloatMotionType,
+    prefloatRotationDirection: motion.prefloatRotationDirection,
   };
 }
 
@@ -116,11 +125,14 @@ export function motionDataFromObject(
   if (data.isVisible !== undefined) {
     partialData.isVisible = data.isVisible;
   }
-  if (data.prefloat_motion_type !== undefined) {
-    partialData.prefloat_motion_type = data.prefloat_motion_type;
+  if (data.color !== undefined) {
+    partialData.color = data.color;
   }
-  if (data.prefloat_prop_rot_dir !== undefined) {
-    partialData.prefloat_prop_rot_dir = data.prefloat_prop_rot_dir;
+  if (data.prefloatMotionType !== undefined) {
+    partialData.prefloatMotionType = data.prefloatMotionType;
+  }
+  if (data.prefloatRotationDirection !== undefined) {
+    partialData.prefloatRotationDirection = data.prefloatRotationDirection;
   }
 
   return createMotionData(partialData);

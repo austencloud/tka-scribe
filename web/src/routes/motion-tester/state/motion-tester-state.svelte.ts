@@ -209,7 +209,7 @@ export function createMotionTesterState(): MotionTesterState {
       return gridType;
     },
     get identifiedLetter() {
-      return identifiedLetter;
+      return identifiedLetter();
     },
 
     // Blue prop methods

@@ -73,7 +73,7 @@
       >
         <!-- Position pictograph -->
         <div class="pictograph-container">
-          <Pictograph pictographData={position} width={120} height={120} />
+          <Pictograph pictographData={position} />
         </div>
 
         <!-- Position label -->

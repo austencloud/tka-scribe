@@ -21,7 +21,6 @@ import {
   MotionType,
   Location,
   Orientation,
-  MotionColor,
 } from "$lib/domain/enums";
 
 // Helper function to convert domain GridData to service GridData

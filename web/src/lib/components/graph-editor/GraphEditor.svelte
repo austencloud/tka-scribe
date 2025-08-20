@@ -142,7 +142,6 @@
           <Pictograph
             bind:this={pictographComponent}
             pictographData={selectedBeatData.pictographData}
-            onClick={() => console.log("Pictograph clicked")}
           />
         {:else}
           <div class="no-pictograph">

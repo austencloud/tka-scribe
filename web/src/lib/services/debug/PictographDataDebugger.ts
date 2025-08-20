@@ -89,8 +89,9 @@ export class PictographDataDebugger {
     const motionEndLocations: Record<string, string> = {};
 
     if (pictographData.props) {
-      Object.entries(pictographData.props).forEach(([color, prop]) => {
-        propLocations[color] = prop.location || "unknown";
+      Object.entries(pictographData.props).forEach(([color, _prop]) => {
+        propLocations[color] =
+          pictographData.motions?.[color]?.endLocation || "unknown";
       });
     }
 
@@ -137,12 +138,13 @@ export class PictographDataDebugger {
   private validatePropData(pictographData: PictographData): boolean {
     if (!pictographData.props) return false;
 
-    return Object.values(pictographData.props).every(
-      (prop) =>
-        prop.location &&
-        prop.propType &&
-        prop.color &&
-        prop.orientation !== undefined
+    return (
+      Object.values(pictographData.props).every(
+        (prop) => prop.propType && prop.orientation !== undefined
+      ) &&
+      Object.values(pictographData.motions || {}).every(
+        (motion) => motion.endLocation && motion.color
+      )
     );
   }
 

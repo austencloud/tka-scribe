@@ -7,6 +7,7 @@
 import { endsWithBeta, isBetaPosition } from "$lib/utils/betaDetection";
 import { GridPosition } from "$lib/domain/enums";
 import type { PictographData } from "$lib/domain/PictographData";
+import { Letter } from "$lib/domain/Letter";
 
 // Test the beta detection utilities
 console.log("🧪 Testing Beta Detection System");
@@ -25,14 +26,14 @@ console.log("\n🎯 Testing endsWithBeta:");
 
 // Mock pictograph data that ends with beta
 const betaPictograph: Partial<PictographData> = {
-  letter: "A",
+  letter: Letter.A, // Use Letter enum
   startPosition: GridPosition.ALPHA1,
   endPosition: GridPosition.BETA3, // This is a beta position
 };
 
 // Mock pictograph data that doesn't end with beta
 const nonBetaPictograph: Partial<PictographData> = {
-  letter: "B",
+  letter: Letter.B, // Use Letter enum
   startPosition: GridPosition.ALPHA1,
   endPosition: GridPosition.GAMMA5, // This is NOT a beta position
 };

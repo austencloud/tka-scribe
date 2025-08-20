@@ -16,8 +16,7 @@ import {
   createPropData,
   GridMode as DomainGridMode,
   Location,
-  MotionColor,
-  MotionType as DomainMotionType,
+  MotionType,
   Orientation,
   PropType,
   RotationDirection,
@@ -156,8 +155,7 @@ export class StartPositionService implements IStartPositionService {
 
     // Validate motion types are static for start positions
     if (
-      position.pictographData?.motions?.blue?.motionType !==
-      DomainMotionType.STATIC
+      position.pictographData?.motions?.blue?.motionType !== MotionType.STATIC
     ) {
       errors.push({
         code: "INVALID_BLUE_MOTION",
@@ -167,8 +165,7 @@ export class StartPositionService implements IStartPositionService {
     }
 
     if (
-      position.pictographData?.motions?.red?.motionType !==
-      DomainMotionType.STATIC
+      position.pictographData?.motions?.red?.motionType !== MotionType.STATIC
     ) {
       errors.push({
         code: "INVALID_RED_MOTION",
@@ -255,49 +252,45 @@ export class StartPositionService implements IStartPositionService {
 
     // Create proper arrow data with location
     const blueArrow = createArrowData({
-      color: MotionColor.BLUE,
       turns: 0,
       location: blueLocation,
     });
 
     const redArrow = createArrowData({
-      color: MotionColor.RED,
       turns: 0,
       location: redLocation,
     });
 
-    // Create proper prop data with location
+    // Create proper prop data
     const blueProp = createPropData({
       propType: PropType.STAFF,
-      color: MotionColor.BLUE,
-      location: blueLocation,
     });
 
     const redProp = createPropData({
       propType: PropType.STAFF,
-      color: MotionColor.RED,
-      location: redLocation,
     });
 
     // Create proper motion data
     const blueMotion = createMotionData({
-      motionType: DomainMotionType.STATIC,
+      motionType: MotionType.STATIC,
       rotationDirection: RotationDirection.NO_ROTATION,
       startLocation: blueLocation,
       endLocation: blueLocation,
       turns: 0,
       startOrientation: Orientation.IN,
       endOrientation: Orientation.IN,
+      color: MotionColor.BLUE,
     });
 
     const redMotion = createMotionData({
-      motionType: DomainMotionType.STATIC,
+      motionType: MotionType.STATIC,
       rotationDirection: RotationDirection.NO_ROTATION,
       startLocation: redLocation,
       endLocation: redLocation,
       turns: 0,
       startOrientation: Orientation.IN,
       endOrientation: Orientation.IN,
+      color: MotionColor.RED,
     });
 
     const pictograph = createPictographData({
@@ -310,7 +303,6 @@ export class StartPositionService implements IStartPositionService {
       props: { blue: blueProp, red: redProp },
       motions: { blue: blueMotion, red: redMotion },
       letter,
-      beat: index,
       isBlank: false,
       isMirrored: false,
     });

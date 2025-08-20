@@ -5,16 +5,10 @@
  * Based on modern desktop app's arrow_data.py
  */
 
-import {
-  MotionColor,
-  MotionType,
-  Orientation,
-  RotationDirection,
-} from "./enums";
+import { MotionType, Orientation, RotationDirection } from "./enums";
 
 export interface ArrowData {
   readonly id: string;
-  readonly color: MotionColor;
   readonly turns: number;
   readonly isMirrored: boolean;
 
@@ -35,13 +29,12 @@ export interface ArrowData {
 
   // State flags
   readonly isVisible: boolean;
-  readonly is_selected: boolean;
+  readonly isSelected: boolean;
 }
 
 export function createArrowData(data: Partial<ArrowData> = {}): ArrowData {
   return {
     id: data.id ?? crypto.randomUUID(),
-    color: data.color ?? MotionColor.BLUE,
     turns: data.turns ?? 0.0,
     isMirrored: data.isMirrored ?? false,
     motionType: data.motionType ?? MotionType.STATIC,
@@ -56,7 +49,7 @@ export function createArrowData(data: Partial<ArrowData> = {}): ArrowData {
     svg_center: data.svg_center ?? null,
     svg_mirrored: data.svg_mirrored ?? false,
     isVisible: data.isVisible ?? true,
-    is_selected: data.is_selected ?? false,
+    isSelected: data.isSelected ?? false,
   };
 }
 
@@ -73,7 +66,6 @@ export function updateArrowData(
 export function arrowDataToObject(arrow: ArrowData): Record<string, unknown> {
   return {
     id: arrow.id,
-    color: arrow.color,
     turns: arrow.turns,
     isMirrored: arrow.isMirrored,
     location: arrow.location,
@@ -81,7 +73,7 @@ export function arrowDataToObject(arrow: ArrowData): Record<string, unknown> {
     position_y: arrow.position_y,
     rotation_angle: arrow.rotation_angle,
     isVisible: arrow.isVisible,
-    is_selected: arrow.is_selected,
+    isSelected: arrow.isSelected,
   };
 }
 
@@ -89,7 +81,6 @@ export function arrowDataFromObject(data: Record<string, unknown>): ArrowData {
   const partialData: Record<string, unknown> = {};
 
   if (typeof data.id === "string") partialData.id = data.id;
-  if (typeof data.color === "string") partialData.color = data.color;
   if (typeof data.turns === "number") partialData.turns = data.turns;
   if (typeof data.isMirrored === "boolean")
     partialData.isMirrored = data.isMirrored;
@@ -102,8 +93,8 @@ export function arrowDataFromObject(data: Record<string, unknown>): ArrowData {
     partialData.rotation_angle = data.rotation_angle;
   if (typeof data.isVisible === "boolean")
     partialData.isVisible = data.isVisible;
-  if (typeof data.is_selected === "boolean")
-    partialData.is_selected = data.is_selected;
+  if (typeof data.isSelected === "boolean")
+    partialData.isSelected = data.isSelected;
 
   return createArrowData(partialData as Partial<ArrowData>);
 }

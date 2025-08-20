@@ -65,17 +65,14 @@ export class ServiceContainer {
 
   resolve<T>(serviceInterface: ServiceInterface<T>): T {
     const token = serviceInterface.token;
-    console.log(`🔧 ServiceContainer: Resolving ${token}`);
 
     // Check if it's a singleton
     if (this.singletons.has(token)) {
-      console.log(`✅ ServiceContainer: Found singleton for ${token}`);
       return this.singletons.get(token) as T;
     }
 
     // Check if it's a factory
     if (this.factories.has(token)) {
-      console.log(`🏭 ServiceContainer: Using factory for ${token}`);
       const factory = this.factories.get(token);
       if (!factory) {
         throw new Error(`Factory for ${token} is unexpectedly undefined`);

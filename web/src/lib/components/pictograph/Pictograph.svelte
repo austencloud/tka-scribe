@@ -27,11 +27,9 @@ ARCHITECTURE:
   interface Props {
     /** Pictograph data to render */
     pictographData?: PictographData | null;
-    /** Click handler */
-    onClick?: () => void;
   }
 
-  let { pictographData = null, onClick }: Props = $props();
+  let { pictographData = null }: Props = $props();
 
   // =============================================================================
   // HOOK-BASED STATE MANAGEMENT
@@ -69,7 +67,9 @@ ARCHITECTURE:
 
   // Derived states
   const requiredComponents = $derived(() => {
-    return loadingFactory.requiredComponents;
+    return loadingFactory.getRequiredComponents(
+      dataState.effectivePictographData
+    );
   });
 
   const allComponentsLoaded = $derived(() => {
@@ -93,17 +93,6 @@ ARCHITECTURE:
     errorMessage = `${componentName}: ${error}`;
     // Still mark as loaded to prevent blocking
     handleComponentLoaded(componentName);
-  }
-
-  function handleSvgClick() {
-    onClick?.();
-  }
-
-  function handleKeyDown(event: KeyboardEvent) {
-    if (event.key === "Enter" || event.key === " ") {
-      event.preventDefault();
-      onClick?.();
-    }
   }
 
   // =============================================================================
@@ -145,7 +134,6 @@ ARCHITECTURE:
   class:loading={isLoading}
   class:loaded={isLoaded}
   class:has-error={errorMessage}
-  class:clickable={onClick}
 >
   <PictographSvg
     pictographData={dataState.effectivePictographData}
@@ -159,11 +147,8 @@ ARCHITECTURE:
     {arrowPositions}
     {arrowMirroring}
     {showArrows}
-    onSvgClick={handleSvgClick}
-    onKeyDown={handleKeyDown}
     onComponentLoaded={handleComponentLoaded}
     onComponentError={handleComponentError}
-    {onClick}
     ariaLabel={dataState.hasValidData ? "Pictograph" : "Empty Pictograph"}
   />
 </div>
@@ -183,28 +168,12 @@ ARCHITECTURE:
     display: block;
   }
 
-  .pictograph.clickable {
-    cursor: pointer;
-  }
-
-  .pictograph.clickable:hover {
-    border-color: #3b82f6;
-    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
-    transform: translateY(-1px);
-  }
-
   .pictograph.loading {
     opacity: 0.8;
   }
 
   .pictograph.has-error {
     border-color: #ef4444;
-  }
-
-  .pictograph:focus-within {
-    outline: none;
-    border-color: #3b82f6;
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
   }
 
   /* Animation classes for component loading */

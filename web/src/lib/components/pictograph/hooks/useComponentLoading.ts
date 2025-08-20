@@ -8,6 +8,7 @@
  */
 
 import type { PictographData } from "$lib/domain";
+import { MotionColor } from "$lib/domain/enums";
 
 export interface ComponentLoadingProps {
   /** Current pictograph data to determine required components */
@@ -39,71 +40,22 @@ export interface ComponentLoadingState {
  * Factory function for component loading management.
  * Returns reactive state using Svelte 5 runes.
  */
-export function useComponentLoading(props: ComponentLoadingProps): ComponentLoadingState {
-  const { pictographData } = props;
-  
-  // State using Svelte 5 $state
-  let loadedComponentsSet = $state(new Set<string>());
-  let errorState = $state<string | null>(null);
-
+export function useComponentLoading(props: ComponentLoadingProps) {
   // Calculate required components based on data
   const getRequiredComponents = (data: PictographData | null): string[] => {
     const components = ["grid"];
 
     if (!data) return components;
 
-    if (data.arrows?.blue) components.push("blue-arrow");
-    if (data.arrows?.red) components.push("red-arrow");
-    if (data.props?.blue) components.push("blue-prop");
-    if (data.props?.red) components.push("red-prop");
+    if (data.arrows?.[MotionColor.BLUE]) components.push("blue-arrow");
+    if (data.arrows?.[MotionColor.RED]) components.push("red-arrow");
+    if (data.props?.[MotionColor.BLUE]) components.push("blue-prop");
+    if (data.props?.[MotionColor.RED]) components.push("red-prop");
 
     return components;
   };
 
   return {
-    // Reactive getters using $derived pattern
-    get loadedComponents() {
-      return loadedComponentsSet;
-    },
-
-    get requiredComponents() {
-      return getRequiredComponents(pictographData);
-    },
-
-    get allComponentsLoaded() {
-      const required = this.requiredComponents;
-      return required.every(component => loadedComponentsSet.has(component));
-    },
-
-    get isLoading() {
-      return !this.allComponentsLoaded && this.requiredComponents.length > 0;
-    },
-
-    get isLoaded() {
-      return this.allComponentsLoaded;
-    },
-
-    get errorMessage() {
-      return errorState;
-    },
-
-    // Action handlers
-    handleComponentLoaded: (componentName: string) => {
-      loadedComponentsSet.add(componentName);
-      // Trigger reactivity by reassigning
-      loadedComponentsSet = new Set(loadedComponentsSet);
-    },
-
-    handleComponentError: (componentName: string, error: string) => {
-      errorState = `Component ${componentName} failed to load: ${error}`;
-      // Still mark as loaded to prevent blocking
-      loadedComponentsSet.add(componentName);
-      loadedComponentsSet = new Set(loadedComponentsSet);
-    },
-
-    clearLoadingState: () => {
-      loadedComponentsSet = new Set();
-      errorState = null;
-    },
+    getRequiredComponents,
   };
 }

@@ -10,6 +10,7 @@ import {
   Orientation as OrientationEnum,
   RotationDirection,
   Location,
+  MotionColor,
 } from "$lib/domain/enums";
 import type { SequenceData } from "$lib/domain";
 import {
@@ -44,6 +45,7 @@ export function createTestSequence(
             motionType: MotionTypeEnum.PRO,
             rotationDirection: RotationDirection.CLOCKWISE,
             turns: 1,
+            color: MotionColor.BLUE,
             isVisible: true,
           },
           red: {
@@ -54,6 +56,7 @@ export function createTestSequence(
             motionType: MotionTypeEnum.STATIC,
             rotationDirection: RotationDirection.NO_ROTATION,
             turns: 0,
+            color: MotionColor.RED,
             isVisible: true,
           },
         },
@@ -77,6 +80,7 @@ export function createTestSequence(
             motionType: MotionTypeEnum.PRO,
             rotationDirection: RotationDirection.CLOCKWISE,
             turns: 1,
+            color: MotionColor.BLUE,
             isVisible: true,
           },
           red: {
@@ -87,6 +91,7 @@ export function createTestSequence(
             motionType: MotionTypeEnum.ANTI,
             rotationDirection: RotationDirection.COUNTER_CLOCKWISE,
             turns: 1,
+            color: MotionColor.RED,
             isVisible: true,
           },
         },
@@ -110,6 +115,7 @@ export function createTestSequence(
             motionType: MotionTypeEnum.PRO,
             rotationDirection: RotationDirection.CLOCKWISE,
             turns: 1,
+            color: MotionColor.BLUE,
             isVisible: true,
           },
           red: {
@@ -120,6 +126,7 @@ export function createTestSequence(
             motionType: MotionTypeEnum.ANTI,
             rotationDirection: RotationDirection.COUNTER_CLOCKWISE,
             turns: 1,
+            color: MotionColor.RED,
             isVisible: true,
           },
         },
@@ -143,6 +150,7 @@ export function createTestSequence(
             motionType: MotionTypeEnum.PRO,
             rotationDirection: RotationDirection.CLOCKWISE,
             turns: 1,
+            color: MotionColor.BLUE,
             isVisible: true,
           },
           red: {
@@ -153,6 +161,7 @@ export function createTestSequence(
             motionType: MotionTypeEnum.ANTI,
             rotationDirection: RotationDirection.COUNTER_CLOCKWISE,
             turns: 1,
+            color: MotionColor.RED,
             isVisible: true,
           },
         },
@@ -196,6 +205,7 @@ export function createSingleBeatTestSequence(
           motionType: motionType,
           rotationDirection: RotationDirection.CLOCKWISE,
           turns: motionType === MotionTypeEnum.STATIC ? 0 : 1,
+          color: MotionColor.BLUE,
           isVisible: true,
         },
         red: {
@@ -206,6 +216,7 @@ export function createSingleBeatTestSequence(
           motionType: motionType,
           rotationDirection: RotationDirection.COUNTER_CLOCKWISE,
           turns: motionType === MotionTypeEnum.STATIC ? 0 : 1,
+          color: MotionColor.RED,
           isVisible: true,
         },
       },

@@ -175,11 +175,7 @@
             <span class="placeholder-letter">{letter}</span>
           {:else}
             <!-- Actual pictograph - simplified container structure -->
-            <Pictograph
-              pictographData={pictograph}
-              width={pictographSize}
-              height={pictographSize}
-            />
+            <Pictograph pictographData={pictograph} />
           {/if}
         </button>
       {/each}

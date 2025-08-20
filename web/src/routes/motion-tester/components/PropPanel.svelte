@@ -13,6 +13,7 @@ Beautiful, intuitive visual controls replacing boring dropdowns:
   import StyledTurnsControl from "./StyledTurnsControl.svelte";
   import MotionTypeButtons from "./MotionTypeButtons.svelte";
   import { getAvailableMotionTypes } from "../utils/motion-helpers";
+  import { MotionColor } from "$lib/domain/enums";
   import type { Orientation, MotionType, Location } from "$lib/domain/enums";
 
   interface Props {
@@ -60,7 +61,9 @@ Beautiful, intuitive visual controls replacing boring dropdowns:
       return `${r}, ${g}, ${b}`;
     }
     // Fallback colors
-    return propName.toLowerCase() === "blue" ? "96, 165, 250" : "248, 113, 113";
+    return propName.toLowerCase() === MotionColor.BLUE
+      ? "96, 165, 250"
+      : "248, 113, 113";
   }
 
   let rgbColor = $derived(hexToRgb(propColor));

@@ -7,7 +7,6 @@
 
 import type { BeatData, MotionData, PictographData } from "$lib/domain";
 import {
-  MotionColor,
   createArrowData,
   createGridData as createDomainGridData,
   createPictographData,
@@ -47,26 +46,19 @@ export class DataTransformationService implements IDataTransformationService {
       id: `beat-${beat.beatNumber}`,
       gridData: createDomainGridData(),
       arrows: {
-        blue: createArrowData({
-          color: MotionColor.BLUE,
-        }),
-        red: createArrowData({
-          color: MotionColor.RED,
-        }),
+        blue: createArrowData(),
+        red: createArrowData(),
       },
       props: {
         blue: createPropData({
           propType: PropType.STAFF,
-          color: MotionColor.BLUE,
         }),
         red: createPropData({
           propType: PropType.STAFF,
-          color: MotionColor.RED,
         }),
       },
       motions,
       letter: beat.pictographData?.letter || null,
-      beat: beat.beatNumber,
       isBlank: beat.isBlank,
       isMirrored: false,
     });

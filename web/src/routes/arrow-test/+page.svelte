@@ -11,6 +11,7 @@ Arrow Mirroring Test Route - Simple test for arrow positioning
     createMotionData,
     createGridData,
   } from "$lib/domain";
+  import { Letter } from "$lib/domain/Letter";
   import {
     GridMode,
     MotionColor,
@@ -33,7 +34,7 @@ Arrow Mirroring Test Route - Simple test for arrow positioning
     try {
       // CCW test case: A,alpha1,alpha7,split,same,pro,ccw,s,e,pro,ccw,n,w
       const ccw = createPictographData({
-        letter: "A",
+        letter: Letter.A, // Use unified Letter enum
         startPosition: GridPosition.ALPHA1,
         endPosition: GridPosition.ALPHA7,
         gridData: createGridData({ gridMode: GridMode.DIAMOND }),
@@ -75,7 +76,7 @@ Arrow Mirroring Test Route - Simple test for arrow positioning
 
       // CW test case: A,alpha1,alpha3,split,same,pro,cw,s,w,pro,cw,n,e
       const cw = createPictographData({
-        letter: "A",
+        letter: Letter.A, // Use unified Letter enum
         startPosition: GridPosition.ALPHA1,
         endPosition: GridPosition.ALPHA3,
         gridData: createGridData({ gridMode: GridMode.DIAMOND }),

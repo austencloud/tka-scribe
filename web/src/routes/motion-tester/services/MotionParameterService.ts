@@ -25,7 +25,7 @@ export class MotionParameterService implements IMotionParameterService {
     const end = endLocation.toLowerCase();
 
     if (start === end) {
-      return "static"; // Same location = static
+      return MotionType.STATIC; // Same location = static
     }
 
     // Check if it's a dash motion (opposite locations)
@@ -38,7 +38,7 @@ export class MotionParameterService implements IMotionParameterService {
 
     for (const [startOpp, endOpp] of opposites) {
       if (start === startOpp && end === endOpp) {
-        return "dash";
+        return MotionType.DASH;
       }
     }
 
@@ -211,13 +211,13 @@ export class MotionParameterService implements IMotionParameterService {
   // Create default motion parameters
   createDefaultParams(): MotionTestParams {
     return {
-      startLocation: "n",
-      endLocation: "e",
-      motionType: "pro",
+      startLocation: Location.NORTH,
+      endLocation: Location.EAST,
+      motionType: MotionType.PRO,
       turns: 0,
-      rotationDirection: "cw",
-      startOrientation: "in",
-      endOrientation: "in",
+      rotationDirection: RotationDirection.CLOCKWISE,
+      startOrientation: Orientation.IN,
+      endOrientation: Orientation.IN,
     };
   }
 
@@ -252,8 +252,8 @@ export class MotionParameterService implements IMotionParameterService {
       startOrientation: this.mapOrientationToEnum(params.startOrientation),
       endOrientation: this.mapOrientationToEnum(params.endOrientation),
       isVisible: true,
-      prefloat_motion_type: null,
-      prefloat_prop_rot_dir: null,
+      prefloatMotionType: null,
+      prefloatRotationDirection: null,
     };
   }
 }

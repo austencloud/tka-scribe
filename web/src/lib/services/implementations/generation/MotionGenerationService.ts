@@ -79,6 +79,7 @@ export class MotionGenerationService implements IMotionGenerationService {
         turns,
         startOrientation: startOrientation,
         endOrientation: endOrientation,
+        color: color,
         isVisible: true,
       };
 

@@ -28,6 +28,7 @@ import type {
   ISvgUtilityService,
 } from "../../interfaces/pictograph-interfaces";
 import type { IPropRenderingService } from "../../interfaces/positioning-interfaces";
+import type { IPropCoordinatorService } from "../../implementations/rendering/PropCoordinatorService";
 import type { IArrowPositioningOrchestrator } from "../../positioning/core-services";
 import type {
   IMotionGenerationService,
@@ -59,6 +60,7 @@ import { PanelManagementService } from "../../implementations/navigation/PanelMa
 import { PictographRenderingService } from "../../implementations/rendering/PictographRenderingService";
 import { PictographService } from "../../implementations/domain/PictographService";
 import { PropRenderingService } from "../../implementations/rendering/PropRenderingService";
+import { PropCoordinatorService } from "../../implementations/rendering/PropCoordinatorService";
 import { SequenceDomainService } from "../../implementations/domain/SequenceDomainService";
 import { SequenceGenerationService } from "../../implementations/generation/SequenceGenerationService";
 import { SequenceService } from "../../implementations/sequence/SequenceService";
@@ -124,6 +126,12 @@ export const IPropRenderingServiceInterface =
   createServiceInterface<IPropRenderingService>(
     "IPropRenderingService",
     PropRenderingService
+  );
+
+export const IPropCoordinatorServiceInterface =
+  createServiceInterface<IPropCoordinatorService>(
+    "IPropCoordinatorService",
+    PropCoordinatorService
   );
 
 // Rendering microservices

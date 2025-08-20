@@ -12,6 +12,7 @@ export * from "./MotionData";
 export * from "./GridData";
 export * from "./ArrowData";
 export * from "./PropData";
+export * from "./PropPlacementData";
 export * from "./PictographData";
 export * from "./BeatData";
 export * from "./SequenceData";

@@ -14,6 +14,7 @@ import type {
 } from "../../interfaces/image-export-interfaces";
 import type { BeatData, SequenceData } from "../../interfaces/domain-types";
 import type { PropData, ArrowData } from "$lib/domain";
+import { MotionColor } from "$lib/domain/enums";
 import type { IPictographService } from "../../interfaces/pictograph-interfaces";
 
 export class BeatRenderingService implements IBeatRenderingService {
@@ -471,7 +472,7 @@ export class BeatRenderingService implements IBeatRenderingService {
     const centerY = size / 2;
     const radius = size * 0.05;
 
-    ctx.fillStyle = color === "blue" ? "#3b82f6" : "#ef4444";
+    ctx.fillStyle = color === MotionColor.BLUE ? "#3b82f6" : "#ef4444";
     ctx.beginPath();
     ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
     ctx.fill();

@@ -3,6 +3,7 @@
   import type { ArrowDebugState } from "../types/ArrowDebugTypes";
   import { createGridData } from "$lib/domain/GridData";
   import type { PictographData } from "$lib/domain";
+  import { Letter } from "$lib/domain/Letter";
   import {
     GridMode,
     MotionColor,
@@ -24,8 +25,8 @@
     {
       name: "Pro Motion Test",
       description: "Blue Pro 1T CW, Red Anti 1T CCW",
-      letter: "A",
-      setup: () => createTestPictograph("A", "pro", "anti", 1, 1),
+      letter: Letter.A.value, // Use Letter enum value for display
+      setup: () => createTestPictograph(Letter.A, "pro", "anti", 1, 1),
     },
     {
       name: "Static Test",
@@ -136,15 +137,15 @@
           id: "blue_arrow",
           color: MotionColor.BLUE,
           isVisible: true,
-          is_selected: false,
+          isSelected: false,
           position_x: 0,
           position_y: 0,
           rotation_angle: 0,
           isMirrored: false,
           motionType: blueMotion,
           location: "center",
-          start_orientation: blueMotion === "pro" ? "in" : "out",
-          end_orientation: blueMotion === "pro" ? "out" : "in",
+          start_orientation: blueMotion === MotionType.PRO ? "in" : "out",
+          end_orientation: blueMotion === MotionType.PRO ? "out" : "in",
           rotationDirection: "cw",
           turns: typeof blueTurns === "number" ? blueTurns : 0,
         },
@@ -152,15 +153,15 @@
           id: "red_arrow",
           color: MotionColor.RED,
           isVisible: true,
-          is_selected: false,
+          isSelected: false,
           position_x: 0,
           position_y: 0,
           rotation_angle: 0,
           isMirrored: false,
           motionType: redMotion,
           location: "center",
-          start_orientation: redMotion === "pro" ? "in" : "out",
-          end_orientation: redMotion === "pro" ? "out" : "in",
+          start_orientation: redMotion === MotionType.PRO ? "in" : "out",
+          end_orientation: redMotion === MotionType.PRO ? "out" : "in",
           rotationDirection: "ccw",
           turns: typeof redTurns === "number" ? redTurns : 0,
         },

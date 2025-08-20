@@ -1,11 +1,11 @@
 import { createGridData, type GridData } from "$lib/data/gridCoordinates.js";
+import { GridMode, Location } from "$lib/domain/enums";
 
 /**
  * DefaultPropPositioner - Calculates default prop positions using grid coordinates
  * Ported from legacy web app to ensure positioning parity
  */
 export class DefaultPropPositioner {
-  private debugMode: boolean = false;
   private fallbackCoordinates: Record<string, { x: number; y: number }> = {
     // Default positions if grid points aren't found - matching legacy fallbacks
     n: { x: 475, y: 330 },
@@ -20,45 +20,32 @@ export class DefaultPropPositioner {
 
   constructor(
     private gridData: GridData,
-    private gridMode: string
+    private gridMode: GridMode
   ) {
     // Validate grid data on initialization
     if (!gridData || !gridData.allHandPointsNormal) {
       throw new Error("Invalid grid data provided to DefaultPropPositioner");
-    }
-
-    if (this.debugMode) {
-      console.log(
-        "🎯 DefaultPropPositioner initialized with grid mode:",
-        gridMode
-      );
     }
   }
 
   /**
    * Calculate coordinates for a prop based on its location
    */
-  public calculateCoordinates(location: string): { x: number; y: number } {
+  public calculateCoordinates(location: Location | string): {
+    x: number;
+    y: number;
+  } {
     // Normalize location to lowercase to match grid coordinate keys
-    const normalizedLocation = location.toLowerCase();
-    const pointName = `${normalizedLocation}_${this.gridMode}_hand_point`;
+    const normalizedLocation = (
+      typeof location === "string" ? location : location
+    ).toLowerCase();
+    const pointName = `${normalizedLocation}_${this.gridMode.valueOf()}_hand_point`;
     const gridPoint = this.getGridPoint(pointName);
 
     if (gridPoint && gridPoint.coordinates) {
-      if (this.debugMode) {
-        console.log(
-          `✅ Found grid point "${pointName}":`,
-          gridPoint.coordinates
-        );
-      }
       return gridPoint.coordinates;
     } else {
       const fallback = this.getFallbackCoordinates(normalizedLocation);
-      if (this.debugMode) {
-        console.warn(
-          `⚠️ Grid point "${pointName}" not found, using fallback: (${fallback.x}, ${fallback.y})`
-        );
-      }
       return fallback;
     }
   }
@@ -114,17 +101,14 @@ export class DefaultPropPositioner {
    * Static helper method for quick coordinate calculation
    */
   static calculatePosition(
-    location: string,
-    gridMode: string = "diamond"
+    location: Location | string,
+    gridMode: GridMode = GridMode.DIAMOND
   ): { x: number; y: number } {
     try {
-      console.log(
-        `🔧 [POSITIONER DEBUG] Calculating position for location="${location}", gridMode="${gridMode}"`
-      );
-      const gridData = createGridData(gridMode as "diamond" | "box");
+      const gridModeStr = gridMode.valueOf();
+      const gridData = createGridData(gridModeStr as "diamond" | "box");
       const positioner = new DefaultPropPositioner(gridData, gridMode);
       const result = positioner.calculateCoordinates(location);
-      console.log(`🔧 [POSITIONER DEBUG] Result for ${location}:`, result);
       return result;
     } catch (error) {
       console.error("Error calculating position:", error);

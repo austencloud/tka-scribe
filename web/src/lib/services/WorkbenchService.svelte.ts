@@ -6,6 +6,7 @@
  */
 
 import { createBeatData, createPictographData, GridMode } from "../domain";
+import { Letter } from "$lib/domain/Letter";
 import { beatFrameService } from "./BeatFrameService.svelte";
 import { sequenceStateService } from "./SequenceStateService.svelte";
 
@@ -62,8 +63,7 @@ class WorkbenchService {
     // For now, just create a simple pictograph
     if (beat?.isBlank) {
       const pictographData = createPictographData({
-        letter: "A", // Default letter
-        beat: index + 1,
+        letter: Letter.A, // Default letter (unified enum)
       });
 
       const updatedBeat = createBeatData({

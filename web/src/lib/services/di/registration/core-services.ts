@@ -19,6 +19,7 @@ import {
   IPictographRenderingServiceInterface,
   IPictographServiceInterface,
   IPropRenderingServiceInterface,
+  IPropCoordinatorServiceInterface,
   ISequenceDomainServiceInterface,
   ISequenceGenerationServiceInterface,
   ISequenceServiceInterface,
@@ -71,6 +72,7 @@ export async function registerCoreServices(
 
   // Register main rendering services
   container.registerSingletonClass(IPropRenderingServiceInterface);
+  container.registerSingletonClass(IPropCoordinatorServiceInterface);
 
   // Register services with dependencies using factories
   container.registerFactory(ISequenceServiceInterface, () => {

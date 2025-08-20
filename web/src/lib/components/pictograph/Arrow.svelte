@@ -132,7 +132,7 @@ REFACTORED: Now purely presentational, uses ArrowRenderingService for business l
     <!-- Loading state -->
     <circle
       r="8"
-      fill={arrowData?.color === "blue" ? "#2E3192" : "#ED1C24"}
+      fill={arrowData?.color === MotionColor.BLUE ? "#2E3192" : "#ED1C24"}
       opacity="0.3"
     />
     <animate
@@ -143,34 +143,28 @@ REFACTORED: Now purely presentational, uses ArrowRenderingService for business l
     />
   {:else if showArrow}
     <!-- Actual arrow SVG with natural sizing and centering (same as props) -->
-    <image
-      href={svgData.imageSrc}
+    <!-- Native SVG with simplified transform chain -->
+    <g
       transform="
-				translate({calculatedPosition().x}, {calculatedPosition().y})
-				rotate({calculatedPosition().rotation || arrowData?.rotation_angle || 0})
-				scale({shouldMirror() ? -1 : 1}, 1)
-				translate({-svgData.center.x}, {-svgData.center.y})
-			"
-      width={svgData.viewBox.width}
-      height={svgData.viewBox.height}
-      preserveAspectRatio="xMidYMid meet"
+        translate({calculatedPosition().x}, {calculatedPosition().y})
+        rotate({calculatedPosition().rotation ||
+        arrowData?.rotation_angle ||
+        0})
+        scale({shouldMirror() ? -1 : 1}, 1)
+        translate({-svgData.center.x}, {-svgData.center.y})
+      "
       class="arrow-svg {arrowData?.color}-arrow-svg"
       class:mirrored={shouldMirror}
       style:opacity={showArrow ? 1 : 0}
-      onerror={() => {
-        error = "Failed to load arrow SVG";
-        onError?.(`${arrowData?.color}-arrow`, error);
-      }}
-      onload={() => {
-        // SVG loaded - no debug logging needed for performance
-      }}
-    />
+    >
+      {@html svgData.svgContent}
+    </g>
   {:else}
     <!-- Hidden but loaded arrow (positioning ready but waiting for coordination) -->
     <g opacity="0" aria-hidden="true">
       <circle
         r="2"
-        fill={arrowData?.color === "blue" ? "#2E3192" : "#ED1C24"}
+        fill={arrowData?.color === MotionColor.BLUE ? "#2E3192" : "#ED1C24"}
         opacity="0.1"
       />
     </g>

@@ -102,7 +102,7 @@ The wrapped Pictograph component focuses purely on rendering pictograph data.
 >
   <!-- Main Pictograph (simplified - no beat-specific props) -->
   {#if beat.pictographData}
-    <Pictograph pictographData={beat.pictographData} onClick={handleClick} />
+    <Pictograph pictographData={beat.pictographData} />
   {:else}
     <!-- Empty beat state -->
     <div class="empty-beat" style:width="{width}px" style:height="{height}px">

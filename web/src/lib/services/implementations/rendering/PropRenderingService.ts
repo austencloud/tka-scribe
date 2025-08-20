@@ -158,15 +158,47 @@ export class PropRenderingService implements IPropRenderingService {
   // getLocationCoordinates removed (unused)
 
   /**
+   * Convert string location to Location enum
+   */
+  private stringToLocation(locationStr: string | Location): Location {
+    if (typeof locationStr !== "string") {
+      return locationStr;
+    }
+
+    const locationMap: Record<string, Location> = {
+      n: Location.NORTH,
+      e: Location.EAST,
+      s: Location.SOUTH,
+      w: Location.WEST,
+      ne: Location.NORTHEAST,
+      se: Location.SOUTHEAST,
+      sw: Location.SOUTHWEST,
+      nw: Location.NORTHWEST,
+      north: Location.NORTH,
+      east: Location.EAST,
+      south: Location.SOUTH,
+      west: Location.WEST,
+      northeast: Location.NORTHEAST,
+      southeast: Location.SOUTHEAST,
+      southwest: Location.SOUTHWEST,
+      northwest: Location.NORTHWEST,
+    };
+
+    return locationMap[locationStr.toLowerCase()] || Location.SOUTH;
+  }
+
+  /**
    * Calculate prop rotation based on motion data using PropRotAngleManager for parity
    */
   private calculatePropRotation(
     motionData: MotionData,
-    location?: string
+    location?: string,
+    gridMode: GridMode = GridMode.DIAMOND
   ): number {
     // Use PropRotAngleManager for consistent rotation calculation with legacy
-    const endLocation =
+    const endLocationStr =
       location || (motionData?.endLocation as unknown as string) || "s";
+    const endLocation = this.stringToLocation(endLocationStr);
     const endOrientation =
       (motionData as unknown as { endOrientation?: string })?.endOrientation ||
       "in";
@@ -191,12 +223,16 @@ export class PropRenderingService implements IPropRenderingService {
     }
 
     // Delegate to angle manager
-    return PropRotAngleManager.calculateRotation(endLocation, orientation);
+    return PropRotAngleManager.calculateRotation(
+      endLocation,
+      orientation,
+      gridMode
+    );
   }
 
   private getColorOffset(color: MotionColor): { x: number; y: number } {
     // Small offset to prevent props from overlapping
-    return color === "blue" ? { x: -8, y: -8 } : { x: 8, y: 8 };
+    return color === MotionColor.BLUE ? { x: -8, y: -8 } : { x: 8, y: 8 };
   }
 
   /**

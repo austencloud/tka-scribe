@@ -7,11 +7,14 @@
 
 import type { MotionData } from "./MotionData";
 import type { PictographData } from "./PictographData";
+import { Direction, Timing } from "./enums";
 
 export interface BeatData {
   readonly id: string;
   readonly beatNumber: number;
   readonly duration: number;
+  readonly timing?: Timing | null;
+  readonly direction?: Direction | null;
   readonly blueReversal: boolean;
   readonly redReversal: boolean;
   readonly isBlank: boolean;

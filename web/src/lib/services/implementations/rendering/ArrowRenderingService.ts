@@ -3,7 +3,7 @@
  *
  * Handles arrow rendering with SVG assets, color transformation, and fallbacks.
  * Extracted from PictographRenderingService and Arrow.svelte.
- * 
+ *
  * Business logic extracted from Arrow.svelte:
  * - arrowPath calculation logic
  * - parseArrowSvg function
@@ -22,7 +22,7 @@ export interface ArrowPosition {
 }
 
 export interface ArrowSvgData {
-  imageSrc: string;
+  svgContent: string;
   viewBox: { width: number; height: number };
   center: { x: number; y: number };
 }
@@ -34,11 +34,17 @@ export interface IArrowRenderingService {
     position: ArrowPosition,
     motionData: MotionData | undefined
   ): Promise<void>;
-  
+
   // New methods extracted from Arrow.svelte
   getArrowPath(arrowData: ArrowData, motionData: MotionData): string | null;
-  loadArrowSvgData(arrowData: ArrowData, motionData: MotionData): Promise<ArrowSvgData>;
-  parseArrowSvg(svgText: string): { viewBox: { width: number; height: number }; center: { x: number; y: number } };
+  loadArrowSvgData(
+    arrowData: ArrowData,
+    motionData: MotionData
+  ): Promise<ArrowSvgData>;
+  parseArrowSvg(svgText: string): {
+    viewBox: { width: number; height: number };
+    center: { x: number; y: number };
+  };
   applyColorToSvg(svgText: string, color: MotionColor): string;
 }
 
@@ -89,9 +95,7 @@ export class ArrowRenderingService implements IArrowRenderingService {
   /**
    * Parse SVG to get proper dimensions and center point (extracted from Arrow.svelte)
    */
-  parseArrowSvg(
-    svgText: string
-  ): {
+  parseArrowSvg(svgText: string): {
     viewBox: { width: number; height: number };
     center: { x: number; y: number };
   } {
@@ -161,7 +165,10 @@ export class ArrowRenderingService implements IArrowRenderingService {
   /**
    * Load arrow SVG data with color transformation (extracted from Arrow.svelte)
    */
-  async loadArrowSvgData(arrowData: ArrowData, motionData: MotionData): Promise<ArrowSvgData> {
+  async loadArrowSvgData(
+    arrowData: ArrowData,
+    motionData: MotionData
+  ): Promise<ArrowSvgData> {
     const path = this.getArrowPath(arrowData, motionData);
     if (!path) {
       throw new Error("No arrow path available - missing motion data");
@@ -176,10 +183,13 @@ export class ArrowRenderingService implements IArrowRenderingService {
     const { viewBox, center } = this.parseArrowSvg(originalSvgText);
 
     // Apply color transformation to the SVG
-    const coloredSvgText = this.applyColorToSvg(originalSvgText, arrowData.color);
+    const coloredSvgText = this.applyColorToSvg(
+      originalSvgText,
+      arrowData.color
+    );
 
     return {
-      imageSrc: `data:image/svg+xml;base64,${btoa(coloredSvgText)}`,
+      svgContent: coloredSvgText,
       viewBox,
       center,
     };

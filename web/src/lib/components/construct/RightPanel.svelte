@@ -75,7 +75,10 @@
     // Convert to ArrowData format for the service
     const fullArrowData: ArrowData = {
       id: `arrow_${Date.now()}`,
-      color: arrowData.color === "blue" ? MotionColor.BLUE : MotionColor.RED,
+      color:
+        arrowData.color === MotionColor.BLUE
+          ? MotionColor.BLUE
+          : MotionColor.RED,
       turns: arrowData.turn_amount || 0,
       isMirrored: false,
       motionType: "static",
@@ -90,7 +93,7 @@
       svg_center: null,
       svg_mirrored: false,
       isVisible: true,
-      is_selected: false,
+      isSelected: false,
     };
     constructTabEventService().handleArrowSelected(fullArrowData);
   }

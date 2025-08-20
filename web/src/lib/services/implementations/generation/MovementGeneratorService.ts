@@ -17,6 +17,7 @@ import {
   createMovementSet,
   createHandMovement,
 } from "$lib/domain/MovementData";
+import { Letter } from "$lib/domain/Letter";
 import {
   GridPosition,
   Timing,
@@ -114,7 +115,7 @@ export class MovementGeneratorService implements IMovementGeneratorService {
     movements.push(...this.generateMovementsFromPattern(pattern2));
 
     return createMovementSet({
-      letter: "C",
+      letter: Letter.C,
       movements,
       pattern: pattern1,
     });
@@ -172,7 +173,7 @@ export class MovementGeneratorService implements IMovementGeneratorService {
     movements.push(...this.generateMovementsFromPattern(pattern2));
 
     return createMovementSet({
-      letter: "F",
+      letter: Letter.F,
       movements,
       pattern: pattern1,
     });

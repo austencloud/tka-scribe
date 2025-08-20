@@ -9,6 +9,7 @@ import { createArrowData } from "$lib/domain/ArrowData";
 import { createPropData } from "$lib/domain/PropData";
 import { createMotionData } from "$lib/domain/MotionData";
 import { createGridData } from "$lib/domain/GridData";
+import { Letter, getLetterType } from "$lib/domain/Letter";
 import {
   GridPosition,
   Timing,
@@ -17,9 +18,7 @@ import {
   RotationDirection,
   Location,
   MotionColor,
-  MotionColor,
   GridMode,
-  LetterType,
 } from "$lib/domain/enums";
 
 // Pattern Definition System
@@ -114,7 +113,7 @@ export class FlexiblePictographGenerator {
   // Pattern Definitions for A-F
   private readonly LETTER_PATTERNS: Record<string, LetterPattern> = {
     A: {
-      letter: "A",
+      letter: Letter.A,
       sequences: [
         {
           name: "alpha_cycle",
@@ -146,11 +145,11 @@ export class FlexiblePictographGenerator {
           sequenceModifier: "reverse",
         },
       ],
-      baseParams: { letter: "A" },
+      baseParams: { letter: Letter.A },
     },
 
     B: {
-      letter: "B",
+      letter: Letter.B,
       sequences: [
         {
           name: "alpha_cycle",
@@ -182,11 +181,11 @@ export class FlexiblePictographGenerator {
           sequenceModifier: "reverse",
         },
       ],
-      baseParams: { letter: "B" },
+      baseParams: { letter: Letter.B },
     },
 
     C: {
-      letter: "C",
+      letter: Letter.C,
       sequences: [
         {
           name: "alpha_cycle",
@@ -236,11 +235,11 @@ export class FlexiblePictographGenerator {
           sequenceModifier: "reverse",
         },
       ],
-      baseParams: { letter: "C" },
+      baseParams: { letter: Letter.C },
     },
 
     D: {
-      letter: "D",
+      letter: Letter.D,
       sequences: [
         {
           name: "beta_alpha_cross",
@@ -276,11 +275,11 @@ export class FlexiblePictographGenerator {
           sequenceModifier: "reverse",
         },
       ],
-      baseParams: { letter: "D" },
+      baseParams: { letter: Letter.D },
     },
 
     E: {
-      letter: "E",
+      letter: Letter.E,
       sequences: [
         {
           name: "beta_alpha_cross",
@@ -316,11 +315,11 @@ export class FlexiblePictographGenerator {
           sequenceModifier: "reverse",
         },
       ],
-      baseParams: { letter: "E" },
+      baseParams: { letter: Letter.E },
     },
 
     F: {
-      letter: "F",
+      letter: Letter.F,
       sequences: [
         {
           name: "beta_alpha_cross",
@@ -358,7 +357,7 @@ export class FlexiblePictographGenerator {
           sequenceModifier: "forward",
         },
       ],
-      baseParams: { letter: "F" },
+      baseParams: { letter: Letter.F },
     },
   };
 
@@ -529,22 +528,20 @@ export class FlexiblePictographGenerator {
   private createPictographFromMovement(params: MovementParams): PictographData {
     return createPictographData({
       id: crypto.randomUUID(),
-      letter: params.letter,
+      letter: params.letter, // Use letter string directly
       startPosition: params.startPosition,
       endPosition: params.endPosition,
       timing: params.timing,
       direction: params.direction,
-      letterType: LetterType.TYPE1,
+      letterType: getLetterType(params.letter), // Get type from letter string
       gridData: createGridData({ gridMode: GridMode.DIAMOND }),
       arrows: {
         blue: createArrowData({
-          color: MotionColor.BLUE,
           motionType: params.blueMotion,
           rotationDirection: params.blueRotation,
           isVisible: true,
         }),
         red: createArrowData({
-          color: MotionColor.RED,
           motionType: params.redMotion,
           rotationDirection: params.redRotation,
           isVisible: true,
@@ -552,11 +549,9 @@ export class FlexiblePictographGenerator {
       },
       props: {
         blue: createPropData({
-          color: MotionColor.BLUE,
           rotationDirection: params.blueRotation,
         }),
         red: createPropData({
-          color: MotionColor.RED,
           rotationDirection: params.redRotation,
         }),
       },
@@ -566,12 +561,14 @@ export class FlexiblePictographGenerator {
           rotationDirection: params.blueRotation,
           startLocation: params.blueStartLocation,
           endLocation: params.blueEndLocation,
+          color: MotionColor.BLUE,
         }),
         red: createMotionData({
           motionType: params.redMotion,
           rotationDirection: params.redRotation,
           startLocation: params.redStartLocation,
           endLocation: params.redEndLocation,
+          color: MotionColor.RED,
         }),
       },
       isBlank: false,

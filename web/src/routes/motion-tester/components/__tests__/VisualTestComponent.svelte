@@ -195,11 +195,7 @@
               </div>
             {:else if result.pictographData}
               <div class="pictograph-wrapper">
-                <Pictograph
-                  pictographData={result.pictographData}
-                  width={200}
-                  height={200}
-                />
+                <Pictograph pictographData={result.pictographData} />
                 <button
                   on:click={() =>
                     logPictographData(

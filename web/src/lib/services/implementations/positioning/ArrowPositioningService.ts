@@ -67,7 +67,7 @@ export class ArrowPositioningService implements IArrowPositioningService {
     pictographData: PictographData
   ): Promise<ArrowPositionResult> {
     console.log(
-      `🎯 ArrowPositioningService.calculatePosition called for ${arrowData.color} arrow`
+      `🎯 ArrowPositioningService.calculatePosition called for ${motionData.color} arrow`
     );
     console.log(`Arrow data:`, {
       motionType: arrowData.motionType,

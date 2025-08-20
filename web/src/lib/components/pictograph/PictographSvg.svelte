@@ -12,7 +12,9 @@ and leaves state management to the parent component.
     PropData,
     MotionColor,
   } from "$lib/domain";
-  import { endsWithBeta } from "$lib/utils/betaDetection";
+  import { GridMode } from "$lib/domain/enums";
+  import { BetaPositioningService } from "$lib/services/implementations/positioning/BetaPositioningService";
+
   import Arrow from "./Arrow.svelte";
   import Grid from "./Grid.svelte";
   import Prop from "./Prop.svelte";
@@ -39,12 +41,9 @@ and leaves state management to the parent component.
     arrowMirroring: Record<string, boolean>;
     showArrows: boolean;
     /** Event handlers */
-    onSvgClick: () => void;
-    onKeyDown: (event: KeyboardEvent) => void;
     onComponentLoaded: (componentName: string) => void;
     onComponentError: (componentName: string, error: string) => void;
     /** Accessibility */
-    onClick?: () => void;
     ariaLabel: string;
   }
 
@@ -60,12 +59,16 @@ and leaves state management to the parent component.
     arrowPositions,
     arrowMirroring,
     showArrows,
-    onSvgClick,
-    onKeyDown,
     onComponentLoaded,
     onComponentError,
-    onClick,
+    ariaLabel,
   }: Props = $props();
+
+  // Calculate beta offsets once for all props
+  const betaPositioningService = new BetaPositioningService();
+  const betaOffsets = pictographData
+    ? betaPositioningService.calculateBetaOffsets(pictographData)
+    : { blue: { x: 0, y: 0 }, red: { x: 0, y: 0 } };
 </script>
 
 <svg
@@ -73,10 +76,8 @@ and leaves state management to the parent component.
   {height}
   {viewBox}
   xmlns="http://www.w3.org/2000/svg"
-  onclick={onSvgClick}
-  onkeydown={onKeyDown}
-  role={onClick ? "button" : "img"}
-  {...onClick ? { tabindex: 0 } : {}}
+  role="img"
+  aria-label={ariaLabel}
 >
   <!-- Background -->
   <rect width="950" height="950" fill="white" />
@@ -92,17 +93,14 @@ and leaves state management to the parent component.
     <!-- Props (rendered first so arrows appear on top) -->
     {#each propsToRender as { color, propData } (color)}
       {@const motionData = pictographData?.motions?.[color]}
-      {@const pictographEndsWithBeta = pictographData
-        ? endsWithBeta(pictographData)
-        : false}
+      {@const propBetaOffset =
+        color === "blue" ? betaOffsets.blue : betaOffsets.red}
       <Prop
         {propData}
         {...motionData && { motionData }}
-        gridMode={pictographData?.gridData?.gridMode || "diamond"}
-        allProps={Object.values(pictographData?.props || {})}
-        endsWithBeta={pictographEndsWithBeta}
-        onLoaded={() => onComponentLoaded(`${color}-prop`)}
-        onError={(error) => onComponentError(`${color}-prop`, error)}
+        gridMode={pictographData?.gridData?.gridMode || GridMode.DIAMOND}
+        betaOffset={propBetaOffset}
+        {color}
       />
     {/each}
 
