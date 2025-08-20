@@ -2,7 +2,6 @@
 __pycache__/
 *.py[cod]
 *.class
-src/web_app/modern_web/reference/
 
 # C extensions
 *.so
@@ -15,8 +14,8 @@ dist/
 downloads/
 eggs/
 .eggs/
+lib/
 lib64/
-# But don't ignore web app source directories
 parts/
 sdist/
 var/
@@ -27,7 +26,6 @@ share/python-wheels/
 .installed.cfg
 *.egg
 MANIFEST
-legacy_app/
 
 # PyInstaller
 *.manifest
@@ -152,6 +150,7 @@ coverage/
 .stylelintcache
 
 # dotenv environment variable files
+.env
 .env.development.local
 .env.test.local
 .env.production.local
@@ -186,6 +185,24 @@ current_sequence.json
 user_settings.json
 settings.ini
 
+# Build artifacts
+build/
+dist/
+legacy_app/
+
+# Temporary files
+*.tmp
+*.temp
+.temp/
+temp/
+
+# Chrome debug profile (as requested)
+chrome-debug-profile/
+
+# Netlify
+.netlify\
+.netlify/
+
 # Prevent root directory clutter
 debug_*.py
 unused_function_detector.py
@@ -217,25 +234,3 @@ clean*.sh
 eliminate*.bat
 vscode-*-settings.json
 scripts-annihilation.bat
-web/.vscode/chrome-debug-profile/
-
-# Prevent scripts directory bloat
-scripts/testing/
-scripts/validation/
-scripts/*test_runner*.py
-scripts/*test_validator*.py
-scripts/README_*TESTING*.md
-scripts/git-hooks/
-scripts/results/
-
-# Build artifacts
-apps/*/build/
-apps/*/dist/
-packages/*/build/
-packages/*/dist/
-
-# Temporary files
-*.tmp
-*.temp
-.temp/
-temp/
