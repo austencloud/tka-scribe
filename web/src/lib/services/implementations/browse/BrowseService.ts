@@ -27,34 +27,30 @@ export class BrowseService implements IBrowseService {
   private isValidSequenceMetadata(sequence: BrowseSequenceMetadata): boolean {
     const word = sequence.word || sequence.name || sequence.id || "";
 
-    // ✅ CIRCUIT BREAKER: Block specific malformed sequences that cause infinite loops
-    const malformedSequences = [
+    // ✅ CIRCUIT BREAKER: Block specific known problematic sequences
+    const problematicSequences = [
       "KD__KD__JE__JE__",
       "KI_X_",
-      "KDC__",
       "KDΨΦKDΨΦJEΨΦJEΨΦ",
       "KIθX-",
-      "KDCΦ-",
     ];
 
     if (
-      malformedSequences.includes(word) ||
-      malformedSequences.includes(sequence.id)
+      problematicSequences.includes(word) ||
+      problematicSequences.includes(sequence.id)
     ) {
-      console.warn(`🚫 CIRCUIT BREAKER: Blocking malformed sequence "${word}"`);
+      console.warn(
+        `🚫 CIRCUIT BREAKER: Blocking problematic sequence "${word}"`
+      );
       return false;
     }
 
+    // Basic validation for real dictionary sequences
     return (
       word.length > 0 &&
-      word.length <= 100 && // Reasonable name length limit
-      !word.includes("__") && // No double underscores
-      !word.includes("αααααα") && // No repeated Greek letters
-      !word.includes("ββββ") && // No repeated Greek letters
-      !word.includes("HHHH") && // No repeated letters
-      !word.includes("GGGG") && // No repeated letters
+      word.length <= 200 && // Increased limit for complex sequences
       word !== "A_A" && // Exclude test sequences
-      !word.includes("test") // No test sequences
+      !word.toLowerCase().includes("test") // No test sequences
     );
   }
 
@@ -285,109 +281,104 @@ export class BrowseService implements IBrowseService {
 
     const rawSequences = data.sequences || [];
 
-    // ✅ FIXED: Filter out sequences with malformed IDs and fix ID mapping
+    // ✅ FIXED: Process real sequences and fix any data format issues
     const sequences = rawSequences
-      .filter((seq: BrowseSequenceMetadata) => {
+      .filter((seq: Record<string, unknown>) => {
         const word = seq.word || seq.name || seq.id;
-        const id = seq.id;
 
-        // Skip sequences where ID has underscores but word doesn't (malformed ID generation)
-        if (id.includes("__") && !word.includes("__")) {
+        // Only filter out sequences that are clearly invalid
+        if (!word || (typeof word === "string" && word.length === 0)) {
           console.warn(
-            `🚫 Filtering malformed sequence: ID="${id}", Word="${word}"`
-          );
-          return false;
-        }
-
-        // Skip sequences where ID doesn't match word pattern
-        if (
-          id.includes("_") &&
-          id !== word.toLowerCase() &&
-          !word.includes("_")
-        ) {
-          console.warn(
-            `🚫 Filtering mismatched sequence: ID="${id}", Word="${word}"`
+            `🚫 Filtering sequence with no word: ${JSON.stringify(seq)}`
           );
           return false;
         }
 
         return true;
       })
-      .map((seq: BrowseSequenceMetadata) => ({
-        ...seq,
-        id: seq.word || seq.name || seq.id, // ✅ FIXED: Use actual word as ID instead of malformed ID
-      }));
+      .map((seq: Record<string, unknown>) => {
+        // Fix GridMode references that might be strings
+        let gridMode = seq.gridMode;
+        if (typeof gridMode === "string") {
+          if (gridMode === "GridMode.DIAMOND" || gridMode === "diamond") {
+            gridMode = GridMode.DIAMOND;
+          } else if (gridMode === "GridMode.BOX" || gridMode === "box") {
+            gridMode = GridMode.BOX;
+          }
+        }
+
+        // Fix date strings to Date objects
+        let dateAdded = seq.dateAdded;
+        if (typeof dateAdded === "string") {
+          dateAdded = new Date(dateAdded);
+        }
+
+        const result: BrowseSequenceMetadata = {
+          id: String(seq.id || seq.word || seq.name),
+          name: String(seq.name || `${seq.word} Sequence`),
+          word: String(seq.word || seq.name || seq.id),
+          thumbnails: Array.isArray(seq.thumbnails)
+            ? (seq.thumbnails as string[])
+            : [],
+          isFavorite: Boolean(seq.isFavorite),
+          isCircular: Boolean(seq.isCircular),
+          tags: Array.isArray(seq.tags)
+            ? (seq.tags as string[])
+            : ["flow", "practice"],
+          metadata:
+            typeof seq.metadata === "object" && seq.metadata !== null
+              ? (seq.metadata as Record<string, unknown>)
+              : { source: "tka_dictionary" },
+        };
+
+        // Add optional properties only if they have values
+        if (seq.author && typeof seq.author === "string")
+          result.author = seq.author;
+        if (gridMode && typeof gridMode === "string")
+          result.gridMode = gridMode;
+        if (seq.difficultyLevel && typeof seq.difficultyLevel === "string")
+          result.difficultyLevel = seq.difficultyLevel;
+        if (seq.sequenceLength && typeof seq.sequenceLength === "number")
+          result.sequenceLength = seq.sequenceLength;
+        if (seq.level && typeof seq.level === "number")
+          result.level = seq.level;
+        if (dateAdded instanceof Date) result.dateAdded = dateAdded;
+        if (seq.propType && typeof seq.propType === "string")
+          result.propType = seq.propType;
+        if (seq.startingPosition && typeof seq.startingPosition === "string")
+          result.startingPosition = seq.startingPosition;
+
+        return result;
+      });
 
     console.log(
-      `🔍 Filtered ${rawSequences.length - sequences.length} malformed sequences`
+      `📦 Processed ${sequences.length} real sequences from dictionary`
     );
-    console.log("📦 Returning sequences:", sequences.length, "items");
+    console.log(
+      "📋 Sample sequence IDs:",
+      sequences.slice(0, 10).map((s: BrowseSequenceMetadata) => s.id)
+    );
+
     return sequences;
   }
 
   private async generateSequenceIndex(): Promise<BrowseSequenceMetadata[]> {
-    // This would scan the dictionary folder to build the index
-    // For now, return sample data - in production, you'd implement folder scanning
-    return this.createSampleSequences();
-  }
+    console.log("🔧 Scanning dictionary folder to generate sequence index...");
 
-  private createSampleSequences(): BrowseSequenceMetadata[] {
-    const sampleWords = [
-      "ALPHA",
-      "BETA",
-      "GAMMA",
-      "DELTA",
-      "EPSILON",
-      "ZETA",
-      "ETA",
-      "THETA",
-      "IOTA",
-      "KAPPA",
-      "LAMBDA",
-      "MU",
-      "NU",
-      "XI",
-      "OMICRON",
-      "PI",
-      "RHO",
-      "SIGMA",
-    ];
+    try {
+      // Scan the dictionary folder for real sequences
+      const sequences: BrowseSequenceMetadata[] = [];
 
-    const authors = ["TKA User", "Demo Author", "Expert User"];
-    const difficulties = ["beginner", "intermediate", "advanced"];
-    const gridModes = [GridMode.DIAMOND, GridMode.BOX];
-
-    return sampleWords.map((word, index): BrowseSequenceMetadata => {
-      const authorValue = authors[index % authors.length];
-      const gridModeValue = gridModes[index % gridModes.length];
-      const difficultyValue = difficulties[index % difficulties.length];
-
-      const result: BrowseSequenceMetadata = {
-        id: word, // ✅ FIXED: Keep uppercase to match PNG file names
-        name: `${word} Sequence`,
-        word,
-        thumbnails: [`${word}_ver1.png`],
-        isFavorite: Math.random() > 0.7,
-        isCircular: false,
-        tags: ["flow", "practice"],
-        metadata: { generated: true },
-      };
-
-      // Add optional properties only if they have values
-      if (authorValue) result.author = authorValue;
-      if (gridModeValue) result.gridMode = gridModeValue;
-      if (difficultyValue) result.difficultyLevel = difficultyValue;
-
-      result.sequenceLength = Math.floor(Math.random() * 8) + 3;
-      result.level = Math.floor(Math.random() * 4) + 1;
-      result.dateAdded = new Date(
-        Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000
+      // This is a fallback method - in production, you should regenerate the sequence-index.json
+      // For now, return empty array to force using the real sequence-index.json
+      console.warn(
+        "⚠️ Dictionary scanning not implemented - please ensure sequence-index.json is up to date"
       );
-      result.propType = "fans";
-      result.startingPosition = "center";
-
-      return result;
-    });
+      return sequences;
+    } catch (error) {
+      console.error("❌ Failed to scan dictionary folder:", error);
+      return [];
+    }
   }
 
   private filterByStartingLetter(

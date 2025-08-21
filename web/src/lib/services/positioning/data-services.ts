@@ -47,7 +47,11 @@ export interface IPlacementKeyGenerator {
 }
 
 export interface IAttributeKeyGenerator {
-  getKeyFromArrow(arrowData: ArrowData, pictographData: PictographData): string;
+  getKeyFromArrow(
+    arrowData: ArrowData,
+    pictographData: PictographData,
+    color: string
+  ): string;
 }
 
 export interface ISpecialPlacementOriKeyGenerator {

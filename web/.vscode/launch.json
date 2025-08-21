@@ -2,80 +2,88 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "🚀 Debug TKA App",
+      "name": "🚀 Debug TKA App (VS Code Optimized)",
       "type": "chrome",
       "request": "launch",
       "url": "http://localhost:5173",
       "webRoot": "${workspaceFolder}",
       "preLaunchTask": "Start Dev Server",
-      "sourceMaps": true,
-      "smartStep": false,
       "userDataDir": "${workspaceFolder}/.vscode/chrome-debug-profile",
-      "runtimeArgs": [
-        "--auto-open-devtools-for-tabs",
-        "--disable-web-security",
-        "--disable-features=VizDisplayCompositor",
-        "--remote-debugging-port=9222"
-      ],
+      "sourceMaps": true,
+      "smartStep": true,
       "skipFiles": [
         "<node_internals>/**",
-        "node_modules/**",
-        "${workspaceFolder}/node_modules/**",
-        "${workspaceFolder}/.svelte-kit/**",
-        "${workspaceFolder}/build/**"
+        "**/node_modules/**",
+        "**/vite/**",
+        "**/@vite/**"
       ],
-      "sourceMapPathOverrides": {
-        "webpack:///./*": "${webRoot}/*",
-        "webpack:///src/*": "${webRoot}/src/*",
-        "webpack:///*": "*",
-        "/./*": "${webRoot}/*",
-        "/src/*": "${webRoot}/src/*",
-        "/*": "*",
-        "vite:///*": "${webRoot}/*",
-        "/@fs/*": "*",
-        "file:///*": "*"
-      },
       "trace": true,
-      "timeout": 30000,
-      "urlFilter": "http://localhost:*/*"
+      "pathMapping": {
+        "/": "${workspaceFolder}/",
+        "/@fs/": "/",
+        "/src/": "${workspaceFolder}/src/"
+      },
+      "sourceMapPathOverrides": {
+        "/@fs/*": "/*",
+        "/src/*": "${workspaceFolder}/src/*",
+        "/*": "${workspaceFolder}/*"
+      },
+      "disableNetworkCache": true,
+      "showAsyncStacks": true
     },
     {
-      "name": "🔄 Debug TKA App (Alternative Port)",
-      "type": "chrome", 
+      "name": "🔗 Debug TKA App (Attach to Running Server)",
+      "type": "chrome",
+      "request": "attach",
+      "port": 9222,
+      "webRoot": "${workspaceFolder}",
+      "sourceMaps": true,
+      "smartStep": true,
+      "skipFiles": [
+        "<node_internals>/**",
+        "**/node_modules/**"
+      ],
+      "trace": true,
+      "pathMapping": {
+        "/": "${workspaceFolder}/",
+        "/@fs/": "/",
+        "/src/": "${workspaceFolder}/src/"
+      },
+      "sourceMapPathOverrides": {
+        "/@fs/*": "/*",
+        "/src/*": "${workspaceFolder}/src/*",
+        "/*": "${workspaceFolder}/*"
+      }
+    },
+    {
+      "name": "🔄 Debug TKA App (Port 5174 - VS Code Optimized)",
+      "type": "chrome",
       "request": "launch",
       "url": "http://localhost:5174",
       "webRoot": "${workspaceFolder}",
-      "preLaunchTask": "Start Dev Server",
+      "preLaunchTask": "Start Dev Server (Port 5174)",
+      "userDataDir": "${workspaceFolder}/.vscode/chrome-debug-profile-alt",
       "sourceMaps": true,
-      "smartStep": false,
-      "userDataDir": "${workspaceFolder}/.vscode/chrome-debug-profile",
-      "runtimeArgs": [
-        "--auto-open-devtools-for-tabs",
-        "--disable-web-security",
-        "--disable-features=VizDisplayCompositor",
-        "--remote-debugging-port=9223"
-      ],
+      "smartStep": true,
       "skipFiles": [
         "<node_internals>/**",
-        "node_modules/**",
-        "${workspaceFolder}/node_modules/**",
-        "${workspaceFolder}/.svelte-kit/**",
-        "${workspaceFolder}/build/**"
+        "**/node_modules/**",
+        "**/vite/**",
+        "**/@vite/**"
       ],
-      "sourceMapPathOverrides": {
-        "webpack:///./*": "${webRoot}/*",
-        "webpack:///src/*": "${webRoot}/src/*",
-        "webpack:///*": "*",
-        "/./*": "${webRoot}/*",
-        "/src/*": "${webRoot}/src/*",
-        "/*": "*",
-        "vite:///*": "${webRoot}/*",
-        "/@fs/*": "*",
-        "file:///*": "*"
-      },
       "trace": true,
-      "timeout": 30000,
-      "urlFilter": "http://localhost:*/*"
+      "pathMapping": {
+        "/": "${workspaceFolder}/",
+        "/@fs/": "/",
+        "/src/": "${workspaceFolder}/src/"
+      },
+      "sourceMapPathOverrides": {
+        "/@fs/*": "/*",
+        "/src/*": "${workspaceFolder}/src/*",
+        "/*": "${workspaceFolder}/*"
+      },
+      "disableNetworkCache": true,
+      "showAsyncStacks": true
     }
   ]
 }

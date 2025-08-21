@@ -22,6 +22,12 @@
 
   onMount(async () => {
     try {
+      // Clean up problematic sessionStorage values first
+      const { cleanupSessionStorage } = await import(
+        "$lib/utils/session-storage-cleanup"
+      );
+      cleanupSessionStorage();
+
       try {
         // Import bootstrap function
         const { createWebApplication } = await import("$services/bootstrap");

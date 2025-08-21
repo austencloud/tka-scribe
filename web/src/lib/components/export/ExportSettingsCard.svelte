@@ -8,8 +8,6 @@
       add_user_info: boolean;
       add_word: boolean;
       use_last_save_directory: boolean;
-      export_format: string;
-      export_quality: string;
       user_name: string;
       custom_note: string;
     };
@@ -17,22 +15,6 @@
   }
 
   let { exportSettings, onsettingchanged }: Props = $props();
-
-  // Format options matching desktop app
-  const formatOptions = [
-    { value: "PNG", label: "PNG" },
-    { value: "JPG", label: "JPG" },
-    { value: "SVG", label: "SVG" },
-    { value: "PDF", label: "PDF" },
-  ];
-
-  // Quality options matching desktop app
-  const qualityOptions = [
-    { value: "72 DPI", label: "72 DPI (Web)" },
-    { value: "150 DPI", label: "150 DPI (Standard)" },
-    { value: "300 DPI", label: "300 DPI (Print)" },
-    { value: "600 DPI", label: "600 DPI (High Quality)" },
-  ];
 
   // User name options (can be extended)
   const userOptions = [
@@ -155,89 +137,44 @@
     </div>
   </div>
 
-  <!-- Format Settings Section -->
-  <div class="settings-section">
-    <h4 class="section-title">Format Settings</h4>
-    <div class="format-controls">
-      <div class="control-group">
-        <label class="control-label" for="export-format">Export Format</label>
-        <select
-          id="export-format"
-          class="modern-select"
-          value={exportSettings.export_format}
-          onchange={(e) => {
-            const target = e.target;
-            if (target instanceof HTMLSelectElement) {
-              handleSelectChange("export_format", target.value);
-            }
-          }}
-        >
-          {#each formatOptions as option}
-            <option value={option.value}>{option.label}</option>
-          {/each}
-        </select>
-      </div>
-
-      <div class="control-group">
-        <label class="control-label" for="export-quality">Quality</label>
-        <select
-          id="export-quality"
-          class="modern-select"
-          value={exportSettings.export_quality}
-          onchange={(e) => {
-            const target = e.target;
-            if (target instanceof HTMLSelectElement) {
-              handleSelectChange("export_quality", target.value);
-            }
-          }}
-        >
-          {#each qualityOptions as option}
-            <option value={option.value}>{option.label}</option>
-          {/each}
-        </select>
-      </div>
-    </div>
-  </div>
-
   <!-- User Settings Section -->
-  <div class="settings-section">
-    <h4 class="section-title">User Settings</h4>
-    <div class="user-controls">
-      <div class="control-group">
-        <label class="control-label" for="user-name">User Name</label>
-        <select
-          id="user-name"
-          class="modern-select"
-          value={exportSettings.user_name}
-          onchange={(e) => {
-            const target = e.target;
-            if (target instanceof HTMLSelectElement) {
-              handleSelectChange("user_name", target.value);
-            }
-          }}
-        >
-          {#each userOptions as option}
-            <option value={option.value}>{option.label}</option>
-          {/each}
-        </select>
-      </div>
+  <div class="settings-section"></div>
+  <h4 class="section-title">User Settings</h4>
+  <div class="user-controls">
+    <div class="control-group">
+      <label class="control-label" for="user-name">User Name</label>
+      <select
+        id="user-name"
+        class="modern-select"
+        value={exportSettings.user_name}
+        onchange={(e) => {
+          const target = e.target;
+          if (target instanceof HTMLSelectElement) {
+            handleSelectChange("user_name", target.value);
+          }
+        }}
+      >
+        {#each userOptions as option}
+          <option value={option.value}>{option.label}</option>
+        {/each}
+      </select>
+    </div>
 
-      <div class="control-group">
-        <label class="control-label" for="custom-note">Custom Note</label>
-        <textarea
-          id="custom-note"
-          class="modern-textarea"
-          value={exportSettings.custom_note}
-          placeholder="Add a custom note to your export..."
-          rows="3"
-          oninput={(e) => {
-            const target = e.target;
-            if (target instanceof HTMLTextAreaElement) {
-              handleTextChange("custom_note", target.value);
-            }
-          }}
-        ></textarea>
-      </div>
+    <div class="control-group">
+      <label class="control-label" for="custom-note">Custom Note</label>
+      <textarea
+        id="custom-note"
+        class="modern-textarea"
+        value={exportSettings.custom_note}
+        placeholder="Add a custom note to your export..."
+        rows="3"
+        oninput={(e) => {
+          const target = e.target;
+          if (target instanceof HTMLTextAreaElement) {
+            handleTextChange("custom_note", target.value);
+          }
+        }}
+      ></textarea>
     </div>
   </div>
 </div>
@@ -330,7 +267,6 @@
     line-height: 1.1;
   }
 
-  .format-controls,
   .user-controls {
     display: flex;
     flex-direction: column;

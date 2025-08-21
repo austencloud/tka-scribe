@@ -9,6 +9,7 @@
  */
 
 import type { IGridOverlayService } from "../../interfaces/image-export-interfaces";
+import { GridMode } from "$lib/domain/enums";
 
 export class GridOverlayService implements IGridOverlayService {
   // Grid constants
@@ -22,7 +23,7 @@ export class GridOverlayService implements IGridOverlayService {
    */
   applyCombinedGrids(
     canvas: HTMLCanvasElement,
-    currentGridMode: string
+    currentGridMode: GridMode
   ): HTMLCanvasElement {
     if (!this.validateGridMode(currentGridMode)) {
       throw new Error(`Invalid grid mode: ${currentGridMode}`);
@@ -59,7 +60,7 @@ export class GridOverlayService implements IGridOverlayService {
    */
   drawGridOverlay(
     ctx: CanvasRenderingContext2D,
-    gridMode: string,
+    gridMode: GridMode,
     size: number,
     opacity: number = 1.0
   ): void {
@@ -91,8 +92,8 @@ export class GridOverlayService implements IGridOverlayService {
    * Get opposite grid mode
    * Matches desktop logic exactly
    */
-  getOppositeGridMode(currentMode: string): string {
-    switch (currentMode.toLowerCase()) {
+  getOppositeGridMode(currentMode: GridMode): GridMode {
+    switch (currentMode) {
       case GridMode.DIAMOND:
         return GridMode.BOX;
       case GridMode.BOX:
@@ -103,11 +104,11 @@ export class GridOverlayService implements IGridOverlayService {
   }
 
   /**
-   * Validate grid modes
+   * Validate grid modes - only accepts proper GridMode enum
    */
-  validateGridMode(gridMode: string): boolean {
+  validateGridMode(gridMode: GridMode): boolean {
     const validModes = [GridMode.DIAMOND, GridMode.BOX];
-    return validModes.includes(gridMode.toLowerCase());
+    return validModes.includes(gridMode);
   }
 
   /**
@@ -216,7 +217,7 @@ export class GridOverlayService implements IGridOverlayService {
    * Create grid overlay as separate canvas
    * Useful for caching grid patterns
    */
-  createGridCanvas(gridMode: string, size: number): HTMLCanvasElement {
+  createGridCanvas(gridMode: GridMode, size: number): HTMLCanvasElement {
     const canvas = document.createElement("canvas");
     canvas.width = size;
     canvas.height = size;
@@ -240,7 +241,7 @@ export class GridOverlayService implements IGridOverlayService {
    */
   applyGridWithBlendMode(
     canvas: HTMLCanvasElement,
-    gridMode: string,
+    gridMode: GridMode,
     blendMode: GlobalCompositeOperation = "source-over"
   ): HTMLCanvasElement {
     const result = document.createElement("canvas");
@@ -294,10 +295,10 @@ export class GridOverlayService implements IGridOverlayService {
    * Get recommended grid overlay settings
    */
   getRecommendedSettings(
-    baseGridMode: string,
+    baseGridMode: GridMode,
     purpose: "export" | "preview" | "print"
   ): {
-    overlayMode: string;
+    overlayMode: GridMode;
     opacity: number;
     lineWidth: number;
     color: string;
@@ -383,7 +384,7 @@ export class GridOverlayService implements IGridOverlayService {
    */
   batchApplyGrids(
     canvases: HTMLCanvasElement[],
-    gridModes: string[]
+    gridModes: GridMode[]
   ): HTMLCanvasElement[] {
     if (canvases.length !== gridModes.length) {
       throw new Error("Canvas count must match grid mode count");
@@ -403,17 +404,7 @@ export class GridOverlayService implements IGridOverlayService {
   }
 
   /**
-   * Validate and normalize grid mode
+   * REMOVED: normalizeGridMode is no longer needed with proper enum type safety
+   * All methods now accept GridMode enum directly
    */
-  normalizeGridMode(gridMode: string): string {
-    const normalized = gridMode.toLowerCase().trim();
-
-    if (!this.validateGridMode(normalized)) {
-      throw new Error(
-        `Unsupported grid mode: ${gridMode}. Supported modes: ${this.getSupportedGridModes().join(", ")}`
-      );
-    }
-
-    return normalized;
-  }
 }

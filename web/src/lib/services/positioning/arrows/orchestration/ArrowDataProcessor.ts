@@ -17,7 +17,7 @@ export class ArrowDataProcessor {
   }
 
   getMotionFromPictograph(
-    arrowData: ArrowData,
+    arrowColor: string, // ✅ FIXED: Pass color directly since ArrowData no longer has color
     pictographData: PictographData
   ): MotionData | undefined {
     /**
@@ -26,7 +26,7 @@ export class ArrowDataProcessor {
     if (!pictographData?.motions) {
       return undefined;
     }
-    return pictographData.motions[arrowData.color];
+    return pictographData.motions[arrowColor];
   }
 
   ensureValidPosition(initialPosition: Point): Point {
@@ -91,13 +91,12 @@ export class ArrowDataProcessor {
     }
 
     // Check required properties
-    const hasColor =
-      typeof arrowData.color === "string" && arrowData.color.length > 0;
+    // ✅ FIXED: Color is no longer part of ArrowData
     const hasValidCoordinates =
-      typeof arrowData.position_x === "number" &&
-      typeof arrowData.position_y === "number";
+      typeof arrowData.positionX === "number" &&
+      typeof arrowData.positionY === "number";
 
-    return hasColor && hasValidCoordinates;
+    return hasValidCoordinates;
   }
 
   validateMotionData(motionData: MotionData): boolean {

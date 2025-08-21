@@ -5,6 +5,7 @@
 
 import type { AppSettings } from "$services/interfaces/application-interfaces";
 import { BackgroundType } from "$lib/components/backgrounds/types/types";
+import { GridMode } from "$lib/domain/enums";
 
 // ============================================================================
 // SIMPLE STATE - No over-engineering!

@@ -294,24 +294,9 @@ export class BetaPropDirectionCalculator {
    * This needs to be passed in from the test or determined by context
    */
   private endsWithRadialOrientation(): boolean {
-    const redEndOri =
-      (
-        this.motionDataSet.red as unknown as {
-          end_orientation?: string;
-          endOrientation?: string;
-        }
-      ).end_orientation ??
-      (this.motionDataSet.red as unknown as { endOrientation?: string })
-        .endOrientation;
-    const blueEndOri =
-      (
-        this.motionDataSet.blue as unknown as {
-          end_orientation?: string;
-          endOrientation?: string;
-        }
-      ).end_orientation ??
-      (this.motionDataSet.blue as unknown as { endOrientation?: string })
-        .endOrientation;
+    // ✅ FIXED: Simplified orientation access using MotionData
+    const redEndOri = this.motionDataSet.red?.endOrientation;
+    const blueEndOri = this.motionDataSet.blue?.endOrientation;
     if (redEndOri === "in" && blueEndOri === "in") return true;
     if (redEndOri === "out" && blueEndOri === "out") return false;
     return true;

@@ -11,8 +11,8 @@ This is the left 2/3 section of the new layout.
   import PropPanel from "./PropPanel.svelte";
   import SimpleGridToggle from "./SimpleGridToggle.svelte";
   import { resolve } from "$lib/services/bootstrap";
-  import { IArrowPositioningOrchestratorInterface } from "$lib/services/di/interfaces/positioning-interfaces";
   import { ILetterQueryServiceInterface } from "$lib/services/di/interfaces/codex-interfaces";
+  import { untrack } from "svelte";
   import type { PictographData } from "$lib/domain";
   import {
     createPictographData,
@@ -27,21 +27,15 @@ This is the left 2/3 section of the new layout.
     MotionColor,
     Location,
     RotationDirection,
+    GridPosition,
   } from "$lib/domain/enums";
+  import { PositionMappingService } from "$lib/services/implementations/movement/PositionMappingService";
 
   interface Props {
     motionState: MotionTesterState;
   }
 
   let { motionState }: Props = $props();
-
-  // Fixed size for consistent layout
-  const PICTOGRAPH_SIZE = 320;
-
-  // Resolve services
-  const arrowPositioningService = resolve(
-    IArrowPositioningOrchestratorInterface
-  );
 
   // Use CSV lookup service to get real pictograph data
   let pictographData = $state<PictographData | null>(null);
@@ -65,8 +59,10 @@ This is the left 2/3 section of the new layout.
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const gridMode = motionState.gridMode;
 
-    // Immediately update pictograph data using CSV lookup
-    updatePictographData();
+    // ✅ FIXED: Use untrack to prevent infinite loop when updating pictographData
+    untrack(() => {
+      updatePictographData();
+    });
   });
 
   async function updatePictographData() {
@@ -168,7 +164,61 @@ This is the left 2/3 section of the new layout.
         identifiedLetter
       );
 
-      // Create the pictograph data
+      // Determine end position for beta detection using PositionMappingService
+      let endPosition: GridPosition = GridPosition.ALPHA1; // ✅ FIXED: Always provide a default
+
+      if (blueMotion.endLocation === redMotion.endLocation) {
+        // Both props end at same location - this is a beta condition
+        const positionMappingService = new PositionMappingService();
+        const locationPair = `${blueMotion.endLocation},${redMotion.endLocation}`;
+        try {
+          endPosition = positionMappingService.getPositionFromLocations(
+            blueMotion.endLocation as Location,
+            redMotion.endLocation as Location
+          );
+          console.log(
+            `🔍 StaticSection: Mapped location pair ${locationPair} to position ${endPosition}`
+          );
+        } catch (error) {
+          console.warn(
+            `🔍 StaticSection: Could not map location pair ${locationPair} to position:`,
+            error
+          );
+          // For beta positions where both hands are at same location, we can infer the beta position
+          const locationToBeta: Record<string, GridPosition> = {
+            n: GridPosition.BETA1,
+            ne: GridPosition.BETA2,
+            e: GridPosition.BETA3,
+            se: GridPosition.BETA4,
+            s: GridPosition.BETA5,
+            sw: GridPosition.BETA6,
+            w: GridPosition.BETA7,
+            nw: GridPosition.BETA8,
+          };
+          endPosition =
+            locationToBeta[blueMotion.endLocation] || GridPosition.BETA1; // ✅ FIXED: Fallback to BETA1
+        }
+      } else {
+        // ✅ FIXED: Handle case where props end at different locations
+        // For non-beta positions, derive from blue prop end location (primary prop)
+        const locationToAlpha: Record<string, GridPosition> = {
+          n: GridPosition.ALPHA1,
+          ne: GridPosition.ALPHA2,
+          e: GridPosition.ALPHA3,
+          se: GridPosition.ALPHA4,
+          s: GridPosition.ALPHA5,
+          sw: GridPosition.ALPHA6,
+          w: GridPosition.ALPHA7,
+          nw: GridPosition.ALPHA8,
+        };
+        endPosition =
+          locationToAlpha[blueMotion.endLocation] || GridPosition.ALPHA1;
+        console.log(
+          `🔍 StaticSection: Props end at different locations, using alpha position ${endPosition} based on blue prop`
+        );
+      }
+
+      // Create the pictograph data with endPosition for automatic beta detection
       const dynamicPictograph = createPictographData({
         id: `motion-tester-${Date.now()}`,
         gridData: createGridData({
@@ -186,6 +236,7 @@ This is the left 2/3 section of the new layout.
           red: redProps,
         },
         letter: identifiedLetter, // ✅ Use the identified letter instead of empty string
+        endPosition: endPosition, // ✅ Add endPosition for automatic beta detection
         isBlank: false,
         isMirrored: false,
         metadata: {
@@ -194,13 +245,8 @@ This is the left 2/3 section of the new layout.
         },
       });
 
-      // Apply arrow positioning to get final positioned pictograph
-      const positionedPictograph =
-        await arrowPositioningService.calculateAllArrowPositions(
-          dynamicPictograph
-        );
-
-      pictographData = positionedPictograph;
+      // ✅ Let Pictograph component handle all positioning automatically
+      pictographData = dynamicPictograph;
       console.log("✅ StaticSection: Dynamic pictograph created successfully!");
       console.log(
         "🔧 [DEBUG] pictographData is:",

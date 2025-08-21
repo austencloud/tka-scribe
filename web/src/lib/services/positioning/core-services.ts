@@ -107,7 +107,8 @@ export interface IArrowPositioningOrchestrator {
    */
   shouldMirrorArrow(
     arrowData: ArrowData,
-    pictographData?: PictographData
+    pictographData?: PictographData,
+    motionData?: MotionData
   ): boolean;
 
   /**

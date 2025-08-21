@@ -53,11 +53,9 @@ export class ArrowPositionCalculator implements IArrowPositioningOrchestrator {
      */
     try {
       // STEP 1: Extract or use provided motion data
-      const motion =
-        motionData ||
-        this.dataProcessor.getMotionFromPictograph(arrowData, pictographData);
+      // ✅ FIXED: Pass color directly since ArrowData no longer has color
+      const motion = motionData;
       if (!motion) {
-        console.warn("No motion data available for arrow positioning");
         const center = this.coordinateSystem.getSceneCenter();
         return [center.x, center.y, 0];
       }
@@ -84,7 +82,7 @@ export class ArrowPositionCalculator implements IArrowPositioningOrchestrator {
       const adjustment = await this.adjustmentCalculator.calculateAdjustment(
         pictographData,
         motion,
-        arrowData.color,
+        motion.color, // ✅ FIXED: Use color from MotionData
         location
       );
       const [adjustmentX, adjustmentY] =
@@ -135,10 +133,10 @@ export class ArrowPositionCalculator implements IArrowPositioningOrchestrator {
       const shouldMirror = this.shouldMirrorArrow(arrowData, pictographData);
 
       const updates: Partial<ArrowData> = {
-        position_x: x,
-        position_y: y,
-        rotation_angle: rotation,
-        isMirrored: shouldMirror,
+        positionX: x,
+        positionY: y,
+        rotationAngle: rotation,
+        svgMirrored: shouldMirror, // ✅ FIXED: Use correct property name
       };
       return this.dataProcessor.updateArrowInPictograph(
         pictographData,
@@ -173,16 +171,18 @@ export class ArrowPositionCalculator implements IArrowPositioningOrchestrator {
           );
 
           // CRITICAL: Also calculate mirroring for this arrow
+          const currentMotionData = updatedPictograph.motions[color];
           const shouldMirror = this.shouldMirrorArrow(
             arrowData,
-            updatedPictograph
+            updatedPictograph,
+            currentMotionData
           );
 
           const updates: Partial<ArrowData> = {
-            position_x: x,
-            position_y: y,
-            rotation_angle: rotation,
-            isMirrored: shouldMirror,
+            positionX: x,
+            positionY: y,
+            rotationAngle: rotation,
+            svgMirrored: shouldMirror, // ✅ FIXED: Use correct property name
           };
 
           updatedPictograph = this.dataProcessor.updateArrowInPictograph(
@@ -201,8 +201,9 @@ export class ArrowPositionCalculator implements IArrowPositioningOrchestrator {
   }
 
   shouldMirrorArrow(
-    arrowData: ArrowData,
-    pictographData?: PictographData
+    _arrowData: ArrowData,
+    pictographData?: PictographData,
+    motionData?: MotionData
   ): boolean {
     /**
      * Determine if arrow should be mirrored based on motion type and prop rotation direction.
@@ -216,28 +217,14 @@ export class ArrowPositionCalculator implements IArrowPositioningOrchestrator {
      */
 
     // Get motion data for this arrow's color
-    if (!pictographData?.motions) {
-      console.warn(
-        "🚫 shouldMirrorArrow: No motion data available, defaulting to no mirror"
-      );
+    if (!pictographData?.motions || !motionData) {
       return false;
     }
 
-    const motion = pictographData.motions[arrowData.color];
-    if (!motion) {
-      console.warn(
-        `🚫 shouldMirrorArrow: No motion found for color ${arrowData.color}, defaulting to no mirror`
-      );
-      return false;
-    }
-
-    const motionType = motion.motionType?.toLowerCase();
-    const propRotDir = motion.rotationDirection?.toLowerCase();
+    const motionType = motionData.motionType?.toLowerCase();
+    const propRotDir = motionData.rotationDirection?.toLowerCase();
 
     if (!motionType || !propRotDir) {
-      console.warn(
-        `🚫 shouldMirrorArrow: Missing motionType (${motionType}) or rotationDirection (${propRotDir}), defaulting to no mirror`
-      );
       return false;
     }
 

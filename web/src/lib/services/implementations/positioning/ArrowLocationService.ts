@@ -3,7 +3,7 @@
  *
  * Determines arrow location based on start and end positions using the same logic
  * as the desktop app's ShiftLocationCalculator.
- * 
+ *
  * REFACTORED: Converted from utils to proper service with interface.
  */
 

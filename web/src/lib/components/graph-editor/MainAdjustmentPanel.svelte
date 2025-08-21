@@ -47,15 +47,16 @@
   }
 
   // Handle orientation changes from DualOrientationPicker
-  function handleOrientationChange(event: CustomEvent) {
-    const { color, orientation } = event.detail;
-    onOrientationChanged(color, orientation);
+  function handleOrientationChange(data: {
+    color: string;
+    orientation: string;
+  }) {
+    onOrientationChanged(data.color, data.orientation);
   }
 
   // Handle turn amount changes from TurnAdjustmentControls
-  function handleTurnAmountChange(event: CustomEvent) {
-    const { color, turnAmount } = event.detail;
-    onTurnAmountChanged(color, turnAmount);
+  function handleTurnAmountChange(data: { color: string; turnAmount: number }) {
+    onTurnAmountChanged(data.color, data.turnAmount);
   }
 
   // Get currently selected arrow info
@@ -104,13 +105,13 @@
       <DualOrientationPicker
         bind:this={orientationPicker}
         {currentBeatData}
-        on:orientationChanged={handleOrientationChange}
+        onorientationchanged={handleOrientationChange}
       />
     {:else if activePanel === "turn"}
       <TurnAdjustmentControls
         bind:this={turnControls}
         {currentBeatData}
-        on:turnAmountChanged={handleTurnAmountChange}
+        onturnamountchanged={handleTurnAmountChange}
       />
     {:else}
       <div class="no-controls">

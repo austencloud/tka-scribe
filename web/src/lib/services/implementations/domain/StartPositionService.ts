@@ -8,13 +8,8 @@
 import type { BeatData, PictographData } from "../../../domain";
 import {
   MotionColor,
-  createArrowData,
   createBeatData,
-  createGridData,
-  createMotionData,
-  createPictographData,
-  createPropData,
-  GridMode as DomainGridMode,
+  GridMode,
   Location,
   MotionType,
   Orientation,
@@ -22,9 +17,10 @@ import {
   RotationDirection,
 } from "../../../domain";
 import type { ValidationResult } from "../../interfaces/domain-types";
-import type { GridMode } from "../../interfaces/core-types";
 import type { IStartPositionService } from "../../interfaces/application-interfaces";
 import type { ValidationError } from "$lib/domain/sequenceCard";
+import { PictographDataFactory } from "../../factories/PictographDataFactory";
+import { Letter } from "$lib/domain/Letter";
 
 export class StartPositionService implements IStartPositionService {
   private readonly DEFAULT_START_POSITIONS = {
@@ -58,7 +54,7 @@ export class StartPositionService implements IStartPositionService {
             pictographData: this.createStartPositionPictograph(
               key,
               index,
-              DomainGridMode.DIAMOND
+              GridMode.DIAMOND
             ),
           });
         });
@@ -196,11 +192,7 @@ export class StartPositionService implements IStartPositionService {
 
         const pictographData: PictographData[] = fallbackKeys.map(
           (key, index) =>
-            this.createStartPositionPictograph(
-              key,
-              index,
-              DomainGridMode.DIAMOND
-            )
+            this.createStartPositionPictograph(key, index, GridMode.DIAMOND)
         );
 
         return pictographData;
@@ -222,12 +214,14 @@ export class StartPositionService implements IStartPositionService {
     index: number,
     gridMode: GridMode
   ): PictographData {
+    // ✅ CENTRALIZED: Use PictographDataFactory for consistent creation
+
     // Determine letter based on position key
-    let letter: string;
-    if (key.includes("alpha")) letter = "α";
-    else if (key.includes("beta")) letter = "β";
-    else if (key.includes("gamma")) letter = "Γ";
-    else letter = key;
+    let letter: Letter;
+    if (key.includes("alpha")) letter = Letter.ALPHA;
+    else if (key.includes("beta")) letter = Letter.BETA;
+    else if (key.includes("gamma")) letter = Letter.GAMMA;
+    else letter = Letter.ALPHA; // Default fallback
 
     // Use correct locations based on legacy position mappings
     // From PatternGenerator.ts and positions_map.py
@@ -250,65 +244,54 @@ export class StartPositionService implements IStartPositionService {
     const blueLocation = mapping?.blue || Location.SOUTH;
     const redLocation = mapping?.red || Location.NORTH;
 
-    // Create proper arrow data with location
-    const blueArrow = createArrowData({
-      turns: 0,
-      location: blueLocation,
-    });
-
-    const redArrow = createArrowData({
-      turns: 0,
-      location: redLocation,
-    });
-
-    // Create proper prop data
-    const blueProp = createPropData({
-      propType: PropType.STAFF,
-    });
-
-    const redProp = createPropData({
-      propType: PropType.STAFF,
-    });
-
-    // Create proper motion data
-    const blueMotion = createMotionData({
-      motionType: MotionType.STATIC,
-      rotationDirection: RotationDirection.NO_ROTATION,
-      startLocation: blueLocation,
-      endLocation: blueLocation,
-      turns: 0,
-      startOrientation: Orientation.IN,
-      endOrientation: Orientation.IN,
-      color: MotionColor.BLUE,
-    });
-
-    const redMotion = createMotionData({
-      motionType: MotionType.STATIC,
-      rotationDirection: RotationDirection.NO_ROTATION,
-      startLocation: redLocation,
-      endLocation: redLocation,
-      turns: 0,
-      startOrientation: Orientation.IN,
-      endOrientation: Orientation.IN,
-      color: MotionColor.RED,
-    });
-
-    const pictograph = createPictographData({
+    // ✅ CENTRALIZED: Use PictographDataFactory for consistent, complete creation
+    return PictographDataFactory.create({
       id: `start-pos-${key}-${index}`,
-      gridData: createGridData({
-        gridMode:
-          gridMode === GridMode.DIAMOND
-            ? DomainGridMode.DIAMOND
-            : DomainGridMode.BOX,
-      }),
-      arrows: { blue: blueArrow, red: redArrow },
-      props: { blue: blueProp, red: redProp },
-      motions: { blue: blueMotion, red: redMotion },
       letter,
+      gridMode,
+      motions: {
+        blue: {
+          motionType: MotionType.STATIC,
+          rotationDirection: RotationDirection.NO_ROTATION,
+          startLocation: blueLocation,
+          endLocation: blueLocation,
+          turns: 0,
+          startOrientation: Orientation.IN,
+          endOrientation: Orientation.IN,
+          color: MotionColor.BLUE,
+        },
+        red: {
+          motionType: MotionType.STATIC,
+          rotationDirection: RotationDirection.NO_ROTATION,
+          startLocation: redLocation,
+          endLocation: redLocation,
+          turns: 0,
+          startOrientation: Orientation.IN,
+          endOrientation: Orientation.IN,
+          color: MotionColor.RED,
+        },
+      },
+      props: {
+        blue: {
+          propType: PropType.STAFF,
+        },
+        red: {
+          propType: PropType.STAFF,
+        },
+      },
+      arrows: {
+        blue: {
+          // ✅ SIMPLIFIED: Only arrow-specific properties, motion data comes from MotionData
+          arrowLocation: null, // Will be calculated by positioning system from motion data
+        },
+        red: {
+          // ✅ SIMPLIFIED: Only arrow-specific properties, motion data comes from MotionData
+          arrowLocation: null, // Will be calculated by positioning system from motion data
+        },
+      },
+      // ✅ GUARANTEED: Factory will derive endPosition from motion data
       isBlank: false,
       isMirrored: false,
     });
-
-    return pictograph;
   }
 }

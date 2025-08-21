@@ -197,7 +197,7 @@
   <div class="export-header">
     <h2 class="export-title">Export</h2>
     <p class="export-description">
-      {sequenceInfo}
+      {sequenceInfo()}
     </p>
     {#if !browser}
       <p class="export-status">⚠️ Export requires JavaScript</p>

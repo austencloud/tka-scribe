@@ -61,7 +61,7 @@ import { OverlayRenderingService } from "../../implementations/rendering/Overlay
 import { PanelManagementService } from "../../implementations/navigation/PanelManagementService";
 import { PictographRenderingService } from "../../implementations/rendering/PictographRenderingService";
 import { PictographService } from "../../implementations/domain/PictographService";
-import { PropRenderingService } from "../../implementations/rendering/PropRenderingService";
+// ✅ REMOVED: PropRenderingService is deprecated and redundant
 import { PropCoordinatorService } from "../../implementations/rendering/PropCoordinatorService";
 import { SequenceDomainService } from "../../implementations/domain/SequenceDomainService";
 import { SequenceGenerationService } from "../../implementations/generation/SequenceGenerationService";
@@ -114,7 +114,7 @@ export const IPictographRenderingServiceInterface =
       constructor(...args: unknown[]) {
         super(
           args[0] as IArrowPositioningOrchestrator,
-          args[1] as IPropRenderingService,
+          args[1] as IPropRenderingService | null, // ✅ FIXED: Allow null for deprecated service
           args[2] as ISvgUtilityService,
           args[3] as IGridRenderingService,
           args[4] as IArrowRenderingService,
@@ -125,11 +125,8 @@ export const IPictographRenderingServiceInterface =
     }
   );
 
-export const IPropRenderingServiceInterface =
-  createServiceInterface<IPropRenderingService>(
-    "IPropRenderingService",
-    PropRenderingService
-  );
+// ✅ REMOVED: PropRenderingService is deprecated and redundant
+// Props are now rendered by Prop.svelte components
 
 export const IPropCoordinatorServiceInterface =
   createServiceInterface<IPropCoordinatorService>(

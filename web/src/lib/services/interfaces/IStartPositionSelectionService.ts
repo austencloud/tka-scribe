@@ -1,6 +1,6 @@
 /**
  * IStartPositionSelectionService.ts
- * 
+ *
  * Interface for start position selection service.
  * Defines the contract for handling start position selection business logic.
  */
@@ -32,4 +32,6 @@ export interface IStartPositionSelectionService {
 /**
  * Service interface symbol for DI container registration
  */
-export const IStartPositionSelectionServiceInterface = Symbol('IStartPositionSelectionService');
+export const IStartPositionSelectionServiceInterface = Symbol(
+  "IStartPositionSelectionService"
+);

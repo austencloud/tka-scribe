@@ -6,7 +6,7 @@
  */
 
 import type { MotionData } from "$lib/domain";
-import { Location, MotionType } from "$lib/domain";
+import { Location, MotionType, GridMode } from "$lib/domain/enums";
 
 export class ArrowQuadrantCalculator {
   calculateQuadrantIndex(motion: MotionData, location: Location): number {

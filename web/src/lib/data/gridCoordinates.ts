@@ -127,7 +127,7 @@ export function parseCoordinates(
 /**
  * Convert raw coordinate data into structured GridData format
  */
-export function createGridData(mode: GridMode): GridData {
+export function createGridData(mode: GridMode): GridPointData {
   const modeData = gridCoordinates[mode];
 
   const parsePoints = (points: Record<string, string>) =>
@@ -151,7 +151,7 @@ export function createGridData(mode: GridMode): GridData {
 /**
  * Grid data interface matching the legacy system
  */
-export interface GridData {
+export interface GridPointData {
   allHandPointsStrict: Record<
     string,
     { coordinates: { x: number; y: number } | null }

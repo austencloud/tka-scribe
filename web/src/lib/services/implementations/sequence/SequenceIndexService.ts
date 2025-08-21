@@ -7,6 +7,7 @@
 
 import type { BrowseSequenceMetadata } from "$lib/services/interfaces/domain-types";
 import type { ISequenceIndexService } from "$lib/services/interfaces/browse-interfaces";
+import { GridMode } from "$lib/domain/enums";
 
 interface SearchIndex {
   wordIndex: Map<string, Set<string>>; // word -> sequence IDs

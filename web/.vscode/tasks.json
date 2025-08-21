@@ -6,47 +6,35 @@
       "type": "shell",
       "command": "npm",
       "args": ["run", "dev"],
-      "options": {
-        "cwd": "${workspaceFolder}"
-      },
-      "group": "build",
-      "presentation": {
-        "echo": true,
-        "reveal": "always",
-        "focus": false,
-        "panel": "shared",
-        "showReuseMessage": true,
-        "clear": false
-      },
       "isBackground": true,
       "problemMatcher": {
         "owner": "vite",
         "pattern": {
-          "regexp": "^([^\\s].*):(\\d+):(\\d+):\\s+(warning|error):\\s+(.*)$",
-          "file": 1,
-          "line": 2,
-          "column": 3,
-          "severity": 4,
-          "message": 5
+          "regexp": "."
         },
         "background": {
           "activeOnStart": true,
           "beginsPattern": "Local:",
-          "endsPattern": "ready in"
+          "endsPattern": "ready in \\d+ms"
         }
       }
     },
     {
-      "label": "Kill Dev Server",
+      "label": "Start Dev Server (Port 5174)",
       "type": "shell",
-      "command": "taskkill",
-      "args": ["/F", "/IM", "node.exe"],
-      "group": "build",
-      "presentation": {
-        "echo": false,
-        "reveal": "silent",
-        "focus": false,
-        "panel": "shared"
+      "command": "npm",
+      "args": ["run", "dev", "--", "--port", "5174"],
+      "isBackground": true,
+      "problemMatcher": {
+        "owner": "vite",
+        "pattern": {
+          "regexp": "."
+        },
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "Local:",
+          "endsPattern": "ready in \\d+ms"
+        }
       }
     }
   ]

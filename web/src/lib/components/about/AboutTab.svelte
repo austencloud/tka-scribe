@@ -50,14 +50,10 @@
     <section id="quick-access" class="section-container">
       <QuickAccess />
     </section>
-
   </div>
-
-
 
   <!-- Support Section -->
   <div class="section-group support-group">
-
     <section id="contact" class="section-container">
       <ContactSection />
     </section>
@@ -147,7 +143,6 @@
     margin: var(--spacing-xl) auto;
     max-width: 1200px;
   }
-
 
   .support-group {
     background: rgba(255, 255, 255, 0.02);

@@ -14,7 +14,7 @@ import type {
 } from "../../interfaces/image-export-interfaces";
 import type { BeatData, SequenceData } from "../../interfaces/domain-types";
 import type { PropData, ArrowData } from "$lib/domain";
-import { MotionColor } from "$lib/domain/enums";
+import { MotionColor, GridMode } from "$lib/domain/enums";
 import type { IPictographService } from "../../interfaces/pictograph-interfaces";
 
 export class BeatRenderingService implements IBeatRenderingService {

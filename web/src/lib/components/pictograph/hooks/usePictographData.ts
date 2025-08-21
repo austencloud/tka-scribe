@@ -3,7 +3,7 @@
  *
  * Handles all data transformation and derivation logic for the Pictograph component.
  * This includes merging different data sources, filtering, and computing display values.
- * 
+ *
  * REFACTORED: Updated to use proper Svelte 5 runes with reactive getters.
  */
 

@@ -1,0 +1,242 @@
+import { createHotContext as __vite__createHotContext } from "/@vite/client";import.meta.hot = __vite__createHotContext("/src/lib/components/contact/forms/ContactForm.svelte");import "/node_modules/.vite/deps/svelte_internal_disclose-version.js?v=474c1bba";
+
+ContactForm[$.FILENAME] = 'src/lib/components/contact/forms/ContactForm.svelte';
+
+import * as $ from "/node_modules/.vite/deps/svelte_internal_client.js?v=474c1bba";
+import SpinnerIcon from "/src/lib/components/contact/icons/SpinnerIcon.svelte";
+import CheckIcon from "/src/lib/components/contact/icons/CheckIcon.svelte";
+import ErrorIcon from "/src/lib/components/contact/icons/ErrorIcon.svelte";
+
+var root_1 = $.add_locations($.from_html(`<!> Sending...`, 1), ContactForm[$.FILENAME], []);
+var root_3 = $.add_locations($.from_html(`<div class="status-message success s-SFvqzgwPTtA8"><!> Thank you! Your message has been sent successfully.</div>`), ContactForm[$.FILENAME], [[112, 6]]);
+var root_5 = $.add_locations($.from_html(`<div class="status-message error s-SFvqzgwPTtA8"><!> Please check your information and try again.</div>`), ContactForm[$.FILENAME], [[117, 6]]);
+
+var root = $.add_locations($.from_html(`<div class="contact-form-container s-SFvqzgwPTtA8"><h2 class="s-SFvqzgwPTtA8">Send a Message</h2> <p class="form-description s-SFvqzgwPTtA8">Fill out the form below and I'll get back to you as soon as possible.</p> <form class="contact-form s-SFvqzgwPTtA8"><div class="form-row s-SFvqzgwPTtA8"><div class="form-group s-SFvqzgwPTtA8"><label for="name" class="s-SFvqzgwPTtA8">Name *</label> <input type="text" id="name" required placeholder="Your name" class="form-input s-SFvqzgwPTtA8"/></div> <div class="form-group s-SFvqzgwPTtA8"><label for="email" class="s-SFvqzgwPTtA8">Email *</label> <input type="email" id="email" required placeholder="your.email@example.com" class="form-input s-SFvqzgwPTtA8"/></div></div> <div class="form-group s-SFvqzgwPTtA8"><label for="subject" class="s-SFvqzgwPTtA8">Subject</label> <input type="text" id="subject" placeholder="What's this about?" class="form-input s-SFvqzgwPTtA8"/></div> <div class="form-group s-SFvqzgwPTtA8"><label for="message" class="s-SFvqzgwPTtA8">Message *</label> <textarea id="message" required placeholder="Tell me about your question, suggestion, or how you'd like to contribute..." rows="6" class="form-textarea s-SFvqzgwPTtA8"></textarea></div> <button type="submit"><!></button> <!></form></div>`), ContactForm[$.FILENAME], [
+	[
+		41,
+		0,
+
+		[
+			[42, 2],
+			[43, 2],
+
+			[
+				47,
+				2,
+
+				[
+					[
+						48,
+						4,
+						[[49, 6, [[50, 8], [51, 8]]], [61, 6, [[62, 8], [63, 8]]]]
+					],
+
+					[74, 4, [[75, 6], [76, 6]]],
+					[85, 4, [[86, 6], [87, 6]]],
+					[97, 4]
+				]
+			]
+		]
+	]
+]);
+
+function ContactForm($$anchor, $$props) {
+	$.check_target(new.target);
+	$.push($$props, true, ContactForm);
+
+	let formData = $.tag($.state($.proxy({ name: "", email: "", subject: "", message: "" })), 'formData');
+	let isSubmitting = $.tag($.state(false), 'isSubmitting');
+	let submitStatus = $.tag($.state("idle"), 'submitStatus');
+
+	function validateEmail(email) {
+		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+		return emailRegex.test(email);
+	}
+
+	async function handleSubmit(event) {
+		event.preventDefault();
+
+		if (!$.get(formData).name.trim() || !$.get(formData).email.trim() || !$.get(formData).message.trim()) {
+			$.set(submitStatus, "error");
+
+			return;
+		}
+
+		if (!validateEmail($.get(formData).email)) {
+			$.set(submitStatus, "error");
+
+			return;
+		}
+
+		$.set(isSubmitting, true);
+		$.set(submitStatus, "idle");
+
+		try {
+			(await $.track_reactivity_loss(new Promise((resolve) => setTimeout(resolve, 2e3))))();
+			$.set(formData, { name: "", email: "", subject: "", message: "" }, true);
+			$.set(submitStatus, "success");
+		} catch(error) {
+			$.set(submitStatus, "error");
+		} finally {
+			$.set(isSubmitting, false);
+		}
+	}
+
+	var div = root();
+	var form = $.sibling($.child(div), 4);
+	var div_1 = $.child(form);
+	var div_2 = $.child(div_1);
+	var input = $.sibling($.child(div_2), 2);
+
+	$.remove_input_defaults(input);
+	$.validate_binding('bind:value={formData.name}', () => $.get(formData), () => 'name', 54, 10);
+	$.reset(div_2);
+
+	var div_3 = $.sibling(div_2, 2);
+	var input_1 = $.sibling($.child(div_3), 2);
+
+	$.remove_input_defaults(input_1);
+	$.validate_binding('bind:value={formData.email}', () => $.get(formData), () => 'email', 66, 10);
+	$.reset(div_3);
+	$.reset(div_1);
+
+	var div_4 = $.sibling(div_1, 2);
+	var input_2 = $.sibling($.child(div_4), 2);
+
+	$.remove_input_defaults(input_2);
+	$.validate_binding('bind:value={formData.subject}', () => $.get(formData), () => 'subject', 79, 8);
+	$.reset(div_4);
+
+	var div_5 = $.sibling(div_4, 2);
+	var textarea = $.sibling($.child(div_5), 2);
+
+	$.remove_textarea_child(textarea);
+	$.validate_binding('bind:value={formData.message}', () => $.get(formData), () => 'message', 89, 8);
+	$.reset(div_5);
+
+	var button = $.sibling(div_5, 2);
+	let classes;
+	var node = $.child(button);
+
+	{
+		var consequent = ($$anchor) => {
+			var fragment = root_1();
+			var node_1 = $.first_child(fragment);
+
+			$.add_svelte_meta(() => SpinnerIcon(node_1, {}), 'component', ContactForm, 104, 8, { componentTag: 'SpinnerIcon' });
+			$.next();
+			$.append($$anchor, fragment);
+		};
+
+		var alternate = ($$anchor) => {
+			var text = $.text('Send Message');
+
+			$.append($$anchor, text);
+		};
+
+		$.add_svelte_meta(
+			() => $.if(node, ($$render) => {
+				if ($.get(isSubmitting)) $$render(consequent); else $$render(alternate, false);
+			}),
+			'if',
+			ContactForm,
+			103,
+			6
+		);
+	}
+
+	$.reset(button);
+
+	var node_2 = $.sibling(button, 2);
+
+	{
+		var consequent_1 = ($$anchor) => {
+			var div_6 = root_3();
+			var node_3 = $.child(div_6);
+
+			$.add_svelte_meta(() => CheckIcon(node_3, {}), 'component', ContactForm, 113, 8, { componentTag: 'CheckIcon' });
+			$.next();
+			$.reset(div_6);
+			$.append($$anchor, div_6);
+		};
+
+		var alternate_1 = ($$anchor) => {
+			var fragment_1 = $.comment();
+			var node_4 = $.first_child(fragment_1);
+
+			{
+				var consequent_2 = ($$anchor) => {
+					var div_7 = root_5();
+					var node_5 = $.child(div_7);
+
+					$.add_svelte_meta(() => ErrorIcon(node_5, {}), 'component', ContactForm, 118, 8, { componentTag: 'ErrorIcon' });
+					$.next();
+					$.reset(div_7);
+					$.append($$anchor, div_7);
+				};
+
+				$.add_svelte_meta(
+					() => $.if(
+						node_4,
+						($$render) => {
+							if ($.strict_equals($.get(submitStatus), "error")) $$render(consequent_2);
+						},
+						true
+					),
+					'if',
+					ContactForm,
+					116,
+					4
+				);
+			}
+
+			$.append($$anchor, fragment_1);
+		};
+
+		$.add_svelte_meta(
+			() => $.if(node_2, ($$render) => {
+				if ($.strict_equals($.get(submitStatus), "success")) $$render(consequent_1); else $$render(alternate_1, false);
+			}),
+			'if',
+			ContactForm,
+			111,
+			4
+		);
+	}
+
+	$.reset(form);
+	$.reset(div);
+
+	$.template_effect(
+		($0) => {
+			button.disabled = $.get(isSubmitting);
+			classes = $.set_class(button, 1, 'submit-button s-SFvqzgwPTtA8', null, classes, $0);
+		},
+		[() => ({ submitting: $.get(isSubmitting) })]
+	);
+
+	$.event('submit', form, handleSubmit);
+	$.bind_value(input, () => $.get(formData).name, ($$value) => $.get(formData).name = $$value);
+	$.bind_value(input_1, () => $.get(formData).email, ($$value) => $.get(formData).email = $$value);
+	$.bind_value(input_2, () => $.get(formData).subject, ($$value) => $.get(formData).subject = $$value);
+	$.bind_value(textarea, () => $.get(formData).message, ($$value) => $.get(formData).message = $$value);
+	$.append($$anchor, div);
+
+	return $.pop({ ...$.legacy_api() });
+}
+
+if (import.meta.hot) {
+	ContactForm = $.hmr(ContactForm, () => ContactForm[$.HMR].source);
+
+	import.meta.hot.acceptExports(["default"],(module) => {
+		$.cleanup_styles('s-SFvqzgwPTtA8');
+		module.default[$.HMR].source = ContactForm[$.HMR].source;
+		$.set(ContactForm[$.HMR].source, module.default[$.HMR].original);
+	});
+}
+
+export default ContactForm;
+import "/src/lib/components/contact/forms/ContactForm.svelte?svelte&type=style&lang.css";
+
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJtYXBwaW5ncyI6Ijs7Ozs7T0FHUyxpQkFBZTtPQUNmLGVBQWU7T0FFbEIsZUFBa0I7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7O3dDQU54QixDQUFDOzs7O0tBUUcsbUNBQ0EsVUFDQSxPQUFTLElBQ1YsYUFFRztLQUlGLDZCQUFtQjtLQUNuQiw2QkFBNEI7O1VBRzlCLGNBQWUsT0FBaUM7UUFDeEMsYUFBZTs7U0FHbEIsV0FBYyxLQUFLLEtBQ25CO0NBR0Q7O2dCQUVGO0VBRUEsTUFBSzs7YUFHTCxnQ0FFQSxnQkFBZSxpQkFDZixrQkFBZSxRQUVYO1NBRUYsY0FBVTs7O0VBSVY7O09BRUEsb0JBQWU7U0FDakIsY0FBRTs7O0VBRUY7O1FBRUYsY0FBTTs7O01BR0Y7c0NBRVUsU0FBTSxZQUFlLFdBQVcsU0FBUSxHQUFLO1NBRzFELFlBQWUsaUJBQWMsSUFBTyxTQUFRLElBQUs7U0FDL0MsY0FBZ0I7RUFDckIsUUFBVyxPQUFPO1NBQ2xCLGNBQW9CO0VBQ3BCO1NBQ0EsY0FBb0I7RUFDcEI7Q0FDQTs7Ozs7Ozs7OzhEQWdCUzs7Ozs7OzsrREFZRjs7Ozs7Ozs7aUVBYUU7Ozs7Ozs7aUVBVVE7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Y0FjVCxZQUFhOzs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7O2lDQWFuQjs7Ozs7Ozs7Ozs7Ozs7Ozs4QkFMRSxZQUFpQixHQUFLLFNBQVM7Ozs7Ozs7Ozs7Ozs7OzJCQVp4Qjs7OzhCQUVhLFlBQVM7Ozt5QkF0RHhCO2lDQU9BO21DQVlGO21DQWFFO29DQVVROzs7O0NBbERqQiIsIm5hbWVzIjpbXSwiaWdub3JlTGlzdCI6W10sInNvdXJjZXMiOlsiQ29udGFjdEZvcm0uc3ZlbHRlIl0sInNvdXJjZXNDb250ZW50IjpbIjwhLS0gQ29udGFjdEZvcm0uc3ZlbHRlIC0gQ29udGFjdCBmb3JtIHdpdGggdmFsaWRhdGlvbiBhbmQgc3VibWlzc2lvbiAtLT5cbjxzY3JpcHQgbGFuZz1cInRzXCI+XG4gIGltcG9ydCBTcGlubmVySWNvbiBmcm9tIFwiLi4vaWNvbnMvU3Bpbm5lckljb24uc3ZlbHRlXCI7XG4gIGltcG9ydCBDaGVja0ljb24gZnJvbSBcIi4uL2ljb25zL0NoZWNrSWNvbi5zdmVsdGVcIjtcbiAgaW1wb3J0IEVycm9ySWNvbiBmcm9tIFwiLi4vaWNvbnMvRXJyb3JJY29uLnN2ZWx0ZVwiO1xuXG4gIGxldCBmb3JtRGF0YSA9ICRzdGF0ZSh7XG4gICAgbmFtZTogXCJcIixcbiAgICBlbWFpbDogXCJcIixcbiAgICBzdWJqZWN0OiBcIlwiLFxuICAgIG1lc3NhZ2U6IFwiXCIsXG4gIH0pO1xuXG4gIGxldCBpc1N1Ym1pdHRpbmcgPSAkc3RhdGUoZmFsc2UpO1xuICBsZXQgc3VibWl0U3RhdHVzID0gJHN0YXRlPFwiaWRsZVwiIHwgXCJzdWNjZXNzXCIgfCBcImVycm9yXCI+KFwiaWRsZVwiKTtcblxuICBmdW5jdGlvbiB2YWxpZGF0ZUVtYWlsKGVtYWlsOiBzdHJpbmcpOiBib29sZWFuIHtcbiAgICBjb25zdCBlbWFpbFJlZ2V4ID0gL15bXlxcc0BdK0BbXlxcc0BdK1xcLlteXFxzQF0rJC87XG4gICAgcmV0dXJuIGVtYWlsUmVnZXgudGVzdChlbWFpbCk7XG4gIH1cblxuICBhc3luYyBmdW5jdGlvbiBoYW5kbGVTdWJtaXQoZXZlbnQ6IFN1Ym1pdEV2ZW50KSB7XG4gICAgZXZlbnQucHJldmVudERlZmF1bHQoKTtcblxuICAgIGlmIChcbiAgICAgICFmb3JtRGF0YS5uYW1lLnRyaW0oKSB8fFxuICAgICAgIWZvcm1EYXRhLmVtYWlsLnRyaW0oKSB8fFxuICAgICAgIWZvcm1EYXRhLm1lc3NhZ2UudHJpbSgpXG4gICAgKSB7XG4gICAgICBzdWJtaXRTdGF0dXMgPSBcImVycm9yXCI7XG4gICAgICByZXR1cm47XG4gICAgfVxuXG4gICAgaWYgKCF2YWxpZGF0ZUVtYWlsKGZvcm1EYXRhLmVtYWlsKSkge1xuICAgICAgc3VibWl0U3RhdHVzID0gXCJlcnJvclwiO1xuICAgICAgcmV0dXJuO1xuICAgIH1cblxuICAgIGlzU3VibWl0dGluZyA9IHRydWU7XG4gICAgc3VibWl0U3RhdHVzID0gXCJpZGxlXCI7XG5cbiAgICB0cnkge1xuICAgICAgLy8gU2ltdWxhdGUgZm9ybSBzdWJtaXNzaW9uIChyZXBsYWNlIHdpdGggYWN0dWFsIEFQSSBjYWxsKVxuICAgICAgYXdhaXQgbmV3IFByb21pc2UoKHJlc29sdmUpID0+IHNldFRpbWVvdXQocmVzb2x2ZSwgMjAwMCkpO1xuXG4gICAgICAvLyBSZXNldCBmb3JtIG9uIHN1Y2Nlc3NcbiAgICAgIGZvcm1EYXRhID0geyBuYW1lOiBcIlwiLCBlbWFpbDogXCJcIiwgc3ViamVjdDogXCJcIiwgbWVzc2FnZTogXCJcIiB9O1xuICAgICAgc3VibWl0U3RhdHVzID0gXCJzdWNjZXNzXCI7XG4gICAgfSBjYXRjaCAoZXJyb3IpIHtcbiAgICAgIHN1Ym1pdFN0YXR1cyA9IFwiZXJyb3JcIjtcbiAgICB9IGZpbmFsbHkge1xuICAgICAgaXNTdWJtaXR0aW5nID0gZmFsc2U7XG4gICAgfVxuICB9XG48L3NjcmlwdD5cblxuPGRpdiBjbGFzcz1cImNvbnRhY3QtZm9ybS1jb250YWluZXJcIj5cbiAgPGgyPlNlbmQgYSBNZXNzYWdlPC9oMj5cbiAgPHAgY2xhc3M9XCJmb3JtLWRlc2NyaXB0aW9uXCI+XG4gICAgRmlsbCBvdXQgdGhlIGZvcm0gYmVsb3cgYW5kIEknbGwgZ2V0IGJhY2sgdG8geW91IGFzIHNvb24gYXMgcG9zc2libGUuXG4gIDwvcD5cblxuICA8Zm9ybSBvbnN1Ym1pdD17aGFuZGxlU3VibWl0fSBjbGFzcz1cImNvbnRhY3QtZm9ybVwiPlxuICAgIDxkaXYgY2xhc3M9XCJmb3JtLXJvd1wiPlxuICAgICAgPGRpdiBjbGFzcz1cImZvcm0tZ3JvdXBcIj5cbiAgICAgICAgPGxhYmVsIGZvcj1cIm5hbWVcIj5OYW1lICo8L2xhYmVsPlxuICAgICAgICA8aW5wdXRcbiAgICAgICAgICB0eXBlPVwidGV4dFwiXG4gICAgICAgICAgaWQ9XCJuYW1lXCJcbiAgICAgICAgICBiaW5kOnZhbHVlPXtmb3JtRGF0YS5uYW1lfVxuICAgICAgICAgIHJlcXVpcmVkXG4gICAgICAgICAgcGxhY2Vob2xkZXI9XCJZb3VyIG5hbWVcIlxuICAgICAgICAgIGNsYXNzPVwiZm9ybS1pbnB1dFwiXG4gICAgICAgIC8+XG4gICAgICA8L2Rpdj5cblxuICAgICAgPGRpdiBjbGFzcz1cImZvcm0tZ3JvdXBcIj5cbiAgICAgICAgPGxhYmVsIGZvcj1cImVtYWlsXCI+RW1haWwgKjwvbGFiZWw+XG4gICAgICAgIDxpbnB1dFxuICAgICAgICAgIHR5cGU9XCJlbWFpbFwiXG4gICAgICAgICAgaWQ9XCJlbWFpbFwiXG4gICAgICAgICAgYmluZDp2YWx1ZT17Zm9ybURhdGEuZW1haWx9XG4gICAgICAgICAgcmVxdWlyZWRcbiAgICAgICAgICBwbGFjZWhvbGRlcj1cInlvdXIuZW1haWxAZXhhbXBsZS5jb21cIlxuICAgICAgICAgIGNsYXNzPVwiZm9ybS1pbnB1dFwiXG4gICAgICAgIC8+XG4gICAgICA8L2Rpdj5cbiAgICA8L2Rpdj5cblxuICAgIDxkaXYgY2xhc3M9XCJmb3JtLWdyb3VwXCI+XG4gICAgICA8bGFiZWwgZm9yPVwic3ViamVjdFwiPlN1YmplY3Q8L2xhYmVsPlxuICAgICAgPGlucHV0XG4gICAgICAgIHR5cGU9XCJ0ZXh0XCJcbiAgICAgICAgaWQ9XCJzdWJqZWN0XCJcbiAgICAgICAgYmluZDp2YWx1ZT17Zm9ybURhdGEuc3ViamVjdH1cbiAgICAgICAgcGxhY2Vob2xkZXI9XCJXaGF0J3MgdGhpcyBhYm91dD9cIlxuICAgICAgICBjbGFzcz1cImZvcm0taW5wdXRcIlxuICAgICAgLz5cbiAgICA8L2Rpdj5cblxuICAgIDxkaXYgY2xhc3M9XCJmb3JtLWdyb3VwXCI+XG4gICAgICA8bGFiZWwgZm9yPVwibWVzc2FnZVwiPk1lc3NhZ2UgKjwvbGFiZWw+XG4gICAgICA8dGV4dGFyZWFcbiAgICAgICAgaWQ9XCJtZXNzYWdlXCJcbiAgICAgICAgYmluZDp2YWx1ZT17Zm9ybURhdGEubWVzc2FnZX1cbiAgICAgICAgcmVxdWlyZWRcbiAgICAgICAgcGxhY2Vob2xkZXI9XCJUZWxsIG1lIGFib3V0IHlvdXIgcXVlc3Rpb24sIHN1Z2dlc3Rpb24sIG9yIGhvdyB5b3UnZCBsaWtlIHRvIGNvbnRyaWJ1dGUuLi5cIlxuICAgICAgICByb3dzPVwiNlwiXG4gICAgICAgIGNsYXNzPVwiZm9ybS10ZXh0YXJlYVwiXG4gICAgICA+PC90ZXh0YXJlYT5cbiAgICA8L2Rpdj5cblxuICAgIDxidXR0b25cbiAgICAgIHR5cGU9XCJzdWJtaXRcIlxuICAgICAgZGlzYWJsZWQ9e2lzU3VibWl0dGluZ31cbiAgICAgIGNsYXNzPVwic3VibWl0LWJ1dHRvblwiXG4gICAgICBjbGFzczpzdWJtaXR0aW5nPXtpc1N1Ym1pdHRpbmd9XG4gICAgPlxuICAgICAgeyNpZiBpc1N1Ym1pdHRpbmd9XG4gICAgICAgIDxTcGlubmVySWNvbiAvPlxuICAgICAgICBTZW5kaW5nLi4uXG4gICAgICB7OmVsc2V9XG4gICAgICAgIFNlbmQgTWVzc2FnZVxuICAgICAgey9pZn1cbiAgICA8L2J1dHRvbj5cblxuICAgIHsjaWYgc3VibWl0U3RhdHVzID09PSBcInN1Y2Nlc3NcIn1cbiAgICAgIDxkaXYgY2xhc3M9XCJzdGF0dXMtbWVzc2FnZSBzdWNjZXNzXCI+XG4gICAgICAgIDxDaGVja0ljb24gLz5cbiAgICAgICAgVGhhbmsgeW91ISBZb3VyIG1lc3NhZ2UgaGFzIGJlZW4gc2VudCBzdWNjZXNzZnVsbHkuXG4gICAgICA8L2Rpdj5cbiAgICB7OmVsc2UgaWYgc3VibWl0U3RhdHVzID09PSBcImVycm9yXCJ9XG4gICAgICA8ZGl2IGNsYXNzPVwic3RhdHVzLW1lc3NhZ2UgZXJyb3JcIj5cbiAgICAgICAgPEVycm9ySWNvbiAvPlxuICAgICAgICBQbGVhc2UgY2hlY2sgeW91ciBpbmZvcm1hdGlvbiBhbmQgdHJ5IGFnYWluLlxuICAgICAgPC9kaXY+XG4gICAgey9pZn1cbiAgPC9mb3JtPlxuPC9kaXY+XG5cbjxzdHlsZT5cbiAgLmNvbnRhY3QtZm9ybS1jb250YWluZXIge1xuICAgIGJhY2tncm91bmQ6IHJnYmEoMjU1LCAyNTUsIDI1NSwgMC4wNSk7XG4gICAgYmFja2Ryb3AtZmlsdGVyOiBibHVyKDEwcHgpO1xuICAgIGJvcmRlcjogMXB4IHNvbGlkIHJnYmEoMjU1LCAyNTUsIDI1NSwgMC4xKTtcbiAgICBib3JkZXItcmFkaXVzOiB2YXIoLS1ib3JkZXItcmFkaXVzLWxnKTtcbiAgICBwYWRkaW5nOiB2YXIoLS1zcGFjaW5nLTJ4bCk7XG4gIH1cblxuICAuY29udGFjdC1mb3JtLWNvbnRhaW5lciBoMiB7XG4gICAgZm9udC1zaXplOiAycmVtO1xuICAgIGZvbnQtd2VpZ2h0OiA3MDA7XG4gICAgY29sb3I6IHZhcigtLXRleHQtY29sb3IpO1xuICAgIG1hcmdpbi1ib3R0b206IHZhcigtLXNwYWNpbmctc20pO1xuICB9XG5cbiAgLmZvcm0tZGVzY3JpcHRpb24ge1xuICAgIGNvbG9yOiB2YXIoLS10ZXh0LXNlY29uZGFyeSk7XG4gICAgbWFyZ2luLWJvdHRvbTogdmFyKC0tc3BhY2luZy14bCk7XG4gICAgbGluZS1oZWlnaHQ6IDEuNTtcbiAgfVxuXG4gIC5jb250YWN0LWZvcm0ge1xuICAgIGRpc3BsYXk6IGZsZXg7XG4gICAgZmxleC1kaXJlY3Rpb246IGNvbHVtbjtcbiAgICBnYXA6IHZhcigtLXNwYWNpbmctbGcpO1xuICB9XG5cbiAgLmZvcm0tcm93IHtcbiAgICBkaXNwbGF5OiBncmlkO1xuICAgIGdyaWQtdGVtcGxhdGUtY29sdW1uczogMWZyIDFmcjtcbiAgICBnYXA6IHZhcigtLXNwYWNpbmctbWQpO1xuICB9XG5cbiAgLmZvcm0tZ3JvdXAge1xuICAgIGRpc3BsYXk6IGZsZXg7XG4gICAgZmxleC1kaXJlY3Rpb246IGNvbHVtbjtcbiAgICBnYXA6IHZhcigtLXNwYWNpbmcteHMpO1xuICB9XG5cbiAgLmZvcm0tZ3JvdXAgbGFiZWwge1xuICAgIGZvbnQtd2VpZ2h0OiA1MDA7XG4gICAgY29sb3I6IHZhcigtLXRleHQtY29sb3IpO1xuICAgIGZvbnQtc2l6ZTogdmFyKC0tZm9udC1zaXplLXNtKTtcbiAgfVxuXG4gIC5mb3JtLWlucHV0LFxuICAuZm9ybS10ZXh0YXJlYSB7XG4gICAgcGFkZGluZzogdmFyKC0tc3BhY2luZy1tZCk7XG4gICAgYmFja2dyb3VuZDogcmdiYSgyNTUsIDI1NSwgMjU1LCAwLjEpO1xuICAgIGJvcmRlcjogMXB4IHNvbGlkIHJnYmEoMjU1LCAyNTUsIDI1NSwgMC4yKTtcbiAgICBib3JkZXItcmFkaXVzOiB2YXIoLS1ib3JkZXItcmFkaXVzKTtcbiAgICBjb2xvcjogdmFyKC0tdGV4dC1jb2xvcik7XG4gICAgZm9udC1zaXplOiB2YXIoLS1mb250LXNpemUtYmFzZSk7XG4gICAgdHJhbnNpdGlvbjogYWxsIDAuMnMgZWFzZTtcbiAgfVxuXG4gIC5mb3JtLWlucHV0OmZvY3VzLFxuICAuZm9ybS10ZXh0YXJlYTpmb2N1cyB7XG4gICAgb3V0bGluZTogbm9uZTtcbiAgICBib3JkZXItY29sb3I6IHZhcigtLXByaW1hcnktY29sb3IpO1xuICAgIGJhY2tncm91bmQ6IHJnYmEoMjU1LCAyNTUsIDI1NSwgMC4xNSk7XG4gICAgYm94LXNoYWRvdzogMCAwIDAgMnB4IHJnYmEoOTksIDEwMiwgMjQxLCAwLjIpO1xuICB9XG5cbiAgLmZvcm0tdGV4dGFyZWEge1xuICAgIHJlc2l6ZTogdmVydGljYWw7XG4gICAgbWluLWhlaWdodDogMTIwcHg7XG4gICAgZm9udC1mYW1pbHk6IGluaGVyaXQ7XG4gIH1cblxuICAuc3VibWl0LWJ1dHRvbiB7XG4gICAgcGFkZGluZzogdmFyKC0tc3BhY2luZy1tZCkgdmFyKC0tc3BhY2luZy14bCk7XG4gICAgYmFja2dyb3VuZDogbGluZWFyLWdyYWRpZW50KFxuICAgICAgMTM1ZGVnLFxuICAgICAgdmFyKC0tcHJpbWFyeS1jb2xvciksXG4gICAgICB2YXIoLS1zZWNvbmRhcnktY29sb3IpXG4gICAgKTtcbiAgICBib3JkZXI6IG5vbmU7XG4gICAgYm9yZGVyLXJhZGl1czogdmFyKC0tYm9yZGVyLXJhZGl1cyk7XG4gICAgY29sb3I6IHdoaXRlO1xuICAgIGZvbnQtd2VpZ2h0OiA2MDA7XG4gICAgZm9udC1zaXplOiB2YXIoLS1mb250LXNpemUtYmFzZSk7XG4gICAgY3Vyc29yOiBwb2ludGVyO1xuICAgIHRyYW5zaXRpb246IGFsbCAwLjJzIGVhc2U7XG4gICAgZGlzcGxheTogZmxleDtcbiAgICBhbGlnbi1pdGVtczogY2VudGVyO1xuICAgIGp1c3RpZnktY29udGVudDogY2VudGVyO1xuICAgIGdhcDogdmFyKC0tc3BhY2luZy1zbSk7XG4gICAgYWxpZ24tc2VsZjogZmxleC1zdGFydDtcbiAgfVxuXG4gIC5zdWJtaXQtYnV0dG9uOmhvdmVyOm5vdCg6ZGlzYWJsZWQpIHtcbiAgICB0cmFuc2Zvcm06IHRyYW5zbGF0ZVkoLTJweCk7XG4gICAgYm94LXNoYWRvdzogMCA0cHggMTJweCByZ2JhKDk5LCAxMDIsIDI0MSwgMC40KTtcbiAgfVxuXG4gIC5zdWJtaXQtYnV0dG9uOmRpc2FibGVkIHtcbiAgICBvcGFjaXR5OiAwLjc7XG4gICAgY3Vyc29yOiBub3QtYWxsb3dlZDtcbiAgfVxuXG4gIC5zdGF0dXMtbWVzc2FnZSB7XG4gICAgZGlzcGxheTogZmxleDtcbiAgICBhbGlnbi1pdGVtczogY2VudGVyO1xuICAgIGdhcDogdmFyKC0tc3BhY2luZy1zbSk7XG4gICAgcGFkZGluZzogdmFyKC0tc3BhY2luZy1tZCk7XG4gICAgYm9yZGVyLXJhZGl1czogdmFyKC0tYm9yZGVyLXJhZGl1cyk7XG4gICAgZm9udC13ZWlnaHQ6IDUwMDtcbiAgfVxuXG4gIC5zdGF0dXMtbWVzc2FnZS5zdWNjZXNzIHtcbiAgICBiYWNrZ3JvdW5kOiByZ2JhKDM0LCAxOTcsIDk0LCAwLjEpO1xuICAgIGJvcmRlcjogMXB4IHNvbGlkIHJnYmEoMzQsIDE5NywgOTQsIDAuMyk7XG4gICAgY29sb3I6ICMyMmM1NWU7XG4gIH1cblxuICAuc3RhdHVzLW1lc3NhZ2UuZXJyb3Ige1xuICAgIGJhY2tncm91bmQ6IHJnYmEoMjM5LCA2OCwgNjgsIDAuMSk7XG4gICAgYm9yZGVyOiAxcHggc29saWQgcmdiYSgyMzksIDY4LCA2OCwgMC4zKTtcbiAgICBjb2xvcjogI2VmNDQ0NDtcbiAgfVxuXG4gIEBtZWRpYSAobWF4LXdpZHRoOiA3NjhweCkge1xuICAgIC5mb3JtLXJvdyB7XG4gICAgICBncmlkLXRlbXBsYXRlLWNvbHVtbnM6IDFmcjtcbiAgICB9XG5cbiAgICAuY29udGFjdC1mb3JtLWNvbnRhaW5lciB7XG4gICAgICBwYWRkaW5nOiB2YXIoLS1zcGFjaW5nLW1kKTtcbiAgICB9XG5cbiAgICAuc3VibWl0LWJ1dHRvbjpob3ZlciB7XG4gICAgICB0cmFuc2Zvcm06IG5vbmU7XG4gICAgfVxuICB9XG48L3N0eWxlPlxuIl0sImZpbGUiOiJDOi9US0Evd2ViL3NyYy9saWIvY29tcG9uZW50cy9jb250YWN0L2Zvcm1zL0NvbnRhY3RGb3JtLnN2ZWx0ZSJ9

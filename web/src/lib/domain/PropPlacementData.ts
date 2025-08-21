@@ -8,13 +8,13 @@
 
 export interface PropPlacementData {
   // Positioning (calculated coordinates)
-  readonly position_x: number;
-  readonly position_y: number;
-  readonly rotation_angle: number;
+  readonly positionX: number;
+  readonly positionY: number;
+  readonly rotationAngle: number;
 
   // Calculated coordinates and SVG data
   readonly coordinates?: { x: number; y: number } | null;
-  readonly svg_center?: { x: number; y: number } | null;
+  readonly svgCenter?: { x: number; y: number } | null;
 }
 
 /**
@@ -24,11 +24,11 @@ export function createPropPlacementData(
   data: Partial<PropPlacementData> = {}
 ): PropPlacementData {
   return {
-    position_x: data.position_x ?? 0.0,
-    position_y: data.position_y ?? 0.0,
-    rotation_angle: data.rotation_angle ?? 0.0,
+    positionX: data.positionX ?? 0.0,
+    positionY: data.positionY ?? 0.0,
+    rotationAngle: data.rotationAngle ?? 0.0,
     coordinates: data.coordinates ?? null,
-    svg_center: data.svg_center ?? null,
+    svgCenter: data.svgCenter ?? null,
   };
 }
 
@@ -52,11 +52,11 @@ export function propPlacementDataToObject(
   placement: PropPlacementData
 ): Record<string, unknown> {
   return {
-    position_x: placement.position_x,
-    position_y: placement.position_y,
-    rotation_angle: placement.rotation_angle,
+    positionX: placement.positionX,
+    positionY: placement.positionY,
+    rotationAngle: placement.rotationAngle,
     coordinates: placement.coordinates,
-    svg_center: placement.svg_center,
+    svgCenter: placement.svgCenter,
   };
 }
 
@@ -71,14 +71,14 @@ export function propPlacementDataFromObject(
   if (data.location !== undefined) {
     placementData.location = data.location;
   }
-  if (data.position_x !== undefined) {
-    placementData.position_x = data.position_x;
+  if (data.positionX !== undefined) {
+    placementData.positionX = data.positionX;
   }
-  if (data.position_y !== undefined) {
-    placementData.position_y = data.position_y;
+  if (data.positionY !== undefined) {
+    placementData.positionY = data.positionY;
   }
-  if (data.rotation_angle !== undefined) {
-    placementData.rotation_angle = data.rotation_angle;
+  if (data.rotationAngle !== undefined) {
+    placementData.rotationAngle = data.rotationAngle;
   }
   if (data.coordinates !== undefined) {
     placementData.coordinates = data.coordinates as {
@@ -86,8 +86,8 @@ export function propPlacementDataFromObject(
       y: number;
     } | null;
   }
-  if (data.svg_center !== undefined) {
-    placementData.svg_center = data.svg_center as {
+  if (data.svgCenter !== undefined) {
+    placementData.svgCenter = data.svgCenter as {
       x: number;
       y: number;
     } | null;
@@ -100,7 +100,7 @@ export function propPlacementDataFromObject(
  * Check if PropPlacementData has valid positioning information
  */
 export function hasValidPlacement(placement: PropPlacementData): boolean {
-  return placement.position_x !== 0 || placement.position_y !== 0;
+  return placement.positionX !== 0 || placement.positionY !== 0;
 }
 
 /**
@@ -111,8 +111,8 @@ export function getPlacementPosition(placement: PropPlacementData): {
   y: number;
 } {
   return {
-    x: placement.position_x,
-    y: placement.position_y,
+    x: placement.positionX,
+    y: placement.positionY,
   };
 }
 
@@ -125,9 +125,9 @@ export function createPropPlacementFromPosition(
   rotation: number = 0
 ): PropPlacementData {
   return createPropPlacementData({
-    position_x: x,
-    position_y: y,
-    rotation_angle: rotation,
+    positionX: x,
+    positionY: y,
+    rotationAngle: rotation,
     coordinates: { x, y },
   });
 }

@@ -21,6 +21,7 @@ import {
   MotionType,
   Location,
   Orientation,
+  RotationDirection,
 } from "$lib/domain/enums";
 
 // Helper function to convert domain GridData to service GridData
@@ -43,39 +44,39 @@ describe("Arrow Positioning Debug Tests", () => {
       "\n🧪 Testing Pro Arrow: N → E (should be clockwise, expect ~90° rotation)"
     );
 
-    // Create test data for pro motion: N → E
+    // ✅ FIXED: ArrowData now only contains arrow-specific properties
     const blueArrowData = createArrowData({
-      color: MotionColor.BLUE,
-      motionType: MotionType.PRO,
-      start_orientation: Orientation.IN,
-      end_orientation: Orientation.IN,
-      turns: 0,
-      position_x: 0,
-      position_y: 0,
+      arrowLocation: null, // Will be calculated by positioning system
+      positionX: 0,
+      positionY: 0,
     });
 
     const blueMotionData = createMotionData({
       motionType: MotionType.PRO,
       startLocation: Location.NORTH,
       endLocation: Location.EAST,
+      startOrientation: Orientation.IN,
+      endOrientation: Orientation.IN,
+      rotationDirection: RotationDirection.CLOCKWISE,
       turns: 0,
+      color: MotionColor.BLUE,
     });
 
     const redArrowData = createArrowData({
-      color: MotionColor.RED,
-      motionType: MotionType.STATIC,
-      start_orientation: Orientation.IN,
-      end_orientation: Orientation.IN,
-      turns: 0,
-      position_x: 0,
-      position_y: 0,
+      arrowLocation: null, // Will be calculated by positioning system
+      positionX: 0,
+      positionY: 0,
     });
 
     const redMotionData = createMotionData({
       motionType: MotionType.STATIC,
       startLocation: Location.SOUTH,
       endLocation: Location.SOUTH,
+      startOrientation: Orientation.IN,
+      endOrientation: Orientation.IN,
+      rotationDirection: RotationDirection.NO_ROTATION,
       turns: 0,
+      color: MotionColor.RED,
     });
 
     const pictographData = createPictographData({
@@ -86,8 +87,8 @@ describe("Arrow Positioning Debug Tests", () => {
         red: redArrowData,
       },
       props: {
-        blue: createPropData({ color: MotionColor.BLUE }),
-        red: createPropData({ color: MotionColor.RED }),
+        blue: createPropData({}), // ✅ FIXED: Color is not part of PropData
+        red: createPropData({}), // ✅ FIXED: Color is not part of PropData
       },
       motions: {
         blue: blueMotionData,
@@ -114,9 +115,9 @@ describe("Arrow Positioning Debug Tests", () => {
     console.log("  Orchestrator Result:");
     console.log(
       "    Position:",
-      `(${orchestratorBlueArrow?.position_x}, ${orchestratorBlueArrow?.position_y})`
+      `(${orchestratorBlueArrow?.positionX}, ${orchestratorBlueArrow?.positionY})`
     );
-    console.log("    Rotation:", `${orchestratorBlueArrow?.rotation_angle}°`);
+    console.log("    Rotation:", `${orchestratorBlueArrow?.rotationAngle}°`);
 
     // Test 2: Direct orchestrator.calculateArrowPosition call
     console.log("\n🎯 Test 3: Direct orchestrator.calculateArrowPosition");
@@ -139,7 +140,7 @@ describe("Arrow Positioning Debug Tests", () => {
     );
 
     // Compare results
-    const orchestratorRotation = orchestratorBlueArrow?.rotation_angle || 0;
+    const orchestratorRotation = orchestratorBlueArrow?.rotationAngle || 0;
     const directRotation = rotation;
 
     console.log("\n🔍 Rotation Comparison:");
@@ -201,11 +202,10 @@ describe("Arrow Positioning Debug Tests", () => {
       });
 
       const arrowData = createArrowData({
-        color: MotionColor.BLUE,
-        motionType: MotionType.PRO,
-        start_orientation: Orientation.IN,
-        end_orientation: Orientation.IN,
-        turns: 0,
+        // ✅ FIXED: ArrowData no longer contains motion properties
+        arrowLocation: null,
+        positionX: 0,
+        positionY: 0,
       });
 
       const pictographData = createPictographData({

@@ -185,7 +185,7 @@
   }
 
   .social-tooltip::before {
-    content: '';
+    content: "";
     position: absolute;
     bottom: 100%;
     left: 50%;

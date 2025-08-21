@@ -179,7 +179,7 @@
 
   <div class="preview-footer">
     <div class="status-bar">
-      <span class="status-text">{statusMessage}</span>
+      <span class="status-text">{statusMessage()}</span>
     </div>
 
     {#if sequenceDetails()}

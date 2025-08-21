@@ -22,7 +22,7 @@ export interface ArrowPosition {
 }
 
 export interface ArrowSvgData {
-  svgContent: string;
+  imageSrc: string; // ✅ FIXED: Changed from svgContent to match interface
   viewBox: { width: number; height: number };
   center: { x: number; y: number };
 }
@@ -69,10 +69,9 @@ export class ArrowRenderingService implements IArrowRenderingService {
     if (["pro", "anti", "static"].includes(motionType)) {
       // Determine if we should use radial vs non-radial arrows
       // Use non-radial only for clock/counter orientations, radial for everything else
-      const startOrientation =
-        arrowData.start_orientation || motionData.startOrientation || "in";
-      const endOrientation =
-        arrowData.end_orientation || motionData.endOrientation || "in";
+      // ✅ FIXED: Orientation data comes from MotionData only
+      const startOrientation = motionData.startOrientation || "in";
+      const endOrientation = motionData.endOrientation || "in";
 
       const isNonRadial =
         startOrientation === "clock" ||
@@ -191,8 +190,9 @@ export class ArrowRenderingService implements IArrowRenderingService {
     // Extract just the inner SVG content (no scaling needed - arrows are already correctly sized)
     const svgContent = this.extractSvgContent(coloredSvgText);
 
+    // ✅ FIXED: Return imageSrc instead of svgContent to match interface
     return {
-      svgContent,
+      imageSrc: svgContent,
       viewBox,
       center,
     };
@@ -348,9 +348,19 @@ export class ArrowRenderingService implements IArrowRenderingService {
   private extractSvgContent(svgText: string): string {
     // Extract SVG content (everything inside the <svg> tags)
     // Arrows are already correctly sized for 950x950 coordinate system
+
+    // Check if this is an empty/static SVG (self-closing or width="0")
+    if (
+      svgText.includes('width="0"') ||
+      (svgText.includes("<svg") && svgText.includes("/>"))
+    ) {
+      // Static arrows are intentionally empty - return empty string
+      return "";
+    }
+
     const svgContentMatch = svgText.match(/<svg[^>]*>(.*)<\/svg>/s);
     if (!svgContentMatch) {
-      console.warn("Could not extract SVG content");
+      console.warn("Could not extract SVG content from non-static arrow");
       return svgText;
     }
 

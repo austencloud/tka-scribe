@@ -5,7 +5,6 @@ Simple horizontal row of numbered buttons for letter types in freeform mode.
 <script lang="ts">
   import { LetterType } from "$lib/domain";
 
-
   interface Props {
     initialValue?: Set<LetterType>;
   }

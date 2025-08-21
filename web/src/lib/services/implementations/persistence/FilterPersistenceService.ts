@@ -15,6 +15,11 @@ import type {
   FilterState as BrowseFilterState,
 } from "../../interfaces/browse-interfaces";
 import { SortMethod as SortMethodEnum } from "../../../domain/browse/SortMethod";
+import {
+  safeSessionStorageGet,
+  safeSessionStorageSet,
+  safeSessionStorageRemove,
+} from "$lib/utils/safe-storage";
 
 export interface FilterState {
   type: FilterType;
@@ -66,10 +71,7 @@ export class FilterPersistenceService implements IFilterPersistenceService {
         ...state,
         lastUpdated: new Date(),
       };
-      sessionStorage.setItem(
-        this.BROWSE_STATE_KEY,
-        JSON.stringify(stateToSave)
-      );
+      safeSessionStorageSet(this.BROWSE_STATE_KEY, stateToSave);
     } catch (error) {
       console.error("Failed to save browse state:", error);
     }
@@ -77,31 +79,37 @@ export class FilterPersistenceService implements IFilterPersistenceService {
 
   async loadBrowseState(): Promise<BrowseState | null> {
     try {
-      const saved = sessionStorage.getItem(this.BROWSE_STATE_KEY);
-      if (!saved) return null;
-
-      const parsed = JSON.parse(saved);
+      const parsed = safeSessionStorageGet<Record<string, unknown>>(
+        this.BROWSE_STATE_KEY,
+        null
+      );
+      if (!parsed) return null;
 
       // Convert date strings back to Date objects
-      if (parsed.currentFilter?.appliedAt) {
-        parsed.currentFilter.appliedAt = new Date(
-          parsed.currentFilter.appliedAt
+      if (
+        parsed.currentFilter &&
+        typeof parsed.currentFilter === "object" &&
+        parsed.currentFilter !== null &&
+        "appliedAt" in parsed.currentFilter
+      ) {
+        (parsed.currentFilter as Record<string, unknown>).appliedAt = new Date(
+          (parsed.currentFilter as Record<string, unknown>).appliedAt as string
         );
       }
-      if (parsed.lastUpdated) {
+      if (parsed.lastUpdated && typeof parsed.lastUpdated === "string") {
         parsed.lastUpdated = new Date(parsed.lastUpdated);
       }
 
       // Validate state is not too old (older than 1 day)
       const oneDay = 24 * 60 * 60 * 1000;
       if (
-        parsed.lastUpdated &&
+        parsed.lastUpdated instanceof Date &&
         Date.now() - parsed.lastUpdated.getTime() > oneDay
       ) {
         return null;
       }
 
-      return parsed as BrowseState;
+      return parsed as unknown as BrowseState;
     } catch (error) {
       console.warn("Failed to load browse state:", error);
       return null;
@@ -127,10 +135,7 @@ export class FilterPersistenceService implements IFilterPersistenceService {
       // Limit history size
       const trimmedHistory = newHistory.slice(0, this.MAX_HISTORY_SIZE);
 
-      sessionStorage.setItem(
-        this.FILTER_HISTORY_KEY,
-        JSON.stringify(trimmedHistory)
-      );
+      safeSessionStorageSet(this.FILTER_HISTORY_KEY, trimmedHistory);
     } catch (error) {
       console.error("Failed to save filter to history:", error);
     }
@@ -138,22 +143,24 @@ export class FilterPersistenceService implements IFilterPersistenceService {
 
   async getFilterHistory(): Promise<FilterState[]> {
     try {
-      const saved = sessionStorage.getItem(this.FILTER_HISTORY_KEY);
-      if (!saved) return [];
-
-      const parsed = JSON.parse(saved);
+      const parsed = safeSessionStorageGet<unknown[]>(
+        this.FILTER_HISTORY_KEY,
+        []
+      );
+      if (!parsed) return [];
 
       // Convert date strings back to Date objects
-      return parsed.map(
-        (filter: {
+      return parsed.map((filter: unknown) => {
+        const f = filter as {
           type: FilterType;
           value: FilterValue;
           appliedAt: string;
-        }) => ({
-          ...filter,
-          appliedAt: new Date(filter.appliedAt),
-        })
-      );
+        };
+        return {
+          ...f,
+          appliedAt: new Date(f.appliedAt),
+        };
+      });
     } catch (error) {
       console.warn("Failed to load filter history:", error);
       return [];
@@ -161,11 +168,7 @@ export class FilterPersistenceService implements IFilterPersistenceService {
   }
 
   async clearFilterHistory(): Promise<void> {
-    try {
-      sessionStorage.removeItem(this.FILTER_HISTORY_KEY);
-    } catch (error) {
-      console.error("Failed to clear filter history:", error);
-    }
+    safeSessionStorageRemove(this.FILTER_HISTORY_KEY);
   }
 
   async getRecentFilters(limit: number = 10): Promise<FilterState[]> {
@@ -174,12 +177,8 @@ export class FilterPersistenceService implements IFilterPersistenceService {
   }
 
   async clearAllState(): Promise<void> {
-    try {
-      sessionStorage.removeItem(this.BROWSE_STATE_KEY);
-      sessionStorage.removeItem(this.FILTER_HISTORY_KEY);
-    } catch (error) {
-      console.error("Failed to clear all state:", error);
-    }
+    safeSessionStorageRemove(this.BROWSE_STATE_KEY);
+    safeSessionStorageRemove(this.FILTER_HISTORY_KEY);
   }
 
   // Utility methods for filter management

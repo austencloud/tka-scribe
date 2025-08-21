@@ -13,7 +13,7 @@ import type {
 } from "./domain-types";
 import type { GridMode } from "../../domain";
 import { MotionColor } from "../../domain/enums";
-import type { GridData as RawGridData } from "../../data/gridCoordinates.js";
+import type { GridPointData as RawGridData } from "../../data/gridCoordinates.js";
 import type { ArrowPosition, GridData } from "./core-types";
 
 // ============================================================================
@@ -78,10 +78,13 @@ export interface IArrowRenderingService {
     position: ArrowPosition,
     motionData: MotionData | undefined
   ): Promise<void>;
-  
+
   // Methods extracted from Arrow.svelte business logic
   getArrowPath(arrowData: ArrowData, motionData: MotionData): string | null;
-  loadArrowSvgData(arrowData: ArrowData, motionData: MotionData): Promise<{
+  loadArrowSvgData(
+    arrowData: ArrowData,
+    motionData: MotionData
+  ): Promise<{
     imageSrc: string;
     viewBox: { width: number; height: number };
     center: { x: number; y: number };

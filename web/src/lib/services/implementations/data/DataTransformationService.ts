@@ -14,7 +14,7 @@ import {
   GridMode,
   PropType,
 } from "$lib/domain";
-import { type GridData as RawGridData } from "../../../data/gridCoordinates.js";
+import { type GridPointData as RawGridData } from "../../../data/gridCoordinates.js";
 export interface GridData {
   mode: GridMode;
   allLayer2PointsNormal: Record<

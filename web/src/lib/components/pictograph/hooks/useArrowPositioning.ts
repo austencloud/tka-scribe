@@ -27,7 +27,9 @@ export interface ArrowPositioningState {
  * Factory function for arrow positioning coordination.
  * Returns the orchestrator and calculation function using DI container.
  */
-export function useArrowPositioning(_props: ArrowPositioningProps): ArrowPositioningState {
+export function useArrowPositioning(
+  _props: ArrowPositioningProps
+): ArrowPositioningState {
   // Get the orchestrator from DI container - SINGLE SOURCE OF TRUTH for arrow positioning
   const orchestrator = resolve(
     "IArrowPositioningOrchestrator"
@@ -64,11 +66,11 @@ export function useArrowPositioning(_props: ArrowPositioningProps): ArrowPositio
               // Type assertion to ArrowData from the orchestrator
               const arrow = arrowData as ArrowData;
               newPositions[color] = {
-                x: arrow.position_x || 475,
-                y: arrow.position_y || 475,
-                rotation: arrow.rotation_angle || 0,
+                x: arrow.positionX || 475,
+                y: arrow.positionY || 475,
+                rotation: arrow.rotationAngle || 0,
               };
-              newMirroring[color] = arrow.isMirrored || false;
+              newMirroring[color] = arrow.svgMirrored || false;
             }
           }
         );

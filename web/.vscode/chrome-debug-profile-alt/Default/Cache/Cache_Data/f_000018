@@ -1,0 +1,292 @@
+import { createHotContext as __vite__createHotContext } from "/@vite/client";import.meta.hot = __vite__createHotContext("/src/lib/components/settings/tabs/GeneralTab.svelte");import "/node_modules/.vite/deps/svelte_internal_disclose-version.js?v=474c1bba";
+
+GeneralTab[$.FILENAME] = 'src/lib/components/settings/tabs/GeneralTab.svelte';
+
+import * as $ from "/node_modules/.vite/deps/svelte_internal_client.js?v=474c1bba";
+import SelectInput from "/src/lib/components/settings/SelectInput.svelte";
+import SettingCard from "/src/lib/components/settings/SettingCard.svelte";
+import TextInput from "/src/lib/components/settings/TextInput.svelte";
+import ToggleSetting from "/src/lib/components/settings/ToggleSetting.svelte";
+
+var root_3 = $.add_locations($.from_html(`<!> <!> <!> <!>`, 1), GeneralTab[$.FILENAME], []);
+var root = $.add_locations($.from_html(`<div class="tab-content s-Tg6FjmA7jaGB"><!> <!> <!></div>`), GeneralTab[$.FILENAME], [[66, 0]]);
+
+function GeneralTab($$anchor, $$props) {
+	$.check_target(new.target);
+	$.push($$props, true, GeneralTab);
+	console.log(...$.log_if_contains_state('log', "\u{1F50D} GeneralTab initialized, onupdate function:", typeof $$props.onupdate, $$props.onupdate));
+
+	let userName = $.tag($.state($.proxy($$props.settings.userName || "")), 'userName');
+	let autoSave = $.tag($.state($.proxy($$props.settings.autoSave ?? true)), 'autoSave');
+	let gridMode = $.tag($.state($.proxy($$props.settings.gridMode || GridMode.DIAMOND)), 'gridMode');
+	let workbenchColumns = $.tag($.state($.proxy($$props.settings.workbenchColumns || 5)), 'workbenchColumns');
+	let animationsEnabled = $.tag($.state($.proxy($$props.settings.animationsEnabled ?? true)), 'animationsEnabled');
+	let developerMode = $.tag($.state($.proxy($$props.settings.developerMode ?? false)), 'developerMode');
+
+	const gridModeOptions = [
+		{ value: GridMode.DIAMOND, label: "Diamond" },
+		{ value: GridMode.BOX, label: "Box" }
+	];
+
+	function handleAnimationsEnabledChange(checked) {
+		$.set(animationsEnabled, checked, true);
+		$$props.onupdate?.({ key: "animationsEnabled", value: $.get(animationsEnabled) });
+		console.log(`\u{1F3A8} Animations ${$.get(animationsEnabled) ? "enabled" : "disabled"}`);
+	}
+
+	function handleDeveloperModeChange(checked) {
+		console.log(...$.log_if_contains_state('log', "\u{1F527} Developer mode toggle clicked, new value:", checked));
+		console.log("\u{1F527} onupdate function available:", typeof $$props.onupdate);
+		$.set(developerMode, checked, true);
+
+		import("/src/lib/state/appState.svelte.ts").then(({ updateSettings, getSettings }) => {
+			const currentSettings = getSettings();
+			const newSettings = { ...currentSettings, developerMode: checked };
+
+			console.log(...$.log_if_contains_state('log', "\u{1F527} Direct updateSettings call with:", newSettings));
+			updateSettings(newSettings);
+		});
+
+		const updateData = { key: "developerMode", value: $.get(developerMode) };
+
+		console.log(...$.log_if_contains_state('log', "\u{1F527} About to call onupdate with:", updateData));
+		$$props.onupdate?.(updateData);
+		console.log(`\u{1F527} Developer mode ${$.get(developerMode) ? "enabled" : "disabled"} - onupdate called`);
+	}
+
+	function handleUserNameChange(value) {
+		$.set(userName, value, true);
+		$$props.onupdate?.({ key: "userName", value: $.get(userName) });
+	}
+
+	function handleAutoSaveChange(checked) {
+		$.set(autoSave, checked, true);
+		$$props.onupdate?.({ key: "autoSave", value: $.get(autoSave) });
+	}
+
+	function handleGridModeChange(value) {
+		if ($.strict_equals(value, GridMode.DIAMOND) || $.strict_equals(value, GridMode.BOX)) {
+			$.set(gridMode, value, true);
+			$$props.onupdate?.({ key: "gridMode", value: $.get(gridMode) });
+		}
+	}
+
+	function handleWorkbenchColumnsChange(value) {
+		$.set(workbenchColumns, parseInt(value), true);
+		$$props.onupdate?.({ key: "workbenchColumns", value: $.get(workbenchColumns) });
+	}
+
+	var div = root();
+	var node = $.child(div);
+
+	$.add_svelte_meta(
+		() => SettingCard(node, {
+			title: 'User Profile',
+
+			children: $.wrap_snippet(GeneralTab, ($$anchor, $$slotProps) => {
+				var fragment = $.comment();
+				var node_1 = $.first_child(fragment);
+
+				$.add_svelte_meta(
+					() => TextInput(node_1, {
+						label: 'User Name',
+
+						get value() {
+							return $.get(userName);
+						},
+
+						placeholder: 'Enter your name...',
+						maxlength: 50,
+						helpText: 'Appears on exported sequences',
+						onchange: handleUserNameChange
+					}),
+					'component',
+					GeneralTab,
+					68,
+					4,
+					{ componentTag: 'TextInput' }
+				);
+
+				$.append($$anchor, fragment);
+			}),
+
+			$$slots: { default: true }
+		}),
+		'component',
+		GeneralTab,
+		67,
+		2,
+		{ componentTag: 'SettingCard' }
+	);
+
+	var node_2 = $.sibling(node, 2);
+
+	$.add_svelte_meta(
+		() => SettingCard(node_2, {
+			title: 'Animation Settings',
+
+			children: $.wrap_snippet(GeneralTab, ($$anchor, $$slotProps) => {
+				var fragment_1 = $.comment();
+				var node_3 = $.first_child(fragment_1);
+
+				$.add_svelte_meta(
+					() => ToggleSetting(node_3, {
+						label: 'Enable Animations',
+
+						get checked() {
+							return $.get(animationsEnabled);
+						},
+
+						helpText: 'Enable smooth animations and transitions',
+						onchange: handleAnimationsEnabledChange
+					}),
+					'component',
+					GeneralTab,
+					79,
+					4,
+					{ componentTag: 'ToggleSetting' }
+				);
+
+				$.append($$anchor, fragment_1);
+			}),
+
+			$$slots: { default: true }
+		}),
+		'component',
+		GeneralTab,
+		78,
+		2,
+		{ componentTag: 'SettingCard' }
+	);
+
+	var node_4 = $.sibling(node_2, 2);
+
+	$.add_svelte_meta(
+		() => SettingCard(node_4, {
+			title: 'Application Settings',
+
+			children: $.wrap_snippet(GeneralTab, ($$anchor, $$slotProps) => {
+				var fragment_2 = root_3();
+				var node_5 = $.first_child(fragment_2);
+
+				$.add_svelte_meta(
+					() => ToggleSetting(node_5, {
+						label: 'Auto-save Settings',
+
+						get checked() {
+							return $.get(autoSave);
+						},
+
+						helpText: 'Save changes automatically',
+						onchange: handleAutoSaveChange
+					}),
+					'component',
+					GeneralTab,
+					88,
+					4,
+					{ componentTag: 'ToggleSetting' }
+				);
+
+				var node_6 = $.sibling(node_5, 2);
+
+				$.add_svelte_meta(
+					() => ToggleSetting(node_6, {
+						label: 'Developer Mode',
+
+						get checked() {
+							return $.get(developerMode);
+						},
+
+						helpText: 'Show developer tools and experimental features in navigation',
+						onchange: handleDeveloperModeChange
+					}),
+					'component',
+					GeneralTab,
+					95,
+					4,
+					{ componentTag: 'ToggleSetting' }
+				);
+
+				var node_7 = $.sibling(node_6, 2);
+
+				$.add_svelte_meta(
+					() => SelectInput(node_7, {
+						label: 'Grid Mode',
+
+						get value() {
+							return $.get(gridMode);
+						},
+
+						get options() {
+							return gridModeOptions;
+						},
+
+						helpText: 'Pictograph grid layout style',
+						onchange: handleGridModeChange
+					}),
+					'component',
+					GeneralTab,
+					102,
+					4,
+					{ componentTag: 'SelectInput' }
+				);
+
+				var node_8 = $.sibling(node_7, 2);
+
+				{
+					let $0 = $.derived(() => $.get(workbenchColumns).toString());
+
+					$.add_svelte_meta(
+						() => TextInput(node_8, {
+							label: 'Workbench Columns',
+
+							get value() {
+								return $.get($0);
+							},
+
+							type: 'number',
+							min: 1,
+							max: 12,
+							helpText: 'Number of columns in sequence workbench',
+							onchange: handleWorkbenchColumnsChange
+						}),
+						'component',
+						GeneralTab,
+						110,
+						4,
+						{ componentTag: 'TextInput' }
+					);
+				}
+
+				$.append($$anchor, fragment_2);
+			}),
+
+			$$slots: { default: true }
+		}),
+		'component',
+		GeneralTab,
+		87,
+		2,
+		{ componentTag: 'SettingCard' }
+	);
+
+	$.reset(div);
+	$.append($$anchor, div);
+
+	return $.pop({ ...$.legacy_api() });
+}
+
+if (import.meta.hot) {
+	GeneralTab = $.hmr(GeneralTab, () => GeneralTab[$.HMR].source);
+
+	import.meta.hot.acceptExports(["default"],(module) => {
+		$.cleanup_styles('s-Tg6FjmA7jaGB');
+		module.default[$.HMR].source = GeneralTab[$.HMR].source;
+		$.set(GeneralTab[$.HMR].source, module.default[$.HMR].original);
+	});
+}
+
+export default GeneralTab;
+import "/src/lib/components/settings/tabs/GeneralTab.svelte?svelte&type=style&lang.css";
+
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJtYXBwaW5ncyI6Ijs7Ozs7T0FLUyxpQkFBZTtPQUNmLGlCQUFtQjtPQWtCcEIsZUFBVTtPQUdSOzs7Ozt1Q0EzQlYsQ0FBQzs7O0NBMkRHLFFBQVEsc0NBQ1I7O0tBUUksa0RBQVk7S0FDWixrREFBMEI7S0FDNUI7S0FDRjtLQUtBLDJEQUFxQjtLQUdyQjs7T0FJQTtJQUNBLE9BQVcsU0FBTyxnQkFBWTtJQUNoQzs7O1VBS0E7UUFFQSxtQkFBUzt1QkFDTywwQkFBb0IsYUFBVTtFQUMxQywwQ0FBVztDQUNYOztVQUVKO0VBRUEsUUFBUyw2RkFBNEM7RUFDbkQ7UUFDQSxlQUFrQjs7K0NBSWpCLGdCQUFtQjtTQUNWLGtCQUFhO1NBQ3RCOztHQUNDLFFBQU8sc0NBQUssOENBQUk7R0FDaEIsZUFBZTtFQUNmOztRQUlEOztFQUNELDhDQUFXOztFQUVaLDhDQUNFO0NBRUw7O1VBRU0scUJBQVUsT0FBNkI7UUFDekMsVUFBQzt1QkFDVTs7O1VBR1Y7UUFDTCxVQUFhO3VCQUNFLGlCQUFRO0NBQ3ZCOztVQUVLOztTQUVBO3dCQUNRLEtBQVUsWUFBSTtFQUMzQjtDQUNBOztVQUVLOzt1QkFFQTtDQUNMOzs7Ozs7Ozs7Ozs7Ozs7Ozs7b0JBT0s7Ozs7aUJBRVE7O2dCQUVEOzs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7O2dCQVNHOzs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7b0JBT0EsUUFBTTs7OztnQkFFTCxvQkFBQzs7Ozs7Ozs7Ozs7Ozs7OztvQkFLZjs7OztnQkFFWSx5QkFBa0I7Ozs7Ozs7Ozs7Ozs7Ozs7b0JBSzlCOzs7Ozs7OztnQkFHYyxvQkFBQzs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7WUFPVjs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Q0FsRFAiLCJuYW1lcyI6W10sImlnbm9yZUxpc3QiOltdLCJzb3VyY2VzIjpbIkdlbmVyYWxUYWIuc3ZlbHRlIl0sInNvdXJjZXNDb250ZW50IjpbIjwhLS0gR2VuZXJhbFRhYi5zdmVsdGUgLSBDb21wYWN0IGdlbmVyYWwgc2V0dGluZ3Mgd2l0aCBmYWRlIHN5c3RlbSBjb250cm9scyAtLT5cbjxzY3JpcHQgbGFuZz1cInRzXCI+XG4gIGltcG9ydCB0eXBlIHsgR3JpZE1vZGUgfSBmcm9tIFwiJGxpYi9kb21haW5cIjtcbiAgaW1wb3J0IFNlbGVjdElucHV0IGZyb20gXCIuLi9TZWxlY3RJbnB1dC5zdmVsdGVcIjtcbiAgaW1wb3J0IFNldHRpbmdDYXJkIGZyb20gXCIuLi9TZXR0aW5nQ2FyZC5zdmVsdGVcIjtcbiAgaW1wb3J0IFRleHRJbnB1dCBmcm9tIFwiLi4vVGV4dElucHV0LnN2ZWx0ZVwiO1xuICBpbXBvcnQgVG9nZ2xlU2V0dGluZyBmcm9tIFwiLi4vVG9nZ2xlU2V0dGluZy5zdmVsdGVcIjtcblxuICAvLyBGYWRlIHN5c3RlbSByZW1vdmVkIC0gdXNpbmcgc2ltcGxlIGFuaW1hdGlvbnMgb25seVxuXG4gIGludGVyZmFjZSBBcHBTZXR0aW5ncyB7XG4gICAgdXNlck5hbWU/OiBzdHJpbmc7XG4gICAgYXV0b1NhdmU/OiBib29sZWFuO1xuICAgIGdyaWRNb2RlPzogR3JpZE1vZGU7XG4gICAgd29ya2JlbmNoQ29sdW1ucz86IG51bWJlcjtcbiAgICBhbmltYXRpb25zRW5hYmxlZD86IGJvb2xlYW47XG4gICAgZGV2ZWxvcGVyTW9kZT86IGJvb2xlYW47XG4gIH1cblxuICBpbnRlcmZhY2UgUHJvcHMge1xuICAgIHNldHRpbmdzOiBBcHBTZXR0aW5ncztcbiAgICBvbnVwZGF0ZT86IChkYXRhOiB7IGtleTogc3RyaW5nOyB2YWx1ZTogYW55IH0pID0+IHZvaWQ7XG4gIH1cblxuICBsZXQgeyBzZXR0aW5ncywgb251cGRhdGUgfTogUHJvcHMgPSAkcHJvcHMoKTtcblxuICAvLyBEZWJ1ZzogQ2hlY2sgaWYgb251cGRhdGUgaXMgYXZhaWxhYmxlXG4gIGNvbnNvbGUubG9nKFxuICAgIFwi8J+UjSBHZW5lcmFsVGFiIGluaXRpYWxpemVkLCBvbnVwZGF0ZSBmdW5jdGlvbjpcIixcbiAgICB0eXBlb2Ygb251cGRhdGUsXG4gICAgb251cGRhdGVcbiAgKTtcblxuICAvLyBMb2NhbCBzdGF0ZSBmb3IgZm9ybSB2YWx1ZXNcbiAgbGV0IHVzZXJOYW1lID0gJHN0YXRlKHNldHRpbmdzLnVzZXJOYW1lIHx8IFwiXCIpO1xuICBsZXQgYXV0b1NhdmUgPSAkc3RhdGUoc2V0dGluZ3MuYXV0b1NhdmUgPz8gdHJ1ZSk7XG4gIGxldCBncmlkTW9kZSA9ICRzdGF0ZShzZXR0aW5ncy5ncmlkTW9kZSB8fCBHcmlkTW9kZS5ESUFNT05EKTtcbiAgbGV0IHdvcmtiZW5jaENvbHVtbnMgPSAkc3RhdGUoc2V0dGluZ3Mud29ya2JlbmNoQ29sdW1ucyB8fCA1KTtcblxuICAvLyBBbmltYXRpb24gc2V0dGluZ3MgKHNpbXBsaWZpZWQpXG4gIGxldCBhbmltYXRpb25zRW5hYmxlZCA9ICRzdGF0ZShzZXR0aW5ncy5hbmltYXRpb25zRW5hYmxlZCA/PyB0cnVlKTtcblxuICAvLyBEZXZlbG9wZXIgc2V0dGluZ3NcbiAgbGV0IGRldmVsb3Blck1vZGUgPSAkc3RhdGUoc2V0dGluZ3MuZGV2ZWxvcGVyTW9kZSA/PyBmYWxzZSk7XG5cbiAgLy8gT3B0aW9uc1xuICBjb25zdCBncmlkTW9kZU9wdGlvbnMgPSBbXG4gICAgeyB2YWx1ZTogR3JpZE1vZGUuRElBTU9ORCwgbGFiZWw6IFwiRGlhbW9uZFwiIH0sXG4gICAgeyB2YWx1ZTogR3JpZE1vZGUuQk9YLCBsYWJlbDogXCJCb3hcIiB9LFxuICBdO1xuXG4gIC8vIEFuaW1hdGlvbiBoYW5kbGVycyAoc2ltcGxpZmllZClcbiAgZnVuY3Rpb24gaGFuZGxlQW5pbWF0aW9uc0VuYWJsZWRDaGFuZ2UoY2hlY2tlZDogYm9vbGVhbikge1xuICAgIGFuaW1hdGlvbnNFbmFibGVkID0gY2hlY2tlZDtcbiAgICBvbnVwZGF0ZT8uKHsga2V5OiBcImFuaW1hdGlvbnNFbmFibGVkXCIsIHZhbHVlOiBhbmltYXRpb25zRW5hYmxlZCB9KTtcbiAgICBjb25zb2xlLmxvZyhg8J+OqCBBbmltYXRpb25zICR7YW5pbWF0aW9uc0VuYWJsZWQgPyBcImVuYWJsZWRcIiA6IFwiZGlzYWJsZWRcIn1gKTtcbiAgfVxuXG4gIGZ1bmN0aW9uIGhhbmRsZURldmVsb3Blck1vZGVDaGFuZ2UoY2hlY2tlZDogYm9vbGVhbikge1xuICAgIGNvbnNvbGUubG9nKFwi8J+UpyBEZXZlbG9wZXIgbW9kZSB0b2dnbGUgY2xpY2tlZCwgbmV3IHZhbHVlOlwiLCBjaGVja2VkKTtcbiAgICBjb25zb2xlLmxvZyhcIvCflKcgb251cGRhdGUgZnVuY3Rpb24gYXZhaWxhYmxlOlwiLCB0eXBlb2Ygb251cGRhdGUpO1xuICAgIGRldmVsb3Blck1vZGUgPSBjaGVja2VkO1xuXG4gICAgLy8gVXBkYXRlIGdsb2JhbCBzdGF0ZSBkaXJlY3RseVxuICAgIGltcG9ydChcIiRsaWIvc3RhdGUvYXBwU3RhdGUuc3ZlbHRlXCIpLnRoZW4oXG4gICAgICAoeyB1cGRhdGVTZXR0aW5ncywgZ2V0U2V0dGluZ3MgfSkgPT4ge1xuICAgICAgICBjb25zdCBjdXJyZW50U2V0dGluZ3MgPSBnZXRTZXR0aW5ncygpO1xuICAgICAgICBjb25zdCBuZXdTZXR0aW5ncyA9IHsgLi4uY3VycmVudFNldHRpbmdzLCBkZXZlbG9wZXJNb2RlOiBjaGVja2VkIH07XG4gICAgICAgIGNvbnNvbGUubG9nKFwi8J+UpyBEaXJlY3QgdXBkYXRlU2V0dGluZ3MgY2FsbCB3aXRoOlwiLCBuZXdTZXR0aW5ncyk7XG4gICAgICAgIHVwZGF0ZVNldHRpbmdzKG5ld1NldHRpbmdzKTtcbiAgICAgIH1cbiAgICApO1xuXG4gICAgLy8gQWxzbyB0cnkgdGhlIG5vcm1hbCBwcm9wIHdheVxuICAgIGNvbnN0IHVwZGF0ZURhdGEgPSB7IGtleTogXCJkZXZlbG9wZXJNb2RlXCIsIHZhbHVlOiBkZXZlbG9wZXJNb2RlIH07XG4gICAgY29uc29sZS5sb2coXCLwn5SnIEFib3V0IHRvIGNhbGwgb251cGRhdGUgd2l0aDpcIiwgdXBkYXRlRGF0YSk7XG4gICAgb251cGRhdGU/Lih1cGRhdGVEYXRhKTtcbiAgICBjb25zb2xlLmxvZyhcbiAgICAgIGDwn5SnIERldmVsb3BlciBtb2RlICR7ZGV2ZWxvcGVyTW9kZSA/IFwiZW5hYmxlZFwiIDogXCJkaXNhYmxlZFwifSAtIG9udXBkYXRlIGNhbGxlZGBcbiAgICApO1xuICB9XG5cbiAgZnVuY3Rpb24gaGFuZGxlVXNlck5hbWVDaGFuZ2UodmFsdWU6IHN0cmluZykge1xuICAgIHVzZXJOYW1lID0gdmFsdWU7XG4gICAgb251cGRhdGU/Lih7IGtleTogXCJ1c2VyTmFtZVwiLCB2YWx1ZTogdXNlck5hbWUgfSk7XG4gIH1cblxuICBmdW5jdGlvbiBoYW5kbGVBdXRvU2F2ZUNoYW5nZShjaGVja2VkOiBib29sZWFuKSB7XG4gICAgYXV0b1NhdmUgPSBjaGVja2VkO1xuICAgIG9udXBkYXRlPy4oeyBrZXk6IFwiYXV0b1NhdmVcIiwgdmFsdWU6IGF1dG9TYXZlIH0pO1xuICB9XG5cbiAgZnVuY3Rpb24gaGFuZGxlR3JpZE1vZGVDaGFuZ2UodmFsdWU6IHN0cmluZykge1xuICAgIGlmICh2YWx1ZSA9PT0gR3JpZE1vZGUuRElBTU9ORCB8fCB2YWx1ZSA9PT0gR3JpZE1vZGUuQk9YKSB7XG4gICAgICBncmlkTW9kZSA9IHZhbHVlO1xuICAgICAgb251cGRhdGU/Lih7IGtleTogXCJncmlkTW9kZVwiLCB2YWx1ZTogZ3JpZE1vZGUgfSk7XG4gICAgfVxuICB9XG5cbiAgZnVuY3Rpb24gaGFuZGxlV29ya2JlbmNoQ29sdW1uc0NoYW5nZSh2YWx1ZTogc3RyaW5nKSB7XG4gICAgd29ya2JlbmNoQ29sdW1ucyA9IHBhcnNlSW50KHZhbHVlKTtcbiAgICBvbnVwZGF0ZT8uKHsga2V5OiBcIndvcmtiZW5jaENvbHVtbnNcIiwgdmFsdWU6IHdvcmtiZW5jaENvbHVtbnMgfSk7XG4gIH1cbjwvc2NyaXB0PlxuXG48ZGl2IGNsYXNzPVwidGFiLWNvbnRlbnRcIj5cbiAgPFNldHRpbmdDYXJkIHRpdGxlPVwiVXNlciBQcm9maWxlXCI+XG4gICAgPFRleHRJbnB1dFxuICAgICAgbGFiZWw9XCJVc2VyIE5hbWVcIlxuICAgICAgdmFsdWU9e3VzZXJOYW1lfVxuICAgICAgcGxhY2Vob2xkZXI9XCJFbnRlciB5b3VyIG5hbWUuLi5cIlxuICAgICAgbWF4bGVuZ3RoPXs1MH1cbiAgICAgIGhlbHBUZXh0PVwiQXBwZWFycyBvbiBleHBvcnRlZCBzZXF1ZW5jZXNcIlxuICAgICAgb25jaGFuZ2U9e2hhbmRsZVVzZXJOYW1lQ2hhbmdlfVxuICAgIC8+XG4gIDwvU2V0dGluZ0NhcmQ+XG5cbiAgPFNldHRpbmdDYXJkIHRpdGxlPVwiQW5pbWF0aW9uIFNldHRpbmdzXCI+XG4gICAgPFRvZ2dsZVNldHRpbmdcbiAgICAgIGxhYmVsPVwiRW5hYmxlIEFuaW1hdGlvbnNcIlxuICAgICAgY2hlY2tlZD17YW5pbWF0aW9uc0VuYWJsZWR9XG4gICAgICBoZWxwVGV4dD1cIkVuYWJsZSBzbW9vdGggYW5pbWF0aW9ucyBhbmQgdHJhbnNpdGlvbnNcIlxuICAgICAgb25jaGFuZ2U9e2hhbmRsZUFuaW1hdGlvbnNFbmFibGVkQ2hhbmdlfVxuICAgIC8+XG4gIDwvU2V0dGluZ0NhcmQ+XG5cbiAgPFNldHRpbmdDYXJkIHRpdGxlPVwiQXBwbGljYXRpb24gU2V0dGluZ3NcIj5cbiAgICA8VG9nZ2xlU2V0dGluZ1xuICAgICAgbGFiZWw9XCJBdXRvLXNhdmUgU2V0dGluZ3NcIlxuICAgICAgY2hlY2tlZD17YXV0b1NhdmV9XG4gICAgICBoZWxwVGV4dD1cIlNhdmUgY2hhbmdlcyBhdXRvbWF0aWNhbGx5XCJcbiAgICAgIG9uY2hhbmdlPXtoYW5kbGVBdXRvU2F2ZUNoYW5nZX1cbiAgICAvPlxuXG4gICAgPFRvZ2dsZVNldHRpbmdcbiAgICAgIGxhYmVsPVwiRGV2ZWxvcGVyIE1vZGVcIlxuICAgICAgY2hlY2tlZD17ZGV2ZWxvcGVyTW9kZX1cbiAgICAgIGhlbHBUZXh0PVwiU2hvdyBkZXZlbG9wZXIgdG9vbHMgYW5kIGV4cGVyaW1lbnRhbCBmZWF0dXJlcyBpbiBuYXZpZ2F0aW9uXCJcbiAgICAgIG9uY2hhbmdlPXtoYW5kbGVEZXZlbG9wZXJNb2RlQ2hhbmdlfVxuICAgIC8+XG5cbiAgICA8U2VsZWN0SW5wdXRcbiAgICAgIGxhYmVsPVwiR3JpZCBNb2RlXCJcbiAgICAgIHZhbHVlPXtncmlkTW9kZX1cbiAgICAgIG9wdGlvbnM9e2dyaWRNb2RlT3B0aW9uc31cbiAgICAgIGhlbHBUZXh0PVwiUGljdG9ncmFwaCBncmlkIGxheW91dCBzdHlsZVwiXG4gICAgICBvbmNoYW5nZT17aGFuZGxlR3JpZE1vZGVDaGFuZ2V9XG4gICAgLz5cblxuICAgIDxUZXh0SW5wdXRcbiAgICAgIGxhYmVsPVwiV29ya2JlbmNoIENvbHVtbnNcIlxuICAgICAgdmFsdWU9e3dvcmtiZW5jaENvbHVtbnMudG9TdHJpbmcoKX1cbiAgICAgIHR5cGU9XCJudW1iZXJcIlxuICAgICAgbWluPXsxfVxuICAgICAgbWF4PXsxMn1cbiAgICAgIGhlbHBUZXh0PVwiTnVtYmVyIG9mIGNvbHVtbnMgaW4gc2VxdWVuY2Ugd29ya2JlbmNoXCJcbiAgICAgIG9uY2hhbmdlPXtoYW5kbGVXb3JrYmVuY2hDb2x1bW5zQ2hhbmdlfVxuICAgIC8+XG4gIDwvU2V0dGluZ0NhcmQ+XG48L2Rpdj5cblxuPHN0eWxlPlxuICAudGFiLWNvbnRlbnQge1xuICAgIHdpZHRoOiAxMDAlO1xuICAgIG1heC13aWR0aDogdmFyKC0tbWF4LWNvbnRlbnQtd2lkdGgsIDEwMCUpO1xuICAgIG1hcmdpbjogMCBhdXRvO1xuICAgIGNvbnRhaW5lci10eXBlOiBpbmxpbmUtc2l6ZTtcbiAgfVxuXG4gIC8qIFJlc3BvbnNpdmUgZ3JpZCBsYXlvdXQgZm9yIHNldHRpbmdzIGNhcmRzICovXG4gIEBjb250YWluZXIgKG1pbi13aWR0aDogNDAwcHgpIHtcbiAgICAudGFiLWNvbnRlbnQge1xuICAgICAgZGlzcGxheTogZ3JpZDtcbiAgICAgIGdyaWQtdGVtcGxhdGUtY29sdW1uczogMWZyO1xuICAgICAgZ2FwOiBjbGFtcCgxNnB4LCAydncsIDMycHgpO1xuICAgIH1cbiAgfVxuXG4gIEBjb250YWluZXIgKG1pbi13aWR0aDogNjAwcHgpIHtcbiAgICAudGFiLWNvbnRlbnQge1xuICAgICAgZ3JpZC10ZW1wbGF0ZS1jb2x1bW5zOiByZXBlYXQoYXV0by1maXQsIG1pbm1heCgyODBweCwgMWZyKSk7XG4gICAgICBnYXA6IGNsYW1wKDIwcHgsIDN2dywgNDBweCk7XG4gICAgfVxuICB9XG5cbiAgQGNvbnRhaW5lciAobWluLXdpZHRoOiA4MDBweCkge1xuICAgIC50YWItY29udGVudCB7XG4gICAgICBncmlkLXRlbXBsYXRlLWNvbHVtbnM6IHJlcGVhdChhdXRvLWZpdCwgbWlubWF4KDMyMHB4LCAxZnIpKTtcbiAgICAgIGdhcDogY2xhbXAoMjRweCwgNHZ3LCA0OHB4KTtcbiAgICB9XG4gIH1cblxuICAvKiBSZW1vdmVkIHVudXNlZCBkZWJ1ZyBzdHlsZXMgKC5mYWRlLWRlYnVnLXNlY3Rpb24sIC5kZWJ1Zy1idXR0b24sIC5kZWJ1Zy1oZWxwKSAqL1xuPC9zdHlsZT5cbiJdLCJmaWxlIjoiQzovVEtBL3dlYi9zcmMvbGliL2NvbXBvbmVudHMvc2V0dGluZ3MvdGFicy9HZW5lcmFsVGFiLnN2ZWx0ZSJ9

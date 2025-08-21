@@ -5,6 +5,8 @@
  * This replaces the monolithic state with focused, testable services.
  */
 
+import { GridMode } from "$lib/domain/enums";
+
 // Domain Types
 export type {
   ThumbnailFile,

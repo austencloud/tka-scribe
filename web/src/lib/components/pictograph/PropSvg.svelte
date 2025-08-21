@@ -1,14 +1,12 @@
 <script lang="ts">
-  import type { MotionData, PropData } from "$lib/domain";
-  import { GridMode } from "$lib/domain/enums";
+  import type { MotionData, PropData, PictographData } from "$lib/domain";
   import type { IPropCoordinatorService } from "$lib/services/implementations/rendering/PropCoordinatorService";
   import { IPropCoordinatorServiceInterface } from "$lib/services/di/interfaces/core-interfaces";
   import { resolve } from "$lib/services/bootstrap";
   interface Props {
     propData: PropData;
     motionData: MotionData; // Required - source of truth for motion properties
-    gridMode?: GridMode;
-    betaOffset?: { x: number; y: number };
+    pictographData: PictographData; // ✅ SIMPLIFIED: Complete pictograph data contains gridMode
   }
 
   interface RenderData {
@@ -22,22 +20,12 @@
     loaded: boolean;
   }
 
-  let {
-    propData,
-    motionData,
-    gridMode = GridMode.DIAMOND,
-    betaOffset = { x: 0, y: 0 },
-  }: Props = $props();
+  let { propData, motionData, pictographData }: Props = $props();
 
   // Derive color from motionData (single source of truth)
   const color = $derived(motionData.color);
 
-  // Debug color changes reactively
-  $effect(() => {
-    console.log(
-      `🎨 Prop.svelte: motionData.color = ${motionData.color}, derived color = ${color}`
-    );
-  });
+  // Debug logging removed for performance
 
   // Native SVG content scales automatically with the parent SVG container
   // No manual scaling needed - the 950x950 coordinate system handles this naturally
@@ -57,7 +45,7 @@
     if (!propData) return;
 
     propCoordinator
-      .calculatePropRenderData(propData, motionData, gridMode, betaOffset)
+      .calculatePropRenderData(propData, motionData, pictographData)
       .then((data) => {
         renderData = data;
       });

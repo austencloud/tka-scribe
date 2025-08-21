@@ -18,7 +18,7 @@ import {
   IPersistenceServiceInterface,
   IPictographRenderingServiceInterface,
   IPictographServiceInterface,
-  IPropRenderingServiceInterface,
+  // ✅ REMOVED: PropRenderingService is deprecated
   IPropCoordinatorServiceInterface,
   ISequenceDomainServiceInterface,
   ISequenceGenerationServiceInterface,
@@ -73,7 +73,7 @@ export async function registerCoreServices(
   container.registerSingletonClass(IOverlayRenderingServiceInterface);
 
   // Register main rendering services
-  container.registerSingletonClass(IPropRenderingServiceInterface);
+  // ✅ REMOVED: PropRenderingService is deprecated
   container.registerSingletonClass(IPropCoordinatorServiceInterface);
 
   // Register services with dependencies using factories
@@ -101,7 +101,7 @@ export async function registerCoreServices(
     const arrowPositioning = container.resolve(
       IArrowPositioningOrchestratorInterface
     ) as IArrowPositioningOrchestrator;
-    const propRendering = container.resolve(IPropRenderingServiceInterface);
+    // ✅ REMOVED: PropRenderingService is deprecated
     const svgUtility = container.resolve(ISvgUtilityServiceInterface);
     const gridRendering = container.resolve(IGridRenderingServiceInterface);
     const arrowRendering = container.resolve(IArrowRenderingServiceInterface);
@@ -113,7 +113,7 @@ export async function registerCoreServices(
     );
     return new PictographRenderingService(
       arrowPositioning,
-      propRendering,
+      null, // ✅ FIXED: PropRenderingService is deprecated, pass null
       svgUtility,
       gridRendering,
       arrowRendering,

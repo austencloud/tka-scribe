@@ -537,13 +537,13 @@ export class FlexiblePictographGenerator {
       gridData: createGridData({ gridMode: GridMode.DIAMOND }),
       arrows: {
         blue: createArrowData({
-          motionType: params.blueMotion,
-          rotationDirection: params.blueRotation,
+          // ✅ FIXED: ArrowData no longer contains motion properties
+          arrowLocation: null,
           isVisible: true,
         }),
         red: createArrowData({
-          motionType: params.redMotion,
-          rotationDirection: params.redRotation,
+          // ✅ FIXED: ArrowData no longer contains motion properties
+          arrowLocation: null,
           isVisible: true,
         }),
       },

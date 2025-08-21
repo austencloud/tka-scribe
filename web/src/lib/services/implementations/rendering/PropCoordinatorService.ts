@@ -6,8 +6,8 @@
  * Uses PropPlacementService for placement calculations following separation of concerns.
  */
 
-import type { PropData, MotionData, PropPlacementData } from "$lib/domain";
-import { MotionColor, GridMode, GridPosition } from "$lib/domain/enums";
+import type { PropData, MotionData, PictographData } from "$lib/domain";
+import { MotionColor } from "$lib/domain/enums";
 import { PropPlacementService } from "../positioning/PropPlacementService";
 import type { IPropPlacementService } from "../positioning/PropPlacementService";
 
@@ -27,8 +27,7 @@ export interface IPropCoordinatorService {
   calculatePropRenderData(
     propData: PropData,
     motionData?: MotionData,
-    gridMode?: GridMode,
-    betaOffset?: { x: number; y: number }
+    pictographData?: PictographData // ✅ SIMPLIFIED: Complete pictograph data contains gridMode
   ): Promise<PropRenderData>;
 }
 
@@ -50,38 +49,52 @@ export class PropCoordinatorService implements IPropCoordinatorService {
   async calculatePropRenderData(
     propData: PropData,
     motionData?: MotionData,
-    gridMode: GridMode = GridMode.DIAMOND,
-    betaOffset: { x: number; y: number } = { x: 0, y: 0 }
+    pictographData?: PictographData
   ): Promise<PropRenderData> {
+    // Debug logging removed for performance
+
     try {
-      // Calculate base placement using dedicated service (without beta offset)
-      const basePlacementData = this.placementService.calculatePlacement(
-        propData,
-        motionData,
-        gridMode,
-        [],
-        {},
-        false
+      // ✅ SIMPLIFIED: Only need pictographData and motionData for placement calculation
+      if (!pictographData) {
+        throw new Error(
+          "PictographData is required for prop placement calculation"
+        );
+      }
+
+      if (!motionData) {
+        throw new Error(
+          "MotionData is required for prop placement calculation"
+        );
+      }
+
+      const placementData = this.placementService.calculatePlacement(
+        pictographData,
+        motionData
       );
 
-      // Apply the pre-calculated beta offset
-      const placementData = {
-        ...basePlacementData,
-        position_x: basePlacementData.position_x + betaOffset.x,
-        position_y: basePlacementData.position_y + betaOffset.y,
-      };
-
       // Load SVG data using motion data for color (single source of truth)
+      console.log("✅ About to load SVG data");
       const svgData = await this.loadSvgData(propData, motionData);
+      console.log("✅ SVG data loaded:", svgData);
 
-      return {
-        position: { x: placementData.position_x, y: placementData.position_y },
-        rotation: placementData.rotation_angle,
+      const result = {
+        position: { x: placementData.positionX, y: placementData.positionY },
+        rotation: placementData.rotationAngle,
         svgData,
         loaded: true,
         error: null,
       };
+
+      console.log(
+        "✅ PropCoordinatorService.calculatePropRenderData returning:",
+        result
+      );
+      return result;
     } catch (error) {
+      console.error(
+        "❌ PropCoordinatorService.calculatePropRenderData error:",
+        error
+      );
       return {
         position: { x: 475, y: 475 },
         rotation: 0,
@@ -102,20 +115,16 @@ export class PropCoordinatorService implements IPropCoordinatorService {
   }> {
     // Use motionData.color as source of truth, fallback to blue
     const color = motionData?.color || MotionColor.BLUE;
-    console.log(
-      `🎨 PropCoordinatorService.loadSvgData: motionData.color = ${motionData?.color}, final color = ${color}`
-    );
     const cacheKey = `${propData.propType}_${color}`;
-
-    console.log(
-      `🔍 PropCoordinatorService: Cache key = ${cacheKey}, cache has key = ${this.svgCache.has(cacheKey)}`
-    );
 
     if (this.svgCache.has(cacheKey)) {
       console.log(
         `✅ PropCoordinatorService: Using cached SVG for ${cacheKey}`
       );
-      return this.svgCache.get(cacheKey)!;
+      const cachedData = this.svgCache.get(cacheKey);
+      if (cachedData) {
+        return cachedData;
+      }
     }
 
     console.log(`🔄 PropCoordinatorService: Creating new SVG for ${cacheKey}`);
@@ -182,11 +191,7 @@ export class PropCoordinatorService implements IPropCoordinatorService {
       [MotionColor.RED, "#ED1C24"],
     ]);
 
-    // Debug: Log the color being applied
-    console.log(`🎨 PropCoordinatorService: Applying color ${color} to SVG`);
-
     const targetColor = colorMap.get(color) || "#2E3192";
-    console.log(`🎨 PropCoordinatorService: Target color is ${targetColor}`);
 
     let coloredSvg = svgText.replace(
       /fill="#[0-9A-Fa-f]{6}"/g,

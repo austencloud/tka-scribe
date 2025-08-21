@@ -6,7 +6,7 @@
  */
 
 import type { ArrowData, MotionData, PictographData } from "$lib/domain";
-import { MotionType, MotionColor } from "$lib/domain";
+import { MotionType, MotionColor, GridMode } from "$lib/domain/enums";
 import { resolve } from "$lib/services/bootstrap";
 import type {
   IArrowCoordinateSystemService,

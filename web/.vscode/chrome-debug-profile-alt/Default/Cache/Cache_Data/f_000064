@@ -1,0 +1,373 @@
+import { createHotContext as __vite__createHotContext } from "/@vite/client";import.meta.hot = __vite__createHotContext("/src/lib/components/codex/CodexComponent.svelte");import "/node_modules/.vite/deps/svelte_internal_disclose-version.js?v=474c1bba";
+
+CodexComponent[$.FILENAME] = 'src/lib/components/codex/CodexComponent.svelte';
+
+import * as $ from "/node_modules/.vite/deps/svelte_internal_client.js?v=474c1bba";
+import SimpleGlassScroll from "/src/lib/components/ui/SimpleGlassScroll.svelte";
+import { createCodexState } from "/src/lib/state/codex-state.svelte.ts";
+import CodexControlPanel from "/src/lib/components/codex/CodexControlPanel.svelte";
+import CodexPictographGrid from "/src/lib/components/codex/CodexPictographGrid.svelte";
+
+function toggleCollapse(_, $$props) {
+	$$props.onToggleVisibility?.();
+}
+
+var root_1 = $.add_locations($.from_html(`<div class="codex-subtitle s-Hde1A07f4wxj">Pictograph Reference</div>`), CodexComponent[$.FILENAME], [[69, 10]]);
+var on_click = (__1, codexState) => codexState.refreshPictographs();
+var root_4 = $.add_locations($.from_html(`<div class="error-state s-Hde1A07f4wxj"><div class="error-icon s-Hde1A07f4wxj">⚠️</div> <p class="error-message s-Hde1A07f4wxj"> </p> <button class="retry-button s-Hde1A07f4wxj">Retry</button></div>`), CodexComponent[$.FILENAME], [[96, 10, [[97, 12], [98, 12], [99, 12]]]]);
+var root_6 = $.add_locations($.from_html(`<div class="loading-state s-Hde1A07f4wxj"><div class="loading-spinner s-Hde1A07f4wxj"></div> <p class="s-Hde1A07f4wxj">Loading pictographs...</p></div>`), CodexComponent[$.FILENAME], [[107, 10, [[108, 12], [109, 12]]]]);
+var root_8 = $.add_locations($.from_html(`<div class="loading-state s-Hde1A07f4wxj"><div class="loading-spinner s-Hde1A07f4wxj"></div> <p class="s-Hde1A07f4wxj">Processing operation...</p></div>`), CodexComponent[$.FILENAME], [[112, 10, [[113, 12], [114, 12]]]]);
+var root_10 = $.add_locations($.from_html(`<div class="loading-state s-Hde1A07f4wxj"><div class="loading-spinner s-Hde1A07f4wxj"></div> <p class="s-Hde1A07f4wxj">Initializing codex...</p></div>`), CodexComponent[$.FILENAME], [[117, 10, [[118, 12], [119, 12]]]]);
+var root_12 = $.add_locations($.from_html(`<div class="empty-state s-Hde1A07f4wxj"><p class="s-Hde1A07f4wxj">No pictographs found</p></div>`), CodexComponent[$.FILENAME], [[122, 10, [[123, 12]]]]);
+var root_2 = $.add_locations($.from_html(`<!> <div class="content-wrapper s-Hde1A07f4wxj"><!></div>`, 1), CodexComponent[$.FILENAME], [[93, 4]]);
+var root = $.add_locations($.from_html(`<div><div class="codex-header s-Hde1A07f4wxj"><div class="header-content s-Hde1A07f4wxj"><div class="header-text s-Hde1A07f4wxj"><h3 class="codex-title s-Hde1A07f4wxj">Codex</h3> <!></div> <button class="collapse-toggle s-Hde1A07f4wxj"> </button></div></div> <!></div>`), CodexComponent[$.FILENAME], [[62, 0, [[64, 2, [[65, 4, [[66, 6, [[67, 8]]], [72, 6]]]]]]]]);
+
+function CodexComponent($$anchor, $$props) {
+	$.check_target(new.target);
+	$.push($$props, true, CodexComponent);
+
+	let isVisible = $.prop($$props, 'isVisible', 3, true);
+	const codexState = createCodexState();
+
+	console.log("\u{1F527} CodexComponent: Created codex state instance");
+
+	$.user_effect(() => {
+		console.log(...$.log_if_contains_state('log', "\u{1F527} CodexComponent $effect triggered, isVisible:", isVisible(), "isInitialized:", codexState.isInitialized, "isLoading:", codexState.isLoading));
+
+		if (isVisible() && !codexState.isInitialized && !codexState.isLoading) {
+			console.log("\u{1F680} CodexComponent: Initializing codex state...");
+			codexState.refreshPictographs();
+		}
+	});
+
+	let filteredPictographsByLetter = $.tag($.derived(() => codexState.filteredPictographsByLetter()), 'filteredPictographsByLetter');
+	let letterRows = $.tag($.derived(() => codexState.letterRows), 'letterRows');
+	let isLoading = $.tag($.derived(() => codexState.isLoading), 'isLoading');
+	let isInitialized = $.tag($.derived(() => codexState.isInitialized), 'isInitialized');
+	let currentOrientation = $.tag($.derived(() => codexState.currentOrientation), 'currentOrientation');
+	let error = $.tag($.derived(() => codexState.error), 'error');
+	let isProcessingOperation = $.tag($.derived(() => codexState.isProcessingOperation), 'isProcessingOperation');
+
+	function handlePictographClick(pictograph) {
+		$$props.onPictographSelected?.(pictograph);
+	}
+
+	function handleRotate() {
+		codexState.rotatePictographs();
+	}
+
+	function handleMirror() {
+		codexState.mirrorPictographs();
+	}
+
+	function handleColorSwap() {
+		codexState.colorSwapPictographs();
+	}
+
+	function handleOrientationChange(orientation) {
+		codexState.setOrientation(orientation);
+	}
+
+	var div = root();
+	let classes;
+	var div_1 = $.child(div);
+	var div_2 = $.child(div_1);
+	var div_3 = $.child(div_2);
+	var node = $.sibling($.child(div_3), 2);
+
+	{
+		var consequent = ($$anchor) => {
+			var div_4 = root_1();
+
+			$.append($$anchor, div_4);
+		};
+
+		$.add_svelte_meta(
+			() => $.if(node, ($$render) => {
+				if (isVisible()) $$render(consequent);
+			}),
+			'if',
+			CodexComponent,
+			68,
+			8
+		);
+	}
+
+	$.reset(div_3);
+
+	var button = $.sibling(div_3, 2);
+
+	button.__click = [toggleCollapse, $$props];
+
+	var text = $.child(button, true);
+
+	$.reset(button);
+	$.reset(div_2);
+	$.reset(div_1);
+
+	var node_1 = $.sibling(div_1, 2);
+
+	{
+		var consequent_6 = ($$anchor) => {
+			var fragment = root_2();
+			var node_2 = $.first_child(fragment);
+
+			$.add_svelte_meta(
+				() => CodexControlPanel(node_2, {
+					get currentOrientation() {
+						return $.get(currentOrientation);
+					},
+
+					onRotate: handleRotate,
+					onMirror: handleMirror,
+					onColorSwap: handleColorSwap,
+					onOrientationChange: handleOrientationChange
+				}),
+				'component',
+				CodexComponent,
+				84,
+				4,
+				{ componentTag: 'CodexControlPanel' }
+			);
+
+			var div_5 = $.sibling(node_2, 2);
+			var node_3 = $.child(div_5);
+
+			$.add_svelte_meta(
+				() => SimpleGlassScroll(node_3, {
+					variant: 'primary',
+					height: '100%',
+
+					children: $.wrap_snippet(CodexComponent, ($$anchor, $$slotProps) => {
+						var fragment_1 = $.comment();
+						var node_4 = $.first_child(fragment_1);
+
+						{
+							var consequent_1 = ($$anchor) => {
+								var div_6 = root_4();
+								var p = $.sibling($.child(div_6), 2);
+								var text_1 = $.child(p, true);
+
+								$.reset(p);
+
+								var button_1 = $.sibling(p, 2);
+
+								button_1.__click = [on_click, codexState];
+								$.reset(div_6);
+								$.template_effect(() => $.set_text(text_1, $.get(error)));
+								$.append($$anchor, div_6);
+							};
+
+							var alternate_4 = ($$anchor) => {
+								var fragment_2 = $.comment();
+								var node_5 = $.first_child(fragment_2);
+
+								{
+									var consequent_2 = ($$anchor) => {
+										var div_7 = root_6();
+
+										$.append($$anchor, div_7);
+									};
+
+									var alternate_3 = ($$anchor) => {
+										var fragment_3 = $.comment();
+										var node_6 = $.first_child(fragment_3);
+
+										{
+											var consequent_3 = ($$anchor) => {
+												var div_8 = root_8();
+
+												$.append($$anchor, div_8);
+											};
+
+											var alternate_2 = ($$anchor) => {
+												var fragment_4 = $.comment();
+												var node_7 = $.first_child(fragment_4);
+
+												{
+													var consequent_4 = ($$anchor) => {
+														var div_9 = root_10();
+
+														$.append($$anchor, div_9);
+													};
+
+													var alternate_1 = ($$anchor) => {
+														var fragment_5 = $.comment();
+														var node_8 = $.first_child(fragment_5);
+
+														{
+															var consequent_5 = ($$anchor) => {
+																var div_10 = root_12();
+
+																$.append($$anchor, div_10);
+															};
+
+															var alternate = ($$anchor) => {
+																var fragment_6 = $.comment();
+																var node_9 = $.first_child(fragment_6);
+
+																$.add_svelte_meta(
+																	() => CodexPictographGrid(node_9, {
+																		get pictographsByLetter() {
+																			return $.get(filteredPictographsByLetter);
+																		},
+
+																		get letterRows() {
+																			return $.get(letterRows);
+																		},
+
+																		pictographSize: 80,
+																		onPictographClick: handlePictographClick
+																	}),
+																	'component',
+																	CodexComponent,
+																	127,
+																	10,
+																	{ componentTag: 'CodexPictographGrid' }
+																);
+
+																$.append($$anchor, fragment_6);
+															};
+
+															$.add_svelte_meta(
+																() => $.if(
+																	node_8,
+																	($$render) => {
+																		if ($.strict_equals(Object.keys($.get(filteredPictographsByLetter)).length, 0)) $$render(consequent_5); else $$render(alternate, false);
+																	},
+																	true
+																),
+																'if',
+																CodexComponent,
+																121,
+																8
+															);
+														}
+
+														$.append($$anchor, fragment_5);
+													};
+
+													$.add_svelte_meta(
+														() => $.if(
+															node_7,
+															($$render) => {
+																if (!$.get(isInitialized)) $$render(consequent_4); else $$render(alternate_1, false);
+															},
+															true
+														),
+														'if',
+														CodexComponent,
+														116,
+														8
+													);
+												}
+
+												$.append($$anchor, fragment_4);
+											};
+
+											$.add_svelte_meta(
+												() => $.if(
+													node_6,
+													($$render) => {
+														if ($.get(isProcessingOperation)) $$render(consequent_3); else $$render(alternate_2, false);
+													},
+													true
+												),
+												'if',
+												CodexComponent,
+												111,
+												8
+											);
+										}
+
+										$.append($$anchor, fragment_3);
+									};
+
+									$.add_svelte_meta(
+										() => $.if(
+											node_5,
+											($$render) => {
+												if ($.get(isLoading)) $$render(consequent_2); else $$render(alternate_3, false);
+											},
+											true
+										),
+										'if',
+										CodexComponent,
+										106,
+										8
+									);
+								}
+
+								$.append($$anchor, fragment_2);
+							};
+
+							$.add_svelte_meta(
+								() => $.if(node_4, ($$render) => {
+									if ($.get(error)) $$render(consequent_1); else $$render(alternate_4, false);
+								}),
+								'if',
+								CodexComponent,
+								95,
+								8
+							);
+						}
+
+						$.append($$anchor, fragment_1);
+					}),
+
+					$$slots: { default: true }
+				}),
+				'component',
+				CodexComponent,
+				94,
+				6,
+				{ componentTag: 'SimpleGlassScroll' }
+			);
+
+			$.reset(div_5);
+			$.append($$anchor, fragment);
+		};
+
+		$.add_svelte_meta(
+			() => $.if(node_1, ($$render) => {
+				if (isVisible()) $$render(consequent_6);
+			}),
+			'if',
+			CodexComponent,
+			82,
+			2
+		);
+	}
+
+	$.reset(div);
+
+	$.template_effect(
+		($0) => {
+			classes = $.set_class(div, 1, 'codex-component s-Hde1A07f4wxj', null, classes, $0);
+			$.set_attribute(button, 'title', isVisible() ? "Hide codex" : "Show codex");
+			$.set_text(text, isVisible() ? "◀" : "▶");
+		},
+		[() => ({ collapsed: !isVisible() })]
+	);
+
+	$.append($$anchor, div);
+
+	return $.pop({ ...$.legacy_api() });
+}
+
+if (import.meta.hot) {
+	CodexComponent = $.hmr(CodexComponent, () => CodexComponent[$.HMR].source);
+
+	import.meta.hot.acceptExports(["default"],(module) => {
+		$.cleanup_styles('s-Hde1A07f4wxj');
+		module.default[$.HMR].source = CodexComponent[$.HMR].source;
+		$.set(CodexComponent[$.HMR].source, module.default[$.HMR].original);
+	});
+}
+
+export default CodexComponent;
+
+$.delegate(['click']);
+import "/src/lib/components/codex/CodexComponent.svelte?svelte&type=style&lang.css";
+
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJtYXBwaW5ncyI6Ijs7Ozs7T0FVVztTQUVGLHdCQUF5QjtPQVM1QjtPQUNGLHlCQUFZOztTQXFFTCwyQkFBYzs7QUFFekI7OztvQ0EyRFc7Ozs7Ozs7OzsyQ0F4SlgsQ0FBQzs7OztLQW9DSztPQU9BLGFBQVk7O0NBQ1osb0VBQThCOztDQUtsQyxvQkFBSTtFQUNGLDhDQUNGLDBEQUNJLGFBQ0Esa0JBQ0EsMEJBQ0EsY0FDQSxXQUFROztNQU1WLDJCQUF1QixrQkFBVTtHQUNuQztHQUVBLFdBQVM7RUFDUDtDQUNGOztLQUtBLG9EQUVBLFdBQVM7S0FFVDtLQUVBLGtDQUEyQjtLQUN6QixzQ0FBVyxXQUFxQjtLQUNsQztLQUVBLDhCQUFTLFdBQXdCO0tBQy9CLDhDQUFxQzs7VUFJOUIsc0JBQWtCLFlBQTRCO2lDQUN0QyxVQUFrQjtDQUNuQzs7VUFPUztFQUNYLFdBQU87Q0FDUDs7VUFFUSxlQUFrQjtFQUMxQixXQUFNO0NBQ047O1VBRVM7RUFDTCxXQUFHOzs7VUFHRSx3QkFBZ0I7RUFDckIsV0FBQztDQUNMOzs7Ozs7Ozs7Ozs7Ozs7Ozs7UUFTTzs7Ozs7Ozs7Ozs7OzttQkFNTyxjQUFhOzs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7ZUFZWixZQUFPO2VBQ04sWUFBUTtrQkFDVCxlQUFXOzBCQUNYOzs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7eURBU0E7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Z0NBOEJBOzs7Ozs7O2tDQUViOzs7Ozs7Ozs7Ozs7Ozs7OztzQ0FUZ0IsTUFBTSxDQUFDLHNDQUFzQjs7Ozs7Ozs7Ozs7Ozs7Ozs7OzJCQUw1QixhQUFPOzs7Ozs7Ozs7Ozs7Ozs7Ozs7d0JBTHJCOzs7Ozs7Ozs7Ozs7Ozs7Ozs7c0JBTE07Ozs7Ozs7Ozs7Ozs7Ozs7bUJBWEQsS0FBUTs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7O1FBYmxCLFNBQWdCOzs7Ozs7Ozs7Ozs7OztvQ0FQRixTQUFVLEtBQUcsWUFBWSxHQUFDO29CQUV4QyxTQUFjOzt3QkFmb0I7Ozs7OztDQUZsQyIsIm5hbWVzIjpbXSwiaWdub3JlTGlzdCI6W10sInNvdXJjZXMiOlsiQ29kZXhDb21wb25lbnQuc3ZlbHRlIl0sInNvdXJjZXNDb250ZW50IjpbIjwhLS1cblx0Q29kZXggQ29tcG9uZW50IC0gUmVmZXJlbmNlIHNpZGViYXIgZm9yIGJyb3dzaW5nIHBpY3RvZ3JhcGhzXG5cblx0TWF0Y2hlcyBkZXNrdG9wIENvZGV4Q29tcG9uZW50IGZ1bmN0aW9uYWxpdHkgd2l0aCBjb250cm9sIHBhbmVsLFxuXHRyb3ctYmFzZWQgcGljdG9ncmFwaCBvcmdhbml6YXRpb24sIG9wZXJhdGlvbnMsIGFuZCBvcmllbnRhdGlvbiBzZWxlY3Rvci5cblx0Tm93IGZlYXR1cmluZyBiZWF1dGlmdWwgZ2xhc3Mgc2Nyb2xsYmFycy5cbi0tPlxuPHNjcmlwdCBsYW5nPVwidHNcIj5cbiAgaW1wb3J0IFNpbXBsZUdsYXNzU2Nyb2xsIGZyb20gXCIkbGliL2NvbXBvbmVudHMvdWkvU2ltcGxlR2xhc3NTY3JvbGwuc3ZlbHRlXCI7XG4gIGltcG9ydCB0eXBlIHsgUGljdG9ncmFwaERhdGEgfSBmcm9tIFwiJGxpYi9kb21haW4vUGljdG9ncmFwaERhdGFcIjtcbiAgaW1wb3J0IHsgY3JlYXRlQ29kZXhTdGF0ZSB9IGZyb20gXCIkbGliL3N0YXRlL2NvZGV4LXN0YXRlLnN2ZWx0ZVwiO1xuICBpbXBvcnQgQ29kZXhDb250cm9sUGFuZWwgZnJvbSBcIi4vQ29kZXhDb250cm9sUGFuZWwuc3ZlbHRlXCI7XG4gIGltcG9ydCBDb2RleFBpY3RvZ3JhcGhHcmlkIGZyb20gXCIuL0NvZGV4UGljdG9ncmFwaEdyaWQuc3ZlbHRlXCI7XG5cbiAgLy8gUHJvcHNcbiAgaW50ZXJmYWNlIFByb3BzIHtcbiAgICBpc1Zpc2libGU/OiBib29sZWFuO1xuICAgIG9uUGljdG9ncmFwaFNlbGVjdGVkPzogKHBpY3RvZ3JhcGg6IFBpY3RvZ3JhcGhEYXRhKSA9PiB2b2lkO1xuICAgIG9uVG9nZ2xlVmlzaWJpbGl0eT86ICgpID0+IHZvaWQ7XG4gIH1cblxuICBsZXQge1xuICAgIGlzVmlzaWJsZSA9IHRydWUsXG4gICAgb25QaWN0b2dyYXBoU2VsZWN0ZWQsXG4gICAgb25Ub2dnbGVWaXNpYmlsaXR5LFxuICB9OiBQcm9wcyA9ICRwcm9wcygpO1xuXG4gIC8vIENyZWF0ZSBjb2RleCBzdGF0ZSB1c2luZyBydW5lc1xuICBjb25zdCBjb2RleFN0YXRlID0gY3JlYXRlQ29kZXhTdGF0ZSgpO1xuICBjb25zb2xlLmxvZyhcIvCflKcgQ29kZXhDb21wb25lbnQ6IENyZWF0ZWQgY29kZXggc3RhdGUgaW5zdGFuY2VcIik7XG5cbiAgLy8gSW5pdGlhbGl6ZSBwaWN0b2dyYXBocyB3aGVuIGNvbXBvbmVudCBtb3VudHMgLSBvbmx5IG9uY2VcbiAgJGVmZmVjdCgoKSA9PiB7XG4gICAgY29uc29sZS5sb2coXG4gICAgICBcIvCflKcgQ29kZXhDb21wb25lbnQgJGVmZmVjdCB0cmlnZ2VyZWQsIGlzVmlzaWJsZTpcIixcbiAgICAgIGlzVmlzaWJsZSxcbiAgICAgIFwiaXNJbml0aWFsaXplZDpcIixcbiAgICAgIGNvZGV4U3RhdGUuaXNJbml0aWFsaXplZCxcbiAgICAgIFwiaXNMb2FkaW5nOlwiLFxuICAgICAgY29kZXhTdGF0ZS5pc0xvYWRpbmdcbiAgICApO1xuICAgIC8vIE9ubHkgaW5pdGlhbGl6ZSBpZiB2aXNpYmxlIGFuZCBub3QgYWxyZWFkeSBpbml0aWFsaXplZCBvciBsb2FkaW5nXG4gICAgaWYgKGlzVmlzaWJsZSAmJiAhY29kZXhTdGF0ZS5pc0luaXRpYWxpemVkICYmICFjb2RleFN0YXRlLmlzTG9hZGluZykge1xuICAgICAgY29uc29sZS5sb2coXCLwn5qAIENvZGV4Q29tcG9uZW50OiBJbml0aWFsaXppbmcgY29kZXggc3RhdGUuLi5cIik7XG4gICAgICBjb2RleFN0YXRlLnJlZnJlc2hQaWN0b2dyYXBocygpO1xuICAgIH1cbiAgfSk7XG5cbiAgLy8gUmVhY3RpdmUgdmFsdWVzXG4gIGxldCBmaWx0ZXJlZFBpY3RvZ3JhcGhzQnlMZXR0ZXIgPSAkZGVyaXZlZChcbiAgICBjb2RleFN0YXRlLmZpbHRlcmVkUGljdG9ncmFwaHNCeUxldHRlcigpXG4gICk7XG4gIGxldCBsZXR0ZXJSb3dzID0gJGRlcml2ZWQoY29kZXhTdGF0ZS5sZXR0ZXJSb3dzKTtcbiAgbGV0IGlzTG9hZGluZyA9ICRkZXJpdmVkKGNvZGV4U3RhdGUuaXNMb2FkaW5nKTtcbiAgbGV0IGlzSW5pdGlhbGl6ZWQgPSAkZGVyaXZlZChjb2RleFN0YXRlLmlzSW5pdGlhbGl6ZWQpO1xuICBsZXQgY3VycmVudE9yaWVudGF0aW9uID0gJGRlcml2ZWQoY29kZXhTdGF0ZS5jdXJyZW50T3JpZW50YXRpb24pO1xuICBsZXQgZXJyb3IgPSAkZGVyaXZlZChjb2RleFN0YXRlLmVycm9yKTtcbiAgbGV0IGlzUHJvY2Vzc2luZ09wZXJhdGlvbiA9ICRkZXJpdmVkKGNvZGV4U3RhdGUuaXNQcm9jZXNzaW5nT3BlcmF0aW9uKTtcblxuICAvLyBNZXRob2RzXG5cbiAgZnVuY3Rpb24gaGFuZGxlUGljdG9ncmFwaENsaWNrKHBpY3RvZ3JhcGg6IFBpY3RvZ3JhcGhEYXRhKSB7XG4gICAgb25QaWN0b2dyYXBoU2VsZWN0ZWQ/LihwaWN0b2dyYXBoKTtcbiAgfVxuXG4gIGZ1bmN0aW9uIHRvZ2dsZUNvbGxhcHNlKCkge1xuICAgIG9uVG9nZ2xlVmlzaWJpbGl0eT8uKCk7XG4gIH1cblxuICAvLyBDb250cm9sIHBhbmVsIGhhbmRsZXJzXG4gIGZ1bmN0aW9uIGhhbmRsZVJvdGF0ZSgpIHtcbiAgICBjb2RleFN0YXRlLnJvdGF0ZVBpY3RvZ3JhcGhzKCk7XG4gIH1cblxuICBmdW5jdGlvbiBoYW5kbGVNaXJyb3IoKSB7XG4gICAgY29kZXhTdGF0ZS5taXJyb3JQaWN0b2dyYXBocygpO1xuICB9XG5cbiAgZnVuY3Rpb24gaGFuZGxlQ29sb3JTd2FwKCkge1xuICAgIGNvZGV4U3RhdGUuY29sb3JTd2FwUGljdG9ncmFwaHMoKTtcbiAgfVxuXG4gIGZ1bmN0aW9uIGhhbmRsZU9yaWVudGF0aW9uQ2hhbmdlKG9yaWVudGF0aW9uOiBzdHJpbmcpIHtcbiAgICBjb2RleFN0YXRlLnNldE9yaWVudGF0aW9uKG9yaWVudGF0aW9uKTtcbiAgfVxuPC9zY3JpcHQ+XG5cbjxkaXYgY2xhc3M9XCJjb2RleC1jb21wb25lbnRcIiBjbGFzczpjb2xsYXBzZWQ9eyFpc1Zpc2libGV9PlxuICA8IS0tIEhlYWRlciB3aXRoIGludGVncmF0ZWQgdG9nZ2xlIChCcm93c2UgbmF2aWdhdGlvbiBzdHlsZSkgLS0+XG4gIDxkaXYgY2xhc3M9XCJjb2RleC1oZWFkZXJcIj5cbiAgICA8ZGl2IGNsYXNzPVwiaGVhZGVyLWNvbnRlbnRcIj5cbiAgICAgIDxkaXYgY2xhc3M9XCJoZWFkZXItdGV4dFwiPlxuICAgICAgICA8aDMgY2xhc3M9XCJjb2RleC10aXRsZVwiPkNvZGV4PC9oMz5cbiAgICAgICAgeyNpZiBpc1Zpc2libGV9XG4gICAgICAgICAgPGRpdiBjbGFzcz1cImNvZGV4LXN1YnRpdGxlXCI+UGljdG9ncmFwaCBSZWZlcmVuY2U8L2Rpdj5cbiAgICAgICAgey9pZn1cbiAgICAgIDwvZGl2PlxuICAgICAgPGJ1dHRvblxuICAgICAgICBjbGFzcz1cImNvbGxhcHNlLXRvZ2dsZVwiXG4gICAgICAgIG9uY2xpY2s9e3RvZ2dsZUNvbGxhcHNlfVxuICAgICAgICB0aXRsZT17aXNWaXNpYmxlID8gXCJIaWRlIGNvZGV4XCIgOiBcIlNob3cgY29kZXhcIn1cbiAgICAgID5cbiAgICAgICAge2lzVmlzaWJsZSA/IFwi4peAXCIgOiBcIuKWtlwifVxuICAgICAgPC9idXR0b24+XG4gICAgPC9kaXY+XG4gIDwvZGl2PlxuXG4gIHsjaWYgaXNWaXNpYmxlfVxuICAgIDwhLS0gQ29udHJvbCBQYW5lbCAtLT5cbiAgICA8Q29kZXhDb250cm9sUGFuZWxcbiAgICAgIHtjdXJyZW50T3JpZW50YXRpb259XG4gICAgICBvblJvdGF0ZT17aGFuZGxlUm90YXRlfVxuICAgICAgb25NaXJyb3I9e2hhbmRsZU1pcnJvcn1cbiAgICAgIG9uQ29sb3JTd2FwPXtoYW5kbGVDb2xvclN3YXB9XG4gICAgICBvbk9yaWVudGF0aW9uQ2hhbmdlPXtoYW5kbGVPcmllbnRhdGlvbkNoYW5nZX1cbiAgICAvPlxuXG4gICAgPCEtLSBDb250ZW50IGFyZWEgd2l0aCBiZWF1dGlmdWwgZ2xhc3Mgc2Nyb2xsYmFyIC0tPlxuICAgIDxkaXYgY2xhc3M9XCJjb250ZW50LXdyYXBwZXJcIj5cbiAgICAgIDxTaW1wbGVHbGFzc1Njcm9sbCB2YXJpYW50PVwicHJpbWFyeVwiIGhlaWdodD1cIjEwMCVcIj5cbiAgICAgICAgeyNpZiBlcnJvcn1cbiAgICAgICAgICA8ZGl2IGNsYXNzPVwiZXJyb3Itc3RhdGVcIj5cbiAgICAgICAgICAgIDxkaXYgY2xhc3M9XCJlcnJvci1pY29uXCI+4pqg77iPPC9kaXY+XG4gICAgICAgICAgICA8cCBjbGFzcz1cImVycm9yLW1lc3NhZ2VcIj57ZXJyb3J9PC9wPlxuICAgICAgICAgICAgPGJ1dHRvblxuICAgICAgICAgICAgICBjbGFzcz1cInJldHJ5LWJ1dHRvblwiXG4gICAgICAgICAgICAgIG9uY2xpY2s9eygpID0+IGNvZGV4U3RhdGUucmVmcmVzaFBpY3RvZ3JhcGhzKCl9XG4gICAgICAgICAgICA+XG4gICAgICAgICAgICAgIFJldHJ5XG4gICAgICAgICAgICA8L2J1dHRvbj5cbiAgICAgICAgICA8L2Rpdj5cbiAgICAgICAgezplbHNlIGlmIGlzTG9hZGluZ31cbiAgICAgICAgICA8ZGl2IGNsYXNzPVwibG9hZGluZy1zdGF0ZVwiPlxuICAgICAgICAgICAgPGRpdiBjbGFzcz1cImxvYWRpbmctc3Bpbm5lclwiPjwvZGl2PlxuICAgICAgICAgICAgPHA+TG9hZGluZyBwaWN0b2dyYXBocy4uLjwvcD5cbiAgICAgICAgICA8L2Rpdj5cbiAgICAgICAgezplbHNlIGlmIGlzUHJvY2Vzc2luZ09wZXJhdGlvbn1cbiAgICAgICAgICA8ZGl2IGNsYXNzPVwibG9hZGluZy1zdGF0ZVwiPlxuICAgICAgICAgICAgPGRpdiBjbGFzcz1cImxvYWRpbmctc3Bpbm5lclwiPjwvZGl2PlxuICAgICAgICAgICAgPHA+UHJvY2Vzc2luZyBvcGVyYXRpb24uLi48L3A+XG4gICAgICAgICAgPC9kaXY+XG4gICAgICAgIHs6ZWxzZSBpZiAhaXNJbml0aWFsaXplZH1cbiAgICAgICAgICA8ZGl2IGNsYXNzPVwibG9hZGluZy1zdGF0ZVwiPlxuICAgICAgICAgICAgPGRpdiBjbGFzcz1cImxvYWRpbmctc3Bpbm5lclwiPjwvZGl2PlxuICAgICAgICAgICAgPHA+SW5pdGlhbGl6aW5nIGNvZGV4Li4uPC9wPlxuICAgICAgICAgIDwvZGl2PlxuICAgICAgICB7OmVsc2UgaWYgT2JqZWN0LmtleXMoZmlsdGVyZWRQaWN0b2dyYXBoc0J5TGV0dGVyKS5sZW5ndGggPT09IDB9XG4gICAgICAgICAgPGRpdiBjbGFzcz1cImVtcHR5LXN0YXRlXCI+XG4gICAgICAgICAgICA8cD5ObyBwaWN0b2dyYXBocyBmb3VuZDwvcD5cbiAgICAgICAgICA8L2Rpdj5cbiAgICAgICAgezplbHNlfVxuICAgICAgICAgIDwhLS0gUm93LWJhc2VkIHBpY3RvZ3JhcGggZ3JpZCAtLT5cbiAgICAgICAgICA8Q29kZXhQaWN0b2dyYXBoR3JpZFxuICAgICAgICAgICAgcGljdG9ncmFwaHNCeUxldHRlcj17ZmlsdGVyZWRQaWN0b2dyYXBoc0J5TGV0dGVyfVxuICAgICAgICAgICAge2xldHRlclJvd3N9XG4gICAgICAgICAgICBwaWN0b2dyYXBoU2l6ZT17ODB9XG4gICAgICAgICAgICBvblBpY3RvZ3JhcGhDbGljaz17aGFuZGxlUGljdG9ncmFwaENsaWNrfVxuICAgICAgICAgIC8+XG4gICAgICAgIHsvaWZ9XG4gICAgICA8L1NpbXBsZUdsYXNzU2Nyb2xsPlxuICAgIDwvZGl2PlxuICB7L2lmfVxuPC9kaXY+XG5cbjxzdHlsZT5cbiAgLmNvZGV4LWNvbXBvbmVudCB7XG4gICAgZGlzcGxheTogZmxleDtcbiAgICBmbGV4LWRpcmVjdGlvbjogY29sdW1uO1xuICAgIGhlaWdodDogMTAwJTtcbiAgICB3aWR0aDogMTAwJTsgLyogVGFrZSBmdWxsIHdpZHRoIG9mIHBhcmVudCBjb250YWluZXIgKi9cbiAgICBtaW4td2lkdGg6IDI1MHB4O1xuICAgIGJhY2tncm91bmQ6IHZhcigtLWRlc2t0b3AtYmctc2Vjb25kYXJ5KTsgLyogVHJhbnNwYXJlbnQgYmFja2dyb3VuZCAqL1xuICAgIGJvcmRlci1yYWRpdXM6IHZhcigtLWRlc2t0b3AtYm9yZGVyLXJhZGl1cyk7XG4gICAgYm9yZGVyOiAxcHggc29saWQgdmFyKC0tZGVza3RvcC1ib3JkZXItc2Vjb25kYXJ5KTtcbiAgICBiYWNrZHJvcC1maWx0ZXI6IGJsdXIoMTBweCk7XG4gICAgdHJhbnNpdGlvbjogYWxsIHZhcigtLWRlc2t0b3AtdHJhbnNpdGlvbi1zbG93KTtcbiAgfVxuXG4gIC5jb2RleC1jb21wb25lbnQuY29sbGFwc2VkIHtcbiAgICB3aWR0aDogNDhweDtcbiAgICBtaW4td2lkdGg6IDQ4cHg7XG4gIH1cblxuICAuY29sbGFwc2VkIC5jb2RleC1oZWFkZXIge1xuICAgIHBhZGRpbmc6IHZhcigtLWRlc2t0b3Atc3BhY2luZy14cyk7XG4gICAgdGV4dC1hbGlnbjogY2VudGVyO1xuICAgIGJvcmRlci1ib3R0b206IG5vbmU7XG4gIH1cblxuICAuY29sbGFwc2VkIC5oZWFkZXItY29udGVudCB7XG4gICAgZmxleC1kaXJlY3Rpb246IGNvbHVtbjtcbiAgICBqdXN0aWZ5LWNvbnRlbnQ6IGNlbnRlcjtcbiAgICBhbGlnbi1pdGVtczogY2VudGVyO1xuICAgIGdhcDogMDtcbiAgfVxuXG4gIC5jb2xsYXBzZWQgLmhlYWRlci10ZXh0IHtcbiAgICBkaXNwbGF5OiBub25lOyAvKiBIaWRlIHRleHQgaW4gY29sbGFwc2VkIHN0YXRlICovXG4gIH1cblxuICAuY29sbGFwc2VkIC5jb2xsYXBzZS10b2dnbGUge1xuICAgIHBhZGRpbmc6IHZhcigtLWRlc2t0b3Atc3BhY2luZy1zbSk7XG4gICAgZm9udC1zaXplOiB2YXIoLS1kZXNrdG9wLWZvbnQtc2l6ZS1sZyk7XG4gICAgYmFja2dyb3VuZDogcmdiYSgyNTUsIDI1NSwgMjU1LCAwLjEpO1xuICAgIGJvcmRlci1yYWRpdXM6IDRweDtcbiAgfVxuXG4gIC5jb2RleC1oZWFkZXIge1xuICAgIHBhZGRpbmc6IHZhcigtLWRlc2t0b3Atc3BhY2luZy1sZyk7XG4gICAgYm9yZGVyLWJvdHRvbTogMXB4IHNvbGlkIHZhcigtLWRlc2t0b3AtYm9yZGVyLXRlcnRpYXJ5KTtcbiAgICBiYWNrZ3JvdW5kOiByZ2JhKDI1NSwgMjU1LCAyNTUsIDAuMDUpO1xuICB9XG5cbiAgLmhlYWRlci1jb250ZW50IHtcbiAgICBkaXNwbGF5OiBmbGV4O1xuICAgIGFsaWduLWl0ZW1zOiBjZW50ZXI7XG4gICAganVzdGlmeS1jb250ZW50OiBzcGFjZS1iZXR3ZWVuO1xuICAgIGdhcDogdmFyKC0tZGVza3RvcC1zcGFjaW5nLW1kKTtcbiAgfVxuXG4gIC5oZWFkZXItdGV4dCB7XG4gICAgZGlzcGxheTogZmxleDtcbiAgICBmbGV4LWRpcmVjdGlvbjogY29sdW1uO1xuICAgIGdhcDogdmFyKC0tZGVza3RvcC1zcGFjaW5nLXhzKTtcbiAgICBmbGV4OiAxO1xuICB9XG5cbiAgLmNvZGV4LXRpdGxlIHtcbiAgICBjb2xvcjogd2hpdGU7XG4gICAgZm9udC1mYW1pbHk6IHZhcigtLWRlc2t0b3AtZm9udC1mYW1pbHkpO1xuICAgIGZvbnQtc2l6ZTogdmFyKC0tZGVza3RvcC1mb250LXNpemUtbGcpO1xuICAgIGZvbnQtd2VpZ2h0OiA2MDA7XG4gICAgbWFyZ2luOiAwO1xuICAgIHdoaXRlLXNwYWNlOiBub3dyYXA7XG4gICAgb3ZlcmZsb3c6IGhpZGRlbjtcbiAgICB0ZXh0LW92ZXJmbG93OiBlbGxpcHNpcztcbiAgfVxuXG4gIC5jb2xsYXBzZWQgLmNvZGV4LXRpdGxlIHtcbiAgICBmb250LXNpemU6IHZhcigtLWRlc2t0b3AtZm9udC1zaXplLXNtKTtcbiAgICBtYXJnaW46IDA7XG4gIH1cblxuICAuY29kZXgtc3VidGl0bGUge1xuICAgIGZvbnQtc2l6ZTogdmFyKC0tZGVza3RvcC1mb250LXNpemUtc20pO1xuICAgIGNvbG9yOiByZ2JhKDI1NSwgMjU1LCAyNTUsIDAuNyk7XG4gICAgbWFyZ2luOiAwO1xuICB9XG5cbiAgLmNvbGxhcHNlLXRvZ2dsZSB7XG4gICAgYmFja2dyb3VuZDogbm9uZTtcbiAgICBib3JkZXI6IG5vbmU7XG4gICAgY29sb3I6IHJnYmEoMjU1LCAyNTUsIDI1NSwgMC43KTtcbiAgICBmb250LXNpemU6IHZhcigtLWRlc2t0b3AtZm9udC1zaXplLXNtKTtcbiAgICBjdXJzb3I6IHBvaW50ZXI7XG4gICAgcGFkZGluZzogdmFyKC0tZGVza3RvcC1zcGFjaW5nLXhzKTtcbiAgICBib3JkZXItcmFkaXVzOiA0cHg7XG4gICAgdHJhbnNpdGlvbjogYWxsIHZhcigtLWRlc2t0b3AtdHJhbnNpdGlvbi1mYXN0KTtcbiAgICBmbGV4LXNocmluazogMDtcbiAgfVxuXG4gIC5jb2xsYXBzZS10b2dnbGU6aG92ZXIge1xuICAgIGJhY2tncm91bmQ6IHJnYmEoMjU1LCAyNTUsIDI1NSwgMC4xKTtcbiAgICBjb2xvcjogd2hpdGU7XG4gIH1cblxuICAvKiBDb250ZW50IHdyYXBwZXIgZm9yIGdsYXNzIHNjcm9sbCBjb250YWluZXIgKi9cbiAgLmNvbnRlbnQtd3JhcHBlciB7XG4gICAgZmxleDogMTtcbiAgICBtaW4taGVpZ2h0OiAwOyAvKiBJbXBvcnRhbnQgZm9yIGZsZXggY29udGFpbmVycyAqL1xuICB9XG5cbiAgLmNvbGxhcHNlZCAuY29udGVudC13cmFwcGVyIHtcbiAgICBkaXNwbGF5OiBub25lO1xuICB9XG5cbiAgLmxvYWRpbmctc3RhdGUsXG4gIC5lbXB0eS1zdGF0ZSB7XG4gICAgZGlzcGxheTogZmxleDtcbiAgICBmbGV4LWRpcmVjdGlvbjogY29sdW1uO1xuICAgIGFsaWduLWl0ZW1zOiBjZW50ZXI7XG4gICAganVzdGlmeS1jb250ZW50OiBjZW50ZXI7XG4gICAgaGVpZ2h0OiAyMDBweDtcbiAgICBjb2xvcjogdmFyKC0tZGVza3RvcC10ZXh0LW11dGVkKTtcbiAgICB0ZXh0LWFsaWduOiBjZW50ZXI7XG4gICAgZ2FwOiB2YXIoLS1kZXNrdG9wLXNwYWNpbmctbGcpO1xuICAgIHBhZGRpbmc6IHZhcigtLWRlc2t0b3Atc3BhY2luZy1sZyk7XG4gIH1cblxuICAuZXJyb3Itc3RhdGUge1xuICAgIGRpc3BsYXk6IGZsZXg7XG4gICAgZmxleC1kaXJlY3Rpb246IGNvbHVtbjtcbiAgICBhbGlnbi1pdGVtczogY2VudGVyO1xuICAgIGp1c3RpZnktY29udGVudDogY2VudGVyO1xuICAgIGhlaWdodDogMjAwcHg7XG4gICAgY29sb3I6IHZhcigtLWRlc2t0b3AtcHJvZ3Jlc3MtcG9vcik7XG4gICAgdGV4dC1hbGlnbjogY2VudGVyO1xuICAgIGdhcDogdmFyKC0tZGVza3RvcC1zcGFjaW5nLWxnKTtcbiAgICBwYWRkaW5nOiB2YXIoLS1kZXNrdG9wLXNwYWNpbmctbGcpO1xuICB9XG5cbiAgLmVycm9yLWljb24ge1xuICAgIGZvbnQtc2l6ZTogMnJlbTtcbiAgfVxuXG4gIC5lcnJvci1tZXNzYWdlIHtcbiAgICBtYXJnaW46IDA7XG4gICAgZm9udC1zaXplOiB2YXIoLS1kZXNrdG9wLWZvbnQtc2l6ZS1zbSk7XG4gICAgY29sb3I6IHZhcigtLWRlc2t0b3AtdGV4dC1tdXRlZCk7XG4gIH1cblxuICAucmV0cnktYnV0dG9uIHtcbiAgICBwYWRkaW5nOiB2YXIoLS1kZXNrdG9wLXNwYWNpbmctc20pIHZhcigtLWRlc2t0b3Atc3BhY2luZy1sZyk7XG4gICAgYmFja2dyb3VuZC1jb2xvcjogdmFyKC0tZGVza3RvcC1yZXN0YXJ0LWJsdWUpO1xuICAgIGJvcmRlcjogMXB4IHNvbGlkIHZhcigtLWRlc2t0b3AtcmVzdGFydC1ibHVlLWJvcmRlcik7XG4gICAgYm9yZGVyLXJhZGl1czogdmFyKC0tZGVza3RvcC1ib3JkZXItcmFkaXVzLXhzKTtcbiAgICBjb2xvcjogdmFyKC0tZGVza3RvcC10ZXh0LXByaW1hcnkpO1xuICAgIGZvbnQtc2l6ZTogdmFyKC0tZGVza3RvcC1mb250LXNpemUtc20pO1xuICAgIGZvbnQtd2VpZ2h0OiA1MDA7XG4gICAgY3Vyc29yOiBwb2ludGVyO1xuICAgIHRyYW5zaXRpb246IGFsbCB2YXIoLS1kZXNrdG9wLXRyYW5zaXRpb24tbm9ybWFsKTtcbiAgfVxuXG4gIC5yZXRyeS1idXR0b246aG92ZXIge1xuICAgIGJhY2tncm91bmQtY29sb3I6IHZhcigtLWRlc2t0b3AtcmVzdGFydC1ibHVlLWhvdmVyKTtcbiAgICBib3JkZXItY29sb3I6IHZhcigtLWRlc2t0b3AtcmVzdGFydC1ibHVlLWhvdmVyLWJvcmRlcik7XG4gIH1cblxuICAubG9hZGluZy1zcGlubmVyIHtcbiAgICB3aWR0aDogMzJweDtcbiAgICBoZWlnaHQ6IDMycHg7XG4gICAgYm9yZGVyOiAzcHggc29saWQgdmFyKC0tZGVza3RvcC1ib3JkZXItdGVydGlhcnkpO1xuICAgIGJvcmRlci1sZWZ0OiAzcHggc29saWQgdmFyKC0tZGVza3RvcC1wcmltYXJ5LWJsdWUpO1xuICAgIGJvcmRlci1yYWRpdXM6IDUwJTtcbiAgICBhbmltYXRpb246IHNwaW4gMXMgbGluZWFyIGluZmluaXRlO1xuICB9XG5cbiAgQGtleWZyYW1lcyBzcGluIHtcbiAgICAwJSB7XG4gICAgICB0cmFuc2Zvcm06IHJvdGF0ZSgwZGVnKTtcbiAgICB9XG4gICAgMTAwJSB7XG4gICAgICB0cmFuc2Zvcm06IHJvdGF0ZSgzNjBkZWcpO1xuICAgIH1cbiAgfVxuXG4gIC8qIFJlc3BvbnNpdmUgZGVzaWduICovXG4gIEBtZWRpYSAobWF4LXdpZHRoOiA3NjhweCkge1xuICAgIC5jb2RleC1jb21wb25lbnQge1xuICAgICAgd2lkdGg6IDI1MHB4O1xuICAgICAgbWluLXdpZHRoOiAyMDBweDtcbiAgICB9XG4gIH1cblxuICBAbWVkaWEgKG1heC13aWR0aDogNDgwcHgpIHtcbiAgICAuY29kZXgtY29tcG9uZW50IHtcbiAgICAgIHdpZHRoOiAxMDAlO1xuICAgICAgbWluLXdpZHRoOiAyNTBweDtcbiAgICB9XG4gIH1cbjwvc3R5bGU+XG4iXSwiZmlsZSI6IkM6L1RLQS93ZWIvc3JjL2xpYi9jb21wb25lbnRzL2NvZGV4L0NvZGV4Q29tcG9uZW50LnN2ZWx0ZSJ9

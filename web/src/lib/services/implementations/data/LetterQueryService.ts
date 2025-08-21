@@ -19,6 +19,7 @@ export interface ILetterQueryService {
     gridMode: GridMode
   ): Promise<PictographData | null>;
   getAllCodexPictographs(gridMode: GridMode): Promise<PictographData[]>;
+  getAllPictographVariations(gridMode: GridMode): Promise<PictographData[]>;
   searchPictographs(
     searchTerm: string,
     gridMode: GridMode
@@ -69,10 +70,40 @@ export class LetterQueryService implements ILetterQueryService {
       );
       const boxParseResult = this.csvParserService.parseCSV(csvData.boxData);
 
+      console.log(
+        `📊 Diamond CSV parsing result: ${diamondParseResult.successfulRows} successful rows out of ${diamondParseResult.totalRows} total`
+      );
+      console.log(
+        `📊 Box CSV parsing result: ${boxParseResult.successfulRows} successful rows out of ${boxParseResult.totalRows} total`
+      );
+
+      if (diamondParseResult.errors.length > 0) {
+        console.warn(`⚠️ Diamond CSV parsing errors (first 3):`);
+        diamondParseResult.errors.slice(0, 3).forEach((error, index) => {
+          console.warn(
+            `  Error ${index + 1}: Row ${error.rowIndex} - ${error.error}`
+          );
+          console.warn(`  Raw row: ${error.rawRow.substring(0, 100)}...`);
+        });
+      }
+      if (boxParseResult.errors.length > 0) {
+        console.warn(`⚠️ Box CSV parsing errors (first 3):`);
+        boxParseResult.errors.slice(0, 3).forEach((error, index) => {
+          console.warn(
+            `  Error ${index + 1}: Row ${error.rowIndex} - ${error.error}`
+          );
+          console.warn(`  Raw row: ${error.rawRow.substring(0, 100)}...`);
+        });
+      }
+
       this.parsedData = {
         [GridMode.DIAMOND]: diamondParseResult.rows,
         [GridMode.BOX]: boxParseResult.rows,
       };
+
+      console.log(
+        `📊 Final parsed data: Diamond=${this.parsedData[GridMode.DIAMOND]?.length || 0} rows, Box=${this.parsedData[GridMode.BOX]?.length || 0} rows`
+      );
 
       this.isInitialized = true;
       console.log("✅ LetterQueryService: CSV data loaded and parsed");
@@ -166,6 +197,62 @@ export class LetterQueryService implements ILetterQueryService {
       return pictographs;
     } catch (error) {
       console.error("❌ Error getting all codex pictographs:", error);
+      return [];
+    }
+  }
+
+  /**
+   * Get ALL pictograph variations from CSV data (not limited by letter mappings)
+   * This returns every row in the CSV as a separate pictograph, including multiple variations per letter
+   */
+  async getAllPictographVariations(
+    gridMode: GridMode
+  ): Promise<PictographData[]> {
+    await this.ensureInitialized();
+
+    try {
+      if (!this.parsedData) {
+        console.error("❌ No parsed CSV data available");
+        return [];
+      }
+
+      const csvRows = this.parsedData[gridMode];
+      if (!csvRows || csvRows.length === 0) {
+        console.error(`❌ No CSV data available for grid mode: ${gridMode}`);
+        return [];
+      }
+
+      console.log(
+        `📚 Converting all ${csvRows.length} CSV rows to pictographs`
+      );
+
+      const pictographs: PictographData[] = [];
+      for (let i = 0; i < csvRows.length; i++) {
+        const row = csvRows[i];
+        try {
+          const pictograph =
+            this.pictographTransformationService.convertCsvRowToPictographData(
+              row,
+              gridMode.toString(),
+              i
+            );
+          if (pictograph) {
+            pictographs.push(pictograph);
+          }
+        } catch (error) {
+          console.warn(
+            `⚠️ Failed to convert CSV row ${i} (letter: ${row.letter}):`,
+            error
+          );
+        }
+      }
+
+      console.log(
+        `✅ Retrieved ${pictographs.length} pictograph variations from CSV`
+      );
+      return pictographs;
+    } catch (error) {
+      console.error("❌ Error getting all pictograph variations:", error);
       return [];
     }
   }

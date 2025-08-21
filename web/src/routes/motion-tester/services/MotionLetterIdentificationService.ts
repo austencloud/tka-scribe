@@ -6,6 +6,7 @@
  */
 
 import type { MotionTestParams } from "./MotionParameterService";
+import { GridMode } from "$lib/domain/enums";
 
 export interface LetterIdentificationResult {
   letter: string | null;

@@ -5,6 +5,7 @@
  * Matches the desktop implementation's question generation logic.
  */
 
+import { GridMode } from "$lib/domain";
 import {
   AnswerFormat,
   type AnswerOption,
@@ -57,7 +58,7 @@ export class QuestionGeneratorService {
   }
 
   /**
-   * Generate a pictograph-to-letter question.
+   * Generate a pictograph-to-letter question. I
    */
   private static generatePictographToLetterQuestion(
     questionId: string,

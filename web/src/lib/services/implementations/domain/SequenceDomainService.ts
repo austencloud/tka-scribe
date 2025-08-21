@@ -6,6 +6,7 @@
  */
 
 import type { BeatData, SequenceData } from "$lib/domain";
+import { GridMode } from "$lib/domain";
 import type { ValidationResult } from "../../interfaces/domain-types";
 import type {
   ISequenceDomainService,

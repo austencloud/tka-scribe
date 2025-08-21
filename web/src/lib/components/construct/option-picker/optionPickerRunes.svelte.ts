@@ -228,20 +228,32 @@ export function createOptionPickerRunes() {
           lastBeat?.endPosition || lastBeat?.metadata?.endPosition;
 
         if (endPosition && typeof endPosition === "string") {
-          // Get the option data service through DI
-          const optionDataService = resolve("IOptionDataService") as {
-            getNextOptions(sequence: unknown[]): Promise<PictographData[]>;
-          };
+          console.log(
+            `🎯 Option Picker: Filtering options for end position: ${endPosition}`
+          );
 
-          // Create a minimal sequence with a beat that has the end position
-          const minimalSequence = [
-            createBeatData({
-              beatNumber: 1,
-              metadata: { endPosition: endPosition },
-            }),
-          ];
+          // Get services through DI
+          const { ILetterQueryServiceInterface } = await import(
+            "$lib/services/di/interfaces/codex-interfaces"
+          );
+          const letterQueryService = resolve(ILetterQueryServiceInterface);
+          const optionFilteringService = resolve(
+            "IOptionFilteringService"
+          ) as any;
 
-          nextOptions = await optionDataService.getNextOptions(minimalSequence);
+          // Get ALL pictograph variations from CSV (like desktop algorithm) and filter by start position
+          const allPictographs =
+            await letterQueryService.getAllPictographVariations(
+              GridMode.DIAMOND
+            );
+          nextOptions = optionFilteringService.filterByStartPosition(
+            allPictographs,
+            endPosition
+          );
+
+          console.log(
+            `✅ Option Picker: Found ${nextOptions.length} options that start from ${endPosition}`
+          );
         } else {
           console.warn("No end position found in sequence");
         }
@@ -255,15 +267,31 @@ export function createOptionPickerRunes() {
               ? startPosition.endPosition
               : null;
           if (endPosition) {
-            // Get the LetterQueryService through DI
+            console.log(
+              `🎯 Option Picker: Filtering options for start position end: ${endPosition}`
+            );
+
+            // Get services through DI
             const { ILetterQueryServiceInterface } = await import(
               "$lib/services/di/interfaces/codex-interfaces"
             );
             const letterQueryService = resolve(ILetterQueryServiceInterface);
+            const optionFilteringService = resolve(
+              "IOptionFilteringService"
+            ) as any;
 
-            // For now, get all pictographs - option filtering logic would need to be implemented
-            nextOptions = await letterQueryService.getAllCodexPictographs(
-              GridMode.DIAMOND
+            // Get ALL pictograph variations from CSV (like desktop algorithm) and filter by start position
+            const allPictographs =
+              await letterQueryService.getAllPictographVariations(
+                GridMode.DIAMOND
+              );
+            nextOptions = optionFilteringService.filterByStartPosition(
+              allPictographs,
+              endPosition
+            );
+
+            console.log(
+              `✅ Option Picker: Found ${nextOptions.length} options that start from ${endPosition}`
             );
           }
         }

@@ -9,7 +9,14 @@
  */
 
 import type { ArrowData, MotionData, PictographData } from "$lib/domain";
-import { MotionColor } from "$lib/domain/enums";
+import {
+  MotionColor,
+  MotionType,
+  Location,
+  Orientation,
+  GridMode,
+} from "$lib/domain/enums";
+import type { Letter } from "$lib/domain/Letter";
 import type { IArrowPositioningOrchestrator } from "$lib/services/positioning";
 import { getPositioningServiceFactory } from "$lib/services/positioning/PositioningServiceFactory";
 
@@ -21,13 +28,13 @@ export interface ArrowPositionResult {
 
 export interface ArrowPositioningInput {
   color: MotionColor;
-  motionType: string;
-  location: string;
-  gridMode: string;
+  motionType: MotionType;
+  location: Location;
+  gridMode: GridMode;
   turns: number;
-  letter?: string;
-  start_orientation?: string;
-  end_orientation?: string;
+  letter: Letter;
+  startOrientation: Orientation;
+  endOrientatio?: Orientation;
 }
 
 export interface Position {
@@ -66,40 +73,19 @@ export class ArrowPositioningService implements IArrowPositioningService {
     motionData: MotionData,
     pictographData: PictographData
   ): Promise<ArrowPositionResult> {
-    console.log(
-      `🎯 ArrowPositioningService.calculatePosition called for ${motionData.color} arrow`
-    );
-    console.log(`Arrow data:`, {
-      motionType: arrowData.motionType,
-      start_orientation: arrowData.start_orientation,
-      end_orientation: arrowData.end_orientation,
-      turns: arrowData.turns,
-      position_x: arrowData.position_x,
-      position_y: arrowData.position_y,
-    });
-    console.log(`Motion data:`, {
-      motionType: motionData.motionType,
-      startLocation: motionData.startLocation,
-      endLocation: motionData.endLocation,
-      turns: motionData.turns,
-    });
+    // Debug logging removed for performance
 
     try {
       // Use the sophisticated positioning pipeline
-      console.log(`🔧 Calling orchestrator.calculateArrowPosition...`);
       const [x, y, rotation] = await this.orchestrator.calculateArrowPosition(
         arrowData,
         pictographData,
         motionData
       );
 
-      console.log(
-        `✅ Orchestrator returned: (${x}, ${y}) rotation: ${rotation}°`
-      );
       return { x, y, rotation };
     } catch (error) {
-      console.error("🚨 CRITICAL: Orchestrator positioning failed:", error);
-      console.error("This should never happen in production!");
+      console.error("Orchestrator positioning failed:", error);
       throw error; // Don't hide orchestrator failures
     }
   }
@@ -115,7 +101,7 @@ export class ArrowPositioningService implements IArrowPositioningService {
     try {
       return this.orchestrator.shouldMirrorArrow(arrowData, pictographData);
     } catch (error) {
-      console.error("🚨 CRITICAL: Mirror determination failed:", error);
+      console.error("Mirror determination failed:", error);
       throw error; // Don't hide orchestrator failures
     }
   }

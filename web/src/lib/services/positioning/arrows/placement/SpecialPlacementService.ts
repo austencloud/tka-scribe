@@ -14,6 +14,7 @@
  */
 
 import type { MotionData, PictographData } from "$lib/domain";
+import { GridMode } from "$lib/domain/enums";
 import type { ISpecialPlacementService } from "../../placement-services";
 import { SpecialPlacementOriKeyGenerator } from "../key_generators/SpecialPlacementOriKeyGenerator";
 import { jsonCache } from "../../cache/SimpleJsonCache";

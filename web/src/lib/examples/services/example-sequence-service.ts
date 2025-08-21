@@ -14,6 +14,7 @@
  */
 
 import type { BeatData, SequenceData } from "$lib/domain";
+import { GridMode } from "$lib/domain/enums";
 
 // ============================================================================
 // INTERFACES (Define contracts)

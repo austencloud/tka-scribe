@@ -71,27 +71,17 @@
     turn_amount?: number;
     type: string;
   }) {
-    // TODO: use enums for this data instead
-    // Convert to ArrowData format for the service
+    // ✅ FIXED: ArrowData now only contains arrow-specific properties
     const fullArrowData: ArrowData = {
       id: `arrow_${Date.now()}`,
-      color:
-        arrowData.color === MotionColor.BLUE
-          ? MotionColor.BLUE
-          : MotionColor.RED,
-      turns: arrowData.turn_amount || 0,
-      isMirrored: false,
-      motionType: "static",
-      start_orientation: "in",
-      end_orientation: "in",
-      rotationDirection: "clockwise",
-      location: null,
-      position_x: 0,
-      position_y: 0,
-      rotation_angle: 0,
+      // Only arrow-specific properties - motion data should be handled separately
+      arrowLocation: null, // Will be calculated by positioning system
+      positionX: 0,
+      positionY: 0,
+      rotationAngle: 0,
       coordinates: null,
-      svg_center: null,
-      svg_mirrored: false,
+      svgCenter: null,
+      svgMirrored: false,
       isVisible: true,
       isSelected: false,
     };

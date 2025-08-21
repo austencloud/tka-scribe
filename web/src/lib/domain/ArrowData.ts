@@ -2,32 +2,25 @@
  * Arrow Domain Model
  *
  * Immutable data for an arrow in a pictograph.
- * Based on modern desktop app's arrow_data.py
+ *
+ * ✅ REFACTORED: Motion properties moved to MotionData as single source of truth.
+ * ArrowData now only contains arrow-specific rendering and positioning data.
  */
 
-import { MotionType, Orientation, RotationDirection } from "./enums";
+import { Location } from "./enums";
 
 export interface ArrowData {
   readonly id: string;
-  readonly turns: number;
-  readonly isMirrored: boolean;
 
-  // Motion properties
-  readonly motionType: string;
-  readonly start_orientation: string;
-  readonly end_orientation: string;
-  readonly rotationDirection: string;
+  readonly arrowLocation: Location | null;
 
-  // Position data (calculated by positioning system)
-  readonly location?: string | null;
-  readonly position_x: number;
-  readonly position_y: number;
-  readonly rotation_angle: number;
-  readonly coordinates?: { x: number; y: number } | null;
-  readonly svg_center?: { x: number; y: number } | null;
-  readonly svg_mirrored?: boolean;
+  readonly positionX: number;
+  readonly positionY: number;
+  readonly rotationAngle: number;
+  readonly coordinates: { x: number; y: number } | null;
+  readonly svgCenter: { x: number; y: number } | null;
+  readonly svgMirrored: boolean;
 
-  // State flags
   readonly isVisible: boolean;
   readonly isSelected: boolean;
 }
@@ -35,19 +28,14 @@ export interface ArrowData {
 export function createArrowData(data: Partial<ArrowData> = {}): ArrowData {
   return {
     id: data.id ?? crypto.randomUUID(),
-    turns: data.turns ?? 0.0,
-    isMirrored: data.isMirrored ?? false,
-    motionType: data.motionType ?? MotionType.STATIC,
-    start_orientation: data.start_orientation ?? Orientation.IN,
-    end_orientation: data.end_orientation ?? Orientation.IN,
-    rotationDirection: data.rotationDirection ?? RotationDirection.CLOCKWISE,
-    location: data.location ?? null,
-    position_x: data.position_x ?? 0.0,
-    position_y: data.position_y ?? 0.0,
-    rotation_angle: data.rotation_angle ?? 0.0,
+
+    arrowLocation: data.arrowLocation ?? null,
+    positionX: data.positionX ?? 0.0,
+    positionY: data.positionY ?? 0.0,
+    rotationAngle: data.rotationAngle ?? 0.0,
     coordinates: data.coordinates ?? null,
-    svg_center: data.svg_center ?? null,
-    svg_mirrored: data.svg_mirrored ?? false,
+    svgCenter: data.svgCenter ?? null,
+    svgMirrored: data.svgMirrored ?? false,
     isVisible: data.isVisible ?? true,
     isSelected: data.isSelected ?? false,
   };
@@ -66,12 +54,14 @@ export function updateArrowData(
 export function arrowDataToObject(arrow: ArrowData): Record<string, unknown> {
   return {
     id: arrow.id,
-    turns: arrow.turns,
-    isMirrored: arrow.isMirrored,
-    location: arrow.location,
-    position_x: arrow.position_x,
-    position_y: arrow.position_y,
-    rotation_angle: arrow.rotation_angle,
+
+    arrowLocation: arrow.arrowLocation,
+    positionX: arrow.positionX,
+    positionY: arrow.positionY,
+    rotationAngle: arrow.rotationAngle,
+    coordinates: arrow.coordinates,
+    svgCenter: arrow.svgCenter,
+    svgMirrored: arrow.svgMirrored,
     isVisible: arrow.isVisible,
     isSelected: arrow.isSelected,
   };
@@ -81,16 +71,21 @@ export function arrowDataFromObject(data: Record<string, unknown>): ArrowData {
   const partialData: Record<string, unknown> = {};
 
   if (typeof data.id === "string") partialData.id = data.id;
-  if (typeof data.turns === "number") partialData.turns = data.turns;
-  if (typeof data.isMirrored === "boolean")
-    partialData.isMirrored = data.isMirrored;
-  if (typeof data.location === "string") partialData.location = data.location;
-  if (typeof data.position_x === "number")
-    partialData.position_x = data.position_x;
-  if (typeof data.position_y === "number")
-    partialData.position_y = data.position_y;
-  if (typeof data.rotation_angle === "number")
-    partialData.rotation_angle = data.rotation_angle;
+
+  if (typeof data.arrowLocation === "string")
+    partialData.arrowLocation = data.arrowLocation;
+  if (typeof data.positionX === "number")
+    partialData.positionX = data.positionX;
+  if (typeof data.positionY === "number")
+    partialData.positionY = data.positionY;
+  if (typeof data.rotationAngle === "number")
+    partialData.rotationAngle = data.rotationAngle;
+  if (data.coordinates && typeof data.coordinates === "object")
+    partialData.coordinates = data.coordinates;
+  if (data.svgCenter && typeof data.svgCenter === "object")
+    partialData.svgCenter = data.svgCenter;
+  if (typeof data.svgMirrored === "boolean")
+    partialData.svgMirrored = data.svgMirrored;
   if (typeof data.isVisible === "boolean")
     partialData.isVisible = data.isVisible;
   if (typeof data.isSelected === "boolean")

@@ -1,4 +1,5 @@
 import type { PictographData } from "$lib/domain/PictographData";
+import { GridMode } from "$lib/domain/enums";
 import { fireEvent, render, screen } from "@testing-library/svelte";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import OptionPickerSection from "../OptionPickerSection.svelte";
@@ -23,7 +24,14 @@ describe("OptionPickerSection", () => {
         center_x: 475,
         center_y: 475,
         radius: 400,
-        gridPoints: {},
+        gridPointData: {
+          allHandPointsStrict: {},
+          allHandPointsNormal: {},
+          allLayer2PointsStrict: {},
+          allLayer2PointsNormal: {},
+          allOuterPoints: {},
+          centerPoint: { coordinates: { x: 475, y: 475 } },
+        },
       },
       arrows: {},
       props: {},
@@ -42,7 +50,14 @@ describe("OptionPickerSection", () => {
         center_x: 475,
         center_y: 475,
         radius: 400,
-        gridPoints: {},
+        gridPointData: {
+          allHandPointsStrict: {},
+          allHandPointsNormal: {},
+          allLayer2PointsStrict: {},
+          allLayer2PointsNormal: {},
+          allOuterPoints: {},
+          centerPoint: { coordinates: { x: 475, y: 475 } },
+        },
       },
       arrows: {},
       props: {},

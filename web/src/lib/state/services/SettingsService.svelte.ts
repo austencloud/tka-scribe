@@ -7,6 +7,7 @@
 
 import { browser } from "$app/environment";
 import { BackgroundType } from "$lib/components/backgrounds/types/types";
+import { GridMode } from "$lib/domain";
 import type { AppSettings } from "$services/interfaces/application-interfaces";
 import type { ISettingsService } from "./state-service-interfaces";
 

@@ -143,12 +143,12 @@
           </div>
         {/if}
         <div class="sequence-status">
-          <span class="status-text">{sequenceStatus}</span>
+          <span class="status-text">{sequenceStatus()}</span>
         </div>
       {:else}
         <div class="no-sequence">
           <span class="no-sequence-text">No sequence loaded</span>
-          <span class="status-text">{sequenceStatus}</span>
+          <span class="status-text">{sequenceStatus()}</span>
         </div>
       {/if}
     </div>
@@ -161,10 +161,10 @@
     >
       {#if isExporting}
         <span class="loading-spinner"></span>
-        {exportButtonText}
+        {exportButtonText()}
       {:else}
         <span class="button-icon">🔤</span>
-        {exportButtonText}
+        {exportButtonText()}
       {/if}
     </button>
   </div>
@@ -193,20 +193,6 @@
         Export All Sequences
       {/if}
     </button>
-  </div>
-
-  <!-- Quick Export Tips -->
-  <div class="quick-tips">
-    <div class="tip-item">
-      <span class="tip-icon">💡</span>
-      <span class="tip-text"
-        >Preview updates automatically when sequence changes</span
-      >
-    </div>
-    <div class="tip-item">
-      <span class="tip-icon">⚡</span>
-      <span class="tip-text">PNG format provides best quality for sharing</span>
-    </div>
   </div>
 </div>
 
@@ -389,34 +375,6 @@
     border-top: 2px solid currentColor;
     border-radius: 50%;
     animation: spin 1s linear infinite;
-  }
-
-  .quick-tips {
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-xs);
-    padding: var(--spacing-xs);
-    background: rgba(255, 255, 255, 0.02);
-    border-radius: 6px;
-    border: 1px solid rgba(255, 255, 255, 0.05);
-  }
-
-  .tip-item {
-    display: flex;
-    align-items: flex-start;
-    gap: var(--spacing-xs);
-  }
-
-  .tip-icon {
-    font-size: var(--font-size-xs);
-    flex-shrink: 0;
-    margin-top: 1px;
-  }
-
-  .tip-text {
-    font-size: var(--font-size-xs);
-    color: rgba(255, 255, 255, 0.6);
-    line-height: 1.3;
   }
 
   @keyframes spin {

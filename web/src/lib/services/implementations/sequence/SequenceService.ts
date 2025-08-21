@@ -9,6 +9,7 @@ import type { BeatData, SequenceData } from "$lib/domain";
 import {
   GridMode,
   MotionType,
+  MotionColor,
   RotationDirection,
   Location,
   Orientation,
@@ -289,12 +290,20 @@ export class SequenceService implements ISequenceService {
             center_x: 0,
             center_y: 0,
             radius: 100,
-            gridPoints: {},
+            gridPointData: {
+              allHandPointsStrict: {},
+              allHandPointsNormal: {},
+              allLayer2PointsStrict: {},
+              allLayer2PointsNormal: {},
+              allOuterPoints: {},
+              centerPoint: { coordinates: { x: 0, y: 0 } },
+            },
           },
           arrows: {},
           props: {},
           motions: {
             blue: {
+              color: MotionColor.BLUE, // ✅ FIXED: Added required color property
               motionType:
                 ((step.blueAttributes as Record<string, unknown>)
                   ?.motionType as MotionType) || MotionType.STATIC,
@@ -319,6 +328,7 @@ export class SequenceService implements ISequenceService {
               isVisible: true,
             },
             red: {
+              color: MotionColor.RED, // ✅ FIXED: Added required color property
               motionType:
                 ((step.redAttributes as Record<string, unknown>)
                   ?.motionType as MotionType) || MotionType.STATIC,

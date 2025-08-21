@@ -83,6 +83,8 @@ export async function registerSharedServices(
     ) as IEnumMappingService;
     return new OptionFilteringService(enumMappingService);
   });
+
+  console.log("✅ Shared services registered successfully");
 }
 
 /**

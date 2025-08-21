@@ -1,4 +1,7 @@
-import { createGridData, type GridData } from "$lib/data/gridCoordinates.js";
+import {
+  createGridData,
+  type GridPointData,
+} from "$lib/data/gridCoordinates.js";
 import { GridMode, Location } from "$lib/domain/enums";
 
 /**
@@ -19,7 +22,7 @@ export class DefaultPropPositioner {
   };
 
   constructor(
-    private gridData: GridData,
+    private gridData: GridPointData,
     private gridMode: GridMode
   ) {
     // Validate grid data on initialization
@@ -101,13 +104,12 @@ export class DefaultPropPositioner {
    * Static helper method for quick coordinate calculation
    */
   static calculatePosition(
-    location: Location | string,
-    gridMode: GridMode = GridMode.DIAMOND
+    location: Location,
+    gridMode: GridMode
   ): { x: number; y: number } {
     try {
-      const gridModeStr = gridMode.valueOf();
-      const gridData = createGridData(gridModeStr as GridMode);
-      const positioner = new DefaultPropPositioner(gridData, gridMode);
+      const gridPointData = createGridData(gridMode);
+      const positioner = new DefaultPropPositioner(gridPointData, gridMode);
       const result = positioner.calculateCoordinates(location);
       return result;
     } catch (error) {

@@ -11,7 +11,8 @@
  * - Better TypeScript organization
  */
 
-import type { MotionData, PictographData, GridMode } from "$lib/domain";
+import type { MotionData, PictographData } from "$lib/domain";
+import { GridMode } from "$lib/domain/enums";
 import { MotionColor } from "$lib/domain";
 import type { IArrowAdjustmentCalculator } from "../../core-services";
 import type {
@@ -220,28 +221,25 @@ export class ArrowAdjustmentCalculator implements IArrowAdjustmentCalculator {
       const turnsTuple =
         this.turnsTupleService.generateTurnsTuple(pictographData);
 
-      // Create minimal arrow data for attribute key generation
+      // ✅ FIXED: Create proper ArrowData and pass color separately
       const color = MotionColor.BLUE;
       const tempArrow = {
         id: "temp",
-        color,
-        motionType: motionData.motionType || "",
-        location: "center",
-        start_orientation: motionData.startOrientation || "",
-        end_orientation: motionData.endOrientation || "",
-        rotationDirection: motionData.rotationDirection || "",
-        turns: typeof motionData.turns === "number" ? motionData.turns : 0,
-        isMirrored: false,
-        position_x: 0,
-        position_y: 0,
-        rotation_angle: 0,
+        arrowLocation: null,
+        positionX: 0,
+        positionY: 0,
+        rotationAngle: 0, // ✅ FIXED: Added missing rotationAngle property
+        coordinates: { x: 0, y: 0 },
+        svgCenter: { x: 0, y: 0 },
+        svgMirrored: false,
         isVisible: true,
         isSelected: false,
       };
 
       const attrKey = this.attributeKeyService.getKeyFromArrow(
         tempArrow,
-        pictographData
+        pictographData,
+        color
       );
 
       return [oriKey, turnsTuple.join(","), attrKey];

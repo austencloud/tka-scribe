@@ -16,7 +16,7 @@ import {
   IPersistenceServiceInterface,
   IPictographRenderingServiceInterface,
   IPictographServiceInterface,
-  IPropRenderingServiceInterface,
+  // ✅ REMOVED: PropRenderingService is deprecated
   IArrowRenderingServiceInterface,
   ISequenceDomainServiceInterface,
   ISequenceGenerationServiceInterface,
@@ -82,6 +82,8 @@ import {
   IPictographOperationsServiceInterface,
 } from "./interfaces/codex-interfaces";
 
+import { IOptionFilteringServiceInterface } from "./registration/shared-services";
+
 /**
  * Service interface mapping for string-based resolution
  * Maintains backward compatibility for existing code using string tokens
@@ -92,7 +94,7 @@ export const serviceInterfaceMap = new Map<string, ServiceInterface<unknown>>([
   ["ISequenceDomainService", ISequenceDomainServiceInterface],
   ["IPictographService", IPictographServiceInterface],
   ["IPictographRenderingService", IPictographRenderingServiceInterface],
-  ["IPropRenderingService", IPropRenderingServiceInterface],
+  // ✅ REMOVED: PropRenderingService is deprecated
   ["IArrowRenderingService", IArrowRenderingServiceInterface],
   ["IPersistenceService", IPersistenceServiceInterface],
   ["ISettingsService", ISettingsServiceInterface],
@@ -156,6 +158,9 @@ export const serviceInterfaceMap = new Map<string, ServiceInterface<unknown>>([
   ["ILessonRepository", ILessonRepositoryInterface],
 
   ["IPictographOperationsService", IPictographOperationsServiceInterface],
+
+  // Shared utility services
+  ["IOptionFilteringService", IOptionFilteringServiceInterface],
 
   // TODO: Uncomment when TKA Image Export services are implemented
   // ["ITKAImageExportService", ITKAImageExportServiceInterface],

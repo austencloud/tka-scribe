@@ -20,7 +20,8 @@ export class AttributeKeyGenerator implements IAttributeKeyGenerator {
 
   getKeyFromArrow(
     arrowData: ArrowData,
-    pictographData: PictographData
+    pictographData: PictographData,
+    color: string
   ): string {
     /**
      * Get attribute key from modern arrow data.
@@ -34,21 +35,19 @@ export class AttributeKeyGenerator implements IAttributeKeyGenerator {
      */
     try {
       // Extract motion data for this arrow color
-      const motionData = pictographData.motions?.[arrowData.color];
+      const motionData = pictographData.motions?.[color];
 
       if (!motionData) {
         // Fallback to color if no motion data
-        console.debug(
-          `No motion data for ${arrowData.color}, using color as key`
-        );
-        return arrowData.color;
+        console.debug(`No motion data for ${color}, using color as key`);
+        return color;
       }
 
       // Extract required attributes
       const motionType = motionData.motionType || "";
       const letter = pictographData.letter || "";
       const startOrientation = motionData.startOrientation || "";
-      const color = arrowData.color;
+      // Color is now passed as parameter
 
       // For modern data, we don't have lead_state, so use undefined
       const leadState: string | undefined = undefined;
@@ -70,12 +69,9 @@ export class AttributeKeyGenerator implements IAttributeKeyGenerator {
         startsFromStandardOrientation
       );
     } catch (error) {
-      console.error(
-        `Error generating attribute key for ${arrowData.color}:`,
-        error
-      );
+      console.error(`Error generating attribute key for ${color}:`, error);
       // Fallback to color
-      return arrowData.color;
+      return color;
     }
   }
 

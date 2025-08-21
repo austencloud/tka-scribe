@@ -40,13 +40,13 @@ Arrow Mirroring Test Route - Simple test for arrow positioning
         gridData: createGridData({ gridMode: GridMode.DIAMOND }),
         arrows: {
           blue: createArrowData({
-            motionType: MotionType.PRO,
-            rotationDirection: RotationDirection.COUNTER_CLOCKWISE,
+            // ✅ FIXED: Only arrow-specific properties, motion data comes from MotionData
+            arrowLocation: null, // Will be calculated by positioning system
             isVisible: true,
           }),
           red: createArrowData({
-            motionType: MotionType.PRO,
-            rotationDirection: RotationDirection.COUNTER_CLOCKWISE,
+            // ✅ FIXED: Only arrow-specific properties, motion data comes from MotionData
+            arrowLocation: null, // Will be calculated by positioning system
             isVisible: true,
           }),
         },
@@ -82,13 +82,13 @@ Arrow Mirroring Test Route - Simple test for arrow positioning
         gridData: createGridData({ gridMode: GridMode.DIAMOND }),
         arrows: {
           blue: createArrowData({
-            motionType: MotionType.PRO,
-            rotationDirection: RotationDirection.CLOCKWISE,
+            // ✅ FIXED: Only arrow-specific properties, motion data comes from MotionData
+            arrowLocation: null, // Will be calculated by positioning system
             isVisible: true,
           }),
           red: createArrowData({
-            motionType: MotionType.PRO,
-            rotationDirection: RotationDirection.CLOCKWISE,
+            // ✅ FIXED: Only arrow-specific properties, motion data comes from MotionData
+            arrowLocation: null, // Will be calculated by positioning system
             isVisible: true,
           }),
         },

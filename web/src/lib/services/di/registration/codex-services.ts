@@ -24,6 +24,7 @@ import { MotionQueryService } from "../../implementations/data/MotionQueryServic
 import {
   ICSVParserServiceInterface,
   IPictographTransformationServiceInterface,
+  IOptionFilteringServiceInterface,
 } from "./shared-services";
 
 /**

@@ -5,6 +5,7 @@ export default defineConfig({
   plugins: [sveltekit()],
   build: {
     sourcemap: true,
+    minify: false, // Disable minification for better debugging
   },
   esbuild: {
     sourcemap: true,
@@ -27,11 +28,14 @@ export default defineConfig({
   define: {
     __VITE_IS_MODERN__: true,
   },
-  // Add development-specific source map configuration
+  // Enhanced debugging configuration
   ...(process.env.NODE_ENV !== "production" && {
-    build: {
+    esbuild: {
       sourcemap: "inline",
-      minify: false,
+      keepNames: true,
+    },
+    css: {
+      devSourcemap: true,
     },
   }),
 });

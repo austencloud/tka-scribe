@@ -54,11 +54,11 @@ REFACTORED: Now purely presentational, uses ArrowRenderingService for business l
     }
 
     // Fallback: use position data from arrowData if available (for legacy compatibility)
-    if (arrowData.position_x !== 0 || arrowData.position_y !== 0) {
+    if (arrowData.positionX !== 0 || arrowData.positionY !== 0) {
       return {
-        x: arrowData.position_x,
-        y: arrowData.position_y,
-        rotation: arrowData.rotation_angle || 0,
+        x: arrowData.positionX,
+        y: arrowData.positionY,
+        rotation: arrowData.rotationAngle || 0,
       };
     }
 
@@ -106,7 +106,7 @@ REFACTORED: Now purely presentational, uses ArrowRenderingService for business l
   class:loaded
   data-arrow-color={motionData?.color}
   data-motion-type={motionData?.motionType}
-  data-location={arrowData?.location}
+  data-location={arrowData?.arrowLocation}
 >
   {#if error}
     <!-- Error state -->
@@ -143,9 +143,7 @@ REFACTORED: Now purely presentational, uses ArrowRenderingService for business l
     <g
       transform="
         translate({calculatedPosition().x}, {calculatedPosition().y})
-        rotate({calculatedPosition().rotation ||
-        arrowData?.rotation_angle ||
-        0})
+        rotate({calculatedPosition().rotation || arrowData?.rotationAngle || 0})
         scale({shouldMirror() ? -1 : 1}, 1)
         translate({-svgData.center.x}, {-svgData.center.y})
       "
@@ -153,11 +151,8 @@ REFACTORED: Now purely presentational, uses ArrowRenderingService for business l
       class:mirrored={shouldMirror}
       style:opacity={showArrow ? 1 : 0}
     >
-      <image
-        href={svgData.imageSrc}
-        width={svgData.viewBox.width}
-        height={svgData.viewBox.height}
-      />
+      <!-- ✅ FIXED: Use raw SVG content directly instead of trying to load it as an image -->
+      {@html svgData.imageSrc}
     </g>
   {:else}
     <!-- Hidden but loaded arrow (positioning ready but waiting for coordination) -->
@@ -173,7 +168,7 @@ REFACTORED: Now purely presentational, uses ArrowRenderingService for business l
     {#if import.meta.env.DEV}
       <circle r="2" fill="red" opacity="0.5" />
       <text x="0" y="-25" text-anchor="middle" font-size="6" fill="black">
-        {arrowData?.location}
+        {arrowData?.arrowLocation}
       </text>
     {/if}
   {/if}

@@ -7,19 +7,20 @@
 
 import type { PictographData } from "$domain/PictographData";
 import type { IStartPositionService } from "$services/interfaces/application-interfaces";
+import { GridMode } from "$lib/domain";
 
 /**
  * State interface for start position picker
  */
 export interface StartPositionState {
-  // Data state
-  readonly startPositionPictographs: PictographData[];
-  readonly selectedStartPos: PictographData | null;
+  // Data state (direct access for Svelte 5 runes)
+  startPositionPictographs: PictographData[];
+  selectedStartPos: PictographData | null;
 
   // Loading state
-  readonly isLoading: boolean;
-  readonly loadingError: boolean;
-  readonly isTransitioning: boolean;
+  isLoading: boolean;
+  loadingError: boolean;
+  isTransitioning: boolean;
 
   // Actions
   setStartPositionPictographs: (pictographs: PictographData[]) => void;
@@ -42,26 +43,12 @@ export function createStartPositionState(): StartPositionState {
   let isTransitioning = $state(false);
 
   return {
-    // Getters for reactive state
-    get startPositionPictographs() {
-      return startPositionPictographs;
-    },
-
-    get selectedStartPos() {
-      return selectedStartPos;
-    },
-
-    get isLoading() {
-      return isLoading;
-    },
-
-    get loadingError() {
-      return loadingError;
-    },
-
-    get isTransitioning() {
-      return isTransitioning;
-    },
+    // Direct access to reactive state (no getters for Svelte 5 runes)
+    startPositionPictographs,
+    selectedStartPos,
+    isLoading,
+    loadingError,
+    isTransitioning,
 
     // Actions to update state
     setStartPositionPictographs: (pictographs: PictographData[]) => {
@@ -73,7 +60,11 @@ export function createStartPositionState(): StartPositionState {
     },
 
     setLoading: (loading: boolean) => {
+      console.log(
+        `🔧 setLoading called with: ${loading}, current isLoading: ${isLoading}`
+      );
       isLoading = loading;
+      console.log(`🔧 setLoading after update, isLoading: ${isLoading}`);
     },
 
     setLoadingError: (error: boolean) => {
@@ -95,12 +86,21 @@ export function createStartPositionState(): StartPositionState {
 }
 
 /**
+ * Global state instance to prevent recreation
+ */
+let globalStartPositionState: StartPositionState | null = null;
+
+/**
  * State management service that combines state with service operations
  */
 export function createStartPositionStateService(
   startPositionService: IStartPositionService
 ) {
-  const state = createStartPositionState();
+  // Use existing global state or create new one
+  if (!globalStartPositionState) {
+    globalStartPositionState = createStartPositionState();
+  }
+  const state = globalStartPositionState;
 
   /**
    * Load start positions for the given grid mode

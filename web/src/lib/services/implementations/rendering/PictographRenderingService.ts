@@ -22,7 +22,7 @@ import type { IPropRenderingService } from "../../interfaces/positioning-interfa
 export class PictographRenderingService implements IPictographRenderingService {
   constructor(
     private arrowPositioning: IArrowPositioningOrchestrator,
-    private propRendering: IPropRenderingService,
+    private propRendering: IPropRenderingService | null, // ✅ FIXED: Made optional for deprecated service
     private svgUtility: ISvgUtilityService,
     private gridRendering: IGridRenderingService,
     private arrowRendering: IArrowRenderingService,
@@ -30,6 +30,7 @@ export class PictographRenderingService implements IPictographRenderingService {
     private dataTransformation: IDataTransformationService
   ) {
     // PictographRenderingService initialized with microservices
+    // PropRenderingService is deprecated - props are now rendered by Prop.svelte components
   }
 
   /**
@@ -54,9 +55,9 @@ export class PictographRenderingService implements IPictographRenderingService {
       )) {
         if (arrowData.isVisible) {
           const position = {
-            x: arrowData.position_x,
-            y: arrowData.position_y,
-            rotation: arrowData.rotation_angle,
+            x: arrowData.positionX,
+            y: arrowData.positionY,
+            rotation: arrowData.rotationAngle,
           };
           const motionData = data.motions?.[color as MotionColor];
           await this.arrowRendering.renderArrowAtPosition(
@@ -86,9 +87,9 @@ export class PictographRenderingService implements IPictographRenderingService {
       )) {
         if (arrowData.isVisible) {
           arrowPositions.set(color, {
-            x: arrowData.position_x,
-            y: arrowData.position_y,
-            rotation: arrowData.rotation_angle,
+            x: arrowData.positionX,
+            y: arrowData.positionY,
+            rotation: arrowData.rotationAngle,
           });
         }
       }

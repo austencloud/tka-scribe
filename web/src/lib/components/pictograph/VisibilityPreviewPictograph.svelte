@@ -11,7 +11,9 @@ with real-time opacity changes based on visibility settings.
     createArrowData,
     createPropData,
     createMotionData,
+    createGridData,
     GridMode,
+    GridPosition,
     MotionColor,
     MotionType,
     Location,
@@ -54,28 +56,23 @@ with real-time opacity changes based on visibility settings.
   // Example pictograph data (matching desktop app's example)
   const exampleData: PictographData = createPictographData({
     letter: "A",
-    gridData: {
+    gridData: createGridData({
       gridMode: GridMode.DIAMOND,
       center_x: 400,
       center_y: 400,
       radius: 200,
-      gridPoints: {},
-    },
+    }),
     arrows: {
       blue: createArrowData({
-        color: MotionColor.BLUE,
-        motionType: MotionType.PRO,
-        turns: 1.0,
+        isVisible: true,
       }),
       red: createArrowData({
-        color: MotionColor.RED,
-        motionType: MotionType.PRO,
-        turns: 1.0,
+        isVisible: true,
       }),
     },
     props: {
-      blue: createPropData({ color: MotionColor.BLUE }),
-      red: createPropData({ color: MotionColor.RED }),
+      blue: createPropData({ isVisible: true }),
+      red: createPropData({ isVisible: true }),
     },
     motions: {
       blue: createMotionData({
@@ -99,6 +96,9 @@ with real-time opacity changes based on visibility settings.
         isVisible: true,
       }),
     },
+    // ✅ FIXED: Add endPosition to prevent beta detection warnings
+    startPosition: GridPosition.ALPHA5, // South-North starting position
+    endPosition: GridPosition.ALPHA7, // West-East ending position (different locations = alpha)
     isBlank: false,
     isMirrored: false,
   });

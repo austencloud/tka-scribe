@@ -5,6 +5,11 @@
  * following the microservices architecture pattern.
  */
 
+import {
+  safeSessionStorageGet,
+  safeSessionStorageSet,
+} from "$lib/utils/safe-storage";
+
 export interface IFavoritesService {
   /** Toggle favorite status for a sequence */
   toggleFavorite(sequenceId: string): Promise<void>;
@@ -127,10 +132,8 @@ export class FavoritesService implements IFavoritesService {
 
   private async loadFavoritesFromStorage(): Promise<void> {
     try {
-      // Note: Using sessionStorage instead of localStorage as localStorage is not supported in artifacts
-      const stored = sessionStorage.getItem(this.STORAGE_KEY);
-      const favorites = stored ? JSON.parse(stored) : [];
-      this.favoritesCache = new Set(favorites);
+      const favorites = safeSessionStorageGet<string[]>(this.STORAGE_KEY, []);
+      this.favoritesCache = new Set(favorites || []);
     } catch (error) {
       console.warn("Failed to load favorites from storage:", error);
       this.favoritesCache = new Set();
@@ -143,7 +146,7 @@ export class FavoritesService implements IFavoritesService {
         throw new Error("Favorites cache not initialized");
       }
       const favorites = Array.from(this.favoritesCache);
-      sessionStorage.setItem(this.STORAGE_KEY, JSON.stringify(favorites));
+      safeSessionStorageSet(this.STORAGE_KEY, favorites);
     } catch (error) {
       console.error("Failed to save favorites to storage:", error);
     }

@@ -5,6 +5,7 @@
  * Based on modern desktop app's gridData.py
  */
 
+import type { GridPointData } from "$lib/data/gridCoordinates";
 import { GridMode } from "./enums";
 
 export interface GridData {
@@ -12,7 +13,7 @@ export interface GridData {
   readonly center_x: number;
   readonly center_y: number;
   readonly radius: number;
-  readonly gridPoints: Record<string, [number, number]>; // [x, y] coordinates
+  readonly gridPointData: GridPointData; //
 }
 
 export function createGridData(data: Partial<GridData> = {}): GridData {
@@ -21,7 +22,14 @@ export function createGridData(data: Partial<GridData> = {}): GridData {
     center_x: data.center_x ?? 0.0,
     center_y: data.center_y ?? 0.0,
     radius: data.radius ?? 100.0,
-    gridPoints: data.gridPoints ?? {},
+    gridPointData: data.gridPointData ?? {
+      allHandPointsStrict: {},
+      allHandPointsNormal: {},
+      allLayer2PointsStrict: {},
+      allLayer2PointsNormal: {},
+      allOuterPoints: {},
+      centerPoint: { coordinates: { x: 0, y: 0 } }
+    },
   };
 }
 
@@ -41,7 +49,7 @@ export function gridDataToObject(grid: GridData): Record<string, unknown> {
     center_x: grid.center_x,
     center_y: grid.center_y,
     radius: grid.radius,
-    gridPoints: grid.gridPoints,
+    gridPoints: grid.gridPointData,
   };
 }
 

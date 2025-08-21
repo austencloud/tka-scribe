@@ -18,9 +18,18 @@ export function isBetaPosition(position: string | GridPosition): boolean {
 
 /**
  * Check if a pictograph ends with beta (end position is a beta position)
+ *
+ * ✅ SIMPLIFIED: Only check endPosition field for consistency.
+ * All pictographs MUST have endPosition set by PictographDataFactory.
  */
 export function endsWithBeta(pictographData: PictographData): boolean {
-  if (!pictographData.endPosition) return false;
+  if (!pictographData.endPosition) {
+    console.warn(
+      "⚠️ PictographData missing endPosition - this should not happen with PictographDataFactory"
+    );
+    return false;
+  }
+
   return isBetaPosition(pictographData.endPosition);
 }
 
