@@ -5,6 +5,7 @@
  * Ported and adapted from desktop app's BrowseService.
  */
 
+import { GridMode } from "$lib/domain";
 import {
   FilterType as FilterTypeEnum,
   SortMethod as SortMethodEnum,
@@ -261,7 +262,7 @@ export class BrowseService implements IBrowseService {
       case FilterTypeEnum.AUTHOR:
         return this.getUniqueValues("author");
       case FilterTypeEnum.GRID_MODE:
-        return ["diamond", "box"];
+        return [GridMode.DIAMOND, GridMode.BOX];
       default:
         return [];
     }
@@ -354,7 +355,7 @@ export class BrowseService implements IBrowseService {
 
     const authors = ["TKA User", "Demo Author", "Expert User"];
     const difficulties = ["beginner", "intermediate", "advanced"];
-    const gridModes = ["diamond", "box"];
+    const gridModes = [GridMode.DIAMOND, GridMode.BOX];
 
     return sampleWords.map((word, index): BrowseSequenceMetadata => {
       const authorValue = authors[index % authors.length];

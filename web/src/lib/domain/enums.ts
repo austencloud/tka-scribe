@@ -127,8 +127,6 @@ export enum GenerationMode {
   CIRCULAR = "circular",
 }
 
-
-
 export enum PropType {
   STAFF = "staff",
   CLUB = "club",
@@ -172,4 +170,32 @@ export enum GlyphType {
   VTG = "VTG",
   ELEMENTAL = "Elemental",
   POSITIONS = "Positions",
+}
+
+export enum SliceSize {
+  HALVED = "halved",
+  QUARTERED = "quartered",
+}
+
+// Fundamental CAP components that can be combined
+export enum CAPComponent {
+  ROTATED = "rotated",
+  MIRRORED = "mirrored",
+  SWAPPED = "swapped",
+  COMPLEMENTARY = "complementary",
+}
+
+// Legacy CAP types for backward compatibility
+export enum CAPType {
+  STRICT_ROTATED = "strict_rotated",
+  STRICT_MIRRORED = "strict_mirrored",
+  STRICT_SWAPPED = "strict_swapped",
+  STRICT_COMPLEMENTARY = "strict_complementary",
+  SWAPPED_COMPLEMENTARY = "swapped_complementary",
+  ROTATED_COMPLEMENTARY = "rotated_complementary",
+  MIRRORED_SWAPPED = "mirrored_swapped",
+  MIRRORED_COMPLEMENTARY = "mirrored_complementary",
+  ROTATED_SWAPPED = "rotated_swapped",
+  MIRRORED_ROTATED = "mirrored_rotated",
+  MIRRORED_COMPLEMENTARY_ROTATED = "mirrored_complementary_rotated",
 }

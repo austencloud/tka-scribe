@@ -5,6 +5,7 @@ A clean, simple toggle for switching between diamond and box grid modes.
 Replaces the overcomplicated GridModeSelector with just essential functionality.
 -->
 <script lang="ts">
+  import { GridMode } from "$lib/domain";
   import type { MotionTesterState } from "../state/motion-tester-state.svelte";
 
   interface Props {
@@ -14,7 +15,8 @@ Replaces the overcomplicated GridModeSelector with just essential functionality.
   let { state }: Props = $props();
 
   function toggleGridMode() {
-    const newGridType = state.gridType === "diamond" ? "box" : "diamond";
+    const newGridType =
+      state.gridMode === GridMode.DIAMOND ? GridMode.BOX : GridMode.DIAMOND;
     state.setGridType(newGridType);
   }
 
@@ -27,14 +29,14 @@ Replaces the overcomplicated GridModeSelector with just essential functionality.
     // Number keys for quick selection
     if (event.key === "1") {
       event.preventDefault();
-      if (state.gridType !== "diamond") {
-        state.setGridType("diamond");
+      if (state.gridMode !== GridMode.DIAMOND) {
+        state.setGridType(GridMode.DIAMOND);
       }
     }
     if (event.key === "2") {
       event.preventDefault();
-      if (state.gridType !== "box") {
-        state.setGridType("box");
+      if (state.gridMode !== GridMode.BOX) {
+        state.setGridType(GridMode.BOX);
       }
     }
   }
@@ -42,12 +44,12 @@ Replaces the overcomplicated GridModeSelector with just essential functionality.
 
 <div class="grid-toggle" role="group" aria-label="Grid mode toggle">
   <button
-    class="toggle-btn diamond-btn {state.gridType === 'diamond'
+    class="toggle-btn diamond-btn {state.gridMode === GridMode.DIAMOND
       ? 'active'
       : ''}"
     onclick={toggleGridMode}
     onkeydown={handleKeyDown}
-    aria-pressed={state.gridType === "diamond"}
+    aria-pressed={state.gridMode === GridMode.DIAMOND}
     aria-label="Diamond grid mode"
     title="Switch to diamond grid (1)"
   >
@@ -55,10 +57,10 @@ Replaces the overcomplicated GridModeSelector with just essential functionality.
   </button>
 
   <button
-    class="toggle-btn box-btn {state.gridType === 'box' ? 'active' : ''}"
+    class="toggle-btn box-btn {state.gridMode === GridMode.BOX ? 'active' : ''}"
     onclick={toggleGridMode}
     onkeydown={handleKeyDown}
-    aria-pressed={state.gridType === "box"}
+    aria-pressed={state.gridMode === GridMode.BOX}
     aria-label="Box grid mode"
     title="Switch to box grid (2)"
   >

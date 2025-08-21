@@ -14,7 +14,7 @@
 		shiftLocation?: Location;
 	} {
 		const result: { gridMode: GridMode; shiftLocation?: Location } = {
-			gridMode: (pictographData.gridMode as GridMode) || 'diamond',
+			gridMode: (pictographData.gridMode as GridMode) || GridMode.DIAMOND,
 		};
 
 		// Only add shiftLocation if we can detect it properly
@@ -399,10 +399,10 @@ export class DashLocationCalculator implements IDashLocationCalculator {
     /**Calculate Type 3 dash location based on shift arrow location.*/
     const startLocation = motion.startLocation;
 
-    if (gridMode === "diamond") {
+    if (gridMode === GridMode.DIAMOND) {
       const key = `${startLocation},${shiftLocation}`;
       return this.DIAMOND_DASH_LOCATION_MAP[key] || startLocation;
-    } else if (gridMode === "box") {
+    } else if (gridMode === GridMode.BOX) {
       const key = `${startLocation},${shiftLocation}`;
       return this.BOX_DASH_LOCATION_MAP[key] || startLocation;
     }
@@ -449,7 +449,7 @@ export class DashLocationCalculator implements IDashLocationCalculator {
     shiftLocation?: Location;
   } {
     const result: { gridMode: GridMode; shiftLocation?: Location } = {
-      gridMode: (pictographData.gridMode as GridMode) || "diamond",
+      gridMode: (pictographData.gridMode as GridMode) || GridMode.DIAMOND,
     };
 
     // Only add shiftLocation if we can detect it properly

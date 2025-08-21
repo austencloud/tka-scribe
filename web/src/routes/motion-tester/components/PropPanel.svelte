@@ -14,7 +14,12 @@ Beautiful, intuitive visual controls replacing boring dropdowns:
   import MotionTypeButtons from "./MotionTypeButtons.svelte";
   import { getAvailableMotionTypes } from "../utils/motion-helpers";
   import { MotionColor } from "$lib/domain/enums";
-  import type { Orientation, MotionType, Location } from "$lib/domain/enums";
+  import {
+    type Orientation,
+    type MotionType,
+    type Location,
+    GridMode,
+  } from "$lib/domain/enums";
 
   interface Props {
     propName: string;
@@ -25,7 +30,7 @@ Beautiful, intuitive visual controls replacing boring dropdowns:
     endOrientation: Orientation;
     turns: number | "fl";
     motionType: MotionType;
-    gridMode?: "diamond" | "box";
+    gridMode?: GridMode;
     onStartLocationChange: (location: Location) => void;
     onEndLocationChange: (location: Location) => void;
     onStartOrientationChange: (orientation: Orientation) => void;
@@ -43,7 +48,7 @@ Beautiful, intuitive visual controls replacing boring dropdowns:
     endOrientation,
     turns,
     motionType,
-    gridMode = "diamond",
+    gridMode = GridMode.DIAMOND,
     onStartLocationChange,
     onEndLocationChange,
     onStartOrientationChange,

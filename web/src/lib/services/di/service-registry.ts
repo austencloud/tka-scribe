@@ -27,6 +27,7 @@ import {
   IPageFactoryServiceInterface,
   IPageImageExportServiceInterface,
   ISequenceCardExportIntegrationServiceInterface,
+  IStartPositionSelectionServiceInterface,
 } from "./interfaces/core-interfaces";
 
 import {
@@ -109,6 +110,7 @@ export const serviceInterfaceMap = new Map<string, ServiceInterface<unknown>>([
   ],
 
   ["IStartPositionService", IStartPositionServiceInterface],
+  ["IStartPositionSelectionService", IStartPositionSelectionServiceInterface],
   ["IPanelManagementService", IPanelManagementServiceInterface],
   ["IPrintablePageLayoutService", IPrintablePageLayoutServiceInterface],
   ["IPageFactoryService", IPageFactoryServiceInterface],

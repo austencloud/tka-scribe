@@ -142,7 +142,7 @@
           <h3>{sequence?.word || "Sequence"}</h3>
           <p>Pictograph visualization</p>
           <div class="placeholder-details">
-            <span>{sequence?.gridMode || "diamond"} grid</span>
+            <span>{sequence?.gridMode || GridMode.DIAMOND} grid</span>
             <span>{sequence?.startPosition || "center"} start</span>
           </div>
         </div>

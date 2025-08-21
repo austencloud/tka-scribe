@@ -75,7 +75,7 @@
     return {
       id: `test_${letter.toLowerCase()}`,
       letter,
-      gridMode: "diamond",
+      gridMode: GridMode.DIAMOND,
       startPosition: GridPosition.ALPHA1,
       endPosition: GridPosition.ALPHA3,
       beat: 1,

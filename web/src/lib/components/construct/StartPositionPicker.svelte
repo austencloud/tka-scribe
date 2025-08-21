@@ -1,19 +1,13 @@
-<!-- StartPositionPicker.svelte - Modern implementation updated for proper OptionPicker integration -->
+<!-- StartPositionPicker.svelte - Clean component following TKA architecture -->
 <script lang="ts">
-  import type { BeatData } from "$domain/BeatData";
   import type { PictographData } from "$domain/PictographData";
-  import { GridMode } from "$domain/enums";
   import { resolve } from "$services/bootstrap";
-  import type { IPictographRenderingService } from "$services/interfaces/pictograph-interfaces";
   import type { IStartPositionService } from "$services/interfaces/application-interfaces";
+  import type { IStartPositionSelectionService } from "$lib/services/interfaces/IStartPositionSelectionService";
   import { onMount } from "svelte";
 
-  // Extracted utilities (keeping original functionality intact)
-  import {
-    extractEndPosition,
-    createStartPositionData,
-    storeStartPositionData,
-  } from "./start-position/utils/StartPositionUtils";
+  // State management
+  import { createStartPositionStateService } from "$lib/state/StartPositionState.svelte";
 
   // UI Components
   import LoadingState from "./start-position/ui/LoadingState.svelte";
@@ -22,171 +16,112 @@
   import TransitionOverlay from "./start-position/ui/TransitionOverlay.svelte";
 
   // Props using runes
-  const { gridMode = "diamond" } = $props<{
-    gridMode?: "diamond" | "box";
+  const { gridMode = GridMode.DIAMOND } = $props<{
+    gridMode?: GridMode;
   }>();
 
-  // Runes-based reactive state (replacing legacy stores)
-  let startPositionPictographs = $state<PictographData[]>([]);
-  let selectedStartPos = $state<PictographData | null>(null);
-  let isLoading = $state(true);
-  let loadingError = $state(false);
-  let isTransitioning = $state(false);
-
-  // Modern services (replacing legacy service calls)
+  // Services
   let startPositionService = $state<IStartPositionService | null>(null);
-  let pictographRenderingService = $state<IPictographRenderingService | null>(
-    null
-  );
+  let selectionService = $state<IStartPositionSelectionService | null>(null);
 
-  // Resolve services when container is ready
+  // State management service
+  let stateService = $state<ReturnType<
+    typeof createStartPositionStateService
+  > | null>(null);
+
+  // Initialize services and state
   $effect(() => {
     try {
-      // Try to resolve services, but handle gracefully if container not ready
+      console.log("StartPositionPicker: Attempting to resolve services...");
+
+      // Resolve services
       if (!startPositionService) {
         try {
           startPositionService = resolve("IStartPositionService");
-        } catch {
-          // Container not ready yet, will retry on next effect run
-          return;
+          console.log("StartPositionPicker: ✅ IStartPositionService resolved");
+        } catch (error) {
+          console.log(
+            "StartPositionPicker: ❌ Failed to resolve IStartPositionService:",
+            error
+          );
+          return; // Container not ready yet
         }
       }
-      if (!pictographRenderingService) {
+
+      if (!selectionService) {
         try {
-          pictographRenderingService = resolve("IPictographRenderingService");
-        } catch {
-          // Container not ready yet, will retry on next effect run
-          return;
+          selectionService = resolve("IStartPositionSelectionService");
+          console.log(
+            "StartPositionPicker: ✅ IStartPositionSelectionService resolved"
+          );
+        } catch (error) {
+          console.log(
+            "StartPositionPicker: ❌ Failed to resolve IStartPositionSelectionService:",
+            error
+          );
+          return; // Container not ready yet
         }
+      }
+
+      // Initialize state service once we have the required service
+      if (startPositionService && !stateService) {
+        console.log("StartPositionPicker: Creating state service...");
+        stateService = createStartPositionStateService(startPositionService);
+        console.log("StartPositionPicker: ✅ State service created");
       }
     } catch (error) {
       console.error("StartPositionPicker: Failed to resolve services:", error);
-      // Services will remain null and component will handle gracefully
     }
   });
 
-  // Load available start positions (modernized from legacy)
+  // Load start positions using state service
   async function loadStartPositions() {
-    isLoading = true;
-    loadingError = false;
-
-    try {
-      // Use modern service to get start positions
-      if (!startPositionService) {
-        throw new Error("StartPositionService not available");
-      }
-      const startPositions =
-        await startPositionService.getDefaultStartPositions(gridMode);
-      startPositionPictographs = startPositions;
-    } catch (error) {
-      console.error("❌ Error loading start positions:", error);
-      loadingError = true;
-      startPositionPictographs = [];
-    } finally {
-      isLoading = false;
+    console.log(
+      "StartPositionPicker: loadStartPositions called, stateService:",
+      !!stateService
+    );
+    if (stateService) {
+      console.log(
+        "StartPositionPicker: Calling stateService.loadStartPositions with gridMode:",
+        gridMode
+      );
+      await stateService.loadStartPositions(gridMode);
+      console.log("StartPositionPicker: loadStartPositions completed");
+    } else {
+      console.log("StartPositionPicker: stateService not available yet");
     }
   }
 
-  // Handle start position selection (modernized from legacy with proper data format)
+  // Handle start position selection using service
   async function handleSelect(startPosPictograph: PictographData) {
+    if (!selectionService || !startPositionService || !stateService) {
+      console.error("Services not available for start position selection");
+      return;
+    }
+
     try {
-      // Show transition state
-      isTransitioning = true;
+      // Set transition state
+      stateService.setTransitioning(true);
+      stateService.setSelectedStartPos(startPosPictograph);
 
-      // **CRITICAL: Create the data format that OptionPicker expects**
-      // Based on legacy analysis, OptionPicker looks for:
-      // 1. localStorage 'startPosition' with endPosition field
-      // 2. Proper pictograph data structure
-
-      // Extract end position from the pictograph data
-      const endPosition = extractEndPosition(startPosPictograph);
-
-      // Create start position data in the format the OptionPicker expects (like legacy)
-      const startPositionData = createStartPositionData(
+      // Use selection service to handle the complex business logic
+      await selectionService.selectStartPosition(
         startPosPictograph,
-        endPosition
+        startPositionService
       );
 
-      // Create start position beat data for internal use
-      const startPositionBeat: BeatData = {
-        id: crypto.randomUUID(),
-        beatNumber: 0,
-        duration: 1.0,
-        blueReversal: false,
-        redReversal: false,
-        isBlank: false,
-        pictographData: startPosPictograph,
-        metadata: {
-          endPosition: endPosition,
-        },
-      };
-
-      // Update selected state
-      selectedStartPos = startPosPictograph;
-
-      // **CRITICAL: Save to localStorage in the format OptionPicker expects**
-      storeStartPositionData(startPositionData);
-
-      // **NEW: Preload options BEFORE triggering the transition**
-      // This ensures options are ready when the option picker fades in
-      try {
-        // Import and use the LetterQueryService to preload options
-        const { resolve } = await import("$services/bootstrap");
-        const { ILetterQueryServiceInterface } = await import(
-          "$services/di/interfaces/codex-interfaces"
-        );
-        const letterQueryService = resolve(ILetterQueryServiceInterface);
-        // LetterQueryService initializes automatically when first used
-
-        // For now, just ensure CSV data is loaded - option generation logic would need to be implemented
-        console.log("✅ CSV data preloaded for option picker");
-
-        // Store empty preloaded options for now - option generation logic would need to be implemented
-      } catch (preloadError) {
-        console.warn(
-          "StartPositionPicker: Failed to preload options, will load normally:",
-          preloadError
-        );
-        // Continue with normal flow even if preload fails
-      }
-
-      // Use modern service to set start position
-      if (startPositionService) {
-        await startPositionService.setStartPosition(startPositionBeat);
-      }
-
-      // **CRITICAL: Emit event that coordination service is listening for**
-      // NOTE: We only use event dispatching, not callback, to avoid duplicate handling
-      const event = new CustomEvent("start-position-selected", {
-        detail: {
-          startPosition: startPositionData,
-          endPosition: endPosition,
-          isTransitioning: true,
-          preloadedOptions: true, // Signal that options are preloaded
-        },
-        bubbles: true,
-      });
-      document.dispatchEvent(event);
-
-      // Clear transition state after a shorter delay to reduce flash duration
+      // Clear transition state after a short delay
       setTimeout(() => {
-        isTransitioning = false;
-      }, 200); // Reduced from 500ms to 200ms
+        stateService?.setTransitioning(false);
+      }, 200);
     } catch (error) {
       console.error(
         "StartPositionPicker: Error selecting start position:",
         error
       );
-      if (error instanceof Error) {
-        console.error("StartPositionPicker: Error stack:", error.stack);
-        console.error("StartPositionPicker: Error details:", {
-          message: error.message,
-          name: error.name,
-          startPosPictograph: startPosPictograph,
-        });
-      }
-      isTransitioning = false;
-      // Consider showing an error message to the user
+      stateService.setTransitioning(false);
+
+      // Show user-friendly error
       alert(
         `Failed to select start position: ${error instanceof Error ? error.message : "Unknown error"}`
       );
@@ -195,6 +130,7 @@
 
   // Initialize on mount
   onMount(() => {
+    console.log("StartPositionPicker: onMount called");
     loadStartPositions();
   });
 
@@ -205,39 +141,56 @@
     }
   });
 
-  // CRITICAL FIX: Listen for sequence state changes to clear transition state
+  // Listen for sequence state changes to clear transition state
   import { sequenceStateService } from "$lib/services/SequenceStateService.svelte";
+  import { GridMode } from "$lib/domain";
 
   $effect(() => {
     const currentSequence = sequenceStateService.currentSequence;
 
     // If a sequence with startPosition exists and we're transitioning, clear the transition
-    if (currentSequence && currentSequence.startPosition && isTransitioning) {
-      isTransitioning = false;
+    if (
+      currentSequence &&
+      currentSequence.startPosition &&
+      stateService?.isTransitioning
+    ) {
+      stateService.setTransitioning(false);
     }
   });
 </script>
 
 <div class="start-pos-picker" data-testid="start-position-picker">
-  {#if isLoading}
+  {#if !stateService}
     <LoadingState />
-  {:else if loadingError}
+  {:else if stateService.isLoading}
+    <LoadingState />
+  {:else if stateService.loadingError}
     <ErrorState />
-  {:else if startPositionPictographs.length === 0}
+  {:else if stateService.startPositionPictographs.length === 0}
     <ErrorState
       message="No valid start positions found for the current configuration."
       hasRefreshButton={false}
     />
   {:else}
     <PictographGrid
-      pictographs={startPositionPictographs}
-      selectedPictograph={selectedStartPos}
+      pictographs={stateService.startPositionPictographs}
+      selectedPictograph={stateService.selectedStartPos}
       onPictographSelect={handleSelect}
     />
   {/if}
 
+  <!-- Debug info -->
+  {#if stateService}
+    <div
+      style="position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.8); color: white; padding: 5px; font-size: 10px;"
+    >
+      Debug: isLoading={stateService.isLoading}, pictographs={stateService
+        .startPositionPictographs.length}, error={stateService.loadingError}
+    </div>
+  {/if}
+
   <!-- Loading overlay during transition -->
-  {#if isTransitioning}
+  {#if stateService?.isTransitioning}
     <TransitionOverlay />
   {/if}
 </div>

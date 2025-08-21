@@ -4,19 +4,14 @@
  * Just extracts the configuration logic from GeneratePanel.svelte without over-engineering
  */
 
-// ===== Types (same as original) =====
-export type GenerationMode = "FREEFORM" | "CIRCULAR";
-export type GridMode = "DIAMOND" | "BOX";
-export type PropContinuity = "RANDOM" | "CONTINUOUS";
-export type SliceSize = "HALVED" | "QUARTERED";
-export type CAPType = "STRICT_ROTATED";
-export type LetterType =
-  | "TYPE1"
-  | "TYPE2"
-  | "TYPE3"
-  | "TYPE4"
-  | "TYPE5"
-  | "TYPE6";
+import {
+  GenerationMode,
+  GridMode,
+  LetterType,
+  PropContinuity,
+  SliceSize,
+  CAPType,
+} from "$lib/domain";
 
 export interface GenerationConfig {
   mode: GenerationMode;
@@ -32,15 +27,22 @@ export interface GenerationConfig {
 
 // ===== Default Configuration =====
 const DEFAULT_CONFIG: GenerationConfig = {
-  mode: "FREEFORM",
+  mode: GenerationMode.FREEFORM,
   length: 16,
   level: 2,
   turnIntensity: 1.0,
-  gridMode: "DIAMOND",
-  propContinuity: "CONTINUOUS",
-  letterTypes: new Set(["TYPE1", "TYPE2", "TYPE3", "TYPE4", "TYPE5", "TYPE6"]),
-  sliceSize: "HALVED",
-  capType: "STRICT_ROTATED",
+  gridMode: GridMode.DIAMOND,
+  propContinuity: PropContinuity.CONTINUOUS,
+  letterTypes: new Set([
+    LetterType.TYPE1,
+    LetterType.TYPE2,
+    LetterType.TYPE3,
+    LetterType.TYPE4,
+    LetterType.TYPE5,
+    LetterType.TYPE6,
+  ]),
+  sliceSize: SliceSize.HALVED,
+  capType: CAPType.STRICT_ROTATED,
 };
 
 // ===== Simple State Creator =====
@@ -57,7 +59,7 @@ export function createGenerationConfigState(
   });
 
   // Derived values
-  const isFreeformMode = $derived(config.mode === "FREEFORM");
+  const isFreeformMode = $derived(config.mode === GenerationMode.FREEFORM);
 
   // Simple update function
   function updateConfig(updates: Partial<GenerationConfig>) {

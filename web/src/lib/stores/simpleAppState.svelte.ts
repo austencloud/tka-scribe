@@ -41,7 +41,7 @@ const appState = $state({
     backgroundType: BackgroundType.NIGHT_SKY,
     backgroundQuality: "medium",
     animationsEnabled: true,
-    gridMode: "diamond",
+    gridMode: GridMode.DIAMOND,
     showBeatNumbers: true,
     autoSave: true,
     exportQuality: "high",

@@ -47,7 +47,7 @@ export interface Page {
   layout: GridConfig;
   pageNumber: number;
   paperSize: PaperSize;
-  orientation: Orientation;
+  orientation: PageOrientation;
   margins: Margins;
 }
 
@@ -56,7 +56,7 @@ export interface Page {
 // ============================================================================
 
 export type PaperSize = "A4" | "Letter" | "Legal" | "Tabloid";
-export type Orientation = "Portrait" | "Landscape";
+export type PageOrientation = "Portrait" | "Landscape";
 
 export interface PaperSpecification {
   name: PaperSize;
@@ -67,7 +67,7 @@ export interface PaperSpecification {
 
 export interface PrintConfiguration {
   paperSize: PaperSize;
-  orientation: Orientation;
+  orientation: PageOrientation;
   margins: Margins;
   dpi: number;
   enablePageNumbers: boolean;
@@ -83,7 +83,7 @@ export interface PrintConfiguration {
 
 export interface LayoutCalculationRequest {
   paperSize: PaperSize;
-  orientation: Orientation;
+  orientation: PageOrientation;
   margins: Margins;
   cardAspectRatio: number;
   sequenceCount: number;

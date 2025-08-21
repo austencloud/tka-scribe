@@ -28,6 +28,7 @@ import type {
   ISvgUtilityService,
 } from "../../interfaces/pictograph-interfaces";
 import type { IPropRenderingService } from "../../interfaces/positioning-interfaces";
+
 import type { IPropCoordinatorService } from "../../implementations/rendering/PropCoordinatorService";
 import type { IArrowPositioningOrchestrator } from "../../positioning/core-services";
 import type {
@@ -42,6 +43,7 @@ import type {
 } from "../../interfaces/export-interfaces";
 import type { IPanelManagementService } from "../../interfaces/panel-interfaces";
 import type { ILetterQueryService } from "../../implementations/data/LetterQueryService";
+import type { IStartPositionSelectionService } from "../../interfaces/IStartPositionSelectionService";
 import { createServiceInterface } from "../types";
 
 // Import service implementations
@@ -73,6 +75,7 @@ import { PageFactoryService } from "../../implementations/generation/PageFactory
 import { PageImageExportService } from "../../implementations/export/PageImageExportService";
 import { SequenceCardExportIntegrationService } from "../../implementations/export/SequenceCardExportIntegrationService";
 import { OrientationCalculationService } from "../../implementations/positioning/OrientationCalculationService";
+import { StartPositionSelectionService } from "../../implementations/StartPositionSelectionService";
 
 // Core domain services
 export const ISequenceServiceInterface =
@@ -304,4 +307,10 @@ export const IOrientationCalculationServiceInterface =
   createServiceInterface<IOrientationCalculationService>(
     "IOrientationCalculationService",
     OrientationCalculationService
+  );
+
+export const IStartPositionSelectionServiceInterface =
+  createServiceInterface<IStartPositionSelectionService>(
+    "IStartPositionSelectionService",
+    StartPositionSelectionService
   );

@@ -17,7 +17,7 @@
   import DebugErrorDisplay from "./arrow-debug/DebugErrorDisplay.svelte";
   import DebugLoadingState from "./arrow-debug/DebugLoadingState.svelte";
   import { createDebugState } from "./arrow-debug/debug-state.svelte";
-  import type { PictographData } from "$lib/domain";
+  import { GridMode, type PictographData } from "$lib/domain";
 
   // Application state
   let isAppReady = $state(false);
@@ -90,7 +90,7 @@
   }
 
   // Handle grid mode change
-  function handleGridModeChange(mode: "diamond" | "box") {
+  function handleGridModeChange(mode: GridMode) {
     debugState.gridMode = mode;
   }
 
@@ -161,18 +161,18 @@
                 <h4>🔲 Grid Mode</h4>
                 <div class="grid-toggle">
                   <button
-                    class="grid-btn {debugState.gridMode === 'diamond'
+                    class="grid-btn {debugState.gridMode === GridMode.DIAMOND
                       ? 'active'
                       : ''}"
-                    onclick={() => handleGridModeChange("diamond")}
+                    onclick={() => handleGridModeChange(GridMode.DIAMOND)}
                   >
                     ◆ Diamond
                   </button>
                   <button
-                    class="grid-btn {debugState.gridMode === 'box'
+                    class="grid-btn {debugState.gridMode === GridMode.BOX
                       ? 'active'
                       : ''}"
-                    onclick={() => handleGridModeChange("box")}
+                    onclick={() => handleGridModeChange(GridMode.BOX)}
                   >
                     ⬜ Box
                   </button>

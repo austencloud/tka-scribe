@@ -7,12 +7,13 @@
 
 import type { PictographData } from "$lib/domain/PictographData";
 import { createPictographData } from "$lib/domain/PictographData";
-import { createMotionData } from "$lib/domain/MotionData";
+
 import { createPropData } from "$lib/domain/PropData";
 import { createPropPlacementData } from "$lib/domain/PropPlacementData";
 import type { IEnumMappingService } from "../../interfaces/application-interfaces";
 import { pictographDataDebugger } from "../../debug/PictographDataDebugger";
 import { MotionColor } from "$lib/domain/enums";
+import { createMotionData } from "$lib/domain/MotionData";
 import type { MotionData, PropData } from "$lib/domain";
 
 export interface IPictographTransformationService {
@@ -129,6 +130,7 @@ export class PictographTransformationService
         ),
         turns: 0,
         isVisible: true,
+        color: MotionColor.BLUE, // ✅ Explicitly set blue color
       });
 
       // Create red motion data
@@ -145,6 +147,7 @@ export class PictographTransformationService
         ),
         turns: 0,
         isVisible: true,
+        color: MotionColor.RED, // ✅ Explicitly set red color
       });
 
       // Create props based on motion data
@@ -213,7 +216,7 @@ export class PictographTransformationService
     });
 
     console.log(`🔧 [DEBUG] Created prop result:`, {
-      color: motion.color, // Get color from motion (source of truth)
+      color: color, // ✅ Color from parameter (MotionColor.BLUE or MotionColor.RED)
       location: motion.endLocation, // Get location from motion.endLocation
       orientation: propData.orientation,
       rotationDirection: propData.rotationDirection,

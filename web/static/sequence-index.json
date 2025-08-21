@@ -20,7 +20,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -42,7 +42,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -64,7 +64,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -86,7 +86,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -108,7 +108,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -130,7 +130,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -154,7 +154,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -176,7 +176,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -198,7 +198,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -220,7 +220,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -242,7 +242,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -264,7 +264,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -286,7 +286,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -308,7 +308,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -330,7 +330,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -352,7 +352,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -374,7 +374,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -396,7 +396,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -418,7 +418,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -440,7 +440,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -462,7 +462,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -484,7 +484,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -506,7 +506,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -528,7 +528,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -552,7 +552,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -574,7 +574,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -596,7 +596,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -618,7 +618,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -640,7 +640,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -662,7 +662,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -684,7 +684,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -706,7 +706,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -728,7 +728,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -750,7 +750,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -772,7 +772,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -794,7 +794,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -816,7 +816,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -838,7 +838,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -860,7 +860,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -882,7 +882,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -904,7 +904,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -926,7 +926,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -948,7 +948,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -970,7 +970,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -992,7 +992,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -1014,7 +1014,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -1036,7 +1036,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -1058,7 +1058,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -1080,7 +1080,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -1102,7 +1102,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -1124,7 +1124,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -1146,7 +1146,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -1168,7 +1168,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -1190,7 +1190,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -1212,7 +1212,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -1234,7 +1234,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -1256,7 +1256,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -1278,7 +1278,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -1300,7 +1300,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -1322,7 +1322,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -1344,7 +1344,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -1366,7 +1366,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -1388,7 +1388,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -1410,7 +1410,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -1432,7 +1432,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -1454,7 +1454,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -1476,7 +1476,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -1498,7 +1498,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -1520,7 +1520,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -1542,7 +1542,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -1564,7 +1564,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -1586,7 +1586,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -1608,7 +1608,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -1630,7 +1630,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -1652,7 +1652,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -1674,7 +1674,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -1696,7 +1696,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -1718,7 +1718,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -1740,7 +1740,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -1762,7 +1762,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -1784,7 +1784,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -1806,7 +1806,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -1828,7 +1828,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -1850,7 +1850,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -1872,7 +1872,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -1894,7 +1894,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -1916,7 +1916,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -1938,7 +1938,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -1960,7 +1960,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -1982,7 +1982,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -2004,7 +2004,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -2026,7 +2026,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -2048,7 +2048,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -2070,7 +2070,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -2092,7 +2092,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -2114,7 +2114,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -2136,7 +2136,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -2158,7 +2158,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -2180,7 +2180,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -2202,7 +2202,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -2224,7 +2224,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -2246,7 +2246,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -2268,7 +2268,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -2290,7 +2290,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -2312,7 +2312,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -2334,7 +2334,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -2356,7 +2356,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -2378,7 +2378,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -2400,7 +2400,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -2422,7 +2422,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -2444,7 +2444,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -2466,7 +2466,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -2488,7 +2488,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -2510,7 +2510,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -2532,7 +2532,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -2554,7 +2554,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -2576,7 +2576,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -2598,7 +2598,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -2620,7 +2620,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -2642,7 +2642,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -2664,7 +2664,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -2686,7 +2686,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -2708,7 +2708,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -2730,7 +2730,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -2752,7 +2752,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -2774,7 +2774,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -2796,7 +2796,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -2818,7 +2818,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -2840,7 +2840,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -2862,7 +2862,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -2884,7 +2884,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -2906,7 +2906,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -2928,7 +2928,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -2950,7 +2950,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -2972,7 +2972,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -2994,7 +2994,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -3016,7 +3016,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -3038,7 +3038,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -3060,7 +3060,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -3082,7 +3082,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -3104,7 +3104,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -3126,7 +3126,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -3148,7 +3148,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -3170,7 +3170,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -3192,7 +3192,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -3214,7 +3214,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -3236,7 +3236,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -3258,7 +3258,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -3280,7 +3280,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -3302,7 +3302,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -3324,7 +3324,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -3346,7 +3346,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -3368,7 +3368,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -3390,7 +3390,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -3412,7 +3412,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -3434,7 +3434,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -3456,7 +3456,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -3478,7 +3478,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -3500,7 +3500,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -3522,7 +3522,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -3544,7 +3544,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -3566,7 +3566,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -3588,7 +3588,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -3610,7 +3610,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -3632,7 +3632,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -3654,7 +3654,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -3676,7 +3676,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -3698,7 +3698,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -3720,7 +3720,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -3742,7 +3742,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -3764,7 +3764,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -3786,7 +3786,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -3808,7 +3808,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -3830,7 +3830,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -3852,7 +3852,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -3874,7 +3874,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -3896,7 +3896,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -3918,7 +3918,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -3940,7 +3940,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -3962,7 +3962,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -3984,7 +3984,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -4006,7 +4006,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -4028,7 +4028,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -4050,7 +4050,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -4072,7 +4072,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -4094,7 +4094,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -4116,7 +4116,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -4138,7 +4138,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -4160,7 +4160,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -4182,7 +4182,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -4204,7 +4204,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -4226,7 +4226,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -4248,7 +4248,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -4270,7 +4270,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -4292,7 +4292,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -4314,7 +4314,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -4336,7 +4336,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -4358,7 +4358,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -4380,7 +4380,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -4402,7 +4402,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -4424,7 +4424,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -4446,7 +4446,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -4468,7 +4468,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -4490,7 +4490,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -4512,7 +4512,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -4534,7 +4534,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -4556,7 +4556,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -4578,7 +4578,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -4600,7 +4600,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -4622,7 +4622,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -4644,7 +4644,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -4666,7 +4666,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -4688,7 +4688,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -4710,7 +4710,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -4732,7 +4732,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -4754,7 +4754,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -4776,7 +4776,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -4798,7 +4798,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -4820,7 +4820,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -4842,7 +4842,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -4864,7 +4864,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -4886,7 +4886,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -4908,7 +4908,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -4930,7 +4930,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -4952,7 +4952,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -4974,7 +4974,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -4996,7 +4996,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -5018,7 +5018,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -5040,7 +5040,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -5064,7 +5064,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -5086,7 +5086,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -5108,7 +5108,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -5132,7 +5132,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -5154,7 +5154,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -5178,7 +5178,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -5200,7 +5200,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -5222,7 +5222,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -5244,7 +5244,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -5266,7 +5266,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -5288,7 +5288,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -5310,7 +5310,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -5332,7 +5332,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -5354,7 +5354,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -5376,7 +5376,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -5398,7 +5398,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -5420,7 +5420,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -5442,7 +5442,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -5466,7 +5466,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -5490,7 +5490,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -5512,7 +5512,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -5534,7 +5534,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -5556,7 +5556,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -5578,7 +5578,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -5602,7 +5602,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -5624,7 +5624,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -5646,7 +5646,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -5668,7 +5668,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -5690,7 +5690,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -5712,7 +5712,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -5734,7 +5734,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -5756,7 +5756,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -5778,7 +5778,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -5800,7 +5800,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -5822,7 +5822,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -5844,7 +5844,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -5866,7 +5866,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -5890,7 +5890,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -5912,7 +5912,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -5934,7 +5934,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -5956,7 +5956,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -5978,7 +5978,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -6000,7 +6000,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -6022,7 +6022,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -6044,7 +6044,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -6066,7 +6066,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -6088,7 +6088,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -6110,7 +6110,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -6132,7 +6132,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -6154,7 +6154,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -6176,7 +6176,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -6198,7 +6198,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -6220,7 +6220,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -6242,7 +6242,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -6264,7 +6264,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -6286,7 +6286,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -6308,7 +6308,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -6330,7 +6330,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -6352,7 +6352,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -6374,7 +6374,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -6396,7 +6396,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -6418,7 +6418,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -6440,7 +6440,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -6462,7 +6462,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -6484,7 +6484,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -6506,7 +6506,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -6528,7 +6528,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -6550,7 +6550,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -6572,7 +6572,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -6594,7 +6594,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -6616,7 +6616,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -6638,7 +6638,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -6660,7 +6660,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -6682,7 +6682,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -6704,7 +6704,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -6726,7 +6726,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -6748,7 +6748,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -6770,7 +6770,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -6792,7 +6792,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -6814,7 +6814,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -6836,7 +6836,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -6858,7 +6858,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -6880,7 +6880,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -6902,7 +6902,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -6926,7 +6926,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -6948,7 +6948,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -6970,7 +6970,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -6994,7 +6994,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -7016,7 +7016,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -7040,7 +7040,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -7062,7 +7062,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -7084,7 +7084,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -7106,7 +7106,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -7128,7 +7128,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -7150,7 +7150,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -7172,7 +7172,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -7196,7 +7196,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -7218,7 +7218,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -7240,7 +7240,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -7262,7 +7262,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -7284,7 +7284,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -7306,7 +7306,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -7328,7 +7328,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -7350,7 +7350,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -7372,7 +7372,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -7394,7 +7394,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -7416,7 +7416,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -7438,7 +7438,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -7460,7 +7460,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -7482,7 +7482,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -7504,7 +7504,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -7526,7 +7526,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -7548,7 +7548,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -7570,7 +7570,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -7592,7 +7592,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -7614,7 +7614,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -7636,7 +7636,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -7658,7 +7658,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -7680,7 +7680,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -7702,7 +7702,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -7724,7 +7724,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -7746,7 +7746,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -7768,7 +7768,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -7790,7 +7790,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -7812,7 +7812,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -7834,7 +7834,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -7856,7 +7856,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -7880,7 +7880,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -7904,7 +7904,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": GridMode.DIAMOND,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -7926,7 +7926,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -7948,7 +7948,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,
@@ -7970,7 +7970,7 @@
       "tags": ["flow", "practice"],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": GridMode.BOX,
       "metadata": {
         "source": "tka_dictionary",
         "migrated": true,

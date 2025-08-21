@@ -32,6 +32,7 @@ import {
   IPageImageExportServiceInterface,
   ISequenceCardExportIntegrationServiceInterface,
   IDataTransformationServiceInterface,
+  IStartPositionSelectionServiceInterface,
 } from "../interfaces/core-interfaces";
 import { ILetterQueryServiceInterface } from "../interfaces/codex-interfaces";
 
@@ -61,6 +62,7 @@ export async function registerCoreServices(
 
   // Register construct tab services
   container.registerSingletonClass(IStartPositionServiceInterface);
+  container.registerSingletonClass(IStartPositionSelectionServiceInterface);
 
   // Register rendering microservices (in dependency order)
   container.registerSingletonClass(ISvgConfigurationInterface);

@@ -10,7 +10,6 @@
     <div class="contact-grid">
       <!-- Contact Info & Social -->
       <div class="info-column">
-        <ContactInfo />
         <SocialLinks />
       </div>
 
@@ -34,10 +33,10 @@
   }
 
   .contact-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+    display: flex;
+    flex-direction: column;
     gap: var(--spacing-3xl);
-    align-items: start;
+    align-items: stretch;
   }
 
   .info-column {
@@ -61,7 +60,6 @@
     }
 
     .contact-grid {
-      grid-template-columns: 1fr;
       gap: var(--spacing-2xl);
     }
   }

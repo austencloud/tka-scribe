@@ -330,7 +330,7 @@ export class BeatRenderingService implements IBeatRenderingService {
     }
 
     // Draw grid background
-    this.drawGrid(ctx, pictograph.gridData?.gridMode || "diamond", size);
+    this.drawGrid(ctx, pictograph.gridData?.gridMode || GridMode.DIAMOND, size);
 
     // Draw props if visible
     if (pictograph.props) {
@@ -368,7 +368,7 @@ export class BeatRenderingService implements IBeatRenderingService {
     options: BeatRenderOptions
   ): Promise<void> {
     // Draw minimal grid
-    this.drawGrid(ctx, "diamond", size);
+    this.drawGrid(ctx, GridMode.DIAMOND, size);
 
     // Draw beat number if enabled
     if (options.addBeatNumbers && beatData.beatNumber > 0) {
@@ -413,7 +413,7 @@ export class BeatRenderingService implements IBeatRenderingService {
     _options: BeatRenderOptions
   ): Promise<void> {
     // Draw grid
-    this.drawGrid(ctx, "diamond", size);
+    this.drawGrid(ctx, GridMode.DIAMOND, size);
 
     // Draw center circle to indicate start position
     const centerX = size / 2;
@@ -437,7 +437,7 @@ export class BeatRenderingService implements IBeatRenderingService {
     ctx.strokeStyle = "#e5e7eb";
     ctx.lineWidth = 1;
 
-    if (gridMode === "diamond") {
+    if (gridMode === GridMode.DIAMOND) {
       // Draw diamond grid
       const centerX = size / 2;
       const centerY = size / 2;
@@ -579,8 +579,8 @@ export class BeatRenderingService implements IBeatRenderingService {
   ): void {
     // Draw both diamond and box grids with slight transparency
     ctx.globalAlpha = 0.5;
-    this.drawGrid(ctx, "diamond", size);
-    this.drawGrid(ctx, "box", size);
+    this.drawGrid(ctx, GridMode.DIAMOND, size);
+    this.drawGrid(ctx, GridMode.BOX, size);
     ctx.globalAlpha = 1.0;
   }
 

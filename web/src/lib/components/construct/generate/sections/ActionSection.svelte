@@ -10,6 +10,7 @@ Updated to convert config format and handle real generation
     DifficultyLevel,
     PropContinuity,
     GenerationMode,
+    LetterType,
   } from "$lib/domain/enums";
 
   interface Props {
@@ -34,22 +35,22 @@ Updated to convert config format and handle real generation
     const letterTypes: string[] = [];
     config.letterTypes.forEach((type) => {
       switch (type) {
-        case "TYPE1":
+        case LetterType.TYPE1:
           letterTypes.push("Dual-Shift");
           break;
-        case "TYPE2":
+        case LetterType.TYPE2:
           letterTypes.push("Shift");
           break;
-        case "TYPE3":
+        case LetterType.TYPE3:
           letterTypes.push("Cross-Shift");
           break;
-        case "TYPE4":
+        case LetterType.TYPE4:
           letterTypes.push("Dash");
           break;
-        case "TYPE5":
+        case LetterType.TYPE5:
           letterTypes.push("Dual-Dash");
           break;
-        case "TYPE6":
+        case LetterType.TYPE6:
           letterTypes.push("Static");
           break;
       }
@@ -75,9 +76,7 @@ Updated to convert config format and handle real generation
       mode: GenerationMode.FREEFORM, // Default to freeform mode
       length: config.length,
       gridMode:
-        config.gridMode.toLowerCase() === "diamond"
-          ? GridMode.DIAMOND
-          : GridMode.BOX,
+        config.gridMode === GridMode.DIAMOND ? GridMode.DIAMOND : GridMode.BOX,
       propType: "fan", // Default prop type
       difficulty: difficulty as DifficultyLevel,
       propContinuity:

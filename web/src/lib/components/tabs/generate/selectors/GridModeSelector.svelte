@@ -4,23 +4,22 @@ A compact control using segmented control for selecting between Diamond and Box 
 -->
 <script lang="ts">
   import IOSToggle from "../../../ui/IOSToggle.svelte";
-
-  type GridMode = "DIAMOND" | "BOX";
+  import { GridMode } from "$lib/domain";
 
   interface Props {
     initialMode?: GridMode;
     onvalueChanged?: (value: GridMode) => void;
   }
 
-  let { initialMode = "DIAMOND", onvalueChanged }: Props = $props();
+  let { initialMode = GridMode.DIAMOND, onvalueChanged }: Props = $props();
 
   // State
   let currentMode = $state(initialMode);
 
   // Options for the segmented control
   const gridOptions = [
-    { value: "DIAMOND", label: "Diamond", icon: "◆" },
-    { value: "BOX", label: "Box", icon: "⬜" },
+    { value: GridMode.DIAMOND, label: "Diamond", icon: "◆" },
+    { value: GridMode.BOX, label: "Box", icon: "⬜" },
   ];
 
   // Handle mode change
@@ -36,7 +35,7 @@ A compact control using segmented control for selecting between Diamond and Box 
   }
 
   export function resetToDefault() {
-    setValue("DIAMOND");
+    setValue(GridMode.DIAMOND);
   }
 </script>
 

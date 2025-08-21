@@ -104,7 +104,7 @@
 >
   <!-- Grid Background -->
   <div class="grid-background">
-    {#if pictographData?.gridMode === "diamond"}
+    {#if pictographData?.gridMode === GridMode.DIAMOND}
       <svg width={gridSize} height={gridSize} class="grid-svg">
         <!-- Diamond grid lines -->
         <path

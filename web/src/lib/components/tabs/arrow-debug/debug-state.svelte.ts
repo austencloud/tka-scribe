@@ -35,7 +35,7 @@ export function createDebugState() {
   let autoUpdate = $state(true);
 
   // Grid mode state (diamond/box toggle)
-  let gridMode = $state<"diamond" | "box">("diamond");
+  let gridMode = $state<GridMode>(GridMode.DIAMOND);
 
   let expandedSections = $state(
     new Set(["input_data", "location_calculation"])
@@ -143,12 +143,13 @@ export function createDebugState() {
   }
 
   // Set grid mode and update pictograph data
-  function setGridMode(mode: "diamond" | "box") {
+  function setGridMode(mode: GridMode) {
     gridMode = mode;
 
     // Update the selected pictograph's grid data if it exists
     if (selectedPictograph) {
-      const newGridMode = mode === "diamond" ? GridMode.DIAMOND : GridMode.BOX;
+      const newGridMode =
+        mode === GridMode.DIAMOND ? GridMode.DIAMOND : GridMode.BOX;
       selectedPictograph = createPictographData({
         ...selectedPictograph,
         gridData: createGridData({ gridMode: newGridMode }),
@@ -458,7 +459,7 @@ export function createDebugState() {
     get gridMode() {
       return gridMode;
     },
-    set gridMode(value: "diamond" | "box") {
+    set gridMode(value: GridMode) {
       setGridMode(value);
     },
 

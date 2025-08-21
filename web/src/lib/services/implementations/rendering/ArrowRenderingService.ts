@@ -185,11 +185,14 @@ export class ArrowRenderingService implements IArrowRenderingService {
     // Apply color transformation to the SVG
     const coloredSvgText = this.applyColorToSvg(
       originalSvgText,
-      arrowData.color
+      motionData.color
     );
 
+    // Extract just the inner SVG content (no scaling needed - arrows are already correctly sized)
+    const svgContent = this.extractSvgContent(coloredSvgText);
+
     return {
-      svgContent: coloredSvgText,
+      svgContent,
       viewBox,
       center,
     };
@@ -340,5 +343,17 @@ export class ArrowRenderingService implements IArrowRenderingService {
     path.setAttribute("class", "sophisticated-arrow");
 
     return path;
+  }
+
+  private extractSvgContent(svgText: string): string {
+    // Extract SVG content (everything inside the <svg> tags)
+    // Arrows are already correctly sized for 950x950 coordinate system
+    const svgContentMatch = svgText.match(/<svg[^>]*>(.*)<\/svg>/s);
+    if (!svgContentMatch) {
+      console.warn("Could not extract SVG content");
+      return svgText;
+    }
+
+    return svgContentMatch[1];
   }
 }

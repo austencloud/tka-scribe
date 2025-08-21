@@ -15,7 +15,7 @@ import type {
 } from "../../interfaces/export-interfaces";
 import type { ExportResult } from "../../interfaces/domain-types";
 import type { IPictographService } from "../../interfaces/pictograph-interfaces";
-import type { Page } from "$lib/domain/pageLayout";
+import type { Page } from "$lib/domain/pageLayoutTypes";
 
 export class ExportService implements IExportService {
   // pictographService reserved for future richer rendering; omitted to reduce lint noise

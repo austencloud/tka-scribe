@@ -18,9 +18,7 @@ export class StartPositionLoader {
   /**
    * Load start positions for a specific grid mode
    */
-  async loadStartPositions(
-    gridMode: "diamond" | "box"
-  ): Promise<PictographData[]> {
+  async loadStartPositions(gridMode: GridMode): Promise<PictographData[]> {
     const cacheKey = `start-positions-${gridMode}`;
 
     // Return cached result if available
@@ -52,7 +50,7 @@ export class StartPositionLoader {
    * Perform the actual loading operation
    */
   private async performLoad(
-    gridMode: "diamond" | "box",
+    gridMode: GridMode,
     _cacheKey: string
   ): Promise<PictographData[]> {
     console.log(
@@ -69,7 +67,7 @@ export class StartPositionLoader {
     try {
       // Convert grid mode string to GridMode enum
       const gridModeEnum =
-        gridMode === "diamond" ? GridMode.DIAMOND : GridMode.BOX;
+        gridMode === GridMode.DIAMOND ? GridMode.DIAMOND : GridMode.BOX;
       const positions =
         await this.startPositionService.getDefaultStartPositions(gridModeEnum);
 
@@ -97,8 +95,8 @@ export class StartPositionLoader {
     console.log("🔄 StartPositionLoader: Preloading all start positions");
 
     const [diamond, box] = await Promise.all([
-      this.loadStartPositions("diamond"),
-      this.loadStartPositions("box"),
+      this.loadStartPositions(GridMode.DIAMOND),
+      this.loadStartPositions(GridMode.BOX),
     ]);
 
     console.log("✅ StartPositionLoader: All start positions preloaded", {
@@ -121,7 +119,7 @@ export class StartPositionLoader {
   /**
    * Get cached positions without triggering a load
    */
-  getCachedPositions(gridMode: "diamond" | "box"): PictographData[] | null {
+  getCachedPositions(gridMode: GridMode): PictographData[] | null {
     const cacheKey = `start-positions-${gridMode}`;
     return this.cache.get(cacheKey) || null;
   }
@@ -129,7 +127,7 @@ export class StartPositionLoader {
   /**
    * Check if positions are currently loading
    */
-  isLoading(gridMode: "diamond" | "box"): boolean {
+  isLoading(gridMode: GridMode): boolean {
     const cacheKey = `start-positions-${gridMode}`;
     return this.loadingPromises.has(cacheKey);
   }

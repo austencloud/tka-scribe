@@ -16,7 +16,7 @@ import type {
   Rectangle,
   GridConfig,
   PaperSize,
-  Orientation,
+  PageOrientation,
   // PrintConfiguration, // Currently unused
   PageLayoutConfig,
   PageCreationOptions,
@@ -25,7 +25,7 @@ import type {
   LayoutValidationResult,
   GridCalculationOptions,
   DPIConfiguration,
-} from "../../domain/pageLayout";
+} from "../../domain/pageLayoutTypes";
 
 // ============================================================================
 // SEQUENCE REQUEST TYPES
@@ -104,7 +104,7 @@ export interface IPrintablePageLayoutService {
    */
   calculatePageDimensions(
     paperSize: PaperSize,
-    orientation: Orientation
+    orientation: PageOrientation
   ): PageDimensions;
 
   /**
@@ -131,7 +131,7 @@ export interface IPrintablePageLayoutService {
    */
   getPageSizeInPixels(
     paperSize: PaperSize,
-    orientation: Orientation,
+    orientation: PageOrientation,
     dpi?: number
   ): PageDimensions;
 

@@ -364,7 +364,7 @@ export class SequenceIndexService implements ISequenceIndexService {
       if (!word) continue; // Skip undefined entries
 
       const authors = ["TKA User", "Demo Author", "Expert User"];
-      const gridModes = ["diamond", "box"];
+      const gridModes = [GridMode.DIAMOND, GridMode.BOX];
       const difficulties = ["beginner", "intermediate", "advanced"];
 
       const author = authors[i % authors.length];

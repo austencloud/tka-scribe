@@ -14,7 +14,7 @@ All individual controls are evenly spaced throughout the container
   import SliceSizeSelector from "../../../tabs/generate/selectors/SliceSizeSelector.svelte";
   import CAPTypeSelector from "../../../tabs/generate/selectors/CAPTypeSelector.svelte";
   import type { GenerationConfig } from "../generateConfigState.svelte";
-  import { GenerationMode } from "$lib/domain";
+  import { GenerationMode, LetterType } from "$lib/domain";
 
   interface Props {
     config: GenerationConfig;
@@ -45,7 +45,7 @@ All individual controls are evenly spaced throughout the container
 
   <div class="setting-item">
     <GenerationModeToggle
-      initialMode={config.mode === "FREEFORM"
+      initialMode={config.mode === GenerationMode.FREEFORM
         ? GenerationMode.FREEFORM
         : GenerationMode.CIRCULAR}
     />

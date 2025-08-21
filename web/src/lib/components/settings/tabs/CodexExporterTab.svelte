@@ -18,7 +18,7 @@
   let redTurns = $state((settings.codexExporter?.redTurns as number) ?? 16);
   let blueTurns = $state((settings.codexExporter?.blueTurns as number) ?? 16);
   let gridMode = $state(
-    (settings.codexExporter?.gridMode as string) ?? "diamond"
+    (settings.codexExporter?.gridMode as string) ?? GridMode.DIAMOND
   );
   let generateAll = $state(
     (settings.codexExporter?.generateAll as boolean) ?? true
@@ -30,8 +30,8 @@
 
   // Options - matching desktop app
   const gridModeOptions = [
-    { value: "diamond", label: "Diamond" },
-    { value: "box", label: "Box" },
+    { value: GridMode.DIAMOND, label: "Diamond" },
+    { value: GridMode.BOX, label: "Box" },
   ];
 
   // Update handlers

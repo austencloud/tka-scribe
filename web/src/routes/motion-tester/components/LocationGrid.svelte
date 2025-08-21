@@ -5,14 +5,14 @@ Replaces dropdown with intuitive visual grid showing N/E/S/W positions.
 Much more intuitive than dropdown for spatial location selection.
 -->
 <script lang="ts">
-  import type { Location } from "$lib/domain/enums";
+  import { GridMode, type Location } from "$lib/domain/enums";
 
   interface Props {
     selectedLocation: string;
     onLocationChange: (location: Location) => void;
     label: string;
     color: string;
-    gridMode?: "diamond" | "box";
+    gridMode?: GridMode;
   }
 
   let {
@@ -20,35 +20,35 @@ Much more intuitive than dropdown for spatial location selection.
     onLocationChange,
     label,
     color,
-    gridMode = "diamond",
+    gridMode = GridMode.DIAMOND,
   }: Props = $props();
 
   // Enable beta positions (NW, NE, SW, SE) in box mode
   const locations = $derived([
     {
       id: "nw",
-      label: gridMode === "box" ? "NW" : "",
-      disabled: gridMode !== "box",
+      label: gridMode === GridMode.BOX ? "NW" : "",
+      disabled: gridMode !== GridMode.BOX,
     },
     { id: "n", label: "N", disabled: false },
     {
       id: "ne",
-      label: gridMode === "box" ? "NE" : "",
-      disabled: gridMode !== "box",
+      label: gridMode === GridMode.BOX ? "NE" : "",
+      disabled: gridMode !== GridMode.BOX,
     },
     { id: "w", label: "W", disabled: false },
     { id: "center", label: "●", disabled: true },
     { id: "e", label: "E", disabled: false },
     {
       id: "sw",
-      label: gridMode === "box" ? "SW" : "",
-      disabled: gridMode !== "box",
+      label: gridMode === GridMode.BOX ? "SW" : "",
+      disabled: gridMode !== GridMode.BOX,
     },
     { id: "s", label: "S", disabled: false },
     {
       id: "se",
-      label: gridMode === "box" ? "SE" : "",
-      disabled: gridMode !== "box",
+      label: gridMode === GridMode.BOX ? "SE" : "",
+      disabled: gridMode !== GridMode.BOX,
     },
   ]);
 

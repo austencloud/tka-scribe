@@ -18,7 +18,7 @@ export class ArrowQuadrantCalculator {
     const motionType = motion.motionType;
 
     // Apply sophisticated quadrant mapping based on grid mode and motion type
-    if (gridMode === "diamond") {
+    if (gridMode === GridMode.DIAMOND) {
       if (this.isShiftMotion(motionType)) {
         return this.diamondShiftQuadrantIndex(location);
       } else {
@@ -34,7 +34,7 @@ export class ArrowQuadrantCalculator {
     }
   }
 
-  private determineGridMode(motion: MotionData): "diamond" | "box" {
+  private determineGridMode(motion: MotionData): GridMode {
     /**
      * Determine grid mode (diamond/box) based on motion start/end locations.
      * Diagonal locations (NE, SE, SW, NW) indicate diamond mode.
@@ -53,10 +53,10 @@ export class ArrowQuadrantCalculator {
 
     // If either start or end is diagonal, it's diamond mode
     if (startIsDiagonal || endIsDiagonal) {
-      return "diamond";
+      return GridMode.DIAMOND;
     }
 
-    return "box";
+    return GridMode.BOX;
   }
 
   private isShiftMotion(motionType: MotionType): boolean {

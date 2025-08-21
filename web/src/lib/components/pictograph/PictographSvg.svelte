@@ -13,11 +13,13 @@ and leaves state management to the parent component.
     MotionColor,
   } from "$lib/domain";
   import { GridMode } from "$lib/domain/enums";
-  import { BetaPositioningService } from "$lib/services/implementations/positioning/BetaPositioningService";
+  import { BetaOffsetCalculator } from "$lib/services/implementations/positioning/BetaOffsetCalculator";
+  import { BetaPropDirectionCalculator } from "$lib/services/implementations/positioning/BetaPropDirectionCalculator";
+  import { endsWithBeta } from "$lib/utils/betaDetection";
 
-  import Arrow from "./Arrow.svelte";
-  import Grid from "./Grid.svelte";
-  import Prop from "./Prop.svelte";
+  import Arrow from "./ArrowSvg.svelte";
+  import Grid from "./GridSvg.svelte";
+  import PropSVG from "./PropSvg.svelte";
   import TKAGlyph from "./TKAGlyph.svelte";
 
   interface Props {
@@ -64,11 +66,111 @@ and leaves state management to the parent component.
     ariaLabel,
   }: Props = $props();
 
-  // Calculate beta offsets once for all props
-  const betaPositioningService = new BetaPositioningService();
-  const betaOffsets = pictographData
-    ? betaPositioningService.calculateBetaOffsets(pictographData)
-    : { blue: { x: 0, y: 0 }, red: { x: 0, y: 0 } };
+  // Calculate beta offsets once for all props using existing services
+  const calculateBetaOffsets = (pictographData: PictographData | null) => {
+    if (!pictographData) {
+      console.log("🔍 Beta offset calculation - no pictograph data");
+      return { blue: { x: 0, y: 0 }, red: { x: 0, y: 0 } };
+    }
+
+    console.log(
+      "🔍 Beta offset calculation - pictograph letter:",
+      pictographData.letter
+    );
+    console.log(
+      "🔍 Beta offset calculation - ends with beta:",
+      endsWithBeta(pictographData)
+    );
+
+    // Use proper letter-based beta detection
+    if (!endsWithBeta(pictographData)) {
+      console.log(
+        "🔍 Beta offset calculation - letter does not end with beta, no beta positioning needed"
+      );
+      return { blue: { x: 0, y: 0 }, red: { x: 0, y: 0 } };
+    }
+
+    console.log(
+      "🔍 Beta offset calculation - letter ends with beta, applying beta positioning"
+    );
+
+    // Additional check: both props should end at the same location for beta positioning
+    const blueMotion = pictographData.motions?.blue;
+    const redMotion = pictographData.motions?.red;
+
+    console.log(
+      "🔍 Beta offset calculation - blue end location:",
+      blueMotion?.endLocation
+    );
+    console.log(
+      "🔍 Beta offset calculation - red end location:",
+      redMotion?.endLocation
+    );
+
+    const propsAtSameLocation =
+      blueMotion?.endLocation === redMotion?.endLocation;
+    console.log(
+      "🔍 Beta offset calculation - props at same location:",
+      propsAtSameLocation
+    );
+
+    if (!propsAtSameLocation) {
+      console.log(
+        "🔍 Beta offset calculation - props end at different locations, no beta positioning needed"
+      );
+      return { blue: { x: 0, y: 0 }, red: { x: 0, y: 0 } };
+    }
+
+    const allProps = Object.values(pictographData.props || {});
+    const allMotions = pictographData.motions || {};
+
+    // Need at least 2 props for beta positioning
+    if (allProps.length < 2) {
+      return { blue: { x: 0, y: 0 }, red: { x: 0, y: 0 } };
+    }
+
+    try {
+      // Get motion data
+      const redMotion = allMotions.red;
+      const blueMotion = allMotions.blue;
+
+      if (!redMotion || !blueMotion) {
+        return { blue: { x: -25, y: 0 }, red: { x: 25, y: 0 } };
+      }
+
+      // Create separate direction calculators for each color to avoid confusion
+      const redDirectionCalculator = new BetaPropDirectionCalculator({
+        red: redMotion,
+        blue: blueMotion,
+      });
+
+      const blueDirectionCalculator = new BetaPropDirectionCalculator({
+        red: redMotion,
+        blue: blueMotion,
+      });
+
+      // Calculate directions based on motion data directly
+      // Use the direction calculator's internal logic but with specific motion data
+      const redDirection =
+        redDirectionCalculator.getDirectionForMotionData(redMotion);
+      const blueDirection =
+        blueDirectionCalculator.getDirectionForMotionData(blueMotion);
+
+      // Use existing offset calculator
+      const offsetCalculator = new BetaOffsetCalculator();
+      const offsets = offsetCalculator.calculateBetaSeparationOffsets(
+        blueDirection,
+        redDirection
+      );
+
+      return offsets;
+    } catch (error) {
+      // Fallback to simple separation
+      return { blue: { x: -25, y: 0 }, red: { x: 25, y: 0 } };
+    }
+  };
+
+  const betaOffsets = calculateBetaOffsets(pictographData);
 </script>
 
 <svg
@@ -85,7 +187,7 @@ and leaves state management to the parent component.
   {#if hasValidData}
     <!-- Grid (always rendered first) -->
     <Grid
-      gridMode={pictographData?.gridData?.gridMode || "diamond"}
+      gridMode={pictographData?.gridData?.gridMode || GridMode.DIAMOND}
       onLoaded={() => onComponentLoaded("grid")}
       onError={(error) => onComponentError("grid", error)}
     />
@@ -93,15 +195,16 @@ and leaves state management to the parent component.
     <!-- Props (rendered first so arrows appear on top) -->
     {#each propsToRender as { color, propData } (color)}
       {@const motionData = pictographData?.motions?.[color]}
-      {@const propBetaOffset =
-        color === "blue" ? betaOffsets.blue : betaOffsets.red}
-      <Prop
-        {propData}
-        {...motionData && { motionData }}
-        gridMode={pictographData?.gridData?.gridMode || GridMode.DIAMOND}
-        betaOffset={propBetaOffset}
-        {color}
-      />
+      {#if motionData}
+        {@const propBetaOffset =
+          motionData.color === "blue" ? betaOffsets.blue : betaOffsets.red}
+        <PropSVG
+          {propData}
+          {motionData}
+          gridMode={pictographData?.gridData?.gridMode || GridMode.DIAMOND}
+          betaOffset={propBetaOffset}
+        />
+      {/if}
     {/each}
 
     <!-- Arrows (rendered after props) -->

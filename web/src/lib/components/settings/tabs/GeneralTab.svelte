@@ -1,5 +1,6 @@
 <!-- GeneralTab.svelte - Compact general settings with fade system controls -->
 <script lang="ts">
+  import type { GridMode } from "$lib/domain";
   import SelectInput from "../SelectInput.svelte";
   import SettingCard from "../SettingCard.svelte";
   import TextInput from "../TextInput.svelte";
@@ -10,7 +11,7 @@
   interface AppSettings {
     userName?: string;
     autoSave?: boolean;
-    gridMode?: "diamond" | "box";
+    gridMode?: GridMode;
     workbenchColumns?: number;
     animationsEnabled?: boolean;
     developerMode?: boolean;
@@ -33,7 +34,7 @@
   // Local state for form values
   let userName = $state(settings.userName || "");
   let autoSave = $state(settings.autoSave ?? true);
-  let gridMode = $state(settings.gridMode || "diamond");
+  let gridMode = $state(settings.gridMode || GridMode.DIAMOND);
   let workbenchColumns = $state(settings.workbenchColumns || 5);
 
   // Animation settings (simplified)
@@ -44,8 +45,8 @@
 
   // Options
   const gridModeOptions = [
-    { value: "diamond", label: "Diamond" },
-    { value: "box", label: "Box" },
+    { value: GridMode.DIAMOND, label: "Diamond" },
+    { value: GridMode.BOX, label: "Box" },
   ];
 
   // Animation handlers (simplified)
@@ -90,7 +91,7 @@
   }
 
   function handleGridModeChange(value: string) {
-    if (value === "diamond" || value === "box") {
+    if (value === GridMode.DIAMOND || value === GridMode.BOX) {
       gridMode = value;
       onupdate?.({ key: "gridMode", value: gridMode });
     }

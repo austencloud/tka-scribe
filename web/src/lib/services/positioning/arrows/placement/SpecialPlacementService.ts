@@ -70,7 +70,9 @@ export class SpecialPlacementService implements ISpecialPlacementService {
 
     // Get grid mode (default to diamond)
     const gridMode =
-      pictographData.gridData?.gridMode || pictographData.gridMode || "diamond";
+      pictographData.gridData?.gridMode ||
+      pictographData.gridMode ||
+      GridMode.DIAMOND;
 
     // Generate turns tuple for lookup
     const turnsTuple = this.generateTurnsTuple(pictographData);

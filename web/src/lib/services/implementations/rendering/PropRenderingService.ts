@@ -12,6 +12,7 @@ import {
   GridMode as DomainGridMode,
   Orientation,
   MotionColor,
+  Location,
 } from "../../../domain/enums";
 import { DefaultPropPositioner } from "../../DefaultPropPositioner";
 import type { MotionData } from "../../interfaces/domain-types";
@@ -193,7 +194,7 @@ export class PropRenderingService implements IPropRenderingService {
   private calculatePropRotation(
     motionData: MotionData,
     location?: string,
-    gridMode: GridMode = GridMode.DIAMOND
+    gridMode: DomainGridMode = DomainGridMode.DIAMOND
   ): number {
     // Use PropRotAngleManager for consistent rotation calculation with legacy
     const endLocationStr =

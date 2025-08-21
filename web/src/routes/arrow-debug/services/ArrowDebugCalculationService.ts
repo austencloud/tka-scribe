@@ -254,7 +254,7 @@ export class ArrowDebugCalculationService {
       placementKey: "placeholder",
       turns: motion.turns || 0,
       motionType: motion.motionType || "",
-      gridMode: pictograph.gridMode || "diamond",
+      gridMode: pictograph.gridMode || GridMode.DIAMOND,
       adjustmentSource: "default_placement",
       rawPlacementData: {},
     };

@@ -4,7 +4,7 @@
    * Handles pictograph selection, arrow color selection, and debug settings
    */
 
-  import type { PictographData } from "$lib/domain";
+  import { GridMode, type PictographData } from "$lib/domain";
   import { MotionColor } from "$lib/domain/enums";
 
   interface Props {
@@ -19,7 +19,7 @@
     showLayer2Points: boolean;
     showAdjustmentVectors: boolean;
     autoUpdate: boolean;
-    gridMode: "diamond" | "box";
+    gridMode: GridMode;
     onPictographSelect: (pictograph: PictographData) => void;
     onArrowColorSelect: (color: MotionColor) => void;
     onStepByStepToggle: (enabled: boolean) => void;
@@ -27,7 +27,7 @@
     onVisualizationToggle: (setting: string, enabled: boolean) => void;
     onAutoUpdateToggle: (enabled: boolean) => void;
     onCalculatePositioning: () => void;
-    onGridModeChange: (mode: "diamond" | "box") => void;
+    onGridModeChange: (mode: GridMode) => void;
   }
 
   let {
@@ -103,14 +103,14 @@
     <h3>🔲 Grid Options</h3>
     <div class="grid-toggle">
       <button
-        class="grid-btn {gridMode === 'diamond' ? 'active' : ''}"
-        onclick={() => onGridModeChange("diamond")}
+        class="grid-btn {gridMode === GridMode.DIAMOND ? 'active' : ''}"
+        onclick={() => onGridModeChange(GridMode.DIAMOND)}
       >
         ◆ Diamond
       </button>
       <button
-        class="grid-btn {gridMode === 'box' ? 'active' : ''}"
-        onclick={() => onGridModeChange("box")}
+        class="grid-btn {gridMode === GridMode.BOX ? 'active' : ''}"
+        onclick={() => onGridModeChange(GridMode.BOX)}
       >
         ⬜ Box
       </button>

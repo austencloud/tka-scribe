@@ -62,10 +62,6 @@ REFACTORED: Now purely presentational, uses ArrowRenderingService for business l
       };
     }
 
-    // Final fallback: center position
-    console.warn(
-      `⚠️ Arrow.svelte: No position data available for ${arrowData.color}, using center fallback`
-    );
     return { x: 475.0, y: 475.0, rotation: 0 };
   });
 
@@ -87,10 +83,10 @@ REFACTORED: Now purely presentational, uses ArrowRenderingService for business l
 
       svgData = svgDataResult;
       loaded = true;
-      onLoaded?.(`${arrowData?.color}-arrow`);
+      onLoaded?.(`${motionData?.color}-arrow`);
     } catch (e) {
       error = `Failed to load arrow SVG: ${e}`;
-      onError?.(`${arrowData?.color}-arrow`, error);
+      onError?.(`${motionData?.color}-arrow`, error);
       // Still mark as loaded to prevent blocking
       loaded = true;
     }
@@ -106,9 +102,9 @@ REFACTORED: Now purely presentational, uses ArrowRenderingService for business l
 
 <!-- Arrow Group -->
 <g
-  class="arrow-group {arrowData?.color}-arrow"
+  class="arrow-group {motionData?.color}-arrow"
   class:loaded
-  data-arrow-color={arrowData?.color}
+  data-arrow-color={motionData?.color}
   data-motion-type={motionData?.motionType}
   data-location={arrowData?.location}
 >
@@ -132,7 +128,7 @@ REFACTORED: Now purely presentational, uses ArrowRenderingService for business l
     <!-- Loading state -->
     <circle
       r="8"
-      fill={arrowData?.color === MotionColor.BLUE ? "#2E3192" : "#ED1C24"}
+      fill={motionData?.color === MotionColor.BLUE ? "#2E3192" : "#ED1C24"}
       opacity="0.3"
     />
     <animate
@@ -153,18 +149,22 @@ REFACTORED: Now purely presentational, uses ArrowRenderingService for business l
         scale({shouldMirror() ? -1 : 1}, 1)
         translate({-svgData.center.x}, {-svgData.center.y})
       "
-      class="arrow-svg {arrowData?.color}-arrow-svg"
+      class="arrow-svg {motionData?.color}-arrow-svg"
       class:mirrored={shouldMirror}
       style:opacity={showArrow ? 1 : 0}
     >
-      {@html svgData.svgContent}
+      <image
+        href={svgData.imageSrc}
+        width={svgData.viewBox.width}
+        height={svgData.viewBox.height}
+      />
     </g>
   {:else}
     <!-- Hidden but loaded arrow (positioning ready but waiting for coordination) -->
     <g opacity="0" aria-hidden="true">
       <circle
         r="2"
-        fill={arrowData?.color === MotionColor.BLUE ? "#2E3192" : "#ED1C24"}
+        fill={motionData?.color === MotionColor.BLUE ? "#2E3192" : "#ED1C24"}
         opacity="0.1"
       />
     </g>

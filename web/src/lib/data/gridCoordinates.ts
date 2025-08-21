@@ -1,3 +1,5 @@
+import { GridMode } from "$lib/domain";
+
 /**
  * Grid coordinate data for pictograph rendering
  * This data defines the precise positioning points for arrows and props
@@ -19,7 +21,7 @@ export interface GridCoordinateData {
   center_point: string;
 }
 
-export const gridCoordinates: Record<"diamond" | "box", GridCoordinateData> = {
+export const gridCoordinates: Record<GridMode, GridCoordinateData> = {
   diamond: {
     hand_points: {
       normal: {
@@ -125,7 +127,7 @@ export function parseCoordinates(
 /**
  * Convert raw coordinate data into structured GridData format
  */
-export function createGridData(mode: "diamond" | "box"): GridData {
+export function createGridData(mode: GridMode): GridData {
   const modeData = gridCoordinates[mode];
 
   const parsePoints = (points: Record<string, string>) =>

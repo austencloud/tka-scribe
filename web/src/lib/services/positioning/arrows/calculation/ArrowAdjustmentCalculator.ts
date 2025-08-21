@@ -284,7 +284,7 @@ export class ArrowAdjustmentCalculator implements IArrowAdjustmentCalculator {
   private async calculateDefaultAdjustment(
     motionData: MotionData,
     pictographData: PictographData,
-    gridMode: string = "diamond"
+    gridMode: string = GridMode.DIAMOND
   ): Promise<Point> {
     /**
      * Calculate default adjustment - IDENTICAL to ArrowAdjustmentLookup.

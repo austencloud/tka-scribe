@@ -3,28 +3,15 @@ CAP Type Selector - Svelte Version
 Simple row of 4 toggleable buttons for selecting circular arrangement pattern types.
 -->
 <script lang="ts">
-  type CAPComponent = "ROTATED" | "MIRRORED" | "SWAPPED" | "COMPLEMENTARY";
-
-  // Legacy CAP types for backward compatibility
-  type CAPType =
-    | "STRICT_ROTATED"
-    | "STRICT_MIRRORED"
-    | "STRICT_SWAPPED"
-    | "STRICT_COMPLEMENTARY"
-    | "MIRRORED_SWAPPED"
-    | "SWAPPED_COMPLEMENTARY"
-    | "ROTATED_COMPLEMENTARY"
-    | "MIRRORED_COMPLEMENTARY"
-    | "ROTATED_SWAPPED"
-    | "MIRRORED_ROTATED"
-    | "MIRRORED_COMPLEMENTARY_ROTATED";
+  import { CAPType, CAPComponent } from "$lib/domain";
 
   interface Props {
     initialValue?: CAPType;
     onvalueChanged?: (value: CAPType) => void;
   }
 
-  let { initialValue = "STRICT_ROTATED", onvalueChanged }: Props = $props();
+  let { initialValue = CAPType.STRICT_ROTATED, onvalueChanged }: Props =
+    $props();
 
   // State - track which components are selected
   let selectedComponents = $state(new Set<CAPComponent>());
@@ -36,89 +23,108 @@ Simple row of 4 toggleable buttons for selecting circular arrangement pattern ty
     icon: string;
     color: string;
   }> = [
-    { component: "ROTATED", label: "Rotated", icon: "🔄", color: "#36c3ff" },
-    { component: "MIRRORED", label: "Mirrored", icon: "🪞", color: "#6F2DA8" },
-    { component: "SWAPPED", label: "Swapped", icon: "🔀", color: "#26e600" },
     {
-      component: "COMPLEMENTARY",
+      component: CAPComponent.ROTATED,
+      label: "Rotated",
+      icon: "🔄",
+      color: "#36c3ff",
+    },
+    {
+      component: CAPComponent.MIRRORED,
+      label: "Mirrored",
+      icon: "🪞",
+      color: "#6F2DA8",
+    },
+    {
+      component: CAPComponent.SWAPPED,
+      label: "Swapped",
+      icon: "🔀",
+      color: "#26e600",
+    },
+    {
+      component: CAPComponent.COMPLEMENTARY,
       label: "Complementary",
       icon: "🎨",
       color: "#eb7d00",
     },
   ];
 
-  // Convert legacy CAP type to component set
-  function capTypeToComponents(capType: CAPType): Set<CAPComponent> {
-    const components = new Set<CAPComponent>();
+  // Generate CAP type from selected components
+  function generateCAPType(components: Set<CAPComponent>): CAPType {
+    if (components.size === 0) return CAPType.STRICT_ROTATED;
 
-    if (capType.includes("ROTATED")) components.add("ROTATED");
-    if (capType.includes("MIRRORED")) components.add("MIRRORED");
-    if (capType.includes("SWAPPED")) components.add("SWAPPED");
-    if (capType.includes("COMPLEMENTARY")) components.add("COMPLEMENTARY");
-
-    // Handle strict types (single component)
-    if (capType === "STRICT_ROTATED") components.add("ROTATED");
-    if (capType === "STRICT_MIRRORED") components.add("MIRRORED");
-    if (capType === "STRICT_SWAPPED") components.add("SWAPPED");
-    if (capType === "STRICT_COMPLEMENTARY") components.add("COMPLEMENTARY");
-
-    return components;
-  }
-
-  // Convert component set to legacy CAP type
-  function componentsToCapType(components: Set<CAPComponent>): CAPType {
     const sorted = Array.from(components).sort();
 
     // Single components (strict)
     if (sorted.length === 1) {
       switch (sorted[0]) {
-        case "ROTATED":
-          return "STRICT_ROTATED";
-        case "MIRRORED":
-          return "STRICT_MIRRORED";
-        case "SWAPPED":
-          return "STRICT_SWAPPED";
-        case "COMPLEMENTARY":
-          return "STRICT_COMPLEMENTARY";
+        case CAPComponent.ROTATED:
+          return CAPType.STRICT_ROTATED;
+        case CAPComponent.MIRRORED:
+          return CAPType.STRICT_MIRRORED;
+        case CAPComponent.SWAPPED:
+          return CAPType.STRICT_SWAPPED;
+        case CAPComponent.COMPLEMENTARY:
+          return CAPType.STRICT_COMPLEMENTARY;
       }
     }
 
-    // Two components
+    // Two components - use alphabetical order for consistency
     if (sorted.length === 2) {
-      const key = sorted.join("_");
-      switch (key) {
-        case "MIRRORED_SWAPPED":
-          return "MIRRORED_SWAPPED";
-        case "COMPLEMENTARY_SWAPPED":
-          return "SWAPPED_COMPLEMENTARY";
-        case "COMPLEMENTARY_ROTATED":
-          return "ROTATED_COMPLEMENTARY";
-        case "COMPLEMENTARY_MIRRORED":
-          return "MIRRORED_COMPLEMENTARY";
-        case "ROTATED_SWAPPED":
-          return "ROTATED_SWAPPED";
-        case "MIRRORED_ROTATED":
-          return "MIRRORED_ROTATED";
-      }
+      const [first, second] = sorted;
+      if (
+        first === CAPComponent.COMPLEMENTARY &&
+        second === CAPComponent.MIRRORED
+      )
+        return CAPType.MIRRORED_COMPLEMENTARY;
+      if (
+        first === CAPComponent.COMPLEMENTARY &&
+        second === CAPComponent.ROTATED
+      )
+        return CAPType.ROTATED_COMPLEMENTARY;
+      if (
+        first === CAPComponent.COMPLEMENTARY &&
+        second === CAPComponent.SWAPPED
+      )
+        return CAPType.SWAPPED_COMPLEMENTARY;
+      if (first === CAPComponent.MIRRORED && second === CAPComponent.ROTATED)
+        return CAPType.MIRRORED_ROTATED;
+      if (first === CAPComponent.MIRRORED && second === CAPComponent.SWAPPED)
+        return CAPType.MIRRORED_SWAPPED;
+      if (first === CAPComponent.ROTATED && second === CAPComponent.SWAPPED)
+        return CAPType.ROTATED_SWAPPED;
     }
 
     // Three components
     if (
       sorted.length === 3 &&
-      sorted.includes("MIRRORED") &&
-      sorted.includes("COMPLEMENTARY") &&
-      sorted.includes("ROTATED")
+      sorted.includes(CAPComponent.MIRRORED) &&
+      sorted.includes(CAPComponent.COMPLEMENTARY) &&
+      sorted.includes(CAPComponent.ROTATED)
     ) {
-      return "MIRRORED_COMPLEMENTARY_ROTATED";
+      return CAPType.MIRRORED_COMPLEMENTARY_ROTATED;
     }
 
     // Default fallback
-    return "STRICT_ROTATED";
+    return CAPType.STRICT_ROTATED;
+  }
+
+  // Parse CAP type to extract components (for initialization)
+  function parseComponents(capType: CAPType): Set<CAPComponent> {
+    const components = new Set<CAPComponent>();
+
+    if (capType.includes("rotated")) components.add(CAPComponent.ROTATED);
+    if (capType.includes("mirrored")) components.add(CAPComponent.MIRRORED);
+    if (capType.includes("swapped")) components.add(CAPComponent.SWAPPED);
+    if (capType.includes("complementary"))
+      components.add(CAPComponent.COMPLEMENTARY);
+
+    return components;
   }
 
   // Initialize from legacy CAP type
   $effect(() => {
-    selectedComponents = capTypeToComponents(initialValue);
+    selectedComponents = parseComponents(initialValue);
   });
 
   // Handle component toggle
@@ -136,17 +142,17 @@ Simple row of 4 toggleable buttons for selecting circular arrangement pattern ty
     }
 
     selectedComponents = newComponents;
-    const capType = componentsToCapType(newComponents);
+    const capType = generateCAPType(newComponents);
     onvalueChanged?.(capType);
   }
 
   // Public methods
   export function setValue(value: CAPType) {
-    selectedComponents = capTypeToComponents(value);
+    selectedComponents = parseComponents(value);
   }
 
   export function getValue(): CAPType {
-    return componentsToCapType(selectedComponents);
+    return generateCAPType(selectedComponents);
   }
 </script>
 

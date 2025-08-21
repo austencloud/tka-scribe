@@ -112,7 +112,7 @@ export class StartPositionService implements IStartPositionService {
           endPosition: startPosition.metadata?.endPosition || "alpha1", // Extract from metadata
           pictographData: startPosition.pictographData,
           letter: startPosition.pictographData?.letter,
-          gridMode: "diamond", // Default
+          gridMode: GridMode.DIAMOND, // Default
           isStartPosition: true,
           // Include the full beat data for compatibility
           ...startPosition,
@@ -297,7 +297,9 @@ export class StartPositionService implements IStartPositionService {
       id: `start-pos-${key}-${index}`,
       gridData: createGridData({
         gridMode:
-          gridMode === "diamond" ? DomainGridMode.DIAMOND : DomainGridMode.BOX,
+          gridMode === GridMode.DIAMOND
+            ? DomainGridMode.DIAMOND
+            : DomainGridMode.BOX,
       }),
       arrows: { blue: blueArrow, red: redArrow },
       props: { blue: blueProp, red: redProp },

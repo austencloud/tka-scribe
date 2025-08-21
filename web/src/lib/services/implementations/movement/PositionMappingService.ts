@@ -183,7 +183,7 @@ export class PositionMappingService {
         return RotationDirection.CLOCKWISE;
       case "ccw":
         return RotationDirection.COUNTER_CLOCKWISE;
-      case "none":
+      case "noRotation":
         return RotationDirection.NO_ROTATION;
       default:
         throw new Error(`Unknown rotation direction: ${str}`);

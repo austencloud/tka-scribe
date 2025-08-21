@@ -42,6 +42,7 @@
   // CRITICAL FIX: Also watch the singleton sequence state for updates
   // This ensures we react to changes made by the coordination service
   import { sequenceStateService } from "$lib/services/SequenceStateService.svelte";
+  import { GridMode } from "$lib/domain";
 
   // Sync the component-scoped state with singleton state when it changes
   $effect(() => {
@@ -86,7 +87,7 @@
 
     return shouldShow;
   });
-  let gridMode = $derived(constructTabState?.gridMode || "diamond");
+  let gridMode = $derived(constructTabState?.gridMode || GridMode.DIAMOND);
   let settings = $derived(getSettings());
 
   // Transition functions that respect animation settings - same as main interface

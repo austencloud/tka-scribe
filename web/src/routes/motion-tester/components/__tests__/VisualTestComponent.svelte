@@ -9,7 +9,7 @@
   import { resolve } from "$lib/services/bootstrap";
   import { IAnimatedPictographDataServiceInterface } from "$lib/services/di/interfaces/motion-tester-interfaces";
   import Pictograph from "$lib/components/pictograph/Pictograph.svelte";
-  import type { PictographData } from "$lib/domain";
+  import { GridMode, type PictographData } from "$lib/domain";
 
   // Resolve service
   const pictographDataService = resolve(
@@ -20,7 +20,7 @@
   const testConfigs = [
     {
       name: "Basic Pro Motion",
-      gridType: "diamond",
+      gridMode: GridMode.DIAMOND,
       blueMotionParams: {
         motionType: "pro",
         startLocation: "n",
@@ -42,7 +42,7 @@
     },
     {
       name: "Float Motion",
-      gridType: "box",
+      gridMode: GridMode.BOX,
       blueMotionParams: {
         motionType: "float",
         startLocation: "ne",
@@ -64,7 +64,7 @@
     },
     {
       name: "Dash Motion",
-      gridType: "diamond",
+      gridMode: GridMode.DIAMOND,
       blueMotionParams: {
         motionType: "dash",
         startLocation: "n",
@@ -86,7 +86,7 @@
     },
     {
       name: "Static Motion",
-      gridType: "box",
+      gridMode: GridMode.BOX,
       blueMotionParams: {
         motionType: "static",
         startLocation: "w",
@@ -120,7 +120,7 @@
       testConfigs.map(async (config) => {
         try {
           const mockState = {
-            gridType: config.gridType,
+            gridMode: config.gridMode,
             blueMotionParams: config.blueMotionParams,
             redMotionParams: config.redMotionParams,
             animationState: { progress: 0.5 },
@@ -172,7 +172,7 @@
           <div class="config-details">
             <h4>Configuration:</h4>
             <ul>
-              <li><strong>Grid:</strong> {result.config.gridType}</li>
+              <li><strong>Grid:</strong> {result.config.gridMode}</li>
               <li>
                 <strong>Blue Motion:</strong>
                 {result.config.blueMotionParams.motionType}

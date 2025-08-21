@@ -6,7 +6,7 @@
  */
 
 import type { MotionData, PropData } from "$lib/domain";
-import { Location, MotionType } from "$lib/domain/enums";
+import { Location, MotionType, GridMode } from "$lib/domain/enums";
 
 // Direction constants
 export const UP = "up";
@@ -47,8 +47,8 @@ export const BLUE = "blue";
 export type Color = typeof RED | typeof BLUE;
 
 // Grid mode constants kept local (could import GridMode if needed)
-const DIAMOND = "diamond";
-const BOX = "box";
+const DIAMOND = GridMode.DIAMOND;
+const BOX = GridMode.BOX;
 
 export class BetaPropDirectionCalculator {
   // Diamond grid maps for static/dash motions
@@ -167,17 +167,28 @@ export class BetaPropDirectionCalculator {
       return null;
     }
 
+    return this.getDirectionForMotionData(motionData);
+  }
+
+  /**
+   * Get direction based on motion data directly (bypasses prop matching)
+   */
+  getDirectionForMotionData(motionData: MotionData): Direction | null {
+    if (!motionData) {
+      return null;
+    }
+
     // Handle shift motions (pro, anti, float)
     if (
       [MotionType.PRO, MotionType.ANTI, MotionType.FLOAT].includes(
         motionData.motionType
       )
     ) {
-      return this.handleShiftMotion(prop, motionData);
+      return this.handleShiftMotionForData(motionData);
     }
 
     // Handle static/dash motions
-    return this.handleStaticDashMotion(prop, motionData);
+    return this.handleStaticDashMotionForData(motionData);
   }
 
   /**
@@ -187,6 +198,13 @@ export class BetaPropDirectionCalculator {
     _prop: PropData,
     motionData: MotionData
   ): Direction | null {
+    return this.handleShiftMotionForData(motionData);
+  }
+
+  /**
+   * Handle shift motion direction calculation for motion data directly
+   */
+  private handleShiftMotionForData(motionData: MotionData): Direction | null {
     const isRadial = this.endsWithRadialOrientation();
     const startLocation =
       (
@@ -223,7 +241,16 @@ export class BetaPropDirectionCalculator {
    * Handle static/dash motion direction calculation
    */
   private handleStaticDashMotion(
-    prop: PropData,
+    _prop: PropData,
+    motionData: MotionData
+  ): Direction | null {
+    return this.handleStaticDashMotionForData(motionData);
+  }
+
+  /**
+   * Handle static/dash motion direction calculation for motion data directly
+   */
+  private handleStaticDashMotionForData(
     motionData: MotionData
   ): Direction | null {
     const location = motionData.endLocation as Loc;

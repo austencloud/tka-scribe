@@ -364,7 +364,7 @@ export class SequenceService implements ISequenceService {
       author: (meta.author as string) || "Unknown",
       level: (meta.level as number) || 1,
       date_added: new Date((meta.date_added as string | number) || Date.now()),
-      gridMode: (meta.gridMode as string) || "diamond",
+      gridMode: (meta.gridMode as string) || GridMode.DIAMOND,
       propType: (meta.propType as string) || "unknown",
       is_favorite: (meta.is_favorite as boolean) || false,
       is_circular: (meta.is_circular as boolean) || false,

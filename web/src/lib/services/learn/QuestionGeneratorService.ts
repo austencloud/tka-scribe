@@ -72,7 +72,7 @@ export class QuestionGeneratorService {
       letter: correctLetter,
       startPosition: "s",
       endPosition: "n",
-      gridMode: "diamond",
+      gridMode: GridMode.DIAMOND,
     };
 
     // Generate wrong letter options
@@ -118,7 +118,7 @@ export class QuestionGeneratorService {
       letter: correctLetter,
       startPosition: "s",
       endPosition: "n",
-      gridMode: "diamond",
+      gridMode: GridMode.DIAMOND,
     };
 
     // Generate wrong pictographs
@@ -161,7 +161,7 @@ export class QuestionGeneratorService {
       letter: "A",
       startPosition: "s",
       endPosition: "e",
-      gridMode: "diamond",
+      gridMode: GridMode.DIAMOND,
     };
 
     // Mock correct next pictograph (startPosition matches endPosition of initial)
@@ -169,7 +169,7 @@ export class QuestionGeneratorService {
       letter: "B",
       startPosition: "e",
       endPosition: "n",
-      gridMode: "diamond",
+      gridMode: GridMode.DIAMOND,
     };
 
     // Generate wrong next pictographs
@@ -178,19 +178,19 @@ export class QuestionGeneratorService {
         letter: "C",
         startPosition: "n",
         endPosition: "w",
-        gridMode: "diamond",
+        gridMode: GridMode.DIAMOND,
       },
       {
         letter: "D",
         startPosition: "w",
         endPosition: "s",
-        gridMode: "diamond",
+        gridMode: GridMode.DIAMOND,
       },
       {
         letter: "E",
         startPosition: "s",
         endPosition: "n",
-        gridMode: "diamond",
+        gridMode: GridMode.DIAMOND,
       },
     ];
 
@@ -247,7 +247,7 @@ export class QuestionGeneratorService {
       letter,
       startPosition: this.getRandomPosition(),
       endPosition: this.getRandomPosition(),
-      gridMode: "diamond",
+      gridMode: GridMode.DIAMOND,
     }));
   }
 

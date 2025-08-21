@@ -19,7 +19,7 @@ describe("OptionPickerSection", () => {
       letter: "A",
       endPosition: "beta1",
       gridData: {
-        gridMode: "diamond",
+        gridMode: GridMode.DIAMOND,
         center_x: 475,
         center_y: 475,
         radius: 400,
@@ -38,7 +38,7 @@ describe("OptionPickerSection", () => {
       letter: "B",
       endPosition: "beta2",
       gridData: {
-        gridMode: "diamond",
+        gridMode: GridMode.DIAMOND,
         center_x: 475,
         center_y: 475,
         radius: 400,

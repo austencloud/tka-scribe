@@ -100,6 +100,7 @@ export class AnimationControlService implements IAnimationControlService {
       rotationDirection: params.rotationDirection as RotationDirection,
       turns: params.turns,
       isVisible: true, // ✅ Add required field for MotionData
+      color: MotionColor.BLUE, // Default color for motion tester
     };
   }
 

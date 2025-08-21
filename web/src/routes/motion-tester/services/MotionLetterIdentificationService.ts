@@ -1,6 +1,6 @@
 /**
  * Motion Letter Identification Service
- * 
+ *
  * Reverse-lookup TKA letters from motion parameters.
  * Takes current motion tester parameters and identifies the corresponding TKA letter.
  */
@@ -18,12 +18,14 @@ export interface IMotionLetterIdentificationService {
   identifyLetter(
     blueParams: MotionTestParams,
     redParams: MotionTestParams,
-    gridType: "diamond" | "box"
+    gridMode: GridMode
   ): LetterIdentificationResult;
   getAvailableLetters(): string[];
 }
 
-export class MotionLetterIdentificationService implements IMotionLetterIdentificationService {
+export class MotionLetterIdentificationService
+  implements IMotionLetterIdentificationService
+{
   private letterMappings: Record<string, any> = {};
   private isInitialized = false;
 
@@ -37,21 +39,29 @@ export class MotionLetterIdentificationService implements IMotionLetterIdentific
   private async initializeLetterMappings() {
     try {
       // Load letter mappings from the configuration file
-      const response = await fetch('/config/codex/letter-mappings.json');
+      const response = await fetch("/config/codex/letter-mappings.json");
       if (!response.ok) {
-        throw new Error(`Failed to load letter mappings: ${response.statusText}`);
+        throw new Error(
+          `Failed to load letter mappings: ${response.statusText}`
+        );
       }
-      
+
       const config = await response.json();
       this.letterMappings = config.letters || {};
       this.isInitialized = true;
-      
-      console.log('✅ MotionLetterIdentificationService: Letter mappings loaded', {
-        letterCount: Object.keys(this.letterMappings).length,
-        availableLetters: Object.keys(this.letterMappings).slice(0, 10) // Show first 10
-      });
+
+      console.log(
+        "✅ MotionLetterIdentificationService: Letter mappings loaded",
+        {
+          letterCount: Object.keys(this.letterMappings).length,
+          availableLetters: Object.keys(this.letterMappings).slice(0, 10), // Show first 10
+        }
+      );
     } catch (error) {
-      console.error('❌ MotionLetterIdentificationService: Failed to load letter mappings:', error);
+      console.error(
+        "❌ MotionLetterIdentificationService: Failed to load letter mappings:",
+        error
+      );
       this.letterMappings = {};
       this.isInitialized = true; // Set to true to prevent infinite loading
     }
@@ -63,56 +73,72 @@ export class MotionLetterIdentificationService implements IMotionLetterIdentific
   identifyLetter(
     blueParams: MotionTestParams,
     redParams: MotionTestParams,
-    gridType: "diamond" | "box"
+    gridMode: GridMode
   ): LetterIdentificationResult {
     if (!this.isInitialized) {
       return {
         letter: null,
         confidence: "none",
         matchedParameters: [],
-        missingParameters: ["Service not initialized"]
+        missingParameters: ["Service not initialized"],
       };
     }
 
-    console.log('🔍 [LETTER ID] Identifying letter for motion parameters:', {
+    console.log("🔍 [LETTER ID] Identifying letter for motion parameters:", {
       blue: blueParams,
       red: redParams,
-      gridType
+      gridMode,
     });
 
     // Convert motion parameters to the format used in letter mappings
-    const motionSignature = this.createMotionSignature(blueParams, redParams, gridType);
-    
-    console.log('🔍 [LETTER ID] Created motion signature:', motionSignature);
+    const motionSignature = this.createMotionSignature(
+      blueParams,
+      redParams,
+      gridMode
+    );
+
+    console.log("🔍 [LETTER ID] Created motion signature:", motionSignature);
 
     // Find matching letter
     let bestMatch: LetterIdentificationResult = {
       letter: null,
       confidence: "none",
       matchedParameters: [],
-      missingParameters: []
+      missingParameters: [],
     };
 
     for (const [letter, mapping] of Object.entries(this.letterMappings)) {
-      const matchResult = this.compareMotionSignature(motionSignature, mapping, letter);
-      
+      const matchResult = this.compareMotionSignature(
+        motionSignature,
+        mapping,
+        letter
+      );
+
       if (matchResult.confidence === "exact") {
         console.log(`✅ [LETTER ID] Exact match found: ${letter}`);
         return matchResult;
       }
-      
-      if (matchResult.confidence === "partial" && bestMatch.confidence !== "exact") {
-        if (bestMatch.confidence === "none" || 
-            matchResult.matchedParameters.length > bestMatch.matchedParameters.length) {
+
+      if (
+        matchResult.confidence === "partial" &&
+        bestMatch.confidence !== "exact"
+      ) {
+        if (
+          bestMatch.confidence === "none" ||
+          matchResult.matchedParameters.length >
+            bestMatch.matchedParameters.length
+        ) {
           bestMatch = matchResult;
         }
       }
     }
 
     if (bestMatch.letter) {
-      console.log(`🔍 [LETTER ID] Best partial match: ${bestMatch.letter} (${bestMatch.matchedParameters.length} matches)`);
+      console.log(
+        `🔍 [LETTER ID] Best partial match: ${bestMatch.letter} (${bestMatch.matchedParameters.length} matches)`
+      );
     } else {
-      console.log('❌ [LETTER ID] No matching letter found');
+      console.log("❌ [LETTER ID] No matching letter found");
     }
 
     return bestMatch;
@@ -124,11 +150,19 @@ export class MotionLetterIdentificationService implements IMotionLetterIdentific
   private createMotionSignature(
     blueParams: MotionTestParams,
     redParams: MotionTestParams,
-    gridType: "diamond" | "box"
+    gridMode: GridMode
   ) {
     // Determine start and end positions based on motion parameters
-    const startPosition = this.determineStartPosition(blueParams, redParams, gridType);
-    const endPosition = this.determineEndPosition(blueParams, redParams, gridType);
+    const startPosition = this.determineStartPosition(
+      blueParams,
+      redParams,
+      gridMode
+    );
+    const endPosition = this.determineEndPosition(
+      blueParams,
+      redParams,
+      gridMode
+    );
 
     return {
       startPosition,
@@ -152,51 +186,51 @@ export class MotionLetterIdentificationService implements IMotionLetterIdentific
   private determineStartPosition(
     blueParams: MotionTestParams,
     redParams: MotionTestParams,
-    gridType: "diamond" | "box"
+    gridMode: GridMode
   ): string {
     // This is a simplified position determination
     // In a full implementation, this would use the same logic as the pictograph generation
     const blueStart = blueParams.startLocation.toLowerCase();
     const redStart = redParams.startLocation.toLowerCase();
-    
+
     // Map location combinations to positions
     const locationToPosition: Record<string, string> = {
-      's,n': 'alpha1',
-      'sw,ne': 'alpha2',
-      'w,e': 'alpha3',
-      'nw,se': 'alpha4',
-      'n,s': 'alpha5',
-      'ne,sw': 'alpha6',
-      'e,w': 'alpha7',
-      'se,nw': 'alpha8',
-      'n,n': 'beta1',
-      'ne,ne': 'beta2',
-      'e,e': 'beta3',
-      'se,se': 'beta4',
-      's,s': 'beta5',
-      'sw,sw': 'beta6',
-      'w,w': 'beta7',
-      'nw,nw': 'beta8',
-      'w,n': 'gamma1',
-      'nw,ne': 'gamma2',
-      'n,e': 'gamma3',
-      'ne,se': 'gamma4',
-      'e,s': 'gamma5',
-      'se,sw': 'gamma6',
-      's,w': 'gamma7',
-      'sw,nw': 'gamma8',
-      'e,n': 'gamma9',
-      'se,ne': 'gamma10',
-      's,e': 'gamma11',
-      'sw,se': 'gamma12',
-      'w,s': 'gamma13',
-      'nw,sw': 'gamma14',
-      'n,w': 'gamma15',
-      'ne,nw': 'gamma16',
+      "s,n": "alpha1",
+      "sw,ne": "alpha2",
+      "w,e": "alpha3",
+      "nw,se": "alpha4",
+      "n,s": "alpha5",
+      "ne,sw": "alpha6",
+      "e,w": "alpha7",
+      "se,nw": "alpha8",
+      "n,n": "beta1",
+      "ne,ne": "beta2",
+      "e,e": "beta3",
+      "se,se": "beta4",
+      "s,s": "beta5",
+      "sw,sw": "beta6",
+      "w,w": "beta7",
+      "nw,nw": "beta8",
+      "w,n": "gamma1",
+      "nw,ne": "gamma2",
+      "n,e": "gamma3",
+      "ne,se": "gamma4",
+      "e,s": "gamma5",
+      "se,sw": "gamma6",
+      "s,w": "gamma7",
+      "sw,nw": "gamma8",
+      "e,n": "gamma9",
+      "se,ne": "gamma10",
+      "s,e": "gamma11",
+      "sw,se": "gamma12",
+      "w,s": "gamma13",
+      "nw,sw": "gamma14",
+      "n,w": "gamma15",
+      "ne,nw": "gamma16",
     };
 
     const key = `${blueStart},${redStart}`;
-    return locationToPosition[key] || 'alpha1'; // Default fallback
+    return locationToPosition[key] || "alpha1"; // Default fallback
   }
 
   /**
@@ -205,49 +239,49 @@ export class MotionLetterIdentificationService implements IMotionLetterIdentific
   private determineEndPosition(
     blueParams: MotionTestParams,
     redParams: MotionTestParams,
-    gridType: "diamond" | "box"
+    gridMode: GridMode
   ): string {
     const blueEnd = blueParams.endLocation.toLowerCase();
     const redEnd = redParams.endLocation.toLowerCase();
-    
+
     // Map location combinations to positions
     const locationToPosition: Record<string, string> = {
-      's,n': 'alpha1',
-      'sw,ne': 'alpha2',
-      'w,e': 'alpha3',
-      'nw,se': 'alpha4',
-      'n,s': 'alpha5',
-      'ne,sw': 'alpha6',
-      'e,w': 'alpha7',
-      'se,nw': 'alpha8',
-      'n,n': 'beta1',
-      'ne,ne': 'beta2',
-      'e,e': 'beta3',
-      'se,se': 'beta4',
-      's,s': 'beta5',
-      'sw,sw': 'beta6',
-      'w,w': 'beta7',
-      'nw,nw': 'beta8',
-      'w,n': 'gamma1',
-      'nw,ne': 'gamma2',
-      'n,e': 'gamma3',
-      'ne,se': 'gamma4',
-      'e,s': 'gamma5',
-      'se,sw': 'gamma6',
-      's,w': 'gamma7',
-      'sw,nw': 'gamma8',
-      'e,n': 'gamma9',
-      'se,ne': 'gamma10',
-      's,e': 'gamma11',
-      'sw,se': 'gamma12',
-      'w,s': 'gamma13',
-      'nw,sw': 'gamma14',
-      'n,w': 'gamma15',
-      'ne,nw': 'gamma16',
+      "s,n": "alpha1",
+      "sw,ne": "alpha2",
+      "w,e": "alpha3",
+      "nw,se": "alpha4",
+      "n,s": "alpha5",
+      "ne,sw": "alpha6",
+      "e,w": "alpha7",
+      "se,nw": "alpha8",
+      "n,n": "beta1",
+      "ne,ne": "beta2",
+      "e,e": "beta3",
+      "se,se": "beta4",
+      "s,s": "beta5",
+      "sw,sw": "beta6",
+      "w,w": "beta7",
+      "nw,nw": "beta8",
+      "w,n": "gamma1",
+      "nw,ne": "gamma2",
+      "n,e": "gamma3",
+      "ne,se": "gamma4",
+      "e,s": "gamma5",
+      "se,sw": "gamma6",
+      "s,w": "gamma7",
+      "sw,nw": "gamma8",
+      "e,n": "gamma9",
+      "se,ne": "gamma10",
+      "s,e": "gamma11",
+      "sw,se": "gamma12",
+      "w,s": "gamma13",
+      "nw,sw": "gamma14",
+      "n,w": "gamma15",
+      "ne,nw": "gamma16",
     };
 
     const key = `${blueEnd},${redEnd}`;
-    return locationToPosition[key] || 'alpha3'; // Default fallback
+    return locationToPosition[key] || "alpha3"; // Default fallback
   }
 
   /**
@@ -257,11 +291,11 @@ export class MotionLetterIdentificationService implements IMotionLetterIdentific
     const normalized = motionType.toLowerCase();
     // Map motion types to letter mapping format
     const motionMap: Record<string, string> = {
-      'pro': 'pro',
-      'anti': 'anti', 
-      'float': 'float',
-      'dash': 'dash',
-      'static': 'static'
+      pro: "pro",
+      anti: "anti",
+      float: "float",
+      dash: "dash",
+      static: "static",
     };
     return motionMap[normalized] || normalized;
   }
@@ -279,21 +313,23 @@ export class MotionLetterIdentificationService implements IMotionLetterIdentific
 
     // Check core parameters
     const coreParams = [
-      { key: 'startPosition', signatureKey: 'startPosition' },
-      { key: 'endPosition', signatureKey: 'endPosition' },
-      { key: 'blueMotion', signatureKey: 'blueMotion' },
-      { key: 'redMotion', signatureKey: 'redMotion' }
+      { key: "startPosition", signatureKey: "startPosition" },
+      { key: "endPosition", signatureKey: "endPosition" },
+      { key: "blueMotion", signatureKey: "blueMotion" },
+      { key: "redMotion", signatureKey: "redMotion" },
     ];
 
     for (const param of coreParams) {
       const mappingValue = mapping[param.key];
       const signatureValue = signature[param.signatureKey];
-      
+
       if (mappingValue && signatureValue) {
         if (mappingValue.toLowerCase() === signatureValue.toLowerCase()) {
           matchedParameters.push(param.key);
         } else {
-          missingParameters.push(`${param.key}: expected ${mappingValue}, got ${signatureValue}`);
+          missingParameters.push(
+            `${param.key}: expected ${mappingValue}, got ${signatureValue}`
+          );
         }
       } else if (mappingValue) {
         missingParameters.push(`${param.key}: missing in signature`);
@@ -302,7 +338,7 @@ export class MotionLetterIdentificationService implements IMotionLetterIdentific
 
     // Determine confidence
     let confidence: "exact" | "partial" | "none" = "none";
-    
+
     if (missingParameters.length === 0 && matchedParameters.length >= 4) {
       confidence = "exact";
     } else if (matchedParameters.length >= 2) {
@@ -313,7 +349,7 @@ export class MotionLetterIdentificationService implements IMotionLetterIdentific
       letter: confidence !== "none" ? letter : null,
       confidence,
       matchedParameters,
-      missingParameters
+      missingParameters,
     };
   }
 

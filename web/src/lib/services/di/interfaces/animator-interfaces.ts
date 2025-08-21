@@ -198,8 +198,10 @@ export interface ICanvasRenderer {
 /**
  * Interface for SVG generator
  */
+import { GridMode } from "$lib/domain";
+
 export interface ISVGGenerator {
-  generateGridSvg(gridType?: "diamond" | "box"): string;
+  generateGridSvg(gridMode?: GridMode): string;
   generateBlueStaffSvg(): string;
   generateRedStaffSvg(): string;
 }

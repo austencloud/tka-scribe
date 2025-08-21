@@ -14,7 +14,7 @@ import type {
   Rectangle,
   GridConfig,
   PaperSize,
-  Orientation,
+  PageOrientation,
   LayoutCalculationRequest,
   LayoutCalculationResult,
   LayoutValidationResult,
@@ -24,7 +24,7 @@ import type {
   GridCalculationOptions,
   DPIConfiguration,
   PageLayoutConfig,
-} from "../../../domain/pageLayout";
+} from "../../../domain/pageLayoutTypes";
 
 export class PrintablePageLayoutService implements IPrintablePageLayoutService {
   private readonly paperSizes = {
@@ -49,7 +49,7 @@ export class PrintablePageLayoutService implements IPrintablePageLayoutService {
 
   calculatePageDimensions(
     paperSize: PaperSize,
-    orientation: Orientation
+    orientation: PageOrientation
   ): PageDimensions {
     const dimensions = this.paperSizes[paperSize];
 
@@ -181,7 +181,7 @@ export class PrintablePageLayoutService implements IPrintablePageLayoutService {
 
   getPageSizeInPixels(
     paperSize: PaperSize,
-    orientation: Orientation,
+    orientation: PageOrientation,
     dpi: number = this.dpiConfig.screenDPI
   ): PageDimensions {
     const pointDimensions = this.calculatePageDimensions(

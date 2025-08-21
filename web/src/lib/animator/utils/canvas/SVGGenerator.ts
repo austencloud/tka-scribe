@@ -1,3 +1,5 @@
+import { GridMode } from "$lib/domain";
+
 /**
  * SVG Generator for creating prop staff images and grid
  * Based on the exact implementation from standalone_animator.html
@@ -6,10 +8,10 @@
 export class SVGGenerator {
   /**
    * Generate grid SVG exactly as in standalone_animator.html
-   * @param gridType - Type of grid to generate ('diamond' or 'box')
+   * @param gridMode - Type of grid to generate (GridMode.DIAMOND or GridMode.BOX)
    */
-  static generateGridSvg(gridType: "diamond" | "box" = "diamond"): string {
-    if (gridType === "box") {
+  static generateGridSvg(gridMode: GridMode = GridMode.DIAMOND): string {
+    if (gridMode === GridMode.BOX) {
       return `<?xml version="1.0" encoding="utf-8"?>
 <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 	 viewBox="0 0 950 950" style="enable-background:new 0 0 950 950;" xml:space="preserve">

@@ -4,23 +4,23 @@ Toggle between random and continuous prop behavior using modern segmented contro
 -->
 <script lang="ts">
   import IOSToggle from "../../../ui/IOSToggle.svelte";
-
-  type PropContinuity = "RANDOM" | "CONTINUOUS";
+  import { PropContinuity } from "$lib/domain";
 
   interface Props {
     initialValue?: PropContinuity;
     onvalueChanged?: (value: PropContinuity) => void;
   }
 
-  let { initialValue = "CONTINUOUS", onvalueChanged }: Props = $props();
+  let { initialValue = PropContinuity.CONTINUOUS, onvalueChanged }: Props =
+    $props();
 
   // State
   let currentValue = $state(initialValue);
 
   // Options for the segmented control
   const continuityOptions = [
-    { value: "RANDOM", label: "Random", icon: "🎲" },
-    { value: "CONTINUOUS", label: "Continuous", icon: "🔗" },
+    { value: PropContinuity.RANDOM, label: "Random", icon: "🎲" },
+    { value: PropContinuity.CONTINUOUS, label: "Continuous", icon: "🔗" },
   ];
 
   // Handle value change

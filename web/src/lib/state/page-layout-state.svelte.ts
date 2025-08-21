@@ -14,11 +14,11 @@ import type {
   PageLayoutConfig,
   PageCreationOptions,
   PaperSize,
-  Orientation,
+  PageOrientation,
   PrintConfiguration,
   GridCalculationOptions,
   LayoutCalculationResult,
-} from "$domain/pageLayout";
+} from "$lib/domain/pageLayoutTypes";
 import type { SequenceData } from "$services/interfaces/domain-types";
 
 export interface PageLayoutState {
@@ -31,7 +31,7 @@ export interface PageLayoutState {
 
   // Layout configuration
   readonly paperSize: PaperSize;
-  readonly orientation: Orientation;
+  readonly orientation: PageOrientation;
   readonly sequencesPerPage: number;
   readonly enableOptimization: boolean;
   readonly showPageNumbers: boolean;
@@ -43,7 +43,7 @@ export interface PageLayoutState {
   // Actions
   createPages: (sequences: SequenceData[]) => Promise<void>;
   setPaperSize: (size: PaperSize) => void;
-  setOrientation: (orientation: Orientation) => void;
+  setOrientation: (orientation: PageOrientation) => void;
   setSequencesPerPage: (count: number) => void;
   setOptimization: (enabled: boolean) => void;
   setCurrentPage: (pageIndex: number) => void;
@@ -69,7 +69,7 @@ export function createPageLayoutState(
 
   // Layout configuration state
   let paperSize = $state<PaperSize>("A4");
-  let orientation = $state<Orientation>("Portrait");
+  let orientation = $state<PageOrientation>("Portrait");
   let sequencesPerPage = $state(6);
   let enableOptimization = $state(true);
   let showPageNumbers = $state(true);
@@ -200,7 +200,7 @@ export function createPageLayoutState(
     }
   }
 
-  function setOrientation(newOrientation: Orientation): void {
+  function setOrientation(newOrientation: PageOrientation): void {
     if (orientation !== newOrientation) {
       orientation = newOrientation;
       layoutResult = null; // Reset layout calculation

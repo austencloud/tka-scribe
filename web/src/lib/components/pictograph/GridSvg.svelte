@@ -9,26 +9,42 @@ Uses pure runes instead of stores for reactivity.
 
   interface Props {
     /** Grid mode - diamond or box */
-    gridMode?: "diamond" | "box";
+    gridMode?: GridMode;
     /** Called when grid is successfully loaded */
     onLoaded?: () => void;
     /** Called when grid loading fails */
     onError?: (error: string) => void;
   }
 
-  let { gridMode = "diamond", onLoaded, onError }: Props = $props();
+  let { gridMode = GridMode.DIAMOND, onLoaded, onError }: Props = $props();
 
   // State using runes
   let isLoaded = $state(false);
   let hasError = $state(false);
   let errorMessage = $state<string | null>(null);
-  // Image element for potential future use
-  let _imageElement = $state<SVGImageElement | null>(null);
 
-  // Derived state - grid image path
-  const gridImagePath = $derived(() => {
-    return `/images/grid/${gridMode}_grid.svg`;
-  });
+  // Load grid SVG as native content for better performance
+  async function loadGridSvg(): Promise<string> {
+    try {
+      const response = await fetch(`/images/grid/${gridMode}_grid.svg`);
+      if (!response.ok) throw new Error(`Failed to load ${gridMode} grid`);
+
+      const svgText = await response.text();
+
+      // Mark as loaded
+      isLoaded = true;
+      hasError = false;
+      errorMessage = null;
+      onLoaded?.();
+
+      return svgText;
+    } catch (error) {
+      hasError = true;
+      errorMessage = `Failed to load ${gridMode} grid`;
+      onError?.(errorMessage);
+      throw error;
+    }
+  }
 
   // Derived state - grid data for positioning (in case parent components need it)
   const gridData = $derived(() => {
@@ -42,30 +58,13 @@ Uses pure runes instead of stores for reactivity.
     errorMessage = null;
   });
 
-  // Event handlers
-  function handleImageLoad() {
-    isLoaded = true;
-    hasError = false;
-    errorMessage = null;
-
-    onLoaded?.();
-  }
-
-  function handleImageError() {
-    hasError = true;
-    errorMessage = `Failed to load ${gridMode} grid image`;
-
-    onError?.(errorMessage);
-
-    // Still call onLoaded to prevent blocking the parent component
-    onLoaded?.();
-  }
+  // Cleanup - removed unused image handlers since we're using native SVG
 
   // Fallback grid rendering using coordinates
   const fallbackGridPath = $derived(() => {
     const data = gridData();
 
-    if (gridMode === "diamond") {
+    if (gridMode === GridMode.DIAMOND) {
       // Create diamond shape from hand points
       const points = [
         data.allHandPointsNormal.n_diamond_hand_point?.coordinates,
@@ -95,7 +94,7 @@ Uses pure runes instead of stores for reactivity.
     const center = { x: 475, y: 475 };
     const size = 143;
 
-    if (gridMode === "diamond") {
+    if (gridMode === GridMode.DIAMOND) {
       return `M ${center.x},${center.y - size} L ${center.x + size},${center.y} L ${center.x},${center.y + size} L ${center.x - size},${center.y} Z`;
     } else {
       return `M ${center.x - size},${center.y - size} L ${center.x + size},${center.y - size} L ${center.x + size},${center.y + size} L ${center.x - size},${center.y + size} Z`;
@@ -111,20 +110,28 @@ Uses pure runes instead of stores for reactivity.
   data-grid-mode={gridMode}
 >
   {#if !hasError}
-    <!-- Primary grid image -->
-    <image
-      bind:this={_imageElement}
-      href={gridImagePath()}
-      x="0"
-      y="0"
-      width="950"
-      height="950"
-      preserveAspectRatio="none"
-      onload={handleImageLoad}
-      onerror={handleImageError}
-    />
+    <!-- Native SVG grid for better performance -->
+    {#await loadGridSvg() then gridSvgContent}
+      <g class="grid-svg">
+        {@html gridSvgContent}
+      </g>
+    {:catch}
+      <!-- Fallback grid rendering -->
+      <g class="fallback-grid">
+        <path
+          d={fallbackGridPath()}
+          fill="none"
+          stroke="#e5e7eb"
+          stroke-width="2"
+          stroke-dasharray="5,5"
+        />
+
+        <!-- Center point -->
+        <circle cx="475" cy="475" r="3" fill="#9ca3af" />
+      </g>
+    {/await}
   {:else}
-    <!-- Fallback grid rendering -->
+    <!-- Error fallback -->
     <g class="fallback-grid">
       <path
         d={fallbackGridPath()}

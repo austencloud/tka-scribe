@@ -40,13 +40,11 @@ Arrow Mirroring Test Route - Simple test for arrow positioning
         gridData: createGridData({ gridMode: GridMode.DIAMOND }),
         arrows: {
           blue: createArrowData({
-            color: MotionColor.BLUE,
             motionType: MotionType.PRO,
             rotationDirection: RotationDirection.COUNTER_CLOCKWISE,
             isVisible: true,
           }),
           red: createArrowData({
-            color: MotionColor.RED,
             motionType: MotionType.PRO,
             rotationDirection: RotationDirection.COUNTER_CLOCKWISE,
             isVisible: true,
@@ -61,6 +59,7 @@ Arrow Mirroring Test Route - Simple test for arrow positioning
             startOrientation: Orientation.IN,
             endOrientation: Orientation.OUT,
             turns: 1,
+            color: MotionColor.BLUE,
           }),
           red: createMotionData({
             motionType: MotionType.PRO,
@@ -70,6 +69,7 @@ Arrow Mirroring Test Route - Simple test for arrow positioning
             startOrientation: Orientation.IN,
             endOrientation: Orientation.OUT,
             turns: 1,
+            color: MotionColor.RED,
           }),
         },
       });
@@ -82,13 +82,11 @@ Arrow Mirroring Test Route - Simple test for arrow positioning
         gridData: createGridData({ gridMode: GridMode.DIAMOND }),
         arrows: {
           blue: createArrowData({
-            color: MotionColor.BLUE,
             motionType: MotionType.PRO,
             rotationDirection: RotationDirection.CLOCKWISE,
             isVisible: true,
           }),
           red: createArrowData({
-            color: MotionColor.RED,
             motionType: MotionType.PRO,
             rotationDirection: RotationDirection.CLOCKWISE,
             isVisible: true,
@@ -103,6 +101,7 @@ Arrow Mirroring Test Route - Simple test for arrow positioning
             startOrientation: Orientation.IN,
             endOrientation: Orientation.OUT,
             turns: 1,
+            color: MotionColor.BLUE,
           }),
           red: createMotionData({
             motionType: MotionType.PRO,
@@ -112,6 +111,7 @@ Arrow Mirroring Test Route - Simple test for arrow positioning
             startOrientation: Orientation.IN,
             endOrientation: Orientation.OUT,
             turns: 1,
+            color: MotionColor.RED,
           }),
         },
       });

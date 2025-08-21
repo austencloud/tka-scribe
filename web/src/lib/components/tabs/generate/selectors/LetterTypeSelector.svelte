@@ -3,7 +3,8 @@ Letter Type Selector - Svelte Version
 Simple horizontal row of numbered buttons for letter types in freeform mode.
 -->
 <script lang="ts">
-  type LetterType = "TYPE1" | "TYPE2" | "TYPE3" | "TYPE4" | "TYPE5" | "TYPE6";
+  import { LetterType } from "$lib/domain";
+
 
   interface Props {
     initialValue?: Set<LetterType>;
@@ -11,12 +12,12 @@ Simple horizontal row of numbered buttons for letter types in freeform mode.
 
   let {
     initialValue = new Set([
-      "TYPE1",
-      "TYPE2",
-      "TYPE3",
-      "TYPE4",
-      "TYPE5",
-      "TYPE6",
+      LetterType.TYPE1,
+      LetterType.TYPE2,
+      LetterType.TYPE3,
+      LetterType.TYPE4,
+      LetterType.TYPE5,
+      LetterType.TYPE6,
     ]),
   }: Props = $props();
 
@@ -31,37 +32,37 @@ Simple horizontal row of numbered buttons for letter types in freeform mode.
     secondaryColor: string;
   }> = [
     {
-      type: "TYPE1",
+      type: LetterType.TYPE1,
       number: "1",
       primaryColor: "#36c3ff",
       secondaryColor: "#6F2DA8",
     },
     {
-      type: "TYPE2",
+      type: LetterType.TYPE2,
       number: "2",
       primaryColor: "#6F2DA8",
       secondaryColor: "#6F2DA8",
     },
     {
-      type: "TYPE3",
+      type: LetterType.TYPE3,
       number: "3",
       primaryColor: "#26e600",
       secondaryColor: "#6F2DA8",
     },
     {
-      type: "TYPE4",
+      type: LetterType.TYPE4,
       number: "4",
       primaryColor: "#26e600",
       secondaryColor: "#26e600",
     },
     {
-      type: "TYPE5",
+      type: LetterType.TYPE5,
       number: "5",
       primaryColor: "#00b3ff",
       secondaryColor: "#26e600",
     },
     {
-      type: "TYPE6",
+      type: LetterType.TYPE6,
       number: "6",
       primaryColor: "#eb7d00",
       secondaryColor: "#eb7d00",

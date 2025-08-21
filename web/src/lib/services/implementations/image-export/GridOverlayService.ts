@@ -77,9 +77,9 @@ export class GridOverlayService implements IGridOverlayService {
     ctx.lineCap = "round";
     ctx.lineJoin = "round";
 
-    if (gridMode === "diamond") {
+    if (gridMode === GridMode.DIAMOND) {
       this.drawDiamondGrid(ctx, size);
-    } else if (gridMode === "box") {
+    } else if (gridMode === GridMode.BOX) {
       this.drawBoxGrid(ctx, size);
     }
 
@@ -93,10 +93,10 @@ export class GridOverlayService implements IGridOverlayService {
    */
   getOppositeGridMode(currentMode: string): string {
     switch (currentMode.toLowerCase()) {
-      case "diamond":
-        return "box";
-      case "box":
-        return "diamond";
+      case GridMode.DIAMOND:
+        return GridMode.BOX;
+      case GridMode.BOX:
+        return GridMode.DIAMOND;
       default:
         throw new Error(`Unknown grid mode: ${currentMode}`);
     }
@@ -106,7 +106,7 @@ export class GridOverlayService implements IGridOverlayService {
    * Validate grid modes
    */
   validateGridMode(gridMode: string): boolean {
-    const validModes = ["diamond", "box"];
+    const validModes = [GridMode.DIAMOND, GridMode.BOX];
     return validModes.includes(gridMode.toLowerCase());
   }
 
@@ -283,8 +283,8 @@ export class GridOverlayService implements IGridOverlayService {
 
     // Draw both grids with reduced opacity
     ctx.globalAlpha = 0.7;
-    this.drawGridOverlay(ctx, "diamond", size);
-    this.drawGridOverlay(ctx, "box", size);
+    this.drawGridOverlay(ctx, GridMode.DIAMOND, size);
+    this.drawGridOverlay(ctx, GridMode.BOX, size);
     ctx.globalAlpha = 1.0;
 
     return canvas;
@@ -372,8 +372,8 @@ export class GridOverlayService implements IGridOverlayService {
     combinedGrid: HTMLCanvasElement;
   } {
     return {
-      diamondGrid: this.createGridCanvas("diamond", size),
-      boxGrid: this.createGridCanvas("box", size),
+      diamondGrid: this.createGridCanvas(GridMode.DIAMOND, size),
+      boxGrid: this.createGridCanvas(GridMode.BOX, size),
       combinedGrid: this.createCombinedGridOverlay(size),
     };
   }
@@ -399,7 +399,7 @@ export class GridOverlayService implements IGridOverlayService {
    * Get supported grid modes
    */
   getSupportedGridModes(): string[] {
-    return ["diamond", "box"];
+    return [GridMode.DIAMOND, GridMode.BOX];
   }
 
   /**

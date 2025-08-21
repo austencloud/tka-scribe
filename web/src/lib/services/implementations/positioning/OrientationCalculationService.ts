@@ -307,6 +307,7 @@ export class OrientationCalculationService
         startOrientation: blueMotion.startOrientation || Orientation.IN,
         endOrientation: blueMotion.endOrientation || Orientation.IN,
         isVisible: blueMotion.isVisible ?? true,
+        color: MotionColor.BLUE,
       };
 
       const calculatedEndOri = this.calculateEndOrientation(
@@ -333,6 +334,7 @@ export class OrientationCalculationService
         startOrientation: redMotion.startOrientation || Orientation.IN,
         endOrientation: redMotion.endOrientation || Orientation.IN,
         isVisible: redMotion.isVisible ?? true,
+        color: MotionColor.RED,
       };
 
       const calculatedEndOri = this.calculateEndOrientation(

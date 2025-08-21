@@ -54,10 +54,13 @@ export class SequenceDomainService implements ISequenceDomainService {
     }
 
     // Grid mode validation from desktop enums
-    if (request.gridMode && !["diamond", "box"].includes(request.gridMode)) {
+    if (
+      request.gridMode &&
+      ![GridMode.DIAMOND, GridMode.BOX].includes(request.gridMode)
+    ) {
       errors.push({
         code: "INVALID_GRID_MODE",
-        message: 'Grid mode must be either "diamond" or "box"',
+        message: "Grid mode must be either GridMode.DIAMOND or GridMode.BOX",
         field: "gridMode",
         severity: "error",
       });

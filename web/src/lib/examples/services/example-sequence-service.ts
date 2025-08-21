@@ -91,7 +91,7 @@ export class ExampleSequenceService implements IExampleSequenceService {
       author: "Unknown",
       level: 1,
       date_added: new Date(),
-      gridMode: "diamond",
+      gridMode: GridMode.DIAMOND,
       propType: "poi",
       is_favorite: false,
       is_circular: false,

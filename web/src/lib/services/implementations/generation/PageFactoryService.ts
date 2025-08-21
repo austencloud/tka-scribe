@@ -22,7 +22,7 @@ import type {
   LayoutValidationWarning,
   LayoutSuggestion,
   GridCalculationOptions,
-} from "../../../domain/pageLayout";
+} from "../../../domain/pageLayoutTypes";
 import type { SequenceData } from "../../interfaces/domain-types";
 
 export class PageFactoryService implements IPageFactoryService {

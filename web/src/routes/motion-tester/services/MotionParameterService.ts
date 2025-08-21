@@ -3,6 +3,7 @@ import {
   Orientation,
   RotationDirection,
   Location,
+  MotionColor,
 } from "$lib/domain/enums";
 import type { MotionData } from "$lib/domain/MotionData";
 import type { IMotionParameterService } from "./interfaces";
@@ -252,6 +253,7 @@ export class MotionParameterService implements IMotionParameterService {
       startOrientation: this.mapOrientationToEnum(params.startOrientation),
       endOrientation: this.mapOrientationToEnum(params.endOrientation),
       isVisible: true,
+      color: MotionColor.BLUE, // Default color for motion tester
       prefloatMotionType: null,
       prefloatRotationDirection: null,
     };

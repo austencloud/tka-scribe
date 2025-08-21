@@ -14,7 +14,7 @@ const SETTINGS_STORAGE_KEY = "tka-modern-web-settings";
 
 const DEFAULT_SETTINGS: AppSettings = {
   theme: "dark",
-  gridMode: "diamond",
+  gridMode: GridMode.DIAMOND,
   showBeatNumbers: true,
   autoSave: true,
   exportQuality: "high",

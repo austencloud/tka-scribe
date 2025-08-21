@@ -12,27 +12,33 @@
 <section class="hero" class:visible={isVisible}>
   <div class="hero-content">
     <h1 class="hero-title">About The Kinetic Alphabet</h1>
-    <p class="hero-subtitle">Innovation in Flow Arts Education</p>
+    <p class="hero-subtitle">A movement notation system for flow arts</p>
   </div>
 </section>
 
 <!-- Philosophy Section -->
 <section class="philosophy">
   <div class="container">
-    <h2>Philosophy</h2>
+    <h2>Why TKA?</h2>
     <div class="philosophy-content">
-      <p>
-        The Kinetic Alphabet represents a paradigm shift in how flow artists
-        approach their craft. By providing a systematic framework for
-        understanding movement, we enable practitioners to develop deeper
-        technical skills while preserving the artistic freedom that defines flow
-        arts.
-      </p>
-      <p>
-        Our approach combines rigorous technical methodology with creative
-        expression, allowing artists to build a solid foundation while exploring
-        infinite possibilities for personal artistic development.
-      </p>
+      <div class="problem-solution">
+        <div class="problem">
+          <h4>❌ The Problem:</h4>
+          <p>Flow arts movements are hard to communicate precisely</p>
+        </div>
+        <div class="solution">
+          <h4>✅ The Solution:</h4>
+          <p>
+            A systematic way to break them down, write them out, and share them
+          </p>
+        </div>
+      </div>
+      <div class="key-benefit">
+        <p>
+          <strong>Result:</strong> Learn underlying patterns instead of just copying
+          moves. It's like having a common language for movement.
+        </p>
+      </div>
     </div>
   </div>
 </section>
@@ -42,13 +48,13 @@
   .hero {
     position: relative;
     color: var(--text-color);
-    padding: var(--spacing-3xl) 0 var(--spacing-2xl) 0;
+    padding: var(--spacing-xl) 0 var(--spacing-lg) 0;
     text-align: center;
     opacity: 0;
     transform: translateY(30px);
     transition: all 0.8s ease;
     z-index: 1;
-    min-height: 40vh;
+    min-height: 25vh;
     display: flex;
     align-items: center;
 
@@ -93,7 +99,7 @@
 
   /* Philosophy Section */
   .philosophy {
-    padding: var(--spacing-3xl) 0;
+    padding: var(--spacing-lg) 0;
   }
 
   .container {
@@ -104,9 +110,9 @@
 
   h2 {
     text-align: center;
-    margin-bottom: var(--spacing-2xl);
+    margin-bottom: var(--spacing-lg);
     color: var(--text-color);
-    font-size: 2.5rem;
+    font-size: 2rem;
     font-weight: 700;
   }
 
@@ -115,16 +121,68 @@
     margin: 0 auto;
     background: rgba(255, 255, 255, 0.05);
     backdrop-filter: blur(10px);
-    padding: var(--spacing-xl);
+    padding: var(--spacing-lg);
     border-radius: 1.5rem;
     border: 1px solid rgba(255, 255, 255, 0.1);
   }
 
-  .philosophy-content p {
-    font-size: 1.125rem;
-    line-height: 1.8;
+  .problem-solution {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-lg);
     margin-bottom: var(--spacing-lg);
+  }
+
+  .problem,
+  .solution {
+    padding: var(--spacing-md);
+    border-radius: 0.75rem;
+    text-align: center;
+  }
+
+  .problem {
+    background: rgba(255, 100, 100, 0.1);
+    border: 1px solid rgba(255, 100, 100, 0.2);
+  }
+
+  .solution {
+    background: rgba(100, 255, 100, 0.1);
+    border: 1px solid rgba(100, 255, 100, 0.2);
+  }
+
+  .problem h4,
+  .solution h4 {
+    margin: 0 0 var(--spacing-sm) 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-color);
+  }
+
+  .problem p,
+  .solution p {
+    margin: 0;
     color: rgba(255, 255, 255, 0.9);
+    line-height: 1.5;
+  }
+
+  .key-benefit {
+    text-align: center;
+    padding: var(--spacing-md);
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 0.75rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .key-benefit p {
+    margin: 0;
+    color: rgba(255, 255, 255, 0.95);
+    line-height: 1.6;
+    font-size: 1.1rem;
+  }
+
+  .key-benefit strong {
+    color: var(--primary-color);
+    font-weight: 600;
   }
 
   /* Mobile responsive */
@@ -135,16 +193,20 @@
       margin: var(--spacing-md);
     }
 
+    .hero-content {
+      padding: 0 var(--spacing-md);
+    }
+
     .hero-title {
       font-size: 2.5rem;
     }
 
     .hero-subtitle {
-      font-size: 1.125rem;
+      font-size: 1.1rem;
     }
 
     .philosophy {
-      padding: var(--spacing-2xl) 0;
+      padding: var(--spacing-md) 0;
     }
 
     .container {
@@ -152,11 +214,12 @@
     }
 
     h2 {
-      font-size: 2rem;
+      font-size: 1.75rem;
     }
 
-    .philosophy-content {
-      padding: var(--spacing-lg);
+    .problem-solution {
+      grid-template-columns: 1fr;
+      gap: var(--spacing-md);
     }
   }
 

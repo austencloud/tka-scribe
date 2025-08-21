@@ -106,7 +106,7 @@ export class DefaultPropPositioner {
   ): { x: number; y: number } {
     try {
       const gridModeStr = gridMode.valueOf();
-      const gridData = createGridData(gridModeStr as "diamond" | "box");
+      const gridData = createGridData(gridModeStr as GridMode);
       const positioner = new DefaultPropPositioner(gridData, gridMode);
       const result = positioner.calculateCoordinates(location);
       return result;

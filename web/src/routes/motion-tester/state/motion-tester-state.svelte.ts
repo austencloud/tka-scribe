@@ -16,7 +16,7 @@ import {
   type LetterIdentificationResult,
 } from "../services/MotionLetterIdentificationService";
 
-import { MotionType, MotionColor } from "$lib/domain/enums";
+import { MotionType, MotionColor, GridMode } from "$lib/domain/enums";
 
 export interface MotionTesterState {
   // Reactive state getters
@@ -26,7 +26,7 @@ export interface MotionTesterState {
   get propVisibility(): PropVisibility;
   get currentPropStates(): PropStates;
   get isEngineInitialized(): boolean;
-  get gridType(): "diamond" | "box";
+  get gridMode(): GridMode;
   get identifiedLetter(): LetterIdentificationResult;
 
   // Blue prop methods
@@ -52,7 +52,7 @@ export interface MotionTesterState {
   resetAnimation: () => void;
 
   // Grid control methods
-  setGridType: (gridType: "diamond" | "box") => void;
+  setGridType: (gridMode: GridMode) => void;
 }
 
 export function createMotionTesterState(): MotionTesterState {
@@ -89,14 +89,14 @@ export function createMotionTesterState(): MotionTesterState {
   });
 
   let isEngineInitialized = $state(false);
-  let gridType = $state<"diamond" | "box">("diamond");
+  let gridMode = $state<GridMode>(GridMode.DIAMOND);
 
   // Letter identification - reactive to motion parameter changes
   const identifiedLetter = $derived(() => {
     return letterIdentificationService.identifyLetter(
       blueMotionParams,
       redMotionParams,
-      gridType
+      gridMode
     );
   });
 
@@ -205,8 +205,8 @@ export function createMotionTesterState(): MotionTesterState {
     get isEngineInitialized() {
       return isEngineInitialized;
     },
-    get gridType() {
-      return gridType;
+    get gridMode() {
+      return gridMode;
     },
     get identifiedLetter() {
       return identifiedLetter();
@@ -282,8 +282,8 @@ export function createMotionTesterState(): MotionTesterState {
     },
 
     // Grid control methods
-    setGridType: (newGridType: "diamond" | "box") => {
-      gridType = newGridType;
+    setGridType: (newGridType: GridMode) => {
+      gridMode = newGridType;
     },
   };
 }

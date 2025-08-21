@@ -24,7 +24,7 @@ Contains Grid Mode, Generation Mode, and Prop Continuity selectors
     </div>
     <div class="setting-item">
       <GenerationModeToggle
-        initialMode={config.mode === "FREEFORM"
+        initialMode={config.mode === GenerationMode.FREEFORM
           ? GenerationMode.FREEFORM
           : GenerationMode.CIRCULAR}
       />

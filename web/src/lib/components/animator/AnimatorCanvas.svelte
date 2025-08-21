@@ -3,6 +3,7 @@
   import { svgStringToImage } from "./svgStringToImage";
   import { SVGGenerator } from "$lib/animator/utils/canvas/SVGGenerator";
   import { CanvasRenderer } from "$lib/animator/utils/canvas/CanvasRenderer";
+  import { GridMode } from "$lib/domain";
   // TODO: Fix missing SVGGenerator and CanvasRenderer imports
   // import { SVGGenerator } from "../../utils/canvas/SVGGenerator.js";
   // import { CanvasRenderer } from "../../utils/canvas/CanvasRenderer.js";
@@ -15,7 +16,7 @@
     width,
     height,
     gridVisible = true,
-    gridType = "diamond",
+    gridMode = GridMode.DIAMOND,
   }: {
     blueProp: PropState;
     redProp: PropState;
@@ -23,7 +24,7 @@
     width?: number;
     height?: number;
     gridVisible?: boolean;
-    gridType?: "diamond" | "box";
+    gridMode?: GridMode;
   } = $props();
 
   // Use width/height if provided, otherwise use canvasSize
@@ -43,7 +44,7 @@
     blueProp;
     redProp;
     gridVisible;
-    gridType;
+    gridMode;
     needsRender = true;
     startRenderLoop();
   });
@@ -54,7 +55,7 @@
       try {
         [gridImage, blueStaffImage, redStaffImage] = await Promise.all([
           svgStringToImage(
-            SVGGenerator.generateGridSvg(gridType),
+            SVGGenerator.generateGridSvg(gridMode),
             actualSize,
             actualSize
           ),

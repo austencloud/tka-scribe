@@ -17,10 +17,11 @@
   } from "./utils/StartPositionUtils";
 
   // Props using runes
-  const { gridMode = "diamond", onStartPositionSelected = () => {} } = $props<{
-    gridMode?: "diamond" | "box";
-    onStartPositionSelected?: (position: BeatData) => void;
-  }>();
+  const { gridMode = GridMode.DIAMOND, onStartPositionSelected = () => {} } =
+    $props<{
+      gridMode?: GridMode;
+      onStartPositionSelected?: (position: BeatData) => void;
+    }>();
 
   // Reactive state
   let startPositions = $state<PictographData[]>([]);

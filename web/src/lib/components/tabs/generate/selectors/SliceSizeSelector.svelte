@@ -4,23 +4,22 @@ Beautiful iOS-style toggle between halved and quartered slice sizes for circular
 -->
 <script lang="ts">
   import IOSToggle from "../../../ui/IOSToggle.svelte";
-
-  type SliceSize = "HALVED" | "QUARTERED";
+  import { SliceSize } from "$lib/domain";
 
   interface Props {
     initialValue?: SliceSize;
     onvalueChanged?: (value: SliceSize) => void;
   }
 
-  let { initialValue = "HALVED", onvalueChanged }: Props = $props();
+  let { initialValue = SliceSize.HALVED, onvalueChanged }: Props = $props();
 
   // State
   let currentValue = $state(initialValue);
 
   // Options for the iOS toggle
   const sliceSizeOptions = [
-    { value: "HALVED", label: "Halved", icon: "◗" },
-    { value: "QUARTERED", label: "Quartered", icon: "◐" },
+    { value: SliceSize.HALVED, label: "Halved", icon: "◗" },
+    { value: SliceSize.QUARTERED, label: "Quartered", icon: "◐" },
   ];
 
   // Handle value change

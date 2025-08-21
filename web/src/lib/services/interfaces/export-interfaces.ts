@@ -5,7 +5,7 @@
  * Supports both individual page and batch export operations.
  */
 
-import type { Page } from "../../domain/pageLayout";
+import type { Page } from "../../domain/pageLayoutTypes";
 import type { SequenceData, ExportOptions, ExportResult } from "./domain-types";
 
 // ============================================================================

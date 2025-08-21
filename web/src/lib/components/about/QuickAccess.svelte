@@ -4,7 +4,15 @@
   }
 </script>
 
-<!-- Quick Access Section -->
+<!-- Quick Acc  /* Mobile Responsive */
+  @media (max-width: 768px) {
+    .quick-access {
+      padding: var(--spacing-md) 0;
+    }
+
+    .container {
+      padding: 0 var(--spacing-md);
+    }on -->
 <section class="quick-access">
   <div class="container">
     <h2>Quick Access</h2>
@@ -49,7 +57,7 @@
 <style>
   /* Quick Access Section */
   .quick-access {
-    padding: var(--spacing-3xl) 0;
+    padding: var(--spacing-lg) 0;
     background: rgba(255, 255, 255, 0.02);
   }
 
@@ -61,7 +69,7 @@
 
   .quick-access h2 {
     text-align: center;
-    margin-bottom: var(--spacing-2xl);
+    margin-bottom: var(--spacing-lg);
     color: var(--text-color);
     font-size: 2rem;
     font-weight: 700;

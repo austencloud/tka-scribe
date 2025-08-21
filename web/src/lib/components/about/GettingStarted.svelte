@@ -45,7 +45,7 @@
 <style>
   /* Getting Started Section */
   .getting-started {
-    padding: var(--spacing-3xl) 0;
+    padding: var(--spacing-lg) 0;
   }
 
   .container {
@@ -56,7 +56,7 @@
 
   .getting-started h2 {
     text-align: center;
-    margin-bottom: var(--spacing-2xl);
+    margin-bottom: var(--spacing-lg);
     color: var(--text-color);
     font-size: 2.5rem;
     font-weight: 700;

@@ -68,7 +68,7 @@
     if (!beatData?.pictographData) return null;
 
     return {
-      gridMode: beatData.pictographData.gridMode || "diamond",
+      gridMode: beatData.pictographData.gridMode || GridMode.DIAMOND,
       blueStart:
         beatData.pictographData.motions?.blue?.startLocation || "Unknown",
       redStart:

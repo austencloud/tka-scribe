@@ -1,8 +1,7 @@
 <script lang="ts">
   import HeroSection from "./HeroSection.svelte";
   import QuickAccess from "./QuickAccess.svelte";
-  import ProjectOverview from "./ProjectOverview.svelte";
-  import Features from "./Features.svelte";
+  import AboutTheSystem from "./AboutTheSystem.svelte";
   import GettingStarted from "./GettingStarted.svelte";
   import ResourcesHistorian from "./ResourcesHistorian.svelte";
   import ContactSection from "./ContactSection.svelte";
@@ -22,28 +21,17 @@
 <!-- About Tab - Modular Architecture -->
 <div class="about-container">
   <!-- Quick Navigation -->
-  <nav class="quick-nav" aria-label="About page navigation">
+  <nav class="page-nav" aria-label="About page sections">
     <div class="nav-content">
-      <span class="nav-title">Quick Navigation:</span>
       <div class="nav-links">
         <button onclick={() => scrollToSection("hero")} class="nav-link"
-          >Philosophy</button
+          >About</button
         >
         <button onclick={() => scrollToSection("quick-access")} class="nav-link"
-          >Quick Access</button
+          >Get Started</button
         >
-        <button onclick={() => scrollToSection("overview")} class="nav-link"
-          >Overview</button
-        >
-        <button onclick={() => scrollToSection("features")} class="nav-link"
-          >Features</button
-        >
-        <button
-          onclick={() => scrollToSection("getting-started")}
-          class="nav-link">Getting Started</button
-        >
-        <button onclick={() => scrollToSection("resources")} class="nav-link"
-          >Resources</button
+        <button onclick={() => scrollToSection("system")} class="nav-link"
+          >How It Works</button
         >
         <button onclick={() => scrollToSection("contact")} class="nav-link"
           >Contact</button
@@ -53,56 +41,45 @@
   </nav>
 
   <!-- Hero Section -->
-  <section id="hero" class="section-container">
+  <section id="hero" class="section-container hero-section">
     <HeroSection />
   </section>
 
-  <!-- Quick Access -->
-  <section id="quick-access" class="section-container">
-    <QuickAccess />
-  </section>
+  <!-- Action Section -->
+  <div class="section-group action-group">
+    <section id="quick-access" class="section-container">
+      <QuickAccess />
+    </section>
 
-  <!-- Project Overview -->
-  <section id="overview" class="section-container">
-    <ProjectOverview />
-  </section>
+  </div>
 
-  <!-- Features -->
-  <section id="features" class="section-container">
-    <Features />
-  </section>
 
-  <!-- Getting Started -->
-  <section id="getting-started" class="section-container">
-    <GettingStarted />
-  </section>
 
-  <!-- Resources & Links -->
-  <section id="resources" class="section-container">
-    <ResourcesHistorian />
-  </section>
+  <!-- Support Section -->
+  <div class="section-group support-group">
 
-  <!-- Contact -->
-  <section id="contact" class="section-container">
-    <ContactSection />
-  </section>
+    <section id="contact" class="section-container">
+      <ContactSection />
+    </section>
+  </div>
 </div>
 
 <style>
   /* About Container */
   .about-container {
     min-height: 100vh;
+    min-width: 100vw;
     background: var(--cosmic-gradient);
     color: var(--text-color);
     position: relative;
   }
 
-  /* Quick Navigation */
-  .quick-nav {
+  /* Page Navigation */
+  .page-nav {
     position: sticky;
     top: 0;
     z-index: 100;
-    background: rgba(0, 0, 0, 0.4);
+    background: rgba(0, 0, 0, 0.6);
     backdrop-filter: blur(20px);
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     padding: var(--spacing-sm) 0;
@@ -113,30 +90,21 @@
     margin: 0 auto;
     padding: 0 var(--spacing-lg);
     display: flex;
-    align-items: center;
-    gap: var(--spacing-lg);
-    flex-wrap: wrap;
-  }
-
-  .nav-title {
-    font-weight: 600;
-    color: var(--text-secondary);
-    font-size: var(--font-size-sm);
-    white-space: nowrap;
+    justify-content: center;
   }
 
   .nav-links {
     display: flex;
-    gap: var(--spacing-sm);
+    gap: var(--spacing-md);
     flex-wrap: wrap;
-    flex: 1;
+    justify-content: center;
   }
 
   .nav-link {
-    padding: var(--spacing-xs) var(--spacing-sm);
+    padding: var(--spacing-sm) var(--spacing-lg);
     background: transparent;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: var(--border-radius-sm);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: var(--border-radius-md);
     color: var(--text-secondary);
     font-family: inherit;
     font-size: var(--font-size-sm);
@@ -162,62 +130,92 @@
     scroll-margin-top: 80px; /* Account for sticky nav */
   }
 
-  /* Section Separators */
-  .section-container:not(:last-child)::after {
+  /* Section Groups */
+  .section-group {
+    position: relative;
+    margin: var(--spacing-xl) 0;
+  }
+
+  .hero-section {
+    margin-bottom: var(--spacing-lg);
+  }
+
+  .action-group {
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 1.5rem;
+    padding: var(--spacing-lg);
+    margin: var(--spacing-xl) auto;
+    max-width: 1200px;
+  }
+
+
+  .support-group {
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 1.5rem;
+    padding: var(--spacing-lg);
+    margin: var(--spacing-xl) auto;
+    max-width: 1200px;
+  }
+
+  /* Group Separators */
+  .section-group:not(:last-child)::after {
     content: "";
     display: block;
-    width: 100px;
-    height: 2px;
+    width: 150px;
+    height: 1px;
     background: linear-gradient(
       90deg,
       transparent 0%,
       var(--primary-color) 50%,
       transparent 100%
     );
-    margin: var(--spacing-2xl) auto;
+    margin: var(--spacing-lg) auto 0;
   }
 
   /* Mobile Responsive */
   @media (max-width: 768px) {
     .nav-content {
       padding: 0 var(--spacing-md);
-      flex-direction: column;
-      align-items: flex-start;
-      gap: var(--spacing-sm);
-    }
-
-    .nav-title {
-      font-size: var(--font-size-xs);
     }
 
     .nav-links {
-      justify-content: center;
+      gap: var(--spacing-sm);
       width: 100%;
+      justify-content: space-between;
     }
 
     .nav-link {
-      padding: var(--spacing-xs);
-      font-size: var(--font-size-xs);
+      padding: var(--spacing-sm);
+      font-size: var(--font-size-sm);
       flex: 1;
-      min-width: 80px;
       text-align: center;
+      min-width: 0;
     }
 
     .section-container {
-      scroll-margin-top: 120px; /* More space for mobile nav */
+      scroll-margin-top: 80px;
+    }
+
+    .section-group {
+      margin: var(--spacing-lg) var(--spacing-md);
+      padding: var(--spacing-md);
+    }
+
+    .hero-section {
+      margin-bottom: var(--spacing-md);
     }
   }
 
   @media (max-width: 480px) {
     .nav-links {
-      grid-template-columns: repeat(auto-fit, minmax(70px, 1fr));
       display: grid;
+      grid-template-columns: 1fr 1fr;
       gap: var(--spacing-xs);
     }
 
     .nav-link {
-      min-width: 0;
       padding: var(--spacing-xs);
+      font-size: var(--font-size-xs);
     }
   }
 
@@ -225,22 +223,6 @@
   @media (prefers-reduced-motion: reduce) {
     .nav-link {
       transition: none;
-    }
-  }
-
-  /* Focus management for accessibility */
-  .about-container:focus-within .nav-link:focus {
-    z-index: 1;
-  }
-
-  /* Print styles */
-  @media print {
-    .quick-nav {
-      display: none;
-    }
-
-    .section-container::after {
-      display: none;
     }
   }
 </style>

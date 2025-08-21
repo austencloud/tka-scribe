@@ -10,9 +10,9 @@ This is the left 2/3 section of the new layout.
   import Pictograph from "$lib/components/pictograph/Pictograph.svelte";
   import PropPanel from "./PropPanel.svelte";
   import SimpleGridToggle from "./SimpleGridToggle.svelte";
-  import LetterIdentificationDisplay from "./LetterIdentificationDisplay.svelte";
   import { resolve } from "$lib/services/bootstrap";
   import { IArrowPositioningOrchestratorInterface } from "$lib/services/di/interfaces/positioning-interfaces";
+  import { ILetterQueryServiceInterface } from "$lib/services/di/interfaces/codex-interfaces";
   import type { PictographData } from "$lib/domain";
   import {
     createPictographData,
@@ -63,7 +63,7 @@ This is the left 2/3 section of the new layout.
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const redMotionType = motionState.redMotionParams.motionType;
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const gridType = motionState.gridType;
+    const gridMode = motionState.gridMode;
 
     // Immediately update pictograph data using CSV lookup
     updatePictographData();
@@ -83,7 +83,9 @@ This is the left 2/3 section of the new layout.
 
       // Get the grid mode
       const gridMode =
-        motionState.gridType === "diamond" ? GridMode.DIAMOND : GridMode.BOX;
+        motionState.gridMode === GridMode.DIAMOND
+          ? GridMode.DIAMOND
+          : GridMode.BOX;
 
       // Create motion data from current motion parameters
       const blueMotion = createMotionData({
@@ -98,6 +100,7 @@ This is the left 2/3 section of the new layout.
           .rotationDirection as RotationDirection,
         turns: motionState.blueMotionParams.turns,
         isVisible: true,
+        color: MotionColor.BLUE, // ✅ Explicitly set blue color
       });
 
       const redMotion = createMotionData({
@@ -112,12 +115,11 @@ This is the left 2/3 section of the new layout.
           .rotationDirection as RotationDirection,
         turns: motionState.redMotionParams.turns,
         isVisible: true,
+        color: MotionColor.RED, // ✅ Explicitly set red color
       });
 
       // Create props based on motion end locations
       const blueProps = createPropData({
-        color: MotionColor.BLUE,
-        location: motionState.blueMotionParams.endLocation as Location,
         orientation: motionState.blueMotionParams.endOrientation as Orientation,
         rotationDirection: motionState.blueMotionParams
           .rotationDirection as RotationDirection,
@@ -125,13 +127,46 @@ This is the left 2/3 section of the new layout.
       });
 
       const redProps = createPropData({
-        color: MotionColor.RED,
-        location: motionState.redMotionParams.endLocation as Location,
         orientation: motionState.redMotionParams.endOrientation as Orientation,
         rotationDirection: motionState.redMotionParams
           .rotationDirection as RotationDirection,
         isVisible: true,
       });
+
+      // Simple approach: if both props end at the same location, try known beta-ending letters
+      // This is much simpler than complex motion parameter matching
+      let identifiedLetter = "";
+
+      if (blueMotion.endLocation === redMotion.endLocation) {
+        // Both props end at same location - try beta-ending letters
+        const letterQueryService = resolve(ILetterQueryServiceInterface);
+
+        // Try common beta-ending letters that have both props at same end location
+        const betaLetters = ["G", "H", "I", "J", "K", "L"];
+
+        for (const letter of betaLetters) {
+          const pictograph = await letterQueryService.getPictographByLetter(
+            letter,
+            gridMode
+          );
+          if (
+            pictograph &&
+            pictograph.motions?.blue?.endLocation === blueMotion.endLocation &&
+            pictograph.motions?.red?.endLocation === redMotion.endLocation
+          ) {
+            identifiedLetter = letter;
+            console.log(
+              `🔍 StaticSection: Found matching beta letter: ${letter}`
+            );
+            break;
+          }
+        }
+      }
+
+      console.log(
+        "🔍 StaticSection: Using identified letter:",
+        identifiedLetter
+      );
 
       // Create the pictograph data
       const dynamicPictograph = createPictographData({
@@ -150,7 +185,7 @@ This is the left 2/3 section of the new layout.
           blue: blueProps,
           red: redProps,
         },
-        letter: "",
+        letter: identifiedLetter, // ✅ Use the identified letter instead of empty string
         isBlank: false,
         isMirrored: false,
         metadata: {
@@ -210,11 +245,6 @@ This is the left 2/3 section of the new layout.
     </div>
   </div>
 
-  <!-- Letter Identification Display -->
-  <LetterIdentificationDisplay
-    identificationResult={motionState.identifiedLetter}
-  />
-
   <!-- Motion Designer Controls -->
   <div class="motion-controls">
     <!-- Blue Prop Section -->
@@ -230,7 +260,7 @@ This is the left 2/3 section of the new layout.
           .endOrientation as Orientation}
         turns={motionState.blueMotionParams.turns}
         motionType={motionState.blueMotionParams.motionType as MotionType}
-        gridMode={motionState.gridType}
+        gridMode={motionState.gridMode}
         onStartLocationChange={(location) =>
           motionState.setBlueStartLocation(location)}
         onEndLocationChange={(location) =>
@@ -259,7 +289,7 @@ This is the left 2/3 section of the new layout.
           .endOrientation as Orientation}
         turns={motionState.redMotionParams.turns}
         motionType={motionState.redMotionParams.motionType as MotionType}
-        gridMode={motionState.gridType}
+        gridMode={motionState.gridMode}
         onStartLocationChange={(location) =>
           motionState.setRedStartLocation(location)}
         onEndLocationChange={(location) =>

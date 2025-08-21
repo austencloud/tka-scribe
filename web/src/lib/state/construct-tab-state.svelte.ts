@@ -7,8 +7,9 @@
 
 import type { SequenceData } from "$lib/domain";
 
+import { GridMode } from "$lib/domain";
+
 export type ActiveRightPanel = "build" | "generate" | "edit" | "export";
-export type GridMode = "diamond" | "box";
 
 // Type for sequence state dependency
 interface SequenceStateType {
@@ -27,7 +28,7 @@ export function createConstructTabState(sequenceState: SequenceStateType) {
   const state = $state({
     // Main tab state
     activeRightPanel: "build" as ActiveRightPanel,
-    gridMode: "diamond" as GridMode,
+    gridMode: GridMode.DIAMOND as GridMode,
 
     // Transition and loading states
     isTransitioning: false,

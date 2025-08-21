@@ -6,10 +6,9 @@
   import { resolve } from "$lib/services/bootstrap";
   interface Props {
     propData: PropData;
-    motionData?: MotionData;
+    motionData: MotionData; // Required - source of truth for motion properties
     gridMode?: GridMode;
     betaOffset?: { x: number; y: number };
-    color: string;
   }
 
   interface RenderData {
@@ -28,8 +27,20 @@
     motionData,
     gridMode = GridMode.DIAMOND,
     betaOffset = { x: 0, y: 0 },
-    color,
   }: Props = $props();
+
+  // Derive color from motionData (single source of truth)
+  const color = $derived(motionData.color);
+
+  // Debug color changes reactively
+  $effect(() => {
+    console.log(
+      `🎨 Prop.svelte: motionData.color = ${motionData.color}, derived color = ${color}`
+    );
+  });
+
+  // Native SVG content scales automatically with the parent SVG container
+  // No manual scaling needed - the 950x950 coordinate system handles this naturally
 
   const propCoordinator: IPropCoordinatorService = resolve(
     IPropCoordinatorServiceInterface
@@ -60,7 +71,7 @@
   data-location={motionData?.endLocation}
 >
   {#if renderData.svgData}
-    <!-- Native SVG with simplified transform chain -->
+    <!-- Native SVG with proper scaling to match image behavior -->
     <g
       transform="
         translate({renderData.position.x}, {renderData.position.y})
