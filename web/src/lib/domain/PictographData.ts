@@ -56,6 +56,7 @@ export function createPictographData(
     letter: derivedData.letter || null,
     startPosition: derivedData.startPosition || null,
     endPosition: derivedData.endPosition || null,
+    gridMode: derivedData.gridMode || null,
     timing: derivedData.timing || null,
     direction: derivedData.direction || null,
     letterType:
@@ -107,8 +108,12 @@ function deriveFromMotionData(
     return data;
   }
 
-  const gridModeService = new GridModeDerivationService();
-  const gridMode = gridModeService.deriveGridMode(blueMotion, redMotion);
+  // Only derive gridMode if it wasn't explicitly provided
+  let gridMode = data.gridMode;
+  if (!gridMode) {
+    const gridModeService = new GridModeDerivationService();
+    gridMode = gridModeService.deriveGridMode(blueMotion, redMotion);
+  }
 
   //  TODO: Derive all other values, like letter and positions and timing and direction adn letter type
 

@@ -41,28 +41,43 @@
   });
 
   $effect(() => {
-    if (!motionData) return;
+    if (!motionData || !motionData.propPlacementData) return;
 
-    // TODO: Update PropCoordinatorService to work with embedded placement data
-    // propCoordinator.calculatePropRenderData(motionData, pictographData)
+    // Use async function inside effect
+    const loadPropData = async () => {
+      try {
+        // Use the actual PropCoordinatorService to load real prop SVGs
+        const propRenderData = await propCoordinator.calculatePropRenderData(
+          motionData.propPlacementData,
+          motionData,
+          pictographData
+        );
 
-    // Temporary: Create mock render data until service is updated
-    const mockRenderData = {
-      position: {
-        x: motionData.propPlacementData.positionX || 475,
-        y: motionData.propPlacementData.positionY || 475,
-      },
-      rotation: motionData.propPlacementData.rotationAngle || 0,
-      svgData: {
-        svgContent: `<svg viewBox="0 0 100 100"><rect x="25" y="10" width="50" height="80" fill="${motionData.color === "blue" ? "#2E3192" : "#ED1C24"}"/></svg>`,
-        viewBox: { width: 100, height: 100 },
-        center: { x: 50, y: 50 },
-      },
-      loaded: true,
-      error: null,
+        renderData = propRenderData;
+      } catch (error) {
+        console.error("❌ PropSvg: Error loading prop data:", error);
+
+        // Fallback to mock render data if service fails
+        const fallbackRenderData = {
+          position: {
+            x: motionData.propPlacementData.positionX || 475,
+            y: motionData.propPlacementData.positionY || 475,
+          },
+          rotation: motionData.propPlacementData.rotationAngle || 0,
+          svgData: {
+            svgContent: `<svg viewBox="0 0 100 100"><rect x="25" y="10" width="50" height="80" fill="${motionData.color === "blue" ? "#2E3192" : "#ED1C24"}"/></svg>`,
+            viewBox: { width: 100, height: 100 },
+            center: { x: 50, y: 50 },
+          },
+          loaded: true,
+          error: error instanceof Error ? error.message : "Unknown error",
+        };
+
+        renderData = fallbackRenderData;
+      }
     };
 
-    renderData = mockRenderData;
+    loadPropData();
   });
 </script>
 

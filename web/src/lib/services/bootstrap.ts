@@ -11,16 +11,17 @@ import { ServiceContainer } from "./di/ServiceContainer";
 import type { ServiceInterface } from "./di/types";
 
 // Import registration functions
-import { registerSharedServices } from "./di/registration/shared-services";
 import { registerBrowseServices } from "./di/registration/browse-services";
 import { registerCoreServices } from "./di/registration/core-services";
 import { registerPositioningServices } from "./di/registration/positioning-services";
+import { registerSharedServices } from "./di/registration/shared-services";
 
 import { registerAnimatorServices } from "./di/registration/animator-services";
 import { registerCodexServices } from "./di/registration/codex-services";
-import { registerMovementServices } from "./di/registration/movement-services";
 import { registerGenerationServices } from "./di/registration/generation-services";
 import { registerImageExportServices } from "./di/registration/image-export-services";
+import { registerMovementServices } from "./di/registration/movement-services";
+import { registerSequenceCardExportServices } from "./di/registration/sequence-card-export-services";
 
 /**
  * Create and configure the web application DI container
@@ -41,6 +42,7 @@ export async function createWebApplication(): Promise<ServiceContainer> {
     await registerMovementServices(container);
     await registerGenerationServices(container);
     await registerImageExportServices(container);
+    await registerSequenceCardExportServices(container);
 
     // Temporarily disable validation to fix infinite loop
     // await validateContainerConfiguration(container);

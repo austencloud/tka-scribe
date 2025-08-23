@@ -6,6 +6,9 @@
  */
 
 import type { PictographData } from "$lib/domain";
+import { resolve } from "$lib/services/bootstrap";
+import { IArrowPositioningServiceInterface } from "$lib/services/di/interfaces/positioning-interfaces";
+import type { IArrowPositioningService } from "$lib/services/interfaces/positioning-interfaces";
 
 export interface ArrowPositioningProps {
   /** Current pictograph data containing arrows */
@@ -28,7 +31,12 @@ export interface ArrowPositioningState {
 export function useArrowPositioning(
   _props: ArrowPositioningProps
 ): ArrowPositioningState {
-  // Clean architecture: Calculate positions from motion data only
+  // Get the arrow positioning service from DI container
+  const positioningService = resolve(
+    IArrowPositioningServiceInterface
+  ) as IArrowPositioningService;
+
+  // Clean architecture: Calculate positions from motion data using the orchestrator
   async function calculateArrowPositions(
     pictographData: PictographData | null
   ) {
@@ -41,36 +49,75 @@ export function useArrowPositioning(
     }
 
     try {
-      // ULTIMATE CLEAN ARCHITECTURE: Calculate positions directly from motion data
-      // No more arrows property - everything calculated from motion data!
+      console.log(
+        "🎯 useArrowPositioning: Starting position calculation for pictograph:",
+        pictographData.letter
+      );
+
       const newPositions: Record<
         string,
         { x: number; y: number; rotation: number }
       > = {};
       const newMirroring: Record<string, boolean> = {};
 
-      // Calculate positions for each motion
+      // Calculate positions for each motion using the actual positioning orchestrator
       for (const [color, motionData] of Object.entries(
         pictographData.motions
       )) {
-        if (motionData && motionData.isVisible) {
-          // Calculate position from motion data - no gridData needed
-          // For now, use basic positioning until orchestrator is updated
-          const position = {
-            positionX: 475, // Default center
-            positionY: 475, // Default center
-            rotationAngle: 0,
-            svgMirrored: false,
-          };
+        if (
+          motionData &&
+          motionData.isVisible &&
+          motionData.arrowPlacementData
+        ) {
+          console.log(
+            `🏹 useArrowPositioning: Calculating position for ${color} arrow`
+          );
 
-          newPositions[color] = {
-            x: position.positionX || 475,
-            y: position.positionY || 475,
-            rotation: position.rotationAngle || 0,
-          };
-          newMirroring[color] = position.svgMirrored || false;
+          try {
+            // Use the actual ArrowPositioningService to calculate positions
+            const positionResult = await positioningService.calculatePosition(
+              motionData.arrowPlacementData,
+              motionData,
+              pictographData
+            );
+
+            const mirroringResult = positioningService.shouldMirror(
+              motionData.arrowPlacementData,
+              motionData,
+              pictographData
+            );
+
+            newPositions[color] = {
+              x: positionResult.x,
+              y: positionResult.y,
+              rotation: positionResult.rotation,
+            };
+            newMirroring[color] = mirroringResult;
+
+            console.log(
+              `✅ useArrowPositioning: ${color} arrow positioned at (${positionResult.x}, ${positionResult.y}) rotation: ${positionResult.rotation}`
+            );
+          } catch (error) {
+            console.error(
+              `❌ useArrowPositioning: Failed to calculate position for ${color} arrow:`,
+              error
+            );
+
+            // Fallback to center position if orchestrator fails
+            newPositions[color] = {
+              x: 475,
+              y: 475,
+              rotation: 0,
+            };
+            newMirroring[color] = false;
+          }
         }
       }
+
+      console.log(
+        "✅ useArrowPositioning: All positions calculated:",
+        newPositions
+      );
 
       return {
         positions: newPositions,

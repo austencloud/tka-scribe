@@ -25,29 +25,26 @@ export const backgroundsConfig: BackgroundMetadata[] = [
   },
   {
     type: BackgroundType.SNOWFALL,
-    name: "Snowfall", 
+    name: "Snowfall",
     description: "Gentle falling snowflakes with shooting stars",
     icon: "❄️",
-    gradient:
-      "linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)",
+    gradient: "linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)",
     animation: "snow-fall",
   },
   {
     type: BackgroundType.NIGHT_SKY,
     name: "Night Sky",
-    description: "Starry night with twinkling celestial bodies", 
+    description: "Starry night with twinkling celestial bodies",
     icon: "🌙",
-    gradient:
-      "linear-gradient(135deg, #0a0e2c 0%, #1a2040 50%, #2a3060 100%)",
+    gradient: "linear-gradient(135deg, #0a0e2c 0%, #1a2040 50%, #2a3060 100%)",
     animation: "star-twinkle",
   },
   {
     type: BackgroundType.BUBBLES,
     name: "Bubbles",
     description: "Underwater scene with floating bubbles",
-    icon: "🫧", 
-    gradient:
-      "linear-gradient(135deg, #143250 0%, #0a1e3c 50%, #050f28 100%)",
+    icon: "🫧",
+    gradient: "linear-gradient(135deg, #143250 0%, #0a1e3c 50%, #050f28 100%)",
     animation: "bubble-float",
   },
 ];
@@ -55,13 +52,15 @@ export const backgroundsConfig: BackgroundMetadata[] = [
 /**
  * Get background metadata by type
  */
-export function getBackgroundConfig(type: BackgroundType): BackgroundMetadata | undefined {
-  return backgroundsConfig.find(bg => bg.type === type);
+export function getBackgroundConfig(
+  type: BackgroundType
+): BackgroundMetadata | undefined {
+  return backgroundsConfig.find((bg) => bg.type === type);
 }
 
 /**
  * Get all available background types
  */
 export function getAvailableBackgroundTypes(): BackgroundType[] {
-  return backgroundsConfig.map(bg => bg.type);
+  return backgroundsConfig.map((bg) => bg.type);
 }

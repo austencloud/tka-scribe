@@ -1,4 +1,4 @@
-import type { BrowseState } from "$lib/state/browse-state.svelte";
+import type { BrowseState } from "$lib/state/browse-state-factory.svelte";
 
 /**
  * Navigation-specific event handlers for the Browse tab
@@ -30,8 +30,8 @@ export function createNavigationEventHandlers(
       if (activeSection && activeItem) {
         // Use NavigationService to filter sequences
         const filteredSequences = await browseState.filterSequencesByNavigation(
-          activeSection.type,
-          activeItem
+          activeItem,
+          activeSection.type
         );
 
         // Switch to browser panel to show results

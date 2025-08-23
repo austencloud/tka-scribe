@@ -4,52 +4,53 @@
  */
 
 import type { ServiceContainer } from "../ServiceContainer";
+import { IBeatFrameServiceInterface } from "../interfaces/beat-frame-interfaces";
+import { ILetterQueryServiceInterface } from "../interfaces/codex-interfaces";
 import {
   IApplicationInitializationServiceInterface,
   IArrowRenderingServiceInterface,
   IConstructTabCoordinationServiceInterface,
+  IDataTransformationServiceInterface,
   IDeviceDetectionServiceInterface,
   IExportServiceInterface,
   IGridRenderingServiceInterface,
   IMotionGenerationServiceInterface,
   IOrientationCalculationServiceInterface,
   IOverlayRenderingServiceInterface,
+  IPageFactoryServiceInterface,
+  IPageImageExportServiceInterface,
   IPanelManagementServiceInterface,
   IPersistenceServiceInterface,
   IPictographRenderingServiceInterface,
   IPictographServiceInterface,
+  IPrintablePageLayoutServiceInterface,
   // ✅ REMOVED: PropRenderingService is deprecated
   IPropCoordinatorServiceInterface,
+  ISequenceCardExportIntegrationServiceInterface,
+  ISequenceDeletionServiceInterface,
   ISequenceDomainServiceInterface,
   ISequenceGenerationServiceInterface,
-  ISequenceServiceInterface,
-  IWorkbenchBeatOperationsServiceInterface,
   ISequenceImportServiceInterface,
-  ISequenceDeletionServiceInterface,
+  ISequenceServiceInterface,
   ISettingsServiceInterface,
+  IStartPositionSelectionServiceInterface,
   IStartPositionServiceInterface,
   ISvgConfigurationInterface,
   ISvgUtilityServiceInterface,
-  IPrintablePageLayoutServiceInterface,
-  IPageFactoryServiceInterface,
-  IPageImageExportServiceInterface,
-  ISequenceCardExportIntegrationServiceInterface,
-  IDataTransformationServiceInterface,
-  IStartPositionSelectionServiceInterface,
+  IWorkbenchBeatOperationsServiceInterface,
 } from "../interfaces/core-interfaces";
-import { ILetterQueryServiceInterface } from "../interfaces/codex-interfaces";
 
 import { ApplicationInitializationService } from "../../implementations/application/ApplicationInitializationService";
 import { ConstructTabCoordinationService } from "../../implementations/construct/ConstructTabCoordinationService";
+import { SequenceGenerationService } from "../../implementations/generation/SequenceGenerationService";
 import { PictographRenderingService } from "../../implementations/rendering/PictographRenderingService";
+import { SequenceDeletionService } from "../../implementations/sequence/SequenceDeletionService";
+import { SequenceImportService } from "../../implementations/sequence/SequenceImportService";
 import { SequenceService } from "../../implementations/sequence/SequenceService";
 import { WorkbenchBeatOperationsService } from "../../implementations/sequence/WorkbenchBeatOperationsService";
-import { SequenceImportService } from "../../implementations/sequence/SequenceImportService";
-import { SequenceDeletionService } from "../../implementations/sequence/SequenceDeletionService";
-import { SequenceGenerationService } from "../../implementations/generation/SequenceGenerationService";
 
-import { IArrowPositioningOrchestratorInterface } from "../interfaces/positioning-interfaces";
 import type { IArrowPositioningOrchestrator } from "../../positioning/core-services";
+import { IArrowPositioningOrchestratorInterface } from "../interfaces/positioning-interfaces";
 
 /**
  * Register all core services with their dependencies
@@ -65,6 +66,9 @@ export async function registerCoreServices(
   container.registerSingletonClass(ISettingsServiceInterface);
   container.registerSingletonClass(IDeviceDetectionServiceInterface);
   container.registerSingletonClass(IPanelManagementServiceInterface);
+
+  // Register layout services
+  container.registerSingletonClass(IBeatFrameServiceInterface);
 
   // Register construct tab services
   container.registerSingletonClass(IStartPositionServiceInterface);

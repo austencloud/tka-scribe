@@ -52,18 +52,20 @@ export class SvgParsingService implements ISvgParsingService {
    * Extract SVG content (everything inside the <svg> tags)
    */
   extractSvgContent(svgText: string): string {
-    // Extract SVG content (everything inside the <svg> tags)
-    // Arrows are already correctly sized for 950x950 coordinate system
-
     // Check if this is an empty/static SVG (self-closing or width="0")
-    if (
-      svgText.includes('width="0"') ||
-      (svgText.includes("<svg") && svgText.includes("/>"))
-    ) {
+    const hasWidthZero = svgText.includes('width="0"');
+
+    // Fix: Properly detect self-closing SVG tags (e.g., <svg ... />)
+    // Not just any file that contains both "<svg" and "/>" somewhere
+    const isSelfClosing = /<svg[^>]*\/>/i.test(svgText);
+
+    if (hasWidthZero || isSelfClosing) {
       // Static arrows are intentionally empty - return empty string
       return "";
     }
 
+    // Extract SVG content (everything inside the <svg> tags)
+    // Arrows are already correctly sized for 950x950 coordinate system
     const svgContentMatch = svgText.match(/<svg[^>]*>([\s\S]*)<\/svg>/);
     if (!svgContentMatch) {
       console.warn("Could not extract SVG content from non-static arrow");

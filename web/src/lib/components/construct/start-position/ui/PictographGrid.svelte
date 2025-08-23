@@ -5,7 +5,7 @@
   import { getLetterBorderColorSafe } from "$lib/domain";
 
   const {
-    pictographs: pictographDataSet,
+    pictographDataSet,
     selectedPictograph = null,
     onPictographSelect,
   } = $props<{

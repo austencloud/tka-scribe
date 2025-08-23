@@ -4,18 +4,21 @@
  * Tests for the ConstructTabNavigation component - a pure component that takes props
  */
 
-import { describe, it, expect, beforeEach, vi } from "vitest";
-import { render, screen, fireEvent } from "@testing-library/svelte";
-import "@testing-library/jest-dom";
-import ConstructTabNavigation from "../ConstructTabNavigation.svelte";
 import type { ActiveRightPanel } from "$lib/state/construct-tab-state.svelte";
+import "@testing-library/jest-dom";
+import { fireEvent, render, screen } from "@testing-library/svelte";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+import ConstructTabNavigation from "../ConstructTabNavigation.svelte";
 
 // Mock the transition service
-vi.mock("$services/implementations/ConstructTabTransitionService", () => ({
-  constructTabTransitionService: {
-    handleMainTabTransition: vi.fn(),
-  },
-}));
+vi.mock(
+  "$services/implementations/construct/ConstructTabTransitionService",
+  () => ({
+    constructTabTransitionService: {
+      handleMainTabTransition: vi.fn(),
+    },
+  })
+);
 
 describe("ConstructTabNavigation", () => {
   let mockSetActiveRightPanel: ReturnType<typeof vi.fn>;

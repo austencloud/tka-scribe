@@ -28,29 +28,10 @@ export class BrowseService implements IBrowseService {
   private isValidSequenceMetadata(sequence: SequenceData): boolean {
     const word = sequence.word || sequence.name || sequence.id || "";
 
-    // ✅ CIRCUIT BREAKER: Block specific known problematic sequences
-    const problematicSequences = [
-      "KD__KD__JE__JE__",
-      "KI_X_",
-      "KDΨΦKDΨΦJEΨΦJEΨΦ",
-      "KIθX-",
-    ];
-
-    if (
-      problematicSequences.includes(word) ||
-      problematicSequences.includes(sequence.id)
-    ) {
-      console.warn(
-        `🚫 CIRCUIT BREAKER: Blocking problematic sequence "${word}"`
-      );
-      return false;
-    }
-
     // Basic validation for real dictionary sequences
     return (
       word.length > 0 &&
       word.length <= 200 && // Increased limit for complex sequences
-      word !== "A_A" && // Exclude test sequences
       !word.toLowerCase().includes("test") // No test sequences
     );
   }

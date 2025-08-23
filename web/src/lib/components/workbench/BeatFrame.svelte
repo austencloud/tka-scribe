@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { BeatData } from "$lib/domain";
-  import { beatFrameService } from "$lib/services/BeatFrameService.svelte";
+  import { resolve } from "$lib/services/bootstrap";
+  import { createBeatFrameState } from "$lib/state/beat-frame/beat-frame-state.svelte";
   import { onMount } from "svelte";
   import BeatView from "./BeatView.svelte";
 
@@ -28,13 +29,17 @@
     onnaturalheightchange,
   }: Props = $props();
 
-  const config = $derived(beatFrameService.config);
-  const hoveredBeatIndex = $derived(beatFrameService.hoveredBeatIndex);
+  // Get service from DI container and create component-scoped state
+  const beatFrameService = resolve(
+    "IBeatFrameService"
+  ) as import("$lib/services/interfaces/beat-frame-interfaces").IBeatFrameService;
+  const beatFrameState = createBeatFrameState(beatFrameService);
+
+  const config = $derived(beatFrameState.config);
+  const hoveredBeatIndex = $derived(beatFrameState.hoveredBeatIndex);
 
   // Use layout info instead of just dimensions for better responsiveness
-  const layoutInfo = $derived(
-    beatFrameService.calculateLayoutInfo(beats.length)
-  );
+  const layoutInfo = $derived(beatFrameState.calculateLayoutInfo(beats.length));
   const frameDimensions = $derived({
     width: layoutInfo.totalWidth,
     height: layoutInfo.totalHeight,
@@ -55,11 +60,11 @@
         timeoutId = setTimeout(() => {
           for (const entry of entries) {
             const { width, height } = entry.contentRect;
-            beatFrameService.setContainerDimensions(
+            beatFrameState.updateContainerDimensions({
               width,
               height,
-              fullScreenMode
-            );
+              isFullscreen: fullScreenMode,
+            });
           }
         }, 100); // Debounce by 100ms
       });
@@ -68,11 +73,11 @@
 
       // Initial dimension setting
       const rect = containerRef.getBoundingClientRect();
-      beatFrameService.setContainerDimensions(
-        rect.width,
-        rect.height,
-        fullScreenMode
-      );
+      beatFrameState.updateContainerDimensions({
+        width: rect.width,
+        height: rect.height,
+        isFullscreen: fullScreenMode,
+      });
 
       return () => {
         clearTimeout(timeoutId);
@@ -88,11 +93,11 @@
     fullscreenUpdateTimeout = setTimeout(() => {
       if (containerRef) {
         const rect = containerRef.getBoundingClientRect();
-        beatFrameService.setContainerDimensions(
-          rect.width,
-          rect.height,
-          fullScreenMode
-        );
+        beatFrameState.updateContainerDimensions({
+          width: rect.width,
+          height: rect.height,
+          isFullscreen: fullScreenMode,
+        });
       }
     }, 50);
   });
@@ -128,16 +133,14 @@
         cellSize: layoutInfo.cellSize,
         columns: layoutInfo.columns,
         beatCount: beats.length,
-        containerDimensions: beatFrameService.containerDimensions,
+        containerDimensions: beatFrameState.containerDimensions,
         frameDimensions,
         shouldScroll: layoutInfo.shouldScroll,
       });
 
       // Only update if significantly different to prevent micro-adjustments
-      if (
-        Math.abs(layoutInfo.cellSize - beatFrameService.config.beatSize) > 1
-      ) {
-        beatFrameService.setConfig({
+      if (Math.abs(layoutInfo.cellSize - beatFrameState.config.beatSize) > 1) {
+        beatFrameState.setConfig({
           beatSize: layoutInfo.cellSize,
           columns: layoutInfo.columns,
         });
@@ -154,11 +157,11 @@
   }
 
   function handleBeatHover(index: number) {
-    beatFrameService.setHoveredBeat(index);
+    beatFrameState.setHoveredBeatIndex(index);
   }
 
   function handleBeatLeave() {
-    beatFrameService.clearHoveredBeat();
+    beatFrameState.clearHover();
   }
 </script>
 
@@ -176,7 +179,7 @@
     >
       <!-- Start Position tile at [0,0] when enabled -->
       {#if config.hasStartTile}
-        {@const startPositionCoords = beatFrameService.calculateStartPosition(
+        {@const startPositionCoords = beatFrameState.calculateStartPosition(
           beats.length
         )}
         <div
@@ -215,7 +218,7 @@
       {/if}
 
       {#each beats as beat, index}
-        {@const position = beatFrameService.calculateBeatPosition(
+        {@const position = beatFrameState.calculateBeatPosition(
           index,
           beats.length
         )}

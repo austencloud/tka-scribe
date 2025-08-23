@@ -22,7 +22,7 @@ Integrates panel management service with runes for:
     IThumbnailService,
   } from "$lib/services/interfaces/browse-interfaces";
   import type { IPanelManagementService } from "$lib/services/interfaces/panel-interfaces";
-  import { createBrowseState } from "$lib/state/browse-state.svelte";
+  import { createBrowseState } from "$lib/state/browse-state-factory.svelte";
   import {
     BROWSE_TAB_PANEL_CONFIGS,
     createPanelState,
@@ -30,7 +30,7 @@ Integrates panel management service with runes for:
   import { onDestroy, onMount } from "svelte";
   // Enhanced components
   import AnimationPanel from "./browse/AnimationPanel.svelte";
-  import BrowseLayoutEnhanced from "./browse/BrowseLayout.svelte";
+  import BrowseLayout from "./browse/BrowseLayout.svelte";
   import NavigationSidebar from "./browse/NavigationSidebar.svelte";
   // Existing components
   import DeleteConfirmationDialog from "./browse/DeleteConfirmationDialog.svelte";
@@ -216,7 +216,7 @@ Integrates panel management service with runes for:
   />
 
   <!-- Enhanced layout with unified panel management -->
-  <BrowseLayoutEnhanced
+  <BrowseLayout
     {panelState}
     onNavigationResize={handleNavigationResize}
     onAnimationResize={handleAnimationResize}
@@ -259,7 +259,7 @@ Integrates panel management service with runes for:
         onClose={handleCloseAnimationPanel}
       />
     {/snippet}
-  </BrowseLayoutEnhanced>
+  </BrowseLayout>
 
   <!-- Loading overlay for initial load -->
   <LoadingOverlay

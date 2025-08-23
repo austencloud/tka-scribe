@@ -71,26 +71,30 @@ REFACTORED: Now purely presentational, uses ArrowRenderingService for business l
   // Load SVG data using ArrowRenderingService (business logic now in service)
   const loadSvg = async () => {
     try {
-      if (!motionData) throw new Error("No motion data available");
+      if (!motionData || !motionData.arrowPlacementData)
+        throw new Error("No motion data or arrow placement data available");
 
-      // TODO: Update ArrowRenderingService to work with embedded placement data
-      // const svgDataResult = await arrowRenderingService.loadArrowPlacementData(motionData);
+      console.log("🏹 ArrowSvg: Loading arrow data for motion:", motionData);
 
-      // Temporary: Create mock SVG data until service is updated
-      const svgDataResult = {
-        imageSrc: `<svg viewBox="0 0 100 100"><path d="M50,10 L90,90 L50,70 L10,90 Z" fill="${motionData.color === "blue" ? "#2E3192" : "#ED1C24"}"/></svg>`,
-        viewBox: { width: 100, height: 100 },
-        center: { x: 50, y: 50 },
-      };
+      // Use the actual ArrowRenderingService to load real arrow SVGs
+      const svgDataResult = await arrowRenderingService.loadArrowPlacementData(
+        motionData.arrowPlacementData,
+        motionData
+      );
+
+      console.log(
+        "✅ ArrowSvg: Arrow SVG data loaded successfully:",
+        svgDataResult
+      );
 
       svgData = svgDataResult;
       loaded = true;
       onLoaded?.(`${motionData?.color}-arrow`);
     } catch (e) {
+      console.error("❌ ArrowSvg: Error loading arrow data:", e);
       error = `Failed to load arrow SVG: ${e}`;
       onError?.(`${motionData?.color}-arrow`, error);
-      // Still mark as loaded to prevent blocking
-      loaded = true;
+      throw e; // Re-throw the error instead of using fallback
     }
   };
 
@@ -168,13 +172,7 @@ REFACTORED: Now purely presentational, uses ArrowRenderingService for business l
       />
     </g>
 
-    <!-- Debug info (if needed) -->
-    {#if import.meta.env.DEV}
-      <circle r="2" fill="red" opacity="0.5" />
-      <text x="0" y="-25" text-anchor="middle" font-size="6" fill="black">
-        {motionData?.arrowLocation}
-      </text>
-    {/if}
+    <!-- Debug info removed to prevent red rectangle artifacts -->
   {/if}
 </g>
 

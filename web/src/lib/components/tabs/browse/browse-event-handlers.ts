@@ -1,6 +1,6 @@
 import type { SequenceData } from "$domain/SequenceData";
 import type { FilterType, FilterValue } from "$lib/domain/browse";
-import type { BrowseState } from "$lib/state/browse-state.svelte";
+import type { BrowseState } from "$lib/state/browse-state-factory.svelte";
 
 /**
  * Event handlers for the Browse tab

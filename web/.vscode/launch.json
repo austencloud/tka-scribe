@@ -2,33 +2,19 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Debug TKA Web App",
-      "type": "chrome",
+      "name": "🚀 Launch TKA",
+      "type": "node",
       "request": "launch",
-      "url": "http://localhost:5173",
-      "webRoot": "${workspaceFolder}",
-      "userDataDir": "${workspaceFolder}/.vscode/chrome-debug-profile",
-      "sourceMaps": true,
-      "smartStep": true,
-      "skipFiles": [
-        "<node_internals>/**",
-        "**/node_modules/**",
-        "**/vite/**",
-        "**/@vite/**",
-        "**/dist/**"
-      ],
-      "pathMapping": {
-        "/": "${workspaceFolder}/",
-        "/@fs/": "/",
-        "/src/": "${workspaceFolder}/src/"
-      },
-      "sourceMapPathOverrides": {
-        "/@fs/*": "/*",
-        "/src/*": "${workspaceFolder}/src/*",
-        "/*": "${workspaceFolder}/*"
-      },
-      "disableNetworkCache": true,
-      "showAsyncStacks": true
+      "cwd": "${workspaceFolder}",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev"],
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "serverReadyAction": {
+        "pattern": "Local:.*http://localhost:([0-9]+)",
+        "uriFormat": "http://localhost:%s",
+        "action": "debugWithChrome"
+      }
     }
   ]
 }

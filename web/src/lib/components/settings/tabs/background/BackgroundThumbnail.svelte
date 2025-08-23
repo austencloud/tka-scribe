@@ -7,7 +7,7 @@
 <script lang="ts">
   import type { BackgroundType } from "$lib/components/backgrounds/types/types";
   import type { BackgroundMetadata } from "./background-config";
-  
+
   interface Props {
     background: BackgroundMetadata;
     isSelected: boolean;

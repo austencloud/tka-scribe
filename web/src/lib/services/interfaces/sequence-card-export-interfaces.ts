@@ -1,0 +1,394 @@
+/**
+ * Sequence Card Export Service Inteexport interface BatchExportProgress extends ProgressInfo {
+  current: number;
+  total: number;
+  percentage: number;
+  message: string;
+  stage: 'initializing' | 'processing' | 'rendering' | 'exporting' | 'finalizing';
+  errorCount: number;
+  warningCount: number;
+  startTime: number;
+}
+ * Clean, focused service contracts for sequence card image generation.
+ * Follows single responsibility principle and TKA DI patterns.
+ */
+
+import type { ExportOptions, ProgressInfo, SequenceData } from "./domain-types";
+
+// ============================================================================
+// CORE TYPES
+// ============================================================================
+
+export interface SequenceCardDimensions {
+  width: number;
+  height: number;
+  scale?: number; // Device pixel ratio multiplier
+}
+
+export interface SequenceCardMetadata {
+  title?: string;
+  author?: string;
+  beatNumbers?: boolean;
+  timestamp?: boolean;
+  backgroundColor?: string;
+}
+
+export interface BatchOperationConfig {
+  batchSize: number;
+  memoryThreshold: number; // MB
+  enableProgressReporting: boolean;
+  enableCancellation: boolean;
+}
+
+export interface ExportMetrics {
+  processingTime: number;
+  fileSize: number;
+  resolution: { width: number; height: number };
+  memoryUsage?: number;
+}
+
+export interface BatchExportProgress extends ProgressInfo {
+  stage:
+    | "initializing"
+    | "processing"
+    | "rendering"
+    | "exporting"
+    | "finalizing";
+}
+
+export interface SequenceCardExportResult {
+  sequenceId: string;
+  success: boolean;
+  blob?: Blob;
+  error?: Error;
+  metrics?: ExportMetrics;
+}
+
+// ============================================================================
+// SERVICE INTERFACES
+// ============================================================================
+
+/**
+ * Main orchestrator for sequence card export operations
+ * Coordinates focused services without doing actual work
+ */
+export interface ISequenceCardExportOrchestrator {
+  /**
+   * Export single sequence card
+   */
+  exportSequenceCard(
+    sequence: SequenceData,
+    dimensions: SequenceCardDimensions,
+    metadata?: SequenceCardMetadata
+  ): Promise<SequenceCardExportResult>;
+
+  /**
+   * Export multiple sequence cards in batch
+   */
+  exportBatch(
+    sequences: SequenceData[],
+    dimensions: SequenceCardDimensions,
+    config: BatchOperationConfig,
+    onProgress?: (progress: BatchExportProgress) => void
+  ): Promise<SequenceCardExportResult[]>;
+
+  /**
+   * Cancel current batch operation
+   */
+  cancelBatch(): void;
+
+  /**
+   * Get current operation status
+   */
+  getOperationStatus(): {
+    isActive: boolean;
+    currentOperation?: string;
+    progress?: BatchExportProgress;
+  };
+}
+
+/**
+ * Service for generating sequence card images from beats
+ */
+export interface ISequenceCardImageGenerationService {
+  /**
+   * Generate image for a single sequence
+   */
+  generateSequenceImage(
+    sequence: SequenceData,
+    dimensions: SequenceCardDimensions
+  ): Promise<HTMLCanvasElement>;
+
+  /**
+   * Validate sequence data for image generation
+   */
+  validateSequenceData(sequence: SequenceData): boolean;
+
+  /**
+   * Get recommended dimensions for sequence
+   */
+  getRecommendedDimensions(beatCount: number): SequenceCardDimensions;
+}
+
+/**
+ * Service for composing SVG layouts from beats
+ */
+export interface ISequenceCardSVGCompositionService {
+  /**
+   * Create SVG layout for sequence beats
+   */
+  createSequenceLayout(
+    beatSVGs: string[],
+    dimensions: SequenceCardDimensions
+  ): Promise<string>;
+
+  /**
+   * Calculate optimal beat arrangement
+   */
+  calculateBeatLayout(
+    beatCount: number,
+    dimensions: SequenceCardDimensions
+  ): {
+    rows: number;
+    columns: number;
+    beatWidth: number;
+    beatHeight: number;
+    spacing: { x: number; y: number };
+  };
+
+  /**
+   * Apply responsive sizing based on beat count
+   */
+  calculateResponsiveDimensions(
+    beatCount: number,
+    maxDimensions: SequenceCardDimensions
+  ): SequenceCardDimensions;
+}
+
+/**
+ * Service for adding metadata overlays (titles, beat numbers, etc.)
+ */
+export interface ISequenceCardMetadataOverlayService {
+  /**
+   * Add metadata overlays to SVG
+   */
+  addMetadataOverlays(
+    svg: string,
+    sequence: SequenceData,
+    metadata: SequenceCardMetadata,
+    dimensions: SequenceCardDimensions
+  ): Promise<string>;
+
+  /**
+   * Generate title overlay
+   */
+  generateTitleOverlay(
+    title: string,
+    dimensions: SequenceCardDimensions
+  ): string;
+
+  /**
+   * Generate beat number overlays
+   */
+  generateBeatNumberOverlays(
+    beatCount: number,
+    layout: {
+      rows: number;
+      columns: number;
+      beatWidth: number;
+      beatHeight: number;
+    }
+  ): string[];
+
+  /**
+   * Add background and borders
+   */
+  addBackgroundAndBorders(
+    svg: string,
+    dimensions: SequenceCardDimensions,
+    backgroundColor?: string
+  ): string;
+}
+
+/**
+ * Service for handling batch processing operations
+ */
+export interface ISequenceCardBatchProcessingService {
+  /**
+   * Process sequence cards in optimized batches
+   */
+  processBatch<T>(
+    items: T[],
+    config: BatchOperationConfig,
+    processor: (item: T, index: number) => Promise<SequenceCardExportResult>,
+    onProgress?: (progress: BatchExportProgress) => void
+  ): Promise<SequenceCardExportResult[]>;
+
+  /**
+   * Calculate optimal batch size based on memory constraints
+   */
+  calculateOptimalBatchSize(
+    itemCount: number,
+    averageItemSize: number,
+    availableMemory: number
+  ): number;
+
+  /**
+   * Monitor memory usage during batch processing
+   */
+  getMemoryUsage(): {
+    used: number;
+    available: number;
+    threshold: number;
+  };
+
+  /**
+   * Request cancellation of current batch
+   */
+  requestCancellation(): void;
+
+  /**
+   * Check if cancellation was requested
+   */
+  isCancellationRequested(): boolean;
+}
+
+/**
+ * Service for converting SVG to high-quality images
+ */
+export interface ISequenceCardImageConversionService {
+  /**
+   * Convert SVG string to Canvas
+   */
+  svgToCanvas(
+    svgString: string,
+    dimensions: SequenceCardDimensions
+  ): Promise<HTMLCanvasElement>;
+
+  /**
+   * Convert Canvas to Blob
+   */
+  canvasToBlob(
+    canvas: HTMLCanvasElement,
+    format: "PNG" | "JPEG" | "WEBP",
+    quality?: number
+  ): Promise<Blob>;
+
+  /**
+   * Convert SVG directly to Blob (optimized pipeline)
+   */
+  svgToBlob(
+    svgString: string,
+    dimensions: SequenceCardDimensions,
+    format: "PNG" | "JPEG" | "WEBP",
+    quality?: number
+  ): Promise<Blob>;
+
+  /**
+   * Optimize image for different use cases
+   */
+  optimizeImage(
+    blob: Blob,
+    useCase: "web" | "print" | "archive"
+  ): Promise<Blob>;
+}
+
+/**
+ * Service for tracking export operation progress
+ */
+export interface ISequenceCardExportProgressTracker {
+  /**
+   * Start tracking new operation
+   */
+  startOperation(operationId: string, totalSteps: number): void;
+
+  /**
+   * Update progress for current operation
+   */
+  updateProgress(
+    operationId: string,
+    current: number,
+    message: string,
+    stage: BatchExportProgress["stage"]
+  ): void;
+
+  /**
+   * Add error to current operation
+   */
+  addError(operationId: string, error: Error): void;
+
+  /**
+   * Add warning to current operation
+   */
+  addWarning(operationId: string, warning: string): void;
+
+  /**
+   * Complete operation
+   */
+  completeOperation(operationId: string): void;
+
+  /**
+   * Get current progress
+   */
+  getProgress(operationId: string): BatchExportProgress | null;
+
+  /**
+   * Subscribe to progress updates
+   */
+  onProgress(
+    operationId: string,
+    callback: (progress: BatchExportProgress) => void
+  ): () => void; // Returns unsubscribe function
+}
+
+/**
+ * Cache service for sequence card images and data
+ */
+export interface ISequenceCardCacheService {
+  /**
+   * Store image in cache
+   */
+  storeImage(
+    sequenceId: string,
+    imageBlob: Blob,
+    options?: ExportOptions
+  ): Promise<void>;
+
+  /**
+   * Retrieve image from cache
+   */
+  retrieveImage(
+    sequenceId: string,
+    options?: ExportOptions
+  ): Promise<Blob | null>;
+
+  /**
+   * Store sequence data in cache
+   */
+  storeSequenceData(sequenceId: string, data: SequenceData): Promise<void>;
+
+  /**
+   * Retrieve sequence data from cache
+   */
+  retrieveSequenceData(sequenceId: string): Promise<SequenceData | null>;
+
+  /**
+   * Clear all cached data
+   */
+  clearCache(): Promise<void>;
+
+  /**
+   * Get cache statistics
+   */
+  getCacheStats(): {
+    entryCount: number;
+    totalSize: number;
+    hitRate: number;
+    lastCleanup: Date;
+  };
+
+  /**
+   * Cleanup expired cache entries
+   */
+  cleanup(): Promise<void>;
+}

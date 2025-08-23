@@ -1,6 +1,6 @@
 {
   "version": "4.0.0",
-  "generatedAt": "2025-08-22T20:05:07.582Z",
+  "generatedAt": "2025-08-23T16:24:03.451Z",
   "totalSequences": 373,
   "source": "real_dictionary_scan",
   "description": "Generated from actual TKA dictionary folders",
@@ -17,7 +17,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "beginner",
       "level": 1,
-      "dateAdded": "2025-07-21T11:54:48.836Z",
+      "dateAdded": "2025-05-01T14:13:50.538Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -46,7 +46,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2025-02-17T08:02:33.564Z",
+      "dateAdded": "2025-02-08T04:58:13.089Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -55,7 +55,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": "diamond",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -74,7 +74,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2024-12-26T07:56:18.830Z",
+      "dateAdded": "2024-09-08T07:14:27.984Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -102,7 +102,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "beginner",
       "level": 2,
-      "dateAdded": "2024-10-24T16:04:57.572Z",
+      "dateAdded": "2024-12-18T05:31:24.308Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -130,7 +130,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 2,
-      "dateAdded": "2025-07-02T06:48:37.726Z",
+      "dateAdded": "2025-07-25T18:55:19.894Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -158,7 +158,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2025-04-22T14:07:10.607Z",
+      "dateAdded": "2024-10-23T23:02:57.717Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -186,7 +186,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 2,
-      "dateAdded": "2025-03-05T00:41:36.195Z",
+      "dateAdded": "2025-03-12T09:45:59.766Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -195,7 +195,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": "diamond",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -214,7 +214,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "advanced",
       "level": 5,
-      "dateAdded": "2025-05-23T01:58:48.403Z",
+      "dateAdded": "2025-04-14T14:03:57.214Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -223,7 +223,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": "diamond",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -243,7 +243,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2024-08-26T22:56:18.801Z",
+      "dateAdded": "2025-07-07T03:22:36.731Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -273,7 +273,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "advanced",
       "level": 5,
-      "dateAdded": "2025-07-22T12:17:48.781Z",
+      "dateAdded": "2024-10-11T04:02:57.466Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -282,7 +282,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": "diamond",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -303,7 +303,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "advanced",
       "level": 4,
-      "dateAdded": "2025-03-10T12:01:48.319Z",
+      "dateAdded": "2024-11-29T15:03:49.992Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -331,7 +331,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2025-05-22T09:08:57.354Z",
+      "dateAdded": "2024-11-24T06:29:17.194Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -359,7 +359,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2024-10-18T21:08:30.750Z",
+      "dateAdded": "2025-02-20T05:23:50.156Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -387,7 +387,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "advanced",
       "level": 5,
-      "dateAdded": "2025-02-20T01:15:28.331Z",
+      "dateAdded": "2025-07-03T01:48:26.870Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -396,7 +396,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": "diamond",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -415,7 +415,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2024-11-19T18:58:13.615Z",
+      "dateAdded": "2025-07-21T07:17:46.223Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -424,7 +424,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": "box",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -443,7 +443,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "beginner",
       "level": 1,
-      "dateAdded": "2024-11-29T05:45:47.528Z",
+      "dateAdded": "2025-01-08T22:32:23.824Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -452,7 +452,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": "diamond",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -471,7 +471,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "beginner",
       "level": 2,
-      "dateAdded": "2025-03-15T19:35:34.441Z",
+      "dateAdded": "2025-01-04T05:15:37.282Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -499,7 +499,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2025-01-07T01:05:52.684Z",
+      "dateAdded": "2024-10-11T04:03:55.634Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -527,7 +527,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2024-12-24T02:50:20.670Z",
+      "dateAdded": "2024-09-11T15:10:26.710Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -555,7 +555,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "beginner",
       "level": 2,
-      "dateAdded": "2024-09-18T10:32:09.989Z",
+      "dateAdded": "2025-08-19T08:35:16.961Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -564,7 +564,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": "diamond",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -583,7 +583,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2025-02-05T06:13:41.195Z",
+      "dateAdded": "2025-04-14T18:10:08.427Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -611,7 +611,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2025-02-20T04:40:55.253Z",
+      "dateAdded": "2025-03-15T20:08:21.328Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -639,7 +639,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2025-04-15T13:20:05.811Z",
+      "dateAdded": "2025-03-15T08:30:52.273Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -667,7 +667,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "advanced",
       "level": 5,
-      "dateAdded": "2024-09-11T20:31:08.180Z",
+      "dateAdded": "2025-01-24T12:31:15.104Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -695,7 +695,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2025-03-22T13:02:45.184Z",
+      "dateAdded": "2024-10-10T02:58:52.732Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -704,7 +704,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": "box",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -723,7 +723,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2024-12-16T14:27:13.561Z",
+      "dateAdded": "2025-08-19T10:46:27.750Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -752,7 +752,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2024-12-21T10:24:29.322Z",
+      "dateAdded": "2024-10-01T17:04:07.725Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -761,7 +761,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": "box",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -780,7 +780,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "advanced",
       "level": 5,
-      "dateAdded": "2024-12-10T14:17:40.328Z",
+      "dateAdded": "2024-08-24T22:44:23.150Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -789,7 +789,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": "diamond",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -808,7 +808,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "advanced",
       "level": 5,
-      "dateAdded": "2024-09-23T16:44:37.602Z",
+      "dateAdded": "2025-08-09T18:13:36.727Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -817,7 +817,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": "box",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -836,7 +836,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2025-05-03T14:22:41.781Z",
+      "dateAdded": "2025-06-11T17:59:29.610Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -845,7 +845,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": "diamond",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -864,7 +864,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2025-03-25T16:19:37.210Z",
+      "dateAdded": "2025-04-07T19:46:29.021Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -892,7 +892,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 2,
-      "dateAdded": "2025-08-15T11:40:10.552Z",
+      "dateAdded": "2024-12-27T00:28:16.908Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -901,7 +901,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": "box",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -920,7 +920,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 4,
-      "dateAdded": "2024-12-14T04:08:14.104Z",
+      "dateAdded": "2025-03-26T08:27:33.623Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -948,7 +948,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2024-09-12T18:32:24.888Z",
+      "dateAdded": "2024-10-08T09:26:00.121Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -957,7 +957,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": "diamond",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -976,7 +976,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 2,
-      "dateAdded": "2025-08-01T04:53:49.329Z",
+      "dateAdded": "2025-04-03T01:33:56.952Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -1006,7 +1006,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "beginner",
       "level": 1,
-      "dateAdded": "2025-03-12T19:07:37.137Z",
+      "dateAdded": "2024-10-13T22:00:06.745Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -1015,7 +1015,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": "box",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -1034,7 +1034,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2024-10-08T01:33:57.318Z",
+      "dateAdded": "2025-08-08T16:10:48.896Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -1043,7 +1043,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": "diamond",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -1062,7 +1062,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2025-08-13T18:49:36.076Z",
+      "dateAdded": "2025-06-28T16:29:28.397Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -1071,7 +1071,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": "box",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -1090,7 +1090,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2025-02-10T06:49:19.416Z",
+      "dateAdded": "2024-09-20T14:51:44.657Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -1119,7 +1119,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2024-12-24T05:36:19.689Z",
+      "dateAdded": "2024-12-22T03:58:43.200Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -1147,7 +1147,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2024-09-26T17:58:15.284Z",
+      "dateAdded": "2025-02-14T15:15:38.136Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -1156,7 +1156,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": "diamond",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -1175,7 +1175,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 4,
-      "dateAdded": "2025-05-22T18:43:14.374Z",
+      "dateAdded": "2025-04-02T13:03:34.948Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -1184,7 +1184,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": "diamond",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -1203,7 +1203,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2025-02-28T09:48:15.687Z",
+      "dateAdded": "2025-07-19T13:37:42.782Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -1212,7 +1212,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": "box",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -1231,7 +1231,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "advanced",
       "level": 5,
-      "dateAdded": "2025-05-18T21:19:33.330Z",
+      "dateAdded": "2024-08-27T13:00:00.706Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -1259,7 +1259,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2025-05-11T04:50:42.490Z",
+      "dateAdded": "2025-04-23T05:46:16.585Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -1268,7 +1268,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": "box",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -1289,7 +1289,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2024-12-23T21:09:26.768Z",
+      "dateAdded": "2025-07-07T20:39:21.113Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -1317,7 +1317,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 4,
-      "dateAdded": "2025-02-01T23:16:37.421Z",
+      "dateAdded": "2025-03-16T02:46:03.339Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -1326,7 +1326,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": "box",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -1345,7 +1345,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2025-02-06T20:42:22.100Z",
+      "dateAdded": "2025-01-27T05:36:37.046Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -1354,7 +1354,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": "box",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -1373,7 +1373,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "beginner",
       "level": 2,
-      "dateAdded": "2025-04-14T04:39:26.705Z",
+      "dateAdded": "2024-08-29T19:49:55.422Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -1382,7 +1382,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": "diamond",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -1402,7 +1402,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2025-06-18T20:30:39.630Z",
+      "dateAdded": "2025-03-05T14:22:41.338Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -1431,7 +1431,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "advanced",
       "level": 5,
-      "dateAdded": "2025-04-01T10:13:41.145Z",
+      "dateAdded": "2024-12-11T19:03:00.364Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -1440,7 +1440,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": "diamond",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -1459,7 +1459,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2025-05-05T20:53:36.230Z",
+      "dateAdded": "2025-03-27T13:27:34.198Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -1468,7 +1468,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": "box",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -1487,7 +1487,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 4,
-      "dateAdded": "2025-02-14T15:06:41.196Z",
+      "dateAdded": "2024-11-22T21:09:45.048Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -1496,7 +1496,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": "box",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -1515,7 +1515,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "advanced",
       "level": 5,
-      "dateAdded": "2025-01-24T08:25:55.039Z",
+      "dateAdded": "2024-12-15T13:13:16.858Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -1524,7 +1524,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": "box",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -1543,7 +1543,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2025-05-29T17:00:01.928Z",
+      "dateAdded": "2024-09-15T07:20:26.130Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -1571,7 +1571,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2025-07-31T10:28:06.877Z",
+      "dateAdded": "2025-04-11T12:33:06.792Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -1599,7 +1599,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "beginner",
       "level": 2,
-      "dateAdded": "2025-08-01T18:05:21.521Z",
+      "dateAdded": "2025-02-14T15:52:07.505Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -1608,7 +1608,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": "box",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -1627,7 +1627,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 4,
-      "dateAdded": "2024-09-12T17:58:34.574Z",
+      "dateAdded": "2024-12-11T08:15:20.425Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -1636,7 +1636,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": "box",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -1655,7 +1655,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2024-12-03T18:41:46.997Z",
+      "dateAdded": "2025-03-08T22:11:33.020Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -1683,7 +1683,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2024-09-01T04:04:32.639Z",
+      "dateAdded": "2025-08-13T01:54:00.923Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -1692,7 +1692,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": "diamond",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -1711,7 +1711,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2025-02-21T15:56:57.211Z",
+      "dateAdded": "2024-11-14T11:26:43.313Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -1739,7 +1739,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 4,
-      "dateAdded": "2025-01-21T22:52:39.906Z",
+      "dateAdded": "2025-08-20T14:40:01.170Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -1767,7 +1767,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "beginner",
       "level": 2,
-      "dateAdded": "2025-06-25T13:12:54.580Z",
+      "dateAdded": "2024-11-19T00:15:11.245Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -1795,7 +1795,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2025-03-12T10:09:29.398Z",
+      "dateAdded": "2025-02-06T03:30:51.296Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -1804,7 +1804,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": "box",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -1823,7 +1823,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2024-09-21T14:26:35.463Z",
+      "dateAdded": "2024-09-07T04:13:03.649Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -1851,7 +1851,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2025-03-05T18:01:00.214Z",
+      "dateAdded": "2025-02-05T04:00:33.501Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -1879,7 +1879,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "beginner",
       "level": 2,
-      "dateAdded": "2024-09-10T10:11:36.424Z",
+      "dateAdded": "2024-10-15T00:22:23.003Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -1907,7 +1907,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 4,
-      "dateAdded": "2025-02-17T14:51:26.429Z",
+      "dateAdded": "2025-07-15T00:13:00.843Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -1935,7 +1935,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "advanced",
       "level": 5,
-      "dateAdded": "2024-11-25T20:32:22.576Z",
+      "dateAdded": "2025-02-27T13:55:06.110Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -1944,7 +1944,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": "diamond",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -1963,7 +1963,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2025-04-04T15:04:32.350Z",
+      "dateAdded": "2025-07-08T00:05:58.758Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -1972,7 +1972,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": "diamond",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -1992,7 +1992,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "advanced",
       "level": 5,
-      "dateAdded": "2025-08-16T22:13:29.656Z",
+      "dateAdded": "2024-11-12T15:52:44.288Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -2020,7 +2020,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "advanced",
       "level": 5,
-      "dateAdded": "2024-12-27T22:12:23.784Z",
+      "dateAdded": "2025-08-21T21:42:59.424Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -2053,7 +2053,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2025-05-16T14:47:20.913Z",
+      "dateAdded": "2025-05-27T19:35:09.929Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -2062,7 +2062,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": "diamond",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -2083,7 +2083,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "advanced",
       "level": 5,
-      "dateAdded": "2024-10-01T20:18:15.090Z",
+      "dateAdded": "2024-12-05T11:40:44.241Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -2111,7 +2111,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "advanced",
       "level": 5,
-      "dateAdded": "2024-12-02T17:44:09.179Z",
+      "dateAdded": "2024-11-08T07:17:05.029Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -2120,7 +2120,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": "diamond",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -2139,7 +2139,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "advanced",
       "level": 5,
-      "dateAdded": "2025-01-16T14:58:16.901Z",
+      "dateAdded": "2025-03-14T05:57:12.936Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -2167,7 +2167,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "advanced",
       "level": 5,
-      "dateAdded": "2025-06-03T06:10:03.559Z",
+      "dateAdded": "2025-02-23T10:53:59.857Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -2196,7 +2196,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "advanced",
       "level": 5,
-      "dateAdded": "2024-08-24T11:01:32.992Z",
+      "dateAdded": "2025-08-13T11:27:11.291Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -2225,7 +2225,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2025-07-14T11:33:39.142Z",
+      "dateAdded": "2024-11-29T19:22:52.572Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -2253,7 +2253,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "advanced",
       "level": 5,
-      "dateAdded": "2024-10-14T14:13:52.029Z",
+      "dateAdded": "2024-10-05T12:30:59.594Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -2262,7 +2262,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": "box",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -2281,7 +2281,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2024-09-02T15:57:14.804Z",
+      "dateAdded": "2025-05-24T10:46:25.739Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -2290,7 +2290,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": "diamond",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -2309,7 +2309,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2024-11-19T11:25:39.253Z",
+      "dateAdded": "2025-03-10T01:45:03.717Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -2318,7 +2318,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": "box",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -2337,7 +2337,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2025-06-25T11:45:52.127Z",
+      "dateAdded": "2024-10-20T09:19:47.635Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -2365,7 +2365,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "beginner",
       "level": 2,
-      "dateAdded": "2025-02-23T21:14:54.550Z",
+      "dateAdded": "2025-02-11T17:31:36.874Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -2374,7 +2374,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": "diamond",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -2393,7 +2393,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "beginner",
       "level": 2,
-      "dateAdded": "2024-11-01T03:18:54.126Z",
+      "dateAdded": "2024-11-10T07:08:23.478Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -2421,7 +2421,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2024-10-26T17:44:39.601Z",
+      "dateAdded": "2025-01-09T17:50:00.995Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -2430,7 +2430,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": "diamond",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -2449,7 +2449,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "advanced",
       "level": 4,
-      "dateAdded": "2025-06-07T14:12:26.291Z",
+      "dateAdded": "2024-09-03T18:11:30.667Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -2477,7 +2477,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2025-01-28T19:36:47.858Z",
+      "dateAdded": "2025-01-23T05:51:49.074Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -2505,7 +2505,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "advanced",
       "level": 5,
-      "dateAdded": "2025-03-12T20:35:18.916Z",
+      "dateAdded": "2025-07-08T06:11:26.236Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -2533,7 +2533,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "advanced",
       "level": 5,
-      "dateAdded": "2025-06-17T11:59:42.885Z",
+      "dateAdded": "2025-08-09T03:46:41.689Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -2561,7 +2561,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "beginner",
       "level": 1,
-      "dateAdded": "2025-03-31T17:25:12.897Z",
+      "dateAdded": "2025-03-06T09:22:02.897Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -2589,7 +2589,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 4,
-      "dateAdded": "2025-03-10T03:50:34.609Z",
+      "dateAdded": "2025-03-26T10:20:15.449Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -2617,7 +2617,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2025-03-10T22:24:57.273Z",
+      "dateAdded": "2024-09-04T04:27:57.690Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -2626,7 +2626,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": "diamond",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -2646,7 +2646,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "advanced",
       "level": 5,
-      "dateAdded": "2025-08-05T01:23:37.692Z",
+      "dateAdded": "2024-11-12T18:04:43.823Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -2674,7 +2674,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2025-04-02T11:36:46.465Z",
+      "dateAdded": "2025-06-13T15:24:27.716Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -2702,7 +2702,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2025-07-12T18:10:30.734Z",
+      "dateAdded": "2024-09-30T19:21:13.633Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -2730,7 +2730,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2025-05-20T04:09:17.870Z",
+      "dateAdded": "2025-05-16T02:20:36.908Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -2739,7 +2739,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": "diamond",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -2758,7 +2758,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2025-02-25T03:23:57.923Z",
+      "dateAdded": "2025-04-24T10:53:18.275Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -2786,7 +2786,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2024-11-14T18:27:40.838Z",
+      "dateAdded": "2025-03-31T01:52:45.498Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -2814,7 +2814,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "beginner",
       "level": 1,
-      "dateAdded": "2025-04-27T20:11:42.427Z",
+      "dateAdded": "2025-07-15T15:11:17.291Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -2842,7 +2842,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "advanced",
       "level": 5,
-      "dateAdded": "2024-11-17T02:55:28.605Z",
+      "dateAdded": "2024-12-26T04:28:55.839Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -2851,7 +2851,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": "box",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -2870,7 +2870,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "advanced",
       "level": 4,
-      "dateAdded": "2025-07-13T01:24:12.601Z",
+      "dateAdded": "2025-03-21T17:23:56.867Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -2879,7 +2879,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": "diamond",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -2898,7 +2898,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2025-02-13T08:41:54.546Z",
+      "dateAdded": "2025-04-26T23:24:48.569Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -2907,7 +2907,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": "box",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -2926,7 +2926,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2025-07-25T21:33:51.171Z",
+      "dateAdded": "2025-02-27T09:54:04.926Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -2935,7 +2935,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": "diamond",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -2954,7 +2954,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "advanced",
       "level": 5,
-      "dateAdded": "2025-05-05T10:16:35.370Z",
+      "dateAdded": "2024-08-30T17:05:22.442Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -2963,7 +2963,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": "diamond",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -2982,7 +2982,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "advanced",
       "level": 5,
-      "dateAdded": "2024-12-15T19:00:54.229Z",
+      "dateAdded": "2025-08-07T05:23:37.791Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -3010,7 +3010,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "beginner",
       "level": 1,
-      "dateAdded": "2025-01-29T15:24:08.333Z",
+      "dateAdded": "2024-12-18T12:42:01.673Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -3019,7 +3019,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": "box",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -3038,7 +3038,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "advanced",
       "level": 5,
-      "dateAdded": "2024-09-09T03:26:36.041Z",
+      "dateAdded": "2025-03-08T17:19:01.211Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -3047,7 +3047,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": "diamond",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -3066,7 +3066,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2025-02-14T04:08:35.494Z",
+      "dateAdded": "2024-11-03T07:19:59.434Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -3075,7 +3075,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": "box",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -3094,7 +3094,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "advanced",
       "level": 5,
-      "dateAdded": "2025-04-11T14:57:04.428Z",
+      "dateAdded": "2025-02-28T10:47:50.907Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -3123,7 +3123,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "advanced",
       "level": 5,
-      "dateAdded": "2025-01-27T19:39:31.782Z",
+      "dateAdded": "2025-01-21T19:02:26.675Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -3151,7 +3151,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2024-09-11T00:15:18.799Z",
+      "dateAdded": "2025-05-08T16:19:10.153Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -3160,7 +3160,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": "diamond",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -3179,7 +3179,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 2,
-      "dateAdded": "2025-03-31T05:40:59.962Z",
+      "dateAdded": "2025-01-30T22:03:49.955Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -3207,7 +3207,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2024-10-03T15:26:38.202Z",
+      "dateAdded": "2025-06-27T22:26:59.442Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -3235,7 +3235,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2025-03-23T19:25:30.936Z",
+      "dateAdded": "2024-11-22T01:59:21.935Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -3263,7 +3263,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2025-02-18T22:26:50.401Z",
+      "dateAdded": "2024-08-26T10:42:37.319Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -3272,7 +3272,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": "diamond",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -3291,7 +3291,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2024-12-10T21:58:57.847Z",
+      "dateAdded": "2025-02-17T19:25:10.591Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -3319,7 +3319,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "beginner",
       "level": 2,
-      "dateAdded": "2025-04-07T02:20:55.024Z",
+      "dateAdded": "2025-02-19T15:12:14.194Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -3328,7 +3328,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": "diamond",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -3347,7 +3347,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 2,
-      "dateAdded": "2025-07-08T08:49:48.328Z",
+      "dateAdded": "2025-06-06T01:54:08.105Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -3375,7 +3375,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2025-06-09T21:33:08.028Z",
+      "dateAdded": "2025-07-03T05:45:30.711Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -3403,7 +3403,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "advanced",
       "level": 5,
-      "dateAdded": "2025-06-23T14:45:16.327Z",
+      "dateAdded": "2025-04-19T20:15:23.126Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -3412,7 +3412,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": "box",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -3431,7 +3431,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2024-10-01T17:37:16.839Z",
+      "dateAdded": "2025-04-07T17:36:22.193Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -3440,7 +3440,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": "box",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -3459,7 +3459,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 4,
-      "dateAdded": "2025-03-14T01:34:14.806Z",
+      "dateAdded": "2024-09-27T13:36:20.249Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -3468,7 +3468,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": "diamond",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -3487,7 +3487,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "beginner",
       "level": 2,
-      "dateAdded": "2025-03-03T23:28:13.006Z",
+      "dateAdded": "2025-08-20T02:30:58.886Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -3515,7 +3515,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 4,
-      "dateAdded": "2025-07-21T13:33:15.936Z",
+      "dateAdded": "2024-11-06T11:54:35.345Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -3543,7 +3543,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2025-04-19T09:21:02.678Z",
+      "dateAdded": "2025-04-06T02:05:25.004Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -3552,7 +3552,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": "box",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -3571,7 +3571,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "advanced",
       "level": 5,
-      "dateAdded": "2025-07-09T19:06:07.743Z",
+      "dateAdded": "2024-12-04T21:49:40.963Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -3580,7 +3580,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": "diamond",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -3599,7 +3599,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2025-08-15T20:07:15.138Z",
+      "dateAdded": "2025-07-26T14:39:52.949Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -3627,7 +3627,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2025-03-31T04:24:08.607Z",
+      "dateAdded": "2025-07-26T20:51:07.672Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -3655,7 +3655,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "advanced",
       "level": 5,
-      "dateAdded": "2025-04-20T19:50:25.459Z",
+      "dateAdded": "2025-03-09T14:38:59.332Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -3664,7 +3664,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": "diamond",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -3683,7 +3683,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "beginner",
       "level": 2,
-      "dateAdded": "2025-07-30T21:58:35.471Z",
+      "dateAdded": "2025-03-18T16:00:05.607Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -3711,7 +3711,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 4,
-      "dateAdded": "2025-03-23T22:04:15.787Z",
+      "dateAdded": "2024-12-28T13:45:19.352Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -3720,7 +3720,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": "diamond",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -3739,7 +3739,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2024-12-31T23:37:25.971Z",
+      "dateAdded": "2025-02-21T02:32:49.679Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -3767,7 +3767,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2024-09-03T15:03:59.158Z",
+      "dateAdded": "2025-06-18T15:49:40.709Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -3795,7 +3795,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2025-08-19T05:12:48.824Z",
+      "dateAdded": "2025-03-07T07:20:16.428Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -3823,7 +3823,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2024-12-30T15:12:26.559Z",
+      "dateAdded": "2024-11-19T22:05:24.870Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -3832,7 +3832,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": "box",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -3852,7 +3852,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2024-09-14T00:05:03.197Z",
+      "dateAdded": "2025-01-31T15:46:47.904Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -3880,7 +3880,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 4,
-      "dateAdded": "2025-04-19T00:00:10.701Z",
+      "dateAdded": "2024-11-30T11:13:53.201Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -3909,7 +3909,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2025-07-11T16:30:19.463Z",
+      "dateAdded": "2025-02-23T12:39:11.183Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -3937,7 +3937,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2024-12-23T07:42:08.221Z",
+      "dateAdded": "2025-06-18T09:21:27.146Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -3966,7 +3966,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "beginner",
       "level": 2,
-      "dateAdded": "2024-12-05T07:58:10.347Z",
+      "dateAdded": "2025-05-24T20:45:59.164Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -3975,7 +3975,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": "box",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -3994,7 +3994,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2024-09-22T17:27:17.652Z",
+      "dateAdded": "2025-05-21T21:35:07.723Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -4022,7 +4022,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2024-10-19T06:43:48.435Z",
+      "dateAdded": "2025-05-19T03:23:29.717Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -4050,7 +4050,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2024-11-07T17:12:10.429Z",
+      "dateAdded": "2025-01-22T09:47:01.892Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -4078,7 +4078,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "advanced",
       "level": 5,
-      "dateAdded": "2024-12-17T04:13:36.732Z",
+      "dateAdded": "2024-11-22T09:04:54.411Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -4106,7 +4106,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "advanced",
       "level": 5,
-      "dateAdded": "2024-11-12T03:17:23.136Z",
+      "dateAdded": "2025-01-17T22:33:45.180Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -4134,7 +4134,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 4,
-      "dateAdded": "2024-09-13T11:49:17.372Z",
+      "dateAdded": "2024-09-02T22:35:22.560Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -4162,7 +4162,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "advanced",
       "level": 4,
-      "dateAdded": "2025-08-15T12:26:50.602Z",
+      "dateAdded": "2024-11-19T15:07:25.257Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -4191,7 +4191,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "beginner",
       "level": 2,
-      "dateAdded": "2025-04-14T21:10:08.573Z",
+      "dateAdded": "2024-10-29T13:17:37.074Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -4200,7 +4200,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": "box",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -4220,7 +4220,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2024-12-17T01:09:43.242Z",
+      "dateAdded": "2025-02-03T03:25:21.528Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -4248,7 +4248,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2024-09-08T10:40:36.691Z",
+      "dateAdded": "2025-01-18T09:22:16.654Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -4276,7 +4276,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2025-06-17T10:09:13.856Z",
+      "dateAdded": "2025-07-23T13:48:38.308Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -4304,7 +4304,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2025-05-13T19:07:23.691Z",
+      "dateAdded": "2024-11-21T19:43:58.649Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -4332,7 +4332,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "beginner",
       "level": 2,
-      "dateAdded": "2024-12-21T05:41:27.146Z",
+      "dateAdded": "2024-10-25T13:12:22.226Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -4341,7 +4341,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": "diamond",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -4361,7 +4361,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2024-11-10T19:03:11.669Z",
+      "dateAdded": "2024-08-23T23:00:45.910Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -4370,7 +4370,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": "diamond",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -4389,7 +4389,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "beginner",
       "level": 2,
-      "dateAdded": "2024-11-21T23:30:38.674Z",
+      "dateAdded": "2025-01-02T18:34:04.278Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -4418,7 +4418,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2024-10-03T00:57:14.704Z",
+      "dateAdded": "2024-09-15T04:25:27.642Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -4427,7 +4427,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": "box",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -4446,7 +4446,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2025-08-13T18:02:50.372Z",
+      "dateAdded": "2024-11-02T15:27:54.596Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -4455,7 +4455,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": "diamond",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -4476,7 +4476,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2024-09-11T16:51:33.037Z",
+      "dateAdded": "2024-12-07T20:14:02.675Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -4504,7 +4504,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "beginner",
       "level": 2,
-      "dateAdded": "2024-10-16T23:41:56.661Z",
+      "dateAdded": "2025-04-18T09:09:49.685Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -4513,7 +4513,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": "diamond",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -4532,7 +4532,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2025-04-09T09:09:04.137Z",
+      "dateAdded": "2025-07-01T10:50:04.027Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -4541,7 +4541,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": "diamond",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -4560,7 +4560,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 4,
-      "dateAdded": "2024-09-03T19:24:31.938Z",
+      "dateAdded": "2025-02-19T14:55:15.446Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -4589,7 +4589,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "advanced",
       "level": 5,
-      "dateAdded": "2025-01-27T18:13:44.093Z",
+      "dateAdded": "2025-01-15T06:47:05.807Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -4617,7 +4617,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "advanced",
       "level": 4,
-      "dateAdded": "2025-08-16T12:27:31.800Z",
+      "dateAdded": "2025-04-24T21:05:11.715Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -4626,7 +4626,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": "diamond",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -4646,7 +4646,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "advanced",
       "level": 5,
-      "dateAdded": "2024-12-04T02:03:30.701Z",
+      "dateAdded": "2025-05-18T16:33:28.512Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -4675,7 +4675,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "beginner",
       "level": 2,
-      "dateAdded": "2024-09-07T19:30:37.997Z",
+      "dateAdded": "2024-11-08T03:28:22.673Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -4684,7 +4684,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": "diamond",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -4703,7 +4703,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2025-07-29T05:09:30.186Z",
+      "dateAdded": "2024-12-26T04:32:51.553Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -4712,7 +4712,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": "diamond",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -4731,7 +4731,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "beginner",
       "level": 2,
-      "dateAdded": "2024-10-05T06:11:09.207Z",
+      "dateAdded": "2024-12-15T04:47:50.909Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -4759,7 +4759,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2025-06-21T22:11:52.281Z",
+      "dateAdded": "2025-01-05T03:47:12.195Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -4787,7 +4787,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2024-11-03T12:37:28.708Z",
+      "dateAdded": "2025-05-23T18:37:39.654Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -4815,7 +4815,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2024-08-31T14:22:29.560Z",
+      "dateAdded": "2024-11-10T12:33:47.637Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -4843,7 +4843,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2025-01-30T10:34:17.310Z",
+      "dateAdded": "2025-01-11T18:53:56.444Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -4852,7 +4852,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": "box",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -4871,7 +4871,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2025-04-12T21:00:26.337Z",
+      "dateAdded": "2025-01-04T01:01:13.486Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -4880,7 +4880,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": "diamond",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -4899,7 +4899,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "beginner",
       "level": 2,
-      "dateAdded": "2025-04-11T05:15:26.721Z",
+      "dateAdded": "2025-03-15T04:44:38.553Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -4927,7 +4927,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 4,
-      "dateAdded": "2024-09-02T03:52:36.179Z",
+      "dateAdded": "2025-07-22T14:54:20.191Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -4936,7 +4936,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": "diamond",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -4955,7 +4955,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 4,
-      "dateAdded": "2025-07-12T21:52:13.736Z",
+      "dateAdded": "2024-09-29T10:44:29.483Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -4983,7 +4983,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 2,
-      "dateAdded": "2025-07-17T21:31:01.960Z",
+      "dateAdded": "2024-12-12T19:42:05.936Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -5011,7 +5011,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2025-07-07T00:22:38.914Z",
+      "dateAdded": "2024-09-13T03:41:04.877Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -5020,7 +5020,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": "box",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -5039,7 +5039,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2025-06-17T19:56:11.824Z",
+      "dateAdded": "2024-09-26T19:24:38.443Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -5067,7 +5067,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "beginner",
       "level": 2,
-      "dateAdded": "2024-12-31T19:04:38.717Z",
+      "dateAdded": "2025-03-17T10:25:49.208Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -5095,7 +5095,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "beginner",
       "level": 2,
-      "dateAdded": "2024-10-28T18:42:27.291Z",
+      "dateAdded": "2024-09-27T12:30:03.839Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -5123,7 +5123,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 4,
-      "dateAdded": "2024-10-09T03:11:34.482Z",
+      "dateAdded": "2025-01-01T22:29:28.742Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -5152,7 +5152,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2025-05-11T03:33:40.421Z",
+      "dateAdded": "2024-12-09T03:56:55.929Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -5161,7 +5161,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": "box",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -5180,7 +5180,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "beginner",
       "level": 2,
-      "dateAdded": "2024-10-04T19:45:48.010Z",
+      "dateAdded": "2025-03-31T09:43:22.040Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -5189,7 +5189,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": "box",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -5208,7 +5208,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 4,
-      "dateAdded": "2024-11-22T18:59:43.705Z",
+      "dateAdded": "2025-07-04T20:33:07.029Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -5217,7 +5217,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": "box",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -5236,7 +5236,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "advanced",
       "level": 5,
-      "dateAdded": "2025-01-02T07:56:01.211Z",
+      "dateAdded": "2025-08-20T07:24:27.562Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -5264,7 +5264,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2025-05-20T03:48:43.500Z",
+      "dateAdded": "2025-05-06T14:35:56.721Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -5293,7 +5293,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 4,
-      "dateAdded": "2024-09-07T01:20:34.376Z",
+      "dateAdded": "2024-08-26T07:48:05.976Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -5322,7 +5322,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 4,
-      "dateAdded": "2025-07-10T01:35:17.522Z",
+      "dateAdded": "2024-09-07T13:31:54.121Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -5331,7 +5331,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": "diamond",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -5350,7 +5350,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2025-07-01T03:21:41.784Z",
+      "dateAdded": "2025-05-21T20:30:42.908Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -5381,7 +5381,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "beginner",
       "level": 2,
-      "dateAdded": "2024-10-09T10:04:19.768Z",
+      "dateAdded": "2024-12-21T20:51:33.190Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -5409,7 +5409,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2025-04-08T16:20:33.017Z",
+      "dateAdded": "2024-09-10T04:36:23.471Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -5418,7 +5418,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": "diamond",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -5437,7 +5437,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 2,
-      "dateAdded": "2025-06-07T02:38:56.611Z",
+      "dateAdded": "2025-02-02T21:14:48.765Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -5465,7 +5465,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "beginner",
       "level": 1,
-      "dateAdded": "2025-04-23T09:36:05.227Z",
+      "dateAdded": "2025-01-06T17:59:37.327Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -5474,7 +5474,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": "diamond",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -5493,7 +5493,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "beginner",
       "level": 2,
-      "dateAdded": "2025-05-02T10:02:50.069Z",
+      "dateAdded": "2024-12-08T08:21:32.230Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -5521,7 +5521,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2025-02-04T10:50:42.276Z",
+      "dateAdded": "2025-01-09T21:45:47.262Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -5549,7 +5549,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2024-11-19T03:24:04.962Z",
+      "dateAdded": "2024-11-04T23:54:45.184Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -5577,7 +5577,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2025-05-21T05:06:23.018Z",
+      "dateAdded": "2024-12-26T07:45:05.305Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -5605,7 +5605,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2025-08-01T10:38:20.062Z",
+      "dateAdded": "2025-05-27T17:33:59.757Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -5614,7 +5614,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": "diamond",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -5634,7 +5634,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "beginner",
       "level": 1,
-      "dateAdded": "2024-11-29T16:13:32.658Z",
+      "dateAdded": "2025-01-16T22:36:50.656Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -5643,7 +5643,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": "box",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -5662,7 +5662,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2025-02-21T00:16:27.754Z",
+      "dateAdded": "2025-05-27T14:19:07.808Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -5690,7 +5690,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2025-07-12T12:19:27.664Z",
+      "dateAdded": "2025-03-21T16:36:13.883Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -5718,7 +5718,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2025-07-31T22:11:40.906Z",
+      "dateAdded": "2024-10-23T02:36:09.974Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -5746,7 +5746,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "advanced",
       "level": 5,
-      "dateAdded": "2025-06-24T03:07:03.631Z",
+      "dateAdded": "2025-08-04T07:45:50.828Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -5755,7 +5755,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": "diamond",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -5774,7 +5774,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "beginner",
       "level": 1,
-      "dateAdded": "2024-12-27T14:24:10.439Z",
+      "dateAdded": "2024-11-03T09:20:36.922Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -5783,7 +5783,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": "diamond",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -5802,7 +5802,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2025-03-22T18:53:03.519Z",
+      "dateAdded": "2025-05-11T04:59:26.752Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -5811,7 +5811,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": "diamond",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -5830,7 +5830,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2024-10-11T06:00:30.295Z",
+      "dateAdded": "2024-09-11T17:34:20.105Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -5859,7 +5859,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "beginner",
       "level": 1,
-      "dateAdded": "2025-07-30T13:35:17.555Z",
+      "dateAdded": "2024-09-26T04:47:46.387Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -5887,7 +5887,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2024-11-23T05:16:10.520Z",
+      "dateAdded": "2024-10-04T05:38:07.234Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -5915,7 +5915,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2025-03-07T05:26:44.899Z",
+      "dateAdded": "2024-10-01T09:46:54.863Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -5924,7 +5924,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": "diamond",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -5943,7 +5943,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2024-11-26T20:01:38.926Z",
+      "dateAdded": "2025-03-10T17:31:30.302Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -5952,7 +5952,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": "diamond",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -5971,7 +5971,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2025-06-25T22:29:23.116Z",
+      "dateAdded": "2025-06-06T03:39:40.519Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -5999,7 +5999,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 4,
-      "dateAdded": "2025-04-22T10:37:22.785Z",
+      "dateAdded": "2025-04-15T04:11:23.971Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -6008,7 +6008,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": "box",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -6027,7 +6027,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 4,
-      "dateAdded": "2025-04-26T18:35:42.211Z",
+      "dateAdded": "2025-01-08T19:50:10.938Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -6036,7 +6036,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": "box",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -6055,7 +6055,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 4,
-      "dateAdded": "2025-05-06T13:00:07.754Z",
+      "dateAdded": "2025-06-29T03:25:19.085Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -6064,7 +6064,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": "diamond",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -6083,7 +6083,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2025-07-25T03:50:51.176Z",
+      "dateAdded": "2024-08-26T01:46:45.808Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -6111,7 +6111,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "advanced",
       "level": 4,
-      "dateAdded": "2025-05-03T09:08:08.480Z",
+      "dateAdded": "2024-09-30T15:48:05.270Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -6139,7 +6139,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2024-12-24T03:04:39.026Z",
+      "dateAdded": "2025-04-14T03:37:56.270Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -6148,7 +6148,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": "diamond",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -6167,7 +6167,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "advanced",
       "level": 4,
-      "dateAdded": "2025-02-21T13:34:16.587Z",
+      "dateAdded": "2024-10-10T12:14:54.422Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -6176,7 +6176,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": "diamond",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -6195,7 +6195,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 4,
-      "dateAdded": "2025-04-27T21:29:40.971Z",
+      "dateAdded": "2024-09-04T08:22:45.572Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -6204,7 +6204,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": "diamond",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -6223,7 +6223,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 4,
-      "dateAdded": "2025-07-05T12:05:36.680Z",
+      "dateAdded": "2024-12-05T08:10:22.068Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -6251,7 +6251,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "advanced",
       "level": 4,
-      "dateAdded": "2024-10-17T15:42:09.430Z",
+      "dateAdded": "2025-06-01T10:40:48.200Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -6279,7 +6279,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 4,
-      "dateAdded": "2024-11-25T00:36:39.467Z",
+      "dateAdded": "2025-07-10T04:32:55.263Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -6310,7 +6310,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 4,
-      "dateAdded": "2025-05-04T01:03:03.029Z",
+      "dateAdded": "2024-12-02T01:21:12.562Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -6319,7 +6319,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": "diamond",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -6338,7 +6338,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "advanced",
       "level": 5,
-      "dateAdded": "2025-01-25T03:20:57.508Z",
+      "dateAdded": "2024-08-24T00:54:16.710Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -6366,7 +6366,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2024-10-08T22:18:58.528Z",
+      "dateAdded": "2024-11-02T15:14:25.566Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -6375,7 +6375,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": "box",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -6394,7 +6394,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 4,
-      "dateAdded": "2024-11-04T17:54:51.309Z",
+      "dateAdded": "2024-09-05T22:37:56.486Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -6403,7 +6403,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": "box",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -6422,7 +6422,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2025-01-27T02:20:32.004Z",
+      "dateAdded": "2025-04-06T12:49:43.547Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -6450,7 +6450,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "beginner",
       "level": 2,
-      "dateAdded": "2025-05-25T20:18:35.814Z",
+      "dateAdded": "2025-03-22T17:02:41.273Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -6459,7 +6459,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": "diamond",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -6478,7 +6478,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "advanced",
       "level": 5,
-      "dateAdded": "2025-06-20T06:14:31.465Z",
+      "dateAdded": "2025-07-16T07:06:34.806Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -6487,7 +6487,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": "diamond",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -6506,7 +6506,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2024-12-13T12:17:08.566Z",
+      "dateAdded": "2025-06-22T23:38:22.306Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -6535,7 +6535,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 2,
-      "dateAdded": "2024-11-20T04:57:53.303Z",
+      "dateAdded": "2025-03-17T16:59:10.893Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -6544,7 +6544,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": "diamond",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -6563,7 +6563,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 4,
-      "dateAdded": "2025-04-14T04:28:38.076Z",
+      "dateAdded": "2025-05-28T22:16:25.921Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -6591,7 +6591,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 4,
-      "dateAdded": "2025-04-07T16:19:05.930Z",
+      "dateAdded": "2025-05-12T00:55:40.767Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -6619,7 +6619,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 4,
-      "dateAdded": "2025-01-14T01:22:19.236Z",
+      "dateAdded": "2025-07-04T13:17:00.640Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -6628,7 +6628,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": "box",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -6647,7 +6647,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2024-10-02T05:04:42.934Z",
+      "dateAdded": "2025-06-17T10:03:26.621Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -6656,7 +6656,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": "box",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -6675,7 +6675,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "advanced",
       "level": 4,
-      "dateAdded": "2025-05-12T10:31:36.410Z",
+      "dateAdded": "2024-09-10T17:33:56.480Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -6684,7 +6684,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": "diamond",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -6703,7 +6703,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "advanced",
       "level": 5,
-      "dateAdded": "2024-10-19T05:46:17.897Z",
+      "dateAdded": "2024-12-04T08:04:00.734Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -6712,7 +6712,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": "diamond",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -6731,7 +6731,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 2,
-      "dateAdded": "2025-01-16T17:37:57.643Z",
+      "dateAdded": "2024-11-06T13:00:20.442Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -6740,7 +6740,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": "box",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -6759,7 +6759,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 4,
-      "dateAdded": "2024-12-24T03:31:40.684Z",
+      "dateAdded": "2025-01-14T20:22:32.806Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -6787,7 +6787,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "advanced",
       "level": 5,
-      "dateAdded": "2025-04-08T16:26:03.855Z",
+      "dateAdded": "2025-04-28T17:03:54.066Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -6815,7 +6815,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "advanced",
       "level": 5,
-      "dateAdded": "2025-01-25T05:01:14.165Z",
+      "dateAdded": "2025-01-05T19:43:31.486Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -6845,7 +6845,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2025-08-07T03:10:10.887Z",
+      "dateAdded": "2025-05-17T13:31:16.035Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -6873,7 +6873,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "advanced",
       "level": 4,
-      "dateAdded": "2025-01-26T05:11:43.959Z",
+      "dateAdded": "2025-03-21T20:17:43.877Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -6901,7 +6901,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "advanced",
       "level": 5,
-      "dateAdded": "2025-06-16T09:54:13.530Z",
+      "dateAdded": "2025-02-21T17:43:42.887Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -6929,7 +6929,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2025-07-16T12:58:30.002Z",
+      "dateAdded": "2025-03-30T06:00:44.898Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -6957,7 +6957,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "advanced",
       "level": 5,
-      "dateAdded": "2024-09-24T00:50:30.771Z",
+      "dateAdded": "2024-12-09T11:57:03.408Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -6985,7 +6985,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2025-03-07T04:10:56.001Z",
+      "dateAdded": "2024-09-28T01:58:08.654Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -7013,7 +7013,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "advanced",
       "level": 5,
-      "dateAdded": "2025-04-27T12:45:39.749Z",
+      "dateAdded": "2025-06-13T00:53:00.915Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -7022,7 +7022,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": "box",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -7041,7 +7041,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "advanced",
       "level": 5,
-      "dateAdded": "2025-04-03T06:32:51.300Z",
+      "dateAdded": "2025-01-22T02:59:49.317Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -7050,7 +7050,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": "box",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -7069,7 +7069,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2025-02-06T16:12:38.795Z",
+      "dateAdded": "2025-05-31T22:24:01.487Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -7078,7 +7078,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": "diamond",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -7097,7 +7097,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2025-06-26T22:23:27.320Z",
+      "dateAdded": "2025-08-20T13:05:59.451Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -7106,7 +7106,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": "box",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -7125,7 +7125,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "advanced",
       "level": 4,
-      "dateAdded": "2024-10-09T12:00:02.957Z",
+      "dateAdded": "2025-05-28T07:10:22.731Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -7134,7 +7134,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": "diamond",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -7153,7 +7153,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "advanced",
       "level": 5,
-      "dateAdded": "2025-03-25T19:57:10.925Z",
+      "dateAdded": "2025-02-02T18:28:16.226Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -7181,7 +7181,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 4,
-      "dateAdded": "2024-09-12T21:03:10.892Z",
+      "dateAdded": "2025-06-25T03:28:53.397Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -7190,7 +7190,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": "box",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -7209,7 +7209,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2024-10-18T12:50:37.801Z",
+      "dateAdded": "2025-06-18T19:31:19.395Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -7237,7 +7237,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "advanced",
       "level": 4,
-      "dateAdded": "2025-01-28T17:33:12.778Z",
+      "dateAdded": "2025-07-19T16:15:16.087Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -7265,7 +7265,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 4,
-      "dateAdded": "2025-02-15T21:40:29.871Z",
+      "dateAdded": "2025-03-07T11:40:44.476Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -7294,7 +7294,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2025-03-20T22:42:11.695Z",
+      "dateAdded": "2025-01-04T07:56:09.163Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -7322,7 +7322,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "advanced",
       "level": 5,
-      "dateAdded": "2025-05-04T11:00:52.612Z",
+      "dateAdded": "2025-08-09T14:57:22.013Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -7350,7 +7350,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "advanced",
       "level": 5,
-      "dateAdded": "2025-06-30T03:43:58.822Z",
+      "dateAdded": "2025-07-09T09:16:03.480Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -7379,7 +7379,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "advanced",
       "level": 5,
-      "dateAdded": "2025-07-01T16:16:26.608Z",
+      "dateAdded": "2024-10-05T03:59:58.492Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -7388,7 +7388,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": "diamond",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -7407,7 +7407,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "advanced",
       "level": 5,
-      "dateAdded": "2025-01-08T11:30:22.390Z",
+      "dateAdded": "2024-11-17T13:11:31.425Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -7435,7 +7435,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "advanced",
       "level": 5,
-      "dateAdded": "2025-07-12T16:45:22.123Z",
+      "dateAdded": "2025-01-26T22:26:59.238Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -7463,7 +7463,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "advanced",
       "level": 4,
-      "dateAdded": "2024-11-17T01:51:54.035Z",
+      "dateAdded": "2025-07-22T16:23:27.678Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -7472,7 +7472,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": "diamond",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -7491,7 +7491,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "advanced",
       "level": 5,
-      "dateAdded": "2024-10-06T21:42:13.182Z",
+      "dateAdded": "2024-10-28T01:27:32.936Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -7500,7 +7500,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": "diamond",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -7519,7 +7519,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 4,
-      "dateAdded": "2024-12-25T12:24:38.385Z",
+      "dateAdded": "2025-02-15T21:08:48.311Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -7528,7 +7528,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": "diamond",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -7547,7 +7547,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2025-03-15T06:39:36.994Z",
+      "dateAdded": "2025-08-06T14:17:36.248Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -7576,7 +7576,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2025-06-05T06:45:58.841Z",
+      "dateAdded": "2025-07-11T17:40:24.801Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -7585,7 +7585,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": "diamond",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -7604,7 +7604,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "advanced",
       "level": 5,
-      "dateAdded": "2024-11-03T05:00:32.501Z",
+      "dateAdded": "2025-01-18T14:47:12.802Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -7632,7 +7632,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2024-12-24T11:26:20.757Z",
+      "dateAdded": "2024-09-22T11:56:31.023Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -7641,7 +7641,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": "box",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -7662,7 +7662,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2024-11-30T19:03:07.276Z",
+      "dateAdded": "2025-03-13T09:57:50.458Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -7671,7 +7671,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": "box",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -7690,7 +7690,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 2,
-      "dateAdded": "2024-09-12T14:43:15.671Z",
+      "dateAdded": "2024-11-29T03:25:09.108Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -7718,7 +7718,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2025-02-02T14:16:20.602Z",
+      "dateAdded": "2025-02-07T17:19:46.087Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -7746,7 +7746,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2025-03-07T15:18:56.656Z",
+      "dateAdded": "2024-11-22T14:36:09.556Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -7755,7 +7755,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": "box",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -7774,7 +7774,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 4,
-      "dateAdded": "2025-05-25T05:09:28.436Z",
+      "dateAdded": "2025-02-25T10:03:45.850Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -7802,7 +7802,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "advanced",
       "level": 4,
-      "dateAdded": "2024-11-18T10:13:38.544Z",
+      "dateAdded": "2024-10-29T21:51:08.252Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -7830,7 +7830,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2025-07-11T06:25:37.297Z",
+      "dateAdded": "2025-07-04T00:07:01.772Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -7858,7 +7858,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "advanced",
       "level": 5,
-      "dateAdded": "2025-07-30T20:29:59.198Z",
+      "dateAdded": "2024-11-10T11:02:21.258Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -7867,7 +7867,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": "box",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -7886,7 +7886,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2024-12-23T14:52:00.351Z",
+      "dateAdded": "2025-07-27T02:28:55.361Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -7914,7 +7914,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "advanced",
       "level": 5,
-      "dateAdded": "2024-12-15T13:44:49.513Z",
+      "dateAdded": "2025-08-03T21:34:21.279Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -7942,7 +7942,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "advanced",
       "level": 5,
-      "dateAdded": "2025-01-24T21:14:17.965Z",
+      "dateAdded": "2025-04-18T06:32:04.035Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -7951,7 +7951,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": "diamond",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -7970,7 +7970,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "advanced",
       "level": 5,
-      "dateAdded": "2025-03-13T22:43:54.208Z",
+      "dateAdded": "2025-06-01T17:59:01.340Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -7979,7 +7979,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": "diamond",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -7998,7 +7998,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2025-07-24T10:27:55.888Z",
+      "dateAdded": "2024-10-06T21:16:52.298Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -8026,7 +8026,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "advanced",
       "level": 4,
-      "dateAdded": "2025-06-09T22:43:59.178Z",
+      "dateAdded": "2025-05-19T08:34:43.748Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -8054,7 +8054,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "advanced",
       "level": 4,
-      "dateAdded": "2024-11-09T21:28:52.120Z",
+      "dateAdded": "2025-03-12T07:17:48.205Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -8063,7 +8063,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": "diamond",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -8082,7 +8082,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2024-10-21T01:18:38.703Z",
+      "dateAdded": "2025-04-01T13:40:07.614Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -8110,7 +8110,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2025-04-05T18:22:13.490Z",
+      "dateAdded": "2025-06-15T00:05:17.046Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -8119,7 +8119,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": "box",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -8138,7 +8138,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2025-03-25T00:50:12.130Z",
+      "dateAdded": "2024-12-08T08:45:12.234Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -8166,7 +8166,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2024-09-08T07:05:32.442Z",
+      "dateAdded": "2025-02-26T22:16:18.925Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -8194,7 +8194,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2024-12-13T04:35:22.698Z",
+      "dateAdded": "2025-04-27T14:06:31.724Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -8203,7 +8203,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": "diamond",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -8222,7 +8222,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 4,
-      "dateAdded": "2025-05-17T07:11:46.942Z",
+      "dateAdded": "2024-11-24T19:48:16.026Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -8250,7 +8250,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2024-09-08T12:26:35.612Z",
+      "dateAdded": "2024-11-15T16:53:32.525Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -8278,7 +8278,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 4,
-      "dateAdded": "2024-10-19T15:26:57.204Z",
+      "dateAdded": "2024-10-15T01:27:37.494Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -8306,7 +8306,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "beginner",
       "level": 1,
-      "dateAdded": "2024-11-18T14:23:45.590Z",
+      "dateAdded": "2024-11-02T19:58:09.259Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -8315,7 +8315,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": "diamond",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -8334,7 +8334,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 2,
-      "dateAdded": "2025-05-15T12:25:23.402Z",
+      "dateAdded": "2025-01-29T10:56:24.995Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -8362,7 +8362,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 2,
-      "dateAdded": "2025-07-27T06:45:54.129Z",
+      "dateAdded": "2025-03-12T05:01:37.069Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -8371,7 +8371,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": "box",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -8390,7 +8390,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "advanced",
       "level": 5,
-      "dateAdded": "2025-05-26T05:46:10.489Z",
+      "dateAdded": "2025-03-22T10:58:24.451Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -8418,7 +8418,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 4,
-      "dateAdded": "2025-01-16T15:49:05.215Z",
+      "dateAdded": "2025-01-21T21:46:34.381Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -8446,7 +8446,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "advanced",
       "level": 4,
-      "dateAdded": "2025-02-06T11:00:43.096Z",
+      "dateAdded": "2025-05-27T06:33:38.371Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -8474,7 +8474,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "advanced",
       "level": 4,
-      "dateAdded": "2024-09-26T03:52:14.485Z",
+      "dateAdded": "2025-04-10T19:37:30.984Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -8502,7 +8502,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 4,
-      "dateAdded": "2024-11-10T05:29:25.082Z",
+      "dateAdded": "2025-02-16T11:39:50.626Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -8511,7 +8511,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": "diamond",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -8530,7 +8530,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2025-01-02T06:35:54.467Z",
+      "dateAdded": "2025-01-04T06:26:18.724Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -8558,7 +8558,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "beginner",
       "level": 2,
-      "dateAdded": "2025-04-04T02:22:00.607Z",
+      "dateAdded": "2024-12-12T19:24:05.912Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -8586,7 +8586,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "advanced",
       "level": 4,
-      "dateAdded": "2025-08-10T20:54:54.251Z",
+      "dateAdded": "2025-06-15T01:56:57.337Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -8614,7 +8614,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2025-01-20T11:30:34.169Z",
+      "dateAdded": "2025-05-07T11:54:27.908Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -8623,7 +8623,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": "box",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -8642,7 +8642,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 4,
-      "dateAdded": "2025-08-16T04:47:33.927Z",
+      "dateAdded": "2024-11-23T21:02:32.296Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -8651,7 +8651,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": "diamond",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -8670,7 +8670,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2024-09-30T23:23:48.991Z",
+      "dateAdded": "2024-10-20T05:46:38.155Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -8698,7 +8698,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 4,
-      "dateAdded": "2024-11-11T19:50:08.969Z",
+      "dateAdded": "2025-05-11T16:54:53.403Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -8707,7 +8707,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": "diamond",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -8726,7 +8726,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "advanced",
       "level": 5,
-      "dateAdded": "2024-11-03T13:54:49.875Z",
+      "dateAdded": "2025-06-25T05:32:52.716Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -8735,7 +8735,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": "box",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -8754,7 +8754,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2024-10-22T22:53:30.027Z",
+      "dateAdded": "2025-04-16T16:59:37.175Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -8782,7 +8782,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2025-04-03T16:41:09.350Z",
+      "dateAdded": "2025-06-22T10:21:44.529Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -8810,7 +8810,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 4,
-      "dateAdded": "2024-10-03T11:00:44.985Z",
+      "dateAdded": "2025-04-13T20:54:44.466Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -8838,7 +8838,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2025-03-24T18:07:04.962Z",
+      "dateAdded": "2025-05-23T10:51:04.075Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -8866,7 +8866,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 4,
-      "dateAdded": "2025-07-10T22:09:24.303Z",
+      "dateAdded": "2025-03-22T21:37:30.744Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -8894,7 +8894,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 4,
-      "dateAdded": "2024-09-24T07:20:24.998Z",
+      "dateAdded": "2024-12-09T17:09:24.038Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -8922,7 +8922,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "advanced",
       "level": 5,
-      "dateAdded": "2025-02-13T08:19:31.942Z",
+      "dateAdded": "2025-05-13T21:13:44.964Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -8931,7 +8931,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": "diamond",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -8950,7 +8950,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2024-09-18T09:31:53.757Z",
+      "dateAdded": "2024-08-31T20:34:21.303Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -8978,7 +8978,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "advanced",
       "level": 4,
-      "dateAdded": "2024-11-06T02:12:41.446Z",
+      "dateAdded": "2024-09-02T19:28:15.368Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -8987,7 +8987,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": "box",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -9006,7 +9006,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "advanced",
       "level": 5,
-      "dateAdded": "2024-11-25T04:52:53.718Z",
+      "dateAdded": "2025-03-22T08:34:16.637Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -9015,7 +9015,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": "box",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -9034,7 +9034,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 4,
-      "dateAdded": "2025-03-26T15:33:30.898Z",
+      "dateAdded": "2025-01-13T20:53:23.967Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -9043,7 +9043,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": "diamond",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -9062,7 +9062,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "advanced",
       "level": 5,
-      "dateAdded": "2025-02-05T15:38:56.865Z",
+      "dateAdded": "2025-04-19T05:28:17.822Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -9090,7 +9090,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "advanced",
       "level": 4,
-      "dateAdded": "2025-07-09T11:24:41.086Z",
+      "dateAdded": "2025-01-21T03:10:14.769Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -9099,7 +9099,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": "diamond",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -9118,7 +9118,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 4,
-      "dateAdded": "2024-09-08T15:30:34.180Z",
+      "dateAdded": "2024-11-24T17:32:39.328Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -9127,7 +9127,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": "box",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -9147,7 +9147,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2025-07-21T18:49:35.223Z",
+      "dateAdded": "2025-07-23T15:52:38.325Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -9175,7 +9175,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "advanced",
       "level": 5,
-      "dateAdded": "2024-11-27T13:02:43.086Z",
+      "dateAdded": "2024-12-31T03:19:19.000Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -9203,7 +9203,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "advanced",
       "level": 5,
-      "dateAdded": "2024-11-17T14:02:09.177Z",
+      "dateAdded": "2025-08-11T13:02:54.109Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -9212,7 +9212,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": "diamond",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -9231,7 +9231,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2025-02-06T09:47:15.029Z",
+      "dateAdded": "2025-04-24T19:10:51.493Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -9259,7 +9259,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "advanced",
       "level": 5,
-      "dateAdded": "2025-01-08T02:11:30.050Z",
+      "dateAdded": "2025-07-19T20:14:00.252Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -9287,7 +9287,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "advanced",
       "level": 5,
-      "dateAdded": "2024-09-17T23:33:56.095Z",
+      "dateAdded": "2024-09-22T21:21:52.271Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -9315,7 +9315,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "advanced",
       "level": 5,
-      "dateAdded": "2025-01-22T06:40:51.156Z",
+      "dateAdded": "2024-11-02T21:25:39.923Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -9324,7 +9324,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": "box",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -9344,7 +9344,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2024-10-19T22:26:36.379Z",
+      "dateAdded": "2024-11-21T23:43:00.527Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -9372,7 +9372,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "beginner",
       "level": 2,
-      "dateAdded": "2024-10-28T17:54:13.351Z",
+      "dateAdded": "2024-11-14T08:05:35.327Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -9400,7 +9400,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 4,
-      "dateAdded": "2025-04-21T19:14:13.620Z",
+      "dateAdded": "2024-09-11T20:01:03.051Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -9428,7 +9428,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2025-03-14T09:28:46.981Z",
+      "dateAdded": "2025-06-01T01:28:47.121Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -9437,7 +9437,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": "diamond",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -9456,7 +9456,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 2,
-      "dateAdded": "2025-07-02T04:13:33.073Z",
+      "dateAdded": "2025-06-02T02:33:37.258Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -9484,7 +9484,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2025-01-09T18:15:57.936Z",
+      "dateAdded": "2025-07-08T07:01:43.506Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -9493,7 +9493,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": "diamond",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -9512,7 +9512,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "advanced",
       "level": 5,
-      "dateAdded": "2025-08-11T11:34:15.513Z",
+      "dateAdded": "2025-04-20T14:40:15.037Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -9521,7 +9521,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": "diamond",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -9540,7 +9540,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2024-10-31T18:44:40.116Z",
+      "dateAdded": "2024-11-16T05:50:51.906Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -9568,7 +9568,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 4,
-      "dateAdded": "2025-03-31T17:04:01.538Z",
+      "dateAdded": "2024-10-18T00:08:05.904Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -9577,7 +9577,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": "box",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -9596,7 +9596,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "advanced",
       "level": 4,
-      "dateAdded": "2025-01-20T15:27:22.116Z",
+      "dateAdded": "2025-03-19T22:38:48.183Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -9605,7 +9605,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": "diamond",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -9624,7 +9624,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2025-02-04T05:11:26.019Z",
+      "dateAdded": "2025-02-12T14:12:22.274Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -9633,7 +9633,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": "diamond",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -9652,7 +9652,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2024-10-01T09:02:55.077Z",
+      "dateAdded": "2025-05-25T15:11:28.162Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -9661,7 +9661,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": "box",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -9680,7 +9680,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2025-08-14T15:31:22.060Z",
+      "dateAdded": "2025-06-16T10:19:28.147Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -9689,7 +9689,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": "box",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -9708,7 +9708,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 4,
-      "dateAdded": "2025-08-11T10:56:32.025Z",
+      "dateAdded": "2025-07-31T17:12:13.741Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -9737,7 +9737,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 4,
-      "dateAdded": "2024-12-30T15:27:32.277Z",
+      "dateAdded": "2024-11-04T21:29:10.302Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -9765,7 +9765,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2025-02-20T14:02:01.422Z",
+      "dateAdded": "2024-12-15T23:20:56.042Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -9793,7 +9793,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "advanced",
       "level": 5,
-      "dateAdded": "2024-11-15T11:03:09.763Z",
+      "dateAdded": "2024-09-27T02:45:49.311Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -9822,7 +9822,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "beginner",
       "level": 2,
-      "dateAdded": "2025-03-05T16:39:37.043Z",
+      "dateAdded": "2024-12-04T06:24:53.551Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -9850,7 +9850,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2024-09-05T10:14:16.374Z",
+      "dateAdded": "2025-02-19T16:14:41.096Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -9878,7 +9878,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 2,
-      "dateAdded": "2024-12-26T18:45:38.804Z",
+      "dateAdded": "2025-04-29T18:42:55.251Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -9907,7 +9907,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2025-02-28T01:39:49.083Z",
+      "dateAdded": "2024-10-09T00:23:54.681Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -9916,7 +9916,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": "box",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -9935,7 +9935,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "advanced",
       "level": 5,
-      "dateAdded": "2025-03-07T16:21:09.599Z",
+      "dateAdded": "2025-03-07T03:35:55.097Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -9944,7 +9944,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": "box",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -9963,7 +9963,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 4,
-      "dateAdded": "2025-08-16T03:43:21.841Z",
+      "dateAdded": "2025-01-10T20:55:02.971Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -9972,7 +9972,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": "box",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -9991,7 +9991,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "advanced",
       "level": 5,
-      "dateAdded": "2024-12-27T22:32:44.810Z",
+      "dateAdded": "2024-09-12T00:45:58.694Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -10000,7 +10000,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": "box",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -10019,7 +10019,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 2,
-      "dateAdded": "2024-10-20T19:00:29.489Z",
+      "dateAdded": "2025-04-30T15:01:59.814Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -10047,7 +10047,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 2,
-      "dateAdded": "2025-05-31T07:27:09.466Z",
+      "dateAdded": "2025-06-11T04:50:31.491Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -10075,7 +10075,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 4,
-      "dateAdded": "2024-12-26T01:25:49.734Z",
+      "dateAdded": "2024-09-07T09:54:09.434Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -10103,7 +10103,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "advanced",
       "level": 4,
-      "dateAdded": "2025-02-01T03:44:14.832Z",
+      "dateAdded": "2025-05-04T18:10:57.676Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -10131,7 +10131,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2025-03-19T10:14:11.158Z",
+      "dateAdded": "2025-08-03T18:53:58.093Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -10159,7 +10159,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2024-09-04T03:19:22.569Z",
+      "dateAdded": "2024-12-19T07:23:06.287Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -10168,7 +10168,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": "box",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -10187,7 +10187,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2025-01-20T07:19:48.168Z",
+      "dateAdded": "2025-04-06T14:25:16.449Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -10196,7 +10196,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": "box",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -10215,7 +10215,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 4,
-      "dateAdded": "2025-02-05T08:15:58.860Z",
+      "dateAdded": "2025-02-27T03:26:41.801Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -10243,7 +10243,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "advanced",
       "level": 5,
-      "dateAdded": "2025-07-07T04:16:00.625Z",
+      "dateAdded": "2025-04-03T02:14:24.934Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -10252,7 +10252,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": "diamond",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -10271,7 +10271,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2024-10-20T01:34:07.042Z",
+      "dateAdded": "2025-06-16T23:03:12.690Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -10280,7 +10280,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": "box",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -10299,7 +10299,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "advanced",
       "level": 5,
-      "dateAdded": "2024-12-08T10:43:27.596Z",
+      "dateAdded": "2024-09-16T19:26:02.856Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -10308,7 +10308,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": "box",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -10327,7 +10327,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2025-03-30T01:42:27.127Z",
+      "dateAdded": "2025-04-05T17:14:19.813Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -10336,7 +10336,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": "box",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -10355,7 +10355,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 4,
-      "dateAdded": "2025-06-23T10:05:02.489Z",
+      "dateAdded": "2025-02-25T02:19:56.525Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -10364,7 +10364,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "diamond",
+      "gridMode": "box",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -10383,7 +10383,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "advanced",
       "level": 5,
-      "dateAdded": "2024-11-03T23:05:54.197Z",
+      "dateAdded": "2025-03-20T23:05:17.452Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -10411,7 +10411,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "advanced",
       "level": 5,
-      "dateAdded": "2025-01-06T06:25:27.931Z",
+      "dateAdded": "2024-11-03T23:52:41.135Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -10420,7 +10420,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": "diamond",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,
@@ -10440,7 +10440,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2024-12-06T18:47:07.796Z",
+      "dateAdded": "2025-02-18T21:00:18.265Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -10468,7 +10468,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "beginner",
       "level": 2,
-      "dateAdded": "2025-01-07T15:31:46.953Z",
+      "dateAdded": "2025-04-22T08:31:04.078Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -10497,7 +10497,7 @@
       "author": "TKA Dictionary",
       "difficultyLevel": "intermediate",
       "level": 3,
-      "dateAdded": "2025-07-22T12:51:22.870Z",
+      "dateAdded": "2025-08-03T23:10:29.355Z",
       "isFavorite": false,
       "isCircular": false,
       "tags": [
@@ -10506,7 +10506,7 @@
       ],
       "propType": "fans",
       "startingPosition": "center",
-      "gridMode": "box",
+      "gridMode": "diamond",
       "metadata": {
         "source": "tka_dictionary",
         "realSequence": true,

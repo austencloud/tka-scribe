@@ -6,39 +6,40 @@
 import type { ServiceInterface } from "./types";
 
 // Import all service interfaces
+import { IBeatFrameServiceInterface } from "./interfaces/beat-frame-interfaces";
 import {
   IApplicationInitializationServiceInterface,
+  // ✅ REMOVED: PropRenderingService is deprecated
+  IArrowRenderingServiceInterface,
   IConstructTabCoordinationServiceInterface,
   IDeviceDetectionServiceInterface,
   IExportServiceInterface,
   IMotionGenerationServiceInterface,
+  IPageFactoryServiceInterface,
+  IPageImageExportServiceInterface,
   IPanelManagementServiceInterface,
   IPersistenceServiceInterface,
   IPictographRenderingServiceInterface,
   IPictographServiceInterface,
-  // ✅ REMOVED: PropRenderingService is deprecated
-  IArrowRenderingServiceInterface,
+  IPrintablePageLayoutServiceInterface,
+  ISequenceCardExportIntegrationServiceInterface,
+  ISequenceDeletionServiceInterface,
   ISequenceDomainServiceInterface,
   ISequenceGenerationServiceInterface,
-  ISequenceServiceInterface,
-  IWorkbenchBeatOperationsServiceInterface,
   ISequenceImportServiceInterface,
-  ISequenceDeletionServiceInterface,
+  ISequenceServiceInterface,
   ISettingsServiceInterface,
-  IStartPositionServiceInterface,
-  IPrintablePageLayoutServiceInterface,
-  IPageFactoryServiceInterface,
-  IPageImageExportServiceInterface,
-  ISequenceCardExportIntegrationServiceInterface,
   IStartPositionSelectionServiceInterface,
+  IStartPositionServiceInterface,
+  IWorkbenchBeatOperationsServiceInterface,
 } from "./interfaces/core-interfaces";
 
 import {
   IArrowAdjustmentCalculatorInterface,
   IArrowCoordinateSystemServiceInterface,
   IArrowLocationCalculatorInterface,
-  IArrowPlacementServiceInterface,
   IArrowPlacementKeyServiceInterface,
+  IArrowPlacementServiceInterface,
   IArrowPositioningOrchestratorInterface,
   IArrowRotationCalculatorInterface,
   IDashLocationCalculatorInterface,
@@ -58,11 +59,11 @@ import {
 } from "./interfaces/browse-interfaces";
 
 import {
+  IAnimationStateServiceInterface,
   IBeatCalculationServiceInterface,
   IPropInterpolationServiceInterface,
-  IAnimationStateServiceInterface,
-  ISequenceAnimationOrchestratorInterface,
   ISequenceAnimationEngineInterface,
+  ISequenceAnimationOrchestratorInterface,
 } from "./interfaces/animator-interfaces";
 
 // TODO: Uncomment when image export interfaces are implemented
@@ -80,12 +81,14 @@ import {
 
 import {
   ICodexServiceInterface,
-  ILetterMappingRepositoryInterface,
   ILessonRepositoryInterface,
+  ILetterMappingRepositoryInterface,
   IPictographOperationsServiceInterface,
 } from "./interfaces/codex-interfaces";
 
 import { IOptionFilteringServiceInterface } from "./registration/shared-services";
+
+import { getSequenceCardExportServiceTokens } from "./registration/sequence-card-export-services";
 
 /**
  * Service interface mapping for string-based resolution
@@ -93,6 +96,7 @@ import { IOptionFilteringServiceInterface } from "./registration/shared-services
  */
 export const serviceInterfaceMap = new Map<string, ServiceInterface<unknown>>([
   // Core services
+  ["IBeatFrameService", IBeatFrameServiceInterface],
   ["ISequenceService", ISequenceServiceInterface],
   ["IWorkbenchBeatOperationsService", IWorkbenchBeatOperationsServiceInterface],
   ["ISequenceImportService", ISequenceImportServiceInterface],
@@ -167,6 +171,9 @@ export const serviceInterfaceMap = new Map<string, ServiceInterface<unknown>>([
 
   // Shared utility services
   ["IOptionFilteringService", IOptionFilteringServiceInterface],
+
+  // Sequence Card Export services
+  ...getSequenceCardExportServiceTokens(),
 
   // TODO: Uncomment when TKA Image Export services are implemented
   // ["ITKAImageExportService", ITKAImageExportServiceInterface],

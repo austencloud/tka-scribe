@@ -3,11 +3,11 @@
  * Uses modern detection methods based on research from W3C, Material Design, and iOS guidelines
  */
 
-import type { DeviceCapabilities } from "../../interfaces/domain-types";
 import type {
   IDeviceDetectionService,
   ResponsiveSettings,
 } from "../../interfaces/device-interfaces";
+import type { DeviceCapabilities } from "../../interfaces/domain-types";
 
 export class DeviceDetectionService implements IDeviceDetectionService {
   private capabilities: DeviceCapabilities | null = null;
@@ -151,6 +151,10 @@ export class DeviceDetectionService implements IDeviceDetectionService {
 
   private detectPrecisePointer(): boolean {
     // Use CSS media query for precise pointer detection
+    // Guard for test environment where window.matchMedia might not exist
+    if (typeof window === "undefined" || !window.matchMedia) {
+      return true; // Default to precise pointer in test environment
+    }
     return window.matchMedia("(pointer: fine)").matches;
   }
 
@@ -158,6 +162,10 @@ export class DeviceDetectionService implements IDeviceDetectionService {
     // This is hard to detect reliably without user interaction
     // For now, assume desktop/laptop devices have keyboards
     // Could be enhanced with actual key event detection
+    // Guard for test environment where window.matchMedia might not exist
+    if (typeof window === "undefined" || !window.matchMedia) {
+      return true; // Default to keyboard available in test environment
+    }
     return window.matchMedia("(pointer: fine)").matches;
   }
 
