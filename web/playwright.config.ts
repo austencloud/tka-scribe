@@ -9,8 +9,8 @@ import { defineConfig, devices } from "@playwright/test";
  * 3. Configure browsers and test execution settings
  */
 export default defineConfig({
-  // Look for test files in the "tests" directory
-  testDir: "./tests",
+  // Look for test files in the "tests/e2e" directory
+  testDir: "./tests/e2e",
 
   // Run tests in parallel
   fullyParallel: true,

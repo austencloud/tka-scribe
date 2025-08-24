@@ -6,8 +6,10 @@ This component is focused solely on rendering the SVG elements
 and leaves state management to the parent component.
 -->
 <script lang="ts">
-  import type { PictographData, MotionData, MotionColor } from "$lib/domain";
+  import type { MotionColor, MotionData, PictographData } from "$lib/domain";
   import { GridMode } from "$lib/domain/enums";
+  import { resolve } from "$lib/services/bootstrap";
+  import type { IGridModeDeriver } from "$lib/services/interfaces/movement/IGridModeDeriver";
   // ✅ REMOVED: Beta calculation imports - now handled in PropPlacementService
 
   import Arrow from "./ArrowSvg.svelte";
@@ -56,6 +58,30 @@ and leaves state management to the parent component.
     ariaLabel,
   }: Props = $props();
 
+  // Derive grid mode from pictograph data using Svelte 5 runes
+  const gridMode = $derived(
+    (() => {
+      if (
+        !pictographData ||
+        !pictographData.motions?.blue ||
+        !pictographData.motions?.red
+      ) {
+        return GridMode.DIAMOND; // Default fallback
+      }
+
+      try {
+        const gridModeService = resolve<IGridModeDeriver>("IGridModeDeriver");
+        return gridModeService.deriveGridMode(
+          pictographData.motions.blue,
+          pictographData.motions.red
+        );
+      } catch (error) {
+        console.warn("Failed to derive grid mode, using default:", error);
+        return GridMode.DIAMOND; // Fallback to default on error
+      }
+    })()
+  );
+
   // ✅ REMOVED: High-level beta calculation - now handled in PropPlacementService with complete pictograph data
 </script>
 
@@ -73,7 +99,7 @@ and leaves state management to the parent component.
   {#if hasValidData}
     <!-- Grid (always rendered first) -->
     <Grid
-      gridMode={pictographData?.gridMode || GridMode.DIAMOND}
+      {gridMode}
       onLoaded={() => onComponentLoaded("grid")}
       onError={(error) => onComponentError("grid", error)}
     />

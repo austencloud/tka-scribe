@@ -3,27 +3,27 @@
  */
 
 // Main component
-export { default as ModernStartPositionPicker } from "./ModernStartPositionPicker.svelte";
+export { default as StartPositionPicker } from "./StartPositionPicker.svelte";
 
 // Sub-components
 export { default as StartPositionGrid } from "./components/StartPositionGrid.svelte";
 
 // Services
 export {
-  StartPositionServiceResolver,
-  createStartPositionServiceResolver,
-} from "./services/StartPositionServiceResolver";
-export {
-  StartPositionLoader,
   createStartPositionLoader,
+  StartPositionLoader,
 } from "./services/StartPositionLoader";
+export {
+  createStartPositionServiceResolver,
+  StartPositionServiceResolver,
+} from "./services/StartPositionServiceResolver";
 
 // Utilities
 export {
+  createStartPositionBeat,
+  createStartPositionData,
   extractEndPosition,
   mapLocationToPosition,
-  createStartPositionData,
-  createStartPositionBeat,
-  storeStartPositionData,
   storePreloadedOptions,
+  storeStartPositionData,
 } from "./utils/StartPositionUtils";

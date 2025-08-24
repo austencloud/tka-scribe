@@ -77,11 +77,6 @@ This is the left 2/3 section of the new layout.
             isVisible: true,
           }),
         },
-
-        metadata: {
-          source: "motion_tester",
-          created: Date.now(),
-        },
       });
 
       console.log(

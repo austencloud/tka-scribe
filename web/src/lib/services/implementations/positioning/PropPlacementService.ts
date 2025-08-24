@@ -14,9 +14,10 @@ import type {
 import { GridMode } from "$lib/domain/enums";
 import { createPropPlacementFromPosition } from "$lib/domain/PropPlacementData";
 import { endsWithBeta } from "$lib/utils/betaDetection";
+import { resolve } from "../../bootstrap";
 import { DefaultPropPositioner } from "../../DefaultPropPositioner";
+import type { IGridModeDeriver } from "../../interfaces/movement/IGridModeDeriver";
 import { PropRotAngleManager } from "../../PropRotAngleManager";
-import { GridModeDerivationService } from "../domain/GridModeDerivationService";
 import { BetaOffsetCalculator } from "./BetaOffsetCalculator";
 import { BetaPropDirectionCalculator } from "./BetaPropDirectionCalculator";
 
@@ -28,7 +29,14 @@ export interface IPropPlacementService {
 }
 
 export class PropPlacementService implements IPropPlacementService {
-  private gridModeService = new GridModeDerivationService();
+  private gridModeService: IGridModeDeriver | null = null;
+
+  private getGridModeService(): IGridModeDeriver {
+    if (!this.gridModeService) {
+      this.gridModeService = resolve<IGridModeDeriver>("IGridModeDeriver");
+    }
+    return this.gridModeService;
+  }
 
   calculatePlacement(
     pictographData: PictographData,
@@ -37,7 +45,7 @@ export class PropPlacementService implements IPropPlacementService {
     // Compute gridMode from motion data
     const gridMode =
       pictographData.motions?.blue && pictographData.motions?.red
-        ? this.gridModeService.deriveGridMode(
+        ? this.getGridModeService().deriveGridMode(
             pictographData.motions.blue,
             pictographData.motions.red
           )

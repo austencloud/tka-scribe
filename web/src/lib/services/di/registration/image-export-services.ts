@@ -13,18 +13,24 @@ import type { ServiceInterface } from "../types";
 import {
   IBeatRenderingServiceInterface,
   ICanvasManagementServiceInterface,
+  IDifficultyBadgeRendererInterface,
   IDimensionCalculationServiceInterface,
+  // New refactored service interfaces
+  IExportConfigurationManagerInterface,
+  IExportMemoryCalculatorInterface,
+  IExportOptionsValidatorInterface,
   IFileExportServiceInterface,
+  IFilenameGeneratorServiceInterface,
   IGridOverlayServiceInterface,
   IImageCompositionServiceInterface,
+  IImagePreviewGeneratorInterface,
   ILayoutCalculationServiceInterface,
-  ITextRenderingServiceInterface,
+  ITextRenderingUtilsInterface,
+  ITKAImageExportOrchestratorInterface,
   ITKAImageExportServiceInterface,
+  IUserInfoRendererInterface,
   // Text rendering component interfaces
   IWordTextRendererInterface,
-  IUserInfoRendererInterface,
-  IDifficultyBadgeRendererInterface,
-  ITextRenderingUtilsInterface,
 } from "../interfaces/image-export-interfaces";
 
 import {
@@ -42,13 +48,20 @@ import { FileExportService } from "../../implementations/image-export/FileExport
 import { GridOverlayService } from "../../implementations/image-export/GridOverlayService";
 import { ImageCompositionService } from "../../implementations/image-export/ImageCompositionService";
 import { LayoutCalculationService } from "../../implementations/image-export/LayoutCalculationService";
-import { TKAImageExportService } from "../../implementations/image-export/TKAImageExportService";
+
+// Import new refactored service implementations
+import { ExportConfigurationManager } from "../../implementations/image-export/ExportConfigurationManager";
+import { ExportMemoryCalculator } from "../../implementations/image-export/ExportMemoryCalculator";
+import { ExportOptionsValidator } from "../../implementations/image-export/ExportOptionsValidator";
+import { FilenameGeneratorService } from "../../implementations/image-export/FilenameGeneratorService";
+import { ImagePreviewGenerator } from "../../implementations/image-export/ImagePreviewGenerator";
+import { TKAImageExportOrchestrator } from "../../implementations/image-export/TKAImageExportOrchestrator";
 
 // Import text rendering component implementations
-import { WordTextRenderer } from "../../implementations/image-export/text-rendering/internal/WordTextRenderer";
-import { UserInfoRenderer } from "../../implementations/image-export/text-rendering/internal/UserInfoRenderer";
 import { DifficultyBadgeRenderer } from "../../implementations/image-export/text-rendering/internal/DifficultyBadgeRenderer";
 import { TextRenderingUtils } from "../../implementations/image-export/text-rendering/internal/TextRenderingUtils";
+import { UserInfoRenderer } from "../../implementations/image-export/text-rendering/internal/UserInfoRenderer";
+import { WordTextRenderer } from "../../implementations/image-export/text-rendering/internal/WordTextRenderer";
 
 /**
  * Register all TKA image export services with the DI container
@@ -129,7 +142,9 @@ export async function registerImageExportServices(
       const beatRenderer = container.resolve(IBeatRenderingServiceInterface);
       const wordRenderer = container.resolve(IWordTextRendererInterface);
       const userInfoRenderer = container.resolve(IUserInfoRendererInterface);
-      const difficultyRenderer = container.resolve(IDifficultyBadgeRendererInterface);
+      const difficultyRenderer = container.resolve(
+        IDifficultyBadgeRendererInterface
+      );
       const textUtils = container.resolve(ITextRenderingUtilsInterface);
 
       return new ImageCompositionService(
@@ -143,8 +158,45 @@ export async function registerImageExportServices(
       );
     });
 
-    // Register main TKA image export service (depends on composition and file services)
-    container.registerFactory(ITKAImageExportServiceInterface, () => {
+    // Register new refactored services (foundation services with no/minimal dependencies)
+    container.registerFactory(IExportConfigurationManagerInterface, () => {
+      return new ExportConfigurationManager();
+    });
+
+    container.registerFactory(IExportMemoryCalculatorInterface, () => {
+      return new ExportMemoryCalculator();
+    });
+
+    container.registerFactory(IFilenameGeneratorServiceInterface, () => {
+      return new FilenameGeneratorService();
+    });
+
+    // Register validator service (depends on memory calculator)
+    container.registerFactory(IExportOptionsValidatorInterface, () => {
+      const memoryCalculator = container.resolve(
+        IExportMemoryCalculatorInterface
+      );
+      return new ExportOptionsValidator(memoryCalculator);
+    });
+
+    // Register preview generator (depends on composition, file, and config services)
+    container.registerFactory(IImagePreviewGeneratorInterface, () => {
+      const compositionService = container.resolve(
+        IImageCompositionServiceInterface
+      );
+      const fileService = container.resolve(IFileExportServiceInterface);
+      const configManager = container.resolve(
+        IExportConfigurationManagerInterface
+      );
+      return new ImagePreviewGenerator(
+        compositionService,
+        fileService,
+        configManager
+      );
+    });
+
+    // Register main TKA image export orchestrator (replaces old monolithic service)
+    container.registerFactory(ITKAImageExportOrchestratorInterface, () => {
       const compositionService = container.resolve(
         IImageCompositionServiceInterface
       );
@@ -155,13 +207,33 @@ export async function registerImageExportServices(
       const dimensionService = container.resolve(
         IDimensionCalculationServiceInterface
       );
+      const configManager = container.resolve(
+        IExportConfigurationManagerInterface
+      );
+      const validator = container.resolve(IExportOptionsValidatorInterface);
+      const previewGenerator = container.resolve(
+        IImagePreviewGeneratorInterface
+      );
+      const filenameGenerator = container.resolve(
+        IFilenameGeneratorServiceInterface
+      );
 
-      return new TKAImageExportService(
+      return new TKAImageExportOrchestrator(
         compositionService,
         fileService,
         layoutService,
-        dimensionService
+        dimensionService,
+        configManager,
+        validator,
+        previewGenerator,
+        filenameGenerator
       );
+    });
+
+    // Register main TKA image export service (depends on composition and file services)
+    container.registerFactory(ITKAImageExportServiceInterface, () => {
+      // Use the new orchestrator instead of the old monolithic service
+      return container.resolve(ITKAImageExportOrchestratorInterface);
     });
 
     // Validate registrations
@@ -191,7 +263,14 @@ async function validateImageExportServices(
     },
     { interface: IFileExportServiceInterface, name: "FileExportService" },
     { interface: IBeatRenderingServiceInterface, name: "BeatRenderingService" },
-    { interface: ITextRenderingServiceInterface, name: "TextRenderingService" },
+    // Text rendering component interfaces
+    { interface: IWordTextRendererInterface, name: "WordTextRenderer" },
+    { interface: IUserInfoRendererInterface, name: "UserInfoRenderer" },
+    {
+      interface: IDifficultyBadgeRendererInterface,
+      name: "DifficultyBadgeRenderer",
+    },
+    { interface: ITextRenderingUtilsInterface, name: "TextRenderingUtils" },
     {
       interface: IImageCompositionServiceInterface,
       name: "ImageCompositionService",
@@ -204,6 +283,31 @@ async function validateImageExportServices(
     {
       interface: ITKAImageExportServiceInterface,
       name: "TKAImageExportService",
+    },
+    // New refactored services
+    {
+      interface: IExportConfigurationManagerInterface,
+      name: "ExportConfigurationManager",
+    },
+    {
+      interface: IExportMemoryCalculatorInterface,
+      name: "ExportMemoryCalculator",
+    },
+    {
+      interface: IExportOptionsValidatorInterface,
+      name: "ExportOptionsValidator",
+    },
+    {
+      interface: IFilenameGeneratorServiceInterface,
+      name: "FilenameGeneratorService",
+    },
+    {
+      interface: IImagePreviewGeneratorInterface,
+      name: "ImagePreviewGenerator",
+    },
+    {
+      interface: ITKAImageExportOrchestratorInterface,
+      name: "TKAImageExportOrchestrator",
     },
   ];
 
@@ -287,10 +391,21 @@ export async function testImageExportPipeline(
       throw new Error("File export service test failed");
     }
 
-    // Test text rendering service
-    const textService = container.resolve(ITextRenderingServiceInterface);
-    if (!textService) {
-      throw new Error("Text rendering service test failed");
+    // Test text rendering components
+    const wordRenderer = container.resolve(IWordTextRendererInterface);
+    const userInfoRenderer = container.resolve(IUserInfoRendererInterface);
+    const difficultyRenderer = container.resolve(
+      IDifficultyBadgeRendererInterface
+    );
+    const textUtils = container.resolve(ITextRenderingUtilsInterface);
+
+    if (
+      !wordRenderer ||
+      !userInfoRenderer ||
+      !difficultyRenderer ||
+      !textUtils
+    ) {
+      throw new Error("Text rendering components test failed");
     }
 
     // Test main export service
@@ -320,7 +435,7 @@ export function getImageExportServiceMetrics(_container: ServiceContainer): {
     "getImageExportServiceMetrics temporarily disabled - service interface compatibility issues"
   );
   return {
-    servicesRegistered: 9, // Static count for now
+    servicesRegistered: 11, // Updated count: 8 original services + 4 text rendering components - 1 removed TextRenderingService
     memoryUsage: undefined,
     cacheStats: undefined,
   };

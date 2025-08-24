@@ -199,7 +199,11 @@ export class WorkbenchService implements IWorkbenchService {
       return false;
     }
 
-    const beat = sequence!.beats[beatIndex];
+    if (!sequence) {
+      return false;
+    }
+
+    const beat = sequence.beats[beatIndex];
     return !beat.isBlank; // Can only clear non-blank beats
   }
 

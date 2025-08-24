@@ -8,7 +8,7 @@
 import type { PictographData } from "$lib/domain/PictographData";
 import { createPictographData } from "$lib/domain/PictographData";
 
-import { getLetterType, Letter } from "$lib/domain";
+import { Letter } from "$lib/domain";
 import { MotionColor } from "$lib/domain/enums";
 import { createMotionData } from "$lib/domain/MotionData";
 import { pictographDataDebugger } from "../../debug/PictographDataDebugger";
@@ -86,7 +86,7 @@ export class PictographTransformationService
    */
   createPictographFromCSVRow(
     row: Record<string, string>,
-    gridMode: string
+    _gridMode: string
   ): PictographData | null {
     try {
       // Validate required fields
@@ -154,13 +154,6 @@ export class PictographTransformationService
         motions: {
           blue: blueMotion,
           red: redMotion,
-        },
-        isBlank: false,
-        metadata: {
-          source: "csv_transformation_service",
-          gridMode,
-          originalRow: row,
-          letterType: getLetterType(letter as Letter),
         },
       });
     } catch (error) {
@@ -299,7 +292,7 @@ export class PictographTransformationService
   createPictographWithMetadata(
     row: Record<string, string>,
     gridMode: string,
-    additionalMetadata: Record<string, unknown> = {}
+    _additionalMetadata: Record<string, unknown> = {}
   ): PictographData | null {
     const pictograph = this.createPictographFromCSVRow(row, gridMode);
 
@@ -307,10 +300,6 @@ export class PictographTransformationService
 
     return {
       ...pictograph,
-      metadata: {
-        ...pictograph.metadata,
-        ...additionalMetadata,
-      },
     };
   }
 }

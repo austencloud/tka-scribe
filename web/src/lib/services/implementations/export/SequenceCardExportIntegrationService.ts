@@ -5,17 +5,17 @@
  * Handles DOM element selection, export orchestration, and file downloads.
  */
 
-import type { ISequenceCardExportIntegrationService } from "../../interfaces/sequence-interfaces";
-import type {
-  IPageImageExportService,
-  ImageExportOptions,
-} from "../../interfaces/export-interfaces";
 import {
   downloadBlobBatch,
   generateTimestampedFilename,
   sanitizeFilename,
   supportsFileDownload,
 } from "../../../utils/file-download";
+import type {
+  IPageImageExportService,
+  ImageExportOptions,
+} from "../../interfaces/export-interfaces";
+import type { ISequenceCardExportIntegrationService } from "../../interfaces/sequence-interfaces";
 
 export class SequenceCardExportIntegrationService
   implements ISequenceCardExportIntegrationService
@@ -80,7 +80,9 @@ export class SequenceCardExportIntegrationService
 
       // Prepare download data
       const downloadData: Array<{ blob: Blob; filename: string }> = [];
-      const errors: Error[] = [...batchResult.errors];
+      const errors: Error[] = batchResult.errors.map((err) =>
+        err instanceof Error ? err : err.error
+      );
 
       for (let i = 0; i < batchResult.results.length; i++) {
         const result = batchResult.results[i];

@@ -5,9 +5,9 @@
  * Updated to match exact legacy generation parameters and options.
  */
 
+import { GenerationMode, MotionColor, PropContinuity } from "$lib/domain/enums";
+import type { DifficultyLevel, GridMode } from "./core-types";
 import type { BeatData, MotionData, SequenceData } from "./domain-types";
-import type { GridMode, DifficultyLevel } from "./core-types";
-import { PropContinuity, GenerationMode, MotionColor } from "$lib/domain/enums";
 
 // ============================================================================
 // GENERATION OPTIONS
@@ -118,114 +118,104 @@ export interface IOrientationCalculationService {
 // MOVEMENT PATTERN GENERATION INTERFACES
 // ============================================================================
 
-import type {
-  MovementData,
-  MovementPattern,
-  MovementSet,
-} from "$lib/domain/MovementData";
+import type { PictographData } from "$lib/domain/PictographData";
 import type { GridPosition } from "$lib/domain/enums";
 
 /**
- * Service for generating TKA movement patterns from templates
+ * Service for generating TKA pictographs from letter patterns
  */
-export interface IMovementGeneratorService {
-  generateMovementSet(pattern: MovementPattern): MovementSet;
-
+export interface IPictographGenerator {
   // Standard letter generators
-  generateA(): MovementSet;
-  generateB(): MovementSet;
-  generateC(): MovementSet;
-  generateD(): MovementSet;
-  generateE(): MovementSet;
-  generateF(): MovementSet;
-  generateG(): MovementSet;
-  generateH(): MovementSet;
-  generateI(): MovementSet;
-  generateJ(): MovementSet;
-  generateK(): MovementSet;
-  generateL(): MovementSet;
-  generateM(): MovementSet;
-  generateN(): MovementSet;
-  generateO(): MovementSet;
-  generateP(): MovementSet;
-  generateQ(): MovementSet;
-  generateR(): MovementSet;
-  generateS(): MovementSet;
-  generateT(): MovementSet;
-  generateU(): MovementSet;
-  generateV(): MovementSet;
-  generateW(): MovementSet;
-  generateX(): MovementSet;
-  generateY(): MovementSet;
-  generateZ(): MovementSet;
+  generateA(): PictographData[];
+  generateB(): PictographData[];
+  generateC(): PictographData[];
+  generateD(): PictographData[];
+  generateE(): PictographData[];
+  generateF(): PictographData[];
+  generateG(): PictographData[];
+  generateH(): PictographData[];
+  generateI(): PictographData[];
+  generateJ(): PictographData[];
+  generateK(): PictographData[];
+  generateL(): PictographData[];
+  generateM(): PictographData[];
+  generateN(): PictographData[];
+  generateO(): PictographData[];
+  generateP(): PictographData[];
+  generateQ(): PictographData[];
+  generateR(): PictographData[];
+  generateS(): PictographData[];
+  generateT(): PictographData[];
+  generateU(): PictographData[];
+  generateV(): PictographData[];
+  generateW(): PictographData[];
+  generateX(): PictographData[];
+  generateY(): PictographData[];
+  generateZ(): PictographData[];
 
   // Greek letter generators
-  generateSigma(): MovementSet;
-  generateDelta(): MovementSet;
-  generateTheta(): MovementSet;
-  generateOmega(): MovementSet;
-  generatePhi(): MovementSet;
-  generatePsi(): MovementSet;
-  generateLambda(): MovementSet;
-  generateAlpha(): MovementSet;
-  generateBeta(): MovementSet;
-  generateGamma(): MovementSet;
+  generateSigma(): PictographData[];
+  generateDelta(): PictographData[];
+  generateTheta(): PictographData[];
+  generateOmega(): PictographData[];
+  generatePhi(): PictographData[];
+  generatePsi(): PictographData[];
+  generateLambda(): PictographData[];
+  generateAlpha(): PictographData[];
+  generateBeta(): PictographData[];
+  generateGamma(): PictographData[];
 
   // Dash variant generators
-  generateWDash(): MovementSet;
-  generateXDash(): MovementSet;
-  generateYDash(): MovementSet;
-  generateZDash(): MovementSet;
-  generateSigmaDash(): MovementSet;
-  generateDeltaDash(): MovementSet;
-  generateThetaDash(): MovementSet;
-  generateOmegaDash(): MovementSet;
-  generatePhiDash(): MovementSet;
-  generatePsiDash(): MovementSet;
-  generateLambdaDash(): MovementSet;
+  generateWDash(): PictographData[];
+  generateXDash(): PictographData[];
+  generateYDash(): PictographData[];
+  generateZDash(): PictographData[];
+  generateSigmaDash(): PictographData[];
+  generateDeltaDash(): PictographData[];
+  generateThetaDash(): PictographData[];
+  generateOmegaDash(): PictographData[];
+  generatePhiDash(): PictographData[];
+  generatePsiDash(): PictographData[];
+  generateLambdaDash(): PictographData[];
 
   // Utility methods
-  getAllMovementSets(): MovementSet[];
-  getMovementSetByLetter(letter: string): MovementSet | undefined;
+  getAllPictographs(): PictographData[];
+  getPictographsByLetter(letter: string): PictographData[] | undefined;
 }
 
 /**
- * Service for managing movement patterns and position sequences
+ * Service for managing position sequences
  */
-export interface IMovementPatternService {
-  createPattern(
-    letter: string,
-    config: Partial<MovementPattern>
-  ): MovementPattern;
-
+export interface IPositionPatternService {
   getAlphaSequence(): GridPosition[];
   getBetaSequence(): GridPosition[];
   getGammaSequence(): GridPosition[];
   getCustomSequence(positions: GridPosition[]): GridPosition[];
 
   generatePositionSequence(
-    pattern: MovementPattern,
+    positionSystem: string,
     length?: number
   ): GridPosition[];
-
-  createVariations(
-    basePattern: MovementPattern,
-    variations: Array<{
-      motionCombination: [string, string];
-      rotationCombination: [string, string];
-    }>
-  ): MovementPattern[];
 }
 
 /**
- * Service for calculating position sequences and transformations
+ * Service for calculating position sequences - focused on sequence generation only
  */
-export interface IPositionCalculatorService {
+export interface IPositionSequenceService {
   getPositionSequence(
     system: "alpha" | "beta" | "gamma",
     count: number
   ): GridPosition[];
   getNextPosition(current: GridPosition, forward: boolean): GridPosition;
+  calculatePositionPairs(
+    sequence: GridPosition[]
+  ): Array<[GridPosition, GridPosition]>;
+}
+
+/**
+ * Service for calculating directional mappings - focused on location calculations
+ */
+export interface IDirectionCalculator {
   getCardinalDirections(
     startPosition: GridPosition,
     endPosition: GridPosition,
@@ -234,18 +224,14 @@ export interface IPositionCalculatorService {
     import("$lib/domain/enums").Location,
     import("$lib/domain/enums").Location,
   ];
-
-  calculatePositionPairs(
-    sequence: GridPosition[]
-  ): Array<[GridPosition, GridPosition]>;
 }
 
 /**
- * Service for validating generated movements
+ * Service for validating generated pictographs
  */
-export interface IMovementValidatorService {
-  validateMovement(movement: MovementData): boolean;
-  validateMovementSet(movementSet: MovementSet): boolean;
-  getValidationErrors(movement: MovementData): string[];
+export interface IPictographValidatorService {
+  validatePictograph(pictograph: PictographData): boolean;
+  validatePictographs(pictographs: PictographData[]): boolean;
+  getValidationErrors(pictograph: PictographData): string[];
   validatePositionSequence(positions: GridPosition[]): boolean;
 }

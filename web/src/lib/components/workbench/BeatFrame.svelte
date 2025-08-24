@@ -10,7 +10,7 @@
     startPosition?: BeatData | null;
     selectedBeatIndex?: number;
     onBeatClick?: (index: number) => void;
-    onBeatDoubleClick?: (index: number) => void;
+
     onStartClick?: () => void;
     isScrollable?: boolean;
     fullScreenMode?: boolean;
@@ -22,7 +22,6 @@
     startPosition = null,
     selectedBeatIndex = -1,
     onBeatClick,
-    onBeatDoubleClick,
     onStartClick,
     isScrollable = false,
     fullScreenMode = false,
@@ -152,9 +151,6 @@
     onBeatClick?.(index);
   }
 
-  function handleBeatDoubleClick(index: number) {
-    onBeatDoubleClick?.(index);
-  }
 
   function handleBeatHover(index: number) {
     beatFrameState.setHoveredBeatIndex(index);
@@ -163,7 +159,7 @@
   function handleBeatLeave() {
     beatFrameState.clearHover();
   }
-</script>
+</script>   
 
 <div
   class="beat-frame-container"
@@ -235,7 +231,6 @@
             isSelected={index === selectedBeatIndex}
             isHovered={index === hoveredBeatIndex}
             onClick={handleBeatClick}
-            onDoubleClick={handleBeatDoubleClick}
             onHover={handleBeatHover}
             onLeave={handleBeatLeave}
           />

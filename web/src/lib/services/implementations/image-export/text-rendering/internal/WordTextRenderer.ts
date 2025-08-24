@@ -7,10 +7,10 @@
 
 import type { TextRenderOptions } from "../../../../interfaces/image-export-interfaces";
 import type { IWordTextRenderer } from "../../../../interfaces/text-rendering-interfaces";
-import { 
-  createFont, 
-  measureTextWithKerning, 
-  renderTextWithKerning 
+import {
+  createFont,
+  measureTextWithKerning,
+  renderTextWithKerning,
 } from "./TextRenderingTypes";
 
 export class WordTextRenderer implements IWordTextRenderer {

@@ -4,6 +4,7 @@
  */
 
 import type { IEnumMappingService } from "../../interfaces/application-interfaces";
+import type { IPositionMapper } from "../../interfaces/movement/IPositionMapper";
 import type { ServiceContainer } from "../ServiceContainer";
 
 import {
@@ -11,6 +12,7 @@ import {
   type ICSVParserService,
 } from "../../implementations/data/CSVParserService";
 import { EnumMappingService } from "../../implementations/data/EnumMappingService";
+import { PositionMapperDI } from "../interfaces/movement-interfaces";
 
 import type { IOptionFilteringService } from "../../implementations/data/OptionFilteringService";
 import { OptionFilteringService } from "../../implementations/data/OptionFilteringService";
@@ -76,12 +78,15 @@ export async function registerSharedServices(
     return new PictographTransformationService(enumMappingService);
   });
 
-  // Register filtering services (depend on enum mapping)
+  // Register filtering services (depend on enum mapping and position mapping)
   container.registerFactory(IOptionFilteringServiceInterface, () => {
     const enumMappingService = container.resolve(
       IEnumMappingServiceInterface
     ) as IEnumMappingService;
-    return new OptionFilteringService(enumMappingService);
+    const PositionMapper = container.resolve(
+      PositionMapperDI
+    ) as IPositionMapper;
+    return new OptionFilteringService(enumMappingService, PositionMapper);
   });
 
   console.log("✅ Shared services registered successfully");

@@ -1,7 +1,8 @@
 <!-- DetailedInfoPanel.svelte - Detailed information about selected beat -->
 <script lang="ts">
   import { GridMode, MotionColor } from "$lib/domain/enums";
-  import { GridModeDerivationService } from "$lib/services/implementations/domain/GridModeDerivationService";
+  import { resolve } from "$lib/services/bootstrap";
+  import type { IGridModeDeriver } from "$lib/services/interfaces/movement/IGridModeDeriver";
   import type {
     BeatData,
     SequenceData,
@@ -71,7 +72,7 @@
     const pictographData = beatData.pictographData;
 
     // Compute gridMode from motion data
-    const gridModeService = new GridModeDerivationService();
+    const gridModeService = resolve<IGridModeDeriver>("IGridModeDeriver");
     const gridMode =
       pictographData.motions?.blue && pictographData.motions?.red
         ? gridModeService.deriveGridMode(

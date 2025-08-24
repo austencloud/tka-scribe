@@ -42,7 +42,6 @@ import type {
   IPageImageExportService,
 } from "../../interfaces/export-interfaces";
 import type {
-  IMotionGenerationService,
   IOrientationCalculationService,
   ISequenceGenerationService,
 } from "../../interfaces/generation-interfaces";
@@ -59,7 +58,6 @@ import { DeviceDetectionService } from "../../implementations/application/Device
 import { ConstructTabCoordinationService } from "../../implementations/construct/ConstructTabCoordinationService";
 import { DataTransformationService } from "../../implementations/data/DataTransformationService";
 import { ExportService } from "../../implementations/export/ExportService";
-import { MotionGenerationService } from "../../implementations/generation/MotionGenerationService";
 import { LocalStoragePersistenceService } from "../../implementations/persistence/LocalStoragePersistenceService";
 import { ArrowRenderingService } from "../../implementations/rendering/ArrowRenderingService";
 import { GridRenderingService } from "../../implementations/rendering/GridRenderingService";
@@ -271,11 +269,6 @@ export const IExportServiceInterface = createServiceInterface<IExportService>(
 );
 
 // Generation services
-export const IMotionGenerationServiceInterface =
-  createServiceInterface<IMotionGenerationService>(
-    "IMotionGenerationService",
-    MotionGenerationService
-  );
 
 export const ISequenceGenerationServiceInterface =
   createServiceInterface<ISequenceGenerationService>(
@@ -376,9 +369,5 @@ export const IBeatGridServiceInterface =
 export const IBeatFallbackRenderingServiceInterface =
   createServiceInterface<IBeatFallbackRenderingService>(
     "IBeatFallbackRenderingService",
-    class extends BeatFallbackRenderingService {
-      constructor(...args: unknown[]) {
-        super(args[0] as IBeatGridService);
-      }
-    }
+    BeatFallbackRenderingService
   );

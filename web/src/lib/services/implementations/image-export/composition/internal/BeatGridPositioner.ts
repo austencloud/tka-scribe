@@ -7,10 +7,10 @@
 
 import type { SequenceData } from "../../../../interfaces/domain-types";
 import type {
+  CompositionOptions,
   IBeatRenderingService,
   LayoutData,
   TKAImageExportOptions,
-  CompositionOptions,
 } from "../../../../interfaces/image-export-interfaces";
 
 export class BeatGridPositioner {
@@ -134,7 +134,10 @@ export class BeatGridPositioner {
   /**
    * Get beat canvas count including start position
    */
-  getTotalCanvasCount(sequence: SequenceData, includeStartPosition: boolean): number {
+  getTotalCanvasCount(
+    sequence: SequenceData,
+    includeStartPosition: boolean
+  ): number {
     const beatCount = sequence.beats ? sequence.beats.length : 0;
     return beatCount + (includeStartPosition ? 1 : 0);
   }

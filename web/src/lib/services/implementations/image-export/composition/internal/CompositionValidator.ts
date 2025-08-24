@@ -7,16 +7,16 @@
 
 import type { SequenceData } from "../../../../interfaces/domain-types";
 import type {
-  ILayoutCalculationService,
   IDimensionCalculationService,
-  TKAImageExportOptions,
+  ILayoutCalculationService,
   LayoutData,
+  TKAImageExportOptions,
 } from "../../../../interfaces/image-export-interfaces";
-import { 
-  CompositionUtils, 
-  type ValidationResult, 
-  type MemoryEstimate, 
-  type CompositionStats 
+import {
+  CompositionUtils,
+  type CompositionStats,
+  type MemoryEstimate,
+  type ValidationResult,
 } from "./CompositionTypes";
 
 export class CompositionValidator {
@@ -57,7 +57,10 @@ export class CompositionValidator {
     // Additional canvas dimension validation
     if (sequence && options) {
       const layoutData = this.calculateLayoutData(sequence, options);
-      const canvasValidation = this.validateCanvasDimensions(layoutData, options);
+      const canvasValidation = this.validateCanvasDimensions(
+        layoutData,
+        options
+      );
       if (!canvasValidation.valid) {
         errors.push(...canvasValidation.errors);
       }

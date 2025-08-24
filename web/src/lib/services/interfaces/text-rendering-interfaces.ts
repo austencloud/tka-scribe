@@ -1,6 +1,6 @@
 /**
  * Text Rendering Component Interfaces
- * 
+ *
  * Proper interfaces for individual text rendering components,
  * enabling proper dependency injection and testability.
  */

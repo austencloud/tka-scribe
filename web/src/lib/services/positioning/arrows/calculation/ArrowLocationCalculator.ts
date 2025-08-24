@@ -15,7 +15,6 @@
 import type { MotionData, PictographData } from "$lib/domain";
 import { Location, MotionType } from "$lib/domain";
 import type { IArrowLocationCalculator } from "../../core-services";
-import type { BeatData } from "../../types";
 import { DashLocationCalculator } from "./DashLocationCalculator";
 
 export class ArrowLocationCalculator implements IArrowLocationCalculator {
@@ -224,29 +223,6 @@ export class ArrowLocationCalculator implements IArrowLocationCalculator {
     }
 
     return true;
-  }
-
-  extractBeatDataFromPictograph(pictograph: PictographData): BeatData | null {
-    /**Extract beat data from pictograph for dash location calculation.*/
-    if (!pictograph.motions) {
-      return null;
-    }
-
-    // Extract motion data from motions dictionary
-    const blueMotion = pictograph.motions?.blue;
-    const redMotion = pictograph.motions?.red;
-
-    // Create beat data
-    return {
-      beatNumber: pictograph.metadata?.created_from_beat || 1,
-      letter: pictograph.letter,
-      pictographData: {
-        motions: {
-          blue: blueMotion,
-          red: redMotion,
-        },
-      },
-    } as BeatData;
   }
 
   isBlueArrowMotion(

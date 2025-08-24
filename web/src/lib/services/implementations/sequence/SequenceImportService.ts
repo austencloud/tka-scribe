@@ -142,8 +142,6 @@ export class SequenceImportService implements ISequenceImportService {
             }),
           },
           letter: (step.letter as Letter) || null,
-          isBlank: false,
-          metadata: {},
         }),
         metadata: {},
       }));

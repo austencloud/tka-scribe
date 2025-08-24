@@ -1,59 +1,34 @@
 /**
- * CSV-Based Movement Generator Service - Uses actual CSV data
+ * CSV-Based Pictograph Generator Service - Uses actual CSV data
  *
  * Replaces pattern-based generation with direct CSV data parsing.
- * Generates exactly the movements defined in BoxPictographDataframe.csv.
+ * Generates exactly the pictographs defined in BoxPictographDataframe.csv.
  * Provides simple AI-friendly functions like generateA(), generateB(), etc.
  */
 
-import type { IMovementGeneratorService } from "../../interfaces/generation-interfaces";
-import type {
-  MovementData,
-  MovementPattern,
-  MovementSet,
-} from "$lib/domain/MovementData";
-import {
-  createMovementSet,
-  createMovementPattern,
-} from "$lib/domain/MovementData";
-import { CSVMovementLoaderService } from "../movement/CSVMovementLoaderService";
-import {
-  Timing,
-  Direction,
-  MotionType,
-  RotationDirection,
-} from "$lib/domain/enums";
+import type { PictographData } from "$lib/domain/PictographData";
+import type { IPictographGenerator } from "../../interfaces/generation-interfaces";
 
-export class CSVMovementGeneratorService implements IMovementGeneratorService {
-  private readonly movementCache = new Map<string, MovementSet>();
-  private readonly csvLoader: CSVMovementLoaderService;
+export class CSVPictographGenerator implements IPictographGenerator {
+  private readonly pictographCache = new Map<string, PictographData[]>();
 
   constructor() {
-    this.csvLoader = new CSVMovementLoaderService();
-  }
-
-  /**
-   * Generate movement set from pattern (legacy method)
-   */
-  generateMovementSet(pattern: MovementPattern): MovementSet {
-    // For CSV-based approach, we ignore the pattern and get movements from CSV
-    const movementSet = this.getMovementSetByLetter(pattern.letter);
-    return movementSet || this.createEmptyMovementSet(pattern.letter);
+    // TODO: Implement CSV loader when needed
   }
 
   // ========================================
   // GROUP 1: Standard Letters A, B, C (VALIDATION TARGET)
   // ========================================
 
-  generateA(): MovementSet {
+  generateA(): PictographData[] {
     return this.generateFromCSV("A");
   }
 
-  generateB(): MovementSet {
+  generateB(): PictographData[] {
     return this.generateFromCSV("B");
   }
 
-  generateC(): MovementSet {
+  generateC(): PictographData[] {
     return this.generateFromCSV("C");
   }
 
@@ -61,15 +36,15 @@ export class CSVMovementGeneratorService implements IMovementGeneratorService {
   // GROUP 2: Cross-System Letters D, E, F (VALIDATION TARGET)
   // ========================================
 
-  generateD(): MovementSet {
+  generateD(): PictographData[] {
     return this.generateFromCSV("D");
   }
 
-  generateE(): MovementSet {
+  generateE(): PictographData[] {
     return this.generateFromCSV("E");
   }
 
-  generateF(): MovementSet {
+  generateF(): PictographData[] {
     return this.generateFromCSV("F");
   }
 
@@ -77,15 +52,15 @@ export class CSVMovementGeneratorService implements IMovementGeneratorService {
   // GROUP 3: Together Timing G, H, I
   // ========================================
 
-  generateG(): MovementSet {
+  generateG(): PictographData[] {
     return this.generateFromCSV("G");
   }
 
-  generateH(): MovementSet {
+  generateH(): PictographData[] {
     return this.generateFromCSV("H");
   }
 
-  generateI(): MovementSet {
+  generateI(): PictographData[] {
     return this.generateFromCSV("I");
   }
 
@@ -93,122 +68,122 @@ export class CSVMovementGeneratorService implements IMovementGeneratorService {
   // REMAINING LETTERS (TO BE IMPLEMENTED)
   // ========================================
 
-  generateJ(): MovementSet {
+  generateJ(): PictographData[] {
     return this.generateFromCSV("J");
   }
-  generateK(): MovementSet {
+  generateK(): PictographData[] {
     return this.generateFromCSV("K");
   }
-  generateL(): MovementSet {
+  generateL(): PictographData[] {
     return this.generateFromCSV("L");
   }
-  generateM(): MovementSet {
+  generateM(): PictographData[] {
     return this.generateFromCSV("M");
   }
-  generateN(): MovementSet {
+  generateN(): PictographData[] {
     return this.generateFromCSV("N");
   }
-  generateO(): MovementSet {
+  generateO(): PictographData[] {
     return this.generateFromCSV("O");
   }
-  generateP(): MovementSet {
+  generateP(): PictographData[] {
     return this.generateFromCSV("P");
   }
-  generateQ(): MovementSet {
+  generateQ(): PictographData[] {
     return this.generateFromCSV("Q");
   }
-  generateR(): MovementSet {
+  generateR(): PictographData[] {
     return this.generateFromCSV("R");
   }
-  generateS(): MovementSet {
+  generateS(): PictographData[] {
     return this.generateFromCSV("S");
   }
-  generateT(): MovementSet {
+  generateT(): PictographData[] {
     return this.generateFromCSV("T");
   }
-  generateU(): MovementSet {
+  generateU(): PictographData[] {
     return this.generateFromCSV("U");
   }
-  generateV(): MovementSet {
+  generateV(): PictographData[] {
     return this.generateFromCSV("V");
   }
-  generateW(): MovementSet {
+  generateW(): PictographData[] {
     return this.generateFromCSV("W");
   }
-  generateX(): MovementSet {
+  generateX(): PictographData[] {
     return this.generateFromCSV("X");
   }
-  generateY(): MovementSet {
+  generateY(): PictographData[] {
     return this.generateFromCSV("Y");
   }
-  generateZ(): MovementSet {
+  generateZ(): PictographData[] {
     return this.generateFromCSV("Z");
   }
 
   // Greek letters
-  generateSigma(): MovementSet {
+  generateSigma(): PictographData[] {
     return this.generateFromCSV("Σ");
   }
-  generateDelta(): MovementSet {
+  generateDelta(): PictographData[] {
     return this.generateFromCSV("Δ");
   }
-  generateTheta(): MovementSet {
+  generateTheta(): PictographData[] {
     return this.generateFromCSV("θ");
   }
-  generateOmega(): MovementSet {
+  generateOmega(): PictographData[] {
     return this.generateFromCSV("Ω");
   }
-  generatePhi(): MovementSet {
+  generatePhi(): PictographData[] {
     return this.generateFromCSV("Φ");
   }
-  generatePsi(): MovementSet {
+  generatePsi(): PictographData[] {
     return this.generateFromCSV("Ψ");
   }
-  generateLambda(): MovementSet {
+  generateLambda(): PictographData[] {
     return this.generateFromCSV("Λ");
   }
-  generateAlpha(): MovementSet {
+  generateAlpha(): PictographData[] {
     return this.generateFromCSV("α");
   }
-  generateBeta(): MovementSet {
+  generateBeta(): PictographData[] {
     return this.generateFromCSV("β");
   }
-  generateGamma(): MovementSet {
+  generateGamma(): PictographData[] {
     return this.generateFromCSV("Γ");
   }
 
   // Dash variants
-  generateWDash(): MovementSet {
+  generateWDash(): PictographData[] {
     return this.generateFromCSV("W-");
   }
-  generateXDash(): MovementSet {
+  generateXDash(): PictographData[] {
     return this.generateFromCSV("X-");
   }
-  generateYDash(): MovementSet {
+  generateYDash(): PictographData[] {
     return this.generateFromCSV("Y-");
   }
-  generateZDash(): MovementSet {
+  generateZDash(): PictographData[] {
     return this.generateFromCSV("Z-");
   }
-  generateSigmaDash(): MovementSet {
+  generateSigmaDash(): PictographData[] {
     return this.generateFromCSV("Σ-");
   }
-  generateDeltaDash(): MovementSet {
+  generateDeltaDash(): PictographData[] {
     return this.generateFromCSV("Δ-");
   }
-  generateThetaDash(): MovementSet {
+  generateThetaDash(): PictographData[] {
     return this.generateFromCSV("θ-");
   }
-  generateOmegaDash(): MovementSet {
+  generateOmegaDash(): PictographData[] {
     return this.generateFromCSV("Ω-");
   }
-  generatePhiDash(): MovementSet {
+  generatePhiDash(): PictographData[] {
     return this.generateFromCSV("Φ-");
   }
-  generatePsiDash(): MovementSet {
+  generatePsiDash(): PictographData[] {
     return this.generateFromCSV("Ψ-");
   }
-  generateLambdaDash(): MovementSet {
+  generateLambdaDash(): PictographData[] {
     return this.generateFromCSV("Λ-");
   }
 
@@ -216,24 +191,17 @@ export class CSVMovementGeneratorService implements IMovementGeneratorService {
   // UTILITY METHODS
   // ========================================
 
-  getAllMovementSets(): MovementSet[] {
-    const letters = this.csvLoader.getAvailableLetters();
-    const movementSets: MovementSet[] = [];
-
-    for (const letter of letters) {
-      const movementSet = this.generateFromCSV(letter);
-      movementSets.push(movementSet);
-    }
-
-    return movementSets;
+  getAllPictographs(): PictographData[] {
+    // TODO: Implement when CSV loader is available
+    return [];
   }
 
-  getMovementSetByLetter(letter: string): MovementSet | undefined {
+  getPictographsByLetter(letter: string): PictographData[] | undefined {
     try {
       return this.generateFromCSV(letter);
     } catch (error) {
       console.warn(
-        `Failed to generate movement set for letter ${letter}:`,
+        `Failed to generate pictographs for letter ${letter}:`,
         error
       );
       return undefined;
@@ -241,10 +209,11 @@ export class CSVMovementGeneratorService implements IMovementGeneratorService {
   }
 
   /**
-   * Get movement counts for validation
+   * Get pictograph counts for validation
    */
-  getMovementCounts(): Record<string, number> {
-    return this.csvLoader.getMovementCounts();
+  getPictographCounts(): Record<string, number> {
+    // TODO: Implement when CSV loader is available
+    return {};
   }
 
   // ========================================
@@ -252,88 +221,27 @@ export class CSVMovementGeneratorService implements IMovementGeneratorService {
   // ========================================
 
   /**
-   * Core method: Generate MovementSet from CSV data
+   * Core method: Generate PictographData[] from CSV data
    */
-  private generateFromCSV(letter: string): MovementSet {
+  private generateFromCSV(letter: string): PictographData[] {
     const cacheKey = `csv_${letter}`;
 
-    if (this.movementCache.has(cacheKey)) {
-      const cached = this.movementCache.get(cacheKey);
+    if (this.pictographCache.has(cacheKey)) {
+      const cached = this.pictographCache.get(cacheKey);
       if (cached) {
         return cached;
       }
     }
 
     try {
-      const movements = this.csvLoader.getMovementsForLetter(letter);
-
-      // Create a default pattern for the letter
-      const pattern = createMovementPattern({
-        letter,
-        timing: Timing.SPLIT,
-        direction: Direction.SAME,
-        positionSystem: "alpha",
-        baseBlueMotion: MotionType.PRO,
-        baseRedMotion: MotionType.PRO,
-        baseBlueRotation: RotationDirection.CLOCKWISE,
-        baseRedRotation: RotationDirection.CLOCKWISE,
-      });
-
-      const movementSet = createMovementSet({
-        letter,
-        movements,
-        pattern,
-      });
-
-      this.movementCache.set(cacheKey, movementSet);
-      return movementSet;
+      // TODO: Implement CSV loading when available
+      const pictographs: PictographData[] = [];
+      this.pictographCache.set(cacheKey, pictographs);
+      return pictographs;
     } catch (error) {
-      console.error(`Failed to generate movement set for ${letter}:`, error);
-      // Return empty movement set instead of throwing
-      return this.createEmptyMovementSet(letter);
+      console.error(`Failed to generate pictographs for ${letter}:`, error);
+      // Return empty array instead of throwing
+      return [];
     }
-  }
-
-  /**
-   * Create a pattern from a movement (for compatibility)
-   * TODO: Remove if not needed
-   */
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  private createPatternFromMovement(movement: MovementData): MovementPattern {
-    return createMovementPattern({
-      letter: movement.letter,
-      timing: movement.timing,
-      direction: movement.direction,
-      positionSystem: this.determinePositionSystem(movement.startPosition),
-      baseBlueMotion: movement.blueHand.motionType,
-      baseRedMotion: movement.redHand.motionType,
-      baseBlueRotation: movement.blueHand.rotationDirection,
-      baseRedRotation: movement.redHand.rotationDirection,
-    });
-  }
-
-  /**
-   * Determine position system from grid position
-   */
-  private determinePositionSystem(
-    position: import("$lib/domain/enums").GridPosition
-  ): "alpha" | "beta" | "gamma" {
-    const posStr = position.toString().toLowerCase();
-    if (posStr.includes("alpha")) return "alpha";
-    if (posStr.includes("beta")) return "beta";
-    if (posStr.includes("gamma")) return "gamma";
-    return "alpha"; // fallback
-  }
-
-  /**
-   * Create empty movement set for missing letters
-   */
-  private createEmptyMovementSet(letter: string): MovementSet {
-    const pattern = createMovementPattern({ letter });
-    return createMovementSet({
-      letter,
-      movements: [],
-      pattern,
-    });
   }
 }

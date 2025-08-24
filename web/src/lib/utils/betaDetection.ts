@@ -6,7 +6,7 @@
 
 import { GridPosition } from "$lib/domain/enums";
 import type { PictographData } from "$lib/domain/PictographData";
-import { PositionMappingService } from "$lib/services/implementations/movement/PositionMappingService";
+import { PositionMapper } from "$lib/services/implementations/movement/PositionMapper";
 
 /**
  * Check if a grid position is a beta position
@@ -20,10 +20,10 @@ export function isBetaPosition(position: string | GridPosition): boolean {
 /**
  * Check if a pictograph ends with beta (end position is a beta position)
  *
- * Computes end position from motion data using PositionMappingService
+ * Computes end position from motion data using PositionMapper
  */
 export function endsWithBeta(pictographData: PictographData): boolean {
-  const positionService = new PositionMappingService();
+  const positionService = new PositionMapper();
 
   if (!pictographData.motions?.blue || !pictographData.motions?.red) {
     console.warn(
@@ -43,10 +43,10 @@ export function endsWithBeta(pictographData: PictographData): boolean {
 /**
  * Check if a pictograph starts with beta (start position is a beta position)
  *
- * Computes start position from motion data using PositionMappingService
+ * Computes start position from motion data using PositionMapper
  */
 export function startsWithBeta(pictographData: PictographData): boolean {
-  const positionService = new PositionMappingService();
+  const positionService = new PositionMapper();
 
   if (!pictographData.motions?.blue || !pictographData.motions?.red) {
     return false;

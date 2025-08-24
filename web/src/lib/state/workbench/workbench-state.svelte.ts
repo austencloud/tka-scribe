@@ -25,7 +25,9 @@ import type {
 export function createWorkbenchState(
   workbenchService: IWorkbenchService,
   coordinationService: IWorkbenchCoordinationService,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   sequenceState: any, // Will be properly typed when sequence state is available
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   beatFrameState: any // Will be properly typed when beat frame state is available
 ) {
   // ============================================================================
@@ -140,27 +142,6 @@ export function createWorkbenchState(
       } catch (err) {
         error =
           err instanceof Error ? err.message : "Failed to handle beat click";
-      }
-    },
-
-    handleBeatDoubleClick(index: number) {
-      try {
-        const result = coordinationService.handleBeatDoubleClick(
-          index,
-          config.mode,
-          currentSequence()
-        );
-
-        if (result.success && result.updatedBeat && sequenceState) {
-          sequenceState.updateBeat(index, result.updatedBeat);
-        } else if (!result.success) {
-          error = result.error || "Failed to edit beat";
-        }
-      } catch (err) {
-        error =
-          err instanceof Error
-            ? err.message
-            : "Failed to handle beat double click";
       }
     },
 

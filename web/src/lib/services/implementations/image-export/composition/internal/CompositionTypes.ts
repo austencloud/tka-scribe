@@ -4,9 +4,9 @@
 
 import type { SequenceData } from "../../../../interfaces/domain-types";
 import type {
+  CompositionOptions,
   LayoutData,
   TKAImageExportOptions,
-  CompositionOptions,
 } from "../../../../interfaces/image-export-interfaces";
 
 export interface CompositionContext {
@@ -62,7 +62,10 @@ export class CompositionUtils {
   /**
    * Validate canvas dimensions
    */
-  static validateCanvasDimensions(width: number, height: number): ValidationResult {
+  static validateCanvasDimensions(
+    width: number,
+    height: number
+  ): ValidationResult {
     const errors: string[] = [];
 
     if (width <= 0 || height <= 0) {
@@ -72,12 +75,17 @@ export class CompositionUtils {
     // Browser limits - conservative estimate
     const maxDimension = 32767;
     if (width > maxDimension || height > maxDimension) {
-      errors.push(`Canvas dimensions exceed browser limits (${maxDimension}px)`);
+      errors.push(
+        `Canvas dimensions exceed browser limits (${maxDimension}px)`
+      );
     }
 
     const memoryMB = CompositionUtils.estimateCanvasMemory(width, height);
-    if (memoryMB > 100) { // 100MB threshold
-      errors.push(`Canvas would use ${memoryMB.toFixed(1)}MB memory, which may cause performance issues`);
+    if (memoryMB > 100) {
+      // 100MB threshold
+      errors.push(
+        `Canvas would use ${memoryMB.toFixed(1)}MB memory, which may cause performance issues`
+      );
     }
 
     return {

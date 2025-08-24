@@ -17,7 +17,6 @@ import {
   IExportServiceInterface,
   IGridRenderingServiceInterface,
   IImageFormatConverterServiceInterface,
-  IMotionGenerationServiceInterface,
   IOrientationCalculationServiceInterface,
   IOverlayRenderingServiceInterface,
   IPageFactoryServiceInterface,
@@ -186,7 +185,6 @@ export async function registerCoreServices(
   container.registerSingletonClass(IExportServiceInterface);
 
   // Register generation services
-  container.registerSingletonClass(IMotionGenerationServiceInterface);
   container.registerSingletonClass(IOrientationCalculationServiceInterface);
 
   // Register sequence generation service with dependencies

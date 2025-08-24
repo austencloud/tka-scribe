@@ -37,7 +37,6 @@ Arrow Mirroring Test Route - Simple test for arrow positioning
         letter: Letter.A, // Use unified Letter enum
         startPosition: GridPosition.ALPHA1,
         endPosition: GridPosition.ALPHA7,
-        gridData: createGridData({ gridMode: GridMode.DIAMOND }),
         motions: {
           blue: createMotionData({
             motionType: MotionType.PRO,
@@ -67,7 +66,6 @@ Arrow Mirroring Test Route - Simple test for arrow positioning
         letter: Letter.A, // Use unified Letter enum
         startPosition: GridPosition.ALPHA1,
         endPosition: GridPosition.ALPHA3,
-        gridData: createGridData({ gridMode: GridMode.DIAMOND }),
 
         motions: {
           blue: createMotionData({

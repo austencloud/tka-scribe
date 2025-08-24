@@ -7,8 +7,8 @@
 
 import type { SequenceData } from "../../../../interfaces/domain-types";
 import type {
-  ILayoutCalculationService,
   IDimensionCalculationService,
+  ILayoutCalculationService,
   LayoutData,
   TKAImageExportOptions,
 } from "../../../../interfaces/image-export-interfaces";
@@ -79,7 +79,10 @@ export class CanvasCreator {
   /**
    * Apply background to canvas
    */
-  applyBackground(canvas: HTMLCanvasElement, backgroundColor?: string): HTMLCanvasElement {
+  applyBackground(
+    canvas: HTMLCanvasElement,
+    backgroundColor?: string
+  ): HTMLCanvasElement {
     const ctx = canvas.getContext("2d");
     if (!ctx) {
       throw new Error("Failed to get 2D context for background application");

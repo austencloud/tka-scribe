@@ -29,11 +29,11 @@ interface WindowWithHtml2Canvas extends Window {
 }
 
 import type {
+  BatchExportResult,
+  ExportProgress,
   IPageImageExportService,
   ImageExportOptions,
   ServiceExportResult,
-  BatchExportResult,
-  ExportProgress,
 } from "../../interfaces/export-interfaces";
 
 export class PageImageExportService implements IPageImageExportService {
@@ -157,6 +157,8 @@ export class PageImageExportService implements IPageImageExportService {
         const progress: ExportProgress = {
           current: i + 1,
           total: pageElements.length,
+          currentItem: i + 1,
+          totalItems: pageElements.length,
           percentage: ((i + 1) / pageElements.length) * 100,
           currentPage: i + 1,
           currentOperation: `Exporting page ${i + 1} of ${pageElements.length}`,
@@ -165,6 +167,7 @@ export class PageImageExportService implements IPageImageExportService {
             pageElements.length,
             performance.now() - startTime
           ),
+          isComplete: i + 1 === pageElements.length,
         };
 
         this.currentProgress = progress;
@@ -224,6 +227,7 @@ export class PageImageExportService implements IPageImageExportService {
     const totalProcessingTime = performance.now() - startTime;
 
     return {
+      success: errors.length === 0,
       totalPages: pageElements.length,
       successCount,
       failureCount,

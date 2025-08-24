@@ -14,7 +14,8 @@
 import type { MotionData, PictographData } from "$lib/domain";
 import { MotionColor } from "$lib/domain";
 import { GridMode } from "$lib/domain/enums";
-import { GridModeDerivationService } from "../../../implementations/domain/GridModeDerivationService";
+import { resolve } from "$lib/services/bootstrap";
+import type { IGridModeDeriver } from "$lib/services/interfaces/movement/IGridModeDeriver";
 import { ArrowPlacementKeyService } from "../../../implementations/positioning/ArrowPlacementKeyService";
 import type { IArrowAdjustmentCalculator } from "../../core-services";
 import type {
@@ -59,7 +60,14 @@ export class ArrowAdjustmentCalculator implements IArrowAdjustmentCalculator {
 
   // Processing services
   private tupleProcessor: IDirectionalTupleProcessor;
-  private gridModeService = new GridModeDerivationService();
+  private gridModeService: IGridModeDeriver | null = null;
+
+  private getGridModeService(): IGridModeDeriver {
+    if (!this.gridModeService) {
+      this.gridModeService = resolve<IGridModeDeriver>("IGridModeDeriver");
+    }
+    return this.gridModeService;
+  }
 
   constructor(options?: {
     specialPlacementService?: ISpecialPlacementService;
@@ -283,17 +291,16 @@ export class ArrowAdjustmentCalculator implements IArrowAdjustmentCalculator {
 
   private async calculateDefaultAdjustment(
     motionData: MotionData,
-    pictographData: PictographData,
-    gridMode: string = GridMode.DIAMOND
+    pictographData: PictographData
   ): Promise<Point> {
     /**
      * Calculate default adjustment - IDENTICAL to ArrowAdjustmentLookup.
      */
     try {
       // Compute gridMode from motion data
-      const gridMode =
+      const derivedGridMode =
         pictographData.motions?.blue && pictographData.motions?.red
-          ? this.gridModeService.deriveGridMode(
+          ? this.getGridModeService().deriveGridMode(
               pictographData.motions.blue,
               pictographData.motions.red
             )
@@ -301,7 +308,7 @@ export class ArrowAdjustmentCalculator implements IArrowAdjustmentCalculator {
 
       const keys = await this.defaultPlacementService.getAvailablePlacementKeys(
         motionData.motionType as MotionTypeType,
-        gridMode as GridMode
+        derivedGridMode as GridMode
       );
       const defaultPlacements: Record<string, unknown> = Object.fromEntries(
         (keys || []).map((k) => [k, true])
@@ -320,7 +327,7 @@ export class ArrowAdjustmentCalculator implements IArrowAdjustmentCalculator {
           placementKey,
           motionData.turns || 0,
           motionData.motionType as MotionTypeType,
-          gridMode as GridMode
+          derivedGridMode as GridMode
         );
 
       return adjustmentPoint;

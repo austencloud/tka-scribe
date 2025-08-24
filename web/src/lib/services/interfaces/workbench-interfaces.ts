@@ -97,11 +97,6 @@ export interface IWorkbenchService {
 export interface IWorkbenchCoordinationService {
   // Service coordination
   handleBeatClick(beatIndex: number, mode: WorkbenchMode): BeatClickResult;
-  handleBeatDoubleClick(
-    beatIndex: number,
-    mode: WorkbenchMode,
-    sequence: SequenceData | null
-  ): BeatEditResult;
   handleBeatHover(beatIndex: number): void;
   handleBeatLeave(): void;
 
@@ -166,7 +161,6 @@ export interface WorkbenchActions {
 
   // Beat interaction actions
   handleBeatClick(index: number): void;
-  handleBeatDoubleClick(index: number): void;
   handleBeatHover(index: number): void;
   handleBeatLeave(): void;
 

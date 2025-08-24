@@ -46,7 +46,6 @@ export function createSequenceData(
     isCircular: data.isCircular ?? false,
     tags: data.tags ?? [],
     metadata: data.metadata ?? {},
-    // Optional properties - only include if defined
     ...(data.sequenceLength !== undefined && {
       sequenceLength: data.sequenceLength,
     }),
@@ -99,33 +98,4 @@ export function removeBeatFromSequence(
   return updateSequenceData(sequence, {
     beats: newBeats,
   });
-}
-
-export function updateBeatInSequence(
-  sequence: SequenceData,
-  beatIndex: number,
-  beat: BeatData
-): SequenceData {
-  if (beatIndex < 0 || beatIndex >= sequence.beats.length) {
-    return sequence;
-  }
-
-  const newBeats = [...sequence.beats];
-  newBeats[beatIndex] = beat;
-
-  return updateSequenceData(sequence, {
-    beats: newBeats,
-  });
-}
-
-export function getSequenceLength(sequence: SequenceData): number {
-  return sequence.beats.length;
-}
-
-export function isEmptySequence(sequence: SequenceData): boolean {
-  return sequence.beats.length === 0;
-}
-
-export function hasStartPosition(sequence: SequenceData): boolean {
-  return sequence.startingPositionBeat != null;
 }

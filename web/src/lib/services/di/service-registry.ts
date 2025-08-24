@@ -14,7 +14,6 @@ import {
   IConstructTabCoordinationServiceInterface,
   IDeviceDetectionServiceInterface,
   IExportServiceInterface,
-  IMotionGenerationServiceInterface,
   IPageFactoryServiceInterface,
   IPageImageExportServiceInterface,
   IPanelManagementServiceInterface,
@@ -91,6 +90,14 @@ import {
   IPictographOperationsServiceInterface,
 } from "./interfaces/codex-interfaces";
 
+import {
+  GridModeDeriverDI,
+  PictographGeneratorDI,
+  PictographValidatorServiceDI,
+  PositionMapperDI,
+  PositionPatternServiceDI,
+} from "./interfaces/movement-interfaces";
+
 import { IOptionFilteringServiceInterface } from "./registration/shared-services";
 
 import { getSequenceCardExportServiceTokens } from "./registration/sequence-card-export-services";
@@ -122,7 +129,6 @@ export const serviceInterfaceMap = new Map<string, ServiceInterface<unknown>>([
     IApplicationInitializationServiceInterface,
   ],
   ["IExportService", IExportServiceInterface],
-  ["IMotionGenerationService", IMotionGenerationServiceInterface],
   ["ISequenceGenerationService", ISequenceGenerationServiceInterface],
   [
     "IConstructTabCoordinationService",
@@ -176,6 +182,13 @@ export const serviceInterfaceMap = new Map<string, ServiceInterface<unknown>>([
   ["ILessonRepository", ILessonRepositoryInterface],
 
   ["IPictographOperationsService", IPictographOperationsServiceInterface],
+
+  // Movement/Generation services
+  ["IGridModeDeriver", GridModeDeriverDI],
+  ["IPictographGenerator", PictographGeneratorDI],
+  ["IPictographValidatorService", PictographValidatorServiceDI],
+  ["IPositionMapper", PositionMapperDI],
+  ["IPositionPatternService", PositionPatternServiceDI],
 
   // Shared utility services
   ["IOptionFilteringService", IOptionFilteringServiceInterface],

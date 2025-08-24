@@ -78,6 +78,7 @@ export class ExampleSequenceService implements IExampleSequenceService {
       blueReversal: false,
       redReversal: false,
       isBlank: true,
+      pictographData: null,
       metadata: {},
     }));
 

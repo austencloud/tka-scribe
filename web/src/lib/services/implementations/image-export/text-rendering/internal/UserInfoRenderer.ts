@@ -5,9 +5,9 @@
  * Matches desktop UserInfoDrawer exactly.
  */
 
-import type { 
-  TextRenderOptions, 
-  UserInfo 
+import type {
+  TextRenderOptions,
+  UserInfo,
 } from "../../../../interfaces/image-export-interfaces";
 import type { IUserInfoRenderer } from "../../../../interfaces/text-rendering-interfaces";
 import { createFont } from "./TextRenderingTypes";

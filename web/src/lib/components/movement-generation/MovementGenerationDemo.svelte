@@ -5,25 +5,25 @@
 -->
 
 <script lang="ts">
-  import { createMovementGenerationState } from "$lib/state/movement-generation.svelte";
-  import type { MovementSet } from "$lib/domain/MovementData";
+  import { MotionColor } from "$lib/domain/enums";
+  import { createPictographGenerationState } from "$lib/state/pictograph-generation.svelte";
 
   // Create reactive state
-  const state = createMovementGenerationState();
+  const state = createPictographGenerationState();
 
   // Example data for demonstration
   const exampleLetters = ["A", "B", "C", "W", "X-", "Z-", "Σ", "α"];
 
   async function handleGenerateExample(letter: string) {
-    const result = await state.generateMovementSet(letter);
+    const result = await state.generatePictographs(letter);
     if (result) {
       console.log(`Generated ${letter}:`, result);
     }
   }
 
   async function handleGenerateAll() {
-    await state.generateAllMovements();
-    console.log("Generated all movements:", state.movementSets);
+    await state.generateAllPictographs();
+    console.log("Generated all pictographs:", state.pictographsByLetter);
   }
 </script>
 
@@ -67,7 +67,7 @@
 
     <button
       class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 ml-2"
-      onclick={() => state.clearMovements()}
+      onclick={() => state.clearPictographs()}
     >
       Clear All
     </button>
@@ -122,12 +122,12 @@
     <h3 class="text-lg font-semibold mb-2">Statistics</h3>
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
       <div>
-        <span class="font-medium">Total Sets:</span>
-        {state.generationStats().totalSets}
+        <span class="font-medium">Total Letters:</span>
+        {state.generationStats().totalLetters}
       </div>
       <div>
-        <span class="font-medium">Total Movements:</span>
-        {state.generationStats().totalMovements}
+        <span class="font-medium">Total Pictographs:</span>
+        {state.generationStats().totalPictographs}
       </div>
       <div>
         <span class="font-medium">Filtered:</span>
@@ -142,67 +142,61 @@
 
   <!-- Generated Movements Display -->
   <div class="space-y-4">
-    <h3 class="text-lg font-semibold">Generated Movement Sets</h3>
+    <h3 class="text-lg font-semibold">Generated Pictographs</h3>
 
-    {#if state.filteredMovementSets.length === 0}
+    {#if state.filteredLetters.length === 0}
       <p class="text-gray-500">
-        No movement sets generated yet. Try generating some movements above!
+        No pictographs generated yet. Try generating some pictographs above!
       </p>
     {:else}
       <div class="grid gap-4">
-        {#each state.filteredMovementSets() as movementSet}
+        {#each state.filteredLetters() as letter}
           <div class="p-4 border rounded-lg">
             <h4 class="text-lg font-semibold mb-2">
-              Letter: {movementSet.letter}
+              Letter: {letter}
             </h4>
 
             <div class="mb-3 text-sm text-gray-600">
-              <span class="mr-4">Timing: {movementSet.pattern.timing}</span>
-              <span class="mr-4"
-                >Direction: {movementSet.pattern.direction}</span
+              <span
+                >Pictographs: {state.getPictographsByLetter(letter)?.length ||
+                  0}</span
               >
-              <span class="mr-4"
-                >System: {movementSet.pattern.positionSystem}</span
-              >
-              <span>Movements: {movementSet.movements.length}</span>
             </div>
 
             <details>
               <summary class="cursor-pointer text-blue-600 hover:text-blue-800"
-                >View Movements</summary
+                >View Pictographs</summary
               >
               <div class="mt-3 space-y-2">
-                {#each movementSet.movements as movement, i}
+                {#each state.getPictographsByLetter(letter) || [] as pictograph, i}
                   <div class="p-3 bg-gray-50 rounded text-sm">
-                    <div class="font-medium mb-1">Movement {i + 1}</div>
+                    <div class="font-medium mb-1">Pictograph {i + 1}</div>
                     <div class="grid grid-cols-2 gap-4">
                       <div>
                         <div>
-                          <strong>Position:</strong>
-                          {movement.startPosition} → {movement.endPosition}
+                          <strong>ID:</strong>
+                          {pictograph.id}
                         </div>
-                        <div><strong>Timing:</strong> {movement.timing}</div>
+                        <div><strong>Letter:</strong> {pictograph.letter}</div>
                         <div>
-                          <strong>Direction:</strong>
-                          {movement.direction}
+                          <strong>Position:</strong>
+                          {pictograph.startPosition} → {pictograph.endPosition}
                         </div>
                       </div>
                       <div>
                         <div>
-                          <strong>Blue Hand:</strong>
-                          {movement.blueHand.motionType}
-                          {movement.blueHand.rotationDirection}
+                          <strong>Blue Motion:</strong>
+                          {pictograph.motions?.[MotionColor.BLUE]?.motionType ||
+                            "N/A"}
+                          {pictograph.motions?.[MotionColor.BLUE]
+                            ?.rotationDirection || ""}
                         </div>
                         <div>
-                          <strong>Red Hand:</strong>
-                          {movement.redHand.motionType}
-                          {movement.redHand.rotationDirection}
-                        </div>
-                        <div>
-                          <strong>Locations:</strong>
-                          {movement.blueHand.startLocation}→{movement.blueHand
-                            .endLocation} | {movement.redHand
-                            .startLocation}→{movement.redHand.endLocation}
+                          <strong>Red Motion:</strong>
+                          {pictograph.motions?.[MotionColor.RED]?.motionType ||
+                            "N/A"}
+                          {pictograph.motions?.[MotionColor.RED]
+                            ?.rotationDirection || ""}
                         </div>
                       </div>
                     </div>
@@ -222,16 +216,16 @@
     <pre
       class="text-sm bg-gray-800 text-green-400 p-3 rounded overflow-x-auto"><code
         >// Generate specific movements
-const movementB = await state.generateMovementSet('B');
-const movementZDash = await state.generateMovementSet('Z-');
-const movementSigma = await state.generateMovementSet('Σ');
+const movementB = await state.generatePictographData('B');
+const movementZDash = await state.generatePictographData('Z-');
+const movementSigma = await state.generatePictographData('Σ');
 
 // Generate all movements at once
 await state.generateAllMovements();
 
 // Access generated data
-const allSets = state.movementSets;
-const filteredSets = state.filteredMovementSets;
+const allSets = state.PictographDatas;
+const filteredSets = state.filteredPictographDatas;
 const stats = state.generationStats;</code
       ></pre>
   </div>

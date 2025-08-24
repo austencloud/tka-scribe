@@ -22,7 +22,7 @@ import {
 } from "../../../domain";
 import type { IStartPositionService } from "../../interfaces/application-interfaces";
 import type { ValidationResult } from "../../interfaces/domain-types";
-import { PositionMappingService } from "../movement/PositionMappingService";
+import { PositionMapper } from "../movement/PositionMapper";
 
 export class StartPositionService implements IStartPositionService {
   private readonly DEFAULT_START_POSITIONS: Record<string, string[]> = {
@@ -31,7 +31,7 @@ export class StartPositionService implements IStartPositionService {
     // SKEWED mode doesn't have separate start positions - it's determined by individual motions
   };
 
-  private positionService = new PositionMappingService();
+  private positionService = new PositionMapper();
 
   async getAvailableStartPositions(
     propType: string,
@@ -109,7 +109,8 @@ export class StartPositionService implements IStartPositionService {
           return;
         }
 
-        const pictographData = startPositionBeat.pictographData;
+        const { pictographData, ...beatWithoutPictographData } =
+          startPositionBeat;
 
         // Compute endPosition from motion data
         const endPosition =
@@ -119,9 +120,6 @@ export class StartPositionService implements IStartPositionService {
                 pictographData.motions.red.endLocation
               )
             : null;
-
-        const { pictographData: _, ...beatWithoutPictographData } =
-          startPositionBeat;
         const optionPickerFormat = {
           endPosition,
           pictographData,
@@ -294,7 +292,6 @@ export class StartPositionService implements IStartPositionService {
           arrowLocation: redLocation, // Will be calculated by positioning system
         }),
       },
-      isBlank: false,
     });
   }
 }

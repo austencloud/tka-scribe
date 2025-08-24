@@ -38,21 +38,6 @@ export class WorkbenchCoordinationService
     };
   }
 
-  handleBeatDoubleClick(
-    beatIndex: number,
-    mode: WorkbenchMode,
-    sequence: SequenceData | null
-  ): BeatEditResult {
-    if (!this.workbenchService.shouldEditBeatOnDoubleClick(mode, beatIndex)) {
-      return {
-        success: false,
-        error: "Cannot edit beat in current mode or invalid beat index",
-      };
-    }
-
-    return this.editBeat(beatIndex, sequence, mode);
-  }
-
   handleBeatHover(_beatIndex: number): void {
     // This will be handled by the beat frame service through the state layer
     // No business logic needed here - just a pass-through
@@ -79,7 +64,14 @@ export class WorkbenchCoordinationService
       };
     }
 
-    const beat = sequence!.beats[beatIndex];
+    if (!sequence) {
+      return {
+        success: false,
+        error: "Cannot edit beat: sequence is null",
+      };
+    }
+
+    const beat = sequence.beats[beatIndex];
     // TODO: Implement these methods in IWorkbenchService
     // const editAction = this.workbenchService.getBeatEditAction(beat);
     // const updatedBeat = this.workbenchService.applyBeatEditAction(beat, editAction);
@@ -99,7 +91,11 @@ export class WorkbenchCoordinationService
       };
     }
 
-    const beat = sequence!.beats[beatIndex];
+    if (!sequence) {
+      return { success: false, error: "No sequence available" };
+    }
+
+    const beat = sequence.beats[beatIndex];
     const clearedBeat = this.workbenchService.createClearedBeatData(beat);
 
     return {

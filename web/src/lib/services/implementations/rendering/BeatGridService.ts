@@ -132,8 +132,9 @@ export class BeatGridService implements IBeatGridService {
    * Get cached grid image from embedded SVG
    */
   private getGridImage(gridMode: GridMode): HTMLImageElement {
-    if (this.gridImageCache.has(gridMode)) {
-      return this.gridImageCache.get(gridMode)!;
+    const cachedImage = this.gridImageCache.get(gridMode);
+    if (cachedImage) {
+      return cachedImage;
     }
 
     const svgString = this.createGridSVG(gridMode);

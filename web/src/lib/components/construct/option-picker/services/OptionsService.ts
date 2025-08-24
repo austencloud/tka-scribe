@@ -15,6 +15,23 @@ import {
   OptionPickerSortMethod,
 } from "$lib/domain";
 import type { PictographData } from "$lib/domain/PictographData";
+import { resolve } from "$lib/services/bootstrap";
+import type { IPositionMapper } from "$lib/services/interfaces/movement/IPositionMapper";
+
+/**
+ * Helper function to compute endPosition from motion data
+ */
+function getEndPosition(option: PictographData): string | null {
+  if (option.motions?.blue && option.motions?.red) {
+    const positionService = resolve("IPositionMapper") as IPositionMapper;
+    const position = positionService.getPositionFromLocations(
+      option.motions.blue.endLocation,
+      option.motions.red.endLocation
+    );
+    return position?.toString() || null;
+  }
+  return null;
+}
 
 /**
  * Union type for all possible group key values returned by determineGroupKey
@@ -80,7 +97,7 @@ export function determineGroupKey(
       }
       return getLetterType(option.letter);
     case OptionPickerSortMethod.END_POSITION: {
-      const endPosition = option.endPosition;
+      const endPosition = getEndPosition(option);
       if (typeof endPosition === "string") {
         // Try to match to GridPosition enum, fallback to GridPositionGroup
         const gridPosition = Object.values(GridPosition).find(
@@ -94,19 +111,7 @@ export function determineGroupKey(
         );
         if (gridGroup) return gridGroup as GridPositionGroup;
       }
-      const metaEndPos = option.metadata?.endPosition;
-      if (typeof metaEndPos === "string") {
-        // Try to match to GridPosition enum, fallback to GridPositionGroup
-        const gridPosition = Object.values(GridPosition).find(
-          (pos) => pos === metaEndPos
-        );
-        if (gridPosition) return gridPosition as GridPosition;
 
-        const gridGroup = Object.values(GridPositionGroup).find(
-          (group) => group === metaEndPos
-        );
-        if (gridGroup) return gridGroup as GridPositionGroup;
-      }
       return "Unknown";
     }
     case OptionPickerSortMethod.REVERSALS:
@@ -181,8 +186,8 @@ export function getSorter(
       };
     case OptionPickerSortMethod.END_POSITION:
       return (a, b) => {
-        const endPosA = String(a.endPosition || "");
-        const endPosB = String(b.endPosition || "");
+        const endPosA = String(getEndPosition(a) || "");
+        const endPosB = String(getEndPosition(b) || "");
         if (endPosA !== endPosB) {
           return endPosA.localeCompare(endPosB);
         }
@@ -294,7 +299,7 @@ export function getOptionsSummary(options: PictographData[]): {
     summary.byType[type] = (summary.byType[type] || 0) + 1;
 
     // Count by end position
-    const endPos = String(option.endPosition || "Unknown");
+    const endPos = String(getEndPosition(option) || "Unknown");
     summary.byEndPosition[endPos] = (summary.byEndPosition[endPos] || 0) + 1;
   });
 

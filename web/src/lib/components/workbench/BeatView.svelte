@@ -10,7 +10,6 @@
     isSelected?: boolean;
     isHovered?: boolean;
     onClick?: (index: number) => void;
-    onDoubleClick?: (index: number) => void;
     onHover?: (index: number) => void;
     onLeave?: () => void;
   }
@@ -21,12 +20,10 @@
     isSelected = false,
     isHovered = false,
     onClick,
-    onDoubleClick,
     onHover,
     onLeave,
   }: Props = $props();
 
-  // Get service from DI container and create component-scoped state
   const beatFrameService = resolve(
     "IBeatFrameService"
   ) as import("$lib/services/interfaces/beat-frame-interfaces").IBeatFrameService;
@@ -38,9 +35,6 @@
     onClick?.(index);
   }
 
-  function handleDoubleClick() {
-    onDoubleClick?.(index);
-  }
 
   function handleMouseEnter() {
     onHover?.(index);
@@ -68,7 +62,6 @@
   style:height="{config.beatSize}px"
   style="position: relative; display: flex; align-items: center; justify-content: center;"
   onclick={handleClick}
-  ondblclick={handleDoubleClick}
   onkeypress={handleKeyPress}
   onmouseenter={handleMouseEnter}
   onmouseleave={handleMouseLeave}

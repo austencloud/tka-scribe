@@ -32,8 +32,9 @@ export class BeatGridService {
     const filename =
       gridMode === GridMode.BOX ? "box_grid.svg" : "diamond_grid.svg";
 
-    if (this.gridCache.has(filename)) {
-      return this.gridCache.get(filename)!;
+    const cachedGrid = this.gridCache.get(filename);
+    if (cachedGrid) {
+      return cachedGrid;
     }
 
     const response = await fetch(`/${filename}`);

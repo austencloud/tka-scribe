@@ -5,6 +5,7 @@
  * Follows the established TKA state factory pattern.
  */
 
+import type { BeatData } from "$lib/domain";
 import type {
   BeatFrameConfig,
   ContainerDimensions,
@@ -135,11 +136,11 @@ export function createBeatFrameState(beatFrameService: IBeatFrameService) {
       return beatFrameService.getBeatAtPosition(x, y, beatCount, config);
     },
 
-    isBeatVisible(beat: any) {
+    isBeatVisible(beat: BeatData) {
       return beatFrameService.isBeatVisible(beat);
     },
 
-    getBeatDisplayText(beat: any) {
+    getBeatDisplayText(beat: BeatData) {
       return beatFrameService.getBeatDisplayText(beat);
     },
 

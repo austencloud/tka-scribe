@@ -20,7 +20,7 @@ import { registerAnimatorServices } from "./di/registration/animator-services";
 import { registerCodexServices } from "./di/registration/codex-services";
 import { registerGenerationServices } from "./di/registration/generation-services";
 import { registerImageExportServices } from "./di/registration/image-export-services";
-import { registerMovementServices } from "./di/registration/movement-services";
+import { registerPictographServices } from "./di/registration/movement-services";
 import { registerSequenceCardExportServices } from "./di/registration/sequence-card-export-services";
 
 /**
@@ -39,7 +39,7 @@ export async function createWebApplication(): Promise<ServiceContainer> {
     await registerAnimatorServices(container);
     await registerBrowseServices(container);
 
-    await registerMovementServices(container);
+    await registerPictographServices(container);
     await registerGenerationServices(container);
     await registerImageExportServices(container);
     await registerSequenceCardExportServices(container);

@@ -39,7 +39,6 @@ export class DataTransformationService implements IDataTransformationService {
       id: `beat-${beat.beatNumber}`,
       motions,
       letter: beat.pictographData?.letter || null,
-      isBlank: beat.isBlank,
     });
   }
 

@@ -5,7 +5,7 @@
  * Contains only pure functions with no reactive state.
  */
 
-import type { BeatData, SequenceData } from "$lib/domain";
+import type { BeatData, Letter, SequenceData } from "$lib/domain";
 import {
   addBeatToSequence,
   createSequenceData,
@@ -192,10 +192,10 @@ export class SequenceStateService implements ISequenceStateService {
     sequence: SequenceData | null,
     beatIndex: number
   ): BeatData | null {
-    if (!this.isValidBeatIndex(sequence, beatIndex)) {
+    if (!this.isValidBeatIndex(sequence, beatIndex) || !sequence) {
       return null;
     }
-    return sequence!.beats[beatIndex];
+    return sequence.beats[beatIndex];
   }
 
   // ============================================================================
@@ -277,7 +277,8 @@ export class SequenceStateService implements ISequenceStateService {
     // Extract letters from pictograph data
     const letters = sequence.beats
       .filter((beat) => beat.pictographData?.letter)
-      .map((beat) => beat.pictographData!.letter)
+      .map((beat) => beat.pictographData?.letter)
+      .filter((letter): letter is Letter => letter !== undefined)
       .join("");
 
     return letters || sequence.name;

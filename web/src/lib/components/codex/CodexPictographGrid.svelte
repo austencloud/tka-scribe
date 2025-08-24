@@ -32,15 +32,7 @@
   function createPlaceholder(letter: string) {
     return {
       id: `placeholder-${letter}`,
-      letter: letter,
-      // Add other required fields with default values
-      startPosition: "alpha1",
-      endPosition: "alpha3",
-      beat: 0,
-      isBlank: true,
-      isMirrored: false,
       motions: {},
-      metadata: { isPlaceholder: true },
     } as PictographData;
   }
 

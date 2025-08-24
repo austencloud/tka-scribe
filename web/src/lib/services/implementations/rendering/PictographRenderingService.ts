@@ -7,7 +7,8 @@
 
 import type { BeatData, PictographData } from "$lib/domain";
 import { GridMode, MotionColor } from "$lib/domain";
-import { GridModeDerivationService } from "../domain/GridModeDerivationService";
+import { resolve } from "../../bootstrap";
+import type { IGridModeDeriver } from "../../interfaces/movement/IGridModeDeriver";
 
 import type {
   IArrowRenderingService,
@@ -21,7 +22,7 @@ import type { IPropRenderingService } from "../../interfaces/positioning-interfa
 import type { IArrowPositioningOrchestrator } from "../../positioning/core-services";
 
 export class PictographRenderingService implements IPictographRenderingService {
-  private gridModeService = new GridModeDerivationService();
+  private gridModeService = resolve<IGridModeDeriver>("IGridModeDeriver");
 
   constructor(
     private arrowPositioning: IArrowPositioningOrchestrator,

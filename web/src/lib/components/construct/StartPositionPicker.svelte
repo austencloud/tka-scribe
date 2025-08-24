@@ -9,7 +9,9 @@
   import TransitionOverlay from "./start-position/ui/TransitionOverlay.svelte";
 
   // Props
-  let { sequenceState } = $props();
+  let { sequenceState } = $props<{
+    sequenceState: import("$lib/state/sequence/sequence-state.svelte").SequenceState;
+  }>();
 
   // Get service from DI container (sequence state comes from props)
   const sequenceStateService = resolve(
@@ -47,19 +49,11 @@
       isLoading = true;
       loadingError = null;
 
-      console.log(
-        "🔄 StartPositionPicker: Loading start positions for DIAMOND mode"
-      );
-
       // Load start positions from the service
       const positions = await startPositionService.getDefaultStartPositions(
         GridMode.DIAMOND
       );
       startPositions = positions;
-
-      console.log(
-        `✅ StartPositionPicker: Loaded ${positions.length} start positions`
-      );
     } catch (error) {
       console.error(
         "❌ StartPositionPicker: Failed to load start positions",
@@ -77,7 +71,6 @@
 
   async function handleSelect(position: any) {
     selectedStartPos = position;
-    console.log("📍 StartPositionPicker: Selected position", position);
 
     try {
       // Create or get current sequence
@@ -85,7 +78,6 @@
 
       if (!currentSequence) {
         // Create a new sequence if none exists
-        console.log("🔄 StartPositionPicker: Creating new sequence");
         currentSequence = sequenceStateService.createNewSequence(
           "New Sequence",
           16
@@ -109,16 +101,11 @@
       };
 
       // Set the start position in the sequence
-      console.log("🎯 StartPositionPicker: Setting start position in sequence");
       const updatedSequence = sequenceStateService.setStartPosition(
         currentSequence,
         startPositionBeat
       );
       sequenceState.setCurrentSequence(updatedSequence);
-
-      console.log(
-        "✅ StartPositionPicker: Start position set, should transition to option picker"
-      );
     } catch (error) {
       console.error(
         "❌ StartPositionPicker: Failed to set start position",

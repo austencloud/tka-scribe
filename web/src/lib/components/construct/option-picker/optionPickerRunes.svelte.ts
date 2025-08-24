@@ -11,6 +11,7 @@
 
 import { GridMode, OptionPickerSortMethod } from "$lib/domain";
 import type { PictographData } from "$lib/domain/PictographData";
+import type { IPositionMapper } from "$lib/services/interfaces/movement/IPositionMapper";
 import { resolve } from "$services/bootstrap";
 import type { ReversalFilter, SortMethod } from "./config";
 import {
@@ -19,6 +20,21 @@ import {
   getSorter,
   type OptionPickerGroupKey,
 } from "./services/OptionsService";
+
+/**
+ * Helper function to compute endPosition from motion data
+ */
+function getEndPosition(pictographData: PictographData): string | null {
+  if (pictographData.motions?.blue && pictographData.motions?.red) {
+    const positionService = resolve("IPositionMapper") as IPositionMapper;
+    const position = positionService.getPositionFromLocations(
+      pictographData.motions.blue.endLocation,
+      pictographData.motions.red.endLocation
+    );
+    return position?.toString() || null;
+  }
+  return null;
+}
 
 // ===== Types =====
 export type LastSelectedTabState = Partial<Record<SortMethod, string | null>>;
@@ -176,8 +192,7 @@ export function createOptionPickerRunes() {
 
         if (sequence && sequence.length > 0) {
           const lastBeat = sequence[sequence.length - 1];
-          const endPosition =
-            lastBeat?.endPosition || lastBeat?.metadata?.endPosition;
+          const endPosition = getEndPosition(lastBeat);
           targetEndPosition =
             typeof endPosition === "string" ? endPosition : null;
         } else {
@@ -224,8 +239,7 @@ export function createOptionPickerRunes() {
 
       if (sequence && sequence.length > 0) {
         const lastBeat = sequence[sequence.length - 1];
-        const endPosition =
-          lastBeat?.endPosition || lastBeat?.metadata?.endPosition;
+        const endPosition = getEndPosition(lastBeat);
 
         if (endPosition && typeof endPosition === "string") {
           console.log(

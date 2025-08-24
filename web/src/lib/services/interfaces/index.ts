@@ -183,20 +183,27 @@ export type {
   CompositionOptions,
   ExportError,
   ExportProgress,
+  ExportValidationResult,
   IBeatRenderingService,
   ICanvasManagementService,
   IDimensionCalculationService,
+  IExportConfigurationManager,
+  IExportMemoryCalculator,
+  IExportOptionsValidator,
   IExportSettingsService,
   IFileExportService,
+  IFilenameGeneratorService,
   IFontManagementService,
   IGridOverlayService,
   IImageCompositionService,
+  IImagePreviewGenerator,
   ILayoutCalculationService,
   IReversalDetectionService,
   ITextRenderingService,
   ITKAImageExportService,
   LayoutConstraints,
   LayoutData,
+  MemoryEstimate,
   RenderQualitySettings,
   TextRenderOptions,
   TKAImageExportOptions,
@@ -205,33 +212,38 @@ export type {
 
 // Text rendering component interfaces
 export type {
-  IWordTextRenderer,
-  IUserInfoRenderer,
   IDifficultyBadgeRenderer,
   ITextRenderingUtils,
+  IUserInfoRenderer,
+  IWordTextRenderer,
 } from "./text-rendering-interfaces";
 
 export {
   IBeatRenderingServiceInterface,
   ICanvasManagementServiceInterface,
   IDimensionCalculationServiceInterface,
+  IExportConfigurationManagerInterface,
+  IExportMemoryCalculatorInterface,
+  IExportOptionsValidatorInterface,
   IExportSettingsServiceInterface,
   IFileExportServiceInterface,
+  IFilenameGeneratorServiceInterface,
   IFontManagementServiceInterface,
   IGridOverlayServiceInterface,
   IImageCompositionServiceInterface,
+  IImagePreviewGeneratorInterface,
   ILayoutCalculationServiceInterface,
   IReversalDetectionServiceInterface,
   ITextRenderingServiceInterface,
   ITKAImageExportServiceInterface,
 } from "./image-export-interfaces";
 
-// Text rendering component DI interfaces  
+// Text rendering component DI interfaces
 export {
-  IWordTextRendererInterface,
-  IUserInfoRendererInterface,
   IDifficultyBadgeRendererInterface,
   ITextRenderingUtilsInterface,
+  IUserInfoRendererInterface,
+  IWordTextRendererInterface,
 } from "../di/interfaces/image-export-interfaces";
 
 // ============================================================================

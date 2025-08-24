@@ -76,7 +76,13 @@ REFACTORED: Now purely presentational, uses ArrowRenderingService for business l
 
       console.log(
         "🏹 ArrowSvg: Loading arrow data for motion:",
-        $inspect(motionData)
+        motionData
+          ? {
+              motionType: motionData.motionType,
+              color: motionData.color,
+              turns: motionData.turns,
+            }
+          : "undefined"
       );
 
       // Use the actual ArrowRenderingService to load real arrow SVGs

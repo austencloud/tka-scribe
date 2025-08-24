@@ -14,10 +14,10 @@ import type {
 } from "../../../../interfaces/image-export-interfaces";
 
 import type {
-  IWordTextRenderer,
-  IUserInfoRenderer,
   IDifficultyBadgeRenderer,
   ITextRenderingUtils,
+  IUserInfoRenderer,
+  IWordTextRenderer,
 } from "../../../../interfaces/text-rendering-interfaces";
 
 export class TextOverlayApplicator {
@@ -97,12 +97,7 @@ export class TextOverlayApplicator {
     const badgeSize = Math.floor(layoutData.additionalHeightTop * 0.75);
     const inset = Math.floor(layoutData.additionalHeightTop / 8);
 
-    this.difficultyRenderer.render(
-      canvas,
-      level,
-      [inset, inset],
-      badgeSize
-    );
+    this.difficultyRenderer.render(canvas, level, [inset, inset], badgeSize);
   }
 
   /**
@@ -130,7 +125,10 @@ export class TextOverlayApplicator {
   /**
    * Estimate additional height needed for text overlays
    */
-  estimateTextOverlayHeight(options: TKAImageExportOptions, beatScale: number): {
+  estimateTextOverlayHeight(
+    options: TKAImageExportOptions,
+    beatScale: number
+  ): {
     additionalHeightTop: number;
     additionalHeightBottom: number;
   } {
@@ -138,15 +136,24 @@ export class TextOverlayApplicator {
     let additionalHeightBottom = 0;
 
     if (options.addWord) {
-      additionalHeightTop = Math.max(additionalHeightTop, Math.floor(200 * beatScale));
+      additionalHeightTop = Math.max(
+        additionalHeightTop,
+        Math.floor(200 * beatScale)
+      );
     }
 
     if (options.addDifficultyLevel) {
-      additionalHeightTop = Math.max(additionalHeightTop, Math.floor(120 * beatScale));
+      additionalHeightTop = Math.max(
+        additionalHeightTop,
+        Math.floor(120 * beatScale)
+      );
     }
 
     if (options.addUserInfo) {
-      additionalHeightBottom = Math.max(additionalHeightBottom, Math.floor(80 * beatScale));
+      additionalHeightBottom = Math.max(
+        additionalHeightBottom,
+        Math.floor(80 * beatScale)
+      );
     }
 
     return { additionalHeightTop, additionalHeightBottom };

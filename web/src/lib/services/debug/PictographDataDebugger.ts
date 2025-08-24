@@ -6,7 +6,8 @@
  */
 
 import type { PictographData } from "$lib/domain/PictographData";
-import { GridModeDerivationService } from "$lib/services/implementations/domain/GridModeDerivationService";
+import { resolve } from "$lib/services/bootstrap";
+import type { IGridModeDeriver } from "$lib/services/interfaces/movement/IGridModeDeriver";
 import { endsWithBeta } from "$lib/utils/betaDetection";
 
 export interface DataFlowTrace {
@@ -105,7 +106,7 @@ export class PictographDataDebugger {
     }
 
     // Compute gridMode from motion data
-    const gridModeService = new GridModeDerivationService();
+    const gridModeService = resolve<IGridModeDeriver>("IGridModeDeriver");
     const gridMode =
       pictographData.motions?.blue && pictographData.motions?.red
         ? gridModeService.deriveGridMode(

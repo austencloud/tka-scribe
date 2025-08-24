@@ -15,7 +15,8 @@
 
 import type { MotionData, PictographData } from "$lib/domain";
 import { GridMode } from "$lib/domain/enums";
-import { GridModeDerivationService } from "../../../implementations/domain/GridModeDerivationService";
+import { resolve } from "$lib/services/bootstrap";
+import type { IGridModeDeriver } from "$lib/services/interfaces/movement/IGridModeDeriver";
 import { jsonCache } from "../../cache/SimpleJsonCache";
 import type { ISpecialPlacementService } from "../../placement-services";
 import { SpecialPlacementOriKeyGenerator } from "../key_generators/SpecialPlacementOriKeyGenerator";
@@ -34,7 +35,14 @@ export class SpecialPlacementService implements ISpecialPlacementService {
   > = {};
   private loadingCache: Set<string> = new Set();
   private oriKeyGenerator: SpecialPlacementOriKeyGenerator;
-  private gridModeService = new GridModeDerivationService();
+  private gridModeService: IGridModeDeriver | null = null;
+
+  private getGridModeService(): IGridModeDeriver {
+    if (!this.gridModeService) {
+      this.gridModeService = resolve<IGridModeDeriver>("IGridModeDeriver");
+    }
+    return this.gridModeService;
+  }
 
   constructor() {
     // Defer loading; we'll lazily load per-letter on demand
@@ -74,7 +82,7 @@ export class SpecialPlacementService implements ISpecialPlacementService {
     // Get grid mode - compute from motion data
     const gridMode =
       pictographData.motions?.blue && pictographData.motions?.red
-        ? this.gridModeService.deriveGridMode(
+        ? this.getGridModeService().deriveGridMode(
             pictographData.motions.blue,
             pictographData.motions.red
           )

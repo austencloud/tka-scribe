@@ -118,6 +118,24 @@ export enum GridMode {
   SKEWED = "skewed",
 }
 
+export enum PositionSystem {
+  // Simple position systems
+  ALPHA = "alpha",
+  BETA = "beta",
+  GAMMA = "gamma",
+
+  // Complex position systems
+  ALPHA_TO_ALPHA = "alpha_to_alpha",
+  ALPHA_TO_BETA = "alpha_to_beta",
+  ALPHA_TO_GAMMA = "alpha_to_gamma",
+  BETA_TO_ALPHA = "beta_to_alpha",
+  BETA_TO_BETA = "beta_to_beta",
+  BETA_TO_GAMMA = "beta_to_gamma",
+  GAMMA_TO_ALPHA = "gamma_to_alpha",
+  GAMMA_TO_BETA = "gamma_to_beta",
+  GAMMA_TO_GAMMA = "gamma_to_gamma",
+}
+
 export enum DifficultyLevel {
   BEGINNER = "beginner",
   INTERMEDIATE = "intermediate",

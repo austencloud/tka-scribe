@@ -1,85 +1,42 @@
 <!--
 Pictograph Generation Test Page
 
-This page tests the algorithmic pictograph generation system.
-It provides buttons to generate specific letters and displays the results
-to validate that the generation functions work correctly.
+DEPRECATED: This page tested the old FlexiblePictographGenerator (A-F only).
+The new Type1 system (A-V, 22 letters) is not yet integrated with the UI.
+
+TODO: Update this page to test the new Type1 generators when ready.
 -->
 <script lang="ts">
-  import { onMount } from "svelte";
-  import { resolve } from "$lib/services/bootstrap";
-  import { IPictographGeneratorServiceInterface } from "$lib/services/interfaces/pictograph-generator-interfaces";
-  import type { IPictographGeneratorService } from "$lib/services/interfaces/pictograph-generator-interfaces";
-  import type { PictographData } from "$lib/domain/PictographData";
   import Pictograph from "$lib/components/pictograph/Pictograph.svelte";
+  import type { PictographData } from "$lib/domain/PictographData";
+  import { onMount } from "svelte";
 
   // State
-  let generatorService: IPictographGeneratorService | null = null;
   let currentLetter: string | null = null;
   let generatedPictographs: PictographData[] = [];
   let isLoading = false;
-  let error: string | null = null;
-  let movementCounts: Record<string, number> = {};
+  let error: string | null =
+    "Pictograph generation service has been replaced. The new Type1 system is not yet integrated with the UI.";
 
   // Initialize service
   onMount(async () => {
-    try {
-      generatorService = resolve(IPictographGeneratorServiceInterface);
-      movementCounts = generatorService.getMovementCounts();
-      console.log("🎯 Pictograph Generator Service initialized");
-      console.log("📊 Movement counts:", movementCounts);
-    } catch (err) {
-      error = `Failed to initialize generator service: ${err}`;
-      console.error("❌", error);
-    }
+    console.log(
+      "⚠️ Pictograph test page is deprecated - old generator service removed"
+    );
+    console.log(
+      "🔄 New Type1 system (A-V) is available but not yet integrated with UI"
+    );
   });
 
-  // Generate pictographs for a specific letter
+  // Generate pictographs for a specific letter (DEPRECATED)
   async function generateLetter(letter: string) {
-    if (!generatorService) {
-      error = "Generator service not initialized";
-      return;
-    }
-
     isLoading = true;
     error = null;
     currentLetter = letter;
 
     try {
-      console.log(`🔄 Generating pictographs for letter ${letter}...`);
-
-      let pictographs: PictographData[] = [];
-
-      switch (letter) {
-        case "A":
-          pictographs = generatorService.generateA();
-          break;
-        case "B":
-          pictographs = generatorService.generateB();
-          break;
-        case "C":
-          pictographs = generatorService.generateC();
-          break;
-        case "D":
-          pictographs = generatorService.generateD();
-          break;
-        case "E":
-          pictographs = generatorService.generateE();
-          break;
-        case "F":
-          pictographs = generatorService.generateF();
-          break;
-        default:
-          throw new Error(`Letter ${letter} not implemented`);
-      }
-
-      generatedPictographs = pictographs;
-      console.log(
-        `✅ Generated ${pictographs.length} pictographs for letter ${letter}`
-      );
-    } catch (err) {
-      error = `Failed to generate letter ${letter}: ${err}`;
-      console.error("❌", error);
+      console.log(`⚠️ Cannot generate ${letter} - service has been replaced`);
+      error = `Letter ${letter} generation not available. The old FlexiblePictographGenerator (A-F only) has been replaced by the new Type1 system (A-V, 22 letters) which is not yet integrated with the UI.`;
       generatedPictographs = [];
     } finally {
       isLoading = false;
@@ -93,8 +50,8 @@ to validate that the generation functions work correctly.
     error = null;
   }
 
-  // Get available letters
-  $: availableLetters = generatorService?.getAvailableLetters() || [];
+  // Get available letters (DEPRECATED - hardcoded for old system)
+  $: availableLetters = ["A", "B", "C", "D", "E", "F"]; // Old system only supported A-F
 </script>
 
 <svelte:head>
@@ -116,7 +73,7 @@ to validate that the generation functions work correctly.
           class="letter-btn"
           class:active={currentLetter === letter}
           onclick={() => generateLetter(letter)}
-          disabled={isLoading || !generatorService}
+          disabled={isLoading || true}
         >
           Generate {letter}
         </button>
@@ -160,10 +117,15 @@ to validate that the generation functions work correctly.
             <div class="pictograph-info">
               <div class="index">#{index + 1}</div>
               <div class="positions">
-                {pictograph.startPosition} → {pictograph.endPosition}
+                <!-- Positions will be derived from motion data when needed -->
+                Motion Data Available
               </div>
-              <div class="timing">
-                {pictograph.timing} | {pictograph.direction}
+              <div class="motions">
+                Blue: {pictograph.motions.blue?.startLocation} → {pictograph
+                  .motions.blue?.endLocation}
+                <br />
+                Red: {pictograph.motions.red?.startLocation} → {pictograph
+                  .motions.red?.endLocation}
               </div>
             </div>
           </div>
@@ -348,7 +310,7 @@ to validate that the generation functions work correctly.
     margin-bottom: 0.25rem;
   }
 
-  .pictograph-info .timing {
+  .pictograph-info .motions {
     font-size: 0.75rem;
     text-transform: uppercase;
     letter-spacing: 0.05em;

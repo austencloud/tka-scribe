@@ -8,7 +8,7 @@
 import { getLetterType } from "$lib/domain";
 import type { BeatData } from "$lib/domain/BeatData";
 import type { PictographData } from "$lib/domain/PictographData";
-import { PositionMappingService } from "../movement/PositionMappingService";
+import type { IPositionMapper } from "../../interfaces/movement/IPositionMapper";
 import type { IEnumMappingService } from "./EnumMappingService";
 
 export interface FilterCriteria {
@@ -55,7 +55,10 @@ export interface IOptionFilteringService {
 }
 
 export class OptionFilteringService implements IOptionFilteringService {
-  constructor(private enumMappingService: IEnumMappingService) {}
+  constructor(
+    private enumMappingService: IEnumMappingService,
+    private positionService: IPositionMapper
+  ) {}
 
   /**
    * Filter options by start position
@@ -67,7 +70,17 @@ export class OptionFilteringService implements IOptionFilteringService {
     if (!startPosition) return options;
 
     return options.filter((option) => {
-      const optionStartPos = option.startPosition?.toString().toLowerCase();
+      // Compute startPosition from motion data
+      const optionStartPos =
+        option.motions?.blue && option.motions?.red
+          ? this.positionService
+              .getPositionFromLocations(
+                option.motions.blue.startLocation,
+                option.motions.red.startLocation
+              )
+              ?.toString()
+              .toLowerCase()
+          : null;
       const targetStartPos = startPosition.toLowerCase();
       return optionStartPos === targetStartPos;
     });
@@ -83,7 +96,17 @@ export class OptionFilteringService implements IOptionFilteringService {
     if (!endPosition) return options;
 
     return options.filter((option) => {
-      const optionEndPos = option.endPosition?.toString().toLowerCase();
+      // Compute endPosition from motion data
+      const optionEndPos =
+        option.motions?.blue && option.motions?.red
+          ? this.positionService
+              .getPositionFromLocations(
+                option.motions.blue.endLocation,
+                option.motions.red.endLocation
+              )
+              ?.toString()
+              .toLowerCase()
+          : null;
       const targetEndPos = endPosition.toLowerCase();
       return optionEndPos === targetEndPos;
     });
@@ -204,7 +227,7 @@ export class OptionFilteringService implements IOptionFilteringService {
 
   /**
    * Extract end position from the last beat in a sequence
-   * Computes end position from motion data using PositionMappingService
+   * Computes end position from motion data using PositionMapper
    */
   extractEndPosition(lastBeat: BeatData): string | null {
     try {
@@ -217,8 +240,7 @@ export class OptionFilteringService implements IOptionFilteringService {
         return null;
       }
 
-      const positionService = new PositionMappingService();
-      const endPosition = positionService.getPositionFromLocations(
+      const endPosition = this.positionService.getPositionFromLocations(
         pictographData.motions.blue.endLocation,
         pictographData.motions.red.endLocation
       );

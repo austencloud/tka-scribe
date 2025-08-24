@@ -9,8 +9,6 @@ with real-time opacity changes based on visibility settings.
   import {
     createMotionData,
     createPictographData,
-    GridPosition,
-    Letter,
     Location,
     MotionColor,
     MotionType,
@@ -51,8 +49,6 @@ with real-time opacity changes based on visibility settings.
 
   // Example pictograph data (matching desktop app's example)
   const exampleData: PictographData = createPictographData({
-    letter: Letter.A,
-
     motions: {
       blue: createMotionData({
         motionType: MotionType.PRO,
@@ -75,10 +71,6 @@ with real-time opacity changes based on visibility settings.
         isVisible: true,
       }),
     },
-    // ✅ FIXED: Add endPosition to prevent beta detection warnings
-    startPosition: GridPosition.ALPHA5, // South-North starting position
-    endPosition: GridPosition.ALPHA7, // West-East ending position (different locations = alpha)
-    isBlank: false,
   });
 
   // Derived state - create preview data with opacity effects

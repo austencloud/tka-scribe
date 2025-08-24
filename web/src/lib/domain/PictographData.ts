@@ -11,10 +11,14 @@ import { MotionColor } from "./enums";
 
 export interface PictographData {
   readonly id: string;
-  readonly motions: Partial<Record<MotionColor, MotionData>>;
+
+  // Letter and position data
   readonly letter?: Letter | null;
-  readonly isBlank: boolean;
-  readonly metadata: Record<string, unknown>;
+  readonly startPosition?: string | null;
+  readonly endPosition?: string | null;
+
+  // Movement data
+  readonly motions: Partial<Record<MotionColor, MotionData>>;
 }
 
 export function createPictographData(
@@ -24,7 +28,7 @@ export function createPictographData(
     id: data.id || crypto.randomUUID(),
     motions: data.motions || {},
     letter: data.letter || null,
-    isBlank: data.isBlank ?? false,
-    metadata: data.metadata || {},
+    startPosition: data.startPosition ?? null,
+    endPosition: data.endPosition ?? null,
   };
 }
