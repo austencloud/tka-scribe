@@ -5,6 +5,8 @@
  * Provides a single source of truth for raw CSV content without parsing logic.
  */
 
+import { injectable } from "inversify";
+
 export interface CsvDataSet {
   diamondData: string;
   boxData: string;
@@ -16,6 +18,7 @@ export interface ICsvLoaderService {
   clearCache(): void;
 }
 
+@injectable()
 export class CsvLoaderService implements ICsvLoaderService {
   private static readonly CSV_FILES = {
     DIAMOND: "/DiamondPictographDataframe.csv",

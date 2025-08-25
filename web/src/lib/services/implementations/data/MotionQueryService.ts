@@ -6,6 +6,7 @@
  */
 
 import type { PictographData } from "$lib/domain";
+import { injectable } from "inversify";
 import { GridMode } from "$lib/domain";
 import type { ICsvLoaderService } from "./CsvLoaderService";
 import type { ICSVParserService, ParsedCsvRow } from "./CSVParserService";
@@ -25,6 +26,7 @@ export interface IMotionQueryService {
   getNextOptionsForSequence(sequence: unknown[]): Promise<PictographData[]>;
 }
 
+@injectable()
 export class MotionQueryService implements IMotionQueryService {
   private parsedData: Record<
     Exclude<GridMode, GridMode.SKEWED>,

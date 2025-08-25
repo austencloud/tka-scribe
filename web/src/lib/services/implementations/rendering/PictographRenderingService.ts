@@ -6,6 +6,7 @@
  */
 
 import type { BeatData, PictographData } from "$lib/domain";
+import { injectable, inject } from "inversify";
 import { GridMode, MotionColor } from "$lib/domain";
 import { resolve } from "../../bootstrap";
 import type { IGridModeDeriver } from "../../interfaces/movement/IGridModeDeriver";
@@ -20,7 +21,9 @@ import type {
 } from "../../interfaces/pictograph-interfaces";
 import type { IPropRenderingService } from "../../interfaces/positioning-interfaces";
 import type { IArrowPositioningOrchestrator } from "../../positioning/core-services";
+import { TYPES } from "../../inversify/types";
 
+@injectable()
 export class PictographRenderingService implements IPictographRenderingService {
   private gridModeService = resolve<IGridModeDeriver>("IGridModeDeriver");
 
@@ -32,6 +35,7 @@ export class PictographRenderingService implements IPictographRenderingService {
     private arrowRendering: IArrowRenderingService,
     private overlayRendering: IOverlayRenderingService,
     private dataTransformation: IDataTransformationService
+  
   ) {
     // PictographRenderingService initialized with microservices
     // PropRenderingService is deprecated - props are now rendered by Prop.svelte components

@@ -5,12 +5,14 @@
  */
 
 import type { ArrowPlacementData } from "$lib/domain";
+import { injectable } from "inversify";
 import type { PictographData } from "../../interfaces/domain-types";
 import type {
   IPictographService,
   IPictographRenderingService,
 } from "../../interfaces/pictograph-interfaces";
 
+@injectable()
 export class PictographService implements IPictographService {
   constructor(private renderingService: IPictographRenderingService) {}
 

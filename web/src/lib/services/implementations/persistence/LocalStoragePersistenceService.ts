@@ -6,8 +6,10 @@
  */
 
 import type { BeatData, SequenceData } from "$lib/domain";
+import { injectable } from "inversify";
 import type { IPersistenceService } from "../../interfaces/sequence-interfaces";
 
+@injectable()
 export class LocalStoragePersistenceService implements IPersistenceService {
   private readonly CACHE_VERSION = "v2.1"; // ✅ ROBUST: Cache versioning
   private readonly SEQUENCES_KEY = `tka-${this.CACHE_VERSION}-sequences`;

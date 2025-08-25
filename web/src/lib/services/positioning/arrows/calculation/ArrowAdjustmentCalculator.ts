@@ -14,8 +14,9 @@
 import type { MotionData, PictographData } from "$lib/domain";
 import { MotionColor } from "$lib/domain";
 import { GridMode } from "$lib/domain/enums";
-import { resolve } from "$lib/services/bootstrap";
 import type { IGridModeDeriver } from "$lib/services/interfaces/movement/IGridModeDeriver";
+import { TYPES } from "$lib/services/inversify/types";
+import { inject, injectable } from "inversify";
 import { ArrowPlacementKeyService } from "../../../implementations/positioning/ArrowPlacementKeyService";
 import type { IArrowAdjustmentCalculator } from "../../core-services";
 import type {
@@ -44,6 +45,7 @@ import {
   type IDirectionalTupleProcessor,
 } from "../processors/DirectionalTupleProcessor";
 
+@injectable()
 export class ArrowAdjustmentCalculator implements IArrowAdjustmentCalculator {
   /**
    * Consolidated service combining lookup and calculation logic.
@@ -60,24 +62,23 @@ export class ArrowAdjustmentCalculator implements IArrowAdjustmentCalculator {
 
   // Processing services
   private tupleProcessor: IDirectionalTupleProcessor;
-  private gridModeService: IGridModeDeriver | null = null;
+  private gridModeService: IGridModeDeriver;
 
-  private getGridModeService(): IGridModeDeriver {
-    if (!this.gridModeService) {
-      this.gridModeService = resolve<IGridModeDeriver>("IGridModeDeriver");
+  constructor(
+    @inject(TYPES.IGridModeDeriver) gridModeService: IGridModeDeriver,
+    options?: {
+      specialPlacementService?: ISpecialPlacementService;
+      defaultPlacementService?: IDefaultPlacementService;
+      orientationKeyService?: ISpecialPlacementOriKeyGenerator;
+      placementKeyService?: ArrowPlacementKeyService;
+      turnsTupleService?: ITurnsTupleKeyGenerator;
+      attributeKeyService?: IAttributeKeyGenerator;
+      tupleProcessor?: IDirectionalTupleProcessor;
     }
-    return this.gridModeService;
-  }
+  ) {
+    // Store injected service
+    this.gridModeService = gridModeService;
 
-  constructor(options?: {
-    specialPlacementService?: ISpecialPlacementService;
-    defaultPlacementService?: IDefaultPlacementService;
-    orientationKeyService?: ISpecialPlacementOriKeyGenerator;
-    placementKeyService?: ArrowPlacementKeyService;
-    turnsTupleService?: ITurnsTupleKeyGenerator;
-    attributeKeyService?: IAttributeKeyGenerator;
-    tupleProcessor?: IDirectionalTupleProcessor;
-  }) {
     // Initialize services with defaults if not provided
     this.specialPlacementService =
       options?.specialPlacementService || new SpecialPlacementService();
@@ -300,7 +301,7 @@ export class ArrowAdjustmentCalculator implements IArrowAdjustmentCalculator {
       // Compute gridMode from motion data
       const derivedGridMode =
         pictographData.motions?.blue && pictographData.motions?.red
-          ? this.getGridModeService().deriveGridMode(
+          ? this.gridModeService.deriveGridMode(
               pictographData.motions.blue,
               pictographData.motions.red
             )

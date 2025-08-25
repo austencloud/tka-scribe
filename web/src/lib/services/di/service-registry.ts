@@ -39,16 +39,17 @@ import {
 } from "./interfaces/workbench-interfaces";
 
 import {
-  IArrowAdjustmentCalculatorInterface,
+  // TODO: Temporarily disabled due to circular dependency
+  // IArrowAdjustmentCalculatorInterface,
   IArrowCoordinateSystemServiceInterface,
   IArrowLocationCalculatorInterface,
   IArrowPlacementKeyServiceInterface,
   IArrowPlacementServiceInterface,
-  IArrowPositioningOrchestratorInterface,
+  // TODO: Temporarily disabled due to circular dependency
+  // IArrowPositioningOrchestratorInterface,
   IArrowRotationCalculatorInterface,
   IDashLocationCalculatorInterface,
   IDirectionalTupleProcessorInterface,
-  IPositioningServiceFactoryInterface,
 } from "./interfaces/positioning-interfaces";
 
 import {
@@ -147,17 +148,21 @@ export const serviceInterfaceMap = new Map<string, ServiceInterface<unknown>>([
   ],
 
   // Positioning services
-  ["IArrowPositioningOrchestrator", IArrowPositioningOrchestratorInterface],
+  // TODO: Temporarily disabled due to circular dependency
+  // ["IArrowPositioningOrchestrator", IArrowPositioningOrchestratorInterface],
   ["IArrowPlacementService", IArrowPlacementServiceInterface],
   ["IArrowPlacementKeyService", IArrowPlacementKeyServiceInterface],
   ["IArrowLocationCalculator", IArrowLocationCalculatorInterface],
   ["IArrowRotationCalculator", IArrowRotationCalculatorInterface],
-  ["IArrowAdjustmentCalculator", IArrowAdjustmentCalculatorInterface],
+  // TODO: Temporarily disabled due to circular dependency
+  // ["IArrowAdjustmentCalculator", IArrowAdjustmentCalculatorInterface],
   ["IArrowCoordinateSystemService", IArrowCoordinateSystemServiceInterface],
   ["IDashLocationCalculator", IDashLocationCalculatorInterface],
   ["IDirectionalTupleProcessor", IDirectionalTupleProcessorInterface],
-  ["IArrowPositioningOrchestrator", IArrowPositioningOrchestratorInterface],
-  ["IPositioningServiceFactory", IPositioningServiceFactoryInterface],
+  // TODO: Temporarily disabled due to circular dependency
+  // ["IArrowPositioningOrchestrator", IArrowPositioningOrchestratorInterface],
+  // TODO: Temporarily disabled due to circular dependency
+  // ["IPositioningServiceFactory", IPositioningServiceFactoryInterface],
 
   // Browse services
   ["IBrowseService", IBrowseServiceInterface],

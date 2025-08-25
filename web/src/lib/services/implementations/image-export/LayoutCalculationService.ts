@@ -10,7 +10,9 @@
  */
 
 import type { ILayoutCalculationService } from "../../interfaces/image-export-interfaces";
+import { injectable } from "inversify";
 
+@injectable()
 export class LayoutCalculationService implements ILayoutCalculationService {
   // Base constants matching desktop application
   private static readonly BASE_BEAT_SIZE = 144; // Match desktop beat.width()

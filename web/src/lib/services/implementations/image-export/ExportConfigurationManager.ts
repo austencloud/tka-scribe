@@ -1,3 +1,5 @@
+import { injectable } from "inversify";
+
 /**
  * Export Configuration Manager
  *
@@ -10,6 +12,7 @@ import type {
   TKAImageExportOptions,
 } from "../../interfaces/image-export-interfaces";
 
+@injectable()
 export class ExportConfigurationManager implements IExportConfigurationManager {
   /**
    * Get default export options

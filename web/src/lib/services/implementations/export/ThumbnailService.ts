@@ -6,7 +6,9 @@
  */
 
 import type { IThumbnailService } from "$lib/services/interfaces/browse-interfaces";
+import { injectable } from "inversify";
 
+@injectable()
 export class ThumbnailService implements IThumbnailService {
   private thumbnailCache = new Map<string, Promise<void>>();
   private metadataCache = new Map<string, { width: number; height: number }>();

@@ -6,6 +6,7 @@
  */
 
 import type { BeatData, Letter, SequenceData } from "$lib/domain";
+import { injectable } from "inversify";
 import { createMotionData, createPictographData } from "$lib/domain";
 import {
   GridMode,
@@ -23,6 +24,7 @@ export interface ISequenceImportService {
   convertPngMetadata(id: string, metadata: unknown[]): Promise<SequenceData>;
 }
 
+@injectable()
 export class SequenceImportService implements ISequenceImportService {
   /**
    * Import sequence from PNG metadata

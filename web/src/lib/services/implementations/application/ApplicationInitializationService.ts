@@ -5,17 +5,21 @@
  * This service ensures all required services are ready before the app starts.
  */
 
+import { inject, injectable } from "inversify";
 import type {
   IApplicationInitializationService,
   ISettingsService,
 } from "../../interfaces/application-interfaces";
 import type { IPersistenceService } from "../../interfaces/sequence-interfaces";
+import { TYPES } from "../../inversify/types";
 
+@injectable()
 export class ApplicationInitializationService
   implements IApplicationInitializationService
 {
   constructor(
-    private settingsService: ISettingsService,
+    @inject(TYPES.ISettingsService) private settingsService: ISettingsService,
+    @inject(TYPES.IPersistenceService)
     private persistenceService: IPersistenceService
   ) {}
 

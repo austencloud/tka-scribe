@@ -3,12 +3,14 @@
  * Uses modern detection methods based on research from W3C, Material Design, and iOS guidelines
  */
 
+import { injectable } from "inversify";
 import type {
   IDeviceDetectionService,
   ResponsiveSettings,
 } from "../../interfaces/device-interfaces";
 import type { DeviceCapabilities } from "../../interfaces/domain-types";
 
+@injectable()
 export class DeviceDetectionService implements IDeviceDetectionService {
   private capabilities: DeviceCapabilities | null = null;
   private listeners: Array<(capabilities: DeviceCapabilities) => void> = [];

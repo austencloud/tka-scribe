@@ -5,12 +5,15 @@
  * Extracted from PictographRenderingService for reusability.
  */
 
+import { injectable } from "inversify";
+
 export interface ISvgConfiguration {
   readonly SVG_SIZE: number;
   readonly CENTER_X: number;
   readonly CENTER_Y: number;
 }
 
+@injectable()
 export class SvgConfiguration implements ISvgConfiguration {
   readonly SVG_SIZE = 950;
   readonly CENTER_X = 475;

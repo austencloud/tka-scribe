@@ -5,6 +5,7 @@
  * following the microservices architecture pattern.
  */
 
+import { injectable } from "inversify";
 import {
   safeSessionStorageGet,
   safeSessionStorageSet,
@@ -30,6 +31,7 @@ export interface IFavoritesService {
   getFavoritesCount(): Promise<number>;
 }
 
+@injectable()
 export class FavoritesService implements IFavoritesService {
   private readonly CACHE_VERSION = "v2.1"; // ✅ ROBUST: Cache versioning
   private readonly STORAGE_KEY = `tka-${this.CACHE_VERSION}-favorites`;

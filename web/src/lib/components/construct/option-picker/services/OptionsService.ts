@@ -251,13 +251,13 @@ export function getGroupDisplayName(
         case LetterType.TYPE2:
           return "Type 2: Shift";
         case LetterType.TYPE3:
-          return "Type 3: Dash";
+          return "Type 3: Cross-Shift";
         case LetterType.TYPE4:
-          return "Type 4: Static";
+          return "Type 4: Dash";
         case LetterType.TYPE5:
-          return "Type 5: Dash Static";
+          return "Type 5: Dual-Dash";
         case LetterType.TYPE6:
-          return "Type 6: Flip";
+          return "Type 6: Static";
         default:
           return String(groupKey);
       }

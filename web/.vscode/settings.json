@@ -1,66 +1,8 @@
 {
-  "editor.formatOnSave": true,
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": "explicit",
-    "source.organizeImports": "explicit"
-  },
-  "[svelte]": {
-    "editor.defaultFormatter": "svelte.svelte-vscode"
-  },
-  "[javascript]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "[typescript]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "[json]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "[html]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "[css]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "[scss]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "[markdown]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "prettier.requireConfig": false,
-  "prettier.useEditorConfig": false,
-  "svelte.enable-ts-plugin": true,
-  "debug.javascript.usePreview": true,
-  "debug.javascript.breakOnConditionalError": true,
-  "debug.javascript.codelens.npmScripts": "all",
-  "debug.javascript.suggestPrettyPrinting": false,
-  "debug.javascript.unmapMissingSources": true,
-  "debug.javascript.autoAttachFilter": "smart",
-  "debug.javascript.terminalOptions": {},
-  "debug.javascript.resolveSourceMapLocations": [
-    "${workspaceFolder}/src/**",
-    "!**/node_modules/**"
-  ],
-  "typescript.preferences.includePackageJsonAutoImports": "auto",
-  "typescript.suggest.autoImports": true,
-  "typescript.updateImportsOnFileMove.enabled": "always",
-
-  // Additional import auto-update settings
-  "javascript.updateImportsOnFileMove.enabled": "always",
-  "javascript.suggest.autoImports": true,
-  "typescript.suggest.includePackageJsonAutoImports": "auto",
-
-  // Enhanced import preferences
-  "typescript.preferences.importModuleSpecifier": "relative",
-  "typescript.preferences.importModuleSpecifierEnding": "minimal",
-
-  // Auto-organize imports
-  "source.organizeImports": true,
-
-  // File associations for better intellisense
-  "files.associations": {
-    "*.svelte": "svelte"
-  }
+  "debug.chrome.useV3": true,
+  "debug.allowBreakpointsEverywhere": false,
+  "debug.showInlineBreakpointCandidates": false,
+  "typescript.preferences.includePackageJsonAutoImports": "off",
+  "typescript.suggest.autoImports": false,
+  "extensions.autoUpdate": false
 }

@@ -6,6 +6,7 @@
  */
 
 import { GridMode, GridPositionGroup, PropType } from "$lib/domain";
+import { injectable } from "inversify";
 import type { SequenceData } from "$lib/domain/SequenceData";
 import { createSequenceData } from "$lib/domain/SequenceData";
 import {
@@ -19,6 +20,7 @@ import type {
 } from "$lib/services/interfaces/domain-types";
 import type { IBrowseService } from "$lib/services/interfaces/browse-interfaces";
 
+@injectable()
 export class BrowseService implements IBrowseService {
   private cachedSequences: SequenceData[] | null = null;
 

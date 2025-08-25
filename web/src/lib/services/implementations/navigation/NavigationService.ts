@@ -6,6 +6,7 @@
  */
 
 import type { SequenceData } from "../../interfaces/domain-types";
+import { injectable } from "inversify";
 
 export interface NavigationSection {
   id: string;
@@ -63,6 +64,7 @@ export interface INavigationService {
   ): NavigationSection[];
 }
 
+@injectable()
 export class NavigationService implements INavigationService {
   async generateNavigationSections(
     sequences: SequenceData[],

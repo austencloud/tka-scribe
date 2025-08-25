@@ -6,6 +6,7 @@
  */
 
 import type { PictographData } from "$lib/domain";
+import { injectable } from "inversify";
 import { GridMode, MotionType } from "$lib/domain";
 
 import type { LetterMapping } from "$lib/domain/codex/types";
@@ -31,6 +32,7 @@ export interface ILetterQueryService {
   ): Promise<PictographData[]>;
 }
 
+@injectable()
 export class LetterQueryService implements ILetterQueryService {
   private parsedData: Record<
     Exclude<GridMode, GridMode.SKEWED>,

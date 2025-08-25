@@ -1,320 +1,171 @@
-<!-- StartPositionPicker.svelte - Clean orchestrator for start position selection -->
+<!-- StartPositionPicker.svelte - Clean component following TKA architecture -->
 <script lang="ts">
-  import type { BeatData } from "$domain/BeatData";
-  import type { PictographData } from "$domain/PictographData";
   import { GridMode } from "$lib/domain";
-  import { onMount } from "svelte";
-  // Import our modular components and services
-  import StartPositionGrid from "./components/StartPositionGrid.svelte";
-  import { StartPositionLoader } from "./services/StartPositionLoader";
-  import { StartPositionServiceResolver } from "./services/StartPositionServiceResolver";
-  import {
-    createStartPositionBeat,
-    createStartPositionData,
-    extractEndPosition,
-    storePreloadedOptions,
-    storeStartPositionData,
-  } from "./utils/StartPositionUtils";
+  import { resolve } from "$services/bootstrap";
+  // UI Components
+  import ErrorState from "./ui/ErrorState.svelte";
+  import LoadingState from "./ui/LoadingState.svelte";
+  import PictographGrid from "./ui/PictographGrid.svelte";
+  import TransitionOverlay from "./ui/TransitionOverlay.svelte";
 
-  // Props using runes
-  const { gridMode = GridMode.DIAMOND, onStartPositionSelected = () => {} } =
-    $props<{
-      gridMode?: GridMode;
-      onStartPositionSelected?: (position: BeatData) => void;
-    }>();
+  // Props
+  let { sequenceState } = $props<{
+    sequenceState: import("$lib/state/sequence/sequence-state.svelte").SequenceState;
+  }>();
+
+  // Get service from DI container (sequence state comes from props)
+  const sequenceStateService = resolve(
+    "ISequenceStateService"
+  ) as import("$lib/services/interfaces/sequence-state-interfaces").ISequenceStateService;
+
+  // Get start position service from DI container
+  const startPositionService = resolve(
+    "IStartPositionService"
+  ) as import("$lib/services/interfaces/application-interfaces").IStartPositionService;
 
   // Reactive state
-  let startPositions = $state<PictographData[]>([]);
-  let selectedPosition = $state<PictographData | null>(null);
   let isLoading = $state(true);
-  let loadingError = $state(false);
+  let loadingError = $state<string | null>(null);
+  let startPositions = $state<any[]>([]);
+  let selectedStartPos = $state<any | null>(null);
   let isTransitioning = $state(false);
 
-  // Service instances
-  let serviceResolver: StartPositionServiceResolver;
-  let positionLoader: StartPositionLoader;
-  let servicesReady = $state(false);
-
-  /**
-   * Initialize services and load start positions
-   */
-  onMount(async () => {
-    console.log("🚀 StartPositionPicker: Initializing");
-
-    try {
-      // Initialize service resolver
-      serviceResolver = new StartPositionServiceResolver();
-
-      // Resolve services
-      const { startPositionService, isResolved } =
-        await serviceResolver.resolveServices();
-
-      if (!isResolved) {
-        console.warn("⚠️ StartPositionPicker: Services not fully resolved");
-        loadingError = true;
-        isLoading = false;
-        return;
-      }
-
-      // Initialize position loader
-      positionLoader = new StartPositionLoader(startPositionService);
-      servicesReady = true;
-
-      // Load start positions
-      await loadStartPositions();
-
-      console.log("✅ StartPositionPicker: Initialization complete");
-    } catch (error) {
-      console.error("❌ StartPositionPicker: Initialization failed", error);
-      loadingError = true;
-      isLoading = false;
-    }
+  // Load start positions when component mounts
+  $effect(() => {
+    loadStartPositions();
   });
 
-  /**
-   * Load start positions for current grid mode
-   */
   async function loadStartPositions() {
-    if (!servicesReady) return;
-
-    isLoading = true;
-    loadingError = false;
+    if (!startPositionService) {
+      console.error(
+        "❌ StartPositionPicker: No start position service available"
+      );
+      loadingError = "Start position service not available";
+      isLoading = false;
+      return;
+    }
 
     try {
-      console.log(
-        `🔄 StartPositionPicker: Loading positions for ${gridMode} mode`
-      );
+      isLoading = true;
+      loadingError = null;
 
-      const positions = await positionLoader.loadStartPositions(gridMode);
+      // Load start positions from the service
+      const positions = await startPositionService.getDefaultStartPositions(
+        GridMode.DIAMOND
+      );
       startPositions = positions;
-
-      console.log(
-        `✅ StartPositionPicker: Loaded ${positions.length} positions`
-      );
     } catch (error) {
-      console.error("❌ StartPositionPicker: Failed to load positions", error);
-      loadingError = true;
+      console.error(
+        "❌ StartPositionPicker: Failed to load start positions",
+        error
+      );
+      loadingError =
+        error instanceof Error
+          ? error.message
+          : "Failed to load start positions";
       startPositions = [];
     } finally {
       isLoading = false;
     }
   }
 
-  /**
-   * Handle start position selection
-   */
-  async function handlePositionSelected(position: PictographData) {
-    if (isTransitioning) return;
-
-    console.log("🎯 StartPositionPicker: Position selected", position.letter);
-
-    selectedPosition = position;
-    isTransitioning = true;
+  async function handleSelect(position: any) {
+    selectedStartPos = position;
 
     try {
-      // Extract end position for OptionPicker integration
-      const endPosition = extractEndPosition(position);
+      // Create or get current sequence
+      let currentSequence = sequenceState.currentSequence;
 
-      // Create start position data for OptionPicker
-      const startPositionData = createStartPositionData(position, endPosition);
+      if (!currentSequence) {
+        // Create a new sequence if none exists
+        currentSequence = sequenceStateService.createNewSequence(
+          "New Sequence",
+          16
+        );
+        sequenceState.setCurrentSequence(currentSequence);
+      }
 
-      // Create beat data for callback
-      const beatData = createStartPositionBeat(position);
+      // Convert the pictograph position to a beat data for start position
+      const startPositionBeat = {
+        id: crypto.randomUUID(),
+        beatNumber: 0, // Start position is beat 0
+        duration: 1.0,
+        blueReversal: false,
+        redReversal: false,
+        isBlank: false,
+        pictographData: position,
+        metadata: {
+          isStartPosition: true,
+          endPosition: position.letter || "unknown",
+        },
+      };
 
-      // Store data for OptionPicker integration
-      storeStartPositionData(startPositionData);
-
-      // Preload next options if possible
-      await preloadNextOptions(endPosition);
-
-      // Notify parent component
-      onStartPositionSelected(beatData);
-
-      console.log("✅ StartPositionPicker: Position selection completed");
-    } catch (error) {
-      console.error("❌ StartPositionPicker: Position selection failed", error);
-    } finally {
-      isTransitioning = false;
-    }
-  }
-
-  /**
-   * Preload next options for smoother transitions
-   */
-  async function preloadNextOptions(endPosition: string) {
-    if (!servicesReady) return;
-
-    try {
-      console.log("🔄 StartPositionPicker: Preloading next options");
-
-      // This would integrate with OptionPicker service if available
-      // For now, just store empty object to prevent errors
-      storePreloadedOptions({});
-
-      console.log("✅ StartPositionPicker: Next options preloaded");
+      // Set the start position in the sequence
+      const updatedSequence = sequenceStateService.setStartPosition(
+        currentSequence,
+        startPositionBeat
+      );
+      sequenceState.setCurrentSequence(updatedSequence);
     } catch (error) {
       console.error(
-        "❌ StartPositionPicker: Failed to preload next options",
+        "❌ StartPositionPicker: Failed to set start position",
         error
       );
     }
   }
 
-  // Reactive effect: reload when grid mode changes
+  // Listen for sequence state changes to clear transition state
   $effect(() => {
-    if (servicesReady) {
-      loadStartPositions();
+    const currentSequence = sequenceState.currentSequence;
+
+    // If a sequence with startPosition exists and we're transitioning, clear the transition
+    if (currentSequence && currentSequence.startPosition && isTransitioning) {
+      isTransitioning = false;
     }
   });
 </script>
 
-<!-- Main interface -->
-<div class="start-position-picker">
-  <!-- Header -->
-  <div class="picker-header">
-    <h2>Select Starting Position</h2>
-    <p class="grid-mode-indicator">Grid Mode: {gridMode}</p>
-  </div>
-
-  <!-- Error state -->
-  {#if loadingError}
-    <div class="error-state">
-      <h3>Failed to Load Start Positions</h3>
-      <p>
-        There was an error loading the start positions. Please try refreshing
-        the page.
-      </p>
-      <button onclick={() => loadStartPositions()} disabled={isLoading}>
-        Try Again
-      </button>
-    </div>
+<div class="start-pos-picker" data-testid="start-position-picker">
+  {#if isLoading}
+    <LoadingState />
+  {:else if loadingError}
+    <ErrorState />
+  {:else if startPositions.length === 0}
+    <ErrorState
+      message="No valid start positions found for the current configuration."
+      hasRefreshButton={false}
+    />
   {:else}
-    <!-- Position grid -->
-    <StartPositionGrid
-      {startPositions}
-      {selectedPosition}
-      {isLoading}
-      onPositionSelected={handlePositionSelected}
+    <PictographGrid
+      pictographDataSet={startPositions}
+      selectedPictograph={selectedStartPos}
+      onPictographSelect={handleSelect}
     />
   {/if}
 
-  <!-- Transition overlay -->
+  <!-- Debug info -->
+  <div
+    style="position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.8); color: white; padding: 5px; font-size: 10px;"
+  >
+    Debug: isLoading={isLoading}, pictographs={startPositions.length}, error={loadingError}
+  </div>
+
+  <!-- Loading overlay during transition -->
   {#if isTransitioning}
-    <div class="transition-overlay">
-      <div class="transition-spinner"></div>
-      <p>Preparing sequence...</p>
-    </div>
+    <TransitionOverlay />
   {/if}
 </div>
 
 <style>
-  .start-position-picker {
+  .start-pos-picker {
     display: flex;
     flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
     width: 100%;
-    min-height: 400px;
+    padding: var(--spacing-lg);
+    background: transparent;
     position: relative;
-  }
-
-  .picker-header {
-    text-align: center;
-    padding: 20px;
-    background: #f8f9fa;
-    border-bottom: 1px solid #dee2e6;
-  }
-
-  .picker-header h2 {
-    margin: 0 0 8px 0;
-    color: #333;
-    font-size: 24px;
-    font-weight: 600;
-  }
-
-  .grid-mode-indicator {
-    margin: 0;
-    color: #666;
-    font-size: 14px;
-    text-transform: capitalize;
-  }
-
-  .error-state {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 40px;
-    text-align: center;
-    color: #721c24;
-    background: #f8d7da;
-    border: 1px solid #f5c6cb;
-    border-radius: 8px;
-    margin: 20px;
-  }
-
-  .error-state h3 {
-    margin: 0 0 12px 0;
-    font-size: 18px;
-  }
-
-  .error-state p {
-    margin: 0 0 20px 0;
-    color: #721c24;
-  }
-
-  .error-state button {
-    padding: 8px 16px;
-    background: #dc3545;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.2s;
-  }
-
-  .error-state button:hover:not(:disabled) {
-    background: #c82333;
-  }
-
-  .error-state button:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-  }
-
-  .transition-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(255, 255, 255, 0.9);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-  }
-
-  .transition-spinner {
-    width: 40px;
-    height: 40px;
-    border: 3px solid #f3f3f3;
-    border-top: 3px solid #007acc;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-    margin-bottom: 16px;
-  }
-
-  @keyframes spin {
-    0% {
-      transform: rotate(0deg);
-    }
-    100% {
-      transform: rotate(360deg);
-    }
-  }
-
-  .transition-overlay p {
-    color: #333;
-    font-weight: 500;
   }
 </style>

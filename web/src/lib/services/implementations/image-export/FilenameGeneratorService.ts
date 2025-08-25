@@ -6,11 +6,13 @@
  */
 
 import type { SequenceData } from "../../interfaces/domain-types";
+import { injectable } from "inversify";
 import type {
   IFilenameGeneratorService,
   TKAImageExportOptions,
 } from "../../interfaces/image-export-interfaces";
 
+@injectable()
 export class FilenameGeneratorService implements IFilenameGeneratorService {
   /**
    * Generate default filename for export

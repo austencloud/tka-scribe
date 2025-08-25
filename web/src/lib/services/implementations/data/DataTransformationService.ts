@@ -6,6 +6,7 @@
  */
 
 import type { BeatData, MotionData, PictographData } from "$lib/domain";
+import { injectable } from "inversify";
 import { createPictographData, GridMode } from "$lib/domain";
 import { type GridPointData as RawGridData } from "../../../data/gridCoordinates.js";
 export interface GridData {
@@ -25,6 +26,7 @@ export interface IDataTransformationService {
   adaptGridData(rawGridData: RawGridData, mode: GridMode): GridData;
 }
 
+@injectable()
 export class DataTransformationService implements IDataTransformationService {
   /**
    * Convert beat data to pictograph data

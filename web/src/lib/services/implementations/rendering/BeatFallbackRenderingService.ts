@@ -3,12 +3,14 @@
  * Just handles the basic cases without overengineering
  */
 
+import { injectable } from "inversify";
 import type {
   EmptyBeatOptions,
   ErrorBeatOptions,
   IBeatFallbackRenderingService,
 } from "../../interfaces/beat-fallback-interfaces";
 
+@injectable()
 export class BeatFallbackRenderingService
   implements IBeatFallbackRenderingService
 {

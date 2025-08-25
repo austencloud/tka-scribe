@@ -5,11 +5,13 @@
  */
 
 import { GridMode as DomainGridMode } from "$lib/domain/enums";
+import { injectable } from "inversify";
 import type {
   AppSettings,
   ISettingsService,
 } from "../../interfaces/application-interfaces";
 
+@injectable()
 export class SettingsService implements ISettingsService {
   private readonly CACHE_VERSION = "v2.1"; // ✅ ROBUST: Cache versioning
   private readonly SETTINGS_KEY = `tka-${this.CACHE_VERSION}-settings`;

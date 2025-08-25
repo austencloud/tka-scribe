@@ -21,6 +21,7 @@ import {
   GridMode,
 } from "$lib/domain/enums";
 import type { Letter } from "$lib/domain/Letter";
+import { injectable } from "inversify";
 import type { IArrowPositioningOrchestrator } from "$lib/services/positioning";
 import { getPositioningServiceFactory } from "$lib/services/positioning/PositioningServiceFactory";
 
@@ -59,6 +60,7 @@ export interface IArrowPositioningService {
   ): boolean;
 }
 
+@injectable()
 export class ArrowPositioningService implements IArrowPositioningService {
   private orchestrator: IArrowPositioningOrchestrator;
 

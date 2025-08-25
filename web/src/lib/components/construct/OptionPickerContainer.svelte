@@ -1,228 +1,173 @@
 <!--
-  OptionPickerContainer.svelte
+OptionPickerContainer.svelte - Main container for the option picker
 
-  Main orchestrator component that leverages existing sophisticated systems:
-  - Uses optionPickerRunes.svelte.ts for state management
-  - Uses OptionPickerLayoutManager.ts for layout calculations
-  - Delegates rendering to existing well-designed sub-components
-
-  This replaces the 562-line monolithic OptionPicker.svelte
+Integrates all option picker components:
+- Uses optionPickerRunes for state management
+- Handles scrolling with OptionPickerScroll
+- Manages layout responsively
+- Coordinates with sequence state
 -->
 <script lang="ts">
   import type { PictographData } from "$lib/domain/PictographData";
-  import type { SequenceData } from "$lib/domain/SequenceData";
+  import { createErrorState } from "$lib/utils/error-handling.svelte";
   import { onMount } from "svelte";
-  // Import sophisticated existing systems
-  import { OptionPickerLayoutManager } from "./option-picker/OptionPickerLayoutManager";
-  import { createOptionPickerRunes } from "./option-picker/optionPickerRunes.svelte";
-  import { detectFoldableDevice } from "./option-picker/utils/deviceDetection";
-  import { getEnhancedDeviceType } from "./option-picker/utils/layoutUtils";
-  // Import well-designed sub-components
+  import ErrorBanner from "./ErrorBanner.svelte";
+  import LoadingOverlay from "./LoadingOverlay.svelte";
   import OptionPickerHeader from "./option-picker/OptionPickerHeader.svelte";
   import OptionPickerScroll from "./option-picker/OptionPickerScroll.svelte";
-  import { resize } from "./option-picker/actions/resize";
+  import { createOptionDataState } from "./option-picker/state/focused/option-data-state.svelte";
+  import { createOptionFilterState } from "./option-picker/state/focused/option-filter-state.svelte";
+  import { createOptionPersistenceState } from "./option-picker/state/focused/option-persistence-state.svelte";
+  import { createOptionUIState } from "./option-picker/state/focused/option-ui-state.svelte";
 
   // Props
-  interface Props {
-    currentSequence?: SequenceData | null;
+  const { onOptionSelected = () => {}, initialSequence = [] } = $props<{
     onOptionSelected?: (option: PictographData) => void;
-  }
+    initialSequence?: PictographData[];
+  }>();
 
-  let { currentSequence = null, onOptionSelected }: Props = $props();
+  // Create microservice states
+  const dataState = createOptionDataState();
+  const uiState = createOptionUIState();
+  const filterState = createOptionFilterState(dataState, uiState);
+  const persistenceState = createOptionPersistenceState();
+  const errorState = createErrorState();
 
-  // Container dimensions for layout calculations
+  // Container dimensions for responsive layout
+  let containerElement: HTMLElement;
   let containerWidth = $state(800);
   let containerHeight = $state(600);
 
-  // Use sophisticated state management system
-  const optionPickerState = createOptionPickerRunes();
+  // Initialize component
+  onMount(() => {
+    // Set up resize observer for responsive behavior
+    if (containerElement) {
+      const resizeObserver = new ResizeObserver((entries) => {
+        for (const entry of entries) {
+          containerWidth = entry.contentRect.width;
+          containerHeight = entry.contentRect.height;
+        }
+      });
+      resizeObserver.observe(containerElement);
 
-  // Simplified loading check - no preloaded data complexity
-  const shouldShowLoading = $derived(() => {
-    return (
-      optionPickerState.isLoading &&
-      optionPickerState.optionsData.length === 0 &&
-      !isCurrentlyLoading // Don't show loading if we're preventing duplicates
-    );
+      return () => resizeObserver.disconnect();
+    }
   });
 
-  // Derived device and layout information
-  const foldableInfo = $derived(() => detectFoldableDevice());
-  const deviceInfo = $derived(() =>
-    getEnhancedDeviceType(containerWidth, containerWidth < 768)
-  );
+  // Track if we've loaded to prevent infinite loop
+  let hasLoadedInitialSequence = $state(false);
 
-  // Calculate layout using sophisticated system
-  const layoutConfig = $derived(() => {
-    return OptionPickerLayoutManager.calculateLayout({
-      count: optionPickerState.optionsData.length,
-      containerWidth,
-      containerHeight,
-      windowWidth: containerWidth,
-      windowHeight: containerHeight,
-      isMobileUserAgent: containerWidth < 768,
-    });
+  // Load options when sequence changes - prevent infinite loop
+  $effect(() => {
+    if (initialSequence.length >= 0 && !hasLoadedInitialSequence) {
+      hasLoadedInitialSequence = true;
+      loadOptionsForSequence(initialSequence);
+    }
   });
 
-  // Reactive access to options data
-  const optionsData = $derived(() => optionPickerState.optionsData);
-  const error = $derived(() => optionPickerState.error);
+  // Coordinated loading logic (moved from composition layer)
+  async function loadOptionsForSequence(sequence: PictographData[]) {
+    try {
+      errorState.clearError();
+      dataState.setSequence(sequence);
 
-  // Handle container resize with protection against infinite loops
-  function handleResize(width: number, height: number) {
-    // Only update if dimensions actually changed significantly
-    const threshold = 5; // 5px threshold to prevent micro-adjustments
-    if (
-      Math.abs(width - containerWidth) > threshold ||
-      Math.abs(height - containerHeight) > threshold
-    ) {
-      containerWidth = width;
-      containerHeight = height;
+      // Check for preloaded options first to avoid loading state
+      const preloadedOptions = persistenceState.checkPreloadedOptions();
+      if (preloadedOptions) {
+        dataState.setOptions(preloadedOptions);
+        uiState.setLoading(false);
+        uiState.setError(null);
+
+        // Set default tab if needed
+        if (
+          !uiState.lastSelectedTab[uiState.sortMethod] ||
+          uiState.lastSelectedTab[uiState.sortMethod] === null
+        ) {
+          uiState.setLastSelectedTabForSort(uiState.sortMethod, "all");
+        }
+        return;
+      }
+
+      // Check for bulk preloaded options
+      const targetEndPosition = persistenceState.getTargetEndPosition(sequence);
+      if (targetEndPosition) {
+        const bulkOptions =
+          persistenceState.checkBulkPreloadedOptions(targetEndPosition);
+        if (bulkOptions && bulkOptions.length > 0) {
+          dataState.setOptions(bulkOptions);
+          uiState.setLoading(false);
+          uiState.setError(null);
+
+          if (
+            !uiState.lastSelectedTab[uiState.sortMethod] ||
+            uiState.lastSelectedTab[uiState.sortMethod] === null
+          ) {
+            uiState.setLastSelectedTabForSort(uiState.sortMethod, "all");
+          }
+          return;
+        }
+      }
+
+      // Load from services
+      await dataState.loadOptionsFromServices(sequence);
+    } catch (error) {
+      errorState.setError(error, "OPTION_LOAD_FAILED");
     }
   }
 
   // Handle option selection
-  function handleOptionSelected(option: PictographData) {
-    optionPickerState.selectOption(option);
-    onOptionSelected?.(option);
-  }
-
-  // Enhanced debouncing to prevent cascades
-  let isCurrentlyLoading = $state(false);
-  let lastLoadTrigger = $state<string | null>(null);
-  let loadTimeout: ReturnType<typeof setTimeout> | null = null;
-
-  // Unified loading function with proper debouncing
-  async function loadOptionsOnce(trigger: string) {
-    // Clear any pending loads
-    if (loadTimeout) {
-      clearTimeout(loadTimeout);
-      loadTimeout = null;
+  async function handleOptionSelected(option: PictographData) {
+    try {
+      await dataState.selectOption(option);
+      onOptionSelected(option);
+    } catch (error) {
+      errorState.setError(error, "OPTION_SELECT_FAILED");
     }
-
-    // Prevent duplicate loading from the same trigger
-    if (isCurrentlyLoading && lastLoadTrigger === trigger) {
-      console.log(
-        `⏭️ OptionPickerContainer: Skipping duplicate load from ${trigger}`
-      );
-      return;
-    }
-
-    // Debounce rapid calls
-    loadTimeout = setTimeout(async () => {
-      isCurrentlyLoading = true;
-      lastLoadTrigger = trigger;
-
-      try {
-        console.log(
-          `🔄 OptionPickerContainer: Loading options from ${trigger}`
-        );
-        await optionPickerState.loadOptions([]);
-      } catch (error) {
-        console.error(
-          `❌ OptionPickerContainer: Failed to load options from ${trigger}:`,
-          error
-        );
-      } finally {
-        // Reset loading state
-        setTimeout(() => {
-          isCurrentlyLoading = false;
-          lastLoadTrigger = null;
-        }, 200);
-      }
-    }, 100); // 100ms debounce
   }
 
-  // Handle start position selection events
-  function handleStartPositionSelected() {
-    loadOptionsOnce("start-position-event");
+  // Handle sort method changes
+  function handleSortMethodChanged(method: string) {
+    uiState.setSortMethod(method as any); // Type assertion for now
   }
-
-  // Initialize on mount
-  onMount(() => {
-    // Don't auto-load on mount to prevent cascade
-    // loadOptionsOnce("mount");
-
-    // Listen for start position selection events
-    document.addEventListener(
-      "start-position-selected",
-      handleStartPositionSelected
-    );
-
-    // Cleanup on unmount
-    return () => {
-      document.removeEventListener(
-        "start-position-selected",
-        handleStartPositionSelected
-      );
-    };
-  });
-
-  // Remove reactive effect to prevent cascade - only load on explicit events
-  // $effect(() => {
-  //   if (currentSequence) {
-  //     loadOptionsOnce("sequence-change");
-  //   }
-  // });
 </script>
 
-<!-- Container with resize detection -->
 <div
   class="option-picker-container"
-  class:mobile={deviceInfo().deviceType === "mobile" ||
-    deviceInfo().deviceType === "smallMobile"}
-  class:tablet={deviceInfo().deviceType === "tablet"}
-  class:foldable={foldableInfo().isFoldable}
-  use:resize={handleResize}
-  style="--layout-scale-factor: {layoutConfig()
-    .scaleFactor}; --option-size: {layoutConfig()
-    .optionSize}px; --grid-gap: {layoutConfig().gridGap}px"
+  bind:this={containerElement}
+  data-testid="option-picker-container"
 >
-  <!-- Header -->
+  <!-- Header with sorting controls -->
   <OptionPickerHeader />
 
-  <!-- Main content area -->
-  <div class="content-area">
-    {#if shouldShowLoading()}
-      <div class="loading-container">
-        <div class="loading-spinner"></div>
-        <p>Loading options...</p>
-        <small>
-          Layout: {deviceInfo().deviceType} |
-          {foldableInfo().isFoldable ? "Foldable" : "Standard"} | Scale: {layoutConfig()
-            .scaleFactor}
-        </small>
-      </div>
-    {:else if error()}
-      <div class="error-container">
-        <p>❌ Error loading options</p>
-        <p>{error()}</p>
-        <button
-          class="retry-button"
-          onclick={() => optionPickerState.loadOptions([])}
-        >
+  <!-- Error banner -->
+  {#if errorState.state.hasError}
+    <ErrorBanner
+      message={errorState.state.errorMessage || "An error occurred"}
+      onDismiss={errorState.clearError}
+    />
+  {/if}
+
+  <!-- Main content -->
+  <div class="option-picker-content">
+    {#if uiState.isLoading}
+      <LoadingOverlay message="Loading options..." />
+    {:else if uiState.error}
+      <div class="error-state">
+        <p>Error loading options: {uiState.error}</p>
+        <button onclick={() => loadOptionsForSequence(initialSequence)}>
           Retry
         </button>
       </div>
-    {:else if optionsData().length === 0}
-      <div class="empty-container">
-        <p>No options available</p>
-        <p>Please select a start position first</p>
-        <small>
-          Layout: {layoutConfig().gridColumns} | Device: {deviceInfo()
-            .deviceType}
-        </small>
+    {:else if filterState.filteredOptions.length === 0}
+      <div class="empty-state">
+        <p>No options available for the current sequence.</p>
       </div>
     {:else}
-      <!-- Use existing well-designed scroll component -->
       <OptionPickerScroll
-        pictographs={optionsData()}
+        pictographs={filterState.filteredOptions}
         onPictographSelected={handleOptionSelected}
         {containerWidth}
         {containerHeight}
-        layoutConfig={layoutConfig().layoutConfig}
-        deviceInfo={deviceInfo()}
-        foldableInfo={foldableInfo()}
       />
     {/if}
   </div>
@@ -234,76 +179,40 @@
     flex-direction: column;
     height: 100%;
     width: 100%;
-    position: relative;
-    border-radius: 8px;
+    background: transparent;
     overflow: hidden;
   }
 
-  .content-area {
+  .option-picker-content {
     flex: 1;
-    display: flex;
-    flex-direction: column;
+    position: relative;
     overflow: hidden;
   }
 
-  .loading-container,
-  .error-container,
-  .empty-container {
+  .error-state,
+  .empty-state {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    flex: 1;
-    padding: 2rem;
+    height: 100%;
+    padding: var(--spacing-xl);
     text-align: center;
+    color: var(--muted-foreground);
   }
 
-  .loading-spinner {
-    width: 40px;
-    height: 40px;
-    border: 4px solid #f3f3f3;
-    border-top: 4px solid #007bff;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-    margin-bottom: 1rem;
-  }
-
-  @keyframes spin {
-    0% {
-      transform: rotate(0deg);
-    }
-    100% {
-      transform: rotate(360deg);
-    }
-  }
-
-  .retry-button {
-    padding: 0.5rem 1rem;
-    background: #007bff;
-    color: white;
+  .error-state button {
+    margin-top: var(--spacing-md);
+    padding: var(--spacing-sm) var(--spacing-md);
+    background: var(--primary);
+    color: var(--primary-foreground);
     border: none;
-    border-radius: 4px;
+    border-radius: var(--radius);
     cursor: pointer;
-    margin-top: 1rem;
+    transition: all 0.2s ease;
   }
 
-  .retry-button:hover {
-    background: #0056b3;
-  }
-
-  /* Responsive adjustments */
-  .option-picker-container.mobile {
-    /* Mobile-specific styles can be added here */
-    font-size: 14px;
-  }
-
-  .option-picker-container.tablet {
-    /* Tablet-specific styles can be added here */
-    font-size: 16px;
-  }
-
-  .option-picker-container.foldable {
-    /* Foldable device styles can be added here */
-    transition: all 0.3s ease;
+  .error-state button:hover {
+    background: var(--primary-hover);
   }
 </style>

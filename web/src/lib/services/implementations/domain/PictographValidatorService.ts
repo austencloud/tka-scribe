@@ -6,6 +6,7 @@
  */
 
 import type { MotionData } from "$lib/domain/MotionData";
+import { injectable } from "inversify";
 import type { PictographData } from "$lib/domain/PictographData";
 import {
   GridPosition,
@@ -16,6 +17,7 @@ import {
 } from "$lib/domain/enums";
 import type { IPictographValidatorService } from "../../interfaces/generation-interfaces";
 
+@injectable()
 export class PictographValidatorService implements IPictographValidatorService {
   validatePictograph(pictograph: PictographData): boolean {
     const errors = this.getValidationErrors(pictograph);

@@ -8,6 +8,7 @@
 import type { MotionData } from "$lib/domain";
 import type { ArrowPlacementData } from "$lib/domain/ArrowPlacementData";
 import { MotionColor } from "$lib/domain/enums";
+import { inject, injectable } from "inversify";
 import type { ISvgConfiguration } from "./SvgConfiguration";
 
 // Import the microservices
@@ -19,6 +20,7 @@ import type {
   ISvgParsingService,
 } from "$lib/services/interfaces/pictograph-interfaces";
 import type { ArrowPosition } from "$lib/services/positioning/types";
+import { TYPES } from "../../inversify/types";
 import {
   ArrowPathResolutionService,
   ArrowPositioningService,
@@ -58,6 +60,7 @@ export interface IArrowRenderingService {
   applyColorToSvg(svgText: string, color: MotionColor): string;
 }
 
+@injectable()
 export class ArrowRenderingService implements IArrowRenderingService {
   private pathResolver: IArrowPathResolutionService;
   private svgParser: ISvgParsingService;
@@ -65,7 +68,9 @@ export class ArrowRenderingService implements IArrowRenderingService {
   private svgLoader: ISvgLoadingService;
   private positioningService: IArrowPositioningService;
 
-  constructor(private config: ISvgConfiguration) {
+  constructor(
+    @inject(TYPES.ISvgConfiguration) private config: ISvgConfiguration
+  ) {
     // Initialize microservices
     this.pathResolver = new ArrowPathResolutionService();
     this.svgParser = new SvgParsingService();

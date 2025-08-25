@@ -6,12 +6,14 @@
  */
 
 import type { SequenceData } from "../../interfaces/domain-types";
+import { injectable } from "inversify";
 import type {
   IExportMemoryCalculator,
   MemoryEstimate,
   TKAImageExportOptions,
 } from "../../interfaces/image-export-interfaces";
 
+@injectable()
 export class ExportMemoryCalculator implements IExportMemoryCalculator {
   private readonly DEFAULT_MEMORY_LIMIT_MB = 200;
 

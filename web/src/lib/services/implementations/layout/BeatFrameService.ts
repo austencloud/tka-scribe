@@ -14,7 +14,9 @@ import type {
   LayoutInfo,
   Position,
 } from "$lib/services/interfaces/beat-frame-interfaces";
+import { injectable } from "inversify";
 
+@injectable()
 export class BeatFrameService implements IBeatFrameService {
   // ============================================================================
   // CONFIGURATION METHODS

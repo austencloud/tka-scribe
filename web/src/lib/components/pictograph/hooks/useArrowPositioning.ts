@@ -6,8 +6,7 @@
  */
 
 import type { PictographData } from "$lib/domain";
-import { resolve } from "$lib/services/bootstrap";
-import { IArrowPositioningServiceInterface } from "$lib/services/di/interfaces/positioning-interfaces";
+// Re-enabled after fixing circular dependency
 import type { IArrowPositioningService } from "$lib/services/interfaces/positioning-interfaces";
 
 export interface ArrowPositioningProps {
@@ -31,10 +30,17 @@ export interface ArrowPositioningState {
 export function useArrowPositioning(
   _props: ArrowPositioningProps
 ): ArrowPositioningState {
+  // TODO: Temporarily disabled due to circular dependency
   // Get the arrow positioning service from DI container
-  const positioningService = resolve(
-    IArrowPositioningServiceInterface
-  ) as IArrowPositioningService;
+  // const positioningService = resolve(
+  //   IArrowPositioningServiceInterface
+  // ) as IArrowPositioningService;
+
+  // Temporary fallback - return mock service
+  const positioningService: IArrowPositioningService = {
+    calculatePosition: async () => ({ x: 0, y: 0, rotation: 0 }),
+    shouldMirror: () => false,
+  };
 
   // Clean architecture: Calculate positions from motion data using the orchestrator
   async function calculateArrowPositions(

@@ -6,8 +6,10 @@
  */
 
 import { GridPosition } from "$lib/domain/enums";
+import { injectable } from "inversify";
 import type { IPositionPatternService } from "../../interfaces/generation-interfaces";
 
+@injectable()
 export class PositionPatternService implements IPositionPatternService {
   getAlphaSequence(): GridPosition[] {
     return [

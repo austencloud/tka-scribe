@@ -1,0 +1,270 @@
+import { createHotContext as __vite__createHotContext } from "/@vite/client";import.meta.hot = __vite__createHotContext("/src/lib/components/construct/start-position/StartPositionPicker.svelte");import "/node_modules/.vite/deps/svelte_internal_disclose-version.js?v=608ae08a";
+
+StartPositionPicker[$.FILENAME] = 'src/lib/components/construct/start-position/StartPositionPicker.svelte';
+
+import * as $ from "/node_modules/.vite/deps/svelte_internal_client.js?v=608ae08a";
+import { GridMode } from "/src/lib/domain/index.ts";
+import { resolve } from "/src/lib/services/bootstrap.ts";
+import ErrorState from "/src/lib/components/construct/start-position/ui/ErrorState.svelte";
+import LoadingState from "/src/lib/components/construct/start-position/ui/LoadingState.svelte";
+import PictographGrid from "/src/lib/components/construct/start-position/ui/PictographGrid.svelte";
+import TransitionOverlay from "/src/lib/components/construct/start-position/ui/TransitionOverlay.svelte";
+
+var root = $.add_locations($.from_html(`<div class="start-pos-picker s-yKJ0n_ggW8mu" data-testid="start-position-picker"><!> <div style="position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.8); color: white; padding: 5px; font-size: 10px;" class="s-yKJ0n_ggW8mu"> </div> <!></div>`), StartPositionPicker[$.FILENAME], [[95, 0, [[114, 2]]]]);
+
+function StartPositionPicker($$anchor, $$props) {
+	$.check_target(new.target);
+	$.push($$props, true, StartPositionPicker);
+
+	const sequenceStateService = resolve("ISequenceStateService");
+	const startPositionService = resolve("IStartPositionService");
+	let isLoading = $.tag($.state(true), 'isLoading');
+	let loadingError = $.tag($.state(null), 'loadingError');
+	let startPositions = $.tag($.state($.proxy([])), 'startPositions');
+	let selectedStartPos = $.tag($.state(null), 'selectedStartPos');
+	let isTransitioning = $.tag($.state(false), 'isTransitioning');
+
+	$.user_effect(() => {
+		loadStartPositions();
+	});
+
+	async function loadStartPositions() {
+		if (!startPositionService) {
+			console.error("\u274C StartPositionPicker: No start position service available");
+			$.set(loadingError, "Start position service not available");
+			$.set(isLoading, false);
+
+			return;
+		}
+
+		try {
+			$.set(isLoading, true);
+			$.set(loadingError, null);
+
+			const positions = (await $.track_reactivity_loss(startPositionService.getDefaultStartPositions(GridMode.DIAMOND)))();
+
+			$.set(startPositions, positions, true);
+		} catch(error) {
+			console.error(...$.log_if_contains_state('error', "\u274C StartPositionPicker: Failed to load start positions", error));
+			$.set(loadingError, error instanceof Error ? error.message : "Failed to load start positions", true);
+			$.set(startPositions, [], true);
+		} finally {
+			$.set(isLoading, false);
+		}
+	}
+
+	async function handleSelect(position) {
+		$.set(selectedStartPos, position, true);
+
+		try {
+			let currentSequence = $$props.sequenceState.currentSequence;
+
+			if (!currentSequence) {
+				currentSequence = sequenceStateService.createNewSequence("New Sequence", 16);
+				$$props.sequenceState.setCurrentSequence(currentSequence);
+			}
+
+			const startPositionBeat = {
+				id: crypto.randomUUID(),
+				beatNumber: 0,
+
+				// Start position is beat 0
+				duration: 1,
+
+				blueReversal: false,
+				redReversal: false,
+				isBlank: false,
+				pictographData: position,
+
+				metadata: {
+					isStartPosition: true,
+					endPosition: position.letter || "unknown"
+				}
+			};
+
+			const updatedSequence = sequenceStateService.setStartPosition(currentSequence, startPositionBeat);
+
+			$$props.sequenceState.setCurrentSequence(updatedSequence);
+		} catch(error) {
+			console.error(...$.log_if_contains_state('error', "\u274C StartPositionPicker: Failed to set start position", error));
+		}
+	}
+
+	$.user_effect(() => {
+		const currentSequence = $$props.sequenceState.currentSequence;
+
+		if (currentSequence && currentSequence.startPosition && $.get(isTransitioning)) {
+			$.set(isTransitioning, false);
+		}
+	});
+
+	var div = root();
+	var node = $.child(div);
+
+	{
+		var consequent = ($$anchor) => {
+			var fragment = $.comment();
+			var node_1 = $.first_child(fragment);
+
+			$.add_svelte_meta(() => LoadingState(node_1, {}), 'component', StartPositionPicker, 97, 4, { componentTag: 'LoadingState' });
+			$.append($$anchor, fragment);
+		};
+
+		var alternate_2 = ($$anchor) => {
+			var fragment_1 = $.comment();
+			var node_2 = $.first_child(fragment_1);
+
+			{
+				var consequent_1 = ($$anchor) => {
+					var fragment_2 = $.comment();
+					var node_3 = $.first_child(fragment_2);
+
+					$.add_svelte_meta(() => ErrorState(node_3, {}), 'component', StartPositionPicker, 99, 4, { componentTag: 'ErrorState' });
+					$.append($$anchor, fragment_2);
+				};
+
+				var alternate_1 = ($$anchor) => {
+					var fragment_3 = $.comment();
+					var node_4 = $.first_child(fragment_3);
+
+					{
+						var consequent_2 = ($$anchor) => {
+							var fragment_4 = $.comment();
+							var node_5 = $.first_child(fragment_4);
+
+							$.add_svelte_meta(
+								() => ErrorState(node_5, {
+									message: 'No valid start positions found for the current configuration.',
+									hasRefreshButton: false
+								}),
+								'component',
+								StartPositionPicker,
+								101,
+								4,
+								{ componentTag: 'ErrorState' }
+							);
+
+							$.append($$anchor, fragment_4);
+						};
+
+						var alternate = ($$anchor) => {
+							var fragment_5 = $.comment();
+							var node_6 = $.first_child(fragment_5);
+
+							$.add_svelte_meta(
+								() => PictographGrid(node_6, {
+									get pictographDataSet() {
+										return $.get(startPositions);
+									},
+
+									get selectedPictograph() {
+										return $.get(selectedStartPos);
+									},
+
+									onPictographSelect: handleSelect
+								}),
+								'component',
+								StartPositionPicker,
+								106,
+								4,
+								{ componentTag: 'PictographGrid' }
+							);
+
+							$.append($$anchor, fragment_5);
+						};
+
+						$.add_svelte_meta(
+							() => $.if(
+								node_4,
+								($$render) => {
+									if ($.strict_equals($.get(startPositions).length, 0)) $$render(consequent_2); else $$render(alternate, false);
+								},
+								true
+							),
+							'if',
+							StartPositionPicker,
+							100,
+							2
+						);
+					}
+
+					$.append($$anchor, fragment_3);
+				};
+
+				$.add_svelte_meta(
+					() => $.if(
+						node_2,
+						($$render) => {
+							if ($.get(loadingError)) $$render(consequent_1); else $$render(alternate_1, false);
+						},
+						true
+					),
+					'if',
+					StartPositionPicker,
+					98,
+					2
+				);
+			}
+
+			$.append($$anchor, fragment_1);
+		};
+
+		$.add_svelte_meta(
+			() => $.if(node, ($$render) => {
+				if ($.get(isLoading)) $$render(consequent); else $$render(alternate_2, false);
+			}),
+			'if',
+			StartPositionPicker,
+			96,
+			2
+		);
+	}
+
+	var div_1 = $.sibling(node, 2);
+	var text = $.child(div_1);
+
+	$.reset(div_1);
+
+	var node_7 = $.sibling(div_1, 2);
+
+	{
+		var consequent_3 = ($$anchor) => {
+			var fragment_6 = $.comment();
+			var node_8 = $.first_child(fragment_6);
+
+			$.add_svelte_meta(() => TransitionOverlay(node_8, {}), 'component', StartPositionPicker, 122, 4, { componentTag: 'TransitionOverlay' });
+			$.append($$anchor, fragment_6);
+		};
+
+		$.add_svelte_meta(
+			() => $.if(node_7, ($$render) => {
+				if ($.get(isTransitioning)) $$render(consequent_3);
+			}),
+			'if',
+			StartPositionPicker,
+			121,
+			2
+		);
+	}
+
+	$.reset(div);
+	$.template_effect(() => $.set_text(text, `Debug: isLoading=${$.get(isLoading) ?? ''}, pictographs=${$.get(startPositions).length ?? ''}, error=${$.get(loadingError) ?? ''}`));
+	$.append($$anchor, div);
+
+	return $.pop({ ...$.legacy_api() });
+}
+
+if (import.meta.hot) {
+	StartPositionPicker = $.hmr(StartPositionPicker, () => StartPositionPicker[$.HMR].source);
+
+	import.meta.hot.acceptExports(["default"],(module) => {
+		$.cleanup_styles('s-yKJ0n_ggW8mu');
+		module.default[$.HMR].source = StartPositionPicker[$.HMR].source;
+		$.set(StartPositionPicker[$.HMR].source, module.default[$.HMR].original);
+	});
+}
+
+export default StartPositionPicker;
+import "/src/lib/components/construct/start-position/StartPositionPicker.svelte?svelte&type=style&lang.css";
+
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJtYXBwaW5ncyI6Ijs7Ozs7U0FHVyxnQkFBZTtTQUVqQixlQUFnQjtPQUVoQjtPQUNBO09BR0Qsb0JBQWtCO09BS2xCLHVCQUF1Qjs7OztnREFoQi9CLENBQUM7Ozs7T0E0QkssdUJBQWlDLFFBQ2pDO09BTUgsK0JBRUQ7S0FJSTtLQUNBLDZCQUFlO0tBQ2Y7S0FDQTtLQUNGOztDQUlFO0VBR0E7Q0FBNkM7O2dCQUc3QyxxQkFBaUI7T0FDbkIsc0JBQWdCO0dBQ2QsUUFBUSxNQUNOO1NBRUY7U0FDQTs7O0VBS0Y7O01BRUE7U0FDRjtTQUVBLGNBQWU7O1NBS1AsMkNBQWtCLHFCQUFjLHlCQUVoQyxTQUFDOztTQUVvQyxnQkFDckM7RUFBQSxRQUNBO0dBQ0Ysa0RBQ0EsOERBQ0Y7U0FJRSxjQUNBLGlCQUFZLHdCQUNaO1NBQ0E7RUFBYyxVQUNkO1NBQ0EsV0FBUztFQUFBO0NBQ087O2dCQUdkLGFBQXNCLFVBQVU7UUFBQSxrQkFDbEM7O01BSUY7T0FFRTs7UUFFRixpQkFBYztJQUVkLGtCQUFRLHVDQUNOLGdCQUNBOzBCQUVKO0dBQ0Y7O1NBT007SUFDRjtJQUNGOzs7SUFDRDs7SUFDSzs7SUFFSCxTQUFZO0lBQ1YsZ0JBQVM7O0lBQ1g7S0FDSSxpQkFBZTtLQUNuQixhQUFZOzs7O1NBS1osd0RBQ0csaUJBQ0g7O3lCQUVDLG1CQUFvQixlQUFnQjtFQUMxQyxRQUFNO0dBQ0Qsa0RBQ0M7RUFHSDtDQUNIOztDQUdFLG9CQUFLOzs7TUFJRixtQkFBbUI7U0FDbEI7RUFDSjs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7OzsyQkFZb0I7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7OzttQ0FIWCxjQUFJOzs7Ozs7Ozs7Ozs7Ozs7Ozs7aUJBRkwsWUFBYTs7Ozs7Ozs7Ozs7Ozs7OztjQUZuQixTQUFLOzs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7OztDQUhUIiwibmFtZXMiOltdLCJpZ25vcmVMaXN0IjpbXSwic291cmNlcyI6WyJTdGFydFBvc2l0aW9uUGlja2VyLnN2ZWx0ZSJdLCJzb3VyY2VzQ29udGVudCI6WyI8IS0tIFN0YXJ0UG9zaXRpb25QaWNrZXIuc3ZlbHRlIC0gQ2xlYW4gY29tcG9uZW50IGZvbGxvd2luZyBUS0EgYXJjaGl0ZWN0dXJlIC0tPlxuPHNjcmlwdCBsYW5nPVwidHNcIj5cbiAgaW1wb3J0IHsgR3JpZE1vZGUgfSBmcm9tIFwiJGxpYi9kb21haW5cIjtcbiAgaW1wb3J0IHsgcmVzb2x2ZSB9IGZyb20gXCIkc2VydmljZXMvYm9vdHN0cmFwXCI7XG4gIC8vIFVJIENvbXBvbmVudHNcbiAgaW1wb3J0IEVycm9yU3RhdGUgZnJvbSBcIi4vdWkvRXJyb3JTdGF0ZS5zdmVsdGVcIjtcbiAgaW1wb3J0IExvYWRpbmdTdGF0ZSBmcm9tIFwiLi91aS9Mb2FkaW5nU3RhdGUuc3ZlbHRlXCI7XG4gIGltcG9ydCBQaWN0b2dyYXBoR3JpZCBmcm9tIFwiLi91aS9QaWN0b2dyYXBoR3JpZC5zdmVsdGVcIjtcbiAgaW1wb3J0IFRyYW5zaXRpb25PdmVybGF5IGZyb20gXCIuL3VpL1RyYW5zaXRpb25PdmVybGF5LnN2ZWx0ZVwiO1xuXG4gIC8vIFByb3BzXG4gIGxldCB7IHNlcXVlbmNlU3RhdGUgfSA9ICRwcm9wczx7XG4gICAgc2VxdWVuY2VTdGF0ZTogaW1wb3J0KFwiJGxpYi9zdGF0ZS9zZXF1ZW5jZS9zZXF1ZW5jZS1zdGF0ZS5zdmVsdGVcIikuU2VxdWVuY2VTdGF0ZTtcbiAgfT4oKTtcblxuICAvLyBHZXQgc2VydmljZSBmcm9tIERJIGNvbnRhaW5lciAoc2VxdWVuY2Ugc3RhdGUgY29tZXMgZnJvbSBwcm9wcylcbiAgY29uc3Qgc2VxdWVuY2VTdGF0ZVNlcnZpY2UgPSByZXNvbHZlKFxuICAgIFwiSVNlcXVlbmNlU3RhdGVTZXJ2aWNlXCJcbiAgKSBhcyBpbXBvcnQoXCIkbGliL3NlcnZpY2VzL2ludGVyZmFjZXMvc2VxdWVuY2Utc3RhdGUtaW50ZXJmYWNlc1wiKS5JU2VxdWVuY2VTdGF0ZVNlcnZpY2U7XG5cbiAgLy8gR2V0IHN0YXJ0IHBvc2l0aW9uIHNlcnZpY2UgZnJvbSBESSBjb250YWluZXJcbiAgY29uc3Qgc3RhcnRQb3NpdGlvblNlcnZpY2UgPSByZXNvbHZlKFxuICAgIFwiSVN0YXJ0UG9zaXRpb25TZXJ2aWNlXCJcbiAgKSBhcyBpbXBvcnQoXCIkbGliL3NlcnZpY2VzL2ludGVyZmFjZXMvYXBwbGljYXRpb24taW50ZXJmYWNlc1wiKS5JU3RhcnRQb3NpdGlvblNlcnZpY2U7XG5cbiAgLy8gUmVhY3RpdmUgc3RhdGVcbiAgbGV0IGlzTG9hZGluZyA9ICRzdGF0ZSh0cnVlKTtcbiAgbGV0IGxvYWRpbmdFcnJvciA9ICRzdGF0ZTxzdHJpbmcgfCBudWxsPihudWxsKTtcbiAgbGV0IHN0YXJ0UG9zaXRpb25zID0gJHN0YXRlPGFueVtdPihbXSk7XG4gIGxldCBzZWxlY3RlZFN0YXJ0UG9zID0gJHN0YXRlPGFueSB8IG51bGw+KG51bGwpO1xuICBsZXQgaXNUcmFuc2l0aW9uaW5nID0gJHN0YXRlKGZhbHNlKTtcblxuICAvLyBMb2FkIHN0YXJ0IHBvc2l0aW9ucyB3aGVuIGNvbXBvbmVudCBtb3VudHNcbiAgJGVmZmVjdCgoKSA9PiB7XG4gICAgbG9hZFN0YXJ0UG9zaXRpb25zKCk7XG4gIH0pO1xuXG4gIGFzeW5jIGZ1bmN0aW9uIGxvYWRTdGFydFBvc2l0aW9ucygpIHtcbiAgICBpZiAoIXN0YXJ0UG9zaXRpb25TZXJ2aWNlKSB7XG4gICAgICBjb25zb2xlLmVycm9yKFxuICAgICAgICBcIuKdjCBTdGFydFBvc2l0aW9uUGlja2VyOiBObyBzdGFydCBwb3NpdGlvbiBzZXJ2aWNlIGF2YWlsYWJsZVwiXG4gICAgICApO1xuICAgICAgbG9hZGluZ0Vycm9yID0gXCJTdGFydCBwb3NpdGlvbiBzZXJ2aWNlIG5vdCBhdmFpbGFibGVcIjtcbiAgICAgIGlzTG9hZGluZyA9IGZhbHNlO1xuICAgICAgcmV0dXJuO1xuICAgIH1cblxuICAgIHRyeSB7XG4gICAgICBpc0xvYWRpbmcgPSB0cnVlO1xuICAgICAgbG9hZGluZ0Vycm9yID0gbnVsbDtcblxuICAgICAgLy8gTG9hZCBzdGFydCBwb3NpdGlvbnMgZnJvbSB0aGUgc2VydmljZVxuICAgICAgY29uc3QgcG9zaXRpb25zID0gYXdhaXQgc3RhcnRQb3NpdGlvblNlcnZpY2UuZ2V0RGVmYXVsdFN0YXJ0UG9zaXRpb25zKFxuICAgICAgICBHcmlkTW9kZS5ESUFNT05EXG4gICAgICApO1xuICAgICAgc3RhcnRQb3NpdGlvbnMgPSBwb3NpdGlvbnM7XG4gICAgfSBjYXRjaCAoZXJyb3IpIHtcbiAgICAgIGNvbnNvbGUuZXJyb3IoXG4gICAgICAgIFwi4p2MIFN0YXJ0UG9zaXRpb25QaWNrZXI6IEZhaWxlZCB0byBsb2FkIHN0YXJ0IHBvc2l0aW9uc1wiLFxuICAgICAgICBlcnJvclxuICAgICAgKTtcbiAgICAgIGxvYWRpbmdFcnJvciA9XG4gICAgICAgIGVycm9yIGluc3RhbmNlb2YgRXJyb3JcbiAgICAgICAgICA/IGVycm9yLm1lc3NhZ2VcbiAgICAgICAgICA6IFwiRmFpbGVkIHRvIGxvYWQgc3RhcnQgcG9zaXRpb25zXCI7XG4gICAgICBzdGFydFBvc2l0aW9ucyA9IFtdO1xuICAgIH0gZmluYWxseSB7XG4gICAgICBpc0xvYWRpbmcgPSBmYWxzZTtcbiAgICB9XG4gIH1cblxuICBhc3luYyBmdW5jdGlvbiBoYW5kbGVTZWxlY3QocG9zaXRpb246IGFueSkge1xuICAgIHNlbGVjdGVkU3RhcnRQb3MgPSBwb3NpdGlvbjtcblxuICAgIHRyeSB7XG4gICAgICAvLyBDcmVhdGUgb3IgZ2V0IGN1cnJlbnQgc2VxdWVuY2VcbiAgICAgIGxldCBjdXJyZW50U2VxdWVuY2UgPSBzZXF1ZW5jZVN0YXRlLmN1cnJlbnRTZXF1ZW5jZTtcblxuICAgICAgaWYgKCFjdXJyZW50U2VxdWVuY2UpIHtcbiAgICAgICAgLy8gQ3JlYXRlIGEgbmV3IHNlcXVlbmNlIGlmIG5vbmUgZXhpc3RzXG4gICAgICAgIGN1cnJlbnRTZXF1ZW5jZSA9IHNlcXVlbmNlU3RhdGVTZXJ2aWNlLmNyZWF0ZU5ld1NlcXVlbmNlKFxuICAgICAgICAgIFwiTmV3IFNlcXVlbmNlXCIsXG4gICAgICAgICAgMTZcbiAgICAgICAgKTtcbiAgICAgICAgc2VxdWVuY2VTdGF0ZS5zZXRDdXJyZW50U2VxdWVuY2UoY3VycmVudFNlcXVlbmNlKTtcbiAgICAgIH1cblxuICAgICAgLy8gQ29udmVydCB0aGUgcGljdG9ncmFwaCBwb3NpdGlvbiB0byBhIGJlYXQgZGF0YSBmb3Igc3RhcnQgcG9zaXRpb25cbiAgICAgIGNvbnN0IHN0YXJ0UG9zaXRpb25CZWF0ID0ge1xuICAgICAgICBpZDogY3J5cHRvLnJhbmRvbVVVSUQoKSxcbiAgICAgICAgYmVhdE51bWJlcjogMCwgLy8gU3RhcnQgcG9zaXRpb24gaXMgYmVhdCAwXG4gICAgICAgIGR1cmF0aW9uOiAxLjAsXG4gICAgICAgIGJsdWVSZXZlcnNhbDogZmFsc2UsXG4gICAgICAgIHJlZFJldmVyc2FsOiBmYWxzZSxcbiAgICAgICAgaXNCbGFuazogZmFsc2UsXG4gICAgICAgIHBpY3RvZ3JhcGhEYXRhOiBwb3NpdGlvbixcbiAgICAgICAgbWV0YWRhdGE6IHtcbiAgICAgICAgICBpc1N0YXJ0UG9zaXRpb246IHRydWUsXG4gICAgICAgICAgZW5kUG9zaXRpb246IHBvc2l0aW9uLmxldHRlciB8fCBcInVua25vd25cIixcbiAgICAgICAgfSxcbiAgICAgIH07XG5cbiAgICAgIC8vIFNldCB0aGUgc3RhcnQgcG9zaXRpb24gaW4gdGhlIHNlcXVlbmNlXG4gICAgICBjb25zdCB1cGRhdGVkU2VxdWVuY2UgPSBzZXF1ZW5jZVN0YXRlU2VydmljZS5zZXRTdGFydFBvc2l0aW9uKFxuICAgICAgICBjdXJyZW50U2VxdWVuY2UsXG4gICAgICAgIHN0YXJ0UG9zaXRpb25CZWF0XG4gICAgICApO1xuICAgICAgc2VxdWVuY2VTdGF0ZS5zZXRDdXJyZW50U2VxdWVuY2UodXBkYXRlZFNlcXVlbmNlKTtcbiAgICB9IGNhdGNoIChlcnJvcikge1xuICAgICAgY29uc29sZS5lcnJvcihcbiAgICAgICAgXCLinYwgU3RhcnRQb3NpdGlvblBpY2tlcjogRmFpbGVkIHRvIHNldCBzdGFydCBwb3NpdGlvblwiLFxuICAgICAgICBlcnJvclxuICAgICAgKTtcbiAgICB9XG4gIH1cblxuICAvLyBMaXN0ZW4gZm9yIHNlcXVlbmNlIHN0YXRlIGNoYW5nZXMgdG8gY2xlYXIgdHJhbnNpdGlvbiBzdGF0ZVxuICAkZWZmZWN0KCgpID0+IHtcbiAgICBjb25zdCBjdXJyZW50U2VxdWVuY2UgPSBzZXF1ZW5jZVN0YXRlLmN1cnJlbnRTZXF1ZW5jZTtcblxuICAgIC8vIElmIGEgc2VxdWVuY2Ugd2l0aCBzdGFydFBvc2l0aW9uIGV4aXN0cyBhbmQgd2UncmUgdHJhbnNpdGlvbmluZywgY2xlYXIgdGhlIHRyYW5zaXRpb25cbiAgICBpZiAoY3VycmVudFNlcXVlbmNlICYmIGN1cnJlbnRTZXF1ZW5jZS5zdGFydFBvc2l0aW9uICYmIGlzVHJhbnNpdGlvbmluZykge1xuICAgICAgaXNUcmFuc2l0aW9uaW5nID0gZmFsc2U7XG4gICAgfVxuICB9KTtcbjwvc2NyaXB0PlxuXG48ZGl2IGNsYXNzPVwic3RhcnQtcG9zLXBpY2tlclwiIGRhdGEtdGVzdGlkPVwic3RhcnQtcG9zaXRpb24tcGlja2VyXCI+XG4gIHsjaWYgaXNMb2FkaW5nfVxuICAgIDxMb2FkaW5nU3RhdGUgLz5cbiAgezplbHNlIGlmIGxvYWRpbmdFcnJvcn1cbiAgICA8RXJyb3JTdGF0ZSAvPlxuICB7OmVsc2UgaWYgc3RhcnRQb3NpdGlvbnMubGVuZ3RoID09PSAwfVxuICAgIDxFcnJvclN0YXRlXG4gICAgICBtZXNzYWdlPVwiTm8gdmFsaWQgc3RhcnQgcG9zaXRpb25zIGZvdW5kIGZvciB0aGUgY3VycmVudCBjb25maWd1cmF0aW9uLlwiXG4gICAgICBoYXNSZWZyZXNoQnV0dG9uPXtmYWxzZX1cbiAgICAvPlxuICB7OmVsc2V9XG4gICAgPFBpY3RvZ3JhcGhHcmlkXG4gICAgICBwaWN0b2dyYXBoRGF0YVNldD17c3RhcnRQb3NpdGlvbnN9XG4gICAgICBzZWxlY3RlZFBpY3RvZ3JhcGg9e3NlbGVjdGVkU3RhcnRQb3N9XG4gICAgICBvblBpY3RvZ3JhcGhTZWxlY3Q9e2hhbmRsZVNlbGVjdH1cbiAgICAvPlxuICB7L2lmfVxuXG4gIDwhLS0gRGVidWcgaW5mbyAtLT5cbiAgPGRpdlxuICAgIHN0eWxlPVwicG9zaXRpb246IGFic29sdXRlOyB0b3A6IDEwcHg7IHJpZ2h0OiAxMHB4OyBiYWNrZ3JvdW5kOiByZ2JhKDAsMCwwLDAuOCk7IGNvbG9yOiB3aGl0ZTsgcGFkZGluZzogNXB4OyBmb250LXNpemU6IDEwcHg7XCJcbiAgPlxuICAgIERlYnVnOiBpc0xvYWRpbmc9e2lzTG9hZGluZ30sIHBpY3RvZ3JhcGhzPXtzdGFydFBvc2l0aW9ucy5sZW5ndGh9LCBlcnJvcj17bG9hZGluZ0Vycm9yfVxuICA8L2Rpdj5cblxuICA8IS0tIExvYWRpbmcgb3ZlcmxheSBkdXJpbmcgdHJhbnNpdGlvbiAtLT5cbiAgeyNpZiBpc1RyYW5zaXRpb25pbmd9XG4gICAgPFRyYW5zaXRpb25PdmVybGF5IC8+XG4gIHsvaWZ9XG48L2Rpdj5cblxuPHN0eWxlPlxuICAuc3RhcnQtcG9zLXBpY2tlciB7XG4gICAgZGlzcGxheTogZmxleDtcbiAgICBmbGV4LWRpcmVjdGlvbjogY29sdW1uO1xuICAgIGp1c3RpZnktY29udGVudDogY2VudGVyO1xuICAgIGFsaWduLWl0ZW1zOiBjZW50ZXI7XG4gICAgaGVpZ2h0OiAxMDAlO1xuICAgIHdpZHRoOiAxMDAlO1xuICAgIHBhZGRpbmc6IHZhcigtLXNwYWNpbmctbGcpO1xuICAgIGJhY2tncm91bmQ6IHRyYW5zcGFyZW50O1xuICAgIHBvc2l0aW9uOiByZWxhdGl2ZTtcbiAgfVxuPC9zdHlsZT5cbiJdLCJmaWxlIjoiQzovVEtBL3dlYi9zcmMvbGliL2NvbXBvbmVudHMvY29uc3RydWN0L3N0YXJ0LXBvc2l0aW9uL1N0YXJ0UG9zaXRpb25QaWNrZXIuc3ZlbHRlIn0=

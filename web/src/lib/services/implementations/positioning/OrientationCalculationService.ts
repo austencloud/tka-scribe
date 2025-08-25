@@ -9,6 +9,7 @@
  */
 
 import type { BeatData } from "$lib/domain/BeatData";
+import { injectable } from "inversify";
 import type { MotionData } from "$lib/domain/MotionData";
 import { createMotionData } from "$lib/domain/MotionData";
 import {
@@ -27,6 +28,7 @@ export interface OrientationCalculationServiceInterface {
   updateEndOrientations(beat: BeatData): BeatData;
 }
 
+@injectable()
 export class OrientationCalculationService
   implements OrientationCalculationServiceInterface
 {

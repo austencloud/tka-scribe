@@ -10,11 +10,16 @@
     "strict": true,
     "target": "ES2022",
     "moduleResolution": "bundler",
+    "incremental": true,
+    "tsBuildInfoFile": ".tsbuildinfo",
     "allowSyntheticDefaultImports": true,
     "noEmit": true,
     "sourceMap": true,
     "inlineSourceMap": false,
-    "inlineSources": false
+    "inlineSources": false,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "types": ["reflect-metadata"]
   },
   "include": ["global.d.ts", "src/**/*.ts", "src/**/*.svelte"],
   "exclude": [

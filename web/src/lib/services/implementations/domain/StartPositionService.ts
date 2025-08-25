@@ -6,6 +6,7 @@
  */
 
 import { Letter } from "$lib/domain/Letter";
+import { injectable } from "inversify";
 import type { ValidationError } from "$lib/domain/SequenceCard";
 import type { BeatData, PictographData } from "../../../domain";
 import {
@@ -24,6 +25,7 @@ import type { IStartPositionService } from "../../interfaces/application-interfa
 import type { ValidationResult } from "../../interfaces/domain-types";
 import { PositionMapper } from "../movement/PositionMapper";
 
+@injectable()
 export class StartPositionService implements IStartPositionService {
   private readonly DEFAULT_START_POSITIONS: Record<string, string[]> = {
     [GridMode.DIAMOND]: ["alpha1_alpha1", "beta5_beta5", "gamma11_gamma11"],

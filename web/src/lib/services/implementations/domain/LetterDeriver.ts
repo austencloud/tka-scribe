@@ -6,6 +6,7 @@
  */
 
 import { GridMode, MotionType } from "$lib/domain/enums";
+import { injectable } from "inversify";
 import { Letter } from "$lib/domain/Letter";
 import type { MotionData } from "$lib/domain/MotionData";
 
@@ -23,6 +24,7 @@ export interface ILetterDeriver {
   ): LetterDerivationResult;
 }
 
+@injectable()
 export class LetterDeriver implements ILetterDeriver {
   private readonly letterPatterns: Map<string, Letter> = new Map();
 

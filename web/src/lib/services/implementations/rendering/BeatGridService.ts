@@ -4,6 +4,7 @@
  */
 
 import { GridMode } from "$lib/domain/enums";
+import { injectable } from "inversify";
 import type {
   CombinedGridOptions,
   GridDrawOptions,
@@ -11,6 +12,7 @@ import type {
   IBeatGridService,
 } from "../../interfaces/beat-grid-interfaces";
 
+@injectable()
 export class BeatGridService implements IBeatGridService {
   private gridImageCache = new Map<GridMode, HTMLImageElement>();
 

@@ -5,6 +5,8 @@
  * Extracted from PictographRenderingService.
  */
 
+import { inject, injectable } from "inversify";
+import { TYPES } from "../../inversify/types";
 import type { ISvgConfiguration } from "./SvgConfiguration";
 
 export interface ISvgUtilityService {
@@ -12,8 +14,11 @@ export interface ISvgUtilityService {
   createErrorSVG(errorMessage?: string): SVGElement;
 }
 
+@injectable()
 export class SvgUtilityService implements ISvgUtilityService {
-  constructor(private config: ISvgConfiguration) {}
+  constructor(
+    @inject(TYPES.ISvgConfiguration) private config: ISvgConfiguration
+  ) {}
 
   /**
    * Create base SVG element

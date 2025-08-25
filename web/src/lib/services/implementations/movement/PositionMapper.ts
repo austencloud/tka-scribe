@@ -6,7 +6,9 @@
  */
 
 import { GridPosition, Location } from "$lib/domain/enums";
+import { injectable } from "inversify";
 
+@injectable()
 export class PositionMapper {
   // Position mapping from (blue_location, red_location) to grid position
   // Using actual Location enums as keys for type safety

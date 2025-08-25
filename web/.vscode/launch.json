@@ -2,7 +2,7 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "🚀 Launch TKA",
+      "name": "🚀 Launch TKA Server",
       "type": "node",
       "request": "launch",
       "cwd": "${workspaceFolder}",
@@ -11,9 +11,46 @@
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen",
       "serverReadyAction": {
-        "pattern": "Local:.*http://localhost:([0-9]+)",
+        "pattern": "Local.*http://localhost:([0-9]+)",
         "uriFormat": "http://localhost:%s",
-        "action": "debugWithChrome"
+        "action": "openExternally"
+      }
+    },
+    {
+      "name": "🌐 Debug TKA in Chrome",
+      "type": "chrome",
+      "request": "launch",
+      "url": "http://localhost:5173",
+      "webRoot": "${workspaceFolder}",
+      "userDataDir": "${workspaceFolder}/.vscode/chrome-debug-fresh",
+      "timeout": 5000,
+      "disableNetworkCache": true,
+      "showAsyncStacks": false,
+      "runtimeArgs": [
+        "--disable-web-security",
+        "--disable-features=VizDisplayCompositor",
+        "--disable-background-timer-throttling",
+        "--disable-backgrounding-occluded-windows",
+        "--disable-renderer-backgrounding",
+        "--no-first-run",
+        "--no-default-browser-check"
+      ]
+    },
+    {
+      "name": "🚀 Launch & Debug TKA",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev"],
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "serverReadyAction": {
+        "pattern": "Local.*http://localhost:([0-9]+)",
+        "uriFormat": "http://localhost:%s",
+        "action": "startDebugging",
+        "name": "🌐 Debug TKA in Chrome",
+        "timeout": 3000
       }
     }
   ]

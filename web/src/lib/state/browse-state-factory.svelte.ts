@@ -5,13 +5,9 @@
  * Replaces the 738-line monolith with focused, testable services.
  */
 
+import { NavigationMode } from "$lib/domain/browse";
 import type {
-  SequenceData,
-  FilterType,
-  FilterValue,
-  BrowseLoadingState,
-} from "$lib/services/interfaces/domain-types";
-import type {
+  DeleteConfirmationData,
   IBrowseService,
   IDeleteService,
   IFavoritesService,
@@ -21,15 +17,19 @@ import type {
   ISequenceIndexService,
   IThumbnailService,
   NavigationSection,
-  DeleteConfirmationData,
 } from "$lib/services/interfaces/browse-interfaces";
-import { NavigationMode } from "$lib/domain/browse";
+import type {
+  BrowseLoadingState,
+  FilterType,
+  FilterValue,
+  SequenceData,
+} from "$lib/services/interfaces/domain-types";
 
+import { BrowseDisplayStateService } from "./services/BrowseDisplayStateService.svelte";
 import { BrowseFilterStateService } from "./services/BrowseFilterStateService.svelte";
 import { BrowseNavigationStateService } from "./services/BrowseNavigationStateService.svelte";
-import { BrowseSelectionStateService } from "./services/BrowseSelectionStateService.svelte";
-import { BrowseDisplayStateService } from "./services/BrowseDisplayStateService.svelte";
 import { BrowseSearchStateService } from "./services/BrowseSearchStateService.svelte";
+import { BrowseSelectionStateService } from "./services/BrowseSelectionStateService.svelte";
 import { BrowseStateCoordinator } from "./services/BrowseStateCoordinator.svelte";
 
 export interface BrowseState {
@@ -237,9 +237,46 @@ export function createBrowseState(
     },
 
     async filterSequencesByNavigation(item: unknown, sectionType: string) {
-      // TODO: Implement navigation filtering
-      console.log("Filter by navigation:", item, sectionType);
-      return [];
+      console.log("🔍 Filter by navigation:", item, sectionType);
+
+      // Cast item to NavigationItem type
+      const navigationItem =
+        item as import("../services/implementations/navigation/NavigationService").NavigationItem;
+
+      if (!navigationItem) {
+        console.warn("No navigation item provided");
+        return [];
+      }
+
+      // Use NavigationService to get sequences for this item
+      const filteredSequences = navigationService.getSequencesForNavigationItem(
+        navigationItem,
+        sectionType as
+          | "date"
+          | "length"
+          | "letter"
+          | "level"
+          | "author"
+          | "favorites",
+        coordinator.allSequences
+      );
+
+      console.log(
+        `✅ Navigation filter applied: ${filteredSequences.length} sequences found`
+      );
+
+      // Update the filter state
+      const filterType =
+        sectionType === "letter" ? "starting_letter" : sectionType;
+      filterState.setFilter(filterType as FilterType, navigationItem.value);
+
+      // Update the coordinator's displayed sequences
+      await coordinator.applyFilter(
+        filterType as FilterType,
+        navigationItem.value
+      );
+
+      return filteredSequences;
     },
   };
 }

@@ -5,6 +5,7 @@
  * Extracted from the monolithic TKAImageExportService to focus solely on validation concerns.
  */
 
+import { inject, injectable } from "inversify";
 import type { SequenceData } from "../../interfaces/domain-types";
 import type {
   ExportValidationResult,
@@ -12,9 +13,14 @@ import type {
   IExportOptionsValidator,
   TKAImageExportOptions,
 } from "../../interfaces/image-export-interfaces";
+import { TYPES } from "../../inversify/types";
 
+@injectable()
 export class ExportOptionsValidator implements IExportOptionsValidator {
-  constructor(private memoryCalculator: IExportMemoryCalculator) {}
+  constructor(
+    @inject(TYPES.IExportMemoryCalculator)
+    private memoryCalculator: IExportMemoryCalculator
+  ) {}
 
   /**
    * Validate export parameters

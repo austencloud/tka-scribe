@@ -15,6 +15,7 @@ import type {
   FilterState as BrowseFilterState,
 } from "../../interfaces/browse-interfaces";
 import { SortMethod as SortMethodEnum } from "../../../domain/browse/SortMethod";
+import { injectable } from "inversify";
 import {
   safeSessionStorageGet,
   safeSessionStorageSet,
@@ -59,6 +60,7 @@ export interface IFilterPersistenceService {
   clearAllState(): Promise<void>;
 }
 
+@injectable()
 export class FilterPersistenceService implements IFilterPersistenceService {
   private readonly CACHE_VERSION = "v2.1"; // ✅ ROBUST: Cache versioning
   private readonly BROWSE_STATE_KEY = `tka-${this.CACHE_VERSION}-browse-state`;

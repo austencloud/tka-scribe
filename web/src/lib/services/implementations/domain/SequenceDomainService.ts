@@ -6,6 +6,7 @@
  */
 
 import type { BeatData, SequenceData } from "$lib/domain";
+import { injectable } from "inversify";
 import { GridMode } from "$lib/domain";
 import type { ValidationError } from "$lib/domain/SequenceCard";
 import type { ValidationResult } from "../../interfaces/domain-types";
@@ -14,6 +15,7 @@ import type {
   SequenceCreateRequest,
 } from "../../interfaces/sequence-interfaces";
 
+@injectable()
 export class SequenceDomainService implements ISequenceDomainService {
   /**
    * Validate sequence creation request - REAL validation from desktop

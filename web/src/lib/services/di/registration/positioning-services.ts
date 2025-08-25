@@ -5,18 +5,19 @@
 
 import type { ServiceContainer } from "../ServiceContainer";
 import {
-  IArrowAdjustmentCalculatorInterface,
+  // TODO: Temporarily disabled due to circular dependency
+  // IArrowAdjustmentCalculatorInterface,
   IArrowCoordinateSystemServiceInterface,
-  IArrowLocationCalculatorInterface,
-  IArrowPlacementServiceInterface,
-  IArrowPlacementKeyServiceInterface,
-  IArrowPositioningOrchestratorInterface,
-  IArrowPositioningServiceInterface,
   IArrowLocationServiceInterface,
+  IArrowPlacementKeyServiceInterface,
+  IArrowPlacementServiceInterface,
+  // TODO: Temporarily disabled due to circular dependency
+  // IArrowPositioningServiceInterface,
+  // TODO: Temporarily disabled due to circular dependency
+  // IArrowPositioningOrchestratorInterface,
   IArrowRotationCalculatorInterface,
   IDashLocationCalculatorInterface,
   IDirectionalTupleProcessorInterface,
-  IPositioningServiceFactoryInterface,
 } from "../interfaces/positioning-interfaces";
 
 /**
@@ -33,34 +34,36 @@ export async function registerPositioningServices(
   container.registerSingletonClass(IArrowCoordinateSystemServiceInterface);
   container.registerSingletonClass(IDashLocationCalculatorInterface);
   container.registerSingletonClass(IArrowRotationCalculatorInterface);
-  container.registerSingletonClass(IPositioningServiceFactoryInterface);
+  // TODO: Temporarily disabled due to circular dependency
+  // container.registerSingletonClass(IPositioningServiceFactoryInterface);
 
-  // Register directional tuple processor with dependencies
-  container.registerFactory(IDirectionalTupleProcessorInterface, () => {
-    const factory = container.resolve(IPositioningServiceFactoryInterface);
-    return factory.createDirectionalTupleProcessor();
-  });
+  // Register directional tuple processor directly (no factory needed)
+  container.registerSingletonClass(IDirectionalTupleProcessorInterface);
 
+  // TODO: Temporarily disabled due to circular dependency
   // Register arrow location calculator with dependencies
-  container.registerFactory(IArrowLocationCalculatorInterface, () => {
-    const factory = container.resolve(IPositioningServiceFactoryInterface);
-    return factory.createLocationCalculator();
-  });
+  // container.registerFactory(IArrowLocationCalculatorInterface, () => {
+  //   const factory = container.resolve(IPositioningServiceFactoryInterface);
+  //   return factory.createLocationCalculator();
+  // });
 
+  // TODO: Temporarily disabled due to circular dependency
   // Register arrow adjustment calculator with dependencies
-  container.registerFactory(IArrowAdjustmentCalculatorInterface, () => {
-    const factory = container.resolve(IPositioningServiceFactoryInterface);
-    return factory.createAdjustmentCalculator();
-  });
+  // container.registerFactory(IArrowAdjustmentCalculatorInterface, () => {
+  //   const factory = container.resolve(IPositioningServiceFactoryInterface);
+  //   return factory.createAdjustmentCalculator();
+  // });
 
+  // TODO: Temporarily disabled due to circular dependency
   // Register enhanced arrow positioning orchestrator
-  container.registerFactory(IArrowPositioningOrchestratorInterface, () => {
-    const factory = container.resolve(IPositioningServiceFactoryInterface);
-    return factory.createPositioningOrchestrator();
-  });
+  // container.registerFactory(IArrowPositioningOrchestratorInterface, () => {
+  //   const factory = container.resolve(IPositioningServiceFactoryInterface);
+  //   return factory.createPositioningOrchestrator();
+  // });
 
+  // TODO: Temporarily disabled due to circular dependency
   // Register ArrowPositioningService as a thin wrapper around orchestrator
-  container.registerSingletonClass(IArrowPositioningServiceInterface);
+  // container.registerSingletonClass(IArrowPositioningServiceInterface);
 
   // Register ArrowLocationService
   container.registerSingletonClass(IArrowLocationServiceInterface);

@@ -6,6 +6,7 @@
  */
 
 import type { Direction } from "./BetaPropDirectionCalculator";
+import { injectable } from "inversify";
 import {
   UP,
   DOWN,
@@ -22,6 +23,7 @@ export interface Position {
   y: number;
 }
 
+@injectable()
 export class BetaOffsetCalculator {
   // Standard offset distance (matches legacy 25 pixel separation)
   private readonly OFFSET_DISTANCE = 25;

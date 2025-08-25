@@ -8,6 +8,8 @@
 import type { Letter, PictographData } from "$lib/domain";
 import type { ArrowPosition } from "$lib/services/positioning/types";
 import { getLetterImagePath } from "$lib/utils/letter-image-getter";
+import { inject, injectable } from "inversify";
+import { TYPES } from "../../inversify/types";
 import type { ISvgConfiguration } from "./SvgConfiguration";
 
 export interface IOverlayRenderingService {
@@ -20,8 +22,11 @@ export interface IOverlayRenderingService {
   ): void;
 }
 
+@injectable()
 export class OverlayRenderingService implements IOverlayRenderingService {
-  constructor(private config: ISvgConfiguration) {}
+  constructor(
+    @inject(TYPES.ISvgConfiguration) private config: ISvgConfiguration
+  ) {}
 
   /**
    * Render glyph overlays (letters now; VTG/elemental when data is available)

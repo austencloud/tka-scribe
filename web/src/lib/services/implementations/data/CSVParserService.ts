@@ -5,6 +5,8 @@
  * Handles line splitting, header extraction, and row parsing with error handling.
  */
 
+import { injectable } from "inversify";
+
 export interface ParsedCsvRow {
   letter: string;
   startPosition: string;
@@ -38,6 +40,7 @@ export interface ICSVParserService {
   createRowFromValues(headers: string[], values: string[]): ParsedCsvRow;
 }
 
+@injectable()
 export class CSVParserService implements ICSVParserService {
   /**
    * Parse CSV text into structured result with detailed error reporting

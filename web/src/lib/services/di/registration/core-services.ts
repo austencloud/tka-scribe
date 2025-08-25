@@ -23,7 +23,6 @@ import {
   IPageImageExportServiceInterface,
   IPanelManagementServiceInterface,
   IPersistenceServiceInterface,
-  IPictographRenderingServiceInterface,
   IPictographServiceInterface,
   IPrintablePageLayoutServiceInterface,
   // ✅ REMOVED: PropRenderingService is deprecated
@@ -52,14 +51,13 @@ import {
 import { ApplicationInitializationService } from "../../implementations/application/ApplicationInitializationService";
 import { ConstructTabCoordinationService } from "../../implementations/construct/ConstructTabCoordinationService";
 import { SequenceGenerationService } from "../../implementations/generation/SequenceGenerationService";
-import { PictographRenderingService } from "../../implementations/rendering/PictographRenderingService";
 import { SequenceDeletionService } from "../../implementations/sequence/SequenceDeletionService";
 import { SequenceImportService } from "../../implementations/sequence/SequenceImportService";
 import { SequenceService } from "../../implementations/sequence/SequenceService";
 import { WorkbenchBeatOperationsService } from "../../implementations/sequence/WorkbenchBeatOperationsService";
 
-import type { IArrowPositioningOrchestrator } from "../../positioning/core-services";
-import { IArrowPositioningOrchestratorInterface } from "../interfaces/positioning-interfaces";
+// TODO: Temporarily disabled due to circular dependency
+// import { IArrowPositioningOrchestratorInterface } from "../interfaces/positioning-interfaces";
 
 /**
  * Register all core services with their dependencies
@@ -152,31 +150,32 @@ export async function registerCoreServices(
     );
   });
 
+  // TODO: Temporarily disabled due to circular dependency
   // Register pictograph rendering service (depends on positioning and microservices)
-  container.registerFactory(IPictographRenderingServiceInterface, () => {
-    const arrowPositioning = container.resolve(
-      IArrowPositioningOrchestratorInterface
-    ) as IArrowPositioningOrchestrator;
-    // ✅ REMOVED: PropRenderingService is deprecated
-    const svgUtility = container.resolve(ISvgUtilityServiceInterface);
-    const gridRendering = container.resolve(IGridRenderingServiceInterface);
-    const arrowRendering = container.resolve(IArrowRenderingServiceInterface);
-    const overlayRendering = container.resolve(
-      IOverlayRenderingServiceInterface
-    );
-    const dataTransformation = container.resolve(
-      IDataTransformationServiceInterface
-    );
-    return new PictographRenderingService(
-      arrowPositioning,
-      null, // ✅ FIXED: PropRenderingService is deprecated, pass null
-      svgUtility,
-      gridRendering,
-      arrowRendering,
-      overlayRendering,
-      dataTransformation
-    );
-  });
+  // container.registerFactory(IPictographRenderingServiceInterface, () => {
+  //   const arrowPositioning = container.resolve(
+  //     IArrowPositioningOrchestratorInterface
+  //   ) as IArrowPositioningOrchestrator;
+  //   // ✅ REMOVED: PropRenderingService is deprecated
+  //   const svgUtility = container.resolve(ISvgUtilityServiceInterface);
+  //   const gridRendering = container.resolve(IGridRenderingServiceInterface);
+  //   const arrowRendering = container.resolve(IArrowRenderingServiceInterface);
+  //   const overlayRendering = container.resolve(
+  //     IOverlayRenderingServiceInterface
+  //   );
+  //   const dataTransformation = container.resolve(
+  //     IDataTransformationServiceInterface
+  //   );
+  //   return new PictographRenderingService(
+  //     arrowPositioning,
+  //     null, // ✅ FIXED: PropRenderingService is deprecated, pass null
+  //     svgUtility,
+  //     gridRendering,
+  //     arrowRendering,
+  //     overlayRendering,
+  //     dataTransformation
+  //   );
+  // });
 
   // Register pictograph service (no dependencies after rendering is registered)
   container.registerSingletonClass(IPictographServiceInterface);

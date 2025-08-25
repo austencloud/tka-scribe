@@ -8,11 +8,13 @@
  * Critical: All calculations match desktop determine_additional_heights() exactly.
  */
 
+import { injectable } from "inversify";
 import type {
   IDimensionCalculationService,
   TKAImageExportOptions,
 } from "../../interfaces/image-export-interfaces";
 
+@injectable()
 export class DimensionCalculationService
   implements IDimensionCalculationService
 {

@@ -6,12 +6,13 @@
  */
 
 import {
-  MotionType,
+  GridPosition,
   Location,
+  MotionType,
   Orientation,
   RotationDirection,
-  GridPosition,
 } from "$lib/domain/enums";
+import { injectable } from "inversify";
 
 export interface IEnumMappingService {
   mapMotionType(motionType: string): MotionType;
@@ -23,6 +24,7 @@ export interface IEnumMappingService {
   ): GridPosition | null;
 }
 
+@injectable()
 export class EnumMappingService implements IEnumMappingService {
   /**
    * Map string motion type to MotionType enum
