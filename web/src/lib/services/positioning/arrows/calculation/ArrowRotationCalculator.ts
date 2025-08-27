@@ -1,5 +1,6 @@
 import type { MotionData } from "$lib/domain";
 import { Location, MotionType } from "$lib/domain";
+import { injectable } from "inversify";
 
 export interface IArrowRotationCalculator {
   calculateRotation(motion: MotionData, location: Location): number;
@@ -7,6 +8,7 @@ export interface IArrowRotationCalculator {
   validateMotionData(motion: MotionData): boolean;
 }
 
+@injectable()
 export class ArrowRotationCalculator implements IArrowRotationCalculator {
   /**
    * Pure algorithmic service for calculating arrow rotation angles.

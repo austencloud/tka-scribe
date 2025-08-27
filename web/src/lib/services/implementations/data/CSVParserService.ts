@@ -1,44 +1,16 @@
 /**
- * CSVParserService - Centralized CSV parsing utilities
+ * CSV Parser Service Implementation
  *
  * Provides consistent CSV parsing functionality used across all data services.
  * Handles line splitting, header extraction, and row parsing with error handling.
  */
 
 import { injectable } from "inversify";
-
-export interface ParsedCsvRow {
-  letter: string;
-  startPosition: string;
-  endPosition: string;
-  timing: string;
-  direction: string;
-  blueMotionType: string;
-  blueRotationDirection: string;
-  blueStartLocation: string;
-  blueEndLocation: string;
-  redMotionType: string;
-  redRotationDirection: string;
-  redStartLocation: string;
-  redEndLocation: string;
-  // Add index signature to make it compatible with Record<string, string>
-  [key: string]: string;
-}
-
-export interface CSVParseResult {
-  headers: string[];
-  rows: ParsedCsvRow[];
-  totalRows: number;
-  successfulRows: number;
-  errors: Array<{ rowIndex: number; error: string; rawRow: string }>;
-}
-
-export interface ICSVParserService {
-  parseCSV(csvText: string): CSVParseResult;
-  parseCSVToRows(csvText: string): ParsedCsvRow[];
-  validateCSVStructure(csvText: string): { isValid: boolean; errors: string[] };
-  createRowFromValues(headers: string[], values: string[]): ParsedCsvRow;
-}
+import type {
+  ParsedCsvRow,
+  CSVParseResult,
+  ICSVParserService
+} from "../../interfaces/data-interfaces";
 
 @injectable()
 export class CSVParserService implements ICSVParserService {
@@ -73,7 +45,20 @@ export class CSVParserService implements ICSVParserService {
       // Parse data rows
       for (let i = 1; i < lines.length; i++) {
         try {
-          const values = lines[i].split(",").map((v) => v.trim());
+          const line = lines[i].trim();
+
+          // Skip completely empty lines
+          if (!line || line === "") {
+            continue;
+          }
+
+          const values = line.split(",").map((v) => v.trim());
+
+          // Skip rows that are just commas (empty CSV cells)
+          if (values.every((v) => v === "")) {
+            continue;
+          }
+
           const row = this.createRowFromValues(result.headers, values);
 
           if (this.isValidRow(row)) {
@@ -204,7 +189,14 @@ export class CSVParserService implements ICSVParserService {
    * Validate that a row has required fields
    */
   private isValidRow(row: ParsedCsvRow): boolean {
-    return !!(row.letter && row.startPosition && row.endPosition);
+    // Check that required fields exist and are not empty strings
+    const hasLetter = !!(row.letter && row.letter.trim() !== "");
+    const hasStartPosition = !!(
+      row.startPosition && row.startPosition.trim() !== ""
+    );
+    const hasEndPosition = !!(row.endPosition && row.endPosition.trim() !== "");
+
+    return hasLetter && hasStartPosition && hasEndPosition;
   }
 
   /**

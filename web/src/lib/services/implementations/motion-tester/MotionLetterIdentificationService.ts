@@ -8,6 +8,7 @@
 import type { LetterMapping } from "$lib/domain/codex/types";
 import { GridMode } from "$lib/domain/enums";
 import type { MotionTestParams } from "./MotionParameterService";
+import { injectable } from "inversify";
 
 export interface LetterIdentificationResult {
   letter: string | null;
@@ -25,6 +26,7 @@ export interface IMotionLetterIdentificationService {
   getAvailableLetters(): string[];
 }
 
+@injectable()
 export class MotionLetterIdentificationService
   implements IMotionLetterIdentificationService
 {

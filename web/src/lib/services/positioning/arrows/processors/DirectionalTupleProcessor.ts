@@ -15,6 +15,8 @@ import type { MotionData } from "$lib/domain";
 import { Location } from "$lib/domain";
 import type { Point } from "../../types";
 import { ArrowQuadrantCalculator } from "../orchestration/ArrowQuadrantCalculator";
+import { injectable, inject } from "inversify";
+import { TYPES } from "$lib/services/inversify/types";
 
 export interface IDirectionalTupleCalculator {
   calculateDirectionalTuple(
@@ -38,6 +40,7 @@ export interface IDirectionalTupleProcessor {
   ): Point;
 }
 
+@injectable()
 export class DirectionalTupleCalculator implements IDirectionalTupleCalculator {
   /**
    * Calculator for directional tuples used in arrow positioning.
@@ -327,6 +330,7 @@ export class DirectionalTupleCalculator implements IDirectionalTupleCalculator {
   }
 }
 
+@injectable()
 export class QuadrantIndexCalculator {
   /**
    * Wrapper around ArrowQuadrantCalculator to maintain interface compatibility.
@@ -343,13 +347,16 @@ export class QuadrantIndexCalculator {
   }
 }
 
+@injectable()
 export class DirectionalTupleProcessor implements IDirectionalTupleProcessor {
   /**
    * Processor for applying directional tuple adjustments to arrow positioning.
    */
 
   constructor(
+    @inject(TYPES.IDirectionalTupleCalculator)
     private directionalTupleService: IDirectionalTupleCalculator,
+    @inject(TYPES.IQuadrantIndexCalculator)
     private quadrantIndexService: QuadrantIndexCalculator
   ) {}
 

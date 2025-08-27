@@ -13,26 +13,13 @@ import type { CSVRow } from "../movement/CSVPictographParserService";
 
 import type { LetterMapping } from "$lib/domain/codex/types";
 import type { ILetterMappingRepository } from "$lib/repositories/LetterMappingRepository";
-import type { ICsvLoaderService } from "./CsvLoaderService";
-import type { ICSVParserService, ParsedCsvRow } from "./CSVParserService";
-import { CSVPictographParserService } from "../movement/CSVPictographParserService";
-
-export interface ILetterQueryService {
-  getPictographByLetter(
-    letter: Letter,
-    gridMode: GridMode
-  ): Promise<PictographData | null>;
-  getAllCodexPictographs(gridMode: GridMode): Promise<PictographData[]>;
-  getAllPictographVariations(gridMode: GridMode): Promise<PictographData[]>;
-  searchPictographs(
-    searchTerm: string,
-    gridMode: GridMode
-  ): Promise<PictographData[]>;
-  getPictographsByLetters(
-    letters: Letter[],
-    gridMode: GridMode
-  ): Promise<PictographData[]>;
-}
+import type { 
+  ICsvLoaderService,
+  ICSVParserService,
+  ILetterQueryService,
+  ParsedCsvRow 
+} from "../../interfaces/data-interfaces";
+import type { ICSVPictographParserService } from "../movement/CSVPictographParserService";
 
 @injectable()
 export class LetterQueryService implements ILetterQueryService {
@@ -49,7 +36,8 @@ export class LetterQueryService implements ILetterQueryService {
     private csvLoaderService: ICsvLoaderService,
     @inject(TYPES.ICSVParsingService)
     private csvParserService: ICSVParserService,
-    private csvPictographParser: CSVPictographParserService = new CSVPictographParserService()
+    @inject(TYPES.ICSVPictographParserService)
+    private csvPictographParser: ICSVPictographParserService
   ) {}
 
   /**
@@ -88,18 +76,38 @@ export class LetterQueryService implements ILetterQueryService {
         `📊 Box CSV parsing result: ${boxParseResult.successfulRows} successful rows out of ${boxParseResult.totalRows} total`
       );
 
-      if (diamondParseResult.errors.length > 0) {
-        console.warn(`⚠️ Diamond CSV parsing errors (first 3):`);
-        diamondParseResult.errors.slice(0, 3).forEach((error, index) => {
+      // Only log significant parsing errors (not empty row issues)
+      const significantDiamondErrors = diamondParseResult.errors.filter(
+        (error) =>
+          !error.error.includes("missing required fields") ||
+          (error.rawRow &&
+            error.rawRow.trim() !== "" &&
+            !error.rawRow.split(",").every((v) => v.trim() === ""))
+      );
+      const significantBoxErrors = boxParseResult.errors.filter(
+        (error) =>
+          !error.error.includes("missing required fields") ||
+          (error.rawRow &&
+            error.rawRow.trim() !== "" &&
+            !error.rawRow.split(",").every((v) => v.trim() === ""))
+      );
+
+      if (significantDiamondErrors.length > 0) {
+        console.warn(
+          `⚠️ Diamond CSV parsing errors (${significantDiamondErrors.length} significant):`
+        );
+        significantDiamondErrors.slice(0, 3).forEach((error, index) => {
           console.warn(
             `  Error ${index + 1}: Row ${error.rowIndex} - ${error.error}`
           );
           console.warn(`  Raw row: ${error.rawRow.substring(0, 100)}...`);
         });
       }
-      if (boxParseResult.errors.length > 0) {
-        console.warn(`⚠️ Box CSV parsing errors (first 3):`);
-        boxParseResult.errors.slice(0, 3).forEach((error, index) => {
+      if (significantBoxErrors.length > 0) {
+        console.warn(
+          `⚠️ Box CSV parsing errors (${significantBoxErrors.length} significant):`
+        );
+        significantBoxErrors.slice(0, 3).forEach((error, index) => {
           console.warn(
             `  Error ${index + 1}: Row ${error.rowIndex} - ${error.error}`
           );

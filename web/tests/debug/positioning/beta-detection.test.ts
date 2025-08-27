@@ -1,56 +1,63 @@
 /**
  * Test Beta Detection System
  *
- * This script tests the new beta detection approach to verify it works correctly.
+ * This test suite verifies the beta detection approach works correctly.
  */
 
+import { describe, it, expect } from "vitest";
 import { GridPosition } from "$lib/domain/enums";
 import { Letter } from "$lib/domain/Letter";
 import type { PictographData } from "$lib/domain/PictographData";
 import { endsWithBeta, isBetaPosition } from "$lib/utils/betaDetection";
 
-// Test the beta detection utilities
-console.log("🧪 Testing Beta Detection System");
-console.log("================================");
+describe("Beta Detection System", () => {
+  describe("isBetaPosition", () => {
+    it("should correctly identify beta positions", () => {
+      expect(isBetaPosition(GridPosition.BETA1)).toBe(true);
+      expect(isBetaPosition(GridPosition.ALPHA1)).toBe(false);
+      expect(isBetaPosition(GridPosition.GAMMA1)).toBe(false);
+      expect(isBetaPosition("beta3")).toBe(true);
+      expect(isBetaPosition("alpha5")).toBe(false);
+    });
+  });
 
-// Test isBetaPosition function
-console.log("\n📍 Testing isBetaPosition:");
-console.log("BETA1 is beta:", isBetaPosition(GridPosition.BETA1)); // Should be true
-console.log("ALPHA1 is beta:", isBetaPosition(GridPosition.ALPHA1)); // Should be false
-console.log("GAMMA1 is beta:", isBetaPosition(GridPosition.GAMMA1)); // Should be false
-console.log("'beta3' string is beta:", isBetaPosition("beta3")); // Should be true
-console.log("'alpha5' string is beta:", isBetaPosition("alpha5")); // Should be false
+  describe("endsWithBeta", () => {
+    it("should handle pictographs with missing motion data gracefully", () => {
+      // Test pictograph with no motion data
+      const pictographWithoutMotions: Partial<PictographData> = {
+        letter: Letter.A,
+        startPosition: GridPosition.ALPHA1,
+        endPosition: GridPosition.BETA3,
+        // No motions property
+      };
 
-// Test endsWithBeta function
-console.log("\n🎯 Testing endsWithBeta:");
+      // Should return false when motion data is missing
+      expect(endsWithBeta(pictographWithoutMotions as PictographData)).toBe(
+        false
+      );
+    });
 
-// Mock pictograph data that ends with beta
-const betaPictograph: Partial<PictographData> = {
-  letter: Letter.A, // Use Letter enum
-  startPosition: GridPosition.ALPHA1,
-  endPosition: GridPosition.BETA3, // This is a beta position
-};
+    it("should handle pictographs with incomplete motion data", () => {
+      // Test pictograph with incomplete motion data
+      const pictographWithIncompleteMotions: Partial<PictographData> = {
+        letter: Letter.A,
+        startPosition: GridPosition.ALPHA1,
+        endPosition: GridPosition.BETA3,
+        motions: {
+          blue: {
+            motionType: "pro" as any,
+            startLocation: "n" as any,
+            endLocation: "e" as any,
+            turns: 0,
+          },
+          // Missing red motion
+        },
+      };
 
-// Mock pictograph data that doesn't end with beta
-const nonBetaPictograph: Partial<PictographData> = {
-  letter: Letter.B, // Use Letter enum
-  startPosition: GridPosition.ALPHA1,
-  endPosition: GridPosition.GAMMA5, // This is NOT a beta position
-};
-
-console.log(
-  "Beta pictograph ends with beta:",
-  endsWithBeta(betaPictograph as PictographData)
-); // Should be true
-console.log(
-  "Non-beta pictograph ends with beta:",
-  endsWithBeta(nonBetaPictograph as PictographData)
-); // Should be false
-
-console.log("\n✅ Beta detection tests completed!");
-console.log(
-  "\n💡 Key insight: Beta detection now works by checking if endPosition starts with 'beta'"
-);
-console.log(
-  "   This is much more reliable than checking metadata or motion patterns!"
-);
+      // Should return false when motion data is incomplete
+      expect(
+        endsWithBeta(pictographWithIncompleteMotions as PictographData)
+      ).toBe(false);
+    });
+  });
+});

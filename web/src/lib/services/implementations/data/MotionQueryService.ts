@@ -10,9 +10,9 @@ import { injectable, inject } from "inversify";
 import { GridMode } from "$lib/domain";
 import type { ICsvLoaderService } from "./CsvLoaderService";
 import type { ICSVParserService, ParsedCsvRow } from "./CSVParserService";
-import {
-  CSVPictographParserService,
-  type CSVRow,
+import type {
+  ICSVPictographParserService,
+  CSVRow,
 } from "../movement/CSVPictographParserService";
 import { TYPES } from "../../inversify/types";
 
@@ -43,7 +43,8 @@ export class MotionQueryService implements IMotionQueryService {
     private csvLoaderService: ICsvLoaderService,
     @inject(TYPES.ICSVParserService)
     private csvParserService: ICSVParserService,
-    private csvPictographParser: CSVPictographParserService = new CSVPictographParserService()
+    @inject(TYPES.ICSVPictographParserService)
+    private csvPictographParser: ICSVPictographParserService
   ) {}
 
   /**

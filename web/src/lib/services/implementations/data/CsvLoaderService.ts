@@ -1,22 +1,15 @@
 /**
- * CSV Loader Service
+ * CSV Loader Service Implementation
  *
  * Handles loading and caching of CSV data from static files or preloaded window data.
  * Provides a single source of truth for raw CSV content without parsing logic.
  */
 
 import { injectable } from "inversify";
-
-export interface CsvDataSet {
-  diamondData: string;
-  boxData: string;
-}
-
-export interface ICsvLoaderService {
-  loadCsvData(): Promise<CsvDataSet>;
-  getCsvData(): CsvDataSet | null;
-  clearCache(): void;
-}
+import type { 
+  CsvDataSet,
+  ICsvLoaderService 
+} from "../../interfaces/data-interfaces";
 
 @injectable()
 export class CsvLoaderService implements ICsvLoaderService {

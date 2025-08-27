@@ -16,6 +16,7 @@
 import type { MotionData } from "$lib/domain";
 import { Location } from "$lib/domain";
 import type { Point } from "../../types";
+import { injectable } from "inversify";
 
 export interface IArrowCoordinateSystemService {
   getInitialPosition(motion: MotionData, location: Location): Point;
@@ -28,6 +29,7 @@ export interface IArrowCoordinateSystemService {
   getSupportedLocations(): Location[];
 }
 
+@injectable()
 export class ArrowCoordinateSystemService
   implements IArrowCoordinateSystemService
 {

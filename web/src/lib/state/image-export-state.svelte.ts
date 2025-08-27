@@ -78,7 +78,7 @@ export function createImageExportState(
 
     const validation = exportService.validateExport(
       currentSequence,
-      exportOptions
+      exportOptions // This is properly reactive now
     );
     return validation.errors;
   });
@@ -95,6 +95,9 @@ export function createImageExportState(
 
   // Auto-regenerate preview when options change
   $effect(() => {
+    // Track exportOptions to ensure reactivity
+    const currentOptions = exportOptions;
+
     if (currentSequence && previewImageUrl) {
       // Debounce preview generation to avoid excessive updates
       const timeoutId = setTimeout(() => {
@@ -144,9 +147,11 @@ export function createImageExportState(
     previewError = null;
 
     try {
+      // Capture current options to avoid reactivity warning
+      const currentOptions = exportOptions;
       const dataUrl = await exportService.generatePreview(
         sequence,
-        exportOptions
+        currentOptions
       );
       previewImageUrl = dataUrl;
     } catch (error) {
@@ -179,13 +184,16 @@ export function createImageExportState(
       // Update current sequence
       currentSequence = sequence;
 
+      // Capture current options to avoid reactivity warning
+      const currentOptions = exportOptions;
+
       // Perform export and download
-      await exportService.exportAndDownload(sequence, filename, exportOptions);
+      await exportService.exportAndDownload(sequence, filename, currentOptions);
 
       // Generate filename for display (if not provided)
       const displayFilename =
         filename ||
-        `${sequence.word || "sequence"}.${exportOptions.format.toLowerCase()}`;
+        `${sequence.word || "sequence"}.${currentOptions.format.toLowerCase()}`;
       lastExportedFile = displayFilename;
     } catch (error) {
       const errorMessage =
@@ -385,9 +393,11 @@ export function createBatchExportState(
     batchProgress = { current: 0, total: sequences.length };
 
     try {
+      // Capture current options to avoid reactivity warning
+      const currentOptions = baseState.exportOptions;
       await exportService.batchExport(
         sequences,
-        baseState.exportOptions,
+        currentOptions,
         (current: number, total: number) => {
           batchProgress = { current, total };
         }

@@ -1,40 +1,54 @@
 import { sveltekit } from "@sveltejs/kit/vite";
 import { defineConfig } from "vite";
 
+const isDev = process.env.NODE_ENV !== "production";
+
 export default defineConfig({
   plugins: [sveltekit()],
+
   build: {
     sourcemap: true,
-    minify: false, // Disable minification for better debugging
+    minify: !isDev,
   },
-  esbuild: {
-    sourcemap: true,
-  },
+
+  esbuild: isDev
+    ? {
+        sourcemap: "inline",
+        keepNames: true,
+      }
+    : {
+        sourcemap: true,
+      },
+
   css: {
-    devSourcemap: true,
+    devSourcemap: isDev,
   },
+
   optimizeDeps: {
     include: ["@sveltejs/kit"],
   },
+
   server: {
-    host: "0.0.0.0", // Bind to all interfaces (IPv4 and IPv6)
-    open: false, // Don't auto-open so debugger can control it
+    host: "0.0.0.0",
+    open: false,
     fs: {
       allow: [".", "../animator"],
     },
   },
-  // Enhance source maps for better debugging
+
   define: {
     __VITE_IS_MODERN__: true,
   },
-  // Enhanced debugging configuration
-  ...(process.env.NODE_ENV !== "production" && {
-    esbuild: {
-      sourcemap: "inline",
-      keepNames: true,
+
+  test: {
+    globals: true,
+    environment: "jsdom",
+    setupFiles: ["./tests/setup.ts"],
+    include: ["tests/**/*.{test,spec}.{js,ts}"],
+    exclude: ["tests/**/*.{integration,e2e}.{js,ts}"],
+    typecheck: {
+      checker: "tsc",
+      include: ["tests/**/*.{test,spec}.{js,ts}"],
     },
-    css: {
-      devSourcemap: true,
-    },
-  }),
+  },
 });

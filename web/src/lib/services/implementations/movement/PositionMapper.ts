@@ -8,8 +8,16 @@
 import { GridPosition, Location } from "$lib/domain/enums";
 import { injectable } from "inversify";
 
+export interface IPositionMapper {
+  getLocationPair(position: GridPosition): [Location, Location];
+  getPositionFromLocations(
+    blueLocation: Location,
+    redLocation: Location
+  ): GridPosition;
+}
+
 @injectable()
-export class PositionMapper {
+export class PositionMapper implements IPositionMapper {
   // Position mapping from (blue_location, red_location) to grid position
   // Using actual Location enums as keys for type safety
   private readonly POSITIONS_MAP = new Map<string, GridPosition>([

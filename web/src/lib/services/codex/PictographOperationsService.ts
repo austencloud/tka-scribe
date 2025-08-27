@@ -1,29 +1,15 @@
 /**
- * Pictograph Operations Service
+ * Pictograph Operations Service Implementation
  *
  * Handles operations that can be performed on pictographs like
  * rotation, mirroring, and color swapping.
  */
 
 import type { PictographData } from "$lib/domain/PictographData";
-
-export interface IPictographOperationsService {
-  rotateAllPictographs(
-    pictographs: PictographData[]
-  ): Promise<PictographData[]>;
-  mirrorAllPictographs(
-    pictographs: PictographData[]
-  ): Promise<PictographData[]>;
-  colorSwapAllPictographs(
-    pictographs: PictographData[]
-  ): Promise<PictographData[]>;
-  applyOperation(
-    pictographs: PictographData[],
-    operation: PictographOperation
-  ): Promise<PictographData[]>;
-}
-
-export type PictographOperation = "rotate" | "mirror" | "colorSwap";
+import type { 
+  IPictographOperationsService,
+  PictographOperation 
+} from "../interfaces/codex-interfaces";
 
 export class PictographOperationsService
   implements IPictographOperationsService

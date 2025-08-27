@@ -7,7 +7,49 @@
 
 // import { get } from "http";
 
-const baseUrl = "http://localhost:5175";
+// Auto-detect running dev server port
+async function findDevServerPort() {
+  const commonPorts = [5173, 5174, 5175, 5176, 5177];
+
+  console.log("🔍 Checking for running dev server...");
+
+  for (const port of commonPorts) {
+    try {
+      console.log(`   Trying port ${port}...`);
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 3000);
+
+      const response = await fetch(`http://localhost:${port}`, {
+        method: "HEAD",
+        signal: controller.signal,
+      });
+
+      clearTimeout(timeoutId);
+
+      if (response.ok) {
+        console.log(`✅ Found dev server running on port ${port}`);
+        return `http://localhost:${port}`;
+      }
+    } catch (error) {
+      // Port not available, continue checking
+      console.log(`   ❌ Port ${port}: ${error.message.substring(0, 50)}...`);
+    }
+  }
+
+  // Check if we can at least see the process is running
+  console.log("\n🔍 Manual verification steps:");
+  console.log("1. Check if dev server is running: npm run dev");
+  console.log(
+    "2. If running, try opening http://localhost:5173 in your browser"
+  );
+  console.log("3. This might be a Windows/WSL networking issue");
+
+  throw new Error(
+    `❌ No dev server found on common ports: ${commonPorts.join(", ")}`
+  );
+}
+
+let baseUrl = ""; // Will be set by findDevServerPort()
 
 // Common search engine user agents
 const userAgents = {
@@ -75,8 +117,17 @@ async function testEndpoint(path, userAgent, botName) {
 }
 
 async function testSEOSystem() {
-  console.log("🚀 Testing SEO System Live on localhost:5175");
+  console.log("🚀 Testing SEO System Live (auto-detecting server port)");
   console.log("=".repeat(60));
+
+  // Auto-detect the running dev server
+  try {
+    baseUrl = await findDevServerPort();
+  } catch (error) {
+    console.log(error.message);
+    console.log("Make sure the dev server is running with: npm run dev");
+    return;
+  }
 
   // Test core SEO endpoints
   console.log("\n📋 TESTING CORE SEO ENDPOINTS");
@@ -108,23 +159,5 @@ async function testSEOSystem() {
   );
 }
 
-// Check if server is accessible
-async function checkServer() {
-  try {
-    const response = await fetch(baseUrl);
-    if (response.ok) {
-      return true;
-    }
-  } catch (error) {
-    console.log(`❌ Cannot connect to ${baseUrl}`);
-    console.log("Make sure the dev server is running with: npm run dev");
-    return false;
-  }
-}
-
 // Run the test
-checkServer().then((isServerRunning) => {
-  if (isServerRunning) {
-    testSEOSystem();
-  }
-});
+testSEOSystem();

@@ -3,7 +3,7 @@
  */
 
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { createOptionFilterState } from "../../../../../../src/lib/components/construct/option-picker/state/focused/option-filter-state.svelte";
+import { createOptionFilterState } from "$lib/state/construct/option-picker/focused/option-filter-state.svelte";
 
 // Mock pictograph data for testing
 interface MockPictographData {
@@ -12,66 +12,14 @@ interface MockPictographData {
   category?: string;
 }
 
-// Mock the filter state module
-vi.mock(
-  "../../../../../../src/lib/components/construct/option-picker/state/focused/option-filter-state.svelte",
-  () => {
-    const mockGetSorter =
-      () => (a: MockPictographData, b: MockPictographData) =>
-        a.letter.localeCompare(b.letter);
-    const mockDetermineGroupKey = (option: MockPictographData) =>
-      option.category || "default";
-    const mockGetSortedGroupKeys = (keys: string[]) => keys.sort();
-
-    return {
-      createOptionFilterState: (dataState: any, _uiState: any) => {
-        let cachedGroupedOptions: Record<string, MockPictographData[]> = {};
-
-        const filteredOptions = () => {
-          const options = [...dataState.options];
-          options.sort(mockGetSorter());
-          return options;
-        };
-
-        const computeGroupedOptions = () => {
-          const groups: Record<string, MockPictographData[]> = {};
-          const options = filteredOptions();
-
-          options.forEach((option) => {
-            const groupKey = mockDetermineGroupKey(option);
-            if (!groups[groupKey]) groups[groupKey] = [];
-            groups[groupKey].push(option);
-          });
-
-          const sortedKeys = mockGetSortedGroupKeys(Object.keys(groups));
-          const sortedGroups: Record<string, MockPictographData[]> = {};
-          sortedKeys.forEach((key: string) => {
-            if (groups[key]) {
-              sortedGroups[key] = groups[key];
-            }
-          });
-
-          cachedGroupedOptions = sortedGroups;
-          return sortedGroups;
-        };
-
-        const categoryKeys = () => Object.keys(cachedGroupedOptions);
-
-        return {
-          get filteredOptions() {
-            return filteredOptions();
-          },
-          get groupedOptions() {
-            return computeGroupedOptions();
-          },
-          get categoryKeys() {
-            return categoryKeys();
-          },
-        };
-      },
-    };
-  }
-);
+// Mock the OptionsService functions that the filter state uses
+vi.mock("$lib/services/implementations/construct/OptionsService", () => ({
+  getSorter: () => (a: MockPictographData, b: MockPictographData) =>
+    a.letter.localeCompare(b.letter),
+  determineGroupKey: (option: MockPictographData) =>
+    option.category || "default",
+  getSortedGroupKeys: (keys: string[]) => keys.sort(),
+}));
 
 describe("createOptionFilterState", () => {
   let mockDataState: any;
@@ -96,9 +44,6 @@ describe("createOptionFilterState", () => {
     };
 
     // Create filter state
-    const {
-      createOptionFilterState,
-    } = require("../../../../../../src/lib/components/construct/option-picker/state/focused/option-filter-state.svelte");
     filterState = createOptionFilterState(mockDataState, mockUIState);
   });
 

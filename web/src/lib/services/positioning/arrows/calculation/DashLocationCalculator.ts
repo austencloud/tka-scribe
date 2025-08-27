@@ -29,6 +29,7 @@ import type { LetterType, MotionData, PictographData } from "$lib/domain";
 import { GridMode, Location } from "$lib/domain";
 import { resolve, TYPES } from "$lib/services/inversify/container";
 import type { IGridModeDeriver } from "$lib/services/interfaces/movement/IGridModeDeriver";
+import { injectable } from "inversify";
 
 // Arrow color type - using string literals to match usage pattern
 type ArrowColor = "red" | "blue";
@@ -52,6 +53,7 @@ export interface IDashLocationCalculator {
   ): Location;
 }
 
+@injectable()
 export class DashLocationCalculator implements IDashLocationCalculator {
   private gridModeService: IGridModeDeriver | null = null;
 

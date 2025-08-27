@@ -7,7 +7,8 @@ import {
 } from "$lib/domain/enums";
 import type { MotionData } from "$lib/domain/MotionData";
 import { createMotionData } from "$lib/domain/MotionData";
-import type { IMotionParameterService } from "./interfaces";
+import type { IMotionParameterService } from "../../interfaces/motion-tester-interfaces";
+import { injectable } from "inversify";
 
 /**
  * Motion Test Parameters - Using proper enums for type safety
@@ -23,6 +24,7 @@ export interface MotionTestParams {
   endOrientation: Orientation;
 }
 
+@injectable()
 export class MotionParameterService implements IMotionParameterService {
   // Helper function to determine motion type based on start/end locations
   getMotionType(startLocation: Location, endLocation: Location): MotionType {

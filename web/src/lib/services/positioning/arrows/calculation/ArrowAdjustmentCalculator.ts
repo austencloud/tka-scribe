@@ -72,7 +72,7 @@ export class ArrowAdjustmentCalculator implements IArrowAdjustmentCalculator {
     defaultPlacementService: IDefaultPlacementService,
     @inject(TYPES.ISpecialPlacementOriKeyGenerator)
     orientationKeyService: ISpecialPlacementOriKeyGenerator,
-    @inject(TYPES.ArrowPlacementKeyService)
+    @inject(TYPES.IArrowPlacementKeyService)
     placementKeyService: ArrowPlacementKeyService,
     @inject(TYPES.ITurnsTupleKeyGenerator)
     turnsTupleService: ITurnsTupleKeyGenerator,

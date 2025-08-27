@@ -8,7 +8,37 @@
  * Tests the core SEO functionality without needing full test suite
  */
 
-const BASE_URL = "http://localhost:5173";
+// Auto-detect running dev server port
+async function findDevServerPort() {
+  const commonPorts = [5173, 5174, 5175, 5176, 5177];
+
+  for (const port of commonPorts) {
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 3000);
+
+      const response = await fetch(`http://localhost:${port}`, {
+        method: "HEAD",
+        signal: controller.signal,
+      });
+
+      clearTimeout(timeoutId);
+
+      if (response.ok) {
+        console.log(`✅ Found dev server running on port ${port}`);
+        return `http://localhost:${port}`;
+      }
+    } catch (error) {
+      // Port not available, continue checking
+    }
+  }
+
+  throw new Error(
+    `❌ No dev server found on common ports: ${commonPorts.join(", ")}`
+  );
+}
+
+let BASE_URL = ""; // Will be set by findDevServerPort()
 const COLORS = {
   green: "\x1b[32m",
   red: "\x1b[31m",
@@ -42,7 +72,19 @@ async function testEndpoint(url, userAgent = null, expectedContent = null) {
 }
 
 async function validateSEOSystem() {
-  log("blue", "🔍 Validating SEO Hybrid System...\n");
+  log(
+    "blue",
+    "🔍 Validating SEO Hybrid System (auto-detecting server port)...\n"
+  );
+
+  // Auto-detect the running dev server
+  try {
+    BASE_URL = await findDevServerPort();
+  } catch (error) {
+    log("red", error.message);
+    log("yellow", "Make sure the dev server is running with: npm run dev");
+    return;
+  }
 
   const tests = [
     {
@@ -105,20 +147,5 @@ async function validateSEOSystem() {
   }
 }
 
-// Check if dev server is likely running
-async function checkServer() {
-  try {
-    const response = await fetch(BASE_URL);
-    if (response.ok) {
-      await validateSEOSystem();
-    } else {
-      throw new Error(`Server responded with status ${response.status}`);
-    }
-  } catch (error) {
-    log("red", "❌ Cannot reach dev server.");
-    log("yellow", "Please start the dev server first: npm run dev");
-    log("yellow", "Then run this script again.");
-  }
-}
-
-checkServer();
+// Run the validation
+validateSEOSystem();

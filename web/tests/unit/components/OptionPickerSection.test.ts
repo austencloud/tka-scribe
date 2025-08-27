@@ -1,11 +1,11 @@
-import OptionPickerSection from "$lib/components/construct/option-picker/OptionPickerSection.svelte";
+import OptionPickerSection from "$lib/components/tabs/build-tab/construct/option-picker/components/OptionPickerSection.svelte";
 import type { PictographData } from "$lib/domain/PictographData";
 import { GridMode } from "$lib/domain/enums";
 import { fireEvent, render, screen } from "@testing-library/svelte";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 // Mock Pictograph component
-vi.mock("$lib/components/pictograph/Pictograph.svelte", () => ({
+vi.mock("$lib/components/core/pictograph/Pictograph.svelte", () => ({
   default: vi.fn(() => ({
     $$: { fragment: null },
     $set: vi.fn(),

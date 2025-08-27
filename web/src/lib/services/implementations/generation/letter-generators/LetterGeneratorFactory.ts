@@ -9,7 +9,7 @@ import type { BaseLetterGenerator } from "../core/BaseLetterGenerator";
 import type {
   ILetterGenerator,
   ILetterGeneratorFactory,
-} from "../core/ILetterGenerator";
+} from "../../../interfaces/generation-interfaces";
 import { Type1Generator } from "./Type1/Type1Generator";
 
 type LetterGeneratorConstructor = new (

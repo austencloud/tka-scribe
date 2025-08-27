@@ -10,8 +10,10 @@ import { createMotionData } from "$lib/domain/MotionData";
 import type { PictographData } from "$lib/domain/PictographData";
 import { createPictographData } from "$lib/domain/PictographData";
 import { MotionColor } from "$lib/domain/enums";
-import { EnumMappingService } from "../data/EnumMappingService";
-import { PositionMapper } from "./PositionMapper";
+import type { IEnumMappingService } from "../data/EnumMappingService";
+import type { IPositionMapper } from "./PositionMapper";
+import { injectable, inject } from "inversify";
+import { TYPES } from "../../inversify/types";
 
 export interface CSVRow {
   letter: string;
@@ -29,14 +31,20 @@ export interface CSVRow {
   redEndLocation: string;
 }
 
-export class CSVPictographParserService {
-  private readonly positionMapper: PositionMapper;
-  private readonly enumMapper: EnumMappingService;
+export interface ICSVPictographParserService {
+  parseCSVRowToPictograph(row: CSVRow): PictographData;
+  parseLetterPictographs(letterRows: CSVRow[]): PictographData[];
+  validateCSVRow(row: unknown): row is CSVRow;
+}
 
-  constructor() {
-    this.positionMapper = new PositionMapper();
-    this.enumMapper = new EnumMappingService();
-  }
+@injectable()
+export class CSVPictographParserService implements ICSVPictographParserService {
+  constructor(
+    @inject(TYPES.IPositionMapper)
+    private readonly positionMapper: IPositionMapper,
+    @inject(TYPES.IEnumMappingService)
+    private readonly enumMapper: IEnumMappingService
+  ) {}
 
   /**
    * Convert a CSV row to PictographData object

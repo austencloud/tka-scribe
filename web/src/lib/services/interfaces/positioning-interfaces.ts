@@ -14,6 +14,7 @@ import type { GridMode } from "./core-types";
 import type { MotionType } from "./domain-types";
 import { MotionColor } from "../../domain/enums";
 import type { Direction } from "../implementations/positioning/BetaPropDirectionCalculator";
+import type { ArrowPosition } from "../positioning/types";
 
 // Import orchestrator interface from positioning services
 export type { IArrowPositioningOrchestrator } from "../positioning/core-services";
@@ -151,4 +152,45 @@ export interface IPropRenderingService {
   loadPropSVG(propType: string, color: MotionColor): Promise<string>;
 
   getSupportedPropTypes(): string[];
+}
+
+// ============================================================================
+// ARROW RENDERING INTERFACES  
+// ============================================================================
+
+/**
+ * Arrow Path Resolution Service Interface
+ *
+ * Responsible for determining the correct SVG file path based on motion data.
+ */
+export interface IArrowPathResolutionService {
+  /**
+   * Get arrow SVG path based on motion type and properties
+   */
+  getArrowPath(
+    arrowData: ArrowPlacementData,
+    motionData: MotionData
+  ): string | null;
+
+  /**
+   * Get the correct arrow SVG path based on motion data (optimized version)
+   */
+  getArrowSvgPath(motionData: MotionData | undefined): string;
+}
+
+/**
+ * Arrow Positioning Service Interface
+ *
+ * Handles positioning and rendering arrows in SVG containers.
+ */
+export interface IArrowPositioningService {
+  /**
+   * Render arrow at sophisticated calculated position using real SVG assets
+   */
+  renderArrowAtPosition(
+    svg: SVGElement,
+    color: MotionColor,
+    position: ArrowPosition,
+    motionData: MotionData | undefined
+  ): Promise<void>;
 }

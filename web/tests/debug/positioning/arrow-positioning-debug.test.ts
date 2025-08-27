@@ -3,7 +3,7 @@
  * Tests both positioning systems to identify rotation calculation problems
  */
 
-import { resolve } from "$lib/services/bootstrap";
+import { resolve, TYPES } from "$lib/services/bootstrap";
 import type { IArrowPositioningOrchestrator } from "$lib/services/interfaces/positioning-interfaces";
 import { describe, it } from "vitest";
 // import type { GridData as ServiceGridData } from "$lib/services/interfaces/core-types";
@@ -35,7 +35,7 @@ describe("Arrow Positioning Debug Tests", () => {
   it("should test pro arrow rotation calculation - N to E motion", async () => {
     // Resolve orchestrator for this test
     const orchestrator = resolve(
-      "IArrowPositioningOrchestrator"
+      TYPES.IArrowPositioningOrchestrator
     ) as IArrowPositioningOrchestrator;
 
     console.log(
@@ -170,7 +170,7 @@ describe("Arrow Positioning Debug Tests", () => {
   it("should test multiple pro arrow directions", async () => {
     // Resolve orchestrator for this test
     const orchestrator = resolve(
-      "IArrowPositioningOrchestrator"
+      TYPES.IArrowPositioningOrchestrator
     ) as IArrowPositioningOrchestrator;
 
     console.log("\n🧪 Testing Multiple Pro Arrow Directions");

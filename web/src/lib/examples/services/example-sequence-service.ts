@@ -207,26 +207,21 @@ export class ExampleSequenceService implements IExampleSequenceService {
  * How to register this service in the DI container:
  *
  * ```typescript
- * // In src/lib/services/inversify/bindings.ts
+ * // In src/lib/services/inversify/container.ts
  * import { ExampleSequenceService } from '$lib/examples/services/example-sequence-service';
+ * import { TYPES } from './types';
  *
- * export async function registerExampleServices(container: ServiceContainer) {
- *   container.register('IExampleSequenceService', (c) =>
- *     new ExampleSequenceService(
- *       c.resolve('IValidationService'),
- *       c.resolve('IPersistenceService')
- *     )
- *   );
- * }
+ * // Add to container bindings:
+ * container.bind(TYPES.IExampleSequenceService).to(ExampleSequenceService);
  * ```
  *
  * How to use in components:
  *
  * ```svelte
  * <script lang="ts">
- *   import { resolve } from '$services/inversify/container';
+ *   import { resolve, TYPES } from '$lib/services/inversify/container';
  *
- *   const sequenceService = resolve('IExampleSequenceService');
+ *   const sequenceService = resolve<IExampleSequenceService>(TYPES.IExampleSequenceService);
  *
  *   async function createNewSequence() {
  *     const sequence = await sequenceService.createSequence('My Sequence', 16);

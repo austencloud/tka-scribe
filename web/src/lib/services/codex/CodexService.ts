@@ -13,9 +13,9 @@ import type { ILessonRepository } from "$lib/repositories/LessonRepository";
 import { TYPES } from "$lib/services/inversify/types";
 import { inject, injectable } from "inversify";
 
-import type { IPictographOperationsService } from "./PictographOperationsService";
+import type { IPictographOperationsService } from "../interfaces/codex-interfaces";
 import type { ICodexService } from "./ICodexService";
-import type { ILetterQueryService } from "../implementations/data/LetterQueryService";
+import type { ILetterQueryService } from "../interfaces/data-interfaces";
 
 // Re-export the interface for convenience
 export type { ICodexService } from "./ICodexService";

@@ -7,7 +7,7 @@
 
 import type { MotionData } from "$lib/domain";
 import type { ArrowPlacementData } from "$lib/domain/ArrowPlacementData";
-import type { IArrowPathResolutionService } from "$lib/services/interfaces/pictograph-interfaces";
+import type { IArrowPathResolutionService } from "$lib/services/interfaces/positioning-interfaces";
 
 export class ArrowPathResolutionService implements IArrowPathResolutionService {
   /**

@@ -111,7 +111,20 @@ export const BeatDataSchema = z.object({
 });
 
 export const SequenceDataSchema = z.object({
-  id: z.string().uuid("Sequence ID must be a valid UUID"),
+  id: z
+    .string()
+    .min(1, "Sequence ID cannot be empty")
+    .refine((id) => {
+      // Accept either UUID format or custom sequence ID format
+      const uuidRegex =
+        /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+      const customIdRegex = /^seq_\d+_[a-z0-9]+$/i; // seq_timestamp_randomstring
+      const shortIdRegex = /^[a-zA-Zα-ωΑ-Ω\-]+$/; // Short letter-based IDs like "bjea", "bσtw"
+
+      return (
+        uuidRegex.test(id) || customIdRegex.test(id) || shortIdRegex.test(id)
+      );
+    }, "Sequence ID must be a valid UUID, custom sequence ID (seq_*), or letter-based ID"),
   name: z
     .string()
     .min(1, "Sequence name cannot be empty")

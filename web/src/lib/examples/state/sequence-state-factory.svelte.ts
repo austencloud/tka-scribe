@@ -160,11 +160,11 @@ export function createSequenceState(sequenceService: ISequenceService) {
  *
  * ```svelte
  * <script lang="ts">
- *   import { resolve } from '$services/inversify/container';
+ *   import { resolve, TYPES } from '$lib/services/inversify/container';
  *   import { createSequenceState } from '$lib/examples/state/sequence-state-factory.svelte';
  *
  *   // Get service from DI container
- *   const sequenceService = resolve('ISequenceService');
+ *   const sequenceService = resolve<ISequenceService>(TYPES.ISequenceService);
  *
  *   // Create component-scoped state
  *   const sequenceState = createSequenceState(sequenceService);

@@ -21,12 +21,9 @@
     "emitDecoratorMetadata": true,
     "types": ["reflect-metadata"]
   },
-  "include": ["global.d.ts", "src/**/*.ts", "src/**/*.svelte"],
+  "include": ["global.d.ts", "src/**/*.ts", "src/**/*.svelte", "tests/**/*.ts"],
   "exclude": [
     "node_modules",
-    "apps/**",
-    "packages/**",
-    "scripts/**",
     "dist",
     "build",
     ".svelte-kit",

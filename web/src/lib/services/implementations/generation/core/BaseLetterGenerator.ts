@@ -16,7 +16,7 @@ import {
   RotationDirection,
   Timing,
 } from "$lib/domain/enums";
-import type { ILetterGenerator } from "./ILetterGenerator";
+import type { ILetterGenerator } from "../../../interfaces/generation-interfaces";
 
 export abstract class BaseLetterGenerator implements ILetterGenerator {
   private static readonly movementCache = new Map<string, PictographData>();

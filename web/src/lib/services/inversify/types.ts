@@ -148,9 +148,11 @@ export const TYPES = {
     "IMotionLetterIdentificationService"
   ),
   ICSVPictographLoaderService: Symbol.for("ICSVPictographLoaderService"),
+  ICSVPictographParserService: Symbol.for("ICSVPictographParserService"),
   IArrowLocationService: Symbol.for("IArrowLocationService"),
   IArrowPlacementKeyService: Symbol.for("IArrowPlacementKeyService"),
   IPropPlacementService: Symbol.for("IPropPlacementService"),
+  IValidationService: Symbol.for("IValidationService"),
 
   // === MISSING TYPES ===
   IArrowPathResolutionService: Symbol.for("IArrowPathResolutionService"),
@@ -163,6 +165,7 @@ export const TYPES = {
   IDirectionCalculator: Symbol.for("IDirectionCalculator"),
   IArrowLocationCalculator: Symbol.for("IArrowLocationCalculator"),
   IArrowRotationCalculator: Symbol.for("IArrowRotationCalculator"),
+  IDashLocationCalculator: Symbol.for("IDashLocationCalculator"),
   IArrowCoordinateSystemService: Symbol.for("IArrowCoordinateSystemService"),
   ISpecialPlacementService: Symbol.for("ISpecialPlacementService"),
   IDefaultPlacementService: Symbol.for("IDefaultPlacementService"),
@@ -173,6 +176,8 @@ export const TYPES = {
   ITurnsTupleKeyGenerator: Symbol.for("ITurnsTupleKeyGenerator"),
   IAttributeKeyGenerator: Symbol.for("IAttributeKeyGenerator"),
   IDirectionalTupleProcessor: Symbol.for("IDirectionalTupleProcessor"),
+  IDirectionalTupleCalculator: Symbol.for("IDirectionalTupleCalculator"),
+  IQuadrantIndexCalculator: Symbol.for("IQuadrantIndexCalculator"),
 
   // === MISSING IMAGE EXPORT TYPES ===
   IWordTextRenderer: Symbol.for("IWordTextRenderer"),

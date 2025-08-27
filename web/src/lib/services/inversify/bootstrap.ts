@@ -33,22 +33,5 @@ export async function initializeInversifyContainer(): Promise<void> {
   }
 }
 
-/**
- * Get the initialized container
- * This provides backward compatibility with the old bootstrap pattern
- */
-export function getContainer() {
-  return container;
-}
-
-/**
- * Legacy resolve function for backward compatibility
- * This allows existing code to work during the migration
- */
-export function resolve<T>(serviceType: symbol): T {
-  return container.get<T>(serviceType);
-}
-
 // Export container and types for convenience
-export { container } from "./container";
-export { TYPES } from "./types";
+export { container, resolve, TYPES } from "./container";

@@ -235,3 +235,40 @@ export interface IPictographValidatorService {
   getValidationErrors(pictograph: PictographData): string[];
   validatePositionSequence(positions: GridPosition[]): boolean;
 }
+
+// ============================================================================
+// LETTER GENERATOR INTERFACES
+// ============================================================================
+
+/**
+ * Base Letter Generator Interface
+ *
+ * All letter-specific generators implement this interface.
+ * Provides consistent API for generating movement sets for individual letters.
+ */
+export interface ILetterGenerator {
+  /**
+   * The letter this generator handles
+   */
+  readonly letter: string;
+
+  /**
+   * Generate movement set for this letter
+   */
+  generate(): PictographData;
+}
+
+/**
+ * Factory interface for creating letter generators
+ */
+export interface ILetterGeneratorFactory {
+  /**
+   * Create generator for the specified letter
+   */
+  createGenerator(letter: string): ILetterGenerator | null;
+
+  /**
+   * Get all supported letters
+   */
+  getSupportedLetters(): string[];
+}

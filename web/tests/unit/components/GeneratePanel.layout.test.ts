@@ -1,4 +1,4 @@
-import GeneratePanel from "$lib/components/construct/generate/GeneratePanel.svelte";
+import GeneratePanel from "$lib/components/tabs/build-tab/generate/GeneratePanel.svelte";
 import { render, screen } from "@testing-library/svelte";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 

@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, vi } from "vitest";
 import { Container } from "inversify";
+import "@testing-library/jest-dom";
 
 // Global Inversify container for tests
 let testContainer: Container;

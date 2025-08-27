@@ -20,6 +20,7 @@ import type { IGridModeDeriver } from "$lib/services/interfaces/movement/IGridMo
 import { jsonCache } from "../../cache/SimpleJsonCache";
 import type { ISpecialPlacementService } from "../../placement-services";
 import { SpecialPlacementOriKeyGenerator } from "../key_generators/SpecialPlacementOriKeyGenerator";
+import { injectable } from "inversify";
 
 // Define Point interface locally since it might not be in domain
 interface Point {
@@ -27,6 +28,7 @@ interface Point {
   y: number;
 }
 
+@injectable()
 export class SpecialPlacementService implements ISpecialPlacementService {
   // Structure: [gridMode][oriKey][letter] -> Record<string, unknown>
   private specialPlacements: Record<

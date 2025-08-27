@@ -1,1 +1,5 @@
-18
+# Node.js version for TKA project
+
+# Keep in sync with package.json engines and netlify.toml
+
+18.20.4

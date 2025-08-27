@@ -16,7 +16,10 @@ import type { MotionData, PictographData } from "$lib/domain";
 import { Location, MotionType } from "$lib/domain";
 import type { IArrowLocationCalculator } from "../../core-services";
 import { DashLocationCalculator } from "./DashLocationCalculator";
+import { injectable, inject } from "inversify";
+import { TYPES } from "../../../inversify/types";
 
+@injectable()
 export class ArrowLocationCalculator implements IArrowLocationCalculator {
   /**
    * Pure algorithmic service for calculating arrow locations.
@@ -50,20 +53,22 @@ export class ArrowLocationCalculator implements IArrowLocationCalculator {
       Location.WEST,
   };
 
-  constructor(dashLocationService?: DashLocationCalculator) {
+  constructor(
+    @inject(TYPES.IDashLocationCalculator)
+    dashLocationService: DashLocationCalculator
+  ) {
     /**
      * Initialize the location calculator.
      *
      * Args:
      *     dashLocationService: Service for dash location calculations
      */
-    this.dashLocationService =
-      dashLocationService || new DashLocationCalculator();
+    this.dashLocationService = dashLocationService;
   }
 
   calculateLocation(
     motion: MotionData,
-    pictographData?: PictographData
+    pictographData: PictographData
   ): Location {
     /**
      * Calculate arrow location based on motion type and data.
@@ -144,12 +149,12 @@ export class ArrowLocationCalculator implements IArrowLocationCalculator {
 
   private calculateDashLocation(
     motion: MotionData,
-    pictographData?: PictographData
+    pictographData: PictographData
   ): Location {
     /**
      * Calculate location for dash arrows.
      *
-     * Dash arrows use specialized logic that may require pictograph data
+     * Dash arrows use specialized logic that require pictograph data
      * for Type 3 detection and other special cases.
      *
      * Args:

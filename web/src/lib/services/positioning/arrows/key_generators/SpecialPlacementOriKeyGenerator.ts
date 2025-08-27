@@ -1,10 +1,12 @@
 import type { MotionData, PictographData } from "$lib/domain";
 import type { ISpecialPlacementOriKeyGenerator } from "../../data-services";
+import { injectable } from "inversify";
 
 /**
  * SpecialPlacementOriKeyGenerator
  * Generates ori_key matching SpecialPlacementService's internal logic.
  */
+@injectable()
 export class SpecialPlacementOriKeyGenerator
   implements ISpecialPlacementOriKeyGenerator
 {

@@ -5,7 +5,9 @@
  */
 
 import type { IInitializationService } from "../interfaces/state-service-interfaces";
+import { injectable } from "inversify";
 
+@injectable()
 export class ApplicationStateService implements IInitializationService {
   // Core application state
   private state = $state({

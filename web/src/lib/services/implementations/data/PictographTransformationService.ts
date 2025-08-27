@@ -212,27 +212,21 @@ export class ExampleSequenceService implements IExampleSequenceService {
  * How to register this service in the DI container:
  *
  * ```typescript
-* // In src/lib/services/inversify/bindings.ts
- * import { ExampleSequenceService } from '$lib/examples/services/example-sequence-service';
+ * // In src/lib/services/inversify/container.ts
+ * import { PictographTransformationService } from '$lib/services/implementations/data/PictographTransformationService';
+ * import { TYPES } from './types';
  *
- * export async function registerExampleServices(container: ServiceContainer) {
- *   container.register('IExampleSequenceService', (c) =>
- *     new ExampleSequenceService(
- *       c.resolve('IValidationService'),
- *       c.resolve('IPersistenceService')
- *     )
- *   );
- * }
- *
-```
+ * // Add to container bindings:
+ * container.bind(TYPES.IPictographTransformationService).to(PictographTransformationService);
+ * ```
  *
  * How to use in components:
  *
  * ```svelte
-* <script lang="ts">
- *   import { resolve } from '$services/inversify/container';
+ * <script lang="ts">
+ *   import { resolve, TYPES } from '$lib/services/inversify/container';
  *
- *   const sequenceService = resolve('IExampleSequenceService');
+ *   const transformationService = resolve<IPictographTransformationService>(TYPES.IPictographTransformationService);
  *
  *   async function createNewSequence() {
  *     const sequence = await sequenceService.createSequence('My Sequence', 16);

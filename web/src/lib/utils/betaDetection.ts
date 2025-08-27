@@ -6,7 +6,8 @@
 
 import { GridPosition } from "$lib/domain/enums";
 import type { PictographData } from "$lib/domain/PictographData";
-import { PositionMapper } from "$lib/services/implementations/movement/PositionMapper";
+import { resolve, TYPES } from "$lib/services/inversify/container";
+import type { IPositionMapper } from "$lib/services/implementations/movement/PositionMapper";
 
 /**
  * Check if a grid position is a beta position
@@ -23,7 +24,7 @@ export function isBetaPosition(position: string | GridPosition): boolean {
  * Computes end position from motion data using PositionMapper
  */
 export function endsWithBeta(pictographData: PictographData): boolean {
-  const positionService = new PositionMapper();
+  const positionService = resolve<IPositionMapper>(TYPES.IPositionMapper);
 
   if (!pictographData.motions?.blue || !pictographData.motions?.red) {
     console.warn(
@@ -46,7 +47,7 @@ export function endsWithBeta(pictographData: PictographData): boolean {
  * Computes start position from motion data using PositionMapper
  */
 export function startsWithBeta(pictographData: PictographData): boolean {
-  const positionService = new PositionMapper();
+  const positionService = resolve<IPositionMapper>(TYPES.IPositionMapper);
 
   if (!pictographData.motions?.blue || !pictographData.motions?.red) {
     return false;

@@ -135,12 +135,27 @@ import { ConstructTabCoordinationService } from "../implementations/construct/Co
 // Import missing services that have confirmed implementations
 import { ArrowPositionCalculator } from "../positioning/arrows/orchestration/ArrowPositionCalculator";
 import { ArrowAdjustmentCalculator } from "../positioning/arrows/calculation/ArrowAdjustmentCalculator";
+import { ArrowLocationCalculator } from "../positioning/arrows/calculation/ArrowLocationCalculator";
+import { ArrowRotationCalculator } from "../positioning/arrows/calculation/ArrowRotationCalculator";
+import { DashLocationCalculator } from "../positioning/arrows/calculation/DashLocationCalculator";
+import { SpecialPlacementService } from "../positioning/arrows/placement/SpecialPlacementService";
+import { DefaultPlacementService } from "../positioning/arrows/placement/DefaultPlacementService";
+import { SpecialPlacementOriKeyGenerator } from "../positioning/arrows/key_generators/SpecialPlacementOriKeyGenerator";
+import { TurnsTupleKeyGenerator } from "../positioning/arrows/key_generators/TurnsTupleKeyGenerator";
+import { AttributeKeyGenerator } from "../positioning/arrows/key_generators/AttributeKeyGenerator";
+import {
+  DirectionalTupleProcessor,
+  DirectionalTupleCalculator,
+  QuadrantIndexCalculator,
+} from "../positioning/arrows/processors/DirectionalTupleProcessor";
+import { ArrowCoordinateSystemService } from "../positioning/arrows/coordinate_system/ArrowCoordinateSystemService";
 import { OrientationCalculationService } from "../implementations/positioning/OrientationCalculationService";
 import { MotionLetterIdentificationService } from "../implementations/motion-tester/MotionLetterIdentificationService";
 import { ArrowPathResolutionService } from "../implementations/rendering/arrow/ArrowPathResolutionService";
 
 // Import additional services with confirmed implementations
 import { PositionMapper } from "../implementations/movement/PositionMapper";
+import { CSVPictographParserService } from "../implementations/movement/CSVPictographParserService";
 import { SequenceAnimationEngine } from "../../animator/core/engine/sequence-animation-engine";
 import { SequenceAnimationOrchestrator } from "../../animator/core/services/SequenceAnimationOrchestrator";
 import { AnimationStateService } from "../../animator/core/services/AnimationStateService";
@@ -335,6 +350,26 @@ try {
   container
     .bind(TYPES.IArrowAdjustmentCalculator)
     .to(ArrowAdjustmentCalculator);
+  container.bind(TYPES.IArrowLocationCalculator).to(ArrowLocationCalculator);
+  container.bind(TYPES.IArrowRotationCalculator).to(ArrowRotationCalculator);
+  container.bind(TYPES.IDashLocationCalculator).to(DashLocationCalculator);
+  container.bind(TYPES.ISpecialPlacementService).to(SpecialPlacementService);
+  container.bind(TYPES.IDefaultPlacementService).to(DefaultPlacementService);
+  container
+    .bind(TYPES.ISpecialPlacementOriKeyGenerator)
+    .to(SpecialPlacementOriKeyGenerator);
+  container.bind(TYPES.ITurnsTupleKeyGenerator).to(TurnsTupleKeyGenerator);
+  container.bind(TYPES.IAttributeKeyGenerator).to(AttributeKeyGenerator);
+  container
+    .bind(TYPES.IDirectionalTupleProcessor)
+    .to(DirectionalTupleProcessor);
+  container
+    .bind(TYPES.IDirectionalTupleCalculator)
+    .to(DirectionalTupleCalculator);
+  container.bind(TYPES.IQuadrantIndexCalculator).to(QuadrantIndexCalculator);
+  container
+    .bind(TYPES.IArrowCoordinateSystemService)
+    .to(ArrowCoordinateSystemService);
   container
     .bind(TYPES.IOrientationCalculationService)
     .to(OrientationCalculationService);
@@ -345,6 +380,9 @@ try {
     .bind(TYPES.IArrowPathResolutionService)
     .to(ArrowPathResolutionService);
   container.bind(TYPES.IPositionMapper).to(PositionMapper);
+  container
+    .bind(TYPES.ICSVPictographParserService)
+    .to(CSVPictographParserService);
   container.bind(TYPES.ISequenceAnimationEngine).to(SequenceAnimationEngine);
   container
     .bind(TYPES.ISequenceAnimationOrchestrator)

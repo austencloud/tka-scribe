@@ -8,6 +8,7 @@
 import { ArrowPlacementService } from "../../../implementations/data/ArrowPlacementService";
 import type { GridMode } from "../../../interfaces/core-types";
 import { MotionType } from "$lib/domain/enums"; // ✅ Import from centralized enums
+import { injectable } from "inversify";
 
 /**
  * Interface for Default Placement Service that mirrors Python implementation
@@ -36,6 +37,7 @@ export interface IDefaultPlacementServiceJson {
   debugAvailableKeys(motionType: MotionType, gridMode: GridMode): Promise<void>;
 }
 
+@injectable()
 export class DefaultPlacementService implements IDefaultPlacementServiceJson {
   private placementDataService: ArrowPlacementService;
 

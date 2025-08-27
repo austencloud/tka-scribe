@@ -65,14 +65,14 @@ async function testBetaPositioning() {
       throw new Error("Missing motion data for test");
     }
 
-    const bluePlacement = propPlacementService.calculatePlacement(
+    const bluePlacement = await propPlacementService.calculatePlacement(
       pictographData,
       pictographData.motions.blue
     );
     console.log("✅ Blue prop placement:", bluePlacement);
 
     console.log("🔍 Testing red prop placement...");
-    const redPlacement = propPlacementService.calculatePlacement(
+    const redPlacement = await propPlacementService.calculatePlacement(
       pictographData,
       pictographData.motions.red
     );
