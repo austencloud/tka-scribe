@@ -187,7 +187,7 @@ export class SequenceImportService implements ISequenceImportService {
     const sequenceData = {
       id: crypto.randomUUID(), // Generate proper UUID for validation
       name: id.toUpperCase(),
-      word: id.toLowerCase() || "",
+      word: (id || "").toLowerCase(),
       beats,
       thumbnails: [], // Empty array as default - schema requires URLs
       sequenceLength: beats.length,

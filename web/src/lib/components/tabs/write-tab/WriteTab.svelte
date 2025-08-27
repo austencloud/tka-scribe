@@ -283,7 +283,7 @@
 
   .splitter {
     width: 4px;
-    background: rgba(80, 80, 100, 0.4);
+    background: rgba(255, 255, 255, 0.1);
     cursor: col-resize;
     transition: background-color var(--transition-fast);
     flex-shrink: 0;
@@ -291,7 +291,7 @@
 
   .splitter:hover,
   .splitter.dragging {
-    background: rgba(120, 150, 200, 0.8);
+    background: var(--primary-color);
   }
 
   .right-panel {

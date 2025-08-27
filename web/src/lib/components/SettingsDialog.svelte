@@ -165,8 +165,8 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.7);
-    backdrop-filter: blur(8px);
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(12px);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -183,11 +183,11 @@
       90vh,
       900px
     ); /* Increased to 90vh and 900px for much taller dialog */
-    background: rgba(40, 44, 52, 0.95);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 12px;
-    backdrop-filter: blur(20px);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+    background: rgba(20, 25, 35, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: var(--border-radius-xl);
+    backdrop-filter: blur(24px);
+    box-shadow: var(--shadow-modal);
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -209,8 +209,8 @@
     align-items: center;
     justify-content: space-between;
     padding: clamp(16px, 2vw, 32px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
-    background: rgba(255, 255, 255, 0.05);
+    border-bottom: var(--glass-border);
+    background: rgba(255, 255, 255, 0.03);
   }
 
   .dialog-header h2 {
@@ -223,10 +223,10 @@
   .close-button {
     background: transparent;
     border: none;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--text-secondary);
     cursor: pointer;
     padding: clamp(8px, 1vw, 12px);
-    border-radius: 6px;
+    border-radius: var(--border-radius-sm);
     transition: all var(--transition-fast);
     min-width: clamp(32px, 4vw, 44px);
     min-height: clamp(32px, 4vw, 44px);
@@ -236,8 +236,8 @@
   }
 
   .close-button:hover {
-    background: rgba(255, 255, 255, 0.1);
-    color: #ffffff;
+    background: rgba(255, 255, 255, 0.08);
+    color: white;
   }
 
   /* Dialog Content Layout */
@@ -253,7 +253,7 @@
     flex: 1;
     overflow-y: auto;
     padding: var(--content-padding);
-    background: rgba(255, 255, 255, 0.02);
+    background: rgba(255, 255, 255, 0.01);
     container-type: inline-size;
   }
 
@@ -301,8 +301,8 @@
     justify-content: flex-end;
     gap: clamp(12px, 1.5vw, 24px);
     padding: clamp(16px, 2vw, 32px);
-    border-top: 1px solid rgba(255, 255, 255, 0.15);
-    background: rgba(255, 255, 255, 0.05);
+    border-top: var(--glass-border);
+    background: rgba(255, 255, 255, 0.03);
     flex-wrap: wrap;
   }
 
@@ -319,24 +319,24 @@
 
   .cancel-button {
     background: transparent;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    color: rgba(255, 255, 255, 0.8);
+    border: var(--glass-border);
+    color: var(--text-secondary);
   }
 
   .cancel-button:hover {
-    background: rgba(255, 255, 255, 0.08);
-    color: #ffffff;
+    background: rgba(255, 255, 255, 0.06);
+    color: white;
   }
 
   .apply-button {
-    background: #6366f1;
-    border: 1px solid #6366f1;
+    background: var(--primary-color);
+    border: 1px solid var(--primary-color);
     color: white;
   }
 
   .apply-button:hover {
-    background: #5855eb;
-    border-color: #5855eb;
+    background: var(--primary-light);
+    border-color: var(--primary-light);
   }
 
   /* Responsive Design */

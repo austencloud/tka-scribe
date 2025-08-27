@@ -16,8 +16,7 @@
   import { fade } from "svelte/transition";
   // CRITICAL FIX: Also watch the singleton sequence state for updates
   // This ensures we react to changes made by the coordination service
-  import { resolve } from "$lib/services/inversify/container";
-  import { TYPES } from "$lib/services/inversify/types";
+  import { resolve, TYPES } from "$lib/services/inversify/container";
   import { createSequenceState } from "$lib/state/sequence/sequence-state.svelte";
 
   // Get service from DI container and create component-scoped state

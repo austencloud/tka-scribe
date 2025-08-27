@@ -78,6 +78,7 @@ import { BackgroundService } from "../implementations/background/BackgroundServi
 
 // Import image export services
 import { BeatRenderingService } from "../implementations/image-export/BeatRenderingService";
+import { BeatFallbackRenderingService } from "../implementations/rendering/BeatFallbackRenderingService";
 import { CanvasManagementService } from "../implementations/image-export/CanvasManagementService";
 import { ExportConfigurationManager } from "../implementations/image-export/ExportConfigurationManager";
 import { ExportMemoryCalculator } from "../implementations/image-export/ExportMemoryCalculator";
@@ -243,6 +244,9 @@ try {
 
   // Bind image export services
   container.bind(TYPES.IBeatRenderingService).to(BeatRenderingService);
+  container
+    .bind(TYPES.IBeatFallbackRenderingService)
+    .to(BeatFallbackRenderingService);
   container.bind(TYPES.ICanvasManagementService).to(CanvasManagementService);
   container
     .bind(TYPES.IExportConfigurationManager)

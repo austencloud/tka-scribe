@@ -157,7 +157,7 @@
     align-items: center;
     justify-content: center;
     padding: var(--spacing-xs);
-    background: rgba(20, 20, 30, 0.3);
+    background: rgba(255, 255, 255, 0.02);
   }
 
   .sequence-preview img {
@@ -169,12 +169,12 @@
 
   .sequence-info {
     padding: var(--spacing-xs);
-    background: rgba(30, 30, 40, 0.8);
-    border-top: 1px solid rgba(80, 80, 100, 0.3);
+    background: rgba(255, 255, 255, 0.05);
+    border-top: var(--glass-border);
   }
 
   .sequence-name {
-    color: rgba(255, 255, 255, 0.9);
+    color: white;
     font-size: var(--font-size-xs);
     font-weight: 500;
     overflow: hidden;
@@ -184,14 +184,14 @@
   }
 
   .beats-count {
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--text-secondary);
     font-size: 10px;
     text-align: center;
   }
 
   /* Focus styles for accessibility */
   .sequence-thumbnail:focus-visible {
-    outline: 2px solid rgba(255, 255, 255, 0.6);
+    outline: 2px solid var(--primary-color);
     outline-offset: 2px;
   }
 
