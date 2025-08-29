@@ -5,13 +5,13 @@
  * Provides centralized canvas management functionality.
  */
 
-import type { SequenceData } from "../../../../interfaces/domain-types";
+import type { SequenceData } from "$lib/domain/core";
 import type {
   IDimensionCalculationService,
   ILayoutCalculationService,
   LayoutData,
   TKAImageExportOptions,
-} from "../../../../interfaces/image-export-interfaces";
+} from "../../../../contracts/image-export-interfaces";
 import { CompositionUtils, type ValidationResult } from "./CompositionTypes";
 
 export class CanvasCreator {

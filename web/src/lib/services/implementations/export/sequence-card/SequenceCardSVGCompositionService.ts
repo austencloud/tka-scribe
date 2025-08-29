@@ -5,10 +5,11 @@
  * Single responsibility: Arranging beat SVGs into card layouts.
  */
 
+import { injectable } from "inversify";
 import type {
   ISequenceCardSVGCompositionService,
   SequenceCardDimensions,
-} from "../../../interfaces/sequence-card-export-interfaces";
+} from "../../../contracts/sequence-card-export-interfaces";
 
 interface BeatLayout {
   rows: number;
@@ -18,6 +19,7 @@ interface BeatLayout {
   spacing: { x: number; y: number };
 }
 
+@injectable()
 export class SequenceCardSVGCompositionService
   implements ISequenceCardSVGCompositionService
 {

@@ -3,7 +3,7 @@
   import type { FilterType, FilterValue } from "$lib/domain/browse";
   import { SortMethod } from "$lib/domain/browse";
   import { resolve, TYPES } from "$lib/services/inversify/container";
-  import type { IThumbnailService } from "$lib/services/interfaces/browse-interfaces";
+  import type { IThumbnailService } from "$lib/services/contracts/browse-interfaces";
   import { getBrowseTabStateManager } from "$lib/state/browse-tab-state-manager.svelte";
   import { onMount } from "svelte";
   import SequenceBrowserControls from "./SequenceBrowserControls.svelte";

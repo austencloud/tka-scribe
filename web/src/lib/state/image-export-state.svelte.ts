@@ -11,8 +11,8 @@
 import type {
   ITKAImageExportService,
   TKAImageExportOptions,
-} from "$lib/services/interfaces/image-export-interfaces";
-import type { SequenceData } from "$lib/services/interfaces/domain-types";
+} from "$lib/services/contracts/image-export-interfaces";
+import type { SequenceData } from "$lib/domain/core";
 
 export interface ImageExportState {
   // Export options state

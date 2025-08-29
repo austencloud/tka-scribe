@@ -10,7 +10,7 @@ import type {
   BeatFrameConfig,
   ContainerDimensions,
   IBeatFrameService,
-} from "$lib/services/interfaces/beat-frame-interfaces";
+} from "$lib/services/contracts/beat-frame-interfaces";
 
 /**
  * Creates component-scoped beat frame state

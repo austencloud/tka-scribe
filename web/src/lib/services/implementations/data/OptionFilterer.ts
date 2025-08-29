@@ -6,9 +6,9 @@
  */
 
 import { getLetterType } from "$lib/domain";
-import type { BeatData } from "$lib/domain/BeatData";
-import type { PictographData } from "$lib/domain/PictographData";
-import type { IPositionMapper } from "$lib/services/interfaces/positioning-interfaces";
+import type { BeatData } from "$lib/domain/build/workbench/BeatData";
+import type { PictographData } from "$lib/domain/core/pictograph/PictographData";
+import type { IPositionMapper } from "$lib/services/contracts/positioning-interfaces";
 import { inject, injectable } from "inversify";
 import { TYPES } from "../../inversify/types";
 import type { IEnumMapper } from "./EnumMapper";

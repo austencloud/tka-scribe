@@ -11,14 +11,14 @@ import { inject, injectable } from "inversify";
 import { TYPES } from "../../inversify/types";
 import type { CSVRow } from "../movement/CSVPictographParserService";
 
-import type { LetterMapping } from "$lib/domain/codex/types";
-import type { ILetterMappingRepository } from "$lib/repositories/LetterMappingRepository";
+import type { ILetterMappingRepository } from "$lib/domain/learn/codex/LetterMappingRepository";
+import type { LetterMapping } from "$lib/domain/learn/codex/types";
 import type {
-  ICsvLoader,
   ICSVParser,
   ILetterQueryHandler,
   ParsedCsvRow,
-} from "../../interfaces/data-interfaces";
+} from "$lib/services/contracts/data-interfaces";
+import type { ICsvLoader } from "../../contracts/data/ICsvLoader";
 import type { ICSVPictographParserService as ICSVPictographParser } from "../movement/CSVPictographParserService";
 
 @injectable()
@@ -104,8 +104,16 @@ export class LetterQueryHandler implements ILetterQueryHandler {
       }
 
       this.parsedData = {
-        [GridMode.DIAMOND]: diamondParseResult.rows,
-        [GridMode.BOX]: boxParseResult.rows,
+        [GridMode.DIAMOND]: diamondParseResult.rows.map((row) => ({
+          data: row,
+          errors: [],
+          isValid: true,
+        })),
+        [GridMode.BOX]: boxParseResult.rows.map((row) => ({
+          data: row,
+          errors: [],
+          isValid: true,
+        })),
         // SKEWED mode doesn't have separate data - it uses both diamond and box
       };
 
@@ -158,7 +166,9 @@ export class LetterQueryHandler implements ILetterQueryHandler {
       }
 
       // Transform CSV row to PictographData using existing service
-      return this.csvPictographParser.parseCSVRowToPictograph(csvRow as CSVRow);
+      return this.csvPictographParser.parseCSVRowToPictograph(
+        csvRow.data as unknown as CSVRow
+      );
     } catch (error) {
       console.error(`❌ Error getting pictograph for letter ${letter}:`, error);
       return null;
@@ -226,14 +236,14 @@ export class LetterQueryHandler implements ILetterQueryHandler {
         const row = csvRows[i];
         try {
           const pictograph = this.csvPictographParser.parseCSVRowToPictograph(
-            row as CSVRow
+            row.data as unknown as CSVRow
           );
           if (pictograph) {
             pictographs.push(pictograph);
           }
         } catch (error) {
           console.warn(
-            `⚠️ Failed to convert CSV row ${i} (letter: ${row.letter}):`,
+            `⚠️ Failed to convert CSV row ${i} (letter: ${row.data.letter}):`,
             error
           );
         }
@@ -334,12 +344,12 @@ export class LetterQueryHandler implements ILetterQueryHandler {
     };
     const matchingRow = csvRows.find(
       (row) =>
-        row.letter === letter &&
-        row.startPosition === mapping.startPosition &&
-        row.endPosition === mapping.endPosition &&
-        row.blueMotionType ===
+        row.data.letter === letter &&
+        row.data.startPosition === mapping.startPosition &&
+        row.data.endPosition === mapping.endPosition &&
+        row.data.blueMotionType ===
           (mappingData.blueMotion || mappingData.blueMotionType) &&
-        row.redMotionType ===
+        row.data.redMotionType ===
           (mappingData.redMotion || mappingData.redMotionType)
     );
 

@@ -5,15 +5,15 @@
  * This service reverse-engineers the letter from motion parameters.
  */
 
+import { Letter } from "$lib/domain/core/Letter";
+import type { MotionData } from "$lib/domain/core/pictograph/MotionData";
+import type { PictographData } from "$lib/domain/core/pictograph/PictographData";
 import { GridMode, MotionType } from "$lib/domain/enums";
 import { injectable } from "inversify";
-import { Letter } from "$lib/domain/Letter";
-import type { MotionData } from "$lib/domain/MotionData";
-import type { PictographData } from "$lib/domain/PictographData";
 import type {
   ILetterDeriver,
   LetterDerivationResult,
-} from "../../interfaces/generation-interfaces";
+} from "../../contracts/generation-interfaces";
 
 // Interface is now imported from generation-interfaces.ts
 

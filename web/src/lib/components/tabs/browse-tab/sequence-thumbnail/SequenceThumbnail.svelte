@@ -6,7 +6,7 @@ separation of concerns and maintainability. Reduced from 537 lines to ~80 lines.
 -->
 <script lang="ts">
   import type { SequenceData } from "$domain/SequenceData";
-  import type { IThumbnailService } from "$lib/services/interfaces/browse-interfaces";
+  import type { IThumbnailService } from "$lib/services/contracts/browse-interfaces";
   import ThumbnailActions from "./ThumbnailActions.svelte";
   import ThumbnailImage from "./ThumbnailImage.svelte";
   import ThumbnailMetadata from "./ThumbnailMetadata.svelte";

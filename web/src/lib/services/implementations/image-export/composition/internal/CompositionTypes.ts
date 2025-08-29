@@ -2,12 +2,12 @@
  * Shared types and utilities for image composition components
  */
 
-import type { SequenceData } from "../../../../interfaces/domain-types";
+import type { SequenceData } from "$lib/domain/core";
 import type {
   CompositionOptions,
   LayoutData,
   TKAImageExportOptions,
-} from "../../../../interfaces/image-export-interfaces";
+} from "../../../../contracts/image-export-interfaces";
 
 export interface CompositionContext {
   sequence: SequenceData;

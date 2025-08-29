@@ -7,7 +7,7 @@
 
 import { GridPosition, Location } from "$lib/domain/enums";
 import { injectable } from "inversify";
-import type { IPositionMapper } from "../../interfaces/positioning-interfaces";
+import type { IPositionMapper } from "../../contracts/positioning-interfaces";
 
 @injectable()
 export class PositionMapper implements IPositionMapper {

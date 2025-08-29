@@ -17,7 +17,7 @@ import type {
   IWorkbenchService,
   SequenceCreationResult,
   WorkbenchMode,
-} from "$lib/services/interfaces/workbench-interfaces";
+} from "$lib/services/contracts/workbench-interfaces";
 
 @injectable()
 export class WorkbenchCoordinationService

@@ -8,8 +8,9 @@
 import type {
   ExportOptions,
   SequenceData,
-} from "../../../interfaces/domain-types";
-import type { ISequenceCardCacheService } from "../../../interfaces/sequence-card-export-interfaces";
+} from "$lib/domain/core";
+import { injectable } from "inversify";
+import type { ISequenceCardCacheService } from "../../../contracts/sequence-card-export-interfaces";
 
 interface CacheEntry {
   data: Blob | SequenceData;
@@ -27,6 +28,7 @@ interface CacheStats {
   lastCleanup: Date;
 }
 
+@injectable()
 export class SequenceCardCacheService implements ISequenceCardCacheService {
   private imageCache = new Map<string, CacheEntry>();
   private dataCache = new Map<string, CacheEntry>();

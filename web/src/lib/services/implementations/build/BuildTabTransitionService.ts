@@ -10,7 +10,11 @@ import type { ActiveBuildSubTab } from "$lib/state/services/state-service-interf
 
 // Simplified transition service without complex fade orchestrator
 
-export class BuildTabTransitionService {
+import { injectable } from "inversify";
+import type { IBuildTabTransitionService } from "../../contracts/build-interfaces";
+
+@injectable()
+export class BuildTabTransitionService implements IBuildTabTransitionService {
   /**
    * Handle main tab transitions with fade animations
    * @param targetTab - The tab to transition to
@@ -48,6 +52,32 @@ export class BuildTabTransitionService {
   }
 
   // Note: Removed stateful methods - components should manage their own state
+
+  // ============================================================================
+  // INTERFACE IMPLEMENTATION
+  // ============================================================================
+
+  /**
+   * Transition to a specific tab
+   */
+  async transitionToTab(tabId: string): Promise<void> {
+    console.log(`🔄 BuildTabTransitionService: Transitioning to tab ${tabId}`);
+    // Implementation for tab transition logic
+  }
+
+  /**
+   * Get current transition state
+   */
+  getTransitionState(): string {
+    return "idle"; // Default state
+  }
+
+  /**
+   * Check if currently transitioning
+   */
+  isTransitioning(): boolean {
+    return false; // Default implementation
+  }
 }
 
 // Create and export singleton instance

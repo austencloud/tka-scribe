@@ -9,7 +9,7 @@ import type { BeatData } from "$lib/domain";
 import type {
   IBeatCalculationService,
   BeatCalculationResult,
-} from "$lib/services/interfaces/application-interfaces";
+} from "$lib/services/contracts/animation";
 import { injectable } from "inversify";
 
 @injectable()

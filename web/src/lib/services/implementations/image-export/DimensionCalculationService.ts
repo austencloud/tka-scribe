@@ -12,7 +12,7 @@ import { injectable } from "inversify";
 import type {
   IDimensionCalculationService,
   TKAImageExportOptions,
-} from "../../interfaces/image-export-interfaces";
+} from "../../contracts/image-export-interfaces";
 
 @injectable()
 export class DimensionCalculationService

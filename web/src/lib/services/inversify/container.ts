@@ -12,17 +12,17 @@ import "reflect-metadata";
 import { TYPES } from "./types";
 
 // Import service implementations
-import { LessonRepository } from "../../repositories/LessonRepository";
-import { LetterMappingRepository } from "../../repositories/LetterMappingRepository";
-import { CodexService } from "../codex/CodexService";
-import { PictographOperationsService } from "../codex/PictographOperationsService";
+import { LetterMappingRepository } from "../../domain/learn/codex/LetterMappingRepository";
+import { LessonRepository } from "../../domain/learn/LessonRepository";
 import { CsvLoader } from "../implementations/data/CsvLoader";
-import { CSVParser } from "../implementations/data/CSVParser";
+import { CSVParser } from "../implementations/data/CsvParser";
 import { LetterQueryHandler } from "../implementations/data/LetterQueryHandler";
+import { CodexService } from "../implementations/learn/codex/CodexService";
+import { PictographOperationsService } from "../implementations/learn/codex/PictographOperationsService";
 
 // Import application services
-import { ApplicationInitializationService } from "../implementations/application/ApplicationInitializationService";
-import { DeviceDetectionService } from "../implementations/application/DeviceDetectionService";
+import { ApplicationInitializer } from "../implementations/application/ApplicationInitializer";
+import { DeviceDetector } from "../implementations/application/DeviceDetector";
 import { LocalStoragePersistenceService } from "../implementations/persistence/LocalStoragePersistenceService";
 import { SettingsService } from "../implementations/persistence/SettingsService";
 
@@ -47,18 +47,18 @@ import { WorkbenchService } from "../implementations/workbench/WorkbenchService"
 import { GridModeDeriver } from "../implementations/domain/GridModeDeriver";
 
 // Import rendering services
-import { PropCoordinatorService } from "../implementations/rendering/PropCoordinatorService";
+import { PropCoordinator } from "../implementations/rendering/PropCoordinator";
 
 // Import browse services
 import { BrowseService } from "../implementations/browse/BrowseService";
 import { FavoritesService } from "../implementations/browse/FavoritesService";
 
 // Import additional data services
-import { ArrowPlacementService } from "../implementations/data/ArrowPlacementService";
 import { DataTransformer } from "../implementations/data/DataTransformer";
 import { EnumMapper } from "../implementations/data/EnumMapper";
 import { MotionQueryHandler } from "../implementations/data/MotionQueryHandler";
 import { OptionFilterer } from "../implementations/data/OptionFilterer";
+import { ArrowPlacementService } from "../implementations/positioning/ArrowPlacementService";
 
 // Import additional domain services
 import { LetterDeriver } from "../implementations/domain/LetterDeriver";
@@ -76,7 +76,7 @@ import { PictographGenerator } from "../implementations/generation/PictographGen
 import { SequenceGenerationService } from "../implementations/generation/SequenceGenerationService";
 
 // Import background services
-import { BackgroundService } from "../implementations/background/BackgroundService";
+import { BackgroundService } from "../implementations/application/background/BackgroundService";
 
 // Import image export services
 import { BeatRenderingService } from "../implementations/image-export/BeatRenderingService";
@@ -91,7 +91,7 @@ import { ImageCompositionService } from "../implementations/image-export/ImageCo
 import { ImagePreviewGenerator } from "../implementations/image-export/ImagePreviewGenerator";
 import { LayoutCalculationService } from "../implementations/image-export/LayoutCalculationService";
 import { TKAImageExportService } from "../implementations/image-export/TKAImageExportService";
-import { BeatFallbackRenderingService } from "../implementations/rendering/BeatFallbackRenderingService";
+import { BeatFallbackRenderer } from "../implementations/rendering/BeatFallbackRenderer";
 
 // Import navigation services
 import { NavigationService } from "../implementations/navigation/NavigationService";
@@ -109,10 +109,10 @@ import { BetaOffsetCalculator } from "../implementations/positioning/BetaOffsetC
 import { PropPlacementService } from "../implementations/positioning/PropPlacementService";
 
 // Import additional rendering services
-import { ArrowRenderingService } from "../implementations/rendering/ArrowRenderingService";
+import { ArrowRenderer } from "../implementations/rendering/ArrowRenderer";
 import { BeatGridService } from "../implementations/rendering/BeatGridService";
 import { GridRenderingService } from "../implementations/rendering/GridRenderingService";
-import { OverlayRenderingService } from "../implementations/rendering/OverlayRenderingService";
+import { OverlayRenderer } from "../implementations/rendering/OverlayRenderer";
 import { SvgConfiguration } from "../implementations/rendering/SvgConfiguration";
 import { SvgUtilityService } from "../implementations/rendering/SvgUtilityService";
 
@@ -136,24 +136,24 @@ import { ConstructSubTabCoordinationService } from "../implementations/build/Con
 
 // Import missing services that have confirmed implementations
 import { MotionLetterIdentificationService } from "../implementations/motion-tester/MotionLetterIdentificationService";
+import { ArrowAdjustmentCalculator } from "../implementations/positioning/calculation/ArrowAdjustmentCalculator";
+import { ArrowLocationCalculator } from "../implementations/positioning/calculation/ArrowLocationCalculator";
+import { ArrowRotationCalculator } from "../implementations/positioning/calculation/ArrowRotationCalculator";
+import { DashLocationCalculator } from "../implementations/positioning/calculation/DashLocationCalculator";
+import { ArrowCoordinateSystemService } from "../implementations/positioning/coordinate_system/ArrowCoordinateSystemService";
+import { AttributeKeyGenerator } from "../implementations/positioning/key_generators/AttributeKeyGenerator";
+import { SpecialPlacementOriKeyGenerator } from "../implementations/positioning/key_generators/SpecialPlacementOriKeyGenerator";
+import { TurnsTupleKeyGenerator } from "../implementations/positioning/key_generators/TurnsTupleKeyGenerator";
+import { ArrowPositionCalculator } from "../implementations/positioning/orchestration/ArrowPositionCalculator";
 import { OrientationCalculationService } from "../implementations/positioning/OrientationCalculationService";
-import { ArrowPathResolutionService } from "../implementations/rendering/arrow/ArrowPathResolutionService";
-import { ArrowAdjustmentCalculator } from "../positioning/arrows/calculation/ArrowAdjustmentCalculator";
-import { ArrowLocationCalculator } from "../positioning/arrows/calculation/ArrowLocationCalculator";
-import { ArrowRotationCalculator } from "../positioning/arrows/calculation/ArrowRotationCalculator";
-import { DashLocationCalculator } from "../positioning/arrows/calculation/DashLocationCalculator";
-import { ArrowCoordinateSystemService } from "../positioning/arrows/coordinate_system/ArrowCoordinateSystemService";
-import { AttributeKeyGenerator } from "../positioning/arrows/key_generators/AttributeKeyGenerator";
-import { SpecialPlacementOriKeyGenerator } from "../positioning/arrows/key_generators/SpecialPlacementOriKeyGenerator";
-import { TurnsTupleKeyGenerator } from "../positioning/arrows/key_generators/TurnsTupleKeyGenerator";
-import { ArrowPositionCalculator } from "../positioning/arrows/orchestration/ArrowPositionCalculator";
-import { DefaultPlacementService } from "../positioning/arrows/placement/DefaultPlacementService";
-import { SpecialPlacementService } from "../positioning/arrows/placement/SpecialPlacementService";
+import { DefaultPlacementService } from "../implementations/positioning/placement/DefaultPlacementService";
+import { SpecialPlacementService } from "../implementations/positioning/placement/SpecialPlacementService";
 import {
   DirectionalTupleCalculator,
   DirectionalTupleProcessor,
   QuadrantIndexCalculator,
-} from "../positioning/arrows/processors/DirectionalTupleProcessor";
+} from "../implementations/positioning/processors/DirectionalTupleProcessor";
+import { ArrowPathResolutionService } from "../implementations/rendering/arrow/ArrowPathResolutionService";
 
 // Import additional services with confirmed implementations
 import { SequenceAnimationEngine } from "../../animator/core/engine/sequence-animation-engine";
@@ -166,8 +166,8 @@ import { PositionMapper } from "../implementations/movement/PositionMapper";
 // ValidationService is defined as interface in PictographTransformationService but no implementation found
 
 // Import additional services with confirmed implementations
-import { ImageFormatConverterService } from "../implementations/conversion/ImageFormatConverterService";
-import { SVGToCanvasConverterService } from "../implementations/conversion/SVGToCanvasConverterService";
+import { ImageFormatConverterService } from "../implementations/export/conversion/ImageFormatConverterService";
+import { SVGToCanvasConverterService } from "../implementations/export/conversion/SVGToCanvasConverterService";
 import { DimensionCalculationService } from "../implementations/image-export/DimensionCalculationService";
 
 // Import text rendering services
@@ -209,10 +209,8 @@ try {
   // Bind application services
   container.bind(TYPES.ISettingsService).to(SettingsService);
   container.bind(TYPES.IPersistenceService).to(LocalStoragePersistenceService);
-  container.bind(TYPES.IDeviceDetector).to(DeviceDetectionService);
-  container
-    .bind(TYPES.IApplicationInitializer)
-    .to(ApplicationInitializationService);
+  container.bind(TYPES.IDeviceDetector).to(DeviceDetector);
+  container.bind(TYPES.IApplicationInitializer).to(ApplicationInitializer);
 
   // Bind sequence services
   container.bind(TYPES.ISequenceDomainService).to(SequenceDomainService);
@@ -245,7 +243,7 @@ try {
   container.bind(TYPES.IGridModeDeriver).to(GridModeDeriver);
 
   // Bind rendering services
-  container.bind(TYPES.IPropCoordinatorService).to(PropCoordinatorService);
+  container.bind(TYPES.IPropCoordinator).to(PropCoordinator);
 
   // Bind additional browse services
   container.bind(TYPES.IFavoritesService).to(FavoritesService);
@@ -281,9 +279,7 @@ try {
 
   // Bind image export services
   container.bind(TYPES.IBeatRenderingService).to(BeatRenderingService);
-  container
-    .bind(TYPES.IBeatFallbackRenderingService)
-    .to(BeatFallbackRenderingService);
+  container.bind(TYPES.IBeatFallbackRenderer).to(BeatFallbackRenderer);
   container.bind(TYPES.ICanvasManagementService).to(CanvasManagementService);
   container
     .bind(TYPES.IExportConfigurationManager)
@@ -327,10 +323,10 @@ try {
   container.bind(TYPES.IPropPlacementService).to(PropPlacementService);
 
   // Bind additional rendering services
-  container.bind(TYPES.IArrowRenderingService).to(ArrowRenderingService);
+  container.bind(TYPES.IArrowRenderer).to(ArrowRenderer);
   container.bind(TYPES.IBeatGridService).to(BeatGridService);
   container.bind(TYPES.IGridRenderingService).to(GridRenderingService);
-  container.bind(TYPES.IOverlayRenderingService).to(OverlayRenderingService);
+  container.bind(TYPES.IOverlayRenderer).to(OverlayRenderer);
   container.bind(TYPES.ISvgConfiguration).to(SvgConfiguration);
   container.bind(TYPES.ISvgUtilityService).to(SvgUtilityService);
 

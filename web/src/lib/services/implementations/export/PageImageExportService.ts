@@ -5,37 +5,21 @@
  * Supports PNG, JPEG, and WebP formats with quality and scaling options.
  */
 
-// Html2Canvas interface for type safety
-interface Html2CanvasFunction {
-  (
-    element: HTMLElement,
-    options?: Html2CanvasOptions
-  ): Promise<HTMLCanvasElement>;
-}
-
-interface Html2CanvasOptions {
-  scale?: number;
-  backgroundColor?: string;
-  useCORS?: boolean;
-  allowTaint?: boolean;
-  width?: number;
-  height?: number;
-  removeContainer?: boolean;
-  [key: string]: unknown; // Allow additional html2canvas options
-}
-
-interface WindowWithHtml2Canvas extends Window {
-  html2canvas?: Html2CanvasFunction;
-}
-
 import type {
   BatchExportResult,
-  ExportProgress,
-  IPageImageExportService,
   ImageExportOptions,
   ServiceExportResult,
-} from "../../interfaces/export-interfaces";
+} from "$lib/domain/data-interfaces/export-config-interfaces";
+import { injectable } from "inversify";
+import type { IPageImageExportService } from "../../contracts/page-export-interfaces";
 
+import type {
+  ExportProgress,
+  Html2CanvasFunction,
+  WindowWithHtml2Canvas,
+} from "$lib/domain/data-interfaces/html-canvas-types";
+
+@injectable()
 export class PageImageExportService implements IPageImageExportService {
   private abortController: AbortController | null = null;
   private currentProgress: ExportProgress | null = null;

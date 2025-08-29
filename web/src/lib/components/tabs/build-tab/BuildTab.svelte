@@ -8,9 +8,9 @@
   import { resolve, TYPES } from "$lib/services/inversify/container";
   import { createBuildTabState } from "$lib/state/build-tab-state.svelte";
   import { createConstructTabState } from "$lib/state/construct-tab-state.svelte";
-  import type { IBuildTabService } from "$lib/services/interfaces/IBuildTabService";
-  import type { IStartPositionService } from "$lib/services/interfaces/IStartPositionService";
-  import type { ISequenceService } from "$lib/services/interfaces/sequence-interfaces";
+  import type { IBuildTabService } from "$lib/services/contracts/build-interfaces";
+  import type { IStartPositionService } from "$lib/services/contracts/application/IStartPositionService";
+  import type { ISequenceService } from "$lib/services/contracts/sequence-interfaces";
   import { GridMode } from "$lib/domain/enums";
   import { onMount } from "svelte";
 

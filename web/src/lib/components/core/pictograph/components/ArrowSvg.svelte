@@ -1,12 +1,12 @@
 <!--
 Arrow Component - Renders SVG arrows with proper positioning and natural sizing
 Follows the same pattern as Prop component for consistent sizing behavior
-REFACTORED: Now purely presentational, uses ArrowRenderingService for business logic
+REFACTORED: Now purely presentational, uses ArrowRenderer for business logic
 -->
 <script lang="ts">
   import { MotionColor, type MotionData } from "$lib/domain";
+  import type { IArrowRenderer } from "$lib/services/contracts/pictograph-interfaces";
   import { resolve, TYPES } from "$lib/services/inversify/container";
-  import type { IArrowRenderingService } from "$lib/services/interfaces/pictograph-interfaces";
   import { onMount } from "svelte";
 
   interface Props {
@@ -30,9 +30,7 @@ REFACTORED: Now purely presentational, uses ArrowRenderingService for business l
   }: Props = $props();
 
   // Get arrow rendering service from DI container
-  const arrowRenderingService = resolve<IArrowRenderingService>(
-    TYPES.IArrowRenderingService
-  );
+  const ArrowRenderer = resolve<IArrowRenderer>(TYPES.IArrowRenderer);
 
   let loaded = $state(false);
   let error = $state<string | null>(null);
@@ -68,14 +66,14 @@ REFACTORED: Now purely presentational, uses ArrowRenderingService for business l
   const calculatedPosition = $derived(() => position());
   const shouldMirror = $derived(() => preCalculatedMirroring ?? false);
 
-  // Load SVG data using ArrowRenderingService (business logic now in service)
+  // Load SVG data using ArrowRenderer (business logic now in service)
   const loadSvg = async () => {
     try {
       if (!motionData || !motionData.arrowPlacementData)
         throw new Error("No motion data or arrow placement data available");
 
-      // Use the actual ArrowRenderingService to load real arrow SVGs
-      const svgDataResult = await arrowRenderingService.loadArrowPlacementData(
+      // Use the actual ArrowRenderer to load real arrow SVGs
+      const svgDataResult = await ArrowRenderer.loadArrowPlacementData(
         motionData.arrowPlacementData,
         motionData
       );

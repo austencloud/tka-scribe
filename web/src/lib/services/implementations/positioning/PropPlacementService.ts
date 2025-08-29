@@ -11,13 +11,14 @@ import type {
   PictographData,
   PropPlacementData,
 } from "$lib/domain";
+import { createPropPlacementFromPosition } from "$lib/domain/core/pictograph/PropPlacementData";
 import { GridMode } from "$lib/domain/enums";
-import { createPropPlacementFromPosition } from "$lib/domain/PropPlacementData";
 import { endsWithBeta } from "$lib/utils/betaDetection";
 
-import { DefaultPropPositioner } from "../../DefaultPropPositioner";
-import type { IGridModeDeriver } from "../../interfaces/positioning-interfaces";
-import { PropRotAngleManager } from "../../PropRotAngleManager";
+import { injectable } from "inversify";
+import type { IGridModeDeriver } from "../../contracts/positioning-interfaces";
+import { DefaultPropPositioner } from "../DefaultPropPositioner";
+import { PropRotAngleManager } from "../PropRotAngleManager";
 import { BetaOffsetCalculator } from "./BetaOffsetCalculator";
 import { BetaPropDirectionCalculator } from "./BetaPropDirectionCalculator";
 
@@ -28,6 +29,7 @@ export interface IPropPlacementService {
   ): Promise<PropPlacementData>;
 }
 
+@injectable()
 export class PropPlacementService implements IPropPlacementService {
   private gridModeService: IGridModeDeriver | null = null;
 

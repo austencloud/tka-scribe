@@ -5,11 +5,12 @@
  * Maintains compatibility with legacy letter type detection while providing clean separation.
  */
 
-import type { PictographData } from "$lib/domain/PictographData";
+import type { PictographData } from "$lib/domain/core/pictograph/PictographData";
+import { injectable } from "inversify";
 import type {
   OrganizedPictographs,
-  PictographOrganizationConfig
-} from "../../interfaces/build-interfaces";
+  PictographOrganizationConfig,
+} from "../../contracts/build-interfaces";
 
 
 
@@ -20,7 +21,8 @@ const DEFAULT_CONFIG: PictographOrganizationConfig = {
 };
 
 // ===== Main Service Class =====
-export class PictographOrganizerService {
+@injectable()
+export class PictographOrganizerService implements IPictographOrganizerService {
   private config: PictographOrganizationConfig;
 
   constructor(config: PictographOrganizationConfig = DEFAULT_CONFIG) {

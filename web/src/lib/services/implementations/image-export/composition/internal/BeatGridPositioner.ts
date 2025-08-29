@@ -5,13 +5,13 @@
  * Manages the rendering and placement of beats within the composition layout.
  */
 
-import type { SequenceData } from "../../../../interfaces/domain-types";
+import type { SequenceData } from "$lib/domain/core";
 import type {
   CompositionOptions,
   IBeatRenderingService,
   LayoutData,
   TKAImageExportOptions,
-} from "../../../../interfaces/image-export-interfaces";
+} from "../../../../contracts/image-export-interfaces";
 
 export class BeatGridPositioner {
   constructor(private beatRenderer: IBeatRenderingService) {}

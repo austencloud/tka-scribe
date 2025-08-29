@@ -6,12 +6,12 @@
  */
 
 import type { SequenceData } from "$lib/domain";
+import { inject, injectable } from "inversify";
 import type {
   IPersistenceService,
-  ISequenceService,
   ISequenceDeletionService,
-} from "../../interfaces/sequence-interfaces";
-import { injectable, inject } from "inversify";
+  ISequenceService,
+} from "$lib/services/contracts/sequence-interfaces";
 import { TYPES } from "../../inversify/types";
 
 @injectable()

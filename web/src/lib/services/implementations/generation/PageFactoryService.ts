@@ -7,6 +7,12 @@
  * Based on desktop application's printable_factory.py functionality.
  */
 
+import type { SequenceData } from "$lib/domain/core";
+import type {
+  IPageFactoryService,
+  IPrintablePageLayoutService,
+} from "$lib/services/contracts/sequence-interfaces";
+import { inject, injectable } from "inversify";
 import type {
   GridCalculationOptions,
   GridConfig,
@@ -18,13 +24,7 @@ import type {
   PageCreationOptions,
   PageLayoutConfig,
   Rectangle,
-} from "../../../domain/PageLayoutTypes";
-import type { SequenceData } from "../../interfaces/domain-types";
-import type {
-  IPageFactoryService,
-  IPrintablePageLayoutService,
-} from "../../interfaces/sequence-interfaces";
-import { injectable, inject } from "inversify";
+} from "../../../domain/sequence-card/PageLayoutTypes";
 import { TYPES } from "../../inversify/types";
 
 @injectable()
@@ -217,7 +217,8 @@ export class PageFactoryService implements IPageFactoryService {
     const layoutValidation = this.layoutService.validateLayout(options.layout);
     errors.push(...layoutValidation.errors);
     warnings.push(...layoutValidation.warnings);
-    suggestions.push(...layoutValidation.suggestions);
+    // Note: LayoutValidationResult doesn't have suggestions property
+    // suggestions.push(...layoutValidation.suggestions);
 
     return {
       isValid: errors.length === 0,

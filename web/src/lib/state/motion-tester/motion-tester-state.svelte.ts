@@ -9,7 +9,7 @@ import {
   type PropStates,
 } from "$lib/services/implementations/motion-tester/AnimationControlService";
 import { resolve, TYPES } from "$lib/services/inversify/container";
-import type { ISequenceAnimationEngine } from "$lib/services/interfaces/application-interfaces";
+import type { ISequenceAnimationEngine } from "$lib/services/contracts/application-interfaces";
 import { OrientationCalculationService } from "$lib/services/implementations/positioning/OrientationCalculationService";
 import {
   MotionLetterIdentificationService,

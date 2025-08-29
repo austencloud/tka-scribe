@@ -14,9 +14,9 @@ import {
   OptionPickerReversalFilter,
   OptionPickerSortMethod,
 } from "$lib/domain";
-import type { PictographData } from "$lib/domain/PictographData";
+import type { PictographData } from "$lib/domain/core/pictograph/PictographData";
+import type { IPositionMapper } from "$lib/services/contracts/positioning-interfaces";
 import { resolve, TYPES } from "$lib/services/inversify/container";
-import type { IPositionMapper } from "$lib/services/interfaces/positioning-interfaces";
 
 /**
  * Helper function to compute endPosition from motion data

@@ -11,7 +11,7 @@
  * while maintaining the same public interface contracts.
  */
 
-import type { SequenceData } from "../../interfaces/domain-types";
+import type { SequenceData } from "$lib/domain/core";
 import type {
   CompositionOptions,
   IBeatRenderingService,
@@ -20,15 +20,15 @@ import type {
   ILayoutCalculationService,
   LayoutData,
   TKAImageExportOptions,
-} from "../../interfaces/image-export-interfaces";
+} from "../../contracts/image-export-interfaces";
 
+import { inject, injectable } from "inversify";
 import type {
   IDifficultyBadgeRenderer,
   ITextRenderingUtils,
   IUserInfoRenderer,
   IWordTextRenderer,
-} from "../../interfaces/text-rendering-interfaces";
-import { injectable, inject } from "inversify";
+} from "../../contracts/text-rendering-interfaces";
 import { TYPES } from "../../inversify/types";
 
 // Internal composition components

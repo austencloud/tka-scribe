@@ -7,6 +7,8 @@
  * Based on desktop application's printable_layout.py functionality.
  */
 
+import type { IPrintablePageLayoutService } from "$lib/services/contracts/sequence-interfaces";
+import { injectable } from "inversify";
 import type {
   DPIConfiguration,
   GridCalculationOptions,
@@ -23,9 +25,9 @@ import type {
   PageOrientation,
   PaperSize,
   Rectangle,
-} from "../../../domain/PageLayoutTypes";
-import type { IPrintablePageLayoutService } from "../../interfaces/sequence-interfaces";
+} from "../../../domain/sequence-card/PageLayoutTypes";
 
+@injectable()
 export class PrintablePageLayoutService implements IPrintablePageLayoutService {
   private readonly paperSizes = {
     A4: { width: 595, height: 842 },

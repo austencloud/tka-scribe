@@ -5,6 +5,7 @@
  * Handles DOM element selection, export orchestration, and file downloads.
  */
 
+import { injectable } from "inversify";
 import {
   downloadBlobBatch,
   generateTimestampedFilename,
@@ -14,9 +15,10 @@ import {
 import type {
   IPageImageExportService,
   ImageExportOptions,
-} from "../../interfaces/export-interfaces";
-import type { ISequenceCardExportIntegrationService } from "../../interfaces/sequence-interfaces";
+} from "../../contracts/export-interfaces";
+import type { ISequenceCardExportIntegrationService } from "$lib/services/contracts/sequence-interfaces";
 
+@injectable()
 export class SequenceCardExportIntegrationService
   implements ISequenceCardExportIntegrationService
 {

@@ -5,7 +5,7 @@
  * Ported from desktop app's browse models.
  */
 
-import type { SequenceData } from "../SequenceData";
+import type { SequenceData } from "../core/SequenceData";
 import type { FilterType, FilterValue } from "./FilterType";
 import { SortMethod } from "./SortMethod";
 

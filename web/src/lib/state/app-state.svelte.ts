@@ -12,7 +12,7 @@ import { settingsService } from "./services/SettingsService.svelte";
 import { tabStateService } from "./services/TabStateService.svelte";
 import { initializationService } from "./services/InitializationService.svelte";
 import { performanceMetricsService } from "./services/PerformanceMetricsService.svelte";
-import type { AppSettings } from "$services/interfaces/application-interfaces";
+import type { AppSettings } from "$services/contracts/application-interfaces";
 import type { TabId, Theme } from "./services/state-service-interfaces";
 
 // ============================================================================

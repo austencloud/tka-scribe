@@ -9,8 +9,8 @@ import type {
   IPanelManagementService,
   PanelState,
   ResizeOperation,
-} from "$lib/services/interfaces/panel-interfaces";
-import { ResizeDirection } from "$lib/services/interfaces/panel-interfaces";
+} from "$lib/services/contracts/panel-interfaces";
+import { ResizeDirection } from "$lib/services/contracts/panel-interfaces";
 
 export interface PanelStateManager {
   // Panel state getters (reactive)

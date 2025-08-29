@@ -6,8 +6,8 @@
  * Matches desktop functionality with row organization and control operations.
  */
 
-import type { PictographData } from "$lib/domain/PictographData";
-import type { ICodexService } from "$lib/services/interfaces/application-interfaces";
+import type { PictographData } from "$lib/domain/core/pictograph/PictographData";
+import type { ICodexService } from "$lib/services/contracts/application-interfaces";
 import { TYPES } from "$lib/services/inversify/types";
 
 // CRITICAL: Import container to ensure it loads

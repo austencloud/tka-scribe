@@ -11,7 +11,7 @@ import type {
   IWorkbenchService,
   WorkbenchConfig,
   WorkbenchMode,
-} from "$lib/services/interfaces/workbench-interfaces";
+} from "$lib/services/contracts/workbench-interfaces";
 
 /**
  * Creates component-scoped workbench state

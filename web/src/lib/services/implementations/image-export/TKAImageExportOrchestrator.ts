@@ -8,7 +8,7 @@
  * Refactored from the monolithic TKAImageExportService to focus solely on orchestration.
  */
 
-import type { SequenceData } from "../../interfaces/domain-types";
+import type { SequenceData } from "../../../domain";
 import type {
   IDimensionCalculationService,
   IExportConfigurationManager,
@@ -20,7 +20,7 @@ import type {
   ILayoutCalculationService,
   ITKAImageExportService,
   TKAImageExportOptions,
-} from "../../interfaces/image-export-interfaces";
+} from "../../contracts/image-export-interfaces";
 
 export class TKAImageExportOrchestrator implements ITKAImageExportService {
   constructor(

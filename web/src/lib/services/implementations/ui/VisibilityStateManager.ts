@@ -5,8 +5,8 @@
  * Manages complex dependencies between motion visibility and dependent glyphs.
  */
 
-import type { AppSettings } from "../../interfaces/application-interfaces";
 import { MotionColor } from "$lib/domain/enums";
+import type { AppSettings } from "$lib/services/contracts/application-interfaces";
 
 type VisibilityObserver = () => void;
 

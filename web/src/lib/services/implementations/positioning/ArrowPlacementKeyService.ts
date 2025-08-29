@@ -6,8 +6,9 @@
  */
 
 import type { MotionData } from "$lib/domain";
+import type { PictographData } from "$lib/domain/core";
 import { MotionType } from "$lib/domain/enums";
-import type { PictographData } from "../../interfaces/domain-types";
+import { injectable } from "inversify";
 
 export interface IArrowPlacementKeyService {
   generatePlacementKey(
@@ -19,6 +20,7 @@ export interface IArrowPlacementKeyService {
   generateBasicKey(motionType: MotionType): string;
 }
 
+@injectable()
 export class ArrowPlacementKeyService implements IArrowPlacementKeyService {
   // Letter condition mappings from desktop
   private readonly dashLetterConditions = {

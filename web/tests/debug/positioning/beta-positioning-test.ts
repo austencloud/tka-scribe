@@ -5,6 +5,7 @@
  */
 
 import { createMotionData, createPictographData } from "$lib/domain";
+import { Letter } from "$lib/domain/core/Letter";
 import {
   GridPosition,
   Location,
@@ -14,7 +15,6 @@ import {
   PropType,
   RotationDirection,
 } from "$lib/domain/enums";
-import { Letter } from "$lib/domain/Letter";
 import { PropPlacementService } from "$lib/services/implementations/positioning/PropPlacementService";
 
 // Test the new simplified beta positioning

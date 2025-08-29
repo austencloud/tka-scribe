@@ -6,11 +6,11 @@
  */
 
 import type { SequenceData } from "$lib/domain";
-import type { IBrowseService } from "$services/interfaces/browse-interfaces";
+import type { IBrowseService } from "$services/contracts/browse-interfaces";
 import type {
   IPageFactoryService,
   IPrintablePageLayoutService,
-} from "$services/interfaces/sequence-interfaces";
+} from "$services/contracts/sequence-interfaces";
 import { createPageLayoutState } from "../page-layout-state.svelte";
 import {
   displayState,

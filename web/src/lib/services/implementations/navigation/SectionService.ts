@@ -5,8 +5,11 @@
  * following the microservices architecture pattern.
  */
 
+import type {
+  SequenceData,
+  SortMethod,
+} from "$lib/domain/core";
 import { injectable } from "inversify";
-import type { SequenceData, SortMethod } from "../../interfaces/domain-types";
 
 export interface SequenceSection {
   id: string;

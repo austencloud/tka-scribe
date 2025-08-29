@@ -8,9 +8,7 @@
 import type { BeatData, SequenceData } from "$lib/domain";
 import type {
   ISequenceStateService,
-  ValidationResult,
-} from "$lib/services/interfaces/sequence-state-interfaces";
-
+} from "$lib/services/contracts/sequence/ISequenceStateService";
 /**
  * Creates component-scoped sequence state
  *

@@ -9,7 +9,7 @@ import { browser } from "$app/environment";
 import { GridMode } from "$lib/domain";
 import { BackgroundType } from "$lib/domain/background/BackgroundTypes";
 import { updateBodyBackground } from "$lib/utils/background-preloader";
-import type { AppSettings } from "$services/interfaces/application-interfaces";
+import type { AppSettings } from "$services/contracts/application-interfaces";
 import type { ISettingsService } from "./state-service-interfaces";
 
 const SETTINGS_STORAGE_KEY = "tka-modern-web-settings";

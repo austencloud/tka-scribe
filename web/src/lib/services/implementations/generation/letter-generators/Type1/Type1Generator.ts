@@ -5,8 +5,8 @@
  * Generates pictograph data for Type 1 letters using logical rules.
  */
 
+import { Letter } from "$lib/domain/core/Letter";
 import { Direction, PositionSystem, Timing } from "$lib/domain/enums";
-import { Letter } from "$lib/domain/Letter";
 import { BaseType1Generator } from "./shared/BaseType1Generator";
 import {
   TYPE1_ALPHA_TO_ALPHA_LETTERS,
@@ -70,9 +70,9 @@ export class Type1Generator extends BaseType1Generator {
 
   constructor(
     letter: string,
-    patternService: import("../../../../interfaces/generation-interfaces").IPositionPatternService,
-    positionCalculator: import("../../../../interfaces/generation-interfaces").IDirectionCalculator,
-    validator: import("../../../../interfaces/generation-interfaces").IPictographValidatorService
+    patternService: import("../../../../contracts/generation-interfaces").IPositionPatternService,
+    positionCalculator: import("../../../../contracts/generation-interfaces").IDirectionCalculator,
+    validator: import("../../../../contracts/generation-interfaces").IPictographValidatorService
   ) {
     // Convert string to Letter enum for internal use
     const letterEnum = letter as Letter;

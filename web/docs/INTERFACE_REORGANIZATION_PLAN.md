@@ -6,7 +6,7 @@
 
 **Current Structure Issues:**
 
-- **28 interface files** in `/src/lib/services/interfaces/`
+- **28 interface files** in `/src/lib/services/contracts/`
 - **258-line mega barrel export** in `index.ts`
 - **183 DI tokens** scattered in `types.ts`
 - **Mixed concerns everywhere**: types, interfaces, constants, and test files
@@ -45,8 +45,8 @@ src/lib/contracts/
 │   ├── pictograph/                  # From your pictograph-interfaces.ts
 │   │   ├── rendering/
 │   │   │   ├── IGridRenderingService.ts         # Grid visualization
-│   │   │   ├── IArrowRenderingService.ts        # Arrow visualization
-│   │   │   ├── IOverlayRenderingService.ts      # Overlay rendering
+│   │   │   ├── IArrowRenderer.ts        # Arrow visualization
+│   │   │   ├── IOverlayRenderer.ts      # Overlay rendering
 │   │   │   └── RenderingTypes.ts                # Rendering configs
 │   │   ├── svg/
 │   │   │   ├── ISvgUtilityService.ts            # SVG manipulation
@@ -120,7 +120,7 @@ src/lib/contracts/
 │   │   │   └── ArrowTypes.ts                    # Arrow positioning types
 │   │   ├── props/
 │   │   │   ├── IPropPlacementService.ts         # Prop positioning
-│   │   │   ├── IPropCoordinatorService.ts       # Prop coordination
+│   │   │   ├── IPropCoordinator.ts       # Prop coordination
 │   │   │   └── PropTypes.ts                     # Prop positioning types
 │   │   ├── calculations/
 │   │   │   ├── IOrientationCalculationService.ts # Orientation math
@@ -164,7 +164,7 @@ src/lib/contracts/
 │   │   │   └── BeatTypes.ts                     # Beat data structures
 │   │   ├── rendering/
 │   │   │   ├── IBeatRenderingService.ts         # Beat visualization
-│   │   │   ├── IBeatFallbackRenderingService.ts # Fallback rendering
+│   │   │   ├── IBeatFallbackRenderer.ts # Fallback rendering
 │   │   │   └── RenderingTypes.ts                # Beat rendering configs
 │   │   ├── tokens/
 │   │   │   └── BeatTokens.ts                    # All beat DI tokens

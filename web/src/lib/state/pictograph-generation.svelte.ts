@@ -6,10 +6,10 @@
  * Follows TKA architecture: services handle business logic, runes handle reactivity.
  */
 
-import { Letter } from "$lib/domain/Letter";
-import type { PictographData } from "$lib/domain/PictographData";
+import { Letter } from "$lib/domain/core/Letter";
+import type { PictographData } from "$lib/domain/core/pictograph/PictographData";
+import type { IPictographGenerator } from "$lib/services/contracts/generation-interfaces";
 import { resolve, TYPES } from "$lib/services/inversify/container";
-import type { IPictographGenerator } from "$lib/services/interfaces/generation-interfaces";
 
 /**
  * Creates reactive state for pictograph generation

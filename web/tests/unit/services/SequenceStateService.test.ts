@@ -6,9 +6,9 @@
  */
 
 import type { SequenceData } from "$lib/domain";
-import { createBeatData } from "$lib/domain/BeatData";
-import { Letter } from "$lib/domain/Letter";
-import { createPictographData } from "$lib/domain/PictographData";
+import { createBeatData } from "$lib/domain/build/workbench/BeatData";
+import { Letter } from "$lib/domain/core/Letter";
+import { createPictographData } from "$lib/domain/core/pictograph/PictographData";
 import { SequenceStateService } from "$lib/services/implementations/sequence/SequenceStateService";
 import { beforeEach, describe, expect, it } from "vitest";
 

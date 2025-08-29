@@ -7,8 +7,8 @@
 
 import type { BeatData, SequenceData } from "$lib/domain";
 import { GridMode } from "$lib/domain/enums";
-import type { ArrowPosition } from "$lib/services/positioning/types";
-import type { ISequenceService } from "$services/interfaces/sequence-interfaces";
+import type { ArrowPosition } from "$lib/services/implementations/positioning/types";
+import type { ISequenceService } from "$services/contracts/sequence-interfaces";
 
 // ============================================================================
 // FACTORY FUNCTION

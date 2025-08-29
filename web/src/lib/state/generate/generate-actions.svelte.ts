@@ -8,7 +8,7 @@
 import type {
   ISequenceGenerationService,
   GenerationOptions,
-} from "$lib/services/interfaces/generation-interfaces";
+} from "$lib/services/contracts/generation-interfaces";
 import type { SequenceData } from "$lib/domain";
 import {
   GridMode,

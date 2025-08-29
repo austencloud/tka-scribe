@@ -5,11 +5,11 @@
  * for the option picker component.
  */
 
-import type { PictographData } from "$lib/domain/PictographData";
+import type { PictographData } from "$lib/domain/core/pictograph/PictographData";
+import type { IMotionQueryHandler } from "$lib/services/contracts/data-interfaces";
 import { inject, injectable } from "inversify";
-import type { IMotionQueryHandler } from "../interfaces/data-interfaces";
-import type { IOptionPickerDataService } from "../interfaces/option-picker-interfaces";
-import type { IPositionMapper } from "../interfaces/positioning-interfaces";
+import type { IOptionPickerDataService } from "../contracts/option-picker-interfaces";
+import type { IPositionMapper } from "../contracts/positioning-interfaces";
 import { TYPES } from "../inversify/types";
 
 @injectable()

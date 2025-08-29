@@ -11,9 +11,9 @@
  */
 
 import { GridMode } from "$lib/domain";
-import type { IBuildTabService } from "$lib/services/interfaces/IBuildTabService";
-import type { IStartPositionService } from "$lib/services/interfaces/IStartPositionService";
-import type { PictographData } from "$lib/domain/PictographData";
+import type { PictographData } from "$lib/domain/core/pictograph/PictographData";
+import type { IStartPositionService } from "$lib/services/contracts/application/IStartPositionService";
+import type { IBuildTabService } from "$lib/services/contracts/build-interfaces";
 
 /**
  * Creates construct tab state for construct-specific concerns

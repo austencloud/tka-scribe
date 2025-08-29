@@ -5,11 +5,13 @@
  * Single responsibility: SVG to Canvas/Blob conversion pipeline.
  */
 
+import { injectable } from "inversify";
 import type {
   ISequenceCardImageConversionService,
   SequenceCardDimensions,
-} from "../../../interfaces/sequence-card-export-interfaces";
+} from "../../../contracts/sequence-card-export-interfaces";
 
+@injectable()
 export class SequenceCardImageConversionService
   implements ISequenceCardImageConversionService
 {

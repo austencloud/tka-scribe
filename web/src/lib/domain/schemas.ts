@@ -11,18 +11,18 @@
  */
 
 import { z } from "zod";
+import { Letter } from "./core/Letter";
 import {
   GridMode,
-  PropType,
-  MotionType,
-  MotionColor,
-  Location,
-  Orientation,
-  RotationDirection,
-  GridPositionGroup,
   GridPosition,
+  GridPositionGroup,
+  Location,
+  MotionColor,
+  MotionType,
+  Orientation,
+  PropType,
+  RotationDirection,
 } from "./enums";
-import { Letter } from "./Letter";
 
 // ============================================================================
 // COORDINATE AND PLACEMENT SCHEMAS

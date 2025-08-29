@@ -1,14 +1,14 @@
+import type { MotionData } from "$lib/domain/core/pictograph/MotionData";
+import { createMotionData } from "$lib/domain/core/pictograph/MotionData";
 import {
+  Location,
+  MotionColor,
   MotionType,
   Orientation,
   RotationDirection,
-  Location,
-  MotionColor,
 } from "$lib/domain/enums";
-import type { MotionData } from "$lib/domain/MotionData";
-import { createMotionData } from "$lib/domain/MotionData";
-import type { IMotionParameterService } from "../../interfaces/motion-tester-interfaces";
 import { injectable } from "inversify";
+import type { IMotionParameterService } from "../../contracts/motion-tester-interfaces";
 
 /**
  * Motion Test Parameters - Using proper enums for type safety

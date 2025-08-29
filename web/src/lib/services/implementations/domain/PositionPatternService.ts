@@ -7,7 +7,7 @@
 
 import { GridPosition } from "$lib/domain/enums";
 import { injectable } from "inversify";
-import type { IPositionPatternService } from "../../interfaces/generation-interfaces";
+import type { IPositionPatternService } from "../../contracts/generation-interfaces";
 
 @injectable()
 export class PositionPatternService implements IPositionPatternService {

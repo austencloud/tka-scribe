@@ -8,8 +8,10 @@
  * Uses the existing file-download utility for consistency with the app.
  */
 
-import type { IFileExportService } from "../../interfaces/image-export-interfaces";
+import { injectable } from "inversify";
+import type { IFileExportService } from "../../contracts/image-export-interfaces";
 
+@injectable()
 export class FileExportService implements IFileExportService {
   /**
    * Convert canvas to blob

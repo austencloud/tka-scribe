@@ -6,14 +6,14 @@
  */
 
 import type { BeatData, SequenceData } from "$lib/domain";
-import { injectable } from "inversify";
 import { GridMode } from "$lib/domain";
-import type { ValidationError } from "$lib/domain/SequenceCard";
-import type { ValidationResult } from "../../interfaces/domain-types";
+import type { ValidationResult } from "$lib/domain/core";
+import type { ValidationError } from "$lib/domain/sequence-card/SequenceCard";
 import type {
   ISequenceDomainService,
   SequenceCreateRequest,
-} from "../../interfaces/sequence-interfaces";
+} from "$lib/services/contracts/sequence-interfaces";
+import { injectable } from "inversify";
 
 @injectable()
 export class SequenceDomainService implements ISequenceDomainService {
@@ -71,7 +71,7 @@ export class SequenceDomainService implements ISequenceDomainService {
 
     return {
       isValid: errors.length === 0,
-      errors,
+      errors: errors.map((error) => error.message || String(error)),
       warnings: [],
     };
   }

@@ -2,7 +2,7 @@
   import type { MotionData, PictographData } from "$lib/domain";
   import { resolve, TYPES } from "$lib/services/inversify/container";
 
-  import type { IPropCoordinatorService } from "$lib/services/implementations/rendering/PropCoordinatorService";
+  import type { IPropCoordinator } from "$lib/services/implementations/rendering/PropCoordinator";
   interface Props {
     motionData: MotionData; // Single source of truth - contains embedded prop placement data
     pictographData: PictographData; // ✅ SIMPLIFIED: Complete pictograph data contains gridMode
@@ -29,8 +29,9 @@
   // Native SVG content scales automatically with the parent SVG container
   // No manual scaling needed - the 950x950 coordinate system handles this naturally
 
-  const propCoordinator: IPropCoordinatorService =
-    resolve<IPropCoordinatorService>(TYPES.IPropCoordinatorService);
+  const propCoordinator: IPropCoordinator = resolve<IPropCoordinator>(
+    TYPES.IPropCoordinator
+  );
 
   let renderData = $state<RenderData>({
     position: { x: 475, y: 475 },
@@ -45,7 +46,7 @@
     // Use async function inside effect
     const loadPropData = async () => {
       try {
-        // Use the actual PropCoordinatorService to load real prop SVGs
+        // Use the actual PropCoordinator to load real prop SVGs
         const propRenderData = await propCoordinator.calculatePropRenderData(
           motionData.propPlacementData,
           motionData,

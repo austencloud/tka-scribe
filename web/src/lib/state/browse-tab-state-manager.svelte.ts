@@ -8,7 +8,7 @@
  * - View mode memory
  * - Selected sequence memory
  *
- * Integrates with BrowseStatePersistenceService for cross-session persistence.
+ * Integrates with BrowseStatePersister for cross-session persistence.
  */
 
 import { browser } from "$app/environment";
@@ -21,7 +21,7 @@ import type {
   BrowseSortState,
   BrowseViewState,
   CompleteBrowseState,
-} from "../services/implementations/browse/BrowseStatePersistenceService";
+} from "../services/implementations/browse/BrowseStatePersister";
 import { getBrowseStatePersistence } from "./app-state.svelte";
 
 // ============================================================================

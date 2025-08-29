@@ -6,8 +6,8 @@
  */
 
 import type { BeatData, MotionData } from "$lib/domain";
-import type { IPropInterpolationService } from "../../../services/interfaces/animation/IPropInterpolationService.js";
-import type { InterpolationResult } from "../../../services/interfaces/index.js";
+import type { IPropInterpolationService } from "../../../services/contracts/animation/IPropInterpolationService.js";
+import type { InterpolationResult } from "../../../services/contracts/index.js";
 
 import {
   calculateMotionEndpoints,

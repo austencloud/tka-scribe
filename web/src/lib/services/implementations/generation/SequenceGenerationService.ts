@@ -7,15 +7,15 @@
 
 import type { BeatData, SequenceData } from "$lib/domain";
 import { createSequenceData, GridMode, PropType } from "$lib/domain";
-import type { ILetterQueryHandler } from "../../interfaces/data-interfaces";
+import type { ILetterQueryHandler } from "$lib/services/contracts/data-interfaces";
 import type {
   GenerationOptions,
   IOrientationCalculationService,
   ISequenceGenerationService,
-} from "../../interfaces/generation-interfaces";
+} from "../../contracts/generation-interfaces";
 
-import { createMotionData } from "$lib/domain/MotionData";
-import type { PictographData } from "$lib/domain/PictographData";
+import { createMotionData } from "$lib/domain/core/pictograph/MotionData";
+import type { PictographData } from "$lib/domain/core/pictograph/PictographData";
 import {
   DifficultyLevel,
   GenerationMode,

@@ -9,16 +9,16 @@
 
   // Get services from DI container
   const sequenceStateService = resolve<
-    import("$lib/services/interfaces/sequence-state-interfaces").ISequenceStateService
+    import("$lib/services/contracts/sequence-state-interfaces").ISequenceStateService
   >(TYPES.ISequenceStateService);
   const beatFrameService = resolve<
-    import("$lib/services/interfaces/beat-frame-interfaces").IBeatFrameService
+    import("$lib/services/contracts/beat-frame-interfaces").IBeatFrameService
   >(TYPES.IBeatFrameService);
   const workbenchService = resolve<
-    import("$lib/services/interfaces/workbench-interfaces").IWorkbenchService
+    import("$lib/services/contracts/workbench-interfaces").IWorkbenchService
   >(TYPES.IWorkbenchService);
   const workbenchCoordinationService = resolve<
-    import("$lib/services/interfaces/workbench-interfaces").IWorkbenchCoordinationService
+    import("$lib/services/contracts/workbench-interfaces").IWorkbenchCoordinationService
   >(TYPES.IWorkbenchCoordinationService);
 
   // Create component-scoped states

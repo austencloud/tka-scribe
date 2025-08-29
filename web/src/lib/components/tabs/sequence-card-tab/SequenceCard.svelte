@@ -1,6 +1,6 @@
 <!-- SequenceCard.svelte - Bare bones sequence image matching legacy desktop -->
 <script lang="ts">
-  import type { SequenceData } from "$services/interfaces/domain-types";
+  import type { SequenceData } from "$lib/domain/core";
 
   // Props
   interface Props {

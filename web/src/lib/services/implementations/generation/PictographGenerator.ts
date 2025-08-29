@@ -7,12 +7,14 @@
  * From 582 lines → ~100 lines by extracting letter-specific logic into microservices.
  */
 
-import type { PictographData } from "../../../domain/PictographData";
-import type { IPictographGenerator } from "../../interfaces/generation-interfaces";
-import type { ILetterGeneratorFactory } from "../../interfaces/generation-interfaces";
-import { LetterGeneratorFactory } from "./letter-generators/LetterGeneratorFactory";
-import { injectable, inject } from "inversify";
+import { inject, injectable } from "inversify";
+import type { PictographData } from "../../../domain/core/pictograph/PictographData";
+import type {
+  ILetterGeneratorFactory,
+  IPictographGenerator,
+} from "../../contracts/generation-interfaces";
 import { TYPES } from "../../inversify/types";
+import { LetterGeneratorFactory } from "./letter-generators/LetterGeneratorFactory";
 
 @injectable()
 export class PictographGenerator implements IPictographGenerator {
@@ -20,11 +22,11 @@ export class PictographGenerator implements IPictographGenerator {
 
   constructor(
     @inject(TYPES.IPositionPatternService)
-    patternService: import("../../interfaces/generation-interfaces").IPositionPatternService,
+    patternService: import("../../contracts/generation-interfaces").IPositionPatternService,
     @inject(TYPES.IDirectionCalculator)
-    positionCalculator: import("../../interfaces/generation-interfaces").IDirectionCalculator,
+    positionCalculator: import("../../contracts/generation-interfaces").IDirectionCalculator,
     @inject(TYPES.IPictographValidatorService)
-    validator: import("../../interfaces/generation-interfaces").IPictographValidatorService
+    validator: import("../../contracts/generation-interfaces").IPictographValidatorService
   ) {
     this.letterGeneratorFactory = new LetterGeneratorFactory(
       patternService,

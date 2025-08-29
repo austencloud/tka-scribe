@@ -4,9 +4,9 @@
  * Common text measurement and rendering utilities shared across text renderers.
  */
 
-import type { ITextRenderingUtils } from "../../../../interfaces/text-rendering-interfaces";
-import { createFont } from "./TextRenderingTypes";
 import { injectable } from "inversify";
+import type { ITextRenderingUtils } from "../../../../contracts/text-rendering-interfaces";
+import { createFont } from "./TextRenderingTypes";
 
 @injectable()
 export class TextRenderingUtils implements ITextRenderingUtils {

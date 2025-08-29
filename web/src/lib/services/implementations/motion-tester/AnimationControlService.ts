@@ -14,11 +14,11 @@ import {
   PropType,
   RotationDirection,
 } from "$lib/domain/enums";
-import type { ISequenceAnimationEngine } from "$lib/services/interfaces/application-interfaces";
-import type { MotionTestParams } from "./MotionParameterService";
-import type { IAnimationControlService } from "../../interfaces/motion-tester-interfaces";
-import { injectable, inject } from "inversify";
+import type { ISequenceAnimationEngine } from "$lib/services/contracts/application-interfaces";
+import { inject, injectable } from "inversify";
+import type { IAnimationControlService } from "../../contracts/motion-tester-interfaces";
 import { TYPES } from "../../inversify/types";
+import type { MotionTestParams } from "./MotionParameterService";
 
 export interface AnimationState {
   isPlaying: boolean;

@@ -7,17 +7,17 @@
  * FIXED: Added proper state synchronization to resolve start position selection getting stuck
  */
 
+import type { BeatData, SequenceData } from "$lib/domain/core";
 import { GridMode } from "$lib/domain/enums";
 import { inject, injectable } from "inversify";
 import type {
   IConstructTabCoordinator as IConstructSubTabCoordinationService,
   IStartPositionService,
-} from "../../interfaces/application-interfaces";
-import type { BeatData, SequenceData } from "../../interfaces/domain-types";
+} from "../../contracts/application-interfaces";
 import type {
   ISequenceService,
   IWorkbenchBeatOperationsService,
-} from "../../interfaces/sequence-interfaces";
+} from "../../contracts/sequence-interfaces";
 import { TYPES } from "../../inversify/types";
 
 // Note: This service will need to be updated to use the new DI pattern
@@ -313,11 +313,6 @@ export class ConstructSubTabCoordinationService
     }
   }
 
-  private hasStartPosition(sequence: SequenceData): boolean {
-    // **FIXED: Check the startPosition field instead of checking beats[0]**
-    // This aligns with the modern architecture where start position is separate
-    return sequence?.startingPositionBeat != null;
-  }
 
   private notifyComponents(eventType: string, data: unknown): void {
     // Notify individual components if they have handlers

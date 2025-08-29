@@ -6,6 +6,7 @@
  *
  * REFACTORED: Converted from utils to proper service with interface.
  */
+import { injectable } from "inversify";
 
 export interface ArrowLocationInput {
   startLocation: string;
@@ -17,6 +18,7 @@ export interface IArrowLocationService {
   calculateArrowLocation(input: ArrowLocationInput): string;
 }
 
+@injectable()
 export class ArrowLocationService implements IArrowLocationService {
   /**
    * Calculate arrow location based on start and end positions

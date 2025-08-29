@@ -25,7 +25,7 @@
   }: Props = $props();
 
   const beatFrameService = resolve<
-    import("$lib/services/interfaces/beat-frame-interfaces").IBeatFrameService
+    import("$lib/services/contracts/beat-frame-interfaces").IBeatFrameService
   >(TYPES.IBeatFrameService);
   const beatFrameState = createBeatFrameState(beatFrameService);
 

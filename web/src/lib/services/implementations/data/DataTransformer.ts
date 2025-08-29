@@ -13,7 +13,7 @@ import type {
 } from "$lib/domain";
 import { createPictographData, GridMode } from "$lib/domain";
 import { injectable } from "inversify";
-import { type GridPointData as RawGridData } from "../../../data/gridCoordinates.js";
+import { type GridPointData as RawGridData } from "../../../domain/core/pictograph/gridCoordinates.js";
 
 export interface IDataTransformer {
   beatToPictographData(beat: BeatData): PictographData;

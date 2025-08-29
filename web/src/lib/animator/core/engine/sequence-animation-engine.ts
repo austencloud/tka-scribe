@@ -12,7 +12,7 @@ import type {
   ISequenceAnimationOrchestrator,
   SequenceMetadata,
   PropStates,
-} from "$lib/services/interfaces/application-interfaces";
+} from "$lib/services/contracts/animation";
 import { TYPES } from "$lib/services/inversify/types";
 import { inject, injectable } from "inversify";
 

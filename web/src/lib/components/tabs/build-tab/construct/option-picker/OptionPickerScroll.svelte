@@ -8,7 +8,7 @@ Migrated to use OptionPickerServiceAdapter directly:
 -->
 <script lang="ts">
   import type { PictographData } from "$lib/domain/PictographData";
-  import type { OptionPickerLayoutCalculationResult } from "$lib/services/interfaces/option-picker-interfaces";
+  import type { OptionPickerLayoutCalculationResult } from "$lib/services/contracts/option-picker-interfaces";
   import OptionPickerSection from "./OptionPickerSection.svelte";
   import SimpleGlassScroll from "$lib/components/ui/SimpleGlassScroll.svelte";
 

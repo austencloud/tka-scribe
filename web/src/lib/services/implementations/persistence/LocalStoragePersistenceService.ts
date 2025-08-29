@@ -9,7 +9,7 @@ import type { BeatData, SequenceData } from "$lib/domain";
 import { SequenceDataSchema } from "$lib/domain/schemas";
 import { safeParseOrNull } from "$lib/utils/validation";
 import { injectable } from "inversify";
-import type { IPersistenceService } from "../../interfaces/sequence-interfaces";
+import type { IPersistenceService } from "$lib/services/contracts/sequence-interfaces";
 
 @injectable()
 export class LocalStoragePersistenceService implements IPersistenceService {

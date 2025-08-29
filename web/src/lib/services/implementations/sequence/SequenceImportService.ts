@@ -23,7 +23,7 @@ import {
 import { PngMetadataExtractor } from "$lib/utils/png-metadata-extractor";
 import { parseStrict } from "$lib/utils/validation";
 import { injectable } from "inversify";
-import type { ISequenceImportService } from "../../interfaces/sequence-interfaces";
+import type { ISequenceImportService } from "$lib/services/contracts/sequence-interfaces";
 
 // Constants for PNG metadata conversion
 const PNG_MOTION_TYPES = {

@@ -5,12 +5,12 @@
  * maintains proper separation of concerns and clean architecture.
  */
 
-import type { ILessonRepository } from "$lib/repositories/LessonRepository";
-import type { ILetterMappingRepository } from "$lib/repositories/LetterMappingRepository";
+import type { ILessonRepository } from "$lib/domain/learn/LessonRepository";
+import type { ILetterMappingRepository } from "$lib/domain/learn/codex/LetterMappingRepository";
 import {
   MockLessonRepository,
   MockLetterMappingRepository,
-} from "$lib/services/codex/mocks";
+} from "$lib/services/implementations/learn/codex/mocks";
 import { beforeAll, describe, expect, it } from "vitest";
 
 describe("Codex Service Refactoring", () => {

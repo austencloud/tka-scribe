@@ -30,7 +30,7 @@
 
   // Get service from DI container and create component-scoped state
   const beatFrameService = resolve<
-    import("$lib/services/interfaces/beat-frame-interfaces").IBeatFrameService
+    import("$lib/services/contracts/beat-frame-interfaces").IBeatFrameService
   >(TYPES.IBeatFrameService);
   const beatFrameState = createBeatFrameState(beatFrameService);
 

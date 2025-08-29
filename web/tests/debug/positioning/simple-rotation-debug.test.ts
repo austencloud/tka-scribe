@@ -3,15 +3,15 @@
  * Tests the core rotation logic directly without DI complexity
  */
 
+import { ArrowRotationCalculator } from "$lib/services/implementations/positioning/calculation/ArrowRotationCalculator";
 import { describe, it } from "vitest";
-import { ArrowRotationCalculator } from "$lib/services/positioning/arrows/calculation/ArrowRotationCalculator";
 
+import { createMotionData } from "$lib/domain";
+import { Location, MotionType } from "$lib/domain/enums";
 import {
   DirectionalTupleCalculator,
   QuadrantIndexCalculator,
-} from "$lib/services/positioning/arrows/processors/DirectionalTupleProcessor";
-import { createMotionData } from "$lib/domain";
-import { MotionType, Location } from "$lib/domain/enums";
+} from "$lib/services/implementations/positioning/processors/DirectionalTupleProcessor";
 
 describe("Simple Arrow Rotation Debug", () => {
   it("should test pro arrow rotation calculation directly", () => {

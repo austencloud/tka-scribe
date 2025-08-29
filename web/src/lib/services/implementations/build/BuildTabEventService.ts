@@ -6,14 +6,18 @@
  * that was previously scattered throughout the massive ConstructTab component.
  */
 
-import type { BeatData } from "$domain/BeatData";
-import { createBeatData } from "$domain/BeatData";
-import type { PictographData } from "$domain/PictographData";
+import type { BeatData } from "$lib/domain/build/workbench/BeatData";
+import { createBeatData } from "$lib/domain/build/workbench/BeatData";
+import type { PictographData } from "$lib/domain/core/pictograph/PictographData";
 import { resolve, TYPES } from "$lib/services/inversify/container";
 
-import type { IConstructTabCoordinator as IConstructSubTabCoordinationService } from "../../interfaces/application-interfaces";
+import type { IConstructTabCoordinator as IConstructSubTabCoordinationService } from "$lib/services/contracts/application-interfaces";
 
-export class BuildTabEventService {
+import { injectable } from "inversify";
+import type { IBuildTabEventService } from "../../contracts/build-interfaces";
+
+@injectable()
+export class BuildTabEventService implements IBuildTabEventService {
   private constructCoordinator: IConstructSubTabCoordinationService | null = null;
   private initialized = false;
 
@@ -180,6 +184,34 @@ export class BuildTabEventService {
         },
       });
     }
+  }
+
+  // ============================================================================
+  // INTERFACE IMPLEMENTATION
+  // ============================================================================
+
+  /**
+   * Handle tab switch events
+   */
+  handleTabSwitch(tabId: string): void {
+    console.log(`🔄 BuildTabEventService: Handling tab switch to ${tabId}`);
+    // Implementation for tab switching logic
+  }
+
+  /**
+   * Handle workbench update events
+   */
+  handleWorkbenchUpdate(data: any): void {
+    console.log("🔄 BuildTabEventService: Handling workbench update", data);
+    // Implementation for workbench update logic
+  }
+
+  /**
+   * Handle option selection events
+   */
+  handleOptionSelection(option: any): void {
+    console.log("🔄 BuildTabEventService: Handling option selection", option);
+    // Implementation for option selection logic
   }
 }
 

@@ -8,10 +8,10 @@
 import { injectable } from "inversify";
 import type {
   IPanelManagementService,
-  PanelState,
   PanelConfiguration,
+  PanelState,
   ResizeOperation,
-} from "../../interfaces/panel-interfaces";
+} from "../../contracts/panel-interfaces";
 
 @injectable()
 export class PanelManagementService implements IPanelManagementService {

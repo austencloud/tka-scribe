@@ -15,7 +15,7 @@
   import GeneratePanel from "../generate/GeneratePanel.svelte";
   // Import Svelte's built-in fade transition for consistency with main tabs
   import type { BeatData } from "$lib/domain";
-  import type { PictographData } from "$services/interfaces/domain-types";
+  import type { PictographData } from "$lib/domain/core";
   import type { ActiveBuildSubTab } from "$lib/state/services/state-service-interfaces";
   import { getAnimationSettings } from "$lib/utils/animation-control";
   import { shouldAnimate } from "$lib/utils/simple-fade";

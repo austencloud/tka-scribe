@@ -17,13 +17,13 @@ import type {
   ISequenceIndexService,
   IThumbnailService,
   NavigationSection,
-} from "$lib/services/interfaces/browse-interfaces";
+} from "$lib/services/contracts/browse-interfaces";
 import type {
   BrowseLoadingState,
   FilterType,
   FilterValue,
   SequenceData,
-} from "$lib/services/interfaces/domain-types";
+} from "$lib/domain/core";
 
 import { BrowseDisplayStateService } from "./services/BrowseDisplayStateService.svelte";
 import { BrowseFilterStateService } from "./services/BrowseFilterStateService.svelte";

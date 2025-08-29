@@ -8,11 +8,11 @@
  * across components, providing a clean separation of concerns.
  */
 
-import { injectable, inject } from "inversify";
+import type { PictographData } from "$lib/domain/core";
+import type { IStartPositionService } from "$lib/services/contracts/application/IStartPositionService";
+import type { IBuildTabService } from "$lib/services/contracts/build-interfaces";
+import { inject, injectable } from "inversify";
 import { TYPES } from "../inversify/types";
-import type { IBuildTabService } from "../interfaces/IBuildTabService";
-import type { PictographData } from "../interfaces/domain-types";
-import type { IStartPositionService } from "../interfaces/IStartPositionService";
 // IStartPositionSelectionService removed - using unified service
 import { constructTabEventService } from "./build/BuildTabEventService";
 
@@ -30,8 +30,13 @@ export class BuildTabService implements IBuildTabService {
    */
   async selectStartPosition(position: PictographData): Promise<void> {
     try {
-      // Business logic: Use the unified service to handle start position selection
-      await this.startPositionService.selectStartPosition(position);
+      // Business logic: Convert PictographData to BeatData for the service
+      const beatData: BeatData = {
+        beatNumber: 0,
+        pictographData: position,
+        timing: { duration: 1000, delay: 0 },
+      };
+      await this.startPositionService.setStartPosition(beatData);
 
       console.log("✅ BuildTabService: Start position selected successfully");
     } catch (error) {

@@ -1,25 +1,25 @@
-/**
+re/**
  * StartPositionService.ts - Complete start position service implementation
  */
 
-import { injectable } from "inversify";
-import type { PictographData } from "$lib/domain/PictographData";
-import type { BeatData } from "$lib/domain/BeatData";
-import { createPictographData } from "$lib/domain/PictographData";
-import { createMotionData } from "$lib/domain/MotionData";
+import type { BeatData } from "$lib/domain/build/workbench/BeatData";
+import { Letter } from "$lib/domain/core/Letter";
+import { createMotionData } from "$lib/domain/core/pictograph/MotionData";
+import type { PictographData } from "$lib/domain/core/pictograph/PictographData";
+import { createPictographData } from "$lib/domain/core/pictograph/PictographData";
 import {
   GridMode,
-  MotionType,
-  RotationDirection,
-  Orientation,
-  MotionColor,
-  PropType,
   Location,
+  MotionColor,
+  MotionType,
+  Orientation,
+  PropType,
+  RotationDirection,
 } from "$lib/domain/enums";
-import { Letter } from "$lib/domain/Letter";
-import type { ValidationResult } from "$lib/services/interfaces/domain-types";
-import type { ValidationError } from "$lib/domain/SequenceCard";
-import type { IStartPositionService } from "../interfaces/IStartPositionService";
+import type { ValidationError } from "$lib/domain/sequence-card/SequenceCard";
+import type { IStartPositionService } from "$lib/services/contracts/application/IStartPositionService";
+import { injectable } from "inversify";
+import type { ValidationResult } from "$lib/domain/core";
 
 @injectable()
 export class StartPositionService implements IStartPositionService {

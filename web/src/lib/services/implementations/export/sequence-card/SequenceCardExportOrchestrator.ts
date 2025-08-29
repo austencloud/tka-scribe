@@ -5,7 +5,7 @@
  * Single responsibility: Coordinate focused services for export workflow.
  */
 
-import type { SequenceData } from "../../../interfaces/domain-types";
+import type { SequenceData } from "$lib/domain/core";
 import type {
   BatchExportProgress,
   BatchOperationConfig,
@@ -18,7 +18,7 @@ import type {
   SequenceCardDimensions,
   SequenceCardExportResult,
   SequenceCardMetadata,
-} from "../../../interfaces/sequence-card-export-interfaces";
+} from "../../../contracts/sequence-card-export-interfaces";
 
 export class SequenceCardExportOrchestrator
   implements ISequenceCardExportOrchestrator

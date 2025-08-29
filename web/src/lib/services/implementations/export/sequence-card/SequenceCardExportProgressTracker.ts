@@ -8,7 +8,7 @@
 import type {
   BatchExportProgress,
   ISequenceCardExportProgressTracker,
-} from "../../../interfaces/sequence-card-export-interfaces";
+} from "../../../contracts/sequence-card-export-interfaces";
 
 interface ProgressOperation {
   id: string;

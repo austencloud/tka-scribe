@@ -5,18 +5,18 @@
  * Handles registration and instantiation of all letter generators.
  */
 
-import type { BaseLetterGenerator } from "../core/BaseLetterGenerator";
 import type {
   ILetterGenerator,
   ILetterGeneratorFactory,
-} from "../../../interfaces/generation-interfaces";
+} from "../../../contracts/generation-interfaces";
+import type { BaseLetterGenerator } from "../core/BaseLetterGenerator";
 import { Type1Generator } from "./Type1/Type1Generator";
 
 type LetterGeneratorConstructor = new (
   letter: string,
-  patternService: import("../../../interfaces/generation-interfaces").IPositionPatternService,
-  positionCalculator: import("../../../interfaces/generation-interfaces").IDirectionCalculator,
-  validator: import("../../../interfaces/generation-interfaces").IPictographValidatorService
+  patternService: import("../../../contracts/generation-interfaces").IPositionPatternService,
+  positionCalculator: import("../../../contracts/generation-interfaces").IDirectionCalculator,
+  validator: import("../../../contracts/generation-interfaces").IPictographValidatorService
 ) => BaseLetterGenerator;
 
 export class LetterGeneratorFactory implements ILetterGeneratorFactory {
@@ -26,9 +26,9 @@ export class LetterGeneratorFactory implements ILetterGeneratorFactory {
   >();
 
   constructor(
-    private readonly patternService: import("../../../interfaces/generation-interfaces").IPositionPatternService,
-    private readonly positionCalculator: import("../../../interfaces/generation-interfaces").IDirectionCalculator,
-    private readonly validator: import("../../../interfaces/generation-interfaces").IPictographValidatorService
+    private readonly patternService: import("../../../contracts/generation-interfaces").IPositionPatternService,
+    private readonly positionCalculator: import("../../../contracts/generation-interfaces").IDirectionCalculator,
+    private readonly validator: import("../../../contracts/generation-interfaces").IPictographValidatorService
   ) {
     this.registerGenerators();
   }

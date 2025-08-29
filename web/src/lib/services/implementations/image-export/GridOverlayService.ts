@@ -8,9 +8,11 @@
  * Critical: Must match desktop overlay opacity and positioning exactly.
  */
 
-import type { IGridOverlayService } from "../../interfaces/image-export-interfaces";
 import { GridMode } from "$lib/domain/enums";
+import { injectable } from "inversify";
+import type { IGridOverlayService } from "../../contracts/image-export-interfaces";
 
+@injectable()
 export class GridOverlayService implements IGridOverlayService {
   // Grid constants
   private static readonly GRID_OPACITY = 1.0; // Desktop uses 100% opacity

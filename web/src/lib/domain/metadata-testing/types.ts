@@ -1,20 +1,71 @@
 /**
  * Metadata Testing Domain Types
  *
- * Clean domain types for the metadata testing system.
+ * Domain types for metadata testing, analysis, and validation functionality.
  */
+
+// ============================================================================
+// CORE METADATA TYPES
+// ============================================================================
+
+export interface SequenceMetadata {
+  word: string;
+  author: string;
+  totalBeats: number;
+  level?: number;
+  startPosition?: string;
+  [key: string]: unknown;
+}
 
 export interface ThumbnailFile {
   name: string;
   path: string;
-  word: string;
+  size: number;
+  lastModified: Date;
+  metadata?: SequenceMetadata;
 }
 
-export interface MetadataValidationIssue {
-  beat: number;
-  field: string;
-  type: "error" | "warning";
-  message: string;
+export interface SequenceFile {
+  name: string;
+  path: string;
+  content: string;
+  metadata: SequenceMetadata;
+}
+
+// ============================================================================
+// ANALYSIS TYPES
+// ============================================================================
+
+export interface MetadataStats {
+  totalBeats: number;
+  sequenceLength: number;
+  realBeatsCount: number;
+  startPositionCount: number;
+  hasAuthor: boolean;
+  authorName: string | null;
+  authorMissing: boolean;
+  authorInconsistent: boolean;
+  hasLevel: boolean;
+  level: number | null;
+  levelMissing: boolean;
+  levelInconsistent: boolean;
+  levelZero: boolean;
+  hasStartPosition: boolean;
+  startPositionMissing: boolean;
+  startPositionInconsistent: boolean;
+  startPositionValue: string | null;
+  missingBeatNumbers: number[];
+  missingLetters: number[];
+  missingMotionData: number[];
+  invalidMotionTypes: InvalidMotionType[];
+  duplicateBeats: number[];
+  invalidBeatStructure: number[];
+  missingRequiredFields: string[];
+  hasErrors: boolean;
+  hasWarnings: boolean;
+  errorCount: number;
+  warningCount: number;
+  healthScore: number;
 }
 
 export interface InvalidMotionType {
@@ -23,93 +74,11 @@ export interface InvalidMotionType {
   type: string;
 }
 
-export interface MetadataStats {
-  // Basic counts
-  totalBeats: number;
-  sequenceLength: number;
-  realBeatsCount: number;
-  startPositionCount: number;
-
-  // Author validation
-  hasAuthor: boolean;
-  authorName: string | null;
-  authorMissing: boolean;
-  authorInconsistent: boolean;
-
-  // Level validation
-  hasLevel: boolean;
-  level: number | null;
-  levelMissing: boolean;
-  levelInconsistent: boolean;
-  levelZero: boolean;
-
-  // Start position validation
-  hasStartPosition: boolean;
-  startPositionMissing: boolean;
-  startPositionInconsistent: boolean;
-  startPositionValue: string | null;
-
-  // Beat validation
-  missingBeatNumbers: number[];
-  missingLetters: number[];
-  missingMotionData: number[];
-  invalidMotionTypes: InvalidMotionType[];
-
-  // Data integrity issues
-  duplicateBeats: number[];
-  invalidBeatStructure: number[];
-  missingRequiredFields: MetadataValidationIssue[];
-
-  // Overall health
-  hasErrors: boolean;
-  hasWarnings: boolean;
-  errorCount: number;
-  warningCount: number;
-  healthScore: number; // 0-100
-
-  // Error and warning details for batch analysis
-  errors?: string[];
-  warnings?: string[];
-
-  // Batch analysis support
-  isBatchSummary?: boolean;
-  batchSummary?: BatchSummary;
-}
-
-export interface BatchSummary {
-  sequencesAnalyzed: number;
-  healthySequences: number;
-  unhealthySequences: number;
-  averageHealthScore: number;
-  totalErrors: number;
-  totalWarnings: number;
-  commonErrors: Array<[string, number]>;
-  commonWarnings: Array<[string, number]>;
-  worstSequences: Array<{ sequence: string; healthScore: number }>;
-  bestSequences: Array<{ sequence: string; healthScore: number }>;
-}
-
-export interface SequenceMetadata {
-  raw: Record<string, unknown>[];
-  extracted: Record<string, unknown>;
-  stats: MetadataStats | null;
-}
-
-export interface MetadataTestingConfig {
-  validMotionTypes: string[];
-  requiredFields: string[];
-  healthScoreWeights: {
-    authorWeight: number;
-    levelWeight: number;
-    startPositionWeight: number;
-    beatIntegrityWeight: number;
-    motionDataWeight: number;
-  };
-}
-
-export interface SequenceFile {
-  name: string;
-  file: File;
+export interface MetadataValidationIssue {
+  type: "error" | "warning";
+  message: string;
+  beat?: number;
+  field?: string;
 }
 
 export interface MetadataAnalysisResult {
@@ -121,31 +90,38 @@ export interface MetadataAnalysisResult {
   };
 }
 
+// ============================================================================
+// BATCH ANALYSIS TYPES
+// ============================================================================
+
 export interface BatchAnalysisConfig {
   batchSize: number;
-  delayMs?: number;
-  exportFormat?: "json" | "csv";
+  delayMs: number;
+  exportFormat: "json" | "csv";
 }
 
 export interface BatchAnalysisResult {
-  analysisId: string;
-  totalSequences: number;
-  successfulAnalyses: number;
-  failedAnalyses: number;
+  totalFiles: number;
+  processedFiles: number;
+  successCount: number;
+  errorCount: number;
   results: MetadataAnalysisResult[];
-  errors: Array<{ sequence: string; error: string }>;
-  duration: number;
-  summary: {
-    averageHealthScore: number;
-    totalErrors: number;
-    totalWarnings: number;
-    commonIssues: Array<{ issue: string; count: number; percentage: number }>;
-    healthDistribution: {
-      excellent: number;
-      good: number;
-      fair: number;
-      poor: number;
-    };
+  errors: Array<{ file: string; error: string }>;
+  processingTime: number;
+}
+
+// ============================================================================
+// CONFIGURATION TYPES
+// ============================================================================
+
+export interface MetadataTestingConfig {
+  validMotionTypes: string[];
+  requiredFields: string[];
+  healthScoreWeights: {
+    authorWeight: number;
+    levelWeight: number;
+    startPositionWeight: number;
+    beatIntegrityWeight: number;
+    motionDataWeight: number;
   };
-  timestamp: string;
 }

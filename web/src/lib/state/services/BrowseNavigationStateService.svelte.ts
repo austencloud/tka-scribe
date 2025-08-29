@@ -6,7 +6,7 @@
  */
 
 import { NavigationMode } from "$lib/domain/browse";
-import type { NavigationSection } from "$lib/services/interfaces/browse-interfaces";
+import type { NavigationSection } from "$lib/services/contracts/browse-interfaces";
 
 export interface IBrowseNavigationStateService {
   // Reactive state getters

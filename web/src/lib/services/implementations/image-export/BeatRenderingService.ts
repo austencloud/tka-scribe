@@ -1,13 +1,13 @@
+import { inject, injectable } from "inversify";
 import type { BeatData, SequenceData } from "../../../domain";
-import type { IBeatFallbackRenderingService } from "../../interfaces/beat-fallback-interfaces";
-import type { IBeatGridService } from "../../interfaces/beat-grid-interfaces";
+import type { IBeatFallbackRenderer } from "$lib/services/contracts/beat-fallback-interfaces";
+import type { IBeatGridService } from "../../contracts/beat-grid-interfaces";
 import type {
   BeatRenderOptions,
   IBeatRenderingService,
   ICanvasManagementService,
-} from "../../interfaces/image-export-interfaces";
-import type { ISVGToCanvasConverterService } from "../../interfaces/svg-conversion-interfaces";
-import { injectable, inject } from "inversify";
+} from "../../contracts/image-export-interfaces";
+import type { ISVGToCanvasConverterService } from "../../contracts/svg-conversion-interfaces";
 import { TYPES } from "../../inversify/types";
 
 @injectable()
@@ -16,8 +16,8 @@ export class BeatRenderingService implements IBeatRenderingService {
     @inject(TYPES.ISVGToCanvasConverterService)
     private svgToCanvasConverter: ISVGToCanvasConverterService,
     @inject(TYPES.IBeatGridService) private _beatGridService: IBeatGridService,
-    @inject(TYPES.IBeatFallbackRenderingService)
-    private fallbackService: IBeatFallbackRenderingService,
+    @inject(TYPES.IBeatFallbackRenderer)
+    private fallbackService: IBeatFallbackRenderer,
     @inject(TYPES.ICanvasManagementService)
     private canvasManager: ICanvasManagementService
   ) {}

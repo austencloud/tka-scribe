@@ -5,10 +5,10 @@
  * Handles pattern creation, movement generation, and caching.
  */
 
-import { Letter } from "$lib/domain/Letter";
-import type { MotionData } from "$lib/domain/MotionData";
-import type { PictographData } from "$lib/domain/PictographData";
-import { createPictographData } from "$lib/domain/PictographData";
+import { Letter } from "$lib/domain/core/Letter";
+import type { MotionData } from "$lib/domain/core/pictograph/MotionData";
+import type { PictographData } from "$lib/domain/core/pictograph/PictographData";
+import { createPictographData } from "$lib/domain/core/pictograph/PictographData";
 import {
   Direction,
   MotionType,
@@ -16,15 +16,15 @@ import {
   RotationDirection,
   Timing,
 } from "$lib/domain/enums";
-import type { ILetterGenerator } from "../../../interfaces/generation-interfaces";
+import type { ILetterGenerator } from "../../../contracts/generation-interfaces";
 
 export abstract class BaseLetterGenerator implements ILetterGenerator {
   private static readonly movementCache = new Map<string, PictographData>();
 
   constructor(
-    protected readonly patternService: import("../../../interfaces/generation-interfaces").IPositionPatternService,
-    protected readonly positionCalculator: import("../../../interfaces/generation-interfaces").IDirectionCalculator,
-    protected readonly validator: import("../../../interfaces/generation-interfaces").IPictographValidatorService
+    protected readonly patternService: import("../../../contracts/generation-interfaces").IPositionPatternService,
+    protected readonly positionCalculator: import("../../../contracts/generation-interfaces").IDirectionCalculator,
+    protected readonly validator: import("../../../contracts/generation-interfaces").IPictographValidatorService
   ) {}
 
   abstract readonly letter: Letter;

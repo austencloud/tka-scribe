@@ -3,22 +3,24 @@
  * Arrow Positioning Service
  *
  * Handles positioning and rendering arrows in SVG containers.
- * Extracted from ArrowRenderingService to improve modularity and reusability.
+ * Extracted from ArrowRenderer to improve modularity and reusability.
  */
 
 import type { MotionData } from "$lib/domain";
 import { MotionColor } from "$lib/domain/enums";
-import type { IArrowPathResolutionService } from "$lib/services/interfaces/positioning-interfaces";
 import type {
   IArrowPositioningService,
-  ISvgColorTransformationService,
-} from "$lib/services/interfaces/pictograph-interfaces";
-import type { ArrowPosition } from "$lib/services/positioning/types";
+  ISvgColorTransformer,
+} from "$lib/services/contracts/pictograph-interfaces";
+import type { IArrowPathResolutionService } from "$lib/services/contracts/positioning-interfaces";
+import type { ArrowPosition } from "$lib/services/implementations/positioning/types";
+import { injectable } from "inversify";
 
+@injectable()
 export class ArrowPositioningService implements IArrowPositioningService {
   constructor(
     private pathResolver: IArrowPathResolutionService,
-    private colorTransformer: ISvgColorTransformationService
+    private colorTransformer: ISvgColorTransformer
   ) {}
 
   /**

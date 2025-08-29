@@ -5,9 +5,11 @@
  * Based on the desktop StartPositionOrchestrator but simplified for web.
  */
 
-import { Letter } from "$lib/domain/Letter";
+import type { ValidationResult } from "$lib/domain/core";
+import { Letter } from "$lib/domain/core/Letter";
+import type { ValidationError } from "$lib/domain/sequence-card/SequenceCard";
+import type { IStartPositionService } from "$lib/services/contracts/application-interfaces";
 import { injectable } from "inversify";
-import type { ValidationError } from "$lib/domain/SequenceCard";
 import type { BeatData, PictographData } from "../../../domain";
 import {
   createBeatData,
@@ -21,8 +23,6 @@ import {
   PropType,
   RotationDirection,
 } from "../../../domain";
-import type { IStartPositionService } from "../../interfaces/application-interfaces";
-import type { ValidationResult } from "../../interfaces/domain-types";
 import { PositionMapper } from "../movement/PositionMapper";
 
 @injectable()
@@ -189,7 +189,7 @@ export class StartPositionService implements IStartPositionService {
 
     return {
       isValid: errors.length === 0,
-      errors,
+      errors: errors.map((error) => error.message || String(error)),
       warnings: [],
     };
   }

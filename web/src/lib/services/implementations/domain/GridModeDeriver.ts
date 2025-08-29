@@ -6,11 +6,14 @@
  * - Box locations (NE, SE, SW, NW) in start/end positions = BOX mode
  */
 
-import { GridMode, Location } from "../../../domain/enums";
 import { injectable } from "inversify";
-import { createGridData, type GridData } from "../../../domain/GridData";
-import type { MotionData } from "../../../domain/MotionData";
-import type { IGridModeDeriver } from "../../interfaces/positioning-interfaces";
+import {
+  createGridData,
+  type GridData,
+} from "../../../domain/core/pictograph/GridData";
+import type { MotionData } from "../../../domain/core/pictograph/MotionData";
+import { GridMode, Location } from "../../../domain/enums";
+import type { IGridModeDeriver } from "../../contracts/positioning-interfaces";
 
 @injectable()
 export class GridModeDeriver implements IGridModeDeriver {

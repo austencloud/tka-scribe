@@ -5,7 +5,8 @@
  * Can be enhanced with actual CSV loading functionality as needed.
  */
 
-import type { PictographData } from "$lib/domain/PictographData";
+import type { PictographData } from "$lib/domain/core/pictograph/PictographData";
+import { injectable } from "inversify";
 import { Letter } from "../../../domain";
 
 export interface ICSVPictographLoaderService {
@@ -15,6 +16,7 @@ export interface ICSVPictographLoaderService {
   clearCache(): void;
 }
 
+@injectable()
 export class CSVPictographLoaderService implements ICSVPictographLoaderService {
   private readonly pictographCache = new Map<Letter, PictographData[]>();
   private readonly availableLetters = Object.values(Letter);

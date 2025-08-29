@@ -10,7 +10,7 @@ import type {
   GridDrawOptions,
   GridValidationResult,
   IBeatGridService,
-} from "../../interfaces/beat-grid-interfaces";
+} from "../../contracts/beat-grid-interfaces";
 
 @injectable()
 export class BeatGridService implements IBeatGridService {

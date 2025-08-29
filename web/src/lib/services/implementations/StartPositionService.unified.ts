@@ -10,7 +10,11 @@
  * NO MORE CONFUSION - ONE SERVICE TO RULE THEM ALL!
  */
 
-import type { BeatData } from "$lib/domain/BeatData";
+import type { BeatData } from "$lib/domain/build/workbench/BeatData";
+import { Letter } from "$lib/domain/core/Letter";
+import { createMotionData } from "$lib/domain/core/pictograph/MotionData";
+import type { PictographData } from "$lib/domain/core/pictograph/PictographData";
+import { createPictographData } from "$lib/domain/core/pictograph/PictographData";
 import {
   GridMode,
   Location,
@@ -20,14 +24,10 @@ import {
   PropType,
   RotationDirection,
 } from "$lib/domain/enums";
-import { Letter } from "$lib/domain/Letter";
-import { createMotionData } from "$lib/domain/MotionData";
-import type { PictographData } from "$lib/domain/PictographData";
-import { createPictographData } from "$lib/domain/PictographData";
 import type {
   ValidationError,
   ValidationResult,
-} from "$lib/domain/SequenceCard";
+} from "$lib/domain/sequence-card/SequenceCard";
 import { injectable } from "inversify";
 
 /**

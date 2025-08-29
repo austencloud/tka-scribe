@@ -8,19 +8,19 @@
  * - Complete handpath calculation for all location pairs
  */
 
-import type { BeatData } from "$lib/domain/BeatData";
-import { injectable } from "inversify";
-import type { MotionData } from "$lib/domain/MotionData";
-import { createMotionData } from "$lib/domain/MotionData";
+import type { BeatData } from "$lib/domain/build/workbench/BeatData";
+import type { MotionData } from "$lib/domain/core/pictograph/MotionData";
+import { createMotionData } from "$lib/domain/core/pictograph/MotionData";
 import {
-  Orientation,
-  MotionType,
+  HandPath,
   Location,
+  MotionColor,
+  MotionType,
+  Orientation,
   PropType,
   RotationDirection,
-  HandPath,
-  MotionColor,
 } from "$lib/domain/enums";
+import { injectable } from "inversify";
 
 export interface OrientationCalculationServiceInterface {
   calculateEndOrientation(motion: MotionData, color: MotionColor): Orientation;

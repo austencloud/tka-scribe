@@ -11,7 +11,7 @@ Refactored into smaller section components for better maintainability:
 - Maintains all original functionality with cleaner separation
 -->
 <script lang="ts">
-  import type { IDeviceDetector } from "$lib/services/interfaces/application/IDeviceDetector";
+  import type { IDeviceDetector } from "$lib/services/contracts/application/IDeviceDetector";
   import { resolve, TYPES } from "$lib/services/inversify/container";
   import { onMount } from "svelte";
   // Import section components

@@ -9,18 +9,18 @@ import type {
   FilterType,
   FilterValue,
   SortMethod,
-} from "../../interfaces/domain-types";
-import type {
-  BrowseState,
-  FilterState as BrowseFilterState,
-} from "../../interfaces/browse-interfaces";
-import { SortMethod as SortMethodEnum } from "../../../domain/browse/SortMethod";
-import { injectable } from "inversify";
+} from "$lib/domain/core";
 import {
   safeSessionStorageGet,
-  safeSessionStorageSet,
   safeSessionStorageRemove,
+  safeSessionStorageSet,
 } from "$lib/utils/safe-storage";
+import { injectable } from "inversify";
+import { SortMethod as SortMethodEnum } from "../../../domain/browse/SortMethod";
+import type {
+  FilterState as BrowseFilterState,
+  BrowseState,
+} from "../../contracts/browse-interfaces";
 
 export interface FilterState {
   type: FilterType;

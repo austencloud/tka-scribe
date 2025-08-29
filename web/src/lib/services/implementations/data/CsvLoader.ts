@@ -6,7 +6,8 @@
  */
 
 import { injectable } from "inversify";
-import type { CsvDataSet, ICsvLoader } from "../../interfaces/data-interfaces";
+import type { CsvDataSet } from "../../../domain/data-interfaces/data-interfaces";
+import type { ICsvLoader } from "../../contracts/data/ICsvLoader";
 
 @injectable()
 export class CsvLoader implements ICsvLoader {

@@ -5,13 +5,15 @@
  * Single responsibility: Efficient batch processing with memory management.
  */
 
+import { injectable } from "inversify";
 import type {
   BatchExportProgress,
   BatchOperationConfig,
   ISequenceCardBatchProcessingService,
   SequenceCardExportResult,
-} from "../../../interfaces/sequence-card-export-interfaces";
+} from "../../../contracts/sequence-card-export-interfaces";
 
+@injectable()
 export class SequenceCardBatchProcessingService
   implements ISequenceCardBatchProcessingService
 {

@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { Location } from "../../../src/lib/domain";
-import { ArrowPositionCalculator } from "../../../src/lib/services/positioning/arrows/orchestration/ArrowPositionCalculator";
+import { ArrowPositionCalculator } from "../../../src/lib/services/implementations/positioning/orchestration/ArrowPositionCalculator";
 
 // Type for accessing private methods in tests
 interface ArrowPositionCalculatorTestAccess {

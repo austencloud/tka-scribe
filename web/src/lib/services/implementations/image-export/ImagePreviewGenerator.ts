@@ -5,15 +5,15 @@
  * Extracted from the monolithic TKAImageExportService to focus solely on preview generation.
  */
 
-import type { SequenceData } from "../../interfaces/domain-types";
+import type { SequenceData } from "$lib/domain/core";
+import { inject, injectable } from "inversify";
 import type {
   IExportConfigurationManager,
   IFileExportService,
   IImageCompositionService,
   IImagePreviewGenerator,
   TKAImageExportOptions,
-} from "../../interfaces/image-export-interfaces";
-import { injectable, inject } from "inversify";
+} from "../../contracts/image-export-interfaces";
 import { TYPES } from "../../inversify/types";
 
 @injectable()

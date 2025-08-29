@@ -7,10 +7,10 @@
 
 import type { BeatData, SequenceData } from "$lib/domain";
 import { GridMode } from "$lib/domain";
-import { Letter } from "$lib/domain/Letter";
-import { createPictographData } from "$lib/domain/PictographData";
+import { Letter } from "$lib/domain/core/Letter";
+import { createPictographData } from "$lib/domain/core/pictograph/PictographData";
+import type { WorkbenchMode } from "$lib/services/contracts/workbench-interfaces";
 import { WorkbenchService } from "$lib/services/implementations/workbench/WorkbenchService";
-import type { WorkbenchMode } from "$lib/services/interfaces/workbench-interfaces";
 import { beforeEach, describe, expect, it } from "vitest";
 
 describe("WorkbenchService", () => {

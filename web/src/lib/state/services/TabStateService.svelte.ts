@@ -6,17 +6,17 @@
  */
 
 import { browser } from "$app/environment";
-import { BrowseStatePersistenceService } from "../../services/implementations/browse/BrowseStatePersistenceService";
+import { BrowseStatePersister } from "../../services/implementations/browse/BrowseStatePersister";
 import type { ItabStateService, TabId } from "./state-service-interfaces";
 
 class TabStateService implements ItabStateService {
-  private browseStatePersistence: BrowseStatePersistenceService;
+  private browseStatePersistence: BrowseStatePersister;
 
   // Tab state
   #activeTab = $state<TabId>("construct");
 
   constructor() {
-    this.browseStatePersistence = new BrowseStatePersistenceService();
+    this.browseStatePersistence = new BrowseStatePersister();
   }
 
   // ============================================================================

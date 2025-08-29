@@ -6,19 +6,19 @@
  */
 
 import { GridMode, GridPositionGroup, PropType } from "$lib/domain";
-import { injectable } from "inversify";
-import type { SequenceData } from "$lib/domain/SequenceData";
-import { createSequenceData } from "$lib/domain/SequenceData";
 import {
   FilterType as FilterTypeEnum,
   SortMethod as SortMethodEnum,
 } from "$lib/domain/browse";
+import type { SequenceData } from "$lib/domain/core/SequenceData";
+import { createSequenceData } from "$lib/domain/core/SequenceData";
 import type {
   FilterType,
   FilterValue,
   SortMethod,
-} from "$lib/services/interfaces/domain-types";
-import type { IBrowseService } from "$lib/services/interfaces/browse-interfaces";
+} from "$lib/domain/core";
+import type { IBrowseService } from "$lib/services/contracts/browse-interfaces";
+import { injectable } from "inversify";
 
 @injectable()
 export class BrowseService implements IBrowseService {

@@ -30,9 +30,9 @@ export const TYPES = {
   ISvgConfiguration: Symbol.for("ISvgConfiguration"),
   IDataTransformer: Symbol.for("IDataTransformer"),
   IGridRenderingService: Symbol.for("IGridRenderingService"),
-  IArrowRenderingService: Symbol.for("IArrowRenderingService"),
-  IOverlayRenderingService: Symbol.for("IOverlayRenderingService"),
-  IPropCoordinatorService: Symbol.for("IPropCoordinatorService"),
+  IArrowRenderer: Symbol.for("IArrowRenderer"),
+  IOverlayRenderer: Symbol.for("IOverlayRenderer"),
+  IPropCoordinator: Symbol.for("IPropCoordinator"),
 
   // === POSITIONING SERVICES ===
   IArrowPositioningOrchestrator: Symbol.for("IArrowPositioningOrchestrator"),
@@ -71,7 +71,7 @@ export const TYPES = {
   // === BEAT FRAME SERVICES ===
   IBeatFrameService: Symbol.for("IBeatFrameService"),
   IBeatGridService: Symbol.for("IBeatGridService"),
-  IBeatFallbackRenderingService: Symbol.for("IBeatFallbackRenderingService"),
+  IBeatFallbackRenderer: Symbol.for("IBeatFallbackRenderer"),
 
   // === EXPORT SERVICES ===
   IExportService: Symbol.for("IExportService"),
@@ -140,7 +140,7 @@ export const TYPES = {
 
   IAnimatedPictographDataService: Symbol.for("IAnimatedPictographDataService"),
   IBackgroundService: Symbol.for("IBackgroundService"),
-  IBrowseStatePersistenceService: Symbol.for("IBrowseStatePersistenceService"),
+  IBrowseStatePersister: Symbol.for("IBrowseStatePersister"),
   IArrowPlacementService: Symbol.for("IArrowPlacementService"),
   IMotionParameterService: Symbol.for("IMotionParameterService"),
   IAnimationControlService: Symbol.for("IAnimationControlService"),
@@ -202,7 +202,7 @@ export const CoreTypes = {
 export const RenderingTypes = {
   ISvgUtilityService: TYPES.ISvgUtilityService,
   IGridRenderingService: TYPES.IGridRenderingService,
-  IArrowRenderingService: TYPES.IArrowRenderingService,
+  IArrowRenderer: TYPES.IArrowRenderer,
 } as const;
 
 export const PositioningTypes = {

@@ -2,13 +2,15 @@
  * Fallback Arrow Service
  *
  * Creates fallback arrows when SVG loading fails.
- * Extracted from ArrowRenderingService to improve modularity and reusability.
+ * Extracted from ArrowRenderer to improve modularity and reusability.
  */
 
 import { MotionColor } from "$lib/domain/enums";
-import type { IFallbackArrowService } from "$lib/services/interfaces/pictograph-interfaces";
-import type { ArrowPosition } from "$lib/services/positioning/types";
+import type { IFallbackArrowService } from "$lib/services/contracts/pictograph-interfaces";
+import type { ArrowPosition } from "$lib/services/implementations/positioning/types";
+import { injectable } from "inversify";
 
+@injectable()
 export class FallbackArrowService implements IFallbackArrowService {
   /**
    * Render fallback arrow if SVG loading fails

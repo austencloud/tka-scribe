@@ -4,7 +4,7 @@
   import { resolve, TYPES } from "$lib/services/inversify/container";
   import { createImageExportState } from "$lib/state/image-export-state.svelte";
   import type { SequenceData } from "$lib/domain";
-  import type { ITKAImageExportService } from "$services/interfaces/image-export-interfaces";
+  import type { ITKAImageExportService } from "$services/contracts/image-export-interfaces";
 
   import ExportActionsCard from "./ExportActionsCard.svelte";
   import ExportPreviewCard from "./ExportPreviewCard.svelte";

@@ -7,7 +7,7 @@
 <script lang="ts">
   import OptionPickerContainer from "./option-picker/OptionPickerContainer.svelte";
   import StartPositionPicker from "./start-position-picker/StartPositionPicker.svelte";
-  import type { PictographData } from "$services/interfaces/domain-types";
+  import type { PictographData } from "$lib/domain/core";
 
   // Import fade transition for smooth switching
   import { getSettings } from "$lib/state/app-state.svelte";

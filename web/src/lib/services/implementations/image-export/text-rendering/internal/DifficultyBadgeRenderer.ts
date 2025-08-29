@@ -5,9 +5,9 @@
  * Matches desktop ImageExportDifficultyLevelDrawer exactly.
  */
 
-import type { IDifficultyBadgeRenderer } from "../../../../interfaces/text-rendering-interfaces";
-import { createFont } from "./TextRenderingTypes";
 import { injectable } from "inversify";
+import type { IDifficultyBadgeRenderer } from "../../../../contracts/text-rendering-interfaces";
+import { createFont } from "./TextRenderingTypes";
 
 @injectable()
 export class DifficultyBadgeRenderer implements IDifficultyBadgeRenderer {

@@ -20,8 +20,8 @@ Integrates panel management service with runes for:
     ISectionService,
     ISequenceIndexService,
     IThumbnailService,
-  } from "$lib/services/interfaces/browse-interfaces";
-  import type { IPanelManagementService } from "$lib/services/interfaces/panel-interfaces";
+  } from "$lib/services/contracts/browse-interfaces";
+  import type { IPanelManagementService } from "$lib/services/contracts/panel-interfaces";
   import { createBrowseState } from "$lib/state/browse-state-factory.svelte";
   import {
     BROWSE_TAB_PANEL_CONFIGS,

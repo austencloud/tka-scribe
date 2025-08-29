@@ -16,15 +16,15 @@ import type {
   ITextRenderingService,
   TextRenderOptions,
   UserInfo,
-} from "../../interfaces/image-export-interfaces";
+} from "../../contracts/image-export-interfaces";
 
+import { inject, injectable } from "inversify";
 import type {
   IDifficultyBadgeRenderer,
   ITextRenderingUtils,
   IUserInfoRenderer,
   IWordTextRenderer,
-} from "../../interfaces/text-rendering-interfaces";
-import { injectable, inject } from "inversify";
+} from "../../contracts/text-rendering-interfaces";
 import { TYPES } from "../../inversify/types";
 
 @injectable()

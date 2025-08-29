@@ -5,13 +5,15 @@
  * Single responsibility: Adding titles, beat numbers, and styling.
  */
 
-import type { SequenceData } from "../../../interfaces/domain-types";
+import type { SequenceData } from "$lib/domain/core";
+import { injectable } from "inversify";
 import type {
   ISequenceCardMetadataOverlayService,
   SequenceCardDimensions,
   SequenceCardMetadata,
-} from "../../../interfaces/sequence-card-export-interfaces";
+} from "../../../contracts/sequence-card-export-interfaces";
 
+@injectable()
 export class SequenceCardMetadataOverlayService
   implements ISequenceCardMetadataOverlayService
 {

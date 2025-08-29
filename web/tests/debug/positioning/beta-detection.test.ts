@@ -4,11 +4,11 @@
  * This test suite verifies the beta detection approach works correctly.
  */
 
-import { describe, it, expect } from "vitest";
+import { Letter } from "$lib/domain/core/Letter";
+import type { PictographData } from "$lib/domain/core/pictograph/PictographData";
 import { GridPosition } from "$lib/domain/enums";
-import { Letter } from "$lib/domain/Letter";
-import type { PictographData } from "$lib/domain/PictographData";
 import { endsWithBeta, isBetaPosition } from "$lib/utils/betaDetection";
+import { describe, expect, it } from "vitest";
 
 describe("Beta Detection System", () => {
   describe("isBetaPosition", () => {

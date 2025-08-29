@@ -5,14 +5,9 @@
  * createBrowseState factory. You can apply this same pattern to other factories.
  */
 
-import { createBrowseAutoSync } from "$lib/state/utils/auto-sync-state.svelte";
+import { NavigationMode } from "$lib/domain/browse";
 import type {
-  SequenceData,
-  FilterType,
-  FilterValue,
-  BrowseLoadingState,
-} from "$lib/services/interfaces/domain-types";
-import type {
+  DeleteConfirmationData,
   IBrowseService,
   IDeleteService,
   IFavoritesService,
@@ -22,9 +17,14 @@ import type {
   ISequenceIndexService,
   IThumbnailService,
   NavigationSection,
-  DeleteConfirmationData,
-} from "$lib/services/interfaces/browse-interfaces";
-import { NavigationMode } from "$lib/domain/browse";
+} from "$lib/services/contracts/browse-interfaces";
+import { createBrowseAutoSync } from "$lib/state/utils/auto-sync-state.svelte";
+import type {
+  BrowseLoadingState,
+  FilterType,
+  FilterValue,
+  SequenceData,
+} from "$lib/domain/core";
 
 // ============================================================================
 // AUTO-SYNC ENABLED BROWSE STATE

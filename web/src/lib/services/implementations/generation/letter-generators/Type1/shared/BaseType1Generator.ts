@@ -6,8 +6,8 @@
  * Generates pictograph data, not just letters.
  */
 
-import { Letter } from "$lib/domain/Letter";
-import type { PictographData } from "$lib/domain/PictographData";
+import { Letter } from "$lib/domain/core/Letter";
+import type { PictographData } from "$lib/domain/core/pictograph/PictographData";
 import { Direction, PositionSystem, Timing } from "$lib/domain/enums";
 import { BaseLetterGenerator } from "../../../core/BaseLetterGenerator";
 import {
@@ -27,9 +27,9 @@ export abstract class BaseType1Generator extends BaseLetterGenerator {
 
   constructor(
     letter: Letter,
-    patternService: import("../../../../../interfaces/generation-interfaces").IPositionPatternService,
-    positionCalculator: import("../../../../../interfaces/generation-interfaces").IDirectionCalculator,
-    validator: import("../../../../../interfaces/generation-interfaces").IPictographValidatorService
+    patternService: import("../../../../../contracts/generation-interfaces").IPositionPatternService,
+    positionCalculator: import("../../../../../contracts/generation-interfaces").IDirectionCalculator,
+    validator: import("../../../../../contracts/generation-interfaces").IPictographValidatorService
   ) {
     super(patternService, positionCalculator, validator);
     this.letter = letter;

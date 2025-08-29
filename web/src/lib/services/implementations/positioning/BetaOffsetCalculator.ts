@@ -5,21 +5,21 @@
  * Based on legacy beta offset calculation logic.
  */
 
-import type { Direction } from "./BetaPropDirectionCalculator";
+import { injectable } from "inversify";
 import type {
   IBetaOffsetCalculator,
   Position,
-} from "../../interfaces/positioning-interfaces";
-import { injectable } from "inversify";
+} from "../../contracts/positioning-interfaces";
+import type { Direction } from "./BetaPropDirectionCalculator";
 import {
-  UP,
   DOWN,
+  DOWNLEFT,
+  DOWNRIGHT,
   LEFT,
   RIGHT,
-  UPRIGHT,
-  DOWNRIGHT,
+  UP,
   UPLEFT,
-  DOWNLEFT,
+  UPRIGHT,
 } from "./BetaPropDirectionCalculator";
 
 @injectable()

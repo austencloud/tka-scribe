@@ -10,7 +10,7 @@ import { injectable } from "inversify";
 import type {
   IExportConfigurationManager,
   TKAImageExportOptions,
-} from "../../interfaces/image-export-interfaces";
+} from "../../contracts/image-export-interfaces";
 
 @injectable()
 export class ExportConfigurationManager implements IExportConfigurationManager {

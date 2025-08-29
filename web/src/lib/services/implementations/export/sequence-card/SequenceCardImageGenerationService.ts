@@ -5,15 +5,20 @@
  * Single responsibility: Converting sequence data to images via SVG composition.
  */
 
-import type { BeatData, SequenceData } from "../../../interfaces/domain-types";
+import type {
+  BeatData,
+  SequenceData,
+} from "$lib/domain/core";
+import { injectable } from "inversify";
 import type {
   ISequenceCardImageGenerationService,
   ISequenceCardMetadataOverlayService,
   ISequenceCardSVGCompositionService,
   SequenceCardDimensions,
-} from "../../../interfaces/sequence-card-export-interfaces";
-import { renderPictograph } from "../../../utils/pictograph-rendering-utils";
+} from "../../../contracts/sequence-card-export-interfaces";
+import { renderPictograph } from "../../pictograph-rendering-utils";
 
+@injectable()
 export class SequenceCardImageGenerationService
   implements ISequenceCardImageGenerationService
 {

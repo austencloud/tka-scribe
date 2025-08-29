@@ -13,7 +13,7 @@ import type {
   IBeatFrameService,
   LayoutInfo,
   Position,
-} from "$lib/services/interfaces/beat-frame-interfaces";
+} from "$lib/services/contracts/beat-frame-interfaces";
 import { injectable } from "inversify";
 
 @injectable()

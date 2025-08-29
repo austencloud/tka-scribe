@@ -24,7 +24,7 @@
 ## 🎯 **Target Structure**
 
 ```
-src/lib/services/interfaces/
+src/lib/services/contracts/
 ├── browse/                    # Business area: Sequence discovery
 │   ├── browse-service.ts           # Core filtering/browsing (80 lines)
 │   ├── thumbnail-service.ts        # Thumbnail management (40 lines)

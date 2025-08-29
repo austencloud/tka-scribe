@@ -5,13 +5,13 @@
  * Matches desktop UserInfoDrawer exactly.
  */
 
+import { injectable } from "inversify";
 import type {
   TextRenderOptions,
   UserInfo,
-} from "../../../../interfaces/image-export-interfaces";
-import type { IUserInfoRenderer } from "../../../../interfaces/text-rendering-interfaces";
+} from "../../../../contracts/image-export-interfaces";
+import type { IUserInfoRenderer } from "../../../../contracts/text-rendering-interfaces";
 import { createFont } from "./TextRenderingTypes";
-import { injectable } from "inversify";
 
 @injectable()
 export class UserInfoRenderer implements IUserInfoRenderer {

@@ -1,7 +1,7 @@
 <!-- SequenceCardTab.svelte - Simple page-based sequence card tab matching legacy desktop -->
 <script lang="ts">
   import { onMount } from "svelte";
-  import type { SequenceData } from "$services/interfaces/domain-types";
+  import type { SequenceData } from "$lib/domain/core";
   // Note: Loading directly from dictionary API
   import SequenceCardNavigation from "./Navigation.svelte";
   import PageDisplay from "./PageDisplay.svelte";

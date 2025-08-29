@@ -9,21 +9,21 @@
  */
 
 import type {
-  ArrowPlacementData as ArrowPlacementData,
+  ArrowPlacementData,
   MotionData,
   PictographData,
 } from "$lib/domain";
+import type { Letter } from "$lib/domain/core/Letter";
 import {
+  GridMode,
+  Location,
   MotionColor,
   MotionType,
-  Location,
   Orientation,
-  GridMode,
 } from "$lib/domain/enums";
-import type { Letter } from "$lib/domain/Letter";
-import { inject, injectable } from "inversify";
-import type { IArrowPositioningOrchestrator } from "$lib/services/interfaces/positioning-interfaces";
+import type { IArrowPositioningOrchestrator } from "$lib/services/contracts/positioning-interfaces";
 import { TYPES } from "$lib/services/inversify/types";
+import { inject, injectable } from "inversify";
 
 export interface ArrowPositionResult {
   x: number;

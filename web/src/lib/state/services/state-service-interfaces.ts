@@ -5,7 +5,7 @@
  * Consolidated into a single file for simplicity since they're small.
  */
 
-import type { AppSettings } from "$services/interfaces/application-interfaces";
+import type { AppSettings } from "$services/contracts/application-interfaces";
 
 // ============================================================================
 // SHARED TYPES

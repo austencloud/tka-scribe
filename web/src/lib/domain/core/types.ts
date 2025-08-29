@@ -1,0 +1,115 @@
+/**
+ * Core Types and Shared Interfaces
+ *
+ * Fundamental types used across multiple service domains.
+ * This file contains shared data structures, coordinates, and utility types.
+ */
+
+import type {
+  DifficultyLevel,
+  Location,
+  MotionColor,
+  MotionType,
+  Orientation,
+} from "../enums";
+import type { GridData } from "./pictograph/GridData";
+import type { PictographData } from "./pictograph/PictographData";
+
+// Core types only - no re-exports to avoid circular dependencies
+
+// ============================================================================
+// BROWSE TYPES
+// ============================================================================
+
+export type FilterType = "difficulty" | "author" | "propType" | "gridMode";
+export type FilterValue = string | number | boolean;
+export type SortMethod = "alphabetical" | "difficulty" | "author" | "recent";
+
+// ============================================================================
+// BASIC COORDINATE TYPES
+// ============================================================================
+
+export interface Coordinates {
+  x: number;
+  y: number;
+}
+
+export interface GridPoint {
+  coordinates: Coordinates;
+}
+
+// ============================================================================
+// ARROW POSITIONING TYPES
+// ============================================================================
+
+// ArrowPosition moved to $lib/services/positioning/types.ts
+
+export interface LegacyArrowData {
+  id: string;
+  color: MotionColor;
+  motionType: MotionType;
+  location: Location;
+  startOrientation: Orientation;
+  endOrientation: Orientation;
+  rotationDirection: string;
+  turns: number;
+  isMirrored: boolean;
+  coords?: Coordinates;
+  rotAngle?: number;
+  svgCenter?: Coordinates;
+  svgMirrored?: boolean;
+}
+
+export interface ArrowPlacementConfig {
+  pictographData: PictographData;
+  gridData: GridData;
+  checker?: unknown;
+}
+
+// ============================================================================
+// PROP TYPES
+// ============================================================================
+
+export interface PropPosition {
+  x: number;
+  y: number;
+  rotation: number;
+}
+
+// ============================================================================
+// TYPE ALIASES
+// ============================================================================
+
+// Use centralized enum types - no duplicates!
+export type HandRotDir = "cw_shift" | "ccw_shift";
+
+// Re-export types from domain
+export { GridMode } from "../enums";
+export type { DifficultyLevel, MotionColor, PropContinuity } from "../enums";
+
+// ============================================================================
+// OPTION FILTER TYPES
+// ============================================================================
+
+export interface OptionFilters {
+  difficulty?: DifficultyLevel;
+  motionTypes?: MotionType[];
+  minTurns?: number;
+  maxTurns?: number;
+}
+
+// ============================================================================
+// SERVICE REGISTRY TYPES
+// ============================================================================
+
+export type ServiceInterface<T> = {
+  readonly name: string;
+  readonly _type?: T;
+};
+
+/**
+ * Helper function to define service interfaces for the DI container
+ */
+export function defineService<T>(name: string): ServiceInterface<T> {
+  return { name } as ServiceInterface<T>;
+}

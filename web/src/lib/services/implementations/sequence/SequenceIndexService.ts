@@ -5,11 +5,11 @@
  * Provides search capabilities across sequence metadata.
  */
 
-import type { SequenceData } from "$lib/services/interfaces/domain-types";
-import { injectable } from "inversify";
 import { createSequenceData } from "$lib/domain";
-import type { ISequenceIndexService } from "$lib/services/interfaces/browse-interfaces";
-import { GridMode, PropType, GridPositionGroup } from "$lib/domain/enums";
+import type { SequenceData } from "$lib/domain/core";
+import { GridMode, GridPositionGroup, PropType } from "$lib/domain/enums";
+import type { ISequenceIndexService } from "$lib/services/contracts/browse-interfaces";
+import { injectable } from "inversify";
 
 interface SearchIndex {
   wordIndex: Map<string, Set<string>>; // word -> sequence IDs

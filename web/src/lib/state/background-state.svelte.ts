@@ -4,7 +4,7 @@ import {
   type PerformanceMetrics,
   type QualityLevel,
 } from "$lib/domain/background/BackgroundTypes";
-import type { IBackgroundService } from "$lib/services/interfaces/background/IBackgroundService";
+import type { IBackgroundService } from "$lib/services/contracts/background/IBackgroundService";
 import { resolve, TYPES } from "$lib/services/inversify/container";
 
 export function createBackgroundState() {
@@ -74,11 +74,6 @@ export function createBackgroundState() {
       metrics = newMetrics;
     },
 
-    async optimizePerformance() {
-      if (shouldOptimize && currentSystem) {
-        const optimalQuality = backgroundService.detectOptimalQuality();
-        await this.setQuality(optimalQuality);
-      }
-    },
+
   };
 }

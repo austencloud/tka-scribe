@@ -5,12 +5,12 @@
  * Extracted from StartPositionPicker component to follow clean architecture.
  */
 
-import type { PictographData } from "$domain/PictographData";
-import type { IStartPositionSelectionService } from "$lib/services/interfaces/IStartPositionSelectionService";
+import type { PictographData } from "$lib/domain/core/pictograph/PictographData";
+import type { IStartPositionSelectionService } from "$lib/services/contracts/application/IStartPositionSelectionService";
 import type {
   IStartPositionService as IApplicationStartPositionService,
   IStartPositionService,
-} from "$services/interfaces/application-interfaces";
+} from "$services/contracts/application-interfaces";
 import { TYPES } from "$services/inversify/types";
 import { inject, injectable } from "inversify";
 

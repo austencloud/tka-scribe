@@ -2,13 +2,15 @@
  * Arrow Path Resolution Service
  *
  * Responsible for determining the correct SVG file path based on motion data.
- * Extracted from ArrowRenderingService to improve modularity and reusability.
+ * Extracted from ArrowRenderer to improve modularity and reusability.
  */
 
 import type { MotionData } from "$lib/domain";
-import type { ArrowPlacementData } from "$lib/domain/ArrowPlacementData";
-import type { IArrowPathResolutionService } from "$lib/services/interfaces/positioning-interfaces";
+import type { ArrowPlacementData } from "$lib/domain/core/pictograph/ArrowPlacementData";
+import type { IArrowPathResolutionService } from "$lib/services/contracts/positioning-interfaces";
+import { injectable } from "inversify";
 
+@injectable()
 export class ArrowPathResolutionService implements IArrowPathResolutionService {
   /**
    * Get arrow SVG path based on motion type and properties (extracted from Arrow.svelte)

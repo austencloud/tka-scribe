@@ -5,13 +5,13 @@
  */
 
 import type { BackgroundType } from "$lib/domain/background/BackgroundTypes";
-import { GridMode as DomainGridMode } from "$lib/domain/enums";
-import { updateBodyBackground } from "$lib/utils/background-preloader";
-import { injectable } from "inversify";
+import { GridMode } from "$lib/domain/enums";
 import type {
   AppSettings,
   ISettingsService,
-} from "../../interfaces/application-interfaces";
+} from "$lib/services/contracts/application-interfaces";
+import { updateBodyBackground } from "$lib/utils/background-preloader";
+import { injectable } from "inversify";
 
 @injectable()
 export class SettingsService implements ISettingsService {
@@ -20,7 +20,7 @@ export class SettingsService implements ISettingsService {
 
   private _settings: AppSettings = {
     theme: "dark",
-    gridMode: DomainGridMode.DIAMOND,
+    gridMode: GridMode.DIAMOND,
     showBeatNumbers: true,
     autoSave: true,
     exportQuality: "high",
@@ -99,7 +99,7 @@ export class SettingsService implements ISettingsService {
   async resetToDefaults(): Promise<void> {
     this._settings = {
       theme: "dark",
-      gridMode: DomainGridMode.DIAMOND,
+      gridMode: GridMode.DIAMOND,
       showBeatNumbers: true,
       autoSave: true,
       exportQuality: "high",

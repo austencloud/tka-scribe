@@ -5,13 +5,13 @@
  * Extracted from the monolithic TKAImageExportService to focus solely on memory calculations.
  */
 
-import type { SequenceData } from "../../interfaces/domain-types";
+import type { SequenceData } from "$lib/domain/core";
 import { injectable } from "inversify";
 import type {
   IExportMemoryCalculator,
   MemoryEstimate,
   TKAImageExportOptions,
-} from "../../interfaces/image-export-interfaces";
+} from "../../contracts/image-export-interfaces";
 
 @injectable()
 export class ExportMemoryCalculator implements IExportMemoryCalculator {

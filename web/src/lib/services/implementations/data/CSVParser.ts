@@ -5,12 +5,9 @@
  * Handles line splitting, header extraction, and row parsing with error handling.
  */
 
+import type { CSVParseResult, ParsedCsvRow } from "$lib/domain";
+import type { ICSVParser } from "$lib/services/contracts/data/ICsvParser";
 import { injectable } from "inversify";
-import type {
-  CSVParseResult,
-  ICSVParser,
-  ParsedCsvRow,
-} from "../../interfaces/data-interfaces";
 
 @injectable()
 export class CSVParser implements ICSVParser {

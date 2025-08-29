@@ -9,6 +9,6 @@
 export { ArrowPathResolutionService } from "./ArrowPathResolutionService";
 export { ArrowPositioningService } from "./ArrowPositioningService";
 export { FallbackArrowService } from "./FallbackArrowService";
-export { SvgColorTransformationService } from "./SvgColorTransformationService";
-export { SvgLoadingService } from "./SvgLoadingService";
-export { SvgParsingService } from "./SvgParsingService";
+export { SvgColorTransformer } from "./SvgColorTransformer";
+export { SvgLoader } from "./SvgLoader";
+export { SvgParser } from "./SvgParser";

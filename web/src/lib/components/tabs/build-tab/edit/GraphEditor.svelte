@@ -4,7 +4,7 @@
   import type {
     BeatData,
     SequenceData,
-  } from "$services/interfaces/domain-types";
+  } from "$lib/domain/core";
   import { onMount } from "svelte";
   import MainAdjustmentPanel from "./MainAdjustmentPanel.svelte";
 

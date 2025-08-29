@@ -7,13 +7,13 @@
 
 import type { PictographData } from "$lib/domain";
 import { GridMode } from "$lib/domain";
-import { inject, injectable } from "inversify";
 import type {
   ICsvLoader,
   ICSVParser,
   IMotionQueryHandler,
   ParsedCsvRow,
-} from "../../interfaces/data-interfaces";
+} from "$lib/services/contracts/data-interfaces";
+import { inject, injectable } from "inversify";
 import { TYPES } from "../../inversify/types";
 import type {
   CSVRow,
@@ -47,15 +47,27 @@ export class MotionQueryHandler implements IMotionQueryHandler {
 
     try {
       // Load raw CSV data
-      const csvData = await this.csvLoaderService.loadCsvData();
+      const csvData = await this.csvLoaderService.loadCSVDataSet();
 
       // Parse CSV data using shared service
-      const diamondParseResult = this.CSVParser.parseCSV(csvData.diamondData);
-      const boxParseResult = this.CSVParser.parseCSV(csvData.boxData);
+      const diamondParseResult = this.CSVParser.parseCSV(
+        csvData.data?.diamondData || ""
+      );
+      const boxParseResult = this.CSVParser.parseCSV(
+        csvData.data?.boxData || ""
+      );
 
       this.parsedData = {
-        [GridMode.DIAMOND]: diamondParseResult.rows,
-        [GridMode.BOX]: boxParseResult.rows,
+        [GridMode.DIAMOND]: diamondParseResult.rows.map((row) => ({
+          data: row,
+          errors: [],
+          isValid: true,
+        })),
+        [GridMode.BOX]: boxParseResult.rows.map((row) => ({
+          data: row,
+          errors: [],
+          isValid: true,
+        })),
         // SKEWED mode doesn't have separate data - it uses both diamond and box
       };
 

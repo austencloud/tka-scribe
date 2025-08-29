@@ -4,8 +4,8 @@
  * Just extracts the device detection logic without over-engineering
  */
 
-import type { ResponsiveSettings } from "$lib/services/interfaces/application/IDeviceDetector";
-import type { DeviceCapabilities } from "$services/interfaces/domain-types";
+import type { DeviceCapabilities } from "$lib/domain/sequence-card/SequenceCard";
+import type { ResponsiveSettings } from "$lib/services/contracts/application/IDeviceDetector";
 
 /**
  * Creates simple reactive state for device integration

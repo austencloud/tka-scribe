@@ -12,7 +12,7 @@ import type {
   IAnimationStateService,
   PropStates,
   InterpolationResult,
-} from "$lib/services/interfaces/application-interfaces";
+} from "$lib/services/contracts/animation";
 
 @injectable()
 export class AnimationStateService implements IAnimationStateService {

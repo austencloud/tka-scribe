@@ -6,8 +6,8 @@
  * Provides simple AI-friendly functions like generateA(), generateB(), etc.
  */
 
-import type { PictographData } from "$lib/domain/PictographData";
-import type { IPictographGenerator } from "../../interfaces/generation-interfaces";
+import type { PictographData } from "$lib/domain/core/pictograph/PictographData";
+import type { IPictographGenerator } from "../../contracts/generation-interfaces";
 
 export class CSVPictographGenerator implements IPictographGenerator {
   private readonly pictographCache = new Map<string, PictographData[]>();

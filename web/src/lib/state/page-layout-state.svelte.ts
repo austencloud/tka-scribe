@@ -14,12 +14,12 @@ import type {
   PageOrientation,
   PaperSize,
   PrintConfiguration,
-} from "$lib/domain/PageLayoutTypes";
-import type { SequenceData } from "$services/interfaces/domain-types";
+} from "$lib/domain/sequence-card/PageLayoutTypes";
 import type {
   IPageFactoryService,
   IPrintablePageLayoutService,
-} from "$services/interfaces/sequence-interfaces";
+} from "$services/contracts/sequence-interfaces";
+import type { SequenceData } from "$lib/domain/core";
 
 export interface PageLayoutState {
   // Page data
