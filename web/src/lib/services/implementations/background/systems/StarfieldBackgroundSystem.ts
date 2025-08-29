@@ -1,11 +1,11 @@
 // src/lib/components/backgrounds/starfield/StarfieldBackgroundSystem.ts
 import type {
   AccessibilitySettings,
-  BackgroundSystem,
   Dimensions,
   PerformanceMetrics,
   QualityLevel,
 } from "$lib/domain/background/BackgroundTypes";
+import type { IBackgroundSystem } from "../../../interfaces/background/IBackgroundSystem";
 
 interface Star {
   x: number;
@@ -17,7 +17,7 @@ interface Star {
   twinkleSpeed: number;
 }
 
-export class StarfieldBackgroundSystem implements BackgroundSystem {
+export class StarfieldBackgroundSystem implements IBackgroundSystem {
   private quality: QualityLevel = "medium";
   private accessibility: AccessibilitySettings = {
     reducedMotion: false,

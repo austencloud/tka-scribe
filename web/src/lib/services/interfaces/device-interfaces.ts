@@ -9,11 +9,11 @@
 // RESPONSIVE SETTINGS
 // ============================================================================
 
-// ResponsiveSettings moved to individual file: ./application/IDeviceDetectionService.ts
+// ResponsiveSettings moved to individual file: ./application/IDeviceDetector.ts
 
 // ============================================================================
 // DEVICE DETECTION SERVICE
 // ============================================================================
 
-// IDeviceDetectionService moved to individual file: ./application/IDeviceDetectionService.ts
+// IDeviceDetector moved to individual file: ./application/IDeviceDetector.ts
 // ResponsiveSettings also moved to the same file

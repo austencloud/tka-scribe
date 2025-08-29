@@ -1,5 +1,5 @@
 /**
- * EnumMappingService - Centralized enum mapping utilities
+ * EnumMapper - Centralized enum mapping utilities
  *
  * Provides consistent string-to-enum conversion functions used across
  * all data services. Eliminates duplication of mapping logic.
@@ -14,7 +14,7 @@ import {
 } from "$lib/domain/enums";
 import { injectable } from "inversify";
 
-export interface IEnumMappingService {
+export interface IEnumMapper {
   mapMotionType(motionType: string): MotionType;
   mapLocation(location: string): Location;
   mapOrientation(orientation: string): Orientation;
@@ -25,7 +25,7 @@ export interface IEnumMappingService {
 }
 
 @injectable()
-export class EnumMappingService implements IEnumMappingService {
+export class EnumMapper implements IEnumMapper {
   /**
    * Map string motion type to MotionType enum
    */

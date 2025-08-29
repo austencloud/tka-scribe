@@ -5,13 +5,13 @@
 
 import { injectable } from "inversify";
 import type {
-  IDeviceDetectionService,
+  IDeviceDetector,
   ResponsiveSettings,
-} from "../../interfaces/application/IDeviceDetectionService";
+} from "../../interfaces/application/IDeviceDetector";
 import type { DeviceCapabilities } from "../../interfaces/domain-types";
 
 @injectable()
-export class DeviceDetectionService implements IDeviceDetectionService {
+export class DeviceDetectionService implements IDeviceDetector {
   private capabilities: DeviceCapabilities | null = null;
   private listeners: Array<(capabilities: DeviceCapabilities) => void> = [];
   private resizeObserver: ResizeObserver | null = null;

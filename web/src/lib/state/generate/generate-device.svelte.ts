@@ -4,7 +4,7 @@
  * Just extracts the device detection logic without over-engineering
  */
 
-import type { ResponsiveSettings } from "$lib/services/interfaces/application/IDeviceDetectionService";
+import type { ResponsiveSettings } from "$lib/services/interfaces/application/IDeviceDetector";
 import type { DeviceCapabilities } from "$services/interfaces/domain-types";
 
 /**

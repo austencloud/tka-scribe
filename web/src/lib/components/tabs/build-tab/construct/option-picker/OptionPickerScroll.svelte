@@ -31,18 +31,18 @@ Migrated to use OptionPickerServiceAdapter directly:
   // Group pictographs by category for clean section rendering
   let organizedPictographs = $derived.by(() => {
     if (!pictographs?.length) return [];
-    
+
     // Simple grouping by pictograph type/category
     const groups = new Map<string, PictographData[]>();
-    
+
     for (const pictograph of pictographs) {
-      const category = pictograph.tags?.[0] || 'Other';
+      const category = pictograph.tags?.[0] || "Other";
       if (!groups.has(category)) {
         groups.set(category, []);
       }
       groups.get(category)!.push(pictograph);
     }
-    
+
     return Array.from(groups.entries()).map(([category, items]) => ({
       title: category,
       pictographs: items,
@@ -52,28 +52,30 @@ Migrated to use OptionPickerServiceAdapter directly:
   // ===== Style Properties =====
   let scrollStyle = $derived(() => {
     if (!layout) return {};
-    
+
     return {
-      '--grid-columns': layout.gridConfig.columns,
-      '--option-size': layout.gridConfig.itemSize + 'px',
-      '--grid-gap': layout.gridConfig.gap + 'px',
+      "--grid-columns": layout.gridConfig.columns,
+      "--option-size": layout.gridConfig.itemSize + "px",
+      "--grid-gap": layout.gridConfig.gap + "px",
     };
   });
 </script>
 
 <div
   class="option-picker-scroll"
-  class:mobile={layout?.deviceType === 'mobile'}
-  class:tablet={layout?.deviceType === 'tablet'}
-  style={Object.entries(scrollStyle).map(([key, value]) => `${key}: ${value}`).join('; ')}
+  class:mobile={layout?.deviceType === "mobile"}
+  class:tablet={layout?.deviceType === "tablet"}
+  style={Object.entries(scrollStyle)
+    .map(([key, value]) => `${key}: ${value}`)
+    .join("; ")}
 >
   <SimpleGlassScroll>
     {#each organizedPictographs as section (section.title)}
       <OptionPickerSection
         letterType={section.title}
         pictographs={section.pictographs}
-        onPictographSelected={onPictographSelected}
-        containerWidth={containerWidth}
+        {onPictographSelected}
+        {containerWidth}
       />
     {/each}
   </SimpleGlassScroll>

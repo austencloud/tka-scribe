@@ -33,7 +33,7 @@ import { BackgroundType } from "$lib/domain/background/BackgroundTypes";
 /**
  * Service for centralized enum mapping utilities
  */
-export interface IEnumMappingService {
+export interface IEnumMapper {
   mapMotionType(motionType: string): DomainMotionType;
   mapLocation(location: string): Location;
   mapOrientation(orientation: string): Orientation;
@@ -49,7 +49,7 @@ export interface IEnumMappingService {
 /**
  * Service for CSV parsing utilities
  */
-export interface ICSVParserService {
+export interface ICSVParser {
   parseCSV(csvText: string): {
     headers: string[];
     rows: Array<Record<string, string>>;
@@ -153,7 +153,7 @@ export interface AppSettings {
 // APPLICATION SERVICE INTERFACES
 // ============================================================================
 
-// IApplicationInitializationService moved to individual file: ./application/IApplicationInitializationService.ts
+// IApplicationInitializer moved to individual file: ./application/IApplicationInitializer.ts
 
 /**
  * Settings management service
@@ -174,7 +174,7 @@ export interface ISettingsService {
 /**
  * Service for coordinating construct tab operations
  */
-export interface IConstructTabCoordinationService {
+export interface IConstructTabCoordinator {
   setupComponentCoordination(components: Record<string, unknown>): void;
   handleSequenceModified(sequence: SequenceData): Promise<void>;
   handleStartPositionSet(startPosition: BeatData): Promise<void>;

@@ -5,19 +5,19 @@
  * for the option picker component.
  */
 
-import { injectable, inject } from "inversify";
-import { TYPES } from "../inversify/types";
-import type { IOptionPickerDataService } from "../interfaces/option-picker-interfaces";
 import type { PictographData } from "$lib/domain/PictographData";
+import { inject, injectable } from "inversify";
+import type { IMotionQueryHandler } from "../interfaces/data-interfaces";
+import type { IOptionPickerDataService } from "../interfaces/option-picker-interfaces";
 import type { IPositionMapper } from "../interfaces/positioning-interfaces";
-import type { IMotionQueryService } from "../interfaces/data-interfaces";
+import { TYPES } from "../inversify/types";
 
 @injectable()
 export class OptionPickerDataService implements IOptionPickerDataService {
   constructor(
     @inject(TYPES.IPositionMapper) private positionMapper: IPositionMapper,
-    @inject(TYPES.IMotionQueryService)
-    private motionQueryService: IMotionQueryService
+    @inject(TYPES.IMotionQueryHandler)
+    private MotionQueryHandler: IMotionQueryHandler
   ) {}
 
   /**
@@ -40,7 +40,7 @@ export class OptionPickerDataService implements IOptionPickerDataService {
     try {
       // Get next options from motion query service
       const nextOptions =
-        await this.motionQueryService.getNextOptionsForSequence(sequence);
+        await this.MotionQueryHandler.getNextOptionsForSequence(sequence);
 
       return nextOptions || [];
     } catch (error) {

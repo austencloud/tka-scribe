@@ -9,11 +9,11 @@ import { Letter } from "$lib/domain/Letter";
 import { createMotionData } from "$lib/domain/MotionData";
 import type { PictographData } from "$lib/domain/PictographData";
 import { createPictographData } from "$lib/domain/PictographData";
-import { MotionColor, GridPosition } from "$lib/domain/enums";
-import type { IEnumMappingService } from "../data/EnumMappingService";
+import { GridPosition, MotionColor } from "$lib/domain/enums";
+import { inject, injectable } from "inversify";
 import type { IPositionMapper } from "../../interfaces/positioning-interfaces";
-import { injectable, inject } from "inversify";
 import { TYPES } from "../../inversify/types";
+import type { IEnumMapper } from "../data/EnumMapper";
 
 export interface CSVRow {
   letter: string;
@@ -42,8 +42,8 @@ export class CSVPictographParserService implements ICSVPictographParserService {
   constructor(
     @inject(TYPES.IPositionMapper)
     private readonly positionMapper: IPositionMapper,
-    @inject(TYPES.IEnumMappingService)
-    private readonly enumMapper: IEnumMappingService
+    @inject(TYPES.IEnumMapper)
+    private readonly enumMapper: IEnumMapper
   ) {}
 
   /**

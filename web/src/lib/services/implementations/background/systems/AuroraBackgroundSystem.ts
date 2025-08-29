@@ -1,11 +1,11 @@
 // src/lib/components/backgrounds/aurora/AuroraBackgroundSystem.ts
 import type {
   AccessibilitySettings,
-  BackgroundSystem,
   Dimensions,
   PerformanceMetrics,
   QualityLevel,
 } from "$lib/domain/background/BackgroundTypes";
+import type { IBackgroundSystem } from "../../../interfaces/background/IBackgroundSystem";
 
 interface Blob {
   x: number;
@@ -26,7 +26,7 @@ interface Sparkle {
   pulseSpeed: number;
 }
 
-export class AuroraBackgroundSystem implements BackgroundSystem {
+export class AuroraBackgroundSystem implements IBackgroundSystem {
   private quality: QualityLevel = "medium";
   private accessibility: AccessibilitySettings = {
     reducedMotion: false,

@@ -5,54 +5,13 @@
  * and cleanup operations following the microservices architecture pattern.
  */
 
-import type { SequenceData } from "../../interfaces/domain-types";
 import { injectable } from "inversify";
-
-export interface DeleteResult {
-  success: boolean;
-  deletedSequence: SequenceData | null;
-  affectedSequences: SequenceData[];
-  error?: string;
-}
-
-export interface DeleteConfirmationData {
-  sequence: SequenceData;
-  relatedSequences: SequenceData[];
-  hasVariations: boolean;
-  willFixVariationNumbers: boolean;
-}
-
-export interface IDeleteService {
-  /** Prepare deletion data for confirmation dialog */
-  prepareDeleteConfirmation(
-    sequence: SequenceData,
-    allSequences: SequenceData[]
-  ): Promise<DeleteConfirmationData>;
-
-  /** Delete sequence and handle cleanup */
-  deleteSequence(
-    sequenceId: string,
-    allSequences: SequenceData[]
-  ): Promise<DeleteResult>;
-
-  /** Fix variation numbers after deletion */
-  fixVariationNumbers(
-    deletedSequence: SequenceData,
-    allSequences: SequenceData[]
-  ): Promise<SequenceData[]>;
-
-  /** Check if sequence can be safely deleted */
-  canDeleteSequence(
-    sequence: SequenceData,
-    allSequences: SequenceData[]
-  ): Promise<boolean>;
-
-  /** Get sequences that would be affected by deletion */
-  getAffectedSequences(
-    sequence: SequenceData,
-    allSequences: SequenceData[]
-  ): Promise<SequenceData[]>;
-}
+import type { SequenceData } from "../../interfaces/domain-types";
+import type {
+  DeleteConfirmationData,
+  DeleteResult,
+  IDeleteService,
+} from "../../interfaces/sequence-interfaces";
 
 @injectable()
 export class DeleteService implements IDeleteService {

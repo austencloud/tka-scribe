@@ -6,20 +6,12 @@
  */
 
 import type { PictographData } from "$lib/domain/PictographData";
+import type {
+  OrganizedPictographs,
+  PictographOrganizationConfig
+} from "../../interfaces/build-interfaces";
 
-// ===== Types =====
-export interface OrganizedPictographs {
-  individual: Record<string, PictographData[]>;
-  grouped: Record<string, PictographData[]>;
-  totalCount: number;
-  hasIndividual: boolean;
-  hasGrouped: boolean;
-}
 
-export interface PictographOrganizationConfig {
-  individualSections: string[];
-  groupedSections: string[];
-}
 
 // ===== Constants =====
 const DEFAULT_CONFIG: PictographOrganizationConfig = {

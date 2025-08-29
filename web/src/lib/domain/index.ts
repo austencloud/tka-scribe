@@ -8,6 +8,7 @@
 export * from "./enums";
 
 // Core Models
+export * from "./AppSettings";
 export * from "./ArrowPlacementData";
 export * from "./BeatData";
 export * from "./GridData";

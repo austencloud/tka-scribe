@@ -11,7 +11,7 @@ Refactored into smaller section components for better maintainability:
 - Maintains all original functionality with cleaner separation
 -->
 <script lang="ts">
-  import type { IDeviceDetectionService } from "$lib/services/interfaces/application/IDeviceDetectionService";
+  import type { IDeviceDetector } from "$lib/services/interfaces/application/IDeviceDetector";
   import { resolve, TYPES } from "$lib/services/inversify/container";
   import { onMount } from "svelte";
   // Import section components
@@ -31,9 +31,7 @@ Refactored into smaller section components for better maintainability:
   // ===== Device Service Integration =====
   onMount(() => {
     try {
-      const deviceService = resolve<IDeviceDetectionService>(
-        TYPES.IDeviceDetectionService
-      );
+      const deviceService = resolve<IDeviceDetector>(TYPES.IDeviceDetector);
       return deviceState.initializeDevice(deviceService);
     } catch (error) {
       console.log("GeneratePanel: Device service not ready yet:", error);

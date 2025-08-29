@@ -1,17 +1,17 @@
 // src/lib/services/implementations/background/systems/SnowfallBackgroundSystem.ts
-import { getOptimizedConfig } from "$lib/domain/background/configs/config";
-import { createShootingStarSystem } from "./core/ShootingStarSystem";
-import { createSnowflakeSystem } from "./core/SnowflakeSystem";
 import type {
-  BackgroundSystem,
   Dimensions,
   QualityLevel,
   ShootingStarState,
   Snowflake,
 } from "$lib/domain/background/BackgroundTypes";
+import { getOptimizedConfig } from "$lib/domain/background/configs/config";
 import { drawBackgroundGradient } from "$lib/utils/background/backgroundUtils";
+import type { IBackgroundSystem } from "../../../interfaces/background/IBackgroundSystem";
+import { createShootingStarSystem } from "./core/ShootingStarSystem";
+import { createSnowflakeSystem } from "./core/SnowflakeSystem";
 
-export class SnowfallBackgroundSystem implements BackgroundSystem {
+export class SnowfallBackgroundSystem implements IBackgroundSystem {
   private snowflakeSystem = createSnowflakeSystem();
   private shootingStarSystem = createShootingStarSystem();
 

@@ -62,5 +62,8 @@ export interface IBatchAnalysisService {
     thumbnails: ThumbnailFile[],
     config: BatchAnalysisConfig
   ): Promise<BatchAnalysisResult>;
-  exportResults(results: BatchAnalysisResult, format: "json" | "csv"): Promise<void>;
+  exportResults(
+    results: BatchAnalysisResult,
+    format: "json" | "csv"
+  ): Promise<void>;
 }

@@ -7,13 +7,13 @@
 
 import { inject, injectable } from "inversify";
 import type { ISettingsService } from "../../interfaces/application-interfaces";
-import type { IApplicationInitializationService } from "../../interfaces/application/IApplicationInitializationService.js";
+import type { IApplicationInitializer } from "../../interfaces/application/IApplicationInitializer.js";
 import type { IPersistenceService } from "../../interfaces/sequence-interfaces";
 import { TYPES } from "../../inversify/types";
 
 @injectable()
 export class ApplicationInitializationService
-  implements IApplicationInitializationService
+  implements IApplicationInitializer
 {
   constructor(
     @inject(TYPES.ISettingsService) private settingsService: ISettingsService,

@@ -5,8 +5,7 @@
  * This includes CSV handling, letter queries, and data processing operations.
  */
 
-import type { PictographData } from "$lib/domain";
-import type { GridMode, Letter } from "$lib/domain";
+import type { GridMode, Letter, PictographData } from "$lib/domain";
 
 // ============================================================================
 // LETTER QUERY SERVICE INTERFACES
@@ -18,7 +17,7 @@ import type { GridMode, Letter } from "$lib/domain";
  * Single responsibility: Query pictographs by letter using LetterMappingRepository
  * Uses shared services for CSV loading, parsing, and transformation.
  */
-export interface ILetterQueryService {
+export interface ILetterQueryHandler {
   getPictographByLetter(
     letter: Letter,
     gridMode: GridMode
@@ -53,7 +52,7 @@ export interface CsvDataSet {
  * Handles loading and caching of CSV data from static files or preloaded window data.
  * Provides a single source of truth for raw CSV content without parsing logic.
  */
-export interface ICsvLoaderService {
+export interface ICsvLoader {
   loadCsvData(): Promise<CsvDataSet>;
   getCsvData(): CsvDataSet | null;
   clearCache(): void;
@@ -101,7 +100,7 @@ export interface CSVParseResult {
  * Provides consistent CSV parsing functionality used across all data services.
  * Handles line splitting, header extraction, and row parsing with error handling.
  */
-export interface ICSVParserService {
+export interface ICSVParser {
   parseCSV(csvText: string): CSVParseResult;
   parseCSVToRows(csvText: string): ParsedCsvRow[];
   validateCSVStructure(csvText: string): { isValid: boolean; errors: string[] };
@@ -113,31 +112,8 @@ export interface ICSVParserService {
 // ============================================================================
 
 /**
- * Motion Query Parameters
- */
-export interface MotionQueryParams {
-  startLocation: string;
-  endLocation: string;
-  motionType: string;
-}
-
-/**
  * Motion Query Service Interface
  */
-export interface IMotionQueryService {
-  findPictographByMotionParams(
-    params: MotionQueryParams,
-    gridMode: GridMode
-  ): Promise<PictographData | null>;
+export interface IMotionQueryHandler {
   getNextOptionsForSequence(sequence: unknown[]): Promise<PictographData[]>;
-  findPictographsByLetter(letter: string): Promise<PictographData[]>;
-  findPictographsByMotionType(motionType: string): Promise<PictographData[]>;
-  findPictographsByStartLocation(location: string): Promise<PictographData[]>;
-  findPictographsByEndLocation(location: string): Promise<PictographData[]>;
-  findPictographsByGridMode(gridMode: GridMode): Promise<PictographData[]>;
-  getAllPictographs(): Promise<PictographData[]>;
-  getAvailableMotionTypes(): Promise<string[]>;
-  getAvailableStartLocations(): Promise<string[]>;
-  getAvailableEndLocations(): Promise<string[]>;
-  getAvailableLetters(): Promise<string[]>;
 }

@@ -8,7 +8,7 @@
 /**
  * Application initialization and startup service
  */
-export interface IApplicationInitializationService {
+export interface IApplicationInitializer {
   /**
    * Initialize the application
    * Performs startup sequence including settings load, persistence setup, and startup checks

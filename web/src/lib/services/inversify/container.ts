@@ -16,9 +16,9 @@ import { LessonRepository } from "../../repositories/LessonRepository";
 import { LetterMappingRepository } from "../../repositories/LetterMappingRepository";
 import { CodexService } from "../codex/CodexService";
 import { PictographOperationsService } from "../codex/PictographOperationsService";
-import { CsvLoaderService } from "../implementations/data/CsvLoaderService";
-import { CSVParserService } from "../implementations/data/CSVParserService";
-import { LetterQueryService } from "../implementations/data/LetterQueryService";
+import { CsvLoader } from "../implementations/data/CsvLoader";
+import { CSVParser } from "../implementations/data/CSVParser";
+import { LetterQueryHandler } from "../implementations/data/LetterQueryHandler";
 
 // Import application services
 import { ApplicationInitializationService } from "../implementations/application/ApplicationInitializationService";
@@ -55,11 +55,10 @@ import { FavoritesService } from "../implementations/browse/FavoritesService";
 
 // Import additional data services
 import { ArrowPlacementService } from "../implementations/data/ArrowPlacementService";
-import { DataTransformationService } from "../implementations/data/DataTransformationService";
-import { EnumMappingService } from "../implementations/data/EnumMappingService";
-import { MotionQueryService } from "../implementations/data/MotionQueryService";
-import { OptionFilteringService } from "../implementations/data/OptionFilteringService";
-import { ExampleSequenceService } from "../implementations/data/PictographTransformationService";
+import { DataTransformer } from "../implementations/data/DataTransformer";
+import { EnumMapper } from "../implementations/data/EnumMapper";
+import { MotionQueryHandler } from "../implementations/data/MotionQueryHandler";
+import { OptionFilterer } from "../implementations/data/OptionFilterer";
 
 // Import additional domain services
 import { LetterDeriver } from "../implementations/domain/LetterDeriver";
@@ -194,15 +193,15 @@ try {
   container.bind(TYPES.ILetterMappingRepository).to(LetterMappingRepository);
   container.bind(TYPES.ILessonRepository).to(LessonRepository);
 
-  // Bind data services (dependencies of LetterQueryService)
-  container.bind(TYPES.ICsvLoaderService).to(CsvLoaderService);
-  container.bind(TYPES.ICSVParsingService).to(CSVParserService);
+  // Bind data services (dependencies of LetterQueryHandler)
+  container.bind(TYPES.ICsvLoader).to(CsvLoader);
+  container.bind(TYPES.ICSVParser).to(CSVParser);
 
   // Bind services
   container
     .bind(TYPES.IPictographOperationsService)
     .to(PictographOperationsService);
-  container.bind(TYPES.ILetterQueryService).to(LetterQueryService);
+  container.bind(TYPES.ILetterQueryHandler).to(LetterQueryHandler);
 
   // Finally bind CodexService
   container.bind(TYPES.ICodexService).to(CodexService);
@@ -210,9 +209,9 @@ try {
   // Bind application services
   container.bind(TYPES.ISettingsService).to(SettingsService);
   container.bind(TYPES.IPersistenceService).to(LocalStoragePersistenceService);
-  container.bind(TYPES.IDeviceDetectionService).to(DeviceDetectionService);
+  container.bind(TYPES.IDeviceDetector).to(DeviceDetectionService);
   container
-    .bind(TYPES.IApplicationInitializationService)
+    .bind(TYPES.IApplicationInitializer)
     .to(ApplicationInitializationService);
 
   // Bind sequence services
@@ -253,13 +252,10 @@ try {
 
   // Bind additional data services
   container.bind(TYPES.IArrowPlacementService).to(ArrowPlacementService);
-  container
-    .bind(TYPES.IDataTransformationService)
-    .to(DataTransformationService);
-  container.bind(TYPES.IEnumMappingService).to(EnumMappingService);
-  container.bind(TYPES.IMotionQueryService).to(MotionQueryService);
-  container.bind(TYPES.IOptionFilteringService).to(OptionFilteringService);
-  container.bind(TYPES.IExampleSequenceService).to(ExampleSequenceService);
+  container.bind(TYPES.IDataTransformer).to(DataTransformer);
+  container.bind(TYPES.IEnumMapper).to(EnumMapper);
+  container.bind(TYPES.IMotionQueryHandler).to(MotionQueryHandler);
+  container.bind(TYPES.IOptionFilterer).to(OptionFilterer);
 
   // Bind additional domain services
   container.bind(TYPES.ILetterDeriver).to(LetterDeriver);
@@ -357,10 +353,10 @@ try {
 
   // Bind construct services
   container
-    .bind(TYPES.IConstructTabCoordinationService)
+    .bind(TYPES.IConstructTabCoordinator)
     .to(ConstructSubTabCoordinationService);
   container.bind(TYPES.IBrowseService).to(BrowseService);
-  container.bind(TYPES.ICSVParserService).to(CSVParserService);
+  container.bind(TYPES.ICSVParser).to(CSVParser);
   container
     .bind(TYPES.IArrowPositioningOrchestrator)
     .to(ArrowPositionCalculator);
@@ -397,9 +393,7 @@ try {
     .bind(TYPES.IArrowPathResolutionService)
     .to(ArrowPathResolutionService);
   container.bind(TYPES.IPositionMapper).to(PositionMapper);
-  container
-    .bind(TYPES.ICSVPictographParserService)
-    .to(CSVPictographParserService);
+  container.bind(TYPES.ICSVPictographParser).to(CSVPictographParserService);
   container.bind(TYPES.ISequenceAnimationEngine).to(SequenceAnimationEngine);
   container
     .bind(TYPES.ISequenceAnimationOrchestrator)

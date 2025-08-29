@@ -6,27 +6,26 @@
  */
 
 import type { BeatData, SequenceData } from "$lib/domain";
-import { createSequenceData } from "$lib/domain";
-import { GridMode, PropType } from "$lib/domain";
+import { createSequenceData, GridMode, PropType } from "$lib/domain";
+import type { ILetterQueryHandler } from "../../interfaces/data-interfaces";
 import type {
   GenerationOptions,
-  ISequenceGenerationService,
   IOrientationCalculationService,
+  ISequenceGenerationService,
 } from "../../interfaces/generation-interfaces";
-import type { ILetterQueryService } from "../../interfaces/data-interfaces";
 
-import type { PictographData } from "$lib/domain/PictographData";
 import { createMotionData } from "$lib/domain/MotionData";
+import type { PictographData } from "$lib/domain/PictographData";
 import {
-  MotionType,
-  RotationDirection,
-  Location,
-  Orientation,
   DifficultyLevel,
-  PropContinuity,
   GenerationMode,
+  Location,
+  MotionType,
+  Orientation,
+  PropContinuity,
+  RotationDirection,
 } from "$lib/domain/enums";
-import { injectable, inject } from "inversify";
+import { inject, injectable } from "inversify";
 import { TYPES } from "../../inversify/types";
 
 // Legacy constants for rotation directions - using enum values
@@ -47,8 +46,8 @@ const MOTION_TYPES = {
 @injectable()
 export class SequenceGenerationService implements ISequenceGenerationService {
   constructor(
-    @inject(TYPES.ILetterQueryService)
-    private letterQueryService: ILetterQueryService,
+    @inject(TYPES.ILetterQueryHandler)
+    private LetterQueryHandler: ILetterQueryHandler,
     @inject(TYPES.IOrientationCalculationService)
     private orientationCalculationService: IOrientationCalculationService
   ) {}
@@ -207,8 +206,8 @@ export class SequenceGenerationService implements ISequenceGenerationService {
   ): Promise<BeatData> {
     try {
       // Step 1: Get option dicts (legacy: self._get_option_dicts())
-      // LetterQueryService initializes automatically when first used
-      const optionDicts = await this.letterQueryService.getAllCodexPictographs(
+      // LetterQueryHandler initializes automatically when first used
+      const optionDicts = await this.LetterQueryHandler.getAllCodexPictographs(
         GridMode.DIAMOND
       );
       console.log(`📋 Loaded ${optionDicts.length} option dicts`);

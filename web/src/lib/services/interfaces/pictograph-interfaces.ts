@@ -107,7 +107,7 @@ export interface IOverlayRenderingService {
 /**
  * Data transformation service for format conversion
  */
-export interface IDataTransformationService {
+export interface IDataTransformer {
   beatToPictographData(beat: BeatData): PictographData;
   adaptGridData(rawGridData: RawGridData, mode: GridMode): GridData;
 }

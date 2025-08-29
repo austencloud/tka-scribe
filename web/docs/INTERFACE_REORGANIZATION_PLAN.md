@@ -106,7 +106,7 @@ src/lib/contracts/
 │   │   │   └── WorkbenchTypes.ts                # Workbench state
 │   │   ├── operations/
 │   │   │   ├── IWorkbenchBeatOperationsService.ts # Beat manipulation
-│   │   │   ├── IConstructTabCoordinationService.ts # Tab coordination
+│   │   │   ├── IConstructTabCoordinator.ts # Tab coordination
 │   │   │   └── OperationTypes.ts                # Operation configs
 │   │   ├── tokens/
 │   │   │   └── WorkbenchTokens.ts               # All workbench DI tokens
@@ -145,7 +145,7 @@ src/lib/contracts/
 │   │
 │   ├── motion/                      # NEW: For your motion analysis
 │   │   ├── analysis/
-│   │   │   ├── IMotionQueryService.ts           # Motion querying
+│   │   │   ├── IMotionQueryHandler.ts           # Motion querying
 │   │   │   ├── IMotionParameterService.ts       # Motion parameters
 │   │   │   ├── IMotionLetterIdentificationService.ts # Letter ID
 │   │   │   └── AnalysisTypes.ts                 # Motion analysis types
@@ -173,11 +173,11 @@ src/lib/contracts/
 │   └── codex/                       # NEW: For your letter/codex services
 │       ├── core/
 │       │   ├── ICodexService.ts                 # Main codex service
-│       │   ├── ILetterQueryService.ts           # Letter querying
+│       │   ├── ILetterQueryHandler.ts           # Letter querying
 │       │   └── CodexTypes.ts                    # Codex data structures
 │       ├── mapping/
 │       │   ├── ILetterMappingRepository.ts      # Letter mappings
-│       │   ├── IOptionFilteringService.ts       # Option filtering
+│       │   ├── IOptionFilterer.ts       # Option filtering
 │       │   └── MappingTypes.ts                  # Mapping configurations
 │       ├── tokens/
 │       │   └── CodexTokens.ts                   # All codex DI tokens
@@ -191,14 +191,14 @@ src/lib/contracts/
 │   │   ├── PersistenceTokens.ts                 # Storage DI tokens
 │   │   └── index.ts
 │   ├── device/
-│   │   ├── IDeviceDetectionService.ts           # Device capabilities
+│   │   ├── IDeviceDetector.ts           # Device capabilities
 │   │   ├── DeviceTypes.ts                       # Device data structures
 │   │   ├── DeviceTokens.ts                      # Device DI tokens
 │   │   └── index.ts
 │   ├── data/
-│   │   ├── ICSVParserService.ts                 # CSV parsing
+│   │   ├── ICSVParser.ts                 # CSV parsing
 │   │   ├── ICsvLoaderService.ts                 # CSV loading
-│   │   ├── IDataTransformationService.ts        # Data transformation
+│   │   ├── IDataTransformer.ts        # Data transformation
 │   │   ├── DataTypes.ts                         # Data processing types
 │   │   ├── DataTokens.ts                        # Data DI tokens
 │   │   └── index.ts
@@ -211,7 +211,7 @@ src/lib/contracts/
 │
 ├── application/                     # Application-Level Services
 │   ├── initialization/
-│   │   ├── IApplicationInitializationService.ts # App startup
+│   │   ├── IApplicationInitializer.ts # App startup
 │   │   ├── InitializationTypes.ts               # Startup configs
 │   │   └── index.ts
 │   ├── settings/
@@ -250,7 +250,7 @@ src/lib/contracts/
 3. Move `domain-types.ts` → `shared/DomainTypes.ts`
 4. Create domain token files from your 183-line `types.ts`
 
-**Phase 2: Simple Domains First (Week 2)** 5. **Device domain**: Move `IDeviceDetectionService` (simplest - only 1 service) 6. **Application domain**: Move `IApplicationInitializationService`, `ISettingsService` 7. **Infrastructure/persistence**: Move `IPersistenceService`, `IFilterPersistenceService`
+**Phase 2: Simple Domains First (Week 2)** 5. **Device domain**: Move `IDeviceDetector` (simplest - only 1 service) 6. **Application domain**: Move `IApplicationInitializer`, `ISettingsService` 7. **Infrastructure/persistence**: Move `IPersistenceService`, `IFilterPersistenceService`
 
 **Phase 3: Core Business Domains (Week 3-4)** 8. **Browse domain**: Move all browse interfaces (clean separation) 9. **Sequence domain**: Move sequence interfaces (split page layout to export) 10. **Navigation domain**: Move `INavigationService`, `IPanelManagementService`
 

@@ -10,18 +10,18 @@
  */
 
 import type {
-  BackgroundSystem,
-  Dimensions,
-  QualityLevel,
   AccessibilitySettings,
-  PerformanceMetrics,
-  DeepOceanState,
   Bubble,
+  DeepOceanState,
+  Dimensions,
   MarineLife,
   OceanParticle,
+  PerformanceMetrics,
+  QualityLevel,
 } from "$lib/domain/background/BackgroundTypes";
+import type { IBackgroundSystem } from "../../../interfaces/background/IBackgroundSystem";
 
-export class DeepOceanBackgroundSystem implements BackgroundSystem {
+export class DeepOceanBackgroundSystem implements IBackgroundSystem {
   private state: DeepOceanState;
   private quality: QualityLevel = "medium";
   private accessibility: AccessibilitySettings = {

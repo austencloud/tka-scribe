@@ -8,9 +8,9 @@
 import { browser } from "$app/environment";
 import { GridMode } from "$lib/domain";
 import { BackgroundType } from "$lib/domain/background/BackgroundTypes";
+import { updateBodyBackground } from "$lib/utils/background-preloader";
 import type { AppSettings } from "$services/interfaces/application-interfaces";
 import type { ISettingsService } from "./state-service-interfaces";
-import { updateBodyBackground } from "$lib/utils/background-preloader";
 
 const SETTINGS_STORAGE_KEY = "tka-modern-web-settings";
 
@@ -54,12 +54,12 @@ class SettingsService implements ISettingsService {
 
   updateSettings(newSettings: Partial<AppSettings>): void {
     Object.assign(this.#settings, newSettings);
-    
+
     // Update body background immediately if background type changed
     if (newSettings.backgroundType) {
       updateBodyBackground(newSettings.backgroundType);
     }
-    
+
     this.saveSettings();
   }
 

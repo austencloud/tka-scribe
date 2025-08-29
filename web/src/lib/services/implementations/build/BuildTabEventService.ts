@@ -11,7 +11,7 @@ import { createBeatData } from "$domain/BeatData";
 import type { PictographData } from "$domain/PictographData";
 import { resolve, TYPES } from "$lib/services/inversify/container";
 
-import type { IConstructTabCoordinationService as IConstructSubTabCoordinationService } from "../../interfaces/application-interfaces";
+import type { IConstructTabCoordinator as IConstructSubTabCoordinationService } from "../../interfaces/application-interfaces";
 
 export class BuildTabEventService {
   private constructCoordinator: IConstructSubTabCoordinationService | null = null;
@@ -28,7 +28,7 @@ export class BuildTabEventService {
 
     try {
       this.constructCoordinator = resolve<IConstructSubTabCoordinationService>(
-        TYPES.IConstructTabCoordinationService
+        TYPES.IConstructTabCoordinator
       );
       this.initialized = true;
     } catch (error) {

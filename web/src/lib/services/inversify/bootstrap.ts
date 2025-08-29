@@ -6,8 +6,6 @@
  */
 
 import "reflect-metadata";
-import { container } from "./container";
-import { runServiceResolutionTests } from "./test-service-resolution";
 
 /**
  * Initialize the InversifyJS container and all services
@@ -24,9 +22,6 @@ export async function initializeInversifyContainer(): Promise<void> {
     // await loadPositioningServices();
 
     console.log("✅ InversifyJS container initialized");
-
-    // Run service resolution tests
-    runServiceResolutionTests();
   } catch (error) {
     console.error("❌ Failed to initialize InversifyJS container:", error);
     throw error;

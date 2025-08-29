@@ -1,13 +1,13 @@
-import { injectable } from "inversify";
-import { BackgroundFactory } from "./BackgroundFactory";
-import { detectAppropriateQuality } from "$lib/domain/background/configs/config";
 import type {
-  BackgroundType,
-  QualityLevel,
   BackgroundSystem,
+  BackgroundType,
   PerformanceMetrics,
+  QualityLevel,
 } from "$lib/domain/background/BackgroundTypes";
-import type { IBackgroundService } from "../../interfaces/background-interfaces";
+import { detectAppropriateQuality } from "$lib/domain/background/configs/config";
+import { injectable } from "inversify";
+import type { IBackgroundService } from "../../interfaces/background/IBackgroundService";
+import { BackgroundFactory } from "./BackgroundFactory";
 
 @injectable()
 export class BackgroundService implements IBackgroundService {

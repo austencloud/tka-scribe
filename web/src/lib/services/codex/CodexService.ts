@@ -8,14 +8,14 @@
 import { GridMode, Letter } from "$lib/domain";
 import type { PictographData } from "$lib/domain/PictographData";
 import type { LetterCategory } from "$lib/domain/codex/types";
-import type { ILetterMappingRepository } from "$lib/repositories/LetterMappingRepository";
 import type { ILessonRepository } from "$lib/repositories/LessonRepository";
+import type { ILetterMappingRepository } from "$lib/repositories/LetterMappingRepository";
 import { TYPES } from "$lib/services/inversify/types";
 import { inject, injectable } from "inversify";
 
-import type { IPictographOperationsService } from "../interfaces/codex-interfaces";
 import type { ICodexService } from "../interfaces/application-interfaces";
-import type { ILetterQueryService } from "../interfaces/data-interfaces";
+import type { IPictographOperationsService } from "../interfaces/codex-interfaces";
+import type { ILetterQueryHandler } from "../interfaces/data-interfaces";
 
 // Re-export the interface for convenience
 export type { ICodexService } from "../interfaces/application-interfaces";
@@ -31,8 +31,8 @@ export class CodexService implements ICodexService {
     private lessonRepository: ILessonRepository,
     @inject(TYPES.IPictographOperationsService)
     private operationsService: IPictographOperationsService,
-    @inject(TYPES.ILetterQueryService)
-    private letterQueryService: ILetterQueryService
+    @inject(TYPES.ILetterQueryHandler)
+    private LetterQueryHandler: ILetterQueryHandler
   ) {
     console.log(
       "🔧 Clean CodexService initialized with proper dependency injection"
@@ -52,7 +52,7 @@ export class CodexService implements ICodexService {
       await Promise.all([
         this.letterMappingRepository.initialize(),
         this.lessonRepository.initialize(),
-        // LetterQueryService initializes automatically when first used
+        // LetterQueryHandler initializes automatically when first used
       ]);
 
       this.initialized = true;
@@ -70,7 +70,7 @@ export class CodexService implements ICodexService {
     await this.initialize();
 
     console.log("🔍 Loading all codex pictographs...");
-    const pictographs = await this.letterQueryService.getAllCodexPictographs(
+    const pictographs = await this.LetterQueryHandler.getAllCodexPictographs(
       GridMode.DIAMOND
     );
     console.log(
@@ -89,7 +89,7 @@ export class CodexService implements ICodexService {
   async searchPictographs(searchTerm: string): Promise<PictographData[]> {
     await this.initialize();
 
-    const pictographs = await this.letterQueryService.searchPictographs(
+    const pictographs = await this.LetterQueryHandler.searchPictographs(
       searchTerm,
       GridMode.DIAMOND
     );
@@ -102,7 +102,7 @@ export class CodexService implements ICodexService {
   async getPictographByLetter(letter: string): Promise<PictographData | null> {
     await this.initialize();
 
-    return this.letterQueryService.getPictographByLetter(
+    return this.LetterQueryHandler.getPictographByLetter(
       letter as Letter,
       GridMode.DIAMOND
     );
@@ -122,7 +122,7 @@ export class CodexService implements ICodexService {
       return [];
     }
 
-    const pictographs = await this.letterQueryService.getPictographsByLetters(
+    const pictographs = await this.LetterQueryHandler.getPictographsByLetters(
       letters as Letter[],
       GridMode.DIAMOND
     );

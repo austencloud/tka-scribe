@@ -127,14 +127,14 @@ export class StartPositionSelectionService
    */
   async preloadOptionsForPosition(_endPosition: string): Promise<void> {
     try {
-      // Import and use the LetterQueryService to preload options
+      // Import and use the LetterQueryHandler to preload options
       const { resolve, TYPES } = await import(
         "$lib/services/inversify/container"
       );
       // Resolve service to trigger initialization
-      resolve(TYPES.ILetterQueryService);
+      resolve(TYPES.ILetterQueryHandler);
 
-      // LetterQueryService initializes automatically when first used
+      // LetterQueryHandler initializes automatically when first used
       console.log("✅ CSV data preloaded for option picker");
 
       // Store empty preloaded options for now - option generation logic would need to be implemented

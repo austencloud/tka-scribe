@@ -1,5 +1,5 @@
 /**
- * OptionFilteringService - Centralized option filtering utilities
+ * OptionFilterer - Centralized option filtering utilities
  *
  * Handles filtering of pictograph options by various criteria including
  * position, letter types, rotation, and other motion parameters.
@@ -9,9 +9,9 @@ import { getLetterType } from "$lib/domain";
 import type { BeatData } from "$lib/domain/BeatData";
 import type { PictographData } from "$lib/domain/PictographData";
 import type { IPositionMapper } from "$lib/services/interfaces/positioning-interfaces";
-import type { IEnumMappingService } from "./EnumMappingService";
-import { injectable, inject } from "inversify";
+import { inject, injectable } from "inversify";
 import { TYPES } from "../../inversify/types";
+import type { IEnumMapper } from "./EnumMapper";
 
 export interface FilterCriteria {
   startPosition?: string;
@@ -31,7 +31,7 @@ export interface FilterResult {
   appliedFilters: string[];
 }
 
-export interface IOptionFilteringService {
+export interface IOptionFilterer {
   filterByStartPosition(
     options: PictographData[],
     startPosition: string
@@ -57,10 +57,10 @@ export interface IOptionFilteringService {
 }
 
 @injectable()
-export class OptionFilteringService implements IOptionFilteringService {
+export class OptionFilterer implements IOptionFilterer {
   constructor(
-    @inject(TYPES.IEnumMappingService)
-    private enumMappingService: IEnumMappingService,
+    @inject(TYPES.IEnumMapper)
+    private EnumMapper: IEnumMapper,
     @inject(TYPES.IPositionMapper) private positionService: IPositionMapper
   ) {}
 

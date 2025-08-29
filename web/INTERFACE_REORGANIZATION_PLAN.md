@@ -3,16 +3,18 @@
 ## 📊 **Current State Analysis**
 
 ### **What's Already Done:**
+
 - ✅ `application/index.ts` - 417 lines (needs splitting)
 - ✅ `infrastructure/device/index.ts` - device interfaces moved
-- ✅ `domain/browse/index.ts` - browse interfaces moved  
+- ✅ `domain/browse/index.ts` - browse interfaces moved
 - 📁 Empty prepared directories: `domain/export/`, `domain/pictograph/`, `domain/positioning/`, `domain/sequence/`, `shared/`
 
 ### **What Needs Organization:**
+
 - 🗃️ **44 loose interface files** still in root interfaces directory
 - 📏 **Large files requiring splits:**
   - `positioning-interfaces.ts` (532 lines)
-  - `application-interfaces.ts` (417 lines) 
+  - `application-interfaces.ts` (417 lines)
   - `sequence-card-export-interfaces.ts` (394 lines)
   - `generation-interfaces.ts` (306 lines)
   - `sequence-interfaces.ts` (304 lines)
@@ -25,7 +27,7 @@
 src/lib/services/interfaces/
 ├── browse/                    # Business area: Sequence discovery
 │   ├── browse-service.ts           # Core filtering/browsing (80 lines)
-│   ├── thumbnail-service.ts        # Thumbnail management (40 lines) 
+│   ├── thumbnail-service.ts        # Thumbnail management (40 lines)
 │   ├── search-service.ts           # Search functionality (50 lines)
 │   ├── navigation-service.ts       # Navigation structure (60 lines)
 │   └── favorites-service.ts        # User favorites (30 lines)
@@ -34,7 +36,7 @@ src/lib/services/interfaces/
 │   ├── sequence-validation.ts      # Validation logic (80 lines)
 │   ├── sequence-animation.ts       # Animation interfaces (100 lines)
 │   └── sequence-state.ts           # State management (109 lines)
-├── export/                    # Business area: Export functionality  
+├── export/                    # Business area: Export functionality
 │   ├── core/
 │   │   ├── export-service.ts       # Main export logic (110 lines)
 │   │   └── export-config.ts        # Configuration (86 lines)
@@ -113,14 +115,16 @@ src/lib/services/interfaces/
 ## 📋 **Migration Plan**
 
 ### **Phase 1: Remove Confusing Structure**
+
 1. **Delete empty `domain/` folder** - We decided this was redundant with `src/lib/domain/`
 2. **Move existing consolidated content** from `domain/browse/` to `browse/`
 3. **Keep `application/` and `infrastructure/`** - these are truly cross-cutting
 
 ### **Phase 2: Organize by Business Area**
+
 1. **Create business area directories:**
    - `browse/` (sequence discovery)
-   - `sequence/` (sequence management) 
+   - `sequence/` (sequence management)
    - `export/` (export functionality)
    - `pictograph/` (pictograph operations)
    - `positioning/` (mathematical positioning)
@@ -138,15 +142,17 @@ src/lib/services/interfaces/
 ### **Phase 3: Split Large Files**
 
 #### **Split `positioning-interfaces.ts` (532 lines):**
+
 ```
 positioning/
 ├── grid-positioning.ts         # Grid calculation interfaces
-├── pictograph-positioning.ts   # Pictograph placement interfaces  
+├── pictograph-positioning.ts   # Pictograph placement interfaces
 ├── mathematical-utils.ts       # Mathematical utility interfaces
 └── positioning-types.ts        # Shared positioning types
 ```
 
 #### **Split `application-interfaces.ts` (417 lines):**
+
 ```
 application/
 ├── settings-service.ts         # Settings management interfaces
@@ -157,6 +163,7 @@ application/
 ```
 
 #### **Split `sequence-card-export-interfaces.ts` (394 lines):**
+
 ```
 export/sequence-cards/
 ├── card-interfaces.ts          # Basic card interface definitions
@@ -166,6 +173,7 @@ export/sequence-cards/
 ```
 
 #### **Split `generation-interfaces.ts` (306 lines):**
+
 ```
 infrastructure/generation/
 ├── generation-core.ts          # Core generation interfaces
@@ -173,6 +181,7 @@ infrastructure/generation/
 ```
 
 #### **Split `sequence-interfaces.ts` (304 lines):**
+
 ```
 sequence/
 ├── sequence-crud.ts            # CRUD operation interfaces
@@ -181,6 +190,7 @@ sequence/
 ```
 
 ### **Phase 4: Organize Export Domain**
+
 **Export is the most complex - organize into logical sub-domains:**
 
 1. **Core export functionality:**
@@ -200,6 +210,7 @@ sequence/
    - `text-rendering-interfaces.ts` → `export/rendering/text-rendering.ts`
 
 ### **Phase 5: Infrastructure Organization**
+
 **Organize remaining technical/infrastructure interfaces:**
 
 1. **Testing interfaces:**
@@ -219,6 +230,7 @@ sequence/
    - `background-interfaces.ts` → `infrastructure/background/background-service.ts`
 
 ### **Phase 6: Shared Types Organization**
+
 **Move common types to shared directory:**
 
 1. **Move core types:**
@@ -230,6 +242,7 @@ sequence/
    - `test-import.ts` (2 lines) - delete if not needed
 
 ### **Phase 7: Update Barrel Exports**
+
 **Create comprehensive `index.ts` files:**
 
 1. **Root barrel export** - Export all interfaces from organized structure
@@ -241,7 +254,7 @@ sequence/
 ## 📏 **File Size Guidelines**
 
 - ✅ **Target:** 50-150 lines per file
-- ⚠️ **Acceptable:** 150-250 lines  
+- ⚠️ **Acceptable:** 150-250 lines
 - 🚨 **Must Split:** 250+ lines
 
 ---

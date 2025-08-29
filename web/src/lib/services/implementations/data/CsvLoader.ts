@@ -6,13 +6,10 @@
  */
 
 import { injectable } from "inversify";
-import type { 
-  CsvDataSet,
-  ICsvLoaderService 
-} from "../../interfaces/data-interfaces";
+import type { CsvDataSet, ICsvLoader } from "../../interfaces/data-interfaces";
 
 @injectable()
-export class CsvLoaderService implements ICsvLoaderService {
+export class CsvLoader implements ICsvLoader {
   private static readonly CSV_FILES = {
     DIAMOND: "/DiamondPictographDataframe.csv",
     BOX: "/BoxPictographDataframe.csv",
@@ -74,8 +71,8 @@ export class CsvLoaderService implements ICsvLoaderService {
 
   private async loadFromStaticFiles(): Promise<CsvDataSet> {
     const [diamondResponse, boxResponse] = await Promise.all([
-      fetch(CsvLoaderService.CSV_FILES.DIAMOND),
-      fetch(CsvLoaderService.CSV_FILES.BOX),
+      fetch(CsvLoader.CSV_FILES.DIAMOND),
+      fetch(CsvLoader.CSV_FILES.BOX),
     ]);
 
     this.validateResponses(diamondResponse, boxResponse);

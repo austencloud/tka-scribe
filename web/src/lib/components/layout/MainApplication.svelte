@@ -1,7 +1,7 @@
 <!-- Main Application Layout -->
 <script lang="ts">
-  import type { IApplicationInitializationService } from "$lib/services/interfaces/application/IApplicationInitializationService";
-  import type { IDeviceDetectionService } from "$lib/services/interfaces/application/IDeviceDetectionService";
+  import type { IApplicationInitializer } from "$lib/services/interfaces/application/IApplicationInitializer";
+  import type { IDeviceDetector } from "$lib/services/interfaces/application/IDeviceDetector";
   import { resolve, TYPES } from "$lib/services/inversify/container";
   import type { ISettingsService } from "$services/interfaces/application-interfaces";
   import type { ISequenceService } from "$services/interfaces/sequence-interfaces";
@@ -32,10 +32,10 @@
   const getContainer = getContext<() => Container | null>("di-container");
 
   // Services - resolved lazily
-  let initService: IApplicationInitializationService | null = $state(null);
+  let initService: IApplicationInitializer | null = $state(null);
   let settingsService: ISettingsService | null = $state(null);
   let sequenceService: ISequenceService | null = $state(null);
-  let deviceService: IDeviceDetectionService | null = $state(null);
+  let deviceService: IDeviceDetector | null = $state(null);
   let servicesResolved = $state(false);
 
   // App state
@@ -49,10 +49,10 @@
   //   if (container && !servicesResolved) {
   //     try {
   //       // Use resolve which will use the global container once it's ready
-  //       initService = resolve(TYPES.IApplicationInitializationService);
+  //       initService = resolve(TYPES.IApplicationInitializer);
   //       settingsService = resolve(TYPES.ISettingsService);
   //       sequenceService = resolve(TYPES.ISequenceService);
-  //       deviceService = resolve(TYPES.IDeviceDetectionService);
+  //       deviceService = resolve(TYPES.IDeviceDetector);
 
   //       servicesResolved = true;
   //     } catch (error) {
@@ -74,10 +74,10 @@
     // Resolve services directly in onMount to prevent infinite loops
     try {
       console.log("🔧 Resolving services...");
-      initService = resolve(TYPES.IApplicationInitializationService);
+      initService = resolve(TYPES.IApplicationInitializer);
       settingsService = resolve(TYPES.ISettingsService);
       sequenceService = resolve(TYPES.ISequenceService);
-      deviceService = resolve(TYPES.IDeviceDetectionService);
+      deviceService = resolve(TYPES.IDeviceDetector);
       servicesResolved = true;
       console.log("✅ Services resolved successfully");
     } catch (error) {

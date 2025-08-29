@@ -6,12 +6,6 @@
  */
 
 import type { BeatData, Letter, SequenceData } from "$lib/domain";
-import {
-  SequenceDataSchema,
-  PngMetadataArraySchema,
-} from "$lib/domain/schemas";
-import { parseStrict } from "$lib/utils/validation";
-import { injectable } from "inversify";
 import { createMotionData, createPictographData } from "$lib/domain";
 import {
   GridMode,
@@ -22,12 +16,14 @@ import {
   PropType,
   RotationDirection,
 } from "$lib/domain/enums";
+import {
+  PngMetadataArraySchema,
+  SequenceDataSchema,
+} from "$lib/domain/schemas";
 import { PngMetadataExtractor } from "$lib/utils/png-metadata-extractor";
-
-export interface ISequenceImportService {
-  importFromPNG(id: string): Promise<SequenceData | null>;
-  convertPngMetadata(id: string, metadata: unknown[]): Promise<SequenceData>;
-}
+import { parseStrict } from "$lib/utils/validation";
+import { injectable } from "inversify";
+import type { ISequenceImportService } from "../../interfaces/sequence-interfaces";
 
 // Constants for PNG metadata conversion
 const PNG_MOTION_TYPES = {

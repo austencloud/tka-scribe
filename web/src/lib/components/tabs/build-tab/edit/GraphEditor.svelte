@@ -101,8 +101,6 @@
     }
     return undefined;
   });
-
-
 </script>
 
 <div class="graph-editor" data-testid="graph-editor">

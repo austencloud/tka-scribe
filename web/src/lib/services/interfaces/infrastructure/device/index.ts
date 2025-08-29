@@ -35,7 +35,7 @@ export interface ResponsiveSettings {
 /**
  * Service for detecting device capabilities and optimizing UI accordingly
  */
-export interface IDeviceDetectionService {
+export interface IDeviceDetector {
   /** Get current device capabilities */
   getCapabilities(): DeviceCapabilities;
 

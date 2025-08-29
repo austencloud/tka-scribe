@@ -7,13 +7,13 @@
 
 import { injectable } from "inversify";
 import type {
-  ParsedCsvRow,
   CSVParseResult,
-  ICSVParserService
+  ICSVParser,
+  ParsedCsvRow,
 } from "../../interfaces/data-interfaces";
 
 @injectable()
-export class CSVParserService implements ICSVParserService {
+export class CSVParser implements ICSVParser {
   /**
    * Parse CSV text into structured result with detailed error reporting
    */

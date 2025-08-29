@@ -84,8 +84,6 @@ export function useArrowPositioning(
             };
 
             newMirroring[color] = arrowPlacement.svgMirrored || false;
-
-
           } catch (error) {
             console.error(
               `❌ useArrowPositioning: Failed to extract position for ${color} arrow:`,

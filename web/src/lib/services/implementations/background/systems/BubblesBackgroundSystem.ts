@@ -1,11 +1,11 @@
 // src/lib/components/backgrounds/bubbles/BubblesBackgroundSystem.ts
 import type {
   AccessibilitySettings,
-  BackgroundSystem,
   Dimensions,
   PerformanceMetrics,
   QualityLevel,
 } from "$lib/domain/background/BackgroundTypes";
+import type { IBackgroundSystem } from "../../../interfaces/background/IBackgroundSystem";
 
 interface Bubble {
   x: number;
@@ -20,7 +20,7 @@ interface Bubble {
   maxLife: number;
 }
 
-export class BubblesBackgroundSystem implements BackgroundSystem {
+export class BubblesBackgroundSystem implements IBackgroundSystem {
   private quality: QualityLevel = "medium";
   private accessibility: AccessibilitySettings = {
     reducedMotion: false,

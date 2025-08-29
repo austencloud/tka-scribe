@@ -62,14 +62,7 @@ export type {
 // APPLICATION INTERFACES
 // ============================================================================
 
-export type {
-  AppSettings,
-  IConstructTabCoordinationService,
-  IOptionDataService,
-  ISettingsService,
-  IStartPositionService,
-} from "./application-interfaces";
-export type { IApplicationInitializationService } from "./application/IApplicationInitializationService";
+export type { AppSettings } from "./application-interfaces";
 
 // ============================================================================
 // SEQUENCE INTERFACES
@@ -91,7 +84,7 @@ export type {
   IArrowPathResolutionService,
   IArrowPositioningService,
   IArrowRenderingService,
-  IDataTransformationService,
+  IDataTransformer,
   IFallbackArrowService,
   IGridRenderingService,
   IOverlayRenderingService,
@@ -175,9 +168,52 @@ export type {
 // ============================================================================
 
 export type {
-  IDeviceDetectionService,
+  IDeviceDetector,
   ResponsiveSettings,
-} from "./application/IDeviceDetectionService";
+} from "./application/IDeviceDetector";
+
+// ============================================================================
+// APPLICATION INTERFACES
+// ============================================================================
+
+export type { IApplicationInitializer as IApplicationInitializationService } from "./application/IApplicationInitializer";
+export type { ICodexService } from "./application/ICodexService";
+export type { IConstructTabCoordinator } from "./application/IConstructTabCoordinator";
+export type { ICSVLoader } from "./application/ICSVLoader";
+export type { ICSVParser } from "./application/ICSVParser";
+export type { IEnumMapper } from "./application/IEnumMapper";
+export type { IOptionDataService } from "./application/IOptionDataService";
+export type { ISettingsService } from "./application/ISettingsService";
+export type { IStartPositionService } from "./application/IStartPositionService";
+
+// ============================================================================
+// ANIMATION INTERFACES
+// ============================================================================
+
+export type { IAnimationControlService } from "./animation/IAnimationControlService";
+export type {
+  IAnimationStateService,
+  InterpolationResult,
+} from "./animation/IAnimationStateService";
+export type {
+  BeatCalculationResult,
+  IBeatCalculationService,
+} from "./animation/IBeatCalculationService";
+export type { IPropInterpolationService } from "./animation/IPropInterpolationService";
+export type {
+  ISequenceAnimationEngine,
+  PropStates,
+  SequenceMetadata,
+} from "./animation/ISequenceAnimationEngine";
+export type { ISequenceAnimationOrchestrator } from "./animation/ISequenceAnimationOrchestrator";
+
+// ============================================================================
+// BACKGROUND INTERFACES
+// ============================================================================
+
+export type { IBackgroundFactory } from "./background/IBackgroundFactory";
+export type { IBackgroundService } from "./background/IBackgroundService";
+export type { IBackgroundSystem } from "./background/IBackgroundSystem";
 
 // ============================================================================
 // EXPORT INTERFACES
@@ -218,14 +254,14 @@ export type {
   IImagePreviewGenerator,
   ILayoutCalculationService,
   IReversalDetectionService,
-  ITKAImageExportService,
   ITextRenderingService,
+  ITKAImageExportService,
   LayoutConstraints,
   LayoutData,
   MemoryEstimate,
   RenderQualitySettings,
-  TKAImageExportOptions,
   TextRenderOptions,
+  TKAImageExportOptions,
   UserInfo,
 } from "./image-export-interfaces";
 
@@ -253,8 +289,8 @@ export {
   IImagePreviewGeneratorInterface,
   ILayoutCalculationServiceInterface,
   IReversalDetectionServiceInterface,
-  ITKAImageExportServiceInterface,
   ITextRenderingServiceInterface,
+  ITKAImageExportServiceInterface,
 } from "./image-export-interfaces";
 
 // Text rendering component DI interfaces

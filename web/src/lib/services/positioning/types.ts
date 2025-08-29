@@ -19,6 +19,3 @@ export type { Point };
 export interface ArrowPosition extends Point {
   rotation: number;
 }
-
-
-

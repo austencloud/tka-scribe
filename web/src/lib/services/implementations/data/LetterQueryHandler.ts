@@ -6,23 +6,23 @@
  */
 
 import type { PictographData } from "$lib/domain";
-import { injectable, inject } from "inversify";
+import { GridMode, Letter, MotionType } from "$lib/domain";
+import { inject, injectable } from "inversify";
 import { TYPES } from "../../inversify/types";
-import { GridMode, MotionType, Letter } from "$lib/domain";
 import type { CSVRow } from "../movement/CSVPictographParserService";
 
 import type { LetterMapping } from "$lib/domain/codex/types";
 import type { ILetterMappingRepository } from "$lib/repositories/LetterMappingRepository";
-import type { 
-  ICsvLoaderService,
-  ICSVParserService,
-  ILetterQueryService,
-  ParsedCsvRow 
+import type {
+  ICsvLoader,
+  ICSVParser,
+  ILetterQueryHandler,
+  ParsedCsvRow,
 } from "../../interfaces/data-interfaces";
-import type { ICSVPictographParserService } from "../movement/CSVPictographParserService";
+import type { ICSVPictographParserService as ICSVPictographParser } from "../movement/CSVPictographParserService";
 
 @injectable()
-export class LetterQueryService implements ILetterQueryService {
+export class LetterQueryHandler implements ILetterQueryHandler {
   private parsedData: Record<
     Exclude<GridMode, GridMode.SKEWED>,
     ParsedCsvRow[]
@@ -32,12 +32,12 @@ export class LetterQueryService implements ILetterQueryService {
   constructor(
     @inject(TYPES.ILetterMappingRepository)
     private letterMappingRepository: ILetterMappingRepository,
-    @inject(TYPES.ICsvLoaderService)
-    private csvLoaderService: ICsvLoaderService,
-    @inject(TYPES.ICSVParsingService)
-    private csvParserService: ICSVParserService,
-    @inject(TYPES.ICSVPictographParserService)
-    private csvPictographParser: ICSVPictographParserService
+    @inject(TYPES.ICsvLoader)
+    private csvLoaderService: ICsvLoader,
+    @inject(TYPES.ICSVParser)
+    private CSVParser: ICSVParser,
+    @inject(TYPES.ICSVPictographParser)
+    private csvPictographParser: ICSVPictographParser
   ) {}
 
   /**
@@ -61,10 +61,8 @@ export class LetterQueryService implements ILetterQueryService {
       const csvData = await this.csvLoaderService.loadCsvData();
 
       // Parse CSV data using shared service
-      const diamondParseResult = this.csvParserService.parseCSV(
-        csvData.diamondData
-      );
-      const boxParseResult = this.csvParserService.parseCSV(csvData.boxData);
+      const diamondParseResult = this.CSVParser.parseCSV(csvData.diamondData);
+      const boxParseResult = this.CSVParser.parseCSV(csvData.boxData);
 
       // Only log significant parsing errors (not empty row issues)
       const significantDiamondErrors = diamondParseResult.errors.filter(
@@ -113,7 +111,7 @@ export class LetterQueryService implements ILetterQueryService {
 
       this.isInitialized = true;
     } catch (error) {
-      console.error("❌ LetterQueryService: Error loading CSV data:", error);
+      console.error("❌ LetterQueryHandler: Error loading CSV data:", error);
       throw new Error(
         `Failed to load CSV data: ${error instanceof Error ? error.message : "Unknown error"}`
       );

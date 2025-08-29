@@ -8,8 +8,9 @@
  */
 
 import { GridMode } from "$lib/domain/enums";
+import { inject, injectable } from "inversify";
 import type {
-  IConstructTabCoordinationService as IConstructSubTabCoordinationService,
+  IConstructTabCoordinator as IConstructSubTabCoordinationService,
   IStartPositionService,
 } from "../../interfaces/application-interfaces";
 import type { BeatData, SequenceData } from "../../interfaces/domain-types";
@@ -17,7 +18,6 @@ import type {
   ISequenceService,
   IWorkbenchBeatOperationsService,
 } from "../../interfaces/sequence-interfaces";
-import { injectable, inject } from "inversify";
 import { TYPES } from "../../inversify/types";
 
 // Note: This service will need to be updated to use the new DI pattern

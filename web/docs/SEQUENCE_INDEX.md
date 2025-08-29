@@ -12,7 +12,6 @@ The browse service uses a pre-generated sequence index (`static/sequence-index.j
 
 ## Scripts
 
-- `npm run generate:index` - Generate index once from dictionary
 - `npm run dev:auto` - Development with automatic index updates
 - `npm run build` - Production build (auto-generates index)
 
