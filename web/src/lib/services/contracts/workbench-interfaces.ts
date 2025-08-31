@@ -14,7 +14,6 @@ import type {
   ValidationResult,
 } from "$domain";
 import { GridMode } from "$domain";
-import type { Letter } from "$domain/core/Letter";
 import type {
   BeatClickResult,
   BeatEditOperation,
@@ -24,7 +23,8 @@ import type {
   SequenceCreationResult,
   WorkbenchConfig,
   WorkbenchMode,
-} from "$domain/data-interfaces/workbench-interfaces-data";
+} from "$domain/build/workbench/workbench-types";
+import type { Letter } from "$domain/core/Letter";
 
 // ============================================================================
 // SERVICE CONTRACTS (Behavioral Interfaces)
@@ -103,19 +103,3 @@ export interface IWorkbenchCoordinationService {
   setGridMode(mode: GridMode): ConfigurationResult;
   setBeatSize(size: number): ConfigurationResult;
 }
-
-// ============================================================================
-// RE-EXPORT TYPES FOR EXTERNAL USE
-// ============================================================================
-
-// Re-export types that other modules need to import
-export type {
-  BeatClickResult,
-  BeatEditOperation,
-  BeatEditResult,
-  ConfigurationResult,
-  SequenceCreationParams,
-  SequenceCreationResult,
-  WorkbenchConfig,
-  WorkbenchMode,
-} from "$domain/data-interfaces/workbench-interfaces-data";

@@ -7,11 +7,11 @@
 
 import pkg from "file-saver";
 import { injectable } from "inversify";
+import type { IImageFormatConverterService } from "../../../contracts/image-format-interfaces";
 import type {
-  IImageFormatConverterService,
   ImageFormatOptions,
   OptimizationSettings,
-} from "../../../contracts/image-format-interfaces";
+} from "../../../../domain";
 const { saveAs } = pkg;
 
 @injectable()

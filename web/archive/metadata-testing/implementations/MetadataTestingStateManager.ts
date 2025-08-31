@@ -492,4 +492,3 @@ export class MetadataTestingStateManager {
     }));
   }
 }
-

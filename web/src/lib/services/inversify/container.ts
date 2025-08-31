@@ -352,7 +352,6 @@ try {
     .bind(TYPES.IConstructTabCoordinator)
     .to(ConstructSubTabCoordinationService);
   container.bind(TYPES.IBrowseService).to(BrowseService);
-  container.bind(TYPES.ICSVParser).to(CSVParser);
   container
     .bind(TYPES.IArrowPositioningOrchestrator)
     .to(ArrowPositionCalculator);

@@ -5,11 +5,9 @@
  */
 
 import { GridMode } from "$domain";
+import type { AppSettings } from "$domain/core/AppSettings";
 import type { BackgroundType } from "$domain/core/ui/backgrounds/BackgroundTypes";
-import type {
-  AppSettings,
-  ISettingsService,
-} from "$lib/services/contracts/application-interfaces";
+import type { ISettingsService } from "$lib/services/contracts/application-interfaces";
 import { updateBodyBackground } from "$lib/utils/background-preloader";
 import { injectable } from "inversify";
 

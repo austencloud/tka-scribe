@@ -112,4 +112,3 @@ export interface TestingConfiguration {
   outputFormat: "json" | "csv" | "html";
   includeWarnings: boolean;
 }
-

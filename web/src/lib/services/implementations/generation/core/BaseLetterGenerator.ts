@@ -5,7 +5,7 @@
  * Handles pattern creation, movement generation, and caching.
  */
 
-import { Direction, PositionSystem, RotationDirection, Timing,  } from "$domain";
+import { Direction, PositionSystem, RotationDirection, Timing } from "$domain";
 import { MotionType } from "$domain/enums";
 import { Letter } from "$domain/core/Letter";
 import type { MotionData } from "$domain/core/pictograph/MotionData";

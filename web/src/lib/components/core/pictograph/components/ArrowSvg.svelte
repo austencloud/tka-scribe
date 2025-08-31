@@ -5,7 +5,7 @@ REFACTORED: Now purely presentational, uses ArrowRenderer for business logic
 -->
 <script lang="ts">
   import { type MotionData } from "$domain";
-import { MotionColor } from "$domain/enums";
+  import { MotionColor } from "$domain/enums";
   import type { IArrowRenderer } from "$lib/services/contracts/pictograph-interfaces";
   import { resolve, TYPES } from "$lib/services/inversify/container";
   import { onMount } from "svelte";

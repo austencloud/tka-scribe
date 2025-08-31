@@ -13,16 +13,10 @@ export * from "./enums";
 // Browse Models
 export * from "./browse";
 
-// Build Domain Types (explicit exports to avoid Position conflicts)
+// Build Domain Types (explicit exports to avoid conflicts)
 export * from "./build/generate";
 export * from "./build/image-export";
 export * from "./build/option-picker";
-export type {
-  BeatFrameConfig,
-  Position as BeatFramePosition,
-  ContainerDimensions,
-  LayoutInfo,
-} from "./build/workbench/beat-frame";
 export * from "./build/workbench/BeatData";
 
 // Layout Domain Types

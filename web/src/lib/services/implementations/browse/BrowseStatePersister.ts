@@ -98,9 +98,7 @@ export interface IBrowseStatePersister {
 }
 
 @injectable()
-export class BrowseStatePersister
-  implements IBrowseStatePersister
-{
+export class BrowseStatePersister implements IBrowseStatePersister {
   private readonly BROWSE_STATE_KEY = "tka-browse-state-v2";
   private readonly FILTER_STATE_KEY = "tka-browse-filter-v2";
   private readonly SORT_STATE_KEY = "tka-browse-sort-v2";

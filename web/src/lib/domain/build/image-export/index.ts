@@ -4,6 +4,9 @@
  * Export point for image export-related domain types and models.
  */
 
-// Export placeholder to make this a valid module
-export { };
+export * from "./beat";
+export * from "./canvas";
+export * from "./core";
+export * from "./format";
+export * from "./utilities";
 

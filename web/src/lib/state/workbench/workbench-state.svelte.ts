@@ -7,10 +7,12 @@
 
 import { GridMode } from "$domain";
 import type {
-  IWorkbenchCoordinationService,
-  IWorkbenchService,
   WorkbenchConfig,
   WorkbenchMode,
+} from "$domain/build/workbench/workbench-types";
+import type {
+  IWorkbenchCoordinationService,
+  IWorkbenchService,
 } from "$lib/services/contracts/workbench-interfaces";
 
 /**

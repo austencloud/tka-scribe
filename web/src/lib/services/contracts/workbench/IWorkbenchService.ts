@@ -12,11 +12,3 @@ export interface IWorkbenchService {
   updateBeat(beat: BeatData): Promise<void>;
   clearWorkbench(): void;
 }
-
-// Re-export data types that services need
-export type {
-  BeatEditOperation,
-  SequenceCreationParams,
-  WorkbenchConfig,
-  WorkbenchMode,
-} from "$domain/data-interfaces/workbench-interfaces-data";

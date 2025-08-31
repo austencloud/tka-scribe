@@ -15,11 +15,11 @@ import type {
   SequenceData,
 } from "$domain";
 import { GenerationMode, GridPosition } from "$domain";
-import { MotionColor } from "$domain/enums";
 import type {
   GenerationOptions,
   LetterDerivationResult,
-} from "$domain/data-interfaces/generation-interfaces-data";
+} from "$domain/build/generate/types";
+import { MotionColor } from "$domain/enums";
 import type { Letter } from "../../domain/core/Letter";
 
 // ============================================================================
@@ -248,4 +248,4 @@ export interface ILetterDeriver {
 export type {
   GenerationOptions,
   LetterDerivationResult,
-} from "$domain/data-interfaces/generation-interfaces-data";
+} from "$domain/build/generate/types";

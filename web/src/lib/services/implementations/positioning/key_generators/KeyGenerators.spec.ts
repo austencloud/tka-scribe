@@ -1,7 +1,4 @@
-import {
-  MotionType,
-  Orientation,
-} from "$domain/enums";
+import { MotionType, Orientation } from "$domain/enums";
 import { describe, expect, it } from "vitest";
 import { SpecialPlacementOriKeyGenerator } from "./SpecialPlacementOriKeyGenerator";
 import { TurnsTupleKeyGenerator } from "./TurnsTupleKeyGenerator";

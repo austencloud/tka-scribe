@@ -7,9 +7,9 @@
 
 import type { BeatData, SequenceData } from "$domain";
 import { GridMode } from "$domain";
+import type { WorkbenchMode } from "$domain/build/workbench/workbench-types";
 import { Letter } from "$domain/core/Letter";
 import { createPictographData } from "$domain/core/pictograph/PictographData";
-import type { WorkbenchMode } from "$lib/services/contracts/workbench-interfaces";
 import { WorkbenchService } from "$lib/services/implementations/workbench/WorkbenchService";
 import { beforeEach, describe, expect, it } from "vitest";
 

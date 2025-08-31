@@ -4,8 +4,12 @@
  * Types for option picker layout, configuration, and responsive behavior.
  */
 
-export type DeviceType = "mobile" | "tablet" | "desktop";
-export type ContainerAspect = "portrait" | "landscape" | "square";
+// Import authoritative types from layout domain
+import type {
+  ContainerAspect,
+  DeviceType,
+} from "$domain/build/option-picker/layout/types";
+export type { ContainerAspect, DeviceType };
 
 export interface LayoutDimensions {
   width: number;
@@ -84,6 +88,7 @@ export interface OptionPickerLayoutCalculationResult {
   scaleFactor: number;
   deviceType: DeviceType;
   containerAspect: ContainerAspect;
+  // Computed properties for backward compatibility
   isMobile: boolean;
   isTablet: boolean;
   isPortrait: boolean;

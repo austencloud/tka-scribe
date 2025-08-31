@@ -6,11 +6,13 @@
  */
 
 import type {
-  BatchExportResult,
   ExportProgress,
+  ExportResult,
+} from "$domain/build/image-export/core";
+import type {
+  BatchExportResult,
   ImageExportOptions,
-  ServiceExportResult,
-} from "$domain/data-interfaces/export-config-interfaces";
+} from "$domain/sequence-card/export";
 
 // ============================================================================
 // PAGE IMAGE EXPORT SERVICES
@@ -26,7 +28,7 @@ export interface IPageImageExportService {
   exportPageAsImage(
     pageElement: HTMLElement,
     options: ImageExportOptions
-  ): Promise<ServiceExportResult>;
+  ): Promise<ExportResult>;
 
   /**
    * Export multiple page elements as individual images

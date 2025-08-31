@@ -7,11 +7,11 @@
 
 // Re-export from individual interface files
 export type { IApplicationInitializer } from "./application/IApplicationInitializer";
+export type {
+  IDeviceDetector,
+  ResponsiveSettings,
+} from "./application/IDeviceDetector";
 export type { ISettingsService } from "./application/ISettingsService";
-export type { IDeviceDetector, ResponsiveSettings } from "./application/IDeviceDetector";
-
-// Re-export domain types
-export type { AppSettings } from "$domain/core/AppSettings";
 
 // Additional interfaces that may be referenced
 export interface ISequenceAnimationEngine {

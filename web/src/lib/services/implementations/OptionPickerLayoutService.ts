@@ -9,8 +9,8 @@ import {
   getContainerAspect,
   getDeviceConfig,
   getDeviceType,
-  type DeviceType,
 } from "$domain/build/option-picker/layout";
+import type { DeviceType } from "$domain/option-picker/OptionPickerTypes";
 import { injectable } from "inversify";
 import type {
   IOptionPickerLayoutService,
@@ -23,6 +23,12 @@ export class OptionPickerLayoutService implements IOptionPickerLayoutService {
   private static lastCalculationKey: string = "";
   private static lastCalculationResult: OptionPickerLayoutCalculationResult | null =
     null;
+
+  // ============================================================================
+  // TYPE CONVERSION HELPERS
+  // ============================================================================
+
+  // Type conversion functions are no longer needed since we're using the same types
 
   /**
    * Calculate sophisticated responsive layout for option picker
@@ -52,10 +58,11 @@ export class OptionPickerLayoutService implements IOptionPickerLayoutService {
 
     // Get device and layout information
     const deviceType = getDeviceType(containerWidth, isMobileUserAgent);
+    const containerAspect = getContainerAspect(containerWidth, containerHeight);
+
     const isMobile = deviceType === "smallMobile" || deviceType === "mobile";
     const isTablet = deviceType === "tablet";
-    const isPortrait = containerHeight > containerWidth;
-    const containerAspect = getContainerAspect(containerWidth, containerHeight);
+    const isPortrait = containerAspect === "tall";
 
     // Calculate grid configuration
     const gridConfig = this.calculateGridConfiguration(

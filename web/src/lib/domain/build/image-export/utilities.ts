@@ -1,19 +1,12 @@
 /**
- * TKA Image Export Utility Interfaces
+ * TKA Image Export Utility Domain Types
  *
- * Service contracts for configuration management, memory calculation,
- * validation, and utility functions in the TKA image export system.
- */
-// ============================================================================
-// UTILITY AND HELPER SERVICES
-// ============================================================================
-
-/**
- * Export settings management service
+ * Domain models for utility functions in the TKA image export system.
+ * Includes memory estimation, validation, and configuration types.
  */
 
 // ============================================================================
-// DATA CONTRACTS (Domain Models)
+// MEMORY AND PERFORMANCE TYPES
 // ============================================================================
 
 export interface MemoryEstimate {
@@ -25,10 +18,18 @@ export interface MemoryEstimate {
   compressionFactor: number;
 }
 
+// ============================================================================
+// VALIDATION TYPES
+// ============================================================================
+
 export interface ExportValidationResult {
   valid: boolean;
   errors: string[];
 }
+
+// ============================================================================
+// SERVICE INTERFACE SYMBOLS
+// ============================================================================
 
 export const IExportSettingsServiceInterface = Symbol.for(
   "IExportSettingsService"

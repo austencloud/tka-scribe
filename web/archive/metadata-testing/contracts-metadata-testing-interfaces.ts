@@ -6,11 +6,11 @@
  * These services handle CSV metadata processing and validation.
  */
 
-import type { 
-  ThumbnailFile, 
-  SequenceFile, 
-  MetadataAnalysisResult, 
-  BatchAnalysisResult 
+import type {
+  ThumbnailFile,
+  SequenceFile,
+  MetadataAnalysisResult,
+  BatchAnalysisResult,
 } from "$lib/domain/data-interfaces/metadata-testing-interfaces-data";
 
 // ============================================================================
@@ -38,7 +38,9 @@ export interface IMetadataAnalysisService {
   /**
    * Analyze extracted metadata
    */
-  analyzeMetadata(results: MetadataAnalysisResult[]): Promise<BatchAnalysisResult>;
+  analyzeMetadata(
+    results: MetadataAnalysisResult[]
+  ): Promise<BatchAnalysisResult>;
 
   /**
    * Generate analysis report
@@ -60,7 +62,10 @@ export interface ISequenceDiscoveryService {
   /**
    * Filter sequences by criteria
    */
-  filterSequences(sequences: ThumbnailFile[], criteria: Record<string, unknown>): ThumbnailFile[];
+  filterSequences(
+    sequences: ThumbnailFile[],
+    criteria: Record<string, unknown>
+  ): ThumbnailFile[];
 
   /**
    * Validate sequence files
@@ -89,4 +94,3 @@ export interface IMetadataTestingStateManager {
    */
   reset(): void;
 }
-

@@ -241,4 +241,3 @@ export class BatchAnalysisService {
     return JSON.stringify(batchResult, null, pretty ? 2 : undefined);
   }
 }
-

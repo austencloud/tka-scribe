@@ -6,7 +6,14 @@
  */
 
 import type { BeatData, Letter, SequenceData } from "$domain";
-import { createMotionData, createPictographData, GridMode, Orientation, PropType, RotationDirection,  } from "$domain";
+import {
+  createMotionData,
+  createPictographData,
+  GridMode,
+  Orientation,
+  PropType,
+  RotationDirection,
+} from "$domain";
 import { Location, MotionColor, MotionType } from "$domain/enums";
 import { PngMetadataArraySchema, SequenceDataSchema } from "$domain/schemas";
 import type { ISequenceImportService } from "$lib/services/contracts/sequence-interfaces";

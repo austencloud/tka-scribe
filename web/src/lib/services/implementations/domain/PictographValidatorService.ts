@@ -5,7 +5,7 @@
  * Ensures generated pictographs conform to TKA rules and constraints.
  */
 
-import { GridPosition, RotationDirection,  } from "$domain";
+import { GridPosition, RotationDirection } from "$domain";
 import { Location, MotionColor, MotionType } from "$domain/enums";
 import type { MotionData } from "$domain/core/pictograph/MotionData";
 import type { PictographData } from "$domain/core/pictograph/PictographData";

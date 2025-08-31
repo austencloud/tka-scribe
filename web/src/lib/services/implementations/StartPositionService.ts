@@ -3,7 +3,7 @@
  */
 
 import type { ValidationResult } from "$domain";
-import { GridMode, Orientation, PropType, RotationDirection,  } from "$domain";
+import { GridMode, Orientation, PropType, RotationDirection } from "$domain";
 import { Location, MotionColor, MotionType } from "$domain/enums";
 import type { BeatData } from "$domain/build/workbench/BeatData";
 import { Letter } from "$domain/core/Letter";

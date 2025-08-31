@@ -12,10 +12,8 @@ import {
   removeBeatFromSequence,
   updateSequenceData,
 } from "$domain/core/SequenceData";
-import type {
-  ISequenceStateService,
-  SequenceStatistics,
-} from "$lib/services/contracts/sequence/ISequenceStateService";
+import type { SequenceStatistics } from "$domain/data-interfaces/sequence-state-interfaces-data";
+import type { ISequenceStateService } from "$lib/services/contracts/sequence/ISequenceStateService";
 import { injectable } from "inversify";
 @injectable()
 export class SequenceStateService implements ISequenceStateService {

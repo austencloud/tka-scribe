@@ -8,7 +8,7 @@
  * - Complete handpath calculation for all location pairs
  */
 
-import { HandPath, Orientation, PropType, RotationDirection,  } from "$domain";
+import { HandPath, Orientation, PropType, RotationDirection } from "$domain";
 import { Location, MotionColor, MotionType } from "$domain/enums";
 import type { BeatData } from "$domain/build/workbench/BeatData";
 import type { MotionData } from "$domain/core/pictograph/MotionData";

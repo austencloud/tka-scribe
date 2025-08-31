@@ -10,7 +10,7 @@
 import type {
   ImageFormatOptions,
   OptimizationSettings,
-} from "$domain/data-interfaces/image-format-interfaces-data";
+} from "$domain/build/image-export/format";
 
 // ============================================================================
 // SERVICE CONTRACTS (Behavioral Interfaces)
@@ -92,13 +92,3 @@ export interface IImageFormatConverterService {
    */
   cleanup(): void;
 }
-
-// ============================================================================
-// RE-EXPORT TYPES FOR EXTERNAL USE
-// ============================================================================
-
-// Re-export types that other modules need to import
-export type {
-  ImageFormatOptions,
-  OptimizationSettings,
-} from "$domain/data-interfaces/image-format-interfaces-data";

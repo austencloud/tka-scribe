@@ -81,7 +81,6 @@ export type {
   MemoryEstimate,
 } from "./image-export-utility-interfaces";
 
-
 // Text rendering component interface symbols (from existing text-rendering-interfaces.ts)
 export const IWordTextRendererInterface = Symbol.for("IWordTextRenderer");
 export const IUserInfoRendererInterface = Symbol.for("IUserInfoRenderer");

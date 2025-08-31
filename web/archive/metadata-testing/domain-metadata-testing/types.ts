@@ -126,4 +126,3 @@ export interface MetadataTestingConfig {
     motionDataWeight: number;
   };
 }
-

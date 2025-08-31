@@ -9,7 +9,7 @@
  */
 
 import type { ArrowPlacementData, MotionData, PictographData } from "$domain";
-import { GridMode, Orientation,  } from "$domain";
+import { GridMode, Orientation } from "$domain";
 import { Location, MotionColor, MotionType } from "$domain/enums";
 import type { Letter } from "$domain/core/Letter";
 import type { IArrowPositioningOrchestrator } from "$lib/services/contracts/positioning-interfaces";

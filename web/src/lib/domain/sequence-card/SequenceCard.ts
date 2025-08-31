@@ -5,6 +5,7 @@
  * export options, device capabilities, and cache management.
  */
 
+import type { ExportResult } from "../build/image-export/core";
 import type { SequenceData } from "../index";
 
 // ============================================================================
@@ -22,8 +23,6 @@ export interface LayoutConfig {
   canFitInContainer: boolean;
   utilization: number; // 0-1 representing how well the layout uses available space
 }
-
-
 
 export interface ResponsiveBreakpoints {
   mobile: number;
@@ -347,17 +346,8 @@ export interface SequenceCardEvents {
   cacheCleared: { reason: string };
 }
 
-export interface ExportResult {
-  sequenceId: string;
-  success: boolean;
-  blob?: Blob;
-  error?: Error;
-  metrics: {
-    processingTime: number;
-    fileSize: number;
-    resolution: { width: number; height: number };
-  };
-}
+// Note: ExportResult is now imported from build/image-export/core
+// to avoid duplication across the domain
 
 // ============================================================================
 // UTILITY TYPES

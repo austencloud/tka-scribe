@@ -14,8 +14,13 @@ import type {
   ISequenceGenerationService,
 } from "../../contracts/generation-interfaces";
 
-import { GenerationMode, Orientation, RotationDirection,  } from "$domain";
-import { DifficultyLevel, Location, MotionType, PropContinuity } from "$domain/enums";
+import { GenerationMode, Orientation, RotationDirection } from "$domain";
+import {
+  DifficultyLevel,
+  Location,
+  MotionType,
+  PropContinuity,
+} from "$domain/enums";
 import { createMotionData } from "$domain/core/pictograph/MotionData";
 import type { PictographData } from "$domain/core/pictograph/PictographData";
 import { inject, injectable } from "inversify";

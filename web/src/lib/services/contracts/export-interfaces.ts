@@ -9,7 +9,7 @@
  * ============================================================================
  */
 
-// Note: Import types directly from $domain/data-interfaces/export-config-interfaces
+// Note: Import types directly from $domain/sequence-card/export
 // instead of re-exporting them from service contracts
 
 // Page export services (image generation, printing)
@@ -47,7 +47,7 @@ import type {
   BatchExportResult,
   ImageExportOptions,
   PDFExportOptions,
-} from "$domain/data-interfaces/export-config-interfaces";
+} from "$domain/sequence-card/export";
 import type { Page } from "../../domain/sequence-card/PageLayoutTypes";
 
 // Re-export the imported types so other services can use them
@@ -56,7 +56,7 @@ export type {
   BatchExportResult,
   ImageExportOptions,
   PDFExportOptions,
-} from "$domain/data-interfaces/export-config-interfaces";
+} from "$domain/sequence-card/export";
 
 /**
  * Main export service for handling different export types

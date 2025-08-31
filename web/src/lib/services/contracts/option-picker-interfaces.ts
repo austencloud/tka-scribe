@@ -11,7 +11,7 @@ import type { PictographData } from "$domain/core/pictograph/PictographData";
 import type {
   OptionPickerLayoutCalculationParams,
   OptionPickerLayoutCalculationResult,
-} from "$domain/data-interfaces/option-picker-interfaces-data";
+} from "$domain/option-picker/OptionPickerTypes";
 
 // ============================================================================
 // SERVICE CONTRACTS (Behavioral Interfaces)
@@ -104,4 +104,4 @@ export interface IOptionPickerDataService {
 export type {
   OptionPickerLayoutCalculationParams,
   OptionPickerLayoutCalculationResult,
-} from "$domain/data-interfaces/option-picker-interfaces-data";
+} from "$domain/option-picker/OptionPickerTypes";

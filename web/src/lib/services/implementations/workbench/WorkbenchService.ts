@@ -12,14 +12,14 @@ import type {
   ValidationResult,
 } from "$domain";
 import { createBeatData, createPictographData, GridMode } from "$domain";
-import { Letter } from "$domain/core/Letter";
 import type {
   BeatEditOperation,
-  IWorkbenchService,
   SequenceCreationParams,
   WorkbenchConfig,
   WorkbenchMode,
-} from "$lib/services/contracts/workbench/IWorkbenchService";
+} from "$domain/build/workbench/workbench-types";
+import { Letter } from "$domain/core/Letter";
+import type { IWorkbenchService } from "$lib/services/contracts/workbench/IWorkbenchService";
 import { injectable } from "inversify";
 @injectable()
 export class WorkbenchService implements IWorkbenchService {

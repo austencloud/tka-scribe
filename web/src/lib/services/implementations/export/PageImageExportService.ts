@@ -7,17 +7,17 @@
 
 import type {
   BatchExportResult,
+  ExportResult,
   ImageExportOptions,
-  ServiceExportResult,
-} from "$domain/data-interfaces/export-config-interfaces";
+} from "$domain/sequence-card/export";
 import { injectable } from "inversify";
 import type { IPageImageExportService } from "../../contracts/page-export-interfaces";
 
 import type {
-  ExportProgress,
   Html2CanvasFunction,
   WindowWithHtml2Canvas,
-} from "$domain/data-interfaces/html-canvas-types";
+} from "$domain/build/image-export/canvas";
+import type { ExportProgress } from "$domain/build/image-export/core";
 
 @injectable()
 export class PageImageExportService implements IPageImageExportService {
@@ -27,7 +27,7 @@ export class PageImageExportService implements IPageImageExportService {
   async exportPageAsImage(
     pageElement: HTMLElement,
     options: ImageExportOptions
-  ): Promise<ServiceExportResult> {
+  ): Promise<ExportResult> {
     const startTime = performance.now();
 
     try {
@@ -72,22 +72,14 @@ export class PageImageExportService implements IPageImageExportService {
       const processingTime = performance.now() - startTime;
 
       return {
-        sequenceId: "page-export",
         success: true,
         blob,
-        filename: this.generateFilename(options.format),
-        metrics: {
-          processingTime,
-          fileSize: blob.size,
-          resolution: { width: canvas.width, height: canvas.height },
-        },
+        filename: "page-export.png",
         metadata: {
           format: options.format,
           size: blob.size,
-          dimensions: {
-            width: canvas.width,
-            height: canvas.height,
-          },
+          dimensions: { width: canvas.width, height: canvas.height },
+          beatCount: 0,
           processingTime,
         },
       };
@@ -95,18 +87,19 @@ export class PageImageExportService implements IPageImageExportService {
       const processingTime = performance.now() - startTime;
 
       return {
-        sequenceId: "page-export",
         success: false,
-        filename: this.generateFilename(options.format),
-        error: error as Error,
-        metrics: {
-          processingTime,
-          fileSize: 0,
-          resolution: { width: 0, height: 0 },
+        filename: "page-export.png",
+        error: {
+          name: error instanceof Error ? error.name : "Error",
+          message: error instanceof Error ? error.message : String(error),
+          stage: "export",
+          details: error,
         },
         metadata: {
           format: options.format,
           size: 0,
+          dimensions: { width: 0, height: 0 },
+          beatCount: 0,
           processingTime,
         },
       };
@@ -119,7 +112,7 @@ export class PageImageExportService implements IPageImageExportService {
     onProgress?: (progress: ExportProgress) => void
   ): Promise<BatchExportResult> {
     const startTime = performance.now();
-    const results: ServiceExportResult[] = [];
+    const results: ExportResult[] = [];
     const errors: Error[] = [];
     let successCount = 0;
     let failureCount = 0;
@@ -139,19 +132,9 @@ export class PageImageExportService implements IPageImageExportService {
 
         // Update progress
         const progress: ExportProgress = {
-          current: i + 1,
-          total: pageElements.length,
-          currentItem: i + 1,
-          totalItems: pageElements.length,
-          percentage: ((i + 1) / pageElements.length) * 100,
-          currentPage: i + 1,
-          currentOperation: `Exporting page ${i + 1} of ${pageElements.length}`,
-          estimatedTimeRemaining: this.estimateTimeRemaining(
-            i + 1,
-            pageElements.length,
-            performance.now() - startTime
-          ),
-          isComplete: i + 1 === pageElements.length,
+          stage: "export",
+          progress: ((i + 1) / pageElements.length) * 100,
+          message: `Exporting page ${i + 1} of ${pageElements.length}`,
         };
 
         this.currentProgress = progress;
@@ -181,18 +164,19 @@ export class PageImageExportService implements IPageImageExportService {
           errors.push(err);
 
           results.push({
-            sequenceId: `page-${i + 1}`,
             success: false,
-            filename: this.generateFilename(options.format, i + 1),
-            error: err,
-            metrics: {
-              processingTime: 0,
-              fileSize: 0,
-              resolution: { width: 0, height: 0 },
+            filename: `page-${i + 1}.png`,
+            error: {
+              name: err instanceof Error ? err.name : "Error",
+              message: err instanceof Error ? err.message : String(err),
+              stage: "export",
+              details: err,
             },
             metadata: {
               format: options.format,
               size: 0,
+              dimensions: { width: 0, height: 0 },
+              beatCount: 0,
               processingTime: 0,
             },
           });
@@ -432,19 +416,12 @@ export class PageImageExportService implements IPageImageExportService {
     }
   }
 
-  private generateFilename(format: string, pageNumber?: number): string {
-    const timestamp = new Date().toISOString().slice(0, 19).replace(/:/g, "-");
-    const page = pageNumber ? `-page-${pageNumber}` : "";
-    const ext = format.toLowerCase();
-    return `sequence-cards${page}-${timestamp}.${ext}`;
-  }
-
   private async exportSinglePageWithCanvas(
     pageElement: HTMLElement,
     html2canvas: Html2CanvasFunction,
     options: ImageExportOptions,
     pageNumber: number
-  ): Promise<ServiceExportResult> {
+  ): Promise<ExportResult> {
     const startTime = performance.now();
 
     try {
@@ -473,22 +450,14 @@ export class PageImageExportService implements IPageImageExportService {
       const processingTime = performance.now() - startTime;
 
       return {
-        sequenceId: `page-${pageNumber}`,
         success: true,
         blob,
-        filename: this.generateFilename(options.format, pageNumber),
-        metrics: {
-          processingTime,
-          fileSize: blob.size,
-          resolution: { width: canvas.width, height: canvas.height },
-        },
+        filename: `page-${pageNumber}.png`,
         metadata: {
-          format: options.format,
+          format: "PNG",
           size: blob.size,
-          dimensions: {
-            width: canvas.width,
-            height: canvas.height,
-          },
+          dimensions: { width: canvas.width, height: canvas.height },
+          beatCount: 0,
           processingTime,
         },
       };
@@ -496,34 +465,23 @@ export class PageImageExportService implements IPageImageExportService {
       const processingTime = performance.now() - startTime;
 
       return {
-        sequenceId: `page-${pageNumber}`,
         success: false,
-        filename: this.generateFilename(options.format, pageNumber),
-        error: error as Error,
-        metrics: {
-          processingTime,
-          fileSize: 0,
-          resolution: { width: 0, height: 0 },
+        filename: `page-${pageNumber}.png`,
+        error: {
+          name: error instanceof Error ? error.name : "Error",
+          message: error instanceof Error ? error.message : String(error),
+          stage: "export",
+          details: error,
         },
         metadata: {
-          format: options.format,
+          format: "PNG",
           size: 0,
+          dimensions: { width: 0, height: 0 },
+          beatCount: 0,
           processingTime,
         },
       };
     }
-  }
-
-  private estimateTimeRemaining(
-    current: number,
-    total: number,
-    elapsedTime: number
-  ): number {
-    if (current === 0) return 0;
-
-    const averageTimePerItem = elapsedTime / current;
-    const remainingItems = total - current;
-    return remainingItems * averageTimePerItem;
   }
 
   private async pauseForUI(): Promise<void> {

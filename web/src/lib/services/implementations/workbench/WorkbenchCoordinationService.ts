@@ -11,10 +11,12 @@ import type {
   BeatClickResult,
   BeatEditResult,
   ConfigurationResult,
-  IWorkbenchCoordinationService,
-  IWorkbenchService,
   SequenceCreationResult,
   WorkbenchMode,
+} from "$domain/build/workbench/workbench-types";
+import type {
+  IWorkbenchCoordinationService,
+  IWorkbenchService,
 } from "$lib/services/contracts/workbench-interfaces";
 import { TYPES } from "$lib/services/inversify/types";
 import { inject, injectable } from "inversify";
@@ -165,27 +167,6 @@ export class WorkbenchCoordinationService
 
     return {
       success: true,
-    };
-  }
-
-  // ============================================================================
-  // HELPER METHODS
-  // ============================================================================
-
-  /**
-   * Validates that all required services are available for an operation
-   */
-  private validateServiceAvailability(): boolean {
-    return this.workbenchService !== null;
-  }
-
-  /**
-   * Creates a standardized error result
-   */
-  private createErrorResult(error: string): BeatEditResult {
-    return {
-      success: false,
-      error,
     };
   }
 }

@@ -5,7 +5,6 @@
  * and platform-specific optimizations.
  */
 
-
 // ============================================================================
 // RESPONSIVE SETTINGS
 // ============================================================================
@@ -26,4 +25,3 @@ export interface ResponsiveSettings {
   /** Font size scaling factor */
   fontScaling: number;
 }
-

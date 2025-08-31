@@ -55,6 +55,3 @@ export interface ISequenceStateService {
   calculateSequenceDuration(sequence: SequenceData): number;
   getSequenceStatistics(sequence: SequenceData): SequenceStatistics;
 }
-
-// Re-export data types that services need
-export type { SequenceStatistics } from "$domain/data-interfaces/sequence-state-interfaces-data";

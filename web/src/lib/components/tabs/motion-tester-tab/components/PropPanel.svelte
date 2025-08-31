@@ -8,8 +8,8 @@ Beautiful, intuitive visual controls replacing boring dropdowns:
 - Enhanced turns control
 -->
 <script lang="ts">
-  import { type Orientation, GridMode,  } from "$domain";
-import { Location, MotionType } from "$domain/enums";
+  import { type Orientation, GridMode } from "$domain";
+  import { Location, MotionType } from "$domain/enums";
   import { MotionColor } from "$domain/enums";
   import { getAvailableMotionTypes } from "../utils/motion-helpers";
   import LocationGrid from "./LocationGrid.svelte";

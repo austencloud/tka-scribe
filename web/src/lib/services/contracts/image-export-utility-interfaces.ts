@@ -14,7 +14,7 @@ import type { SequenceData } from "$domain";
 import type {
   ExportValidationResult,
   MemoryEstimate,
-} from "$domain/data-interfaces/image-export-utility-interfaces-data";
+} from "$domain/build/image-export/utilities";
 import type { TKAImageExportOptions } from "./image-export-core-interfaces";
 
 // ============================================================================
@@ -114,4 +114,4 @@ export interface IImagePreviewGenerator {
 export type {
   ExportValidationResult,
   MemoryEstimate,
-} from "$domain/data-interfaces/image-export-utility-interfaces-data";
+} from "$domain/build/image-export/utilities";

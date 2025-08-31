@@ -1,15 +1,12 @@
 /**
- * TKA Image Export Core Interfaces
+ * TKA Image Export Core Domain Types
  *
- * Core service contracts and types for the TKA image export system.
- * Contains the main orchestrator service and fundamental configuration types.
+ * Core domain models for the TKA image export system.
+ * Contains the main configuration types and fundamental data structures.
  */
-// ============================================================================
-// EXPORT OPTIONS AND CONFIGURATION
-// ============================================================================
 
 // ============================================================================
-// DATA CONTRACTS (Domain Models)
+// EXPORT OPTIONS AND CONFIGURATION
 // ============================================================================
 
 export interface TKAImageExportOptions {
@@ -77,6 +74,10 @@ export interface LayoutData {
   additionalHeightBottom: number;
 }
 
+// ============================================================================
+// EXPORT PROGRESS AND RESULTS
+// ============================================================================
+
 export interface ExportProgress {
   stage: "validation" | "rendering" | "composition" | "export" | "complete";
   progress: number; // 0-100
@@ -104,6 +105,10 @@ export interface ExportResult {
   };
 }
 
+// ============================================================================
+// RENDERING CONFIGURATION
+// ============================================================================
+
 export interface RenderQualitySettings {
   antialiasing: boolean;
   smoothScaling: boolean;
@@ -118,6 +123,10 @@ export interface LayoutConstraints {
   maxBeatSize: number;
   aspectRatio?: number;
 }
+
+// ============================================================================
+// SERVICE INTERFACE SYMBOLS
+// ============================================================================
 
 export const ITKAImageExportServiceInterface = Symbol.for(
   "ITKAImageExportService"
