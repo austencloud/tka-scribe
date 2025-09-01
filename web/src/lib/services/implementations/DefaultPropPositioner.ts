@@ -3,7 +3,7 @@ import {
   type GridPointData,
   createGridPointData,
 } from "$domain/core/pictograph/gridCoordinates.js";
-import { Location } from "$domain/enums";
+import { Location } from "$lib/domain/enums/enums";
 
 /**
  * DefaultPropPositioner - Calculates default prop positions using grid coordinates

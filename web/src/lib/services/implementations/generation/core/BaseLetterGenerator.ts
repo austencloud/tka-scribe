@@ -6,11 +6,11 @@
  */
 
 import { Direction, PositionSystem, RotationDirection, Timing } from "$domain";
-import { MotionType } from "$domain/enums";
 import { Letter } from "$domain/core/Letter";
 import type { MotionData } from "$domain/core/pictograph/MotionData";
 import type { PictographData } from "$domain/core/pictograph/PictographData";
 import { createPictographData } from "$domain/core/pictograph/PictographData";
+import { MotionType } from "$lib/domain/enums/enums";
 import type { ILetterGenerator } from "../../../contracts/generation-interfaces";
 
 export abstract class BaseLetterGenerator implements ILetterGenerator {
@@ -90,7 +90,9 @@ export abstract class BaseLetterGenerator implements ILetterGenerator {
    */
   private generateMotionsFromPattern(
     pattern: PictographData
-  ): Partial<Record<import("$lib/domain/enums").MotionColor, MotionData>> {
+  ): Partial<
+    Record<import("$lib/domain/enums/enums").MotionColor, MotionData>
+  > {
     // Default implementation - subclasses should override
     return pattern.motions;
   }

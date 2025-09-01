@@ -19,7 +19,7 @@ import type {
   GenerationOptions,
   LetterDerivationResult,
 } from "$domain/build/generate/types";
-import { MotionColor } from "$domain/enums";
+import { MotionColor } from "$lib/domain/enums/enums";
 import type { Letter } from "../../domain/core/Letter";
 
 // ============================================================================
@@ -189,8 +189,8 @@ export interface IDirectionCalculator {
     endPosition: GridPosition,
     motionType: string
   ): [
-    import("$lib/domain/enums").Location,
-    import("$lib/domain/enums").Location,
+    import("$lib/domain/enums/enums").Location,
+    import("$lib/domain/enums/enums").Location,
   ];
 }
 

@@ -4,7 +4,7 @@
  * Clean domain types for the codex system, separated from business logic.
  */
 
-import { MotionType } from "../../enums";
+import { MotionType } from "../../enums/enums";
 
 export interface LetterMapping {
   startPosition: string;

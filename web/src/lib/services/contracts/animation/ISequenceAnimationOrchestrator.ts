@@ -5,12 +5,12 @@
  * Higher-level orchestration of animation components.
  */
 
-import type { PropState } from "$lib/components/tabs/browse-tab/animator/types/PropState";
 import type { SequenceData } from "$domain";
+import type { PropState } from "$lib/components/tabs/browse-tab/animator/types/PropState";
 import type {
   PropStates,
   SequenceMetadata,
-} from "$domain/data-interfaces/ISequenceAnimationEngine";
+} from "$lib/services/contracts/animation/ISequenceAnimationEngine";
 
 export interface ISequenceAnimationOrchestrator {
   initializeWithDomainData(sequenceData: SequenceData): boolean;

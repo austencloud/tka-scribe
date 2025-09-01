@@ -7,7 +7,7 @@
 
 import type { MotionData, PictographData } from "$domain";
 import { GridMode } from "$domain";
-import { MotionColor } from "$domain/enums";
+import { MotionColor } from "$lib/domain/enums/enums";
 import type {
   IArrowRenderer,
   IGridRenderingService,

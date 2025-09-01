@@ -18,30 +18,30 @@ import type {
   LayoutCalculationRequest,
   LayoutCalculationResult,
   LayoutValidationResult,
-  Margins,
   Page,
   PageCreationOptions,
   PageDimensions,
   PageLayoutConfig,
+  PageMargins,
   PageOrientation,
   Rectangle,
   SequenceCardGridConfig,
   SequenceCardPaperSize,
 } from "$domain/sequence-card/PageLayoutTypes";
 
-// Sequence-specific types from data-interfaces
+// Sequence-specific types from build workbench models
 import type {
   DeleteConfirmationData,
   DeleteResult,
   SequenceCreateRequest,
-} from "$domain/data-interfaces/sequence-interfaces-data";
+} from "$domain/models/build/workbench/SequenceOperations";
 
 // Re-export sequence-specific domain types
 export type {
   DeleteConfirmationData,
   DeleteResult,
   SequenceCreateRequest,
-} from "$domain/data-interfaces/sequence-interfaces-data";
+} from "$domain/models/build/workbench/SequenceOperations";
 
 // ============================================================================
 // SERVICE CONTRACTS (Behavioral Interfaces)
@@ -147,12 +147,15 @@ export interface IPrintablePageLayoutService {
   /**
    * Calculate margins for a given paper size
    */
-  calculateMargins(paperSize: SequenceCardPaperSize): Margins;
+  calculateMargins(paperSize: SequenceCardPaperSize): PageMargins;
 
   /**
    * Calculate the content area (page dimensions minus margins)
    */
-  calculateContentArea(pageSize: PageDimensions, margins: Margins): Rectangle;
+  calculateContentArea(
+    pageSize: PageDimensions,
+    margins: PageMargins
+  ): Rectangle;
 
   /**
    * Calculate optimal grid configuration for given constraints

@@ -4,4 +4,5 @@
  * Export point for image export-related domain types and models.
  */
 
-export * from "./format";
+export * from "../../models/build/export/ImageExport";
+export * from "../../models/build/export/ImageFormat";

@@ -6,7 +6,7 @@
  */
 
 import { GridPosition } from "$domain";
-import { Location } from "$domain/enums";
+import { Location } from "$lib/domain/enums/enums";
 import { injectable } from "inversify";
 import type { IPositionMapper } from "../../contracts/positioning-interfaces";
 

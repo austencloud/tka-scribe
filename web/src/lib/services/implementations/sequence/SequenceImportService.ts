@@ -14,8 +14,8 @@ import {
   PropType,
   RotationDirection,
 } from "$domain";
-import { Location, MotionColor, MotionType } from "$domain/enums";
 import { PngMetadataArraySchema, SequenceDataSchema } from "$domain/schemas";
+import { Location, MotionColor, MotionType } from "$lib/domain/enums/enums";
 import type { ISequenceImportService } from "$lib/services/contracts/sequence-interfaces";
 import { PngMetadataExtractor } from "$lib/utils/png-metadata-extractor";
 import { parseStrict } from "$lib/utils/validation";

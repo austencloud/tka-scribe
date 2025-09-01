@@ -4,4 +4,4 @@
  * Export point for generation-related domain types and models.
  */
 
-export * from "./types";
+export * from "../../models/build/GenerateModels";

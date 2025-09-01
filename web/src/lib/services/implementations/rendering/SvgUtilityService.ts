@@ -6,8 +6,8 @@
  */
 
 import { inject, injectable } from "inversify";
+import type { ISvgConfiguration } from "../../contracts/pictograph-interfaces";
 import { TYPES } from "../../inversify/types";
-import type { ISvgConfiguration } from "./SvgConfiguration";
 
 export interface ISvgUtilityService {
   createBaseSVG(): SVGElement;

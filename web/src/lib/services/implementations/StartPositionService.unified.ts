@@ -16,11 +16,11 @@ import { Letter } from "$domain/core/Letter";
 import { createMotionData } from "$domain/core/pictograph/MotionData";
 import type { PictographData } from "$domain/core/pictograph/PictographData";
 import { createPictographData } from "$domain/core/pictograph/PictographData";
-import { Location, MotionColor, MotionType } from "$domain/enums";
 import type {
   ValidationError,
   ValidationResult,
 } from "$domain/sequence-card/SequenceCard";
+import { Location, MotionColor, MotionType } from "$lib/domain/enums/enums";
 import { injectable } from "inversify";
 
 /**

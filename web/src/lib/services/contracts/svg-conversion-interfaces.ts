@@ -9,7 +9,7 @@
 import type {
   RenderQualitySettings,
   SVGConversionOptions,
-} from "$domain/data-interfaces/svg-conversion-interfaces-data";
+} from "$domain/models/core/rendering/SvgConversion";
 
 // ============================================================================
 // SERVICE CONTRACTS (Behavioral Interfaces)
@@ -81,4 +81,4 @@ export interface ISVGToCanvasConverterService {
 export type {
   RenderQualitySettings,
   SVGConversionOptions,
-} from "$domain/data-interfaces/svg-conversion-interfaces-data";
+} from "$domain/models/core/rendering/SvgConversion";

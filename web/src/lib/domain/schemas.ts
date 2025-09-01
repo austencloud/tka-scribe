@@ -10,8 +10,8 @@
  *     Don't use for internal service constructors or component props.
  */
 
+import { Letter } from "$domain";
 import { z } from "zod";
-import { Letter } from "./core/Letter";
 import {
   GridMode,
   GridPosition,
@@ -22,7 +22,7 @@ import {
   Orientation,
   PropType,
   RotationDirection,
-} from "./enums";
+} from "./enums/enums";
 
 // ============================================================================
 // COORDINATE AND PLACEMENT SCHEMAS

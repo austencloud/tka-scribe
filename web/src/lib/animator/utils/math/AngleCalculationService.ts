@@ -6,7 +6,7 @@
  */
 
 import { Orientation } from "$domain";
-import { Location } from "$domain/enums";
+import { Location } from "$lib/domain/enums/enums.js";
 import { HALF_PI, LOCATION_ANGLES, PI, TWO_PI } from "./MathConstants.js";
 
 /**

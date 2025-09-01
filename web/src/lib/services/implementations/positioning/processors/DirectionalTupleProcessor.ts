@@ -12,7 +12,7 @@
  */
 
 import type { MotionData } from "$domain";
-import { Location } from "$domain/enums";
+import { Location } from "$lib/domain/enums/enums";
 import { TYPES } from "$lib/services/inversify/types";
 import { inject, injectable } from "inversify";
 import { ArrowQuadrantCalculator } from "../orchestration/ArrowQuadrantCalculator";

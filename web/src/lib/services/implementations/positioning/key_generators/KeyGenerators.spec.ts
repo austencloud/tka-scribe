@@ -1,9 +1,9 @@
-import { MotionType, Orientation } from "$domain/enums";
+import { MotionType, Orientation } from "$lib/domain/enums/enums";
 import { describe, expect, it } from "vitest";
-import { SpecialPlacementOriKeyGenerator } from "./SpecialPlacementOriKeyGenerator";
-import { TurnsTupleKeyGenerator } from "./TurnsTupleKeyGenerator";
 import { createMotionData } from "../../../../domain/core/pictograph/MotionData";
 import { createPictographData } from "../../../../domain/core/pictograph/PictographData";
+import { SpecialPlacementOriKeyGenerator } from "./SpecialPlacementOriKeyGenerator";
+import { TurnsTupleKeyGenerator } from "./TurnsTupleKeyGenerator";
 
 describe("Key Generators", () => {
   it("SpecialPlacementOriKeyGenerator generates from_layer2 for layer2 orientations", () => {

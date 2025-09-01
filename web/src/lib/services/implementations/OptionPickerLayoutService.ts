@@ -10,7 +10,7 @@ import {
   getDeviceConfig,
   getDeviceType,
 } from "$domain/build/option-picker/layout";
-import type { DeviceType } from "$domain/option-picker/OptionPickerTypes";
+import type { DeviceType } from "$lib/domain/build/option-picker/OptionPickerTypes";
 import { injectable } from "inversify";
 import type {
   IOptionPickerLayoutService,

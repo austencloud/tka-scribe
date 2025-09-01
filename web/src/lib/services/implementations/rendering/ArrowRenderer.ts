@@ -6,9 +6,9 @@
  */
 
 import type { ArrowPlacementData, MotionData } from "$domain";
-import { MotionColor } from "$domain/enums";
+import { MotionColor } from "$lib/domain/enums/enums";
 import { inject, injectable } from "inversify";
-import type { ISvgConfiguration } from "./SvgConfiguration";
+import type { ISvgConfiguration } from "../../contracts/pictograph-interfaces";
 
 // Import the microservices
 import type {

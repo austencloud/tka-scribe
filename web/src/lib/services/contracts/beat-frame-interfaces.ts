@@ -7,12 +7,11 @@
 // ============================================================================
 // CONFIGURATION TYPES
 // ============================================================================
-import type { BeatData } from "$domain";
+import type { BeatData, Position } from "$domain";
 import type {
   BeatFrameConfig,
   ContainerDimensions,
   LayoutInfo,
-  Position,
 } from "$domain/build/workbench/beat-frame";
 
 // ============================================================================

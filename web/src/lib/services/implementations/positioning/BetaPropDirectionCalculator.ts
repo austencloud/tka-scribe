@@ -7,7 +7,7 @@
 
 import type { MotionData, PropPlacementData } from "$domain";
 import { GridMode } from "$domain";
-import { Location, MotionType } from "$domain/enums";
+import { Location, MotionType } from "$lib/domain/enums/enums";
 
 // Direction constants
 export const UP = "up";

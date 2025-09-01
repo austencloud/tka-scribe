@@ -14,7 +14,7 @@
  */
 
 import type { MotionData } from "$domain";
-import { Location } from "$domain/enums";
+import { Location } from "$lib/domain/enums/enums";
 import { injectable } from "inversify";
 import type { Point } from "../types";
 

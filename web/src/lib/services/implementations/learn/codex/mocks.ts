@@ -4,7 +4,6 @@
  * Used for testing to provide predictable data without external dependencies.
  */
 
-import { MotionType } from "$domain/enums";
 import type { ILetterMappingRepository } from "$domain/learn/codex/LetterMappingRepository";
 import type {
   LessonConfiguration,
@@ -13,6 +12,7 @@ import type {
   LetterRow,
 } from "$domain/learn/codex/types";
 import type { ILessonRepository } from "$domain/learn/LessonRepository";
+import { MotionType } from "$lib/domain/enums/enums";
 
 /**
  * Mock Letter Mapping Repository for testing

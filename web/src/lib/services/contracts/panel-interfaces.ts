@@ -9,7 +9,7 @@ import type {
   PanelConfiguration,
   PanelState,
   ResizeOperation,
-} from "$lib/domain/data-interfaces/panel-interfaces-data";
+} from "$domain/layout/LayoutTypes";
 
 // ============================================================================
 // SERVICE CONTRACTS (Behavioral Interfaces)
@@ -47,4 +47,4 @@ export type {
   PanelState,
   ResizeDirection,
   ResizeOperation,
-} from "$lib/domain/data-interfaces/panel-interfaces-data";
+} from "$domain/layout/LayoutTypes";

@@ -15,14 +15,14 @@ import type {
 } from "../../contracts/generation-interfaces";
 
 import { GenerationMode, Orientation, RotationDirection } from "$domain";
+import { createMotionData } from "$domain/core/pictograph/MotionData";
+import type { PictographData } from "$domain/core/pictograph/PictographData";
 import {
   DifficultyLevel,
   Location,
   MotionType,
   PropContinuity,
-} from "$domain/enums";
-import { createMotionData } from "$domain/core/pictograph/MotionData";
-import type { PictographData } from "$domain/core/pictograph/PictographData";
+} from "$lib/domain/enums/enums";
 import { inject, injectable } from "inversify";
 import { TYPES } from "../../inversify/types";
 

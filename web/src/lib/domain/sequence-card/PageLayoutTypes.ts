@@ -19,7 +19,7 @@ export interface PageDimensions {
   height: number;
 }
 
-export interface Margins {
+export interface PageMargins {
   top: number;
   right: number;
   bottom: number;
@@ -48,7 +48,7 @@ export interface Page {
   pageNumber: number;
   paperSize: SequenceCardPaperSize;
   orientation: PageOrientation;
-  margins: Margins;
+  margins: PageMargins;
 }
 
 // ============================================================================
@@ -68,7 +68,7 @@ export interface PaperSpecification {
 export interface PrintConfiguration {
   paperSize: SequenceCardPaperSize;
   orientation: PageOrientation;
-  margins: Margins;
+  margins: PageMargins;
   dpi: number;
   enablePageNumbers: boolean;
   enableHeader: boolean;
@@ -84,7 +84,7 @@ export interface PrintConfiguration {
 export interface LayoutCalculationRequest {
   paperSize: SequenceCardPaperSize;
   orientation: PageOrientation;
-  margins: Margins;
+  margins: PageMargins;
   cardAspectRatio: number;
   sequenceCount: number;
   preferredCardsPerPage?: number;
@@ -211,7 +211,7 @@ export const PAPER_SIZES: Record<SequenceCardPaperSize, PaperSpecification> = {
   },
 };
 
-export const DEFAULT_MARGINS: Margins = {
+export const DEFAULT_MARGINS: PageMargins = {
   top: 36, // 0.5 inch
   right: 18, // 0.25 inch
   bottom: 36, // 0.5 inch

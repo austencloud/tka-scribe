@@ -7,7 +7,7 @@
 
 import type { PictographData } from "$domain";
 import { GridMode, Letter } from "$domain";
-import { MotionType } from "$domain/enums";
+import { MotionType } from "$lib/domain/enums/enums";
 import { inject, injectable } from "inversify";
 import { TYPES } from "../../inversify/types";
 import type { CSVRow } from "../movement/CSVPictographParserService";

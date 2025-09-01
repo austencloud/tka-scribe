@@ -4,12 +4,13 @@
  * Export point for core domain types and fundamental data structures.
  */
 
-export * from "./ApplicationTypes";
+// Export from new models directory
+export * from "../models/core/ApplicationTypes";
+export * from "../models/core/DeviceTypes";
+export * from "../models/core/Letter";
+export * from "../models/core/SequenceData";
 export * from "./AppSettings";
-export * from "./Letter";
 export * from "./pictograph";
-export * from "./SequenceData";
-export * from "./types";
 export * from "./ui";
 
 // Note: Types from other domain areas are exported directly from domain/index.ts

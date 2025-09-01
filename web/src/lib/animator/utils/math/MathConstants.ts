@@ -4,7 +4,7 @@
  * Centralized mathematical constants used throughout the animator.
  */
 
-import { Location } from "$domain/enums";
+import { Location } from "$lib/domain/enums/enums";
 
 // Core mathematical constants
 export const PI = Math.PI;

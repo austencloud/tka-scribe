@@ -7,7 +7,7 @@
 
 import type { MotionData } from "$domain";
 import { Orientation, RotationDirection } from "$domain";
-import { MotionType } from "$domain/enums";
+import { MotionType } from "$lib/domain/enums/enums.js";
 import {
   mapOrientationToAngle,
   mapPositionToAngle,

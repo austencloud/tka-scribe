@@ -12,7 +12,7 @@ import {
   removeBeatFromSequence,
   updateSequenceData,
 } from "$domain/core/SequenceData";
-import type { SequenceStatistics } from "$domain/data-interfaces/sequence-state-interfaces-data";
+import type { SequenceStatistics } from "$domain/models/browse/SequenceState";
 import type { ISequenceStateService } from "$lib/services/contracts/sequence/ISequenceStateService";
 import { injectable } from "inversify";
 @injectable()

@@ -5,14 +5,14 @@
  */
 
 import type {
-  BreakpointConfig,
   AspectRatioConfig,
+  BreakpointConfig,
   DeviceConfig,
   DeviceType,
-  ResponsiveLayoutTemplates,
-  LayoutCategory,
   FoldableDeviceSpec,
-} from "./types";
+  LayoutCategory,
+  ResponsiveLayoutTemplates,
+} from "../../../models/build/OptionPickerLayoutModels";
 
 // ============================================================================
 // BREAKPOINTS

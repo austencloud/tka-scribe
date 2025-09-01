@@ -12,7 +12,7 @@ import {
   type GridData,
 } from "../../../domain/core/pictograph/GridData";
 import type { MotionData } from "../../../domain/core/pictograph/MotionData";
-import { GridMode, Location } from "../../../domain/enums";
+import { GridMode, Location } from "../../../domain/enums/enums";
 import type { IGridModeDeriver } from "../../contracts/positioning-interfaces";
 
 @injectable()

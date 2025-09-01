@@ -13,7 +13,7 @@ import type {
   SequenceCardDimensions,
   SequenceCardExportResult,
   SequenceCardMetadata,
-} from "$domain/data-interfaces/sequence-card-export-interfaces-data";
+} from "$domain/models/build/export/SequenceCardExport";
 
 // Re-export the imported types so other services can use them
 export type {
@@ -22,7 +22,7 @@ export type {
   SequenceCardDimensions,
   SequenceCardExportResult,
   SequenceCardMetadata,
-} from "$domain/data-interfaces/sequence-card-export-interfaces-data";
+} from "$domain/models/build/export/SequenceCardExport";
 
 // ============================================================================
 // SERVICE CONTRACTS (Behavioral Interfaces)
@@ -328,5 +328,5 @@ export interface ISequenceCardCacheService {
   cleanup(): Promise<void>;
 }
 
-// Note: Import types directly from $domain/data-interfaces/sequence-card-export-interfaces-data
+// Note: Import types directly from $domain/models/build/export/SequenceCardExport
 // instead of re-exporting them from service contracts

@@ -1,4 +1,22 @@
 // src/lib/components/backgrounds/config/nightSky.ts
+import type { QualityLevel } from "../BackgroundTypes";
+
+// ============================================================================
+// CONFIGURATION INTERFACES
+// ============================================================================
+
+export interface CometConfig {
+  size: number;
+  speed: number;
+  color: string;
+  tailLength: number;
+  interval: number;
+  enabledOnQuality: QualityLevel[];
+}
+
+// ============================================================================
+// NIGHT SKY CONFIGURATION
+// ============================================================================
 
 export const NightSkyConfig = {
   stars: {

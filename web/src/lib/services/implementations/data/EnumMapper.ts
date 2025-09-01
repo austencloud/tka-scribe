@@ -6,7 +6,7 @@
  */
 
 import { GridPosition, Orientation, RotationDirection } from "$domain";
-import { Location, MotionType } from "$domain/enums";
+import { Location, MotionType } from "$lib/domain/enums/enums";
 import { injectable } from "inversify";
 
 export interface IEnumMapper {

@@ -6,7 +6,7 @@
  */
 
 import { Direction, Timing } from "$domain";
-import { MotionType } from "$domain/enums";
+import { MotionType } from "$lib/domain/enums/enums";
 
 export enum Type1MotionPattern {
   // Type 1 only uses PRO and ANTI

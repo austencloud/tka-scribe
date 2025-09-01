@@ -6,7 +6,7 @@
  */
 
 import type { MotionData } from "$domain";
-import { Location, MotionType } from "$domain/enums";
+import { Location, MotionType } from "$lib/domain/enums/enums";
 import type { IArrowLocationCalculator } from "$lib/services/contracts/positioning-interfaces";
 import type { Point } from "../types";
 import { ArrowQuadrantCalculator } from "./ArrowQuadrantCalculator";

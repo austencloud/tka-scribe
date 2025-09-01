@@ -1,35 +1,19 @@
-/**
- * Domain Models Index
- *
- * Central export point for all domain models following modern desktop architecture.
- */
+// Core models - direct exports
+export * from "./models/build/workbench/BeatData";
+export * from "./models/core/ApplicationTypes";
+export * from "./models/core/DeviceTypes";
+export * from "./models/core/GridData";
+export * from "./models/core/Letter";
+export * from "./models/core/MotionData";
+export * from "./models/core/PictographData";
+export * from "./models/core/SequenceData";
 
-// Core Types and Models (includes UI backgrounds)
-export * from "./core";
-
-// Enums
-export * from "./enums";
-
-// Browse Models
+// Other domain areas
 export * from "./browse";
-
-// Build Domain Types (explicit exports to avoid conflicts)
-export * from "./build/generate";
-export * from "./build/image-export";
-export * from "./build/option-picker";
-export * from "./build/workbench/BeatData";
-
-// Layout Domain Types
+export * from "./build";
+export * from "./core";
+export * from "./enums/enums";
 export * from "./layout";
-
-// Sequence Card Types
-export * from "./sequence-card";
-
-// Learn Domain Types
 export * from "./learn";
-
-// Schemas
 export * from "./schemas";
-
-// Note: data-interfaces not exported from main index to avoid conflicts
-// Services should import data-interfaces directly when needed
+export * from "./sequence-card";

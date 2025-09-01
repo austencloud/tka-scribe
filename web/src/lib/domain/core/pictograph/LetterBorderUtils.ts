@@ -5,8 +5,8 @@
  * PictographBorderManager dual border system.
  */
 
-import { LetterType } from "../../enums";
-import { Letter, getLetterType } from "../Letter";
+import { Letter, getLetterType } from "$domain";
+import { LetterType } from "../../enums/enums";
 
 /**
  * Letter type border color mapping from desktop app

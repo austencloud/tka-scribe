@@ -3,7 +3,7 @@
  */
 
 import { Orientation } from "$domain";
-import { Location, MotionType } from "$domain/enums";
+import { Location, MotionType } from "$lib/domain/enums/enums";
 
 // Helper function to determine motion type based on start/end locations
 export function getMotionType(

@@ -3,13 +3,13 @@
  * Uses modern detection methods based on research from W3C, Material Design, and iOS guidelines
  */
 
-import type { DeviceCapabilities } from "$domain/sequence-card/SequenceCard";
+import type {
+  DeviceCapabilities,
+  ResponsiveSettings,
+} from "$domain/core/DeviceTypes";
 
 import { injectable } from "inversify";
-import type {
-  IDeviceDetector,
-  ResponsiveSettings,
-} from "../../contracts/application/IDeviceDetector";
+import type { IDeviceDetector } from "../../contracts/application/IDeviceDetector";
 
 @injectable()
 export class DeviceDetector implements IDeviceDetector {

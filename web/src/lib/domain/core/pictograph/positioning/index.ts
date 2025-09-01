@@ -4,4 +4,4 @@
  * Export point for positioning-related domain types and models.
  */
 
-export * from "./types";
+export * from "../../../models/core/PositioningModels";

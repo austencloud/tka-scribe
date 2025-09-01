@@ -1,7 +1,7 @@
 import { Orientation, RotationDirection } from "$domain";
-import { Location, MotionColor, MotionType } from "$domain/enums";
 import type { MotionData } from "$domain/core/pictograph/MotionData";
 import { createMotionData } from "$domain/core/pictograph/MotionData";
+import { Location, MotionColor, MotionType } from "$lib/domain/enums/enums";
 import { injectable } from "inversify";
 import type { IMotionParameterService } from "../../contracts/motion-tester-interfaces";
 

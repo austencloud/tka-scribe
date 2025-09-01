@@ -10,8 +10,8 @@
 
 import type { ArrowPlacementData, MotionData, PictographData } from "$domain";
 import { GridMode, Orientation } from "$domain";
-import { Location, MotionColor, MotionType } from "$domain/enums";
 import type { Letter } from "$domain/core/Letter";
+import { Location, MotionColor, MotionType } from "$lib/domain/enums/enums";
 import type { IArrowPositioningOrchestrator } from "$lib/services/contracts/positioning-interfaces";
 import { TYPES } from "$lib/services/inversify/types";
 import { inject, injectable } from "inversify";

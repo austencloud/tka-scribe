@@ -7,7 +7,7 @@
  */
 
 import type { MotionData, PictographData, PropPlacementData } from "$domain";
-import { MotionColor } from "$domain/enums";
+import { MotionColor } from "$lib/domain/enums/enums";
 import { injectable } from "inversify";
 import type { IPropPlacementService } from "../positioning/PropPlacementService";
 import { PropPlacementService } from "../positioning/PropPlacementService";

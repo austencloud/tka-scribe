@@ -9,8 +9,8 @@ import type { Letter, PictographData } from "$domain";
 import type { ArrowPosition } from "$lib/services/implementations/positioning/types";
 import { getLetterImagePath } from "$lib/utils/letter-image-getter";
 import { inject, injectable } from "inversify";
+import type { ISvgConfiguration } from "../../contracts/pictograph-interfaces";
 import { TYPES } from "../../inversify/types";
-import type { ISvgConfiguration } from "./SvgConfiguration";
 
 export interface IOverlayRenderer {
   renderOverlays(svg: SVGElement, data: PictographData): Promise<void>;

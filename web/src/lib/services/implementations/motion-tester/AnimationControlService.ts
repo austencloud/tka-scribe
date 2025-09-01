@@ -8,8 +8,8 @@ import {
   PropType,
   RotationDirection,
 } from "$domain";
-import { Location, MotionColor, MotionType } from "$domain/enums";
 import type { PropState } from "$lib/components/tabs/browse-tab/animator";
+import { Location, MotionColor, MotionType } from "$lib/domain/enums/enums";
 import type { ISequenceAnimationEngine } from "$lib/services/contracts/animation";
 import { inject, injectable } from "inversify";
 import type { IAnimationControlService } from "../../contracts/motion-tester-interfaces";

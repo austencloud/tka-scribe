@@ -15,13 +15,23 @@ import type {
   PictographData,
 } from "$domain";
 import type { ArrowPlacementData } from "$domain/core/pictograph/ArrowPlacementData";
+import type {
+  ArrowSvgData,
+  SVGDimensions,
+} from "$domain/core/pictograph/SvgTypes";
 import type { GridPointData as RawGridData } from "../../domain/core/pictograph/gridCoordinates.js";
-import { MotionColor } from "../../domain/enums";
+import { MotionColor } from "../../domain/enums/enums.js";
 import type { ArrowPosition } from "../implementations/positioning/types.js";
 
 // ============================================================================
 // SERVICE CONTRACTS (Behavioral Interfaces)
 // ============================================================================
+
+export interface ISvgConfiguration {
+  readonly SVG_SIZE: number;
+  readonly CENTER_X: number;
+  readonly CENTER_Y: number;
+}
 
 export interface IPictographRenderingService {
   renderPictograph(data: PictographData): Promise<SVGElement>;
@@ -172,19 +182,12 @@ export interface ISvgParser {
   extractSvgContent(svgText: string): string;
 }
 
-// Missing SVG data types
-export interface ArrowSvgData {
-  id: string;
-  svgContent: string;
-  dimensions: SVGDimensions;
-  imageSrc?: string;
-  viewBox?: string;
-  center?: { x: number; y: number };
-}
+// ============================================================================
+// RE-EXPORT DOMAIN TYPES FOR SERVICE USE
+// ============================================================================
 
-export interface SVGDimensions {
-  width: number;
-  height: number;
-  viewBox?: string;
-  center?: { x: number; y: number };
-}
+// Re-export SVG domain types for service implementations
+export type {
+  ArrowSvgData,
+  SVGDimensions,
+} from "$domain/core/pictograph/SvgTypes";

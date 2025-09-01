@@ -6,7 +6,7 @@
  */
 
 import type { AppSettings } from "$domain/core/AppSettings";
-import { MotionColor } from "$domain/enums";
+import { MotionColor } from "$lib/domain/enums/enums";
 
 type VisibilityObserver = () => void;
 

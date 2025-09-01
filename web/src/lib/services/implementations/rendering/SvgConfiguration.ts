@@ -6,12 +6,7 @@
  */
 
 import { injectable } from "inversify";
-
-export interface ISvgConfiguration {
-  readonly SVG_SIZE: number;
-  readonly CENTER_X: number;
-  readonly CENTER_Y: number;
-}
+import type { ISvgConfiguration } from "../../contracts/pictograph-interfaces";
 
 @injectable()
 export class SvgConfiguration implements ISvgConfiguration {

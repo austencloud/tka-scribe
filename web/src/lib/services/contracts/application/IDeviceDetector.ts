@@ -4,27 +4,10 @@
  * Service contract for device detection and responsive settings management.
  */
 
-import type { DeviceCapabilities } from "$domain/sequence-card/SequenceCard";
-
-// ============================================================================
-// DATA CONTRACTS
-// ============================================================================
-
-export interface ResponsiveSettings {
-  minTouchTarget: number;
-  elementSpacing: number;
-  allowScrolling: boolean;
-  layoutDensity: "compact" | "comfortable" | "spacious";
-  fontScaling: number;
-  isMobile: boolean;
-  isTablet: boolean;
-  isDesktop: boolean;
-  screenWidth: number;
-  screenHeight: number;
-  devicePixelRatio: number;
-  touchSupported: boolean;
-  orientation: "portrait" | "landscape";
-}
+import type {
+  DeviceCapabilities,
+  ResponsiveSettings,
+} from "$domain/core/DeviceTypes";
 
 // ============================================================================
 // SERVICE CONTRACT (Behavioral Interface)

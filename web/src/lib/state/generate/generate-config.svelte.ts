@@ -11,7 +11,7 @@ import {
   LetterType,
   SliceSize,
 } from "$domain";
-import { PropContinuity } from "$domain/enums";
+import { PropContinuity } from "$lib/domain/enums/enums";
 
 export interface GenerationConfig {
   mode: GenerationMode;

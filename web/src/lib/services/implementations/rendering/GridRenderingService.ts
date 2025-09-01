@@ -7,8 +7,8 @@
 
 import { GridMode } from "$domain";
 import { inject, injectable } from "inversify";
+import type { ISvgConfiguration } from "../../contracts/pictograph-interfaces";
 import { TYPES } from "../../inversify/types";
-import type { ISvgConfiguration } from "./SvgConfiguration";
 
 export interface IGridRenderingService {
   renderGrid(svg: SVGElement, gridMode?: GridMode): Promise<void>;

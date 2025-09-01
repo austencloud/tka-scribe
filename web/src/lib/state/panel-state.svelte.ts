@@ -5,7 +5,7 @@
  * Follows TKA architecture: services handle logic, runes handle reactivity.
  */
 
-import { ResizeDirection } from "$lib/domain/data-interfaces/panel-interfaces-data";
+import { ResizeDirection } from "$domain/layout/LayoutTypes";
 import type {
   IPanelManagementService,
   PanelState,

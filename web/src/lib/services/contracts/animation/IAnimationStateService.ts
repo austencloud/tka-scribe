@@ -5,8 +5,8 @@
  * Handles prop state updates and management.
  */
 
-import type { PropStates } from "$domain/data-interfaces/ISequenceAnimationEngine";
 import type { PropState } from "$lib/components/tabs/browse-tab/animator/types/PropState";
+import type { PropStates } from "$lib/services/contracts/animation/ISequenceAnimationEngine";
 
 export interface IAnimationStateService {
   getBluePropState(): PropState;

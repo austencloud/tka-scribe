@@ -33,15 +33,15 @@ export {
   createDefaultLoadingState,
   NavigationMode,
   updateBrowseState,
-} from "./BrowseState";
+} from "../models/browse/BrowseState";
 export type {
   BrowseDisplayState,
   BrowseLoadingState,
   BrowseState,
   SequenceFilterResult,
-} from "./BrowseState";
+} from "../models/browse/BrowseState";
 
-// Main browse types including legacy ones from types.ts
+// Main browse types including legacy ones from models
 export type {
   BrowseConfig,
   BrowseDeleteConfirmationData,
@@ -55,16 +55,19 @@ export type {
   SectionConfiguration,
   SequenceSection,
   SortOption,
-} from "./types";
+} from "../models/browse/BrowseModels";
 
 // Re-export GridMode from main enums to maintain compatibility
-export { GridMode } from "../enums";
+export { GridMode } from "../enums/enums";
 
 // Metadata types for Browse functionality
-export * from "./metadata";
+export * from "../models/browse/Metadata";
 
 // Favorites types
 export type { FavoriteItem, FavoritesCollection } from "./favorites";
 
 // Animation types
-export type { AnimationConfig, AnimationState } from "./animation/types";
+export type {
+  AnimationConfig,
+  AnimationState,
+} from "../models/browse/AnimationModels";

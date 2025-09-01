@@ -18,9 +18,9 @@ import type {
   LayoutValidationError,
   LayoutValidationResult,
   LayoutValidationWarning,
-  Margins,
   PageDimensions,
   PageLayoutConfig,
+  PageMargins,
   PageOrientation,
   Rectangle,
   SequenceCardGridConfig,
@@ -36,7 +36,7 @@ export class PrintablePageLayoutService implements IPrintablePageLayoutService {
     Tabloid: { width: 792, height: 1224 },
   };
 
-  private readonly defaultMargins: Margins = {
+  private readonly defaultMargins: PageMargins = {
     top: 36, // 0.5 inch
     right: 18, // 0.25 inch
     bottom: 36, // 0.5 inch
@@ -68,13 +68,16 @@ export class PrintablePageLayoutService implements IPrintablePageLayoutService {
     };
   }
 
-  calculateMargins(_paperSize: SequenceCardPaperSize): Margins {
+  calculateMargins(_paperSize: SequenceCardPaperSize): PageMargins {
     // For now, use default margins for all paper sizes
     // Could be extended to have paper-specific margins
     return { ...this.defaultMargins };
   }
 
-  calculateContentArea(pageSize: PageDimensions, margins: Margins): Rectangle {
+  calculateContentArea(
+    pageSize: PageDimensions,
+    margins: PageMargins
+  ): Rectangle {
     return {
       x: margins.left,
       y: margins.top,

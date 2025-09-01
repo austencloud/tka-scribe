@@ -11,7 +11,7 @@ import type {
   LayoutCalculationParams,
   LayoutCalculationResult,
 } from "$domain";
-import type { ResponsiveLayoutConfig } from "$domain/option-picker/OptionPickerTypes";
+import type { ResponsiveLayoutConfig } from "$lib/domain/build/option-picker/OptionPickerTypes";
 
 // ============================================================================
 // LAYOUT TYPES

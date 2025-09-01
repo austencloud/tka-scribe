@@ -14,18 +14,20 @@
  */
 import type { GridMode, MotionType } from "$domain";
 import type { GridData } from "../../domain/core/pictograph/GridData";
-import { GridPosition, Location, MotionColor } from "../../domain/enums";
+import { GridPosition, Location, MotionColor } from "../../domain/enums/enums";
 import type { Direction } from "../implementations/positioning/BetaPropDirectionCalculator";
 export type { Location, MotionType };
 
-// Import missing types from data contracts
+// Import domain types from their authoritative locations
 import type {
   ArrowPlacementData,
   MotionData,
   PictographData,
+} from "$domain/core/pictograph";
+import type {
   Point,
   Position,
-} from "$domain/data-interfaces/positioning-interfaces-data";
+} from "$domain/core/pictograph/positioning/types";
 
 // ============================================================================
 // SERVICE CONTRACTS (Behavioral Interfaces)
@@ -393,11 +395,13 @@ export interface IGridModeDeriver {
 // RE-EXPORT TYPES FOR EXTERNAL USE
 // ============================================================================
 
-// Re-export types that other modules need to import
+// Re-export domain types for service implementations
 export type {
   ArrowPlacementData,
   MotionData,
   PictographData,
+} from "$domain/core/pictograph";
+export type {
   Point,
   Position,
-} from "$domain/data-interfaces/positioning-interfaces-data";
+} from "$domain/core/pictograph/positioning/types";

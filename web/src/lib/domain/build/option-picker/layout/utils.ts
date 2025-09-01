@@ -4,13 +4,13 @@
  * Pure domain logic for layout calculations and device type determination
  */
 
-import { ASPECT_RATIO, BREAKPOINTS, DEVICE_CONFIG } from "./config";
 import type {
   ContainerAspect,
+  DeviceConfig,
   DeviceType,
   LayoutCategory,
-  DeviceConfig,
-} from "./types";
+} from "../../../models/build/OptionPickerLayoutModels";
+import { ASPECT_RATIO, BREAKPOINTS, DEVICE_CONFIG } from "./config";
 
 // ============================================================================
 // CONTAINER ASPECT RATIO
