@@ -6,7 +6,7 @@
 import type {
   DeviceCapabilities,
   ResponsiveSettings,
-} from "$domain/core/DeviceTypes";
+} from "../../../domain/models/core/DeviceTypes";
 
 import { injectable } from "inversify";
 import type { IDeviceDetector } from "../../contracts/application/IDeviceDetector";

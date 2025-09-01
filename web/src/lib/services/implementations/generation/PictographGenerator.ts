@@ -8,7 +8,7 @@
  */
 
 import { inject, injectable } from "inversify";
-import type { PictographData } from "../../../domain/core/pictograph/PictographData";
+import type { PictographData } from "../../../domain/models/core/PictographData";
 import type {
   ILetterGeneratorFactory,
   IPictographGenerator,

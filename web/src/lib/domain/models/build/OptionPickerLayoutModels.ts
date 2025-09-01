@@ -8,7 +8,7 @@
 // DEVICE AND VIEWPORT TYPES
 // ============================================================================
 
-import type { ContainerAspect, DeviceType, LayoutCategory } from "../../types/build/OptionPickerTypes";
+import type { ContainerAspect, DeviceType, LayoutCategory } from "../../enums/enums";
 
 // ============================================================================
 // CONFIGURATION TYPES
@@ -150,3 +150,6 @@ export interface ResponsiveLayoutConfig {
   aspectClass: string;
   scaleFactor: number;
 }
+
+// Re-export types for convenience
+export type { ContainerAspect, DeviceType, LayoutCategory };

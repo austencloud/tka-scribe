@@ -1,7 +1,7 @@
 import { MotionType, Orientation } from "$lib/domain/enums/enums";
 import { describe, expect, it } from "vitest";
-import { createMotionData } from "../../../../domain/core/pictograph/MotionData";
-import { createPictographData } from "../../../../domain/core/pictograph/PictographData";
+import { createMotionData } from "../../../../domain/models/core/MotionData";
+import { createPictographData } from "../../../../domain/models/core/PictographData";
 import { SpecialPlacementOriKeyGenerator } from "./SpecialPlacementOriKeyGenerator";
 import { TurnsTupleKeyGenerator } from "./TurnsTupleKeyGenerator";
 

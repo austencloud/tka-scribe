@@ -4,7 +4,6 @@
  * Tests the new simplified beta positioning architecture
  */
 
-import { Letter } from "$domain/core/Letter";
 import {
   GridPosition,
   Location,
@@ -15,8 +14,9 @@ import {
   RotationDirection,
 } from "$lib/domain/enums/enums";
 import { PropPlacementService } from "$lib/services/implementations/positioning/PropPlacementService";
-import { createMotionData } from "../../../src/lib/domain/core/pictograph/MotionData";
-import { createPictographData } from "../../../src/lib/domain/core/pictograph/PictographData";
+import { Letter } from "../../../src/lib/domain/models/core/Letter";
+import { createMotionData } from "../../../src/lib/domain/models/core/MotionData";
+import { createPictographData } from "../../../src/lib/domain/models/core/PictographData";
 
 // Test the new simplified beta positioning
 async function testBetaPositioning() {

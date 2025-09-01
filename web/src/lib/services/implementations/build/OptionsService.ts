@@ -6,17 +6,17 @@
  */
 
 import {
-  getLetterType,
-  GridPosition,
-  GridPositionGroup,
-  Letter,
-  LetterType,
-  OptionPickerReversalFilter,
-  OptionPickerSortMethod,
+    getLetterType,
+    GridPosition,
+    GridPositionGroup,
+    Letter,
+    LetterType,
+    OptionPickerReversalFilter,
+    OptionPickerSortMethod,
 } from "$domain";
-import type { PictographData } from "$domain/core/pictograph/PictographData";
 import type { IPositionMapper } from "$lib/services/contracts/positioning-interfaces";
 import { resolve, TYPES } from "$lib/services/inversify/container";
+import type { PictographData } from "../../../domain/models/core/PictographData";
 
 /**
  * Helper function to compute endPosition from motion data

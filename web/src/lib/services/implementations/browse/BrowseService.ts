@@ -11,10 +11,10 @@ import {
   FilterType as FilterTypeEnum,
   SortMethod as SortMethodEnum,
 } from "$domain/browse";
-import type { SequenceData } from "$domain/core/SequenceData";
-import { createSequenceData } from "$domain/core/SequenceData";
 import type { IBrowseService } from "$lib/services/contracts/browse-interfaces";
 import { injectable } from "inversify";
+import type { SequenceData } from "../../../domain/models/core/SequenceData";
+import { createSequenceData } from "../../../domain/models/core/SequenceData";
 
 @injectable()
 export class BrowseService implements IBrowseService {

@@ -6,11 +6,11 @@
  */
 
 import { Direction, PositionSystem, RotationDirection, Timing } from "$domain";
-import { Letter } from "$domain/core/Letter";
-import type { MotionData } from "$domain/core/pictograph/MotionData";
-import type { PictographData } from "$domain/core/pictograph/PictographData";
-import { createPictographData } from "$domain/core/pictograph/PictographData";
 import { MotionType } from "$lib/domain/enums/enums";
+import { Letter } from "../../../../domain/models/core/Letter";
+import type { MotionData } from "../../../../domain/models/core/MotionData";
+import type { PictographData } from "../../../../domain/models/core/PictographData";
+import { createPictographData } from "../../../../domain/models/core/PictographData";
 import type { ILetterGenerator } from "../../../contracts/generation-interfaces";
 
 export abstract class BaseLetterGenerator implements ILetterGenerator {

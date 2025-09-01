@@ -4,7 +4,7 @@
  * Service contracts for data handling, CSV parsing, and query operations.
  */
 
-import type { PictographData } from "$domain/core/pictograph/PictographData";
+import type { PictographData } from "../../domain/models/core/PictographData";
 
 // ============================================================================
 // DATA CONTRACTS

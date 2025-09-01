@@ -5,7 +5,6 @@
  * Acts as a facade that combines layout and data services.
  */
 
-import type { PictographData } from "$domain/core/pictograph/PictographData";
 import type {
   IOptionPickerDataService,
   IOptionPickerLayoutService,
@@ -13,6 +12,7 @@ import type {
   OptionPickerLayoutCalculationResult,
 } from "$lib/services/contracts/option-picker-interfaces";
 import { resolve, TYPES } from "$lib/services/inversify/container";
+import type { PictographData } from "../../domain/models/core/PictographData";
 
 export interface OptionPickerServices {
   layout: IOptionPickerLayoutService;

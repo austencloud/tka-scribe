@@ -15,9 +15,9 @@ import {
   PropType,
   RotationDirection,
 } from "$domain";
-import { Letter } from "$domain/core/Letter";
 import { Location, MotionColor, MotionType } from "$lib/domain/enums/enums";
 import { injectable } from "inversify";
+import { Letter } from "../../../domain/models/core/Letter";
 import type { IStartPositionService } from "../../contracts/application/IStartPositionService";
 import { PositionMapper } from "../movement/PositionMapper";
 

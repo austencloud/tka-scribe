@@ -5,9 +5,9 @@
  * for the option picker component.
  */
 
-import type { PictographData } from "$domain/core/pictograph/PictographData";
 import type { IMotionQueryHandler } from "$lib/services/contracts/data-interfaces";
 import { inject, injectable } from "inversify";
+import type { PictographData } from "../../domain/models/core/PictographData";
 import type { IOptionPickerDataService } from "../contracts/option-picker-interfaces";
 import type { IPositionMapper } from "../contracts/positioning-interfaces";
 import { TYPES } from "../inversify/types";

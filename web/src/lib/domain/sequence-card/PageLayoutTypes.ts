@@ -8,7 +8,7 @@
  * desktop application functionality for physical printing.
  */
 
-import type { SequenceData } from "../core/SequenceData";
+import type { SequenceData } from "../models/core/SequenceData";
 
 // ============================================================================
 // CORE PAGE LAYOUT TYPES

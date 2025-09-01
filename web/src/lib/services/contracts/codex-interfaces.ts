@@ -10,8 +10,8 @@
 /**
  * Types of operations that can be performed on pictographs
  */
-import type { PictographData } from "$domain/core/pictograph/PictographData";
 import type { PictographTransformOperation } from "$domain/learn/codex";
+import type { PictographData } from "../../domain/models/core/PictographData";
 
 // Re-export the imported types so other services can use them
 export type { PictographTransformOperation } from "$domain/learn/codex";

@@ -5,8 +5,17 @@
  * export options, device capabilities, and cache management.
  */
 
-import type { ExportResult } from "../build/image-export/core";
-import type { SequenceData } from "../index";
+import type { SequenceData } from "./SequenceData";
+
+// Basic export result interface
+export interface ExportResult {
+  success: boolean;
+  data?: Blob | string;
+  filename?: string;
+  mimeType?: string;
+  metadata?: Record<string, unknown>;
+  error?: string;
+}
 
 // ============================================================================
 // LAYOUT CONFIGURATION TYPES
@@ -119,26 +128,8 @@ type SequenceCardPaperSize = "A4" | "Letter" | "Legal" | "Tabloid";
 // DEVICE CAPABILITIES & RESPONSIVENESS
 // ============================================================================
 
-// Re-export DeviceCapabilities from core for backward compatibility
-export type { DeviceCapabilities } from "../core/DeviceTypes";
-
-export interface ResponsiveSettings {
-  // Touch targets
-  minTouchTarget: number;
-  elementSpacing: number;
-
-  // Layout density
-  layoutDensity: "compact" | "comfortable" | "spacious";
-
-  // Typography
-  fontScaling: number;
-  lineHeightMultiplier: number;
-
-  // Interaction preferences
-  allowScrolling: boolean;
-  preferSwipeGestures: boolean;
-  reducedMotion: boolean;
-}
+// Re-export DeviceCapabilities and ResponsiveSettings from core for backward compatibility
+export type { DeviceCapabilities, ResponsiveSettings } from "./DeviceTypes";
 
 // ============================================================================
 // CACHE MANAGEMENT TYPES

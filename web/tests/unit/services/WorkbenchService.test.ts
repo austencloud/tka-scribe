@@ -8,10 +8,10 @@
 import type { BeatData, SequenceData } from "$domain";
 import { GridMode } from "$domain";
 import type { WorkbenchMode } from "$domain/build/workbench/workbench-types";
-import { Letter } from "$domain/core/Letter";
-import { createPictographData } from "$domain/core/pictograph/PictographData";
 import { WorkbenchService } from "$lib/services/implementations/workbench/WorkbenchService";
 import { beforeEach, describe, expect, it } from "vitest";
+import { Letter } from "../../../src/lib/domain/models/core/Letter";
+import { createPictographData } from "../../../src/lib/domain/models/core/PictographData";
 
 describe("WorkbenchService", () => {
   let service: WorkbenchService;

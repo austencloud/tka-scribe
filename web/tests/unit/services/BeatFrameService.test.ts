@@ -55,9 +55,13 @@ describe("BeatFrameService", () => {
       const config: BeatFrameConfig = {
         columns: 4,
         beatSize: 160,
+        cellSize: 160,
         gap: 0,
         gridMode: GridMode.DIAMOND,
         hasStartTile: true,
+        showBeatNumbers: false,
+        enableHover: true,
+        enableDrag: true,
       };
 
       // First beat should be at column 1 (after start tile)
@@ -77,9 +81,13 @@ describe("BeatFrameService", () => {
       const config: BeatFrameConfig = {
         columns: 4,
         beatSize: 160,
+        cellSize: 160,
         gap: 0,
         gridMode: GridMode.DIAMOND,
         hasStartTile: true,
+        showBeatNumbers: false,
+        enableHover: true,
+        enableDrag: true,
       };
 
       const startPosition = service.calculateStartPosition(5, config);
@@ -90,9 +98,13 @@ describe("BeatFrameService", () => {
       const config: BeatFrameConfig = {
         columns: 4,
         beatSize: 160,
+        cellSize: 160,
         gap: 0,
         gridMode: GridMode.DIAMOND,
         hasStartTile: true,
+        showBeatNumbers: false,
+        enableHover: true,
+        enableDrag: true,
       };
 
       // 4 beats should fit in 1 row + start tile = 5 columns total
@@ -107,9 +119,13 @@ describe("BeatFrameService", () => {
       const config: BeatFrameConfig = {
         columns: 4,
         beatSize: 160,
+        cellSize: 160,
         gap: 0,
         gridMode: GridMode.DIAMOND,
         hasStartTile: true,
+        showBeatNumbers: false,
+        enableHover: true,
+        enableDrag: true,
       };
 
       const dimensions = service.calculateFrameDimensions(0, config);
@@ -163,9 +179,13 @@ describe("BeatFrameService", () => {
       const config: BeatFrameConfig = {
         columns: 4,
         beatSize: 160,
+        cellSize: 160,
         gap: 0,
         gridMode: GridMode.DIAMOND,
         hasStartTile: true,
+        showBeatNumbers: false,
+        enableHover: true,
+        enableDrag: true,
       };
 
       // Click at beat 0 position (column 1)

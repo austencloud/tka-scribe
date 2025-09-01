@@ -20,7 +20,7 @@ import type {
   LetterDerivationResult,
 } from "$domain/build/generate/types";
 import { MotionColor } from "$lib/domain/enums/enums";
-import type { Letter } from "../../domain/core/Letter";
+import type { Letter } from "../../domain/models/core/Letter";
 
 // ============================================================================
 // SERVICE CONTRACTS (Behavioral Interfaces)

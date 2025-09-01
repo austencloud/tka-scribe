@@ -6,15 +6,15 @@
  */
 
 import type { BeatData, Letter, SequenceData, ValidationResult } from "$domain";
+import type { SequenceStatistics } from "$domain/models/browse/SequenceState";
+import type { ISequenceStateService } from "$lib/services/contracts/sequence/ISequenceStateService";
+import { injectable } from "inversify";
 import {
   addBeatToSequence,
   createSequenceData,
   removeBeatFromSequence,
   updateSequenceData,
-} from "$domain/core/SequenceData";
-import type { SequenceStatistics } from "$domain/models/browse/SequenceState";
-import type { ISequenceStateService } from "$lib/services/contracts/sequence/ISequenceStateService";
-import { injectable } from "inversify";
+} from "../../../domain/models/core/SequenceData";
 @injectable()
 export class SequenceStateService implements ISequenceStateService {
   // ============================================================================
@@ -119,10 +119,12 @@ export class SequenceStateService implements ISequenceStateService {
     const updatedSequence = removeBeatFromSequence(sequence, beatIndex);
 
     // Renumber remaining beats
-    const renumberedBeats = updatedSequence.beats.map((beat, index) => ({
-      ...beat,
-      beatNumber: index + 1,
-    }));
+    const renumberedBeats = updatedSequence.beats.map(
+      (beat: any, index: number) => ({
+        ...beat,
+        beatNumber: index + 1,
+      })
+    );
 
     return updateSequenceData(updatedSequence, {
       beats: renumberedBeats,

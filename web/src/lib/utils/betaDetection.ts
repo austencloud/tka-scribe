@@ -5,9 +5,9 @@
  */
 
 import { GridPosition } from "$domain";
-import type { PictographData } from "$domain/core/pictograph/PictographData";
 import type { IPositionMapper } from "$lib/services/contracts/positioning-interfaces";
 import { resolve, TYPES } from "$lib/services/inversify/container";
+import type { PictographData } from "../domain/models/core/PictographData";
 
 /**
  * Check if a grid position is a beta position

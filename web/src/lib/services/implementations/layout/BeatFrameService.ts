@@ -25,20 +25,29 @@ export class BeatFrameService implements IBeatFrameService {
     return {
       columns: 4,
       beatSize: 160,
+      cellSize: 160, // Same as beatSize for compatibility
       gap: 0,
       gridMode: GridMode.DIAMOND,
       hasStartTile: true,
+      showBeatNumbers: false,
+      enableHover: true,
+      enableDrag: true,
     };
   }
 
   validateConfig(config: Partial<BeatFrameConfig>): BeatFrameConfig {
     const defaults = this.getDefaultConfig();
+    const beatSize = Math.max(50, config.beatSize ?? defaults.beatSize);
     return {
       columns: Math.max(1, config.columns ?? defaults.columns),
-      beatSize: Math.max(50, config.beatSize ?? defaults.beatSize),
+      beatSize,
+      cellSize: beatSize, // Keep in sync with beatSize
       gap: Math.max(0, config.gap ?? defaults.gap),
       gridMode: config.gridMode ?? defaults.gridMode,
       hasStartTile: config.hasStartTile ?? defaults.hasStartTile,
+      showBeatNumbers: config.showBeatNumbers ?? defaults.showBeatNumbers,
+      enableHover: config.enableHover ?? defaults.enableHover,
+      enableDrag: config.enableDrag ?? defaults.enableDrag,
     };
   }
 

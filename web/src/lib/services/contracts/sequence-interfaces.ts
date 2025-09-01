@@ -10,7 +10,7 @@
 // SEQUENCE REQUEST TYPES
 // ============================================================================
 import type { SequenceData, ValidationResult } from "$domain";
-import type { BeatData } from "$domain/build/workbench/BeatData";
+import type { BeatData } from "../../domain/models/build/workbench/BeatData";
 // Page layout types from sequence-card domain
 import type {
   DPIConfiguration,

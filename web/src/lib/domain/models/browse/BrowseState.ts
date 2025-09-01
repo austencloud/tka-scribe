@@ -5,9 +5,10 @@
  * Ported from desktop app's browse models.
  */
 
+import type { FilterType } from "../../enums/enums";
+import { SortMethod } from "../../enums/enums";
+import type { FilterValue } from "../../types/BrowseTypes";
 import type { SequenceData } from "../core/SequenceData";
-import type { FilterType, FilterValue } from "./FilterType";
-import { SortMethod } from "./SortMethod";
 
 export interface BrowseState {
   filterType: FilterType | null;

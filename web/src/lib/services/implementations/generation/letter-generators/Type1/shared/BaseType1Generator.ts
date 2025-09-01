@@ -7,8 +7,8 @@
  */
 
 import { Direction, PositionSystem, Timing } from "$domain";
-import { Letter } from "$domain/core/Letter";
-import type { PictographData } from "$domain/core/pictograph/PictographData";
+import { Letter } from "../../../../../../domain/models/core/Letter";
+import type { PictographData } from "../../../../../../domain/models/core/PictographData";
 import { BaseLetterGenerator } from "../../../core/BaseLetterGenerator";
 import {
   calculateDirectionForPositionSystem,

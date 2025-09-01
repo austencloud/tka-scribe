@@ -6,7 +6,7 @@
  */
 
 import { Direction, PositionSystem, Timing } from "$domain";
-import { Letter } from "$domain/core/Letter";
+import { Letter } from "../../../../../domain/models/core/Letter";
 import { BaseType1Generator } from "./shared/BaseType1Generator";
 import {
   TYPE1_ALPHA_TO_ALPHA_LETTERS,

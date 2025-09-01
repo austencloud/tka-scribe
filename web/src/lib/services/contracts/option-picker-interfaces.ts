@@ -7,11 +7,11 @@
 // ============================================================================
 // LAYOUT CALCULATION INTERFACES
 // ============================================================================
-import type { PictographData } from "$domain/core/pictograph/PictographData";
 import type {
   OptionPickerLayoutCalculationParams,
   OptionPickerLayoutCalculationResult,
 } from "$lib/domain/build/option-picker/OptionPickerTypes";
+import type { PictographData } from "../../domain/models/core/PictographData";
 
 // ============================================================================
 // SERVICE CONTRACTS (Behavioral Interfaces)

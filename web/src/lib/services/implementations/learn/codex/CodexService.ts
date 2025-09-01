@@ -6,12 +6,12 @@
  */
 
 import { GridMode, Letter } from "$domain";
-import type { PictographData } from "$domain/core/pictograph/PictographData";
 import type { ILetterMappingRepository } from "$domain/learn/codex/LetterMappingRepository";
 import type { LetterCategory } from "$domain/learn/codex/types";
 import type { ILessonRepository } from "$domain/learn/LessonRepository";
 import { TYPES } from "$lib/services/inversify/types";
 import { inject, injectable } from "inversify";
+import type { PictographData } from "../../../../domain/models/core/PictographData";
 
 import type { ILetterQueryHandler } from "$lib/services/contracts/data-interfaces";
 import type { ICodexService } from "../../../contracts/application/ICodexService";

@@ -15,7 +15,7 @@ import { TYPES } from "./types";
 import { LetterMappingRepository } from "../../domain/learn/codex/LetterMappingRepository";
 import { LessonRepository } from "../../domain/learn/LessonRepository";
 import { CsvLoader } from "../implementations/data/CsvLoader";
-import { CSVParser } from "../implementations/data/CsvParser";
+import { CSVParser } from "../implementations/data/CSVParser";
 import { LetterQueryHandler } from "../implementations/data/LetterQueryHandler";
 import { CodexService } from "../implementations/learn/codex/CodexService";
 import { PictographOperationsService } from "../implementations/learn/codex/PictographOperationsService";

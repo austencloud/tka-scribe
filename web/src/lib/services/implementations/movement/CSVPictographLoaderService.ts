@@ -6,8 +6,8 @@
  */
 
 import { Letter } from "$domain";
-import type { PictographData } from "$domain/core/pictograph/PictographData";
 import { injectable } from "inversify";
+import type { PictographData } from "../../../domain/models/core/PictographData";
 
 export interface ICSVPictographLoaderService {
   getPictographsForLetter(letter: Letter): PictographData[];

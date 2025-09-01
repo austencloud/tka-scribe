@@ -5,8 +5,8 @@
  */
 
 import type { SequenceData, ValidationResult } from "$domain";
-import type { BeatData } from "$domain/build/workbench/BeatData";
-import type { SequenceStatistics } from "$domain/models/browse/SequenceState";
+import type { SequenceStatistics } from "../../../domain/models/browse/SequenceState";
+import type { BeatData } from "../../../domain/models/build/workbench/BeatData";
 
 export interface ISequenceStateService {
   // Sequence management

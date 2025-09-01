@@ -7,12 +7,12 @@
  */
 
 import { injectable } from "inversify";
+import { GridMode, Location } from "../../../domain/enums/enums";
 import {
   createGridData,
   type GridData,
-} from "../../../domain/core/pictograph/GridData";
-import type { MotionData } from "../../../domain/core/pictograph/MotionData";
-import { GridMode, Location } from "../../../domain/enums/enums";
+} from "../../../domain/models/core/GridData";
+import type { MotionData } from "../../../domain/models/core/MotionData";
 import type { IGridModeDeriver } from "../../contracts/positioning-interfaces";
 
 @injectable()

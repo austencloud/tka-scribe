@@ -8,12 +8,38 @@ export * from "./models/core/MotionData";
 export * from "./models/core/PictographData";
 export * from "./models/core/SequenceData";
 
-// Other domain areas
+// Other domain areas - specific exports to avoid conflicts
 export * from "./browse";
-export * from "./build";
 export * from "./core";
 export * from "./enums/enums";
 export * from "./layout";
 export * from "./learn";
-export * from "./schemas";
-export * from "./sequence-card";
+
+// Export build types that actually exist
+export type {
+  BeatFrameConfig,
+  ContainerDimensions,
+  GenerationOptions,
+  LayoutInfo,
+  LetterDerivationResult,
+  WorkbenchConfig,
+  WorkbenchMode,
+  WorkbenchState,
+} from "./build";
+
+// Export sequence-card types except conflicting ones
+export type {
+  CacheConfig,
+  CacheEntry,
+  DeviceCapabilities,
+  ExportOptions,
+  OptimizationGoal,
+  ProgressInfo,
+  ProgressStage,
+  ResponsiveSettings,
+  SequenceCardExportSettings,
+  SequenceCardLayoutMode,
+} from "./sequence-card";
+
+// Export types that actually exist
+export type { FilterValue } from "./types";

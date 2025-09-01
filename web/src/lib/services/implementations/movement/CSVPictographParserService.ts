@@ -6,12 +6,12 @@
  */
 
 import { GridPosition } from "$domain";
-import { Letter } from "$domain/core/Letter";
-import { createMotionData } from "$domain/core/pictograph/MotionData";
-import type { PictographData } from "$domain/core/pictograph/PictographData";
-import { createPictographData } from "$domain/core/pictograph/PictographData";
 import { MotionColor } from "$lib/domain/enums/enums";
 import { inject, injectable } from "inversify";
+import { Letter } from "../../../domain/models/core/Letter";
+import { createMotionData } from "../../../domain/models/core/MotionData";
+import type { PictographData } from "../../../domain/models/core/PictographData";
+import { createPictographData } from "../../../domain/models/core/PictographData";
 import type { IPositionMapper } from "../../contracts/positioning-interfaces";
 import { TYPES } from "../../inversify/types";
 import type { IEnumMapper } from "../data/EnumMapper";

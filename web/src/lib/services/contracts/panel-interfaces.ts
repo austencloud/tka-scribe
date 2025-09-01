@@ -5,11 +5,8 @@
  * This handles panel resizing, coordination, and state management.
  */
 
-import type {
-  PanelConfiguration,
-  PanelState,
-  ResizeOperation,
-} from "$domain/layout/LayoutTypes";
+import type { PanelConfiguration, PanelState } from "$domain/layout";
+import { ResizeOperation } from "$domain/layout/LayoutTypes";
 
 // ============================================================================
 // SERVICE CONTRACTS (Behavioral Interfaces)

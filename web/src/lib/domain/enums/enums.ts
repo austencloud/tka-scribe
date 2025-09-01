@@ -265,3 +265,45 @@ export enum LayoutCategory {
   MEDIUM_ITEMS = "mediumItems",
   MANY_ITEMS = "manyItems",
 }
+
+// ============================================================================
+// BROWSE ENUMS
+// ============================================================================
+
+export enum FilterType {
+  STARTING_LETTER = "starting_letter",
+  CONTAINS_LETTERS = "contains_letters",
+  LENGTH = "length",
+  DIFFICULTY = "difficulty",
+  startPosition = "startPosition",
+  AUTHOR = "author",
+  GRID_MODE = "gridMode",
+  ALL_SEQUENCES = "all_sequences",
+  FAVORITES = "favorites",
+  RECENT = "recent",
+}
+
+export enum SortMethod {
+  ALPHABETICAL = "alphabetical",
+  dateAdded = "dateAdded",
+  difficultyLevel = "difficultyLevel",
+  sequenceLength = "sequenceLength",
+  AUTHOR = "author",
+  POPULARITY = "popularity",
+}
+
+// ============================================================================
+// LAYOUT ENUMS
+// ============================================================================
+
+export enum ResizeDirection {
+  HORIZONTAL = "horizontal",
+  VERTICAL = "vertical",
+  BOTH = "both",
+}
+
+export enum ResizeOperation {
+  START = "start",
+  RESIZE = "resize",
+  END = "end",
+}

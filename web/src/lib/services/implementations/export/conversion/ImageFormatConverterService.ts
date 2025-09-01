@@ -8,10 +8,18 @@
 import pkg from "file-saver";
 import { injectable } from "inversify";
 import type { IImageFormatConverterService } from "../../../contracts/image-format-interfaces";
-import type {
-  ImageFormatOptions,
-  OptimizationSettings,
-} from "../../../../domain";
+// Define missing types locally for now
+interface ImageFormatOptions {
+  format: "png" | "jpeg" | "webp";
+  quality?: number;
+  compression?: number;
+}
+
+interface OptimizationSettings {
+  enableCompression: boolean;
+  quality: number;
+  progressive?: boolean;
+}
 const { saveAs } = pkg;
 
 @injectable()

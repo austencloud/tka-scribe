@@ -4,17 +4,19 @@
  * Central export for all browse-related domain models and types.
  */
 
-// Filter Types
+// Filter Types - now from enums and models
+export { FilterType } from "../enums/enums";
 export {
   createFilterConfig,
-  FilterType,
   formatFilterDisplayName,
   isMultiValueFilter,
   isRangeFilter,
-} from "./FilterType";
-export type { FilterConfig, FilterValue } from "./FilterType";
+} from "../models/browse/BrowseFilters";
+export type { FilterConfig } from "../models/browse/FilterModels";
+export type { FilterValue } from "../types/BrowseTypes";
 
-// Sort Methods
+// Sort Methods - now from enums and models
+export { SortMethod } from "../enums/enums";
 export {
   createCustomSortConfig,
   getAvailableSortConfigs,
@@ -22,9 +24,9 @@ export {
   getSortConfig,
   getSortDisplayName,
   SORT_CONFIGS,
-  SortMethod,
-} from "./SortMethod";
-export type { SortConfig } from "./SortMethod";
+} from "../models/browse/BrowseSorting";
+export type { SortConfig } from "../models/browse/SortModels";
+export type { SortDirection } from "../types/BrowseTypes";
 
 // Browse State
 export {
@@ -63,8 +65,11 @@ export { GridMode } from "../enums/enums";
 // Metadata types for Browse functionality
 export * from "../models/browse/Metadata";
 
-// Favorites types
-export type { FavoriteItem, FavoritesCollection } from "./favorites";
+// Favorites types - now from models
+export type {
+  FavoriteItem,
+  FavoritesCollection,
+} from "../models/browse/FavoritesModels";
 
 // Animation types
 export type {

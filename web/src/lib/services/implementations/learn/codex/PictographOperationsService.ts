@@ -5,7 +5,7 @@
  * rotation, mirroring, and color swapping.
  */
 
-import type { PictographData } from "$domain/core/pictograph/PictographData";
+import type { PictographData } from "../../../../domain/models/core/PictographData";
 import type {
   IPictographOperationsService,
   PictographTransformOperation,

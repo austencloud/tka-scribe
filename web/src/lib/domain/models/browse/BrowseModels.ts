@@ -1,6 +1,6 @@
-import type { SequenceData } from "../core";
-import type { FilterType, FilterValue } from "./FilterType";
-import type { SortMethod } from "./SortMethod";
+import type { FilterType, SortMethod } from "../../enums/enums";
+import type { FilterValue } from "../../types/BrowseTypes";
+import type { SequenceData } from "../core/SequenceData";
 
 export interface SequenceMetadata {
   word: string;

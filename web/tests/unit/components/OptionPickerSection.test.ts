@@ -1,8 +1,8 @@
 import { GridMode } from "$domain";
-import type { PictographData } from "$domain/core/pictograph/PictographData";
 import OptionPickerSection from "$lib/components/tabs/build-tab/construct/option-picker/OptionPickerSection.svelte";
 import { fireEvent, render, screen } from "@testing-library/svelte";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import type { PictographData } from "../../../src/lib/domain/models/core/PictographData";
 
 // Mock Pictograph component
 vi.mock("$lib/components/core/pictograph/Pictograph.svelte", () => ({

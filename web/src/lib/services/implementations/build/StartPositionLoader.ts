@@ -3,8 +3,8 @@
  */
 
 import { GridMode } from "$domain";
-import type { PictographData } from "$domain/core/pictograph/PictographData";
 import type { IStartPositionService } from "$services/contracts/application/IStartPositionService";
+import type { PictographData } from "../../../domain/models/core/PictographData";
 
 /**
  * Handles loading and caching of start position data

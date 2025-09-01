@@ -1,5 +1,11 @@
-import type { SequenceData } from "../../models/core/SequenceData";
-import type { PageOrientation, PaperSize } from "./PageTypes";
+import type {
+  PageOrientation,
+  SequenceCardPaperSize,
+} from "../../types/PageLayoutTypes";
+import type { SequenceData } from "./SequenceData";
+
+// Type alias for backward compatibility
+type PaperSize = SequenceCardPaperSize;
 
 export interface PageDimensions {
   width: number;

@@ -8,12 +8,12 @@
 // GENERATION OPTIONS
 // ============================================================================
 import type {
-  DifficultyLevel,
-  GridMode,
+    DifficultyLevel,
+    GridMode,
 } from "$domain";
 import { GenerationMode } from "$domain";
 import { PropContinuity } from "$lib/domain/enums/enums";
-import type { Letter } from "../../core/Letter";
+import type { Letter } from "../core/Letter";
 
 // ============================================================================
 // DATA CONTRACTS (Domain Models)

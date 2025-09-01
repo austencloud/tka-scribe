@@ -6,7 +6,7 @@
 // ============================================================================
 // CORE TYPES
 // ============================================================================
-import type { ProgressInfo } from "$domain/sequence-card/SequenceCard";
+import type { ProgressInfo } from "../../core/SequenceCard";
 
 // ============================================================================
 // DATA CONTRACTS (Domain Models)
@@ -41,12 +41,11 @@ export interface ExportMetrics {
 }
 
 export interface BatchExportProgress extends ProgressInfo {
-  stage:
-    | "initializing"
-    | "processing"
-    | "rendering"
-    | "exporting"
-    | "finalizing";
+  // ProgressInfo already includes all the properties we need:
+  // current, total, percentage, message, stage, startTime, errorCount, warningCount
+  // We can add additional properties specific to batch export if needed
+  batchId?: string;
+  itemsProcessed?: number;
 }
 
 export interface SequenceCardExportResult {

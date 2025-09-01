@@ -9,11 +9,11 @@
  */
 
 import { HandPath, Orientation, PropType, RotationDirection } from "$domain";
-import type { BeatData } from "$domain/build/workbench/BeatData";
-import type { MotionData } from "$domain/core/pictograph/MotionData";
-import { createMotionData } from "$domain/core/pictograph/MotionData";
 import { Location, MotionColor, MotionType } from "$lib/domain/enums/enums";
 import { injectable } from "inversify";
+import type { BeatData } from "../../../domain/models/build/workbench/BeatData";
+import type { MotionData } from "../../../domain/models/core/MotionData";
+import { createMotionData } from "../../../domain/models/core/MotionData";
 
 export interface OrientationCalculationServiceInterface {
   calculateEndOrientation(motion: MotionData, color: MotionColor): Orientation;

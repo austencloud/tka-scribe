@@ -15,8 +15,6 @@ import type {
 } from "../../contracts/generation-interfaces";
 
 import { GenerationMode, Orientation, RotationDirection } from "$domain";
-import { createMotionData } from "$domain/core/pictograph/MotionData";
-import type { PictographData } from "$domain/core/pictograph/PictographData";
 import {
   DifficultyLevel,
   Location,
@@ -24,6 +22,8 @@ import {
   PropContinuity,
 } from "$lib/domain/enums/enums";
 import { inject, injectable } from "inversify";
+import { createMotionData } from "../../../domain/models/core/MotionData";
+import type { PictographData } from "../../../domain/models/core/PictographData";
 import { TYPES } from "../../inversify/types";
 
 // Legacy constants for rotation directions - using enum values

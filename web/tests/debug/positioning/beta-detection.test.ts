@@ -5,10 +5,10 @@
  */
 
 import { GridPosition } from "$domain";
-import { Letter } from "$domain/core/Letter";
-import type { PictographData } from "$domain/core/pictograph/PictographData";
 import { endsWithBeta, isBetaPosition } from "$lib/utils/betaDetection";
 import { describe, expect, it } from "vitest";
+import { Letter } from "../../../src/lib/domain/models/core/Letter";
+import type { PictographData } from "../../../src/lib/domain/models/core/PictographData";
 
 describe("Beta Detection System", () => {
   describe("isBetaPosition", () => {

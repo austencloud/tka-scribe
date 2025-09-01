@@ -11,17 +11,17 @@
  */
 
 import { GridMode, Orientation, PropType, RotationDirection } from "$domain";
-import type { BeatData } from "$domain/build/workbench/BeatData";
-import { Letter } from "$domain/core/Letter";
-import { createMotionData } from "$domain/core/pictograph/MotionData";
-import type { PictographData } from "$domain/core/pictograph/PictographData";
-import { createPictographData } from "$domain/core/pictograph/PictographData";
 import type {
   ValidationError,
   ValidationResult,
 } from "$domain/sequence-card/SequenceCard";
 import { Location, MotionColor, MotionType } from "$lib/domain/enums/enums";
 import { injectable } from "inversify";
+import type { BeatData } from "../../domain/models/build/workbench/BeatData";
+import { Letter } from "../../domain/models/core/Letter";
+import { createMotionData } from "../../domain/models/core/MotionData";
+import type { PictographData } from "../../domain/models/core/PictographData";
+import { createPictographData } from "../../domain/models/core/PictographData";
 
 /**
  * SINGLE START POSITION SERVICE INTERFACE

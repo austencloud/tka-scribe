@@ -6,11 +6,11 @@
  */
 
 import { GridMode } from "$domain";
-import { Letter } from "$domain/core/Letter";
-import type { MotionData } from "$domain/core/pictograph/MotionData";
-import type { PictographData } from "$domain/core/pictograph/PictographData";
 import { MotionType } from "$lib/domain/enums/enums";
 import { injectable } from "inversify";
+import { Letter } from "../../../domain/models/core/Letter";
+import type { MotionData } from "../../../domain/models/core/MotionData";
+import type { PictographData } from "../../../domain/models/core/PictographData";
 import type {
   ILetterDeriver,
   LetterDerivationResult,

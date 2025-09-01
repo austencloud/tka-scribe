@@ -6,10 +6,10 @@
  */
 
 import { GridPosition, RotationDirection } from "$domain";
-import type { MotionData } from "$domain/core/pictograph/MotionData";
-import type { PictographData } from "$domain/core/pictograph/PictographData";
 import { Location, MotionColor, MotionType } from "$lib/domain/enums/enums";
 import { injectable } from "inversify";
+import type { MotionData } from "../../../domain/models/core/MotionData";
+import type { PictographData } from "../../../domain/models/core/PictographData";
 import type { IPictographValidatorService } from "../../contracts/generation-interfaces";
 
 @injectable()

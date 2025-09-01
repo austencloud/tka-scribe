@@ -4,12 +4,12 @@
  * Pure domain logic for layout calculations and device type determination
  */
 
-import type {
-  ContainerAspect,
-  DeviceConfig,
-  DeviceType,
-  LayoutCategory,
-} from "../../../models/build/OptionPickerLayoutModels";
+import {
+    ContainerAspect,
+    DeviceType,
+    LayoutCategory,
+} from "../../../enums/enums";
+import type { DeviceConfig } from "../../../models/build/OptionPickerLayoutModels";
 import { ASPECT_RATIO, BREAKPOINTS, DEVICE_CONFIG } from "./config";
 
 // ============================================================================
@@ -23,11 +23,11 @@ export function getContainerAspect(
   width: number,
   height: number
 ): ContainerAspect {
-  if (!width || !height) return "square";
+  if (!width || !height) return ContainerAspect.SQUARE;
   const ratio = width / height;
-  if (ratio < ASPECT_RATIO.tall) return "tall";
-  if (ratio > ASPECT_RATIO.square) return "wide";
-  return "square";
+  if (ratio < ASPECT_RATIO.tall) return ContainerAspect.TALL;
+  if (ratio > ASPECT_RATIO.square) return ContainerAspect.WIDE;
+  return ContainerAspect.SQUARE;
 }
 
 // ============================================================================
@@ -42,12 +42,12 @@ export function getDeviceType(
   _isMobileUserAgent: boolean
 ): DeviceType {
   if (width < BREAKPOINTS.mobile) {
-    return width < BREAKPOINTS.smallMobile ? "smallMobile" : "mobile";
+    return width < BREAKPOINTS.smallMobile ? DeviceType.SMALL_MOBILE : DeviceType.MOBILE;
   }
-  if (width < BREAKPOINTS.tablet) return "mobile";
-  if (width < BREAKPOINTS.laptop) return "tablet";
-  if (width < BREAKPOINTS.desktop) return "desktop";
-  return "largeDesktop";
+  if (width < BREAKPOINTS.tablet) return DeviceType.MOBILE;
+  if (width < BREAKPOINTS.laptop) return DeviceType.TABLET;
+  if (width < BREAKPOINTS.desktop) return DeviceType.DESKTOP;
+  return DeviceType.LARGE_DESKTOP;
 }
 
 /**
@@ -69,11 +69,11 @@ export function getSimplifiedDeviceCategory(
  * Gets the layout category based on item count
  */
 export function getLayoutCategory(count: number): LayoutCategory {
-  if (count === 1) return "singleItem";
-  if (count === 2) return "twoItems";
-  if (count <= 8) return "fewItems";
-  if (count <= 16) return "mediumItems";
-  return "manyItems";
+  if (count === 1) return LayoutCategory.SINGLE_ITEM;
+  if (count === 2) return LayoutCategory.TWO_ITEMS;
+  if (count <= 8) return LayoutCategory.FEW_ITEMS;
+  if (count <= 16) return LayoutCategory.MEDIUM_ITEMS;
+  return LayoutCategory.MANY_ITEMS;
 }
 
 // ============================================================================
