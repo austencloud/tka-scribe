@@ -4,7 +4,7 @@
 
 import type { IStartPositionService } from "$contracts";
 import { resolve, TYPES } from "$lib/services/inversify/container";
-import { renderPictograph } from "../../pictograph-rendering-utils";
+import { renderPictograph } from "../../core/pictograph/rendering/pictograph-rendering-utils";
 
 /**
  * Resolves and manages service dependencies for start position functionality

@@ -19,11 +19,11 @@ export class PictographGenerator implements IPictographGenerator {
 
   constructor(
     @inject(TYPES.IPositionPatternService)
-    patternService: import("../../../contracts/generation-interfaces").IPositionPatternService,
+    patternService: import("../../../contracts/build/generate/generate-interfaces").IPositionPatternService,
     @inject(TYPES.IDirectionCalculator)
-    positionCalculator: import("../../../contracts/generation-interfaces").IDirectionCalculator,
+    positionCalculator: import("../../../contracts/build/generate/generate-interfaces").IDirectionCalculator,
     @inject(TYPES.IPictographValidatorService)
-    validator: import("../../../contracts/generation-interfaces").IPictographValidatorService
+    validator: import("../../../contracts/build/generate/generate-interfaces").IPictographValidatorService
   ) {
     this.letterGeneratorFactory = new LetterGeneratorFactory(
       patternService,

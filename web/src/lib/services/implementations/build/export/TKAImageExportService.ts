@@ -253,6 +253,7 @@ export class TKAImageExportService implements ITKAImageExportService {
       // Output format
       format: "PNG",
       quality: 1.0, // Maximum quality
+      scale: 1.0, // Default scale
 
       // Additional features
       addDifficultyLevel: false,

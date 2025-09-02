@@ -8,15 +8,15 @@
 import type {
   ILetterGenerator,
   ILetterGeneratorFactory,
-} from "../../../../contracts/generation-interfaces";
+} from "../../../../contracts/build/generate/generate-interfaces";
 import type { BaseLetterGenerator } from "./BaseLetterGenerator";
 import { Type1Generator } from "./Type1/Type1Generator";
 
 type LetterGeneratorConstructor = new (
   letter: string,
-  patternService: import("../../../../contracts/generation-interfaces").IPositionPatternService,
-  positionCalculator: import("../../../../contracts/generation-interfaces").IDirectionCalculator,
-  validator: import("../../../../contracts/generation-interfaces").IPictographValidatorService
+  patternService: import("../../../../contracts/build/generate/generate-interfaces").IPositionPatternService,
+  positionCalculator: import("../../../../contracts/build/generate/generate-interfaces").IDirectionCalculator,
+  validator: import("../../../../contracts/build/generate/generate-interfaces").IPictographValidatorService
 ) => BaseLetterGenerator;
 
 export class LetterGeneratorFactory implements ILetterGeneratorFactory {
@@ -26,9 +26,9 @@ export class LetterGeneratorFactory implements ILetterGeneratorFactory {
   >();
 
   constructor(
-    private readonly patternService: import("../../../../contracts/generation-interfaces").IPositionPatternService,
-    private readonly positionCalculator: import("../../../../contracts/generation-interfaces").IDirectionCalculator,
-    private readonly validator: import("../../../../contracts/generation-interfaces").IPictographValidatorService
+    private readonly patternService: import("../../../../contracts/build/generate/generate-interfaces").IPositionPatternService,
+    private readonly positionCalculator: import("../../../../contracts/build/generate/generate-interfaces").IDirectionCalculator,
+    private readonly validator: import("../../../../contracts/build/generate/generate-interfaces").IPictographValidatorService
   ) {
     this.registerGenerators();
   }

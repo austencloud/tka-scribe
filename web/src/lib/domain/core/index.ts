@@ -11,7 +11,7 @@ export * from "../models/core/csv-handling/CsvModels";
 export * from "../models/core/device-recognition/DeviceTypes";
 export * from "../models/core/sequence/SequenceData";
 export * from "./AppSettings";
-export * from "./pictograph";
+// export * from "./pictograph"; // Directory doesn't exist
 export * from "./ui";
 
 // Note: Types from other domain areas are exported directly from domain/index.ts

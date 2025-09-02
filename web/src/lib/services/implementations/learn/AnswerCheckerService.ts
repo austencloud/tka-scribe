@@ -10,7 +10,7 @@ import {
   type AnswerOption,
   LessonType,
   type QuestionData,
-} from "$lib/types/learn";
+} from "$lib/domain/types/learn";
 
 export interface AnswerResult {
   isCorrect: boolean;

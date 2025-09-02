@@ -175,6 +175,7 @@ export class CompositionValidator {
       notes: "Test composition",
       format: "PNG",
       quality: 1.0,
+      scale: 1.0,
       addDifficultyLevel: true,
     };
   }

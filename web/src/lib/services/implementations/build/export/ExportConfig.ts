@@ -50,6 +50,7 @@ export class ExportConfig implements IExportConfig {
       // Output format
       format: "PNG",
       quality: 1.0, // Maximum quality
+      scale: 1.0, // Default scale
     };
   }
 

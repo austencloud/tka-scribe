@@ -9,10 +9,10 @@ import type { ImageExportOptions, SequenceData } from "$domain";
 import { inject, injectable } from "inversify";
 
 import type {
-  ExportValidationResult,
   IExportMemoryCalculator,
   IExportOptionsValidator,
 } from "$contracts";
+import type { ValidationResult as ExportValidationResult } from "$domain";
 import { TYPES } from "../../../inversify/types";
 
 @injectable()
@@ -34,7 +34,7 @@ export class ExportOptionsValidator implements IExportOptionsValidator {
     // Validate sequence
     const sequenceValidation = this.validateSequence(sequence);
     errors.push(
-      ...sequenceValidation.errors.map((e) =>
+      ...sequenceValidation.errors.map((e: any) =>
         typeof e === "string" ? e : e.message
       )
     );
@@ -42,7 +42,7 @@ export class ExportOptionsValidator implements IExportOptionsValidator {
     // Validate options
     const optionsValidation = this.validateOptions(options);
     errors.push(
-      ...optionsValidation.errors.map((e) =>
+      ...optionsValidation.errors.map((e: any) =>
         typeof e === "string" ? e : e.message
       )
     );

@@ -1,12 +1,12 @@
 // Modal State using Svelte 5 Runes
 // Proper runes-based state management for modal functionality
 
-import type { ResourceModalData } from "$lib/components/resource-guide/types";
 import {
-  openModal,
   closeModal,
   initializeModalEventHandlers,
-} from "$lib/components/resource-guide/modal-helpers";
+  openModal,
+} from "$components/about/resource-guide/modal-helpers";
+import type { ResourceModalData } from "$components/about/resource-guide/types";
 
 // ============================================================================
 // MODAL STATE FACTORY

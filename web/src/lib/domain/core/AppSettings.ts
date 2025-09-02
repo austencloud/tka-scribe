@@ -5,7 +5,7 @@
  * This is a domain type that represents the user's preferences and app state.
  */
 
-import type { GridMode, BackgroundType } from "$domain";
+import type { BackgroundType, GridMode } from "$domain";
 
 export interface AppSettings {
   theme: "light" | "dark";
@@ -43,7 +43,7 @@ export interface AppSettings {
     addInfo?: boolean;
     addUserInfo?: boolean;
   };
-  // Sequence Card Settings
+  // Word Card Settings
   sequenceCard?: {
     defaultColumnCount?: number;
     defaultLayoutMode?: "grid" | "list" | "printable";

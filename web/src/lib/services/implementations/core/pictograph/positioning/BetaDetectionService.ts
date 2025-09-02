@@ -6,7 +6,8 @@
  */
 
 import type { IBetaDetectionService, IGridPositionDeriver } from "$contracts";
-import type { PictographData, Position } from "$domain";
+import type { PictographData } from "$domain";
+import { GridPosition } from "$domain";
 import { TYPES } from "$inversify/types";
 import { inject, injectable } from "inversify";
 
@@ -17,12 +18,11 @@ export class BetaDetectionService implements IBetaDetectionService {
   ) {}
 
   /**
-   * Check if a position is a beta position
-   * Beta positions are: 1, 3, 5, 7, 9, 11, 13, 15
+   * Check if a grid position is a beta position
+   * Beta positions are the BETA enum values
    */
-  isBetaPosition(position: Position): boolean {
-    const betaPositions = [1, 3, 5, 7, 9, 11, 13, 15];
-    return betaPositions.includes(position);
+  isBetaPosition(position: GridPosition): boolean {
+    return position.toString().startsWith("beta");
   }
 
   /**

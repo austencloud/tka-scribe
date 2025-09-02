@@ -164,12 +164,14 @@ export class FileExportService implements IFileExportService {
   /**
    * Get MIME type for format
    */
-  getMimeType(format: "PNG" | "JPEG"): string {
+  getMimeType(format: "PNG" | "JPEG" | "WebP"): string {
     switch (format) {
       case "PNG":
         return "image/png";
       case "JPEG":
         return "image/jpeg";
+      case "WebP":
+        return "image/webp";
       default:
         throw new Error(`Unknown format: ${format}`);
     }
@@ -257,7 +259,7 @@ export class FileExportService implements IFileExportService {
    */
   canvasToDataURL(
     canvas: HTMLCanvasElement,
-    format: "PNG" | "JPEG" = "PNG",
+    format: "PNG" | "JPEG" | "WebP" = "PNG",
     quality: number = 1.0
   ): string {
     if (!canvas) {

@@ -100,7 +100,7 @@ Use the configured aliases for clean imports:
 ```typescript
 // ✅ Good - Use aliases
 import { MyService } from "$lib/services/MyService";
-import { MyComponent } from "$lib/components/MyComponent.svelte";
+import { MyComponent } from "$components/MyComponent.svelte";
 
 // ❌ Avoid - Relative paths
 import { MyService } from "../../../src/lib/services/MyService";

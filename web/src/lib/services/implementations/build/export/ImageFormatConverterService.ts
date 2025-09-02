@@ -7,7 +7,7 @@
 
 import pkg from "file-saver";
 import { injectable } from "inversify";
-import type { IImageFormatConverterService } from "../../../contracts/image-format-interfaces";
+import type { IImageFormatConverterService } from "../../../contracts/build/export/image-format-interfaces";
 // Define missing types locally for now
 interface ImageFormatOptions {
   format: "png" | "jpeg" | "webp";

@@ -17,7 +17,7 @@ import { TYPES } from "$lib/services/inversify/types";
 import { inject, injectable } from "inversify";
 
 import type { ICodexService, ILetterQueryHandler } from "$contracts";
-import type { IPictographOperationsService } from "../../../contracts/codex-interfaces";
+import type { IPictographOperationsService } from "../../../contracts/learn/codex-interfaces";
 
 // Re-export the interface for convenience
 export type { ICodexService } from "$contracts";

@@ -5,14 +5,12 @@
  * Clean separation of performance tracking from other concerns.
  */
 
-import type {
-  IPerformanceMetricsService,
-  PerformanceMetrics,
-} from "./state-service-interfaces";
+import type { UIPerformanceMetrics } from "$domain";
+import type { IPerformanceMetricsService } from "./state-service-interfaces";
 
 class PerformanceMetricsService implements IPerformanceMetricsService {
   // Performance metrics state
-  #performanceMetrics = $state<PerformanceMetrics>({
+  #performanceMetrics = $state<UIPerformanceMetrics>({
     initializationTime: 0,
     lastRenderTime: 0,
     memoryUsage: 0,

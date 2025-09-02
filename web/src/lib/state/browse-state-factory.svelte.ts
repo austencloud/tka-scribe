@@ -14,7 +14,6 @@ import type {
   ISectionService,
   ISequenceIndexService,
   IThumbnailService,
-  NavigationSection,
 } from "$contracts";
 import type {
   BrowseDeleteConfirmationData,
@@ -49,7 +48,7 @@ export interface BrowseState {
   readonly hasError: boolean;
   readonly displayedSequences: SequenceData[];
   readonly navigationMode: NavigationMode;
-  readonly navigationSections: NavigationSection[];
+  readonly navigationSections: any[]; // NavigationSection type not available
   readonly selectedSequence: SequenceData | null;
 
   // Additional properties needed by BrowseTab
@@ -236,9 +235,7 @@ export function createBrowseState(
 
       // Prevent infinite loops by checking if this item is already active
       const currentSections = navigationState.navigationSections;
-      const section = currentSections.find(
-        (s: NavigationSection) => s.id === sectionId
-      );
+      const section = currentSections.find((s: any) => s.id === sectionId);
       if (!section) return;
 
       const item = section.items.find((i: any) => i.id === itemId);

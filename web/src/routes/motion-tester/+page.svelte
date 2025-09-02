@@ -1,12 +1,12 @@
 <!-- Animator Route - MISSING FILE FIX -->
 <script lang="ts">
-  import MainApplication from "$components/layout/MainApplication.svelte";
+  import MainApplication from "$lib/components/core/MainApplication.svelte";
   import { switchTab } from "$state";
   import { onMount } from "svelte";
 
   onMount(async () => {
-    // Navigate to motion-tester tab
-    switchTab("motion-tester");
+    // Navigate to animator tab
+    switchTab("animator");
   });
 </script>
 
@@ -22,7 +22,7 @@
     content="Test and debug motion parameters for flow arts animations with TKA's motion testing interface."
   />
   <meta property="og:type" content="website" />
-  <link rel="canonical" href="https://thekineticalphabet.com/motion-tester" />
+  <link rel="canonical" href="https://thekineticalphabet.com/animator" />
 </svelte:head>
 
 <MainApplication />

@@ -10,12 +10,12 @@ and leaves state management to the parent component.
   import type { MotionColor, MotionData, PictographData } from "$domain";
   import { GridMode } from "$domain";
   import { resolve, TYPES } from "$lib/services/inversify/container";
+  import GridSvg from "./GridSvg.svelte";
+  import PropSvg from "./PropSvg.svelte";
+  import TKAGlyph from "./TKAGlyph.svelte";
   // ✅ REMOVED: Beta calculation imports - now handled in PropPlacementService
 
-  import Arrow from "./components/ArrowSvg.svelte";
-  import Grid from "./components/GridSvg.svelte";
-  import PropSVG from "./components/PropSvg.svelte";
-  import TKAGlyph from "./components/TKAGlyph.svelte";
+  import Arrow from "./ArrowSvg.svelte";
 
   interface Props {
     /** Pictograph data to render */
@@ -100,7 +100,7 @@ and leaves state management to the parent component.
 
   {#if hasValidData}
     <!-- Grid (always rendered first) -->
-    <Grid
+    <GridSvg
       {gridMode}
       onLoaded={() => onComponentLoaded("grid")}
       onError={(error) => onComponentError("grid", error)}
@@ -109,7 +109,7 @@ and leaves state management to the parent component.
     <!-- Props (rendered first so arrows appear on top) -->
     {#each motionsToRender as { color, motionData } (color)}
       {#if pictographData}
-        <PropSVG {motionData} {pictographData} />
+        <PropSvg {motionData} {pictographData} />
       {/if}
     {/each}
 

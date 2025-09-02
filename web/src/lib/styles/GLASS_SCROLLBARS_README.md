@@ -1,1 +1,368 @@
-# Glass Scrollbar System Documentation\n\n## 🎨 Beautiful Glassmorphism Scrollbars for TKA\n\nA comprehensive scrollbar styling system that provides consistent, elegant glassmorphism scrollbars across all components in the TKA application.\n\n## ✨ Features\n\n- **5 Beautiful Variants**: Primary, Secondary, Minimal, Hover, and Gradient\n- **Perfect Desktop Integration**: Matches your existing design system\n- **Cross-Browser Support**: Works in Chrome, Safari, Firefox, and Edge\n- **Responsive Design**: Adapts to different screen sizes automatically\n- **Accessibility Features**: Supports reduced motion and high contrast modes\n- **Easy Integration**: Multiple ways to implement\n\n## 🚀 Quick Start\n\n### Method 1: Using GlassScrollContainer Component (Recommended)\n\n`svelte\n<script>\n\timport GlassScrollContainer from '$lib/components/ui/GlassScrollContainer.svelte';\n</script>\n\n<GlassScrollContainer \n\tvariant=\"primary\" \n\theight=\"400px\" \n\tscrollDirection=\"vertical\"\n>\n\t<YourContent />\n</GlassScrollContainer>\n`\n\n### Method 2: Using CSS Classes Directly\n\n`svelte\n<div class=\"my-content glass-scrollbar-primary\" style=\"height: 400px; overflow-y: auto;\">\n\t<YourContent />\n</div>\n`\n\n### Method 3: Using Data Attributes (Auto-applied)\n\n`svelte\n<div \n\tdata-glass-scrollbar=\"primary\" \n\tdata-scroll-direction=\"vertical\"\n\tstyle=\"height: 400px; overflow-y: auto;\"\n>\n\t<YourContent />\n</div>\n`\n\n### Method 4: Programmatic Application\n\n`typescript\nimport { applyGlassScrollbar } from '$lib/utils/glassScrollbars';\n\nconst element = document.querySelector('.my-scrollable-content');\napplyGlassScrollbar(element, { \n\tvariant: 'primary',\n\tdirection: 'vertical' \n});\n`\n\n## 🎯 Scrollbar Variants\n\n### Primary Scrollbar (`glass-scrollbar-primary`)\n**Best for:** Main content areas, codex, primary scrollable regions\n\n- Full glassmorphism effect with backdrop blur\n- Prominent but elegant appearance\n- 12px width with hover effects\n- Perfect for desktop-style interfaces\n\n### Secondary Scrollbar (`glass-scrollbar-secondary`) \n**Best for:** Sidebars, panels, secondary content areas\n\n- Subtle glassmorphism effect\n- Less prominent than primary\n- 10px width\n- Great for option pickers and supporting content\n\n### Minimal Scrollbar (`glass-scrollbar-minimal`)\n**Best for:** Modals, dropdowns, compact spaces\n\n- Ultra-thin 6px width\n- Clean, minimal appearance\n- Perfect for tight layouts\n\n### Hover Scrollbar (`glass-scrollbar-hover`)\n**Best for:** Background content, overlays\n\n- Appears only on hover\n- Keeps interface clean when not needed\n- Smooth fade-in/out transitions\n\n### Gradient Scrollbar (`glass-scrollbar-gradient`)\n**Best for:** Featured content, highlights, special sections\n\n- Enhanced gradient effects\n- Extra visual flair\n- Perfect for premium content areas\n\n## 📱 Responsive Behavior\n\nScrollbars automatically adapt to screen size:\n\n- **Desktop (>768px)**: Full 12px width\n- **Tablet (≤768px)**: 10px width \n- **Mobile (≤480px)**: 8px width\n- **Minimal variant**: Scales from 6px to 3px\n\n## 🔧 Integration Guide\n\n### For New Components\n\n`svelte\n<!-- NewComponent.svelte -->\n<script>\n\timport GlassScrollContainer from '$lib/components/ui/GlassScrollContainer.svelte';\n</script>\n\n<div class=\"my-component\">\n\t<div class=\"header\">My Component Header</div>\n\t\n\t<GlassScrollContainer \n\t\tvariant=\"primary\" \n\t\theight=\"100%\" \n\t\tscrollDirection=\"vertical\"\n\t>\n\t\t<div class=\"content\">\n\t\t\t<!-- Your scrollable content here -->\n\t\t</div>\n\t</GlassScrollContainer>\n</div>\n`\n\n### For Existing Components\n\n#### Option 1: Add CSS Class\n`svelte\n<!-- Existing component -->\n<div class=\"existing-scrollable-area glass-scrollbar-secondary\">\n\t<!-- content -->\n</div>\n`\n\n#### Option 2: Use Utility Function\n`svelte\n<script>\n\timport { onMount } from 'svelte';\n\timport { applyGlassScrollbar } from '$lib/utils/glassScrollbars';\n\t\n\tlet scrollElement;\n\t\n\tonMount(() => {\n\t\tapplyGlassScrollbar(scrollElement, { \n\t\t\tvariant: 'secondary' \n\t\t});\n\t});\n</script>\n\n<div bind:this={scrollElement} class=\"existing-content\">\n\t<!-- content -->\n</div>\n`\n\n## 🎨 Customization\n\n### Custom CSS Variables\n\nYou can override the default styling:\n\n`css\n:root {\n\t/* Customize scrollbar colors */\n\t--glass-scrollbar-thumb-bg: rgba(100, 200, 255, 0.15);\n\t--glass-scrollbar-thumb-bg-hover: rgba(100, 200, 255, 0.25);\n\t\n\t/* Customize dimensions */\n\t--glass-scrollbar-width: 14px;\n\t\n\t/* Customize effects */\n\t--glass-scrollbar-transition: all 0.4s ease;\n}\n`\n\n### Component-Specific Styling\n\n`svelte\n<style>\n\t.my-component :global(.glass-scrollbar-primary) {\n\t\t/* Override scrollbar styling for this component */\n\t\t--glass-scrollbar-thumb-bg: rgba(255, 100, 100, 0.15);\n\t}\n</style>\n`\n\n## 🛠️ Utility Functions\n\n### Core Functions\n\n`typescript\n// Apply glass scrollbar to element\napplyGlassScrollbar(element, config)\n\n// Remove glass scrollbar from element  \nremoveGlassScrollbar(element)\n\n// Get recommended variant based on context\ngetRecommendedVariant('codex') // returns 'primary'\n\n// Create throttled scroll listener\nconst listener = createScrollListener(callback, 16)\n\n// Smooth scroll to element\nsmoothScrollToElement(container, target, options)\n\n// Auto-apply to elements with data attributes\nautoApplyGlassScrollbars()\n\n// Initialize the entire system\ninitializeGlassScrollbars()\n`\n\n### Scroll Position Utilities\n\n`typescript\nimport { scrollUtils } from '$lib/utils/glassScrollbars';\n\n// Check scroll position\nscrollUtils.isAtTop(element)\nscrollUtils.isAtBottom(element)\nscrollUtils.getScrollPercentage(element)\n\n// Control scroll position\nscrollUtils.scrollToPercentage(element, 75)\n`\n\n## 🔄 Migration Guide\n\n### Updating Existing Components\n\n1. **Codex Component**: ✅ Already updated with `GlassScrollContainer`\n2. **Option Picker**: ✅ Already updated with `glass-scrollbar-secondary` class\n3. **Other Components**: Add one of the methods above\n\n### Replace Old Scrollbar Styling\n\n**Before:**\n`css\n.my-component::-webkit-scrollbar {\n\twidth: 8px;\n}\n.my-component::-webkit-scrollbar-thumb {\n\tbackground: rgba(0, 0, 0, 0.2);\n}\n`\n\n**After:**\n`css\n.my-component {\n\t/* Remove old scrollbar styling */\n}\n`\n\n`svelte\n<div class=\"my-component glass-scrollbar-primary\">\n\t<!-- content -->\n</div>\n`\n\n## 🎯 Component Recommendations\n\n| Component Type | Recommended Variant | Why |\n|---------------|-------------------|-----|\n| **Codex** | `primary` | Main reference content |\n| **Browse Tab** | `primary` | Primary navigation area |\n| **Option Picker** | `secondary` | Supporting content |\n| **Sidebars** | `secondary` | Secondary panels |\n| **Modals** | `minimal` | Compact space |\n| **Dropdowns** | `minimal` | Small containers |\n| **Background Lists** | `hover` | Non-intrusive |\n| **Featured Content** | `gradient` | Special emphasis |\n\n## 🚀 Performance Notes\n\n- **Backdrop filters** use GPU acceleration\n- **Smooth scrolling** automatically disabled on mobile for performance\n- **Transition animations** respect `prefers-reduced-motion`\n- **High DPI displays** get optimized opacity values\n\n## 🔍 Troubleshooting\n\n### Scrollbar Not Appearing\n1. Ensure element has `overflow: auto` or `overflow-y: auto`\n2. Check that content actually overflows the container\n3. Verify the glass scrollbar CSS is imported in `app.css`\n\n### Styling Conflicts\n1. Remove existing `::-webkit-scrollbar` rules\n2. Use `:global()` when targeting from Svelte components\n3. Check CSS specificity - glass scrollbar styles should have higher specificity\n\n### Performance Issues\n1. Use `scroll-behavior: auto` on mobile (automatically handled)\n2. Reduce `backdrop-filter` blur amount if needed\n3. Use `minimal` variant for better performance\n\n## 📦 Files\n\n- **`/lib/styles/glass-scrollbars.css`** - Core CSS styles\n- **`/lib/components/ui/GlassScrollContainer.svelte`** - React component wrapper\n- **`/lib/utils/glassScrollbars.ts`** - Utility functions\n- **`/app.css`** - Import location\n\n## 🎨 Examples in Action\n\n### Codex Component\n`svelte\n<GlassScrollContainer variant=\"primary\" height=\"100%\">\n\t<CodexPictographGrid />\n</GlassScrollContainer>\n`\n\n### Option Picker\n`html\n<div class=\"option-picker-scroll glass-scrollbar-secondary\">\n\t<!-- options -->\n</div>\n`\n\n### Browse Tab (Recommended)\n`svelte\n<div class=\"browse-content\" data-glass-scrollbar=\"primary\">\n\t<!-- browse content -->\n</div>\n`\n\nThat's it! Your scrollbars now have beautiful glassmorphism effects that perfectly match your desktop design system. 🎉\n
+# 🪟 Glass Scrollbar System Documentation
+
+> **Beautiful Glassmorphism Scrollbars for TKA**  
+> A comprehensive scrollbar styling system that provides consistent, elegant glassmorphism scrollbars across all components in the TKA application.
+
+---
+
+## ✨ **Features**
+
+- 🎨 **5 Beautiful Variants** — Primary, Secondary, Minimal, Hover, and Gradient
+- 🖥️ **Perfect Desktop Integration** — Matches your existing design system
+- 🌐 **Cross-Browser Support** — Works in Chrome, Safari, Firefox, and Edge
+- 📱 **Responsive Design** — Adapts to different screen sizes automatically
+- ♿ **Accessibility Features** — Supports reduced motion and high contrast modes
+- ⚡ **Easy Integration** — Multiple ways to implement
+
+---
+
+## 🚀 **Quick Start**
+
+### **Method 1:** Using GlassScrollContainer Component _(Recommended)_
+
+```svelte
+<script>
+    import GlassScrollContainer from '$lib/components/ui/GlassScrollContainer.svelte';
+</script>
+
+<GlassScrollContainer 
+    variant="primary" 
+    height="400px" 
+    scrollDirection="vertical"
+>
+    <YourContent />
+</GlassScrollContainer>
+```
+
+### **Method 2:** Using CSS Classes Directly
+
+```svelte
+<div class="my-content glass-scrollbar-primary" style="height: 400px; overflow-y: auto;">
+    <YourContent />
+</div>
+```
+
+### **Method 3:** Using Data Attributes _(Auto-applied)_
+
+```svelte
+<div 
+    data-glass-scrollbar="primary" 
+    data-scroll-direction="vertical"
+    style="height: 400px; overflow-y: auto;"
+>
+    <YourContent />
+</div>
+```
+
+### **Method 4:** Programmatic Application
+
+```typescript
+import { applyGlassScrollbar } from '$lib/utils/glassScrollbars';
+
+const element = document.querySelector('.my-scrollable-content');
+applyGlassScrollbar(element, { 
+    variant: 'primary',
+    direction: 'vertical' 
+});
+```
+
+---
+
+## 🎯 **Scrollbar Variants**
+
+### 🔵 **Primary** (`glass-scrollbar-primary`)
+> **Best for:** Main content areas, codex, primary scrollable regions
+
+- Full glassmorphism effect with backdrop blur
+- Prominent but elegant appearance
+- 12px width with hover effects
+- Perfect for desktop-style interfaces
+
+### 🟡 **Secondary** (`glass-scrollbar-secondary`) 
+> **Best for:** Sidebars, panels, secondary content areas
+
+- Subtle glassmorphism effect
+- Less prominent than primary
+- 10px width
+- Great for option pickers and supporting content
+
+### ⚪ **Minimal** (`glass-scrollbar-minimal`)
+> **Best for:** Modals, dropdowns, compact spaces
+
+- Ultra-thin 6px width
+- Clean, minimal appearance
+- Perfect for tight layouts
+
+### 👻 **Hover** (`glass-scrollbar-hover`)
+> **Best for:** Background content, overlays
+
+- Appears only on hover
+- Keeps interface clean when not needed
+- Smooth fade-in/out transitions
+
+### 🌈 **Gradient** (`glass-scrollbar-gradient`)
+> **Best for:** Featured content, highlights, special sections
+
+- Enhanced gradient effects
+- Extra visual flair
+- Perfect for premium content areas
+
+---
+
+## 📱 **Responsive Behavior**
+
+| Screen Size | Width | Behavior |
+|-------------|-------|----------|
+| 🖥️ **Desktop** (>768px) | 12px | Full width |
+| 📱 **Tablet** (≤768px) | 10px | Reduced width |
+| 📱 **Mobile** (≤480px) | 8px | Minimal width |
+| ⚪ **Minimal variant** | 6px → 3px | Auto-scaling |
+
+---
+
+## 🔧 **Integration Guide**
+
+### **For New Components**
+
+```svelte
+<!-- NewComponent.svelte -->
+<script>
+    import GlassScrollContainer from '$lib/components/ui/GlassScrollContainer.svelte';
+</script>
+
+<div class="my-component">
+    <div class="header">My Component Header</div>
+    
+    <GlassScrollContainer 
+        variant="primary" 
+        height="100%" 
+        scrollDirection="vertical"
+    >
+        <div class="content">
+            <!-- Your scrollable content here -->
+        </div>
+    </GlassScrollContainer>
+</div>
+```
+
+### **For Existing Components**
+
+#### **Option 1:** Add CSS Class
+```svelte
+<!-- Existing component -->
+<div class="existing-scrollable-area glass-scrollbar-secondary">
+    <!-- content -->
+</div>
+```
+
+#### **Option 2:** Use Utility Function
+```svelte
+<script>
+    import { onMount } from 'svelte';
+    import { applyGlassScrollbar } from '$lib/utils/glassScrollbars';
+    
+    let scrollElement;
+    
+    onMount(() => {
+        applyGlassScrollbar(scrollElement, { 
+            variant: 'secondary' 
+        });
+    });
+</script>
+
+<div bind:this={scrollElement} class="existing-content">
+    <!-- content -->
+</div>
+```
+
+---
+
+## 🎨 **Customization**
+
+### **Custom CSS Variables**
+
+```css
+:root {
+    /* Customize scrollbar colors */
+    --glass-scrollbar-thumb-bg: rgba(100, 200, 255, 0.15);
+    --glass-scrollbar-thumb-bg-hover: rgba(100, 200, 255, 0.25);
+    
+    /* Customize dimensions */
+    --glass-scrollbar-width: 14px;
+    
+    /* Customize effects */
+    --glass-scrollbar-transition: all 0.4s ease;
+}
+```
+
+### **Component-Specific Styling**
+
+```svelte
+<style>
+    .my-component :global(.glass-scrollbar-primary) {
+        /* Override scrollbar styling for this component */
+        --glass-scrollbar-thumb-bg: rgba(255, 100, 100, 0.15);
+    }
+</style>
+```
+
+---
+
+## 🛠️ **Utility Functions**
+
+### **Core Functions**
+
+```typescript
+// Apply glass scrollbar to element
+applyGlassScrollbar(element, config)
+
+// Remove glass scrollbar from element  
+removeGlassScrollbar(element)
+
+// Get recommended variant based on context
+getRecommendedVariant('codex') // returns 'primary'
+
+// Create throttled scroll listener
+const listener = createScrollListener(callback, 16)
+
+// Smooth scroll to element
+smoothScrollToElement(container, target, options)
+
+// Auto-apply to elements with data attributes
+autoApplyGlassScrollbars()
+
+// Initialize the entire system
+initializeGlassScrollbars()
+```
+
+### **Scroll Position Utilities**
+
+```typescript
+import { scrollUtils } from '$lib/utils/glassScrollbars';
+
+// Check scroll position
+scrollUtils.isAtTop(element)
+scrollUtils.isAtBottom(element)
+scrollUtils.getScrollPercentage(element)
+
+// Control scroll position
+scrollUtils.scrollToPercentage(element, 75)
+```
+
+---
+
+## 🔄 **Migration Guide**
+
+### **Updating Existing Components**
+
+- ✅ **Codex Component** — Already updated with `GlassScrollContainer`
+- ✅ **Option Picker** — Already updated with `glass-scrollbar-secondary` class
+- ⏳ **Other Components** — Add one of the methods above
+
+### **Replace Old Scrollbar Styling**
+
+#### **Before:**
+```css
+.my-component::-webkit-scrollbar {
+    width: 8px;
+}
+.my-component::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.2);
+}
+```
+
+#### **After:**
+```css
+.my-component {
+    /* Remove old scrollbar styling */
+}
+```
+
+```svelte
+<div class="my-component glass-scrollbar-primary">
+    <!-- content -->
+</div>
+```
+
+---
+
+## 🎯 **Component Recommendations**
+
+| Component Type | Recommended Variant | Reason |
+|---------------|-------------------|--------|
+| 📖 **Codex** | `primary` | Main reference content |
+| 🗂️ **Browse Tab** | `primary` | Primary navigation area |
+| ⚙️ **Option Picker** | `secondary` | Supporting content |
+| 📋 **Sidebars** | `secondary` | Secondary panels |
+| 📱 **Modals** | `minimal` | Compact space |
+| 📝 **Dropdowns** | `minimal` | Small containers |
+| 👤 **Background Lists** | `hover` | Non-intrusive |
+| ⭐ **Featured Content** | `gradient` | Special emphasis |
+
+---
+
+## 🚀 **Performance Notes**
+
+- 🖥️ **Backdrop filters** use GPU acceleration
+- 📱 **Smooth scrolling** automatically disabled on mobile for performance
+- ♿ **Transition animations** respect `prefers-reduced-motion`
+- 🔍 **High DPI displays** get optimized opacity values
+
+---
+
+## 🔍 **Troubleshooting**
+
+### **Scrollbar Not Appearing**
+1. Ensure element has `overflow: auto` or `overflow-y: auto`
+2. Check that content actually overflows the container
+3. Verify the glass scrollbar CSS is imported in `app.css`
+
+### **Styling Conflicts**
+1. Remove existing `::-webkit-scrollbar` rules
+2. Use `:global()` when targeting from Svelte components
+3. Check CSS specificity - glass scrollbar styles should have higher specificity
+
+### **Performance Issues**
+1. Use `scroll-behavior: auto` on mobile (automatically handled)
+2. Reduce `backdrop-filter` blur amount if needed
+3. Use `minimal` variant for better performance
+
+---
+
+## 📦 **Files**
+
+```
+/lib/styles/glass-scrollbars.css        # Core CSS styles
+/lib/components/ui/GlassScrollContainer.svelte    # Component wrapper
+/lib/utils/glassScrollbars.ts           # Utility functions
+/app.css                                # Import location
+```
+
+---
+
+## 🎨 **Examples in Action**
+
+### **Codex Component**
+```svelte
+<GlassScrollContainer variant="primary" height="100%">
+    <CodexPictographGrid />
+</GlassScrollContainer>
+```
+
+### **Option Picker**
+```html
+<div class="option-picker-scroll glass-scrollbar-secondary">
+    <!-- options -->
+</div>
+```
+
+### **Browse Tab** _(Recommended)_
+```svelte
+<div class="browse-content" data-glass-scrollbar="primary">
+    <!-- browse content -->
+</div>
+```
+
+---
+
+> **🎉 That's it!** Your scrollbars now have beautiful glassmorphism effects that perfectly match your desktop design system.

@@ -6,11 +6,11 @@
  */
 
 import type { PictographData, PictographTransformOperation } from "$domain";
-import type { IPictographOperationsService } from "../../../contracts/codex-interfaces";
+import type { IPictographOperationsService } from "../../../contracts/learn/codex-interfaces";
 
 // Re-export types for convenience
 export type { PictographTransformOperation } from "$domain";
-export type { IPictographOperationsService } from "../../../contracts/codex-interfaces";
+export type { IPictographOperationsService } from "../../../contracts/learn/codex-interfaces";
 
 export class PictographOperationsService
   implements IPictographOperationsService

@@ -48,11 +48,16 @@ export * from "./memoizationUtils";
 // Pure validation utilities (if any remain pure)
 export * from "./validation";
 
-// Math utilities (pure functions from animator)
-export * from "../animator/utils/math";
+// Math utilities (pure functions from animator services)
+export { lerpAngle } from "../services/implementations/animator/AngleCalculationService";
+export { calculateCoordinatesFromAngle } from "../services/implementations/animator/CoordinateUpdateService";
+export {
+  calculateMotionEndpoints,
+  type MotionEndpoints,
+} from "../services/implementations/animator/EndpointCalculationService";
 
 // Motion utilities (pure functions)
-export * from "../components/tabs/motion-tester-tab/utils/motion-helpers";
+export * from "../components/animator/motion-helpers";
 
 // NOTE: The following have been moved to services:
 // - betaDetection -> BetaDetectionService

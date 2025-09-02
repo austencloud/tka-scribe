@@ -9,7 +9,3 @@
 export { default as Pictograph } from "./Pictograph.svelte";
 export { default as PictographSvg } from "./PictographSvg.svelte";
 
-// Re-export from sub-directories
-export * from "./components";
-export * from "./variants";
-export * from "./hooks";

@@ -17,7 +17,7 @@ import {
   QUIZ_DEFAULTS,
   QUIZ_MODE_NAMES,
   QuizMode,
-} from "$lib/types/learn";
+} from "$lib/domain/types/learn";
 
 export class LessonConfigService {
   /**

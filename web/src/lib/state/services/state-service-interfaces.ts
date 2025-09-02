@@ -5,13 +5,16 @@
  * Consolidated into a single file for simplicity since they're small.
  */
 
-import type {
+import type { AppSettings, TabId, Theme, UIPerformanceMetrics } from "$domain";
+import type { IBrowseStatePersister } from "$implementations";
+
+// Re-export domain types for convenience
+export type {
   ApplicationPerformanceMetrics,
   AppSettings,
   TabId,
   Theme,
 } from "$domain";
-import type { IBrowseStatePersister } from "$implementations";
 
 // ============================================================================
 // SERVICE INTERFACES
@@ -109,7 +112,7 @@ export interface IInitializationService {
  */
 export interface IPerformanceMetricsService {
   // State getters
-  readonly performanceMetrics: ApplicationPerformanceMetrics;
+  readonly performanceMetrics: UIPerformanceMetrics;
 
   // Actions
   updateInitializationTime(time: number): void;

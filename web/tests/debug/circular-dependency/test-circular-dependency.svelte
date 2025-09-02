@@ -1,18 +1,16 @@
 <!--
   Isolated Test for Circular Dependency Issue
   
-  This test replicates the exact reactive patterns from the sequence-card-state
+  This test replicates the exact reactive patterns from the word-card-state
   and page-layout-state to identify the source of the infinite loop.
   
   We'll build this up incrementally to find the exact trigger.
 -->
 <script lang="ts">
-  import { untrack } from "svelte";
-
   // === STEP 1: Basic State (No Reactivity) ===
   console.log("🧪 Test: Starting circular dependency test");
 
-  // Simulate sequence card state
+  // Simulate word card state
   let layoutMode = $state<"grid" | "list" | "printable">("grid");
   let currentPage = $state(1);
   let itemsPerPage = $state(12);

@@ -69,9 +69,9 @@ export class Type1Generator extends BaseType1Generator {
 
   constructor(
     letter: string,
-    patternService: import("../../../../../contracts/generation-interfaces").IPositionPatternService,
-    positionCalculator: import("../../../../../contracts/generation-interfaces").IDirectionCalculator,
-    validator: import("../../../../../contracts/generation-interfaces").IPictographValidatorService
+    patternService: import("../../../../../contracts/build/generate/generate-interfaces").IPositionPatternService,
+    positionCalculator: import("../../../../../contracts/build/generate/generate-interfaces").IDirectionCalculator,
+    validator: import("../../../../../contracts/build/generate/generate-interfaces").IPictographValidatorService
   ) {
     // Convert string to Letter enum for internal use
     const letterEnum = letter as Letter;

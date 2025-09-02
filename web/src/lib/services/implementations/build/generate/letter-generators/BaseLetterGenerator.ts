@@ -15,15 +15,15 @@ import {
   Timing,
   createPictographData,
 } from "$domain";
-import type { ILetterGenerator } from "../../../../contracts/generation-interfaces";
+import type { ILetterGenerator } from "../../../../contracts/build/generate/generate-interfaces";
 
 export abstract class BaseLetterGenerator implements ILetterGenerator {
   private static readonly movementCache = new Map<string, PictographData>();
 
   constructor(
-    protected readonly patternService: import("../../../../contracts/generation-interfaces").IPositionPatternService,
-    protected readonly positionCalculator: import("../../../../contracts/generation-interfaces").IDirectionCalculator,
-    protected readonly validator: import("../../../../contracts/generation-interfaces").IPictographValidatorService
+    protected readonly patternService: import("../../../../contracts/build/generate/generate-interfaces").IPositionPatternService,
+    protected readonly positionCalculator: import("../../../../contracts/build/generate/generate-interfaces").IDirectionCalculator,
+    protected readonly validator: import("../../../../contracts/build/generate/generate-interfaces").IPictographValidatorService
   ) {}
 
   abstract readonly letter: Letter;

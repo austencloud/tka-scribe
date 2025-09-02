@@ -18,6 +18,12 @@ export interface Point {
 }
 
 /**
+ * Position type alias for Point (layout coordinates)
+ * @deprecated Use Point directly instead
+ */
+export type Position = Point;
+
+/**
  * Arrow position with coordinates and rotation angle
  */
 export interface ArrowPosition extends Point {

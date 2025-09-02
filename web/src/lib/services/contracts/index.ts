@@ -9,57 +9,57 @@
 // Organized by domain structure that mirrors implementations
 
 // Animation Domain
-export * from "./animation/IAnimationControlService";
-export * from "./animation/IAnimationStateService";
-export * from "./animation/IBeatCalculationService";
-export * from "./animation/IPropInterpolationService";
-export * from "./animation/ISequenceAnimationEngine";
-export * from "./animation/ISequenceAnimationOrchestrator";
+export * from "./animator/IAnimationControlService";
+export * from "./animator/IAnimationStateService";
+export * from "./animator/IBeatCalculationService";
+export * from "./animator/IPropInterpolationService";
+export * from "./animator/ISequenceAnimationEngine";
+export * from "./animator/ISequenceAnimationOrchestrator";
 
 // Application Domain
-export * from "./application/IApplicationInitializer";
-export * from "./application/ICodexService";
-export * from "./application/IConstructTabCoordinator";
-export * from "./application/ICSVLoader";
-export * from "./application/ICSVParser";
-export * from "./application/IDeviceDetector";
-export * from "./application/IEnumMapper";
-export * from "./application/IOptionDataService";
-export * from "./application/ISettingsService";
-export * from "./application/IStartPositionSelectionService";
-export * from "./application/IStartPositionService";
+export * from "./build/construct/IConstructTabCoordinator";
+export * from "./build/construct/IOptionDataService";
+export * from "./build/construct/IStartPositionSelectionService";
+export * from "./build/construct/IStartPositionService";
+export * from "./core/application/IApplicationInitializer";
+export * from "./core/data/ICSVLoader";
+export * from "./core/data/ICSVParser";
+export * from "./core/data/IEnumMapper";
+export * from "./core/device/IDeviceDetector";
+export * from "./core/settings/ISettingsService";
+export * from "./learn/ICodexService";
 
 // Background Domain
-export * from "./background/IBackgroundFactory";
-export * from "./background/IBackgroundService";
-export * from "./background/IBackgroundSystem";
+export * from "./core/background/IBackgroundFactory";
+export * from "./core/background/IBackgroundService";
+export * from "./core/background/IBackgroundSystem";
 
 // Build Domain - TODO: Move to individual interface files
-export * from "./build-interfaces";
+export * from "./build/build-interfaces";
 
 // Browse Domain
-export * from "./browse-interfaces";
+export * from "./browse/browse-interfaces";
 export * from "./browse/IBrowseSectionService";
 export * from "./browse/IMetadataExtractionService";
 
 // Beat Frame Domain
-export * from "./beat-frame-interfaces";
+export * from "./build/workbench/beat-frame-interfaces";
 
 // Beat Grid Domain
-export * from "./beat-grid-interfaces";
+export * from "./build/export/beat-grid-interfaces";
 
 // Beat Fallback Domain
-export * from "./beat-fallback-interfaces";
+export * from "./build/export/beat-fallback-interfaces";
 
 // Data Domain - Selective exports to avoid conflicts
 export type {
   ILetterQueryHandler,
   IMotionQueryHandler,
-} from "./data-interfaces";
+} from "./core/data/data-interfaces";
 
 // Export Domain
-export * from "./export-interfaces";
-export * from "./IBatchExportService";
+export * from "./build/export/export-interfaces";
+export * from "./build/export/IBatchExportService";
 
 // Generation Domain - Selective exports to avoid conflicts
 export type {
@@ -71,12 +71,12 @@ export type {
   IPictographValidatorService,
   IPositionPatternService,
   ISequenceGenerationService,
-} from "./generation-interfaces";
+} from "./build/generate/generate-interfaces";
 
 // NOTE: Domain types should be imported directly from $domain, not re-exported from contracts
 
 // Image Export Domain
-export * from "./image-export-interfaces";
+export * from "./build/export/image-export-interfaces";
 
 // Pictograph Domain - Selective exports to avoid conflicts
 export type {
@@ -99,13 +99,13 @@ export * from "./learn/ILessonRepository";
 export * from "./learn/ILetterMappingRepository";
 
 // Sequence Domain - Individual interface (correct pattern)
-export * from "./sequence/ISequenceStateService";
+export * from "./build/workbench/ISequenceStateService";
 
 // Temporary exports until migration to individual interfaces is complete
-// TEMPORARILY REMOVED: export * from "./motion-tester-interfaces"; (conflicts with IAnimationControlService)
-export type { IMotionParameterService } from "./motion-tester-interfaces";
-export * from "./option-picker-interfaces";
-export * from "./panel-interfaces";
+// TEMPORARILY REMOVED: export * from "./animator-interfaces"; (conflicts with IAnimationControlService)
+export type { IMotionParameterService } from "./animator/animator-interfaces";
+export * from "./build/construct/option-picker-interfaces";
+export * from "./browse/browse-panel-interfaces";
 // TEMPORARILY REMOVED: export * from "./pictograph-interfaces"; (conflicts with IArrowPathResolutionService, IArrowPositioningService)
 // Positioning Domain - Explicit exports to avoid conflicts
 export * from "./positioning-interfaces";
@@ -124,8 +124,6 @@ export {
   // Service interfaces (excluding conflicting IDeleteService)
   type ISequenceService,
   type IWorkbenchBeatOperationsService,
-  // Domain types re-exported for service contracts
-  type SequenceCardGridConfig,
 } from "./sequence-interfaces";
 
 // NOTE: Domain types should be imported directly from $domain, not re-exported from contracts
@@ -136,9 +134,8 @@ export * from "./text-rendering-interfaces";
 export * from "./workbench-interfaces";
 
 // Movement Domain - Individual interfaces (correct pattern)
-export * from "./movement/ICSVPictographParserService";
+export * from "./core/data/ICsvPictographParserService";
 
 // Utility Services
-export * from "./IBetaDetectionService";
-export * from "./IErrorHandlingService";
-export * from "./IMotionHelperService";
+export * from "./core/application/IErrorHandlingService";
+export * from "./core/pictograph/IBetaDetectionService";

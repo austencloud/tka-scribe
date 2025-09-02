@@ -15,7 +15,7 @@ export type TabId =
   | "write"
   | "learn"
   | "about"
-  | "motion-tester";
+  | "animator";
 
 /**
  * Available build tab sub-sections
@@ -28,10 +28,10 @@ export type ActiveBuildSubTab = "construct" | "generate" | "edit" | "export";
 export type Theme = "light" | "dark";
 
 /**
- * Performance metrics for application state tracking
- * Note: Different from background PerformanceMetrics which track fps/rendering
+ * Performance metrics for UI state tracking
+ * Note: Different from ApplicationPerformanceMetrics which track app-level metrics
  */
-export interface ApplicationPerformanceMetrics {
+export interface UIPerformanceMetrics {
   initializationTime: number;
   lastRenderTime: number;
   memoryUsage: number;

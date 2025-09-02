@@ -2,7 +2,7 @@
  * Page Layout State - Svelte 5 Runes
  *
  * Manages printable page layout state including page creation, layout configuration,
- * and page navigation for the sequence card tab.
+ * and page navigation for the word card tab.
  */
 
 import type {

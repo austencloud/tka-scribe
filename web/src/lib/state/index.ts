@@ -33,8 +33,8 @@ export * from "./browse-tab-state-manager.svelte";
 // ============================================================================
 // SEQUENCE CARD STATE
 // ============================================================================
-export * from "./sequence-card/display-state.svelte";
-export * from "./sequence-card/sequence-card-state-factory.svelte";
+export * from "./word-card/display-state.svelte";
+export * from "./word-card/word-card-state-factory.svelte";
 
 // ============================================================================
 // WORKBENCH & BUILD STATES
@@ -68,7 +68,7 @@ export * from "./image-export-state.svelte";
 // ============================================================================
 // MOTION TESTER STATE
 // ============================================================================
-export * from "./motion-tester/motion-tester-state.svelte";
+export * from "./animator/animator-state.svelte";
 
 // ============================================================================
 // PICTOGRAPH GENERATION STATE

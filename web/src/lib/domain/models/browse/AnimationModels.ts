@@ -1,4 +1,4 @@
-import type { PropState } from "../../../components/tabs/browse-tab/animator/types/PropState";
+import type { PropState } from "../../../components/animator/types/PropState";
 import type { BeatData } from "../build/workbench/BeatModels";
 
 export interface InterpolationResult {

@@ -188,7 +188,6 @@ export const TYPES = {
 
   // === UTILITY SERVICES ===
   IBetaDetectionService: Symbol.for("IBetaDetectionService"),
-  IMotionHelperService: Symbol.for("IMotionHelperService"),
   IErrorHandlingService: Symbol.for("IErrorHandlingService"),
 } as const;
 

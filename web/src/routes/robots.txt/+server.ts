@@ -1,5 +1,5 @@
-import type { RequestHandler } from "./$types";
 import { PRIMARY_DOMAIN } from "$lib/config/domains";
+import type { RequestHandler } from "./$types";
 
 export const GET: RequestHandler = async () => {
   const robots = `User-agent: *
@@ -18,12 +18,12 @@ Allow: /features
 Allow: /getting-started
 
 # Secondary pages
-Allow: /sequence-card
+Allow: /word-card
 Allow: /write
 
 # Development tools - lower priority but still allowed
 Allow: /metadata-tester
-Allow: /motion-tester
+Allow: /animator
 
 # Block irrelevant paths
 Disallow: /api/

@@ -48,7 +48,7 @@ const pages = [
     description: "Getting Started with TKA - Tutorial",
   },
   {
-    url: "sequence-card",
+    url: "word-card",
     priority: "0.6",
     changefreq: "monthly",
     description: "Sequence Cards - Movement Notation",
@@ -62,7 +62,7 @@ const pages = [
 
   // Development Tools (Lower Priority - but still indexed)
   {
-    url: "motion-tester",
+    url: "animator",
     priority: "0.3",
     changefreq: "monthly",
     description: "Animator - Development Tool",

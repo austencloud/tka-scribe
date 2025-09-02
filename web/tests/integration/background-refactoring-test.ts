@@ -1,11 +1,11 @@
 // background-refactoring-test.ts
 // Quick test to verify our monolith decomposition worked
 
-import { BackgroundType } from "$domain";
 import {
   backgroundsConfig,
   getBackgroundConfig,
-} from "$lib/components/settings/tabs/background/background-config";
+} from "$components/core/settings/tabs/background/background-config";
+import { BackgroundType } from "$domain";
 import { describe, expect, it } from "vitest";
 
 describe("Background Refactoring Tests", () => {
@@ -15,7 +15,9 @@ describe("Background Refactoring Tests", () => {
   });
 
   it("should include all expected background types", () => {
-    const types = backgroundsConfig.map((bg) => bg.type);
+    const types = backgroundsConfig.map(
+      (bg: { type: BackgroundType }) => bg.type
+    );
     expect(types).toContain(BackgroundType.AURORA);
     expect(types).toContain(BackgroundType.SNOWFALL);
     expect(types).toContain(BackgroundType.NIGHT_SKY);
@@ -30,14 +32,23 @@ describe("Background Refactoring Tests", () => {
   });
 
   it("should have proper metadata for each background", () => {
-    backgroundsConfig.forEach((bg) => {
-      expect(bg.type).toBeDefined();
-      expect(bg.name).toBeDefined();
-      expect(bg.description).toBeDefined();
-      expect(bg.icon).toBeDefined();
-      expect(bg.gradient).toBeDefined();
-      expect(bg.animation).toBeDefined();
-    });
+    backgroundsConfig.forEach(
+      (bg: {
+        type: BackgroundType;
+        name: string;
+        description: string;
+        icon: string;
+        gradient: string;
+        animation: string;
+      }) => {
+        expect(bg.type).toBeDefined();
+        expect(bg.name).toBeDefined();
+        expect(bg.description).toBeDefined();
+        expect(bg.icon).toBeDefined();
+        expect(bg.gradient).toBeDefined();
+        expect(bg.animation).toBeDefined();
+      }
+    );
   });
 });
 

@@ -56,7 +56,5 @@ window.tabTestHelpers = {
 console.log("🔧 Tab testing helpers loaded! Use:");
 console.log("- tabTestHelpers.enableDeveloperMode() - Enable dev mode");
 console.log("- tabTestHelpers.checkTabState() - Check current state");
-console.log(
-  '- tabTestHelpers.setTabState("motion-tester") - Set tab to restore'
-);
+console.log('- tabTestHelpers.setTabState("animator") - Set tab to restore');
 console.log("- tabTestHelpers.clearAllState() - Clear all state");

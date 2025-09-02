@@ -7,7 +7,7 @@
 
 // Application Domain
 export * from "./core/application/ApplicationInitializer";
-export * from "./core/application/DeviceDetector";
+export * from "./core/device/DeviceDetector";
 export * from "./core/ui/background/BackgroundFactory";
 export * from "./core/ui/background/BackgroundService";
 
@@ -18,11 +18,11 @@ export * from "./browse/FavoritesService";
 export * from "./browse/MetadataExtractionService";
 
 // Build Domain
+export * from "./build/BuildTabEventService";
+export * from "./build/BuildTabTransitionService";
 export * from "./build/construct/ConstructSubTabCoordinationService";
 export * from "./build/construct/StartPositionLoader";
 export * from "./build/construct/StartPositionServiceResolver";
-export * from "./build/core/BuildTabEventService";
-export * from "./build/core/BuildTabTransitionService";
 
 // Data Domain
 export * from "./core/data/CsvLoader";
@@ -45,12 +45,12 @@ export * from "./browse/ThumbnailService";
 export * from "./build/export/ImageFormatConverterService";
 export * from "./build/export/SequenceExportService";
 export * from "./build/export/SVGToCanvasConverterService";
-export * from "./sequence-card/PageImageExportService";
+export * from "./word-card/PageImageExportService";
 
 // Generation Domain
 export * from "./build/generate/PictographGenerator";
 export * from "./build/generate/SequenceGenerationService";
-export * from "./sequence-card/PageFactoryService";
+export * from "./word-card/PageFactoryService";
 
 // Image Export Domain
 export * from "./build/export/BeatRenderingService";
@@ -100,9 +100,9 @@ export * from "./browse/BrowseSectionService";
 export * from "./browse/NavigationService";
 
 // Option Picker Domain
-export * from "./OptionPickerDataService";
-export * from "./OptionPickerLayoutService";
-export * from "./OptionPickerServiceAdapter";
+export * from "./build/construct/OptionPickerDataService";
+export * from "./build/construct/OptionPickerLayoutService";
+export * from "./build/construct/OptionPickerServiceAdapter";
 
 // Persistence Domain
 export * from "./browse/FilterPersistenceService";
@@ -145,30 +145,29 @@ export * from "./core/pictograph/rendering/SvgConfiguration";
 export * from "./core/pictograph/rendering/SvgUtilityService";
 
 // Sequence Domain
-export * from "./sequence/DeleteService";
-export * from "./sequence/PrintablePageLayoutService";
-export * from "./sequence/SequenceDeletionService";
-export * from "./sequence/SequenceImportService";
-export * from "./sequence/SequenceIndexService";
-export * from "./sequence/SequenceService";
-export * from "./sequence/SequenceStateService";
+export * from "./build/workbench/DeleteService";
+export * from "./build/workbench/PrintablePageLayoutService";
+export * from "./build/workbench/SequenceDeletionService";
+export * from "./build/workbench/SequenceImportService";
+export * from "./build/workbench/SequenceIndexService";
+export * from "./build/workbench/SequenceService";
+export * from "./build/workbench/SequenceStateService";
 
 // Start Position Domain
-export * from "./StartPositionSelectionService";
-export * from "./StartPositionService";
+export * from "./build/construct/StartPositionSelectionService";
+export * from "./build/construct/StartPositionService";
 
 // UI Domain
-export * from "./ui/VisibilityStateManager";
+export * from "./core/ui/VisibilityStateManager";
 
 // Workbench Domain
-export * from "./sequence/WorkbenchBeatOperationsService";
-export * from "./workbench/WorkbenchCoordinationService";
-export * from "./workbench/WorkbenchService";
+export * from "./build/workbench/WorkbenchBeatOperationsService";
+export * from "./build/workbench/WorkbenchCoordinationService";
+export * from "./build/workbench/WorkbenchService";
 
 // Build Tab Service (standalone)
-export * from "./BuildTabService";
+export * from "./build/BuildTabService";
 
 // Utility Services
+export * from "./core/application/ErrorHandlingService";
 export * from "./core/pictograph/positioning/BetaDetectionService";
-export * from "./core/pictograph/positioning/MotionHelperService";
-export * from "./ErrorHandlingService";

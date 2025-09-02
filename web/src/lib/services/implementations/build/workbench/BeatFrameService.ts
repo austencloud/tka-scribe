@@ -11,7 +11,7 @@ import type {
   BeatFrameConfig,
   ContainerDimensions,
   LayoutInfo,
-  Position,
+  Point,
 } from "$domain";
 import { GridMode } from "$domain";
 import { injectable } from "inversify";
@@ -60,7 +60,7 @@ export class BeatFrameService implements IBeatFrameService {
     index: number,
     beatCount?: number,
     config?: BeatFrameConfig
-  ): Position {
+  ): Point {
     const effectiveConfig = config ?? this.getDefaultConfig();
 
     // Use the optimal layout for this beat count
@@ -77,7 +77,7 @@ export class BeatFrameService implements IBeatFrameService {
   calculateStartPosition(
     _beatCount: number,
     config?: BeatFrameConfig
-  ): Position {
+  ): Point {
     const effectiveConfig = config ?? this.getDefaultConfig();
 
     if (!effectiveConfig.hasStartTile) {

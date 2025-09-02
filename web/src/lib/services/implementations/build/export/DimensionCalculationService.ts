@@ -341,6 +341,7 @@ export class DimensionCalculationService
       notes: "Test",
       format: "PNG",
       quality: 1.0,
+      scale: 1.0,
       addDifficultyLevel: false,
     };
 

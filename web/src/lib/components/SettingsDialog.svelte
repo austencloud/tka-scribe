@@ -1,17 +1,13 @@
 <!-- SettingsDialog.svelte - Simplified main settings dialog -->
 <script lang="ts">
   import { BackgroundType } from "$domain";
-  import {
-    getSettings,
-    hideSettingsDialog,
-    updateSettings,
-  } from "$state";
-  import SettingsSidebar from "./settings/SettingsSidebar.svelte";
-  import BackgroundTab from "./settings/tabs/BackgroundTab.svelte";
-  import CodexExporterTab from "./settings/tabs/CodexExporterTab.svelte";
-  import GeneralTab from "./settings/tabs/GeneralTab.svelte";
-  import PropTypeTab from "./settings/tabs/PropTypeTab.svelte";
-  import VisibilityTab from "./settings/tabs/VisibilityTab.svelte";
+  import { getSettings, hideSettingsDialog, updateSettings } from "$state";
+  import SettingsSidebar from "./core/settings/SettingsSidebar.svelte";
+  import BackgroundTab from "./core/settings/tabs/BackgroundTab.svelte";
+  import CodexExporterTab from "./core/settings/tabs/CodexExporterTab.svelte";
+  import GeneralTab from "./core/settings/tabs/GeneralTab.svelte";
+  import PropTypeTab from "./core/settings/tabs/PropTypeTab.svelte";
+  import VisibilityTab from "./core/settings/tabs/VisibilityTab.svelte";
 
   // Current settings state
   let settings = $state(getSettings());

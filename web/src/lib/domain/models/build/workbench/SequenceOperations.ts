@@ -4,7 +4,7 @@
  * Interfaces for sequence management, creation, updates, and domain logic.
  * This includes both service contracts and related data structures.
  *
- * Also includes page layout services for printable sequence card creation.
+ * Also includes page layout services for printable word card creation.
  */
 // ============================================================================
 // IMPORTS

@@ -11,7 +11,7 @@ export type {
   ExportResult,
   ValidationError,
   ValidationResult,
-} from "./models/sequence-card/SequenceCard";
+} from "./models/word-cards/WordCard";
 
 // Export factory functions (non-conflicting)
 export { createBeatData } from "./models/build/workbench/BeatData";
@@ -20,7 +20,7 @@ export { createBeatData } from "./models/build/workbench/BeatData";
 export * from "./core/AppSettings";
 export * from "./core/ui";
 export * from "./enums/Letter";
-export * from "./models/core/application/ApplicationTypes";
+// export * from "./models/core/application/ApplicationTypes"; // Already exported via core/index.ts
 export * from "./models/core/csv-handling/CsvModels";
 export * from "./models/core/device-recognition/DeviceTypes";
 
@@ -50,7 +50,7 @@ export type {
   ResponsiveLayoutConfig,
 } from "./models/build/construct/OptionPicker";
 
-// Note: LayoutCalculationResult now exported from sequence-card-models (the correct version)
+// Note: LayoutCalculationResult now exported from word-card-models (the correct version)
 
 export type {
   BeatClickResult,
@@ -80,11 +80,11 @@ export type {
   CompositionOptions,
   ExportError,
   ExportProgress,
-  TKAImageExportOptions as ImageExportOptions,
+  SequenceExportOptions as ImageExportOptions,
   LayoutData,
   TextRenderOptions,
   UserInfo,
-} from "./models/build/export/ImageExport";
+} from "./models/build/export/SequenceExportOptions";
 
 // Export image format types
 export type {
@@ -107,7 +107,7 @@ export type {
   OptionPickerLayoutDimensions,
 } from "./models/build/construct/OptionPickerLayout";
 
-// Export page layout types (sequence-card-specific)
+// Export page layout types (word-card-specific)
 export type {
   DPIConfiguration,
   GridConfig,
@@ -116,7 +116,7 @@ export type {
   PageDimensions,
   LayoutCalculationResult as PageLayoutCalculationResult,
   Rectangle,
-} from "./models/sequence-card/PageLayout";
+} from "./models/word-cards/PageLayout";
 
 // Export the correct GridCalculationOptions and related types from sequence-card-models
 export type {
@@ -127,10 +127,10 @@ export type {
   PageCreationOptions,
   PageLayoutConfig,
   SequenceCardGridConfig,
-} from "./models/sequence-card/sequence-card-models";
+} from "./models/word-cards/word-card-models";
 
-// Export sequence-card types except conflicting ones
-// Export sequence card types directly (no intermediate exports)
+// Export word-card types except conflicting ones
+// Export word card types directly (no intermediate exports)
 export type {
   CacheConfig,
   CacheEntry,
@@ -140,7 +140,7 @@ export type {
   ProgressStage,
   ResponsiveSettings,
   SequenceCardExportSettings,
-} from "./models/sequence-card/SequenceCard";
+} from "./models/word-cards/WordCard";
 
 export type {
   OptimizationGoal,
@@ -148,17 +148,17 @@ export type {
   SequenceCardLayoutMode,
 } from "./types/PageLayoutTypes";
 
-export * from "./models/sequence-card/PageLayoutConstants";
-export * from "./models/sequence-card/sequence-card-models";
-export * from "./models/sequence-card/SequenceCardExport";
+export * from "./models/word-cards/PageLayoutConstants";
+export * from "./models/word-cards/word-card-models";
+export * from "./models/word-cards/WordCardExport";
 
-// Export sequence card export types
+// Export word card export types
 export type {
   BatchExportOptions,
   BatchExportResult,
-  ImageExportOptions,
+  // ImageExportOptions, // Already exported above as TKAImageExportOptions alias
   PDFExportOptions,
-} from "./models/sequence-card/export-config";
+} from "./models/word-cards/export-config";
 
 // Export browse types directly (no intermediate exports)
 export {
@@ -235,10 +235,7 @@ export type {
 // PictographData and createPictographData are already exported above
 
 // Export positioning types (what actually exists)
-export type {
-  Point,
-  Position,
-} from "./models/core/pictograph/PositioningModels";
+export type { Point } from "./models/core/pictograph/PositioningModels";
 
 // AppSettings doesn't exist yet
 
@@ -306,7 +303,7 @@ export interface MemoryEstimate {
   safe: boolean;
 }
 
-// Export sequence card types
+// Export word card types
 export type { SequenceCardPaperSize } from "./types/PageLayoutTypes";
 
 // Export HTML2Canvas types

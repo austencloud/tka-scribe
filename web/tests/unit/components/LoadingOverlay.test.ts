@@ -4,7 +4,7 @@
  * Tests for the LoadingOverlay component extracted from ConstructTab
  */
 
-import LoadingOverlay from "$lib/components/tabs/build-tab/shared/LoadingOverlay.svelte";
+import LoadingOverlay from "$lib/components/build/shared/LoadingOverlay.svelte";
 import "@testing-library/jest-dom";
 import { render, screen } from "@testing-library/svelte";
 import { beforeEach, describe, expect, it } from "vitest";

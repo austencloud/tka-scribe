@@ -79,7 +79,6 @@ import {
 import {
   BetaDetectionService,
   ErrorHandlingService,
-  MotionHelperService,
 } from "$implementations";
 
 // Import export services
@@ -195,11 +194,11 @@ import {
   CSVPictographParserService,
   GridPositionDeriver,
 } from "$implementations";
-import { SequenceAnimationEngine } from "../../animator/core/engine/sequence-animation-engine";
-import { AnimationStateService } from "../../animator/core/services/AnimationStateService";
-import { BeatCalculationService } from "../../animator/core/services/BeatCalculationService";
-import { PropInterpolationService } from "../../animator/core/services/PropInterpolationService";
-import { SequenceAnimationOrchestrator } from "../../animator/core/services/SequenceAnimationOrchestrator";
+import { AnimationStateService } from "../implementations/animator/AnimationStateService";
+import { BeatCalculationService } from "../implementations/animator/BeatCalculationService";
+import { PropInterpolationService } from "../implementations/animator/PropInterpolationService";
+import { SequenceAnimationEngine } from "../implementations/animator/sequence-animation-engine";
+import { SequenceAnimationOrchestrator } from "../implementations/animator/SequenceAnimationOrchestrator";
 // ValidationService is defined as interface in PictographTransformationService but no implementation found
 
 // Import additional services with confirmed implementations
@@ -453,7 +452,6 @@ try {
 
   // === UTILITY SERVICES ===
   container.bind(TYPES.IBetaDetectionService).to(BetaDetectionService);
-  container.bind(TYPES.IMotionHelperService).to(MotionHelperService);
   container.bind(TYPES.IErrorHandlingService).to(ErrorHandlingService);
 } catch (error) {
   console.error("❌ TKA Container: Failed to bind services:", error);
