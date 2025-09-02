@@ -221,7 +221,7 @@ export type {
 export type {
   AnimationConfig,
   AnimationState,
-} from "./models/browse/AnimationModels";
+} from "./models/animator/AnimationModels";
 
 export type {
   BeatOperationResult,

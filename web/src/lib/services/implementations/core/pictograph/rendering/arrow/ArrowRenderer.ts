@@ -5,7 +5,6 @@
  *
  */
 
-import type { ISvgConfiguration } from "$contracts/pictograph-interfaces";
 import type { ArrowPlacementData, MotionData } from "$domain";
 import {
   createMotionData,
@@ -15,6 +14,7 @@ import {
   Orientation,
   RotationDirection,
 } from "$domain";
+import type { ISvgConfiguration } from "$lib/services/contracts/core/pictograph/pictograph-interfaces";
 import { inject, injectable } from "inversify";
 
 // Import the microservices

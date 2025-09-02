@@ -6,9 +6,9 @@
  */
 
 import type { IMotionQueryHandler } from "$contracts";
-import type { IGridPositionDeriver } from "$contracts/positioning-interfaces";
 import type { PictographData } from "$domain";
 import type { IOptionPickerDataService } from "$lib/services/contracts/build/construct/option-picker-interfaces";
+import type { IGridPositionDeriver } from "$lib/services/contracts/core/pictograph/positioning/positioning-interfaces";
 import { inject, injectable } from "inversify";
 import { TYPES } from "../../../inversify/types";
 

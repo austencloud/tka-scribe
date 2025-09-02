@@ -6,7 +6,6 @@
  */
 
 import type { CSVRow, ICSVPictographParserService } from "$contracts";
-import type { IGridPositionDeriver } from "$contracts/positioning-interfaces";
 import type { PictographData } from "$domain";
 import {
   GridPosition,
@@ -15,6 +14,7 @@ import {
   createMotionData,
   createPictographData,
 } from "$domain";
+import type { IGridPositionDeriver } from "$lib/services/contracts/core/pictograph/positioning/positioning-interfaces";
 import { inject, injectable } from "inversify";
 import { TYPES } from "../../../inversify/types";
 import type { IEnumMapper } from "../../core/data/EnumMapper";

@@ -11,12 +11,12 @@ import type {
   IOverlayRenderer,
   ISvgUtilityService,
 } from "$contracts";
+import type { MotionData, PictographData } from "$domain";
+import { GridMode, MotionColor } from "$domain";
 import type {
   IArrowPositioningOrchestrator,
   IGridModeDeriver,
-} from "$contracts/positioning-interfaces";
-import type { MotionData, PictographData } from "$domain";
-import { GridMode, MotionColor } from "$domain";
+} from "$lib/services/contracts/core/pictograph/positioning/positioning-interfaces";
 import { resolve, TYPES } from "../../../../inversify/container";
 
 /**

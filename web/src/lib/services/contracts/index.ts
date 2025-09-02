@@ -89,7 +89,7 @@ export type {
   ISvgLoader,
   ISvgParser,
   ISvgUtilityService,
-} from "./pictograph-interfaces";
+} from "./core/pictograph/pictograph-interfaces";
 
 // TODO: Replace these consolidated interface files with individual domain-organized interfaces
 // Following the one-to-one interface-to-implementation pattern
@@ -104,11 +104,11 @@ export * from "./build/workbench/ISequenceStateService";
 // Temporary exports until migration to individual interfaces is complete
 // TEMPORARILY REMOVED: export * from "./animator-interfaces"; (conflicts with IAnimationControlService)
 export type { IMotionParameterService } from "./animator/animator-interfaces";
-export * from "./build/construct/option-picker-interfaces";
 export * from "./browse/browse-panel-interfaces";
+export * from "./build/construct/option-picker-interfaces";
 // TEMPORARILY REMOVED: export * from "./pictograph-interfaces"; (conflicts with IArrowPathResolutionService, IArrowPositioningService)
 // Positioning Domain - Explicit exports to avoid conflicts
-export * from "./positioning-interfaces";
+export * from "./core/pictograph/positioning/positioning-interfaces";
 export * from "./responsive-layout-interfaces";
 
 // Export sequence-interfaces but exclude conflicting types that are now in browse domain
@@ -138,4 +138,4 @@ export * from "./core/data/ICsvPictographParserService";
 
 // Utility Services
 export * from "./core/application/IErrorHandlingService";
-export * from "./core/pictograph/IBetaDetectionService";
+export * from "./core/pictograph/positioning/IBetaDetectionService";
