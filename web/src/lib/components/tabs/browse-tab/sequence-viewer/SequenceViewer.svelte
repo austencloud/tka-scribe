@@ -1,7 +1,7 @@
 <!-- SequenceViewer.svelte - Main coordinator component using pure Svelte 5 runes -->
 <script lang="ts">
   import type { SequenceData } from "$domain";
-  import { ThumbnailService } from "$lib/services/implementations/export/ThumbnailService";
+  import { ThumbnailService } from "$implementations";
   import { slide } from "svelte/transition";
   import SequenceActions from "./SequenceActions.svelte";
   import SequenceDetails from "./SequenceDetails.svelte";

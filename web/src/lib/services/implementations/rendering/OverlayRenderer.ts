@@ -6,8 +6,7 @@
  */
 
 import type { ISvgConfiguration } from "$contracts";
-import type { Letter, PictographData } from "$domain";
-import type { ArrowPosition } from "$lib/services/implementations/positioning/types";
+import type { ArrowPosition, Letter, PictographData } from "$domain";
 import { getLetterImagePath } from "$lib/utils/letter-image-getter";
 import { inject, injectable } from "inversify";
 import { TYPES } from "../../inversify/types";

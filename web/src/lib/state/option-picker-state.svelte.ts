@@ -14,7 +14,7 @@ import type {
   OptionPickerLayoutCalculationResult,
   PictographData,
 } from "$domain";
-import { OptionPickerServiceAdapter } from "$lib/services/implementations/OptionPickerServiceAdapter";
+import { OptionPickerServiceAdapter } from "$implementations";
 
 export function createOptionPickerState() {
   // Service adapter for business logic

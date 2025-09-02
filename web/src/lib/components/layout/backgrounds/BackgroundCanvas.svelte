@@ -12,7 +12,7 @@ without the complex BackgroundContext system.
     PerformanceMetrics,
     QualityLevel,
   } from "$domain";
-  import { BackgroundFactory } from "$lib/services/implementations/application/background/BackgroundFactory";
+  import { BackgroundFactory } from "$implementations";
   import { onDestroy, onMount } from "svelte";
 
   // Props

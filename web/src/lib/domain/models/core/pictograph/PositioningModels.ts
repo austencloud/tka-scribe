@@ -6,13 +6,6 @@
  */
 
 // ============================================================================
-// IMPORTS
-// ============================================================================
-import type { ArrowPlacementData, MotionData, PictographData } from "$domain";
-
-// Location and MotionType are available from $domain - no need to re-export
-
-// ============================================================================
 // BASIC TYPES
 // ============================================================================
 
@@ -25,11 +18,10 @@ export interface Point {
 }
 
 /**
- * Position interface for beta offset calculations
+ * Arrow position with coordinates and rotation angle
  */
-export interface Position {
-  x: number;
-  y: number;
+export interface ArrowPosition extends Point {
+  rotation: number;
 }
 
 // ArrowPlacementData, MotionData, PictographData are available from $domain - no need to re-export

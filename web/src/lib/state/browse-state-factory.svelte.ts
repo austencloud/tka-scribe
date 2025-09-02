@@ -232,16 +232,35 @@ export function createBrowseState(
     },
 
     setActiveNavigationItem(sectionId: string, itemId: string) {
-      // TODO: Implement navigation item activation
       console.log("Set active navigation item:", sectionId, itemId);
+
+      // Prevent infinite loops by checking if this item is already active
+      const currentSections = navigationState.navigationSections;
+      const section = currentSections.find(
+        (s: NavigationSection) => s.id === sectionId
+      );
+      if (!section) return;
+
+      const item = section.items.find((i: any) => i.id === itemId);
+      if (!item || item.isActive) {
+        // Item is already active, don't trigger another update
+        return;
+      }
+
+      // Update navigation sections with new active state
+      const updatedSections = navigationService.setActiveItem(
+        sectionId,
+        itemId,
+        currentSections
+      );
+      navigationState.setNavigationSections(updatedSections);
     },
 
     async filterSequencesByNavigation(item: unknown, sectionType: string) {
       console.log("🔍 Filter by navigation:", item, sectionType);
 
       // Cast item to NavigationItem type
-      const navigationItem =
-        item as import("../services/implementations/navigation/NavigationService").NavigationItem;
+      const navigationItem = item as import("$implementations").NavigationItem;
 
       if (!navigationItem) {
         console.warn("No navigation item provided");

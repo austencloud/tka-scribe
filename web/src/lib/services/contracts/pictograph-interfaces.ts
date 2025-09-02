@@ -9,6 +9,7 @@
 // ============================================================================
 import type {
   ArrowPlacementData,
+  ArrowPosition,
   ArrowSvgData,
   BeatData,
   GridData,
@@ -20,7 +21,6 @@ import type {
   SVGDimensions,
 } from "$domain";
 import { MotionColor } from "$domain";
-import type { ArrowPosition } from "$lib/services/implementations/positioning/types";
 
 // ============================================================================
 // SERVICE CONTRACTS (Behavioral Interfaces)

@@ -11,11 +11,11 @@
  * Export settings management service
  */
 import type {
+  MemoryEstimate,
   SequenceData,
   TKAImageExportOptions,
   ValidationResult,
 } from "$domain";
-import type { MemoryEstimate } from "$implementations/image-export/composition/internal/CompositionTypes";
 
 // Export validation result for image export operations
 export interface ExportValidationResult extends ValidationResult {

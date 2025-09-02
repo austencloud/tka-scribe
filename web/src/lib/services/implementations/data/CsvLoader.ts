@@ -6,20 +6,50 @@
  */
 
 import type { ICSVLoader } from "$contracts";
-import type { CsvDataSet, GridMode } from "$domain";
+import type { CsvDataSet } from "$domain";
+import { GridMode } from "$domain";
 import { injectable } from "inversify";
 
 @injectable()
 export class CsvLoader implements ICSVLoader {
-  loadCSVFile(_filename: string): Promise<{
+  async loadCSVFile(filename: string): Promise<{
     success: boolean;
     data?: string;
     error?: string;
     source: "fetch" | "window" | "cache";
   }> {
-    throw new Error("Method not implemented.");
+    try {
+      const csvData = await this.loadCsvData();
+
+      // Determine which file was requested and return appropriate data
+      if (filename.includes("Diamond") || filename.includes("diamond")) {
+        return {
+          success: true,
+          data: csvData.diamondData,
+          source: this.isWindowDataAvailable() ? "window" : "fetch",
+        };
+      } else if (filename.includes("Box") || filename.includes("box")) {
+        return {
+          success: true,
+          data: csvData.boxData,
+          source: this.isWindowDataAvailable() ? "window" : "fetch",
+        };
+      } else {
+        return {
+          success: false,
+          error: `Unknown file: ${filename}`,
+          source: "fetch",
+        };
+      }
+    } catch (error) {
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : "Unknown error",
+        source: "fetch",
+      };
+    }
   }
-  loadCSVDataSet(): Promise<{
+  async loadCSVDataSet(): Promise<{
     success: boolean;
     data?: { diamondData: string; boxData: string };
     error?: string;
@@ -28,18 +58,66 @@ export class CsvLoader implements ICSVLoader {
       box: "fetch" | "window" | "cache";
     };
   }> {
-    throw new Error("Method not implemented.");
+    try {
+      const csvData = await this.loadCsvData();
+      return {
+        success: true,
+        data: csvData,
+        sources: {
+          diamond: this.isWindowDataAvailable() ? "window" : "fetch",
+          box: this.isWindowDataAvailable() ? "window" : "fetch",
+        },
+      };
+    } catch (error) {
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : "Unknown error",
+        sources: {
+          diamond: "fetch",
+          box: "fetch",
+        },
+      };
+    }
   }
-  loadCSVForGridMode(_gridMode: GridMode): Promise<{
+  async loadCSVForGridMode(gridMode: GridMode): Promise<{
     success: boolean;
     data?: string;
     error?: string;
     source: "fetch" | "window" | "cache";
   }> {
-    throw new Error("Method not implemented.");
+    try {
+      const csvData = await this.loadCsvData();
+
+      // Return appropriate data based on grid mode
+      let data: string;
+      if (gridMode === GridMode.DIAMOND || gridMode === GridMode.SKEWED) {
+        data = csvData.diamondData;
+      } else if (gridMode === GridMode.BOX) {
+        data = csvData.boxData;
+      } else {
+        return {
+          success: false,
+          error: `Unknown grid mode: ${gridMode}`,
+          source: "fetch",
+        };
+      }
+
+      return {
+        success: true,
+        data,
+        source: this.isWindowDataAvailable() ? "window" : "fetch",
+      };
+    } catch (error) {
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : "Unknown error",
+        source: "fetch",
+      };
+    }
   }
+
   isDataCached(): boolean {
-    throw new Error("Method not implemented.");
+    return this.isLoaded && this.csvData !== null;
   }
   private static readonly CSV_FILES = {
     DIAMOND: "/DiamondPictographDataframe.csv",

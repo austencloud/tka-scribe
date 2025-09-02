@@ -25,7 +25,7 @@ import type {
   ISvgLoader,
   ISvgParser,
 } from "$contracts";
-import type { ArrowPosition } from "$lib/services/implementations/positioning/types";
+import type { ArrowPosition } from "$domain";
 import { TYPES } from "../../inversify/types";
 import {
   ArrowPathResolutionService,

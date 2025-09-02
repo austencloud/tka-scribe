@@ -420,7 +420,7 @@ try {
     .to(ArrowPathResolutionService);
   container.bind(TYPES.IPositionMapper).to(PositionMapper);
   container
-    .bind(TYPES.ICSVPictographLoaderService)
+    .bind(TYPES.ICSVPictographParserService)
     .to(CSVPictographParserService);
   container.bind(TYPES.ISequenceAnimationEngine).to(SequenceAnimationEngine);
   container

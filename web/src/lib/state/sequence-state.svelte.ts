@@ -6,9 +6,8 @@
  */
 
 import type { ISequenceService } from "$contracts";
-import type { BeatData, SequenceData } from "$domain";
+import type { ArrowPosition, BeatData, SequenceData } from "$domain";
 import { GridMode } from "$domain";
-import type { ArrowPosition } from "$lib/services/implementations/positioning/types";
 
 // ============================================================================
 // FACTORY FUNCTION

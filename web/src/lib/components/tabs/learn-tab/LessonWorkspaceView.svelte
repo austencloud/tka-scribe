@@ -11,14 +11,16 @@
   import { QuizMode as QuizModeEnum } from "$lib/types/learn";
   import { onDestroy, onMount } from "svelte";
 
+  import type { PictographData } from "$domain";
+  import {
+    LessonConfigService,
+    QuestionGeneratorService,
+    QuizSessionService,
+  } from "$implementations";
+  import LessonControls from "./LessonControls.svelte";
   import ProgressTracker from "./ProgressTracker.svelte";
   import QuestionGenerator from "./QuestionGenerator.svelte";
   import QuizTimer from "./QuizTimer.svelte";
-  import LessonControls from "./LessonControls.svelte";
-  import { QuizSessionService } from "../../../services/implementations/learn/QuizSessionService";
-  import { LessonConfigService } from "../../../services/implementations/learn/LessonConfigService";
-  import { QuestionGeneratorService } from "../../../services/implementations/learn/QuestionGeneratorService";
-  import type { PictographData } from "$domain";
 
   // Props
   interface Props {

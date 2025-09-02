@@ -1,4 +1,4 @@
-// Option picker module exports - Clean service-based architecture
+// Option picker module exports - Clean component architecture
 export { default as OptionPickerContainer } from "./OptionPickerContainer.svelte";
 
 // Component exports
@@ -7,7 +7,3 @@ export { default as OptionPickerHeader } from "./OptionPickerHeader.svelte";
 export { default as OptionPickerScroll } from "./OptionPickerScroll.svelte";
 export { default as OptionPickerSection } from "./OptionPickerSection.svelte";
 export { default as OptionPickerSectionHeader } from "./OptionPickerSectionHeader.svelte";
-
-// Service exports - Use these for business logic
-export * from "$contracts";
-export { OptionPickerServiceAdapter } from "$lib/services/implementations/OptionPickerServiceAdapter";

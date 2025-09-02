@@ -8,7 +8,7 @@
   import GraphEditor from "./../edit/GraphEditor.svelte";
   import ExportPanel from "./../export/ExportPanel.svelte";
 
-  import { constructTabEventService } from "$lib/services/implementations/build/BuildTabEventService";
+  import { constructTabEventService } from "$implementations";
   import ConstructTabNavigation from "../BuildSubTabNavigation.svelte";
   import ConstructTabContent from "../construct/ConstructTabContent.svelte";
   import GeneratePanel from "../generate/GeneratePanel.svelte";

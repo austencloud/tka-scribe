@@ -11,8 +11,7 @@ import type {
   MotionType,
   RotationDirection,
 } from "$domain";
-import type { PropStates } from "$implementations/motion-tester/AnimationControlService";
-import type { MotionTestParams } from "$implementations/motion-tester/MotionParameterService";
+import type { MotionTestParams, PropStates } from "$implementations";
 
 /**
  * Interface for motion parameter calculations and conversions

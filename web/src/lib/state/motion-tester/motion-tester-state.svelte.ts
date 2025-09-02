@@ -1,19 +1,15 @@
 import type { ISequenceAnimationEngine } from "$contracts";
 import {
   AnimationControlService,
+  MotionLetterIdentificationService,
+  MotionParameterService,
+  OrientationCalculationService,
   type AnimationState,
+  type LetterIdentificationResult,
+  type MotionTestParams,
   type PropStates,
   type PropVisibility,
-} from "$lib/services/implementations/motion-tester/AnimationControlService";
-import {
-  MotionLetterIdentificationService,
-  type LetterIdentificationResult,
-} from "$lib/services/implementations/motion-tester/MotionLetterIdentificationService";
-import {
-  MotionParameterService,
-  type MotionTestParams,
-} from "$lib/services/implementations/motion-tester/MotionParameterService";
-import { OrientationCalculationService } from "$lib/services/implementations/positioning/OrientationCalculationService";
+} from "$implementations";
 import { resolve, TYPES } from "$lib/services/inversify/container";
 
 import { GridMode, Location, MotionColor, MotionType } from "$domain";

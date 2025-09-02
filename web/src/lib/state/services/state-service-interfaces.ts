@@ -6,7 +6,7 @@
  */
 
 import type { AppSettings } from "$domain";
-import type { IBrowseStatePersister } from "$lib/services/implementations/browse/BrowseStatePersister";
+import type { IBrowseStatePersister } from "$implementations";
 
 // ============================================================================
 // SHARED TYPES

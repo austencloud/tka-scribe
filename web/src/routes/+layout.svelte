@@ -1,9 +1,8 @@
 <script lang="ts">
+  import type { Container } from "inversify";
   import type { Snippet } from "svelte";
   import { onMount, setContext } from "svelte";
   import "../app.css";
-  import type { Container } from "inversify";
-  import { container as inversifyContainer } from "../lib/services/inversify/container";
 
   interface Props {
     children: Snippet;
@@ -28,6 +27,11 @@
         "$lib/utils/session-storage-cleanup"
       );
       cleanupSessionStorage();
+
+      // Dynamically import container only on client-side to avoid SSR issues
+      const { container: inversifyContainer } = await import(
+        "../lib/services/inversify/container"
+      );
 
       // Set up DI container - this is all we need at root level
       container = inversifyContainer;

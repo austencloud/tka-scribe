@@ -9,7 +9,7 @@ import type { ILessonRepository, ILetterMappingRepository } from "$domain";
 import {
   MockLessonRepository,
   MockLetterMappingRepository,
-} from "$lib/services/implementations/learn/codex/mocks";
+} from "$implementations";
 import { beforeAll, describe, expect, it } from "vitest";
 
 describe("Codex Service Refactoring", () => {

@@ -6,8 +6,8 @@
  */
 
 import type { IFallbackArrowService } from "$contracts";
+import type { ArrowPosition } from "$domain";
 import { MotionColor } from "$domain";
-import type { ArrowPosition } from "$lib/services/implementations/positioning/types";
 import { injectable } from "inversify";
 
 @injectable()

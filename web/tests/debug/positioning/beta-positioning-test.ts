@@ -16,7 +16,7 @@ import {
   createMotionData,
   createPictographData,
 } from "$domain";
-import { PropPlacementService } from "$lib/services/implementations/positioning/PropPlacementService";
+import { PropPlacementService } from "$implementations";
 
 // Test the new simplified beta positioning
 async function testBetaPositioning() {

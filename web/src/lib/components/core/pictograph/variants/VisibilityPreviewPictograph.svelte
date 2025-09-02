@@ -9,11 +9,13 @@ with real-time opacity changes based on visibility settings.
   import {
     createMotionData,
     createPictographData,
+    Location,
+    MotionColor,
+    MotionType,
     Orientation,
     RotationDirection,
   } from "$domain";
-  import { Location, MotionColor, MotionType } from "$domain";
-  import { getVisibilityStateManager } from "$lib/services/implementations/ui/VisibilityStateManager";
+  import { getVisibilityStateManager } from "$implementations";
   import { onMount } from "svelte";
   import PictographWithVisibility from "./PictographWithVisibility.svelte";
 

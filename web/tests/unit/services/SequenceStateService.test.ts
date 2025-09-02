@@ -7,7 +7,7 @@
 
 import type { SequenceData } from "$domain";
 import { Letter, createBeatData, createPictographData } from "$domain";
-import { SequenceStateService } from "$lib/services/implementations/sequence/SequenceStateService";
+import { SequenceStateService } from "$implementations";
 import { beforeEach, describe, expect, it } from "vitest";
 
 describe("SequenceStateService", () => {

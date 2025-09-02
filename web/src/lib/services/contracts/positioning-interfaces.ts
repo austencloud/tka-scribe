@@ -27,7 +27,7 @@ import type {
 } from "$domain";
 
 // Import spatial Direction type from BetaPropDirectionCalculator (not domain Direction enum)
-import type { Direction } from "../implementations/positioning/BetaPropDirectionCalculator";
+import type { Direction } from "$implementations";
 
 // ============================================================================
 // SERVICE CONTRACTS (Behavioral Interfaces)

@@ -7,6 +7,7 @@
 
 // Application Domain
 export * from "./application/ApplicationInitializer";
+export * from "./application/background/BackgroundFactory";
 export * from "./application/background/BackgroundService";
 export * from "./application/DeviceDetector";
 
@@ -20,6 +21,8 @@ export * from "./browse/MetadataExtractionService";
 export * from "./build/BuildTabEventService";
 export * from "./build/BuildTabTransitionService";
 export * from "./build/ConstructSubTabCoordinationService";
+export * from "./build/StartPositionLoader";
+export * from "./build/StartPositionServiceResolver";
 
 // Data Domain
 export * from "./data/CsvLoader";
@@ -74,10 +77,13 @@ export * from "./layout/BeatFrameService";
 
 // Learn Domain
 export * from "./learn/codex/CodexService";
+export * from "./learn/codex/mocks";
 export * from "./learn/codex/PictographOperationsService";
+export * from "./learn/LessonConfigService";
 export * from "./learn/LessonRepository";
 export * from "./learn/LetterMappingRepository";
-
+export * from "./learn/QuestionGeneratorService";
+export * from "./learn/QuizSessionService";
 // Motion Tester Domain
 export * from "./motion-tester/AnimationControlService";
 export * from "./motion-tester/MotionLetterIdentificationService";
@@ -96,6 +102,7 @@ export * from "./navigation/PanelManagementService";
 // Option Picker Domain
 export * from "./OptionPickerDataService";
 export * from "./OptionPickerLayoutService";
+export * from "./OptionPickerServiceAdapter";
 
 // Persistence Domain
 export * from "./persistence/FilterPersistenceService";
@@ -146,6 +153,9 @@ export * from "./sequence/SequenceStateService";
 // Start Position Domain
 export * from "./StartPositionSelectionService";
 export * from "./StartPositionService";
+
+// UI Domain
+export * from "./ui/VisibilityStateManager";
 
 // Workbench Domain
 export * from "./sequence/WorkbenchBeatOperationsService";

@@ -7,13 +7,3 @@ export { default as StartPositionPicker } from "./StartPositionPicker.svelte";
 
 // Sub-components
 export { default as StartPositionGrid } from "./StartPositionGrid.svelte";
-
-// Services
-export {
-  createStartPositionLoader,
-  StartPositionLoader,
-} from "$lib/services/implementations/build/StartPositionLoader";
-export {
-  createStartPositionServiceResolver,
-  StartPositionServiceResolver,
-} from "$lib/services/implementations/build/StartPositionServiceResolver";

@@ -13,7 +13,7 @@ import {
   type SequenceData,
   type WorkbenchMode,
 } from "$domain";
-import { WorkbenchService } from "$lib/services/implementations/workbench/WorkbenchService";
+import { WorkbenchService } from "$implementations";
 import { beforeEach, describe, expect, it } from "vitest";
 
 describe("WorkbenchService", () => {

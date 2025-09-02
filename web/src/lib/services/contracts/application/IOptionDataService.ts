@@ -14,7 +14,7 @@ import type {
 } from "$domain";
 
 // Import FilterCriteria from the OptionFilterer implementation
-import type { FilterCriteria } from "$implementations/data/OptionFilterer";
+import type { FilterCriteria } from "$implementations";
 
 export interface IOptionDataService {
   getNextOptions(
