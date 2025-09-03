@@ -76,10 +76,7 @@ import {
 } from "$implementations";
 
 // Import utility services
-import {
-  BetaDetectionService,
-  ErrorHandlingService,
-} from "$implementations";
+import { BetaDetectionService, ErrorHandlingService } from "$implementations";
 
 // Import export services
 import {

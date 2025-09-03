@@ -20,7 +20,7 @@ import type {
   ITextRenderingUtils,
   IUserInfoRenderer,
   IWordTextRenderer,
-} from "$contracts/text-rendering-interfaces";
+} from "$lib/services/contracts/build/export/text-rendering-interfaces";
 import { inject, injectable } from "inversify";
 import { TYPES } from "../../../inversify/types";
 

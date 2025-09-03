@@ -1,8 +1,8 @@
 <!-- LessonSelectorView.svelte - Main lesson selection interface -->
 <script lang="ts">
-  import { QuizMode, LessonType, LESSON_INFO } from "$lib/domain/types/learn";
-  import LessonModeToggle from "./LessonModeToggle.svelte";
+  import { LESSON_INFO, LessonType, QuizMode } from "$domain";
   import LessonButton from "./LessonButton.svelte";
+  import LessonModeToggle from "./LessonModeToggle.svelte";
 
   // Props
   interface Props {

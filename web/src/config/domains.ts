@@ -49,10 +49,10 @@ export function getRedirectURL(currentURL: string): string {
 export const SEO_CONFIG = {
   siteName: "TKA - The Kinetic Alphabet",
   description:
-    "Revolutionary browser-based tool for creating kinetic typography animations",
+    "Revolutionary browser-based tool for creating flow arts sequences",
   keywords:
-    "kinetic typography, animation, web app, sequence editor, motion graphics",
-  author: "TKA Team",
+    "flow arts, notation, vtg, tka",
+  author: "Austen Cloud",
   language: "en",
   type: "website",
 };

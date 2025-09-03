@@ -1,6 +1,6 @@
 <!-- LessonButton.svelte - Styled lesson selection button -->
 <script lang="ts">
-  import type { LessonType } from "$lib/domain/types/learn";
+  import type { LessonType } from "$domain";
 
   // Props
   interface Props {

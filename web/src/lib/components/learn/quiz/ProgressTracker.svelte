@@ -7,8 +7,8 @@
 -->
 
 <script lang="ts">
-  import type { LessonProgress, QuizMode } from "$lib/domain/types/learn";
-  import { QuizMode as QuizModeEnum } from "$lib/domain/types/learn";
+  import type { LessonProgress, QuizMode } from "$domain";
+  import { QuizMode as QuizModeEnum } from "$domain";
 
   // Props using Svelte 5 runes
   let {
@@ -173,7 +173,7 @@
 </div>
 
 <style>
-  @import "$lib/styles/desktop-theme.css";
+  @import "$styles/desktop-theme.css";
 
   .progress-tracker {
     background: var(--desktop-bg-secondary);

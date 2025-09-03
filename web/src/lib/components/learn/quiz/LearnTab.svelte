@@ -1,12 +1,7 @@
 <!-- Learn Tab - Educational content with pixel-perfect desktop replica -->
 <script lang="ts">
   import type { PictographData } from "$domain";
-  import {
-    LearnView,
-    LessonType,
-    QuizMode,
-    type LessonResults,
-  } from "$lib/domain/types/learn";
+  import { LearnView, LessonType, QuizMode, type LessonResults } from "$domain";
   import CodexComponent from "../codex/CodexComponent.svelte";
   import LessonResultsView from "./LessonResultsView.svelte";
   import LessonSelectorView from "./LessonSelectorView.svelte";

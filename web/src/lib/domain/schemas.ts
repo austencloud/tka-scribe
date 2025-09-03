@@ -22,7 +22,7 @@ import {
   Orientation,
   PropType,
   RotationDirection,
-} from "./enums/enums";
+} from "./core/enums/enums";
 
 // ============================================================================
 // COORDINATE AND PLACEMENT SCHEMAS

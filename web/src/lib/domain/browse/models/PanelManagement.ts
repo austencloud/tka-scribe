@@ -24,7 +24,7 @@ export interface BrowsePanelState {
   isResizing: boolean;
 }
 
-export interface BrowsePanelConfiguration {
+export interface BrowsePanelConfig {
   id: string;
   title: string;
   defaultWidth: number;

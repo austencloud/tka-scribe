@@ -1,6 +1,6 @@
 <!-- ActHeader.svelte - Act header with name, description, and music controls -->
 <script lang="ts">
-  import type { ActData } from "$lib/domain/types/write";
+  import type { ActData } from "$domain";
 
   // Props
   interface Props {

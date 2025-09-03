@@ -1,7 +1,7 @@
 <!-- MusicPlayer.svelte - Music player component with playback controls -->
 <script lang="ts">
-  import type { MusicPlayerState } from "$lib/domain/types/write";
-  import { formatTime, createDefaultMusicPlayerState } from "$lib/domain/types/write";
+  import type { MusicPlayerState } from "$domain";
+  import { createDefaultMusicPlayerState, formatTime } from "$domain";
 
   // Props
   interface Props {

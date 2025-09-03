@@ -1,7 +1,7 @@
 <!-- SequenceThumbnail.svelte - Individual sequence thumbnail widget -->
 <script lang="ts">
-  import type { SequenceData } from "$lib/domain/types/write";
-  import { generateSequenceThumbnail } from "$lib/domain/types/write";
+  import type { SequenceData } from "$domain";
+  import { generateSequenceThumbnail } from "$domain";
 
   // Props
   interface Props {
@@ -35,7 +35,7 @@
 
   // Generate thumbnail
   const thumbnailSrc = $derived(
-    sequence.thumbnail || generateSequenceThumbnail(sequence)
+    sequence.thumbnails?.[0] || generateSequenceThumbnail(sequence)
   );
   const beatsCount = $derived(sequence.beats.length);
 </script>
@@ -62,12 +62,12 @@
 
   <!-- Sequence preview -->
   <div class="sequence-preview">
-    <img src={thumbnailSrc} alt={sequence.name} />
+    <img src={thumbnailSrc} alt={sequence.word || sequence.name} />
   </div>
 
   <!-- Sequence info -->
   <div class="sequence-info">
-    <div class="sequence-name">{sequence.name}</div>
+    <div class="sequence-name">{sequence.word || sequence.name}</div>
     <div class="beats-count">
       {beatsCount} beat{beatsCount !== 1 ? "s" : ""}
     </div>

@@ -5,33 +5,14 @@
  * for printable formats. Includes caching and batch processing capabilities.
  */
 
-import type { ExportOptions, Page, SequenceData } from "$domain";
-
-// ============================================================================
-// SEQUENCE CARD LAYOUT TYPES
-// ============================================================================
-
-export interface GridLayout {
-  rows: number;
-  columns: number;
-  cardWidth: number;
-  cardHeight: number;
-  spacing: { horizontal: number; vertical: number };
-}
-
-export interface LayoutRecommendation {
-  rows: number;
-  columns: number;
-  efficiency: number;
-  description: string;
-}
-
-export interface Margins {
-  top: number;
-  right: number;
-  bottom: number;
-  left: number;
-}
+import type {
+  ExportOptions,
+  GridLayout,
+  LayoutRecommendation,
+  Margins,
+  Page,
+  SequenceData,
+} from "$domain";
 
 // ============================================================================
 // SEQUENCE CARD SERVICE INTERFACES

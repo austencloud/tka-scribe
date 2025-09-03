@@ -19,7 +19,7 @@
   import BrowseTab from "../browse/BrowseTab.svelte";
   import BuildTab from "../build/BuildTab.svelte";
   import LearnTab from "../learn/quiz/LearnTab.svelte";
-  import SettingsDialog from "../SettingsDialog.svelte";
+  import SettingsDialog from "./settings/SettingsDialog.svelte";
   import SequenceCardTab from "../word-card/SequenceCardTab.svelte";
   import WriteTab from "../write/WriteTab.svelte";
   import NavigationBar from "./navigation/NavigationBar.svelte";

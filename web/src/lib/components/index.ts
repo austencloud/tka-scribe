@@ -16,7 +16,7 @@ export * from "./word-card";
 export * from "./write";
 
 // Top-level app components
-export { default as SettingsDialog } from "./SettingsDialog.svelte";
+export { default as SettingsDialog } from "./core/settings/SettingsDialog.svelte";
 
 // Individual component exports for directories without index.ts
 export { default as BrowseTab } from "./browse/BrowseTab.svelte";

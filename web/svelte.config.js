@@ -51,6 +51,10 @@ const config = {
       "$utils/*": "./src/lib/utils/*",
       $state: "./src/lib/state",
       "$state/*": "./src/lib/state/*",
+      $styles: "./src/styles",
+      "$styles/*": "./src/styles/*",
+      $config: "./src/config",
+      "$config/*": "./src/config/*",
     },
   },
 };

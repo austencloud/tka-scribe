@@ -26,7 +26,7 @@
   } from "$state";
   // Import components
   import MainInterface from "$lib/components/core/MainInterface.svelte";
-  import SettingsDialog from "$components/SettingsDialog.svelte";
+  import SettingsDialog from "$lib/components/core/settings/SettingsDialog.svelte";
   import ErrorScreen from "$components/core/ui/ErrorScreen.svelte";
   import LoadingScreen from "$components/core/ui/LoadingScreen.svelte";
 

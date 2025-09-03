@@ -1,6 +1,6 @@
 <!-- SequenceGrid.svelte - Grid component for displaying sequences -->
 <script lang="ts">
-  import type { SequenceData } from "$lib/domain/types/write";
+  import type { SequenceData } from "$domain";
   import SequenceThumbnail from "./SequenceThumbnail.svelte";
 
   // Props

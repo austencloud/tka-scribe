@@ -1,6 +1,6 @@
 <!-- ActBrowser.svelte - Act browser component with grid layout -->
 <script lang="ts">
-  import type { ActThumbnailInfo } from "$lib/domain/types/write";
+  import type { ActThumbnailInfo } from "$domain";
   import ActThumbnail from "./ActThumbnail.svelte";
 
   // Props

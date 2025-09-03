@@ -5,12 +5,12 @@
  * paper sizes, margins, grid calculations, and print specifications.
  */
 
+import type { SequenceData } from "$domain";
 import type {
   OptimizationGoal,
   PageOrientation,
   SequenceCardPaperSize,
-} from "../../types/PageLayoutTypes";
-import type { SequenceData } from "../core/sequence/SequenceData";
+} from "../types/PageLayoutTypes";
 
 // ============================================================================
 // CORE PAGE LAYOUT INTERFACES
@@ -204,3 +204,25 @@ export interface LayoutOptimizationResult {
   reasoning: string[];
 }
 // Duplicate simplified types removed — using the core, fully-defined interfaces above.
+
+// ============================================================================
+// GRID LAYOUT INTERFACES
+// ============================================================================
+
+export interface GridLayout {
+  columns: number;
+  rows: number;
+  cardWidth: number;
+  cardHeight: number;
+  spacing: number;
+  totalWidth: number;
+  totalHeight: number;
+}
+
+export interface LayoutRecommendation {
+  layout: GridLayout;
+  score: number;
+  description: string;
+  pros: string[];
+  cons: string[];
+}

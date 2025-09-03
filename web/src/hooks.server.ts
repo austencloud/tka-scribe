@@ -1,5 +1,5 @@
+import { getRedirectURL, shouldRedirectToPrimary } from "$config/domains";
 import type { Handle } from "@sveltejs/kit";
-import { shouldRedirectToPrimary, getRedirectURL } from "$lib/config/domains";
 
 export const handle: Handle = async ({ event, resolve }) => {
   // Check if we need to redirect to primary domain

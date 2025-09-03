@@ -1,18 +1,41 @@
 /**
- * Core Domain Types
+ * Core Domain Exports
  *
- * Export point for core domain types and fundamental data structures.
+ * Shared types, models, and enums used across all tabs.
  */
 
-// Export from new models directory
-export * from "../enums/Letter";
-export * from "../models/core/application/ApplicationTypes";
-export * from "../models/core/csv-handling/CsvModels";
-export * from "../models/core/device-recognition/DeviceTypes";
-export * from "../models/core/sequence/SequenceData";
-export * from "./AppSettings";
-// export * from "./pictograph"; // Directory doesn't exist
+// Models - Application
+export * from "./models/application/ApplicationTypes";
+
+// Models - CSV Handling
+export * from "./models/csv-handling/CsvModels";
+
+// Models - Device Recognition
+export * from "./models/device-recognition/DeviceTypes";
+
+// Models - Pictograph
+export * from "./models/pictograph/ArrowPlacementData";
+export * from "./models/pictograph/gridCoordinates";
+export * from "./models/pictograph/GridData";
+export * from "./models/pictograph/LetterBorderUtils";
+export * from "./models/pictograph/MotionData";
+export * from "./models/pictograph/PictographData";
+export * from "./models/pictograph/PositioningModels";
+export * from "./models/pictograph/PropPlacementData";
+export * from "./models/pictograph/SvgTypes";
+
+// Models - Rendering
+export * from "./models/rendering/SvgConversion";
+
+// Models - Sequence
+export * from "./models/sequence/SequenceData";
+
+// Enums
+export * from "./enums/enums";
+export * from "./enums/Letter";
+
+// UI
 export * from "./ui";
 
-// Note: Types from other domain areas are exported directly from domain/index.ts
-// to avoid duplicate exports. Import them directly from their source modules.
+// App Settings
+export * from "./AppSettings";

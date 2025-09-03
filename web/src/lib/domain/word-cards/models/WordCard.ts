@@ -5,7 +5,7 @@
  * export options, device capabilities, and cache management.
  */
 
-import type { SequenceData } from "../core/sequence/SequenceData";
+import type { SequenceData } from "$domain";
 
 // Basic export result interface
 export interface ExportResult {
@@ -132,7 +132,7 @@ type SequenceCardPaperSize = "A4" | "Letter" | "Legal" | "Tabloid";
 export type {
   DeviceCapabilities,
   ResponsiveSettings,
-} from "../core/device-recognition/DeviceTypes";
+} from "../../core/models/device-recognition/DeviceTypes";
 
 // ============================================================================
 // CACHE MANAGEMENT TYPES

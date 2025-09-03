@@ -1,54 +1,54 @@
-// Core models - direct exports from new locations
-export * from "./build/models/workbench/BeatData";
-export * from "./core/enums/Letter";
-export * from "./core/models/application/ApplicationTypes";
-export * from "./core/models/device-recognition/DeviceTypes";
-export * from "./core/models/pictograph/GridData";
-export * from "./core/models/pictograph/MotionData";
-export * from "./core/models/pictograph/PictographData";
-export * from "./core/models/sequence/SequenceData";
+// Core models - direct exports
+export * from "./enums/Letter";
+export * from "./models/build/workbench/BeatData";
+export * from "./models/core/application/ApplicationTypes";
+export * from "./models/core/device-recognition/DeviceTypes";
+export * from "./models/core/pictograph/GridData";
+export * from "./models/core/pictograph/MotionData";
+export * from "./models/core/pictograph/PictographData";
+export * from "./models/core/sequence/SequenceData";
 export type {
   ExportResult,
   ValidationError,
   ValidationResult,
-} from "./word-cards/models/WordCard";
+} from "./models/word-cards/WordCard";
 
 // Export factory functions (non-conflicting)
-export { createBeatData } from "./build/models/workbench/BeatData";
+export { createBeatData } from "./models/build/workbench/BeatData";
 
 // Core domain exports (specific to avoid conflicts)
 export * from "./core/AppSettings";
-export * from "./core/enums/Letter";
 export * from "./core/ui";
-// export * from "./core/models/application/ApplicationTypes"; // Already exported via core/index.ts
-export * from "./core/models/csv-handling/CsvModels";
-export * from "./core/models/device-recognition/DeviceTypes";
+export * from "./enums/Letter";
+// export * from "./models/core/application/ApplicationTypes"; // Already exported via core/index.ts
+export * from "./models/core/csv-handling/CsvModels";
+export * from "./models/core/device-recognition/DeviceTypes";
 
 // Pictograph exports (specific to avoid conflicts)
-export * from "./core/models/pictograph/ArrowPlacementData";
-export * from "./core/models/pictograph/gridCoordinates";
-export * from "./core/models/pictograph/GridData";
-export * from "./core/models/pictograph/LetterBorderUtils";
-export * from "./core/models/pictograph/MotionData";
-export * from "./core/models/pictograph/PictographData";
-export * from "./core/models/pictograph/PositioningModels";
-export * from "./core/models/pictograph/PropPlacementData";
-export * from "./core/models/pictograph/SvgTypes";
+export * from "./models/core/pictograph/ArrowPlacementData";
+export * from "./models/core/pictograph/gridCoordinates";
+export * from "./models/core/pictograph/GridData";
+export * from "./models/core/pictograph/LetterBorderUtils";
+export * from "./models/core/pictograph/MotionData";
+export * from "./models/core/pictograph/PictographData";
+export * from "./models/core/pictograph/PositioningModels";
+export * from "./models/core/pictograph/PropPlacementData";
+export * from "./models/core/pictograph/SvgTypes";
 
 // Enum exports (specific to avoid conflicts)
-export * from "./core/enums/enums";
+export * from "./enums/enums";
 
 // Export build types from new locations
 export type {
   GenerationOptions,
   LetterDerivationResult,
-} from "./build/models/generate/GenerateModels";
+} from "./models/build/generate/GenerateModels";
 
 export type {
   LayoutCalculationParams,
   OptionPickerLayoutCalculationResult,
   ResponsiveLayoutConfig,
-} from "./build/models/construct/OptionPicker";
+} from "./models/build/construct/OptionPicker";
 
 // Note: LayoutCalculationResult now exported from word-card-models (the correct version)
 
@@ -61,18 +61,18 @@ export type {
   WorkbenchActions,
   WorkbenchConfig,
   WorkbenchState,
-} from "./build/models/workbench/WorkbenchModels";
+} from "./models/build/workbench/WorkbenchModels";
 
-export type { WorkbenchMode } from "./build/types/WorkbenchTypes";
+export type { WorkbenchMode } from "./types/build/WorkbenchTypes";
 
 // Export beat frame types
-export * from "./build/models/workbench/BeatFrame";
+export * from "./models/build/workbench/BeatFrame";
 
 // Export sequence operations types
-export * from "./build/models/workbench/SequenceOperations";
+export * from "./models/build/workbench/SequenceOperations";
 
 // Export workbench types
-export * from "./build/types/WorkbenchTypes";
+export * from "./types/build/WorkbenchTypes";
 
 // Export image export types
 export type {
@@ -84,13 +84,13 @@ export type {
   LayoutData,
   TextRenderOptions,
   UserInfo,
-} from "./build/models/export/SequenceExportOptions";
+} from "./models/build/export/SequenceExportOptions";
 
 // Export image format types
 export type {
   ImageFormatOptions,
   OptimizationSettings,
-} from "./build/models/export/ImageFormat";
+} from "./models/build/export/ImageFormat";
 
 // Export panel management types (browse-specific)
 export type {
@@ -98,14 +98,14 @@ export type {
   BrowsePanelState as BrowsePanelState,
   ResizeOperation,
   SplitterConfig,
-} from "./browse/models/PanelManagement";
+} from "./models/browse/PanelManagement";
 
 // Export option picker layout types (build/construct-specific)
 export type {
   OptionPickerGridConfiguration,
   OptionPickerLayoutCalculationParams,
   OptionPickerLayoutDimensions,
-} from "./build/models/construct/OptionPickerLayout";
+} from "./models/build/construct/OptionPickerLayout";
 
 // Export page layout types (word-card-specific)
 export type {
@@ -116,7 +116,7 @@ export type {
   PageDimensions,
   LayoutCalculationResult as PageLayoutCalculationResult,
   Rectangle,
-} from "./word-cards/models/PageLayout";
+} from "./models/word-cards/PageLayout";
 
 // Export the correct GridCalculationOptions and related types from sequence-card-models
 export type {
@@ -127,7 +127,7 @@ export type {
   PageCreationOptions,
   PageLayoutConfig,
   SequenceCardGridConfig,
-} from "./word-cards/models/word-card-models";
+} from "./models/word-cards/word-card-models";
 
 // Export word-card types except conflicting ones
 // Export word card types directly (no intermediate exports)
@@ -140,23 +140,17 @@ export type {
   ProgressStage,
   ResponsiveSettings,
   SequenceCardExportSettings,
-} from "./word-cards/models/WordCard";
+} from "./models/word-cards/WordCard";
 
 export type {
   OptimizationGoal,
   PageOrientation,
   SequenceCardLayoutMode,
-} from "./word-cards/types/PageLayoutTypes";
+} from "./types/PageLayoutTypes";
 
-export * from "./word-cards/models/PageLayoutConstants";
-export * from "./word-cards/models/word-card-models";
-export * from "./word-cards/models/WordCardExport";
-
-// Export additional word-card types
-export type {
-  GridLayout,
-  LayoutRecommendation,
-} from "./word-cards/models/word-card-models";
+export * from "./models/word-cards/PageLayoutConstants";
+export * from "./models/word-cards/word-card-models";
+export * from "./models/word-cards/WordCardExport";
 
 // Export word card export types
 export type {
@@ -164,7 +158,7 @@ export type {
   BatchExportResult,
   // ImageExportOptions, // Already exported above as TKAImageExportOptions alias
   PDFExportOptions,
-} from "./word-cards/models/export-config";
+} from "./models/word-cards/export-config";
 
 // Export browse types directly (no intermediate exports)
 export {
@@ -172,7 +166,7 @@ export {
   formatFilterDisplayName,
   isMultiValueFilter,
   isRangeFilter,
-} from "./browse/models/BrowseFilters";
+} from "./models/browse/BrowseFilters";
 
 export {
   createCustomSortConfig,
@@ -181,7 +175,7 @@ export {
   getSortConfig,
   getSortDisplayName,
   SORT_CONFIGS,
-} from "./browse/models/BrowseSorting";
+} from "./models/browse/BrowseSorting";
 
 export {
   createDefaultBrowseState,
@@ -189,20 +183,20 @@ export {
   createDefaultLoadingState,
   NavigationMode,
   updateBrowseState,
-} from "./browse/models/BrowseState";
+} from "./models/browse/BrowseState";
 
-export * from "./browse/models/Metadata";
+export * from "./models/browse/Metadata";
 
-export type { FilterConfig } from "./browse/models/FilterModels";
-export type { SortConfig } from "./browse/models/SortModels";
-export type { FilterValue, SortDirection } from "./browse/types/BrowseTypes";
+export type { FilterConfig } from "./models/browse/FilterModels";
+export type { SortConfig } from "./models/browse/SortModels";
+export type { FilterValue, SortDirection } from "./types/browse/BrowseTypes";
 
 export type {
   BrowseDisplayState,
   BrowseLoadingState,
   BrowseState,
   SequenceFilterResult,
-} from "./browse/models/BrowseState";
+} from "./models/browse/BrowseState";
 
 export type {
   BrowseConfig,
@@ -217,23 +211,23 @@ export type {
   SectionConfiguration,
   SequenceSection,
   SortOption,
-} from "./browse/models/BrowseModels";
+} from "./models/browse/BrowseModels";
 
 export type {
   FavoriteItem,
   FavoritesCollection,
-} from "./browse/models/FavoritesModels";
+} from "./models/browse/FavoritesModels";
 
 export type {
   AnimationConfig,
   AnimationState,
-} from "./animator/models/AnimationModels";
+} from "./models/animator/AnimationModels";
 
 export type {
   BeatOperationResult,
   SequenceStatistics,
   SequenceTransformOptions,
-} from "./browse/models/SequenceState";
+} from "./models/browse/SequenceState";
 
 // Background types will be added when the actual files are found
 
@@ -241,7 +235,7 @@ export type {
 // PictographData and createPictographData are already exported above
 
 // Export positioning types (what actually exists)
-export type { Point } from "./core/models/pictograph/PositioningModels";
+export type { Point } from "./models/core/pictograph/PositioningModels";
 
 // AppSettings doesn't exist yet
 
@@ -251,7 +245,7 @@ export type { Point } from "./core/models/pictograph/PositioningModels";
 export type {
   LetterCategory,
   PictographTransformOperation,
-} from "./learn/types/CodexTypes";
+} from "./types/CodexTypes";
 
 export type {
   CodexConfiguration,
@@ -259,32 +253,29 @@ export type {
   LessonConfiguration,
   LetterMapping,
   LetterRow,
-} from "./learn/models/CodexModels";
-
-// Export learn types and enums
-export * from "./learn/types/learn";
+} from "./models/learn/CodexModels";
 
 // Export factory functions
 export {
   createCodexLetter,
   createLetterMapping,
   createLetterRow,
-} from "./learn/models/CodexModels";
+} from "./models/learn/CodexModels";
 
 // Export workbench types
-export type { ConfigurationResult } from "./build/models/workbench/WorkbenchModels";
+export type { ConfigurationResult } from "./models/build/workbench/WorkbenchModels";
 
 // Export option picker utility functions
 export {
   getContainerAspect,
   getDeviceConfig,
   getDeviceType,
-} from "./build/models/construct/OptionPickerUtils";
+} from "./models/build/construct/OptionPickerUtils";
 
 // ResizeDirection is already exported from enums above
 
 // Export additional option picker layout types
-export type { DeviceConfig } from "./build/models/construct/OptionPickerLayoutModels";
+export type { DeviceConfig } from "./models/build/construct/OptionPickerLayoutModels";
 
 // Export service interfaces (needed by some files)
 export type { ILessonRepository } from "../services/contracts/learn/ILessonRepository";
@@ -294,14 +285,14 @@ export type { ILetterMappingRepository } from "../services/contracts/learn/ILett
 export type {
   RenderQualitySettings,
   SVGConversionOptions,
-} from "./core/models/rendering/SvgConversion";
+} from "./models/core/rendering/SvgConversion";
 
 // Export grid types (including beat grid types)
 export type {
   CombinedGridOptions,
   GridDrawOptions,
   GridValidationResult,
-} from "./core/models/pictograph/GridData";
+} from "./models/core/pictograph/GridData";
 
 // Export schema types
 export { PngMetadataArraySchema, SequenceDataSchema } from "./schemas";
@@ -313,21 +304,7 @@ export interface MemoryEstimate {
 }
 
 // Export word card types
-export type { SequenceCardPaperSize } from "./word-cards/types/PageLayoutTypes";
-
-// Export word-cards/write types (excluding SequenceData to avoid conflict)
-export {
-  createDefaultMusicPlayerState,
-  createEmptyAct,
-  formatTime,
-  generateActThumbnail,
-  generateSequenceThumbnail,
-} from "./word-cards/types/write";
-export type {
-  ActData,
-  ActThumbnailInfo,
-  MusicPlayerState,
-} from "./word-cards/types/write";
+export type { SequenceCardPaperSize } from "./types/PageLayoutTypes";
 
 // Export HTML2Canvas types
 export interface Html2CanvasFunction {

@@ -18,9 +18,9 @@ export * from "./animator/ISequenceAnimationOrchestrator";
 
 // Application Domain
 export * from "./build/construct/IConstructTabCoordinator";
-export * from "./build/construct/IOptionDataService";
-export * from "./build/construct/IStartPositionSelectionService";
-export * from "./build/construct/IStartPositionService";
+export * from "./build/construct/option-picker/IOptionDataService";
+export * from "./build/construct/start-position-picker/IStartPositionSelectionService";
+export * from "./build/construct/start-position-picker/IStartPositionService";
 export * from "./core/application/IApplicationInitializer";
 export * from "./core/data/ICSVLoader";
 export * from "./core/data/ICSVParser";
@@ -105,11 +105,11 @@ export * from "./build/workbench/ISequenceStateService";
 // TEMPORARILY REMOVED: export * from "./animator-interfaces"; (conflicts with IAnimationControlService)
 export type { IMotionParameterService } from "./animator/animator-interfaces";
 export * from "./browse/browse-panel-interfaces";
-export * from "./build/construct/option-picker-interfaces";
+export * from "./build/construct/option-picker/option-picker-interfaces";
 // TEMPORARILY REMOVED: export * from "./pictograph-interfaces"; (conflicts with IArrowPathResolutionService, IArrowPositioningService)
 // Positioning Domain - Explicit exports to avoid conflicts
+export * from "./build/construct/option-picker/responsive-layout-interfaces";
 export * from "./core/pictograph/positioning/positioning-interfaces";
-export * from "./responsive-layout-interfaces";
 
 // Export sequence-interfaces but exclude conflicting types that are now in browse domain
 // Only export service interfaces, not data models (which belong in domain)
@@ -124,14 +124,14 @@ export {
   // Service interfaces (excluding conflicting IDeleteService)
   type ISequenceService,
   type IWorkbenchBeatOperationsService,
-} from "./sequence-interfaces";
+} from "./build/workbench/sequence-interfaces";
 
 // NOTE: Domain types should be imported directly from $domain, not re-exported from contracts
 
 // TEMPORARILY REMOVED: export * from "./sequence-state-interfaces"; (conflicts with ISequenceStateService)
-export * from "./svg-conversion-interfaces";
-export * from "./text-rendering-interfaces";
-export * from "./workbench-interfaces";
+export * from "./build/export/svg-conversion-interfaces";
+export * from "./build/export/text-rendering-interfaces";
+export * from "./build/workbench/workbench-interfaces";
 
 // Movement Domain - Individual interfaces (correct pattern)
 export * from "./core/data/ICsvPictographParserService";

@@ -1,8 +1,8 @@
 <!-- Write Tab - Act creation and editing with pixel-perfect desktop replica -->
 <script lang="ts">
+  import ActBrowser from "./ActBrowser.svelte";
   import ActSheet from "./ActSheet.svelte";
   import MusicPlayer from "./MusicPlayer.svelte";
-  import ActBrowser from "./ActBrowser.svelte";
   import WriteToolbar from "./WriteToolbar.svelte";
 
   import {
@@ -11,7 +11,7 @@
     type ActData,
     type ActThumbnailInfo,
     type MusicPlayerState,
-  } from "$lib/domain/types/write";
+  } from "$domain";
 
   // State management using runes
 

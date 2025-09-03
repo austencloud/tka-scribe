@@ -1,4 +1,4 @@
-import { PRIMARY_DOMAIN } from "$lib/config/domains";
+import { PRIMARY_DOMAIN } from "$config/domains";
 import type { RequestHandler } from "./$types";
 
 export const GET: RequestHandler = async () => {

@@ -1,7 +1,7 @@
 <!-- ActThumbnail.svelte - Individual act thumbnail widget -->
 <script lang="ts">
-  import type { ActThumbnailInfo } from "$lib/domain/types/write";
-  import { generateActThumbnail } from "$lib/domain/types/write";
+  import type { ActThumbnailInfo } from "$domain";
+  import { generateActThumbnail } from "$domain";
 
   // Props
   interface Props {

@@ -1,6 +1,6 @@
 <!-- LessonResultsView.svelte - Lesson results placeholder -->
 <script lang="ts">
-  import type { LessonResults } from "$lib/domain/types/learn";
+  import type { LessonResults } from "$domain";
 
   // Props
   interface Props {

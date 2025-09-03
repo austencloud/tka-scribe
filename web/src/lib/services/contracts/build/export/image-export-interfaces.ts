@@ -17,7 +17,7 @@
 // ============================================================================
 
 // Core interfaces (main orchestrator & fundamental types)
-export type { ITKAImageExportService } from "../../sequence-export-core-interfaces";
+export type { ITKAImageExportService } from "./sequence-export-core-interfaces";
 
 // Rendering interfaces (beat, image, canvas, visual effects)
 export type {

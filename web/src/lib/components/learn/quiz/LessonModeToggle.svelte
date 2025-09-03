@@ -1,6 +1,6 @@
 <!-- LessonModeToggle.svelte - Quiz mode selection toggle -->
 <script lang="ts">
-  import { QuizMode } from "$lib/domain/types/learn";
+  import { QuizMode } from "$domain";
 
   // Props
   interface Props {

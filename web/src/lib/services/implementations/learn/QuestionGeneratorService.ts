@@ -12,7 +12,7 @@ import {
   LessonType,
   type QuestionData,
   QuestionFormat,
-} from "$lib/domain/types/learn";
+} from "$domain";
 
 // Mock pictograph data structure (this would come from the actual pictograph service)
 interface PictographData {

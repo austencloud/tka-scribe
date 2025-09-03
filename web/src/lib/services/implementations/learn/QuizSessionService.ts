@@ -12,7 +12,7 @@ import {
   type TimerState,
   LessonType,
   QuizMode,
-} from "$lib/domain/types/learn";
+} from "$domain";
 import { LessonConfigService } from "./LessonConfigService";
 
 export class QuizSessionService {

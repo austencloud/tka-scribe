@@ -6,7 +6,7 @@ positioned over the specific prop panel that triggered it.
 -->
 <script lang="ts">
   import type { Orientation } from "$domain";
-  import "$lib/styles/modal-animations.css";
+  import "$styles/modal-animations.css";
   import { onMount } from "svelte";
 
   interface Props {

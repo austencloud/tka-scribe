@@ -7,8 +7,8 @@
     LessonType,
     QuestionData,
     QuizMode,
-  } from "$lib/domain/types/learn";
-  import { QuizMode as QuizModeEnum } from "$lib/domain/types/learn";
+  } from "$domain";
+  import { QuizMode as QuizModeEnum } from "$domain";
   import { onDestroy, onMount } from "svelte";
 
   import type { PictographData } from "$domain";

@@ -6,14 +6,14 @@
 -->
 
 <script lang="ts">
-  import type { PictographData } from "$domain";
-  import { QuestionGeneratorService } from "$implementations";
   import type {
     AnswerOption,
     LessonType,
+    PictographData,
     QuestionData,
-  } from "$lib/domain/types/learn";
-  import { AnswerFormat } from "$lib/domain/types/learn";
+  } from "$domain";
+  import { AnswerFormat } from "$domain";
+  import { QuestionGeneratorService } from "$implementations";
   // Events are now handled via callbacks in props
   import AnswerButton from "./AnswerButton.svelte";
   import AnswerPictograph from "./AnswerPictograph.svelte";

@@ -5,25 +5,11 @@
  * for consistent data structures across the application.
  */
 
-/**
- * Represents sequence data within an act.
- */
-export interface SequenceData {
-  id: string;
-  name: string;
-  beats: unknown[]; // Beat data structure
-  thumbnail?: string; // Base64 or URL to thumbnail image
-  duration?: number; // Duration in seconds
-  metadata?: {
-    created: Date;
-    modified: Date;
-    author?: string;
-    description?: string;
-  };
-}
+import type { SequenceData } from "$domain";
 
 /**
  * Represents act data for the write tab.
+ * Uses the core SequenceData domain model for consistency across the application.
  */
 export interface ActData {
   id: string;
