@@ -1,5 +1,10 @@
-import type { BeatData } from "$domain";
-import type { PropState } from "../types/PropState";
+import type {
+  BeatData,
+  Location,
+  MotionType,
+  Orientation,
+  RotationDirection,
+} from "$domain";
 
 export interface InterpolationResult {
   blueAngles: {
@@ -20,11 +25,6 @@ export interface BeatCalculationResult {
   isValid: boolean;
 }
 
-export interface PropStates {
-  blue: PropState;
-  red: PropState;
-}
-
 export interface AnimationConfig {
   duration: number;
   easing: string;
@@ -37,4 +37,49 @@ export interface AnimationState {
   currentFrame: number;
   totalFrames: number;
   progress: number;
+  currentBeat: number;
+}
+
+export interface PropVisibility {
+  blue: boolean;
+  red: boolean;
+}
+export interface MotionEndpoints {
+  startCenterAngle: number;
+  startStaffAngle: number;
+  targetCenterAngle: number;
+  targetStaffAngle: number;
+}
+
+/**
+ * Motion Test Parameters
+ * Domain model for motion testing and configuration
+ */
+export interface AnimatedMotionParams {
+  startLocation: Location;
+  endLocation: Location;
+  motionType: MotionType;
+  turns: number | "fl"; // Support both numeric turns and float
+  rotationDirection: RotationDirection;
+  startOrientation: Orientation;
+  endOrientation: Orientation;
+}
+
+// Legacy alias for backward compatibility
+export type MotionTestParams = AnimatedMotionParams;
+
+// Motion calculation utilities
+export function calculateMotionEndpoints(
+  _params: AnimatedMotionParams
+): MotionEndpoints {
+  return {
+    startCenterAngle: 0,
+    startStaffAngle: 0,
+    targetCenterAngle: 90,
+    targetStaffAngle: 90,
+  };
+}
+
+export function lerpAngle(start: number, end: number, t: number): number {
+  return start + (end - start) * t;
 }

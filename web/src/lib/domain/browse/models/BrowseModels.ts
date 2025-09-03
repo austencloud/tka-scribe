@@ -1,15 +1,9 @@
 import type {
   FilterType,
   FilterValue,
-  SortMethod,
   SequenceData,
+  SortMethod,
 } from "$domain";
-
-export interface SequenceMetadata {
-  word: string;
-  author: string;
-  totalBeats: number;
-}
 
 export interface SequenceSection {
   id: string;
@@ -80,7 +74,7 @@ export interface NavigationItem {
   sequences: SequenceData[];
 }
 
-export interface NavigationSection {
+export interface NavigationSectionConfig {
   id: string;
   title: string;
   type: "date" | "length" | "letter" | "level" | "author" | "favorites";

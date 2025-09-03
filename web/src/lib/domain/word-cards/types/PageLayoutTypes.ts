@@ -6,14 +6,9 @@
  */
 
 // Type aliases only
-export type SequenceCardPaperSize =
-  | "A4"
-  | "Letter"
-  | "Legal"
-  | "A3"
-  | "Tabloid";
+export type WordCardPaperSize = "A4" | "Letter" | "Legal" | "A3" | "Tabloid";
 export type PageOrientation = "portrait" | "landscape";
-export type SequenceCardLayoutMode = "optimal" | "fixed" | "custom";
+export type WordCardLayoutMode = "optimal" | "fixed" | "custom";
 export type OptimizationGoal =
   | "maximize_card_size"
   | "minimize_pages"

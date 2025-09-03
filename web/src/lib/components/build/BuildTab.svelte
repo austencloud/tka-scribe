@@ -5,13 +5,13 @@
   import ErrorBanner from "./shared/ErrorBanner.svelte";
   import LoadingOverlay from "./shared/LoadingOverlay.svelte";
 
+  import { GridMode } from "$domain";
+  import { resolve, TYPES } from "$lib/services/inversify/container";
   import type {
     IBuildTabService,
     ISequenceService,
     IStartPositionService,
-  } from "$contracts";
-  import { GridMode } from "$domain";
-  import { resolve, TYPES } from "$lib/services/inversify/container";
+  } from "$services";
   import { createBuildTabState, createConstructTabState } from "$state";
   import { onMount } from "svelte";
 

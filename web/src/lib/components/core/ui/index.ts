@@ -18,9 +18,5 @@ export { default as IOSToggle } from "./IOSToggle.svelte";
 // Layout components
 export { default as Splitter } from "./Splitter.svelte";
 
-// Re-export types for convenience
-export type {
-  ScrollbarVariant as GlassScrollbarVariant,
-  ScrollDirection,
-} from "./GlassScrollContainer.svelte";
-export type { ScrollbarVariant } from "./SimpleGlassScroll.svelte";
+// Note: Svelte component types should be imported directly from the component files
+// Re-exporting from .svelte files can cause TypeScript issues

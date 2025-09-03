@@ -8,7 +8,7 @@ import { getSettings } from "$state";
 /**
  * Check if animations should run based on settings and user preferences
  */
-export function shouldAnimate(): boolean {
+export function shouldUseAnimations(): boolean {
   // Check user's reduced motion preference
   if (typeof window !== "undefined") {
     const prefersReducedMotion = window.matchMedia(
@@ -27,6 +27,6 @@ export function shouldAnimate(): boolean {
  */
 export function getAnimationSettings() {
   return {
-    animationsEnabled: shouldAnimate(),
+    animationsEnabled: shouldUseAnimations(),
   };
 }

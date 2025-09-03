@@ -16,14 +16,9 @@
   interface Props {
     isVisible?: boolean;
     onPictographSelected?: (pictograph: PictographData) => void;
-    onToggleVisibility?: () => void;
   }
 
-  let {
-    isVisible = true,
-    onPictographSelected,
-    onToggleVisibility,
-  }: Props = $props();
+  let { isVisible = true, onPictographSelected }: Props = $props();
 
   // Create codex state using runes
   const codexState = createCodexState();
@@ -63,10 +58,6 @@
     onPictographSelected?.(pictograph);
   }
 
-  function toggleCollapse() {
-    onToggleVisibility?.();
-  }
-
   // Control panel handlers
   function handleRotate() {
     codexState.rotatePictographs();
@@ -86,7 +77,7 @@
 </script>
 
 <div class="codex-component" class:collapsed={!isVisible}>
-  <!-- Header with integrated toggle (Browse navigation style) -->
+  <!-- Header without collapse toggle -->
   <div class="codex-header">
     <div class="header-content">
       <div class="header-text">
@@ -95,13 +86,6 @@
           <div class="codex-subtitle">Pictograph Reference</div>
         {/if}
       </div>
-      <button
-        class="collapse-toggle"
-        onclick={toggleCollapse}
-        title={isVisible ? "Hide codex" : "Show codex"}
-      >
-        {isVisible ? "◀" : "▶"}
-      </button>
     </div>
   </div>
 
@@ -153,7 +137,6 @@
           <CodexPictographGrid
             pictographsByLetter={filteredPictographsByLetter}
             {letterRows}
-            pictographSize={80}
             onPictographClick={handlePictographClick}
           />
         {/if}
@@ -198,13 +181,6 @@
     display: none; /* Hide text in collapsed state */
   }
 
-  .collapsed .collapse-toggle {
-    padding: var(--desktop-spacing-sm);
-    font-size: var(--desktop-font-size-lg);
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 4px;
-  }
-
   .codex-header {
     padding: var(--desktop-spacing-lg);
     border-bottom: 1px solid var(--desktop-border-tertiary);
@@ -245,23 +221,6 @@
     font-size: var(--desktop-font-size-sm);
     color: rgba(255, 255, 255, 0.7);
     margin: 0;
-  }
-
-  .collapse-toggle {
-    background: none;
-    border: none;
-    color: rgba(255, 255, 255, 0.7);
-    font-size: var(--desktop-font-size-sm);
-    cursor: pointer;
-    padding: var(--desktop-spacing-xs);
-    border-radius: 4px;
-    transition: all var(--desktop-transition-fast);
-    flex-shrink: 0;
-  }
-
-  .collapse-toggle:hover {
-    background: rgba(255, 255, 255, 0.1);
-    color: white;
   }
 
   /* Content wrapper for glass scroll container */

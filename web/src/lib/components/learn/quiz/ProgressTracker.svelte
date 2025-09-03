@@ -173,7 +173,6 @@
 </div>
 
 <style>
-
   .progress-tracker {
     background: var(--desktop-bg-secondary);
     border: 1px solid var(--desktop-border-secondary);

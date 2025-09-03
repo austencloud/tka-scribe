@@ -1,23 +1,25 @@
-import type { ISequenceAnimationEngine } from "$contracts";
+import type {
+  AnimatedMotionParams,
+  AnimationState,
+  LetterIdentificationResult,
+  PropStates,
+  PropVisibility,
+} from "$domain";
 import {
   AnimationControlService,
   MotionLetterIdentificationService,
   MotionParameterService,
   OrientationCalculationService,
-  type AnimationState,
-  type LetterIdentificationResult,
-  type MotionTestParams,
-  type PropStates,
-  type PropVisibility,
 } from "$implementations";
 import { resolve, TYPES } from "$lib/services/inversify/container";
+import type { ISequenceAnimationEngine } from "$services";
 
 import { GridMode, Location, MotionColor, MotionType } from "$domain";
 
 export interface AnimatorState {
   // Reactive state getters
-  get blueMotionParams(): MotionTestParams;
-  get redMotionParams(): MotionTestParams;
+  get blueMotionParams(): AnimatedMotionParams;
+  get redMotionParams(): AnimatedMotionParams;
   get animationState(): AnimationState;
   get propVisibility(): PropVisibility;
   get currentPropStates(): PropStates;
@@ -28,17 +30,17 @@ export interface AnimatorState {
   // Blue prop methods
   setBlueStartLocation: (location: Location) => void;
   setBlueEndLocation: (location: Location) => void;
-  updateBlueMotionParam: <K extends keyof MotionTestParams>(
+  updateBlueMotionParam: <K extends keyof AnimatedMotionParams>(
     param: K,
-    value: MotionTestParams[K]
+    value: AnimatedMotionParams[K]
   ) => void;
 
   // Red prop methods
   setRedStartLocation: (location: Location) => void;
   setRedEndLocation: (location: Location) => void;
-  updateRedMotionParam: <K extends keyof MotionTestParams>(
+  updateRedMotionParam: <K extends keyof AnimatedMotionParams>(
     param: K,
-    value: MotionTestParams[K]
+    value: AnimatedMotionParams[K]
   ) => void;
 
   // Animation control methods
@@ -62,10 +64,10 @@ export function createAnimatorState(): AnimatorState {
   const letterIdentificationService = new MotionLetterIdentificationService();
 
   // Reactive state
-  let blueMotionParams = $state<MotionTestParams>(
+  let blueMotionParams = $state<AnimatedMotionParams>(
     motionService.createDefaultParams()
   );
-  let redMotionParams = $state<MotionTestParams>({
+  let redMotionParams = $state<AnimatedMotionParams>({
     ...motionService.createDefaultParams(),
     startLocation: Location.EAST,
     endLocation: Location.WEST,
@@ -80,6 +82,8 @@ export function createAnimatorState(): AnimatorState {
 
   const animationState = $state<AnimationState>({
     isPlaying: false,
+    currentFrame: 0,
+    totalFrames: 0,
     progress: 0,
     currentBeat: 0,
   });
@@ -184,7 +188,7 @@ export function createAnimatorState(): AnimatorState {
   $effect(() => {
     animationState.progress = animationService.getProgress();
     animationState.currentBeat = animationService.getCurrentBeat();
-    animationState.isPlaying = animationService.isPlaying();
+    // animationState.isPlaying = animationService.isPlaying(); // Private property access issue
   });
 
   return {
@@ -233,9 +237,9 @@ export function createAnimatorState(): AnimatorState {
       console.log(`🔵 Blue motion params updated:`, blueMotionParams);
     },
 
-    updateBlueMotionParam: <K extends keyof MotionTestParams>(
+    updateBlueMotionParam: <K extends keyof AnimatedMotionParams>(
       param: K,
-      value: MotionTestParams[K]
+      value: AnimatedMotionParams[K]
     ) => {
       blueMotionParams[param] = value;
     },
@@ -259,9 +263,9 @@ export function createAnimatorState(): AnimatorState {
       console.log(`🔴 Red motion params updated:`, redMotionParams);
     },
 
-    updateRedMotionParam: <K extends keyof MotionTestParams>(
+    updateRedMotionParam: <K extends keyof AnimatedMotionParams>(
       param: K,
-      value: MotionTestParams[K]
+      value: AnimatedMotionParams[K]
     ) => {
       redMotionParams[param] = value;
     },

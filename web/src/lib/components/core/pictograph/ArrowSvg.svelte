@@ -4,9 +4,9 @@ Follows the same pattern as Prop component for consistent sizing behavior
 REFACTORED: Now purely presentational, uses ArrowRenderer for business logic
 -->
 <script lang="ts">
-  import type { IArrowRenderer } from "$contracts";
   import { MotionColor, type MotionData } from "$domain";
   import { resolve, TYPES } from "$lib/services/inversify/container";
+  import type { IArrowRenderer } from "$services";
   import { onMount } from "svelte";
 
   interface Props {

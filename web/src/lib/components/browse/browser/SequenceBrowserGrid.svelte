@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { SequenceData } from "$domain";
-  import type { IThumbnailService } from "$contracts";
+  import type { IThumbnailService } from "$services";
   import { slide } from "svelte/transition";
   import SequenceThumbnail from "../thumbnail/BrowseSequenceThumbnail.svelte";
 

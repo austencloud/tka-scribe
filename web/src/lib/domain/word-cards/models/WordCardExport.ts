@@ -12,13 +12,13 @@ import type { ProgressInfo } from "$domain";
 // DATA CONTRACTS (Domain Models)
 // ============================================================================
 
-export interface SequenceCardDimensions {
+export interface WordCardDimensions {
   width: number;
   height: number;
   scale?: number; // Device pixel ratio multiplier
 }
 
-export interface SequenceCardMetadata {
+export interface WordCardMetadata {
   title?: string;
   author?: string;
   beatNumbers?: boolean;
@@ -48,7 +48,7 @@ export interface BatchExportProgress extends ProgressInfo {
   itemsProcessed?: number;
 }
 
-export interface SequenceCardExportResult {
+export interface WordCardExportResult {
   sequenceId: string;
   success: boolean;
   blob?: Blob;

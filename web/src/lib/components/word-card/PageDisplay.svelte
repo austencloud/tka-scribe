@@ -1,7 +1,7 @@
 <!-- PageDisplay.svelte - Simple page display matching legacy desktop -->
 <script lang="ts">
   import type { SequenceData } from "$domain";
-  import SequenceCard from "./SequenceCard.svelte";
+  import WordCard from "./WordCard.svelte";
 
   // Props
   interface Props {
@@ -167,7 +167,7 @@
               style:grid-template-columns="repeat(2, 1fr)"
             >
               {#each page.sequences as sequence (sequence.id)}
-                <SequenceCard {sequence} />
+                <WordCard {sequence} />
               {/each}
             </div>
           </div>

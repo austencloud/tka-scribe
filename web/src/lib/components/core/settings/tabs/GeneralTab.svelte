@@ -62,14 +62,12 @@
     developerMode = checked;
 
     // Update global state directly
-        import("$state").then(
-      ({ updateSettings, getSettings }) => {
-        const currentSettings = getSettings();
-        const newSettings = { ...currentSettings, developerMode: checked };
-        console.log("🔧 Direct updateSettings call with:", newSettings);
-        updateSettings(newSettings);
-      }
-    );
+    import("$state").then(({ updateSettings, getSettings }) => {
+      const currentSettings = getSettings();
+      const newSettings = { ...currentSettings, developerMode: checked };
+      console.log("🔧 Direct updateSettings call with:", newSettings);
+      updateSettings(newSettings);
+    });
 
     // Also try the normal prop way
     const updateData = { key: "developerMode", value: developerMode };

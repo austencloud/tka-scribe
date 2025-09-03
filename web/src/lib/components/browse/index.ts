@@ -33,5 +33,5 @@ export * from "./thumbnail";
 export * from "./viewer";
 
 // Event handlers
-export * from "./browse-event-handlers";
-export * from "./navigation-event-handlers";
+export * from "../../services/browse/implementations/browse-event-handlers";
+export * from "../../services/browse/implementations/navigation-event-handlers";

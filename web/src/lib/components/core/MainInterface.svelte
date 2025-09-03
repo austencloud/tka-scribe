@@ -19,11 +19,11 @@
   import BrowseTab from "../browse/BrowseTab.svelte";
   import BuildTab from "../build/BuildTab.svelte";
   import LearnTab from "../learn/quiz/LearnTab.svelte";
-  import SettingsDialog from "./settings/SettingsDialog.svelte";
-  import SequenceCardTab from "../word-card/SequenceCardTab.svelte";
+  import WordCardTab from "../word-card/WordCardTab.svelte";
   import WriteTab from "../write/WriteTab.svelte";
   import NavigationBar from "./navigation/NavigationBar.svelte";
   import BackgroundCanvas from "./settings/BackgroundCanvas.svelte";
+  import SettingsDialog from "./settings/SettingsDialog.svelte";
 
   // Reactive state for template using proper derived
   let activeTab = $derived(getActiveTab());
@@ -143,7 +143,7 @@
         {:else if isTabActive("browse")}
           <BrowseTab />
         {:else if isTabActive("sequence_card")}
-          <SequenceCardTab />
+          <WordCardTab />
         {:else if isTabActive("write")}
           <WriteTab />
         {:else if isTabActive("learn")}

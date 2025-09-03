@@ -1,19 +1,60 @@
 /**
  * Sequence State Factory - Component-Scoped State for Svelte 5 Runes
  *
- * Creates component-scoped sequence state instead of global singletons.
- * Each component gets its own isolated state through factory function.
+ * Single, unified sequence state used across the app and the build/workbench.
+ *
+ * - Supports persistence-oriented operations via ISequenceService (async)
+ * - Supports workbench editing operations via ISequenceStateService (pure sync)
+ *
+ * Pass one or both services depending on context.
  */
 
-import type { ISequenceService } from "$contracts";
-import type { ArrowPosition, BeatData, SequenceData } from "$domain";
+import type {
+  ArrowPosition,
+  BeatData,
+  SequenceData,
+  ValidationResult,
+} from "$domain";
 import { GridMode } from "$domain";
+import type { ISequenceService } from "$services/build/contracts/workbench/sequence-interfaces";
+import type { ISequenceStateService } from "$services/build/contracts/workbench/sequence-state-interfaces";
+
+interface SequenceStateOptions {
+  sequenceService?: ISequenceService;
+  sequenceStateService?: ISequenceStateService;
+  getAllSequences?: () => Promise<SequenceData[]>;
+}
 
 // ============================================================================
 // FACTORY FUNCTION
 // ============================================================================
 
-export function createSequenceState(sequenceService: ISequenceService) {
+export function createSequenceState(
+  services:
+    | {
+        sequenceService?: ISequenceService;
+        sequenceStateService?: ISequenceStateService;
+      }
+    | ISequenceService
+    | ISequenceStateService
+) {
+  // Back-compat: allow passing a single service instance or an options object
+  let sequenceService: ISequenceService | undefined;
+  let sequenceStateService: ISequenceStateService | undefined;
+  const arg = services as SequenceStateOptions;
+  if (arg && ("sequenceService" in arg || "sequenceStateService" in arg)) {
+    sequenceService = arg.sequenceService as ISequenceService | undefined;
+    sequenceStateService = arg.sequenceStateService as
+      | ISequenceStateService
+      | undefined;
+  } else if (arg && typeof arg === "object") {
+    if ("getAllSequences" in arg) {
+      sequenceService = arg as ISequenceService;
+    }
+    if ("addBeat" in arg) {
+      sequenceStateService = arg as ISequenceStateService;
+    }
+  }
   // ============================================================================
   // COMPONENT-SCOPED STATE
   // ============================================================================
@@ -93,17 +134,8 @@ export function createSequenceState(sequenceService: ISequenceService) {
     return state.currentSequence.beats[state.selectedBeatIndex] ?? null;
   }
 
-  function getSelectedBeat(): BeatData | null {
-    const beatIndex = state.selectedBeatIndex;
-    const sequence = state.currentSequence;
-    return beatIndex !== null && sequence
-      ? (sequence.beats[beatIndex] ?? null)
-      : null;
-  }
-
-  function getHasCurrentSequence(): boolean {
-    return state.currentSequence !== null;
-  }
+  // getSelectedBeat and hasCurrentSequence are implemented later with
+  // optional use of sequenceStateService for validation/derivation.
 
   function getSequenceCount(): number {
     return state.sequences.length;
@@ -220,9 +252,7 @@ export function createSequenceState(sequenceService: ISequenceService) {
   /**
    * Select a beat
    */
-  function selectBeat(beatIndex: number | null): void {
-    state.selectedBeatIndex = beatIndex;
-  }
+  // selectBeat is implemented later to optionally use sequenceStateService.
 
   /**
    * Set grid mode
@@ -300,6 +330,7 @@ export function createSequenceState(sequenceService: ISequenceService) {
     setLoading(true);
     setError(null);
     try {
+      if (!sequenceService) return; // Not available in some contexts
       const sequences = await sequenceService.getAllSequences();
       setSequences(sequences);
     } catch (error) {
@@ -324,6 +355,7 @@ export function createSequenceState(sequenceService: ISequenceService) {
     setLoading(true);
     setError(null);
     try {
+      if (!sequenceService) return null;
       const sequence = await sequenceService.createSequence(request);
       addSequence(sequence);
       return sequence;
@@ -349,6 +381,7 @@ export function createSequenceState(sequenceService: ISequenceService) {
     beatData: BeatData
   ): Promise<void> {
     try {
+      if (!sequenceService) return;
       await sequenceService.updateBeat(sequenceId, beatIndex, beatData);
       updateCurrentBeat(beatIndex, beatData);
     } catch (error) {
@@ -357,6 +390,242 @@ export function createSequenceState(sequenceService: ISequenceService) {
       setError(errorMessage);
       console.error("Failed to update beat:", error);
     }
+  }
+
+  // ============================================================================
+  // WORKBENCH EDITING OPERATIONS (via ISequenceStateService if provided)
+  // ============================================================================
+
+  function getSelectedBeat(): BeatData | null {
+    if (state.selectedBeatIndex === null || !state.currentSequence) return null;
+    if (sequenceStateService) {
+      return sequenceStateService.getSelectedBeat(
+        state.currentSequence,
+        state.selectedBeatIndex
+      );
+    }
+    return (state.currentSequence.beats[state.selectedBeatIndex] ??
+      null) as BeatData | null;
+  }
+
+  function hasCurrentSequence(): boolean {
+    return state.currentSequence !== null;
+  }
+
+  function getBeatCount(): number {
+    return state.currentSequence?.beats.length ?? 0;
+  }
+
+  function getSequenceStatistics() {
+    if (!state.currentSequence || !sequenceStateService) return null;
+    return sequenceStateService.getSequenceStatistics(state.currentSequence);
+  }
+
+  function getSequenceWord(): string {
+    if (!state.currentSequence || !sequenceStateService) return "";
+    return sequenceStateService.generateSequenceWord(state.currentSequence);
+  }
+
+  function getSequenceDuration(): number {
+    if (!state.currentSequence || !sequenceStateService) return 0;
+    return sequenceStateService.calculateSequenceDuration(
+      state.currentSequence
+    );
+  }
+
+  function selectBeat(index: number | null): void {
+    if (index === null) {
+      state.selectedBeatIndex = null;
+      return;
+    }
+    if (!sequenceStateService) {
+      state.selectedBeatIndex = index;
+      return;
+    }
+    if (sequenceStateService.isValidBeatIndex(state.currentSequence, index)) {
+      state.selectedBeatIndex = index;
+    } else {
+      state.selectedBeatIndex = null;
+    }
+  }
+
+  function clearSelection(): void {
+    state.selectedBeatIndex = null;
+  }
+
+  function addBeat(beatData?: Partial<BeatData>): void {
+    if (!state.currentSequence || !sequenceStateService) return;
+    try {
+      state.currentSequence = sequenceStateService.addBeat(
+        state.currentSequence,
+        beatData
+      );
+      state.error = null;
+    } catch (err) {
+      state.error = err instanceof Error ? err.message : "Failed to add beat";
+    }
+  }
+
+  function removeBeat(beatIndex: number): void {
+    if (!state.currentSequence || !sequenceStateService) return;
+    try {
+      state.currentSequence = sequenceStateService.removeBeat(
+        state.currentSequence,
+        beatIndex
+      );
+      if (state.selectedBeatIndex === beatIndex) {
+        state.selectedBeatIndex = null;
+      } else if (
+        state.selectedBeatIndex !== null &&
+        state.selectedBeatIndex > beatIndex
+      ) {
+        state.selectedBeatIndex = state.selectedBeatIndex - 1;
+      }
+      state.error = null;
+    } catch (err) {
+      state.error =
+        err instanceof Error ? err.message : "Failed to remove beat";
+    }
+  }
+
+  function updateBeat(beatIndex: number, beatData: Partial<BeatData>): void {
+    if (!state.currentSequence || !sequenceStateService) return;
+    try {
+      state.currentSequence = sequenceStateService.updateBeat(
+        state.currentSequence,
+        beatIndex,
+        beatData
+      );
+      state.error = null;
+    } catch (err) {
+      state.error =
+        err instanceof Error ? err.message : "Failed to update beat";
+    }
+  }
+
+  function insertBeat(beatIndex: number, beatData?: Partial<BeatData>): void {
+    if (!state.currentSequence || !sequenceStateService) return;
+    try {
+      state.currentSequence = sequenceStateService.insertBeat(
+        state.currentSequence,
+        beatIndex,
+        beatData
+      );
+      if (
+        state.selectedBeatIndex !== null &&
+        state.selectedBeatIndex >= beatIndex
+      ) {
+        state.selectedBeatIndex = state.selectedBeatIndex + 1;
+      }
+      state.error = null;
+    } catch (err) {
+      state.error =
+        err instanceof Error ? err.message : "Failed to insert beat";
+    }
+  }
+
+  function clearSequenceBeats(): void {
+    if (!state.currentSequence || !sequenceStateService) return;
+    try {
+      state.currentSequence = sequenceStateService.clearSequence(
+        state.currentSequence
+      );
+      state.selectedBeatIndex = null;
+      state.error = null;
+    } catch (err) {
+      state.error =
+        err instanceof Error ? err.message : "Failed to clear sequence";
+    }
+  }
+
+  function duplicateSequence(newName?: string): SequenceData | null {
+    if (!state.currentSequence || !sequenceStateService) return null;
+    try {
+      const duplicated = sequenceStateService.duplicateSequence(
+        state.currentSequence,
+        newName
+      );
+      state.error = null;
+      return duplicated;
+    } catch (err) {
+      state.error =
+        err instanceof Error ? err.message : "Failed to duplicate sequence";
+      return null;
+    }
+  }
+
+  function setStartPosition(startPosition: BeatData): void {
+    if (!state.currentSequence || !sequenceStateService) return;
+    try {
+      state.currentSequence = sequenceStateService.setStartPosition(
+        state.currentSequence,
+        startPosition
+      );
+      state.error = null;
+    } catch (err) {
+      state.error =
+        err instanceof Error ? err.message : "Failed to set start position";
+    }
+  }
+
+  function mirrorSequence(): void {
+    if (!state.currentSequence || !sequenceStateService) return;
+    try {
+      state.currentSequence = sequenceStateService.mirrorSequence(
+        state.currentSequence
+      );
+      state.error = null;
+    } catch (err) {
+      state.error =
+        err instanceof Error ? err.message : "Failed to mirror sequence";
+    }
+  }
+
+  function swapColors(): void {
+    if (!state.currentSequence || !sequenceStateService) return;
+    try {
+      state.currentSequence = sequenceStateService.swapColors(
+        state.currentSequence
+      );
+      state.error = null;
+    } catch (err) {
+      state.error =
+        err instanceof Error ? err.message : "Failed to swap colors";
+    }
+  }
+
+  function rotateSequence(direction: "clockwise" | "counterclockwise"): void {
+    if (!state.currentSequence || !sequenceStateService) return;
+    try {
+      state.currentSequence = sequenceStateService.rotateSequence(
+        state.currentSequence,
+        direction
+      );
+      state.error = null;
+    } catch (err) {
+      state.error =
+        err instanceof Error ? err.message : "Failed to rotate sequence";
+    }
+  }
+
+  function validateCurrentSequence(): ValidationResult | null {
+    if (!state.currentSequence || !sequenceStateService) return null;
+    return sequenceStateService.validateSequence(state.currentSequence);
+  }
+
+  function isBeatSelected(index: number): boolean {
+    return state.selectedBeatIndex === index;
+  }
+
+  function getBeat(index: number): BeatData | null {
+    if (sequenceStateService)
+      return sequenceStateService.getSelectedBeat(state.currentSequence, index);
+    if (!state.currentSequence) return null;
+    return state.currentSequence.beats[index] ?? null;
+  }
+
+  function hasContent(): boolean {
+    return state.currentSequence?.beats.some((b) => !b.isBlank) ?? false;
   }
 
   // ============================================================================
@@ -415,12 +684,17 @@ export function createSequenceState(sequenceService: ISequenceService) {
     // Computed getters
     getCurrentBeats,
     getSelectedBeatData,
-    getSelectedBeat,
-    getHasCurrentSequence,
+    getSelectedBeat: getSelectedBeat,
+    getHasCurrentSequence: hasCurrentSequence,
     getSequenceCount,
     getHasUnsavedChanges,
     getHasArrowPositions,
     getArrowPositioningComplete,
+    hasSequence: hasCurrentSequence,
+    beatCount: getBeatCount,
+    sequenceStatistics: getSequenceStatistics,
+    sequenceWord: getSequenceWord,
+    sequenceDuration: getSequenceDuration,
 
     // Actions
     setCurrentSequence,
@@ -441,6 +715,21 @@ export function createSequenceState(sequenceService: ISequenceService) {
     getArrowPosition,
     clearArrowPositions,
     resetSequenceState,
+    clearSelection,
+    addBeat,
+    removeBeat,
+    updateBeat,
+    insertBeat,
+    clearSequence: clearSequenceBeats,
+    duplicateSequence,
+    setStartPosition,
+    mirrorSequence,
+    swapColors,
+    rotateSequence,
+    validateCurrentSequence,
+    isBeatSelected,
+    getBeat,
+    hasContent,
 
     // Service integration
     loadSequences,
@@ -455,3 +744,5 @@ export function createSequenceState(sequenceService: ISequenceService) {
 
 // Export only the factory function - components should use createSequenceState()
 // This eliminates legacy compatibility code and enforces proper component-scoped state
+
+export type SequenceState = ReturnType<typeof createSequenceState>;

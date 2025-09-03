@@ -50,8 +50,7 @@ export const SEO_CONFIG = {
   siteName: "TKA - The Kinetic Alphabet",
   description:
     "Revolutionary browser-based tool for creating flow arts sequences",
-  keywords:
-    "flow arts, notation, vtg, tka",
+  keywords: "flow arts, notation, vtg, tka",
   author: "Austen Cloud",
   language: "en",
   type: "website",

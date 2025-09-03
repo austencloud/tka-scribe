@@ -30,12 +30,6 @@ export interface SequenceFile {
   isValid: boolean;
 }
 
-export interface SequenceMetadata {
-  word: string;
-  author: string;
-  totalBeats: number;
-}
-
 export interface MetadataAnalysisResult {
   fileName: string;
   isValid: boolean;

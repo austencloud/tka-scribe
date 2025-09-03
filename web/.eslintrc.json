@@ -35,7 +35,8 @@
               "../domain/**",
               "../../domain/**",
               "../../../domain/**",
-              "../../../../domain/**"
+              "../../../../domain/**",
+              "$lib/domain/**"
             ],
             "message": "❌ Use '$domain' alias instead of relative paths to import from domain layer. This enforces clean architecture boundaries."
           },

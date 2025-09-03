@@ -119,7 +119,7 @@ export const SequenceDataSchema = z.object({
       const uuidRegex =
         /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
       const customIdRegex = /^seq_\d+_[a-z0-9]+$/i; // seq_timestamp_randomstring
-      const shortIdRegex = /^[a-zA-Zα-ωΑ-Ω\-]+$/; // Short letter-based IDs like "bjea", "bσtw"
+      const shortIdRegex = /^[a-zA-Zα-ωΑ-Ω-]+$/; // Short letter-based IDs like "bjea", "bσtw"
 
       return (
         uuidRegex.test(id) || customIdRegex.test(id) || shortIdRegex.test(id)

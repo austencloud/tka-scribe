@@ -4,3 +4,8 @@ export interface PropState {
   x: number;
   y: number;
 }
+
+export interface PropStates {
+  blue: PropState;
+  red: PropState;
+}

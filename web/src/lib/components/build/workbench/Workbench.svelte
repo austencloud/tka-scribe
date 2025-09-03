@@ -1,8 +1,6 @@
 <script lang="ts">
   import { resolve, TYPES } from "$lib/services/inversify/container";
-  import { createBeatFrameState } from "$state";
-  import { createSequenceState } from "$state";
-  import { createWorkbenchState } from "$state";
+  import { createBeatFrameState, createSequenceState, createWorkbenchState } from "$state";
   import { onMount } from "svelte";
   import ButtonPanel from "./ButtonPanel.svelte";
   import SequenceContent from "./SequenceContent.svelte";
@@ -22,7 +20,9 @@
   >(TYPES.IWorkbenchCoordinationService);
 
   // Create component-scoped states
-  const sequenceState = createSequenceState(sequenceStateService);
+  const sequenceState = createSequenceState({
+    sequenceStateService: sequenceStateService,
+  });
   const beatFrameState = createBeatFrameState(beatFrameService);
   const workbenchState = createWorkbenchState(
     workbenchService,

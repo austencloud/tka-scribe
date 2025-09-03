@@ -29,7 +29,7 @@ export function fadeOut(
     settings,
   }: { duration?: number; settings?: { animationsEnabled?: boolean } } = {}
 ) {
-  if (!shouldAnimate(settings)) {
+  if (!shouldUseFadeAnimation(settings)) {
     return { duration: 0 };
   }
 
@@ -51,7 +51,7 @@ export function fadeIn(
     settings?: { animationsEnabled?: boolean };
   } = {}
 ) {
-  if (!shouldAnimate(settings)) {
+  if (!shouldUseFadeAnimation(settings)) {
     return { duration: 0 };
   }
 
@@ -59,9 +59,9 @@ export function fadeIn(
 }
 
 /**
- * Check if animations should be enabled based on user preferences
+ * Check if fade animations should be enabled based on user preferences
  */
-export function shouldAnimate(settings?: {
+export function shouldUseFadeAnimation(settings?: {
   animationsEnabled?: boolean;
 }): boolean {
   // Respect user's reduced motion preference
@@ -88,7 +88,7 @@ export function conditionalFade(
 ) {
   const { duration = 300, settings } = params;
 
-  if (!shouldAnimate(settings)) {
+  if (!shouldUseFadeAnimation(settings)) {
     return { duration: 0 };
   }
 

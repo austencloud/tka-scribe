@@ -15,7 +15,7 @@ Beautiful, intuitive visual controls replacing boring dropdowns:
     MotionColor,
     MotionType,
   } from "$domain";
-  import { getAvailableMotionTypes } from "$utils";
+  import { getAvailableMotionTypes } from "$lib/services/animator/contracts/motion-helpers";
   import LocationGrid from "./LocationGrid.svelte";
   import MotionTypeButtons from "./MotionTypeButtons.svelte";
   import OrientationButton from "./OrientationButton.svelte";

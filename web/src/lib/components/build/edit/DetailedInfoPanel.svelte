@@ -1,9 +1,9 @@
 <!-- DetailedInfoPanel.svelte - Detailed information about selected beat -->
 <script lang="ts">
-  import type { IGridModeDeriver } from "$contracts";
   import type { BeatData, SequenceData } from "$domain";
   import { GridMode, MotionColor } from "$domain";
   import { resolve, TYPES } from "$lib/services/inversify/container";
+  import type { IGridModeDeriver } from "$services";
   import { onMount } from "svelte";
 
   // Props

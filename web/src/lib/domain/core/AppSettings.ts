@@ -44,7 +44,7 @@ export interface AppSettings {
     addUserInfo?: boolean;
   };
   // Word Card Settings
-  sequenceCard?: {
+  WordCard?: {
     defaultColumnCount?: number;
     defaultLayoutMode?: "grid" | "list" | "printable";
     enableTransparency?: boolean;

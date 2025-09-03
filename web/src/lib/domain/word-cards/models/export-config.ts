@@ -5,6 +5,8 @@
  * These types are specific to word card export functionality.
  */
 
+import type { WordCardExportResult } from "./WordCard";
+
 // ============================================================================
 // IMAGE EXPORT CONFIGURATION
 // ============================================================================
@@ -51,14 +53,12 @@ export interface BatchExportOptions {
 // EXPORT RESULT TYPES
 // ============================================================================
 
-import type { ExportResult } from "$domain";
-
 // Extended result with additional service-level metadata
-export interface ExportResultWithMetadata extends ExportResult {
+export interface ExportResultWithMetadata extends WordCardExportResult {
   fileName?: string;
   mimeType?: string;
   warnings?: string[];
-  // Note: metadata is inherited from ExportResult with proper structure
+  // Note: metadata is inherited from WordCardExportResult with proper structure
 }
 
 export interface BatchExportResult {
@@ -79,14 +79,9 @@ export interface BatchExportResult {
 // ============================================================================
 
 // Extended service-level export result with additional metadata
-export interface ServiceExportResult extends ExportResult {
-  sequenceId: string;
-  // Note: filename and metadata are inherited from ExportResult
-  metrics: {
-    processingTime: number;
-    fileSize: number;
-    resolution: { width: number; height: number };
-  };
+export interface ServiceExportResult extends WordCardExportResult {
+  conversionStartTime: number;
+  // Note: filename and metadata are inherited from WordCardExportResult
 }
 
 // ============================================================================

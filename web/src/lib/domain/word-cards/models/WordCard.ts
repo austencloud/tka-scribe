@@ -8,7 +8,7 @@
 import type { SequenceData } from "$domain";
 
 // Basic export result interface
-export interface ExportResult {
+export interface WordCardExportResult {
   success: boolean;
   data?: Blob | string;
   filename?: string;
@@ -76,7 +76,7 @@ export interface ExportOptions {
   jpgQuality: number; // 1-100, higher is better quality
 }
 
-export interface SequenceCardExportSettings {
+export interface WordCardExportSettings {
   // Export format
   format: "individual" | "batch" | "page" | "pdf";
 
@@ -100,7 +100,7 @@ export interface SequenceCardExportSettings {
 }
 
 export interface PrintLayoutOptions {
-  paperSize: SequenceCardPaperSize;
+  paperSize: WordCardPaperSize;
   orientation: "Portrait" | "Landscape";
   margins: {
     top: number;
@@ -122,7 +122,7 @@ export interface PrintLayoutOptions {
   footerText?: string;
 }
 
-type SequenceCardPaperSize = "A4" | "Letter" | "Legal" | "Tabloid";
+type WordCardPaperSize = "A4" | "Letter" | "Legal" | "Tabloid";
 
 // ============================================================================
 // DEVICE CAPABILITIES & RESPONSIVENESS
@@ -182,7 +182,7 @@ export interface CacheStats {
 // SEQUENCE CARD DISPLAY TYPES
 // ============================================================================
 
-export interface SequenceCardDisplayOptions {
+export interface WordCardDisplayOptions {
   // Visual options
   showBeatNumbers: boolean;
   showDifficulty: boolean;
@@ -205,7 +205,7 @@ export interface SequenceCardDisplayOptions {
   blurIntensity: number;
 }
 
-export interface SequenceCardMetrics {
+export interface WordCardMetrics {
   // Dimensions
   width: number;
   height: number;
@@ -289,7 +289,7 @@ export interface ValidationWarning {
 // EVENT TYPES
 // ============================================================================
 
-export interface SequenceCardEvents {
+export interface WordCardEvents {
   // Selection events
   cardSelected: { sequenceId: string; card: SequenceData };
   cardDeselected: { sequenceId: string };
@@ -298,7 +298,7 @@ export interface SequenceCardEvents {
   // Export events
   exportStarted: { sequences: SequenceData[]; options: ExportOptions };
   exportProgress: { progress: ProgressInfo };
-  exportCompleted: { results: ExportResult[] };
+  exportCompleted: { results: WordCardExportResult[] };
   exportCancelled: { reason: string };
   exportError: { error: Error; sequences: SequenceData[] };
 
@@ -314,7 +314,7 @@ export interface SequenceCardEvents {
   cacheCleared: { reason: string };
 }
 
-// Note: ExportResult is now imported from build/image-export/core
+// Note: WordCardExportResult is defined above
 // to avoid duplication across the domain
 
 // ============================================================================
@@ -330,12 +330,12 @@ export type SortField =
   | "created"
   | "modified";
 
-export interface SequenceCardSortConfig {
+export interface WordCardSortConfig {
   field: SortField;
   order: SortOrder;
 }
 
-export interface SequenceCardFilterConfig {
+export interface WordCardFilterConfig {
   lengthFilter: number | null; // null means "all"
   difficultyFilter: string[];
   authorFilter: string[];
@@ -346,9 +346,9 @@ export interface SequenceCardFilterConfig {
 // COMPONENT PROPS TYPES
 // ============================================================================
 
-export interface SequenceCardProps {
+export interface WordCardProps {
   sequence: SequenceData;
-  displayOptions?: Partial<SequenceCardDisplayOptions>;
+  displayOptions?: Partial<WordCardDisplayOptions>;
   isSelected?: boolean;
   isLoading?: boolean;
   onSelect?: (sequence: SequenceData) => void;
@@ -356,17 +356,17 @@ export interface SequenceCardProps {
   onPreview?: (sequence: SequenceData) => void;
 }
 
-export interface SequenceCardGridProps {
+export interface WordCardGridProps {
   sequences: SequenceData[];
   layout: LayoutConfig;
-  displayOptions?: Partial<SequenceCardDisplayOptions>;
+  displayOptions?: Partial<WordCardDisplayOptions>;
   onSequenceSelect?: (sequence: SequenceData) => void;
   onLayoutChange?: (layout: LayoutConfig) => void;
 }
 
-export interface SequenceCardExportDialogProps {
+export interface WordCardExportDialogProps {
   sequences: SequenceData[];
-  initialSettings?: Partial<SequenceCardExportSettings>;
-  onExport?: (settings: SequenceCardExportSettings) => void;
+  initialSettings?: Partial<WordCardExportSettings>;
+  onExport?: (settings: WordCardExportSettings) => void;
   onCancel?: () => void;
 }

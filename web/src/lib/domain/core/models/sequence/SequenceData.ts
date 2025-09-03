@@ -98,3 +98,17 @@ export function removeBeatFromSequence(
     beats: newBeats,
   });
 }
+
+// ============================================================================
+// SEQUENCE METADATA
+// ============================================================================
+
+/**
+ * Essential metadata about a sequence
+ * Subset of SequenceData containing the most commonly needed fields
+ */
+export interface SequenceMetadata {
+  word: string;
+  author: string;
+  totalBeats: number;
+}

@@ -2,11 +2,13 @@
 SequenceThumbnail Component - Refactored Implementation
 
 Displays individual sequence thumbnails using extracted components for better
-separation of concerns and maintainability. Reduced from 537 lines to ~80 lines.
+separation of concerns and maintainability. 
+
+Updated UX: Clicking thumbnail opens fullscreen view directly.
 -->
 <script lang="ts">
-  import type { IThumbnailService } from "$contracts";
   import type { SequenceData } from "$domain";
+  import type { IThumbnailService } from "$services";
   import ThumbnailActions from "./ThumbnailActions.svelte";
   import ThumbnailImage from "./ThumbnailImage.svelte";
   import ThumbnailMetadata from "./ThumbnailMetadata.svelte";
@@ -28,17 +30,17 @@ separation of concerns and maintainability. Reduced from 537 lines to ~80 lines.
     onAction?: (action: string, sequence: SequenceData) => void;
   }>();
 
-  // Event handlers - Updated for new UX: click to animate
+  // Event handlers - Updated for new UX: click to open fullscreen
   function handleClick() {
-    // New UX: Default click behavior is to animate the sequence
-    onAction("animate", sequence);
+    // New UX: Default click behavior is to view fullscreen
+    onAction("fullscreen", sequence);
   }
 
   function handleKeydown(event: KeyboardEvent) {
     if (event.key === "Enter" || event.key === " ") {
       event.preventDefault();
-      // New UX: Default keyboard behavior is to animate the sequence
-      onAction("animate", sequence);
+      // New UX: Default keyboard behavior is to view fullscreen
+      onAction("fullscreen", sequence);
     }
   }
 </script>

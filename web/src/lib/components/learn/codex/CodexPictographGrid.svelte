@@ -12,16 +12,10 @@
   interface Props {
     pictographsByLetter: Record<string, PictographData | null>;
     letterRows: string[][];
-    pictographSize?: number;
     onPictographClick?: (pictograph: PictographData) => void;
   }
 
-  let {
-    pictographsByLetter,
-    letterRows,
-    pictographSize = 80,
-    onPictographClick,
-  }: Props = $props();
+  let { pictographsByLetter, letterRows, onPictographClick }: Props = $props();
 
   // Handle pictograph click
   function handlePictographClick(pictograph: PictographData) {
@@ -224,7 +218,16 @@
     justify-content: center;
     align-items: center;
     gap: var(--desktop-spacing-md);
-    flex-wrap: wrap;
+    margin: 0 auto;
+    max-width: 100%;
+    padding: var(--desktop-spacing-sm) 0;
+  }
+
+  /* All pictographs exactly the same size regardless of row length */
+  .pictograph-row > * {
+    width: 120px; /* Fixed width for all pictographs */
+    height: 120px; /* Fixed height for all pictographs */
+    flex-shrink: 0; /* Prevent shrinking */
   }
 
   .pictograph-item {
@@ -314,7 +317,7 @@
     }
   }
 
-  /* Responsive design */
+  /* Responsive design - maintain 6 columns but adjust spacing */
   @media (max-width: 768px) {
     .codex-pictograph-grid {
       padding: var(--desktop-spacing-md);
@@ -332,11 +335,11 @@
 
   @media (max-width: 480px) {
     .pictograph-row {
-      justify-content: center;
+      gap: var(--desktop-spacing-xs);
     }
 
     .pictograph-item {
-      min-width: 60px;
+      padding: calc(var(--desktop-spacing-xs) / 2);
     }
   }
 </style>

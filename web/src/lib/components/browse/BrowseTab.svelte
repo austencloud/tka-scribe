@@ -8,6 +8,9 @@ Integrates panel management service with runes for:
 - Reactive UI updates
 -->
 <script lang="ts">
+  import type { SequenceData } from "$domain";
+  import { NavigationMode } from "$domain";
+  import { resolve, TYPES } from "$lib/services/inversify/container";
   import type {
     IBrowsePanelManager,
     IBrowseService,
@@ -18,10 +21,7 @@ Integrates panel management service with runes for:
     ISectionService,
     ISequenceIndexService,
     IThumbnailService,
-  } from "$contracts";
-  import type { SequenceData } from "$domain";
-  import { NavigationMode } from "$domain";
-  import { resolve, TYPES } from "$lib/services/inversify/container";
+  } from "$services";
   import {
     BROWSE_TAB_PANEL_CONFIGS,
     createBrowseState,
@@ -32,16 +32,16 @@ Integrates panel management service with runes for:
   import BrowseLayout from "./BrowseLayout.svelte";
   import NavigationSidebar from "./NavigationSidebar.svelte";
   // Existing components
+  import LoadingOverlay from "./BrowseLoadingOverlay.svelte";
   import DeleteConfirmationDialog from "./DeleteConfirmationDialog.svelte";
   import ErrorBanner from "./ErrorBanner.svelte";
   import FilterSelectionPanel from "./FilterSelectionPanel.svelte";
   import FullscreenSequenceViewer from "./FullscreenSequenceViewer.svelte";
-  import LoadingOverlay from "./BrowseLoadingOverlay.svelte";
   import PanelContainer from "./PanelContainer.svelte";
   import SequenceBrowserPanel from "./browser/SequenceBrowserPanel.svelte";
   // Event handlers
-  import { createBrowseEventHandlers } from "./browse-event-handlers";
-  import { createNavigationEventHandlers } from "./navigation-event-handlers";
+  import { createBrowseEventHandlers } from "$lib/services/browse/implementations/browse-event-handlers";
+  import { createNavigationEventHandlers } from "$lib/services/browse/implementations/navigation-event-handlers";
 
   // ✅ RESOLVE SERVICES: Get services from DI container
   const browseService = resolve(TYPES.IBrowseService) as IBrowseService;
@@ -113,7 +113,11 @@ Integrates panel management service with runes for:
   // Load initial data when component mounts
   onMount(async () => {
     try {
+      // Load all sequences first
       await browseState.loadAllSequences();
+      
+      // Then restore any saved filter state (including starting letter)
+      await browseState.restoreSavedState();
     } catch (error) {
       console.error("❌ Failed to load browse data:", error);
     }
@@ -197,15 +201,12 @@ Integrates panel management service with runes for:
   <!-- Error banner -->
   <ErrorBanner
     show={hasError}
-    message={browseState.loadingState.error || ""}
+    message={browseState.loadingState?.error || ""}
     onDismiss={handleClearError}
   />
 
   <!-- Enhanced layout with unified panel management -->
-  <BrowseLayout
-    {panelState}
-    onNavigationResize={handleNavigationResize}
-  >
+  <BrowseLayout {panelState} onNavigationResize={handleNavigationResize}>
     {#snippet navigationSidebar()}
       <NavigationSidebar
         sections={navigationSections}
@@ -241,7 +242,7 @@ Integrates panel management service with runes for:
   <LoadingOverlay
     show={isLoading && sequences.length === 0}
     message="Loading sequence library..."
-    detail={browseState.loadingState.currentOperation}
+    detail={browseState.loadingState?.currentOperation}
   />
 
   <!-- Delete Confirmation Dialog -->

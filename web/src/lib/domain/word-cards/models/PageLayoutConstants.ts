@@ -9,14 +9,14 @@ import type {
   MeasurementUnit,
   PageMargins,
   PaperSpecification,
-  SequenceCardPaperSize,
+  WordCardPaperSize,
 } from "$domain";
 
 // ============================================================================
 // CONSTANTS
 // ============================================================================
 
-export const PAPER_SIZES: Record<SequenceCardPaperSize, PaperSpecification> = {
+export const PAPER_SIZES: Record<WordCardPaperSize, PaperSpecification> = {
   A4: {
     name: "A4",
     dimensions: { width: 595, height: 842 }, // 210mm x 297mm at 72 DPI
@@ -57,8 +57,9 @@ export const DEFAULT_MARGINS: PageMargins = {
 };
 
 export const DEFAULT_DPI_CONFIG: DPIConfiguration = {
-  screen: 96,
-  print: 300,
+  screenDPI: 96,
+  printDPI: 300,
+  scaleFactor: 1.0,
 };
 
 export const MEASUREMENT_UNITS: Record<string, MeasurementUnit> = {

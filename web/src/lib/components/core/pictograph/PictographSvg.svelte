@@ -6,10 +6,10 @@ This component is focused solely on rendering the SVG elements
 and leaves state management to the parent component.
 -->
 <script lang="ts">
-  import type { IGridModeDeriver } from "$contracts";
   import type { MotionColor, MotionData, PictographData } from "$domain";
   import { GridMode } from "$domain";
   import { resolve, TYPES } from "$lib/services/inversify/container";
+  import type { IGridModeDeriver } from "$services";
   import GridSvg from "./GridSvg.svelte";
   import PropSvg from "./PropSvg.svelte";
   import TKAGlyph from "./TKAGlyph.svelte";

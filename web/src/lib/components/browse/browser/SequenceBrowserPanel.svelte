@@ -1,15 +1,14 @@
 <script lang="ts">
-  import type { SequenceData } from "$domain";
-  import type { FilterType, FilterValue } from "$domain";
+  import type { FilterType, FilterValue, SequenceData } from "$domain";
   import { SortMethod } from "$domain";
-  import type { IThumbnailService } from "$contracts";
   import { resolve, TYPES } from "$lib/services/inversify/container";
+  import type { IThumbnailService } from "$services";
   import { getBrowseTabStateManager } from "$state";
   import { onMount } from "svelte";
   import SequenceBrowserControls from "./SequenceBrowserControls.svelte";
   import SequenceBrowserFooter from "./SequenceBrowserFooter.svelte";
-  import SequenceBrowserStates from "./SequenceBrowserStates.svelte";
   import SequenceGrid from "./SequenceBrowserGrid.svelte";
+  import SequenceBrowserStates from "./SequenceBrowserStates.svelte";
 
   // ✅ PURE RUNES: Props using modern Svelte 5 runes
   const {

@@ -8,4 +8,3 @@
 // Main pictograph components
 export { default as Pictograph } from "./Pictograph.svelte";
 export { default as PictographSvg } from "./PictographSvg.svelte";
-

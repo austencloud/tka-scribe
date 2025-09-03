@@ -10,96 +10,72 @@ import "reflect-metadata";
 
 // Import service types
 import { TYPES } from "./types";
-// Import service implementations
-import {
-  CodexService,
-  CsvLoader,
-  CSVParser,
-  LessonRepository,
-  LetterMappingRepository,
-  LetterQueryHandler,
-  PictographOperationsService,
-} from "$implementations";
+// Import service implementations using new tab-first structure
 
-// Import application services
+// Core services
 import {
   ApplicationInitializer,
+  BackgroundService,
+  BetaDetectionService,
+  CsvLoader,
+  CSVParser,
+  DataTransformer,
   DeviceDetector,
-  LocalStoragePersistenceService,
+  EnumMapper,
+  ErrorHandlingService,
+  GridModeDeriver,
+  LetterDeriver,
+  LetterQueryHandler,
+  MotionQueryHandler,
+  OptionFilterer,
+  PictographValidatorService,
   SettingsService,
-} from "$implementations";
+} from "../core/implementations";
 
-// Import sequence services
+// Browse services
 import {
+  BrowseService,
+  FavoritesService,
+  ThumbnailService,
+} from "../browse/implementations";
+
+// Build services
+import {
+  BeatFrameService,
+  BuildTabService,
+  PictographGenerator,
+  PositionPatternService,
   SequenceDomainService,
+  SequenceGenerationService,
   SequenceImportService,
   SequenceService,
   SequenceStateService,
-} from "$implementations";
-
-// Import build tab services
-import { BuildTabService } from "$implementations";
-
-// Import layout services
-import { BeatFrameService } from "$implementations";
-
-// Import workbench services
-import {
   WorkbenchBeatOperationsService,
   WorkbenchCoordinationService,
   WorkbenchService,
-} from "$implementations";
+} from "../build/implementations";
 
-// Import domain services
-import { GridModeDeriver } from "$implementations";
-
-// Import rendering services
-import { PropCoordinator } from "$implementations";
-
-// Import browse services
-import { BrowseService, FavoritesService } from "$implementations";
-
-// Import additional data services
+// Learn services
 import {
-  // ArrowPlacementService, // TODO: Restore when positioning directory is recreated
-  DataTransformer,
-  EnumMapper,
-  MotionQueryHandler,
-  OptionFilterer,
-} from "$implementations";
+  CodexService,
+  LessonRepository,
+  LetterMappingRepository,
+  PictographOperationsService,
+} from "../learn/implementations";
 
-// Import additional domain services
-import {
-  LetterDeriver,
-  PictographValidatorService,
-  PositionPatternService,
-} from "$implementations";
-
-// Import utility services
-import { BetaDetectionService, ErrorHandlingService } from "$implementations";
-
-// Import export services
-import {
-  ExportService,
-  PageImageExportService,
-  ThumbnailService,
-} from "$implementations";
-
-// Import generation services
+// Word Card services
 import {
   PageFactoryService,
-  PictographGenerator,
-  SequenceGenerationService,
-} from "$implementations";
+  PageImageExportService,
+} from "../word-card/implementations";
 
-// Import background services
-import { BackgroundService } from "$implementations";
-
-// Import image export services
+// Additional Build services (export, positioning, rendering)
 import {
-  BeatFallbackRenderer,
   BeatRenderingService,
   CanvasManagementService,
+  ConstructSubTabCoordinationService,
+  CSVPictographLoaderService,
+  DeleteService,
   ExportConfig,
   ExportMemoryCalculator,
   ExportOptionsValidator,
@@ -109,62 +85,48 @@ import {
   ImageCompositionService,
   ImagePreviewGenerator,
   LayoutCalculationService,
+  PrintablePageLayoutService,
+  SequenceDeletionService,
+  SequenceIndexService,
   TKAImageExportService,
-} from "$implementations";
+} from "../build/implementations";
 
-// Import navigation services
+// Core rendering services that were misplaced
+import { BeatFallbackRenderer } from "../core/implementations";
+
+// Additional Browse services
 import {
   BrowsePanelManager,
   BrowseSectionService,
   BrowseStatePersister,
+  FilterPersistenceService,
   NavigationService,
-} from "$implementations";
+} from "../browse/implementations";
 
-// Import additional persistence services
-import { FilterPersistenceService } from "$implementations";
-
-// Import positioning services (from core/pictograph/positioning)
+// Additional Core services (positioning, rendering)
 import {
   ArrowLocationService,
   ArrowPlacementKeyService,
   ArrowPositioningService,
-  BetaOffsetCalculator,
-  PropPlacementService,
-} from "$implementations";
-
-// Import additional rendering services
-import {
   ArrowRenderer,
   BeatGridService,
+  BetaOffsetCalculator,
   GridRenderingService,
   OverlayRenderer,
+  PropPlacementService,
   SvgConfiguration,
   SvgUtilityService,
-} from "$implementations";
+} from "../core/implementations";
 
-// Import additional sequence services
-import {
-  DeleteService,
-  PrintablePageLayoutService,
-  SequenceDeletionService,
-  SequenceIndexService,
-} from "$implementations";
-
-// Import animator services
+// Animator services
 import {
   AnimationControlService,
   MotionParameterService,
-} from "$implementations";
-
-// Import movement services
-import { CSVPictographLoaderService } from "$implementations";
-
-// Import missing construct services (these exist)
-import { ConstructSubTabCoordinationService } from "$implementations";
+} from "../animator/implementations";
 
 // Additional services will be added as needed
 
-// Import missing services that have confirmed implementations
+// Additional Core services (positioning, calculation, parsing)
 import {
   ArrowAdjustmentCalculator,
   ArrowCoordinateSystemService,
@@ -175,54 +137,48 @@ import {
   AttributeKeyGenerator,
   DashLocationCalculator,
   DefaultPlacementService,
-  DirectionalTupleCalculator,
   DirectionalTupleProcessor,
-  MotionLetterIdentificationService,
+  GridPositionDeriver,
   OrientationCalculationService,
-  QuadrantIndexCalculator,
+  PropCoordinator,
   SpecialPlacementOriKeyGenerator,
   SpecialPlacementService,
   TurnsTupleKeyGenerator,
-} from "$implementations";
+} from "../core/implementations";
 
-// Import additional positioning services
+// DirectionalTupleCalculator import
+import {
+  DirectionalTupleCalculator,
+  QuadrantIndexCalculator,
+} from "../core/implementations/pictograph/positioning/processors/DirectionalTupleProcessor";
 
-// Import additional services with confirmed implementations
+// Build services that were missing
+import { CSVPictographParserService } from "../build/implementations";
+
+// Additional Animator services
 import {
   AnimationStateService,
   BeatCalculationService,
-  CSVPictographParserService,
-  GridPositionDeriver,
+  MotionLetterIdentificationService,
   PropInterpolationService,
   SequenceAnimationEngine,
   SequenceAnimationOrchestrator,
-} from "$implementations";
-// ValidationService is defined as interface in PictographTransformationService but no implementation found
+} from "../animator/implementations";
 
-// Import additional services with confirmed implementations
-import {
-  DimensionCalculationService,
-  ImageFormatConverterService,
-  SVGToCanvasConverterService,
-} from "$implementations";
-
-// Import text rendering services
+// Additional Build services (export utilities, text rendering)
 import {
   DifficultyBadgeRenderer,
+  DimensionCalculationService,
+  ImageFormatConverterService,
+  OptionPickerDataService,
+  OptionPickerLayoutService,
+  StartPositionService,
+  SVGToCanvasConverterService,
   TextRenderingService,
   TextRenderingUtils,
   UserInfoRenderer,
   WordTextRenderer,
-} from "$implementations";
-
-// Import start position service
-import { StartPositionService } from "$implementations";
-
-// Import option picker services
-import {
-  OptionPickerDataService,
-  OptionPickerLayoutService,
-} from "$implementations";
+} from "../build/implementations";
 
 // Create container
 const container = new Container();
@@ -248,7 +204,7 @@ try {
 
   // Bind application services
   container.bind(TYPES.ISettingsService).to(SettingsService);
-  container.bind(TYPES.IPersistenceService).to(LocalStoragePersistenceService);
+  container.bind(TYPES.IPersistenceService).to(FilterPersistenceService);
   container.bind(TYPES.IDeviceDetector).to(DeviceDetector);
   container.bind(TYPES.IApplicationInitializer).to(ApplicationInitializer);
 
@@ -283,6 +239,7 @@ try {
   container.bind(TYPES.IGridModeDeriver).to(GridModeDeriver);
 
   // Bind rendering services
+  // PropCoordinator is exported from core/implementations
   container.bind(TYPES.IPropCoordinator).to(PropCoordinator);
 
   // Bind additional browse services
@@ -303,7 +260,8 @@ try {
   container.bind(TYPES.IPositionPatternService).to(PositionPatternService);
 
   // Bind export services
-  container.bind(TYPES.IExportService).to(ExportService);
+  // ExportService was renamed - using FileExportService instead
+  // container.bind(TYPES.IExportService).to(ExportService);
   container.bind(TYPES.IPageImageExportService).to(PageImageExportService);
   container.bind(TYPES.IThumbnailService).to(ThumbnailService);
 

@@ -45,7 +45,7 @@ export interface ResizeOperation {
   startSize: { width: number; height: number };
 }
 
-import { ResizeDirection } from "$domain";
+import { ResizeDirection } from "../../core/enums/enums";
 
 export interface SplitterConfig {
   orientation: "horizontal" | "vertical";

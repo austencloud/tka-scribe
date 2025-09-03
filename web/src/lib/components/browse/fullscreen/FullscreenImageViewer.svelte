@@ -1,7 +1,7 @@
 <!-- FullscreenImageViewer.svelte - Image display and navigation for fullscreen viewer -->
 <script lang="ts">
-  import type { IThumbnailService } from "$contracts";
   import type { SequenceData } from "$domain";
+  import type { IThumbnailService } from "$services";
 
   // ✅ PURE RUNES: Props using modern Svelte 5 runes
   let {
@@ -205,6 +205,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    pointer-events: auto;
   }
 
   .sequence-image {

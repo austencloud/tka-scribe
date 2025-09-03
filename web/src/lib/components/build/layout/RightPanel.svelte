@@ -19,7 +19,7 @@
     BeatData,
     PictographData,
   } from "$domain";
-  import { getAnimationSettings, shouldAnimateLocal as shouldAnimate } from "$utils";
+  import { getAnimationSettings } from "$utils";
   import { fade } from "svelte/transition";
 
   // Props from parent BuildTab
@@ -77,12 +77,12 @@
 
   // Transition parameters using runes
   let fadeOutParams = $derived(
-    shouldAnimate(animationSettings)
+    animationSettings.animationsEnabled
       ? { duration: OUT_DURATION }
       : { duration: 0 }
   );
   let fadeInParams = $derived(
-    shouldAnimate(animationSettings)
+    animationSettings.animationsEnabled
       ? { duration: IN_DURATION, delay: IN_DELAY }
       : { duration: 0 }
   );

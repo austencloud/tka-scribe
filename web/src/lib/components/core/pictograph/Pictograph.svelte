@@ -95,12 +95,12 @@ ARCHITECTURE:
   // LIFECYCLE & EFFECTS
   // =============================================================================
 
-  // Clear loading state when data changes
+  // Clear loading state when data changes (but preserve arrow visibility)
   $effect(() => {
     if (dataState.effectivePictographData) {
       errorMessage = null;
       loadedComponents.clear();
-      showArrows = false;
+      // Don't reset showArrows here - let onMount handle arrow positioning
     }
   });
 

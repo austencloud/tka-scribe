@@ -4,7 +4,7 @@ Updated to convert config format and handle real generation
 -->
 <script lang="ts">
   import { DifficultyLevel, GenerationMode, GridMode, LetterType, PropContinuity } from "$domain";
-  import type { GenerationConfig as ActionsGenerationConfig } from "$state/generate/generate-actions.svelte";
+  import type { GenerationConfig as ActionsGenerationConfig } from "$lib/state/build/generate/generate-actions.svelte";
   import type { GenerationConfig } from "$state/generate/generate-config.svelte";
 
   interface Props {

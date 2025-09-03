@@ -12,7 +12,7 @@ Provides sophisticated navigation sections matching desktop functionality:
 Follows Svelte 5 runes + microservices architecture.
 -->
 <script lang="ts">
-  import type { NavigationItem, NavigationSection } from "$domain";
+  import type { NavigationItem, NavigationSectionConfig } from "$domain";
   import { slide } from "svelte/transition";
 
   // ✅ PURE RUNES: Props using modern Svelte 5 runes
@@ -23,7 +23,7 @@ Follows Svelte 5 runes + microservices architecture.
     isCollapsed = false,
     onToggleCollapse = () => {},
   } = $props<{
-    sections?: NavigationSection[];
+    sections?: NavigationSectionConfig[];
     onSectionToggle?: (sectionId: string) => void;
     onItemClick?: (sectionId: string, itemId: string) => void;
     isCollapsed?: boolean;
@@ -31,12 +31,15 @@ Follows Svelte 5 runes + microservices architecture.
   }>();
 
   // Handle section header click
-  function handleSectionClick(section: NavigationSection) {
+  function handleSectionClick(section: NavigationSectionConfig) {
     onSectionToggle(section.id);
   }
 
   // Handle navigation item click
-  function handleItemClick(section: NavigationSection, item: NavigationItem) {
+  function handleItemClick(
+    section: NavigationSectionConfig,
+    item: NavigationItem
+  ) {
     onItemClick(section.id, item.id);
   }
 
@@ -143,11 +146,12 @@ Follows Svelte 5 runes + microservices architecture.
     <!-- Footer Stats -->
     {#if sections.length > 0}
       {@const totalSequences = sections.reduce(
-        (sum: number, section: NavigationSection) => sum + section.totalCount,
+        (sum: number, section: NavigationSectionConfig) =>
+          sum + section.totalCount,
         0
       )}
       {@const expandedCount = sections.filter(
-        (s: NavigationSection) => s.isExpanded
+        (s: NavigationSectionConfig) => s.isExpanded
       ).length}
       <div class="sidebar-footer">
         <div class="footer-stats">

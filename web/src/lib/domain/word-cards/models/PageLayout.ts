@@ -1,14 +1,6 @@
-import type {
-  PageOrientation,
-  SequenceCardPaperSize,
-  SequenceData,
-} from "$domain";
+import type { PageOrientation, SequenceData, WordCardPaperSize } from "$domain";
 
 // Type alias for backward compatibility
-export interface PageDimensions {
-  width: number;
-  height: number;
-}
 
 export interface Margins {
   top: number;
@@ -18,7 +10,7 @@ export interface Margins {
 }
 
 export interface PageLayoutConfig {
-  paperSize: SequenceCardPaperSize;
+  paperSize: WordCardPaperSize;
   orientation: PageOrientation;
   margins: Margins;
   sequencesPerPage: number;
@@ -53,7 +45,7 @@ export interface GridConfig {
 }
 
 export interface LayoutCalculationRequest {
-  paperSize: SequenceCardPaperSize;
+  paperSize: WordCardPaperSize;
   orientation: PageOrientation;
   cardCount: number;
   cardAspectRatio: number;
@@ -66,10 +58,7 @@ export interface LayoutCalculationResult {
   utilization: number;
 }
 
-export interface DPIConfiguration {
-  screen: number;
-  print: number;
-}
+// DPIConfiguration moved to line 197 to avoid duplicates
 
 export interface PageCreationOptions {
   layout: PageLayoutConfig;
@@ -78,10 +67,222 @@ export interface PageCreationOptions {
   includeHeaders: boolean;
 }
 
+/**
+ * Page Layout Models
+ *
+ * Interface definitions for printable page layout functionality including page dimensions,
+ * paper sizes, margins, grid calculations, and print specifications.
+ */
+
+// ============================================================================
+// CORE PAGE LAYOUT INTERFACES
+// ============================================================================
+
+export interface PageDimensions {
+  width: number;
+  height: number;
+}
+
+export interface PageMargins {
+  top: number;
+  right: number;
+  bottom: number;
+  left: number;
+}
+
+export interface Rectangle {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
+
+export interface WordCardGridConfig {
+  rows: number;
+  columns: number;
+  spacing: number;
+  cardWidth: number;
+  cardHeight: number;
+}
+
 export interface Page {
-  pageNumber: number;
+  id: string;
   sequences: SequenceData[];
+  layout: WordCardGridConfig;
+  pageNumber: number;
+  paperSize: WordCardPaperSize;
+  orientation: PageOrientation;
+  margins: PageMargins;
+}
+
+// ============================================================================
+// PAPER SPECIFICATIONS
+// ============================================================================
+
+export interface PaperSpecification {
+  name: WordCardPaperSize;
+  dimensions: PageDimensions; // in points (1/72 inch)
+  displayName: string;
+  description: string;
+}
+
+export interface PrintConfiguration {
+  paperSize: WordCardPaperSize;
+  orientation: PageOrientation;
+  margins: PageMargins;
+  dpi: number;
+  enablePageNumbers: boolean;
+  enableHeader: boolean;
+  enableFooter: boolean;
+  headerText?: string;
+  footerText?: string;
+}
+
+// ============================================================================
+// LAYOUT CALCULATION INTERFACES
+// ============================================================================
+
+export interface LayoutCalculationRequest {
+  paperSize: WordCardPaperSize;
+  orientation: PageOrientation;
+  margins: PageMargins;
+  cardAspectRatio: number;
+  sequenceCount: number;
+  preferredCardsPerPage?: number;
+}
+
+export interface WordCardLayoutCalculationResult {
+  gridConfig: WordCardGridConfig;
+  pagesNeeded: number;
+  cardDimensions: PageDimensions;
+  contentArea: Rectangle;
+  utilization: number; // 0-1 representing how well the layout uses available space
+  isOptimal: boolean;
+}
+
+export interface GridCalculationOptions {
+  minCardsPerPage: number;
+  maxCardsPerPage: number;
+  preferSquareLayout: boolean;
+  prioritizeCardSize: boolean;
+  allowPartialLastPage: boolean;
+}
+
+// ============================================================================
+// PAGE LAYOUT CONFIGURATION
+// ============================================================================
+
+export interface PageLayoutConfig {
+  printConfiguration: PrintConfiguration;
+  gridOptions: GridCalculationOptions;
+  sequencesPerPage: number;
+  enableOptimization: boolean;
+}
+
+export interface PageCreationOptions {
   layout: PageLayoutConfig;
-  isEmpty: boolean;
-  message?: string;
+  sequences: SequenceData[];
+  startPageNumber: number;
+  enableEmptyPages: boolean;
+  emptyPageMessage?: string;
+}
+
+// ============================================================================
+// MEASUREMENT AND CONVERSION INTERFACES
+// ============================================================================
+
+export interface DPIConfiguration {
+  screenDPI: number;
+  printDPI: number;
+  scaleFactor: number;
+}
+
+export interface MeasurementUnit {
+  name: string;
+  pointsPerUnit: number; // 1 point = 1/72 inch
+  displayName: string;
+}
+
+export interface ConversionResult {
+  points: number;
+  pixels: number;
+  inches: number;
+  millimeters: number;
+}
+
+// ============================================================================
+// VALIDATION INTERFACES
+// ============================================================================
+
+export interface LayoutValidationError {
+  code: string;
+  message: string;
+  field?: string;
+  severity: "error" | "warning" | "info";
+}
+
+export interface LayoutValidationWarning {
+  code: string;
+  message: string;
+  suggestion?: string;
+}
+
+export interface LayoutSuggestion {
+  type: "paper_size" | "orientation" | "grid" | "margins";
+  description: string;
+  suggestedValue: unknown;
+  expectedImprovement: string;
+}
+
+// ============================================================================
+// OPTIMIZATION INTERFACES
+// ============================================================================
+
+export type OptimizationGoal =
+  | "maximize_card_size"
+  | "minimize_pages"
+  | "balanced";
+
+export interface LayoutOptimizationRequest {
+  goal: OptimizationGoal;
+  constraints: {
+    minCardSize?: PageDimensions;
+    maxPages?: number;
+    preferredAspectRatio?: number;
+  };
+  weights: {
+    cardSizeWeight: number;
+    pageCountWeight: number;
+    utilizationWeight: number;
+  };
+}
+
+export interface LayoutOptimizationResult {
+  recommendedConfig: PageLayoutConfig;
+  alternativeConfigs: PageLayoutConfig[];
+  optimizationScore: number;
+  reasoning: string[];
+}
+// Duplicate simplified types removed — using the core, fully-defined interfaces above.
+
+// ============================================================================
+// GRID LAYOUT INTERFACES
+// ============================================================================
+
+export interface GridLayout {
+  columns: number;
+  rows: number;
+  cardWidth: number;
+  cardHeight: number;
+  spacing: number;
+  totalWidth: number;
+  totalHeight: number;
+}
+
+export interface LayoutRecommendation {
+  layout: GridLayout;
+  score: number;
+  description: string;
+  pros: string[];
+  cons: string[];
 }

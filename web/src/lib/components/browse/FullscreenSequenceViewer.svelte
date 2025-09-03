@@ -1,7 +1,7 @@
 <!-- FullscreenSequenceViewer.svelte - Fullscreen sequence viewer with actions -->
 <script lang="ts">
-  import type { IThumbnailService } from "$contracts";
   import type { SequenceData } from "$domain";
+  import type { IThumbnailService } from "$services";
   import { fade } from "svelte/transition";
   // Import subcomponents
   import FullscreenActionButtons from "./fullscreen/FullscreenActionButtons.svelte";
@@ -24,6 +24,9 @@
 
   // State for current variation (shared with image viewer)
   let currentVariationIndex = $state(0);
+
+  // State for showing dismissal hint
+  let showDismissalHint = $state(true);
 
   // Dynamic header height detection
   let closeButtonTopOffset = $state(16); // Default 1rem
@@ -68,6 +71,14 @@
   $effect(() => {
     if (sequence) {
       currentVariationIndex = 0;
+      showDismissalHint = true;
+      
+      // Hide the hint after 3 seconds
+      const timeoutId = setTimeout(() => {
+        showDismissalHint = false;
+      }, 3000);
+      
+      return () => clearTimeout(timeoutId);
     }
   });
 
@@ -82,6 +93,11 @@
       handleClose();
     }
   }
+
+  // Hide hint on first interaction
+  function hideDismissalHint() {
+    showDismissalHint = false;
+  }
 </script>
 
 {#if show && sequence}
@@ -91,9 +107,11 @@
     transition:fade={{ duration: 300 }}
     onclick={handleBackdropClick}
     onkeydown={(e) => e.key === "Escape" && handleClose()}
+    onmousemove={hideDismissalHint}
     role="dialog"
     aria-modal="true"
     aria-labelledby="fullscreen-title"
+    aria-describedby="dismissal-instructions"
     tabindex="-1"
   >
     <!-- Close button positioned intelligently below header -->
@@ -110,7 +128,7 @@
     <div class="fullscreen-content">
       <!-- Sequence title above image -->
       <div class="sequence-title-container">
-        <h1 class="sequence-title">{sequence?.word || "Sequence"}</h1>
+        <h1 class="sequence-title" id="fullscreen-title">{sequence?.word || "Sequence"}</h1>
         {#if sequence?.difficulty}
           <span
             class="difficulty-badge"
@@ -134,6 +152,13 @@
       <div class="bottom-panel">
         <FullscreenActionButtons {sequence} {onAction} />
       </div>
+      
+      <!-- Dismissal hint -->
+      {#if showDismissalHint}
+        <div class="dismissal-hint" id="dismissal-instructions">
+          <span>Click anywhere outside the image or press ESC to close</span>
+        </div>
+      {/if}
     </div>
   </div>
 {/if}
@@ -249,6 +274,44 @@
     margin: 0 auto;
   }
 
+  .dismissal-hint {
+    position: fixed;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 2rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    z-index: 9998;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    animation: fadeInUp 0.5s ease-out, fadeOut 0.5s ease-out 2.5s forwards;
+    pointer-events: none;
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateX(-50%) translateY(1rem);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+  }
+
+  @keyframes fadeOut {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0;
+    }
+  }
+
   /* Mobile adjustments */
   @media (max-width: 768px) {
     .close-button {
@@ -278,6 +341,16 @@
     .bottom-panel {
       gap: 1rem;
       max-width: 100%;
+    }
+
+    .dismissal-hint {
+      bottom: 1rem;
+      left: 1rem;
+      right: 1rem;
+      transform: none;
+      text-align: center;
+      font-size: 0.8rem;
+      padding: 0.5rem 1rem;
     }
   }
 </style>

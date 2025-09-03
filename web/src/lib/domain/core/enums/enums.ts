@@ -292,7 +292,7 @@ export enum ResizeDirection {
   RIGHT = "right",
 }
 
-export enum ResizeOperation {
+export enum ResizeOperationType {
   START = "start",
   RESIZE = "resize",
   END = "end",

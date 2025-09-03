@@ -2,6 +2,7 @@
 ThumbnailActions Component - Action Buttons
 
 Handles favorite, delete, and edit actions for sequence thumbnails.
+Fullscreen functionality moved to direct thumbnail click.
 Extracted from SequenceThumbnail.svelte for better separation of concerns.
 -->
 <script lang="ts">
@@ -59,14 +60,6 @@ Extracted from SequenceThumbnail.svelte for better separation of concerns.
     title="Edit sequence"
   >
     ✏️
-  </button>
-  <button
-    class="action-button fullscreen-button"
-    onclick={(e) => handleActionClick("fullscreen", e)}
-    aria-label="View fullscreen"
-    title="View fullscreen"
-  >
-    🔍
   </button>
 </div>
 
@@ -145,11 +138,6 @@ Extracted from SequenceThumbnail.svelte for better separation of concerns.
   .edit-button:hover {
     background: rgba(59, 130, 246, 0.1);
     border-color: rgba(59, 130, 246, 0.3);
-  }
-
-  .fullscreen-button:hover {
-    background: rgba(16, 185, 129, 0.1);
-    border-color: rgba(16, 185, 129, 0.3);
   }
 
   /* Responsive design */

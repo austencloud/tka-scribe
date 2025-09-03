@@ -5,8 +5,8 @@ Refactored into smaller sub-components for better maintainability.
 Handles data loading, animation engine, and state management.
 -->
 <script lang="ts">
-  import type { ISequenceAnimationEngine, ISequenceService } from "$contracts";
   import type { SequenceData } from "$domain";
+  import type { ISequenceAnimationEngine, ISequenceService } from "$services";
 
   import { resolve, TYPES } from "$lib/services/inversify/container";
   import type { BrowsePanelStateManager } from "$state";

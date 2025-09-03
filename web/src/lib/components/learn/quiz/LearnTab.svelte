@@ -1,24 +1,51 @@
-<!-- Learn Tab - Educational content with pixel-perfect desktop replica -->
+<!-- Learn Tab - Educational content with beautiful sub-tabs -->
 <script lang="ts">
   import type { PictographData } from "$domain";
   import { LearnView, LessonType, QuizMode, type LessonResults } from "$domain";
+  import { getSettings } from "$state";
+  import { fade } from "svelte/transition";
   import CodexComponent from "../codex/CodexComponent.svelte";
   import LessonResultsView from "./LessonResultsView.svelte";
   import LessonSelectorView from "./LessonSelectorView.svelte";
   import LessonWorkspaceView from "./LessonWorkspaceView.svelte";
 
-  // State management using regular Svelte reactivity for better performance
-  let currentView: LearnView = LearnView.LESSON_SELECTOR;
-  let selectedMode: QuizMode = QuizMode.FIXED_QUESTION;
-  let currentLessonType: LessonType | null = null;
-  let currentResults: LessonResults | null = null;
-  let isLoading: boolean = false;
-  let codexVisible: boolean = true;
-  let codexWidth: number = 50; // Default 50% width (1/2 of page)
-  let isResizing: boolean = false;
+  // Sub-tab system
+  type LearnSubTab = "codex" | "quiz";
+  let activeSubTab = $state<LearnSubTab>("codex");
+
+  // Quiz state management
+  let currentView = $state<LearnView>(LearnView.LESSON_SELECTOR);
+  let selectedMode = $state<QuizMode>(QuizMode.FIXED_QUESTION);
+  let currentLessonType = $state<LessonType | null>(null);
+  let currentResults = $state<LessonResults | null>(null);
+  let isLoading = $state<boolean>(false);
 
   // Available lessons (all enabled for now)
   let availableLessons: LessonType[] = Object.values(LessonType);
+
+  // Get settings for animation control
+  let settings = $derived(getSettings());
+
+  // Transition functions that respect animation settings - same as main interface
+  const contentOut = (node: Element) => {
+    const animationsEnabled = settings.animationsEnabled !== false;
+    return fade(node, {
+      duration: animationsEnabled ? 250 : 0,
+    });
+  };
+
+  const contentIn = (node: Element) => {
+    const animationsEnabled = settings.animationsEnabled !== false;
+    return fade(node, {
+      duration: animationsEnabled ? 300 : 0,
+      delay: animationsEnabled ? 250 : 0, // Wait for out transition
+    });
+  };
+
+  // Sub-tab switching
+  function switchToSubTab(subTab: LearnSubTab) {
+    activeSubTab = subTab;
+  }
 
   // Navigation handlers
   function handleLessonRequested(event: {
@@ -66,41 +93,9 @@
     }
   }
 
-  // Codex handlers
-  function handleCodexToggle() {
-    codexVisible = !codexVisible;
-  }
-
-  // Resize functionality optimized for Svelte 5 runes performance
-  function handleResizeStart(event: MouseEvent) {
-    isResizing = true;
-    event.preventDefault();
-
-    const startX = event.clientX;
-    const startWidth = codexWidth;
-    const containerWidth = window.innerWidth;
-
-    function handleMouseMove(e: MouseEvent) {
-      if (!isResizing) return;
-
-      const deltaX = e.clientX - startX;
-      const deltaPercent = (deltaX / containerWidth) * 100;
-      const newWidth = Math.max(15, Math.min(60, startWidth + deltaPercent));
-      codexWidth = newWidth;
-    }
-
-    function handleMouseUp() {
-      isResizing = false;
-      document.removeEventListener("mousemove", handleMouseMove);
-      document.removeEventListener("mouseup", handleMouseUp);
-    }
-
-    document.addEventListener("mousemove", handleMouseMove);
-    document.addEventListener("mouseup", handleMouseUp);
-  }
-
   function handlePictographSelected(pictograph: PictographData) {
     // Handle pictograph selection from codex (for reference during learning)
+    console.log("Pictograph selected:", pictograph.letter);
   }
 
   function handleLessonComplete(results: LessonResults) {
@@ -116,10 +111,28 @@
 </script>
 
 <div class="learn-tab">
-  <!-- Main Content with Splitter Layout -->
-  <div class="learn-content-wrapper" class:codex-visible={codexVisible}>
+  <!-- Sub-tab Navigation -->
+  <div class="sub-tab-nav">
+    <button
+      class="sub-tab-button"
+      class:active={activeSubTab === "codex"}
+      onclick={() => switchToSubTab("codex")}
+    >
+      📚 Codex
+    </button>
+    <button
+      class="sub-tab-button"
+      class:active={activeSubTab === "quiz"}
+      onclick={() => switchToSubTab("quiz")}
+    >
+      🧠 Quiz
+    </button>
+  </div>
+
+  <!-- Sub-tab Content with proper key-based transitions -->
+  <div class="sub-tab-content">
     <!-- Loading Overlay -->
-    {#if isLoading}
+    {#if isLoading && activeSubTab === "quiz"}
       <div class="loading-overlay">
         <div class="loading-spinner"></div>
         <p class="loading-text">
@@ -134,60 +147,56 @@
       </div>
     {/if}
 
-    <!-- Codex Sidebar - Always present but can be collapsed -->
-    <div
-      class="codex-sidebar"
-      class:collapsed={!codexVisible}
-      style="width: {codexVisible ? codexWidth + '%' : '48px'}"
-    >
+    <!-- Keep CodexComponent alive but show/hide with CSS -->
+    <div class="codex-container" class:hidden={activeSubTab !== "codex"}>
       <CodexComponent
-        isVisible={codexVisible}
+        isVisible={activeSubTab === "codex"}
         onPictographSelected={handlePictographSelected}
-        onToggleVisibility={handleCodexToggle}
       />
     </div>
 
-    <!-- Resize handle - only show when expanded -->
-    {#if codexVisible}
-      <button
-        class="resize-handle"
-        class:resizing={isResizing}
-        onmousedown={handleResizeStart}
-        aria-label="Resize codex panel"
-      ></button>
-    {/if}
-
-    <!-- Main content area with stacked views -->
-    <div class="learn-content" class:loading={isLoading}>
-      {#if currentView === LearnView.LESSON_SELECTOR}
-        <div class="view-container" class:active={!isLoading}>
-          <LessonSelectorView
-            bind:selectedMode
-            {availableLessons}
-            isLoading={false}
-            onLessonRequested={handleLessonRequested}
-            onModeChanged={handleModeChanged}
-          />
-        </div>
-      {:else if currentView === LearnView.LESSON_WORKSPACE}
-        <div class="view-container" class:active={!isLoading}>
-          <LessonWorkspaceView
-            lessonType={currentLessonType}
-            quizMode={selectedMode}
-            onBackToSelector={handleBackToSelector}
-            onLessonComplete={handleLessonComplete}
-          />
-        </div>
-      {:else if currentView === LearnView.LESSON_RESULTS}
-        <div class="view-container" class:active={!isLoading}>
-          <LessonResultsView
-            results={currentResults}
-            onBackToSelector={handleBackToSelector}
-            onRetryLesson={handleRetryLesson}
-          />
-        </div>
-      {/if}
-    </div>
+    <!-- Sub-tab content with proper transitions for quiz only -->
+    {#key activeSubTab}
+      <div
+        class="tab-content-wrapper"
+        class:hidden={activeSubTab !== "quiz"}
+        in:contentIn
+        out:contentOut
+      >
+        {#if activeSubTab === "quiz"}
+          <div class="quiz-container" class:loading={isLoading}>
+            {#if currentView === LearnView.LESSON_SELECTOR}
+              <div class="view-container" class:active={!isLoading}>
+                <LessonSelectorView
+                  bind:selectedMode
+                  {availableLessons}
+                  isLoading={false}
+                  onLessonRequested={handleLessonRequested}
+                  onModeChanged={handleModeChanged}
+                />
+              </div>
+            {:else if currentView === LearnView.LESSON_WORKSPACE}
+              <div class="view-container" class:active={!isLoading}>
+                <LessonWorkspaceView
+                  lessonType={currentLessonType}
+                  quizMode={selectedMode}
+                  onBackToSelector={handleBackToSelector}
+                  onLessonComplete={handleLessonComplete}
+                />
+              </div>
+            {:else if currentView === LearnView.LESSON_RESULTS}
+              <div class="view-container" class:active={!isLoading}>
+                <LessonResultsView
+                  results={currentResults}
+                  onBackToSelector={handleBackToSelector}
+                  onRetryLesson={handleRetryLesson}
+                />
+              </div>
+            {/if}
+          </div>
+        {/if}
+      </div>
+    {/key}
   </div>
 </div>
 
@@ -202,80 +211,73 @@
     background: transparent;
   }
 
-  /* MAIN LAYOUT: Horizontal splitter (side-by-side) */
-  .learn-content-wrapper {
+  /* Sub-tab Navigation */
+  .sub-tab-nav {
     display: flex;
-    flex-direction: row; /* DEFAULT: Horizontal layout */
-    flex: 1;
-    width: 100%;
-    height: 100%;
-    gap: 1rem;
-    padding: 1rem;
-    min-height: 0;
-  }
-
-  .codex-sidebar {
-    /* Width is now controlled by inline style */
-    min-width: 250px;
-    max-width: 60%; /* Allow more flexibility */
-    flex-shrink: 0;
-    height: 100%;
-    /* REMOVED CSS TRANSITION - THIS WAS CAUSING THE DRAG LAG! */
-    border-right: 1px solid var(--desktop-border-tertiary);
-  }
-
-  .codex-sidebar.collapsed {
-    min-width: 48px; /* Minimal collapsed width like VS Code */
-    max-width: 48px;
-  }
-
-  .resize-handle {
-    width: 4px;
-    height: 100%;
-    background: rgba(80, 80, 100, 0.4);
-    cursor: col-resize;
-    flex-shrink: 0;
-    position: relative;
-    transition: background-color 0.2s ease;
-    border: none;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.2);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     padding: 0;
     margin: 0;
-    outline: none;
+    flex-shrink: 0;
   }
 
-  .resize-handle:hover,
-  .resize-handle.resizing {
-    background: rgba(120, 150, 200, 0.8);
-  }
-
-  .resize-handle:focus {
-    background: rgba(120, 150, 200, 0.6);
-    outline: 2px solid rgba(120, 150, 200, 0.8);
-    outline-offset: 1px;
-  }
-
-  .resize-handle::before {
-    content: "";
-    position: absolute;
-    left: -2px;
-    right: -2px;
-    top: 0;
-    bottom: 0;
+  .sub-tab-button {
     background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.7);
+    padding: 1rem 2rem;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-bottom: 3px solid transparent;
+    position: relative;
   }
 
-  .learn-content {
+  .sub-tab-button:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: rgba(255, 255, 255, 0.9);
+  }
+
+  .sub-tab-button.active {
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.1);
+    border-bottom-color: #667eea;
+  }
+
+  /* Sub-tab Content */
+  .sub-tab-content {
     flex: 1;
     display: flex;
     flex-direction: column;
-    width: 100%;
-    height: 100%;
+    min-height: 0;
     position: relative;
-    transition: opacity 0.3s ease-out;
-    min-width: 0; /* Allow shrinking */
   }
 
-  .learn-content.loading {
+  /* Hide inactive content while keeping it in DOM for caching */
+  .hidden {
+    display: none !important;
+  }
+
+  /* Content Containers */
+  .codex-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    padding: 1rem;
+  }
+
+  .quiz-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    position: relative;
+  }
+
+  .quiz-container.loading {
     opacity: 0.3;
     pointer-events: none;
   }
@@ -327,16 +329,6 @@
     text-align: center;
   }
 
-  /* When codex is hidden, content takes full width */
-  .learn-content-wrapper:not(.codex-visible) {
-    padding-top: 1rem;
-  }
-
-  .learn-content-wrapper:not(.codex-visible) .learn-content {
-    width: 100%;
-    max-width: none;
-  }
-
   /* Animations */
   @keyframes fadeIn {
     0% {
@@ -356,50 +348,15 @@
     }
   }
 
-  /* Responsive Design - MAINTAIN HORIZONTAL LAYOUT */
-
-  /* Tablets and larger screens - keep horizontal */
-  @media (min-width: 769px) {
-    .learn-content-wrapper {
-      flex-direction: row !important; /* Force horizontal */
-    }
-  }
-
-  /* Medium tablets - reduce codex width but stay horizontal */
-  @media (max-width: 1024px) and (min-width: 769px) {
-    .codex-sidebar {
-      min-width: 200px;
-    }
-  }
-
-  /* Small tablets - further reduce but stay horizontal */
-  @media (max-width: 768px) and (min-width: 641px) {
-    .codex-sidebar {
-      min-width: 180px;
-    }
-
-    .learn-content-wrapper {
-      gap: 0.75rem;
-      padding: 0.75rem;
-      padding-top: 3.5rem;
-    }
-  }
-
-  /* ONLY on very small mobile screens (phones) - stack vertically */
+  /* Responsive Design */
   @media (max-width: 640px) {
-    .learn-content-wrapper {
-      flex-direction: column; /* Only stack on phones */
-      padding: 0.5rem;
-      padding-top: 3.5rem;
-      gap: 0.5rem;
+    .sub-tab-button {
+      padding: 0.75rem 1rem;
+      font-size: 0.9rem;
     }
 
-    .codex-sidebar {
-      width: 100%;
-      min-width: unset;
-      max-width: none;
-      height: 200px;
-      flex-shrink: 0;
+    .codex-container {
+      padding: 0.5rem;
     }
 
     .loading-text {
@@ -415,8 +372,9 @@
 
   /* Reduced motion */
   @media (prefers-reduced-motion: reduce) {
+    .sub-tab-button,
     .loading-overlay,
-    .learn-content,
+    .quiz-container,
     .view-container {
       transition: none;
       animation: none;

@@ -78,8 +78,8 @@ export const TYPES = {
   IPageImageExportService: Symbol.for("IPageImageExportService"),
   IPageFactoryService: Symbol.for("IPageFactoryService"),
   IPrintablePageLayoutService: Symbol.for("IPrintablePageLayoutService"),
-  ISequenceCardExportIntegrationService: Symbol.for(
-    "ISequenceCardExportIntegrationService"
+  IWordCardExportIntegrationService: Symbol.for(
+    "IWordCardExportIntegrationService"
   ),
   IImageFormatConverterService: Symbol.for("IImageFormatConverterService"),
   ISVGToCanvasConverterService: Symbol.for("ISVGToCanvasConverterService"),

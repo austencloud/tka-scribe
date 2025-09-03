@@ -5,13 +5,12 @@
  * NO REDUNDANT LOGIC - uses BrowseService for data, PageLayoutService for layout.
  */
 
+import type { SequenceData } from "$domain";
 import type {
   IBrowseService,
   IPageFactoryService,
   IPrintablePageLayoutService,
-} from "$contracts";
-import type { SequenceData } from "$domain";
-import { createPageLayoutState } from "../page-layout-state.svelte";
+} from "$services";
 import {
   displayState,
   exportSettings,
@@ -31,12 +30,14 @@ import {
   updateExportProgress,
   updateExportSetting,
 } from "./display-state.svelte";
+import createPageLayoutState from "./page-layout-state.svelte";
+// createPageLayoutState imported above at line 14
 
 // ============================================================================
 // SEQUENCE CARD STATE FACTORY
 // ============================================================================
 
-export function createSequenceCardState(
+export function createWordCardState(
   _browseService: IBrowseService,
   layoutService: IPrintablePageLayoutService,
   pageFactoryService: IPageFactoryService
@@ -124,10 +125,10 @@ export function createSequenceCardState(
     pageLayoutState,
 
     // Derived data (using existing services)
-    filteredSequences,
-    currentPageSequences,
-    totalPages,
-    statusMessage,
+    get filteredSequences() { return filteredSequences; },
+    get currentPageSequences() { return currentPageSequences; },
+    get totalPages() { return totalPages; },
+    get statusMessage() { return statusMessage; },
 
     // Actions
     setSelectedLength,
@@ -148,4 +149,4 @@ export function createSequenceCardState(
   };
 }
 
-export type SequenceCardState = ReturnType<typeof createSequenceCardState>;
+export type WordCardState = ReturnType<typeof createWordCardState>;
