@@ -6,15 +6,15 @@
  */
 
 import type { NavigationSectionConfig } from "$browse/domain";
-import { NavigationMode } from "$browse/domain";
+import { GalleryNvaigationMode } from "$browse/domain";
 
 export interface IBrowseNavigationState {
   // Reactive state getters
-  readonly navigationMode: NavigationMode;
+  readonly GalleryNvaigationMode: GalleryNvaigationMode;
   readonly navigationSections: NavigationSectionConfig[];
 
   // Actions
-  setNavigationMode(mode: NavigationMode): void;
+  setGalleryNvaigationMode(mode: GalleryNvaigationMode): void;
   setNavigationSections(sections: NavigationSectionConfig[]): void;
   goToFilterSelection(): void;
   goToSequenceBrowser(): void;
@@ -22,12 +22,14 @@ export interface IBrowseNavigationState {
 
 export class BrowseNavigationState implements IBrowseNavigationState {
   // Private reactive state
-  #navigationMode = $state<NavigationMode>(NavigationMode.FILTER_SELECTION);
+  #GalleryNvaigationMode = $state<GalleryNvaigationMode>(
+    GalleryNvaigationMode.FILTER_SELECTION
+  );
   #navigationSections = $state<NavigationSectionConfig[]>([]);
 
   // Reactive getters
-  get navigationMode() {
-    return this.#navigationMode;
+  get GalleryNvaigationMode() {
+    return this.#GalleryNvaigationMode;
   }
 
   get navigationSections() {
@@ -35,8 +37,8 @@ export class BrowseNavigationState implements IBrowseNavigationState {
   }
 
   // Actions
-  setNavigationMode(mode: NavigationMode): void {
-    this.#navigationMode = mode;
+  setGalleryNvaigationMode(mode: GalleryNvaigationMode): void {
+    this.#GalleryNvaigationMode = mode;
   }
 
   setNavigationSections(sections: NavigationSectionConfig[]): void {
@@ -44,10 +46,10 @@ export class BrowseNavigationState implements IBrowseNavigationState {
   }
 
   goToFilterSelection(): void {
-    this.#navigationMode = NavigationMode.FILTER_SELECTION;
+    this.#GalleryNvaigationMode = GalleryNvaigationMode.FILTER_SELECTION;
   }
 
   goToSequenceBrowser(): void {
-    this.#navigationMode = NavigationMode.SEQUENCE_BROWSER;
+    this.#GalleryNvaigationMode = GalleryNvaigationMode.SEQUENCE_BROWSER;
   }
 }

@@ -5,15 +5,11 @@
  * following the microservices architecture pattern.
  */
 
-import type {
-  GalleryFilterState as BrowseFilterState,
-  BrowseState,
-} from "$browse/domain";
+import type { BrowseState, GalleryFilterState } from "$browse/domain";
 import type { GalleryFilterValue } from "$browse/domain/types";
 import {
   FilterType,
   GallerySortMethod,
-  NavigationMode,
 } from "$lib/modules/browse/gallery/domain/enums/gallery-enums";
 import {
   safeSessionStorageGet,
@@ -215,7 +211,7 @@ export class FilterPersistenceService implements IFilterPersistenceService {
       filterValues: null,
       selectedSequence: null,
       selectedVariation: null,
-      navigationMode: NavigationMode.FILTER_SELECTION,
+      GalleryNvaigationMode: GalleryNvaigationMode.FILTER_SELECTION,
       sortMethod: GallerySortMethod.ALPHABETICAL,
     };
   }
@@ -228,13 +224,13 @@ export class FilterPersistenceService implements IFilterPersistenceService {
       filterValues: null,
       selectedSequence: null,
       selectedVariation: null,
-      navigationMode: NavigationMode.FILTER_SELECTION,
+      GalleryNvaigationMode: GalleryNvaigationMode.FILTER_SELECTION,
       sortMethod: GallerySortMethod.ALPHABETICAL,
     };
     await this.saveBrowseState(browseState);
   }
 
-  async loadFilterState(): Promise<BrowseFilterState> {
+  async loadFilterState(): Promise<GalleryFilterState> {
     // Return a default filter state since BrowseState doesn't have filterState property
     return {
       activeFilters: {

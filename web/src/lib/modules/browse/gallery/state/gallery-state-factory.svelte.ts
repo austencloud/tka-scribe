@@ -5,16 +5,11 @@
  * Replaces the 738-line monolith with focused, testable services.
  */
 
-import type {
-  BrowseDeleteConfirmationData,
-  GalleryLoadingState,
-  NavigationItem,
-  NavigationSectionConfig,
-} from "$browse/domain";
-import { NavigationMode } from "$browse/domain";
 import type { GalleryFilterValue } from "$browse/domain/types";
 import { FilterType } from "$lib/modules/browse/gallery/domain/enums/gallery-enums";
 import type { SequenceData } from "$shared/domain";
+import type { GalleryNavigationItem } from "../gallery/domain/models/gallery-models";
+import type { GalleryLoadingState } from "../gallery/state/gallery-state-models";
 import type {
   IDeleteService,
   IFavoritesService,
@@ -24,24 +19,24 @@ import type {
   INavigationService,
   ISectionService,
   ISequenceIndexService,
+  NavigationSectionConfig,
 } from "../services/contracts";
-import { BrowseFilterState } from "./BrowseFilterState.svelte";
+import type { BrowseDeleteConfirmationData } from "../shared/domain/models/browse-models";
 import { BrowseNavigationState } from "./BrowseNavigationState.svelte";
 import { BrowseSearchState } from "./BrowseSearchState.svelte";
 import { BrowseSelectionState } from "./BrowseSelectionState.svelte";
-import { BrowseStateCoordinator } from "./BrowseStateCoordinator.svelte";
-import { GalleryDisplayStateService } from "./GalleryDisplayState.svelte";
+import { GalleryFilterState } from "./GalleryFilterState.svelte";
 
 export interface BrowseState {
   // State microservices (reactive)
-  readonly filterState: BrowseFilterState;
+  readonly filterState: GalleryFilterState;
   readonly navigationState: BrowseNavigationState;
   readonly selectionState: BrowseSelectionState;
   readonly displayState: GalleryDisplayStateService;
   readonly searchState: BrowseSearchState;
 
   // Coordinator (orchestration)
-  readonly coordinator: BrowseStateCoordinator;
+  readonly coordinator: GalleryStateCoordinator;
 
   // Convenience getters (derived from microservices)
   readonly currentFilter: {
@@ -51,7 +46,7 @@ export interface BrowseState {
   readonly isLoading: boolean;
   readonly hasError: boolean;
   readonly displayedSequences: SequenceData[];
-  readonly navigationMode: NavigationMode;
+  readonly GalleryNvaigationMode: GalleryNvaigationMode;
   readonly navigationSections: NavigationSectionConfig[]; // NavigationSectionConfig type not available
   readonly selectedSequence: SequenceData | null;
 
@@ -82,7 +77,7 @@ export interface BrowseState {
 
   // Navigation methods
   toggleNavigationSection(sectionId: string): void;
-  setActiveNavigationItem(sectionId: string, itemId: string): void;
+  setActiveGalleryNavigationItem(sectionId: string, itemId: string): void;
   filterSequencesByNavigation(
     item: unknown,
     sectionType: string
@@ -104,7 +99,7 @@ export function createBrowseState(
   _deleteService: IDeleteService
 ): BrowseState {
   // Create focused microservices - actual instances instead of empty objects
-  const filterStateImpl = new BrowseFilterState();
+  const filterStateImpl = new GalleryFilterState();
   const navigationState = new BrowseNavigationState();
   const selectionState = new BrowseSelectionState();
   const displayStateImpl = new GalleryDisplayStateService();
@@ -155,7 +150,7 @@ export function createBrowseState(
   };
 
   // Create coordinator with proper dependencies
-  const coordinator = new BrowseStateCoordinator(
+  const coordinator = new GalleryStateCoordinator(
     filterState,
     navigationState,
     selectionState,
@@ -195,8 +190,8 @@ export function createBrowseState(
     get displayedSequences() {
       return coordinator.displayedSequences;
     },
-    get navigationMode() {
-      return navigationState.navigationMode;
+    get GalleryNvaigationMode() {
+      return navigationState.GalleryNvaigationMode;
     },
     get navigationSections() {
       return navigationState.navigationSections;
@@ -292,7 +287,7 @@ export function createBrowseState(
       console.log("Toggle navigation section:", sectionId);
     },
 
-    setActiveNavigationItem(sectionId: string, itemId: string) {
+    setActiveGalleryNavigationItem(sectionId: string, itemId: string) {
       console.log("Set active navigation item:", sectionId, itemId);
 
       // Prevent infinite loops by checking if this item is already active
@@ -302,7 +297,9 @@ export function createBrowseState(
       );
       if (!section) return;
 
-      const item = section.items.find((i: NavigationItem) => i.id === itemId);
+      const item = section.items.find(
+        (i: GalleryNavigationItem) => i.id === itemId
+      );
       if (!item || item.isActive) {
         // Item is already active, don't trigger another update
         return;
@@ -320,8 +317,9 @@ export function createBrowseState(
     async filterSequencesByNavigation(item: unknown, sectionType: string) {
       console.log("🔍 Filter by navigation:", item, sectionType);
 
-      // Cast item to NavigationItem type
-      const navigationItem = item as import("../services").NavigationItem;
+      // Cast item to GalleryNavigationItem type
+      const navigationItem =
+        item as import("../services").GalleryNavigationItem;
 
       if (!navigationItem) {
         console.warn("No navigation item provided");
@@ -329,17 +327,18 @@ export function createBrowseState(
       }
 
       // Use NavigationService to get sequences for this item
-      const filteredSequences = navigationService.getSequencesForNavigationItem(
-        navigationItem,
-        sectionType as
-          | "date"
-          | "length"
-          | "letter"
-          | "level"
-          | "author"
-          | "favorites",
-        coordinator.allSequences
-      );
+      const filteredSequences =
+        navigationService.getSequencesForGalleryNavigationItem(
+          navigationItem,
+          sectionType as
+            | "date"
+            | "length"
+            | "letter"
+            | "level"
+            | "author"
+            | "favorites",
+          coordinator.allSequences
+        );
 
       console.log(
         `✅ Navigation filter applied: ${filteredSequences.length} sequences found`

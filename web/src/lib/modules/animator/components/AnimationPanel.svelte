@@ -11,8 +11,8 @@ Handles data loading, animation engine, and state management.
     ISequenceService,
   } from "../services/contracts";
 
+  import type { GalleryPanelStateManager } from "$browse/state";
   import { resolve, TYPES } from "$shared/inversify";
-  import type { BrowsePanelStateManager } from "$browse/state";
   import { onDestroy } from "svelte";
   // Sub-components - all in animator directory
   import type { PropState } from "../domain";
@@ -31,7 +31,7 @@ Handles data loading, animation engine, and state management.
     onClose = () => {},
   } = $props<{
     sequence?: SequenceData | null;
-    panelState: BrowsePanelStateManager;
+    panelState: GalleryPanelStateManager;
     onClose?: () => void;
   }>();
 

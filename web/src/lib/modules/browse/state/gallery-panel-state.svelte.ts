@@ -12,7 +12,7 @@ import {
 } from "$browse/domain";
 import type { IBrowsePanelManager } from "../services/contracts";
 
-export interface BrowsePanelStateManager {
+export interface GalleryPanelStateManager {
   // Panel state getters (reactive)
   readonly navigationPanel: BrowsePanelState;
 
@@ -60,7 +60,7 @@ function getDefaultPanelState(panelId: string): BrowsePanelState {
  */
 export function createPanelState(
   panelService: IBrowsePanelManager
-): BrowsePanelStateManager {
+): GalleryPanelStateManager {
   // ✅ PURE RUNES: Reactive state for UI with default fallbacks
   let navigationPanel = $state<BrowsePanelState>(
     panelService.getPanelState("navigation") ||

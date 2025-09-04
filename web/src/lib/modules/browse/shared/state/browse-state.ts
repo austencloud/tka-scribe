@@ -5,11 +5,11 @@
  * Ported from desktop app's browse models.
  */
 
-import type { GalleryFilterValue } from "../../domain/types";
 import {
   GallerySortMethod,
   type FilterType,
 } from "../../gallery/domain/enums/gallery-enums";
+import type { GalleryFilterValue } from "../../gallery/domain/types/gallery-types";
 
 export interface BrowseState {
   filterType: FilterType | null;

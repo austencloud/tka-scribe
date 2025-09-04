@@ -5,13 +5,11 @@
  * that require coordination between multiple services.
  */
 
-import { NavigationMode } from "$browse/domain";
-import type {
-  FilterType,
-  GalleryFilterValue,
-  GallerySortMethod,
-  SequenceData,
-} from "$shared/domain";
+import { GalleryNvaigationMode } from "$browse/domain";
+import type { SequenceData } from "../../../shared/domain";
+import type { FilterType, GallerySortMethod } from "../gallery/domain/enums";
+import type { GalleryFilterValue } from "../gallery/domain/types/gallery-types";
+import type { IGalleryState } from "../gallery/state/gallery-state-contracts";
 import type {
   IFavoritesService,
   IFilterPersistenceService,
@@ -20,48 +18,13 @@ import type {
   INavigationService,
   ISequenceIndexService,
 } from "../services/contracts";
+import type { IGalleryDisplayState } from "./BrowseDisplayState.svelte";
 import type { IBrowseNavigationState } from "./BrowseNavigationState.svelte";
 import type { IBrowseSearchState } from "./BrowseSearchState.svelte";
 import type { IBrowseSelectionState } from "./BrowseSelectionState.svelte";
+import type { IGalleryFilterState } from "./GalleryFilterState.svelte";
 
-// Interfaces defined locally to avoid circular imports
-interface IBrowseFilterState {
-  setFilter(type: string, value: unknown): void;
-  applyCurrentFilter(sequences: SequenceData[]): Promise<SequenceData[]>;
-  clearFilter(): void;
-  isFilterActive: boolean;
-}
-
-interface IGalleryDisplayState {
-  setLoading(loading: boolean, operation?: string): void;
-  setError(error: string | null): void;
-}
-
-export interface IBrowseStateCoordinator {
-  // Core operations
-  loadAllSequences(): Promise<void>;
-  applyFilter(type: FilterType, value: GalleryFilterValue): Promise<void>;
-  searchSequences(query: string): Promise<void>;
-  updateSort(sortMethod: GallerySortMethod): Promise<void>;
-  backToFilters(): Promise<void>;
-
-  // Selection operations
-  selectSequence(sequence: SequenceData): Promise<void>;
-
-  // Navigation operations
-  generateNavigationSections(): Promise<void>;
-
-  // Filter persistence operations
-  restoreSavedState(): Promise<void>;
-  clearSavedState(): Promise<void>;
-
-  // Reactive getters
-  readonly allSequences: SequenceData[];
-  readonly filteredSequences: SequenceData[];
-  readonly displayedSequences: SequenceData[];
-}
-
-export class BrowseStateCoordinator implements IBrowseStateCoordinator {
+export class GalleryState implements IGalleryState {
   // Internal sequence state
   #allSequences = $state<SequenceData[]>([]);
   #filteredSequences = $state<SequenceData[]>([]);
@@ -69,7 +32,7 @@ export class BrowseStateCoordinator implements IBrowseStateCoordinator {
   #currentSort = $state<GallerySortMethod>("ALPHABETICAL" as GallerySortMethod);
 
   constructor(
-    private filterState: IBrowseFilterState,
+    private filterState: IGalleryFilterState,
     private navigationState: IBrowseNavigationState,
     private selectionState: IBrowseSelectionState,
     private displayState: IGalleryDisplayState,
@@ -257,7 +220,7 @@ export class BrowseStateCoordinator implements IBrowseStateCoordinator {
         filterValues: value,
         selectedSequence: null,
         selectedVariation: null,
-        navigationMode: NavigationMode.SEQUENCE_BROWSER,
+        GalleryNvaigationMode: GalleryNvaigationMode.SEQUENCE_BROWSER,
         sortMethod: this.#currentSort,
       };
 
@@ -343,7 +306,7 @@ export class BrowseStateCoordinator implements IBrowseStateCoordinator {
         filterValues: null,
         selectedSequence: null,
         selectedVariation: null,
-        navigationMode: NavigationMode.FILTER_SELECTION,
+        GalleryNvaigationMode: GalleryNvaigationMode.FILTER_SELECTION,
         sortMethod: this.#currentSort,
       };
       await this.filterPersistenceService.saveBrowseState(emptyBrowseState);

@@ -8,8 +8,8 @@ Provides three-section layout with:
 -->
 <script lang="ts">
   import Splitter from "$shared/components/ui/Splitter.svelte";
-  import type { BrowsePanelStateManager } from "../../state";
   import type { Snippet } from "svelte";
+  import type { GalleryPanelStateManager } from "../../state";
 
   // ✅ PURE RUNES: Props using modern Svelte 5 runes
   const {
@@ -18,7 +18,7 @@ Provides three-section layout with:
     centerPanel,
     onNavigationResize = () => {},
   } = $props<{
-    panelState: BrowsePanelStateManager;
+    panelState: GalleryPanelStateManager;
     navigationSidebar: Snippet;
     centerPanel: Snippet;
     onNavigationResize?: (width: number) => void;

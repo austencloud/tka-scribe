@@ -5,13 +5,12 @@
  * Handles reactive filter state without business logic.
  */
 
-
 import type { SequenceData } from "../../../shared/domain";
 import type { FilterType } from "../gallery/domain/enums";
 import type { GalleryFilterValue } from "../gallery/domain/types/gallery-types";
 import type { IGalleryService } from "../services/contracts";
 
-export interface IBrowseFilterState {
+export interface IGalleryFilterState {
   // Reactive state getters
   readonly currentFilter: {
     type: FilterType;
@@ -30,7 +29,7 @@ export interface IBrowseFilterState {
   ): Promise<SequenceData[]>;
 }
 
-export class BrowseFilterState implements IBrowseFilterState {
+export class GalleryFilterState implements IGalleryFilterState {
   // Private reactive state
   #currentFilter = $state<{
     type: FilterType;

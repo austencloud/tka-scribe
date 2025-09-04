@@ -23,3 +23,8 @@ export enum GallerySortMethod {
   AUTHOR = "author",
   POPULARITY = "popularity",
 }
+
+export enum GalleryNvaigationMode {
+  FILTER_SELECTION = "filter_selection",
+  SEQUENCE_BROWSER = "sequence_browser",
+}

@@ -12,7 +12,7 @@
 
 import { injectable } from "inversify";
 
-export interface BrowseFilterState {
+export interface GalleryFilterState {
   type: string | null;
   value: unknown;
   appliedAt: Date;
@@ -50,7 +50,7 @@ export interface BrowseSortState {
 }
 
 export interface CompleteBrowseState {
-  filter: BrowseFilterState | null;
+  filter: GalleryFilterState | null;
   sort: BrowseSortState;
   view: BrowseViewState;
   scroll: BrowseScrollState;
@@ -72,8 +72,8 @@ export interface IBrowseStatePersister {
   loadBrowseState(): Promise<CompleteBrowseState | null>;
 
   // Individual state component persistence
-  saveFilterState(filter: BrowseFilterState): Promise<void>;
-  loadFilterState(): Promise<BrowseFilterState | null>;
+  saveFilterState(filter: GalleryFilterState): Promise<void>;
+  loadFilterState(): Promise<GalleryFilterState | null>;
 
   saveSortState(sort: BrowseSortState): Promise<void>;
   loadSortState(): Promise<BrowseSortState | null>;
@@ -170,7 +170,7 @@ export class BrowseStatePersister implements IBrowseStatePersister {
   // INDIVIDUAL STATE COMPONENTS
   // ============================================================================
 
-  async saveFilterState(filter: BrowseFilterState): Promise<void> {
+  async saveFilterState(filter: GalleryFilterState): Promise<void> {
     try {
       localStorage.setItem(this.FILTER_STATE_KEY, JSON.stringify(filter));
     } catch (error) {
@@ -178,7 +178,7 @@ export class BrowseStatePersister implements IBrowseStatePersister {
     }
   }
 
-  async loadFilterState(): Promise<BrowseFilterState | null> {
+  async loadFilterState(): Promise<GalleryFilterState | null> {
     try {
       const saved = localStorage.getItem(this.FILTER_STATE_KEY);
       if (!saved) return null;
@@ -188,7 +188,7 @@ export class BrowseStatePersister implements IBrowseStatePersister {
         parsed.appliedAt = new Date(parsed.appliedAt);
       }
 
-      return parsed as BrowseFilterState;
+      return parsed as GalleryFilterState;
     } catch (error) {
       console.warn("⚠️ Failed to load filter state:", error);
       return null;

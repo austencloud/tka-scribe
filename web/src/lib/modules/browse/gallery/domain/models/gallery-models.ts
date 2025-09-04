@@ -1,6 +1,6 @@
 import type { SequenceData } from "../../../../../shared/domain";
-import type { GalleryFilterValue } from "../../../domain/types";
 import type { FilterType, GallerySortMethod } from "../enums";
+import type { GalleryFilterValue } from "../types";
 
 export interface GallerySection {
   id: string;
