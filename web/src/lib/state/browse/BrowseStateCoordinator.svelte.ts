@@ -257,7 +257,7 @@ export class BrowseStateCoordinator implements IBrowseStateCoordinator {
         navigationMode: NavigationMode.SEQUENCE_BROWSER,
         sortMethod: this.#currentSort,
       };
-      
+
       await this.filterPersistenceService.saveBrowseState(browseState);
       console.log(`💾 Saved filter state: ${type} = ${value}`);
     } catch (error) {
@@ -271,11 +271,17 @@ export class BrowseStateCoordinator implements IBrowseStateCoordinator {
   async restoreSavedState(): Promise<void> {
     try {
       const browseState = await this.filterPersistenceService.loadBrowseState();
-      
-      if (browseState && browseState.filterType && browseState.filterValues !== null) {
+
+      if (
+        browseState &&
+        browseState.filterType &&
+        browseState.filterValues !== null
+      ) {
         const { filterType, filterValues } = browseState;
-        console.log(`🔄 Restoring filter state: ${filterType} = ${filterValues}`);
-        
+        console.log(
+          `🔄 Restoring filter state: ${filterType} = ${filterValues}`
+        );
+
         // Apply the saved filter without saving it again (to avoid recursion)
         await this.applySavedFilter(filterType, filterValues);
       }
@@ -314,7 +320,7 @@ export class BrowseStateCoordinator implements IBrowseStateCoordinator {
       this.navigationState.goToSequenceBrowser();
 
       this.displayState.setLoading(false);
-      
+
       console.log(`✅ Restored filter: ${filtered.length} sequences found`);
     } catch (error) {
       this.displayState.setError(

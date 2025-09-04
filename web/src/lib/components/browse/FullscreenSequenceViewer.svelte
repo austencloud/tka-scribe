@@ -72,12 +72,12 @@
     if (sequence) {
       currentVariationIndex = 0;
       showDismissalHint = true;
-      
+
       // Hide the hint after 3 seconds
       const timeoutId = setTimeout(() => {
         showDismissalHint = false;
       }, 3000);
-      
+
       return () => clearTimeout(timeoutId);
     }
   });
@@ -128,7 +128,9 @@
     <div class="fullscreen-content">
       <!-- Sequence title above image -->
       <div class="sequence-title-container">
-        <h1 class="sequence-title" id="fullscreen-title">{sequence?.word || "Sequence"}</h1>
+        <h1 class="sequence-title" id="fullscreen-title">
+          {sequence?.word || "Sequence"}
+        </h1>
         {#if sequence?.difficulty}
           <span
             class="difficulty-badge"
@@ -152,7 +154,7 @@
       <div class="bottom-panel">
         <FullscreenActionButtons {sequence} {onAction} />
       </div>
-      
+
       <!-- Dismissal hint -->
       {#if showDismissalHint}
         <div class="dismissal-hint" id="dismissal-instructions">
@@ -288,7 +290,9 @@
     z-index: 9998;
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    animation: fadeInUp 0.5s ease-out, fadeOut 0.5s ease-out 2.5s forwards;
+    animation:
+      fadeInUp 0.5s ease-out,
+      fadeOut 0.5s ease-out 2.5s forwards;
     pointer-events: none;
   }
 

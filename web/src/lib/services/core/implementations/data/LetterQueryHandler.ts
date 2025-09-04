@@ -26,8 +26,9 @@ import { inject, injectable } from "inversify";
 
 interface CsvParseError {
   error: string;
-  rowIndex: number;
+  rowIndex?: number;
   rawRow: string;
+  lineNumber: number;
 }
 
 @injectable()

@@ -9,13 +9,6 @@ export interface Margins {
   left: number;
 }
 
-export interface PageLayoutConfig {
-  paperSize: WordCardPaperSize;
-  orientation: PageOrientation;
-  margins: Margins;
-  sequencesPerPage: number;
-}
-
 export interface LayoutValidationResult {
   isValid: boolean;
   errors: string[];
@@ -27,13 +20,6 @@ export interface Rectangle {
   y: number;
   width: number;
   height: number;
-}
-
-export interface GridCalculationOptions {
-  minCardSize: number;
-  maxCardSize: number;
-  preferredAspectRatio: number;
-  padding: number;
 }
 
 export interface GridConfig {

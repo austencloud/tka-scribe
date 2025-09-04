@@ -273,7 +273,7 @@ export class PrintablePageLayoutService implements IPrintablePageLayoutService {
     const warnings: LayoutValidationWarning[] = [];
 
     // Validate margins
-    const margins = config.margins;
+    const margins = config.printConfiguration.margins;
     if (
       margins.top < 0 ||
       margins.right < 0 ||
@@ -311,8 +311,8 @@ export class PrintablePageLayoutService implements IPrintablePageLayoutService {
 
     // Check if margins are too large
     const pageDimensions = this.calculatePageDimensions(
-      config.paperSize,
-      config.orientation
+      config.printConfiguration.paperSize,
+      config.printConfiguration.orientation
     );
     const totalMarginWidth = margins.left + margins.right;
     const totalMarginHeight = margins.top + margins.bottom;

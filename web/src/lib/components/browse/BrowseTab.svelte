@@ -115,7 +115,7 @@ Integrates panel management service with runes for:
     try {
       // Load all sequences first
       await browseState.loadAllSequences();
-      
+
       // Then restore any saved filter state (including starting letter)
       await browseState.restoreSavedState();
     } catch (error) {

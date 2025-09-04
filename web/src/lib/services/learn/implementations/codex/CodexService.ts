@@ -141,7 +141,7 @@ export class CodexService implements ICodexService {
     this.ensureInitialized();
 
     const rows = await this.letterMappingRepository.getLetterRows();
-    return rows.map((row) => [...row.letters]); // Return copy to prevent mutation
+    return rows.map((row: any) => [...row.letters]); // Return copy to prevent mutation
   }
 
   /**
@@ -187,7 +187,7 @@ export class CodexService implements ICodexService {
     const result: Record<string, PictographData | null> = {};
 
     // Initialize all letters to null
-    allLetters.forEach((letter) => {
+    allLetters.forEach((letter: any) => {
       result[letter] = null;
     });
 

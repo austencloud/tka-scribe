@@ -5,6 +5,7 @@
  */
 
 // Import types needed for interfaces defined in this file
+import type { SequenceData } from "$domain";
 import type {
   PageOrientation,
   WordCardPaperSize,
@@ -39,6 +40,7 @@ export type {
   PageLayoutConfig,
   PageCreationOptions as PageLayoutCreationOptions,
   GridCalculationOptions as PageLayoutGridCalculationOptions,
+  PrintConfiguration,
   Rectangle,
 } from "./PageLayout";
 
@@ -122,7 +124,7 @@ export interface SequenceStatistics {
 
 export interface Page {
   id: string;
-  sequences: unknown[];
+  sequences: SequenceData[];
   pageNumber: number;
   layout?: unknown;
   paperSize?: string;
