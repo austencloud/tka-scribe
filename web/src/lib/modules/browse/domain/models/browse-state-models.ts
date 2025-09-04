@@ -12,19 +12,14 @@ import {
 } from "../../gallery/domain/enums/gallery-enums";
 import type { FilterValue } from "../types";
 
-export interface BrowseState {
+export interface GalleryState {
   filterType: FilterType | null;
   filterValues: FilterValue;
   selectedSequence: string | null;
   selectedVariation: number | null;
-  navigationMode: NavigationMode;
   sortMethod: GallerySortMethod;
 }
 
-export enum NavigationMode {
-  FILTER_SELECTION = "filter_selector",
-  SEQUENCE_BROWSER = "sequence_picker",
-}
 
 // SequenceData eliminated - using SequenceData directly
 // This eliminates 95% duplication and clarifies starting position types
@@ -47,7 +42,7 @@ export interface GalleryDisplayState {
 }
 
 // Helper functions for state management
-export function createDefaultBrowseState(): BrowseState {
+export function createDefaultBrowseState(): GalleryState {
   return {
     filterType: null,
     filterValues: null,
@@ -81,8 +76,8 @@ export function createDefaultDisplayState(): GalleryDisplayState {
 }
 
 export function updateBrowseState(
-  state: BrowseState,
-  updates: Partial<BrowseState>
-): BrowseState {
+  state: GalleryState,
+  updates: Partial<GalleryState>
+): GalleryState {
   return { ...state, ...updates };
 }
