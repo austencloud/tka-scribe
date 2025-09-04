@@ -1,4 +1,5 @@
 import { resolve, TYPES } from "$shared/inversify/container";
+import { OrientationCalculationService } from "$shared/services/core/implementations/pictograph/positioning";
 import type {
   AnimatedMotionParams,
   AnimationState,
@@ -59,7 +60,7 @@ export function createAnimatorState(): AnimatorState {
     TYPES.ISequenceAnimationEngine
   ) as ISequenceAnimationEngine;
   const animationService = new AnimationControlService(animationEngine);
-  // OrientationCalculationService removed - service doesn't exist
+  const orientationService = new OrientationCalculationService();
   const letterIdentificationService = new MotionLetterIdentificationService();
 
   // Reactive state
@@ -120,14 +121,13 @@ export function createAnimatorState(): AnimatorState {
       blueMotionParams,
       MotionColor.BLUE
     );
-    // TODO: OrientationCalculationService removed - need alternative implementation
-    // const newEndOri = orientationService.calculateEndOrientation(
-    //   motionData,
-    //   MotionColor.BLUE
-    // );
-    // if (newEndOri !== blueMotionParams.endOrientation) {
-    //   blueMotionParams.endOrientation = newEndOri;
-    // }
+    const newEndOri = orientationService.calculateEndOrientation(
+      motionData,
+      MotionColor.BLUE
+    );
+    if (newEndOri !== blueMotionParams.endOrientation) {
+      blueMotionParams.endOrientation = newEndOri;
+    }
   });
 
   // Auto-calculate rotation direction for red prop
@@ -160,14 +160,13 @@ export function createAnimatorState(): AnimatorState {
       redMotionParams,
       MotionColor.RED
     );
-    // TODO: OrientationCalculationService removed - need alternative implementation
-    // const newEndOri = orientationService.calculateEndOrientation(
-    //   motionData,
-    //   MotionColor.RED
-    // );
-    // if (newEndOri !== redMotionParams.endOrientation) {
-    //   redMotionParams.endOrientation = newEndOri;
-    // }
+    const newEndOri = orientationService.calculateEndOrientation(
+      motionData,
+      MotionColor.RED
+    );
+    if (newEndOri !== redMotionParams.endOrientation) {
+      redMotionParams.endOrientation = newEndOri;
+    }
   });
 
   // Initialize engine when motion parameters change

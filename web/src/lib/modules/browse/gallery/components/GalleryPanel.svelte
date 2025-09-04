@@ -7,7 +7,7 @@
   import { GallerySortMethod } from "$shared/domain";
   import { resolve, TYPES } from "$shared/inversify";
   import { onMount } from "svelte";
-  import type { IThumbnailService } from "../../services/contracts";
+  import type { IGalleryThumbnailService } from "../../services/contracts";
   import { getBrowseTabStateManager } from "../../state";
   import SequenceBrowserControls from "./SequenceBrowserControls.svelte";
   import SequenceBrowserFooter from "./SequenceBrowserFooter.svelte";
@@ -29,7 +29,9 @@
   }>();
 
   // ✅ RESOLVE SERVICES: Get services from DI container
-  const thumbnailService = resolve<IThumbnailService>(TYPES.IThumbnailService);
+  const thumbnailService = resolve<IGalleryThumbnailService>(
+    TYPES.IGalleryThumbnailService
+  );
   const stateManager = getBrowseTabStateManager();
 
   // ✅ PURE RUNES: State using runes with persistence

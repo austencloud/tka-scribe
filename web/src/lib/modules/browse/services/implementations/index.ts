@@ -18,7 +18,7 @@ export type {
 export { FavoritesService } from "./FavoritesService";
 export { FilterPersistenceService } from "./FilterPersistenceService";
 export { GalleryService } from "./GalleryService";
+export { GalleryThumbnailService } from "./GalleryThumbnailService";
 export { LocalStoragePersistenceService } from "./LocalStoragePersistenceService";
 export { MetadataExtractionService } from "./MetadataExtractionService";
 export { NavigationService } from "./NavigationService";
-export { ThumbnailService } from "./ThumbnailService";

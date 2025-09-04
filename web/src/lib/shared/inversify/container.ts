@@ -218,7 +218,7 @@ try {
   // ExportService was renamed - using FileExportService instead
   // container.bind(TYPES.IExportService).to(ExportService);
   container.bind(TYPES.IPageImageExportService).to(PageImageExportService);
-  container.bind(TYPES.IThumbnailService).to(ThumbnailService);
+  container.bind(TYPES.IGalleryThumbnailService).to(GalleryThumbnailService);
 
   // Bind generation services
   container.bind(TYPES.IPageFactoryService).to(PageFactoryService);

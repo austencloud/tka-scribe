@@ -6,10 +6,10 @@
  */
 
 import { injectable } from "inversify";
-import type { IThumbnailService } from "../contracts";
+import type { IGalleryThumbnailService } from "../contracts";
 
 @injectable()
-export class ThumbnailService implements IThumbnailService {
+export class GalleryThumbnailService implements IGalleryThumbnailService {
   private thumbnailCache = new Map<string, Promise<void>>();
   private metadataCache = new Map<string, { width: number; height: number }>();
   private baseUrl = "/dictionary";

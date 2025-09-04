@@ -19,7 +19,7 @@ Integrates panel management service with runes for:
   //   INavigationService,
   //   ISectionService,
   //   ISequenceIndexService,
-  //   IThumbnailService,
+  //   IGalleryThumbnailService,
   // } from "$services";
   import { onDestroy, onMount } from "svelte";
   // Import layout and UI components
@@ -34,7 +34,7 @@ Integrates panel management service with runes for:
 
   // TEMPORARY: All service resolution commented out until container is restored
   // const browseService = resolve(TYPES.IGalleryService) as IGalleryService;
-  // const thumbnailService = resolve(TYPES.IThumbnailService) as IThumbnailService;
+  // const thumbnailService = resolve(TYPES.IGalleryThumbnailService) as IGalleryThumbnailService;
   // const sequenceIndexService = resolve(TYPES.ISequenceIndexService) as ISequenceIndexService;
   // const favoritesService = resolve(TYPES.IFavoritesService) as IFavoritesService;
   // const navigationService = resolve(TYPES.INavigationService) as INavigationService;

@@ -11,13 +11,23 @@
  * Main browse service for sequence discovery and filtering
  */
 
-import type { GalleryFilterState, NavigationSectionConfig, NavigationItem, SectionConfig, SequenceSection } from ".";
+import type {
+  GalleryFilterState,
+  NavigationItem,
+  NavigationSectionConfig,
+  SectionConfig,
+  SequenceSection,
+} from ".";
 import type { SequenceData } from "../../../../shared/domain";
 import type { FilterType, GallerySortMethod } from "../../gallery/domain/enums";
 import type { GalleryFilterValue } from "../../gallery/domain/types/gallery-types";
-import type { BrowseDeleteConfirmationData, BrowseDeleteResult } from "../../shared/domain/models/browse-models";
+import type {
+  BrowseDeleteConfirmationData,
+  BrowseDeleteResult,
+} from "../../shared/domain/models/browse-models";
 import type { BrowseState } from "../../state";
 
+// ============================================================================
 
 // SERVICE CONTRACTS (Behavioral Interfaces)
 // ============================================================================
@@ -41,7 +51,7 @@ export interface IGalleryService {
   getFilterOptions(filterType: FilterType): Promise<string[]>;
 }
 
-export interface IThumbnailService {
+export interface IGalleryThumbnailService {
   getThumbnailUrl(sequenceId: string, thumbnailPath: string): string;
   preloadThumbnail(sequenceId: string, thumbnailPath: string): Promise<void>;
   getThumbnailMetadata(

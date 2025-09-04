@@ -16,9 +16,9 @@ import type {
   IFavoritesService,
   IFilterPersistenceService,
   IGalleryService,
+  IGalleryThumbnailService,
   INavigationService,
   ISequenceIndexService,
-  IThumbnailService,
 } from "../services/contracts";
 import type { IBrowseNavigationState } from "./BrowseNavigationState.svelte";
 import type { IBrowseSearchState } from "./BrowseSearchState.svelte";
@@ -78,7 +78,7 @@ export class BrowseStateCoordinator implements IBrowseStateCoordinator {
     private navigationService: INavigationService,
     private sequenceIndexService: ISequenceIndexService,
     private favoritesService: IFavoritesService,
-    private thumbnailService: IThumbnailService,
+    private thumbnailService: IGalleryThumbnailService,
     private filterPersistenceService: IFilterPersistenceService
   ) {}
 

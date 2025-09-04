@@ -20,10 +20,10 @@ import type {
   IFavoritesService,
   IFilterPersistenceService,
   IGalleryService,
+  IGalleryThumbnailService,
   INavigationService,
   ISectionService,
   ISequenceIndexService,
-  IThumbnailService,
 } from "../services/contracts";
 import { BrowseFilterState } from "./BrowseFilterState.svelte";
 import { BrowseNavigationState } from "./BrowseNavigationState.svelte";
@@ -95,7 +95,7 @@ export interface BrowseState {
 
 export function createBrowseState(
   browseService: IGalleryService,
-  thumbnailService: IThumbnailService,
+  thumbnailService: IGalleryThumbnailService,
   sequenceIndexService: ISequenceIndexService,
   favoritesService: IFavoritesService,
   navigationService: INavigationService,

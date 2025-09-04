@@ -1,9 +1,9 @@
 <!  import type { SequenceData } from "$shared/domain";
-  import type { IThumbnailService } from "../services/contracts";
+  import type { IGalleryThumbnailService } from "../services/contracts";
   import { slide } from "svelte/transition";FullscreenSequenceViewer.svelte - Fullscreen sequence viewer with actions -->
 <script lang="ts">
   import type { SequenceData } from "$shared/domain";
-  import type { IThumbnailService } from "$browse/services";
+  import type { IGalleryThumbnailService } from "$browse/services";
   import { fade } from "svelte/transition";
   // Import subcomponents
   import FullscreenActionButtons from "./fullscreen/FullscreenActionButtons.svelte";
@@ -19,7 +19,7 @@
   } = $props<{
     show?: boolean;
     sequence?: SequenceData;
-    thumbnailService?: IThumbnailService;
+    thumbnailService?: IGalleryThumbnailService;
     onClose?: () => void;
     onAction?: (action: string, sequence: SequenceData) => void;
   }>();

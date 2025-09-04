@@ -1,7 +1,7 @@
 <!-- FullscreenImageViewer.svelte - Image display and navigation for fullscreen viewer -->
 <script lang="ts">
   import type { SequenceData } from "$shared/domain";
-  import type { IThumbnailService } from "../../services/contracts";
+  import type { IGalleryThumbnailService } from "../../services/contracts";
 
   // ✅ PURE RUNES: Props using modern Svelte 5 runes
   let {
@@ -10,7 +10,7 @@
     currentVariationIndex = $bindable(0),
   } = $props<{
     sequence?: SequenceData;
-    thumbnailService?: IThumbnailService;
+    thumbnailService?: IGalleryThumbnailService;
     currentVariationIndex?: number;
   }>();
 

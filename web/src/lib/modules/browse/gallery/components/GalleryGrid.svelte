@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { SequenceData } from "$shared/domain";
-  import type { IThumbnailService } from "../../services/contracts";
   import { slide } from "svelte/transition";
+  import type { IGalleryThumbnailService } from "../../services/contracts";
   import SequenceThumbnail from "./GalleryThumbnail.svelte";
 
   // ✅ PURE RUNES: Props using modern Svelte 5 runes
@@ -13,7 +13,7 @@
   } = $props<{
     sequences?: SequenceData[];
     viewMode?: "grid" | "list";
-    thumbnailService: IThumbnailService;
+    thumbnailService: IGalleryThumbnailService;
     onAction?: (action: string, sequence: SequenceData) => void;
   }>();
 

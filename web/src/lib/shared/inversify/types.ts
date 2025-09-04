@@ -51,7 +51,7 @@ export const TYPES = {
 
   // === BROWSE SERVICES ===
   IGalleryService: Symbol.for("IGalleryService"),
-  IThumbnailService: Symbol.for("IThumbnailService"),
+  IGalleryThumbnailService: Symbol.for("IGalleryThumbnailService"),
   INavigationService: Symbol.for("INavigationService"),
   IFavoritesService: Symbol.for("IFavoritesService"),
   IDeleteService: Symbol.for("IDeleteService"),

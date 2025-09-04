@@ -51,7 +51,7 @@ export interface IGalleryService {
 /**
  * Thumbnail management service
  */
-export interface IThumbnailService {
+export interface IGalleryThumbnailService {
   getThumbnailUrl(sequenceId: string, thumbnailPath: string): string;
   preloadThumbnail(sequenceId: string, thumbnailPath: string): Promise<void>;
   getThumbnailMetadata(
