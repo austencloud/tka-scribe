@@ -2,7 +2,7 @@
   import type { MotionData, PictographData } from "$domain";
   import { resolve, TYPES } from "$lib/services/inversify/container";
 
-  import type { IPropCoordinator } from "$implementations";
+  import type { IPropCoordinator } from "$lib/services/core/implementations/pictograph/rendering/PropCoordinator";
   interface Props {
     motionData: MotionData; // Single source of truth - contains embedded prop placement data
     pictographData: PictographData; // ✅ SIMPLIFIED: Complete pictograph data contains gridMode

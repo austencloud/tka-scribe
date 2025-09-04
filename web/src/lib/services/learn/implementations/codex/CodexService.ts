@@ -11,6 +11,7 @@ import {
   type ILessonRepository,
   type ILetterMappingRepository,
   type LetterCategory,
+  type LetterRow,
   type PictographData,
 } from "$domain";
 import { TYPES } from "$inversify/types";
@@ -141,7 +142,7 @@ export class CodexService implements ICodexService {
     this.ensureInitialized();
 
     const rows = await this.letterMappingRepository.getLetterRows();
-    return rows.map((row: any) => [...row.letters]); // Return copy to prevent mutation
+    return (rows as LetterRow[]).map((row) => [...row.letters]); // Return copy to prevent mutation
   }
 
   /**
@@ -187,7 +188,7 @@ export class CodexService implements ICodexService {
     const result: Record<string, PictographData | null> = {};
 
     // Initialize all letters to null
-    allLetters.forEach((letter: any) => {
+    (allLetters as string[]).forEach((letter) => {
       result[letter] = null;
     });
 

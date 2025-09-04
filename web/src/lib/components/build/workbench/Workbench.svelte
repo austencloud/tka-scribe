@@ -31,7 +31,7 @@
     beatFrameState
   );
 
-  const hasSelection = $derived(sequenceState.selectedBeatIndex >= 0);
+  const hasSelection = $derived(sequenceState.selectedBeatIndex !== null && sequenceState.selectedBeatIndex >= 0);
 
   onMount(() => {
     workbenchState.initialize();
@@ -41,7 +41,7 @@
 
   function handleDeleteBeat() {
     const idx = sequenceState.selectedBeatIndex;
-    if (idx >= 0) {
+    if (idx !== null && idx >= 0) {
       // TODO: Replace with WorkbenchBeatOperationsService.removeBeat
       // For now, use the state service directly
       sequenceState.removeBeat(idx);

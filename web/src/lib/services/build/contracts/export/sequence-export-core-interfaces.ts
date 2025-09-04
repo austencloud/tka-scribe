@@ -7,7 +7,7 @@
 // ============================================================================
 // EXPORT OPTIONS AND CONFIGURATION
 // ============================================================================
-import type { ImageExportOptions, SequenceData } from "$domain";
+import type { SequenceData, SequenceExportOptions } from "$domain";
 
 // ============================================================================
 // SERVICE CONTRACTS (Behavioral Interfaces)
@@ -19,7 +19,7 @@ export interface ITKAImageExportService {
    */
   exportSequenceImage(
     sequence: SequenceData,
-    options?: Partial<ImageExportOptions>
+    options?: Partial<SequenceExportOptions>
   ): Promise<Blob>;
 
   /**
@@ -27,7 +27,7 @@ export interface ITKAImageExportService {
    */
   generatePreview(
     sequence: SequenceData,
-    options?: Partial<ImageExportOptions>
+    options?: Partial<SequenceExportOptions>
   ): Promise<string>; // Returns data URL
 
   /**
@@ -36,7 +36,7 @@ export interface ITKAImageExportService {
   exportAndDownload(
     sequence: SequenceData,
     filename?: string,
-    options?: Partial<ImageExportOptions>
+    options?: Partial<SequenceExportOptions>
   ): Promise<void>;
 
   /**
@@ -44,7 +44,7 @@ export interface ITKAImageExportService {
    */
   batchExport(
     sequences: SequenceData[],
-    options?: Partial<ImageExportOptions>,
+    options?: Partial<SequenceExportOptions>,
     progressCallback?: (current: number, total: number) => void
   ): Promise<void>;
 
@@ -53,13 +53,13 @@ export interface ITKAImageExportService {
    */
   validateExport(
     sequence: SequenceData,
-    options: ImageExportOptions
+    options: SequenceExportOptions
   ): { valid: boolean; errors: string[] };
 
   /**
    * Get default export options
    */
-  getDefaultOptions(): ImageExportOptions;
+  getDefaultOptions(): SequenceExportOptions;
 }
 
 // Note: Import types directly from $domain

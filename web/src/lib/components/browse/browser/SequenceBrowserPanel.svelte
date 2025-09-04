@@ -107,13 +107,15 @@
         if (savedState) {
           // Restore sort state
           if (savedState.sort) {
-            sortBy = stateManager.mapStringToSortMethod(savedState.sort.method);
+            sortBy = stateManager.mapStringToSortMethod(
+              savedState.sort.sortMethod
+            );
             console.log("📖 Restored sort method:", sortBy);
           }
 
           // Restore view state
           if (savedState.view) {
-            viewMode = savedState.view.mode;
+            viewMode = savedState.view.viewMode;
             console.log("📖 Restored view mode:", viewMode);
           }
         }

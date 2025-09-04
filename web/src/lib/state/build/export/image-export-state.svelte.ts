@@ -8,12 +8,12 @@
  * Critical: All state uses Svelte 5 runes, no legacy stores.
  */
 
-import type { ImageExportOptions, SequenceData } from "$domain";
+import type { SequenceData, SequenceExportOptions } from "$domain";
 import type { ITKAImageExportService } from "$services";
 
 export interface ImageExportState {
   // Export options state
-  readonly exportOptions: ImageExportOptions;
+  readonly exportOptions: SequenceExportOptions;
 
   // Preview state
   readonly previewImageUrl: string | null;
@@ -30,7 +30,7 @@ export interface ImageExportState {
   readonly validationErrors: string[];
 
   // Actions
-  updateOptions: (newOptions: Partial<ImageExportOptions>) => Promise<void>;
+  updateOptions: (newOptions: Partial<SequenceExportOptions>) => Promise<void>;
   generatePreview: (sequence?: SequenceData) => Promise<void>;
   exportSequence: (sequence: SequenceData, filename?: string) => Promise<void>;
   clearPreview: () => void;
@@ -44,10 +44,10 @@ export interface ImageExportState {
  */
 export function createImageExportState(
   exportService: ITKAImageExportService,
-  initialOptions?: Partial<ImageExportOptions>
+  initialOptions?: Partial<SequenceExportOptions>
 ): ImageExportState {
   // Core export options state
-  let exportOptions = $state<ImageExportOptions>(
+  let exportOptions = $state<SequenceExportOptions>(
     exportService.getDefaultOptions()
   );
 
@@ -111,7 +111,7 @@ export function createImageExportState(
    * Triggers preview regeneration if sequence is available
    */
   async function updateOptions(
-    newOptions: Partial<ImageExportOptions>
+    newOptions: Partial<SequenceExportOptions>
   ): Promise<void> {
     try {
       clearErrors();
@@ -277,7 +277,7 @@ export function createPersistentImageExportState(
   storageKey: string = "tka-image-export-options"
 ): ImageExportState {
   // Load saved options from localStorage
-  let savedOptions: Partial<ImageExportOptions> = {};
+  let savedOptions: Partial<SequenceExportOptions> = {};
   try {
     const saved = localStorage.getItem(storageKey);
     if (saved) {
@@ -293,7 +293,7 @@ export function createPersistentImageExportState(
   // Wrap updateOptions to save to localStorage
   const originalUpdateOptions = state.updateOptions;
   const persistentUpdateOptions = async (
-    newOptions: Partial<ImageExportOptions>
+    newOptions: Partial<SequenceExportOptions>
   ) => {
     await originalUpdateOptions(newOptions);
 
@@ -333,7 +333,7 @@ export function createQuickExportState(
   purpose: "sharing" | "printing" | "archival"
 ): ImageExportState {
   // Preset options for different purposes
-  const presetOptions: Record<string, Partial<ImageExportOptions>> = {
+  const presetOptions: Record<string, Partial<SequenceExportOptions>> = {
     sharing: {
       // beatScale: 0.8, // Not available in ImageExportOptions
       format: "PNG",

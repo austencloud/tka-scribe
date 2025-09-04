@@ -125,10 +125,18 @@ export function createWordCardState(
     pageLayoutState,
 
     // Derived data (using existing services)
-    get filteredSequences() { return filteredSequences; },
-    get currentPageSequences() { return currentPageSequences; },
-    get totalPages() { return totalPages; },
-    get statusMessage() { return statusMessage; },
+    get filteredSequences() {
+      return filteredSequences;
+    },
+    get currentPageSequences() {
+      return currentPageSequences;
+    },
+    get totalPages() {
+      return totalPages;
+    },
+    get statusMessage() {
+      return statusMessage;
+    },
 
     // Actions
     setSelectedLength,

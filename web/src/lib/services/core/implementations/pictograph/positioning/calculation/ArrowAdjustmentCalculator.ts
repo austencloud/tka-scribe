@@ -159,7 +159,7 @@ export class ArrowAdjustmentCalculator implements IArrowAdjustmentCalculator {
 
     try {
       // Generate required keys for special placement lookup
-      const [oriKey, turnsTuple, attrKey] = this.generateLookupKeys(
+      const [_oriKey, _turnsTuple, _attrKey] = this.generateLookupKeys(
         pictographData,
         motionData
       );

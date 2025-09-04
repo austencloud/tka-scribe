@@ -3,23 +3,34 @@ SequenceSettingsSection.svelte - Core sequence configuration settings
 Contains Level, Length, and Turn Intensity selectors
 -->
 <script lang="ts">
-  import LevelSelector from "../selectors/LevelSelector.svelte";
-  import LengthSelector from "../selectors/LengthSelector.svelte";
-  import TurnIntensitySelector from "../selectors/TurnIntensitySelector.svelte";
+  import { DifficultyLevel } from "$domain";
   import type { GenerationConfig } from "$state";
+  import LengthSelector from "../selectors/LengthSelector.svelte";
+  import LevelSelector from "../selectors/LevelSelector.svelte";
+  import TurnIntensitySelector from "../selectors/TurnIntensitySelector.svelte";
 
   interface Props {
     config: GenerationConfig;
   }
 
   let { config }: Props = $props();
+
+  // Convert number level to DifficultyLevel enum
+  function levelToDifficulty(level: number): DifficultyLevel {
+    switch (level) {
+      case 1: return DifficultyLevel.BEGINNER;
+      case 2: return DifficultyLevel.INTERMEDIATE;
+      case 3: return DifficultyLevel.ADVANCED;
+      default: return DifficultyLevel.INTERMEDIATE;
+    }
+  }
 </script>
 
 <section class="settings-section">
   <h4 class="section-title">Sequence Settings</h4>
   <div class="settings-grid">
     <div class="setting-item">
-      <LevelSelector initialValue={config.difficulty} />
+      <LevelSelector initialValue={levelToDifficulty(config.level)} />
     </div>
     <div class="setting-item">
       <LengthSelector initialValue={config.length} />

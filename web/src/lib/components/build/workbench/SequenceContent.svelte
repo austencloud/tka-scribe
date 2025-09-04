@@ -38,8 +38,8 @@
       >
         <BeatFrame
           beats={currentSequence?.beats ?? []}
-          startPosition={currentSequence?.startPosition ?? null}
-          {selectedBeatIndex}
+          startPosition={currentSequence?.startPosition ?? undefined}
+          selectedBeatIndex={selectedBeatIndex ?? undefined}
           onBeatClick={handleBeatClick}
           isScrollable={beatFrameShouldScroll}
         />

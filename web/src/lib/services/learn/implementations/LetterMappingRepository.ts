@@ -114,7 +114,12 @@ export class LetterMappingRepository implements ILetterMappingRepository {
       // Convert the JSON data to our internal format
       const letters: Record<string, LetterMapping> = {};
       for (const [letter, mapping] of Object.entries(data.letters)) {
-        const letterData = mapping as any;
+        const letterData = mapping as {
+          startPosition: string;
+          endPosition: string;
+          blueMotion: string;
+          redMotion: string;
+        };
         letters[letter] = createLetterMapping({
           startPosition: letterData.startPosition,
           endPosition: letterData.endPosition,
@@ -139,8 +144,10 @@ export class LetterMappingRepository implements ILetterMappingRepository {
     }
   }
 
-  private mapMotionString(motionString: string): MotionType {
-    switch (motionString.toLowerCase()) {
+  private mapMotionString(motionString: string | unknown): MotionType {
+    const motionStr =
+      typeof motionString === "string" ? motionString : String(motionString);
+    switch (motionStr.toLowerCase()) {
       case "pro":
         return MotionType.PRO;
       case "anti":
@@ -150,7 +157,7 @@ export class LetterMappingRepository implements ILetterMappingRepository {
       case "dash":
         return MotionType.DASH;
       default:
-        console.warn(`Unknown motion type: ${motionString}, defaulting to PRO`);
+        console.warn(`Unknown motion type: ${motionStr}, defaulting to PRO`);
         return MotionType.PRO;
     }
   }

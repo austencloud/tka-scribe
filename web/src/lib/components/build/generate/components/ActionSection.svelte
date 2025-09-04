@@ -5,7 +5,7 @@ Updated to convert config format and handle real generation
 <script lang="ts">
   import { DifficultyLevel, GenerationMode, GridMode, LetterType, PropContinuity } from "$domain";
   import type { GenerationConfig as ActionsGenerationConfig } from "$lib/state/build/generate/generate-actions.svelte";
-  import type { GenerationConfig } from "$state/generate/generate-config.svelte";
+  import type { GenerationConfig } from "$lib/state/build/generate/generate-config.svelte";
 
   interface Props {
     onAutoCompleteClicked: () => void;
@@ -27,7 +27,7 @@ Updated to convert config format and handle real generation
   function convertConfig(config: GenerationConfig): ActionsGenerationConfig {
     // Convert letter types from Set<LetterType> to string[]
     const letterTypes: string[] = [];
-    config.letterTypes.forEach((type) => {
+    config.letterTypes.forEach((type: any) => {
       switch (type) {
         case LetterType.TYPE1:
           letterTypes.push("Dual-Shift");
