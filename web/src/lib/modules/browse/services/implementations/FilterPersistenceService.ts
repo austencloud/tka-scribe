@@ -5,11 +5,10 @@
  * following the microservices architecture pattern.
  */
 
-import type { BrowseState, GalleryFilterState } from "$browse/domain";
-import type { GalleryFilterValue } from "$browse/domain/types";
 import {
   FilterType,
   GallerySortMethod,
+  NavigationMode,
 } from "$lib/modules/browse/gallery/domain/enums/gallery-enums";
 import {
   safeSessionStorageGet,
@@ -17,6 +16,8 @@ import {
   safeSessionStorageSet,
 } from "$shared/utils";
 import { injectable } from "inversify";
+import type { GalleryFilterValue } from "../../domain";
+import type { BrowseState } from "../../shared/state/browse-state";
 
 export interface GalleryFilterState {
   type: FilterType;
@@ -211,7 +212,7 @@ export class FilterPersistenceService implements IFilterPersistenceService {
       filterValues: null,
       selectedSequence: null,
       selectedVariation: null,
-      GalleryNvaigationMode: GalleryNvaigationMode.FILTER_SELECTION,
+      navigationMode: NavigationMode.FILTER_SELECTION,
       sortMethod: GallerySortMethod.ALPHABETICAL,
     };
   }
@@ -224,7 +225,7 @@ export class FilterPersistenceService implements IFilterPersistenceService {
       filterValues: null,
       selectedSequence: null,
       selectedVariation: null,
-      GalleryNvaigationMode: GalleryNvaigationMode.FILTER_SELECTION,
+      navigationMode: NavigationMode.FILTER_SELECTION,
       sortMethod: GallerySortMethod.ALPHABETICAL,
     };
     await this.saveBrowseState(browseState);

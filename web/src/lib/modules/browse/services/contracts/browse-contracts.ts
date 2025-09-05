@@ -25,7 +25,7 @@ import type {
   BrowseDeleteConfirmationData,
   BrowseDeleteResult,
 } from "../../shared/domain/models/browse-models";
-import type { BrowseState } from "../../state";
+import type { BrowseState } from "../../shared/state/browse-state";
 
 // ============================================================================
 

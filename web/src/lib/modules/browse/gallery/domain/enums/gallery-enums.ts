@@ -24,7 +24,7 @@ export enum GallerySortMethod {
   POPULARITY = "popularity",
 }
 
-export enum GalleryNvaigationMode {
+export enum NavigationMode {
   FILTER_SELECTION = "filter_selection",
   SEQUENCE_BROWSER = "sequence_browser",
 }

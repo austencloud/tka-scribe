@@ -5,11 +5,7 @@
  * Replaces the 738-line monolith with focused, testable services.
  */
 
-import type { GalleryFilterValue } from "$browse/domain/types";
-import { FilterType } from "$lib/modules/browse/gallery/domain/enums/gallery-enums";
 import type { SequenceData } from "$shared/domain";
-import type { GalleryNavigationItem } from "../gallery/domain/models/gallery-models";
-import type { GalleryLoadingState } from "../gallery/state/gallery-state-models";
 import type {
   IDeleteService,
   IFavoritesService,
@@ -20,19 +16,24 @@ import type {
   ISectionService,
   ISequenceIndexService,
   NavigationSectionConfig,
-} from "../services/contracts";
-import type { BrowseDeleteConfirmationData } from "../shared/domain/models/browse-models";
-import { BrowseNavigationState } from "./BrowseNavigationState.svelte";
-import { BrowseSearchState } from "./BrowseSearchState.svelte";
-import { BrowseSelectionState } from "./BrowseSelectionState.svelte";
-import { GalleryFilterState } from "./GalleryFilterState.svelte";
+} from "../../services/contracts";
+import type { BrowseDeleteConfirmationData } from "../../shared/domain/models/browse-models";
+import type { IGalleryDisplayState } from "../../state/BrowseDisplayState.svelte";
+import { BrowseNavigationState } from "../../state/BrowseNavigationState.svelte";
+import { BrowseSearchState } from "../../state/BrowseSearchState.svelte";
+import { BrowseSelectionState } from "../../state/BrowseSelectionState.svelte";
+import { GalleryFilterState } from "../../state/GalleryFilterState.svelte";
+import { FilterType, NavigationMode } from "../domain/enums/gallery-enums";
+import type { GalleryNavigationItem } from "../domain/models/gallery-models";
+import type { GalleryFilterValue } from "../domain/types/gallery-types";
+import type { GalleryLoadingState } from "./gallery-state-models";
 
 export interface BrowseState {
   // State microservices (reactive)
   readonly filterState: GalleryFilterState;
   readonly navigationState: BrowseNavigationState;
   readonly selectionState: BrowseSelectionState;
-  readonly displayState: GalleryDisplayStateService;
+  readonly displayState: IGalleryDisplayState;
   readonly searchState: BrowseSearchState;
 
   // Coordinator (orchestration)
@@ -46,7 +47,7 @@ export interface BrowseState {
   readonly isLoading: boolean;
   readonly hasError: boolean;
   readonly displayedSequences: SequenceData[];
-  readonly GalleryNvaigationMode: GalleryNvaigationMode;
+  readonly navigationMode: NavigationMode;
   readonly navigationSections: NavigationSectionConfig[]; // NavigationSectionConfig type not available
   readonly selectedSequence: SequenceData | null;
 
@@ -190,8 +191,8 @@ export function createBrowseState(
     get displayedSequences() {
       return coordinator.displayedSequences;
     },
-    get GalleryNvaigationMode() {
-      return navigationState.GalleryNvaigationMode;
+    get GalleryNavigationMode() {
+      return navigationState.GalleryNavigationMode;
     },
     get navigationSections() {
       return navigationState.navigationSections;

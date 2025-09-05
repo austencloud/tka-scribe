@@ -6,15 +6,15 @@
  */
 
 import type { NavigationSectionConfig } from "$browse/domain";
-import { GalleryNvaigationMode } from "$browse/domain";
+import { GalleryNavigationMode } from "$browse/domain";
 
 export interface IBrowseNavigationState {
   // Reactive state getters
-  readonly GalleryNvaigationMode: GalleryNvaigationMode;
+  readonly GalleryNavigationMode: GalleryNavigationMode;
   readonly navigationSections: NavigationSectionConfig[];
 
   // Actions
-  setGalleryNvaigationMode(mode: GalleryNvaigationMode): void;
+  setGalleryNavigationMode(mode: GalleryNavigationMode): void;
   setNavigationSections(sections: NavigationSectionConfig[]): void;
   goToFilterSelection(): void;
   goToSequenceBrowser(): void;
@@ -22,14 +22,14 @@ export interface IBrowseNavigationState {
 
 export class BrowseNavigationState implements IBrowseNavigationState {
   // Private reactive state
-  #GalleryNvaigationMode = $state<GalleryNvaigationMode>(
-    GalleryNvaigationMode.FILTER_SELECTION
+  #GalleryNavigationMode = $state<GalleryNavigationMode>(
+    GalleryNavigationMode.FILTER_SELECTION
   );
   #navigationSections = $state<NavigationSectionConfig[]>([]);
 
   // Reactive getters
-  get GalleryNvaigationMode() {
-    return this.#GalleryNvaigationMode;
+  get GalleryNavigationMode() {
+    return this.#GalleryNavigationMode;
   }
 
   get navigationSections() {
@@ -37,8 +37,8 @@ export class BrowseNavigationState implements IBrowseNavigationState {
   }
 
   // Actions
-  setGalleryNvaigationMode(mode: GalleryNvaigationMode): void {
-    this.#GalleryNvaigationMode = mode;
+  setGalleryNavigationMode(mode: GalleryNavigationMode): void {
+    this.#GalleryNavigationMode = mode;
   }
 
   setNavigationSections(sections: NavigationSectionConfig[]): void {
@@ -46,10 +46,10 @@ export class BrowseNavigationState implements IBrowseNavigationState {
   }
 
   goToFilterSelection(): void {
-    this.#GalleryNvaigationMode = GalleryNvaigationMode.FILTER_SELECTION;
+    this.#GalleryNavigationMode = GalleryNavigationMode.FILTER_SELECTION;
   }
 
   goToSequenceBrowser(): void {
-    this.#GalleryNvaigationMode = GalleryNvaigationMode.SEQUENCE_BROWSER;
+    this.#GalleryNavigationMode = GalleryNavigationMode.SEQUENCE_BROWSER;
   }
 }

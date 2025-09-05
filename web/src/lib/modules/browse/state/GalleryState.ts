@@ -5,7 +5,7 @@
  * that require coordination between multiple services.
  */
 
-import { GalleryNvaigationMode } from "$browse/domain";
+import { GalleryNavigationMode } from "$browse/domain";
 import type { SequenceData } from "../../../shared/domain";
 import type { FilterType, GallerySortMethod } from "../gallery/domain/enums";
 import type { GalleryFilterValue } from "../gallery/domain/types/gallery-types";
@@ -220,7 +220,7 @@ export class GalleryState implements IGalleryState {
         filterValues: value,
         selectedSequence: null,
         selectedVariation: null,
-        GalleryNvaigationMode: GalleryNvaigationMode.SEQUENCE_BROWSER,
+        GalleryNavigationMode: GalleryNavigationMode.SEQUENCE_BROWSER,
         sortMethod: this.#currentSort,
       };
 
@@ -306,7 +306,7 @@ export class GalleryState implements IGalleryState {
         filterValues: null,
         selectedSequence: null,
         selectedVariation: null,
-        GalleryNvaigationMode: GalleryNvaigationMode.FILTER_SELECTION,
+        GalleryNavigationMode: GalleryNavigationMode.FILTER_SELECTION,
         sortMethod: this.#currentSort,
       };
       await this.filterPersistenceService.saveBrowseState(emptyBrowseState);
