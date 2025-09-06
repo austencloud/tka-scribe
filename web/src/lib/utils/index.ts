@@ -38,8 +38,6 @@ export * from "./png-parser";
 export * from "./letter-image-getter";
 
 // UI utilities
-export * from "./glass-scrollbars";
-export * from "./quick-glass-scrollbars";
 export * from "./seo-utils";
 
 // Performance utilities
