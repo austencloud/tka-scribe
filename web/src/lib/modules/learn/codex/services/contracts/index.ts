@@ -2,6 +2,6 @@
  * Codex Service Contracts
  */
 
-export * from "./ICodexLetterMappingRepository";
+export * from "./ICodexLetterMappingRepo";
 export * from "./ICodexPictographUpdater";
 export * from "./ICodexService";

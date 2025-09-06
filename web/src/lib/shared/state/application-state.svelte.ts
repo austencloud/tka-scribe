@@ -94,5 +94,5 @@ class ApplicationStateService implements IApplicationStateService {
   }
 }
 
-// Singleton instance
-export const applicationStateService = new ApplicationStateService();
+// Export the class for DI container binding
+// Singleton instance will be managed by the DI container

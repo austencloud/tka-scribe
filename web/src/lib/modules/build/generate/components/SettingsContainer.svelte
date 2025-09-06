@@ -5,16 +5,16 @@ All individual controls are evenly spaced throughout the container
 -->
 <script lang="ts">
   import { DifficultyLevel, GenerationMode } from "$shared/domain";
-  import type { GenerationConfig } from "$lib/state/build/generate/generate-config.svelte";
-  import CAPTypeSelector from "../selectors/CAPTypeSelector.svelte";
-  import GenerationModeToggle from "../selectors/GenerationModeToggle.svelte";
-  import GridModeSelector from "../selectors/GridModeSelector.svelte";
-  import LengthSelector from "../selectors/LengthSelector.svelte";
-  import LetterTypeSelector from "../selectors/LetterTypeSelector.svelte";
-  import LevelSelector from "../selectors/LevelSelector.svelte";
-  import PropContinuityToggle from "../selectors/PropContinuityToggle.svelte";
-  import SliceSizeSelector from "../selectors/SliceSizeSelector.svelte";
-  import TurnIntensitySelector from "../selectors/TurnIntensitySelector.svelte";
+  import type { GenerationConfig } from "../state/generate-config.svelte";
+  import CAPTypeSelector from "./selectors/CAPTypeSelector.svelte";
+  import GenerationModeToggle from "./selectors/GenerationModeToggle.svelte";
+  import GridModeSelector from "./selectors/GridModeSelector.svelte";
+  import LengthSelector from "./selectors/LengthSelector.svelte";
+  import LetterTypeSelector from "./selectors/LetterTypeSelector.svelte";
+  import LevelSelector from "./selectors/LevelSelector.svelte";
+  import PropContinuityToggle from "./selectors/PropContinuityToggle.svelte";
+  import SliceSizeSelector from "./selectors/SliceSizeSelector.svelte";
+  import TurnIntensitySelector from "./selectors/TurnIntensitySelector.svelte";
 
   interface Props {
     config: GenerationConfig;

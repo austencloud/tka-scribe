@@ -46,7 +46,7 @@ export class LetterQueryHandler implements ILetterQueryHandler {
 
   constructor(
     @inject(TYPES.ICodexLetterMappingRepo)
-    private letterMappingRepository: ICodexLetterMappingRepo,
+    private letterMappingRepo: ICodexLetterMappingRepo,
     @inject(TYPES.ICSVLoader)
     private csvLoaderService: ICSVLoader,
     @inject(TYPES.ICSVParser)
@@ -66,10 +66,10 @@ export class LetterQueryHandler implements ILetterQueryHandler {
     try {
       // Initialize letter mapping repository first
       if (
-        this.letterMappingRepository &&
-        typeof this.letterMappingRepository.initialize === "function"
+        this.letterMappingRepo &&
+        typeof this.letterMappingRepo.initialize === "function"
       ) {
-        await this.letterMappingRepository.initialize();
+        await this.letterMappingRepo.initialize();
       }
 
       // Load raw CSV data
@@ -148,7 +148,7 @@ export class LetterQueryHandler implements ILetterQueryHandler {
     letter: Letter,
     gridMode: GridMode
   ): Promise<PictographData | null> {
-    if (!this.letterMappingRepository) {
+    if (!this.letterMappingRepo) {
       console.error(
         "❌ CodexLetterMappingRepo not available for getPictographByLetter"
       );
@@ -162,8 +162,7 @@ export class LetterQueryHandler implements ILetterQueryHandler {
       const letterString = letter.toString();
 
       // Get letter mapping from repository
-      const mapping =
-        this.letterMappingRepository.getLetterMapping(letterString);
+      const mapping = this.letterMappingRepo.getLetterMapping(letterString);
       if (!mapping) {
         console.warn(`⚠️ No letter mapping found for letter: ${letterString}`);
         return null;
@@ -194,7 +193,7 @@ export class LetterQueryHandler implements ILetterQueryHandler {
    * Get all pictographs from the codex using CodexLetterMappingRepo
    */
   async getAllCodexPictographs(gridMode: GridMode): Promise<PictographData[]> {
-    if (!this.letterMappingRepository) {
+    if (!this.letterMappingRepo) {
       console.error(
         "❌ CodexLetterMappingRepo not available for getAllCodexPictographs"
       );
@@ -204,7 +203,7 @@ export class LetterQueryHandler implements ILetterQueryHandler {
     await this.ensureInitialized();
 
     try {
-      const allLetters = this.letterMappingRepository.getAllLetters();
+      const allLetters = this.letterMappingRepo.getAllLetters();
 
       const pictographs: PictographData[] = [];
       for (const letterString of allLetters) {
@@ -278,7 +277,7 @@ export class LetterQueryHandler implements ILetterQueryHandler {
     searchTerm: string,
     gridMode: GridMode
   ): Promise<PictographData[]> {
-    if (!this.letterMappingRepository) {
+    if (!this.letterMappingRepo) {
       console.error(
         "❌ CodexLetterMappingRepo not available for searchPictographs"
       );
@@ -288,7 +287,7 @@ export class LetterQueryHandler implements ILetterQueryHandler {
     await this.ensureInitialized();
 
     try {
-      const allLetters = this.letterMappingRepository.getAllLetters();
+      const allLetters = this.letterMappingRepo.getAllLetters();
       const matchingLetters = allLetters.filter((letter) =>
         letter.toLowerCase().includes(searchTerm.toLowerCase())
       );

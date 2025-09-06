@@ -31,9 +31,9 @@ export class CodexService implements ICodexService {
 
   constructor(
     @inject(TYPES.ICodexLetterMappingRepo)
-    private letterMappingRepository: ICodexLetterMappingRepo,
+    private letterMappingRepo: ICodexLetterMappingRepo,
     @inject(TYPES.IQuizRepoManager)
-    private lessonRepository: IQuizRepoManager,
+    private lessonRepo: IQuizRepoManager,
     @inject(TYPES.ICodexPictographUpdater)
     private operationsService: ICodexPictographUpdater,
     @inject(TYPES.ILetterQueryHandler)
@@ -55,8 +55,8 @@ export class CodexService implements ICodexService {
 
       // Initialize all repositories and services
       await Promise.all([
-        this.letterMappingRepository.initialize(),
-        this.lessonRepository.initialize(),
+        this.letterMappingRepo.initialize(),
+        this.lessonRepo.initialize(),
         // LetterQueryHandler initializes automatically when first used
       ]);
 
@@ -121,7 +121,7 @@ export class CodexService implements ICodexService {
 
     console.log(`📚 Getting pictographs for lesson type: ${lessonType}`);
 
-    const letters = await this.lessonRepository.getLettersForLesson(lessonType);
+    const letters = await this.lessonRepo.getLettersForLesson(lessonType);
     if (letters.length === 0) {
       console.warn(`No letters found for lesson type: ${lessonType}`);
       return [];
@@ -140,7 +140,7 @@ export class CodexService implements ICodexService {
   async getLettersByRow(): Promise<string[][]> {
     this.ensureInitialized();
 
-    const rows = await this.letterMappingRepository.getLetterRows();
+    const rows = await this.letterMappingRepo.getLetterRows();
     return (rows as CodexLetterRow[]).map((row) => [...row.letters]); // Return copy to prevent mutation
   }
 
@@ -183,7 +183,7 @@ export class CodexService implements ICodexService {
   async getAllPictographData(): Promise<Record<string, PictographData | null>> {
     await this.initialize();
 
-    const allLetters = await this.letterMappingRepository.getAllLetters();
+    const allLetters = await this.letterMappingRepo.getAllLetters();
     const result: Record<string, PictographData | null> = {};
 
     // Initialize all letters to null
@@ -210,7 +210,7 @@ export class CodexService implements ICodexService {
   async getAvailableQuizTypes(): Promise<string[]> {
     await this.initialize();
 
-    return await this.lessonRepository.getAllQuizTypes();
+    return await this.lessonRepo.getAllQuizTypes();
   }
 
   /**
@@ -219,7 +219,7 @@ export class CodexService implements ICodexService {
   isValidLetter(letter: string): boolean {
     this.ensureInitialized();
 
-    return this.letterMappingRepository.isValidLetter(letter);
+    return this.letterMappingRepo.isValidLetter(letter);
   }
 
   // Private helper methods

@@ -1,5 +1,5 @@
 /**
- * Lesson Repository Implementation
+ * Lesson Repo Implementation
  *
  * Service implementation for lesson configuration management and retrieval.
  * Handles lesson types, configurations, and category management.
@@ -31,7 +31,7 @@ export class QuizRepoManager implements IQuizRepoManager {
 
   constructor(
     @inject(TYPES.ICodexLetterMappingRepo)
-    private letterMappingRepository: ICodexLetterMappingRepo
+    private letterMappingRepo: ICodexLetterMappingRepo
   ) {}
 
   async initialize(): Promise<void> {
@@ -41,7 +41,7 @@ export class QuizRepoManager implements IQuizRepoManager {
 
     try {
       // Initialize letter mapping repository first
-      await this.letterMappingRepository.initialize();
+      await this.letterMappingRepo.initialize();
 
       // Load lesson configurations
       await this.loadQuizConfigs();

@@ -16,6 +16,11 @@ positions:
       orientations: ["vertical", "horizontal", "diagonal"]
       thumb_positions: ["thumbs_in", "thumbs_out", "mixed"]
     
+    timing_modes:
+      split_same: "Both hands move in same direction but from opposite positions"
+      split_opp: "Hands move in opposite directions from opposite positions"
+      tog_opp: "Hands move in opposite directions (for Alpha<->Beta transitions)"
+    
   beta:
     symbol: "β"
     name: "Beta" 
@@ -27,6 +32,10 @@ positions:
     variations:
       locations: ["top", "bottom", "left", "right"]
       thumb_positions: ["thumbs_in", "thumbs_out", "mixed"]
+    
+    timing_modes:
+      tog_same: "Both hands move in same direction from same general area"
+      tog_opp: "Hands move in opposite directions (for Beta<->Alpha transitions)"
       
   gamma:
     symbol: "Γ"

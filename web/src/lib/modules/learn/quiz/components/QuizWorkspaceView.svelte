@@ -12,11 +12,10 @@
   import { QuizMode as QuizModeEnum } from "../domain";
 
   import type { PictographData } from "../../../../shared/domain";
-  import {
-    QuestionGeneratorService,
-    QuizConfigurator,
-    QuizSessionService,
-  } from "../../services/implementations";
+  // TODO: Fix service imports - temporarily commented out
+  // import { QuestionGenerator as QuestionGeneratorService } from "../../services/implementations/QuestionGenerator.ts";
+  // import { QuizConfigurator } from "../../services/implementations/QuizConfigurator.ts";
+  // import { QuizSessionService } from "../../services/implementations/QuizSessionService.ts";
   import QuestionGenerator from "./QuestionGenerator.svelte";
   import LessonControls from "./QuizControls.svelte";
   import ProgressTracker from "./QuizProgressTracker.svelte";
@@ -68,9 +67,10 @@
   });
 
   onDestroy(() => {
-    if (sessionId) {
-      QuizSessionService.abandonSession(sessionId);
-    }
+    // TODO: Re-enable when services are fixed
+    // if (sessionId) {
+    //   QuizSessionService.abandonSession(sessionId);
+    // }
   });
 
   // Methods

@@ -7,10 +7,11 @@
 
 <script lang="ts">
   import type { PictographData } from "$shared/domain";
-  import { QuestionGeneratorService } from "../../services/implementations";
+  // TODO: Fix service import - temporarily commented out
+  // import { QuestionGeneratorService } from "../../services/implementations";
   import type { QuizAnswerOption, QuizQuestionData, QuizType } from "../domain";
   import { QuizAnswerFormat } from "../domain";
-  // Events are now handled via callbacks in props
+// Events are now handled via callbacks in props
   import AnswerButton from "./AnswerButton.svelte";
   import AnswerPictograph from "./AnswerPictograph.svelte";
   import PictographRenderer from "./QuizPictographRenderer.svelte";
@@ -49,11 +50,13 @@
 
   // Methods
   function generateNewQuestion() {
-    try {
-      questionData = QuestionGeneratorService.generateQuestion(lessonType);
-    } catch (error) {
-      console.error("Failed to generate question:", error);
-    }
+    // TODO: Re-enable when services are fixed
+    // try {
+    //   questionData = QuestionGeneratorService.generateQuestion(lessonType);
+    // } catch (error) {
+    //   console.error("Failed to generate question:", error);
+    // }
+    console.log("generateNewQuestion called - service temporarily disabled");
   }
 
   function handleAnswerClick(option: QuizAnswerOption) {

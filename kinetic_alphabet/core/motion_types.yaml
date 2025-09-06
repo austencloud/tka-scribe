@@ -26,10 +26,14 @@ motion_types:
     description: "Both hands travel to adjacent points"
     fundamental_combination: "shift + shift"
     timing_modes:
-      - "Split-Same (SS)"
-      - "Tog-Same (TS)" 
-      - "Split-Opp (SO)"
-      - "Tog-Opp (TO)"
+      split_same: "Both hands move same direction from opposite positions (offset timing)"
+      tog_same: "Both hands move same direction from same area (synchronized timing)"
+      split_opp: "Hands move opposite directions from opposite positions (offset timing)"
+      tog_opp: "Hands move opposite directions, hit convergence simultaneously"
+    timing_explanation:
+      tog: "Together time - hands hit key points simultaneously"
+      split: "Split time - hands hit key points with offset timing"
+      determination: "Tog vs Split determined by continuing handpath to see if convergence is simultaneous"
     focus: "Simultaneous motions between two positions, relative to center point"
     
   type_2:

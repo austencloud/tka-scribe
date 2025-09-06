@@ -1,5 +1,5 @@
 /**
- * Letter Mapping Repository Implementation
+ * Letter Mapping Repo Implementation
  *
  * Service implementation for letter mapping management and codex configuration.
  * Handles letter mappings, categories, and validation.

@@ -22,9 +22,9 @@
   import WordCardTab from "../modules/word-card/components/WordCardTab.svelte";
   import WriteTab from "../modules/write/components/WriteTab.svelte";
   // Shared components: Direct relative paths (bulletproof standard)
-  import NavigationBar from "./components/navigation/NavigationBar.svelte";
   import BackgroundCanvas from "./background/components/BackgroundCanvas.svelte";
-  import SettingsDialog from "./components/settings/SettingsDialog.svelte";
+  import NavigationBar from "./navigation/components/NavigationBar.svelte";
+  import SettingsDialog from "./settings/components/SettingsDialog.svelte";
 
   // Reactive state for template using proper derived
   let activeTab = $derived(getActiveTab());

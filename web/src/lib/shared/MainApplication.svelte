@@ -21,15 +21,13 @@
   } from "./state/app-state.svelte";
   // Import components - BULLETPROOF RELATIVE IMPORTS
   import type { ISequenceService } from "../modules/build/workbench";
-  import SettingsDialog from "./components/settings/SettingsDialog.svelte";
+  import type { IApplicationInitializer } from "./foundation/services/contracts/application/IApplicationInitializer";
+  import type { IDeviceDetector } from "./foundation/services/contracts/device/IDeviceDetector";
+  import type { ISettingsService } from "./foundation/services/contracts/settings/ISettingsService";
   import ErrorScreen from "./foundation/ui/ErrorScreen.svelte";
   import LoadingScreen from "./foundation/ui/LoadingScreen.svelte";
   import MainInterface from "./MainInterface.svelte";
-  import type {
-    IApplicationInitializer,
-    IDeviceDetector,
-    ISettingsService,
-  } from "./services";
+  import SettingsDialog from "./settings/components/SettingsDialog.svelte";
 
   // Get DI container from context
   const getContainer = getContext<() => Container | null>("di-container");

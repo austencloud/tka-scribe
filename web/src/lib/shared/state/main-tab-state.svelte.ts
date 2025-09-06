@@ -137,5 +137,5 @@ class MainTabState implements IMainTabState {
   }
 }
 
-// Singleton instance
-export const tabStateService = new MainTabState();
+// Export the class for DI container binding
+// Singleton instance will be managed by the DI container

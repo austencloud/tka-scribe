@@ -9,8 +9,8 @@ Clean, minimal component that focuses only on UI concerns:
 <script lang="ts">
 	import type { PictographData } from "$shared/domain";
 	import { onMount } from "svelte";
-	import ErrorBanner from './../../../../../components/build/shared/ErrorBanner.svelte';
-	import LoadingOverlay from './../../../../../components/build/shared/LoadingOverlay.svelte';
+	import ErrorBanner from '../../../shared/components/ErrorBanner.svelte';
+	import LoadingOverlay from '../../../shared/components/LoadingOverlay.svelte';
 	import OptionPickerHeader from "./OptionPickerHeader.svelte";
 	import OptionPickerScroll from "./OptionPickerScroll.svelte";
 

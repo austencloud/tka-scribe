@@ -59,14 +59,22 @@ export interface AnimatorState {
 }
 
 export function createAnimatorState(): AnimatorState {
-  // Services
-  const motionService = new MotionParameterService();
+  // Services - Use DI container instead of direct instantiation
+  const motionService = resolve(
+    TYPES.IMotionParameterService
+  ) as MotionParameterService;
   const animationEngine = resolve(
     TYPES.ISequenceAnimationEngine
   ) as ISequenceAnimationEngine;
-  const animationService = new AnimationControlService(animationEngine);
-  const orientationService = new OrientationCalculationService();
-  const letterIdentificationService = new MotionLetterIdentificationService();
+  const animationService = resolve(
+    TYPES.IAnimationControlService
+  ) as AnimationControlService;
+  const orientationService = resolve(
+    TYPES.IOrientationCalculationService
+  ) as OrientationCalculationService;
+  const letterIdentificationService = resolve(
+    TYPES.IMotionLetterIdentificationService
+  ) as MotionLetterIdentificationService;
 
   // Reactive state
   let blueMotionParams = $state<AnimatedMotionParams>(

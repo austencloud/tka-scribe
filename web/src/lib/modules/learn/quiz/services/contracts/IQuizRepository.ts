@@ -1,5 +1,5 @@
 /**
- * Lesson Repository Interface
+ * Lesson Repo Interface
  *
  * Contract for lesson configuration management and retrieval.
  * Handles lesson types, configurations, and category management.

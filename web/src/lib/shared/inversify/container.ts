@@ -1,14 +1,5 @@
-/**
- * InversifyJS Container Config - WORKING VERSION WITH ALL DEPENDENCIES
- *
- * This file sets up the main InversifyJS container and provides
- * the service resolution interface for the TKA application.
- */
-
 import { Container } from "inversify";
-import "reflect-metadata";
-
-// Import service types
+import { PageFactoryService, PageImageExportService } from "../../modules";
 import {
   AnimationControlService,
   AnimationStateService,
@@ -19,7 +10,15 @@ import {
   SequenceAnimationEngine,
   SequenceAnimationOrchestrator,
 } from "../../modules/animator/services";
+import { BrowseStatePersister } from "../../modules/browse/gallery/services/implementations/BrowseStatePersister";
+import { FavoritesService } from "../../modules/browse/gallery/services/implementations/FavoritesService";
 import { FilterPersistenceService } from "../../modules/browse/gallery/services/implementations/FilterPersistenceService";
+import { GalleryPanelManager } from "../../modules/browse/gallery/services/implementations/GalleryPanelManager";
+import { BrowseSectionService } from "../../modules/browse/gallery/services/implementations/GallerySectionService";
+import { GalleryService } from "../../modules/browse/gallery/services/implementations/GalleryService";
+import { GalleryThumbnailService } from "../../modules/browse/gallery/services/implementations/GalleryThumbnailService";
+import { NavigationService } from "../../modules/browse/gallery/services/implementations/NavigationService";
+import { BrowsePersistenceService } from "../../modules/browse/shared/services/implementations/BrowsePersistenceService";
 import { OptionPickerDataService } from "../../modules/build/construct/option-picker/services/implementations/OptionPickerDataService";
 import { OptionPickerLayoutService } from "../../modules/build/construct/option-picker/services/implementations/OptionPickerLayoutService";
 import { ConstructCoordinator } from "../../modules/build/construct/shared/services/implementations/ConstructCoordinator";
@@ -37,6 +36,7 @@ import { ImageCompositionService } from "../../modules/build/export/services/imp
 import { ImageFormatConverterService } from "../../modules/build/export/services/implementations/ImageFormatConverterService";
 import { ImagePreviewGenerator } from "../../modules/build/export/services/implementations/ImagePreviewGenerator";
 import { LayoutCalculationService } from "../../modules/build/export/services/implementations/LayoutCalculationService";
+import { ExportService } from "../../modules/build/export/services/implementations/SequenceExportService";
 import { SVGToCanvasConverterService } from "../../modules/build/export/services/implementations/SVGToCanvasConverterService";
 import { TextRenderingService } from "../../modules/build/export/services/implementations/TextRenderingService";
 import { TextRenderingUtils } from "../../modules/build/export/services/implementations/TextRenderingUtils";
@@ -64,17 +64,11 @@ import {
   WorkbenchDeleteService,
   WorkbenchService,
 } from "../../modules/build/workbench";
-import {
-  CodexLetterMappingRepo,
-  CodexPictographUpdater,
-  CodexService,
-} from "../../modules/learn/codex/services/implementations";
+import { CodexService } from "../../modules/learn/codex/services/implementations";
+import { CodexLetterMappingRepo } from "../../modules/learn/codex/services/implementations/CodexLetterMappingRepo";
+import { CodexPictographUpdater } from "../../modules/learn/codex/services/implementations/CodexPictographUpdater";
 import { QuizRepoManager } from "../../modules/learn/quiz/services/implementations/QuizRepoManager";
-import {
-  PageFactoryService,
-  PageImageExportService,
-} from "../../modules/word-card/services/implementations";
-// Foundation services (core infrastructure)
+import { QuizSessionService } from "../../modules/learn/quiz/services/implementations/QuizSessionService";
 import {
   ApplicationInitializer,
   BackgroundService,
@@ -90,11 +84,8 @@ import {
   LetterQueryHandler,
   MotionQueryHandler,
   OptionFilterer,
-  ResourceTracker,
   SettingsService,
-} from "../foundation/services";
-
-// Pictograph services (pictograph-specific logic)
+} from "../foundation";
 import {
   ArrowAdjustmentCalculator,
   ArrowCoordinateSystemService,
@@ -132,35 +123,6 @@ import {
 } from "../pictograph/services/implementations/positioning/processors/DirectionalTupleProcessor";
 import { TYPES } from "./types";
 
-// Temporary service stubs for missing services
-class FavoritesService {
-  // Stub implementation
-}
-
-class GalleryThumbnailService {
-  // Stub implementation
-}
-
-class NavigationService {
-  // Stub implementation
-}
-
-class GalleryPanelManager {
-  // Stub implementation
-}
-
-class BrowseSectionService {
-  // Stub implementation
-}
-
-class BrowseStatePersister {
-  // Stub implementation
-}
-
-class GalleryService {
-  // Stub implementation
-}
-
 // Create container
 const container = new Container();
 
@@ -169,6 +131,7 @@ try {
   // Bind repositories
   container.bind(TYPES.ICodexLetterMappingRepo).to(CodexLetterMappingRepo);
   container.bind(TYPES.IQuizRepoManager).to(QuizRepoManager);
+  container.bind(TYPES.IQuizSessionService).to(QuizSessionService);
 
   // Bind data services (dependencies of LetterQueryHandler)
   container.bind(TYPES.ICSVLoader).to(CsvLoader);
@@ -183,9 +146,8 @@ try {
 
   // Bind application services
   container.bind(TYPES.ISettingsService).to(SettingsService);
-  container.bind(TYPES.IPersistenceService).to(FilterPersistenceService);
+  container.bind(TYPES.IPersistenceService).to(BrowsePersistenceService);
   container.bind(TYPES.IDeviceDetector).to(DeviceDetector);
-  container.bind(TYPES.IResourceTracker).to(ResourceTracker);
   container.bind(TYPES.IApplicationInitializer).to(ApplicationInitializer);
 
   // Bind sequence services
@@ -219,7 +181,6 @@ try {
   container.bind(TYPES.IGridModeDeriver).to(GridModeDeriver);
 
   // Bind rendering services
-  // PropCoordinator is exported from core/implementations
   container.bind(TYPES.IPropCoordinator).to(PropCoordinator);
 
   // Bind additional browse services
@@ -240,8 +201,7 @@ try {
   container.bind(TYPES.IPositionPatternService).to(PositionPatternService);
 
   // Bind export services
-  // ExportService was renamed - using FileExportService instead
-  // container.bind(TYPES.IExportService).to(ExportService);
+  container.bind(TYPES.IExportService).to(ExportService);
   container.bind(TYPES.IPageImageExportService).to(PageImageExportService);
   container.bind(TYPES.IGalleryThumbnailService).to(GalleryThumbnailService);
 
@@ -285,7 +245,7 @@ try {
 
   // Bind navigation services
   container.bind(TYPES.INavigationService).to(NavigationService);
-  container.bind(TYPES.IPanelManagementService).to(GalleryPanelManager);
+  container.bind(TYPES.IGalleryPanelManager).to(GalleryPanelManager);
   container.bind(TYPES.ISectionService).to(BrowseSectionService);
 
   // Bind additional persistence services
@@ -388,6 +348,14 @@ try {
   // === UTILITY SERVICES ===
   container.bind(TYPES.IBetaDetectionService).to(BetaDetectionService);
   container.bind(TYPES.IErrorHandlingService).to(ErrorHandlingService);
+
+  // === STATE SERVICES ===
+  // Note: These services use $state runes and should be bound as singletons
+  // They will be imported and bound when needed
+  // container.bind(TYPES.IAppStateInitializer).to(AppStateInitializer).inSingletonScope();
+  // container.bind(TYPES.IApplicationStateService).to(ApplicationStateService).inSingletonScope();
+  // container.bind(TYPES.IMainTabState).to(MainTabState).inSingletonScope();
+  // container.bind(TYPES.IPerformanceMetricsState).to(PerformanceMetricsState).inSingletonScope();
 } catch (error) {
   console.error("❌ TKA Container: Failed to bind services:", error);
 }

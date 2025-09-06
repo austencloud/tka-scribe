@@ -6,6 +6,8 @@ This component is focused solely on rendering the SVG elements
 and leaves state management to the parent component.
 -->
 <script lang="ts">
+	import TKAGlyph from './TKAGlyph.svelte';
+	import ArrowSvg from './ArrowSvg.svelte';
   import {
     GridMode,
     type MotionColor,
@@ -13,7 +15,7 @@ and leaves state management to the parent component.
     type PictographData,
   } from "../../domain";
   import { resolve, TYPES } from "../../inversify";
-  import type { IGridModeDeriver } from "../../services";
+  import type { IGridModeDeriver } from "../services";
   import GridSvg from "./GridSvg.svelte";
   import PropSvg from "./PropSvg.svelte";
 
@@ -115,7 +117,7 @@ and leaves state management to the parent component.
 
     <!-- Arrows (rendered after props) -->
     {#each motionsToRender as { color, motionData } (color)}
-      <Arrow
+      <ArrowSvg
         {motionData}
         preCalculatedPosition={arrowPositions[color]}
         preCalculatedMirroring={arrowMirroring[color]}

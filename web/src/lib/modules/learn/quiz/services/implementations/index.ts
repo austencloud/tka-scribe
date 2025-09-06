@@ -7,7 +7,7 @@
 
 // Quiz services
 export { AnswerCheckerService } from "./AnswerCheckerService";
-export { QuestionGenerator } from "./QuestionGenerator";
+export { QuestionGenerator as QuestionGeneratorService } from "./QuestionGenerator";
 export { QuizConfigurator } from "./QuizConfigurator";
 export { QuizRepoManager } from "./QuizRepoManager";
 export { QuizSessionService } from "./QuizSessionService";

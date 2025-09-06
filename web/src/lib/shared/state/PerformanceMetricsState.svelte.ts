@@ -53,5 +53,5 @@ export class PerformanceMetricsState implements IPerformanceMetricsState {
   }
 }
 
-// Singleton instance
-export const performanceMetricsService = new PerformanceMetricsState();
+// Export the class for DI container binding
+// Singleton instance will be managed by the DI container

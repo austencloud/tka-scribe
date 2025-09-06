@@ -13,6 +13,7 @@ gamma_to_alpha:
     start_position: "gamma"
     end_position: "alpha"
     category: "open"
+    rotation: "prospin"
     cross_shift_form: "W-"
     
   X:
@@ -20,6 +21,7 @@ gamma_to_alpha:
     start_position: "gamma"
     end_position: "alpha"
     category: "open"
+    rotation: "antispin"
     cross_shift_form: "X-"
 
 # Gamma -> Beta (Closing movements)
@@ -29,6 +31,7 @@ gamma_to_beta:
     start_position: "gamma"
     end_position: "beta"
     category: "close"
+    rotation: "prospin"
     cross_shift_form: "Y-"
     
   Z:
@@ -36,6 +39,7 @@ gamma_to_beta:
     start_position: "gamma"
     end_position: "beta"
     category: "close"
+    rotation: "antispin"
     cross_shift_form: "Z-"
 
 # Alpha -> Gamma (Closing movements)
@@ -46,6 +50,7 @@ alpha_to_gamma:
     start_position: "alpha"
     end_position: "gamma"
     category: "close"
+    rotation: "prospin"
     cross_shift_form: "Σ-"
     spoken_as: "Sigma"
     
@@ -55,6 +60,7 @@ alpha_to_gamma:
     start_position: "alpha"
     end_position: "gamma"
     category: "close"
+    rotation: "antispin"
     cross_shift_form: "Δ-"
     spoken_as: "Delta"
 
@@ -66,6 +72,7 @@ beta_to_gamma:
     start_position: "beta"
     end_position: "gamma"
     category: "open"
+    rotation: "prospin"
     cross_shift_form: "θ-"
     spoken_as: "Theta"
     
@@ -75,6 +82,7 @@ beta_to_gamma:
     start_position: "beta"
     end_position: "gamma"
     category: "open"
+    rotation: "antispin"
     cross_shift_form: "Ω-"
     spoken_as: "Omega"
 
@@ -97,6 +105,20 @@ movement_categories:
   closing:
     description: "Movements that close or compact from expanded positions"
     letters: ["Y", "Z", "Σ", "Δ"]
+
+# Pattern Recognition
+pattern_recognition:
+  pro_anti_pairs:
+    description: "Type 2 letters follow Pro-Anti pairing rule"
+    examples:
+      - "W(prospin) - X(antispin): Gamma→Alpha"
+      - "Y(prospin) - Z(antispin): Gamma→Beta"
+      - "Σ(prospin) - Δ(antispin): Alpha→Gamma"
+      - "θ(prospin) - Ω(antispin): Beta→Gamma"
+    
+  rotation_mechanics:
+    prospin_rule: "Handpath direction matches staff rotation direction"
+    antispin_rule: "Handpath direction opposite to staff rotation direction"
 
 # Cross-Shift relationship
 cross_shift_notation:

@@ -66,15 +66,16 @@ beta_to_beta:
     note: "Either hand can execute prospin or antispin"
     self_combines: true
 
-# Compound Letters (Alpha<->Beta transitions)
+# Compound Letters (Beta->Alpha transitions)
 compound_beta_to_alpha:
   D:
     motion_type: "Dual-Shift"
     start_position: "beta"
     end_position: "alpha"
-    handpath: "Tog-Opp"
-    rotation: "isolation"
-    pattern_position: "Iso"
+    handpath_options: ["Tog-Opp", "Split-Opp"]
+    handpath_determination: "Depends on whether continued handpath leads to simultaneous convergence"
+    rotation: "prospin"
+    pattern_position: "Pro"
     combines_with: ["J"]
     compound_word: "DJ"
     mnemonic: "Disco Jam"
@@ -83,7 +84,8 @@ compound_beta_to_alpha:
     motion_type: "Dual-Shift"
     start_position: "beta"
     end_position: "alpha"
-    handpath: "Tog-Opp"
+    handpath_options: ["Tog-Opp", "Split-Opp"]
+    handpath_determination: "Depends on whether continued handpath leads to simultaneous convergence"
     rotation: "antispin"
     pattern_position: "Anti"
     combines_with: ["K"]
@@ -94,9 +96,11 @@ compound_beta_to_alpha:
     motion_type: "Dual-Shift"
     start_position: "beta"
     end_position: "alpha"
-    handpath: "Tog-Opp"
+    handpath_options: ["Tog-Opp", "Split-Opp"]
+    handpath_determination: "Depends on whether continued handpath leads to simultaneous convergence"
     rotation: "hybrid"
     pattern_position: "Hybrid"
+    note: "One hand prospin, one hand antispin - double the variations"
     combines_with: ["L"]
     compound_word: "FL"
     mnemonic: "Fruity Loops"
@@ -106,9 +110,10 @@ compound_alpha_to_beta:
     motion_type: "Dual-Shift"
     start_position: "alpha"
     end_position: "beta"
-    handpath: "Split-Opp"
-    rotation: "isolation"
-    pattern_position: "Iso"
+    handpath_options: ["Tog-Opp", "Split-Opp"]
+    handpath_determination: "Depends on whether continued handpath leads to simultaneous convergence"
+    rotation: "prospin"
+    pattern_position: "Pro"
     combines_with: ["D"]
     compound_word: "DJ"
     
@@ -116,7 +121,8 @@ compound_alpha_to_beta:
     motion_type: "Dual-Shift"
     start_position: "alpha" 
     end_position: "beta"
-    handpath: "Split-Opp"
+    handpath_options: ["Tog-Opp", "Split-Opp"]
+    handpath_determination: "Depends on whether continued handpath leads to simultaneous convergence"
     rotation: "antispin"
     pattern_position: "Anti"
     combines_with: ["E"]
@@ -126,9 +132,11 @@ compound_alpha_to_beta:
     motion_type: "Dual-Shift"
     start_position: "alpha"
     end_position: "beta"
-    handpath: "Split-Opp"
+    handpath_options: ["Tog-Opp", "Split-Opp"]
+    handpath_determination: "Depends on whether continued handpath leads to simultaneous convergence"
     rotation: "hybrid"
-    pattern_position: "Hybrid" 
+    pattern_position: "Hybrid"
+    note: "One hand prospin, one hand antispin - double the variations"
     combines_with: ["F"]
     compound_word: "FL"
 
@@ -198,14 +206,15 @@ gamma_quarter_opp:
     compound_words: ["OR"]
 
 # Gamma Letters (Quarter-Same movements)
+# Note: STUV follows leading hand pattern, not Pro-Anti-Hybrid
 gamma_quarter_same:
   S:
     motion_type: "Dual-Shift"
     start_position: "gamma"
     end_position: "gamma"
     handpath: "Quarter-Same"
-    rotation: "isolation"
-    leading_hand: "isolation"
+    leading_hand: "prospin"
+    pattern_note: "Pro leading hand"
     self_combines: true
     word_form: "SS"
     
@@ -214,8 +223,8 @@ gamma_quarter_same:
     start_position: "gamma"
     end_position: "gamma"
     handpath: "Quarter-Same"
-    rotation: "antispin"
     leading_hand: "antispin"
+    pattern_note: "Anti leading hand"
     self_combines: true
     word_form: "TT"
     
@@ -224,8 +233,8 @@ gamma_quarter_same:
     start_position: "gamma"
     end_position: "gamma"
     handpath: "Quarter-Same"
-    rotation: "isolation"
-    leading_hand: "isolation"
+    leading_hand: "prospin"
+    pattern_note: "Pro leading hand"
     visual_mnemonic: "Round motion like letter U"
     self_combines: true
     word_form: "UU"
@@ -236,19 +245,36 @@ gamma_quarter_same:
     start_position: "gamma"
     end_position: "gamma"
     handpath: "Quarter-Same"
-    rotation: "antispin"
     leading_hand: "antispin"
+    pattern_note: "Anti leading hand"
     visual_mnemonic: "Spiky motion like letter V"
     self_combines: true
     word_form: "VV"
     distinguishing_feature: "Cannot be rotated into U"
 
+# Staff Rotation Mechanics
+rotation_system:
+  prospin_rule:
+    description: "Handpath direction matches staff rotation direction"
+    example: "East→North (counterclockwise handpath) + prospin = counterclockwise staff rotation"
+    
+  antispin_rule:
+    description: "Handpath direction opposite to staff rotation direction"
+    example: "East→North (counterclockwise handpath) + antispin = clockwise staff rotation"
+    
+  hybrid_mechanics:
+    description: "One hand prospin, one hand antispin"
+    variations: "Double the variations - either hand can be pro or anti"
+    
 # Pattern Recognition
 learning_aids:
   pro_anti_hybrid_pattern:
-    description: "Each group follows Pro-Anti-Hybrid pattern"
+    description: "Most groups follow Pro-Anti-Hybrid pattern"
     memory_aid: "If you memorize only one letter in each group, you know all of them"
     examples:
       - "A=prospin → B=antispin → C=hybrid"
       - "G=prospin → H=antispin → I=hybrid"
-      - "M=iso → N=anti → O=hybrid"
+      - "D=prospin → E=antispin → F=hybrid"
+      - "M=prospin → N=antispin → O=hybrid"
+    exception:
+      stuv_pattern: "S=pro leading → T=anti leading → U=pro leading → V=anti leading"

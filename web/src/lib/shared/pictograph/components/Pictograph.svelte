@@ -15,12 +15,12 @@ ARCHITECTURE:
   import type { PictographData } from "$shared/domain";
   import { onMount } from "svelte";
   import PictographSvg from "./PictographSvg.svelte";
-  // Import our focused hooks
+// Import our focused hooks
   import {
     useArrowPositioning,
     useComponentLoading,
     usePictographData,
-  } from "./hooks";
+  } from "../services/implementations";
 
   // Simplified Props interface - removed beat-specific properties
   interface Props {

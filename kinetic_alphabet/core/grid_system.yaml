@@ -6,11 +6,12 @@ metadata:
 grid:
   modes:
     diamond: 
-      description: "Primary mode used in this guide"
-      note: "Everything translates to box mode"
+      description: "One of two equivalent grid orientations"
+      note: "Guide uses diamond but everything translates to box"
+      learning: "Often easier for people to start with"
     box: 
-      description: "Alternative grid orientation"
-      note: "Same concepts, rotated 45 degrees"
+      description: "Alternative grid orientation, rotated 45° from diamond"
+      equivalence: "Two sides of the same coin with diamond"
     eight_point: 
       description: "Combination of diamond and box grids"
       

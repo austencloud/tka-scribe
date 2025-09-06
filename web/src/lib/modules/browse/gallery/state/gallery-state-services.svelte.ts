@@ -12,7 +12,6 @@
  */
 
 import { browser } from "$app/environment";
-import { tabStateService } from "$shared/state/main-tab-state.svelte";
 import { GallerySortMethod } from "../domain";
 // import type { SequenceData } from "$shared/domain";
 import type {
@@ -26,7 +25,7 @@ import type {
 // ============================================================================
 
 export class GalleryTabStateManager {
-  private persistenceService = tabStateService.browseStatePersistence;
+  private persistenceService = resolve(TYPES.IBrowseStatePersister);
   private saveTimeout: number | null = null;
   private readonly SAVE_DEBOUNCE_MS = 500; // Debounce saves to avoid excessive localStorage writes
 

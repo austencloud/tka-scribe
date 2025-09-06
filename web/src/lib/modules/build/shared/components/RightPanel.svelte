@@ -8,10 +8,10 @@
   import GraphEditor from "../../edit/components/GraphEditor.svelte";
   import ExportPanel from "../../export/components/ExportPanel.svelte";
 
-  import ConstructTabContent from "../../construct/components/ConstructTabContent.svelte";
+  import ConstructTabContent from "../../construct/shared/components/ConstructTabContent.svelte";
   import GeneratePanel from "../../generate/components/GeneratePanel.svelte";
 // import { constructTabEventService } from "../../services/implementations"; // TODO: Implement service
-  import ConstructTabNavigation from "../BuildSubTabNavigation.svelte";
+  import ConstructTabNavigation from "./BuildTabNavigation.svelte";
 // Import Svelte's built-in fade transition for consistency with main tabs
   import type {
     ActiveBuildTab,

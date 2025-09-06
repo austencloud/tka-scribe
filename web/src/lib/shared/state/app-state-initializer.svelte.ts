@@ -73,5 +73,5 @@ class AppStateInitializer implements IAppStateInitializer {
   }
 }
 
-// Singleton instance
-export const initializationService = new AppStateInitializer();
+// Export the class for DI container binding
+// Singleton instance will be managed by the DI container

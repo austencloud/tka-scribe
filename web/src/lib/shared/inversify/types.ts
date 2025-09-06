@@ -194,6 +194,12 @@ export const TYPES = {
   // === UTILITY SERVICES ===
   IBetaDetectionService: Symbol.for("IBetaDetectionService"),
   IErrorHandlingService: Symbol.for("IErrorHandlingService"),
+
+  // === STATE SERVICES ===
+  IAppStateInitializer: Symbol.for("IAppStateInitializer"),
+  IApplicationStateService: Symbol.for("IApplicationStateService"),
+  IMainTabState: Symbol.for("IMainTabState"),
+  IPerformanceMetricsState: Symbol.for("IPerformanceMetricsState"),
 } as const;
 
 // Type helper for getting service types

@@ -74,7 +74,7 @@
           type: "internal",
         },
         {
-          title: "GitHub Repository",
+          title: "GitHub Repo",
           description: "Source code and development updates",
           url: "https://github.com/austencloud/tka-sequence-constructor",
           type: "external",
